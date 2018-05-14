@@ -1,0 +1,78 @@
+//	ObjectTalk Scripting Language
+//	Copyright 1993-2018 Johan A. Goossens
+//
+//	Licensed under the Apache License, Version 2.0 (the "License");
+//	you may not use this file except in compliance with the License.
+//	You may obtain a copy of the License at
+//
+//		http://www.apache.org/licenses/LICENSE-2.0
+//
+//	Unless required by applicable law or agreed to in writing, software
+//	distributed under the License is distributed on an "AS IS" BASIS,
+//	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//	See the License for the specific language governing permissions and
+//	limitations under the License.
+
+//	Test script for ObjectTalk classes
+
+assert('global.get("true") == true')
+assert('global.true == true')
+
+assert('1.getClass().getName() == "Integer"')
+assert('1.getClass().getClass().getName() == "Class"')
+
+theClass = 1.getClass()
+path = theClass.getName()
+
+while theClass.hasParent()
+{
+    theClass = theClass.getParent()
+    path += "->" + theClass.getName()
+}
+
+assert('path == "Integer->Primitive->Object"')
+
+class MyObject : Object
+{
+    function pedigree(this, useless)
+    {
+        theClass = this.getClass()
+        path = theClass.getName()
+
+        while theClass.hasParent()
+        {
+            theClass = theClass.getParent()
+            path += "->" + theClass.getName()
+        }
+
+        return path
+    }
+
+    function set(this, value)
+    {
+        this.value = value
+    }
+}
+
+test = MyObject()
+
+pedigree = test.pedigree
+
+assert('test.pedigree("useless") == "MyObject->Object"')
+
+pedigree = test.pedigree
+assert('pedigree("useless") == "MyObject->Object"')
+assert('pedigree.getClass().getName() == "BoundFunction"')
+
+test.set(12)
+assert('test.value == 12')
+
+set = test.set
+set(14)
+assert('test.value == 14')
+
+test.value = 16
+assert('test.value == 16')
+
+// Well done
+print("Passed all class tests")

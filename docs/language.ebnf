@@ -1,0 +1,46 @@
+object-talk	::= statement*
+
+statement ::= expressions
+| "{" statement+ "}"
+| "class" name ":" name statement
+| "function" name "(" (name ("," name)* | "...") ")" statement
+| "if" expression statement ("else" statement)?
+| "while" expression statement
+| "do" statement "while" expression
+| "for" "(" expressions ";" expression ";" expressions ")" statement
+| "switch" expression ("case" expression statement)+ ("default" statement)?
+| "return" expression
+
+expressions ::= expression ("," expression)*
+
+expression ::= conditional ("=" conditional | "*=" conditional | "/=" conditional | "%=" conditional |
+"+=" conditional | "-=" conditional | "|=" conditional | "^=" conditional | "&=" conditional)*
+
+conditional ::= or ("?" expression ":" expression)?
+
+or ::= and ("||" and)*
+and ::= bytewise-or ("&&" bytewise-or)*
+
+bytewise-or ::= bytewise-xor ("|" bytewise-xor)*
+bytewise-xor ::= bytewise-and ("^" bytewise-and)*
+bytewise-and ::= equal ("&" equal)*
+
+equal ::= relation ("==" expressions  | "!=" expressions)*
+relation ::= shift ("<" shift | "<=" shift | ">" shift | ">=" shift)*
+
+shift ::= addition ("<<" addition | ">>" addition)*
+addition ::= multiplication ("+" multiplication | "-" multiplication)*
+multiplication ::= prefix ("*" prefix | "/" prefix | "%" prefix)*
+
+prefix ::= ("-" | "!" | "^" | "++" | "--")? postfix
+postfix ::= primary ("[" expression "]" | "(" expressions ")" | "." name | "++" | "--")*
+
+primary ::= "(" expression ")"
+| "[" expressions "]"
+| "{" name ":" expression ("," name ":" expression)* "}"
+| integer | real | string | name
+
+integer ::= [-]? [0-9][0-9]*
+real ::= [-]? [0-9][0-9]*.[0-9][0-9]* ([Ee] [-]? [0-9][0-9]*)?
+string ::= '"' (Char - '"')* '"' | "'" (Char - "'")* "'"
+name ::= [a-zA-Z_][a-zA-Z0-9_]*

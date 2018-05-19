@@ -36,8 +36,6 @@ class OtFile : public OtIO
 {
 public:
 	OtFile() {}
-
-	private
 };
 
 

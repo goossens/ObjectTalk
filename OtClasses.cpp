@@ -403,103 +403,87 @@ static OtType OtDictType()
 
 
 //
-//  Create a new value
-//
-
-inline OtValue CreateValue(OtType type, OtValue object)
-{
-	if (object)
-		object->setType(type);
-
-	else
-		object = type->instantiate();
-
-	return object;
-}
-
-
-//
 //  Class factory
 //
 
 OtValue OtObjectClassCreate()
 {
-	return CreateValue(OtClassType(), std::make_shared<OtClass>(OtObjectType()));
+	return OtValueCreate(OtClassType(), std::make_shared<OtClass>(OtObjectType()));
 }
 
 OtValue OtInternalClassCreate()
 {
-	return CreateValue(OtClassType(), std::make_shared<OtClass>(OtInternalType()));
+	return OtValueCreate(OtClassType(), std::make_shared<OtClass>(OtInternalType()));
 }
 
 OtValue OtClassClassCreate()
 {
-	return CreateValue(OtClassType(), std::make_shared<OtClass>(OtClassType()));
+	return OtValueCreate(OtClassType(), std::make_shared<OtClass>(OtClassType()));
 }
 
 OtValue OtMemberReferenceClassCreate()
 {
-	return CreateValue(OtClassType(), std::make_shared<OtClass>(OtMemberReferenceType()));
+	return OtValueCreate(OtClassType(), std::make_shared<OtClass>(OtMemberReferenceType()));
 }
 
 OtValue OtArrayReferenceClassCreate()
 {
-	return CreateValue(OtClassType(), std::make_shared<OtClass>(OtArrayReferenceType()));
+	return OtValueCreate(OtClassType(), std::make_shared<OtClass>(OtArrayReferenceType()));
 }
 
 OtValue OtDictReferenceClassCreate()
 {
-	return CreateValue(OtClassType(), std::make_shared<OtClass>(OtDictReferenceType()));
+	return OtValueCreate(OtClassType(), std::make_shared<OtClass>(OtDictReferenceType()));
 }
 
 OtValue OtPrimitiveClassCreate()
 {
-	return CreateValue(OtClassType(), std::make_shared<OtClass>(OtPrimitiveType()));
+	return OtValueCreate(OtClassType(), std::make_shared<OtClass>(OtPrimitiveType()));
 }
 
 OtValue OtBooleanClassCreate()
 {
-	return CreateValue(OtClassType(), std::make_shared<OtClass>(OtBooleanType()));
+	return OtValueCreate(OtClassType(), std::make_shared<OtClass>(OtBooleanType()));
 }
 
 OtValue OtIntegerClassCreate()
 {
-	return CreateValue(OtClassType(), std::make_shared<OtClass>(OtIntegerType()));
+	return OtValueCreate(OtClassType(), std::make_shared<OtClass>(OtIntegerType()));
 }
 
 OtValue OtRealClassCreate()
 {
-	return CreateValue(OtClassType(), std::make_shared<OtClass>(OtRealType()));
+	return OtValueCreate(OtClassType(), std::make_shared<OtClass>(OtRealType()));
 }
 
 OtValue OtStringClassCreate()
 {
-	return CreateValue(OtClassType(), std::make_shared<OtClass>(OtStringType()));
+	return OtValueCreate(OtClassType(), std::make_shared<OtClass>(OtStringType()));
 }
 
 OtValue OtFunctionClassCreate()
 {
-	return CreateValue(OtClassType(), std::make_shared<OtClass>(OtFunctionType()));
+	return OtValueCreate(OtClassType(), std::make_shared<OtClass>(OtFunctionType()));
 }
 
 OtValue OtBoundFunctionClassCreate()
 {
-	return CreateValue(OtClassType(), std::make_shared<OtClass>(OtBoundFunctionType()));
+	return OtValueCreate(OtClassType(), std::make_shared<OtClass>(OtBoundFunctionType()));
 }
 
 OtValue OtCollectionClassCreate()
 {
-	return CreateValue(OtClassType(), std::make_shared<OtClass>(OtCollectionType()));
+	return OtValueCreate(OtClassType(), std::make_shared<OtClass>(OtCollectionType()));
 }
 
 OtValue OtArrayClassCreate()
 {
-	return CreateValue(OtClassType(), std::make_shared<OtClass>(OtArrayType()));
+	return OtValueCreate(OtClassType(), std::make_shared<OtClass>(OtArrayType()));
 }
 
 OtValue OtDictClassCreate()
 {
-	return CreateValue(OtClassType(), std::make_shared<OtClass>(OtDictType()));
+	return OtValueCreate(OtClassType(), std::make_shared<OtClass>(OtDictType()));
 }
 
 
@@ -509,95 +493,95 @@ OtValue OtDictClassCreate()
 
 OtValue OtValueCreate()
 {
-	return CreateValue(OtObjectType(), nullptr);
+	return OtValueCreate(OtObjectType(), nullptr);
 
 }
 
 OtValue OtValueCreate(bool boolean)
 {
-	return CreateValue(OtBooleanType(), std::make_shared<OtBoolean>(boolean));
+	return OtValueCreate(OtBooleanType(), std::make_shared<OtBoolean>(boolean));
 }
 
 OtValue OtValueCreate(long integer)
 {
-	return CreateValue(OtIntegerType(), std::make_shared<OtInteger>(integer));
+	return OtValueCreate(OtIntegerType(), std::make_shared<OtInteger>(integer));
 }
 
 OtValue OtValueCreate(size_t integer)
 {
-	return CreateValue(OtIntegerType(), std::make_shared<OtInteger>((long) integer));
+	return OtValueCreate(OtIntegerType(), std::make_shared<OtInteger>((long) integer));
 }
 
 OtValue OtValueCreate(double real)
 {
-	return CreateValue(OtRealType(), std::make_shared<OtReal>(real));
+	return OtValueCreate(OtRealType(), std::make_shared<OtReal>(real));
 }
 
 OtValue OtValueCreate(const std::string& string)
 {
-	return CreateValue(OtStringType(), std::make_shared<OtString>(string));
+	return OtValueCreate(OtStringType(), std::make_shared<OtString>(string));
 }
 
 OtValue OtValueCreate(OtType type)
 {
-	return CreateValue(OtClassType(), std::make_shared<OtClass>(type));
+	return OtValueCreate(OtClassType(), std::make_shared<OtClass>(type));
 }
 
 OtValue OtValueCreate(size_t count, OtExecutable executable)
 {
-	return CreateValue(OtFunctionType(), std::make_shared<OtFunction>(count, executable));
+	return OtValueCreate(OtFunctionType(), std::make_shared<OtFunction>(count, executable));
 }
 
 OtValue OtValueCreate(size_t count, OtCode code, const std::vector<std::string>& names)
 {
-	return CreateValue(OtFunctionType(), std::make_shared<OtFunction>(count, code, names));
+	return OtValueCreate(OtFunctionType(), std::make_shared<OtFunction>(count, code, names));
 }
 
 OtValue OtBoundFunctionCreate(OtValue object, OtValue function)
 {
-	return CreateValue(OtBoundFunctionType(), std::make_shared<OtBoundFunction>(object, function));
+	return OtValueCreate(OtBoundFunctionType(), std::make_shared<OtBoundFunction>(object, function));
 }
 
 OtValue OtArrayCreate()
 {
-	return CreateValue(OtArrayType(), nullptr);
+	return OtValueCreate(OtArrayType(), nullptr);
 }
 
 OtValue OtArrayCreate(size_t count, OtValue* values)
 {
 	std::shared_ptr<OtArray> array = std::make_shared<OtArray>();
 	array->init(count, values);
-	return CreateValue(OtArrayType(), array);
+	return OtValueCreate(OtArrayType(), array);
 }
 
 OtValue OtDictCreate()
 {
-	return CreateValue(OtDictType(), nullptr);
+	return OtValueCreate(OtDictType(), nullptr);
 }
 
 OtValue OtDictCreate(size_t count, OtValue* values)
 {
 	std::shared_ptr<OtDict> dict = std::make_shared<OtDict>();
 	dict->init(count, values);
-	return CreateValue(OtDictType(), dict);
+	return OtValueCreate(OtDictType(), dict);
 }
 
 OtValue OtContextReferenceCreate(const std::string& member)
 {
-	return CreateValue(OtContextReferenceType(), std::make_shared<OtContextReference>(member));
+	return OtValueCreate(OtContextReferenceType(), std::make_shared<OtContextReference>(member));
 }
 
 OtValue OtMemberReferenceCreate(OtValue object, const std::string& member)
 {
-	return CreateValue(OtMemberReferenceType(), std::make_shared<OtMemberReference>(object, member));
+	return OtValueCreate(OtMemberReferenceType(), std::make_shared<OtMemberReference>(object, member));
 }
 
 OtValue OtArrayReferenceCreate(OtValue array, size_t index)
 {
-	return CreateValue(OtArrayReferenceType(), std::make_shared<OtArrayReference>(OtTypeCast<OtArray>(array), index));
+	return OtValueCreate(OtArrayReferenceType(), std::make_shared<OtArrayReference>(OtTypeCast<OtArray>(array), index));
 }
 
 OtValue OtDictReferenceCreate(OtValue dict, const std::string& index)
 {
-	return CreateValue(OtDictReferenceType(), std::make_shared<OtDictReference>(OtTypeCast<OtDict>(dict), index));
+	return OtValueCreate(OtDictReferenceType(), std::make_shared<OtDictReference>(OtTypeCast<OtDict>(dict), index));
 }

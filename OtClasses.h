@@ -30,10 +30,10 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "OtNucleus.h"
-#include "OtSequence.h"
 
 
 //
@@ -65,7 +65,6 @@ OtValue OtFunctionCreateRaw(OtValue (Class::*function)(size_t count, OtValue* pa
 	return OtValueCreate(SIZE_MAX, [function] (OtValue, size_t c, OtValue* p)->OtValue
 	{
 		return (*OtTypeCast<Class>(p[0]).*function)(c - 1, p + 1);
-
 	});
 }
 

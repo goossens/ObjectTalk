@@ -17,13 +17,18 @@
 
 dot -Tpng -oFileDependencies.png <<END
 digraph d {
+"OtMain.cpp" -> "OtObjectTalk.h"
+
 "OtObjectTalk.h" -> "OtClasses.h"
 "OtObjectTalk.h" -> "OtScanner.h"
 
 "OtClasses.cpp" -> "OtClasses.h"
 
 "OtClasses.h" -> "OtNucleus.h"
-"OtClasses.h" -> "OtSequence.h"
+"OtClasses.h" -> "OtClassesPrimitives.h"
+"OtClasses.h" -> "OtClassesCollections.h"
+"OtClasses.h" -> "OtClassesIO.h"
+"OtClasses.h" -> "OtClassesInternal.h"
 
 "OtScanner.h" -> "OtException.h"
 

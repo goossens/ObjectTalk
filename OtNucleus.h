@@ -241,6 +241,22 @@ protected:
 
 
 //
+//  Create a new value
+//
+
+inline OtValue OtValueCreate(OtType type, OtValue object)
+{
+	if (object)
+		object->setType(type);
+
+	else
+		object = type->instantiate();
+
+	return object;
+}
+
+
+//
 //  OtMetaClass::instantiate (defined here due to circular references)
 //
 

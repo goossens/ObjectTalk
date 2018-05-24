@@ -43,79 +43,79 @@ public:
 	// basic tokens
 	enum
 	{
-		OT_SCANNER_ILLEGAL_TOKEN = -1,
-		OT_SCANNER_EOS_TOKEN = 1,
+		ILLEGAL_TOKEN = -1,
+		EOS_TOKEN = 1,
 
-		OT_SCANNER_IDENTIFIER_TOKEN,
-		OT_SCANNER_INTEGER_TOKEN,
-		OT_SCANNER_REAL_TOKEN,
-		OT_SCANNER_STRING_TOKEN,
+		IDENTIFIER_TOKEN,
+		INTEGER_TOKEN,
+		REAL_TOKEN,
+		STRING_TOKEN,
 
-		OT_SCANNER_LPAREN_TOKEN,
-		OT_SCANNER_RPAREN_TOKEN,
-		OT_SCANNER_LBRACKET_TOKEN,
-		OT_SCANNER_RBRACKET_TOKEN,
-		OT_SCANNER_LBRACE_TOKEN,
-		OT_SCANNER_RBRACE_TOKEN,
+		LPAREN_TOKEN,
+		RPAREN_TOKEN,
+		LBRACKET_TOKEN,
+		RBRACKET_TOKEN,
+		LBRACE_TOKEN,
+		RBRACE_TOKEN,
 
-		OT_SCANNER_COMMA_TOKEN,
-		OT_SCANNER_PERIOD_TOKEN,
-		OT_SCANNER_COLON_TOKEN,
-		OT_SCANNER_SEMICOLON_TOKEN,
-		OT_SCANNER_QUESTION_TOKEN,
+		COMMA_TOKEN,
+		PERIOD_TOKEN,
+		COLON_TOKEN,
+		SEMICOLON_TOKEN,
+		QUESTION_TOKEN,
 
-		OT_SCANNER_ASSIGNMENT_TOKEN,
-		OT_SCANNER_MULTIPLY_ASSIGNMENT_TOKEN,
-		OT_SCANNER_DIVIDE_ASSIGNMENT_TOKEN,
-		OT_SCANNER_MODULO_ASSIGNMENT_TOKEN,
-		OT_SCANNER_ADD_ASSIGNMENT_TOKEN,
-		OT_SCANNER_SUBTRACT_ASSIGNMENT_TOKEN,
-		OT_SCANNER_BITWISE_AND_ASSIGNMENT_TOKEN,
-		OT_SCANNER_BITWISE_OR_ASSIGNMENT_TOKEN,
-		OT_SCANNER_BITWISE_XOR_ASSIGNMENT_TOKEN,
+		ASSIGNMENT_TOKEN,
+		MULTIPLY_ASSIGNMENT_TOKEN,
+		DIVIDE_ASSIGNMENT_TOKEN,
+		MODULO_ASSIGNMENT_TOKEN,
+		ADD_ASSIGNMENT_TOKEN,
+		SUBTRACT_ASSIGNMENT_TOKEN,
+		BITWISE_AND_ASSIGNMENT_TOKEN,
+		BITWISE_OR_ASSIGNMENT_TOKEN,
+		BITWISE_XOR_ASSIGNMENT_TOKEN,
 
-		OT_SCANNER_EQUAL_TOKEN,
-		OT_SCANNER_NOT_EQUAL_TOKEN,
-		OT_SCANNER_LESS_TOKEN,
-		OT_SCANNER_LESS_EQUAL_TOKEN,
-		OT_SCANNER_GREATER_TOKEN,
-		OT_SCANNER_GREATER_EQUAL_TOKEN,
+		EQUAL_TOKEN,
+		NOT_EQUAL_TOKEN,
+		LESS_TOKEN,
+		LESS_EQUAL_TOKEN,
+		GREATER_TOKEN,
+		GREATER_EQUAL_TOKEN,
 
-		OT_SCANNER_NOT_TOKEN,
-		OT_SCANNER_AND_TOKEN,
-		OT_SCANNER_OR_TOKEN,
+		NOT_TOKEN,
+		AND_TOKEN,
+		OR_TOKEN,
 
-		OT_SCANNER_ADD_TOKEN,
-		OT_SCANNER_SUBTRACT_TOKEN,
-		OT_SCANNER_MULTIPLY_TOKEN,
-		OT_SCANNER_DIVIDE_TOKEN,
-		OT_SCANNER_POWER_TOKEN,
-		OT_SCANNER_MODULO_TOKEN,
+		ADD_TOKEN,
+		SUBTRACT_TOKEN,
+		MULTIPLY_TOKEN,
+		DIVIDE_TOKEN,
+		POWER_TOKEN,
+		MODULO_TOKEN,
 
-		OT_SCANNER_INCREMENT_TOKEN,
-		OT_SCANNER_DECREMENT_TOKEN,
+		INCREMENT_TOKEN,
+		DECREMENT_TOKEN,
 
-		OT_SCANNER_BITWISE_AND_TOKEN,
-		OT_SCANNER_BITWISE_NOT_TOKEN,
-		OT_SCANNER_BITWISE_OR_TOKEN,
-		OT_SCANNER_BITWISE_XOR_TOKEN,
+		BITWISE_AND_TOKEN,
+		BITWISE_NOT_TOKEN,
+		BITWISE_OR_TOKEN,
+		BITWISE_XOR_TOKEN,
 
-		OT_SCANNER_SHIFT_LEFT_TOKEN,
-		OT_SCANNER_SHIFT_RIGHT_TOKEN,
+		SHIFT_LEFT_TOKEN,
+		SHIFT_RIGHT_TOKEN,
 
-		OT_SCANNER_ELLIPSIS_TOKEN,
+		ELLIPSIS_TOKEN,
 
-		OT_SCANNER_CASE_TOKEN,
-		OT_SCANNER_CLASS_TOKEN,
-		OT_SCANNER_DEFAULT_TOKEN,
-		OT_SCANNER_DO_TOKEN,
-		OT_SCANNER_ELSE_TOKEN,
-		OT_SCANNER_FOR_TOKEN,
-		OT_SCANNER_FUNCTION_TOKEN,
-		OT_SCANNER_IF_TOKEN,
-		OT_SCANNER_RETURN_TOKEN,
-		OT_SCANNER_SWITCH_TOKEN,
-		OT_SCANNER_WHILE_TOKEN
+		CASE_TOKEN,
+		CLASS_TOKEN,
+		DEFAULT_TOKEN,
+		DO_TOKEN,
+		ELSE_TOKEN,
+		FOR_TOKEN,
+		FUNCTION_TOKEN,
+		IF_TOKEN,
+		RETURN_TOKEN,
+		SWITCH_TOKEN,
+		WHILE_TOKEN
 
 	};
 
@@ -123,65 +123,65 @@ public:
 	OtScanner()
 	{
 		// set default scanner state
-		token = OT_SCANNER_ILLEGAL_TOKEN;
+		token = ILLEGAL_TOKEN;
 		stateTable.resize(1);
 
 		// setup scanner
-		addToken("(", OT_SCANNER_LPAREN_TOKEN);
-		addToken(")", OT_SCANNER_RPAREN_TOKEN);
-		addToken("[", OT_SCANNER_LBRACKET_TOKEN);
-		addToken("]", OT_SCANNER_RBRACKET_TOKEN);
-		addToken("{", OT_SCANNER_LBRACE_TOKEN);
-		addToken("}", OT_SCANNER_RBRACE_TOKEN);
-		addToken(",", OT_SCANNER_COMMA_TOKEN);
-		addToken("...", OT_SCANNER_ELLIPSIS_TOKEN);
-		addToken(".", OT_SCANNER_PERIOD_TOKEN);
-		addToken(":", OT_SCANNER_COLON_TOKEN);
-		addToken(";", OT_SCANNER_SEMICOLON_TOKEN);
-		addToken("?", OT_SCANNER_QUESTION_TOKEN);
-		addToken("==", OT_SCANNER_EQUAL_TOKEN);
-		addToken("=", OT_SCANNER_ASSIGNMENT_TOKEN);
-		addToken("!=", OT_SCANNER_NOT_EQUAL_TOKEN);
-		addToken("!", OT_SCANNER_NOT_TOKEN);
-		addToken("<=", OT_SCANNER_LESS_EQUAL_TOKEN);
-		addToken("<<", OT_SCANNER_SHIFT_LEFT_TOKEN);
-		addToken("<", OT_SCANNER_LESS_TOKEN);
-		addToken(">=", OT_SCANNER_GREATER_EQUAL_TOKEN);
-		addToken(">>", OT_SCANNER_SHIFT_RIGHT_TOKEN);
-		addToken(">", OT_SCANNER_GREATER_TOKEN);
-		addToken("++", OT_SCANNER_INCREMENT_TOKEN);
-		addToken("+=", OT_SCANNER_ADD_ASSIGNMENT_TOKEN);
-		addToken("+", OT_SCANNER_ADD_TOKEN);
-		addToken("--", OT_SCANNER_DECREMENT_TOKEN);
-		addToken("-=", OT_SCANNER_SUBTRACT_ASSIGNMENT_TOKEN);
-		addToken("-", OT_SCANNER_SUBTRACT_TOKEN);
-		addToken("*=", OT_SCANNER_MULTIPLY_ASSIGNMENT_TOKEN);
-		addToken("**", OT_SCANNER_POWER_TOKEN);
-		addToken("*", OT_SCANNER_MULTIPLY_TOKEN);
-		addToken("/=", OT_SCANNER_DIVIDE_ASSIGNMENT_TOKEN);
-		addToken("/", OT_SCANNER_DIVIDE_TOKEN);
-		addToken("%=", OT_SCANNER_MODULO_ASSIGNMENT_TOKEN);
-		addToken("%", OT_SCANNER_MODULO_TOKEN);
-		addToken("||", OT_SCANNER_OR_TOKEN);
-		addToken("|=", OT_SCANNER_BITWISE_AND_ASSIGNMENT_TOKEN);
-		addToken("|", OT_SCANNER_BITWISE_OR_TOKEN);
-		addToken("&&", OT_SCANNER_AND_TOKEN);
-		addToken("&=", OT_SCANNER_BITWISE_OR_ASSIGNMENT_TOKEN);
-		addToken("&", OT_SCANNER_BITWISE_AND_TOKEN);
-		addToken("^=", OT_SCANNER_BITWISE_XOR_ASSIGNMENT_TOKEN);
-		addToken("^", OT_SCANNER_BITWISE_XOR_TOKEN);
-		addToken("~", OT_SCANNER_BITWISE_NOT_TOKEN);
-		addToken("case", OT_SCANNER_CASE_TOKEN);
-		addToken("class", OT_SCANNER_CLASS_TOKEN);
-		addToken("default", OT_SCANNER_DEFAULT_TOKEN);
-		addToken("do", OT_SCANNER_DO_TOKEN);
-		addToken("else", OT_SCANNER_ELSE_TOKEN);
-		addToken("for", OT_SCANNER_FOR_TOKEN);
-		addToken("function", OT_SCANNER_FUNCTION_TOKEN);
-		addToken("if", OT_SCANNER_IF_TOKEN);
-		addToken("return", OT_SCANNER_RETURN_TOKEN);
-		addToken("switch", OT_SCANNER_SWITCH_TOKEN);
-		addToken("while", OT_SCANNER_WHILE_TOKEN);
+		addToken("(", LPAREN_TOKEN);
+		addToken(")", RPAREN_TOKEN);
+		addToken("[", LBRACKET_TOKEN);
+		addToken("]", RBRACKET_TOKEN);
+		addToken("{", LBRACE_TOKEN);
+		addToken("}", RBRACE_TOKEN);
+		addToken(",", COMMA_TOKEN);
+		addToken("...", ELLIPSIS_TOKEN);
+		addToken(".", PERIOD_TOKEN);
+		addToken(":", COLON_TOKEN);
+		addToken(";", SEMICOLON_TOKEN);
+		addToken("?", QUESTION_TOKEN);
+		addToken("==", EQUAL_TOKEN);
+		addToken("=", ASSIGNMENT_TOKEN);
+		addToken("!=", NOT_EQUAL_TOKEN);
+		addToken("!", NOT_TOKEN);
+		addToken("<=", LESS_EQUAL_TOKEN);
+		addToken("<<", SHIFT_LEFT_TOKEN);
+		addToken("<", LESS_TOKEN);
+		addToken(">=", GREATER_EQUAL_TOKEN);
+		addToken(">>", SHIFT_RIGHT_TOKEN);
+		addToken(">", GREATER_TOKEN);
+		addToken("++", INCREMENT_TOKEN);
+		addToken("+=", ADD_ASSIGNMENT_TOKEN);
+		addToken("+", ADD_TOKEN);
+		addToken("--", DECREMENT_TOKEN);
+		addToken("-=", SUBTRACT_ASSIGNMENT_TOKEN);
+		addToken("-", SUBTRACT_TOKEN);
+		addToken("*=", MULTIPLY_ASSIGNMENT_TOKEN);
+		addToken("**", POWER_TOKEN);
+		addToken("*", MULTIPLY_TOKEN);
+		addToken("/=", DIVIDE_ASSIGNMENT_TOKEN);
+		addToken("/", DIVIDE_TOKEN);
+		addToken("%=", MODULO_ASSIGNMENT_TOKEN);
+		addToken("%", MODULO_TOKEN);
+		addToken("||", OR_TOKEN);
+		addToken("|=", BITWISE_AND_ASSIGNMENT_TOKEN);
+		addToken("|", BITWISE_OR_TOKEN);
+		addToken("&&", AND_TOKEN);
+		addToken("&=", BITWISE_OR_ASSIGNMENT_TOKEN);
+		addToken("&", BITWISE_AND_TOKEN);
+		addToken("^=", BITWISE_XOR_ASSIGNMENT_TOKEN);
+		addToken("^", BITWISE_XOR_TOKEN);
+		addToken("~", BITWISE_NOT_TOKEN);
+		addToken("case", CASE_TOKEN);
+		addToken("class", CLASS_TOKEN);
+		addToken("default", DEFAULT_TOKEN);
+		addToken("do", DO_TOKEN);
+		addToken("else", ELSE_TOKEN);
+		addToken("for", FOR_TOKEN);
+		addToken("function", FUNCTION_TOKEN);
+		addToken("if", IF_TOKEN);
+		addToken("return", RETURN_TOKEN);
+		addToken("switch", SWITCH_TOKEN);
+		addToken("while", WHILE_TOKEN);
 	}
 
 	// specify a new token to the scanner
@@ -302,7 +302,7 @@ public:
 
 		// check for end of string
 		if (position == size)
-			token = OT_SCANNER_EOS_TOKEN;
+			token = EOS_TOKEN;
 
 		// handle numerical values
 		else if (std::isdigit(text[position]) || (text[position] == '-' && position < size && std::isdigit(text[position + 1])))
@@ -331,13 +331,13 @@ public:
 				}
 
 				realValue = std::stod(text.substr(start, position - start));
-				token = OT_SCANNER_REAL_TOKEN;
+				token = REAL_TOKEN;
 			}
 
 			else
 			{
 				integerValue = std::stoi(text.substr(start, position - start));
-				token = OT_SCANNER_INTEGER_TOKEN;
+				token = INTEGER_TOKEN;
 			}
 		}
 
@@ -404,7 +404,7 @@ public:
 			if (position < size)
 				position++;
 
-			token = OT_SCANNER_STRING_TOKEN;
+			token = STRING_TOKEN;
 		}
 
 		// handle identifiers (and tokens with identifier structure)
@@ -418,11 +418,11 @@ public:
 			for (auto p = tokenStart; state != OtScannerState::noTransition && p < position; p++)
 				state = stateTable[state].transitions[(int) text[p]];
 
-			if (state != OtScannerState::noTransition && stateTable[state].token != OT_SCANNER_ILLEGAL_TOKEN)
+			if (state != OtScannerState::noTransition && stateTable[state].token != ILLEGAL_TOKEN)
 				token = stateTable[state].token;
 
 			else
-				token = OT_SCANNER_IDENTIFIER_TOKEN;
+				token = IDENTIFIER_TOKEN;
 		}
 
 		// handle (non-identifier) tokens
@@ -434,12 +434,12 @@ public:
 			while(position < size && stateTable[state].transitions[(int) text[position]] != OtScannerState::noTransition)
 				state = stateTable[state].transitions[(int) text[position++]];
 
-			if (position > tokenStart && stateTable[state].token != OT_SCANNER_ILLEGAL_TOKEN)
+			if (position > tokenStart && stateTable[state].token != ILLEGAL_TOKEN)
 				token = stateTable[state].token;
 
 			else
 				// we tried but whatever we are looking at, it's illegal
-				token = OT_SCANNER_ILLEGAL_TOKEN;
+				token = ILLEGAL_TOKEN;
 		}
 
 		// return the token we just scanned
@@ -512,7 +512,7 @@ public:
 			for (auto c = 0; c < 256; c++)
 				transitions[c] = noTransition;
 
-			token = OT_SCANNER_ILLEGAL_TOKEN;
+			token = ILLEGAL_TOKEN;
 		}
 
 		// state transitions

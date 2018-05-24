@@ -214,28 +214,28 @@ OtValue OtDictReferenceCreate(OtValue dict, const std::string& index);
 //  Create class values
 //
 
-OtValue OtObjectClassCreate();
+OtValue OtObjectCreateClass();
 
-OtValue OtPrimitiveClassCreate();
-OtValue OtBooleanClassCreate();
-OtValue OtIntegerClassCreate();
-OtValue OtRealClassCreate();
-OtValue OtStringClassCreate();
-OtValue OtFunctionClassCreate();
+OtValue OtPrimitiveCreateClass();
+OtValue OtBooleanCreateClass();
+OtValue OtIntegerCreateClass();
+OtValue OtRealCreateClass();
+OtValue OtStringCreateClass();
+OtValue OtFunctionCreateClass();
 
-OtValue OtCollectionClassCreate();
-OtValue OtArrayClassCreate();
-OtValue OtDictClassCreate();
+OtValue OtCollectionCreateClass();
+OtValue OtArrayCreateClass();
+OtValue OtDictCreateClass();
 
-OtValue OtIOClassCreate();
-OtValue OtFileClassCreate();
-OtValue OtHttpClassCreate();
+OtValue OtIOCreateClass();
+OtValue OtFileCreateClass();
+OtValue OtHttpCreateClass();
 
-OtValue OtInternalClassCreate();
-OtValue OtClassClassCreate();
-OtValue OtMemberReferenceClassCreate();
-OtValue OtArrayReferenceClassCreate();
-OtValue OtDictReferenceClassCreate();
+OtValue OtInternalCreateClass();
+OtValue OtClassCreateClass();
+OtValue OtMemberReferenceCreateClass();
+OtValue OtArrayReferenceCreateClass();
+OtValue OtDictReferenceCreateClass();
 
 
 //

@@ -40,135 +40,8 @@
 class OtObjectTalk
 {
 public:
-	enum
-	{
-		OT_OBJECT_TALK_LPAREN_TOKEN = OtScanner::OT_SCANNER_MAX_TOKEN,
-		OT_OBJECT_TALK_RPAREN_TOKEN,
-		OT_OBJECT_TALK_LBRACKET_TOKEN,
-		OT_OBJECT_TALK_RBRACKET_TOKEN,
-		OT_OBJECT_TALK_LBRACE_TOKEN,
-		OT_OBJECT_TALK_RBRACE_TOKEN,
-
-		OT_OBJECT_TALK_COMMA_TOKEN,
-		OT_OBJECT_TALK_PERIOD_TOKEN,
-		OT_OBJECT_TALK_COLON_TOKEN,
-		OT_OBJECT_TALK_SEMICOLON_TOKEN,
-		OT_OBJECT_TALK_QUESTION_TOKEN,
-
-		OT_OBJECT_TALK_ASSIGNMENT_TOKEN,
-		OT_OBJECT_TALK_MULTIPLY_ASSIGNMENT_TOKEN,
-		OT_OBJECT_TALK_DIVIDE_ASSIGNMENT_TOKEN,
-		OT_OBJECT_TALK_MODULO_ASSIGNMENT_TOKEN,
-		OT_OBJECT_TALK_ADD_ASSIGNMENT_TOKEN,
-		OT_OBJECT_TALK_SUBTRACT_ASSIGNMENT_TOKEN,
-		OT_OBJECT_TALK_BITWISE_AND_ASSIGNMENT_TOKEN,
-		OT_OBJECT_TALK_BITWISE_OR_ASSIGNMENT_TOKEN,
-		OT_OBJECT_TALK_BITWISE_XOR_ASSIGNMENT_TOKEN,
-
-		OT_OBJECT_TALK_EQUAL_TOKEN,
-		OT_OBJECT_TALK_NOT_EQUAL_TOKEN,
-		OT_OBJECT_TALK_LESS_TOKEN,
-		OT_OBJECT_TALK_LESS_EQUAL_TOKEN,
-		OT_OBJECT_TALK_GREATER_TOKEN,
-		OT_OBJECT_TALK_GREATER_EQUAL_TOKEN,
-
-		OT_OBJECT_TALK_NOT_TOKEN,
-		OT_OBJECT_TALK_AND_TOKEN,
-		OT_OBJECT_TALK_OR_TOKEN,
-
-		OT_OBJECT_TALK_ADD_TOKEN,
-		OT_OBJECT_TALK_SUBTRACT_TOKEN,
-		OT_OBJECT_TALK_MULTIPLY_TOKEN,
-		OT_OBJECT_TALK_DIVIDE_TOKEN,
-		OT_OBJECT_TALK_POWER_TOKEN,
-		OT_OBJECT_TALK_MODULO_TOKEN,
-
-		OT_OBJECT_TALK_INCREMENT_TOKEN,
-		OT_OBJECT_TALK_DECREMENT_TOKEN,
-
-		OT_OBJECT_TALK_BITWISE_AND_TOKEN,
-		OT_OBJECT_TALK_BITWISE_NOT_TOKEN,
-		OT_OBJECT_TALK_BITWISE_OR_TOKEN,
-		OT_OBJECT_TALK_BITWISE_XOR_TOKEN,
-
-		OT_OBJECT_TALK_SHIFT_LEFT_TOKEN,
-		OT_OBJECT_TALK_SHIFT_RIGHT_TOKEN,
-
-		OT_OBJECT_TALK_ELLIPSIS_TOKEN,
-
-		OT_OBJECT_TALK_CASE_TOKEN,
-		OT_OBJECT_TALK_CLASS_TOKEN,
-		OT_OBJECT_TALK_DEFAULT_TOKEN,
-		OT_OBJECT_TALK_DO_TOKEN,
-		OT_OBJECT_TALK_ELSE_TOKEN,
-		OT_OBJECT_TALK_FOR_TOKEN,
-		OT_OBJECT_TALK_FUNCTION_TOKEN,
-		OT_OBJECT_TALK_IF_TOKEN,
-		OT_OBJECT_TALK_RETURN_TOKEN,
-		OT_OBJECT_TALK_SWITCH_TOKEN,
-		OT_OBJECT_TALK_WHILE_TOKEN
-	};
-
 	// constructor
-	OtObjectTalk()
-	{
-		// setup scanner
-		scanner.addToken("(", OT_OBJECT_TALK_LPAREN_TOKEN);
-		scanner.addToken(")", OT_OBJECT_TALK_RPAREN_TOKEN);
-		scanner.addToken("[", OT_OBJECT_TALK_LBRACKET_TOKEN);
-		scanner.addToken("]", OT_OBJECT_TALK_RBRACKET_TOKEN);
-		scanner.addToken("{", OT_OBJECT_TALK_LBRACE_TOKEN);
-		scanner.addToken("}", OT_OBJECT_TALK_RBRACE_TOKEN);
-		scanner.addToken(",", OT_OBJECT_TALK_COMMA_TOKEN);
-		scanner.addToken("...", OT_OBJECT_TALK_ELLIPSIS_TOKEN);
-		scanner.addToken(".", OT_OBJECT_TALK_PERIOD_TOKEN);
-		scanner.addToken(":", OT_OBJECT_TALK_COLON_TOKEN);
-		scanner.addToken(";", OT_OBJECT_TALK_SEMICOLON_TOKEN);
-		scanner.addToken("?", OT_OBJECT_TALK_QUESTION_TOKEN);
-		scanner.addToken("==", OT_OBJECT_TALK_EQUAL_TOKEN);
-		scanner.addToken("=", OT_OBJECT_TALK_ASSIGNMENT_TOKEN);
-		scanner.addToken("!=", OT_OBJECT_TALK_NOT_EQUAL_TOKEN);
-		scanner.addToken("!", OT_OBJECT_TALK_NOT_TOKEN);
-		scanner.addToken("<=", OT_OBJECT_TALK_LESS_EQUAL_TOKEN);
-		scanner.addToken("<<", OT_OBJECT_TALK_SHIFT_LEFT_TOKEN);
-		scanner.addToken("<", OT_OBJECT_TALK_LESS_TOKEN);
-		scanner.addToken(">=", OT_OBJECT_TALK_GREATER_EQUAL_TOKEN);
-		scanner.addToken(">>", OT_OBJECT_TALK_SHIFT_RIGHT_TOKEN);
-		scanner.addToken(">", OT_OBJECT_TALK_GREATER_TOKEN);
-		scanner.addToken("++", OT_OBJECT_TALK_INCREMENT_TOKEN);
-		scanner.addToken("+=", OT_OBJECT_TALK_ADD_ASSIGNMENT_TOKEN);
-		scanner.addToken("+", OT_OBJECT_TALK_ADD_TOKEN);
-		scanner.addToken("--", OT_OBJECT_TALK_DECREMENT_TOKEN);
-		scanner.addToken("-=", OT_OBJECT_TALK_SUBTRACT_ASSIGNMENT_TOKEN);
-		scanner.addToken("-", OT_OBJECT_TALK_SUBTRACT_TOKEN);
-		scanner.addToken("*=", OT_OBJECT_TALK_MULTIPLY_ASSIGNMENT_TOKEN);
-		scanner.addToken("**", OT_OBJECT_TALK_POWER_TOKEN);
-		scanner.addToken("*", OT_OBJECT_TALK_MULTIPLY_TOKEN);
-		scanner.addToken("/=", OT_OBJECT_TALK_DIVIDE_ASSIGNMENT_TOKEN);
-		scanner.addToken("/", OT_OBJECT_TALK_DIVIDE_TOKEN);
-		scanner.addToken("%=", OT_OBJECT_TALK_MODULO_ASSIGNMENT_TOKEN);
-		scanner.addToken("%", OT_OBJECT_TALK_MODULO_TOKEN);
-		scanner.addToken("||", OT_OBJECT_TALK_OR_TOKEN);
-		scanner.addToken("|=", OT_OBJECT_TALK_BITWISE_AND_ASSIGNMENT_TOKEN);
-		scanner.addToken("|", OT_OBJECT_TALK_BITWISE_OR_TOKEN);
-		scanner.addToken("&&", OT_OBJECT_TALK_AND_TOKEN);
-		scanner.addToken("&=", OT_OBJECT_TALK_BITWISE_OR_ASSIGNMENT_TOKEN);
-		scanner.addToken("&", OT_OBJECT_TALK_BITWISE_AND_TOKEN);
-		scanner.addToken("^=", OT_OBJECT_TALK_BITWISE_XOR_ASSIGNMENT_TOKEN);
-		scanner.addToken("^", OT_OBJECT_TALK_BITWISE_XOR_TOKEN);
-		scanner.addToken("~", OT_OBJECT_TALK_BITWISE_NOT_TOKEN);
-		scanner.addToken("case", OT_OBJECT_TALK_CASE_TOKEN);
-		scanner.addToken("class", OT_OBJECT_TALK_CLASS_TOKEN);
-		scanner.addToken("default", OT_OBJECT_TALK_DEFAULT_TOKEN);
-		scanner.addToken("do", OT_OBJECT_TALK_DO_TOKEN);
-		scanner.addToken("else", OT_OBJECT_TALK_ELSE_TOKEN);
-		scanner.addToken("for", OT_OBJECT_TALK_FOR_TOKEN);
-		scanner.addToken("function", OT_OBJECT_TALK_FUNCTION_TOKEN);
-		scanner.addToken("if", OT_OBJECT_TALK_IF_TOKEN);
-		scanner.addToken("return", OT_OBJECT_TALK_RETURN_TOKEN);
-		scanner.addToken("switch", OT_OBJECT_TALK_SWITCH_TOKEN);
-		scanner.addToken("while", OT_OBJECT_TALK_WHILE_TOKEN);
-	}
+	OtObjectTalk() {}
 
 	// compile text into microcode
 	OtCode compile(const std::string& text)
@@ -292,31 +165,31 @@ private:
 		std::vector<std::string> names;
 
 		// skip function and opening parenthesis
-		scanner.expect(OT_OBJECT_TALK_FUNCTION_TOKEN);
-		scanner.expect(OT_OBJECT_TALK_LPAREN_TOKEN);
+		scanner.expect(OtScanner::OT_SCANNER_FUNCTION_TOKEN);
+		scanner.expect(OtScanner::OT_SCANNER_LPAREN_TOKEN);
 
 		// handle ellipsis for variable argument count
-		if (scanner.matchToken(OT_OBJECT_TALK_ELLIPSIS_TOKEN))
+		if (scanner.matchToken(OtScanner::OT_SCANNER_ELLIPSIS_TOKEN))
 		{
 			scanner.advance();
-			scanner.expect(OT_OBJECT_TALK_RPAREN_TOKEN);
+			scanner.expect(OtScanner::OT_SCANNER_RPAREN_TOKEN);
 			count = SIZE_MAX;
 		}
 
 		else
 		{
 			// get parameter names
-			while (!scanner.matchToken(OT_OBJECT_TALK_RPAREN_TOKEN) && !scanner.matchToken(OtScanner::OT_SCANNER_EOS_TOKEN))
+			while (!scanner.matchToken(OtScanner::OT_SCANNER_RPAREN_TOKEN) && !scanner.matchToken(OtScanner::OT_SCANNER_EOS_TOKEN))
 			{
 				scanner.expect(OtScanner::OT_SCANNER_IDENTIFIER_TOKEN, false);
 				names.push_back(scanner.getText());
 				scanner.advance();
 
-				if (scanner.matchToken(OT_OBJECT_TALK_COMMA_TOKEN))
+				if (scanner.matchToken(OtScanner::OT_SCANNER_COMMA_TOKEN))
 					scanner.advance();
 			}
 
-			scanner.expect(OT_OBJECT_TALK_RPAREN_TOKEN);
+			scanner.expect(OtScanner::OT_SCANNER_RPAREN_TOKEN);
 			count = names.size();
 		}
 
@@ -334,11 +207,11 @@ private:
 
 		switch (scanner.getToken())
 		{
-			case OT_OBJECT_TALK_LPAREN_TOKEN:
+			case OtScanner::OT_SCANNER_LPAREN_TOKEN:
 				// handle sub-expression
 				scanner.advance();
 				reference = expression(code);
-				scanner.expect(OT_OBJECT_TALK_RPAREN_TOKEN);
+				scanner.expect(OtScanner::OT_SCANNER_RPAREN_TOKEN);
 				break;
 
 			case OtScanner::OT_SCANNER_INTEGER_TOKEN:
@@ -362,7 +235,7 @@ private:
 				reference = false;
 				break;
 
-			case OT_OBJECT_TALK_FUNCTION_TOKEN:
+			case OtScanner::OT_SCANNER_FUNCTION_TOKEN:
 				// handle function definition
 				function(code);
 				reference = false;
@@ -375,37 +248,37 @@ private:
 				reference = true;
 				break;
 
-			case OT_OBJECT_TALK_LBRACKET_TOKEN:
+			case OtScanner::OT_SCANNER_LBRACKET_TOKEN:
 				// handle array constant
 				scanner.advance();
 				code->push(OtArrayCreate());
 				code->method("__init__", expressions(code));
-				scanner.expect(OT_OBJECT_TALK_RBRACKET_TOKEN);
+				scanner.expect(OtScanner::OT_SCANNER_RBRACKET_TOKEN);
 				reference = false;
 				break;
 
-			case OT_OBJECT_TALK_LBRACE_TOKEN:
+			case OtScanner::OT_SCANNER_LBRACE_TOKEN:
 				// handle dictionary constant
 				scanner.advance();
 				code->push(OtDictCreate());
 
-				while (scanner.getToken() != OT_OBJECT_TALK_RBRACE_TOKEN && scanner.getToken() != OtScanner::OT_SCANNER_EOS_TOKEN)
+				while (scanner.getToken() != OtScanner::OT_SCANNER_RBRACE_TOKEN && scanner.getToken() != OtScanner::OT_SCANNER_EOS_TOKEN)
 				{
 					scanner.expect(OtScanner::OT_SCANNER_IDENTIFIER_TOKEN, false);
 					code->push(OtValueCreate(scanner.getText()));
 					scanner.advance();
-					scanner.expect(OT_OBJECT_TALK_COLON_TOKEN);
+					scanner.expect(OtScanner::OT_SCANNER_COLON_TOKEN);
 
 					if (expression(code))
 						code->method("__deref__", 0);
 
 					count += 2;
 
-					if (scanner.getToken() == OT_OBJECT_TALK_COMMA_TOKEN)
+					if (scanner.getToken() == OtScanner::OT_SCANNER_COMMA_TOKEN)
 						scanner.advance();
 				}
 
-				scanner.expect(OT_OBJECT_TALK_RBRACE_TOKEN);
+				scanner.expect(OtScanner::OT_SCANNER_RBRACE_TOKEN);
 				code->method("__init__", count);
 				reference = false;
 				break;
@@ -426,11 +299,11 @@ private:
 		OtToken token = scanner.getToken();
 
 		// process postfix
-		while (token == OT_OBJECT_TALK_LBRACKET_TOKEN ||
-			   token == OT_OBJECT_TALK_LPAREN_TOKEN ||
-			   token == OT_OBJECT_TALK_PERIOD_TOKEN ||
-			   token == OT_OBJECT_TALK_INCREMENT_TOKEN ||
-			   token == OT_OBJECT_TALK_DECREMENT_TOKEN)
+		while (token == OtScanner::OT_SCANNER_LBRACKET_TOKEN ||
+			   token == OtScanner::OT_SCANNER_LPAREN_TOKEN ||
+			   token == OtScanner::OT_SCANNER_PERIOD_TOKEN ||
+			   token == OtScanner::OT_SCANNER_INCREMENT_TOKEN ||
+			   token == OtScanner::OT_SCANNER_DECREMENT_TOKEN)
 		{
 			scanner.advance();
 			std::string member;
@@ -439,7 +312,7 @@ private:
 			// generate code
 			switch (token)
 			{
-				case OT_OBJECT_TALK_LBRACKET_TOKEN:
+				case OtScanner::OT_SCANNER_LBRACKET_TOKEN:
 					// index object
 					if (reference)
 						code->method("__deref__", 0);
@@ -447,23 +320,23 @@ private:
 					if (expression(code))
 						code->method("__deref__", 0);
 
-					scanner.expect(OT_OBJECT_TALK_RBRACKET_TOKEN);
+					scanner.expect(OtScanner::OT_SCANNER_RBRACKET_TOKEN);
 					code->method("__index__", 1);
 					reference = true;
 					break;
 
-				case OT_OBJECT_TALK_LPAREN_TOKEN:
+				case OtScanner::OT_SCANNER_LPAREN_TOKEN:
 					// call object
 					if (reference)
 						code->method("__deref__", 0);
 
-					count = scanner.matchToken(OT_OBJECT_TALK_RPAREN_TOKEN) ? 0 : expressions(code);
-					scanner.expect(OT_OBJECT_TALK_RPAREN_TOKEN);
+					count = scanner.matchToken(OtScanner::OT_SCANNER_RPAREN_TOKEN) ? 0 : expressions(code);
+					scanner.expect(OtScanner::OT_SCANNER_RPAREN_TOKEN);
 					code->method("__call__", count);
 					reference = false;
 					break;
 
-				case OT_OBJECT_TALK_PERIOD_TOKEN:
+				case OtScanner::OT_SCANNER_PERIOD_TOKEN:
 					// member access
 					if (reference)
 						code->method("__deref__", 0);
@@ -476,7 +349,7 @@ private:
 
 					break;
 
-				case OT_OBJECT_TALK_INCREMENT_TOKEN:
+				case OtScanner::OT_SCANNER_INCREMENT_TOKEN:
 					if (!reference)
 						scanner.error("Lvalue required for '++'");
 
@@ -491,7 +364,7 @@ private:
 					reference = false;
 					break;
 
-				case OT_OBJECT_TALK_DECREMENT_TOKEN:
+				case OtScanner::OT_SCANNER_DECREMENT_TOKEN:
 					if (!reference)
 						scanner.error("Lvalue required for '--'");
 
@@ -519,11 +392,11 @@ private:
 		OtToken token = scanner.getToken();
 
 		// process prefix
-		if (token == OT_OBJECT_TALK_SUBTRACT_TOKEN ||
-			token == OT_OBJECT_TALK_NOT_TOKEN ||
-			token == OT_OBJECT_TALK_BITWISE_NOT_TOKEN ||
-			token == OT_OBJECT_TALK_INCREMENT_TOKEN ||
-			token == OT_OBJECT_TALK_DECREMENT_TOKEN)
+		if (token == OtScanner::OT_SCANNER_SUBTRACT_TOKEN ||
+			token == OtScanner::OT_SCANNER_NOT_TOKEN ||
+			token == OtScanner::OT_SCANNER_BITWISE_NOT_TOKEN ||
+			token == OtScanner::OT_SCANNER_INCREMENT_TOKEN ||
+			token == OtScanner::OT_SCANNER_DECREMENT_TOKEN)
 		{
 			scanner.advance();
 			bool reference = postfix(code);
@@ -531,28 +404,28 @@ private:
 			// generate code
 			switch (token)
 			{
-				case OT_OBJECT_TALK_SUBTRACT_TOKEN:
+				case OtScanner::OT_SCANNER_SUBTRACT_TOKEN:
 					if (reference)
 						code->method("__deref__", 0);
 
 					code->method("__neg__", 0);
 					break;
 
-				case OT_OBJECT_TALK_NOT_TOKEN:
+				case OtScanner::OT_SCANNER_NOT_TOKEN:
 					if (reference)
 						code->method("__deref__", 0);
 
 					code->method("__not__", 0);
 					break;
 
-				case OT_OBJECT_TALK_BITWISE_NOT_TOKEN:
+				case OtScanner::OT_SCANNER_BITWISE_NOT_TOKEN:
 					if (reference)
 						code->method("__deref__", 0);
 
 					code->method("__bnot__", 0);
 					break;
 
-				case OT_OBJECT_TALK_INCREMENT_TOKEN:
+				case OtScanner::OT_SCANNER_INCREMENT_TOKEN:
 					if (!reference)
 						scanner.error("Lvalue required for '++'");
 
@@ -562,7 +435,7 @@ private:
 					code->method("__assign__", 0);
 					break;
 
-				case OT_OBJECT_TALK_DECREMENT_TOKEN:
+				case OtScanner::OT_SCANNER_DECREMENT_TOKEN:
 					if (!reference)
 						scanner.error("Lvalue required for '--'");
 
@@ -587,10 +460,10 @@ private:
 		bool reference = prefix(code);
 		OtToken token = scanner.getToken();
 
-		while (token == OT_OBJECT_TALK_MULTIPLY_TOKEN ||
-			   token == OT_OBJECT_TALK_DIVIDE_TOKEN ||
-			   token == OT_OBJECT_TALK_POWER_TOKEN ||
-			   token == OT_OBJECT_TALK_MODULO_TOKEN)
+		while (token == OtScanner::OT_SCANNER_MULTIPLY_TOKEN ||
+			   token == OtScanner::OT_SCANNER_DIVIDE_TOKEN ||
+			   token == OtScanner::OT_SCANNER_POWER_TOKEN ||
+			   token == OtScanner::OT_SCANNER_MODULO_TOKEN)
 		{
 			// deref if required
 			scanner.advance();
@@ -605,19 +478,19 @@ private:
 			// generate code
 			switch (token)
 			{
-				case OT_OBJECT_TALK_MULTIPLY_TOKEN:
+				case OtScanner::OT_SCANNER_MULTIPLY_TOKEN:
 					code->method("__mul__", 1);
 					break;
 
-				case OT_OBJECT_TALK_DIVIDE_TOKEN:
+				case OtScanner::OT_SCANNER_DIVIDE_TOKEN:
 					code->method("__div__", 1);
 					break;
 
-				case OT_OBJECT_TALK_POWER_TOKEN:
+				case OtScanner::OT_SCANNER_POWER_TOKEN:
 					code->method("__power__", 1);
 					break;
 
-				case OT_OBJECT_TALK_MODULO_TOKEN:
+				case OtScanner::OT_SCANNER_MODULO_TOKEN:
 					code->method("__mod__", 1);
 					break;
 			}
@@ -636,7 +509,7 @@ private:
 		bool reference = multiplications(code);
 		OtToken token = scanner.getToken();
 
-		while (token == OT_OBJECT_TALK_ADD_TOKEN || token == OT_OBJECT_TALK_SUBTRACT_TOKEN)
+		while (token == OtScanner::OT_SCANNER_ADD_TOKEN || token == OtScanner::OT_SCANNER_SUBTRACT_TOKEN)
 		{
 			// deref if required
 			scanner.advance();
@@ -649,7 +522,7 @@ private:
 				code->method("__deref__", 0);
 
 			// generate code
-			if (token == OT_OBJECT_TALK_ADD_TOKEN)
+			if (token == OtScanner::OT_SCANNER_ADD_TOKEN)
 				code->method("__add__", 1);
 
 			else
@@ -669,7 +542,7 @@ private:
 		bool reference = additions(code);
 		OtToken token = scanner.getToken();
 
-		while (token == OT_OBJECT_TALK_SHIFT_LEFT_TOKEN || token == OT_OBJECT_TALK_SHIFT_RIGHT_TOKEN)
+		while (token == OtScanner::OT_SCANNER_SHIFT_LEFT_TOKEN || token == OtScanner::OT_SCANNER_SHIFT_RIGHT_TOKEN)
 		{
 			// deref if required
 			scanner.advance();
@@ -682,7 +555,7 @@ private:
 				code->method("__deref__", 0);
 
 			// generate code
-			if (token == OT_OBJECT_TALK_SHIFT_LEFT_TOKEN)
+			if (token == OtScanner::OT_SCANNER_SHIFT_LEFT_TOKEN)
 				code->method("__lshift__", 1);
 
 			else
@@ -702,10 +575,10 @@ private:
 		bool reference = shift(code);
 		OtToken token = scanner.getToken();
 
-		while (token == OT_OBJECT_TALK_LESS_TOKEN ||
-			   token == OT_OBJECT_TALK_LESS_EQUAL_TOKEN ||
-			   token == OT_OBJECT_TALK_GREATER_TOKEN ||
-			   token == OT_OBJECT_TALK_GREATER_EQUAL_TOKEN)
+		while (token == OtScanner::OT_SCANNER_LESS_TOKEN ||
+			   token == OtScanner::OT_SCANNER_LESS_EQUAL_TOKEN ||
+			   token == OtScanner::OT_SCANNER_GREATER_TOKEN ||
+			   token == OtScanner::OT_SCANNER_GREATER_EQUAL_TOKEN)
 		{
 			// deref if required
 			scanner.advance();
@@ -720,19 +593,19 @@ private:
 			// generate code
 			switch (token)
 			{
-				case OT_OBJECT_TALK_LESS_TOKEN:
+				case OtScanner::OT_SCANNER_LESS_TOKEN:
 					code->method("__lt__", 1);
 					break;
 
-				case OT_OBJECT_TALK_LESS_EQUAL_TOKEN:
+				case OtScanner::OT_SCANNER_LESS_EQUAL_TOKEN:
 					code->method("__le__", 1);
 					break;
 
-				case OT_OBJECT_TALK_GREATER_TOKEN:
+				case OtScanner::OT_SCANNER_GREATER_TOKEN:
 					code->method("__gt__", 1);
 					break;
 
-				case OT_OBJECT_TALK_GREATER_EQUAL_TOKEN:
+				case OtScanner::OT_SCANNER_GREATER_EQUAL_TOKEN:
 					code->method("__ge__", 1);
 					break;
 			}
@@ -751,7 +624,7 @@ private:
 		bool reference = relation(code);
 		OtToken token = scanner.getToken();
 
-		while (token == OT_OBJECT_TALK_EQUAL_TOKEN || token == OT_OBJECT_TALK_NOT_EQUAL_TOKEN)
+		while (token == OtScanner::OT_SCANNER_EQUAL_TOKEN || token == OtScanner::OT_SCANNER_NOT_EQUAL_TOKEN)
 		{
 			// deref if required
 			scanner.advance();
@@ -764,7 +637,7 @@ private:
 				code->method("__deref__", 0);
 
 			// generate code
-			if (token == OT_OBJECT_TALK_EQUAL_TOKEN)
+			if (token == OtScanner::OT_SCANNER_EQUAL_TOKEN)
 				code->method("__eq__", 1);
 
 			else
@@ -784,7 +657,7 @@ private:
 		bool reference = equal(code);
 
 		// handle all "&" operators
-		if (scanner.matchToken(OT_OBJECT_TALK_BITWISE_AND_TOKEN))
+		if (scanner.matchToken(OtScanner::OT_SCANNER_BITWISE_AND_TOKEN))
 		{
 			// deref if required
 			scanner.advance();
@@ -811,7 +684,7 @@ private:
 		bool reference = bitwiseAnd(code);
 
 		// handle all "&" operators
-		if (scanner.matchToken(OT_OBJECT_TALK_BITWISE_XOR_TOKEN))
+		if (scanner.matchToken(OtScanner::OT_SCANNER_BITWISE_XOR_TOKEN))
 		{
 			// deref if required
 			scanner.advance();
@@ -838,7 +711,7 @@ private:
 		bool reference = bitwiseXor(code);
 
 		// handle all "|" operators
-		if (scanner.matchToken(OT_OBJECT_TALK_BITWISE_OR_TOKEN))
+		if (scanner.matchToken(OtScanner::OT_SCANNER_BITWISE_OR_TOKEN))
 		{
 			// deref if required
 			scanner.advance();
@@ -865,7 +738,7 @@ private:
 		bool reference = bitwiseOr(code);
 
 		// handle all "&&" operators
-		while (scanner.matchToken(OT_OBJECT_TALK_AND_TOKEN))
+		while (scanner.matchToken(OtScanner::OT_SCANNER_AND_TOKEN))
 		{
 			// skip token
 			scanner.advance();
@@ -893,7 +766,7 @@ private:
 		bool reference = andExpression(code);
 
 		// handle all "||" operators
-		while (scanner.matchToken(OT_OBJECT_TALK_OR_TOKEN))
+		while (scanner.matchToken(OtScanner::OT_SCANNER_OR_TOKEN))
 		{
 			// skip token
 			scanner.advance();
@@ -920,7 +793,7 @@ private:
 		// parse left side
 		bool reference = orExpression(code);
 
-		if (scanner.matchToken(OT_OBJECT_TALK_QUESTION_TOKEN))
+		if (scanner.matchToken(OtScanner::OT_SCANNER_QUESTION_TOKEN))
 		{
 			// deref if required
 			scanner.advance();
@@ -936,7 +809,7 @@ private:
 			if (expression(code))
 				code->method("__deref__", 0);
 
-			scanner.expect(OT_OBJECT_TALK_COLON_TOKEN);
+			scanner.expect(OtScanner::OT_SCANNER_COLON_TOKEN);
 
 			// jump around "false" expression and patch first jump
 			size_t offset2 = code->size();
@@ -963,22 +836,22 @@ private:
 		OtToken token = scanner.getToken();
 
 		// process all assignment operators
-		while (token == OT_OBJECT_TALK_ASSIGNMENT_TOKEN ||
-			   token == OT_OBJECT_TALK_MULTIPLY_ASSIGNMENT_TOKEN ||
-			   token == OT_OBJECT_TALK_DIVIDE_ASSIGNMENT_TOKEN ||
-			   token == OT_OBJECT_TALK_MODULO_ASSIGNMENT_TOKEN ||
-			   token == OT_OBJECT_TALK_ADD_ASSIGNMENT_TOKEN ||
-			   token == OT_OBJECT_TALK_SUBTRACT_ASSIGNMENT_TOKEN ||
-			   token == OT_OBJECT_TALK_BITWISE_AND_ASSIGNMENT_TOKEN ||
-			   token == OT_OBJECT_TALK_BITWISE_OR_ASSIGNMENT_TOKEN ||
-			   token == OT_OBJECT_TALK_BITWISE_XOR_ASSIGNMENT_TOKEN)
+		while (token == OtScanner::OT_SCANNER_ASSIGNMENT_TOKEN ||
+			   token == OtScanner::OT_SCANNER_MULTIPLY_ASSIGNMENT_TOKEN ||
+			   token == OtScanner::OT_SCANNER_DIVIDE_ASSIGNMENT_TOKEN ||
+			   token == OtScanner::OT_SCANNER_MODULO_ASSIGNMENT_TOKEN ||
+			   token == OtScanner::OT_SCANNER_ADD_ASSIGNMENT_TOKEN ||
+			   token == OtScanner::OT_SCANNER_SUBTRACT_ASSIGNMENT_TOKEN ||
+			   token == OtScanner::OT_SCANNER_BITWISE_AND_ASSIGNMENT_TOKEN ||
+			   token == OtScanner::OT_SCANNER_BITWISE_OR_ASSIGNMENT_TOKEN ||
+			   token == OtScanner::OT_SCANNER_BITWISE_XOR_ASSIGNMENT_TOKEN)
 		{
 			// sanity check
 			if (!reference)
 				scanner.error("Lvalue required for assignments");
 
 			// duplicate left side if required
-			if (token != OT_OBJECT_TALK_ASSIGNMENT_TOKEN)
+			if (token != OtScanner::OT_SCANNER_ASSIGNMENT_TOKEN)
 			{
 				code->dup();
 				code->method("__deref__", 0);
@@ -995,35 +868,35 @@ private:
 			// handle different assignments
 			switch (token)
 			{
-				case OT_OBJECT_TALK_MULTIPLY_ASSIGNMENT_TOKEN:
+				case OtScanner::OT_SCANNER_MULTIPLY_ASSIGNMENT_TOKEN:
 					code->method("__mul__", 1);
 					break;
 
-				case OT_OBJECT_TALK_DIVIDE_ASSIGNMENT_TOKEN:
+				case OtScanner::OT_SCANNER_DIVIDE_ASSIGNMENT_TOKEN:
 					code->method("__div__", 1);
 					break;
 
-				case OT_OBJECT_TALK_MODULO_ASSIGNMENT_TOKEN:
+				case OtScanner::OT_SCANNER_MODULO_ASSIGNMENT_TOKEN:
 					code->method("__mod__", 1);
 					break;
 
-				case OT_OBJECT_TALK_ADD_ASSIGNMENT_TOKEN:
+				case OtScanner::OT_SCANNER_ADD_ASSIGNMENT_TOKEN:
 					code->method("__add__", 1);
 					break;
 
-				case OT_OBJECT_TALK_SUBTRACT_ASSIGNMENT_TOKEN:
+				case OtScanner::OT_SCANNER_SUBTRACT_ASSIGNMENT_TOKEN:
 					code->method("__sub__", 1);
 					break;
 
-				case OT_OBJECT_TALK_BITWISE_AND_ASSIGNMENT_TOKEN:
+				case OtScanner::OT_SCANNER_BITWISE_AND_ASSIGNMENT_TOKEN:
 					code->method("__bend__", 1);
 					break;
 
-				case OT_OBJECT_TALK_BITWISE_OR_ASSIGNMENT_TOKEN:
+				case OtScanner::OT_SCANNER_BITWISE_OR_ASSIGNMENT_TOKEN:
 					code->method("__bor__", 1);
 					break;
 
-				case OT_OBJECT_TALK_BITWISE_XOR_ASSIGNMENT_TOKEN:
+				case OtScanner::OT_SCANNER_BITWISE_XOR_ASSIGNMENT_TOKEN:
 					code->method("__bxor__", 1);
 					break;
 			}
@@ -1047,7 +920,7 @@ private:
 		if (expression(code))
 			code->method("__deref__", 0);
 
-		while (scanner.matchToken(OT_OBJECT_TALK_COMMA_TOKEN))
+		while (scanner.matchToken(OtScanner::OT_SCANNER_COMMA_TOKEN))
 		{
 			scanner.advance();
 
@@ -1063,36 +936,36 @@ private:
 	// compile a block of statements
 	void block(OtCode code)
 	{
-		scanner.expect(OT_OBJECT_TALK_LBRACE_TOKEN);
+		scanner.expect(OtScanner::OT_SCANNER_LBRACE_TOKEN);
 
-		if (scanner.matchToken(OT_OBJECT_TALK_RBRACE_TOKEN))
+		if (scanner.matchToken(OtScanner::OT_SCANNER_RBRACE_TOKEN))
 			code->push(nullptr);
 
 		else
 		{
 			statement(code);
 
-			while (!scanner.matchToken(OT_OBJECT_TALK_RBRACE_TOKEN) && !scanner.matchToken(OtScanner::OT_SCANNER_EOS_TOKEN))
+			while (!scanner.matchToken(OtScanner::OT_SCANNER_RBRACE_TOKEN) && !scanner.matchToken(OtScanner::OT_SCANNER_EOS_TOKEN))
 			{
 				code->pop();
 				statement(code);
 			}
 		}
 
-		scanner.expect(OT_OBJECT_TALK_RBRACE_TOKEN);
+		scanner.expect(OtScanner::OT_SCANNER_RBRACE_TOKEN);
 	}
 
 	// compile a class definition
 	void classDeclaration(OtCode code)
 	{
 		// handle class name
-		scanner.expect(OT_OBJECT_TALK_CLASS_TOKEN);
+		scanner.expect(OtScanner::OT_SCANNER_CLASS_TOKEN);
 		scanner.expect(OtScanner::OT_SCANNER_IDENTIFIER_TOKEN, false);
 		std::string name = scanner.getText();
 		scanner.advance();
 
 		// handle parent name
-		scanner.expect(OT_OBJECT_TALK_COLON_TOKEN);
+		scanner.expect(OtScanner::OT_SCANNER_COLON_TOKEN);
 		scanner.expect(OtScanner::OT_SCANNER_IDENTIFIER_TOKEN, false);
 		std::string parent = scanner.getText();
 		scanner.advance();
@@ -1122,14 +995,14 @@ private:
 		std::vector<std::string> names;
 
 		// get function name
-		scanner.expect(OT_OBJECT_TALK_FUNCTION_TOKEN);
+		scanner.expect(OtScanner::OT_SCANNER_FUNCTION_TOKEN);
 		scanner.expect(OtScanner::OT_SCANNER_IDENTIFIER_TOKEN, false);
 		std::string name = scanner.getText();
 		scanner.advance();
-		scanner.expect(OT_OBJECT_TALK_LPAREN_TOKEN);
+		scanner.expect(OtScanner::OT_SCANNER_LPAREN_TOKEN);
 
 		// handle ellipsis for variable argument count
-		if (scanner.matchToken(OT_OBJECT_TALK_ELLIPSIS_TOKEN))
+		if (scanner.matchToken(OtScanner::OT_SCANNER_ELLIPSIS_TOKEN))
 		{
 			scanner.advance();
 			count = SIZE_MAX;
@@ -1138,20 +1011,20 @@ private:
 		else
 		{
 			// get parameter names
-			while (!scanner.matchToken(OT_OBJECT_TALK_RPAREN_TOKEN) && !scanner.matchToken(OtScanner::OT_SCANNER_EOS_TOKEN))
+			while (!scanner.matchToken(OtScanner::OT_SCANNER_RPAREN_TOKEN) && !scanner.matchToken(OtScanner::OT_SCANNER_EOS_TOKEN))
 			{
 				scanner.expect(OtScanner::OT_SCANNER_IDENTIFIER_TOKEN, false);
 				names.push_back(scanner.getText());
 				scanner.advance();
 
-				if (scanner.matchToken(OT_OBJECT_TALK_COMMA_TOKEN))
+				if (scanner.matchToken(OtScanner::OT_SCANNER_COMMA_TOKEN))
 					scanner.advance();
 			}
 
 			count = names.size();
 		}
 
-		scanner.expect(OT_OBJECT_TALK_RPAREN_TOKEN);
+		scanner.expect(OtScanner::OT_SCANNER_RPAREN_TOKEN);
 
 		// get function level code
 		OtCode body = OtCodeCreate();
@@ -1166,13 +1039,13 @@ private:
 	// compile a do statement
 	void doStatement(OtCode code)
 	{
-		scanner.expect(OT_OBJECT_TALK_DO_TOKEN);
+		scanner.expect(OtScanner::OT_SCANNER_DO_TOKEN);
 		size_t offset = code->size();
 
 		statement(code);
 		code->pop();
 
-		scanner.expect(OT_OBJECT_TALK_WHILE_TOKEN);
+		scanner.expect(OtScanner::OT_SCANNER_WHILE_TOKEN);
 
 		if (expression(code))
 			code->method("__deref__", 0);
@@ -1183,13 +1056,13 @@ private:
 	// compile a for statement
 	void forStatement(OtCode code)
 	{
-		scanner.expect(OT_OBJECT_TALK_FOR_TOKEN);
-		scanner.expect(OT_OBJECT_TALK_LPAREN_TOKEN);
+		scanner.expect(OtScanner::OT_SCANNER_FOR_TOKEN);
+		scanner.expect(OtScanner::OT_SCANNER_LPAREN_TOKEN);
 
-		if (!scanner.matchToken(OT_OBJECT_TALK_SEMICOLON_TOKEN))
+		if (!scanner.matchToken(OtScanner::OT_SCANNER_SEMICOLON_TOKEN))
 			code->pop(expressions(code));
 
-		scanner.expect(OT_OBJECT_TALK_SEMICOLON_TOKEN);
+		scanner.expect(OtScanner::OT_SCANNER_SEMICOLON_TOKEN);
 
 		size_t offset1 = code->size();
 
@@ -1199,14 +1072,14 @@ private:
 		size_t offset2 = code->size();
 		code->jumpFalse(0);
 
-		scanner.expect(OT_OBJECT_TALK_SEMICOLON_TOKEN);
+		scanner.expect(OtScanner::OT_SCANNER_SEMICOLON_TOKEN);
 
 		OtCode tmp = OtCodeCreate();
 
-		if (!scanner.matchToken(OT_OBJECT_TALK_RPAREN_TOKEN))
+		if (!scanner.matchToken(OtScanner::OT_SCANNER_RPAREN_TOKEN))
 			tmp->pop(expressions(tmp));
 
-		scanner.expect(OT_OBJECT_TALK_RPAREN_TOKEN);
+		scanner.expect(OtScanner::OT_SCANNER_RPAREN_TOKEN);
 		statement(code);
 		code->pop();
 
@@ -1219,7 +1092,7 @@ private:
 	// compile an if statement
 	void ifStatement(OtCode code)
 	{
-		scanner.expect(OT_OBJECT_TALK_IF_TOKEN);
+		scanner.expect(OtScanner::OT_SCANNER_IF_TOKEN);
 
 		if (expression(code))
 			code->method("__deref__", 0);
@@ -1230,7 +1103,7 @@ private:
 		statement(code);
 		code->pop();
 
-		if (scanner.matchToken(OT_OBJECT_TALK_ELSE_TOKEN))
+		if (scanner.matchToken(OtScanner::OT_SCANNER_ELSE_TOKEN))
 		{
 			scanner.advance();
 
@@ -1251,7 +1124,7 @@ private:
 	// compile a return statement
 	void returnStatement(OtCode code)
 	{
-		scanner.expect(OT_OBJECT_TALK_RETURN_TOKEN);
+		scanner.expect(OtScanner::OT_SCANNER_RETURN_TOKEN);
 
 		if (expression(code))
 			code->method("__deref__", 0);
@@ -1264,12 +1137,12 @@ private:
 	{
 		std::vector<size_t> patches;
 
-		scanner.expect(OT_OBJECT_TALK_SWITCH_TOKEN);
+		scanner.expect(OtScanner::OT_SCANNER_SWITCH_TOKEN);
 
 		if (expression(code))
 			code->method("__deref__", 0);
 
-			while (scanner.matchToken(OT_OBJECT_TALK_CASE_TOKEN))
+			while (scanner.matchToken(OtScanner::OT_SCANNER_CASE_TOKEN))
 			{
 				scanner.advance();
 				code->dup();
@@ -1291,7 +1164,7 @@ private:
 					code->patch(offset1);
 					}
 
-		if (scanner.matchToken(OT_OBJECT_TALK_DEFAULT_TOKEN))
+		if (scanner.matchToken(OtScanner::OT_SCANNER_DEFAULT_TOKEN))
 		{
 			scanner.advance();
 			statement(code);
@@ -1307,7 +1180,7 @@ private:
 	// compile a while statement
 	void whileStatement(OtCode code)
 	{
-		scanner.expect(OT_OBJECT_TALK_WHILE_TOKEN);
+		scanner.expect(OtScanner::OT_SCANNER_WHILE_TOKEN);
 		size_t offset1 = code->size();
 
 		if (expression(code))
@@ -1328,43 +1201,43 @@ private:
 		// process statement
 		switch (scanner.getToken())
 		{
-			case OT_OBJECT_TALK_LBRACE_TOKEN:
+			case OtScanner::OT_SCANNER_LBRACE_TOKEN:
 				block(code);
 				break;
 
-			case OT_OBJECT_TALK_CLASS_TOKEN:
+			case OtScanner::OT_SCANNER_CLASS_TOKEN:
 				classDeclaration(code);
 				break;
 
-			case OT_OBJECT_TALK_FUNCTION_TOKEN:
+			case OtScanner::OT_SCANNER_FUNCTION_TOKEN:
 				functionDeclaration(code);
 				break;
 
-			case OT_OBJECT_TALK_DO_TOKEN:
+			case OtScanner::OT_SCANNER_DO_TOKEN:
 				doStatement(code);
 				code->push(nullptr);
 				break;
 
-			case OT_OBJECT_TALK_FOR_TOKEN:
+			case OtScanner::OT_SCANNER_FOR_TOKEN:
 				forStatement(code);
 				code->push(nullptr);
 				break;
 
-			case OT_OBJECT_TALK_IF_TOKEN:
+			case OtScanner::OT_SCANNER_IF_TOKEN:
 				ifStatement(code);
 				code->push(nullptr);
 				break;
 
-			case OT_OBJECT_TALK_RETURN_TOKEN:
+			case OtScanner::OT_SCANNER_RETURN_TOKEN:
 				returnStatement(code);
 				break;
 
-			case OT_OBJECT_TALK_SWITCH_TOKEN:
+			case OtScanner::OT_SCANNER_SWITCH_TOKEN:
 				switchStatement(code);
 				code->push(nullptr);
 				break;
 
-			case OT_OBJECT_TALK_WHILE_TOKEN:
+			case OtScanner::OT_SCANNER_WHILE_TOKEN:
 				whileStatement(code);
 				code->push(nullptr);
 				break;
@@ -1374,7 +1247,7 @@ private:
 				break;
 		}
 
-		while (scanner.matchToken(OT_OBJECT_TALK_SEMICOLON_TOKEN))
+		while (scanner.matchToken(OtScanner::OT_SCANNER_SEMICOLON_TOKEN))
 			scanner.advance();
 	}
 

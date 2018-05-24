@@ -25,10 +25,10 @@ digraph d {
 "OtClasses.cpp" -> "OtClasses.h"
 
 "OtClasses.h" -> "OtNucleus.h"
-"OtClasses.h" -> "OtClassesPrimitives.h"
-"OtClasses.h" -> "OtClassesCollections.h"
-"OtClasses.h" -> "OtClassesIO.h"
-"OtClasses.h" -> "OtClassesInternal.h"
+"OtClasses.h" -> "OtPrimitives.h"
+"OtClasses.h" -> "OtCollections.h"
+"OtClasses.h" -> "OtIO.h"
+"OtClasses.h" -> "OtInternal.h"
 
 "OtScanner.h" -> "OtException.h"
 

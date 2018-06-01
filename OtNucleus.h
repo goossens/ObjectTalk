@@ -148,8 +148,8 @@ class OtObject : public std::enable_shared_from_this<OtObject>
 {
 public:
 	// constructor/destructor
-	OtObject() { members = nullptr; }
-	virtual ~OtObject() { if (members) delete members; }
+	OtObject() {}
+	virtual ~OtObject() {}
 
 	// type access
 	void setType(OtType t) { type = t; }
@@ -196,16 +196,16 @@ public:
 	virtual OtValue set(const std::string& name, OtValue value)
 	{
 		if (!members)
-			members = new std::map<std::string, OtValue>;
+			members = std::make_shared<std::map<std::string, OtValue>>();
 
-		(*members)[name] = value;
+		members->operator [] (name) = value;
 		return value;
 	}
 
 	virtual OtValue get(const std::string& name)
 	{
 		if (members && members->count(name))
-			return (*members)[name];
+			return members->operator [] (name);
 
 		if (parent && parent->has(name))
 			return parent->get(name);
@@ -233,7 +233,7 @@ protected:
 	OtType type;
 
 	// members
-	std::map<std::string, OtValue>* members;
+	std::shared_ptr<std::map<std::string, OtValue>> members;
 
 	// parent in chain
 	OtValue parent;

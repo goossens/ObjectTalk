@@ -13,22 +13,35 @@
 //	See the License for the specific language governing permissions and
 //	limitations under the License.
 
-Object
-	Primitive
-		Boolean
-		Integer
-		Real
-		String
-		Function
-		BoundFunction
 
-	Collection
-		Array
-		Dict
+#pragma once
 
-	Internal
-		Class
-		OtContextReference
-		MemberReference
-		ArrayReference
-		DictReference
+
+//
+//  OtType
+//
+
+class OtTypeClass;
+typedef std::shared_ptr<OtTypeClass> OtType;
+
+
+//
+//  OtObject
+//
+
+class OtObjectClass;
+typedef std::shared_ptr<OtObjectClass> OtObject;
+
+
+//
+//  OtConstructor
+//
+
+typedef std::function<OtObject ()> OtConstructor;
+
+
+//
+//  OtExecutable
+//
+
+typedef std::function<OtObject (OtObject context, size_t count, OtObject* parameters)> OtExecutable;

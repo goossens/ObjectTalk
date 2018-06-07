@@ -18,20 +18,6 @@
 
 
 //
-//  Include files
-//
-
-#include <cctype>
-#include <map>
-#include <limits>
-#include <stdexcept>
-#include <string>
-#include <vector>
-
-#include "OtException.h"
-
-
-//
 //  OtScanner
 //
 
@@ -431,7 +417,7 @@ public:
 			// see if we can find a token
 			size_t state = 0;
 
-			while(position < size && stateTable[state].transitions[(int) text[position]] != OtScannerState::noTransition)
+			while (position < size && stateTable[state].transitions[(int) text[position]] != OtScannerState::noTransition)
 				state = stateTable[state].transitions[(int) text[position++]];
 
 			if (position > tokenStart && stateTable[state].token != ILLEGAL_TOKEN)

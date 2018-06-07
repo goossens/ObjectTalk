@@ -26,32 +26,32 @@ path = theClass.getName()
 
 while theClass.hasParent()
 {
-    theClass = theClass.getParent()
-    path += "->" + theClass.getName()
+	theClass = theClass.getParent()
+	path += "->" + theClass.getName()
 }
 
-assert('path == "Integer->Primitive->Object"')
+assert('path == "Integer->Object"')
 
 class MyObject : Object
 {
-    function pedigree(this, useless)
-    {
-        theClass = this.getClass()
-        path = theClass.getName()
+	function pedigree(this, useless)
+	{
+		theClass = this.getClass()
+		path = theClass.getName()
 
-        while theClass.hasParent()
-        {
-            theClass = theClass.getParent()
-            path += "->" + theClass.getName()
-        }
+		while theClass.hasParent()
+		{
+			theClass = theClass.getParent()
+			path += "->" + theClass.getName()
+		}
 
-        return path
-    }
+		return path
+	}
 
-    function set(this, value)
-    {
-        this.value = value
-    }
+	function set(this, value)
+	{
+		this.value = value
+	}
 }
 
 test = MyObject()

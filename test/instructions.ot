@@ -25,44 +25,44 @@ if integer == 2 flag2 = true else flag2 = false
 assert('flag1 && !flag2')
 
 for (test = 0, c = 0; c < 10; c++)
-    test++
+	test++
 
 assert('test == 10')
 
 while test > 0
-    test--
+	test--
 
 assert('test == 0')
 
 do
 {
-    test += 2
-    test -= 2
-    test += 2
+	test += 2
+	test -= 2
+	test += 2
 }
 while test < 10
 
 assert('test == 10')
 
 for (test = 0, c = 0; c < 5; c++)
-    switch c
-        case 1
-            test += 1
+	switch c
+		case 1
+			test += 1
 
-        case 2
-            test += 2
+		case 2
+			test += 2
 
-        case 3
-            test += 3
+		case 3
+			test += 3
 
-        case 4
-            test += 4
+		case 4
+			test += 4
 
-        case 5
-            test += 5
+		case 5
+			test += 5
 
-        default
-            test += 10
+		default
+			test += 10
 
 assert('test == 20')
 

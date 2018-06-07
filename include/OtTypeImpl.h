@@ -18,22 +18,12 @@
 
 
 //
-//  Include files
+//  OtTypeClass::instantiate
 //
 
-#include <cstdio>
-#include <string>
-
-
-//
-//	OtFormat
-//
-
-template <typename... Args>
-std::string OtFormat(const std::string &format, Args... args)
+inline OtObject OtTypeClass::instantiate()
 {
-	unsigned required = std::snprintf(nullptr, 0, format.c_str(), args...) + 1;
-	char bytes[required];
-	std::snprintf(bytes, required, format.c_str(), args...);
-	return std::string(bytes);
+	OtObject object = constructor();
+	object->setType(shared_from_this());
+	return object;
 }

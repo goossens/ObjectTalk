@@ -18,33 +18,14 @@
 
 
 //
-//  OtIO
+//	OtFormat
 //
 
-class OtIO : public OtObject
+template <typename... Args>
+std::string OtFormat(const std::string &format, Args... args)
 {
-public:
-	OtIO() {}
-};
-
-
-//
-//  OtFile
-//
-
-class OtFile : public OtIO
-{
-public:
-	OtFile() {}
-};
-
-
-//
-//  OtHttp
-//
-
-class OtHttp : public OtIO
-{
-public:
-	OtHttp() {}
-};
+	unsigned required = std::snprintf(nullptr, 0, format.c_str(), args...) + 1;
+	char bytes[required];
+	std::snprintf(bytes, required, format.c_str(), args...);
+	return std::string(bytes);
+}

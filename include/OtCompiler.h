@@ -18,30 +18,51 @@
 
 
 //
-//  Include files
+//
+//  OtContextReferenceClass
 //
 
-#include <fstream>
-#include <iostream>
-#include <memory>
-#include <sstream>
-#include <string>
-#include <vector>
+class OtContextReferenceClass : public OtObjectClass
+{
+public:
+	OtContextReferenceClass() {}
+	OtContextReferenceClass(const std::string& m) { member = m; }
 
-#include "OtClasses.h"
-#include "OtException.h"
-#include "OtScanner.h"
+	OtObject deref(OtObject context, size_t, OtObject*) { return context->get(member); }
+	OtObject assign(OtObject context, size_t, OtObject* value) { return context->set(member, *value); }
+
+	// get type definition
+	static OtType getMeta()
+	{
+		static OtType type = nullptr;
+
+		if (!type)
+		{
+			type = OtTypeClass::create<OtContextReferenceClass>("ContextReference", OtObjectClass::getMeta());
+			type->set("__deref__", OtFunctionClass::create(&OtContextReferenceClass::deref));
+			type->set("__assign__", OtFunctionClass::create(&OtContextReferenceClass::assign));
+		}
+
+		return type;
+	}
+
+	// create a new object
+	static OtObject create(const std::string& n) { return std::make_shared<OtContextReferenceClass>(n)->setType(getMeta()); }
+
+private:
+	std::string member;
+};
 
 
 //
-//  OtObjectTalk
+//  OtCompiler
 //
 
-class OtObjectTalk
+class OtCompiler
 {
 public:
 	// constructor
-	OtObjectTalk() {}
+	OtCompiler() {}
 
 	// compile text into microcode
 	OtCode compile(const std::string& text)
@@ -50,7 +71,7 @@ public:
 		scanner.loadText(text);
 
 		// setup code
-		OtCode code = OtCodeCreate();
+		OtCode code = OtCodeClass::create();
 
 		// process all statements
 		if (scanner.matchToken(OtScanner::EOS_TOKEN))
@@ -71,101 +92,16 @@ public:
 		return code;
 	}
 
-	// create a default object talk context
-	OtValue createDefaultContext()
-	{
-		// create global context
-		OtValue context = OtValueCreate();
-		context->set("global", context);
-
-		// add default constants
-		context->set("true", OtValueCreate(true));
-		context->set("false", OtValueCreate(false));
-		context->set("null", nullptr);
-
-		// add default functions
-		context->set("assert", OtFunctionCreateRaw([] (OtValue context, size_t c, OtValue* p)->OtValue
-		{
-			if (c != 1)
-				OT_EXCEPT("Function expects 1 parameter, %d given", c);
-
-			OtObjectTalk ot;
-			std::string assertion = p[0]->operator std::string();
-			OtValue result = ot.processText(assertion, context);
-			
-			if (!result->operator bool())
-				OT_EXCEPT("Assertion [%s] failed", assertion.c_str());
-
-			return nullptr;
-		}));
-
-		context->set("print", OtFunctionCreateRaw([] (OtValue, size_t c, OtValue* p)->OtValue
-		{
-			for (size_t i = 0; i < c; i++)
-				std::cout << (std::string) *p[i];
-
-			std::cout << std::endl;
-			return nullptr;
-		}));
-
-		// add default classes
-		context->set("Object", OtObjectCreateClass());
-
-		context->set("Internal", OtInternalCreateClass());
-		context->set("Class", OtClassCreateClass());
-		context->set("MemberReference", OtMemberReferenceCreateClass());
-		context->set("ArrayReference", OtArrayReferenceCreateClass());
-		context->set("DictReference", OtDictReferenceCreateClass());
-
-		context->set("Primitive", OtPrimitiveCreateClass());
-		context->set("Boolean", OtBooleanCreateClass());
-		context->set("Integer", OtIntegerCreateClass());
-		context->set("Real", OtRealCreateClass());
-		context->set("String", OtStringCreateClass());
-		context->set("Function", OtFunctionCreateClass());
-
-		context->set("Collection", OtCollectionCreateClass());
-		context->set("Array", OtArrayCreateClass());
-		context->set("Dict", OtDictCreateClass());
-
-		// return default context
-		return context;
-	}
-
-	// compile and run ObjectTalk text
-	OtValue processText(const std::string& text, OtValue context=nullptr)
-	{
-		// compile the code
-		OtCode code = compile(text);
-
-		// create default context if required
-		if (!context)
-			context = createDefaultContext();
-
-		// execute code and return result
-		return code->run(context);
-	}
-
-	// compile and run an ObjectTalk file
-	OtValue processFile(const std::string& filename, OtValue context=nullptr)
-	{
-		// get text from file and process
-		std::ifstream stream(filename);
-		std::stringstream buffer;
-		buffer << stream.rdbuf();
-		return processText(buffer.str(), context);
-	}
-
 private:
-	// compile anonymous function
+	// compile function
 	void function(OtCode code)
 	{
-		// local variables
-		size_t count;
-		std::vector<std::string> names;
+		// create function
+		OtCode function = OtCodeClass::create();
+		function->saveArgs();
 
-		// skip function and opening parenthesis
-		scanner.expect(OtScanner::FUNCTION_TOKEN);
+		// parse parameters
+		size_t count = 0;
 		scanner.expect(OtScanner::LPAREN_TOKEN);
 
 		// handle ellipsis for variable argument count
@@ -182,7 +118,7 @@ private:
 			while (!scanner.matchToken(OtScanner::RPAREN_TOKEN) && !scanner.matchToken(OtScanner::EOS_TOKEN))
 			{
 				scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
-				names.push_back(scanner.getText());
+				function->saveArg(count++, scanner.getText());
 				scanner.advance();
 
 				if (scanner.matchToken(OtScanner::COMMA_TOKEN))
@@ -190,13 +126,11 @@ private:
 			}
 
 			scanner.expect(OtScanner::RPAREN_TOKEN);
-			count = names.size();
 		}
 
 		// get function level code
-		OtCode body = OtCodeCreate();
-		statement(body);
-		code->push(OtValueCreate(count, body, names));
+		statement(function);
+		code->push(OtCodeFunctionClass::create(function));
 	}
 
 	// compile primary expression
@@ -216,34 +150,35 @@ private:
 
 			case OtScanner::INTEGER_TOKEN:
 				// handle integer constants
-				code->push(OtValueCreate(scanner.getInteger()));
+				code->push(OtObjectCreate(scanner.getInteger()));
 				scanner.advance();
 				reference = false;
 				break;
 
 			case OtScanner::REAL_TOKEN:
 				// handle real constants
-				code->push(OtValueCreate(scanner.getReal()));
+				code->push(OtObjectCreate(scanner.getReal()));
 				scanner.advance();
 				reference = false;
 				break;
 
 			case OtScanner::STRING_TOKEN:
 				// handle string constants
-				code->push(OtValueCreate(scanner.getString()));
+				code->push(OtObjectCreate(scanner.getString()));
 				scanner.advance();
 				reference = false;
 				break;
 
 			case OtScanner::FUNCTION_TOKEN:
 				// handle function definition
+				scanner.advance();
 				function(code);
 				reference = false;
 				break;
 
 			case OtScanner::IDENTIFIER_TOKEN:
 				// handle named reference
-				code->push(OtContextReferenceCreate(scanner.getText()));
+				code->push(OtContextReferenceClass::create(scanner.getText()));
 				scanner.advance();
 				reference = true;
 				break;
@@ -251,7 +186,7 @@ private:
 			case OtScanner::LBRACKET_TOKEN:
 				// handle array constant
 				scanner.advance();
-				code->push(OtArrayCreate());
+				code->push(OtArrayClass::create());
 				code->method("__init__", expressions(code));
 				scanner.expect(OtScanner::RBRACKET_TOKEN);
 				reference = false;
@@ -260,12 +195,12 @@ private:
 			case OtScanner::LBRACE_TOKEN:
 				// handle dictionary constant
 				scanner.advance();
-				code->push(OtDictCreate());
+				code->push(OtDictClass::create());
 
 				while (scanner.getToken() != OtScanner::RBRACE_TOKEN && scanner.getToken() != OtScanner::EOS_TOKEN)
 				{
 					scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
-					code->push(OtValueCreate(scanner.getText()));
+					code->push(OtObjectCreate(scanner.getText()));
 					scanner.advance();
 					scanner.expect(OtScanner::COLON_TOKEN);
 
@@ -342,7 +277,7 @@ private:
 						code->method("__deref__", 0);
 
 					scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
-					code->push(OtValueCreate(scanner.getText()));
+					code->push(OtObjectCreate(scanner.getText()));
 					scanner.advance();
 					code->method("__member__", 1);
 					reference = true;
@@ -972,15 +907,15 @@ private:
 
 		// create new class
 		code->get(parent);
-		code->push(OtValueCreate(name));
-		code->method("subClass", 1);
+		code->push(OtObjectCreate(name));
+		code->method("subType", 1);
 
 		// assign class
-		code->dup();
 		code->dup();
 		code->set(name);
 
 		// process class content
+		code->dup();
 		code->pushContext();
 		statement(code);
 		code->pop();
@@ -990,48 +925,14 @@ private:
 	// compile function definition
 	void functionDeclaration(OtCode code)
 	{
-		// local variables
-		size_t count;
-		std::vector<std::string> names;
-
 		// get function name
 		scanner.expect(OtScanner::FUNCTION_TOKEN);
 		scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
 		std::string name = scanner.getText();
 		scanner.advance();
-		scanner.expect(OtScanner::LPAREN_TOKEN);
 
-		// handle ellipsis for variable argument count
-		if (scanner.matchToken(OtScanner::ELLIPSIS_TOKEN))
-		{
-			scanner.advance();
-			count = SIZE_MAX;
-		}
-
-		else
-		{
-			// get parameter names
-			while (!scanner.matchToken(OtScanner::RPAREN_TOKEN) && !scanner.matchToken(OtScanner::EOS_TOKEN))
-			{
-				scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
-				names.push_back(scanner.getText());
-				scanner.advance();
-
-				if (scanner.matchToken(OtScanner::COMMA_TOKEN))
-					scanner.advance();
-			}
-
-			count = names.size();
-		}
-
-		scanner.expect(OtScanner::RPAREN_TOKEN);
-
-		// get function level code
-		OtCode body = OtCodeCreate();
-		statement(body);
-
-		// add function to context
-		code->push(OtValueCreate(count, body, names));
+		// parse function and add to context
+		function(code);
 		code->dup();
 		code->set(name);
 	}
@@ -1074,7 +975,7 @@ private:
 
 		scanner.expect(OtScanner::SEMICOLON_TOKEN);
 
-		OtCode tmp = OtCodeCreate();
+		OtCode tmp = OtCodeClass::create();
 
 		if (!scanner.matchToken(OtScanner::RPAREN_TOKEN))
 			tmp->pop(expressions(tmp));

@@ -18,16 +18,6 @@
 
 
 //
-//  Include files
-//
-
-#include <stdexcept>
-#include <string>
-
-#include "OtFormat.h"
-
-
-//
 //  OtException
 //
 

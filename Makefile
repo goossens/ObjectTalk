@@ -1,4 +1,4 @@
-CXXFLAGS=-Wall -Wextra -MMD -MP -std=c++17
+CXXFLAGS=-I./include -Wall -Wextra -MMD -MP -std=c++17
 LDLIBS=-lm
 
 SRC=$(wildcard *.cpp)

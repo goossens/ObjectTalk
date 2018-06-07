@@ -95,8 +95,8 @@ public:
 		return nullptr;
 	}
 
-	// "execute" object (context, count, parameters)
-	virtual OtObject execute(OtObject, size_t, OtObject*) { return nullptr; }
+	// "call" object (context, count, parameters)
+	virtual OtObject operator () (OtObject, size_t, OtObject*) { return nullptr; }
 
 	// cast shared pointer to specified type
 	template <typename T>

@@ -96,8 +96,8 @@ public:
 		if (!context)
 			context = createDefaultContext();
 
-		// execute code and return result
-		return code->execute(context);
+		// call code and return result
+		return code->operator ()(context);
 	}
 
 	// compile and run an ObjectTalk file

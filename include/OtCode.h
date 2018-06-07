@@ -103,8 +103,8 @@ public:
 	// patch jump instruction
 	void patch(size_t location) { at(location).integer = size(); }
 
-	// execute code
-	OtObject execute(OtObject context, size_t count=0, OtObject* parameters=nullptr)
+	// call code
+	OtObject operator ()(OtObject context, size_t count=0, OtObject* parameters=nullptr)
 	{
 		// create local context
 		OtObject local = OtObjectClass::create();
@@ -121,7 +121,7 @@ public:
 		OtObject value;
 		size_t cnt;
 
-		// execute all code
+		// execute all instructions
 		while (pc < size())
 		{
 			switch (at(pc).opcode)
@@ -177,7 +177,7 @@ public:
 					if (!value)
 						OT_EXCEPT("Can't call method [%s] on NULL object", at(pc).string.c_str());
 
-					value = value->execute(local, cnt, sp);
+					value = value->operator ()(local, cnt, sp);
 
 					// clean up stack
 					stack.resize(stack.size() - cnt);

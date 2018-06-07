@@ -36,8 +36,8 @@ public:
 	OtCodeFunctionClass() {}
 	OtCodeFunctionClass(OtCode c) {code = c; }
 
-	// execute code
-	OtObject execute(OtObject c, size_t n, OtObject* p) { return code->execute(c, n, p); }
+	// call code
+	OtObject operator () (OtObject c, size_t n, OtObject* p) { return code->operator ()(c, n, p); }
 
 	// get type definition
 	static OtType getMeta()
@@ -47,7 +47,7 @@ public:
 		if (!type)
 		{
 			type = OtTypeClass::create<OtCodeFunctionClass>("CodeFunction", OtFunctionClass::getMeta());
-			type->set("__call__", OtFunctionClass::create(&OtCodeFunctionClass::execute));
+			type->set("__call__", OtFunctionClass::create(&OtCodeFunctionClass::operator ()));
 		}
 
 		return type;

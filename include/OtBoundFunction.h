@@ -36,8 +36,8 @@ public:
 	OtBoundFunctionClass() {}
 	OtBoundFunctionClass(OtObject o, OtObject f) { object = o; function = f; }
 
-	// execute bound function
-	OtObject execute(OtObject context, size_t count, OtObject* parameters)
+	// call bound function
+	OtObject operator () (OtObject context, size_t count, OtObject* parameters)
 	{
 		OtObject pars[count + 1];
 		pars[0] = object;
@@ -45,7 +45,7 @@ public:
 		if (count)
 			std::copy(parameters, parameters + count, pars + 1);
 
-		return OtTypeClass::cast<OtFunctionClass>(function)->execute(context, count + 1, pars);
+		return OtTypeClass::cast<OtFunctionClass>(function)->operator ()(context, count + 1, pars);
 	}
 
 	// get type definition
@@ -56,7 +56,7 @@ public:
 		if (!type)
 		{
 			type = OtTypeClass::create<OtBoundFunctionClass>("BoundFunction", OtInternalClass::getMeta());
-			type->set("__call__", OtFunctionClass::create(&OtBoundFunctionClass::execute));
+			type->set("__call__", OtFunctionClass::create(&OtBoundFunctionClass::operator ()));
 		}
 
 		return type;

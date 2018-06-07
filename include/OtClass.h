@@ -61,7 +61,7 @@ public:
 	OtObject set(const std::string& name, OtObject value) { return classType->set(name, value); }
 
 	// call operator
-	OtObject call(OtObject context, size_t count, OtObject* parameters)
+	OtObject operator () (OtObject context, size_t count, OtObject* parameters)
 	{
 		// create new instance
 		OtObject value = classType->instantiate();
@@ -75,7 +75,7 @@ public:
 			for (size_t c = 0; c < count; c++)
 				pars[c + 1] = parameters[c];
 
-			value->get("__init__")->execute(context, count + 1, pars);
+			value->get("__init__")->operator ()(context, count + 1, pars);
 		}
 
 		return value;
@@ -89,7 +89,7 @@ public:
 		if (!type)
 		{
 			type = OtTypeClass::create<OtClassClass>("Class", OtInternalClass::getMeta());
-			type->set("__call__", OtFunctionClass::create(&OtClassClass::call));
+			type->set("__call__", OtFunctionClass::create(&OtClassClass::operator ()));
 			type->set("getName", OtFunctionCreate(&OtClassClass::getName));
 			type->set("hasParent", OtFunctionCreate(&OtClassClass::hasParent));
 			type->set("getParent", OtFunctionCreate(&OtClassClass::getParent));

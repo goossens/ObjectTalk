@@ -41,8 +41,8 @@ public:
 		executable = e;
 	}
 
-	// execute function
-	OtObject execute(OtObject context, size_t count, OtObject* parameters)
+	// call function
+	OtObject operator () (OtObject context, size_t count, OtObject* parameters)
 	{
 		// sanity check
 		if (parameterCount != SIZE_MAX && count != parameterCount)
@@ -59,7 +59,7 @@ public:
 		if (!type)
 		{
 			type = OtTypeClass::create<OtFunctionClass>("Function", OtPrimitiveClass::getMeta());
-			type->set("__call__", OtFunctionClass::create(&OtFunctionClass::execute));
+			type->set("__call__", OtFunctionClass::create(&OtFunctionClass::operator ()));
 		}
 
 		return type;

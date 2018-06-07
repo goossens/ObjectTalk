@@ -18,56 +18,6 @@
 
 
 //
-//  Include files
-//
-
-#include <cctype>
-#include <cmath>
-#include <cstdio>
-#include <fstream>
-#include <iostream>
-#include <limits>
-#include <map>
-#include <memory>
-#include <sstream>
-#include <stdexcept>
-#include <string>
-#include <utility>
-#include <vector>
-	 
-#include "OtFormat.h"
-#include "OtException.h"
-
-#include "OtDefs.h"
-#include "OtType.h"
-#include "OtObject.h"
-
-#include "OtPrimitive.h"
-#include "OtFunction.h"
-#include "OtBoolean.h"
-#include "OtInteger.h"
-#include "OtReal.h"
-#include "OtString.h"
-
-#include "OtInternal.h"
-#include "OtClass.h"
-#include "OtBoundFunction.h"
-
-#include "OtCollection.h"
-#include "OtArray.h"
-#include "OtDict.h"
-
-#include "OtCode.h"
-#include "OtCodeFunction.h"
-
-#include "OtScanner.h"
-#include "OtCompiler.h"
-
-#include "OtTypeImpl.h"
-#include "OtObjectImpl.h"
-
-
-//
 //  OtObjectTalk
 //
 
@@ -116,14 +66,18 @@ public:
 
 		// add default classes
 		context->set("Object", OtClassClass::create(OtObjectClass::getMeta()));
+
+		context->set("Internal", OtClassClass::create(OtInternalClass::getMeta()));
 		context->set("Class", OtClassClass::create(OtClassClass::getMeta()));
 
+		context->set("Primitive", OtClassClass::create(OtPrimitiveClass::getMeta()));
 		context->set("Boolean", OtClassClass::create(OtBooleanClass::getMeta()));
 		context->set("Integer", OtClassClass::create(OtIntegerClass::getMeta()));
 		context->set("Real", OtClassClass::create(OtRealClass::getMeta()));
 		context->set("String", OtClassClass::create(OtStringClass::getMeta()));
 		context->set("Function", OtClassClass::create(OtFunctionClass::getMeta()));
 
+		context->set("Collection", OtClassClass::create(OtCollectionClass::getMeta()));
 		context->set("Array", OtClassClass::create(OtArrayClass::getMeta()));
 		context->set("Dict", OtClassClass::create(OtDictClass::getMeta()));
 

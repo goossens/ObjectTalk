@@ -29,7 +29,7 @@ typedef std::shared_ptr<OtStringClass> OtString;
 //  OtStringClass
 //
 
-class OtStringClass : public OtObjectClass
+class OtStringClass : public OtPrimitiveClass
 {
 public:
 	OtStringClass() {}
@@ -98,7 +98,7 @@ public:
 
 		if (!type)
 		{
-			type = OtTypeClass::create<OtStringClass>("String", OtObjectClass::getMeta());
+			type = OtTypeClass::create<OtStringClass>("String", OtPrimitiveClass::getMeta());
 
 			type->set("__add__", OtFunctionCreate(&OtStringClass::add));
 

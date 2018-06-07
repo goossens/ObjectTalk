@@ -29,7 +29,7 @@ typedef std::shared_ptr<OtDictClass> OtDict;
 //  OtDictReferenceClass
 //
 
-class OtDictReferenceClass : public OtObjectClass
+class OtDictReferenceClass : public OtInternalClass
 {
 public:
 	OtDictReferenceClass() {}
@@ -45,7 +45,7 @@ public:
 
 		if (!type)
 		{
-			type = OtTypeClass::create<OtDictReferenceClass>("DictReference", OtObjectClass::getMeta());
+			type = OtTypeClass::create<OtDictReferenceClass>("DictReference", OtInternalClass::getMeta());
 			type->set("__deref__", OtFunctionCreate(&OtDictReferenceClass::deref));
 			type->set("__assign__", OtFunctionCreate(&OtDictReferenceClass::assign));
 		}
@@ -66,7 +66,7 @@ private:
 //  OtDictClass
 //
 
-class OtDictClass : public OtObjectClass, public std::map<std::string, OtObject>
+class OtDictClass : public OtCollectionClass, public std::map<std::string, OtObject>
 {
 public:
 	OtDictClass() {}
@@ -153,7 +153,7 @@ public:
 
 		if (!type)
 		{
-			type = OtTypeClass::create<OtDictClass>("Dict", OtObjectClass::getMeta());
+			type = OtTypeClass::create<OtDictClass>("Dict", OtCollectionClass::getMeta());
 
 			type->set("__init__", OtFunctionClass::create(&OtDictClass::init));
 			type->set("__index__", OtFunctionCreate(&OtDictClass::index));

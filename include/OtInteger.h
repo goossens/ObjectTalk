@@ -29,7 +29,7 @@ typedef std::shared_ptr<OtIntegerClass> OtInteger;
 //  OtInteger
 //
 
-class OtIntegerClass : public OtObjectClass
+class OtIntegerClass : public OtPrimitiveClass
 {
 public:
 	OtIntegerClass() {}
@@ -77,7 +77,7 @@ public:
 
 		if (!type)
 		{
-			type = OtTypeClass::create<OtIntegerClass>("Integer", OtObjectClass::getMeta());
+			type = OtTypeClass::create<OtIntegerClass>("Integer", OtPrimitiveClass::getMeta());
 
 			type->set("__add__", OtFunctionCreate(&OtIntegerClass::add));
 			type->set("__sub__", OtFunctionCreate(&OtIntegerClass::subtract));

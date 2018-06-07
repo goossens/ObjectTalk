@@ -29,7 +29,7 @@ typedef std::shared_ptr<OtBoundFunctionClass> OtBoundFunction;
 //  OtBoundFunctionClass
 //
 
-class OtBoundFunctionClass : public OtObjectClass
+class OtBoundFunctionClass : public OtInternalClass
 {
 public:
 	// constructor
@@ -55,7 +55,7 @@ public:
 
 		if (!type)
 		{
-			type = OtTypeClass::create<OtBoundFunctionClass>("BoundFunction", OtObjectClass::getMeta());
+			type = OtTypeClass::create<OtBoundFunctionClass>("BoundFunction", OtInternalClass::getMeta());
 			type->set("__call__", OtFunctionClass::create(&OtBoundFunctionClass::execute));
 		}
 

@@ -22,7 +22,7 @@
 //  OtMemberReferenceClass
 //
 
-class OtMemberReferenceClass : public OtObjectClass
+class OtMemberReferenceClass : public OtInternalClass
 {
 public:
 	OtMemberReferenceClass() {}
@@ -51,7 +51,7 @@ public:
 
 		if (!type)
 		{
-			type = OtTypeClass::create<OtMemberReferenceClass>("MemberReference", OtObjectClass::getMeta());
+			type = OtTypeClass::create<OtMemberReferenceClass>("MemberReference", OtInternalClass::getMeta());
 			type->set("__deref__", OtFunctionCreate(&OtMemberReferenceClass::deref));
 			type->set("__assign__", OtFunctionCreate(&OtMemberReferenceClass::assign));
 		}

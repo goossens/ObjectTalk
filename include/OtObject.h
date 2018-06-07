@@ -127,6 +127,11 @@ protected:
 inline OtObject OtObjectCreate() { return OtObjectClass::create(); }
 inline OtObject OtObjectCreate(OtObject value) { return value; }
 
+
+//
+//	Forward reference
+//
+
 inline OtObject OtObjectCreate(bool value);
 inline OtObject OtObjectCreate(long value);
 inline OtObject OtObjectCreate(size_t value);

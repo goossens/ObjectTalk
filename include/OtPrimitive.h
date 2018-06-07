@@ -13,23 +13,37 @@
 //	See the License for the specific language governing permissions and
 //	limitations under the License.
 
-Object
-	Primitive
-		Boolean
-		Integer
-		Real
-		String
-		Function
-			CodeFunction
 
-	Collection
-		Array
-		Dict
+#pragma once
 
-	Internal
-		Class
-		BoundFunction
-		ContextReference
-		MemberReference
-		ArrayReference
-		DictReference
+
+//
+//  OtPrimitive
+//
+
+class OtPrimitiveClass;
+typedef std::shared_ptr<OtPrimitiveClass> OtPrimitive;
+
+
+//
+//  OtPrimitiveClass
+//
+
+class OtPrimitiveClass : public OtObjectClass
+{
+public:
+	OtPrimitiveClass() {}
+
+	// get type definition
+	static OtType getMeta()
+	{
+		static OtType type = nullptr;
+
+		if (!type)
+		{
+			type = OtTypeClass::create<OtPrimitiveClass>("Primitive", OtObjectClass::getMeta());
+		}
+
+		return type;
+	}
+};

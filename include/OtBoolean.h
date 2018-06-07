@@ -29,7 +29,7 @@ typedef std::shared_ptr<OtBooleanClass> OtBoolean;
 //  OtBooleanClass
 //
 
-class OtBooleanClass : public OtObjectClass
+class OtBooleanClass : public OtPrimitiveClass
 {
 public:
 	OtBooleanClass() {}
@@ -55,7 +55,7 @@ public:
 
 		if (!type)
 		{
-			type = OtTypeClass::create<OtBooleanClass>("Boolean", OtObjectClass::getMeta());
+			type = OtTypeClass::create<OtBooleanClass>("Boolean", OtPrimitiveClass::getMeta());
 
 			type->set("__and__", OtFunctionCreate(&OtBooleanClass::logicalAnd));
 			type->set("__or__", OtFunctionCreate(&OtBooleanClass::logicalOr));

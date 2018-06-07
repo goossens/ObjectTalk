@@ -22,7 +22,7 @@
 //  OtContextReferenceClass
 //
 
-class OtContextReferenceClass : public OtObjectClass
+class OtContextReferenceClass : public OtInternalClass
 {
 public:
 	OtContextReferenceClass() {}
@@ -38,7 +38,7 @@ public:
 
 		if (!type)
 		{
-			type = OtTypeClass::create<OtContextReferenceClass>("ContextReference", OtObjectClass::getMeta());
+			type = OtTypeClass::create<OtContextReferenceClass>("ContextReference", OtInternalClass::getMeta());
 			type->set("__deref__", OtFunctionClass::create(&OtContextReferenceClass::deref));
 			type->set("__assign__", OtFunctionClass::create(&OtContextReferenceClass::assign));
 		}

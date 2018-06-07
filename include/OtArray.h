@@ -29,7 +29,7 @@ typedef std::shared_ptr<OtArrayClass> OtArray;
 //  OtArrayReferenceClass
 //
 
-class OtArrayReferenceClass : public OtObjectClass
+class OtArrayReferenceClass : public OtInternalClass
 {
 public:
 	OtArrayReferenceClass() {}
@@ -45,7 +45,7 @@ public:
 
 		if (!type)
 		{
-			type = OtTypeClass::create<OtArrayReferenceClass>("ArrayReference", OtObjectClass::getMeta());
+			type = OtTypeClass::create<OtArrayReferenceClass>("ArrayReference", OtInternalClass::getMeta());
 			type->set("__deref__", OtFunctionCreate(&OtArrayReferenceClass::deref));
 			type->set("__assign__", OtFunctionCreate(&OtArrayReferenceClass::assign));
 		}
@@ -66,7 +66,7 @@ private:
 //  OtArrayClass
 //
 
-class OtArrayClass : public OtObjectClass, public std::vector<OtObject>
+class OtArrayClass : public OtCollectionClass, public std::vector<OtObject>
 {
 public:
 	OtArrayClass() {}
@@ -169,7 +169,7 @@ public:
 
 		if (!type)
 		{
-			type = OtTypeClass::create<OtArrayClass>("Array", OtObjectClass::getMeta());
+			type = OtTypeClass::create<OtArrayClass>("Array", OtCollectionClass::getMeta());
 
 			type->set("__init__", OtFunctionClass::create(&OtArrayClass::init));
 			type->set("__index__", OtFunctionCreate(&OtArrayClass::index));

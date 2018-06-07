@@ -29,7 +29,7 @@ typedef std::shared_ptr<OtRealClass> OtReal;
 //  OtRealClass
 //
 
-class OtRealClass : public OtObjectClass
+class OtRealClass : public OtPrimitiveClass
 {
 public:
 	OtRealClass() {}
@@ -73,7 +73,7 @@ public:
 
 		if (!type)
 		{
-			type = OtTypeClass::create<OtRealClass>("Real", OtObjectClass::getMeta());
+			type = OtTypeClass::create<OtRealClass>("Real", OtPrimitiveClass::getMeta());
 
 			type->set("__add__", OtFunctionCreate(&OtRealClass::add));
 			type->set("__sub__", OtFunctionCreate(&OtRealClass::subtract));

@@ -29,7 +29,7 @@ typedef std::shared_ptr<OtFunctionClass> OtFunction;
 //  OtFunctionClass
 //
 
-class OtFunctionClass : public OtObjectClass
+class OtFunctionClass : public OtPrimitiveClass
 {
 public:
 	// constructors
@@ -58,7 +58,7 @@ public:
 
 		if (!type)
 		{
-			type = OtTypeClass::create<OtFunctionClass>("Function", OtObjectClass::getMeta());
+			type = OtTypeClass::create<OtFunctionClass>("Function", OtPrimitiveClass::getMeta());
 			type->set("__call__", OtFunctionClass::create(&OtFunctionClass::execute));
 		}
 

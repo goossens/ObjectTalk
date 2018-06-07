@@ -41,18 +41,19 @@
 #include "OtDefs.h"
 #include "OtType.h"
 #include "OtObject.h"
+
+#include "OtPrimitive.h"
 #include "OtFunction.h"
-#include "OtBoundFunction.h"
-#include "OtClass.h"
-
-#include "OtTypeImpl.h"
-#include "OtObjectImpl.h"
-
 #include "OtBoolean.h"
 #include "OtInteger.h"
 #include "OtReal.h"
 #include "OtString.h"
 
+#include "OtInternal.h"
+#include "OtClass.h"
+#include "OtBoundFunction.h"
+
+#include "OtCollection.h"
 #include "OtArray.h"
 #include "OtDict.h"
 
@@ -61,6 +62,9 @@
 
 #include "OtScanner.h"
 #include "OtCompiler.h"
+
+#include "OtTypeImpl.h"
+#include "OtObjectImpl.h"
 
 
 //

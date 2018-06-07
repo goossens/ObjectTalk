@@ -46,7 +46,7 @@ public:
 
 		if (!type)
 		{
-			type = OtTypeClass::create<OtCodeFunctionClass>("CodeFunction", OtObjectClass::getMeta());
+			type = OtTypeClass::create<OtCodeFunctionClass>("CodeFunction", OtFunctionClass::getMeta());
 			type->set("__call__", OtFunctionClass::create(&OtCodeFunctionClass::execute));
 		}
 

@@ -8,6 +8,7 @@ statement ::= expressions
 | "while" expression statement
 | "do" statement "while" expression
 | "for" "(" expressions ";" expression ";" expressions ")" statement
+| "foreach" name "in" expression statement
 | "switch" expression ("case" expression statement)+ ("default" statement)?
 | "return" expression
 
@@ -38,9 +39,14 @@ postfix ::= primary ("[" expression "]" | "(" expressions ")" | "." name | "++" 
 primary ::= "(" expression ")"
 | "[" expressions "]"
 | "{" name ":" expression ("," name ":" expression)* "}"
-| integer | real | string | name
+| integer
+| real
+| string
+| function
+| name
 
 integer ::= [-]? [0-9][0-9]*
 real ::= [-]? [0-9][0-9]*.[0-9][0-9]* ([Ee] [-]? [0-9][0-9]*)?
 string ::= '"' (Char - '"')* '"' | "'" (Char - "'")* "'"
+function ::= "function" "(" (name ("," name)* | "...") ")" statement
 name ::= [a-zA-Z_][a-zA-Z0-9_]*

@@ -56,7 +56,7 @@ public:
 	const std::string& getPath() { return path; }
 	const std::string& getDirectory() { return directory; }
 	const std::string& getFilename() { return filename; }
-	const std::string& getBasename() { return basename; }
+	const std::string& getStem() { return stem; }
 	const std::string& getExtension() { return extension; }
 	const std::string& getQuery() { return query; }
 	const std::string& getFragment() { return fragment; }
@@ -134,13 +134,13 @@ public:
 		
 			if (period == std::string::npos)
 			{
-				basename = filename;
+				stem = filename;
 				extension = "";
 			}
 		
 			else
 			{
-				basename = filename.substr(0, period);
+				stem = filename.substr(0, period);
 				extension = filename.substr(period + 1);
 				std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
 			}
@@ -183,7 +183,7 @@ public:
 			type->set("path", OtFunctionCreate(&OtURIClass::getPath));
 			type->set("directory", OtFunctionCreate(&OtURIClass::getDirectory));
 			type->set("filename", OtFunctionCreate(&OtURIClass::getFilename));
-			type->set("basename", OtFunctionCreate(&OtURIClass::getBasename));
+			type->set("stem", OtFunctionCreate(&OtURIClass::getStem));
 			type->set("extension", OtFunctionCreate(&OtURIClass::getExtension));
 			type->set("query", OtFunctionCreate(&OtURIClass::getQuery));
 			type->set("params", OtFunctionCreate(&OtURIClass::getParams));
@@ -218,7 +218,7 @@ private:
 	std::string path;
 	std::string directory;
 	std::string filename;
-	std::string basename;
+	std::string stem;
 	std::string extension;
 	std::string query;
 	std::string fragment;

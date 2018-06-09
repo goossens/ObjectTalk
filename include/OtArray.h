@@ -23,43 +23,6 @@ typedef std::shared_ptr<OtArrayClass> OtArray;
 
 
 //
-//  OtArrayReferenceClass
-//
-
-class OtArrayReferenceClass : public OtInternalClass
-{
-public:
-	OtArrayReferenceClass() {}
-	OtArrayReferenceClass(OtArray a, size_t i) { array = a; index = i; }
-
-	OtObject deref();
-	OtObject assign(OtObject value);
-
-	// get type definition
-	static OtType getMeta()
-	{
-		static OtType type = nullptr;
-
-		if (!type)
-		{
-			type = OtTypeClass::create<OtArrayReferenceClass>("ArrayReference", OtInternalClass::getMeta());
-			type->set("__deref__", OtFunctionCreate(&OtArrayReferenceClass::deref));
-			type->set("__assign__", OtFunctionCreate(&OtArrayReferenceClass::assign));
-		}
-
-		return type;
-	}
-
-	// create a new object
-	static OtObject create(OtArray a, size_t i) { return std::make_shared<OtArrayReferenceClass>(a, i)->setType(getMeta()); }
-
-private:
-	OtArray array;
-	size_t index;
-};
-
-
-//
 //  OtArrayClass
 //
 
@@ -100,12 +63,73 @@ public:
 		return getSharedPtr();
 	}
 
+	class OtArrayReferenceClass : public OtInternalClass
+	{
+	public:
+		OtArrayReferenceClass() {}
+		OtArrayReferenceClass(OtArray a, size_t i) { array = a; index = i; }
+
+		OtObject deref() { return array->operator[] (index); }
+		OtObject assign(OtObject value) { array->operator[] (index) = value; return value; }
+
+		// get type definition
+		static OtType getMeta()
+		{
+			static OtType type = nullptr;
+
+			if (!type)
+			{
+				type = OtTypeClass::create<OtArrayReferenceClass>("ArrayReference", OtInternalClass::getMeta());
+				type->set("__deref__", OtFunctionCreate(&OtArrayReferenceClass::deref));
+				type->set("__assign__", OtFunctionCreate(&OtArrayReferenceClass::assign));
+			}
+
+			return type;
+		}
+
+		// create a new object
+		static OtObject create(OtArray a, size_t i) { return std::make_shared<OtArrayReferenceClass>(a, i)->setType(getMeta()); }
+
+	private:
+		OtArray array;
+		size_t index;
+	};
+	
 	OtObject index(size_t index) { return OtArrayReferenceClass::create(OtTypeClass::cast<OtArrayClass>(getSharedPtr()), index); }
 
-	size_t mySize()
+	class OtArrayIteratorClass : public OtInternalClass
 	{
-		return size();
-	}
+	public:
+		OtArrayIteratorClass() {}
+		OtArrayIteratorClass(OtArray a) { array = a; index = 0; }
+
+		bool end() { return index == array->size(); }
+		OtObject next() { return array->operator[](index++); }
+
+		// get type definition
+		static OtType getMeta()
+		{
+			static OtType type = nullptr;
+
+			if (!type)
+			{
+				type = OtTypeClass::create<OtArrayIteratorClass>("ArrayIterator", OtInternalClass::getMeta());
+				type->set("__end__", OtFunctionCreate(&OtArrayIteratorClass::end));
+				type->set("__next__", OtFunctionCreate(&OtArrayIteratorClass::next));
+			}
+
+			return type;
+		}
+
+		// create a new object
+		static OtObject create(OtArray a) { return std::make_shared<OtArrayIteratorClass>(a)->setType(getMeta()); }
+
+	private:
+		OtArray array;
+		size_t index;
+	};
+
+	OtObject iterate() { return OtArrayIteratorClass::create(OtTypeClass::cast<OtArrayClass>(getSharedPtr())); }
 
 	OtObject add(OtObject value)
 	{
@@ -113,6 +137,11 @@ public:
 		for (auto& it : *this) result->push_back(it);
 		result->append(value);
 		return result;
+	}
+
+	size_t mySize()
+	{
+		return size();
 	}
 
 	OtObject clone()
@@ -170,6 +199,7 @@ public:
 
 			type->set("__init__", OtFunctionClass::create(&OtArrayClass::init));
 			type->set("__index__", OtFunctionCreate(&OtArrayClass::index));
+			type->set("__iter__", OtFunctionCreate(&OtArrayClass::iterate));
 			type->set("__add__", OtFunctionCreate(&OtArrayClass::add));
 
 			type->set("size", OtFunctionCreate(&OtArrayClass::mySize));
@@ -208,11 +238,3 @@ public:
 		return array;
 	}
 };
-
-
-//
-//	Delayed implementations
-//
-
-OtObject OtArrayReferenceClass::deref() { return array->operator[] (index); }
-OtObject OtArrayReferenceClass::assign(OtObject value) { array->operator[] (index) = value; return value; }

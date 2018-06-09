@@ -49,7 +49,7 @@ assert('uri.port() == 8080')
 assert('uri.path() == "/a/b/c/d/test.txt"')
 assert('uri.directory() == "/a/b/c/d"')
 assert('uri.filename() == "test.txt"')
-assert('uri.basename() == "test"')
+assert('uri.stem() == "test"')
 assert('uri.extension() == "txt"')
 assert('uri.query() == "a=1&b=2"')
 

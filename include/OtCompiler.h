@@ -184,7 +184,10 @@ private:
 				// handle array constant
 				scanner.advance();
 				code->push(OtArrayClass::create());
-				code->method("__init__", expressions(code));
+				
+				if (scanner.getToken() != OtScanner::RBRACKET_TOKEN)
+					code->method("__init__", expressions(code));
+
 				scanner.expect(OtScanner::RBRACKET_TOKEN);
 				reference = false;
 				break;
@@ -211,7 +214,10 @@ private:
 				}
 
 				scanner.expect(OtScanner::RBRACE_TOKEN);
-				code->method("__init__", count);
+
+				if (count)
+					code->method("__init__", count);
+
 				reference = false;
 				break;
 
@@ -951,6 +957,42 @@ private:
 		code->jumpTrue(offset);
 	}
 
+	// compile a foreach statement
+	void foreachStatement(OtCode code)
+	{
+		scanner.expect(OtScanner::FOREACH_TOKEN);
+		scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
+		std::string name = scanner.getText();
+		scanner.advance();
+
+		scanner.expect(OtScanner::IN_TOKEN);
+
+		if (expression(code))
+			code->method("__deref__", 0);
+
+		code->method("__iter__", 0);
+		size_t offset1 = code->size();
+
+		code->dup();
+		code->method("__end__", 0);
+		size_t offset2 = code->size();
+		code->jumpTrue(0);
+
+		code->dup();
+		code->method("__next__", 0);
+		code->push(OtContextReferenceClass::create(name));
+		code->swap();
+		code->method("__assign__", 1);
+		code->pop();
+
+		statement(code);
+		code->pop();
+
+		code->jump(offset1);
+		code->patch(offset2);
+		code->pop();
+	}
+
 	// compile a for statement
 	void forStatement(OtCode code)
 	{
@@ -1113,6 +1155,11 @@ private:
 
 			case OtScanner::DO_TOKEN:
 				doStatement(code);
+				code->push(nullptr);
+				break;
+
+			case OtScanner::FOREACH_TOKEN:
+				foreachStatement(code);
 				code->push(nullptr);
 				break;
 

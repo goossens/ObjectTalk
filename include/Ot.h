@@ -21,6 +21,9 @@
 //  Include files
 //
 
+#include <stdlib.h>
+#include <unistd.h>
+
 #include <cctype>
 #include <cmath>
 #include <cstdio>
@@ -29,6 +32,7 @@
 #include <limits>
 #include <map>
 #include <memory>
+#include <regex>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -56,6 +60,11 @@
 #include "OtCollection.h"
 #include "OtArray.h"
 #include "OtDict.h"
+
+#include "OtOS.h"
+#include "OtPath.h"
+#include "OtFS.h"
+#include "OtURI.h"
 
 #include "OtCode.h"
 #include "OtCodeFunction.h"

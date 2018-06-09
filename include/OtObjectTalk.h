@@ -78,6 +78,10 @@ public:
 		context->set("Array", OtClassClass::create(OtArrayClass::getMeta()));
 		context->set("Dict", OtClassClass::create(OtDictClass::getMeta()));
 
+		context->set("Path", OtClassClass::create(OtPathClass::getMeta()));
+		context->set("FS", OtClassClass::create(OtFSClass::getMeta()));
+		context->set("URI", OtClassClass::create(OtURIClass::getMeta()));
+
 		// return default context
 		return context;
 	}
@@ -100,6 +104,14 @@ public:
 	// compile and run an ObjectTalk file
 	OtObject processFile(const std::string& filename, OtObject context=nullptr)
 	{
+		// create default context if required
+		if (!context)
+			context = createDefaultContext();
+
+		// add file name to context
+		char path[PATH_MAX];
+		context->set("__FILE__", OtPathClass::create(realpath(filename.c_str(), path)));
+
 		// get text from file and process
 		std::ifstream stream(filename);
 		std::stringstream buffer;

@@ -1,0 +1,57 @@
+//	ObjectTalk Scripting Language
+//	Copyright 1993-2018 Johan A. Goossens
+//
+//	Licensed under the Apache License, Version 2.0 (the "License");
+//	you may not use this file except in compliance with the License.
+//	You may obtain a copy of the License at
+//
+//		http://www.apache.org/licenses/LICENSE-2.0
+//
+//	Unless required by applicable law or agreed to in writing, software
+//	distributed under the License is distributed on an "AS IS" BASIS,
+//	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//	See the License for the specific language governing permissions and
+//	limitations under the License.
+
+//	Test script for ObjectTalk operating system functions
+
+print(__FILE__)
+print(__FILE__.directory())
+
+path = Path("//var/lib///test.a")
+assert('path.string() == "/var/lib/test.a"')
+assert('path.directory() == "/var/lib"')
+assert('path.filename() == "test.a"')
+assert('path.stem() == "test"')
+assert('path.extension() == "a"')
+
+path = Path("..//test.a")
+assert('path.string() == "../test.a"')
+assert('path.directory() == ".."')
+
+path = Path("test.a")
+assert('path.directory() == ""')
+
+path = Path("")
+assert('path.directory() == ".."')
+
+path = Path("/")
+assert('path.directory() == "/"')
+
+uri = URI("http://user:password@test.org:8080/a/b/c/d/test.txt?a=1&b=2")
+assert('uri.string() == "http://user:password@test.org:8080/a/b/c/d/test.txt?a=1&b=2"')
+assert('uri.scheme() == "http"')
+assert('uri.authority() == "user:password@test.org:8080"')
+assert('uri.user() == "user"')
+assert('uri.password() == "password"')
+assert('uri.host() == "test.org"')
+assert('uri.port() == 8080')
+assert('uri.path() == "/a/b/c/d/test.txt"')
+assert('uri.directory() == "/a/b/c/d"')
+assert('uri.filename() == "test.txt"')
+assert('uri.basename() == "test"')
+assert('uri.extension() == "txt"')
+assert('uri.query() == "a=1&b=2"')
+
+// Well done
+print("Passed all operating system tests")

@@ -15,9 +15,6 @@
 
 //	Test script for ObjectTalk operating system functions
 
-print(__FILE__)
-print(__FILE__.directory())
-
 path = Path("//var/lib///test.a")
 assert('path.string() == "/var/lib/test.a"')
 assert('path.directory() == "/var/lib"')

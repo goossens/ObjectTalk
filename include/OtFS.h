@@ -31,6 +31,7 @@ class OtFSClass : public OtOSClass
 public:
 	OtFSClass() {}
 
+	// get current working directory
 	OtObject getcwd()
 	{
 		char path[PATH_MAX];
@@ -39,6 +40,20 @@ public:
 			OT_EXCEPT("Internal error in getcwd(): %s", strerror(errno));
 
 		return OtPathClass::create(path);
+	}
+
+	// get list of files in specified directory
+	OtObject ls(const std::string& path)
+	{
+		OtArray result = OtArrayClass::create();
+		DIR* dir = opendir(path.c_str());
+	    struct dirent* dp;
+
+		while ((dp = readdir(dir)) != NULL)
+			result->push_back(OtStringClass::create(dp->d_name));
+
+		closedir(dir);
+		return result;
 	}
 
 	// get type definition
@@ -51,6 +66,7 @@ public:
 			type = OtTypeClass::create<OtFSClass>("FS", OtOSClass::getMeta());
 
 			type->set("getcwd", OtFunctionCreate(&OtFSClass::getcwd));
+			type->set("ls", OtFunctionCreate(&OtFSClass::ls));
 		}
 
 		return type;

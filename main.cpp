@@ -25,7 +25,7 @@
 
 
 //
-//	Scripting language main function
+//	ObjectTalk engine main function
 //
 
 int main(int argc, const char * argv[])

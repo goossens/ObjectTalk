@@ -26,6 +26,12 @@ Object
 		Array
 		Dict
 
+
+	OS
+		FS
+		Path
+		URI
+
 	Internal
 		Class
 		BoundFunction

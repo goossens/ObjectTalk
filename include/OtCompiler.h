@@ -184,7 +184,7 @@ private:
 				// handle array constant
 				scanner.advance();
 				code->push(OtArrayClass::create());
-				
+
 				if (scanner.getToken() != OtScanner::RBRACKET_TOKEN)
 					code->method("__init__", expressions(code));
 
@@ -957,76 +957,80 @@ private:
 		code->jumpTrue(offset);
 	}
 
-	// compile a foreach statement
-	void foreachStatement(OtCode code)
-	{
-		scanner.expect(OtScanner::FOREACH_TOKEN);
-		scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
-		std::string name = scanner.getText();
-		scanner.advance();
-
-		scanner.expect(OtScanner::IN_TOKEN);
-
-		if (expression(code))
-			code->method("__deref__", 0);
-
-		code->method("__iter__", 0);
-		size_t offset1 = code->size();
-
-		code->dup();
-		code->method("__end__", 0);
-		size_t offset2 = code->size();
-		code->jumpTrue(0);
-
-		code->dup();
-		code->method("__next__", 0);
-		code->push(OtContextReferenceClass::create(name));
-		code->swap();
-		code->method("__assign__", 1);
-		code->pop();
-
-		statement(code);
-		code->pop();
-
-		code->jump(offset1);
-		code->patch(offset2);
-		code->pop();
-	}
-
 	// compile a for statement
 	void forStatement(OtCode code)
 	{
 		scanner.expect(OtScanner::FOR_TOKEN);
-		scanner.expect(OtScanner::LPAREN_TOKEN);
 
-		if (!scanner.matchToken(OtScanner::SEMICOLON_TOKEN))
-			code->pop(expressions(code));
+		if (scanner.matchToken(OtScanner::LPAREN_TOKEN))
+		{
+			scanner.expect(OtScanner::LPAREN_TOKEN);
 
-		scanner.expect(OtScanner::SEMICOLON_TOKEN);
+			if (!scanner.matchToken(OtScanner::SEMICOLON_TOKEN))
+				code->pop(expressions(code));
 
-		size_t offset1 = code->size();
+			scanner.expect(OtScanner::SEMICOLON_TOKEN);
 
-		if (expression(code))
-			code->method("__deref__", 0);
+			size_t offset1 = code->size();
 
-		size_t offset2 = code->size();
-		code->jumpFalse(0);
+			if (expression(code))
+				code->method("__deref__", 0);
 
-		scanner.expect(OtScanner::SEMICOLON_TOKEN);
+			size_t offset2 = code->size();
+			code->jumpFalse(0);
 
-		OtCode tmp = OtCodeClass::create();
+			scanner.expect(OtScanner::SEMICOLON_TOKEN);
 
-		if (!scanner.matchToken(OtScanner::RPAREN_TOKEN))
-			tmp->pop(expressions(tmp));
+			OtCode tmp = OtCodeClass::create();
 
-		scanner.expect(OtScanner::RPAREN_TOKEN);
-		statement(code);
-		code->pop();
+			if (!scanner.matchToken(OtScanner::RPAREN_TOKEN))
+				tmp->pop(expressions(tmp));
 
-		code->insert(code->end(), tmp->begin(), tmp->end());
+			scanner.expect(OtScanner::RPAREN_TOKEN);
+			statement(code);
+			code->pop();
 
-		code->jump(offset1);
-		code->patch(offset2);
+			code->insert(code->end(), tmp->begin(), tmp->end());
+
+			code->jump(offset1);
+			code->patch(offset2);
+		}
+
+		else if (scanner.matchToken(OtScanner::IDENTIFIER_TOKEN))
+		{
+			std::string name = scanner.getText();
+			scanner.advance();
+
+			scanner.expect(OtScanner::IN_TOKEN);
+
+			if (expression(code))
+				code->method("__deref__", 0);
+
+			code->method("__iter__", 0);
+			size_t offset1 = code->size();
+
+			code->dup();
+			code->method("__end__", 0);
+			size_t offset2 = code->size();
+			code->jumpTrue(0);
+
+			code->dup();
+			code->method("__next__", 0);
+			code->push(OtContextReferenceClass::create(name));
+			code->swap();
+			code->method("__assign__", 1);
+			code->pop();
+
+			statement(code);
+			code->pop();
+
+			code->jump(offset1);
+			code->patch(offset2);
+			code->pop();
+		}
+
+		else
+			throw OtException("A [for] statement must be folowed by open parenthesis or an identifier");
 	}
 
 	// compile an if statement
@@ -1155,11 +1159,6 @@ private:
 
 			case OtScanner::DO_TOKEN:
 				doStatement(code);
-				code->push(nullptr);
-				break;
-
-			case OtScanner::FOREACH_TOKEN:
-				foreachStatement(code);
 				code->push(nullptr);
 				break;
 

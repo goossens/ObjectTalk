@@ -8,7 +8,7 @@ statement ::= expressions
 | "while" expression statement
 | "do" statement "while" expression
 | "for" "(" expressions ";" expression ";" expressions ")" statement
-| "foreach" name "in" expression statement
+| "for" name "in" expression statement
 | "switch" expression ("case" expression statement)+ ("default" statement)?
 | "return" expression
 

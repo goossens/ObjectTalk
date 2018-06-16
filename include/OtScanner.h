@@ -93,7 +93,6 @@ public:
 		DEFAULT_TOKEN,
 		DO_TOKEN,
 		ELSE_TOKEN,
-		FOREACH_TOKEN,
 		FOR_TOKEN,
 		FUNCTION_TOKEN,
 		IF_TOKEN,
@@ -161,7 +160,6 @@ public:
 		addToken("default", DEFAULT_TOKEN);
 		addToken("do", DO_TOKEN);
 		addToken("else", ELSE_TOKEN);
-		addToken("foreach", FOREACH_TOKEN);
 		addToken("for", FOR_TOKEN);
 		addToken("function", FUNCTION_TOKEN);
 		addToken("if", IF_TOKEN);

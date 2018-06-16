@@ -16,6 +16,6 @@
 fs = FS()
 dir =  __FILE__.directory()
 
-foreach file in fs.ls(dir)
+for file in fs.ls(dir)
 	if (file != "." && file != ".." && file != "main.ot")
 		print(file)

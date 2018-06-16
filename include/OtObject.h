@@ -42,6 +42,7 @@ public:
 	virtual operator std::string() { return ""; }
 	virtual operator OtObject() { return shared_from_this(); }
 
+	// get object representation (as in source code)
 	virtual std::string repr() { return operator std::string(); }
 
 	// get shared pointer

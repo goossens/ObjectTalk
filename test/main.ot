@@ -13,9 +13,6 @@
 
 //	Script to run all test scripts
 
-fs = FS()
-dir =  __FILE__.directory()
-
-for file in fs.ls(dir)
-	if (file != "." && file != ".." && file != "main.ot")
+for file in FS().ls(__FILE__.directory())
+	if (file.filename() != "main.ot")
 		print(file)

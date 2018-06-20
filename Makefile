@@ -1,5 +1,15 @@
 CXXFLAGS=-I./include -Wall -Wextra -MMD -MP -std=c++14
+UNAME_S := $(shell uname -s)
+
+ifeq ($(UNAME_S),Darwin)
+	CXXFLAGS += -I/usr/local/include
+endif
+
 LDLIBS=-lm
+
+ifeq ($(UNAME_S),Darwin)
+	LDLIBS += -L/usr/local/lib -lboost_filesystem
+endif
 
 SRC=$(wildcard *.cpp)
 OBJ=$(SRC:.cpp=.o)
@@ -16,7 +26,7 @@ debug: CXXFLAGS += -g
 debug: ot
 
 ot: $(OBJ)
-	$(CXX) -o ot $(OBJ)
+	$(CXX) -o ot $(OBJ) $(LDLIBS)
 	
 clean:
 	$(RM) ot $(OBJ) $(DEP) 

@@ -102,18 +102,17 @@ public:
 	}
 
 	// compile and run an ObjectTalk file
-	OtObject processFile(const std::string& filename, OtObject context=nullptr)
+	OtObject processFile(OtPath path, OtObject context=nullptr)
 	{
 		// create default context if required
 		if (!context)
 			context = createDefaultContext();
 
 		// add file name to context
-		char path[PATH_MAX];
-		context->set("__FILE__", OtPathClass::create(realpath(filename.c_str(), path)));
+		context->set("__FILE__", path);
 
 		// get text from file and process
-		std::ifstream stream(filename);
+        std::ifstream stream(path->operator std::string());
 		std::stringstream buffer;
 		buffer << stream.rdbuf();
 		return processText(buffer.str(), context);

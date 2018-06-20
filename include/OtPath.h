@@ -31,44 +31,11 @@ class OtPathClass : public OtOSClass
 public:
 	// constructors
 	OtPathClass() {}
-	OtPathClass(const std::string& path) { parse(path); }
-
-	void parse(const std::string& pth)
-	{
-		absolute = pth[0] == '/';
-		size_t c = 0;
-
-		while (c < pth.length())
-		{
-			while (pth[c] == '/') c++;
-			size_t d = c;
-			while (pth[d] != '/' && d < pth.length()) d++;
-
-			if (d > c)
-				path.push_back(pth.substr(c, d - c));
-
-			c = d;
-		}
-	}
+    OtPathClass(const std::string& p) { path = p; }
+    OtPathClass(const std::filesystem::path& p) { path = p; }
 
 	// convert to string
-	operator std::string()
-	{
-		std::ostringstream result;
-
-		if (absolute)
-			result << "/";
-
-		for (size_t c = 0; c < path.size(); c++)
-		{
-			result << path[c];
-
-			if (c + 1 < path.size())
-				result << '/';
-		}
-
-		return result.str();
-	}
+	operator std::string() { return path.string(); }
 
 	// initialize path
 	OtObject init(OtObject, size_t count, OtObject* parameters)
@@ -76,65 +43,62 @@ public:
 		if (count != 1)
 			OT_EXCEPT("Path initializer expected 1 parameter not [%d]", count);
 
-		parse(parameters[0]->operator std::string());
+        path = parameters[0]->operator std::string();
 		return getSharedPtr();
 	}
 
+    // operators
+    OtObject add(OtObject operand) { return OtPathClass::create(path / operand->operator std::string()); }
+    bool equal(OtObject operand) { return path == operand->operator std::string(); }
+    bool notEqual(OtObject operand) { return path != operand->operator std::string(); }
+    bool greaterThan(OtObject operand) { return path > operand->operator std::string(); }
+    bool lessThan(OtObject operand) { return path < operand->operator std::string(); }
+    bool greaterEqual(OtObject operand) { return path >= operand->operator std::string(); }
+    bool lessEqual(OtObject operand) { return path <= operand->operator std::string(); }
+
 	// get path elements
-	std::string directory()
-	{
-		if (path.empty())
-			return absolute ? "/" : "..";
+    OtObject directory() { return create(path.parent_path()); }
+	OtObject filename() { return create(path.filename()); }
+	OtObject stem() { return create(path.stem()); }
+	OtObject extension() { return create(path.extension()); }
 
-		else
-		{
-			std::ostringstream result;
+    // normalize path
+    OtObject normalize() { return create(path.lexically_normal()); }
 
-			if (absolute)
-				result << '/';
+    // support iterator
+    class OtPathIteratorClass : public OtInternalClass
+    {
+    public:
+        OtPathIteratorClass() {}
+        OtPathIteratorClass(std::filesystem::path::iterator b, std::filesystem::path::iterator l) { iterator = b; last = l; }
+        
+        bool end() { return iterator == last; }
+        OtObject next() { return OtPathClass::create(*(iterator++)); }
 
-			for (size_t c = 0; c < path.size() - 1; c++)
-			{
-				result << path[c];
-
-				if (c + 2 < path.size())
-					result << '/';
-			}
-
-			return result.str();
-		}
-	}
-
-	std::string filename()
-	{
-		if (path.empty())
-			return "";
-
-		else
-			return path[path.size() - 1];
-	}
-
-	std::string stem()
-	{
-		std::string name = filename();
-		size_t c = name.find_last_of(".");
-
-		if (c == std::string::npos)
-			return name;
-
-		return name.substr(0, c);
-	}
-
-	std::string extension()
-	{
-		std::string name = filename();
-		size_t c = name.find_last_of(".");
-
-		if (c == std::string::npos)
-			return "";
-
-		return name.substr(c + 1);
-	}
+        // get type definition
+        static OtType getMeta()
+        {
+            static OtType type = nullptr;
+            
+            if (!type)
+            {
+                type = OtTypeClass::create<OtPathIteratorClass>("PathIterator", OtInternalClass::getMeta());
+                type->set("__end__", OtFunctionCreate(&OtPathIteratorClass::end));
+                type->set("__next__", OtFunctionCreate(&OtPathIteratorClass::next));
+            }
+            
+            return type;
+        }
+        
+        // create a new object
+        static OtObject create(OtPath p) { return std::make_shared<OtPathIteratorClass>(p->path.begin(), p->path.end())->setType(getMeta()); }
+        
+    private:
+        std::filesystem::path::iterator iterator;
+        std::filesystem::path::iterator last;
+    };
+    
+    OtObject iterate() { return OtPathIteratorClass::create(OtTypeClass::cast<OtPathClass>(getSharedPtr())); }
 
 	// get type definition
 	static OtType getMeta()
@@ -146,11 +110,22 @@ public:
 			type = OtTypeClass::create<OtPathClass>("Path", OtOSClass::getMeta());
 
 			type->set("__init__", OtFunctionClass::create(&OtPathClass::init));
+            type->set("__iter__", OtFunctionCreate(&OtPathClass::iterate));
+            type->set("__add__", OtFunctionCreate(&OtPathClass::add));
+
+            type->set("__eq__", OtFunctionCreate(&OtPathClass::equal));
+            type->set("__ne__", OtFunctionCreate(&OtPathClass::notEqual));
+            type->set("__gt__", OtFunctionCreate(&OtPathClass::greaterThan));
+            type->set("__lt__", OtFunctionCreate(&OtPathClass::lessThan));
+            type->set("__ge__", OtFunctionCreate(&OtPathClass::greaterEqual));
+            type->set("__le__", OtFunctionCreate(&OtPathClass::lessEqual));
 
 			type->set("directory", OtFunctionCreate(&OtPathClass::directory));
 			type->set("filename", OtFunctionCreate(&OtPathClass::filename));
 			type->set("stem", OtFunctionCreate(&OtPathClass::stem));
-			type->set("extension", OtFunctionCreate(&OtPathClass::extension));
+            type->set("extension", OtFunctionCreate(&OtPathClass::extension));
+
+            type->set("normalize", OtFunctionCreate(&OtPathClass::normalize));
 		}
 
 		return type;
@@ -164,9 +139,15 @@ public:
 		return path;
 	}
 
+    static OtPath create(const std::filesystem::path& value)
+    {
+        OtPath path = std::make_shared<OtPathClass>(value);
+        path->setType(getMeta());
+        return path;
+    }
+
 private:
-	bool absolute;
-	std::vector<std::string> path;
+    std::filesystem::path path;
 };
 
 

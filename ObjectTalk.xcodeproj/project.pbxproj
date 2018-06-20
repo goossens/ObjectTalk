@@ -81,8 +81,8 @@
 			children = (
 				0C24368220D519A8004642C8 /* Products */,
 				0C529E2520D51A30000023B7 /* docs */,
-				0C529E0720D519FF000023B7 /* include */,
 				0C529E2920D51A84000023B7 /* test */,
+				0C529E0720D519FF000023B7 /* include */,
 				0C529E0520D519EB000023B7 /* main.cpp */,
 			);
 			sourceTree = "<group>";
@@ -271,6 +271,10 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"-lboost_filesystem",
+					"-lboost_system",
+				);
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -322,6 +326,10 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = (
+					"-lboost_filesystem",
+					"-lboost_system",
+				);
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -330,6 +338,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = /usr/local/include;
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -338,6 +348,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = /usr/local/include;
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

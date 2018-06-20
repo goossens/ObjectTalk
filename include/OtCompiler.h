@@ -147,21 +147,21 @@ private:
 
 			case OtScanner::INTEGER_TOKEN:
 				// handle integer constants
-				code->push(OtObjectCreate(scanner.getInteger()));
+                code->push(OtIntegerClass::create(scanner.getInteger()));
 				scanner.advance();
 				reference = false;
 				break;
 
 			case OtScanner::REAL_TOKEN:
 				// handle real constants
-				code->push(OtObjectCreate(scanner.getReal()));
+                code->push(OtRealClass::create(scanner.getReal()));
 				scanner.advance();
 				reference = false;
 				break;
 
 			case OtScanner::STRING_TOKEN:
 				// handle string constants
-				code->push(OtObjectCreate(scanner.getString()));
+                code->push(OtStringClass::create(scanner.getString()));
 				scanner.advance();
 				reference = false;
 				break;
@@ -200,7 +200,7 @@ private:
 				while (scanner.getToken() != OtScanner::RBRACE_TOKEN && scanner.getToken() != OtScanner::EOS_TOKEN)
 				{
 					scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
-					code->push(OtObjectCreate(scanner.getText()));
+                    code->push(OtStringClass::create(scanner.getText()));
 					scanner.advance();
 					scanner.expect(OtScanner::COLON_TOKEN);
 
@@ -280,7 +280,7 @@ private:
 						code->method("__deref__", 0);
 
 					scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
-					code->push(OtObjectCreate(scanner.getText()));
+					code->push(OtStringClass::create(scanner.getText()));
 					scanner.advance();
 					code->method("__member__", 1);
 					reference = true;
@@ -910,7 +910,7 @@ private:
 
 		// create new class
 		code->get(parent);
-		code->push(OtObjectCreate(name));
+		code->push(OtStringClass::create(name));
 		code->method("subType", 1);
 
 		// assign class

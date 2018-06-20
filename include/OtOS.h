@@ -35,12 +35,7 @@ public:
 	static OtType getMeta()
 	{
 		static OtType type = nullptr;
-
-		if (!type)
-		{
-			type = OtTypeClass::create<OtOSClass>("OS", OtObjectClass::getMeta());
-		}
-
+		if (!type) { type = OtTypeClass::create<OtOSClass>("OS", OtObjectClass::getMeta()); }
 		return type;
 	}
 };

@@ -35,12 +35,7 @@ public:
 	static OtType getMeta()
 	{
 		static OtType type = nullptr;
-
-		if (!type)
-		{
-			type = OtTypeClass::create<OtInternalClass>("Internal", OtObjectClass::getMeta());
-		}
-
+        if (!type) { type = OtTypeClass::create<OtInternalClass>("Internal", OtObjectClass::getMeta()); }
 		return type;
 	}
 };

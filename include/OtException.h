@@ -21,7 +21,7 @@
 class OtException : public std::exception
 {
 public:
-	OtException(std::string _message) { message = _message; }
+	OtException(std::string m) { message = m; }
 	virtual const char* what() const throw() { return message.c_str(); }
 
 private:

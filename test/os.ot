@@ -15,14 +15,14 @@
 
 //	Test script for ObjectTalk operating system functions
 
-path = Path("//var/lib///test.a")
+path = Path("/var/lib///test.a").normalize()
 assert('path.string() == "/var/lib/test.a"')
 assert('path.directory() == "/var/lib"')
 assert('path.filename() == "test.a"')
 assert('path.stem() == "test"')
-assert('path.extension() == "a"')
+assert('path.extension() == ".a"')
 
-path = Path("..//test.a")
+path = Path("..//test.a").normalize()
 assert('path.string() == "../test.a"')
 assert('path.directory() == ".."')
 
@@ -30,10 +30,10 @@ path = Path("test.a")
 assert('path.directory() == ""')
 
 path = Path("")
-assert('path.directory() == ".."')
+assert('path.directory() == ""')
 
 path = Path("/")
-assert('path.directory() == "/"')
+assert('path.directory() == ""')
 
 uri = URI("http://user:password@test.org:8080/a/b/c/d/test.txt?a=1&b=2")
 assert('uri.string() == "http://user:password@test.org:8080/a/b/c/d/test.txt?a=1&b=2"')

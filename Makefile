@@ -8,7 +8,7 @@ endif
 LDLIBS=-lm
 
 ifeq ($(UNAME_S),Darwin)
-	LDLIBS += -L/usr/local/lib -lboost_filesystem
+	LDLIBS += -L/usr/local/lib -lboost_filesystem -lboost_system
 endif
 
 SRC=$(wildcard *.cpp)

@@ -15,4 +15,4 @@
 
 for file in FS().ls(__FILE__.directory())
 	if (file.filename() != "main.ot")
-		print(file)
+		run(file)

@@ -40,7 +40,7 @@ public:
 		context->set("assert", OtFunctionClass::create([] (OtObject context, size_t c, OtObject* p)->OtObject
 		{
 			if (c != 1)
-				OT_EXCEPT("Function expects 1 parameter, %d given", c);
+				OT_EXCEPT("Function [assert] expects 1 parameter, %d given", c);
 
 			OtObjectTalk ot;
 			std::string assertion = p[0]->operator std::string();
@@ -50,6 +50,24 @@ public:
 				OT_EXCEPT("Assertion [%s] failed", assertion.c_str());
 
 			return nullptr;
+		}));
+
+		context->set("import", OtFunctionClass::create([] (OtObject context, size_t c, OtObject* p)->OtObject
+		{
+			if (c != 1)
+				OT_EXCEPT("Function [import] expects 1 parameter, %d given", c);
+
+			OtObjectTalk ot;
+			return ot.processFile(OtPathClass::create(p[0]->operator std::string()), context);
+		}));
+
+		context->set("run", OtFunctionClass::create([] (OtObject, size_t c, OtObject* p)->OtObject
+		{
+			if (c != 1)
+				OT_EXCEPT("Function [run] expects 1 parameter, %d given", c);
+
+			OtObjectTalk ot;
+			return ot.processFile(OtPathClass::create(p[0]->operator std::string()));
 		}));
 
 		context->set("print", OtFunctionClass::create([] (OtObject, size_t c, OtObject* p)->OtObject

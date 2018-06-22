@@ -129,7 +129,7 @@ public:
 		// add file name to context
 		context->set("__FILE__", path);
 
-		// get text from file and process
+		// get text from file and process it
         std::ifstream stream(path->operator std::string());
 		std::stringstream buffer;
 		buffer << stream.rdbuf();

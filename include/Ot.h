@@ -42,15 +42,15 @@
 #include <vector>
 
 #if defined(__APPLE_CC__)
-#   include <boost/filesystem.hpp>
-    namespace std { namespace filesystem = boost::filesystem; }
+#	include <boost/filesystem.hpp>
+	namespace std { namespace filesystem = boost::filesystem; }
 
 #elif __cplusplus < 201703L
-#   include <experimental/filesystem>
-    namespace std { namespace filesystem = experimental::filesystem; }
+#	include <experimental/filesystem>
+	namespace std { namespace filesystem = experimental::filesystem; }
 
 #else
-#   include <filesystem>
+#	include <filesystem>
 #endif
 
 #include "OtFormat.h"

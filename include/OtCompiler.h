@@ -147,21 +147,21 @@ private:
 
 			case OtScanner::INTEGER_TOKEN:
 				// handle integer constants
-                code->push(OtIntegerClass::create(scanner.getInteger()));
+				code->push(OtIntegerClass::create(scanner.getInteger()));
 				scanner.advance();
 				reference = false;
 				break;
 
 			case OtScanner::REAL_TOKEN:
 				// handle real constants
-                code->push(OtRealClass::create(scanner.getReal()));
+				code->push(OtRealClass::create(scanner.getReal()));
 				scanner.advance();
 				reference = false;
 				break;
 
 			case OtScanner::STRING_TOKEN:
 				// handle string constants
-                code->push(OtStringClass::create(scanner.getString()));
+				code->push(OtStringClass::create(scanner.getString()));
 				scanner.advance();
 				reference = false;
 				break;
@@ -200,7 +200,7 @@ private:
 				while (scanner.getToken() != OtScanner::RBRACE_TOKEN && scanner.getToken() != OtScanner::EOS_TOKEN)
 				{
 					scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
-                    code->push(OtStringClass::create(scanner.getText()));
+					code->push(OtStringClass::create(scanner.getText()));
 					scanner.advance();
 					scanner.expect(OtScanner::COLON_TOKEN);
 

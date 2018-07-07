@@ -45,7 +45,7 @@ public:
 			OtObjectTalk ot;
 			std::string assertion = p[0]->operator std::string();
 			OtObject result = ot.processText(assertion, context);
-			
+
 			if (!result->operator bool())
 				OT_EXCEPT("Assertion [%s] failed", assertion.c_str());
 
@@ -130,7 +130,7 @@ public:
 		context->set("__FILE__", path);
 
 		// get text from file and process it
-        std::ifstream stream(path->operator std::string());
+		std::ifstream stream(path->operator std::string());
 		std::stringstream buffer;
 		buffer << stream.rdbuf();
 		return processText(buffer.str(), context);

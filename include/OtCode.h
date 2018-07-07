@@ -106,7 +106,7 @@ public:
 		// create local context
 		OtObject local = OtObjectClass::create();
 		local->setParent(context);
-		
+
 		// program counter
 		size_t pc = 0;
 
@@ -223,6 +223,6 @@ public:
 
 		return stack.back();
 	}
-	
+
 	static OtCode create() { return std::make_shared<OtCodeClass>(); }
 };

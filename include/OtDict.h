@@ -182,7 +182,7 @@ public:
 
 		for (size_t c = 0; c < count; c += 2)
 			dict->insert(std::make_pair((std::string) *values[c], values[c + 1]));
-		
+
 		return dict;
 	}
 };

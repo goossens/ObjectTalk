@@ -74,7 +74,7 @@ public:
 			return (*OtTypeClass::cast<Class>(p[0]).*function)(context, c - 1, p + 1);
 		});
 	}
-	
+
 protected:
 	size_t parameterCount;
 	OtExecutable executable;

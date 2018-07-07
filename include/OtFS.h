@@ -37,13 +37,13 @@ public:
 	// get list of files in specified directory
 	OtObject ls(const std::string& path)
 	{
-        // get content of directory
-        OtArray result = OtArrayClass::create();
+		// get content of directory
+		OtArray result = OtArrayClass::create();
 
-        for(auto& p: std::filesystem::directory_iterator(path))
+		for(auto& p: std::filesystem::directory_iterator(path))
 			result->push_back(OtPathClass::create(p));
 
-        return result;
+		return result;
 	}
 
 	// get type definition

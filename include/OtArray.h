@@ -52,7 +52,7 @@ public:
 		return result;
 	}
 
-    // clear array and add all calling parameters
+	// clear array and add all calling parameters
 	OtObject init(OtObject, size_t count, OtObject* parameters)
 	{
 		clear();
@@ -63,7 +63,7 @@ public:
 		return getSharedPtr();
 	}
 
-    // support index operator
+	// support index operator
 	class OtArrayReferenceClass : public OtInternalClass
 	{
 	public:
@@ -95,10 +95,10 @@ public:
 		OtArray array;
 		size_t index;
 	};
-	
+
 	OtObject index(size_t index) { return OtArrayReferenceClass::create(OtTypeClass::cast<OtArrayClass>(getSharedPtr()), index); }
 
-    // support iterator
+	// support iterator
 	class OtArrayIteratorClass : public OtInternalClass
 	{
 	public:
@@ -236,7 +236,7 @@ public:
 
 		for (size_t c = 0; c < count; c++)
 			array->push_back(values[c]);
-		
+
 		return array;
 	}
 };

@@ -37,6 +37,6 @@ int main(int argc, const char * argv[])
 	}
 
 	OtObjectTalk ot;
-    ot.processFile(OtPathClass::create(std::string(argv[1])));
+	ot.processFile(OtPathClass::create(std::string(argv[1])));
 	return 0;
 }

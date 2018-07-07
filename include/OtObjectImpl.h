@@ -95,7 +95,7 @@ OtType OtObjectClass::getMeta()
 		type->set("getClass", OtFunctionCreate(
 		std::function<OtObject(OtObject)>([] (OtObject o)->OtObject
 		{
-            return OtClassClass::create(o->getType());
+			return OtClassClass::create(o->getType());
 		})));
 
 		type->set("isKindOf", OtFunctionCreate(

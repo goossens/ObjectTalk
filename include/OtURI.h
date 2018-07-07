@@ -83,14 +83,14 @@ public:
 			"(?:\\?([^#]*))?"				// ?query
 			"(?:#(.*))?");					// #fragment
 		std::smatch match;
-	
+
 		if (!std::regex_match(uri, match, uriRegex))
 			OT_EXCEPT("Invalid URI [%s]", uri.c_str());
-	
+
 		scheme = submatch(match, 1);
 		std::transform(scheme.begin(), scheme.end(), scheme.begin(), ::tolower);
 		path = submatch(match, 2);
-	
+
 		static std::regex authorityAndPathRegex("//([^/]*)(/.*)?");
 		std::smatch authorityAndPathMatch;
 
@@ -102,12 +102,12 @@ public:
 				"(?:([^@:]*)(?::([^@]*))?@)?"	// username, password
 				"(\\[[^\\]]*\\]|[^\\[:]*)"		// host (IP-literal (e.g. '['+IPv6+']', dotted-IPv4, or named host)
 				"(?::(\\d*))?");				// port
-		
+
 			std::smatch authorityMatch;
 
 			if (!std::regex_match(authority, authorityMatch, authorityRegex))
 				OT_EXCEPT("Invalid URI authority [%s]", authority.c_str());
-		
+
 			username = submatch(authorityMatch, 1);
 			password = submatch(authorityMatch, 2);
 			host = submatch(authorityMatch, 3);
@@ -115,7 +115,7 @@ public:
 			port = (portString.size()) ? std::stoi(portString) : 0;
 
 			path = submatch(authorityAndPathMatch, 2);
-		
+
 			auto slash = path.rfind('/');
 
 			if (slash == std::string::npos)
@@ -123,7 +123,7 @@ public:
 				directory = "";
 				filename = path;
 			}
-		
+
 			else
 			{
 				directory = path.substr(0, slash);
@@ -131,13 +131,13 @@ public:
 			}
 
 			auto period = filename.rfind('.');
-		
+
 			if (period == std::string::npos)
 			{
 				stem = filename;
 				extension = "";
 			}
-		
+
 			else
 			{
 				stem = filename.substr(0, period);
@@ -147,7 +147,7 @@ public:
 		}
 
 		query = submatch(match, 3);
-	
+
 		if (query.size())
 		{
 			static std::regex queryParamRegex(
@@ -159,7 +159,7 @@ public:
 			for (auto i = std::sregex_iterator(query.begin(), query.end(), queryParamRegex); i != std::sregex_iterator(); i++)
 				queryParams[std::string((*i)[2].first, (*i)[2].second)] = std::string((*i)[3].first, (*i)[3].second);
 		}
-	
+
 		fragment = submatch(match, 4);
 	}
 

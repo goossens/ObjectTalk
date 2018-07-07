@@ -14,6 +14,7 @@ endif
 SRC=$(wildcard *.cpp)
 OBJ=$(SRC:.cpp=.o)
 DEP=$(SRC:.cpp=.d)
+INC=$(wildcard include/*.h)
 
 .PHONY: clean
 
@@ -27,7 +28,11 @@ debug: ot
 
 ot: $(OBJ)
 	$(CXX) -o ot $(OBJ) $(LDLIBS)
-	
+
+cleanup:
+	perl -i -pe 's/\s+\n/\n/' ${SRC} $(INC)
+	perl -i -pe 's/[\t ]+$$//g' ${SRC} $(INC)
+
 clean:
 	$(RM) ot $(OBJ) $(DEP) 
 

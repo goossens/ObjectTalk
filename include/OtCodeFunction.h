@@ -31,7 +31,7 @@ class OtCodeFunctionClass : public OtFunctionClass
 public:
 	// constructor
 	OtCodeFunctionClass() {}
-	OtCodeFunctionClass(OtCode c) {code = c; }
+	OtCodeFunctionClass(OtCode c) { code = c; }
 
 	// call code
 	OtObject operator () (OtObject c, size_t n, OtObject* p) { return code->operator ()(c, n, p); }

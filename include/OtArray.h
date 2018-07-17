@@ -15,7 +15,7 @@
 
 
 //
-//  OtArray
+//	OtArray
 //
 
 class OtArrayClass;
@@ -23,7 +23,7 @@ typedef std::shared_ptr<OtArrayClass> OtArray;
 
 
 //
-//  OtArrayClass
+//	OtArrayClass
 //
 
 class OtArrayClass : public OtCollectionClass, public std::vector<OtObject>

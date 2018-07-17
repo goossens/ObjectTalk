@@ -15,7 +15,7 @@
 
 
 //
-//  OtFunction
+//	OtFunction
 //
 
 class OtFunctionClass;
@@ -23,7 +23,7 @@ typedef std::shared_ptr<OtFunctionClass> OtFunction;
 
 
 //
-//  OtFunctionClass
+//	OtFunctionClass
 //
 
 class OtFunctionClass : public OtPrimitiveClass
@@ -64,7 +64,7 @@ public:
 
 	// create a new function
 	static OtObject create(size_t c, OtExecutable e)  { return std::make_shared<OtFunctionClass>(c, e)->setType(getMeta()); }
-	static OtObject create(OtExecutable e)  { return std::make_shared<OtFunctionClass>(SIZE_MAX, e)->setType(getMeta()); }
+	static OtObject create(OtExecutable e)	{ return std::make_shared<OtFunctionClass>(SIZE_MAX, e)->setType(getMeta()); }
 
 	template<typename Class>
 	static OtObject create(OtObject (Class::*function)(OtObject, size_t, OtObject*))
@@ -82,7 +82,7 @@ protected:
 
 
 //
-//  Create function object for non-void functions
+//	Create function object for non-void functions
 //
 
 template<typename Function, size_t... I>
@@ -108,7 +108,7 @@ OtObject OtFunctionCreate(std::function<Result (Args...)> function)
 
 
 //
-//  Create function object for void functions
+//	Create function object for void functions
 //
 
 template<typename Function, size_t... I>
@@ -135,7 +135,7 @@ OtObject OtFunctionCreate(std::function<void (Args...)> function)
 
 
 //
-//  Create function object for non-void member functions
+//	Create function object for non-void member functions
 //
 
 template<typename Class, typename Method, size_t... I>
@@ -156,7 +156,7 @@ OtObject OtFunctionCreate(Result (Class::*function)(Args...))
 
 
 //
-//  Create function object for void member functions
+//	Create function object for void member functions
 //
 
 template<typename Class, typename Method, size_t... I>

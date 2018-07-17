@@ -15,7 +15,7 @@
 
 
 //
-//  OtString
+//	OtString
 //
 
 class OtStringClass;
@@ -23,7 +23,7 @@ typedef std::shared_ptr<OtStringClass> OtString;
 
 
 //
-//  OtStringClass
+//	OtStringClass
 //
 
 class OtStringClass : public OtPrimitiveClass

@@ -15,7 +15,7 @@
 
 
 //
-//  OtBoundFunction
+//	OtBoundFunction
 //
 
 class OtBoundFunctionClass;
@@ -23,7 +23,7 @@ typedef std::shared_ptr<OtBoundFunctionClass> OtBoundFunction;
 
 
 //
-//  OtBoundFunctionClass
+//	OtBoundFunctionClass
 //
 
 class OtBoundFunctionClass : public OtInternalClass

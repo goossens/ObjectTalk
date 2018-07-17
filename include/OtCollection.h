@@ -15,7 +15,7 @@
 
 
 //
-//  OtCollection
+//	OtCollection
 //
 
 class OtCollectionClass;
@@ -23,7 +23,7 @@ typedef std::shared_ptr<OtCollectionClass> OtCollection;
 
 
 //
-//  OtCollectionClass
+//	OtCollectionClass
 //
 
 class OtCollectionClass : public OtObjectClass

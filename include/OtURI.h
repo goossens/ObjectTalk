@@ -15,7 +15,7 @@
 
 
 //
-//  OtURI
+//	OtURI
 //
 
 class OtURIClass;
@@ -23,7 +23,7 @@ typedef std::shared_ptr<OtURIClass> OtURI;
 
 
 //
-//  OtURIClass
+//	OtURIClass
 //
 
 class OtURIClass : public OtOSClass

@@ -15,7 +15,7 @@
 
 
 //
-//  OtDict
+//	OtDict
 //
 
 class OtDictClass;
@@ -23,7 +23,7 @@ typedef std::shared_ptr<OtDictClass> OtDict;
 
 
 //
-//  OtDictReferenceClass
+//	OtDictReferenceClass
 //
 
 class OtDictReferenceClass : public OtInternalClass
@@ -60,7 +60,7 @@ private:
 
 
 //
-//  OtDictClass
+//	OtDictClass
 //
 
 class OtDictClass : public OtCollectionClass, public std::map<std::string, OtObject>

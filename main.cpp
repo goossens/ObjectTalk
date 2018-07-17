@@ -37,8 +37,8 @@ int main(int argc, const char * argv[])
 	}
 
 	OtObjectTalk ot;
-    OtObject context = ot.createContext();
-    ot.processFile(OtPathClass::create(std::string(argv[1])), context);
-    ot.deleteContext(context);
+	OtObject context = ot.createContext();
+	ot.processFile(OtPathClass::create(std::string(argv[1])), context);
+	ot.deleteContext(context);
 	return 0;
 }

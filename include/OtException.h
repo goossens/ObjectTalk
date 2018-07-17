@@ -15,7 +15,7 @@
 
 
 //
-//  OtException
+//	OtException
 //
 
 class OtException : public std::exception

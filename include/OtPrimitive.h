@@ -15,7 +15,7 @@
 
 
 //
-//  OtPrimitive
+//	OtPrimitive
 //
 
 class OtPrimitiveClass;
@@ -23,7 +23,7 @@ typedef std::shared_ptr<OtPrimitiveClass> OtPrimitive;
 
 
 //
-//  OtPrimitiveClass
+//	OtPrimitiveClass
 //
 
 class OtPrimitiveClass : public OtObjectClass

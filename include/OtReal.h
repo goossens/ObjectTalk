@@ -15,7 +15,7 @@
 
 
 //
-//  OtReal
+//	OtReal
 //
 
 class OtRealClass;
@@ -23,7 +23,7 @@ typedef std::shared_ptr<OtRealClass> OtReal;
 
 
 //
-//  OtRealClass
+//	OtRealClass
 //
 
 class OtRealClass : public OtPrimitiveClass

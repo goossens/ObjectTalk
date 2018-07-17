@@ -15,7 +15,7 @@
 
 
 //
-//  Include files
+//	Include files
 //
 
 #include <memory>
@@ -25,7 +25,7 @@
 
 
 //
-//  OtCode
+//	OtCode
 //
 
 class OtCodeClass;
@@ -33,7 +33,7 @@ typedef std::shared_ptr<OtCodeClass> OtCode;
 
 
 //
-//  OtInstruction
+//	OtInstruction
 //
 
 class OtInstruction
@@ -73,7 +73,7 @@ public:
 
 
 //
-//  OtCodeClass
+//	OtCodeClass
 //
 
 class OtCodeClass : public std::vector<OtInstruction>

@@ -15,7 +15,7 @@
 
 
 //
-//  OtCodeFunction
+//	OtCodeFunction
 //
 
 class OtCodeFunctionClass;
@@ -23,7 +23,7 @@ typedef std::shared_ptr<OtCodeFunctionClass> OtCodeFunction;
 
 
 //
-//  OtCodeFunctionClass
+//	OtCodeFunctionClass
 //
 
 class OtCodeFunctionClass : public OtFunctionClass

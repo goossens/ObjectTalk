@@ -16,7 +16,7 @@
 
 //
 //
-//  OtMemberReferenceClass
+//	OtMemberReferenceClass
 //
 
 class OtMemberReferenceClass : public OtInternalClass
@@ -66,7 +66,7 @@ private:
 
 
 //
-//  OtObjectClass::getMeta
+//	OtObjectClass::getMeta
 //
 
 OtType OtObjectClass::getMeta()

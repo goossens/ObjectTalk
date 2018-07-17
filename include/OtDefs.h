@@ -15,7 +15,7 @@
 
 
 //
-//  OtType
+//	OtType
 //
 
 class OtTypeClass;
@@ -23,7 +23,7 @@ typedef std::shared_ptr<OtTypeClass> OtType;
 
 
 //
-//  OtObject
+//	OtObject
 //
 
 class OtObjectClass;
@@ -31,14 +31,14 @@ typedef std::shared_ptr<OtObjectClass> OtObject;
 
 
 //
-//  OtConstructor
+//	OtConstructor
 //
 
 typedef std::function<OtObject ()> OtConstructor;
 
 
 //
-//  OtExecutable
+//	OtExecutable
 //
 
 typedef std::function<OtObject (OtObject context, size_t count, OtObject* parameters)> OtExecutable;

@@ -15,7 +15,7 @@
 
 
 //
-//  OtObjectTalk
+//	OtObjectTalk
 //
 
 class OtObjectTalk
@@ -67,10 +67,10 @@ public:
 				OT_EXCEPT("Function [run] expects 1 parameter, %d given", c);
 
 			OtObjectTalk ot;
-            OtObject context = ot.createContext();
-            OtObject result = ot.processFile(OtPathClass::create(p[0]->operator std::string()), context);
-            ot.deleteContext(context);
-            return result;
+			OtObject context = ot.createContext();
+			OtObject result = ot.processFile(OtPathClass::create(p[0]->operator std::string()), context);
+			ot.deleteContext(context);
+			return result;
 		}));
 
 		context->set("print", OtFunctionClass::create([] (OtObject, size_t c, OtObject* p)->OtObject
@@ -107,12 +107,12 @@ public:
 		return context;
 	}
 
-    // delete default context (handle circular "global" references)
-    void deleteContext(OtObject context)
-    {
-        context->eraseMember("global");
-        context->clearMembers();
-    }
+	// delete default context (handle circular "global" references)
+	void deleteContext(OtObject context)
+	{
+		context->eraseMember("global");
+		context->clearMembers();
+	}
 
 	// compile and run ObjectTalk text
 	OtObject processText(const std::string& text, OtObject context)

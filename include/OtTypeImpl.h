@@ -15,7 +15,7 @@
 
 
 //
-//  OtTypeClass::instantiate
+//	OtTypeClass::instantiate
 //
 
 inline OtObject OtTypeClass::instantiate()

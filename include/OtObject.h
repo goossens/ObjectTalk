@@ -15,7 +15,7 @@
 
 
 //
-//  OtObjectClass
+//	OtObjectClass
 //
 
 class OtObjectClass : public std::enable_shared_from_this<OtObjectClass>
@@ -93,8 +93,8 @@ public:
 		return nullptr;
 	}
 
-    virtual void eraseMember(const std::string& name) { if (members) members->erase(name); }
-    virtual void clearMembers() { members = nullptr; }
+	virtual void eraseMember(const std::string& name) { if (members) members->erase(name); }
+	virtual void clearMembers() { members = nullptr; }
 
 	// "call" object (context, count, parameters)
 	virtual OtObject operator () (OtObject, size_t, OtObject*) { return nullptr; }

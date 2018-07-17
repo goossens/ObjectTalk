@@ -15,7 +15,7 @@
 
 
 //
-//  OtFS
+//	OtFS
 //
 
 class OtFSClass;
@@ -23,7 +23,7 @@ typedef std::shared_ptr<OtFSClass> OtFS;
 
 
 //
-//  OtFSClass
+//	OtFSClass
 //
 
 class OtFSClass : public OtOSClass

@@ -15,7 +15,7 @@
 
 
 //
-//  OtPath
+//	OtPath
 //
 
 class OtPathClass;
@@ -23,7 +23,7 @@ typedef std::shared_ptr<OtPathClass> OtPath;
 
 
 //
-//  OtPathClass
+//	OtPathClass
 //
 
 class OtPathClass : public OtOSClass

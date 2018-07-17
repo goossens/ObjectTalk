@@ -15,7 +15,7 @@
 
 
 //
-//  OtOS
+//	OtOS
 //
 
 class OtOSClass;
@@ -23,7 +23,7 @@ typedef std::shared_ptr<OtOSClass> OtOS;
 
 
 //
-//  OtOSClass
+//	OtOSClass
 //
 
 class OtOSClass : public OtObjectClass

@@ -16,7 +16,7 @@
 
 //
 //
-//  OtContextReferenceClass
+//	OtContextReferenceClass
 //
 
 class OtContextReferenceClass : public OtInternalClass
@@ -52,7 +52,7 @@ private:
 
 
 //
-//  OtCompiler
+//	OtCompiler
 //
 
 class OtCompiler

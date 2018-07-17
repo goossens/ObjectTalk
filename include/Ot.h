@@ -18,7 +18,7 @@
 
 
 //
-//  Include files
+//	Include files
 //
 
 #include <sys/types.h>

@@ -15,7 +15,7 @@
 
 
 //
-//  OtScanner
+//	OtScanner
 //
 
 typedef int OtToken;

@@ -15,7 +15,7 @@
 
 
 //
-//  OtBoolean
+//	OtBoolean
 //
 
 class OtBooleanClass;
@@ -23,7 +23,7 @@ typedef std::shared_ptr<OtBooleanClass> OtBoolean;
 
 
 //
-//  OtBooleanClass
+//	OtBooleanClass
 //
 
 class OtBooleanClass : public OtPrimitiveClass

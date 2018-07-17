@@ -15,7 +15,7 @@
 
 
 //
-//  OtInteger
+//	OtInteger
 //
 
 class OtIntegerClass;
@@ -23,7 +23,7 @@ typedef std::shared_ptr<OtIntegerClass> OtInteger;
 
 
 //
-//  OtInteger
+//	OtInteger
 //
 
 class OtIntegerClass : public OtPrimitiveClass

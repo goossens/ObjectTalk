@@ -33,6 +33,9 @@ cleanup:
 	perl -i -pe 's/\s+\n/\n/' ${SRC} $(INC)
 	perl -i -pe 's/[\t ]+$$//g' ${SRC} $(INC)
 
+cleanup2:
+	ls ${SRC} $(INC) | xargs -o -n 1 vim -c 'set ts=4|set noet|%retab!|wq'
+
 clean:
 	$(RM) ot $(OBJ) $(DEP) 
 

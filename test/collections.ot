@@ -33,6 +33,9 @@ assert('array[12] == 13')
 assert('5 in array')
 assert('15 not in array')
 
+assert('array.find(2) == 1')
+assert('array.find(20) == -1')
+
 array2 = array.clone()
 assert('array2.size() == 13')
 

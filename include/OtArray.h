@@ -156,6 +156,17 @@ public:
 		return size();
 	}
 
+	long find(OtObject value)
+	{
+		int result = -1;
+		
+		for (size_t i = 0; i < size() && result == -1; i++)
+			if (value->method("__eq__", OtObjectClass::create(), 1, &(operator[] (i)))->operator bool())
+				result = i;
+
+		return result;
+	}
+
 	OtObject clone()
 	{
 		OtArray result = create();
@@ -216,6 +227,7 @@ public:
 			type->set("__contains__", OtFunctionCreate(&OtArrayClass::contains));
 
 			type->set("size", OtFunctionCreate(&OtArrayClass::mySize));
+			type->set("find", OtFunctionCreate(&OtArrayClass::find));
 
 			type->set("clone", OtFunctionCreate(&OtArrayClass::clone));
 			type->set("clear", OtFunctionCreate(&OtArrayClass::clear));

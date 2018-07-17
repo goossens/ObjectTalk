@@ -96,6 +96,15 @@ public:
 	// "call" object (context, count, parameters)
 	virtual OtObject operator () (OtObject, size_t, OtObject*) { return nullptr; }
 
+	// "call" named object member
+	OtObject method(const std::string& m, OtObject c, size_t n, OtObject* p)
+	{
+		OtObject pars[n + 1];
+		pars[0] = shared_from_this();
+		std::copy(p, p + n, pars + 1);
+		return get(m)->operator ()(c, n + 1, pars);
+	}
+
 	// cast shared pointer to specified type
 	template <typename T>
 	std::shared_ptr<T> cast() { return std::static_pointer_cast<T>(shared_from_this()); }

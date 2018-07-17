@@ -26,8 +26,8 @@ bytewise-or ::= bytewise-xor ("|" bytewise-xor)*
 bytewise-xor ::= bytewise-and ("^" bytewise-and)*
 bytewise-and ::= equal ("&" equal)*
 
-equal ::= relation ("==" expressions  | "!=" expressions)*
-relation ::= shift ("<" shift | "<=" shift | ">" shift | ">=" shift)*
+equal ::= relation ("==" relation  | "!=" relation)*
+relation ::= shift ("<" shift | "<=" shift | ">" shift | ">=" shift | "in" shift | "not in" shift)*
 
 shift ::= addition ("<<" addition | ">>" addition)*
 addition ::= multiplication ("+" multiplication | "-" multiplication)*

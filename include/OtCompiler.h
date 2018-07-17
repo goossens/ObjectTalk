@@ -331,7 +331,7 @@ private:
 
 		// process prefix
 		if (token == OtScanner::SUBTRACT_TOKEN ||
-			token == OtScanner::NOT_TOKEN ||
+			token == OtScanner::NEGATE_TOKEN ||
 			token == OtScanner::BITWISE_NOT_TOKEN ||
 			token == OtScanner::INCREMENT_TOKEN ||
 			token == OtScanner::DECREMENT_TOKEN)
@@ -349,7 +349,7 @@ private:
 					code->method("__neg__", 0);
 					break;
 
-				case OtScanner::NOT_TOKEN:
+				case OtScanner::NEGATE_TOKEN:
 					if (reference)
 						code->method("__deref__", 0);
 
@@ -506,7 +506,7 @@ private:
 		return reference;
 	}
 
-	// compile relationship expressions
+	// compile relationship/membership expressions
 	bool relation(OtCode code)
 	{
 		// parse left side
@@ -516,11 +516,17 @@ private:
 		while (token == OtScanner::LESS_TOKEN ||
 			   token == OtScanner::LESS_EQUAL_TOKEN ||
 			   token == OtScanner::GREATER_TOKEN ||
-			   token == OtScanner::GREATER_EQUAL_TOKEN)
+			   token == OtScanner::GREATER_EQUAL_TOKEN ||
+			   token == OtScanner::IN_TOKEN ||
+			   token == OtScanner::NOT_TOKEN)
 		{
-			// deref if required
 			scanner.advance();
 
+			// expect "in" if required
+			if (token == OtScanner::NOT_TOKEN)
+				scanner.expect(OtScanner::IN_TOKEN);
+
+			// deref if required
 			if (reference)
 				code->method("__deref__", 0);
 
@@ -543,8 +549,15 @@ private:
 					code->method("__gt__", 1);
 					break;
 
-				case OtScanner::GREATER_EQUAL_TOKEN:
-					code->method("__ge__", 1);
+				case OtScanner::IN_TOKEN:
+					code->swap();
+					code->method("__contains__", 1);
+					break;
+
+				case OtScanner::NOT_TOKEN:
+					code->swap();
+					code->method("__contains__", 1);
+					code->method("__not__", 0);
 					break;
 			}
 
@@ -564,9 +577,9 @@ private:
 
 		while (token == OtScanner::EQUAL_TOKEN || token == OtScanner::NOT_EQUAL_TOKEN)
 		{
-			// deref if required
 			scanner.advance();
 
+			// deref if required
 			if (reference)
 				code->method("__deref__", 0);
 

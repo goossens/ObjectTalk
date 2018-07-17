@@ -169,12 +169,7 @@ public:
 					// get target object and call method
 					cnt = at(pc).integer + 1;
 					sp = &stack[stack.size() - cnt];
-					value = sp[0]->get(at(pc).string);
-
-					if (!value)
-						OT_EXCEPT("Can't call method [%s] on NULL object", at(pc).string.c_str());
-
-					value = value->operator ()(local, cnt, sp);
+					value = sp[0]->get(at(pc).string)->operator ()(local, cnt, sp);
 
 					// clean up stack
 					stack.resize(stack.size() - cnt);

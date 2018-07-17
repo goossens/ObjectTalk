@@ -64,7 +64,7 @@ public:
 		GREATER_TOKEN,
 		GREATER_EQUAL_TOKEN,
 
-		NOT_TOKEN,
+		NEGATE_TOKEN,
 		AND_TOKEN,
 		OR_TOKEN,
 
@@ -97,6 +97,7 @@ public:
 		FUNCTION_TOKEN,
 		IF_TOKEN,
 		IN_TOKEN,
+		NOT_TOKEN,
 		RETURN_TOKEN,
 		SWITCH_TOKEN,
 		WHILE_TOKEN
@@ -126,7 +127,7 @@ public:
 		addToken("==", EQUAL_TOKEN);
 		addToken("=", ASSIGNMENT_TOKEN);
 		addToken("!=", NOT_EQUAL_TOKEN);
-		addToken("!", NOT_TOKEN);
+		addToken("!", NEGATE_TOKEN);
 		addToken("<=", LESS_EQUAL_TOKEN);
 		addToken("<<", SHIFT_LEFT_TOKEN);
 		addToken("<", LESS_TOKEN);
@@ -164,6 +165,7 @@ public:
 		addToken("function", FUNCTION_TOKEN);
 		addToken("if", IF_TOKEN);
 		addToken("in", IN_TOKEN);
+		addToken("not", NOT_TOKEN);
 		addToken("return", RETURN_TOKEN);
 		addToken("switch", SWITCH_TOKEN);
 		addToken("while", WHILE_TOKEN);

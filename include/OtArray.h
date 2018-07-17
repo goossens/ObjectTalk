@@ -141,6 +141,16 @@ public:
 		return result;
 	}
 
+	OtObject contains(OtObject value)
+	{
+		bool result = false;
+
+		for (auto it = begin(); it != end() && !result; it++)
+			result = value->method("__eq__", OtObjectClass::create(), 1, &(*it))->operator bool();
+
+		return OtBooleanClass::create(result);
+	}
+
 	size_t mySize()
 	{
 		return size();
@@ -203,6 +213,7 @@ public:
 			type->set("__index__", OtFunctionCreate(&OtArrayClass::index));
 			type->set("__iter__", OtFunctionCreate(&OtArrayClass::iterate));
 			type->set("__add__", OtFunctionCreate(&OtArrayClass::add));
+			type->set("__contains__", OtFunctionCreate(&OtArrayClass::contains));
 
 			type->set("size", OtFunctionCreate(&OtArrayClass::mySize));
 

@@ -25,7 +25,7 @@ public:
 	OtObjectTalk() {}
 
 	// create a default object talk context
-	OtObject createDefaultContext()
+	OtObject createContext()
 	{
 		// create global context
 		OtObject context = OtObjectClass::create();
@@ -67,7 +67,10 @@ public:
 				OT_EXCEPT("Function [run] expects 1 parameter, %d given", c);
 
 			OtObjectTalk ot;
-			return ot.processFile(OtPathClass::create(p[0]->operator std::string()));
+            OtObject context = ot.createContext();
+            OtObject result = ot.processFile(OtPathClass::create(p[0]->operator std::string()), context);
+            ot.deleteContext(context);
+            return result;
 		}));
 
 		context->set("print", OtFunctionClass::create([] (OtObject, size_t c, OtObject* p)->OtObject
@@ -104,28 +107,25 @@ public:
 		return context;
 	}
 
+    // delete default context (handle circular "global" references)
+    void deleteContext(OtObject context)
+    {
+        context->eraseMember("global");
+        context->clearMembers();
+    }
+
 	// compile and run ObjectTalk text
-	OtObject processText(const std::string& text, OtObject context=nullptr)
+	OtObject processText(const std::string& text, OtObject context)
 	{
-		// compile the code
+		// compile code, run it and return result
 		OtCompiler compiler;
 		OtCode code = compiler.compile(text);
-
-		// create default context if required
-		if (!context)
-			context = createDefaultContext();
-
-		// call code and return result
 		return code->operator ()(context);
 	}
 
 	// compile and run an ObjectTalk file
-	OtObject processFile(OtPath path, OtObject context=nullptr)
+	OtObject processFile(OtPath path, OtObject context)
 	{
-		// create default context if required
-		if (!context)
-			context = createDefaultContext();
-
 		// add file name to context
 		context->set("__FILE__", path);
 

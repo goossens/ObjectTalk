@@ -51,6 +51,7 @@ assert('uri.extension() == "txt"')
 assert('uri.query() == "a=1&b=2"')
 
 print(URI("http://www.google.com/").getAsString())
+URI("http://www.google.com/").getAsFile("/tmp/google.html")
 
 // Well done
 print("Passed all operating system tests")

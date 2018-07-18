@@ -159,7 +159,7 @@ public:
 	long find(OtObject value)
 	{
 		int result = -1;
-		
+
 		for (size_t i = 0; i < size() && result == -1; i++)
 			if (value->method("__eq__", OtObjectClass::create(), 1, &(operator[] (i)))->operator bool())
 				result = i;

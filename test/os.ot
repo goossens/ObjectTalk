@@ -50,5 +50,7 @@ assert('uri.stem() == "test"')
 assert('uri.extension() == "txt"')
 assert('uri.query() == "a=1&b=2"')
 
+print(URI("http://www.google.com/").getAsString())
+
 // Well done
 print("Passed all operating system tests")

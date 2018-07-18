@@ -28,7 +28,7 @@
 //	ObjectTalk engine main function
 //
 
-int main(int argc, const char * argv[])
+int main(int argc, const char* argv[])
 {
 	if (argc != 2)
 	{

@@ -53,6 +53,8 @@
 #	include <filesystem>
 #endif
 
+#include <curl/curl.h>
+
 #include "OtFormat.h"
 #include "OtException.h"
 

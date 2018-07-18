@@ -5,7 +5,7 @@ ifeq ($(UNAME_S),Darwin)
 	CXXFLAGS += -I/usr/local/include
 endif
 
-LDLIBS=-lm
+LDLIBS=-lcurl -lm
 
 ifeq ($(UNAME_S),Darwin)
 	LDLIBS += -L/usr/local/lib -lboost_filesystem -lboost_system

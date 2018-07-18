@@ -163,6 +163,36 @@ public:
 		fragment = submatch(match, 4);
 	}
 
+	// helper to write data to stream
+	static size_t write_data(void *pointer, size_t size, size_t count, void *stream)
+	{
+		std::string data((const char*) pointer, (size_t) size * count);
+		*((std::stringstream*) stream) << data << std::endl;
+		return size * count;
+	}
+
+	// get URI as string
+	OtObject getAsString()
+	{
+		std::stringstream out;
+
+		CURL *curl;
+		curl = curl_easy_init();
+		curl_easy_setopt(curl, CURLOPT_URL, uri.c_str());
+		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
+		curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
+		curl_easy_setopt(curl, CURLOPT_ACCEPT_ENCODING, "deflate");
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &OtURIClass::write_data);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &out);
+		CURLcode res = curl_easy_perform(curl);
+		curl_easy_cleanup(curl);
+
+		if (res != CURLE_OK)
+			OT_EXCEPT("Error [%s]", curl_easy_strerror(res));
+
+		return OtStringClass::create(out.str());
+	}
+
 	// get type definition
 	static OtType getMeta()
 	{
@@ -188,6 +218,8 @@ public:
 			type->set("query", OtFunctionCreate(&OtURIClass::getQuery));
 			type->set("params", OtFunctionCreate(&OtURIClass::getParams));
 			type->set("fragment", OtFunctionCreate(&OtURIClass::getFragment));
+
+			type->set("getAsString", OtFunctionCreate(&OtURIClass::getAsString));
 		}
 
 		return type;

@@ -274,6 +274,7 @@
 				OTHER_LDFLAGS = (
 					"-lboost_filesystem",
 					"-lboost_system",
+					"-lcurl",
 				);
 				SDKROOT = macosx;
 			};
@@ -329,6 +330,7 @@
 				OTHER_LDFLAGS = (
 					"-lboost_filesystem",
 					"-lboost_system",
+					"-lcurl",
 				);
 				SDKROOT = macosx;
 			};

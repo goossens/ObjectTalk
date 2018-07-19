@@ -164,19 +164,89 @@ public:
 	}
 
 	// helper function to write data to stream
-	static size_t write_data(void* pointer, size_t size, size_t count, void* stream)
+	static size_t write_data(char* pointer, size_t size, size_t count, void* stream)
 	{
-		((std::ostream*) stream)->write((char*) pointer, size * count);
+		((std::ostream*) stream)->write(pointer, size * count);
 		return size * count;
 	}
 
+	// helper class to track libcurl handle
+	class OtCurl
+	{
+	public:
+		OtCurl() { curl_global_init(CURL_GLOBAL_ALL); curl = curl_easy_init(); }
+		~OtCurl() { curl_easy_cleanup(curl); curl_global_cleanup(); }
+
+		static CURL* instance()
+		{
+			static std::shared_ptr<OtCurl> singleton;
+
+			if (!singleton)
+				singleton = std::make_shared<OtCurl>();
+
+            else
+                curl_easy_reset(singleton->curl);
+
+			return singleton->curl;
+		}
+
+	private:
+		CURL* curl;
+	};
+
+	// helper function to trim string
+	static std::string trim(const std::string& value)
+	{
+		const auto begin = value.find_first_not_of(" \t\n\r\f\v");
+
+		if (begin == std::string::npos)
+			return "";
+
+		else
+			return value.substr(begin, value.find_last_not_of(" \t\n\r\f\v") - begin + 1);
+	}
+	
 	// get URI as string
-	OtObject getAsString()
+	OtObject head()
+	{
+		std::stringstream header;
+
+		CURL* curl = OtCurl::instance();
+		curl_easy_setopt(curl, CURLOPT_URL, uri.c_str());
+		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
+		curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
+		curl_easy_setopt(curl, CURLOPT_NOBODY, 1);
+		curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, &OtURIClass::write_data);
+		curl_easy_setopt(curl, CURLOPT_HEADERDATA, &header);
+		CURLcode res = curl_easy_perform(curl);
+
+		if (res != CURLE_OK)
+			OT_EXCEPT("Error [%s]", curl_easy_strerror(res));
+
+		OtDict headers = OtDictClass::create();
+		std::string line;
+
+		std::getline(header, line);
+		headers->operator[] ("Result") = OtStringClass::create(trim(line));
+
+		while (std::getline(header, line) && line != "\r")
+		{
+			size_t index = line.find(':', 0);
+
+			if (index != std::string::npos)
+				headers->operator[] (trim(line.substr(0, index))) =
+					OtStringClass::create(trim(line.substr(index + 1)));
+		}
+
+		return headers;
+	}
+
+	// get URI as string
+	std::string getAsString()
 	{
 		std::ostringstream out;
 
-		CURL *curl;
-		curl = curl_easy_init();
+		CURL* curl = OtCurl::instance();
 		curl_easy_setopt(curl, CURLOPT_URL, uri.c_str());
 		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
 		curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
@@ -184,22 +254,20 @@ public:
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &OtURIClass::write_data);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &out);
 		CURLcode res = curl_easy_perform(curl);
-		curl_easy_cleanup(curl);
 
 		if (res != CURLE_OK)
 			OT_EXCEPT("Error [%s]", curl_easy_strerror(res));
 
-		return OtStringClass::create(out.str());
+		return out.str();
 	}
 
 	// get URI as string
-	OtObject getAsFile(const std::string& filename)
+	void getAsFile(const std::string& filename)
 	{
 		std::ofstream out;
 		out.open(filename.c_str());
 
-		CURL *curl;
-		curl = curl_easy_init();
+		CURL* curl = OtCurl::instance();
 		curl_easy_setopt(curl, CURLOPT_URL, uri.c_str());
 		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
 		curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
@@ -207,13 +275,10 @@ public:
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &OtURIClass::write_data);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &out);
 		CURLcode res = curl_easy_perform(curl);
-		curl_easy_cleanup(curl);
 		out.close();
 
 		if (res != CURLE_OK)
 			OT_EXCEPT("Error [%s]", curl_easy_strerror(res));
-
-		return OtBooleanClass::create(true);
 	}
 
 	// get type definition
@@ -242,6 +307,7 @@ public:
 			type->set("params", OtFunctionCreate(&OtURIClass::getParams));
 			type->set("fragment", OtFunctionCreate(&OtURIClass::getFragment));
 
+			type->set("head", OtFunctionCreate(&OtURIClass::head));
 			type->set("getAsString", OtFunctionCreate(&OtURIClass::getAsString));
 			type->set("getAsFile", OtFunctionCreate(&OtURIClass::getAsFile));
 		}

@@ -23,43 +23,6 @@ typedef std::shared_ptr<OtDictClass> OtDict;
 
 
 //
-//	OtDictReferenceClass
-//
-
-class OtDictReferenceClass : public OtInternalClass
-{
-public:
-	OtDictReferenceClass() {}
-	OtDictReferenceClass(OtDict d, const std::string& i) { dict = d; index = i; }
-
-	OtObject deref();
-	OtObject assign(OtObject value);
-
-	// get type definition
-	static OtType getMeta()
-	{
-		static OtType type = nullptr;
-
-		if (!type)
-		{
-			type = OtTypeClass::create<OtDictReferenceClass>("DictReference", OtInternalClass::getMeta());
-			type->set("__deref__", OtFunctionCreate(&OtDictReferenceClass::deref));
-			type->set("__assign__", OtFunctionCreate(&OtDictReferenceClass::assign));
-		}
-
-		return type;
-	}
-
-	// create a new object
-	static OtObject create(OtDict a, const std::string& i) { return std::make_shared<OtDictReferenceClass>(a, i)->setType(getMeta()); }
-
-private:
-	OtDict dict;
-	std::string index;
-};
-
-
-//
 //	OtDictClass
 //
 
@@ -68,9 +31,9 @@ class OtDictClass : public OtCollectionClass, public std::map<std::string, OtObj
 public:
 	OtDictClass() {}
 
+	// convert dictionary to string
 	operator std::string()
 	{
-		// convert dictionary to string
 		std::string result("{");
 		bool first = true;
 
@@ -89,6 +52,7 @@ public:
 		return result;
 	}
 
+	// support index operator
 	OtObject init(OtObject, size_t count, OtObject* parameters)
 	{
 		// clear Dict and add all calling parameters
@@ -100,13 +64,48 @@ public:
 		return getSharedPtr();
 	}
 
+	// support index operator
+	class OtDictReferenceClass : public OtInternalClass
+	{
+	public:
+		OtDictReferenceClass() {}
+		OtDictReferenceClass(OtDict d, const std::string& i) { dict = d; index = i; }
+
+		OtObject deref() { return dict->operator[] (index); }
+		OtObject assign(OtObject value) { dict->operator[] (index) = value; return value; }
+
+		// get type definition
+		static OtType getMeta()
+		{
+			static OtType type = nullptr;
+
+			if (!type)
+			{
+				type = OtTypeClass::create<OtDictReferenceClass>("DictReference", OtInternalClass::getMeta());
+				type->set("__deref__", OtFunctionCreate(&OtDictReferenceClass::deref));
+				type->set("__assign__", OtFunctionCreate(&OtDictReferenceClass::assign));
+			}
+
+			return type;
+		}
+
+		// create a new object
+		static OtObject create(OtDict a, const std::string& i) { return std::make_shared<OtDictReferenceClass>(a, i)->setType(getMeta()); }
+
+	private:
+		OtDict dict;
+		std::string index;
+	};
+
 	OtObject index(const std::string& index) { return OtDictReferenceClass::create(OtTypeClass::cast<OtDictClass>(getSharedPtr()), index); }
 
+	// get dictionary size
 	size_t mySize()
 	{
 		return size();
 	}
 
+	// return dictionary clone
 	OtObject clone()
 	{
 		OtDict result = create();
@@ -114,6 +113,7 @@ public:
 		return result;
 	}
 
+	// remove dictionary entry
 	OtObject eraseEntry(const std::string& name)
 	{
 		OtObject value = operator[] (name);
@@ -121,6 +121,7 @@ public:
 		return value;
 	}
 
+	// get array of dictionary names
 	OtObject keys()
 	{
 		// create array of all keys in context
@@ -132,6 +133,7 @@ public:
 		return array;
 	}
 
+	// get array of dictionary values
 	OtObject values()
 	{
 		// create array of all values in context
@@ -186,11 +188,3 @@ public:
 		return dict;
 	}
 };
-
-
-//
-//	Delayed implementations
-//
-
-OtObject OtDictReferenceClass::deref() { return dict->operator[] (index); }
-OtObject OtDictReferenceClass::assign(OtObject value) { dict->operator[] (index) = value; return value; }

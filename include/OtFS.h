@@ -46,6 +46,12 @@ public:
 		return result;
 	}
 
+	// get file size
+	size_t filesize(const std::string& path) { return std::filesystem::file_size(path); }
+
+	// remove file
+	void rm(const std::string& path) { std::filesystem::remove(path); }
+
 	// get type definition
 	static OtType getMeta()
 	{
@@ -57,6 +63,8 @@ public:
 
 			type->set("getcwd", OtFunctionCreate(&OtFSClass::getcwd));
 			type->set("ls", OtFunctionCreate(&OtFSClass::ls));
+			type->set("filesize", OtFunctionCreate(&OtFSClass::filesize));
+			type->set("rm", OtFunctionCreate(&OtFSClass::rm));
 		}
 
 		return type;

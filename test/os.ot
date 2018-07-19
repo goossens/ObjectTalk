@@ -52,6 +52,8 @@ assert('uri.query() == "a=1&b=2"')
 
 print(URI("http://www.google.com/").getAsString())
 URI("http://www.google.com/").getAsFile("/tmp/google.html")
+assert('FS().filesize("/tmp/google.html") > 1')
+FS().rm("/tmp/google.html")
 
 // Well done
 print("Passed all operating system tests")

@@ -163,13 +163,6 @@ public:
 		fragment = submatch(match, 4);
 	}
 
-	// helper function to write data to stream
-	static size_t write_data(char* pointer, size_t size, size_t count, void* stream)
-	{
-		((std::ostream*) stream)->write(pointer, size * count);
-		return size * count;
-	}
-
 	// helper class to track libcurl handle
 	class OtCurl
 	{
@@ -184,8 +177,8 @@ public:
 			if (!singleton)
 				singleton = std::make_shared<OtCurl>();
 
-            else
-                curl_easy_reset(singleton->curl);
+			else
+				curl_easy_reset(singleton->curl);
 
 			return singleton->curl;
 		}
@@ -193,6 +186,19 @@ public:
 	private:
 		CURL* curl;
 	};
+
+	// helper function to read data from stream
+	static size_t readData(char* pointer, size_t size, size_t count, void* stream)
+	{
+		return ((std::istream*) stream)->readsome(pointer, size * count);
+	}
+
+	// helper function to write data to stream
+	static size_t writeData(char* pointer, size_t size, size_t count, void* stream)
+	{
+		((std::ostream*) stream)->write(pointer, size * count);
+		return size * count;
+	}
 
 	// helper function to trim string
 	static std::string trim(const std::string& value)
@@ -205,7 +211,7 @@ public:
 		else
 			return value.substr(begin, value.find_last_not_of(" \t\n\r\f\v") - begin + 1);
 	}
-	
+
 	// get URI as string
 	OtObject head()
 	{
@@ -216,7 +222,7 @@ public:
 		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
 		curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
 		curl_easy_setopt(curl, CURLOPT_NOBODY, 1);
-		curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, &OtURIClass::write_data);
+		curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, &OtURIClass::writeData);
 		curl_easy_setopt(curl, CURLOPT_HEADERDATA, &header);
 		CURLcode res = curl_easy_perform(curl);
 
@@ -242,7 +248,7 @@ public:
 	}
 
 	// get URI as string
-	std::string getAsString()
+	std::string getString()
 	{
 		std::ostringstream out;
 
@@ -251,7 +257,7 @@ public:
 		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
 		curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
 		curl_easy_setopt(curl, CURLOPT_ACCEPT_ENCODING, "deflate");
-		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &OtURIClass::write_data);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &OtURIClass::writeData);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &out);
 		CURLcode res = curl_easy_perform(curl);
 
@@ -262,7 +268,7 @@ public:
 	}
 
 	// get URI as string
-	void getAsFile(const std::string& filename)
+	void getFile(const std::string& filename)
 	{
 		std::ofstream out;
 		out.open(filename.c_str());
@@ -272,10 +278,49 @@ public:
 		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
 		curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
 		curl_easy_setopt(curl, CURLOPT_ACCEPT_ENCODING, "deflate");
-		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &OtURIClass::write_data);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &OtURIClass::writeData);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &out);
 		CURLcode res = curl_easy_perform(curl);
 		out.close();
+
+		if (res != CURLE_OK)
+			OT_EXCEPT("Error [%s]", curl_easy_strerror(res));
+	}
+
+	// put string to URI
+	void putString(const std::string& string)
+	{
+		std::istringstream in(string);
+
+		CURL* curl = OtCurl::instance();
+		curl_easy_setopt(curl, CURLOPT_URL, uri.c_str());
+		curl_easy_setopt(curl, CURLOPT_PUT, 1);
+		curl_easy_setopt(curl, CURLOPT_UPLOAD, 1);
+		curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
+		curl_easy_setopt(curl, CURLOPT_READFUNCTION, &OtURIClass::readData);
+		curl_easy_setopt(curl, CURLOPT_READDATA, &in);
+		curl_easy_setopt(curl, CURLOPT_INFILESIZE_LARGE, string.length());
+		CURLcode res = curl_easy_perform(curl);
+
+		if (res != CURLE_OK)
+			OT_EXCEPT("Error [%s]", curl_easy_strerror(res));
+	}
+
+	// put file to URI
+	void putFile(const std::string& filename)
+	{
+		std::ifstream in;
+		in.open(filename.c_str());
+
+		CURL* curl = OtCurl::instance();
+		curl_easy_setopt(curl, CURLOPT_URL, uri.c_str());
+		curl_easy_setopt(curl, CURLOPT_PUT, 1);
+		curl_easy_setopt(curl, CURLOPT_UPLOAD, 1);
+		curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
+		curl_easy_setopt(curl, CURLOPT_READFUNCTION, &OtURIClass::readData);
+		curl_easy_setopt(curl, CURLOPT_READDATA, &in);
+		CURLcode res = curl_easy_perform(curl);
+		in.close();
 
 		if (res != CURLE_OK)
 			OT_EXCEPT("Error [%s]", curl_easy_strerror(res));
@@ -308,8 +353,10 @@ public:
 			type->set("fragment", OtFunctionCreate(&OtURIClass::getFragment));
 
 			type->set("head", OtFunctionCreate(&OtURIClass::head));
-			type->set("getAsString", OtFunctionCreate(&OtURIClass::getAsString));
-			type->set("getAsFile", OtFunctionCreate(&OtURIClass::getAsFile));
+			type->set("getString", OtFunctionCreate(&OtURIClass::getString));
+			type->set("getFile", OtFunctionCreate(&OtURIClass::getFile));
+			type->set("putString", OtFunctionCreate(&OtURIClass::putString));
+			type->set("putFile", OtFunctionCreate(&OtURIClass::putFile));
 		}
 
 		return type;

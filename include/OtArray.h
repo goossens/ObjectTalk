@@ -31,9 +31,9 @@ class OtArrayClass : public OtCollectionClass, public std::vector<OtObject>
 public:
 	OtArrayClass() {}
 
+	// convert array to string
 	operator std::string()
 	{
-		// convert array to string
 		std::string result("[");
 		bool first = true;
 

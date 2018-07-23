@@ -15,14 +15,14 @@
 
 //	Test script for ObjectTalk operating system functions
 
-path = Path("/var/lib///test.a").normalize()
+path = Path("/var/lib/test.a")
 assert('path.string() == "/var/lib/test.a"')
 assert('path.directory() == "/var/lib"')
 assert('path.filename() == "test.a"')
 assert('path.stem() == "test"')
 assert('path.extension() == ".a"')
 
-path = Path("..//test.a").normalize()
+path = Path("../test.a")
 assert('path.string() == "../test.a"')
 assert('path.directory() == ".."')
 

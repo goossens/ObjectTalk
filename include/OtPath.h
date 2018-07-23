@@ -62,9 +62,6 @@ public:
 	OtObject stem() { return create(path.stem()); }
 	OtObject extension() { return create(path.extension()); }
 
-	// normalize path
-	OtObject normalize() { return create(path.lexically_normal()); }
-
 	// support iterator
 	class OtPathIteratorClass : public OtInternalClass
 	{
@@ -124,8 +121,6 @@ public:
 			type->set("filename", OtFunctionCreate(&OtPathClass::filename));
 			type->set("stem", OtFunctionCreate(&OtPathClass::stem));
 			type->set("extension", OtFunctionCreate(&OtPathClass::extension));
-
-			type->set("normalize", OtFunctionCreate(&OtPathClass::normalize));
 		}
 
 		return type;

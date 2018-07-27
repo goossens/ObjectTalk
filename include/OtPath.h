@@ -121,6 +121,7 @@ public:
 			type->set("filename", OtFunctionCreate(&OtPathClass::filename));
 			type->set("stem", OtFunctionCreate(&OtPathClass::stem));
 			type->set("extension", OtFunctionCreate(&OtPathClass::extension));
+
 		}
 
 		return type;

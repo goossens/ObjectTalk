@@ -46,8 +46,8 @@
 	namespace std { namespace filesystem = boost::filesystem; }
 
 #elif __cplusplus < 201703L
-#	include <experimental/filesystem>
-	namespace std { namespace filesystem = experimental::filesystem; }
+#	include <boost/filesystem.hpp>
+	namespace std { namespace filesystem = boost::filesystem; }
 
 #else
 #	include <filesystem>

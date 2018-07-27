@@ -5,10 +5,10 @@ ifeq ($(UNAME_S),Darwin)
 	CXXFLAGS += -I/usr/local/include
 endif
 
-LDLIBS=-lcurl -lm
+LDLIBS=-lcurl -lm -lboost_filesystem -lboost_system
 
 ifeq ($(UNAME_S),Darwin)
-	LDLIBS += -L/usr/local/lib -lboost_filesystem -lboost_system
+	LDLIBS += -L/usr/local/lib
 endif
 
 SRC=$(wildcard *.cpp)

@@ -50,9 +50,9 @@ assert('uri.stem() == "test"')
 assert('uri.extension() == "txt"')
 assert('uri.query() == "a=1&b=2"')
 
-print(URI("http://www.google.com/").getAsString())
+print(URI("http://www.google.com/").getString())
 print(URI("http://www.google.com/").head())
-URI("http://www.google.com/").getAsFile("/tmp/google.html")
+URI("http://www.google.com/").getFile("/tmp/google.html")
 assert('FS().filesize("/tmp/google.html") > 1')
 FS().rm("/tmp/google.html")
 

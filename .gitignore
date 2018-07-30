@@ -31,5 +31,9 @@
 *.out
 *.app
 
+# MacOS files
+.DS_Store
+._*
+
 # Local files
 ot

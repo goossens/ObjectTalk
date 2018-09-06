@@ -15,43 +15,6 @@
 
 
 //
-//
-//	OtContextReferenceClass
-//
-
-class OtContextReferenceClass : public OtInternalClass
-{
-public:
-	OtContextReferenceClass() {}
-	OtContextReferenceClass(const std::string& m) { member = m; }
-
-	OtObject deref(OtObject context, size_t, OtObject*) { return context->get(member); }
-	OtObject assign(OtObject context, size_t, OtObject* value) { return context->set(member, *value); }
-
-	// get type definition
-	static OtType getMeta()
-	{
-		static OtType type = nullptr;
-
-		if (!type)
-		{
-			type = OtTypeClass::create<OtContextReferenceClass>("ContextReference", OtInternalClass::getMeta());
-			type->set("__deref__", OtFunctionClass::create(&OtContextReferenceClass::deref));
-			type->set("__assign__", OtFunctionClass::create(&OtContextReferenceClass::assign));
-		}
-
-		return type;
-	}
-
-	// create a new object
-	static OtObject create(const std::string& n) { return std::make_shared<OtContextReferenceClass>(n)->setType(getMeta()); }
-
-private:
-	std::string member;
-};
-
-
-//
 //	OtCompiler
 //
 
@@ -129,6 +92,37 @@ private:
 		statement(function);
 		code->push(OtCodeFunctionClass::create(function));
 	}
+
+	class OtContextReferenceClass : public OtInternalClass
+	{
+	public:
+		OtContextReferenceClass() {}
+		OtContextReferenceClass(const std::string& m) { member = m; }
+
+		OtObject deref(OtObject context, size_t, OtObject*) { return context->get(member); }
+		OtObject assign(OtObject context, size_t, OtObject* value) { return context->set(member, *value); }
+
+		// get type definition
+		static OtType getMeta()
+		{
+			static OtType type = nullptr;
+
+			if (!type)
+			{
+				type = OtTypeClass::create<OtContextReferenceClass>("ContextReference", OtInternalClass::getMeta());
+				type->set("__deref__", OtFunctionClass::create(&OtContextReferenceClass::deref));
+				type->set("__assign__", OtFunctionClass::create(&OtContextReferenceClass::assign));
+			}
+
+			return type;
+		}
+
+		// create a new object
+		static OtObject create(const std::string& n) { return std::make_shared<OtContextReferenceClass>(n)->setType(getMeta()); }
+
+	private:
+		std::string member;
+	};
 
 	// compile primary expression
 	bool primary(OtCode code)

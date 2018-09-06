@@ -28,6 +28,7 @@ Object
 
 	OS
 		FS
+		HTTP
 		Path
 		URI
 

@@ -13,31 +13,29 @@
 //	See the License for the specific language governing permissions and
 //	limitations under the License.
 
-Object
-	Primitive
-		Boolean
-		Integer
-		Real
-		String
-		Function
-			CodeFunction
 
-	Collection
-		Array
-		Dict
+//
+//	OtNet
+//
 
-	OS
-		FS
-		Path
+class OtNetClass;
+typedef std::shared_ptr<OtNetClass> OtNet;
 
-	Net
-		HTTP
-		URI
-	
-	Internal
-		Class
-		BoundFunction
-		ContextReference
-		MemberReference
-		ArrayReference
-		DictReference
+
+//
+//	OtNetClass
+//
+
+class OtNetClass : public OtObjectClass
+{
+public:
+	OtNetClass() {}
+
+	// get type definition
+	static OtType getMeta()
+	{
+		static OtType type = nullptr;
+		if (!type) { type = OtTypeClass::create<OtNetClass>("Net", OtObjectClass::getMeta()); }
+		return type;
+	}
+};

@@ -26,7 +26,7 @@ typedef std::shared_ptr<OtHTTPClass> OtHTTP;
 //	OtHTTPClass
 //
 
-class OtHTTPClass : public OtOSClass
+class OtHTTPClass : public OtNetClass
 {
 public:
 	OtHTTPClass() {}
@@ -35,6 +35,11 @@ public:
 	class OtHttpRequestClass : public OtInternalClass
 	{
 	public:
+		// get member data
+		OtObject getMethod() { return OtObjectCreate(method); }
+		OtObject getURI() { return uri; }
+		OtObject getVersion() { return OtObjectCreate(version); }
+
 		// get type definition
 		static OtType getMeta()
 		{
@@ -43,8 +48,9 @@ public:
 			if (!type)
 			{
 				type = OtTypeClass::create<OtHttpRequestClass>("HttpRequest", OtInternalClass::getMeta());
-				type->set("__deref__", OtFunctionCreate(&OtHttpRequestClass::deref));
-				type->set("__assign__", OtFunctionCreate(&OtHttpRequestClass::assign));
+				type->set("method", OtFunctionCreate(&OtHttpRequestClass::getMethod));
+				type->set("uri", OtFunctionCreate(&OtHttpRequestClass::getURI));
+				type->set("version", OtFunctionCreate(&OtHttpRequestClass::getVersion));
 			}
 
 			return type;
@@ -55,8 +61,8 @@ public:
 		
 	private:
 		std::string method;
-		OtURIClass uri;
-		std::string 
+		OtURI uri;
+		std::string version;
 	};
 
 	// get type definition
@@ -66,12 +72,7 @@ public:
 
 		if (!type)
 		{
-			type = OtTypeClass::create<OtHTTPClass>("HTTP", OtOSClass::getMeta());
-
-			type->set("getcwd", OtFunctionCreate(&OtHTTPClass::getcwd));
-			type->set("ls", OtFunctionCreate(&OtHTTPClass::ls));
-			type->set("filesize", OtFunctionCreate(&OtHTTPClass::filesize));
-			type->set("rm", OtFunctionCreate(&OtHTTPClass::rm));
+			type = OtTypeClass::create<OtHTTPClass>("HTTP", OtNetClass::getMeta());
 		}
 
 		return type;

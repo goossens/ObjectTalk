@@ -77,10 +77,13 @@
 #include "OtArray.h"
 #include "OtDict.h"
 
+#include "OtNet.h"
+#include "OtURI.h"
+#include "OtHTTP.h"
+
 #include "OtOS.h"
 #include "OtPath.h"
 #include "OtFS.h"
-#include "OtURI.h"
 
 #include "OtCode.h"
 #include "OtCodeFunction.h"

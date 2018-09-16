@@ -29,12 +29,17 @@ typedef std::shared_ptr<OtHTTPClass> OtHTTP;
 class OtHTTPClass : public OtNetClass
 {
 public:
+	// constructors
 	OtHTTPClass() {}
 
 	// class to represent an HTTP request
-	class OtHttpRequestClass : public OtInternalClass
+	class OtHTTPRequestClass : public OtInternalClass
 	{
 	public:
+		// constructor
+		OtHTTPRequestClass() {}
+		OtHTTPRequestClass(const std::string& m, OtURI u, const std::string& v) { method = m; uri = u; version = v; }
+
 		// get member data
 		OtObject getMethod() { return OtObjectCreate(method); }
 		OtObject getURI() { return uri; }
@@ -47,18 +52,21 @@ public:
 
 			if (!type)
 			{
-				type = OtTypeClass::create<OtHttpRequestClass>("HttpRequest", OtInternalClass::getMeta());
-				type->set("method", OtFunctionCreate(&OtHttpRequestClass::getMethod));
-				type->set("uri", OtFunctionCreate(&OtHttpRequestClass::getURI));
-				type->set("version", OtFunctionCreate(&OtHttpRequestClass::getVersion));
+				type = OtTypeClass::create<OtHTTPRequestClass>("HttpRequest", OtInternalClass::getMeta());
+				type->set("method", OtFunctionCreate(&OtHTTPRequestClass::getMethod));
+				type->set("uri", OtFunctionCreate(&OtHTTPRequestClass::getURI));
+				type->set("version", OtFunctionCreate(&OtHTTPRequestClass::getVersion));
 			}
 
 			return type;
 		}
 
 		// create a new object
-		static OtObject create(OtArray a, size_t i) { return std::make_shared<OtHttpRequestClass>(a, i)->setType(getMeta()); }
-		
+		static OtObject create(const std::string& m, OtURI u, const std::string& v)
+		{
+			return std::make_shared<OtHTTPRequestClass>(m, u, v)->setType(getMeta());
+		}
+
 	private:
 		std::string method;
 		OtURI uri;

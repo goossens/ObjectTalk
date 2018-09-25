@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -86,6 +86,7 @@
 				0C529E0520D519EB000023B7 /* main.cpp */,
 			);
 			sourceTree = "<group>";
+			usesTabs = 1;
 		};
 		0C24368220D519A8004642C8 /* Products */ = {
 			isa = PBXGroup;
@@ -189,7 +190,7 @@
 				};
 			};
 			buildConfigurationList = 0C24367C20D519A8004642C8 /* Build configuration list for PBXProject "ObjectTalk" */;
-			compatibilityVersion = "Xcode 9.3";
+			compatibilityVersion = "Xcode 10.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (

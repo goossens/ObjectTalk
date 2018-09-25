@@ -193,8 +193,8 @@ private:
 
 				while (scanner.getToken() != OtScanner::RBRACE_TOKEN && scanner.getToken() != OtScanner::EOS_TOKEN)
 				{
-					scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
-					code->push(OtStringClass::create(scanner.getText()));
+					scanner.expect(OtScanner::STRING_TOKEN, false);
+					code->push(OtStringClass::create(scanner.getString()));
 					scanner.advance();
 					scanner.expect(OtScanner::COLON_TOKEN);
 

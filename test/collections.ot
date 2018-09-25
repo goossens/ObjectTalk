@@ -92,7 +92,7 @@ dict2.erase("pi")
 assert('dict2.size() == 3')
 assert('dict.size() == 4')
 
-dict3 = { name : "value", flag : true, result : (10 - 4) / 3 }
+dict3 = { "name": "value", "flag": true, "result": (10 - 4) / 3 }
 assert('dict3.size() == 3')
 assert('dict3["result"] == 2')
 

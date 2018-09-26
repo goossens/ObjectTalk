@@ -1,5 +1,6 @@
 CXXFLAGS=-I./include -Wall -Wextra -MMD -MP -std=c++14
 UNAME_S := $(shell uname -s)
+PWD := $(shell pwd)
 
 ifeq ($(UNAME_S),Darwin)
 	CXXFLAGS += -I/usr/local/include
@@ -30,10 +31,18 @@ ot: $(OBJ)
 	$(CXX) -o ot $(OBJ) $(LDLIBS)
 
 cleanup:
-	perl -i -pe 's/\s+\n/\n/' ${SRC} $(INC)
-	ls ${SRC} $(INC) | xargs -o -n 1 vim -c 'set ts=4|set noet|%retab!|wq'
+	perl -i -pe 's/\s+\n/\n/' $(SRC) $(INC)
+	ls $(SRC) $(INC) | xargs -o -n 1 vim -c 'set ts=4|set noet|%retab!|wq'
 
 clean:
-	$(RM) ot $(OBJ) $(DEP) 
+	$(RM) ot $(OBJ) $(DEP)
+
+docker:
+	docker build -t ot .
+	docker run --interactive --tty --name ot --volume $(PWD):/ot ot sh
+
+dockerclean:
+	docker container rm ot
+	docker image rm ot
 
 -include $(DEP)

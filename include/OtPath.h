@@ -31,6 +31,7 @@ class OtPathClass : public OtSystemClass
 public:
 	// constructors
 	OtPathClass() {}
+	OtPathClass(const char* p) { path = p; }
 	OtPathClass(const std::string& p) { path = p; }
 	OtPathClass(const std::filesystem::path& p) { path = p; }
 
@@ -127,6 +128,13 @@ public:
 	}
 
 	// create a new object
+	static OtPath create(const char* value)
+	{
+		OtPath path = std::make_shared<OtPathClass>(value);
+		path->setType(getMeta());
+		return path;
+	}
+
 	static OtPath create(const std::string& value)
 	{
 		OtPath path = std::make_shared<OtPathClass>(value);

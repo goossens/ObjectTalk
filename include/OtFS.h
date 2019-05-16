@@ -95,7 +95,7 @@ public:
 			if (result)
 				OT_EXCEPT("LS failed: %s", uv_strerror(result));
 
-			content->push_back(OtStringClass::create(ent.name));
+			content->push_back(OtPathClass::create(ent.name));
 		}
 
 		return content;

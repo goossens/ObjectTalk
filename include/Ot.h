@@ -33,11 +33,14 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include <algorithm>
 #include <cctype>
 #include <cmath>
 #include <cstdio>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
+#include <iterator>
 #include <limits>
 #include <map>
 #include <memory>
@@ -65,6 +68,7 @@
 
 #include "OtFormat.h"
 #include "OtException.h"
+#include "OtText.h"
 
 #include "OtDefs.h"
 #include "OtType.h"
@@ -88,7 +92,10 @@
 #include "OtPath.h"
 #include "OtFS.h"
 #include "OtOS.h"
+	
+#include "OtNet.h"
 #include "OtURI.h"
+#include "OtHTTP.h"
 
 #include "OtCode.h"
 #include "OtScanner.h"

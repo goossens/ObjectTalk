@@ -45,17 +45,17 @@ public:
 			else
 				result += ",";
 
-			result += entry.first + ":" + entry.second->repr();
+			result += "\"" + entry.first + "\":" + entry.second->repr();
 		}
 
 		result += "}";
 		return result;
 	}
 
-	// support index operator
+	// initializer
 	OtObject init(OtObject, size_t count, OtObject* parameters)
 	{
-		// clear Dict and add all calling parameters
+		// clear dictionary and add all calling parameters
 		clear();
 
 		for (size_t c = 0; c < count; c += 2)

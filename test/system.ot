@@ -51,7 +51,7 @@ assert('uri.extension() == "txt"')
 assert('uri.query() == "a=1&b=2"')
 
 fs = FS()
-print(URI("http://www.google.com/").getString())
+//print(URI("http://www.google.com/").getString())
 print(URI("http://www.google.com/").head())
 URI("http://www.google.com/").getFile("/tmp/google.html")
 assert('fs.filesize("/tmp/google.html") > 1')

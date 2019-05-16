@@ -26,7 +26,7 @@ typedef std::shared_ptr<OtURIClass> OtURI;
 //	OtURIClass
 //
 
-class OtURIClass : public OtSystemClass
+class OtURIClass : public OtNetClass
 {
 public:
 	// constructors
@@ -333,8 +333,7 @@ public:
 
 		if (!type)
 		{
-			type = OtTypeClass::create<OtURIClass>("Path", OtSystemClass::getMeta());
-
+			type = OtTypeClass::create<OtURIClass>("Path", OtNetClass::getMeta());
 			type->set("__init__", OtFunctionClass::create(&OtURIClass::init));
 
 			type->set("scheme", OtFunctionCreate(&OtURIClass::getScheme));

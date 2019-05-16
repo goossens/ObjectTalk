@@ -165,6 +165,37 @@ private:
 		code->push(OtCodeFunctionClass::create(function));
 	}
 
+	class OtContextReferenceClass : public OtInternalClass
+	{
+	public:
+		OtContextReferenceClass() {}
+		OtContextReferenceClass(const std::string& m) { member = m; }
+
+		OtObject deref(OtObject context, size_t, OtObject*) { return context->get(member); }
+		OtObject assign(OtObject context, size_t, OtObject* value) { return context->set(member, *value); }
+
+		// get type definition
+		static OtType getMeta()
+		{
+			static OtType type = nullptr;
+
+			if (!type)
+			{
+				type = OtTypeClass::create<OtContextReferenceClass>("ContextReference", OtInternalClass::getMeta());
+				type->set("__deref__", OtFunctionClass::create(&OtContextReferenceClass::deref));
+				type->set("__assign__", OtFunctionClass::create(&OtContextReferenceClass::assign));
+			}
+
+			return type;
+		}
+
+		// create a new object
+		static OtObject create(const std::string& n) { return std::make_shared<OtContextReferenceClass>(n)->setType(getMeta()); }
+
+	private:
+		std::string member;
+	};
+
 	// compile primary expression
 	bool primary(OtCode code)
 	{
@@ -234,8 +265,8 @@ private:
 
 				while (scanner.getToken() != OtScanner::RBRACE_TOKEN && scanner.getToken() != OtScanner::EOS_TOKEN)
 				{
-					scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
-					code->push(OtStringClass::create(scanner.getText()));
+					scanner.expect(OtScanner::STRING_TOKEN, false);
+					code->push(OtStringClass::create(scanner.getString()));
 					scanner.advance();
 					scanner.expect(OtScanner::COLON_TOKEN);
 
@@ -1134,27 +1165,27 @@ private:
 		if (expression(code))
 			code->method("__deref__", 0);
 
-			while (scanner.matchToken(OtScanner::CASE_TOKEN))
-			{
-				scanner.advance();
-				code->dup();
+		while (scanner.matchToken(OtScanner::CASE_TOKEN))
+		{
+			scanner.advance();
+			code->dup();
 
-				if (expression(code))
-					code->method("__deref__", 0);
+			if (expression(code))
+				code->method("__deref__", 0);
 
-					code->method("__eq__", 1);
+			code->method("__eq__", 1);
 
-					size_t offset1 = code->size();
-					code->jumpFalse(0);
+			size_t offset1 = code->size();
+			code->jumpFalse(0);
 
-					statement(code);
-					code->pop();
+			statement(code);
+			code->pop();
 
-					patches.push_back(code->size());
-					code->jump(0);
+			patches.push_back(code->size());
+			code->jump(0);
 
-					code->patch(offset1);
-					}
+			code->patch(offset1);
+		}
 
 		if (scanner.matchToken(OtScanner::DEFAULT_TOKEN))
 		{
@@ -1166,8 +1197,8 @@ private:
 		for (auto const& patch : patches)
 			code->patch(patch);
 
-			code->pop();
-			}
+		code->pop();
+	}
 
 	// compile a while statement
 	void whileStatement(OtCode code)

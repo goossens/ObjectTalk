@@ -38,7 +38,7 @@ public:
 	operator double() { return std::stof(value); }
 	operator std::string() {return value; }
 
-	std::string repr() { return '"' + value + '"'; }
+	std::string repr() { return OtTextToJSON(value); }
 
 	std::string add(const std::string& operand) { return value + operand; }
 
@@ -57,33 +57,10 @@ public:
 
 	size_t find(const std::string& sub) { std::string::size_type p = value.find(sub); return p == std::string::npos ? -1 : (size_t) p; }
 
-	std::string trim()
-	{
-		const auto begin = value.find_first_not_of(" \t\n\r\f\v");
-
-		if (begin == std::string::npos)
-			return "";
-
-		else
-			return value.substr(begin, value.find_last_not_of(" \t\n\r\f\v") - begin + 1);
-	}
-
-	std::string ltrim() { return value.substr(value.find_first_not_of(" \t\n\r\f\v")); }
-	std::string rtrim() { return value.substr(0, value.find_last_not_of(" \t\n\r\f\v") + 1); }
-
-	std::string compress()
-	{
-		auto result = trim();
-		auto begin = result.find_first_of(" \t\n\r\f\v");
-
-		while (begin != std::string::npos)
-		{
-			result.replace(begin, result.find_first_not_of(" \t\n\r\f\v", begin) - begin, " ");
-			begin = result.find_first_of(" \t\n\r\f\v", begin + 1);
-		}
-
-		return result;
-	}
+	std::string trim() { return OtTextTrim(value); }
+	std::string ltrim() { return OtTextLeftTrim(value); }
+	std::string rtrim() { return OtTextRightTrim(value); }
+	std::string compress() { return OtTextCompress(value); }
 
 	std::string lower() { auto v = value; std::transform(v.begin(), v.end(), v.begin(), ::tolower); return v; }
 	std::string upper() { auto v = value; std::transform(v.begin(), v.end(), v.begin(), ::toupper); return v; }

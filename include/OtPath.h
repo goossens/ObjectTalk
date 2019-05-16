@@ -68,7 +68,7 @@ public:
 	{
 	public:
 		OtPathIteratorClass() {}
-		OtPathIteratorClass(std::filesystem::path::iterator b, std::filesystem::path::iterator l) { iterator = b; last = l; }
+		OtPathIteratorClass(OtPath p) { path = p; iterator = p->path.begin(); last = p->path.end(); }
 
 		bool end() { return iterator == last; }
 		OtObject next() { return OtPathClass::create(*(iterator++)); }
@@ -89,9 +89,10 @@ public:
 		}
 
 		// create a new object
-		static OtObject create(OtPath p) { return std::make_shared<OtPathIteratorClass>(p->path.begin(), p->path.end())->setType(getMeta()); }
+		static OtObject create(OtPath path) { return std::make_shared<OtPathIteratorClass>(path)->setType(getMeta()); }
 
 	private:
+		OtPath path;
 		std::filesystem::path::iterator iterator;
 		std::filesystem::path::iterator last;
 	};
@@ -152,180 +153,3 @@ public:
 private:
 	std::filesystem::path path;
 };
-
-
-
-/*
-#pragma once
-
-#include "fwd.h"
-#include <string>
-#include <vector>
-#include <stdexcept>
-#include <sstream>
-#include <cctype>
-#include <cstdlib>
-#include <cerrno>
-#include <cstring>
-#include <sys/stat.h>
-# include <linux/limits.h>
-
-	path make_absolute() const {
-#if !defined(_WIN32)
-		char temp[PATH_MAX];
-		if (realpath(str().c_str(), temp) == NULL)
-			throw std::runtime_error("Internal error in realpath(): " + std::string(strerror(errno)));
-		return path(temp);
-#else
-		std::wstring value = wstr(), out(MAX_PATH, '\0');
-		DWORD length = GetFullPathNameW(value.c_str(), MAX_PATH, &out[0], NULL);
-		if (length == 0)
-			throw std::runtime_error("Internal error in realpath(): " + std::to_string(GetLastError()));
-		return path(out.substr(0, length));
-#endif
-	}
-
-	bool exists() const {
-#if defined(_WIN32)
-		return GetFileAttributesW(wstr().c_str()) != INVALID_FILE_ATTRIBUTES;
-#else
-		struct stat sb;
-		return stat(str().c_str(), &sb) == 0;
-#endif
-	}
-
-	size_t file_size() const {
-#if defined(_WIN32)
-		struct _stati64 sb;
-		if (_wstati64(wstr().c_str(), &sb) != 0)
-			throw std::runtime_error("path::file_size(): cannot stat file \"" + str() + "\"!");
-#else
-		struct stat sb;
-		if (stat(str().c_str(), &sb) != 0)
-			throw std::runtime_error("path::file_size(): cannot stat file \"" + str() + "\"!");
-#endif
-		return (size_t) sb.st_size;
-	}
-
-	bool is_directory() const {
-#if defined(_WIN32)
-		DWORD result = GetFileAttributesW(wstr().c_str());
-		if (result == INVALID_FILE_ATTRIBUTES)
-			return false;
-		return (result & FILE_ATTRIBUTE_DIRECTORY) != 0;
-#else
-		struct stat sb;
-		if (stat(str().c_str(), &sb))
-			return false;
-		return S_ISDIR(sb.st_mode);
-#endif
-	}
-
-	bool is_file() const {
-#if defined(_WIN32)
-		DWORD attr = GetFileAttributesW(wstr().c_str());
-		return (attr != INVALID_FILE_ATTRIBUTES && (attr & FILE_ATTRIBUTE_DIRECTORY) == 0);
-#else
-		struct stat sb;
-		if (stat(str().c_str(), &sb))
-			return false;
-		return S_ISREG(sb.st_mode);
-#endif
-	}
-
-	std::string extension() const {
-		const std::string &name = filename();
-		size_t pos = name.find_last_of(".");
-		if (pos == std::string::npos)
-			return "";
-		return name.substr(pos+1);
-	}
-
-	path operator/(const path &other) const {
-		if (other.absolute)
-			throw std::runtime_error("path::operator/(): expected a relative path!");
-		if (m_type != other.m_type)
-			throw std::runtime_error("path::operator/(): expected a path of the same type!");
-
-		path result(*this);
-
-		for (size_t i=0; i<other.path.size(); ++i)
-			result.path.push_back(other.path[i]);
-
-		return result;
-	}
-
-
-	path &operator=(const path &path) {
-		m_type = path.m_type;
-		path = path.path;
-		absolute = path.absolute;
-		return *this;
-	}
-
-	path &operator=(path &&path) {
-		if (this != &path) {
-			m_type = path.m_type;
-			path = std::move(path.path);
-			absolute = path.absolute;
-		}
-		return *this;
-	}
-
-	friend std::ostream &operator<<(std::ostream &os, const path &path) {
-		os << path.str();
-		return os;
-	}
-
-	bool remove_file() {
-#if !defined(_WIN32)
-		return std::remove(str().c_str()) == 0;
-#else
-		return DeleteFileW(wstr().c_str()) != 0;
-#endif
-	}
-
-	bool resize_file(size_t target_length) {
-#if !defined(_WIN32)
-		return ::truncate(str().c_str(), (off_t) target_length) == 0;
-#else
-		HANDLE handle = CreateFileW(wstr().c_str(), GENERIC_WRITE, 0, nullptr, 0, FILE_ATTRIBUTE_NORMAL, nullptr);
-		if (handle == INVALID_HANDLE_VALUE)
-			return false;
-		LARGE_INTEGER size;
-		size.QuadPart = (LONGLONG) target_length;
-		if (SetFilePointerEx(handle, size, NULL, FILE_BEGIN) == 0) {
-			CloseHandle(handle);
-			return false;
-		}
-		if (SetEndOfFile(handle) == 0) {
-			CloseHandle(handle);
-			return false;
-		}
-		CloseHandle(handle);
-		return true;
-#endif
-	}
-
-	path &operator=(const std::wstring &str) { set(str); return *this; }
-#endif
-
-	bool operator==(const path &p) const { return p.path == path; }
-	bool operator!=(const path &p) const { return p.path != path; }
-
-protected:
-
-protected:
-	path_type m_type;
-	bool absolute;
-};
-
-inline bool create_directory(const path& p) {
-#if defined(_WIN32)
-	return CreateDirectoryW(p.wstr().c_str(), NULL) != 0;
-#else
-	return mkdir(p.str().c_str(), S_IRUSR | S_IWUSR | S_IXUSR) == 0;
-#endif
-}
-
-*/

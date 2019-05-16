@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright 1993-2018 Johan A. Goossens
+//	Copyright 1993-2019 Johan A. Goossens
 //
 //	Licensed under the Apache License, Version 2.0 (the "License");
 //	you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ typedef std::shared_ptr<OtURIClass> OtURI;
 //	OtURIClass
 //
 
-class OtURIClass : public OtOSClass
+class OtURIClass : public OtSystemClass
 {
 public:
 	// constructors
@@ -333,7 +333,7 @@ public:
 
 		if (!type)
 		{
-			type = OtTypeClass::create<OtURIClass>("Path", OtOSClass::getMeta());
+			type = OtTypeClass::create<OtURIClass>("Path", OtSystemClass::getMeta());
 
 			type->set("__init__", OtFunctionClass::create(&OtURIClass::init));
 

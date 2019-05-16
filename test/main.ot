@@ -12,7 +12,12 @@
 //	limitations under the License.
 
 //	Script to run all test scripts
-
 for file in FS().ls(__FILE__.directory())
 	if (file.filename() != "main.ot")
+	{
+		print("running " + file)
 		run(file)
+	}
+
+// Well done
+print("Passed all tests")

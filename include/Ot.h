@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright 1993-2018 Johan A. Goossens
+//	Copyright 1993-2019 Johan A. Goossens
 //
 //	Licensed under the Apache License, Version 2.0 (the "License");
 //	you may not use this file except in compliance with the License.
@@ -15,6 +15,13 @@
 
 
 #pragma once
+
+
+//
+//	Constants
+//
+
+#define OT_MAX_BUFFER 4096
 
 
 //
@@ -53,6 +60,7 @@
 #	include <filesystem>
 #endif
 
+#include <uv.h>
 #include <curl/curl.h>
 
 #include "OtFormat.h"
@@ -71,20 +79,18 @@
 
 #include "OtInternal.h"
 #include "OtClass.h"
-#include "OtBoundFunction.h"
 
 #include "OtCollection.h"
 #include "OtArray.h"
 #include "OtDict.h"
 
-#include "OtOS.h"
+#include "OtSystem.h"
 #include "OtPath.h"
 #include "OtFS.h"
+#include "OtOS.h"
 #include "OtURI.h"
 
 #include "OtCode.h"
-#include "OtCodeFunction.h"
-
 #include "OtScanner.h"
 #include "OtCompiler.h"
 #include "OtObjectTalk.h"

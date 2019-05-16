@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright 1993-2018 Johan A. Goossens
+//	Copyright 1993-2019 Johan A. Goossens
 //
 //	Licensed under the Apache License, Version 2.0 (the "License");
 //	you may not use this file except in compliance with the License.
@@ -20,13 +20,13 @@ Object
 		Real
 		String
 		Function
-			CodeFunction
 
 	Collection
 		Array
 		Dict
 
-	OS
+	System
+		OS
 		FS
 		Path
 		URI
@@ -34,6 +34,7 @@ Object
 	Internal
 		Class
 		BoundFunction
+		CodeFunction
 		ContextReference
 		MemberReference
 		ArrayReference

@@ -15,14 +15,28 @@
 
 
 //
-//	OtFormat
+//	Include files
 //
 
-template <typename... Args>
-std::string OtFormat(const std::string &format, Args... args)
+#include <cstdlib>
+#include <iostream>
+
+#include "Ot.h"
+
+
+//
+//	ObjectTalk engine main function
+//
+
+int main(int argc, const char* argv[])
 {
-	unsigned required = std::snprintf(nullptr, 0, format.c_str(), args...) + 1;
-	char bytes[required];
-	std::snprintf(bytes, required, format.c_str(), args...);
-	return std::string(bytes);
+	if (argc != 2)
+	{
+		std::cerr << "ot: usage: ot scriptname" << std::endl;
+		exit(EXIT_FAILURE);
+	}
+
+	OtObject context = OtObjectTalk::createDefaultContext();
+	OtObjectTalk::processFile(OtPathClass::create(std::string(argv[1])), context);
+	return 0;
 }

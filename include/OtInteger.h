@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright 1993-2018 Johan A. Goossens
+//	Copyright 1993-2019 Johan A. Goossens
 //
 //	Licensed under the Apache License, Version 2.0 (the "License");
 //	you may not use this file except in compliance with the License.
@@ -89,7 +89,7 @@ public:
 			type->set("__lshift__", OtFunctionCreate(&OtIntegerClass::shiftLeft));
 			type->set("__rshift__", OtFunctionCreate(&OtIntegerClass::shiftRight));
 
-			type->set("__bend__", OtFunctionCreate(&OtIntegerClass::bitwiseAnd));
+			type->set("__band__", OtFunctionCreate(&OtIntegerClass::bitwiseAnd));
 			type->set("__bor__", OtFunctionCreate(&OtIntegerClass::bitwiseOr));
 			type->set("__bxor__", OtFunctionCreate(&OtIntegerClass::bitwiseXor));
 			type->set("__bnot__", OtFunctionCreate(&OtIntegerClass::bitwiseNot));

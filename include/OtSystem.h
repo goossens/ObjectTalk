@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright 1993-2018 Johan A. Goossens
+//	Copyright 1993-2019 Johan A. Goossens
 //
 //	Licensed under the Apache License, Version 2.0 (the "License");
 //	you may not use this file except in compliance with the License.
@@ -15,30 +15,27 @@
 
 
 //
-//	Include files
+//	OtSystem
 //
 
-#include <cstdlib>
-#include <iostream>
-
-#include "Ot.h"
+class OtSystemClass;
+typedef std::shared_ptr<OtSystemClass> OtSystem;
 
 
 //
-//	ObjectTalk engine main function
+//	OtSystemClass
 //
 
-int main(int argc, const char* argv[])
+class OtSystemClass : public OtObjectClass
 {
-	if (argc != 2)
-	{
-		std::cerr << "ot: usage: ot scriptname" << std::endl;
-		exit(EXIT_FAILURE);
-	}
+public:
+	OtSystemClass() {}
 
-	OtObjectTalk ot;
-	OtObject context = ot.createContext();
-	ot.processFile(OtPathClass::create(std::string(argv[1])), context);
-	ot.deleteContext(context);
-	return 0;
-}
+	// get type definition
+	static OtType getMeta()
+	{
+		static OtType type = nullptr;
+		if (!type) { type = OtTypeClass::create<OtSystemClass>("System", OtObjectClass::getMeta()); }
+		return type;
+	}
+};

@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright 1993-2018 Johan A. Goossens
+//	Copyright 1993-2019 Johan A. Goossens
 //
 //	Licensed under the Apache License, Version 2.0 (the "License");
 //	you may not use this file except in compliance with the License.
@@ -15,6 +15,41 @@
 
 
 //
+//	OtCodeFunctionClass
+//
+
+class OtCodeFunctionClass : public OtInternalClass
+{
+public:
+	// constructor
+	OtCodeFunctionClass() {}
+	OtCodeFunctionClass(OtCode c) { code = c; }
+
+	// call code
+	OtObject operator () (OtObject c, size_t n, OtObject* p) { return code->operator ()(c, n, p); }
+
+	// get type definition
+	static OtType getMeta()
+	{
+		static OtType type = nullptr;
+
+		if (!type)
+		{
+			type = OtTypeClass::create<OtCodeFunctionClass>("CodeFunction", OtInternalClass::getMeta());
+			type->set("__call__", OtFunctionClass::create(&OtCodeFunctionClass::operator ()));
+		}
+
+		return type;
+	}
+
+	// create a new object
+	static OtObject create(OtCode c) { return std::make_shared<OtCodeFunctionClass>(c)->setType(getMeta()); }
+
+private:
+	OtCode code;
+};
+
+
 //
 //	OtContextReferenceClass
 //
@@ -98,7 +133,6 @@ private:
 		function->saveArgs();
 
 		// parse parameters
-		size_t count = 0;
 		scanner.expect(OtScanner::LPAREN_TOKEN);
 
 		// handle ellipsis for variable argument count
@@ -106,12 +140,13 @@ private:
 		{
 			scanner.advance();
 			scanner.expect(OtScanner::RPAREN_TOKEN);
-			count = SIZE_MAX;
 		}
 
 		else
 		{
 			// get parameter names
+			size_t count = 0;
+
 			while (!scanner.matchToken(OtScanner::RPAREN_TOKEN) && !scanner.matchToken(OtScanner::EOS_TOKEN))
 			{
 				scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
@@ -621,7 +656,7 @@ private:
 				code->method("__deref__", 0);
 
 			// generate code
-			code->method("__bend__", 1);
+			code->method("__band__", 1);
 			reference = false;
 		}
 
@@ -840,7 +875,7 @@ private:
 					break;
 
 				case OtScanner::BITWISE_AND_ASSIGNMENT_TOKEN:
-					code->method("__bend__", 1);
+					code->method("__band__", 1);
 					break;
 
 				case OtScanner::BITWISE_OR_ASSIGNMENT_TOKEN:

@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright 1993-2018 Johan A. Goossens
+//	Copyright 1993-2019 Johan A. Goossens
 //
 //	Licensed under the Apache License, Version 2.0 (the "License");
 //	you may not use this file except in compliance with the License.
@@ -15,6 +15,51 @@
 
 
 //
+//	OtBoundFunctionClass
+//
+
+class OtBoundFunctionClass : public OtInternalClass
+{
+public:
+	// constructor
+	OtBoundFunctionClass() {}
+	OtBoundFunctionClass(OtObject o, OtObject f) { object = o; function = f; }
+
+	// call bound function
+	OtObject operator () (OtObject context, size_t count, OtObject* parameters)
+	{
+		OtObject pars[count + 1];
+		pars[0] = object;
+
+		if (count)
+			std::copy(parameters, parameters + count, pars + 1);
+
+		return function->operator ()(context, count + 1, pars);
+	}
+
+	// get type definition
+	static OtType getMeta()
+	{
+		static OtType type = nullptr;
+
+		if (!type)
+		{
+			type = OtTypeClass::create<OtBoundFunctionClass>("BoundFunction", OtInternalClass::getMeta());
+			type->set("__call__", OtFunctionClass::create(&OtBoundFunctionClass::operator ()));
+		}
+
+		return type;
+	}
+
+	// create a new object
+	static OtObject create(OtObject o, OtObject f) { return std::make_shared<OtBoundFunctionClass>(o, f)->setType(getMeta()); }
+
+private:
+	OtObject object;
+	OtObject function;
+};
+
+
 //
 //	OtMemberReferenceClass
 //
@@ -29,7 +74,7 @@ public:
 	{
 		OtObject result = object->get(member);
 
-		if (result && result->isKindOf("Function"))
+		if (result && (result->isKindOf("Function") || result->isKindOf("CodeFunction")))
 			return OtBoundFunctionClass::create(object, result);
 
 		else

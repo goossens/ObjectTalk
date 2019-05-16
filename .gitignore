@@ -36,4 +36,5 @@
 ._*
 
 # Local files
-ot
+build/*
+!build/.gitkeep

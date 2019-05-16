@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright 1993-2018 Johan A. Goossens
+//	Copyright 1993-2019 Johan A. Goossens
 //
 //	Licensed under the Apache License, Version 2.0 (the "License");
 //	you may not use this file except in compliance with the License.
@@ -177,39 +177,43 @@ public:
 					break;
 
 				case OtInstruction::EXIT:
+					// exit instructions
 					pc = size();
 					break;
 
 				case OtInstruction::SET:
+					// set a local variable
 					value = stack.back();
 					stack.pop_back();
 					local->set(at(pc).string, value);
 					break;
 
 				case OtInstruction::GET:
+					// get the value of a variable
 					stack.push_back(local->get(at(pc).string));
 					break;
 
 				case OtInstruction::SAVE_ARG:
+					// save a named argument to the local context
 					local->set(at(pc).string, parameters[at(pc).integer]);
 					break;
 
 				case OtInstruction::SAVE_ARGS:
+					// save variable arguments to the local context
 					local->set("args", OtArrayClass::create(count, parameters));
 					break;
 
 				case OtInstruction::PUSH_CONTEXT:
+					// push current context and create a new one
 					value = stack.back();
 					stack.pop_back();
 					value->setParent(local);
-
-					stack.push_back(local);
 					local = value;
 					break;
 
 				case OtInstruction::POP_CONTEXT:
-					local = stack.back();
-					stack.pop_back();
+					// return to previous context
+					local = local->getParent();
 					break;
 			}
 

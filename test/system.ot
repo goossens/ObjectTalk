@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright 1993-2018 Johan A. Goossens
+//	Copyright 1993-2019 Johan A. Goossens
 //
 //	Licensed under the Apache License, Version 2.0 (the "License");
 //	you may not use this file except in compliance with the License.
@@ -50,11 +50,30 @@ assert('uri.stem() == "test"')
 assert('uri.extension() == "txt"')
 assert('uri.query() == "a=1&b=2"')
 
+fs = FS()
 print(URI("http://www.google.com/").getString())
 print(URI("http://www.google.com/").head())
 URI("http://www.google.com/").getFile("/tmp/google.html")
-assert('FS().filesize("/tmp/google.html") > 1')
-FS().rm("/tmp/google.html")
+assert('fs.filesize("/tmp/google.html") > 1')
+fs.rm("/tmp/google.html")
+
+os = OS()
+assert('os.hasenv("OBJECT_TALK") == false')
+os.setenv("OBJECT_TALK", "test")
+assert('os.hasenv("OBJECT_TALK") == true')
+assert('os.getenv("OBJECT_TALK") == "test"')
+os.unsetenv("OBJECT_TALK")
+assert('os.hasenv("OBJECT_TALK") == false')
+
+home = fs.gethome()
+tmp = fs.gettmp()
+cwd = fs.getcwd()
+
+fs.chdir(home)
+print("[" + fs.getcwd() + "]")
+assert('fs.getcwd() == home')
+fs.chdir(cwd)
+assert('fs.getcwd() == cwd')
 
 // Well done
 print("Passed all operating system tests")

@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright 1993-2018 Johan A. Goossens
+//	Copyright 1993-2019 Johan A. Goossens
 //
 //	Licensed under the Apache License, Version 2.0 (the "License");
 //	you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ typedef std::shared_ptr<OtPathClass> OtPath;
 //	OtPathClass
 //
 
-class OtPathClass : public OtOSClass
+class OtPathClass : public OtSystemClass
 {
 public:
 	// constructors
@@ -104,7 +104,7 @@ public:
 
 		if (!type)
 		{
-			type = OtTypeClass::create<OtPathClass>("Path", OtOSClass::getMeta());
+			type = OtTypeClass::create<OtPathClass>("Path", OtSystemClass::getMeta());
 
 			type->set("__init__", OtFunctionClass::create(&OtPathClass::init));
 			type->set("__iter__", OtFunctionCreate(&OtPathClass::iterate));
@@ -121,7 +121,6 @@ public:
 			type->set("filename", OtFunctionCreate(&OtPathClass::filename));
 			type->set("stem", OtFunctionCreate(&OtPathClass::stem));
 			type->set("extension", OtFunctionCreate(&OtPathClass::extension));
-
 		}
 
 		return type;

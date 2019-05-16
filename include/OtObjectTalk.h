@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright 1993-2018 Johan A. Goossens
+//	Copyright 1993-2019 Johan A. Goossens
 //
 //	Licensed under the Apache License, Version 2.0 (the "License");
 //	you may not use this file except in compliance with the License.
@@ -21,15 +21,11 @@
 class OtObjectTalk
 {
 public:
-	// constructor
-	OtObjectTalk() {}
-
-	// create a default object talk context
-	OtObject createContext()
+	// create a default ObjectTalk context
+	static OtObject createDefaultContext()
 	{
-		// create global context
+		// create context
 		OtObject context = OtObjectClass::create();
-		context->set("global", context);
 
 		// add default constants
 		context->set("true", OtBooleanClass::create(true));
@@ -57,8 +53,7 @@ public:
 			if (c != 1)
 				OT_EXCEPT("Function [import] expects 1 parameter, %d given", c);
 
-			OtObjectTalk ot;
-			return ot.processFile(OtPathClass::create(p[0]->operator std::string()), context);
+			return processFile(OtPathClass::create(p[0]->operator std::string()), context);
 		}));
 
 		context->set("run", OtFunctionClass::create([] (OtObject, size_t c, OtObject* p)->OtObject
@@ -66,10 +61,8 @@ public:
 			if (c != 1)
 				OT_EXCEPT("Function [run] expects 1 parameter, %d given", c);
 
-			OtObjectTalk ot;
-			OtObject context = ot.createContext();
-			OtObject result = ot.processFile(OtPathClass::create(p[0]->operator std::string()), context);
-			ot.deleteContext(context);
+			OtObject context = createDefaultContext();
+			OtObject result = processFile(OtPathClass::create(p[0]->operator std::string()), context);
 			return result;
 		}));
 
@@ -99,23 +92,18 @@ public:
 		context->set("Array", OtClassClass::create(OtArrayClass::getMeta()));
 		context->set("Dict", OtClassClass::create(OtDictClass::getMeta()));
 
+		context->set("System", OtClassClass::create(OtSystemClass::getMeta()));
 		context->set("Path", OtClassClass::create(OtPathClass::getMeta()));
 		context->set("FS", OtClassClass::create(OtFSClass::getMeta()));
+		context->set("OS", OtClassClass::create(OtOSClass::getMeta()));
 		context->set("URI", OtClassClass::create(OtURIClass::getMeta()));
 
 		// return default context
 		return context;
 	}
 
-	// delete default context (handle circular "global" references)
-	void deleteContext(OtObject context)
-	{
-		context->eraseMember("global");
-		context->clearMembers();
-	}
-
 	// compile and run ObjectTalk text
-	OtObject processText(const std::string& text, OtObject context)
+	static OtObject processText(const std::string& text, OtObject context)
 	{
 		// compile code, run it and return result
 		OtCompiler compiler;
@@ -124,7 +112,7 @@ public:
 	}
 
 	// compile and run an ObjectTalk file
-	OtObject processFile(OtPath path, OtObject context)
+	static OtObject processFile(OtPath path, OtObject context)
 	{
 		// add file name to context
 		context->set("__FILE__", path);
@@ -135,4 +123,8 @@ public:
 		buffer << stream.rdbuf();
 		return processText(buffer.str(), context);
 	}
+
+private:
+	// constructor
+	OtObjectTalk() {}
 };

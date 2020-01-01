@@ -14,6 +14,9 @@
 //	limitations under the License.
 
 
+#include <curl/curl.h>
+
+
 //
 //	OtURI
 //

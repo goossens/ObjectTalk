@@ -53,7 +53,7 @@ public:
 			if (c != 1)
 				OT_EXCEPT("Function [import] expects 1 parameter, %d given", c);
 
-			return processFile(OtPathClass::create(p[0]->operator std::string()), context);
+			return processFile(p[0]->operator std::string(), context);
 		}));
 
 		context->set("run", OtFunctionClass::create([] (OtObject, size_t c, OtObject* p)->OtObject
@@ -62,8 +62,10 @@ public:
 				OT_EXCEPT("Function [run] expects 1 parameter, %d given", c);
 
 			OtObject context = createDefaultContext();
-			OtObject result = processFile(OtPathClass::create(p[0]->operator std::string()), context);
-			return result;
+			std::string path = p[0]->operator std::string();
+			context->set("__FILE__", OtStringClass::create(path));
+
+			return processFile(path, context);
 		}));
 
 		context->set("print", OtFunctionClass::create([] (OtObject, size_t c, OtObject* p)->OtObject
@@ -92,12 +94,6 @@ public:
 		context->set("Array", OtClassClass::create(OtArrayClass::getMeta()));
 		context->set("Dict", OtClassClass::create(OtDictClass::getMeta()));
 
-		context->set("System", OtClassClass::create(OtSystemClass::getMeta()));
-		context->set("Path", OtClassClass::create(OtPathClass::getMeta()));
-		context->set("FS", OtClassClass::create(OtFSClass::getMeta()));
-		context->set("OS", OtClassClass::create(OtOSClass::getMeta()));
-		context->set("URI", OtClassClass::create(OtURIClass::getMeta()));
-
 		// return default context
 		return context;
 	}
@@ -112,13 +108,10 @@ public:
 	}
 
 	// compile and run an ObjectTalk file
-	static OtObject processFile(OtPath path, OtObject context)
+	static OtObject processFile(const std::string& path, OtObject context)
 	{
-		// add file name to context
-		context->set("__FILE__", path);
-
 		// get text from file and process it
-		std::ifstream stream(path->operator std::string());
+		std::ifstream stream(path);
 		std::stringstream buffer;
 		buffer << stream.rdbuf();
 		return processText(buffer.str(), context);

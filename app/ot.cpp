@@ -37,6 +37,6 @@ int main(int argc, const char* argv[])
 	}
 
 	OtObject context = OtObjectTalk::createDefaultContext();
-	OtObjectTalk::processFile(OtPathClass::create(std::string(argv[1])), context);
+	OtObjectTalk::processFile(std::string(argv[1]), context);
 	return 0;
 }

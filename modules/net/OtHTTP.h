@@ -130,7 +130,7 @@ public:
 
 		if (!type)
 		{
-			type = OtTypeClass::create<OtHTTPClass>("HTTP", OtNetClass::getMeta());
+			type = OtTypeClass::create<OtHTTPClass>("HTTP", OtHTTPClass::getMeta());
 		}
 
 		return type;

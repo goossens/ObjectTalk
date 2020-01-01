@@ -13,49 +13,23 @@
 //	See the License for the specific language governing permissions and
 //	limitations under the License.
 
-Language classes:
-=================
 
-Object
-	Primitive
-		Boolean
-		Integer
-		Real
-		String
-		Function
+//
+//	Include files
+//
 
-	Collection
-		Array
-		Dict
+#include "Ot.h"
 
-	Internal
-		Class
-		BoundFunction
-		CodeFunction
-		ContextReference
-		MemberReference
-		ArrayReference
-		DictReference
+#include "OtSystem.h"
+#include "OtPath.h"
 
-Module classes:
-===============
 
-System module:
---------------
+//
+//	System module
+//
 
-Object
-	System
-		Path
-		OS
-		FS
-
-Net module:
------------
-
-Object
-	Net
-		HTTP
-		URI
-	
-	Internal
-		HttpRequest
+void init(OtObject context)
+{
+	context->set("System", OtClassClass::create(OtSystemClass::getMeta()));
+	context->set("Path", OtClassClass::create(OtPathClass::getMeta()));
+}

@@ -1,3 +1,5 @@
+//	ObjectTalk Scripting Language
+//	Copyright 1993-2019 Johan A. Goossens
 //
 //	Licensed under the Apache License, Version 2.0 (the "License");
 //	you may not use this file except in compliance with the License.
@@ -11,13 +13,21 @@
 //	See the License for the specific language governing permissions and
 //	limitations under the License.
 
-//	Script to run all test scripts
-for file in FS().ls(__FILE__.directory())
-	if (file.filename() != "main.ot")
-	{
-		print("running " + file)
-		run(file)
-	}
 
-// Well done
-print("Passed all tests")
+//
+//	Include files
+//
+
+#include "Ot.h"
+
+#include "OtNet.h"
+
+
+//
+//	Network module
+//
+
+void init(OtObject context)
+{
+	context->set("Net", OtClassClass::create(OtNetClass::getMeta()));
+}

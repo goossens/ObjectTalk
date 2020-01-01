@@ -37,6 +37,7 @@
 #include <cctype>
 #include <cmath>
 #include <cstdio>
+#include <filesystem>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -50,21 +51,6 @@
 #include <string>
 #include <utility>
 #include <vector>
-
-#if defined(__APPLE_CC__)
-#	include <boost/filesystem.hpp>
-	namespace std { namespace filesystem = boost::filesystem; }
-
-#elif __cplusplus < 201703L
-#	include <boost/filesystem.hpp>
-	namespace std { namespace filesystem = boost::filesystem; }
-
-#else
-#	include <filesystem>
-#endif
-
-#include <uv.h>
-#include <curl/curl.h>
 
 #include "OtFormat.h"
 #include "OtException.h"
@@ -87,15 +73,6 @@
 #include "OtCollection.h"
 #include "OtArray.h"
 #include "OtDict.h"
-
-#include "OtSystem.h"
-#include "OtPath.h"
-#include "OtFS.h"
-#include "OtOS.h"
-	
-#include "OtNet.h"
-#include "OtURI.h"
-#include "OtHTTP.h"
 
 #include "OtCode.h"
 #include "OtScanner.h"

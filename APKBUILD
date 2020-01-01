@@ -34,7 +34,6 @@ check() {
 
 package() {
 	cd "$startdir"/build
-
 	make DESTDIR="$pkgdir" install
 }
 

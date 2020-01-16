@@ -99,15 +99,75 @@ inline std::wstring OtTextToJSON(const std::wstring& text)
 			case L'\t': o << L"\\t"; break;
 
 			default:
-				if (L'\x00' <= *c && *c <= L'\x1f')
+				if (*c < L' ' || *c > L'~')
 					o << L"\\u" << std::hex << std::setw(4) << std::setfill(L'0') << static_cast<unsigned int>(*c);
 
 				else
 					o << *c;
-
 		}
 	}
 
 	o << '"';
+	return o.str();
+}
+
+inline std::wstring OtTextFromJSON(const std::wstring text)
+{
+	std::wostringstream o;
+	auto c = text.cbegin();
+
+	while (c < text.cend())
+	{
+		if (*c == L'\\')
+		{
+			c++;
+
+			if (c < text.cend())
+			{
+				switch (*c)
+				{
+					case L'b':
+						o << L'\b';
+						break;
+
+					case L'f':
+						o << L'\f';
+						break;
+
+					case L'n':
+						o << L'\n';
+						break;
+
+					case L'r':
+						o << L'\r';
+						break;
+
+					case L't':
+						o << L'\t';
+
+					case L'u':
+						c++;
+						
+						if (c + 4 < text.cend())
+						{
+							o << std::wcstol(std::wstring(c, c + 4).c_str(), nullptr, 16);
+							c += 4;
+						}
+
+						else
+							c = text.cend();
+
+						break;
+
+					default:
+						o << *c;
+				}
+			}
+		}
+
+		else
+			o << *c++;
+	}
+
 	return o.str();
 }

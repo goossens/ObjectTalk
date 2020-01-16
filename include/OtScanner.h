@@ -332,61 +332,17 @@ public:
 		else if (text[position] == L'"' || text[position] == L'\'')
 		{
 			wchar_t terminator = text[position++];
-			stringValue = L"";
+			size_t start = position;
 
 			while (position < size && text[position] != terminator)
 			{
-				// is this a new line?
 				if (text[position] == L'\n')
 					lineNumber++;
 
-				if (text[position] == L'\\')
-				{
-					position++;
-
-					if (position < size)
-					{
-						wchar_t character = text[position++];
-
-						switch (character)
-						{
-							case L'a':
-								stringValue += L'\a';
-								break;
-
-							case L'b':
-								stringValue += L'\b';
-								break;
-
-							case L'f':
-								stringValue += L'\f';
-								break;
-
-							case L'n':
-								stringValue += L'\n';
-								break;
-
-							case L'r':
-								stringValue += L'\r';
-								break;
-
-							case L't':
-								stringValue += L'\t';
-								break;
-
-							case L'v':
-								stringValue += L'\v';
-								break;
-
-							default:
-								stringValue += character;
-						}
-					}
-				}
-
-				else
-					stringValue += text[position++];
+				position++;
 			}
+	
+			stringValue = OtTextFromJSON(text.substr(start, position - start));
 
 			if (position < size)
 				position++;

@@ -35,7 +35,7 @@ public:
 	static OtType getMeta()
 	{
 		static OtType type = nullptr;
-		if (!type) { type = OtTypeClass::create<OtNetClass>("Net", OtObjectClass::getMeta()); }
+		if (!type) { type = OtTypeClass::create<OtNetClass>(L"Net", OtObjectClass::getMeta()); }
 		return type;
 	}
 };

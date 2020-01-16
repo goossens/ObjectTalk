@@ -26,15 +26,15 @@ typedef std::shared_ptr<OtDictClass> OtDict;
 //	OtDictClass
 //
 
-class OtDictClass : public OtCollectionClass, public std::map<std::string, OtObject>
+class OtDictClass : public OtCollectionClass, public std::map<std::wstring, OtObject>
 {
 public:
 	OtDictClass() {}
 
 	// convert dictionary to string
-	operator std::string()
+	operator std::wstring()
 	{
-		std::string result("{");
+		std::wstring result(L"{");
 		bool first = true;
 
 		for (auto const& entry : *this)
@@ -43,12 +43,12 @@ public:
 				first = false;
 
 			else
-				result += ",";
+				result += L",";
 
-			result += "\"" + entry.first + "\":" + entry.second->repr();
+			result += L"\"" + entry.first + L"\":" + entry.second->repr();
 		}
 
-		result += "}";
+		result += L"}";
 		return result;
 	}
 
@@ -59,7 +59,7 @@ public:
 		clear();
 
 		for (size_t c = 0; c < count; c += 2)
-			insert(std::make_pair((std::string) *parameters[c], parameters[c + 1]));
+			insert(std::make_pair((std::wstring) *parameters[c], parameters[c + 1]));
 
 		return getSharedPtr();
 	}
@@ -69,7 +69,7 @@ public:
 	{
 	public:
 		OtDictReferenceClass() {}
-		OtDictReferenceClass(OtDict d, const std::string& i) { dict = d; index = i; }
+		OtDictReferenceClass(OtDict d, const std::wstring& i) { dict = d; index = i; }
 
 		OtObject deref() { return dict->operator[] (index); }
 		OtObject assign(OtObject value) { dict->operator[] (index) = value; return value; }
@@ -81,23 +81,23 @@ public:
 
 			if (!type)
 			{
-				type = OtTypeClass::create<OtDictReferenceClass>("DictReference", OtInternalClass::getMeta());
-				type->set("__deref__", OtFunctionCreate(&OtDictReferenceClass::deref));
-				type->set("__assign__", OtFunctionCreate(&OtDictReferenceClass::assign));
+				type = OtTypeClass::create<OtDictReferenceClass>(L"DictReference", OtInternalClass::getMeta());
+				type->set(L"__deref__", OtFunctionCreate(&OtDictReferenceClass::deref));
+				type->set(L"__assign__", OtFunctionCreate(&OtDictReferenceClass::assign));
 			}
 
 			return type;
 		}
 
 		// create a new object
-		static OtObject create(OtDict a, const std::string& i) { return std::make_shared<OtDictReferenceClass>(a, i)->setType(getMeta()); }
+		static OtObject create(OtDict a, const std::wstring& i) { return std::make_shared<OtDictReferenceClass>(a, i)->setType(getMeta()); }
 
 	private:
 		OtDict dict;
-		std::string index;
+		std::wstring index;
 	};
 
-	OtObject index(const std::string& index) { return OtDictReferenceClass::create(OtTypeClass::cast<OtDictClass>(getSharedPtr()), index); }
+	OtObject index(const std::wstring& index) { return OtDictReferenceClass::create(OtTypeClass::cast<OtDictClass>(getSharedPtr()), index); }
 
 	// get dictionary size
 	size_t mySize()
@@ -114,7 +114,7 @@ public:
 	}
 
 	// remove dictionary entry
-	OtObject eraseEntry(const std::string& name)
+	OtObject eraseEntry(const std::wstring& name)
 	{
 		OtObject value = operator[] (name);
 		erase(name);
@@ -152,19 +152,19 @@ public:
 
 		if (!type)
 		{
-			type = OtTypeClass::create<OtDictClass>("Dict", OtCollectionClass::getMeta());
+			type = OtTypeClass::create<OtDictClass>(L"Dict", OtCollectionClass::getMeta());
 
-			type->set("__init__", OtFunctionClass::create(&OtDictClass::init));
-			type->set("__index__", OtFunctionCreate(&OtDictClass::index));
+			type->set(L"__init__", OtFunctionClass::create(&OtDictClass::init));
+			type->set(L"__index__", OtFunctionCreate(&OtDictClass::index));
 
-			type->set("size", OtFunctionCreate(&OtDictClass::mySize));
+			type->set(L"size", OtFunctionCreate(&OtDictClass::mySize));
 
-			type->set("clone", OtFunctionCreate(&OtDictClass::clone));
-			type->set("clear", OtFunctionCreate(&OtDictClass::clear));
-			type->set("erase", OtFunctionCreate(&OtDictClass::eraseEntry));
+			type->set(L"clone", OtFunctionCreate(&OtDictClass::clone));
+			type->set(L"clear", OtFunctionCreate(&OtDictClass::clear));
+			type->set(L"erase", OtFunctionCreate(&OtDictClass::eraseEntry));
 
-			type->set("keys", OtFunctionCreate(&OtDictClass::keys));
-			type->set("values", OtFunctionCreate(&OtDictClass::values));
+			type->set(L"keys", OtFunctionCreate(&OtDictClass::keys));
+			type->set(L"values", OtFunctionCreate(&OtDictClass::values));
 		}
 
 		return type;
@@ -183,7 +183,7 @@ public:
 		OtDict dict = create();
 
 		for (size_t c = 0; c < count; c += 2)
-			dict->insert(std::make_pair((std::string) *values[c], values[c + 1]));
+			dict->insert(std::make_pair((std::wstring) *values[c], values[c + 1]));
 
 		return dict;
 	}

@@ -29,5 +29,5 @@
 
 void init(OtObject context)
 {
-	context->set("Net", OtClassClass::create(OtNetClass::getMeta()));
+	context->set(L"Net", OtClassClass::create(OtNetClass::getMeta()));
 }

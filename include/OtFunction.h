@@ -43,7 +43,7 @@ public:
 	{
 		// sanity check
 		if (parameterCount != SIZE_MAX && count != parameterCount)
-			OT_EXCEPT("Function expects %d parameters, %d given", parameterCount, count);
+			OT_EXCEPT(L"Function expects %d parameters, %d given", parameterCount, count);
 
 		return executable(context, count, parameters);
 	}
@@ -55,8 +55,8 @@ public:
 
 		if (!type)
 		{
-			type = OtTypeClass::create<OtFunctionClass>("Function", OtPrimitiveClass::getMeta());
-			type->set("__call__", OtFunctionClass::create(&OtFunctionClass::operator ()));
+			type = OtTypeClass::create<OtFunctionClass>(L"Function", OtPrimitiveClass::getMeta());
+			type->set(L"__call__", OtFunctionClass::create(&OtFunctionClass::operator ()));
 		}
 
 		return type;

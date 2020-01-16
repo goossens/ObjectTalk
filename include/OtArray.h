@@ -32,9 +32,9 @@ public:
 	OtArrayClass() {}
 
 	// convert array to string
-	operator std::string()
+	operator std::wstring()
 	{
-		std::string result("[");
+		std::wstring result(L"[");
 		bool first = true;
 
 		for (auto const& entry : *this)
@@ -43,12 +43,12 @@ public:
 				first = false;
 
 			else
-				result += ",";
+				result += L",";
 
 			result += entry->repr();
 		}
 
-		result += "]";
+		result += L"]";
 		return result;
 	}
 
@@ -80,9 +80,9 @@ public:
 
 			if (!type)
 			{
-				type = OtTypeClass::create<OtArrayReferenceClass>("ArrayReference", OtInternalClass::getMeta());
-				type->set("__deref__", OtFunctionCreate(&OtArrayReferenceClass::deref));
-				type->set("__assign__", OtFunctionCreate(&OtArrayReferenceClass::assign));
+				type = OtTypeClass::create<OtArrayReferenceClass>(L"ArrayReference", OtInternalClass::getMeta());
+				type->set(L"__deref__", OtFunctionCreate(&OtArrayReferenceClass::deref));
+				type->set(L"__assign__", OtFunctionCreate(&OtArrayReferenceClass::assign));
 			}
 
 			return type;
@@ -115,9 +115,9 @@ public:
 
 			if (!type)
 			{
-				type = OtTypeClass::create<OtArrayIteratorClass>("ArrayIterator", OtInternalClass::getMeta());
-				type->set("__end__", OtFunctionCreate(&OtArrayIteratorClass::end));
-				type->set("__next__", OtFunctionCreate(&OtArrayIteratorClass::next));
+				type = OtTypeClass::create<OtArrayIteratorClass>(L"ArrayIterator", OtInternalClass::getMeta());
+				type->set(L"__end__", OtFunctionCreate(&OtArrayIteratorClass::end));
+				type->set(L"__next__", OtFunctionCreate(&OtArrayIteratorClass::next));
 			}
 
 			return type;
@@ -146,7 +146,7 @@ public:
 		bool result = false;
 
 		for (auto it = begin(); it != end() && !result; it++)
-			result = value->method("__eq__", OtObjectClass::create(), 1, &(*it))->operator bool();
+			result = value->method(L"__eq__", OtObjectClass::create(), 1, &(*it))->operator bool();
 
 		return OtBooleanClass::create(result);
 	}
@@ -161,7 +161,7 @@ public:
 		long result = -1;
 
 		for (size_t i = 0; i < size() && result == -1; i++)
-			if (value->method("__eq__", OtObjectClass::create(), 1, &(operator[] (i)))->operator bool())
+			if (value->method(L"__eq__", OtObjectClass::create(), 1, &(operator[] (i)))->operator bool())
 				result = i;
 
 		return result;
@@ -218,28 +218,28 @@ public:
 
 		if (!type)
 		{
-			type = OtTypeClass::create<OtArrayClass>("Array", OtCollectionClass::getMeta());
+			type = OtTypeClass::create<OtArrayClass>(L"Array", OtCollectionClass::getMeta());
 
-			type->set("__init__", OtFunctionClass::create(&OtArrayClass::init));
-			type->set("__index__", OtFunctionCreate(&OtArrayClass::index));
-			type->set("__iter__", OtFunctionCreate(&OtArrayClass::iterate));
-			type->set("__add__", OtFunctionCreate(&OtArrayClass::add));
-			type->set("__contains__", OtFunctionCreate(&OtArrayClass::contains));
+			type->set(L"__init__", OtFunctionClass::create(&OtArrayClass::init));
+			type->set(L"__index__", OtFunctionCreate(&OtArrayClass::index));
+			type->set(L"__iter__", OtFunctionCreate(&OtArrayClass::iterate));
+			type->set(L"__add__", OtFunctionCreate(&OtArrayClass::add));
+			type->set(L"__contains__", OtFunctionCreate(&OtArrayClass::contains));
 
-			type->set("size", OtFunctionCreate(&OtArrayClass::mySize));
-			type->set("find", OtFunctionCreate(&OtArrayClass::find));
+			type->set(L"size", OtFunctionCreate(&OtArrayClass::mySize));
+			type->set(L"find", OtFunctionCreate(&OtArrayClass::find));
 
-			type->set("clone", OtFunctionCreate(&OtArrayClass::clone));
-			type->set("clear", OtFunctionCreate(&OtArrayClass::clear));
+			type->set(L"clone", OtFunctionCreate(&OtArrayClass::clone));
+			type->set(L"clear", OtFunctionCreate(&OtArrayClass::clear));
 
-			type->set("append", OtFunctionCreate(&OtArrayClass::append));
-			type->set("insert", OtFunctionCreate(&OtArrayClass::insert));
+			type->set(L"append", OtFunctionCreate(&OtArrayClass::append));
+			type->set(L"insert", OtFunctionCreate(&OtArrayClass::insert));
 
-			type->set("erase", OtFunctionCreate(&OtArrayClass::erase));
-			type->set("eraseMultiple", OtFunctionCreate(&OtArrayClass::eraseMultiple));
+			type->set(L"erase", OtFunctionCreate(&OtArrayClass::erase));
+			type->set(L"eraseMultiple", OtFunctionCreate(&OtArrayClass::eraseMultiple));
 
-			type->set("push", OtFunctionCreate(&OtArrayClass::push));
-			type->set("pop", OtFunctionCreate(&OtArrayClass::pop));
+			type->set(L"push", OtFunctionCreate(&OtArrayClass::push));
+			type->set(L"pop", OtFunctionCreate(&OtArrayClass::pop));
 		}
 
 		return type;

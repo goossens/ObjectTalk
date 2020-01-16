@@ -35,55 +35,55 @@ public:
 	OtFSClass() {}
 
 	// get user home directory
-	std::string gethome()
+	std::wstring gethome()
 	{
 		size_t size = OT_MAX_BUFFER;
 		char path[size];
 		int result = uv_os_homedir(path, &size);
 
 		if (result == UV_ENOBUFS)
-			OT_EXCEPT("GETHOME of size %d does not fit in buffer of size %d", size, UV_ENOBUFS);
+			OT_EXCEPT(L"GETHOME of size %d does not fit in buffer of size %d", size, UV_ENOBUFS);
 
-		return std::string(path);
+		return std::wstring(path);
 	}
 
 	// get temporary directory
-	std::string gettmp()
+	std::wstring gettmp()
 	{
 		size_t size = OT_MAX_BUFFER;
 		char path[size];
 		int result = uv_os_tmpdir(path, &size);
 
 		if (result == UV_ENOBUFS)
-			OT_EXCEPT("GETTMP of size %d does not fit in buffer of size %d", size, UV_ENOBUFS);
+			OT_EXCEPT(L"GETTMP of size %d does not fit in buffer of size %d", size, UV_ENOBUFS);
 
-		return std::string(path);
+		return std::wstring(path);
 	}
 
 	// change current working directory
-	void chdir(const std::string& path)
+	void chdir(const std::wstring& path)
 	{
 		int result = uv_chdir(path.c_str());
 
 		if (result)
-			OT_EXCEPT("CHDIR failed: %s", uv_strerror(result));
+			OT_EXCEPT(L"CHDIR failed: %s", uv_strerror(result));
 	}
 
 	// get current working directory
-	std::string getcwd()
+	std::wstring getcwd()
 	{
 		size_t size = OT_MAX_BUFFER;
 		char path[size];
 		int result = uv_cwd(path, &size);
 
 		if (result == UV_ENOBUFS)
-			OT_EXCEPT("GETCWD of size %d does not fit in buffer of size %d", size, UV_ENOBUFS);
+			OT_EXCEPT(L"GETCWD of size %d does not fit in buffer of size %d", size, UV_ENOBUFS);
 
-		return std::string(path);
+		return std::wstring(path);
 	}
 
 	// get list of files in specified directory
-	OtObject ls(const std::string& path)
+	OtObject ls(const std::wstring& path)
 	{
 		// get content of directory
 		OtArray content = OtArrayClass::create();
@@ -96,7 +96,7 @@ public:
 		while ((result = uv_fs_scandir_next(&req, &ent)) != UV_EOF)
 		{
 			if (result)
-				OT_EXCEPT("LS failed: %s", uv_strerror(result));
+				OT_EXCEPT(L"LS failed: %s", uv_strerror(result));
 
 			content->push_back(OtPathClass::create(ent.name));
 		}
@@ -105,28 +105,28 @@ public:
 	}
 
 	// get file size
-	size_t filesize(const std::string& path)
+	size_t filesize(const std::wstring& path)
 	{
 		int result;
 		uv_fs_t req;
 		result = uv_fs_stat(uv_default_loop(), &req, path.c_str(), 0);
 
 		if (result)
-			OT_EXCEPT("os.filesize failed: %s", uv_strerror(result));
+			OT_EXCEPT(L"os.filesize failed: %s", uv_strerror(result));
 		
 		uv_stat_t* stat = uv_fs_get_statbuf(&req);
 		return (size_t) stat->st_size;
 	}
 
 	// remove file
-	void rm(const std::string& path)
+	void rm(const std::wstring& path)
 	{
 		int result;
 		uv_fs_t req;
 		result = uv_fs_unlink(uv_default_loop(), &req, path.c_str(), 0);
 
 		if (result)
-			OT_EXCEPT("os.rm failed: %s", uv_strerror(result));
+			OT_EXCEPT(L"os.rm failed: %s", uv_strerror(result));
 	}
 
 	// get type definition
@@ -136,15 +136,15 @@ public:
 
 		if (!type)
 		{
-			type = OtTypeClass::create<OtFSClass>("FS", OtSystemClass::getMeta());
+			type = OtTypeClass::create<OtFSClass>(L"FS", OtSystemClass::getMeta());
 
-			type->set("gethome", OtFunctionCreate(&OtFSClass::gethome));
-			type->set("gettmp", OtFunctionCreate(&OtFSClass::gettmp));
-			type->set("chdir", OtFunctionCreate(&OtFSClass::chdir));
-			type->set("getcwd", OtFunctionCreate(&OtFSClass::getcwd));
-			type->set("ls", OtFunctionCreate(&OtFSClass::ls));
-			type->set("filesize", OtFunctionCreate(&OtFSClass::filesize));
-			type->set("rm", OtFunctionCreate(&OtFSClass::rm));
+			type->set(L"gethome", OtFunctionCreate(&OtFSClass::gethome));
+			type->set(L"gettmp", OtFunctionCreate(&OtFSClass::gettmp));
+			type->set(L"chdir", OtFunctionCreate(&OtFSClass::chdir));
+			type->set(L"getcwd", OtFunctionCreate(&OtFSClass::getcwd));
+			type->set(L"ls", OtFunctionCreate(&OtFSClass::ls));
+			type->set(L"filesize", OtFunctionCreate(&OtFSClass::filesize));
+			type->set(L"rm", OtFunctionCreate(&OtFSClass::rm));
 		}
 
 		return type;

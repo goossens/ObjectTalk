@@ -19,10 +19,10 @@
 //
 
 template <typename... Args>
-std::string OtFormat(const std::string &format, Args... args)
+std::wstring OtFormat(const std::wstring &format, Args... args)
 {
-	unsigned required = std::snprintf(nullptr, 0, format.c_str(), args...) + 1;
-	char bytes[required];
-	std::snprintf(bytes, required, format.c_str(), args...);
-	return std::string(bytes);
+	unsigned required = std::swprintf(nullptr, 0, format.c_str(), args...) + 1;
+	wchar_t bytes[required];
+	std::swprintf(bytes, required, format.c_str(), args...);
+	return std::wstring(bytes);
 }

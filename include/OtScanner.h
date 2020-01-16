@@ -112,67 +112,67 @@ public:
 		stateTable.resize(1);
 
 		// setup scanner
-		addToken("(", LPAREN_TOKEN);
-		addToken(")", RPAREN_TOKEN);
-		addToken("[", LBRACKET_TOKEN);
-		addToken("]", RBRACKET_TOKEN);
-		addToken("{", LBRACE_TOKEN);
-		addToken("}", RBRACE_TOKEN);
-		addToken(",", COMMA_TOKEN);
-		addToken("...", ELLIPSIS_TOKEN);
-		addToken(".", PERIOD_TOKEN);
-		addToken(":", COLON_TOKEN);
-		addToken(";", SEMICOLON_TOKEN);
-		addToken("?", QUESTION_TOKEN);
-		addToken("==", EQUAL_TOKEN);
-		addToken("=", ASSIGNMENT_TOKEN);
-		addToken("!=", NOT_EQUAL_TOKEN);
-		addToken("!", NEGATE_TOKEN);
-		addToken("<=", LESS_EQUAL_TOKEN);
-		addToken("<<", SHIFT_LEFT_TOKEN);
-		addToken("<", LESS_TOKEN);
-		addToken(">=", GREATER_EQUAL_TOKEN);
-		addToken(">>", SHIFT_RIGHT_TOKEN);
-		addToken(">", GREATER_TOKEN);
-		addToken("++", INCREMENT_TOKEN);
-		addToken("+=", ADD_ASSIGNMENT_TOKEN);
-		addToken("+", ADD_TOKEN);
-		addToken("--", DECREMENT_TOKEN);
-		addToken("-=", SUBTRACT_ASSIGNMENT_TOKEN);
-		addToken("-", SUBTRACT_TOKEN);
-		addToken("*=", MULTIPLY_ASSIGNMENT_TOKEN);
-		addToken("**", POWER_TOKEN);
-		addToken("*", MULTIPLY_TOKEN);
-		addToken("/=", DIVIDE_ASSIGNMENT_TOKEN);
-		addToken("/", DIVIDE_TOKEN);
-		addToken("%=", MODULO_ASSIGNMENT_TOKEN);
-		addToken("%", MODULO_TOKEN);
-		addToken("||", OR_TOKEN);
-		addToken("|=", BITWISE_AND_ASSIGNMENT_TOKEN);
-		addToken("|", BITWISE_OR_TOKEN);
-		addToken("&&", AND_TOKEN);
-		addToken("&=", BITWISE_OR_ASSIGNMENT_TOKEN);
-		addToken("&", BITWISE_AND_TOKEN);
-		addToken("^=", BITWISE_XOR_ASSIGNMENT_TOKEN);
-		addToken("^", BITWISE_XOR_TOKEN);
-		addToken("~", BITWISE_NOT_TOKEN);
-		addToken("case", CASE_TOKEN);
-		addToken("class", CLASS_TOKEN);
-		addToken("default", DEFAULT_TOKEN);
-		addToken("do", DO_TOKEN);
-		addToken("else", ELSE_TOKEN);
-		addToken("for", FOR_TOKEN);
-		addToken("function", FUNCTION_TOKEN);
-		addToken("if", IF_TOKEN);
-		addToken("in", IN_TOKEN);
-		addToken("not", NOT_TOKEN);
-		addToken("return", RETURN_TOKEN);
-		addToken("switch", SWITCH_TOKEN);
-		addToken("while", WHILE_TOKEN);
+		addToken(L"(", LPAREN_TOKEN);
+		addToken(L")", RPAREN_TOKEN);
+		addToken(L"[", LBRACKET_TOKEN);
+		addToken(L"]", RBRACKET_TOKEN);
+		addToken(L"{", LBRACE_TOKEN);
+		addToken(L"}", RBRACE_TOKEN);
+		addToken(L",", COMMA_TOKEN);
+		addToken(L"...", ELLIPSIS_TOKEN);
+		addToken(L".", PERIOD_TOKEN);
+		addToken(L":", COLON_TOKEN);
+		addToken(L";", SEMICOLON_TOKEN);
+		addToken(L"?", QUESTION_TOKEN);
+		addToken(L"==", EQUAL_TOKEN);
+		addToken(L"=", ASSIGNMENT_TOKEN);
+		addToken(L"!=", NOT_EQUAL_TOKEN);
+		addToken(L"!", NEGATE_TOKEN);
+		addToken(L"<=", LESS_EQUAL_TOKEN);
+		addToken(L"<<", SHIFT_LEFT_TOKEN);
+		addToken(L"<", LESS_TOKEN);
+		addToken(L">=", GREATER_EQUAL_TOKEN);
+		addToken(L">>", SHIFT_RIGHT_TOKEN);
+		addToken(L">", GREATER_TOKEN);
+		addToken(L"++", INCREMENT_TOKEN);
+		addToken(L"+=", ADD_ASSIGNMENT_TOKEN);
+		addToken(L"+", ADD_TOKEN);
+		addToken(L"--", DECREMENT_TOKEN);
+		addToken(L"-=", SUBTRACT_ASSIGNMENT_TOKEN);
+		addToken(L"-", SUBTRACT_TOKEN);
+		addToken(L"*=", MULTIPLY_ASSIGNMENT_TOKEN);
+		addToken(L"**", POWER_TOKEN);
+		addToken(L"*", MULTIPLY_TOKEN);
+		addToken(L"/=", DIVIDE_ASSIGNMENT_TOKEN);
+		addToken(L"/", DIVIDE_TOKEN);
+		addToken(L"%=", MODULO_ASSIGNMENT_TOKEN);
+		addToken(L"%", MODULO_TOKEN);
+		addToken(L"||", OR_TOKEN);
+		addToken(L"|=", BITWISE_AND_ASSIGNMENT_TOKEN);
+		addToken(L"|", BITWISE_OR_TOKEN);
+		addToken(L"&&", AND_TOKEN);
+		addToken(L"&=", BITWISE_OR_ASSIGNMENT_TOKEN);
+		addToken(L"&", BITWISE_AND_TOKEN);
+		addToken(L"^=", BITWISE_XOR_ASSIGNMENT_TOKEN);
+		addToken(L"^", BITWISE_XOR_TOKEN);
+		addToken(L"~", BITWISE_NOT_TOKEN);
+		addToken(L"case", CASE_TOKEN);
+		addToken(L"class", CLASS_TOKEN);
+		addToken(L"default", DEFAULT_TOKEN);
+		addToken(L"do", DO_TOKEN);
+		addToken(L"else", ELSE_TOKEN);
+		addToken(L"for", FOR_TOKEN);
+		addToken(L"function", FUNCTION_TOKEN);
+		addToken(L"if", IF_TOKEN);
+		addToken(L"in", IN_TOKEN);
+		addToken(L"not", NOT_TOKEN);
+		addToken(L"return", RETURN_TOKEN);
+		addToken(L"switch", SWITCH_TOKEN);
+		addToken(L"while", WHILE_TOKEN);
 	}
 
 	// specify a new token to the scanner
-	void addToken(const std::string text, int token)
+	void addToken(const std::wstring text, int token)
 	{
 		// add token to lookup
 		tokens[token] = text;
@@ -203,7 +203,7 @@ public:
 	}
 
 	// load text to scan
-	void loadText(const std::string t)
+	void loadText(const std::wstring t)
 	{
 		// save text to be scanned
 		text = t;
@@ -222,27 +222,27 @@ public:
 	{
 		// skip all white space and comments
 		while (isspace(text[position]) ||
-			   (text[position] == '#') ||
-			   (text[position] == '/' && text[position + 1] == '*') ||
-			   (text[position] == '/' && text[position + 1] == '/'))
+			   (text[position] == L'#') ||
+			   (text[position] == L'/' && text[position + 1] == L'*') ||
+			   (text[position] == L'/' && text[position + 1] == L'/'))
 		{
 			// skip white space
 			while (isspace(text[position]))
 			{
-				if (text[position] == '\n')
+				if (text[position] == L'\n')
 					lineNumber++;
 
 				position++;
 			}
 
 			// skip C style comments
-			if (text[position] == '/' && text[position + 1] == '*')
+			if (text[position] == L'/' && text[position + 1] == L'*')
 			{
 				position += 2;
 
-				while (position < size && !(text[position] == '*' && text[position + 1] == '/'))
+				while (position < size && !(text[position] == L'*' && text[position + 1] == L'/'))
 				{
-					if (text[position] == '\n')
+					if (text[position] == L'\n')
 						lineNumber++;
 
 					position++;
@@ -253,11 +253,11 @@ public:
 			}
 
 			// skip C++ style comments
-			else if (text[position] == '/' && text[position + 1] == '/')
+			else if (text[position] == L'/' && text[position + 1] == L'/')
 			{
 				position += 2;
 
-				while (position < size && !(text[position + 1] == '\n'))
+				while (position < size && !(text[position + 1] == L'\n'))
 					position++;
 
 				if (position < size)
@@ -268,11 +268,11 @@ public:
 			}
 
 			// skip shell style comments
-			else if (text[position] == '#')
+			else if (text[position] == L'#')
 			{
 				position++;
 
-				while (position < size && !(text[position + 1] == '\n'))
+				while (position < size && !(text[position + 1] == L'\n'))
 					position++;
 
 				if (position < size)
@@ -292,24 +292,24 @@ public:
 			token = EOS_TOKEN;
 
 		// handle numerical values
-		else if (std::isdigit(text[position]) || (text[position] == '-' && position < size && std::isdigit(text[position + 1])))
+		else if (std::isdigit(text[position]) || (text[position] == L'-' && position < size && std::isdigit(text[position + 1])))
 		{
 			size_t start = position;
 
-			if (text[position] == '-')
+			if (text[position] == L'-')
 				position++;
 
 			while (std::isdigit(text[position]))
 				position++;
 
-			if (text[position] == '.' && position < size && std::isdigit(text[position + 1]))
+			if (text[position] == L'.' && position < size && std::isdigit(text[position + 1]))
 			{
 				position++;
 
 				while (std::isdigit(text[position]))
 					position++;
 
-				if (tolower(text[position]) == 'e' && position < size)
+				if (tolower(text[position]) == L'e' && position < size)
 				{
 					position++;
 
@@ -329,53 +329,53 @@ public:
 		}
 
 		// handle strings
-		else if (text[position] == '"' || text[position] == '\'')
+		else if (text[position] == L'"' || text[position] == L'\'')
 		{
-			char terminator = text[position++];
-			stringValue = "";
+			wchar_t terminator = text[position++];
+			stringValue = L"";
 
 			while (position < size && text[position] != terminator)
 			{
 				// is this a new line?
-				if (text[position] == '\n')
+				if (text[position] == L'\n')
 					lineNumber++;
 
-				if (text[position] == '\\')
+				if (text[position] == L'\\')
 				{
 					position++;
 
 					if (position < size)
 					{
-						char character = text[position++];
+						wchar_t character = text[position++];
 
 						switch (character)
 						{
-							case 'a':
-								stringValue += '\a';
+							case L'a':
+								stringValue += L'\a';
 								break;
 
-							case 'b':
-								stringValue += '\b';
+							case L'b':
+								stringValue += L'\b';
 								break;
 
-							case 'f':
-								stringValue += '\f';
+							case L'f':
+								stringValue += L'\f';
 								break;
 
-							case 'n':
-								stringValue += '\n';
+							case L'n':
+								stringValue += L'\n';
 								break;
 
-							case 'r':
-								stringValue += '\r';
+							case L'r':
+								stringValue += L'\r';
 								break;
 
-							case 't':
-								stringValue += '\t';
+							case L't':
+								stringValue += L'\t';
 								break;
 
-							case 'v':
-								stringValue += '\v';
+							case L'v':
+								stringValue += L'\v';
 								break;
 
 							default:
@@ -395,9 +395,9 @@ public:
 		}
 
 		// handle identifiers (and tokens with identifier structure)
-		else if (text[position] == '_' || std::isalpha(text[position]))
+		else if (text[position] == L'_' || std::isalpha(text[position]))
 		{
-			while (text[position] == '_' || std::isalnum(text[position]))
+			while (text[position] == L'_' || std::isalnum(text[position]))
 				position++;
 
 			size_t state = 0;
@@ -437,42 +437,42 @@ public:
 	OtToken getToken() { return token; }
 	bool matchToken(OtToken _token) { return token == _token; }
 	size_t getTokenStart() { return tokenStart; }
-	std::string getText() { return text.substr(tokenStart, position - tokenStart); }
-	std::string getTextFrom(size_t start) { return text.substr(start, tokenStart - start); }
+	std::wstring getText() { return text.substr(tokenStart, position - tokenStart); }
+	std::wstring getTextFrom(size_t start) { return text.substr(start, tokenStart - start); }
 	long getInteger() { return integerValue; }
 	double getReal() { return realValue; }
-	std::string getString() { return stringValue; }
+	std::wstring getString() { return stringValue; }
 
 	// throw an exection
-	void error(std::string message)
+	void error(std::wstring message)
 	{
 		// find start of line
 		size_t start = tokenStart;
 
-		while (start && text[start - 1] != '\n')
+		while (start && text[start - 1] != L'\n')
 			start--;
 
 		// find end of line
 		size_t end = start;
 
-		while (start < size && text[end] != '\n')
+		while (start < size && text[end] != L'\n')
 			end++;
 
 		// extract line and create marker
-		std::string line = text.substr(start, end - start);
-		std::string marker;
+		std::wstring line = text.substr(start, end - start);
+		std::wstring marker;
 
 		for (size_t c = 0; c < tokenStart - start; c++)
 			if (std::isspace(line[c]))
 				marker +=line[c];
 
 			else
-				marker += ' ';
+				marker += L' ';
 
-		marker += '^';
+		marker += L'^';
 
 		// throw exception
-		OT_EXCEPT("%s on line %d:\n%s\n%s", message.c_str(), tokenLine, line.c_str(), marker.c_str());
+		OT_EXCEPT(L"%s on line %d:\n%s\n%s", message.c_str(), tokenLine, line.c_str(), marker.c_str());
 	}
 
 	// see if the current token is equal to the specified token
@@ -486,7 +486,7 @@ public:
 		}
 
 		else
-			error(OtFormat("Expected [%s]", tokens[t].c_str()));
+			error(OtFormat(L"Expected [%s]", tokens[t].c_str()));
 	}
 
 	// state definition for token state/transition table
@@ -511,13 +511,13 @@ public:
 	};
 
 	// token lookup
-	std::map<OtToken, std::string> tokens;
+	std::map<OtToken, std::wstring> tokens;
 
 	// token state/transition table
 	std::vector<OtScannerState> stateTable;
 
 	// text to be scanned
-	std::string text;
+	std::wstring text;
 
 	// scanner state
 	size_t size;
@@ -529,5 +529,5 @@ public:
 	OtToken token;
 	long integerValue;
 	double realValue;
-	std::string stringValue;
+	std::wstring stringValue;
 };

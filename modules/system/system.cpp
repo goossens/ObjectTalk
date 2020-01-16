@@ -30,6 +30,6 @@
 
 void init(OtObject context)
 {
-	context->set("System", OtClassClass::create(OtSystemClass::getMeta()));
-	context->set("Path", OtClassClass::create(OtPathClass::getMeta()));
+	context->set(L"System", OtClassClass::create(OtSystemClass::getMeta()));
+	context->set(L"Path", OtClassClass::create(OtPathClass::getMeta()));
 }

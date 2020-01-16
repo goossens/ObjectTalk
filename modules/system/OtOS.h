@@ -35,43 +35,43 @@ public:
 	OtOSClass() {}
 
 	// see if environment variable exists
-	bool hasenv(const std::string& name)
+	bool hasenv(const std::wstring& name)
 	{
 		size_t size = OT_MAX_BUFFER;
 		char value[size];
 		int result = uv_os_getenv(name.c_str(), value, &size);
 
 		if (result == UV_ENOBUFS)
-			OT_EXCEPT("Environment variable [%s] of size %d does not fit in buffer of size %d", name.c_str(), size, UV_ENOBUFS);
+			OT_EXCEPT(L"Environment variable [%s] of size %d does not fit in buffer of size %d", name.c_str(), size, UV_ENOBUFS);
 
 		return result != UV_ENOENT;
 	}
 
 	// get environment variable
-	std::string getenv(const std::string& name)
+	std::wstring getenv(const std::wstring& name)
 	{
 		size_t size = OT_MAX_BUFFER;
 		char value[size];
 		int result = uv_os_getenv(name.c_str(), value, &size);
 
 		if (result == UV_ENOBUFS)
-			OT_EXCEPT("Environment variable [%s] of size %d does not fit in buffer of size %d", name.c_str(), size, UV_ENOBUFS);
+			OT_EXCEPT(L"Environment variable [%s] of size %d does not fit in buffer of size %d", name.c_str(), size, UV_ENOBUFS);
 
 		if (result == UV_ENOENT)
 			return 0;
 
 		else
-			return std::string(value);
+			return std::wstring(value);
 	}
 
 	// set environment variable
-	void setenv(const std::string& name, const std::string& value)
+	void setenv(const std::wstring& name, const std::wstring& value)
 	{
 		uv_os_setenv(name.c_str(), value.c_str());
 	}
 
 	// unset environment variable
-	void unsetenv(const std::string& name)
+	void unsetenv(const std::wstring& name)
 	{
 		uv_os_unsetenv(name.c_str());
 	}
@@ -83,12 +83,12 @@ public:
 
 		if (!type)
 		{
-			type = OtTypeClass::create<OtOSClass>("OS", OtSystemClass::getMeta());
+			type = OtTypeClass::create<OtOSClass>(L"OS", OtSystemClass::getMeta());
 
-			type->set("hasenv", OtFunctionCreate(&OtOSClass::hasenv));
-			type->set("getenv", OtFunctionCreate(&OtOSClass::getenv));
-			type->set("setenv", OtFunctionCreate(&OtOSClass::setenv));
-			type->set("unsetenv", OtFunctionCreate(&OtOSClass::unsetenv));
+			type->set(L"hasenv", OtFunctionCreate(&OtOSClass::hasenv));
+			type->set(L"getenv", OtFunctionCreate(&OtOSClass::getenv));
+			type->set(L"setenv", OtFunctionCreate(&OtOSClass::setenv));
+			type->set(L"unsetenv", OtFunctionCreate(&OtOSClass::unsetenv));
 		}
 
 		return type;

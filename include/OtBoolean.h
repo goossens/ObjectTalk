@@ -36,7 +36,7 @@ public:
 	operator long() { return value ? 1 : 0; }
 	operator size_t() { return value ? 1 : 0; }
 	operator double() { return value ? 1.0 : 0.0; }
-	operator std::string() { return value ? "true" : "false"; }
+	operator std::wstring() { return value ? L"true" : L"false"; }
 
 	bool logicalAnd(bool operand) { return value && operand; }
 	bool logicalOr(bool operand) { return value || operand; }
@@ -52,14 +52,14 @@ public:
 
 		if (!type)
 		{
-			type = OtTypeClass::create<OtBooleanClass>("Boolean", OtPrimitiveClass::getMeta());
+			type = OtTypeClass::create<OtBooleanClass>(L"Boolean", OtPrimitiveClass::getMeta());
 
-			type->set("__and__", OtFunctionCreate(&OtBooleanClass::logicalAnd));
-			type->set("__or__", OtFunctionCreate(&OtBooleanClass::logicalOr));
-			type->set("__not__", OtFunctionCreate(&OtBooleanClass::logicalNot));
+			type->set(L"__and__", OtFunctionCreate(&OtBooleanClass::logicalAnd));
+			type->set(L"__or__", OtFunctionCreate(&OtBooleanClass::logicalOr));
+			type->set(L"__not__", OtFunctionCreate(&OtBooleanClass::logicalNot));
 
-			type->set("__eq__", OtFunctionCreate(&OtBooleanClass::equal));
-			type->set("__ne__", OtFunctionCreate(&OtBooleanClass::notEqual));
+			type->set(L"__eq__", OtFunctionCreate(&OtBooleanClass::equal));
+			type->set(L"__ne__", OtFunctionCreate(&OtBooleanClass::notEqual));
 		}
 
 		return type;

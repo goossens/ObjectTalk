@@ -28,78 +28,78 @@ public:
 		OtObject context = OtObjectClass::create();
 
 		// add default constants
-		context->set("true", OtBooleanClass::create(true));
-		context->set("false", OtBooleanClass::create(false));
-		context->set("null", nullptr);
+		context->set(L"true", OtBooleanClass::create(true));
+		context->set(L"false", OtBooleanClass::create(false));
+		context->set(L"null", nullptr);
 
 		// add default functions
-		context->set("assert", OtFunctionClass::create([] (OtObject context, size_t c, OtObject* p)->OtObject
+		context->set(L"assert", OtFunctionClass::create([] (OtObject context, size_t c, OtObject* p)->OtObject
 		{
 			if (c != 1)
-				OT_EXCEPT("Function [assert] expects 1 parameter, %d given", c);
+				OT_EXCEPT(L"Function [assert] expects 1 parameter, %d given", c);
 
 			OtObjectTalk ot;
-			std::string assertion = p[0]->operator std::string();
+			std::wstring assertion = p[0]->operator std::wstring();
 			OtObject result = ot.processText(assertion, context);
 
 			if (!result->operator bool())
-				OT_EXCEPT("Assertion [%s] failed", assertion.c_str());
+				OT_EXCEPT(L"Assertion [%s] failed", assertion.c_str());
 
 			return nullptr;
 		}));
 
-		context->set("import", OtFunctionClass::create([] (OtObject context, size_t c, OtObject* p)->OtObject
+		context->set(L"import", OtFunctionClass::create([] (OtObject context, size_t c, OtObject* p)->OtObject
 		{
 			if (c != 1)
-				OT_EXCEPT("Function [import] expects 1 parameter, %d given", c);
+				OT_EXCEPT(L"Function [import] expects 1 parameter, %d given", c);
 
-			return processFile(p[0]->operator std::string(), context);
+			return processFile(p[0]->operator std::wstring(), context);
 		}));
 
-		context->set("run", OtFunctionClass::create([] (OtObject, size_t c, OtObject* p)->OtObject
+		context->set(L"run", OtFunctionClass::create([] (OtObject, size_t c, OtObject* p)->OtObject
 		{
 			if (c != 1)
-				OT_EXCEPT("Function [run] expects 1 parameter, %d given", c);
+				OT_EXCEPT(L"Function [run] expects 1 parameter, %d given", c);
 
 			OtObject context = createDefaultContext();
-			std::string path = p[0]->operator std::string();
-			context->set("__FILE__", OtStringClass::create(path));
+			std::wstring path = p[0]->operator std::wstring();
+			context->set(L"__FILE__", OtStringClass::create(path));
 
 			return processFile(path, context);
 		}));
 
-		context->set("print", OtFunctionClass::create([] (OtObject, size_t c, OtObject* p)->OtObject
+		context->set(L"print", OtFunctionClass::create([] (OtObject, size_t c, OtObject* p)->OtObject
 		{
 			for (size_t i = 0; i < c; i++)
-				std::cout << (std::string) *p[i];
+				std::wcout << (std::wstring) *p[i];
 
-			std::cout << std::endl;
+			std::wcout << std::endl;
 			return nullptr;
 		}));
 
 		// add default classes
-		context->set("Object", OtClassClass::create(OtObjectClass::getMeta()));
+		context->set(L"Object", OtClassClass::create(OtObjectClass::getMeta()));
 
-		context->set("Internal", OtClassClass::create(OtInternalClass::getMeta()));
-		context->set("Class", OtClassClass::create(OtClassClass::getMeta()));
+		context->set(L"Internal", OtClassClass::create(OtInternalClass::getMeta()));
+		context->set(L"Class", OtClassClass::create(OtClassClass::getMeta()));
 
-		context->set("Primitive", OtClassClass::create(OtPrimitiveClass::getMeta()));
-		context->set("Boolean", OtClassClass::create(OtBooleanClass::getMeta()));
-		context->set("Integer", OtClassClass::create(OtIntegerClass::getMeta()));
-		context->set("Real", OtClassClass::create(OtRealClass::getMeta()));
-		context->set("String", OtClassClass::create(OtStringClass::getMeta()));
-		context->set("Function", OtClassClass::create(OtFunctionClass::getMeta()));
+		context->set(L"Primitive", OtClassClass::create(OtPrimitiveClass::getMeta()));
+		context->set(L"Boolean", OtClassClass::create(OtBooleanClass::getMeta()));
+		context->set(L"Integer", OtClassClass::create(OtIntegerClass::getMeta()));
+		context->set(L"Real", OtClassClass::create(OtRealClass::getMeta()));
+		context->set(L"String", OtClassClass::create(OtStringClass::getMeta()));
+		context->set(L"Function", OtClassClass::create(OtFunctionClass::getMeta()));
 
-		context->set("Collection", OtClassClass::create(OtCollectionClass::getMeta()));
-		context->set("Array", OtClassClass::create(OtArrayClass::getMeta()));
-		context->set("Dict", OtClassClass::create(OtDictClass::getMeta()));
+		context->set(L"Collection", OtClassClass::create(OtCollectionClass::getMeta()));
+		context->set(L"Array", OtClassClass::create(OtArrayClass::getMeta()));
+		context->set(L"Dict", OtClassClass::create(OtDictClass::getMeta()));
 
 		// return default context
 		return context;
 	}
 
 	// compile and run ObjectTalk text
-	static OtObject processText(const std::string& text, OtObject context)
+	static OtObject processText(const std::wstring& text, OtObject context)
 	{
 		// compile code, run it and return result
 		OtCompiler compiler;
@@ -108,11 +108,11 @@ public:
 	}
 
 	// compile and run an ObjectTalk file
-	static OtObject processFile(const std::string& path, OtObject context)
+	static OtObject processFile(const std::wstring& path, OtObject context)
 	{
 		// get text from file and process it
 		std::ifstream stream(path);
-		std::stringstream buffer;
+		std::wstringstream buffer;
 		buffer << stream.rdbuf();
 		return processText(buffer.str(), context);
 	}

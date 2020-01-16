@@ -34,36 +34,36 @@ class OtURIClass : public OtNetClass
 public:
 	// constructors
 	OtURIClass() {}
-	OtURIClass(const std::string& path) { parse(path); }
+	OtURIClass(const std::wstring& path) { parse(path); }
 
 	// initialize URI
 	OtObject init(OtObject, size_t count, OtObject* parameters)
 	{
 		if (count != 1)
-			OT_EXCEPT("URI initializer expected 1 parameter not [%d]", count);
+			OT_EXCEPT(L"URI initializer expected 1 parameter not [%d]", count);
 
-		parse(parameters[0]->operator std::string());
+		parse(parameters[0]->operator std::wstring());
 		return getSharedPtr();
 	}
 
 	// get URI parts
-	operator std::string() { return uri; }
+	operator std::wstring() { return uri; }
 	const char* c_str() { return uri.c_str(); }
-	const std::string& getURI() { return uri; }
-	const std::string& getScheme() { return scheme; }
-	const std::string& getAuthority() { return authority; }
-	const std::string& getUsername() { return username; }
-	const std::string& getPassword() { return password; }
-	const std::string& getHost() { return host; }
+	const std::wstring& getURI() { return uri; }
+	const std::wstring& getScheme() { return scheme; }
+	const std::wstring& getAuthority() { return authority; }
+	const std::wstring& getUsername() { return username; }
+	const std::wstring& getPassword() { return password; }
+	const std::wstring& getHost() { return host; }
 	long getPort() { return port; }
-	const std::string& getPath() { return path; }
-	const std::string& getDirectory() { return directory; }
-	const std::string& getFilename() { return filename; }
-	const std::string& getStem() { return stem; }
-	const std::string& getExtension() { return extension; }
-	const std::string& getQuery() { return query; }
-	const std::string& getFragment() { return fragment; }
-	const std::map<std::string, std::string>& getQueryParams() { return queryParams; }
+	const std::wstring& getPath() { return path; }
+	const std::wstring& getDirectory() { return directory; }
+	const std::wstring& getFilename() { return filename; }
+	const std::wstring& getStem() { return stem; }
+	const std::wstring& getExtension() { return extension; }
+	const std::wstring& getQuery() { return query; }
+	const std::wstring& getFragment() { return fragment; }
+	const std::map<std::wstring, std::wstring>& getQueryParams() { return queryParams; }
 
 	OtObject getParams()
 	{
@@ -76,7 +76,7 @@ public:
 	}
 
 	// parse URI string
-	void parse(const std::string& uri)
+	void parse(const std::wstring& uri)
 	{
 		this->uri = uri;
 
@@ -88,7 +88,7 @@ public:
 		std::smatch match;
 
 		if (!std::regex_match(uri, match, uriRegex))
-			OT_EXCEPT("Invalid URI [%s]", uri.c_str());
+			OT_EXCEPT(L"Invalid URI [%s]", uri.c_str());
 
 		scheme = submatch(match, 1);
 		std::transform(scheme.begin(), scheme.end(), scheme.begin(), ::tolower);
@@ -109,7 +109,7 @@ public:
 			std::smatch authorityMatch;
 
 			if (!std::regex_match(authority, authorityMatch, authorityRegex))
-				OT_EXCEPT("Invalid URI authority [%s]", authority.c_str());
+				OT_EXCEPT(L"Invalid URI authority [%s]", authority.c_str());
 
 			username = submatch(authorityMatch, 1);
 			password = submatch(authorityMatch, 2);
@@ -121,7 +121,7 @@ public:
 
 			auto slash = path.rfind('/');
 
-			if (slash == std::string::npos)
+			if (slash == std::wstring::npos)
 			{
 				directory = "";
 				filename = path;
@@ -135,7 +135,7 @@ public:
 
 			auto period = filename.rfind('.');
 
-			if (period == std::string::npos)
+			if (period == std::wstring::npos)
 			{
 				stem = filename;
 				extension = "";
@@ -160,7 +160,7 @@ public:
 				"(?=(&|$))");	// next should be end of query or start of next parameter
 
 			for (auto i = std::sregex_iterator(query.begin(), query.end(), queryParamRegex); i != std::sregex_iterator(); i++)
-				queryParams[std::string((*i)[2].first, (*i)[2].second)] = std::string((*i)[3].first, (*i)[3].second);
+				queryParams[std::wstring((*i)[2].first, (*i)[2].second)] = std::wstring((*i)[3].first, (*i)[3].second);
 		}
 
 		fragment = submatch(match, 4);
@@ -204,11 +204,11 @@ public:
 	}
 
 	// helper function to trim string
-	static std::string trim(const std::string& value)
+	static std::wstring trim(const std::wstring& value)
 	{
 		const auto begin = value.find_first_not_of(" \t\n\r\f\v");
 
-		if (begin == std::string::npos)
+		if (begin == std::wstring::npos)
 			return "";
 
 		else
@@ -218,7 +218,7 @@ public:
 	// get URI as string
 	OtObject head()
 	{
-		std::stringstream header;
+		std::wstringstream header;
 
 		CURL* curl = OtCurl::instance();
 		curl_easy_setopt(curl, CURLOPT_URL, uri.c_str());
@@ -230,10 +230,10 @@ public:
 		CURLcode res = curl_easy_perform(curl);
 
 		if (res != CURLE_OK)
-			OT_EXCEPT("Error [%s]", curl_easy_strerror(res));
+			OT_EXCEPT(L"Error [%s]", curl_easy_strerror(res));
 
 		OtDict headers = OtDictClass::create();
-		std::string line;
+		std::wstring line;
 
 		std::getline(header, line);
 		headers->operator[] ("Result") = OtStringClass::create(trim(line));
@@ -242,7 +242,7 @@ public:
 		{
 			size_t index = line.find(':', 0);
 
-			if (index != std::string::npos)
+			if (index != std::wstring::npos)
 				headers->operator[] (trim(line.substr(0, index))) =
 					OtStringClass::create(trim(line.substr(index + 1)));
 		}
@@ -251,7 +251,7 @@ public:
 	}
 
 	// get URI as string
-	std::string getString()
+	std::wstring getString()
 	{
 		std::ostringstream out;
 
@@ -265,13 +265,13 @@ public:
 		CURLcode res = curl_easy_perform(curl);
 
 		if (res != CURLE_OK)
-			OT_EXCEPT("Error [%s]", curl_easy_strerror(res));
+			OT_EXCEPT(L"Error [%s]", curl_easy_strerror(res));
 
 		return out.str();
 	}
 
 	// get URI as string
-	void getFile(const std::string& filename)
+	void getFile(const std::wstring& filename)
 	{
 		std::ofstream out;
 		out.open(filename.c_str());
@@ -287,11 +287,11 @@ public:
 		out.close();
 
 		if (res != CURLE_OK)
-			OT_EXCEPT("Error [%s]", curl_easy_strerror(res));
+			OT_EXCEPT(L"Error [%s]", curl_easy_strerror(res));
 	}
 
 	// put string to URI
-	void putString(const std::string& string)
+	void putString(const std::wstring& string)
 	{
 		std::istringstream in(string);
 
@@ -306,11 +306,11 @@ public:
 		CURLcode res = curl_easy_perform(curl);
 
 		if (res != CURLE_OK)
-			OT_EXCEPT("Error [%s]", curl_easy_strerror(res));
+			OT_EXCEPT(L"Error [%s]", curl_easy_strerror(res));
 	}
 
 	// put file to URI
-	void putFile(const std::string& filename)
+	void putFile(const std::wstring& filename)
 	{
 		std::ifstream in;
 		in.open(filename.c_str());
@@ -326,7 +326,7 @@ public:
 		in.close();
 
 		if (res != CURLE_OK)
-			OT_EXCEPT("Error [%s]", curl_easy_strerror(res));
+			OT_EXCEPT(L"Error [%s]", curl_easy_strerror(res));
 	}
 
 	// get type definition
@@ -336,36 +336,36 @@ public:
 
 		if (!type)
 		{
-			type = OtTypeClass::create<OtURIClass>("Path", OtNetClass::getMeta());
-			type->set("__init__", OtFunctionClass::create(&OtURIClass::init));
+			type = OtTypeClass::create<OtURIClass>(L"Path", OtNetClass::getMeta());
+			type->set(L"__init__", OtFunctionClass::create(&OtURIClass::init));
 
-			type->set("scheme", OtFunctionCreate(&OtURIClass::getScheme));
-			type->set("authority", OtFunctionCreate(&OtURIClass::getAuthority));
-			type->set("user", OtFunctionCreate(&OtURIClass::getUsername));
-			type->set("password", OtFunctionCreate(&OtURIClass::getPassword));
-			type->set("host", OtFunctionCreate(&OtURIClass::getHost));
-			type->set("port", OtFunctionCreate(&OtURIClass::getPort));
-			type->set("path", OtFunctionCreate(&OtURIClass::getPath));
-			type->set("directory", OtFunctionCreate(&OtURIClass::getDirectory));
-			type->set("filename", OtFunctionCreate(&OtURIClass::getFilename));
-			type->set("stem", OtFunctionCreate(&OtURIClass::getStem));
-			type->set("extension", OtFunctionCreate(&OtURIClass::getExtension));
-			type->set("query", OtFunctionCreate(&OtURIClass::getQuery));
-			type->set("params", OtFunctionCreate(&OtURIClass::getParams));
-			type->set("fragment", OtFunctionCreate(&OtURIClass::getFragment));
+			type->set(L"scheme", OtFunctionCreate(&OtURIClass::getScheme));
+			type->set(L"authority", OtFunctionCreate(&OtURIClass::getAuthority));
+			type->set(L"user", OtFunctionCreate(&OtURIClass::getUsername));
+			type->set(L"password", OtFunctionCreate(&OtURIClass::getPassword));
+			type->set(L"host", OtFunctionCreate(&OtURIClass::getHost));
+			type->set(L"port", OtFunctionCreate(&OtURIClass::getPort));
+			type->set(L"path", OtFunctionCreate(&OtURIClass::getPath));
+			type->set(L"directory", OtFunctionCreate(&OtURIClass::getDirectory));
+			type->set(L"filename", OtFunctionCreate(&OtURIClass::getFilename));
+			type->set(L"stem", OtFunctionCreate(&OtURIClass::getStem));
+			type->set(L"extension", OtFunctionCreate(&OtURIClass::getExtension));
+			type->set(L"query", OtFunctionCreate(&OtURIClass::getQuery));
+			type->set(L"params", OtFunctionCreate(&OtURIClass::getParams));
+			type->set(L"fragment", OtFunctionCreate(&OtURIClass::getFragment));
 
-			type->set("head", OtFunctionCreate(&OtURIClass::head));
-			type->set("getString", OtFunctionCreate(&OtURIClass::getString));
-			type->set("getFile", OtFunctionCreate(&OtURIClass::getFile));
-			type->set("putString", OtFunctionCreate(&OtURIClass::putString));
-			type->set("putFile", OtFunctionCreate(&OtURIClass::putFile));
+			type->set(L"head", OtFunctionCreate(&OtURIClass::head));
+			type->set(L"getString", OtFunctionCreate(&OtURIClass::getString));
+			type->set(L"getFile", OtFunctionCreate(&OtURIClass::getFile));
+			type->set(L"putString", OtFunctionCreate(&OtURIClass::putString));
+			type->set(L"putFile", OtFunctionCreate(&OtURIClass::putFile));
 		}
 
 		return type;
 	}
 
 	// create a new object
-	static OtURI create(const std::string& value)
+	static OtURI create(const std::wstring& value)
 	{
 		OtURI Path = std::make_shared<OtURIClass>(value);
 		Path->setType(getMeta());
@@ -373,25 +373,25 @@ public:
 	}
 
 private:
-	std::string submatch(const std::smatch& match, int index)
+	std::wstring submatch(const std::smatch& match, int index)
 	{
 		auto& sub = match[index];
-		return std::string(sub.first, sub.second);
+		return std::wstring(sub.first, sub.second);
 	}
 
-	std::string uri;
-	std::string scheme;
-	std::string authority;
-	std::string username;
-	std::string password;
-	std::string host;
+	std::wstring uri;
+	std::wstring scheme;
+	std::wstring authority;
+	std::wstring username;
+	std::wstring password;
+	std::wstring host;
 	int port;
-	std::string path;
-	std::string directory;
-	std::string filename;
-	std::string stem;
-	std::string extension;
-	std::string query;
-	std::string fragment;
-	std::map<std::string, std::string> queryParams;
+	std::wstring path;
+	std::wstring directory;
+	std::wstring filename;
+	std::wstring stem;
+	std::wstring extension;
+	std::wstring query;
+	std::wstring fragment;
+	std::map<std::wstring, std::wstring> queryParams;
 };

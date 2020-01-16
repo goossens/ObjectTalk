@@ -35,7 +35,7 @@ public:
 	static OtType getMeta()
 	{
 		static OtType type = nullptr;
-		if (!type) { type = OtTypeClass::create<OtPrimitiveClass>("Primitive", OtObjectClass::getMeta()); }
+		if (!type) { type = OtTypeClass::create<OtPrimitiveClass>(L"Primitive", OtObjectClass::getMeta()); }
 		return type;
 	}
 };

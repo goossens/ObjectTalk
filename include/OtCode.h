@@ -61,13 +61,13 @@ public:
 
 	OtInstruction(OtOpcode o) { opcode = o; integer = 0; value = nullptr; }
 	OtInstruction(OtOpcode o, long i)  { opcode = o; integer = i; value = nullptr; }
-	OtInstruction(OtOpcode o, const std::string& s)  { opcode = o; string = s; integer = 0; value = nullptr; }
-	OtInstruction(OtOpcode o, const std::string& s, long i)  { opcode = o; string = s; integer = i; value = nullptr; }
+	OtInstruction(OtOpcode o, const std::wstring& s)  { opcode = o; string = s; integer = 0; value = nullptr; }
+	OtInstruction(OtOpcode o, const std::wstring& s, long i)  { opcode = o; string = s; integer = i; value = nullptr; }
 	OtInstruction(OtOpcode o, OtObject v)  { opcode = o; integer = 0; value = v; }
 
 	OtOpcode opcode;
 	long integer;
-	std::string string;
+	std::wstring string;
 	OtObject value;
 };
 
@@ -88,11 +88,11 @@ public:
 	void jump(size_t offset) { push_back(OtInstruction(OtInstruction::JUMP, offset)); }
 	void jumpTrue(size_t offset) { push_back(OtInstruction(OtInstruction::JUMP_TRUE, offset)); }
 	void jumpFalse(size_t offset) { push_back(OtInstruction(OtInstruction::JUMP_FALSE, offset)); }
-	void method(const std::string& name, size_t count) { push_back(OtInstruction(OtInstruction::METHOD, name, count)); }
+	void method(const std::wstring& name, size_t count) { push_back(OtInstruction(OtInstruction::METHOD, name, count)); }
 	void exit() { push_back(OtInstruction(OtInstruction::EXIT)); }
-	void set(const std::string& name) { push_back(OtInstruction(OtInstruction::SET, name)); }
-	void get(const std::string& name) { push_back(OtInstruction(OtInstruction::GET, name)); }
-	void saveArg(size_t index, const std::string& name) { push_back(OtInstruction(OtInstruction::SAVE_ARG, name, index)); }
+	void set(const std::wstring& name) { push_back(OtInstruction(OtInstruction::SET, name)); }
+	void get(const std::wstring& name) { push_back(OtInstruction(OtInstruction::GET, name)); }
+	void saveArg(size_t index, const std::wstring& name) { push_back(OtInstruction(OtInstruction::SAVE_ARG, name, index)); }
 	void saveArgs() { push_back(OtInstruction(OtInstruction::SAVE_ARGS)); }
 	void pushContext() { push_back(OtInstruction(OtInstruction::PUSH_CONTEXT)); }
 	void popContext() { push_back(OtInstruction(OtInstruction::POP_CONTEXT)); }
@@ -200,7 +200,7 @@ public:
 
 				case OtInstruction::SAVE_ARGS:
 					// save variable arguments to the local context
-					local->set("args", OtArrayClass::create(count, parameters));
+					local->set(L"args", OtArrayClass::create(count, parameters));
 					break;
 
 				case OtInstruction::PUSH_CONTEXT:

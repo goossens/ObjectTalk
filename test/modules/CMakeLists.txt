@@ -13,8 +13,8 @@
 #	See the License for the specific language governing permissions and
 #	limitations under the License.
 
-add_executable(ot ot.cpp)
+file(GLOB OT_TESTS "*.ot")
 
-target_compile_features(ot PRIVATE cxx_std_17)
-set_target_properties(ot PROPERTIES CXX_EXTENSIONS OFF)
-target_link_libraries(ot PRIVATE m)
+foreach(TEST ${OT_TESTS})
+	add_test(NAME ${TEST} COMMAND ot ${TEST})
+endforeach()

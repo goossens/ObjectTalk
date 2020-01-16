@@ -13,27 +13,7 @@
 //	See the License for the specific language governing permissions and
 //	limitations under the License.
 
-//	Test script for ObjectTalk operating system functions
-
-path = Path("/var/lib/test.a")
-assert('path.string() == "/var/lib/test.a"')
-assert('path.directory() == "/var/lib"')
-assert('path.filename() == "test.a"')
-assert('path.stem() == "test"')
-assert('path.extension() == ".a"')
-
-path = Path("../test.a")
-assert('path.string() == "../test.a"')
-assert('path.directory() == ".."')
-
-path = Path("test.a")
-assert('path.directory() == ""')
-
-path = Path("")
-assert('path.directory() == ""')
-
-path = Path("/")
-assert('path.directory() == ""')
+//	Test script for ObjectTalk net functions
 
 uri = URI("http://user:password@test.org:8080/a/b/c/d/test.txt?a=1&b=2")
 assert('uri.string() == "http://user:password@test.org:8080/a/b/c/d/test.txt?a=1&b=2"')
@@ -50,30 +30,5 @@ assert('uri.stem() == "test"')
 assert('uri.extension() == "txt"')
 assert('uri.query() == "a=1&b=2"')
 
-fs = FS()
-//print(URI("http://www.google.com/").getString())
-print(URI("http://www.google.com/").head())
-URI("http://www.google.com/").getFile("/tmp/google.html")
-assert('fs.filesize("/tmp/google.html") > 1')
-fs.rm("/tmp/google.html")
-
-os = OS()
-assert('os.hasenv("OBJECT_TALK") == false')
-os.setenv("OBJECT_TALK", "test")
-assert('os.hasenv("OBJECT_TALK") == true')
-assert('os.getenv("OBJECT_TALK") == "test"')
-os.unsetenv("OBJECT_TALK")
-assert('os.hasenv("OBJECT_TALK") == false')
-
-home = fs.gethome()
-tmp = fs.gettmp()
-cwd = fs.getcwd()
-
-fs.chdir(home)
-print("[" + fs.getcwd() + "]")
-assert('fs.getcwd() == home')
-fs.chdir(cwd)
-assert('fs.getcwd() == cwd')
-
 // Well done
-print("Passed all operating system tests")
+print("Passed all net tests")

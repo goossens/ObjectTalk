@@ -18,7 +18,8 @@ docker:
 	docker container rm ot
 
 dockerclean:
-	docker image rm ot
+	docker container rm ot; true
+	docker image rm ot; true
 
 apk:
 	abuild -F build

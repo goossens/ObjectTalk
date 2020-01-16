@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright 1993-2019 Johan A. Goossens
+//	Copyright 1993-2020 Johan A. Goossens
 //
 //	Licensed under the Apache License, Version 2.0 (the "License");
 //	you may not use this file except in compliance with the License.
@@ -42,7 +42,10 @@ public:
 		int result = uv_os_homedir(path, &size);
 
 		if (result == UV_ENOBUFS)
-			OT_EXCEPT(L"GETHOME of size %d does not fit in buffer of size %d", size, UV_ENOBUFS);
+			OT_EXCEPT(L"fs.gethome of size %d does not fit in buffer of size %d", size, UV_ENOBUFS);
+
+		else if (result)
+			OT_EXCEPT(L"fs.gethome failed: %s", uv_strerror(result));
 
 		return std::wstring(path);
 	}
@@ -55,7 +58,10 @@ public:
 		int result = uv_os_tmpdir(path, &size);
 
 		if (result == UV_ENOBUFS)
-			OT_EXCEPT(L"GETTMP of size %d does not fit in buffer of size %d", size, UV_ENOBUFS);
+			OT_EXCEPT(L"fs.gettmp of size %d does not fit in buffer of size %d", size, UV_ENOBUFS);
+
+		else if (result)
+			OT_EXCEPT(L"fs.gettmp failed: %s", uv_strerror(result));
 
 		return std::wstring(path);
 	}
@@ -66,7 +72,7 @@ public:
 		int result = uv_chdir(path.c_str());
 
 		if (result)
-			OT_EXCEPT(L"CHDIR failed: %s", uv_strerror(result));
+			OT_EXCEPT(L"fs.chdir failed: %s", uv_strerror(result));
 	}
 
 	// get current working directory
@@ -77,7 +83,10 @@ public:
 		int result = uv_cwd(path, &size);
 
 		if (result == UV_ENOBUFS)
-			OT_EXCEPT(L"GETCWD of size %d does not fit in buffer of size %d", size, UV_ENOBUFS);
+			OT_EXCEPT(L"fs.getcwd of size %d does not fit in buffer of size %d", size, UV_ENOBUFS);
+
+		else if (result)
+			OT_EXCEPT(L"fs.getcwd failed: %s", uv_strerror(result));
 
 		return std::wstring(path);
 	}
@@ -96,7 +105,7 @@ public:
 		while ((result = uv_fs_scandir_next(&req, &ent)) != UV_EOF)
 		{
 			if (result)
-				OT_EXCEPT(L"LS failed: %s", uv_strerror(result));
+				OT_EXCEPT(L"fs.ls failed: %s", uv_strerror(result));
 
 			content->push_back(OtPathClass::create(ent.name));
 		}
@@ -112,7 +121,7 @@ public:
 		result = uv_fs_stat(uv_default_loop(), &req, path.c_str(), 0);
 
 		if (result)
-			OT_EXCEPT(L"os.filesize failed: %s", uv_strerror(result));
+			OT_EXCEPT(L"fs.filesize failed: %s", uv_strerror(result));
 		
 		uv_stat_t* stat = uv_fs_get_statbuf(&req);
 		return (size_t) stat->st_size;
@@ -126,7 +135,7 @@ public:
 		result = uv_fs_unlink(uv_default_loop(), &req, path.c_str(), 0);
 
 		if (result)
-			OT_EXCEPT(L"os.rm failed: %s", uv_strerror(result));
+			OT_EXCEPT(L"fs.rm failed: %s", uv_strerror(result));
 	}
 
 	// get type definition

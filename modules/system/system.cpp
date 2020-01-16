@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright 1993-2019 Johan A. Goossens
+//	Copyright 1993-2020 Johan A. Goossens
 //
 //	Licensed under the Apache License, Version 2.0 (the "License");
 //	you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@
 
 #include "OtSystem.h"
 #include "OtPath.h"
+#include "OtOS.h"
+#include "OtFS.h"
 
 
 //
@@ -32,4 +34,6 @@ void init(OtObject context)
 {
 	context->set(L"System", OtClassClass::create(OtSystemClass::getMeta()));
 	context->set(L"Path", OtClassClass::create(OtPathClass::getMeta()));
+	context->set(L"OS", OtClassClass::create(OtOSClass::getMeta()));
+	context->set(L"FS", OtClassClass::create(OtFSClass::getMeta()));
 }

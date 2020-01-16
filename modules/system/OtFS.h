@@ -47,7 +47,7 @@ public:
 		else if (result)
 			OT_EXCEPT(L"fs.gethome failed: %s", uv_strerror(result));
 
-		return std::wstring(path);
+		return OtTextToWide(path);
 	}
 
 	// get temporary directory
@@ -63,13 +63,13 @@ public:
 		else if (result)
 			OT_EXCEPT(L"fs.gettmp failed: %s", uv_strerror(result));
 
-		return std::wstring(path);
+		return OtTextToWide(path);
 	}
 
 	// change current working directory
 	void chdir(const std::wstring& path)
 	{
-		int result = uv_chdir(path.c_str());
+		int result = uv_chdir(OtTextToNarrow(path).c_str());
 
 		if (result)
 			OT_EXCEPT(L"fs.chdir failed: %s", uv_strerror(result));
@@ -88,7 +88,7 @@ public:
 		else if (result)
 			OT_EXCEPT(L"fs.getcwd failed: %s", uv_strerror(result));
 
-		return std::wstring(path);
+		return OtTextToWide(path);
 	}
 
 	// get list of files in specified directory
@@ -100,14 +100,14 @@ public:
 		uv_dirent_t ent;
 		int result;
 
-		uv_fs_scandir(uv_default_loop(), &req, path.c_str(), 0, 0);
+		uv_fs_scandir(uv_default_loop(), &req, OtTextToNarrow(path).c_str(), 0, 0);
 
 		while ((result = uv_fs_scandir_next(&req, &ent)) != UV_EOF)
 		{
 			if (result)
 				OT_EXCEPT(L"fs.ls failed: %s", uv_strerror(result));
 
-			content->push_back(OtPathClass::create(ent.name));
+			content->push_back(OtPathClass::create(OtTextToWide(ent.name)));
 		}
 
 		return content;
@@ -118,7 +118,7 @@ public:
 	{
 		int result;
 		uv_fs_t req;
-		result = uv_fs_stat(uv_default_loop(), &req, path.c_str(), 0);
+		result = uv_fs_stat(uv_default_loop(), &req, OtTextToNarrow(path).c_str(), 0);
 
 		if (result)
 			OT_EXCEPT(L"fs.filesize failed: %s", uv_strerror(result));
@@ -132,7 +132,7 @@ public:
 	{
 		int result;
 		uv_fs_t req;
-		result = uv_fs_unlink(uv_default_loop(), &req, path.c_str(), 0);
+		result = uv_fs_unlink(uv_default_loop(), &req, OtTextToNarrow(path).c_str(), 0);
 
 		if (result)
 			OT_EXCEPT(L"fs.rm failed: %s", uv_strerror(result));

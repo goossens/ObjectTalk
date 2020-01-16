@@ -30,8 +30,6 @@
 
 int main(int argc, const char* argv[])
 {
-	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-
 	if (argc != 2)
 	{
 		std::cerr << "ot: usage: ot scriptname" << std::endl;
@@ -39,6 +37,6 @@ int main(int argc, const char* argv[])
 	}
 
 	OtObject context = OtObjectTalk::createDefaultContext();
-	OtObjectTalk::processFile(converter.from_bytes(std::string(argv[1])), context);
+	OtObjectTalk::processFile(OtTextToWide(argv[1]), context);
 	return 0;
 }

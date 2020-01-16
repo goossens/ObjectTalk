@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright 1993-2018 Johan A. Goossens
+//	Copyright 1993-2020 Johan A. Goossens
 //
 //	Licensed under the Apache License, Version 2.0 (the "License");
 //	you may not use this file except in compliance with the License.
@@ -66,10 +66,22 @@ inline bool OtTextCaseInsensitiveEqual(const std::wstring& s1, const std::wstrin
 
 
 //
-//	JSON Functions
+//	Conversion Functions
 //
 
-inline std::wstring OtTextToJSON(const std::wstring &text)
+inline std::wstring OtTextToWide(const std::string& narrow)
+{
+	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+	return converter.from_bytes(narrow);
+}
+
+inline std::string OtTextToNarrow(const std::wstring& wide)
+{
+	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+	return converter.to_bytes(wide);
+}
+
+inline std::wstring OtTextToJSON(const std::wstring& text)
 {
 	std::wostringstream o;
 	o << '"';

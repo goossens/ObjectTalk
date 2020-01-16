@@ -39,7 +39,7 @@ public:
 	{
 		size_t size = OT_MAX_BUFFER;
 		char value[size];
-		int result = uv_os_getenv(name.c_str(), value, &size);
+		int result = uv_os_getenv(OtTextToNarrow(name).c_str(), value, &size);
 
 		if (result == UV_ENOBUFS)
 			OT_EXCEPT(L"Environment variable [%s] of size %d does not fit in buffer of size %d", name.c_str(), size, UV_ENOBUFS);
@@ -52,7 +52,7 @@ public:
 	{
 		size_t size = OT_MAX_BUFFER;
 		char value[size];
-		int result = uv_os_getenv(name.c_str(), value, &size);
+		int result = uv_os_getenv(OtTextToNarrow(name).c_str(), value, &size);
 
 		if (result == UV_ENOBUFS)
 			OT_EXCEPT(L"Environment variable [%s] of size %d does not fit in buffer of size %d", name.c_str(), size, UV_ENOBUFS);
@@ -61,19 +61,19 @@ public:
 			return 0;
 
 		else
-			return std::wstring(value);
+			return OtTextToWide(value);
 	}
 
 	// set environment variable
 	void setenv(const std::wstring& name, const std::wstring& value)
 	{
-		uv_os_setenv(name.c_str(), value.c_str());
+		uv_os_setenv(OtTextToNarrow(name).c_str(), OtTextToNarrow(value).c_str());
 	}
 
 	// unset environment variable
 	void unsetenv(const std::wstring& name)
 	{
-		uv_os_unsetenv(name.c_str());
+		uv_os_unsetenv(OtTextToNarrow(name).c_str());
 	}
 
 	// get type definition

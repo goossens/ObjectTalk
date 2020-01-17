@@ -149,7 +149,7 @@ inline std::wstring OtTextFromJSON(const std::wstring text)
 					case L't':
 						c++;
 						o << L'\t';
-						//break;
+						break;
 
 					case L'u':
 						c++;

@@ -32,11 +32,22 @@ int main(int argc, const char* argv[])
 {
 	if (argc != 2)
 	{
-		std::cerr << "ot: usage: ot scriptname" << std::endl;
+		std::wcerr << "ot: usage: ot scriptname" << std::endl;
 		exit(EXIT_FAILURE);
 	}
 
 	OtObject context = OtObjectTalk::createDefaultContext();
-	OtObjectTalk::processFile(OtTextToWide(argv[1]), context);
+
+	try
+	{
+		OtObjectTalk::processFile(OtTextToWide(argv[1]), context);		
+	}
+
+	catch (const OtException& e)
+	{
+		std::wcerr << L"ot: error: " << e.what() << std::endl;
+		exit(EXIT_FAILURE);
+	}
+
 	return 0;
 }

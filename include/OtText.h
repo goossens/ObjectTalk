@@ -127,30 +127,36 @@ inline std::wstring OtTextFromJSON(const std::wstring text)
 				switch (*c)
 				{
 					case L'b':
+						c++;
 						o << L'\b';
 						break;
 
 					case L'f':
+						c++;
 						o << L'\f';
 						break;
 
 					case L'n':
+						c++;
 						o << L'\n';
 						break;
 
 					case L'r':
+						c++;
 						o << L'\r';
 						break;
 
 					case L't':
+						c++;
 						o << L'\t';
+						//break;
 
 					case L'u':
 						c++;
 						
 						if (c + 4 < text.cend())
 						{
-							o << std::wcstol(std::wstring(c, c + 4).c_str(), nullptr, 16);
+							o << ((wchar_t) std::wcstol(std::wstring(c, c + 4).c_str(), nullptr, 16));
 							c += 4;
 						}
 
@@ -160,7 +166,7 @@ inline std::wstring OtTextFromJSON(const std::wstring text)
 						break;
 
 					default:
-						o << *c;
+						o << *c++;
 				}
 			}
 		}

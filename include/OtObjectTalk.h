@@ -43,7 +43,7 @@ public:
 			OtObject result = ot.processText(assertion, context);
 
 			if (!result->operator bool())
-				OT_EXCEPT(L"Assertion [%s] failed", assertion.c_str());
+				OT_EXCEPT(L"Assertion [%ls] failed", assertion.c_str());
 
 			return nullptr;
 		}));
@@ -111,7 +111,7 @@ public:
 	static OtObject processFile(const std::wstring& path, OtObject context)
 	{
 		// get text from file and process it
-		std::ifstream stream(path);
+		std::wifstream stream(OtTextToNarrow(path).c_str());
 		std::wstringstream buffer;
 		buffer << stream.rdbuf();
 		return processText(buffer.str(), context);

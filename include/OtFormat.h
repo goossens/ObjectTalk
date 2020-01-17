@@ -21,8 +21,7 @@
 template <typename... Args>
 std::wstring OtFormat(const std::wstring &format, Args... args)
 {
-	unsigned required = std::swprintf(nullptr, 0, format.c_str(), args...) + 1;
-	wchar_t bytes[required];
-	std::swprintf(bytes, required, format.c_str(), args...);
-	return std::wstring(bytes);
+	wchar_t output[1024];
+	std::swprintf(output, 1024, format.c_str(), args...);
+	return std::wstring(output);
 }

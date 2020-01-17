@@ -42,7 +42,7 @@ public:
 		int result = uv_os_getenv(OtTextToNarrow(name).c_str(), value, &size);
 
 		if (result == UV_ENOBUFS)
-			OT_EXCEPT(L"Environment variable [%s] of size %d does not fit in buffer of size %d", name.c_str(), size, UV_ENOBUFS);
+			OT_EXCEPT(L"Environment variable [%ls] of size %d does not fit in buffer of size %d", name.c_str(), size, UV_ENOBUFS);
 
 		return result != UV_ENOENT;
 	}
@@ -55,7 +55,7 @@ public:
 		int result = uv_os_getenv(OtTextToNarrow(name).c_str(), value, &size);
 
 		if (result == UV_ENOBUFS)
-			OT_EXCEPT(L"Environment variable [%s] of size %d does not fit in buffer of size %d", name.c_str(), size, UV_ENOBUFS);
+			OT_EXCEPT(L"Environment variable [%ls] of size %d does not fit in buffer of size %d", name.c_str(), size, UV_ENOBUFS);
 
 		if (result == UV_ENOENT)
 			return 0;

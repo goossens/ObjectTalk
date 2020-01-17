@@ -89,7 +89,7 @@ public:
 			if (t->has(name))
 				return t->get(name);
 
-		OT_EXCEPT(L"Unknown member [%s] in class [%s]", name.c_str(), type->getName().c_str());
+		OT_EXCEPT(L"Unknown member [%ls] in class [%ls]", name.c_str(), type->getName().c_str());
 		return nullptr;
 	}
 

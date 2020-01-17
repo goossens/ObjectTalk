@@ -420,7 +420,7 @@ public:
 
 		for (size_t c = 0; c < tokenStart - start; c++)
 			if (std::isspace(line[c]))
-				marker +=line[c];
+				marker += line[c];
 
 			else
 				marker += L' ';
@@ -428,7 +428,7 @@ public:
 		marker += L'^';
 
 		// throw exception
-		OT_EXCEPT(L"%s on line %d:\n%s\n%s", message.c_str(), tokenLine, line.c_str(), marker.c_str());
+		OT_EXCEPT(L"%ls on line %d:\n%ls\n%ls", message.c_str(), tokenLine, line.c_str(), marker.c_str());
 	}
 
 	// see if the current token is equal to the specified token
@@ -442,7 +442,7 @@ public:
 		}
 
 		else
-			error(OtFormat(L"Expected [%s]", tokens[t].c_str()));
+			error(OtFormat(L"Expected [%ls]", tokens[t].c_str()));
 	}
 
 	// state definition for token state/transition table

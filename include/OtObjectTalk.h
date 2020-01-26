@@ -14,6 +14,18 @@
 //	limitations under the License.
 
 
+/*
+#ifdef __linux__
+#define LIBTYPE void*
+#define OPENLIB(libname) dlopen((libname), RTLD_LAZY)
+#define LIBFUNC(lib, fn) dlsym((lib), (fn))
+#elif defined(WINVER)
+#define LIBTYPE HINSTANCE
+#define OPENLIB(libname) LoadLibraryW(L ## libname)
+#define LIBFUNC(lib, fn) GetProcAddress((lib), (fn))
+#endif
+*/
+
 //
 //	OtObjectTalk
 //
@@ -53,7 +65,7 @@ public:
 			if (c != 1)
 				OT_EXCEPT(L"Function [import] expects 1 parameter, %d given", c);
 
-			return processFile(p[0]->operator std::wstring(), context);
+			return importFile(p[0]->operator std::wstring(), context);
 		}));
 
 		context->set(L"run", OtFunctionClass::create([] (OtObject, size_t c, OtObject* p)->OtObject
@@ -61,11 +73,7 @@ public:
 			if (c != 1)
 				OT_EXCEPT(L"Function [run] expects 1 parameter, %d given", c);
 
-			OtObject context = createDefaultContext();
-			std::wstring path = p[0]->operator std::wstring();
-			context->set(L"__FILE__", OtStringClass::create(path));
-
-			return processFile(path, context);
+			return runFile(p[0]->operator std::wstring());
 		}));
 
 		context->set(L"print", OtFunctionClass::create([] (OtObject, size_t c, OtObject* p)->OtObject
@@ -107,14 +115,22 @@ public:
 		return code->operator ()(context);
 	}
 
-	// compile and run an ObjectTalk file
-	static OtObject processFile(const std::wstring& path, OtObject context)
+	// compile and import an ObjectTalk file into the specified context
+	static OtObject importFile(const std::wstring& path, OtObject context)
 	{
 		// get text from file and process it
 		std::wifstream stream(OtTextToNarrow(path).c_str());
 		std::wstringstream buffer;
 		buffer << stream.rdbuf();
 		return processText(buffer.str(), context);
+	}
+
+	// compile and run an ObjectTalk file in a new context
+	static OtObject runFile(const std::wstring& path)
+	{
+		OtObject context = createDefaultContext();
+		context->set(L"__FILE__", OtStringClass::create(path));
+		return importFile(path, context);
 	}
 
 private:

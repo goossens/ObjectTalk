@@ -27,7 +27,7 @@
 //	Network module
 //
 
-void init(OtObject context)
+extern "C" void init(OtObject context)
 {
 	context->set(L"Net", OtClassClass::create(OtNetClass::getMeta()));
 }

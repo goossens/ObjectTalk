@@ -28,4 +28,4 @@ enable_testing()
 
 add_subdirectory(app)
 add_subdirectory(modules)
-add_subdirectory(test)
+add_subdirectory(tests)

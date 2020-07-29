@@ -1,6 +1,12 @@
+SRC=$(wildcard app/*.cpp modules/*/*.cpp)
+INC=$(wildcard include/*.h modules/*/*.h)
+
 make:
 	cmake -Bbuild
 	cd build && make
+
+test:
+	cd build && make test
 
 xcode:
 	cmake -G Xcode --build build

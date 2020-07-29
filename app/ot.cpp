@@ -39,7 +39,7 @@ int main(int argc, const char* argv[])
 	try
 	{
 		for (auto c = 1; c < argc; c++)
-			OtObjectTalk::runFile(OtTextToWide(argv[c]));		
+			OtObjectTalk::runFile(OtTextToWide(argv[c]));
 	}
 
 	catch (const OtException& e)

@@ -122,7 +122,7 @@ public:
 
 		if (result)
 			OT_EXCEPT(L"fs.filesize failed: %s", uv_strerror(result));
-		
+
 		uv_stat_t* stat = uv_fs_get_statbuf(&req);
 		return (size_t) stat->st_size;
 	}

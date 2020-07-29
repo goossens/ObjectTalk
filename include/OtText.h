@@ -153,7 +153,7 @@ inline std::wstring OtTextFromJSON(const std::wstring text)
 
 					case L'u':
 						c++;
-						
+
 						if (c + 4 < text.cend())
 						{
 							o << ((wchar_t) std::wcstol(std::wstring(c, c + 4).c_str(), nullptr, 16));

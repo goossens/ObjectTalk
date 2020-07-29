@@ -341,7 +341,7 @@ public:
 
 				position++;
 			}
-	
+
 			stringValue = OtTextFromJSON(text.substr(start, position - start));
 
 			if (position < size)

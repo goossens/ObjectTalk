@@ -35,34 +35,42 @@ public:
 
 	// get user home directory
 	std::wstring gethome() {
-		size_t size = OT_MAX_BUFFER;
-		char path[size];
+		size_t size = 256;
+		char* path = (char*) malloc(size);
 		int result = uv_os_homedir(path, &size);
 
 		if (result == UV_ENOBUFS) {
-			OT_EXCEPT(L"fs.gethome of size %d does not fit in buffer of size %d", size, OT_MAX_BUFFER);
+			path = (char*) realloc(path, size);
+			result = uv_os_homedir(path, &size);
+		}
 
-		} else if (result) {
+		if (result) {
 			OT_EXCEPT(L"fs.gethome failed: %s", uv_strerror(result));
 		}
 
-		return OtTextToWide(path);
+		std::wstring p = OtTextToWide(path);
+		free(path);
+		return p;
 	}
 
 	// get temporary directory
 	std::wstring gettmp() {
-		size_t size = OT_MAX_BUFFER;
-		char path[size];
+		size_t size = 256;
+		char* path = (char*) malloc(size);
 		int result = uv_os_tmpdir(path, &size);
 
 		if (result == UV_ENOBUFS) {
-			OT_EXCEPT(L"fs.gettmp of size %d does not fit in buffer of size %d", size, OT_MAX_BUFFER);
+			path = (char*) realloc(path, size);
+			result = uv_os_tmpdir(path, &size);
+		}
 
-		} else if (result) {
+		if (result) {
 			OT_EXCEPT(L"fs.gettmp failed: %s", uv_strerror(result));
 		}
 
-		return OtTextToWide(path);
+		std::wstring p = OtTextToWide(path);
+		free(path);
+		return p;
 	}
 
 	// change current working directory
@@ -77,18 +85,22 @@ public:
 	// get current working directory
 	std::wstring getcwd()
 	{
-		size_t size = OT_MAX_BUFFER;
-		char path[size];
+		size_t size = 256;
+		char* path = (char*) malloc(size);
 		int result = uv_cwd(path, &size);
 
 		if (result == UV_ENOBUFS) {
-			OT_EXCEPT(L"fs.getcwd of size %d does not fit in buffer of size %d", size, OT_MAX_BUFFER);
+			path = (char*) realloc(path, size);
+			result = uv_cwd(path, &size);
+		}
 
-		} else if (result) {
+		if (result) {
 			OT_EXCEPT(L"fs.getcwd failed: %s", uv_strerror(result));
 		}
 
-		return OtTextToWide(path);
+		std::wstring p = OtTextToWide(path);
+		free(path);
+		return p;
 	}
 
 	// get list of files in specified directory

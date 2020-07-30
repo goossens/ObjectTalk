@@ -18,13 +18,6 @@
 
 
 //
-//	Constants
-//
-
-#define OT_MAX_BUFFER 4096
-
-
-//
 //	Include files
 //
 

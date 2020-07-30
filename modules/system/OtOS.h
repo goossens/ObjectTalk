@@ -35,32 +35,37 @@ public:
 
 	// see if environment variable exists
 	bool hasenv(const std::wstring& name) {
-		size_t size = OT_MAX_BUFFER;
-		char value[size];
+		size_t size = 256;
+		char* value = (char*) malloc(size);
 		int result = uv_os_getenv(OtTextToNarrow(name).c_str(), value, &size);
 
 		if (result == UV_ENOBUFS) {
-			OT_EXCEPT(L"Environment variable [%ls] of size %d does not fit in buffer of size %d", name.c_str(), size, OT_MAX_BUFFER);
+			value = (char*) realloc(value, size);
+			result = uv_os_getenv(OtTextToNarrow(name).c_str(), value, &size);
 		}
 
+		free(value);
 		return result != UV_ENOENT;
 	}
 
 	// get environment variable
 	std::wstring getenv(const std::wstring& name) {
-		size_t size = OT_MAX_BUFFER;
-		char value[size];
+		size_t size = 256;
+		char* value = (char*) malloc(size);
 		int result = uv_os_getenv(OtTextToNarrow(name).c_str(), value, &size);
 
 		if (result == UV_ENOBUFS) {
-			OT_EXCEPT(L"Environment variable [%ls] of size %d does not fit in buffer of size %d", name.c_str(), size, OT_MAX_BUFFER);
+			value = (char*) realloc(value, size);
+			result = uv_os_getenv(OtTextToNarrow(name).c_str(), value, &size);
 		}
 
 		if (result == UV_ENOENT) {
 			return 0;
 		}
 
-		return OtTextToWide(value);
+		std::wstring v = OtTextToWide(value);
+		free(value);
+		return v;
 	}
 
 	// set environment variable

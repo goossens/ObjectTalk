@@ -13,9 +13,16 @@
 #	See the License for the specific language governing permissions and
 #	limitations under the License.
 
+find_path(UV_INCLUDES uv.h)
 find_library(UV_LIBRARY uv)
+
+find_path(HTTP_INCLUDES http_parser.h)
+find_library(HTTP_LIBRARY http_parser)
 
 add_library(net MODULE net.cpp)
 target_compile_features(net PRIVATE cxx_std_17)
 set_target_properties(net PROPERTIES CXX_EXTENSIONS OFF)
+target_include_directories(net PRIVATE ${UV_INCLUDES})
+target_include_directories(net PRIVATE ${HTTP_INCLUDES})
 target_link_libraries(net PRIVATE ${UV_LIBRARY})
+target_link_libraries(net PRIVATE ${HTTP_LIBRARY})

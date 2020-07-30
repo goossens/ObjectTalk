@@ -29,50 +29,49 @@ typedef std::shared_ptr<OtFSClass> OtFS;
 //	OtFSClass
 //
 
-class OtFSClass : public OtSystemClass
-{
+class OtFSClass : public OtSystemClass {
 public:
 	OtFSClass() {}
 
 	// get user home directory
-	std::wstring gethome()
-	{
+	std::wstring gethome() {
 		size_t size = OT_MAX_BUFFER;
 		char path[size];
 		int result = uv_os_homedir(path, &size);
 
-		if (result == UV_ENOBUFS)
+		if (result == UV_ENOBUFS) {
 			OT_EXCEPT(L"fs.gethome of size %d does not fit in buffer of size %d", size, UV_ENOBUFS);
 
-		else if (result)
+		} else if (result) {
 			OT_EXCEPT(L"fs.gethome failed: %s", uv_strerror(result));
+		}
 
 		return OtTextToWide(path);
 	}
 
 	// get temporary directory
-	std::wstring gettmp()
-	{
+	std::wstring gettmp() {
 		size_t size = OT_MAX_BUFFER;
 		char path[size];
 		int result = uv_os_tmpdir(path, &size);
 
-		if (result == UV_ENOBUFS)
+		if (result == UV_ENOBUFS) {
 			OT_EXCEPT(L"fs.gettmp of size %d does not fit in buffer of size %d", size, UV_ENOBUFS);
 
-		else if (result)
+		} else if (result) {
 			OT_EXCEPT(L"fs.gettmp failed: %s", uv_strerror(result));
+		}
 
 		return OtTextToWide(path);
 	}
 
 	// change current working directory
-	void chdir(const std::wstring& path)
-	{
+	void chdir(const std::wstring& path) {
 		int result = uv_chdir(OtTextToNarrow(path).c_str());
 
-		if (result)
+		if (result) {
 			OT_EXCEPT(L"fs.chdir failed: %s", uv_strerror(result));
+		}
 	}
 
 	// get current working directory
@@ -82,18 +81,18 @@ public:
 		char path[size];
 		int result = uv_cwd(path, &size);
 
-		if (result == UV_ENOBUFS)
+		if (result == UV_ENOBUFS) {
 			OT_EXCEPT(L"fs.getcwd of size %d does not fit in buffer of size %d", size, UV_ENOBUFS);
 
-		else if (result)
+		} else if (result) {
 			OT_EXCEPT(L"fs.getcwd failed: %s", uv_strerror(result));
+		}
 
 		return OtTextToWide(path);
 	}
 
 	// get list of files in specified directory
-	OtObject ls(const std::wstring& path)
-	{
+	OtObject ls(const std::wstring& path) {
 		// get content of directory
 		OtArray content = OtArrayClass::create();
 		uv_fs_t req;
@@ -102,10 +101,10 @@ public:
 
 		uv_fs_scandir(uv_default_loop(), &req, OtTextToNarrow(path).c_str(), 0, 0);
 
-		while ((result = uv_fs_scandir_next(&req, &ent)) != UV_EOF)
-		{
-			if (result)
+		while ((result = uv_fs_scandir_next(&req, &ent)) != UV_EOF) {
+			if (result) {
 				OT_EXCEPT(L"fs.ls failed: %s", uv_strerror(result));
+			}
 
 			content->push_back(OtPathClass::create(OtTextToWide(ent.name)));
 		}
@@ -114,37 +113,35 @@ public:
 	}
 
 	// get file size
-	size_t filesize(const std::wstring& path)
-	{
+	size_t filesize(const std::wstring& path) {
 		int result;
 		uv_fs_t req;
 		result = uv_fs_stat(uv_default_loop(), &req, OtTextToNarrow(path).c_str(), 0);
 
-		if (result)
+		if (result) {
 			OT_EXCEPT(L"fs.filesize failed: %s", uv_strerror(result));
+		}
 
 		uv_stat_t* stat = uv_fs_get_statbuf(&req);
 		return (size_t) stat->st_size;
 	}
 
 	// remove file
-	void rm(const std::wstring& path)
-	{
+	void rm(const std::wstring& path) {
 		int result;
 		uv_fs_t req;
 		result = uv_fs_unlink(uv_default_loop(), &req, OtTextToNarrow(path).c_str(), 0);
 
-		if (result)
+		if (result) {
 			OT_EXCEPT(L"fs.rm failed: %s", uv_strerror(result));
+		}
 	}
 
 	// get type definition
-	static OtType getMeta()
-	{
+	static OtType getMeta() {
 		static OtType type = nullptr;
 
-		if (!type)
-		{
+		if (!type) {
 			type = OtTypeClass::create<OtFSClass>(L"FS", OtSystemClass::getMeta());
 
 			type->set(L"gethome", OtFunctionCreate(&OtFSClass::gethome));
@@ -160,8 +157,7 @@ public:
 	}
 
 	// create a new object
-	static OtFS create()
-	{
+	static OtFS create() {
 		OtFS fs = std::make_shared<OtFSClass>();
 		fs->setType(getMeta());
 		return fs;

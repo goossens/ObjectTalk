@@ -18,8 +18,7 @@
 //	OtObjectClass
 //
 
-class OtObjectClass : public std::enable_shared_from_this<OtObjectClass>
-{
+class OtObjectClass : public std::enable_shared_from_this<OtObjectClass> {
 public:
 	// constructor/destructor
 	OtObjectClass() {}
@@ -53,41 +52,47 @@ public:
 	OtObject getParent() { return parent; }
 
 	// member acccess
-	bool has(const std::wstring& name)
-	{
-		if (members && members->count(name))
+	bool has(const std::wstring& name) {
+		if (members && members->count(name)) {
 			return true;
+		}
 
-		if (parent && parent->has(name))
+		if (parent && parent->has(name)) {
 			return true;
+		}
 
-		for (auto t = type; t; t = t->getParent())
-			if (t->has(name))
+		for (auto t = type; t; t = t->getParent()) {
+			if (t->has(name)) {
 				return true;
+			}
+		}
 
 		return false;
 	}
 
-	virtual OtObject set(const std::wstring& name, OtObject value)
-	{
-		if (!members)
+	virtual OtObject set(const std::wstring& name, OtObject value) {
+		if (!members) {
 			members = std::make_shared<std::map<std::wstring, OtObject>>();
+		}
 
 		members->operator [] (name) = value;
 		return value;
 	}
 
-	virtual OtObject get(const std::wstring& name)
-	{
-		if (members && members->count(name))
+	virtual OtObject get(const std::wstring& name) {
+		if (members && members->count(name)) {
 			return members->operator [] (name);
+		}
 
-		if (parent && parent->has(name))
+		if (parent && parent->has(name)) {
 			return parent->get(name);
+		}
 
-		for (auto t = type; t; t = t->getParent())
-			if (t->has(name))
+		for (auto t = type; t; t = t->getParent()) {
+			if (t->has(name)) {
 				return t->get(name);
+			}
+		}
 
 		OT_EXCEPT(L"Unknown member [%ls] in class [%ls]", name.c_str(), type->getName().c_str());
 		return nullptr;
@@ -100,8 +105,7 @@ public:
 	virtual OtObject operator () (OtObject, size_t, OtObject*) { return nullptr; }
 
 	// "call" named object member
-	OtObject method(const std::wstring& m, OtObject c, size_t n, OtObject* p)
-	{
+	OtObject method(const std::wstring& m, OtObject c, size_t n, OtObject* p) {
 		OtObject pars[n + 1];
 		pars[0] = shared_from_this();
 		std::copy(p, p + n, pars + 1);

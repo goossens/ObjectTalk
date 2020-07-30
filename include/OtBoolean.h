@@ -26,8 +26,7 @@ typedef std::shared_ptr<OtBooleanClass> OtBoolean;
 //	OtBooleanClass
 //
 
-class OtBooleanClass : public OtPrimitiveClass
-{
+class OtBooleanClass : public OtPrimitiveClass {
 public:
 	OtBooleanClass() {}
 	OtBooleanClass(bool boolean) { value = boolean; }
@@ -46,12 +45,10 @@ public:
 	bool notEqual(bool operand) { return value != operand; }
 
 	// get type definition
-	static OtType getMeta()
-	{
+	static OtType getMeta() {
 		static OtType type = nullptr;
 
-		if (!type)
-		{
+		if (!type) {
 			type = OtTypeClass::create<OtBooleanClass>(L"Boolean", OtPrimitiveClass::getMeta());
 
 			type->set(L"__and__", OtFunctionCreate(&OtBooleanClass::logicalAnd));
@@ -66,8 +63,7 @@ public:
 	}
 
 	// create a new object
-	static OtBoolean create(bool value)
-	{
+	static OtBoolean create(bool value) {
 		OtBoolean boolean = std::make_shared<OtBooleanClass>(value);
 		boolean->setType(getMeta());
 		return boolean;

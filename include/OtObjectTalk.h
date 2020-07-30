@@ -30,12 +30,10 @@
 //	OtObjectTalk
 //
 
-class OtObjectTalk
-{
+class OtObjectTalk {
 public:
 	// create a default ObjectTalk context
-	static OtObject createDefaultContext()
-	{
+	static OtObject createDefaultContext() {
 		// create context
 		OtObject context = OtObjectClass::create();
 
@@ -45,41 +43,42 @@ public:
 		context->set(L"null", nullptr);
 
 		// add default functions
-		context->set(L"assert", OtFunctionClass::create([] (OtObject context, size_t c, OtObject* p)->OtObject
-		{
-			if (c != 1)
+		context->set(L"assert", OtFunctionClass::create([] (OtObject context, size_t c, OtObject* p)->OtObject {
+			if (c != 1) {
 				OT_EXCEPT(L"Function [assert] expects 1 parameter, %d given", c);
+			}
 
-			OtObjectTalk ot;
 			std::wstring assertion = p[0]->operator std::wstring();
-			OtObject result = ot.processText(assertion, context);
+			OtObject result = processText(assertion, context);
 
-			if (!result->operator bool())
+			if (!result->operator bool()) {
 				OT_EXCEPT(L"Assertion [%ls] failed", assertion.c_str());
+			}
 
 			return nullptr;
 		}));
 
 		context->set(L"import", OtFunctionClass::create([] (OtObject context, size_t c, OtObject* p)->OtObject
 		{
-			if (c != 1)
+			if (c != 1) {
 				OT_EXCEPT(L"Function [import] expects 1 parameter, %d given", c);
+			}
 
 			return importFile(p[0]->operator std::wstring(), context);
 		}));
 
-		context->set(L"run", OtFunctionClass::create([] (OtObject, size_t c, OtObject* p)->OtObject
-		{
-			if (c != 1)
+		context->set(L"run", OtFunctionClass::create([] (OtObject, size_t c, OtObject* p)->OtObject {
+			if (c != 1) {
 				OT_EXCEPT(L"Function [run] expects 1 parameter, %d given", c);
+			}
 
 			return runFile(p[0]->operator std::wstring());
 		}));
 
-		context->set(L"print", OtFunctionClass::create([] (OtObject, size_t c, OtObject* p)->OtObject
-		{
-			for (size_t i = 0; i < c; i++)
+		context->set(L"print", OtFunctionClass::create([] (OtObject, size_t c, OtObject* p)->OtObject {
+			for (size_t i = 0; i < c; i++) {
 				std::wcout << (std::wstring) *p[i];
+			}
 
 			std::wcout << std::endl;
 			return nullptr;
@@ -107,8 +106,7 @@ public:
 	}
 
 	// compile and run ObjectTalk text
-	static OtObject processText(const std::wstring& text, OtObject context)
-	{
+	static OtObject processText(const std::wstring& text, OtObject context) {
 		// compile code, run it and return result
 		OtCompiler compiler;
 		OtCode code = compiler.compile(text);
@@ -116,8 +114,7 @@ public:
 	}
 
 	// compile and import an ObjectTalk file into the specified context
-	static OtObject importFile(const std::wstring& path, OtObject context)
-	{
+	static OtObject importFile(const std::wstring& path, OtObject context) {
 		// get text from file and process it
 		std::wifstream stream(OtTextToNarrow(path).c_str());
 		std::wstringstream buffer;
@@ -126,8 +123,7 @@ public:
 	}
 
 	// compile and run an ObjectTalk file in a new context
-	static OtObject runFile(const std::wstring& path)
-	{
+	static OtObject runFile(const std::wstring& path) {
 		OtObject context = createDefaultContext();
 		context->set(L"__FILE__", OtStringClass::create(path));
 		return importFile(path, context);

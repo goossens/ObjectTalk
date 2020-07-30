@@ -29,60 +29,55 @@ typedef std::shared_ptr<OtOSClass> OtOS;
 //	OtOSClass
 //
 
-class OtOSClass : public OtSystemClass
-{
+class OtOSClass : public OtSystemClass {
 public:
 	OtOSClass() {}
 
 	// see if environment variable exists
-	bool hasenv(const std::wstring& name)
-	{
+	bool hasenv(const std::wstring& name) {
 		size_t size = OT_MAX_BUFFER;
 		char value[size];
 		int result = uv_os_getenv(OtTextToNarrow(name).c_str(), value, &size);
 
-		if (result == UV_ENOBUFS)
+		if (result == UV_ENOBUFS) {
 			OT_EXCEPT(L"Environment variable [%ls] of size %d does not fit in buffer of size %d", name.c_str(), size, UV_ENOBUFS);
+		}
 
 		return result != UV_ENOENT;
 	}
 
 	// get environment variable
-	std::wstring getenv(const std::wstring& name)
-	{
+	std::wstring getenv(const std::wstring& name) {
 		size_t size = OT_MAX_BUFFER;
 		char value[size];
 		int result = uv_os_getenv(OtTextToNarrow(name).c_str(), value, &size);
 
-		if (result == UV_ENOBUFS)
+		if (result == UV_ENOBUFS) {
 			OT_EXCEPT(L"Environment variable [%ls] of size %d does not fit in buffer of size %d", name.c_str(), size, UV_ENOBUFS);
+		}
 
-		if (result == UV_ENOENT)
+		if (result == UV_ENOENT) {
 			return 0;
+		}
 
-		else
-			return OtTextToWide(value);
+		return OtTextToWide(value);
 	}
 
 	// set environment variable
-	void setenv(const std::wstring& name, const std::wstring& value)
-	{
+	void setenv(const std::wstring& name, const std::wstring& value) {
 		uv_os_setenv(OtTextToNarrow(name).c_str(), OtTextToNarrow(value).c_str());
 	}
 
 	// unset environment variable
-	void unsetenv(const std::wstring& name)
-	{
+	void unsetenv(const std::wstring& name) {
 		uv_os_unsetenv(OtTextToNarrow(name).c_str());
 	}
 
 	// get type definition
-	static OtType getMeta()
-	{
+	static OtType getMeta() {
 		static OtType type = nullptr;
 
-		if (!type)
-		{
+		if (!type) {
 			type = OtTypeClass::create<OtOSClass>(L"OS", OtSystemClass::getMeta());
 
 			type->set(L"hasenv", OtFunctionCreate(&OtOSClass::hasenv));
@@ -95,8 +90,7 @@ public:
 	}
 
 	// create a new object
-	static OtOS create()
-	{
+	static OtOS create() {
 		OtOS fs = std::make_shared<OtOSClass>();
 		fs->setType(getMeta());
 		return fs;

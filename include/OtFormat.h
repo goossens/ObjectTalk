@@ -19,8 +19,7 @@
 //
 
 template <typename... Args>
-std::wstring OtFormat(const std::wstring &format, Args... args)
-{
+std::wstring OtFormat(const std::wstring &format, Args... args) {
 	wchar_t output[1024];
 	std::swprintf(output, 1024, format.c_str(), args...);
 	return std::wstring(output);

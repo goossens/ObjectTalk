@@ -36,11 +36,9 @@ typedef std::shared_ptr<OtCodeClass> OtCode;
 //	OtInstruction
 //
 
-class OtInstruction
-{
+class OtInstruction {
 public:
-	typedef enum
-	{
+	typedef enum {
 		PUSH,
 		POP,
 		POP_COUNT,
@@ -76,8 +74,7 @@ public:
 //	OtCodeClass
 //
 
-class OtCodeClass : public std::vector<OtInstruction>
-{
+class OtCodeClass : public std::vector<OtInstruction> {
 public:
 	// add instructions to code
 	void push(OtObject value) { push_back(OtInstruction(OtInstruction::PUSH, value)); }
@@ -101,8 +98,7 @@ public:
 	void patch(size_t location) { at(location).integer = size(); }
 
 	// call code
-	OtObject operator ()(OtObject context, size_t count=0, OtObject* parameters=nullptr)
-	{
+	OtObject operator ()(OtObject context, size_t count=0, OtObject* parameters=nullptr) {
 		// create local context
 		OtObject local = OtObjectClass::create();
 		local->setParent(context);
@@ -119,10 +115,8 @@ public:
 		size_t cnt;
 
 		// execute all instructions
-		while (pc < size())
-		{
-			switch (at(pc).opcode)
-			{
+		while (pc < size()) {
+			switch (at(pc).opcode) {
 				case OtInstruction::PUSH:
 					stack.push_back(at(pc).value);
 					break;
@@ -151,8 +145,9 @@ public:
 					value = stack.back();
 					stack.pop_back();
 
-					if (value->operator bool())
+					if (value->operator bool()) {
 						pc = at(pc).integer - 1;
+					}
 
 					break;
 
@@ -160,8 +155,9 @@ public:
 					value = stack.back();
 					stack.pop_back();
 
-					if (!value->operator bool())
+					if (!value->operator bool()) {
 						pc = at(pc).integer - 1;
+					}
 
 					break;
 

@@ -26,8 +26,7 @@ typedef std::shared_ptr<OtStringClass> OtString;
 //	OtStringClass
 //
 
-class OtStringClass : public OtPrimitiveClass
-{
+class OtStringClass : public OtPrimitiveClass {
 public:
 	OtStringClass() {}
 	OtStringClass(const std::wstring& string) { value = string; }
@@ -66,12 +65,10 @@ public:
 	std::wstring upper() { auto v = value; std::transform(v.begin(), v.end(), v.begin(), ::toupper); return v; }
 
 	// get type definition
-	static OtType getMeta()
-	{
+	static OtType getMeta() {
 		static OtType type = nullptr;
 
-		if (!type)
-		{
+		if (!type) {
 			type = OtTypeClass::create<OtStringClass>(L"String", OtPrimitiveClass::getMeta());
 
 			type->set(L"__add__", OtFunctionCreate(&OtStringClass::add));
@@ -103,8 +100,7 @@ public:
 	}
 
 	// create a new object
-	static OtString create(const std::wstring& value)
-	{
+	static OtString create(const std::wstring& value) {
 		OtString string = std::make_shared<OtStringClass>(value);
 		string->setType(getMeta());
 		return string;

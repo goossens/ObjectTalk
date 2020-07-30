@@ -26,8 +26,7 @@ typedef std::shared_ptr<OtClassClass> OtClass;
 //	OtClassClass
 //
 
-class OtClassClass : public OtInternalClass
-{
+class OtClassClass : public OtInternalClass {
 public:
 	// constructors
 	OtClassClass() {}
@@ -36,18 +35,16 @@ public:
 	// access member information
 	std::wstring getName() { return classType->getName(); }
 
-	bool hasParent()
-	{
+	bool hasParent() {
 		return classType->getParent() != nullptr;
 	}
-	OtObject getParent()
-	{
+
+	OtObject getParent() {
 		return OtClassClass::create(classType->getParent());
 	}
 
 	// create a sub class
-	OtObject subType(const std::wstring& name)
-	{
+	OtObject subType(const std::wstring& name) {
 		return OtClassClass::create(classType->subType(name));
 	}
 
@@ -58,19 +55,18 @@ public:
 	OtObject set(const std::wstring& name, OtObject value) { return classType->set(name, value); }
 
 	// call operator
-	OtObject operator () (OtObject context, size_t count, OtObject* parameters)
-	{
+	OtObject operator () (OtObject context, size_t count, OtObject* parameters) {
 		// create new instance
 		OtObject value = classType->instantiate();
 
 		// run possible init function
-		if (value->has(L"__init__"))
-		{
+		if (value->has(L"__init__")) {
 			OtObject pars[count + 1];
 			pars[0] = value;
 
-			for (size_t c = 0; c < count; c++)
+			for (size_t c = 0; c < count; c++) {
 				pars[c + 1] = parameters[c];
+			}
 
 			value->get(L"__init__")->operator ()(context, count + 1, pars);
 		}
@@ -79,12 +75,10 @@ public:
 	}
 
 	// get type definition
-	static OtType getMeta()
-	{
+	static OtType getMeta() {
 		static OtType type = nullptr;
 
-		if (!type)
-		{
+		if (!type) {
 			type = OtTypeClass::create<OtClassClass>(L"Class", OtInternalClass::getMeta());
 			type->set(L"__call__", OtFunctionClass::create(&OtClassClass::operator ()));
 			type->set(L"getName", OtFunctionCreate(&OtClassClass::getName));
@@ -98,8 +92,7 @@ public:
 	}
 
 	// create a new object
-	static OtClass create(OtType type)
-	{
+	static OtClass create(OtType type) {
 		OtClass cls = std::make_shared<OtClassClass>(type);
 		cls->setType(getMeta());
 		return cls;

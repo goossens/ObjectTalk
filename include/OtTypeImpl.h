@@ -18,8 +18,7 @@
 //	OtTypeClass::instantiate
 //
 
-inline OtObject OtTypeClass::instantiate()
-{
+inline OtObject OtTypeClass::instantiate() {
 	OtObject object = constructor();
 	object->setType(shared_from_this());
 	return object;

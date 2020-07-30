@@ -26,24 +26,21 @@ typedef std::shared_ptr<OtDictClass> OtDict;
 //	OtDictClass
 //
 
-class OtDictClass : public OtCollectionClass, public std::map<std::wstring, OtObject>
-{
+class OtDictClass : public OtCollectionClass, public std::map<std::wstring, OtObject> {
 public:
 	OtDictClass() {}
 
 	// convert dictionary to string
-	operator std::wstring()
-	{
+	operator std::wstring() {
 		std::wstring result(L"{");
 		bool first = true;
 
-		for (auto const& entry : *this)
-		{
-			if (first)
+		for (auto const& entry : *this) {
+			if (first) {
 				first = false;
-
-			else
+			} else {
 				result += L",";
+			}
 
 			result += L"\"" + entry.first + L"\":" + entry.second->repr();
 		}
@@ -53,20 +50,19 @@ public:
 	}
 
 	// initializer
-	OtObject init(OtObject, size_t count, OtObject* parameters)
-	{
+	OtObject init(OtObject, size_t count, OtObject* parameters) {
 		// clear dictionary and add all calling parameters
 		clear();
 
-		for (size_t c = 0; c < count; c += 2)
+		for (size_t c = 0; c < count; c += 2) {
 			insert(std::make_pair((std::wstring) *parameters[c], parameters[c + 1]));
+		}
 
 		return getSharedPtr();
 	}
 
 	// support index operator
-	class OtDictReferenceClass : public OtInternalClass
-	{
+	class OtDictReferenceClass : public OtInternalClass {
 	public:
 		OtDictReferenceClass() {}
 		OtDictReferenceClass(OtDict d, const std::wstring& i) { dict = d; index = i; }
@@ -75,12 +71,10 @@ public:
 		OtObject assign(OtObject value) { dict->operator[] (index) = value; return value; }
 
 		// get type definition
-		static OtType getMeta()
-		{
+		static OtType getMeta() {
 			static OtType type = nullptr;
 
-			if (!type)
-			{
+			if (!type) {
 				type = OtTypeClass::create<OtDictReferenceClass>(L"DictReference", OtInternalClass::getMeta());
 				type->set(L"__deref__", OtFunctionCreate(&OtDictReferenceClass::deref));
 				type->set(L"__assign__", OtFunctionCreate(&OtDictReferenceClass::assign));
@@ -100,58 +94,53 @@ public:
 	OtObject index(const std::wstring& index) { return OtDictReferenceClass::create(OtTypeClass::cast<OtDictClass>(getSharedPtr()), index); }
 
 	// get dictionary size
-	size_t mySize()
-	{
+	size_t mySize() {
 		return size();
 	}
 
 	// return dictionary clone
-	OtObject clone()
-	{
+	OtObject clone() {
 		OtDict result = create();
 		for (auto& it : *this) result->insert(std::make_pair(it.first, it.second));
 		return result;
 	}
 
 	// remove dictionary entry
-	OtObject eraseEntry(const std::wstring& name)
-	{
+	OtObject eraseEntry(const std::wstring& name) {
 		OtObject value = operator[] (name);
 		erase(name);
 		return value;
 	}
 
 	// get array of dictionary names
-	OtObject keys()
-	{
+	OtObject keys() {
 		// create array of all keys in context
 		OtArray array = OtArrayClass::create();
 
-		for (auto const& entry : *this)
+		for (auto const& entry : *this) {
 			array->push_back(OtStringClass::create(entry.first));
+		}
 
 		return array;
 	}
 
 	// get array of dictionary values
-	OtObject values()
-	{
+	OtObject values() {
 		// create array of all values in context
 		OtArray array = OtArrayClass::create();
 
-		for (auto const& entry : *this)
+		for (auto const& entry : *this) {
 			array->push_back(entry.second);
+		}
 
 		return array;
 	}
 
 	// get type definition
-	static OtType getMeta()
-	{
+	static OtType getMeta() {
 		static OtType type = nullptr;
 
-		if (!type)
-		{
+		if (!type) {
 			type = OtTypeClass::create<OtDictClass>(L"Dict", OtCollectionClass::getMeta());
 
 			type->set(L"__init__", OtFunctionClass::create(&OtDictClass::init));
@@ -171,19 +160,18 @@ public:
 	}
 
 	// create a new object
-	static OtDict create()
-	{
+	static OtDict create() {
 		OtDict dict = std::make_shared<OtDictClass>();
 		dict->setType(getMeta());
 		return dict;
 	}
 
-	static OtDict create(size_t count, OtObject* values)
-	{
+	static OtDict create(size_t count, OtObject* values) {
 		OtDict dict = create();
 
-		for (size_t c = 0; c < count; c += 2)
+		for (size_t c = 0; c < count; c += 2) {
 			dict->insert(std::make_pair((std::wstring) *values[c], values[c + 1]));
+		}
 
 		return dict;
 	}

@@ -18,8 +18,7 @@
 //	OtException
 //
 
-class OtException
-{
+class OtException {
 public:
 	OtException(std::wstring m) { message = m; }
 	virtual const wchar_t* what() const throw() { return message.c_str(); }

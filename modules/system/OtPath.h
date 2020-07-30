@@ -26,8 +26,7 @@ typedef std::shared_ptr<OtPathClass> OtPath;
 //	OtPathClass
 //
 
-class OtPathClass : public OtSystemClass
-{
+class OtPathClass : public OtSystemClass {
 public:
 	// constructors
 	OtPathClass() {}
@@ -39,10 +38,10 @@ public:
 	operator std::wstring() { return path.wstring(); }
 
 	// initialize path
-	OtObject init(OtObject, size_t count, OtObject* parameters)
-	{
-		if (count != 1)
+	OtObject init(OtObject, size_t count, OtObject* parameters) {
+		if (count != 1) {
 			OT_EXCEPT(L"Path initializer expected 1 parameter not [%d]", count);
+		}
 
 		path = parameters[0]->operator std::wstring();
 		return getSharedPtr();
@@ -64,8 +63,7 @@ public:
 	OtObject extension() { return create(path.extension()); }
 
 	// support iterator
-	class OtPathIteratorClass : public OtInternalClass
-	{
+	class OtPathIteratorClass : public OtInternalClass {
 	public:
 		OtPathIteratorClass() {}
 		OtPathIteratorClass(OtPath p) { path = p; iterator = p->path.begin(); last = p->path.end(); }
@@ -74,12 +72,10 @@ public:
 		OtObject next() { return OtPathClass::create(*(iterator++)); }
 
 		// get type definition
-		static OtType getMeta()
-		{
+		static OtType getMeta() {
 			static OtType type = nullptr;
 
-			if (!type)
-			{
+			if (!type) {
 				type = OtTypeClass::create<OtPathIteratorClass>(L"PathIterator", OtInternalClass::getMeta());
 				type->set(L"__end__", OtFunctionCreate(&OtPathIteratorClass::end));
 				type->set(L"__next__", OtFunctionCreate(&OtPathIteratorClass::next));
@@ -100,12 +96,10 @@ public:
 	OtObject iterate() { return OtPathIteratorClass::create(OtTypeClass::cast<OtPathClass>(getSharedPtr())); }
 
 	// get type definition
-	static OtType getMeta()
-	{
+	static OtType getMeta() {
 		static OtType type = nullptr;
 
-		if (!type)
-		{
+		if (!type) {
 			type = OtTypeClass::create<OtPathClass>(L"Path", OtSystemClass::getMeta());
 
 			type->set(L"__init__", OtFunctionClass::create(&OtPathClass::init));
@@ -129,22 +123,19 @@ public:
 	}
 
 	// create a new object
-	static OtPath create(const char* value)
-	{
+	static OtPath create(const char* value) {
 		OtPath path = std::make_shared<OtPathClass>(value);
 		path->setType(getMeta());
 		return path;
 	}
 
-	static OtPath create(const std::wstring& value)
-	{
+	static OtPath create(const std::wstring& value) {
 		OtPath path = std::make_shared<OtPathClass>(value);
 		path->setType(getMeta());
 		return path;
 	}
 
-	static OtPath create(const std::filesystem::path& value)
-	{
+	static OtPath create(const std::filesystem::path& value) {
 		OtPath path = std::make_shared<OtPathClass>(value);
 		path->setType(getMeta());
 		return path;

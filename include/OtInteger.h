@@ -26,8 +26,7 @@ typedef std::shared_ptr<OtIntegerClass> OtInteger;
 //	OtInteger
 //
 
-class OtIntegerClass : public OtPrimitiveClass
-{
+class OtIntegerClass : public OtPrimitiveClass {
 public:
 	OtIntegerClass() {}
 	OtIntegerClass(long integer) { value = integer; }
@@ -68,12 +67,10 @@ public:
 	long sign() { return value / std::abs(value); }
 
 	// get type definition
-	static OtType getMeta()
-	{
+	static OtType getMeta() {
 		static OtType type = nullptr;
 
-		if (!type)
-		{
+		if (!type) {
 			type = OtTypeClass::create<OtIntegerClass>(L"Integer", OtPrimitiveClass::getMeta());
 
 			type->set(L"__add__", OtFunctionCreate(&OtIntegerClass::add));
@@ -111,8 +108,7 @@ public:
 	}
 
 	// create a new object
-	static OtInteger create(long value)
-	{
+	static OtInteger create(long value) {
 		OtInteger integer = std::make_shared<OtIntegerClass>(value);
 		integer->setType(getMeta());
 		return integer;

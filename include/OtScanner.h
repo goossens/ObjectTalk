@@ -20,12 +20,10 @@
 
 typedef int OtToken;
 
-class OtScanner
-{
+class OtScanner {
 public:
 	// basic tokens
-	enum
-	{
+	enum {
 		ILLEGAL_TOKEN = -1,
 		EOS_TOKEN = 1,
 
@@ -101,12 +99,10 @@ public:
 		RETURN_TOKEN,
 		SWITCH_TOKEN,
 		WHILE_TOKEN
-
 	};
 
 	// constructor
-	OtScanner()
-	{
+	OtScanner() {
 		// set default scanner state
 		token = ILLEGAL_TOKEN;
 		stateTable.resize(1);
@@ -172,8 +168,7 @@ public:
 	}
 
 	// specify a new token to the scanner
-	void addToken(const std::wstring text, int token)
-	{
+	void addToken(const std::wstring text, int token) {
 		// add token to lookup
 		tokens[token] = text;
 
@@ -181,14 +176,12 @@ public:
 		short state = 0;
 
 		// process all characters
-		for (auto i = text.begin(); i < text.end(); i++)
-		{
+		for (auto i = text.begin(); i < text.end(); i++) {
 			// determine next state
 			size_t next = stateTable[state].transitions[(int) *i];
 
 			// add a new state if required
-			if (next == OtScannerState::noTransition)
-			{
+			if (next == OtScannerState::noTransition) {
 				next = stateTable.size();
 				stateTable.resize(next + 1);
 				stateTable[state].transitions[(int) *i] = next;
@@ -203,8 +196,7 @@ public:
 	}
 
 	// load text to scan
-	void loadText(const std::wstring t)
-	{
+	void loadText(const std::wstring t) {
 		// save text to be scanned
 		text = t;
 		size = text.length();
@@ -218,17 +210,14 @@ public:
 	}
 
 	// advance the scanner by parsing the next token
-	OtToken advance()
-	{
+	OtToken advance() {
 		// skip all white space and comments
 		while (isspace(text[position]) ||
 			   (text[position] == L'#') ||
 			   (text[position] == L'/' && text[position + 1] == L'*') ||
-			   (text[position] == L'/' && text[position + 1] == L'/'))
-		{
+			   (text[position] == L'/' && text[position + 1] == L'/')) {
 			// skip white space
-			while (isspace(text[position]))
-			{
+			while (isspace(text[position])) {
 				if (text[position] == L'\n')
 					lineNumber++;
 
@@ -236,47 +225,43 @@ public:
 			}
 
 			// skip C style comments
-			if (text[position] == L'/' && text[position + 1] == L'*')
-			{
+			if (text[position] == L'/' && text[position + 1] == L'*') {
 				position += 2;
 
-				while (position < size && !(text[position] == L'*' && text[position + 1] == L'/'))
-				{
+				while (position < size && !(text[position] == L'*' && text[position + 1] == L'/')) {
 					if (text[position] == L'\n')
 						lineNumber++;
 
 					position++;
 				}
 
-				if (position < size)
+				if (position < size) {
 					position += 2;
-			}
-
-			// skip C++ style comments
-			else if (text[position] == L'/' && text[position + 1] == L'/')
-			{
-				position += 2;
-
-				while (position < size && !(text[position + 1] == L'\n'))
-					position++;
-
-				if (position < size)
-				{
-					position++;
-					lineNumber++;
 				}
 			}
 
+			// skip C++ style comments
+			else if (text[position] == L'/' && text[position + 1] == L'/') {
+				position += 2;
+
+				while (position < size && !(text[position + 1] == L'\n')) {
+					position++;
+				}
+
+				if (position < size) {
+					position++;
+					lineNumber++;
+				}
+
+			} else if (text[position] == L'#') {
 			// skip shell style comments
-			else if (text[position] == L'#')
-			{
 				position++;
 
-				while (position < size && !(text[position + 1] == L'\n'))
+				while (position < size && !(text[position + 1] == L'\n')) {
 					position++;
+				}
 
-				if (position < size)
-				{
+				if (position < size) {
 					position++;
 					lineNumber++;
 				}
@@ -288,101 +273,99 @@ public:
 		tokenLine = lineNumber;
 
 		// check for end of string
-		if (position == size)
+		if (position == size) {
 			token = EOS_TOKEN;
 
-		// handle numerical values
-		else if (std::isdigit(text[position]) || (text[position] == L'-' && position < size && std::isdigit(text[position + 1])))
-		{
+		} else if (std::isdigit(text[position]) || (text[position] == L'-' && position < size && std::isdigit(text[position + 1]))) {
+			// handle numerical values
 			size_t start = position;
 
-			if (text[position] == L'-')
+			if (text[position] == L'-') {
+				position++;
+			}
+
+			while (std::isdigit(text[position])) {
+				position++;
+			}
+
+			if (text[position] == L'.' && position < size && std::isdigit(text[position + 1])) {
 				position++;
 
-			while (std::isdigit(text[position]))
-				position++;
+				while (std::isdigit(text[position])) {
+					position++;
+				}
 
-			if (text[position] == L'.' && position < size && std::isdigit(text[position + 1]))
-			{
-				position++;
-
-				while (std::isdigit(text[position]))
+				if (tolower(text[position]) == L'e' && position < size) {
 					position++;
 
-				if (tolower(text[position]) == L'e' && position < size)
-				{
-					position++;
-
-					while (std::isdigit(text[position]))
+					while (std::isdigit(text[position])) {
 						position++;
+					}
 				}
 
 				realValue = std::stod(text.substr(start, position - start));
 				token = REAL_TOKEN;
-			}
 
-			else
-			{
+			} else {
 				integerValue = std::stoi(text.substr(start, position - start));
 				token = INTEGER_TOKEN;
 			}
-		}
 
-		// handle strings
-		else if (text[position] == L'"' || text[position] == L'\'')
-		{
+		} else if (text[position] == L'"' || text[position] == L'\'') {
+			// handle strings
 			wchar_t terminator = text[position++];
 			size_t start = position;
 
-			while (position < size && text[position] != terminator)
-			{
-				if (text[position] == L'\n')
+			while (position < size && text[position] != terminator) {
+				if (text[position] == L'\n') {
 					lineNumber++;
+				}
 
 				position++;
 			}
 
 			stringValue = OtTextFromJSON(text.substr(start, position - start));
 
-			if (position < size)
+			if (position < size) {
 				position++;
+			}
 
 			token = STRING_TOKEN;
-		}
 
-		// handle identifiers (and tokens with identifier structure)
-		else if (text[position] == L'_' || std::isalpha(text[position]))
-		{
-			while (text[position] == L'_' || std::isalnum(text[position]))
+		} else if (text[position] == L'_' || std::isalpha(text[position])) {
+			// handle identifiers (and tokens with identifier structure)
+			while (text[position] == L'_' || std::isalnum(text[position])) {
 				position++;
+			}
 
 			size_t state = 0;
 
-			for (auto p = tokenStart; state != OtScannerState::noTransition && p < position; p++)
+			for (auto p = tokenStart; state != OtScannerState::noTransition && p < position; p++) {
 				state = stateTable[state].transitions[(int) text[p]];
+			}
 
-			if (state != OtScannerState::noTransition && stateTable[state].token != ILLEGAL_TOKEN)
+			if (state != OtScannerState::noTransition && stateTable[state].token != ILLEGAL_TOKEN) {
 				token = stateTable[state].token;
 
-			else
+			} else {
 				token = IDENTIFIER_TOKEN;
-		}
+			}
 
-		// handle (non-identifier) tokens
-		else
-		{
-			// see if we can find a token
+		} else {
+			// handle (non-identifier) tokens
 			size_t state = 0;
 
-			while (position < size && stateTable[state].transitions[(int) text[position]] != OtScannerState::noTransition)
+			while (position < size && stateTable[state].transitions[(int) text[position]] != OtScannerState::noTransition) {
 				state = stateTable[state].transitions[(int) text[position++]];
+			}
 
-			if (position > tokenStart && stateTable[state].token != ILLEGAL_TOKEN)
+			if (position > tokenStart && stateTable[state].token != ILLEGAL_TOKEN) {
 				token = stateTable[state].token;
 
-			else
+			} else {
 				// we tried but whatever we are looking at, it's illegal
 				token = ILLEGAL_TOKEN;
+			}
 		}
 
 		// return the token we just scanned
@@ -400,30 +383,33 @@ public:
 	std::wstring getString() { return stringValue; }
 
 	// throw an exection
-	void error(std::wstring message)
-	{
+	void error(std::wstring message) {
 		// find start of line
 		size_t start = tokenStart;
 
-		while (start && text[start - 1] != L'\n')
+		while (start && text[start - 1] != L'\n') {
 			start--;
+		}
 
 		// find end of line
 		size_t end = start;
 
-		while (start < size && text[end] != L'\n')
+		while (start < size && text[end] != L'\n') {
 			end++;
+		}
 
 		// extract line and create marker
 		std::wstring line = text.substr(start, end - start);
 		std::wstring marker;
 
-		for (size_t c = 0; c < tokenStart - start; c++)
-			if (std::isspace(line[c]))
+		for (size_t c = 0; c < tokenStart - start; c++) {
+			if (std::isspace(line[c])) {
 				marker += line[c];
 
-			else
+			} else {
 				marker += L' ';
+			}
+		}
 
 		marker += L'^';
 
@@ -433,27 +419,25 @@ public:
 
 	// see if the current token is equal to the specified token
 	// if not, raise an exception
-	void expect(OtToken t, bool a=true)
-	{
-		if (token == t)
-		{
-			if (a)
+	void expect(OtToken t, bool a=true) {
+		if (token == t) {
+			if (a) {
 				advance();
-		}
+			}
 
-		else
+		} else {
 			error(OtFormat(L"Expected [%ls]", tokens[t].c_str()));
+		}
 	}
 
 	// state definition for token state/transition table
-	class OtScannerState
-	{
+	class OtScannerState {
 	public:
 		// constructor
-		OtScannerState()
-		{
-			for (auto c = 0; c < 256; c++)
+		OtScannerState() {
+			for (auto c = 0; c < 256; c++) {
 				transitions[c] = noTransition;
+			}
 
 			token = ILLEGAL_TOKEN;
 		}

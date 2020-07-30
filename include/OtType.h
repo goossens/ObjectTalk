@@ -18,12 +18,10 @@
 //	OtTypeClass 
 //
 
-class OtTypeClass : public std::enable_shared_from_this<OtTypeClass>
-{
+class OtTypeClass : public std::enable_shared_from_this<OtTypeClass> {
 public:
 	// constructor
-	OtTypeClass(const std::wstring& n, OtType p, OtConstructor c=nullptr)
-	{
+	OtTypeClass(const std::wstring& n, OtType p, OtConstructor c=nullptr) {
 		name = n;
 		parent = p;
 		constructor = c ? c : parent->constructor;
@@ -33,8 +31,7 @@ public:
 	OtObject instantiate();
 
 	// create a sub-type
-	OtType subType(const std::wstring& n, OtConstructor c=nullptr)
-	{
+	OtType subType(const std::wstring& n, OtConstructor c=nullptr) {
 		return std::make_shared<OtTypeClass>(n, getSharedPtr(), c);
 	}
 
@@ -42,11 +39,12 @@ public:
 	OtType getSharedPtr() { return shared_from_this(); }
 
 	// see if type is kind of
-	bool isKindOf(const std::wstring& className)
-	{
-		for (auto p = getSharedPtr(); p; p = p->parent)
-			if (p->name == className)
+	bool isKindOf(const std::wstring& className) {
+		for (auto p = getSharedPtr(); p; p = p->parent) {
+			if (p->name == className) {
 				return true;
+			}
+		}
 
 		return false;
 	}
@@ -64,8 +62,7 @@ public:
 
 	// create a new type
 	template <class T>
-	static OtType create(const std::wstring& name, OtType parent=nullptr)
-	{
+	static OtType create(const std::wstring& name, OtType parent=nullptr) {
 		return std::make_shared<OtTypeClass>(name, parent, []() { return std::make_shared<T>(); });
 	}
 

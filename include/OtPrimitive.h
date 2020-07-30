@@ -26,16 +26,18 @@ typedef std::shared_ptr<OtPrimitiveClass> OtPrimitive;
 //	OtPrimitiveClass
 //
 
-class OtPrimitiveClass : public OtObjectClass
-{
+class OtPrimitiveClass : public OtObjectClass {
 public:
 	OtPrimitiveClass() {}
 
 	// get type definition
-	static OtType getMeta()
-	{
+	static OtType getMeta() {
 		static OtType type = nullptr;
-		if (!type) { type = OtTypeClass::create<OtPrimitiveClass>(L"Primitive", OtObjectClass::getMeta()); }
+
+		if (!type) {
+			type = OtTypeClass::create<OtPrimitiveClass>(L"Primitive", OtObjectClass::getMeta());
+		}
+
 		return type;
 	}
 };

@@ -28,22 +28,18 @@
 //	ObjectTalk engine main function
 //
 
-int main(int argc, const char* argv[])
-{
-	if (argc == 1)
-	{
+int main(int argc, const char* argv[]) {
+	if (argc == 1) {
 		std::wcerr << argv[0] << ": usage: " << argv[0] << " script ..." << std::endl;
 		exit(EXIT_FAILURE);
 	}
 
-	try
-	{
-		for (auto c = 1; c < argc; c++)
+	try {
+		for (auto c = 1; c < argc; c++) {
 			OtObjectTalk::runFile(OtTextToWide(argv[c]));
-	}
+		}
 
-	catch (const OtException& e)
-	{
+	} catch (const OtException& e) {
 		std::wcerr << argv[0] << L": error: " << e.what() << std::endl;
 		exit(EXIT_FAILURE);
 	}

@@ -26,8 +26,7 @@ typedef std::shared_ptr<OtRealClass> OtReal;
 //	OtRealClass
 //
 
-class OtRealClass : public OtPrimitiveClass
-{
+class OtRealClass : public OtPrimitiveClass {
 public:
 	OtRealClass() {}
 	OtRealClass(double real) { value = real; }
@@ -64,12 +63,10 @@ public:
 	double degrees() { return value / M_PI * 190.0; }
 
 	// get type definition
-	static OtType getMeta()
-	{
+	static OtType getMeta() {
 		static OtType type = nullptr;
 
-		if (!type)
-		{
+		if (!type) {
 			type = OtTypeClass::create<OtRealClass>(L"Real", OtPrimitiveClass::getMeta());
 
 			type->set(L"__add__", OtFunctionCreate(&OtRealClass::add));
@@ -103,8 +100,7 @@ public:
 	}
 
 	// create a new object
-	static OtReal create(double value)
-	{
+	static OtReal create(double value) {
 		OtReal real = std::make_shared<OtRealClass>(value);
 		real->setType(getMeta());
 		return real;
@@ -121,4 +117,3 @@ private:
 
 inline OtObject OtObjectCreate(float value) { return OtRealClass::create(value); }
 inline OtObject OtObjectCreate(double value) { return OtRealClass::create(value); }
-

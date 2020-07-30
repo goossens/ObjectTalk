@@ -40,7 +40,7 @@ public:
 		int result = uv_os_homedir(path, &size);
 
 		if (result == UV_ENOBUFS) {
-			OT_EXCEPT(L"fs.gethome of size %d does not fit in buffer of size %d", size, UV_ENOBUFS);
+			OT_EXCEPT(L"fs.gethome of size %d does not fit in buffer of size %d", size, OT_MAX_BUFFER);
 
 		} else if (result) {
 			OT_EXCEPT(L"fs.gethome failed: %s", uv_strerror(result));
@@ -56,7 +56,7 @@ public:
 		int result = uv_os_tmpdir(path, &size);
 
 		if (result == UV_ENOBUFS) {
-			OT_EXCEPT(L"fs.gettmp of size %d does not fit in buffer of size %d", size, UV_ENOBUFS);
+			OT_EXCEPT(L"fs.gettmp of size %d does not fit in buffer of size %d", size, OT_MAX_BUFFER);
 
 		} else if (result) {
 			OT_EXCEPT(L"fs.gettmp failed: %s", uv_strerror(result));
@@ -82,7 +82,7 @@ public:
 		int result = uv_cwd(path, &size);
 
 		if (result == UV_ENOBUFS) {
-			OT_EXCEPT(L"fs.getcwd of size %d does not fit in buffer of size %d", size, UV_ENOBUFS);
+			OT_EXCEPT(L"fs.getcwd of size %d does not fit in buffer of size %d", size, OT_MAX_BUFFER);
 
 		} else if (result) {
 			OT_EXCEPT(L"fs.getcwd failed: %s", uv_strerror(result));

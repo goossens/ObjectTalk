@@ -32,13 +32,13 @@ inline std::wstring OtTextTrim(std::wstring text, const std::wstring& chars = L"
 	return OtTextLeftTrim(OtTextRightTrim(text, chars), chars);
 }
 
-inline std::wstring OtTextCompress(const std::wstring& text) {
+inline std::wstring OtTextCompress(const std::wstring& text, const std::wstring& chars = L"\t\n\v\f\r ") {
 	auto result = OtTextTrim(text);
-	auto begin = result.find_first_of(L" \t\n\r\f\v");
+	auto begin = result.find_first_of(chars);
 
 	while (begin != std::wstring::npos) {
-		result.replace(begin, result.find_first_not_of(L" \t\n\r\f\v", begin) - begin, L" ");
-		begin = result.find_first_of(L" \t\n\r\f\v", begin + 1);
+		result.replace(begin, result.find_first_not_of(chars, begin) - begin, L" ");
+		begin = result.find_first_of(chars, begin + 1);
 	}
 
 	return result;

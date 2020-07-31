@@ -1,12 +1,19 @@
 SRC=$(wildcard app/*.cpp modules/*/*.cpp)
 INC=$(wildcard include/*.h modules/*/*.h)
 
-make:
-	cmake -Bbuild
-	cd build && make
+debug:
+	cmake -Bdebug
+	cd debug && make
 
-test:
-	cd build && make test
+test: debug
+	cd debug && make test
+
+release:
+	cmake -Brelease -DCMAKE_BUILD_TYPE=Release
+	cd release && make
+
+install: release
+	cd release && make install/strip
 
 xcode:
 	cmake -G Xcode --build build
@@ -16,7 +23,7 @@ cleanup:
 	ls $(SRC) $(INC) | xargs -o -n 1 vim -c 'set ts=4|set noet|%retab!|wq'
 
 clean:
-	rm -rf build/*
+	rm -rf debug release
 
 docker:
 	docker build -t ot .
@@ -28,4 +35,4 @@ dockerclean:
 	docker image rm ot; true
 
 apk:
-	abuild -F build
+	abuild -F release

@@ -26,3 +26,5 @@ target_include_directories(net PRIVATE ${UV_INCLUDES})
 target_include_directories(net PRIVATE ${HTTP_INCLUDES})
 target_link_libraries(net PRIVATE ${UV_LIBRARY})
 target_link_libraries(net PRIVATE ${HTTP_LIBRARY})
+
+install(TARGETS net DESTINATION lib/ot)

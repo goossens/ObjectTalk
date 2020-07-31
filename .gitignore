@@ -36,5 +36,5 @@
 ._*
 
 # Local files
-build/*
-!build/.gitkeep
+debug/*
+release/*

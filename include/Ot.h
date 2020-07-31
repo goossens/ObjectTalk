@@ -21,16 +21,12 @@
 //	Include files
 //
 
-#include <sys/types.h>
-#include <dirent.h>
-#include <stdlib.h>
-#include <unistd.h>
-
 #include <algorithm>
 #include <cctype>
 #include <cmath>
 #include <codecvt>
 #include <cstdio>
+#include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <iomanip>

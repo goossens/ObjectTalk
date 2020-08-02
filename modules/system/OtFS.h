@@ -34,7 +34,7 @@ public:
 	OtFSClass() {}
 
 	// get user home directory
-	std::wstring gethome() {
+	OtObject gethome() {
 		size_t size = 256;
 		char* path = (char*) malloc(size);
 		int result = uv_os_homedir(path, &size);
@@ -48,13 +48,13 @@ public:
 			OT_EXCEPT(L"fs.gethome failed: %s", uv_strerror(result));
 		}
 
-		std::wstring p = OtTextToWide(path);
+		OtPath p = OtPathClass::create(path);
 		free(path);
 		return p;
 	}
 
 	// get temporary directory
-	std::wstring gettmp() {
+	OtObject gettmp() {
 		size_t size = 256;
 		char* path = (char*) malloc(size);
 		int result = uv_os_tmpdir(path, &size);
@@ -68,7 +68,7 @@ public:
 			OT_EXCEPT(L"fs.gettmp failed: %s", uv_strerror(result));
 		}
 
-		std::wstring p = OtTextToWide(path);
+		OtPath p = OtPathClass::create(path);
 		free(path);
 		return p;
 	}
@@ -83,7 +83,7 @@ public:
 	}
 
 	// get current working directory
-	std::wstring getcwd()
+	OtObject getcwd()
 	{
 		size_t size = 256;
 		char* path = (char*) malloc(size);
@@ -98,7 +98,7 @@ public:
 			OT_EXCEPT(L"fs.getcwd failed: %s", uv_strerror(result));
 		}
 
-		std::wstring p = OtTextToWide(path);
+		OtPath p = OtPathClass::create(path);
 		free(path);
 		return p;
 	}

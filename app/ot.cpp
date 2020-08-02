@@ -18,9 +18,6 @@
 //	Include files
 //
 
-#include <cstdlib>
-#include <iostream>
-
 #include "Ot.h"
 
 
@@ -29,17 +26,23 @@
 //
 
 int main(int argc, const char* argv[]) {
+	// ensure we have some arguments
 	if (argc == 1) {
 		std::wcerr << argv[0] << ": usage: " << argv[0] << " script ..." << std::endl;
 		exit(EXIT_FAILURE);
 	}
 
+	// build module path
+	OtObjectTalk::buildModulePath(argv);
+
 	try {
+		// run each script
 		for (auto c = 1; c < argc; c++) {
 			OtObjectTalk::runFile(OtTextToWide(argv[c]));
 		}
 
 	} catch (const OtException& e) {
+		// handle all failures
 		std::wcerr << argv[0] << L": error: " << e.what() << std::endl;
 		exit(EXIT_FAILURE);
 	}

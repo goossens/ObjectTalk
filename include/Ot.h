@@ -21,6 +21,11 @@
 //	Include files
 //
 
+#if defined(WINVER)
+#else
+#include <dlfcn.h>
+#endif
+
 #include <algorithm>
 #include <cctype>
 #include <cmath>

@@ -38,6 +38,7 @@ public:
 		for (auto const& entry : *this) {
 			if (first) {
 				first = false;
+
 			} else {
 				result += L",";
 			}

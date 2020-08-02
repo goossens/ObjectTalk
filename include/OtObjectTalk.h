@@ -14,18 +14,6 @@
 //	limitations under the License.
 
 
-/*
-#ifdef __linux__
-#define LIBTYPE void*
-#define OPENLIB(libname) dlopen((libname), RTLD_LAZY)
-#define LIBFUNC(lib, fn) dlsym((lib), (fn))
-#elif defined(WINVER)
-#define LIBTYPE HINSTANCE
-#define OPENLIB(libname) LoadLibraryW(L ## libname)
-#define LIBFUNC(lib, fn) GetProcAddress((lib), (fn))
-#endif
-*/
-
 //
 //	OtObjectTalk
 //
@@ -64,7 +52,7 @@ public:
 				OT_EXCEPT(L"Function [import] expects 1 parameter, %d given", c);
 			}
 
-			return importFile(p[0]->operator std::wstring(), context);
+			return importModule(p[0]->operator std::wstring(), context);
 		}));
 
 		context->set(L"run", OtFunctionClass::create([] (OtObject, size_t c, OtObject* p)->OtObject {
@@ -105,28 +93,101 @@ public:
 		return context;
 	}
 
+	static inline std::vector<std::filesystem::path> modulePath;
+
+	// build module path
+	static void buildModulePath(const char* argv[]) {
+		modulePath.clear();
+
+		// use local directory as default
+		modulePath.push_back(std::filesystem::canonical("."));
+
+		// use OT_PATH environment variable if provided
+		auto path = std::getenv("OT_PATH");
+
+		if (path) {
+			std::vector<std::wstring> parts;
+			OtTextSplit(OtTextToWide(path), parts, L';');
+
+			for (auto part = parts.begin(); part != parts.end(); ++part) {
+				modulePath.push_back(*part);
+			}
+		}
+
+		// use lib directory
+		auto exec = std::filesystem::path(argv[0]);
+		auto bin = std::filesystem::canonical(exec).parent_path();
+		auto lib = bin.parent_path().append("lib").append("ot");
+
+		if (std::filesystem::is_directory(lib)) {
+			modulePath.push_back(lib);
+		}
+	}
+
 	// compile and run ObjectTalk text
 	static OtObject processText(const std::wstring& text, OtObject context) {
-		// compile code, run it and return result
 		OtCompiler compiler;
 		OtCode code = compiler.compile(text);
 		return code->operator ()(context);
 	}
 
-	// compile and import an ObjectTalk file into the specified context
-	static OtObject importFile(const std::wstring& path, OtObject context) {
-		// get text from file and process it
-		std::wifstream stream(OtTextToNarrow(path).c_str());
-		std::wstringstream buffer;
-		buffer << stream.rdbuf();
-		return processText(buffer.str(), context);
+	// compile and import an ObjectTalk module into the specified context
+	static OtObject importModule(const std::wstring& file, OtObject context) {
+		// find module
+		std::filesystem::path module;
+
+		for (size_t i = 0; i < modulePath.size() && module.empty(); i++) {
+			auto path = modulePath[i].append(file);
+
+			if (std::filesystem::exists(path)) {
+				module = std::filesystem::canonical(path);
+
+			} else if (std::filesystem::exists(path.replace_extension(L".ot"))) {
+				module = std::filesystem::canonical(path.replace_extension(L".ot"));
+
+			} else if (std::filesystem::exists(path.replace_extension(L".so"))) {
+				module = std::filesystem::canonical(path.replace_extension(L".so"));
+			}
+		}
+
+		if (!module.empty()) {
+			if (module.extension() == ".ot") {
+				std::wifstream stream(module.c_str());
+				std::wstringstream buffer;
+				buffer << stream.rdbuf();
+
+				return processText(buffer.str(), context);
+
+			} else if (module.extension() == ".so") {
+#if defined(WINVER)
+#else
+				void* lib = dlopen(module.c_str(), RTLD_LAZY);
+
+				if (!lib) {
+					OT_EXCEPT(L"Can't import module [%ls], error [%s]", file.c_str(), dlerror());
+				}
+
+				void (*init)(OtObject) = (void (*)(OtObject)) dlsym(lib, "init");
+
+				if (!init) {
+					OT_EXCEPT(L"No [init] function in module [%ls]", file.c_str());
+				}
+
+				(*init)(context);
+#endif
+
+				return 0;
+			}
+		}
+
+		OT_EXCEPT(L"Can't import module [%ls]", file.c_str());
 	}
 
 	// compile and run an ObjectTalk file in a new context
 	static OtObject runFile(const std::wstring& path) {
 		OtObject context = createDefaultContext();
 		context->set(L"__FILE__", OtStringClass::create(path));
-		return importFile(path, context);
+		return importModule(path, context);
 	}
 
 private:

@@ -15,6 +15,8 @@
 
 //	Test script for ObjectTalk operating system functions
 
+import("system")
+
 path = Path("/var/lib/test.a")
 assert('path.string() == "/var/lib/test.a"')
 assert('path.directory() == "/var/lib"')
@@ -33,29 +35,7 @@ path = Path("")
 assert('path.directory() == ""')
 
 path = Path("/")
-assert('path.directory() == ""')
-
-uri = URI("http://user:password@test.org:8080/a/b/c/d/test.txt?a=1&b=2")
-assert('uri.string() == "http://user:password@test.org:8080/a/b/c/d/test.txt?a=1&b=2"')
-assert('uri.scheme() == "http"')
-assert('uri.authority() == "user:password@test.org:8080"')
-assert('uri.user() == "user"')
-assert('uri.password() == "password"')
-assert('uri.host() == "test.org"')
-assert('uri.port() == 8080')
-assert('uri.path() == "/a/b/c/d/test.txt"')
-assert('uri.directory() == "/a/b/c/d"')
-assert('uri.filename() == "test.txt"')
-assert('uri.stem() == "test"')
-assert('uri.extension() == "txt"')
-assert('uri.query() == "a=1&b=2"')
-
-fs = FS()
-//print(URI("http://www.google.com/").getString())
-print(URI("http://www.google.com/").head())
-URI("http://www.google.com/").getFile("/tmp/google.html")
-assert('fs.filesize("/tmp/google.html") > 1')
-fs.rm("/tmp/google.html")
+assert('path.directory() == "/"')
 
 os = OS()
 assert('os.hasenv("OBJECT_TALK") == false')
@@ -65,12 +45,12 @@ assert('os.getenv("OBJECT_TALK") == "test"')
 os.unsetenv("OBJECT_TALK")
 assert('os.hasenv("OBJECT_TALK") == false')
 
+fs = FS()
 home = fs.gethome()
 tmp = fs.gettmp()
 cwd = fs.getcwd()
 
 fs.chdir(home)
-print("[" + fs.getcwd() + "]")
 assert('fs.getcwd() == home')
 fs.chdir(cwd)
 assert('fs.getcwd() == cwd')

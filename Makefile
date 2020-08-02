@@ -1,6 +1,8 @@
 SRC=$(wildcard app/*.cpp modules/*/*.cpp)
 INC=$(wildcard include/*.h modules/*/*.h)
 
+.PHONY : debug release
+
 debug:
 	cmake -Bdebug
 	cd debug && make

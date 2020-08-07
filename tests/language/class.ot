@@ -21,23 +21,19 @@ assert('1.getClass().getClass().getName() == "Class"')
 theClass = 1.getClass()
 path = theClass.getName()
 
-while theClass.hasParent()
-{
+while theClass.hasParent() {
 	theClass = theClass.getParent()
 	path += "->" + theClass.getName()
 }
 
 assert('path == "Integer->Primitive->Object"')
 
-class MyObject : Object
-{
-	function pedigree(this)
-	{
+class MyObject : Object {
+	function pedigree(this) {
 		theClass = this.getClass()
 		path = theClass.getName()
 
-		while theClass.hasParent()
-		{
+		while theClass.hasParent() {
 			theClass = theClass.getParent()
 			path += "->" + theClass.getName()
 		}
@@ -45,13 +41,11 @@ class MyObject : Object
 		return path
 	}
 
-	function useless(this, useless)
-	{
+	function useless(this, useless) {
 		return this.pedigree()
 	}
 
-	function set(this, value)
-	{
+	function set(this, value) {
 		this.value = value
 	}
 }

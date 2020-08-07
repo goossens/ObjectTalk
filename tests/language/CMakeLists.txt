@@ -18,8 +18,3 @@ file(GLOB OT_TESTS "*.ot")
 foreach(TEST ${OT_TESTS})
 	add_test(NAME ${TEST} COMMAND ot ${TEST})
 endforeach()
-
-add_subdirectory(language)
-add_subdirectory(primitives)
-add_subdirectory(collections)
-add_subdirectory(modules)

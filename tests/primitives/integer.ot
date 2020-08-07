@@ -1,0 +1,51 @@
+//	ObjectTalk Scripting Language
+//	Copyright 1993-2020 Johan A. Goossens
+//
+//	Licensed under the Apache License, Version 2.0 (the "License");
+//	you may not use this file except in compliance with the License.
+//	You may obtain a copy of the License at
+//
+//		http://www.apache.org/licenses/LICENSE-2.0
+//
+//	Unless required by applicable law or agreed to in writing, software
+//	distributed under the License is distributed on an "AS IS" BASIS,
+//	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//	See the License for the specific language governing permissions and
+//	limitations under the License.
+
+// Integer class test
+assert('(1 + 2) == 3')
+assert('(3 - 1) == 2')
+assert('(3 * 2) == 6')
+assert('(8 / 2) == 4')
+assert('(11 / 2) == 5')
+assert('(8 % 3) == 2')
+assert('(2 << 4) == 32')
+assert('(64 >> 2) == 16')
+assert('(12 & 4) == 4')
+assert('(8 | 4) == 12')
+assert('(12 ^ 4) == 8')
+assert('~4 == -5')
+
+assert('0 != 1')
+assert('1 == 1')
+assert('0 < 1')
+assert('1 <= 1')
+assert('2 > 1')
+assert('1 >= 1')
+assert('-1 == -1')
+assert('- -1 == 1')
+
+assert('1.abs() == 1')
+assert('-1.abs() == 1')
+assert('11.sign() == 1')
+assert('-11.sign() == -1')
+assert('3.real() > 2.9')
+
+assert('0.boolean() == false')
+assert('10.boolean() == true')
+assert('10.real() == 10.0')
+assert('10.string() == "10"')
+
+// Well done
+print("Passed all integer tests")

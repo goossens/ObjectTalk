@@ -19,4 +19,4 @@ foreach(TEST ${OT_TESTS})
 	add_test(NAME ${TEST} COMMAND ot ${TEST})
 endforeach()
 
-# add_subdirectory(modules)
+add_subdirectory(modules)

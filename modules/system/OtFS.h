@@ -14,9 +14,6 @@
 //	limitations under the License.
 
 
-#include <uv.h>
-
-
 //
 //	OtFS
 //
@@ -33,92 +30,28 @@ class OtFSClass : public OtSystemClass {
 public:
 	OtFSClass() {}
 
-	// get user home directory
-	OtObject gethome() {
-		size_t size = 256;
-		char* path = (char*) malloc(size);
-		int result = uv_os_homedir(path, &size);
-
-		if (result == UV_ENOBUFS) {
-			path = (char*) realloc(path, size);
-			result = uv_os_homedir(path, &size);
-		}
-
-		if (result) {
-			OT_EXCEPT(L"fs.gethome failed: %s", uv_strerror(result));
-		}
-
-		OtPath p = OtPathClass::create(path);
-		free(path);
-		return p;
-	}
-
 	// get temporary directory
 	OtObject gettmp() {
-		size_t size = 256;
-		char* path = (char*) malloc(size);
-		int result = uv_os_tmpdir(path, &size);
+		 return OtPathClass::create(std::filesystem::temp_directory_path());
+	}
 
-		if (result == UV_ENOBUFS) {
-			path = (char*) realloc(path, size);
-			result = uv_os_tmpdir(path, &size);
-		}
-
-		if (result) {
-			OT_EXCEPT(L"fs.gettmp failed: %s", uv_strerror(result));
-		}
-
-		OtPath p = OtPathClass::create(path);
-		free(path);
-		return p;
+	// get current working directory
+	OtObject getcwd() {
+		return OtPathClass::create(std::filesystem::current_path());
 	}
 
 	// change current working directory
 	void chdir(const std::wstring& path) {
-		int result = uv_chdir(OtTextToNarrow(path).c_str());
-
-		if (result) {
-			OT_EXCEPT(L"fs.chdir failed: %s", uv_strerror(result));
-		}
-	}
-
-	// get current working directory
-	OtObject getcwd()
-	{
-		size_t size = 256;
-		char* path = (char*) malloc(size);
-		int result = uv_cwd(path, &size);
-
-		if (result == UV_ENOBUFS) {
-			path = (char*) realloc(path, size);
-			result = uv_cwd(path, &size);
-		}
-
-		if (result) {
-			OT_EXCEPT(L"fs.getcwd failed: %s", uv_strerror(result));
-		}
-
-		OtPath p = OtPathClass::create(path);
-		free(path);
-		return p;
+		 std::filesystem::current_path(path);
 	}
 
 	// get list of files in specified directory
 	OtObject ls(const std::wstring& path) {
 		// get content of directory
 		OtArray content = OtArrayClass::create();
-		uv_fs_t req;
-		uv_dirent_t ent;
-		int result;
 
-		uv_fs_scandir(uv_default_loop(), &req, OtTextToNarrow(path).c_str(), 0, 0);
-
-		while ((result = uv_fs_scandir_next(&req, &ent)) != UV_EOF) {
-			if (result) {
-				OT_EXCEPT(L"fs.ls failed: %s", uv_strerror(result));
-			}
-
-			content->push_back(OtPathClass::create(OtTextToWide(ent.name)));
+		for (auto& p: std::filesystem::directory_iterator(path)) {
+			content->push_back(OtPathClass::create(p.path()));
 		}
 
 		return content;
@@ -126,27 +59,108 @@ public:
 
 	// get file size
 	size_t filesize(const std::wstring& path) {
-		int result;
-		uv_fs_t req;
-		result = uv_fs_stat(uv_default_loop(), &req, OtTextToNarrow(path).c_str(), 0);
-
-		if (result) {
-			OT_EXCEPT(L"fs.filesize failed: %s", uv_strerror(result));
-		}
-
-		uv_stat_t* stat = uv_fs_get_statbuf(&req);
-		return (size_t) stat->st_size;
+		return (size_t) std::filesystem::file_size(path);
 	}
 
-	// remove file
-	void rm(const std::wstring& path) {
-		int result;
-		uv_fs_t req;
-		result = uv_fs_unlink(uv_default_loop(), &req, OtTextToNarrow(path).c_str(), 0);
+	// copy a file system object
+	void cp(const std::wstring& from, const std::wstring& to) {
+		std::filesystem::copy(from, to, std::filesystem::copy_options::recursive);
+	}
 
-		if (result) {
-			OT_EXCEPT(L"fs.rm failed: %s", uv_strerror(result));
+	// move (rename) a file system object
+	void mv(const std::wstring& from, const std::wstring& to) {
+		std::filesystem::rename(from, to);
+	}
+
+	// link a file system object
+	void ln(const std::wstring& from, const std::wstring& to) {
+		std::filesystem::create_hard_link(from, to);
+	}
+
+	// link a file system object symbolically
+	void lns(const std::wstring& from, const std::wstring& to) {
+		std::filesystem::create_symlink(from, to);
+	}
+
+	// resize file
+	void resize(const std::wstring& path, size_t size) {
+		std::filesystem::resize_file(path, size);
+	}
+
+	// remove file system object
+	void rm(const std::wstring& path) {
+		if (!std::filesystem::remove(path)) {
+			OT_EXCEPT(L"can't remove [%ls]", path.c_str());
 		}
+	}
+
+	// create directory
+	void mkdir(const std::wstring& path) {
+		if (!std::filesystem::create_directory(path)) {
+			OT_EXCEPT(L"can't create directory [%ls]", path.c_str());
+		}
+	}
+
+	// create (intermediate) directories
+	void mkdirs(const std::wstring& path) {
+		if (!std::filesystem::create_directories(path)) {
+			OT_EXCEPT(L"can't create directories [%ls]", path.c_str());
+		}
+	}
+
+	// create temporary directories
+	OtObject mktmpdir() {
+		std::random_device rd;
+		std::mt19937 generator(rd());
+		std::uniform_int_distribution<uint64_t> rand(0);
+
+		auto tmp = std::filesystem::temp_directory_path();
+		std::filesystem::path path;
+		bool done = false;
+
+		while (!done) {
+			std::stringstream ss;
+			ss << std::hex << rand(generator);
+			path = tmp / ss.str();
+
+			if (std::filesystem::create_directory(path)) {
+				done = true;
+			}
+		}
+
+		return OtPathClass::create(path);
+	}
+
+	// remove directory
+	void rmdir(const std::wstring& path) {
+		if (!std::filesystem::remove(path)) {
+			OT_EXCEPT(L"can't remove directory [%ls]", path.c_str());
+		}
+	}
+
+	// remove directory and its content
+	void rmdirs(const std::wstring& path) {
+		if (!std::filesystem::remove_all(path)) {
+			OT_EXCEPT(L"can't remove directory [%ls]", path.c_str());
+		}
+	}
+
+	// get file system capacity
+	size_t capacity(const std::wstring& path) {
+		std::filesystem::space_info space = std::filesystem::space(path);
+		return space.capacity;
+	}
+
+	// get free space on file system
+	size_t free(const std::wstring& path) {
+		std::filesystem::space_info space = std::filesystem::space(path);
+		return space.free;
+	}
+
+	// get available space on file system
+	size_t available(const std::wstring& path) {
+		std::filesystem::space_info space = std::filesystem::space(path);
+		return space.available;
 	}
 
 	// get type definition
@@ -156,13 +170,25 @@ public:
 		if (!type) {
 			type = OtTypeClass::create<OtFSClass>(L"FS", OtSystemClass::getMeta());
 
-			type->set(L"gethome", OtFunctionCreate(&OtFSClass::gethome));
 			type->set(L"gettmp", OtFunctionCreate(&OtFSClass::gettmp));
-			type->set(L"chdir", OtFunctionCreate(&OtFSClass::chdir));
 			type->set(L"getcwd", OtFunctionCreate(&OtFSClass::getcwd));
+			type->set(L"chdir", OtFunctionCreate(&OtFSClass::chdir));
 			type->set(L"ls", OtFunctionCreate(&OtFSClass::ls));
 			type->set(L"filesize", OtFunctionCreate(&OtFSClass::filesize));
+			type->set(L"cp", OtFunctionCreate(&OtFSClass::cp));
+			type->set(L"mv", OtFunctionCreate(&OtFSClass::mv));
+			type->set(L"ln", OtFunctionCreate(&OtFSClass::ln));
+			type->set(L"lns", OtFunctionCreate(&OtFSClass::lns));
+			type->set(L"resize", OtFunctionCreate(&OtFSClass::resize));
 			type->set(L"rm", OtFunctionCreate(&OtFSClass::rm));
+			type->set(L"mkdir", OtFunctionCreate(&OtFSClass::mkdir));
+			type->set(L"mkdirs", OtFunctionCreate(&OtFSClass::mkdirs));
+			type->set(L"mktmpdir", OtFunctionCreate(&OtFSClass::mktmpdir));
+			type->set(L"rmdir", OtFunctionCreate(&OtFSClass::rmdir));
+			type->set(L"rmdirs", OtFunctionCreate(&OtFSClass::rmdirs));
+			type->set(L"capacity", OtFunctionCreate(&OtFSClass::capacity));
+			type->set(L"free", OtFunctionCreate(&OtFSClass::free));
+			type->set(L"available", OtFunctionCreate(&OtFSClass::available));
 		}
 
 		return type;

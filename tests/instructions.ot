@@ -21,8 +21,15 @@ string = "test"
 assert('integer == 1 && real == 1.1 && string == "test"')
 
 if integer == 1 flag1 = true else flag1 = false
-if integer == 2 flag2 = true else flag2 = false
-assert('flag1 && !flag2')
+if (integer == 2) flag2 = true; else flag2 = false;
+
+if (integer == 3) {
+	flag3 = true;
+} else {
+	flag3 = false;
+}
+
+assert('flag1 && !flag2 && !flag3')
 
 for (test = 0, c = 0; c < 10; c++)
 	test++

@@ -91,12 +91,11 @@ os.unsetenv("OBJECT_TALK")
 assert('os.hasenv("OBJECT_TALK") == false')
 
 fs = FS()
-home = fs.gethome()
 tmp = fs.gettmp()
 cwd = fs.getcwd()
 
-fs.chdir(home)
-assert('fs.getcwd() == home')
+fs.chdir(tmp)
+assert('fs.getcwd() == tmp')
 fs.chdir(cwd)
 assert('fs.getcwd() == cwd')
 

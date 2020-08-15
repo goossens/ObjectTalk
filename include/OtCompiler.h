@@ -1200,7 +1200,7 @@ private:
 	}
 
 	// compile a single statement
-	void statement(OtCode code) 	{
+	void statement(OtCode code) {
 		// process statement
 		switch (scanner.getToken()) {
 			case OtScanner::LBRACE_TOKEN:

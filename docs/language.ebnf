@@ -1,6 +1,6 @@
 object-talk	::= statement*
 
-statement ::= expressions
+statement ::= expression
 | "{" statement+ "}"
 | "class" name ":" name statement
 | "function" name "(" (name ("," name)* | "...") ")" statement

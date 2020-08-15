@@ -32,12 +32,14 @@ public:
 
 	// get temporary directory
 	OtObject gettmp() {
-		 return OtPathClass::create(std::filesystem::temp_directory_path());
+		 return OtPathClass::create(std::filesystem::canonical(
+			 std::filesystem::temp_directory_path()));
 	}
 
 	// get current working directory
 	OtObject getcwd() {
-		return OtPathClass::create(std::filesystem::current_path());
+		return OtPathClass::create(std::filesystem::canonical(
+			std::filesystem::current_path()));
 	}
 
 	// change current working directory

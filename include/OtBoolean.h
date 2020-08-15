@@ -28,8 +28,8 @@ typedef std::shared_ptr<OtBooleanClass> OtBoolean;
 
 class OtBooleanClass : public OtPrimitiveClass {
 public:
-	OtBooleanClass() {}
-	OtBooleanClass(bool boolean) { value = boolean; }
+	OtBooleanClass() = default;
+	OtBooleanClass(bool boolean) : value(boolean) {}
 
 	operator bool() { return value; }
 	operator long() { return value ? 1 : 0; }
@@ -70,7 +70,7 @@ public:
 	}
 
 private:
-	bool value;
+	bool value {false};
 };
 
 

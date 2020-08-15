@@ -31,8 +31,6 @@ typedef std::shared_ptr<OtOSClass> OtOS;
 
 class OtOSClass : public OtSystemClass {
 public:
-	OtOSClass() {}
-
 	// see if environment variable exists
 	bool hasenv(const std::wstring& name) {
 		size_t size = 256;

@@ -28,8 +28,8 @@ typedef std::shared_ptr<OtIntegerClass> OtInteger;
 
 class OtIntegerClass : public OtPrimitiveClass {
 public:
-	OtIntegerClass() {}
-	OtIntegerClass(long integer) { value = integer; }
+	OtIntegerClass() = default;
+	OtIntegerClass(long integer) : value(integer) {}
 
 	operator bool() { return value != 0; }
 	operator long() { return value; }
@@ -115,7 +115,7 @@ public:
 	}
 
 private:
-	long value;
+	long value {0};
 };
 
 

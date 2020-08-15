@@ -28,8 +28,6 @@ typedef std::shared_ptr<OtArrayClass> OtArray;
 
 class OtArrayClass : public OtCollectionClass, public std::vector<OtObject> {
 public:
-	OtArrayClass() {}
-
 	// convert array to string
 	operator std::wstring() {
 		std::wstring result(L"[");
@@ -64,8 +62,8 @@ public:
 	// support index operator
 	class OtArrayReferenceClass : public OtInternalClass {
 	public:
-		OtArrayReferenceClass() {}
-		OtArrayReferenceClass(OtArray a, size_t i) { array = a; index = i; }
+		OtArrayReferenceClass() = default;
+		OtArrayReferenceClass(OtArray a, size_t i) : array(a), index(i) {}
 
 		OtObject deref() { return array->operator[] (index); }
 		OtObject assign(OtObject value) { array->operator[] (index) = value; return value; }
@@ -96,8 +94,8 @@ public:
 	// support iterator
 	class OtArrayIteratorClass : public OtInternalClass {
 	public:
-		OtArrayIteratorClass() {}
-		OtArrayIteratorClass(OtArray a) { array = a; index = 0; }
+		OtArrayIteratorClass() = default;
+		OtArrayIteratorClass(OtArray a) : array(a) {}
 
 		bool end() { return index == array->size(); }
 		OtObject next() { return array->operator[](index++); }
@@ -120,7 +118,7 @@ public:
 
 	private:
 		OtArray array;
-		size_t index;
+		size_t index {0};
 	};
 
 	OtObject iterate() { return OtArrayIteratorClass::create(OtTypeClass::cast<OtArrayClass>(getSharedPtr())); }

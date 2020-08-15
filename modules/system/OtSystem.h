@@ -28,8 +28,6 @@ typedef std::shared_ptr<OtSystemClass> OtSystem;
 
 class OtSystemClass : public OtObjectClass {
 public:
-	OtSystemClass() {}
-
 	// get type definition
 	static OtType getMeta() {
 		static OtType type = nullptr;

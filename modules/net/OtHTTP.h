@@ -29,16 +29,10 @@ typedef std::shared_ptr<OtHTTPClass> OtHTTP;
 class OtHTTPClass : public OtNetClass
 {
 public:
-	// constructors
-	OtHTTPClass() {}
-
 	// class to represent an HTTP request
 	class OtHTTPRequestClass : public OtInternalClass
 	{
 	public:
-		// constructor
-		OtHTTPRequestClass() {}
-
 		// parse request header
 		bool parse(std::istream &stream)
 		{

@@ -33,7 +33,7 @@ class OtURIClass : public OtNetClass
 {
 public:
 	// constructors
-	OtURIClass() {}
+	OtURIClass() = default;
 	OtURIClass(const std::wstring& path) { parse(path); }
 
 	// initialize URI
@@ -385,7 +385,7 @@ private:
 	std::wstring username;
 	std::wstring password;
 	std::wstring host;
-	int port;
+	int port {0};
 	std::wstring path;
 	std::wstring directory;
 	std::wstring filename;

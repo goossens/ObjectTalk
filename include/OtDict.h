@@ -28,8 +28,6 @@ typedef std::shared_ptr<OtDictClass> OtDict;
 
 class OtDictClass : public OtCollectionClass, public std::map<std::wstring, OtObject> {
 public:
-	OtDictClass() {}
-
 	// convert dictionary to string
 	operator std::wstring() {
 		std::wstring result(L"{");
@@ -64,8 +62,8 @@ public:
 	// support index operator
 	class OtDictReferenceClass : public OtInternalClass {
 	public:
-		OtDictReferenceClass() {}
-		OtDictReferenceClass(OtDict d, const std::wstring& i) { dict = d; index = i; }
+		OtDictReferenceClass() = default;
+		OtDictReferenceClass(OtDict d, const std::wstring& i) : dict(d), index(i) {}
 
 		OtObject deref() { return dict->operator[] (index); }
 		OtObject assign(OtObject value) { dict->operator[] (index) = value; return value; }

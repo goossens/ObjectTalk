@@ -28,8 +28,6 @@ typedef std::shared_ptr<OtCollectionClass> OtCollection;
 
 class OtCollectionClass : public OtObjectClass {
 public:
-	OtCollectionClass() {}
-
 	// get type definition
 	static OtType getMeta() {
 		static OtType type = nullptr;

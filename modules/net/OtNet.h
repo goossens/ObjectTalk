@@ -28,8 +28,6 @@ typedef std::shared_ptr<OtNetClass> OtNet;
 
 class OtNetClass : public OtObjectClass {
 public:
-	OtNetClass() {}
-
 	// get type definition
 	static OtType getMeta() {
 		static OtType type = nullptr;

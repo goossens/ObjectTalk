@@ -28,8 +28,6 @@ typedef std::shared_ptr<OtFSClass> OtFS;
 
 class OtFSClass : public OtSystemClass {
 public:
-	OtFSClass() {}
-
 	// get temporary directory
 	OtObject gettmp() {
 		 return OtPathClass::create(std::filesystem::canonical(

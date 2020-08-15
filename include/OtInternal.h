@@ -28,8 +28,6 @@ typedef std::shared_ptr<OtInternalClass> OtInternal;
 
 class OtInternalClass : public OtObjectClass {
 public:
-	OtInternalClass() {}
-
 	// get type definition
 	static OtType getMeta() {
 		static OtType type = nullptr;

@@ -29,10 +29,10 @@ typedef std::shared_ptr<OtPathClass> OtPath;
 class OtPathClass : public OtSystemClass {
 public:
 	// constructors
-	OtPathClass() {}
-	OtPathClass(const char* p) { path = p; }
-	OtPathClass(const std::wstring& p) { path = p; }
-	OtPathClass(const std::filesystem::path& p) { path = p; }
+	OtPathClass() = default;
+	OtPathClass(const char* p) : path(p) {}
+	OtPathClass(const std::wstring& p) : path(p) {}
+	OtPathClass(const std::filesystem::path& p) : path(p) {}
 
 	// convert to string
 	operator std::wstring() { return path.wstring(); }

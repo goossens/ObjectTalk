@@ -192,5 +192,5 @@ public:
 
 private:
 	// constructor
-	OtObjectTalk() {}
+	OtObjectTalk() = default;
 };

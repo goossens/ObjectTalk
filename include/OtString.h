@@ -28,8 +28,8 @@ typedef std::shared_ptr<OtStringClass> OtString;
 
 class OtStringClass : public OtPrimitiveClass {
 public:
-	OtStringClass() {}
-	OtStringClass(const std::wstring& string) { value = string; }
+	OtStringClass() = default;
+	OtStringClass(const std::wstring& string) : value(string) {}
 
 	operator bool() { auto v = value; std::transform(v.begin(), v.end(), v.begin(), ::tolower); return v == L"true"; }
 	operator long() { return std::stol(value); }
@@ -107,7 +107,7 @@ public:
 	}
 
 private:
-	std::wstring value;
+	std::wstring value {L""};
 };
 
 

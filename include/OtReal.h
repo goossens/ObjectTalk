@@ -28,8 +28,8 @@ typedef std::shared_ptr<OtRealClass> OtReal;
 
 class OtRealClass : public OtPrimitiveClass {
 public:
-	OtRealClass() {}
-	OtRealClass(double real) { value = real; }
+	OtRealClass() = default;
+	OtRealClass(double real) : value(real) {}
 
 	operator bool() { return value != 0.0; }
 	operator long() { return long(value); }
@@ -107,7 +107,7 @@ public:
 	}
 
 private:
-	double value;
+	double value {0.0};
 };
 
 

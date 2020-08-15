@@ -21,8 +21,8 @@
 class OtBoundFunctionClass : public OtInternalClass {
 public:
 	// constructor
-	OtBoundFunctionClass() {}
-	OtBoundFunctionClass(OtObject o, OtObject f) { object = o; function = f; }
+	OtBoundFunctionClass() = default;
+	OtBoundFunctionClass(OtObject o, OtObject f) : object(o), function(f) {}
 
 	// call bound function
 	OtObject operator () (OtObject context, size_t count, OtObject* parameters) {
@@ -63,8 +63,8 @@ private:
 
 class OtMemberReferenceClass : public OtInternalClass {
 public:
-	OtMemberReferenceClass() {}
-	OtMemberReferenceClass(OtObject o, const std::wstring& m) { object = o; member = m; }
+	OtMemberReferenceClass() = default;
+	OtMemberReferenceClass(OtObject o, const std::wstring& m) : object(o), member(m) {}
 
 	OtObject deref() {
 		OtObject result = object->get(member);

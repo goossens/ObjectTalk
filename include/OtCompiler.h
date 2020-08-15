@@ -21,8 +21,8 @@
 class OtCodeFunctionClass : public OtInternalClass {
 public:
 	// constructor
-	OtCodeFunctionClass() {}
-	OtCodeFunctionClass(OtCode c) { code = c; }
+	OtCodeFunctionClass() = default;
+	OtCodeFunctionClass(OtCode c) : code(c) {}
 
 	// call code
 	OtObject operator () (OtObject c, size_t n, OtObject* p) { return code->operator ()(c, n, p); }
@@ -53,8 +53,8 @@ private:
 
 class OtContextReferenceClass : public OtInternalClass {
 public:
-	OtContextReferenceClass() {}
-	OtContextReferenceClass(const std::wstring& m) { member = m; }
+	OtContextReferenceClass() = default;
+	OtContextReferenceClass(const std::wstring& m) : member(m) {}
 
 	OtObject deref(OtObject context, size_t, OtObject*) { return context->get(member); }
 	OtObject assign(OtObject context, size_t, OtObject* value) { return context->set(member, *value); }
@@ -86,9 +86,6 @@ private:
 
 class OtCompiler {
 public:
-	// constructor
-	OtCompiler() {}
-
 	// compile text into microcode
 	OtCode compile(const std::wstring& text) {
 		// load scanner
@@ -153,8 +150,8 @@ private:
 
 	class OtContextReferenceClass : public OtInternalClass {
 	public:
-		OtContextReferenceClass() {}
-		OtContextReferenceClass(const std::wstring& m) { member = m; }
+		OtContextReferenceClass() = default;
+		OtContextReferenceClass(const std::wstring& m) : member(m) {}
 
 		OtObject deref(OtObject context, size_t, OtObject*) { return context->get(member); }
 		OtObject assign(OtObject context, size_t, OtObject* value) { return context->set(member, *value); }

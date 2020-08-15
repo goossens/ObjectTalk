@@ -29,17 +29,16 @@ typedef std::shared_ptr<OtFunctionClass> OtFunction;
 class OtFunctionClass : public OtPrimitiveClass {
 public:
 	// constructors
-	OtFunctionClass() {}
-
-	OtFunctionClass(size_t p, OtExecutable e) {
-		parameterCount = p;
-		executable = e;
-	}
+	OtFunctionClass() = default;
+	OtFunctionClass(size_t p, OtExecutable e) : parameterCount(p), executable(e) {}
 
 	// call function
 	OtObject operator () (OtObject context, size_t count, OtObject* parameters) {
 		// sanity check
-		if (parameterCount != SIZE_MAX && count != parameterCount) {
+		if (!executable) {
+			OT_EXCEPT(L"Function not initialized", false);
+
+		} else if (parameterCount != SIZE_MAX && count != parameterCount) {
 			OT_EXCEPT(L"Function expects %d parameters, %d given", parameterCount, count);
 		}
 
@@ -70,8 +69,8 @@ public:
 	}
 
 protected:
-	size_t parameterCount;
-	OtExecutable executable;
+	size_t parameterCount {0};
+	OtExecutable executable {nullptr};
 };
 
 

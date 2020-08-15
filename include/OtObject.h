@@ -21,7 +21,7 @@
 class OtObjectClass : public std::enable_shared_from_this<OtObjectClass> {
 public:
 	// constructor/destructor
-	OtObjectClass() {}
+	OtObjectClass() = default;
 	virtual ~OtObjectClass() {}
 
 	// type access

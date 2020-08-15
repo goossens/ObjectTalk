@@ -29,8 +29,8 @@ typedef std::shared_ptr<OtClassClass> OtClass;
 class OtClassClass : public OtInternalClass {
 public:
 	// constructors
-	OtClassClass() {}
-	OtClassClass(OtType t) { classType = t; }
+	OtClassClass() = default;
+	OtClassClass(OtType t) : classType(t) {}
 
 	// access member information
 	std::wstring getName() { return classType->getName(); }

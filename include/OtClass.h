@@ -34,19 +34,11 @@ public:
 
 	// access member information
 	std::wstring getName() { return classType->getName(); }
-
-	bool hasParent() {
-		return classType->getParent() != nullptr;
-	}
-
-	OtObject getParent() {
-		return OtClassClass::create(classType->getParent());
-	}
+	bool hasParent() { return classType->getParent() != nullptr; }
+	OtObject getParent() { return OtClassClass::create(classType->getParent()); }
 
 	// create a sub class
-	OtObject subType(const std::wstring& name) {
-		return OtClassClass::create(classType->subType(name));
-	}
+	OtObject subType(const std::wstring& name) { return OtClassClass::create(classType->subType(name)); }
 
 	// see if class is kind of
 	bool isKindOf(const std::wstring& className) { return classType->isKindOf(className); }

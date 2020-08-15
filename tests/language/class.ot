@@ -68,5 +68,17 @@ assert('test.value == 14')
 test.value = 16
 assert('test.value == 16')
 
+class ClassMember : Object {
+	constant = 13
+
+	function test(this) {
+		return this.constant
+	}
+}
+
+test = ClassMember()
+assert('test.constant == 13')
+assert('test.test() == 13')
+
 // Well done
 print("Passed all class tests")

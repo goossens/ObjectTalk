@@ -14,6 +14,9 @@
 //	limitations under the License.
 
 
+#include <httplib.h>
+
+
 //
 //	OtHTTP
 //
@@ -26,115 +29,42 @@ typedef std::shared_ptr<OtHTTPClass> OtHTTP;
 //	OtHTTPClass
 //
 
-class OtHTTPClass : public OtNetClass
-{
+class OtHTTPClass : public OtNetClass {
 public:
-	// class to represent an HTTP request
-	class OtHTTPRequestClass : public OtInternalClass
-	{
-	public:
-		// parse request header
-		bool parse(std::istream &stream)
-		{
-			std::wstring line;
-			std::getline(stream, line);
-			std::size_t start, end;
+	// add handlers
+	void get(const std::wstring& path, OtObject callback) {
+		server.Get(OtTextToNarrow(path).c_str(), [this, callback](const httplib::Request& req, httplib::Response &res) {
+			OtHttpRequest request = OtHttpRequestClass::create(&req);
+			res.set_content("Hello World!\n", "text/plain");
+		});
+	}
 
-			if ((end = line.find_first_of(' ')) == std::wstring::npos)
-				return false;
-
-			method = line.substr(0, end);
-			start = line.find_first_not_of(' ', end);
-
-			if ((end = line.find_first_of(' ', start)) == std::wstring::npos)
-				return false;
-
-			uri = OtURIClass::create(line.substr(start, end));
-			start = line.find_first_not_of(' ', end);
-
-			version = line.substr(start, line.find_last_not_of("\n\r") + 1);
-
-			headers.clear();
-			std::getline(stream, line);
-
-			while ((end = line.find_first_of(':')) != std::wstring::npos)
-			{
-				headers.push_back(line.substr(0, line.find_last_not_of("\n\r") + 1));
-				std::getline(stream, line);
-			}
-
-			return true;
-		}
-
-		// get member data
-		OtObject getMethod() { return OtObjectCreate(method); }
-		OtObject getURI() { return uri; }
-		OtObject getVersion() { return OtObjectCreate(version); }
-
-		std::size_t getHeaderCount() { return headers.size(); }
-		std::wstring getHeader(long index) { return headers[index]; }
-
-		OtObject getHeaderValues(const std::wstring& name)
-		{
-			OtArray values = OtArrayClass::create();
-
-			for (auto& header : headers)
-			{
-				std::size_t sep = header.find_first_of(':');
-				std::wstring key = header.substr(0, sep);
-				std::wstring value = header.substr(header.find_first_not_of(" \t", sep + 1), std::wstring::npos);
-
-				if (OtTextCaseInsensitiveEqual(key, name))
-					values->append(OtStringClass::create(value));
-			}
-
-			return values;
-		}
-
-		// get type definition
-		static OtType getMeta()
-		{
-			static OtType type = nullptr;
-
-			if (!type)
-			{
-				type = OtTypeClass::create<OtHTTPRequestClass>(L"HttpRequest", OtInternalClass::getMeta());
-				type->set(L"method", OtFunctionCreate(&OtHTTPRequestClass::getMethod));
-				type->set(L"uri", OtFunctionCreate(&OtHTTPRequestClass::getURI));
-				type->set(L"version", OtFunctionCreate(&OtHTTPRequestClass::getVersion));
-				type->set(L"headers", OtFunctionCreate(&OtHTTPRequestClass::getHeaderCount));
-				type->set(L"header", OtFunctionCreate(&OtHTTPRequestClass::getHeader));
-				type->set(L"headervalues", OtFunctionCreate(&OtHTTPRequestClass::getHeaderValues));
-			}
-
-			return type;
-		}
-
-	private:
-		std::wstring method;
-		OtURI uri;
-		std::wstring version;
-		std::vector<std::wstring> headers;
-	};
+	// listen for requests
+	void listen(const std::wstring& address, long port) {
+		server.listen(OtTextToNarrow(address).c_str(), port);
+	}
 
 	// get type definition
-	static OtType getMeta()
-	{
+	static OtType getMeta() {
 		static OtType type = nullptr;
 
-		if (!type)
-		{
+		if (!type) {
 			type = OtTypeClass::create<OtHTTPClass>(L"HTTP", OtHTTPClass::getMeta());
+
+			type->set(L"get", OtFunctionCreate(&OtHTTPClass::get));
+			type->set(L"listen", OtFunctionCreate(&OtHTTPClass::listen));
 		}
 
 		return type;
 	}
 
 	// create a new object
-	static OtHTTP create()
-	{
-		OtHTTP fs = std::make_shared<OtHTTPClass>();
-		fs->setType(getMeta());
-		return fs;
+	static OtHTTP create() {
+		OtHTTP http = std::make_shared<OtHTTPClass>();
+		http->setType(getMeta());
+		return http;
 	}
+
+private:
+	httplib::Server server;
 };

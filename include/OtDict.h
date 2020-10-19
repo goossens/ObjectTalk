@@ -82,14 +82,18 @@ public:
 		}
 
 		// create a new object
-		static OtObject create(OtDict a, const std::wstring& i) { return std::make_shared<OtDictReferenceClass>(a, i)->setType(getMeta()); }
+		static OtObject create(OtDict a, const std::wstring& i) {
+			return std::make_shared<OtDictReferenceClass>(a, i)->setType(getMeta());
+		}
 
 	private:
 		OtDict dict;
 		std::wstring index;
 	};
 
-	OtObject index(const std::wstring& index) { return OtDictReferenceClass::create(OtTypeClass::cast<OtDictClass>(getSharedPtr()), index); }
+	OtObject index(const std::wstring& index) {
+		return OtDictReferenceClass::create(OtTypeClass::cast<OtDictClass>(getSharedPtr()), index);
+	}
 
 	// get dictionary size
 	size_t mySize() {
@@ -99,7 +103,11 @@ public:
 	// return dictionary clone
 	OtObject clone() {
 		OtDict result = create();
-		for (auto& it : *this) result->insert(std::make_pair(it.first, it.second));
+
+		for (auto& it : *this) {
+			result->insert(std::make_pair(it.first, it.second));
+		}
+
 		return result;
 	}
 

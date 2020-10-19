@@ -73,6 +73,60 @@ inline std::string OtTextToNarrow(const std::wstring& wide) {
 	return converter.to_bytes(wide);
 }
 
+//
+//	URL Conversion Functions
+//
+
+inline std::wstring OtTextEncodeURL(const std::wstring& text) {
+	std::wostringstream o;
+
+	for (auto c = text.cbegin(); c != text.cend(); c++) {
+		if ((*c >= L'a' && *c <= L'z') || (*c >= L'A' && *c <= L'Z') || (*c >= L'0' && *c <= L'9')) {
+			o << *c;
+
+		} else if (*c == L' ') {
+			o << L'+';
+
+		} else {
+			o << L'%' << std::hex << std::setw(2) << std::setfill(L'0') << static_cast<unsigned int>(*c);
+		}
+	}
+
+	return o.str();
+}
+
+inline std::wstring OtTextDecodeURL(const std::wstring& text) {
+	std::wostringstream o;
+	auto c = text.cbegin();
+
+	while (c < text.cend()) {
+		if (*c == L'+') {
+			c++;
+			o << L' ';
+
+		} else if (*c == L'%') {
+			c++;
+
+			if (c + 2 < text.cend()) {
+				o << ((wchar_t) std::wcstol(std::wstring(c, c + 2).c_str(), nullptr, 16));
+				c += 2;
+
+			} else {
+				c = text.cend();
+			}
+
+		} else {
+			o << *c++;
+		}
+	}
+
+	return o.str();
+}
+
+//
+//	JSON Conversion Functions
+//
+
 inline std::wstring OtTextToJSON(const std::wstring& text) {
 	std::wostringstream o;
 	o << '"';

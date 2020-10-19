@@ -86,7 +86,7 @@ public:
 	// support iterator
 	class OtPathIteratorClass : public OtInternalClass {
 	public:
-		OtPathIteratorClass() {}
+		OtPathIteratorClass() = default;
 		OtPathIteratorClass(OtPath p) { path = p; iterator = p->path.begin(); last = p->path.end(); }
 
 		bool end() { return iterator == last; }

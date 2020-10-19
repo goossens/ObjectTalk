@@ -17,6 +17,7 @@ cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
 project(ObjectTalk VERSION 1.0 DESCRIPTION "ObjectTalk - The Completely Object-Oriented Scripting Language" LANGUAGES CXX)
 
 include_directories(include)
+include_directories(3rdparty)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/ot)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)

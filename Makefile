@@ -18,7 +18,7 @@ install: release
 	cd release && make install/strip
 
 xcode:
-	cmake -G Xcode --build build
+	cmake -Bdebug -GXcode
 
 cleanup:
 	perl -i -pe 's/\s+\n/\n/' $(SRC) $(INC)

@@ -116,8 +116,8 @@ public:
 
 		// use lib directory
 		auto exec = std::filesystem::path(argv[0]);
-		auto bin = std::filesystem::canonical(exec).parent_path();
-		auto lib = bin.parent_path().append("lib").append("ot");
+		auto root = std::filesystem::canonical(exec).parent_path().parent_path();
+		auto lib = root.append("lib").append("ot");
 
 		if (std::filesystem::is_directory(lib)) {
 			modulePath.push_back(lib);

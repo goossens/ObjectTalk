@@ -68,6 +68,14 @@ inline std::wstring OtTextToWide(const std::string& narrow) {
 	return converter.from_bytes(narrow);
 }
 
+inline std::wstring OtTextFromPtr(const char *string) {
+	return OtTextToWide(std::string(string));
+}
+
+inline std::wstring OtTextFromPtr(const char *string, size_t length) {
+	return OtTextToWide(std::string(string, length));
+}
+
 inline std::string OtTextToNarrow(const std::wstring& wide) {
 	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 	return converter.to_bytes(wide);

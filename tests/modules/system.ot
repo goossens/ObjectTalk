@@ -76,11 +76,12 @@ assert('Path("test.a").hasFilename() == true')
 assert('Path("./aa/").hasFilename() == false')
 
 assert('Path("/var/lib/test.a").hasStem() == true')
-assert('Path("./hasStem/").hasStem() == false')
+assert('Path("/var/lib/test").hasStem() == true')
+assert('Path("/var/lib/").hasStem() == false')
 
 assert('Path("/var/lib/test.a").hasExtension() == true')
 assert('Path("/var/lib/test").hasExtension() == false')
-assert('Path("./hasStem/").hasExtension() == false')
+assert('Path("/var/lib/").hasExtension() == false')
 
 os = OS()
 assert('os.hasenv("OBJECT_TALK") == false')

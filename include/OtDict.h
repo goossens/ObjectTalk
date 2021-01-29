@@ -92,7 +92,7 @@ public:
 	};
 
 	OtObject index(const std::wstring& index) {
-		return OtDictReferenceClass::create(OtTypeClass::cast<OtDictClass>(getSharedPtr()), index);
+		return OtDictReferenceClass::create(cast<OtDictClass>(), index);
 	}
 
 	// get dictionary size

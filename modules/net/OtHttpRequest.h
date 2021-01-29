@@ -14,9 +14,6 @@
 //	limitations under the License.
 
 
-#include <httplib.h>
-
-
 //
 //	OtHttpRequest
 //
@@ -29,45 +26,54 @@ typedef std::shared_ptr<OtHttpRequestClass> OtHttpRequest;
 //	OtHttpRequestClass
 //
 
-class OtHttpRequestClass : public OtInternalClass {
+class OtHttpRequestClass : public OtNetClass {
 public:
-	// get request parts
-	const std::wstring getMethod() { return OtTextToWide(req->method); }
-	const std::wstring getPath() { return OtTextToWide(req->path); }
-	const std::wstring getBody() { return OtTextToWide(req->body); }
+	// clear all request fields
+	void clear() {
+		method.clear();
+		path.clear();
+		version.clear();
+		headers.clear();
+		params.clear();
+		body.clear();
+	}
+
+	// set/get request parts
+	void setMethod(const std::wstring& m) { method = m; }
+	const std::wstring getMethod() { return method; }
+
+	void setPath(const std::wstring& p) { path = p; }
+	const std::wstring getPath() { return path; }
+
+	void setVersion(const std::wstring& v) { version = v; }
+	const std::wstring getVersion() { return version; }
+
+	void setHeader(const std::wstring& name, const std::wstring& value) {
+		headers[name] = value;
+	}
 
 	const bool hasHeader(const std::wstring& header) {
-		return req->has_header(OtTextToNarrow(header).c_str());
+		return headers.find(header) != headers.end();
  	}
 
 	const std::wstring getHeader(const std::wstring& header) {
-		return OtTextToWide(req->get_header_value(OtTextToNarrow(header).c_str()));
+		return headers[header];
+	}
+
+	void setParam(const std::wstring& name, const std::wstring& value) {
+		params[name] = value;
 	}
 
 	const bool hasParam(const std::wstring& param) {
-		return req->has_param(OtTextToNarrow(param).c_str());
+		return params.find(param) != params.end();
  	}
 
 	const std::wstring getParam(const std::wstring& param) {
-		return OtTextToWide(req->get_param_value(OtTextToNarrow(param).c_str()));
+		return params[param];
 	}
 
-	const bool isMultipart() {
-		return req->is_multipart_form_data();
- 	}
-
-	const bool hasFile(const std::wstring& file) {
-		return req->has_file(OtTextToNarrow(file).c_str());
- 	}
-
-	const OtObject getFile(const std::wstring& file) {
-		httplib::MultipartFormData data = req->get_file_value(OtTextToNarrow(file).c_str());
-		OtDict dict = OtDictClass::create();
-		dict->operator[] (L"name") = OtStringClass::create(OtTextToWide(data.name));
-		dict->operator[] (L"content") = OtStringClass::create(OtTextToWide(data.content));
-		dict->operator[] (L"filename") = OtStringClass::create(OtTextToWide(data.filename));
-		dict->operator[] (L"type") = OtStringClass::create(OtTextToWide(data.content_type));
-		return dict;
+	void appendBody(const char* data, size_t length) {
+		body.append(data, length);
 	}
 
 	// get type definition
@@ -75,34 +81,33 @@ public:
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtHttpRequestClass>(L"HttpRequest", OtInternalClass::getMeta());
+			type = OtTypeClass::create<OtHttpRequestClass>(L"HttpRequest", OtNetClass::getMeta());
 
 			type->set(L"method", OtFunctionCreate(&OtHttpRequestClass::getMethod));
 			type->set(L"path", OtFunctionCreate(&OtHttpRequestClass::getPath));
-			type->set(L"body", OtFunctionCreate(&OtHttpRequestClass::getBody));
 
 			type->set(L"hasHeader", OtFunctionCreate(&OtHttpRequestClass::hasHeader));
 			type->set(L"getHeader", OtFunctionCreate(&OtHttpRequestClass::getHeader));
 
 			type->set(L"hasParam", OtFunctionCreate(&OtHttpRequestClass::hasParam));
 			type->set(L"getParam", OtFunctionCreate(&OtHttpRequestClass::getParam));
-
-			type->set(L"isMultipart", OtFunctionCreate(&OtHttpRequestClass::isMultipart));
-			type->set(L"hasFile", OtFunctionCreate(&OtHttpRequestClass::hasFile));
-			type->set(L"getFile", OtFunctionCreate(&OtHttpRequestClass::getFile));
 		}
 
 		return type;
 	}
 
 	// create a new object
-	static OtHttpRequest create(const httplib::Request* r) {
+	static OtHttpRequest create() {
 		OtHttpRequest request = std::make_shared<OtHttpRequestClass>();
 		request->setType(getMeta());
-		request->req = r;
 		return request;
 	}
 
 private:
-	const httplib::Request* req;
+	std::wstring method;
+	std::wstring path;
+	std::wstring version;
+	std::map<std::wstring, std::wstring> headers;
+	std::map<std::wstring, std::wstring> params;
+	std::string body;
 };

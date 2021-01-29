@@ -82,14 +82,18 @@ public:
 		}
 
 		// create a new object
-		static OtObject create(OtArray a, size_t i) { return std::make_shared<OtArrayReferenceClass>(a, i)->setType(getMeta()); }
+		static OtObject create(OtArray a, size_t i) {
+			return std::make_shared<OtArrayReferenceClass>(a, i)->setType(getMeta());
+		}
 
 	private:
 		OtArray array;
 		size_t index;
 	};
 
-	OtObject index(size_t index) { return OtArrayReferenceClass::create(OtTypeClass::cast<OtArrayClass>(getSharedPtr()), index); }
+	OtObject index(size_t index) {
+		return OtArrayReferenceClass::create(cast<OtArrayClass>(), index);
+	}
 
 	// support iterator
 	class OtArrayIteratorClass : public OtInternalClass {
@@ -114,14 +118,18 @@ public:
 		}
 
 		// create a new object
-		static OtObject create(OtArray a) { return std::make_shared<OtArrayIteratorClass>(a)->setType(getMeta()); }
+		static OtObject create(OtArray a) {
+			return std::make_shared<OtArrayIteratorClass>(a)->setType(getMeta());
+		}
 
 	private:
 		OtArray array;
 		size_t index {0};
 	};
 
-	OtObject iterate() { return OtArrayIteratorClass::create(OtTypeClass::cast<OtArrayClass>(getSharedPtr())); }
+	OtObject iterate() {
+		return OtArrayIteratorClass::create(cast<OtArrayClass>());
+	}
 
 	OtObject add(OtObject value) {
 		OtArray result = create();

@@ -106,7 +106,9 @@ public:
 		}
 
 		// create a new object
-		static OtObject create(OtPath path) { return std::make_shared<OtPathIteratorClass>(path)->setType(getMeta()); }
+		static OtObject create(OtPath path) {
+			return std::make_shared<OtPathIteratorClass>(path)->setType(getMeta());
+		}
 
 	private:
 		OtPath path;
@@ -114,7 +116,9 @@ public:
 		std::filesystem::path::iterator last;
 	};
 
-	OtObject iterate() { return OtPathIteratorClass::create(OtTypeClass::cast<OtPathClass>(getSharedPtr())); }
+	OtObject iterate() {
+		return OtPathIteratorClass::create(cast<OtPathClass>());
+	}
 
 	// get type definition
 	static OtType getMeta() {
@@ -156,7 +160,7 @@ public:
 			type->set(L"stem", OtFunctionCreate(&OtPathClass::stem));
 			type->set(L"extension", OtFunctionCreate(&OtPathClass::extension));
 
-			type->set(L"", OtFunctionCreate(&OtPathClass::relative));
+			type->set(L"relative", OtFunctionCreate(&OtPathClass::relative));
 		}
 
 		return type;

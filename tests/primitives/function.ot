@@ -15,16 +15,16 @@
 
 // Function class test
 
-function test(s, f) {
-	return f(s)
-}
-
 function lower(s) {
 	return s.lower();
 }
 
 function upper(s) {
 	return s.upper();
+}
+
+function test(s, f) {
+	return f(s)
 }
 
 assert('test("Hello", lower) == "hello"')
@@ -35,6 +35,12 @@ trim = function(s) {
 }
 
 assert('trim(" test  ") == "test"')
+
+global = 1;
+
+assert('test(true, function(bool) {
+	return bool == true && global == 1
+}) == true')
 
 // Well done
 print("Passed all function tests")

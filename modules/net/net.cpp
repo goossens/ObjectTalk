@@ -22,10 +22,11 @@
 
 #include "OtNet.h"
 #include "OtURL.h"
+#include "OtLoop.h"
 #include "OtHttpRequest.h"
 #include "OtHttpResponse.h"
+#include "OtHttpRouter.h"
 #include "OtHTTP.h"
-
 
 //
 //	Network module
@@ -34,7 +35,9 @@
 extern "C" void init(OtObject context) {
 	context->set(L"Net", OtClassClass::create(OtNetClass::getMeta()));
 	context->set(L"URL", OtClassClass::create(OtURLClass::getMeta()));
+	context->set(L"Loop", OtClassClass::create(OtLoopClass::getMeta()));
 	context->set(L"HTTPRequest", OtClassClass::create(OtHttpRequestClass::getMeta()));
 	context->set(L"HTTPResponse", OtClassClass::create(OtHttpResponseClass::getMeta()));
+	context->set(L"HTTPRouter", OtClassClass::create(OtHttpRouterClass::getMeta()));
 	context->set(L"HTTP", OtClassClass::create(OtHTTPClass::getMeta()));
 }

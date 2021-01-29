@@ -48,39 +48,6 @@ private:
 
 
 //
-//	OtContextReferenceClass
-//
-
-class OtContextReferenceClass : public OtInternalClass {
-public:
-	OtContextReferenceClass() = default;
-	OtContextReferenceClass(const std::wstring& m) : member(m) {}
-
-	OtObject deref(OtObject context, size_t, OtObject*) { return context->get(member); }
-	OtObject assign(OtObject context, size_t, OtObject* value) { return context->set(member, *value); }
-
-	// get type definition
-	static OtType getMeta() {
-		static OtType type = nullptr;
-
-		if (!type) {
-			type = OtTypeClass::create<OtContextReferenceClass>(L"ContextReference", OtInternalClass::getMeta());
-			type->set(L"__deref__", OtFunctionClass::create(&OtContextReferenceClass::deref));
-			type->set(L"__assign__", OtFunctionClass::create(&OtContextReferenceClass::assign));
-		}
-
-		return type;
-	}
-
-	// create a new object
-	static OtObject create(const std::wstring& n) { return std::make_shared<OtContextReferenceClass>(n)->setType(getMeta()); }
-
-private:
-	std::wstring member;
-};
-
-
-//
 //	OtCompiler
 //
 

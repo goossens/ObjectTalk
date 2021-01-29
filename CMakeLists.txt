@@ -14,7 +14,7 @@
 #	limitations under the License.
 
 cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
-project(ObjectTalk VERSION 1.0 DESCRIPTION "ObjectTalk - The Completely Object-Oriented Scripting Language" LANGUAGES CXX)
+project(ObjectTalk VERSION 1.0 DESCRIPTION "ObjectTalk - The Completely Object-Oriented Scripting Language" LANGUAGES C CXX)
 
 include_directories(include)
 include_directories(3rdparty)
@@ -32,6 +32,7 @@ set(CMAKE_SHARED_MODULE_PREFIX "")
 enable_testing()
 list(APPEND CMAKE_CTEST_ARGUMENTS "--output-on-failure")
 
+add_subdirectory(3rdparty)
 add_subdirectory(app)
 add_subdirectory(modules)
 add_subdirectory(tests)

@@ -54,8 +54,12 @@ Net module:
 
 Object
 	Net
-		HTTP
 		URI
-	
-	Internal
+		Loop
 		HttpRequest
+		HttpResponse
+		HttpRouter
+			HTTP
+
+	Internal
+		HttpNext

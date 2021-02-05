@@ -30,93 +30,134 @@ class OtHttpResponseClass : public OtNetClass {
 public:
 	// clear all response fields
 	void clear() {
-		status = 200;
-		explanation = L"OK";
+		setStatus(404);
 		headers.clear();
+		body.clear();
 	}
 
 	// set response status
-	void setStatus(int s) {
+	OtObject setStatus(int s) {
 		status = s;
 
 		switch (status) {
 			//####### 1xx - Informational #######
-			case 100: explanation = L"Continue"; break;
-			case 101: explanation = L"Switching Protocols"; break;
-			case 102: explanation = L"Processing"; break;
-			case 103: explanation = L"Early Hints"; break;
+			case 100: explanation = "Continue"; break;
+			case 101: explanation = "Switching Protocols"; break;
+			case 102: explanation = "Processing"; break;
+			case 103: explanation = "Early Hints"; break;
 
 			//####### 2xx - Successful #######
-			case 200: explanation = L"OK"; break;
-			case 201: explanation = L"Created"; break;
-			case 202: explanation = L"Accepted"; break;
-			case 203: explanation = L"Non-Authoritative Information"; break;
-			case 204: explanation = L"No Content"; break;
-			case 205: explanation = L"Reset Content"; break;
-			case 206: explanation = L"Partial Content"; break;
-			case 207: explanation = L"Multi-Status"; break;
-			case 208: explanation = L"Already Reported"; break;
-			case 226: explanation = L"IM Used"; break;
+			case 200: explanation = "OK"; break;
+			case 201: explanation = "Created"; break;
+			case 202: explanation = "Accepted"; break;
+			case 203: explanation = "Non-Authoritative Information"; break;
+			case 204: explanation = "No Content"; break;
+			case 205: explanation = "Reset Content"; break;
+			case 206: explanation = "Partial Content"; break;
+			case 207: explanation = "Multi-Status"; break;
+			case 208: explanation = "Already Reported"; break;
+			case 226: explanation = "IM Used"; break;
 
 			//####### 3xx - Redirection #######
-			case 300: explanation = L"Multiple Choices"; break;
-			case 301: explanation = L"Moved Permanently"; break;
-			case 302: explanation = L"Found"; break;
-			case 303: explanation = L"See Other"; break;
-			case 304: explanation = L"Not Modified"; break;
-			case 305: explanation = L"Use Proxy"; break;
-			case 307: explanation = L"Temporary Redirect"; break;
-			case 308: explanation = L"Permanent Redirect"; break;
+			case 300: explanation = "Multiple Choices"; break;
+			case 301: explanation = "Moved Permanently"; break;
+			case 302: explanation = "Found"; break;
+			case 303: explanation = "See Other"; break;
+			case 304: explanation = "Not Modified"; break;
+			case 305: explanation = "Use Proxy"; break;
+			case 307: explanation = "Temporary Redirect"; break;
+			case 308: explanation = "Permanent Redirect"; break;
 
 			//####### 4xx - Client Error #######
-			case 400: explanation = L"Bad Request"; break;
-			case 401: explanation = L"Unauthorized"; break;
-			case 402: explanation = L"Payment Required"; break;
-			case 403: explanation = L"Forbidden"; break;
-			case 404: explanation = L"Not Found"; break;
-			case 405: explanation = L"Method Not Allowed"; break;
-			case 406: explanation = L"Not Acceptable"; break;
-			case 407: explanation = L"Proxy Authentication Required"; break;
-			case 408: explanation = L"Request Timeout"; break;
-			case 409: explanation = L"Conflict"; break;
-			case 410: explanation = L"Gone"; break;
-			case 411: explanation = L"Length Required"; break;
-			case 412: explanation = L"Precondition Failed"; break;
-			case 413: explanation = L"Payload Too Large"; break;
-			case 414: explanation = L"URI Too Long"; break;
-			case 415: explanation = L"Unsupported Media Type"; break;
-			case 416: explanation = L"Range Not Satisfiable"; break;
-			case 417: explanation = L"Expectation Failed"; break;
-			case 418: explanation = L"I'm a teapot"; break;
-			case 422: explanation = L"Unprocessable Entity"; break;
-			case 423: explanation = L"Locked"; break;
-			case 424: explanation = L"Failed Dependency"; break;
-			case 426: explanation = L"Upgrade Required"; break;
-			case 428: explanation = L"Precondition Required"; break;
-			case 429: explanation = L"Too Many Requests"; break;
-			case 431: explanation = L"Request Header Fields Too Large"; break;
-			case 451: explanation = L"Unavailable For Legal Reasons"; break;
+			case 400: explanation = "Bad Request"; break;
+			case 401: explanation = "Unauthorized"; break;
+			case 402: explanation = "Payment Required"; break;
+			case 403: explanation = "Forbidden"; break;
+			case 404: explanation = "Not Found"; break;
+			case 405: explanation = "Method Not Allowed"; break;
+			case 406: explanation = "Not Acceptable"; break;
+			case 407: explanation = "Proxy Authentication Required"; break;
+			case 408: explanation = "Request Timeout"; break;
+			case 409: explanation = "Conflict"; break;
+			case 410: explanation = "Gone"; break;
+			case 411: explanation = "Length Required"; break;
+			case 412: explanation = "Precondition Failed"; break;
+			case 413: explanation = "Payload Too Large"; break;
+			case 414: explanation = "URI Too Long"; break;
+			case 415: explanation = "Unsupported Media Type"; break;
+			case 416: explanation = "Range Not Satisfiable"; break;
+			case 417: explanation = "Expectation Failed"; break;
+			case 418: explanation = "I'm a teapot"; break;
+			case 422: explanation = "Unprocessable Entity"; break;
+			case 423: explanation = "Locked"; break;
+			case 424: explanation = "Failed Dependency"; break;
+			case 426: explanation = "Upgrade Required"; break;
+			case 428: explanation = "Precondition Required"; break;
+			case 429: explanation = "Too Many Requests"; break;
+			case 431: explanation = "Request Header Fields Too Large"; break;
+			case 451: explanation = "Unavailable For Legal Reasons"; break;
 
 			//####### 5xx - Server Error #######
-			case 500: explanation = L"Internal Server Error"; break;
-			case 501: explanation = L"Not Implemented"; break;
-			case 502: explanation = L"Bad Gateway"; break;
-			case 503: explanation = L"Service Unavailable"; break;
-			case 504: explanation = L"Gateway Time-out"; break;
-			case 505: explanation = L"HTTP Version Not Supported"; break;
-			case 506: explanation = L"Variant Also Negotiates"; break;
-			case 507: explanation = L"Insufficient Storage"; break;
-			case 508: explanation = L"Loop Detected"; break;
-			case 510: explanation = L"Not Extended"; break; break;
-			case 511: explanation = L"Network Authentication Required"; break;
+			case 500: explanation = "Internal Server Error"; break;
+			case 501: explanation = "Not Implemented"; break;
+			case 502: explanation = "Bad Gateway"; break;
+			case 503: explanation = "Service Unavailable"; break;
+			case 504: explanation = "Gateway Time-out"; break;
+			case 505: explanation = "HTTP Version Not Supported"; break;
+			case 506: explanation = "Variant Also Negotiates"; break;
+			case 507: explanation = "Insufficient Storage"; break;
+			case 508: explanation = "Loop Detected"; break;
+			case 510: explanation = "Not Extended"; break; break;
+			case 511: explanation = "Network Authentication Required"; break;
 
-			default: explanation = L""; break;
+			default: explanation = ""; break;
 		}
+
+		return getSharedPtr();
 	}
 
 	// add response header
-	void setHeader(const std::wstring& name, const std::wstring& value) {
-		headers[name] = value;
+	OtObject setHeader(const std::wstring& name, const std::wstring& value) {
+		headers[OtTextToNarrow(name)] = OtTextToNarrow(value);
+		return getSharedPtr();
+	}
+
+	// see if header is set
+	const bool hasHeader(const std::wstring& header) {
+		return headers.has(OtTextToNarrow(header));
+ 	}
+
+	// set result body
+	OtObject text(const std::wstring& text) {
+		body = OtTextToNarrow(text);
+		headers["Content-Type"] = "text/plain";
+		setStatus(200);
+		return getSharedPtr();
+	}
+
+	OtObject json(OtObject object) {
+		body = OtTextToNarrow(object->repr());
+		headers["Content-Type"] = "application/json";
+		setStatus(200);
+		return getSharedPtr();
+	}
+
+	// get size of body
+	size_t getBodySize() {
+		return body.size();
+	}
+
+	// put response in stream
+	void toStream(std::stringstream& stream) {
+		// put status and headers in stream
+		stream << "HTTP/1.1 " << status << " " << explanation << "\r\n";
+
+		for (auto &header : headers) {
+			stream << header.first << ": " << header.second << "\r\n";
+		}
+
+		stream << "\r\n";
+		stream << body;
 	}
 
 	// get type definition
@@ -125,6 +166,11 @@ public:
 
 		if (!type) {
 			type = OtTypeClass::create<OtHttpResponseClass>(L"HttpResponse", OtNetClass::getMeta());
+			type->set(L"setStatus", OtFunctionCreate(&OtHttpResponseClass::setStatus));
+			type->set(L"setHeader", OtFunctionCreate(&OtHttpResponseClass::setHeader));
+			type->set(L"hasHeader", OtFunctionCreate(&OtHttpResponseClass::hasHeader));
+			type->set(L"text", OtFunctionCreate(&OtHttpResponseClass::text));
+			type->set(L"json", OtFunctionCreate(&OtHttpResponseClass::json));
 		}
 
 		return type;
@@ -139,6 +185,7 @@ public:
 
 private:
 	int status;
-	std::wstring explanation;
-	std::map<std::wstring, std::wstring> headers;
+	std::string explanation;
+	OtHttpHeaders headers;
+	std::string body;
 };

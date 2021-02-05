@@ -57,8 +57,17 @@ public:
  	}
 
 	const std::wstring getHeader(const std::wstring& header) {
-		return headers[header];
+		if (hasHeader(header)) {
+			return headers[header];
+
+		} else {
+			return L"";
+		}
 	}
+
+	const bool headerIs(const std::wstring& header, const std::wstring& value) {
+		return getHeader(header) == value;
+ 	}
 
 	void setParam(const std::wstring& name, const std::wstring& value) {
 		params[name] = value;

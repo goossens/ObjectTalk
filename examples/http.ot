@@ -13,16 +13,39 @@
 //	See the License for the specific language governing permissions and
 //	limitations under the License.
 
+import("net")
 
-scope = "Lexical Scope"
+class MyHttpServer : HTTP {
+	function __init__(this) {
+		this.loop = Loop()
 
-function printScope() {
-	print(scope)
+		this.get("/info", this.info)
+
+		this.get("/info2", function(req, res, next) {
+			res.json({
+				"id": 12,
+				"name": "john",
+				"amount": 12.3,
+				"data" : [ 2, 3, 4, 5]
+			})
+		})
+
+		this.get("/info3", function(req, res, next) {
+			next()
+		})
+	}
+
+	function info(this, req, res, next) {
+		res.text("info")
+	}
+
+	function run(this) {
+		this.listen(this.loop, "0.0.0.0", 80)
+		this.loop.run();
+	}
 }
 
-function test() {
-	scope = "Dynamic Scope"
-	printScope()
-}
+print()
+print("Running HTTP server")
 
-test()
+MyHttpServer().run()

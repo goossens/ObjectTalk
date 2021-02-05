@@ -14,15 +14,20 @@
 //	limitations under the License.
 
 
-scope = "Lexical Scope"
+//
+//	Case insensitive headers map
+//
 
-function printScope() {
-	print(scope)
-}
+class OtHttpHeadersComparator {
+public:
+    bool operator()(const std::string& a, const std::string& b) const {
+		return ::strcasecmp(a.c_str(), b.c_str()) < 0;
+    }
+};
 
-function test() {
-	scope = "Dynamic Scope"
-	printScope()
-}
-
-test()
+class OtHttpHeaders : public std::map<std::string, std::string, OtHttpHeadersComparator> {
+public:
+	bool has(const std::string& name) {
+		return find(name) != end();
+	}
+};

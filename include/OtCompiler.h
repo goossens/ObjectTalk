@@ -15,39 +15,6 @@
 
 
 //
-//	OtCodeFunctionClass
-//
-
-class OtCodeFunctionClass : public OtInternalClass {
-public:
-	// constructor
-	OtCodeFunctionClass() = default;
-	OtCodeFunctionClass(OtCode c) : code(c) {}
-
-	// call code
-	OtObject operator () (OtObject c, size_t n, OtObject* p) { return code->operator ()(c, n, p); }
-
-	// get type definition
-	static OtType getMeta() {
-		static OtType type = nullptr;
-
-		if (!type) {
-			type = OtTypeClass::create<OtCodeFunctionClass>(L"CodeFunction", OtInternalClass::getMeta());
-			type->set(L"__call__", OtFunctionClass::create(&OtCodeFunctionClass::operator ()));
-		}
-
-		return type;
-	}
-
-	// create a new object
-	static OtObject create(OtCode c) { return std::make_shared<OtCodeFunctionClass>(c)->setType(getMeta()); }
-
-private:
-	OtCode code;
-};
-
-
-//
 //	OtCompiler
 //
 
@@ -79,6 +46,35 @@ public:
 	}
 
 private:
+	//	OtCodeFunctionClass
+	class OtCodeFunctionClass : public OtInternalClass {
+	public:
+		// constructor
+		OtCodeFunctionClass() = default;
+		OtCodeFunctionClass(OtCode c) : code(c) {}
+
+		// call code
+		OtObject operator () (OtObject c, size_t n, OtObject* p) { return code->operator ()(c, n, p); }
+
+		// get type definition
+		static OtType getMeta() {
+			static OtType type = nullptr;
+
+			if (!type) {
+				type = OtTypeClass::create<OtCodeFunctionClass>(L"CodeFunction", OtInternalClass::getMeta());
+				type->set(L"__call__", OtFunctionClass::create(&OtCodeFunctionClass::operator ()));
+			}
+
+			return type;
+		}
+
+		// create a new object
+		static OtObject create(OtCode c) { return std::make_shared<OtCodeFunctionClass>(c)->setType(getMeta()); }
+
+	private:
+		OtCode code;
+	};
+
 	// compile function
 	void function(OtCode code) {
 		// create function

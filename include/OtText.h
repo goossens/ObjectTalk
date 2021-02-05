@@ -54,8 +54,11 @@ void OtTextSplit(const std::wstring& text, Container& container, wchar_t delimet
 	}
 }
 
-inline bool OtTextCaseInsensitiveEqual(const std::wstring& s1, const std::wstring & s2) {
-	return s1.size() == s2.size() && std::equal(s1.begin(), s1.end(), s2.begin(), [](wchar_t a, wchar_t b) { return tolower(a) == tolower(b); });
+inline bool OtTextCaseInsensitiveEqual(const std::wstring& s1, const std::wstring& s2) {
+	return s1.size() == s2.size() &&
+		std::equal(s1.begin(), s1.end(), s2.begin(), [](wchar_t a, wchar_t b) {
+			return tolower(a) == tolower(b);
+		});
 }
 
 

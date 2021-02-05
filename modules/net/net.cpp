@@ -23,6 +23,7 @@
 #include "OtNet.h"
 #include "OtURL.h"
 #include "OtLoop.h"
+#include "OtHttpHeaders.h"
 #include "OtHttpRequest.h"
 #include "OtHttpResponse.h"
 #include "OtHttpRouter.h"

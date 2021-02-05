@@ -28,9 +28,43 @@ typedef std::shared_ptr<OtHttpRouterClass> OtHttpRouter;
 
 class OtHttpRouterClass : public OtNetClass {
 private:
+	class OtHttpNextClass : public OtInternalClass {
+	public:
+		OtHttpNextClass() = default;
+		OtHttpNextClass(OtHttpRouter r, size_t i, OtHttpRequest q, OtHttpResponse s) : router(r), index(i), req(q), res(s) {}
+
+		// execute next
+		void next() {
+			router->runHandler(index, req, res);
+		}
+
+		// get type definition
+		static OtType getMeta() {
+			static OtType type = nullptr;
+
+			if (!type) {
+				type = OtTypeClass::create<OtHttpNextClass>(L"HttpNext", OtInternalClass::getMeta());
+				type->set(L"__call__", OtFunctionCreate(&OtHttpNextClass::next));
+			}
+
+			return type;
+		}
+
+		// create a new object
+		static OtObject create(OtHttpRouter r, size_t i, OtHttpRequest q, OtHttpResponse s) {
+			return std::make_shared<OtHttpNextClass>(r, i, q, s)->setType(getMeta());
+		}
+
+	private:
+		OtHttpRouter router;
+		size_t index;
+		OtHttpRequest req;
+		OtHttpResponse res;
+	};
+
 	class OtHandler {
 	public:
-		OtHandler(const std::wstring& m, const std::wstring& p, OtObject c) : method(m), path(p), callback(c) {
+		OtHandler(const std::wstring& m, OtObject c, const std::wstring& p, OtObject b) : method(m), context(c), path(p), callback(b) {
 			if (method.length() == 0) {
 				type = ALL;
 
@@ -97,10 +131,14 @@ private:
 		}
 
 		void run(OtHttpRequest req, OtHttpResponse res, OtObject next) {
+			// execute callback if method and path matches
 			if (match(req)) {
+				OtObject pars[] = {callback, req, res, next};
+				callback->get(L"__call__")->operator ()(context, 3, pars);
 
 			} else {
-
+				// no match, call next handler
+				next->cast<OtHttpNextClass>()->next();
 			}
 		}
 
@@ -114,50 +152,21 @@ private:
 
 		OtHandlerType type;
 		std::wstring method;
+		OtObject context;
 		std::wstring path;
 		std::wregex pattern;
 		std::vector<std::wstring> names;
 		OtObject callback;
 	};
 
-	class OtHttpNextClass : public OtInternalClass {
-	public:
-		OtHttpNextClass() = default;
-		OtHttpNextClass(OtHttpRouter r, size_t i, OtHttpRequest q, OtHttpResponse s) : router(r), index(i), req(q), res(s) {}
-
-		// execute next
-		void next() {
-			router->runHandler(index, req, res);
-		}
-
-		// get type definition
-		static OtType getMeta() {
-			static OtType type = nullptr;
-
-			if (!type) {
-				type = OtTypeClass::create<OtHttpNextClass>(L"HttpNext", OtInternalClass::getMeta());
-				type->set(L"__call__", OtFunctionCreate(&OtHttpNextClass::next));
-			}
-
-			return type;
-		}
-
-		// create a new object
-		static OtObject create(OtHttpRouter r, size_t i, OtHttpRequest q, OtHttpResponse s) {
-			return std::make_shared<OtHttpNextClass>(r, i, q, s)->setType(getMeta());
-		}
-
-	private:
-		OtHttpRouter router;
-		size_t index;
-		OtHttpRequest req;
-		OtHttpResponse res;
-	};
-
 private:
 	// add handler
-	void add(const std::wstring& method, const std::wstring& path, OtObject callback) {
-		handlers.push_back(OtHandler(method, path, callback));
+	void add(const std::wstring& method, OtObject context, size_t count, OtObject* parameters) {
+		if (count != 2) {
+			OT_EXCEPT(L"Function expects 2 parameters, %d given", count);
+		}
+
+		handlers.push_back(OtHandler(method, context, (std::wstring) (*parameters[0]), parameters[1]));
 	}
 
 	// run specified handler
@@ -169,24 +178,29 @@ private:
 
 public:
 	// add handlers
-	void use(const std::wstring& pattern, OtObject callback) {
-		add(L"", pattern, callback);
+	OtObject use(OtObject context, size_t count, OtObject* parameters) {
+		add(L"", context, count, parameters);
+		return 0;
 	}
 
-	void get(const std::wstring& pattern, OtObject callback) {
-		add(L"GET", pattern, callback);
+	OtObject get(OtObject context, size_t count, OtObject* parameters) {
+		add(L"GET", context, count, parameters);
+		return 0;
 	}
 
-	void put(const std::wstring& pattern, OtObject callback) {
-		add(L"PUT", pattern, callback);
+	OtObject put(OtObject context, size_t count, OtObject* parameters) {
+		add(L"PUT", context, count, parameters);
+		return 0;
 	}
 
-	void post(const std::wstring& pattern, OtObject callback) {
-		add(L"POST", pattern, callback);
+	OtObject post(OtObject context, size_t count, OtObject* parameters) {
+		add(L"POST", context, count, parameters);
+		return 0;
 	}
 
-	void del(const std::wstring& pattern, OtObject callback) {
-		add(L"DELETE", pattern, callback);
+	OtObject del(OtObject context, size_t count, OtObject* parameters) {
+		add(L"DELETE", context, count, parameters);
+		return 0;
 	}
 
 	void dispatch(OtHttpRequest req, OtHttpResponse res) {
@@ -199,11 +213,11 @@ public:
 
 		if (!type) {
 			type = OtTypeClass::create<OtHttpRouterClass>(L"HttpRouter", OtNetClass::getMeta());
-			type->set(L"use", OtFunctionCreate(&OtHttpRouterClass::use));
-			type->set(L"get", OtFunctionCreate(&OtHttpRouterClass::get));
-			type->set(L"put", OtFunctionCreate(&OtHttpRouterClass::put));
-			type->set(L"post", OtFunctionCreate(&OtHttpRouterClass::post));
-			type->set(L"delete", OtFunctionCreate(&OtHttpRouterClass::del));
+			type->set(L"use", OtFunctionClass::create(&OtHttpRouterClass::use));
+			type->set(L"get", OtFunctionClass::create(&OtHttpRouterClass::get));
+			type->set(L"put", OtFunctionClass::create(&OtHttpRouterClass::put));
+			type->set(L"post", OtFunctionClass::create(&OtHttpRouterClass::post));
+			type->set(L"delete", OtFunctionClass::create(&OtHttpRouterClass::del));
 		}
 
 		return type;

@@ -76,7 +76,7 @@ private:
 				return HPE_OK;
 			};
 
-			// callback for complete header_state
+			// callback for complete header state
 			settings.on_headers_complete = [](llhttp_t* parser) -> int {
 				OtHttpSession* session = (OtHttpSession*)(parser->data);
 				session->request->setMethod(OtTextFromPtr(llhttp_method_name((llhttp_method_t) parser->method)));
@@ -92,9 +92,43 @@ private:
 
 			// callback for complete messages
 			settings.on_message_complete = [](llhttp_t* parser) -> int {
+				// dispatch request
 				OtHttpSession* session = (OtHttpSession*)(parser->data);
+				session->http->dispatch(session->request, session->response);
 
-				session->response->setStatus(404);
+				// add required headers
+				if (session->request->headerIs(L"Connection", L"close")) {
+					session->response->setHeader(L"Connection", L"close");
+
+				} else {
+					session->response->setHeader(L"Keep-Alive", L"timeout=5, max=5");
+				}
+
+				if (!session->response->hasHeader(L"Content-Type")) {
+					session->response->setHeader(L"Content-Type", L"text/plain");
+				}
+
+				if (!session->response->hasHeader(L"Content-Length")) {
+					session->response->setHeader(L"Content-Length", std::to_wstring(session->response->getBodySize()));
+				}
+
+				// convert response to stream
+				std::stringstream* stream = new std::stringstream();
+				session->response->toStream(*stream);
+
+				// send response
+				uv_write_t* uv_write_req = new uv_write_t;
+				uv_write_req->data = stream;
+
+				std::string str = stream->str();
+				uv_buf_t buffer{};
+				buffer.base = (char*) str.c_str();
+				buffer.len = str.size();
+
+				uv_write(uv_write_req, (uv_stream_t*) &(session->uv_client), &buffer, 1, [](uv_write_t* req, int status) {
+					delete (std::stringstream*) (req->data);
+					delete req;
+				});
 
 				return HPE_OK;
 			};
@@ -189,8 +223,6 @@ public:
 
 		if (!type) {
 			type = OtTypeClass::create<OtHTTPClass>(L"HTTP", OtHttpRouterClass::getMeta());
-
-			type->set(L"get", OtFunctionCreate(&OtHTTPClass::get));
 			type->set(L"listen", OtFunctionCreate(&OtHTTPClass::listen));
 		}
 

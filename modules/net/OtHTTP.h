@@ -59,28 +59,28 @@ private:
 
 			// callback for parsed path
 			settings.on_url = [](llhttp_t* parser, const char *at, size_t length) -> int {
-				((OtHttpSession*)(parser->data))->request->setPath(OtTextFromPtr(at, length));
+				((OtHttpSession*)(parser->data))->request->setPath(std::string(at, length));
 				return HPE_OK;
 			};
 
 			// callback for header name
 			settings.on_header_field = [](llhttp_t* parser, const char *at, size_t length) -> int {
-				((OtHttpSession*)(parser->data))->header = OtTextFromPtr(at, length);
+				((OtHttpSession*)(parser->data))->header = std::string(at, length);
 				return HPE_OK;
 			};
 
 			// callback for header value
 			settings.on_header_value = [](llhttp_t* parser, const char *at, size_t length) -> int {
 				OtHttpSession* session = (OtHttpSession*)(parser->data);
-				session->request->setHeader(session->header, OtTextFromPtr(at, length));
+				session->request->setHeader(session->header, std::string(at, length));
 				return HPE_OK;
 			};
 
 			// callback for complete header state
 			settings.on_headers_complete = [](llhttp_t* parser) -> int {
 				OtHttpSession* session = (OtHttpSession*)(parser->data);
-				session->request->setMethod(OtTextFromPtr(llhttp_method_name((llhttp_method_t) parser->method)));
-				session->request->setVersion(OtFormat(L"HTTP/%d.%d", parser->http_major, parser->http_minor));
+				session->request->setMethod(std::string(llhttp_method_name((llhttp_method_t) parser->method)));
+				session->request->setVersion(OtFormat("HTTP/%d.%d", parser->http_major, parser->http_minor));
 				return HPE_OK;
 			};
 
@@ -97,19 +97,19 @@ private:
 				session->http->dispatch(session->request, session->response);
 
 				// add required headers
-				if (session->request->headerIs(L"Connection", L"close")) {
-					session->response->setHeader(L"Connection", L"close");
+				if (session->request->headerIs("Connection","close")) {
+					session->response->setHeader("Connection","close");
 
 				} else {
-					session->response->setHeader(L"Keep-Alive", L"timeout=5, max=5");
+					session->response->setHeader("Keep-Alive","timeout=5, max=5");
 				}
 
-				if (!session->response->hasHeader(L"Content-Type")) {
-					session->response->setHeader(L"Content-Type", L"text/plain");
+				if (!session->response->hasHeader("Content-Type")) {
+					session->response->setHeader("Content-Type","text/plain");
 				}
 
-				if (!session->response->hasHeader(L"Content-Length")) {
-					session->response->setHeader(L"Content-Length", std::to_wstring(session->response->getBodySize()));
+				if (!session->response->hasHeader("Content-Length")) {
+					session->response->setHeader("Content-Length", std::to_string(session->response->getBodySize()));
 				}
 
 				// convert response to stream
@@ -179,7 +179,7 @@ private:
 	private:
 		OtHttpRequest request;
 		OtHttpResponse response;
-		std::wstring header;
+		std::string header;
 
 		OtHTTPClass* http;
 		uv_tcp_t uv_client;
@@ -195,7 +195,7 @@ private:
 
 public:
 	// listen for requests
-	void listen(OtObject loop, const std::wstring& ip, long port) {
+	void listen(OtObject loop, const std::string& ip, long port) {
 		uv_loop = loop->cast<OtLoopClass>()->getLoop();
 		uv_tcp_init(uv_loop, &uv_server);
 		uv_server.data = (void*) this;
@@ -203,7 +203,7 @@ public:
 		int status;
 		struct sockaddr_in address;
 
-		status = uv_ip4_addr(OtTextToNarrow(ip).c_str(), port, &address);
+		status = uv_ip4_addr(ip.c_str(), port, &address);
 		UV_CHECK_ERROR("uv_ip4_addr", status);
 
 		status = uv_tcp_bind(&uv_server, (const struct sockaddr*) &address, 0);
@@ -222,8 +222,8 @@ public:
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtHTTPClass>(L"HTTP", OtHttpRouterClass::getMeta());
-			type->set(L"listen", OtFunctionCreate(&OtHTTPClass::listen));
+			type = OtTypeClass::create<OtHTTPClass>("HTTP", OtHttpRouterClass::getMeta());
+			type->set("listen", OtFunctionCreate(&OtHTTPClass::listen));
 		}
 
 		return type;

@@ -33,18 +33,18 @@ public:
 	OtClassClass(OtType t) : classType(t) {}
 
 	// access member information
-	std::wstring getName() { return classType->getName(); }
+	std::string getName() { return classType->getName(); }
 	bool hasParent() { return classType->getParent() != nullptr; }
 	OtObject getParent() { return OtClassClass::create(classType->getParent()); }
 
 	// create a sub class
-	OtObject subType(const std::wstring& name) { return OtClassClass::create(classType->subType(name)); }
+	OtObject subType(const std::string& name) { return OtClassClass::create(classType->subType(name)); }
 
 	// see if class is kind of
-	bool isKindOf(const std::wstring& className) { return classType->isKindOf(className); }
+	bool isKindOf(const std::string& className) { return classType->isKindOf(className); }
 
 	// special member acccess (so we can add methods to metaclass via class
-	OtObject set(const std::wstring& name, OtObject value) { return classType->set(name, value); }
+	OtObject set(const std::string& name, OtObject value) { return classType->set(name, value); }
 
 	// call operator
 	OtObject operator () (OtObject context, size_t count, OtObject* parameters) {
@@ -52,7 +52,7 @@ public:
 		OtObject value = classType->instantiate();
 
 		// run possible init function
-		if (value->has(L"__init__")) {
+		if (value->has("__init__")) {
 			OtObject pars[count + 1];
 			pars[0] = value;
 
@@ -60,7 +60,7 @@ public:
 				pars[c + 1] = parameters[c];
 			}
 
-			value->get(L"__init__")->operator ()(context, count + 1, pars);
+			value->get("__init__")->operator ()(context, count + 1, pars);
 		}
 
 		return value;
@@ -71,13 +71,13 @@ public:
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtClassClass>(L"Class", OtInternalClass::getMeta());
-			type->set(L"__call__", OtFunctionClass::create(&OtClassClass::operator ()));
-			type->set(L"getName", OtFunctionCreate(&OtClassClass::getName));
-			type->set(L"hasParent", OtFunctionCreate(&OtClassClass::hasParent));
-			type->set(L"getParent", OtFunctionCreate(&OtClassClass::getParent));
-			type->set(L"subType", OtFunctionCreate(&OtClassClass::subType));
-			type->set(L"isKindOf", OtFunctionCreate(&OtClassClass::isKindOf));
+			type = OtTypeClass::create<OtClassClass>("Class", OtInternalClass::getMeta());
+			type->set("__call__", OtFunctionClass::create(&OtClassClass::operator ()));
+			type->set("getName", OtFunctionCreate(&OtClassClass::getName));
+			type->set("hasParent", OtFunctionCreate(&OtClassClass::hasParent));
+			type->set("getParent", OtFunctionCreate(&OtClassClass::getParent));
+			type->set("subType", OtFunctionCreate(&OtClassClass::subType));
+			type->set("isKindOf", OtFunctionCreate(&OtClassClass::isKindOf));
 		}
 
 		return type;

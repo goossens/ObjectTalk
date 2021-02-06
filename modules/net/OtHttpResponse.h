@@ -117,26 +117,26 @@ public:
 	}
 
 	// add response header
-	OtObject setHeader(const std::wstring& name, const std::wstring& value) {
-		headers[OtTextToNarrow(name)] = OtTextToNarrow(value);
+	OtObject setHeader(const std::string& name, const std::string& value) {
+		headers[name] = value;
 		return getSharedPtr();
 	}
 
 	// see if header is set
-	const bool hasHeader(const std::wstring& header) {
-		return headers.has(OtTextToNarrow(header));
+	const bool hasHeader(const std::string& header) {
+		return headers.has(header);
  	}
 
 	// set result body
-	OtObject text(const std::wstring& text) {
-		body = OtTextToNarrow(text);
+	OtObject text(const std::string& text) {
+		body = text;
 		headers["Content-Type"] = "text/plain";
 		setStatus(200);
 		return getSharedPtr();
 	}
 
 	OtObject json(OtObject object) {
-		body = OtTextToNarrow(object->repr());
+		body = object->repr();
 		headers["Content-Type"] = "application/json";
 		setStatus(200);
 		return getSharedPtr();
@@ -165,12 +165,12 @@ public:
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtHttpResponseClass>(L"HttpResponse", OtNetClass::getMeta());
-			type->set(L"setStatus", OtFunctionCreate(&OtHttpResponseClass::setStatus));
-			type->set(L"setHeader", OtFunctionCreate(&OtHttpResponseClass::setHeader));
-			type->set(L"hasHeader", OtFunctionCreate(&OtHttpResponseClass::hasHeader));
-			type->set(L"text", OtFunctionCreate(&OtHttpResponseClass::text));
-			type->set(L"json", OtFunctionCreate(&OtHttpResponseClass::json));
+			type = OtTypeClass::create<OtHttpResponseClass>("HttpResponse", OtNetClass::getMeta());
+			type->set("setStatus", OtFunctionCreate(&OtHttpResponseClass::setStatus));
+			type->set("setHeader", OtFunctionCreate(&OtHttpResponseClass::setHeader));
+			type->set("hasHeader", OtFunctionCreate(&OtHttpResponseClass::hasHeader));
+			type->set("text", OtFunctionCreate(&OtHttpResponseClass::text));
+			type->set("json", OtFunctionCreate(&OtHttpResponseClass::json));
 		}
 
 		return type;

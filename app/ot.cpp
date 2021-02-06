@@ -38,12 +38,12 @@ int main(int argc, const char* argv[]) {
 	try {
 		// run each script
 		for (auto c = 1; c < argc; c++) {
-			OtObjectTalk::runFile(OtTextToWide(argv[c]));
+			OtObjectTalk::runFile(argv[c]);
 		}
 
 	} catch (const OtException& e) {
 		// handle all failures
-		std::wcerr << argv[0] << L": error: " << e.what() << std::endl;
+		std::wcerr << argv[0] <<": error: " << e.what() << std::endl;
 		exit(EXIT_FAILURE);
 	}
 

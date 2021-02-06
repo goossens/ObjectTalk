@@ -18,26 +18,26 @@
 //	Text manipulation functions
 //
 
-inline std::wstring OtTextLeftTrim(std::wstring text, const std::wstring& chars = L"\t\n\v\f\r ") {
+inline std::string OtTextLeftTrim(std::string text, const std::string& chars ="\t\n\v\f\r ") {
 	text.erase(0, text.find_first_not_of(chars));
 	return text;
 }
 
-inline std::wstring OtTextRightTrim(std::wstring text, const std::wstring& chars = L"\t\n\v\f\r ") {
+inline std::string OtTextRightTrim(std::string text, const std::string& chars ="\t\n\v\f\r ") {
 	text.erase(text.find_last_not_of(chars) + 1);
 	return text;
 }
 
-inline std::wstring OtTextTrim(std::wstring text, const std::wstring& chars = L"\t\n\v\f\r ") {
+inline std::string OtTextTrim(std::string text, const std::string& chars ="\t\n\v\f\r ") {
 	return OtTextLeftTrim(OtTextRightTrim(text, chars), chars);
 }
 
-inline std::wstring OtTextCompress(const std::wstring& text, const std::wstring& chars = L"\t\n\v\f\r ") {
+inline std::string OtTextCompress(const std::string& text, const std::string& chars ="\t\n\v\f\r ") {
 	auto result = OtTextTrim(text);
 	auto begin = result.find_first_of(chars);
 
-	while (begin != std::wstring::npos) {
-		result.replace(begin, result.find_first_not_of(chars, begin) - begin, L" ");
+	while (begin != std::string::npos) {
+		result.replace(begin, result.find_first_not_of(chars, begin) - begin," ");
 		begin = result.find_first_of(chars, begin + 1);
 	}
 
@@ -45,81 +45,59 @@ inline std::wstring OtTextCompress(const std::wstring& text, const std::wstring&
 }
 
 template <class Container>
-void OtTextSplit(const std::wstring& text, Container& container, wchar_t delimeter = L' ') {
-	std::wstringstream ss(text);
-	std::wstring token;
+void OtTextSplit(const std::string& text, Container& container, char delimeter =' ') {
+	std::stringstream ss(text);
+	std::string token;
 
 	while (std::getline(ss, token, delimeter)) {
 		container.push_back(token);
 	}
 }
 
-inline bool OtTextCaseInsensitiveEqual(const std::wstring& s1, const std::wstring& s2) {
+inline bool OtTextCaseInsensitiveEqual(const std::string& s1, const std::string& s2) {
 	return s1.size() == s2.size() &&
-		std::equal(s1.begin(), s1.end(), s2.begin(), [](wchar_t a, wchar_t b) {
+		std::equal(s1.begin(), s1.end(), s2.begin(), [](char a, char b) {
 			return tolower(a) == tolower(b);
 		});
 }
 
 
 //
-//	Conversion Functions
-//
-
-inline std::wstring OtTextToWide(const std::string& narrow) {
-	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-	return converter.from_bytes(narrow);
-}
-
-inline std::wstring OtTextFromPtr(const char *string) {
-	return OtTextToWide(std::string(string));
-}
-
-inline std::wstring OtTextFromPtr(const char *string, size_t length) {
-	return OtTextToWide(std::string(string, length));
-}
-
-inline std::string OtTextToNarrow(const std::wstring& wide) {
-	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-	return converter.to_bytes(wide);
-}
-
-//
 //	URL Conversion Functions
 //
 
-inline std::wstring OtTextEncodeURL(const std::wstring& text) {
-	std::wostringstream o;
+inline std::string OtTextEncodeURL(const std::string& text) {
+	std::ostringstream o;
 
 	for (auto c = text.cbegin(); c != text.cend(); c++) {
-		if ((*c >= L'a' && *c <= L'z') || (*c >= L'A' && *c <= L'Z') || (*c >= L'0' && *c <= L'9')) {
+		if ((*c >='a' && *c <='z') || (*c >='A' && *c <='Z') || (*c >='0' && *c <='9')) {
 			o << *c;
 
-		} else if (*c == L' ') {
-			o << L'+';
+		} else if (*c ==' ') {
+			o <<'+';
 
 		} else {
-			o << L'%' << std::hex << std::setw(2) << std::setfill(L'0') << static_cast<unsigned int>(*c);
+			o <<'%' << std::hex << std::setw(2) << std::setfill('0') << static_cast<unsigned int>(*c);
 		}
 	}
 
 	return o.str();
 }
 
-inline std::wstring OtTextDecodeURL(const std::wstring& text) {
-	std::wostringstream o;
+inline std::string OtTextDecodeURL(const std::string& text) {
+	std::ostringstream o;
 	auto c = text.cbegin();
 
 	while (c < text.cend()) {
-		if (*c == L'+') {
+		if (*c =='+') {
 			c++;
-			o << L' ';
+			o <<' ';
 
-		} else if (*c == L'%') {
+		} else if (*c =='%') {
 			c++;
 
 			if (c + 2 < text.cend()) {
-				o << ((wchar_t) std::wcstol(std::wstring(c, c + 2).c_str(), nullptr, 16));
+				o << ((char) std::strtol(std::string(c, c + 2).c_str(), nullptr, 16));
 				c += 2;
 
 			} else {
@@ -134,27 +112,28 @@ inline std::wstring OtTextDecodeURL(const std::wstring& text) {
 	return o.str();
 }
 
+
 //
 //	JSON Conversion Functions
 //
 
-inline std::wstring OtTextToJSON(const std::wstring& text) {
-	std::wostringstream o;
+inline std::string OtTextToJSON(const std::string& text) {
+	std::ostringstream o;
 	o << '"';
 
 	for (auto c = text.cbegin(); c != text.cend(); c++) {
 		switch (*c) {
-			case L'"': o << L"\\\""; break;
-			case L'\\': o << L"\\\\"; break;
-			case L'\b': o << L"\\b"; break;
-			case L'\f': o << L"\\f"; break;
-			case L'\n': o << L"\\n"; break;
-			case L'\r': o << L"\\r"; break;
-			case L'\t': o << L"\\t"; break;
+			case'"': o <<"\\\""; break;
+			case'\\': o <<"\\\\"; break;
+			case'\b': o <<"\\b"; break;
+			case'\f': o <<"\\f"; break;
+			case'\n': o <<"\\n"; break;
+			case'\r': o <<"\\r"; break;
+			case'\t': o <<"\\t"; break;
 
 			default:
-				if (*c < L' ' || *c > L'~') {
-					o << L"\\u" << std::hex << std::setw(4) << std::setfill(L'0') << static_cast<unsigned int>(*c);
+				if (*c <' ' || *c >'~') {
+					o <<"\\u" << std::hex << std::setw(4) << std::setfill('0') << static_cast<unsigned int>(*c);
 
 				} else {
 					o << *c;
@@ -166,46 +145,46 @@ inline std::wstring OtTextToJSON(const std::wstring& text) {
 	return o.str();
 }
 
-inline std::wstring OtTextFromJSON(const std::wstring text) {
-	std::wostringstream o;
+inline std::string OtTextFromJSON(const std::string text) {
+	std::ostringstream o;
 	auto c = text.cbegin();
 
 	while (c < text.cend()) {
-		if (*c == L'\\') {
+		if (*c =='\\') {
 			c++;
 
 			if (c < text.cend()) {
 				switch (*c) {
-					case L'b':
+					case'b':
 						c++;
-						o << L'\b';
+						o <<'\b';
 						break;
 
-					case L'f':
+					case'f':
 						c++;
-						o << L'\f';
+						o <<'\f';
 						break;
 
-					case L'n':
+					case'n':
 						c++;
-						o << L'\n';
+						o <<'\n';
 						break;
 
-					case L'r':
+					case'r':
 						c++;
-						o << L'\r';
+						o <<'\r';
 						break;
 
-					case L't':
+					case't':
 						c++;
-						o << L'\t';
+						o <<'\t';
 						break;
 
-					case L'u':
+					case'u':
 						c++;
 
 						if (c + 4 < text.cend()) {
-							o << ((wchar_t) std::wcstol(std::wstring(c, c + 4).c_str(), nullptr, 16));
+							o << ((char) std::strtol(std::string(c, c + 4).c_str(), nullptr, 16));
 							c += 4;
 
 						} else {

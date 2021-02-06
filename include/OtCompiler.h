@@ -21,7 +21,7 @@
 class OtCompiler {
 public:
 	// compile text into microcode
-	OtCode compile(const std::wstring& text) {
+	OtCode compile(const std::string& text) {
 		// load scanner
 		scanner.loadText(text);
 
@@ -51,51 +51,71 @@ private:
 	public:
 		// constructor
 		OtCodeFunctionClass() = default;
-		OtCodeFunctionClass(OtCode c) : code(c) {}
+		OtCodeFunctionClass(size_t p, const std::vector<std::string>& n, OtCode c) : parameterCount(p), names(n), code(c) {}
 
 		// call code
-		OtObject operator () (OtObject c, size_t n, OtObject* p) { return code->operator ()(c, n, p); }
+		OtObject operator () (OtObject context, size_t count, OtObject* parameters) {
+			// sanity check
+			if (parameterCount != SIZE_MAX && parameterCount != count) {
+				OT_EXCEPT("Function expects %d parameters, %d given", parameterCount, count);
+			}
+
+			// create local context
+			OtObject local = OtObjectClass::create();
+			local->setParent(context);
+
+			// set calling parameters
+			local->set("args", OtArrayClass::create(count, parameters));
+
+			for (auto c= 0; c < count; c++) {
+				local->set(names[c], parameters[c]);
+			}
+
+			return code->operator ()(local);
+		}
 
 		// get type definition
 		static OtType getMeta() {
 			static OtType type = nullptr;
 
 			if (!type) {
-				type = OtTypeClass::create<OtCodeFunctionClass>(L"CodeFunction", OtInternalClass::getMeta());
-				type->set(L"__call__", OtFunctionClass::create(&OtCodeFunctionClass::operator ()));
+				type = OtTypeClass::create<OtCodeFunctionClass>("CodeFunction", OtInternalClass::getMeta());
+				type->set("__call__", OtFunctionClass::create(&OtCodeFunctionClass::operator ()));
 			}
 
 			return type;
 		}
 
 		// create a new object
-		static OtObject create(OtCode c) { return std::make_shared<OtCodeFunctionClass>(c)->setType(getMeta()); }
+		static OtObject create(size_t count, const std::vector<std::string>& names, OtCode code) {
+			return std::make_shared<OtCodeFunctionClass>(count, names, code)->setType(getMeta());
+		}
 
 	private:
+		size_t parameterCount;
+		std::vector<std::string> names;
 		OtCode code;
 	};
 
 	// compile function
 	void function(OtCode code) {
-		// create function
-		OtCode function = OtCodeClass::create();
-		function->saveArgs();
-
 		// parse parameters
+		size_t count = 0;
+		std::vector<std::string> names;
+
 		scanner.expect(OtScanner::LPAREN_TOKEN);
 
 		// handle ellipsis for variable argument count
 		if (scanner.matchToken(OtScanner::ELLIPSIS_TOKEN)) {
 			scanner.advance();
 			scanner.expect(OtScanner::RPAREN_TOKEN);
+			count = SIZE_MAX;
 
 		} else {
 			// get parameter names
-			size_t count = 0;
-
 			while (!scanner.matchToken(OtScanner::RPAREN_TOKEN) && !scanner.matchToken(OtScanner::EOS_TOKEN)) {
 				scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
-				function->saveArg(count++, scanner.getText());
+				names.push_back(scanner.getText());
 				scanner.advance();
 
 				if (scanner.matchToken(OtScanner::COMMA_TOKEN)) {
@@ -103,18 +123,20 @@ private:
 				}
 			}
 
+			count = names.size();
 			scanner.expect(OtScanner::RPAREN_TOKEN);
 		}
 
 		// get function level code
-		statement(function);
-		code->push(OtCodeFunctionClass::create(function));
+		OtCode functionCode = OtCodeClass::create();
+		statement(functionCode);
+		code->push(OtCodeFunctionClass::create(count, names, functionCode));
 	}
 
 	class OtContextReferenceClass : public OtInternalClass {
 	public:
 		OtContextReferenceClass() = default;
-		OtContextReferenceClass(const std::wstring& m) : member(m) {}
+		OtContextReferenceClass(const std::string& m) : member(m) {}
 
 		OtObject deref(OtObject context, size_t, OtObject*) { return context->get(member); }
 		OtObject assign(OtObject context, size_t, OtObject* value) { return context->set(member, *value); }
@@ -124,19 +146,19 @@ private:
 			static OtType type = nullptr;
 
 			if (!type) {
-				type = OtTypeClass::create<OtContextReferenceClass>(L"ContextReference", OtInternalClass::getMeta());
-				type->set(L"__deref__", OtFunctionClass::create(&OtContextReferenceClass::deref));
-				type->set(L"__assign__", OtFunctionClass::create(&OtContextReferenceClass::assign));
+				type = OtTypeClass::create<OtContextReferenceClass>("ContextReference", OtInternalClass::getMeta());
+				type->set("__deref__", OtFunctionClass::create(&OtContextReferenceClass::deref));
+				type->set("__assign__", OtFunctionClass::create(&OtContextReferenceClass::assign));
 			}
 
 			return type;
 		}
 
 		// create a new object
-		static OtObject create(const std::wstring& n) { return std::make_shared<OtContextReferenceClass>(n)->setType(getMeta()); }
+		static OtObject create(const std::string& n) { return std::make_shared<OtContextReferenceClass>(n)->setType(getMeta()); }
 
 	private:
-		std::wstring member;
+		std::string member;
 	};
 
 	// compile primary expression
@@ -193,7 +215,7 @@ private:
 				code->push(OtArrayClass::create());
 
 				if (scanner.getToken() != OtScanner::RBRACKET_TOKEN) {
-					code->method(L"__init__", expressions(code));
+					code->method("__init__", expressions(code));
 				}
 
 				scanner.expect(OtScanner::RBRACKET_TOKEN);
@@ -212,7 +234,7 @@ private:
 					scanner.expect(OtScanner::COLON_TOKEN);
 
 					if (expression(code)) {
-						code->method(L"__deref__", 0);
+						code->method("__deref__", 0);
 					}
 
 					count += 2;
@@ -225,7 +247,7 @@ private:
 				scanner.expect(OtScanner::RBRACE_TOKEN);
 
 				if (count) {
-					code->method(L"__init__", count);
+					code->method("__init__", count);
 				}
 
 				reference = false;
@@ -233,7 +255,7 @@ private:
 
 			default:
 				reference = false;
-				scanner.error(L"Primary expected");
+				scanner.error("Primary expected");
 		}
 
 		return reference;
@@ -252,7 +274,7 @@ private:
 			   token == OtScanner::INCREMENT_TOKEN ||
 			   token == OtScanner::DECREMENT_TOKEN) {
 			scanner.advance();
-			std::wstring member;
+			std::string member;
 			size_t count;
 
 			// generate code
@@ -260,72 +282,72 @@ private:
 				case OtScanner::LBRACKET_TOKEN:
 					// index object
 					if (reference) {
-						code->method(L"__deref__", 0);
+						code->method("__deref__", 0);
 					}
 
 					if (expression(code)) {
-						code->method(L"__deref__", 0);
+						code->method("__deref__", 0);
 					}
 
 					scanner.expect(OtScanner::RBRACKET_TOKEN);
-					code->method(L"__index__", 1);
+					code->method("__index__", 1);
 					reference = true;
 					break;
 
 				case OtScanner::LPAREN_TOKEN:
 					// call object
 					if (reference) {
-						code->method(L"__deref__", 0);
+						code->method("__deref__", 0);
 					}
 
 					count = scanner.matchToken(OtScanner::RPAREN_TOKEN) ? 0 : expressions(code);
 					scanner.expect(OtScanner::RPAREN_TOKEN);
-					code->method(L"__call__", count);
+					code->method("__call__", count);
 					reference = false;
 					break;
 
 				case OtScanner::PERIOD_TOKEN:
 					// member access
 					if (reference) {
-						code->method(L"__deref__", 0);
+						code->method("__deref__", 0);
 					}
 
 					scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
 					code->push(OtStringClass::create(scanner.getText()));
 					scanner.advance();
-					code->method(L"__member__", 1);
+					code->method("__member__", 1);
 					reference = true;
 
 					break;
 
 				case OtScanner::INCREMENT_TOKEN:
 					if (!reference) {
-						scanner.error(L"Lvalue required for '++'");
+						scanner.error("Lvalue required for '++'");
 					}
 
 					code->dup();
-					code->method(L"__deref__", 0);
+					code->method("__deref__", 0);
 					code->swap();
 					code->dup();
-					code->method(L"__deref__", 0);
-					code->method(L"__inc__", 0);
-					code->method(L"__assign__", 1);
+					code->method("__deref__", 0);
+					code->method("__inc__", 0);
+					code->method("__assign__", 1);
 					code->pop();
 					reference = false;
 					break;
 
 				case OtScanner::DECREMENT_TOKEN:
 					if (!reference) {
-						scanner.error(L"Lvalue required for '--'");
+						scanner.error("Lvalue required for '--'");
 					}
 
 					code->dup();
-					code->method(L"__deref__", 0);
+					code->method("__deref__", 0);
 					code->swap();
 					code->dup();
-					code->method(L"__deref__", 0);
-					code->method(L"__dec__", 0);
-					code->method(L"__assign__", 1);
+					code->method("__deref__", 0);
+					code->method("__dec__", 0);
+					code->method("__assign__", 1);
 					code->pop();
 					reference = false;
 					break;
@@ -354,48 +376,48 @@ private:
 			switch (token) {
 				case OtScanner::SUBTRACT_TOKEN:
 					if (reference) {
-						code->method(L"__deref__", 0);
+						code->method("__deref__", 0);
 					}
 
-					code->method(L"__neg__", 0);
+					code->method("__neg__", 0);
 					break;
 
 				case OtScanner::NEGATE_TOKEN:
 					if (reference) {
-						code->method(L"__deref__", 0);
+						code->method("__deref__", 0);
 					}
 
-					code->method(L"__not__", 0);
+					code->method("__not__", 0);
 					break;
 
 				case OtScanner::BITWISE_NOT_TOKEN:
 					if (reference) {
-						code->method(L"__deref__", 0);
+						code->method("__deref__", 0);
 					}
 
-					code->method(L"__bnot__", 0);
+					code->method("__bnot__", 0);
 					break;
 
 				case OtScanner::INCREMENT_TOKEN:
 					if (!reference) {
-						scanner.error(L"Lvalue required for '++'");
+						scanner.error("Lvalue required for '++'");
 					}
 
 					code->dup();
-					code->method(L"__deref__", 0);
-					code->method(L"__inc__", 0);
-					code->method(L"__assign__", 0);
+					code->method("__deref__", 0);
+					code->method("__inc__", 0);
+					code->method("__assign__", 0);
 					break;
 
 				case OtScanner::DECREMENT_TOKEN:
 					if (!reference) {
-						scanner.error(L"Lvalue required for '--'");
+						scanner.error("Lvalue required for '--'");
 					}
 
 					code->dup();
-					code->method(L"__deref__", 0);
-					code->method(L"__dec__", 0);
-					code->method(L"__assign__", 0);
+					code->method("__deref__", 0);
+					code->method("__dec__", 0);
+					code->method("__assign__", 0);
 					break;
 			}
 
@@ -420,30 +442,30 @@ private:
 			scanner.advance();
 
 			if (reference) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
 			// parse right side
 			if (prefix(code)) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
 			// generate code
 			switch (token) {
 				case OtScanner::MULTIPLY_TOKEN:
-					code->method(L"__mul__", 1);
+					code->method("__mul__", 1);
 					break;
 
 				case OtScanner::DIVIDE_TOKEN:
-					code->method(L"__div__", 1);
+					code->method("__div__", 1);
 					break;
 
 				case OtScanner::POWER_TOKEN:
-					code->method(L"__power__", 1);
+					code->method("__power__", 1);
 					break;
 
 				case OtScanner::MODULO_TOKEN:
-					code->method(L"__mod__", 1);
+					code->method("__mod__", 1);
 					break;
 			}
 
@@ -465,19 +487,19 @@ private:
 			scanner.advance();
 
 			if (reference) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
 			// parse right side
 			if (multiplications(code)) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
 			// generate code
 			if (token == OtScanner::ADD_TOKEN) {
-				code->method(L"__add__", 1);
+				code->method("__add__", 1);
 			} else {
-				code->method(L"__sub__", 1);
+				code->method("__sub__", 1);
 			}
 
 			token = scanner.getToken();
@@ -498,19 +520,19 @@ private:
 			scanner.advance();
 
 			if (reference) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
 			// parse right side
 			if (additions(code)) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
 			// generate code
 			if (token == OtScanner::SHIFT_LEFT_TOKEN) {
-				code->method(L"__lshift__", 1);
+				code->method("__lshift__", 1);
 			} else {
-				code->method(L"__rshift__", 1);
+				code->method("__rshift__", 1);
 			}
 
 			token = scanner.getToken();
@@ -541,37 +563,37 @@ private:
 
 			// deref if required
 			if (reference) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
 			// parse right side
 			if (shift(code)) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
 			// generate code
 			switch (token) {
 				case OtScanner::LESS_TOKEN:
-					code->method(L"__lt__", 1);
+					code->method("__lt__", 1);
 					break;
 
 				case OtScanner::LESS_EQUAL_TOKEN:
-					code->method(L"__le__", 1);
+					code->method("__le__", 1);
 					break;
 
 				case OtScanner::GREATER_TOKEN:
-					code->method(L"__gt__", 1);
+					code->method("__gt__", 1);
 					break;
 
 				case OtScanner::IN_TOKEN:
 					code->swap();
-					code->method(L"__contains__", 1);
+					code->method("__contains__", 1);
 					break;
 
 				case OtScanner::NOT_TOKEN:
 					code->swap();
-					code->method(L"__contains__", 1);
-					code->method(L"__not__", 0);
+					code->method("__contains__", 1);
+					code->method("__not__", 0);
 					break;
 			}
 
@@ -593,19 +615,19 @@ private:
 
 			// deref if required
 			if (reference) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
 			// parse right side
 			if (relation(code)) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
 			// generate code
 			if (token == OtScanner::EQUAL_TOKEN) {
-				code->method(L"__eq__", 1);
+				code->method("__eq__", 1);
 			} else {
-				code->method(L"__ne__", 1);
+				code->method("__ne__", 1);
 			}
 
 			token = scanner.getToken();
@@ -626,16 +648,16 @@ private:
 			scanner.advance();
 
 			if (reference) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
 			// parse right side
 			if (equal(code)) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
 			// generate code
-			code->method(L"__band__", 1);
+			code->method("__band__", 1);
 			reference = false;
 		}
 
@@ -653,16 +675,16 @@ private:
 			scanner.advance();
 
 			if (reference) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
 			// parse right side
 			if (bitwiseAnd(code)) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
 			// generate code
-			code->method(L"__bxor__", 1);
+			code->method("__bxor__", 1);
 			reference = false;
 		}
 
@@ -680,16 +702,16 @@ private:
 			scanner.advance();
 
 			if (reference) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
 			// parse right side
 			if (bitwiseXor(code)) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
 			// generate code
-			code->method(L"__bor__", 1);
+			code->method("__bor__", 1);
 			reference = false;
 		}
 
@@ -708,16 +730,16 @@ private:
 
 			// deref if required
 			if (reference) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
 			// parse right side
 			if (bitwiseOr(code)) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
 			// generate code
-			code->method(L"__and__", 1);
+			code->method("__and__", 1);
 			reference = false;
 		}
 
@@ -736,16 +758,16 @@ private:
 
 			// deref if required
 			if (reference) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
 			// parse right side
 			if (andExpression(code)) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
 			// generate code
-			code->method(L"__or__", 1);
+			code->method("__or__", 1);
 			reference = false;
 		}
 
@@ -762,7 +784,7 @@ private:
 			scanner.advance();
 
 			if (reference) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
 			// evaluate expression
@@ -771,7 +793,7 @@ private:
 
 			// process "true" expression
 			if (expression(code)) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
 			scanner.expect(OtScanner::COLON_TOKEN);
@@ -783,7 +805,7 @@ private:
 
 			// process "false" expression
 			if (expression(code)) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
 			// patch jump around false
@@ -812,13 +834,13 @@ private:
 			   token == OtScanner::BITWISE_XOR_ASSIGNMENT_TOKEN) {
 			// sanity check
 			if (!reference) {
-				scanner.error(L"Lvalue required for assignments");
+				scanner.error("Lvalue required for assignments");
 			}
 
 			// duplicate left side if required
 			if (token != OtScanner::ASSIGNMENT_TOKEN) {
 				code->dup();
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
 			// parse right side
@@ -827,46 +849,46 @@ private:
 
 			// dereference if required
 			if (reference) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
 			// handle different assignments
 			switch (token) {
 				case OtScanner::MULTIPLY_ASSIGNMENT_TOKEN:
-					code->method(L"__mul__", 1);
+					code->method("__mul__", 1);
 					break;
 
 				case OtScanner::DIVIDE_ASSIGNMENT_TOKEN:
-					code->method(L"__div__", 1);
+					code->method("__div__", 1);
 					break;
 
 				case OtScanner::MODULO_ASSIGNMENT_TOKEN:
-					code->method(L"__mod__", 1);
+					code->method("__mod__", 1);
 					break;
 
 				case OtScanner::ADD_ASSIGNMENT_TOKEN:
-					code->method(L"__add__", 1);
+					code->method("__add__", 1);
 					break;
 
 				case OtScanner::SUBTRACT_ASSIGNMENT_TOKEN:
-					code->method(L"__sub__", 1);
+					code->method("__sub__", 1);
 					break;
 
 				case OtScanner::BITWISE_AND_ASSIGNMENT_TOKEN:
-					code->method(L"__band__", 1);
+					code->method("__band__", 1);
 					break;
 
 				case OtScanner::BITWISE_OR_ASSIGNMENT_TOKEN:
-					code->method(L"__bor__", 1);
+					code->method("__bor__", 1);
 					break;
 
 				case OtScanner::BITWISE_XOR_ASSIGNMENT_TOKEN:
-					code->method(L"__bxor__", 1);
+					code->method("__bxor__", 1);
 					break;
 			}
 
 			// perform assignment
-			code->method(L"__assign__", 1);
+			code->method("__assign__", 1);
 			reference = false;
 
 			token = scanner.getToken();
@@ -881,14 +903,14 @@ private:
 		size_t count = 1;
 
 		if (expression(code)) {
-			code->method(L"__deref__", 0);
+			code->method("__deref__", 0);
 		}
 
 		while (scanner.matchToken(OtScanner::COMMA_TOKEN)) {
 			scanner.advance();
 
 			if (expression(code)) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
 			count++;
@@ -921,23 +943,26 @@ private:
 		// handle class name
 		scanner.expect(OtScanner::CLASS_TOKEN);
 		scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
-		std::wstring name = scanner.getText();
+		std::string name = scanner.getText();
 		scanner.advance();
 
 		// handle parent name
 		scanner.expect(OtScanner::COLON_TOKEN);
 		scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
-		std::wstring parent = scanner.getText();
+		std::string parent = scanner.getText();
 		scanner.advance();
 
 		// create new class
-		code->get(parent);
+		code->push(OtContextReferenceClass::create(parent));
+		code->method("__deref__", 0);
 		code->push(OtStringClass::create(name));
-		code->method(L"subType", 1);
+		code->method("subType", 1);
 
 		// assign class
 		code->dup();
-		code->set(name);
+		code->push(OtContextReferenceClass::create(name));
+		code->swap();
+		code->method("__assign__", 1);
 
 		// process class content
 		code->dup();
@@ -952,13 +977,15 @@ private:
 		// get function name
 		scanner.expect(OtScanner::FUNCTION_TOKEN);
 		scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
-		std::wstring name = scanner.getText();
+		std::string name = scanner.getText();
 		scanner.advance();
 
 		// parse function and add to context
 		function(code);
 		code->dup();
-		code->set(name);
+		code->push(OtContextReferenceClass::create(name));
+		code->swap();
+		code->method("__assign__", 1);
 	}
 
 	// compile a do statement
@@ -972,7 +999,7 @@ private:
 		scanner.expect(OtScanner::WHILE_TOKEN);
 
 		if (expression(code)) {
-			code->method(L"__deref__", 0);
+			code->method("__deref__", 0);
 		}
 
 		code->jumpTrue(offset);
@@ -994,7 +1021,7 @@ private:
 			size_t offset1 = code->size();
 
 			if (expression(code)) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
 			size_t offset2 = code->size();
@@ -1018,28 +1045,28 @@ private:
 			code->patch(offset2);
 
 		} else if (scanner.matchToken(OtScanner::IDENTIFIER_TOKEN)) {
-			std::wstring name = scanner.getText();
+			std::string name = scanner.getText();
 			scanner.advance();
 
 			scanner.expect(OtScanner::IN_TOKEN);
 
 			if (expression(code)) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
-			code->method(L"__iter__", 0);
+			code->method("__iter__", 0);
 			size_t offset1 = code->size();
 
 			code->dup();
-			code->method(L"__end__", 0);
+			code->method("__end__", 0);
 			size_t offset2 = code->size();
 			code->jumpTrue(0);
 
 			code->dup();
-			code->method(L"__next__", 0);
+			code->method("__next__", 0);
 			code->push(OtContextReferenceClass::create(name));
 			code->swap();
-			code->method(L"__assign__", 1);
+			code->method("__assign__", 1);
 			code->pop();
 
 			statement(code);
@@ -1050,7 +1077,7 @@ private:
 			code->pop();
 
 		} else {
-			throw OtException(L"A [for] statement must be folowed by open parenthesis or an identifier");
+			throw OtException("A [for] statement must be folowed by open parenthesis or an identifier");
 		}
 	}
 
@@ -1059,7 +1086,7 @@ private:
 		scanner.expect(OtScanner::IF_TOKEN);
 
 		if (expression(code)) {
-			code->method(L"__deref__", 0);
+			code->method("__deref__", 0);
 		}
 
 		size_t offset1 = code->size();
@@ -1090,7 +1117,7 @@ private:
 		scanner.expect(OtScanner::RETURN_TOKEN);
 
 		if (expression(code)) {
-			code->method(L"__deref__", 0);
+			code->method("__deref__", 0);
 		}
 
 		code->exit();
@@ -1103,7 +1130,7 @@ private:
 		scanner.expect(OtScanner::SWITCH_TOKEN);
 
 		if (expression(code)) {
-			code->method(L"__deref__", 0);
+			code->method("__deref__", 0);
 		}
 
 		while (scanner.matchToken(OtScanner::CASE_TOKEN)) {
@@ -1111,10 +1138,10 @@ private:
 			code->dup();
 
 			if (expression(code)) {
-				code->method(L"__deref__", 0);
+				code->method("__deref__", 0);
 			}
 
-			code->method(L"__eq__", 1);
+			code->method("__eq__", 1);
 
 			size_t offset1 = code->size();
 			code->jumpFalse(0);
@@ -1147,7 +1174,7 @@ private:
 		size_t offset1 = code->size();
 
 		if (expression(code)) {
-			code->method(L"__deref__", 0);
+			code->method("__deref__", 0);
 		}
 
 		size_t offset2 = code->size();

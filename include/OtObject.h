@@ -27,10 +27,10 @@ public:
 	// type access
 	OtObject setType(OtType t) { type = t; return shared_from_this(); }
 	OtType getType() { return type; }
-	std::wstring getTypeName() { return type->getName(); }
+	std::string getTypeName() { return type->getName(); }
 
 	// see if object "is kind of"
-	bool isKindOf(const std::wstring& className) { return type->isKindOf(className); }
+	bool isKindOf(const std::string& className) { return type->isKindOf(className); }
 	bool isKindOf(OtType t)  { return type->isKindOf(t); }
 
 	// default conversion operators
@@ -38,11 +38,11 @@ public:
 	virtual operator long() { return 0; }
 	virtual operator size_t() { return 0; }
 	virtual operator double() { return 0.0; }
-	virtual operator std::wstring() { return L""; }
+	virtual operator std::string() { return""; }
 	virtual operator OtObject() { return shared_from_this(); }
 
 	// get object representation (as in source code)
-	virtual std::wstring repr() { return operator std::wstring(); }
+	virtual std::string repr() { return operator std::string(); }
 
 	// get shared pointer
 	OtObject getSharedPtr() { return shared_from_this(); }
@@ -52,7 +52,7 @@ public:
 	OtObject getParent() { return parent; }
 
 	// member acccess
-	bool has(const std::wstring& name) {
+	bool has(const std::string& name) {
 		if (members && members->count(name)) {
 			return true;
 		}
@@ -70,16 +70,16 @@ public:
 		return false;
 	}
 
-	virtual OtObject set(const std::wstring& name, OtObject value) {
+	virtual OtObject set(const std::string& name, OtObject value) {
 		if (!members) {
-			members = std::make_shared<std::map<std::wstring, OtObject>>();
+			members = std::make_shared<std::map<std::string, OtObject>>();
 		}
 
 		members->operator [] (name) = value;
 		return value;
 	}
 
-	virtual OtObject get(const std::wstring& name) {
+	virtual OtObject get(const std::string& name) {
 		if (members && members->count(name)) {
 			return members->operator [] (name);
 		}
@@ -94,18 +94,18 @@ public:
 			}
 		}
 
-		OT_EXCEPT(L"Unknown member [%ls] in class [%ls]", name.c_str(), type->getName().c_str());
+		OT_EXCEPT("Unknown member [%s] in class [%s]", name.c_str(), type->getName().c_str());
 		return nullptr;
 	}
 
-	virtual void eraseMember(const std::wstring& name) { if (members) members->erase(name); }
+	virtual void eraseMember(const std::string& name) { if (members) members->erase(name); }
 	virtual void clearMembers() { members = nullptr; }
 
 	// "call" object (context, count, parameters)
 	virtual OtObject operator () (OtObject, size_t, OtObject*) { return nullptr; }
 
 	// "call" named object member
-	OtObject method(const std::wstring& m, OtObject c, size_t n, OtObject* p) {
+	OtObject method(const std::string& m, OtObject c, size_t n, OtObject* p) {
 		OtObject pars[n + 1];
 		pars[0] = shared_from_this();
 		std::copy(p, p + n, pars + 1);
@@ -127,7 +127,7 @@ protected:
 	OtType type;
 
 	// members
-	std::shared_ptr<std::map<std::wstring, OtObject>> members;
+	std::shared_ptr<std::map<std::string, OtObject>> members;
 
 	// parent in chain
 	OtObject parent;
@@ -151,4 +151,4 @@ inline OtObject OtObjectCreate(long value);
 inline OtObject OtObjectCreate(size_t value);
 inline OtObject OtObjectCreate(float value);
 inline OtObject OtObjectCreate(double value);
-inline OtObject OtObjectCreate(const std::wstring& value);
+inline OtObject OtObjectCreate(const std::string& value);

@@ -29,8 +29,8 @@ typedef std::shared_ptr<OtArrayClass> OtArray;
 class OtArrayClass : public OtCollectionClass, public std::vector<OtObject> {
 public:
 	// convert array to string
-	operator std::wstring() {
-		std::wstring result(L"[");
+	operator std::string() {
+		std::string result("[");
 		bool first = true;
 
 		for (auto const& entry : *this) {
@@ -38,17 +38,17 @@ public:
 				first = false;
 
 			} else {
-				result += L",";
+				result +=",";
 			}
 
 			result += entry->repr();
 		}
 
-		result += L"]";
+		result +="]";
 		return result;
 	}
 
-	// clear array and add all calling parameters
+	// clear array and add all parameters
 	OtObject init(OtObject, size_t count, OtObject* parameters) {
 		clear();
 
@@ -59,12 +59,14 @@ public:
 		return getSharedPtr();
 	}
 
-	// support index operator
+	// support index operations
 	class OtArrayReferenceClass : public OtInternalClass {
 	public:
+		// constructors
 		OtArrayReferenceClass() = default;
 		OtArrayReferenceClass(OtArray a, size_t i) : array(a), index(i) {}
 
+		// index operations
 		OtObject deref() { return array->operator[] (index); }
 		OtObject assign(OtObject value) { array->operator[] (index) = value; return value; }
 
@@ -73,9 +75,9 @@ public:
 			static OtType type = nullptr;
 
 			if (!type) {
-				type = OtTypeClass::create<OtArrayReferenceClass>(L"ArrayReference", OtInternalClass::getMeta());
-				type->set(L"__deref__", OtFunctionCreate(&OtArrayReferenceClass::deref));
-				type->set(L"__assign__", OtFunctionCreate(&OtArrayReferenceClass::assign));
+				type = OtTypeClass::create<OtArrayReferenceClass>("ArrayReference", OtInternalClass::getMeta());
+				type->set("__deref__", OtFunctionCreate(&OtArrayReferenceClass::deref));
+				type->set("__assign__", OtFunctionCreate(&OtArrayReferenceClass::assign));
 			}
 
 			return type;
@@ -91,6 +93,7 @@ public:
 		size_t index;
 	};
 
+	// support indexing
 	OtObject index(size_t index) {
 		return OtArrayReferenceClass::create(cast<OtArrayClass>(), index);
 	}
@@ -98,9 +101,11 @@ public:
 	// support iterator
 	class OtArrayIteratorClass : public OtInternalClass {
 	public:
+		// constructors
 		OtArrayIteratorClass() = default;
 		OtArrayIteratorClass(OtArray a) : array(a) {}
 
+		// iteration operations
 		bool end() { return index == array->size(); }
 		OtObject next() { return array->operator[](index++); }
 
@@ -109,9 +114,9 @@ public:
 			static OtType type = nullptr;
 
 			if (!type) {
-				type = OtTypeClass::create<OtArrayIteratorClass>(L"ArrayIterator", OtInternalClass::getMeta());
-				type->set(L"__end__", OtFunctionCreate(&OtArrayIteratorClass::end));
-				type->set(L"__next__", OtFunctionCreate(&OtArrayIteratorClass::next));
+				type = OtTypeClass::create<OtArrayIteratorClass>("ArrayIterator", OtInternalClass::getMeta());
+				type->set("__end__", OtFunctionCreate(&OtArrayIteratorClass::end));
+				type->set("__next__", OtFunctionCreate(&OtArrayIteratorClass::next));
 			}
 
 			return type;
@@ -127,10 +132,12 @@ public:
 		size_t index {0};
 	};
 
+	// start iterator
 	OtObject iterate() {
 		return OtArrayIteratorClass::create(cast<OtArrayClass>());
 	}
 
+	// add two arrays
 	OtObject add(OtObject value) {
 		OtArray result = create();
 
@@ -142,25 +149,28 @@ public:
 		return result;
 	}
 
+	// does array contains specified object
 	OtObject contains(OtObject value) {
 		bool result = false;
 
 		for (auto it = begin(); it != end() && !result; it++) {
-			result = value->method(L"__eq__", OtObjectClass::create(), 1, &(*it))->operator bool();
+			result = value->method("__eq__", OtObjectClass::create(), 1, &(*it))->operator bool();
 		}
 
 		return OtBooleanClass::create(result);
 	}
 
+	// return number of array members
 	size_t mySize() {
 		return size();
 	}
 
+	// find an array entry and return index (-1 if not found)
 	long find(OtObject value) {
 		long result = -1;
 
 		for (size_t i = 0; i < size() && result == -1; i++) {
-			if (value->method(L"__eq__", OtObjectClass::create(), 1, &(operator[] (i)))->operator bool()) {
+			if (value->method("__eq__", OtObjectClass::create(), 1, &(operator[] (i)))->operator bool()) {
 				result = i;
 			}
 		}
@@ -168,6 +178,7 @@ public:
 		return result;
 	}
 
+	// clone an array
 	OtObject clone() {
 		OtArray result = create();
 		for (auto& it : *this) {
@@ -177,31 +188,36 @@ public:
 		return result;
 	}
 
+	// add new member to the end
 	OtObject append(OtObject value) {
 		push_back(value);
 		return getSharedPtr();
 	}
 
+	// insert member at specified location
 	OtObject insert(size_t index, OtObject value) {
 		std::vector<OtObject>::insert(begin() + index, value);
 		return getSharedPtr();
 	}
 
+	// remove member at specified location
 	OtObject erase(size_t index) {
 		std::vector<OtObject>::erase(begin() + index);
 		return getSharedPtr();
 	}
 
+	// erase member from until specified locations
 	OtObject eraseMultiple(size_t index1, size_t index2) {
 		std::vector<OtObject>::erase(begin() + index1, begin() + index2);
 		return getSharedPtr();
 	}
 
+	// push object to end of array
 	OtObject push(OtObject value) {
 		push_back(value); return value;
-		return getSharedPtr();
 	}
 
+	// pop object from and of array
 	OtObject pop() {
 		OtObject value = back();
 		pop_back();
@@ -213,28 +229,28 @@ public:
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtArrayClass>(L"Array", OtCollectionClass::getMeta());
+			type = OtTypeClass::create<OtArrayClass>("Array", OtCollectionClass::getMeta());
 
-			type->set(L"__init__", OtFunctionClass::create(&OtArrayClass::init));
-			type->set(L"__index__", OtFunctionCreate(&OtArrayClass::index));
-			type->set(L"__iter__", OtFunctionCreate(&OtArrayClass::iterate));
-			type->set(L"__add__", OtFunctionCreate(&OtArrayClass::add));
-			type->set(L"__contains__", OtFunctionCreate(&OtArrayClass::contains));
+			type->set("__init__", OtFunctionClass::create(&OtArrayClass::init));
+			type->set("__index__", OtFunctionCreate(&OtArrayClass::index));
+			type->set("__iter__", OtFunctionCreate(&OtArrayClass::iterate));
+			type->set("__add__", OtFunctionCreate(&OtArrayClass::add));
+			type->set("__contains__", OtFunctionCreate(&OtArrayClass::contains));
 
-			type->set(L"size", OtFunctionCreate(&OtArrayClass::mySize));
-			type->set(L"find", OtFunctionCreate(&OtArrayClass::find));
+			type->set("size", OtFunctionCreate(&OtArrayClass::mySize));
+			type->set("find", OtFunctionCreate(&OtArrayClass::find));
 
-			type->set(L"clone", OtFunctionCreate(&OtArrayClass::clone));
-			type->set(L"clear", OtFunctionCreate(&OtArrayClass::clear));
+			type->set("clone", OtFunctionCreate(&OtArrayClass::clone));
+			type->set("clear", OtFunctionCreate(&OtArrayClass::clear));
 
-			type->set(L"append", OtFunctionCreate(&OtArrayClass::append));
-			type->set(L"insert", OtFunctionCreate(&OtArrayClass::insert));
+			type->set("append", OtFunctionCreate(&OtArrayClass::append));
+			type->set("insert", OtFunctionCreate(&OtArrayClass::insert));
 
-			type->set(L"erase", OtFunctionCreate(&OtArrayClass::erase));
-			type->set(L"eraseMultiple", OtFunctionCreate(&OtArrayClass::eraseMultiple));
+			type->set("erase", OtFunctionCreate(&OtArrayClass::erase));
+			type->set("eraseMultiple", OtFunctionCreate(&OtArrayClass::eraseMultiple));
 
-			type->set(L"push", OtFunctionCreate(&OtArrayClass::push));
-			type->set(L"pop", OtFunctionCreate(&OtArrayClass::pop));
+			type->set("push", OtFunctionCreate(&OtArrayClass::push));
+			type->set("pop", OtFunctionCreate(&OtArrayClass::pop));
 		}
 
 		return type;

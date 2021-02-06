@@ -43,8 +43,8 @@ private:
 			static OtType type = nullptr;
 
 			if (!type) {
-				type = OtTypeClass::create<OtHttpNextClass>(L"HttpNext", OtInternalClass::getMeta());
-				type->set(L"__call__", OtFunctionCreate(&OtHttpNextClass::next));
+				type = OtTypeClass::create<OtHttpNextClass>("HttpNext", OtInternalClass::getMeta());
+				type->set("__call__", OtFunctionCreate(&OtHttpNextClass::next));
 			}
 
 			return type;
@@ -64,7 +64,7 @@ private:
 
 	class OtHandler {
 	public:
-		OtHandler(const std::wstring& m, OtObject c, const std::wstring& p, OtObject b) : method(m), context(c), path(p), callback(b) {
+		OtHandler(const std::string& m, OtObject c, const std::string& p, OtObject b) : method(m), context(c), path(p), callback(b) {
 			if (method.length() == 0) {
 				type = ALL;
 
@@ -75,16 +75,16 @@ private:
 			} else if (path.find(':') != std::string::npos) {
 				type = REGEX;
 
-				std::wregex nameRE(L":([^\\/]+)?");
-				std::wsregex_token_iterator it(path.begin(), path.end(), nameRE);
-				std::wsregex_token_iterator end;
+				std::regex nameRE(":([^\\/]+)?");
+				std::sregex_token_iterator it(path.begin(), path.end(), nameRE);
+				std::sregex_token_iterator end;
 
 				while (it != end) {
-					std::wstring name = *it++;
+					std::string name = *it++;
 					names.push_back(name.erase(0, 1));
 				}
 
-				pattern = std::wregex(L"^" + std::regex_replace(path, nameRE,  L"(?:([^\\/]+?))") + L"$");
+				pattern = std::regex("^" + std::regex_replace(path, nameRE, "(?:([^\\/]+?))") +"$");
 
 			} else {
 				type = MATCH;
@@ -108,8 +108,8 @@ private:
 
 				case REGEX:
 					if (req->getMethod() == method) {
-						std::wstring path = req->getPath();
-						std::wsmatch values;
+						std::string path = req->getPath();
+						std::smatch values;
 
 						if (regex_match(path, values, pattern)) {
 							for (auto i = 1; i < values.size(); i++) {
@@ -134,7 +134,7 @@ private:
 			// execute callback if method and path matches
 			if (match(req)) {
 				OtObject pars[] = {callback, req, res, next};
-				callback->get(L"__call__")->operator ()(context, 3, pars);
+				callback->get("__call__")->operator ()(context, 3, pars);
 
 			} else {
 				// no match, call next handler
@@ -151,22 +151,22 @@ private:
 		};
 
 		OtHandlerType type;
-		std::wstring method;
+		std::string method;
 		OtObject context;
-		std::wstring path;
-		std::wregex pattern;
-		std::vector<std::wstring> names;
+		std::string path;
+		std::regex pattern;
+		std::vector<std::string> names;
 		OtObject callback;
 	};
 
 private:
 	// add handler
-	void add(const std::wstring& method, OtObject context, size_t count, OtObject* parameters) {
+	void add(const std::string& method, OtObject context, size_t count, OtObject* parameters) {
 		if (count != 2) {
-			OT_EXCEPT(L"Function expects 2 parameters, %d given", count);
+			OT_EXCEPT("Function expects 2 parameters, %d given", count);
 		}
 
-		handlers.push_back(OtHandler(method, context, (std::wstring) (*parameters[0]), parameters[1]));
+		handlers.push_back(OtHandler(method, context, (std::string) (*parameters[0]), parameters[1]));
 	}
 
 	// run specified handler
@@ -179,28 +179,28 @@ private:
 public:
 	// add handlers
 	OtObject use(OtObject context, size_t count, OtObject* parameters) {
-		add(L"", context, count, parameters);
-		return 0;
+		add("", context, count, parameters);
+		return nullptr;
 	}
 
 	OtObject get(OtObject context, size_t count, OtObject* parameters) {
-		add(L"GET", context, count, parameters);
-		return 0;
+		add("GET", context, count, parameters);
+		return nullptr;
 	}
 
 	OtObject put(OtObject context, size_t count, OtObject* parameters) {
-		add(L"PUT", context, count, parameters);
-		return 0;
+		add("PUT", context, count, parameters);
+		return nullptr;
 	}
 
 	OtObject post(OtObject context, size_t count, OtObject* parameters) {
-		add(L"POST", context, count, parameters);
-		return 0;
+		add("POST", context, count, parameters);
+		return nullptr;
 	}
 
 	OtObject del(OtObject context, size_t count, OtObject* parameters) {
-		add(L"DELETE", context, count, parameters);
-		return 0;
+		add("DELETE", context, count, parameters);
+		return nullptr;
 	}
 
 	void dispatch(OtHttpRequest req, OtHttpResponse res) {
@@ -212,12 +212,12 @@ public:
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtHttpRouterClass>(L"HttpRouter", OtNetClass::getMeta());
-			type->set(L"use", OtFunctionClass::create(&OtHttpRouterClass::use));
-			type->set(L"get", OtFunctionClass::create(&OtHttpRouterClass::get));
-			type->set(L"put", OtFunctionClass::create(&OtHttpRouterClass::put));
-			type->set(L"post", OtFunctionClass::create(&OtHttpRouterClass::post));
-			type->set(L"delete", OtFunctionClass::create(&OtHttpRouterClass::del));
+			type = OtTypeClass::create<OtHttpRouterClass>("HttpRouter", OtNetClass::getMeta());
+			type->set("use", OtFunctionClass::create(&OtHttpRouterClass::use));
+			type->set("get", OtFunctionClass::create(&OtHttpRouterClass::get));
+			type->set("put", OtFunctionClass::create(&OtHttpRouterClass::put));
+			type->set("post", OtFunctionClass::create(&OtHttpRouterClass::post));
+			type->set("delete", OtFunctionClass::create(&OtHttpRouterClass::del));
 		}
 
 		return type;

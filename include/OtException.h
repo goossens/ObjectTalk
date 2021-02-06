@@ -20,11 +20,11 @@
 
 class OtException {
 public:
-	OtException(std::wstring m) { message = m; }
-	virtual const wchar_t* what() const throw() { return message.c_str(); }
+	OtException(std::string m) : message(m) {}
+	virtual const char* what() const throw() { return message.c_str(); }
 
 private:
-	std::wstring message;
+	std::string message;
 };
 
-#define OT_EXCEPT(format, ...) throw OtException(OtFormat(L"%s: line %d: " format, __FILE__, __LINE__, __VA_ARGS__))
+#define OT_EXCEPT(format, ...) throw OtException(OtFormat("%s: line %d: " format, __FILE__, __LINE__, __VA_ARGS__))

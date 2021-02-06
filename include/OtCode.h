@@ -49,23 +49,19 @@ public:
 		JUMP_FALSE,
 		METHOD,
 		EXIT,
-		SET,
-		GET,
-		SAVE_ARG,
-		SAVE_ARGS,
 		PUSH_CONTEXT,
 		POP_CONTEXT
 	} OtOpcode;
 
 	OtInstruction(OtOpcode o) { opcode = o; integer = 0; value = nullptr; }
 	OtInstruction(OtOpcode o, long i)  { opcode = o; integer = i; value = nullptr; }
-	OtInstruction(OtOpcode o, const std::wstring& s)  { opcode = o; string = s; integer = 0; value = nullptr; }
-	OtInstruction(OtOpcode o, const std::wstring& s, long i)  { opcode = o; string = s; integer = i; value = nullptr; }
+	OtInstruction(OtOpcode o, const std::string& s)  { opcode = o; string = s; integer = 0; value = nullptr; }
+	OtInstruction(OtOpcode o, const std::string& s, long i)  { opcode = o; string = s; integer = i; value = nullptr; }
 	OtInstruction(OtOpcode o, OtObject v)  { opcode = o; integer = 0; value = v; }
 
 	OtOpcode opcode;
 	long integer;
-	std::wstring string;
+	std::string string;
 	OtObject value;
 };
 
@@ -85,12 +81,8 @@ public:
 	void jump(size_t offset) { push_back(OtInstruction(OtInstruction::JUMP, offset)); }
 	void jumpTrue(size_t offset) { push_back(OtInstruction(OtInstruction::JUMP_TRUE, offset)); }
 	void jumpFalse(size_t offset) { push_back(OtInstruction(OtInstruction::JUMP_FALSE, offset)); }
-	void method(const std::wstring& name, size_t count) { push_back(OtInstruction(OtInstruction::METHOD, name, count)); }
+	void method(const std::string& name, size_t count) { push_back(OtInstruction(OtInstruction::METHOD, name, count)); }
 	void exit() { push_back(OtInstruction(OtInstruction::EXIT)); }
-	void set(const std::wstring& name) { push_back(OtInstruction(OtInstruction::SET, name)); }
-	void get(const std::wstring& name) { push_back(OtInstruction(OtInstruction::GET, name)); }
-	void saveArg(size_t index, const std::wstring& name) { push_back(OtInstruction(OtInstruction::SAVE_ARG, name, index)); }
-	void saveArgs() { push_back(OtInstruction(OtInstruction::SAVE_ARGS)); }
 	void pushContext() { push_back(OtInstruction(OtInstruction::PUSH_CONTEXT)); }
 	void popContext() { push_back(OtInstruction(OtInstruction::POP_CONTEXT)); }
 
@@ -98,11 +90,7 @@ public:
 	void patch(size_t location) { at(location).integer = size(); }
 
 	// call code
-	OtObject operator ()(OtObject context, size_t count=0, OtObject* parameters=nullptr) {
-		// create local context
-		OtObject local = OtObjectClass::create();
-		local->setParent(context);
-
+	OtObject operator ()(OtObject context) {
 		// program counter
 		size_t pc = 0;
 
@@ -165,7 +153,7 @@ public:
 					// get target object and call method
 					cnt = at(pc).integer + 1;
 					sp = &stack[stack.size() - cnt];
-					value = sp[0]->get(at(pc).string)->operator ()(local, cnt, sp);
+					value = sp[0]->get(at(pc).string)->operator ()(context, cnt, sp);
 
 					// clean up stack
 					stack.resize(stack.size() - cnt);
@@ -177,39 +165,17 @@ public:
 					pc = size();
 					break;
 
-				case OtInstruction::SET:
-					// set a local variable
-					value = stack.back();
-					stack.pop_back();
-					local->set(at(pc).string, value);
-					break;
-
-				case OtInstruction::GET:
-					// get the value of a variable
-					stack.push_back(local->get(at(pc).string));
-					break;
-
-				case OtInstruction::SAVE_ARG:
-					// save a named argument to the local context
-					local->set(at(pc).string, parameters[at(pc).integer]);
-					break;
-
-				case OtInstruction::SAVE_ARGS:
-					// save variable arguments to the local context
-					local->set(L"args", OtArrayClass::create(count, parameters));
-					break;
-
 				case OtInstruction::PUSH_CONTEXT:
-					// push current context and create a new one
+					// push current context
 					value = stack.back();
 					stack.pop_back();
-					value->setParent(local);
-					local = value;
+					value->setParent(context);
+					context = value;
 					break;
 
 				case OtInstruction::POP_CONTEXT:
 					// return to previous context
-					local = local->getParent();
+					context = context->getParent();
 					break;
 			}
 

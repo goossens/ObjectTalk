@@ -31,31 +31,31 @@ public:
 	// constructors
 	OtPathClass() = default;
 	OtPathClass(const char* p) : path(p) {}
-	OtPathClass(const std::wstring& p) : path(p) {}
+	OtPathClass(const std::string& p) : path(p) {}
 	OtPathClass(const std::filesystem::path& p) : path(p) {}
 
 	// convert to string
-	operator std::wstring() { return path.wstring(); }
+	operator std::string() { return path.string(); }
 
 	// initialize path
 	OtObject init(OtObject, size_t count, OtObject* parameters) {
 		if (count != 1) {
-			OT_EXCEPT(L"Path initializer expected 1 parameter not [%d]", count);
+			OT_EXCEPT("Path initializer expected 1 parameter not [%d]", count);
 		}
 
-		path = parameters[0]->operator std::wstring();
+		path = parameters[0]->operator std::string();
 		return getSharedPtr();
 	}
 
 	// modifiers
 	void clear() { path.clear(); }
 	void removeFilename() { path.remove_filename(); }
-	void replaceFilename(OtObject name) { path.replace_filename(name->operator std::wstring()); }
-	void replaceExtension(OtObject name) { path.replace_extension(name->operator std::wstring()); }
+	void replaceFilename(OtObject name) { path.replace_filename(name->operator std::string()); }
+	void replaceExtension(OtObject name) { path.replace_extension(name->operator std::string()); }
 
 	// operators
-	OtObject add(OtObject operand) { return OtPathClass::create(path / operand->operator std::wstring()); }
-	bool equal(OtObject operand) { return path == operand->operator std::wstring(); }
+	OtObject add(OtObject operand) { return OtPathClass::create(path / operand->operator std::string()); }
+	bool equal(OtObject operand) { return path == operand->operator std::string(); }
 	bool notEqual(OtObject operand) { return !equal(operand); }
 
 	// check path status
@@ -81,7 +81,7 @@ public:
 	OtObject stem() { return create(path.stem()); }
 	OtObject extension() { return create(path.extension()); }
 
-	OtObject relative(OtObject name) { return create(path.lexically_relative(name->operator std::wstring())); }
+	OtObject relative(OtObject name) { return create(path.lexically_relative(name->operator std::string())); }
 
 	// support iterator
 	class OtPathIteratorClass : public OtInternalClass {
@@ -97,9 +97,9 @@ public:
 			static OtType type = nullptr;
 
 			if (!type) {
-				type = OtTypeClass::create<OtPathIteratorClass>(L"PathIterator", OtInternalClass::getMeta());
-				type->set(L"__end__", OtFunctionCreate(&OtPathIteratorClass::end));
-				type->set(L"__next__", OtFunctionCreate(&OtPathIteratorClass::next));
+				type = OtTypeClass::create<OtPathIteratorClass>("PathIterator", OtInternalClass::getMeta());
+				type->set("__end__", OtFunctionCreate(&OtPathIteratorClass::end));
+				type->set("__next__", OtFunctionCreate(&OtPathIteratorClass::next));
 			}
 
 			return type;
@@ -125,42 +125,42 @@ public:
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtPathClass>(L"Path", OtSystemClass::getMeta());
+			type = OtTypeClass::create<OtPathClass>("Path", OtSystemClass::getMeta());
 
-			type->set(L"__init__", OtFunctionClass::create(&OtPathClass::init));
-			type->set(L"__iter__", OtFunctionCreate(&OtPathClass::iterate));
-			type->set(L"__add__", OtFunctionCreate(&OtPathClass::add));
+			type->set("__init__", OtFunctionClass::create(&OtPathClass::init));
+			type->set("__iter__", OtFunctionCreate(&OtPathClass::iterate));
+			type->set("__add__", OtFunctionCreate(&OtPathClass::add));
 
-			type->set(L"__eq__", OtFunctionCreate(&OtPathClass::equal));
-			type->set(L"__ne__", OtFunctionCreate(&OtPathClass::notEqual));
+			type->set("__eq__", OtFunctionCreate(&OtPathClass::equal));
+			type->set("__ne__", OtFunctionCreate(&OtPathClass::notEqual));
 
-			type->set(L"clear", OtFunctionCreate(&OtPathClass::clear));
-			type->set(L"removeFilename", OtFunctionCreate(&OtPathClass::removeFilename));
-			type->set(L"replaceFilename", OtFunctionCreate(&OtPathClass::replaceFilename));
-			type->set(L"replaceExtension", OtFunctionCreate(&OtPathClass::replaceExtension));
+			type->set("clear", OtFunctionCreate(&OtPathClass::clear));
+			type->set("removeFilename", OtFunctionCreate(&OtPathClass::removeFilename));
+			type->set("replaceFilename", OtFunctionCreate(&OtPathClass::replaceFilename));
+			type->set("replaceExtension", OtFunctionCreate(&OtPathClass::replaceExtension));
 
-			type->set(L"isEmpty", OtFunctionCreate(&OtPathClass::isEmpty));
-			type->set(L"isAbsolute", OtFunctionCreate(&OtPathClass::isAbsolute));
-			type->set(L"isRelative", OtFunctionCreate(&OtPathClass::isRelative));
+			type->set("isEmpty", OtFunctionCreate(&OtPathClass::isEmpty));
+			type->set("isAbsolute", OtFunctionCreate(&OtPathClass::isAbsolute));
+			type->set("isRelative", OtFunctionCreate(&OtPathClass::isRelative));
 
-			type->set(L"hasRootPath", OtFunctionCreate(&OtPathClass::hasRootPath));
-			type->set(L"hasRootName", OtFunctionCreate(&OtPathClass::hasRootName));
-			type->set(L"hasRootDirectory", OtFunctionCreate(&OtPathClass::hasRootDirectory));
-			type->set(L"hasRelativePath", OtFunctionCreate(&OtPathClass::hasRelativePath));
-			type->set(L"hasParentPath", OtFunctionCreate(&OtPathClass::hasParentPath));
-			type->set(L"hasFilename", OtFunctionCreate(&OtPathClass::hasFilename));
-			type->set(L"hasStem", OtFunctionCreate(&OtPathClass::hasStem));
-			type->set(L"hasExtension", OtFunctionCreate(&OtPathClass::hasExtension));
+			type->set("hasRootPath", OtFunctionCreate(&OtPathClass::hasRootPath));
+			type->set("hasRootName", OtFunctionCreate(&OtPathClass::hasRootName));
+			type->set("hasRootDirectory", OtFunctionCreate(&OtPathClass::hasRootDirectory));
+			type->set("hasRelativePath", OtFunctionCreate(&OtPathClass::hasRelativePath));
+			type->set("hasParentPath", OtFunctionCreate(&OtPathClass::hasParentPath));
+			type->set("hasFilename", OtFunctionCreate(&OtPathClass::hasFilename));
+			type->set("hasStem", OtFunctionCreate(&OtPathClass::hasStem));
+			type->set("hasExtension", OtFunctionCreate(&OtPathClass::hasExtension));
 
-			type->set(L"rootName", OtFunctionCreate(&OtPathClass::rootName));
-			type->set(L"rootDirectory", OtFunctionCreate(&OtPathClass::rootDirectory));
-			type->set(L"rootPath", OtFunctionCreate(&OtPathClass::rootPath));
-			type->set(L"directory", OtFunctionCreate(&OtPathClass::directory));
-			type->set(L"filename", OtFunctionCreate(&OtPathClass::filename));
-			type->set(L"stem", OtFunctionCreate(&OtPathClass::stem));
-			type->set(L"extension", OtFunctionCreate(&OtPathClass::extension));
+			type->set("rootName", OtFunctionCreate(&OtPathClass::rootName));
+			type->set("rootDirectory", OtFunctionCreate(&OtPathClass::rootDirectory));
+			type->set("rootPath", OtFunctionCreate(&OtPathClass::rootPath));
+			type->set("directory", OtFunctionCreate(&OtPathClass::directory));
+			type->set("filename", OtFunctionCreate(&OtPathClass::filename));
+			type->set("stem", OtFunctionCreate(&OtPathClass::stem));
+			type->set("extension", OtFunctionCreate(&OtPathClass::extension));
 
-			type->set(L"relative", OtFunctionCreate(&OtPathClass::relative));
+			type->set("relative", OtFunctionCreate(&OtPathClass::relative));
 		}
 
 		return type;
@@ -173,7 +173,7 @@ public:
 		return path;
 	}
 
-	static OtPath create(const std::wstring& value) {
+	static OtPath create(const std::string& value) {
 		OtPath path = std::make_shared<OtPathClass>(value);
 		path->setType(getMeta());
 		return path;

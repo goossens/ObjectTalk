@@ -34,11 +34,11 @@
 //
 
 extern "C" void init(OtObject context) {
-	context->set(L"Net", OtClassClass::create(OtNetClass::getMeta()));
-	context->set(L"URL", OtClassClass::create(OtURLClass::getMeta()));
-	context->set(L"Loop", OtClassClass::create(OtLoopClass::getMeta()));
-	context->set(L"HTTPRequest", OtClassClass::create(OtHttpRequestClass::getMeta()));
-	context->set(L"HTTPResponse", OtClassClass::create(OtHttpResponseClass::getMeta()));
-	context->set(L"HTTPRouter", OtClassClass::create(OtHttpRouterClass::getMeta()));
-	context->set(L"HTTP", OtClassClass::create(OtHTTPClass::getMeta()));
+	context->set("Net", OtClassClass::create(OtNetClass::getMeta()));
+	context->set("URL", OtClassClass::create(OtURLClass::getMeta()));
+	context->set("Loop", OtClassClass::create(OtLoopClass::getMeta()));
+	context->set("HTTPRequest", OtClassClass::create(OtHttpRequestClass::getMeta()));
+	context->set("HTTPResponse", OtClassClass::create(OtHttpResponseClass::getMeta()));
+	context->set("HTTPRouter", OtClassClass::create(OtHttpRouterClass::getMeta()));
+	context->set("HTTP", OtClassClass::create(OtHTTPClass::getMeta()));
 }

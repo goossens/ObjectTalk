@@ -41,12 +41,12 @@ public:
 	}
 
 	// change current working directory
-	void chdir(const std::wstring& path) {
+	void chdir(const std::string& path) {
 		 std::filesystem::current_path(path);
 	}
 
 	// get list of files in specified directory
-	OtObject ls(const std::wstring& path) {
+	OtObject ls(const std::string& path) {
 		// get content of directory
 		OtArray content = OtArrayClass::create();
 
@@ -58,53 +58,53 @@ public:
 	}
 
 	// get file size
-	size_t filesize(const std::wstring& path) {
+	size_t filesize(const std::string& path) {
 		return (size_t) std::filesystem::file_size(path);
 	}
 
 	// copy a file system object
-	void cp(const std::wstring& from, const std::wstring& to) {
+	void cp(const std::string& from, const std::string& to) {
 		std::filesystem::copy(from, to, std::filesystem::copy_options::recursive);
 	}
 
 	// move (rename) a file system object
-	void mv(const std::wstring& from, const std::wstring& to) {
+	void mv(const std::string& from, const std::string& to) {
 		std::filesystem::rename(from, to);
 	}
 
 	// link a file system object
-	void ln(const std::wstring& from, const std::wstring& to) {
+	void ln(const std::string& from, const std::string& to) {
 		std::filesystem::create_hard_link(from, to);
 	}
 
 	// link a file system object symbolically
-	void lns(const std::wstring& from, const std::wstring& to) {
+	void lns(const std::string& from, const std::string& to) {
 		std::filesystem::create_symlink(from, to);
 	}
 
 	// resize file
-	void resize(const std::wstring& path, size_t size) {
+	void resize(const std::string& path, size_t size) {
 		std::filesystem::resize_file(path, size);
 	}
 
 	// remove file system object
-	void rm(const std::wstring& path) {
+	void rm(const std::string& path) {
 		if (!std::filesystem::remove(path)) {
-			OT_EXCEPT(L"can't remove [%ls]", path.c_str());
+			OT_EXCEPT("can't remove [%s]", path.c_str());
 		}
 	}
 
 	// create directory
-	void mkdir(const std::wstring& path) {
+	void mkdir(const std::string& path) {
 		if (!std::filesystem::create_directory(path)) {
-			OT_EXCEPT(L"can't create directory [%ls]", path.c_str());
+			OT_EXCEPT("can't create directory [%s]", path.c_str());
 		}
 	}
 
 	// create (intermediate) directories
-	void mkdirs(const std::wstring& path) {
+	void mkdirs(const std::string& path) {
 		if (!std::filesystem::create_directories(path)) {
-			OT_EXCEPT(L"can't create directories [%ls]", path.c_str());
+			OT_EXCEPT("can't create directories [%s]", path.c_str());
 		}
 	}
 
@@ -132,33 +132,33 @@ public:
 	}
 
 	// remove directory
-	void rmdir(const std::wstring& path) {
+	void rmdir(const std::string& path) {
 		if (!std::filesystem::remove(path)) {
-			OT_EXCEPT(L"can't remove directory [%ls]", path.c_str());
+			OT_EXCEPT("can't remove directory [%s]", path.c_str());
 		}
 	}
 
 	// remove directory and its content
-	void rmdirs(const std::wstring& path) {
+	void rmdirs(const std::string& path) {
 		if (!std::filesystem::remove_all(path)) {
-			OT_EXCEPT(L"can't remove directory [%ls]", path.c_str());
+			OT_EXCEPT("can't remove directory [%s]", path.c_str());
 		}
 	}
 
 	// get file system capacity
-	size_t capacity(const std::wstring& path) {
+	size_t capacity(const std::string& path) {
 		std::filesystem::space_info space = std::filesystem::space(path);
 		return space.capacity;
 	}
 
 	// get free space on file system
-	size_t free(const std::wstring& path) {
+	size_t free(const std::string& path) {
 		std::filesystem::space_info space = std::filesystem::space(path);
 		return space.free;
 	}
 
 	// get available space on file system
-	size_t available(const std::wstring& path) {
+	size_t available(const std::string& path) {
 		std::filesystem::space_info space = std::filesystem::space(path);
 		return space.available;
 	}
@@ -168,27 +168,27 @@ public:
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtFSClass>(L"FS", OtSystemClass::getMeta());
+			type = OtTypeClass::create<OtFSClass>("FS", OtSystemClass::getMeta());
 
-			type->set(L"gettmp", OtFunctionCreate(&OtFSClass::gettmp));
-			type->set(L"getcwd", OtFunctionCreate(&OtFSClass::getcwd));
-			type->set(L"chdir", OtFunctionCreate(&OtFSClass::chdir));
-			type->set(L"ls", OtFunctionCreate(&OtFSClass::ls));
-			type->set(L"filesize", OtFunctionCreate(&OtFSClass::filesize));
-			type->set(L"cp", OtFunctionCreate(&OtFSClass::cp));
-			type->set(L"mv", OtFunctionCreate(&OtFSClass::mv));
-			type->set(L"ln", OtFunctionCreate(&OtFSClass::ln));
-			type->set(L"lns", OtFunctionCreate(&OtFSClass::lns));
-			type->set(L"resize", OtFunctionCreate(&OtFSClass::resize));
-			type->set(L"rm", OtFunctionCreate(&OtFSClass::rm));
-			type->set(L"mkdir", OtFunctionCreate(&OtFSClass::mkdir));
-			type->set(L"mkdirs", OtFunctionCreate(&OtFSClass::mkdirs));
-			type->set(L"mktmpdir", OtFunctionCreate(&OtFSClass::mktmpdir));
-			type->set(L"rmdir", OtFunctionCreate(&OtFSClass::rmdir));
-			type->set(L"rmdirs", OtFunctionCreate(&OtFSClass::rmdirs));
-			type->set(L"capacity", OtFunctionCreate(&OtFSClass::capacity));
-			type->set(L"free", OtFunctionCreate(&OtFSClass::free));
-			type->set(L"available", OtFunctionCreate(&OtFSClass::available));
+			type->set("gettmp", OtFunctionCreate(&OtFSClass::gettmp));
+			type->set("getcwd", OtFunctionCreate(&OtFSClass::getcwd));
+			type->set("chdir", OtFunctionCreate(&OtFSClass::chdir));
+			type->set("ls", OtFunctionCreate(&OtFSClass::ls));
+			type->set("filesize", OtFunctionCreate(&OtFSClass::filesize));
+			type->set("cp", OtFunctionCreate(&OtFSClass::cp));
+			type->set("mv", OtFunctionCreate(&OtFSClass::mv));
+			type->set("ln", OtFunctionCreate(&OtFSClass::ln));
+			type->set("lns", OtFunctionCreate(&OtFSClass::lns));
+			type->set("resize", OtFunctionCreate(&OtFSClass::resize));
+			type->set("rm", OtFunctionCreate(&OtFSClass::rm));
+			type->set("mkdir", OtFunctionCreate(&OtFSClass::mkdir));
+			type->set("mkdirs", OtFunctionCreate(&OtFSClass::mkdirs));
+			type->set("mktmpdir", OtFunctionCreate(&OtFSClass::mktmpdir));
+			type->set("rmdir", OtFunctionCreate(&OtFSClass::rmdir));
+			type->set("rmdirs", OtFunctionCreate(&OtFSClass::rmdirs));
+			type->set("capacity", OtFunctionCreate(&OtFSClass::capacity));
+			type->set("free", OtFunctionCreate(&OtFSClass::free));
+			type->set("available", OtFunctionCreate(&OtFSClass::available));
 		}
 
 		return type;

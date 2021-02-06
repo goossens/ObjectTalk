@@ -33,7 +33,7 @@ public:
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtInternalClass>(L"Internal", OtObjectClass::getMeta());
+			type = OtTypeClass::create<OtInternalClass>("Internal", OtObjectClass::getMeta());
 		}
 
 		return type;

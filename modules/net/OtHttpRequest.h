@@ -39,45 +39,45 @@ public:
 	}
 
 	// set/get request parts
-	void setMethod(const std::wstring& m) { method = m; }
-	const std::wstring getMethod() { return method; }
+	void setMethod(const std::string& m) { method = m; }
+	const std::string getMethod() { return method; }
 
-	void setPath(const std::wstring& p) { path = p; }
-	const std::wstring getPath() { return path; }
+	void setPath(const std::string& p) { path = p; }
+	const std::string getPath() { return path; }
 
-	void setVersion(const std::wstring& v) { version = v; }
-	const std::wstring getVersion() { return version; }
+	void setVersion(const std::string& v) { version = v; }
+	const std::string getVersion() { return version; }
 
-	void setHeader(const std::wstring& name, const std::wstring& value) {
+	void setHeader(const std::string& name, const std::string& value) {
 		headers[name] = value;
 	}
 
-	const bool hasHeader(const std::wstring& header) {
+	const bool hasHeader(const std::string& header) {
 		return headers.find(header) != headers.end();
  	}
 
-	const std::wstring getHeader(const std::wstring& header) {
+	const std::string getHeader(const std::string& header) {
 		if (hasHeader(header)) {
 			return headers[header];
 
 		} else {
-			return L"";
+			return"";
 		}
 	}
 
-	const bool headerIs(const std::wstring& header, const std::wstring& value) {
+	const bool headerIs(const std::string& header, const std::string& value) {
 		return getHeader(header) == value;
  	}
 
-	void setParam(const std::wstring& name, const std::wstring& value) {
+	void setParam(const std::string& name, const std::string& value) {
 		params[name] = value;
 	}
 
-	const bool hasParam(const std::wstring& param) {
+	const bool hasParam(const std::string& param) {
 		return params.find(param) != params.end();
  	}
 
-	const std::wstring getParam(const std::wstring& param) {
+	const std::string getParam(const std::string& param) {
 		return params[param];
 	}
 
@@ -90,16 +90,16 @@ public:
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtHttpRequestClass>(L"HttpRequest", OtNetClass::getMeta());
+			type = OtTypeClass::create<OtHttpRequestClass>("HttpRequest", OtNetClass::getMeta());
 
-			type->set(L"method", OtFunctionCreate(&OtHttpRequestClass::getMethod));
-			type->set(L"path", OtFunctionCreate(&OtHttpRequestClass::getPath));
+			type->set("method", OtFunctionCreate(&OtHttpRequestClass::getMethod));
+			type->set("path", OtFunctionCreate(&OtHttpRequestClass::getPath));
 
-			type->set(L"hasHeader", OtFunctionCreate(&OtHttpRequestClass::hasHeader));
-			type->set(L"getHeader", OtFunctionCreate(&OtHttpRequestClass::getHeader));
+			type->set("hasHeader", OtFunctionCreate(&OtHttpRequestClass::hasHeader));
+			type->set("getHeader", OtFunctionCreate(&OtHttpRequestClass::getHeader));
 
-			type->set(L"hasParam", OtFunctionCreate(&OtHttpRequestClass::hasParam));
-			type->set(L"getParam", OtFunctionCreate(&OtHttpRequestClass::getParam));
+			type->set("hasParam", OtFunctionCreate(&OtHttpRequestClass::hasParam));
+			type->set("getParam", OtFunctionCreate(&OtHttpRequestClass::getParam));
 		}
 
 		return type;
@@ -113,10 +113,10 @@ public:
 	}
 
 private:
-	std::wstring method;
-	std::wstring path;
-	std::wstring version;
-	std::map<std::wstring, std::wstring> headers;
-	std::map<std::wstring, std::wstring> params;
+	std::string method;
+	std::string path;
+	std::string version;
+	std::map<std::string, std::string> headers;
+	std::map<std::string, std::string> params;
 	std::string body;
 };

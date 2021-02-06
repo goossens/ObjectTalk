@@ -50,9 +50,9 @@ public:
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtLoopClass>(L"Loop", OtNetClass::getMeta());
+			type = OtTypeClass::create<OtLoopClass>("Loop", OtNetClass::getMeta());
 
-			type->set(L"run", OtFunctionCreate(&OtLoopClass::run));
+			type->set("run", OtFunctionCreate(&OtLoopClass::run));
 		}
 
 		return type;

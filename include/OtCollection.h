@@ -33,7 +33,7 @@ public:
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtCollectionClass>(L"Collection", OtObjectClass::getMeta());
+			type = OtTypeClass::create<OtCollectionClass>("Collection", OtObjectClass::getMeta());
 		}
 
 		return type;

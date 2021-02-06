@@ -21,7 +21,7 @@
 class OtTypeClass : public std::enable_shared_from_this<OtTypeClass> {
 public:
 	// constructor
-	OtTypeClass(const std::wstring& n, OtType p, OtConstructor c=nullptr) {
+	OtTypeClass(const std::string& n, OtType p, OtConstructor c=nullptr) {
 		name = n;
 		parent = p;
 		constructor = c ? c : parent->constructor;
@@ -31,7 +31,7 @@ public:
 	OtObject instantiate();
 
 	// create a sub-type
-	OtType subType(const std::wstring& n, OtConstructor c=nullptr) {
+	OtType subType(const std::string& n, OtConstructor c=nullptr) {
 		return std::make_shared<OtTypeClass>(n, getSharedPtr(), c);
 	}
 
@@ -39,7 +39,7 @@ public:
 	OtType getSharedPtr() { return shared_from_this(); }
 
 	// see if type is kind of
-	bool isKindOf(const std::wstring& className) {
+	bool isKindOf(const std::string& className) {
 		for (auto p = getSharedPtr(); p; p = p->parent) {
 			if (p->name == className) {
 				return true;
@@ -52,17 +52,17 @@ public:
 	bool isKindOf(OtType metaclass)  { return isKindOf(metaclass->name); }
 
 	// get information
-	std::wstring getName() { return name; }
+	std::string getName() { return name; }
 	OtType getParent() { return parent; }
 
 	// member access
-	bool has(const std::wstring& name) { return get(name) != nullptr; }
-	OtObject set(const std::wstring& name, OtObject value) { members[name] = value; return value; }
-	OtObject get(const std::wstring& name) { return members.count(name) ? members[name] : nullptr; }
+	bool has(const std::string& name) { return get(name) != nullptr; }
+	OtObject set(const std::string& name, OtObject value) { members[name] = value; return value; }
+	OtObject get(const std::string& name) { return members.count(name) ? members[name] : nullptr; }
 
 	// create a new type
 	template <class T>
-	static OtType create(const std::wstring& name, OtType parent=nullptr) {
+	static OtType create(const std::string& name, OtType parent=nullptr) {
 		return std::make_shared<OtTypeClass>(name, parent, []() { return std::make_shared<T>(); });
 	}
 
@@ -72,8 +72,8 @@ public:
 
 private:
 	// attributes
-	std::wstring name;
+	std::string name;
 	OtType parent;
-	std::map<std::wstring, OtObject> members;
+	std::map<std::string, OtObject> members;
 	OtConstructor constructor;
 };

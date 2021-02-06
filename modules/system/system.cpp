@@ -31,8 +31,8 @@
 //
 
 extern "C" void init(OtObject context) {
-	context->set(L"System", OtClassClass::create(OtSystemClass::getMeta()));
-	context->set(L"Path", OtClassClass::create(OtPathClass::getMeta()));
-	context->set(L"OS", OtClassClass::create(OtOSClass::getMeta()));
-	context->set(L"FS", OtClassClass::create(OtFSClass::getMeta()));
+	context->set("System", OtClassClass::create(OtSystemClass::getMeta()));
+	context->set("Path", OtClassClass::create(OtPathClass::getMeta()));
+	context->set("OS", OtClassClass::create(OtOSClass::getMeta()));
+	context->set("FS", OtClassClass::create(OtFSClass::getMeta()));
 }

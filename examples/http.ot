@@ -22,6 +22,8 @@ class MyHttpServer : HttpServer {
 			next()
 		})
 
+		this.static("/static", __DIR__ + "/static")
+
 		this.get("/info", this.info)
 
 		this.get("/info2", function(req, res, next) {
@@ -46,7 +48,7 @@ class MyHttpServer : HttpServer {
 		})
 
 		this.get("/file", function(req, res, next) {
-			res.sendfile(__DIR__ + "/test.txt")
+			res.sendfile(__DIR__ + "/static/test.txt")
 		})
 	}
 

@@ -23,7 +23,10 @@ typedef std::shared_ptr<OtHttpRouterClass> OtHttpRouter;
 
 class OtHttpRouterClass : public OtHttpClass {
 protected:
+	//
 	// OtHttpNotFound
+	//
+
 	class OtHttpNotFoundClass;
 	typedef std::shared_ptr<OtHttpNotFoundClass> OtHttpNotFound;
 
@@ -63,7 +66,10 @@ protected:
 	};
 
 private:
+	//
 	// OtHttpNotFound
+	//
+
 	class OtHttpNextClass;
 	typedef std::shared_ptr<OtHttpNextClass> OtHttpNext;
 
@@ -105,9 +111,22 @@ private:
 		OtObject next;
 	};
 
+	//
+	//	Abstract request handler class
+	//
+
 	class OtHandler {
 	public:
-		OtHandler(const std::string& m, OtObject c, const std::string& p, OtObject b) : method(m), context(c), path(p), callback(b) {
+		virtual void run(OtHttpRequest req, OtHttpResponse res, OtObject next) {}
+	};
+
+	//
+	//	Request handler basd on method and path
+	//
+
+	class OtMethodHandler : public OtHandler {
+	public:
+		OtMethodHandler(const std::string& m, OtObject c, const std::string& p, OtObject b) : method(m), context(c), path(p), callback(b) {
 			if (method.length() == 0) {
 				type = USE;
 
@@ -181,7 +200,7 @@ private:
 
 			} else {
 				// no match, call next handler
-				next->get("__call__")->operator ()(context, 1, &next);
+				next->get("__call__")->operator ()(next, 1, &next);
 			}
 		}
 
@@ -202,23 +221,48 @@ private:
 		OtObject callback;
 	};
 
+	//
+	//	Request handler for static files
+	//
+
+	class OtStaticHandler : public OtHandler {
+	public:
+		OtStaticHandler(const std::string& p, const std::string& f) : serverPath(p), fsPath(f) {}
+
+		void run(OtHttpRequest req, OtHttpResponse res, OtObject next) {
+			if (OtTextStartsWith(req->getPath(), serverPath)) {
+				// send file
+				res->sendfile(fsPath + req->getPath().substr(serverPath.size(), -1));
+
+			} else {
+				// no match, pass to next handler
+				next->get("__call__")->operator ()(next, 1, &next);
+			}
+		}
+
+	private:
+		std::string serverPath;
+		std::string fsPath;
+	};
+
 private:
 	// add handler
-	void add(const std::string& method, OtObject context, size_t count, OtObject* parameters) {
+	OtObject add(const std::string& method, OtObject context, size_t count, OtObject* parameters) {
 		if (count != 2) {
 			OT_EXCEPT("Function expects 2 parameters, %d given", count);
 		}
 
-		handlers.push_back(OtHandler(method, context, (std::string) (*parameters[0]), parameters[1]));
+		handlers.push_back(std::make_shared<OtMethodHandler>(method, context, (std::string) (*parameters[0]), parameters[1]));
+		return getSharedPtr();
 	}
 
 	// run specified handler
 	void runHandler(const size_t index, OtHttpRequest req, OtHttpResponse res, OtObject next) {
 		if (index < handlers.size()) {
-			handlers[index].run(req, res, OtHttpNextClass::create(cast<OtHttpRouterClass>(), index + 1, req, res, next));
+			handlers[index]->run(req, res, OtHttpNextClass::create(cast<OtHttpRouterClass>(), index + 1, req, res, next));
 
 		} else {
-			next->get("__call__")->operator ()(getSharedPtr(), 1, &next);
+			next->get("__call__")->operator ()(next, 1, &next);
 		}
 	}
 
@@ -229,32 +273,32 @@ public:
 			OT_EXCEPT("Use function expects 1 parameters, %d given", count);
 		}
 
-		handlers.push_back(OtHandler("", context, "*", parameters[0]));
+		handlers.push_back(std::make_shared<OtMethodHandler>("", context, "*", parameters[0]));
 		return getSharedPtr();
 	}
 
 	OtObject all(OtObject context, size_t count, OtObject* parameters) {
-		add("ALL", context, count, parameters);
-		return getSharedPtr();
+		return add("ALL", context, count, parameters);
 	}
 
 	OtObject get(OtObject context, size_t count, OtObject* parameters) {
-		add("GET", context, count, parameters);
-		return getSharedPtr();
+		return add("GET", context, count, parameters);
 	}
 
 	OtObject put(OtObject context, size_t count, OtObject* parameters) {
-		add("PUT", context, count, parameters);
-		return getSharedPtr();
+		return add("PUT", context, count, parameters);
 	}
 
 	OtObject post(OtObject context, size_t count, OtObject* parameters) {
-		add("POST", context, count, parameters);
-		return getSharedPtr();
+		return add("POST", context, count, parameters);
 	}
 
 	OtObject del(OtObject context, size_t count, OtObject* parameters) {
-		add("DELETE", context, count, parameters);
+		return add("DELETE", context, count, parameters);
+	}
+
+	OtObject staticFiles(const std::string& serverPath, const std::string& filePath) {
+		handlers.push_back(std::make_shared<OtStaticHandler>(serverPath, filePath));
 		return getSharedPtr();
 	}
 
@@ -274,6 +318,7 @@ public:
 			type->set("put", OtFunctionClass::create(&OtHttpRouterClass::put));
 			type->set("post", OtFunctionClass::create(&OtHttpRouterClass::post));
 			type->set("delete", OtFunctionClass::create(&OtHttpRouterClass::del));
+			type->set("static", OtFunctionCreate(&OtHttpRouterClass::staticFiles));
 			type->set("__call__", OtFunctionCreate(&OtHttpRouterClass::call));
 		}
 
@@ -288,5 +333,5 @@ public:
 	}
 
 private:
-	std::vector<OtHandler> handlers;
+	std::vector<std::shared_ptr<OtHandler>> handlers;
 };

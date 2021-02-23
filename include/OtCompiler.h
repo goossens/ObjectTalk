@@ -135,7 +135,7 @@ private:
 
 		// get function level code
 		OtCode functionCode = OtCodeClass::create();
-		statement(functionCode);
+		block(functionCode);
 		code->push(OtCodeFunctionClass::create(count, names, functionCode));
 	}
 
@@ -960,15 +960,14 @@ private:
 		std::string name = scanner.getText();
 		scanner.advance();
 
-		// handle parent name
+		// handle parent
 		scanner.expect(OtScanner::COLON_TOKEN);
-		scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
-		std::string parent = scanner.getText();
-		scanner.advance();
+
+		if (expression(code)) {
+			code->method("__deref__", 0);
+		}
 
 		// create new class
-		code->push(OtContextReferenceClass::create(parent));
-		code->method("__deref__", 0);
 		code->push(OtStringClass::create(name));
 		code->method("subType", 1);
 
@@ -981,7 +980,7 @@ private:
 		// process class content
 		code->dup();
 		code->pushContext();
-		statement(code);
+		block(code);
 		code->pop();
 		code->popContext();
 	}

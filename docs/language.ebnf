@@ -1,9 +1,11 @@
 object-talk	::= statement*
 
+block ::= "{" statement+ "}"
+
 statement ::= expression
-| "{" statement+ "}"
-| "class" name ":" name statement
-| "function" name "(" (name ("," name)* | "...") ")" statement
+| block
+| "class" name ":" expression block
+| "function" name "(" (name ("," name)* | "...") ")" block
 | "if" expression statement ("else" statement)?
 | "while" expression statement
 | "do" statement "while" expression

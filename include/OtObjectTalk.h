@@ -52,7 +52,9 @@ public:
 				OT_EXCEPT("Function [import] expects 1 parameter, %d given", c);
 			}
 
-			return importModule(p[0]->operator std::string(), context);
+			OtObject module = OtObjectClass::create();
+			importModule(p[0]->operator std::string(), module);
+			return module;
 		}));
 
 		context->set("run", OtFunctionClass::create([] (OtObject, size_t c, OtObject* p)->OtObject {

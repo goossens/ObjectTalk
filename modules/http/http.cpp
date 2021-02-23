@@ -26,7 +26,7 @@
 
 #include "Ot.h"
 
-#include "OtNet.h"
+#include "OtHttp.h"
 #include "OtMimeType.h"
 #include "OtURL.h"
 #include "OtLoop.h"
@@ -42,7 +42,7 @@
 //
 
 extern "C" void init(OtObject context) {
-	context->set("Net", OtClassClass::create(OtNetClass::getMeta()));
+	context->set("Net", OtClassClass::create(OtHttpClass::getMeta()));
 	context->set("URL", OtClassClass::create(OtURLClass::getMeta()));
 	context->set("Loop", OtClassClass::create(OtLoopClass::getMeta()));
 	context->set("HttpRouter", OtClassClass::create(OtHttpRouterClass::getMeta()));

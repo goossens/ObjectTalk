@@ -49,11 +49,11 @@ Object
 		OS
 		FS
 
-Net module:
+Http module:
 -----------
 
 Object
-	Net
+	Http
 		URI
 		Loop
 		HttpRouter

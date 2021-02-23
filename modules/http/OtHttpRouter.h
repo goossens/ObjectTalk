@@ -21,7 +21,7 @@
 class OtHttpRouterClass;
 typedef std::shared_ptr<OtHttpRouterClass> OtHttpRouter;
 
-class OtHttpRouterClass : public OtNetClass {
+class OtHttpRouterClass : public OtHttpClass {
 protected:
 	// OtHttpNotFound
 	class OtHttpNotFoundClass;
@@ -267,7 +267,7 @@ public:
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtHttpRouterClass>("HttpRouter", OtNetClass::getMeta());
+			type = OtTypeClass::create<OtHttpRouterClass>("HttpRouter", OtHttpClass::getMeta());
 			type->set("use", OtFunctionClass::create(&OtHttpRouterClass::use));
 			type->set("all", OtFunctionClass::create(&OtHttpRouterClass::all));
 			type->set("get", OtFunctionClass::create(&OtHttpRouterClass::get));

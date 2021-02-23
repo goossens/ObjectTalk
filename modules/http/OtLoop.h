@@ -15,22 +15,48 @@
 
 
 //
-//	OtNet
+//	OtLoop
 //
 
-class OtNetClass;
-typedef std::shared_ptr<OtNetClass> OtNet;
+class OtLoopClass;
+typedef std::shared_ptr<OtLoopClass> OtLoop;
 
-class OtNetClass : public OtObjectClass {
+class OtLoopClass : public OtHttpClass {
 public:
+	// constructor
+	OtLoopClass() {
+		uv_loop = uv_default_loop();
+	}
+
+	// run loop
+	void run() {
+		uv_run(uv_loop, UV_RUN_DEFAULT);
+	}
+
+	uv_loop_t* getLoop() {
+		return uv_loop;
+	}
+
 	// get type definition
 	static OtType getMeta() {
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtNetClass>("Net", OtObjectClass::getMeta());
+			type = OtTypeClass::create<OtLoopClass>("Loop", OtHttpClass::getMeta());
+
+			type->set("run", OtFunctionCreate(&OtLoopClass::run));
 		}
 
 		return type;
 	}
+
+	// create a new object
+	static OtLoop create() {
+		OtLoop loop = std::make_shared<OtLoopClass>();
+		loop->setType(getMeta());
+		return loop;
+	}
+
+private:
+	uv_loop_t* uv_loop;
 };

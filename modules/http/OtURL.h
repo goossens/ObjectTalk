@@ -26,7 +26,7 @@ typedef std::shared_ptr<OtURLClass> OtURL;
 //	OtURLClass
 //
 
-class OtURLClass : public OtNetClass
+class OtURLClass : public OtHttpClass
 {
 public:
 	// constructors
@@ -168,7 +168,7 @@ public:
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtURLClass>("Path", OtNetClass::getMeta());
+			type = OtTypeClass::create<OtURLClass>("Path", OtHttpClass::getMeta());
 			type->set("__init__", OtFunctionClass::create(&OtURLClass::init));
 
 			type->set("url", OtFunctionCreate(&OtURLClass::getURL));

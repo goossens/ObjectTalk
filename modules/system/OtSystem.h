@@ -21,11 +21,6 @@
 class OtSystemClass;
 typedef std::shared_ptr<OtSystemClass> OtSystem;
 
-
-//
-//	OtSystemClass
-//
-
 class OtSystemClass : public OtObjectClass {
 public:
 	// get type definition

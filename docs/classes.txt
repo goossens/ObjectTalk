@@ -56,10 +56,11 @@ Object
 	Net
 		URI
 		Loop
-		HttpRequest
-		HttpResponse
 		HttpRouter
-			HTTP
+			HttpServer
 
 	Internal
+		HttpRequest
+		HttpResponse
 		HttpNext
+		HttpNotFound

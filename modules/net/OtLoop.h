@@ -14,20 +14,12 @@
 //	limitations under the License.
 
 
-#include <uv.h>
-
-
 //
 //	OtLoop
 //
 
 class OtLoopClass;
 typedef std::shared_ptr<OtLoopClass> OtLoop;
-
-
-//
-//	OtLoopClass
-//
 
 class OtLoopClass : public OtNetClass {
 public:

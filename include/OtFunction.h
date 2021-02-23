@@ -21,11 +21,6 @@
 class OtFunctionClass;
 typedef std::shared_ptr<OtFunctionClass> OtFunction;
 
-
-//
-//	OtFunctionClass
-//
-
 class OtFunctionClass : public OtPrimitiveClass {
 public:
 	// constructors
@@ -58,11 +53,20 @@ public:
 	}
 
 	// create a new function
-	static OtObject create(size_t c, OtExecutable e)  { return std::make_shared<OtFunctionClass>(c, e)->setType(getMeta()); }
-	static OtObject create(OtExecutable e)	{ return std::make_shared<OtFunctionClass>(SIZE_MAX, e)->setType(getMeta()); }
+	static OtFunction create(size_t c, OtExecutable e) {
+		OtFunction func = std::make_shared<OtFunctionClass>(c, e);
+		func->setType(getMeta());
+		return func;
+	}
+
+	static OtFunction create(OtExecutable e) {
+		OtFunction func = std::make_shared<OtFunctionClass>(SIZE_MAX, e);
+		func->setType(getMeta());
+		return func;
+	}
 
 	template<typename Class>
-	static OtObject create(OtObject (Class::*function)(OtObject, size_t, OtObject*)) {
+	static OtFunction create(OtObject (Class::*function)(OtObject, size_t, OtObject*)) {
 		return create(SIZE_MAX, [function] (OtObject context, size_t c, OtObject* p)->OtObject {
 			return (*OtTypeClass::cast<Class>(p[0]).*function)(context, c - 1, p + 1);
 		});

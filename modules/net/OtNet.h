@@ -21,11 +21,6 @@
 class OtNetClass;
 typedef std::shared_ptr<OtNetClass> OtNet;
 
-
-//
-//	OtNetClass
-//
-
 class OtNetClass : public OtObjectClass {
 public:
 	// get type definition

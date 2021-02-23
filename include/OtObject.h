@@ -15,7 +15,7 @@
 
 
 //
-//	OtObjectClass
+//	OtObject
 //
 
 class OtObjectClass : public std::enable_shared_from_this<OtObjectClass> {
@@ -120,7 +120,9 @@ public:
 	static OtType getMeta();
 
 	// create a new object
-	static OtObject create() { return std::make_shared<OtObjectClass>()->setType(getMeta()); }
+	static OtObject create() {
+		return std::make_shared<OtObjectClass>()->setType(getMeta());
+	}
 
 protected:
 	// object type

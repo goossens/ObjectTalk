@@ -46,7 +46,11 @@ public:
 	}
 
 private:
-	//	OtCodeFunctionClass
+	//	OtCodeFunction
+	class OtCodeFunctionClass;
+	typedef std::shared_ptr<OtCodeFunctionClass> OtCodeFunction;
+
+
 	class OtCodeFunctionClass : public OtInternalClass {
 	public:
 		// constructor
@@ -87,8 +91,10 @@ private:
 		}
 
 		// create a new object
-		static OtObject create(size_t count, const std::vector<std::string>& names, OtCode code) {
-			return std::make_shared<OtCodeFunctionClass>(count, names, code)->setType(getMeta());
+		static OtCodeFunction create(size_t count, const std::vector<std::string>& names, OtCode code) {
+			OtCodeFunction func = std::make_shared<OtCodeFunctionClass>(count, names, code);
+			func->setType(getMeta());
+			return func;
 		}
 
 	private:
@@ -133,6 +139,10 @@ private:
 		code->push(OtCodeFunctionClass::create(count, names, functionCode));
 	}
 
+	// context reference
+	class OtContextReferenceClass;
+	typedef std::shared_ptr<OtContextReferenceClass> OtContextReference;
+
 	class OtContextReferenceClass : public OtInternalClass {
 	public:
 		OtContextReferenceClass() = default;
@@ -155,7 +165,11 @@ private:
 		}
 
 		// create a new object
-		static OtObject create(const std::string& n) { return std::make_shared<OtContextReferenceClass>(n)->setType(getMeta()); }
+		static OtContextReference create(const std::string& n) {
+			OtContextReference reference = std::make_shared<OtContextReferenceClass>(n);
+			reference->setType(getMeta());
+			return reference;
+		}
 
 	private:
 		std::string member;

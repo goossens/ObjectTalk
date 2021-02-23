@@ -21,11 +21,6 @@
 class OtIntegerClass;
 typedef std::shared_ptr<OtIntegerClass> OtInteger;
 
-
-//
-//	OtInteger
-//
-
 class OtIntegerClass : public OtPrimitiveClass {
 public:
 	// constructors

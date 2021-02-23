@@ -21,11 +21,6 @@
 class OtStringClass;
 typedef std::shared_ptr<OtStringClass> OtString;
 
-
-//
-//	OtStringClass
-//
-
 class OtStringClass : public OtPrimitiveClass {
 public:
 	// constructors
@@ -60,6 +55,8 @@ public:
 	std::string mid(size_t start, size_t count) { return value.substr(start, count); }
 
 	size_t find(const std::string& sub) { std::string::size_type p = value.find(sub); return p == std::string::npos ? -1 : (size_t) p; }
+	bool startsWith(const std::string& sub) { return OtTextStartsWith(value, sub); }
+	bool contains(const std::string& sub) { return OtTextContains(value, sub); }
 
 	std::string trim() { return OtTextTrim(value); }
 	std::string ltrim() { return OtTextLeftTrim(value); }
@@ -92,6 +89,8 @@ public:
 			type->set("mid", OtFunctionCreate(&OtStringClass::mid));
 
 			type->set("find", OtFunctionCreate(&OtStringClass::find));
+			type->set("startsWith", OtFunctionCreate(&OtStringClass::startsWith));
+			type->set("contains", OtFunctionCreate(&OtStringClass::contains));
 
 			type->set("trim", OtFunctionCreate(&OtStringClass::trim));
 			type->set("ltrim", OtFunctionCreate(&OtStringClass::ltrim));
@@ -106,7 +105,7 @@ public:
 
 	// create a new object
 	static OtString create(const std::string& value) {
-		OtString string = std::make_shared<OtStringClass>(value);
+		auto string = std::make_shared<OtStringClass>(value);
 		string->setType(getMeta());
 		return string;
 	}

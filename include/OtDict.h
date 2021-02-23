@@ -21,11 +21,6 @@
 class OtDictClass;
 typedef std::shared_ptr<OtDictClass> OtDict;
 
-
-//
-//	OtDictClass
-//
-
 class OtDictClass : public OtCollectionClass, public std::map<std::string, OtObject> {
 public:
 	// convert dictionary to string
@@ -60,6 +55,9 @@ public:
 	}
 
 	// support index operator
+	class OtDictReferenceClass;
+	typedef std::shared_ptr<OtDictReferenceClass> OtDictReference;
+
 	class OtDictReferenceClass : public OtInternalClass {
 	public:
 		// constructors
@@ -84,8 +82,10 @@ public:
 		}
 
 		// create a new object
-		static OtObject create(OtDict a, const std::string& i) {
-			return std::make_shared<OtDictReferenceClass>(a, i)->setType(getMeta());
+		static OtDictReference create(OtDict a, const std::string& i) {
+			OtDictReference reference = std::make_shared<OtDictReferenceClass>(a, i);
+			reference->setType(getMeta());
+			return reference;
 		}
 
 	private:

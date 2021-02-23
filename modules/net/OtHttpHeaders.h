@@ -20,14 +20,47 @@
 
 class OtHttpHeadersComparator {
 public:
-    bool operator()(const std::string& a, const std::string& b) const {
-		return ::strcasecmp(a.c_str(), b.c_str()) < 0;
+    bool operator()(const std::string& s1, const std::string& s2) const {
+		return std::lexicographical_compare(
+			s1.begin(),
+			s1.end(),
+			s2.begin(),
+			s2.end(),
+			[](unsigned char c1, unsigned char c2) {
+				return ::tolower(c1) < ::tolower(c2);
+			});
     }
 };
 
-class OtHttpHeaders : public std::map<std::string, std::string, OtHttpHeadersComparator> {
+class OtHttpHeaders : public std::multimap<std::string, std::string, OtHttpHeadersComparator> {
 public:
 	bool has(const std::string& name) {
 		return find(name) != end();
+	}
+
+	const std::string get(const std::string& header) {
+		if (has(header)) {
+			auto range = equal_range(header);
+
+			if (range.first == range.second) {
+				return range.first->second;
+
+			} else {
+				std::string result;
+
+				for (auto i = range.first; i != range.second; i++) {
+					if (i != range.first) {
+						result.append("; ");
+					}
+
+					result.append(i->second);
+				}
+
+				return result;
+			}
+
+		} else {
+			return "";
+		}
 	}
 };

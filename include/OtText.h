@@ -18,6 +18,14 @@
 //	Text manipulation functions
 //
 
+inline bool OtTextStartsWith(const std::string& text, const std::string& part) {
+	return text.rfind(part, 0) == 0;
+}
+
+inline bool OtTextContains(const std::string& text, const std::string& part) {
+	return text.find(part) != std::string::npos;
+}
+
 inline std::string OtTextLeftTrim(std::string text, const std::string& chars ="\t\n\v\f\r ") {
 	text.erase(0, text.find_first_not_of(chars));
 	return text;
@@ -29,7 +37,9 @@ inline std::string OtTextRightTrim(std::string text, const std::string& chars ="
 }
 
 inline std::string OtTextTrim(std::string text, const std::string& chars ="\t\n\v\f\r ") {
-	return OtTextLeftTrim(OtTextRightTrim(text, chars), chars);
+	text.erase(0, text.find_first_not_of(chars));
+	text.erase(text.find_last_not_of(chars) + 1);
+	return text;
 }
 
 inline std::string OtTextCompress(const std::string& text, const std::string& chars ="\t\n\v\f\r ") {
@@ -54,6 +64,40 @@ void OtTextSplit(const std::string& text, Container& container, char delimeter =
 	}
 }
 
+template <class Function>
+void OtTextSplitIterator(const char* begin, const char* end, char character, Function function) {
+	auto i = begin;
+	auto start = begin;
+
+	while (i < end) {
+		if (*i == character) {
+			function(start, i);
+			start = i + 1;
+		}
+
+		i++;
+	}
+
+	if (start < end) {
+		function(start, end);
+	}
+}
+
+template <class Function>
+void OtTextSplitTrimIterator(const char* begin, const char* end, char character, Function function) {
+	OtTextSplitIterator(begin, end, character, [&](const char *b, const char *e) {
+		while (isspace(*b) && b < e) {
+			b++;
+		}
+
+		while (isspace(*(e - 1)) && e > b) {
+			e--;
+		}
+
+		function(b, e);
+	});
+}
+
 inline bool OtTextCaseInsensitiveEqual(const std::string& s1, const std::string& s2) {
 	return s1.size() == s2.size() &&
 		std::equal(s1.begin(), s1.end(), s2.begin(), [](char a, char b) {
@@ -70,11 +114,8 @@ inline std::string OtTextEncodeURL(const std::string& text) {
 	std::ostringstream o;
 
 	for (auto c = text.cbegin(); c != text.cend(); c++) {
-		if ((*c >='a' && *c <='z') || (*c >='A' && *c <='Z') || (*c >='0' && *c <='9')) {
+		if (isalnum(*c) || *c == '-' || *c == '_' || *c == '.' || *c == '~') {
 			o << *c;
-
-		} else if (*c ==' ') {
-			o <<'+';
 
 		} else {
 			o <<'%' << std::hex << std::setw(2) << std::setfill('0') << static_cast<unsigned int>(*c);

@@ -21,18 +21,18 @@
 class OtHttpResponseClass;
 typedef std::shared_ptr<OtHttpResponseClass> OtHttpResponse;
 
-
-//
-//	OtHttpResponseClass
-//
-
-class OtHttpResponseClass : public OtNetClass {
+class OtHttpResponseClass : public OtInternalClass {
 public:
+	// specify the output stream
+	void setStream(uv_stream_t* s) {
+		clientStream = s;
+	}
+
 	// clear all response fields
 	void clear() {
+		state = START;
 		setStatus(404);
 		headers.clear();
-		body.clear();
 	}
 
 	// set response status
@@ -118,7 +118,11 @@ public:
 
 	// add response header
 	OtObject setHeader(const std::string& name, const std::string& value) {
-		headers[name] = value;
+		if (state != START) {
+			OT_EXCEPT("HttpResponse can't send headers after body transmission has started", false);
+		}
+
+		headers.emplace(name, value);
 		return getSharedPtr();
 	}
 
@@ -127,28 +131,10 @@ public:
 		return headers.has(header);
  	}
 
-	// set result body
-	OtObject text(const std::string& text) {
-		body = text;
-		headers["Content-Type"] = "text/plain";
-		setStatus(200);
-		return getSharedPtr();
-	}
+	// send headers to stream
+	void sendHeaders() {
+		std::stringstream stream;
 
-	OtObject json(OtObject object) {
-		body = object->repr();
-		headers["Content-Type"] = "application/json";
-		setStatus(200);
-		return getSharedPtr();
-	}
-
-	// get size of body
-	size_t getBodySize() {
-		return body.size();
-	}
-
-	// put response in stream
-	void toStream(std::stringstream& stream) {
 		// put status and headers in stream
 		stream << "HTTP/1.1 " << status << " " << explanation << "\r\n";
 
@@ -157,7 +143,145 @@ public:
 		}
 
 		stream << "\r\n";
-		stream << body;
+
+		// send response
+		std::string text = stream.str();
+		uv_buf_t buffer = uv_buf_init(strndup((char*) text.c_str(), text.size()), text.size());
+		uv_write_t* uv_write_req = new uv_write_t;
+		uv_write_req->data = buffer.base;
+
+		uv_write(uv_write_req, clientStream, &buffer, 1, [](uv_write_t* req, int status) {
+			delete (char*) (req->data);
+			delete req;
+		});
+
+		status = HEADERS_SENT;
+	}
+
+	// write string as part of body
+	OtObject write(const char* text, size_t size) {
+		if (state == START) {
+			sendHeaders();
+		}
+
+		// send body
+		uv_buf_t buffer = uv_buf_init(strndup(text, size), size);
+		uv_write_t* uv_write_req = new uv_write_t;
+		uv_write_req->data = buffer.base;
+
+		uv_write(uv_write_req, clientStream, &buffer, 1, [](uv_write_t* req, int status) {
+			delete (char*) (req->data);
+			delete req;
+		});
+
+		return getSharedPtr();
+	}
+
+	OtObject write(const std::string& text) {
+		return write(text.c_str(), text.size());
+	}
+
+	// end the response
+	OtObject end() {
+		if (state == START) {
+			headers.emplace("Content-Type", "text/plain");
+			headers.emplace("Content-Length", std::to_string(explanation.size()));
+			write(explanation);
+		}
+
+		status = COMPLETE;
+		return getSharedPtr();
+	}
+
+	// send body
+	OtObject send(const std::string& text) {
+		if (!hasHeader("Content-Type")) {
+			headers.emplace("Content-Type", "text/plain");
+		}
+
+		headers.emplace("Content-Length", std::to_string(text.size()));
+		write(text);
+		end();
+
+		return getSharedPtr();
+	};
+
+	// send result as jSON
+	OtObject json(OtObject object) {
+		setStatus(200);
+		std::string text = object->repr();
+		headers.emplace("Content-Type", "application/json");
+		headers.emplace("Content-Length", std::to_string(text.size()));
+		write(text);
+		end();
+
+		return getSharedPtr();
+	}
+
+	// send a file as the response
+	OtObject sendfile(const std::string& name) {
+		std::filesystem::file_status status = std::filesystem::status(name);
+
+		// handle file not found error
+		if (!std::filesystem::is_regular_file(status)) {
+			setStatus(404);
+			end();
+
+		} else {
+			// set status
+			setStatus(200);
+
+			// set headers
+			std::filesystem::path path(name);
+			headers.emplace("Content-Length", std::to_string(std::filesystem::file_size(name)));
+			headers.emplace("Content-Type", OtMimeTypeGet(path.extension().string().substr(1, std::string::npos)));
+
+			// create pipe to file
+			uv_pipe_init(uv_default_loop(), &fileStream, 0);
+			auto fd = uv_fs_open(uv_default_loop(), &file_req, name.c_str(), O_RDONLY, 0, nullptr);
+			uv_pipe_open(&fileStream, fd);
+
+			fileStream.data = this;
+
+			// allocate memory and attempt to read file
+			auto status = uv_read_start(
+				(uv_stream_t*) &fileStream,
+				[](uv_handle_t* handle, size_t size, uv_buf_t* buffer) {
+					*buffer = uv_buf_init((char*) malloc(size), size);
+				},
+				[](uv_stream_t* stream, ssize_t nread, const uv_buf_t* buffer) {
+					((OtHttpResponseClass*)(stream->data))->onFileRead(buffer, nread);
+				});
+
+			UV_CHECK_ERROR("uv_read_start", status);
+		}
+
+		return getSharedPtr();
+	}
+
+	// download user file
+	OtObject download(const std::string& name) {
+		std::filesystem::path path(name);
+		headers.emplace("Content-Disposition", "attachment; filename=" + path.filename().string());
+		return 	sendfile(name);
+	}
+
+	// handle file read events
+	void onFileRead(const uv_buf_t* buffer, ssize_t nread) {
+		if (nread > 0) {
+			// write file to socket
+			write(buffer->base, nread);
+
+		} else if (nread == UV_EOF) {
+			uv_close((uv_handle_t*) &fileStream, nullptr);
+			end();
+
+		} else {
+			UV_CHECK_ERROR("uv_read_start", nread);
+		}
+
+		// free buffer data
+		free(buffer->base);
 	}
 
 	// get type definition
@@ -165,11 +289,14 @@ public:
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtHttpResponseClass>("HttpResponse", OtNetClass::getMeta());
+			type = OtTypeClass::create<OtHttpResponseClass>("HttpResponse", OtInternalClass::getMeta());
 			type->set("setStatus", OtFunctionCreate(&OtHttpResponseClass::setStatus));
 			type->set("setHeader", OtFunctionCreate(&OtHttpResponseClass::setHeader));
 			type->set("hasHeader", OtFunctionCreate(&OtHttpResponseClass::hasHeader));
-			type->set("text", OtFunctionCreate(&OtHttpResponseClass::text));
+			type->set("end", OtFunctionCreate(&OtHttpResponseClass::end));
+			type->set("send", OtFunctionCreate(&OtHttpResponseClass::send));
+			type->set("sendfile", OtFunctionCreate(&OtHttpResponseClass::sendfile));
+			type->set("download", OtFunctionCreate(&OtHttpResponseClass::download));
 			type->set("json", OtFunctionCreate(&OtHttpResponseClass::json));
 		}
 
@@ -184,8 +311,18 @@ public:
 	}
 
 private:
+	enum OtResponseState {
+		START = 1,
+		HEADERS_SENT,
+		COMPLETE
+	};
+
+	OtResponseState state;
 	int status;
 	std::string explanation;
 	OtHttpHeaders headers;
-	std::string body;
+
+	uv_stream_t* clientStream;
+	uv_pipe_t fileStream;
+	uv_fs_t file_req;
 };

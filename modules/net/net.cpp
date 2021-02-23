@@ -18,16 +18,24 @@
 //	Include files
 //
 
+#include <uv.h>
+#include "llhttp/llhttp.h"
+#include "multipart/multipartparser.h"
+
+#define UV_CHECK_ERROR(action, status) if (status < 0) OT_EXCEPT("libuv error in %s: %s", action, uv_strerror(status))
+
 #include "Ot.h"
 
 #include "OtNet.h"
+#include "OtMimeType.h"
 #include "OtURL.h"
 #include "OtLoop.h"
 #include "OtHttpHeaders.h"
 #include "OtHttpRequest.h"
 #include "OtHttpResponse.h"
 #include "OtHttpRouter.h"
-#include "OtHTTP.h"
+#include "OtHttpServer.h"
+
 
 //
 //	Network module
@@ -37,8 +45,6 @@ extern "C" void init(OtObject context) {
 	context->set("Net", OtClassClass::create(OtNetClass::getMeta()));
 	context->set("URL", OtClassClass::create(OtURLClass::getMeta()));
 	context->set("Loop", OtClassClass::create(OtLoopClass::getMeta()));
-	context->set("HTTPRequest", OtClassClass::create(OtHttpRequestClass::getMeta()));
-	context->set("HTTPResponse", OtClassClass::create(OtHttpResponseClass::getMeta()));
-	context->set("HTTPRouter", OtClassClass::create(OtHttpRouterClass::getMeta()));
-	context->set("HTTP", OtClassClass::create(OtHTTPClass::getMeta()));
+	context->set("HttpRouter", OtClassClass::create(OtHttpRouterClass::getMeta()));
+	context->set("HttpServer", OtClassClass::create(OtHttpServerClass::getMeta()));
 }

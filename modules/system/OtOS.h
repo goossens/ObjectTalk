@@ -14,20 +14,12 @@
 //	limitations under the License.
 
 
-#include <uv.h>
-
-
 //
 //	OtOS
 //
 
 class OtOSClass;
 typedef std::shared_ptr<OtOSClass> OtOS;
-
-
-//
-//	OtOSClass
-//
 
 class OtOSClass : public OtSystemClass {
 public:

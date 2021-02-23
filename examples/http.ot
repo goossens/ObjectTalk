@@ -15,9 +15,12 @@
 
 import("net")
 
-class MyHttpServer : HTTP {
+class MyHttpServer : HttpServer {
 	function __init__(this) {
-		this.loop = Loop()
+		this.use(function(req, res, next) {
+			res.setHeader("hello", "world")
+			next()
+		})
 
 		this.get("/info", this.info)
 
@@ -26,26 +29,34 @@ class MyHttpServer : HTTP {
 				"id": 12,
 				"name": "john",
 				"amount": 12.3,
-				"data" : [ 2, 3, 4, 5]
+				"data" : [2, 3, 4, 5]
 			})
 		})
 
 		this.get("/info3", function(req, res, next) {
+			res.json(req.getHeaders());
+		})
+
+		this.get("/info4", function(req, res, next) {
 			next()
+		})
+
+		this.get("/debug", function(req, res, next) {
+			res.send(req.debug())
+		})
+
+		this.get("/file", function(req, res, next) {
+			res.sendfile(__DIR__ + "/test.txt")
 		})
 	}
 
 	function info(this, req, res, next) {
-		res.text("info")
-	}
-
-	function run(this) {
-		this.listen(this.loop, "0.0.0.0", 80)
-		this.loop.run();
+		res.send("info")
 	}
 }
 
 print()
 print("Running HTTP server")
 
-MyHttpServer().run()
+MyHttpServer().listen("0.0.0.0", 80)
+Loop().run();

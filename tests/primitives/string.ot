@@ -23,6 +23,10 @@ assert('"Hello".right(2) == "lo"')
 assert('"Hello".mid(2, 2) == "ll"')
 
 assert('"Hello World".find("World") == 6')
+assert('"Hello World".startsWith("Hello") == true')
+assert('"Hello World".startsWith("World") == false')
+assert('"Hello World".contains("World") == true')
+assert('"Hello World".contains("world") == false')
 
 assert('"   Hello World   ".trim() == "Hello World"')
 assert('"   Hello World   ".ltrim() == "Hello World   "')

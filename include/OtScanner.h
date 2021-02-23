@@ -178,7 +178,7 @@ public:
 		// process all characters
 		for (auto i = text.begin(); i < text.end(); i++) {
 			// determine next state
-			size_t next = stateTable[state].transitions[(int) *i];
+			auto next = stateTable[state].transitions[(int) *i];
 
 			// add a new state if required
 			if (next == OtScannerState::noTransition) {
@@ -278,7 +278,7 @@ public:
 
 		} else if (std::isdigit(text[position]) || (text[position] =='-' && position < size && std::isdigit(text[position + 1]))) {
 			// handle numerical values
-			size_t start = position;
+			auto start = position;
 
 			if (text[position] =='-') {
 				position++;
@@ -313,8 +313,8 @@ public:
 
 		} else if (text[position] =='"' || text[position] =='\'') {
 			// handle strings
-			char terminator = text[position++];
-			size_t start = position;
+			auto terminator = text[position++];
+			auto start = position;
 
 			while (position < size && text[position] != terminator) {
 				if (text[position] =='\n') {
@@ -385,24 +385,24 @@ public:
 	// throw an exection
 	void error(std::string message) {
 		// find start of line
-		size_t start = tokenStart;
+		auto start = tokenStart;
 
 		while (start && text[start - 1] !='\n') {
 			start--;
 		}
 
 		// find end of line
-		size_t end = start;
+		auto end = start;
 
 		while (start < size && text[end] !='\n') {
 			end++;
 		}
 
 		// extract line and create marker
-		std::string line = text.substr(start, end - start);
+		auto line = text.substr(start, end - start);
 		std::string marker;
 
-		for (size_t c = 0; c < tokenStart - start; c++) {
+		for (auto c = 0; c < tokenStart - start; c++) {
 			if (std::isspace(line[c])) {
 				marker += line[c];
 

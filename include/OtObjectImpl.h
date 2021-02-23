@@ -15,8 +15,11 @@
 
 
 //
-//	OtBoundFunctionClass
+//	OtBoundFunction
 //
+
+class OtBoundFunctionClass;
+typedef std::shared_ptr<OtBoundFunctionClass> OtBoundFunction;
 
 class OtBoundFunctionClass : public OtInternalClass {
 public:
@@ -49,7 +52,11 @@ public:
 	}
 
 	// create a new object
-	static OtObject create(OtObject o, OtObject f) { return std::make_shared<OtBoundFunctionClass>(o, f)->setType(getMeta()); }
+	static OtBoundFunction create(OtObject o, OtObject f) {
+		OtBoundFunction bound = std::make_shared<OtBoundFunctionClass>(o, f);
+		bound->setType(getMeta());
+		return bound;
+	}
 
 private:
 	OtObject object;
@@ -58,8 +65,11 @@ private:
 
 
 //
-//	OtMemberReferenceClass
+//	OtMemberReference
 //
+
+class OtMemberReferenceClass;
+typedef std::shared_ptr<OtMemberReferenceClass> OtMemberReference;
 
 class OtMemberReferenceClass : public OtInternalClass {
 public:
@@ -95,7 +105,11 @@ public:
 	}
 
 	// create a new object
-	static OtObject create(OtObject o, const std::string& m) { return std::make_shared<OtMemberReferenceClass>(o, m)->setType(getMeta()); }
+	static OtMemberReference create(OtObject o, const std::string& m) {
+		OtMemberReference member = std::make_shared<OtMemberReferenceClass>(o, m);
+		member->setType(getMeta());
+		return member;
+	}
 
 private:
 	OtObject object;

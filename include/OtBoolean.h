@@ -21,11 +21,6 @@
 class OtBooleanClass;
 typedef std::shared_ptr<OtBooleanClass> OtBoolean;
 
-
-//
-//	OtBooleanClass
-//
-
 class OtBooleanClass : public OtPrimitiveClass {
 public:
 	// constructors

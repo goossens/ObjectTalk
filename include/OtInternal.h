@@ -21,11 +21,6 @@
 class OtInternalClass;
 typedef std::shared_ptr<OtInternalClass> OtInternal;
 
-
-//
-//	OtInternalClass
-//
-
 class OtInternalClass : public OtObjectClass {
 public:
 	// get type definition

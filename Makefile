@@ -10,6 +10,9 @@ debug:
 test: debug
 	cd debug && make test
 
+http: debug
+	gdb --args ./debug/bin/ot examples/http.ot
+
 release:
 	cmake -Brelease -DCMAKE_BUILD_TYPE=Release
 	cd release && make
@@ -18,14 +21,14 @@ install: release
 	cd release && make install/strip
 
 xcode:
-	cmake -Bdebug -GXcode
+	cmake -Bxcode -GXcode
 
 cleanup:
 	perl -i -pe 's/\s+\n/\n/' $(SRC) $(INC)
 	ls $(SRC) $(INC) | xargs -o -n 1 vim -c 'set ts=4|set noet|%retab!|wq'
 
 clean:
-	rm -rf debug release
+	rm -rf debug release xcode
 
 docker:
 	docker build -t ot .

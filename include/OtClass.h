@@ -21,11 +21,6 @@
 class OtClassClass;
 typedef std::shared_ptr<OtClassClass> OtClass;
 
-
-//
-//	OtClassClass
-//
-
 class OtClassClass : public OtInternalClass {
 public:
 	// constructors

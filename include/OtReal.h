@@ -21,11 +21,6 @@
 class OtRealClass;
 typedef std::shared_ptr<OtRealClass> OtReal;
 
-
-//
-//	OtRealClass
-//
-
 class OtRealClass : public OtPrimitiveClass {
 public:
 	// constructors

@@ -18,6 +18,8 @@
 //	Include files
 //
 
+#include <uv.h>
+
 #include "Ot.h"
 
 #include "OtSystem.h"

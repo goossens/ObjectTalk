@@ -21,11 +21,6 @@
 class OtCollectionClass;
 typedef std::shared_ptr<OtCollectionClass> OtCollection;
 
-
-//
-//	OtCollectionClass
-//
-
 class OtCollectionClass : public OtObjectClass {
 public:
 	// get type definition

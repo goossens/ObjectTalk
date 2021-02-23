@@ -21,11 +21,6 @@
 class OtArrayClass;
 typedef std::shared_ptr<OtArrayClass> OtArray;
 
-
-//
-//	OtArrayClass
-//
-
 class OtArrayClass : public OtCollectionClass, public std::vector<OtObject> {
 public:
 	// convert array to string
@@ -52,7 +47,7 @@ public:
 	OtObject init(OtObject, size_t count, OtObject* parameters) {
 		clear();
 
-		for (size_t c = 0; c < count; c++) {
+		for (auto c = 0; c < count; c++) {
 			push_back(parameters[c]);
 		}
 
@@ -60,6 +55,9 @@ public:
 	}
 
 	// support index operations
+	class OtArrayReferenceClass;
+	typedef std::shared_ptr<OtArrayReferenceClass> OtArrayReference;
+
 	class OtArrayReferenceClass : public OtInternalClass {
 	public:
 		// constructors
@@ -84,8 +82,10 @@ public:
 		}
 
 		// create a new object
-		static OtObject create(OtArray a, size_t i) {
-			return std::make_shared<OtArrayReferenceClass>(a, i)->setType(getMeta());
+		static OtArrayReference create(OtArray a, size_t i) {
+			OtArrayReference reference = std::make_shared<OtArrayReferenceClass>(a, i);
+			reference->setType(getMeta());
+			return reference;
 		}
 
 	private:
@@ -99,6 +99,9 @@ public:
 	}
 
 	// support iterator
+	class OtArrayIteratorClass;
+	typedef std::shared_ptr<OtArrayIteratorClass> OtArrayIterator;
+
 	class OtArrayIteratorClass : public OtInternalClass {
 	public:
 		// constructors
@@ -123,8 +126,10 @@ public:
 		}
 
 		// create a new object
-		static OtObject create(OtArray a) {
-			return std::make_shared<OtArrayIteratorClass>(a)->setType(getMeta());
+		static OtArrayIterator create(OtArray a) {
+			OtArrayIterator iterator = std::make_shared<OtArrayIteratorClass>(a);
+			iterator->setType(getMeta());
+			return iterator;
 		}
 
 	private:
@@ -169,7 +174,7 @@ public:
 	long find(OtObject value) {
 		long result = -1;
 
-		for (size_t i = 0; i < size() && result == -1; i++) {
+		for (auto i = 0; i < size() && result == -1; i++) {
 			if (value->method("__eq__", OtObjectClass::create(), 1, &(operator[] (i)))->operator bool()) {
 				result = i;
 			}
@@ -266,7 +271,7 @@ public:
 	static OtArray create(size_t count, OtObject* values) {
 		OtArray array = create();
 
-		for (size_t c = 0; c < count; c++) {
+		for (auto c = 0; c < count; c++) {
 			array->push_back(values[c]);
 		}
 

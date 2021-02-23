@@ -21,11 +21,6 @@
 class OtFSClass;
 typedef std::shared_ptr<OtFSClass> OtFS;
 
-
-//
-//	OtFSClass
-//
-
 class OtFSClass : public OtSystemClass {
 public:
 	// get temporary directory

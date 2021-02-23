@@ -21,11 +21,6 @@
 class OtPathClass;
 typedef std::shared_ptr<OtPathClass> OtPath;
 
-
-//
-//	OtPathClass
-//
-
 class OtPathClass : public OtSystemClass {
 public:
 	// constructors
@@ -84,6 +79,9 @@ public:
 	OtObject relative(OtObject name) { return create(path.lexically_relative(name->operator std::string())); }
 
 	// support iterator
+	class OtPathIteratorClass;
+	typedef std::shared_ptr<OtPathIteratorClass> OtPathIterator;
+
 	class OtPathIteratorClass : public OtInternalClass {
 	public:
 		OtPathIteratorClass() = default;
@@ -106,8 +104,10 @@ public:
 		}
 
 		// create a new object
-		static OtObject create(OtPath path) {
-			return std::make_shared<OtPathIteratorClass>(path)->setType(getMeta());
+		static OtPathIterator create(OtPath path) {
+			OtPathIterator iterator = std::make_shared<OtPathIteratorClass>(path);
+			iterator->setType(getMeta());
+			return iterator;
 		}
 
 	private:

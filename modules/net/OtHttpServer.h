@@ -14,34 +14,19 @@
 //	limitations under the License.
 
 
-#include "llhttp/llhttp.h"
-
-
-//
-//	Defines
-//
-
-#define UV_CHECK_ERROR(action, status) if (status) OT_EXCEPT("libuv error in %s: %s", action, uv_strerror(status))
-
-
-//
+///
 //	OtHTTP
 //
 
-class OtHTTPClass;
-typedef std::shared_ptr<OtHTTPClass> OtHTTP;
+class OtHttpServerClass;
+typedef std::shared_ptr<OtHttpServerClass> OtHttpServer;
 
-
-//
-//	OtHTTPClass
-//
-
-class OtHTTPClass : public OtHttpRouterClass {
+class OtHttpServerClass : public OtHttpRouterClass {
 private:
 	// class to handle sessions
 	class OtHttpSession {
 	public:
-		OtHttpSession(OtHTTPClass* h) : http(h) {
+		OtHttpSession(OtHttpServerClass* s) : server(s) {
 			// setup request/response objects
 			request = OtHttpRequestClass::create();
 			response = OtHttpResponseClass::create();
@@ -51,104 +36,65 @@ private:
 
 			// callback for start of message
 			settings.on_message_begin = [](llhttp_t* parser) -> int {
-				OtHttpSession* session = (OtHttpSession*)(parser->data);
-				session->request->clear();
-				session->response->clear();
+				((OtHttpSession*)(parser->data))->onBegin();
 				return HPE_OK;
 			};
 
-			// callback for parsed path
+			// callback for request URL
 			settings.on_url = [](llhttp_t* parser, const char *at, size_t length) -> int {
-				((OtHttpSession*)(parser->data))->request->setPath(std::string(at, length));
+				((OtHttpSession*)(parser->data))->request->onURL(at, length);
 				return HPE_OK;
 			};
 
 			// callback for header name
 			settings.on_header_field = [](llhttp_t* parser, const char *at, size_t length) -> int {
-				((OtHttpSession*)(parser->data))->header = std::string(at, length);
+				((OtHttpSession*)(parser->data))->request->onHeaderField(at, length);
 				return HPE_OK;
 			};
 
 			// callback for header value
 			settings.on_header_value = [](llhttp_t* parser, const char *at, size_t length) -> int {
-				OtHttpSession* session = (OtHttpSession*)(parser->data);
-				session->request->setHeader(session->header, std::string(at, length));
+				((OtHttpSession*)(parser->data))->request->onHeaderValue(at, length);
 				return HPE_OK;
 			};
 
 			// callback for complete header state
 			settings.on_headers_complete = [](llhttp_t* parser) -> int {
-				OtHttpSession* session = (OtHttpSession*)(parser->data);
-				session->request->setMethod(std::string(llhttp_method_name((llhttp_method_t) parser->method)));
-				session->request->setVersion(OtFormat("HTTP/%d.%d", parser->http_major, parser->http_minor));
+				((OtHttpSession*)(parser->data))->request->onHeadersComplete(
+					std::string(llhttp_method_name((llhttp_method_t) parser->method)),
+					OtFormat("HTTP/%d.%d", parser->http_major, parser->http_minor));
+
 				return HPE_OK;
 			};
 
 			// callback for body content
 			settings.on_body = [](llhttp_t* parser, const char *at, size_t length) -> int {
-				((OtHttpSession*)(parser->data))->request->appendBody(at, length);
+				((OtHttpSession*)(parser->data))->request->onBody(at, length);
 				return HPE_OK;
 			};
 
 			// callback for complete messages
 			settings.on_message_complete = [](llhttp_t* parser) -> int {
-				// dispatch request
-				OtHttpSession* session = (OtHttpSession*)(parser->data);
-				session->http->dispatch(session->request, session->response);
-
-				// add required headers
-				if (session->request->headerIs("Connection","close")) {
-					session->response->setHeader("Connection","close");
-
-				} else {
-					session->response->setHeader("Keep-Alive","timeout=5, max=5");
-				}
-
-				if (!session->response->hasHeader("Content-Type")) {
-					session->response->setHeader("Content-Type","text/plain");
-				}
-
-				if (!session->response->hasHeader("Content-Length")) {
-					session->response->setHeader("Content-Length", std::to_string(session->response->getBodySize()));
-				}
-
-				// convert response to stream
-				std::stringstream* stream = new std::stringstream();
-				session->response->toStream(*stream);
-
-				// send response
-				uv_write_t* uv_write_req = new uv_write_t;
-				uv_write_req->data = stream;
-
-				std::string str = stream->str();
-				uv_buf_t buffer{};
-				buffer.base = (char*) str.c_str();
-				buffer.len = str.size();
-
-				uv_write(uv_write_req, (uv_stream_t*) &(session->uv_client), &buffer, 1, [](uv_write_t* req, int status) {
-					delete (std::stringstream*) (req->data);
-					delete req;
-				});
-
+				((OtHttpSession*)(parser->data))->onMessageComplete();
 				return HPE_OK;
 			};
 
-			// setup parser
+			// setup HTTP parser
 			llhttp_init(&parser, HTTP_BOTH, &settings);
 			parser.data = this;
 
 			// setup client socket
-			uv_tcp_init(http->uv_loop, &uv_client);
+			uv_tcp_init(uv_default_loop(), &uv_client);
 			uv_client.data = this;
 
-			int status;
-			status = uv_accept((uv_stream_t*) &http->uv_server, (uv_stream_t*) &uv_client);
+			int status = uv_accept((uv_stream_t*) &server->uv_server, (uv_stream_t*) &uv_client);
 			UV_CHECK_ERROR("uv_accept", status);
 
 			// allocate memory and attempt to read
 			status = uv_read_start(
 				(uv_stream_t*) &uv_client,
 				[](uv_handle_t* handle, size_t size, uv_buf_t* buffer) {
+					std::cout << size << std::endl;
 					*buffer = uv_buf_init((char*) malloc(size), size);
 				},
 				[](uv_stream_t* socket, ssize_t nread, const uv_buf_t* buffer) {
@@ -156,10 +102,36 @@ private:
 				});
 
 			UV_CHECK_ERROR("uv_read_start", status);
+
+			// pass client socket to response ogject for writes
+			response->setStream((uv_stream_t*) &(uv_client));
+		}
+
+		// event handlers
+		void onBegin() {
+			request->clear();
+			response->clear();
+		}
+
+		void onMessageComplete() {
+			// finish request
+			request->onMessageComplete();
+
+			// set default response headers
+			if (request->headerIs("Connection","close")) {
+				response->setHeader("Connection","close");
+
+			} else {
+				response->setHeader("Keep-Alive","timeout=5, max=5");
+			}
+
+			// dispatch request
+			server->call(request, response, OtHttpNotFoundClass::create(response));
 		}
 
 		// handle socket read events
 		void onRead(const uv_buf_t* buffer, ssize_t nread) {
+			std::cout << "onRead: " << nread << std::endl;
 			if (nread >= 0) {
 				auto status = llhttp_execute(&parser, buffer->base, nread);
 
@@ -179,9 +151,8 @@ private:
 	private:
 		OtHttpRequest request;
 		OtHttpResponse response;
-		std::string header;
 
-		OtHTTPClass* http;
+		OtHttpServerClass* server;
 		uv_tcp_t uv_client;
 		llhttp_settings_t settings;
 		llhttp_t parser;
@@ -195,9 +166,8 @@ private:
 
 public:
 	// listen for requests
-	void listen(OtObject loop, const std::string& ip, long port) {
-		uv_loop = loop->cast<OtLoopClass>()->getLoop();
-		uv_tcp_init(uv_loop, &uv_server);
+	void listen(const std::string& ip, long port) {
+		uv_tcp_init(uv_default_loop(), &uv_server);
 		uv_server.data = (void*) this;
 
 		int status;
@@ -211,7 +181,7 @@ public:
 
 		status = uv_listen((uv_stream_t*) &uv_server, 128, [](uv_stream_t* socket, int status) {
 			UV_CHECK_ERROR("uv_listen", status);
-			((OtHTTPClass*)(socket->data))->onConnect();
+			((OtHttpServerClass*)(socket->data))->onConnect();
 		});
 
 		UV_CHECK_ERROR("uv_listen", status);
@@ -222,21 +192,20 @@ public:
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtHTTPClass>("HTTP", OtHttpRouterClass::getMeta());
-			type->set("listen", OtFunctionCreate(&OtHTTPClass::listen));
+			type = OtTypeClass::create<OtHttpServerClass>("HttpServer", OtHttpRouterClass::getMeta());
+			type->set("listen", OtFunctionCreate(&OtHttpServerClass::listen));
 		}
 
 		return type;
 	}
 
 	// create a new object
-	static OtHTTP create() {
-		OtHTTP http = std::make_shared<OtHTTPClass>();
-		http->setType(getMeta());
-		return http;
+	static OtHttpServer create() {
+		OtHttpServer server = std::make_shared<OtHttpServerClass>();
+		server->setType(getMeta());
+		return server;
 	}
 
 private:
-	uv_loop_t* uv_loop;
 	uv_tcp_t uv_server;
 };

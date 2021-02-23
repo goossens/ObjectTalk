@@ -21,11 +21,6 @@
 class OtPrimitiveClass;
 typedef std::shared_ptr<OtPrimitiveClass> OtPrimitive;
 
-
-//
-//	OtPrimitiveClass
-//
-
 class OtPrimitiveClass : public OtObjectClass {
 public:
 	// get type definition

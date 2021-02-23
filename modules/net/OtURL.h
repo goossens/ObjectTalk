@@ -72,6 +72,10 @@ public:
 		return hasParam(p) ? getParam(p) : d;
 	}
 
+	const std::map<std::string, std::string> getParams() {
+		return queryParams;
+	}
+
 	// parse URL string
 	void parse(const std::string& url) {
 		this->url = url;
@@ -151,7 +155,8 @@ public:
 				"(?=(&|$))");	// next should be end of query or start of next parameter
 
 			for (auto i = std::sregex_iterator(query.begin(), query.end(), queryParamRegex); i != std::sregex_iterator(); i++) {
-				queryParams[std::string((*i)[2].first, (*i)[2].second)] = std::string((*i)[3].first, (*i)[3].second);
+				queryParams[OtTextDecodeURL(std::string((*i)[2].first, (*i)[2].second))] =
+					OtTextDecodeURL(std::string((*i)[3].first, (*i)[3].second));
 			}
 		}
 

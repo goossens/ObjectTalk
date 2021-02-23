@@ -75,9 +75,6 @@ public:
 		// add default classes
 		context->set("Object", OtClassClass::create(OtObjectClass::getMeta()));
 
-		context->set("Internal", OtClassClass::create(OtInternalClass::getMeta()));
-		context->set("Class", OtClassClass::create(OtClassClass::getMeta()));
-
 		context->set("Primitive", OtClassClass::create(OtPrimitiveClass::getMeta()));
 		context->set("Boolean", OtClassClass::create(OtBooleanClass::getMeta()));
 		context->set("Integer", OtClassClass::create(OtIntegerClass::getMeta()));
@@ -186,7 +183,11 @@ public:
 	// compile and run an ObjectTalk file in a new context
 	static OtObject runFile(const std::string& path) {
 		OtObject context = createDefaultContext();
-		context->set("__FILE__", OtStringClass::create(path));
+
+		auto filePath = std::filesystem::canonical(path);
+		context->set("__FILE__", OtStringClass::create(filePath.string()));
+		context->set("__DIR__", OtStringClass::create(filePath.parent_path().string()));
+
 		return importModule(path, context);
 	}
 

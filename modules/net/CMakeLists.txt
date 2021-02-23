@@ -20,6 +20,6 @@ add_library(net MODULE net.cpp)
 target_compile_features(net PRIVATE cxx_std_17)
 set_target_properties(net PROPERTIES CXX_EXTENSIONS OFF)
 target_include_directories(net PRIVATE ${UV_INCLUDES})
-target_link_libraries(net PRIVATE ${UV_LIBRARY} llhttp)
+target_link_libraries(net PRIVATE ${UV_LIBRARY} llhttp multipart)
 
 install(TARGETS net DESTINATION lib/ot)

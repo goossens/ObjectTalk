@@ -165,8 +165,8 @@ private:
 	}
 
 public:
-	// listen for requests
-	void listen(const std::string& ip, long port) {
+	// listen for requests on specified IP address and port
+	OtObject listen(const std::string& ip, long port) {
 		uv_tcp_init(uv_default_loop(), &uv_server);
 		uv_server.data = (void*) this;
 
@@ -185,6 +185,12 @@ public:
 		});
 
 		UV_CHECK_ERROR("uv_listen", status);
+		return getSharedPtr();
+	}
+
+	// run server
+	void run() {
+		uv_run(uv_default_loop(), UV_RUN_DEFAULT);
 	}
 
 	// get type definition
@@ -194,6 +200,7 @@ public:
 		if (!type) {
 			type = OtTypeClass::create<OtHttpServerClass>("HttpServer", OtHttpRouterClass::getMeta());
 			type->set("listen", OtFunctionCreate(&OtHttpServerClass::listen));
+			type->set("run", OtFunctionCreate(&OtHttpServerClass::run));
 		}
 
 		return type;

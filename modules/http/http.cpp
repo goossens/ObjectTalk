@@ -29,7 +29,6 @@
 #include "OtHttp.h"
 #include "OtMimeType.h"
 #include "OtURL.h"
-#include "OtLoop.h"
 #include "OtHttpHeaders.h"
 #include "OtHttpRequest.h"
 #include "OtHttpResponse.h"
@@ -44,7 +43,6 @@
 extern "C" void init(OtObject context) {
 	context->set("Net", OtClassClass::create(OtHttpClass::getMeta()));
 	context->set("URL", OtClassClass::create(OtURLClass::getMeta()));
-	context->set("Loop", OtClassClass::create(OtLoopClass::getMeta()));
 	context->set("HttpRouter", OtClassClass::create(OtHttpRouterClass::getMeta()));
 	context->set("HttpServer", OtClassClass::create(OtHttpServerClass::getMeta()));
 }

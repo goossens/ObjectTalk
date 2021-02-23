@@ -58,5 +58,4 @@ class MyHttpServer : HttpServer {
 print()
 print("Running HTTP server")
 
-MyHttpServer().listen("0.0.0.0", 80)
-Loop().run();
+MyHttpServer().listen("0.0.0.0", 80).run();

@@ -55,7 +55,6 @@ Http module:
 Object
 	Http
 		URI
-		Loop
 		HttpRouter
 			HttpServer
 

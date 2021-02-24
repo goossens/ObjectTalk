@@ -25,20 +25,13 @@
 
 
 //
-//	OtCode
-//
-
-class OtCodeClass;
-typedef std::shared_ptr<OtCodeClass> OtCode;
-
-
-//
 //	OtInstruction
 //
 
 class OtInstruction {
 public:
 	typedef enum {
+		MARK,
 		PUSH,
 		POP,
 		POP_COUNT,
@@ -53,11 +46,11 @@ public:
 		POP_CONTEXT
 	} OtOpcode;
 
-	OtInstruction(OtOpcode o) { opcode = o; integer = 0; value = nullptr; }
-	OtInstruction(OtOpcode o, long i)  { opcode = o; integer = i; value = nullptr; }
-	OtInstruction(OtOpcode o, const std::string& s)  { opcode = o; string = s; integer = 0; value = nullptr; }
-	OtInstruction(OtOpcode o, const std::string& s, long i)  { opcode = o; string = s; integer = i; value = nullptr; }
-	OtInstruction(OtOpcode o, OtObject v)  { opcode = o; integer = 0; value = v; }
+	OtInstruction(OtOpcode o) : opcode(o), integer(0), value(nullptr) {}
+	OtInstruction(OtOpcode o, long i) : opcode(o), integer(i), value(nullptr) {}
+	OtInstruction(OtOpcode o, const std::string& s) : opcode(o), string(s), integer(0), value(nullptr) {}
+	OtInstruction(OtOpcode o, const std::string& s, long i) : opcode(o), string(s), integer(i), value(nullptr) {}
+	OtInstruction(OtOpcode o, OtObject v) : opcode(o), integer(0), value(v) {}
 
 	OtOpcode opcode;
 	long integer;
@@ -67,12 +60,16 @@ public:
 
 
 //
-//	OtCodeClass
+//	OtCode
 //
+
+class OtCodeClass;
+typedef std::shared_ptr<OtCodeClass> OtCode;
 
 class OtCodeClass : public std::vector<OtInstruction> {
 public:
 	// add instructions to code
+	void mark(long value) { push_back(OtInstruction(OtInstruction::MARK, value)); }
 	void push(OtObject value) { push_back(OtInstruction(OtInstruction::PUSH, value)); }
 	void pop() { push_back(OtInstruction(OtInstruction::POP)); }
 	void pop(size_t count) { push_back(OtInstruction(OtInstruction::POP_COUNT, count)); }

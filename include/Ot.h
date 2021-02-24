@@ -72,7 +72,8 @@
 #include "OtCode.h"
 #include "OtScanner.h"
 #include "OtCompiler.h"
-#include "OtObjectTalk.h"
+#include "OtModule.h"
+#include "OtGlobal.h"
 
 #include "OtTypeImpl.h"
 #include "OtObjectImpl.h"

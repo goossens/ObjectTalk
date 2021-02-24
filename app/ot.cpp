@@ -22,7 +22,7 @@
 
 
 //
-//	ObjectTalk engine main function
+//	ObjectTalk interpreter main function
 //
 
 int main(int argc, const char* argv[]) {
@@ -33,12 +33,16 @@ int main(int argc, const char* argv[]) {
 	}
 
 	// build module path
-	OtObjectTalk::buildModulePath(argv);
+	OtModuleClass::buildModulePath(argv);
+
+	// create globale context
+	OtGlobal global = OtGlobalClass::create();
 
 	try {
-		// run each script
+		// run each script in the global context
 		for (auto c = 1; c < argc; c++) {
-			OtObjectTalk::runFile(argv[c]);
+			OtModule module = OtModuleClass::create();
+			module->run(argv[c], global);
 		}
 
 	} catch (const OtException& e) {

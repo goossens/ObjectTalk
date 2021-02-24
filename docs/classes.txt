@@ -29,7 +29,9 @@ Object
 		Dict
 
 	Internal
+		Module
 		Class
+		Global
 		BoundFunction
 		CodeFunction
 		ContextReference

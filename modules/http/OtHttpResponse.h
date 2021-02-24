@@ -129,7 +129,7 @@ public:
 	// see if header is set
 	const bool hasHeader(const std::string& header) {
 		return headers.has(header);
- 	}
+	}
 
 	// send headers to stream
 	void sendHeaders() {
@@ -263,7 +263,7 @@ public:
 	OtObject download(const std::string& name) {
 		std::filesystem::path path(name);
 		headers.emplace("Content-Disposition", "attachment; filename=" + path.filename().string());
-		return 	sendfile(name);
+		return sendfile(name);
 	}
 
 	// handle file read events

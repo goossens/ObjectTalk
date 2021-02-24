@@ -196,7 +196,7 @@ public:
 	}
 
 	// load text to scan
-	void loadText(const std::string t) {
+	void loadText(const std::string& t) {
 		// save text to be scanned
 		text = t;
 		size = text.length();

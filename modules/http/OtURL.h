@@ -62,7 +62,7 @@ public:
 
 	const bool hasParam(const std::string& p) {
 		return queryParams.find(p) != queryParams.end();
- 	}
+	}
 
 	const OtObject getParam(const std::string& p) {
 		return OtStringClass::create(queryParams.find(p)->second);

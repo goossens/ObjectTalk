@@ -306,11 +306,11 @@ public:
 
 	const bool hasHeader(const std::string& header) {
 		return headers.find(header) != headers.end();
- 	}
+	}
 
 	const bool headerIs(const std::string& header, const std::string& value) {
 		return getHeader(header) == value;
- 	}
+	}
 
 	const std::string getHeader(const std::string& header) {
 		return headers.get(header);
@@ -357,7 +357,7 @@ public:
 
 	const bool hasParam(const std::string& param) {
 		return params.find(param) != params.end();
- 	}
+	}
 
 	const std::string& getParam(const std::string& param) {
 		return params[param];
@@ -370,7 +370,7 @@ public:
 
 	const bool hasCookie(const std::string& cookie) {
 		return cookies.find(cookie) != params.end();
- 	}
+	}
 
 	const std::string& getCookie(const std::string& cookie) {
 		return cookies[cookie];
@@ -479,5 +479,5 @@ private:
 	std::ofstream multipartStream;
 
 	multipartparser_callbacks multipartCallbacks;
-    multipartparser multipartParser;
+	multipartparser multipartParser;
 };

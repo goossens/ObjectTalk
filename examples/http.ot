@@ -43,7 +43,7 @@ class MyHttpServer : http.HttpServer {
 			next()
 		})
 
-		this.get("/debug", function(req, res, next) {
+		this.all("/debug", function(req, res, next) {
 			res.send(req.debug())
 		})
 

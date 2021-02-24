@@ -39,4 +39,4 @@ assert('url.getParam("a") == 1')
 assert('url.getParamWithDefault("c", 1) == 1')
 
 // Well done
-print("Passed all net tests")
+print("Passed all http tests")

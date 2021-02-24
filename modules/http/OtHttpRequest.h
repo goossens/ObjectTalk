@@ -141,6 +141,7 @@ public:
 
 				// initialize multipart parser
 				multipartparser_init(&multipartParser, multipartBoundary.c_str());
+				multipartParser.data = this;
 			}
 		}
 	}
@@ -213,6 +214,14 @@ public:
 							key.assign(b2, e2);
 
 						} else {
+							if (*b2 == '"' && b2 < e2) {
+								b2++;
+							}
+
+							if (*(e2 - 1) == '"' && e2 > b2) {
+								e2--;
+							}
+
 							val.assign(b2, e2);
 						}
 					});

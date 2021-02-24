@@ -32,9 +32,6 @@ int main(int argc, const char* argv[]) {
 		exit(EXIT_FAILURE);
 	}
 
-	// build module path
-	OtModuleClass::buildModulePath(argv);
-
 	// create globale context
 	OtGlobal global = OtGlobalClass::create();
 

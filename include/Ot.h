@@ -47,6 +47,8 @@
 #include <utility>
 #include <vector>
 
+#include <whereami/whereami.h>
+
 #include "OtFormat.h"
 #include "OtException.h"
 #include "OtText.h"

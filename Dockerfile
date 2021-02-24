@@ -8,6 +8,7 @@ RUN apk add --no-cache \
 	cmake \
 	musl-dev \
 	libuv-dev \
-	alpine-sdk
+	alpine-sdk \
+	linux-headers
 
 WORKDIR /ot

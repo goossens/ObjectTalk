@@ -38,35 +38,6 @@ public:
 		return load(name);
 	}
 
-	// build module path
-	static void buildModulePath(const char* argv[]) {
-		modulePath.clear();
-
-		// use local directory as default
-		modulePath.push_back(std::filesystem::canonical("."));
-
-		// use OT_PATH environment variable if provided
-		auto path = std::getenv("OT_PATH");
-
-		if (path) {
-			std::vector<std::string> parts;
-			OtTextSplit(path, parts,';');
-
-			for (auto part = parts.begin(); part != parts.end(); ++part) {
-				modulePath.push_back(*part);
-			}
-		}
-
-		// use lib directory
-		auto exec = std::filesystem::path(argv[0]);
-		auto root = std::filesystem::canonical(exec).parent_path().parent_path();
-		auto lib = root.append("lib").append("ot");
-
-		if (std::filesystem::is_directory(lib)) {
-			modulePath.push_back(lib);
-		}
-	}
-
 	// get type definition
 	static OtType getMeta() {
 		static OtType type = nullptr;
@@ -87,10 +58,45 @@ public:
 
 private:
 	// list of directories to search for modules in
-	static inline std::vector<std::filesystem::path> modulePath;
+	std::vector<std::filesystem::path> modulePath;
 
 	// load a module
 	OtObject load(const std::string& name) {
+		// build module path (if required)
+		if (modulePath.size() == 0) {
+			// use local directory as default
+			modulePath.push_back(std::filesystem::canonical("."));
+
+			// use OT_PATH environment variable if provided
+			auto path = std::getenv("OT_PATH");
+
+			if (path) {
+				std::vector<std::string> parts;
+				OtTextSplit(path, parts,';');
+
+				for (auto part = parts.begin(); part != parts.end(); ++part) {
+					modulePath.push_back(*part);
+				}
+			}
+
+			// figure out where we live
+			int length = wai_getExecutablePath(nullptr, 0, nullptr);
+			int dirname_length;
+			char buffer[length];
+			wai_getExecutablePath(buffer, length, &dirname_length);
+			std::string home(buffer, length);
+			std::cout << home << std::endl;
+
+			// use lib directory
+			auto exec = std::filesystem::path(home);
+			auto root = std::filesystem::canonical(exec).parent_path().parent_path();
+			auto lib = root.append("lib").append("ot");
+
+			if (std::filesystem::is_directory(lib)) {
+				modulePath.push_back(lib);
+			}
+		}
+
 		std::filesystem::path module;
 
 		// find module

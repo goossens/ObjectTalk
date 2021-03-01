@@ -94,7 +94,6 @@ private:
 			status = uv_read_start(
 				(uv_stream_t*) &uv_client,
 				[](uv_handle_t* handle, size_t size, uv_buf_t* buffer) {
-					std::cout << size << std::endl;
 					*buffer = uv_buf_init((char*) malloc(size), size);
 				},
 				[](uv_stream_t* socket, ssize_t nread, const uv_buf_t* buffer) {
@@ -131,7 +130,6 @@ private:
 
 		// handle socket read events
 		void onRead(const uv_buf_t* buffer, ssize_t nread) {
-			std::cout << "onRead: " << nread << std::endl;
 			if (nread >= 0) {
 				auto status = llhttp_execute(&parser, buffer->base, nread);
 

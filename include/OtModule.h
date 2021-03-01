@@ -85,7 +85,6 @@ private:
 			char buffer[length];
 			wai_getExecutablePath(buffer, length, &dirname_length);
 			std::string home(buffer, length);
-			std::cout << home << std::endl;
 
 			// use lib directory
 			auto exec = std::filesystem::path(home);

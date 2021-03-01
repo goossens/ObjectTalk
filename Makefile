@@ -34,7 +34,7 @@ clean:
 
 docker:
 	docker build -t ot .
-	docker run --interactive --tty --name ot --publish 8080:80 --volume $(shell pwd):/ot ot sh
+	docker run --interactive --tty --name ot --publish 80:80 --volume $(shell pwd):/ot ot sh
 	docker container rm ot
 
 dockerclean:

@@ -130,9 +130,12 @@ private:
 				OtCode code = compiler.compile(buffer.str());
 				return code->operator ()(getSharedPtr());
 
-			} else if (module.extension() == ".so") {
 #if defined(WINVER)
+			} else if (module.extension() == ".dll") {
+				//TODO
+
 #else
+			} else if (module.extension() == ".so") {
 				void* lib = dlopen(module.c_str(), RTLD_LAZY);
 
 				if (!lib) {

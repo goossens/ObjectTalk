@@ -25,21 +25,23 @@ class OtDictClass : public OtCollectionClass, public std::map<std::string, OtObj
 public:
 	// convert dictionary to string
 	operator std::string() {
-		std::string result("{");
+		std::ostringstream o;
 		bool first = true;
+
+		o << "{";
 
 		for (auto const& entry : *this) {
 			if (first) {
 				first = false;
 			} else {
-				result +=",";
+				o << ",";
 			}
 
-			result +="\"" + entry.first +"\":" + entry.second->repr();
+			o << "\"" << OtTextToJSON(entry.first) << "\":" << entry.second->json();
 		}
 
-		result +="}";
-		return result;
+		o <<  "}";
+		return o.str();
 	}
 
 	// initializer

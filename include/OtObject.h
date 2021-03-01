@@ -38,11 +38,11 @@ public:
 	virtual operator long() { return 0; }
 	virtual operator size_t() { return 0; }
 	virtual operator double() { return 0.0; }
-	virtual operator std::string() { return""; }
+	virtual operator std::string() { return ""; }
 	virtual operator OtObject() { return shared_from_this(); }
 
-	// get object representation (as in source code)
-	virtual std::string repr() { return operator std::string(); }
+	// get object's JSON representation
+	virtual std::string json() { return operator std::string(); }
 
 	// get shared pointer
 	OtObject getSharedPtr() { return shared_from_this(); }
@@ -79,7 +79,7 @@ public:
 		return value;
 	}
 
-	virtual OtObject get(const std::string& name) {
+	OtObject get(const std::string& name) {
 		if (members && members->count(name)) {
 			return members->operator [] (name);
 		}

@@ -131,16 +131,29 @@ OtType OtObjectClass::getMeta() {
 			return OtMemberReferenceClass::create(o, n);
 		})));
 
-		type->set("boolean", OtFunctionCreate(&OtObjectClass::operator bool));
-		type->set("integer", OtFunctionCreate(&OtObjectClass::operator long));
-		type->set("real", OtFunctionCreate(&OtObjectClass::operator double));
-		type->set("string", OtFunctionCreate(&OtObjectClass::operator std::string));
+		type->set("boolean", OtFunctionCreate(std::function<bool(OtObject)>([] (OtObject o)->bool {
+			return o->operator bool();
+		})));
+
+		type->set("integer", OtFunctionCreate(std::function<long(OtObject)>([] (OtObject o)->long {
+			return o->operator long();
+		})));
+
+		type->set("real", OtFunctionCreate(std::function<double(OtObject)>([] (OtObject o)->double {
+			return o->operator double();
+		})));
+
+		type->set("string", OtFunctionCreate(std::function<std::string(OtObject)>([] (OtObject o)->std::string {
+			return o->operator std::string();
+		})));
+
+		type->set("json", OtFunctionCreate(std::function<std::string(OtObject)>([] (OtObject o)->std::string {
+			return o->json();
+		})));
 
 		type->set("has", OtFunctionCreate(&OtObjectClass::has));
-		type->set("get", OtFunctionCreate(&OtObjectClass::get));
-		type->set("set", OtFunctionCreate(&OtObjectClass::set));
 
-		type->set("getClass", OtFunctionCreate(std::function<OtObject(OtObject)>([] (OtObject o)->OtObject{
+		type->set("getClass", OtFunctionCreate(std::function<OtObject(OtObject)>([] (OtObject o)->OtObject {
 			return OtClassClass::create(o->getType());
 		})));
 

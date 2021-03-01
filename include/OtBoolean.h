@@ -32,7 +32,7 @@ public:
 	operator long() { return value ? 1 : 0; }
 	operator size_t() { return value ? 1 : 0; }
 	operator double() { return value ? 1.0 : 0.0; }
-	operator std::string() { return value ?"true" :"false"; }
+	operator std::string() { return value ? "true" : "false"; }
 
 	// arithmetic
 	bool logicalAnd(bool operand) { return value && operand; }

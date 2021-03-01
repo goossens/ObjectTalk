@@ -51,11 +51,13 @@
 
 #include "OtFormat.h"
 #include "OtException.h"
+#include "OtCodePoint.h"
 #include "OtText.h"
 
 #include "OtDefs.h"
 #include "OtType.h"
 #include "OtObject.h"
+#include "OtInternal.h"
 
 #include "OtPrimitive.h"
 #include "OtFunction.h"
@@ -64,7 +66,6 @@
 #include "OtReal.h"
 #include "OtString.h"
 
-#include "OtInternal.h"
 #include "OtClass.h"
 
 #include "OtCollection.h"

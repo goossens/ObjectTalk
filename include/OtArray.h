@@ -25,22 +25,24 @@ class OtArrayClass : public OtCollectionClass, public std::vector<OtObject> {
 public:
 	// convert array to string
 	operator std::string() {
-		std::string result("[");
+		std::ostringstream o;
 		bool first = true;
+
+		o << "[";
 
 		for (auto const& entry : *this) {
 			if (first) {
 				first = false;
 
 			} else {
-				result +=",";
+				o << ",";
 			}
 
-			result += entry->repr();
+			o << entry->json();
 		}
 
-		result +="]";
-		return result;
+		o << "]";
+		return o.str();
 	}
 
 	// clear array and add all parameters

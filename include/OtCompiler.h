@@ -599,6 +599,10 @@ private:
 					code->method("__gt__", 1);
 					break;
 
+				case OtScanner::GREATER_EQUAL_TOKEN:
+					code->method("__ge__", 1);
+					break;
+
 				case OtScanner::IN_TOKEN:
 					code->swap();
 					code->method("__contains__", 1);

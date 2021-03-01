@@ -36,8 +36,12 @@ Object
 		CodeFunction
 		ContextReference
 		MemberReference
+		StringReference
 		ArrayReference
 		DictReference
+		StringIterator
+		ArrayIterator
+		DictIterator
 
 Module classes:
 ===============

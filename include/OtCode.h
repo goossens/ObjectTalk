@@ -102,6 +102,9 @@ public:
 		// execute all instructions
 		while (pc < size()) {
 			switch (at(pc).opcode) {
+				case OtInstruction::MARK:
+					break;
+
 				case OtInstruction::PUSH:
 					stack.push_back(at(pc).value);
 					break;

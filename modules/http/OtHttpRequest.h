@@ -285,7 +285,7 @@ public:
 	void setHeader(const std::string& name, const std::string& value) {
 		headers.emplace(name, value);
 
-		if (OtTextCaseInsensitiveEqual(name, "cookie")) {
+		if (OtTextCaseEqual(name, "cookie")) {
 			OtTextSplitIterator(value.data(), value.data() + value.size(), ';', [&](const char *b, const char *e) {
 				std::string key;
 				std::string val;

@@ -209,7 +209,7 @@ public:
 	// send result as jSON
 	OtObject json(OtObject object) {
 		setStatus(200);
-		std::string text = object->repr();
+		std::string text = object->json();
 		headers.emplace("Content-Type", "application/json");
 		headers.emplace("Content-Length", std::to_string(text.size()));
 		write(text);

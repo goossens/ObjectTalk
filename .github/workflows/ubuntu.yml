@@ -3,7 +3,7 @@ name: Ubuntu 20.04
 on: [push]
 
 jobs:
-  build:
+  verify-ubuntu:
     runs-on: ubuntu-20.04
 
     steps:
@@ -17,8 +17,11 @@ jobs:
       with:
         cmake-version: '3.19.x'
 
+    - name: Configure
+      run: mkdir build && cd build && cmake ..
+
     - name: Build
-      run: mkdir debug && cmake --build debug --config Debug
+      run: cmake --build build
 
     - name: Test
-      run: cd debug && ctest
+      run: cd build && ctest

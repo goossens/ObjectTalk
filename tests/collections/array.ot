@@ -70,8 +70,9 @@ assert('array.size() == 13')
 
 array4 = []
 
-for a in Array(1, 2, 3, 4)
+for a in Array(1, 2, 3, 4) {
 	array4.append(a)
+}
 
 assert('array4.size() == 4')
 

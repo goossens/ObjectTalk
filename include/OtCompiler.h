@@ -1010,7 +1010,7 @@ private:
 		scanner.expect(OtScanner::DO_TOKEN);
 		size_t offset = code->size();
 
-		statement(code);
+		block(code);
 		code->pop();
 
 		scanner.expect(OtScanner::WHILE_TOKEN);
@@ -1026,76 +1026,37 @@ private:
 	void forStatement(OtCode code) {
 		scanner.expect(OtScanner::FOR_TOKEN);
 
-		if (scanner.matchToken(OtScanner::LPAREN_TOKEN)) {
-			scanner.expect(OtScanner::LPAREN_TOKEN);
+		scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
+		std::string name = scanner.getText();
+		scanner.advance();
 
-			if (!scanner.matchToken(OtScanner::SEMICOLON_TOKEN)) {
-				code->pop(expressions(code));
-			}
+		scanner.expect(OtScanner::IN_TOKEN);
 
-			scanner.expect(OtScanner::SEMICOLON_TOKEN);
-
-			size_t offset1 = code->size();
-
-			if (expression(code)) {
-				code->method("__deref__", 0);
-			}
-
-			size_t offset2 = code->size();
-			code->jumpFalse(0);
-
-			scanner.expect(OtScanner::SEMICOLON_TOKEN);
-
-			OtCode tmp = OtCodeClass::create();
-
-			if (!scanner.matchToken(OtScanner::RPAREN_TOKEN)) {
-				tmp->pop(expressions(tmp));
-			}
-
-			scanner.expect(OtScanner::RPAREN_TOKEN);
-			statement(code);
-			code->pop();
-
-			code->insert(code->end(), tmp->begin(), tmp->end());
-
-			code->jump(offset1);
-			code->patch(offset2);
-
-		} else if (scanner.matchToken(OtScanner::IDENTIFIER_TOKEN)) {
-			std::string name = scanner.getText();
-			scanner.advance();
-
-			scanner.expect(OtScanner::IN_TOKEN);
-
-			if (expression(code)) {
-				code->method("__deref__", 0);
-			}
-
-			code->method("__iter__", 0);
-			size_t offset1 = code->size();
-
-			code->dup();
-			code->method("__end__", 0);
-			size_t offset2 = code->size();
-			code->jumpTrue(0);
-
-			code->dup();
-			code->method("__next__", 0);
-			code->push(OtContextReferenceClass::create(name));
-			code->swap();
-			code->method("__assign__", 1);
-			code->pop();
-
-			statement(code);
-			code->pop();
-
-			code->jump(offset1);
-			code->patch(offset2);
-			code->pop();
-
-		} else {
-			throw OtException("A [for] statement must be folowed by open parenthesis or an identifier");
+		if (expression(code)) {
+			code->method("__deref__", 0);
 		}
+
+		code->method("__iter__", 0);
+		size_t offset1 = code->size();
+
+		code->dup();
+		code->method("__end__", 0);
+		size_t offset2 = code->size();
+		code->jumpTrue(0);
+
+		code->dup();
+		code->method("__next__", 0);
+		code->push(OtContextReferenceClass::create(name));
+		code->swap();
+		code->method("__assign__", 1);
+		code->pop();
+
+		block(code);
+		code->pop();
+
+		code->jump(offset1);
+		code->patch(offset2);
+		code->pop();
 	}
 
 	// compile an if statement
@@ -1109,7 +1070,7 @@ private:
 		size_t offset1 = code->size();
 		code->jumpFalse(0);
 
-		statement(code);
+		block(code);
 		code->pop();
 
 		if (scanner.matchToken(OtScanner::ELSE_TOKEN)) {
@@ -1119,7 +1080,7 @@ private:
 			code->jump(0);
 
 			code->patch(offset1);
-			statement(code);
+			block(code);
 			code->pop();
 
 			code->patch(offset2);
@@ -1150,6 +1111,8 @@ private:
 			code->method("__deref__", 0);
 		}
 
+		scanner.expect(OtScanner::LBRACE_TOKEN);
+
 		while (scanner.matchToken(OtScanner::CASE_TOKEN)) {
 			scanner.advance();
 			code->dup();
@@ -1178,6 +1141,8 @@ private:
 			code->pop();
 		}
 
+		scanner.expect(OtScanner::RBRACE_TOKEN);
+
 		for (auto const& patch : patches) {
 			code->patch(patch);
 		}
@@ -1197,7 +1162,7 @@ private:
 		size_t offset2 = code->size();
 		code->jumpFalse(0);
 
-		statement(code);
+		block(code);
 		code->pop();
 		code->jump(offset1);
 		code->patch(offset2);

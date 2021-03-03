@@ -102,7 +102,7 @@ private:
 
 			UV_CHECK_ERROR("uv_read_start", status);
 
-			// pass client socket to response ogject for writes
+			// pass client socket to response object for writes
 			response->setStream((uv_stream_t*) &(uv_client));
 		}
 
@@ -131,7 +131,13 @@ private:
 		// handle socket read events
 		void onRead(const uv_buf_t* buffer, ssize_t nread) {
 			if (nread >= 0) {
-				auto status = llhttp_execute(&parser, buffer->base, nread);
+				auto parsed = llhttp_execute(&parser, buffer->base, nread);
+
+				if (parsed != nread) {
+					uv_close((uv_handle_t*) &uv_client, [](uv_handle_t* handle) {
+						delete (OtHttpSession*)(handle->data);
+					});
+				}
 
 			} else if (nread == UV_EOF) {
 				uv_close((uv_handle_t*) &uv_client, [](uv_handle_t* handle) {

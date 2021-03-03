@@ -20,39 +20,44 @@ real = 1.1
 string = "test"
 assert('integer == 1 && real == 1.1 && string == "test"')
 
-if integer == 1 flag1 = true else flag1 = false
-if (integer == 2) flag2 = true; else flag2 = false;
+if integer == 1 { flag1 = true } else { flag1 = false }
+if (integer == 2) { flag2 = true; } else { flag2 = false; }
 
 if (integer == 3) {
 	flag3 = true;
+
 } else {
 	flag3 = false;
 }
 
 assert('flag1 && !flag2 && !flag3')
 
-for (test = 0, c = 0; c < 10; c++)
+c = 0
+test = 0
+
+while c < 10 {
 	test++
+	c++
+}
 
 assert('test == 10')
 
-while test > 0
+while test > 0 {
 	test--
+}
 
 assert('test == 0')
 
-do
-{
+do {
 	test += 2
 	test -= 2
 	test += 2
-}
-while test < 10
+} while test < 10
 
 assert('test == 10')
 
-for (test = 0, c = 0; c < 5; c++)
-	switch c
+for value in [ 1, 0, 3, 4, 2 ] {
+	switch value {
 		case 1
 			test += 1
 
@@ -70,8 +75,18 @@ for (test = 0, c = 0; c < 5; c++)
 
 		default
 			test += 10
+	}
+}
 
-assert('test == 20')
+assert('test == 30')
+
+result = 0
+
+for value in [ 1, 2, 3, 4 ] {
+	result += value
+}
+
+assert('result == 10')
 
 // Well done
 print("Passed all instruction tests")

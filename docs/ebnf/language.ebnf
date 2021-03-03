@@ -1,18 +1,17 @@
-object-talk	::= statement*
-
-block ::= "{" statement+ "}"
+module	::= statement*
 
 statement ::= expression
 | block
 | "class" name ":" expression block
 | "function" name "(" (name ("," name)* | "...") ")" block
-| "if" expression statement ("else" statement)?
-| "while" expression statement
-| "do" statement "while" expression
-| "for" "(" expressions ";" expression ";" expressions ")" statement
-| "for" name "in" expression statement
-| "switch" expression ("case" expression statement)+ ("default" statement)?
+| "if" expression block ("else" block)?
+| "while" expression block
+| "do" block "while" expression
+| "for" name "in" expression block
+| "switch" expression "{" ("case" expression statement)+ ("default" statement)? "}"
 | "return" expression
+
+block ::= "{" statement+ "}"
 
 expressions ::= expression ("," expression)*
 
@@ -40,7 +39,7 @@ postfix ::= primary ("[" expression "]" | "(" expressions ")" | "." name | "++" 
 
 primary ::= "(" expression ")"
 | "[" expressions "]"
-| "{" name ":" expression ("," name ":" expression)* "}"
+| "{" string ":" expression ("," string ":" expression)* "}"
 | integer
 | real
 | string

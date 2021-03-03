@@ -4,8 +4,9 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-find_path(UV_INCLUDES uv.h)
-find_library(UV_LIBRARY uv)
+set(CMAKE_FIND_DEBUG_MODE TRUE)
+find_path(UV_INCLUDES uv.h REQUIRED)
+find_library(UV_LIBRARY uv REQUIRED)
 
 add_library(http MODULE http.cpp)
 target_compile_features(http PRIVATE cxx_std_17)

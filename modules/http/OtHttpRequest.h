@@ -225,8 +225,13 @@ public:
 						multipartFileName = val;
 
 						// create temporary file
-						multipartFile = std::tmpnam(nullptr);
-						multipartStream.open(multipartFile, std::ios::out | std::ios::binary);
+						std::string tmpl = std::filesystem::temp_directory_path() / "ot-XXXXXX";
+
+						uv_fs_t req;
+						uv_fs_mkstemp(uv_default_loop(), &req, tmpl.c_str(), 0);
+						multipartFile = req.path;
+						multipartFD = req.result;
+						uv_fs_req_cleanup(&req);
 					}
 				}
 			});
@@ -239,7 +244,11 @@ public:
 	void onMultipartData(const char *data, size_t length) {
 		// handle file uploads
 		if (multipartFileName.size()) {
-			multipartStream.write(data, length);
+			uv_fs_t req;
+			uv_buf_t buffer = uv_buf_init((char*) data, length);
+			uv_fs_write(0, &req, multipartFD, &buffer, 1, -1, 0);
+			UV_CHECK_ERROR("uv_fs_write", req.result);
+			uv_fs_req_cleanup(&req);
 
 		} else {
 			// handle field values
@@ -250,7 +259,8 @@ public:
 	void onMultipartEnd() {
 		// handle file uploads
 		if (multipartFileName.size()) {
-			multipartStream.close();
+			uv_fs_t req;
+			uv_fs_close(0, &req, multipartFD, 0);
 			setParam(multipartFieldName, multipartFileName + "|" + multipartFile);
 
 		} else {
@@ -467,7 +477,7 @@ private:
 	std::string multipartValue;
 
 	std::string multipartFile;
-	std::ofstream multipartStream;
+	int multipartFD;
 
 	multipartparser_callbacks multipartCallbacks;
 	multipartparser multipartParser;

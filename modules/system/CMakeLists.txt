@@ -4,8 +4,8 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-find_path(UV_INCLUDES uv.h)
-find_library(UV_LIBRARY uv)
+find_path(UV_INCLUDES uv.h REQUIRED)
+find_library(UV_LIBRARY uv REQUIRED)
 
 add_library(system MODULE system.cpp)
 target_compile_features(system PRIVATE cxx_std_17)

@@ -1,0 +1,24 @@
+name: Ubuntu 20.04
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup libuv
+      run: sudo apt-get install libuv1-dev
+
+    - name: Setup cmake
+      uses: jwlawson/actions-setup-cmake@v1.8
+      with:
+        cmake-version: '3.19.x'
+
+    - name: Build
+      run: cmake --build debug --config Debug
+
+    - name: Test
+      run: cd debug && ctest

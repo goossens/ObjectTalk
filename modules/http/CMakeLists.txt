@@ -4,7 +4,6 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-set(CMAKE_FIND_DEBUG_MODE TRUE)
 find_path(UV_INCLUDES uv.h REQUIRED)
 find_library(UV_LIBRARY uv REQUIRED)
 

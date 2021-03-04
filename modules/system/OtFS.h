@@ -76,21 +76,21 @@ public:
 	// remove file system object
 	void rm(const std::string& path) {
 		if (!std::filesystem::remove(path)) {
-			OT_EXCEPT("can't remove [%s]", path.c_str());
+			throw OtException(OtFormat("can't remove [%s]", path.c_str()));
 		}
 	}
 
 	// create directory
 	void mkdir(const std::string& path) {
 		if (!std::filesystem::create_directory(path)) {
-			OT_EXCEPT("can't create directory [%s]", path.c_str());
+			throw OtException(OtFormat("can't create directory [%s]", path.c_str()));
 		}
 	}
 
 	// create (intermediate) directories
 	void mkdirs(const std::string& path) {
 		if (!std::filesystem::create_directories(path)) {
-			OT_EXCEPT("can't create directories [%s]", path.c_str());
+			throw OtException(OtFormat("can't create directories [%s]", path.c_str()));
 		}
 	}
 
@@ -120,14 +120,14 @@ public:
 	// remove directory
 	void rmdir(const std::string& path) {
 		if (!std::filesystem::remove(path)) {
-			OT_EXCEPT("can't remove directory [%s]", path.c_str());
+			throw OtException(OtFormat("can't remove directory [%s]", path.c_str()));
 		}
 	}
 
 	// remove directory and its content
 	void rmdirs(const std::string& path) {
 		if (!std::filesystem::remove_all(path)) {
-			OT_EXCEPT("can't remove directory [%s]", path.c_str());
+			throw OtException(OtFormat("can't remove directory [%s]", path.c_str()));
 		}
 	}
 

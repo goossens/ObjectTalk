@@ -26,7 +26,7 @@ public:
 		// assert()
 		set("assert", OtFunctionClass::create([] (OtObject context, size_t c, OtObject* p)->OtObject {
 			if (c != 1) {
-				OT_EXCEPT("Function [assert] expects 1 parameter, %d given", c);
+				throw OtException(OtFormat("Function [assert] expects 1 parameter, %d given", c));
 			}
 
 			std::string assertion = p[0]->operator std::string();
@@ -35,7 +35,7 @@ public:
 			OtObject result = code->operator ()(context);
 
 			if (!result->operator bool()) {
-				OT_EXCEPT("Assertion [%s] failed", assertion.c_str());
+				throw OtException(OtFormat("Assertion [%s] failed", assertion.c_str()));
 			}
 
 			return nullptr;
@@ -45,7 +45,7 @@ public:
 		set("import", OtFunctionClass::create([] (OtObject context, size_t c, OtObject* p)->OtObject
 		{
 			if (c != 1) {
-				OT_EXCEPT("Function [import] expects 1 parameter, %d given", c);
+				throw OtException(OtFormat("Function [import] expects 1 parameter, %d given", c));
 			}
 
 			OtModule module = OtModuleClass::create();

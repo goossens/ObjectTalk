@@ -17,7 +17,7 @@ public:
 		scanner.loadText(text);
 
 		// setup code
-		OtCode code = OtCodeClass::create();
+		OtCode code = OtCodeClass::create(text);
 
 		// process all statements
 		if (scanner.matchToken(OtScanner::EOS_TOKEN)) {
@@ -46,13 +46,14 @@ private:
 	public:
 		// constructor
 		OtCodeFunctionClass() = default;
-		OtCodeFunctionClass(size_t p, const std::vector<std::string>& n, OtCode c) : parameterCount(p), names(n), code(c) {}
+		OtCodeFunctionClass(size_t p, const std::vector<std::string>& n, OtCode c, size_t s, size_t e)
+			: parameterCount(p), names(n), code(c), start(s), end(e) {}
 
 		// call code
 		OtObject operator () (OtObject context, size_t count, OtObject* parameters) {
 			// sanity check
 			if (parameterCount != SIZE_MAX && parameterCount != count) {
-				OT_EXCEPT("Function expects %d parameters, %d given", parameterCount, count);
+				throw OtException(OtFormat("Function expects %d parameters, %d given", parameterCount, count));
 			}
 
 			// create local context
@@ -66,7 +67,7 @@ private:
 				local->set(names[c], parameters[c]);
 			}
 
-			return code->operator ()(local);
+			return code->operator ()(local, start, end);
 		}
 
 		// get type definition
@@ -82,8 +83,8 @@ private:
 		}
 
 		// create a new object
-		static OtCodeFunction create(size_t count, const std::vector<std::string>& names, OtCode code) {
-			OtCodeFunction func = std::make_shared<OtCodeFunctionClass>(count, names, code);
+		static OtCodeFunction create(size_t count, const std::vector<std::string>& names, OtCode code, size_t start, size_t end) {
+			OtCodeFunction func = std::make_shared<OtCodeFunctionClass>(count, names, code, start, end);
 			func->setType(getMeta());
 			return func;
 		}
@@ -92,10 +93,16 @@ private:
 		size_t parameterCount;
 		std::vector<std::string> names;
 		OtCode code;
+		size_t start;
+		size_t end;
 	};
 
 	// compile function
 	void function(OtCode code) {
+		// jump around function code
+		size_t offset = code->size();
+		code->jump(0);
+
 		// parse parameters
 		size_t count = 0;
 		std::vector<std::string> names;
@@ -125,9 +132,12 @@ private:
 		}
 
 		// get function level code
-		OtCode functionCode = OtCodeClass::create();
-		block(functionCode);
-		code->push(OtCodeFunctionClass::create(count, names, functionCode));
+		size_t start = code->size();
+		block(code);
+		code->patch(offset);
+
+		// put new function on stack
+		code->push(OtCodeFunctionClass::create(count, names, code, start, code->size()));
 	}
 
 	// context reference
@@ -967,7 +977,6 @@ private:
 		code->method("subType", 1);
 
 		// assign class
-		code->dup();
 		code->push(OtContextReferenceClass::create(name));
 		code->swap();
 		code->method("__assign__", 1);
@@ -990,7 +999,6 @@ private:
 
 		// parse function and add to context
 		function(code);
-		code->dup();
 		code->push(OtContextReferenceClass::create(name));
 		code->swap();
 		code->method("__assign__", 1);
@@ -1161,6 +1169,9 @@ private:
 
 	// compile a single statement
 	void statement(OtCode code) {
+		// mark start of statement
+		code->mark(scanner.getTokenStart());
+
 		// process statement
 		switch (scanner.getToken()) {
 			case OtScanner::LBRACE_TOKEN:
@@ -1208,6 +1219,9 @@ private:
 				expression(code);
 				break;
 		}
+
+		// mark end of statement
+		code->mark(scanner.getLastTokenEnd());
 
 		while (scanner.matchToken(OtScanner::SEMICOLON_TOKEN)) {
 			scanner.advance();

@@ -85,7 +85,7 @@ public:
 			}
 		}
 
-		OT_EXCEPT("Unknown member [%s] in class [%s]", name.c_str(), type->getName().c_str());
+		throw OtException(OtFormat("Unknown member [%s] in instance of class [%s]", name.c_str(), type->getName().c_str()));
 		return nullptr;
 	}
 

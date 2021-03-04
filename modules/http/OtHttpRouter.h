@@ -240,7 +240,7 @@ private:
 	// add handler
 	OtObject add(const std::string& method, OtObject context, size_t count, OtObject* parameters) {
 		if (count != 2) {
-			OT_EXCEPT("Function expects 2 parameters, %d given", count);
+			throw OtException(OtFormat("Function expects 2 parameters, %d given", count));
 		}
 
 		handlers.push_back(std::make_shared<OtMethodHandler>(method, context, (std::string) (*parameters[0]), parameters[1]));
@@ -261,7 +261,7 @@ public:
 	// add handlers
 	OtObject use(OtObject context, size_t count, OtObject* parameters) {
 		if (count != 1) {
-			OT_EXCEPT("Use function expects 1 parameters, %d given", count);
+			throw OtException(OtFormat("Use function expects 1 parameters, %d given", count));
 		}
 
 		handlers.push_back(std::make_shared<OtMethodHandler>("", context, "*", parameters[0]));

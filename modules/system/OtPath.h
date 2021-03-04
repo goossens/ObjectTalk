@@ -26,7 +26,7 @@ public:
 	// initialize path
 	OtObject init(OtObject, size_t count, OtObject* parameters) {
 		if (count != 1) {
-			OT_EXCEPT("Path initializer expected 1 parameter not [%d]", count);
+			throw OtException(OtFormat("Path initializer expected 1 parameter not [%d]", count));
 		}
 
 		path = parameters[0]->operator std::string();

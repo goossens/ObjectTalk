@@ -365,7 +365,7 @@ inline std::string OtTextFromJSON(const std::string text) {
 							c += 4;
 
 						} else {
-							OT_EXCEPT("Invalid UTF-8 string in JSON", false);
+							throw OtException("Invalid UTF-8 string in JSON");
 						}
 
 						break;

@@ -136,7 +136,7 @@ private:
 				});
 
 			} else {
-				OT_EXCEPT("llhttp error in llhttp_execute: %s", llhttp_errno_name((llhttp_errno_t) nread));
+				throw OtException(OtFormat("llhttp error in llhttp_execute: %s", llhttp_errno_name((llhttp_errno_t) nread)));
 			}
 
 			// free buffer data

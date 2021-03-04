@@ -259,6 +259,10 @@ public:
 			}
 		}
 
+		// save information on previous token
+		lastTokenStart = tokenStart;
+		lastTokenEnd = tokenEnd;
+
 		// save start of token
 		tokenStart = position;
 		tokenLine = lineNumber;
@@ -359,6 +363,9 @@ public:
 			}
 		}
 
+		// save end of token
+		tokenEnd = position;
+
 		// return the token we just scanned
 		return token;
 	}
@@ -367,8 +374,8 @@ public:
 	OtToken getToken() { return token; }
 	bool matchToken(OtToken _token) { return token == _token; }
 	size_t getTokenStart() { return tokenStart; }
+	size_t getLastTokenEnd() { return lastTokenEnd; }
 	std::string getText() { return text.substr(tokenStart, position - tokenStart); }
-	std::string getTextFrom(size_t start) { return text.substr(start, tokenStart - start); }
 	long getInteger() { return integerValue; }
 	double getReal() { return realValue; }
 	std::string getString() { return stringValue; }
@@ -405,7 +412,12 @@ public:
 		marker +='^';
 
 		// throw exception
-		OT_EXCEPT("%s on line %d:\n%s\n%s", message.c_str(), tokenLine, line.c_str(), marker.c_str());
+		throw OtException(OtFormat(
+			"%s on line %d:\n%s\n%s",
+			message.c_str(),
+			tokenLine,
+			line.c_str(),
+			marker.c_str()));
 	}
 
 	// see if the current token is equal to the specified token
@@ -455,6 +467,9 @@ public:
 	size_t position;
 	size_t lineNumber;
 	size_t tokenStart;
+	size_t tokenEnd;
+	size_t lastTokenStart;
+	size_t lastTokenEnd;
 	size_t tokenLine;
 
 	OtToken token;

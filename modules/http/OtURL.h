@@ -27,7 +27,7 @@ public:
 	// initialize URL
 	OtObject init(OtObject, size_t count, OtObject* parameters) {
 		if (count != 1) {
-			OT_EXCEPT("URL initializer expected 1 parameter not [%d]", count);
+			throw OtException(OtFormat("URL initializer expected 1 parameter not [%d]", count));
 		}
 
 		parse(parameters[0]->operator std::string());
@@ -80,7 +80,7 @@ public:
 		std::smatch match;
 
 		if (!std::regex_match(url, match, urlRegex)) {
-			OT_EXCEPT("Invalid URL [%s]", url.c_str());
+			throw OtException(OtFormat("Invalid URL [%s]", url.c_str()));
 		}
 
 		scheme = submatch(match, 1);
@@ -101,7 +101,7 @@ public:
 			std::smatch authorityMatch;
 
 			if (!std::regex_match(authority, authorityMatch, authorityRegex)) {
-				OT_EXCEPT("Invalid URL authority [%s]", authority.c_str());
+				throw OtException(OtFormat("Invalid URL authority [%s]", authority.c_str()));
 			}
 
 			username = submatch(authorityMatch, 1);

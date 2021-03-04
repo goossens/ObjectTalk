@@ -114,7 +114,7 @@ private:
 				std::ifstream stream(module.c_str());
 				std::stringstream buffer;
 				buffer << stream.rdbuf();
-				set("__SRC__", OtStringClass::create(buffer.str()));
+				stream.close();
 
 				OtCompiler compiler;
 				OtCode code = compiler.compile(buffer.str());
@@ -129,15 +129,11 @@ private:
 				void* lib = dlopen(module.c_str(), RTLD_LAZY);
 
 				if (!lib) {
-					OT_EXCEPT("Can't import module [%s], error [%s]", name.c_str(), dlerror());
+					throw OtException(OtFormat("Can't import module [%s], error [%s]", name.c_str(), dlerror()));
 				}
 
 				void (*init)(OtObject) = (void (*)(OtObject)) dlsym(lib, "init");
-
-				if (!init) {
-					OT_EXCEPT("No [init] function in module [%s]", name.c_str());
-				}
-
+				OT_ASSERT(init);
 				(*init)(getSharedPtr());
 #endif
 
@@ -145,6 +141,6 @@ private:
 			}
 		}
 
-		OT_EXCEPT("Can't import module [%s]", name.c_str());
+		throw OtException(OtFormat("Can't import module [%s]", name.c_str()));
 	}
 };

@@ -21,11 +21,10 @@ public:
 	// call function
 	OtObject operator () (OtObject context, size_t count, OtObject* parameters) {
 		// sanity check
-		if (!executable) {
-			OT_EXCEPT("Function not initialized", false);
+		OT_ASSERT(executable);
 
-		} else if (parameterCount != SIZE_MAX && count != parameterCount) {
-			OT_EXCEPT("Function expects %d parameters, %d given", parameterCount, count);
+		if (parameterCount != SIZE_MAX && count != parameterCount) {
+			throw OtException(OtFormat("Function expects %d parameters, %d given", parameterCount, count));
 		}
 
 		return executable(context, count, parameters);

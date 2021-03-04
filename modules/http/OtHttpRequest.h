@@ -143,7 +143,7 @@ public:
 			auto parsed = multipartparser_execute(&multipartParser, &multipartCallbacks, data, length);
 
 			if (parsed != length) {
-				OT_EXCEPT("Invalid multipart", false);
+				throw OtException("Invalid multipart");
 			}
 
 		} else {
@@ -237,7 +237,7 @@ public:
 			});
 
 		} else {
-			OT_EXCEPT("Content-Disposition missing in multipart", false);
+			throw OtException("Content-Disposition missing in multipart");
 		}
 	}
 
@@ -325,7 +325,8 @@ public:
 				dict->operator[] (i->first) = OtStringClass::create(i->second);
 
 			} else {
-				std::string value = *(dict->operator[] (i->first)) + "; " + i->second;
+				std::string value = *(dict->operator[] (i->first));
+				value += "; " + i->second;
 				dict->operator[] (i->first) = OtStringClass::create(value);
 			}
 		}

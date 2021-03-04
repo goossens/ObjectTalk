@@ -19,3 +19,5 @@ private:
 };
 
 #define OT_EXCEPT(format, ...) throw OtException(OtFormat("%s: line %d: " format, __FILE__, __LINE__, __VA_ARGS__))
+#define OT_ASSERT(assertion) if (!assertion) OT_EXCEPT("Assertion error: %s", #assertion)
+#define OT_DEBUG(value) std::cout << value << std::endl

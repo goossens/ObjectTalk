@@ -22,45 +22,9 @@ public:
 		set("null", nullptr);
 
 		// add default functions
-
-		// assert()
-		set("assert", OtFunctionClass::create([] (OtObject context, size_t c, OtObject* p)->OtObject {
-			if (c != 1) {
-				throw OtException(OtFormat("Function [assert] expects 1 parameter, %d given", c));
-			}
-
-			std::string assertion = p[0]->operator std::string();
-			OtCompiler compiler;
-			OtCode code = compiler.compile(assertion);
-			OtObject result = code->operator ()(context);
-
-			if (!result->operator bool()) {
-				throw OtException(OtFormat("Assertion [%s] failed", assertion.c_str()));
-			}
-
-			return nullptr;
-		}));
-
-		// import()
-		set("import", OtFunctionClass::create([] (OtObject context, size_t c, OtObject* p)->OtObject
-		{
-			if (c != 1) {
-				throw OtException(OtFormat("Function [import] expects 1 parameter, %d given", c));
-			}
-
-			OtModule module = OtModuleClass::create();
-			return module->import(p[0]->operator std::string());
-		}));
-
-		// print()
-		set("print", OtFunctionClass::create([] (OtObject, size_t c, OtObject* p)->OtObject {
-			for (size_t i = 0; i < c; i++) {
-				std::cout << (std::string) *p[i];
-			}
-
-			std::cout << std::endl;
-			return nullptr;
-		}));
+		set("assert", OtFunctionClass::create(&OtGlobalClass::doAssert));
+		set("import", OtFunctionClass::create(&OtGlobalClass::import));
+		set("print", OtFunctionClass::create(&OtGlobalClass::print));
 
 		// add default classes
 		set("Object", OtClassClass::create(OtObjectClass::getMeta()));
@@ -75,6 +39,29 @@ public:
 		set("Collection", OtClassClass::create(OtCollectionClass::getMeta()));
 		set("Array", OtClassClass::create(OtArrayClass::getMeta()));
 		set("Dict", OtClassClass::create(OtDictClass::getMeta()));
+	}
+
+	// check assertion
+	static void doAssert(bool condition) {
+		if (!condition) {
+			throw OtException("Assertion error");
+		}
+	}
+
+	// import module
+	static OtObject import(const std::string name) {
+		OtModule module = OtModuleClass::create();
+		return module->import(name);
+	}
+
+	// print to STDOUT
+	static OtObject print(OtObject context, size_t count, OtObject* parameters) {
+		for (size_t i = 0; i < count; i++) {
+			std::cout << (std::string) *parameters[i];
+		}
+
+		std::cout << std::endl;
+		return nullptr;
 	}
 
 	// get type definition

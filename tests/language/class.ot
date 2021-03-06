@@ -6,8 +6,8 @@
 
 //	Test script for ObjectTalk classes
 
-assert('1.getClass().getName() == "Integer"')
-assert('1.getClass().getClass().getName() == "Class"')
+assert(1.getClass().getName() == "Integer")
+assert(1.getClass().getClass().getName() == "Class")
 
 theClass = 1.getClass()
 path = theClass.getName()
@@ -17,7 +17,7 @@ while theClass.hasParent() {
 	path += "->" + theClass.getName()
 }
 
-assert('path == "Integer->Primitive->Object"')
+assert(path == "Integer->Primitive->Object")
 
 class MyObject : Object {
 	function pedigree(this) {
@@ -42,22 +42,22 @@ class MyObject : Object {
 }
 
 test = MyObject()
-assert('test.pedigree() == "MyObject->Object"')
-assert('test.useless("useless") == "MyObject->Object"')
+assert(test.pedigree() == "MyObject->Object")
+assert(test.useless("useless") == "MyObject->Object")
 
 pedigree = test.pedigree
-assert('pedigree.getClass().getName() == "BoundFunction"')
-assert('pedigree() == "MyObject->Object"')
+assert(pedigree.getClass().getName() == "BoundFunction")
+assert(pedigree() == "MyObject->Object")
 
 test.set(12)
-assert('test.value == 12')
+assert(test.value == 12)
 
 set = test.set
 set(14)
-assert('test.value == 14')
+assert(test.value == 14)
 
 test.value = 16
-assert('test.value == 16')
+assert(test.value == 16)
 
 class ClassMember : Object {
 	constant = 13
@@ -68,8 +68,8 @@ class ClassMember : Object {
 }
 
 test = ClassMember()
-assert('test.constant == 13')
-assert('test.test() == 13')
+assert(test.constant == 13)
+assert(test.test() == 13)
 
 // Well done
 print("Passed all class tests")

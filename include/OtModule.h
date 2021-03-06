@@ -23,7 +23,7 @@ public:
 		return getSharedPtr();
 	}
 
-	// // load module and run in specified context
+	// load module and run in specified context
 	OtObject run(const std::string& name, OtObject context=nullptr) {
 		setParent(context);
 		return load(name);

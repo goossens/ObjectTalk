@@ -10,6 +10,8 @@
 //
 
 class OtTypeClass : public std::enable_shared_from_this<OtTypeClass> {
+	typedef OtObject(*OtConstructor)();
+
 public:
 	// constructor
 	OtTypeClass(const std::string& n, OtType p, OtConstructor c=nullptr) {
@@ -22,8 +24,8 @@ public:
 	OtObject instantiate();
 
 	// create a sub-type
-	OtType subType(const std::string& n, OtConstructor c=nullptr) {
-		return std::make_shared<OtTypeClass>(n, getSharedPtr(), c);
+	OtType subType(const std::string& n) {
+		return std::make_shared<OtTypeClass>(n, getSharedPtr());
 	}
 
 	// get shared pointer
@@ -40,8 +42,6 @@ public:
 		return false;
 	}
 
-	bool isKindOf(OtType metaclass)  { return isKindOf(metaclass->name); }
-
 	// get information
 	std::string getName() { return name; }
 	OtType getParent() { return parent; }
@@ -54,12 +54,10 @@ public:
 	// create a new type
 	template <class T>
 	static OtType create(const std::string& name, OtType parent=nullptr) {
-		return std::make_shared<OtTypeClass>(name, parent, []() { return std::make_shared<T>(); });
+		return std::make_shared<OtTypeClass>(name, parent, []() {
+			return (OtObject) std::make_shared<T>();
+		});
 	}
-
-	// cast to different type
-	template <class T>
-	static std::shared_ptr<T> cast(OtObject object) { return std::dynamic_pointer_cast<T>(object); }
 
 private:
 	// attributes

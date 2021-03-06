@@ -235,7 +235,7 @@ public:
 			else if (text[position] =='/' && text[position + 1] =='/') {
 				position += 2;
 
-				while (position < size && !(text[position + 1] =='\n')) {
+				while (position < size && !(text[position] == '\n')) {
 					position++;
 				}
 
@@ -248,7 +248,7 @@ public:
 			// skip shell style comments
 				position++;
 
-				while (position < size && !(text[position + 1] =='\n')) {
+				while (position < size && !(text[position] == '\n')) {
 					position++;
 				}
 
@@ -306,12 +306,11 @@ public:
 				token = INTEGER_TOKEN;
 			}
 
-		} else if (text[position] =='"' || text[position] =='\'') {
+		} else if (text[position] =='"') {
 			// handle strings
-			auto terminator = text[position++];
-			auto start = position;
+			auto start = ++position;
 
-			while (position < size && text[position] != terminator) {
+			while (position < size && text[position] != '"') {
 				if (text[position] =='\n') {
 					lineNumber++;
 				}

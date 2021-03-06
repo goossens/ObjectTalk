@@ -22,14 +22,8 @@ typedef std::shared_ptr<OtObjectClass> OtObject;
 
 
 //
-//	OtConstructor
+//	OtClass
 //
 
-typedef std::function<OtObject ()> OtConstructor;
-
-
-//
-//	OtExecutable
-//
-
-typedef std::function<OtObject (OtObject context, size_t count, OtObject* parameters)> OtExecutable;
+class OtClassClass;
+typedef std::shared_ptr<OtClassClass> OtClass;

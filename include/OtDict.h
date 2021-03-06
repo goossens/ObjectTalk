@@ -67,8 +67,8 @@ public:
 
 			if (!type) {
 				type = OtTypeClass::create<OtDictReferenceClass>("DictReference", OtInternalClass::getMeta());
-				type->set("__deref__", OtFunctionCreate(&OtDictReferenceClass::deref));
-				type->set("__assign__", OtFunctionCreate(&OtDictReferenceClass::assign));
+				type->set("__deref__", OtFunctionClass::create(&OtDictReferenceClass::deref));
+				type->set("__assign__", OtFunctionClass::create(&OtDictReferenceClass::assign));
 			}
 
 			return type;
@@ -146,16 +146,16 @@ public:
 			type = OtTypeClass::create<OtDictClass>("Dict", OtCollectionClass::getMeta());
 
 			type->set("__init__", OtFunctionClass::create(&OtDictClass::init));
-			type->set("__index__", OtFunctionCreate(&OtDictClass::index));
+			type->set("__index__", OtFunctionClass::create(&OtDictClass::index));
 
-			type->set("size", OtFunctionCreate(&OtDictClass::mySize));
+			type->set("size", OtFunctionClass::create(&OtDictClass::mySize));
 
-			type->set("clone", OtFunctionCreate(&OtDictClass::clone));
-			type->set("clear", OtFunctionCreate(&OtDictClass::clear));
-			type->set("erase", OtFunctionCreate(&OtDictClass::eraseEntry));
+			type->set("clone", OtFunctionClass::create(&OtDictClass::clone));
+			type->set("clear", OtFunctionClass::create(&OtDictClass::clear));
+			type->set("erase", OtFunctionClass::create(&OtDictClass::eraseEntry));
 
-			type->set("keys", OtFunctionCreate(&OtDictClass::keys));
-			type->set("values", OtFunctionCreate(&OtDictClass::values));
+			type->set("keys", OtFunctionClass::create(&OtDictClass::keys));
+			type->set("values", OtFunctionClass::create(&OtDictClass::values));
 		}
 
 		return type;

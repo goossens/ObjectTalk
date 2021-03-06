@@ -419,25 +419,25 @@ public:
 		if (!type) {
 			type = OtTypeClass::create<OtHttpRequestClass>("HttpRequest", OtInternalClass::getMeta());
 
-			type->set("getMethod", OtFunctionCreate(&OtHttpRequestClass::getMethod));
-			type->set("getURL", OtFunctionCreate(&OtHttpRequestClass::getURL));
-			type->set("getPath", OtFunctionCreate(&OtHttpRequestClass::getPath));
-			type->set("getVersion", OtFunctionCreate(&OtHttpRequestClass::getVersion));
+			type->set("getMethod", OtFunctionClass::create(&OtHttpRequestClass::getMethod));
+			type->set("getURL", OtFunctionClass::create(&OtHttpRequestClass::getURL));
+			type->set("getPath", OtFunctionClass::create(&OtHttpRequestClass::getPath));
+			type->set("getVersion", OtFunctionClass::create(&OtHttpRequestClass::getVersion));
 
-			type->set("hasHeader", OtFunctionCreate(&OtHttpRequestClass::hasHeader));
-			type->set("headerIs", OtFunctionCreate(&OtHttpRequestClass::hasHeader));
-			type->set("getHeader", OtFunctionCreate(&OtHttpRequestClass::getHeader));
-			type->set("getHeaders", OtFunctionCreate(&OtHttpRequestClass::getHeaders));
+			type->set("hasHeader", OtFunctionClass::create(&OtHttpRequestClass::hasHeader));
+			type->set("headerIs", OtFunctionClass::create(&OtHttpRequestClass::hasHeader));
+			type->set("getHeader", OtFunctionClass::create(&OtHttpRequestClass::getHeader));
+			type->set("getHeaders", OtFunctionClass::create(&OtHttpRequestClass::getHeaders));
 
-			type->set("hasParam", OtFunctionCreate(&OtHttpRequestClass::hasParam));
-			type->set("getParam", OtFunctionCreate(&OtHttpRequestClass::getParam));
+			type->set("hasParam", OtFunctionClass::create(&OtHttpRequestClass::hasParam));
+			type->set("getParam", OtFunctionClass::create(&OtHttpRequestClass::getParam));
 
-			type->set("hasCookie", OtFunctionCreate(&OtHttpRequestClass::hasCookie));
-			type->set("getCookie", OtFunctionCreate(&OtHttpRequestClass::getCookie));
+			type->set("hasCookie", OtFunctionClass::create(&OtHttpRequestClass::hasCookie));
+			type->set("getCookie", OtFunctionClass::create(&OtHttpRequestClass::getCookie));
 
-			type->set("getBody", OtFunctionCreate(&OtHttpRequestClass::getBody));
+			type->set("getBody", OtFunctionClass::create(&OtHttpRequestClass::getBody));
 
-			type->set("debug", OtFunctionCreate(&OtHttpRequestClass::debug));
+			type->set("debug", OtFunctionClass::create(&OtHttpRequestClass::debug));
 		}
 
 		return type;

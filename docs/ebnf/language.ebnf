@@ -48,6 +48,6 @@ primary ::= "(" expression ")"
 
 integer ::= [-]? [0-9][0-9]*
 real ::= [-]? [0-9][0-9]*.[0-9][0-9]* ([Ee] [-]? [0-9][0-9]*)?
-string ::= '"' (Char - '"')* '"' | "'" (Char - "'")* "'"
+string ::= '"' (Char - ["\] | '\' ["\bfnrt] | "\u"  [0-9A-Fa-f] [0-9A-Fa-f] [0-9A-Fa-f] [0-9A-Fa-f])* '"'
 function ::= "function" "(" (name ("," name)* | "...") ")" statement
 name ::= [a-zA-Z_][a-zA-Z0-9_]*

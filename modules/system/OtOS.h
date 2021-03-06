@@ -60,10 +60,10 @@ public:
 		if (!type) {
 			type = OtTypeClass::create<OtOSClass>("OS", OtSystemClass::getMeta());
 
-			type->set("hasenv", OtFunctionCreate(&OtOSClass::hasenv));
-			type->set("getenv", OtFunctionCreate(&OtOSClass::getenv));
-			type->set("setenv", OtFunctionCreate(&OtOSClass::setenv));
-			type->set("unsetenv", OtFunctionCreate(&OtOSClass::unsetenv));
+			type->set("hasenv", OtFunctionClass::create(&OtOSClass::hasenv));
+			type->set("getenv", OtFunctionClass::create(&OtOSClass::getenv));
+			type->set("setenv", OtFunctionClass::create(&OtOSClass::setenv));
+			type->set("unsetenv", OtFunctionClass::create(&OtOSClass::unsetenv));
 		}
 
 		return type;

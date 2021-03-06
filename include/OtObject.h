@@ -22,7 +22,6 @@ public:
 
 	// see if object "is kind of"
 	bool isKindOf(const std::string& className) { return type->isKindOf(className); }
-	bool isKindOf(OtType t)  { return type->isKindOf(t); }
 
 	// default conversion operators
 	virtual operator bool() { return false; }
@@ -34,6 +33,13 @@ public:
 
 	// get object's JSON representation
 	virtual std::string json() { return operator std::string(); }
+
+	// methods to allow binding to virtual member functions
+	bool toBoolean() { return operator bool(); }
+	long toInteger() { return operator long(); }
+	double toReal() { return operator double(); }
+	std::string toString() { return operator std::string(); }
+	std::string toJSON() { return json(); }
 
 	// get shared pointer
 	OtObject getSharedPtr() { return shared_from_this(); }
@@ -92,6 +98,9 @@ public:
 	virtual void eraseMember(const std::string& name) { if (members) members->erase(name); }
 	virtual void clearMembers() { members = nullptr; }
 
+	// support member operator
+	OtObject member(const std::string& name);
+
 	// "call" object (context, count, parameters)
 	virtual OtObject operator () (OtObject, size_t, OtObject*) { return nullptr; }
 
@@ -102,6 +111,8 @@ public:
 		std::copy(p, p + n, pars + 1);
 		return get(m)->operator ()(c, n + 1, pars);
 	}
+
+	OtClass getClass();
 
 	// cast shared pointer to specified type
 	template <typename T>

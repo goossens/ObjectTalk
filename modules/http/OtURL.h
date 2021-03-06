@@ -162,24 +162,24 @@ public:
 			type = OtTypeClass::create<OtURLClass>("Path", OtHttpClass::getMeta());
 			type->set("__init__", OtFunctionClass::create(&OtURLClass::init));
 
-			type->set("url", OtFunctionCreate(&OtURLClass::getURL));
-			type->set("scheme", OtFunctionCreate(&OtURLClass::getScheme));
-			type->set("authority", OtFunctionCreate(&OtURLClass::getAuthority));
-			type->set("user", OtFunctionCreate(&OtURLClass::getUsername));
-			type->set("password", OtFunctionCreate(&OtURLClass::getPassword));
-			type->set("host", OtFunctionCreate(&OtURLClass::getHost));
-			type->set("port", OtFunctionCreate(&OtURLClass::getPort));
-			type->set("path", OtFunctionCreate(&OtURLClass::getPath));
-			type->set("directory", OtFunctionCreate(&OtURLClass::getDirectory));
-			type->set("filename", OtFunctionCreate(&OtURLClass::getFilename));
-			type->set("stem", OtFunctionCreate(&OtURLClass::getStem));
-			type->set("extension", OtFunctionCreate(&OtURLClass::getExtension));
-			type->set("query", OtFunctionCreate(&OtURLClass::getQuery));
-			type->set("fragment", OtFunctionCreate(&OtURLClass::getFragment));
+			type->set("url", OtFunctionClass::create(&OtURLClass::getURL));
+			type->set("scheme", OtFunctionClass::create(&OtURLClass::getScheme));
+			type->set("authority", OtFunctionClass::create(&OtURLClass::getAuthority));
+			type->set("user", OtFunctionClass::create(&OtURLClass::getUsername));
+			type->set("password", OtFunctionClass::create(&OtURLClass::getPassword));
+			type->set("host", OtFunctionClass::create(&OtURLClass::getHost));
+			type->set("port", OtFunctionClass::create(&OtURLClass::getPort));
+			type->set("path", OtFunctionClass::create(&OtURLClass::getPath));
+			type->set("directory", OtFunctionClass::create(&OtURLClass::getDirectory));
+			type->set("filename", OtFunctionClass::create(&OtURLClass::getFilename));
+			type->set("stem", OtFunctionClass::create(&OtURLClass::getStem));
+			type->set("extension", OtFunctionClass::create(&OtURLClass::getExtension));
+			type->set("query", OtFunctionClass::create(&OtURLClass::getQuery));
+			type->set("fragment", OtFunctionClass::create(&OtURLClass::getFragment));
 
-			type->set("hasParam", OtFunctionCreate(&OtURLClass::hasParam));
-			type->set("getParam", OtFunctionCreate(&OtURLClass::getParam));
-			type->set("getParamWithDefault", OtFunctionCreate(&OtURLClass::getParamWithDefault));
+			type->set("hasParam", OtFunctionClass::create(&OtURLClass::hasParam));
+			type->set("getParam", OtFunctionClass::create(&OtURLClass::getParam));
+			type->set("getParamWithDefault", OtFunctionClass::create(&OtURLClass::getParamWithDefault));
 		}
 
 		return type;

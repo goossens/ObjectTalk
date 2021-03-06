@@ -52,8 +52,8 @@ public:
 
 			if (!type) {
 				type = OtTypeClass::create<OtStringReferenceClass>("StringReference", OtInternalClass::getMeta());
-				type->set("__deref__", OtFunctionCreate(&OtStringReferenceClass::deref));
-				type->set("__assign__", OtFunctionCreate(&OtStringReferenceClass::assign));
+				type->set("__deref__", OtFunctionClass::create(&OtStringReferenceClass::deref));
+				type->set("__assign__", OtFunctionClass::create(&OtStringReferenceClass::assign));
 			}
 
 			return type;
@@ -105,8 +105,8 @@ public:
 
 			if (!type) {
 				type = OtTypeClass::create<OtStringIteratorClass>("StringIterator", OtInternalClass::getMeta());
-				type->set("__end__", OtFunctionCreate(&OtStringIteratorClass::end));
-				type->set("__next__", OtFunctionCreate(&OtStringIteratorClass::next));
+				type->set("__end__", OtFunctionClass::create(&OtStringIteratorClass::end));
+				type->set("__next__", OtFunctionClass::create(&OtStringIteratorClass::next));
 			}
 
 			return type;
@@ -168,36 +168,36 @@ public:
 		if (!type) {
 			type = OtTypeClass::create<OtStringClass>("String", OtPrimitiveClass::getMeta());
 
-			type->set("__index__", OtFunctionCreate(&OtStringClass::index));
-			type->set("__iter__", OtFunctionCreate(&OtStringClass::iterate));
-			type->set("__add__", OtFunctionCreate(&OtStringClass::add));
+			type->set("__index__", OtFunctionClass::create(&OtStringClass::index));
+			type->set("__iter__", OtFunctionClass::create(&OtStringClass::iterate));
+			type->set("__add__", OtFunctionClass::create(&OtStringClass::add));
 
-			type->set("__eq__", OtFunctionCreate(&OtStringClass::equal));
-			type->set("__ne__", OtFunctionCreate(&OtStringClass::notEqual));
-			type->set("__gt__", OtFunctionCreate(&OtStringClass::greaterThan));
-			type->set("__lt__", OtFunctionCreate(&OtStringClass::lessThan));
-			type->set("__ge__", OtFunctionCreate(&OtStringClass::greaterEqual));
-			type->set("__le__", OtFunctionCreate(&OtStringClass::lessEqual));
+			type->set("__eq__", OtFunctionClass::create(&OtStringClass::equal));
+			type->set("__ne__", OtFunctionClass::create(&OtStringClass::notEqual));
+			type->set("__gt__", OtFunctionClass::create(&OtStringClass::greaterThan));
+			type->set("__lt__", OtFunctionClass::create(&OtStringClass::lessThan));
+			type->set("__ge__", OtFunctionClass::create(&OtStringClass::greaterEqual));
+			type->set("__le__", OtFunctionClass::create(&OtStringClass::lessEqual));
 
-			type->set("casecmp", OtFunctionCreate(&OtStringClass::casecmp));
+			type->set("casecmp", OtFunctionClass::create(&OtStringClass::casecmp));
 
-			type->set("len", OtFunctionCreate(&OtStringClass::len));
+			type->set("len", OtFunctionClass::create(&OtStringClass::len));
 
-			type->set("left", OtFunctionCreate(&OtStringClass::left));
-			type->set("right", OtFunctionCreate(&OtStringClass::right));
-			type->set("mid", OtFunctionCreate(&OtStringClass::mid));
+			type->set("left", OtFunctionClass::create(&OtStringClass::left));
+			type->set("right", OtFunctionClass::create(&OtStringClass::right));
+			type->set("mid", OtFunctionClass::create(&OtStringClass::mid));
 
-			type->set("find", OtFunctionCreate(&OtStringClass::find));
-			type->set("startsWith", OtFunctionCreate(&OtStringClass::startsWith));
-			type->set("contains", OtFunctionCreate(&OtStringClass::contains));
+			type->set("find", OtFunctionClass::create(&OtStringClass::find));
+			type->set("startsWith", OtFunctionClass::create(&OtStringClass::startsWith));
+			type->set("contains", OtFunctionClass::create(&OtStringClass::contains));
 
-			type->set("trim", OtFunctionCreate(&OtStringClass::trim));
-			type->set("ltrim", OtFunctionCreate(&OtStringClass::ltrim));
-			type->set("rtrim", OtFunctionCreate(&OtStringClass::rtrim));
-			type->set("compress", OtFunctionCreate(&OtStringClass::compress));
+			type->set("trim", OtFunctionClass::create(&OtStringClass::trim));
+			type->set("ltrim", OtFunctionClass::create(&OtStringClass::ltrim));
+			type->set("rtrim", OtFunctionClass::create(&OtStringClass::rtrim));
+			type->set("compress", OtFunctionClass::create(&OtStringClass::compress));
 
-			type->set("lower", OtFunctionCreate(&OtStringClass::lower));
-			type->set("upper", OtFunctionCreate(&OtStringClass::upper));
+			type->set("lower", OtFunctionClass::create(&OtStringClass::lower));
+			type->set("upper", OtFunctionClass::create(&OtStringClass::upper));
 		}
 
 		return type;

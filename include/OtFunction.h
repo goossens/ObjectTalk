@@ -13,21 +13,26 @@ class OtFunctionClass;
 typedef std::shared_ptr<OtFunctionClass> OtFunction;
 
 class OtFunctionClass : public OtPrimitiveClass {
+	typedef OtObject (*OtInvoke)(void* target, OtObject context, size_t count, OtObject* parameters);
+
 public:
 	// constructors
 	OtFunctionClass() = default;
-	OtFunctionClass(size_t p, OtExecutable e) : parameterCount(p), executable(e) {}
+	OtFunctionClass(OtInvoke i, void* t, size_t p) : invoker(i), target(t), parameterCount(p) {}
+
+	// destructor
+	~OtFunctionClass() {
+		free(target);
+	}
 
 	// call function
 	OtObject operator () (OtObject context, size_t count, OtObject* parameters) {
 		// sanity check
-		OT_ASSERT(executable);
-
 		if (parameterCount != SIZE_MAX && count != parameterCount) {
 			throw OtException(OtFormat("Function expects %d parameters, %d given", parameterCount, count));
 		}
 
-		return executable(context, count, parameters);
+		return (*invoker)(target, context, count, parameters);
 	}
 
 	// get type definition
@@ -42,117 +47,133 @@ public:
 		return type;
 	}
 
-	// create a new function
-	static OtFunction create(size_t c, OtExecutable e) {
-		OtFunction func = std::make_shared<OtFunctionClass>(c, e);
+	// invoke functions by type
+	template<typename FUNCTION, size_t... I>
+	inline static OtObject invokeVoidFunction(void* t, OtObject* p, std::index_sequence<I...>) {
+		(*((FUNCTION*) t))(*p[I]...);
+		return nullptr;
+	}
+
+	template<typename FUNCTION, size_t... I>
+	inline static OtObject invokeFunction(void* t, OtObject* p, std::index_sequence<I...>) {
+		return OtObjectCreate((*((FUNCTION*) t))(*p[I]...));
+	}
+
+	template<typename CLASS, typename METHOD, size_t... I>
+	inline static OtObject invokeVoidMethod(void* t, OtObject* p, std::index_sequence<I...>) {
+		auto object = p[0]->cast<CLASS>();
+		auto method = *((METHOD*) t);
+		((*object).*method)(*p[I + 1]...);
+		return nullptr;
+	}
+
+	template<typename CLASS, typename METHOD, size_t... I>
+	inline static OtObject invokeMethod(void* t, OtObject* p, std::index_sequence<I...>) {
+		auto object = p[0]->cast<CLASS>();
+		auto method = *((METHOD*) t);
+		return OtObjectCreate(((*object).*method)(*p[I + 1]...));
+	}
+
+	// helper function to associate type with object
+	static OtFunction createWithType(OtFunction func) {
 		func->setType(getMeta());
 		return func;
 	}
 
-	static OtFunction create(OtExecutable e) {
-		OtFunction func = std::make_shared<OtFunctionClass>(SIZE_MAX, e);
-		func->setType(getMeta());
-		return func;
+	// create new function bindings by function type
+	static OtFunction create(OtObject (*function)(OtObject, size_t, OtObject*)) {
+		typedef decltype(function) FUNCTION;
+		FUNCTION* target = (FUNCTION*) malloc(sizeof(FUNCTION));
+		*target = function;
+
+		struct Helper {
+			static OtObject invoke(void* t, OtObject c, size_t n, OtObject* p) {
+				return (*((FUNCTION*) t))(c, n, p);
+			}
+		};
+
+		return createWithType(std::make_shared<OtFunctionClass>(&Helper::invoke, target, SIZE_MAX));
 	}
 
-	template<typename Class>
-	static OtFunction create(OtObject (Class::*function)(OtObject, size_t, OtObject*)) {
-		return create(SIZE_MAX, [function] (OtObject context, size_t c, OtObject* p)->OtObject {
-			return (*OtTypeClass::cast<Class>(p[0]).*function)(context, c - 1, p + 1);
-		});
+	template<typename RETURN, typename ...ARGS>
+	static OtFunction create(RETURN (*function)(ARGS...)) {
+		typedef decltype(function) FUNCTION;
+		FUNCTION* target = (FUNCTION*) malloc(sizeof(FUNCTION));
+		*target = function;
+
+		struct Helper {
+			static OtObject invoke(void* t, OtObject c, size_t n, OtObject* p) {
+				return invokeFunction<FUNCTION>(t, p, std::index_sequence_for<ARGS...>());
+			}
+		};
+
+		return createWithType(std::make_shared<OtFunctionClass>(&Helper::invoke, target, sizeof...(ARGS)));
+	}
+
+	template<typename ...ARGS>
+	static OtFunction create(void (*function)(ARGS...)) {
+		typedef decltype(function) FUNCTION;
+		FUNCTION* target = (FUNCTION*) malloc(sizeof(FUNCTION));
+		*target = function;
+
+		struct Helper {
+			static OtObject invoke(void* t, OtObject c, size_t n, OtObject* p) {
+				return invokeVoidFunction<FUNCTION>(t, p, std::index_sequence_for<ARGS...>());
+			}
+		};
+
+		return createWithType(std::make_shared<OtFunctionClass>(&Helper::invoke, target, sizeof...(ARGS)));
+	}
+
+	template<typename CLASS>
+	static OtFunction create(OtObject (CLASS::*method)(OtObject, size_t, OtObject*)) {
+		typedef decltype(method) METHOD;
+		METHOD* target = (METHOD*) malloc(sizeof(METHOD));
+		*target = method;
+
+		struct Helper {
+			static OtObject invoke(void* t, OtObject c, size_t n, OtObject* p) {
+				auto object = p[0]->cast<CLASS>();
+				auto method = *((METHOD*) t);
+				return ((*object).*method)(c, n - 1, p + 1);
+			}
+		};
+
+		return createWithType(std::make_shared<OtFunctionClass>(&Helper::invoke, target, SIZE_MAX));
+	}
+
+	template<typename CLASS, typename ...ARGS>
+	static OtFunction create(void (CLASS::*method)(ARGS...)) {
+		typedef decltype(method) METHOD;
+		METHOD* target = (METHOD*) malloc(sizeof(METHOD));
+		*target = method;
+
+		struct Helper {
+			static OtObject invoke(void* t, OtObject c, size_t n, OtObject* p) {
+				return invokeVoidMethod<CLASS, METHOD>(t, p, std::index_sequence_for<ARGS...>());
+			}
+		};
+
+		return createWithType(std::make_shared<OtFunctionClass>(&Helper::invoke, target, sizeof...(ARGS) + 1));
+	}
+
+	template<typename CLASS, typename RETURN, typename ...ARGS>
+	static OtFunction create(RETURN (CLASS::*method)(ARGS...)) {
+		typedef decltype(method) METHOD;
+		METHOD* target = (METHOD*) malloc(sizeof(METHOD));
+		*target = method;
+
+		struct Helper {
+			static OtObject invoke(void* t, OtObject c, size_t n, OtObject* p) {
+				return invokeMethod<CLASS, METHOD>(t, p, std::index_sequence_for<ARGS...>());
+			}
+		};
+
+		return createWithType(std::make_shared<OtFunctionClass>(&Helper::invoke, target, sizeof...(ARGS) + 1));
 	}
 
 protected:
+	OtInvoke invoker {nullptr};
+	void* target {nullptr};
 	size_t parameterCount {0};
-	OtExecutable executable {nullptr};
 };
-
-
-//
-//	Create function object for non-void functions
-//
-
-template<typename Function, size_t... I>
-OtObject OtFunctionCaller(Function function, std::index_sequence<I...>) {
-	return OtFunctionClass::create(sizeof...(I), [function] (OtObject, size_t, OtObject* p)->OtObject {
-		return OtObjectCreate(function(*p[I]...));
-	});
-}
-
-template<typename Result, typename ... Args>
-OtObject OtFunctionCreate(Result (*function)(Args...)) {
-	return OtFunctionCaller(function, std::index_sequence_for<Args...>());
-}
-
-template<typename Result, typename ... Args>
-OtObject OtFunctionCreate(std::function<Result (Args...)> function) {
-	return OtFunctionCaller(function, std::index_sequence_for<Args...>());
-}
-
-
-//
-//	Create function object for void functions
-//
-
-template<typename Function, size_t... I>
-OtObject OtFunctionCallerVoid(Function function, std::index_sequence<I...>) {
-	return OtFunctionClass::create(sizeof...(I), [function] (OtObject, size_t, OtObject* p)->OtObject {
-		function(*p[I]...);
-		return nullptr;
-	});
-}
-
-template<typename ... Args>
-OtObject OtFunctionCreate(void (*function)(Args...)) {
-	return OtFunctionCallerVoid(function, std::index_sequence_for<Args...>());
-}
-
-template<typename ... Args>
-OtObject OtFunctionCreate(std::function<void (Args...)> function) {
-	return OtFunctionCallerVoid(function, std::index_sequence_for<Args...>());
-}
-
-
-//
-//	Create function object for non-void member functions
-//
-
-template<typename Class, typename Method, size_t... I>
-OtObject OtMethodCaller(Method method, std::index_sequence<I...>) {
-	return OtFunctionClass::create(sizeof...(I) + 1, [method] (OtObject, size_t, OtObject* p)->OtObject {
-		return OtObjectCreate(method(OtTypeClass::cast<Class>(p[0]), *p[I + 1]...));
-	});
-}
-
-template<typename Result, typename Class, typename... Args>
-OtObject OtFunctionCreate(Result (Class::*function)(Args...)) {
-	std::function<Result(std::shared_ptr<Class>, Args...)> method = function;
-	return OtMethodCaller<Class>(method, std::index_sequence_for<Args...>());
-}
-
-
-//
-//	Create function object for void member functions
-//
-
-template<typename Class, typename Method, size_t... I>
-OtObject OtMethodCallerVoid(Method method, std::index_sequence<I...>) {
-	return OtFunctionClass::create(sizeof...(I) + 1, [method] (OtObject, size_t, OtObject* p)->OtObject {
-		method(OtTypeClass::cast<Class>(p[0]), *p[I + 1]...);
-		return nullptr;
-	});
-}
-
-template<typename Class, typename... Args>
-OtObject OtFunctionCreate(void (Class::*function)(Args...)) {
-	std::function<void(std::shared_ptr<Class>, Args...)> method = function;
-	return OtMethodCallerVoid<Class>(method, std::index_sequence_for<Args...>());
-}
-
-
-//
-//	Overloaded conversion function for ObjectTalk function calls
-//
-
-inline OtObject OtObjectCreate(size_t c, OtExecutable e) { return OtFunctionClass::create(c, e); }
-inline OtObject OtObjectCreate(OtExecutable e) { return OtFunctionClass::create(e); }

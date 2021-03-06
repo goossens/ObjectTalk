@@ -39,7 +39,7 @@ protected:
 
 			if (!type) {
 				type = OtTypeClass::create<OtHttpNotFoundClass>("HttpNotFound", OtInternalClass::getMeta());
-				type->set("__call__", OtFunctionCreate(&OtHttpNotFoundClass::call));
+				type->set("__call__", OtFunctionClass::create(&OtHttpNotFoundClass::call));
 			}
 
 			return type;
@@ -81,7 +81,7 @@ private:
 
 			if (!type) {
 				type = OtTypeClass::create<OtHttpNextClass>("HttpNext", OtInternalClass::getMeta());
-				type->set("__call__", OtFunctionCreate(&OtHttpNextClass::call));
+				type->set("__call__", OtFunctionClass::create(&OtHttpNextClass::call));
 			}
 
 			return type;
@@ -309,8 +309,8 @@ public:
 			type->set("put", OtFunctionClass::create(&OtHttpRouterClass::put));
 			type->set("post", OtFunctionClass::create(&OtHttpRouterClass::post));
 			type->set("delete", OtFunctionClass::create(&OtHttpRouterClass::del));
-			type->set("static", OtFunctionCreate(&OtHttpRouterClass::staticFiles));
-			type->set("__call__", OtFunctionCreate(&OtHttpRouterClass::call));
+			type->set("static", OtFunctionClass::create(&OtHttpRouterClass::staticFiles));
+			type->set("__call__", OtFunctionClass::create(&OtHttpRouterClass::call));
 		}
 
 		return type;

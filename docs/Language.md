@@ -134,7 +134,7 @@ for visualizing grammar.
 ## string
 ![Railroad Diagram](ebnf/string.png)
 
-    string ::= '"' (Char - '"')* '"' | "'" (Char - "'")* "'"
+    string ::= '"' (Char - ["\] | '\' ["\bfnrt] | "\u"  [0-9A-Fa-f] [0-9A-Fa-f] [0-9A-Fa-f] [0-9A-Fa-f])* '"'
 
 ## function
 ![Railroad Diagram](ebnf/function.png)

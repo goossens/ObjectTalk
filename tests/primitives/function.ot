@@ -18,20 +18,20 @@ function test(s, f) {
 	return f(s)
 }
 
-assert('test("Hello", lower) == "hello"')
-assert('test("Hello", upper) == "HELLO"')
+assert(test("Hello", lower) == "hello")
+assert(test("Hello", upper) == "HELLO")
 
 trim = function(s) {
 	return s.trim()
 }
 
-assert('trim(" test  ") == "test"')
+assert(trim(" test  ") == "test")
 
 global = 1;
 
-assert('test(true, function(bool) {
+assert(test(true, function(bool) {
 	return bool == true && global == 1
-}) == true')
+}) == true)
 
 // Well done
 print("Passed all function tests")

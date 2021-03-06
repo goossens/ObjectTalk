@@ -47,9 +47,9 @@ In the expression above b gets converted to a String as the addition
 operator is applied to a String object that wants its argument to be
 a string.
 
-Strings in ObjectTalk are captured in single or double quotes and can
-span multiple lines. Strings may contain UTF-8 characters (like "€") or
-use JSON style encoding (like "Most Europeans like the \u00C4.\n").
+Strings in ObjectTalk are captured in double quotes and can span
+multiple lines. Strings may contain UTF-8 characters (like "€") or
+use JSON style encoding like "Most Europeans like the \u00C4.\n".
 
 In ObjectTalk, a function is a primitive value. This means that
 we can pass a function around like any other primitive. The following

@@ -41,12 +41,12 @@ public:
 		if (!type) {
 			type = OtTypeClass::create<OtBooleanClass>("Boolean", OtPrimitiveClass::getMeta());
 
-			type->set("__and__", OtFunctionCreate(&OtBooleanClass::logicalAnd));
-			type->set("__or__", OtFunctionCreate(&OtBooleanClass::logicalOr));
-			type->set("__not__", OtFunctionCreate(&OtBooleanClass::logicalNot));
+			type->set("__and__", OtFunctionClass::create(&OtBooleanClass::logicalAnd));
+			type->set("__or__", OtFunctionClass::create(&OtBooleanClass::logicalOr));
+			type->set("__not__", OtFunctionClass::create(&OtBooleanClass::logicalNot));
 
-			type->set("__eq__", OtFunctionCreate(&OtBooleanClass::equal));
-			type->set("__ne__", OtFunctionCreate(&OtBooleanClass::notEqual));
+			type->set("__eq__", OtFunctionClass::create(&OtBooleanClass::equal));
+			type->set("__ne__", OtFunctionClass::create(&OtBooleanClass::notEqual));
 		}
 
 		return type;

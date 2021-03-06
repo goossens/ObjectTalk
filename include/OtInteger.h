@@ -64,35 +64,35 @@ public:
 		if (!type) {
 			type = OtTypeClass::create<OtIntegerClass>("Integer", OtPrimitiveClass::getMeta());
 
-			type->set("__add__", OtFunctionCreate(&OtIntegerClass::add));
-			type->set("__sub__", OtFunctionCreate(&OtIntegerClass::subtract));
-			type->set("__mul__", OtFunctionCreate(&OtIntegerClass::multiply));
-			type->set("__div__", OtFunctionCreate(&OtIntegerClass::divide));
-			type->set("__mod__", OtFunctionCreate(&OtIntegerClass::modulo));
-			type->set("__pow__", OtFunctionCreate(&OtIntegerClass::power));
+			type->set("__add__", OtFunctionClass::create(&OtIntegerClass::add));
+			type->set("__sub__", OtFunctionClass::create(&OtIntegerClass::subtract));
+			type->set("__mul__", OtFunctionClass::create(&OtIntegerClass::multiply));
+			type->set("__div__", OtFunctionClass::create(&OtIntegerClass::divide));
+			type->set("__mod__", OtFunctionClass::create(&OtIntegerClass::modulo));
+			type->set("__pow__", OtFunctionClass::create(&OtIntegerClass::power));
 
-			type->set("__inc__", OtFunctionCreate(&OtIntegerClass::increment));
-			type->set("__dec__", OtFunctionCreate(&OtIntegerClass::decrement));
+			type->set("__inc__", OtFunctionClass::create(&OtIntegerClass::increment));
+			type->set("__dec__", OtFunctionClass::create(&OtIntegerClass::decrement));
 
-			type->set("__lshift__", OtFunctionCreate(&OtIntegerClass::shiftLeft));
-			type->set("__rshift__", OtFunctionCreate(&OtIntegerClass::shiftRight));
+			type->set("__lshift__", OtFunctionClass::create(&OtIntegerClass::shiftLeft));
+			type->set("__rshift__", OtFunctionClass::create(&OtIntegerClass::shiftRight));
 
-			type->set("__band__", OtFunctionCreate(&OtIntegerClass::bitwiseAnd));
-			type->set("__bor__", OtFunctionCreate(&OtIntegerClass::bitwiseOr));
-			type->set("__bxor__", OtFunctionCreate(&OtIntegerClass::bitwiseXor));
-			type->set("__bnot__", OtFunctionCreate(&OtIntegerClass::bitwiseNot));
+			type->set("__band__", OtFunctionClass::create(&OtIntegerClass::bitwiseAnd));
+			type->set("__bor__", OtFunctionClass::create(&OtIntegerClass::bitwiseOr));
+			type->set("__bxor__", OtFunctionClass::create(&OtIntegerClass::bitwiseXor));
+			type->set("__bnot__", OtFunctionClass::create(&OtIntegerClass::bitwiseNot));
 
-			type->set("__eq__", OtFunctionCreate(&OtIntegerClass::equal));
-			type->set("__ne__", OtFunctionCreate(&OtIntegerClass::notEqual));
-			type->set("__gt__", OtFunctionCreate(&OtIntegerClass::greaterThan));
-			type->set("__lt__", OtFunctionCreate(&OtIntegerClass::lessThan));
-			type->set("__ge__", OtFunctionCreate(&OtIntegerClass::greaterEqual));
-			type->set("__le__", OtFunctionCreate(&OtIntegerClass::lessEqual));
+			type->set("__eq__", OtFunctionClass::create(&OtIntegerClass::equal));
+			type->set("__ne__", OtFunctionClass::create(&OtIntegerClass::notEqual));
+			type->set("__gt__", OtFunctionClass::create(&OtIntegerClass::greaterThan));
+			type->set("__lt__", OtFunctionClass::create(&OtIntegerClass::lessThan));
+			type->set("__ge__", OtFunctionClass::create(&OtIntegerClass::greaterEqual));
+			type->set("__le__", OtFunctionClass::create(&OtIntegerClass::lessEqual));
 
-			type->set("__neg__", OtFunctionCreate(&OtIntegerClass::negate));
+			type->set("__neg__", OtFunctionClass::create(&OtIntegerClass::negate));
 
-			type->set("abs", OtFunctionCreate(&OtIntegerClass::abs));
-			type->set("sign", OtFunctionCreate(&OtIntegerClass::sign));
+			type->set("abs", OtFunctionClass::create(&OtIntegerClass::abs));
+			type->set("sign", OtFunctionClass::create(&OtIntegerClass::sign));
 		}
 
 		return type;

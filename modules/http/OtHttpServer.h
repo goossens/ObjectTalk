@@ -194,8 +194,8 @@ public:
 
 		if (!type) {
 			type = OtTypeClass::create<OtHttpServerClass>("HttpServer", OtHttpRouterClass::getMeta());
-			type->set("listen", OtFunctionCreate(&OtHttpServerClass::listen));
-			type->set("run", OtFunctionCreate(&OtHttpServerClass::run));
+			type->set("listen", OtFunctionClass::create(&OtHttpServerClass::listen));
+			type->set("run", OtFunctionClass::create(&OtHttpServerClass::run));
 		}
 
 		return type;

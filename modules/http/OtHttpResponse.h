@@ -281,14 +281,14 @@ public:
 
 		if (!type) {
 			type = OtTypeClass::create<OtHttpResponseClass>("HttpResponse", OtInternalClass::getMeta());
-			type->set("setStatus", OtFunctionCreate(&OtHttpResponseClass::setStatus));
-			type->set("setHeader", OtFunctionCreate(&OtHttpResponseClass::setHeader));
-			type->set("hasHeader", OtFunctionCreate(&OtHttpResponseClass::hasHeader));
-			type->set("end", OtFunctionCreate(&OtHttpResponseClass::end));
-			type->set("send", OtFunctionCreate(&OtHttpResponseClass::send));
-			type->set("sendfile", OtFunctionCreate(&OtHttpResponseClass::sendfile));
-			type->set("download", OtFunctionCreate(&OtHttpResponseClass::download));
-			type->set("json", OtFunctionCreate(&OtHttpResponseClass::json));
+			type->set("setStatus", OtFunctionClass::create(&OtHttpResponseClass::setStatus));
+			type->set("setHeader", OtFunctionClass::create(&OtHttpResponseClass::setHeader));
+			type->set("hasHeader", OtFunctionClass::create(&OtHttpResponseClass::hasHeader));
+			type->set("end", OtFunctionClass::create(&OtHttpResponseClass::end));
+			type->set("send", OtFunctionClass::create(&OtHttpResponseClass::send));
+			type->set("sendfile", OtFunctionClass::create(&OtHttpResponseClass::sendfile));
+			type->set("download", OtFunctionClass::create(&OtHttpResponseClass::download));
+			type->set("json", OtFunctionClass::create(&OtHttpResponseClass::json));
 		}
 
 		return type;

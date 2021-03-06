@@ -13,6 +13,9 @@ test: debug
 http: debug
 	gdb --args ./debug/bin/ot examples/http.ot
 
+leaks: debug
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./debug/bin/ot examples/hello.ot
+
 release:
 	cmake -Brelease -DCMAKE_BUILD_TYPE=Release
 	cd release && make
@@ -29,17 +32,18 @@ cleanup:
 	perl -i -pe 's/\s+\n/\n/' $(SRC) $(INC)
 	ls $(SRC) $(INC) | xargs -o -n 1 vim -c 'set ts=4|set noet|%retab!|wq'
 
+alpine:
+	cd docker/alpine && ./run
+
+ubuntu:
+	cd docker/ubuntu && ./run
+
 clean:
 	rm -rf debug release xcode
 
-docker:
-	docker build -t ot .
-	docker run --interactive --tty --name ot --publish 80:80 --volume $(shell pwd):/ot ot sh
-	docker container rm ot
-
-dockerclean:
-	docker container rm ot; true
-	docker image rm ot; true
-
+distclean: clean
+	cd docker/alpine && ./clean
+	cd docker/ubuntu && ./clean
+	
 apk:
 	abuild -F release

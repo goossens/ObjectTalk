@@ -1,0 +1,4 @@
+#!/bin/sh
+
+docker container rm ot-ubuntu; true
+docker image rm ot-ubuntu; true

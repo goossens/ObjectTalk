@@ -1,0 +1,5 @@
+#!/bin/sh
+
+docker build -t ot-ubuntu .
+docker run --interactive --tty --name ot-ubuntu --publish 80:80 --volume $(cd ../..; pwd):/ot ot-ubuntu sh
+docker container rm ot-ubuntu

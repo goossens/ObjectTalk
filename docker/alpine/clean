@@ -1,0 +1,4 @@
+#!/bin/sh
+
+docker container rm ot-alpine; true
+docker image rm ot-alpine; true

@@ -12,11 +12,11 @@
 class OtHttpHeadersComparator {
 public:
 	bool operator()(const std::string& s1, const std::string& s2) const {
-		return OtTextCaseCmp(s1, s2) < 0;
+		return OtTextCaseCmp(s1, s2) == 0;
 	}
 };
 
-class OtHttpHeaders : public std::multimap<std::string, std::string, OtHttpHeadersComparator> {
+class OtHttpHeaders : public std::unordered_multimap<std::string, std::string, std::hash<std::string>, OtHttpHeadersComparator> {
 public:
 	bool has(const std::string& name) {
 		return find(name) != end();

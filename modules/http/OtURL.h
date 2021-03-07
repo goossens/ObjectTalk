@@ -63,7 +63,7 @@ public:
 		return hasParam(p) ? getParam(p) : d;
 	}
 
-	const std::map<std::string, std::string> getParams() {
+	const std::unordered_map<std::string, std::string> getParams() {
 		return queryParams;
 	}
 
@@ -212,5 +212,5 @@ private:
 	std::string extension;
 	std::string query;
 	std::string fragment;
-	std::map<std::string, std::string> queryParams;
+	std::unordered_map<std::string, std::string> queryParams;
 };

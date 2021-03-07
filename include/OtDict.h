@@ -12,7 +12,7 @@
 class OtDictClass;
 typedef std::shared_ptr<OtDictClass> OtDict;
 
-class OtDictClass : public OtCollectionClass, public std::map<std::string, OtObject> {
+class OtDictClass : public OtCollectionClass, public std::unordered_map<std::string, OtObject> {
 public:
 	// convert dictionary to string
 	operator std::string() {

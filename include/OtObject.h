@@ -70,7 +70,7 @@ public:
 
 	virtual OtObject set(const std::string& name, OtObject value) {
 		if (!members) {
-			members = std::make_shared<std::map<std::string, OtObject>>();
+			members = std::make_shared<std::unordered_map<std::string, OtObject>>();
 		}
 
 		members->operator [] (name) = value;
@@ -134,7 +134,7 @@ protected:
 	OtType type;
 
 	// members
-	std::shared_ptr<std::map<std::string, OtObject>> members;
+	std::shared_ptr<std::unordered_map<std::string, OtObject>> members;
 
 	// parent in chain
 	OtObject parent;

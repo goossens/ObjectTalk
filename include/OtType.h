@@ -89,6 +89,6 @@ private:
 	// attributes
 	std::string name;
 	OtType parent;
-	std::map<std::string, OtObject> members;
+	std::unordered_map<std::string, OtObject> members;
 	OtConstructor constructor;
 };

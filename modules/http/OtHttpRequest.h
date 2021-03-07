@@ -466,8 +466,8 @@ private:
 	std::string headerValue;
 	OtHttpHeaders headers;
 
-	std::map<std::string, std::string> params;
-	std::map<std::string, std::string> cookies;
+	std::unordered_map<std::string, std::string> params;
+	std::unordered_map<std::string, std::string> cookies;
 
 	std::string body;
 

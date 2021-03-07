@@ -5,7 +5,7 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 
-static std::map<std::string, std::string> OtMimeType = {
+static std::unordered_map<std::string, std::string> OtMimeType = {
 	{"css", "text/css"},
 	{"csv", "text/csv"},
 

@@ -453,7 +453,7 @@ public:
 	};
 
 	// token lookup
-	std::map<OtToken, std::string> tokens;
+	std::unordered_map<OtToken, std::string> tokens;
 
 	// token state/transition table
 	std::vector<OtScannerState> stateTable;

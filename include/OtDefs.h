@@ -10,7 +10,7 @@
 //
 
 class OtTypeClass;
-typedef std::shared_ptr<OtTypeClass> OtType;
+typedef OtTypeClass* OtType;
 
 
 //

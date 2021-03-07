@@ -11,14 +11,15 @@
 
 class OtObjectClass : public std::enable_shared_from_this<OtObjectClass> {
 public:
-	// constructor/destructor
+	// constructor
 	OtObjectClass() = default;
+
+	// destructor
 	virtual ~OtObjectClass() {}
 
 	// type access
-	OtObject setType(OtType t) { type = t; return shared_from_this(); }
+	void setType(OtType t) { type = t; }
 	OtType getType() { return type; }
-	std::string getTypeName() { return type->getName(); }
 
 	// see if object "is kind of"
 	bool isKindOf(const std::string& className) { return type->isKindOf(className); }
@@ -115,15 +116,17 @@ public:
 	OtClass getClass();
 
 	// cast shared pointer to specified type
-	template <typename T>
-	std::shared_ptr<T> cast() { return std::dynamic_pointer_cast<T>(shared_from_this()); }
+	template <typename CLASS>
+	std::shared_ptr<CLASS> cast() { return std::dynamic_pointer_cast<CLASS>(shared_from_this()); }
 
 	// get type definition
 	static OtType getMeta();
 
 	// create a new object
 	static OtObject create() {
-		return std::make_shared<OtObjectClass>()->setType(getMeta());
+		OtObject object = std::make_shared<OtObjectClass>();
+		object->setType(getMeta());
+		return object;
 	}
 
 protected:

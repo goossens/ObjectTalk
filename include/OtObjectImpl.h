@@ -131,10 +131,10 @@ OtClass OtObjectClass::getClass() {
 //
 
 OtType OtObjectClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtObjectClass>("Object");
+		type = OtTypeClass::create<OtObjectClass>("Object", nullptr);
 
 		type->set("boolean", OtFunctionClass::create(&OtObjectClass::toBoolean));
 		type->set("integer", OtFunctionClass::create(&OtObjectClass::toInteger));

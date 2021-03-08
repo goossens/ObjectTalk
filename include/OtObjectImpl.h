@@ -19,7 +19,7 @@ public:
 	OtBoundFunctionClass(OtObject o, OtObject f) : object(o), function(f) {}
 
 	// call bound function
-	OtObject operator () (OtObject context, size_t count, OtObject* parameters) {
+	OtObject operator () (OtContext context, size_t count, OtObject* parameters) {
 		OtObject pars[count + 1];
 		pars[0] = object;
 

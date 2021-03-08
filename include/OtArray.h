@@ -37,7 +37,7 @@ public:
 	}
 
 	// clear array and add all parameters
-	OtObject init(OtObject, size_t count, OtObject* parameters) {
+	OtObject init(OtContext, size_t count, OtObject* parameters) {
 		clear();
 
 		for (auto c = 0; c < count; c++) {
@@ -152,7 +152,7 @@ public:
 		bool result = false;
 
 		for (auto it = begin(); it != end() && !result; it++) {
-			result = value->method("__eq__", OtObjectClass::create(), 1, &(*it))->operator bool();
+			result = value->method("__eq__", OtContextClass::create(), 1, &(*it))->operator bool();
 		}
 
 		return OtBooleanClass::create(result);
@@ -168,7 +168,7 @@ public:
 		long result = -1;
 
 		for (auto i = 0; i < size() && result == -1; i++) {
-			if (value->method("__eq__", OtObjectClass::create(), 1, &(operator[] (i)))->operator bool()) {
+			if (value->method("__eq__", OtContextClass::create(), 1, &(operator[] (i)))->operator bool()) {
 				result = i;
 			}
 		}

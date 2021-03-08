@@ -8,7 +8,7 @@
 //	OtClass
 //
 
-class OtClassClass : public OtInternalClass {
+class OtClassClass : public OtContextClass {
 public:
 	// constructors
 	OtClassClass() = default;
@@ -29,7 +29,7 @@ public:
 	OtObject set(const std::string& name, OtObject value) { return classType->set(name, value); }
 
 	// call operator
-	OtObject operator () (OtObject context, size_t count, OtObject* parameters) {
+	OtObject operator () (OtContext context, size_t count, OtObject* parameters) {
 		// create new instance
 		OtObject value = classType->instantiate();
 
@@ -53,7 +53,7 @@ public:
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtClassClass>("Class", OtInternalClass::getMeta());
+			type = OtTypeClass::create<OtClassClass>("Class", OtContextClass::getMeta());
 			type->set("__call__", OtFunctionClass::create(&OtClassClass::operator ()));
 			type->set("getName", OtFunctionClass::create(&OtClassClass::getName));
 			type->set("hasParent", OtFunctionClass::create(&OtClassClass::hasParent));

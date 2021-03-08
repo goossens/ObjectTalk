@@ -65,11 +65,19 @@ class ClassMember : Object {
 	function test(this) {
 		return this.constant
 	}
+
+	function cb(this, callback) {
+		return callback(this.constant)
+	}
 }
 
 test = ClassMember()
 assert(test.constant == 13)
 assert(test.test() == 13)
+
+assert(test.cb(function(value) {
+	return value + 1
+}) == 14)
 
 // Well done
 print("Passed all class tests")

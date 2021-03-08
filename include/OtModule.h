@@ -12,7 +12,7 @@
 class OtModuleClass;
 typedef std::shared_ptr<OtModuleClass> OtModule;
 
-class OtModuleClass : public OtInternalClass {
+class OtModuleClass : public OtContextClass {
 public:
 	// constructor
 	OtModuleClass() = default;
@@ -24,7 +24,7 @@ public:
 	}
 
 	// load module and run in specified context
-	OtObject run(const std::string& name, OtObject context=nullptr) {
+	OtObject run(const std::string& name, OtContext context=nullptr) {
 		setParent(context);
 		return load(name);
 	}
@@ -34,7 +34,7 @@ public:
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtModuleClass>("Module", OtInternalClass::getMeta());
+			type = OtTypeClass::create<OtModuleClass>("Module", OtContextClass::getMeta());
 		}
 
 		return type;
@@ -118,7 +118,7 @@ private:
 
 				OtCompiler compiler;
 				OtCode code = compiler.compile(buffer.str());
-				return code->operator ()(getSharedPtr());
+				return code->operator ()(getSharedPtr()->cast<OtContextClass>());
 
 #if defined(WINVER)
 			} else if (module.extension() == ".dll") {

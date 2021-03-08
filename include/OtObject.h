@@ -45,17 +45,17 @@ public:
 	// get shared pointer
 	OtObject getSharedPtr() { return shared_from_this(); }
 
-	// parent access
-	void setParent(OtObject v) { parent = v; }
-	OtObject getParent() { return parent; }
-
 	// member acccess
-	bool has(const std::string& name) {
-		if (members && members->count(name)) {
-			return true;
-		}
+	bool hasMember(const std::string& name) {
+		return members && members->count(name);
+	}
 
-		if (parent && parent->has(name)) {
+	OtObject getMember(const std::string& name) {
+		return members->operator [] (name);
+	}
+
+	virtual bool has(const std::string& name) {
+		if (hasMember(name)) {
 			return true;
 		}
 
@@ -77,13 +77,9 @@ public:
 		return value;
 	}
 
-	OtObject get(const std::string& name) {
-		if (members && members->count(name)) {
-			return members->operator [] (name);
-		}
-
-		if (parent && parent->has(name)) {
-			return parent->get(name);
+	virtual OtObject get(const std::string& name) {
+		if (hasMember(name)) {
+			return getMember(name);
 		}
 
 		for (auto t = type; t; t = t->getParent()) {
@@ -103,10 +99,10 @@ public:
 	OtObject member(const std::string& name);
 
 	// "call" object (context, count, parameters)
-	virtual OtObject operator () (OtObject, size_t, OtObject*) { return nullptr; }
+	virtual OtObject operator () (OtContext, size_t, OtObject*) { return nullptr; }
 
 	// "call" named object member
-	OtObject method(const std::string& m, OtObject c, size_t n, OtObject* p) {
+	OtObject method(const std::string& m, OtContext c, size_t n, OtObject* p) {
 		OtObject pars[n + 1];
 		pars[0] = shared_from_this();
 		std::copy(p, p + n, pars + 1);
@@ -135,9 +131,6 @@ protected:
 
 	// members
 	std::shared_ptr<std::unordered_map<std::string, OtObject>> members;
-
-	// parent in chain
-	OtObject parent;
 };
 
 

@@ -12,7 +12,7 @@
 class OtGlobalClass;
 typedef std::shared_ptr<OtGlobalClass> OtGlobal;
 
-class OtGlobalClass : public OtInternalClass {
+class OtGlobalClass : public OtContextClass {
 public:
 	// constructor (create a default ObjectTalk context)
 	OtGlobalClass() {
@@ -55,7 +55,7 @@ public:
 	}
 
 	// print to STDOUT
-	static OtObject print(OtObject context, size_t count, OtObject* parameters) {
+	static OtObject print(OtContext context, size_t count, OtObject* parameters) {
 		for (size_t i = 0; i < count; i++) {
 			std::cout << (std::string) *parameters[i];
 		}
@@ -69,7 +69,7 @@ public:
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtGlobalClass>("Global", OtInternalClass::getMeta());
+			type = OtTypeClass::create<OtGlobalClass>("Global", OtContextClass::getMeta());
 		}
 
 		return type;

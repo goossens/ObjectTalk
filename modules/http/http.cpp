@@ -24,6 +24,7 @@
 #include "OtHttpHeaders.h"
 #include "OtHttpRequest.h"
 #include "OtHttpResponse.h"
+#include "OtHttpNotFound.h"
 #include "OtHttpRouter.h"
 #include "OtHttpServer.h"
 
@@ -32,7 +33,7 @@
 //	Network module
 //
 
-extern "C" void init(OtObject context) {
+extern "C" void init(OtContext context) {
 	context->set("Net", OtClassClass::create(OtHttpClass::getMeta()));
 	context->set("URL", OtClassClass::create(OtURLClass::getMeta()));
 	context->set("HttpRouter", OtClassClass::create(OtHttpRouterClass::getMeta()));

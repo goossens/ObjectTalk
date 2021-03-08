@@ -36,7 +36,7 @@ public:
 	}
 
 	// initializer
-	OtObject init(OtObject, size_t count, OtObject* parameters) {
+	OtObject init(OtContext, size_t count, OtObject* parameters) {
 		// clear dictionary and add all calling parameters
 		clear();
 

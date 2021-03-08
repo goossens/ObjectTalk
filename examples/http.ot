@@ -6,6 +6,10 @@
 
 http = import("http")
 
+function info(req, res, next) {
+	res.send("info")
+}
+
 class MyHttpServer : http.HttpServer {
 	function __init__(this) {
 		this.use(function(req, res, next) {
@@ -15,7 +19,7 @@ class MyHttpServer : http.HttpServer {
 
 		this.static("/static", __DIR__ + "/static")
 
-		this.get("/info", this.info)
+		this.get("/info", info)
 
 		this.get("/info2", function(req, res, next) {
 			res.json({
@@ -43,13 +47,9 @@ class MyHttpServer : http.HttpServer {
 		})
 
 		this.get("/stop", function(req, res, next) {
-			this.stop()
 			res.send("Server stopping")
+			this.stop()
 		})
-	}
-
-	function info(this, req, res, next) {
-		res.send("info")
 	}
 }
 

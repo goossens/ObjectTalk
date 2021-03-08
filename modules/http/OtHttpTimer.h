@@ -15,7 +15,7 @@ typedef std::shared_ptr<OtHttpTimerClass> OtHttpTimer;
 class OtHttpTimerClass : public OtInternalClass {
 public:
 	OtHttpTimerClass() = default;
-	OtHttpTimerClass(long wait, long repeat, OtObject ctx, OtObject cb) : context(ctx), callback(cb) {
+	OtHttpTimerClass(long wait, long repeat, OtContext ctx, OtObject cb) : context(ctx), callback(cb) {
 		uv_timer_init(uv_default_loop(), &uv_timer);
 		uv_timer.data = this;
 
@@ -37,7 +37,7 @@ public:
 	}
 
 	// create a new object
-	static OtHttpTimer create(long wait, long repeat, OtObject context, OtObject callback) {
+	static OtHttpTimer create(long wait, long repeat, OtContext context, OtObject callback) {
 		OtHttpTimer timer = std::make_shared<OtHttpTimerClass>(wait, repeat, context, callback);
 		timer->setType(getMeta());
 		return timer;
@@ -45,6 +45,6 @@ public:
 
 private:
 	uv_timer_t uv_timer;
-	OtObject context;
+	OtContext context;
 	OtObject callback;
 };

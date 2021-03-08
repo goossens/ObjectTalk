@@ -27,3 +27,11 @@ typedef std::shared_ptr<OtObjectClass> OtObject;
 
 class OtClassClass;
 typedef std::shared_ptr<OtClassClass> OtClass;
+
+
+//
+//	OtContext
+//
+
+class OtContextClass;
+typedef std::shared_ptr<OtContextClass> OtContext;

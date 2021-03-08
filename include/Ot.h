@@ -50,6 +50,8 @@
 #include "OtObject.h"
 #include "OtInternal.h"
 
+#include "OtContext.h"
+
 #include "OtPrimitive.h"
 #include "OtFunction.h"
 #include "OtBoolean.h"
@@ -58,12 +60,14 @@
 #include "OtString.h"
 
 #include "OtClass.h"
+#include "OtContextReference.h"
 
 #include "OtCollection.h"
 #include "OtArray.h"
 #include "OtDict.h"
 
 #include "OtCode.h"
+#include "OtCodeFunction.h"
 #include "OtScanner.h"
 #include "OtCompiler.h"
 #include "OtModule.h"

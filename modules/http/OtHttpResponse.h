@@ -150,13 +150,13 @@ public:
 	}
 
 	// write string as part of body
-	OtObject write(const char* text, size_t size) {
+	OtObject write(const char* data, size_t size) {
 		if (state == START) {
 			sendHeaders();
 		}
 
 		// send body
-		uv_buf_t buffer = uv_buf_init(strndup(text, size), size);
+		uv_buf_t buffer = uv_buf_init(strndup(data, size), size);
 		uv_write_t* uv_write_req = (uv_write_t*) malloc(sizeof(uv_write_t));
 		uv_write_req->data = buffer.base;
 
@@ -168,8 +168,8 @@ public:
 		return getSharedPtr();
 	}
 
-	OtObject write(const std::string& text) {
-		return write(text.c_str(), text.size());
+	OtObject write(const std::string& data) {
+		return write(data.c_str(), data.size());
 	}
 
 	// end the response
@@ -227,27 +227,56 @@ public:
 			headers.emplace("Content-Length", std::to_string(std::filesystem::file_size(name)));
 			headers.emplace("Content-Type", OtMimeTypeGet(path.extension().string().substr(1, std::string::npos)));
 
-			// create pipe to file
-			uv_pipe_init(uv_default_loop(), &fileStream, 0);
-			auto fd = uv_fs_open(uv_default_loop(), &file_req, name.c_str(), O_RDONLY, 0, nullptr);
-			uv_pipe_open(&fileStream, fd);
+			// open file
+			uv_fs_t open_req;
+			auto status = uv_fs_open(uv_default_loop(), &open_req, name.c_str(), O_RDONLY, 0, nullptr);
+			UV_CHECK_ERROR("uv_fs_open", status);
+			uv_fs_req_cleanup(&open_req);
+			uv_read_fd = open_req.result;
 
-			fileStream.data = this;
+			uv_read_req.data = this;
+			uv_read_buffer = (char*) malloc(64 * 1024);
+			uv_buf_t buffer = uv_buf_init(uv_read_buffer, 64 * 1024);
 
-			// allocate memory and attempt to read file
-			auto status = uv_read_start(
-				(uv_stream_t*) &fileStream,
-				[](uv_handle_t* handle, size_t size, uv_buf_t* buffer) {
-					*buffer = uv_buf_init((char*) malloc(size), size);
-				},
-				[](uv_stream_t* stream, ssize_t nread, const uv_buf_t* buffer) {
-					((OtHttpResponseClass*)(stream->data))->onFileRead(buffer, nread);
-				});
+			status = uv_fs_read(uv_default_loop(), &uv_read_req, uv_read_fd, &buffer, 1, -1, [](uv_fs_t* req) {
+				uv_fs_req_cleanup(req);
+				OtHttpResponseClass* res = (OtHttpResponseClass*) req->data;
+				((OtHttpResponseClass*)(req->data))->onFileRead(req->result);
+			});
 
-			UV_CHECK_ERROR("uv_read_start", status);
+			UV_CHECK_ERROR("uv_fs_read", status);
 		}
 
 		return getSharedPtr();
+	}
+
+	// handle file read events
+	void onFileRead(ssize_t size) {
+		if (size > 0) {
+			// write file to socket
+			write(uv_read_buffer, size);
+
+			// continue reading
+			uv_buf_t buffer = uv_buf_init(uv_read_buffer, 64 * 1024);
+
+			auto status = uv_fs_read(uv_default_loop(), &uv_read_req, uv_read_fd, &buffer, 1, -1, [](uv_fs_t* req) {
+				uv_fs_req_cleanup(req);
+				OtHttpResponseClass* res = (OtHttpResponseClass*) req->data;
+				((OtHttpResponseClass*)(req->data))->onFileRead(req->result);
+			});
+
+			UV_CHECK_ERROR("uv_fs_read", status);
+
+		} else if (size == 0) {
+			uv_fs_t close_req;
+			uv_fs_close(uv_default_loop(), &close_req, uv_read_fd, nullptr);
+			uv_fs_req_cleanup(&close_req);
+			free(uv_read_buffer);
+			end();
+
+		} else {
+			UV_CHECK_ERROR("uv_fs_read", size);
+		}
 	}
 
 	// download user file
@@ -255,24 +284,6 @@ public:
 		std::filesystem::path path(name);
 		headers.emplace("Content-Disposition", "attachment; filename=" + path.filename().string());
 		return sendfile(name);
-	}
-
-	// handle file read events
-	void onFileRead(const uv_buf_t* buffer, ssize_t nread) {
-		if (nread > 0) {
-			// write file to socket
-			write(buffer->base, nread);
-
-		} else if (nread == UV_EOF) {
-			uv_close((uv_handle_t*) &fileStream, nullptr);
-			end();
-
-		} else {
-			UV_CHECK_ERROR("uv_read_start", nread);
-		}
-
-		// free buffer data
-		free(buffer->base);
 	}
 
 	// get type definition
@@ -314,6 +325,7 @@ private:
 	OtHttpHeaders headers;
 
 	uv_stream_t* clientStream;
-	uv_pipe_t fileStream;
-	uv_fs_t file_req;
+	ssize_t uv_read_fd;
+	uv_fs_t uv_read_req;
+	char* uv_read_buffer;
 };

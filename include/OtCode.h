@@ -81,7 +81,7 @@ public:
 	void patch(size_t location) { at(location).integer = size(); }
 
 	// call code
-	OtObject operator ()(OtObject context, size_t start=0, size_t end=SIZE_MAX) {
+	OtObject operator ()(OtContext context, size_t start=0, size_t end=SIZE_MAX) {
 		// calculate end if required
 		if (end == SIZE_MAX) {
 			end = size();
@@ -94,6 +94,7 @@ public:
 		size_t pc = start;
 		OtObject* sp;
 		OtObject value;
+		OtContext ctx;
 		size_t cnt;
 		size_t mark;
 
@@ -167,17 +168,17 @@ public:
 
 					case OtInstruction::PUSH_CONTEXT:
 						// push current context
-						value = stack.back();
+						ctx = stack.back()->cast<OtContextClass>();
 						stack.pop_back();
-						value->setParent(context);
-						context = value;
+						ctx->setParent(context);
+						context = ctx;
 						break;
 
 					case OtInstruction::POP_CONTEXT:
 						// return to previous context
-						value = context->getParent();
+						ctx = context->getParent();
 						context->setParent(nullptr);
-						context = value;
+						context = ctx;
 						break;
 				}
 

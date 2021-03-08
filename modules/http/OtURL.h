@@ -25,7 +25,7 @@ public:
 	OtURLClass(const std::string& path) { parse(path); }
 
 	// initialize URL
-	OtObject init(OtObject, size_t count, OtObject* parameters) {
+	OtObject init(OtContext, size_t count, OtObject* parameters) {
 		if (count != 1) {
 			throw OtException(OtFormat("URL initializer expected 1 parameter not [%d]", count));
 		}

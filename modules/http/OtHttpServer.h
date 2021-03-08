@@ -116,13 +116,18 @@ private:
 			}
 
 			// dispatch request
-			server->call(request, response, OtHttpNotFoundClass::create(response));
+			OtObject pars[] = {
+				request,
+				response,
+				OtHttpNotFoundClass::create(response)
+			};
+
+			server->call(nullptr, 3, pars);
 		}
 
 		// handle socket read events
 		void onRead(const uv_buf_t* buffer, ssize_t nread) {
 			if (nread > 0) {
-				OT_DEBUG(nread);
 				auto status = llhttp_execute(&parser, buffer->base, nread);
 
 				if (status) {
@@ -137,7 +142,6 @@ private:
 				free(buffer->base);
 
 			} else if (nread == UV_EOF) {
-				OT_DEBUG("closing session");
 				uv_close((uv_handle_t*) &uv_client, [](uv_handle_t* handle) {
 					delete (OtHttpSession*)(handle->data);
 				});
@@ -208,9 +212,9 @@ public:
 	}
 
 	// set a timer
-	OtObject timer(OtObject context, size_t count, OtObject* parameters) {
+	OtObject timer(OtContext context, size_t count, OtObject* parameters) {
 		if (count != 3) {
-			throw OtException(OtFormat("HttpServer.Timer expected 3 parameter not [%d]", count));
+			throw OtException(OtFormat("HttpServer.timer expected 3 parameter not [%d]", count));
 		}
 
 		return OtHttpTimerClass::create(*parameters[0], *parameters[1], context, parameters[2]);

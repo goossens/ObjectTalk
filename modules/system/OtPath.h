@@ -24,7 +24,7 @@ public:
 	operator std::string() { return path.string(); }
 
 	// initialize path
-	OtObject init(OtObject, size_t count, OtObject* parameters) {
+	OtObject init(OtContext, size_t count, OtObject* parameters) {
 		if (count != 1) {
 			throw OtException(OtFormat("Path initializer expected 1 parameter not [%d]", count));
 		}

@@ -20,9 +20,11 @@ Object
 		Dict
 
 	Internal
-		Module
-		Class
-		Global
+		Context
+			Module
+			Class
+			Global
+
 		BoundFunction
 		CodeFunction
 		ContextReference

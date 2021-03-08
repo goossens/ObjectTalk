@@ -23,7 +23,7 @@
 //	System module
 //
 
-extern "C" void init(OtObject context) {
+extern "C" void init(OtContext context) {
 	context->set("System", OtClassClass::create(OtSystemClass::getMeta()));
 	context->set("Path", OtClassClass::create(OtPathClass::getMeta()));
 	context->set("OS", OtClassClass::create(OtOSClass::getMeta()));

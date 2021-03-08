@@ -175,7 +175,9 @@ public:
 
 					case OtInstruction::POP_CONTEXT:
 						// return to previous context
-						context = context->getParent();
+						value = context->getParent();
+						context->setParent(nullptr);
+						context = value;
 						break;
 				}
 

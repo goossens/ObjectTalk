@@ -46,7 +46,7 @@ private:
 	public:
 		// constructor
 		OtCodeFunctionClass() = default;
-		OtCodeFunctionClass(size_t p, const std::vector<std::string>& n, OtCode c, size_t s, size_t e)
+		OtCodeFunctionClass(size_t p, const std::vector<std::string>& n, std::weak_ptr<OtCodeClass> c, size_t s, size_t e)
 			: parameterCount(p), names(n), code(c), start(s), end(e) {}
 
 		// call code
@@ -67,7 +67,7 @@ private:
 				local->set(names[c], parameters[c]);
 			}
 
-			return code->operator ()(local, start, end);
+			return code.lock()->operator ()(local, start, end);
 		}
 
 		// get type definition
@@ -83,7 +83,7 @@ private:
 		}
 
 		// create a new object
-		static OtCodeFunction create(size_t count, const std::vector<std::string>& names, OtCode code, size_t start, size_t end) {
+		static OtCodeFunction create(size_t count, const std::vector<std::string>& names, std::weak_ptr<OtCodeClass> code, size_t start, size_t end) {
 			OtCodeFunction func = std::make_shared<OtCodeFunctionClass>(count, names, code, start, end);
 			func->setType(getMeta());
 			return func;
@@ -92,7 +92,7 @@ private:
 	private:
 		size_t parameterCount;
 		std::vector<std::string> names;
-		OtCode code;
+		std::weak_ptr<OtCodeClass> code;
 		size_t start;
 		size_t end;
 	};
@@ -122,13 +122,13 @@ private:
 				names.push_back(scanner.getText());
 				scanner.advance();
 
-				if (scanner.matchToken(OtScanner::COMMA_TOKEN)) {
-					scanner.advance();
+				if (!scanner.matchToken(OtScanner::RPAREN_TOKEN)) {
+					scanner.expect(OtScanner::COMMA_TOKEN);
 				}
 			}
 
-			count = names.size();
 			scanner.expect(OtScanner::RPAREN_TOKEN);
+			count = names.size();
 		}
 
 		// get function level code
@@ -974,7 +974,7 @@ private:
 
 		// create new class
 		code->push(OtStringClass::create(name));
-		code->method("subType", 1);
+		code->method("subClass", 1);
 
 		// assign class
 		code->push(OtContextReferenceClass::create(name));

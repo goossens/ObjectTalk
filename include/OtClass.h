@@ -20,7 +20,7 @@ public:
 	OtObject getParent() { return OtClassClass::create(classType->getParent()); }
 
 	// create a sub class
-	OtObject subType(const std::string& name) { return OtClassClass::create(classType->subType(name)); }
+	OtObject subClass(const std::string& name) { return OtClassClass::create(classType->subType(name)); }
 
 	// see if class is kind of
 	bool isKindOf(const std::string& className) { return classType->isKindOf(className); }
@@ -58,7 +58,7 @@ public:
 			type->set("getName", OtFunctionClass::create(&OtClassClass::getName));
 			type->set("hasParent", OtFunctionClass::create(&OtClassClass::hasParent));
 			type->set("getParent", OtFunctionClass::create(&OtClassClass::getParent));
-			type->set("subType", OtFunctionClass::create(&OtClassClass::subType));
+			type->set("subClass", OtFunctionClass::create(&OtClassClass::subClass));
 			type->set("isKindOf", OtFunctionClass::create(&OtClassClass::isKindOf));
 		}
 

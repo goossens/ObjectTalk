@@ -60,3 +60,4 @@ Object
 		HttpResponse
 		HttpNext
 		HttpNotFound
+		HttpTimer

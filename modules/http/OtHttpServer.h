@@ -6,7 +6,7 @@
 
 
 ///
-//	OtHTTP
+//	OtHttpServerClass
 //
 
 class OtHttpServerClass;
@@ -121,26 +121,37 @@ private:
 
 		// handle socket read events
 		void onRead(const uv_buf_t* buffer, ssize_t nread) {
-			if (nread >= 0) {
-				auto parsed = llhttp_execute(&parser, buffer->base, nread);
+			if (nread > 0) {
+				OT_DEBUG(nread);
+				auto status = llhttp_execute(&parser, buffer->base, nread);
 
-				if (parsed != nread) {
+				if (status) {
+					OT_DEBUG(OtFormat("llhttp error in llhttp_execute: %s", llhttp_errno_name(status)));
+
 					uv_close((uv_handle_t*) &uv_client, [](uv_handle_t* handle) {
 						delete (OtHttpSession*)(handle->data);
 					});
 				}
 
+				// free buffer data
+				free(buffer->base);
+
 			} else if (nread == UV_EOF) {
+				OT_DEBUG("closing session");
 				uv_close((uv_handle_t*) &uv_client, [](uv_handle_t* handle) {
 					delete (OtHttpSession*)(handle->data);
 				});
 
-			} else {
-				throw OtException(OtFormat("llhttp error in llhttp_execute: %s", llhttp_errno_name((llhttp_errno_t) nread)));
-			}
+				// free buffer data
+				free(buffer->base);
 
-			// free buffer data
-			free(buffer->base);
+			} else if (nread < 0) {
+				OT_DEBUG(OtFormat("libuv error during read: %s", uv_strerror(nread)));
+
+				uv_close((uv_handle_t*) &uv_client, [](uv_handle_t* handle) {
+					delete (OtHttpSession*)(handle->data);
+				});
+			}
 		}
 
 	private:
@@ -160,6 +171,14 @@ private:
 	}
 
 public:
+	// constructor
+	OtHttpServerClass() = default;
+
+	// destructor
+	~OtHttpServerClass() {
+		OT_DEBUG("~OtHttpServerClass");
+	}
+
 	// listen for requests on specified IP address and port
 	OtObject listen(const std::string& ip, long port) {
 		uv_tcp_init(uv_default_loop(), &uv_server);
@@ -188,6 +207,30 @@ public:
 		uv_run(uv_default_loop(), UV_RUN_DEFAULT);
 	}
 
+	// set a timer
+	OtObject timer(OtObject context, size_t count, OtObject* parameters) {
+		if (count != 3) {
+			throw OtException(OtFormat("HttpServer.Timer expected 3 parameter not [%d]", count));
+		}
+
+		return OtHttpTimerClass::create(*parameters[0], *parameters[1], context, parameters[2]);
+	}
+
+	// stop server
+	void stop() {
+		// use timer so "stop" transaction can complete
+		uv_timer_init(uv_default_loop(), &uv_shutdown);
+
+		uv_timer_start(&uv_shutdown, [](uv_timer_t* handle) {
+			// close all handles which will end libuv's loop
+			uv_walk(uv_default_loop(), [](uv_handle_t* handle, void* arg) {
+				if (!uv_is_closing(handle)) {
+					uv_close(handle, nullptr);
+				}
+			}, nullptr);
+		}, 1000, 0);
+	}
+
 	// get type definition
 	static OtType getMeta() {
 		static OtType type = nullptr;
@@ -196,6 +239,8 @@ public:
 			type = OtTypeClass::create<OtHttpServerClass>("HttpServer", OtHttpRouterClass::getMeta());
 			type->set("listen", OtFunctionClass::create(&OtHttpServerClass::listen));
 			type->set("run", OtFunctionClass::create(&OtHttpServerClass::run));
+			type->set("timer", OtFunctionClass::create(&OtHttpServerClass::timer));
+			type->set("stop", OtFunctionClass::create(&OtHttpServerClass::stop));
 		}
 
 		return type;
@@ -210,4 +255,5 @@ public:
 
 private:
 	uv_tcp_t uv_server;
+	uv_timer_t uv_shutdown;
 };

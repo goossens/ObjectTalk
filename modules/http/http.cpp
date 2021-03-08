@@ -20,6 +20,7 @@
 #include "OtHttp.h"
 #include "OtMimeType.h"
 #include "OtURL.h"
+#include "OtHttpTimer.h"
 #include "OtHttpHeaders.h"
 #include "OtHttpRequest.h"
 #include "OtHttpResponse.h"

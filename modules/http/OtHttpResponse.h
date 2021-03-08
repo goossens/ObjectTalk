@@ -138,12 +138,12 @@ public:
 		// send response
 		std::string text = stream.str();
 		uv_buf_t buffer = uv_buf_init(strndup((char*) text.c_str(), text.size()), text.size());
-		uv_write_t* uv_write_req = new uv_write_t;
+		uv_write_t* uv_write_req = (uv_write_t*) malloc(sizeof(uv_write_t));
 		uv_write_req->data = buffer.base;
 
 		uv_write(uv_write_req, clientStream, &buffer, 1, [](uv_write_t* req, int status) {
-			delete (char*) (req->data);
-			delete req;
+			free(req->data);
+			free(req);
 		});
 
 		status = HEADERS_SENT;
@@ -157,12 +157,12 @@ public:
 
 		// send body
 		uv_buf_t buffer = uv_buf_init(strndup(text, size), size);
-		uv_write_t* uv_write_req = new uv_write_t;
+		uv_write_t* uv_write_req = (uv_write_t*) malloc(sizeof(uv_write_t));
 		uv_write_req->data = buffer.base;
 
 		uv_write(uv_write_req, clientStream, &buffer, 1, [](uv_write_t* req, int status) {
-			delete (char*) (req->data);
-			delete req;
+			free(req->data);
+			free(req);
 		});
 
 		return getSharedPtr();

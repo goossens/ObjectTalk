@@ -58,7 +58,7 @@ protected:
 
 private:
 	//
-	// OtHttpNotFound
+	// OtHttpNextClass
 	//
 
 	class OtHttpNextClass;
@@ -108,6 +108,13 @@ private:
 
 	class OtHandler {
 	public:
+		// constructor
+		OtHandler() = default;
+
+		// destructor
+		virtual ~OtHandler() {}
+
+		// run the handler
 		virtual void run(OtHttpRequest req, OtHttpResponse res, OtObject next) {}
 	};
 
@@ -318,9 +325,9 @@ public:
 
 	// create a new object
 	static OtHttpRouter create() {
-		OtHttpRouter Router = std::make_shared<OtHttpRouterClass>();
-		Router->setType(getMeta());
-		return Router;
+		OtHttpRouter router = std::make_shared<OtHttpRouterClass>();
+		router->setType(getMeta());
+		return router;
 	}
 
 private:

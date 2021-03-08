@@ -41,6 +41,11 @@ class MyHttpServer : http.HttpServer {
 		this.get("/file", function(req, res, next) {
 			res.sendfile(__DIR__ + "/static/test.txt")
 		})
+
+		this.get("/stop", function(req, res, next) {
+			this.stop()
+			res.send("Server stopping")
+		})
 	}
 
 	function info(this, req, res, next) {
@@ -52,3 +57,6 @@ print()
 print("Running HTTP server")
 
 MyHttpServer().listen("0.0.0.0", 80).run();
+
+print()
+print("Stopped HTTP server")

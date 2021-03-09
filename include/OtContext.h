@@ -16,7 +16,7 @@ public:
 
 	// parent access
 	void setParent(OtContext v) { parent = v; }
-	OtContext getParent() { return parent; }
+	OtContext getParent() { return parent.lock(); }
 
 	// member acccess
 	bool virtual has(const std::string& name) {
@@ -24,7 +24,7 @@ public:
 			return true;
 		}
 
-		for (auto p = parent; p; p = p->getParent()) {
+		for (auto p = parent.lock(); p; p = p->getParent()) {
 			if (p->hasMember(name)) {
 				return true;
 			}
@@ -44,7 +44,7 @@ public:
 			return getMember(name);
 		}
 
-		for (auto p = parent; p; p = p->getParent()) {
+		for (auto p = parent.lock(); p; p = p->getParent()) {
 			if (p->hasMember(name)) {
 				return p->getMember(name);
 			}
@@ -56,7 +56,7 @@ public:
 			}
 		}
 
-		throw OtException(OtFormat("Unknown ----- member [%s] in instance of class [%s]", name.c_str(), type->getName().c_str()));
+		throw OtException(OtFormat("Unknown member [%s] in instance of class [%s]", name.c_str(), type->getName().c_str()));
 		return nullptr;
 	}
 
@@ -80,5 +80,5 @@ public:
 
 private:
 		// parent in context chain
-		OtContext parent;
+		std::weak_ptr<OtContextClass> parent;
 };

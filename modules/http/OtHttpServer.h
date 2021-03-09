@@ -17,7 +17,7 @@ private:
 	// class to handle sessions
 	class OtHttpSession {
 	public:
-		OtHttpSession(OtHttpServerClass* s) : server(s) {
+		OtHttpSession(OtHttpServerClass* s, size_t i) : server(s), id(i) {
 			// setup request/response objects
 			request = OtHttpRequestClass::create();
 			response = OtHttpResponseClass::create();
@@ -134,7 +134,8 @@ private:
 					OT_DEBUG(OtFormat("llhttp error in llhttp_execute: %s", llhttp_errno_name(status)));
 
 					uv_close((uv_handle_t*) &uv_client, [](uv_handle_t* handle) {
-						delete (OtHttpSession*)(handle->data);
+						auto session = ((OtHttpSession*)(handle->data));
+						session->server->removeSession(session->id);
 					});
 				}
 
@@ -143,7 +144,8 @@ private:
 
 			} else if (nread == UV_EOF) {
 				uv_close((uv_handle_t*) &uv_client, [](uv_handle_t* handle) {
-					delete (OtHttpSession*)(handle->data);
+					auto session = ((OtHttpSession*)(handle->data));
+					session->server->removeSession(session->id);
 				});
 
 				// free buffer data
@@ -153,16 +155,17 @@ private:
 				OT_DEBUG(OtFormat("libuv error during read: %s", uv_strerror(nread)));
 
 				uv_close((uv_handle_t*) &uv_client, [](uv_handle_t* handle) {
-					delete (OtHttpSession*)(handle->data);
+					auto session = ((OtHttpSession*)(handle->data));
+					session->server->removeSession(session->id);
 				});
 			}
 		}
 
-	private:
 		OtHttpRequest request;
 		OtHttpResponse response;
 
 		OtHttpServerClass* server;
+		size_t id;
 		uv_tcp_t uv_client;
 		llhttp_settings_t settings;
 		llhttp_t parser;
@@ -170,18 +173,21 @@ private:
 
 	// handle connection requests
 	void onConnect() {
-		// create new session (object gets deleted at EOF in read function above)
-		new OtHttpSession(this);
+		// create new session
+		auto session = std::make_shared<OtHttpSession>(this, sessionId++);
+		sessions.push_back(session);
+	}
+
+	// remove a session by ID
+	void removeSession(ssize_t id) {
+		sessions.erase(std::remove_if(sessions.begin(), sessions.end(), [id](const std::shared_ptr<OtHttpSession> & session) {
+			return session->id == id;
+		}), sessions.end());
 	}
 
 public:
 	// constructor
 	OtHttpServerClass() = default;
-
-	// destructor
-	~OtHttpServerClass() {
-		OT_DEBUG("~OtHttpServerClass");
-	}
 
 	// listen for requests on specified IP address and port
 	OtObject listen(const std::string& ip, long port) {
@@ -209,6 +215,15 @@ public:
 	// run server
 	void run() {
 		uv_run(uv_default_loop(), UV_RUN_DEFAULT);
+
+		uv_walk(uv_default_loop(), [](uv_handle_t* handle, void* arg) {
+			if (!uv_is_closing(handle))
+			    uv_close(handle, nullptr);
+		}, nullptr);
+
+		uv_run(uv_default_loop(), UV_RUN_DEFAULT);
+	    uv_loop_close(uv_default_loop());
+	    uv_library_shutdown();                          \
 	}
 
 	// set a timer
@@ -260,4 +275,7 @@ public:
 private:
 	uv_tcp_t uv_server;
 	uv_timer_t uv_shutdown;
+
+	size_t sessionId = 1;
+	std::vector<std::shared_ptr<OtHttpSession>> sessions;
 };

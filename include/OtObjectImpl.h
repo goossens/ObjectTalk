@@ -144,6 +144,8 @@ OtType OtObjectClass::getMeta() {
 
 		type->set("has", OtFunctionClass::create(&OtObjectClass::has));
 		type->set("__member__", OtFunctionClass::create(&OtObjectClass::member));
+		type->set("eraseMember", OtFunctionClass::create(&OtObjectClass::eraseMember));
+		type->set("clearMembers", OtFunctionClass::create(&OtObjectClass::clearMembers));
 
 		type->set("getClass", OtFunctionClass::create(&OtObjectClass::getClass));
 		type->set("isKindOf", OtFunctionClass::create(&OtObjectClass::isKindOf));

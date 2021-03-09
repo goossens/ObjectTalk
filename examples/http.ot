@@ -56,7 +56,9 @@ class MyHttpServer : http.HttpServer {
 print()
 print("Running HTTP server")
 
-MyHttpServer().listen("0.0.0.0", 80).run();
+server = MyHttpServer()
+server.listen("0.0.0.0", 80).run();
+server.clearHandlers()
 
 print()
 print("Stopped HTTP server")

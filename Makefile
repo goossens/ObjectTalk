@@ -14,7 +14,7 @@ http: debug
 	gdb --args ./debug/bin/ot examples/http.ot
 
 leaks: debug
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./debug/bin/ot examples/hello.ot
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./debug/bin/ot examples/http.ot
 
 release:
 	cmake -Brelease -DCMAKE_BUILD_TYPE=Release
@@ -44,6 +44,6 @@ clean:
 distclean: clean
 	cd docker/alpine && ./clean
 	cd docker/ubuntu && ./clean
-	
+
 apk:
 	abuild -F release

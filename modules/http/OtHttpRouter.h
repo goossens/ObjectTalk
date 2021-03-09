@@ -29,7 +29,7 @@ private:
 
 		// execute next
 		void call() {
-			router->runHandler(index, req, res, next);
+			router.lock()->runHandler(index, req, res, next);
 		}
 
 		// get type definition
@@ -52,7 +52,7 @@ private:
 		}
 
 	private:
-		OtHttpRouter router;
+		std::weak_ptr<OtHttpRouterClass> router;
 		size_t index;
 		OtHttpRequest req;
 		OtHttpResponse res;
@@ -227,12 +227,6 @@ public:
 	// constructor
 	OtHttpRouterClass() = default;
 
-	// destructor
-
-	~OtHttpRouterClass() {
-		OT_DEBUG("~OtHttpRouterClass");
-	}
-
 	// add handlers
 	OtObject useHandler(OtContext context, size_t count, OtObject* parameters) {
 		if (count != 1) {
@@ -284,6 +278,10 @@ public:
 		return getSharedPtr();
 	}
 
+	void clearHandlers() {
+		handlers.clear();
+	}
+
 	// get type definition
 	static OtType getMeta() {
 		static OtType type = nullptr;
@@ -298,6 +296,7 @@ public:
 			type->set("delete", OtFunctionClass::create(&OtHttpRouterClass::deleleteHandler));
 			type->set("static", OtFunctionClass::create(&OtHttpRouterClass::staticFiles));
 			type->set("__call__", OtFunctionClass::create(&OtHttpRouterClass::call));
+			type->set("clearHandlers", OtFunctionClass::create(&OtHttpRouterClass::clearHandlers));
 		}
 
 		return type;

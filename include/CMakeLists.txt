@@ -4,11 +4,5 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-set(INCLUDE_FILES
-	Ot.h
-	OtArray.h
-)
-
-file(GLOB OT_INCLUDES "*.h")
-
+file(GLOB OT_INCLUDES "*.h" "ot/*.h")
 add_custom_target(includes SOURCES ${OT_INCLUDES})

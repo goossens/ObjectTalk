@@ -223,7 +223,10 @@ public:
 
 		uv_run(uv_default_loop(), UV_RUN_DEFAULT);
 	    uv_loop_close(uv_default_loop());
-	    uv_library_shutdown();                          \
+
+#if UV_VERSION_MINOR >= 38
+	    uv_library_shutdown();
+#endif
 	}
 
 	// set a timer

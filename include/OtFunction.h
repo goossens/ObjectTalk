@@ -29,7 +29,7 @@ public:
 	OtObject operator () (OtContext context, size_t count, OtObject* parameters) {
 		// sanity check
 		if (parameterCount != SIZE_MAX && count != parameterCount) {
-			throw OtException(OtFormat("Function expects %d parameters, %d given", parameterCount, count));
+			OT_EXCEPT("Function expects %d parameters, %d given", parameterCount, count);
 		}
 
 		return (*invoker)(target, context, count, parameters);

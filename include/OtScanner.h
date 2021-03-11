@@ -411,12 +411,7 @@ public:
 		marker +='^';
 
 		// throw exception
-		throw OtException(OtFormat(
-			"%s on line %d:\n%s\n%s",
-			message.c_str(),
-			tokenLine,
-			line.c_str(),
-			marker.c_str()));
+		OT_EXCEPT("%s on line %d:\n%s\n%s", message.c_str(), tokenLine, line.c_str(), marker.c_str());
 	}
 
 	// see if the current token is equal to the specified token

@@ -129,7 +129,7 @@ private:
 				void* lib = dlopen(module.c_str(), RTLD_LAZY);
 
 				if (!lib) {
-					throw OtException(OtFormat("Can't import module [%s], error [%s]", name.c_str(), dlerror()));
+					OT_EXCEPT("Can't import module [%s], error [%s]", name.c_str(), dlerror());
 				}
 
 				void (*init)(OtObject) = (void (*)(OtObject)) dlsym(lib, "init");
@@ -141,6 +141,6 @@ private:
 			}
 		}
 
-		throw OtException(OtFormat("Can't import module [%s]", name.c_str()));
+		OT_EXCEPT("Can't import module [%s]", name.c_str());
 	}
 };

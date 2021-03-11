@@ -232,7 +232,7 @@ public:
 	// set a timer
 	OtObject timer(OtContext context, size_t count, OtObject* parameters) {
 		if (count != 3) {
-			throw OtException(OtFormat("HttpServer.timer expected 3 parameter not [%d]", count));
+			OT_EXCEPT("HttpServer.timer expected 3 parameter not [%d]", count);
 		}
 
 		return OtHttpTimerClass::create(*parameters[0], *parameters[1], context, parameters[2]);

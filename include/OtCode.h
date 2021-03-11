@@ -231,7 +231,7 @@ public:
 				statement += OtFormat("Line %ld: %s", line++, text.c_str());
 			});
 
-			throw OtException(OtFormat("%s:\n%s", e.what(), statement.c_str()));
+			OT_EXCEPT("%s:\n%s", e.what(), statement.c_str());
 		}
 
 		OT_ASSERT(stack.size() == 1);

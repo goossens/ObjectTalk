@@ -110,7 +110,7 @@ public:
 	// add response header
 	OtObject setHeader(const std::string& name, const std::string& value) {
 		if (state != START) {
-			throw OtException(OtFormat("HttpResponse can't send headers after body transmission has started", false));
+			OT_EXCEPT("HttpResponse can't send headers after body transmission has started", false);
 		}
 
 		headers.emplace(name, value);

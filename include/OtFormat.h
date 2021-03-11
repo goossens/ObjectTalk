@@ -5,13 +5,26 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 
+#pragma once
+
+
+//
+//	  Include files
+//
+
+#include <stdio.h>
+
+#include <string>
+
+
 //
 //	OtFormat
 //
 
 template <typename... Args>
-std::string OtFormat(const std::string &format, Args... args) {
-	char output[1024];
-	std::snprintf(output, 1024, format.c_str(), args...);
-	return std::string(output);
+std::string OtFormat(const char* format, Args && ...args) {
+	auto size = std::snprintf(nullptr, 0, format, std::forward<Args>(args)...);
+	std::string result(size + 1, '\0');
+	std::sprintf(&result[0], format, std::forward<Args>(args)...);
+	return result;
 }

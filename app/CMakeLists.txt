@@ -5,15 +5,20 @@
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
 add_executable(ot ot.cpp)
-add_dependencies(ot http system)
+add_dependencies(ot libot http system)
 
 set_target_properties(ot PROPERTIES
 	XCODE_GENERATE_SCHEME TRUE
 	XCODE_SCHEME_ARGUMENTS "${CMAKE_SOURCE_DIR}/examples/http.ot"
 )
 
+set_target_properties(ot PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set_target_properties(ot PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/bin)
+set_target_properties(ot PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin)
+
 target_compile_features(ot PRIVATE cxx_std_17)
 set_target_properties(ot PROPERTIES CXX_EXTENSIONS OFF)
-target_link_libraries(ot PRIVATE m dl whereami)
+
+target_link_libraries(ot PRIVATE libot)
 
 install(TARGETS ot DESTINATION bin)

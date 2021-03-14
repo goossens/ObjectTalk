@@ -5,23 +5,25 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 
+#pragma once
+
+
 //
 //	Include files
 //
 
-#include "http.h"
+#include "object.h"
 
 
 //
-//	OtHttpClass::getMeta
+//	OtInternal
 //
 
-OtType OtHttpClass::getMeta() {
-	static OtType type = nullptr;
+class OtInternalClass;
+typedef std::shared_ptr<OtInternalClass> OtInternal;
 
-	if (!type) {
-		type = OtTypeClass::create<OtHttpClass>("Http", OtObjectClass::getMeta());
-	}
-
-	return type;
-}
+class OtInternalClass : public OtObjectClass {
+public:
+	// get type definition
+	static OtType getMeta();
+};

@@ -9,23 +9,19 @@
 //	Include files
 //
 
-#include <uv.h>
-
-#include "Ot.h"
-
-#include "OtSystem.h"
-#include "OtPath.h"
-#include "OtOS.h"
-#include "OtFS.h"
+#include "system.h"
 
 
 //
-//	System module
+//	OtSystemClass::getMeta
 //
 
-extern "C" void init(OtContext context) {
-	context->set("System", OtClassClass::create(OtSystemClass::getMeta()));
-	context->set("Path", OtClassClass::create(OtPathClass::getMeta()));
-	context->set("OS", OtClassClass::create(OtOSClass::getMeta()));
-	context->set("FS", OtClassClass::create(OtFSClass::getMeta()));
+OtType OtSystemClass::getMeta() {
+	static OtType type = nullptr;
+
+	if (!type) {
+		type = OtTypeClass::create<OtSystemClass>("System", OtObjectClass::getMeta());
+	}
+
+	return type;
 }

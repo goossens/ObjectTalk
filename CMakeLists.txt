@@ -7,24 +7,21 @@
 cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
 project(ObjectTalk VERSION 1.0 DESCRIPTION "ObjectTalk - The Completely Object-Oriented Scripting Language" LANGUAGES C CXX)
 
-include_directories(include)
-include_directories(3rdparty)
-
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/ot)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/lib/ot)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/lib/ot)
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/bin)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin)
-
-set(CMAKE_SHARED_MODULE_PREFIX "")
-
 enable_testing()
 list(APPEND CMAKE_CTEST_ARGUMENTS "--output-on-failure")
 
-add_subdirectory(app)
-add_subdirectory(include)
+include_directories(3rdparty)
+include_directories(libot/include)
+
+add_subdirectory(docs)
+
 add_subdirectory(3rdparty)
+add_subdirectory(libot)
+
+add_subdirectory(app)
+
 add_subdirectory(modules)
+add_subdirectory(examples)
 add_subdirectory(tests)
+
+add_custom_target(other SOURCES LICENSE Makefile README.md)

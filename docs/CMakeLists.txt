@@ -4,10 +4,8 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-file(GLOB_RECURSE OT_TESTS "*.ot")
+file(GLOB_RECURSE OT_DOCS "*.md")
+file(GLOB_RECURSE OT_DOCS_IMG "*.png")
+file(GLOB_RECURSE OT_DOCS_EBNF "*.ebnf")
 
-foreach(TEST ${OT_TESTS})
-	add_test(NAME ${TEST} COMMAND ot ${TEST})
-endforeach()
-
-add_custom_target(tests SOURCES ${OT_TESTS})
+add_custom_target(docs SOURCES ${OT_DOCS} ${OT_DOCS_IMG} ${OT_DOCS_EBNF})

@@ -9,18 +9,18 @@
 //	Include files
 //
 
-#include "http.h"
+#include "ot/primitive.h"
 
 
 //
-//	OtHttpClass::getMeta
+//	OtCollectionClass::getMeta
 //
 
-OtType OtHttpClass::getMeta() {
+OtType OtPrimitiveClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtTypeClass::create<OtHttpClass>("Http", OtObjectClass::getMeta());
+		type = OtTypeClass::create<OtPrimitiveClass>("Primitive", OtObjectClass::getMeta());
 	}
 
 	return type;

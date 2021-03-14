@@ -1,7 +1,7 @@
 SRC=$(wildcard app/*.cpp modules/*/*.cpp)
 INC=$(wildcard include/*.h modules/*/*.h)
 
-.PHONY : debug release
+.PHONY : debug release xcode alpine ubuntu
 
 debug:
 	cmake -Bdebug
@@ -20,9 +20,13 @@ release:
 	cmake -Brelease -DCMAKE_BUILD_TYPE=Release
 	cd release && make
 
+rtest: release
+	cd release && make test
+
 install: release
 	cd release && make install/strip
 	ls -l /usr/local/bin/ot
+	ls -l /usr/local/lib/libot.*
 	ls -l /usr/local/lib/ot
 
 xcode:

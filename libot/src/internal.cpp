@@ -9,18 +9,18 @@
 //	Include files
 //
 
-#include "http.h"
+#include "ot/internal.h"
 
 
 //
-//	OtHttpClass::getMeta
+//	OtInternalClass::getMeta
 //
 
-OtType OtHttpClass::getMeta() {
+OtType OtInternalClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtTypeClass::create<OtHttpClass>("Http", OtObjectClass::getMeta());
+		type = OtTypeClass::create<OtInternalClass>("Internal", OtObjectClass::getMeta());
 	}
 
 	return type;

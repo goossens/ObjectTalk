@@ -29,6 +29,10 @@ install: release
 	ls -l /usr/local/lib/libot.*
 	ls -l /usr/local/lib/ot
 
+package: release
+	find libot -name '.DS_Store' -depth -exec rm {} \;
+	tar cvfz builds/ot.alpine.latest.tgz -C release bin lib -C ../libot include
+
 xcode:
 	cmake -Bxcode -GXcode
 
@@ -48,6 +52,3 @@ clean:
 distclean: clean
 	cd docker/alpine && ./clean
 	cd docker/ubuntu && ./clean
-
-apk:
-	abuild -F release

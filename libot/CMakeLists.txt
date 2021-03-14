@@ -21,3 +21,4 @@ set_target_properties(libot PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_
 target_link_libraries(libot PRIVATE m dl whereami)
 
 install(TARGETS libot DESTINATION lib)
+install(DIRECTORY include/ DESTINATION include FILES_MATCHING PATTERN "*.h")

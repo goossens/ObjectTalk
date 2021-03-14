@@ -1,5 +1,5 @@
-SRC=$(wildcard app/*.cpp modules/*/*.cpp)
-INC=$(wildcard include/*.h modules/*/*.h)
+SRC=$(wildcard app/*.cpp libot/src/*.cpp modules/*/*.cpp)
+INC=$(wildcard libot/include/*.h libot/include/ot/*.h modules/*/*.h)
 
 .PHONY : debug release xcode alpine ubuntu
 
@@ -7,18 +7,15 @@ debug:
 	cmake -Bdebug
 	cd debug && make
 
-test: debug
-	cd debug && make test
-
-http: debug
-	gdb --args ./debug/bin/ot examples/http.ot
-
-leaks: debug
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./debug/bin/ot examples/http.ot
-
 release:
 	cmake -Brelease -DCMAKE_BUILD_TYPE=Release
 	cd release && make
+
+xcode:
+	cmake -Bxcode -GXcode
+
+test: debug
+	cd debug && make test
 
 rtest: release
 	cd release && make test
@@ -29,13 +26,7 @@ install: release
 	ls -l /usr/local/lib/libot.*
 	ls -l /usr/local/lib/ot
 
-package: release
-	find libot -name '.DS_Store' -depth -exec rm {} \;
-	tar cvfz builds/ot.alpine.latest.tgz -C release bin lib -C ../libot include
-
 xcode:
-	cmake -Bxcode -GXcode
-
 cleanup:
 	perl -i -pe 's/\s+\n/\n/' $(SRC) $(INC)
 	ls $(SRC) $(INC) | xargs -o -n 1 vim -c 'set ts=4|set noet|%retab!|wq'

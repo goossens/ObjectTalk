@@ -10,6 +10,7 @@ RUN apk add --no-cache \
 	musl-dev \
 	libuv-dev \
 	alpine-sdk \
-	linux-headers
+	linux-headers \
+	openssh-client
 
 WORKDIR /ot

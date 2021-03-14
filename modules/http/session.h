@@ -38,7 +38,7 @@ public:
 
 	// close session
 	void close();
-	
+
 	// see if session is still alive
 	bool isAlive();
 
@@ -61,7 +61,7 @@ private:
 	OtHttpResponse response;
 
 	OtHttpRouter router;
-	
+
 	uv_tcp_t uv_client;
 	llhttp_settings_t settings;
 	llhttp_t parser;

@@ -125,7 +125,7 @@ int32_t OtCodePointLower(int32_t cp) {
 		(cp >= 0x03d8 && cp <= 0x03ef) ||
 		(cp >= 0x0460 && cp <= 0x0481) ||
 		(cp >= 0x048a && cp <= 0x04ff)) {
-		    cp |= 0x1;
+			cp |= 0x1;
 
 	} else if ((cp >= 0x0139 && cp <= 0x0148) ||
 		(cp >= 0x0179 && cp <= 0x017e) ||
@@ -135,7 +135,7 @@ int32_t OtCodePointLower(int32_t cp) {
 			cp += 1;
 			cp &= ~0x1;
 
- 	} else {
+	} else {
 		switch (cp) {
 			case 0x0178: cp = 0x00ff; break;
 			case 0x0243: cp = 0x0180; break;

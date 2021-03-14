@@ -92,7 +92,7 @@ public:
 
 	// create new code object
 	static OtCode create(const std::string& source);
-	
+
 private:
 	std::string source;
 };

@@ -111,7 +111,7 @@ void OtHttpServerClass::run() {
 
 	uv_timer_start(&uv_watchdog, [](uv_timer_t* handle) {
 		auto server = (OtHttpServerClass*) (handle->data);
-		
+
 		// remove dead sessions
 		server->sessions.erase(std::remove_if(
 			server->sessions.begin(),

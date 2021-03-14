@@ -26,7 +26,6 @@ install: release
 	ls -l /usr/local/lib/libot.*
 	ls -l /usr/local/lib/ot
 
-xcode:
 cleanup:
 	perl -i -pe 's/\s+\n/\n/' $(SRC) $(INC)
 	ls $(SRC) $(INC) | xargs -o -n 1 vim -c 'set ts=4|set noet|%retab!|wq'

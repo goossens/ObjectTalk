@@ -47,11 +47,12 @@ public:
 	void replaceExtension(OtObject name) { path.replace_extension(name->operator std::string()); }
 
 	// operators
-	OtObject add(OtObject operand) { return OtPathClass::create(path / operand->operator std::string()); }
+	OtObject join(OtObject operand) { return OtPathClass::create(path / operand->operator std::string()); }
 	bool equal(OtObject operand) { return path == operand->operator std::string(); }
 	bool notEqual(OtObject operand) { return !equal(operand); }
 
 	// check path status
+	bool exists() { return std::filesystem::exists(path); }
 	bool isEmpty() { return path.empty(); }
 	bool isAbsolute() { return path.is_absolute(); }
 	bool isRelative() { return path.is_relative(); }
@@ -74,8 +75,10 @@ public:
 	OtObject stem() { return create(path.stem()); }
 	OtObject extension() { return create(path.extension()); }
 
+	// get relative path to other location
 	OtObject relative(OtObject name) { return create(path.lexically_relative(name->operator std::string())); }
 
+	// iterate through path elements
 	OtObject iterate();
 
 	// get type definition

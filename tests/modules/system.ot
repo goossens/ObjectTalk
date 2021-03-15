@@ -39,6 +39,7 @@ assert(path == "/var/lib/test.cpp")
 path.replaceExtension(".o")
 assert(path == "/var/lib/test.o")
 
+assert(system.Path("/crazy/lib/test.a").exists() == false)
 assert(system.Path("").isEmpty() == true)
 assert(system.Path("/var/lib/test.a").isEmpty() == false)
 assert(system.Path("/var/lib/test.a").isAbsolute() == true)

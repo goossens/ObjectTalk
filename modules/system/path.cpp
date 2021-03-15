@@ -95,7 +95,8 @@ OtType OtPathClass::getMeta() {
 
 		type->set("__init__", OtFunctionClass::create(&OtPathClass::init));
 		type->set("__iter__", OtFunctionClass::create(&OtPathClass::iterate));
-		type->set("__add__", OtFunctionClass::create(&OtPathClass::add));
+		type->set("__add__", OtFunctionClass::create(&OtPathClass::join));
+		type->set("__div__", OtFunctionClass::create(&OtPathClass::join));
 
 		type->set("__eq__", OtFunctionClass::create(&OtPathClass::equal));
 		type->set("__ne__", OtFunctionClass::create(&OtPathClass::notEqual));
@@ -105,6 +106,7 @@ OtType OtPathClass::getMeta() {
 		type->set("replaceFilename", OtFunctionClass::create(&OtPathClass::replaceFilename));
 		type->set("replaceExtension", OtFunctionClass::create(&OtPathClass::replaceExtension));
 
+		type->set("exists", OtFunctionClass::create(&OtPathClass::exists));
 		type->set("isEmpty", OtFunctionClass::create(&OtPathClass::isEmpty));
 		type->set("isAbsolute", OtFunctionClass::create(&OtPathClass::isAbsolute));
 		type->set("isRelative", OtFunctionClass::create(&OtPathClass::isRelative));

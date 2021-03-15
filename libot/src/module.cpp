@@ -96,7 +96,17 @@ OtObject OtModuleClass::load(const std::string& name) {
 
 	std::filesystem::path module;
 
-	// find module
+	// see if the module exists without a path prepended?
+	if (std::filesystem::exists(name)) {
+		module = std::filesystem::canonical(name);
+
+	// see if it's an absolute path?
+	} else if (std::filesystem::path(name).replace_extension(".ot").is_absolute() &&
+			std::filesystem::exists(std::filesystem::path(name).replace_extension(".ot"))) {
+		module = std::filesystem::path(name).replace_extension(".ot");
+	}
+
+	// find module on path (if still required)
 	for (size_t i = 0; i < modulePath.size() && module.empty(); i++) {
 		auto path = modulePath[i].append(name);
 

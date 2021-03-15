@@ -3,13 +3,13 @@
 cd "$(dirname $(readlink -f "$0"))/.."
 make release
 
-tar cvfz ot.alpine.latest.tgz -C release bin lib
+tar cfz ot.alpine.latest.tgz -C release bin lib
 
 scp ot.alpine.latest.tgz goosjeco@goosje.com:public_html/ourtide
 rm ot.alpine.latest.tgz
 
 find libot -name '.DS_Store' -depth -exec rm {} \;
-tar cvfz otdev.alpine.latest.tgz -C release bin lib -C ../libot include
+tar cfz otdev.alpine.latest.tgz -C release bin lib -C ../libot include
 
 scp otdev.alpine.latest.tgz goosjeco@goosje.com:public_html/ourtide
 rm otdev.alpine.latest.tgz

@@ -98,7 +98,7 @@ OtObject OtModuleClass::load(const std::string& name) {
 
 	// see if the module exists without a path prepended?
 	if (std::filesystem::exists(name)) {
-		module = std::filesystem::canonical(name);
+		module = std::filesystem::path(name);
 
 	// see if it's an absolute path?
 	} else if (std::filesystem::path(name).replace_extension(".ot").is_absolute() &&
@@ -127,22 +127,12 @@ OtObject OtModuleClass::load(const std::string& name) {
 		set("__FILE__", OtStringClass::create(filePath.string()));
 		set("__DIR__", OtStringClass::create(filePath.parent_path().string()));
 
-		if (module.extension() == ".ot") {
-			std::ifstream stream(module.c_str());
-			std::stringstream buffer;
-			buffer << stream.rdbuf();
-			stream.close();
-
-			OtCompiler compiler;
-			OtCode code = compiler.compile(buffer.str());
-			return code->operator ()(getSharedPtr()->cast<OtContextClass>());
-
 #if defined(WINVER)
-		} else if (module.extension() == ".dll") {
+		if (module.extension() == ".dll") {
 			//TODO
 
 #else
-		} else if (module.extension() == ".so") {
+		if (module.extension() == ".so") {
 			void* lib = dlopen(module.c_str(), RTLD_LAZY);
 
 			if (!lib) {
@@ -155,6 +145,16 @@ OtObject OtModuleClass::load(const std::string& name) {
 #endif
 
 			return nullptr;
+
+		} else {
+			std::ifstream stream(module.c_str());
+			std::stringstream buffer;
+			buffer << stream.rdbuf();
+			stream.close();
+
+			OtCompiler compiler;
+			OtCode code = compiler.compile(buffer.str());
+			return code->operator ()(getSharedPtr()->cast<OtContextClass>());
 		}
 	}
 

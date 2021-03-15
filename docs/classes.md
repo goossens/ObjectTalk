@@ -27,6 +27,7 @@ Object
 
 		BoundFunction
 		CodeFunction
+		Throw
 		ContextReference
 		MemberReference
 		StringReference

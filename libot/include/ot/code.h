@@ -40,6 +40,8 @@ public:
 		JUMP_FALSE,
 		METHOD,
 		EXIT,
+		PUSH_TRY,
+		POP_TRY,
 		PUSH_CONTEXT,
 		POP_CONTEXT
 	} OtOpcode;
@@ -81,6 +83,8 @@ public:
 	void jumpFalse(size_t offset) { push_back(OtInstruction(OtInstruction::JUMP_FALSE, offset)); }
 	void method(const std::string& name, size_t count) { push_back(OtInstruction(OtInstruction::METHOD, name, count)); }
 	void exit() { push_back(OtInstruction(OtInstruction::EXIT)); }
+	void pushTry() { push_back(OtInstruction(OtInstruction::PUSH_TRY)); }
+	void popTry() { push_back(OtInstruction(OtInstruction::POP_CONTEXT)); }
 	void pushContext() { push_back(OtInstruction(OtInstruction::PUSH_CONTEXT)); }
 	void popContext() { push_back(OtInstruction(OtInstruction::POP_CONTEXT)); }
 

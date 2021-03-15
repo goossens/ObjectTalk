@@ -1269,6 +1269,95 @@ void OtCompiler::switchStatement(OtCode code) {
 
 
 //
+// OtHttpNotFound
+//
+
+class OtThrowClass;
+typedef std::shared_ptr<OtThrowClass> OtThrow;
+
+class OtThrowClass : public OtInternalClass {
+public:
+	OtThrowClass() = default;
+
+	// throw the exception
+	void call(const std::string& error) {
+		throw OtException(error);
+	}
+
+	// get type definition
+	static OtType getMeta() {
+		static OtType type = nullptr;
+
+		if (!type) {
+			type = OtTypeClass::create<OtThrowClass>("Throw", OtInternalClass::getMeta());
+			type->set("__call__", OtFunctionClass::create(&OtThrowClass::call));
+		}
+
+		return type;
+	}
+
+	// create a new object
+	static OtThrow create() {
+		OtThrow thrw = std::make_shared<OtThrowClass>();
+		thrw->setType(getMeta());
+		return thrw;
+	}
+};
+
+
+//
+//	OtCompiler::throwStatement
+//
+
+void OtCompiler::throwStatement(OtCode code) {
+	scanner.expect(OtScanner::THROW_TOKEN);
+
+	if (expression(code)) {
+		code->method("__deref__", 0);
+	}
+
+	code->push(OtThrowClass::create());
+	code->swap();
+	code->method("__call__", 1);
+}
+
+
+//
+//	OtCompiler::tryStatement
+//
+
+void OtCompiler::tryStatement(OtCode code) {
+	scanner.expect(OtScanner::TRY_TOKEN);
+
+	size_t offset1 = code->size();
+	code->pushTry();
+
+	block(code);
+	code->pop();
+
+	code->popTry();
+
+	size_t offset2 = code->size();
+	code->jump(0);
+	code->patch(offset1);
+
+	scanner.expect(OtScanner::CATCH_TOKEN);
+	scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
+	code->push(OtContextReferenceClass::create(scanner.getText()));
+	scanner.advance();
+
+	code->swap();
+	code->method("__assign__", 1);
+	code->pop();
+
+	block(code);
+	code->pop();
+
+	code->patch(offset2);
+}
+
+
+//
 //	OtCompiler::whileStatement
 //
 
@@ -1333,6 +1422,16 @@ void OtCompiler::statement(OtCode code) {
 
 		case OtScanner::SWITCH_TOKEN:
 			switchStatement(code);
+			code->push(nullptr);
+			break;
+
+		case OtScanner::THROW_TOKEN:
+			throwStatement(code);
+			code->push(nullptr);
+			break;
+
+		case OtScanner::TRY_TOKEN:
+			tryStatement(code);
 			code->push(nullptr);
 			break;
 

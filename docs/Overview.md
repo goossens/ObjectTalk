@@ -11,12 +11,12 @@ syntax might look familiar to you. In ObjectTalk, this line of code is a
 complete program. You don’t need to import a separate library for
 functionality like input/output or string handling. Code written at global
 scope is used as the entry point for the program, so you don’t even need
-a main() function. You don’t even need to write semicolons at the end of
-every statement.
+a main() function. You also don’t  need to write semicolons at the end of
+every statement (although you are free to do so).
 
-So where do we go from here. Well, we hope this overview gives you enough
-information to start writing code in ObjectTalk by showing you how to
-accomplish a variety of programming tasks. Don’t worry if you don’t
+So where do we go from here. Well, we hope the overview below gives you
+enough information to start writing code in ObjectTalk by showing you how
+to accomplish a variety of programming tasks. Don’t worry if you don’t
 understand something, everything introduced in this overview is explained
 in detail in the rest of the documentation.
 
@@ -29,29 +29,47 @@ change it, it's a constant. If you do change it, it's a variable.
 
 ## Primitive Values
 
-ObjectTalk supports 5 primitive values that are derived from the
-Boolean, Integer, Real, String and Function classes. The following
-statements assign primitive values to a variable.
+ObjectTalk supports 6 primitive values that are derived from the
+Object, Boolean, Integer, Real, String and Function classes. The
+following statements assign primitive values to a variable.
 
-    a = true
-    b = 1
-    c = 3.14 * 2
-    d = "Hello world"
+	a = null
+    b = true
+    c = 1
+    d = 3.14 * 2
+    e = "Hello world"
 
 Please also note that primitive values are automatically converted in
 ObjectTalk when required.
 
-    e = d + b
+    f = e + c
 
-In the expression above b gets converted to a String as the addition
-operator is applied to a String object that wants its argument to be
-a string.
+In the expression above c gets converted to a String as the addition
+operator is applied to e (a String object) which wants its
+argument also as a string.
 
-Strings in ObjectTalk are captured in double quotes and can span
+In ObjectTalk, The null object is the only instance of the abstract
+Object class. It's a special object as it can't do anything. It is
+however helpful as a true null concept.
+
+Booleans in ObjectTalk can only hold two values: true and false.
+The default global language context defines the variables true and
+false as a convenience.
+
+Integers represent negative and positive whole numbers.
+On most systems, this number os implemented as a 64-bit number meaning
+that the extremes are -9,223,372,036,854,775,808 and
+9,223,372,036,854,775,807 (inclusive).
+
+Reals in ObjectTalk are double-precision floating point numbers.
+On most systems, Reals are implemented using 8 bytes and have a range
+of 1.7E +/- 308 (15 digits).
+
+In ObjectTalk, Strings are captured in double quotes and can span
 multiple lines. Strings may contain UTF-8 characters (like "€") or
 use JSON style encoding like "Most Europeans like the \u00C4.\n".
 
-In ObjectTalk, a function is a primitive value. This means that
+Function in ObjectTalk are a primitive value. This means that
 we can pass a function around like any other primitive. The following
 code might be a little too complex for this overview, so we'll defer an
 explanation until we'll get the the Language Guide. The point is
@@ -93,7 +111,7 @@ also has many methods to manipulate the content of a dictionary.
 	name = dict2["Name"]
 
 Both arrays and dictionaries follow JSON rules and the ObjectTalk
-compiler can therefore ingest properly formatted JSON without any trouble.
+compiler can therefore ingest JSON without any trouble.
 This should also make it easier for those who are already familiar
 with JSON encoding.
 
@@ -119,3 +137,44 @@ Parentheses around the condition or loop variable are optional. Braces around th
     // Prints "11"
 
 ## Functions
+
+## Object and Classes
+
+## Error handling
+
+ObjectTalk uses a classic try/catch/throw paradigm. Critical code
+is captured in a try block and if an exception is raised, the code
+in the catch block is executed. If an exception is raised outside
+a try block, your script will terminate.
+
+A simple example might look like:
+
+    try {
+    	a = 1
+    	b = 2
+    	print(c)
+    	d = 4
+
+    } catch error {
+    	print("Caught an exception:")
+    	print(error)
+    }
+
+    print("Recovered from exception")
+
+In the example above, the ObjectTalk runtime will raise the exception
+as the variable **c** is not defined at the time the **print** function
+is used.
+
+Programmers can also use the throw command to raise an exception:
+
+    try {
+    	throw "this is completely wrong"
+
+    } catch error {
+    	print("Caught an exception:")
+    	print(error)
+	}
+
+In the catch block, the error message is automatically assigned to
+the variable mentioned after catch.

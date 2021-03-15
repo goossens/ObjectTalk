@@ -1,0 +1,24 @@
+
+try {
+	a = 1
+	b = 2
+	print(c)
+	d = 4
+
+} catch error {
+	print("Caught an exception:")
+	print(error)
+}
+
+print("Recovered from exception")
+print()
+
+try {
+	throw "this is completely wrong"
+
+} catch error {
+	print("Caught an exception:")
+	print(error)
+}
+
+print("Recovered from another exception")

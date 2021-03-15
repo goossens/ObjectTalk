@@ -26,6 +26,8 @@ for visualizing grammar.
     | "do" block "while" expression
     | "for" name "in" expression block
     | "switch" expression "{" ("case" expression statement)+ ("default" statement)? "}"
+	| "throw" expression
+	| "try" block "catch" name block
     | "return" expression
 
 # Block

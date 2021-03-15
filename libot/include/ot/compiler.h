@@ -103,6 +103,12 @@ private:
 	// compile a switch statement
 	void switchStatement(OtCode code);
 
+	// compile a throw statement
+	void throwStatement(OtCode code);
+
+	// compile a try/catch statement
+	void tryStatement(OtCode code);
+
 	// compile a while statement
 	void whileStatement(OtCode code);
 

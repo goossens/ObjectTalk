@@ -14,7 +14,20 @@
 
 #include "ot/exception.h"
 #include "ot/text.h"
+#include "ot/string.h"
 #include "ot/code.h"
+
+
+//
+//	OtTryCatch
+//
+
+class OtTryCatch {
+public:
+	OtTryCatch(size_t p, size_t s) : pc(p), sp(s) {}
+	size_t pc;
+	size_t sp;
+};
 
 
 //
@@ -30,6 +43,9 @@ OtObject OtCodeClass::operator ()(OtContext context, size_t start, size_t end) {
 	// stack
 	std::vector<OtObject> stack;
 
+	// try/catch stack
+	std::vector<OtTryCatch> tryCatch;
+
 	// local variables
 	size_t pc = start;
 	OtObject* sp;
@@ -38,9 +54,9 @@ OtObject OtCodeClass::operator ()(OtContext context, size_t start, size_t end) {
 	size_t cnt;
 	size_t mark;
 
-	try {
-		// execute all instructions
-		while (pc < end) {
+	// execute all instructions
+	while (pc < end) {
+		try {
 			switch (at(pc).opcode) {
 				case OtInstruction::MARK:
 					mark = at(pc).integer;
@@ -106,6 +122,16 @@ OtObject OtCodeClass::operator ()(OtContext context, size_t start, size_t end) {
 					pc = end;
 					break;
 
+				case OtInstruction::PUSH_TRY:
+					// start a new try/catch cycle
+					tryCatch.push_back(OtTryCatch(at(pc).integer, stack.size()));
+					break;
+
+				case OtInstruction::POP_TRY:
+					// start a new try/catch cycle
+					tryCatch.pop_back();
+					break;
+
 				case OtInstruction::PUSH_CONTEXT:
 					// push current context
 					ctx = stack.back()->cast<OtContextClass>();
@@ -122,56 +148,71 @@ OtObject OtCodeClass::operator ()(OtContext context, size_t start, size_t end) {
 					break;
 			}
 
-			pc++;
-		}
+		} catch (const OtException& e) {
+			// do we have an exception handler
+			if (tryCatch.size()) {
+				// yes, use it
+				OtTryCatch trycatch = tryCatch.back();
+				tryCatch.pop_back();
 
-	} catch (const OtException& e) {
-		// find start of line
-		size_t startOfLine = source.rfind('\n', mark);
+				// restore program counter and stack
+				pc = trycatch.pc - 1;
+				stack.resize(trycatch.sp);
 
-		if (startOfLine == std::string::npos) {
-			startOfLine = 0;
+				// put exception on stack
+				stack.push_back(OtStringClass::create(e.what()));
 
-		} else {
-			startOfLine++;
-		}
+			} else {
+				// find start of line
+				size_t startOfLine = source.rfind('\n', mark);
 
-		// find end of line
-		size_t nextMark = 0;
-		size_t endOfLine;
+				if (startOfLine == std::string::npos) {
+					startOfLine = 0;
 
-		for (auto i = pc; !nextMark && i < end; i++) {
-			if (at(i).opcode == OtInstruction::MARK) {
-				nextMark = at(i).integer;
+				} else {
+					startOfLine++;
+				}
+
+				// find end of line
+				size_t nextMark = 0;
+				size_t endOfLine;
+
+				for (auto i = pc; !nextMark && i < end; i++) {
+					if (at(i).opcode == OtInstruction::MARK) {
+						nextMark = at(i).integer;
+					}
+				}
+
+				if (nextMark == 0) {
+					nextMark = source.size();
+				}
+
+				auto p = source.find_last_not_of("\t\n\v\f\r ", nextMark - 1);
+				endOfLine = source.find('\n', p);
+
+				if (endOfLine == std::string::npos) {
+					endOfLine = source.size();
+				}
+
+				// find starting line number
+				auto line = std::count(source.begin(), source.begin() + startOfLine, '\n') + 1;
+
+				// get text of offending line(s)
+				auto lines = source.substr(startOfLine, endOfLine - startOfLine);
+
+				// format nicely
+				std::string statement;
+
+				OtTextSplitIterator(lines.data(), lines.data() + lines.size(), ';', [&](const char *b, const char *e) {
+					std::string text(b, e - b);
+					statement += OtFormat("Line %ld: %s", line++, text.c_str());
+				});
+
+				OT_EXCEPT("%s:\n%s", e.what(), statement.c_str());
 			}
 		}
 
-		if (nextMark == 0) {
-			nextMark = source.size();
-		}
-
-		auto p = source.find_last_not_of("\t\n\v\f\r ", nextMark - 1);
-		endOfLine = source.find('\n', p);
-
-		if (endOfLine == std::string::npos) {
-			endOfLine = source.size();
-		}
-
-		// find starting line number
-		auto line = std::count(source.begin(), source.begin() + startOfLine, '\n') + 1;
-
-		// get text of offending line(s)
-		auto lines = source.substr(startOfLine, endOfLine - startOfLine);
-
-		// format nicely
-		std::string statement;
-
-		OtTextSplitIterator(lines.data(), lines.data() + lines.size(), ';', [&](const char *b, const char *e) {
-			std::string text(b, e - b);
-			statement += OtFormat("Line %ld: %s", line++, text.c_str());
-		});
-
-		OT_EXCEPT("%s:\n%s", e.what(), statement.c_str());
+		pc++;
 	}
 
 	OT_ASSERT(stack.size() == 1);

@@ -18,7 +18,7 @@
 #include "ot/array.h"
 #include "ot/dict.h"
 
-#include "ot/internal.h"
+#include "ot/reference.h"
 
 
 //
@@ -167,7 +167,7 @@ void OtCompiler::function(OtCode code) {
 class OtContextReferenceClass;
 typedef std::shared_ptr<OtContextReferenceClass> OtContextReference;
 
-class OtContextReferenceClass : public OtInternalClass {
+class OtContextReferenceClass : public OtReferenceClass {
 public:
 	OtContextReferenceClass() = default;
 	OtContextReferenceClass(const std::string& m) : member(m) {}
@@ -180,7 +180,7 @@ public:
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtContextReferenceClass>("ContextReference", OtInternalClass::getMeta());
+			type = OtTypeClass::create<OtContextReferenceClass>("ContextReference", OtReferenceClass::getMeta());
 			type->set("__deref__", OtFunctionClass::create(&OtContextReferenceClass::deref));
 			type->set("__assign__", OtFunctionClass::create(&OtContextReferenceClass::assign));
 		}

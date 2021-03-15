@@ -7,35 +7,38 @@
 Language classes:
 =================
 
-Object
-	Primitive
-		Boolean
-		Integer
-		Real
-		String
-		Function
+	Object
+		Primitive
+			Boolean
+			Integer
+			Real
+			String
+			Function
 
-	Collection
-		Array
-		Dict
+		Collection
+			Array
+			Dict
 
-	Internal
-		Context
-			Module
-			Class
-			Global
+		Internal
+			Context
+				Module
+				Class
+				Global
 
-		BoundFunction
-		CodeFunction
-		Throw
-		ContextReference
-		MemberReference
-		StringReference
-		ArrayReference
-		DictReference
-		StringIterator
-		ArrayIterator
-		DictIterator
+			Reference
+				ContextReference
+				MemberReference
+				StringReference
+				ArrayReference
+				DictReference
+
+			Iterator
+				StringIterator
+				ArrayIterator
+
+			BoundFunction
+			CodeFunction
+			Throw
 
 Module classes:
 ===============
@@ -43,24 +46,24 @@ Module classes:
 System module:
 --------------
 
-Object
-	System
-		Path
-		OS
-		FS
+	Object
+		System
+			Path
+			OS
+			FS
 
 Http module:
 -----------
 
-Object
-	Http
-		URI
-		HttpRouter
-			HttpServer
+	Object
+		Http
+			URI
+			HttpRouter
+				HttpServer
 
-	Internal
-		HttpRequest
-		HttpResponse
-		HttpNext
-		HttpNotFound
-		HttpTimer
+		Internal
+			HttpRequest
+			HttpResponse
+			HttpNext
+			HttpNotFound
+			HttpTimer

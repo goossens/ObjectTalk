@@ -12,8 +12,8 @@
 #include "ot/exception.h"
 #include "ot/object.h"
 #include "ot/function.h"
-#include "ot/internal.h"
 #include "ot/class.h"
+#include "ot/reference.h"
 
 
 //
@@ -156,7 +156,7 @@ private:
 class OtMemberReferenceClass;
 typedef std::shared_ptr<OtMemberReferenceClass> OtMemberReference;
 
-class OtMemberReferenceClass : public OtInternalClass {
+class OtMemberReferenceClass : public OtReferenceClass {
 public:
 	OtMemberReferenceClass() = default;
 	OtMemberReferenceClass(OtObject o, const std::string& m) : object(o), member(m) {}
@@ -181,7 +181,7 @@ public:
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtMemberReferenceClass>("MemberReference", OtInternalClass::getMeta());
+			type = OtTypeClass::create<OtMemberReferenceClass>("MemberReference", OtReferenceClass::getMeta());
 			type->set("__deref__", OtFunctionClass::create(&OtMemberReferenceClass::deref));
 			type->set("__assign__", OtFunctionClass::create(&OtMemberReferenceClass::assign));
 		}

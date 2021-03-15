@@ -14,7 +14,7 @@
 
 #include "ot/exception.h"
 #include "ot/function.h"
-#include "ot/internal.h"
+#include "ot/iterator.h"
 
 #include "path.h"
 
@@ -39,7 +39,7 @@ OtObject OtPathClass::init(OtContext, size_t count, OtObject* parameters) {
 class OtPathIteratorClass;
 typedef std::shared_ptr<OtPathIteratorClass> OtPathIterator;
 
-class OtPathIteratorClass : public OtInternalClass {
+class OtPathIteratorClass : public OtIteratorClass {
 public:
 	OtPathIteratorClass() = default;
 	OtPathIteratorClass(OtPath p) { path = p; iterator = p->path.begin(); last = p->path.end(); }
@@ -52,7 +52,7 @@ public:
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtPathIteratorClass>("PathIterator", OtInternalClass::getMeta());
+			type = OtTypeClass::create<OtPathIteratorClass>("PathIterator", OtIteratorClass::getMeta());
 			type->set("__end__", OtFunctionClass::create(&OtPathIteratorClass::end));
 			type->set("__next__", OtFunctionClass::create(&OtPathIteratorClass::next));
 		}

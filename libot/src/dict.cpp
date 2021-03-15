@@ -12,7 +12,7 @@
 #include "ot/dict.h"
 #include "ot/function.h"
 #include "ot/array.h"
-#include "ot/internal.h"
+#include "ot/reference.h"
 
 
 //
@@ -63,7 +63,7 @@ OtObject OtDictClass::init(OtContext, size_t count, OtObject* parameters) {
 class OtDictReferenceClass;
 typedef std::shared_ptr<OtDictReferenceClass> OtDictReference;
 
-class OtDictReferenceClass : public OtInternalClass {
+class OtDictReferenceClass : public OtReferenceClass {
 public:
 	// constructors
 	OtDictReferenceClass() = default;
@@ -78,7 +78,7 @@ public:
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtDictReferenceClass>("DictReference", OtInternalClass::getMeta());
+			type = OtTypeClass::create<OtDictReferenceClass>("DictReference", OtReferenceClass::getMeta());
 			type->set("__deref__", OtFunctionClass::create(&OtDictReferenceClass::deref));
 			type->set("__assign__", OtFunctionClass::create(&OtDictReferenceClass::assign));
 		}

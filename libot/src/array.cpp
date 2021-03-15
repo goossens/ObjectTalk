@@ -13,8 +13,9 @@
 
 #include "ot/array.h"
 #include "ot/function.h"
-#include "ot/internal.h"
 #include "ot/context.h"
+#include "ot/reference.h"
+#include "ot/iterator.h"
 
 
 //
@@ -65,7 +66,7 @@ OtObject OtArrayClass::init(OtContext, size_t count, OtObject* parameters) {
 class OtArrayReferenceClass;
 typedef std::shared_ptr<OtArrayReferenceClass> OtArrayReference;
 
-class OtArrayReferenceClass : public OtInternalClass {
+class OtArrayReferenceClass : public OtReferenceClass {
 public:
 	// constructors
 	OtArrayReferenceClass() = default;
@@ -80,7 +81,7 @@ public:
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtArrayReferenceClass>("ArrayReference", OtInternalClass::getMeta());
+			type = OtTypeClass::create<OtArrayReferenceClass>("ArrayReference", OtReferenceClass::getMeta());
 			type->set("__deref__", OtFunctionClass::create(&OtArrayReferenceClass::deref));
 			type->set("__assign__", OtFunctionClass::create(&OtArrayReferenceClass::assign));
 		}
@@ -117,7 +118,7 @@ OtObject OtArrayClass::index(size_t index) {
 class OtArrayIteratorClass;
 typedef std::shared_ptr<OtArrayIteratorClass> OtArrayIterator;
 
-class OtArrayIteratorClass : public OtInternalClass {
+class OtArrayIteratorClass : public OtIteratorClass {
 public:
 	// constructors
 	OtArrayIteratorClass() = default;
@@ -132,7 +133,7 @@ public:
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtArrayIteratorClass>("ArrayIterator", OtInternalClass::getMeta());
+			type = OtTypeClass::create<OtArrayIteratorClass>("ArrayIterator", OtIteratorClass::getMeta());
 			type->set("__end__", OtFunctionClass::create(&OtArrayIteratorClass::end));
 			type->set("__next__", OtFunctionClass::create(&OtArrayIteratorClass::next));
 		}

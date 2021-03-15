@@ -14,7 +14,8 @@
 
 #include "ot/string.h"
 #include "ot/function.h"
-#include "ot/internal.h"
+#include "ot/reference.h"
+#include "ot/iterator.h"
 
 
 //
@@ -24,7 +25,7 @@
 class OtStringReferenceClass;
 typedef std::shared_ptr<OtStringReferenceClass> OtStringReference;
 
-class OtStringReferenceClass : public OtInternalClass {
+class OtStringReferenceClass : public OtReferenceClass {
 public:
 	// constructors
 	OtStringReferenceClass() = default;
@@ -44,7 +45,7 @@ public:
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtStringReferenceClass>("StringReference", OtInternalClass::getMeta());
+			type = OtTypeClass::create<OtStringReferenceClass>("StringReference", OtReferenceClass::getMeta());
 			type->set("__deref__", OtFunctionClass::create(&OtStringReferenceClass::deref));
 			type->set("__assign__", OtFunctionClass::create(&OtStringReferenceClass::assign));
 		}
@@ -81,7 +82,7 @@ OtObject OtStringClass::index(size_t index) {
 class OtStringIteratorClass;
 typedef std::shared_ptr<OtStringIteratorClass> OtStringIterator;
 
-class OtStringIteratorClass : public OtInternalClass {
+class OtStringIteratorClass : public OtIteratorClass {
 public:
 	// constructors
 	OtStringIteratorClass() = default;
@@ -105,7 +106,7 @@ public:
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtTypeClass::create<OtStringIteratorClass>("StringIterator", OtInternalClass::getMeta());
+			type = OtTypeClass::create<OtStringIteratorClass>("StringIterator", OtIteratorClass::getMeta());
 			type->set("__end__", OtFunctionClass::create(&OtStringIteratorClass::end));
 			type->set("__next__", OtFunctionClass::create(&OtStringIteratorClass::next));
 		}

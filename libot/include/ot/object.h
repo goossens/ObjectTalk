@@ -84,6 +84,10 @@ public:
 	// support member operator
 	OtObject member(const std::string& name);
 
+	// comparison
+	bool equal(OtObject operand);
+	bool notEqual(OtObject operand) { return !equal(operand); }
+
 	// "call" object (context, count, parameters)
 	virtual OtObject operator () (OtContext, size_t, OtObject*) { return nullptr; }
 

@@ -8,10 +8,12 @@ of the language's compiler and runtime, every effort is made to
 keep the code and documentation synchronized.
 
 * A tour of ObjectTalk
-    - [About ObjectTalk](About.md)
-	- [History of ObjectTalk](History.md)
-	- [Quick ObjectTalk Overview](Overview.md)
+	* [About ObjectTalk](About.md)
+	* [History of ObjectTalk](History.md)
+	* [Quick ObjectTalk Overview](Overview.md)
 * Language Guide
-    - XXX
+    * XXX
 * Language Reference
-    - [ObjectTalk Language Reference in EBNF](Language.md)
+	* [ObjectTalk Language Reference in EBNF](Language.md)
+	* [ObjectTalk Classes](Classes.md)
+	

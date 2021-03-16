@@ -29,9 +29,12 @@ change it, it's a constant. If you do change it, it's a variable.
 
 ## Primitive Values
 
-ObjectTalk supports 6 primitive values that are derived from the
-Object, Boolean, Integer, Real, String and Function classes. The
-following statements assign primitive values to a variable.
+ObjectTalk supports 6 [Primitive](reference/Primitive.md) values
+that are derived from the
+[Object](reference/Object.md), [Boolean](reference/Boolean.md),
+[Integer](reference/Integer.md), [Real](reference/Real.md),
+[String](reference/String.md) and [Function](reference/Function.md)
+classes. The following statements assign primitive values to variables.
 
 	a = null
     b = true
@@ -48,32 +51,32 @@ In the expression above c gets converted to a String as the addition
 operator is applied to e (a String object) which wants its
 argument also as a string.
 
-In ObjectTalk, The null object is the only instance of the abstract
-Object class. It's a special object as it can't do anything. It is
-however helpful as a true null concept.
+In ObjectTalk, The **null** object is the only instance of the abstract
+[Object](reference/Object.md) class. It's a special object as it can't
+do anything. It is however helpful as a true non-value.
 
-Booleans in ObjectTalk can only hold two values: true and false.
-The default global language context defines the variables true and
-false as a convenience.
+[Booleans](reference/Boolean.md) in ObjectTalk can only hold two values:
+true and false. The default global language context defines the variables
+**true** and **false** as a convenience.
 
-Integers represent negative and positive whole numbers.
-On most systems, this number os implemented as a 64-bit number meaning
-that the extremes are -9,223,372,036,854,775,808 and
+[Integers](reference/Integer.md) represent negative and positive whole
+numbers. On most systems, this number os implemented as a 64-bit number
+meaning that the extremes are -9,223,372,036,854,775,808 and
 9,223,372,036,854,775,807 (inclusive).
 
-Reals in ObjectTalk are double-precision floating point numbers.
-On most systems, Reals are implemented using 8 bytes and have a range
-of 1.7E +/- 308 (15 digits).
+[Reals](reference/Real.md) in ObjectTalk are double-precision floating
+point numbers. On most systems, Reals are implemented using 8 bytes
+and have a range of 1.7E +/- 308 (15 digits).
 
-In ObjectTalk, Strings are captured in double quotes and can span
+In ObjectTalk, [Strings](reference/String.md) are captured in double quotes and can span
 multiple lines. Strings may contain UTF-8 characters (like "€") or
 use JSON style encoding like "Most Europeans like the \u00C4.\n".
 
-Function in ObjectTalk are a primitive value. This means that
-we can pass a function around like any other primitive. The following
-code might be a little too complex for this overview, so we'll defer an
-explanation until we'll get the the Language Guide. The point is
-that a function is a first class citizen in ObjectTalk.
+[Functions](String/Function.md) in ObjectTalk are primitive values.
+This means that we can pass a function around like any other primitive.
+The following code might be a little too complex for this overview, so
+we'll defer an explanation until we'll get the the Language Guide.
+The point is that a function is a first class citizen in ObjectTalk.
 
     function test1(callback) {
         callback()
@@ -87,12 +90,15 @@ that a function is a first class citizen in ObjectTalk.
 
 ## Collections
 
-ObjectTalk supports two types of collections (arrays and dictionaries)
+ObjectTalk supports two types of [Collections](reference/Collections.md)
+([Arrays](reference/Array.md) arrays and
+[Dictionaries](reference/Dict.md))
 that can be nested if required.
 
-Arrays are sequences of objects that can be constructed using square
-brackets ([]) or through the Array class constructor. The Array class
-has many methods to manipulate the content of an array.
+[Arrays](reference/Array.md) are sequences of objects that can be
+constructed using square brackets ([]) or through the Array class
+constructor. The Array class has many methods to manipulate the content
+of an array.
 
     array1 = [ 1, 2, "test", 7 + 4, a ]
     array2 = Array(3.14, 7, 34, 1)
@@ -100,9 +106,10 @@ has many methods to manipulate the content of an array.
 	array1.append("new value")
 	thirdValue = array1[3]
 
-Dictionaries contain indexed key/value pairs that are constructed using
-curly brackets ({}) or through the Dict class constructor. The Dict class
-also has many methods to manipulate the content of a dictionary.
+[Dictionaries](reference/Dict.md) contain indexed key/value pairs that
+are constructed using curly brackets ({}) or through the Dict class
+constructor. The Dict class also has many methods to manipulate the
+content of a dictionary.
 
 	dict1 = [ "First Name": "John", "Last Name": "Doe", "Age": 34 }
 	dict2 = Dict("Name", "John Doe", "Address", "Unknown")
@@ -142,9 +149,9 @@ Parentheses around the condition or loop variable are optional. Braces around th
 
 ## Error handling
 
-ObjectTalk uses a classic try/catch/throw paradigm. Critical code
-is captured in a try block and if an exception is raised, the code
-in the catch block is executed. If an exception is raised outside
+ObjectTalk uses a classic **try/catch/throw** paradigm. Critical code
+is captured in a **try** block and if an exception is raised, the code
+in the **catch** block is executed. If an exception is raised outside
 a try block, your script will terminate.
 
 A simple example might look like:
@@ -166,7 +173,7 @@ In the example above, the ObjectTalk runtime will raise the exception
 as the variable **c** is not defined at the time the **print** function
 is used.
 
-Programmers can also use the throw command to raise an exception:
+Programmers can also use the **throw** command to raise an exception:
 
     try {
     	throw "this is completely wrong"
@@ -177,4 +184,4 @@ Programmers can also use the throw command to raise an exception:
 	}
 
 In the catch block, the error message is automatically assigned to
-the variable mentioned after catch.
+the variable mentioned after the **catch** statement.

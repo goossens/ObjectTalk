@@ -16,7 +16,6 @@
 #include "ot/exception.h"
 #include "ot/function.h"
 #include "ot/dict.h"
-#include "ot/internal.h"
 
 #include "request.h"
 
@@ -554,7 +553,7 @@ OtType OtHttpRequestClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtTypeClass::create<OtHttpRequestClass>("HttpRequest", OtInternalClass::getMeta());
+		type = OtTypeClass::create<OtHttpRequestClass>("HttpRequest", OtHttpClass::getMeta());
 
 		type->set("getMethod", OtFunctionClass::create(&OtHttpRequestClass::getMethod));
 		type->set("getURL", OtFunctionClass::create(&OtHttpRequestClass::getURL));

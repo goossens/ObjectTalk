@@ -16,8 +16,7 @@
 
 #include <uv.h>
 
-#include "ot/internal.h"
-
+#include "http.h"
 #include "headers.h"
 
 
@@ -28,7 +27,7 @@
 class OtHttpResponseClass;
 typedef std::shared_ptr<OtHttpResponseClass> OtHttpResponse;
 
-class OtHttpResponseClass : public OtInternalClass {
+class OtHttpResponseClass : public OtHttpClass {
 public:
 	// specify the output stream
 	void setStream(uv_stream_t* s);

@@ -24,11 +24,14 @@
 //
 
 OtObject OtPathClass::init(OtContext, size_t count, OtObject* parameters) {
-	if (count != 1) {
-		OT_EXCEPT("Path initializer expected 1 parameter not [%d]", count);
+	if (count >= 1) {
+		path = parameters[0]->operator std::string();
+
+		for (auto c = 1; c < count; c++) {
+			path / parameters[c]->operator std::string();
+		}
 	}
 
-	path = parameters[0]->operator std::string();
 	return getSharedPtr();
 }
 

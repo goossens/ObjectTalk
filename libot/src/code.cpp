@@ -110,7 +110,13 @@ OtObject OtCodeClass::operator ()(OtContext context, size_t start, size_t end) {
 					// get target object and call method
 					cnt = at(pc).integer + 1;
 					sp = &stack[stack.size() - cnt];
-					value = sp[0]->get(at(pc).string)->operator ()(context, cnt, sp);
+					
+					if (sp[0]) {
+						value = sp[0]->get(at(pc).string)->operator ()(context, cnt, sp);
+
+					} else {
+						OT_EXCEPT("You can't call a method on the null object" , false);
+					}
 
 					// clean up stack
 					stack.resize(stack.size() - cnt);

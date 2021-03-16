@@ -36,9 +36,9 @@
 
 OtGlobalClass::OtGlobalClass() {
 	// add default constants
+	set("null", OtObjectClass::create());
 	set("true", OtBooleanClass::create(true));
 	set("false", OtBooleanClass::create(false));
-	set("null", nullptr);
 
 	// add default functions
 	set("assert", OtFunctionClass::create(&OtGlobalClass::doAssert));

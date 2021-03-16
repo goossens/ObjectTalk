@@ -16,8 +16,6 @@
 
 #include "multipart/multipartparser.h"
 
-#include "ot/internal.h"
-
 #include "http.h"
 #include "headers.h"
 
@@ -29,7 +27,7 @@
 class OtHttpRequestClass;
 typedef std::shared_ptr<OtHttpRequestClass> OtHttpRequest;
 
-class OtHttpRequestClass : public OtInternalClass {
+class OtHttpRequestClass : public OtHttpClass {
 public:
 	// constructor
 	OtHttpRequestClass();

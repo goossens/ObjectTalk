@@ -49,6 +49,7 @@ OtCode OtCompiler::compile(const std::string& text) {
 	return code;
 }
 
+
 //
 //	OtCodeFunction
 //
@@ -1311,13 +1312,12 @@ public:
 
 void OtCompiler::throwStatement(OtCode code) {
 	scanner.expect(OtScanner::THROW_TOKEN);
+	code->push(OtThrowClass::create());
 
 	if (expression(code)) {
 		code->method("__deref__", 0);
 	}
 
-	code->push(OtThrowClass::create());
-	code->swap();
 	code->method("__call__", 1);
 }
 

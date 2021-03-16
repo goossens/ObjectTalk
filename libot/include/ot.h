@@ -21,11 +21,11 @@
 #include "ot/object.h"
 
 #include "ot/primitive.h"
-#include "ot/function.h"
 #include "ot/boolean.h"
 #include "ot/integer.h"
 #include "ot/real.h"
 #include "ot/string.h"
+#include "ot/function.h"
 
 #include "ot/collection.h"
 #include "ot/array.h"
@@ -36,6 +36,8 @@
 #include "ot/class.h"
 #include "ot/module.h"
 #include "ot/global.h"
+#include "ot/reference.h"
+#include "ot/iterator.h"
 
 #include "ot/code.h"
 #include "ot/scanner.h"

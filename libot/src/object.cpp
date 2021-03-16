@@ -212,6 +212,16 @@ OtObject OtObjectClass::member(const std::string& name) {
 
 
 //
+//	OtObjectClass::equal
+//
+
+bool OtObjectClass::equal(OtObject operand) {
+	return type == OtObjectClass::getMeta() &&
+		operand->type == OtObjectClass::getMeta();
+}
+
+
+//
 //	OtObjectClass::getClass
 //
 
@@ -240,6 +250,9 @@ OtType OtObjectClass::getMeta() {
 		type->set("__member__", OtFunctionClass::create(&OtObjectClass::member));
 		type->set("eraseMember", OtFunctionClass::create(&OtObjectClass::eraseMember));
 		type->set("clearMembers", OtFunctionClass::create(&OtObjectClass::clearMembers));
+
+		type->set("__eq__", OtFunctionClass::create(&OtObjectClass::equal));
+		type->set("__ne__", OtFunctionClass::create(&OtObjectClass::notEqual));
 
 		type->set("getClass", OtFunctionClass::create(&OtObjectClass::getClass));
 		type->set("isKindOf", OtFunctionClass::create(&OtObjectClass::isKindOf));

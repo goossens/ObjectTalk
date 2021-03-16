@@ -12,11 +12,11 @@ file(GLOB_RECURSE SYSTEM_SOURCES "*.cpp")
 
 add_library(system MODULE ${SYSTEM_INCLUDES} ${SYSTEM_SOURCES})
 
-target_compile_features(system PRIVATE cxx_std_17)
-set_target_properties(system PROPERTIES CXX_EXTENSIONS OFF)
-
 target_include_directories(system PRIVATE ${UV_INCLUDES})
 target_link_libraries(system PRIVATE libot ${UV_LIBRARY})
+
+target_compile_features(system PRIVATE cxx_std_17)
+set_target_properties(system PROPERTIES CXX_EXTENSIONS OFF)
 
 set_target_properties(system PROPERTIES PREFIX "")
 

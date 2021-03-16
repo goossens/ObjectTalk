@@ -10,6 +10,7 @@
 //
 
 #include <iostream>
+#include <uv.h>
 #include "ot.h"
 
 
@@ -17,12 +18,15 @@
 //	ObjectTalk interpreter main function
 //
 
-int main(int argc, const char* argv[]) {
+int main(int argc, char* argv[]) {
 	// ensure we have some arguments
 	if (argc == 1) {
 		std::wcerr << argv[0] << ": usage: " << argv[0] << " script ..." << std::endl;
 		exit(EXIT_FAILURE);
 	}
+
+	// initialize libuv
+	uv_setup_args(argc, argv);
 
 	// create globale context
 	OtGlobal global = OtGlobalClass::create();

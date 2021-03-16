@@ -18,7 +18,7 @@
 #include <fstream>
 #include <sstream>
 
-#include <whereami/whereami.h>
+#include <uv.h>
 
 #include "ot/exception.h"
 #include "ot/text.h"
@@ -27,6 +27,9 @@
 #include "ot/module.h"
 #include "ot/code.h"
 #include "ot/compiler.h"
+
+
+#define UV_CHECK_ERROR(action, status) if (status < 0) OT_EXCEPT("libuv error in %s: %s", action, uv_strerror(status))
 
 
 //
@@ -78,10 +81,10 @@ OtObject OtModuleClass::load(const std::string& name) {
 		}
 
 		// figure out where we live
-		int length = wai_getExecutablePath(nullptr, 0, nullptr);
-		int dirname_length;
-		char buffer[length];
-		wai_getExecutablePath(buffer, length, &dirname_length);
+		char buffer[PATH_MAX];
+		size_t length = PATH_MAX;
+		auto status = uv_exepath(buffer, &length);
+		UV_CHECK_ERROR("uv_exepath", status);
 		std::string home(buffer, length);
 
 		// use lib directory

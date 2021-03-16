@@ -4,9 +4,6 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-add_library(whereami STATIC whereami/whereami.c whereami/whereami.h)
-set_property(TARGET whereami PROPERTY POSITION_INDEPENDENT_CODE ON)
-
 add_library(llhttp STATIC llhttp/api.c llhttp/http.c llhttp/llhttp.c llhttp/llhttp.h)
 set_property(TARGET llhttp PROPERTY POSITION_INDEPENDENT_CODE ON)
 

@@ -4,8 +4,14 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
+find_path(UV_INCLUDES uv.h REQUIRED)
+find_library(UV_LIBRARY uv REQUIRED)
+
 add_executable(ot ot.cpp)
 add_dependencies(ot libot http system)
+
+target_include_directories(ot PRIVATE ${UV_INCLUDES})
+target_link_libraries(ot PRIVATE libot ${UV_LIBRARY})
 
 set_target_properties(ot PROPERTIES
 	XCODE_GENERATE_SCHEME TRUE
@@ -18,7 +24,5 @@ set_target_properties(ot PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BIN
 
 target_compile_features(ot PRIVATE cxx_std_17)
 set_target_properties(ot PROPERTIES CXX_EXTENSIONS OFF)
-
-target_link_libraries(ot PRIVATE libot)
 
 install(TARGETS ot DESTINATION bin)

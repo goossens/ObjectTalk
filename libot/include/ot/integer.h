@@ -47,8 +47,8 @@ public:
 	long modulo(long operand) { return value % operand; }
 	long power(long operand) { return std::pow(value, operand); }
 
-	long increment() { return ++value; }
-	long decrement() { return --value; }
+	long increment() { return value + 1; }
+	long decrement() { return value - 1; }
 
 	long shiftLeft(long operand) { return value << operand; }
 	long shiftRight(long operand) { return value >> operand; }

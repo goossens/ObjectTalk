@@ -36,6 +36,7 @@ public:
 	operator size_t() { return (size_t) value; }
 	operator double() { return value; }
 	operator std::string() {return std::to_string(value); }
+	std::string toFixed(size_t precision);
 
 	// arithmetic
 	double add(double operand) { return value + operand; }
@@ -56,9 +57,9 @@ public:
 	double negate() { return -value; }
 	double abs() { return std::abs(value); }
 	double sign() { return value / std::abs(value); }
-	double round() { return std::round(value); }
-	double ceil() { return std::ceil(value); }
-	double floor() { return std::floor(value); }
+	long round() { return std::round(value); }
+	long ceil() { return std::ceil(value); }
+	long floor() { return std::floor(value); }
 	double sin() { return std::sin(value); }
 	double cos() { return std::cos(value); }
 	double tan() { return std::tan(value); }

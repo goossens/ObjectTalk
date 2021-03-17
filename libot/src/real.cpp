@@ -9,8 +9,22 @@
 //	Include files
 //
 
+#include <sstream>
+#include <iomanip>
+
 #include "ot/real.h"
 #include "ot/function.h"
+
+
+//
+//	OtRealClass::toFixed
+//
+
+std::string OtRealClass::toFixed(size_t precision) {
+	std::ostringstream stream;
+	stream << std::fixed << std::setprecision(precision) << value;
+	return stream.str();
+}
 
 
 //
@@ -22,6 +36,9 @@ OtType OtRealClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtRealClass>("Real", OtPrimitiveClass::getMeta());
+
+
+		type->set("toFixed", OtFunctionClass::create(&OtRealClass::toFixed));
 
 		type->set("__add__", OtFunctionClass::create(&OtRealClass::add));
 		type->set("__sub__", OtFunctionClass::create(&OtRealClass::subtract));

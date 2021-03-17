@@ -34,6 +34,7 @@ public:
 
 	// convertors
 	operator bool() { return value != 0; }
+	operator int() { return (int) value; }
 	operator long() { return value; }
 	operator size_t() { return (size_t) value; }
 	operator double() { return double(value); }

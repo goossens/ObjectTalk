@@ -26,6 +26,7 @@
 inline OtObject OtObjectCreate() { return OtObjectClass::create(); }
 inline OtObject OtObjectCreate(OtObject value) { return value; }
 inline OtObject OtObjectCreate(bool value) { return OtBooleanClass::create(value); }
+inline OtObject OtObjectCreate(int value) { return OtIntegerClass::create(value); }
 inline OtObject OtObjectCreate(long value) { return OtIntegerClass::create(value); }
 inline OtObject OtObjectCreate(size_t value) { return OtIntegerClass::create(value); }
 inline OtObject OtObjectCreate(float value) { return OtRealClass::create(value); }

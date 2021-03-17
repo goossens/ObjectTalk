@@ -36,6 +36,7 @@ public:
 
 	// convertors
 	operator bool() { auto v = value; std::transform(v.begin(), v.end(), v.begin(), ::tolower); return v =="true"; }
+	operator int() { return std::stoi(value); }
 	operator long() { try { return std::stol(value); } catch(...) { return 0; }}
 	operator size_t() { return (size_t) std::stol(value); }
 	operator double() { try { return std::stof(value); } catch(...) { return 0.0; }}

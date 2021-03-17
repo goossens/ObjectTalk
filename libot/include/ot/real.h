@@ -32,6 +32,7 @@ public:
 
 	// covertors
 	operator bool() { return value != 0.0; }
+	operator int() { return (int) value; }
 	operator long() { return long(value); }
 	operator size_t() { return (size_t) value; }
 	operator double() { return value; }

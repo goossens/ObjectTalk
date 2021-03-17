@@ -1,17 +1,17 @@
 module	::= statement*
 
-statement ::= expression
+statement ::= expression ";"
 | block
 | "class" name ":" expression block
 | "function" name "(" (name ("," name)* | "...") ")" block
 | "if" expression block ("else" block)?
 | "while" expression block
-| "do" block "while" expression
+| "do" block "while" expression ";"
 | "for" name "in" expression block
 | "switch" expression "{" ("case" expression statement)+ ("default" statement)? "}"
-| "throw" expression
+| "throw" expression ";"
 | "try" block "catch" name block
-| "return" expression
+| "return" expression ";"
 
 block ::= "{" statement+ "}"
 

@@ -7,44 +7,42 @@ on [Wikipedia](https://en.wikipedia.org/wiki/Extended_Backus–Naur_form). The p
 translates EBNF into HTML with pictures. This tool is highly recommended
 for visualizing grammar.
 
-# Module
+# module
 ![Railroad Diagram](ebnf/module.png)
 
     module ::= statement*
 
-# Statement
+# statement
 ![Railroad Diagram](ebnf/statement.png)
 
-    statement ::= expression
-    | block
-    | "class" name ":" expression block
-    | "class" name ":" expression block
-    | "class" name ":" expression block
-    | "function" name "(" (name ("," name)* | "...") ")" block
-    | "if" expression block ("else" block)?
-    | "while" expression block
-    | "do" block "while" expression
-    | "for" name "in" expression block
-    | "switch" expression "{" ("case" expression statement)+ ("default" statement)? "}"
-	| "throw" expression
+	statement ::= expression ";"
+	| block
+	| "class" name ":" expression block
+	| "function" name "(" (name ("," name)* | "...") ")" block
+	| "if" expression block ("else" block)?
+	| "while" expression block
+	| "do" block "while" expression ";"
+	| "for" name "in" expression block
+	| "switch" expression "{" ("case" expression statement)+ ("default" statement)? "}"
+	| "throw" expression ";"
 	| "try" block "catch" name block
-    | "return" expression
+	| "return" expression ";"
 
-# Block
+# block
 ![Railroad Diagram](ebnf/block.png)
 
     block ::= "{" statement+ "}"
+
+# expressions
+![Railroad Diagram](ebnf/expressions.png)
+
+    expressions ::= expression ("," expression)*
 
 ## expression
 ![Railroad Diagram](ebnf/expression.png)
 
     expression ::= conditional ("=" conditional | "*=" conditional | "/=" conditional | "%=" conditional |
     "+=" conditional | "-=" conditional | "|=" conditional | "^=" conditional | "&=" conditional)*
-
-# expressions
-![Railroad Diagram](ebnf/expressions.png)
-
-    expressions ::= expression ("," expression)*
 
 ## conditional
 ![Railroad Diagram](ebnf/conditional.png)

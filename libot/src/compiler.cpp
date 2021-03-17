@@ -457,7 +457,7 @@ bool OtCompiler::prefix(OtCode code) {
 				code->dup();
 				code->method("__deref__", 0);
 				code->method("__inc__", 0);
-				code->method("__assign__", 0);
+				code->method("__assign__", 1);
 				break;
 
 			case OtScanner::DECREMENT_TOKEN:
@@ -468,7 +468,7 @@ bool OtCompiler::prefix(OtCode code) {
 				code->dup();
 				code->method("__deref__", 0);
 				code->method("__dec__", 0);
-				code->method("__assign__", 0);
+				code->method("__assign__", 1);
 				break;
 		}
 
@@ -1123,6 +1123,7 @@ void OtCompiler::doStatement(OtCode code) {
 	}
 
 	code->jumpTrue(offset);
+	scanner.expect(OtScanner::SEMICOLON_TOKEN);
 }
 
 
@@ -1213,6 +1214,7 @@ void OtCompiler::returnStatement(OtCode code) {
 	}
 
 	code->exit();
+	scanner.expect(OtScanner::SEMICOLON_TOKEN);
 }
 
 
@@ -1319,6 +1321,7 @@ void OtCompiler::throwStatement(OtCode code) {
 	}
 
 	code->method("__call__", 1);
+	scanner.expect(OtScanner::SEMICOLON_TOKEN);
 }
 
 
@@ -1442,13 +1445,10 @@ void OtCompiler::statement(OtCode code) {
 
 		default:
 			expression(code);
+			scanner.expect(OtScanner::SEMICOLON_TOKEN);
 			break;
 	}
 
 	// mark end of statement
 	code->mark(scanner.getLastTokenEnd());
-
-	while (scanner.matchToken(OtScanner::SEMICOLON_TOKEN)) {
-		scanner.advance();
-	}
 }

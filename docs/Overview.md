@@ -4,15 +4,14 @@ Tradition suggests that the first program in a new language should print
 the words “Hello, world!” on the screen. In ObjectTalk, this can be done
 in a single line:
 
-    print("Hello, world!")
+    print("Hello, world!");
 
 If you have written code in C or any of the derived languages before, this
 syntax might look familiar to you. In ObjectTalk, this line of code is a
 complete program. You don’t need to import a separate library for
 functionality like input/output or string handling. Code written at global
 scope is used as the entry point for the program, so you don’t even need
-a main() function. You also don’t  need to write semicolons at the end of
-every statement (although you are free to do so).
+a main() function.
 
 So where do we go from here. Well, we hope the overview below gives you
 enough information to start writing code in ObjectTalk by showing you how
@@ -36,16 +35,16 @@ that are derived from the
 [String](reference/String.md) and [Function](reference/Function.md)
 classes. The following statements assign primitive values to variables.
 
-	a = null
-    b = true
-    c = 1
-    d = 3.14 * 2
-    e = "Hello world"
+	a = null;
+    b = true;
+    c = 1;
+    d = 3.14 * 2;
+    e = "Hello world";
 
 Please also note that primitive values are automatically converted in
 ObjectTalk when required.
 
-    f = e + c
+    f = e + c;
 
 In the expression above c gets converted to a String as the addition
 operator is applied to e (a String object) which wants its
@@ -79,14 +78,14 @@ we'll defer an explanation until we'll get the the Language Guide.
 The point is that a function is a first class citizen in ObjectTalk.
 
     function test1(callback) {
-        callback()
+        callback();
     }
 
     test2 = function() {
-        print("Hello, world!")
-    }
+        print("Hello, world!");
+    };
 
-    test1(test2)
+    test1(test2);
 
 ## Collections
 
@@ -100,22 +99,22 @@ constructed using square brackets ([]) or through the Array class
 constructor. The Array class has many methods to manipulate the content
 of an array.
 
-    array1 = [ 1, 2, "test", 7 + 4, a ]
-    array2 = Array(3.14, 7, 34, 1)
+    array1 = [ 1, 2, "test", 7 + 4, a ];
+    array2 = Array(3.14, 7, 34, 1);
 
-	array1.append("new value")
-	thirdValue = array1[3]
+	array1.append("new value");
+	thirdValue = array1[3];
 
 [Dictionaries](reference/Dict.md) contain indexed key/value pairs that
 are constructed using curly brackets ({}) or through the Dict class
 constructor. The Dict class also has many methods to manipulate the
 content of a dictionary.
 
-	dict1 = [ "First Name": "John", "Last Name": "Doe", "Age": 34 }
-	dict2 = Dict("Name", "John Doe", "Address", "Unknown")
+	dict1 = [ "First Name": "John", "Last Name": "Doe", "Age": 34 };
+	dict2 = Dict("Name", "John Doe", "Address", "Unknown");
 
-	dict1["Last Update"] = "1 Apr 2000"
-	name = dict2["Name"]
+	dict1["Last Update"] = "1 Apr 2000";
+	name = dict2["Name"];
 
 Both arrays and dictionaries follow JSON rules and the ObjectTalk
 compiler can therefore ingest JSON without any trouble.
@@ -128,19 +127,19 @@ ObjectTalk uses **if** and **switch** to make conditionals and use
 **for in**, **while** and **do while** to make loops.
 Parentheses around the condition or loop variable are optional. Braces around the body are required.
 
-    individualScores = [75, 43, 103, 87, 12]
-    teamScore = 0
+    individualScores = [75, 43, 103, 87, 12];
+    teamScore = 0;
 
     foreach score in individualScores {
         if score > 50 {
-            teamScore += 3
+            teamScore += 3;
 
         } else {
-            teamScore += 1
+            teamScore += 1;
         }
     }
 
-    print(teamScore)
+    print(teamScore);
     // Prints "11"
 
 ## Functions
@@ -157,17 +156,17 @@ a try block, your script will terminate.
 A simple example might look like:
 
     try {
-    	a = 1
-    	b = 2
-    	print(c)
-    	d = 4
+    	a = 1;
+    	b = 2;
+    	print(c);
+    	d = 4;
 
     } catch error {
-    	print("Caught an exception:")
-    	print(error)
+    	print("Caught an exception:");
+    	print(error);
     }
 
-    print("Recovered from exception")
+    print("Recovered from exception");
 
 In the example above, the ObjectTalk runtime will raise the exception
 as the variable **c** is not defined at the time the **print** function
@@ -176,11 +175,11 @@ is used.
 Programmers can also use the **throw** command to raise an exception:
 
     try {
-    	throw "this is completely wrong"
+    	throw "this is completely wrong";
 
     } catch error {
-    	print("Caught an exception:")
-    	print(error)
+    	print("Caught an exception:");
+    	print(error);
 	}
 
 In the catch block, the error message is automatically assigned to

@@ -5,76 +5,76 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 // String class test
-assert(("Hello" + " " + "World") == "Hello World")
-assert("Hello" != "World")
-assert("Hello" == "Hello")
+assert(("Hello" + " " + "World") == "Hello World");
+assert("Hello" != "World");
+assert("Hello" == "Hello");
 
-assert("Hello" < "World")
-assert("Hello" <= "World")
-assert("Hello" <= "Hello")
+assert("Hello" < "World");
+assert("Hello" <= "World");
+assert("Hello" <= "Hello");
 
-assert("World" > "Hello")
-assert("World" >= "Hello")
-assert("World" >= "World")
+assert("World" > "Hello");
+assert("World" >= "Hello");
+assert("World" >= "World");
 
-assert("Hello".casecmp("Hello") == 0)
-assert("Hello".casecmp("hELLO") == 0)
-assert("Hello".casecmp("World") < 0)
-assert("Hello".casecmp("world") < 0)
-assert("World".casecmp("Hello") > 0)
-assert("world".casecmp("Hello") > 0)
-assert("World".casecmp("hello") > 0)
+assert("Hello".casecmp("Hello") == 0);
+assert("Hello".casecmp("hELLO") == 0);
+assert("Hello".casecmp("World") < 0);
+assert("Hello".casecmp("world") < 0);
+assert("World".casecmp("Hello") > 0);
+assert("world".casecmp("Hello") > 0);
+assert("World".casecmp("hello") > 0);
 
-assert("Hello".len() == 5)
+assert("Hello".len() == 5);
 
-assert("Hello".left(4) == "Hell")
-assert("Hello".right(2) == "lo")
-assert("Hello".mid(2, 2) == "ll")
+assert("Hello".left(4) == "Hell");
+assert("Hello".right(2) == "lo");
+assert("Hello".mid(2, 2) == "ll");
 
-assert("Hello World".find("World") == 6)
-assert("Hello World".startsWith("Hello") == true)
-assert("Hello World".startsWith("World") == false)
-assert("Hello World".contains("World") == true)
-assert("Hello World".contains("world") == false)
+assert("Hello World".find("World") == 6);
+assert("Hello World".startsWith("Hello") == true);
+assert("Hello World".startsWith("World") == false);
+assert("Hello World".contains("World") == true);
+assert("Hello World".contains("world") == false);
 
-assert("   Hello World   ".trim() == "Hello World")
-assert("   Hello World   ".ltrim() == "Hello World   ")
-assert("   Hello World   ".rtrim() == "   Hello World")
-assert("   Hello \t\n   World   ".compress() == "Hello World")
+assert("   Hello World   ".trim() == "Hello World");
+assert("   Hello World   ".ltrim() == "Hello World   ");
+assert("   Hello World   ".rtrim() == "   Hello World");
+assert("   Hello \t\n   World   ".compress() == "Hello World");
 
-assert("Hello World".lower() == "hello world")
-assert("Hello World".upper() == "HELLO WORLD")
+assert("Hello World".lower() == "hello world");
+assert("Hello World".upper() == "HELLO WORLD");
 
-assert("false".boolean() == false)
-assert("x".boolean() == false)
-assert("true".boolean() == true)
-assert("10".integer() == 10)
-assert("10.1".real() - 10.1 < 0.000001)
+assert("false".boolean() == false);
+assert("x".boolean() == false);
+assert("true".boolean() == true);
+assert("10".integer() == 10);
+assert("10.1".real() - 10.1 < 0.000001);
 
-assert("\u20AC" == "€")
-assert("\u20AC".json() == "€".json())
+assert("\u20AC" == "€");
+assert("\u20AC".json() == "€".json());
 
-assert("\u20AC".len() == 1)
-assert("\u20AC\u20AC \u20AC".len() == 4)
+assert("\u20AC".len() == 1);
+assert("\u20AC\u20AC \u20AC".len() == 4);
 
-assert("\u20AC\u20AC \u20AC".left(1) == "€")
-assert("\u20AC\u20AC \u20AC".right(2) == " €")
-assert("\u20AC\u20AC \u20AC".mid(1, 2) == "€ ")
+assert("\u20AC\u20AC \u20AC".left(1) == "€");
+assert("\u20AC\u20AC \u20AC".right(2) == " €");
+assert("\u20AC\u20AC \u20AC".mid(1, 2) == "€ ");
 
-assert("ä".casecmp("Ä") == 0)
-assert("\u00C4".casecmp("\u00E4") == 0)
-assert("ä ".casecmp("\u00E4 ") == 0)
+assert("ä".casecmp("Ä") == 0);
+assert("\u00C4".casecmp("\u00E4") == 0);
+assert("ä ".casecmp("\u00E4 ") == 0);
 
-assert("Hello World"[1] == "e")
+assert("Hello World"[1] == "e");
 
-count = 0
+count = 0;
 
 for ch in "€\u20AC€\u20AC€\u20AC€" {
-	assert(ch == "€")
-	count++
+	assert(ch == "€");
+	count++;
 }
 
-assert(count == 7)
+assert(count == 7);
 
 // Well done
-print("Passed all string tests")
+print("Passed all string tests");

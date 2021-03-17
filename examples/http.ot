@@ -4,22 +4,22 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-http = import("http")
+http = import("http");
 
 function info(req, res, next) {
-	res.send("info")
+	res.send("info");
 }
 
 class MyHttpServer : http.HttpServer {
 	function __init__(this) {
 		this.use(function(req, res, next) {
-			res.setHeader("hello", "world")
-			next()
-		})
+			res.setHeader("hello", "world");
+			next();
+		});
 
-		this.static("/static", __DIR__ + "/static")
+		this.static("/static", __DIR__ + "/static");
 
-		this.get("/info", info)
+		this.get("/info", info);
 
 		this.get("/info2", function(req, res, next) {
 			res.json({
@@ -27,38 +27,38 @@ class MyHttpServer : http.HttpServer {
 				"name": "john",
 				"amount": 12.3,
 				"data" : [2, 3, 4, 5]
-			})
-		})
+			});
+		});
 
 		this.get("/info3", function(req, res, next) {
 			res.json(req.getHeaders());
-		})
+		});
 
 		this.get("/info4", function(req, res, next) {
-			next()
-		})
+			next();
+		});
 
 		this.all("/debug", function(req, res, next) {
-			res.send(req.debug())
-		})
+			res.send(req.debug());
+		});
 
 		this.get("/file", function(req, res, next) {
-			res.sendfile(__DIR__ + "/static/test.txt")
-		})
+			res.sendfile(__DIR__ + "/static/test.txt");
+		});
 
 		this.get("/stop", function(req, res, next) {
-			res.send("Server stopping")
-			this.stop()
-		})
+			res.send("Server stopping");
+			this.stop();
+		});
 	}
 }
 
-print()
-print("Running HTTP server")
+print();
+print("Running HTTP server");
 
-server = MyHttpServer()
+server = MyHttpServer();
 server.listen("0.0.0.0", 80).run();
-server.clearHandlers()
+server.clearHandlers();
 
-print()
-print("Stopped HTTP server")
+print();
+print("Stopped HTTP server");

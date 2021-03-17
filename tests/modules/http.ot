@@ -6,28 +6,28 @@
 
 //	Test script for ObjectTalk http functions
 
-http = import("http")
+http = import("http");
 
-url = http.URL("http://user:password@test.org:8080/a/b/c/d/test.txt?a=1&b=2#frag")
-assert(url.string() == "http://user:password@test.org:8080/a/b/c/d/test.txt?a=1&b=2#frag")
-assert(url.url() == "http://user:password@test.org:8080/a/b/c/d/test.txt?a=1&b=2#frag")
-assert(url.scheme() == "http")
-assert(url.authority() == "user:password@test.org:8080")
-assert(url.user() == "user")
-assert(url.password() == "password")
-assert(url.host() == "test.org")
-assert(url.port() == 8080)
-assert(url.path() == "/a/b/c/d/test.txt")
-assert(url.directory() == "/a/b/c/d")
-assert(url.filename() == "test.txt")
-assert(url.stem() == "test")
-assert(url.extension() == "txt")
-assert(url.query() == "a=1&b=2")
-assert(url.fragment() == "frag")
-assert(url.hasParam("a") == true)
-assert(url.hasParam("c") == false)
-assert(url.getParam("a") == 1)
-assert(url.getParamWithDefault("c", 1) == 1)
+url = http.URL("http://user:password@test.org:8080/a/b/c/d/test.txt?a=1&b=2#frag");
+assert(url.string() == "http://user:password@test.org:8080/a/b/c/d/test.txt?a=1&b=2#frag");
+assert(url.url() == "http://user:password@test.org:8080/a/b/c/d/test.txt?a=1&b=2#frag");
+assert(url.scheme() == "http");
+assert(url.authority() == "user:password@test.org:8080");
+assert(url.user() == "user");
+assert(url.password() == "password");
+assert(url.host() == "test.org");
+assert(url.port() == 8080);
+assert(url.path() == "/a/b/c/d/test.txt");
+assert(url.directory() == "/a/b/c/d");
+assert(url.filename() == "test.txt");
+assert(url.stem() == "test");
+assert(url.extension() == "txt");
+assert(url.query() == "a=1&b=2");
+assert(url.fragment() == "frag");
+assert(url.hasParam("a") == true);
+assert(url.hasParam("c") == false);
+assert(url.getParam("a") == 1);
+assert(url.getParamWithDefault("c", 1) == 1);
 
 // Well done
-print("Passed all http tests")
+print("Passed all http tests");

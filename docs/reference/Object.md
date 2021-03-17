@@ -12,9 +12,9 @@ meaningful to instantiate it. Off course there is an exception here
 as well as the default global context creates a **null** object
 that can be used to denote a value that does not exist.
 
-	a = null
-	b = Object()
-	assert(a == b)
+	a = null;
+	b = Object();
+	assert(a == b);
 
 In the example above, both **a** and **b** have the same (non) value.
 
@@ -29,50 +29,50 @@ metadata registry attached to the object and if it can't be found,
 it's class and parent classes are consulted. This is actually the
 mechanism by which data and function members are found.
 
-	a = -1
-	a.flag = true            // attach metadata to object a
-	assert(a.flag == true)
-	assert(a.abs() == 1)     // abs member function from Integer class
+	a = -1;
+	a.flag = true;            // attach metadata to object a
+	assert(a.flag == true);
+	assert(a.abs() == 1);     // abs member function from Integer class
 
-	Integer.flag2 = false    // set metadata on Integer class
-	assert(a.flag2 == false) // find metadata in Integer object
+	Integer.flag2 = false;    // set metadata on Integer class
+	assert(a.flag2 == false); // find metadata in Integer object
 
 This metadata power however comes with a disadvantage as you can create
 really obscure code. Here is an example:
 
-	a = "test"
-	b = "test"
-	a.flag = true
+	a = "test";
+	b = "test";
+	a.flag = true;
 
 	a.dosomething = function(this) {
-		return "I did it"
-	}
+		return "I did it";
+	};
 
-	assert(a.flag == true)
-	assert(a.dosomething() == "I did it")
+	assert(a.flag == true);
+	assert(a.dosomething() == "I did it");
 
-	result = false
-	c = ""
+	result = false;
+	c = "";
 
 	try {
-		c = b.dosomething()
+		c = b.dosomething();
 	}
 
 	catch error {
-		result = true     // we expected this error
+		result = true;     // we expected this error
 	}
 
-	assert(result == true)
-	assert(c == "")
+	assert(result == true);
+	assert(c == "");
 
 	String.dosomething = function(this) {
-		return "I did it"
-	}
+		return "I did it";
+	};
 
-	assert(a.flag == true)
-	assert(b.flag == true)
-	assert(a.dosomething() == "I did it")
-	assert(b.dosomething() == "I did it")
+	assert(a.flag == true);
+	assert(b.flag == true);
+	assert(a.dosomething() == "I did it");
+	assert(b.dosomething() == "I did it");
 
 Class Methods
 -------------

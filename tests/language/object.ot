@@ -6,57 +6,57 @@
 
 //	Test script for ObjectTalk objects
 
-a = null
-b = Object()
-c = 1
+a = null;
+b = Object();
+c = 1;
 
-assert (a == b)
-assert (a != c)
+assert (a == b);
+assert (a != c);
 
-a = -1
-a.flag = true
-assert(a.flag == true)
+a = -1;
+a.flag = true;
+assert(a.flag == true);
 
-assert(a.abs() == 1)
-Integer.flag2 = false
-assert(a.flag2 == false)
+assert(a.abs() == 1);
+Integer.flag2 = false;
+assert(a.flag2 == false);
 
-a = "test"
-b = "test"
+a = "test";
+b = "test";
 
-a.flag = true
+a.flag = true;
 
 a.dosomething = function(this) {
-	return "I did it"
-}
+	return "I did it";
+};
 
-assert(a.flag == true)
-assert(a.dosomething() == "I did it")
+assert(a.flag == true);
+assert(a.dosomething() == "I did it");
 
-result = false
-c = ""
+result = false;
+c = "";
 
 try {
-	c = b.dosomething()
+	c = b.dosomething();
 }
 
 catch error {
-	result = true
+	result = true;
 }
 
-assert(result == true)
-assert(c == "")
+assert(result == true);
+assert(c == "");
 
-String.flag2 = true
+String.flag2 = true;
 
 String.dosomething = function(this) {
-	return "I did it"
-}
+	return "I did it";
+};
 
-assert(a.flag2 == true)
-assert(b.flag2 == true)
-assert(a.dosomething() == "I did it")
-assert(b.dosomething() == "I did it")
+assert(a.flag2 == true);
+assert(b.flag2 == true);
+assert(a.dosomething() == "I did it");
+assert(b.dosomething() == "I did it");
 
 // Well done
-print("Passed all object tests")
+print("Passed all object tests");

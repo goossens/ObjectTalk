@@ -5,15 +5,15 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 
-scope = "Lexical Scope"
+scope = "Lexical Scope";
 
 function printScope() {
-	print(scope)
+	print(scope);
 }
 
 function test() {
-	scope = "Dynamic Scope"
-	printScope()
+	scope = "Dynamic Scope";
+	printScope();
 }
 
-test()
+test();

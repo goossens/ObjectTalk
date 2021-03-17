@@ -6,78 +6,78 @@
 
 //	Test script for ObjectTalk classes
 
-assert(1.getClass().getName() == "Integer")
-assert(1.getClass().getClass().getName() == "Class")
+assert(1.getClass().getName() == "Integer");
+assert(1.getClass().getClass().getName() == "Class");
 
-theClass = 1.getClass()
-path = theClass.getName()
+theClass = 1.getClass();
+path = theClass.getName();
 
 while theClass.hasParent() {
-	theClass = theClass.getParent()
-	path += "->" + theClass.getName()
+	theClass = theClass.getParent();
+	path += "->" + theClass.getName();
 }
 
-assert(path == "Integer->Primitive->Object")
+assert(path == "Integer->Primitive->Object");
 
 class MyObject : Object {
 	function pedigree(this) {
-		theClass = this.getClass()
-		path = theClass.getName()
+		theClass = this.getClass();
+		path = theClass.getName();
 
 		while theClass.hasParent() {
-			theClass = theClass.getParent()
-			path += "->" + theClass.getName()
+			theClass = theClass.getParent();
+			path += "->" + theClass.getName();
 		}
 
-		return path
+		return path;
 	}
 
 	function useless(this, useless) {
-		return this.pedigree()
+		return this.pedigree();
 	}
 
 	function set(this, value) {
-		this.value = value
+		this.value = value;
 	}
 }
 
-test = MyObject()
-assert(test.pedigree() == "MyObject->Object")
-assert(test.useless("useless") == "MyObject->Object")
+test = MyObject();
+assert(test.pedigree() == "MyObject->Object");
+assert(test.useless("useless") == "MyObject->Object");
 
-pedigree = test.pedigree
-assert(pedigree.getClass().getName() == "BoundFunction")
-assert(pedigree() == "MyObject->Object")
+pedigree = test.pedigree;
+assert(pedigree.getClass().getName() == "BoundFunction");
+assert(pedigree() == "MyObject->Object");
 
-test.set(12)
-assert(test.value == 12)
+test.set(12);
+assert(test.value == 12);
 
-set = test.set
-set(14)
-assert(test.value == 14)
+set = test.set;
+set(14);
+assert(test.value == 14);
 
-test.value = 16
-assert(test.value == 16)
+test.value = 16;
+assert(test.value == 16);
 
 class ClassMember : Object {
-	constant = 13
+	constant = 13;
 
 	function test(this) {
-		return this.constant
+		return this.constant;
 	}
 
 	function cb(this, callback) {
-		return callback(this.constant)
+		return callback(this.constant);
 	}
 }
 
-test = ClassMember()
-assert(test.constant == 13)
-assert(test.test() == 13)
+test = ClassMember();
+assert(test.constant == 13);
+assert(test.test() == 13);
 
 assert(test.cb(function(value) {
-	return value + 1
-}) == 14)
+	return value + 1;
+}) == 14);
 
 // Well done
-print("Passed all class tests")
+print("Passed all class tests");

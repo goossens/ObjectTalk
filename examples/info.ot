@@ -1,0 +1,70 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+function size2string(bytes) {
+	bytes = bytes.real();
+
+	units = [" B", " KB", " MB", " GB", " TB"];
+	i = 0;
+
+	while bytes > 1024.0 {
+		bytes /= 1024.0;
+		++i;
+	}
+
+	return bytes.toFixed(2) + units[i];
+}
+
+function seconds2string(seconds) {
+	result = "";
+
+	day = 24 * 60 * 60;
+	days = (seconds / day).floor();
+	result += days.string() + " days, ";
+	seconds -= days * day;
+
+	hour = 60 * 60;
+	hours = (seconds / hour).floor();
+	result += hours.string() + " hours, ";
+	seconds -= hours * hour;
+
+	minute = 60;
+	minutes = (seconds / minute).floor();
+	result += minutes.string() + " minutes ";
+	seconds -= minutes * minute;
+
+	result += "and " + seconds.integer() + " seconds";
+	return result;
+}
+
+system = import("system");
+os = system.OS();
+
+print("System name: " + os.sysname());
+print("Release: " + os.release());
+print("Version: " + os.version());
+print("Machine: " + os.machine());
+print("Uptime: " + seconds2string(os.uptime()));
+print("Hostname: " + os.hostname());
+print();
+
+cores = os.cores();
+print("CPU: " + cores[0]["model"]);
+print("Number of cores/threads: " + cores.size());
+print();
+
+print("Total memory: " + size2string(os.totalMemory()));
+print("Free memory: " + size2string(os.freeMemory()));
+print();
+
+networks = os.networks();
+print("Number of networks: " + networks.size());
+
+for network in networks {
+	print(network);
+}
+
+print();

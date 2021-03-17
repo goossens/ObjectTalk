@@ -11,9 +11,14 @@
 
 #include <uv.h>
 
+#include "ot/exception.h"
 #include "ot/function.h"
+#include "ot/array.h"
+#include "ot/dict.h"
 
 #include "os.h"
+
+#define UV_CHECK_ERROR(action, status) if (status < 0) OT_EXCEPT("libuv error in %s: %s", action, uv_strerror(status))
 
 
 //
@@ -72,6 +77,174 @@ void OtOSClass::unsetenv(const std::string& name) {
 
 
 //
+//	OtOSClass::sysname
+//
+
+std::string OtOSClass::sysname() {
+	uv_utsname_t info;
+	auto status = uv_os_uname(&info);
+	UV_CHECK_ERROR("uv_os_uname", status);
+	return std::string(info.sysname);
+}
+
+
+//
+//	OtOSClass::release
+//
+
+std::string OtOSClass::release() {
+	uv_utsname_t info;
+	auto status = uv_os_uname(&info);
+	UV_CHECK_ERROR("uv_os_uname", status);
+	return std::string(info.release);
+}
+
+
+//
+//	OtOSClass::version
+//
+
+std::string OtOSClass::version()  {
+	uv_utsname_t info;
+	auto status = uv_os_uname(&info);
+	UV_CHECK_ERROR("uv_os_uname", status);
+	return std::string(info.version);
+}
+
+
+//
+//	OtOSClass::machine
+//
+
+std::string OtOSClass::machine()  {
+	uv_utsname_t info;
+	auto status = uv_os_uname(&info);
+	UV_CHECK_ERROR("uv_os_uname", status);
+	return std::string(info.machine);
+}
+
+
+//
+//	OtOSClass::uptime
+//
+
+double OtOSClass::uptime() {
+	double uptime;
+	auto status = uv_uptime(&uptime);
+	UV_CHECK_ERROR("uv_uptime", status);
+	return uptime;
+}
+
+
+//
+//	OtOSClass::hostname
+//
+
+std::string OtOSClass::hostname() {
+	char hostname[UV_MAXHOSTNAMESIZE];
+	size_t length;
+	auto status = uv_os_gethostname(hostname, &length);
+	UV_CHECK_ERROR("uv_uptime", status);
+	return std::string(hostname, length);
+}
+
+
+//
+//	OtOSClass::totalMemory
+//
+
+long OtOSClass::totalMemory() {
+	return uv_get_total_memory();
+}
+
+
+//
+//	OtOSClass::freeMemory
+//
+
+long OtOSClass::freeMemory() {
+	return uv_get_free_memory();
+}
+
+
+//
+//	OtOSClass::cores
+//
+
+OtObject OtOSClass::cores() {
+	uv_cpu_info_t* info;
+	int count;
+	auto status = uv_cpu_info(&info, &count);
+	UV_CHECK_ERROR("uv_cpu_info", status);
+
+	OtArray result = OtArrayClass::create();
+
+	for (auto c = 0; c < count; c++) {
+		OtDict core = OtDictClass::create();
+		core->operator[] ("model") = OtStringClass::create(info[c].model);
+		core->operator[] ("speed") = OtIntegerClass::create(info[c].speed);
+		core->operator[] ("user") = OtIntegerClass::create(info[c].cpu_times.user);
+		core->operator[] ("nice") = OtIntegerClass::create(info[c].cpu_times.nice);
+		core->operator[] ("sys") = OtIntegerClass::create(info[c].cpu_times.sys);
+		core->operator[] ("idle") = OtIntegerClass::create(info[c].cpu_times.idle);
+		core->operator[] ("irq") = OtIntegerClass::create(info[c].cpu_times.irq);
+		result->push_back(core);
+	}
+
+	uv_free_cpu_info(info, count);
+	return result;
+}
+
+
+//
+//	OtOSClass::networks
+//
+
+OtObject OtOSClass::networks() {
+	uv_interface_address_t* info;
+	int count;
+	auto status = uv_interface_addresses(&info, &count);
+	UV_CHECK_ERROR("uv_interface_addresses", status);
+
+	OtArray result = OtArrayClass::create();
+	char buffer[PATH_MAX];
+
+	for (auto c = 0; c < count; c++) {
+		OtDict network = OtDictClass::create();
+		network->operator[] ("name") = OtStringClass::create(info[c].name);
+		network->operator[] ("internal") = OtBooleanClass::create(info[c].is_internal);
+
+		if (info[c].address.address4.sin_family == AF_INET) {
+			status = uv_ip4_name(&info[c].address.address4, buffer, PATH_MAX);
+			UV_CHECK_ERROR("uv_ip4_name", status);
+			network->operator[] ("address") = OtStringClass::create(buffer);
+			network->operator[] ("family") = OtStringClass::create("IPV4");
+
+		} else if (info[c].address.address4.sin_family == AF_INET6) {
+			status = uv_ip6_name(&info[c].address.address6, buffer, PATH_MAX);
+			UV_CHECK_ERROR("address6", status);
+			network->operator[] ("address") = OtStringClass::create(buffer);
+			network->operator[] ("family") = OtStringClass::create("IPV6");
+		}
+
+		result->push_back(network);
+	}
+
+	uv_free_interface_addresses(info, count);
+	return result;
+}
+
+
+//
+//	OtOSClass::sleep
+//
+
+void OtOSClass::sleep(long milliseconds) {
+	uv_sleep(milliseconds);
+}
+
+
+//
 //	OtOSClass::getMeta
 //
 
@@ -85,6 +258,21 @@ OtType OtOSClass::getMeta() {
 		type->set("getenv", OtFunctionClass::create(&OtOSClass::getenv));
 		type->set("setenv", OtFunctionClass::create(&OtOSClass::setenv));
 		type->set("unsetenv", OtFunctionClass::create(&OtOSClass::unsetenv));
+
+		type->set("sysname", OtFunctionClass::create(&OtOSClass::sysname));
+		type->set("release", OtFunctionClass::create(&OtOSClass::release));
+		type->set("version", OtFunctionClass::create(&OtOSClass::version));
+		type->set("machine", OtFunctionClass::create(&OtOSClass::machine));
+		type->set("uptime", OtFunctionClass::create(&OtOSClass::uptime));
+		type->set("hostname", OtFunctionClass::create(&OtOSClass::hostname));
+
+		type->set("cores", OtFunctionClass::create(&OtOSClass::cores));
+		type->set("networks", OtFunctionClass::create(&OtOSClass::networks));
+		
+		type->set("totalMemory", OtFunctionClass::create(&OtOSClass::totalMemory));
+		type->set("freeMemory", OtFunctionClass::create(&OtOSClass::freeMemory));
+
+		type->set("sleep", OtFunctionClass::create(&OtOSClass::sleep));
 	}
 
 	return type;

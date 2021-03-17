@@ -38,6 +38,23 @@ public:
 	// unset environment variable
 	void unsetenv(const std::string& name);
 
+	// get system information
+	std::string sysname();
+	std::string release();
+	std::string version();
+	std::string machine();
+	double uptime();
+	std::string hostname();
+
+	OtObject cores();
+	OtObject networks();
+
+	long totalMemory();
+	long freeMemory();
+
+	// sleep for specified number of milliseconds
+	void sleep(long milliseconds);
+
 	// get type definition
 	static OtType getMeta();
 

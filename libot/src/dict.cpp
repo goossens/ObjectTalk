@@ -32,7 +32,7 @@ OtDictClass::operator std::string() {
 			o << ",";
 		}
 
-		o << "\"" << OtTextToJSON(entry.first) << "\":" << entry.second->json();
+		o << OtTextToJSON(entry.first) << ":" << entry.second->json();
 	}
 
 	o <<  "}";

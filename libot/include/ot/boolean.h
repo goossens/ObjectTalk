@@ -36,14 +36,14 @@ public:
 	operator double() { return value ? 1.0 : 0.0; }
 	operator std::string() { return value ? "true" : "false"; }
 
+	// comparison
+	bool equal(bool operand) { return value == operand; }
+	bool notEqual(bool operand) { return value != operand; }
+
 	// arithmetic
 	bool logicalAnd(bool operand) { return value && operand; }
 	bool logicalOr(bool operand) { return value || operand; }
 	bool logicalNot() { return !value; }
-
-	// comparison
-	bool equal(bool operand) { return value == operand; }
-	bool notEqual(bool operand) { return value != operand; }
 
 	// get type definition
 	static OtType getMeta();

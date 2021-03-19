@@ -308,6 +308,9 @@ OtType OtArrayClass::getMeta() {
 		type = OtTypeClass::create<OtArrayClass>("Array", OtCollectionClass::getMeta());
 
 		type->set("__init__", OtFunctionClass::create(&OtArrayClass::init));
+
+		type->set("string", OtFunctionClass::create(&OtBooleanClass::operator std::string));
+
 		type->set("__index__", OtFunctionClass::create(&OtArrayClass::index));
 		type->set("__iter__", OtFunctionClass::create(&OtArrayClass::iterate));
 		type->set("__add__", OtFunctionClass::create(&OtArrayClass::add));

@@ -12,6 +12,7 @@
 #include <iostream>
 
 #include "ot/exception.h"
+#include "ot/numbers.h"
 
 #include "ot/global.h"
 
@@ -39,6 +40,8 @@ OtGlobalClass::OtGlobalClass() {
 	set("null", OtObjectClass::create());
 	set("true", OtBooleanClass::create(true));
 	set("false", OtBooleanClass::create(false));
+	set("pi", OtRealClass::create(std::numbers::pi));
+	set("e", OtRealClass::create(std::numbers::e));
 
 	// add default functions
 	set("assert", OtFunctionClass::create(&OtGlobalClass::doAssert));

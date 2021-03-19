@@ -23,6 +23,18 @@ OtType OtIntegerClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtIntegerClass>("Integer", OtPrimitiveClass::getMeta());
 
+		type->set("boolean", OtFunctionClass::create(&OtIntegerClass::operator bool));
+		type->set("integer", OtFunctionClass::create(&OtIntegerClass::operator long));
+		type->set("real", OtFunctionClass::create(&OtIntegerClass::operator double));
+		type->set("string", OtFunctionClass::create(&OtIntegerClass::operator std::string));
+
+		type->set("__eq__", OtFunctionClass::create(&OtIntegerClass::equal));
+		type->set("__ne__", OtFunctionClass::create(&OtIntegerClass::notEqual));
+		type->set("__gt__", OtFunctionClass::create(&OtIntegerClass::greaterThan));
+		type->set("__lt__", OtFunctionClass::create(&OtIntegerClass::lessThan));
+		type->set("__ge__", OtFunctionClass::create(&OtIntegerClass::greaterEqual));
+		type->set("__le__", OtFunctionClass::create(&OtIntegerClass::lessEqual));
+
 		type->set("__add__", OtFunctionClass::create(&OtIntegerClass::add));
 		type->set("__sub__", OtFunctionClass::create(&OtIntegerClass::subtract));
 		type->set("__mul__", OtFunctionClass::create(&OtIntegerClass::multiply));
@@ -40,13 +52,6 @@ OtType OtIntegerClass::getMeta() {
 		type->set("__bor__", OtFunctionClass::create(&OtIntegerClass::bitwiseOr));
 		type->set("__bxor__", OtFunctionClass::create(&OtIntegerClass::bitwiseXor));
 		type->set("__bnot__", OtFunctionClass::create(&OtIntegerClass::bitwiseNot));
-
-		type->set("__eq__", OtFunctionClass::create(&OtIntegerClass::equal));
-		type->set("__ne__", OtFunctionClass::create(&OtIntegerClass::notEqual));
-		type->set("__gt__", OtFunctionClass::create(&OtIntegerClass::greaterThan));
-		type->set("__lt__", OtFunctionClass::create(&OtIntegerClass::lessThan));
-		type->set("__ge__", OtFunctionClass::create(&OtIntegerClass::greaterEqual));
-		type->set("__le__", OtFunctionClass::create(&OtIntegerClass::lessEqual));
 
 		type->set("__neg__", OtFunctionClass::create(&OtIntegerClass::negate));
 

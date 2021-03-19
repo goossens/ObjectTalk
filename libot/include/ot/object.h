@@ -61,13 +61,6 @@ public:
 	// get object's JSON representation
 	virtual std::string json() { return operator std::string(); }
 
-	// methods to allow binding to virtual member functions
-	bool toBoolean() { return operator bool(); }
-	long toInteger() { return operator long(); }
-	double toReal() { return operator double(); }
-	std::string toString() { return operator std::string(); }
-	std::string toJSON() { return json(); }
-
 	// get shared pointer
 	OtObject getSharedPtr() { return shared_from_this(); }
 
@@ -95,7 +88,7 @@ public:
 	// "call" named object member
 	OtObject method(const std::string& m, OtContext c, size_t n, OtObject* p);
 
-	// get an object class
+	// get an object's class
 	OtClass getClass();
 
 	// cast shared pointer to specified type

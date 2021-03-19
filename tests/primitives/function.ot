@@ -10,9 +10,9 @@ function lower(s) {
 	return s.lower();
 }
 
-function upper(s) {
+upper = function(s) {
 	return s.upper();
-}
+};
 
 function test(s, f) {
 	return f(s);

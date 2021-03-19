@@ -59,7 +59,7 @@ true and false. The default global language context defines the variables
 **true** and **false** as a convenience.
 
 [Integers](reference/Integer.md) represent negative and positive whole
-numbers. On most systems, this number os implemented as a 64-bit number
+numbers. On most systems, this number is implemented as a 64-bit number
 meaning that the extremes are -9,223,372,036,854,775,808 and
 9,223,372,036,854,775,807 (inclusive).
 
@@ -67,9 +67,10 @@ meaning that the extremes are -9,223,372,036,854,775,808 and
 point numbers. On most systems, Reals are implemented using 8 bytes
 and have a range of 1.7E +/- 308 (15 digits).
 
-In ObjectTalk, [Strings](reference/String.md) are captured in double quotes and can span
-multiple lines. Strings may contain UTF-8 characters (like "€") or
-use JSON style encoding like "Most Europeans like the \u00C4.\n".
+In ObjectTalk, [Strings](reference/String.md) are captured in double
+quotes and can span multiple lines. Strings may contain UTF-8 characters
+(like "€") or use JSON style encoding like "Most Europeans like the
+\u00C4.\n".
 
 [Functions](String/Function.md) in ObjectTalk are primitive values.
 This means that we can pass a function around like any other primitive.

@@ -16,6 +16,7 @@
 #include <memory>
 #include <string>
 
+#include "exception.h"
 #include "primitive.h"
 
 
@@ -40,12 +41,20 @@ public:
 	operator double() { return double(value); }
 	operator std::string() {return std::to_string(value); }
 
+	// comparison
+	bool equal(long operand) { return value == operand; }
+	bool notEqual(long operand) { return value != operand; }
+	bool greaterThan(long operand) { return value > operand; }
+	bool lessThan(long operand) { return value < operand; }
+	bool greaterEqual(long operand) { return value >= operand; }
+	bool lessEqual(long operand) { return value <= operand; }
+
 	// arithmetic
 	long add(long operand) { return value + operand; }
 	long subtract(long operand) { return value - operand; }
 	long multiply(long operand) { return value * operand; }
-	long divide(long operand) { return value / operand; }
-	long modulo(long operand) { return value % operand; }
+	long divide(long operand) { if (operand == 0) OT_EXCEPT0("Divide by zero"); return value / operand; }
+	long modulo(long operand) { if (operand == 0) OT_EXCEPT0("Divide by zero"); return value % operand; }
 	long power(long operand) { return std::pow(value, operand); }
 
 	long increment() { return value + 1; }
@@ -59,18 +68,10 @@ public:
 	long bitwiseXor(long operand) { return value ^ operand; }
 	long bitwiseNot() { return ~value; }
 
-	// comparison
-	bool equal(long operand) { return value == operand; }
-	bool notEqual(long operand) { return value != operand; }
-	bool greaterThan(long operand) { return value > operand; }
-	bool lessThan(long operand) { return value < operand; }
-	bool greaterEqual(long operand) { return value >= operand; }
-	bool lessEqual(long operand) { return value <= operand; }
-
 	// funtions
 	long negate() { return -value; }
 	long abs() { return std::abs(value); }
-	long sign() { return value / std::abs(value); }
+	long sign() { return (0 < value) - (value < 0); }
 
 	// get type definition
 	static OtType getMeta();

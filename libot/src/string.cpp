@@ -71,6 +71,14 @@ private:
 //
 
 OtObject OtStringClass::index(size_t index) {
+	if (index < 0) {
+		OT_EXCEPT("Negative index [%ld] is not allowed in a string", index);
+		
+	} else if (index >= value.size()) {
+		OT_EXCEPT("Index [%ld] is greater than string length [%ld]", index, value.size());
+
+	}
+
 	return OtStringReferenceClass::create(cast<OtStringClass>(), index);
 }
 
@@ -146,9 +154,11 @@ OtType OtStringClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtStringClass>("String", OtPrimitiveClass::getMeta());
 
-		type->set("__index__", OtFunctionClass::create(&OtStringClass::index));
-		type->set("__iter__", OtFunctionClass::create(&OtStringClass::iterate));
-		type->set("__add__", OtFunctionClass::create(&OtStringClass::add));
+		type->set("boolean", OtFunctionClass::create(&OtStringClass::operator bool));
+		type->set("integer", OtFunctionClass::create(&OtStringClass::operator long));
+		type->set("real", OtFunctionClass::create(&OtStringClass::operator double));
+		type->set("string", OtFunctionClass::create(&OtStringClass::operator std::string));
+		type->set("json", OtFunctionClass::create(&OtStringClass::json));
 
 		type->set("__eq__", OtFunctionClass::create(&OtStringClass::equal));
 		type->set("__ne__", OtFunctionClass::create(&OtStringClass::notEqual));
@@ -158,6 +168,10 @@ OtType OtStringClass::getMeta() {
 		type->set("__le__", OtFunctionClass::create(&OtStringClass::lessEqual));
 
 		type->set("casecmp", OtFunctionClass::create(&OtStringClass::casecmp));
+
+		type->set("__index__", OtFunctionClass::create(&OtStringClass::index));
+		type->set("__iter__", OtFunctionClass::create(&OtStringClass::iterate));
+		type->set("__add__", OtFunctionClass::create(&OtStringClass::add));
 
 		type->set("len", OtFunctionClass::create(&OtStringClass::len));
 

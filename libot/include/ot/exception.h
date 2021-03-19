@@ -31,6 +31,8 @@ private:
 	std::string message;
 };
 
+
+#define OT_EXCEPT0(message) throw OtException(message)
 #define OT_EXCEPT(format, ...) throw OtException(OtFormat(format, __VA_ARGS__))
 #define OT_FATAL(format, ...) throw OtException(OtFormat("%s: line %d: " format, __FILE__, __LINE__, __VA_ARGS__))
 #define OT_ASSERT(assertion) if (!(assertion)) OT_FATAL("Assertion error: %s", #assertion)

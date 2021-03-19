@@ -5,10 +5,27 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 // String class test
-assert(("Hello" + " " + "World") == "Hello World");
-assert("Hello" != "World");
-assert("Hello" == "Hello");
 
+assert("\u20AC" == "€");
+assert("\u20AC".json() == "€".json());
+
+assert("\u20AC".len() == 1);
+assert("\u20AC\u20AC \u20AC".len() == 4);
+
+assert("\u20AC\u20AC \u20AC".left(1) == "€");
+assert("\u20AC\u20AC \u20AC".right(2) == " €");
+assert("\u20AC\u20AC \u20AC".mid(1, 2) == "€ ");
+
+assert("false".boolean() == false);
+assert("x".boolean() == false);
+assert("true".boolean() == true);
+assert("10".integer() == 10);
+assert("-10".integer() == -10);
+assert("10.1".real() - 10.1 < 0.000001);
+assert("-10.1".real() + 10.1 < 0.000001);
+
+assert("Hello" == "Hello");
+assert("Hello" != "World");
 assert("Hello" < "World");
 assert("Hello" <= "World");
 assert("Hello" <= "Hello");
@@ -24,6 +41,31 @@ assert("Hello".casecmp("world") < 0);
 assert("World".casecmp("Hello") > 0);
 assert("world".casecmp("Hello") > 0);
 assert("World".casecmp("hello") > 0);
+
+assert("ä".casecmp("Ä") == 0);
+assert("\u00C4".casecmp("\u00E4") == 0);
+assert("ä ".casecmp("\u00E4 ") == 0);
+
+assert("Hello World"[1] == "e");
+
+result = "";
+
+for ch in "Hello World" {
+	result = ch + result;
+}
+
+assert(result == "dlroW olleH");
+
+count = 0;
+
+for ch in "€\u20AC€\u20AC€\u20AC€" {
+	assert(ch == "€");
+	count++;
+}
+
+assert(count == 7);
+
+assert(("Hello" + " " + "World") == "Hello World");
 
 assert("Hello".len() == 5);
 
@@ -44,37 +86,6 @@ assert("   Hello \t\n   World   ".compress() == "Hello World");
 
 assert("Hello World".lower() == "hello world");
 assert("Hello World".upper() == "HELLO WORLD");
-
-assert("false".boolean() == false);
-assert("x".boolean() == false);
-assert("true".boolean() == true);
-assert("10".integer() == 10);
-assert("10.1".real() - 10.1 < 0.000001);
-
-assert("\u20AC" == "€");
-assert("\u20AC".json() == "€".json());
-
-assert("\u20AC".len() == 1);
-assert("\u20AC\u20AC \u20AC".len() == 4);
-
-assert("\u20AC\u20AC \u20AC".left(1) == "€");
-assert("\u20AC\u20AC \u20AC".right(2) == " €");
-assert("\u20AC\u20AC \u20AC".mid(1, 2) == "€ ");
-
-assert("ä".casecmp("Ä") == 0);
-assert("\u00C4".casecmp("\u00E4") == 0);
-assert("ä ".casecmp("\u00E4 ") == 0);
-
-assert("Hello World"[1] == "e");
-
-count = 0;
-
-for ch in "€\u20AC€\u20AC€\u20AC€" {
-	assert(ch == "€");
-	count++;
-}
-
-assert(count == 7);
 
 // Well done
 print("Passed all string tests");

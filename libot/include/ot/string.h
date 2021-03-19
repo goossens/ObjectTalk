@@ -44,15 +44,6 @@ public:
 
 	std::string json() { return OtTextToJSON(value); }
 
-	// support indexing
-	OtObject index(size_t index);
-
-	// start iterator
-	OtObject iterate();
-
-	// "arithmetic"
-	std::string add(const std::string& operand) { return value + operand; }
-
 	// comparison
 	bool equal(const std::string& operand) { return value == operand; }
 	bool notEqual(const std::string& operand) { return value != operand; }
@@ -62,6 +53,15 @@ public:
 	bool lessEqual(const std::string& operand) { return value <= operand; }
 
 	long casecmp(const std::string& operand) { return OtTextCaseCmp(value, operand); }
+
+	// support indexing
+	OtObject index(size_t index);
+
+	// start iterator
+	OtObject iterate();
+
+	// "arithmetic"
+	std::string add(const std::string& operand) { return value + operand; }
 
 	// functions
 	size_t len() { return (size_t) OtTextLen(value); }

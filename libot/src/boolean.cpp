@@ -23,12 +23,17 @@ OtType OtBooleanClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtBooleanClass>("Boolean", OtPrimitiveClass::getMeta());
 
-		type->set("__and__", OtFunctionClass::create(&OtBooleanClass::logicalAnd));
-		type->set("__or__", OtFunctionClass::create(&OtBooleanClass::logicalOr));
-		type->set("__not__", OtFunctionClass::create(&OtBooleanClass::logicalNot));
+		type->set("boolean", OtFunctionClass::create(&OtBooleanClass::operator bool));
+		type->set("integer", OtFunctionClass::create(&OtBooleanClass::operator long));
+		type->set("real", OtFunctionClass::create(&OtBooleanClass::operator double));
+		type->set("string", OtFunctionClass::create(&OtBooleanClass::operator std::string));
 
 		type->set("__eq__", OtFunctionClass::create(&OtBooleanClass::equal));
 		type->set("__ne__", OtFunctionClass::create(&OtBooleanClass::notEqual));
+
+		type->set("__and__", OtFunctionClass::create(&OtBooleanClass::logicalAnd));
+		type->set("__or__", OtFunctionClass::create(&OtBooleanClass::logicalOr));
+		type->set("__not__", OtFunctionClass::create(&OtBooleanClass::logicalNot));
 	}
 
 	return type;

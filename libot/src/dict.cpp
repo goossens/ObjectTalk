@@ -186,6 +186,9 @@ OtType OtDictClass::getMeta() {
 		type = OtTypeClass::create<OtDictClass>("Dict", OtCollectionClass::getMeta());
 
 		type->set("__init__", OtFunctionClass::create(&OtDictClass::init));
+
+		type->set("string", OtFunctionClass::create(&OtBooleanClass::operator std::string));
+
 		type->set("__index__", OtFunctionClass::create(&OtDictClass::index));
 
 		type->set("size", OtFunctionClass::create(&OtDictClass::mySize));

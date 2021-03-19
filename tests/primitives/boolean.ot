@@ -5,6 +5,7 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 // Boolean class test
+
 assert(true);
 assert(!false);
 assert(true != false);

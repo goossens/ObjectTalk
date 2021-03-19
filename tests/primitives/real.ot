@@ -5,11 +5,11 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 // Real class test
-assert((1.2 + 2.3) == 3.5);
-assert((3.4 - 1.2) == 2.2);
-assert((-3.2 * 2) == -6.4);
-assert((8.0 / 2) == 4);
-assert((11.0 / 2.0) == 5.5);
+
+assert(0.0.boolean() == false);
+assert(10.0.boolean() == true);
+assert(10.0.integer() == 10);
+assert(10.0.string().integer() == 10);
 
 assert(0.0 != 1.0);
 assert(1.0 == 1);
@@ -20,17 +20,86 @@ assert(2.0 > 1.9);
 assert(-1.0 >= -1.01);
 assert(-1.0 == -1.0);
 assert(- -1.0 == 1.0);
+assert(3.0.integer() > 2);
+
+assert((1.2 + 2.3) == 3.5);
+assert((-1.2 + 2.4) == 1.2);
+assert((3.4 - 1.2) == 2.2);
+assert((-3.4 - 1.2) == -4.6);
+assert((3.2 * 2) == 6.4);
+assert((-3.2 * 2) == -6.4);
+assert((3.2 * -2) == -6.4);
+assert((-3.2 * -2) == 6.4);
+assert((8.0 / 2) == 4);
+assert((8.0 / -2) == -4);
+assert((-8.0 / 2) == -4);
+assert((-8.0 / -2) == 4);
+assert((11.0 / 2.0) == 5.5);
 
 assert(1.0.abs() == 1.0);
 assert(-1.0.abs() == 1.0);
-assert(11.0.sign() == 1);
-assert(-11.0.sign() == -1);
-assert(3.0.integer() > 2);
 
-assert(0.0.boolean() == false);
-assert(10.0.boolean() == true);
-assert(10.0.integer() == 10);
-assert(10.0.string().integer() == 10);
+assert(-11.0.sign() == -1);
+assert(0.0.sign() == 0);
+assert(11.0.sign() == 1);
+
+assert(1.1.round() == 1);
+assert(1.9.round() == 2);
+assert(-1.1.round() == -1);
+assert(-1.9.round() == -2);
+
+assert(1.1.ceil() == 2);
+assert(1.9.ceil() == 2);
+assert(-1.1.ceil() == -1);
+assert(-1.9.ceil() == -1);
+
+assert(1.1.floor() == 1);
+assert(1.9.floor() == 1);
+assert(-1.1.floor() == -2);
+assert(-1.9.floor() == -2);
+
+assert(1.1.trunc() == 1);
+assert(1.9.trunc() == 1);
+assert(-1.1.trunc() == -1);
+assert(-1.9.trunc() == -1);
+
+function closeEnough(a, b) {
+	return (a - b).abs().toFixed(10) == 0.0.toFixed(10);
+}
+
+assert(0.0.cos() == 1.0);
+assert(closeEnough((pi / 2).cos(), 0.0));
+assert(closeEnough((-pi / 2).cos(), 0.0));
+assert(closeEnough(pi.cos(), -1.0));
+assert(closeEnough((-pi).cos(), -1.0));
+
+assert(0.0.sin() == 0.0);
+assert(closeEnough((pi / 2).sin(), 1.0));
+assert(closeEnough((-pi / 2).sin(), -1.0));
+assert(closeEnough(pi.sin(), 0.0));
+assert(closeEnough((-pi).sin(), 0.0));
+
+assert(0.0.tan() == 0.0);
+assert(closeEnough((pi / 4).tan(), 1.0));
+assert(closeEnough((-pi / 4).tan(), -1.0));
+
+assert(0.0.radians() == 0.0);
+assert(closeEnough(180.0.radians(), pi));
+assert(closeEnough(-180.0.radians(), -pi));
+
+assert(0.0.degrees() == 0.0);
+assert(closeEnough(-pi.degrees(), -180.0));
+
+assert(closeEnough(1.0.log(), 0.0));
+assert(closeEnough(e.log(), 1.0));
+
+assert(closeEnough(0.0.exp(), 1.0));
+assert(closeEnough(1.0.exp(), e));
+assert(closeEnough(2.0.exp(), e * e));
+
+assert(closeEnough(1.0.log10(), 0.0));
+assert(closeEnough(10.0.log10(), 1.0));
+assert(closeEnough(100.0.log10(), 2.0));
 
 // Well done
 print("Passed all real tests");

@@ -19,15 +19,15 @@ that can be used to denote a value that does not exist.
 In the example above, both **a** and **b** have the same (non) value.
 
 All ObjectTalk objects have a special mechanism to store metadata
-that can be accessed with the dot operator. Metadata is not preserved
-beyond the running of a script and should therefore not be used
-as a dictionary. For that, please of the [Dict](Dict.md) class.
+that can be accessed with the dot (member) operator. Metadata is not
+preserved beyond the running of a script and should therefore not be
+used as a dictionary. For that, please of the [Dict](Dict.md) class.
 Metadata is powerful as any data can be attached to an object.
 
 When metadata is retrieved, the ObjectTalk engine for looks in the
-metadata registry attached to the object and if it can't be found,
-it's class and parent classes are consulted. This is actually the
-mechanism by which data and function members are found.
+metadata attached to the object and if it can't be found,
+it's class and parent classes are searched. This is actually the
+mechanism by which class member functions (methods) are found.
 
 	a = -1;
 	a.flag = true;            // attach metadata to object a
@@ -42,11 +42,11 @@ really obscure code. Here is an example:
 
 	a = "test";
 	b = "test";
-	a.flag = true;
+	a.flag = true;            // only set metadata on object a
 
 	a.dosomething = function(this) {
 		return "I did it";
-	};
+	};                        // store a function in object's a metadata
 
 	assert(a.flag == true);
 	assert(a.dosomething() == "I did it");
@@ -55,22 +55,25 @@ really obscure code. Here is an example:
 	c = "";
 
 	try {
-		c = b.dosomething();
+		c = b.dosomething();  // this won't work a b does not have metadata
 	}
 
 	catch error {
-		result = true;     // we expected this error
+		result = true;        // we expected this error
 	}
 
 	assert(result == true);
 	assert(c == "");
 
+	String.flag2 = true;      // add metadata to String class
+
 	String.dosomething = function(this) {
 		return "I did it";
-	};
+	};                        // add function to String class metadata
 
-	assert(a.flag == true);
-	assert(b.flag == true);
+    // now the metadata is available on on String objects
+	assert(a.flag2 == true);
+	assert(b.flag2 == true);
 	assert(a.dosomething() == "I did it");
 	assert(b.dosomething() == "I did it");
 
@@ -79,19 +82,16 @@ Class Methods
 
 | Method | Description |
 | ------ | ----------- |
-| boolean() | Force conversion of object to a boolean value |
-| integer() | Force conversion of object to an integer value |
-| real() | Force conversion of object to a real value |
-| string() | Force conversion of object to a string value |
-| json() | Represent object in JSON format |
-| has(name) | See if object has named metadata |
-| \_\_member__(name) | Return object's named metadata (this method is called when you use the index ([]) operator) |
-| eraseMember(name) | Erase named metadata |
-| clearMembers() | Erase all metadata |
-| \_\_eq__(object) | See if object are equal (this method is called when you use the equal (==) operator) |
-| \_\_ne__(object) | See if object are not equal (this method is called when you use the not equal (!=) operator) |
-| getClass() | return the object's class |
-| isKindOf(className) | See if object is derived from specified class |
-
-Examples
---------
+| boolean() | Convert object to a boolean. This is a virtual function that child classes must overwrite if required. By default, this function returns **false**. |
+| integer() | Convert object to an integer. This is a virtual function that child classes must overwrite if required. By default, this function returns **0**. |
+| real() | Convert object to a real. This is a virtual function that child classes must overwrite if required. By default, this function returns **0.0**. |
+| string() | Convert object to a string.  This is a virtual function that child classes must overwrite if required. By default, this function returns **""**. |
+| json() | Represent object in JSON format.  This is a virtual function that child classes must overwrite if required. By default, this function returns the **string** representation. |
+| has(name) | See if object has named metadata. |
+| \_\_member__(name) | Reference an object's named metadata (this method is called when you use the **index** ([]) operator). |
+| eraseMember(name) | Erase named metadata. |
+| clearMembers() | Erase all metadata. |
+| \_\_eq__(object) | See if objects are equal. This virtual method is called when you use the **equal** (==) operator and should be overwritten when required. |
+| \_\_ne__(object) | See if objects are not equal. This virtual method is called when you use the **not equal** (!=) operator and should be overwritten when required. |
+| getClass() | return the object's class. |
+| isKindOf(className) | See if object is derived from specified class. |

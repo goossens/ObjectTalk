@@ -79,6 +79,11 @@ assert("Hello World".startsWith("World") == false);
 assert("Hello World".contains("World") == true);
 assert("Hello World".contains("world") == false);
 
+assert(("Wor" in "Hello World") == true);
+assert(("Not" in "Hello World") == false);
+assert(("Wor" not in "Hello World") == false);
+assert(("Not" not in "Hello World") == true);
+
 assert("   Hello World   ".trim() == "Hello World");
 assert("   Hello World   ".ltrim() == "Hello World   ");
 assert("   Hello World   ".rtrim() == "   Hello World");

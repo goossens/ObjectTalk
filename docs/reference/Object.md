@@ -88,10 +88,10 @@ Class Methods
 | string() | Convert object to a string.  This is a virtual function that child classes must overwrite if required. By default, this function returns **""**. |
 | json() | Represent object in JSON format.  This is a virtual function that child classes must overwrite if required. By default, this function returns the **string** representation. |
 | has(name) | See if object has named metadata. |
-| \_\_member__(name) | Reference an object's named metadata (this method is called when you use the **index** ([]) operator). |
+| \_\_member__(name) | Return a [MemberReference](MemberReference.md) object to acces an object's metadata. This method is called when you use the **member** (.) operator. You typically don't call this method directly. |
 | eraseMember(name) | Erase named metadata. |
 | clearMembers() | Erase all metadata. |
-| \_\_eq__(object) | See if objects are equal. This virtual method is called when you use the **equal** (==) operator and should be overwritten when required. |
-| \_\_ne__(object) | See if objects are not equal. This virtual method is called when you use the **not equal** (!=) operator and should be overwritten when required. |
+| \_\_eq__(object) | See if objects are equal. This virtual method is called when you use the **equal** (==) operator and should be overwritten when required. You typically don't call this method directly. |
+| \_\_ne__(object) | See if objects are not equal. This virtual method is called when you use the **not equal** (!=) operator and should be overwritten when required. You typically don't call this method directly. |
 | getClass() | return the object's class. |
 | isKindOf(className) | See if object is derived from specified class. |

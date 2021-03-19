@@ -35,6 +35,13 @@ public:
 	// support indexing
 	OtObject index(const std::string& index);
 
+	// add two dictionaries
+	OtObject add(OtObject value);
+
+	// does dictionary contains specified object
+	bool containsKey(const std::string& name);
+	bool containsValue(OtObject value);
+
 	// get dictionary size
 	size_t mySize();
 

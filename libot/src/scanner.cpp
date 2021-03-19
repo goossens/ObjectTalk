@@ -219,7 +219,7 @@ OtToken OtScanner::advance() {
 		// handle strings
 		auto start = ++position;
 
-		while (position < size && text[position] != '"') {
+		while (position < size && !(text[position] == '"' && !(text[position - 1] == '\\'))) {
 			if (text[position] =='\n') {
 				lineNumber++;
 			}

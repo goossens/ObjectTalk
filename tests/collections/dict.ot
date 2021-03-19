@@ -5,9 +5,15 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 // Dict class test
+
 dict = Dict("name", "value", "test", true, "result", 2 + 3 + 5);
 assert(dict.size() == 3);
 assert(dict["result"] == 10);
+
+assert(("test" in dict) == true);
+assert(("wrong" in dict) == false);
+assert(("test" not in dict) == false);
+assert(("wrong" not in dict) == true);
 
 dict["pi"] = 3.14;
 assert(dict.size() == 4);
@@ -19,9 +25,19 @@ dict2.erase("pi");
 assert(dict2.size() == 3);
 assert(dict.size() == 4);
 
+dict2.clear();
+assert(dict2.size() == 0);
+
 dict3 = { "name": "value", "flag": true, "result": (10 - 4) / 3 };
 assert(dict3.size() == 3);
 assert(dict3["result"] == 2);
+
+assert(dict3.containsKey("name") == true);
+assert(dict3.containsKey("wrong") == false);
+
+assert(dict3.containsValue(2) == true);
+assert(dict3.containsValue(true) == true);
+assert(dict3.containsValue("test") == false);
 
 // Well done
 print("Passed all dictionary tests");

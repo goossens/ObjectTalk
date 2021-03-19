@@ -182,6 +182,7 @@ OtType OtStringClass::getMeta() {
 		type->set("find", OtFunctionClass::create(&OtStringClass::find));
 		type->set("startsWith", OtFunctionClass::create(&OtStringClass::startsWith));
 		type->set("contains", OtFunctionClass::create(&OtStringClass::contains));
+		type->set("__contains__", OtFunctionClass::create(&OtStringClass::contains));
 
 		type->set("trim", OtFunctionClass::create(&OtStringClass::trim));
 		type->set("ltrim", OtFunctionClass::create(&OtStringClass::ltrim));

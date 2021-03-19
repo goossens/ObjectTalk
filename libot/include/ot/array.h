@@ -38,26 +38,29 @@ public:
 	// start iterator
 	OtObject iterate();
 
-	// add two arrays
-	OtObject add(OtObject value);
+	// add object to array
+	OtObject add(OtObject object);
 
 	// does array contains specified object
-	OtObject contains(OtObject value);
+	OtObject contains(OtObject object);
 
 	// return number of array members
 	size_t mySize();
 
 	// find an array entry and return index (-1 if not found)
-	long find(OtObject value);
+	long find(OtObject object);
 
 	// clone an array
 	OtObject clone();
 
-	// add new member to the end
-	OtObject append(OtObject value);
+	// join two arrays
+	OtObject join(OtObject object);
 
-	// insert member at specified location
-	OtObject insert(size_t index, OtObject value);
+	// add new member to the end
+	OtObject append(OtObject object);
+
+	// insert object at specified location
+	OtObject insert(size_t index, OtObject object);
 
 	// remove member at specified location
 	OtObject erase(size_t index);
@@ -66,7 +69,7 @@ public:
 	OtObject eraseMultiple(size_t index1, size_t index2);
 
 	// push object to end of array
-	OtObject push(OtObject value);
+	OtObject push(OtObject object);
 
 	// pop object from and of array
 	OtObject pop();

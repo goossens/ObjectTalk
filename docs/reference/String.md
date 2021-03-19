@@ -15,9 +15,10 @@ Class Methods
 | \_\_ge__(string) | Compares string to the object's value alphabetically and returns a boolean indicating whether the object's value is greater or equal than the integer or not. This method is called when you use the **greater or equal than** (>=) operator. |
 | \_\_le__(string) | Compares string to the object's value alphabetically and returns a boolean indicating whether the object's value is less or equal than the integer or not. This method is called when you use the **less or equal than** (<=) operator. |
 | casecmp(string) | Compares string to the object's value alphabetically but case independently and returns an integer indicating whether the object's value is less, equal or greater than the string. |
-| \_\_index__(string) | Return a StringReference object to address individual characters in a string. This method is called when you use the **index** ([]) operator. |
-| \_\_iter__(string) | Return a StringIterator object to iterate through individual characters in a string. This method is called when you use the **for in** statement. |
+| \_\_index__(integer) | Return a [StringReference](StringReference.md) object to address individual characters in a string. This method is called when you use the **index** ([]) operator. You typically don't call this method directly. |
+| \_\_iter__() | Return a [StringIterator](StringIterator.md) object to iterate through individual characters in a string. This method is called when you use the **for in** statement. You typically don't call this method directly. |
 | \_\_add__(string) | Concatenates string to the object's value and returns result. This method is called when you use the **addition** (+) operator. |
+| \_\_contains__(string) | Determine if string is contained in objects value. This method is called when you use the **(not) in** operators. |
 | len() | Return number of characters in object's value. |
 | left(len) | Return the left most number of characters in object's value. If number is higher than length of string, the entire string is returned. |
 | right(len) | Return the right most number of characters in object's value. If number is higher than length of string, the entire string is returned. |
@@ -25,10 +26,10 @@ Class Methods
 | find(string) | Searches the object's value for the first occurrence of the specified string and return its position. If string is not found, -1 is returned. |
 | startsWith(string) | Determines if the object's value starts with the specified string. A Boolean is returned. |
 | contains(string) | Determines if the object's value contains the specified string. A Boolean is returned. |
-| trim() | Trim all whitespaces (SPACE, TAB, VTAB, CR, LF) at the start and end of the object's value and return result. |
-| ltrim() | Trim all whitespaces (SPACE, TAB, VTAB, CR, LF) at the start of the object's value and return result. |
-| rtrim() | Trim all whitespaces (SPACE, TAB, VTAB, CR, LF) at the end of the object's value and return result. |
-| compress() | Trim all whitespaces (SPACE, TAB, VTAB, CR, LF) at the start and end of the object's value, replace whitespace sequence in the middle with a single space and return result. |
+| trim() | Trim all whitespaces (SPACE, TAB, VTAB, CR, LF) from the start and the end of the object's value and return result. |
+| ltrim() | Trim all whitespaces (SPACE, TAB, VTAB, CR, LF) from the start of the object's value and return result. |
+| rtrim() | Trim all whitespaces (SPACE, TAB, VTAB, CR, LF) from the end of the object's value and return result. |
+| compress() | Trim all whitespaces (SPACE, TAB, VTAB, CR, LF) from the start and the end of the object's value, replace whitespace sequence in the middle with a single space and return result. |
 | lower() | Convert all characters in the object's value to lowercase and return result. |
 | upper() | Convert all characters in the object's value to uppercase and return result. |
 

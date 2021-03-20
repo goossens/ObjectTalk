@@ -12,8 +12,11 @@ keep the code and documentation synchronized.
 	* [History of ObjectTalk](History.md)
 	* [Quick ObjectTalk Overview](Overview.md)
 * Language Guide
-    * XXX
+    * [The Basics](guide/Basics.md)
+	* [Context and Scope](guide/Context.md)
+	* [Modules](guide/Modules.md)
+	* [Statements](guide/Statements.md)
+	* [Control Flow](guide/Flow.md)
 * Language Reference
 	* [ObjectTalk Language Reference in EBNF](Language.md)
 	* [ObjectTalk Classes](Classes.md)
-	

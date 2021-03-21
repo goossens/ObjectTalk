@@ -18,8 +18,6 @@
 #include "response.h"
 #include "mimetypes.h"
 
-#define UV_CHECK_ERROR(action, status) if (status < 0) OT_EXCEPT("libuv error in %s: %s", action, uv_strerror(status))
-
 
 //
 //	OtHttpResponse

@@ -9,16 +9,12 @@
 //	Include files
 //
 
-#include <uv.h>
-
-#include "ot/exception.h"
+#include "ot/libuv.h"
 #include "ot/function.h"
 #include "ot/array.h"
 #include "ot/dict.h"
 
 #include "os.h"
-
-#define UV_CHECK_ERROR(action, status) if (status < 0) OT_EXCEPT("libuv error in %s: %s", action, uv_strerror(status))
 
 
 //
@@ -268,7 +264,7 @@ OtType OtOSClass::getMeta() {
 
 		type->set("cores", OtFunctionClass::create(&OtOSClass::cores));
 		type->set("networks", OtFunctionClass::create(&OtOSClass::networks));
-		
+
 		type->set("totalMemory", OtFunctionClass::create(&OtOSClass::totalMemory));
 		type->set("freeMemory", OtFunctionClass::create(&OtOSClass::freeMemory));
 

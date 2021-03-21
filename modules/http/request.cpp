@@ -11,15 +11,13 @@
 
 #include <filesystem>
 
-#include <uv.h>
-
 #include "ot/exception.h"
+#include "ot/libuv.h"
 #include "ot/function.h"
 #include "ot/dict.h"
 
 #include "request.h"
 
-#define UV_CHECK_ERROR(action, status) if (status < 0) OT_EXCEPT("libuv error in %s: %s", action, uv_strerror(status))
 
 //
 //	OtHttpRequestClass::OtHttpRequestClass
@@ -181,7 +179,7 @@ void OtHttpRequestClass::onBody(const char *data, size_t length) {
 		auto parsed = multipartparser_execute(&multipartParser, &multipartCallbacks, data, length);
 
 		if (parsed != length) {
-			throw OtException("Invalid multipart");
+			OT_EXCEPT0("Invalid multipart");
 		}
 
 	} else {
@@ -295,7 +293,7 @@ void OtHttpRequestClass::onMultipartHeadersComplete() {
 		});
 
 	} else {
-		throw OtException("Content-Disposition missing in multipart");
+		OT_EXCEPT0("Content-Disposition missing in multipart");
 	}
 }
 

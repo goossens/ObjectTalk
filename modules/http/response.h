@@ -14,7 +14,7 @@
 
 #include <string>
 
-#include <uv.h>
+#include "ot/libuv.h"
 
 #include "http.h"
 #include "headers.h"

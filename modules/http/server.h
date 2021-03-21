@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 
-#include <uv.h>
+#include "ot/libuv.h"
 
 #include "router.h"
 #include "request.h"

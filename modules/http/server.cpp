@@ -9,12 +9,12 @@
 //	Include files
 //
 
+#include "ot/exception.h"
+#include "ot/libuv.h"
 #include "ot/function.h"
 
 #include "server.h"
 #include "session.h"
-
-#define UV_CHECK_ERROR(action, status) if (status < 0) OT_EXCEPT("libuv error in %s: %s", action, uv_strerror(status))
 
 
 //

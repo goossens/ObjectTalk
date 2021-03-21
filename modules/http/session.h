@@ -12,8 +12,9 @@
 //	Include files
 //
 
-#include <uv.h>
 #include <llhttp/llhttp.h>
+
+#include "ot/libuv.h"
 
 #include "http.h"
 #include "request.h"

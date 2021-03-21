@@ -10,13 +10,18 @@ ObjectTalk uses dynamic scoping (a detailed explanation can be found on
 In simple terms, in dynamic scoping the runtime first searches the
 current context and then successively all the calling functions.
 This may sound strange in a modern language since it is very rare
-but in the end it does hurt as modern concepts like capture for
-callback (explained later) are still supported, it keeps the
-implementation easier to understand and we can keep variable
-assignment without declaration. Finding a variable is a runtime
-decision not a compile time decision.
+but in the end it does hurt as modern concepts like closure or capture
+are still supported, it keeps the implementation easier to understand
+and we can keep variable assignment without declaration. Most importantly,
+given that ObjectTalk is object-oriented first, it is better to let
+variables be class or object members rather than rely on complex scoping
+rules.
 
-ObjectTalk implments 4 different context types:
+Finding a variable is a runtime decision not a compile time decision.
+This is not the most efficient way as some case could be handled at
+compile time but it makes the engine simpler and easier to understand.
+
+ObjectTalk implements 4 different context types:
 
 * **Global Context** - When the ObjectTalk interpreter is started,
 a default global scope is created. This is the root scope and contains

@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include "ot/exception.h"
 #include "ot/type.h"
 
 
@@ -80,6 +81,20 @@ bool OtTypeClass::isKindOf(const std::string& className) {
 	}
 
 	return false;
+}
+
+
+//
+//	OtTypeClass::unset
+//
+
+void OtTypeClass::unset(const std::string& name) {
+	if (has(name)) {
+		members.erase(name);
+
+	} else {
+		OT_EXCEPT("Unknown member [%s] in itype [%s]", name.c_str(), getName().c_str());
+	}
 }
 
 

@@ -28,19 +28,21 @@ int main(int argc, char* argv[]) {
 	// initialize libuv
 	uv_setup_args(argc, argv);
 
-	// create globale context
+	// create global context
 	OtGlobal global = OtGlobalClass::create();
 
 	try {
-		// run each script in the global context
+		// run each script
 		for (auto c = 1; c < argc; c++) {
-			OtModule module = OtModuleClass::create();
-			module->run(argv[c], global);
+			for (auto i = 0; i < 1000; i++) {
+				OtModule module = OtModuleClass::create();
+				module->run(argv[c], global);
+			}
 		}
 
 	} catch (const OtException& e) {
 		// handle all failures
-		std::wcerr << argv[0] <<": error: " << e.what() << std::endl;
+		std::wcerr << "Error: " << e.what() << std::endl;
 		exit(EXIT_FAILURE);
 	}
 

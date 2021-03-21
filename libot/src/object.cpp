@@ -88,6 +88,20 @@ OtObject OtObjectClass::get(const std::string& name) {
 
 
 //
+//	OtObjectClass::unset
+//
+
+void OtObjectClass::unset(const std::string& name) {
+	if (hasMember(name)) {
+		members->erase(name);
+
+	} else {
+		OT_EXCEPT("Unknown member [%s] in instance of class [%s]", name.c_str(), type->getName().c_str());
+	}
+}
+
+
+//
 //	OtObjectClass::method
 //
 
@@ -248,8 +262,7 @@ OtType OtObjectClass::getMeta() {
 
 		type->set("has", OtFunctionClass::create(&OtObjectClass::has));
 		type->set("__member__", OtFunctionClass::create(&OtObjectClass::member));
-		type->set("eraseMember", OtFunctionClass::create(&OtObjectClass::eraseMember));
-		type->set("clearMembers", OtFunctionClass::create(&OtObjectClass::clearMembers));
+		type->set("unset", OtFunctionClass::create(&OtObjectClass::unset));
 
 		type->set("__eq__", OtFunctionClass::create(&OtObjectClass::equal));
 		type->set("__ne__", OtFunctionClass::create(&OtObjectClass::notEqual));

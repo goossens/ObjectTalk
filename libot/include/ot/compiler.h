@@ -14,6 +14,7 @@
 
 #include <string>
 
+#include "source.h"
 #include "code.h"
 #include "scanner.h"
 
@@ -24,8 +25,8 @@
 
 class OtCompiler {
 public:
-	// compile text into microcode
-	OtCode compile(const std::string& text);
+	// compile source code into microcode
+	OtCode compile(OtSource source);
 
 private:
 	// compile function
@@ -116,6 +117,9 @@ private:
 	void statement(OtCode code);
 
 private:
+	// source code we're compiling
+	OtSource source;
+
 	// scanner for compilation
 	OtScanner scanner;
 };

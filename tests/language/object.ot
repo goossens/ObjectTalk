@@ -34,7 +34,7 @@ assert(a.flag == true);
 assert(a.dosomething() == "I did it");
 
 result = false;
-c = "";
+c = "hello";
 
 try {
 	c = b.dosomething();
@@ -45,7 +45,7 @@ catch error {
 }
 
 assert(result == true);
-assert(c == "");
+assert(c == "hello");
 
 String.flag2 = true;
 
@@ -57,6 +57,8 @@ assert(a.flag2 == true);
 assert(b.flag2 == true);
 assert(a.dosomething() == "I did it");
 assert(b.dosomething() == "I did it");
+
+String.unset("dosomething");
 
 // Well done
 print("Passed all object tests");

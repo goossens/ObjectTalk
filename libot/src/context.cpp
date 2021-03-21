@@ -22,7 +22,7 @@ bool OtContextClass::has(const std::string& name) {
 		return true;
 	}
 
-	for (auto p = parent.lock(); p; p = p->getParent()) {
+	for (auto p = parent; p; p = p->getParent()) {
 		if (p->hasMember(name)) {
 			return true;
 		}
@@ -47,7 +47,7 @@ OtObject OtContextClass::get(const std::string& name) {
 		return getMember(name);
 	}
 
-	for (auto p = parent.lock(); p; p = p->getParent()) {
+	for (auto p = parent; p; p = p->getParent()) {
 		if (p->hasMember(name)) {
 			return p->getMember(name);
 		}

@@ -18,18 +18,15 @@
 #include <fstream>
 #include <sstream>
 
-#include <uv.h>
-
 #include "ot/exception.h"
 #include "ot/text.h"
+#include "ot/source.h"
+#include "ot/libuv.h"
 
 #include "ot/string.h"
 #include "ot/module.h"
 #include "ot/code.h"
 #include "ot/compiler.h"
-
-
-#define UV_CHECK_ERROR(action, status) if (status < 0) OT_EXCEPT("libuv error in %s: %s", action, uv_strerror(status))
 
 
 //
@@ -97,16 +94,26 @@ OtObject OtModuleClass::load(const std::string& name) {
 		}
 	}
 
+	std::filesystem::path pathName = std::filesystem::path(name);
 	std::filesystem::path module;
 
-	// see if the module exists without a path prepended?
-	if (std::filesystem::exists(name)) {
-		module = std::filesystem::path(name);
+#if defined(WINVER)
+	std::string libext = ".dll";
 
-	// see if it's an absolute path?
-	} else if (std::filesystem::path(name).replace_extension(".ot").is_absolute() &&
-			std::filesystem::exists(std::filesystem::path(name).replace_extension(".ot"))) {
-		module = std::filesystem::path(name).replace_extension(".ot");
+#else
+	std::string libext = ".so";
+#endif
+
+	// see if the module exists without a path prepended?
+	if (std::filesystem::exists(pathName)) {
+		module = pathName;
+
+	// see if the module exists without a path prepended yet an extension appended?
+	} else if (std::filesystem::exists(pathName.replace_extension(".ot"))) {
+		module = pathName.replace_extension(".ot");
+
+	} else if (std::filesystem::exists(pathName.replace_extension(libext))) {
+		module = pathName.replace_extension(libext);
 	}
 
 	// find module on path (if still required)
@@ -119,8 +126,8 @@ OtObject OtModuleClass::load(const std::string& name) {
 		} else if (std::filesystem::exists(path.replace_extension(".ot"))) {
 			module = std::filesystem::canonical(path.replace_extension(".ot"));
 
-		} else if (std::filesystem::exists(path.replace_extension(".so"))) {
-			module = std::filesystem::canonical(path.replace_extension(".so"));
+		} else if (std::filesystem::exists(path.replace_extension(libext))) {
+			module = std::filesystem::canonical(path.replace_extension(libext));
 		}
 	}
 
@@ -131,11 +138,11 @@ OtObject OtModuleClass::load(const std::string& name) {
 		set("__DIR__", OtStringClass::create(filePath.parent_path().string()));
 
 #if defined(WINVER)
-		if (module.extension() == ".dll") {
+		if (module.extension() == libext) {
 			//TODO
 
 #else
-		if (module.extension() == ".so") {
+		if (module.extension() == libext) {
 			void* lib = dlopen(module.c_str(), RTLD_LAZY);
 
 			if (!lib) {
@@ -156,10 +163,11 @@ OtObject OtModuleClass::load(const std::string& name) {
 			stream.close();
 
 			OtCompiler compiler;
-			OtCode code = compiler.compile(buffer.str());
+			OtSource source = OtSourceClass::create(name, buffer.str());
+			OtCode code = compiler.compile(source);
 			return code->operator ()(getSharedPtr()->cast<OtContextClass>());
 		}
 	}
 
-	OT_EXCEPT("Can't import module [%s]", name.c_str());
+	OT_EXCEPT("Can't find module [%s]", name.c_str());
 }

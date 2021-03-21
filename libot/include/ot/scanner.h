@@ -16,6 +16,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include "source.h"
+
 
 //
 //	OtScanner
@@ -110,8 +112,8 @@ public:
 	// constructor
 	OtScanner();
 
-	// load text to scan
-	void loadText(const std::string& t);
+	// load source code to scan
+	void loadSource(OtSource source);
 
 	// advance the scanner by parsing the next token
 	OtToken advance();
@@ -121,7 +123,7 @@ public:
 	bool matchToken(OtToken _token) { return token == _token; }
 	size_t getTokenStart() { return tokenStart; }
 	size_t getLastTokenEnd() { return lastTokenEnd; }
-	std::string getText() { return text.substr(tokenStart, position - tokenStart); }
+	std::string getText() { return source->substr(tokenStart, position - tokenStart); }
 	long getInteger() { return integerValue; }
 	double getReal() { return realValue; }
 	std::string getString() { return stringValue; }
@@ -163,18 +165,16 @@ private:
 	// token state/transition table
 	std::vector<OtScannerState> stateTable;
 
-	// text to be scanned
-	std::string text;
+	// source code to be scanned
+	OtSource source;
 
 	// scanner state
 	size_t size;
 	size_t position;
-	size_t lineNumber;
 	size_t tokenStart;
 	size_t tokenEnd;
 	size_t lastTokenStart;
 	size_t lastTokenEnd;
-	size_t tokenLine;
 
 	OtToken token;
 	long integerValue;

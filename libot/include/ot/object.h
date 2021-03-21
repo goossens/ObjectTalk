@@ -71,9 +71,7 @@ public:
 	virtual bool has(const std::string& name);
 	virtual OtObject set(const std::string& name, OtObject value);
 	virtual OtObject get(const std::string& name);
-
-	virtual void eraseMember(const std::string& name) { if (members) members->erase(name); }
-	virtual void clearMembers() { members = nullptr; }
+	virtual void unset(const std::string& name);
 
 	// support member operator
 	OtObject member(const std::string& name);

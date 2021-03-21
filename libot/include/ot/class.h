@@ -38,6 +38,7 @@ public:
 
 	// special member acccess (so we can add methods to metaclass via class
 	OtObject set(const std::string& name, OtObject value) { return classType->set(name, value); }
+	void unset(const std::string& name) { return classType->unset(name); }
 
 	// call operator
 	OtObject operator () (OtContext context, size_t count, OtObject* parameters);

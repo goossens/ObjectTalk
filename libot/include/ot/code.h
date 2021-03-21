@@ -18,6 +18,7 @@
 #include <string>
 #include <vector>
 
+#include "source.h"
 #include "object.h"
 #include "context.h"
 
@@ -69,7 +70,7 @@ typedef std::shared_ptr<OtCodeClass> OtCode;
 class OtCodeClass : public std::vector<OtInstruction> {
 public:
 	// constructor
-	OtCodeClass(const std::string& s) : source(s) {}
+	OtCodeClass(OtSource s) : source(s) {}
 
 	// add instructions to code
 	void mark(size_t mark) { push_back(OtInstruction(OtInstruction::MARK, mark)); }
@@ -92,11 +93,11 @@ public:
 	void patch(size_t location) { at(location).integer = size(); }
 
 	// execute code
-	OtObject operator ()(OtContext context, size_t start=0, size_t end=SIZE_MAX);
+	OtObject operator ()(OtContext context);
 
 	// create new code object
-	static OtCode create(const std::string& source);
+	static OtCode create(OtSource source);
 
 private:
-	std::string source;
+	OtSource source;
 };

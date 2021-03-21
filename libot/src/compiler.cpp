@@ -25,12 +25,15 @@
 //	OtCompiler::compile
 //
 
-OtCode OtCompiler::compile(const std::string& text) {
+OtCode OtCompiler::compile(OtSource src) {
+	// rememember source code
+	source = src;
+
 	// load scanner
-	scanner.loadText(text);
+	scanner.loadSource(src);
 
 	// setup code
-	OtCode code = OtCodeClass::create(text);
+	OtCode code = OtCodeClass::create(src);
 
 	// process all statements
 	if (scanner.matchToken(OtScanner::EOS_TOKEN)) {
@@ -56,14 +59,13 @@ OtCode OtCompiler::compile(const std::string& text) {
 
 class OtCodeFunctionClass;
 typedef std::shared_ptr<OtCodeFunctionClass> OtCodeFunction;
-
+typedef std::vector<std::string> OtNames;
 
 class OtCodeFunctionClass : public OtInternalClass {
 public:
 	// constructor
 	OtCodeFunctionClass() = default;
-	OtCodeFunctionClass(size_t p, const std::vector<std::string>& n, std::weak_ptr<OtCodeClass> c, size_t s, size_t e)
-		: parameterCount(p), names(n), code(c), start(s), end(e) {}
+	OtCodeFunctionClass(size_t p, const OtNames& n, OtCode c) : parameterCount(p), names(n), code(c) {}
 
 	// call code
 	OtObject operator () (OtContext context, size_t count, OtObject* parameters) {
@@ -83,7 +85,7 @@ public:
 			local->set(names[c], parameters[c]);
 		}
 
-		return code.lock()->operator ()(local, start, end);
+		return code->operator ()(local);
 	}
 
 	// get type definition
@@ -99,18 +101,16 @@ public:
 	}
 
 	// create a new object
-	static OtCodeFunction create(size_t count, const std::vector<std::string>& names, std::weak_ptr<OtCodeClass> code, size_t start, size_t end) {
-		OtCodeFunction func = std::make_shared<OtCodeFunctionClass>(count, names, code, start, end);
+	static OtCodeFunction create(size_t count, const OtNames& names, OtCode code) {
+		OtCodeFunction func = std::make_shared<OtCodeFunctionClass>(count, names, code);
 		func->setType(getMeta());
 		return func;
 	}
 
 private:
 	size_t parameterCount;
-	std::vector<std::string> names;
-	std::weak_ptr<OtCodeClass> code;
-	size_t start;
-	size_t end;
+	OtNames names;
+	OtCode code;
 };
 
 
@@ -119,13 +119,9 @@ private:
 //
 
 void OtCompiler::function(OtCode code) {
-	// jump around function code
-	size_t offset = code->size();
-	code->jump(0);
-
 	// parse parameters
 	size_t count = 0;
-	std::vector<std::string> names;
+	OtNames names;
 
 	scanner.expect(OtScanner::LPAREN_TOKEN);
 
@@ -152,12 +148,11 @@ void OtCompiler::function(OtCode code) {
 	}
 
 	// get function level code
-	size_t start = code->size();
-	block(code);
-	code->patch(offset);
+	OtCode functionCode = OtCodeClass::create(source);
+	block(functionCode);
 
-	// put new function on stack
-	code->push(OtCodeFunctionClass::create(count, names, code, start, code->size()));
+	// put new function on the stack
+	code->push(OtCodeFunctionClass::create(count, names, functionCode));
 }
 
 

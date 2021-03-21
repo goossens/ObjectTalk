@@ -89,17 +89,16 @@ OtScanner::OtScanner() {
 
 
 //
-//	OtScanner::loadText
+//	OtScanner::loadSource
 //
 
-void OtScanner::loadText(const std::string& t) {
+void OtScanner::loadSource(OtSource src) {
 	// save text to be scanned
-	text = t;
-	size = text.length();
+	source = src;
+	size = src->size();
 
 	// set scanner state
 	position = 0;
-	lineNumber = 1;
 
 	// go to first token
 	advance();
@@ -112,59 +111,51 @@ void OtScanner::loadText(const std::string& t) {
 
 OtToken OtScanner::advance() {
 	// skip all white space and comments
-	while (isspace(text[position]) ||
-		   (text[position] =='#') ||
-		   (text[position] =='/' && text[position + 1] =='*') ||
-		   (text[position] =='/' && text[position + 1] =='/')) {
+	while (isspace(source->at(position)) ||
+		   (source->at(position) == '#') ||
+		   (source->at(position) == '/' && source->at(position + 1) == '*') ||
+		   (source->at(position) == '/' && source->at(position + 1) == '/')) {
 		// skip white space
-		while (isspace(text[position])) {
-			if (text[position] =='\n')
-				lineNumber++;
-
+		while (isspace(source->at(position))) {
 			position++;
 		}
 
-		// skip C style comments
-		if (text[position] =='/' && text[position + 1] =='*') {
+		// skip shell style comments
+		if (source->at(position) =='#') {
+			position++;
+
+			while (position < size && !(source->at(position) == '\n')) {
+				position++;
+			}
+
+			if (position < size) {
+				position++;
+			}
+
+		} else if (source->at(position) =='/' && source->at(position + 1) =='*') {
+			// skip C style comments
 			position += 2;
 
-			while (position < size && !(text[position] =='*' && text[position + 1] =='/')) {
-				if (text[position] =='\n')
-					lineNumber++;
-
+			while (position < size && !(source->at(position) =='*' && source->at(position + 1) =='/')) {
 				position++;
 			}
 
 			if (position < size) {
 				position += 2;
 			}
-		}
 
-		// skip C++ style comments
-		else if (text[position] =='/' && text[position + 1] =='/') {
+		} else if (source->at(position) =='/' && source->at(position + 1) =='/') {
+			// skip C++ style comments
 			position += 2;
 
-			while (position < size && !(text[position] == '\n')) {
+			while (position < size && !(source->at(position) == '\n')) {
 				position++;
 			}
 
 			if (position < size) {
 				position++;
-				lineNumber++;
 			}
 
-		} else if (text[position] =='#') {
-		// skip shell style comments
-			position++;
-
-			while (position < size && !(text[position] == '\n')) {
-				position++;
-			}
-
-			if (position < size) {
-				position++;
-				lineNumber++;
-			}
 		}
 	}
 
@@ -174,60 +165,55 @@ OtToken OtScanner::advance() {
 
 	// save start of token
 	tokenStart = position;
-	tokenLine = lineNumber;
 
 	// check for end of string
 	if (position == size) {
 		token = EOS_TOKEN;
 
-	} else if (std::isdigit(text[position]) || (text[position] =='-' && position < size && std::isdigit(text[position + 1]))) {
+	} else if (std::isdigit(source->at(position)) || (source->at(position) =='-' && position < size && std::isdigit(source->at(position + 1)))) {
 		// handle numerical values
 		auto start = position;
 
-		if (text[position] =='-') {
+		if (source->at(position) =='-') {
 			position++;
 		}
 
-		while (std::isdigit(text[position])) {
+		while (std::isdigit(source->at(position))) {
 			position++;
 		}
 
-		if (text[position] =='.' && position < size && std::isdigit(text[position + 1])) {
+		if (source->at(position) =='.' && position < size && std::isdigit(source->at(position + 1))) {
 			position++;
 
-			while (std::isdigit(text[position])) {
+			while (std::isdigit(source->at(position))) {
 				position++;
 			}
 
-			if (tolower(text[position]) =='e' && position < size) {
+			if (tolower(source->at(position)) =='e' && position < size) {
 				position++;
 
-				while (std::isdigit(text[position])) {
+				while (std::isdigit(source->at(position))) {
 					position++;
 				}
 			}
 
-			realValue = std::stod(text.substr(start, position - start));
+			realValue = std::stod(source->substr(start, position - start));
 			token = REAL_TOKEN;
 
 		} else {
-			integerValue = std::stoi(text.substr(start, position - start));
+			integerValue = std::stoi(source->substr(start, position - start));
 			token = INTEGER_TOKEN;
 		}
 
-	} else if (text[position] =='"') {
+	} else if (source->at(position) =='"') {
 		// handle strings
 		auto start = ++position;
 
-		while (position < size && !(text[position] == '"' && !(text[position - 1] == '\\'))) {
-			if (text[position] =='\n') {
-				lineNumber++;
-			}
-
+		while (position < size && !(source->at(position) == '"' && !(source->at(position - 1) == '\\'))) {
 			position++;
 		}
 
-		stringValue = OtTextFromJSON(text.substr(start, position - start));
+		stringValue = OtTextFromJSON(source->substr(start, position - start));
 
 		if (position < size) {
 			position++;
@@ -235,16 +221,16 @@ OtToken OtScanner::advance() {
 
 		token = STRING_TOKEN;
 
-	} else if (text[position] =='_' || std::isalpha(text[position])) {
+	} else if (source->at(position) =='_' || std::isalpha(source->at(position))) {
 		// handle identifiers (and tokens with identifier structure)
-		while (text[position] =='_' || std::isalnum(text[position])) {
+		while (source->at(position) =='_' || std::isalnum(source->at(position))) {
 			position++;
 		}
 
 		size_t state = 0;
 
 		for (auto p = tokenStart; state != OtScannerState::noTransition && p < position; p++) {
-			state = stateTable[state].transitions[(int) text[p]];
+			state = stateTable[state].transitions[(int) source->at(p)];
 		}
 
 		if (state != OtScannerState::noTransition && stateTable[state].token != ILLEGAL_TOKEN) {
@@ -258,8 +244,8 @@ OtToken OtScanner::advance() {
 		// handle (non-identifier) tokens
 		size_t state = 0;
 
-		while (position < size && stateTable[state].transitions[(int) text[position]] != OtScannerState::noTransition) {
-			state = stateTable[state].transitions[(int) text[position++]];
+		while (position < size && stateTable[state].transitions[(int) source->at(position)] != OtScannerState::noTransition) {
+			state = stateTable[state].transitions[(int) source->at(position++)];
 		}
 
 		if (position > tokenStart && stateTable[state].token != ILLEGAL_TOKEN) {
@@ -284,22 +270,9 @@ OtToken OtScanner::advance() {
 //
 
 void OtScanner::error(std::string message) {
-	// find start of line
-	auto start = tokenStart;
-
-	while (start && text[start - 1] !='\n') {
-		start--;
-	}
-
-	// find end of line
-	auto end = start;
-
-	while (start < size && text[end] !='\n') {
-		end++;
-	}
-
 	// extract line and create marker
-	auto line = text.substr(start, end - start);
+	auto start = source->getStartOfLine(tokenStart);
+	auto line = source->getLine(tokenStart);
 	std::string marker;
 
 	for (auto c = 0; c < tokenStart - start; c++) {
@@ -314,7 +287,12 @@ void OtScanner::error(std::string message) {
 	marker +='^';
 
 	// throw exception
-	OT_EXCEPT("%s on line %d:\n%s\n%s", message.c_str(), tokenLine, line.c_str(), marker.c_str());
+	OT_EXCEPT("Module: %s, Line %ld: %s:\n%s\n%s",
+		source->getModule().c_str(),
+		source->getLineNumber(tokenStart),
+		message.c_str(),
+		line.c_str(),
+		marker.c_str());
 }
 
 

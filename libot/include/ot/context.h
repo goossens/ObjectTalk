@@ -23,7 +23,7 @@ class OtContextClass : public OtInternalClass {
 public:
 	// parent access
 	void setParent(OtContext v) { parent = v; }
-	OtContext getParent() { return parent.lock(); }
+	OtContext getParent() { return parent; }
 
 	// member acccess
 	bool has(const std::string& name);
@@ -36,6 +36,6 @@ public:
 	static OtContext create();
 
 private:
-		// parent in context chain
-		std::weak_ptr<OtContextClass> parent;
+	// parent in context chain
+	OtContext parent;
 };

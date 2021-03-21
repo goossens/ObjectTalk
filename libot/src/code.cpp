@@ -34,12 +34,7 @@ public:
 //	OtCodeClass::operator ()
 //
 
-OtObject OtCodeClass::operator ()(OtContext context, size_t start, size_t end) {
-	// calculate end if required
-	if (end == SIZE_MAX) {
-		end = size();
-	}
-
+OtObject OtCodeClass::operator ()(OtContext context) {
 	// stack
 	std::vector<OtObject> stack;
 
@@ -47,11 +42,8 @@ OtObject OtCodeClass::operator ()(OtContext context, size_t start, size_t end) {
 	std::vector<OtTryCatch> tryCatch;
 
 	// local variables
-	size_t pc = start;
-	OtObject* sp;
-	OtObject value;
-	OtContext ctx;
-	size_t cnt;
+	size_t end = size();
+	size_t pc = 0;
 	size_t mark;
 
 	// execute all instructions
@@ -86,8 +78,8 @@ OtObject OtCodeClass::operator ()(OtContext context, size_t start, size_t end) {
 					pc = at(pc).integer - 1;
 					break;
 
-				case OtInstruction::JUMP_TRUE:
-					value = stack.back();
+				case OtInstruction::JUMP_TRUE: {
+					auto value = stack.back();
 					stack.pop_back();
 
 					if (value->operator bool()) {
@@ -95,9 +87,10 @@ OtObject OtCodeClass::operator ()(OtContext context, size_t start, size_t end) {
 					}
 
 					break;
+				}
 
-				case OtInstruction::JUMP_FALSE:
-					value = stack.back();
+				case OtInstruction::JUMP_FALSE: {
+					auto value = stack.back();
 					stack.pop_back();
 
 					if (!value->operator bool()) {
@@ -105,23 +98,26 @@ OtObject OtCodeClass::operator ()(OtContext context, size_t start, size_t end) {
 					}
 
 					break;
+				}
 
-				case OtInstruction::METHOD:
+				case OtInstruction::METHOD: {
 					// get target object and call method
-					cnt = at(pc).integer + 1;
-					sp = &stack[stack.size() - cnt];
+					auto cnt = at(pc).integer + 1;
+					auto sp = &stack[stack.size() - cnt];
 
-					if (sp[0]) {
-						value = sp[0]->get(at(pc).string)->operator ()(context, cnt, sp);
-
-					} else {
+					// sanity check
+					if (!sp[0]) {
 						OT_EXCEPT0("You can't call a method on the null object");
 					}
+
+					// call method
+					auto value = sp[0]->get(at(pc).string)->operator ()(context, cnt, sp);
 
 					// clean up stack
 					stack.resize(stack.size() - cnt);
 					stack.push_back(value);
 					break;
+				}
 
 				case OtInstruction::EXIT:
 					// exit instructions
@@ -138,20 +134,22 @@ OtObject OtCodeClass::operator ()(OtContext context, size_t start, size_t end) {
 					tryCatch.pop_back();
 					break;
 
-				case OtInstruction::PUSH_CONTEXT:
+				case OtInstruction::PUSH_CONTEXT: {
 					// push current context
-					ctx = stack.back()->cast<OtContextClass>();
+					auto ctx = stack.back()->cast<OtContextClass>();
 					stack.pop_back();
 					ctx->setParent(context);
 					context = ctx;
 					break;
+				}
 
-				case OtInstruction::POP_CONTEXT:
+				case OtInstruction::POP_CONTEXT: {
 					// return to previous context
-					ctx = context->getParent();
+					auto ctx = context->getParent();
 					context->setParent(nullptr);
 					context = ctx;
 					break;
+				}
 			}
 
 		} catch (const OtException& e) {
@@ -169,62 +167,46 @@ OtObject OtCodeClass::operator ()(OtContext context, size_t start, size_t end) {
 				stack.push_back(OtStringClass::create(e.what()));
 
 			} else {
-				// find start of line
-				size_t startOfLine = source.rfind('\n', mark);
+				// find next marker
+				size_t nextMark = source->size();
+				bool found = false;
 
-				if (startOfLine == std::string::npos) {
-					startOfLine = 0;
-
-				} else {
-					startOfLine++;
-				}
-
-				// find end of line
-				size_t nextMark = 0;
-				size_t endOfLine;
-
-				for (auto i = pc; !nextMark && i < end; i++) {
+				for (auto i = pc; !found && i < end; i++) {
 					if (at(i).opcode == OtInstruction::MARK) {
 						nextMark = at(i).integer;
+						found = true;
 					}
 				}
 
-				if (nextMark == 0) {
-					nextMark = source.size();
-				}
-
-				auto p = source.find_last_not_of("\t\n\v\f\r ", nextMark - 1);
-				endOfLine = source.find('\n', p);
-
-				if (endOfLine == std::string::npos) {
-					endOfLine = source.size();
-				}
-
-				// find starting line number
-				auto line = std::count(source.begin(), source.begin() + startOfLine, '\n') + 1;
-
 				// get text of offending line(s)
-				auto lines = source.substr(startOfLine, endOfLine - startOfLine);
+				auto line = source->getLineNumber(mark);
+				auto lines = source->getLines(mark, nextMark);
 
 				// format nicely
 				std::string statement;
 
 				OtTextSplitIterator(lines.data(), lines.data() + lines.size(), ';', [&](const char *b, const char *e) {
 					std::string text(b, e - b);
+
+					if (statement.size()) {
+						statement += '\n';
+					}
+
 					statement += OtFormat("Line %ld: %s", line++, text.c_str());
 				});
 
-				OT_EXCEPT("%s:\n%s", e.what(), statement.c_str());
+				OT_EXCEPT("%s\nModule: %s\n%s", e.what(), source->getModule().c_str(), statement.c_str());
 			}
 		}
 
 		pc++;
 	}
 
+	OT_ASSERT(tryCatch.size() == 0);
 	OT_ASSERT(stack.size() == 1);
 	return stack.back();
 }
 
-OtCode OtCodeClass::create(const std::string& source) {
+OtCode OtCodeClass::create(OtSource source) {
 	return std::make_shared<OtCodeClass>(source);
 }

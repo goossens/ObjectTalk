@@ -36,7 +36,7 @@ public:
 	// see if class is kind of
 	bool isKindOf(const std::string& className) { return classType->isKindOf(className); }
 
-	// special member acccess (so we can add methods to metaclass via class
+	// special member acccess (so we can manipulate metaclass members via class
 	OtObject set(const std::string& name, OtObject value) { return classType->set(name, value); }
 	void unset(const std::string& name) { return classType->unset(name); }
 

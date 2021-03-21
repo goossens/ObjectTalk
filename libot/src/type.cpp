@@ -46,6 +46,7 @@ OtTypeClass::OtTypeClass(const std::string& n, OtType p, OtConstructor c) {
 	name = n;
 	parent = p;
 	constructor = c ? c : parent->constructor;
+	members = OtMembersClass::create();
 }
 
 
@@ -90,10 +91,10 @@ bool OtTypeClass::isKindOf(const std::string& className) {
 
 void OtTypeClass::unset(const std::string& name) {
 	if (has(name)) {
-		members.erase(name);
+		members->unset(name);
 
 	} else {
-		OT_EXCEPT("Unknown member [%s] in itype [%s]", name.c_str(), getName().c_str());
+		OT_EXCEPT("Unknown member [%s] in type [%s]", name.c_str(), getName().c_str());
 	}
 }
 

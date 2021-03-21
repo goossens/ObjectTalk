@@ -14,8 +14,9 @@
 
 #include <memory>
 #include <string>
-#include <unordered_map>
 #include <vector>
+
+#include "members.h"
 
 
 //
@@ -56,9 +57,9 @@ public:
 	OtType getParent() { return parent; }
 
 	// member access
-	bool has(const std::string& name) { return members.count(name) != 0; }
-	OtObject set(const std::string& name, OtObject value) { members[name] = value; return value; }
-	OtObject get(const std::string& name) { return members.count(name) ? members[name] : nullptr; }
+	bool has(const std::string& name) { return members->has(name) != 0; }
+	OtObject set(const std::string& name, OtObject value) { members->set(name, value); return value; }
+	OtObject get(const std::string& name) { return members->has(name) ? members->get(name) : nullptr; }
 	void unset(const std::string& name);
 
 	// register a class
@@ -78,6 +79,6 @@ private:
 	// attributes
 	std::string name;
 	OtType parent;
-	std::unordered_map<std::string, OtObject> members;
+	OtMembers members;
 	OtConstructor constructor;
 };

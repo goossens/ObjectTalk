@@ -10,6 +10,7 @@
 //
 
 #include "ot/exception.h"
+#include "ot/members.h"
 #include "ot/object.h"
 #include "ot/function.h"
 #include "ot/class.h"
@@ -21,7 +22,7 @@
 //
 
 bool OtObjectClass::hasMember(const std::string& name) {
-	return members && members->count(name);
+	return members && members->has(name);
 }
 
 
@@ -30,7 +31,7 @@ bool OtObjectClass::hasMember(const std::string& name) {
 //
 
 OtObject OtObjectClass::getMember(const std::string& name) {
-	return members->operator [] (name);
+	return members->get(name);
 }
 
 
@@ -59,10 +60,10 @@ bool OtObjectClass::has(const std::string& name) {
 
 OtObject OtObjectClass::set(const std::string& name, OtObject value) {
 	if (!members) {
-		members = std::make_shared<std::unordered_map<std::string, OtObject>>();
+		members = OtMembersClass::create();
 	}
 
-	members->operator [] (name) = value;
+	members->set(name, value);
 	return value;
 }
 
@@ -93,7 +94,7 @@ OtObject OtObjectClass::get(const std::string& name) {
 
 void OtObjectClass::unset(const std::string& name) {
 	if (hasMember(name)) {
-		members->erase(name);
+		members->unset(name);
 
 	} else {
 		OT_EXCEPT("Unknown member [%s] in instance of class [%s]", name.c_str(), type->getName().c_str());

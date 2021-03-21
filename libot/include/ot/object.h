@@ -14,9 +14,9 @@
 
 #include <memory>
 #include <string>
-#include <unordered_map>
 
 #include "type.h"
+#include "members.h"
 
 
 //
@@ -104,5 +104,5 @@ protected:
 	OtType type;
 
 	// members
-	std::shared_ptr<std::unordered_map<std::string, OtObject>> members;
+	OtMembers members;
 };

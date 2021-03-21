@@ -35,8 +35,7 @@ int main(int argc, char* argv[]) {
 		// run each script
 		for (auto c = 1; c < argc; c++) {
 			for (auto i = 0; i < 1000; i++) {
-				OtModule module = OtModuleClass::create();
-				module->run(argv[c], global);
+				OtModuleClass::create()->run(argv[c], global);
 			}
 		}
 

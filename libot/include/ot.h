@@ -17,6 +17,7 @@
 #include "ot/codepoint.h"
 #include "ot/text.h"
 #include "ot/source.h"
+#include "ot/members.h"
 
 #include "ot/type.h"
 #include "ot/object.h"

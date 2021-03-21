@@ -85,7 +85,7 @@ public:
 	void method(const std::string& name, size_t count) { push_back(OtInstruction(OtInstruction::METHOD, name, count)); }
 	void exit() { push_back(OtInstruction(OtInstruction::EXIT)); }
 	void pushTry() { push_back(OtInstruction(OtInstruction::PUSH_TRY)); }
-	void popTry() { push_back(OtInstruction(OtInstruction::POP_CONTEXT)); }
+	void popTry() { push_back(OtInstruction(OtInstruction::POP_TRY)); }
 	void pushContext() { push_back(OtInstruction(OtInstruction::PUSH_CONTEXT)); }
 	void popContext() { push_back(OtInstruction(OtInstruction::POP_CONTEXT)); }
 

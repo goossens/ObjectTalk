@@ -72,10 +72,10 @@ private:
 
 OtObject OtStringClass::index(size_t index) {
 	if (index < 0) {
-		OT_EXCEPT("Negative index [%ld] is not allowed in a string", index);
+		OtExcept("Negative index [%ld] is not allowed in a string", index);
 		
 	} else if (index >= value.size()) {
-		OT_EXCEPT("Index [%ld] is greater than string length [%ld]", index, value.size());
+		OtExcept("Index [%ld] is greater than string length [%ld]", index, value.size());
 
 	}
 

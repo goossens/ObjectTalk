@@ -21,10 +21,10 @@
 //	OtFormat
 //
 
-template <typename... Args>
-std::string OtFormat(const char* format, Args && ...args) {
-	auto size = std::snprintf(nullptr, 0, format, std::forward<Args>(args)...);
+template <typename... ARGS>
+std::string OtFormat(const char* format, ARGS && ...args) {
+	auto size = std::snprintf(nullptr, 0, format, std::forward<ARGS>(args)...);
 	std::string result(size, '\0');
-	std::sprintf(&result[0], format, std::forward<Args>(args)...);
+	std::sprintf(&result[0], format, std::forward<ARGS>(args)...);
 	return result;
 }

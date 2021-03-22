@@ -108,10 +108,10 @@ private:
 
 OtObject OtArrayClass::index(size_t index) {
 	if (index < 0) {
-		OT_EXCEPT("Negative index [%ld] is not allowed in array", index);
+		OtExcept("Negative index [%ld] is not allowed in array", index);
 
 	} else if (index >= size()) {
-		OT_EXCEPT("Index [%ld] is greater than array length [%ld]", index, size());
+		OtExcept("Index [%ld] is greater than array length [%ld]", index, size());
 
 	}
 
@@ -250,7 +250,7 @@ OtObject OtArrayClass::clone() {
 
 OtObject OtArrayClass::join(OtObject object) {
 	if (!object->isKindOf("Array")) {
-		OT_EXCEPT("The array join expects another array instance, not a [%s]", object->getType()->getName().c_str());
+		OtExcept("The array join expects another array instance, not a [%s]", object->getType()->getName().c_str());
 	}
 
 	OtArray result = create();
@@ -283,10 +283,10 @@ OtObject OtArrayClass::append(OtObject object) {
 
 OtObject OtArrayClass::insert(size_t index, OtObject object) {
 	if (index < 0) {
-		OT_EXCEPT("Negative index [%ld] is not allowed in array", index);
+		OtExcept("Negative index [%ld] is not allowed in array", index);
 
 	} else if (index >= size()) {
-		OT_EXCEPT("Index [%ld] is greater than array length [%ld]", index, size());
+		OtExcept("Index [%ld] is greater than array length [%ld]", index, size());
 
 	}
 
@@ -301,10 +301,10 @@ OtObject OtArrayClass::insert(size_t index, OtObject object) {
 
 OtObject OtArrayClass::erase(size_t index) {
 	if (index < 0) {
-		OT_EXCEPT("Negative index [%ld] is not allowed in array", index);
+		OtExcept("Negative index [%ld] is not allowed in array", index);
 
 	} else if (index >= size()) {
-		OT_EXCEPT("Index [%ld] is greater than array length [%ld]", index, size());
+		OtExcept("Index [%ld] is greater than array length [%ld]", index, size());
 
 	}
 
@@ -319,23 +319,23 @@ OtObject OtArrayClass::erase(size_t index) {
 
 OtObject OtArrayClass::eraseMultiple(size_t index1, size_t index2) {
 	if (index1 < 0) {
-		OT_EXCEPT("Negative index [%ld] is not allowed in array", index1);
+		OtExcept("Negative index [%ld] is not allowed in array", index1);
 
 	} else if (index1 >= size()) {
-		OT_EXCEPT("Index [%ld] is greater than array length [%ld]", index1, size());
+		OtExcept("Index [%ld] is greater than array length [%ld]", index1, size());
 
 	}
 
 	if (index2 < 0) {
-		OT_EXCEPT("Negative index [%ld] is not allowed in array", index2);
+		OtExcept("Negative index [%ld] is not allowed in array", index2);
 
 	} else if (index2 >= size()) {
-		OT_EXCEPT("Index [%ld] is greater than array length [%ld]", index2, size());
+		OtExcept("Index [%ld] is greater than array length [%ld]", index2, size());
 
 	}
 
 	if (index1 > index2) {
-		OT_EXCEPT("Indexes [%ld and %ld2] are in the wrong order", index1, index2);
+		OtExcept("Indexes [%ld and %ld2] are in the wrong order", index1, index2);
 	}
 
 	std::vector<OtObject>::erase(begin() + index1, begin() + index2);

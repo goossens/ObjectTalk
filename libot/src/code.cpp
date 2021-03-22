@@ -12,6 +12,7 @@
 #include <vector>
 #include <algorithm>
 
+#include "ot/format.h"
 #include "ot/exception.h"
 #include "ot/text.h"
 #include "ot/string.h"
@@ -107,7 +108,7 @@ OtObject OtCodeClass::operator ()(OtContext context) {
 
 					// sanity check
 					if (!sp[0]) {
-						OT_EXCEPT0("You can't call a method on the null object");
+						OtExcept("You can't call a method on the null object");
 					}
 
 					// call method
@@ -195,7 +196,7 @@ OtObject OtCodeClass::operator ()(OtContext context) {
 					statement += OtFormat("Line %ld: %s", line++, text.c_str());
 				});
 
-				OT_EXCEPT("%s\nModule: %s\n%s", e.what(), source->getModule().c_str(), statement.c_str());
+				OtExcept("%s\nModule: %s\n%s", e.what(), source->getModule().c_str(), statement.c_str());
 			}
 		}
 

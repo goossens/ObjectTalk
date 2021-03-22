@@ -152,7 +152,7 @@ void OtHttpServerClass::run() {
 
 OtObject OtHttpServerClass::timer(OtContext context, size_t count, OtObject* parameters) {
 	if (count != 3) {
-		OT_EXCEPT("HttpServer.timer expected 3 parameter not [%d]", count);
+		OtExcept("HttpServer.timer expected 3 parameter not [%d]", count);
 	}
 
 	return OtHttpTimerClass::create(*parameters[0], *parameters[1], context, parameters[2]);

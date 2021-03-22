@@ -20,7 +20,7 @@
 OtObject OtFunctionClass::operator () (OtContext context, size_t count, OtObject* parameters) {
 	// sanity check
 	if (parameterCount != SIZE_MAX && count != parameterCount) {
-		OT_EXCEPT("Function expects %d parameters, %d given", parameterCount, count);
+		OtExcept("Function expects %d parameters, %d given", parameterCount, count);
 	}
 
 	return (*invoker)(target, context, count, parameters);

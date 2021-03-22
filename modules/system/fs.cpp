@@ -125,7 +125,7 @@ void OtFSClass::resize(const std::string& path, size_t size) {
 
 void OtFSClass::rm(const std::string& path) {
 	if (!std::filesystem::remove(path)) {
-		OT_EXCEPT("can't remove [%s]", path.c_str());
+		OtExcept("can't remove [%s]", path.c_str());
 	}
 }
 
@@ -136,7 +136,7 @@ void OtFSClass::rm(const std::string& path) {
 
 void OtFSClass::mkdir(const std::string& path) {
 	if (!std::filesystem::create_directory(path)) {
-		OT_EXCEPT("can't create directory [%s]", path.c_str());
+		OtExcept("can't create directory [%s]", path.c_str());
 	}
 }
 
@@ -147,7 +147,7 @@ void OtFSClass::mkdir(const std::string& path) {
 
 void OtFSClass::mkdirs(const std::string& path) {
 	if (!std::filesystem::create_directories(path)) {
-		OT_EXCEPT("can't create directories [%s]", path.c_str());
+		OtExcept("can't create directories [%s]", path.c_str());
 	}
 }
 
@@ -185,7 +185,7 @@ OtObject OtFSClass::mktmpdir() {
 
 void OtFSClass::rmdir(const std::string& path) {
 	if (!std::filesystem::remove(path)) {
-		OT_EXCEPT("can't remove directory [%s]", path.c_str());
+		OtExcept("can't remove directory [%s]", path.c_str());
 	}
 }
 
@@ -196,7 +196,7 @@ void OtFSClass::rmdir(const std::string& path) {
 
 void OtFSClass::rmdirs(const std::string& path) {
 	if (!std::filesystem::remove_all(path)) {
-		OT_EXCEPT("can't remove directory [%s]", path.c_str());
+		OtExcept("can't remove directory [%s]", path.c_str());
 	}
 }
 

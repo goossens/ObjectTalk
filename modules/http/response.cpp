@@ -130,7 +130,7 @@ OtObject OtHttpResponseClass::setStatus(int s) {
 
 OtObject OtHttpResponseClass::setHeader(const std::string& name, const std::string& value) {
 	if (responseState != START) {
-		OT_EXCEPT0("HttpResponse can't send headers after body transmission has started");
+		OtExcept("HttpResponse can't send headers after body transmission has started");
 	}
 
 	headers.emplace(name, value);

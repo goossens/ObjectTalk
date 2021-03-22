@@ -146,7 +146,7 @@ OtObject OtModuleClass::load(const std::string& name) {
 			void* lib = dlopen(module.c_str(), RTLD_LAZY);
 
 			if (!lib) {
-				OT_EXCEPT("Can't import module [%s], error [%s]", name.c_str(), dlerror());
+				OtExcept("Can't import module [%s], error [%s]", name.c_str(), dlerror());
 			}
 
 			void (*init)(OtObject) = (void (*)(OtObject)) dlsym(lib, "init");
@@ -169,5 +169,6 @@ OtObject OtModuleClass::load(const std::string& name) {
 		}
 	}
 
-	OT_EXCEPT("Can't find module [%s]", name.c_str());
+	OtExcept("Can't find module [%s]", name.c_str());
+	return nullptr;
 }

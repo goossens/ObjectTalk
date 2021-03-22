@@ -53,8 +53,8 @@ public:
 	long add(long operand) { return value + operand; }
 	long subtract(long operand) { return value - operand; }
 	long multiply(long operand) { return value * operand; }
-	long divide(long operand) { if (operand == 0) OT_EXCEPT0("Divide by zero"); return value / operand; }
-	long modulo(long operand) { if (operand == 0) OT_EXCEPT0("Divide by zero"); return value % operand; }
+	long divide(long operand) { if (operand == 0) OtExcept("Divide by zero"); return value / operand; }
+	long modulo(long operand) { if (operand == 0) OtExcept("Divide by zero"); return value % operand; }
 	long power(long operand) { return std::pow(value, operand); }
 
 	long increment() { return value + 1; }

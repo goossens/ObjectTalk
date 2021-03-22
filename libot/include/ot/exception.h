@@ -12,10 +12,10 @@
 //	  Include files
 //
 
+#include <stdio.h>
+
 #include <string>
 #include <iostream>
-
-#include "format.h"
 
 
 //
@@ -32,8 +32,28 @@ private:
 };
 
 
-#define OT_EXCEPT0(message) throw OtException(message)
-#define OT_EXCEPT(format, ...) throw OtException(OtFormat(format, __VA_ARGS__))
-#define OT_FATAL(format, ...) throw OtException(OtFormat("%s: line %d: " format, __FILE__, __LINE__, __VA_ARGS__))
+//
+//	OtExcept
+//
+
+template <typename... ARGS>
+void OtExcept(const char* format, ARGS && ...args) {
+	if constexpr(sizeof...(ARGS) == 0) {
+		throw OtException(format);
+
+	} else {
+		auto size = std::snprintf(nullptr, 0, format, std::forward<ARGS>(args)...);
+		std::string result(size, '\0');
+		std::sprintf(&result[0], format, std::forward<ARGS>(args)...);
+		throw OtException(result);
+	}
+}
+
+
+//
+//	Macros
+//
+
+#define OT_FATAL(format, ...) OtExcept("%s: line %d: " format, __FILE__, __LINE__, __VA_ARGS__)
 #define OT_ASSERT(assertion) if (!(assertion)) OT_FATAL("Assertion error: %s", #assertion)
 #define OT_DEBUG(value) std::cout << value << std::endl

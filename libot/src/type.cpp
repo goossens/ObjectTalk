@@ -94,7 +94,7 @@ void OtTypeClass::unset(const std::string& name) {
 		members->unset(name);
 
 	} else {
-		OT_EXCEPT("Unknown member [%s] in type [%s]", name.c_str(), getName().c_str());
+		OtExcept("Unknown member [%s] in type [%s]", name.c_str(), getName().c_str());
 	}
 }
 

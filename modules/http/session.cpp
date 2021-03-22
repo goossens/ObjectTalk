@@ -10,6 +10,7 @@
 //
 
 #include "ot/libuv.h"
+#include "ot/format.h"
 #include "ot/function.h"
 
 #include "session.h"

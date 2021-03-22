@@ -46,7 +46,7 @@ OtDictClass::operator std::string() {
 
 OtObject OtDictClass::init(OtContext, size_t count, OtObject* parameters) {
 	if (count %2 != 0) {
-		OT_EXCEPT("Dict constructor expects an even number of parameters not [%ld]", count);
+		OtExcept("Dict constructor expects an even number of parameters not [%ld]", count);
 	}
 
 	// clear dictionary and add all calling parameters
@@ -76,7 +76,7 @@ public:
 	// index operations
 	OtObject deref() {
 		if (dict->find(index) == dict->end()) {
-			OT_EXCEPT("Unkown dictionary member [%s]", index.c_str());
+			OtExcept("Unkown dictionary member [%s]", index.c_str());
 		}
 
 		return dict->operator[] (index);
@@ -125,7 +125,7 @@ OtObject OtDictClass::index(const std::string& index) {
 
 OtObject OtDictClass::add(OtObject value) {
 	if (!value->isKindOf("Dict")) {
-		OT_EXCEPT("The dictionary add operator expects another [dictionary] instance, not [%s]", value->getType()->getName().c_str());
+		OtExcept("The dictionary add operator expects another [dictionary] instance, not [%s]", value->getType()->getName().c_str());
 	}
 
 	OtDict result = create();
@@ -197,7 +197,7 @@ OtObject OtDictClass::clone() {
 
 OtObject OtDictClass::eraseEntry(const std::string& index) {
 	if (find(index) == end()) {
-		OT_EXCEPT("Unkown dictionary member [%s]", index.c_str());
+		OtExcept("Unkown dictionary member [%s]", index.c_str());
 	}
 
 	OtObject value = operator[] (index);

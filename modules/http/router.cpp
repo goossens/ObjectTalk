@@ -196,7 +196,7 @@ private:
 
 OtObject OtHttpRouterClass::addHandler(OtContext context, const std::string& method, size_t count, OtObject* parameters) {
 	if (count != 2) {
-		OT_EXCEPT("%s function expects 2 parameters, %d given", method.c_str(), count);
+		OtExcept("%s function expects 2 parameters, %d given", method.c_str(), count);
 	}
 
 	handlers.push_back(std::make_shared<OtMethodHandler>(context, method, (std::string) (*parameters[0]), parameters[1]));
@@ -224,7 +224,7 @@ void OtHttpRouterClass::runHandler(const size_t index, OtHttpRequest req, OtHttp
 
 OtObject OtHttpRouterClass::useHandler(OtContext context, size_t count, OtObject* parameters) {
 	if (count != 1) {
-		OT_EXCEPT("Use function expects 1 parameters, %d given", count);
+		OtExcept("Use function expects 1 parameters, %d given", count);
 	}
 
 	handlers.push_back(std::make_shared<OtMethodHandler>(context, "", "*", parameters[0]));
@@ -283,7 +283,7 @@ OtObject OtHttpRouterClass::deleleteHandler(OtContext context, size_t count, OtO
 
 OtObject OtHttpRouterClass::staticFiles(OtContext context, size_t count, OtObject* parameters) {
 	if (count != 2) {
-		OT_EXCEPT("Static function expects 2 parameters, %d given", count);
+		OtExcept("Static function expects 2 parameters, %d given", count);
 	}
 
 	std::string serverPath = parameters[0]->operator std::string();
@@ -300,7 +300,7 @@ OtObject OtHttpRouterClass::staticFiles(OtContext context, size_t count, OtObjec
 
 OtObject OtHttpRouterClass::call(OtContext context, size_t count, OtObject* p) {
 	if (count != 3) {
-		OT_EXCEPT("HttpRouter expects 3 parameters, %d given", count);
+		OtExcept("HttpRouter expects 3 parameters, %d given", count);
 	}
 
 	runHandler(0, p[0]->cast<OtHttpRequestClass>(), p[1]->cast<OtHttpResponseClass>(), p[2]);

@@ -42,3 +42,4 @@ clean:
 distclean: clean
 	cd docker/alpine && ./clean
 	cd docker/ubuntu && ./clean
+	docker builder prune --force

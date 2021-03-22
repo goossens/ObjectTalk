@@ -11,6 +11,7 @@
 
 #include "ot/scanner.h"
 
+#include "ot/format.h"
 #include "ot/exception.h"
 #include "ot/text.h"
 
@@ -287,7 +288,7 @@ void OtScanner::error(std::string message) {
 	marker +='^';
 
 	// throw exception
-	OT_EXCEPT("Module: %s, Line %ld: %s:\n%s\n%s",
+	OtExcept("Module: %s, Line %ld: %s:\n%s\n%s",
 		source->getModule().c_str(),
 		source->getLineNumber(tokenStart),
 		message.c_str(),

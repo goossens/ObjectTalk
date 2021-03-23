@@ -70,11 +70,10 @@ OtScanner::OtScanner() {
 	addToken("^=", BITWISE_XOR_ASSIGNMENT_TOKEN);
 	addToken("^", BITWISE_XOR_TOKEN);
 	addToken("~", BITWISE_NOT_TOKEN);
-	addToken("case", CASE_TOKEN);
 	addToken("catch", CATCH_TOKEN);
 	addToken("class", CLASS_TOKEN);
-	addToken("default", DEFAULT_TOKEN);
 	addToken("do", DO_TOKEN);
+	addToken("elif", ELIF_TOKEN);
 	addToken("else", ELSE_TOKEN);
 	addToken("for", FOR_TOKEN);
 	addToken("function", FUNCTION_TOKEN);
@@ -82,7 +81,6 @@ OtScanner::OtScanner() {
 	addToken("in", IN_TOKEN);
 	addToken("not", NOT_TOKEN);
 	addToken("return", RETURN_TOKEN);
-	addToken("switch", SWITCH_TOKEN);
 	addToken("throw", THROW_TOKEN);
 	addToken("try", TRY_TOKEN);
 	addToken("while", WHILE_TOKEN);

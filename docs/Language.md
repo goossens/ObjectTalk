@@ -15,23 +15,22 @@ for visualizing grammar.
 # statement
 ![Railroad Diagram](ebnf/statement.png)
 
-	statement ::= expression ";"
-	| block
-	| "class" name ":" expression block
-	| "function" name "(" (name ("," name)* | "...") ")" block
-	| "if" expression block ("else" block)?
-	| "while" expression block
-	| "do" block "while" expression ";"
-	| "for" name "in" expression block
-	| "switch" expression "{" ("case" expression statement)+ ("default" statement)? "}"
-	| "throw" expression ";"
-	| "try" block "catch" name block
-	| "return" expression ";"
+    statement ::= expression ";"
+    | block
+    | "class" name ":" expression block
+    | "function" name "(" (name ("," name)* | "...") ")" block
+    | "if" expression block ("elif" expression block)* ("else" block)?
+    | "while" expression block
+    | "do" block "while" expression ";"
+    | "for" name "in" expression block
+    | "throw" expression ";"
+    | "try" block "catch" name block
+    | "return" expression ";"
 
 # block
 ![Railroad Diagram](ebnf/block.png)
 
-    block ::= "{" statement+ "}"
+    block ::= "{" statement* "}"
 
 # expressions
 ![Railroad Diagram](ebnf/expressions.png)
@@ -41,8 +40,16 @@ for visualizing grammar.
 ## expression
 ![Railroad Diagram](ebnf/expression.png)
 
-    expression ::= conditional ("=" conditional | "*=" conditional | "/=" conditional | "%=" conditional |
-    "+=" conditional | "-=" conditional | "|=" conditional | "^=" conditional | "&=" conditional)*
+    expression ::= conditional (
+        "=" conditional |
+        "*=" conditional |
+        "/=" conditional |
+        "%=" conditional |
+        "+=" conditional |
+        "-=" conditional |
+        "|=" conditional |
+        "^=" conditional |
+        "&=" conditional)*
 
 ## conditional
 ![Railroad Diagram](ebnf/conditional.png)
@@ -82,7 +89,13 @@ for visualizing grammar.
 ## relation
 ![Railroad Diagram](ebnf/relation.png)
 
-    relation ::= shift ("<" shift | "<=" shift | ">" shift | ">=" shift | "in" shift | "not in" shift)*
+    relation ::= shift (
+        "<" shift |
+        "<=" shift |
+        ">" shift |
+        ">=" shift |
+        "in" shift |
+        "not in" shift)*
 
 ## shift
 ![Railroad Diagram](ebnf/shift.png)
@@ -138,7 +151,7 @@ for visualizing grammar.
 
 ## function
 ![Railroad Diagram](ebnf/function.png)
-    function ::= "function" "(" (name ("," name)* | "...") ")" statement
+    function ::= "function" "(" (name ("," name)* | "...") ")" block
 
 ## name
 ![Railroad Diagram](ebnf/name.png)

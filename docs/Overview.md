@@ -35,7 +35,7 @@ that are derived from the
 [String](reference/String.md) and [Function](reference/Function.md)
 classes. The following statements assign primitive values to variables.
 
-	a = null;
+    a = null;
     b = true;
     c = 1;
     d = 3.14 * 2;
@@ -103,19 +103,19 @@ of an array.
     array1 = [ 1, 2, "test", 7 + 4, a ];
     array2 = Array(3.14, 7, 34, 1);
 
-	array1.append("new value");
-	thirdValue = array1[3];
+    array1.append("new value");
+    thirdValue = array1[3];
 
 [Dictionaries](reference/Dict.md) contain indexed key/value pairs that
 are constructed using curly brackets ({}) or through the Dict class
 constructor. The Dict class also has many methods to manipulate the
 content of a dictionary.
 
-	dict1 = [ "First Name": "John", "Last Name": "Doe", "Age": 34 };
-	dict2 = Dict("Name", "John Doe", "Address", "Unknown");
+    dict1 = [ "First Name": "John", "Last Name": "Doe", "Age": 34 };
+    dict2 = Dict("Name", "John Doe", "Address", "Unknown");
 
-	dict1["Last Update"] = "1 Apr 2000";
-	name = dict2["Name"];
+    dict1["Last Update"] = "1 Apr 2000";
+    name = dict2["Name"];
 
 Both arrays and dictionaries follow JSON rules and the ObjectTalk
 compiler can therefore ingest JSON without any trouble.
@@ -124,9 +124,9 @@ with JSON encoding.
 
 ## Control Flow
 
-ObjectTalk uses **if** and **switch** to make conditionals and use
-**for in**, **while** and **do while** to make loops.
-Parentheses around the condition or loop variable are optional. Braces around the body are required.
+ObjectTalk uses **if** to make conditionals and uses **for in**,
+**while** and **do while** to make loops. Parentheses around the
+condition or loop variable are optional. Braces around the body are required.
 
     individualScores = [75, 43, 103, 87, 12];
     teamScore = 0;
@@ -157,14 +157,14 @@ a try block, your script will terminate.
 A simple example might look like:
 
     try {
-    	a = 1;
-    	b = 2;
-    	print(c);
-    	d = 4;
+        a = 1;
+        b = 2;
+        print(c);
+        d = 4;
 
     } catch error {
-    	print("Caught an exception:");
-    	print(error);
+        print("Caught an exception:");
+        print(error);
     }
 
     print("Recovered from exception");
@@ -176,12 +176,12 @@ is used.
 Programmers can also use the **throw** command to raise an exception:
 
     try {
-    	throw "this is completely wrong";
+        throw "this is completely wrong";
 
     } catch error {
-    	print("Caught an exception:");
-    	print(error);
-	}
+        print("Caught an exception:");
+        print(error);
+    }
 
 In the catch block, the error message is automatically assigned to
 the variable mentioned after the **catch** statement.

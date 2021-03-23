@@ -1152,29 +1152,33 @@ void OtCompiler::forStatement(OtCode code) {
 //
 
 void OtCompiler::ifStatement(OtCode code) {
-	scanner.expect(OtScanner::IF_TOKEN);
+	std::vector<size_t> patches;
 
-	if (expression(code)) {
-		code->method("__deref__", 0);
+	while (scanner.matchToken(OtScanner::IF_TOKEN) || scanner.matchToken(OtScanner::ELIF_TOKEN)) {
+		scanner.advance();
+
+		if (expression(code)) {
+			code->method("__deref__", 0);
+		}
+
+		size_t offset = code->size();
+		code->jumpFalse(0);
+
+		block(code);
+
+		patches.push_back(code->size());
+		code->jump(0);
+		code->patch(offset);
 	}
-
-	size_t offset1 = code->size();
-	code->jumpFalse(0);
-
-	block(code);
 
 	if (scanner.matchToken(OtScanner::ELSE_TOKEN)) {
 		scanner.advance();
 
-		size_t offset2 = code->size();
-		code->jump(0);
-
-		code->patch(offset1);
 		block(code);
-		code->patch(offset2);
+	}
 
-	} else {
-		code->patch(offset1);
+	for (auto const& patch : patches) {
+		code->patch(patch);
 	}
 }
 
@@ -1196,58 +1200,7 @@ void OtCompiler::returnStatement(OtCode code) {
 
 
 //
-//	OtCompiler::switchStatement
-//
-
-void OtCompiler::switchStatement(OtCode code) {
-	std::vector<size_t> patches;
-
-	scanner.expect(OtScanner::SWITCH_TOKEN);
-
-	if (expression(code)) {
-		code->method("__deref__", 0);
-	}
-
-	scanner.expect(OtScanner::LBRACE_TOKEN);
-
-	while (scanner.matchToken(OtScanner::CASE_TOKEN)) {
-		scanner.advance();
-		code->dup();
-
-		if (expression(code)) {
-			code->method("__deref__", 0);
-		}
-
-		code->method("__eq__", 1);
-
-		size_t offset1 = code->size();
-		code->jumpFalse(0);
-
-		statement(code);
-
-		patches.push_back(code->size());
-		code->jump(0);
-
-		code->patch(offset1);
-	}
-
-	if (scanner.matchToken(OtScanner::DEFAULT_TOKEN)) {
-		scanner.advance();
-		statement(code);
-	}
-
-	scanner.expect(OtScanner::RBRACE_TOKEN);
-
-	for (auto const& patch : patches) {
-		code->patch(patch);
-	}
-
-	code->pop();
-}
-
-
-//
-// OtHttpNotFound
+//	OtThrowClass
 //
 
 class OtThrowClass;
@@ -1387,10 +1340,6 @@ void OtCompiler::statement(OtCode code) {
 
 		case OtScanner::RETURN_TOKEN:
 			returnStatement(code);
-			break;
-
-		case OtScanner::SWITCH_TOKEN:
-			switchStatement(code);
 			break;
 
 		case OtScanner::THROW_TOKEN:

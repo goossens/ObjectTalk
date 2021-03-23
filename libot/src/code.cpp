@@ -112,6 +112,7 @@ OtObject OtCodeClass::operator ()(OtContext context) {
 					}
 
 					// call method
+					auto method =at(pc).string;
 					auto value = sp[0]->get(at(pc).string)->operator ()(context, cnt, sp);
 
 					// clean up stack

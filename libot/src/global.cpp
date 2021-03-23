@@ -81,7 +81,8 @@ void OtGlobalClass::doAssert(bool condition) {
 
 OtObject OtGlobalClass::import(const std::string name) {
 	OtModule module = OtModuleClass::create();
-	return module->import(name);
+	module->import(name);
+	return module;
 }
 
 

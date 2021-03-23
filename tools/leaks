@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd "$(dirname $(readlink -f "$0"))/.."
+cd "$(cd "$(dirname "$0")"; pwd)/.."
 make debug
 
-valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes debug/bin/ot examples/http.ot
+valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes debug/bin/ot --valgrind examples/http.ot

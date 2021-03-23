@@ -26,11 +26,8 @@ typedef std::shared_ptr<OtModuleClass> OtModule;
 
 class OtModuleClass : public OtContextClass {
 public:
-	// import module and return it
-	OtObject import(const std::string& name) { load(name); return getSharedPtr(); }
-
-	// load module and run in specified context
-	OtObject run(const std::string& name, OtContext context=nullptr) { setParent(context); return load(name); }
+	// import module
+	void import(const std::string& name);
 
 	// get type definition
 	static OtType getMeta();
@@ -41,7 +38,4 @@ public:
 private:
 	// list of directories to search for modules in
 	std::vector<std::filesystem::path> modulePath;
-
-	// load a module
-	OtObject load(const std::string& name);
 };

@@ -19,47 +19,48 @@
 #include <sstream>
 
 #include "ot/exception.h"
+#include "ot/registry.h"
+#include "ot/singleton.h"
 #include "ot/text.h"
 #include "ot/source.h"
 #include "ot/libuv.h"
 
 #include "ot/string.h"
+#include "ot/global.h"
 #include "ot/module.h"
 #include "ot/code.h"
 #include "ot/compiler.h"
 
 
 //
-//	OtModuleClass::getMeta
+//	Globals
 //
 
-OtType OtModuleClass::getMeta() {
-	static OtType type = nullptr;
+OtGlobal global;
 
-	if (!type) {
-		type = OtTypeClass::create<OtModuleClass>("Module", OtContextClass::getMeta());
+
+//
+//	OtModuleRegistry
+//
+
+class OtModuleRegistry : public OtSingleton<OtModuleRegistry>, public OtRegistry<OtModule> {
+};
+
+
+//
+//	OtModuleClass::import
+//
+
+void OtModuleClass::import(const std::string& name) {
+	// set global if required
+	if (!getParent()) {
+		if (!global) {
+			global = OtGlobalClass::create();
+		}
+
+		setParent(global);
 	}
 
-	return type;
-}
-
-
-//
-//	OtModuleClass::create
-//
-
-OtModule OtModuleClass::create() {
-	OtModule module = std::make_shared<OtModuleClass>();
-	module->setType(getMeta());
-	return module;
-}
-
-
-//
-//	OtModuleClass::load
-//
-
-OtObject OtModuleClass::load(const std::string& name) {
 	// build module path (if required)
 	if (modulePath.size() == 0) {
 		// use local directory as default
@@ -154,8 +155,6 @@ OtObject OtModuleClass::load(const std::string& name) {
 			(*init)(getSharedPtr());
 #endif
 
-			return nullptr;
-
 		} else {
 			std::ifstream stream(module.c_str());
 			std::stringstream buffer;
@@ -165,10 +164,36 @@ OtObject OtModuleClass::load(const std::string& name) {
 			OtCompiler compiler;
 			OtSource source = OtSourceClass::create(name, buffer.str());
 			OtCode code = compiler.compile(source);
-			return code->operator ()(getSharedPtr()->cast<OtContextClass>());
+			code->operator ()(getSharedPtr()->cast<OtContextClass>());
 		}
+
+	} else {
+		OtExcept("Can't find module [%s]", name.c_str());
+	}
+}
+
+
+//
+//	OtModuleClass::getMeta
+//
+
+OtType OtModuleClass::getMeta() {
+	static OtType type = nullptr;
+
+	if (!type) {
+		type = OtTypeClass::create<OtModuleClass>("Module", OtContextClass::getMeta());
 	}
 
-	OtExcept("Can't find module [%s]", name.c_str());
-	return nullptr;
+	return type;
+}
+
+
+//
+//	OtModuleClass::create
+//
+
+OtModule OtModuleClass::create() {
+	OtModule module = std::make_shared<OtModuleClass>();
+	module->setType(getMeta());
+	return module;
 }

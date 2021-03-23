@@ -10,6 +10,8 @@
 //
 
 #include "ot/exception.h"
+#include "ot/registry.h"
+#include "ot/singleton.h"
 #include "ot/type.h"
 
 
@@ -17,24 +19,7 @@
 //	OtTypeRegistry
 //
 
-class OtTypeRegistry {
-public:
-	void store(OtSharedType type) {
-		types.push_back(type);
-	}
-
-	// implemented as singleton
-	static OtTypeRegistry& instance() {
-		static OtTypeRegistry registry;
-		return registry;
-	}
-
-private:
-	// constructor (nobody should be instantiating this singleton)
-	OtTypeRegistry() = default;
-
-	// registry of registered types
-	std::vector<OtSharedType> types;
+class OtTypeRegistry : public OtSingleton<OtTypeRegistry>, public OtRegistry<OtSharedType> {
 };
 
 
@@ -63,9 +48,9 @@ OtObject OtTypeClass::construct() {
 //	OtTypeClass::subType
 //
 
-OtType OtTypeClass::subType(const std::string& n) {
-	OtSharedType type = std::make_shared<OtTypeClass>(n, this, constructor);
-	OtTypeRegistry::instance().store(type);
+OtType OtTypeClass::subType(const std::string& name) {
+	OtSharedType type = std::make_shared<OtTypeClass>(name, this, constructor);
+	OtTypeRegistry::instance().store(name, type);
 	return type.get();
 }
 
@@ -104,6 +89,6 @@ void OtTypeClass::unset(const std::string& name) {
 //
 
 OtType OtTypeClass::registerType(OtSharedType type) {
-	OtTypeRegistry::instance().store(type);
+	OtTypeRegistry::instance().store(type->getName(), type);
 	return type.get();
 }

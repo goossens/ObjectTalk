@@ -138,11 +138,6 @@ void OtHttpServerClass::run() {
 
 	// drop all remaining sessions
 	sessions.clear();
-
-#if UV_VERSION_MINOR >= 38
-	// free the last libuv memory
-	uv_library_shutdown();
-#endif
 }
 
 

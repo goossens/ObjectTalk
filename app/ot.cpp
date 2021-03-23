@@ -10,7 +10,7 @@
 //
 
 #include <iostream>
-#include <uv.h>
+
 #include "ot.h"
 
 
@@ -19,24 +19,21 @@
 //
 
 int main(int argc, char* argv[]) {
+	// initialize ObjectTalk library
+	argc = OtInit(argc, argv);
+
 	// ensure we have some arguments
 	if (argc == 1) {
 		std::wcerr << argv[0] << ": usage: " << argv[0] << " script ..." << std::endl;
 		exit(EXIT_FAILURE);
 	}
 
-	// initialize libuv
-	uv_setup_args(argc, argv);
-
-	// create global context
-	OtGlobal global = OtGlobalClass::create();
-
 	try {
 		// run each script
 		for (auto c = 1; c < argc; c++) {
-			for (auto i = 0; i < 1000; i++) {
-				OtModuleClass::create()->run(argv[c], global);
-			}
+//			for (auto i = 0; i < 1000; i++) {
+				OtModuleClass::create()->import(argv[c]);
+//			}
 		}
 
 	} catch (const OtException& e) {
@@ -44,6 +41,9 @@ int main(int argc, char* argv[]) {
 		std::wcerr << "Error: " << e.what() << std::endl;
 		exit(EXIT_FAILURE);
 	}
+
+	// close ObjectTalk library
+	OtEnd();
 
 	return 0;
 }

@@ -44,3 +44,5 @@
 #include "ot/code.h"
 #include "ot/scanner.h"
 #include "ot/compiler.h"
+
+#include "ot/main.h"

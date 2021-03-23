@@ -32,23 +32,16 @@ OtCode OtCompiler::compile(OtSource src) {
 	// load scanner
 	scanner.loadSource(src);
 
-	// setup code
+	// setup bytecode
 	OtCode code = OtCodeClass::create(src);
 
 	// process all statements
-	if (scanner.matchToken(OtScanner::EOS_TOKEN)) {
-		code->push(nullptr);
-
-	} else {
+	while (!scanner.matchToken(OtScanner::EOS_TOKEN)) {
 		statement(code);
-
-		while (!scanner.matchToken(OtScanner::EOS_TOKEN)) {
-			code->pop();
-			statement(code);
-		}
 	}
 
 	// return compiled code
+	code->push(nullptr);
 	return code;
 }
 
@@ -150,6 +143,9 @@ void OtCompiler::function(OtCode code) {
 	// get function level code
 	OtCode functionCode = OtCodeClass::create(source);
 	block(functionCode);
+
+	// default return value in case function does not have return statement
+	functionCode->push(nullptr);
 
 	// put new function on the stack
 	code->push(OtCodeFunctionClass::create(count, names, functionCode));
@@ -1029,16 +1025,8 @@ size_t OtCompiler::expressions(OtCode code) {
 void OtCompiler::block(OtCode code) {
 	scanner.expect(OtScanner::LBRACE_TOKEN);
 
-	if (scanner.matchToken(OtScanner::RBRACE_TOKEN)) {
-		code->push(nullptr);
-
-	} else {
+	while (!scanner.matchToken(OtScanner::RBRACE_TOKEN) && !scanner.matchToken(OtScanner::EOS_TOKEN)) {
 		statement(code);
-
-		while (!scanner.matchToken(OtScanner::RBRACE_TOKEN) && !scanner.matchToken(OtScanner::EOS_TOKEN)) {
-			code->pop();
-			statement(code);
-		}
 	}
 
 	scanner.expect(OtScanner::RBRACE_TOKEN);
@@ -1073,10 +1061,8 @@ void OtCompiler::classDeclaration(OtCode code) {
 	code->method("__assign__", 1);
 
 	// process class content
-	code->dup();
 	code->pushContext();
 	block(code);
-	code->pop();
 	code->popContext();
 }
 
@@ -1097,6 +1083,7 @@ void OtCompiler::functionDeclaration(OtCode code) {
 	code->push(OtContextReferenceClass::create(name));
 	code->swap();
 	code->method("__assign__", 1);
+	code->pop();
 }
 
 
@@ -1109,7 +1096,6 @@ void OtCompiler::doStatement(OtCode code) {
 	size_t offset = code->size();
 
 	block(code);
-	code->pop();
 
 	scanner.expect(OtScanner::WHILE_TOKEN);
 
@@ -1155,7 +1141,6 @@ void OtCompiler::forStatement(OtCode code) {
 	code->pop();
 
 	block(code);
-	code->pop();
 
 	code->jump(offset1);
 	code->patch(offset2);
@@ -1177,7 +1162,6 @@ void OtCompiler::ifStatement(OtCode code) {
 	code->jumpFalse(0);
 
 	block(code);
-	code->pop();
 
 	if (scanner.matchToken(OtScanner::ELSE_TOKEN)) {
 		scanner.advance();
@@ -1187,8 +1171,6 @@ void OtCompiler::ifStatement(OtCode code) {
 
 		code->patch(offset1);
 		block(code);
-		code->pop();
-
 		code->patch(offset2);
 
 	} else {
@@ -1242,7 +1224,6 @@ void OtCompiler::switchStatement(OtCode code) {
 		code->jumpFalse(0);
 
 		statement(code);
-		code->pop();
 
 		patches.push_back(code->size());
 		code->jump(0);
@@ -1253,7 +1234,6 @@ void OtCompiler::switchStatement(OtCode code) {
 	if (scanner.matchToken(OtScanner::DEFAULT_TOKEN)) {
 		scanner.advance();
 		statement(code);
-		code->pop();
 	}
 
 	scanner.expect(OtScanner::RBRACE_TOKEN);
@@ -1329,10 +1309,7 @@ void OtCompiler::tryStatement(OtCode code) {
 
 	size_t offset1 = code->size();
 	code->pushTry();
-
 	block(code);
-	code->pop();
-
 	code->popTry();
 
 	size_t offset2 = code->size();
@@ -1349,8 +1326,6 @@ void OtCompiler::tryStatement(OtCode code) {
 	code->pop();
 
 	block(code);
-	code->pop();
-
 	code->patch(offset2);
 }
 
@@ -1371,7 +1346,6 @@ void OtCompiler::whileStatement(OtCode code) {
 	code->jumpFalse(0);
 
 	block(code);
-	code->pop();
 	code->jump(offset1);
 	code->patch(offset2);
 }
@@ -1401,17 +1375,14 @@ void OtCompiler::statement(OtCode code) {
 
 		case OtScanner::DO_TOKEN:
 			doStatement(code);
-			code->push(nullptr);
 			break;
 
 		case OtScanner::FOR_TOKEN:
 			forStatement(code);
-			code->push(nullptr);
 			break;
 
 		case OtScanner::IF_TOKEN:
 			ifStatement(code);
-			code->push(nullptr);
 			break;
 
 		case OtScanner::RETURN_TOKEN:
@@ -1420,26 +1391,23 @@ void OtCompiler::statement(OtCode code) {
 
 		case OtScanner::SWITCH_TOKEN:
 			switchStatement(code);
-			code->push(nullptr);
 			break;
 
 		case OtScanner::THROW_TOKEN:
 			throwStatement(code);
-			code->push(nullptr);
 			break;
 
 		case OtScanner::TRY_TOKEN:
 			tryStatement(code);
-			code->push(nullptr);
 			break;
 
 		case OtScanner::WHILE_TOKEN:
 			whileStatement(code);
-			code->push(nullptr);
 			break;
 
 		default:
 			expression(code);
+			code->pop();
 			scanner.expect(OtScanner::SEMICOLON_TOKEN);
 			break;
 	}

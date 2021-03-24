@@ -878,8 +878,7 @@ bool OtCompiler::conditional(OtCode code) {
 		}
 
 		// evaluate expression
-		size_t offset1 = code->size();
-		code->jumpFalse(0);
+		size_t offset1 = code->jumpFalse(0);
 
 		// process "true" expression
 		if (expression(code)) {
@@ -889,8 +888,7 @@ bool OtCompiler::conditional(OtCode code) {
 		scanner.expect(OtScanner::COLON_TOKEN);
 
 		// jump around "false" expression and patch first jump
-		size_t offset2 = code->size();
-		code->jump(0);
+		size_t offset2 = code->jump(0);
 		code->patch(offset1);
 
 		// process "false" expression
@@ -1130,8 +1128,7 @@ void OtCompiler::forStatement(OtCode code) {
 
 	code->dup();
 	code->method("__end__", 0);
-	size_t offset2 = code->size();
-	code->jumpTrue(0);
+	size_t offset2 = code->jumpTrue(0);
 
 	code->dup();
 	code->method("__next__", 0);
@@ -1161,13 +1158,10 @@ void OtCompiler::ifStatement(OtCode code) {
 			code->method("__deref__", 0);
 		}
 
-		size_t offset = code->size();
-		code->jumpFalse(0);
-
+		size_t offset = code->jumpFalse(0);
 		block(code);
 
-		patches.push_back(code->size());
-		code->jump(0);
+		patches.push_back(code->jump(0));
 		code->patch(offset);
 	}
 
@@ -1260,13 +1254,11 @@ void OtCompiler::throwStatement(OtCode code) {
 void OtCompiler::tryStatement(OtCode code) {
 	scanner.expect(OtScanner::TRY_TOKEN);
 
-	size_t offset1 = code->size();
-	code->pushTry();
+	size_t offset1 = code->pushTry();
 	block(code);
 	code->popTry();
 
-	size_t offset2 = code->size();
-	code->jump(0);
+	size_t offset2 = code->jump(0);
 	code->patch(offset1);
 
 	scanner.expect(OtScanner::CATCH_TOKEN);
@@ -1295,9 +1287,7 @@ void OtCompiler::whileStatement(OtCode code) {
 		code->method("__deref__", 0);
 	}
 
-	size_t offset2 = code->size();
-	code->jumpFalse(0);
-
+	size_t offset2 = code->jumpFalse(0);
 	block(code);
 	code->jump(offset1);
 	code->patch(offset2);

@@ -12,6 +12,7 @@
 #include "ot/exception.h"
 #include "ot/libuv.h"
 #include "ot/function.h"
+#include "ot/internal.h"
 
 #include "server.h"
 #include "session.h"
@@ -27,13 +28,13 @@ typedef std::shared_ptr<OtHttpTimerClass> OtHttpTimer;
 class OtHttpTimerClass : public OtInternalClass {
 public:
 	OtHttpTimerClass() = default;
-	OtHttpTimerClass(long wait, long repeat, OtContext ctx, OtObject cb) : context(ctx), callback(cb) {
+	OtHttpTimerClass(long wait, long repeat, OtObject cb) : callback(cb) {
 		uv_timer_init(uv_default_loop(), &uv_timer);
 		uv_timer.data = this;
 
 		uv_timer_start(&uv_timer, [](uv_timer_t* handle) {
 			OtHttpTimerClass* timer = (OtHttpTimerClass*) (handle->data);
-			timer->callback->get("__call__")->operator ()(timer->context, 1, &timer->callback);
+			timer->callback->get("__call__")->operator()(1, &timer->callback);
 		}, wait, repeat);
 	}
 
@@ -49,15 +50,14 @@ public:
 	}
 
 	// create a new object
-	static OtHttpTimer create(long wait, long repeat, OtContext context, OtObject callback) {
-		OtHttpTimer timer = std::make_shared<OtHttpTimerClass>(wait, repeat, context, callback);
+	static OtHttpTimer create(long wait, long repeat, OtObject callback) {
+		OtHttpTimer timer = std::make_shared<OtHttpTimerClass>(wait, repeat, callback);
 		timer->setType(getMeta());
 		return timer;
 	}
 
 private:
 	uv_timer_t uv_timer;
-	OtContext context;
 	OtObject callback;
 };
 
@@ -145,12 +145,8 @@ void OtHttpServerClass::run() {
 //	OtHttpServerClass::timer
 //
 
-OtObject OtHttpServerClass::timer(OtContext context, size_t count, OtObject* parameters) {
-	if (count != 3) {
-		OtExcept("HttpServer.timer expected 3 parameter not [%d]", count);
-	}
-
-	return OtHttpTimerClass::create(*parameters[0], *parameters[1], context, parameters[2]);
+OtObject OtHttpServerClass::timer(long wait, long repeat, OtObject callback) {
+	return OtHttpTimerClass::create(wait, repeat, callback);
 }
 
 

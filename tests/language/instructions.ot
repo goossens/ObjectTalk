@@ -6,10 +6,14 @@
 
 //	Test script for ObjectTalk instructions
 
-integer = 1;
-real = 1.1;
-string = "test";
+var integer = 1;
+var real = 1.1;
+var string = "test";
 assert(integer == 1 && real == 1.1 && string == "test");
+
+var flag1;
+var flag2;
+var flag3;
 
 if integer == 1 { flag1 = true; } else { flag1 = false; }
 if (integer == 2) { flag2 = true; } else { flag2 = false; }
@@ -23,8 +27,8 @@ if (integer == 3) {
 
 assert(flag1 && !flag2 && !flag3);
 
-c = 0;
-test = 0;
+var c = 0;
+var test = 0;
 
 while c < 10 {
 	test++;
@@ -58,7 +62,7 @@ for value in [ 1, 0, 3, 4, 2 ] {
 
 assert(test == 30);
 
-result = 0;
+var result = 0;
 
 for value in [ 1, 2, 3, 4 ] {
 	result += value;

@@ -23,7 +23,7 @@
 //	OtPathClass::init
 //
 
-OtObject OtPathClass::init(OtContext, size_t count, OtObject* parameters) {
+OtObject OtPathClass::init(size_t count, OtObject* parameters) {
 	if (count >= 1) {
 		path = parameters[0]->operator std::string();
 

@@ -14,8 +14,6 @@
 
 #include <vector>
 
-#include "ot/context.h"
-
 #include "http.h"
 #include "request.h"
 #include "response.h"
@@ -30,19 +28,23 @@ typedef std::shared_ptr<OtHttpRouterClass> OtHttpRouter;
 
 class OtHttpRouterClass : public OtHttpClass {
 	friend class OtHttpNextClass;
-	friend class OtMethodHandler;
+	friend class OtHttpMethodHandler;
 	friend class OtStaticHandler;
 
 public:
 	// add handlers
-	OtObject useHandler(OtContext context, size_t count, OtObject* parameters);
-	OtObject allHandler(OtContext context, size_t count, OtObject* parameters);
-	OtObject getHandler(OtContext context, size_t count, OtObject* parameters);
-	OtObject putHandler(OtContext context, size_t count, OtObject* parameters);
-	OtObject postHandler(OtContext context, size_t count, OtObject* parameters);
-	OtObject deleleteHandler(OtContext context, size_t count, OtObject* parameters);
-	OtObject staticFiles(OtContext context, size_t count, OtObject* parameters);
-	OtObject call(OtContext context, size_t count, OtObject* p);
+	OtObject useHandler(OtObject callback);
+	OtObject allHandler(const std::string& path, OtObject callback);
+	OtObject getHandler(const std::string& path, OtObject callback);
+	OtObject putHandler(const std::string& path, OtObject callback);
+	OtObject postHandler(const std::string& path, OtObject callback);
+	OtObject deleleteHandler(const std::string& path, OtObject callback);
+	OtObject staticFiles(const std::string& serverPath, const std::string& filePath);
+
+	// dispatch requests
+	OtObject call(OtObject req, OtObject res, OtObject next);
+
+	// clear all handlers in router
 	void clearHandlers();
 
 	// get type definition
@@ -65,7 +67,7 @@ private:
 	};
 
 	// manage handlers
-	OtObject addHandler(OtContext context, const std::string& method, size_t count, OtObject* parameters);
+	OtObject addHandler(const std::string& method, const std::string& path, OtObject callback);
 	void runHandler(const size_t index, OtHttpRequest req, OtHttpResponse res, OtObject next);
 
 	std::vector<std::shared_ptr<OtHandler>> handlers;

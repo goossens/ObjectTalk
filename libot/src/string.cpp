@@ -12,58 +12,39 @@
 #include "ot/codepoint.h"
 #include "ot/text.h"
 
-#include "ot/string.h"
 #include "ot/function.h"
-#include "ot/reference.h"
-#include "ot/iterator.h"
+#include "ot/string.h"
+#include "ot/stringreference.h"
+#include "ot/stringiterator.h"
 
 
 //
-//	OtStringReference
+//	OtStringClass::getEntry
 //
 
-class OtStringReferenceClass;
-typedef std::shared_ptr<OtStringReferenceClass> OtStringReference;
-
-class OtStringReferenceClass : public OtReferenceClass {
-public:
-	// constructors
-	OtStringReferenceClass() = default;
-	OtStringReferenceClass(OtString t, size_t i) : target(t), index(i) {}
-
-	// index operations
-	std::string deref() { return OtTextGet(target->value, index); }
-
-	OtObject assign(OtObject value) {
-		auto ch = value->operator std::string();
-		target->value = OtTextSet(target->value, index, ch);
-		return value;
+std::string OtStringClass::getEntry(size_t index) {
+	// sanity check
+	if (index < 0 || index >= len()) {
+		OtExcept("invalid index [%ld] for string of size [%ld]", index, len());
 	}
 
-	// get type definition
-	static OtType getMeta() {
-		static OtType type = nullptr;
+	return OtText::get(value, index);
+}
 
-		if (!type) {
-			type = OtTypeClass::create<OtStringReferenceClass>("StringReference", OtReferenceClass::getMeta());
-			type->set("__deref__", OtFunctionClass::create(&OtStringReferenceClass::deref));
-			type->set("__assign__", OtFunctionClass::create(&OtStringReferenceClass::assign));
-		}
 
-		return type;
+//
+//	OtStringClass::setEntry
+//
+
+std::string OtStringClass::setEntry(size_t index, const std::string& string) {
+	// sanity check
+	if (index < 0 || index >= len()) {
+		OtExcept("invalid index [%ld] for string of size [%ld]", index, len());
 	}
 
-	// create a new object
-	static OtStringReference create(OtString t, size_t i) {
-		OtStringReference reference = std::make_shared<OtStringReferenceClass>(t, i);
-		reference->setType(getMeta());
-		return reference;
-	}
-
-private:
-	OtString target;
-	size_t index;
-};
+	value = OtText::set(value, index, string);
+	return value;
+}
 
 
 //
@@ -71,68 +52,13 @@ private:
 //
 
 OtObject OtStringClass::index(size_t index) {
-	if (index < 0) {
-		OtExcept("Negative index [%ld] is not allowed in a string", index);
-		
-	} else if (index >= value.size()) {
-		OtExcept("Index [%ld] is greater than string length [%ld]", index, value.size());
-
+	// sanity check
+	if (index < 0 || index >= len()) {
+		OtExcept("invalid index [%ld] for string of size [%ld]", index, len());
 	}
 
 	return OtStringReferenceClass::create(cast<OtStringClass>(), index);
 }
-
-
-//
-//	OtStringIteratorClass
-//
-
-class OtStringIteratorClass;
-typedef std::shared_ptr<OtStringIteratorClass> OtStringIterator;
-
-class OtStringIteratorClass : public OtIteratorClass {
-public:
-	// constructors
-	OtStringIteratorClass() = default;
-	OtStringIteratorClass(OtString t) {
-		pos = t->value.cbegin();
-		last = t->value.cend();
-	}
-
-	// iteration operations
-	bool end() { return pos == last; }
-
-	std::string next() {
-		size_t size = OtCodePointSize(pos);
-		std::string result(pos, pos + size);
-		pos += size;
-		return result;
-	}
-
-	// get type definition
-	static OtType getMeta() {
-		static OtType type = nullptr;
-
-		if (!type) {
-			type = OtTypeClass::create<OtStringIteratorClass>("StringIterator", OtIteratorClass::getMeta());
-			type->set("__end__", OtFunctionClass::create(&OtStringIteratorClass::end));
-			type->set("__next__", OtFunctionClass::create(&OtStringIteratorClass::next));
-		}
-
-		return type;
-	}
-
-	// create a new object
-	static OtStringIterator create(OtString t) {
-		OtStringIterator iterator = std::make_shared<OtStringIteratorClass>(t);
-		iterator->setType(getMeta());
-		return iterator;
-	}
-
-private:
-	std::string::const_iterator pos;
-	std::string::const_iterator last;
-};
 
 
 //

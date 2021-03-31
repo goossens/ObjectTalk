@@ -177,14 +177,14 @@ OtObject OtOSClass::cores() {
 
 	for (auto c = 0; c < count; c++) {
 		OtDict core = OtDictClass::create();
-		core->operator[] ("model") = OtStringClass::create(info[c].model);
-		core->operator[] ("speed") = OtIntegerClass::create(info[c].speed);
-		core->operator[] ("user") = OtIntegerClass::create(info[c].cpu_times.user);
-		core->operator[] ("nice") = OtIntegerClass::create(info[c].cpu_times.nice);
-		core->operator[] ("sys") = OtIntegerClass::create(info[c].cpu_times.sys);
-		core->operator[] ("idle") = OtIntegerClass::create(info[c].cpu_times.idle);
-		core->operator[] ("irq") = OtIntegerClass::create(info[c].cpu_times.irq);
-		result->push_back(core);
+		core->setEntry("model", OtStringClass::create(info[c].model));
+		core->setEntry("speed", OtIntegerClass::create(info[c].speed));
+		core->setEntry("user", OtIntegerClass::create(info[c].cpu_times.user));
+		core->setEntry("nice", OtIntegerClass::create(info[c].cpu_times.nice));
+		core->setEntry("sys", OtIntegerClass::create(info[c].cpu_times.sys));
+		core->setEntry("idle", OtIntegerClass::create(info[c].cpu_times.idle));
+		core->setEntry("irq", OtIntegerClass::create(info[c].cpu_times.irq));
+		result->add(core);
 	}
 
 	uv_free_cpu_info(info, count);
@@ -207,23 +207,23 @@ OtObject OtOSClass::networks() {
 
 	for (auto c = 0; c < count; c++) {
 		OtDict network = OtDictClass::create();
-		network->operator[] ("name") = OtStringClass::create(info[c].name);
-		network->operator[] ("internal") = OtBooleanClass::create(info[c].is_internal);
+		network->setEntry("name", OtStringClass::create(info[c].name));
+		network->setEntry("internal", OtBooleanClass::create(info[c].is_internal));
 
 		if (info[c].address.address4.sin_family == AF_INET) {
 			status = uv_ip4_name(&info[c].address.address4, buffer, PATH_MAX);
 			UV_CHECK_ERROR("uv_ip4_name", status);
-			network->operator[] ("address") = OtStringClass::create(buffer);
-			network->operator[] ("family") = OtStringClass::create("IPV4");
+			network->setEntry("address", OtStringClass::create(buffer));
+			network->setEntry("family", OtStringClass::create("IPV4"));
 
 		} else if (info[c].address.address4.sin_family == AF_INET6) {
 			status = uv_ip6_name(&info[c].address.address6, buffer, PATH_MAX);
 			UV_CHECK_ERROR("address6", status);
-			network->operator[] ("address") = OtStringClass::create(buffer);
-			network->operator[] ("family") = OtStringClass::create("IPV6");
+			network->setEntry("address", OtStringClass::create(buffer));
+			network->setEntry("family", OtStringClass::create("IPV6"));
 		}
 
-		result->push_back(network);
+		result->add(network);
 	}
 
 	uv_free_interface_addresses(info, count);

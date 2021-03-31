@@ -34,9 +34,6 @@ public:
 	// constructor
 	OtHttpSessionClass(uv_stream_t* stream, OtHttpRouter router);
 
-	// destructor
-	~OtHttpSessionClass();
-
 	// close session
 	void close();
 

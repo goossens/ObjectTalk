@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include "context.h"
+#include "internal.h"
 
 
 //
@@ -22,9 +22,9 @@
 class OtGlobalClass;
 typedef std::shared_ptr<OtGlobalClass> OtGlobal;
 
-class OtGlobalClass : public OtContextClass {
+class OtGlobalClass : public OtInternalClass {
 public:
-	// constructor (create a default ObjectTalk context)
+	// constructor (create a default ObjectTalk scope)
 	OtGlobalClass();
 
 	// get type definition
@@ -41,5 +41,5 @@ private:
 	static OtObject import(const std::string name);
 
 	// print to STDOUT
-	static OtObject print(OtContext context, size_t count, OtObject* parameters);
+	static OtObject print(size_t count, OtObject* parameters);
 };

@@ -30,7 +30,6 @@
 #include "ot/module.h"
 
 
-
 //
 //	OtGlobalClass::OtGlobalClass
 //
@@ -90,7 +89,7 @@ OtObject OtGlobalClass::import(const std::string name) {
 //	OtGlobalClass::print
 //
 
-OtObject OtGlobalClass::print(OtContext context, size_t count, OtObject* parameters) {
+OtObject OtGlobalClass::print(size_t count, OtObject* parameters) {
 	for (size_t i = 0; i < count; i++) {
 		std::cout << (std::string) *parameters[i];
 	}
@@ -108,7 +107,7 @@ OtType OtGlobalClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtTypeClass::create<OtGlobalClass>("Global", OtContextClass::getMeta());
+		type = OtTypeClass::create<OtGlobalClass>("Global", OtInternalClass::getMeta());
 	}
 
 	return type;

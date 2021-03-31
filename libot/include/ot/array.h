@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <string>
 #include <vector>
 
 #include "collection.h"
@@ -24,13 +25,20 @@
 class OtArrayClass;
 typedef std::shared_ptr<OtArrayClass> OtArray;
 
-class OtArrayClass : public OtCollectionClass, public std::vector<OtObject> {
+class OtArrayClass : public OtCollectionClass {
 public:
 	// convert array to string
 	operator std::string();
 
+	// debugging support
+	std::string describe() { return std::to_string(array.size()) + " entries"; }
+
 	// clear array and add all parameters
-	OtObject init(OtContext, size_t count, OtObject* parameters);
+	OtObject init(size_t count, OtObject* parameters);
+
+	// access array members
+	OtObject getEntry(size_t index);
+	OtObject setEntry(size_t index, OtObject object);
 
 	// support indexing
 	OtObject index(size_t index);
@@ -45,13 +53,16 @@ public:
 	OtObject contains(OtObject object);
 
 	// return number of array members
-	size_t mySize();
+	size_t size() { return array.size(); }
 
 	// find an array entry and return index (-1 if not found)
 	long find(OtObject object);
 
 	// clone an array
 	OtObject clone();
+
+	// empty an array
+	void clear() { array.clear(); }
 
 	// join two arrays
 	OtObject join(OtObject object);
@@ -80,4 +91,7 @@ public:
 	// create a new array
 	static OtArray create();
 	static OtArray create(size_t count, OtObject* values);
+
+private:
+	std::vector<OtObject> array;
 };

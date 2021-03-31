@@ -18,21 +18,21 @@
 #include <string>
 #include <vector>
 
+#include "exception.h"
 #include "source.h"
 #include "object.h"
 #include "internal.h"
-#include "context.h"
 
 
 //
-//	OtCode
+//	OtByteCode
 //
 
-class OtCodeClass;
-typedef std::shared_ptr<OtCodeClass> OtCode;
+class OtByteCodeClass;
+typedef std::shared_ptr<OtByteCodeClass> OtByteCode;
 
-class OtCodeClass : public OtInternalClass {
-private:
+class OtByteCodeClass : public OtInternalClass {
+public:
 	// possible opcodes
 	typedef enum {
 		MARK,
@@ -41,29 +41,30 @@ private:
 		POP_COUNT,
 		DUP,
 		SWAP,
+		MOVE,
+		RESERVE,
 		JUMP,
 		JUMP_TRUE,
 		JUMP_FALSE,
 		METHOD,
 		EXIT,
 		PUSH_TRY,
-		POP_TRY,
-		PUSH_CONTEXT,
-		POP_CONTEXT
+		POP_TRY
 	} OtOpcode;
 
-public:
 	// constructors
-	OtCodeClass() = default;
-	OtCodeClass(OtSource s) : source(s) {}
+	OtByteCodeClass() = default;
+	OtByteCodeClass(OtSource s) : source(s) {}
 
 	// add instructions to code
 	void mark(size_t mark) { emitOpcode(MARK); emitMark(mark); }
 	void push(OtObject value) { emitOpcode(PUSH); emitConstant(value); }
 	void pop() { emitOpcode(POP); }
-	void pop(size_t count) { emitOpcode(POP_COUNT); emitNumber(count); }
+	void pop(size_t count) { emitOpcode(POP_COUNT); emitByte(count); }
 	void dup() { emitOpcode(DUP); }
 	void swap() { emitOpcode(SWAP); }
+	void move(size_t count) { emitOpcode(MOVE); emitByte(count); }
+	size_t reserve(size_t count) { emitOpcode(RESERVE); return emitByte(count); }
 	size_t jump(size_t offset) { emitOpcode(JUMP); return emitOffset(offset); }
 	size_t jumpTrue(size_t offset) { emitOpcode(JUMP_TRUE); return emitOffset(offset); }
 	size_t jumpFalse(size_t offset) { emitOpcode(JUMP_FALSE); return emitOffset(offset); }
@@ -71,17 +72,43 @@ public:
 	void exit() { emitOpcode(EXIT); }
 	size_t pushTry() { emitOpcode(PUSH_TRY); return emitOffset(0); }
 	void popTry() { emitOpcode(POP_TRY); }
-	void pushContext() { emitOpcode(PUSH_CONTEXT); }
-	void popContext() { emitOpcode(POP_CONTEXT); }
+
+	void patchJump(size_t offset) { offsets[offset] = bytecode.size(); }
+	void patchByte(size_t offset, size_t value) { bytecode[offset] = value; }
 
 	// get current code size
 	size_t size() { return bytecode.size(); }
 
-	// patch jump instruction
-	void patch(size_t offset) { offsets[offset] = bytecode.size(); }
+	// get opcode
+	uint8_t getOpcode(size_t* pc) {
+		auto opcode = bytecode[*pc];
+		(*pc)++;
+		return opcode;
+	}
 
-	// execute code
-	OtObject operator ()(OtContext context);
+	// get variable leght number
+	inline size_t getNumber(size_t* pc) {
+		size_t result = 0;
+		size_t digit = 0;
+
+		while (bytecode[*pc] & 128) {
+			result |= (bytecode[*pc] & 127) << (7 * digit++);
+			(*pc)++;
+		}
+
+		result |= bytecode[*pc] << (7 * digit);
+		(*pc)++;
+		return result;
+	}
+
+	// get code parts
+	inline OtSource getSource() { return source; }
+	uint8_t* getCode() { return bytecode.data(); }
+	inline OtObject getConstant(size_t index) { return constants[index]; }
+	inline std::string getString(size_t index) { return strings[index]; }
+	inline size_t getOffset(size_t index) { return offsets[index]; }
+	inline size_t getMark(size_t index) { return marks[index]; }
+	inline size_t getNextMark(size_t index) { return index + 1 < marks.size() ? marks[index + 1] : source->size(); }
 
 	// disassemble the bytecode
 	std::string disassemble();
@@ -90,7 +117,7 @@ public:
 	static OtType getMeta();
 
 	// create new code object
-	static OtCode create(OtSource source);
+	static OtByteCode create(OtSource source);
 
 private:
 	// emit parts to bytecode
@@ -132,35 +159,15 @@ private:
 		bytecode.push_back((uint8_t) index);
 	}
 
-	// get parts from bytecode
-	inline OtObject getConstant(size_t* pc) {
-		return constants[getNumber(pc)];
-	}
+	inline size_t emitByte(size_t index) {
+		auto offset = bytecode.size();
 
-	inline std::string getString(size_t* pc) {
-		return strings[getNumber(pc)];
-	}
-
-	inline size_t getMark(size_t* pc) {
-		return marks[getNumber(pc)];
-	}
-
-	inline size_t getOffset(size_t* pc) {
-		return offsets[getNumber(pc)];
-	}
-
-	inline size_t getNumber(size_t* pc) {
-		size_t result = 0;
-		size_t digit = 0;
-
-		while (bytecode[*pc] & 128) {
-			result |= (bytecode[*pc] & 127) << (7 * digit++);
-			(*pc)++;
+		if (index > 127) {
+			OtExcept("You have more than 127 local variables [%ld]. REALLY!", index);
 		}
 
-		result |= bytecode[*pc] << (7 * digit);
-		(*pc)++;
-		return result;
+		bytecode.push_back(index);
+		return offset;
 	}
 
 	OtSource source;

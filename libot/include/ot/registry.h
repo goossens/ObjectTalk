@@ -24,13 +24,21 @@ template<class T>
 class OtRegistry {
 public:
 	// add a new member to the registry
-	void store(const std::string& name, T member) {
+	void set(const std::string& name, T member) {
 		if (index.count(name)) {
 			OtExcept("Member [%s] already in registry", name.c_str());
 		}
 
 		index[name] = members.size();
 		members.push_back(member);
+	}
+
+	T get(const std::string& name) {
+		if (!index.count(name)) {
+			OtExcept("Member [%s] not in registry", name.c_str());
+		}
+
+		return members[index[name]];
 	}
 
 private:

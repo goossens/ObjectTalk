@@ -21,7 +21,7 @@
 //	OtURLClass::init
 //
 
-OtObject OtURLClass::init(OtContext, size_t count, OtObject* parameters) {
+OtObject OtURLClass::init(size_t count, OtObject* parameters) {
 	if (count != 1) {
 		OtExcept("URL initializer expected 1 parameter not [%d]", count);
 	}
@@ -123,8 +123,8 @@ void OtURLClass::parse(const std::string& url) {
 			"(?=(&|$))");	// next should be end of query or start of next parameter
 
 		for (auto i = std::sregex_iterator(query.begin(), query.end(), queryParamRegex); i != std::sregex_iterator(); i++) {
-			queryParams[OtTextDecodeURL(std::string((*i)[2].first, (*i)[2].second))] =
-				OtTextDecodeURL(std::string((*i)[3].first, (*i)[3].second));
+			queryParams[OtText::decodeURL(std::string((*i)[2].first, (*i)[2].second))] =
+				OtText::decodeURL(std::string((*i)[3].first, (*i)[3].second));
 		}
 	}
 

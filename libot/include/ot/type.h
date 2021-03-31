@@ -62,8 +62,11 @@ public:
 	OtObject get(const std::string& name) { return members->has(name) ? members->get(name) : nullptr; }
 	void unset(const std::string& name);
 
-	// register a class
+	// register a type
 	static OtType registerType(OtSharedType type);
+
+	// retrieve a registered type
+	static OtType getRegistered(const std::string& name);
 
 	// create a new type
 	template <class CLASS>

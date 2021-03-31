@@ -10,7 +10,7 @@ function lower(s) {
 	return s.lower();
 }
 
-upper = function(s) {
+var upper = function(s) {
 	return s.upper();
 };
 
@@ -21,13 +21,13 @@ function test(s, f) {
 assert(test("Hello", lower) == "hello");
 assert(test("Hello", upper) == "HELLO");
 
-trim = function(s) {
+var trim = function(s) {
 	return s.trim();
 };
 
 assert(trim(" test  ") == "test");
 
-global = 1;
+var global = 1;
 
 assert(test(true, function(bool) {
 	return bool == true && global == 1;

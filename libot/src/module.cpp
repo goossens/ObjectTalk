@@ -26,17 +26,9 @@
 #include "ot/libuv.h"
 
 #include "ot/string.h"
-#include "ot/global.h"
 #include "ot/module.h"
-#include "ot/code.h"
+#include "ot/bytecode.h"
 #include "ot/compiler.h"
-
-
-//
-//	Globals
-//
-
-OtGlobal global;
 
 
 //
@@ -52,15 +44,6 @@ class OtModuleRegistry : public OtSingleton<OtModuleRegistry>, public OtRegistry
 //
 
 void OtModuleClass::import(const std::string& name) {
-	// set global if required
-	if (!getParent()) {
-		if (!global) {
-			global = OtGlobalClass::create();
-		}
-
-		setParent(global);
-	}
-
 	// build module path (if required)
 	if (modulePath.size() == 0) {
 		// use local directory as default
@@ -71,7 +54,7 @@ void OtModuleClass::import(const std::string& name) {
 
 		if (path) {
 			std::vector<std::string> parts;
-			OtTextSplit(path, parts,';');
+			OtText::split(path, parts,';');
 
 			for (auto part = parts.begin(); part != parts.end(); ++part) {
 				modulePath.push_back(*part);
@@ -163,8 +146,9 @@ void OtModuleClass::import(const std::string& name) {
 
 			OtCompiler compiler;
 			OtSource source = OtSourceClass::create(name, buffer.str());
-			OtCode code = compiler.compile(source);
-			code->operator ()(getSharedPtr()->cast<OtContextClass>());
+			OtByteCode bytecode = compiler.compile(source, getSharedPtr()->cast<OtModuleClass>());
+
+			OtVM::execute(bytecode, 0);
 		}
 
 	} else {
@@ -181,7 +165,7 @@ OtType OtModuleClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtTypeClass::create<OtModuleClass>("Module", OtContextClass::getMeta());
+		type = OtTypeClass::create<OtModuleClass>("Module", OtInternalClass::getMeta());
 	}
 
 	return type;

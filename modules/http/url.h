@@ -35,7 +35,7 @@ public:
 	OtURLClass(const std::string& path) { parse(path); }
 
 	// initialize URL
-	OtObject init(OtContext, size_t count, OtObject* parameters);
+	OtObject init(size_t count, OtObject* parameters);
 
 	// get URL parts
 	operator std::string() { return url; }

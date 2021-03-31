@@ -12,6 +12,7 @@
 #include "ot/libuv.h"
 #include "ot/format.h"
 #include "ot/function.h"
+#include "ot/internal.h"
 
 #include "session.h"
 
@@ -145,13 +146,6 @@ OtHttpSessionClass::OtHttpSessionClass(uv_stream_t* stream, OtHttpRouter r) : ro
 	// set sesion status
 	active = true;
 	lastRequest = uv_now(uv_default_loop());
-
-	OT_DEBUG("OtHttpSessionClass");
-}
-
-
-OtHttpSessionClass::~OtHttpSessionClass() {
-	OT_DEBUG("~OtHttpSessionClass");
 }
 
 
@@ -217,13 +211,7 @@ void OtHttpSessionClass::onMessageComplete() {
 	}
 
 	// dispatch request
-	OtObject pars[] = {
-		request,
-		response,
-		OtHttpNotFoundClass::create(response)
-	};
-
-	router->call(nullptr, 3, pars);
+	router->call(request, response, OtHttpNotFoundClass::create(response));
 
 	// track last reuest time
 	lastRequest = uv_now(uv_default_loop());
@@ -253,7 +241,7 @@ void OtHttpSessionClass::onRead(const uv_buf_t* buffer, ssize_t nread) {
 		free(buffer->base);
 
 	} else if (nread < 0) {
-		OT_DEBUG(OtFormat("libuv error during read: %s", uv_strerror(nread)));
+		OT_DEBUG(OtFormat("libuv error in read: %s", uv_strerror(nread)));
 		close();
 	}
 }

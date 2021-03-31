@@ -40,6 +40,9 @@ public:
 	operator double() { return value; }
 	operator std::string() {return std::to_string(value); }
 
+	// debugging support
+	std::string describe() { return operator std::string(); }
+
 	// comparison
 	bool equal(double operand) { return value == operand; }
 	bool notEqual(double operand) { return value != operand; }

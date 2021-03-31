@@ -139,15 +139,15 @@ void OtHttpRequestClass::onHeadersComplete(const std::string m, const std::strin
 	size_t query = url.find('?');
 
 	if (query == std::string::npos) {
-		path = OtTextDecodeURL(url);
+		path = OtText::decodeURL(url);
 
 	} else {
-		path = OtTextDecodeURL(url.substr(0, query));
+		path = OtText::decodeURL(url.substr(0, query));
 		parseParams(url.substr(query + 1, std::string::npos));
 	}
 
 	// handle multipart form data
-	if (OtTextContains(getHeader("Content-Type"), "multipart/form-data")) {
+	if (OtText::contains(getHeader("Content-Type"), "multipart/form-data")) {
 		auto type = getHeader("Content-Type");
 		auto pos = type.find("boundary=");
 
@@ -249,14 +249,14 @@ void OtHttpRequestClass::onMultipartHeadersComplete() {
 	if (multipartHeaders.has("Content-Disposition")) {
 		auto d = multipartHeaders.get("Content-Disposition");
 
-		OtTextSplitTrimIterator(d.data(), d.data() + d.size(), ';', [&](const char *b, const char *e) {
+		OtText::splitTrimIterator(d.data(), d.data() + d.size(), ';', [&](const char *b, const char *e) {
 			auto part = std::string(b, e - b);
 
 			if (part.find("=") != std::string::npos) {
 				std::string key;
 				std::string val;
 
-				OtTextSplitTrimIterator(b, e, '=', [&](const char *b2, const char *e2) {
+				OtText::splitTrimIterator(b, e, '=', [&](const char *b2, const char *e2) {
 					if (key.empty()) {
 						key.assign(b2, e2);
 
@@ -355,12 +355,12 @@ void OtHttpRequestClass::onMessageComplete() {
 void OtHttpRequestClass::setHeader(const std::string& name, const std::string& value) {
 	headers.emplace(name, value);
 
-	if (OtTextCaseEqual(name, "cookie")) {
-		OtTextSplitIterator(value.data(), value.data() + value.size(), ';', [&](const char *b, const char *e) {
+	if (OtText::caseEqual(name, "cookie")) {
+		OtText::splitIterator(value.data(), value.data() + value.size(), ';', [&](const char *b, const char *e) {
 			std::string key;
 			std::string val;
 
-			OtTextSplitIterator(b, e, '=', [&](const char *b2, const char *e2) {
+			OtText::splitIterator(b, e, '=', [&](const char *b2, const char *e2) {
 				if (key.empty()) {
 					key.assign(b2, e2);
 
@@ -369,7 +369,7 @@ void OtHttpRequestClass::setHeader(const std::string& name, const std::string& v
 				}
 			});
 
-			setCookie(OtTextDecodeURL(OtTextTrim(key)), OtTextDecodeURL(OtTextTrim(val)));
+			setCookie(OtText::decodeURL(OtText::trim(key)), OtText::decodeURL(OtText::trim(val)));
 		});
 	}
 }
@@ -410,13 +410,13 @@ const OtObject OtHttpRequestClass::getHeaders() {
 	OtDict dict = OtDictClass::create();
 
 	for (auto i = headers.begin(); i != headers.end(); i++) {
-		if (dict->find(i->first) == dict->end()) {
-			dict->operator[] (i->first) = OtStringClass::create(i->second);
+		if (dict->contains(i->first)) {
+			std::string value = dict->getEntry(i->first)->operator std::string();
+			value += "; " + i->second;
+			dict->setEntry(i->first, OtStringClass::create(value));
 
 		} else {
-			std::string value = *(dict->operator[] (i->first));
-			value += "; " + i->second;
-			dict->operator[] (i->first) = OtStringClass::create(value);
+			dict->setEntry(i->first, OtStringClass::create(i->second));
 		}
 	}
 
@@ -429,11 +429,11 @@ const OtObject OtHttpRequestClass::getHeaders() {
 //
 
 void OtHttpRequestClass::parseParams(const std::string& text) {
-	OtTextSplitIterator(text.data(), text.data() + text.size(), '&', [&](const char *b, const char *e) {
+	OtText::splitIterator(text.data(), text.data() + text.size(), '&', [&](const char *b, const char *e) {
 		std::string key;
 		std::string value;
 
-		OtTextSplitIterator(b, e, '=', [&](const char *b2, const char *e2) {
+		OtText::splitIterator(b, e, '=', [&](const char *b2, const char *e2) {
 			if (key.empty()) {
 				key.assign(b2, e2);
 
@@ -442,7 +442,7 @@ void OtHttpRequestClass::parseParams(const std::string& text) {
 			}
 		});
 
-		setParam(OtTextDecodeURL(key), OtTextDecodeURL(value));
+		setParam(OtText::decodeURL(key), OtText::decodeURL(value));
 	});
 }
 

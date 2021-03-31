@@ -17,11 +17,23 @@
 
 
 //
-//	Codepoint Functions
+//	OtCodepoint
 //
 
-size_t OtCodePointSize(std::string::const_iterator i);
-std::string::const_iterator OtCodePointGet(std::string::const_iterator i, int32_t* codeword);
-std::string::iterator OtCodePointPut(std::string::iterator i, int32_t codeword);
-int32_t OtCodePointLower(int32_t cp);
-int32_t OtCodePointUpper(int32_t cp);
+class OtCodePoint {
+public:
+	// get the number of bytes required for this code point
+	static size_t size(std::string::const_iterator i);
+
+	// get the next code point and update iterator
+	static std::string::const_iterator get(std::string::const_iterator i, int32_t* codeword);
+
+	// write code point in UTF-8 and update iterator
+	static std::string::iterator put(std::string::iterator i, int32_t codeword);
+
+	// convert code point to lower case
+	static int32_t lower(int32_t cp);
+
+	// convert code point to upper case
+	static int32_t upper(int32_t cp);
+};

@@ -36,6 +36,8 @@ public:
 	operator double() { return value ? 1.0 : 0.0; }
 	operator std::string() { return value ? "true" : "false"; }
 
+	std::string describe() { return operator std::string(); }
+
 	// comparison
 	bool equal(bool operand) { return value == operand; }
 	bool notEqual(bool operand) { return value != operand; }

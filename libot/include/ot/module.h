@@ -14,7 +14,7 @@
 
 #include <filesystem>
 
-#include "context.h"
+#include "internal.h"
 
 
 //
@@ -24,7 +24,7 @@
 class OtModuleClass;
 typedef std::shared_ptr<OtModuleClass> OtModule;
 
-class OtModuleClass : public OtContextClass {
+class OtModuleClass : public OtInternalClass {
 public:
 	// import module
 	void import(const std::string& name);

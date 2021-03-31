@@ -12,18 +12,21 @@
 //	Include files
 //
 
-#include "context.h"
+#include "internal.h"
 
 
 //
 //	OtClass
 //
 
-class OtClassClass : public OtContextClass {
+class OtClassClass : public OtInternalClass {
 public:
 	// constructors
 	OtClassClass() = default;
 	OtClassClass(OtType t) : classType(t) {}
+
+	// debugging support
+	std::string describe() { return classType->getName(); }
 
 	// access member information
 	std::string getName() { return classType->getName(); }
@@ -41,7 +44,7 @@ public:
 	void unset(const std::string& name) { return classType->unset(name); }
 
 	// call operator
-	OtObject operator () (OtContext context, size_t count, OtObject* parameters);
+	OtObject operator()(size_t count, OtObject* parameters);
 
 	// get type definition
 	static OtType getMeta();

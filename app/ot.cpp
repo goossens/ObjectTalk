@@ -20,7 +20,7 @@
 
 int main(int argc, char* argv[]) {
 	// initialize ObjectTalk library
-	argc = OtInit(argc, argv);
+	argc = OtVM::init(argc, argv);
 
 	// ensure we have some arguments
 	if (argc == 1) {
@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	// close ObjectTalk library
-	OtEnd();
+	OtVM::end();
 
 	return 0;
 }

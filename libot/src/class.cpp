@@ -11,27 +11,34 @@
 
 #include "ot/function.h"
 #include "ot/class.h"
+#include "ot/vm.h"
 
 
 //
-//	OtClassClass::operator ()
+//	OtClassClass::operator()
 //
 
-OtObject OtClassClass::operator () (OtContext context, size_t count, OtObject* parameters) {
+OtObject OtClassClass::operator()(size_t count, OtObject* parameters) {
 	// create new instance
 	OtObject object = classType->construct();
 	object->setType(classType);
 
 	// run possible init function
 	if (object->has("__init__")) {
-		OtObject pars[count + 1];
-		pars[0] = object;
+		// open a new stack frame
+		OtVM::stack->openFrame(count + 1);
 
-		for (size_t c = 0; c < count; c++) {
-			pars[c + 1] = parameters[c];
-		}
+		// get a new stack pointer
+		auto sp = OtVM::stack->sp(count + 1);
 
-		object->get("__init__")->operator ()(context, count + 1, pars);
+		// ugly patch
+		*sp = object;
+
+		// execute __init__ with one more parameter (this)
+		object->get("__init__")->operator()(count + 1, sp);
+
+		// close the stack frame
+		OtVM::stack->closeFrame();
 	}
 
 	return object;
@@ -46,8 +53,8 @@ OtType OtClassClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtTypeClass::create<OtClassClass>("Class", OtContextClass::getMeta());
-		type->set("__call__", OtFunctionClass::create(&OtClassClass::operator ()));
+		type = OtTypeClass::create<OtClassClass>("Class", OtInternalClass::getMeta());
+		type->set("__call__", OtFunctionClass::create(&OtClassClass::operator()));
 		type->set("getName", OtFunctionClass::create(&OtClassClass::getName));
 		type->set("hasParent", OtFunctionClass::create(&OtClassClass::hasParent));
 		type->set("getParent", OtFunctionClass::create(&OtClassClass::getParent));

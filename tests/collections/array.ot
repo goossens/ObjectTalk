@@ -4,11 +4,9 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-// Array class test
-
 assert([ 1, 2, 3 ].string() == "[1,2,3]");
 
-array = Array(1, 2, 3 ,4, 5, 6, 7, 8, 9, 10);
+var array = Array(1, 2, 3 ,4, 5, 6, 7, 8, 9, 10);
 
 assert(array.size() == 10);
 assert(array[0] == 1);
@@ -31,7 +29,7 @@ assert(array.find(20) == -1);
 assert(array.contains(2) == true);
 assert(array.contains(20) == false);
 
-array2 = array.clone();
+var array2 = array.clone();
 assert(array2.size() == 13);
 
 array2.erase(1);
@@ -61,17 +59,14 @@ assert(array2.size() == 1);
 assert(array2.pop() == 55);
 assert(array2.size() == 0);
 
-array3 = [1, 2, 3 ,4, 5, 6, 7, 8, 9, [10, 11, 12]];
+var array3 = [1, 2, 3 ,4, 5, 6, 7, 8, 9, [10, 11, 12]];
 assert(array3.size() == 10);
 assert(array.size() == 13);
 
-array4 = [];
+var array4 = [];
 
 for a in Array(1, 2, 3, 4) {
 	array4.append(a);
 }
 
 assert(array4.size() == 4);
-
-// Well done
-print("Passed all array tests");

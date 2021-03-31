@@ -21,25 +21,25 @@ Language Classes:
 		* [Dict](reference/Dict.md)
 
 	* [Internal](reference/Internal.md)
-		* [Context](reference/Context.md)
-			* [Global](reference/Global.md) *
-			* [Module](reference/Module.md) *
-			* [Class](reference/Class.md) *
+		* [Class](reference/Class.md) *
+		* [Global](reference/Global.md) *
+		* [Module](reference/Module.md) *
+		* [BoundFunction](reference/BoundFunction.md) *
+		* [CodeFunction](reference/CodeFunction.md) *
+		* [Throw](reference/Throw.md) *
 
 		* [Reference](reference/Reference.md)
-			* [ContextReference](reference/ContextReference.md) *
 			* [MemberReference](reference/MemberReference.md) *
 			* [StringReference](reference/StringReference.md) *
 			* [ArrayReference](reference/ArrayReference.md) *
 			* [DictReference](reference/DictReference.md) *
+			* [ObjectReference](reference/ObjectReference.md) *
+			* [ClassReference](reference/ClassReference.md) *
+			* [StackReference](reference/StackReference.md) *
 
 		* [Iterator](reference/Iterator.md)
 			* [ArrayIterator](reference/ArrayIterator.md) *
-			* [ArrayIterator](reference/ArrayIterator.md) *
-
-		* [BoundFunction](reference/BoundFunction.md) *
-		* [CodeFunction](reference/CodeFunction.md) *
-		* [Throw](reference/Throw.md) *
+			* [DictIterator](reference/DictIterator.md) *
 
 Module Classes:
 ===============
@@ -53,16 +53,16 @@ System module:
 		* [OS](reference/OS.md)
 		* [FS](reference/FS.md)
 
-Http module:
+HTTP module:
 -----------
 
 * [Object](reference/Object.md)
 	* [Http](reference/Http.md)
-	* [URI](reference/URI.md)
-	* [HttpRouter](reference/HttpRouter.md)
-		* [HttpServer](reference/HttpServer.md)
-	* [HttpRequest](reference/HttpRequest.md)
-	* [HttpResponse](reference/HttpResponse.md)
+		* [URI](reference/URI.md)
+		* [HttpRouter](reference/HttpRouter.md)
+			* [HttpServer](reference/HttpServer.md)
+		* [HttpRequest](reference/HttpRequest.md)
+		* [HttpResponse](reference/HttpResponse.md)
 
 	* [Internal](reference/Internal.md)
 		* [HttpNext](reference/HttpNext.md) *

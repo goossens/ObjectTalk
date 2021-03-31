@@ -9,8 +9,8 @@
 assert(1.getClass().getName() == "Integer");
 assert(1.getClass().getClass().getName() == "Class");
 
-theClass = 1.getClass();
-path = theClass.getName();
+var theClass = 1.getClass();
+var path = theClass.getName();
 
 while theClass.hasParent() {
 	theClass = theClass.getParent();
@@ -21,8 +21,8 @@ assert(path == "Integer->Primitive->Object");
 
 class MyObject : Object {
 	function pedigree(this) {
-		theClass = this.getClass();
-		path = theClass.getName();
+		var theClass = this.getClass();
+		var path = theClass.getName();
 
 		while theClass.hasParent() {
 			theClass = theClass.getParent();
@@ -41,18 +41,18 @@ class MyObject : Object {
 	}
 }
 
-test = MyObject();
+var test = MyObject();
 assert(test.pedigree() == "MyObject->Object");
 assert(test.useless("useless") == "MyObject->Object");
 
-pedigree = test.pedigree;
+var pedigree = test.pedigree;
 assert(pedigree.getClass().getName() == "BoundFunction");
 assert(pedigree() == "MyObject->Object");
 
 test.set(12);
 assert(test.value == 12);
 
-set = test.set;
+var set = test.set;
 set(14);
 assert(test.value == 14);
 
@@ -60,7 +60,7 @@ test.value = 16;
 assert(test.value == 16);
 
 class ClassMember : Object {
-	constant = 13;
+	var constant = 13;
 
 	function test(this) {
 		return this.constant;

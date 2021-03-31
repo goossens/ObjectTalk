@@ -39,7 +39,7 @@ public:
 	void run();
 
 	// set a timer
-	OtObject timer(OtContext context, size_t count, OtObject* parameters);
+	OtObject timer(long wait, long repeat, OtObject callback);
 
 	// stop server
 	void stop();

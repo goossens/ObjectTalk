@@ -50,7 +50,7 @@ OtObject OtTypeClass::construct() {
 
 OtType OtTypeClass::subType(const std::string& name) {
 	OtSharedType type = std::make_shared<OtTypeClass>(name, this, constructor);
-	OtTypeRegistry::instance().store(name, type);
+	OtTypeRegistry::instance().set(name, type);
 	return type.get();
 }
 
@@ -89,6 +89,15 @@ void OtTypeClass::unset(const std::string& name) {
 //
 
 OtType OtTypeClass::registerType(OtSharedType type) {
-	OtTypeRegistry::instance().store(type->getName(), type);
+	OtTypeRegistry::instance().set(type->getName(), type);
 	return type.get();
+}
+
+
+//
+//	OtTypeClass::getRegistered
+//
+
+OtType OtTypeClass::getRegistered(const std::string& name) {
+	return OtTypeRegistry::instance().get(name).get();
 }

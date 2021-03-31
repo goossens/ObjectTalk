@@ -9,7 +9,7 @@
 //	Include files
 //
 
-#include "ot/context.h"
+#include "ot/module.h"
 #include "ot/class.h"
 
 #include "http.h"
@@ -22,9 +22,9 @@
 //	Http module
 //
 
-extern "C" void init(OtContext context) {
-	context->set("Http", OtClassClass::create(OtHttpClass::getMeta()));
-	context->set("URL", OtClassClass::create(OtURLClass::getMeta()));
-	context->set("HttpRouter", OtClassClass::create(OtHttpRouterClass::getMeta()));
-	context->set("HttpServer", OtClassClass::create(OtHttpServerClass::getMeta()));
+extern "C" void init(OtModule module) {
+	module->set("Http", OtClassClass::create(OtHttpClass::getMeta()));
+	module->set("URL", OtClassClass::create(OtURLClass::getMeta()));
+	module->set("HttpRouter", OtClassClass::create(OtHttpRouterClass::getMeta()));
+	module->set("HttpServer", OtClassClass::create(OtHttpServerClass::getMeta()));
 }

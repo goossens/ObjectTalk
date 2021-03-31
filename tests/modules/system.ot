@@ -6,9 +6,9 @@
 
 //	Test script for ObjectTalk operating system functions
 
-system = import("system");
+var system = import("system");
 
-path = system.Path("/var/lib/test.a");
+var path = system.Path("/var/lib/test.a");
 assert(path.string() == "/var/lib/test.a");
 assert(path.rootName() == "");
 assert(path.rootDirectory() == "/");
@@ -75,7 +75,7 @@ assert(system.Path("/var/lib/test.a").hasExtension() == true);
 assert(system.Path("/var/lib/test").hasExtension() == false);
 assert(system.Path("/var/lib/").hasExtension() == false);
 
-os = system.OS();
+var os = system.OS();
 assert(os.hasenv("OBJECT_TALK") == false);
 os.setenv("OBJECT_TALK", "test");
 assert(os.hasenv("OBJECT_TALK") == true);
@@ -83,9 +83,10 @@ assert(os.getenv("OBJECT_TALK") == "test");
 os.unsetenv("OBJECT_TALK");
 assert(os.hasenv("OBJECT_TALK") == false);
 
-fs = system.FS();
-tmp = fs.gettmp();
-cwd = fs.getcwd();
+var fs = system.FS();
+
+var tmp = fs.gettmp();
+var cwd = fs.getcwd();
 
 fs.chdir(tmp);
 assert(fs.getcwd() == tmp);

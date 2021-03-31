@@ -4,13 +4,6 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
+assert(true);
 
-#pragma once
-
-
-//
-//	Main functions
-//
-
-int OtInit(int argc, char* argv[]);
-void OtEnd();
+// end with comment

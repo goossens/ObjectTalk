@@ -19,13 +19,13 @@
 
 
 //
-//	OtTextLen
+//	OtText::len
 //
 
-size_t OtTextLen(const std::string& text) {
+size_t OtText::len(const std::string& text) {
 	size_t result = 0;
 
-	for (auto i = text.begin(); i != text.end(); i += OtCodePointSize(i)) {
+	for (auto i = text.begin(); i != text.end(); i += OtCodePoint::size(i)) {
 		result++;
 	}
 
@@ -34,14 +34,14 @@ size_t OtTextLen(const std::string& text) {
 
 
 //
-//	OtTextLeft
+//	OtText::left
 //
 
-std::string OtTextLeft(const std::string& text, size_t length) {
+std::string OtText::left(const std::string& text, size_t length) {
 	auto end = text.begin();
 
 	while (length > 0 && end != text.end()) {
-		end += OtCodePointSize(end);
+		end += OtCodePoint::size(end);
 		length--;
 	}
 
@@ -50,10 +50,10 @@ std::string OtTextLeft(const std::string& text, size_t length) {
 
 
 //
-//	OtTextRight
+//	OtText::right
 //
 
-std::string OtTextRight(const std::string& text, size_t length) {
+std::string OtText::right(const std::string& text, size_t length) {
 	auto start = text.end();
 
 	while (length > 0 && start != text.begin()) {
@@ -69,21 +69,21 @@ std::string OtTextRight(const std::string& text, size_t length) {
 
 
 //
-//	OtTextMid
+//	OtText::mid
 //
 
-std::string OtTextMid(const std::string& text, size_t start, size_t length) {
+std::string OtText::mid(const std::string& text, size_t start, size_t length) {
 	auto s = text.begin();
 
 	while (start > 0 && s != text.end()) {
-		s += OtCodePointSize(s);
+		s += OtCodePoint::size(s);
 		start--;
 	}
 
 	auto e = s;
 
 	while (length > 0 && e != text.end()) {
-		e += OtCodePointSize(e);
+		e += OtCodePoint::size(e);
 		length--;
 	}
 
@@ -92,14 +92,14 @@ std::string OtTextMid(const std::string& text, size_t start, size_t length) {
 
 
 //
-//	OtTextGet
+//	OtText::get
 //
 
-std::string OtTextGet(const std::string& text, size_t offset) {
+std::string OtText::get(const std::string& text, size_t offset) {
 	auto pos = text.begin();
 
 	while (offset > 0 && pos != text.end()) {
-		pos += OtCodePointSize(pos);
+		pos += OtCodePoint::size(pos);
 		offset--;
 	}
 
@@ -107,22 +107,22 @@ std::string OtTextGet(const std::string& text, size_t offset) {
 		return "";
 
 	} else {
-		return std::string(pos, pos + OtCodePointSize(pos));
+		return std::string(pos, pos + OtCodePoint::size(pos));
 	}
 }
 
 
 //
-//	OtTextSet
+//	OtText::set
 //
 
-std::string OtTextSet(const std::string& text, size_t offset, std::string& ch) {
-	auto length = OtTextLen(text);
+std::string OtText::set(const std::string& text, size_t offset, const std::string& ch) {
+	auto length = OtText::len(text);
 
 	if (offset >= 0 && offset < length) {
-		return OtTextLeft(text, offset) +
-			OtTextGet(ch, 0) +
-			OtTextRight(text, length - offset - 1);
+		return OtText::left(text, offset) +
+			OtText::get(ch, 0) +
+			OtText::right(text, length - offset - 1);
 
 	} else {
 		return text;
@@ -131,10 +131,10 @@ std::string OtTextSet(const std::string& text, size_t offset, std::string& ch) {
 
 
 //
-//	OtTextLower
+//	OtText::lower
 //
 
-std::string OtTextLower(const std::string& text) {
+std::string OtText::lower(const std::string& text) {
 	std::string result(text.length(), 0);
 	auto i = text.begin();
 	auto i2 = result.begin();
@@ -142,8 +142,8 @@ std::string OtTextLower(const std::string& text) {
 	while (i < text.end()) {
 		int32_t codepoint;
 
-		i = OtCodePointGet(i, &codepoint);
-		i2 = OtCodePointPut(i2, OtCodePointLower(codepoint));
+		i = OtCodePoint::get(i, &codepoint);
+		i2 = OtCodePoint::put(i2, OtCodePoint::lower(codepoint));
 	}
 
 	return result;
@@ -151,10 +151,10 @@ std::string OtTextLower(const std::string& text) {
 
 
 //
-//	OtTextUpper
+//	OtText::upper
 //
 
-std::string OtTextUpper(const std::string& text) {
+std::string OtText::upper(const std::string& text) {
 	std::string result(text.length(), 0);
 	auto i = text.begin();
 	auto i2 = result.begin();
@@ -162,8 +162,8 @@ std::string OtTextUpper(const std::string& text) {
 	while (i < text.end()) {
 		int32_t codepoint;
 
-		i = OtCodePointGet(i, &codepoint);
-		i2 = OtCodePointPut(i2, OtCodePointUpper(codepoint));
+		i = OtCodePoint::get(i, &codepoint);
+		i2 = OtCodePoint::put(i2, OtCodePoint::upper(codepoint));
 	}
 
 	return result;
@@ -171,21 +171,21 @@ std::string OtTextUpper(const std::string& text) {
 
 
 //
-//	OtTextCaseCmp
+//	OtText::caseCmp
 //
 
-int32_t OtTextCaseCmp(const std::string& s1, const std::string& s2) {
+int32_t OtText::caseCmp(const std::string& s1, const std::string& s2) {
 	auto i1 = s1.begin();
 	auto i2 = s2.begin();
 
 	while (i1 != s1.end() && i2 != s2.end()) {
 		int32_t cp1, cp2;
 
-		i1 = OtCodePointGet(i1, &cp1);
-		i2 = OtCodePointGet(i2, &cp2);
+		i1 = OtCodePoint::get(i1, &cp1);
+		i2 = OtCodePoint::get(i2, &cp2);
 
-		cp1 = OtCodePointLower(cp1);
-		cp2 = OtCodePointLower(cp2);
+		cp1 = OtCodePoint::lower(cp1);
+		cp2 = OtCodePoint::lower(cp2);
 
 		if (cp1 != cp2) {
 			return cp1 - cp2;
@@ -205,57 +205,57 @@ int32_t OtTextCaseCmp(const std::string& s1, const std::string& s2) {
 
 
 //
-//	OtTextCaseEqual
+//	OtText::caseEqual
 //
 
-bool OtTextCaseEqual(const std::string& s1, const std::string& s2) {
-	return OtTextCaseCmp(s1, s2) == 0;
+bool OtText::caseEqual(const std::string& s1, const std::string& s2) {
+	return OtText::caseCmp(s1, s2) == 0;
 }
 
 
 //
-//	OtTextStartsWith
+//	OtText::startsWith
 //
 
-bool OtTextStartsWith(const std::string& text, const std::string& part) {
+bool OtText::startsWith(const std::string& text, const std::string& part) {
 	return text.rfind(part, 0) == 0;
 }
 
 
 //
-//	OtTextContains
+//	OtText::contains
 //
 
-bool OtTextContains(const std::string& text, const std::string& part) {
+bool OtText::contains(const std::string& text, const std::string& part) {
 	return text.find(part) != std::string::npos;
 }
 
 
 //
-//	OtTextLeftTrim
+//	OtText::leftTrim
 //
 
-std::string OtTextLeftTrim(std::string text, const std::string& chars) {
+std::string OtText::leftTrim(std::string text, const std::string& chars) {
 	text.erase(0, text.find_first_not_of(chars));
 	return text;
 }
 
 
 //
-//	OtTextRightTrim
+//	OtText::rightTrim
 //
 
-std::string OtTextRightTrim(std::string text, const std::string& chars) {
+std::string OtText::rightTrim(std::string text, const std::string& chars) {
 	text.erase(text.find_last_not_of(chars) + 1);
 	return text;
 }
 
 
 //
-//	OtTextTrim
+//	OtText::trim
 //
 
-std::string OtTextTrim(std::string text, const std::string& chars) {
+std::string OtText::trim(std::string text, const std::string& chars) {
 	text.erase(0, text.find_first_not_of(chars));
 	text.erase(text.find_last_not_of(chars) + 1);
 	return text;
@@ -263,11 +263,11 @@ std::string OtTextTrim(std::string text, const std::string& chars) {
 
 
 //
-//	OtTextCompress
+//	OtText::compress
 //
 
-std::string OtTextCompress(const std::string& text, const std::string& chars) {
-	auto result = OtTextTrim(text);
+std::string OtText::compress(const std::string& text, const std::string& chars) {
+	auto result = OtText::trim(text);
 	auto begin = result.find_first_of(chars);
 
 	while (begin != std::string::npos) {
@@ -279,10 +279,10 @@ std::string OtTextCompress(const std::string& text, const std::string& chars) {
 }
 
 //
-//	OtTextEncodeURL
+//	OtText::EncodeURL
 //
 
-std::string OtTextEncodeURL(const std::string& text) {
+std::string OtText::encodeURL(const std::string& text) {
 	std::ostringstream o;
 
 	for (auto c = text.cbegin(); c != text.cend(); c++) {
@@ -299,10 +299,10 @@ std::string OtTextEncodeURL(const std::string& text) {
 
 
 //
-//	OtTextDecodeURL
+//	OtText::DecodeURL
 //
 
-std::string OtTextDecodeURL(const std::string& text) {
+std::string OtText::decodeURL(const std::string& text) {
 	std::ostringstream o;
 	auto c = text.cbegin();
 
@@ -332,14 +332,14 @@ std::string OtTextDecodeURL(const std::string& text) {
 
 
 //
-//	OtTextToJSON
+//	OtText::toJSON
 //
 
-std::string OtTextToJSON(const std::string& text) {
+std::string OtText::toJSON(const std::string& text) {
 	std::ostringstream o;
 	o << '"';
 
-	for (auto c = text.begin(); c != text.end(); c += OtCodePointSize(c)) {
+	for (auto c = text.begin(); c != text.end(); c += OtCodePoint::size(c)) {
 		switch (*c) {
 			case '"': o << "\\\""; break;
 			case '\\': o << "\\\\"; break;
@@ -352,7 +352,7 @@ std::string OtTextToJSON(const std::string& text) {
 			default:
 				if (*c & 0x80) {
 					int32_t codepoint;
-					OtCodePointGet(c, &codepoint);
+					OtCodePoint::get(c, &codepoint);
 					o << "\\u" << std::hex << std::setw(4) << std::setfill('0') << codepoint;
 
 				} else {
@@ -367,10 +367,10 @@ std::string OtTextToJSON(const std::string& text) {
 
 
 //
-//	OtTextFromJSON
+//	OtText::fromJSON
 //
 
-std::string OtTextFromJSON(const std::string text) {
+std::string OtText::fromJSON(const std::string text) {
 	std::ostringstream o;
 	auto c = text.begin();
 
@@ -412,7 +412,7 @@ std::string OtTextFromJSON(const std::string text) {
 							std::string utf8(4, 0);
 
 							int32_t codepoint = std::strtol(std::string(c, c + 4).c_str(), nullptr, 16);
-							auto end = OtCodePointPut(utf8.begin(), codepoint);
+							auto end = OtCodePoint::put(utf8.begin(), codepoint);
 
 							o << std::string(utf8.begin(), end);
 							c += 4;

@@ -34,15 +34,14 @@
 #include "ot/dict.h"
 
 #include "ot/internal.h"
-#include "ot/context.h"
 #include "ot/class.h"
 #include "ot/module.h"
 #include "ot/global.h"
 #include "ot/reference.h"
 #include "ot/iterator.h"
 
-#include "ot/code.h"
+#include "ot/bytecode.h"
 #include "ot/scanner.h"
 #include "ot/compiler.h"
 
-#include "ot/main.h"
+#include "ot/vm.h"

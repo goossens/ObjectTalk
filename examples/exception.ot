@@ -1,3 +1,8 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
 
 try {
 	a = 1;
@@ -6,8 +11,7 @@ try {
 	d = 4;
 
 } catch error {
-	print("Caught an exception:");
-	print(error);
+	print("Caught an exception: ", error);
 }
 
 print("Recovered from exception");
@@ -17,8 +21,7 @@ try {
 	throw "this is completely wrong";
 
 } catch error {
-	print("Caught an exception:");
-	print(error);
+	print("Caught another exception: ", error);
 }
 
 print("Recovered from another exception");

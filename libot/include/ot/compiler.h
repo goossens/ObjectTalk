@@ -13,10 +13,13 @@
 //
 
 #include <string>
+#include <unordered_map>
 
 #include "source.h"
-#include "code.h"
 #include "scanner.h"
+#include "bytecode.h"
+#include "module.h"
+#include "vm.h"
 
 
 //
@@ -25,96 +28,117 @@
 
 class OtCompiler {
 public:
-	// compile source code into microcode
-	OtCode compile(OtSource source);
+	// compile source code into bytecode
+	OtByteCode compile(OtSource source, OtModule module);
 
 private:
+	// push a new scope onto the scope stack
+	void pushObjectScope(OtObject object);
+	void pushClassScope(const std::string& className);
+	void pushFunctionScope();
+	void pushBlockScope();
+
+	// pop the last scope from the scope stack
+	void popScope();
+
+	// declare a new variable in the current scope
+	void declareVariable(OtByteCode bytecode, const std::string& name);
+
+	// resolve variable name by pushing a reference to the stack
+	void resolveVariable(OtByteCode bytecode, const std::string& name);
+
+	// assign top stack value to named variable
+	void assignVariable(OtByteCode bytecode, const std::string& name);
+
 	// compile function
-	void function(OtCode code);
+	void function(OtByteCode bytecode);
 
 	// compile primary expression
-	bool primary(OtCode code);
+	bool primary(OtByteCode bytecode);
 
 	// compile postfix expressions
-	bool postfix(OtCode code);
+	bool postfix(OtByteCode bytecode);
 
 	// compile prefix expressions
-	bool prefix(OtCode code);
+	bool prefix(OtByteCode bytecode);
 
 	// compile multiplication/division/power/modulo expressions
-	bool multiplications(OtCode code);
+	bool multiplications(OtByteCode bytecode);
 
 	// compile addition/subtraction expressions
-	bool additions(OtCode code);
+	bool additions(OtByteCode bytecode);
 
 	// compile shift expressions
-	bool shift(OtCode code);
+	bool shift(OtByteCode bytecode);
 
 	// compile relationship/membership expressions
-	bool relation(OtCode code);
+	bool relation(OtByteCode bytecode);
 
 	// compile (not) equal expressions
-	bool equal(OtCode code);
+	bool equal(OtByteCode bytecode);
 
 	// compile bitwise "and" expression
-	bool bitwiseAnd(OtCode code);
+	bool bitwiseAnd(OtByteCode bytecode);
 
 	// compile bitwise "xor" expression
-	bool bitwiseXor(OtCode code);
+	bool bitwiseXor(OtByteCode bytecode);
 
 	// compile bitwise "or" expression
-	bool bitwiseOr(OtCode code);
+	bool bitwiseOr(OtByteCode bytecode);
 
 	// compile "and" expression
-	bool andExpression(OtCode code);
+	bool andExpression(OtByteCode bytecode);
 
 	// compile "or" expression
-	bool orExpression(OtCode code);
+	bool orExpression(OtByteCode bytecode);
 
 	// compile a conditional expression
-	bool conditional(OtCode code);
+	bool conditional(OtByteCode bytecode);
 
 	// compile an expression
-	bool expression(OtCode code);
+	bool expression(OtByteCode bytecode);
 
 	// compile a list of expressions
-	size_t expressions(OtCode code);
+	size_t expressions(OtByteCode bytecode);
 
 	// compile a block of statements
-	void block(OtCode code);
+	void block(OtByteCode bytecode);
 
-	// compile a class definition
-	void classDeclaration(OtCode code);
+	// compile a variable declatation
+	void variableDeclaration(OtByteCode bytecode);
 
-	// compile function definition
-	void functionDeclaration(OtCode code);
+	// compile a class declatation
+	void classDeclaration(OtByteCode bytecode);
+
+	// compile function declatation
+	void functionDeclaration(OtByteCode bytecode);
 
 	// compile a do statement
-	void doStatement(OtCode code);
+	void doStatement(OtByteCode bytecode);
 
 	// compile a for statement
-	void forStatement(OtCode code);
+	void forStatement(OtByteCode bytecode);
 
 	// compile an if statement
-	void ifStatement(OtCode code);
+	void ifStatement(OtByteCode bytecode);
 
 	// compile a return statement
-	void returnStatement(OtCode code);
+	void returnStatement(OtByteCode bytecode);
 
 	// compile a switch statement
-	void switchStatement(OtCode code);
+	void switchStatement(OtByteCode bytecode);
 
 	// compile a throw statement
-	void throwStatement(OtCode code);
+	void throwStatement(OtByteCode bytecode);
 
 	// compile a try/catch statement
-	void tryStatement(OtCode code);
+	void tryStatement(OtByteCode bytecode);
 
 	// compile a while statement
-	void whileStatement(OtCode code);
+	void whileStatement(OtByteCode bytecode);
 
 	// compile a single statement
-	void statement(OtCode code);
+	void statement(OtByteCode bytecode);
 
 private:
 	// source code we're compiling
@@ -122,4 +146,31 @@ private:
 
 	// scanner for compilation
 	OtScanner scanner;
+
+	// scope tracker
+	typedef enum {
+		UNDEFINED_SCOPE,
+		OBJECT_SCOPE,
+		CLASS_SCOPE,
+		FUNCTION_SCOPE,
+		BLOCK_SCOPE
+	} OtScopeType;
+
+	class OtScope {
+	public:
+		// constructors
+		OtScope(OtScopeType t, OtObject o) : type(t), object(o) {}
+		OtScope(OtScopeType t, const std::string& cn) : type(t), className(cn) {}
+		OtScope(OtScopeType t) : type(t), stackFrameOffset(0) {}
+		OtScope(OtScopeType t, size_t sfo) : type(t), stackFrameOffset(sfo) {}
+
+		// scope details
+		OtScopeType type = UNDEFINED_SCOPE;
+		OtObject object = nullptr;
+		std::string className;
+		size_t stackFrameOffset = 0;
+		std::unordered_map<std::string, size_t> locals;
+	};
+
+	std::vector<OtScope> scopeStack;
 };

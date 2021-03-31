@@ -4,15 +4,14 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-
-scope = "Lexical Scope";
+var scope = "Lexical Scope";
 
 function printScope() {
 	print(scope);
 }
 
 function test() {
-	scope = "Dynamic Scope";
+	var scope = "Dynamic Scope";
 	printScope();
 }
 

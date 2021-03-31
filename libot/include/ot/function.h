@@ -42,7 +42,7 @@ class OtFunctionClass;
 typedef std::shared_ptr<OtFunctionClass> OtFunction;
 
 class OtFunctionClass : public OtPrimitiveClass {
-	typedef OtObject (*OtInvoke)(void* target, OtContext context, size_t count, OtObject* parameters);
+	typedef OtObject (*OtInvoke)(void* target, size_t count, OtObject* parameters);
 
 public:
 	// constructors
@@ -53,20 +53,20 @@ public:
 	~OtFunctionClass() { free(target); }
 
 	// call function
-	OtObject operator () (OtContext context, size_t count, OtObject* parameters);
+	OtObject operator()(size_t count, OtObject* parameters);
 
 	// get type definition
 	static OtType getMeta();
 
 	// create new function bindings by function type
-	static OtFunction create(OtObject (*function)(OtContext, size_t, OtObject*)) {
+	static OtFunction create(OtObject (*function)(size_t, OtObject*)) {
 		typedef decltype(function) FUNCTION;
 		FUNCTION* target = (FUNCTION*) malloc(sizeof(FUNCTION));
 		*target = function;
 
 		struct Helper {
-			static OtObject invoke(void* t, OtContext c, size_t n, OtObject* p) {
-				return (*((FUNCTION*) t))(c, n, p);
+			static OtObject invoke(void* t, size_t n, OtObject* p) {
+				return (*((FUNCTION*) t))(n, p);
 			}
 		};
 
@@ -80,7 +80,7 @@ public:
 		*target = function;
 
 		struct Helper {
-			static OtObject invoke(void* t, OtContext c, size_t n, OtObject* p) {
+			static OtObject invoke(void* t, size_t n, OtObject* p) {
 				return invokeFunction<FUNCTION>(t, p, std::index_sequence_for<ARGS...>());
 			}
 		};
@@ -95,7 +95,7 @@ public:
 		*target = function;
 
 		struct Helper {
-			static OtObject invoke(void* t, OtContext c, size_t n, OtObject* p) {
+			static OtObject invoke(void* t, size_t n, OtObject* p) {
 				return invokeVoidFunction<FUNCTION>(t, p, std::index_sequence_for<ARGS...>());
 			}
 		};
@@ -104,16 +104,16 @@ public:
 	}
 
 	template<typename CLASS>
-	static OtFunction create(OtObject (CLASS::*method)(OtContext, size_t, OtObject*)) {
+	static OtFunction create(OtObject (CLASS::*method)(size_t, OtObject*)) {
 		typedef decltype(method) METHOD;
 		METHOD* target = (METHOD*) malloc(sizeof(METHOD));
 		*target = method;
 
 		struct Helper {
-			static OtObject invoke(void* t, OtContext c, size_t n, OtObject* p) {
+			static OtObject invoke(void* t, size_t n, OtObject* p) {
 				auto object = p[0]->cast<CLASS>();
 				auto method = *((METHOD*) t);
-				return ((*object).*method)(c, n - 1, p + 1);
+				return ((*object).*method)(n - 1, p + 1);
 			}
 		};
 
@@ -127,7 +127,7 @@ public:
 		*target = method;
 
 		struct Helper {
-			static OtObject invoke(void* t, OtContext c, size_t n, OtObject* p) {
+			static OtObject invoke(void* t, size_t n, OtObject* p) {
 				return invokeVoidMethod<CLASS, METHOD>(t, p, std::index_sequence_for<ARGS...>());
 			}
 		};
@@ -142,7 +142,7 @@ public:
 		*target = method;
 
 		struct Helper {
-			static OtObject invoke(void* t, OtContext c, size_t n, OtObject* p) {
+			static OtObject invoke(void* t, size_t n, OtObject* p) {
 				return invokeMethod<CLASS, METHOD>(t, p, std::index_sequence_for<ARGS...>());
 			}
 		};

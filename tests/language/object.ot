@@ -6,9 +6,9 @@
 
 //	Test script for ObjectTalk objects
 
-a = null;
-b = Object();
-c = 1;
+var a = null;
+var b = Object();
+var c = 1;
 
 assert (a == b);
 assert (a != c);
@@ -16,8 +16,10 @@ assert (a != c);
 a = -1;
 a.flag = true;
 assert(a.flag == true);
+assert(a.flag != false);
 
 assert(a.abs() == 1);
+
 Integer.flag2 = false;
 assert(a.flag2 == false);
 
@@ -33,7 +35,7 @@ a.dosomething = function(this) {
 assert(a.flag == true);
 assert(a.dosomething() == "I did it");
 
-result = false;
+var result = false;
 c = "hello";
 
 try {
@@ -58,6 +60,7 @@ assert(b.flag2 == true);
 assert(a.dosomething() == "I did it");
 assert(b.dosomething() == "I did it");
 
+String.unset("flag2");
 String.unset("dosomething");
 
 // Well done

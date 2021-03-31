@@ -14,6 +14,7 @@
 
 #include <memory>
 #include <string>
+#include <utility>
 
 #include "type.h"
 #include "members.h"
@@ -25,9 +26,6 @@
 
 class OtClassClass;
 typedef std::shared_ptr<OtClassClass> OtClass;
-
-class OtContextClass;
-typedef std::shared_ptr<OtContextClass> OtContext;
 
 
 //
@@ -61,13 +59,13 @@ public:
 	// get object's JSON representation
 	virtual std::string json() { return operator std::string(); }
 
+	// describe object for debugging purposes
+	virtual std::string describe() { return ""; }
+
 	// get shared pointer
 	OtObject getSharedPtr() { return shared_from_this(); }
 
 	// member acccess
-	bool hasMember(const std::string& name);
-	OtObject getMember(const std::string& name);
-
 	virtual bool has(const std::string& name);
 	virtual OtObject set(const std::string& name, OtObject value);
 	virtual OtObject get(const std::string& name);
@@ -75,16 +73,14 @@ public:
 
 	// support member operator
 	OtObject member(const std::string& name);
+	OtMembers getMembers() { return members; }
 
 	// comparison
 	bool equal(OtObject operand);
 	bool notEqual(OtObject operand) { return !equal(operand); }
 
-	// "call" object (context, count, parameters)
-	virtual OtObject operator () (OtContext, size_t, OtObject*) { return nullptr; }
-
-	// "call" named object member
-	OtObject method(const std::string& m, OtContext c, size_t n, OtObject* p);
+	// "call" object (count, parameters)
+	virtual OtObject operator()(size_t, OtObject*) { return nullptr; }
 
 	// get an object's class
 	OtClass getClass();
@@ -106,3 +102,17 @@ protected:
 	// members
 	OtMembers members;
 };
+
+
+//
+//	OtObjectDescribe
+//
+
+inline std::string OtObjectDescribe(OtObject object) {
+	if (object) {
+		return object->getType()->getName() + " " + object->describe();
+
+	} else {
+		return "null";
+	}
+}

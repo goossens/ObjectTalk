@@ -23,8 +23,6 @@ Class Methods
 | clone() | Return a clone of the dictionary. |
 | clear() | Clear (empty) the dictionary. |
 | erase(string) | Remove the named object from the dictionary. |
-| containsKey(string) | Determine if name is index in dictionary. |
-| containsValue(object) | Determine if object is stored in dictionary. |
 | keys() | Return an array with all the dictionary's keys. |
 | values() | Return an array with all the dictionary's values. |
 

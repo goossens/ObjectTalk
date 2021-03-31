@@ -38,7 +38,7 @@ public:
 	operator std::string() { return path.string(); }
 
 	// initialize path
-	OtObject init(OtContext, size_t count, OtObject* parameters);
+	OtObject init(size_t count, OtObject* parameters);
 
 	// modifiers
 	void clear() { path.clear(); }

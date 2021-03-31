@@ -14,16 +14,21 @@
 
 
 //
-//	OtFunctionClass::operator ()
+//	OtFunctionClass::operator()
 //
 
-OtObject OtFunctionClass::operator () (OtContext context, size_t count, OtObject* parameters) {
+OtObject OtFunctionClass::operator()(size_t count, OtObject* parameters) {
 	// sanity check
 	if (parameterCount != SIZE_MAX && count != parameterCount) {
-		OtExcept("Function expects %d parameters, %d given", parameterCount, count);
+		if (parameterCount == 1) {
+			OtExcept("Function expects [%d] parameter, [%d] given", parameterCount, count);
+
+		} else {
+			OtExcept("Function expects [%d] parameters, [%d] given", parameterCount, count);
+		}
 	}
 
-	return (*invoker)(target, context, count, parameters);
+	return (*invoker)(target, count, parameters);
 }
 
 
@@ -36,7 +41,7 @@ OtType OtFunctionClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtFunctionClass>("Function", OtPrimitiveClass::getMeta());
-		type->set("__call__", OtFunctionClass::create(&OtFunctionClass::operator ()));
+		type->set("__call__", OtFunctionClass::create(&OtFunctionClass::operator()));
 	}
 
 	return type;

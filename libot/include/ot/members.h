@@ -15,6 +15,7 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 
 //
@@ -39,6 +40,12 @@ public:
 	inline OtObject get(const std::string& name) { return members[name]; }
 	inline void set(const std::string& name, OtObject member) { members[name] = member; }
 	inline void unset(const std::string& name) { members.erase(name); }
+
+	std::vector<std::string> names() {
+		std::vector<std::string> result;
+		for (auto i : members) { result.push_back(i.first); }
+		return result;
+	}
 
 	// create a new members hash table
 	static OtMembers create() { return std::make_shared<OtMembersClass>(); }

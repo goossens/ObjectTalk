@@ -11,11 +11,11 @@
 
 #include <sstream>
 
+#include "ot/exception.h"
 #include "ot/array.h"
+#include "ot/arrayreference.h"
+#include "ot/arrayiterator.h"
 #include "ot/function.h"
-#include "ot/context.h"
-#include "ot/reference.h"
-#include "ot/iterator.h"
 
 
 //
@@ -28,7 +28,7 @@ OtArrayClass::operator std::string() {
 
 	o << "[";
 
-	for (auto const& entry : *this) {
+	for (auto const& entry : array) {
 		if (first) {
 			first = false;
 
@@ -48,11 +48,11 @@ OtArrayClass::operator std::string() {
 //	OtArrayClass::init
 //
 
-OtObject OtArrayClass::init(OtContext, size_t count, OtObject* parameters) {
-	clear();
+OtObject OtArrayClass::init(size_t count, OtObject* parameters) {
+	array.clear();
 
 	for (auto c = 0; c < count; c++) {
-		push_back(parameters[c]);
+		array.push_back(parameters[c]);
 	}
 
 	return getSharedPtr();
@@ -60,46 +60,34 @@ OtObject OtArrayClass::init(OtContext, size_t count, OtObject* parameters) {
 
 
 //
-//	OtArrayReferenceClass
+//	OtArrayClass::getEntry
 //
 
-class OtArrayReferenceClass;
-typedef std::shared_ptr<OtArrayReferenceClass> OtArrayReference;
-
-class OtArrayReferenceClass : public OtReferenceClass {
-public:
-	// constructors
-	OtArrayReferenceClass() = default;
-	OtArrayReferenceClass(OtArray a, size_t i) : array(a), index(i) {}
-
-	// index operations
-	OtObject deref() { return array->operator[] (index); }
-	OtObject assign(OtObject object) { array->operator[] (index) = object; return object; }
-
-	// get type definition
-	static OtType getMeta() {
-		static OtType type = nullptr;
-
-		if (!type) {
-			type = OtTypeClass::create<OtArrayReferenceClass>("ArrayReference", OtReferenceClass::getMeta());
-			type->set("__deref__", OtFunctionClass::create(&OtArrayReferenceClass::deref));
-			type->set("__assign__", OtFunctionClass::create(&OtArrayReferenceClass::assign));
-		}
-
-		return type;
+OtObject OtArrayClass::getEntry(size_t index) {
+	// sanity check
+	if (index < 0 || index >= array.size()) {
+		OtExcept("invalid index [%ld] for array of size [%ld]", index, array.size());
 	}
 
-	// create a new object
-	static OtArrayReference create(OtArray a, size_t i) {
-		OtArrayReference reference = std::make_shared<OtArrayReferenceClass>(a, i);
-		reference->setType(getMeta());
-		return reference;
+	// return entry
+	return array[index];
+}
+
+
+//
+//	OtArrayClass::setEntry
+//
+
+OtObject OtArrayClass::setEntry(size_t index, OtObject object) {
+	// sanity check
+	if (index < 0 || index >= array.size()) {
+		OtExcept("invalid index [%ld] for array of size [%ld]", index, array.size());
 	}
 
-private:
-	OtArray array;
-	size_t index;
-};
+	// set entry
+	array[index] = object;
+	return object;
+}
 
 
 //
@@ -110,56 +98,13 @@ OtObject OtArrayClass::index(size_t index) {
 	if (index < 0) {
 		OtExcept("Negative index [%ld] is not allowed in array", index);
 
-	} else if (index >= size()) {
-		OtExcept("Index [%ld] is greater than array length [%ld]", index, size());
+	} else if (index >= array.size()) {
+		OtExcept("Index [%ld] is greater than array length [%ld]", index, array.size());
 
 	}
 
 	return OtArrayReferenceClass::create(cast<OtArrayClass>(), index);
 }
-
-
-//
-//	OtArrayIteratorClass
-//
-
-class OtArrayIteratorClass;
-typedef std::shared_ptr<OtArrayIteratorClass> OtArrayIterator;
-
-class OtArrayIteratorClass : public OtIteratorClass {
-public:
-	// constructors
-	OtArrayIteratorClass() = default;
-	OtArrayIteratorClass(OtArray a) : array(a) {}
-
-	// iteration operations
-	bool end() { return index == array->size(); }
-	OtObject next() { return array->operator[](index++); }
-
-	// get type definition
-	static OtType getMeta() {
-		static OtType type = nullptr;
-
-		if (!type) {
-			type = OtTypeClass::create<OtArrayIteratorClass>("ArrayIterator", OtIteratorClass::getMeta());
-			type->set("__end__", OtFunctionClass::create(&OtArrayIteratorClass::end));
-			type->set("__next__", OtFunctionClass::create(&OtArrayIteratorClass::next));
-		}
-
-		return type;
-	}
-
-	// create a new object
-	static OtArrayIterator create(OtArray a) {
-		OtArrayIterator iterator = std::make_shared<OtArrayIteratorClass>(a);
-		iterator->setType(getMeta());
-		return iterator;
-	}
-
-private:
-	OtArray array;
-	size_t index {0};
-};
 
 
 //
@@ -178,11 +123,11 @@ OtObject OtArrayClass::iterate() {
 OtObject OtArrayClass::add(OtObject object) {
 	OtArray result = create();
 
-	for (auto& it : *this) {
-		result->push_back(it);
+	for (auto& it : array) {
+		result->array.push_back(it);
 	}
 
-	result->append(object);
+	result->array.push_back(std::move(object));
 	return result;
 }
 
@@ -193,22 +138,12 @@ OtObject OtArrayClass::add(OtObject object) {
 
 OtObject OtArrayClass::contains(OtObject object) {
 	bool result = false;
-	OtContext context = OtContextClass::create();
 
-	for (auto it = begin(); it != end() && !result; it++) {
-		result = object->method("__eq__", context, 1, &(*it))->operator bool();
+	for (auto i = array.begin(); !result && i != array.end(); i++) {
+		result = (*i)->equal(object);
 	}
 
 	return OtBooleanClass::create(result);
-}
-
-
-//
-//	OtArrayClass::mySize
-//
-
-size_t OtArrayClass::mySize() {
-	return size();
 }
 
 
@@ -218,10 +153,11 @@ size_t OtArrayClass::mySize() {
 
 long OtArrayClass::find(OtObject object) {
 	long result = -1;
+	long c = 0;
 
-	for (auto i = 0; i < size() && result == -1; i++) {
-		if (object->method("__eq__", nullptr, 1, &(operator[] (i)))->operator bool()) {
-			result = i;
+	for (auto i = array.begin(); result == -1 && i != array.end(); i++, c++) {
+		if ((*i)->equal(object)) {
+			result = c;
 		}
 	}
 
@@ -236,8 +172,8 @@ long OtArrayClass::find(OtObject object) {
 OtObject OtArrayClass::clone() {
 	OtArray result = create();
 
-	for (auto& it : *this) {
-		result->push_back(it);
+	for (auto& it : array) {
+		result->array.push_back(it);
 	}
 
 	return result;
@@ -255,12 +191,12 @@ OtObject OtArrayClass::join(OtObject object) {
 
 	OtArray result = create();
 
-	for (auto& it : *this) {
-		result->push_back(it);
+	for (auto& it : array) {
+		result->array.push_back(it);
 	}
 
-	for (auto& it : *(object->cast<OtArrayClass>())) {
-		result->push_back(it);
+	for (auto& it : object->cast<OtArrayClass>()->array) {
+		result->array.push_back(it);
 	}
 
 	return result;
@@ -272,7 +208,7 @@ OtObject OtArrayClass::join(OtObject object) {
 //
 
 OtObject OtArrayClass::append(OtObject object) {
-	push_back(object);
+	array.push_back(object);
 	return getSharedPtr();
 }
 
@@ -290,7 +226,7 @@ OtObject OtArrayClass::insert(size_t index, OtObject object) {
 
 	}
 
-	std::vector<OtObject>::insert(begin() + index, object);
+	array.insert(array.begin() + index, std::move(object));
 	return getSharedPtr();
 }
 
@@ -308,7 +244,7 @@ OtObject OtArrayClass::erase(size_t index) {
 
 	}
 
-	std::vector<OtObject>::erase(begin() + index);
+	array.erase(array.begin() + index);
 	return getSharedPtr();
 }
 
@@ -338,7 +274,7 @@ OtObject OtArrayClass::eraseMultiple(size_t index1, size_t index2) {
 		OtExcept("Indexes [%ld and %ld2] are in the wrong order", index1, index2);
 	}
 
-	std::vector<OtObject>::erase(begin() + index1, begin() + index2);
+	array.erase(array.begin() + index1, array.begin() + index2);
 	return getSharedPtr();
 }
 
@@ -348,7 +284,7 @@ OtObject OtArrayClass::eraseMultiple(size_t index1, size_t index2) {
 //
 
 OtObject OtArrayClass::push(OtObject object) {
-	push_back(object); return object;
+	array.push_back(object); return object;
 }
 
 
@@ -357,8 +293,8 @@ OtObject OtArrayClass::push(OtObject object) {
 //
 
 OtObject OtArrayClass::pop() {
-	OtObject object = back();
-	pop_back();
+	OtObject object = array.back();
+	array.pop_back();
 	return object;
 }
 
@@ -382,7 +318,7 @@ OtType OtArrayClass::getMeta() {
 		type->set("__add__", OtFunctionClass::create(&OtArrayClass::add));
 		type->set("__contains__", OtFunctionClass::create(&OtArrayClass::contains));
 
-		type->set("size", OtFunctionClass::create(&OtArrayClass::mySize));
+		type->set("size", OtFunctionClass::create(&OtArrayClass::size));
 		type->set("find", OtFunctionClass::create(&OtArrayClass::find));
 		type->set("contains", OtFunctionClass::create(&OtArrayClass::contains));
 
@@ -417,7 +353,7 @@ OtArray OtArrayClass::create(size_t count, OtObject* objects) {
 	OtArray array = create();
 
 	for (auto c = 0; c < count; c++) {
-		array->push_back(objects[c]);
+		array->add(objects[c]);
 	}
 
 	return array;

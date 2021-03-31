@@ -41,6 +41,9 @@ public:
 	operator double() { return double(value); }
 	operator std::string() {return std::to_string(value); }
 
+	// debugging support
+	std::string describe() { return operator std::string(); }
+
 	// comparison
 	bool equal(long operand) { return value == operand; }
 	bool notEqual(long operand) { return value != operand; }

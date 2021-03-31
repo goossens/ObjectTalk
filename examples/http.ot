@@ -4,7 +4,7 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-http = import("http");
+var http = import("http");
 
 function info(req, res, next) {
 	res.send("info");
@@ -46,17 +46,24 @@ class MyHttpServer : http.HttpServer {
 			res.sendfile(__DIR__ + "/static/test.txt");
 		});
 
-		this.get("/stop", function(req, res, next) {
+		this.get("/stop2", function(req, res, next) {
 			res.send("Server stopping");
 			this.stop();
 		});
+
+		this.get("/stop", this.stopCall);
+	}
+
+	function stopCall(this, req, res, next) {
+		res.send("Server stopping");
+		this.stop();
 	}
 }
 
 print();
 print("Running HTTP server");
 
-server = MyHttpServer();
+var server = MyHttpServer();
 server.listen("0.0.0.0", 80).run();
 server.clearHandlers();
 

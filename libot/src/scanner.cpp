@@ -33,7 +33,6 @@ OtScanner::OtScanner() {
 	addToken("{", LBRACE_TOKEN);
 	addToken("}", RBRACE_TOKEN);
 	addToken(",", COMMA_TOKEN);
-	addToken("...", ELLIPSIS_TOKEN);
 	addToken(".", PERIOD_TOKEN);
 	addToken(":", COLON_TOKEN);
 	addToken(";", SEMICOLON_TOKEN);
@@ -83,6 +82,7 @@ OtScanner::OtScanner() {
 	addToken("return", RETURN_TOKEN);
 	addToken("throw", THROW_TOKEN);
 	addToken("try", TRY_TOKEN);
+	addToken("var", VAR_TOKEN);
 	addToken("while", WHILE_TOKEN);
 }
 
@@ -212,7 +212,7 @@ OtToken OtScanner::advance() {
 			position++;
 		}
 
-		stringValue = OtTextFromJSON(source->substr(start, position - start));
+		stringValue = OtText::fromJSON(source->substr(start, position - start));
 
 		if (position < size) {
 			position++;

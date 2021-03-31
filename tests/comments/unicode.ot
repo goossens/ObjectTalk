@@ -1,0 +1,15 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+// Unicode characters are allowed in comments.
+//
+// Latin 1 Supplement: £§¶ÜÞ
+// Latin Extended-A: ĐĦŋœ
+// Latin Extended-B: ƂƢƩǁ
+// Other stuff: ឃᢆ᯽₪ℜ↩⊗┺░
+// Emoji: ☃☺♣
+
+assert(true);

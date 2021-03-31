@@ -16,26 +16,23 @@
 
 
 //
-//	OtContext
+//	OtThrow
 //
 
-class OtContextClass : public OtInternalClass {
-public:
-	// parent access
-	void setParent(OtContext v) { parent = v; }
-	OtContext getParent() { return parent; }
+class OtThrowClass;
+typedef std::shared_ptr<OtThrowClass> OtThrow;
 
-	// member acccess
-	bool has(const std::string& name);
-	OtObject get(const std::string& name);
+class OtThrowClass : public OtInternalClass {
+public:
+	// constructor
+	OtThrowClass() = default;
+
+	// throw the exception
+	void call(const std::string& error);
 
 	// get type definition
 	static OtType getMeta();
 
 	// create a new object
-	static OtContext create();
-
-private:
-	// parent in context chain
-	OtContext parent;
+	static OtThrow create();
 };

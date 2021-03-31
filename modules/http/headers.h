@@ -25,7 +25,7 @@
 class OtHttpHeadersComparator {
 public:
 	bool operator()(const std::string& s1, const std::string& s2) const {
-		return OtTextCaseCmp(s1, s2) == 0;
+		return OtText::caseCmp(s1, s2) == 0;
 	}
 };
 

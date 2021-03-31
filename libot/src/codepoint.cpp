@@ -17,7 +17,7 @@
 //	OtCodePointSize
 //
 
-size_t OtCodePointSize(std::string::const_iterator i) {
+size_t OtCodePoint::size(std::string::const_iterator i) {
 	if ((*i & 0x80) == 0) {
 		return 1;
 
@@ -40,7 +40,7 @@ size_t OtCodePointSize(std::string::const_iterator i) {
 //	OtCodePointGet
 //
 
-std::string::const_iterator OtCodePointGet(std::string::const_iterator i, int32_t* codeword) {
+std::string::const_iterator OtCodePoint::get(std::string::const_iterator i, int32_t* codeword) {
 	if ((*i & 0x80) == 0) {
 		*codeword = *i;
 		i++;
@@ -69,7 +69,7 @@ std::string::const_iterator OtCodePointGet(std::string::const_iterator i, int32_
 //	OtCodePointPut
 //
 
-std::string::iterator OtCodePointPut(std::string::iterator i, int32_t codeword) {
+std::string::iterator OtCodePoint::put(std::string::iterator i, int32_t codeword) {
 	if ((codeword & 0xffffff80) == 0) {
 		*i = codeword;
 		i++;
@@ -101,7 +101,7 @@ std::string::iterator OtCodePointPut(std::string::iterator i, int32_t codeword) 
 //	OtCodePointLower
 //
 
-int32_t OtCodePointLower(int32_t cp) {
+int32_t OtCodePoint::lower(int32_t cp) {
 	if ((cp >= 0x0041 && cp <= 0x005a) ||
 		(cp >= 0x00c0 && cp <= 0x00d6) ||
 		(cp >= 0x00d8 && cp <= 0x00de) ||
@@ -191,7 +191,7 @@ int32_t OtCodePointLower(int32_t cp) {
 //	OtCodePointUpper
 //
 
-int32_t OtCodePointUpper(int32_t cp) {
+int32_t OtCodePoint::upper(int32_t cp) {
 	if ((cp >= 0x0061 && cp <= 0x007a) ||
 		(cp >= 0x00e0 && cp <= 0x00f6) ||
 		(cp >= 0x00f8 && cp <= 0x00fe) ||

@@ -164,21 +164,37 @@ void OtCompiler::declareVariable(OtByteCode bytecode, const std::string& name) {
 void OtCompiler::resolveVariable(OtByteCode bytecode, const std::string& name) {
 	// try to resolve name
 	bool found = false;
+	size_t functionLevel = 0;
+	long stackOffset = 0;
 
 	for (auto scope = scopeStack.rbegin(); !found && scope != scopeStack.rend(); scope++) {
 		if (scope->locals.count(name)) {
 			// handle different scope types
 			switch(scope->type) {
 				case OBJECT_SCOPE:
+					// variable is object member
 					bytecode->push(OtObjectReferenceClass::create(scope->object, name));
 					break;
 
 				case CLASS_SCOPE:
+					// variable is class member
 					bytecode->push(OtClassReferenceClass::create(scope->className, name));
 					break;
 
 				case FUNCTION_SCOPE:
+					if (functionLevel == 0) {
+						// variable lives on stack
+						bytecode->push(OtStackReferenceClass::create(name, scope->locals[name]));
+
+					} else {
+						// variabel is an upvalue in an enclosing function
+						// bytecode->push(OtUpvalueReferenceClass::create(name, stackOffset + scope->locals[name]));
+					}
+
+					break;
+
 				case BLOCK_SCOPE:
+					// variable lives on stack
 					bytecode->push(OtStackReferenceClass::create(name, scope->locals[name]));
 					break;
 
@@ -187,6 +203,13 @@ void OtCompiler::resolveVariable(OtByteCode bytecode, const std::string& name) {
 			}
 
 			found = true;
+		}
+
+		// do some housekeeping if we had a function scope
+		if (!found && scope->type == FUNCTION_SCOPE) {
+			if (functionLevel++) {
+				stackOffset -= scope->locals.size();
+			}
 		}
 	}
 

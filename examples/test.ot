@@ -1,0 +1,13 @@
+var x = "global";
+
+function outer() {
+	var x = "outer";
+
+	function inner() {
+		print(x);
+  	}
+
+	inner();
+}
+
+outer();

@@ -16,20 +16,20 @@
 
 
 //
-//	OtMemberReference
+//	OtCaptureReferenceClass
 //
 
-class OtMemberReferenceClass;
-typedef std::shared_ptr<OtMemberReferenceClass> OtMemberReference;
+class OtCaptureReferenceClass;
+typedef std::shared_ptr<OtCaptureReferenceClass> OtCaptureReference;
 
-class OtMemberReferenceClass : public OtReferenceClass {
+class OtCaptureReferenceClass : public OtReferenceClass {
 public:
 	// constructors
-	OtMemberReferenceClass() = default;
-	OtMemberReferenceClass(OtObject o, const std::string& m) : object(o), member(m) {}
+	OtCaptureReferenceClass() = default;
+	OtCaptureReferenceClass(const std::string& n) :  name(n) {}
 
 	// debugging support
-	std::string describe() { return object->getType()->getName() + " " + member; }
+	std::string describe() { return name; }
 
 	// (de)reference functions
 	OtObject deref();
@@ -39,9 +39,8 @@ public:
 	static OtType getMeta();
 
 	// create a new object
-	static OtMemberReference create(OtObject object, const std::string& member);
+	static OtCaptureReference create(const std::string& name);
 
 private:
-	OtObject object;
-	std::string member;
+	std::string name;
 };

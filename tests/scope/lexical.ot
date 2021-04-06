@@ -15,4 +15,4 @@ function test() {
 	return getScope();
 }
 
-print(test());
+assert(test() == "Lexical Scope");

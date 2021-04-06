@@ -16,7 +16,7 @@
 
 
 //
-//	OtByteCodeFunctionClassoperator
+//	OtByteCodeFunctionClass::operator()
 //
 
 OtObject OtByteCodeFunctionClass::operator()(size_t count, OtObject* parameters) {

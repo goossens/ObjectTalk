@@ -24,6 +24,11 @@ The objectives for the development of ObjectTalk where:
 * Learn computer language development.
 * Learn how to write a lexical scanner and language compiler.
 * Learn how to implement a simple stack-based virtual machine.
+* Learn how the develop a language that is:
+	* Fully object-oriented.
+	* Dynamically typed.
+	* Lexically scoped.
+	* Closure/capture aware.
 * Learn C++17 as that is the language the ObjectTalk engine is written in.
 * Keep the code multi-platform to support reuse and maximum outreach.
 * Don't over-optimize to keep the code readable (so others can learn).
@@ -45,13 +50,14 @@ of the objectives above.
 So what makes ObjectTalk great?
 
 * It is truly object-oriented as everything is an object (even numbers,
-strings and functions) with methods.
+strings and functions) with members and member functions.
 * The language will feel comfortable to everyone who has worked on
 C-derived languages.
-* Variables are type free and primitive objects like Boolean, Integer,
-Real and String are automatically converted if required.
+* Variables are dynamically typed and primitive objects like Boolean,
+Integer, Real and String are automatically converted if required.
 * Functions are first class objects and can be passed as arguments or
 bound to an object as a method.
-* Variables don't need to be declared. They are just assigned in a scope.
+* Variables are lexically scoped and must be declared before use.
+* Variables are automatically captured in closures if required.
 * Variables are always initialized before use.
 * Memory is managed automatically.

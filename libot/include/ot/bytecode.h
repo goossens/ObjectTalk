@@ -35,6 +35,7 @@ class OtByteCodeClass : public OtInternalClass {
 public:
 	// possible opcodes
 	typedef enum {
+		DEBUG,
 		MARK,
 		PUSH,
 		POP,
@@ -57,6 +58,7 @@ public:
 	OtByteCodeClass(OtSource s) : source(s) {}
 
 	// add instructions to code
+	void debug() { emitOpcode(DEBUG); }
 	void mark(size_t mark) { emitOpcode(MARK); emitMark(mark); }
 	void push(OtObject value) { emitOpcode(PUSH); emitConstant(value); }
 	void pop() { emitOpcode(POP); }

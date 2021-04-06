@@ -13,7 +13,7 @@ keep the code and documentation synchronized.
 	* [Quick ObjectTalk Overview](Overview.md)
 * Language Guide
     * [The Basics](guide/Basics.md)
-	* [Context and Scope](guide/Context.md)
+	* [Scope](guide/Scope.md)
 	* [Modules](guide/Modules.md)
 	* [Statements](guide/Statements.md)
 	* [Control Flow](guide/Flow.md)

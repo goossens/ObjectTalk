@@ -4,13 +4,13 @@ Arrays are sequences of objects that can be constructed using square
 brackets ([]) or through the Array class constructor. The Array class has
 many methods to manipulate the content of an array.
 
-    array1 = [ 1, 2, "test", 7 + 4, a ];
-    array2 = Array(3.14, 7, 34, 1);
+    var array1 = [ 1, 2, "test", 7 + 4, a ];
+    var array2 = Array(3.14, 7, 34, 1);
 
 	array1.append("new value");
-	thirdValue = array1[3];
+	var thirdValue = array1[3];
 
-	array3 = [3.14, [3, 5, 4], 34, 1];
+	var array3 = [3.14, [3, 5, 4], 34, 1];
 
 Class Methods
 -------------

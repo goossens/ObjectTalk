@@ -20,7 +20,7 @@
 //
 
 OtObject OtStackReferenceClass::deref() {
-	return OtVM::stack->get(OtVM::stack->getFrame() + slot);
+	return OtVM::stack->getFrameItem(OtStackItem(0, slot));
 }
 
 
@@ -29,7 +29,7 @@ OtObject OtStackReferenceClass::deref() {
 //
 
 OtObject OtStackReferenceClass::assign(OtObject value) {
-	OtVM::stack->set(OtVM::stack->getFrame() +  slot, value);
+	OtVM::stack->setFrameItem(OtStackItem(0, slot), value);
 	return value;
 }
 

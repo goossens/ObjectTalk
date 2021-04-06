@@ -34,6 +34,10 @@ std::string OtByteCodeClass::disassemble() {
 		buffer << std::left << std::setw(16);
 
 		switch (bytecode[pc++]) {
+			case DEBUG:
+				buffer << "DEBUG";
+				break;
+
 			case MARK:
 				buffer << "MARK" << marks[getNumber(&pc)];
 				break;

@@ -24,9 +24,12 @@
 #include "ot/throw.h"
 #include "ot/bytecodefunction.h"
 
+#include "ot/closure.h"
+
 #include "ot/objectreference.h"
 #include "ot/classreference.h"
 #include "ot/stackreference.h"
+#include "ot/capturereference.h"
 
 
 //
@@ -133,6 +136,36 @@ void OtCompiler::popScope() {
 
 
 //
+//	OtCompiler::declareCapture
+//
+
+void OtCompiler::declareCapture(const std::string& name, OtStackItem item) {
+	// find most recent function scope
+	auto scope = scopeStack.rbegin();
+
+	while (scope->type != FUNCTION_SCOPE && scope != scopeStack.rend()) {
+		scope++;
+	}
+
+	// sanity check
+	if (scope == scopeStack.rend()) {
+		OtExcept("Internal error. No function scope on stack");
+	}
+
+	// see if this variable is already captured
+	if (scope->captures.count(name)) {
+		if (scope->captures[name] != item) {
+			OtExcept("Internal error. Captured variable has different stack offset");
+		}
+
+	} else {
+		// add item to list of captured variables
+		scope->captures[name] = item;
+	}
+}
+
+
+//
 //	OtCompiler::declareVariable
 //
 
@@ -147,11 +180,11 @@ void OtCompiler::declareVariable(OtByteCode bytecode, const std::string& name) {
 
 	// add variable to compiler scope
 	if (scope->type == FUNCTION_SCOPE || scope->type == BLOCK_SCOPE) {
-		// variable lives on stack
+		// variable lives on the stack
 		scope->locals[name] = scope->stackFrameOffset + scope->locals.size();
 
 	} else {
-		// variable lives on heap
+		// variable lives on the heap
 		scope->locals[name] = 0;
 	}
 }
@@ -165,11 +198,17 @@ void OtCompiler::resolveVariable(OtByteCode bytecode, const std::string& name) {
 	// try to resolve name
 	bool found = false;
 	size_t functionLevel = 0;
-	long stackOffset = 0;
 
+	// look at all scope levels in reverse order
 	for (auto scope = scopeStack.rbegin(); !found && scope != scopeStack.rend(); scope++) {
-		if (scope->locals.count(name)) {
-			// handle different scope types
+		// did we already capture the variable in this scope?
+		if (scope->captures.count(name)) {
+			// yes, reuse reference
+			bytecode->push(OtCaptureReferenceClass::create(name));
+
+		// is variable in this scope?
+		} else if (scope->locals.count(name)) {
+			// yes, handle different scope types
 			switch(scope->type) {
 				case OBJECT_SCOPE:
 					// variable is object member
@@ -182,20 +221,17 @@ void OtCompiler::resolveVariable(OtByteCode bytecode, const std::string& name) {
 					break;
 
 				case FUNCTION_SCOPE:
+				case BLOCK_SCOPE:
 					if (functionLevel == 0) {
-						// variable lives on stack
+						// variable lives on the stack in the current stack frame
 						bytecode->push(OtStackReferenceClass::create(name, scope->locals[name]));
 
 					} else {
-						// variabel is an upvalue in an enclosing function
-						// bytecode->push(OtUpvalueReferenceClass::create(name, stackOffset + scope->locals[name]));
+						// variable is in an enclosing function, we need to capture it
+						declareCapture(name, OtStackItem(functionLevel - 1, scope->locals[name]));
+						bytecode->push(OtCaptureReferenceClass::create(name));
 					}
 
-					break;
-
-				case BLOCK_SCOPE:
-					// variable lives on stack
-					bytecode->push(OtStackReferenceClass::create(name, scope->locals[name]));
 					break;
 
 				default:
@@ -207,12 +243,12 @@ void OtCompiler::resolveVariable(OtByteCode bytecode, const std::string& name) {
 
 		// do some housekeeping if we had a function scope
 		if (!found && scope->type == FUNCTION_SCOPE) {
-			if (functionLevel++) {
-				stackOffset -= scope->locals.size();
-			}
+			// track how many function levels we have to go back
+			functionLevel++;
 		}
 	}
 
+	// generate error if variable is not found
 	if (!found) {
 		OtExcept("Unknown variable [%s]", name.c_str());
 	}
@@ -265,8 +301,23 @@ void OtCompiler::function(OtByteCode bytecode) {
 	// default return value in case function does not have return statement
 	functionCode->push(OtVM::null);
 
-	// put new function on the stack
-	bytecode->push(OtByteCodeFunctionClass::create(functionCode, count));
+	// create a new bytecode function
+	auto function = OtByteCodeFunctionClass::create(functionCode, count);
+
+	// see if this function captures variables and needs a closure
+	auto scope = &(scopeStack.back());
+
+	if (scope->captures.size()) {
+		// function does capture variables so let's wrap it in a closure
+		bytecode->push(OtClosureClass::create(function, scope->captures));
+
+		// generate code to perform the actual capture
+		bytecode->method("__capture__", 0);
+
+	} else {
+		// no captures so just put new function on the stack
+		bytecode->push(function);
+	}
 
 	// end function scope
 	popScope();
@@ -1126,7 +1177,7 @@ void OtCompiler::block(OtByteCode bytecode) {
 	// now that we know the number of local variables, patch the previous code
 	bytecode->patchByte(offset, locals);
 
-	// also remove locals from stack
+	// locals are going out of scope so we remove them from the stack
 	bytecode->pop(locals);
 
 	// remove the block scope
@@ -1396,30 +1447,38 @@ void OtCompiler::throwStatement(OtByteCode bytecode) {
 //
 
 void OtCompiler::tryStatement(OtByteCode bytecode) {
+	// handle "try" block
 	scanner.expect(OtScanner::TRY_TOKEN);
-
-	// "try/catch" is block to handle the error variable
-	pushBlockScope();
-
 	size_t offset1 = bytecode->pushTry();
 	block(bytecode);
 	bytecode->popTry();
 
+	// jump around "catch" block
 	size_t offset2 = bytecode->jump(0);
 	bytecode->patchJump(offset1);
 
+	// handle catch block
 	scanner.expect(OtScanner::CATCH_TOKEN);
 	scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
 	std::string name = scanner.getText();
-
-	declareVariable(bytecode, name);
-	assignVariable(bytecode, name);
-
 	scanner.advance();
 
+	// create a new block scope to handle error variable
+	pushBlockScope();
+
+	// declare error variable whose value is already on stack (courtesy of the VM)
+	declareVariable(bytecode, name);
+
+	// compile "catch" block
 	block(bytecode);
+
+	// remove error variable from the stack
+	bytecode->pop();
+
+	// patch jump at the end of the "try" block
 	bytecode->patchJump(offset2);
 
+	// remove temporary scope
 	popScope();
 }
 

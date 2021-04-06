@@ -35,9 +35,9 @@ bool OtVM::valgrindMode = false;
 
 class OtTryCatch {
 public:
-	OtTryCatch(size_t p, size_t s) : pc(p), sp(s) {}
+	OtTryCatch(size_t p, OtStackState s) : pc(p), stack(s) {}
 	size_t pc;
-	size_t sp;
+	OtStackState stack;
 };
 
 
@@ -116,14 +116,14 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 
 	// execute all instructions
 	while (pc < end) {
-		if (pc == 9999) {
-			OT_DEBUG(bytecode->disassemble());
-			OT_DEBUG(OtFormat("PC: %ld\n", pc));
-			OT_DEBUG(stack->debug());
-		}
-
 		try {
 			switch (bytecode->getOpcode(&pc)) {
+				case OtByteCodeClass::DEBUG:
+					OT_DEBUG(bytecode->disassemble());
+					OT_DEBUG(OtFormat("PC: %ld\n", pc));
+					OT_DEBUG(stack->debug());
+					break;
+
 				case OtByteCodeClass::MARK:
 					mark = bytecode->getNumber(&pc);
 					break;
@@ -220,7 +220,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 
 				case OtByteCodeClass::PUSH_TRY:
 					// start a new try/catch cycle
-					tryCatch.push_back(OtTryCatch(bytecode->getOffset(bytecode->getNumber(&pc)), stack->size()));
+					tryCatch.push_back(OtTryCatch(bytecode->getOffset(bytecode->getNumber(&pc)), stack->getState()));
 					break;
 
 				case OtByteCodeClass::POP_TRY:
@@ -238,16 +238,12 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 
 				// restore program counter and stack
 				pc = trycatch.pc;
-				stack->resize(trycatch.sp);
+				stack->restoreState(trycatch.stack);
 
 				// put exception on stack
 				stack->push(OtStringClass::create(e.what()));
 
 			} else {
-				OT_DEBUG(bytecode->disassemble());
-				OT_DEBUG(OtFormat("PC: %ld\n", pc));
-				OT_DEBUG(stack->debug());
-
 				// get source code
 				OtSource source = bytecode->getSource();
 

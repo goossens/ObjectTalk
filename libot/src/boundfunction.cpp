@@ -22,19 +22,19 @@
 
 OtObject OtBoundFunctionClass::operator()(size_t count, OtObject* parameters) {
 	// open a new stack frame
-	OtVM::stack->openFrame(count + 1);
+	//OtVM::stack->openFrame(count + 1);
 
 	// get a new stack pointer
 	auto sp = OtVM::stack->sp(count + 1);
 
-	// ugly patch
+	// ugly patch to put "this" on stack
 	*sp = object;
 
 	// execute bound function with one more parameter (this)
 	auto result = function->operator()(count + 1, sp);
 
 	// close the stack frame
-	OtVM::stack->closeFrame();
+	//OtVM::stack->closeFrame();
 
 	// return bound function result
 	return result;

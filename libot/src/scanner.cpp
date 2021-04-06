@@ -169,43 +169,84 @@ OtToken OtScanner::advance() {
 	if (position == size) {
 		token = EOS_TOKEN;
 
+	// handle numerical values
 	} else if (std::isdigit(source->at(position)) || (source->at(position) =='-' && position < size && std::isdigit(source->at(position + 1)))) {
-		// handle numerical values
 		auto start = position;
+		int sign = 1;
 
 		if (source->at(position) =='-') {
 			position++;
+			sign = -1;
 		}
 
-		while (std::isdigit(source->at(position))) {
-			position++;
-		}
+		// see if we have a binary constant
+		if (source->at(position) == '0' && (source->at(position + 1) == 'b' || source->at(position + 1) == 'B')) {
+			position += 2;
+			auto value = position;
 
-		if (source->at(position) =='.' && position < size && std::isdigit(source->at(position + 1))) {
-			position++;
+			while (source->at(position) == '0' || source->at(position) == '1') {
+				position++;
+			}
 
+			integerValue = sign * std::stol(source->substr(value, position - value), 0, 2);
+			token = INTEGER_TOKEN;
+
+		// see if we have an octal constant
+		} else if (source->at(position) == '0' && (source->at(position + 1) == 'o' || source->at(position + 1) == 'O')) {
+			position += 2;
+			auto value = position;
+
+			while (source->at(position) >= '0' && source->at(position) <= '7') {
+				position++;
+			}
+
+			integerValue = sign * std::stol(source->substr(value, position - value), 0, 8);
+			token = INTEGER_TOKEN;
+
+		// see if we have a hexadecimal constant
+		} else if (source->at(position) == '0' && (source->at(position + 1) == 'x' || source->at(position + 1) == 'X')) {
+			position += 2;
+			auto value = position;
+
+			while (isxdigit(source->at(position))) {
+				position++;
+			}
+
+			integerValue = sign * std::stol(source->substr(value, position - value), 0, 16);
+			token = INTEGER_TOKEN;
+
+		// handle integers and reals
+		} else {
 			while (std::isdigit(source->at(position))) {
 				position++;
 			}
 
-			if (tolower(source->at(position)) =='e' && position < size) {
+			if (source->at(position) =='.' && position < size && std::isdigit(source->at(position + 1))) {
 				position++;
 
 				while (std::isdigit(source->at(position))) {
 					position++;
 				}
+
+				if (tolower(source->at(position)) =='e' && position < size) {
+					position++;
+
+					while (std::isdigit(source->at(position))) {
+						position++;
+					}
+				}
+
+				realValue = std::stod(source->substr(start, position - start));
+				token = REAL_TOKEN;
+
+			} else {
+				integerValue = std::stoi(source->substr(start, position - start));
+				token = INTEGER_TOKEN;
 			}
-
-			realValue = std::stod(source->substr(start, position - start));
-			token = REAL_TOKEN;
-
-		} else {
-			integerValue = std::stoi(source->substr(start, position - start));
-			token = INTEGER_TOKEN;
 		}
 
+	// handle strings
 	} else if (source->at(position) =='"') {
-		// handle strings
 		auto start = ++position;
 
 		while (position < size && !(source->at(position) == '"' && !(source->at(position - 1) == '\\'))) {
@@ -220,8 +261,8 @@ OtToken OtScanner::advance() {
 
 		token = STRING_TOKEN;
 
+	// handle identifiers (and tokens with identifier structure)
 	} else if (source->at(position) =='_' || std::isalpha(source->at(position))) {
-		// handle identifiers (and tokens with identifier structure)
 		while (source->at(position) =='_' || std::isalnum(source->at(position))) {
 			position++;
 		}
@@ -239,8 +280,8 @@ OtToken OtScanner::advance() {
 			token = IDENTIFIER_TOKEN;
 		}
 
+	// handle (non-identifier) tokens
 	} else {
-		// handle (non-identifier) tokens
 		size_t state = 0;
 
 		while (position < size && stateTable[state].transitions[(int) source->at(position)] != OtScannerState::noTransition) {

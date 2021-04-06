@@ -1,0 +1,28 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var a = 25;
+var b = 30;
+
+{
+	assert(a == 25);
+	assert(b == 30);
+
+	a *= 2;
+	assert(a == 50);
+	assert(b == 30);
+
+	b /= 2;
+	assert(a == 50);
+ 	assert(b == 15);
+
+	var a = b * b;
+	assert(a == 225);
+ 	assert(b == 15);
+ }
+
+ assert(a == 50);
+ assert(b == 15);

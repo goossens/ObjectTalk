@@ -19,6 +19,7 @@
 #include "scanner.h"
 #include "bytecode.h"
 #include "module.h"
+#include "stack.h"
 #include "vm.h"
 
 
@@ -40,6 +41,9 @@ private:
 
 	// pop the last scope from the scope stack
 	void popScope();
+
+	// declare a new captured variable
+	void declareCapture(const std::string& name, OtStackItem item);
 
 	// declare a new variable in the current scope
 	void declareVariable(OtByteCode bytecode, const std::string& name);
@@ -170,6 +174,7 @@ private:
 		std::string className;
 		size_t stackFrameOffset = 0;
 		std::unordered_map<std::string, size_t> locals;
+		std::unordered_map<std::string, OtStackItem> captures;
 	};
 
 	std::vector<OtScope> scopeStack;

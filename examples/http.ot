@@ -51,12 +51,10 @@ class MyHttpServer : http.HttpServer {
 			this.stop();
 		});
 
-		this.get("/stop", this.stopCall);
-	}
-
-	function stopCall(this, req, res, next) {
-		res.send("Server stopping");
-		this.stop();
+		this.get("/stop", function(req, res, next) {
+			res.send("Server stopping");
+			this.stop();
+		});
 	}
 }
 

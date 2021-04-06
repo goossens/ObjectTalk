@@ -9,7 +9,7 @@ in a single line:
 If you have written code in C or any of the derived languages before, this
 syntax might look familiar to you. In ObjectTalk, this line of code is a
 complete program. You don’t need to import a separate library for
-functionality like input/output or string handling. Code written at global
+functionality like input/output or string handling. Code written at module
 scope is used as the entry point for the program, so you don’t even need
 a main() function.
 
@@ -21,10 +21,20 @@ in detail in the rest of the documentation.
 
 ## Variables
 
-In ObjectTalk, variables do not have to be declared as they are created
-in the appropriate scope through assignment. ObjectTalk makes no
-distinction between constants and variables. If you set it and don't
-change it, it's a constant. If you do change it, it's a variable.
+In ObjectTalk, variables must be declared as in the appropriate scope
+through assignment. ObjectTalk makes no distinction between constants
+and variables. If you set it and don't change it, it's a constant.
+If you do change it, it's a variable. The example below creates two
+new variables. The first (a) is initialized to the integer 1. The second
+(b) is initialized to null as no value was provided and the third (c)
+is only visible in the inner scope.
+
+	var a = 1;
+	var b;
+
+	{
+		var c = 2;
+	}
 
 ## Primitive Values
 
@@ -35,16 +45,16 @@ that are derived from the
 [String](reference/String.md) and [Function](reference/Function.md)
 classes. The following statements assign primitive values to variables.
 
-    a = null;
-    b = true;
-    c = 1;
-    d = 3.14 * 2;
-    e = "Hello world";
+    var a = null;
+    var b = true;
+    var c = 1;
+    var d = 3.14 * 2;
+    var e = "Hello world";
 
 Please also note that primitive values are automatically converted in
 ObjectTalk when required.
 
-    f = e + c;
+    var f = e + c;
 
 In the expression above c gets converted to a String as the addition
 operator is applied to e (a String object) which wants its
@@ -100,22 +110,22 @@ constructed using square brackets ([]) or through the Array class
 constructor. The Array class has many methods to manipulate the content
 of an array.
 
-    array1 = [ 1, 2, "test", 7 + 4, a ];
-    array2 = Array(3.14, 7, 34, 1);
+    var array1 = [ 1, 2, "test", 7 + 4, a ];
+    var array2 = Array(3.14, 7, 34, 1);
 
     array1.append("new value");
-    thirdValue = array1[3];
+    var thirdValue = array1[3];
 
 [Dictionaries](reference/Dict.md) contain indexed key/value pairs that
 are constructed using curly brackets ({}) or through the Dict class
 constructor. The Dict class also has many methods to manipulate the
 content of a dictionary.
 
-    dict1 = [ "First Name": "John", "Last Name": "Doe", "Age": 34 };
-    dict2 = Dict("Name", "John Doe", "Address", "Unknown");
+    var dict1 = [ "First Name": "John", "Last Name": "Doe", "Age": 34 };
+    var dict2 = Dict("Name", "John Doe", "Address", "Unknown");
 
     dict1["Last Update"] = "1 Apr 2000";
-    name = dict2["Name"];
+    var name = dict2["Name"];
 
 Both arrays and dictionaries follow JSON rules and the ObjectTalk
 compiler can therefore ingest JSON without any trouble.
@@ -128,10 +138,10 @@ ObjectTalk uses **if** to make conditionals and uses **for in**,
 **while** and **do while** to make loops. Parentheses around the
 condition or loop variable are optional. Braces around the body are required.
 
-    individualScores = [75, 43, 103, 87, 12];
-    teamScore = 0;
+    var individualScores = [75, 43, 103, 87, 12];
+    var teamScore = 0;
 
-    foreach score in individualScores {
+    for score in individualScores {
         if score > 50 {
             teamScore += 3;
 
@@ -157,21 +167,19 @@ a try block, your script will terminate.
 A simple example might look like:
 
     try {
-        a = 1;
-        b = 2;
-        print(c);
-        d = 4;
+        var a = 1;
+        var b = 2;
+        var c = 4 / 0;
 
     } catch error {
-        print("Caught an exception:");
-        print(error);
+		print("Caught an exception: ", error);
     }
 
     print("Recovered from exception");
 
 In the example above, the ObjectTalk runtime will raise the exception
-as the variable **c** is not defined at the time the **print** function
-is used.
+as the variable **c** is initialized through a "divide by zero"
+computation.
 
 Programmers can also use the **throw** command to raise an exception:
 
@@ -179,9 +187,10 @@ Programmers can also use the **throw** command to raise an exception:
         throw "this is completely wrong";
 
     } catch error {
-        print("Caught an exception:");
-        print(error);
+        print("Caught an exception: ", error);
     }
+
+	print("Recovered from exception");
 
 In the catch block, the error message is automatically assigned to
 the variable mentioned after the **catch** statement.

@@ -22,6 +22,48 @@
 
 
 //
+//	OtStackItem
+//
+
+class OtStackItem {
+public:
+	// constructors
+	OtStackItem() = default;
+	OtStackItem(size_t f, size_t s) : frame(f), slot(s) {}
+
+	// comparison operators
+	bool operator==(const OtStackItem& item) const {
+		return frame == item.frame && slot == item.slot;
+	}
+
+	bool operator!=(const OtStackItem& item) const {
+		return frame != item.frame || slot != item.slot;
+	}
+
+	// stack item address
+	size_t frame = 0;
+	size_t slot = 0;
+};
+
+
+//
+//	OtStackState
+//
+
+class OtStackState {
+public:
+	// constructors
+	OtStackState() = default;
+	OtStackState(size_t s, size_t f, size_t c) : stack(s), frames(f), closures(c) {}
+
+	// stack state
+	size_t stack;
+	size_t frames;
+	size_t closures;
+};
+
+
+//
 //	OtStack
 //
 
@@ -38,9 +80,6 @@ public:
 	void swap() { std::swap(stack[stack.size() - 1], stack[stack.size() - 2]); }
 	void move(size_t count) { auto e = stack.rbegin(); std::rotate(e, e + 1, e + count + 1); }
 
-	void set(size_t slot, OtObject object) { stack[slot] = std::move(object); }
-	OtObject get(size_t slot) { return stack[slot]; }
-
 	size_t size() { return stack.size(); }
 	void resize(size_t size) { stack.resize(size); }
 	void reserve(size_t size) { stack.resize(stack.size() + size); }
@@ -48,8 +87,18 @@ public:
 
 	// stack frame access functions
 	void openFrame(size_t offset=0) { frames.push_back(stack.size() - offset); }
-	size_t getFrame() { return frames.back(); }
+	OtObject getFrameItem(OtStackItem item) { return stack[frames[frames.size() - item.frame - 1] + item.slot]; }
+	void setFrameItem(OtStackItem item, OtObject object) { stack[frames[frames.size() - item.frame - 1] + item.slot] = object; }
 	void closeFrame() { frames.pop_back(); }
+
+	// closure access functions
+	void pushClosure(OtObject closure) { closures.push_back(std::move(closure)); }
+	OtObject getClosure() { return closures.back(); }
+	void popClosure() { closures.pop_back(); }
+
+	// manipulate stack state
+	OtStackState getState() { return OtStackState(stack.size(), frames.size(), closures.size()); }
+	void restoreState(OtStackState state) { stack.resize(state.stack); frames.resize(state.frames); closures.resize(state.closures); }
 
 	// debug stack
 	std::string debug() {
@@ -82,4 +131,5 @@ public:
 private:
 	std::vector<OtObject> stack;
 	std::vector<size_t> frames;
+	std::vector<OtObject> closures;
 };

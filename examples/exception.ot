@@ -5,10 +5,9 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 try {
-	a = 1;
-	b = 2;
-	print(c);
-	d = 4;
+	var a = 1;
+	var b = 2 / 0;
+	var c = 4;
 
 } catch error {
 	print("Caught an exception: ", error);

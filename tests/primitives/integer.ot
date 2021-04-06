@@ -24,6 +24,19 @@ assert(1 >= 1);
 assert(-1 == -1);
 assert(- -1 == 1);
 
+assert(0b10001 == 17);
+assert(0B10001 == 17);
+assert(0o21 == 17);
+assert(0O21 == 17);
+assert(0x11 == 17);
+assert(0X11 == 17);
+assert(0x1a == 26);
+assert(0x1A == 26);
+
+assert(-0b10001 == -17);
+assert(-0o21 == -17);
+assert(-0x1a == -26);
+
 assert((1 + 2) == 3);
 assert((-1 + 2) == 1);
 assert((3 - 1) == 2);

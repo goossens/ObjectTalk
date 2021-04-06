@@ -15,6 +15,7 @@
 #include <string>
 
 #include "reference.h"
+#include "stack.h"
 
 
 //

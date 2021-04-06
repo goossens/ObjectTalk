@@ -41,16 +41,16 @@ for visualizing grammar.
 ## expression
 ![Railroad Diagram](ebnf/expression.png)
 
-    expression ::= conditional (
-        "=" conditional |
-        "*=" conditional |
-        "/=" conditional |
-        "%=" conditional |
-        "+=" conditional |
-        "-=" conditional |
-        "|=" conditional |
-        "^=" conditional |
-        "&=" conditional)*
+    expression ::= expression (
+        "=" expression |
+        "*=" expression |
+        "/=" expression |
+        "%=" expression |
+        "+=" expression |
+        "-=" expression |
+        "|=" expression |
+        "^=" expression |
+        "&=" expression)*
 
 ## conditional
 ![Railroad Diagram](ebnf/conditional.png)

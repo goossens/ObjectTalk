@@ -1,0 +1,78 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+function makeClosure() {
+	var local = "local";
+
+	function closure() {
+		return local;
+	}
+
+	return closure;
+}
+
+var closure = makeClosure();
+assert(closure() == "local");
+
+// -------------------------------------------------------------
+
+function bake(value) {
+	function closure() {
+		return value;
+	}
+
+	return closure;
+}
+
+var doughnut = bake("doughnut");
+var bagel = bake("bagel");
+assert(doughnut() == "doughnut");
+assert(bagel() == "bagel");
+
+// -------------------------------------------------------------
+
+var x = "global";
+
+function outer1(unused) {
+	var a = 1;
+	var x = "outer";
+
+	var middle = function() {
+		var inner = function() {
+			return x;
+	  	};
+
+		return inner;
+	};
+
+	var func = middle();
+	x = "later";
+	return func;
+}
+
+var func1 = outer1(true);
+assert(func1() == "outer");
+
+// -------------------------------------------------------------
+
+function outer2(unused) {
+	var a = 1;
+	var x = "outer";
+
+	var middle = function() {
+		var inner = function() {
+			return x;
+	  	};
+
+		return inner;
+	};
+
+	x = "later";
+	return middle();
+}
+
+var func2 = outer2(true);
+assert(func2() == "later");

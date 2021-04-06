@@ -9,7 +9,7 @@ ObjectTalk provides its own versions of all fundamental C types, including
 Booleans, Integers (for int), Reals (for double), String for textual data
 and Functions as first class primitives. ObjectTalk also provides powerful
 versions of the two primary collection types, Array and Dictionary, as
-described in Collection Types. In fact, In ObjectTalk everything is an
+described in Collection Types. In fact, in ObjectTalk everything is an
 object derived from a class and the word type is only used internally
 in the language's runtime. Primitives like Booleans, Integers, Reals,
 Strings and Functions are objects just like Array, Dict and HTTP servers.
@@ -17,27 +17,28 @@ Strings and Functions are objects just like Array, Dict and HTTP servers.
 Variables
 ---------
 
-Variables associate a name (e.g. myVariable) with a value derived from a
-certain class (e.g. the number 10 or the string "Hello"). Variables
-in ObjectTalk do not have to be declared first as they are established
-through assignment is a particular context. In the following example
-(let's assume this is at the top level of a module), the value 10 will
-be assigned to variable myVariable in the module's context.
+Variables associate a name (e.g. myVariable) with an object derived from
+a certain class (e.g. the number 10 or the string "Hello"). Variables
+in ObjectTalk must be declared to establish visibility in a certain
+scope. In the following example (let's assume this is at the top level
+of a module), the value 10 will be assigned to variable myVariable in the
+module's scope.
 
-	myVariable = 10;
+	var myVariable = 10;
 	print(myVariable); // this will print the number 10.
 
-In the following example, the variable is assigned to a class OtContext and therefore becomes a class member.
+In the following example, the variable is assigned to a class OtContext
+and therefore becomes a class member.
 
 	class myClass: Object {
-		myVariable = 10;
+		var myVariable = 10;
 	}
 
 	print(myClass.myVariable); // this will print the number 10.
 
 As you can see from the examples, the variables do not have to be type
-declared as the assign determines what type of object is stored in the
-variable.
+declared as the assignment  determines what type of object is stored
+in the variable.
 
 Comments
 --------
@@ -62,20 +63,27 @@ Single-line shell-style comments begin with a number sign:
 
 	# This is a comment.
 
+A shell style comment allows ObjectTalk scripts to be made executable
+in UNIX type systems. The following first line (typically called a
+"shebang") tell the UNIX shell to execute this script with the ObjectTalk
+interpreter.
+
+	#!/usr/bin/ot
+
 Semicolons
 ----------
 
 Unlike some newer languages, ObjectTalk mandates the use of Semicolons
 at the end of statements that don't end with a block. This allows
 statements to be written over multiple lines (without the need for
-backslashes) and it avoid possible ambiguity. For example, earlier versions
-of ObjectTalk allowed:
+backslashes) and it avoids possible ambiguity. For example, earlier
+versions of ObjectTalk allowed:
 
 	a = 10
 	++b
 
 To most people, it is obvious that we want to assign the number 10 to
-variable a and increment variable b. The compiler however doesn't Unknown
+variable a and increment variable b. The compiler however doesn't known
 the first statement ended after the number 10 and it will generate code
 for:
 
@@ -94,16 +102,20 @@ Null
 Null is a special value that indicates a valueless state. All instances
 of the Object class all null values.
 
-	nothing = null;
-	alsoNOthing = Object();
+	var nothing = null;
+	var alsoNothing = Object();
 
 Booleans
 --------
 
 Booleans in ObjectTalk can only hold two logical values: true and false.
-The default global language context defines the variables **true** and
-**false** as a convenience. A large number of language operators
-or member functions return Booleand as a result.
+The default global scope defines the variables **true** and **false**
+as a convenience. A large number of language operators or member functions
+return Booleans as a result.
+
+	var bool1 = true;
+	var bool2 = false;
+	var bool3 = !bool2;
 
 Integers
 --------
@@ -116,16 +128,16 @@ meaning that the extremes are -9,223,372,036,854,775,808 and
 Integer literals can be written as:
 
 * A decimal number, with no prefix
-* A binary number, with a 0b prefix
-* An octal number, with a 0o prefix
-* A hexadecimal number, with a 0x prefix
+* A binary number, with a 0b or 0B prefix
+* An octal number, with a 0o or 0O prefix
+* A hexadecimal number, with a 0x or 0X prefix
 
 All the following integer literals have a decimal value of 17:
 
-	decimalInteger = 17;
-	binaryInteger = 0b10001;       // 17 in binary notation
-	octalInteger = 0o21;           // 17 in octal notation
-	hexadecimalInteger = 0x11;     // 17 in hexadecimal notation
+	var decimalInteger = 17;
+	var binaryInteger = 0b10001;       // 17 in binary notation
+	var octalInteger = 0o21;           // 17 in octal notation
+	var hexadecimalInteger = 0x11;     // 17 in hexadecimal notation
 
 Reals
 -----
@@ -136,8 +148,8 @@ a range of 1.7E +/- 308 (15 digits).
 
 Real literals can be written as a floating point number with or without an exponent:
 
-	decimalDouble = 12.1875;
-	exponentDouble = 1.21875e1;
+	var decimalDouble = 12.1875;
+	var exponentDouble = 1.21875e1;
 
 Strings
 -------
@@ -149,18 +161,17 @@ variable length encoding, ObjectTalk does not measure or index strings
 in bytes but rather in codewords that represent a character whether it is
 1,2, 3 or 4 bytes long.
 
-String literal are encoded using the same logic as JSON making it
+String literals are encoded using the same logic as JSON making it
 easy to exchange with other languages.A string literal is a sequence of
 characters surrounded by double quotation marks (").
 
-	someString = "Some string literal value";
-	message = "\tMost Europeans like the \u00C4.\n";
+	var someString = "Some string literal value";
+	var message = "\tMost Europeans like the \u00C4.\n";
 
-Multiline strings can be created using three double quotation marks:
+Multiline strings can also be created:
 
-	quotation = """The White Rabbit put on his spectacles.
-		"Where shall I begin, please your Majesty?" he asked.
+	var quotation = "The White Rabbit put on his spectacles.
+		\"Where shall I begin, please your Majesty?\" he asked.
 
-		"Begin at the beginning," the King said gravely,
-		"and go on till you come to the end; then stop."
-	"""
+		\"Begin at the beginning,\" the King said gravely,
+		\"and go on till you come to the end; then stop.\"";

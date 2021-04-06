@@ -1,13 +1,7 @@
-var x = "global";
+var quotation = "The White Rabbit put on his spectacles.
+	\"Where shall I begin, please your Majesty?\" he asked.
 
-function outer() {
-	var x = "outer";
+	\"Begin at the beginning,\" the King said gravely,
+	\"and go on till you come to the end; then stop.\"";
 
-	function inner() {
-		print(x);
-  	}
-
-	inner();
-}
-
-outer();
+print(quotation.json());

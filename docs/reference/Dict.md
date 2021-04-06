@@ -4,11 +4,11 @@ Dictionaries contain indexed key/value pairs that are constructed using
 curly brackets ({}) or through the Dict class constructor. The Dict class
 also has many methods to manipulate the content of a dictionary.
 
-	dict1 = [ "First Name": "John", "Last Name": "Doe", "Age": 34 };
-	dict2 = Dict("Name", "John Doe", "Address", "Unknown");
+	var dict1 = [ "First Name": "John", "Last Name": "Doe", "Age": 34 };
+	var dict2 = Dict("Name", "John Doe", "Address", "Unknown");
 
 	dict1["Last Update"] = "1 Apr 2000";
-	name = dict2["Name"];
+	var name = dict2["Name"];
 
 Class Methods
 -------------

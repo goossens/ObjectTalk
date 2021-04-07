@@ -105,6 +105,9 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 	// try/catch stack
 	std::vector<OtTryCatch> tryCatch;
 
+	// save the current stack state (so we can restore it in case of an uncaught exception)
+	OtStackState state = stack->getState();
+
 	// local variables
 	size_t sp = stack->size();
 	size_t pc = 0;
@@ -244,6 +247,9 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 				stack->push(OtStringClass::create(e.what()));
 
 			} else {
+				// no exception handler, restore the stack state
+				stack->restoreState(state);
+
 				// get source code
 				OtSource source = bytecode->getSource();
 
@@ -268,6 +274,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 					statement += OtFormat("Line %ld: %s", line++, text.c_str());
 				});
 
+				// throw the exception
 				OtExcept("%s\nModule: %s\n%s", e.what(), source->getModule().c_str(), statement.c_str());
 			}
 		}

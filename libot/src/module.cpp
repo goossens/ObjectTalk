@@ -134,7 +134,11 @@ void OtModuleClass::import(const std::string& name) {
 			}
 
 			void (*init)(OtObject) = (void (*)(OtObject)) dlsym(lib, "init");
-			OT_ASSERT(init);
+
+			if (!init) {
+				OtExcept("Module [%s] does not have an [init] function", name.c_str());
+			}
+
 			(*init)(getSharedPtr());
 #endif
 

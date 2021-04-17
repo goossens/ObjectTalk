@@ -1,5 +1,7 @@
 # About ObjectTalk
 
+![Logo](../logo/logo-small.png)
+
 ObjectTalk is a simple object-oriented scripting language that has
 evolved over decades and was heavily influenced by other languages.
 As a long time IT professional, I've seen a lot of software development

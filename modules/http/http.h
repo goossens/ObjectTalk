@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include "ot/exception.h"
 #include "ot/object.h"
 
 

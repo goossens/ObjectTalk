@@ -12,8 +12,6 @@
 //	Include files
 //
 
-#include <string>
-
 #include "ot/object.h"
 
 

@@ -1,5 +1,7 @@
 # ObjectTalk Documentation
 
+![Logo](../logo/logo-small.png)
+
 This directory contains the documentation for the ObjectTalk scripting
 language. It provides the authoritative reference for ObjectTalk,
 offers a guided tour, a comprehensive guide, and a formal reference of
@@ -14,7 +16,12 @@ keep the code and documentation synchronized.
 * Language Guide
     * [The Basics](guide/Basics.md)
 	* [Scope](guide/Scope.md)
+	* [Operators](guide/Operators.md)
 	* [Modules](guide/Modules.md)
+	* [Classes](guide/Classes.md)
+	* [Properties](guide/Properties.md)
+	* [Functions](guide/Functions.md)
+	* [Closures](guide/Closures.md)
 	* [Statements](guide/Statements.md)
 	* [Control Flow](guide/Flow.md)
 * Language Reference

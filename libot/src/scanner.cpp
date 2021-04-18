@@ -42,9 +42,11 @@ OtScanner::OtScanner() {
 	addToken("!=", NOT_EQUAL_TOKEN);
 	addToken("!", NEGATE_TOKEN);
 	addToken("<=", LESS_EQUAL_TOKEN);
+	addToken("<<=", SHIFT_LEFT_ASSIGNMENT_TOKEN);
 	addToken("<<", SHIFT_LEFT_TOKEN);
 	addToken("<", LESS_TOKEN);
 	addToken(">=", GREATER_EQUAL_TOKEN);
+	addToken(">>=", SHIFT_RIGHT_ASSIGNMENT_TOKEN);
 	addToken(">>", SHIFT_RIGHT_TOKEN);
 	addToken(">", GREATER_TOKEN);
 	addToken("++", INCREMENT_TOKEN);
@@ -170,13 +172,18 @@ OtToken OtScanner::advance() {
 		token = EOS_TOKEN;
 
 	// handle numerical values
-	} else if (std::isdigit(source->at(position)) || (source->at(position) =='-' && position < size && std::isdigit(source->at(position + 1)))) {
+	} else if (std::isdigit(source->at(position)) ||
+				(source->at(position) =='-' && position < size && std::isdigit(source->at(position + 1))) ||
+				(source->at(position) =='+' && position < size && std::isdigit(source->at(position + 1)))) {
 		auto start = position;
 		int sign = 1;
 
 		if (source->at(position) =='-') {
 			position++;
 			sign = -1;
+
+		} else if (source->at(position) =='+') {
+			position++;
 		}
 
 		// see if we have a binary constant
@@ -217,10 +224,12 @@ OtToken OtScanner::advance() {
 
 		// handle integers and reals
 		} else {
+			// handle integer part
 			while (std::isdigit(source->at(position))) {
 				position++;
 			}
 
+			// is this a real?
 			if (source->at(position) =='.' && position < size && std::isdigit(source->at(position + 1))) {
 				position++;
 
@@ -230,6 +239,13 @@ OtToken OtScanner::advance() {
 
 				if (tolower(source->at(position)) =='e' && position < size) {
 					position++;
+
+					if (source->at(position) =='-') {
+						position++;
+
+					} else if (source->at(position) =='+') {
+						position++;
+					}
 
 					while (std::isdigit(source->at(position))) {
 						position++;

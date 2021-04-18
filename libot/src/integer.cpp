@@ -54,6 +54,7 @@ OtType OtIntegerClass::getMeta() {
 		type->set("__bnot__", OtFunctionClass::create(&OtIntegerClass::bitwiseNot));
 
 		type->set("__neg__", OtFunctionClass::create(&OtIntegerClass::negate));
+		type->set("__plus__", OtFunctionClass::create(&OtIntegerClass::positive));
 
 		type->set("abs", OtFunctionClass::create(&OtIntegerClass::abs));
 		type->set("sign", OtFunctionClass::create(&OtIntegerClass::sign));

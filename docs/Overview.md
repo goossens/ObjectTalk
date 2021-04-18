@@ -4,7 +4,7 @@ Tradition suggests that the first program in a new language should print
 the words “Hello, world!” on the screen. In ObjectTalk, this can be done
 in a single line:
 
-    print("Hello, world!");
+	print("Hello, world!");
 
 If you have written code in C or any of the derived languages before, this
 syntax might look familiar to you. In ObjectTalk, this line of code is a
@@ -18,6 +18,31 @@ enough information to start writing code in ObjectTalk by showing you how
 to accomplish a variety of programming tasks. Don’t worry if you don’t
 understand something, everything introduced in this overview is explained
 in detail in the rest of the documentation.
+
+## Everything is an ObjectTalk
+
+In ObjectTalk, everything is an Object derived from a Class. The number 1
+is an object derived from the Integer class and so are 3.14 (derived from
+the Real class) and "test" (derived from the string class). To take this
+a step further, operators like +, -, *, /, [] and () are actually member
+functions on an Object. This keep the Virtual Machine (VM) very simple as
+it has no mathematical instructions. The VM actually only executes member
+functions on Objects.
+
+To ensure this doesn't lead to silly syntax, the ObjectTalk compiler
+translates more traditional expressions into a set of method calls.
+So for instances, the follow example shows this translation:
+
+	1 + (2 * 3)
+
+	2.__mul__(3).__add__(1)
+
+As a user of ObjectTalk you only have to learn the top syntax. If you want
+to understand the compiler and VM, you have to =understand both.
+
+Given that operators become member function calls, custom Classes
+can implement operators so it is very simple in ObjectTalk to implement
+a Vector class that implements a dot product operator.
 
 ## Variables
 
@@ -45,16 +70,16 @@ that are derived from the
 [String](reference/String.md) and [Function](reference/Function.md)
 classes. The following statements assign primitive values to variables.
 
-    var a = null;
-    var b = true;
-    var c = 1;
-    var d = 3.14 * 2;
-    var e = "Hello world";
+	var a = null;
+	var b = true;
+	var c = 1;
+	var d = 3.14 * 2;
+	var e = "Hello world";
 
 Please also note that primitive values are automatically converted in
 ObjectTalk when required.
 
-    var f = e + c;
+	var f = e + c;
 
 In the expression above c gets converted to a String as the addition
 operator is applied to e (a String object) which wants its
@@ -82,21 +107,21 @@ quotes and can span multiple lines. Strings may contain UTF-8 characters
 (like "€") or use JSON style encoding like "Most Europeans like the
 \u00C4.\n".
 
-[Functions](String/Function.md) in ObjectTalk are primitive values.
+[Functions](reference/Function.md) in ObjectTalk are primitive values.
 This means that we can pass a function around like any other primitive.
 The following code might be a little too complex for this overview, so
 we'll defer an explanation until we'll get the the Language Guide.
 The point is that a function is a first class citizen in ObjectTalk.
 
-    function test1(callback) {
-        callback();
-    }
+	function test1(callback) {
+		callback();
+	}
 
-    test2 = function() {
-        print("Hello, world!");
-    };
+	var test2 = function() {
+		print("Hello, world!");
+	};
 
-    test1(test2);
+	test1(test2);
 
 ## Collections
 
@@ -110,22 +135,22 @@ constructed using square brackets ([]) or through the Array class
 constructor. The Array class has many methods to manipulate the content
 of an array.
 
-    var array1 = [ 1, 2, "test", 7 + 4, a ];
-    var array2 = Array(3.14, 7, 34, 1);
+	var array1 = [ 1, 2, "test", 7 + 4, a ];
+	var array2 = Array(3.14, 7, 34, 1);
 
-    array1.append("new value");
-    var thirdValue = array1[3];
+	array1.append("new value");
+	var thirdValue = array1[3];
 
 [Dictionaries](reference/Dict.md) contain indexed key/value pairs that
 are constructed using curly brackets ({}) or through the Dict class
 constructor. The Dict class also has many methods to manipulate the
 content of a dictionary.
 
-    var dict1 = [ "First Name": "John", "Last Name": "Doe", "Age": 34 };
-    var dict2 = Dict("Name", "John Doe", "Address", "Unknown");
+	var dict1 = [ "First Name": "John", "Last Name": "Doe", "Age": 34 };
+	var dict2 = Dict("Name", "John Doe", "Address", "Unknown");
 
-    dict1["Last Update"] = "1 Apr 2000";
-    var name = dict2["Name"];
+	dict1["Last Update"] = "1 Apr 2000";
+	var name = dict2["Name"];
 
 Both arrays and dictionaries follow JSON rules and the ObjectTalk
 compiler can therefore ingest JSON without any trouble.
@@ -136,26 +161,181 @@ with JSON encoding.
 
 ObjectTalk uses **if** to make conditionals and uses **for in**,
 **while** and **do while** to make loops. Parentheses around the
-condition or loop variable are optional. Braces around the body are required.
+condition or loop variables are optional. Braces around the body are required.
 
-    var individualScores = [75, 43, 103, 87, 12];
-    var teamScore = 0;
+	var individualScores = [75, 43, 103, 87, 12];
+	var teamScore = 0;
 
-    for score in individualScores {
-        if score > 50 {
-            teamScore += 3;
+	for score in individualScores {
+		if score > 50 {
+			teamScore += 3;
 
-        } else {
-            teamScore += 1;
-        }
-    }
+		} else {
+			teamScore += 1;
+		}
+	}
 
-    print(teamScore);
-    // Prints "11"
+	print(teamScore);
+	// Prints "11"
+
+In ObjectTalk, conditions are converted to their boolean value in
+**if**, **while** and **do while** statements. In the following example,
+the string and integer variables are converted to boolean and assessed
+in the **if** statements.
+
+	var A = 0;
+	var B = 5;
+	var C = "true";
+
+	if A {
+		print("this will never be printed as variable A evaluates to false");
+	}
+
+	if B {
+		print("variable B evaluated to true");
+	}
+
+	if C {
+		print("variable C evaluated to true");
+	}
+
+In ObjectTalk **switch** or **case** type statements are implemented
+with **if**, **elif** and **else** constructs. This keeps the syntax
+clean and it allows more powerful expressions for each case (e.g.
+regular expressions).
+
+	if (a == 1) {
+		print("1");
+
+	} elif (a == 2) {
+		print("2");
+
+	} elif (a == 3) {
+		print("3");
+
+	} else {
+		print("it's something else");
+	}
 
 ## Functions
 
+In ObjectTalk, there are two way to declare a function. First, there is
+the traditional way that you see in many languages. The second is to
+create an anonymous function that can be assigned to a variable. In
+ObjectTalk, the following two are the same:
+
+	function test(var1) {
+		return var1;
+	}
+
+	var test = function(var1) {
+		return var1;
+	});
+
+Later we'll talk about member functions in Object and Classes but their
+syntax is basically the same.
+
+Functions can be nested. Nested functions have access to variables that
+were declared in the outer function. You can use nested functions to
+organize the code in a function that’s long or complex.
+
+	function returnFifteen() {
+		var y = 10;
+
+		function add() {
+			y += 5
+		}
+
+		add();
+		return y;
+	}
+
+	returnFifteen();
+
+Functions are a first-class type. This means that a function can return another function as its value.
+
+	function makeIncrementer() {
+		function addOne(number) {
+			return number + 1;
+		}
+
+		return addOne;
+	}
+	var increment = makeIncrementer()
+	increment(7);
+
+A function can take another function as one of its arguments.
+
+function hasAnyMatches(list, condition) {
+	for item in list {
+		if condition(item) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+function lessThanTen(number) {
+	return number < 10;
+}
+
+var numbers = [20, 19, 7, 12];
+hasAnyMatches(numbers, lessThanTen);
+
+Functions are actually a special case of closures: blocks of code that can
+be called later. The code in a closure has access to things like variables
+and functions that were available in the scope where the closure was
+created, even if the closure is in a different scope when it’s executed.
+You saw an example of this already with nested functions.
+
 ## Object and Classes
+
+Use class followed by the class’s name, a colon and the parent classes
+name to create a new class. A property declaration in a class is written
+the same way as a constant or variable declaration, except that it’s in
+the context of a class. Likewise, method and function declarations are
+written the same way.
+
+	class Shape : Object {
+		function simpleDescription(this) {
+			return "A simple shape"
+		}
+	}
+
+Create an instance of a class by putting parentheses after the class name
+(executing the call operator(\_\_call\_\_)). Use dot syntax to access the
+properties and methods of the instance.
+
+	var shape = Shape();
+	shape.numberOfSides = 7;
+	var shapeDescription = shape.simpleDescription();
+
+This version of the Shape class is missing something important: an
+initializer to set up the class when an instance is created.
+Use \_\_init\_\_ to create one.
+
+class NamedShape : Shape {
+	function __init__(this, name) {
+		this.name = name;
+	}
+
+	function simpleDescription(this) {
+		return "A named shape called " + this.name;
+	}
+}
+
+Notice how "this" is used to distinguish the name property from the name
+argument to the initializer. In some computer language, the "this" or
+"self" argument is automatically added to a member function. In
+ObjectTalk this is not the case and you have to name it yourself
+as the first parameter. The benefit is that you can call it whatever you
+want and it's not some hidden feature of the language. The disadvantage
+is that you have to type it for ever member function. The compiler
+automatically translates a bound function (a function in the context of
+an object) to a new function call with an additional parameter.
+
+	a.test(1, 2) becomes test(a, 1, 2);
 
 ## Error handling
 
@@ -166,16 +346,16 @@ a try block, your script will terminate.
 
 A simple example might look like:
 
-    try {
-        var a = 1;
-        var b = 2;
-        var c = 4 / 0;
+	try {
+		var a = 1;
+		var b = 2;
+		var c = 4 / 0;
 
-    } catch error {
+	} catch error {
 		print("Caught an exception: ", error);
-    }
+	}
 
-    print("Recovered from exception");
+	print("Recovered from exception");
 
 In the example above, the ObjectTalk runtime will raise the exception
 as the variable **c** is initialized through a "divide by zero"
@@ -183,12 +363,12 @@ computation.
 
 Programmers can also use the **throw** command to raise an exception:
 
-    try {
-        throw "this is completely wrong";
+	try {
+		throw "this is completely wrong";
 
-    } catch error {
-        print("Caught an exception: ", error);
-    }
+	} catch error {
+		print("Caught an exception: ", error);
+	}
 
 	print("Recovered from exception");
 

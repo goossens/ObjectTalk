@@ -56,6 +56,7 @@ OtType OtRealClass::getMeta() {
 		type->set("__pow__", OtFunctionClass::create(&OtRealClass::power));
 
 		type->set("__neg__", OtFunctionClass::create(&OtRealClass::negate));
+		type->set("__plus__", OtFunctionClass::create(&OtRealClass::positive));
 
 		type->set("abs", OtFunctionClass::create(&OtRealClass::abs));
 		type->set("sign", OtFunctionClass::create(&OtRealClass::sign));

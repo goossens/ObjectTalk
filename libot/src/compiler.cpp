@@ -558,6 +558,14 @@ bool OtCompiler::prefix(OtByteCode bytecode) {
 				bytecode->method("__neg__", 0);
 				break;
 
+		case OtScanner::ADD_TOKEN:
+			if (reference) {
+				bytecode->method("__deref__", 0);
+			}
+
+			bytecode->method("__plus__", 0);
+			break;
+
 			case OtScanner::NEGATE_TOKEN:
 				if (reference) {
 					bytecode->method("__deref__", 0);
@@ -1057,6 +1065,8 @@ bool OtCompiler::expression(OtByteCode bytecode) {
 		   token == OtScanner::MODULO_ASSIGNMENT_TOKEN ||
 		   token == OtScanner::ADD_ASSIGNMENT_TOKEN ||
 		   token == OtScanner::SUBTRACT_ASSIGNMENT_TOKEN ||
+		   token == OtScanner::SHIFT_LEFT_ASSIGNMENT_TOKEN ||
+		   token == OtScanner::SHIFT_RIGHT_ASSIGNMENT_TOKEN ||
 		   token == OtScanner::BITWISE_AND_ASSIGNMENT_TOKEN ||
 		   token == OtScanner::BITWISE_OR_ASSIGNMENT_TOKEN ||
 		   token == OtScanner::BITWISE_XOR_ASSIGNMENT_TOKEN) {
@@ -1098,6 +1108,14 @@ bool OtCompiler::expression(OtByteCode bytecode) {
 
 			case OtScanner::SUBTRACT_ASSIGNMENT_TOKEN:
 				bytecode->method("__sub__", 1);
+				break;
+
+			case OtScanner::SHIFT_LEFT_ASSIGNMENT_TOKEN:
+				bytecode->method("__lshift__", 1);
+				break;
+
+			case OtScanner::SHIFT_RIGHT_ASSIGNMENT_TOKEN:
+				bytecode->method("__rshift__", 1);
 				break;
 
 			case OtScanner::BITWISE_AND_ASSIGNMENT_TOKEN:

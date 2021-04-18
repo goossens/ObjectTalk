@@ -60,6 +60,7 @@ public:
 
 	// functions
 	double negate() { return -value; }
+	double positive() { return value; }
 	double abs() { return std::abs(value); }
 	long sign() { return (0.0 < value) - (value < .00); }
 	long round() { return std::round(value); }

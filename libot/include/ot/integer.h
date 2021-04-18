@@ -73,6 +73,7 @@ public:
 
 	// funtions
 	long negate() { return -value; }
+	long positive() { return value; }
 	long abs() { return std::abs(value); }
 	long sign() { return (0 < value) - (value < 0); }
 

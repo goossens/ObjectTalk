@@ -27,7 +27,7 @@ module's scope.
 	var myVariable = 10;
 	print(myVariable); // this will print the number 10.
 
-In the following example, the variable is assigned to a class OtContext
+In the following example, the variable is assigned to a class
 and therefore becomes a class member.
 
 	class myClass: Object {
@@ -37,14 +37,14 @@ and therefore becomes a class member.
 	print(myClass.myVariable); // this will print the number 10.
 
 As you can see from the examples, the variables do not have to be type
-declared as the assignment  determines what type of object is stored
+declared as the assignment determines what type of object is stored
 in the variable.
 
 Comments
 --------
 
 In ObjectTalk, you can uses comments to include non-executable text in
-your code, as a note or reminder to yourself. Comments are ignored by
+your code or as a note or reminder to yourself. Comments are ignored by
 the ObjectTalk compiler when your code is compiled. ObjectTalk allows
 three types of comments: multiline C-style comments, single line
 C++ style comments and single line shell-style comments.
@@ -65,7 +65,7 @@ Single-line shell-style comments begin with a number sign:
 
 A shell style comment allows ObjectTalk scripts to be made executable
 in UNIX type systems. The following first line (typically called a
-"shebang") tell the UNIX shell to execute this script with the ObjectTalk
+"shebang") tells the UNIX shell to execute this script with the ObjectTalk
 interpreter.
 
 	#!/usr/bin/ot
@@ -108,10 +108,10 @@ of the Object class all null values.
 Booleans
 --------
 
-Booleans in ObjectTalk can only hold two logical values: true and false.
-The default global scope defines the variables **true** and **false**
-as a convenience. A large number of language operators or member functions
-return Booleans as a result.
+[Booleans](../reference/Boolean.md) in ObjectTalk can only hold two
+logical values: true and false. The default global scope defines the
+variables **true** and **false** as a convenience. A large number of
+language operators or member functions return Booleans as a result.
 
 	var bool1 = true;
 	var bool2 = false;
@@ -120,10 +120,10 @@ return Booleans as a result.
 Integers
 --------
 
-Integers are signed whole numbers with no fractional component, such as 42
-and -23. On most systems, this number is implemented as a 64-bit number
-meaning that the extremes are -9,223,372,036,854,775,808 and
-9,223,372,036,854,775,807 (inclusive).
+[Integers](../reference/Integer.md) are signed whole numbers with no
+fractional component, such as 42 and -23. On most systems, this number
+is implemented as a 64-bit number meaning that the extremes are
+-9,223,372,036,854,775,808 and 9,223,372,036,854,775,807 (inclusive).
 
 Integer literals can be written as:
 
@@ -142,9 +142,9 @@ All the following integer literals have a decimal value of 17:
 Reals
 -----
 
-Reals are signed floating point numbers with a fractional component, such
-as 3.14159, 0.1, and -273.15. Reals are implemented using 8 bytes and have
-a range of 1.7E +/- 308 (15 digits).
+[Reals](../reference/Real.md) are signed floating point numbers with a
+fractional component, such as 3.14159, 0.1, and -273.15. Reals are
+implemented using 8 bytes and have a range of 1.7E +/- 308 (15 digits).
 
 Real literals can be written as a floating point number with or without an exponent:
 
@@ -154,7 +154,8 @@ Real literals can be written as a floating point number with or without an expon
 Strings
 -------
 
-Strings are a series of characters, such as "hello, world" or "albatross".
+[Strings](../reference/String.md) are a series of characters, such as
+"hello, world" or "albatross".
 ObjectTalk strings are instances of the String class. Strings are
 made up of unicode characters encoded in UTF-8. Given that UTF-8 uses
 variable length encoding, ObjectTalk does not measure or index strings
@@ -175,3 +176,21 @@ Multiline strings can also be created:
 
 		\"Begin at the beginning,\" the King said gravely,
 		\"and go on till you come to the end; then stop.\"";
+
+Functions
+---------
+
+[Functions](../reference/Function.md)  are self-contained chunks of code
+that perform a specific task. You give a function a name that identifies
+what it does, and this name is used to “call” the function to perform its
+task when needed.
+
+	function test1(callback) {
+		callback();
+	}
+
+	var test2 = function() {
+		print("Hello, world!");
+	};
+
+	test1(test2);

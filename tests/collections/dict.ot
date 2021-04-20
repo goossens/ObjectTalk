@@ -30,5 +30,10 @@ var dict3 = { "name": "value", "flag": true, "result": (10 - 4) / 3 };
 assert(dict3.size() == 3);
 assert(dict3["result"] == 2);
 
-// Well done
-print("Passed all dictionary tests");
+var dict4 = { "name": "value", "flag": true, "result": 3 };
+var dict5 = { "name": "value", "flag": true, "result": 2 };
+
+assert(dict != dict2);
+assert(dict != dict3);
+assert(dict3 != dict4);
+assert(dict3 == dict5);

@@ -93,37 +93,16 @@ OtObject OtObjectClass::member(const std::string& name) {
 
 
 //
-//	OtObjectClass::equal
+//	OtObjectClass::eq
 //
 
-bool OtObjectClass::equal(OtObject operand) {
-	auto type1 = operand->getType();
+bool OtObjectClass::operator ==(OtObject operand) {
+	if (getSharedPtr().get() == operand.get()) {
+		return true;
 
-	if (type != type1) {
-		return false;
+	} else {
+		return type == getMeta() && operand->getType() == getMeta();
 	}
-
-	if (type->isKindOf("Boolean")) {
-		return operator bool() == operand->operator bool();
-
-	} else if (type->isKindOf("Integer")) {
-		return operator long() == operand->operator long();
-
-	} else if (type->isKindOf("Real")) {
-		return operator double() == operand->operator double();
-
-	} else if (isKindOf("String")) {
-		return operator std::string() == operand->operator std::string();
-
-	} else if (type == OtObjectClass::getMeta()) {
-		return type1 == OtObjectClass::getMeta();
-	}
-
-	return false;
-
-
-
-
 }
 
 

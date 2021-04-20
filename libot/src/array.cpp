@@ -60,6 +60,33 @@ OtObject OtArrayClass::init(size_t count, OtObject* parameters) {
 
 
 //
+//	OtArrayClass::operator ==
+//
+
+bool OtArrayClass::operator ==(OtObject operand) {
+	OtArray op = operand->cast<OtArrayClass>();
+
+	// ensure object is an array
+	if (!op) {
+		return false;
+
+	// ensure they have the same size
+	} else if (array.size() != op->array.size()) {
+		return false;
+	}
+
+	// complare all elements
+	for (auto c = 0; c < array.size(); c++) {
+		if (!array[c]->equal(op->array[c])) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+
+//
 //	OtArrayClass::getEntry
 //
 

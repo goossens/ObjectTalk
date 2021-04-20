@@ -47,6 +47,7 @@ public:
 	std::string describe() { return "\"" + (len() > 32 ? left(32) + "...\"" : value) + "\""; }
 
 	// comparison
+	bool operator ==(OtObject operand) { return value == operand->operator std::string(); }
 	bool equal(const std::string& operand) { return value == operand; }
 	bool notEqual(const std::string& operand) { return value != operand; }
 	bool greaterThan(const std::string& operand) { return value > operand; }

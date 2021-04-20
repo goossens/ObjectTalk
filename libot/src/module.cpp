@@ -10,6 +10,7 @@
 //
 
 #if defined(WINVER)
+#include <Windows.h>
 #else
 #include <dlfcn.h>
 #endif
@@ -121,12 +122,17 @@ void OtModuleClass::import(const std::string& name) {
 		set("__FILE__", OtStringClass::create(filePath.string()));
 		set("__DIR__", OtStringClass::create(filePath.parent_path().string()));
 
-#if defined(WINVER)
 		if (module.extension() == libext) {
-			//TODO
+#if defined(WINVER)
+			HMODULE lib = LoadLibrary(module.c_str());
+
+			if (!lib) {
+				OtExcept("Can't import module [%s], error [%d]", name.c_str(), GetLastError());
+			}
+
+			void (*init)(OtObject) = (void (*)(OtObject)) GetProcAddress(lib, "init");
 
 #else
-		if (module.extension() == libext) {
 			void* lib = dlopen(module.c_str(), RTLD_LAZY);
 
 			if (!lib) {
@@ -134,13 +140,13 @@ void OtModuleClass::import(const std::string& name) {
 			}
 
 			void (*init)(OtObject) = (void (*)(OtObject)) dlsym(lib, "init");
+#endif
 
 			if (!init) {
 				OtExcept("Module [%s] does not have an [init] function", name.c_str());
 			}
 
 			(*init)(getSharedPtr());
-#endif
 
 		} else {
 			std::ifstream stream(module.c_str());

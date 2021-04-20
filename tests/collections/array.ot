@@ -70,3 +70,12 @@ for a in Array(1, 2, 3, 4) {
 }
 
 assert(array4.size() == 4);
+
+var array5 = [1, 2, 3, 4, 5];
+var array6 = [1, 2, 3, 4, 5, 6];
+var array6a = [1, 2, 3, 4, 6, 5];
+var array6b = [1, 2, 3, 4, 6, 5];
+
+assert(array5 != array6);
+assert(array6 != array6a);
+assert(array6a == array6b);

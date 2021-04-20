@@ -36,6 +36,9 @@ public:
 	// clear array and add all parameters
 	OtObject init(size_t count, OtObject* parameters);
 
+	// comparison
+	bool operator ==(OtObject operand);
+
 	// access array members
 	OtObject getEntry(size_t index);
 	OtObject setEntry(size_t index, OtObject object);

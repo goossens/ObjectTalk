@@ -62,6 +62,36 @@ OtObject OtDictClass::init(size_t count, OtObject* parameters) {
 
 
 //
+//	OtDictClass::operator ==
+//
+
+bool OtDictClass::operator ==(OtObject operand) {
+	OtDict op = operand->cast<OtDictClass>();
+
+	// ensure object is an dictionary
+	if (!op) {
+		return false;
+
+	// ensure they have the same size
+	} else if (dict.size() != op->dict.size()) {
+		return false;
+	}
+
+	// compare all elements
+	for (auto& it : dict) {
+		if (op->dict.find(it.first) == op->dict.end()) {
+			return false;
+
+		} else if (!it.second->equal(op->dict[it.first])) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+
+//
 //	OtDictClass::getEntry
 //
 

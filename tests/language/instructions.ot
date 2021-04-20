@@ -69,6 +69,3 @@ for value in [ 1, 2, 3, 4 ] {
 }
 
 assert(result == 10);
-
-// Well done
-print("Passed all instruction tests");

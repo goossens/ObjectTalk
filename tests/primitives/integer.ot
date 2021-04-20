@@ -63,6 +63,3 @@ assert(-11.sign() == -1);
 assert(0.sign() == 0);
 assert(11.sign() == 1);
 assert(3.real() > 2.9);
-
-// Well done
-print("Passed all integer tests");

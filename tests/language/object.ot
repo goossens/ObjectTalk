@@ -62,6 +62,3 @@ assert(b.dosomething() == "I did it");
 
 String.unset("flag2");
 String.unset("dosomething");
-
-// Well done
-print("Passed all object tests");

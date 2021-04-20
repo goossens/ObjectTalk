@@ -32,6 +32,3 @@ assert(true.string() == "true");
 assert(false.integer() == 0);
 assert(false.real() == 0.0);
 assert(false.string() == "false");
-
-// Well done
-print("Passed all boolean tests");

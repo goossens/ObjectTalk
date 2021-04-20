@@ -32,6 +32,3 @@ var global = 1;
 assert(test(true, function(bool) {
 	return bool == true && global == 1;
 }) == true);
-
-// Well done
-print("Passed all function tests");

@@ -78,6 +78,3 @@ assert(test.test() == 13);
 assert(test.cb(function(value) {
 	return value + 1;
 }) == 14);
-
-// Well done
-print("Passed all class tests");

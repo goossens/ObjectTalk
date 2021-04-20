@@ -91,6 +91,3 @@ assert("   Hello \t\n   World   ".compress() == "Hello World");
 
 assert("Hello World".lower() == "hello world");
 assert("Hello World".upper() == "HELLO WORLD");
-
-// Well done
-print("Passed all string tests");

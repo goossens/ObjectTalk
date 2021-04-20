@@ -40,6 +40,8 @@ public:
 
 	// comparison
 	bool operator ==(OtObject operand) { return value == operand->operator bool(); }
+	bool operator <(OtObject operand) { return value < operand->operator bool(); }
+
 	bool equal(bool operand) { return value == operand; }
 	bool notEqual(bool operand) { return value != operand; }
 

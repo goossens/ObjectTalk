@@ -93,7 +93,7 @@ OtObject OtObjectClass::member(const std::string& name) {
 
 
 //
-//	OtObjectClass::eq
+//	OtObjectClass::operator ==
 //
 
 bool OtObjectClass::operator ==(OtObject operand) {
@@ -103,6 +103,15 @@ bool OtObjectClass::operator ==(OtObject operand) {
 	} else {
 		return type == getMeta() && operand->getType() == getMeta();
 	}
+}
+
+
+//
+//	OtObjectClass::operator <
+//
+
+bool OtObjectClass::operator <(OtObject operand) {
+	return getSharedPtr().get() < operand.get();
 }
 
 

@@ -77,6 +77,8 @@ public:
 
 	// comparison
 	virtual bool operator ==(OtObject operand);
+	virtual bool operator <(OtObject operand);
+
 	bool equal(OtObject operand) { return operator ==(operand); }
 	bool notEqual(OtObject operand) { return !operator ==(operand); }
 

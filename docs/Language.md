@@ -41,7 +41,7 @@ for visualizing grammar.
 ## expression
 ![Railroad Diagram](ebnf/expression.png)
 
-    expression ::= expression (
+    expression ::= conditional (
         "=" expression |
         "*=" expression |
         "/=" expression |

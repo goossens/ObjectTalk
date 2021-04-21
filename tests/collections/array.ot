@@ -12,7 +12,9 @@ assert(array.size() == 10);
 assert(array[0] == 1);
 assert(array[2] == 3);
 
-array.append(11).append(12);
+array.append(11);
+array.append(12);
+
 assert(array.size() == 12);
 assert(array[10] == 11);
 assert(array[11] == 12);

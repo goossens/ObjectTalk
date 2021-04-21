@@ -14,7 +14,7 @@
 
 #include <string>
 
-#include "array.h"
+#include "set.h"
 #include "iterator.h"
 
 
@@ -22,26 +22,29 @@
 //	OtArrayIteratorClass
 //
 
-class OtArrayIteratorClass;
-typedef std::shared_ptr<OtArrayIteratorClass> OtArrayIterator;
+class OtSetIteratorClass;
+typedef std::shared_ptr<OtSetIteratorClass> OtSetIterator;
 
-class OtArrayIteratorClass : public OtIteratorClass {
+class OtSetIteratorClass : public OtIteratorClass {
 public:
 	// constructors
-	OtArrayIteratorClass() = default;
-	OtArrayIteratorClass(OtArray a) : array(a) {}
+	OtSetIteratorClass() = default;
+
+	OtSetIteratorClass(OtSet s) : set(s) {
+		iterator = set->set.begin();
+	}
 
 	// iteration operations
-	bool end() { return index == array->size(); }
-	OtObject next() { return array->getEntry(index++); }
+	bool end() { return iterator == set->set.end(); }
+	OtObject next() { return *iterator++; }
 
 	// get type definition
 	static OtType getMeta();
 
 	// create a new object
-	static OtArrayIterator create(OtArray array);
+	static OtSetIterator create(OtSet set);
 
 private:
-	OtArray array;
-	size_t index {0};
+	OtSet set;
+	std::set<OtObject>::iterator iterator;
 };

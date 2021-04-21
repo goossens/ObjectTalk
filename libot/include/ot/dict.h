@@ -62,7 +62,7 @@ public:
 	void clear() { dict.clear(); }
 
 	// remove dictionary entry
-	OtObject eraseEntry(const std::string& name);
+	void eraseEntry(const std::string& name);
 
 	// get array of dictionary names
 	OtObject keys();
@@ -75,7 +75,7 @@ public:
 
 	// create a new object
 	static OtDict create();
-	static OtDict create(size_t count, OtObject* values);
+	static OtDict create(size_t count, OtObject* objects);
 
 private:
 	std::unordered_map<std::string, OtObject> dict;

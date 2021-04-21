@@ -20,6 +20,7 @@ Language Classes:
 	* [Collection](reference/Collection.md)
 		* [Array](reference/Array.md)
 		* [Dict](reference/Dict.md)
+		* [Set](reference/Set.md)
 
 	* [Internal](reference/Internal.md) *
 		* [Class](reference/Class.md) *
@@ -42,6 +43,7 @@ Language Classes:
 		* [Iterator](reference/Iterator.md) *
 			* [ArrayIterator](reference/ArrayIterator.md) *
 			* [DictIterator](reference/DictIterator.md) *
+			* [SetIterator](reference/SetIterator.md) *
 
 Module Classes:
 ===============

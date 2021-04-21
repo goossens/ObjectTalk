@@ -64,7 +64,7 @@ OtObject OtObjectClass::get(const std::string& name) {
 		}
 	}
 
-	OtExcept("Unknown member [%s] in instance of class [%s]", name.c_str(), getMeta()->getName().c_str());
+	OtExcept("Unknown member [%s] in instance of class [%s]", name.c_str(), type->getName().c_str());
 	return nullptr;
 }
 

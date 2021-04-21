@@ -25,6 +25,7 @@
 #include "ot/collection.h"
 #include "ot/array.h"
 #include "ot/dict.h"
+#include "ot/set.h"
 
 #include "ot/class.h"
 #include "ot/module.h"
@@ -60,6 +61,7 @@ OtGlobalClass::OtGlobalClass() {
 	set("Collection", OtClassClass::create(OtCollectionClass::getMeta()));
 	set("Array", OtClassClass::create(OtArrayClass::getMeta()));
 	set("Dict", OtClassClass::create(OtDictClass::getMeta()));
+	set("Set", OtClassClass::create(OtSetClass::getMeta()));
 }
 
 

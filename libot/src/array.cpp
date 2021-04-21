@@ -75,7 +75,7 @@ bool OtArrayClass::operator ==(OtObject operand) {
 		return false;
 	}
 
-	// complare all elements
+	// compare all elements
 	for (auto c = 0; c < array.size(); c++) {
 		if (!array[c]->equal(op->array[c])) {
 			return false;
@@ -163,14 +163,14 @@ OtObject OtArrayClass::add(OtObject object) {
 //	OtArrayClass::contains
 //
 
-OtObject OtArrayClass::contains(OtObject object) {
+bool OtArrayClass::contains(OtObject object) {
 	bool result = false;
 
 	for (auto i = array.begin(); !result && i != array.end(); i++) {
 		result = (*i)->equal(object);
 	}
 
-	return OtBooleanClass::create(result);
+	return result;
 }
 
 
@@ -213,7 +213,7 @@ OtObject OtArrayClass::clone() {
 
 OtObject OtArrayClass::join(OtObject object) {
 	if (!object->isKindOf("Array")) {
-		OtExcept("The array join expects another array instance, not a [%s]", object->getType()->getName().c_str());
+		OtExcept("The array join method expects another array instance, not a [%s]", object->getType()->getName().c_str());
 	}
 
 	OtArray result = create();
@@ -234,9 +234,8 @@ OtObject OtArrayClass::join(OtObject object) {
 //	OtArrayClass::append
 //
 
-OtObject OtArrayClass::append(OtObject object) {
+void OtArrayClass::append(OtObject object) {
 	array.push_back(object);
-	return getSharedPtr();
 }
 
 
@@ -244,7 +243,7 @@ OtObject OtArrayClass::append(OtObject object) {
 //	OtArrayClass::insert
 //
 
-OtObject OtArrayClass::insert(size_t index, OtObject object) {
+void OtArrayClass::insert(size_t index, OtObject object) {
 	if (index < 0) {
 		OtExcept("Negative index [%ld] is not allowed in array", index);
 
@@ -254,7 +253,6 @@ OtObject OtArrayClass::insert(size_t index, OtObject object) {
 	}
 
 	array.insert(array.begin() + index, std::move(object));
-	return getSharedPtr();
 }
 
 
@@ -262,7 +260,7 @@ OtObject OtArrayClass::insert(size_t index, OtObject object) {
 //	OtArrayClass::erase
 //
 
-OtObject OtArrayClass::erase(size_t index) {
+void OtArrayClass::erase(size_t index) {
 	if (index < 0) {
 		OtExcept("Negative index [%ld] is not allowed in array", index);
 
@@ -272,7 +270,6 @@ OtObject OtArrayClass::erase(size_t index) {
 	}
 
 	array.erase(array.begin() + index);
-	return getSharedPtr();
 }
 
 
@@ -280,7 +277,7 @@ OtObject OtArrayClass::erase(size_t index) {
 //	OtArrayClass::eraseMultiple
 //
 
-OtObject OtArrayClass::eraseMultiple(size_t index1, size_t index2) {
+void OtArrayClass::eraseMultiple(size_t index1, size_t index2) {
 	if (index1 < 0) {
 		OtExcept("Negative index [%ld] is not allowed in array", index1);
 
@@ -302,7 +299,6 @@ OtObject OtArrayClass::eraseMultiple(size_t index1, size_t index2) {
 	}
 
 	array.erase(array.begin() + index1, array.begin() + index2);
-	return getSharedPtr();
 }
 
 
@@ -310,8 +306,8 @@ OtObject OtArrayClass::eraseMultiple(size_t index1, size_t index2) {
 //	OtArrayClass::push
 //
 
-OtObject OtArrayClass::push(OtObject object) {
-	array.push_back(object); return object;
+void OtArrayClass::push(OtObject object) {
+	array.push_back(object);
 }
 
 

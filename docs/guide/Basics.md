@@ -8,11 +8,12 @@ derived languages.
 ObjectTalk provides its own versions of all fundamental C types, including
 Booleans, Integers (for int), Reals (for double), String for textual data
 and Functions as first class primitives. ObjectTalk also provides powerful
-versions of the two primary collection types, Array and Dictionary, as
-described in Collection Types. In fact, in ObjectTalk everything is an
+versions of the three primary collection types, Array, Dictionary and sets,
+as described in Collection Types. In fact, in ObjectTalk everything is an
 object derived from a class and the word type is only used internally
 in the language's runtime. Primitives like Booleans, Integers, Reals,
-Strings and Functions are objects just like Array, Dict and HTTP servers.
+Strings and Functions are objects just like Array, Dict, Sets and HTTP
+servers.
 
 Variables
 ---------

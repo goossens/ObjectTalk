@@ -15,15 +15,15 @@ keep the code and documentation synchronized.
 	* [Quick ObjectTalk Overview](Overview.md)
 * Language Guide
     * [The Basics](guide/Basics.md)
-	* [Scope](guide/Scope.md)
+	* [Collections](guide/Collections.md)
 	* [Operators](guide/Operators.md)
+	* [Statements](guide/Statements.md)
+	* [Scope](guide/Scope.md)
 	* [Modules](guide/Modules.md)
 	* [Classes](guide/Classes.md)
 	* [Properties](guide/Properties.md)
 	* [Functions](guide/Functions.md)
 	* [Closures](guide/Closures.md)
-	* [Statements](guide/Statements.md)
-	* [Control Flow](guide/Flow.md)
 * Language Reference
 	* [ObjectTalk Language Reference in EBNF](Language.md)
 	* [ObjectTalk Classes](Classes.md)

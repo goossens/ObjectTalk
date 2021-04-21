@@ -125,9 +125,10 @@ The point is that a function is a first class citizen in ObjectTalk.
 
 ## Collections
 
-ObjectTalk supports two types of [Collections](reference/Collections.md)
-([Arrays](reference/Array.md) arrays and
-[Dictionaries](reference/Dict.md))
+ObjectTalk supports three types of [Collections](reference/Collections.md)
+([Arrays](reference/Array.md) arrays,
+[Dictionaries](reference/Dict.md) and
+[Sets](reference/Set.md))
 that can be nested if required.
 
 [Arrays](reference/Array.md) are sequences of objects that can be
@@ -156,6 +157,21 @@ Both arrays and dictionaries follow JSON rules and the ObjectTalk
 compiler can therefore ingest JSON without any trouble.
 This should also make it easier for those who are already familiar
 with JSON encoding.
+
+[Sets](reference/Set.md) store distinct values in a collection without
+defined order. You can use a set instead of an array when the order of
+items isn’t important, or when you need to ensure that an item only
+appears once. Sets can be created using the Set class constructor.
+The Set class also has many methods to manipulate the content of a
+set or to perform set operations (e.g. union, difference).
+
+	var set = Set(1, 2, 3, 5);
+	var set2 = Set(1, 3, 6, 8);
+
+	assert(set.intersection(set2) == Set(1, 3));
+	assert(set.difference(set2) == Set(2, 5, 6, 8));
+	assert(set.union(set2) == Set(1, 2, 3, 5, 6, 8));
+	assert(set.subtract(set2) == Set(2, 5));
 
 ## Control Flow
 

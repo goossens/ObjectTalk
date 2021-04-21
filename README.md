@@ -39,14 +39,28 @@ setup using homebrew.
 
 	brew install cmake libuv
 
+Theoretically, ObjectTalk also runs on Windows but since I don't own
+a BillyBox, I'll leave it to the community to make that work.
+
 ## Special Thanks
 
 This project uses Open Source products without which it would have been
-a lot harder to implement. Special thanks goes to the following communities:
+a lot harder to implement ObjectTalk. Special thanks goes to the
+following communities:
 
 * [libuv](https://libuv.org) - multi-platform support library with a focus on asynchronous I/O.
 * [llhttp](https://llhttp.org) - HTTP protocol parser
 * [multipart-parser](https://github.com/francoiscolas/multipart-parser) - HTTP multipart body parser
+
+A special thanks also goes to
+[Gunther Rademacher](https://github.com/GuntherRademacher) for his
+["RailRoad Diagram Generator"](https://www.bottlecaps.de/rr/ui) which is
+used in the documentation to visualize the ObjectTalk grammer.
+
+A final special thanks goes to the team that wrote the
+[Swift](https://swift.org) computer language
+[documentation](https://swift.org/documentation/). It is awesome and I've
+respectfully reused a lot of it to document ObjectTalk.
 
 ## License
 

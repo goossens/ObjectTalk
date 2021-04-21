@@ -52,8 +52,8 @@ public:
 	// add object to array
 	OtObject add(OtObject object);
 
-	// does array contains specified object
-	OtObject contains(OtObject object);
+	// does array contain a specified object
+	bool contains(OtObject object);
 
 	// return number of array members
 	size_t size() { return array.size(); }
@@ -71,19 +71,19 @@ public:
 	OtObject join(OtObject object);
 
 	// add new member to the end
-	OtObject append(OtObject object);
+	void append(OtObject object);
 
 	// insert object at specified location
-	OtObject insert(size_t index, OtObject object);
+	void insert(size_t index, OtObject object);
 
 	// remove member at specified location
-	OtObject erase(size_t index);
+	void erase(size_t index);
 
 	// erase member from until specified locations
-	OtObject eraseMultiple(size_t index1, size_t index2);
+	void eraseMultiple(size_t index1, size_t index2);
 
 	// push object to end of array
-	OtObject push(OtObject object);
+	void push(OtObject object);
 
 	// pop object from and of array
 	OtObject pop();
@@ -93,7 +93,7 @@ public:
 
 	// create a new array
 	static OtArray create();
-	static OtArray create(size_t count, OtObject* values);
+	static OtArray create(size_t count, OtObject* objects);
 
 private:
 	std::vector<OtObject> array;

@@ -21,7 +21,7 @@ Class Methods
 | \_\_index__(integer) | Return an [ArrayReference](ArrayReference.md) object to address individual objects in an array. This method is called when you use the **index** ([]) operator. You typically don't call this method directly. |
 | \_\_iter__() | Return an [ArrayIterator](ArrayIterator.md) object to iterate through objects in an array. This method is called when you use the **for in** statement. You typically don't call this method directly. |
 | \_\_add__(object) | Append object to the array and return a new array. This method is called when you use the **addition** (+) operator. If the object is another array, it will be added as a single member creating an array hierarchy. If you want to join two arrays, use the join method. |
-| \_\_contains__(object) | Determine if object is member of array. This method is called when you use the **(not) in** operator. You typically don't call this method directly. |
+| \_\_contains__(object) | Determine if object is member of array. |
 | size() | Return number of objects in array. |
 | find(object) | Find object in array and return its position. If object is not found, -1 is returned. |
 | contains(object) | Determine if object is member of array. This method is called when you use the **(not) in** operator. You typically don't call this method directly. |

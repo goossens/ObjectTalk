@@ -348,7 +348,7 @@ associativity, priority and member function name.
 | > | Greater than | None | 6 | \_\_gt\_\_ |
 | >= | Greater than or equal | None | 6 | \_\_ge\_\_ |
 | in | is in | None | 6 | \_\_contains\_\_ |
-| not in | is not in | None | 6 | \_\_contains\_\_ \_\_not\_\_ |
+| not in | is not in | None | 6 | |
 | == | Equal | None | 7 | \_\_eq\_\_ |
 | != | Not equal | None | 7 | \_\_ne\_\_ |
 | & | Bitwise AND | Left | 8 | \_\_band\_\_ |

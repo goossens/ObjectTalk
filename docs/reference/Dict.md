@@ -20,6 +20,7 @@ Class Methods
 | \_\_add__(dict) | Concatenates objects from the dictionary to this object's value and return a new dictionary. This method is called when you use the **addition** (+) operator. In case there are duplicates, the entries in the operand will win. You typically don't call this method directly. |
 | \_\_contains__(string) | Determine if named object is member of dictionary. This method is called when you use the **(not) in** operator. You typically don't call this method directly. |
 | size() | Return number of objects in the dictionary. |
+| contains(key) | See if we have named object in dictionary. |
 | clone() | Return a clone of the dictionary. |
 | clear() | Clear (empty) the dictionary. |
 | erase(string) | Remove the named object from the dictionary. |

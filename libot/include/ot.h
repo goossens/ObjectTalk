@@ -32,6 +32,7 @@
 #include "ot/collection.h"
 #include "ot/array.h"
 #include "ot/dict.h"
+#include "ot/set.h"
 
 #include "ot/internal.h"
 #include "ot/class.h"

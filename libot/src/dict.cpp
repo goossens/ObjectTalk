@@ -169,14 +169,12 @@ OtObject OtDictClass::clone() {
 //	OtDictClass::eraseEntry
 //
 
-OtObject OtDictClass::eraseEntry(const std::string& index) {
+void OtDictClass::eraseEntry(const std::string& index) {
 	if (dict.find(index) == dict.end()) {
 		OtExcept("Unkown dictionary member [%s]", index.c_str());
 	}
 
-	OtObject value = dict[index];
 	dict.erase(index);
-	return value;
 }
 
 
@@ -230,6 +228,7 @@ OtType OtDictClass::getMeta() {
 		type->set("__contains__", OtFunctionClass::create(&OtDictClass::contains));
 
 		type->set("size", OtFunctionClass::create(&OtDictClass::size));
+		type->set("contains", OtFunctionClass::create(&OtDictClass::contains));
 
 		type->set("clone", OtFunctionClass::create(&OtDictClass::clone));
 		type->set("clear", OtFunctionClass::create(&OtDictClass::clear));
@@ -253,11 +252,11 @@ OtDict OtDictClass::create() {
 	return dict;
 }
 
-OtDict OtDictClass::create(size_t count, OtObject* values) {
+OtDict OtDictClass::create(size_t count, OtObject* objects) {
 	OtDict dict = create();
 
 	for (size_t c = 0; c < count; c += 2) {
-		dict->setEntry((std::string) *values[c], values[c + 1]);
+		dict->setEntry((std::string) *objects[c], objects[c + 1]);
 	}
 
 	return dict;

@@ -1,8 +1,8 @@
 # ObjectTalk Documentation
 
-![Logo](../logo/logo-small.png)
+![Logo](logo/logo-small.png)
 
-This directory contains the documentation for the ObjectTalk scripting
+Welcome to the documentation for the ObjectTalk scripting
 language. It provides the authoritative reference for ObjectTalk,
 offers a guided tour, a comprehensive guide, and a formal reference of
 the language. As the documentation is included in the source code

@@ -1,7 +1,8 @@
 # Scope
 
 Scope is a concept that refers to where objects including functions and
-classes can be seen and accessed. In ObjectTalk, variables are declared and stored in a scope. The scope of a variable describes where in a program's
+classes can be seen and accessed. In ObjectTalk, variables are declared and
+stored in a scope. The scope of a variable describes where in a program's
 text the variable may be used, while the extent or lifetime describes when
 in a program's execution a variable has a value.
 

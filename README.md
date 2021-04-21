@@ -3,7 +3,7 @@
 
 # ObjectTalk Scripting Language
 
-![Logo](logo/logo-small.png)
+![Logo](docs/logo/logo-small.png)
 
 Welcome to the ObjectTalk scripting language. ObjectTalk is a simple
 object-oriented scripting language that has evolved over decades and

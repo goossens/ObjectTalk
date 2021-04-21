@@ -1,7 +1,7 @@
 # operators
 
 An operator is a special symbol or phrase that you use to check, change,
-or combine values. For example, the addition operator (+) adds two numbers,
+or combine values. For example, the addition operator (+) adds two objects,
 as in **var i = 1 + 2**, and the logical AND operator (&&) combines two Boolean
 values, as in **if enteredDoorCode && passedRetinaScan**. ObjectTalk
 supports the operators you may already know from languages like C.
@@ -32,8 +32,7 @@ with the value of b:
 
 ## Arithmetic Operators
 
-ObjectTalk supports the four standard arithmetic operators for all number
-types:
+ObjectTalk supports the four standard arithmetic operators:
 
 * Addition (+)
 * Subtraction (-)
@@ -48,7 +47,7 @@ Examples:
 	10.0 / 2.5  // equals 4.0
 
 The addition operator is also supported for String concatenation or for
-any class that implements the \_\_add\_\_ member function.:
+any class that implements the \_\_add\_\_ member function.
 
 	"hello, " + "world"  // equals "hello, world"
 
@@ -125,10 +124,10 @@ the if statement:
 	    print("hello, world")
 
 	} else {
-	    print("I'm sorry \(name), but I don't recognize you")
+	    print("I'm sorry ", name, ", but I don't recognize you")
 	}
 
-	// Prints "hello, world", because name is indeed equal to "world".
+	// prints "hello, world"
 
 ## Ternary Conditional Operator
 
@@ -322,49 +321,49 @@ where they help to make your intentions clear.
 The table below list all the operators used in ObjectTalk including their
 associativity, priority and member function name.
 
-| Operator | Description | Associativity | Priority | Member Function |
-| -------- | ----------- | ------------- | -------- | --------------- |
-| [] | Index | None | 1 | \_\_index\_\_ |
-| () | Call | None | 1 | \_\_call\_\_ |
-| . | Member | None | 1 | \_\_member\_\_ |
-| ++ | Post-increment | None | 1 | \_\_inc\_\_ |
-| -- | Post-decrement  | None | 1 | \_\_dec\_\_ |
-| - | Unary minus | None | 2 | \_\_neg\_\_ |
-| + | Unary plus | None | 2 | \_\_plus\_\_ |
-| ! | Logical NOT | None | 2 | \_\_not\_\_ |
-| ~ | Bitwise NOT | None | 2 | \_\_bnot\_\_ |
-| ++ | Pre-increment | None | 2 | \_\_inc\_\_ |
-| -- | Pre-decrement | None | 2 | \_\_dec\_\_ |
-| * | Multiply | Left | 3 | \_\_mul\_\_ |
-| / | Divide | Left | 3 | \_\_div\_\_ |
-| ** | Power | Left | 3 | \_\_power\_\_ |
-| % | Remainder | Left | 3 | \_\_mod\_\_ |
-| + | Add | Left | 4 | \_\_add\_\_ |
-| - | Subtract | Left | 4 | \_\_sub\_\_ |
-| << | Bitwise left shift | None | 5 | \_\_lshift\_\_ |
-| >> | Bitwise right shift | None | 5 | \_\_rshift\_\_ |
-| < | Less than | None | 6 | \_\_lt\_\_ |
-| <= | Less than or equal | None | 6 | \_\_le\_\_ |
-| > | Greater than | None | 6 | \_\_gt\_\_ |
-| >= | Greater than or equal | None | 6 | \_\_ge\_\_ |
-| in | is in | None | 6 | \_\_contains\_\_ |
-| not in | is not in | None | 6 | |
-| == | Equal | None | 7 | \_\_eq\_\_ |
-| != | Not equal | None | 7 | \_\_ne\_\_ |
-| & | Bitwise AND | Left | 8 | \_\_band\_\_ |
-| ^ | Bitwise XOR | Left | 9 | \_\_bxor\_\_ |
-| \| | Bitwise OR | Left | 10 | \_\_bor\_\_ |
-| && | Logical AND | Left | 11 | \_\_and\_\_ |
-| \|\| | Logical OR | Left | 12 | \_\_or\_\_ |
-| ?: | Ternary conditional | Right | 13 | |
-| = | Assign| Right | 14 | \_\_assign\_\_ |
-| *= | Multiply and assign | Right | 14 | |
-| /= | Divide and assign | Right | 14 | |
-| %= | Remainder and assign | Right | 14 | |
-| += | Add and assign | Right | 14 | |
-| -= | Subtract and assign | Right | 14 | |
-| <<= | Left bit shift and assign | Right | 14 |  |
-| >>= | Right bit shift and assign | Right | 14 |  |
-| &= | Bitwise AND and assign | Right | 14 | |
-| \|= | Bitwise OR and assign | Right | 14 | |
-| ^= | Bitwise XOR and assign | Right | 14 | |
+| Operator | Description | Priority | Member Function |
+| -------- | ----------- | -------- | --------------- |
+| [] | Index | 1 | \_\_index\_\_ |
+| () | Call | 1 | \_\_call\_\_ |
+| . | Member | 1 | \_\_member\_\_ |
+| ++ | Post-increment | 1 | \_\_inc\_\_ |
+| -- | Post-decrement  | 1 | \_\_dec\_\_ |
+| - | Unary minus | 2 | \_\_neg\_\_ |
+| + | Unary plus | 2 | \_\_plus\_\_ |
+| ! | Logical NOT | 2 | \_\_not\_\_ |
+| ~ | Bitwise NOT | 2 | \_\_bnot\_\_ |
+| ++ | Pre-increment | 2 | \_\_inc\_\_ |
+| -- | Pre-decrement | 2 | \_\_dec\_\_ |
+| * | Multiply | 3 | \_\_mul\_\_ |
+| / | Divide | 3 | \_\_div\_\_ |
+| ** | Power | 3 | \_\_power\_\_ |
+| % | Remainder | 3 | \_\_mod\_\_ |
+| + | Add | 4 | \_\_add\_\_ |
+| - | Subtract | 4 | \_\_sub\_\_ |
+| << | Bitwise left shift | 5 | \_\_lshift\_\_ |
+| >> | Bitwise right shift | 5 | \_\_rshift\_\_ |
+| < | Less than | 6 | \_\_lt\_\_ |
+| <= | Less than or equal | 6 | \_\_le\_\_ |
+| > | Greater than | 6 | \_\_gt\_\_ |
+| >= | Greater than or equal | 6 | \_\_ge\_\_ |
+| in | is in | 6 | \_\_contains\_\_ |
+| not in | is not in | 6 | |
+| == | Equal | 7 | \_\_eq\_\_ |
+| != | Not equal | 7 | \_\_ne\_\_ |
+| & | Bitwise AND | 8 | \_\_band\_\_ |
+| ^ | Bitwise XOR | 9 | \_\_bxor\_\_ |
+| \| | Bitwise OR | 10 | \_\_bor\_\_ |
+| && | Logical AND | 11 | \_\_and\_\_ |
+| \|\| | Logical OR | 12 | \_\_or\_\_ |
+| ?: | Ternary conditional | 13 | |
+| = | Assign| 14 | \_\_assign\_\_ |
+| *= | Multiply and assign | 14 | |
+| /= | Divide and assign | 14 | |
+| %= | Remainder and assign | 14 | |
+| += | Add and assign | 14 | |
+| -= | Subtract and assign | 14 | |
+| <<= | Left bit shift and assign | 14 |  |
+| >>= | Right bit shift and assign | 14 |  |
+| &= | Bitwise AND and assign | 14 | |
+| \|= | Bitwise OR and assign | 14 | |
+| ^= | Bitwise XOR and assign | 14 | |

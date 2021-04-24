@@ -1,0 +1,1981 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>ObjectTalk Reference</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/theme.css" />
+  </head>
+  <body id="page-top">
+    <div
+      class="container-fluid d-flex flex-column flex-grow-1 vh-100 overflow-hidden"
+    >
+      <nav
+        class="navbar navbar-expand px-0 pt-1 pb-0 flex-shrink-0 manual-header"
+      >
+        <a class="navbar-brand" href="index.html"
+          ><img src="img/icon.png" height="40" alt="" /><span class="ml-2"
+            >Documentation</span
+          ></a
+        ><button
+          class="navbar-toggler navbar-toggler-right"
+          data-toggle="collapse"
+          data-target="#navbarResponsive"
+          type="button"
+          data-toogle="collapse"
+          aria-controls="navbarResponsive"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <i class="fa fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item text-right">
+              <a class="nav-link page-scroll" href="tour.html">Tour</a>
+            </li>
+            <li class="nav-item text-right">
+              <a class="nav-link page-scroll" href="guide.html">Guide</a>
+            </li>
+            <li class="nav-item text-right">
+              <a class="nav-link page-scroll" href="reference.html"
+                >Reference</a
+              >
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <div class="row flex-grow-1 overflow-hidden vh-100">
+        <div class="col-2 mh-100 overflow-auto py-2 manual-toc">
+          <p class="pt-2"><strong>ObjectTalk Reference</strong></p>
+          <ul>
+            <li><a class="page-scroll" href="#language">Language</a></li>
+            <li><a class="page-scroll" href="#classes">Classes</a></li>
+          </ul>
+          <p><strong>Core Classes</strong></p>
+          <ul>
+            <li>
+              <a class="page-scroll" href="#object">Object</a>
+              <ul>
+                <li>
+                  <a class="page-scroll" href="#primitive">Primitive</a>
+                  <ul>
+                    <li><a class="page-scroll" href="#boolean">Boolean</a></li>
+                    <li><a class="page-scroll" href="#integer">Integer</a></li>
+                    <li><a class="page-scroll" href="#real">Real</a></li>
+                    <li><a class="page-scroll" href="#string">String</a></li>
+                    <li>
+                      <a class="page-scroll" href="#function">Function</a>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <a class="page-scroll" href="#collection">Collection</a>
+                  <ul>
+                    <li><a class="page-scroll" href="#array">Array</a></li>
+                    <li><a class="page-scroll" href="#dict">Dict</a></li>
+                    <li><a class="page-scroll" href="#set">Set</a></li>
+                  </ul>
+                </li>
+                <li>
+                  <a class="page-scroll" href="#internal">Internal</a>
+                  <ul>
+                    <li><a class="page-scroll" href="#class">Class</a></li>
+                    <li><a class="page-scroll" href="#global">Global</a></li>
+                    <li><a class="page-scroll" href="#module">Module</a></li>
+                    <li>
+                      <a class="page-scroll" href="#boundfunction"
+                        >BoundFunction</a
+                      >
+                    </li>
+                    <li>
+                      <a class="page-scroll" href="#codefunction"
+                        >CodeFunction</a
+                      >
+                    </li>
+                    <li><a class="page-scroll" href="#throw">Throw</a></li>
+                    <li>
+                      <a class="page-scroll" href="#reference">Reference</a>
+                      <ul>
+                        <li>
+                          <a class="page-scroll" href="#memberreference"
+                            >MemberReference</a
+                          >
+                        </li>
+                        <li>
+                          <a class="page-scroll" href="#stringreference"
+                            >StringReference</a
+                          >
+                        </li>
+                        <li>
+                          <a class="page-scroll" href="#arrayreference"
+                            >ArrayReference</a
+                          >
+                        </li>
+                        <li>
+                          <a class="page-scroll" href="#dictreference"
+                            >DictReference</a
+                          >
+                        </li>
+                        <li>
+                          <a class="page-scroll" href="#objectreference"
+                            >ObjectReference</a
+                          >
+                        </li>
+                        <li>
+                          <a class="page-scroll" href="#classreference"
+                            >ClassReference</a
+                          >
+                        </li>
+                        <li>
+                          <a class="page-scroll" href="#stackreference"
+                            >StackReference</a
+                          >
+                        </li>
+                        <li>
+                          <a class="page-scroll" href="#capturereference"
+                            >CaptureReference</a
+                          >
+                        </li>
+                      </ul>
+                    </li>
+                    <li>
+                      <a class="page-scroll" href="#iterator">Iterator</a>
+                      <ul>
+                        <li>
+                          <a class="page-scroll" href="#arrayiterator"
+                            >ArrayIterator</a
+                          >
+                        </li>
+                        <li>
+                          <a class="page-scroll" href="#dictiterator"
+                            >DictIterator</a
+                          >
+                        </li>
+                        <li>
+                          <a class="page-scroll" href="#setiterator"
+                            >SetIterator</a
+                          >
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+          <p><strong>System Module Classes</strong></p>
+          <ul>
+            <li>
+              <a class="page-scroll" href="#object">Object</a>
+              <ul>
+                <li>
+                  <a class="page-scroll" href="#system">System</a>
+                  <ul>
+                    <li><a class="page-scroll" href="#path">Path</a></li>
+                    <li><a class="page-scroll" href="#os">OS</a></li>
+                    <li><a class="page-scroll" href="#fs">FS</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+          <p><strong>HTTP Module Classes</strong></p>
+          <ul>
+            <li>
+              <a class="page-scroll" href="#object">Object</a>
+              <ul>
+                <li>
+                  <a class="page-scroll" href="#http">Http</a>
+                  <ul>
+                    <li><a class="page-scroll" href="#uri">URI</a></li>
+                    <li>
+                      <a class="page-scroll" href="#httprouter">HttpRouter</a>
+                      <ul>
+                        <li>
+                          <a class="page-scroll" href="#httpserver"
+                            >HttpServer</a
+                          >
+                        </li>
+                      </ul>
+                    </li>
+                    <li>
+                      <a class="page-scroll" href="#httprequest">HttpRequest</a>
+                    </li>
+                    <li>
+                      <a class="page-scroll" href="#httpresponse"
+                        >HttpResponse</a
+                      >
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <a class="page-scroll" href="#internal">Internal</a>
+                  <ul>
+                    <li>
+                      <a class="page-scroll" href="#httpnext">HttpNext</a>
+                    </li>
+                    <li>
+                      <a class="page-scroll" href="#httpnotfound"
+                        >HttpNotFound</a
+                      >
+                    </li>
+                    <li>
+                      <a class="page-scroll" href="#httptimer">HttpTimer</a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="col mh-100 overflow-auto py-2 manual-content">
+          <div id="language">
+            <h1 class="pb-2">ObjectTalk Definition</h1>
+            <p>
+              Below is a formal expression of the ObjectTalk scripting language
+              in Extended Backus–Naur Form (EBNF). You can read more about this
+              notation on
+              <a
+                href="https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form"
+                >Wikipedia</a
+              >. The pretty diagrams were created using the
+              <a href="https://www.bottlecaps.de/rr/ui"
+                >&quot;RailRoad Diagram Generator&quot;</a
+              >
+              which translates EBNF into HTML with pictures. This tool is highly
+              recommended for visualizing grammar.
+            </p>
+            <h2>module</h2>
+            <p><img src="img/module.png" alt="Railroad Diagram" /></p>
+            <pre><code>module ::= statement*
+</code></pre>
+            <h2>statement</h2>
+            <p><img src="img/statement.png" alt="Railroad Diagram" /></p>
+            <pre><code>statement ::= expression &quot;;&quot;
+| block
+| &quot;var&quot; name (&quot;=&quot; expression)? &quot;;&quot;
+| &quot;class&quot; name &quot;:&quot; expression block
+| &quot;function&quot; name &quot;(&quot; ((name (&quot;,&quot; name)*)? | &quot;...&quot;) &quot;)&quot; block
+| &quot;if&quot; expression block (&quot;elif&quot; expression block)* (&quot;else&quot; block)?
+| &quot;while&quot; expression block
+| &quot;do&quot; block &quot;while&quot; expression &quot;;&quot;
+| &quot;for&quot; name &quot;in&quot; expression block
+| &quot;throw&quot; expression &quot;;&quot;
+| &quot;try&quot; block &quot;catch&quot; name block
+| &quot;return&quot; expression &quot;;&quot;
+</code></pre>
+            <h2>block</h2>
+            <p><img src="img/block.png" alt="Railroad Diagram" /></p>
+            <pre><code>block ::= &quot;{&quot; statement* &quot;}&quot;
+</code></pre>
+            <h2>expressions</h2>
+            <p><img src="img/expressions.png" alt="Railroad Diagram" /></p>
+            <pre><code>expressions ::= expression (&quot;,&quot; expression)*
+</code></pre>
+            <h3>expression</h3>
+            <p><img src="img/expression.png" alt="Railroad Diagram" /></p>
+            <pre><code>expression ::= conditional (
+    &quot;=&quot; expression |
+    &quot;*=&quot; expression |
+    &quot;/=&quot; expression |
+    &quot;%=&quot; expression |
+    &quot;+=&quot; expression |
+    &quot;-=&quot; expression |
+    &quot;|=&quot; expression |
+    &quot;^=&quot; expression |
+    &quot;&amp;=&quot; expression)*
+</code></pre>
+            <h3>conditional</h3>
+            <p><img src="img/conditional.png" alt="Railroad Diagram" /></p>
+            <pre><code>conditional ::= or (&quot;?&quot; expression &quot;:&quot; expression)?
+</code></pre>
+            <h3>or</h3>
+            <p><img src="img/or.png" alt="Railroad Diagram" /></p>
+            <pre><code>or ::= and (&quot;||&quot; and)*
+</code></pre>
+            <h3>and</h3>
+            <p><img src="img/and.png" alt="Railroad Diagram" /></p>
+            <pre><code>and ::= bytewise-or (&quot;&amp;&amp;&quot; bytewise-or)*
+</code></pre>
+            <h3>bytewise-or</h3>
+            <p><img src="img/bytewise-or.png" alt="Railroad Diagram" /></p>
+            <pre><code>bytewise-or ::= bytewise-xor (&quot;|&quot; bytewise-xor)*
+</code></pre>
+            <h3>bytewise-xor</h3>
+            <p><img src="img/bytewise-xor.png" alt="Railroad Diagram" /></p>
+            <pre><code>bytewise-xor ::= bytewise-and (&quot;^&quot; bytewise-and)*
+</code></pre>
+            <h3>bytewise-and</h3>
+            <p><img src="img/bytewise-and.png" alt="Railroad Diagram" /></p>
+            <pre><code>bytewise-and ::= equal (&quot;&amp;&quot; equal)*
+</code></pre>
+            <h3>equal</h3>
+            <p><img src="img/equal.png" alt="Railroad Diagram" /></p>
+            <pre><code>equal ::= relation (&quot;==&quot; relation  | &quot;!=&quot; relation)*
+</code></pre>
+            <h3>relation</h3>
+            <p><img src="img/relation.png" alt="Railroad Diagram" /></p>
+            <pre><code>relation ::= shift (
+    &quot;&lt;&quot; shift |
+    &quot;&lt;=&quot; shift |
+    &quot;&gt;&quot; shift |
+    &quot;&gt;=&quot; shift |
+    &quot;in&quot; shift |
+    &quot;not in&quot; shift)*
+</code></pre>
+            <h3>shift</h3>
+            <p><img src="img/shift.png" alt="Railroad Diagram" /></p>
+            <pre><code>shift ::= addition (&quot;&lt;&lt;&quot; addition | &quot;&gt;&gt;&quot; addition)*
+</code></pre>
+            <h3>addition</h3>
+            <p><img src="img/addition.png" alt="Railroad Diagram" /></p>
+            <pre><code>addition ::= multiplication (&quot;+&quot; multiplication | &quot;-&quot; multiplication)*
+</code></pre>
+            <h3>multiplication</h3>
+            <p><img src="img/multiplication.png" alt="Railroad Diagram" /></p>
+            <pre><code>multiplication ::= prefix (&quot;*&quot; prefix | &quot;/&quot; prefix | &quot;%&quot; prefix)*
+</code></pre>
+            <h3>prefix</h3>
+            <p><img src="img/prefix.png" alt="Railroad Diagram" /></p>
+            <pre><code>prefix ::= (&quot;-&quot; | &quot;!&quot; | &quot;^&quot; | &quot;++&quot; | &quot;--&quot;)? postfix
+</code></pre>
+            <h3>postfix</h3>
+            <p><img src="img/postfix.png" alt="Railroad Diagram" /></p>
+            <pre><code>postfix ::= primary (&quot;[&quot; expression &quot;]&quot; | &quot;(&quot; expressions &quot;)&quot; | &quot;.&quot; name | &quot;++&quot; | &quot;--&quot;)*
+</code></pre>
+            <h3>primary</h3>
+            <p><img src="img/primary.png" alt="Railroad Diagram" /></p>
+            <pre><code>primary ::= &quot;(&quot; expression &quot;)&quot;
+| &quot;[&quot; expressions &quot;]&quot;
+| &quot;{&quot; string &quot;:&quot; expression (&quot;,&quot; string &quot;:&quot; expression)* &quot;}&quot;
+| integer
+| real
+| string
+| function
+| name
+</code></pre>
+            <h3>integer</h3>
+            <p><img src="img/integer.png" alt="Railroad Diagram" /></p>
+            <pre><code>integer ::= [-]? [0-9][0-9]*
+</code></pre>
+            <h3>real</h3>
+            <p><img src="img/real.png" alt="Railroad Diagram" /></p>
+            <pre><code>real ::= [-]? [0-9][0-9]*.[0-9][0-9]* ([Ee] [-]? [0-9][0-9]*)?
+</code></pre>
+            <h3>string</h3>
+            <p><img src="img/string.png" alt="Railroad Diagram" /></p>
+            <pre><code>string ::= '&quot;' (Char - [&quot;\] | '\' [&quot;\bfnrt] | &quot;\u&quot;  [0-9A-Fa-f] [0-9A-Fa-f] [0-9A-Fa-f] [0-9A-Fa-f])* '&quot;'
+</code></pre>
+            <h3>function</h3>
+            <p>
+              <img src="img/function.png" alt="Railroad Diagram" /> function ::=
+              &quot;function&quot; &quot;(&quot; ((name (&quot;,&quot; name)*)?
+              | &quot;...&quot;) &quot;)&quot; block
+            </p>
+            <h3>name</h3>
+            <p><img src="img/name.png" alt="Railroad Diagram" /></p>
+            <pre><code>name ::= [a-zA-Z_][a-zA-Z0-9_]*
+</code></pre>
+          </div>
+          <div id="classes">
+            <h1 class="pb-2">ObjectTalk Classes</h1>
+            <p>
+              Below is a list of classes included in the default ObjectClass
+              runtime. For each class, reference documentation is available. The
+              classes marked with an asterisk cannot be instantiated. These
+              classes are created within the ObjectTalk engine for internal use.
+              They are documented here for completeness and some of them might
+              be exposed to the user.
+            </p>
+            <h2>Core Classes:</h2>
+            <ul>
+              <li>
+                <a class="page-scroll" href="#object">Object</a>
+                <ul>
+                  <li>
+                    <a class="page-scroll" href="#primitive">Primitive</a>
+                    <ul>
+                      <li>
+                        <a class="page-scroll" href="#boolean">Boolean</a>
+                      </li>
+                      <li>
+                        <a class="page-scroll" href="#integer">Integer</a>
+                      </li>
+                      <li><a class="page-scroll" href="#real">Real</a></li>
+                      <li><a class="page-scroll" href="#string">String</a></li>
+                      <li>
+                        <a class="page-scroll" href="#function">Function</a>
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a class="page-scroll" href="#collection">Collection</a>
+                    <ul>
+                      <li><a class="page-scroll" href="#array">Array</a></li>
+                      <li><a class="page-scroll" href="#dict">Dict</a></li>
+                      <li><a class="page-scroll" href="#set">Set</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a class="page-scroll" href="#internal">Internal</a> *
+                    <ul>
+                      <li><a class="page-scroll" href="#class">Class</a> *</li>
+                      <li>
+                        <a class="page-scroll" href="#global">Global</a> *
+                      </li>
+                      <li>
+                        <a class="page-scroll" href="#module">Module</a> *
+                      </li>
+                      <li>
+                        <a class="page-scroll" href="#boundfunction"
+                          >BoundFunction</a
+                        >
+                        *
+                      </li>
+                      <li>
+                        <a class="page-scroll" href="#vodefunction"
+                          >CodeFunction</a
+                        >
+                        *
+                      </li>
+                      <li><a class="page-scroll" href="#Throw">Throw</a> *</li>
+                      <li>
+                        <a class="page-scroll" href="#reference">Reference</a> *
+                        <ul>
+                          <li>
+                            <a class="page-scroll" href="#memberreference"
+                              >MemberReference</a
+                            >
+                            *
+                          </li>
+                          <li>
+                            <a class="page-scroll" href="#stringreference"
+                              >StringReference</a
+                            >
+                            *
+                          </li>
+                          <li>
+                            <a class="page-scroll" href="#arrayreference"
+                              >ArrayReference</a
+                            >
+                            *
+                          </li>
+                          <li>
+                            <a class="page-scroll" href="#dictreference"
+                              >DictReference</a
+                            >
+                            *
+                          </li>
+                          <li>
+                            <a class="page-scroll" href="#objectreference"
+                              >ObjectReference</a
+                            >
+                            *
+                          </li>
+                          <li>
+                            <a class="page-scroll" href="#classreference"
+                              >ClassReference</a
+                            >
+                            *
+                          </li>
+                          <li>
+                            <a class="page-scroll" href="#stackreference"
+                              >StackReference</a
+                            >
+                            *
+                          </li>
+                          <li>
+                            <a class="page-scroll" href="#capturereference"
+                              >CaptureReference</a
+                            >
+                            *
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a class="page-scroll" href="#iterator">Iterator</a> *
+                        <ul>
+                          <li>
+                            <a class="page-scroll" href="#arrayiterator"
+                              >ArrayIterator</a
+                            >
+                            *
+                          </li>
+                          <li>
+                            <a class="page-scroll" href="#dictiterator"
+                              >DictIterator</a
+                            >
+                            *
+                          </li>
+                          <li>
+                            <a class="page-scroll" href="#setiterator"
+                              >SetIterator</a
+                            >
+                            *
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+            <h2>System Classes</h2>
+            <ul>
+              <li>
+                <a class="page-scroll" href="#object">Object</a>
+                <ul>
+                  <li>
+                    <a class="page-scroll" href="#system">System</a>
+                    <ul>
+                      <li><a class="page-scroll" href="#path">Path</a></li>
+                      <li><a class="page-scroll" href="#os">OS</a></li>
+                      <li><a class="page-scroll" href="#fs">FS</a></li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+            <h2>HTTP Classes</h2>
+            <ul>
+              <li>
+                <a class="page-scroll" href="#object">Object</a>
+                <ul>
+                  <li>
+                    <a class="page-scroll" href="#http">Http</a>
+                    <ul>
+                      <li><a class="page-scroll" href="#uri">URI</a></li>
+                      <li>
+                        <a class="page-scroll" href="#httprouter">HttpRouter</a>
+                        <ul>
+                          <li>
+                            <a class="page-scroll" href="#httpserver"
+                              >HttpServer</a
+                            >
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a class="page-scroll" href="#httprequest"
+                          >HttpRequest</a
+                        >
+                      </li>
+                      <li>
+                        <a class="page-scroll" href="#httpresponse"
+                          >HttpResponse</a
+                        >
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a class="page-scroll" href="#internal">Internal</a> *
+                    <ul>
+                      <li>
+                        <a class="page-scroll" href="#httpnext">HttpNext</a> *
+                      </li>
+                      <li>
+                        <a class="page-scroll" href="#httpnotfound"
+                          >HttpNotFound</a
+                        >
+                        *
+                      </li>
+                      <li>
+                        <a class="page-scroll" href="#httptimer">HttpTimer</a> *
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div id="object">
+            <h1 class="pb-2">Object Class</h1>
+            <p>
+              ObjectTalk uses single inheritance to simplify the language and
+              every class must be derived from another class. The only exception
+              to this rule is the Object class as it provides the foundation for
+              all objects. As such, all ObjectTalk classes are derived (directly
+              or indirectly) from Object. The Object class is the only class
+              without a parent class.
+            </p>
+            <p>
+              Given that the Object class is very abstract, it is not very
+              meaningful to instantiate it. Off course there is an exception
+              here as well as the default global context creates a
+              <strong>null</strong> object that can be used to denote a value
+              that does not exist.
+            </p>
+            <pre><code>var a = null;
+var b = Object();
+assert(a == b);
+</code></pre>
+            <p>
+              In the example above, both <strong>a</strong> and
+              <strong>b</strong> have the same (non) value.
+            </p>
+            <p>
+              All ObjectTalk objects have a special mechanism to store members
+              that can be accessed with the dot (member) operator. Members are
+              not preserved beyond the running of a script and should therefore
+              not be used as a dictionary. For that, please of the
+              <a href="Dict.md">Dict</a> class. Members are powerful as any data
+              can be attached to an object.
+            </p>
+            <p>
+              When members are retrieved, the ObjectTalk engine for looks at the
+              members attached to the object and if it can't be found, it's
+              class and parent classes are searched. This is actually the
+              mechanism by which class member functions are found.
+            </p>
+            <pre><code>var a = -1;
+a.flag = true;            // attach member to object a
+assert(a.flag == true);
+assert(a.abs() == 1);     // abs member function from Integer class
+
+Integer.flag2 = false;    // set member on Integer class
+assert(a.flag2 == false); // find member in Integer object
+</code></pre>
+            <p>
+              This power however comes with a disadvantage as you can create
+              really obscure code. Here is an example:
+            </p>
+            <pre><code>var a = &quot;test&quot;;
+var b = &quot;test&quot;;
+a.flag = true;            // only set member on object a
+
+a.dosomething = function(this) {
+	return &quot;I did it&quot;;
+};                        // store a function as a member
+
+assert(a.flag == true);
+assert(a.dosomething() == &quot;I did it&quot;);
+
+var result = false;
+var c = &quot;&quot;;
+
+try {
+	c = b.dosomething();  // this won't work as b does not have members
+}
+
+catch error {
+	result = true;        // we expected this error
+}
+
+assert(result == true);
+assert(c == &quot;&quot;);
+
+String.flag2 = true;      // add member to String class
+
+String.dosomething = function(this) {
+	return &quot;I did it&quot;;
+};                        // add function to String class
+
+// now the member is available on all String objects
+assert(a.flag2 == true);
+assert(b.flag2 == true);
+assert(a.dosomething() == &quot;I did it&quot;);
+assert(b.dosomething() == &quot;I did it&quot;);
+</code></pre>
+            <p><strong>Member Functions</strong></p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Function</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>boolean()</td>
+                  <td>
+                    Convert object to a boolean. This is a virtual function that
+                    child classes must overwrite if required. By default, this
+                    function returns <strong>false</strong>.
+                  </td>
+                </tr>
+                <tr>
+                  <td>integer()</td>
+                  <td>
+                    Convert object to an integer. This is a virtual function
+                    that child classes must overwrite if required. By default,
+                    this function returns <strong>0</strong>.
+                  </td>
+                </tr>
+                <tr>
+                  <td>real()</td>
+                  <td>
+                    Convert object to a real. This is a virtual function that
+                    child classes must overwrite if required. By default, this
+                    function returns <strong>0.0</strong>.
+                  </td>
+                </tr>
+                <tr>
+                  <td>string()</td>
+                  <td>
+                    Convert object to a string. This is a virtual function that
+                    child classes must overwrite if required. By default, this
+                    function returns <strong>&quot;&quot;</strong>.
+                  </td>
+                </tr>
+                <tr>
+                  <td>json()</td>
+                  <td>
+                    Represent object in JSON format. This is a virtual function
+                    that child classes must overwrite if required. By default,
+                    this function returns the
+                    <strong>string</strong> representation.
+                  </td>
+                </tr>
+                <tr>
+                  <td>has(name)</td>
+                  <td>See if object has named member.</td>
+                </tr>
+                <tr>
+                  <td>__member__(name)</td>
+                  <td>
+                    Return a
+                    <a href="MemberReference.md">MemberReference</a> object to
+                    acces an object's named member. This member function is
+                    called when you use the <strong>member</strong> (.)
+                    operator. You typically don't call this member function
+                    directly.
+                  </td>
+                </tr>
+                <tr>
+                  <td>eraseMember(name)</td>
+                  <td>Erase named member.</td>
+                </tr>
+                <tr>
+                  <td>clearMembers()</td>
+                  <td>Erase all members.</td>
+                </tr>
+                <tr>
+                  <td>__eq__(object)</td>
+                  <td>
+                    See if objects are equal. This virtual member function is
+                    called when you use the <strong>equal</strong> (==) operator
+                    and should be overwritten when required. You typically don't
+                    call this member function directly.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__ne__(object)</td>
+                  <td>
+                    See if objects are not equal. This virtual member function
+                    is called when you use the <strong>not equal</strong> (!=)
+                    operator and should be overwritten when required. You
+                    typically don't call this member function directly.
+                  </td>
+                </tr>
+                <tr>
+                  <td>getClass()</td>
+                  <td>return the object's class.</td>
+                </tr>
+                <tr>
+                  <td>isKindOf(className)</td>
+                  <td>See if object is derived from specified class.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="primitive">
+            <h1 class="pb-2">Primitive Class</h1>
+            <p>
+              The Primitive class is an abstract class without any functionality
+              derived from <a href="Object.md">Object</a>. The purpose of it in
+              ObjectTalk is simply to group all primitive classes and to provide
+              a common base class for them.
+            </p>
+            <p>
+              <a href="Boolean.md">Booleans</a>,
+              <a href="Integer.md">Integers</a>, <a href="Real.md">Reals</a>,
+              <a href="String.md">Strings</a> and
+              <a href="Function.md">Functions</a> are derived from this class.
+            </p>
+          </div>
+          <div id="boolean">
+            <h1 class="pb-2">Boolean Class</h1>
+            <p>
+              Booleans in ObjectTalk can only hold two values: true and false.
+              The default global language context defines the variables
+              <strong>true</strong> and <strong>false</strong> as a convenience.
+            </p>
+            <p><strong>Member Functions</strong></p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Function</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>__and__(boolean)</td>
+                  <td>
+                    Perform a logical <strong>and</strong> with the boolean
+                    representation of the operand. This member function is
+                    called when you use the <strong>and</strong> (&amp;&amp;)
+                    operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__or__(boolean)</td>
+                  <td>
+                    Perform a logical <strong>or</strong> with the boolean
+                    representation of the operand. This member function is
+                    called when you use the <strong>or</strong> (||) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__not__()</td>
+                  <td>
+                    Take truth to falsity and vice versa. This member function
+                    is called when you use the <strong>not</strong> (!)
+                    operator.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p><strong>Overrides</strong></p>
+            <p>
+              The Boolean class overrides the following member functions from
+              the Object class:
+            </p>
+            <ul>
+              <li>boolean</li>
+              <li>integer</li>
+              <li>real</li>
+              <li>string</li>
+              <li>__eq__</li>
+              <li>__ne__</li>
+            </ul>
+          </div>
+          <div id="integer">
+            <h1 class="pb-2">Integer Class</h1>
+            <p>
+              Integers in ObjectTalk represent negative and positive whole
+              numbers. On most systems, this number is implemented as a 64-bit
+              number meaning that the extremes are -9,223,372,036,854,775,808
+              and 9,223,372,036,854,775,807 (inclusive).
+            </p>
+            <p><strong>Member Functions</strong></p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Function</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>__gt__(integer)</td>
+                  <td>
+                    Compares integer to the object's value and returns a boolean
+                    indicating whether the object's value is greater than the
+                    integer or not. This member function is called when you use
+                    the <strong>greater than</strong> (&gt;) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__lt__(integer)</td>
+                  <td>
+                    Compares integer to the object's value and returns a boolean
+                    indicating whether the object's value is less than the
+                    integer or not. This member function is called when you use
+                    the <strong>less than</strong> (&lt;) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__ge__(integer)</td>
+                  <td>
+                    Compares integer to the object's value and returns a boolean
+                    indicating whether the object's value is greater or equal
+                    than the integer or not. This member function is called when
+                    you use the <strong>greater or equal than</strong> (&gt;=)
+                    operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__le__(integer)</td>
+                  <td>
+                    Compares integer to the object's value and returns a boolean
+                    indicating whether the object's value is less or equal than
+                    the integer or not. This member function is called when you
+                    use the <strong>less or equal than</strong> (&lt;=)
+                    operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__add__(integer)</td>
+                  <td>
+                    Add integer to object's value and return result. This member
+                    function is called when you use the <strong>add</strong> (+)
+                    operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__sub__(integer)</td>
+                  <td>
+                    Subtract integer from object's value and return result. This
+                    member function is called when you use the
+                    <strong>subtract</strong> (-) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__mul__(integer)</td>
+                  <td>
+                    Multiple integer with object's value and return result. This
+                    member function is called when you use the
+                    <strong>multiply</strong> (*) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__div__(integer)</td>
+                  <td>
+                    Divide object's value by integer and return result. This
+                    member function is called when you use the
+                    <strong>divide</strong> (/) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__mod__(integer)</td>
+                  <td>
+                    Divide object's value by integer and return leftover. This
+                    member function is called when you use the
+                    <strong>modulo</strong> (%) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__pow__(integer)</td>
+                  <td>
+                    Raise object's value to the power of integer and return
+                    result. This member function is called when you use the
+                    <strong>exponent</strong> (**) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__inc__()</td>
+                  <td>
+                    Return object's value + 1. This member function is called
+                    when you use the <strong>increment</strong> (++) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__dec__()</td>
+                  <td>
+                    Return object's value - 1. This member function is called
+                    when you use the <strong>decrement</strong> (--) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__lshift__(integer)</td>
+                  <td>
+                    Shift bits in object's value left by integer and return
+                    result. This member function is called when you use the
+                    <strong>shift left</strong> (&lt;&lt;) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__rshift__(integer)</td>
+                  <td>
+                    Shift bits in object's value right by integer and return
+                    result. This member function is called when you use the
+                    <strong>shift right</strong> (&gt;&gt;) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__band__(integer)</td>
+                  <td>
+                    Perform a bitwise logical AND between object's value and
+                    integer and return result. This member function is called
+                    when you use the <strong>bitwise and</strong> (&amp;)
+                    operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__bor__(integer)</td>
+                  <td>
+                    Perform a bitwise logical OR between object's value and
+                    integer and return result. This member function is called
+                    when you use the <strong>bitwise or</strong> (
+                  </td>
+                </tr>
+                <tr>
+                  <td>__bxor__(integer)</td>
+                  <td>
+                    Perform a bitwise logical exclusive OR between object's
+                    value and integer and return result. This member function is
+                    called when you use the
+                    <strong>bitwise exclusive or</strong> (^) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__bnot__()</td>
+                  <td>
+                    Perform logical negation of each bit in object's value and
+                    return result. This member function is called when you use
+                    the <strong>bitwise and</strong> (~) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__neg__()</td>
+                  <td>
+                    Perform a unary negation of object's value and return
+                    result. This member function is called when you use the
+                    <strong>unary negation</strong> (-) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>abs()</td>
+                  <td>Return absolute value of object's value.</td>
+                </tr>
+                <tr>
+                  <td>sign()</td>
+                  <td>Return sign (-1, 0 or 1) of object's value.</td>
+                </tr>
+              </tbody>
+            </table>
+            <p><strong>Overrides</strong></p>
+            <p>
+              The Integer class overrides the following member functions from
+              the Object class:
+            </p>
+            <ul>
+              <li>boolean</li>
+              <li>integer</li>
+              <li>real</li>
+              <li>string</li>
+              <li>__eq__</li>
+              <li>__ne__</li>
+            </ul>
+          </div>
+          <div id="real">
+            <h1 class="pb-2">Real Class</h1>
+            <p>
+              Reals in ObjectTalk are double-precision floating point numbers.
+              On most systems, Reals are implemented using 8 bytes and have a
+              range of 1.7E +/- 308 (15 digits).
+            </p>
+            <p><strong>Member Functions</strong></p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Function</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>__gt__(real)</td>
+                  <td>
+                    Compares real to the object's value and returns a boolean
+                    indicating whether the object's value is greater than the
+                    integer or not. This member function is called when you use
+                    the <strong>greater than</strong> (&gt;) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__lt__(real)</td>
+                  <td>
+                    Compares real to the object's value and returns a boolean
+                    indicating whether the object's value is less than the
+                    integer or not. This member function is called when you use
+                    the <strong>less than</strong> (&lt;) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__ge__(real)</td>
+                  <td>
+                    Compares real to the object's value and returns a boolean
+                    indicating whether the object's value is greater or equal
+                    than the integer or not. This member function is called when
+                    you use the <strong>greater or equal than</strong> (&gt;=)
+                    operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__le__(real)</td>
+                  <td>
+                    Compares real to the object's value and returns a boolean
+                    indicating whether the object's value is less or equal than
+                    the integer or not. This member function is called when you
+                    use the <strong>less or equal than</strong> (&lt;=)
+                    operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__add__(real)</td>
+                  <td>
+                    Add real to object's value and return result. This member
+                    function is called when you use the <strong>add</strong> (+)
+                    operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__sub__(real)</td>
+                  <td>
+                    Subtract real from object's value and return result. This
+                    member function is called when you use the
+                    <strong>subtract</strong> (-) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__mul__(real)</td>
+                  <td>
+                    Multiple real with object's value and return result. This
+                    member function is called when you use the
+                    <strong>multiply</strong> (*) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__div__(real)</td>
+                  <td>
+                    Divide object's value by real and return result. This member
+                    function is called when you use the
+                    <strong>divide</strong> (/) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__mod__(real)</td>
+                  <td>
+                    Divide object's value by real and return leftover. This
+                    member function is called when you use the
+                    <strong>modulo</strong> (%) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__pow__(real)</td>
+                  <td>
+                    Raise object's value to the power of real and return result.
+                    This member function is called when you use the
+                    <strong>exponent</strong> (**) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__neg__()</td>
+                  <td>
+                    Perform a unary negation of object's value and return
+                    result. This member function is called when you use the
+                    <strong>unary negation</strong> (-) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>abs()</td>
+                  <td>Return absolute value of object's value.</td>
+                </tr>
+                <tr>
+                  <td>sign()</td>
+                  <td>Return sign (-1, 0 or 1) of object's value.</td>
+                </tr>
+                <tr>
+                  <td>round()</td>
+                  <td>
+                    Returns integer that is nearest to object's value, with
+                    halfway cases rounded away from zero.
+                  </td>
+                </tr>
+                <tr>
+                  <td>ceil()</td>
+                  <td>
+                    Rounds object's value upward, returning the smallest
+                    integral value that is not less than object's value.
+                  </td>
+                </tr>
+                <tr>
+                  <td>floor()</td>
+                  <td>
+                    Rounds object's value downward, returning the largest
+                    integral value that is not greater than object's value.
+                  </td>
+                </tr>
+                <tr>
+                  <td>trunc()</td>
+                  <td>
+                    Rounds object's value toward zero, returning the nearest
+                    integral value that is not larger in magnitude than object's
+                    value.
+                  </td>
+                </tr>
+                <tr>
+                  <td>sin()</td>
+                  <td>
+                    Returns the sine of an angle of object's value in radians.
+                  </td>
+                </tr>
+                <tr>
+                  <td>cos()</td>
+                  <td>
+                    Returns the cosine of an angle of object's value in radians.
+                  </td>
+                </tr>
+                <tr>
+                  <td>tan()</td>
+                  <td>
+                    Returns the tangent of an angle of object's value in
+                    radians.
+                  </td>
+                </tr>
+                <tr>
+                  <td>asin()</td>
+                  <td>
+                    Returns the principal value of the arc cosine of object's
+                    value, expressed in radians.
+                  </td>
+                </tr>
+                <tr>
+                  <td>acos()</td>
+                  <td>
+                    Returns the principal value of the arc cosine of object's
+                    value, expressed in radians.
+                  </td>
+                </tr>
+                <tr>
+                  <td>atan()</td>
+                  <td>
+                    Returns the principal value of the arc cosine of object's
+                    value, expressed in radians.
+                  </td>
+                </tr>
+                <tr>
+                  <td>radians()</td>
+                  <td>
+                    Convert object's value, expressed in degrees, to radians.
+                  </td>
+                </tr>
+                <tr>
+                  <td>degrees()</td>
+                  <td>
+                    Convert object's value, expressed in radians, to degrees.
+                  </td>
+                </tr>
+                <tr>
+                  <td>log()</td>
+                  <td>
+                    Return the natural (base-e) logarithm of object's value.
+                  </td>
+                </tr>
+                <tr>
+                  <td>exp()</td>
+                  <td>
+                    Returns the base-e exponential function of object's value.
+                  </td>
+                </tr>
+                <tr>
+                  <td>log10()</td>
+                  <td>
+                    Return the common (base-10) logarithm of object's value.
+                  </td>
+                </tr>
+                <tr>
+                  <td>toFixed(precision)</td>
+                  <td>Format object's value using fixed-point notation.</td>
+                </tr>
+              </tbody>
+            </table>
+            <p><strong>Overrides</strong></p>
+            <p>
+              The Real class overrides the following member functions from the
+              Object class:
+            </p>
+            <ul>
+              <li>boolean</li>
+              <li>integer</li>
+              <li>real</li>
+              <li>string</li>
+              <li>__eq__</li>
+              <li>__ne__</li>
+            </ul>
+          </div>
+          <div id="string">
+            <h1 class="pb-2">String Class</h1>
+            <p>
+              Strings in ObjectTalk are sequences of characters and are captured
+              in double quotes and can span multiple lines. Strings may contain
+              UTF-8 characters (like &quot;€&quot;) or use JSON style encoding
+              like &quot;Most Europeans like the \u00C4.\n&quot;.
+            </p>
+            <p><strong>Member Functions</strong></p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Function</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>__gt__(string)</td>
+                  <td>
+                    Compares string to the object's value alphabetically and
+                    returns a boolean indicating whether the object's value is
+                    greater than the integer or not. This member function is
+                    called when you use the <strong>greater than</strong> (&gt;)
+                    operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__lt__(string)</td>
+                  <td>
+                    Compares string to the object's value alphabetically and
+                    returns a boolean indicating whether the object's value is
+                    less than the integer or not. This member function is called
+                    when you use the <strong>less than</strong> (&lt;) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__ge__(string)</td>
+                  <td>
+                    Compares string to the object's value alphabetically and
+                    returns a boolean indicating whether the object's value is
+                    greater or equal than the integer or not. This member
+                    function is called when you use the
+                    <strong>greater or equal than</strong> (&gt;=) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__le__(string)</td>
+                  <td>
+                    Compares string to the object's value alphabetically and
+                    returns a boolean indicating whether the object's value is
+                    less or equal than the integer or not. This member function
+                    is called when you use the
+                    <strong>less or equal than</strong> (&lt;=) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>casecmp(string)</td>
+                  <td>
+                    Compares string to the object's value alphabetically but
+                    case independently and returns an integer indicating whether
+                    the object's value is less, equal or greater than the
+                    string.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__index__(integer)</td>
+                  <td>
+                    Return a
+                    <a href="StringReference.md">StringReference</a> object to
+                    address individual characters in a string. This member
+                    function is called when you use the
+                    <strong>index</strong> ([]) operator. You typically don't
+                    call this member function directly.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__iter__()</td>
+                  <td>
+                    Return a
+                    <a href="StringIterator.md">StringIterator</a> object to
+                    iterate through individual characters in a string. This
+                    member function is called when you use the
+                    <strong>for in</strong> statement. You typically don't call
+                    this member function directly.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__add__(string)</td>
+                  <td>
+                    Concatenates string to the object's value and returns
+                    result. This member function is called when you use the
+                    <strong>addition</strong> (+) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__contains__(string)</td>
+                  <td>
+                    Determine if string is contained in objects value. This
+                    member function is called when you use the
+                    <strong>(not) in</strong> operators.
+                  </td>
+                </tr>
+                <tr>
+                  <td>len()</td>
+                  <td>Return number of characters in object's value.</td>
+                </tr>
+                <tr>
+                  <td>left(len)</td>
+                  <td>
+                    Return the left most number of characters in object's value.
+                    If number is higher than length of string, the entire string
+                    is returned.
+                  </td>
+                </tr>
+                <tr>
+                  <td>right(len)</td>
+                  <td>
+                    Return the right most number of characters in object's
+                    value. If number is higher than length of string, the entire
+                    string is returned.
+                  </td>
+                </tr>
+                <tr>
+                  <td>mid(pos, len)</td>
+                  <td>
+                    Return the portion of the object's value that starts at
+                    character position pos and spans len characters (or until
+                    the end of the string, whichever comes first).
+                  </td>
+                </tr>
+                <tr>
+                  <td>find(string)</td>
+                  <td>
+                    Searches the object's value for the first occurrence of the
+                    specified string and return its position. If string is not
+                    found, -1 is returned.
+                  </td>
+                </tr>
+                <tr>
+                  <td>startsWith(string)</td>
+                  <td>
+                    Determines if the object's value starts with the specified
+                    string. A Boolean is returned.
+                  </td>
+                </tr>
+                <tr>
+                  <td>contains(string)</td>
+                  <td>
+                    Determines if the object's value contains the specified
+                    string. A Boolean is returned.
+                  </td>
+                </tr>
+                <tr>
+                  <td>trim()</td>
+                  <td>
+                    Trim all whitespaces (SPACE, TAB, VTAB, CR, LF) from the
+                    start and the end of the object's value and return result.
+                  </td>
+                </tr>
+                <tr>
+                  <td>ltrim()</td>
+                  <td>
+                    Trim all whitespaces (SPACE, TAB, VTAB, CR, LF) from the
+                    start of the object's value and return result.
+                  </td>
+                </tr>
+                <tr>
+                  <td>rtrim()</td>
+                  <td>
+                    Trim all whitespaces (SPACE, TAB, VTAB, CR, LF) from the end
+                    of the object's value and return result.
+                  </td>
+                </tr>
+                <tr>
+                  <td>compress()</td>
+                  <td>
+                    Trim all whitespaces (SPACE, TAB, VTAB, CR, LF) from the
+                    start and the end of the object's value, replace whitespace
+                    sequence in the middle with a single space and return
+                    result.
+                  </td>
+                </tr>
+                <tr>
+                  <td>lower()</td>
+                  <td>
+                    Convert all characters in the object's value to lowercase
+                    and return result.
+                  </td>
+                </tr>
+                <tr>
+                  <td>upper()</td>
+                  <td>
+                    Convert all characters in the object's value to uppercase
+                    and return result.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p><strong>Overrides</strong></p>
+            <p>
+              The String class overrides the following member functions from the
+              Object class:
+            </p>
+            <ul>
+              <li>boolean</li>
+              <li>integer</li>
+              <li>real</li>
+              <li>string</li>
+              <li>json</li>
+              <li>__eq__</li>
+              <li>__ne__</li>
+            </ul>
+          </div>
+          <div id="function">
+            <h1 class="pb-2">Function Class</h1>
+            <p>
+              Functions in ObjectTalk are primitive values. This means that we
+              can pass a function around like any other primitive. Function are
+              first class citizens in ObjectTalk.
+            </p>
+            <p>
+              In ObjectTalk, there are two types of functions: those that are
+              mapped to machine level C or C++ code and those that are written
+              in ObjectTalk. From a usage perspective there is no difference and
+              both are called the same way, stored the same way and can be
+              passed as arguments. The two examples below create the same
+              result. In the first case, you see a traditional function
+              declaration where as in the second case, an anonymous (lambda)
+              function is assigned a variable.
+            </p>
+            <pre><code>function test() {
+}
+
+var test = function() {
+};
+</code></pre>
+            <p>
+              Class &quot;methods&quot; in ObjectTalk are regular functions and
+              the ObjectTalk compiler translates a perceived method call into a
+              function call. In the example below the test member of an object
+              is called with object as the first parameter. This is why methods
+              (member functions) in their definition must have a first parameter
+              that refers to the object. ObjectTalk does not care if you call
+              that first member self, this or anything else. You can also see in
+              the example that methods (member functions) can be declared in a
+              traditional way or as lambda assignments.
+            </p>
+            <pre><code>object.test(p1, p2); becomes test(object, p1, p2);
+
+class Test : Object {
+	function test(this, p1, p2) {
+	}
+
+	function test2(self) {
+	}
+
+	var test3 = function(object) {
+	}
+}
+</code></pre>
+            <p><strong>Member Functions</strong></p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Function</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>__call__(...)</td>
+                  <td>execute the function and return the result.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="collection">
+            <h1 class="pb-2">Collection Class</h1>
+            <p>
+              The Collection class is an abstract class without any
+              functionality derived from <a href="Object.md">Object</a>. The
+              purpose of it in ObjectTalk is simply to group all collection
+              classes and to provide a common base class for them.
+            </p>
+            <p>
+              <a href="Array.md">Arrays</a>
+              <a href="Dict.md">Dictionaries</a> and
+              <a href="Set.md">Sets</a> are derived from this class.
+            </p>
+          </div>
+          <div id="array">
+            <h1 class="pb-2">Array Class</h1>
+            <p>
+              Arrays are sequences of objects that can be constructed using
+              square brackets ([]) or through the Array class constructor. The
+              Array class has many member functions to manipulate the content of
+              an array.
+            </p>
+            <pre><code>var array1 = [ 1, 2, &quot;test&quot;, 7 + 4, a ];
+var array2 = Array(3.14, 7, 34, 1);
+
+array1.append(&quot;new value&quot;);
+var thirdValue = array1[3];
+
+var array3 = [3.14, [3, 5, 4], 34, 1];
+</code></pre>
+            <p><strong>Member Functions</strong></p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Function</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>__init__(...)</td>
+                  <td>
+                    Construct an array. This member function is called when you
+                    use the <strong>execution</strong> [()] operator on the
+                    Array class. Every value passed to this function becomes a
+                    member of the new array. You typically don't call this
+                    member function directly.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__index__(integer)</td>
+                  <td>
+                    Return an
+                    <a href="ArrayReference.md">ArrayReference</a> object to
+                    address individual objects in an array. This member function
+                    is called when you use the <strong>index</strong> ([])
+                    operator. You typically don't call this member function
+                    directly.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__iter__()</td>
+                  <td>
+                    Return an
+                    <a href="ArrayIterator.md">ArrayIterator</a> object to
+                    iterate through objects in an array. This member function is
+                    called when you use the <strong>for in</strong> statement.
+                    You typically don't call this member function directly.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__add__(object)</td>
+                  <td>
+                    Append object to the array and return a new array. This
+                    member function is called when you use the
+                    <strong>addition</strong> (+) operator. If the object is
+                    another array, it will be added as a single member creating
+                    an array hierarchy. If you want to join two arrays, use the
+                    join member function.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__contains__(object)</td>
+                  <td>Determine if object is member of array.</td>
+                </tr>
+                <tr>
+                  <td>size()</td>
+                  <td>Return number of objects in array.</td>
+                </tr>
+                <tr>
+                  <td>find(object)</td>
+                  <td>
+                    Find object in array and return its position. If object is
+                    not found, -1 is returned.
+                  </td>
+                </tr>
+                <tr>
+                  <td>contains(object)</td>
+                  <td>
+                    Determine if object is member of array. This member function
+                    is called when you use the
+                    <strong>(not) in</strong> operator. You typically don't call
+                    this member function directly.
+                  </td>
+                </tr>
+                <tr>
+                  <td>clone()</td>
+                  <td>Return a clone of the array.</td>
+                </tr>
+                <tr>
+                  <td>join(array)</td>
+                  <td>
+                    Append array to object's value and return a new array.
+                  </td>
+                </tr>
+                <tr>
+                  <td>clear()</td>
+                  <td>Clear (empty) the array.</td>
+                </tr>
+                <tr>
+                  <td>append(object)</td>
+                  <td>Append object to array.</td>
+                </tr>
+                <tr>
+                  <td>insert(index, object)</td>
+                  <td>Insert object at specified location.</td>
+                </tr>
+                <tr>
+                  <td>erase(index)</td>
+                  <td>Remove object at specified location.</td>
+                </tr>
+                <tr>
+                  <td>eraseMultiple(from, to)</td>
+                  <td>Remove all objects between specified locations.</td>
+                </tr>
+                <tr>
+                  <td>push(object)</td>
+                  <td>
+                    Push object to array. This is the same as append but makes
+                    it more logical if you use an array as a stack.
+                  </td>
+                </tr>
+                <tr>
+                  <td>pop()</td>
+                  <td>
+                    Pop object from the end of the array allowing it to be used
+                    as a stack.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p><strong>Overrides</strong></p>
+            <p>
+              The Array class overrides the following member functions from the
+              Object class:
+            </p>
+            <ul>
+              <li>string</li>
+            </ul>
+          </div>
+          <div id="dict">
+            <h1 class="pb-2">Dict Class</h1>
+            <p>
+              Dictionaries contain indexed key/value pairs that are constructed
+              using curly brackets ({}) or through the Dict class constructor.
+              The Dict class also has many member functions to manipulate the
+              content of a dictionary.
+            </p>
+            <pre><code>var dict1 = [ &quot;First Name&quot;: &quot;John&quot;, &quot;Last Name&quot;: &quot;Doe&quot;, &quot;Age&quot;: 34 };
+var dict2 = Dict(&quot;Name&quot;, &quot;John Doe&quot;, &quot;Address&quot;, &quot;Unknown&quot;);
+
+dict1[&quot;Last Update&quot;] = &quot;1 Apr 2000&quot;;
+var name = dict2[&quot;Name&quot;];
+</code></pre>
+            <p><strong>Member Functions</strong></p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Function</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>__init__(...)</td>
+                  <td>
+                    Construct a dictionary. This member function is called when
+                    you use the <strong>execution</strong> [()] operator on the
+                    Dict class. Every two parameters will become a dictionary
+                    entry. The first is the index and the second is the value.
+                    You typically don't call this member function directly.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__index__(string)</td>
+                  <td>
+                    Return a <a href="DictReference.md">DictReference</a> object
+                    to address individual objects in a dictionary. This member
+                    function is called when you use the
+                    <strong>index</strong> ([]) operator. You typically don't
+                    call this member function directly.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__add__(dict)</td>
+                  <td>
+                    Concatenates objects from the dictionary to this object's
+                    value and return a new dictionary. This member function is
+                    called when you use the <strong>addition</strong> (+)
+                    operator. In case there are duplicates, the entries in the
+                    operand will win. You typically don't call this member
+                    function directly.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__contains__(string)</td>
+                  <td>
+                    Determine if named object is member of dictionary. This
+                    member function is called when you use the
+                    <strong>(not) in</strong> operator. You typically don't call
+                    this member function directly.
+                  </td>
+                </tr>
+                <tr>
+                  <td>size()</td>
+                  <td>Return number of objects in the dictionary.</td>
+                </tr>
+                <tr>
+                  <td>contains(key)</td>
+                  <td>See if we have named object in dictionary.</td>
+                </tr>
+                <tr>
+                  <td>clone()</td>
+                  <td>Return a clone of the dictionary.</td>
+                </tr>
+                <tr>
+                  <td>clear()</td>
+                  <td>Clear (empty) the dictionary.</td>
+                </tr>
+                <tr>
+                  <td>erase(string)</td>
+                  <td>Remove the named object from the dictionary.</td>
+                </tr>
+                <tr>
+                  <td>keys()</td>
+                  <td>Return an array with all the dictionary's keys.</td>
+                </tr>
+                <tr>
+                  <td>values()</td>
+                  <td>Return an array with all the dictionary's values.</td>
+                </tr>
+              </tbody>
+            </table>
+            <p><strong>Overrides</strong></p>
+            <p>
+              The Dict class overrides the following member functions from the
+              Object class:
+            </p>
+            <ul>
+              <li>string</li>
+            </ul>
+          </div>
+          <div id="set">
+            <h1 class="pb-2">Set Class</h1>
+            <p>
+              Sets store distinct values in a collection without defined order.
+              You can use a set instead of an array when the order of items
+              isn’t important, or when you need to ensure that an item only
+              appears once. Sets can be created using the Set class constructor.
+              The Set class also has many member functions to manipulate the
+              content of a set or to perform set operations (e.g. union,
+              difference).
+            </p>
+            <pre><code>var set = Set(1, 2, 3, 5);
+var set2 = Set(1, 3, 6, 8);
+
+assert(set.intersection(set2) == Set(1, 3));
+assert(set.difference(set2) == Set(2, 5, 6, 8));
+assert(set.union(set2) == Set(1, 2, 3, 5, 6, 8));
+assert(set.subtract(set2) == Set(2, 5));
+</code></pre>
+            <p><strong>Member Functions</strong></p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Function</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>__init__(...)</td>
+                  <td>
+                    Construct a Set. This member function is called when you use
+                    the <strong>execution</strong> [()] operator on the Set
+                    class. Every value passed to this member function becomes a
+                    member of the new set. You typically don't call this member
+                    function directly.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__iter__()</td>
+                  <td>
+                    Return a <a href="SetIterator.md">SetIterator</a> object to
+                    iterate through objects in a set. This member function is
+                    called when you use the <strong>for in</strong> statement.
+                    You typically don't call this member function directly.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__add__(object)</td>
+                  <td>
+                    Add object to the set and return a new set. This member
+                    function is called when you use the
+                    <strong>addition</strong> (+) operator. If the object is
+                    another set, it will be added as a single member creating a
+                    set hierarchy. If you want to perform mathematical function
+                    on two sets use the intersection, difference, union and
+                    subtract functions.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__sub__(object)</td>
+                  <td>
+                    Remove object from the set and return a new set. This member
+                    function is called when you use the
+                    <strong>subtraction</strong> (-) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__contains__(object)</td>
+                  <td>
+                    Determine if object is a member of the set. This member
+                    function is called when you use the
+                    <strong>(not) in</strong> operator. You typically don't call
+                    this member function directly.
+                  </td>
+                </tr>
+                <tr>
+                  <td>size()</td>
+                  <td>Return number of objects in the set.</td>
+                </tr>
+                <tr>
+                  <td>contains(object)</td>
+                  <td>Determine if object is a member of the set.</td>
+                </tr>
+                <tr>
+                  <td>clone()</td>
+                  <td>Return a clone of the set.</td>
+                </tr>
+                <tr>
+                  <td>clear()</td>
+                  <td>Clear (empty) the set.</td>
+                </tr>
+                <tr>
+                  <td>add(object)</td>
+                  <td>Add object to the set.</td>
+                </tr>
+                <tr>
+                  <td>erase(object)</td>
+                  <td>Remove object from the set.</td>
+                </tr>
+                <tr>
+                  <td>intersection(set)</td>
+                  <td>
+                    Return a new set with only the values common to both sets.
+                  </td>
+                </tr>
+                <tr>
+                  <td>difference(set)</td>
+                  <td>
+                    Return a new set with values in either set, but not both.
+                  </td>
+                </tr>
+                <tr>
+                  <td>union(set)</td>
+                  <td>Return a new set with all of the values in both sets.</td>
+                </tr>
+                <tr>
+                  <td>subtract(set)</td>
+                  <td>
+                    Return a new set with values not in the specified set.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p><strong>Overrides</strong></p>
+            <p>
+              The Set class overrides the following member functions from the
+              Object class:
+            </p>
+            <ul>
+              <li>string</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="row flex-shrink-0 py-1 manual-footer" id="copyright">
+        <p class="mx-auto py-0 my-0 small">
+          Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.
+        </p>
+      </div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/theme.js"></script>
+  </body>
+</html>

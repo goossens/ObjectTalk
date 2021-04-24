@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>ObjectTalk Guide</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/theme.css" />
+  </head>
+  <body id="page-top">
+    <div
+      class="container-fluid d-flex flex-column flex-grow-1 vh-100 overflow-hidden"
+    >
+      <nav
+        class="navbar navbar-expand px-0 pt-1 pb-0 flex-shrink-0 manual-header"
+      >
+        <a class="navbar-brand" href="index.html"
+          ><img src="img/icon.png" height="40" alt="" /><span class="ml-2"
+            >Documentation</span
+          ></a
+        ><button
+          class="navbar-toggler navbar-toggler-right"
+          data-toggle="collapse"
+          data-target="#navbarResponsive"
+          type="button"
+          data-toogle="collapse"
+          aria-controls="navbarResponsive"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <i class="fa fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item text-right">
+              <a class="nav-link page-scroll" href="tour.html">Tour</a>
+            </li>
+            <li class="nav-item text-right">
+              <a class="nav-link page-scroll" href="guide.html">Guide</a>
+            </li>
+            <li class="nav-item text-right">
+              <a class="nav-link page-scroll" href="reference.html"
+                >Reference</a
+              >
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <div class="row flex-grow-1 overflow-hidden vh-100">
+        <div class="col-2 mh-100 overflow-auto py-2 manual-toc">
+          <p class="pt-2"><strong>ObjectTalk Guide</strong></p>
+          <ul>
+            <li><a class="page-scroll" href="#basics">The Basics</a></li>
+            <li><a class="page-scroll" href="#collections">Collections</a></li>
+            <li><a class="page-scroll" href="#.operators">Operators</a></li>
+            <li><a class="page-scroll" href="#statements">Statements</a></li>
+            <li><a class="page-scroll" href="#scope">Scope</a></li>
+            <li><a class="page-scroll" href="#modules">Modules</a></li>
+            <li><a class="page-scroll" href="#classes">Classes</a></li>
+            <li><a class="page-scroll" href="#properties">Properties</a></li>
+            <li><a class="page-scroll" href="#functions">Functions</a></li>
+            <li><a class="page-scroll" href="#closures">Closures</a></li>
+          </ul>
+        </div>
+        <div class="col mh-100 overflow-auto py-2 manual-content">
+          <div id="basics">
+            <h1 class="pb-2">The Basics</h1>
+            <p>
+              ObjectTalk is an object-oriented scripting language that was
+              developed from the ground up to be efficient and pure.
+              Nonetheless, many parts of ObjectTalk will be familiar your
+              experience of developing in C and derived languages.
+            </p>
+            <p>
+              ObjectTalk provides its own versions of all fundamental C types,
+              including Booleans, Integers (for int), Reals (for double), String
+              for textual data and Functions as first class primitives.
+              ObjectTalk also provides powerful versions of the three primary
+              collection types, Array, Dictionary and sets, as described in
+              Collection Types. In fact, in ObjectTalk everything is an object
+              derived from a class and the word type is only used internally in
+              the language's runtime. Primitives like Booleans, Integers, Reals,
+              Strings and Functions are objects just like Array, Dict, Sets and
+              HTTP servers.
+            </p>
+            <p><strong>Variables</strong></p>
+            <p>
+              Variables associate a name (e.g. myVariable) with an object
+              derived from a certain class (e.g. the number 10 or the string
+              &quot;Hello&quot;). Variables in ObjectTalk must be declared to
+              establish visibility in a certain scope. In the following example
+              (let's assume this is at the top level of a module), the value 10
+              will be assigned to variable myVariable in the module's scope.
+            </p>
+            <pre><code>var myVariable = 10;
+print(myVariable); // this will print the number 10.
+</code></pre>
+            <p>
+              In the following example, the variable is assigned to a class and
+              therefore becomes a class member.
+            </p>
+            <pre><code>class myClass: Object {
+	var myVariable = 10;
+}
+
+print(myClass.myVariable); // this will print the number 10.
+</code></pre>
+            <p>
+              As you can see from the examples, the variables do not have to be
+              type declared as the assignment determines what type of object is
+              stored in the variable.
+            </p>
+            <p><strong>Comments</strong></p>
+            <p>
+              In ObjectTalk, you can uses comments to include non-executable
+              text in your code or as a note or reminder to yourself. Comments
+              are ignored by the ObjectTalk compiler when your code is compiled.
+              ObjectTalk allows three types of comments: multiline C-style
+              comments, single line C++ style comments and single line
+              shell-style comments.
+            </p>
+            <p>
+              Multiline C-style comments start with a forward-slash followed by
+              an asterisk:
+            </p>
+            <pre><code>/* This is also a comment
+   written over multiple lines. */
+</code></pre>
+            <p>
+              Single-line C++ style comments begin with two forward-slashes:
+            </p>
+            <pre><code>// This is a comment.
+</code></pre>
+            <p>Single-line shell-style comments begin with a number sign:</p>
+            <pre><code># This is a comment.
+</code></pre>
+            <p>
+              A shell style comment allows ObjectTalk scripts to be made
+              executable in UNIX type systems. The following first line
+              (typically called a &quot;shebang&quot;) tells the UNIX shell to
+              execute this script with the ObjectTalk interpreter.
+            </p>
+            <pre><code>#!/usr/bin/ot
+</code></pre>
+            <p><strong>Semicolons</strong></p>
+            <p>
+              Unlike some newer languages, ObjectTalk mandates the use of
+              Semicolons at the end of statements that don't end with a block.
+              This allows statements to be written over multiple lines (without
+              the need for backslashes) and it avoids possible ambiguity. For
+              example, earlier versions of ObjectTalk allowed:
+            </p>
+            <pre><code>a = 10
+++b
+</code></pre>
+            <p>
+              To most people, it is obvious that we want to assign the number 10
+              to variable a and increment variable b. The compiler however
+              doesn't known the first statement ended after the number 10 and it
+              will generate code for:
+            </p>
+            <pre><code>a = 10++;
+b;
+</code></pre>
+            <p>
+              To avoid this confusion, semicolons are mandatory at the end of
+              statements that don't end with a block so the ObjectTalk script
+              should have read:
+            </p>
+            <pre><code>a = 10;
+++b;
+</code></pre>
+            <p><strong>Null</strong></p>
+            <p>
+              Null is a special value that indicates a valueless state. All
+              instances of the Object class all null values.
+            </p>
+            <pre><code>var nothing = null;
+var alsoNothing = Object();
+</code></pre>
+            <p><strong>Booleans</strong></p>
+            <p>
+              <a href="reference.html#boolean">Booleans</a> in ObjectTalk can
+              only hold two logical values: true and false. The default global
+              scope defines the variables <strong>true</strong> and
+              <strong>false</strong> as a convenience. A large number of
+              language operators or member functions return Booleans as a
+              result.
+            </p>
+            <pre><code>var bool1 = true;
+var bool2 = false;
+var bool3 = !bool2;
+</code></pre>
+            <p><strong>Integers</strong></p>
+            <p>
+              <a href="reference.html#integer">Integers</a> are signed whole
+              numbers with no fractional component, such as 42 and -23. On most
+              systems, this number is implemented as a 64-bit number meaning
+              that the extremes are -9,223,372,036,854,775,808 and
+              9,223,372,036,854,775,807 (inclusive).
+            </p>
+            <p>Integer literals can be written as:</p>
+            <ul>
+              <li>A decimal number, with no prefix</li>
+              <li>A binary number, with a 0b or 0B prefix</li>
+              <li>An octal number, with a 0o or 0O prefix</li>
+              <li>A hexadecimal number, with a 0x or 0X prefix</li>
+            </ul>
+            <p>
+              All the following integer literals have a decimal value of 17:
+            </p>
+            <pre><code>var decimalInteger = 17;
+var binaryInteger = 0b10001;       // 17 in binary notation
+var octalInteger = 0o21;           // 17 in octal notation
+var hexadecimalInteger = 0x11;     // 17 in hexadecimal notation
+</code></pre>
+            <p><strong>Reals</strong></p>
+            <p>
+              <a href="reference.html#real">Reals</a> are signed floating point
+              numbers with a fractional component, such as 3.14159, 0.1, and
+              -273.15. Reals are implemented using 8 bytes and have a range of
+              1.7E +/- 308 (15 digits).
+            </p>
+            <p>
+              Real literals can be written as a floating point number with or
+              without an exponent:
+            </p>
+            <pre><code>var decimalDouble = 12.1875;
+var exponentDouble = 1.21875e1;
+</code></pre>
+            <p><strong>Strings</strong></p>
+            <p>
+              <a href="reference.html#string">Strings</a> are a series of
+              characters, such as &quot;hello, world&quot; or
+              &quot;albatross&quot;. ObjectTalk strings are instances of the
+              String class. Strings are made up of unicode characters encoded in
+              UTF-8. Given that UTF-8 uses variable length encoding, ObjectTalk
+              does not measure or index strings in bytes but rather in codewords
+              that represent a character whether it is 1,2, 3 or 4 bytes long.
+            </p>
+            <p>
+              String literals are encoded using the same logic as JSON making it
+              easy to exchange with other languages.A string literal is a
+              sequence of characters surrounded by double quotation marks
+              (&quot;).
+            </p>
+            <pre><code>var someString = &quot;Some string literal value&quot;;
+var message = &quot;\tMost Europeans like the \u00C4.\n&quot;;
+</code></pre>
+            <p>Multiline strings can also be created:</p>
+            <pre><code>var quotation = &quot;The White Rabbit put on his spectacles.
+	\&quot;Where shall I begin, please your Majesty?\&quot; he asked.
+
+	\&quot;Begin at the beginning,\&quot; the King said gravely,
+	\&quot;and go on till you come to the end; then stop.\&quot;&quot;;
+</code></pre>
+            <p><strong>Functions</strong></p>
+            <p>
+              <a href="reference.html#function">Functions</a> are self-contained
+              chunks of code that perform a specific task. You give a function a
+              name that identifies what it does, and this name is used to “call”
+              the function to perform its task when needed.
+            </p>
+            <pre><code>function test1(callback) {
+	callback();
+}
+
+var test2 = function() {
+	print(&quot;Hello, world!&quot;);
+};
+
+test1(test2);
+</code></pre>
+          </div>
+          <div id="collections">
+            <h1 class="pb-2">Collections</h1>
+            <p>
+              ObjectTalk provides three primary collection types, known as
+              <a href="reference.html#array">Arrays</a>,
+              <a href="reference.html#dict">Dictionaries</a> and
+              <a href="reference.html#set">Sets</a>, for storing collections of
+              values. Arrays are ordered collections of values. Dictionaries are
+              unordered collections of key-value associations. Sets are
+              unordered collections of unique values.
+            </p>
+            <h3>Arrays</h3>
+            <p>
+              An array stores values in an ordered list. The same value can
+              appear in an array multiple times at different positions.
+            </p>
+            <p><strong>Creating an Array</strong></p>
+            <p>
+              You can create an array using a literal or the Array class
+              constructor:
+            </p>
+            <pre><code>var array1 = [];
+var array2 = [1, 2, 3.14, &quot;test&quot;];
+var array3 = Array();
+var array4 = Array(1, 2, 3.14, &quot;test);
+</code></pre>
+            <p><strong>Accessing and Modifying an Array</strong></p>
+            <p>
+              You access and modify an array through its member functions, or by
+              using the index (<strong>[]</strong>) and addition
+              (<strong>+</strong>) operators.
+            </p>
+            <pre><code>var array = [1, 2, 3.14, &quot;test&quot;];
+
+array.append(&quot;name&quot;);
+array.insert(3);
+array += 9;
+
+var size = array.size();
+
+var entry = array[2];
+array[0] = 0;
+
+array.erase(2);
+array.eraseMultiple(1, 2);
+array.clear();
+</code></pre>
+            <p>You can combine arrays:</p>
+            <pre><code>var array1 = [1, 2, 3.14, &quot;test&quot;];
+var array2 = [8, 9];
+
+var array3 = array1.join(array2);
+// array3 is now [1, 2, 3.14, &quot;test&quot;, 8, 9]
+</code></pre>
+            <p>You can use an array as a stack:</p>
+            <pre><code>var stack = Array();
+stack.push(5);
+var item = stack.pop();
+</code></pre>
+            <p><strong>Iterating over an Array</strong></p>
+            <p>
+              You can iterate over the entire set of values in an array with the
+              <strong>for-in</strong> loop:
+            </p>
+            <pre><code>var array = [1, 2, 3.14, &quot;test&quot;];
+
+for item in array {
+	print(item);
+}
+</code></pre>
+            <h3>Dictionaries</h3>
+            <p>
+              A dictionary stores associations between string keys and values in
+              a collection with no defined ordering. Each value is associated
+              with a unique key, which acts as an identifier for that value
+              within the dictionary. Unlike items in an array, items in a
+              dictionary don’t have a specified order. You use a dictionary when
+              you need to look up values based on their identifier, in much the
+              same way that a real-world dictionary is used to look up the
+              definition for a particular word.
+            </p>
+            <p><strong>Creating a Dictionary</strong></p>
+            <p>
+              You can create an Dictionary using a literal or the Dict class
+              constructor:
+            </p>
+            <pre><code>var dict1 = { &quot;name&quot;: &quot;Doe&quot;, &quot;age&quot;: 29 };
+var dict2 = Dict(&quot;name&quot;: &quot;Smith&quot;, &quot;age&quot;: 31);
+</code></pre>
+            <p><strong>Accessing and Modifying a Dictionary</strong></p>
+            <p>
+              You access and modify a dictionary through its member functions,
+              or by using index operator (<strong>[]</strong>).
+            </p>
+            <pre><code>var dict = Dict();
+
+dict[&quot;name&quot;] = &quot;John&quot;;
+dict[&quot;age&quot;] = 39;
+dict.erase(&quot;age&quot;);
+
+var size = dict.size();
+
+dict.clear();
+</code></pre>
+            <p><strong>Iterating over a Dictionary</strong></p>
+            <p>You can iterate over a dictionary's keys or values.</p>
+            <pre><code>var dict = { &quot;name&quot;: &quot;Doe&quot;, &quot;age&quot;: 29 };
+
+for key in dict.keys() {
+	print(key);
+}
+
+for value in dict.values() {
+	print(value);
+}
+</code></pre>
+            <p><strong>Dictionary Membership</strong></p>
+            <p>
+              Dictionary membership can be determined with the
+              <strong>(not) in</strong> operators or the contains member
+              functions.
+            </p>
+            <p>
+              var dict = { &quot;name&quot;: &quot;Doe&quot;, &quot;age&quot;:
+              29 };
+            </p>
+            <pre><code>assert(&quot;name&quot; in dict);
+assert(&quot;address&quot; not in dict);
+assert(dict.contains(&quot;age&quot;) == true);
+</code></pre>
+            <h3>Sets</h3>
+            <p>
+              A set stores distinct values in a collection with no defined
+              ordering. You can use a set instead of an array when the order of
+              items isn’t important, or when you need to ensure that an item
+              only appears once.
+            </p>
+            <p><strong>Creating a Set</strong></p>
+            <p>You can create a set with the Set class constructor.</p>
+            <pre><code>var set1 = Set();
+var set2 = Set(1, 5, 9);
+</code></pre>
+            <p><strong>Accessing and Modifying a Set</strong></p>
+            <p>
+              You access and modify a set through its member functions, or by
+              using the addition (<strong>+</strong>) and subtraction
+              (<strong>-</strong>) operators.
+            </p>
+            <pre><code>var set = Set();
+set.insert(1);
+set += 2;
+set.insert(4);
+s -= 1;
+set.erase(2);
+
+var size = set.size();
+</code></pre>
+            <p><strong>Set Operations</strong></p>
+            <p>
+              You can efficiently perform fundamental set operations, such as
+              combining two sets together, determining which values two sets
+              have in common, or determining whether two sets contain all, some,
+              or none of the same values.
+            </p>
+            <pre><code>var set = Set(1, 2, 3, 5);
+var set2 = Set(1, 3, 6, 8);
+
+assert(set.intersection(set2) == Set(1, 3));
+assert(set.difference(set2) == Set(2, 5, 6, 8));
+assert(set.union(set2) == Set(1, 2, 3, 5, 6, 8));
+assert(set.subtract(set2) == Set(2, 5));
+</code></pre>
+            <p><strong>Iterating over a Set</strong></p>
+            <p>
+              You can iterate over the entire set of values in an array with the
+              <strong>for-in</strong> loop:
+            </p>
+            <pre><code>var set = Set(1, 2, 3.14, &quot;test&quot;);
+
+for item in set {
+	print(item);
+}
+</code></pre>
+            <p><strong>Set Membership</strong></p>
+            <p>
+              Set membership can be determined with the
+              <strong>(not) in</strong> operators or the contains member
+              functions.
+            </p>
+            <pre><code>var set = Set(1, 2, 3.14, &quot;test&quot;);
+
+assert(1 in set);
+assert(&quot;hello&quot; not in set);
+assert(set.contains(&quot;test&quot;) == true);
+</code></pre>
+          </div>
+          <div id="operators">
+            <h1 class="pb-2">Operators</h1>
+            <p>
+              An operator is a special symbol or phrase that you use to check,
+              change, or combine values. For example, the addition operator (+)
+              adds two objects, as in <strong>var i = 1 + 2</strong>, and the
+              logical AND operator (&amp;&amp;) combines two Boolean values, as
+              in
+              <strong>if enteredDoorCode &amp;&amp; passedRetinaScan</strong>.
+              ObjectTalk supports the operators you may already know from
+              languages like C.
+            </p>
+            <p><strong>Terminology</strong></p>
+            <p>Operators are unary, binary, or ternary:</p>
+            <ul>
+              <li>
+                <strong>Unary operators</strong> operate on a single target
+                (such as -a). Unary prefix operators appear immediately before
+                their target (such as !b), and unary postfix operators appear
+                immediately after their target (such as c!).
+              </li>
+              <li>
+                <strong>Binary operators</strong> operate on two targets (such
+                as 2 + 3) and are infix because they appear in between their two
+                targets.
+              </li>
+              <li>
+                <strong>Ternary operators</strong> operate on three targets.
+                Like C, ObjectTalk has only one ternary operator, the ternary
+                conditional operator (a ? b : c).
+              </li>
+            </ul>
+            <p>
+              The values that operators affect are operands. In the expression 1
+              + 2, the + symbol is a binary operator and its two operands are
+              the values 1 and 2.
+            </p>
+            <p><strong>Assignment Operator</strong></p>
+            <p>
+              The assignment operator <strong>(a = b)</strong> initializes or
+              updates the value of a with the value of b:
+            </p>
+            <pre><code>var b = 10;
+var a = 5;
+a = b;
+// a is now equal to 10
+</code></pre>
+            <p><strong>Arithmetic Operators</strong></p>
+            <p>ObjectTalk supports the four standard arithmetic operators:</p>
+            <ul>
+              <li>Addition (+)</li>
+              <li>Subtraction (-)</li>
+              <li>Multiplication (*)</li>
+              <li>Division (/)</li>
+            </ul>
+            <p>Examples:</p>
+            <pre><code>1 + 2       // equals 3
+5 - 3       // equals 2
+2 * 3       // equals 6
+10.0 / 2.5  // equals 4.0
+</code></pre>
+            <p>
+              The addition operator is also supported for String concatenation
+              or for any class that implements the __add__ member function.
+            </p>
+            <pre><code>&quot;hello, &quot; + &quot;world&quot;  // equals &quot;hello, world&quot;
+</code></pre>
+            <p><strong>Remainder Operator</strong></p>
+            <p>
+              The remainder operator <strong>(a % b)</strong> works out how many
+              multiples of b will fit inside a and returns the value that’s left
+              over (known as the remainder).
+            </p>
+            <p><strong>Unary Minus Operator</strong></p>
+            <p>
+              The sign of a numeric value can be toggled using a prefixed -,
+              known as the unary minus operator:
+            </p>
+            <pre><code>var three = 3;
+var minusThree = -three;       // equals -3
+var plusThree = -minusThree;   // equals 3, or &quot;minus minus three&quot;
+</code></pre>
+            <p>
+              The unary minus operator (-) is prepended directly before the
+              value it operates on, without any white space.
+            </p>
+            <p><strong>Unary Plus Operator</strong></p>
+            <p>
+              The unary plus operator <strong>(+)</strong> simply returns the
+              value it operates on, without any change:
+            </p>
+            <pre><code>let minusSix = -6;
+let alsoMinusSix = +minusSix;  // equals -6
+</code></pre>
+            <p>
+              Although the unary plus operator doesn’t actually do anything, you
+              can use it to provide symmetry in your code for positive numbers
+              when also using the unary minus operator for negative numbers.
+            </p>
+            <p><strong>Compound Assignment Operators</strong></p>
+            <p>
+              Like C, ObjectTalk provides compound assignment operators that
+              combine assignment <strong>(=)</strong> with another operation.
+              One example is the addition assignment operator
+              <strong>(+=)</strong>:
+            </p>
+            <pre><code>var a = 1;
+a += 2;
+// a is now equal to 3
+</code></pre>
+            <p>
+              The expression a += 2 is shorthand for a = a + 2. Effectively, the
+              addition and the assignment are combined into one operator that
+              performs both tasks at the same time.
+            </p>
+            <p><strong>Comparison Operators</strong></p>
+            <p>ObjectTalk supports the following comparison operators:</p>
+            <ul>
+              <li>Equal to (a == b)</li>
+              <li>Not equal to (a != b)</li>
+              <li>Greater than (a &gt; b)</li>
+              <li>Less than (a &lt; b)</li>
+              <li>Greater than or equal to (a &gt;= b)</li>
+              <li>Less than or equal to (a &lt;= b)</li>
+            </ul>
+            <p>Examples:</p>
+            <pre><code>1 == 1   // true because 1 is equal to 1
+2 != 1   // true because 2 isn't equal to 1
+2 &gt; 1    // true because 2 is greater than 1
+1 &lt; 2    // true because 1 is less than 2
+1 &gt;= 1   // true because 1 is greater than or equal to 1
+2 &lt;= 1   // false because 2 isn't less than or equal to 1
+</code></pre>
+            <p>
+              Comparison operators are often used in conditional statements,
+              such as the if statement:
+            </p>
+            <pre><code>var name = &quot;world&quot;;
+
+if name == &quot;world&quot; {
+    print(&quot;hello, world&quot;)
+
+} else {
+    print(&quot;I'm sorry &quot;, name, &quot;, but I don't recognize you&quot;)
+}
+
+// prints &quot;hello, world&quot;
+</code></pre>
+            <p><strong>Ternary Conditional Operator</strong></p>
+            <p>
+              The ternary conditional operator is a special operator with three
+              parts, which takes the form question ? answer1 : answer2. It’s a
+              shortcut for evaluating one of two expressions based on whether
+              question is true or false. If question is true, it evaluates
+              answer1 and returns its value; otherwise, it evaluates answer2 and
+              returns its value. The ternary conditional operator is shorthand
+              for the code below:
+            </p>
+            <pre><code>if question {
+    answer1
+
+} else {
+    answer2
+}
+</code></pre>
+            <p>
+              Here’s an example, which calculates the height for a table row.
+              The row height should be 50 points taller than the content height
+              if the row has a header, and 20 points taller if the row doesn’t
+              have a header:
+            </p>
+            <pre><code>var contentHeight = 40;
+var hasHeader = true;
+var rowHeight = contentHeight + (hasHeader ? 50 : 20);
+// rowHeight is equal to 90
+</code></pre>
+            <p>The example above is shorthand for the code below:</p>
+            <pre><code>var contentHeight = 40;
+var hasHeader = true;
+var rowHeight;
+
+if hasHeader {
+    rowHeight = contentHeight + 50;
+
+} else {
+    rowHeight = contentHeight + 20;
+}
+
+// rowHeight is equal to 90
+</code></pre>
+            <p>
+              The first example’s use of the ternary conditional operator means
+              that rowHeight can be set to the correct value on a single line of
+              code, which is more concise than the code used in the second
+              example.
+            </p>
+            <p>
+              The ternary conditional operator provides an efficient shorthand
+              for deciding which of two expressions to consider. Use the ternary
+              conditional operator with care, however. Its conciseness can lead
+              to hard-to-read code if overused. Avoid combining multiple
+              instances of the ternary conditional operator into one compound
+              statement.
+            </p>
+            <p><strong>Logical Operators</strong></p>
+            <p>
+              Logical operators modify or combine the Boolean logic values true
+              and false. ObjectTalk supports the three standard logical
+              operators found in C-based languages:
+            </p>
+            <ul>
+              <li>Logical NOT (!a)</li>
+              <li>Logical AND (a &amp;&amp; b)</li>
+              <li>Logical OR (a || b)</li>
+            </ul>
+            <p><strong>Logical NOT Operator</strong></p>
+            <p>
+              The logical NOT operator <strong>(!a)</strong> inverts a Boolean
+              value so that true becomes false, and false becomes true.
+            </p>
+            <p>
+              The logical NOT operator is a prefix operator, and appears
+              immediately before the value it operates on, without any white
+              space. It can be read as “not a”, as seen in the following
+              example:
+            </p>
+            <pre><code>var allowedEntry = false;
+
+if !allowedEntry {
+    print(&quot;ACCESS DENIED&quot;);
+}
+
+// Prints &quot;ACCESS DENIED&quot;
+</code></pre>
+            <p>
+              The phrase if !allowedEntry can be read as “if not allowed entry.”
+              The subsequent line is only executed if “not allowed entry” is
+              true; that is, if allowedEntry is false.
+            </p>
+            <p>
+              As in this example, careful choice of Boolean constant and
+              variable names can help to keep code readable and concise, while
+              avoiding double negatives or confusing logic statements.
+            </p>
+            <p><strong>Logical AND Operator</strong></p>
+            <p>
+              The logical AND operator <strong>(a &amp;&amp; b)</strong> creates
+              logical expressions where both values must be true for the overall
+              expression to also be true.
+            </p>
+            <p>
+              If either value is false, the overall expression will also be
+              false. In fact, if the first value is false, the second value
+              won’t even be evaluated, because it can’t possibly make the
+              overall expression equate to true. This is known as short-circuit
+              evaluation.
+            </p>
+            <p>
+              This example considers two Bool values and only allows access if
+              both values are true:
+            </p>
+            <pre><code>var enteredDoorCode = true;
+var passedRetinaScan = false;
+
+if enteredDoorCode &amp;&amp; passedRetinaScan {
+    print(&quot;Welcome!&quot;);
+
+} else {
+    print(&quot;ACCESS DENIED&quot;);
+}
+
+// Prints &quot;ACCESS DENIED&quot;
+</code></pre>
+            <p><strong>Logical OR Operator</strong></p>
+            <p>
+              The logical OR operator <strong>(a || b)</strong> is an infix
+              operator made from two adjacent pipe characters. You use it to
+              create logical expressions in which only one of the two values has
+              to be true for the overall expression to be true.
+            </p>
+            <p>
+              Like the Logical AND operator above, the Logical OR operator uses
+              short circuit evaluation to consider its expressions. If the left
+              side of a Logical OR expression is true, the right side isn’t
+              evaluated, because it can’t change the outcome of the overall
+              expression.
+            </p>
+            <p>
+              In the example below, the first Bool value (hasDoorKey) is false,
+              but the second value (knowsOverridePassword) is true. Because one
+              value is true, the overall expression also evaluates to true, and
+              access is allowed:
+            </p>
+            <pre><code>var hasDoorKey = false;
+var knowsOverridePassword = true;
+
+if hasDoorKey || knowsOverridePassword {
+    print(&quot;Welcome!&quot;);
+
+} else {
+    print(&quot;ACCESS DENIED&quot;);
+}
+
+// Prints &quot;Welcome!&quot;
+</code></pre>
+            <p><strong>Combining Logical Operators</strong></p>
+            <p>
+              You can combine multiple logical operators to create longer
+              compound expressions:
+            </p>
+            <pre><code>if enteredDoorCode &amp;&amp; passedRetinaScan || hasDoorKey || knowsOverridePassword {
+    print(&quot;Welcome!&quot;);
+
+} else {
+    print(&quot;ACCESS DENIED&quot;);
+}
+
+// Prints &quot;Welcome!&quot;
+</code></pre>
+            <p>
+              This example uses multiple &amp;&amp; and || operators to create a
+              longer compound expression. However, the &amp;&amp; and ||
+              operators still operate on only two values, so this is actually
+              three smaller expressions chained together. The example can be
+              read as:
+            </p>
+            <p>
+              If we’ve entered the correct door code and passed the retina scan,
+              or if we have a valid door key, or if we know the emergency
+              override password, then allow access.
+            </p>
+            <p>
+              Based on the values of enteredDoorCode, passedRetinaScan, and
+              hasDoorKey, the first two subexpressions are false. However, the
+              emergency override password is known, so the overall compound
+              expression still evaluates to true.
+            </p>
+            <p><strong>Explicit Parentheses</strong></p>
+            <p>
+              It’s sometimes useful to include parentheses when they’re not
+              strictly needed, to make the intention of a complex expression
+              easier to read. In the door access example above, it’s useful to
+              add parentheses around the first part of the compound expression
+              to make its intent explicit:
+            </p>
+            <pre><code>if (enteredDoorCode &amp;&amp; passedRetinaScan) || hasDoorKey || knowsOverridePassword {
+    print(&quot;Welcome!&quot;);
+
+} else {
+    print(&quot;ACCESS DENIED&quot;);
+}
+
+// Prints &quot;Welcome!&quot;
+</code></pre>
+            <p>
+              The parentheses make it clear that the first two values are
+              considered as part of a separate possible state in the overall
+              logic. The output of the compound expression doesn’t change, but
+              the overall intention is clearer to the reader. Readability is
+              always preferred over brevity; use parentheses where they help to
+              make your intentions clear.
+            </p>
+            <p><strong>Operator Overview and Priorities</strong></p>
+            <p>
+              The table below list all the operators used in ObjectTalk
+              including their associativity, priority and member function name.
+            </p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Operator</th>
+                  <th>Description</th>
+                  <th>Priority</th>
+                  <th>Member Function</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>[]</td>
+                  <td>Index</td>
+                  <td>1</td>
+                  <td>__index__</td>
+                </tr>
+                <tr>
+                  <td>()</td>
+                  <td>Call</td>
+                  <td>1</td>
+                  <td>__call__</td>
+                </tr>
+                <tr>
+                  <td>.</td>
+                  <td>Member</td>
+                  <td>1</td>
+                  <td>__member__</td>
+                </tr>
+                <tr>
+                  <td>++</td>
+                  <td>Post-increment</td>
+                  <td>1</td>
+                  <td>__inc__</td>
+                </tr>
+                <tr>
+                  <td>--</td>
+                  <td>Post-decrement</td>
+                  <td>1</td>
+                  <td>__dec__</td>
+                </tr>
+                <tr>
+                  <td>-</td>
+                  <td>Unary minus</td>
+                  <td>2</td>
+                  <td>__neg__</td>
+                </tr>
+                <tr>
+                  <td>+</td>
+                  <td>Unary plus</td>
+                  <td>2</td>
+                  <td>__plus__</td>
+                </tr>
+                <tr>
+                  <td>!</td>
+                  <td>Logical NOT</td>
+                  <td>2</td>
+                  <td>__not__</td>
+                </tr>
+                <tr>
+                  <td>~</td>
+                  <td>Bitwise NOT</td>
+                  <td>2</td>
+                  <td>__bnot__</td>
+                </tr>
+                <tr>
+                  <td>++</td>
+                  <td>Pre-increment</td>
+                  <td>2</td>
+                  <td>__inc__</td>
+                </tr>
+                <tr>
+                  <td>--</td>
+                  <td>Pre-decrement</td>
+                  <td>2</td>
+                  <td>__dec__</td>
+                </tr>
+                <tr>
+                  <td>*</td>
+                  <td>Multiply</td>
+                  <td>3</td>
+                  <td>__mul__</td>
+                </tr>
+                <tr>
+                  <td>/</td>
+                  <td>Divide</td>
+                  <td>3</td>
+                  <td>__div__</td>
+                </tr>
+                <tr>
+                  <td>**</td>
+                  <td>Power</td>
+                  <td>3</td>
+                  <td>__power__</td>
+                </tr>
+                <tr>
+                  <td>%</td>
+                  <td>Remainder</td>
+                  <td>3</td>
+                  <td>__mod__</td>
+                </tr>
+                <tr>
+                  <td>+</td>
+                  <td>Add</td>
+                  <td>4</td>
+                  <td>__add__</td>
+                </tr>
+                <tr>
+                  <td>-</td>
+                  <td>Subtract</td>
+                  <td>4</td>
+                  <td>__sub__</td>
+                </tr>
+                <tr>
+                  <td>&lt;&lt;</td>
+                  <td>Bitwise left shift</td>
+                  <td>5</td>
+                  <td>__lshift__</td>
+                </tr>
+                <tr>
+                  <td>&gt;&gt;</td>
+                  <td>Bitwise right shift</td>
+                  <td>5</td>
+                  <td>__rshift__</td>
+                </tr>
+                <tr>
+                  <td>&lt;</td>
+                  <td>Less than</td>
+                  <td>6</td>
+                  <td>__lt__</td>
+                </tr>
+                <tr>
+                  <td>&lt;=</td>
+                  <td>Less than or equal</td>
+                  <td>6</td>
+                  <td>__le__</td>
+                </tr>
+                <tr>
+                  <td>&gt;</td>
+                  <td>Greater than</td>
+                  <td>6</td>
+                  <td>__gt__</td>
+                </tr>
+                <tr>
+                  <td>&gt;=</td>
+                  <td>Greater than or equal</td>
+                  <td>6</td>
+                  <td>__ge__</td>
+                </tr>
+                <tr>
+                  <td>in</td>
+                  <td>is in</td>
+                  <td>6</td>
+                  <td>__contains__</td>
+                </tr>
+                <tr>
+                  <td>not in</td>
+                  <td>is not in</td>
+                  <td>6</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>==</td>
+                  <td>Equal</td>
+                  <td>7</td>
+                  <td>__eq__</td>
+                </tr>
+                <tr>
+                  <td>!=</td>
+                  <td>Not equal</td>
+                  <td>7</td>
+                  <td>__ne__</td>
+                </tr>
+                <tr>
+                  <td>&amp;</td>
+                  <td>Bitwise AND</td>
+                  <td>8</td>
+                  <td>__band__</td>
+                </tr>
+                <tr>
+                  <td>^</td>
+                  <td>Bitwise XOR</td>
+                  <td>9</td>
+                  <td>__bxor__</td>
+                </tr>
+                <tr>
+                  <td>|</td>
+                  <td>Bitwise OR</td>
+                  <td>10</td>
+                  <td>__bor__</td>
+                </tr>
+                <tr>
+                  <td>&amp;&amp;</td>
+                  <td>Logical AND</td>
+                  <td>11</td>
+                  <td>__and__</td>
+                </tr>
+                <tr>
+                  <td>||</td>
+                  <td>Logical OR</td>
+                  <td>12</td>
+                  <td>__or__</td>
+                </tr>
+                <tr>
+                  <td>?:</td>
+                  <td>Ternary conditional</td>
+                  <td>13</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>=</td>
+                  <td>Assign</td>
+                  <td>14</td>
+                  <td>__assign__</td>
+                </tr>
+                <tr>
+                  <td>*=</td>
+                  <td>Multiply and assign</td>
+                  <td>14</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>/=</td>
+                  <td>Divide and assign</td>
+                  <td>14</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>%=</td>
+                  <td>Remainder and assign</td>
+                  <td>14</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>+=</td>
+                  <td>Add and assign</td>
+                  <td>14</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>-=</td>
+                  <td>Subtract and assign</td>
+                  <td>14</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>&lt;&lt;=</td>
+                  <td>Left bit shift and assign</td>
+                  <td>14</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>&gt;&gt;=</td>
+                  <td>Right bit shift and assign</td>
+                  <td>14</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>&amp;=</td>
+                  <td>Bitwise AND and assign</td>
+                  <td>14</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>|=</td>
+                  <td>Bitwise OR and assign</td>
+                  <td>14</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>^=</td>
+                  <td>Bitwise XOR and assign</td>
+                  <td>14</td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="statements"><h1 class="pb-2">Statements</h1></div>
+          <div id="scope">
+            <h1 class="pb-2">Scope</h1>
+            <p>
+              Scope is a concept that refers to where objects including
+              functions and classes can be seen and accessed. In ObjectTalk,
+              variables are declared and stored in a scope. The scope of a
+              variable describes where in a program's text the variable may be
+              used, while the extent or lifetime describes when in a program's
+              execution a variable has a value.
+            </p>
+            <p>
+              ObjectTalk uses lexical scoping (a detailed explanation can be
+              found on
+              <a href="https://en.wikipedia.org/wiki/Scope_(computer_science)"
+                >Wikipedia</a
+              >. In lexical scoping, name resolution depends on the location in
+              the source code and the lexical context, which is defined by where
+              the named object is defined.
+            </p>
+            <p>ObjectTalk implements 5 different scope types:</p>
+            <ul>
+              <li>
+                <strong>Global Scope</strong> - When the ObjectTalk interpreter
+                is started, a default global scope is created. This is the root
+                scope and contains a small set of useful variables (null, true,
+                false), a few high level functions (import, print, and assert)
+                and the list of classes that can be instantiated by the user.
+                For a detailed description see the documentation on the
+                <a href="reference.html#global">Global class</a>. Global scope
+                members are stored on the heap.
+              </li>
+              <li>
+                <strong>Module Scope</strong> - An ObjectTalk
+                <a class="page-scroll" href="#modules">module</a> is derived
+                from a single source code file. Any object defined at the
+                module's root level is added to the object scope. The effect
+                this achieves is that those objects have global visibility in
+                that module and can simply be addressed by their name. If a
+                module is imported into another module, the variables of the
+                imported module can be accessed by the importer using the member
+                notation (dot operator). Module scope members are stored on the
+                heap.
+              </li>
+              <li>
+                <strong>Class Scope</strong> - In ObjectTalk, classes represent
+                a separate scope. Any object (variables, functions, subclasses)
+                defined in a class become part of the class scope. These object
+                can be addressed inside the class by their name and using the
+                member notation (dot operator) outside of the class. Class scope
+                members are stored on the heap.
+              </li>
+              <li>
+                <strong>Function Scope</strong> - In ObjectTalk, functions
+                represent a separate scope. Unlike the previous 3 types,
+                function scope objects live on the stack as their lifetime tends
+                to be short. The function scope includes the calling parameters.
+              </li>
+              <li>
+                <strong>Block Scope</strong> - In ObjectTalk, every block (code
+                contained in curly brackets({})). has it's own scope. Variables
+                contained in blocks are stored on the stack as the are also very
+                short lived.
+              </li>
+            </ul>
+            <p>
+              ObjectTalk does have a mechanism to capture variables from a
+              parent scope using a closure mechanism. The special mechanism
+              which is often required in lambda function or just because
+              functions are first class citizens in ObjectTalk, is described in
+              in the
+              <a class="page-scroll" href="#closures">closure</a> section.
+            </p>
+          </div>
+          <div id="classes"><h1 class="pb-2">Classes</h1></div>
+          <div id="properties"><h1 class="pb-2">Properties</h1></div>
+          <div id="functions"><h1 class="pb-2">Functions</h1></div>
+          <div id="closures"><h1 class="pb-2">Closures</h1></div>
+        </div>
+      </div>
+      <div class="row flex-shrink-0 py-1 manual-footer" id="copyright">
+        <p class="mx-auto py-0 my-0 small">
+          Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.
+        </p>
+      </div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/theme.js"></script>
+  </body>
+</html>

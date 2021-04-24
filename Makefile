@@ -7,7 +7,7 @@
 SRC=$(wildcard app/*.cpp libot/src/*.cpp modules/*/*.cpp)
 INC=$(wildcard libot/include/*.h libot/include/ot/*.h modules/*/*.h)
 
-.PHONY: debug release xcode alpine ubuntu
+.PHONY: debug release xcode docs alpine ubuntu
 
 debug:
 	cmake -Bdebug
@@ -31,6 +31,9 @@ install: release
 	ls -l /usr/local/bin/ot
 	ls -l /usr/local/lib/libot.*
 	ls -l /usr/local/lib/ot
+
+docs:
+	pugger --theme manual --assets --out docs docs-src
 
 cleanup:
 	perl -i -pe 's/\s+\n/\n/' $(SRC) $(INC)

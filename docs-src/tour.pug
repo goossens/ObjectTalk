@@ -1,0 +1,24 @@
+include /manual.pug
+
++page("ObjectTalk Tour")
+	+manual()
+		+manual-header("img/icon.png", "Documentation")
+			+manual-link("Tour", "tour.html")
+			+manual-link("Guide", "guide.html")
+			+manual-link("Reference", "reference.html")
+
+		+manual-body()
+			+manual-toc("ObjectTalk Tour")
+				include:markdown-it tour/toc.md
+
+			+manual-content()
+				+manual-chapter("about", "About ObjectTalk")
+					include:markdown-it tour/about.md
+
+				+manual-chapter("history", "Language History")
+					include:markdown-it tour/history.md
+
+				+manual-chapter("overview", "Language Overview")
+					include:markdown-it tour/overview.md
+
+		+manual-footer("1993-2021", "Johan A. Goossens")

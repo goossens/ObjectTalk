@@ -1,0 +1,40 @@
+body {
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	color: #000;
+	background-color: #fff;
+}
+
+html {
+}
+
+pre {
+	background: #eee;
+	padding-left: 24px;
+}
+
+ul {
+	list-style-position: inside;
+	margin-bottom: 0px;
+	padding-inline-start: 8px;
+}
+
+div > ul {
+	margin-bottom: 16px;
+}
+
+.manual-header {
+	border-bottom: 1px solid #ddd;
+	margin-bottom: 0;
+}
+
+.manual-toc {
+	border-right: 2px solid #ddd;
+}
+
+.manual-content {
+}
+
+.manual-footer {
+	color: #555;
+	border-top: 1px solid #ddd;
+}

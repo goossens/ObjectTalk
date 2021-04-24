@@ -1,0 +1,54 @@
+include /manual.pug
+
++page("ObjectTalk Reference")
+	+manual()
+		+manual-header("img/icon.png", "Documentation")
+			+manual-link("Tour", "tour.html")
+			+manual-link("Guide", "guide.html")
+			+manual-link("Reference", "reference.html")
+
+		+manual-body()
+			+manual-toc("ObjectTalk Reference")
+				include:markdown-it reference/toc.md
+
+			+manual-content()
+				+manual-chapter("language", "ObjectTalk Definition")
+					include:markdown-it reference/language.md
+
+				+manual-chapter("classes", "ObjectTalk Classes")
+					include:markdown-it reference/classes.md
+
+				+manual-chapter("object", "Object Class")
+					include:markdown-it reference/object.md
+
+				+manual-chapter("primitive", "Primitive Class")
+					include:markdown-it reference/primitive.md
+
+				+manual-chapter("boolean", "Boolean Class")
+					include:markdown-it reference/boolean.md
+
+				+manual-chapter("integer", "Integer Class")
+					include:markdown-it reference/integer.md
+
+				+manual-chapter("real", "Real Class")
+					include:markdown-it reference/real.md
+
+				+manual-chapter("string", "String Class")
+					include:markdown-it reference/String.md
+
+				+manual-chapter("function", "Function Class")
+					include:markdown-it reference/function.md
+
+				+manual-chapter("collection", "Collection Class")
+					include:markdown-it reference/collection.md
+
+				+manual-chapter("array", "Array Class")
+					include:markdown-it reference/array.md
+
+				+manual-chapter("dict", "Dict Class")
+					include:markdown-it reference/dict.md
+
+				+manual-chapter("set", "Set Class")
+					include:markdown-it reference/set.md
+
+		+manual-footer("1993-2021", "Johan A. Goossens")

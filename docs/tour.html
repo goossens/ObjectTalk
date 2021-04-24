@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>ObjectTalk Tour</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/theme.css" />
+  </head>
+  <body id="page-top">
+    <div
+      class="container-fluid d-flex flex-column flex-grow-1 vh-100 overflow-hidden"
+    >
+      <nav
+        class="navbar navbar-expand px-0 pt-1 pb-0 flex-shrink-0 manual-header"
+      >
+        <a class="navbar-brand" href="index.html"
+          ><img src="img/icon.png" height="40" alt="" /><span class="ml-2"
+            >Documentation</span
+          ></a
+        ><button
+          class="navbar-toggler navbar-toggler-right"
+          data-toggle="collapse"
+          data-target="#navbarResponsive"
+          type="button"
+          data-toogle="collapse"
+          aria-controls="navbarResponsive"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <i class="fa fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item text-right">
+              <a class="nav-link page-scroll" href="tour.html">Tour</a>
+            </li>
+            <li class="nav-item text-right">
+              <a class="nav-link page-scroll" href="guide.html">Guide</a>
+            </li>
+            <li class="nav-item text-right">
+              <a class="nav-link page-scroll" href="reference.html"
+                >Reference</a
+              >
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <div class="row flex-grow-1 overflow-hidden vh-100">
+        <div class="col-2 mh-100 overflow-auto py-2 manual-toc">
+          <p class="pt-2"><strong>ObjectTalk Tour</strong></p>
+          <ul>
+            <li><a class="page-scroll" href="#about">About</a></li>
+            <li><a class="page-scroll" href="#history">History</a></li>
+            <li><a class="page-scroll" href="#overview">Overview</a></li>
+          </ul>
+        </div>
+        <div class="col mh-100 overflow-auto py-2 manual-content">
+          <div id="about">
+            <h1 class="pb-2">About ObjectTalk</h1>
+            <p><img src="img/logo-small.png" alt="Logo" /></p>
+            <p>
+              ObjectTalk is a simple object-oriented scripting language that has
+              evolved over decades and was heavily influenced by other
+              languages. As a long time IT professional, I've seen a lot of
+              software development with all its greatness and flaws. ObjectTalk
+              represents what I think is a well-balanced scripting language that
+              is easy to learn and can make even a novice look good quickly. If
+              you are interested in how I got to where we are today, please see
+              the <a class="page-scroll" href="#history">history</a> page for
+              the story behind ObjectTalk.
+            </p>
+            <p>
+              So before continuing, let me address the elephant in the room. Why
+              the heck would the world need another scripting language? Well,
+              the simple answer is: it doesn't!! We already have more than
+              enough of them. I wouldn't even suggest ObjectTalk is a language
+              for serious software development. If you need to deploy mission
+              critical code, look elsewhere. ObjectTalk is however is a good
+              starting point to learn programming and it's also good if you want
+              to learn language development. Those of you who have ever looked
+              at the code for compilers and interpreters for populars languages
+              will probably know what I mean.
+            </p>
+            <p>The objectives for the development of ObjectTalk where:</p>
+            <ul>
+              <li>Learn computer language development.</li>
+              <li>
+                Learn how to write a lexical scanner and language compiler.
+              </li>
+              <li>
+                Learn how to implement a simple stack-based virtual machine.
+              </li>
+              <li>
+                Learn how the develop a language that is:
+                <ul>
+                  <li>Fully object-oriented.</li>
+                  <li>Dynamically typed.</li>
+                  <li>Lexically scoped.</li>
+                  <li>Closure/capture aware.</li>
+                </ul>
+              </li>
+              <li>
+                Learn C++17 as that is the language the ObjectTalk engine is
+                written in.
+              </li>
+              <li>
+                Keep the code multi-platform to support reuse and maximum
+                outreach.
+              </li>
+              <li>
+                Don't over-optimize to keep the code readable (so others can
+                learn).
+              </li>
+              <li>End up with something that can be used for simple tasks.</li>
+            </ul>
+            <p>
+              So I believe (and yes, I might be a little biased), that
+              ObjectTalk is meeting the objectives above and will provide others
+              the ability to learn from this as well. If you agree with me, feel
+              free to reuse and contribute. Collective learning is a great
+              thing.
+            </p>
+            <p>
+              So what's good about ObjectTalk? Well, typically it is a very
+              personal as to what is good or bad about a computer language. Many
+              religious arguments have been used over the years when it comes to
+              good and bad in Computerland. Those that have strong opinions
+              about computer languages will have the same views about
+              ObjectTalk. I'm wide open to ObjectTalk improvements but they'll
+              have to be within the context of the objectives above.
+              Constructive advice is very welcome. Bullies, meanies and
+              know-it-alls will be ignored and are advised to develop their own
+              language.
+            </p>
+            <p>So what makes ObjectTalk great (at least in my little mind)?</p>
+            <ul>
+              <li>
+                It's easy to learn (simple yet consistent grammar and no
+                &quot;over-the-top you'll-never-use-it but
+                &quot;look-at-how-smart-I-am language creep&quot;).
+              </li>
+              <li>
+                It is truly object-oriented as everything is an object with
+                members and member functions (even numbers, strings and
+                functions).
+              </li>
+              <li>
+                The language will feel comfortable to everyone who has worked on
+                C-derived languages.
+              </li>
+              <li>
+                Variables are dynamically typed and primitive objects like
+                Booleans, Integers, Reals and Strings are automatically
+                converted if required.
+              </li>
+              <li>
+                Functions are first class citizens and can be passed as
+                arguments or bound to an object as member functions.
+              </li>
+              <li>
+                Variables are lexically scoped and must be declared before use.
+              </li>
+              <li>
+                Variables are automatically captured in closures if required.
+              </li>
+              <li>Variables are always initialized before use.</li>
+              <li>Memory is managed automatically.</li>
+              <li>A single pass compiler generates simple bytecode.</li>
+              <li>
+                A simple stack-based Virtual Machine (VM) executes the bytecode.
+              </li>
+            </ul>
+          </div>
+          <div id="history"><h1 class="pb-2">Language History</h1></div>
+          <div id="overview">
+            <h1 class="pb-2">Language Overview</h1>
+            <p>
+              Tradition suggests that the first program in a new language should
+              print the words “Hello, world!” on the screen. In ObjectTalk, this
+              can be done in a single line:
+            </p>
+            <pre><code>print(&quot;Hello, world!&quot;);
+</code></pre>
+            <p>
+              If you have written code in C or any of the derived languages
+              before, this syntax might look familiar to you. In ObjectTalk,
+              this line of code is a complete program. You don’t need to import
+              a separate library for functionality like input/output or string
+              handling. Code written at module scope is used as the entry point
+              for the program, so you don’t even need a main() function.
+            </p>
+            <p>
+              So where do we go from here. Well, we hope the overview below
+              gives you enough information to start writing code in ObjectTalk
+              by showing you how to accomplish a variety of programming tasks.
+              Don’t worry if you don’t understand something, everything
+              introduced in this overview is explained in detail in the rest of
+              the documentation.
+            </p>
+            <h2>Everything is an ObjectTalk</h2>
+            <p>
+              In ObjectTalk, everything is an Object derived from a Class. The
+              number 1 is an object derived from the Integer class and so are
+              3.14 (derived from the Real class) and &quot;test&quot; (derived
+              from the string class). To take this a step further, operators
+              like +, -, *, /, [] and () are actually member functions on an
+              Object. This keep the Virtual Machine (VM) very simple as it has
+              no mathematical instructions. The VM actually only executes member
+              functions on Objects.
+            </p>
+            <p>
+              To ensure this doesn't lead to silly syntax, the ObjectTalk
+              compiler translates more traditional expressions into a set of
+              member function calls. So for instances, the follow example shows
+              this translation:
+            </p>
+            <pre><code>1 + (2 * 3)
+
+2.__mul__(3).__add__(1)
+</code></pre>
+            <p>
+              As a user of ObjectTalk you only have to learn the top syntax. If
+              you want to understand the compiler and VM, you have to understand
+              both.
+            </p>
+            <p>
+              Given that operators become member function calls, custom Classes
+              can implement operators so it is very simple in ObjectTalk to
+              implement a Vector class that implements a dot product operator.
+            </p>
+            <h2>Variables</h2>
+            <p>
+              In ObjectTalk, variables must be declared as in the appropriate
+              scope through assignment. ObjectTalk makes no distinction between
+              constants and variables. If you set it and don't change it, it's a
+              constant. If you do change it, it's a variable. The example below
+              creates two new variables. The first (a) is initialized to the
+              integer 1. The second (b) is initialized to null as no value was
+              provided and the third (c) is only visible in the inner scope.
+            </p>
+            <pre><code>var a = 1;
+var b;
+
+{
+	var c = 2;
+}
+</code></pre>
+            <h2>Primitive Values</h2>
+            <p>
+              ObjectTalk supports 6
+              <a href="reference.html#primitive">Primitives</a>
+              that are derived from the
+              <a href="reference.html#object">Object</a>,
+              <a href="reference.html#boolean">Boolean</a>,
+              <a href="reference.html#integer">Integer</a>,
+              <a href="reference.html#real">Real</a>,
+              <a href="reference.html#string">String</a> and
+              <a href="reference.html#function">Function</a> classes. The
+              following statements assign primitive values to variables.
+            </p>
+            <pre><code>var a = null;
+var b = true;
+var c = 1;
+var d = 3.14 * 2;
+var e = &quot;Hello world&quot;;
+</code></pre>
+            <p>
+              Please also note that primitive values are automatically converted
+              in ObjectTalk when required.
+            </p>
+            <pre><code>var f = e + c;
+</code></pre>
+            <p>
+              In the expression above c gets converted to a String as the
+              addition operator is applied to e (a String object) which wants
+              its argument also as a string.
+            </p>
+            <p>
+              In ObjectTalk, The <strong>null</strong> object is the only
+              instance of the abstract
+              <a href="reference.html#object">Object</a> class. It's a special
+              object as it can't do anything. It is however helpful as a
+              non-value.
+            </p>
+            <p>
+              <a href="reference.html#boolean">Booleans</a> in ObjectTalk can
+              only hold two values: true and false. The default global language
+              context defines the variables <strong>true</strong> and
+              <strong>false</strong> as a convenience.
+            </p>
+            <p>
+              <a href="reference.html#integer">Integers</a> represent negative
+              and positive whole numbers. On most systems, this number is
+              implemented as a 64-bit number meaning that the extremes are
+              -9,223,372,036,854,775,808 and 9,223,372,036,854,775,807
+              (inclusive).
+            </p>
+            <p>
+              <a href="reference.html#real">Reals</a> in ObjectTalk are
+              double-precision floating point numbers. On most systems, Reals
+              are implemented using 8 bytes and have a range of 1.7E +/- 308 (15
+              digits).
+            </p>
+            <p>
+              In ObjectTalk, <a href="reference.html#string">Strings</a> are
+              captured in double quotes and can span multiple lines. Strings may
+              contain UTF-8 characters (like &quot;€&quot;) or use JSON style
+              encoding like &quot;Most Europeans like the \u00C4.\n&quot;.
+            </p>
+            <p>
+              <a href="reference.html#function">Functions</a> in ObjectTalk are
+              primitive values. This means that we can pass a function around
+              like any other primitive. The following code might be a little too
+              complex for this overview, so we'll defer an explanation until
+              we'll get to the <a href="guide.html">Language Guide</a>. The
+              point is that a function is a first class citizen in ObjectTalk.
+            </p>
+            <pre><code>function test1(callback) {
+	callback();
+}
+
+var test2 = function() {
+	print(&quot;Hello, world!&quot;);
+};
+
+test1(test2);
+// prints &quot;Hello, world!&quot;
+</code></pre>
+            <h2>Collections</h2>
+            <p>
+              ObjectTalk supports three types of
+              <a href="reference.html#collections">Collections</a>
+              (<a href="reference.html#array">Arrays</a> arrays,
+              <a href="reference.html#dict">Dictionaries</a> and
+              <a href="reference.html#set">Sets</a>) that can be nested if
+              required.
+            </p>
+            <p>
+              <a href="reference.html#array">Arrays</a> are sequences of objects
+              that can be constructed using square brackets ([]) or through the
+              Array class constructor. The Array class has many member functions
+              to manipulate the content of an array.
+            </p>
+            <pre><code>var array1 = [ 1, 2, &quot;test&quot;, 7 + 4, a ];
+var array2 = Array(3.14, 7, 34, 1);
+
+array1.append(&quot;new value&quot;);
+var thirdValue = array1[3];
+</code></pre>
+            <p>
+              <a href="reference.html#dict">Dictionaries</a> contain indexed
+              key/value pairs that are constructed using curly brackets ({}) or
+              through the Dict class constructor. The Dict class also has many
+              member functions to manipulate the content of a dictionary.
+            </p>
+            <pre><code>var dict1 = [ &quot;First Name&quot;: &quot;John&quot;, &quot;Last Name&quot;: &quot;Doe&quot;, &quot;Age&quot;: 34 };
+var dict2 = Dict(&quot;Name&quot;, &quot;John Doe&quot;, &quot;Address&quot;, &quot;Unknown&quot;);
+
+dict1[&quot;Last Update&quot;] = &quot;1 Apr 2000&quot;;
+var name = dict2[&quot;Name&quot;];
+</code></pre>
+            <p>
+              Both arrays and dictionaries follow JSON rules and the ObjectTalk
+              compiler can therefore ingest JSON without any trouble. This
+              should also make it easier for those who are already familiar with
+              JSON encoding.
+            </p>
+            <p>
+              <a href="reference.html#set">Sets</a> store distinct values in a
+              collection without defined order. You can use a set instead of an
+              array when the order of items isn’t important, or when you need to
+              ensure that an item only appears once. Sets can be created using
+              the Set class constructor. The Set class also has many member
+              functions to manipulate the content of a set or to perform set
+              operations (e.g. union, difference).
+            </p>
+            <pre><code>var set = Set(1, 2, 3, 5);
+var set2 = Set(1, 3, 6, 8);
+
+assert(set.intersection(set2) == Set(1, 3));
+assert(set.difference(set2) == Set(2, 5, 6, 8));
+assert(set.union(set2) == Set(1, 2, 3, 5, 6, 8));
+assert(set.subtract(set2) == Set(2, 5));
+</code></pre>
+            <h2>Control Flow</h2>
+            <p>
+              ObjectTalk uses <strong>if</strong> to make conditionals and uses
+              <strong>for in</strong>, <strong>while</strong> and
+              <strong>do while</strong> to make loops. Parentheses around the
+              condition or loop variables are optional. Braces around the body
+              are required.
+            </p>
+            <pre><code>var individualScores = [75, 43, 103, 87, 12];
+var teamScore = 0;
+
+for score in individualScores {
+	if score &gt; 50 {
+		teamScore += 3;
+
+	} else {
+		teamScore += 1;
+	}
+}
+
+print(teamScore);
+// Prints &quot;11&quot;
+</code></pre>
+            <p>
+              In ObjectTalk, conditions are converted to their boolean value in
+              <strong>if</strong>, <strong>while</strong> and
+              <strong>do while</strong> statements. In the following example,
+              the string and integer variables are converted to boolean and
+              assessed in the <strong>if</strong> statements.
+            </p>
+            <pre><code>var A = 0;
+var B = 5;
+var C = &quot;true&quot;;
+
+if A {
+	print(&quot;this will never be printed as variable A evaluates to false&quot;);
+}
+
+if B {
+	print(&quot;variable B evaluated to true&quot;);
+}
+
+if C {
+	print(&quot;variable C evaluated to true&quot;);
+}
+</code></pre>
+            <p>
+              In ObjectTalk <strong>switch</strong> or
+              <strong>case</strong> type statements are implemented with
+              <strong>if</strong>, <strong>elif</strong> and
+              <strong>else</strong> constructs. This keeps the syntax clean and
+              it allows more powerful expressions for each case (e.g. regular
+              expressions).
+            </p>
+            <pre><code>if (a == 1) {
+	print(&quot;1&quot;);
+
+} elif (a == 2) {
+	print(&quot;2&quot;);
+
+} elif (a == 3) {
+	print(&quot;3&quot;);
+
+} else {
+	print(&quot;it's something else&quot;);
+}
+</code></pre>
+            <h2>Functions</h2>
+            <p>
+              In ObjectTalk, there are two way to declare a function. First,
+              there is the traditional way that you see in many languages. The
+              second is to create an anonymous function that can be assigned to
+              a variable. In ObjectTalk, the following two are the same:
+            </p>
+            <pre><code>function test(var1) {
+	return var1;
+}
+
+var test = function(var1) {
+	return var1;
+});
+</code></pre>
+            <p>
+              Later we'll talk about member functions in Object and Classes but
+              their syntax is basically the same.
+            </p>
+            <p>
+              Functions can be nested. Nested functions have access to variables
+              that were declared in the outer function. You can use nested
+              functions to organize the code in a function that’s long or
+              complex.
+            </p>
+            <pre><code>function returnFifteen() {
+	var y = 10;
+
+	function add() {
+		y += 5
+	}
+
+	add();
+	return y;
+}
+
+returnFifteen();
+</code></pre>
+            <p>
+              Functions are a first-class type. This means that a function can
+              return another function as its value.
+            </p>
+            <pre><code>function makeIncrementer() {
+	function addOne(number) {
+		return number + 1;
+	}
+
+	return addOne;
+}
+var increment = makeIncrementer()
+increment(7);
+</code></pre>
+            <p>A function can take another function as one of its arguments.</p>
+            <p>
+              function hasAnyMatches(list, condition) { for item in list { if
+              condition(item) { return true; } }
+            </p>
+            <pre><code>return false;
+</code></pre>
+            <p>}</p>
+            <p>function lessThanTen(number) { return number &lt; 10; }</p>
+            <p>
+              var numbers = [20, 19, 7, 12]; hasAnyMatches(numbers,
+              lessThanTen);
+            </p>
+            <p>
+              Functions are actually a special case of closures: blocks of code
+              that can be called later. The code in a closure has access to
+              things like variables and functions that were available in the
+              scope where the closure was created, even if the closure is in a
+              different scope when it’s executed. You saw an example of this
+              already with nested functions.
+            </p>
+            <h2>Object and Classes</h2>
+            <p>
+              Use class followed by the class’s name, a colon and the parent
+              classes name to create a new class. A property declaration in a
+              class is written the same way as a constant or variable
+              declaration, except that it’s in the context of a class. Likewise,
+              member function and function declarations are written the same
+              way.
+            </p>
+            <pre><code>class Shape : Object {
+	function simpleDescription(this) {
+		return &quot;A simple shape&quot;
+	}
+}
+</code></pre>
+            <p>
+              Create an instance of a class by putting parentheses after the
+              class name (executing the call operator(__call__)). Use dot syntax
+              to access the properties and member function of the instance.
+            </p>
+            <pre><code>var shape = Shape();
+shape.numberOfSides = 7;
+var shapeDescription = shape.simpleDescription();
+</code></pre>
+            <p>
+              This version of the Shape class is missing something important: an
+              initializer to set up the class when an instance is created. Use
+              __init__ to create one.
+            </p>
+            <p>
+              class NamedShape : Shape { function <strong>init</strong>(this,
+              name) { this.name = name; }
+            </p>
+            <pre><code>function simpleDescription(this) {
+	return &quot;A named shape called &quot; + this.name;
+}
+</code></pre>
+            <p>}</p>
+            <p>
+              Notice how &quot;this&quot; is used to distinguish the name
+              property from the name argument to the initializer. In some
+              computer language, the &quot;this&quot; or &quot;self&quot;
+              argument is automatically added to a member function. In
+              ObjectTalk this is not the case and you have to name it yourself
+              as the first parameter. The benefit is that you can call it
+              whatever you want and it's not some hidden feature of the
+              language. The disadvantage is that you have to type it for ever
+              member function. The compiler automatically translates a bound
+              function (a function in the context of an object) to a new
+              function call with an additional parameter.
+            </p>
+            <pre><code>a.test(1, 2) becomes test(a, 1, 2);
+</code></pre>
+            <h2>Error handling</h2>
+            <p>
+              ObjectTalk uses a classic
+              <strong>try/catch/throw</strong> paradigm. Critical code is
+              captured in a <strong>try</strong> block and if an exception is
+              raised, the code in the <strong>catch</strong> block is executed.
+              If an exception is raised outside a try block, your script will
+              terminate.
+            </p>
+            <p>A simple example might look like:</p>
+            <pre><code>try {
+	var a = 1;
+	var b = 2;
+	var c = 4 / 0;
+
+} catch error {
+	print(&quot;Caught an exception: &quot;, error);
+}
+
+print(&quot;Recovered from exception&quot;);
+</code></pre>
+            <p>
+              In the example above, the ObjectTalk runtime will raise the
+              exception as the variable <strong>c</strong> is initialized
+              through a &quot;divide by zero&quot; computation.
+            </p>
+            <p>
+              Programmers can also use the <strong>throw</strong> command to
+              raise an exception:
+            </p>
+            <pre><code>try {
+	throw &quot;this is completely wrong&quot;;
+
+} catch error {
+	print(&quot;Caught an exception: &quot;, error);
+}
+
+print(&quot;Recovered from exception&quot;);
+</code></pre>
+            <p>
+              In the catch block, the error message is automatically assigned to
+              the variable mentioned after the <strong>catch</strong> statement.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="row flex-shrink-0 py-1 manual-footer" id="copyright">
+        <p class="mx-auto py-0 my-0 small">
+          Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.
+        </p>
+      </div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/theme.js"></script>
+  </body>
+</html>

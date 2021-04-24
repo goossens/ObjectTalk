@@ -13,8 +13,6 @@ list(APPEND CMAKE_CTEST_ARGUMENTS "--output-on-failure")
 include_directories(3rdparty)
 include_directories(libot/include)
 
-add_subdirectory(docs)
-
 add_subdirectory(3rdparty)
 add_subdirectory(libot)
 

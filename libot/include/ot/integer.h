@@ -74,7 +74,7 @@ public:
 	long bitwiseXor(long operand) { return value ^ operand; }
 	long bitwiseNot() { return ~value; }
 
-	// funtions
+	// functions
 	long negate() { return -value; }
 	long positive() { return value; }
 	long abs() { return std::abs(value); }

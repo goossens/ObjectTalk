@@ -1,17 +1,16 @@
 ObjectTalk is an object-oriented scripting language that was developed
 from the ground up to be efficient and pure. Nonetheless, many parts of
-ObjectTalk will be familiar your experience of developing in C and
-derived languages.
+ObjectTalk will be familiar if you have experience with developing in C
+and derived languages.
 
-ObjectTalk provides its own versions of all fundamental C types, including
+ObjectTalk provides its own versions of fundamental C types, including
 Booleans, Integers (for int), Reals (for double), String for textual data
 and Functions as first class primitives. ObjectTalk also provides powerful
-versions of the three primary collection types, Array, Dictionary and sets,
-as described in Collection Types. In fact, in ObjectTalk everything is an
-object derived from a class and the word type is only used internally
-in the language's runtime. Primitives like Booleans, Integers, Reals,
-Strings and Functions are objects just like Array, Dict, Sets and HTTP
-servers.
+versions of the three primary collection types: Array, Dictionary and sets.
+In fact, in ObjectTalk everything is an object derived from a class and
+the word type is only used internally in the language's runtime. Primitives
+like Booleans, Integers, Reals, Strings and Functions are objects just like
+Arrays, Dicts, Sets and HTTP servers.
 
 **Variables**
 
@@ -34,7 +33,7 @@ and therefore becomes a class member.
 
 	print(myClass.myVariable); // this will print the number 10.
 
-As you can see from the examples, the variables do not have to be type
+As you can see from the examples, variables do not have to be type
 declared as the assignment determines what type of object is stored
 in the variable.
 
@@ -79,7 +78,7 @@ versions of ObjectTalk allowed:
 	++b
 
 To most people, it is obvious that we want to assign the number 10 to
-variable a and increment variable b. The compiler however doesn't known
+variable a and pre-increment variable b. The compiler however doesn't known
 the first statement ended after the number 10 and it will generate code
 for:
 
@@ -95,7 +94,8 @@ that don't end with a block so the ObjectTalk script should have read:
 **Null**
 
 Null is a special value that indicates a valueless state. All instances
-of the Object class all null values.
+of the Object class all null values. The default global scope defines the
+variable **null** as a convenience.
 
 	var nothing = null;
 	var alsoNothing = Object();
@@ -114,7 +114,7 @@ language operators or member functions return Booleans as a result.
 **Integers**
 
 [Integers](reference.html#integer) are signed whole numbers with no
-fractional component, such as 42 and -23. On most systems, this number
+fractional component, such as 42, +1 and -23. On most systems, this number
 is implemented as a 64-bit number meaning that the extremes are
 -9,223,372,036,854,775,808 and 9,223,372,036,854,775,807 (inclusive).
 
@@ -141,7 +141,7 @@ implemented using 8 bytes and have a range of 1.7E +/- 308 (15 digits).
 Real literals can be written as a floating point number with or without an exponent:
 
 	var decimalDouble = 12.1875;
-	var exponentDouble = 1.21875e1;
+	var exponentDouble = -1.21875e1;
 
 **Strings**
 
@@ -154,8 +154,8 @@ in bytes but rather in codewords that represent a character whether it is
 1,2, 3 or 4 bytes long.
 
 String literals are encoded using the same logic as JSON making it
-easy to exchange with other languages.A string literal is a sequence of
-characters surrounded by double quotation marks (").
+easy to exchange information with other languages or systems. A string literal
+is a sequence of characters surrounded by double quotation marks (").
 
 	var someString = "Some string literal value";
 	var message = "\tMost Europeans like the \u00C4.\n";

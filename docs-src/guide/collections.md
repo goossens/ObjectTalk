@@ -1,8 +1,7 @@
 ObjectTalk provides three primary collection types, known as
 [Arrays](reference.html#array),
 [Dictionaries](reference.html#dict) and
-[Sets](reference.html#set),
-for storing collections of values. Arrays are ordered collections of
+[Sets](reference.html#set). Arrays are ordered collections of
 values. Dictionaries are unordered collections of key-value associations.
 Sets are unordered collections of unique values.
 
@@ -81,7 +80,7 @@ You can create an Dictionary using a literal or the Dict class
 constructor:
 
 	var dict1 = { "name": "Doe", "age": 29 };
-	var dict2 = Dict("name": "Smith", "age": 31);
+	var dict2 = Dict("name", "Smith", "age", 31);
 
 **Accessing and Modifying a Dictionary**
 
@@ -150,6 +149,8 @@ addition (**+**) and subtraction (**-**) operators.
 
 	var size = set.size();
 
+	set.clear();
+
 **Set Operations**
 
 You can efficiently perform fundamental set operations, such as combining
@@ -178,7 +179,7 @@ You can iterate over the entire set of values in an array with the
 **Set Membership**
 
 Set membership can be determined with the **(not) in** operators or the
-contains member functions.
+**contains** member functions.
 
 	var set = Set(1, 2, 3.14, "test");
 

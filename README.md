@@ -3,7 +3,7 @@
 
 # ObjectTalk Scripting Language
 
-![Logo](docs/logo/logo-small.png)
+![Logo](docs/img/logo-small.png)
 
 Welcome to the ObjectTalk scripting language. ObjectTalk is a simple
 object-oriented scripting language that has evolved over decades and
@@ -12,7 +12,8 @@ I've seen a lot of software development with all its greatness and flaws.
 ObjectTalk represents what I think is a well-balanced scripting language
 that is easy to learn and can make even a novice look good quickly.
 If you are interested in how I got to where we are today, please see the
-[history](docs/History.md) page for the story behind ObjectTalk.
+[history](https://goossens.github.io/ObjectTalk/tour.html#history)
+page for the story behind ObjectTalk.
 
 So before continuing, let me address the elephant in the room. Why the
 heck would the world need another scripting language? Well, the simple
@@ -25,7 +26,7 @@ looked at the code for compilers and interpreters of populars
 languages will probably know what I mean.
 
 Full documentation for ObjectTalk can be found in
-[the manual](docs).
+[the manual](https://goossens.github.io/ObjectTalk/).
 
 ## Prerequisites
 

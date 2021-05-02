@@ -49,7 +49,7 @@ public:
 	// start iterator
 	OtObject iterate();
 
-	// add object to array
+	// add object to array and return new array
 	OtObject add(OtObject object);
 
 	// does array contain a specified object

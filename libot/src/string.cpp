@@ -16,6 +16,7 @@
 #include "ot/string.h"
 #include "ot/stringreference.h"
 #include "ot/stringiterator.h"
+#include "ot/array.h"
 
 
 //
@@ -71,6 +72,25 @@ OtObject OtStringClass::iterate() {
 
 
 //
+//	OtStringClass::split
+//
+
+OtObject OtStringClass::split(const std::string& delimiter) {
+	OtArray result = OtArrayClass::create();
+	size_t start = 0;
+	size_t end;
+
+	while ((end = value.find(delimiter, start)) != std::string::npos) {
+		result->append(OtStringClass::create(value.substr(start, end - start)));
+		start = end + delimiter.size();
+	}
+
+	result->append(OtStringClass::create(value.substr(start)));
+	return result;
+}
+
+
+//
 //	OtStringClass::getMeta
 //
 
@@ -117,6 +137,8 @@ OtType OtStringClass::getMeta() {
 
 		type->set("lower", OtFunctionClass::create(&OtStringClass::lower));
 		type->set("upper", OtFunctionClass::create(&OtStringClass::upper));
+
+		type->set("split", OtFunctionClass::create(&OtStringClass::split));
 	}
 
 	return type;

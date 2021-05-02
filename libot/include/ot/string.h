@@ -91,6 +91,8 @@ public:
 	std::string lower() { return OtText::lower(value); }
 	std::string upper() { return OtText::upper(value); }
 
+	OtObject split(const std::string& delimiter);
+	
 	// get type definition
 	static OtType getMeta();
 

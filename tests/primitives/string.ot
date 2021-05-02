@@ -91,3 +91,6 @@ assert("   Hello \t\n   World   ".compress() == "Hello World");
 
 assert("Hello World".lower() == "hello world");
 assert("Hello World".upper() == "HELLO WORLD");
+
+assert("1. 2. 3".split(". ") == ["1", "2", "3"]);
+assert(". 2. 3. ".split(". ") == ["", "2", "3", ""]);

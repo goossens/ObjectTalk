@@ -29,6 +29,7 @@ characters (like "€") or use JSON style encoding like
 | compress() | Trim all whitespaces (SPACE, TAB, VTAB, CR, LF) from the start and the end of the object's value, replace whitespace sequence in the middle with a single space and return result. |
 | lower() | Convert all characters in the object's value to lowercase and return result. |
 | upper() | Convert all characters in the object's value to uppercase and return result. |
+| split(delimiter) | Split string based on delimiter and return array of substrings. |
 
 **Overrides**
 

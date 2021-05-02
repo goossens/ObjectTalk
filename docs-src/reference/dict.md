@@ -18,6 +18,7 @@ also has many member functions to manipulate the content of a dictionary.
 | \_\_contains__(string) | Determine if named object is member of dictionary. This member function is called when you use the **(not) in** operator. You typically don't call this member function directly. |
 | size() | Return number of objects in the dictionary. |
 | contains(key) | See if we have named object in dictionary. |
+| merge() | Merge two dictionaries and return a new one. |
 | clone() | Return a clone of the dictionary. |
 | clear() | Clear (empty) the dictionary. |
 | erase(string) | Remove the named object from the dictionary. |

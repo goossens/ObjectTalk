@@ -58,6 +58,9 @@ public:
 	// return dictionary clone
 	OtObject clone();
 
+	// merge two dictionaries
+	OtObject merge(OtObject object);
+
 	// remove all dictionary entries
 	void clear() { dict.clear(); }
 

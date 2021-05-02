@@ -162,6 +162,31 @@ OtObject OtSetClass::clone() {
 
 
 //
+//	OtSetClass::merge
+//
+
+OtObject OtSetClass::merge(OtObject object) {
+	if (!object->isKindOf("Set")) {
+		OtExcept("Set merge expects another [set] instance, not a [%s]", object->getType()->getName().c_str());
+	}
+
+	OtSet result = create();
+
+	for (auto& item : set) {
+		result->set.insert(item);
+	}
+
+	for (auto& item : object->cast<OtSetClass>()->set) {
+		if (!result->contains(item)) {
+			result->set.insert(item);
+		}
+	}
+
+	return result;
+}
+
+
+//
 //	OtSetClass::insert
 //
 
@@ -196,7 +221,7 @@ OtObject OtSetClass::intersectWith(OtObject object) {
 	OtSet op = object->cast<OtSetClass>();
 
 	if (!op) {
-		OtExcept("The set union method expects another set instance, not a [%s]", object->getType()->getName().c_str());
+		OtExcept("Set intersect method expects another [set] instance, not a [%s]", object->getType()->getName().c_str());
 	}
 
 	OtSet result = create();
@@ -219,7 +244,7 @@ OtObject OtSetClass::diffFrom(OtObject object) {
 	OtSet op = object->cast<OtSetClass>();
 
 	if (!op) {
-		OtExcept("The set union method expects another set instance, not a [%s]", object->getType()->getName().c_str());
+		OtExcept("Set difference expects another [set] instance, not a [%s]", object->getType()->getName().c_str());
 	}
 
 	OtSet result = create();
@@ -246,7 +271,7 @@ OtObject OtSetClass::diffFrom(OtObject object) {
 
 OtObject OtSetClass::unionWith(OtObject object) {
 	if (!object->isKindOf("Set")) {
-		OtExcept("The set union method expects another set instance, not a [%s]", object->getType()->getName().c_str());
+		OtExcept("Set union expects another [set] instance, not a [%s]", object->getType()->getName().c_str());
 	}
 
 	OtSet result = create();
@@ -273,7 +298,7 @@ OtObject OtSetClass::subtractFrom(OtObject object) {
 	OtSet op = object->cast<OtSetClass>();
 
 	if (!op) {
-		OtExcept("The set union method expects another set instance, not a [%s]", object->getType()->getName().c_str());
+		OtExcept("Set subtract expects another [set] instance, not a [%s]", object->getType()->getName().c_str());
 	}
 
 	OtSet result = create();
@@ -310,6 +335,7 @@ OtType OtSetClass::getMeta() {
 		type->set("contains", OtFunctionClass::create(&OtSetClass::contains));
 
 		type->set("clone", OtFunctionClass::create(&OtSetClass::clone));
+		type->set("merge", OtFunctionClass::create(&OtSetClass::merge));
 		type->set("clear", OtFunctionClass::create(&OtSetClass::clear));
 
 		type->set("insert", OtFunctionClass::create(&OtSetClass::insert));

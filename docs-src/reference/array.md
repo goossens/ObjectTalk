@@ -23,7 +23,7 @@ many member functions to manipulate the content of an array.
 | find(object) | Find object in array and return its position. If object is not found, -1 is returned. |
 | contains(object) | Determine if object is member of array. This member function is called when you use the **(not) in** operator. You typically don't call this member function directly. |
 | clone() | Return a clone of the array. |
-| join(array) | Append array to object's value and return a new array. |
+| merge(array) | Append array to object's value and return a new array. |
 | clear() | Clear (empty) the array. |
 | append(object) | Append object to array. |
 | insert(index, object) | Insert object at specified location. |

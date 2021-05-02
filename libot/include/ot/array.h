@@ -67,8 +67,8 @@ public:
 	// empty an array
 	void clear() { array.clear(); }
 
-	// join two arrays
-	OtObject join(OtObject object);
+	// merge two arrays
+	OtObject merge(OtObject object);
 
 	// add new member to the end
 	void append(OtObject object);

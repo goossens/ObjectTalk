@@ -25,6 +25,7 @@ a set or to perform set operations (e.g. union, difference).
 | size() | Return number of objects in the set. |
 | contains(object) | Determine if object is a member of the set. |
 | clone() | Return a clone of the set. |
+| merge() | Merge two sets and return a new one. |
 | clear() | Clear (empty) the set. |
 | add(object) | Add object to the set. |
 | erase(object) | Remove object from the set. |

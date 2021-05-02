@@ -55,6 +55,9 @@ public:
 	// clone a set
 	OtObject clone();
 
+	// merge two sets
+	OtObject merge(OtObject object);
+
 	// empty a set
 	void clear() { set.clear(); }
 

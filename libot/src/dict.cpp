@@ -166,6 +166,30 @@ OtObject OtDictClass::clone() {
 
 
 //
+//	OtDictClass::merge
+//
+
+OtObject OtDictClass::merge(OtObject value) {
+	if (!value->isKindOf("Dict")) {
+		OtExcept("Dictionary merge expects another [dictionary] instance, not [%s]", value->getType()->getName().c_str());
+	}
+
+	OtDict result = create();
+
+	for (auto& it : dict) {
+		result->setEntry(it.first, it.second);
+	}
+
+
+	for (auto& it : value->cast<OtDictClass>()->dict) {
+		result->setEntry(it.first, it.second);
+	}
+
+	return result;
+}
+
+
+//
 //	OtDictClass::eraseEntry
 //
 
@@ -231,6 +255,7 @@ OtType OtDictClass::getMeta() {
 		type->set("contains", OtFunctionClass::create(&OtDictClass::contains));
 
 		type->set("clone", OtFunctionClass::create(&OtDictClass::clone));
+		type->set("merge", OtFunctionClass::create(&OtDictClass::merge));
 		type->set("clear", OtFunctionClass::create(&OtDictClass::clear));
 		type->set("erase", OtFunctionClass::create(&OtDictClass::eraseEntry));
 

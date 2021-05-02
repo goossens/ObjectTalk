@@ -208,12 +208,12 @@ OtObject OtArrayClass::clone() {
 
 
 //
-//	OtArrayClass::join
+//	OtArrayClass::merge
 //
 
-OtObject OtArrayClass::join(OtObject object) {
+OtObject OtArrayClass::merge(OtObject object) {
 	if (!object->isKindOf("Array")) {
-		OtExcept("The array join method expects another array instance, not a [%s]", object->getType()->getName().c_str());
+		OtExcept("Array merge expects another [array] instance, not a [%s]", object->getType()->getName().c_str());
 	}
 
 	OtArray result = create();
@@ -346,6 +346,7 @@ OtType OtArrayClass::getMeta() {
 		type->set("contains", OtFunctionClass::create(&OtArrayClass::contains));
 
 		type->set("clone", OtFunctionClass::create(&OtArrayClass::clone));
+		type->set("merge", OtFunctionClass::create(&OtArrayClass::merge));
 		type->set("clear", OtFunctionClass::create(&OtArrayClass::clear));
 
 		type->set("append", OtFunctionClass::create(&OtArrayClass::append));

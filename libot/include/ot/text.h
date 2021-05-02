@@ -55,7 +55,7 @@ public:
 
 	// split UTF-8 string by delimeter into container
 	template <class CONTAINER>
-	static void split(const std::string& text, CONTAINER& container, char delimeter =' ') {
+	static void split(const std::string& text, CONTAINER& container, char delimeter=' ') {
 		std::stringstream ss(text);
 		std::string token;
 

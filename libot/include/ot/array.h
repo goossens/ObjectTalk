@@ -88,6 +88,9 @@ public:
 	// pop object from and of array
 	OtObject pop();
 
+	// join array entries into a string with separator
+	std::string join(const std::string& separator);
+
 	// get type definition
 	static OtType getMeta();
 

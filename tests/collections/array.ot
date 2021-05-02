@@ -81,3 +81,5 @@ var array6b = [1, 2, 3, 4, 6, 5];
 assert(array5 != array6);
 assert(array6 != array6a);
 assert(array6a == array6b);
+
+assert(array5.join(" ") == "1 2 3 4 5");

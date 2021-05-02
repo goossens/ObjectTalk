@@ -323,6 +323,29 @@ OtObject OtArrayClass::pop() {
 
 
 //
+//	OtArrayClass::join
+//
+
+std::string OtArrayClass::join(const std::string& separator) {
+	std::ostringstream o;
+	bool first = true;
+
+	for (auto const& entry : array) {
+		if (first) {
+			first = false;
+
+		} else {
+			o << separator;
+		}
+
+		o << entry->operator std::string();
+	}
+
+	return o.str();
+}
+
+
+//
 //	OtArrayClass::getMeta
 //
 
@@ -357,6 +380,8 @@ OtType OtArrayClass::getMeta() {
 
 		type->set("push", OtFunctionClass::create(&OtArrayClass::push));
 		type->set("pop", OtFunctionClass::create(&OtArrayClass::pop));
+
+		type->set("join", OtFunctionClass::create(&OtArrayClass::join));
 	}
 
 	return type;

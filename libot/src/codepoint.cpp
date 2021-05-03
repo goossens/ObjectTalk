@@ -31,8 +31,10 @@ size_t OtCodePoint::size(std::string::const_iterator i) {
 		return 4;
 
 	} else {
-		throw OtException("Invalid codepoint in UTF-8 string");
+		OtExcept("Invalid codepoint in UTF-8 string");
 	}
+
+	return 0;
 }
 
 
@@ -58,7 +60,7 @@ std::string::const_iterator OtCodePoint::get(std::string::const_iterator i, int3
 		i += 4;
 
 	} else {
-		throw OtException("Invalid codepoint in UTF-8 string");
+		OtExcept("Invalid codepoint in UTF-8 string");
 	}
 
 	return i;

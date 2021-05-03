@@ -69,3 +69,35 @@ for value in [ 1, 2, 3, 4 ] {
 }
 
 assert(result == 10);
+
+result = 0;
+
+for value in range(4) {
+	result += value;
+}
+
+assert(result == 10);
+
+result = 0;
+
+for value in range(3, 5) {
+	result += value;
+}
+
+assert(result == 12);
+
+result = 0;
+
+for value in range(0, 10, 2) {
+	result += value;
+}
+
+assert(result == 30);
+
+result = 0;
+
+for value in range(10, 6, -2) {
+	result += value;
+}
+
+assert(result == 24);

@@ -33,8 +33,8 @@ OtType OtArrayIteratorClass::getMeta() {
 //	OtArrayIteratorClass::create
 //
 
-OtArrayIterator OtArrayIteratorClass::create(OtArray a) {
-	OtArrayIterator iterator = std::make_shared<OtArrayIteratorClass>(a);
+OtArrayIterator OtArrayIteratorClass::create(OtArray array) {
+	OtArrayIterator iterator = std::make_shared<OtArrayIteratorClass>(array);
 	iterator->setType(getMeta());
 	return iterator;
 }

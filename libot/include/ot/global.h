@@ -40,6 +40,9 @@ private:
 	// import module
 	static OtObject import(const std::string name);
 
+	// create a range iterator
+	static OtObject range(size_t count, OtObject* parameters);
+
 	// print to STDOUT
 	static OtObject print(size_t count, OtObject* parameters);
 };

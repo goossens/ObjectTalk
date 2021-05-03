@@ -34,6 +34,7 @@
 			* [ArrayIterator](#arrayiterator)
 			* [DictIterator](#dictiterator)
 			* [SetIterator](#setiterator)
+			* [RangeIterator](#rangeiterator)
 
 **System Module Classes**
 

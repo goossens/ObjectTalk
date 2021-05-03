@@ -49,6 +49,9 @@ void OtExcept(const char* format, ARGS && ...args) {
 	}
 }
 
+inline void OtExcept(const std::string message) {
+	throw OtException(message);
+}
 
 //
 //	Macros

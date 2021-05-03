@@ -19,7 +19,7 @@
 //
 
 void OtThrowClass::call(const std::string& error) {
-	throw OtException(error);
+	OtExcept(error);
 }
 
 

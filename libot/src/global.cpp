@@ -30,6 +30,8 @@
 #include "ot/class.h"
 #include "ot/module.h"
 
+#include "ot/rangeiterator.h"
+
 
 //
 //	OtGlobalClass::OtGlobalClass
@@ -45,6 +47,7 @@ OtGlobalClass::OtGlobalClass() {
 
 	// add default functions
 	set("assert", OtFunctionClass::create(&OtGlobalClass::doAssert));
+	set("range", OtFunctionClass::create(&OtGlobalClass::range));
 	set("import", OtFunctionClass::create(&OtGlobalClass::import));
 	set("print", OtFunctionClass::create(&OtGlobalClass::print));
 
@@ -71,7 +74,7 @@ OtGlobalClass::OtGlobalClass() {
 
 void OtGlobalClass::doAssert(bool condition) {
 	if (!condition) {
-		throw OtException("Assertion error");
+		OtExcept("Assertion error");
 	}
 }
 
@@ -84,6 +87,48 @@ OtObject OtGlobalClass::import(const std::string name) {
 	OtModule module = OtModuleClass::create();
 	module->import(name);
 	return module;
+}
+
+
+//
+//	OtGlobalClass::range
+//
+
+OtObject OtGlobalClass::range(size_t count, OtObject* parameters) {
+	long from;
+	long to;
+	long increment;
+
+	if (count == 1) {
+		from = 1;
+		to = parameters[0]->operator long();
+		increment = 1;
+
+	} else if (count == 2) {
+		from = parameters[0]->operator long();
+		to = parameters[1]->operator long();
+		increment = 1;
+
+	} else if (count == 3) {
+		from = parameters[0]->operator long();
+		to = parameters[1]->operator long();
+		increment = parameters[2]->operator long();
+
+	}else {
+		OtExcept("Range functions required 1, 2 or 3 parameters, not %ld", count);
+	}
+
+	if (increment == 0) {
+		OtExcept("You can't create a range with an increment of 0");
+
+	} else if (to > from && increment < 0) {
+		OtExcept("Forward ranges must have positive increments");
+
+	} else if (from > to && increment > 0) {
+		OtExcept("Reverse ranges must have negative increments");
+	}
+
+	return OtRangeIteratorClass::create(from, to, increment);
 }
 
 

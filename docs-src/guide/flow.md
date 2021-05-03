@@ -265,3 +265,29 @@ This example uses a for-in loop to iterate over the items in an array:
 	// Hello, Alex!
 	// Hello, Brian!
 	// Hello, Jack!
+
+To use a preset range, you can use the **range** generator:
+
+	for number in range(4) {
+		print(number);
+	}
+
+	// prints 1 2 3 4
+
+	for number in range(2, 6) {
+		print(number);
+	}
+
+	// prints 2 3 4 5 6
+
+	for number in range(5, 9, 2) {
+		print(number);
+	}
+
+	// prints 5 7 9
+
+	for number in range(10, 6, -2) {
+		print(number);
+	}
+
+	// prints 10 8 6

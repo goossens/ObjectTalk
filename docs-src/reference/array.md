@@ -31,6 +31,7 @@ many member functions to manipulate the content of an array.
 | eraseMultiple(from, to) | Remove all objects between specified locations. |
 | push(object) | Push object to array. This is the same as append but makes it more logical if you use an array as a stack. |
 | pop() | Pop object from the end of the array allowing it to be used as a stack. |
+| fill(count, object) |  Fill array with N copies of provided object. |
 | join(separator) |  Join array entries into a string with separator. |
 
 **Overrides**

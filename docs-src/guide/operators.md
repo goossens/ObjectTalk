@@ -1,8 +1,9 @@
 An operator is a special symbol or phrase that you use to check, change,
 or combine values. For example, the addition operator (+) adds two objects,
-as in **var i = 1 + 2**, and the logical AND operator (&&) combines two Boolean
-values, as in **if enteredDoorCode && passedRetinaScan**. ObjectTalk
-supports the operators you may already know from languages like C.
+as in **var i = 1 + 2**, and the logical AND operator (&&) combines two
+Boolean values, as in **if enteredDoorCode && passedRetinaScan**.
+ObjectTalk supports the operators you may already know from languages
+like C.
 
 **Terminology**
 
@@ -10,7 +11,7 @@ Operators are unary, binary, or ternary:
 
 * **Unary operators** operate on a single target (such as -a). Unary
 prefix operators appear immediately before their target (such as !b), and
-unary postfix operators appear immediately after their target (such as c!).
+unary postfix operators appear immediately after their target (such as c++).
 * **Binary operators** operate on two targets (such as 2 + 3) and are infix
 because they appear in between their two targets.
 * **Ternary operators** operate on three targets. Like C, ObjectTalk
@@ -91,7 +92,9 @@ assignment operator **(+=)**:
 
 The expression a += 2 is shorthand for a = a + 2. Effectively, the
 addition and the assignment are combined into one operator that performs
-both tasks at the same time.
+both tasks at the same time. The generated code for a += 2 however is
+identical to the code generated for a = a + 2. a += 2 is therefore just
+"syntactical sugar".
 
 **Comparison Operators**
 
@@ -317,7 +320,7 @@ where they help to make your intentions clear.
 **Operator Overview and Priorities**
 
 The table below list all the operators used in ObjectTalk including their
-associativity, priority and member function name.
+priority and member function name.
 
 | Operator | Description | Priority | Member Function |
 | -------- | ----------- | -------- | --------------- |

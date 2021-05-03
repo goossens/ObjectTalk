@@ -82,4 +82,7 @@ assert(array5 != array6);
 assert(array6 != array6a);
 assert(array6a == array6b);
 
+array6.fill(5, 1);
+assert(array6 == [1, 1, 1, 1, 1]);
+
 assert(array5.join(" ") == "1 2 3 4 5");

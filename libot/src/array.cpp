@@ -323,6 +323,19 @@ OtObject OtArrayClass::pop() {
 
 
 //
+//	OtArrayClass::fill
+//
+
+void OtArrayClass::fill(size_t count, OtObject object) {
+	array.clear();
+
+	for (auto c = 0; c < count; c++) {
+		array.push_back(object);
+	}
+}
+
+
+//
 //	OtArrayClass::join
 //
 
@@ -381,6 +394,7 @@ OtType OtArrayClass::getMeta() {
 		type->set("push", OtFunctionClass::create(&OtArrayClass::push));
 		type->set("pop", OtFunctionClass::create(&OtArrayClass::pop));
 
+		type->set("fill", OtFunctionClass::create(&OtArrayClass::fill));
 		type->set("join", OtFunctionClass::create(&OtArrayClass::join));
 	}
 

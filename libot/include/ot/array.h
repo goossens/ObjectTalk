@@ -88,6 +88,9 @@ public:
 	// pop object from and of array
 	OtObject pop();
 
+	// fill an array with N copies of provided object
+	void fill(size_t count, OtObject object);
+
 	// join array entries into a string with separator
 	std::string join(const std::string& separator);
 

@@ -158,7 +158,7 @@ void OtModuleClass::import(const std::string& name) {
 			OtSource source = OtSourceClass::create(name, buffer.str());
 			OtByteCode bytecode = compiler.compile(source, getSharedPtr()->cast<OtModuleClass>());
 
-			OtVM::execute(bytecode, 0);
+			OtVM::execute(bytecode);
 		}
 
 	} else {

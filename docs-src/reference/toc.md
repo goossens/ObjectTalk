@@ -14,6 +14,11 @@
 		* [Array](#array)
 		* [Dict](#dict)
 		* [Set](#set)
+	* [System](#system)
+		* [Path](#path)
+		* [IO](#io)
+		* [OS](#os)
+		* [FS](#fs)
 	* [Internal](#internal)
 		* [Class](#class)
 		* [Global](#global)
@@ -35,14 +40,7 @@
 			* [DictIterator](#dictiterator)
 			* [SetIterator](#setiterator)
 			* [RangeIterator](#rangeiterator)
-
-**System Module Classes**
-
-* [Object](#object)
-	* [System](#system)
-		* [Path](#path)
-		* [OS](#os)
-		* [FS](#fs)
+			* [PathIterator](#pathiterator)
 
 **HTTP Module Classes**
 

@@ -14,9 +14,8 @@
 
 #include "ot/exception.h"
 #include "ot/function.h"
-#include "ot/iterator.h"
-
-#include "path.h"
+#include "ot/path.h"
+#include "ot/pathiterator.h"
 
 
 //
@@ -34,47 +33,6 @@ OtObject OtPathClass::init(size_t count, OtObject* parameters) {
 
 	return getSharedPtr();
 }
-
-
-//
-//	OtPathIterator
-//
-class OtPathIteratorClass;
-typedef std::shared_ptr<OtPathIteratorClass> OtPathIterator;
-
-class OtPathIteratorClass : public OtIteratorClass {
-public:
-	OtPathIteratorClass() = default;
-	OtPathIteratorClass(OtPath p) { path = p; iterator = p->path.begin(); last = p->path.end(); }
-
-	bool end() { return iterator == last; }
-	OtObject next() { return OtPathClass::create(*(iterator++)); }
-
-	// get type definition
-	static OtType getMeta() {
-		static OtType type = nullptr;
-
-		if (!type) {
-			type = OtTypeClass::create<OtPathIteratorClass>("PathIterator", OtIteratorClass::getMeta());
-			type->set("__end__", OtFunctionClass::create(&OtPathIteratorClass::end));
-			type->set("__next__", OtFunctionClass::create(&OtPathIteratorClass::next));
-		}
-
-		return type;
-	}
-
-	// create a new object
-	static OtPathIterator create(OtPath path) {
-		OtPathIterator iterator = std::make_shared<OtPathIteratorClass>(path);
-		iterator->setType(getMeta());
-		return iterator;
-	}
-
-private:
-	OtPath path;
-	std::filesystem::path::iterator iterator;
-	std::filesystem::path::iterator last;
-};
 
 
 //

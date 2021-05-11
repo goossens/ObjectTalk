@@ -27,6 +27,12 @@
 #include "ot/dict.h"
 #include "ot/set.h"
 
+#include "ot/system.h"
+#include "ot/path.h"
+#include "ot/io.h"
+#include "ot/os.h"
+#include "ot/fs.h"
+
 #include "ot/class.h"
 #include "ot/module.h"
 
@@ -65,6 +71,17 @@ OtGlobalClass::OtGlobalClass() {
 	set("Array", OtClassClass::create(OtArrayClass::getMeta()));
 	set("Dict", OtClassClass::create(OtDictClass::getMeta()));
 	set("Set", OtClassClass::create(OtSetClass::getMeta()));
+
+	set("System", OtClassClass::create(OtSystemClass::getMeta()));
+	set("Path", OtClassClass::create(OtPathClass::getMeta()));
+	set("IO", OtClassClass::create(OtIOClass::getMeta()));
+	set("OS", OtClassClass::create(OtOSClass::getMeta()));
+	set("FS", OtClassClass::create(OtFSClass::getMeta()));
+
+	// add default instances
+	set("io", OtIOClass::create());
+	set("os", OtOSClass::create());
+	set("fs", OtFSClass::create());
 }
 
 
@@ -136,13 +153,12 @@ OtObject OtGlobalClass::range(size_t count, OtObject* parameters) {
 //	OtGlobalClass::print
 //
 
-OtObject OtGlobalClass::print(size_t count, OtObject* parameters) {
+void OtGlobalClass::print(size_t count, OtObject* parameters) {
 	for (size_t i = 0; i < count; i++) {
 		std::cout << (std::string) *parameters[i];
 	}
 
 	std::cout << std::endl;
-	return nullptr;
 }
 
 

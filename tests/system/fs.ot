@@ -1,0 +1,13 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var tmp = fs.gettmp();
+var cwd = fs.getcwd();
+
+fs.chdir(tmp);
+assert(fs.getcwd() == tmp);
+fs.chdir(cwd);
+assert(fs.getcwd() == cwd);

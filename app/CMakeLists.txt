@@ -8,7 +8,7 @@ find_path(UV_INCLUDES uv.h REQUIRED)
 find_library(UV_LIBRARY uv REQUIRED)
 
 add_executable(ot ot.cpp)
-add_dependencies(ot libot http system)
+add_dependencies(ot libot http)
 
 target_include_directories(ot PRIVATE ${UV_INCLUDES})
 target_link_libraries(ot PRIVATE libot ${UV_LIBRARY})

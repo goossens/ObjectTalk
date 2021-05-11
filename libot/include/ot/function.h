@@ -73,6 +73,21 @@ public:
 		return createWithType(std::make_shared<OtFunctionClass>(&Helper::invoke, target, SIZE_MAX));
 	}
 
+	static OtFunction create(void (*function)(size_t, OtObject*)) {
+		typedef decltype(function) FUNCTION;
+		FUNCTION* target = (FUNCTION*) malloc(sizeof(FUNCTION));
+		*target = function;
+
+		struct Helper {
+			static OtObject invoke(void* t, size_t n, OtObject* p) {
+				(*((FUNCTION*) t))(n, p);
+				return nullptr;
+			}
+		};
+
+		return createWithType(std::make_shared<OtFunctionClass>(&Helper::invoke, target, SIZE_MAX));
+	}
+
 	template<typename RETURN, typename ...ARGS>
 	static OtFunction create(RETURN (*function)(ARGS...)) {
 		typedef decltype(function) FUNCTION;
@@ -114,6 +129,24 @@ public:
 				auto object = p[0]->cast<CLASS>();
 				auto method = *((METHOD*) t);
 				return ((*object).*method)(n - 1, p + 1);
+			}
+		};
+
+		return createWithType(std::make_shared<OtFunctionClass>(&Helper::invoke, target, SIZE_MAX));
+	}
+
+	template<typename CLASS>
+	static OtFunction create(void (CLASS::*method)(size_t, OtObject*)) {
+		typedef decltype(method) METHOD;
+		METHOD* target = (METHOD*) malloc(sizeof(METHOD));
+		*target = method;
+
+		struct Helper {
+			static OtObject invoke(void* t, size_t n, OtObject* p) {
+				auto object = p[0]->cast<CLASS>();
+				auto method = *((METHOD*) t);
+				((*object).*method)(n - 1, p + 1);
+				return nullptr;
 			}
 		};
 

@@ -32,7 +32,7 @@ public:
 	static void end();
 
 	// execute bytecode in the virtual machine
-	static OtObject execute(OtByteCode bytecode, size_t callingParameters);
+	static OtObject execute(OtByteCode bytecode, size_t callingParameters=0);
 
 	// virtual machine components
 	static OtGlobal global;

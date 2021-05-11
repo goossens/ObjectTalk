@@ -19,31 +19,29 @@
 //
 
 int main(int argc, char* argv[]) {
-	// initialize ObjectTalk library
-	argc = OtVM::init(argc, argv);
-
-	// ensure we have some arguments
-	if (argc == 1) {
-		std::wcerr << argv[0] << ": usage: " << argv[0] << " script ..." << std::endl;
-		exit(EXIT_FAILURE);
-	}
-
 	try {
+		// initialize ObjectTalk library
+		argc = OtVM::init(argc, argv);
+
+		// ensure we have some arguments
+		if (argc == 1) {
+			std::wcerr << argv[0] << ": usage: " << argv[0] << " script ..." << std::endl;
+			exit(EXIT_FAILURE);
+		}
+
 		// run each script
 		for (auto c = 1; c < argc; c++) {
-//			for (auto i = 0; i < 1000; i++) {
-				OtModuleClass::create()->import(argv[c]);
-//			}
+			OtModuleClass::create()->import(argv[c]);
 		}
+
+		// close ObjectTalk library
+		OtVM::end();
 
 	} catch (const OtException& e) {
 		// handle all failures
 		std::wcerr << "Error: " << e.what() << std::endl;
 		exit(EXIT_FAILURE);
 	}
-
-	// close ObjectTalk library
-	OtVM::end();
 
 	return 0;
 }

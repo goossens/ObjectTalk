@@ -1,0 +1,13 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+//	Test script for ObjectTalk operating system functions
+assert(os.hasenv("OBJECT_TALK") == false);
+os.setenv("OBJECT_TALK", "test");
+assert(os.hasenv("OBJECT_TALK") == true);
+assert(os.getenv("OBJECT_TALK") == "test");
+os.unsetenv("OBJECT_TALK");
+assert(os.hasenv("OBJECT_TALK") == false);

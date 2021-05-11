@@ -34,6 +34,12 @@
 #include "ot/dict.h"
 #include "ot/set.h"
 
+#include "ot/system.h"
+#include "ot/io.h"
+#include "ot/os.h"
+#include "ot/fs.h"
+#include "ot/path.h"
+
 #include "ot/internal.h"
 #include "ot/class.h"
 #include "ot/module.h"

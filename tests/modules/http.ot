@@ -4,8 +4,6 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-//	Test script for ObjectTalk http functions
-
 var http = import("http");
 
 var url = http.URL("http://user:password@test.org:8080/a/b/c/d/test.txt?a=1&b=2#frag");

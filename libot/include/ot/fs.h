@@ -65,13 +65,13 @@ public:
 	// create (intermediate) directories
 	void mkdirs(const std::string& path);
 
-	// create temporary directories
+	// create temporary directorY
 	OtObject mktmpdir();
 
 	// remove directory
 	void rmdir(const std::string& path);
 
-	// remove directory and its content
+	// recursively remove directory and its content
 	void rmdirs(const std::string& path);
 
 	// get file system capacity

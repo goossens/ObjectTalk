@@ -44,5 +44,5 @@ private:
 	static OtObject range(size_t count, OtObject* parameters);
 
 	// print to STDOUT
-	static OtObject print(size_t count, OtObject* parameters);
+	static void print(size_t count, OtObject* parameters);
 };

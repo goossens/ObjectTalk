@@ -183,7 +183,7 @@ OtObject OtOSClass::cores() {
 		core->setEntry("sys", OtIntegerClass::create(info[c].cpu_times.sys));
 		core->setEntry("idle", OtIntegerClass::create(info[c].cpu_times.idle));
 		core->setEntry("irq", OtIntegerClass::create(info[c].cpu_times.irq));
-		result->add(core);
+		result->append(core);
 	}
 
 	uv_free_cpu_info(info, count);
@@ -222,7 +222,7 @@ OtObject OtOSClass::networks() {
 			network->setEntry("family", OtStringClass::create("IPV6"));
 		}
 
-		result->add(network);
+		result->append(network);
 	}
 
 	uv_free_interface_addresses(info, count);

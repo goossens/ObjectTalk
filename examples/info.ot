@@ -40,9 +40,6 @@ function seconds2string(seconds) {
 	return result;
 }
 
-var system = import("system");
-var os = system.OS();
-
 print("System name: " + os.sysname());
 print("Release: " + os.release());
 print("Version: " + os.version());
@@ -58,6 +55,11 @@ print();
 
 print("Total memory: " + size2string(os.totalMemory()));
 print("Free memory: " + size2string(os.freeMemory()));
+print();
+
+print("Filesystem capacity: " + size2string(fs.capacity("/")));
+print("Filesystem free: " + size2string(fs.free("/")));
+print("Filesystem available: " + size2string(fs.available("/")));
 print();
 
 var networks = os.networks();

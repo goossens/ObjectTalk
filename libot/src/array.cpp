@@ -416,7 +416,7 @@ OtArray OtArrayClass::create(size_t count, OtObject* objects) {
 	OtArray array = create();
 
 	for (auto c = 0; c < count; c++) {
-		array->add(objects[c]);
+		array->append(objects[c]);
 	}
 
 	return array;

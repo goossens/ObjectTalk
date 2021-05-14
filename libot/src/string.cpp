@@ -26,7 +26,7 @@
 std::string OtStringClass::getEntry(size_t index) {
 	// sanity check
 	if (index < 0 || index >= len()) {
-		OtExcept("invalid index [%ld] for string of size [%ld]", index, len());
+		OtExcept("Invalid index [%ld] for string of size [%ld]", index, len());
 	}
 
 	return OtText::get(value, index);
@@ -40,7 +40,7 @@ std::string OtStringClass::getEntry(size_t index) {
 std::string OtStringClass::setEntry(size_t index, const std::string& string) {
 	// sanity check
 	if (index < 0 || index >= len()) {
-		OtExcept("invalid index [%ld] for string of size [%ld]", index, len());
+		OtExcept("Invalid index [%ld] for string of size [%ld]", index, len());
 	}
 
 	value = OtText::set(value, index, string);
@@ -55,7 +55,7 @@ std::string OtStringClass::setEntry(size_t index, const std::string& string) {
 OtObject OtStringClass::index(size_t index) {
 	// sanity check
 	if (index < 0 || index >= len()) {
-		OtExcept("invalid index [%ld] for string of size [%ld]", index, len());
+		OtExcept("Invalid index [%ld] for string of size [%ld]", index, len());
 	}
 
 	return OtStringReferenceClass::create(cast<OtStringClass>(), index);

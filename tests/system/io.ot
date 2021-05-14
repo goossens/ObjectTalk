@@ -3,3 +3,22 @@
 //
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var name = fs.tmpnam();
+var value = ["John", 31, {"valid": true}];
+
+assert(!name.exists());
+io.writeJSON(name, value);
+assert(name.exists());
+assert(fs.filesize(name) ==26);
+assert(io.readJSON(name) == value);
+fs.rm(name);
+assert(!name.exists());
+
+assert(!name.exists());
+io.writeText(name, "This is a test");
+assert(name.exists());
+assert(fs.filesize(name) == 14);
+assert(io.readText(name) == "This is a test");
+fs.rm(name);
+assert(!name.exists());

@@ -11,3 +11,74 @@ fs.chdir(tmp);
 assert(fs.getcwd() == tmp);
 fs.chdir(cwd);
 assert(fs.getcwd() == cwd);
+
+var name = fs.tmpnam();
+fs.touch(name);
+assert(name.exists());
+fs.rm(name);
+assert(!name.exists());
+
+var dir = fs.mktmpdir();
+assert(fs.ls(dir).size() == 0);
+
+for file in range(1, 10) {
+	fs.touch(dir + file);
+}
+
+assert(fs.ls(dir).size() == 10);
+fs.rmdirs(dir);
+
+assert(!name.exists());
+io.writeText(name, "This is a test");
+assert(fs.filesize(name) == 14);
+assert(io.readText(name) == "This is a test");
+assert(name.exists());
+
+var clone = fs.tmpnam();
+assert(!clone.exists());
+fs.cp(name, clone);
+assert(clone.exists());
+assert(fs.filesize(clone) == 14);
+assert(io.readText(clone) == "This is a test");
+
+fs.rm(clone);
+assert(!clone.exists());
+fs.mv(name, clone);
+assert(!name.exists());
+assert(clone.exists());
+assert(fs.filesize(clone) == 14);
+assert(io.readText(clone) == "This is a test");
+
+fs.ln(clone, name);
+assert(name.exists());
+assert(clone.exists());
+
+fs.rm(clone);
+assert(name.exists());
+assert(!clone.exists());
+
+fs.lns(name, clone);
+assert(name.exists());
+assert(clone.exists());
+
+fs.resize(name, 100);
+assert(fs.filesize(name) == 100);
+
+fs.rm(name);
+fs.rm(clone);
+
+var dir1 = tmp + "test";
+assert(!dir1.exists());
+fs.mkdir(dir1);
+assert(dir1.exists());
+fs.rmdir(dir1);
+assert(!dir1.exists());
+
+var dirs = tmp + "test" + "level2";
+assert(!dirs.exists());
+fs.mkdirs(dirs);
+assert(dir1.exists());
+assert(dirs.exists());
+fs.rmdirs(dir1);
+assert(!dir1.exists());
+assert(!dirs.exists());

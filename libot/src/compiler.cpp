@@ -33,10 +33,10 @@
 
 
 //
-//	OtCompiler::compile
+//	OtCompiler::compileModule
 //
 
-OtByteCode OtCompiler::compile(OtSource src, OtModule module) {
+OtByteCode OtCompiler::compileModule(OtSource src, OtModule module) {
 	// rememember source code
 	source = src;
 
@@ -78,6 +78,50 @@ OtByteCode OtCompiler::compile(OtSource src, OtModule module) {
 
 	// return compiled code
 	bytecode->push(OtVM::null);
+	return bytecode;
+}
+
+
+//
+//	OtCompiler::compileExpression
+//
+
+OtByteCode OtCompiler::compileExpression(OtSource src) {
+	// rememember source code
+	source = src;
+
+	// load scanner
+	scanner.loadSource(src);
+
+	// setup bytecode
+	OtByteCode bytecode = OtByteCodeClass::create(src);
+
+	// setup global scope
+	OtGlobal global = OtVM::global;
+	pushObjectScope(global);
+
+	for (auto name : global->getMembers()->names()) {
+		declareVariable(bytecode, name);
+	}
+
+	// process expression
+	try {
+		if (expression(bytecode)) {
+			bytecode->method("__deref__", 0);
+		}
+
+		scanner.expect(OtScanner::EOS_TOKEN);
+
+	} catch (const OtException& e) {
+		// clear scope stack
+		scopeStack.clear();
+		throw e;
+	}
+
+	// clear scope stack
+	scopeStack.clear();
+
+	// return compiled code
 	return bytecode;
 }
 

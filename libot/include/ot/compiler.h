@@ -29,8 +29,11 @@
 
 class OtCompiler {
 public:
-	// compile source code into bytecode
-	OtByteCode compile(OtSource source, OtModule module);
+	// compile module into bytecode
+	OtByteCode compileModule(OtSource source, OtModule module);
+
+	// compile expression into bytecode
+	OtByteCode compileExpression(OtSource source);
 
 private:
 	// push a new scope onto the scope stack

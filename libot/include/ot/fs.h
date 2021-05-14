@@ -29,17 +29,23 @@ public:
 	// get temporary directory
 	OtObject gettmp();
 
+	// get temporary file name
+	OtObject tmpnam();
+
 	// get current working directory
 	OtObject getcwd();
 
 	// change current working directory
 	void chdir(const std::string& path);
 
-	// get list of files in specified directory
+	// get list of files in specified directory as an array
 	OtObject ls(const std::string& path);
 
 	// get file size
 	size_t filesize(const std::string& path);
+
+	// touch a file
+	void touch(const std::string& path);
 
 	// copy a file system object
 	void cp(const std::string& from, const std::string& to);
@@ -65,7 +71,7 @@ public:
 	// create (intermediate) directories
 	void mkdirs(const std::string& path);
 
-	// create temporary directorY
+	// create temporary directory
 	OtObject mktmpdir();
 
 	// remove directory

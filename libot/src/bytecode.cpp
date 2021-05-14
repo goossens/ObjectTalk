@@ -99,7 +99,7 @@ std::string OtByteCodeClass::disassemble() {
 			case POP_TRY:
 				buffer << "POP_TRY";
 				break;
- 		}
+		}
 
 		buffer << std::endl;
 	}

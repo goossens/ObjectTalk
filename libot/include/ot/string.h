@@ -92,7 +92,7 @@ public:
 	std::string upper() { return OtText::upper(value); }
 
 	OtObject split(const std::string& delimiter);
-	
+
 	// get type definition
 	static OtType getMeta();
 

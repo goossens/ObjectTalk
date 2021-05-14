@@ -113,7 +113,7 @@ public:
 			buffer << OtObjectDescribe(element) << std::endl;
 		}
 
-		buffer  << std::endl << "frames:" << std::endl;
+		buffer	<< std::endl << "frames:" << std::endl;
 		buffer << "-------" << std::endl << std::endl;
 		count = 0;
 

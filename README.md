@@ -50,8 +50,8 @@ a lot harder to implement ObjectTalk. Special thanks goes to the
 following communities:
 
 * [libuv](https://libuv.org) - multi-platform support library with a focus on asynchronous I/O.
-* [llhttp](https://llhttp.org) - HTTP protocol parser
-* [multipart-parser](https://github.com/francoiscolas/multipart-parser) - HTTP multipart body parser
+* [llhttp](https://llhttp.org) - HTTP protocol parser.
+* [multipart-parser](https://github.com/francoiscolas/multipart-parser) - HTTP multipart body parser.
 
 A special thanks also goes to
 [Gunther Rademacher](https://github.com/GuntherRademacher) for his

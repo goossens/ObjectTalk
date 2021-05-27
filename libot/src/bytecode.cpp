@@ -39,11 +39,11 @@ std::string OtByteCodeClass::disassemble() {
 				break;
 
 			case MARK:
-				buffer << "MARK" << marks[getNumber(&pc)];
+				buffer << "MARK" << marks[getNumber(pc)];
 				break;
 
 			case PUSH: {
-				auto n = getNumber(&pc);
+				auto n = getNumber(pc);
 				buffer << "PUSH" << OtObjectDescribe(constants[n]);
 				break;
 			}
@@ -53,7 +53,7 @@ std::string OtByteCodeClass::disassemble() {
 				break;
 
 			case POP_COUNT:
-				buffer << "POP_COUNT" << getNumber(&pc);
+				buffer << "POP_COUNT" << getNumber(pc);
 				break;
 
 			case DUP:
@@ -65,27 +65,27 @@ std::string OtByteCodeClass::disassemble() {
 				break;
 
 			case MOVE:
-				buffer << "MOVE" << getNumber(&pc);
+				buffer << "MOVE" << getNumber(pc);
 				break;
 
 			case RESERVE:
-				buffer << "RESERVE" << getNumber(&pc);
+				buffer << "RESERVE" << getNumber(pc);
 				break;
 
 			case JUMP:
-				buffer << "JUMP" << offsets[getNumber(&pc)];
+				buffer << "JUMP" << offsets[getNumber(pc)];
 				break;
 
 			case JUMP_TRUE:
-				buffer << "JUMP_TRUE" << offsets[getNumber(&pc)];
+				buffer << "JUMP_TRUE" << offsets[getNumber(pc)];
 				break;
 
 			case JUMP_FALSE:
-				buffer << "JUMP_TRUE" << offsets[getNumber(&pc)];
+				buffer << "JUMP_TRUE" << offsets[getNumber(pc)];
 				break;
 
 			case METHOD:
-				buffer << "METHOD" << getString(getNumber(&pc)) << "(" << getNumber(&pc) << ")";
+				buffer << "METHOD" << getString(getNumber(pc)) << "(" << getNumber(pc) << ")";
 				break;
 
 			case EXIT:
@@ -93,7 +93,7 @@ std::string OtByteCodeClass::disassemble() {
 				break;
 
 			case PUSH_TRY:
-				buffer << "PUSH_TRY" << offsets[getNumber(&pc)];
+				buffer << "PUSH_TRY" << offsets[getNumber(pc)];
 				break;
 
 			case POP_TRY:

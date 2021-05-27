@@ -183,6 +183,21 @@ public:
 		return createWithType(std::make_shared<OtFunctionClass>(&Helper::invoke, target, sizeof...(ARGS) + 1));
 	}
 
+	template<typename CLASS, typename RETURN, typename ...ARGS>
+	static OtFunction create(RETURN (CLASS::*method)(ARGS...) const) {
+		typedef decltype(method) METHOD;
+		METHOD* target = (METHOD*) malloc(sizeof(METHOD));
+		*target = method;
+
+		struct Helper {
+			static OtObject invoke(void* t, size_t n, OtObject* p) {
+				return invokeMethod<CLASS, METHOD>(t, p, std::index_sequence_for<ARGS...>());
+			}
+		};
+
+		return createWithType(std::make_shared<OtFunctionClass>(&Helper::invoke, target, sizeof...(ARGS) + 1));
+	}
+
 protected:
 	// invoke functions by type
 	template<typename FUNCTION, size_t... I>

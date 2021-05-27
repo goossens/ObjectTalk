@@ -34,6 +34,32 @@ public:
 	// execute bytecode in the virtual machine
 	static OtObject execute(OtByteCode bytecode, size_t callingParameters=0);
 
+	// call a member function on an object with arguments
+	template<typename... ARGS>
+	static OtObject memberFunction(OtObject target, const std::string& member, ARGS... args) {
+		const size_t count = sizeof...(ARGS) + 1;
+		stack->push(target);
+		(stack->push(args), ...);
+		stack->openFrame(count);
+		auto result = target->get(member)->operator()(count, stack->sp(count));
+		stack->closeFrame();
+		stack->pop(count);
+		return result;
+	}
+
+	// redirect member function to a new target
+	static inline OtObject redirectMemberFunction(OtObject target, OtObject member, size_t count) {
+		auto sp = stack->sp(count + 1);
+		*sp = target;
+		return member->operator()(count + 1, sp);
+	}
+
+	static inline OtObject redirectMemberFunction(OtObject target, const std::string& member, size_t count) {
+		auto sp = stack->sp(count + 1);
+		*sp = target;
+		return target->get(member)->operator()(count + 1, sp);
+	}
+
 	// virtual machine components
 	static OtGlobal global;
 	static OtStack stack;

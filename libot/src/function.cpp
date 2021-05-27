@@ -21,7 +21,7 @@ OtObject OtFunctionClass::operator()(size_t count, OtObject* parameters) {
 	// sanity check
 	if (parameterCount != SIZE_MAX && count != parameterCount) {
 		if (parameterCount == 1) {
-			OtExcept("Function expects [%d] parameter, [%d] given", parameterCount, count);
+			OtExcept("Function expects [1] parameter, [%d] given", count);
 
 		} else {
 			OtExcept("Function expects [%d] parameters, [%d] given", parameterCount, count);

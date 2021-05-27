@@ -15,30 +15,17 @@
 
 
 //
-//	OtClassClass::operator()
+//	OtClassClass::instantiate
 //
 
-OtObject OtClassClass::operator()(size_t count, OtObject* parameters) {
+OtObject OtClassClass::instantiate(size_t count, OtObject* parameters) {
 	// create new instance
 	OtObject object = classType->construct();
 	object->setType(classType);
 
 	// run possible init function
 	if (object->has("__init__")) {
-		// open a new stack frame
-		OtVM::stack->openFrame(count + 1);
-
-		// get a new stack pointer
-		auto sp = OtVM::stack->sp(count + 1);
-
-		// ugly patch
-		*sp = object;
-
-		// execute __init__ with one more parameter (this)
-		object->get("__init__")->operator()(count + 1, sp);
-
-		// close the stack frame
-		OtVM::stack->closeFrame();
+		return OtVM::redirectMemberFunction(object, "__init__", count);
 	}
 
 	return object;
@@ -54,7 +41,7 @@ OtType OtClassClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtClassClass>("Class", OtInternalClass::getMeta());
-		type->set("__call__", OtFunctionClass::create(&OtClassClass::operator()));
+		type->set("__call__", OtFunctionClass::create(&OtClassClass::instantiate));
 		type->set("getName", OtFunctionClass::create(&OtClassClass::getName));
 		type->set("hasParent", OtFunctionClass::create(&OtClassClass::hasParent));
 		type->set("getParent", OtFunctionClass::create(&OtClassClass::getParent));

@@ -120,7 +120,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 	// execute all instructions
 	while (pc < end) {
 		try {
-			switch (bytecode->getOpcode(&pc)) {
+			switch (bytecode->getOpcode(pc)) {
 				case OtByteCodeClass::DEBUG:
 					OT_DEBUG(bytecode->disassemble());
 					OT_DEBUG(OtFormat("PC: %ld\n", pc));
@@ -128,11 +128,11 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 					break;
 
 				case OtByteCodeClass::MARK:
-					mark = bytecode->getNumber(&pc);
+					mark = bytecode->getNumber(pc);
 					break;
 
 				case OtByteCodeClass::PUSH:
-					stack->push(bytecode->getConstant(bytecode->getNumber(&pc)));
+					stack->push(bytecode->getConstant(bytecode->getNumber(pc)));
 					break;
 
 				case OtByteCodeClass::POP:
@@ -140,7 +140,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 					break;
 
 				case OtByteCodeClass::POP_COUNT:
-					stack->pop(bytecode->getNumber(&pc));
+					stack->pop(bytecode->getNumber(pc));
 					break;
 
 				case OtByteCodeClass::DUP:
@@ -152,19 +152,19 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 					break;
 
 				case OtByteCodeClass::MOVE:
-					stack->move(bytecode->getNumber(&pc));
+					stack->move(bytecode->getNumber(pc));
 					break;
 
 				case OtByteCodeClass::RESERVE:
-					stack->reserve(bytecode->getNumber(&pc));
+					stack->reserve(bytecode->getNumber(pc));
 					break;
 
 				case OtByteCodeClass::JUMP:
-					pc = bytecode->getOffset(bytecode->getNumber(&pc));
+					pc = bytecode->getOffset(bytecode->getNumber(pc));
 					break;
 
 				case OtByteCodeClass::JUMP_TRUE: {
-					auto jump = bytecode->getOffset(bytecode->getNumber(&pc));
+					auto jump = bytecode->getOffset(bytecode->getNumber(pc));
 					auto value = stack->pop();
 
 					if (value->operator bool()) {
@@ -175,7 +175,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 				}
 
 				case OtByteCodeClass::JUMP_FALSE: {
-					auto jump = bytecode->getOffset(bytecode->getNumber(&pc));
+					auto jump = bytecode->getOffset(bytecode->getNumber(pc));
 					auto value = stack->pop();
 
 					if (!value->operator bool()) {
@@ -187,32 +187,23 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 
 				case OtByteCodeClass::METHOD: {
 					// get method name
-					auto method = bytecode->getString(bytecode->getNumber(&pc));
+					auto method = bytecode->getString(bytecode->getNumber(pc));
 
 					// get number of calling parameters
-					auto count = bytecode->getNumber(&pc);
+					auto count = bytecode->getNumber(pc);
 
 					// get a stack pointer to the calling parameters and target object
 					auto parameters = stack->sp(count + 1);
 
 					// sanity check
-					if (!parameters[0]) {
-						OtExcept("You can't call a method on a null object");
-					}
+					OT_ASSERT(parameters[0]);
 
 					// call method
-					auto value = parameters[0]->get(method)->operator()(count + 1, parameters);
+					auto result = parameters[0]->get(method)->operator()(count + 1, parameters);
 
 					// clean up stack and put result back on stack
 					stack->pop(count + 1);
-
-					if (value) {
-						stack->push(value);
-
-					} else {
-						stack->push(null);
-					}
-
+					stack->push(result ? result : null);
 					break;
 				}
 
@@ -223,7 +214,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 
 				case OtByteCodeClass::PUSH_TRY:
 					// start a new try/catch cycle
-					tryCatch.push_back(OtTryCatch(bytecode->getOffset(bytecode->getNumber(&pc)), stack->getState()));
+					tryCatch.push_back(OtTryCatch(bytecode->getOffset(bytecode->getNumber(pc)), stack->getState()));
 					break;
 
 				case OtByteCodeClass::POP_TRY:

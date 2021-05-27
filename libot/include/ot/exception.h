@@ -59,4 +59,4 @@ inline void OtExcept(const std::string message) {
 
 #define OT_FATAL(format, ...) OtExcept("%s: line %d: " format, __FILE__, __LINE__, __VA_ARGS__)
 #define OT_ASSERT(assertion) if (!(assertion)) OT_FATAL("Assertion error: %s", #assertion)
-#define OT_DEBUG(value) std::cout << value << std::endl
+#define OT_DEBUG(value) std::cout << (value) << std::endl

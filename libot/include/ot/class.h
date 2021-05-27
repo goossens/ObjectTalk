@@ -33,18 +33,18 @@ public:
 	bool hasParent() { return classType->getParent() != nullptr; }
 	OtObject getParent() { return OtClassClass::create(classType->getParent()); }
 
+	// instantiate a new class instance
+	OtObject instantiate(size_t count, OtObject* parameters);
+
 	// create a sub class
 	OtObject subClass(const std::string& name) { return OtClassClass::create(classType->subType(name)); }
 
 	// see if class is kind of
 	bool isKindOf(const std::string& className) { return classType->isKindOf(className); }
 
-	// special member acccess (so we can manipulate metaclass members via class
+	// special member acccess (so we can manipulate metaclass members via class)
 	OtObject set(const std::string& name, OtObject value) { return classType->set(name, value); }
 	void unset(const std::string& name) { return classType->unset(name); }
-
-	// call operator
-	OtObject operator()(size_t count, OtObject* parameters);
 
 	// get type definition
 	static OtType getMeta();

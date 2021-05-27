@@ -13,6 +13,7 @@
 #include "ot/libuv.h"
 #include "ot/function.h"
 #include "ot/internal.h"
+#include "ot/vm.h"
 
 #include "server.h"
 #include "session.h"
@@ -34,7 +35,7 @@ public:
 
 		uv_timer_start(&uv_timer, [](uv_timer_t* handle) {
 			OtHttpTimerClass* timer = (OtHttpTimerClass*) (handle->data);
-			timer->callback->get("__call__")->operator()(1, &timer->callback);
+			OtVM::memberFunction(timer->callback, "__call__");
 		}, wait, repeat);
 	}
 

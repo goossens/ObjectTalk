@@ -73,7 +73,7 @@ public:
 	std::string add(const std::string& operand) { return value + operand; }
 
 	// functions
-	size_t len() { return (size_t) OtText::len(value); }
+	size_t len() { return OtText::len(value); }
 
 	std::string left(size_t count) { return OtText::left(value, count); }
 	std::string right(size_t count) { return OtText::right(value, count); }

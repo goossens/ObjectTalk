@@ -82,25 +82,21 @@ public:
 	size_t size() { return bytecode.size(); }
 
 	// get opcode
-	uint8_t getOpcode(size_t* pc) {
-		auto opcode = bytecode[*pc];
-		(*pc)++;
+	inline uint8_t getOpcode(size_t& pc) {
+		auto opcode = bytecode[pc++];
 		return opcode;
 	}
 
 	// get variable leght number
-	inline size_t getNumber(size_t* pc) {
+	inline size_t getNumber(size_t& pc) {
 		size_t result = 0;
 		size_t digit = 0;
 
-		while (bytecode[*pc] & 128) {
-			result |= (bytecode[*pc] & 127) << (7 * digit++);
-			(*pc)++;
+		while (bytecode[pc] & 128) {
+			result |= (bytecode[pc++] & 127) << (7 * digit++);
 		}
 
-		result |= bytecode[*pc] << (7 * digit);
-		(*pc)++;
-		return result;
+		return result | bytecode[pc++] << (7 * digit);
 	}
 
 	// get code parts

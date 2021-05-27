@@ -138,18 +138,11 @@ public:
 	void run(OtHttpRequest req, OtHttpResponse res, OtObject next) {
 		// execute callback if method and path matches
 		if (match(req)) {
-			OtVM::stack->push(callback);
-			OtVM::stack->push(req);
-			OtVM::stack->push(res);
-			OtVM::stack->push(next);
-			OtVM::stack->openFrame(4);
-			callback->get("__call__")->operator()(4, OtVM::stack->sp(4));
-			OtVM::stack->closeFrame();
-			OtVM::stack->pop(4);
+			OtVM::memberFunction(callback, "__call__", req, res, next);
 
 		} else {
 			// no match, call next handler
-			next->get("__call__")->operator()(1, &next);
+			OtVM::memberFunction(next, "__call__");
 		}
 	}
 
@@ -185,7 +178,7 @@ public:
 
 		} else {
 			// no match, pass to next handler
-			next->get("__call__")->operator()(1, &next);
+			OtVM::memberFunction(next, "__call__");
 		}
 	}
 
@@ -214,7 +207,7 @@ void OtHttpRouterClass::runHandler(const size_t index, OtHttpRequest req, OtHttp
 		handlers[index]->run(req, res, OtHttpNextClass::create(cast<OtHttpRouterClass>(), index + 1, req, res, next));
 
 	} else {
-		next->get("__call__")->operator()(1, &next);
+		OtVM::memberFunction(next, "__call__");
 	}
 }
 

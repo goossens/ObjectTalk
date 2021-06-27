@@ -84,6 +84,8 @@ public:
 	double exp() { return std::exp(value); }
 	double log10() { if (value <= 0.0) OtExcept("Log10 requires number > zero"); return std::log10(value); }
 
+	double random() { return OtRandom(value); };
+
 	std::string toFixed(size_t precision);
 
 	// get type definition

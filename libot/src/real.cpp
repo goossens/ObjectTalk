@@ -78,6 +78,8 @@ OtType OtRealClass::getMeta() {
 		type->set("exp", OtFunctionClass::create(&OtRealClass::exp));
 		type->set("log10", OtFunctionClass::create(&OtRealClass::log10));
 
+		type->set("random", OtFunctionClass::create(&OtRealClass::random));
+
 		type->set("toFixed", OtFunctionClass::create(&OtRealClass::toFixed));
 	}
 

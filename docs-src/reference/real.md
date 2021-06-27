@@ -34,6 +34,7 @@ systems, Reals are implemented using 8 bytes and have a range of
 | log() | Return the natural (base-e) logarithm of object's value.
 | exp() | Returns the base-e exponential function of object's value.
 | log10() | Return the common (base-10) logarithm of object's value.
+| random() | Return a non-cryptographic random number between 0.0 and the object's value.
 | toFixed(precision) | Format object's value using fixed-point notation.
 
 **Overrides**

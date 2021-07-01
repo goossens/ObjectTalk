@@ -52,6 +52,9 @@ public:
 	long totalMemory();
 	long freeMemory();
 
+	// get number of seconds since epoch
+	double clock();
+
 	// sleep for specified number of milliseconds
 	void sleep(long milliseconds);
 

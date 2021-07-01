@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <chrono>
+
 #include "ot/libuv.h"
 #include "ot/function.h"
 #include "ot/array.h"
@@ -231,6 +233,16 @@ OtObject OtOSClass::networks() {
 
 
 //
+//	OtOSClass::clock
+//
+
+double OtOSClass::clock() {
+	return (double) std::chrono::duration_cast<std::chrono::milliseconds>(
+		std::chrono::system_clock::now().time_since_epoch()).count() / 1000.0;
+}
+
+
+//
 //	OtOSClass::sleep
 //
 
@@ -267,6 +279,7 @@ OtType OtOSClass::getMeta() {
 		type->set("totalMemory", OtFunctionClass::create(&OtOSClass::totalMemory));
 		type->set("freeMemory", OtFunctionClass::create(&OtOSClass::freeMemory));
 
+		type->set("clock", OtFunctionClass::create(&OtOSClass::clock));
 		type->set("sleep", OtFunctionClass::create(&OtOSClass::sleep));
 	}
 

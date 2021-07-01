@@ -6,12 +6,12 @@
 
 class Zoo : Object {
 	function __init__(this) {
-		this.aardvark = 1;
-		this.baboon   = 1;
-		this.cat      = 1;
-		this.donkey   = 1;
-		this.elephant = 1;
-		this.fox      = 1;
+		this.aardvark = 1.0;
+		this.baboon   = 1.0;
+		this.cat      = 1.0;
+		this.donkey   = 1.0;
+		this.elephant = 1.0;
+		this.fox      = 1.0;
 	}
 
 	function ant(this)    { return this.aardvark; }
@@ -23,14 +23,11 @@ class Zoo : Object {
 }
 
 var zoo = Zoo();
-var sum = 0;
-
-// var start = clock();
+var sum = 0.0;
+var start = os.clock();
 
 while (sum < 1000000) {
 	sum += zoo.ant() + zoo.banana() + zoo.tuna() + zoo.hay() + zoo.grass() + zoo.mouse();
 }
 
-// print clock() - start;
-
-print(sum);
+print(os.clock() - start);

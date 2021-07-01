@@ -25,9 +25,16 @@ class Zoo : Object {
 var zoo = Zoo();
 var sum = 0.0;
 var start = os.clock();
+var loops = 100000;
+var c = 0;
 
-while (sum < 1000000) {
+print("Loops: ", loops);
+
+while (c++ < loops) {
 	sum += zoo.ant() + zoo.banana() + zoo.tuna() + zoo.hay() + zoo.grass() + zoo.mouse();
 }
 
-print(os.clock() - start);
+var time = os.clock() - start;
+var lps = loops.real() / time;
+print("Runtime: ", time.toFixed(2), " seconds");
+print("Loops per second: ", lps.toFixed(2));

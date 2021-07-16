@@ -73,11 +73,12 @@ classes. The following statements assign primitive values to variables.
 	var c = 1;
 	var d = 3.14 * 2;
 	var e = "Hello world";
+	var f = function() { print("Hello, world!"); }
 
 Please also note that primitive values are automatically converted in
 ObjectTalk when required.
 
-	var f = e + c;
+	var g = e + c;
 
 In the expression above c gets converted to a String as the addition
 operator is applied to e (a String object) which wants its
@@ -197,7 +198,7 @@ condition or loop variables are optional. Braces around the body are required.
 
 In ObjectTalk, conditions are converted to their boolean value in
 **if**, **while** and **do while** statements. In the following example,
-the string and integer variables are converted to boolean and assessed
+the string and integer variables are converted to a boolean and assessed
 in the **if** statements.
 
 	var A = 0;
@@ -308,7 +309,7 @@ You saw an example of this already with nested functions.
 
 ## Object and Classes
 
-Use class followed by the class’s name, a colon and the parent classes
+Use **class** followed by the class’s name, a colon and the parent class'
 name to create a new class. A property declaration in a class is written
 the same way as a constant or variable declaration, except that it’s in
 the context of a class. Likewise, member function and function
@@ -348,7 +349,7 @@ argument to the initializer. In some computer language, the "this" or
 ObjectTalk this is not the case and you have to name it yourself
 as the first parameter. The benefit is that you can call it whatever you
 want and it's not some hidden feature of the language. The disadvantage
-is that you have to type it for ever member function. The compiler
+is that you have to type it for every member function. The compiler
 automatically translates a bound function (a function in the context of
 an object) to a new function call with an additional parameter.
 

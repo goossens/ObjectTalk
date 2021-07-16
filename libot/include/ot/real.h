@@ -80,6 +80,9 @@ public:
 	double radians() { return value * std::numbers::pi / 180.0; }
 	double degrees() { return value / std::numbers::pi * 180.0; }
 
+	double sqrt() { if (value < 0.0) OtExcept("Sqrt requires number >= zero"); return std::sqrt(value); }
+	double pow(double exp) { return std::pow(value, exp); }
+
 	double log() { if (value <= 0.0) OtExcept("Log requires number > zero"); return std::log(value); }
 	double exp() { return std::exp(value); }
 	double log10() { if (value <= 0.0) OtExcept("Log10 requires number > zero"); return std::log10(value); }

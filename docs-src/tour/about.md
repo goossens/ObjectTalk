@@ -6,7 +6,7 @@ As a long time IT professional, I've seen a lot of software development
 with all its greatness and flaws. ObjectTalk represents what I think
 is a well-balanced scripting language that is easy to learn and can
 make even a novice look good quickly. If you are interested in how I got
-to where we are today, please see the [history](#history) page
+to where we are today, please see the [history](#history) section below
 for the story behind ObjectTalk.
 
 So before continuing, let me address the elephant in the room. Why the
@@ -41,7 +41,7 @@ contribute. Collective learning is a great thing.
 
 So what's good about ObjectTalk? Well, typically it is a very personal
 as to what is good or bad about a computer language. Many religious
-arguments have been used over the years when it comes to good and
+wars have been waged over the years when it comes to good and
 bad in Computerland. Those that have strong opinions about computer
 languages will have the same views about ObjectTalk. I'm wide open
 to ObjectTalk improvements but they'll have to be within the context
@@ -52,14 +52,14 @@ their own language.
 So what makes ObjectTalk great (at least in my little mind)?
 
 * It's easy to learn (simple yet consistent grammar and no
-"over-the-top you'll-never-use-it but
-"look-at-how-smart-I-am language creep").
+"over-the-top, you'll-never-use-it but
+look-at-how-smart-I-am language creep").
 * It is truly object-oriented as everything is an object with members
 and member functions (even numbers, strings and functions).
 * The language will feel comfortable to everyone who has worked on
 C-derived languages.
 * Variables are dynamically typed and primitive objects like Booleans,
-Integers, Reals and Strings are automatically converted if required.
+Integers, Reals and Strings are automatically converted when required.
 * Functions are first class citizens and can be passed as arguments or
 bound to an object as member functions.
 * Variables are lexically scoped and must be declared before use.

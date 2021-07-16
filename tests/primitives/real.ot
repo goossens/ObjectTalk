@@ -90,6 +90,9 @@ assert(closeEnough(-180.0.radians(), -pi));
 assert(0.0.degrees() == 0.0);
 assert(closeEnough(-pi.degrees(), -180.0));
 
+assert(closeEnough(256.0.sqrt(), 16.0));
+assert(closeEnough(16.0.pow(2.0), 256.0));
+
 assert(closeEnough(1.0.log(), 0.0));
 assert(closeEnough(e.log(), 1.0));
 

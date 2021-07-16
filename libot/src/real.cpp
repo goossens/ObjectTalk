@@ -74,6 +74,9 @@ OtType OtRealClass::getMeta() {
 		type->set("radians", OtFunctionClass::create(&OtRealClass::radians));
 		type->set("degrees", OtFunctionClass::create(&OtRealClass::degrees));
 
+		type->set("sqrt", OtFunctionClass::create(&OtRealClass::sqrt));
+		type->set("pow", OtFunctionClass::create(&OtRealClass::pow));
+
 		type->set("log", OtFunctionClass::create(&OtRealClass::log));
 		type->set("exp", OtFunctionClass::create(&OtRealClass::exp));
 		type->set("log10", OtFunctionClass::create(&OtRealClass::log10));

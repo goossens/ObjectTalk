@@ -6,7 +6,7 @@ and derived languages.
 ObjectTalk provides its own versions of fundamental C types, including
 Booleans, Integers (for int), Reals (for double), String for textual data
 and Functions as first class primitives. ObjectTalk also provides powerful
-versions of the three primary collection types: Array, Dictionary and sets.
+versions of the three primary collection types: Array, Dictionary and Sets.
 In fact, in ObjectTalk everything is an object derived from a class and
 the word type is only used internally in the language's runtime. Primitives
 like Booleans, Integers, Reals, Strings and Functions are objects just like
@@ -94,7 +94,7 @@ that don't end with a block so the ObjectTalk script should have read:
 **Null**
 
 Null is a special value that indicates a valueless state. All instances
-of the Object class all null values. The default global scope defines the
+of the Object class are null values. The default global scope defines the
 variable **null** as a convenience.
 
 	var nothing = null;
@@ -154,8 +154,7 @@ in bytes but rather in codewords that represent a character whether it is
 1,2, 3 or 4 bytes long.
 
 String literals are encoded using the same logic as JSON making it
-easy to exchange information with other languages or systems. A string literal
-is a sequence of characters surrounded by double quotation marks (").
+easy to exchange information with other languages or systems. A string literal is a sequence of characters surrounded by double quotation marks (").
 
 	var someString = "Some string literal value";
 	var message = "\tMost Europeans like the \u00C4.\n";

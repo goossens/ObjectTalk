@@ -53,7 +53,7 @@ public:
 	static std::string trim(std::string text, const std::string& chars="\t\n\v\f\r ");
 	static std::string compress(const std::string& text, const std::string& chars="\t\n\v\f\r ");
 
-	// split UTF-8 string by delimeter into container
+	// split UTF-8 string by delimeter into a container
 	template <class CONTAINER>
 	static void split(const std::string& text, CONTAINER& container, char delimeter=' ') {
 		std::stringstream ss(text);

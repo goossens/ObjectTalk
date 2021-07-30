@@ -9,7 +9,7 @@
 //	Include files
 //
 
-#if defined(WINVER)
+#if defined(_WIN32)
 #include <Windows.h>
 #else
 #include <dlfcn.h>
@@ -82,7 +82,7 @@ void OtModuleClass::import(const std::string& name) {
 	std::filesystem::path pathName = std::filesystem::path(name);
 	std::filesystem::path module;
 
-#if defined(WINVER)
+#if defined(_WIN32)
 	std::string libext = ".dll";
 
 #else
@@ -123,7 +123,7 @@ void OtModuleClass::import(const std::string& name) {
 		set("__DIR__", OtStringClass::create(filePath.parent_path().string()));
 
 		if (module.extension() == libext) {
-#if defined(WINVER)
+#if defined(_WIN32)
 			HMODULE lib = LoadLibrary(module.c_str());
 
 			if (!lib) {

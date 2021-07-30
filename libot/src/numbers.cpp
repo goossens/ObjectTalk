@@ -13,7 +13,7 @@
 #include <cstdlib>
 #include <ctime>
 
-#if defined(WINVER)
+#if defined(_WIN32)
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #endif
@@ -29,7 +29,7 @@ double OtRandom(double num1, double num2) {
 	static bool initialized = false;
 
 	if (!initialized) {
-#if defined(WINVER)
+#if defined(_WIN32)
 		srand(GetTickCount());
 
 #else

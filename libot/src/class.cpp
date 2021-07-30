@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include "ot/exception.h"
 #include "ot/function.h"
 #include "ot/class.h"
 #include "ot/vm.h"
@@ -26,6 +27,12 @@ OtObject OtClassClass::instantiate(size_t count, OtObject* parameters) {
 	// run possible init function
 	if (object->has("__init__")) {
 		OtVM::redirectMemberFunction(object, "__init__", count);
+
+	} else if (count) {
+		OtExcept(
+			"Class [%s] is missing [__init__] member function (called with %d parameters)",
+			classType->getName().c_str(),
+		count);
 	}
 
 	return object;

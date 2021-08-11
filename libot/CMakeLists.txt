@@ -4,15 +4,11 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-find_path(UV_INCLUDES uv.h REQUIRED)
-find_library(UV_LIBRARY uv REQUIRED)
-
 file(GLOB_RECURSE OT_INCLUDES "*.h")
 file(GLOB_RECURSE OT_SOURCES "*.cpp")
 
 add_library(libot SHARED ${OT_INCLUDES} ${OT_SOURCES})
 
-target_include_directories(libot PRIVATE ${UV_INCLUDES})
 target_link_libraries(libot PRIVATE m dl ${UV_LIBRARY})
 
 target_compile_features(libot PRIVATE cxx_std_17)

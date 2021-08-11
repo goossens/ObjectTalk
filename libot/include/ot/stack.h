@@ -32,11 +32,11 @@ public:
 	OtStackItem(size_t f, size_t s) : frame(f), slot(s) {}
 
 	// comparison operators
-	bool operator==(const OtStackItem& item) const {
+	bool operator == (const OtStackItem& item) const {
 		return frame == item.frame && slot == item.slot;
 	}
 
-	bool operator!=(const OtStackItem& item) const {
+	bool operator != (const OtStackItem& item) const {
 		return frame != item.frame || slot != item.slot;
 	}
 

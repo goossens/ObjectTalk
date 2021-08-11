@@ -38,7 +38,7 @@ public:
 	OtObject init(size_t count, OtObject* parameters);
 
 	// comparison
-	bool operator ==(OtObject object);
+	bool operator == (OtObject object);
 
 	// start iterator
 	OtObject iterate();

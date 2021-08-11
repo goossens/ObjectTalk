@@ -44,8 +44,8 @@ public:
 	std::string describe() { return operator std::string(); }
 
 	// comparison
-	bool operator ==(OtObject operand) { return value == operand->operator double(); }
-	bool operator <(OtObject operand) { return value < operand->operator double(); }
+	bool operator == (OtObject operand) { return value == operand->operator double(); }
+	bool operator < (OtObject operand) { return value < operand->operator double(); }
 
 	bool equal(double operand) { return value == operand; }
 	bool notEqual(double operand) { return value != operand; }

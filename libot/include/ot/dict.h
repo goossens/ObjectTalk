@@ -37,7 +37,7 @@ public:
 	OtObject init(size_t count, OtObject* parameters);
 
 	// comparison
-	bool operator ==(OtObject operand);
+	bool operator == (OtObject operand);
 
 	// access dict members
 	OtObject getEntry(const std::string& index);

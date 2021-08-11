@@ -37,7 +37,7 @@ public:
 	OtObject init(size_t count, OtObject* parameters);
 
 	// comparison
-	bool operator ==(OtObject operand);
+	bool operator == (OtObject operand);
 
 	// access array members
 	OtObject getEntry(size_t index);
@@ -100,6 +100,9 @@ public:
 	// create a new array
 	static OtArray create();
 	static OtArray create(size_t count, OtObject* objects);
+
+	// get access to raw object array
+	std::vector<OtObject>& raw() { return array; }
 
 private:
 	std::vector<OtObject> array;

@@ -40,6 +40,7 @@ public:
 	inline OtObject get(const std::string& name) { return members[name]; }
 	inline void set(const std::string& name, OtObject member) { members[name] = member; }
 	inline void unset(const std::string& name) { members.erase(name); }
+	inline void unsetAll() { members.clear(); }
 
 	std::vector<std::string> names() {
 		std::vector<std::string> result;

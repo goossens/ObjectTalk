@@ -141,8 +141,12 @@ OtType OtObjectClass::getMeta() {
 		type->set("json", OtFunctionClass::create(&OtObjectClass::json));
 
 		type->set("has", OtFunctionClass::create(&OtObjectClass::has));
-		type->set("__member__", OtFunctionClass::create(&OtObjectClass::member));
+		type->set("set", OtFunctionClass::create(&OtObjectClass::set));
+		type->set("get", OtFunctionClass::create(&OtObjectClass::get));
 		type->set("unset", OtFunctionClass::create(&OtObjectClass::unset));
+		type->set("unsetAll", OtFunctionClass::create(&OtObjectClass::unset));
+
+		type->set("__member__", OtFunctionClass::create(&OtObjectClass::member));
 
 		type->set("__eq__", OtFunctionClass::create(&OtObjectClass::equal));
 		type->set("__ne__", OtFunctionClass::create(&OtObjectClass::notEqual));

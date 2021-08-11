@@ -70,14 +70,15 @@ public:
 	virtual OtObject set(const std::string& name, OtObject value);
 	virtual OtObject get(const std::string& name);
 	virtual void unset(const std::string& name);
+	virtual void unsetAll() { members = nullptr; }
 
 	// support member operator
 	OtObject member(const std::string& name);
 	OtMembers getMembers() { return members; }
 
 	// comparison
-	virtual bool operator ==(OtObject operand);
-	virtual bool operator <(OtObject operand);
+	virtual bool operator == (OtObject operand);
+	virtual bool operator < (OtObject operand);
 
 	bool equal(OtObject operand) { return operator ==(operand); }
 	bool notEqual(OtObject operand) { return !operator ==(operand); }

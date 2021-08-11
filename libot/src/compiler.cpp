@@ -51,14 +51,14 @@ OtByteCode OtCompiler::compileModule(OtSource src, OtModule module) {
 	pushObjectScope(global);
 
 	for (auto name : global->getMembers()->names()) {
-		declareVariable(bytecode, name);
+		declareVariable(name);
 	}
 
 	// setup module scope
 	pushObjectScope(module);
 
 	for (auto name : module->getMembers()->names()) {
-		declareVariable(bytecode, name);
+		declareVariable(name);
 	}
 
 	// process all statements
@@ -101,7 +101,7 @@ OtByteCode OtCompiler::compileExpression(OtSource src) {
 	pushObjectScope(global);
 
 	for (auto name : global->getMembers()->names()) {
-		declareVariable(bytecode, name);
+		declareVariable(name);
 	}
 
 	// process expression
@@ -213,7 +213,7 @@ void OtCompiler::declareCapture(const std::string& name, OtStackItem item) {
 //	OtCompiler::declareVariable
 //
 
-void OtCompiler::declareVariable(OtByteCode bytecode, const std::string& name) {
+void OtCompiler::declareVariable(const std::string& name) {
 	// get current scope
 	auto scope = &(scopeStack.back());
 
@@ -245,13 +245,8 @@ void OtCompiler::resolveVariable(OtByteCode bytecode, const std::string& name) {
 
 	// look at all scope levels in reverse order
 	for (auto scope = scopeStack.rbegin(); !found && scope != scopeStack.rend(); scope++) {
-		// did we already capture the variable in this scope?
-		if (scope->captures.count(name)) {
-			// yes, reuse reference
-			bytecode->push(OtCaptureReferenceClass::create(name));
-
 		// is variable in this scope?
-		} else if (scope->locals.count(name)) {
+		if (scope->locals.count(name)) {
 			// yes, handle different scope types
 			switch(scope->type) {
 				case OBJECT_SCOPE:
@@ -325,7 +320,7 @@ void OtCompiler::function(OtByteCode bytecode) {
 
 	while (!scanner.matchToken(OtScanner::RPAREN_TOKEN) && !scanner.matchToken(OtScanner::EOS_TOKEN)) {
 		scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
-		declareVariable(bytecode, scanner.getText());
+		declareVariable(scanner.getText());
 		scanner.advance();
 		count++;
 
@@ -1259,7 +1254,7 @@ void OtCompiler::variableDeclaration(OtByteCode bytecode) {
 	scanner.advance();
 
 	// add variable to scope
-	declareVariable(bytecode, name);
+	declareVariable(name);
 
 	// process initial value if required
 	if (scanner.matchToken(OtScanner::ASSIGNMENT_TOKEN)) {
@@ -1301,7 +1296,7 @@ void OtCompiler::classDeclaration(OtByteCode bytecode) {
 	bytecode->method("subClass", 1);
 
 	// add class to current scope
-	declareVariable(bytecode, name);
+	declareVariable(name);
 	assignVariable(bytecode, name);
 
 	// start new class scope
@@ -1333,7 +1328,7 @@ void OtCompiler::functionDeclaration(OtByteCode bytecode) {
 	scanner.advance();
 
 	// add function to scope to allow for recursion
-	declareVariable(bytecode, name);
+	declareVariable(name);
 
 	// parse function definition to function object on stack
 	function(bytecode);
@@ -1380,7 +1375,7 @@ void OtCompiler::forStatement(OtByteCode bytecode) {
 	scanner.advance();
 
 	// create variable on the stack
-	declareVariable(bytecode, name);
+	declareVariable(name);
 	bytecode->reserve(1);
 
 	// get the object to be iterated on
@@ -1395,7 +1390,7 @@ void OtCompiler::forStatement(OtByteCode bytecode) {
 	size_t offset1 = bytecode->size();
 
 	// pretend iterator is a local (that can't be addressed)
-	declareVariable(bytecode, "");
+	declareVariable("");
 
 	// see if we are at the end of the iteration
 	bytecode->dup();
@@ -1428,28 +1423,45 @@ void OtCompiler::forStatement(OtByteCode bytecode) {
 //
 
 void OtCompiler::ifStatement(OtByteCode bytecode) {
+	// track various patches for jumps
 	std::vector<size_t> patches;
 
-	while (scanner.matchToken(OtScanner::IF_TOKEN) || scanner.matchToken(OtScanner::ELIF_TOKEN)) {
+	// handle if clause and block
+	scanner.expect(OtScanner::IF_TOKEN);
+
+	if (expression(bytecode)) {
+		bytecode->method("__deref__", 0);
+	}
+
+	size_t offset = bytecode->jumpFalse(0);
+	block(bytecode);
+
+	patches.push_back(bytecode->jump(0));
+	bytecode->patchJump(offset);
+
+	// handle possible elsif clauses and their blocks
+	while (scanner.matchToken(OtScanner::ELIF_TOKEN)) {
 		scanner.advance();
 
 		if (expression(bytecode)) {
 			bytecode->method("__deref__", 0);
 		}
 
-		size_t offset = bytecode->jumpFalse(0);
+		offset = bytecode->jumpFalse(0);
 		block(bytecode);
 
 		patches.push_back(bytecode->jump(0));
 		bytecode->patchJump(offset);
 	}
 
+	// handle possible else clause and block
 	if (scanner.matchToken(OtScanner::ELSE_TOKEN)) {
 		scanner.advance();
 
 		block(bytecode);
 	}
 
+	// patch all jumps
 	for (auto const& patch : patches) {
 		bytecode->patchJump(patch);
 	}
@@ -1529,7 +1541,7 @@ void OtCompiler::tryStatement(OtByteCode bytecode) {
 	pushBlockScope();
 
 	// declare error variable whose value is already on stack (courtesy of the VM)
-	declareVariable(bytecode, name);
+	declareVariable(name);
 
 	// compile "catch" block
 	block(bytecode);

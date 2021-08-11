@@ -21,7 +21,7 @@
 OtObject OtMemberReferenceClass::deref() {
 	OtObject result = object->get(member);
 
-	if (result && (result->isKindOf("Function") || result->isKindOf("CodeFunction"))) {
+	if (result && !object->isKindOf("Module") && (result->isKindOf("Function") || result->isKindOf("CodeFunction"))) {
 		return OtBoundFunctionClass::create(object, result);
 
 	} else {

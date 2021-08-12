@@ -1,0 +1,187 @@
+#!/usr/local/bin/ot
+
+//	ObjectTalk Scripting Language
+//	Copyright (c) 2020-2021 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var gui = import("gui");
+
+// specify default values
+var defaultGeometry = "torus";
+var defaultMaterial = "gold";
+var defaultRenderer = "textured";
+
+// create combobox value lists
+var geometries = [
+	"circle", "cone", "cylinder", "plane", "sphere", "torus",
+	"bunny", "column", "teapot"
+];
+
+var textures = {
+	"earth" : "texture:" + __DIR__ + "/assets/earth.png",
+	"moon" : "texture:" + __DIR__ + "/assets/moon.png"
+};
+
+var materials = gui.getDefaultMaterials().merge(textures.keys());
+
+var renderers = [
+	"textured", "wireframe"
+];
+
+// define our application
+class MyApp : gui.Application {
+	function __init__(this) {
+		this.rotation = 0.0;
+	}
+
+	function setup(this, screen) {
+		// create view and scene
+		this.scene = this.createScene();
+		this.createView(screen).setScene(this.scene);
+
+		// create control panel
+		this.createPanel(screen);
+	}
+
+	function update(this) {
+		this.rotation -= 0.005;
+		this.mesh.rotateY(this.rotation);
+		this.wireframe.rotateY(this.rotation);
+	}
+
+	function createView(this, screen) {
+		this.camera = gui.Camera(0, 40, 40, 0, -5, -10, 0, 1, 0);
+
+		var view = screen.add(gui.View(1, 30, 0, 70, 100));
+		view.setCamera(this.camera);
+		return view;
+	}
+
+	function createScene(this) {
+		// set default geometry and material
+		this.setGeometry(defaultGeometry);
+		this.setMaterial(defaultMaterial);
+
+		// create a scene with grid and geometry renderers
+		var scene = gui.Scene();
+		this.grid = scene.add(gui.Wireframe(gui.Grid(), gui.Material("vertex")));
+		this.mesh = scene.add(gui.Mesh(this.geometry, this.material));
+		this.wireframe = scene.add(gui.Wireframe(this.geometry, this.material));
+
+		// enable default renderer
+		if (defaultRenderer == "textured") {
+			this.wireframe.disable();
+
+		} else {
+			this.mesh.disable();
+		}
+
+		// add a spot light
+		scene.addLight(gui.Light(true, 25, 25, 40, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8));
+
+		// add default fog
+		this.fog = gui.Fog(false, 0.5, 0.5, 0.5, 0, 100);
+		scene.setFog(this.fog);
+
+		// return new scene
+		return scene;
+	}
+
+	function createPanel(this, screen) {
+		var panel = screen.add(gui.Panel(0, 0, 30, 100));
+
+		panel.add(gui.CameraController(this.camera));
+		panel.add(gui.LightController(this.scene));
+		panel.add(gui.FogController(this.fog));
+
+		var node = panel.add(gui.TreeNode("3D Object:"));
+
+		node.add(gui.Combobox("Geometry", geometries, defaultGeometry, function(selected) {
+			this.setGeometry(selected);
+		}));
+
+		node.add(gui.Combobox("Material", materials, defaultMaterial, function(selected) {
+			this.setMaterial(selected);
+		}));
+
+		node.add(gui.Combobox("Renderer", renderers, defaultRenderer, function(selected) {
+			this.setRenderer(selected);
+		}));
+
+		node.add(gui.Checkbox("Show grid", true, function(checked) {
+			this.grid.setEnabled(checked);
+		}));
+	}
+
+	function setGeometry(this, name) {
+		if (name == "circle") {
+			this.geometry = gui.Circle(20, 30);
+
+		} elif (name == "cone") {
+			this.geometry = gui.Cone(20, 20, 30);
+
+		} elif (name == "cylinder") {
+			this.geometry = gui.Cylinder(16, 40, 64);
+
+		} elif (name == "plane") {
+			this.geometry = gui.Plane(40, 40);
+
+		} elif (name == "sphere") {
+			this.geometry = gui.Sphere(21, 64, 64);
+
+		} elif (name == "torus") {
+			this.geometry = gui.Torus(15, 5, 32, 32);
+
+		} elif (name == "bunny") {
+			this.geometry = gui.Model(__DIR__ + "/assets/bunny.obj", 16);
+
+		} elif (name == "column") {
+			this.geometry = gui.Model(__DIR__ + "/assets/column.obj", 2);
+
+		} elif (name == "teapot") {
+			this.geometry = gui.Model(__DIR__ + "/assets/teapot.obj", 28);
+		}
+
+		if (this.has("mesh")) {
+ 			this.mesh.setGeometry(this.geometry);
+		}
+
+		if (this.has("wireframe")) {
+			this.wireframe.setGeometry(this.geometry);
+		}
+	}
+
+	function setMaterial(this, name) {
+		if (name in gui.getDefaultMaterials()) {
+			this.material = gui.Material(name);
+
+		} else {
+			this.material = gui.Material(textures[name]);
+		}
+
+		if (this.has("mesh")) {
+			this.mesh.setMaterial(this.material);
+		}
+
+		if (this.has("wireframe")) {
+			this.wireframe.setMaterial(this.material);
+		}
+	}
+
+	function setRenderer(this, name) {
+		if (name == "textured") {
+			this.mesh.enable();
+			this.wireframe.disable();
+
+		} else {
+			this.mesh.disable();
+			this.wireframe.enable();
+		}
+	}
+}
+
+// instantiate application and run it
+var app = MyApp();
+app.run("Geometry Demonstration");

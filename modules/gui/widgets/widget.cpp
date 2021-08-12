@@ -1,0 +1,51 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+
+//
+//	Include files
+//
+
+#include <algorithm>
+
+#include "ot/function.h"
+
+#include "widget.h"
+
+
+//
+//	OtWidgetClass::validateChild
+//
+
+void OtWidgetClass::validateChild(OtComponent child) {
+	OtExcept("A [%s] can't have children", child->getType()->getName().c_str());
+}
+
+
+//
+//	OtWidgetClass::getMeta
+//
+
+OtType OtWidgetClass::getMeta() {
+	static OtType type = nullptr;
+
+	if (!type) {
+		type = OtTypeClass::create<OtWidgetClass>("Widget", OtCompositeClass::getMeta());
+	}
+
+	return type;
+}
+
+
+//
+//	OtWidgetClass::create
+//
+
+OtWidget OtWidgetClass::create() {
+	OtWidget widget = std::make_shared<OtWidgetClass>();
+	widget->setType(getMeta());
+	return widget;
+}

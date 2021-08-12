@@ -85,9 +85,11 @@ really obscure code. Here is an example:
 | string() | Convert object to a string.  This is a virtual function that child classes must overwrite if required. By default, this function returns **""**. |
 | json() | Represent object in JSON format.  This is a virtual function that child classes must overwrite if required. By default, this function returns the **string** representation. |
 | has(name) | See if object has named member. |
+| set(name, value) | Set the value of a named member. |
+| get(name) | Get the value of a named member. |
+| unset(name) | Remove named member. |
+| unsetAll() | Remove all named members. |
 | \_\_member__(name) | Return a [MemberReference](MemberReference.md) object to acces an object's named member. This member function is called when you use the **member** (.) operator. You typically don't call this member function directly. |
-| eraseMember(name) | Erase named member. |
-| clearMembers() | Erase all members. |
 | \_\_eq__(object) | See if objects are equal. This virtual member function is called when you use the **equal** (==) operator and should be overwritten when required. You typically don't call this member function directly. |
 | \_\_ne__(object) | See if objects are not equal. This virtual member function is called when you use the **not equal** (!=) operator and should be overwritten when required. You typically don't call this member function directly. |
 | getClass() | return the object's class. |

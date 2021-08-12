@@ -1,0 +1,32 @@
+#!/bin/bash
+
+SHADERC=~/bin/shaderc
+HOME="$(cd -P "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)"
+
+function compilerShader() {
+	case $1 in
+		vertex) EXT=vs;;
+		fragment) EXT=fs;;
+		compute) EXT=cs;;
+	esac
+
+	TMP=$(mktemp)
+
+	${SHADERC} -f $2.${EXT} -o ${TMP} -i ${HOME}/tools --type $1 --platform osx -p metal --bin2c $1_$2_mtl
+	mv ${TMP} $1_$2.h
+}
+
+function compileShaders() {
+		if [ -f $1.vs ]
+		then
+			compilerShader vertex $1
+		fi
+
+		if [ -f $1.fs ]
+		then
+			compilerShader fragment $1
+		fi
+}
+
+cd ${HOME}/modules/gui/world
+compileShaders shader

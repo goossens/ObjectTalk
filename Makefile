@@ -26,6 +26,9 @@ test: debug
 rtest: release
 	cd release && make test
 
+gui: debug
+	./debug/bin/ot ./examples/3d/main.ot
+
 install: release
 	cd release && make install/strip
 	ls -l /usr/local/bin/ot

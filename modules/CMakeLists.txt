@@ -5,3 +5,7 @@
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
 add_subdirectory(http)
+
+if(OT_GUI)
+	add_subdirectory(gui)
+endif()

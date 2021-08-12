@@ -17,6 +17,10 @@ completeness and some of them might be exposed to the user.
 		* [Array](#array)
 		* [Dict](#dict)
 		* [Set](#set)
+	* [System](#system)
+		* [Path](#path)
+		* [OS](#os)
+		* [FS](#fs)
 	* [Internal](#internal) *
 		* [Class](#class) *
 		* [Global](#global) *
@@ -38,15 +42,6 @@ completeness and some of them might be exposed to the user.
 			* [DictIterator](#dictiterator) *
 			* [SetIterator](#setiterator) *
 
-## System Classes
-
-
-* [Object](#object)
-	* [System](#system)
-		* [Path](#path)
-		* [OS](#os)
-		* [FS](#fs)
-
 ## HTTP Classes
 
 * [Object](#object)
@@ -60,3 +55,44 @@ completeness and some of them might be exposed to the user.
 		* [HttpNext](#httpnext) *
 		* [HttpNotFound](#httpnotfound) *
 		* [HttpTimer](#httptimer) *
+
+## GUI Classes
+
+* [Object](#object)
+	* [Gui](#gui)
+		* [Application](#application)
+		* [Component](#component)
+			* [Composite](#composite)
+				* [Screen](#screen)
+				* [Scene](#scene)
+				* [Widget](#widget)
+					* [View](#view)
+					* [Window](#window)
+					* [Panel](#panel)
+					* [Menubar](#menubar)
+					* [Menu](#menu)
+					* [MenuItem](#menuitem)
+					* [Label](#label)
+					* [Checkbox](#checkbox)
+					* [Combobox](#combobox)
+					* [Tron](#tron)
+					* [Controller](#controller)
+						* [CameraController](#cameracontroller)
+						* [LightController](#lightcontroller)
+						* [FogController](#fogcontroller)
+				* [Object3D](#object3d)
+					* [Mesh](#mesh)
+					* [Wireframe](#wireframe)
+		* [Geometry](#geometry)
+			* [Circle](#circle)
+			* [Cone](#cone)
+			* [Cylinder](#cylinder)
+			* [Grid](#grid)
+			* [Model](#model)
+			* [Plane](#plane)
+			* [Sphere](#sphere)
+			* [Torus](#torus)
+		* [Material](#material)
+		* [Camera](#camera)
+		* [Light](#light)
+		* [Fog](#fog)

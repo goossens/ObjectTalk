@@ -14,7 +14,13 @@
   </head>
   <body id="page-top">
     <div
-      class="container-fluid d-flex flex-column flex-grow-1 vh-100 overflow-hidden"
+      class="
+        container-fluid
+        d-flex
+        flex-column flex-grow-1
+        vh-100
+        overflow-hidden
+      "
     >
       <nav
         class="navbar navbar-expand px-0 pt-1 pb-0 flex-shrink-0 manual-header"
@@ -72,8 +78,8 @@
               represents what I think is a well-balanced scripting language that
               is easy to learn and can make even a novice look good quickly. If
               you are interested in how I got to where we are today, please see
-              the <a class="page-scroll" href="#history">history</a> page for
-              the story behind ObjectTalk.
+              the <a class="page-scroll" href="#history">history</a> section
+              below for the story behind ObjectTalk.
             </p>
             <p>
               So before continuing, let me address the elephant in the room. Why
@@ -129,7 +135,7 @@
             <p>
               So what's good about ObjectTalk? Well, typically it is a very
               personal as to what is good or bad about a computer language. Many
-              religious arguments have been used over the years when it comes to
+              religious wars have been waged over the years when it comes to
               good and bad in Computerland. Those that have strong opinions
               about computer languages will have the same views about
               ObjectTalk. I'm wide open to ObjectTalk improvements but they'll
@@ -142,8 +148,8 @@
             <ul>
               <li>
                 It's easy to learn (simple yet consistent grammar and no
-                &quot;over-the-top you'll-never-use-it but
-                &quot;look-at-how-smart-I-am language creep&quot;).
+                &quot;over-the-top, you'll-never-use-it but
+                look-at-how-smart-I-am language creep&quot;).
               </li>
               <li>
                 It is truly object-oriented as everything is an object with
@@ -157,7 +163,7 @@
               <li>
                 Variables are dynamically typed and primitive objects like
                 Booleans, Integers, Reals and Strings are automatically
-                converted if required.
+                converted when required.
               </li>
               <li>
                 Functions are first class citizens and can be passed as
@@ -188,7 +194,7 @@
               applications were written in assembler. You can probably imagine
               that that became a rats nest over time. In one case, a programmer
               was so smart that he patched jump instructions to
-              &quot;efficiently&quot; create a switch/case type structures. As
+              &quot;efficiently&quot; create a switch/case type statement. As
               you probably already expect, this was not maintainable and
               pre-deployment testing started to take way too much time.
             </p>
@@ -231,7 +237,7 @@
               Pascal and Ada were too complex and creating binding to other
               packages was not easy. If we had done this later, we might have
               picked Python or Lua but those languages have also become complex
-              over time (but at least, binding are easy).
+              over time (but at least, bindings are easy).
             </p>
             <p>
               As I started to move up the management chain, I got further and
@@ -341,12 +347,13 @@ var b = true;
 var c = 1;
 var d = 3.14 * 2;
 var e = &quot;Hello world&quot;;
+var f = function() { print(&quot;Hello, world!&quot;); }
 </code></pre>
             <p>
               Please also note that primitive values are automatically converted
               in ObjectTalk when required.
             </p>
-            <pre><code>var f = e + c;
+            <pre><code>var g = e + c;
 </code></pre>
             <p>
               In the expression above c gets converted to a String as the
@@ -487,7 +494,7 @@ print(teamScore);
               In ObjectTalk, conditions are converted to their boolean value in
               <strong>if</strong>, <strong>while</strong> and
               <strong>do while</strong> statements. In the following example,
-              the string and integer variables are converted to boolean and
+              the string and integer variables are converted to a boolean and
               assessed in the <strong>if</strong> statements.
             </p>
             <pre><code>var A = 0;
@@ -602,12 +609,12 @@ increment(7);
             </p>
             <h2>Object and Classes</h2>
             <p>
-              Use class followed by the class’s name, a colon and the parent
-              classes name to create a new class. A property declaration in a
-              class is written the same way as a constant or variable
-              declaration, except that it’s in the context of a class. Likewise,
-              member function and function declarations are written the same
-              way.
+              Use <strong>class</strong> followed by the class’s name, a colon
+              and the parent class' name to create a new class. A property
+              declaration in a class is written the same way as a constant or
+              variable declaration, except that it’s in the context of a class.
+              Likewise, member function and function declarations are written
+              the same way.
             </p>
             <pre><code>class Shape : Object {
 	function simpleDescription(this) {
@@ -646,7 +653,7 @@ var shapeDescription = shape.simpleDescription();
               ObjectTalk this is not the case and you have to name it yourself
               as the first parameter. The benefit is that you can call it
               whatever you want and it's not some hidden feature of the
-              language. The disadvantage is that you have to type it for ever
+              language. The disadvantage is that you have to type it for every
               member function. The compiler automatically translates a bound
               function (a function in the context of an object) to a new
               function call with an additional parameter.

@@ -30,7 +30,7 @@ Full documentation for ObjectTalk can be found in
 
 ## Prerequisites
 
-ObjectTalk only has a few dependencies. For UNIX based systems like Ubuntu
+ObjectTalk has a few dependencies. For UNIX based systems like Ubuntu
 or Alpine Linux, Docker containers are provided in the docker folder.
 If you are running on bare metal or in your own VMs or containers, the
 Dockerfiles show which packages are required to build and run ObjectTalk.
@@ -49,9 +49,17 @@ This project uses Open Source products without which it would have been
 a lot harder to implement ObjectTalk. Special thanks goes to the
 following communities:
 
+* [CMake](https://cmake.org) - cross-platform family of tools designed to build, test and package software.
 * [libuv](https://libuv.org) - multi-platform support library with a focus on asynchronous I/O.
 * [llhttp](https://llhttp.org) - HTTP protocol parser.
 * [multipart-parser](https://github.com/francoiscolas/multipart-parser) - HTTP multipart body parser.
+
+In case the GUI module is included, we also use:
+
+* [GLFW](https://www.glfw.org) - multi-platform library for desktop application development.
+* [bgfx](https://github.com/bkaradzic/bgfx) - cross-platform, graphics API agnostic rendering library.
+* [Dear ImGui](https://github.com/ocornut/imgui) - graphical user interface library.
+* [glm](https://github.com/g-truc/glm) - mathematics library for graphics software.
 
 A special thanks also goes to
 [Gunther Rademacher](https://github.com/GuntherRademacher) for his

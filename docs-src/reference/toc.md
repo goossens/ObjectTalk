@@ -1,7 +1,8 @@
 * [Language](#language)
 * [Classes](#classes)
 
-**Core Classes**
+
+## Core Classes:
 
 * [Object](#object)
 	* [Primitive](#primitive)
@@ -16,7 +17,6 @@
 		* [Set](#set)
 	* [System](#system)
 		* [Path](#path)
-		* [IO](#io)
 		* [OS](#os)
 		* [FS](#fs)
 	* [Internal](#internal)
@@ -24,8 +24,8 @@
 		* [Global](#global)
 		* [Module](#module)
 		* [BoundFunction](#boundfunction)
-		* [CodeFunction](#codefunction)
-		* [Throw](#throw)
+		* [CodeFunction](#vodefunction)
+		* [Throw](#Throw)
 		* [Reference](#reference)
 			* [MemberReference](#memberreference)
 			* [StringReference](#stringreference)
@@ -39,10 +39,8 @@
 			* [ArrayIterator](#arrayiterator)
 			* [DictIterator](#dictiterator)
 			* [SetIterator](#setiterator)
-			* [RangeIterator](#rangeiterator)
-			* [PathIterator](#pathiterator)
 
-**HTTP Module Classes**
+## HTTP Classes
 
 * [Object](#object)
 	* [Http](#http)
@@ -51,7 +49,48 @@
 			* [HttpServer](#httpserver)
 		* [HttpRequest](#httprequest)
 		* [HttpResponse](#httpresponse)
-	* [Internal](#internal)
-		* [HttpNext](#httpnext)
-		* [HttpNotFound](#httpnotfound)
-		* [HttpTimer](#httptimer)
+	* [Internal](#internal) *
+		* [HttpNext](#httpnext) *
+		* [HttpNotFound](#httpnotfound) *
+		* [HttpTimer](#httptimer) *
+
+## GUI Classes
+
+* [Object](#object)
+	* [Gui](#gui)
+		* [Application](#application)
+		* [Component](#component)
+			* [Composite](#composite)
+				* [Screen](#screen)
+				* [Scene](#scene)
+				* [Widget](#widget)
+					* [View](#view)
+					* [Window](#window)
+					* [Panel](#panel)
+					* [Menubar](#menubar)
+					* [Menu](#menu)
+					* [MenuItem](#menuitem)
+					* [Label](#label)
+					* [Checkbox](#checkbox)
+					* [Combobox](#combobox)
+					* [Tron](#tron)
+					* [Controller](#controller)
+						* [CameraController](#cameracontroller)
+						* [LightController](#lightcontroller)
+						* [FogController](#fogcontroller)
+				* [Object3D](#object3d)
+					* [Mesh](#mesh)
+					* [Wireframe](#wireframe)
+		* [Geometry](#geometry)
+			* [Circle](#circle)
+			* [Cone](#cone)
+			* [Cylinder](#cylinder)
+			* [Grid](#grid)
+			* [Model](#model)
+			* [Plane](#plane)
+			* [Sphere](#sphere)
+			* [Torus](#torus)
+		* [Material](#material)
+		* [Camera](#camera)
+		* [Light](#light)
+		* [Fog](#fog)

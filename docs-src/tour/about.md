@@ -19,7 +19,7 @@ it's also good if you want to learn language development. Those of you
 who have ever looked at the code for compilers and interpreters for
 populars languages will probably know what I mean.
 
-The objectives for the development of ObjectTalk where:
+The objectives for the development of ObjectTalk are:
 
 * Learn computer language development.
 * Learn how to write a lexical scanner and language compiler.
@@ -33,6 +33,9 @@ The objectives for the development of ObjectTalk where:
 * Keep the code multi-platform to support reuse and maximum outreach.
 * Don't over-optimize to keep the code readable (so others can learn).
 * End up with something that can be used for simple tasks.
+* Have enough capability to create simple applications like:
+	* Web servers based on a few lines of code.
+	* Cool looking desktop applications including 2D/3D games.
 
 So I believe (and yes, I might be a little biased), that ObjectTalk is
 meeting the objectives above and will provide others the ability to
@@ -54,8 +57,8 @@ So what makes ObjectTalk great (at least in my little mind)?
 * It's easy to learn (simple yet consistent grammar and no
 "over-the-top, you'll-never-use-it but
 look-at-how-smart-I-am language creep").
-* It is truly object-oriented as everything is an object with members
-and member functions (even numbers, strings and functions).
+* It is truly object-oriented as everything is an object
+(even numbers, strings and functions) with members and member functions.
 * The language will feel comfortable to everyone who has worked on
 C-derived languages.
 * Variables are dynamically typed and primitive objects like Booleans,

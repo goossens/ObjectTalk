@@ -93,7 +93,7 @@
               at the code for compilers and interpreters for populars languages
               will probably know what I mean.
             </p>
-            <p>The objectives for the development of ObjectTalk where:</p>
+            <p>The objectives for the development of ObjectTalk are:</p>
             <ul>
               <li>Learn computer language development.</li>
               <li>
@@ -124,6 +124,15 @@
                 learn).
               </li>
               <li>End up with something that can be used for simple tasks.</li>
+              <li>
+                Have enough capability to create simple applications like:
+                <ul>
+                  <li>Web servers based on a few lines of code.</li>
+                  <li>
+                    Cool looking desktop applications including 2D/3D games.
+                  </li>
+                </ul>
+              </li>
             </ul>
             <p>
               So I believe (and yes, I might be a little biased), that
@@ -152,9 +161,9 @@
                 look-at-how-smart-I-am language creep&quot;).
               </li>
               <li>
-                It is truly object-oriented as everything is an object with
-                members and member functions (even numbers, strings and
-                functions).
+                It is truly object-oriented as everything is an object (even
+                numbers, strings and functions) with members and member
+                functions.
               </li>
               <li>
                 The language will feel comfortable to everyone who has worked on
@@ -281,14 +290,14 @@
               introduced in this overview is explained in detail in the rest of
               the documentation.
             </p>
-            <h2>Everything is an ObjectTalk</h2>
+            <h2>Everything is an Object</h2>
             <p>
               In ObjectTalk, everything is an Object derived from a Class. The
               number 1 is an object derived from the Integer class and so are
               3.14 (derived from the Real class) and &quot;test&quot; (derived
               from the string class). To take this a step further, operators
               like +, -, *, /, [] and () are actually member functions on an
-              Object. This keep the Virtual Machine (VM) very simple as it has
+              Object. This keeps the Virtual Machine (VM) very simple as it has
               no mathematical instructions. The VM actually only executes member
               functions on Objects.
             </p>
@@ -314,8 +323,8 @@
             </p>
             <h2>Variables</h2>
             <p>
-              In ObjectTalk, variables must be declared as in the appropriate
-              scope through assignment. ObjectTalk makes no distinction between
+              In ObjectTalk, variables must be declared in the appropriate scope
+              through assignment. ObjectTalk makes no distinction between
               constants and variables. If you set it and don't change it, it's a
               constant. If you do change it, it's a variable. The example below
               creates two new variables. The first (a) is initialized to the
@@ -365,7 +374,8 @@ var f = function() { print(&quot;Hello, world!&quot;); }
               instance of the abstract
               <a href="reference.html#object">Object</a> class. It's a special
               object as it can't do anything. It is however helpful as a
-              non-value.
+              non-value. The default global scope defines the variable
+              <strong>null</strong> as a convenience.
             </p>
             <p>
               <a href="reference.html#boolean">Booleans</a> in ObjectTalk can
@@ -384,7 +394,9 @@ var f = function() { print(&quot;Hello, world!&quot;); }
               <a href="reference.html#real">Reals</a> in ObjectTalk are
               double-precision floating point numbers. On most systems, Reals
               are implemented using 8 bytes and have a range of 1.7E +/- 308 (15
-              digits).
+              digits). The default global language context predefines the
+              variable <strong>pi</strong> (3.14...) and
+              <strong>e</strong> (2.71...) as a convenience.
             </p>
             <p>
               In ObjectTalk, <a href="reference.html#string">Strings</a> are
@@ -583,8 +595,10 @@ returnFifteen();
 
 	return addOne;
 }
+
 var increment = makeIncrementer()
-increment(7);
+print(increment(7));
+// prints 8
 </code></pre>
             <p>A function can take another function as one of its arguments.</p>
             <p>
@@ -596,8 +610,8 @@ increment(7);
             <p>}</p>
             <p>function lessThanTen(number) { return number &lt; 10; }</p>
             <p>
-              var numbers = [20, 19, 7, 12]; hasAnyMatches(numbers,
-              lessThanTen);
+              var numbers = [20, 19, 7, 12]; print(hasAnyMatches(numbers,
+              lessThanTen)); // prints true
             </p>
             <p>
               Functions are actually a special case of closures: blocks of code
@@ -633,8 +647,8 @@ var shapeDescription = shape.simpleDescription();
 </code></pre>
             <p>
               This version of the Shape class is missing something important: an
-              initializer to set up the class when an instance is created. Use
-              __init__ to create one.
+              initializer (constructor) to set up the class when an instance is
+              created. Use __init__ to create one.
             </p>
             <p>
               class NamedShape : Shape { function <strong>init</strong>(this,
@@ -660,7 +674,7 @@ var shapeDescription = shape.simpleDescription();
             </p>
             <pre><code>a.test(1, 2) becomes test(a, 1, 2);
 </code></pre>
-            <h2>Error handling</h2>
+            <h2>Error Handling</h2>
             <p>
               ObjectTalk uses a classic
               <strong>try/catch/throw</strong> paradigm. Critical code is

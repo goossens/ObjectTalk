@@ -21,7 +21,7 @@ on the [Global class](reference.html#global). Global scope members
 are stored on the heap.
 * **Module Scope** - An ObjectTalk [module](#modules) is derived from
 a single source code file. Any object defined at the module's root level
-is added to the object scope. The effect this achieves is that those
+is added to the module's scope. The effect this achieves is that those
 objects have global visibility in that module and can simply be addressed
 by their name. If a module is imported into another module, the variables
 of the imported module can be accessed by the importer using the member

@@ -16,10 +16,10 @@ traditional function declaration where as in the second case, an anonymous
 	var test = function() {
 	};
 
-Class "methods" in ObjectTalk are regular functions and the ObjectTalk
-compiler translates a perceived method call into a function call. In the
-example below the test member of an object is called with object as
-the first parameter. This is why methods (member functions) in their
+Class member functions or "methods" in ObjectTalk are regular functions
+and the ObjectTalk compiler translates a perceived method call into a
+function call. In the example below the test member of an object is called
+with object as the first parameter. This is why member functions in their
 definition must have a first parameter that refers to the object.
 ObjectTalk does not care if you call that first member self, this or
 anything else. You can also see in the example that methods (member

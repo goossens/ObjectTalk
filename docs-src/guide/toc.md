@@ -5,6 +5,4 @@
 * [Scope](#scope)
 * [Modules](#modules)
 * [Classes](#classes)
-* [Properties](#properties)
 * [Functions](#functions)
-* [Closures](#closures)

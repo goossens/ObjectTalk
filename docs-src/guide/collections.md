@@ -44,7 +44,7 @@ You can combine arrays:
 	var array1 = [1, 2, 3.14, "test"];
 	var array2 = [8, 9];
 
-	var array3 = array1.join(array2);
+	var array3 = array1.merge(array2);
 	// array3 is now [1, 2, 3.14, "test", 8, 9]
 
 You can use an array as a stack:
@@ -104,7 +104,7 @@ You can iterate over a dictionary's keys or values.
 	var dict = { "name": "Doe", "age": 29 };
 
 	for key in dict.keys() {
-		print(key);
+		print(key, ": ", dict[key]);
 	}
 
 	for value in dict.values() {

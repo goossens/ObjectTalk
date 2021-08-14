@@ -29,8 +29,8 @@ systems, Reals are implemented using 8 bytes and have a range of
 | asin() | Returns the principal value of the arc cosine of object's value, expressed in radians.
 | acos() | Returns the principal value of the arc cosine of object's value, expressed in radians.
 | atan() | Returns the principal value of the arc cosine of object's value, expressed in radians.
-| radians() | Convert object's value, expressed in degrees, to radians.
-| degrees() | Convert object's value, expressed in radians, to degrees.
+| radians() | Returns object's value converted from degrees to radians.
+| degrees() | Returns object's value converted from radians to degrees.
 | sqrt() | Return the square root of object's value.
 | pow(exp) | Return the object's value raised to the power exp.
 | log() | Return the natural (base-e) logarithm of object's value.

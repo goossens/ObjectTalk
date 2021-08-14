@@ -4,9 +4,9 @@ ObjectTalk will be familiar if you have experience with developing in C
 and derived languages.
 
 ObjectTalk provides its own versions of fundamental C types, including
-Booleans, Integers (for int), Reals (for double), String for textual data
-and Functions as first class primitives. ObjectTalk also provides powerful
-versions of the three primary collection types: Array, Dictionary and Sets.
+Boolean, Integer (for int), Real (for double), String for textual data
+and Function as first class primitives. ObjectTalk also provides powerful
+versions of the three primary collection types: Array, Dictionary and Set.
 In fact, in ObjectTalk everything is an object derived from a class and
 the word type is only used internally in the language's runtime. Primitives
 like Booleans, Integers, Reals, Strings and Functions are objects just like
@@ -143,6 +143,9 @@ Real literals can be written as a floating point number with or without an expon
 	var decimalDouble = 12.1875;
 	var exponentDouble = -1.21875e1;
 
+The default global language context predefines the variable **pi**
+(3.14...) and **e** (2.71...) as a convenience.
+
 **Strings**
 
 [Strings](reference.html#string) are a series of characters, such as
@@ -162,10 +165,10 @@ easy to exchange information with other languages or systems. A string literal i
 Multiline strings can also be created:
 
 	var quotation = "The White Rabbit put on his spectacles.
-		\"Where shall I begin, please your Majesty?\" he asked.
+		'Where shall I begin, please your Majesty?' he asked.
 
-		\"Begin at the beginning,\" the King said gravely,
-		\"and go on till you come to the end; then stop.\"";
+		'Begin at the beginning,' the King said gravely,
+		'and go on till you come to the end; then stop.'";
 
 **Functions**
 

@@ -1,7 +1,8 @@
 An operator is a special symbol or phrase that you use to check, change,
-or combine values. For example, the addition operator (+) adds two objects,
-as in **var i = 1 + 2**, and the logical AND operator (&&) combines two
-Boolean values, as in **if enteredDoorCode && passedRetinaScan**.
+or combine values. For example, the addition operator (**+**) adds two
+objects, as in **var i = 1 + 2**, and the logical AND operator (**&&**)
+combines two Boolean values, as in
+**if enteredDoorCode && passedRetinaScan**.
 ObjectTalk supports the operators you may already know from languages
 like C.
 

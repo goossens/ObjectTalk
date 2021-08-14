@@ -68,9 +68,7 @@
             <li><a class="page-scroll" href="#scope">Scope</a></li>
             <li><a class="page-scroll" href="#modules">Modules</a></li>
             <li><a class="page-scroll" href="#classes">Classes</a></li>
-            <li><a class="page-scroll" href="#properties">Properties</a></li>
             <li><a class="page-scroll" href="#functions">Functions</a></li>
-            <li><a class="page-scroll" href="#closures">Closures</a></li>
           </ul>
         </div>
         <div class="col mh-100 overflow-auto py-2 manual-content">
@@ -84,10 +82,10 @@
             </p>
             <p>
               ObjectTalk provides its own versions of fundamental C types,
-              including Booleans, Integers (for int), Reals (for double), String
-              for textual data and Functions as first class primitives.
+              including Boolean, Integer (for int), Real (for double), String
+              for textual data and Function as first class primitives.
               ObjectTalk also provides powerful versions of the three primary
-              collection types: Array, Dictionary and Sets. In fact, in
+              collection types: Array, Dictionary and Set. In fact, in
               ObjectTalk everything is an object derived from a class and the
               word type is only used internally in the language's runtime.
               Primitives like Booleans, Integers, Reals, Strings and Functions
@@ -239,6 +237,11 @@ var hexadecimalInteger = 0x11;     // 17 in hexadecimal notation
             <pre><code>var decimalDouble = 12.1875;
 var exponentDouble = -1.21875e1;
 </code></pre>
+            <p>
+              The default global language context predefines the variable
+              <strong>pi</strong> (3.14...) and <strong>e</strong> (2.71...) as
+              a convenience.
+            </p>
             <p><strong>Strings</strong></p>
             <p>
               <a href="reference.html#string">Strings</a> are a series of
@@ -260,10 +263,10 @@ var message = &quot;\tMost Europeans like the \u00C4.\n&quot;;
 </code></pre>
             <p>Multiline strings can also be created:</p>
             <pre><code>var quotation = &quot;The White Rabbit put on his spectacles.
-	\&quot;Where shall I begin, please your Majesty?\&quot; he asked.
+	'Where shall I begin, please your Majesty?' he asked.
 
-	\&quot;Begin at the beginning,\&quot; the King said gravely,
-	\&quot;and go on till you come to the end; then stop.\&quot;&quot;;
+	'Begin at the beginning,' the King said gravely,
+	'and go on till you come to the end; then stop.'&quot;;
 </code></pre>
             <p><strong>Functions</strong></p>
             <p>
@@ -334,7 +337,7 @@ array.clear();
             <pre><code>var array1 = [1, 2, 3.14, &quot;test&quot;];
 var array2 = [8, 9];
 
-var array3 = array1.join(array2);
+var array3 = array1.merge(array2);
 // array3 is now [1, 2, 3.14, &quot;test&quot;, 8, 9]
 </code></pre>
             <p>You can use an array as a stack:</p>
@@ -392,7 +395,7 @@ dict.clear();
             <pre><code>var dict = { &quot;name&quot;: &quot;Doe&quot;, &quot;age&quot;: 29 };
 
 for key in dict.keys() {
-	print(key);
+	print(key, &quot;: &quot;, dict[key]);
 }
 
 for value in dict.values() {
@@ -485,10 +488,10 @@ assert(set.contains(&quot;test&quot;) == true);
             <h1 class="pb-2">Operators</h1>
             <p>
               An operator is a special symbol or phrase that you use to check,
-              change, or combine values. For example, the addition operator (+)
-              adds two objects, as in <strong>var i = 1 + 2</strong>, and the
-              logical AND operator (&amp;&amp;) combines two Boolean values, as
-              in
+              change, or combine values. For example, the addition operator
+              (<strong>+</strong>) adds two objects, as in
+              <strong>var i = 1 + 2</strong>, and the logical AND operator
+              (<strong>&amp;&amp;</strong>) combines two Boolean values, as in
               <strong>if enteredDoorCode &amp;&amp; passedRetinaScan</strong>.
               ObjectTalk supports the operators you may already know from
               languages like C.
@@ -1133,9 +1136,9 @@ if hasDoorKey || knowsOverridePassword {
               ObjectTalk provides a variety of control flow statements. These
               include while loops to perform a task multiple times; if
               statements to execute different branches of code based on certain
-              conditions. Swift also provides a for-in loop that makes it easy
-              to iterate over arrays, dictionaries, sets, strings, and other
-              sequences.
+              conditions. ObjectTalk also provides a for-in loop that makes it
+              easy to iterate over arrays, dictionaries, sets, strings, and
+              other sequences.
             </p>
             <p><strong>If</strong></p>
             <p>
@@ -1517,7 +1520,7 @@ for number in range(10, 6, -2) {
                 <strong>Module Scope</strong> - An ObjectTalk
                 <a class="page-scroll" href="#modules">module</a> is derived
                 from a single source code file. Any object defined at the
-                module's root level is added to the object scope. The effect
+                module's root level is added to the module's scope. The effect
                 this achieves is that those objects have global visibility in
                 that module and can simply be addressed by their name. If a
                 module is imported into another module, the variables of the
@@ -1557,23 +1560,581 @@ for number in range(10, 6, -2) {
           </div>
           <div id="modules">
             <h1 class="pb-2">Modules</h1>
-            <p>To be written</p>
+            <p>
+              A module is a single unit of code that’s built and shipped as a
+              single unit and that can be imported by another module with
+              ObjectTalk's import keyword.
+            </p>
+            <p>
+              A source file is a single ObjectTalk module (in effect, a single
+              file within an app). Although it’s common to define individual
+              types in separate source files, a single source file can contain
+              definitions for multiple classes, functions, and so on.
+            </p>
+            <p>
+              When the ObjectTalk interpreter is started, it will load the
+              specified script (source code) as the first module. Additional
+              modules can be loaded with the import script. Here is an example
+              based on two files; one containing a class definition and the
+              other containing the main program.
+            </p>
+            <pre><code>// Module &quot;counter.ot&quot;
+
+class Counter : Object {
+	function__init__(this) {
+		this.count = 0;
+	}
+
+	function increment(this) {
+		this.count += 1;
+	}
+	function increment(this, amount) {
+		this.count += amount;
+	}
+	function reset(this) {
+		this.count = 0;
+	}
+}
+
+// Module &quot;app.ot&quot;
+
+var counter = import(&quot;counter&quot;);
+
+var tracker = counter.Counter(); // the initial counter value is 0
+assert(tracker.count == 0);
+
+tracker.increment();             // the counter's value is now 1
+assert(tracker.count == 1);
+
+tracker.increment(5);            // the counter's value is now 6
+assert(tracker.count == 6);
+
+tracker.reset();                 // the counter's value is now 0
+assert(tracker.count == 0);
+</code></pre>
           </div>
           <div id="classes">
             <h1 class="pb-2">Classes</h1>
-            <p>To be written</p>
-          </div>
-          <div id="properties">
-            <h1 class="pb-2">Properties</h1>
-            <p>To be written</p>
+            <p>
+              Classes are general-purpose, flexible constructs that become the
+              building blocks of your program’s code. You define properties and
+              member functions to add functionality to your classes using the
+              same syntax you use to define variables and functions.
+            </p>
+            <p>
+              An instance of a class is traditionally known as an object.
+              However, in this ObjectTalk documentation the terms object and
+              instance are used interchangeably.
+            </p>
+            <p><strong>Definition Syntax</strong></p>
+            <p>You introduce classes with the class keyword:</p>
+            <pre><code>class Resolution : Object {
+    var width = 0;
+    var height = 0;
+}
+</code></pre>
+            <p>
+              The example above defines a new class called Resolution (that is
+              derived from the Object class), to describe a pixel-based display
+              resolution. This class has two class variables called width and
+              height. Class variables are variables that are stored as part of
+              the class. All instances of Resolution share these variables. To
+              have unique variables per instances we need to assign values to
+              the instance member.
+            </p>
+            <pre><code>class Resolution : Object {
+	// instance member initialized in constructor
+	function__init__(this, width, height) {
+		this.width = 0;
+	    this.height = 0;
+	}
+}
+
+class VideoMode : Object {
+	var classVariable = &quot;mode class&quot;;
+
+	function__init__(this) {
+	    this.resolution = Resolution(1920, 1080);
+	    this.interlaced = false;
+	    this.frameRate = 0.0;
+	    this.name;
+	}
+}
+
+var mode = VideoMode();
+mode.name = &quot;Test Mode&quot;; // assign value to instance variable
+</code></pre>
+            <p>
+              The example above also defines a new class called VideoMode, to
+              describe a specific video mode for video display. This class has
+              four instance variables. The first, resolution, is initialized
+              with a new Resolution instance, which infers a property type of
+              Resolution. For the other three properties, new VideoMode
+              instances will be initialized with an interlaced setting of false
+              (meaning “noninterlaced video”), a playback frame rate of 0.0, and
+              an optional String value called name. The name property is
+              automatically given a default value of <strong>null</strong>.
+            </p>
+            <p><strong>Class Instances</strong></p>
+            <p>
+              The Resolution and the VideoMode classes definition only describe
+              what a Resolution or VideoMode will look like. They themselves
+              don’t describe a specific resolution or video mode. To do that,
+              you need to create an instance of the structure or class.
+            </p>
+            <pre><code>var someResolution = Resolution(1920, 1080);
+var someVideoMode = VideoMode();
+</code></pre>
+            <p>
+              The simplest form of initializer syntax uses the type name of the
+              class followed by empty parentheses, such as VideoMode(). This
+              creates a new instance of the class. In some cases (like the
+              Resolution class above), the class constructor (__init__) can take
+              additional parameters to initialize a class instance.
+            </p>
+            <p><strong>Accessing Members</strong></p>
+            <p>
+              You can access the members of an instance using dot syntax. In dot
+              syntax, you write the property name immediately after the instance
+              name, separated by a period (.):
+            </p>
+            <pre><code>print(&quot;The width of someResolution is &quot;, someResolution.width);
+// Prints &quot;The width of someResolution is 1920&quot;
+</code></pre>
+            <p>
+              In this example, someResolution.width refers to the width property
+              of someResolution, and returns its default initial value of 0.
+            </p>
+            <p>
+              You can drill down into sub-properties, such as the width property
+              in the resolution property of a VideoMode:
+            </p>
+            <pre><code>print(&quot;The width of someVideoMode is &quot;, someVideoMode.resolution.width&quot;);
+// Prints &quot;The width of someVideoMode is 1920&quot;
+</code></pre>
+            <p>
+              You can also use dot syntax to assign a new value to a variable
+              property:
+            </p>
+            <pre><code>someVideoMode.resolution.width = 1280;
+print(&quot;The width of someVideoMode is &quot;, someVideoMode.resolution.width&quot;);
+// Prints &quot;The width of someVideoMode is 1280&quot;
+</code></pre>
+            <p>
+              The dot notations can be used to access both instance and class
+              member variables. When reading a member, the runtime will first
+              look in the instance and if it can't be found the runtime will
+              search the class and all it's parent classes. Here is an example:
+            </p>
+            <pre><code>class Root : Object {
+	var value0 = 0;
+	var value1 = 1;
+}
+
+class Child : Root {
+	var value0 = false;
+}
+
+class GrandChild : Child {
+	var value2 = 2;
+	var value3 = 3;
+}
+
+var grandChild = GrandChild();
+grandChild.value3 = true;
+
+assert(grandChild.value0 == false);
+assert(grandChild.value1 == 1);
+assert(grandChild.value2 == 2);
+assert(grandChild.value3 == true);
+</code></pre>
+            <p>
+              When setting a member, the dot notation can be used to set
+              instance and class members like:
+            </p>
+            <pre><code>grandChild.age = 5; // setting an instance member
+GrandChild.value3 = null; // setting a class member;
+</code></pre>
+            <p><strong>Member Functions</strong></p>
+            <p>
+              Member functions are associated with classes and encapsulate
+              specific tasks and functionality for working with an instance of a
+              given class.
+            </p>
+            <p>
+              You write an member functions within the opening and closing
+              braces of the class they belongs to. A member function can be
+              called only on a specific instance of the class it belongs to.
+            </p>
+            <p>
+              Here’s an example that defines a simple Counter class, which can
+              be used to count the number of times an action occurs:
+            </p>
+            <pre><code>class Counter : Object {
+	function__init__(this) {
+	    this.count = 0;
+	}
+
+    function increment(this) {
+        this.count += 1;
+    }
+    function increment(this, amount) {
+        this.count += amount;
+    }
+    function reset(this) {
+        this.count = 0;
+    }
+}
+</code></pre>
+            <p>The Counter class defines three instance methods:</p>
+            <ul>
+              <li>increment(this) - increments the counter by 1.</li>
+              <li>
+                increment(this, amount) - increments the counter by a specified
+                amount.
+              </li>
+              <li>reset(this) - resets the counter to zero.</li>
+            </ul>
+            <p>
+              You call instance methods with the same dot syntax as properties:
+            </p>
+            <p>
+              var counter = Counter(); // the initial counter value is 0
+              counter.increment(); // the counter's value is now 1
+              counter.increment(5); // the counter's value is now 6
+              counter.reset(); // the counter's value is now 0
+            </p>
+            <p><strong>The this Property</strong></p>
+            <p>
+              Notice in the examples above how &quot;this&quot; is used to
+              distinguish the name property from the name argument to the
+              initializer. In some computer language, the &quot;this&quot; or
+              &quot;self&quot; argument is automatically added to a member
+              function. In ObjectTalk this is not the case and you have to name
+              it yourself as the first parameter of a member function. The
+              benefit is that you can call it whatever you want and it's not
+              some hidden feature of the language. The disadvantage is that you
+              have to type it for every member function. The compiler
+              automatically translates a bound function (a function in the
+              context of an object) to a new function call with an additional
+              parameter.
+            </p>
+            <pre><code>counter.increment(2); // becomes:
+Counter.increment(counter, 2);
+</code></pre>
+            <p><strong>Constructor</strong></p>
+            <p>
+              Initialization is the process of preparing an instance of a class
+              for use and it's performed by the class' constructor. This process
+              involves setting an initial value for member variables on that
+              instance and performing any other setup or initialization that’s
+              required before the new instance is ready for use.
+            </p>
+            <p>
+              You implement this initialization process by defining
+              constructors, which are like special member functions that can be
+              called to create a new instance of a particular type. Their
+              primary role is to ensure that new instances of a type are
+              correctly initialized before they’re used for the first time.
+            </p>
+            <p>
+              The name of the constructor is always <strong>__init__</strong> as
+              you can see in the examples above. Here's another example:
+            </p>
+            <pre><code>class Fahrenheit : Object {
+    function __init__(this) {
+        this.temperature = 32;
+    }
+}
+
+var f = Fahrenheit();
+print(&quot;The default temperature is &quot;, f.temperature, &quot;° Fahrenheit&quot;)
+// Prints &quot;The default temperature is 32° Fahrenheit&quot;
+</code></pre>
+            <p>
+              In case the class is derived from a class that also has a
+              constructor, the superclass constructor must also be called like:
+            </p>
+            <pre><code>class Temperature : Object {
+	function __init__(this) {
+		this.measurement = &quot;temperature&quot;;
+	}
+}
+
+class Fahrenheit : Temperature {
+	function __init__(this) {
+		Temperature.__init__(this);
+		this.temperature = 32;
+	}
+}
+</code></pre>
+            <p><strong>Operators</strong></p>
+            <p>
+              In ObjectTalk, everything is an Object derived from a Class. The
+              number 1 is an object derived from the Integer class and so are
+              3.14 (derived from the Real class) and &quot;test&quot; (derived
+              from the string class). To take this a step further, operators
+              like +, -, *, /, [] and () are actually member functions of a
+              class.
+            </p>
+            <p>
+              To ensure this doesn't lead to silly syntax, the ObjectTalk
+              compiler translates more traditional expressions into a set of
+              member function calls. So for instances, the follow example shows
+              this translation:
+            </p>
+            <pre><code>1 + (2 * 3)
+
+2.__mul__(3).__add__(1)
+</code></pre>
+            <p>
+              As a user of ObjectTalk you only have to learn the top syntax. If
+              you want to understand the compiler and VM, you have to understand
+              both.
+            </p>
+            <p>
+              Given that operators become member function calls, custom Classes
+              can implement operators so it is very simple in ObjectTalk to
+              implement a Vector class that implements a dot product operator.
+            </p>
+            <p>
+              You can find a list of all operator function member name in the
+              <a class="page-scroll" href="#operators">Operators</a> section.
+            </p>
+            <p><strong>Subclassing</strong></p>
+            <p>
+              You can subclass any class as ObjectTalk supports the concept of
+              single inheritance (meaning a class can derive from a single other
+              class). In fact all classes in ObjectTalk have a parent class with
+              the exception of the <strong>Object</strong> class which is the
+              root class for all others.
+            </p>
+            <pre><code>class A : Object {
+    function someMethod(this) {}
+}
+
+class B : A {
+    function someMethod(this) {}
+}
+</code></pre>
+            <p>It’s valid for a subclass member to call a superclass member:</p>
+            <pre><code>class A : Object {
+	function someMethod(this) {}
+}
+
+class B : A {
+	function someMethod(this) {}
+		A.someMethod(this);
+}
+</code></pre>
           </div>
           <div id="functions">
             <h1 class="pb-2">Functions</h1>
-            <p>To be written</p>
-          </div>
-          <div id="closures">
-            <h1 class="pb-2">Closures</h1>
-            <p>To be written</p>
+            <p>
+              Functions are self-contained chunks of code that perform a
+              specific task. ObjectTalk has three function &quot;types&quot;.
+              First there is the traditional function as you would define it in
+              other languages. Secondly there is the &quot;lambda&quot; version
+              of a function which makes a function look more like any other
+              primitive. In fact, the only difference between these first two
+              types is syntax. The third type is the member function which is a
+              function attached to a class and performs a task on an instance of
+              that class. This is what they looks like:
+            </p>
+            <pre><code>// traditional function definition
+function callMeTraditional(parameter) {
+	return parameter + 1;
+}
+
+// &quot;lambda&quot; style function
+var callMeLambda = function(parameter) {
+	return parameter + 1;
+}
+
+// member function
+class newestObjectClass : Object {
+	var increment = 1;
+
+	function callMeMemberFunction(this, parameter) {
+		return parameter + this.increment;
+	}
+}
+</code></pre>
+            <p>
+              Traditional and lambda functions will be described in this
+              section. Member Functions will be covered in the
+              <a class="page-scroll" href="#classes">Classes</a> section.
+            </p>
+            <p>
+              When you define a function, you can optionally define one or more
+              named, values that the function takes as input, known as
+              parameters. Function parameters and return values are extremely
+              flexible in ObjectTalk. You can define anything from a simple
+              utility function with a single parameter to a complex function
+              with expressive parameters.
+            </p>
+            <p><strong>Functions Without Parameters</strong></p>
+            <p>
+              Functions aren’t required to define input parameters. Here’s a
+              function with no input parameters, which always returns the same
+              String message whenever it’s called:
+            </p>
+            <pre><code>function sayHelloWorld() {
+	return &quot;hello, world&quot;;
+}
+
+print(sayHelloWorld());
+// Prints &quot;hello, world&quot;
+</code></pre>
+            <p>
+              The function definition still needs parentheses after the
+              function’s name, even though it doesn’t take any parameters. The
+              function name is also followed by an empty pair of parentheses
+              when the function is called.
+            </p>
+            <p><strong>Functions With Multiple Parameters</strong></p>
+            <p>
+              Functions can have multiple input parameters, which are written
+              within he function’s parentheses, separated by commas.
+            </p>
+            <p>
+              This function takes a person’s name and whether they have already
+              been greeted as input, and returns an appropriate greeting for
+              that person:
+            </p>
+            <pre><code>function greet(person, alreadyGreeted) {
+	if (alreadyGreeted) {
+		return greetAgain(person);
+
+	} else {
+		return greet(person);
+	}
+}
+
+print(greet(&quot;Tim&quot;, true));
+// Prints &quot;Hello again, Tim!&quot;
+</code></pre>
+            <p><strong>Functions Without Return Values</strong></p>
+            <p>
+              Functions aren’t required to return a value. Here’s a version of
+              the greet function, which prints its own String value rather than
+              returning it:
+            </p>
+            <pre><code>function greet(person) {
+	print(&quot;Hello, &quot;, person, &quot;!&quot;);
+}
+
+greet(&quot;Dave&quot;);
+// Prints &quot;Hello, Dave!&quot;
+</code></pre>
+            <p>
+              Strictly speaking, this version of the greet() function does still
+              return a value, even though no return value is defined. Functions
+              without a defined return will automatically return
+              <strong>null</strong>.
+            </p>
+            <p>Return values can be ignored.</p>
+            <p>
+              <strong>Function Types as Return Types</strong> You can use a
+              function as the return value of another function.
+            </p>
+            <p>
+              The next example defines two simple functions called stepForward()
+              and stepBackward(). The stepForward() function returns a value one
+              more than its input value, and the stepBackward() function returns
+              a value one less than its input value.
+            </p>
+            <pre><code>function stepForward(input) {
+	return input + 1;
+}
+
+function stepBackward(input) {
+	return input - 1;
+}
+</code></pre>
+            <p>
+              Here’s a function called chooseStepFunction() which returns the
+              stepForward() function or the stepBackward() function based on a
+              Boolean arameter called backward:
+            </p>
+            <pre><code>function chooseStepFunction(backward) {
+	return backward ? stepBackward : stepForward;
+}
+</code></pre>
+            <p>
+              You can now use chooseStepFunction() to obtain a function that
+              will step in one direction or the other:
+            </p>
+            <pre><code>var currentValue = 3;
+var moveNearerToZero = chooseStepFunction(currentValue &gt; 0);
+// moveNearerToZero now refers to the stepBackward() function
+</code></pre>
+            <p>
+              The example above determines whether a positive or negative step
+              is needed to move a variable called currentValue progressively
+              closer to zero. currentValue has an initial value of 3, which
+              means that currentValue &gt; 0 returns true, causing
+              chooseStepFunction(backward:) to return the stepBackward()
+              function. A reference to the returned function is stored in a
+              constant called moveNearerToZero.
+            </p>
+            <p>
+              Now that moveNearerToZero refers to the correct function, it can
+              be used to count to zero:
+            </p>
+            <pre><code>print(&quot;Counting to zero:&quot;);
+
+// Counting to zero:
+while (currentValue != 0) {
+	print(currentValue, &quot;... &quot;);
+	currentValue = moveNearerToZero(currentValue);
+}
+
+print(&quot;zero!&quot;);
+// 3...
+// 2...
+// 1...
+// zero!
+</code></pre>
+            <p><strong>Nested Functions</strong></p>
+            <p>
+              All of the functions you have encountered so far in this chapter
+              have been examples of global functions, which are defined at a
+              global or module scope. You can also define functions inside the
+              bodies of other functions, known as nested functions.
+            </p>
+            <p>
+              Nested functions are hidden from the outside world by default, but
+              can still be called and used by their enclosing function. An
+              enclosing function can also return one of its nested functions to
+              allow the nested function to be used in another scope.
+            </p>
+            <p>
+              You can rewrite the chooseStepFunction() example above to use and
+              return nested functions:
+            </p>
+            <pre><code>function chooseStepFunction(backward) {
+	function stepForward(input) { return input + 1 }
+	function stepBackward(input) { return input - 1 }
+	return backward ? stepBackward : stepForward;
+}
+
+var currentValue = -4;
+var moveNearerToZero = chooseStepFunction(currentValue &gt; 0);
+
+// moveNearerToZero now refers to the nested stepForward() function
+while (currentValue != 0) {
+	print(currentValue, &quot;...&quot;);
+	currentValue = moveNearerToZero(currentValue);
+}
+
+print(&quot;zero!&quot;);
+// -4...
+// -3...
+// -2...
+// -1...
+// zero!
+</code></pre>
           </div>
         </div>
       </div>

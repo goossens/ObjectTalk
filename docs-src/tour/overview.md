@@ -17,13 +17,13 @@ to accomplish a variety of programming tasks. Don’t worry if you don’t
 understand something, everything introduced in this overview is explained
 in detail in the rest of the documentation.
 
-## Everything is an ObjectTalk
+## Everything is an Object
 
 In ObjectTalk, everything is an Object derived from a Class. The number 1
 is an object derived from the Integer class and so are 3.14 (derived from
 the Real class) and "test" (derived from the string class). To take this
 a step further, operators like +, -, *, /, [] and () are actually member
-functions on an Object. This keep the Virtual Machine (VM) very simple as
+functions on an Object. This keeps the Virtual Machine (VM) very simple as
 it has no mathematical instructions. The VM actually only executes member
 functions on Objects.
 
@@ -44,7 +44,7 @@ a Vector class that implements a dot product operator.
 
 ## Variables
 
-In ObjectTalk, variables must be declared as in the appropriate scope
+In ObjectTalk, variables must be declared in the appropriate scope
 through assignment. ObjectTalk makes no distinction between constants
 and variables. If you set it and don't change it, it's a constant.
 If you do change it, it's a variable. The example below creates two
@@ -86,7 +86,8 @@ argument also as a string.
 
 In ObjectTalk, The **null** object is the only instance of the abstract
 [Object](reference.html#object) class. It's a special object as it can't
-do anything. It is however helpful as a non-value.
+do anything. It is however helpful as a non-value. The default global
+scope defines the variable **null** as a convenience.
 
 [Booleans](reference.html#boolean) in ObjectTalk can only hold two values:
 true and false. The default global language context defines the variables
@@ -99,7 +100,9 @@ meaning that the extremes are -9,223,372,036,854,775,808 and
 
 [Reals](reference.html#real) in ObjectTalk are double-precision floating
 point numbers. On most systems, Reals are implemented using 8 bytes
-and have a range of 1.7E +/- 308 (15 digits).
+and have a range of 1.7E +/- 308 (15 digits). The default global language
+context predefines the variable **pi** (3.14...) and **e** (2.71...)
+as a convenience.
 
 In ObjectTalk, [Strings](reference.html#string) are captured in double
 quotes and can span multiple lines. Strings may contain UTF-8 characters
@@ -279,8 +282,10 @@ Functions are a first-class type. This means that a function can return another 
 
 		return addOne;
 	}
+
 	var increment = makeIncrementer()
-	increment(7);
+	print(increment(7));
+	// prints 8
 
 A function can take another function as one of its arguments.
 
@@ -299,7 +304,8 @@ function lessThanTen(number) {
 }
 
 var numbers = [20, 19, 7, 12];
-hasAnyMatches(numbers, lessThanTen);
+print(hasAnyMatches(numbers, lessThanTen));
+// prints true
 
 Functions are actually a special case of closures: blocks of code that can
 be called later. The code in a closure has access to things like variables
@@ -330,7 +336,7 @@ properties and member function of the instance.
 	var shapeDescription = shape.simpleDescription();
 
 This version of the Shape class is missing something important: an
-initializer to set up the class when an instance is created.
+initializer (constructor) to set up the class when an instance is created.
 Use \_\_init\_\_ to create one.
 
 class NamedShape : Shape {
@@ -355,7 +361,7 @@ an object) to a new function call with an additional parameter.
 
 	a.test(1, 2) becomes test(a, 1, 2);
 
-## Error handling
+## Error Handling
 
 ObjectTalk uses a classic **try/catch/throw** paradigm. Critical code
 is captured in a **try** block and if an exception is raised, the code

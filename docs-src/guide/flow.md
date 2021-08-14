@@ -1,7 +1,7 @@
 ObjectTalk provides a variety of control flow statements. These include
 while loops to perform a task multiple times; if statements to execute
 different branches of code based on certain conditions.
-Swift also provides a for-in loop that makes it easy to iterate over
+ObjectTalk also provides a for-in loop that makes it easy to iterate over
 arrays, dictionaries, sets, strings, and other sequences.
 
 **If**

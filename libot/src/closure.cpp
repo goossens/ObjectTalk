@@ -37,12 +37,12 @@ OtObject OtClosureClass::capture() {
 //	OtClosureClass::operator()
 //
 
-OtObject OtClosureClass::operator()(size_t count, OtObject* parameters) {
+OtObject OtClosureClass::operator () (size_t count, OtObject* parameters) {
 	// register closure on the stack
 	OtVM::stack->pushClosure(shared());
 
 	// execute the enclosed function
-	auto result = function->operator()(count, parameters);
+	auto result = function->operator () (count, parameters);
 
 	// remove this closure from the stack
 	OtVM::stack->popClosure();

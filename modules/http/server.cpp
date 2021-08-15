@@ -35,7 +35,7 @@ public:
 
 		uv_timer_start(&uv_timer, [](uv_timer_t* handle) {
 			OtHttpTimerClass* timer = (OtHttpTimerClass*) (handle->data);
-			OtVM::memberFunction(timer->callback, "__call__");
+			OtVM::callMemberFunction(timer->callback, "__call__");
 		}, wait, repeat);
 	}
 

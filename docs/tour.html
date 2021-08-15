@@ -601,18 +601,24 @@ print(increment(7));
 // prints 8
 </code></pre>
             <p>A function can take another function as one of its arguments.</p>
-            <p>
-              function hasAnyMatches(list, condition) { for item in list { if
-              condition(item) { return true; } }
-            </p>
-            <pre><code>return false;
+            <pre><code>function hasAnyMatches(list, condition) {
+	for item in list {
+		if condition(item) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+function lessThanTen(number) {
+	return number &lt; 10;
+}
+
+var numbers = [20, 19, 7, 12];
+print(hasAnyMatches(numbers, lessThanTen));
+// prints true
 </code></pre>
-            <p>}</p>
-            <p>function lessThanTen(number) { return number &lt; 10; }</p>
-            <p>
-              var numbers = [20, 19, 7, 12]; print(hasAnyMatches(numbers,
-              lessThanTen)); // prints true
-            </p>
             <p>
               Functions are actually a special case of closures: blocks of code
               that can be called later. The code in a closure has access to

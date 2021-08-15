@@ -80,7 +80,7 @@ void OtApplicationClass::run(const std::string& name) {
 
 	// call app's setup member (if defined)
 	if (has("setup")) {
-		OtVM::memberFunction(shared(), "setup", screen);
+		OtVM::callMemberFunction(shared(), "setup", screen);
 	}
 
 	// application main loop
@@ -99,7 +99,7 @@ void OtApplicationClass::run(const std::string& name) {
 
 		// call app's update member (if defined)
 		if (has("update")) {
-			OtVM::memberFunction(shared(), "update");
+			OtVM::callMemberFunction(shared(), "update");
 		}
 
 		// render frame
@@ -114,7 +114,7 @@ void OtApplicationClass::run(const std::string& name) {
 
 	// call app's update member (if defined)
 	if (has("terminate")) {
-		OtVM::memberFunction(shared(), "terminate");
+		OtVM::callMemberFunction(shared(), "terminate");
 	}
 
 	// remove all children from the screen to avoid memory leaks

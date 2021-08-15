@@ -1910,22 +1910,36 @@ class Fahrenheit : Temperature {
               root class for all others.
             </p>
             <pre><code>class A : Object {
-    function someMethod(this) {}
+    function someMethod(this) {
+		print(&quot;A.someMethod()&quot;);
+	}
 }
 
 class B : A {
-    function someMethod(this) {}
+    function someMethod(this) {
+		print(&quot;B.someMethod()&quot;);
+	}
 }
 </code></pre>
-            <p>It’s valid for a subclass member to call a superclass member:</p>
+            <p>
+              It’s valid for a subclass member to call a superclass member using
+              the global <strong>super</strong> function:
+            </p>
             <pre><code>class A : Object {
-	function someMethod(this) {}
+	function someMethod(this, value) {
+		print(&quot;A.someMethod(&quot;, value, &quot;)&quot;);
+	}
 }
 
 class B : A {
-	function someMethod(this) {}
-		A.someMethod(this);
+	function someMethod(this, value) {
+		super(this, &quot;someMethod&quot;, value);
+		print(&quot;B.someMethod(&quot;, value, &quot;)&quot;);
+	}
 }
+
+var b = B();
+b.someMethod(2);
 </code></pre>
           </div>
           <div id="functions">

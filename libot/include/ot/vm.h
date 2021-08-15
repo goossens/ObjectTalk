@@ -36,12 +36,27 @@ public:
 
 	// call a member function on an object with arguments
 	template<typename... ARGS>
-	static OtObject memberFunction(OtObject target, const std::string& member, ARGS... args) {
+	static OtObject callMemberFunction(OtObject target, const std::string& member, ARGS... args) {
 		const size_t count = sizeof...(ARGS) + 1;
 		stack->push(target);
 		(stack->push(args), ...);
 		stack->openFrame(count);
-		auto result = target->get(member)->operator()(count, stack->sp(count));
+		auto result = target->get(member)->operator () (count, stack->sp(count));
+		stack->closeFrame();
+		stack->pop(count);
+		return result;
+	}
+
+	static inline OtObject callMemberFunction(OtObject target, OtObject member, size_t count, OtObject* args) {
+		stack->push(target);
+
+		for (auto c = 0; c < count; c ++) {
+			(stack->push(args[c]));
+		}
+
+		count++;
+		stack->openFrame(count);
+		auto result = member->operator () (count, stack->sp(count));
 		stack->closeFrame();
 		stack->pop(count);
 		return result;
@@ -51,13 +66,13 @@ public:
 	static inline OtObject redirectMemberFunction(OtObject target, OtObject member, size_t count) {
 		auto sp = stack->sp(count + 1);
 		*sp = target;
-		return member->operator()(count + 1, sp);
+		return member->operator () (count + 1, sp);
 	}
 
 	static inline OtObject redirectMemberFunction(OtObject target, const std::string& member, size_t count) {
 		auto sp = stack->sp(count + 1);
 		*sp = target;
-		return target->get(member)->operator()(count + 1, sp);
+		return target->get(member)->operator () (count + 1, sp);
 	}
 
 	// virtual machine components

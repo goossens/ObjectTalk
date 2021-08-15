@@ -259,20 +259,32 @@ all classes in ObjectTalk have a parent class with the exception of the
 **Object** class which is the root class for all others.
 
 	class A : Object {
-	    function someMethod(this) {}
+	    function someMethod(this) {
+			print("A.someMethod()");
+		}
 	}
 
 	class B : A {
-	    function someMethod(this) {}
+	    function someMethod(this) {
+			print("B.someMethod()");
+		}
 	}
 
-It’s valid for a subclass member to call a superclass member:
+It’s valid for a subclass member to call a superclass member using the
+global **super** function:
 
 	class A : Object {
-		function someMethod(this) {}
+		function someMethod(this, value) {
+			print("A.someMethod(", value, ")");
+		}
 	}
 
 	class B : A {
-		function someMethod(this) {}
-			A.someMethod(this);
+		function someMethod(this, value) {
+			super(this, "someMethod", value);
+			print("B.someMethod(", value, ")");
+		}
 	}
+
+	var b = B();
+	b.someMethod(2);

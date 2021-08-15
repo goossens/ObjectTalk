@@ -33,7 +33,7 @@ public:
 	std::string describe() { return object->getType()->getName() + " " + "function"; }
 
 	// call bound function
-	OtObject operator()(size_t count, OtObject* parameters);
+	OtObject operator () (size_t count, OtObject* parameters);
 
 	// get type definition
 	static OtType getMeta();

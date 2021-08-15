@@ -20,7 +20,7 @@
 //	OtBoundFunctionClass::operator()
 //
 
-OtObject OtBoundFunctionClass::operator()(size_t count, OtObject* parameters) {
+OtObject OtBoundFunctionClass::operator () (size_t count, OtObject* parameters) {
 	return OtVM::redirectMemberFunction(object, function, count);
 }
 

@@ -30,9 +30,9 @@ OtObject OtClassClass::instantiate(size_t count, OtObject* parameters) {
 
 	} else if (count) {
 		OtExcept(
-			"Class [%s] is missing [__init__] member function (called with %d parameters)",
+			"Class [%s] is missing [__init__] member function (called with %ld parameters)",
 			classType->getName().c_str(),
-		count);
+			count);
 	}
 
 	return object;

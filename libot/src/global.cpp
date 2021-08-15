@@ -38,6 +38,8 @@
 
 #include "ot/rangeiterator.h"
 
+#include "ot/vm.h"
+
 
 //
 //	OtGlobalClass::OtGlobalClass
@@ -56,6 +58,7 @@ OtGlobalClass::OtGlobalClass() {
 	set("range", OtFunctionClass::create(&OtGlobalClass::range));
 	set("import", OtFunctionClass::create(&OtGlobalClass::import));
 	set("print", OtFunctionClass::create(&OtGlobalClass::print));
+	set("super", OtFunctionClass::create(&OtGlobalClass::super));
 
 	// add default classes
 	set("Object", OtClassClass::create(OtObjectClass::getMeta()));
@@ -160,6 +163,40 @@ void OtGlobalClass::print(size_t count, OtObject* parameters) {
 
 	std::cout << std::endl;
 }
+
+
+//
+//	OtGlobalClass::super
+//
+
+OtObject OtGlobalClass::super(size_t count, OtObject* parameters) {
+	// sanity check
+	if (count < 2) {
+		OtExcept("Super requires at least 2 parameters (%ld given)", count);
+	}
+
+	// get member from super class
+	OtType type = parameters[0]->getType()->getParent();
+	std::string memberName = parameters[1]->operator std::string();
+	OtObject member;
+
+	while (type && !member) {
+		member = type->get(memberName);
+		type = type->getParent();
+	}
+
+	// sanity check
+	if (!member) {
+		OtExcept(
+			"Can't find member function [%s] in super class of [%s]",
+			memberName.c_str(),
+			parameters[0]->getType()->getName().c_str());
+	}
+
+	// call member function
+	return OtVM::callMemberFunction(parameters[0], member, count - 2, &(parameters[2]));
+}
+
 
 
 //

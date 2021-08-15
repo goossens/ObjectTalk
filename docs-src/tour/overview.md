@@ -289,23 +289,23 @@ Functions are a first-class type. This means that a function can return another 
 
 A function can take another function as one of its arguments.
 
-function hasAnyMatches(list, condition) {
-	for item in list {
-		if condition(item) {
-			return true;
+	function hasAnyMatches(list, condition) {
+		for item in list {
+			if condition(item) {
+				return true;
+			}
 		}
+
+		return false;
 	}
 
-	return false;
-}
+	function lessThanTen(number) {
+		return number < 10;
+	}
 
-function lessThanTen(number) {
-	return number < 10;
-}
-
-var numbers = [20, 19, 7, 12];
-print(hasAnyMatches(numbers, lessThanTen));
-// prints true
+	var numbers = [20, 19, 7, 12];
+	print(hasAnyMatches(numbers, lessThanTen));
+	// prints true
 
 Functions are actually a special case of closures: blocks of code that can
 be called later. The code in a closure has access to things like variables

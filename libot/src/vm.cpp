@@ -199,7 +199,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 					OT_ASSERT(parameters[0]);
 
 					// call method
-					auto result = parameters[0]->get(method)->operator()(count + 1, parameters);
+					auto result = parameters[0]->get(method)->operator () (count + 1, parameters);
 
 					// clean up stack and put result back on stack
 					stack->pop(count + 1);

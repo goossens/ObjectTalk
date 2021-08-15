@@ -45,4 +45,7 @@ private:
 
 	// print to STDOUT
 	static void print(size_t count, OtObject* parameters);
+
+	// call member function on super class
+	static OtObject super(size_t count, OtObject* parameters);
 };

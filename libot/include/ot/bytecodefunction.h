@@ -30,7 +30,7 @@ public:
 	OtByteCodeFunctionClass(OtByteCode c, size_t p) : bytecode(c), parameterCount(p) {}
 
 	// call code
-	OtObject operator()(size_t count, OtObject* parameters);
+	OtObject operator () (size_t count, OtObject* parameters);
 
 	// get type definition
 	static OtType getMeta();

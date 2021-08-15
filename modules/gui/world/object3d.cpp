@@ -15,17 +15,6 @@
 
 
 //
-//	OtObject3dClass::validateChild
-//
-
-void OtObject3dClass::validateChild(OtComponent child) {
-	if (!child->isKindOf("Object3D")) {
-		OtExcept("An [Object3D] can only have [Object3D]s as children, not [%s]", child->getType()->getName().c_str());
-	}
-}
-
-
-//
 //	OtObject3dClass::render
 //
 
@@ -44,7 +33,7 @@ OtType OtObject3dClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtTypeClass::create<OtObject3dClass>("Object3D", OtCompositeClass::getMeta());
+		type = OtTypeClass::create<OtObject3dClass>("Object3D", OtComponentClass::getMeta());
 		type->set("rotate", OtFunctionClass::create(&OtObject3dClass::rotate));
 		type->set("rotateX", OtFunctionClass::create(&OtObject3dClass::rotateX));
 		type->set("rotateY", OtFunctionClass::create(&OtObject3dClass::rotateY));

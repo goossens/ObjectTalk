@@ -21,7 +21,7 @@
 //
 
 void OtLightClass::renderGUI(int number) {
-	int flags = ImGuiTreeNodeFlags_Framed | (active ? ImGuiTreeNodeFlags_DefaultOpen : 0);
+	int flags = ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen;
 
 	if (ImGui::TreeNodeEx(this, flags, "Light %d", number)) {
 		ImGui::Checkbox("active", &active);

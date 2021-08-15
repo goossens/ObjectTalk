@@ -13,7 +13,6 @@
 //
 
 #include <cmath>
-#include <memory>
 #include <string>
 
 #include "exception.h"

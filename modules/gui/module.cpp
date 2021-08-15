@@ -17,11 +17,9 @@
 
 #include "gui.h"
 #include "application.h"
-
 #include "component.h"
-#include "composite.h"
-#include "screen.h"
 
+#include "screen.h"
 #include "view.h"
 #include "camera.h"
 #include "light.h"
@@ -69,11 +67,9 @@
 extern "C" void init(OtModule module) {
 	module->set("GUI", OtClassClass::create(OtGuiClass::getMeta()));
 	module->set("Application", OtClassClass::create(OtApplicationClass::getMeta()));
-
 	module->set("Component", OtClassClass::create(OtComponentClass::getMeta()));
-	module->set("Composite", OtClassClass::create(OtCompositeClass::getMeta()));
-	module->set("Screen", OtClassClass::create(OtScreenClass::getMeta()));
 
+	module->set("Screen", OtClassClass::create(OtScreenClass::getMeta()));
 	module->set("View", OtClassClass::create(OtViewClass::getMeta()));
 	module->set("Camera", OtClassClass::create(OtCameraClass::getMeta()));
 	module->set("Light", OtClassClass::create(OtLightClass::getMeta()));

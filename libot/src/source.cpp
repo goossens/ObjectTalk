@@ -10,7 +10,6 @@
 //
 
 #include <algorithm>
-#include <memory>
 #include <string>
 
 #include "ot/source.h"

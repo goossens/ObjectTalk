@@ -26,6 +26,32 @@ void OtWidgetClass::validateChild(OtComponent child) {
 
 
 //
+//	OtWidgetClass::update
+//
+
+void OtWidgetClass::update() {
+	// update all children
+	for (auto const& child : children) {
+		child->cast<OtWidgetClass>()->update();
+	}
+}
+
+
+//
+//	OtWidgetClass::render
+//
+
+void OtWidgetClass::render() {
+	// render all children
+	for (auto const& child : children) {
+		if (child->isEnabled()) {
+			child->cast<OtWidgetClass>()->render();
+		}
+	}
+}
+
+
+//
 //	OtWidgetClass::getMeta
 //
 
@@ -33,7 +59,7 @@ OtType OtWidgetClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtTypeClass::create<OtWidgetClass>("Widget", OtCompositeClass::getMeta());
+		type = OtTypeClass::create<OtWidgetClass>("Widget", OtComponentClass::getMeta());
 	}
 
 	return type;

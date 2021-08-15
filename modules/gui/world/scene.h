@@ -17,7 +17,7 @@
 #include "bgfx/bgfx.h"
 #include "glm/glm.hpp"
 
-#include "composite.h"
+#include "object3d.h"
 #include "fog.h"
 #include "light.h"
 
@@ -29,7 +29,7 @@
 class OtSceneClass;
 typedef std::shared_ptr<OtSceneClass> OtScene;
 
-class OtSceneClass : public OtCompositeClass {
+class OtSceneClass : public OtObject3dClass {
 public:
 	// constructor/destructor
 	OtSceneClass();

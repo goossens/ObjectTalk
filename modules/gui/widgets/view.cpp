@@ -85,7 +85,7 @@ OtType OtViewClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtTypeClass::create<OtViewClass>("View", OtComponentClass::getMeta());
+		type = OtTypeClass::create<OtViewClass>("View", OtWidgetClass::getMeta());
 		type->set("__init__", OtFunctionClass::create(&OtViewClass::init));
 		type->set("setScene", OtFunctionClass::create(&OtViewClass::setScene));
 		type->set("setCamera", OtFunctionClass::create(&OtViewClass::setCamera));

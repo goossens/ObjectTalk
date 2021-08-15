@@ -41,6 +41,17 @@ OtSceneClass::OtSceneClass() {
 
 
 //
+//	OtSceneClass::validateChild
+//
+
+void OtSceneClass::validateChild(OtComponent child) {
+	if (!child->isKindOf("Object3D")) {
+		OtExcept("A [Scene] can only have [Object3D] subclasses as children, not [%s]", child->getType()->getName().c_str());
+	}
+}
+
+
+//
 //	OtSceneClass::~OtSceneClass
 //
 
@@ -48,17 +59,6 @@ OtSceneClass::~OtSceneClass() {
 	// release resources
 	if (lightUniform.idx != bgfx::kInvalidHandle) {
 		bgfx::destroy(lightUniform);
-	}
-}
-
-
-//
-//	OtSceneClass::validateChild
-//
-
-void OtSceneClass::validateChild(OtComponent child) {
-	if (!child->isKindOf("Object3D")) {
-		OtExcept("A [Scene] can only have [Object3D] instances as children, not a [%s]", child->getType()->getName().c_str());
 	}
 }
 
@@ -156,7 +156,7 @@ OtType OtSceneClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtTypeClass::create<OtSceneClass>("Scene", OtCompositeClass::getMeta());
+		type = OtTypeClass::create<OtSceneClass>("Scene", OtObject3dClass::getMeta());
 		type->set("setFog", OtFunctionClass::create(&OtSceneClass::setFog));
 		type->set("setAmbientLight", OtFunctionClass::create(&OtSceneClass::setAmbientLight));
 		type->set("addLight", OtFunctionClass::create(&OtSceneClass::addLight));

@@ -61,9 +61,7 @@ void OtPanelClass::render() {
 
 	if (ImGui::Begin("panel", nullptr, flags)) {
 		// render all children
-		for (auto const& child : children) {
-			child->render();
-		}
+		OtWidgetClass::render();
 	}
 
 	ImGui::End();

@@ -88,7 +88,7 @@ void OtObjectClass::unset(const std::string& name) {
 //
 
 OtObject OtObjectClass::member(const std::string& name) {
-	return OtMemberReferenceClass::create(getSharedPtr(), name);
+	return OtMemberReferenceClass::create(shared(), name);
 }
 
 
@@ -96,8 +96,8 @@ OtObject OtObjectClass::member(const std::string& name) {
 //	OtObjectClass::operator ==
 //
 
-bool OtObjectClass::operator ==(OtObject operand) {
-	if (getSharedPtr().get() == operand.get()) {
+bool OtObjectClass::operator == (OtObject operand) {
+	if (shared().get() == operand.get()) {
 		return true;
 
 	} else {
@@ -110,8 +110,8 @@ bool OtObjectClass::operator ==(OtObject operand) {
 //	OtObjectClass::operator <
 //
 
-bool OtObjectClass::operator <(OtObject operand) {
-	return getSharedPtr().get() < operand.get();
+bool OtObjectClass::operator < (OtObject operand) {
+	return shared().get() < operand.get();
 }
 
 

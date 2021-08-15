@@ -12,9 +12,9 @@
 //	Include files
 //
 
-#include "component.h"
 #include "camera.h"
 #include "scene.h"
+#include "widget.h"
 
 
 //
@@ -24,7 +24,7 @@
 class OtViewClass;
 typedef std::shared_ptr<OtViewClass> OtView;
 
-class OtViewClass : public OtComponentClass {
+class OtViewClass : public OtWidgetClass {
 public:
 	// destructor
 	~OtViewClass();

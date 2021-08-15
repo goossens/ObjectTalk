@@ -57,7 +57,7 @@ OtObject OtDictClass::init(size_t count, OtObject* parameters) {
 		dict.insert(std::make_pair((std::string) *parameters[c], parameters[c + 1]));
 	}
 
-	return getSharedPtr();
+	return shared();
 }
 
 
@@ -65,7 +65,7 @@ OtObject OtDictClass::init(size_t count, OtObject* parameters) {
 //	OtDictClass::operator ==
 //
 
-bool OtDictClass::operator ==(OtObject operand) {
+bool OtDictClass::operator == (OtObject operand) {
 	OtDict op = operand->cast<OtDictClass>();
 
 	// ensure object is an dictionary

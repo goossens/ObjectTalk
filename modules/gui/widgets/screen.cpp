@@ -49,7 +49,7 @@ OtType OtScreenClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtTypeClass::create<OtScreenClass>("Screen", OtCompositeClass::getMeta());
+		type = OtTypeClass::create<OtScreenClass>("Screen", OtWidgetClass::getMeta());
 	}
 
 	return type;

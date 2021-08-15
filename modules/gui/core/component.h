@@ -24,24 +24,21 @@ typedef std::shared_ptr<OtComponentClass> OtComponent;
 
 class OtComponentClass : public OtGuiClass {
 public:
-	// set new parent
-    void setParent(OtComponent p=nullptr) { parent = p; }
-	OtComponent getParent() { return parent; }
+	// add / remove components
+	OtComponent add(OtObject object);
+	void remove(OtObject object);
+
+	// ensure specified component is allowed as a child
+	virtual void validateChild(OtComponent child);
 
 	// clear component tree
-	virtual void clear() { parent = nullptr; }
+	void clear();
 
 	// update enabled flag
 	void enable() { enabled = true; }
 	void disable() { enabled = false; }
 	void setEnabled(bool e) { enabled = e; }
 	bool isEnabled() { return enabled; }
-
-	// update state (called every frame so be carefull)
-    virtual void update() {}
-
-    // render content
-    virtual void render() {}
 
 	// get type definition
 	static OtType getMeta();
@@ -52,6 +49,9 @@ public:
 protected:
 	// parent component
 	OtComponent parent = nullptr;
+
+	// our children
+	std::vector<OtComponent> children;
 
 	// enabled flag
 	bool enabled = true;

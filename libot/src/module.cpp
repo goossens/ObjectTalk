@@ -146,7 +146,7 @@ void OtModuleClass::import(const std::string& name) {
 				OtExcept("Module [%s] does not have an [init] function", name.c_str());
 			}
 
-			(*init)(getSharedPtr());
+			(*init)(shared());
 
 		} else {
 			std::ifstream stream(module.c_str());
@@ -156,7 +156,7 @@ void OtModuleClass::import(const std::string& name) {
 
 			OtCompiler compiler;
 			OtSource source = OtSourceClass::create(name, buffer.str());
-			OtByteCode bytecode = compiler.compileModule(source, getSharedPtr()->cast<OtModuleClass>());
+			OtByteCode bytecode = compiler.compileModule(source, cast<OtModuleClass>());
 
 			OtVM::execute(bytecode);
 		}

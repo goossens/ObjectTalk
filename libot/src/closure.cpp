@@ -39,7 +39,7 @@ OtObject OtClosureClass::capture() {
 
 OtObject OtClosureClass::operator()(size_t count, OtObject* parameters) {
 	// register closure on the stack
-	OtVM::stack->pushClosure(getSharedPtr());
+	OtVM::stack->pushClosure(shared());
 
 	// execute the enclosed function
 	auto result = function->operator()(count, parameters);

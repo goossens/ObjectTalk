@@ -63,7 +63,11 @@ public:
 	virtual std::string describe() { return ""; }
 
 	// get shared pointer
-	OtObject getSharedPtr() { return shared_from_this(); }
+	OtObject shared() { return shared_from_this(); }
+
+	// get casted shared pointer
+	template <typename CLASS>
+	std::shared_ptr<CLASS> cast() { return std::dynamic_pointer_cast<CLASS>(shared_from_this()); }
 
 	// member acccess
 	virtual bool has(const std::string& name);
@@ -80,18 +84,14 @@ public:
 	virtual bool operator == (OtObject operand);
 	virtual bool operator < (OtObject operand);
 
-	bool equal(OtObject operand) { return operator ==(operand); }
-	bool notEqual(OtObject operand) { return !operator ==(operand); }
+	bool equal(OtObject operand) { return operator == (operand); }
+	bool notEqual(OtObject operand) { return !(operator == (operand)); }
 
 	// "call" object (count, parameters)
-	virtual OtObject operator()(size_t, OtObject*) { return nullptr; }
+	virtual OtObject operator () (size_t, OtObject*) { return nullptr; }
 
 	// get an object's class
 	OtClass getClass();
-
-	// cast shared pointer to specified type
-	template <typename CLASS>
-	std::shared_ptr<CLASS> cast() { return std::dynamic_pointer_cast<CLASS>(shared_from_this()); }
 
 	// get type definition
 	static OtType getMeta();

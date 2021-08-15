@@ -22,7 +22,7 @@ OtObject OtMemberReferenceClass::deref() {
 	OtObject result = object->get(member);
 
 	// never create bound functions for Model or Class members
-	if (object->isKindOf("Module") || object->isKindOf("Class")) {
+	if (object->isKindOf("Module")) { // || object->isKindOf("Class")) {
 		return result;
 
 	// create bound function if required

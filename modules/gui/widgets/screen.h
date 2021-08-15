@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include "composite.h"
+#include "widget.h"
 
 
 //
@@ -22,7 +22,7 @@
 class OtScreenClass;
 typedef std::shared_ptr<OtScreenClass> OtScreen;
 
-class OtScreenClass : public OtCompositeClass {
+class OtScreenClass : public OtWidgetClass {
 public:
 	// ensure specified component is allowed as a child
 	void validateChild(OtComponent child);

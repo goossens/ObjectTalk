@@ -97,7 +97,7 @@ OtObject OtHttpServerClass::listen(const std::string& ip, long port) {
 	});
 
 	UV_CHECK_ERROR("uv_listen", status);
-	return getSharedPtr();
+	return shared();
 }
 
 

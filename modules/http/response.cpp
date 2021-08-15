@@ -222,7 +222,7 @@ OtObject OtHttpResponseClass::end() {
 	}
 
 	responseState = COMPLETE;
-	return getSharedPtr();
+	return shared();
 }
 
 
@@ -241,7 +241,7 @@ OtObject OtHttpResponseClass::send(const std::string& text) {
 	write(text);
 	end();
 
-	return getSharedPtr();
+	return shared();
 };
 
 
@@ -257,7 +257,7 @@ OtObject OtHttpResponseClass::json(OtObject object) {
 	write(text);
 	end();
 
-	return getSharedPtr();
+	return shared();
 }
 
 
@@ -302,7 +302,7 @@ OtObject OtHttpResponseClass::sendfile(const std::string& name) {
 		UV_CHECK_ERROR("uv_fs_read", status);
 	}
 
-	return getSharedPtr();
+	return shared();
 }
 
 

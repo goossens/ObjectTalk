@@ -55,7 +55,7 @@ OtObject OtArrayClass::init(size_t count, OtObject* parameters) {
 		array.push_back(parameters[c]);
 	}
 
-	return getSharedPtr();
+	return shared();
 }
 
 
@@ -63,7 +63,7 @@ OtObject OtArrayClass::init(size_t count, OtObject* parameters) {
 //	OtArrayClass::operator ==
 //
 
-bool OtArrayClass::operator ==(OtObject operand) {
+bool OtArrayClass::operator == (OtObject operand) {
 	OtArray op = operand->cast<OtArrayClass>();
 
 	// ensure object is an array

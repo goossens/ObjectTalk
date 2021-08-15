@@ -12,9 +12,9 @@
 //	Include files
 //
 
-#include "composite.h"
-
 #include "imgui.h"
+
+#include "component.h"
 
 
 //
@@ -24,10 +24,16 @@
 class OtWidgetClass;
 typedef std::shared_ptr<OtWidgetClass> OtWidget;
 
-class OtWidgetClass : public OtCompositeClass {
+class OtWidgetClass : public OtComponentClass {
 public:
 	// ensure specified component is allowed as a child
 	void validateChild(OtComponent child);
+
+	// update state (called every frame so be carefull)
+    virtual void update();
+
+    // render content
+    virtual void render();
 
 	// get type definition
 	static OtType getMeta();

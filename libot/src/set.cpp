@@ -55,7 +55,7 @@ OtObject OtSetClass::init(size_t count, OtObject* parameters) {
 		set.insert(parameters[c]);
 	}
 
-	return getSharedPtr();
+	return shared();
 }
 
 
@@ -63,7 +63,7 @@ OtObject OtSetClass::init(size_t count, OtObject* parameters) {
 //	OtSetClass::operator ==
 //
 
-bool OtSetClass::operator ==(OtObject object) {
+bool OtSetClass::operator == (OtObject object) {
 	OtSet op = object->cast<OtSetClass>();
 
 	// ensure object is a set

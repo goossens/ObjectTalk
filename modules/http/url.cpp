@@ -27,7 +27,7 @@ OtObject OtURLClass::init(size_t count, OtObject* parameters) {
 	}
 
 	parse(parameters[0]->operator std::string());
-	return getSharedPtr();
+	return shared();
 }
 
 

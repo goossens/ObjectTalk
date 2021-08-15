@@ -20,7 +20,7 @@
 
 void OtWindowClass::validateChild(OtComponent child) {
 	if (!child->isKindOf("Widget")) {
-		OtExcept("A [Window] can only have [Widget]s as children, not [%s]", child->getType()->getName().c_str());
+		OtExcept("A [Window] can only have [Widget] subclasses as children, not [%s]", child->getType()->getName().c_str());
 	}
 }
 
@@ -35,9 +35,7 @@ void OtWindowClass::render() {
 
 	if (ImGui::Begin(title.c_str(), nullptr, flags)) {
 		// render all children
-		for (auto const& child : children) {
-			child->render();
-		}
+		OtWidgetClass::render();
 	}
 
 	ImGui::End();

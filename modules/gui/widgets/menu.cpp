@@ -32,9 +32,7 @@ void OtMenuClass::validateChild(OtComponent child) {
 void OtMenuClass::render() {
 	if (ImGui::BeginMenu(title.c_str(), enabled)) {
 		// render all children
-		for (auto const& child : children) {
-			child->render();
-		}
+		OtWidgetClass::render();
 
 		ImGui::EndMenu();
 	}
@@ -49,7 +47,7 @@ OtType OtMenuClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtTypeClass::create<OtMenuClass>("Menu", OtCompositeClass::getMeta());
+		type = OtTypeClass::create<OtMenuClass>("Menu", OtWidgetClass::getMeta());
 		type->set("__init__", OtFunctionClass::create(&OtMenuClass::init));
 		type->set("getTitle", OtFunctionClass::create(&OtMenuClass::getTitle));
 		type->set("setTitle", OtFunctionClass::create(&OtMenuClass::setTitle));

@@ -19,9 +19,9 @@
 #include "glm/ext.hpp"
 #include "bgfx/bgfx.h"
 
-#include "vertex.h"
-#include "composite.h"
+#include "component.h"
 #include "material.h"
+#include "vertex.h"
 
 
 //
@@ -31,11 +31,8 @@
 class OtObject3dClass;
 typedef std::shared_ptr<OtObject3dClass> OtObject3d;
 
-class OtObject3dClass : public OtCompositeClass {
+class OtObject3dClass : public OtComponentClass {
 public:
-	// ensure specified component is allowed as a child
-	void validateChild(OtComponent child);
-
 	// change geometry
 	void rotate(double angle, double x, double y, double z) { rotating = glm::rotate(glm::mat4(1.0), (float) angle, glm::vec3(x, y, z)); }
 	void rotateX(double angle) { rotating = glm::rotate(glm::mat4(1.0), (float) angle, glm::vec3(1.0, 0.0, 0.0)); }

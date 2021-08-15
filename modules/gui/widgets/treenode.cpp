@@ -43,10 +43,7 @@ void OtTreeNodeClass::render() {
 	int flags = ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen;
 
 	if (ImGui::TreeNodeEx(this, flags, "%s", label.c_str())) {
-		for (auto& child : children) {
-			child->render();
-		}
-
+		OtWidgetClass::render();
 		ImGui::TreePop();
 	}
 }

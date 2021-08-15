@@ -31,7 +31,7 @@ OtObject OtPathClass::init(size_t count, OtObject* parameters) {
 		}
 	}
 
-	return getSharedPtr();
+	return shared();
 }
 
 

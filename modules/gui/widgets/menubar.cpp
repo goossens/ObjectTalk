@@ -34,28 +34,16 @@ void OtMenubarClass::render() {
 	if (parent->isKindOf("Screen")) {
 		// it's a screen-level main menubar
 		if (ImGui::BeginMainMenuBar()) {
-			// capture our height
 			height = ImGui::GetWindowSize().y;
-
-			// render all children
-			for (auto const& child : children) {
-				child->render();
-			}
-
+			OtWidgetClass::render();
 			ImGui::EndMainMenuBar();
 		}
 
 	} else {
 		// it's a regular menubar
 		if (ImGui::BeginMenuBar()) {
-			// capture our height
 			height = ImGui::GetWindowSize().y;
-
-			// render all children
-			for (auto const& child : children) {
-				child->render();
-			}
-
+			OtWidgetClass::render();
 			ImGui::EndMenuBar();
 		}
 	}

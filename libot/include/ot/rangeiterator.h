@@ -30,7 +30,7 @@ public:
 	OtRangeIteratorClass(long f, long t, long i) : from(f), to(t), increment(i), index(f) {}
 
 	// start iterator
-	OtObject iterate() { return getSharedPtr(); }
+	OtObject iterate() { return shared(); }
 
 	// iteration operations
 	bool end() {

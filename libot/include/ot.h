@@ -18,6 +18,8 @@
 #include "ot/text.h"
 #include "ot/source.h"
 #include "ot/members.h"
+#include "ot/numbers.h"
+#include "ot/libuv.h"
 
 #include "ot/type.h"
 #include "ot/object.h"
@@ -42,10 +44,34 @@
 
 #include "ot/internal.h"
 #include "ot/class.h"
+#include "ot/closure.h"
+#include "ot/iterator.h"
 #include "ot/module.h"
 #include "ot/global.h"
+#include "ot/boundfunction.h"
+#include "ot/bytecodefunction.h"
+
 #include "ot/reference.h"
+#include "ot/arrayreference.h"
+#include "ot/capturereference.h"
+#include "ot/classreference.h"
+#include "ot/dictreference.h"
+#include "ot/memberreference.h"
+#include "ot/objectreference.h"
+#include "ot/stackreference.h"
+#include "ot/stringreference.h"
+
 #include "ot/iterator.h"
+#include "ot/arrayiterator.h"
+#include "ot/pathiterator.h"
+#include "ot/rangeiterator.h"
+#include "ot/setiterator.h"
+#include "ot/stringiterator.h"
+
+#include "ot/registry.h"
+#include "ot/singleton.h"
+#include "ot/stack.h"
+#include "ot/throw.h"
 
 #include "ot/bytecode.h"
 #include "ot/scanner.h"

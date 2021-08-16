@@ -19,7 +19,7 @@
 //
 
 void OtObject3dClass::render(int view, glm::mat4 parentTransform) {
-	// calculate transformation for object
+	// calculate object transformation
 	glm::mat4 t = parentTransform * translating * rotating * scaling;
 	bgfx::setTransform(glm::value_ptr(t));
 }

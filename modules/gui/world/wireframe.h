@@ -49,6 +49,9 @@ public:
 	static OtWireframe create();
 
 protected:
+	// render with culling
+	void render(int view, glm::mat4 parentTransform, int flag);
+
 	// geometry and material
 	OtGeometry geometry;
 	OtMaterial material;

@@ -19,14 +19,14 @@
 #include "imgui_impl_glfw.h"
 
 #include "application.h"
-#include "shaders.h"
+#include "imgui_shader.h"
 
 
 //
 //	Globals
 //
 
-static const bgfx::EmbeddedShader s_embeddedShaders[] = {
+static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(vs_ocornut_imgui),
 	BGFX_EMBEDDED_SHADER(fs_ocornut_imgui),
 	BGFX_EMBEDDED_SHADER_END()
@@ -72,8 +72,8 @@ void OtApplicationClass::initIMGUI() {
 	bgfx::RendererType::Enum type = bgfx::getRendererType();
 
 	imguiProgram = bgfx::createProgram(
-		bgfx::createEmbeddedShader(s_embeddedShaders, type, "vs_ocornut_imgui"),
-		bgfx::createEmbeddedShader(s_embeddedShaders, type, "fs_ocornut_imgui"),
+		bgfx::createEmbeddedShader(embeddedShaders, type, "vs_ocornut_imgui"),
+		bgfx::createEmbeddedShader(embeddedShaders, type, "fs_ocornut_imgui"),
 		true);
 
 	// setup default font

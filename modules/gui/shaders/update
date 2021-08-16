@@ -1,0 +1,57 @@
+#!/bin/bash
+
+SHADERC=~/bin/shaderc
+HOME="$(cd -P "$(dirname "${BASH_SOURCE[0]}")"; pwd)"
+
+function fakePart() {
+	if [ ! -f $1_$3.h ]
+	then
+		sed "s/$1_$2_mtl/$1_$2_$3/" <$1_mtl.h >$1_$3.h
+	fi
+}
+
+function compilerPart() {
+	case $1 in
+		vertex) EXT=vs;;
+		fragment) EXT=fs;;
+		compute) EXT=cs;;
+	esac
+
+	${SHADERC} -f $2.${EXT} -o ${EXT}_mtl.h -i ${HOME}/include --type $1 --platform osx -p metal --bin2c ${EXT}_$2_mtl
+}
+
+function compileShader() {
+	cd ${HOME}/$1
+
+	if [ -f $1.vs ]
+	then
+		compilerPart vertex $1
+		fakePart vs $1 glsl
+		fakePart vs $1 essl
+		fakePart vs $1 spv
+		fakePart vs $1 dx9
+		fakePart vs $1 dx11
+	fi
+
+	if [ -f $1.fs ]
+	then
+		compilerPart fragment $1
+		fakePart fs $1 glsl
+		fakePart fs $1 essl
+		fakePart fs $1 spv
+		fakePart fs $1 dx9
+		fakePart fs $1 dx11
+	fi
+
+	cd ${HOME}
+
+	cat $1/vs_glsl.h $1/vs_essl.h $1/vs_spv.h $1/vs_dx9.h $1/vs_dx11.h $1/vs_mtl.h >$1_shader.h
+	echo "extern const uint8_t* vs_$1_pssl;" >>$1_shader.h
+	echo "extern const uint32_t vs_$1_pssl_size;" >>$1_shader.h
+
+	cat $1/fs_glsl.h $1/fs_essl.h $1/fs_spv.h $1/fs_dx9.h $1/fs_dx11.h $1/fs_mtl.h >>$1_shader.h
+	echo "extern const uint8_t* fs_$1_pssl;" >>$1_shader.h
+	echo "extern const uint32_t fs_$1_pssl_size;" >>$1_shader.h
+}
+
+compileShader mesh

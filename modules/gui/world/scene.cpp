@@ -41,17 +41,6 @@ OtSceneClass::OtSceneClass() {
 
 
 //
-//	OtSceneClass::validateChild
-//
-
-void OtSceneClass::validateChild(OtComponent child) {
-	if (!child->isKindOf("Object3D")) {
-		OtExcept("A [Scene] can only have [Object3D] subclasses as children, not [%s]", child->getType()->getName().c_str());
-	}
-}
-
-
-//
 //	OtSceneClass::~OtSceneClass
 //
 
@@ -59,6 +48,17 @@ OtSceneClass::~OtSceneClass() {
 	// release resources
 	if (lightUniform.idx != bgfx::kInvalidHandle) {
 		bgfx::destroy(lightUniform);
+	}
+}
+
+
+//
+//	OtSceneClass::validateChild
+//
+
+void OtSceneClass::validateChild(OtComponent child) {
+	if (!child->isKindOf("Object3D")) {
+		OtExcept("A [Scene] can only have [Object3D] subclasses as children, not [%s]", child->getType()->getName().c_str());
 	}
 }
 

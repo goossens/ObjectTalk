@@ -13,6 +13,7 @@
 
 #include "ot/function.h"
 
+#include "color.h"
 #include "fog.h"
 
 
@@ -42,11 +43,29 @@ OtFogClass::~OtFogClass() {
 //	OtFogClass::init
 //
 
-void OtFogClass::init(bool a, double r, double g, double b, double n, double f) {
-	active = a;
-	color = glm::vec4(r, g, b, 1.0);
-	near = n;
-	far = f;
+OtObject OtFogClass::init(size_t count, OtObject* parameters) {
+	// set attributes
+	if (count) {
+		switch (count) {
+			case 4:
+				far = parameters[3]->operator double();
+
+			case 3:
+				near = parameters[2]->operator double();
+
+			case 2:
+				color = OtColorParseToVec4(parameters[1]->operator std::string());
+
+			case 1:
+				active = parameters[0]->operator bool();
+				break;
+
+			default:
+				OtExcept("Too many parameters [%ld] for [Fog] contructor (max 4)", count);
+		}
+	}
+
+	return nullptr;
 }
 
 

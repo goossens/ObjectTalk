@@ -36,7 +36,7 @@ public:
 	~OtFogClass();
 
 	// initialize fog
-	void init(bool active, double red, double green, double blue, double near, double far);
+	OtObject init(size_t count, OtObject* parameters);
 
 	// GUI to change fog parameters
 	void renderGUI();
@@ -53,9 +53,9 @@ public:
 private:
 	// fog properties
 	bool active = false;
-	glm::vec4 color;
-	float near;
-	float far;
+	glm::vec4 color = glm::vec4(1.0);
+	float near = 0;
+	float far = 100;
 
 	// to pass information to shaders
 	bgfx::UniformHandle fogUniform = BGFX_INVALID_HANDLE;

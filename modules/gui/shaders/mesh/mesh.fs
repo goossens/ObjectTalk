@@ -6,39 +6,11 @@
 
 $input v_position, v_normal, v_texcoord0, v_color0
 
-#include <bgfx_shader.sh>
+#include <bgfx.glsl>
 
-// fog uniforms
-uniform vec4 u_fog[2];
-#define u_fog_enabled u_fog[0].x // in camera space
-#define u_fog_near u_fog[0].y
-#define u_fog_far u_fog[0].z
-#define u_fog_color u_fog[1]
-
-// light uniforms
-
-#define LIGHTS 3
-#define SLOTS_PER_LIGHT 4
-
-uniform vec4 u_light[LIGHTS * SLOTS_PER_LIGHT + 1];
-#define u_light_ambient u_light[0]
-#define u_light_on(l) u_light[SLOTS_PER_LIGHT * l + 1].x
-#define u_light_type(l) u_light[SLOTS_PER_LIGHT * l +1].y
-#define u_light_position(l) u_light[SLOTS_PER_LIGHT * l + 2] // in camera space
-#define u_light_diffuse(l) u_light[SLOTS_PER_LIGHT * l + 3]
-#define u_light_specular(l) u_light[SLOTS_PER_LIGHT * l + 4]
-
-// material uniforms
-uniform vec4 u_material[4];
-#define u_material_ambient u_material[0]
-#define u_material_diffuse u_material[1]
-#define u_material_specular u_material[2]
-#define u_material_raw u_material[3].x
-#define u_material_textured u_material[3].y
-#define u_material_shininess u_material[3].z
-
-// textures
-SAMPLER2D(s_texture, 0);
+#include <fog.glsl>
+#include <light.glsl>
+#include <material.glsl>
 
 // Process a light
 vec4 processLight(int light, vec3 position, vec3 normal, vec4 material_diffuse, vec4 material_specular) {
@@ -95,11 +67,7 @@ void main() {
 		}
 
 		// handle fog
-		if (int(u_fog_enabled)) {
-			float distance = abs(length(v_position.xyz));
-			float fog_factor = (u_fog_far - distance) / (u_fog_far - u_fog_near);
-			color = mix(u_fog_color, color, clamp(fog_factor, 0.0, 1.0));
-		}
+		color = processFog(color, v_position);
 	}
 
 	// return fragment color

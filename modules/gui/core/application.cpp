@@ -150,7 +150,7 @@ void OtApplicationClass::render() {
 	frameBGFX();
 	frameIMGUI();
 
-	// update an render all widgets
+	// update and render all elements
 	screen->update();
 	screen->render();
 

@@ -30,7 +30,7 @@ class OtCameraClass : public OtGuiClass {
 
 public:
 	// initialize camera
-	void init(double x, double y, double z, double dx, double dy, double dz, double ux, double uy, double uz);
+	OtObject init(size_t count, OtObject* parameters);
 
 	// change camera geometry
 	void setPosition(double x, double y, double z) { cameraPos = glm::vec3(x, y, z); }

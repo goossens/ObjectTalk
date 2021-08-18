@@ -22,10 +22,26 @@
 //	OtCameraClass::init
 //
 
-void OtCameraClass::init(double x, double y, double z, double dx, double dy, double dz, double ux, double uy, double uz) {
-	setPosition(x, y, z);
-	setDirection(dx, dy, dz);
-	setUp(ux, uy, uz);
+OtObject OtCameraClass::init(size_t count, OtObject* parameters) {
+	// set attributes
+	if (count) {
+		switch (count) {
+			case 3:
+				farClip = parameters[2]->operator double();
+
+			case 2:
+				nearClip = parameters[1]->operator double();
+
+			case 1:
+				fov = parameters[0]->operator double();
+				break;
+
+			default:
+				OtExcept("Too many parameters [%ld] for [Camera] contructor (max 3)", count);
+		}
+	}
+
+	return nullptr;
 }
 
 

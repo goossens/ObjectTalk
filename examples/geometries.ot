@@ -21,7 +21,9 @@ var geometries = [
 
 var textures = {
 	"earth" : "texture:" + __DIR__ + "/assets/earth.png",
-	"moon" : "texture:" + __DIR__ + "/assets/moon.png"
+	"moon" : "texture:" + __DIR__ + "/assets/moon.png",
+	"grass" : "texture:" + __DIR__ + "/assets/grass.jpg",
+	"uvmap" : "texture:" + __DIR__ + "/assets/uv.jpg"
 };
 
 var materials = gui.getDefaultMaterials().merge(textures.keys());
@@ -52,7 +54,9 @@ class MyApp : gui.Application {
 	}
 
 	function createView(this, screen) {
-		this.camera = gui.Camera(0, 40, 40, 0, -5, -10, 0, 1, 0);
+		this.camera = gui.Camera();
+		this.camera.setPosition(0, 40, 40);
+		this.camera.setDirection(0, -5, -10);
 
 		var view = screen.add(gui.View(1, 30, 0, 70, 100));
 		view.setCamera(this.camera);
@@ -66,6 +70,7 @@ class MyApp : gui.Application {
 
 		// create a scene with grid and geometry renderers
 		var scene = gui.Scene();
+
 		this.grid = scene.add(gui.Wireframe(gui.Grid(), gui.Material("vertex")));
 		this.mesh = scene.add(gui.Mesh(this.geometry, this.material));
 		this.wireframe = scene.add(gui.Wireframe(this.geometry, this.material));
@@ -82,7 +87,7 @@ class MyApp : gui.Application {
 		scene.addLight(gui.Light(true, 25, 25, 40, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8));
 
 		// add default fog
-		this.fog = gui.Fog(false, 0.5, 0.5, 0.5, 0, 100);
+		this.fog = gui.Fog(false, "#808080", 0, 100);
 		scene.setFog(this.fog);
 
 		// return new scene

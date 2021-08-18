@@ -24,8 +24,9 @@ typedef std::shared_ptr<OtPlaneClass> OtPlane;
 
 class OtPlaneClass : public OtGeometryClass {
 public:
-	// constructor
+	// constructors
 	OtPlaneClass();
+	OtPlaneClass(double width, double height);
 
 	// initialize geometry
 	OtObject init(size_t count, OtObject* parameters);
@@ -35,6 +36,7 @@ public:
 
 	// create a new object
 	static OtPlane create();
+	static OtPlane create(double width, double height);
 
 private:
 	// create vertices

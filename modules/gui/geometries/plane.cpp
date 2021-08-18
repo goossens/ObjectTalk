@@ -22,6 +22,12 @@ OtPlaneClass::OtPlaneClass() {
 	createTriangles();
 }
 
+OtPlaneClass::OtPlaneClass(double w, double h) {
+	width = w;
+	height = h;
+	createTriangles();
+}
+
 
 //
 //	OtPlaneClass::init
@@ -59,7 +65,7 @@ void OtPlaneClass::createTriangles() {
 
 	// add vertices
 	double w = width / 2.0;
-	double h = height / 2;
+	double h = height / 2.0;
 	glm::vec3 normal = glm::vec3(0.0, 0.0, 1.0);
 
 	addVertex(OtVertex(glm::vec3(-w, h, 0.0), normal, glm::vec2(0.0, 0.0)));
@@ -95,6 +101,12 @@ OtType OtPlaneClass::getMeta() {
 
 OtPlane OtPlaneClass::create() {
 	OtPlane plane = std::make_shared<OtPlaneClass>();
+	plane->setType(getMeta());
+	return plane;
+}
+
+OtPlane OtPlaneClass::create(double width, double height) {
+	OtPlane plane = std::make_shared<OtPlaneClass>(width, height);
 	plane->setType(getMeta());
 	return plane;
 }

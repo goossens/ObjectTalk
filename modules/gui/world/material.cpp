@@ -65,6 +65,7 @@ static OtMaterialProperties materials[] = {
 OtMaterialClass::OtMaterialClass() {
 	// register uniforms
 	materialUniform = bgfx::createUniform("u_material", bgfx::UniformType::Vec4, 4);
+	transformUniform = bgfx::createUniform("u_uv_transform", bgfx::UniformType::Mat3);
 	textureUniform = bgfx::createUniform("s_texture", bgfx::UniformType::Sampler);
 
 	// create a dummy texture
@@ -84,6 +85,10 @@ OtMaterialClass::~OtMaterialClass() {
 	// release resources
 	if (materialUniform.idx != bgfx::kInvalidHandle) {
 		bgfx::destroy(materialUniform);
+	}
+
+	if (transformUniform.idx != bgfx::kInvalidHandle) {
+		bgfx::destroy(transformUniform);
 	}
 
 	if (textureUniform.idx != bgfx::kInvalidHandle) {
@@ -150,6 +155,13 @@ void OtMaterialClass::init(const std::string& name) {
 			OtExcept("Invalid texture format in [%s]", file.c_str());
 		}
 
+	} else if (name.rfind("color:", 0) == 0) {
+		// parse CSS style color
+		glm::vec3 color = OtColorParseToVec3(name.substr(6));
+		ambient = color * 0.4f;
+		diffuse = color * 0.6f;
+		specular = color * 0.4f;
+
 	} else {
 		// try to find named material
 		for (const auto& material : materials) {
@@ -168,6 +180,22 @@ void OtMaterialClass::init(const std::string& name) {
 
 
 //
+//	OtMaterialClass::setUvTransform
+//
+
+void OtMaterialClass::setUvTransform(double ox, double oy, double rx, double ry, double r, double cx, double cy) {
+	// specifiy a new UV coordinate transformation matrix
+	auto c = std::cos(r);
+	auto s = std::sin(r);
+
+	uvTransform = glm::mat3(
+		rx * c, rx * s, -rx * (c * cx + s * cy) + cx + ox,
+		-ry * s, ry * c, -ry * (-s * cx + c * cy) + cy + oy,
+		0.0, 0.0, 1.0
+	);
+}
+
+//
 //	OtMaterialClass::submit
 //
 
@@ -182,6 +210,10 @@ void OtMaterialClass::submit(int view) {
 	uniforms[3].z = shininess;
 	bgfx::setUniform(materialUniform, &uniforms, 4);
 
+	// pass UV transformation
+	bgfx::setUniform(transformUniform, &uvTransform);
+
+	// pass texture
 	if (texture.idx != bgfx::kInvalidHandle) {
 		bgfx::setTexture(0, textureUniform, texture);
 
@@ -211,6 +243,8 @@ OtType OtMaterialClass::getMeta() {
 
 		type->set("setShininess", OtFunctionClass::create(&OtMaterialClass::setShininess));
 		type->set("setTransparency", OtFunctionClass::create(&OtMaterialClass::setTransparency));
+
+		type->set("setUvTransform", OtFunctionClass::create(&OtMaterialClass::setUvTransform));
 	}
 
 	return type;

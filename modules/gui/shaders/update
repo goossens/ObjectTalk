@@ -54,4 +54,5 @@ function compileShader() {
 	echo "extern const uint32_t fs_$1_pssl_size;" >>$1_shader.h
 }
 
+compileShader background
 compileShader mesh

@@ -47,6 +47,13 @@ public:
 	void setShininess(double s) { shininess = s; }
 	void setTransparency(double t) { transparency = t; }
 
+	// set UV transformation
+	void setUvTransform(
+		double offsetX, double offsetY,
+		double repeatX, double repeatY,
+		double rotation,
+		double centerX, double centerY);
+
 	// submit shader data to BGFX
 	virtual void submit(int view);
 
@@ -64,12 +71,15 @@ private:
 	// material properties
 	bool vertex = false;
 	glm::vec3 ambient = { 0.4, 0.4, 0.4 };
-	glm::vec3 diffuse = { 0.8, 0.8, 0.8 };
+	glm::vec3 diffuse = { 0.6, 0.6, 0.6 };
 	glm::vec3 specular = { 0.4, 0.4, 0.4 };
 	double shininess = 20;
 	double transparency = 1.0;
 
+	glm::mat3 uvTransform = glm::mat3(1.0);
+
 	bgfx::UniformHandle materialUniform = BGFX_INVALID_HANDLE;
+	bgfx::UniformHandle transformUniform = BGFX_INVALID_HANDLE;
 
 	// our texture (if required)
 	bgfx::UniformHandle textureUniform = BGFX_INVALID_HANDLE;

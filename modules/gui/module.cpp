@@ -27,6 +27,7 @@
 #include "scene.h"
 
 #include "object3d.h"
+#include "background.h"
 #include "mesh.h"
 #include "wireframe.h"
 #include "material.h"
@@ -77,6 +78,7 @@ extern "C" void init(OtModule module) {
 	module->set("Scene", OtClassClass::create(OtSceneClass::getMeta()));
 
 	module->set("Object3D", OtClassClass::create(OtObject3dClass::getMeta()));
+	module->set("Background", OtClassClass::create(OtBackgroundClass::getMeta()));
 	module->set("Mesh", OtClassClass::create(OtMeshClass::getMeta()));
 	module->set("Wireframe", OtClassClass::create(OtWireframeClass::getMeta()));
 	module->set("Material", OtClassClass::create(OtMaterialClass::getMeta()));

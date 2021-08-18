@@ -1,0 +1,64 @@
+#!/usr/local/bin/ot
+
+//	ObjectTalk Scripting Language
+//	Copyright (c) 2020-2021 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var gui = import("gui");
+
+var skyColor = "#cce0ff";
+
+// define our application
+class MyApp : gui.Application {
+	function __init__(this) {
+	}
+
+	function setup(this, screen) {
+		// create view and scene
+		this.scene = this.createScene();
+		this.createView(screen).setScene(this.scene);
+
+		// create control panel
+		// this.createPanel(screen);
+	}
+
+	function update(this) {
+	}
+
+	function createView(this, screen) {
+		this.camera = gui.Camera();
+		this.camera.setPosition(0, 20, 50);
+
+		var view = screen.add(gui.View(1, 30, 0, 70, 100));
+		view.setCamera(this.camera);
+		return view;
+	}
+
+	function createScene(this) {
+		// create scene
+		var scene = gui.Scene();
+		scene.add(gui.Background(gui.Material("color:" + skyColor)));
+
+		var grass = gui.Material("texture:" + __DIR__ + "/assets/grass.jpg");
+		grass.setUvTransform(0, 0, 5, 5, 0, 0, 0);
+
+		this.grass = scene.add(gui.Mesh(gui.Plane(150, 150), grass));
+		this.grass.rotateX(-pi / 2.0);
+
+		// add default fog
+		this.fog = gui.Fog(true, skyColor, 30, 100);
+		scene.setFog(this.fog);
+
+		// return new scene
+		return scene;
+	}
+
+	function createPanel(this, screen) {
+	}
+}
+
+// instantiate application and run it
+var app = MyApp();
+app.run("Cloth Demonstration");

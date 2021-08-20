@@ -139,9 +139,9 @@ double OtOSClass::uptime() {
 
 std::string OtOSClass::hostname() {
 	char hostname[UV_MAXHOSTNAMESIZE];
-	size_t length;
+	size_t length = UV_MAXHOSTNAMESIZE;
 	auto status = uv_os_gethostname(hostname, &length);
-	UV_CHECK_ERROR("uv_uptime", status);
+	UV_CHECK_ERROR("uv_os_gethostname", status);
 	return std::string(hostname, length);
 }
 

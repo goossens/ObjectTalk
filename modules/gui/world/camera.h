@@ -60,8 +60,8 @@ private:
 
 	// field-of-view and clipping
 	float fov = 60.0;
-	float nearClip = 0.1;
-	float farClip = 100;
+	float nearClip = 1.0;
+	float farClip = 1000.0;
 
 	// transformation matrices;
 	glm::mat4 viewMatrix;

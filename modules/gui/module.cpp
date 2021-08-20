@@ -28,6 +28,7 @@
 
 #include "object3d.h"
 #include "background.h"
+#include "skybox.h"
 #include "mesh.h"
 #include "wireframe.h"
 #include "material.h"
@@ -79,6 +80,7 @@ extern "C" void init(OtModule module) {
 
 	module->set("Object3D", OtClassClass::create(OtObject3dClass::getMeta()));
 	module->set("Background", OtClassClass::create(OtBackgroundClass::getMeta()));
+	module->set("Skybox", OtClassClass::create(OtSkyboxClass::getMeta()));
 	module->set("Mesh", OtClassClass::create(OtMeshClass::getMeta()));
 	module->set("Wireframe", OtClassClass::create(OtWireframeClass::getMeta()));
 	module->set("Material", OtClassClass::create(OtMaterialClass::getMeta()));
@@ -123,7 +125,22 @@ extern "C" void init(OtModule module) {
 	module->set("windowUnsavedDocument", OtIntegerClass::create(ImGuiWindowFlags_UnsavedDocument));
 	module->set("windowNoNav", OtIntegerClass::create(ImGuiWindowFlags_NoNav));
 	module->set("windowNoDecoration", OtIntegerClass::create(ImGuiWindowFlags_NoDecoration));
-	module->set("windowNoInputs", OtIntegerClass::create(ImGuiWindowFlags_NoInputs));
+
+	module->set("keyLeft", OtIntegerClass::create(GLFW_KEY_LEFT));
+	module->set("keyRight", OtIntegerClass::create(GLFW_KEY_RIGHT));
+	module->set("keyUp", OtIntegerClass::create(GLFW_KEY_UP));
+	module->set("keyDown", OtIntegerClass::create(GLFW_KEY_DOWN));
+	module->set("keyPageUp", OtIntegerClass::create(GLFW_KEY_PAGE_UP));
+	module->set("keyPageDown", OtIntegerClass::create(GLFW_KEY_PAGE_DOWN));
+	module->set("keyHome", OtIntegerClass::create(GLFW_KEY_HOME));
+	module->set("keyEnd", OtIntegerClass::create(GLFW_KEY_END));
+
+	module->set("keyModShift", OtIntegerClass::create(GLFW_MOD_SHIFT));
+	module->set("keyModCtrl", OtIntegerClass::create(GLFW_MOD_CONTROL));
+	module->set("keyModAlt", OtIntegerClass::create(GLFW_MOD_ALT));
+	module->set("keyModSuper", OtIntegerClass::create(GLFW_MOD_SUPER));
+	module->set("keyModCapsLock", OtIntegerClass::create(GLFW_MOD_CAPS_LOCK));
+	module->set("keyModNumLock", OtIntegerClass::create(GLFW_MOD_NUM_LOCK));
 
 	module->set("TreeNode", OtClassClass::create(OtTreeNodeClass::getMeta()));
 	module->set("Label", OtClassClass::create(OtLabelClass::getMeta()));

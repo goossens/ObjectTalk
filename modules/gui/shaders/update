@@ -4,7 +4,7 @@ SHADERC=~/bin/shaderc
 HOME="$(cd -P "$(dirname "${BASH_SOURCE[0]}")"; pwd)"
 
 function fakePart() {
-	if [ ! -f $1_$3.h ]
+	if [ -f $1_mtl.h -a ! -f $1_$3.h ]
 	then
 		sed "s/$1_$2_mtl/$1_$2_$3/" <$1_mtl.h >$1_$3.h
 	fi
@@ -56,3 +56,4 @@ function compileShader() {
 
 compileShader background
 compileShader mesh
+compileShader skybox

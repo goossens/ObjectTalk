@@ -65,11 +65,14 @@ public:
 	double negate() { return -value; }
 	double positive() { return value; }
 	double abs() { return std::abs(value); }
-	long sign() { return (0.0 < value) - (value < .00); }
+	long sign() { return (0.0 < value) - (value < 0.0); }
 	long round() { return std::round(value); }
 	long ceil() { return std::ceil(value); }
 	long floor() { return std::floor(value); }
 	long trunc() { return std::trunc(value); }
+	double min(double operand) { return std::min(value, operand); }
+	double max(double operand) { return std::max(value, operand); }
+	double clamp(double min, double max) { return std::max(std::min(max, value), min); }
 
 	double sin() { return std::sin(value); }
 	double cos() { return std::cos(value); }

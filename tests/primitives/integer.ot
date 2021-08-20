@@ -63,3 +63,21 @@ assert(-11.sign() == -1);
 assert(0.sign() == 0);
 assert(11.sign() == 1);
 assert(3.real() > 2.9);
+
+assert(3.min(2) == 2);
+assert(3.min(4) == 3);
+assert(-3.min(-2) == -3);
+assert(-3.min(-4) == -4);
+
+assert(3.max(2) == 3);
+assert(3.max(4) == 4);
+assert(-3.max(-2) == -2);
+assert(-3.max(-4) == -3);
+
+assert(5.clamp(1, 9) == 5);
+assert(5.clamp(1, 4) == 4);
+assert(5.clamp(7, 9) == 7);
+
+assert(-5.clamp(-9, -1) == -5);
+assert(-5.clamp(-9, -7) == -7);
+assert(-5.clamp(-4, -1) == -4);

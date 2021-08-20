@@ -78,6 +78,9 @@ public:
 	long positive() { return value; }
 	long abs() { return std::abs(value); }
 	long sign() { return (0 < value) - (value < 0); }
+	long min(long operand) { return std::min(value, operand); }
+	long max(long operand) { return std::max(value, operand); }
+	long clamp(long min, long max) { return std::max(std::min(max, value), min); }
 
 	// get type definition
 	static OtType getMeta();

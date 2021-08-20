@@ -64,6 +64,9 @@ OtType OtRealClass::getMeta() {
 		type->set("ceil", OtFunctionClass::create(&OtRealClass::ceil));
 		type->set("floor", OtFunctionClass::create(&OtRealClass::floor));
 		type->set("trunc", OtFunctionClass::create(&OtRealClass::trunc));
+		type->set("min", OtFunctionClass::create(&OtRealClass::min));
+		type->set("max", OtFunctionClass::create(&OtRealClass::max));
+		type->set("clamp", OtFunctionClass::create(&OtRealClass::clamp));
 
 		type->set("sin", OtFunctionClass::create(&OtRealClass::sin));
 		type->set("cos", OtFunctionClass::create(&OtRealClass::cos));

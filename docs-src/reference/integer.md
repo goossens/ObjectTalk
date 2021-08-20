@@ -28,6 +28,9 @@ meaning that the extremes are -9,223,372,036,854,775,808 and
 | \_\_neg__() | Perform a unary negation of object's value and return result. This member function is called when you use the **unary negation** (-) operator. |
 | abs() | Return absolute value of object's value.
 | sign() | Return sign (-1, 0 or 1) of object's value.
+| min(integer) | Return the minimum of integer and the object's value.
+| max(integer) | Return the maximum of integer and the object's value.
+| clamp(min, max) | Return clamped value between min and max.
 
 **Overrides**
 

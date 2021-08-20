@@ -9,9 +9,6 @@
 //	Include files
 //
 
-#import <QuartzCore/CAMetalLayer.h>
-#import <Metal/Metal.h>
-#import <MetalKit/MetalKit.h>
 #import <Cocoa/Cocoa.h>
 
 #include "application.h"

@@ -98,13 +98,24 @@ void OtApplicationClass::frameIMGUI() {
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 	// ImGui::ShowDemoWindow();
+}
 
-	// check for app level events
-	ImGuiIO& io = ImGui::GetIO();
 
-	if (!io.WantCaptureKeyboard) {
+//
+//	OtApplicationClass::mouseIMGUI
+//
 
-	}
+bool OtApplicationClass::mouseIMGUI() {
+	return ImGui::GetIO().WantCaptureMouse;
+}
+
+
+//
+//	OtApplicationClass::keyboardIMGUI
+//
+
+bool OtApplicationClass::keyboardIMGUI() {
+	return ImGui::GetIO().WantCaptureKeyboard;
 }
 
 

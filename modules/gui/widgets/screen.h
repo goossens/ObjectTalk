@@ -30,6 +30,12 @@ public:
 	// get menubar height
 	size_t getMenubarHeight();
 
+	// mouse and keyboard events
+	void onMouseButton(int button, int action, int mods, double xpos, double ypos);
+	void onMouseMove(int button, double xpos, double ypos);
+	void onKey(int key, int mods);
+	void onChar(unsigned int codepoint);
+
 	// get type definition
 	static OtType getMeta();
 

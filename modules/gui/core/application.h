@@ -36,6 +36,12 @@ public:
 	// run the application
 	void run(const std::string& name);
 
+	// mouse and keyboard events
+	void onMouseButton(int button, int action, int mods, double xpos, double ypos);
+	void onMouseMove(int button, double xpos, double ypos);
+	void onKey(int key, int scancode, int action, int mods);
+	void onChar(unsigned int codepoint);
+
 	// animate a parameter
 	static void animate(double* value, double delay, double length, double start, double end);
 
@@ -73,6 +79,8 @@ private:
 
 	void initIMGUI();
 	void frameIMGUI();
+	bool mouseIMGUI();
+	bool keyboardIMGUI();
 	void renderIMGUI();
 	void endIMGUI();
 

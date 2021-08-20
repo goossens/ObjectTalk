@@ -41,6 +41,12 @@ public:
 	// render content
 	void render();
 
+	// mouse and keyboard events
+	void onMouseButton(int button, int action, int mods, double xpos, double ypos);
+	void onMouseMove(int button, double xpos, double ypos);
+	void onKey(int key, int mods);
+	void onChar(unsigned int codepoint);
+
 	// get type definition
 	static OtType getMeta();
 
@@ -62,4 +68,8 @@ protected:
 	float y = 0;
 	float w = 100;
 	float h = 100;
+
+	// old mouse postion for drag operation
+	double xold = 0.0;
+	double yold = 0.0;
 };

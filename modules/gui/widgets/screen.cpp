@@ -13,6 +13,7 @@
 
 #include "screen.h"
 #include "menubar.h"
+#include "view.h"
 
 
 //
@@ -38,6 +39,58 @@ size_t OtScreenClass::getMenubarHeight() {
 	}
 
 	return 0;
+}
+
+
+//
+//	OtScreenClass::onMouseButton
+//
+
+void OtScreenClass::onMouseButton(int button, int action, int mods, double xpos, double ypos) {
+	for (auto& child: children) {
+		if (child->isKindOf("View")) {
+			child->cast<OtViewClass>()->onMouseButton(button, action, mods, xpos, ypos);
+		}
+	}
+}
+
+
+//
+//	OtScreenClass::onMouseMove
+//
+
+void OtScreenClass::onMouseMove(int button, double xpos, double ypos) {
+	for (auto& child: children) {
+		if (child->isKindOf("View")) {
+			child->cast<OtViewClass>()->onMouseMove(button, xpos, ypos);
+		}
+	}
+}
+
+
+//
+//	OtScreenClass::onKey
+//
+
+void OtScreenClass::onKey(int key, int mods) {
+	for (auto& child: children) {
+		if (child->isKindOf("View")) {
+			child->cast<OtViewClass>()->onKey(key, mods);
+		}
+	}
+}
+
+
+//
+//	OtScreenClass::onChar
+//
+
+void OtScreenClass::onChar(unsigned int codepoint) {
+	for (auto& child: children) {
+		if (child->isKindOf("View")) {
+			child->cast<OtViewClass>()->onChar(codepoint);
+		}
+	}
 }
 
 

@@ -161,6 +161,54 @@ void OtApplicationClass::render() {
 
 
 //
+//	OtApplicationClass::onMouseButton
+//
+
+void OtApplicationClass::onMouseButton(int button, int action, int mods, double xpos, double ypos) {
+	// see if IMGUI wants the mouse event
+	if (!mouseIMGUI()) {
+		screen->onMouseButton(button, action, mods, xpos, ypos);
+	}
+}
+
+
+//
+//	OtApplicationClass::onMouseMove
+//
+
+void OtApplicationClass::onMouseMove(int button, double xpos, double ypos) {
+	// see if IMGUI wants the mouse event
+	if (!mouseIMGUI()) {
+		screen->onMouseMove(button, xpos, ypos);
+	}
+}
+
+
+//
+//	OtApplicationClass::onKey
+//
+
+void OtApplicationClass::onKey(int key, int scancode, int action, int mods) {
+	// see if IMGUI wants the keyboard event
+	if (!keyboardIMGUI() && action != GLFW_RELEASE) {
+		screen->onKey(key, mods);
+	}
+}
+
+
+//
+//	OtApplicationClass::onChar
+//
+
+void OtApplicationClass::onChar(unsigned int codepoint) {
+	// see if IMGUI wants the keyboard event
+	if (!keyboardIMGUI()) {
+		screen->onChar(codepoint);
+	}
+}
+
+
+//
 //	OtApplicationClass::animate
 //
 

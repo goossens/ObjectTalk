@@ -10,6 +10,7 @@
 //
 
 #include "ot/exception.h"
+#include "ot/function.h"
 
 #include "application.h"
 
@@ -53,21 +54,35 @@ void OtApplicationClass::initGLFW(const std::string& name) {
 	// setup mouse button callback
 	glfwSetMouseButtonCallback(window, [](GLFWwindow* window, int button, int action, int mods) {
 		OtApplicationClass* app = (OtApplicationClass*) glfwGetWindowUserPointer(window);
-		ImGuiIO& io = ImGui::GetIO();
+		double xpos, ypos;
+		glfwGetCursorPos(window, &xpos, &ypos);
+		app->onMouseButton(button, action, mods, xpos, ypos);
+	});
 
-		if (!io.WantCaptureMouse) {
-			OT_DEBUG(button);
+	// setup mouse move callback
+	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) {
+		OtApplicationClass* app = (OtApplicationClass*) glfwGetWindowUserPointer(window);
+		int button = -1;
+
+		for (auto b = 0; button == -1 && b < 3; b++) {
+			if (glfwGetMouseButton(window, b) == GLFW_PRESS) {
+				button = b;
+			}
 		}
+
+		app->onMouseMove(button, xpos, ypos);
 	});
 
 	// set keyboard callback
 	glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
 		OtApplicationClass* app = (OtApplicationClass*) glfwGetWindowUserPointer(window);
-		ImGuiIO& io = ImGui::GetIO();
+		app->onKey(key, scancode, action, mods);
+	});
 
-		if (!io.WantCaptureKeyboard) {
-			OT_DEBUG(key);
-		}
+	// set character callback
+	glfwSetCharCallback(window, [](GLFWwindow* window, unsigned int codepoint) {
+		OtApplicationClass* app = (OtApplicationClass*) glfwGetWindowUserPointer(window);
+		app->onChar(codepoint);
 	});
 
 	// start time tracking

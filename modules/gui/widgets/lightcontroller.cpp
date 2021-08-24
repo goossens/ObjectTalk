@@ -19,11 +19,11 @@
 //
 
 void OtLightControllerClass::init(OtObject object) {
-	if (!object->isKindOf("Scene")) {
-		OtExcept("Expected a [Scene] object, not a [%s]", object->getType()->getName().c_str());
+	if (!object->isKindOf("Light")) {
+		OtExcept("Expected a [Light] object, not a [%s]", object->getType()->getName().c_str());
 	}
 
-	scene = object->cast<OtSceneClass>();
+	light = object->cast<OtLightClass>();
 }
 
 
@@ -32,7 +32,7 @@ void OtLightControllerClass::init(OtObject object) {
 //
 
 void OtLightControllerClass::render() {
-	scene->renderLightGUI();
+	light->renderGUI();
 }
 
 

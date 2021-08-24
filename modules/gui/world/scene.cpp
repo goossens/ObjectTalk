@@ -14,6 +14,9 @@
 #include "ot/numbers.h"
 #include "ot/function.h"
 
+#include "ambient.h"
+#include "fog.h"
+#include "light.h"
 #include "object3d.h"
 #include "scene.h"
 
@@ -22,9 +25,9 @@
 //	Constants
 //
 
-#define LIGHTS 3
+#define LIGHTS 4
 #define SLOTS_PER_LIGHT 4
-#define TOTAL_SLOTS (LIGHTS * SLOTS_PER_LIGHT + 1)
+#define TOTAL_SLOTS (LIGHTS * SLOTS_PER_LIGHT + 3)
 
 
 //
@@ -34,9 +37,6 @@
 OtSceneClass::OtSceneClass() {
 	// register uniform
 	lightUniform = bgfx::createUniform("u_light", bgfx::UniformType::Vec4, TOTAL_SLOTS);
-
-	// create default fog
-	fog = OtFogClass::create();
 }
 
 
@@ -46,9 +46,7 @@ OtSceneClass::OtSceneClass() {
 
 OtSceneClass::~OtSceneClass() {
 	// release resources
-	if (lightUniform.idx != bgfx::kInvalidHandle) {
-		bgfx::destroy(lightUniform);
-	}
+	bgfx::destroy(lightUniform);
 }
 
 
@@ -57,64 +55,8 @@ OtSceneClass::~OtSceneClass() {
 //
 
 void OtSceneClass::validateChild(OtComponent child) {
-	if (!child->isKindOf("Object3D")) {
-		OtExcept("A [Scene] can only have [Object3D] subclasses as children, not [%s]", child->getType()->getName().c_str());
-	}
-}
-
-
-//
-//	OtSceneClass::setFog
-//
-
-void OtSceneClass::setFog(OtObject fg) {
-	// ensure object is fog
-	if (fg->isKindOf("Fog")) {
-		fog = fg->cast<OtFogClass>();
-
-	} else {
-		OtExcept("Expected a [Fog] object, not a [%s]", fg->getType()->getName().c_str());
-	}
-}
-
-
-//
-//	OtSceneClass::addLight
-//
-
-void OtSceneClass::addLight(OtObject light) {
-	// sanity check
-	if (lights.size() >= LIGHTS) {
-		OtExcept("Too many point/spot lights in scene (max %d)", LIGHTS);
-	}
-
-	// ensure object is a light
-	if (light->isKindOf("Light")) {
-		lights.push_back(light->cast<OtLightClass>());
-
-	} else {
-		OtExcept("Expected a [Light] object, not a [%s]", light->getType()->getName().c_str());
-	}
-}
-
-
-//
-//	OtSceneClass::renderLightGUI
-//
-
-void OtSceneClass::renderLightGUI() {
-	int flags = ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen;
-
-	if (ImGui::TreeNodeEx(this, flags, "Lights:")) {
-		ImGui::ColorEdit4("Ambient", glm::value_ptr(ambient));
-
-		int i = 1;
-
-		for (auto& light : lights) {
-			light->renderGUI(i++);
-		}
-
-		ImGui::TreePop();
+	if (!child->isKindOf("SceneObject")) {
+		OtExcept("A [Scene] can only have [SceneObject] subclasses as children, not [%s]", child->getType()->getName().c_str());
 	}
 }
 
@@ -124,26 +66,56 @@ void OtSceneClass::renderLightGUI() {
 //
 
 void OtSceneClass::render(int view, const glm::mat4& viewMatrix) {
-	// pass fog information
-	fog->submit();
-
-	// pass light information
+	// light information
+	bool hasAmbient = false;
 	glm::vec4 uniforms[TOTAL_SLOTS] = { glm::vec4(0.0) };
-	glm::vec4* slot = uniforms +1;
+	glm::vec4* slot = uniforms + 3;
+	int lights = 0;
 
-	for (auto& light : lights) {
-		light->submit(slot, viewMatrix);
-		slot += SLOTS_PER_LIGHT;
+	// list of non-light and non-fog objects
+	std::vector<OtSceneObject> objects;
+
+	// collect all light and fog information
+	for (auto const& child : children) {
+		if (child->isKindOf("Ambient")) {
+			hasAmbient = true;
+		}
+
+		if (child->isEnabled()) {
+			// handle ambient light
+			if (child->isKindOf("Ambient")) {
+				child->cast<OtAmbientClass>()->submit(uniforms);
+
+			// handle fog
+			} else if (child->isKindOf("Fog")) {
+				child->cast<OtFogClass>()->submit(uniforms + 1);
+
+			// handle lights
+		} else if (child->isKindOf("Light")) {
+				if (lights == LIGHTS) {
+					OtExcept("Too many lights in scene (max %d)", LIGHTS);
+				}
+
+				child->cast<OtLightClass>()->submit(slot, viewMatrix);
+				slot += SLOTS_PER_LIGHT;
+				lights++;
+
+			// handle other scene objects
+			} else {
+				objects.push_back(child->cast<OtSceneObjectClass>());
+			}
+		}
 	}
 
-	uniforms[0] = ambient;
-	bgfx::setUniform(lightUniform, &uniforms, TOTAL_SLOTS);
+	// set default ambient light if required
+	if (!hasAmbient) {
+		uniforms[0] = glm::vec4(1.0);
+	}
 
 	// render all children
-	for (auto const& child : children) {
-		if (child->isEnabled()) {
-			child->cast<OtObject3dClass>()->render(view, glm::mat4(1.0));
-		}
+	for (auto const& object : objects) {
+		bgfx::setUniform(lightUniform, &uniforms, TOTAL_SLOTS);
+		object->render(view, glm::mat4(1.0));
 	}
 }
 
@@ -156,10 +128,7 @@ OtType OtSceneClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtTypeClass::create<OtSceneClass>("Scene", OtObject3dClass::getMeta());
-		type->set("setFog", OtFunctionClass::create(&OtSceneClass::setFog));
-		type->set("setAmbientLight", OtFunctionClass::create(&OtSceneClass::setAmbientLight));
-		type->set("addLight", OtFunctionClass::create(&OtSceneClass::addLight));
+		type = OtTypeClass::create<OtSceneClass>("Scene", OtComponentClass::getMeta());
 	}
 
 	return type;

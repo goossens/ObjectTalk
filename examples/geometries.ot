@@ -20,10 +20,10 @@ var geometries = [
 ];
 
 var textures = {
-	"earth" : "texture:" + __DIR__ + "/assets/earth.png",
-	"moon" : "texture:" + __DIR__ + "/assets/moon.png",
-	"grass" : "texture:" + __DIR__ + "/assets/grass.jpg",
-	"uvmap" : "texture:" + __DIR__ + "/assets/uv.jpg"
+	"earth" : __DIR__ + "/assets/earth.png",
+	"moon"  : __DIR__ + "/assets/moon.png",
+	"grass" : __DIR__ + "/assets/grass.jpg",
+	"uvmap" : __DIR__ + "/assets/uv.jpg"
 };
 
 var materials = gui.getDefaultMaterials().merge(textures.keys());
@@ -34,46 +34,57 @@ var renderers = [
 
 // define our application
 class MyApp : gui.Application {
-	function __init__(this) {
-		this.rotation = 0.0;
-	}
-
 	function setup(this, screen) {
-		// create view and scene
-		this.scene = this.createScene();
-		this.createView(screen).setScene(this.scene);
-
-		// create control panel
-		this.createPanel(screen);
-	}
-
-	function update(this) {
-		this.rotation -= 0.005;
-		this.mesh.rotateY(this.rotation);
-		this.wireframe.rotateY(this.rotation);
-	}
-
-	function createView(this, screen) {
-		this.camera = gui.Camera();
-		this.camera.setPosition(0, 40, 40);
-		this.camera.setDirection(0, -5, -10);
-
-		var view = screen.add(gui.View(1, 30, 0, 70, 100));
-		view.setCamera(this.camera);
-		return view;
-	}
-
-	function createScene(this) {
 		// set default geometry and material
 		this.setGeometry(defaultGeometry);
 		this.setMaterial(defaultMaterial);
 
-		// create a scene with grid and geometry renderers
-		var scene = gui.Scene();
+		// set default object rotation
+		this.rotation = 0.0;
 
-		this.grid = scene.add(gui.Wireframe(gui.Grid(), gui.Material("vertex")));
-		this.mesh = scene.add(gui.Mesh(this.geometry, this.material));
-		this.wireframe = scene.add(gui.Wireframe(this.geometry, this.material));
+		// create all components
+		this.camera = gui.Camera()
+			.setPosition(0, 40, 40)
+			.setDirection(0, -5, -10);
+
+		this.grid = gui.Wireframe()
+			.setGeometry(gui.Grid())
+			.setMaterial(gui.Material().setVertex());
+
+		this.mesh = gui.Mesh()
+			.setGeometry(this.geometry)
+			.setMaterial(this.material);
+
+		this.wireframe = gui.Wireframe()
+			.setGeometry(this.geometry)
+			.setMaterial(this.material);
+
+		this.ambient = gui.Ambient();
+
+		this.light = gui.Light()
+			.setPosition(25, 25, 40)
+			.setDiffuseCSS("#c0c0c0")
+			.setSpecularCSS("#c0c0c0");
+
+		this.fog = gui.Fog()
+			.setColorCSS("#808080")
+			.setDistances(0, 100)
+			.disable();
+
+		// create scene
+		var scene = gui.Scene()
+			.add(this.grid)
+			.add(this.mesh)
+			.add(this.wireframe)
+			.add(this.ambient)
+			.add(this.light)
+			.add(this.fog);
+
+		// create view
+		screen.add(gui.View()
+			.setScreenArea(30, 0, 70, 100)
+			.setCamera(this.camera)
+			.setScene(scene));
 
 		// enable default renderer
 		if (defaultRenderer == "textured") {
@@ -83,25 +94,36 @@ class MyApp : gui.Application {
 			this.mesh.disable();
 		}
 
-		// add a spot light
-		scene.addLight(gui.Light(true, 25, 25, 40, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8));
-
-		// add default fog
-		this.fog = gui.Fog(false, "#808080", 0, 100);
-		scene.setFog(this.fog);
-
-		// return new scene
-		return scene;
+		// create control panel
+		screen.add(this.createPanel());
 	}
 
-	function createPanel(this, screen) {
-		var panel = screen.add(gui.Panel(0, 0, 30, 100));
+	function update(this) {
+		this.rotation -= 0.005;
+		this.mesh.rotateY(this.rotation);
+		this.wireframe.rotateY(this.rotation);
+	}
 
-		panel.add(gui.CameraController(this.camera));
-		panel.add(gui.LightController(this.scene));
-		panel.add(gui.FogController(this.fog));
+	function createPanel(this) {
+		var panel = gui.Panel(0, 0, 30, 100);
 
-		var node = panel.add(gui.TreeNode("3D Object:"));
+		var node = gui.TreeNode("Camera:");
+		node.add(gui.CameraController(this.camera));
+		panel.add(node);
+
+		node = gui.TreeNode("Ambient:");
+		node.add(gui.AmbientController(this.ambient));
+		panel.add(node);
+
+		node = gui.TreeNode("Light:");
+		node.add(gui.LightController(this.light));
+		panel.add(node);
+
+		node = gui.TreeNode("Fog:");
+		node.add(gui.FogController(this.fog));
+		panel.add(node);
+
+		node = panel.add(gui.TreeNode("3D Object:"));
 
 		node.add(gui.Combobox("Geometry", geometries, defaultGeometry, function(selected) {
 			this.setGeometry(selected);
@@ -118,6 +140,8 @@ class MyApp : gui.Application {
 		node.add(gui.Checkbox("Show grid", true, function(checked) {
 			this.grid.setEnabled(checked);
 		}));
+
+		return panel;
 	}
 
 	function setGeometry(this, name) {
@@ -160,10 +184,10 @@ class MyApp : gui.Application {
 
 	function setMaterial(this, name) {
 		if (name in gui.getDefaultMaterials()) {
-			this.material = gui.Material(name);
+			this.material = gui.Material().setMaterial(name);
 
 		} else {
-			this.material = gui.Material(textures[name]);
+			this.material = gui.Material().setTexture(textures[name]);
 		}
 
 		if (this.has("mesh")) {

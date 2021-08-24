@@ -15,6 +15,7 @@
 #include "ot/exception.h"
 #include "ot/function.h"
 
+#include "color.h"
 #include "material.h"
 
 
@@ -78,22 +79,15 @@ OtMaterialClass::OtMaterialClass() {
 
 
 //
-//	OtViewClass::~OtViewClass
+//	OtMaterialClass::~OtMaterialClass
 //
 
 OtMaterialClass::~OtMaterialClass() {
 	// release resources
-	if (materialUniform.idx != bgfx::kInvalidHandle) {
-		bgfx::destroy(materialUniform);
-	}
-
-	if (transformUniform.idx != bgfx::kInvalidHandle) {
-		bgfx::destroy(transformUniform);
-	}
-
-	if (textureUniform.idx != bgfx::kInvalidHandle) {
-		bgfx::destroy(textureUniform);
-	}
+	bgfx::destroy(materialUniform);
+	bgfx::destroy(transformUniform);
+	bgfx::destroy(textureUniform);
+	bgfx::destroy(dummy);
 
 	if (image) {
 		bimg::imageFree(image);
@@ -102,80 +96,188 @@ OtMaterialClass::~OtMaterialClass() {
 	if (texture.idx != bgfx::kInvalidHandle) {
 		bgfx::destroy(texture);
 	}
-
-	if (dummy.idx != bgfx::kInvalidHandle) {
-		bgfx::destroy(dummy);
-	}
 }
 
 
 //
-//	OtMaterialClass::init
+//	OtMaterialClass::setMaterial
 //
 
-void OtMaterialClass::init(const std::string& name) {
-	if (name == "vertex") {
-		vertex = true;
-
-	} else if (name.rfind("texture:", 0) == 0) {
-		// load named texture
-		std::string file = name.substr(8);
-		static bx::DefaultAllocator allocator;
-		static bx::FileReader reader;
-
-		if (!bx::open(&reader, file.c_str())) {
-			OtExcept("Can't open texture [%s]", file.c_str());
+OtObject OtMaterialClass::setMaterial(const std::string& name) {
+	// try to find named material
+	for (const auto& material : materials) {
+		if (name == material.name) {
+			ambient = material.ambient;
+			diffuse = material.diffuse;
+			specular = material.specular;
+			shininess = material.shininess;
+			return shared();
 		}
-
-		uint32_t size = (uint32_t) bx::getSize(&reader);
-		void* data = BX_ALLOC(&allocator, size);
-		bx::read(&reader, data, size);
-		bx::close(&reader);
-
-		image = bimg::imageParse(&allocator, data, size);
-
-		if (!image)  {
-			OtExcept("Can't process texture in [%s]", file.c_str());
-		}
-
-		const bgfx::Memory* mem = bgfx::makeRef(image->m_data, image->m_size);
-		BX_FREE(&allocator, data);
-
-		if (bgfx::isTextureValid(0, false, image->m_numLayers, bgfx::TextureFormat::Enum(image->m_format), BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE)) {
-			texture = bgfx::createTexture2D(
-				uint16_t(image->m_width),
-				uint16_t(image->m_height),
-				1 < image->m_numMips,
-				image->m_numLayers,
-				bgfx::TextureFormat::Enum(image->m_format),
-				BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
-				mem);
-
-		} else {
-			OtExcept("Invalid texture format in [%s]", file.c_str());
-		}
-
-	} else if (name.rfind("color:", 0) == 0) {
-		// parse CSS style color
-		glm::vec3 color = OtColorParseToVec3(name.substr(6));
-		ambient = color * 0.4f;
-		diffuse = color * 0.6f;
-		specular = color * 0.4f;
-
-	} else {
-		// try to find named material
-		for (const auto& material : materials) {
-			if (name == material.name) {
-				ambient = material.ambient;
-				diffuse = material.diffuse;
-				specular = material.specular;
-				shininess = material.shininess;
-				return;
-			}
-		}
-
-		OtExcept("Unknown material [%s]", name.c_str());
 	}
+
+	OtExcept("Unknown material [%s]", name.c_str());
+	return shared();
+}
+
+
+//
+//	OtMaterialClass::setColorRGB
+//
+
+OtObject OtMaterialClass::setColorRGB(double r, double g, double b) {
+	glm::vec3 color = glm::vec4(r, g, b, 1.0);
+	ambient = color * 0.4f;
+	diffuse = color * 0.6f;
+	specular = color * 0.4f;
+	return shared();
+}
+
+
+//
+//	OtMaterialClass::setColorCSS
+//
+
+OtObject OtMaterialClass::setColorCSS(const std::string& name) {
+	// parse CSS style color
+	glm::vec3 color = OtColorParseToVec3(name);
+	ambient = color * 0.4f;
+	diffuse = color * 0.6f;
+	specular = color * 0.4f;
+	return shared();
+}
+
+
+//
+//	OtMaterialClass::setTexture
+//
+
+OtObject OtMaterialClass::setTexture(const std::string& file) {
+	// load named texture
+	static bx::DefaultAllocator allocator;
+	static bx::FileReader reader;
+
+	if (!bx::open(&reader, file.c_str())) {
+		OtExcept("Can't open texture [%s]", file.c_str());
+	}
+
+	uint32_t size = (uint32_t) bx::getSize(&reader);
+	void* data = BX_ALLOC(&allocator, size);
+	bx::read(&reader, data, size);
+	bx::close(&reader);
+
+	image = bimg::imageParse(&allocator, data, size);
+
+	if (!image)  {
+		OtExcept("Can't process texture in [%s]", file.c_str());
+	}
+
+	const bgfx::Memory* mem = bgfx::makeRef(image->m_data, image->m_size);
+	BX_FREE(&allocator, data);
+
+	if (!bgfx::isTextureValid(0, false, image->m_numLayers, bgfx::TextureFormat::Enum(image->m_format), BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE)) {
+		OtExcept("Invalid texture format in [%s]", file.c_str());
+	}
+
+	texture = bgfx::createTexture2D(
+		uint16_t(image->m_width),
+		uint16_t(image->m_height),
+		1 < image->m_numMips,
+		image->m_numLayers,
+		bgfx::TextureFormat::Enum(image->m_format),
+		BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
+		mem);
+
+	return shared();
+}
+
+
+//
+//	OtMaterialClass::setVertex
+//
+
+OtObject OtMaterialClass::setVertex() {
+	vertex = true;
+	return shared();
+}
+
+
+//
+//	OtMaterialClass::setAmbientRGB
+//
+
+OtObject OtMaterialClass::setAmbientRGB(double r, double g, double b) {
+	ambient = glm::vec3(r, g, b);
+	return shared();
+}
+
+
+//
+//	OtMaterialClass::setAmbientCSS
+//
+
+OtObject OtMaterialClass::setAmbientCSS(const std::string c) {
+	ambient = OtColorParseToVec3(c);
+	return shared();
+}
+
+
+//
+//	OtMaterialClass::setDiffuseRGB
+//
+
+OtObject OtMaterialClass::setDiffuseRGB(double r, double g, double b) {
+	diffuse = glm::vec3(r, g, b);
+	return shared();
+}
+
+
+//
+//	OtMaterialClass::setDiffuseCSS
+//
+
+OtObject OtMaterialClass::setDiffuseCSS(const std::string c) {
+	diffuse = OtColorParseToVec3(c);
+	return shared();
+}
+
+
+//
+//	OtMaterialClass::setSpecularRGB
+//
+
+OtObject OtMaterialClass::setSpecularRGB(double r, double g, double b) {
+	specular = glm::vec3(r, g, b);
+	return shared();
+}
+
+
+//
+//	OtMaterialClass::setSpecularCSS
+//
+
+OtObject OtMaterialClass::setSpecularCSS(const std::string c) {
+	specular = OtColorParseToVec3(c);
+	return shared();
+}
+
+
+//
+//	OtMaterialClass::setShininess
+//
+
+OtObject OtMaterialClass::setShininess(double s) {
+	shininess = s;
+	return shared();
+}
+
+
+//
+//	OtMaterialClass::setTransparency
+//
+
+OtObject OtMaterialClass::setTransparency(double t) {
+	transparency = t;
+	return shared();
 }
 
 
@@ -183,7 +285,7 @@ void OtMaterialClass::init(const std::string& name) {
 //	OtMaterialClass::setUvTransform
 //
 
-void OtMaterialClass::setUvTransform(double ox, double oy, double rx, double ry, double r, double cx, double cy) {
+OtObject OtMaterialClass::setUvTransform(double ox, double oy, double rx, double ry, double r, double cx, double cy) {
 	// specifiy a new UV coordinate transformation matrix
 	auto c = std::cos(r);
 	auto s = std::sin(r);
@@ -193,6 +295,8 @@ void OtMaterialClass::setUvTransform(double ox, double oy, double rx, double ry,
 		-ry * s, ry * c, -ry * (-s * cx + c * cy) + cy + oy,
 		0.0, 0.0, 1.0
 	);
+
+	return shared();
 }
 
 //
@@ -232,7 +336,11 @@ OtType OtMaterialClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtMaterialClass>("Material", OtGuiClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtMaterialClass::init));
+		type->set("setMaterial", OtFunctionClass::create(&OtMaterialClass::setMaterial));
+		type->set("setColorRGB", OtFunctionClass::create(&OtMaterialClass::setColorRGB));
+		type->set("setColorCSS", OtFunctionClass::create(&OtMaterialClass::setColorCSS));
+		type->set("setTexture", OtFunctionClass::create(&OtMaterialClass::setTexture));
+		type->set("setVertex", OtFunctionClass::create(&OtMaterialClass::setVertex));
 
 		type->set("setAmbientRGB", OtFunctionClass::create(&OtMaterialClass::setAmbientRGB));
 		type->set("setAmbientCSS", OtFunctionClass::create(&OtMaterialClass::setAmbientCSS));

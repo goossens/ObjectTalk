@@ -18,54 +18,33 @@
 
 
 //
-//	OtFogClass::OtFogClass
+//	OtFogClass::setColorRGB
 //
 
-OtFogClass::OtFogClass() {
-	// register uniform
-	fogUniform = bgfx::createUniform("u_fog", bgfx::UniformType::Vec4, 2);
+OtObject OtFogClass::setColorRGB(double r, double g, double b) {
+	color = glm::vec4(r, g, b, 1.0);
+	return shared();
 }
 
 
 //
-//	OtFogClass::~OtFogClass
+//	OtFogClass::setColorCSS
 //
 
-OtFogClass::~OtFogClass() {
-	// release resources
-	if (fogUniform.idx != bgfx::kInvalidHandle) {
-		bgfx::destroy(fogUniform);
-	}
+OtObject OtFogClass::setColorCSS(const std::string& c) {
+	color = OtColorParseToVec4(c);
+	return shared();
 }
 
 
 //
-//	OtFogClass::init
+//	OtFogClass::setDistances
 //
 
-OtObject OtFogClass::init(size_t count, OtObject* parameters) {
-	// set attributes
-	if (count) {
-		switch (count) {
-			case 4:
-				far = parameters[3]->operator double();
-
-			case 3:
-				near = parameters[2]->operator double();
-
-			case 2:
-				color = OtColorParseToVec4(parameters[1]->operator std::string());
-
-			case 1:
-				active = parameters[0]->operator bool();
-				break;
-
-			default:
-				OtExcept("Too many parameters [%ld] for [Fog] contructor (max 4)", count);
-		}
-	}
-
-	return nullptr;
+OtObject OtFogClass::setDistances(double n, double f) {
+	near = n;
+	far = f;
+	return shared();
 }
 
 
@@ -74,15 +53,10 @@ OtObject OtFogClass::init(size_t count, OtObject* parameters) {
 //
 
 void OtFogClass::renderGUI() {
-	int flags = ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen;
-
-	if (ImGui::TreeNodeEx(this, flags, "Fog:")) {
-		ImGui::ColorEdit4("Color", glm::value_ptr(color));
-		ImGui::SliderFloat("Near", &near, 0.0f, 100.0f);
-		ImGui::SliderFloat("Far", &far, 0.0f, 100.0f);
-		ImGui::Checkbox("active", &active);
-		ImGui::TreePop();
-	}
+	ImGui::Checkbox("Enabled", &enabled);
+	ImGui::ColorEdit4("Color", glm::value_ptr(color));
+	ImGui::SliderFloat("Near", &near, 0.0f, 100.0f);
+	ImGui::SliderFloat("Far", &far, 0.0f, 100.0f);
 }
 
 
@@ -90,12 +64,10 @@ void OtFogClass::renderGUI() {
 //	OtFogClass::submit
 //
 
-void OtFogClass::submit() {
+void OtFogClass::submit(glm::vec4* slot) {
 	// pass fog information
-	glm::vec4 fogUniforms[2];
-	fogUniforms[0] = { active, near, far, 0.0 };
-	fogUniforms[1] = color;
-	bgfx::setUniform(fogUniform, &fogUniforms, 2);
+	slot[0] = { enabled, near, far, 0.0 };
+	slot[1] = color;
 }
 
 
@@ -107,8 +79,10 @@ OtType OtFogClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtTypeClass::create<OtFogClass>("Fog", OtGuiClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtFogClass::init));
+		type = OtTypeClass::create<OtFogClass>("Fog", OtSceneObjectClass::getMeta());
+		type->set("setColorRGB", OtFunctionClass::create(&OtFogClass::setColorRGB));
+		type->set("setColorCSS", OtFunctionClass::create(&OtFogClass::setColorCSS));
+		type->set("setDistances", OtFunctionClass::create(&OtFogClass::setDistances));
 	}
 
 	return type;

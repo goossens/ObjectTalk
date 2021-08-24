@@ -25,8 +25,8 @@ typedef std::shared_ptr<OtComponentClass> OtComponent;
 class OtComponentClass : public OtGuiClass {
 public:
 	// add / remove components
-	OtComponent add(OtObject object);
-	void remove(OtObject object);
+	OtObject add(OtObject object);
+	OtObject remove(OtObject object);
 
 	// ensure specified component is allowed as a child
 	virtual void validateChild(OtComponent child);
@@ -35,9 +35,9 @@ public:
 	void clear();
 
 	// update enabled flag
-	void enable() { enabled = true; }
-	void disable() { enabled = false; }
-	void setEnabled(bool e) { enabled = e; }
+	OtObject enable() { enabled = true; return shared(); }
+	OtObject disable() { enabled = false; return shared(); }
+	OtObject setEnabled(bool e) { enabled = e; return shared(); }
 	bool isEnabled() { return enabled; }
 
 	// get type definition

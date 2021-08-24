@@ -32,12 +32,10 @@ public:
 	OtMeshClass();
 	~OtMeshClass();
 
-	// initialize mesh
-	OtObject init(size_t count, OtObject* parameters);
-
-	// update geometry or material
-	void setGeometry(OtObject geometry);
-	void setMaterial(OtObject material);
+	// set properties
+	OtObject setGeometry(OtObject geometry);
+	OtObject setMaterial(OtObject material);
+	OtObject setHoles(bool holes);
 
 	// render in BGFX
     void render(int view, glm::mat4 parentTransform);
@@ -50,7 +48,7 @@ public:
 
 protected:
 	// render with culling
-	void render(int view, glm::mat4 parentTransform, int flag);
+	void render(int view, glm::mat4 parentTransform, long flag);
 
 	// geometry and material
 	OtGeometry geometry;

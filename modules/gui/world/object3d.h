@@ -12,16 +12,9 @@
 //	Include files
 //
 
-#include <vector>
-
-#define GLM_ENABLE_EXPERIMENTAL
 #include "glm/glm.hpp"
-#include "glm/ext.hpp"
-#include "bgfx/bgfx.h"
 
-#include "component.h"
-#include "material.h"
-#include "vertex.h"
+#include "sceneobject.h"
 
 
 //
@@ -31,15 +24,15 @@
 class OtObject3dClass;
 typedef std::shared_ptr<OtObject3dClass> OtObject3d;
 
-class OtObject3dClass : public OtComponentClass {
+class OtObject3dClass : public OtSceneObjectClass {
 public:
 	// change geometry
-	void rotate(double angle, double x, double y, double z) { rotating = glm::rotate(glm::mat4(1.0), (float) angle, glm::vec3(x, y, z)); }
-	void rotateX(double angle) { rotating = glm::rotate(glm::mat4(1.0), (float) angle, glm::vec3(1.0, 0.0, 0.0)); }
-	void rotateY(double angle) { rotating = glm::rotate(glm::mat4(1.0), (float) angle, glm::vec3(0.0, 1.0, 0.0)); }
-	void rotateZ(double angle) { rotating = glm::rotate(glm::mat4(1.0), (float) angle, glm::vec3(0.0, 0.0, 1.0)); }
-	void scale(double x, double y, double z) { scaling = glm::scale(glm::mat4(1.0), glm::vec3(x, y, z)); }
-	void translate(double x, double y, double z) { translating = glm::translate(glm::mat4(1.0), glm::vec3(x, y, z)); }
+	OtObject rotate(double angle, double x, double y, double z);
+	OtObject rotateX(double angle);
+	OtObject rotateY(double angle);
+	OtObject rotateZ(double angle);
+	OtObject scale(double x, double y, double z);
+	OtObject translate(double x, double y, double z);
 
 	// render in BGFX
     virtual void render(int view, glm::mat4 parentTransform);

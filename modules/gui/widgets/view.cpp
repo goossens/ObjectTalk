@@ -26,10 +26,33 @@ OtViewClass::~OtViewClass() {
 
 
 //
+//	OtViewClass::setID
+//
+
+OtObject OtViewClass::setID(int i) {
+	id = i;
+	return shared();
+}
+
+
+//
+//	OtViewClass::setScreenArea
+//
+
+OtObject OtViewClass::setScreenArea(int _x, int _y, int _w, int _h) {
+	x = _x;
+	y = _y;
+	w = _w;
+	h = _h;
+	return shared();
+}
+
+
+//
 //	OtViewClass::setCamera
 //
 
-void OtViewClass::setCamera(OtObject cam) {
+OtObject OtViewClass::setCamera(OtObject cam) {
 	// ensure object is a camera
 	if (cam->isKindOf("Camera")) {
 		camera = cam->cast<OtCameraClass>();
@@ -37,6 +60,8 @@ void OtViewClass::setCamera(OtObject cam) {
 	} else {
 		OtExcept("Expected a [Camera] object, not a [%s]", cam->getType()->getName().c_str());
 	}
+
+	return shared();
 }
 
 
@@ -44,7 +69,7 @@ void OtViewClass::setCamera(OtObject cam) {
 //	OtViewClass::setScene
 //
 
-void OtViewClass::setScene(OtObject scn) {
+OtObject OtViewClass::setScene(OtObject scn) {
 	// ensure object is a material
 	if (scn->isKindOf("Scene")) {
 		scene = scn->cast<OtSceneClass>();
@@ -52,6 +77,8 @@ void OtViewClass::setScene(OtObject scn) {
 	} else {
 		OtExcept("Expected a [Scene] object, not a [%s]", scn->getType()->getName().c_str());
 	}
+
+	return shared();
 }
 
 
@@ -152,7 +179,9 @@ OtType OtViewClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtViewClass>("View", OtWidgetClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtViewClass::init));
+
+		type->set("setID", OtFunctionClass::create(&OtViewClass::setID));
+		type->set("setScreenArea", OtFunctionClass::create(&OtViewClass::setScreenArea));
 		type->set("setScene", OtFunctionClass::create(&OtViewClass::setScene));
 		type->set("setCamera", OtFunctionClass::create(&OtViewClass::setCamera));
 	}

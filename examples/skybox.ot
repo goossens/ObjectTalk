@@ -13,8 +13,6 @@ var cameraRadius = 120.0;
 // define our view
 class MyView : gui.View {
 	function __init__(this) {
-		super(this, "__init__", 1, 0, 0, 100, 100);
-
 		this.camera = gui.Camera();
 		this.setCamera(this.camera);
 
@@ -70,15 +68,27 @@ class MyApp : gui.Application {
 	}
 
 	function setup(this, screen) {
-		// create scene
-		var scene = gui.Scene();
-		scene.add(gui.Skybox(__DIR__ + "/assets/yokohama.ktx"));
-		this.sphere = scene.add(gui.Wireframe(gui.Sphere(20, 40, 40), gui.Material("gold")));
+		// create all components
+		var skybox = gui.Skybox().setCubemap(__DIR__ + "/assets/yokohama.ktx");
 
-		scene.addLight(gui.Light(true, 25, 25, 40, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8));
+		var light = gui.Light()
+			.setPosition(25, 25, 40)
+			.setDiffuseRGB(0.8, 0.8, 0.8)
+			.setSpecularRGB(0.8, 0.8, 0.8);
 
-		var view = screen.add(MyView());
-		view.setScene(scene);
+		this.sphere = gui.Wireframe()
+			.setGeometry(gui.Sphere(20, 40, 40))
+			.setMaterial(gui.Material().setMaterial("gold"));
+
+		var scene = gui.Scene()
+			.add(skybox)
+			.add(this.sphere)
+			.add(light);
+
+		// create our view and scene
+		screen.add(MyView()
+			.setScreenArea(0, 0, 100, 100)
+			.setScene(scene));
 	}
 
 	function update(this) {

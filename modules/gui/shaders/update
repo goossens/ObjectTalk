@@ -45,13 +45,13 @@ function compileShader() {
 
 	cd ${HOME}
 
-	cat $1/vs_glsl.h $1/vs_essl.h $1/vs_spv.h $1/vs_dx9.h $1/vs_dx11.h $1/vs_mtl.h >$1_shader.h
-	echo "extern const uint8_t* vs_$1_pssl;" >>$1_shader.h
-	echo "extern const uint32_t vs_$1_pssl_size;" >>$1_shader.h
+	cat $1/vs_glsl.h $1/vs_essl.h $1/vs_spv.h $1/vs_dx9.h $1/vs_dx11.h $1/vs_mtl.h >$1shader.h
+	echo "extern const uint8_t* vs_$1_pssl;" >>$1shader.h
+	echo "extern const uint32_t vs_$1_pssl_size;" >>$1shader.h
 
-	cat $1/fs_glsl.h $1/fs_essl.h $1/fs_spv.h $1/fs_dx9.h $1/fs_dx11.h $1/fs_mtl.h >>$1_shader.h
-	echo "extern const uint8_t* fs_$1_pssl;" >>$1_shader.h
-	echo "extern const uint32_t fs_$1_pssl_size;" >>$1_shader.h
+	cat $1/fs_glsl.h $1/fs_essl.h $1/fs_spv.h $1/fs_dx9.h $1/fs_dx11.h $1/fs_mtl.h >>$1shader.h
+	echo "extern const uint8_t* fs_$1_pssl;" >>$1shader.h
+	echo "extern const uint32_t fs_$1_pssl_size;" >>$1shader.h
 }
 
 compileShader background

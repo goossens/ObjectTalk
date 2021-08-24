@@ -12,50 +12,34 @@ var skyColor = "#cce0ff";
 
 // define our application
 class MyApp : gui.Application {
-	function __init__(this) {
-	}
-
 	function setup(this, screen) {
-		// create view and scene
-		this.scene = this.createScene();
-		this.createView(screen).setScene(this.scene);
+		// create all components
+		var background = gui.Background()
+			.setMaterial(gui.Material()
+				.setColorCSS(skyColor));
 
-		// create control panel
-		// this.createPanel(screen);
-	}
+		var grass = gui.Mesh()
+			.setGeometry(gui.Plane(150, 150))
+			.setMaterial(gui.Material()
+				.setTexture(__DIR__ + "/assets/grass.jpg")
+				.setUvTransform(0, 0, 5, 5, 0, 0, 0))
+			.rotateX(-pi / 2.0);
 
-	function update(this) {
-	}
+		var fog = gui.Fog()
+			.setColorCSS(skyColor)
+			.setDistances(30, 100);
 
-	function createView(this, screen) {
-		this.camera = gui.Camera();
-		this.camera.setPosition(0, 20, 50);
-
-		var view = screen.add(gui.View(1, 30, 0, 70, 100));
-		view.setCamera(this.camera);
-		return view;
-	}
-
-	function createScene(this) {
 		// create scene
-		var scene = gui.Scene();
-		scene.add(gui.Background(gui.Material("color:" + skyColor)));
+		var scene = gui.Scene()
+			.add(background)
+			.add(grass)
+			.add(fog);
 
-		var grass = gui.Material("texture:" + __DIR__ + "/assets/grass.jpg");
-		grass.setUvTransform(0, 0, 5, 5, 0, 0, 0);
-
-		this.grass = scene.add(gui.Mesh(gui.Plane(150, 150), grass));
-		this.grass.rotateX(-pi / 2.0);
-
-		// add default fog
-		this.fog = gui.Fog(true, skyColor, 30, 100);
-		scene.setFog(this.fog);
-
-		// return new scene
-		return scene;
-	}
-
-	function createPanel(this, screen) {
+		// create view
+		screen.add(gui.View()
+			.setScreenArea(30, 0, 70, 100)
+			.setCamera(gui.Camera().setPosition(0, 20, 50))
+			.setScene(scene));
 	}
 }
 

@@ -17,7 +17,6 @@
 #include "bimg/decode.h"
 #include "tiny_obj_loader.h"
 
-#include "color.h"
 #include "gui.h"
 
 
@@ -34,21 +33,23 @@ public:
 	OtMaterialClass();
 	~OtMaterialClass();
 
-	// initialize material
-	void init(const std::string& material);
-
 	// set properties
-	void setAmbientRGB(double r, double g, double b) { ambient = glm::vec3(r, g, b); }
-	void setAmbientCSS(const std::string c) { ambient = OtColorParseToVec3(c); }
-	void setDiffuseRGB(double r, double g, double b) { diffuse = glm::vec3(r, g, b); }
-	void setDiffuseCSS(const std::string c) { diffuse = OtColorParseToVec3(c); }
-	void setSpecularRGB(double r, double g, double b) { specular = glm::vec3(r, g, b); }
-	void setSpecularCSS(const std::string c) { specular = OtColorParseToVec3(c); }
-	void setShininess(double s) { shininess = s; }
-	void setTransparency(double t) { transparency = t; }
+	OtObject setMaterial(const std::string& name);
+	OtObject setColorRGB(double r, double g, double b);
+	OtObject setColorCSS(const std::string& color);
+	OtObject setTexture(const std::string& file);
+	OtObject setVertex();
+	OtObject setAmbientRGB(double r, double g, double b);
+	OtObject setAmbientCSS(const std::string c);
+	OtObject setDiffuseRGB(double r, double g, double b);
+	OtObject setDiffuseCSS(const std::string c) ;
+	OtObject setSpecularRGB(double r, double g, double b);
+	OtObject setSpecularCSS(const std::string c);
+	OtObject setShininess(double s);
+	OtObject setTransparency(double t);
 
 	// set UV transformation
-	void setUvTransform(
+	OtObject setUvTransform(
 		double offsetX, double offsetY,
 		double repeatX, double repeatY,
 		double rotation,
@@ -78,6 +79,7 @@ private:
 
 	glm::mat3 uvTransform = glm::mat3(1.0);
 
+	// material information
 	bgfx::UniformHandle materialUniform = BGFX_INVALID_HANDLE;
 	bgfx::UniformHandle transformUniform = BGFX_INVALID_HANDLE;
 

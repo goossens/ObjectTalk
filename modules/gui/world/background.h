@@ -32,11 +32,8 @@ public:
 	OtBackgroundClass();
 	~OtBackgroundClass();
 
-	// initialize wireframe
-	void init(OtObject material);
-
 	// update material
-	void setMaterial(OtObject material);
+	OtObject setMaterial(OtObject material);
 
 	// render in BGFX
     void render(int view, glm::mat4 parentTransform);

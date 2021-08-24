@@ -52,10 +52,13 @@ OtType OtWindowClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtWindowClass>("Window", OtWidgetClass::getMeta());
 		type->set("__init__", OtFunctionClass::create(&OtWindowClass::init));
-		type->set("getTitle", OtFunctionClass::create(&OtWindowClass::getTitle));
 		type->set("setTitle", OtFunctionClass::create(&OtWindowClass::setTitle));
-		type->set("getFlags", OtFunctionClass::create(&OtWindowClass::getFlags));
+		type->set("getTitle", OtFunctionClass::create(&OtWindowClass::getTitle));
+		type->set("setSize", OtFunctionClass::create(&OtWindowClass::setSize));
+		type->set("getWidth", OtFunctionClass::create(&OtWindowClass::getWidth));
+		type->set("getHeight", OtFunctionClass::create(&OtWindowClass::getHeight));
 		type->set("setFlags", OtFunctionClass::create(&OtWindowClass::setFlags));
+		type->set("getFlags", OtFunctionClass::create(&OtWindowClass::getFlags));
 	}
 
 	return type;

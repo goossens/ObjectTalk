@@ -17,7 +17,7 @@
 #include "bgfx/bgfx.h"
 #include "glm/glm.hpp"
 
-#include "object3d.h"
+#include "component.h"
 #include "fog.h"
 #include "light.h"
 
@@ -29,7 +29,7 @@
 class OtSceneClass;
 typedef std::shared_ptr<OtSceneClass> OtScene;
 
-class OtSceneClass : public OtObject3dClass {
+class OtSceneClass : public OtComponentClass {
 public:
 	// constructor/destructor
 	OtSceneClass();
@@ -37,18 +37,6 @@ public:
 
 	// ensure specified component is allowed as a child
 	void validateChild(OtComponent child);
-
-	// specify the ambient light
-	void setAmbientLight(double r, double g, double b) { ambient = glm::vec4(r, g, b, 1.0); }
-
-	// add a point/spot light
-	void addLight(OtObject light);
-
-	// specifiy fog for view
-	void setFog(OtObject fog);
-
-	// GUI to change lighting parameters
-	void renderLightGUI();
 
 	// render content
 	void render(int view, const glm::mat4& viewMatrix);
@@ -60,15 +48,6 @@ public:
 	static OtScene create();
 
 private:
-	// possible fog in scene
-	OtFog fog;
-
-	// ambient lighting
-	glm::vec4 ambient = { 1.0, 1.0, 1.0, 1.0};
-
-	// point/spot lights
-	std::vector<OtLight> lights;
-
 	// to pass information to shaders
 	bgfx::UniformHandle lightUniform = BGFX_INVALID_HANDLE;
 };

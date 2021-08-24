@@ -49,11 +49,8 @@ OtType OtMenuClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtMenuClass>("Menu", OtWidgetClass::getMeta());
 		type->set("__init__", OtFunctionClass::create(&OtMenuClass::init));
-		type->set("getTitle", OtFunctionClass::create(&OtMenuClass::getTitle));
 		type->set("setTitle", OtFunctionClass::create(&OtMenuClass::setTitle));
-		type->set("enable", OtFunctionClass::create(&OtMenuClass::enable));
-		type->set("disable", OtFunctionClass::create(&OtMenuClass::disable));
-		type->set("isEnabled", OtFunctionClass::create(&OtMenuClass::isEnabled));
+		type->set("getTitle", OtFunctionClass::create(&OtMenuClass::getTitle));
 	}
 
 	return type;

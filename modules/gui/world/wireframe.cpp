@@ -14,7 +14,7 @@
 #include "ot/function.h"
 
 #include "wireframe.h"
-#include "mesh_shader.h"
+#include "meshshader.h"
 
 
 //
@@ -49,9 +49,7 @@ OtWireframeClass::OtWireframeClass() {
 
 OtWireframeClass::~OtWireframeClass() {
 	// release resources
-	if (program.idx != bgfx::kInvalidHandle) {
-		bgfx::destroy(program);
-	}
+	bgfx::destroy(program);
 
 	if (vertexBuffer.idx != bgfx::kInvalidHandle) {
 		bgfx::destroy(vertexBuffer);
@@ -64,20 +62,10 @@ OtWireframeClass::~OtWireframeClass() {
 
 
 //
-//	OtWireframeClass::init
-//
-
-void OtWireframeClass::init(OtObject geom, OtObject mat) {
-	setGeometry(geom);
-	setMaterial(mat);
-}
-
-
-//
 //	OtWireframeClass::setGeometry
 //
 
-void OtWireframeClass::setGeometry(OtObject object) {
+OtObject OtWireframeClass::setGeometry(OtObject object) {
 	// ensure object is a geometry
 	if (object->isKindOf("Geometry")) {
 		geometry = object->cast<OtGeometryClass>();
@@ -98,6 +86,8 @@ void OtWireframeClass::setGeometry(OtObject object) {
 	// create BGFX buffers
 	vertexBuffer = geometry->getVertexBuffer();
 	indexBuffer = geometry->getLineIndexBuffer();
+
+	return shared();
 }
 
 
@@ -105,7 +95,7 @@ void OtWireframeClass::setGeometry(OtObject object) {
 //	OtWireframeClass::setMaterial
 //
 
-void OtWireframeClass::setMaterial(OtObject object) {
+OtObject OtWireframeClass::setMaterial(OtObject object) {
 	// ensure object is a material
 	if (object->isKindOf("Material")) {
 		material = object->cast<OtMaterialClass>();
@@ -113,6 +103,8 @@ void OtWireframeClass::setMaterial(OtObject object) {
 	} else {
 		OtExcept("Expected a [Material] object, not a [%s]", object->getType()->getName().c_str());
 	}
+
+	return shared();
 }
 
 
@@ -120,7 +112,7 @@ void OtWireframeClass::setMaterial(OtObject object) {
 //	OtWireframeClass::render
 //
 
-void OtWireframeClass::render(int view, glm::mat4 parentTransform, int flag) {
+void OtWireframeClass::render(int view, glm::mat4 parentTransform, long flag) {
 	// let parent class do its thing
 	OtObject3dClass::render(view, parentTransform);
 
@@ -167,7 +159,6 @@ OtType OtWireframeClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtWireframeClass>("Wireframe", OtObject3dClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtWireframeClass::init));
 		type->set("setGeometry", OtFunctionClass::create(&OtWireframeClass::setGeometry));
 		type->set("setMaterial", OtFunctionClass::create(&OtWireframeClass::setMaterial));
 	}

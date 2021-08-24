@@ -15,7 +15,7 @@
 #include "ot/function.h"
 
 #include "skybox.h"
-#include "skybox_shader.h"
+#include "skyboxshader.h"
 
 
 //
@@ -127,29 +127,18 @@ OtSkyboxClass::OtSkyboxClass() {
 
 OtSkyboxClass::~OtSkyboxClass() {
 	// release resources
-	if (cubemapUniform.idx != bgfx::kInvalidHandle) {
-		bgfx::destroy(cubemapUniform);
-	}
-
-	if (program.idx != bgfx::kInvalidHandle) {
-		bgfx::destroy(program);
-	}
-
-	if (vertexBuffer.idx != bgfx::kInvalidHandle) {
-		bgfx::destroy(vertexBuffer);
-	}
-
-	if (indexBuffer.idx != bgfx::kInvalidHandle) {
-		bgfx::destroy(indexBuffer);
-	}
+	bgfx::destroy(vertexBuffer);
+	bgfx::destroy(indexBuffer);
+	bgfx::destroy(cubemapUniform);
+	bgfx::destroy(program);
 }
 
 
 //
-//	OtSkyboxClass::init
+//	OtSkyboxClass::setCubemap
 //
 
-void OtSkyboxClass::init(const std::string& file) {
+OtObject OtSkyboxClass::setCubemap(const std::string& file) {
 	// load named texture
 	static bx::DefaultAllocator allocator;
 	static bx::FileReader reader;
@@ -188,6 +177,8 @@ void OtSkyboxClass::init(const std::string& file) {
 	} else {
 		OtExcept("Invalid cubemap format in [%s]", file.c_str());
 	}
+
+	return shared();
 }
 
 
@@ -222,8 +213,8 @@ OtType OtSkyboxClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtTypeClass::create<OtSkyboxClass>("Skybox", OtObject3dClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtSkyboxClass::init));
+		type = OtTypeClass::create<OtSkyboxClass>("Skybox", OtSceneObjectClass::getMeta());
+		type->set("setCubemap", OtFunctionClass::create(&OtSkyboxClass::setCubemap));
 	}
 
 	return type;

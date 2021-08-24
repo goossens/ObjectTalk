@@ -48,7 +48,7 @@ public:
 	// get system time in milliseconds since the epoch
 	static double getTime();
 
-	// get the current framerate
+	// get the current frame rate
 	static double getFrameRate() { return 1.0 / loopDuration; }
 
 	// get type definition

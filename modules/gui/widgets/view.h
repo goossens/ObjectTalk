@@ -29,14 +29,11 @@ public:
 	// destructor
 	~OtViewClass();
 
-	// initialize view
-	void init(int _id, int _x, int _y, int _w, int _h) { id = _id; x = _x; y = _y; w = _w; h = _h; }
-
-	// specifiy camera for view
-	void setCamera(OtObject camera);
-
-	// specifiy scene for view
-	void setScene(OtObject scene);
+	// update attributes
+	OtObject setID(int id);
+	OtObject setScreenArea(int x, int y, int w, int h);
+	OtObject setCamera(OtObject camera);
+	OtObject setScene(OtObject scene);
 
 	// render content
 	void render();

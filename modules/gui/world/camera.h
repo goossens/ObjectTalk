@@ -29,16 +29,12 @@ class OtCameraClass : public OtGuiClass {
 	friend class OtViewClass;
 
 public:
-	// initialize camera
-	OtObject init(size_t count, OtObject* parameters);
-
 	// change camera geometry
-	void setPosition(double x, double y, double z) { cameraPos = glm::vec3(x, y, z); }
-	void setDirection(double x, double y, double z) { cameraDir = glm::vec3(x, y, z); }
-	void setUp(double x, double y, double z) { cameraUp = glm::vec3(x, y, z); }
-
-	void setFOV(double _f) { fov = _f; }
-	void setClipping(double near, double far) { nearClip = near; farClip = far; }
+	OtObject setPosition(double x, double y, double z);
+	OtObject setDirection(double x, double y, double z);
+	OtObject setUp(double x, double y, double z);
+	OtObject setFOV(double fov);
+	OtObject setClipping(double near, double far);
 
 	// GUI to change camera parameters
 	void renderGUI();

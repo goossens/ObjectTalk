@@ -28,12 +28,8 @@ public:
 	void init(const std::string& t) { title = t; }
 
 	// adjust menu properties
-	void setTitle(const std::string& t) { title = t; }
+	OtObject setTitle(const std::string& t) { title = t; return shared(); }
 	std::string getTitle() { return title; }
-
-	void enable() { enabled = true; }
-	void disable() { enabled = false; }
-	bool isEnabled() { return enabled; }
 
 	// ensure specified component is allowed as a child
 	void validateChild(OtComponent child);
@@ -50,5 +46,4 @@ public:
 private:
 	// menu properties
 	std::string title = "Menu";
-	bool enabled = true;
 };

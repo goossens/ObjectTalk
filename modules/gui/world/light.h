@@ -15,7 +15,7 @@
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
 
-#include "gui.h"
+#include "sceneobject.h"
 
 
 //
@@ -25,28 +25,17 @@
 class OtLightClass;
 typedef std::shared_ptr<OtLightClass> OtLight;
 
-class OtLightClass : public OtGuiClass {
-	friend class OtViewClass;
-
+class OtLightClass : public OtSceneObjectClass {
 public:
-	// initialize light
-	void init(bool a,
-		double px, double py, double pz,
-		double dr, double dg, double db,
-		double sr, double sg, double sb) {
-			active = a;
-			position = glm::vec4(px, py, pz, 1.0);
-			diffuse = glm::vec4(dr, dg, db, 1.0);
-			specular = glm::vec4(sr, sg, sb, 1.0);
-	}
-
 	// update attributes
-	void setPosition(double px, double py, double pz) { position = glm::vec4(px, py, pz, 1.0); }
-	void setDiffuse(double dr, double dg, double db) { diffuse = glm::vec4(dr, dg, db, 1.0); }
-	void setSpecular(double sr, double sg, double sb) { specular = glm::vec4(sr, sg, sb, 1.0); }
+	OtObject setPosition(double x, double y, double z);
+	OtObject setDiffuseRGB(double r, double g, double b);
+	OtObject setDiffuseCSS(const std::string c) ;
+	OtObject setSpecularRGB(double r, double g, double b);
+	OtObject setSpecularCSS(const std::string c);
 
-	// GUI to change fog parameters
-	void renderGUI(int number);
+	// GUI to change parameters
+	void renderGUI();
 
 	// submit data to BGFX
 	void submit(glm::vec4* slot, const glm::mat4& viewMatrix);
@@ -59,8 +48,7 @@ public:
 
 private:
 	// light properties
-	bool active = false;
-	glm::vec4 position;
-	glm::vec4 diffuse;
-	glm::vec4 specular;
+	glm::vec4 position = glm::vec4(0.0);
+	glm::vec4 diffuse = glm::vec4(1.0);
+	glm::vec4 specular = glm::vec4(1.0);
 };

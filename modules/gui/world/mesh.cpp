@@ -14,7 +14,7 @@
 #include "ot/function.h"
 
 #include "mesh.h"
-#include "mesh_shader.h"
+#include "meshshader.h"
 
 
 //
@@ -64,39 +64,10 @@ OtMeshClass::~OtMeshClass() {
 
 
 //
-//	OtMeshClass::init
-//
-
-OtObject OtMeshClass::init(size_t count, OtObject* parameters) {
-	// set attributes
-	switch (count) {
-		case 3:
-			holes = parameters[2]->operator bool();
-
-		case 2:
-			setMaterial(parameters[1]);
-			setGeometry(parameters[0]);
-			break;
-
-		case 1:
-			OtExcept("[Geometry] or [material] missing in [mesh] contructor");
-
-		case 0:
-			OtExcept("[Geometry] and [material] missing in [mesh] contructor");
-
-		default:
-			OtExcept("Too many parameters [%ld] for [Mesh] contructor (max 3)", count);
-	}
-
-	return nullptr;
-}
-
-
-//
 //	OtMeshClass::setGeometry
 //
 
-void OtMeshClass::setGeometry(OtObject object) {
+OtObject OtMeshClass::setGeometry(OtObject object) {
 	// ensure object is a geometry
 	if (object->isKindOf("Geometry")) {
 		geometry = object->cast<OtGeometryClass>();
@@ -117,6 +88,7 @@ void OtMeshClass::setGeometry(OtObject object) {
 	// create BGFX buffers
 	vertexBuffer = geometry->getVertexBuffer();
 	indexBuffer = geometry->getTriangleIndexBuffer();
+	return shared();
 }
 
 
@@ -124,7 +96,7 @@ void OtMeshClass::setGeometry(OtObject object) {
 //	OtMeshClass::setMaterial
 //
 
-void OtMeshClass::setMaterial(OtObject object) {
+OtObject OtMeshClass::setMaterial(OtObject object) {
 	// ensure object is a material
 	if (object->isKindOf("Material")) {
 		material = object->cast<OtMaterialClass>();
@@ -132,6 +104,18 @@ void OtMeshClass::setMaterial(OtObject object) {
 	} else {
 		OtExcept("Expected a [Material] object, not a [%s]", object->getType()->getName().c_str());
 	}
+
+	return shared();
+}
+
+
+//
+//	OtMeshClass::setHoles
+//
+
+OtObject OtMeshClass::setHoles(bool h) {
+	holes = h;
+	return shared();
 }
 
 
@@ -139,7 +123,7 @@ void OtMeshClass::setMaterial(OtObject object) {
 //	OtMeshClass::render
 //
 
-void OtMeshClass::render(int view, glm::mat4 parentTransform, int flag) {
+void OtMeshClass::render(int view, glm::mat4 parentTransform, long flag) {
 	// let parent class do its thing
 	OtObject3dClass::render(view, parentTransform);
 
@@ -166,6 +150,11 @@ void OtMeshClass::render(int view, glm::mat4 parentTransform, int flag) {
 //
 
 void OtMeshClass::render(int view, glm::mat4 parentTransform) {
+	// sanity check
+	if (!geometry || !material) {
+		OtExcept("[Geometry] and/or [material] missing for [mesh]");
+	}
+
 	// see if culling is desired
 	if (!geometry->wantsCulling() || holes) {
 		// render back side
@@ -186,9 +175,9 @@ OtType OtMeshClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtMeshClass>("Mesh", OtObject3dClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtMeshClass::init));
 		type->set("setGeometry", OtFunctionClass::create(&OtMeshClass::setGeometry));
 		type->set("setMaterial", OtFunctionClass::create(&OtMeshClass::setMaterial));
+		type->set("setHoles", OtFunctionClass::create(&OtMeshClass::setHoles));
 	}
 
 	return type;

@@ -20,10 +20,12 @@
 //	OtComponentClass::add
 //
 
-OtComponent OtComponentClass::add(OtObject object) {
+OtObject OtComponentClass::add(OtObject object) {
 	// ensure object is of the right class
 	if (!object->isKindOf("Component")) {
-		OtExcept("Can't have a [%s] as a child of a [Component]", object->getType()->getName().c_str());
+		OtExcept("Can't have a [%s] as a child of a [%s]",
+			object->getType()->getName().c_str(),
+			getType()->getName().c_str());
 	}
 
 	// cast the object to the child type
@@ -42,9 +44,7 @@ OtComponent OtComponentClass::add(OtObject object) {
 
 	// add new child
 	children.push_back(child);
-
-	// return new child as the correct type
-	return child;
+	return shared();
 }
 
 
@@ -52,7 +52,7 @@ OtComponent OtComponentClass::add(OtObject object) {
 //	OtComponentClass::remove
 //
 
-void OtComponentClass::remove(OtObject object) {
+OtObject OtComponentClass::remove(OtObject object) {
 	// ensure object is of the right class
 	if (!object->isKindOf("Component")) {
 		OtExcept("Can't have a [%s] as a child of a [Component]", object->getType()->getName().c_str());
@@ -73,6 +73,8 @@ void OtComponentClass::remove(OtObject object) {
 			found = true;
 		}
 	}
+
+	return shared();
 }
 
 

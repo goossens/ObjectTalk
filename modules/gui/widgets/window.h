@@ -28,10 +28,14 @@ public:
 	void init(const std::string& t, int w, int h, int f) { title = t; width = w; height = h; flags = f; }
 
 	// adjust window properties
-	void setTitle(const std::string& t) { title = t; }
+	OtObject setTitle(const std::string& t) { title = t; return shared(); }
 	std::string getTitle() { return title; }
 
-	void setFlags(int f) { flags = f; }
+	OtObject setSize(int w, int h) { width = w; height = h; return shared(); }
+	int getWidth() { return width; }
+	int getHeight() { return height; }
+
+	OtObject setFlags(int f) { flags = f; return shared(); }
 	int getFlags() { return flags; }
 
 	// ensure specified component is allowed as a child

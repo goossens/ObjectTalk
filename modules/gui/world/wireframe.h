@@ -32,12 +32,9 @@ public:
 	OtWireframeClass();
 	~OtWireframeClass();
 
-	// initialize wireframe
-	void init(OtObject geometry, OtObject material);
-
 	// update geometry or material
-	void setGeometry(OtObject geometry);
-	void setMaterial(OtObject material);
+	OtObject setGeometry(OtObject geometry);
+	OtObject setMaterial(OtObject material);
 
 	// render in BGFX
     void render(int view, glm::mat4 parentTransform);
@@ -50,7 +47,7 @@ public:
 
 protected:
 	// render with culling
-	void render(int view, glm::mat4 parentTransform, int flag);
+	void render(int view, glm::mat4 parentTransform, long flag);
 
 	// geometry and material
 	OtGeometry geometry;

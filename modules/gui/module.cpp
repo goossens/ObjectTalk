@@ -19,12 +19,15 @@
 #include "application.h"
 #include "component.h"
 
-#include "screen.h"
 #include "view.h"
 #include "camera.h"
+#include "scene.h"
+
+#include "sceneobject.h"
+
+#include "ambient.h"
 #include "light.h"
 #include "fog.h"
-#include "scene.h"
 
 #include "object3d.h"
 #include "background.h"
@@ -44,21 +47,25 @@
 #include "model.h"
 
 #include "widget.h"
+
+#include "screen.h"
+#include "window.h"
+#include "panel.h"
+
 #include "menubar.h"
 #include "menu.h"
 #include "menuitem.h"
-
-#include "window.h"
-#include "panel.h"
 
 #include "treenode.h"
 #include "label.h"
 #include "checkbox.h"
 #include "combobox.h"
 
+#include "ambientcontroller.h"
 #include "cameracontroller.h"
 #include "lightcontroller.h"
 #include "fogcontroller.h"
+
 #include "tron.h"
 
 
@@ -71,12 +78,15 @@ extern "C" void init(OtModule module) {
 	module->set("Application", OtClassClass::create(OtApplicationClass::getMeta()));
 	module->set("Component", OtClassClass::create(OtComponentClass::getMeta()));
 
-	module->set("Screen", OtClassClass::create(OtScreenClass::getMeta()));
 	module->set("View", OtClassClass::create(OtViewClass::getMeta()));
 	module->set("Camera", OtClassClass::create(OtCameraClass::getMeta()));
+	module->set("Scene", OtClassClass::create(OtSceneClass::getMeta()));
+
+	module->set("SceneObject", OtClassClass::create(OtSceneObjectClass::getMeta()));
+
+	module->set("Ambient", OtClassClass::create(OtAmbientClass::getMeta()));
 	module->set("Light", OtClassClass::create(OtLightClass::getMeta()));
 	module->set("Fog", OtClassClass::create(OtFogClass::getMeta()));
-	module->set("Scene", OtClassClass::create(OtSceneClass::getMeta()));
 
 	module->set("Object3D", OtClassClass::create(OtObject3dClass::getMeta()));
 	module->set("Background", OtClassClass::create(OtBackgroundClass::getMeta()));
@@ -97,10 +107,8 @@ extern "C" void init(OtModule module) {
 	module->set("Torus", OtClassClass::create(OtTorusClass::getMeta()));
 	module->set("Model", OtClassClass::create(OtModelClass::getMeta()));
 
-	module->set("Menubar", OtClassClass::create(OtMenubarClass::getMeta()));
-	module->set("Menu", OtClassClass::create(OtMenuClass::getMeta()));
-	module->set("MenuItem", OtClassClass::create(OtMenuItemClass::getMeta()));
-
+	module->set("Widget", OtClassClass::create(OtWidgetClass::getMeta()));
+	module->set("Screen", OtClassClass::create(OtScreenClass::getMeta()));
 	module->set("Window", OtClassClass::create(OtWindowClass::getMeta()));
 	module->set("Panel", OtClassClass::create(OtPanelClass::getMeta()));
 
@@ -142,13 +150,19 @@ extern "C" void init(OtModule module) {
 	module->set("keyModCapsLock", OtIntegerClass::create(GLFW_MOD_CAPS_LOCK));
 	module->set("keyModNumLock", OtIntegerClass::create(GLFW_MOD_NUM_LOCK));
 
+	module->set("Menubar", OtClassClass::create(OtMenubarClass::getMeta()));
+	module->set("Menu", OtClassClass::create(OtMenuClass::getMeta()));
+	module->set("MenuItem", OtClassClass::create(OtMenuItemClass::getMeta()));
+
 	module->set("TreeNode", OtClassClass::create(OtTreeNodeClass::getMeta()));
 	module->set("Label", OtClassClass::create(OtLabelClass::getMeta()));
 	module->set("Checkbox", OtClassClass::create(OtCheckboxClass::getMeta()));
 	module->set("Combobox", OtClassClass::create(OtComboboxClass::getMeta()));
 
+	module->set("AmbientController", OtClassClass::create(OtAmbientControllerClass::getMeta()));
 	module->set("CameraController", OtClassClass::create(OtCameraControllerClass::getMeta()));
 	module->set("LightController", OtClassClass::create(OtLightControllerClass::getMeta()));
 	module->set("FogController", OtClassClass::create(OtFogControllerClass::getMeta()));
+
 	module->set("Tron", OtClassClass::create(OtTronClass::getMeta()));
 }

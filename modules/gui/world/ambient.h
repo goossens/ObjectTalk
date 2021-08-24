@@ -12,31 +12,28 @@
 //	Include files
 //
 
-#include "glm/ext.hpp"
 #include "glm/glm.hpp"
-
-#include "bgfx/bgfx.h"
+#include "glm/ext.hpp"
 
 #include "sceneobject.h"
 
 
 //
-//	OtFogClass
+//	OtAmbientClass
 //
 
-class OtFogClass;
-typedef std::shared_ptr<OtFogClass> OtFog;
+class OtAmbientClass;
+typedef std::shared_ptr<OtAmbientClass> OtAmbient;
 
-class OtFogClass : public OtSceneObjectClass {
+class OtAmbientClass : public OtSceneObjectClass {
 	friend class OtViewClass;
 
 public:
 	// update attributes
 	OtObject setColorRGB(double r, double g, double b);
 	OtObject setColorCSS(const std::string& color);
-	OtObject setDistances(double near, double far);
 
-	// GUI to change fog parameters
+	// GUI to change parameters
 	void renderGUI();
 
 	// submit data to BGFX
@@ -46,11 +43,9 @@ public:
 	static OtType getMeta();
 
 	// create a new object
-	static OtFog create();
+	static OtAmbient create();
 
 private:
-	// fog properties
+	// light properties
 	glm::vec4 color = glm::vec4(1.0);
-	float near = 0;
-	float far = 100;
 };

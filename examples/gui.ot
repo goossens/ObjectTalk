@@ -10,24 +10,28 @@ var gui = import("gui");
 
 class MyApp : gui.Application {
 	function setup(this, screen) {
-		this.createMenubar(screen);
-		this.createPanel(screen);
+		screen.add(this.createMenubar());
+		screen.add(this.createPanel());
 	}
 
-	function createMenubar(this, screen) {
-		var menubar = screen.add(gui.Menubar());
+	function createMenubar(this) {
+		var menubar = gui.Menubar();
 
-		var fileMenu = menubar.add(gui.Menu("File"));
+		var fileMenu = gui.Menu("File");
 		fileMenu.add(gui.MenuItem("New", "CMD+N"));
 		fileMenu.add(gui.MenuItem("Open...", "CMD+O"));
+		menubar.add(fileMenu);
 
-		var editMenu = menubar.add(gui.Menu("Edit"));
+		var editMenu = gui.Menu("Edit");
+		menubar.add(editMenu);
+
+		return menubar;
 	}
 
-	function createPanel(this, screen) {
-		var panel = screen.add(gui.Panel(0, 0, 20, 100));
+	function createPanel(this) {
+		var panel = gui.Panel(0, 0, 20, 100);
 		panel.add(gui.Tron());
-		panel.add(gui.CameraControl(this.camera));
+		return panel;
 	}
 }
 

@@ -13,17 +13,17 @@
 //
 
 #include "widget.h"
-#include "light.h"
+#include "ambient.h"
 
 
 //
-//	OtLightControllerClass
+//	OtAmbientControllerClass
 //
 
-class OtLightControllerClass;
-typedef std::shared_ptr<OtLightControllerClass> OtLightController;
+class OtAmbientControllerClass;
+typedef std::shared_ptr<OtAmbientControllerClass> OtAmbientController;
 
-class OtLightControllerClass : public OtWidgetClass {
+class OtAmbientControllerClass : public OtWidgetClass {
 public:
 	// initialize controller
 	void init(OtObject object);
@@ -35,9 +35,9 @@ public:
 	static OtType getMeta();
 
 	// create a new object
-	static OtLightController create();
+	static OtAmbientController create();
 
 private:
 	// our scene
-	OtLight light;
+	OtAmbient ambient;
 };

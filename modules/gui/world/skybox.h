@@ -14,9 +14,9 @@
 
 #include "bgfx/bgfx.h"
 
-#include "object3d.h"
 #include "geometry.h"
 #include "material.h"
+#include "sceneobject.h"
 
 
 //
@@ -26,14 +26,14 @@
 class OtSkyboxClass;
 typedef std::shared_ptr<OtSkyboxClass> OtSkybox;
 
-class OtSkyboxClass : public OtObject3dClass {
+class OtSkyboxClass : public OtSceneObjectClass {
 public:
 	// constructor/destructor
 	OtSkyboxClass();
 	~OtSkyboxClass();
 
 	// initialize wireframe
-	void init(const std::string& cubemap);
+	OtObject setCubemap(const std::string& file);
 
 	// render in BGFX
     void render(int view, glm::mat4 parentTransform);

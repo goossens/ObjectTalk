@@ -10,8 +10,8 @@ uniform vec4 u_material[4];
 #define u_material_ambient u_material[0]
 #define u_material_diffuse u_material[1]
 #define u_material_specular u_material[2]
-#define u_material_raw u_material[3].x
-#define u_material_textured u_material[3].y
+#define u_material_raw int(u_material[3].x)
+#define u_material_textured int(u_material[3].y)
 #define u_material_shininess u_material[3].z
 
 uniform mat3 u_uv_transform;

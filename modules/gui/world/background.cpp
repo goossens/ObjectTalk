@@ -14,7 +14,7 @@
 #include "ot/function.h"
 
 #include "background.h"
-#include "background_shader.h"
+#include "backgroundshader.h"
 #include "plane.h"
 #include "theme.h"
 
@@ -78,20 +78,10 @@ OtBackgroundClass::~OtBackgroundClass() {
 
 
 //
-//	OtBackgroundClass::init
-//
-
-void OtBackgroundClass::init(OtObject mat) {
-	// setGeometry(geom);
-	setMaterial(mat);
-}
-
-
-//
 //	OtBackgroundClass::setMaterial
 //
 
-void OtBackgroundClass::setMaterial(OtObject object) {
+OtObject OtBackgroundClass::setMaterial(OtObject object) {
 	// ensure object is a material
 	if (object->isKindOf("Material")) {
 		material = object->cast<OtMaterialClass>();
@@ -99,6 +89,8 @@ void OtBackgroundClass::setMaterial(OtObject object) {
 	} else {
 		OtExcept("Expected a [Material] object, not a [%s]", object->getType()->getName().c_str());
 	}
+
+	return shared();
 }
 
 
@@ -140,7 +132,6 @@ OtType OtBackgroundClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtBackgroundClass>("Background", OtObject3dClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtBackgroundClass::init));
 		type->set("setMaterial", OtFunctionClass::create(&OtBackgroundClass::setMaterial));
 	}
 

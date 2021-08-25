@@ -50,14 +50,10 @@ protected:
 	// render with culling
 	void render(int view, glm::mat4 parentTransform, long flag);
 
-	// geometry and material
+	// geometry, material and flag to describe holes/transparency
 	OtGeometry geometry;
 	OtMaterial material;
 	bool holes = false;
-
-	// BGFX buffers
-	bgfx::VertexBufferHandle vertexBuffer = BGFX_INVALID_HANDLE;
-	bgfx::IndexBufferHandle indexBuffer = BGFX_INVALID_HANDLE;
 
 	// BGFX shader
 	bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;

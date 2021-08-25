@@ -15,12 +15,63 @@
 
 
 //
+//	OtGeometryClass::~OtGeometryClass
+//
+
+OtGeometryClass::~OtGeometryClass() {
+	clearBuffers();
+}
+
+
+//
 //	OtGeometryClass::clear
 //
 
 void OtGeometryClass::clear() {
 	vertices.clear();
 	triangles.clear();
+	lines.clear();
+	refreshBuffers = true;
+}
+
+
+//
+//	OtGeometryClass::clearBuffers
+//
+
+void OtGeometryClass::clearBuffers() {
+	if (bgfx::isValid(vertexBuffer)) {
+		bgfx::destroy(vertexBuffer);
+		vertexBuffer = BGFX_INVALID_HANDLE;
+	}
+
+	if (bgfx::isValid(triagleIndexBuffer)) {
+		bgfx::destroy(triagleIndexBuffer);
+		triagleIndexBuffer = BGFX_INVALID_HANDLE;
+	}
+
+	if (bgfx::isValid(lineIndexBuffer)) {
+		bgfx::destroy(lineIndexBuffer);
+		lineIndexBuffer = BGFX_INVALID_HANDLE;
+	}
+
+	refreshBuffers = true;
+}
+
+
+//
+//	OtGeometryClass::updateBuffers
+//
+
+void OtGeometryClass::updateBuffers() {
+	clearBuffers();
+	fillBuffers();
+
+	bgfx::VertexLayout layout = OtVertex::getVertexLayout();
+	vertexBuffer = bgfx::createVertexBuffer(bgfx::makeRef(vertices.data(), sizeof(OtVertex) * vertices.size()), layout);
+	triagleIndexBuffer = bgfx::createIndexBuffer(bgfx::makeRef(triangles.data(), sizeof(uint16_t) * triangles.size()));
+	lineIndexBuffer = bgfx::createIndexBuffer(bgfx::makeRef(lines.data(), sizeof(uint16_t) * lines.size()));
+	refreshBuffers = false;
 }
 
 
@@ -29,8 +80,11 @@ void OtGeometryClass::clear() {
 //
 
 bgfx::VertexBufferHandle OtGeometryClass::getVertexBuffer() {
-	bgfx::VertexLayout layout = OtVertex::getVertexLayout();
-	return bgfx::createVertexBuffer(bgfx::makeRef(vertices.data(), sizeof(OtVertex) * vertices.size()), layout);
+	if (refreshBuffers) {
+		updateBuffers();
+	}
+
+	return vertexBuffer;
 }
 
 
@@ -39,7 +93,11 @@ bgfx::VertexBufferHandle OtGeometryClass::getVertexBuffer() {
 //
 
 bgfx::IndexBufferHandle OtGeometryClass::getTriangleIndexBuffer() {
-	return bgfx::createIndexBuffer(bgfx::makeRef(triangles.data(), sizeof(uint16_t) * triangles.size()));
+	if (refreshBuffers) {
+		updateBuffers();
+	}
+
+	return triagleIndexBuffer;
 }
 
 
@@ -48,19 +106,11 @@ bgfx::IndexBufferHandle OtGeometryClass::getTriangleIndexBuffer() {
 //
 
 bgfx::IndexBufferHandle OtGeometryClass::getLineIndexBuffer() {
-	// convert triangles to lines (if required)
-	if (!lines.size()) {
-		for (auto c = 0; c < triangles.size(); c+= 3) {
-			lines.push_back(triangles[c]);
-			lines.push_back(triangles[c + 1]);
-			lines.push_back(triangles[c + 1]);
-			lines.push_back(triangles[c + 2]);
-			lines.push_back(triangles[c + 2]);
-			lines.push_back(triangles[c]);
-		}
+	if (refreshBuffers) {
+		updateBuffers();
 	}
 
-	return bgfx::createIndexBuffer(bgfx::makeRef(lines.data(), sizeof(uint16_t) * lines.size()));
+	return lineIndexBuffer;
 }
 
 

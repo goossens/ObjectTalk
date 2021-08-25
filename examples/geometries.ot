@@ -9,7 +9,7 @@
 var gui = import("gui");
 
 // specify default values
-var defaultGeometry = "torus";
+var defaultGeometry = "sphere";
 var defaultMaterial = "gold";
 var defaultRenderer = "textured";
 
@@ -48,8 +48,9 @@ class MyApp : gui.Application {
 			.setDirection(0, -5, -10);
 
 		this.grid = gui.Wireframe()
-			.setGeometry(gui.Grid())
-			.setMaterial(gui.Material().setVertex());
+			.setGeometry(gui.Plane(50, 50, 10, 10))
+			.setMaterial(gui.Material().setVertex())
+			.rotateX(-pi / 2.0);
 
 		this.mesh = gui.Mesh()
 			.setGeometry(this.geometry)

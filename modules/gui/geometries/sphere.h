@@ -26,11 +26,15 @@ typedef std::shared_ptr<OtSphereClass> OtSphere;
 
 class OtSphereClass : public OtGeometryClass {
 public:
-	// constructor
-	OtSphereClass();
-
 	// initialize geometry
 	OtObject init(size_t count, OtObject* parameters);
+
+	// update attributes
+	OtObject setRadius(double radius);
+	OtObject setWidthSegments(int segments);
+	OtObject setHeightSegments(int segments);
+	OtObject setWidthPartial(double phiStart, double phiLength);
+	OtObject setHeightPartial(double thetaStart, double thetaLength);
 
 	// get type definition
 	static OtType getMeta();
@@ -39,8 +43,8 @@ public:
 	static OtSphere create();
 
 private:
-	// create vertices
-	void createTriangles();
+	// generate geometry
+	void fillBuffers();
 
 	// attributes
 	double radius = 1.0;

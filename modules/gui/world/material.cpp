@@ -93,7 +93,7 @@ OtMaterialClass::~OtMaterialClass() {
 		bimg::imageFree(image);
 	}
 
-	if (texture.idx != bgfx::kInvalidHandle) {
+	if (bgfx::isValid(texture)) {
 		bgfx::destroy(texture);
 	}
 }
@@ -318,7 +318,7 @@ void OtMaterialClass::submit(int view) {
 	bgfx::setUniform(transformUniform, &uvTransform);
 
 	// pass texture
-	if (texture.idx != bgfx::kInvalidHandle) {
+	if (bgfx::isValid(texture)) {
 		bgfx::setTexture(0, textureUniform, texture);
 
 	} else {

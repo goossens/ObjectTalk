@@ -50,14 +50,6 @@ OtWireframeClass::OtWireframeClass() {
 OtWireframeClass::~OtWireframeClass() {
 	// release resources
 	bgfx::destroy(program);
-
-	if (vertexBuffer.idx != bgfx::kInvalidHandle) {
-		bgfx::destroy(vertexBuffer);
-	}
-
-	if (indexBuffer.idx != bgfx::kInvalidHandle) {
-		bgfx::destroy(indexBuffer);
-	}
 }
 
 
@@ -73,19 +65,6 @@ OtObject OtWireframeClass::setGeometry(OtObject object) {
 	} else {
 		OtExcept("Expected a [Geometry] object, not a [%s]", object->getType()->getName().c_str());
 	}
-
-	// release resources if required
-	if (vertexBuffer.idx != bgfx::kInvalidHandle) {
-		bgfx::destroy(vertexBuffer);
-	}
-
-	if (indexBuffer.idx != bgfx::kInvalidHandle) {
-		bgfx::destroy(indexBuffer);
-	}
-
-	// create BGFX buffers
-	vertexBuffer = geometry->getVertexBuffer();
-	indexBuffer = geometry->getLineIndexBuffer();
 
 	return shared();
 }
@@ -117,8 +96,8 @@ void OtWireframeClass::render(int view, glm::mat4 parentTransform, long flag) {
 	OtObject3dClass::render(view, parentTransform);
 
 	// submit vertices and triangles
-	bgfx::setVertexBuffer(0, vertexBuffer);
-	bgfx::setIndexBuffer(indexBuffer);
+	bgfx::setVertexBuffer(0, geometry->getVertexBuffer());
+	bgfx::setIndexBuffer(geometry->getLineIndexBuffer());
 
 	// setup material
 	material->submit(view);

@@ -39,7 +39,6 @@
 #include "geometry.h"
 #include "plane.h"
 #include "circle.h"
-#include "grid.h"
 #include "sphere.h"
 #include "cylinder.h"
 #include "cone.h"
@@ -101,7 +100,6 @@ extern "C" void init(OtModule module) {
 	module->set("Circle", OtClassClass::create(OtCircleClass::getMeta()));
 	module->set("Plane", OtClassClass::create(OtPlaneClass::getMeta()));
 	module->set("Sphere", OtClassClass::create(OtSphereClass::getMeta()));
-	module->set("Grid", OtClassClass::create(OtGridClass::getMeta()));
 	module->set("Cylinder", OtClassClass::create(OtCylinderClass::getMeta()));
 	module->set("Cone", OtClassClass::create(OtConeClass::getMeta()));
 	module->set("Torus", OtClassClass::create(OtTorusClass::getMeta()));

@@ -27,6 +27,10 @@ public:
 	// initialize geometry
 	OtObject init(size_t count, OtObject* parameters);
 
+	// update attributes
+	OtObject setModel(const std::string& name);
+	OtObject setScale(double scale);
+
 	// get type definition
 	static OtType getMeta();
 
@@ -34,6 +38,10 @@ public:
 	static OtModel create();
 
 private:
-	// initial scaling
+	// generate geometry
+	void fillBuffers();
+
+	// properties
+	std::string modelName;
 	float scale = 1.0;
 };

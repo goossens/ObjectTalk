@@ -17,15 +17,6 @@
 
 
 //
-//	OtSphereClass::OtSphereClass()
-//
-
-OtSphereClass::OtSphereClass() {
-	createTriangles();
-}
-
-
-//
 //	OtSphereClass::init
 //
 
@@ -63,7 +54,7 @@ OtObject OtSphereClass::init(size_t count, OtObject* parameters) {
 				OtExcept("Too many parameters [%ld] for [Sphere] contructor (max 7)", count);
 		}
 
-		createTriangles();
+		refreshBuffers = true;
 	}
 
 	return nullptr;
@@ -71,11 +62,68 @@ OtObject OtSphereClass::init(size_t count, OtObject* parameters) {
 
 
 //
-//	OtSphereClass::createTriangles
+//	OtSphereClass::setRadius
 //
 
-void OtSphereClass::createTriangles() {
-	// clear vertex/triangle lists
+OtObject OtSphereClass::setRadius(double r) {
+	radius = r;
+	refreshBuffers = true;
+	return shared();
+}
+
+
+//
+//	OtSphereClass::setWidthSegments
+//
+
+OtObject OtSphereClass::setWidthSegments(int segments) {
+	widthSegments = segments;
+	refreshBuffers = true;
+	return shared();
+}
+
+
+//
+//	OtSphereClass::setHeightSegments
+//
+
+OtObject OtSphereClass::setHeightSegments(int segments) {
+	heightSegments = segments;
+	refreshBuffers = true;
+	return shared();
+}
+
+
+//
+//	OtSphereClass::setWidthPartial
+//
+
+OtObject OtSphereClass::setWidthPartial(double ps, double pl) {
+	phiStart = ps;
+	phiLength = pl;
+	refreshBuffers = true;
+	return shared();
+}
+
+
+//
+//	OtSphereClass::setHeightPartial
+//
+
+OtObject OtSphereClass::setHeightPartial(double ts, double tl) {
+	thetaStart = ts;
+	thetaLength = tl;
+	refreshBuffers = true;
+	return shared();
+}
+
+
+//
+//	OtSphereClass::fillBuffers
+//
+
+void OtSphereClass::fillBuffers() {
+	// clear geometry
 	clear();
 
 	// get increments
@@ -102,7 +150,7 @@ void OtSphereClass::createTriangles() {
 		}
 	}
 
-	// add triangles
+	// add triangles and lines
 	for (auto ring = 0; ring < heightSegments; ring++) {
 		for (auto seg = 0; seg < widthSegments; seg++) {
 			auto a = ring * (widthSegments + 1) + seg;
@@ -112,6 +160,13 @@ void OtSphereClass::createTriangles() {
 
 			addTriangle(a, b, d);
 			addTriangle(b, c, d);
+
+			if (ring == 0) {
+				addLine(a, d);
+			}
+
+			addLine(a, b);
+			addLine(b, c);
 		}
 	}
 }
@@ -127,6 +182,11 @@ OtType OtSphereClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtSphereClass>("Sphere", OtGeometryClass::getMeta());
 		type->set("__init__", OtFunctionClass::create(&OtSphereClass::init));
+		type->set("setRadius", OtFunctionClass::create(&OtSphereClass::setRadius));
+		type->set("setWidthSegments", OtFunctionClass::create(&OtSphereClass::setWidthSegments));
+		type->set("setHeightSegments", OtFunctionClass::create(&OtSphereClass::setHeightSegments));
+		type->set("setWidthPartial", OtFunctionClass::create(&OtSphereClass::setWidthPartial));
+		type->set("setHeightPartial", OtFunctionClass::create(&OtSphereClass::setHeightPartial));
 	}
 
 	return type;

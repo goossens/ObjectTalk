@@ -49,17 +49,7 @@ OtMeshClass::OtMeshClass() {
 
 OtMeshClass::~OtMeshClass() {
 	// release resources
-	if (program.idx != bgfx::kInvalidHandle) {
-		bgfx::destroy(program);
-	}
-
-	if (vertexBuffer.idx != bgfx::kInvalidHandle) {
-		bgfx::destroy(vertexBuffer);
-	}
-
-	if (indexBuffer.idx != bgfx::kInvalidHandle) {
-		bgfx::destroy(indexBuffer);
-	}
+	bgfx::destroy(program);
 }
 
 
@@ -76,18 +66,6 @@ OtObject OtMeshClass::setGeometry(OtObject object) {
 		OtExcept("Expected a [Geometry] object, not a [%s]", object->getType()->getName().c_str());
 	}
 
-	// release resources if required
-	if (vertexBuffer.idx != bgfx::kInvalidHandle) {
-		bgfx::destroy(vertexBuffer);
-	}
-
-	if (indexBuffer.idx != bgfx::kInvalidHandle) {
-		bgfx::destroy(indexBuffer);
-	}
-
-	// create BGFX buffers
-	vertexBuffer = geometry->getVertexBuffer();
-	indexBuffer = geometry->getTriangleIndexBuffer();
 	return shared();
 }
 
@@ -128,8 +106,8 @@ void OtMeshClass::render(int view, glm::mat4 parentTransform, long flag) {
 	OtObject3dClass::render(view, parentTransform);
 
 	// submit vertices and triangles
-	bgfx::setVertexBuffer(0, vertexBuffer);
-	bgfx::setIndexBuffer(indexBuffer);
+	bgfx::setVertexBuffer(0, geometry->getVertexBuffer());
+	bgfx::setIndexBuffer(geometry->getTriangleIndexBuffer());
 
 	// setup material
 	material->submit(view);

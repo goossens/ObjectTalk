@@ -49,10 +49,6 @@ protected:
 	OtGeometry geometry;
 	OtMaterial material;
 
-	// BGFX buffers
-	bgfx::VertexBufferHandle vertexBuffer = BGFX_INVALID_HANDLE;
-	bgfx::IndexBufferHandle indexBuffer = BGFX_INVALID_HANDLE;
-
 	// BGFX shader
 	bgfx::UniformHandle transformUniform = BGFX_INVALID_HANDLE;
 	bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;

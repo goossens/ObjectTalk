@@ -26,11 +26,15 @@ typedef std::shared_ptr<OtTorusClass> OtTorus;
 
 class OtTorusClass : public OtGeometryClass {
 public:
-	// constructor
-	OtTorusClass();
-
 	// initialize geometry
 	OtObject init(size_t count, OtObject* parameters);
+
+	// update attributes
+	OtObject setRadius(double radius);
+	OtObject setTube(double tube);
+	OtObject setRadialSegments(int segments);
+	OtObject setTubularSegments(int segments);
+	OtObject setArc(double arc);
 
 	// get type definition
 	static OtType getMeta();
@@ -39,8 +43,8 @@ public:
 	static OtTorus create();
 
 private:
-	// create vertices
-	void createTriangles();
+	// generate geometry
+	void fillBuffers();
 
 	// attributes
 	double radius = 1.0;

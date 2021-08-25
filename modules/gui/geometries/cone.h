@@ -26,26 +26,30 @@ typedef std::shared_ptr<OtConeClass> OtCone;
 
 class OtConeClass : public OtGeometryClass {
 public:
-	// constructor
-	OtConeClass();
-
 	// initialize geometry
 	OtObject init(size_t count, OtObject* parameters);
+
+	// update attributes
+	OtObject setRadius(double radius);
+	OtObject setHeight(double height);
+	OtObject setSegments(int segments);
+	OtObject setPartial(double thetaStart, double thetaLength);
 
 	// get type definition
 	static OtType getMeta();
 
 	// create a new object
 	static OtCone create();
+	static OtCone create(double radius, double height, long segments);
 
 private:
-	// create vertices
-	void createTriangles();
+	// generate geometry
+	void fillBuffers();
 
 	// geometry
 	double radius = 1.0;
 	double height = 1.0;
-	int numSegments = 20;
+	int segments = 20;
 	float thetaStart = 0.0;
 	float thetaLength = std::numbers::pi * 2.0;
 };

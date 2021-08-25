@@ -17,15 +17,6 @@
 
 
 //
-//	OtCircleClass::OtCircleClass()
-//
-
-OtCircleClass::OtCircleClass() {
-	createTriangles();
-}
-
-
-//
 //	OtCircleClass::init
 //
 
@@ -50,7 +41,7 @@ OtObject OtCircleClass::init(size_t count, OtObject* parameters) {
 				OtExcept("Too many parameters [%ld] for [Circle] contructor (max 4)", count);
 		}
 
-		createTriangles();
+		refreshBuffers = true;
 	}
 
 	return nullptr;
@@ -58,11 +49,45 @@ OtObject OtCircleClass::init(size_t count, OtObject* parameters) {
 
 
 //
-//	OtCircleClass::createTriangles
+//	OtCircleClass::setRadius
 //
 
-void OtCircleClass::createTriangles() {
-	// clear vertex/triangle lists
+OtObject OtCircleClass::setRadius(double r) {
+	radius = r;
+	refreshBuffers = true;
+	return shared();
+}
+
+
+//
+//	OtCircleClass::setSegments
+//
+
+OtObject OtCircleClass::setSegments(int s) {
+	segments = s;
+	refreshBuffers = true;
+	return shared();
+}
+
+
+//
+//	OtCircleClass::setPartial
+//
+
+OtObject OtCircleClass::setPartial(double ts, double tl) {
+	thetaStart = ts;
+	thetaLength = tl;
+	refreshBuffers = true;
+	return shared();
+}
+
+
+//
+//	OtCircleClass::fillBuffers
+//
+
+void OtCircleClass::fillBuffers() {
+	// clear geometry
 	clear();
 
 	// add center
@@ -71,7 +96,7 @@ void OtCircleClass::createTriangles() {
 		glm::normalize(glm::vec3(0, 0, 1)),
 		glm::vec2(0.5, 0.5)));
 
-	// add circle points
+	// add points on circle
 	float delta = thetaLength / segments;
 
 	for (auto c = 0; c <= segments; c++) {
@@ -85,9 +110,16 @@ void OtCircleClass::createTriangles() {
 			glm::vec2((x + 1.0) / 2.0, 1.0 - ((y + 1.0) / 2.0))));
 	}
 
-	// add all triangles
+	// add triangles and lines
 	for (auto c = 1; c <= segments; c++) {
 		addTriangle(c, c + 1, 0);
+
+		addLine(0, c);
+		addLine(c, c + 1);
+
+		if (c == segments) {
+			addLine(0, c + 1);
+		}
 	}
 }
 
@@ -102,6 +134,9 @@ OtType OtCircleClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtCircleClass>("Circle", OtGeometryClass::getMeta());
 		type->set("__init__", OtFunctionClass::create(&OtCircleClass::init));
+		type->set("setRadius", OtFunctionClass::create(&OtCircleClass::setRadius));
+		type->set("setSegments", OtFunctionClass::create(&OtCircleClass::setSegments));
+		type->set("setPartial", OtFunctionClass::create(&OtCircleClass::setPartial));
 	}
 
 	return type;
@@ -115,5 +150,12 @@ OtType OtCircleClass::getMeta() {
 OtCircle OtCircleClass::create() {
 	OtCircle circle = std::make_shared<OtCircleClass>();
 	circle->setType(getMeta());
+	return circle;
+}
+
+OtCircle OtCircleClass::create(double radius, long segments) {
+	OtCircle circle = create();
+	circle->setRadius(radius);
+	circle->setSegments(segments);
 	return circle;
 }

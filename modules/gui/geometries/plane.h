@@ -24,12 +24,12 @@ typedef std::shared_ptr<OtPlaneClass> OtPlane;
 
 class OtPlaneClass : public OtGeometryClass {
 public:
-	// constructors
-	OtPlaneClass();
-	OtPlaneClass(double width, double height);
-
 	// initialize geometry
 	OtObject init(size_t count, OtObject* parameters);
+
+	// update attributes
+	OtObject setSize(double width, double height);
+	OtObject setSegments(int widthSegments, int heightSegments);
 
 	// get type definition
 	static OtType getMeta();
@@ -39,10 +39,12 @@ public:
 	static OtPlane create(double width, double height);
 
 private:
-	// create vertices
-	void createTriangles();
+	// generate geometry
+	void fillBuffers();
 
 	// attributes
 	double width = 1.0;
 	double height = 1.0;
+	int widthSegments = 1;
+	int heightSegments = 1;
 };

@@ -19,7 +19,7 @@ class MyApp : gui.Application {
 				.setColorCSS(skyColor));
 
 		var grass = gui.Mesh()
-			.setGeometry(gui.Plane(150, 150))
+			.setGeometry(gui.Plane(200, 150))
 			.setMaterial(gui.Material()
 				.setTexture(__DIR__ + "/assets/grass.jpg")
 				.setUvTransform(0, 0, 5, 5, 0, 0, 0))
@@ -37,7 +37,7 @@ class MyApp : gui.Application {
 
 		// create view
 		screen.add(gui.View()
-			.setScreenArea(30, 0, 70, 100)
+			.setScreenArea(0, 0, 100, 100)
 			.setCamera(gui.Camera().setPosition(0, 20, 50))
 			.setScene(scene));
 	}

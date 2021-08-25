@@ -37,8 +37,6 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 OtBackgroundClass::OtBackgroundClass() {
 	// create geometry
 	geometry = OtPlaneClass::create(2.0, 2.0);
-	vertexBuffer = geometry->getVertexBuffer();
-	indexBuffer = geometry->getTriangleIndexBuffer();
 
 	// register uniform
 	transformUniform = bgfx::createUniform("u_background_transform", bgfx::UniformType::Mat4);
@@ -59,21 +57,8 @@ OtBackgroundClass::OtBackgroundClass() {
 
 OtBackgroundClass::~OtBackgroundClass() {
 	// release resources
-	if (transformUniform.idx != bgfx::kInvalidHandle) {
-		bgfx::destroy(transformUniform);
-	}
-
-	if (program.idx != bgfx::kInvalidHandle) {
-		bgfx::destroy(program);
-	}
-
-	if (vertexBuffer.idx != bgfx::kInvalidHandle) {
-		bgfx::destroy(vertexBuffer);
-	}
-
-	if (indexBuffer.idx != bgfx::kInvalidHandle) {
-		bgfx::destroy(indexBuffer);
-	}
+	bgfx::destroy(transformUniform);
+	bgfx::destroy(program);
 }
 
 
@@ -111,8 +96,8 @@ void OtBackgroundClass::render(int view, glm::mat4 parentTransform) {
 	bgfx::setUniform(transformUniform, &transform);
 
 	// submit vertices and triangles
-	bgfx::setVertexBuffer(0, vertexBuffer);
-	bgfx::setIndexBuffer(indexBuffer);
+	bgfx::setVertexBuffer(0, geometry->getVertexBuffer());
+	bgfx::setIndexBuffer(geometry->getTriangleIndexBuffer());
 
 	// setup material
 	material->submit(view);

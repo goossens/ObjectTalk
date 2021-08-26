@@ -9,57 +9,12 @@
 //	Include files
 //
 
-#include <map>
-
 #include "ot/function.h"
 #include "ot/libuv.h"
 #include "ot/vm.h"
 
 #include "application.h"
-
-
-//
-//	OtAnimation
-//
-
-class OtAnimation
-{
-public:
-	OtAnimation(double* v, double d, double l, double s, double e) : value(v), delay(d), length(l), start(s), end(e) {
-		startTime = OtApplicationClass::getTime();
-	}
-
-	bool update(double delta) {
-		// wait until we are at the end of the delay time
-		bool done = false;
-
-		if (delta >= delay) {
-			// determine place in animation process
-			delta = delta - delay;
-
-			// have we reach the end of our animation?
-			if (delta >= length) {
-				// yes, we are done
-				*value = end;
-				done = true;
-
-			} else {
-				// no, calculate new animation value
-				*value = start + (delta / length) * (end - start);
-			}
-		}
-
-		return done;
-	}
-
-private:
-	double startTime;
-	double* value;
-	double delay, length;
-	double start, end;
-};
-
-static std::map<void*, std::shared_ptr<OtAnimation>> animations;
+#include "theme.h"
 
 
 //
@@ -85,15 +40,13 @@ void OtApplicationClass::run(const std::string& name) {
 
 	// application main loop
 	while (!glfwWindowShouldClose(window)) {
+		// update loop timings
+		timeGLFW();
+
 		// update all animations
-		auto i = animations.begin();
-
-		while (i != animations.end()) {
-			if (i->second->update(loopDuration)) {
-				animations.erase(i++);
-
-			} else {
-				i++;
+		for (int c = animations.size() - 1; c >= 0; c--) {
+			if (!animations[c]->step(loopDuration * 1000)) {
+				animations.erase(animations.begin() + c);
 			}
 		}
 
@@ -124,6 +77,9 @@ void OtApplicationClass::run(const std::string& name) {
 	screen = nullptr;
 	unsetAll();
 
+	// remove all animations
+	animations.clear();
+
 	// terminate libraries
 	endIMGUI();
 	endBGFX();
@@ -137,6 +93,17 @@ void OtApplicationClass::run(const std::string& name) {
 
 	uv_run(uv_default_loop(), UV_RUN_DEFAULT);
 	uv_loop_close(uv_default_loop());
+}
+
+
+//
+//	OtApplicationClass::animate
+//
+
+OtObject OtApplicationClass::animation() {
+	OtAnimation animation = OtAnimationClass::create();
+	animations.push_back(animation);
+	return animation;
 }
 
 
@@ -209,15 +176,6 @@ void OtApplicationClass::onChar(unsigned int codepoint) {
 
 
 //
-//	OtApplicationClass::animate
-//
-
-void OtApplicationClass::animate(double* value, double delay, double length, double start, double end) {
-	animations[value] = std::make_shared<OtAnimation>(value, delay, length, start, end);
-}
-
-
-//
 //	OtApplicationClass::getTime()
 //
 
@@ -236,6 +194,7 @@ OtType OtApplicationClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtApplicationClass>("Application", OtGuiClass::getMeta());
 		type->set("run", OtFunctionClass::create(&OtApplicationClass::run));
+		type->set("animation", OtFunctionClass::create(&OtApplicationClass::animation));
 	}
 
 	return type;
@@ -247,7 +206,7 @@ OtType OtApplicationClass::getMeta() {
 //
 
 OtApplication OtApplicationClass::create() {
-	OtApplication app = std::make_shared<OtApplicationClass>();
-	app->setType(getMeta());
-	return app;
+	OtApplication application = std::make_shared<OtApplicationClass>();
+	application->setType(getMeta());
+	return application;
 }

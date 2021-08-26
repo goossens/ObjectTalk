@@ -39,9 +39,6 @@ class MyApp : gui.Application {
 		this.setGeometry(defaultGeometry);
 		this.setMaterial(defaultMaterial);
 
-		// set default object rotation
-		this.rotation = 0.0;
-
 		// create all components
 		this.camera = gui.Camera()
 			.setPosition(0, 40, 40)
@@ -59,6 +56,16 @@ class MyApp : gui.Application {
 		this.wireframe = gui.Wireframe()
 			.setGeometry(this.geometry)
 			.setMaterial(this.material);
+
+		this.animation()
+			.from(0.0)
+			.to(pi * 2.0)
+			.during(20000)
+			.continuous()
+			.onStep(function(angle) {
+				this.mesh.rotateY(-angle);
+				this.wireframe.rotateY(-angle);
+			});
 
 		this.ambient = gui.Ambient();
 
@@ -97,12 +104,6 @@ class MyApp : gui.Application {
 
 		// create control panel
 		screen.add(this.createPanel());
-	}
-
-	function update(this) {
-		this.rotation -= 0.005;
-		this.mesh.rotateY(this.rotation);
-		this.wireframe.rotateY(this.rotation);
 	}
 
 	function createPanel(this) {

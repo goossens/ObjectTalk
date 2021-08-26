@@ -13,6 +13,7 @@
 #include "ot/function.h"
 
 #include "application.h"
+#include "theme.h"
 
 
 //
@@ -91,17 +92,24 @@ void OtApplicationClass::initGLFW(const std::string& name) {
 
 
 //
+//	OtApplicationClass::timeGLFW
+//
+
+void OtApplicationClass::timeGLFW() {
+	// get time since epoch
+	loopTime = glfwGetTime();
+	loopDuration = loopTime - lastTime;
+	lastTime = loopTime;
+}
+
+
+//
 //	OtApplicationClass::frameGLFW
 //
 
 void OtApplicationClass::frameGLFW() {
 	// get window size
 	glfwGetFramebufferSize(window, &OtTheme::width, &OtTheme::height);
-
-	// get time since epoch
-	loopTime = glfwGetTime();
-	loopDuration = loopTime - lastTime;
-	lastTime = loopTime;
 }
 
 

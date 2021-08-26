@@ -20,6 +20,7 @@
 #include <bgfx/platform.h>
 
 #include "application.h"
+#include "theme.h"
 
 
 //

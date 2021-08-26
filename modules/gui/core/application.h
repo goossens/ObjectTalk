@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include <vector>
+
 #define GLFW_INCLUDE_NONE
 #import <GLFW/glfw3.h>
 
@@ -20,8 +22,8 @@
 #include <imgui.h>
 
 #include "gui.h"
+#include "animation.h"
 #include "screen.h"
-#include "theme.h"
 
 
 //
@@ -42,8 +44,8 @@ public:
 	void onKey(int key, int scancode, int action, int mods);
 	void onChar(unsigned int codepoint);
 
-	// animate a parameter
-	static void animate(double* value, double delay, double length, double start, double end);
+	// add an animation
+	OtObject animation();
 
 	// get system time in milliseconds since the epoch
 	static double getTime();
@@ -68,6 +70,7 @@ private:
 
 	// initialize, run and terminate libraries
 	void initGLFW(const std::string& name);
+	void timeGLFW();
 	void frameGLFW();
 	void eventsGLFW();
 	void endGLFW();
@@ -91,6 +94,9 @@ private:
 	static double lastTime;
 	static double loopTime;
 	static double loopDuration;
+
+	// animations
+	std::vector<OtAnimation> animations;
 
 	// to render IM3D
 	bgfx::VertexLayout  im3dVertexLayout;

@@ -12,13 +12,17 @@ var cameraRadius = 120.0;
 
 // define our view
 class MyView : gui.View {
-	function __init__(this) {
+	function __init__(this, scene) {
+		this.setScreenArea(0, 0, 100, 100);
+
 		this.camera = gui.Camera();
 		this.setCamera(this.camera);
 
 		this.cameraY = 0.0;
 		this.cameraRotation = 0.0;
 		this.camera.setPosition(0.0, 0.0, cameraRadius);
+
+		this.setScene(scene);
 	}
 
 	function onKey(this, key, mods) {
@@ -63,10 +67,6 @@ class MyView : gui.View {
 
 // define our application
 class MyApp : gui.Application {
-	function __init__(this) {
-		this.sphereRotation = 0.0;
-	}
-
 	function setup(this, screen) {
 		// create all components
 		var skybox = gui.Skybox().setCubemap(__DIR__ + "/assets/yokohama.ktx");
@@ -80,20 +80,20 @@ class MyApp : gui.Application {
 			.setGeometry(gui.Sphere(20, 40, 40))
 			.setMaterial(gui.Material().setMaterial("gold"));
 
-		var scene = gui.Scene()
+		this.animation()
+			.from(0.0)
+			.to(pi * 2.0)
+			.during(15000)
+			.continuous()
+			.onStep(function(angle) {
+				this.sphere.rotateY(-angle);
+			});
+
+		// create our view scene
+		screen.add(MyView(gui.Scene()
 			.add(skybox)
 			.add(this.sphere)
-			.add(light);
-
-		// create our view and scene
-		screen.add(MyView()
-			.setScreenArea(0, 0, 100, 100)
-			.setScene(scene));
-	}
-
-	function update(this) {
-		this.sphereRotation -= 0.005;
-		this.sphere.rotateY(this.sphereRotation);
+			.add(light)));
 	}
 }
 

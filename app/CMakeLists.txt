@@ -12,7 +12,7 @@ if(PRIVATE_UV)
 endif()
 
 if(OT_GUI)
-	add_dependencies(ot gui glfw bgfx glm imgui tinyobjloader)
+	add_dependencies(ot gui glfw bgfx glm imgui tinyobjloader tweeny)
 endif()
 
 target_link_libraries(ot PRIVATE libot ${UV_LIBRARY})

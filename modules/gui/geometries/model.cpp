@@ -21,9 +21,6 @@
 //
 
 OtObject OtModelClass::init(size_t count, OtObject* parameters) {
-	// default culling
-	culling = true;
-
 	// set attributes
 	if (count) {
 		switch (count) {
@@ -74,6 +71,9 @@ OtObject OtModelClass::setScale(double s) {
 void OtModelClass::fillBuffers() {
 	// clear geometry
 	clear();
+
+	// default culling
+	culling = true;
 
 	// load the object model
 	tinyobj::attrib_t attrib;

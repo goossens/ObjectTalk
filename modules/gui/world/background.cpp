@@ -63,6 +63,22 @@ OtBackgroundClass::~OtBackgroundClass() {
 
 
 //
+//	OtBackgroundClass::init
+//
+
+OtObject OtBackgroundClass::init(size_t count, OtObject* parameters) {
+	if (count == 1) {
+		setMaterial(parameters[0]);
+
+	} else if (count != 0) {
+		OtExcept("[Background] constructor expects 0 or 1 arguments (not %ld)", count);
+	}
+
+	return nullptr;
+}
+
+
+//
 //	OtBackgroundClass::setMaterial
 //
 
@@ -117,6 +133,7 @@ OtType OtBackgroundClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtBackgroundClass>("Background", OtObject3dClass::getMeta());
+		type->set("__init__", OtFunctionClass::create(&OtBackgroundClass::init));
 		type->set("setMaterial", OtFunctionClass::create(&OtBackgroundClass::setMaterial));
 	}
 

@@ -61,6 +61,7 @@ OtType OtIntegerClass::getMeta() {
 		type->set("min", OtFunctionClass::create(&OtIntegerClass::min));
 		type->set("max", OtFunctionClass::create(&OtIntegerClass::max));
 		type->set("clamp", OtFunctionClass::create(&OtIntegerClass::clamp));
+		type->set("random", OtFunctionClass::create(&OtIntegerClass::random));
 	}
 
 	return type;

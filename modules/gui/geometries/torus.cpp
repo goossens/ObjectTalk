@@ -21,15 +21,11 @@
 //
 
 OtObject OtTorusClass::init(size_t count, OtObject* parameters) {
-	// default culling
-	culling = true;
-
 	// set attributes
 	if (count) {
 		switch (count) {
 			case 5:
 				arc = parameters[4]->operator double();
-				culling = false;
 
 			case 4:
 				tubularSegments = parameters[3]->operator int();
@@ -117,6 +113,9 @@ OtObject OtTorusClass::setArc(double a) {
 void OtTorusClass::fillBuffers() {
 	// clear geometry
 	clear();
+
+	// default culling
+	culling = arc = std::numbers::pi * 2.0;
 
 	// generate vertices
 	for (auto j = 0; j <= radialSegments; j++) {

@@ -31,6 +31,7 @@ meaning that the extremes are -9,223,372,036,854,775,808 and
 | min(integer) | Return the minimum of integer and the object's value.
 | max(integer) | Return the maximum of integer and the object's value.
 | clamp(min, max) | Return clamped value between min and max.
+| random() | Return a non-cryptographic random number between 0 and the object's value.
 
 **Overrides**
 

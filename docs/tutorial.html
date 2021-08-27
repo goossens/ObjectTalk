@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>ObjectTalk Tutorial</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/theme.css" />
+  </head>
+  <body id="page-top">
+    <div
+      class="
+        container-fluid
+        d-flex
+        flex-column flex-grow-1
+        vh-100
+        overflow-hidden
+      "
+    >
+      <nav
+        class="navbar navbar-expand px-0 pt-1 pb-0 flex-shrink-0 manual-header"
+      >
+        <a class="navbar-brand" href="index.html"
+          ><img src="img/icon.png" height="40" alt="" /><span class="ml-2"
+            >Documentation</span
+          ></a
+        ><button
+          class="navbar-toggler navbar-toggler-right"
+          data-toggle="collapse"
+          data-target="#navbarResponsive"
+          type="button"
+          data-toogle="collapse"
+          aria-controls="navbarResponsive"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <i class="fa fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item text-right">
+              <a class="nav-link page-scroll" href="tour.html">Tour</a>
+            </li>
+            <li class="nav-item text-right">
+              <a class="nav-link page-scroll" href="guide.html">Guide</a>
+            </li>
+            <li class="nav-item text-right">
+              <a class="nav-link page-scroll" href="reference.html"
+                >Reference</a
+              >
+            </li>
+            <li class="nav-item text-right">
+              <a class="nav-link page-scroll" href="tutorial.html">Tutorial</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <div class="row flex-grow-1 overflow-hidden vh-100">
+        <div class="col-2 mh-100 overflow-auto py-2 manual-toc">
+          <p class="pt-2"><strong>ObjectTalk Tutorial</strong></p>
+          <ul>
+            <li><a class="page-scroll" href="#overview">Overview</a></li>
+            <li>
+              <a class="page-scroll" href="#3d">3D Tutorial</a>
+              <ul>
+                <li>
+                  <a class="page-scroll" href="#3d-fundamentals"
+                    >Fundamentals</a
+                  >
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="col mh-100 overflow-auto py-2 manual-content">
+          <div id="overview">
+            <h1 class="pb-2">Tutorial Overview</h1>
+            <p>
+              This section contains a set of tutorials for the ObjectTalk
+              language and its modules. The intent is to make it as easy as
+              possible to get started with ObjectTalk and learn the language and
+              its libraries through a set of examples.
+            </p>
+          </div>
+          <div id="3d">
+            <h1 class="pb-2">3D Tutorial</h1>
+            <p>
+              Below is a set of tutorial that explore the 3D part of the
+              Graphical User Interface (GUI) module. These tutorials assume you
+              are already a little familiar with the ObjectTalk language and
+              have read the <a href="tour.html">tour</a> and
+              <a href="guide.html">guide</a> parts of the documentation.
+            </p>
+          </div>
+          <div id="3d-fundamentals">
+            <h1 class="pb-2">3D Fundamentals</h1>
+            <p>
+              When learning most programming languages the first thing people do
+              is make the computer print &quot;Hello World!&quot;. For 3D, one
+              of the most common first things to do is to make a 3D cube. So
+              let's start with &quot;Hello Cube!&quot;
+            </p>
+            <p>
+              Before we get started let's try to give you an idea of the
+              structure of a 3D GUI app. This app requires you to create a bunch
+              of objects and connect them together. Here's a diagram that
+              represents a small 3D app.
+            </p>
+            <p>
+              <img
+                class="mx-auto d-block"
+                src="img/3d-structure.png"
+                alt="3D App Structure"
+              />
+            </p>
+            <p>Things to notice about the diagram above:</p>
+            <ul>
+              <li>
+                There is an <strong>Application</strong>. This is the main
+                object of GUI App. You add widgets to an app and the
+                <strong>View</strong> widget is used to render a 3D scene via a
+                specified <strong>Camera</strong>.
+              </li>
+              <li>
+                There is a Scenegraph which is a tree like structure, consisting
+                of various objects like a <strong>Background</strong>,
+                <strong>Skycube</strong>, <strong>Meshes</strong>,
+                <strong>Wireframes</strong>, <strong>Lights</strong> and
+                <strong>Fog</strong>. A <strong>Scene</strong> object defines
+                the root of the Scenegraph in which objects define a
+                hierarchical parent/child tree like structure and represent
+                where objects appear and how they are oriented. Children are
+                positioned and oriented relative to their parent. For example
+                the wheels on a car might be children of the car so that moving
+                and orienting the car's object automatically moves the wheels.
+              </li>
+              <li>
+                <strong>Mesh</strong> and <strong>Wireframe</strong> objects
+                represent drawing a specific <strong>Geometry</strong> with a
+                specific <strong>Material</strong>. Both
+                <strong>Material</strong> objects and
+                <strong>Geometry</strong> objects can be used by multiple
+                <strong>Mesh</strong> or <strong>Wireframe</strong> objects. For
+                example to draw two blue cubes in different locations we could
+                need two <strong>Mesh</strong> objects to represent the position
+                and orientation of each cube. We would only need one
+                <strong>Geometry</strong> to hold the vertex data for a cube and
+                we would only need one <strong>Material</strong> to specify the
+                color blue. Both <strong>Mesh</strong> objects could reference
+                the same <strong>Geometry</strong> object and the same
+                <strong>Material</strong> object.
+              </li>
+              <li>
+                <strong>Geometry</strong> objects represent the vertex data of
+                some piece of geometry like a sphere, cube, plane, dog, cat,
+                human, tree, building, etc... ObjectTalk provides many kinds of
+                built in <strong>Geometry</strong> primitives. You can also
+                create custom geometry as well as load geometry models from
+                files.
+              </li>
+              <li>
+                <strong>Material</strong> objects represent the surface
+                properties used to draw geometry including things like the color
+                to use and how shiny it is. A <strong>Material</strong> can also
+                reference a texture which can be used, for example, to wrap an
+                image onto the surface of a geometry.
+              </li>
+              <li>
+                <strong>Light</strong> objects represent different kinds of
+                lights.
+              </li>
+            </ul>
+            <p>
+              Given all of that, we're going to make the smallest possible
+              &quot;Hello Cube&quot; App that looks like this:
+            </p>
+            <p>
+              <img
+                class="mx-auto d-block"
+                src="img/3d-hello-cube.png"
+                alt="3D App Structure"
+              />
+            </p>
+            <p>
+              Below is a skeleton ObjectTalk GUI App that forms the basis for
+              every application. You simply subclass the
+              <strong>Application</strong> class, populate the
+              <strong>setup</strong> member function and run the App.
+            </p>
+            <pre><code>var gui = import(&quot;gui&quot;);
+
+class MyApp : gui.Application {
+	function setup(this, screen) {
+	}
+}
+
+var app = MyApp();
+app.run(&quot;3D Tutorial&quot;);
+</code></pre>
+            <p>
+              This is a complete and valid App even though it doesn't do
+              anything. You can launch the App and it will create a black screen
+              or black window depending on your operating system.
+            </p>
+            <p>
+              So let's start to populate the <strong>setup</strong> member
+              function and first create a <strong>Scene</strong>.
+            </p>
+            <pre><code>var geometry = gui.Cube();
+var material = gui.Material(&quot;material&quot;, &quot;gold&quot;);
+
+var cube = gui.Mesh(geometry, material);
+var scene = gui.Scene().add(cube);
+</code></pre>
+            <p>
+              Here we create a <strong>Cube</strong> geometry followed by a
+              <strong>Material</strong> instance. Please note that we are going
+              for the gold here in our first App (this is not a low budget
+              tutorial, is it). The <strong>Mesh</strong> uses the created
+              geometry and material. Our simple <strong>Scene</strong> can now
+              be created as it only has one member.
+            </p>
+            <p>Now let's create a <strong>Camera</strong>:</p>
+            <pre><code>var camera = gui.Camera()
+	.setPosition(0, 0, 2)
+	.setFOV(75)
+	.setClipping(0.1, 5);
+</code></pre>
+            <p>
+              FOV is short for Field Of View. In this case 75 degrees. Note that
+              most angles in ObjectTalk's GUI module are in radians but the
+              camera takes degrees for FOV. Read up onOpenGL and other libraries
+              and you see where this comes from. The clipping parameters express
+              a near and far point. near and far represent the space in front of
+              the camera that will be rendered. Anything before that range or
+              after that range will be clipped (not drawn).
+            </p>
+            <p>
+              Those settings define a &quot;frustum&quot;. A frustum is the name
+              of a 3D shape that is like a pyramid with the tip sliced off. In
+              other words, think of the word &quot;frustum&quot; as another 3D
+              shape like sphere, cube, prism, frustum.
+            </p>
+            <p>
+              <img
+                class="mx-auto d-block"
+                src="img/3d-frustum.png"
+                alt="3D App Structure"
+              />
+            </p>
+            <p>
+              The camera defaults to looking down the -Z axis with +Y up. We'll
+              put our cube at the origin so we need to move the camera back a
+              little from the origin in order to see anything. This is what
+              <strong>setPosition</strong> does. So here is what we are aiming
+              for:
+            </p>
+            <p>
+              <img
+                class="mx-auto d-block"
+                src="img/3d-scene-down.png"
+                alt="3D App Structure"
+              />
+            </p>
+            <p>
+              In the diagram above, we can see our camera is at z = 2. It's
+              looking down the -Z axis. Our frustum starts 0.1 units from the
+              front of the camera and goes to 5 units in front of the camera.
+            </p>
+            <p>
+              Finally we create the <strong>View</strong>, connect the
+              <strong>Camera</strong>, connect the <strong>Scene</strong> and
+              make it visible on the <strong>Screen</strong>:
+            </p>
+            <pre><code>var view = gui.View()
+	.setCamera(camera)
+	.setScene(scene);
+
+screen.add(view);
+</code></pre>
+            <p>Our complete App now looks like this:</p>
+            <pre><code>var gui = import(&quot;gui&quot;);
+
+class MyApp : gui.Application {
+	function setup(this, screen) {
+		var geometry = gui.Box();
+		var material = gui.Material(&quot;material&quot;, &quot;gold&quot;);
+
+		var cube = gui.Mesh(geometry, material);
+		var scene = gui.Scene().add(cube);
+
+		var camera = gui.Camera()
+			.setPosition(0, 0, 2)
+			.setFOV(75)
+			.setClipping(0.1, 5);
+
+		var view = gui.View()
+			.setCamera(camera)
+			.setScene(scene);
+
+		screen.add(view);
+	}
+}
+
+var app = MyApp();
+app.run(&quot;3D Tutorial&quot;);
+</code></pre>
+            <p>
+              Let's run this App and be amazed how underwhelming to result is.
+              It looks like we drew just a square. Yes, It's kind of hard to
+              tell that is a 3D cube since we're viewing it directly down the -Z
+              axis and the cube itself is axis aligned so we're only seeing a
+              single face.
+            </p>
+            <p>
+              Let's animate it spinning and hopefully that will make it clear
+              it's being drawn in 3D. To animate it we'll add an animation to
+              the App:
+            </p>
+            <pre><code>this.animation()
+	.from(0.0)
+	.to(pi * 2.0)
+	.during(15000)
+	.continuous()
+	.onStep(function(angle) {
+		cube.rotate(angle, 1, 1, 0);
+	});
+</code></pre>
+            <p>
+              This animation animates a real from 0.0 to 2PI during 15000
+              microseconds (or 15 seconds) and repeats this endlessly. The
+              number is than used to rotate the cube around the [0, 0, 0] vector
+              which makes it spin around the X and Y axis.
+            </p>
+            <p>
+              We now start to see that we have a cube but it is start hard to
+              make out as all sides are colored the same way. The first thing we
+              can do is change the <strong>Mesh</strong> 3D object to a
+              <strong>Wireframe</strong>. This makes it clear that we truly have
+              a cube.
+            </p>
+            <p>
+              The better solution is to add light to make it more realistic. By
+              default, a <strong>Scene</strong> includes a dim
+              <strong>Ambient</strong> light so we can see our creations. You
+              can add your own <strong>Ambient</strong> light which will
+              override the default. You can also add point
+              <strong>Lights</strong> that make it easier to make the scene more
+              realistic. So let's do both and change the App to:
+            </p>
+            <pre><code>var gui = import(&quot;gui&quot;);
+
+class MyApp : gui.Application {
+	function setup(this, screen) {
+		var geometry = gui.Box();
+		var material = gui.Material(&quot;material&quot;, &quot;gold&quot;);
+
+		var cube = gui.Mesh(geometry, material);
+
+		this.animation()
+			.from(0.0)
+			.to(pi * 2.0)
+			.during(15000)
+			.continuous()
+			.onStep(function(angle) {
+				cube.rotate(angle, 1, 1, 0);
+			});
+
+		var ambient = gui.Ambient();
+		var light = gui.Light().setPosition(1, 2, 4);
+
+		var scene = gui.Scene()
+			.add(cube)
+			.add(ambient)
+			.add(light);
+
+		var camera = gui.Camera()
+			.setPosition(0, 0, 2)
+			.setFOV(75)
+			.setClipping(0.1, 5);
+
+		var view = gui.View()
+			.setCamera(camera)
+			.setScene(scene);
+
+		screen.add(view);
+	}
+}
+
+var app = MyApp();
+app.run(&quot;3D Tutorial&quot;);
+</code></pre>
+            <p>
+              It should now be pretty clearly 3D. Point lights have a position
+              and it defaults to 0, 0, 0. In our case we're setting the light's
+              position to 1, 2, 4 so it's slightly on the right, above, and
+              behind our camera. A slightly more complex version with three
+              rotating cubes can be found in the examples folder.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="row flex-shrink-0 py-1 manual-footer" id="copyright">
+        <p class="mx-auto py-0 my-0 small">
+          Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.
+        </p>
+      </div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/theme.js"></script>
+  </body>
+</html>

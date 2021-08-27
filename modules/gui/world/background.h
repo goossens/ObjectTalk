@@ -32,6 +32,9 @@ public:
 	OtBackgroundClass();
 	~OtBackgroundClass();
 
+	// initialize
+	OtObject init(size_t count, OtObject* parameters);
+
 	// update material
 	OtObject setMaterial(OtObject material);
 

@@ -124,7 +124,6 @@ void OtPlaneClass::fillBuffers() {
 				addLine(c, d);
 			}
 		}
-
 	}
 }
 

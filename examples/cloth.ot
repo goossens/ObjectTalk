@@ -14,9 +14,7 @@ var skyColor = "#cce0ff";
 class MyApp : gui.Application {
 	function setup(this, screen) {
 		// create all components
-		var background = gui.Background()
-			.setMaterial(gui.Material()
-				.setColorCSS(skyColor));
+		var background = gui.Background(gui.Material("color", skyColor));
 
 		var grass = gui.Mesh()
 			.setGeometry(gui.Plane(200, 150))

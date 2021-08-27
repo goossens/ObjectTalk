@@ -1,0 +1,25 @@
+include /manual.pug
+
++page("ObjectTalk Tutorial")
+	+manual()
+		+manual-header("img/icon.png", "Documentation")
+			+manual-link("Tour", "tour.html")
+			+manual-link("Guide", "guide.html")
+			+manual-link("Reference", "reference.html")
+			+manual-link("Tutorial", "tutorial.html")
+
+		+manual-body()
+			+manual-toc("ObjectTalk Tutorial")
+				include:markdown-it tutorial/toc.md
+
+			+manual-content()
+				+manual-chapter("overview", "Tutorial Overview")
+					include:markdown-it tutorial/overview.md
+
+				+manual-chapter("3d", "3D Tutorial")
+					include:markdown-it tutorial/3d/overview.md
+
+				+manual-chapter("3d-fundamentals", "3D Fundamentals")
+					include:markdown-it tutorial/3d/fundamentals.md
+
+		+manual-footer("1993-2021", "Johan A. Goossens")

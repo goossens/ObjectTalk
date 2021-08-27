@@ -32,6 +32,9 @@ public:
 	OtSkyboxClass();
 	~OtSkyboxClass();
 
+	// initialize
+	OtObject init(size_t count, OtObject* parameters);
+
 	// initialize wireframe
 	OtObject setCubemap(const std::string& file);
 

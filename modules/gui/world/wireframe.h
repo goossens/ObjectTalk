@@ -32,6 +32,9 @@ public:
 	OtWireframeClass();
 	~OtWireframeClass();
 
+	// initialize
+	OtObject init(size_t count, OtObject* parameters);
+
 	// update geometry or material
 	OtObject setGeometry(OtObject geometry);
 	OtObject setMaterial(OtObject material);

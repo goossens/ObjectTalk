@@ -1,0 +1,55 @@
+var gui = import("gui");
+
+class MyApp : gui.Application {
+	function setup(this, screen) {
+		var geometry = gui.Box();
+
+		var gold = gui.Material("material", "gold");
+		var silver = gui.Material("material", "silver");
+		var bronze = gui.Material("material", "bronze");
+
+		var cube1 = this.createInstance(geometry, gold, -2);
+		var cube2 = this.createInstance(geometry, silver, 0);
+		var cube3 = this.createInstance(geometry, bronze, 2);
+
+		var ambient = gui.Ambient();
+		var light = gui.Light().setPosition(1, 2, 4);
+
+		var scene = gui.Scene()
+			.add(cube1)
+			.add(cube2)
+			.add(cube3)
+			.add(ambient)
+			.add(light);
+
+		var camera = gui.Camera()
+			.setPosition(0, 0, 5)
+			.setFOV(45)
+			.setClipping(0.1, 10);
+
+		var view = gui.View()
+			.setCamera(camera)
+			.setScene(scene);
+
+		screen.add(view);
+	}
+
+	function createInstance(this, geometry, material, offset) {
+		var cube = gui.Mesh(geometry, material)
+			.translate(offset, 0, 0);
+
+		this.animation()
+			.from(0.0)
+			.to(pi * 2.0)
+			.during(5000 + 10000.random())
+			.continuous()
+			.onStep(function(angle) {
+				cube.rotate(angle, 1, 1, 0);
+			});
+
+		return cube;
+	}
+}
+
+var app = MyApp();
+app.run("3D Rotating Cubes");

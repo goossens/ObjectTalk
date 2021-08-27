@@ -16,6 +16,7 @@
 #include <string>
 
 #include "exception.h"
+#include "numbers.h"
 #include "primitive.h"
 
 
@@ -81,6 +82,7 @@ public:
 	long min(long operand) { return std::min(value, operand); }
 	long max(long operand) { return std::max(value, operand); }
 	long clamp(long min, long max) { return std::max(std::min(max, value), min); }
+	long random() { return OtRandom(value); };
 
 	// get type definition
 	static OtType getMeta();

@@ -25,3 +25,6 @@ keep the code and documentation synchronized.
 * Language Reference
 	* [ObjectTalk Language Reference in EBNF](reference.html#language)
 	* [ObjectTalk Classes](reference.html#classes)
+* Tutorials
+	* [3D Tutorial](tutorial.html#3d)
+	* [HTTP Tutorial](tutorial.html#http)

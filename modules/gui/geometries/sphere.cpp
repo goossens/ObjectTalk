@@ -21,9 +21,6 @@
 //
 
 OtObject OtSphereClass::init(size_t count, OtObject* parameters) {
-	// default culling
-	culling = true;
-
 	// set attributes
 	if (count) {
 		switch (count) {
@@ -38,7 +35,6 @@ OtObject OtSphereClass::init(size_t count, OtObject* parameters) {
 
 			case 4:
 				phiStart = parameters[3]->operator double();
-				culling = false;
 
 			case 3:
 				heightSegments = parameters[2]->operator int();
@@ -125,6 +121,9 @@ OtObject OtSphereClass::setHeightPartial(double ts, double tl) {
 void OtSphereClass::fillBuffers() {
 	// clear geometry
 	clear();
+
+	// default culling
+	culling = true;
 
 	// get increments
 	float ringDelta = thetaLength / heightSegments;

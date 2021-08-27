@@ -54,6 +54,30 @@ OtWireframeClass::~OtWireframeClass() {
 
 
 //
+//	OtWireframeClass::init
+//
+
+OtObject OtWireframeClass::init(size_t count, OtObject* parameters) {
+	// set attributes
+	if (count) {
+		switch (count) {
+			case 2:
+				setMaterial(parameters[1]);
+
+			case 1:
+				setGeometry(parameters[0]);
+				break;
+
+			default:
+				OtExcept("Too many parameters [%ld] for [Wireframe] contructor (max 2)", count);
+		}
+	}
+
+	return nullptr;
+}
+
+
+//
 //	OtWireframeClass::setGeometry
 //
 
@@ -138,6 +162,8 @@ OtType OtWireframeClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtWireframeClass>("Wireframe", OtObject3dClass::getMeta());
+		type->set("__init__", OtFunctionClass::create(&OtWireframeClass::init));
+
 		type->set("setGeometry", OtFunctionClass::create(&OtWireframeClass::setGeometry));
 		type->set("setMaterial", OtFunctionClass::create(&OtWireframeClass::setMaterial));
 	}

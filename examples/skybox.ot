@@ -69,16 +69,16 @@ class MyView : gui.View {
 class MyApp : gui.Application {
 	function setup(this, screen) {
 		// create all components
-		var skybox = gui.Skybox().setCubemap(__DIR__ + "/assets/yokohama.ktx");
+		var skybox = gui.Skybox(__DIR__ + "/assets/yokohama.ktx");
 
 		var light = gui.Light()
 			.setPosition(25, 25, 40)
 			.setDiffuseRGB(0.8, 0.8, 0.8)
 			.setSpecularRGB(0.8, 0.8, 0.8);
 
-		this.sphere = gui.Wireframe()
+		var sphere = gui.Wireframe()
 			.setGeometry(gui.Sphere(20, 40, 40))
-			.setMaterial(gui.Material().setMaterial("gold"));
+			.setMaterial(gui.Material("material", "gold"));
 
 		this.animation()
 			.from(0.0)
@@ -86,13 +86,13 @@ class MyApp : gui.Application {
 			.during(15000)
 			.continuous()
 			.onStep(function(angle) {
-				this.sphere.rotateY(-angle);
+				sphere.rotateY(-angle);
 			});
 
 		// create our view scene
 		screen.add(MyView(gui.Scene()
 			.add(skybox)
-			.add(this.sphere)
+			.add(sphere)
 			.add(light)));
 	}
 }

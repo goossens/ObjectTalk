@@ -37,13 +37,14 @@
 #include "material.h"
 
 #include "geometry.h"
-#include "plane.h"
+#include "box.h"
 #include "circle.h"
-#include "sphere.h"
-#include "cylinder.h"
 #include "cone.h"
-#include "torus.h"
+#include "cylinder.h"
 #include "model.h"
+#include "plane.h"
+#include "sphere.h"
+#include "torus.h"
 
 #include "widget.h"
 
@@ -97,13 +98,14 @@ extern "C" void init(OtModule module) {
 	module->set("getDefaultMaterials", OtFunctionClass::create(&OtMaterialClass::getDefaultMaterials));
 
 	module->set("Geometry", OtClassClass::create(OtGeometryClass::getMeta()));
+	module->set("Box", OtClassClass::create(OtBoxClass::getMeta()));
 	module->set("Circle", OtClassClass::create(OtCircleClass::getMeta()));
+	module->set("Cone", OtClassClass::create(OtConeClass::getMeta()));
+	module->set("Cylinder", OtClassClass::create(OtCylinderClass::getMeta()));
+	module->set("Model", OtClassClass::create(OtModelClass::getMeta()));
 	module->set("Plane", OtClassClass::create(OtPlaneClass::getMeta()));
 	module->set("Sphere", OtClassClass::create(OtSphereClass::getMeta()));
-	module->set("Cylinder", OtClassClass::create(OtCylinderClass::getMeta()));
-	module->set("Cone", OtClassClass::create(OtConeClass::getMeta()));
 	module->set("Torus", OtClassClass::create(OtTorusClass::getMeta()));
-	module->set("Model", OtClassClass::create(OtModelClass::getMeta()));
 
 	module->set("Widget", OtClassClass::create(OtWidgetClass::getMeta()));
 	module->set("Screen", OtClassClass::create(OtScreenClass::getMeta()));

@@ -29,6 +29,9 @@ class OtAmbientClass : public OtSceneObjectClass {
 	friend class OtViewClass;
 
 public:
+	// initialize
+	OtObject init(size_t count, OtObject* parameters);
+
 	// update attributes
 	OtObject setColorRGB(double r, double g, double b);
 	OtObject setColorCSS(const std::string& color);

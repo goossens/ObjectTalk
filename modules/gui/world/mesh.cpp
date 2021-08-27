@@ -54,6 +54,30 @@ OtMeshClass::~OtMeshClass() {
 
 
 //
+//	OtMeshClass::init
+//
+
+OtObject OtMeshClass::init(size_t count, OtObject* parameters) {
+	// set attributes
+	if (count) {
+		switch (count) {
+			case 2:
+				setMaterial(parameters[1]);
+
+			case 1:
+				setGeometry(parameters[0]);
+				break;
+
+			default:
+				OtExcept("Too many parameters [%ld] for [Mesh] contructor (max 2)", count);
+		}
+	}
+
+	return nullptr;
+}
+
+
+//
 //	OtMeshClass::setGeometry
 //
 
@@ -153,6 +177,8 @@ OtType OtMeshClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtMeshClass>("Mesh", OtObject3dClass::getMeta());
+		type->set("__init__", OtFunctionClass::create(&OtMeshClass::init));
+
 		type->set("setGeometry", OtFunctionClass::create(&OtMeshClass::setGeometry));
 		type->set("setMaterial", OtFunctionClass::create(&OtMeshClass::setMaterial));
 		type->set("setHoles", OtFunctionClass::create(&OtMeshClass::setHoles));

@@ -60,16 +60,22 @@ In case the GUI module is included, we also use:
 * [bgfx](https://github.com/bkaradzic/bgfx) - cross-platform, graphics API agnostic rendering library.
 * [Dear ImGui](https://github.com/ocornut/imgui) - graphical user interface library.
 * [glm](https://github.com/g-truc/glm) - mathematics library for graphics software.
+* [tweeny](https://github.com/mobius3/tweeny) -  animation library.
 
 A special thanks also goes to
 [Gunther Rademacher](https://github.com/GuntherRademacher) for his
 ["RailRoad Diagram Generator"](https://www.bottlecaps.de/rr/ui) which is
 used in the documentation to visualize the ObjectTalk grammer.
 
-A final special thanks goes to the team that wrote the
+A another special thanks goes to the team that wrote the
 [Swift](https://swift.org) computer language
 [documentation](https://swift.org/documentation/). It is awesome and I've
 respectfully reused a lot of it to document ObjectTalk.
+
+A final special thanks goes to the team that wrote the
+[Three.js](https://threejs.org)
+[Fundamentals Tutorials](https://threejsfundamentals.org). The 3D
+ObjectTalk tutorial is based on it
 
 ## License
 

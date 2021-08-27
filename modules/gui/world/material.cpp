@@ -100,6 +100,36 @@ OtMaterialClass::~OtMaterialClass() {
 
 
 //
+//	OtMaterialClass::init
+//
+
+OtObject OtMaterialClass::init(size_t count, OtObject* parameters) {
+	if (count == 2) {
+		std::string type = parameters[0]->operator std::string();
+		std::string material = parameters[1]->operator std::string();
+
+		if (type == "material") {
+			setMaterial(material);
+
+		} else if (type == "color") {
+			setColorCSS(material);
+
+		} else if (type == "texture") {
+			setTexture(material);
+
+		} else {
+			OtExcept("Invalid material type [%s]", type.c_str());
+		}
+
+	} else if (count != 0) {
+		OtExcept("[Material] constructor expects 0 or 2 arguments (not %ld)", count);
+	}
+
+	return nullptr;
+}
+
+
+//
 //	OtMaterialClass::setMaterial
 //
 
@@ -336,6 +366,8 @@ OtType OtMaterialClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtMaterialClass>("Material", OtGuiClass::getMeta());
+		type->set("__init__", OtFunctionClass::create(&OtMaterialClass::init));
+
 		type->set("setMaterial", OtFunctionClass::create(&OtMaterialClass::setMaterial));
 		type->set("setColorRGB", OtFunctionClass::create(&OtMaterialClass::setColorRGB));
 		type->set("setColorCSS", OtFunctionClass::create(&OtMaterialClass::setColorCSS));

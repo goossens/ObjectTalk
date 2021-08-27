@@ -113,11 +113,11 @@ class MyApp : gui.Application {
 		node.add(gui.CameraController(this.camera));
 		panel.add(node);
 
-		node = gui.TreeNode("Ambient:");
+		node = gui.TreeNode("Ambient Light:");
 		node.add(gui.AmbientController(this.ambient));
 		panel.add(node);
 
-		node = gui.TreeNode("Light:");
+		node = gui.TreeNode("Point Light:");
 		node.add(gui.LightController(this.light));
 		panel.add(node);
 

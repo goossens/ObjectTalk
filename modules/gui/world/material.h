@@ -33,6 +33,9 @@ public:
 	OtMaterialClass();
 	~OtMaterialClass();
 
+	// initialize
+	OtObject init(size_t count, OtObject* parameters);
+
 	// set properties
 	OtObject setMaterial(const std::string& name);
 	OtObject setColorRGB(double r, double g, double b);

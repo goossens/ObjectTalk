@@ -16,16 +16,16 @@
 
 
 //
-//	OtCheckboxClass
+//	OtRealSliderClass
 //
 
-class OtCheckboxClass;
-typedef std::shared_ptr<OtCheckboxClass> OtCheckbox;
+class OtRealSliderClass;
+typedef std::shared_ptr<OtRealSliderClass> OtRealSlider;
 
-class OtCheckboxClass : public OtWidgetClass {
+class OtRealSliderClass : public OtWidgetClass {
 public:
-	// initialize checkbox
-	void init(const std::string& label, bool checked, OtObject callback);
+	// initialize slider
+	void init(const std::string& label, double min, double max, double value, OtObject callback);
 
 	// render content
 	void render();
@@ -34,11 +34,13 @@ public:
 	static OtType getMeta();
 
 	// create a new object
-	static OtCheckbox create();
+	static OtRealSlider create();
 
 private:
 	// properties
 	std::string label;
+	float min;
+	float max;
+	float value;
 	OtObject callback;
-	bool checked = false;
 };

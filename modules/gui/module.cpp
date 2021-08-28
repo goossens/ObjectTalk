@@ -39,7 +39,6 @@
 #include "geometry.h"
 #include "box.h"
 #include "circle.h"
-#include "cone.h"
 #include "cylinder.h"
 #include "model.h"
 #include "plane.h"
@@ -60,6 +59,8 @@
 #include "label.h"
 #include "checkbox.h"
 #include "combobox.h"
+#include "integerslider.h"
+#include "realslider.h"
 
 #include "ambientcontroller.h"
 #include "cameracontroller.h"
@@ -100,7 +101,6 @@ extern "C" void init(OtModule module) {
 	module->set("Geometry", OtClassClass::create(OtGeometryClass::getMeta()));
 	module->set("Box", OtClassClass::create(OtBoxClass::getMeta()));
 	module->set("Circle", OtClassClass::create(OtCircleClass::getMeta()));
-	module->set("Cone", OtClassClass::create(OtConeClass::getMeta()));
 	module->set("Cylinder", OtClassClass::create(OtCylinderClass::getMeta()));
 	module->set("Model", OtClassClass::create(OtModelClass::getMeta()));
 	module->set("Plane", OtClassClass::create(OtPlaneClass::getMeta()));
@@ -158,6 +158,8 @@ extern "C" void init(OtModule module) {
 	module->set("Label", OtClassClass::create(OtLabelClass::getMeta()));
 	module->set("Checkbox", OtClassClass::create(OtCheckboxClass::getMeta()));
 	module->set("Combobox", OtClassClass::create(OtComboboxClass::getMeta()));
+	module->set("IntegerSlider", OtClassClass::create(OtIntegerSliderClass::getMeta()));
+	module->set("RealSlider", OtClassClass::create(OtRealSliderClass::getMeta()));
 
 	module->set("AmbientController", OtClassClass::create(OtAmbientControllerClass::getMeta()));
 	module->set("CameraController", OtClassClass::create(OtCameraControllerClass::getMeta()));

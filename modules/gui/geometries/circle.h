@@ -32,14 +32,14 @@ public:
 	// update attributes
 	OtObject setRadius(double radius);
 	OtObject setSegments(int segments);
-	OtObject setPartial(double thetaStart, double thetaLength);
+	OtObject setThetaStart(double thetaStart);
+	OtObject setThetaLength(double thetaLength);
 
 	// get type definition
 	static OtType getMeta();
 
 	// create a new object
 	static OtCircle create();
-	static OtCircle create(double radius, long segments);
 
 private:
 	// generate geometry
@@ -47,7 +47,7 @@ private:
 
 	// geometry
 	double radius = 1.0;
-	int segments = 8;
+	int segments = 16;
 	double thetaStart = 0.0;
 	double thetaLength = std::numbers::pi * 2.0;
 };

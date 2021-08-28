@@ -24,8 +24,17 @@ OtObject OtTorusClass::init(size_t count, OtObject* parameters) {
 	// set attributes
 	if (count) {
 		switch (count) {
+			case 8:
+				tubularLength = parameters[7]->operator double();
+
+			case 7:
+				tubularStart = parameters[6]->operator double();
+
+			case 6:
+				radialLength = parameters[5]->operator double();
+
 			case 5:
-				arc = parameters[4]->operator double();
+				radialStart = parameters[4]->operator double();
 
 			case 4:
 				tubularSegments = parameters[3]->operator int();
@@ -34,14 +43,14 @@ OtObject OtTorusClass::init(size_t count, OtObject* parameters) {
 				radialSegments = parameters[2]->operator int();
 
 			case 2:
-				tube = parameters[1]->operator double();
+				tubeRadius = parameters[1]->operator double();
 
 			case 1:
 				radius = parameters[0]->operator double();
 				break;
 
 			default:
-				OtExcept("Too many parameters [%ld] for [Torus] contructor (max 5)", count);
+				OtExcept("Too many parameters [%ld] for [Torus] constructor (max 8)", count);
 		}
 
 		refreshBuffers = true;
@@ -63,11 +72,11 @@ OtObject OtTorusClass::setRadius(double r) {
 
 
 //
-//	OtTorusClass::setTube
+//	OtTorusClass::setTubeRadius
 //
 
-OtObject OtTorusClass::setTube(double t) {
-	tube = t;
+OtObject OtTorusClass::setTubeRadius(double tr) {
+	tubeRadius = tr;
 	refreshBuffers = true;
 	return shared();
 }
@@ -96,11 +105,44 @@ OtObject OtTorusClass::setTubularSegments(int segments) {
 
 
 //
-//	OtTorusClass::setArc
+//	OtTorusClass::setRadialStart
 //
 
-OtObject OtTorusClass::setArc(double a) {
-	arc = a;
+OtObject OtTorusClass::setRadialStart(double rs) {
+	radialStart = rs;
+	refreshBuffers = true;
+	return shared();
+}
+
+
+//
+//	OtTorusClass::setRadialLength
+//
+
+OtObject OtTorusClass::setRadialLength(double rl) {
+	radialLength = rl;
+	refreshBuffers = true;
+	return shared();
+}
+
+
+//
+//	OtTorusClass::setTubularStart
+//
+
+OtObject OtTorusClass::setTubularStart(double ts) {
+	tubularStart = ts;
+	refreshBuffers = true;
+	return shared();
+}
+
+
+//
+//	OtTorusClass::setTubularLength
+//
+
+OtObject OtTorusClass::setTubularLength(double tl) {
+	tubularLength = tl;
 	refreshBuffers = true;
 	return shared();
 }
@@ -115,17 +157,17 @@ void OtTorusClass::fillBuffers() {
 	clear();
 
 	// default culling
-	culling = arc = std::numbers::pi * 2.0;
+	culling = tubularLength == std::numbers::pi * 2.0 && radialLength == std::numbers::pi;
 
 	// generate vertices
 	for (auto j = 0; j <= radialSegments; j++) {
 		for (auto i = 0; i <= tubularSegments; i++) {
-			auto u = (float) i / tubularSegments * arc;
-			auto v = (float) j / radialSegments * std::numbers::pi * 2.0;
+			auto u = radialStart + (float) j / radialSegments * radialLength;
+			auto v = tubularStart + (float) i / tubularSegments * tubularLength;
 
-			auto x = (radius + tube * std::cosf(v)) * std::cosf(u);
-			auto y = (radius + tube * std::cosf(v)) * std::sinf(u);
-			auto z = tube * std::sinf(v);
+			auto x = (radius + tubeRadius * std::cosf(v)) * std::cosf(u);
+			auto y = (radius + tubeRadius * std::cosf(v)) * std::sinf(u);
+			auto z = tubeRadius * std::sinf(v);
 
 			glm::vec3 pos = glm::vec3(x, y, z);
 			glm::vec3 center = glm::vec3(radius * std::cosf(u), radius * std::sinf(u), 0.0);
@@ -150,9 +192,8 @@ void OtTorusClass::fillBuffers() {
 			addTriangle(a, b, d);
 			addTriangle(b, c, d);
 
-			if (j == 1) {
+			if (i == 1) {
 				addLine(a, b);
-
 			}
 
 			addLine(b, c);
@@ -174,10 +215,13 @@ OtType OtTorusClass::getMeta() {
 		type = OtTypeClass::create<OtTorusClass>("Torus", OtGeometryClass::getMeta());
 		type->set("__init__", OtFunctionClass::create(&OtTorusClass::init));
 		type->set("setRadius", OtFunctionClass::create(&OtTorusClass::setRadius));
-		type->set("setTube", OtFunctionClass::create(&OtTorusClass::setTube));
+		type->set("setTubeRadius", OtFunctionClass::create(&OtTorusClass::setTubeRadius));
 		type->set("setRadialSegments", OtFunctionClass::create(&OtTorusClass::setRadialSegments));
 		type->set("setTubularSegments", OtFunctionClass::create(&OtTorusClass::setTubularSegments));
-		type->set("setArc", OtFunctionClass::create(&OtTorusClass::setArc));
+		type->set("setRadialStart", OtFunctionClass::create(&OtTorusClass::setRadialStart));
+		type->set("setRadialLength", OtFunctionClass::create(&OtTorusClass::setRadialLength));
+		type->set("setTubularStart", OtFunctionClass::create(&OtTorusClass::setTubularStart));
+		type->set("setTubularLength", OtFunctionClass::create(&OtTorusClass::setTubularLength));
 	}
 
 	return type;

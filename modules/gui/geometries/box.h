@@ -28,22 +28,25 @@ public:
 	OtObject init(size_t count, OtObject* parameters);
 
 	// update attributes
-	OtObject setSize(double width, double height, double depth);
-	OtObject setSegments(int widthSegments, int heightSegments, int depthSegments);
+	OtObject setWidth(double width);
+	OtObject setHeight(double height);
+	OtObject setDepth(double depth);
+	OtObject setWidthSegments(int widthSegments);
+	OtObject setHeightSegments(int heightSegments);
+	OtObject setDepthSegments(int depthSegments);
 
 	// get type definition
 	static OtType getMeta();
 
 	// create a new object
 	static OtBox create();
-	static OtBox create(double width, double height, double depth);
 
 private:
 	// generate geometry
 	void fillBuffers();
 
 	// create one side of the box
-	void buildPlane(int side, int udir, int vdir, double w, double h, double d, int gridX, int gridY, glm::vec3 (*cb)(float, float, float));
+	void buildPlane(int udir, int vdir, double w, double h, double d, int gridX, int gridY, glm::vec3 (*cb)(float, float, float));
 
 	// attributes
 	double width = 1.0;

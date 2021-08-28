@@ -31,10 +31,13 @@ public:
 
 	// update attributes
 	OtObject setRadius(double radius);
-	OtObject setTube(double tube);
+	OtObject setTubeRadius(double tubeRadius);
 	OtObject setRadialSegments(int segments);
 	OtObject setTubularSegments(int segments);
-	OtObject setArc(double arc);
+	OtObject setRadialStart(double radialStart);
+	OtObject setRadialLength(double radialLength);
+	OtObject setTubularStart(double tubularStart);
+	OtObject setTubularLength(double tubularLength);
 
 	// get type definition
 	static OtType getMeta();
@@ -48,8 +51,11 @@ private:
 
 	// attributes
 	double radius = 1.0;
-	double tube = 0.4;
-	int radialSegments = 8;
-	int tubularSegments = 6;
-	double arc = std::numbers::pi * 2.0;
+	double tubeRadius = 0.4;
+	int radialSegments = 32;
+	int tubularSegments = 16;
+	double radialStart = 0.0;
+	double radialLength = std::numbers::pi * 2.0;
+	double tubularStart = 0.0;
+	double tubularLength = std::numbers::pi * 2.0;
 };

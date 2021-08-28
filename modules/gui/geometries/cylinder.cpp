@@ -24,24 +24,34 @@ OtObject OtCylinderClass::init(size_t count, OtObject* parameters) {
 	// set attributes
 	if (count) {
 		switch (count) {
+			case 8:
+				thetaLength = parameters[7]->operator double();
+
+			case 7:
+				thetaStart = parameters[6]->operator double();
+
+			case 6:
+				openEnded = parameters[5]->operator bool();
+
 			case 5:
-				thetaLength = parameters[4]->operator double();
+				heightSegments = parameters[4]->operator int();
 
 			case 4:
-				thetaStart = parameters[3]->operator double();
+				radialSegments = parameters[3]->operator int();
 
 			case 3:
-				segments = parameters[2]->operator int();
+				height = parameters[2]->operator double();
 
 			case 2:
-				height = parameters[1]->operator double();
+				bottomRadius = parameters[1]->operator double();
+				break;
 
 			case 1:
-				radius = parameters[0]->operator double();
+				topRadius = parameters[0]->operator double();
 				break;
 
 			default:
-				OtExcept("Too many parameters [%ld] for [Cylinder] contructor (max 5)", count);
+				OtExcept("Too many parameters [%ld] for [Cylinder] constructor (max 8)", count);
 		}
 
 		refreshBuffers = true;
@@ -52,11 +62,22 @@ OtObject OtCylinderClass::init(size_t count, OtObject* parameters) {
 
 
 //
-//	OtCylinderClass::setRadius
+//	OtCylinderClass::setTopRadius
 //
 
-OtObject OtCylinderClass::setRadius(double r) {
-	radius = r;
+OtObject OtCylinderClass::setTopRadius(double r) {
+	topRadius = r;
+	refreshBuffers = true;
+	return shared();
+}
+
+
+//
+//	OtCylinderClass::setBottomRadius
+//
+
+OtObject OtCylinderClass::setBottomRadius(double r) {
+	bottomRadius = r;
 	refreshBuffers = true;
 	return shared();
 }
@@ -74,22 +95,54 @@ OtObject OtCylinderClass::setHeight(double h) {
 
 
 //
-//	OtCylinderClass::setSegments
+//	OtCylinderClass::setRadialSegments
 //
 
-OtObject OtCylinderClass::setSegments(int s) {
-	segments = s;
+OtObject OtCylinderClass::setRadialSegments(int rs) {
+	radialSegments = rs;
 	refreshBuffers = true;
 	return shared();
 }
 
 
 //
-//	OtCylinderClass::setPartial
+//	OtCylinderClass::setHeightSegments
 //
 
-OtObject OtCylinderClass::setPartial(double ts, double tl) {
+OtObject OtCylinderClass::setHeightSegments(int hs) {
+	heightSegments = hs;
+	refreshBuffers = true;
+	return shared();
+}
+
+
+//
+//	OtCylinderClass::setOpenEnded
+//
+
+OtObject OtCylinderClass::setOpenEnded(bool oe) {
+	openEnded = oe;
+	refreshBuffers = true;
+	return shared();
+}
+
+
+//
+//	OtCylinderClass::setThetaStart
+//
+
+OtObject OtCylinderClass::setThetaStart(double ts) {
 	thetaStart = ts;
+	refreshBuffers = true;
+	return shared();
+}
+
+
+//
+//	OtCylinderClass::setThetaLength
+//
+
+OtObject OtCylinderClass::setThetaLength(double tl) {
 	thetaLength = tl;
 	refreshBuffers = true;
 	return shared();
@@ -104,43 +157,123 @@ void OtCylinderClass::fillBuffers() {
 	// clear geometry
 	clear();
 
-	// get increment
-	float delta = thetaLength / segments;
+	// generate a torso
+	generateTorso();
 
-	// address each segment
-	for (auto seg = 0; seg <= segments; seg++) {
-		auto x0 = radius * -std::sinf(thetaStart + seg * delta);
-		auto z0 = radius * -std::cosf(thetaStart + seg * delta);
+	// generate end caps if required
+	if (!openEnded) {
+		if (topRadius > 0) {
+			generateCap(true);
+		}
 
-		// add a new vertices
-		addVertex(OtVertex(
-			glm::vec3(x0, height / 2.0, z0),
-			glm::normalize(glm::vec3(x0, 0.0, z0)),
-			glm::vec2((float) seg / (float) segments, 0.0)));
+		if (bottomRadius > 0) {
+			generateCap(false);
+		}
+	}
+}
 
-		addVertex(OtVertex(
-			glm::vec3(x0, -height / 2.0, z0),
-			glm::normalize(glm::vec3(x0, 0.0, z0)),
-			glm::vec2((float) seg / (float) segments, 1.0)));
+
+//
+//	OtCylinderClass::generateTorso
+//
+
+void OtCylinderClass::generateTorso() {
+	auto slope = ( bottomRadius - topRadius) / height;
+
+	// generate each height segment
+	for (auto y = 0; y <= heightSegments; y++) {
+		auto v = (float) y / heightSegments;
+		auto radius = v * (bottomRadius - topRadius) + topRadius;
+
+		// generate each radial segment
+		for (auto x = 0; x <= radialSegments; x++) {
+			auto u = (float) x / radialSegments;
+			auto theta = u * thetaLength + thetaStart;
+
+			auto sinTheta = std::sinf(theta);
+			auto cosTheta = std::cosf(theta);
+
+			// add a new vertice
+			addVertex(OtVertex(
+				glm::vec3(radius * sinTheta, -v * height + height / 2.0, radius * cosTheta),
+				glm::normalize(glm::vec3(sinTheta, slope, cosTheta)),
+				glm::vec2(u, 1 - v)));
+		}
 	}
 
 	// add triangles and lines
-	for (auto seg = 0; seg < segments; seg++) {
-		auto a = seg * 2;
-		auto b = a + 1;
-		auto d = (seg + 1) * 2;
-		auto c = d + 1;
+	for (auto y = 0; y < heightSegments; y++) {
+		for (auto x = 0; x < radialSegments; x++) {
+			auto a = y * (radialSegments + 1) + x;
+			auto d = a + 1;
+			auto b = a + (radialSegments + 1);
+			auto c = b + 1;
 
-		addTriangle(a, b, d);
-		addTriangle(b, c, d);
+			addTriangle(a, b, d);
+			addTriangle(b, c, d);
 
-		if (seg == 0) {
+			if (y == 0) {
+				addLine(a, d);
+			}
+
 			addLine(a, b);
+			addLine(b, c);
+
+			if (x == radialSegments - 1) {
+				addLine(c, d);
+			}
+		}
+	}
+}
+
+
+//
+//	OtCylinderClass::generateCap
+//
+
+void OtCylinderClass::generateCap(bool top) {
+	auto radius = top ? topRadius : bottomRadius;
+	auto sign = top ? 1 : - 1;
+
+	// add center
+	auto center = vertices.size();
+
+	addVertex(OtVertex(
+		glm::vec3(0, height / 2.0 * sign, 0),
+		glm::vec3(0, sign, 0),
+		glm::vec2(0.5, 0.5)));
+
+	// add outside vertices
+	auto offset = vertices.size();
+
+	for (auto x = 0; x <= radialSegments; x++) {
+		auto u = (float) x / radialSegments;
+		auto theta = u * thetaLength + thetaStart;
+		auto cosTheta = std::cosf(theta);
+		auto sinTheta = std::sinf(theta);
+
+		// add vertex
+		addVertex(OtVertex(
+			glm::vec3(radius * sinTheta, height / 2.0 * sign, radius * cosTheta),
+			glm::vec3(0, sign, 0),
+			glm::vec2((cosTheta * 0.5) + 0.5, (sinTheta * 0.5 * sign) + 0.5)));
+	}
+
+	// add triangles and lines
+	for (auto c = 0; c < radialSegments; c++) {
+		if (top) {
+			addTriangle(offset + c, offset + c + 1, center);
+
+		} else {
+			addTriangle(offset + c + 1, offset + c, center);
 		}
 
-		addLine(a, d);
-		addLine(b, c);
-		addLine(c, d);
+		addLine(center, offset + c);
+		addLine(offset + c, offset + c + 1);
+
+		if (c == radialSegments - 1) {
+			addLine(center, offset + c + 1);
+		}
 	}
 }
 
@@ -155,10 +288,14 @@ OtType OtCylinderClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtCylinderClass>("Cylinder", OtGeometryClass::getMeta());
 		type->set("__init__", OtFunctionClass::create(&OtCylinderClass::init));
-		type->set("setRadius", OtFunctionClass::create(&OtCylinderClass::setRadius));
+		type->set("setTopRadius", OtFunctionClass::create(&OtCylinderClass::setTopRadius));
+		type->set("setBottomRadius", OtFunctionClass::create(&OtCylinderClass::setBottomRadius));
 		type->set("setHeight", OtFunctionClass::create(&OtCylinderClass::setHeight));
-		type->set("setSegments", OtFunctionClass::create(&OtCylinderClass::setSegments));
-		type->set("setPartial", OtFunctionClass::create(&OtCylinderClass::setPartial));
+		type->set("setRadialSegments", OtFunctionClass::create(&OtCylinderClass::setRadialSegments));
+		type->set("setHeightSegments", OtFunctionClass::create(&OtCylinderClass::setHeightSegments));
+		type->set("setOpenEnded", OtFunctionClass::create(&OtCylinderClass::setOpenEnded));
+		type->set("setThetaStart", OtFunctionClass::create(&OtCylinderClass::setThetaStart));
+		type->set("setThetaLength", OtFunctionClass::create(&OtCylinderClass::setThetaLength));
 	}
 
 	return type;
@@ -172,13 +309,5 @@ OtType OtCylinderClass::getMeta() {
 OtCylinder OtCylinderClass::create() {
 	OtCylinder cylinder = std::make_shared<OtCylinderClass>();
 	cylinder->setType(getMeta());
-	return cylinder;
-}
-
-OtCylinder OtCylinderClass::create(double radius, double height, long segments) {
-	OtCylinder cylinder = create();
-	cylinder->setRadius(radius);
-	cylinder->setHeight(height);
-	cylinder->setSegments(segments);
 	return cylinder;
 }

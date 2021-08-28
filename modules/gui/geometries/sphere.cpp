@@ -47,7 +47,7 @@ OtObject OtSphereClass::init(size_t count, OtObject* parameters) {
 				break;
 
 			default:
-				OtExcept("Too many parameters [%ld] for [Sphere] contructor (max 7)", count);
+				OtExcept("Too many parameters [%ld] for [Sphere] constructor (max 7)", count);
 		}
 
 		refreshBuffers = true;
@@ -91,11 +91,21 @@ OtObject OtSphereClass::setHeightSegments(int segments) {
 
 
 //
-//	OtSphereClass::setWidthPartial
+//	OtSphereClass::setPhiStart
 //
 
-OtObject OtSphereClass::setWidthPartial(double ps, double pl) {
+OtObject OtSphereClass::setPhiStart(double ps) {
 	phiStart = ps;
+	refreshBuffers = true;
+	return shared();
+}
+
+
+//
+//	OtSphereClass::setPhiLength
+//
+
+OtObject OtSphereClass::setPhiLength(double pl) {
 	phiLength = pl;
 	refreshBuffers = true;
 	return shared();
@@ -103,11 +113,21 @@ OtObject OtSphereClass::setWidthPartial(double ps, double pl) {
 
 
 //
-//	OtSphereClass::setHeightPartial
+//	OtSphereClass::setThetaStart
 //
 
-OtObject OtSphereClass::setHeightPartial(double ts, double tl) {
+OtObject OtSphereClass::setThetaStart(double ts) {
 	thetaStart = ts;
+	refreshBuffers = true;
+	return shared();
+}
+
+
+//
+//	OtSphereClass::setThetaLength
+//
+
+OtObject OtSphereClass::setThetaLength(double tl) {
 	thetaLength = tl;
 	refreshBuffers = true;
 	return shared();
@@ -184,8 +204,10 @@ OtType OtSphereClass::getMeta() {
 		type->set("setRadius", OtFunctionClass::create(&OtSphereClass::setRadius));
 		type->set("setWidthSegments", OtFunctionClass::create(&OtSphereClass::setWidthSegments));
 		type->set("setHeightSegments", OtFunctionClass::create(&OtSphereClass::setHeightSegments));
-		type->set("setWidthPartial", OtFunctionClass::create(&OtSphereClass::setWidthPartial));
-		type->set("setHeightPartial", OtFunctionClass::create(&OtSphereClass::setHeightPartial));
+		type->set("setPhiStart", OtFunctionClass::create(&OtSphereClass::setPhiStart));
+		type->set("setPhiLength", OtFunctionClass::create(&OtSphereClass::setPhiLength));
+		type->set("setThetaStart", OtFunctionClass::create(&OtSphereClass::setThetaStart));
+		type->set("setThetaLength", OtFunctionClass::create(&OtSphereClass::setThetaLength));
 	}
 
 	return type;

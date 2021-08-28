@@ -28,15 +28,16 @@ public:
 	OtObject init(size_t count, OtObject* parameters);
 
 	// update attributes
-	OtObject setSize(double width, double height);
-	OtObject setSegments(int widthSegments, int heightSegments);
+	OtObject setWidth(double width);
+	OtObject setHeight(double height);
+	OtObject setWidthSegments(int widthSegments);
+	OtObject setHeightSegments(int heightSegments);
 
 	// get type definition
 	static OtType getMeta();
 
 	// create a new object
 	static OtPlane create();
-	static OtPlane create(double width, double height);
 
 private:
 	// generate geometry

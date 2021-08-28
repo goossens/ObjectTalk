@@ -32,7 +32,7 @@ OtObject OtModelClass::init(size_t count, OtObject* parameters) {
 				break;
 
 			default:
-				OtExcept("Too many parameters [%ld] for [Model] contructor (max 2)", count);
+				OtExcept("Too many parameters [%ld] for [Model] constructor (max 2)", count);
 		}
 
 		refreshBuffers = true;

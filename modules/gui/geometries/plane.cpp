@@ -36,7 +36,7 @@ OtObject OtPlaneClass::init(size_t count, OtObject* parameters) {
 				break;
 
 			default:
-				OtExcept("Too many parameters [%ld] for [Plane] contructor (max 4)", count);
+				OtExcept("Too many parameters [%ld] for [Plane] constructor (max 4)", count);
 		}
 
 		refreshBuffers = true;
@@ -47,11 +47,21 @@ OtObject OtPlaneClass::init(size_t count, OtObject* parameters) {
 
 
 //
-//	OtPlaneClass::setSize
+//	OtPlaneClass::setWidth
 //
 
-OtObject OtPlaneClass::setSize(double w, double h) {
+OtObject OtPlaneClass::setWidth(double w) {
 	width = w;
+	refreshBuffers = true;
+	return shared();
+}
+
+
+//
+//	OtPlaneClass::setHeight
+//
+
+OtObject OtPlaneClass::setHeight(double h) {
 	height = h;
 	refreshBuffers = true;
 	return shared();
@@ -59,11 +69,21 @@ OtObject OtPlaneClass::setSize(double w, double h) {
 
 
 //
-//	OtPlaneClass::setSegments
+//	OtPlaneClass::setWidthSegments
 //
 
-OtObject OtPlaneClass::setSegments(int ws, int hs) {
+OtObject OtPlaneClass::setWidthSegments(int ws) {
 	widthSegments = ws;
+	refreshBuffers = true;
+	return shared();
+}
+
+
+//
+//	OtPlaneClass::setHeightSegments
+//
+
+OtObject OtPlaneClass::setHeightSegments(int hs) {
 	heightSegments = hs;
 	refreshBuffers = true;
 	return shared();
@@ -138,8 +158,10 @@ OtType OtPlaneClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtPlaneClass>("Plane", OtGeometryClass::getMeta());
 		type->set("__init__", OtFunctionClass::create(&OtPlaneClass::init));
-		type->set("setSize", OtFunctionClass::create(&OtPlaneClass::setSize));
-		type->set("setSegments", OtFunctionClass::create(&OtPlaneClass::setSegments));
+		type->set("setWidth", OtFunctionClass::create(&OtPlaneClass::setWidth));
+		type->set("setHeight", OtFunctionClass::create(&OtPlaneClass::setHeight));
+		type->set("setWidthSegments", OtFunctionClass::create(&OtPlaneClass::setWidthSegments));
+		type->set("setHeightSegments", OtFunctionClass::create(&OtPlaneClass::setHeightSegments));
 	}
 
 	return type;
@@ -153,11 +175,5 @@ OtType OtPlaneClass::getMeta() {
 OtPlane OtPlaneClass::create() {
 	OtPlane plane = std::make_shared<OtPlaneClass>();
 	plane->setType(getMeta());
-	return plane;
-}
-
-OtPlane OtPlaneClass::create(double width, double height) {
-	OtPlane plane = create();
-	plane->setSize(width, height);
 	return plane;
 }

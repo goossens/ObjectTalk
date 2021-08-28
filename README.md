@@ -65,7 +65,7 @@ In case the GUI module is included, we also use:
 A special thanks also goes to
 [Gunther Rademacher](https://github.com/GuntherRademacher) for his
 ["RailRoad Diagram Generator"](https://www.bottlecaps.de/rr/ui) which is
-used in the documentation to visualize the ObjectTalk grammer.
+used in the documentation to visualize the ObjectTalk grammar.
 
 A another special thanks goes to the team that wrote the
 [Swift](https://swift.org) computer language
@@ -73,9 +73,8 @@ A another special thanks goes to the team that wrote the
 respectfully reused a lot of it to document ObjectTalk.
 
 A final special thanks goes to the team that wrote the
-[Three.js](https://threejs.org)
-[Fundamentals Tutorials](https://threejsfundamentals.org). The 3D
-ObjectTalk tutorial is based on it
+[Tutorials](https://threejsfundamentals.org) for
+[Three.js](https://threejs.org). The 3D ObjectTalk tutorial is based on it.
 
 ## License
 

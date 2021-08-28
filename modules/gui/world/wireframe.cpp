@@ -69,7 +69,7 @@ OtObject OtWireframeClass::init(size_t count, OtObject* parameters) {
 				break;
 
 			default:
-				OtExcept("Too many parameters [%ld] for [Wireframe] contructor (max 2)", count);
+				OtExcept("Too many parameters [%ld] for [Wireframe] constructor (max 2)", count);
 		}
 	}
 

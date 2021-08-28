@@ -36,7 +36,9 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 
 OtBackgroundClass::OtBackgroundClass() {
 	// create geometry
-	geometry = OtPlaneClass::create(2.0, 2.0);
+	plane = OtPlaneClass::create();
+	plane->setWidth(2.0);
+	plane->setHeight(2.0);
 
 	// register uniform
 	transformUniform = bgfx::createUniform("u_background_transform", bgfx::UniformType::Mat4);
@@ -112,8 +114,8 @@ void OtBackgroundClass::render(int view, glm::mat4 parentTransform) {
 	bgfx::setUniform(transformUniform, &transform);
 
 	// submit vertices and triangles
-	bgfx::setVertexBuffer(0, geometry->getVertexBuffer());
-	bgfx::setIndexBuffer(geometry->getTriangleIndexBuffer());
+	bgfx::setVertexBuffer(0, plane->getVertexBuffer());
+	bgfx::setIndexBuffer(plane->getTriangleIndexBuffer());
 
 	// setup material
 	material->submit(view);

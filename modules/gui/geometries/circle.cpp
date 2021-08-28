@@ -38,7 +38,7 @@ OtObject OtCircleClass::init(size_t count, OtObject* parameters) {
 				break;
 
 			default:
-				OtExcept("Too many parameters [%ld] for [Circle] contructor (max 4)", count);
+				OtExcept("Too many parameters [%ld] for [Circle] constructor (max 4)", count);
 		}
 
 		refreshBuffers = true;
@@ -71,11 +71,21 @@ OtObject OtCircleClass::setSegments(int s) {
 
 
 //
-//	OtCircleClass::setPartial
+//	OtCircleClass::setThetaStart
 //
 
-OtObject OtCircleClass::setPartial(double ts, double tl) {
+OtObject OtCircleClass::setThetaStart(double ts) {
 	thetaStart = ts;
+	refreshBuffers = true;
+	return shared();
+}
+
+
+//
+//	OtCircleClass::setThetaLength
+//
+
+OtObject OtCircleClass::setThetaLength(double tl) {
 	thetaLength = tl;
 	refreshBuffers = true;
 	return shared();
@@ -136,7 +146,8 @@ OtType OtCircleClass::getMeta() {
 		type->set("__init__", OtFunctionClass::create(&OtCircleClass::init));
 		type->set("setRadius", OtFunctionClass::create(&OtCircleClass::setRadius));
 		type->set("setSegments", OtFunctionClass::create(&OtCircleClass::setSegments));
-		type->set("setPartial", OtFunctionClass::create(&OtCircleClass::setPartial));
+		type->set("setThetaStart", OtFunctionClass::create(&OtCircleClass::setThetaStart));
+		type->set("setThetaLength", OtFunctionClass::create(&OtCircleClass::setThetaLength));
 	}
 
 	return type;
@@ -150,12 +161,5 @@ OtType OtCircleClass::getMeta() {
 OtCircle OtCircleClass::create() {
 	OtCircle circle = std::make_shared<OtCircleClass>();
 	circle->setType(getMeta());
-	return circle;
-}
-
-OtCircle OtCircleClass::create(double radius, long segments) {
-	OtCircle circle = create();
-	circle->setRadius(radius);
-	circle->setSegments(segments);
 	return circle;
 }

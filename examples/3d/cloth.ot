@@ -35,7 +35,6 @@ class MyApp : gui.Application {
 
 		// create view
 		screen.add(gui.View()
-			.setScreenArea(0, 0, 100, 100)
 			.setCamera(gui.Camera().setPosition(0, 20, 50))
 			.setScene(scene));
 	}

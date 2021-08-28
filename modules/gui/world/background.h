@@ -15,7 +15,7 @@
 #include "bgfx/bgfx.h"
 
 #include "object3d.h"
-#include "geometry.h"
+#include "plane.h"
 #include "material.h"
 
 
@@ -49,7 +49,7 @@ public:
 
 protected:
 	// geometry and material
-	OtGeometry geometry;
+	OtPlane plane;
 	OtMaterial material;
 
 	// BGFX shader

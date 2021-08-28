@@ -30,26 +30,36 @@ public:
 	OtObject init(size_t count, OtObject* parameters);
 
 	// update attributes
-	OtObject setRadius(double radius);
+	OtObject setTopRadius(double radius);
+	OtObject setBottomRadius(double radius);
 	OtObject setHeight(double height);
-	OtObject setSegments(int segments);
-	OtObject setPartial(double thetaStart, double thetaLength);
+	OtObject setRadialSegments(int radialSegments);
+	OtObject setHeightSegments(int heightSegments);
+	OtObject setOpenEnded(bool openEnded);
+	OtObject setThetaStart(double thetaStart);
+	OtObject setThetaLength(double thetaLength);
 
 	// get type definition
 	static OtType getMeta();
 
 	// create a new object
 	static OtCylinder create();
-	static OtCylinder create(double radius, double height, long segments);
 
 private:
 	// generate geometry
 	void fillBuffers();
 
+	// generate parts
+	void generateTorso();
+	void generateCap(bool top);
+
 	// geometry
-	double radius = 1.0;
+	double topRadius = 1.0;
+	double bottomRadius = 1.0;
 	double height = 1.0;
-	int segments = 8;
+	int radialSegments = 16;
+	int heightSegments = 1;
+	bool openEnded = false;
 	float thetaStart = 0.0;
 	float thetaLength = std::numbers::pi * 2.0;
 };

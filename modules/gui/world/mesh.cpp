@@ -69,7 +69,7 @@ OtObject OtMeshClass::init(size_t count, OtObject* parameters) {
 				break;
 
 			default:
-				OtExcept("Too many parameters [%ld] for [Mesh] contructor (max 2)", count);
+				OtExcept("Too many parameters [%ld] for [Mesh] constructor (max 2)", count);
 		}
 	}
 

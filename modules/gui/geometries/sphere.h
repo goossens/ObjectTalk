@@ -33,8 +33,10 @@ public:
 	OtObject setRadius(double radius);
 	OtObject setWidthSegments(int segments);
 	OtObject setHeightSegments(int segments);
-	OtObject setWidthPartial(double phiStart, double phiLength);
-	OtObject setHeightPartial(double thetaStart, double thetaLength);
+	OtObject setPhiStart(double phiStart);
+	OtObject setPhiLength(double phiLength);
+	OtObject setThetaStart(double thetaStart);
+	OtObject setThetaLength(double thetaLength);
 
 	// get type definition
 	static OtType getMeta();

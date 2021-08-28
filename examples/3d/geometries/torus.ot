@@ -1,0 +1,81 @@
+var gui = import("gui");
+
+class MyApp : gui.Application {
+	function setup(this, screen) {
+		var geometry = gui.Torus();
+		var gold = gui.Material("material", "gold");
+		var object = gui.Wireframe(geometry, gold);
+
+		this.animation()
+			.from(0.0)
+			.to(pi * 2.0)
+			.during(15000)
+			.continuous()
+			.onStep(function(angle) {
+				object.rotate(angle, 1, 1, 0);
+			});
+
+		var ambient = gui.Ambient();
+		var light = gui.Light().setPosition(1, 2, 4);
+
+		var scene = gui.Scene()
+			.add(object)
+			.add(ambient)
+			.add(light);
+
+		var camera = gui.Camera()
+			.setPosition(0, 0, 4)
+			.setFOV(45)
+			.setClipping(0.1, 10);
+
+		var view = gui.View()
+			.setScreenArea(30, 0, 70, 100)
+			.setCamera(camera)
+			.setScene(scene);
+
+		var panel = gui.Panel(0, 0, 30, 100);
+
+		var node = gui.TreeNode("Camera:");
+		node.add(gui.CameraController(camera));
+		panel.add(node);
+
+		node = panel.add(gui.TreeNode("Cylinder:"));
+
+		panel.add(gui.RealSlider("Radius", 0, 4, 1, function(value) {
+			geometry.setRadius(value);
+		}));
+
+		panel.add(gui.RealSlider("Tube Radius", 0, 4, 0.4, function(value) {
+			geometry.setTubeRadius(value);
+		}));
+
+		panel.add(gui.IntegerSlider("Radial Segments", 4, 64, 32, function(value) {
+			geometry.setRadialSegments(value);
+		}));
+
+		panel.add(gui.IntegerSlider("Tubular Segments", 4, 128, 16, function(value) {
+			geometry.setTubularSegments(value);
+		}));
+
+		panel.add(gui.RealSlider("Radial Start", 0, pi * 2, 0, function(value) {
+			geometry.setRadialStart(value);
+		}));
+
+		panel.add(gui.RealSlider("Radial Length", 0, pi * 2, pi * 2, function(value) {
+			geometry.setRadialLength(value);
+		}));
+
+		panel.add(gui.RealSlider("Tubular Start", 0, pi * 2, 0, function(value) {
+			geometry.setTubularStart(value);
+		}));
+
+		panel.add(gui.RealSlider("Tubular Length", 0, pi * 2, pi * 2, function(value) {
+			geometry.setTubularLength(value);
+		}));
+
+		screen.add(view).add(panel);
+	}
+}
+
+var app = MyApp();
+app.run("3D Geometry");

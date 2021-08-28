@@ -42,7 +42,7 @@ OtObject OtBoxClass::init(size_t count, OtObject* parameters) {
 				break;
 
 			default:
-				OtExcept("Too many parameters [%ld] for [Box] contructor (max 6)", count);
+				OtExcept("Too many parameters [%ld] for [Box] constructor (max 6)", count);
 		}
 
 		refreshBuffers = true;
@@ -53,13 +53,55 @@ OtObject OtBoxClass::init(size_t count, OtObject* parameters) {
 
 
 //
-//	OtBoxClass::setSize
+//	OtBoxClass::setWidth
 //
 
-OtObject OtBoxClass::setSize(double w, double h, double d) {
+OtObject OtBoxClass::setWidth(double w) {
 	width = w;
+	refreshBuffers = true;
+	return shared();
+}
+
+
+//
+//	OtBoxClass::setHeight
+//
+
+OtObject OtBoxClass::setHeight(double h) {
 	height = h;
+	refreshBuffers = true;
+	return shared();
+}
+
+
+//
+//	OtBoxClass::setDepth
+//
+
+OtObject OtBoxClass::setDepth(double d) {
 	depth = d;
+	refreshBuffers = true;
+	return shared();
+}
+
+
+//
+//	OtBoxClass::setWidthSegments
+//
+
+OtObject OtBoxClass::setWidthSegments(int ws) {
+	widthSegments = ws;
+	refreshBuffers = true;
+	return shared();
+}
+
+
+//
+//	OtBoxClass::setHeightSegments
+//
+
+OtObject OtBoxClass::setHeightSegments(int hs) {
+	heightSegments = hs;
 	refreshBuffers = true;
 	return shared();
 }
@@ -69,9 +111,7 @@ OtObject OtBoxClass::setSize(double w, double h, double d) {
 //	OtBoxClass::setSegments
 //
 
-OtObject OtBoxClass::setSegments(int ws, int hs, int ds) {
-	widthSegments = ws;
-	heightSegments = hs;
+OtObject OtBoxClass::setDepthSegments(int ds) {
 	depthSegments = ds;
 	refreshBuffers = true;
 	return shared();
@@ -90,12 +130,12 @@ void OtBoxClass::fillBuffers() {
 	culling = true;
 
 	// create all six planes
-	buildPlane(0, -1, -1, depth, height,  width, depthSegments, heightSegments, [](float u, float v, float w) { return glm::vec3(w, v, u); });
-	buildPlane(1,  1, -1, depth, height, -width, depthSegments, heightSegments, [](float u, float v, float w) { return glm::vec3(w, v, u); });
-	buildPlane(2,  1,  1, width, depth,  height, widthSegments,  depthSegments, [](float u, float v, float w) { return glm::vec3(u, w, v); });
-	buildPlane(3,  1, -1, width, depth, -height, widthSegments,  depthSegments, [](float u, float v, float w) { return glm::vec3(u, w, v); });
-	buildPlane(4,  1, -1, width, height,  depth, widthSegments, heightSegments, [](float u, float v, float w) { return glm::vec3(u, v, w); });
-	buildPlane(5, -1, -1, width, height, -depth, widthSegments, heightSegments, [](float u, float v, float w) { return glm::vec3(u, v, w); });
+	buildPlane(-1, -1, depth, height,  width, depthSegments, heightSegments, [](float u, float v, float w) { return glm::vec3(w, v, u); });
+	buildPlane( 1, -1, depth, height, -width, depthSegments, heightSegments, [](float u, float v, float w) { return glm::vec3(w, v, u); });
+	buildPlane( 1,  1, width, depth,  height, widthSegments,  depthSegments, [](float u, float v, float w) { return glm::vec3(u, w, v); });
+	buildPlane( 1, -1, width, depth, -height, widthSegments,  depthSegments, [](float u, float v, float w) { return glm::vec3(u, w, v); });
+	buildPlane( 1, -1, width, height,  depth, widthSegments, heightSegments, [](float u, float v, float w) { return glm::vec3(u, v, w); });
+	buildPlane(-1, -1, width, height, -depth, widthSegments, heightSegments, [](float u, float v, float w) { return glm::vec3(u, v, w); });
 }
 
 
@@ -103,7 +143,7 @@ void OtBoxClass::fillBuffers() {
 //	OtBoxClass::buildPlane
 //
 
-void OtBoxClass::buildPlane(int side, int udir, int vdir, double w, double h, double d, int gridX, int gridY, glm::vec3 (*cb)(float, float, float)) {
+void OtBoxClass::buildPlane(int udir, int vdir, double w, double h, double d, int gridX, int gridY, glm::vec3 (*cb)(float, float, float)) {
 	// add vertices
 	auto segmentWidth = w / gridX;
 	auto segmentHeight = h / gridY;
@@ -114,6 +154,8 @@ void OtBoxClass::buildPlane(int side, int udir, int vdir, double w, double h, do
 
 	auto gridX1 = gridX + 1;
 	auto gridY1 = gridY + 1;
+
+	auto offset = vertices.size();
 
 	for (auto iy = 0; iy < gridY1; iy++) {
 		auto y = iy * segmentHeight - heightHalf;
@@ -130,8 +172,6 @@ void OtBoxClass::buildPlane(int side, int udir, int vdir, double w, double h, do
 	}
 
 	// add triangles and lines
-	auto offset = side * gridX1 * gridY1;
-
 	for (auto iy = 0; iy < gridY; iy++) {
 		for (auto ix = 0; ix < gridX; ix++) {
 			auto a = offset + ix + gridX1 * iy;
@@ -167,8 +207,12 @@ OtType OtBoxClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtBoxClass>("Box", OtGeometryClass::getMeta());
 		type->set("__init__", OtFunctionClass::create(&OtBoxClass::init));
-		type->set("setSize", OtFunctionClass::create(&OtBoxClass::setSize));
-		type->set("setSegments", OtFunctionClass::create(&OtBoxClass::setSegments));
+		type->set("setWidth", OtFunctionClass::create(&OtBoxClass::setWidth));
+		type->set("setHeight", OtFunctionClass::create(&OtBoxClass::setHeight));
+		type->set("setDepth", OtFunctionClass::create(&OtBoxClass::setDepth));
+		type->set("setWidthSegments", OtFunctionClass::create(&OtBoxClass::setWidthSegments));
+		type->set("setHeightSegments", OtFunctionClass::create(&OtBoxClass::setHeightSegments));
+		type->set("setDepthSegments", OtFunctionClass::create(&OtBoxClass::setDepthSegments));
 	}
 
 	return type;
@@ -182,11 +226,5 @@ OtType OtBoxClass::getMeta() {
 OtBox OtBoxClass::create() {
 	OtBox box = std::make_shared<OtBoxClass>();
 	box->setType(getMeta());
-	return box;
-}
-
-OtBox OtBoxClass::create(double width, double height, double depth) {
-	OtBox box = create();
-	box->setSize(width, height, depth);
 	return box;
 }

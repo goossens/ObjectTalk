@@ -30,6 +30,7 @@
 #include "fog.h"
 
 #include "object3d.h"
+#include "group.h"
 #include "background.h"
 #include "skybox.h"
 #include "mesh.h"
@@ -90,6 +91,7 @@ extern "C" void init(OtModule module) {
 	module->set("Fog", OtClassClass::create(OtFogClass::getMeta()));
 
 	module->set("Object3D", OtClassClass::create(OtObject3dClass::getMeta()));
+	module->set("Group", OtClassClass::create(OtGroupClass::getMeta()));
 	module->set("Background", OtClassClass::create(OtBackgroundClass::getMeta()));
 	module->set("Skybox", OtClassClass::create(OtSkyboxClass::getMeta()));
 	module->set("Mesh", OtClassClass::create(OtMeshClass::getMeta()));

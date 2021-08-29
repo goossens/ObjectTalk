@@ -27,10 +27,11 @@ typedef std::shared_ptr<OtObject3dClass> OtObject3d;
 class OtObject3dClass : public OtSceneObjectClass {
 public:
 	// change geometry
-	OtObject rotate(double angle, double x, double y, double z);
 	OtObject rotateX(double angle);
 	OtObject rotateY(double angle);
 	OtObject rotateZ(double angle);
+	OtObject rotateAroundVector(double angle, double x, double y, double z);
+	OtObject yawPitchRoll(double yaw, double pitch, double roll);
 	OtObject scale(double x, double y, double z);
 	OtObject translate(double x, double y, double z);
 

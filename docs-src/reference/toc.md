@@ -79,6 +79,7 @@
 				* [FogController](#fogcontroller)
 			* [Scene](#scene)
 			* [SceneObject](#sceneobject)
+				* [Group](#group)
 				* [Background](#background)
 				* [Skybox](#skybox)
 				* [Light](#light)

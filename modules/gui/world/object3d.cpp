@@ -19,16 +19,6 @@
 
 
 //
-//	OtObject3dClass::rotate
-//
-
-OtObject OtObject3dClass::rotate(double angle, double x, double y, double z) {
-	rotating = glm::rotate(glm::mat4(1.0), (float) angle, glm::vec3(x, y, z));
-	return shared();
-}
-
-
-//
 //	OtObject3dClass::rotateX
 //
 
@@ -54,6 +44,26 @@ OtObject OtObject3dClass::rotateY(double angle) {
 
 OtObject OtObject3dClass::rotateZ(double angle) {
 	rotating = glm::rotate(glm::mat4(1.0), (float) angle, glm::vec3(0.0, 0.0, 1.0));
+	return shared();
+}
+
+
+//
+//	OtObject3dClass::rotateAroundVector
+//
+
+OtObject OtObject3dClass::rotateAroundVector(double angle, double x, double y, double z) {
+	rotating = glm::rotate(glm::mat4(1.0), (float) angle, glm::vec3(x, y, z));
+	return shared();
+}
+
+
+//
+//	OtObject3dClass::yawPitchRoll
+//
+
+OtObject OtObject3dClass::yawPitchRoll(double yaw, double pitch, double roll) {
+	rotating = glm::yawPitchRoll((float) yaw, (float) pitch, (float) roll);
 	return shared();
 }
 
@@ -98,10 +108,11 @@ OtType OtObject3dClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtObject3dClass>("Object3D", OtSceneObjectClass::getMeta());
-		type->set("rotate", OtFunctionClass::create(&OtObject3dClass::rotate));
 		type->set("rotateX", OtFunctionClass::create(&OtObject3dClass::rotateX));
 		type->set("rotateY", OtFunctionClass::create(&OtObject3dClass::rotateY));
 		type->set("rotateZ", OtFunctionClass::create(&OtObject3dClass::rotateZ));
+		type->set("rotateAroundVector", OtFunctionClass::create(&OtObject3dClass::rotateAroundVector));
+		type->set("yawPitchRoll", OtFunctionClass::create(&OtObject3dClass::yawPitchRoll));
 		type->set("scale", OtFunctionClass::create(&OtObject3dClass::scale));
 		type->set("translate", OtFunctionClass::create(&OtObject3dClass::translate));
 	}

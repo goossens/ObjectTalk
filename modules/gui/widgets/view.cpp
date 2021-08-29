@@ -182,8 +182,11 @@ OtType OtViewClass::getMeta() {
 
 		type->set("setID", OtFunctionClass::create(&OtViewClass::setID));
 		type->set("setScreenArea", OtFunctionClass::create(&OtViewClass::setScreenArea));
-		type->set("setScene", OtFunctionClass::create(&OtViewClass::setScene));
 		type->set("setCamera", OtFunctionClass::create(&OtViewClass::setCamera));
+		type->set("setScene", OtFunctionClass::create(&OtViewClass::setScene));
+
+		type->set("getCamera", OtFunctionClass::create(&OtViewClass::getCamera));
+		type->set("getScene", OtFunctionClass::create(&OtViewClass::getScene));
 	}
 
 	return type;

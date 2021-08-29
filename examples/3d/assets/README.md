@@ -41,3 +41,10 @@ All Natural Earth III images and data are in the public domain.
 * earth.png
 * clouds.png
 * moon.png
+
+## OpenGameArt.Org
+
+The following assets are from [OpenGameArt.Org](OpenGameArt.Org) and are
+licensed under the [Creative Commons Public Domain](https://creativecommons.org/publicdomain/zero/1.0/) license:
+
+* space.ktx - by [StumpyStrust](https://opengameart.org/content/space-skyboxes-0)

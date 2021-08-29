@@ -1,13 +1,91 @@
 var gui = import("gui");
 
+var defaultLat = 51.5;
+var defaultLng = 4.3;
+var defaultCameraDistance = 3.0;
+
+class EarthView : gui.View {
+	function __init__(this) {
+		this.setCamera(gui.Camera());
+
+		this.lat = defaultLat;
+		this.lng = defaultLng;
+
+		this.updateCamera();
+	}
+
+	function setLat(this, value) {
+		this.lat = value;
+		this.updateCamera();
+	}
+
+	function setLng(this, value) {
+		this.lng = value;
+		this.updateCamera();
+	}
+
+	function onKey(this, key, mods) {
+		if (key == gui.keyDown) {
+			this.lat -= 1.0;
+			this.updateCamera();
+
+		} elif (key == gui.keyUp) {
+			this.lat += 1.0;
+			this.updateCamera();
+
+		} elif (key == gui.keyLeft) {
+			this.lng += 2.0;
+			this.updateCamera();
+
+		} elif (key == gui.keyRight) {
+			this.lng -= 2.0;
+			this.updateCamera();
+
+		}  elif (key == gui.keyHome) {
+			this.lat = 0.0;
+			this.lng = 0.0;
+			this.updateCamera();
+		}
+	}
+
+	function onMouseDrag(this, button, dx, dy) {
+		this.lat += dy / 10.0;
+		this.lng -= dx / 10.0;
+		this.updateCamera();
+	}
+
+	function updateCamera(this) {
+		this.lat = this.lat.clamp(-90.0, 90.0);
+
+		if (this.lng < -180) {
+			this.lng += 360.0;
+
+		} elif (this.lng > 180.0) {
+			this.lng -= 360.0;
+		}
+
+		var clat = this.lat.radians().cos();
+		var slat = this.lat.radians().sin();
+		var clng = this.lng.radians().cos();
+		var slng = this.lng.radians().sin();
+
+		this.getCamera().setPosition(
+			defaultCameraDistance * clat * slng,
+			defaultCameraDistance * slat,
+            defaultCameraDistance * clat * clng);
+	}
+}
+
 class MyApp : gui.Application {
 	function setup(this, screen) {
+		var skybox = gui.Skybox(__DIR__ + "/assets/space.ktx");
+
 		var grid = gui.Wireframe(
 			gui.Sphere()
 				.setRadius(0.99)
 				.setWidthSegments(60)
 				.setHeightSegments(30),
-			gui.Material().setColorCSS("#404040"));
+			gui.Material().setColorCSS("#505050"));
 
 		var surface = gui.Mesh()
 			.setGeometry(gui.Sphere()
@@ -34,55 +112,22 @@ class MyApp : gui.Application {
 		var ambient = gui.Ambient();
 		var light = gui.Light().setPosition(1, 4, 4);
 
+		var fog = gui.Fog()
+			.setColorCSS("black")
+			.setDistances(4, 5.5);
+
 		var scene = gui.Scene()
+			.add(skybox)
 			.add(earth)
 			.add(ambient)
-			.add(light);
+			.add(light)
+			.add(fog);
 
-		this.camera = gui.Camera()
-			.setFOV(45)
-			.setClipping(0.1, 10);
-
-		this.lat = 51.5;
-		this.lng = 4.3;
-		this.updateCamera();
-
-		var view = gui.View()
-			.setScreenArea(30, 0, 70, 100)
-			.setCamera(this.camera)
+		 var view = EarthView()
+			.setScreenArea(0, 0, 100, 100)
 			.setScene(scene);
 
-		var panel = gui.Panel(0, 0, 30, 100);
-
-		var node = gui.TreeNode("Camera:");
-		node.add(gui.CameraController(this.camera));
-		panel.add(node);
-
-		node = panel.add(gui.TreeNode("Earth:"));
-
-		panel.add(gui.RealSlider("Latitude", -90, 90, this.lat, function(value) {
-			this.lat = value;
-			this.updateCamera();
-		}));
-
-		panel.add(gui.RealSlider("Longitude", -180, 180, this.lng, function(value) {
-			this.lng = value;
-			this.updateCamera();
-		}));
-
-		screen.add(view).add(panel);
-	}
-
-	function updateCamera(this) {
-		var clat = this.lat.radians().cos();
-		var slat = this.lat.radians().sin();
-		var clng = this.lng.radians().cos();
-		var slng = this.lng.radians().sin();
-
-		this.camera.setPosition(
-			4.0 * clat * slng,
-			4.0 * slat,
-            4.0 * clat * clng);
+		screen.add(view);
 	}
 }
 

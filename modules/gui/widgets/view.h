@@ -35,6 +35,10 @@ public:
 	OtObject setCamera(OtObject camera);
 	OtObject setScene(OtObject scene);
 
+	// access attributes
+	OtObject getCamera() { return camera; }
+	OtObject getScene()  { return scene; }
+
 	// render content
 	void render();
 

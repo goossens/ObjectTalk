@@ -118,8 +118,13 @@ void OtApplicationClass::frameGLFW() {
 //
 
 void OtApplicationClass::eventsGLFW() {
-	// poll for more windows events
-	glfwPollEvents();
+	// poll for windows events
+	if (glfwGetWindowAttrib(window, GLFW_FOCUSED)) {
+		glfwPollEvents();
+
+	} else {
+		glfwWaitEventsTimeout(0.1);
+	}
 }
 
 

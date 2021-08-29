@@ -328,7 +328,7 @@ app.run(&quot;3D Tutorial&quot;);
 	.during(15000)
 	.continuous()
 	.onStep(function(angle) {
-		cube.rotate(angle, 1, 1, 0);
+		cube.rotateAroundVector(angle, 1, 1, 0);
 	});
 </code></pre>
             <p>
@@ -368,7 +368,7 @@ class MyApp : gui.Application {
 			.during(15000)
 			.continuous()
 			.onStep(function(angle) {
-				cube.rotate(angle, 1, 1, 0);
+				cube.rotateAroundVector(angle, 1, 1, 0);
 			});
 
 		var ambient = gui.Ambient();

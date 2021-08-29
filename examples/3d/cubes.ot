@@ -44,7 +44,7 @@ class MyApp : gui.Application {
 			.during(5000 + 10000.random())
 			.continuous()
 			.onStep(function(angle) {
-				cube.rotate(angle, 1, 1, 0);
+				cube.rotateAroundVector(angle, 1, 1, 0);
 			});
 
 		return cube;

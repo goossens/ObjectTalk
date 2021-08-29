@@ -160,7 +160,7 @@ being drawn in 3D. To animate it we'll add an animation to the App:
 		.during(15000)
 		.continuous()
 		.onStep(function(angle) {
-			cube.rotate(angle, 1, 1, 0);
+			cube.rotateAroundVector(angle, 1, 1, 0);
 		});
 
 This animation animates a real from 0.0 to 2PI during 15000 microseconds
@@ -194,7 +194,7 @@ more realistic. So let's do both and change the App to:
 				.during(15000)
 				.continuous()
 				.onStep(function(angle) {
-					cube.rotate(angle, 1, 1, 0);
+					cube.rotateAroundVector(angle, 1, 1, 0);
 				});
 
 			var ambient = gui.Ambient();

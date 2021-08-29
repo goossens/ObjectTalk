@@ -12,7 +12,7 @@ class MyApp : gui.Application {
 			.during(15000)
 			.continuous()
 			.onStep(function(angle) {
-				object.rotate(angle, 1, 1, 0);
+				object.rotateAroundVector(angle, 1, 1, 0);
 			});
 
 		var ambient = gui.Ambient();
@@ -25,8 +25,7 @@ class MyApp : gui.Application {
 
 		var camera = gui.Camera()
 			.setPosition(0, 0, 4)
-			.setFOV(45)
-			.setClipping(0.1, 10);
+			.setFOV(45);
 
 		var view = gui.View()
 			.setScreenArea(30, 0, 70, 100)

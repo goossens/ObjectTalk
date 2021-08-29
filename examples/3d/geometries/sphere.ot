@@ -12,7 +12,7 @@ class MyApp : gui.Application {
 			.during(15000)
 			.continuous()
 			.onStep(function(angle) {
-				object.rotate(angle, 1, 1, 0);
+				object.rotateAroundVector(angle, 1, 1, 0);
 			});
 
 		var ambient = gui.Ambient();
@@ -25,8 +25,7 @@ class MyApp : gui.Application {
 
 		var camera = gui.Camera()
 			.setPosition(0, 0, 4)
-			.setFOV(45)
-			.setClipping(0.1, 10);
+			.setFOV(45);
 
 		var view = gui.View()
 			.setScreenArea(30, 0, 70, 100)
@@ -51,10 +50,6 @@ class MyApp : gui.Application {
 
 		panel.add(gui.IntegerSlider("Height Segments", 4, 64, 16, function(value) {
 			geometry.setHeightSegments(value);
-		}));
-
-		panel.add(gui.Checkbox("Open ended", false, function(value) {
-			geometry.setOpenEnded(value);
 		}));
 
 		panel.add(gui.RealSlider("phiStart", 0, pi, 0, function(value) {

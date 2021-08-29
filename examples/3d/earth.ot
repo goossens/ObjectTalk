@@ -1,0 +1,90 @@
+var gui = import("gui");
+
+class MyApp : gui.Application {
+	function setup(this, screen) {
+		var grid = gui.Wireframe(
+			gui.Sphere()
+				.setRadius(0.99)
+				.setWidthSegments(60)
+				.setHeightSegments(30),
+			gui.Material().setColorCSS("#404040"));
+
+		var surface = gui.Mesh()
+			.setGeometry(gui.Sphere()
+				.setWidthSegments(64)
+				.setHeightSegments(32))
+			.setMaterial(gui.Material()
+				.setTexture(__DIR__ + "/assets/earth.png"))
+			.setHoles(true);
+
+		var clouds = gui.Mesh()
+			.setGeometry(gui.Sphere()
+				.setRadius(1.01)
+				.setWidthSegments(64)
+				.setHeightSegments(32))
+			.setMaterial(gui.Material()
+				.setTexture(__DIR__ + "/assets/clouds.png"))
+			.setHoles(true);
+
+		var earth = gui.Group()
+			.add(grid)
+			.add(surface)
+			.add(clouds);
+
+		var ambient = gui.Ambient();
+		var light = gui.Light().setPosition(1, 4, 4);
+
+		var scene = gui.Scene()
+			.add(earth)
+			.add(ambient)
+			.add(light);
+
+		this.camera = gui.Camera()
+			.setFOV(45)
+			.setClipping(0.1, 10);
+
+		this.lat = 51.5;
+		this.lng = 4.3;
+		this.updateCamera();
+
+		var view = gui.View()
+			.setScreenArea(30, 0, 70, 100)
+			.setCamera(this.camera)
+			.setScene(scene);
+
+		var panel = gui.Panel(0, 0, 30, 100);
+
+		var node = gui.TreeNode("Camera:");
+		node.add(gui.CameraController(this.camera));
+		panel.add(node);
+
+		node = panel.add(gui.TreeNode("Earth:"));
+
+		panel.add(gui.RealSlider("Latitude", -90, 90, this.lat, function(value) {
+			this.lat = value;
+			this.updateCamera();
+		}));
+
+		panel.add(gui.RealSlider("Longitude", -180, 180, this.lng, function(value) {
+			this.lng = value;
+			this.updateCamera();
+		}));
+
+		screen.add(view).add(panel);
+	}
+
+	function updateCamera(this) {
+		var clat = this.lat.radians().cos();
+		var slat = this.lat.radians().sin();
+		var clng = this.lng.radians().cos();
+		var slng = this.lng.radians().sin();
+
+		this.camera.setPosition(
+			4.0 * clat * slng,
+			4.0 * slat,
+            4.0 * clat * clng);
+	}
+}
+
+var app = MyApp();
+app.run("Transparent Earth");

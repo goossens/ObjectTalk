@@ -217,6 +217,6 @@ void OtApplicationClass::endIMGUI() {
 	bgfx::destroy(imguiFontUniform);
 	bgfx::destroy(imguiFontTexture);
 	bgfx::destroy(imguiProgram);
-	ImGui::DestroyContext();
 	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 }

@@ -126,8 +126,20 @@ OtObject OtMeshClass::setHoles(bool h) {
 //
 
 void OtMeshClass::render(int view, glm::mat4 parentTransform, long flag) {
+	// sanity checks
+	if (!geometry) {
+		OtExcept("No [Geometry] specified for [Mesh]");
+	}
+
+	if (!material) {
+		OtExcept("No [Material] specified for [Mesh]");
+	}
+
 	// let parent class do its thing
 	OtObject3dClass::render(view, parentTransform);
+
+	// update geometry state (to support animations)
+	geometry->update();
 
 	// submit vertices and triangles
 	bgfx::setVertexBuffer(0, geometry->getVertexBuffer());

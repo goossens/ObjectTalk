@@ -45,7 +45,7 @@ OtObject OtBoxClass::init(size_t count, OtObject* parameters) {
 				OtExcept("Too many parameters [%ld] for [Box] constructor (max 6)", count);
 		}
 
-		refreshBuffers = true;
+		refreshGeometry = true;
 	}
 
 	return nullptr;
@@ -58,7 +58,7 @@ OtObject OtBoxClass::init(size_t count, OtObject* parameters) {
 
 OtObject OtBoxClass::setWidth(double w) {
 	width = w;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -69,7 +69,7 @@ OtObject OtBoxClass::setWidth(double w) {
 
 OtObject OtBoxClass::setHeight(double h) {
 	height = h;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -80,7 +80,7 @@ OtObject OtBoxClass::setHeight(double h) {
 
 OtObject OtBoxClass::setDepth(double d) {
 	depth = d;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -91,7 +91,7 @@ OtObject OtBoxClass::setDepth(double d) {
 
 OtObject OtBoxClass::setWidthSegments(int ws) {
 	widthSegments = ws;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -102,7 +102,7 @@ OtObject OtBoxClass::setWidthSegments(int ws) {
 
 OtObject OtBoxClass::setHeightSegments(int hs) {
 	heightSegments = hs;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -113,19 +113,12 @@ OtObject OtBoxClass::setHeightSegments(int hs) {
 
 OtObject OtBoxClass::setDepthSegments(int ds) {
 	depthSegments = ds;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
 
-//
-//	OtBoxClass::fillBuffers
-//
-
-void OtBoxClass::fillBuffers() {
-	// clear geometry
-	clear();
-
+void OtBoxClass::fillGeometry() {
 	// default culling
 	culling = true;
 

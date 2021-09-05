@@ -87,7 +87,9 @@ void OtApplicationClass::initGLFW(const std::string& name) {
 	});
 
 	// start time tracking
-	lastTime = glfwGetTime();
+	loopTime = glfwGetTime();
+	lastTime = loopTime - 1.0 / 60.0;
+	loopDuration = loopTime - lastTime;
 }
 
 
@@ -98,6 +100,8 @@ void OtApplicationClass::initGLFW(const std::string& name) {
 void OtApplicationClass::timeGLFW() {
 	// get time since epoch
 	loopTime = glfwGetTime();
+
+	// calculate loop speed
 	loopDuration = loopTime - lastTime;
 	lastTime = loopTime;
 }
@@ -114,17 +118,23 @@ void OtApplicationClass::frameGLFW() {
 
 
 //
+//	OtApplicationClass::renderGLFW
+//
+
+void OtApplicationClass::renderGLFW() {
+#if ! __APPLE__
+	glfwSwapBuffers(window);
+#endif
+}
+
+
+//
 //	OtApplicationClass::eventsGLFW
 //
 
 void OtApplicationClass::eventsGLFW() {
 	// poll for windows events
-	if (glfwGetWindowAttrib(window, GLFW_FOCUSED)) {
-		glfwPollEvents();
-
-	} else {
-		glfwWaitEventsTimeout(0.1);
-	}
+	glfwPollEvents();
 }
 
 

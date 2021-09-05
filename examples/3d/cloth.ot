@@ -17,25 +17,69 @@ class MyApp : gui.Application {
 		var background = gui.Background(gui.Material("color", skyColor));
 
 		var grass = gui.Mesh()
-			.setGeometry(gui.Plane(200, 150))
+			.setGeometry(gui.Plane(200, 200, 10, 10))
 			.setMaterial(gui.Material()
 				.setTexture(__DIR__ + "/assets/grass.jpg")
 				.setUvTransform(0, 0, 5, 5, 0, 0, 0))
 			.rotateX(-pi / 2.0);
 
+		var poleGeometry = gui.Cylinder(0.5, 0.5, 26);
+		var poleMaterial = gui.Material("material", "bronze");
+
+		var pole1 = gui.Mesh()
+			.setGeometry(poleGeometry)
+			.setMaterial(poleMaterial)
+			.translate(-16, 13, 50);
+
+		var pole2 = gui.Mesh()
+			.setGeometry(poleGeometry)
+			.setMaterial(poleMaterial)
+			.translate(16, 13, 50);
+
+		var wire = gui.Mesh()
+			.setGeometry(gui.Cylinder(0.1, 0.1, 34))
+			.setMaterial(gui.Material("material", "black plastic"))
+			.rotateZ(pi / 2.0)
+			.translate(0, 25, 50);
+
+		var plane = gui.Plane(20, 20, 20, 20);
+		this.addSimulation(gui.Cloth()
+			.setPlane(plane)
+			.setPins(2)
+			.start());
+
+		var cloth = gui.Mesh()
+			.setGeometry(plane)
+			.setMaterial(gui.Material("texture", __DIR__ + "/assets/cloth.png"))
+			.translate(0, 15, 50);
+
+		var light = gui.Light()
+			.setPosition(0, 200, 200);
+
 		var fog = gui.Fog()
 			.setColorCSS(skyColor)
-			.setDistances(30, 100);
+			.setDistances(50, 150);
 
 		// create scene
 		var scene = gui.Scene()
 			.add(background)
 			.add(grass)
+			.add(pole1)
+			.add(pole2)
+			.add(wire)
+			.add(cloth)
+			.add(light)
 			.add(fog);
+
+		// create camera
+		var camera = gui.Camera()
+			.setPosition(0, 15, 100)
+			.setDirection(0, 10, 0)
+			.setFOV(45);
 
 		// create view
 		screen.add(gui.View()
-			.setCamera(gui.Camera().setPosition(0, 20, 50))
+			.setCamera(camera)
 			.setScene(scene));
 	}
 }

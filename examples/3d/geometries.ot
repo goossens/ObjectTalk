@@ -15,7 +15,7 @@ var defaultRenderer = "textured";
 
 // create combobox value lists
 var geometries = [
-	"circle", "cone", "cylinder", "plane", "sphere", "torus",
+	"circle", "cylinder", "plane", "sphere", "torus",
 	"bunny", "column", "teapot"
 ];
 
@@ -154,7 +154,7 @@ class MyApp : gui.Application {
 			this.geometry = gui.Cone(20, 20, 30);
 
 		} elif (name == "cylinder") {
-			this.geometry = gui.Cylinder(16, 40, 64);
+			this.geometry = gui.Cylinder(16, 16, 40, 64);
 
 		} elif (name == "plane") {
 			this.geometry = gui.Plane(40, 40);

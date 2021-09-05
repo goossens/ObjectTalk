@@ -44,7 +44,6 @@ OtObject OtCylinderClass::init(size_t count, OtObject* parameters) {
 
 			case 2:
 				bottomRadius = parameters[1]->operator double();
-				break;
 
 			case 1:
 				topRadius = parameters[0]->operator double();
@@ -54,7 +53,7 @@ OtObject OtCylinderClass::init(size_t count, OtObject* parameters) {
 				OtExcept("Too many parameters [%ld] for [Cylinder] constructor (max 8)", count);
 		}
 
-		refreshBuffers = true;
+		refreshGeometry = true;
 	}
 
 	return nullptr;
@@ -67,7 +66,7 @@ OtObject OtCylinderClass::init(size_t count, OtObject* parameters) {
 
 OtObject OtCylinderClass::setTopRadius(double r) {
 	topRadius = r;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -78,7 +77,7 @@ OtObject OtCylinderClass::setTopRadius(double r) {
 
 OtObject OtCylinderClass::setBottomRadius(double r) {
 	bottomRadius = r;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -89,7 +88,7 @@ OtObject OtCylinderClass::setBottomRadius(double r) {
 
 OtObject OtCylinderClass::setHeight(double h) {
 	height = h;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -100,7 +99,7 @@ OtObject OtCylinderClass::setHeight(double h) {
 
 OtObject OtCylinderClass::setRadialSegments(int rs) {
 	radialSegments = rs;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -111,7 +110,7 @@ OtObject OtCylinderClass::setRadialSegments(int rs) {
 
 OtObject OtCylinderClass::setHeightSegments(int hs) {
 	heightSegments = hs;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -122,7 +121,7 @@ OtObject OtCylinderClass::setHeightSegments(int hs) {
 
 OtObject OtCylinderClass::setOpenEnded(bool oe) {
 	openEnded = oe;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -133,7 +132,7 @@ OtObject OtCylinderClass::setOpenEnded(bool oe) {
 
 OtObject OtCylinderClass::setThetaStart(double ts) {
 	thetaStart = ts;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -144,19 +143,16 @@ OtObject OtCylinderClass::setThetaStart(double ts) {
 
 OtObject OtCylinderClass::setThetaLength(double tl) {
 	thetaLength = tl;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
 
 //
-//	OtCylinderClass::fillBuffers
+//	OtCylinderClass::fillGeometry
 //
 
-void OtCylinderClass::fillBuffers() {
-	// clear geometry
-	clear();
-
+void OtCylinderClass::fillGeometry() {
 	// generate a torso
 	generateTorso();
 
@@ -197,7 +193,7 @@ void OtCylinderClass::generateTorso() {
 			addVertex(OtVertex(
 				glm::vec3(radius * sinTheta, -v * height + height / 2.0, radius * cosTheta),
 				glm::normalize(glm::vec3(sinTheta, slope, cosTheta)),
-				glm::vec2(u, 1 - v)));
+				glm::vec2(u, v)));
 		}
 	}
 

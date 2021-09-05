@@ -27,10 +27,23 @@ OtGeometryClass::~OtGeometryClass() {
 //	OtGeometryClass::clear
 //
 
-void OtGeometryClass::clear() {
+void OtGeometryClass::clearGeometry() {
 	vertices.clear();
 	triangles.clear();
 	lines.clear();
+	refreshGeometry = true;
+	refreshBuffers = true;
+}
+
+
+//
+//	OtGeometryClass::updateGeometry
+//
+
+void OtGeometryClass::updateGeometry() {
+	clearGeometry();
+	fillGeometry();
+	refreshGeometry = false;
 	refreshBuffers = true;
 }
 
@@ -65,7 +78,6 @@ void OtGeometryClass::clearBuffers() {
 
 void OtGeometryClass::updateBuffers() {
 	clearBuffers();
-	fillBuffers();
 
 	bgfx::VertexLayout layout = OtVertex::getVertexLayout();
 	vertexBuffer = bgfx::createVertexBuffer(bgfx::makeRef(vertices.data(), sizeof(OtVertex) * vertices.size()), layout);
@@ -80,6 +92,10 @@ void OtGeometryClass::updateBuffers() {
 //
 
 bgfx::VertexBufferHandle OtGeometryClass::getVertexBuffer() {
+	if (refreshGeometry) {
+		updateGeometry();
+	}
+
 	if (refreshBuffers) {
 		updateBuffers();
 	}
@@ -93,6 +109,10 @@ bgfx::VertexBufferHandle OtGeometryClass::getVertexBuffer() {
 //
 
 bgfx::IndexBufferHandle OtGeometryClass::getTriangleIndexBuffer() {
+	if (refreshGeometry) {
+		updateGeometry();
+	}
+
 	if (refreshBuffers) {
 		updateBuffers();
 	}
@@ -106,6 +126,10 @@ bgfx::IndexBufferHandle OtGeometryClass::getTriangleIndexBuffer() {
 //
 
 bgfx::IndexBufferHandle OtGeometryClass::getLineIndexBuffer() {
+	if (refreshGeometry) {
+		updateGeometry();
+	}
+
 	if (refreshBuffers) {
 		updateBuffers();
 	}

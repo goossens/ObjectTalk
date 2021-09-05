@@ -23,6 +23,7 @@
 
 #include "gui.h"
 #include "animation.h"
+#include "simulation.h"
 #include "screen.h"
 
 
@@ -47,8 +48,14 @@ public:
 	// add an animation
 	OtObject animation();
 
-	// get system time in milliseconds since the epoch
+	// add a simulation
+	OtObject addSimulation(OtObject simulation);
+
+	// get system time in seconds since the epoch
 	static double getTime();
+
+	// get the current frame number
+	static size_t getFrameNumber() { return frameNumber; }
 
 	// get the current frame rate
 	static double getFrameRate() { return 1.0 / loopDuration; }
@@ -72,6 +79,7 @@ private:
 	void initGLFW(const std::string& name);
 	void timeGLFW();
 	void frameGLFW();
+	void renderGLFW();
 	void eventsGLFW();
 	void endGLFW();
 
@@ -91,12 +99,16 @@ private:
 	GLFWwindow* window;
 
 	// time tracking
+	static size_t frameNumber;
 	static double lastTime;
 	static double loopTime;
 	static double loopDuration;
 
 	// animations
 	std::vector<OtAnimation> animations;
+
+	// simulations
+	std::vector<OtSimulation> simulations;
 
 	// to render IM3D
 	bgfx::VertexLayout  im3dVertexLayout;

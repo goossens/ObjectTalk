@@ -18,6 +18,13 @@
 
 
 //
+//	Globals
+//
+
+size_t OtApplicationClass::frameNumber = 0;
+
+
+//
 //	OtApplicationClass::run
 //
 
@@ -41,12 +48,20 @@ void OtApplicationClass::run(const std::string& name) {
 	// application main loop
 	while (!glfwWindowShouldClose(window)) {
 		// update loop timings
+		frameNumber++;
 		timeGLFW();
 
 		// update all animations
 		for (int c = animations.size() - 1; c >= 0; c--) {
 			if (!animations[c]->step(loopDuration * 1000)) {
 				animations.erase(animations.begin() + c);
+			}
+		}
+
+		// update all simulations
+		for (auto& simulation : simulations) {
+			if (simulation->isRunning()) {
+				simulation->step(loopDuration * 1000);
 			}
 		}
 
@@ -70,15 +85,16 @@ void OtApplicationClass::run(const std::string& name) {
 		OtVM::callMemberFunction(shared(), "terminate");
 	}
 
+	// remove all animations and simulations
+	animations.clear();
+	simulations.clear();
+
 	// remove all children from the screen to avoid memory leaks
 	// it has circular parent/child relationships
 
 	screen->clear();
 	screen = nullptr;
 	unsetAll();
-
-	// remove all animations
-	animations.clear();
 
 	// terminate libraries
 	endIMGUI();
@@ -108,6 +124,23 @@ OtObject OtApplicationClass::animation() {
 
 
 //
+//	OtApplicationClass::addSimulation
+//
+
+OtObject OtApplicationClass::addSimulation(OtObject object) {
+	// ensure object is a simulation
+	if (object->isKindOf("Simulation")) {
+		simulations.push_back(object->cast<OtSimulationClass>());
+
+	} else {
+		OtExcept("Expected a [Simulation] object, not a [%s]", object->getType()->getName().c_str());
+	}
+
+	return object;
+}
+
+
+//
 //	OtApplicationClass::render
 //
 
@@ -124,6 +157,7 @@ void OtApplicationClass::render() {
 	// put results on screen
 	renderIMGUI();
 	renderBGFX();
+	renderGLFW();
 }
 
 
@@ -195,6 +229,7 @@ OtType OtApplicationClass::getMeta() {
 		type = OtTypeClass::create<OtApplicationClass>("Application", OtGuiClass::getMeta());
 		type->set("run", OtFunctionClass::create(&OtApplicationClass::run));
 		type->set("animation", OtFunctionClass::create(&OtApplicationClass::animation));
+		type->set("addSimulation", OtFunctionClass::create(&OtApplicationClass::addSimulation));
 	}
 
 	return type;

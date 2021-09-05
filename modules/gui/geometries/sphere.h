@@ -46,7 +46,7 @@ public:
 
 private:
 	// generate geometry
-	void fillBuffers();
+	void fillGeometry();
 
 	// attributes
 	double radius = 1.0;

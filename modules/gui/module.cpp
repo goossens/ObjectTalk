@@ -46,6 +46,9 @@
 #include "sphere.h"
 #include "torus.h"
 
+#include "simulation.h"
+#include "cloth.h"
+
 #include "widget.h"
 
 #include "screen.h"
@@ -108,6 +111,9 @@ extern "C" void init(OtModule module) {
 	module->set("Plane", OtClassClass::create(OtPlaneClass::getMeta()));
 	module->set("Sphere", OtClassClass::create(OtSphereClass::getMeta()));
 	module->set("Torus", OtClassClass::create(OtTorusClass::getMeta()));
+
+	module->set("Simulation", OtClassClass::create(OtSimulationClass::getMeta()));
+	module->set("Cloth", OtClassClass::create(OtClothClass::getMeta()));
 
 	module->set("Widget", OtClassClass::create(OtWidgetClass::getMeta()));
 	module->set("Screen", OtClassClass::create(OtScreenClass::getMeta()));

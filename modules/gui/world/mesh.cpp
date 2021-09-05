@@ -138,9 +138,6 @@ void OtMeshClass::render(int view, glm::mat4 parentTransform, long flag) {
 	// let parent class do its thing
 	OtObject3dClass::render(view, parentTransform);
 
-	// update geometry state (to support animations)
-	geometry->update();
-
 	// submit vertices and triangles
 	bgfx::setVertexBuffer(0, geometry->getVertexBuffer());
 	bgfx::setIndexBuffer(geometry->getTriangleIndexBuffer());

@@ -53,7 +53,7 @@ OtObject OtTorusClass::init(size_t count, OtObject* parameters) {
 				OtExcept("Too many parameters [%ld] for [Torus] constructor (max 8)", count);
 		}
 
-		refreshBuffers = true;
+		refreshGeometry = true;
 	}
 
 	return nullptr;
@@ -66,7 +66,7 @@ OtObject OtTorusClass::init(size_t count, OtObject* parameters) {
 
 OtObject OtTorusClass::setRadius(double r) {
 	radius = r;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -77,7 +77,7 @@ OtObject OtTorusClass::setRadius(double r) {
 
 OtObject OtTorusClass::setTubeRadius(double tr) {
 	tubeRadius = tr;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -88,7 +88,7 @@ OtObject OtTorusClass::setTubeRadius(double tr) {
 
 OtObject OtTorusClass::setRadialSegments(int segments) {
 	radialSegments = segments;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -99,7 +99,7 @@ OtObject OtTorusClass::setRadialSegments(int segments) {
 
 OtObject OtTorusClass::setTubularSegments(int segments) {
 	tubularSegments = segments;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -110,7 +110,7 @@ OtObject OtTorusClass::setTubularSegments(int segments) {
 
 OtObject OtTorusClass::setRadialStart(double rs) {
 	radialStart = rs;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -121,7 +121,7 @@ OtObject OtTorusClass::setRadialStart(double rs) {
 
 OtObject OtTorusClass::setRadialLength(double rl) {
 	radialLength = rl;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -132,7 +132,7 @@ OtObject OtTorusClass::setRadialLength(double rl) {
 
 OtObject OtTorusClass::setTubularStart(double ts) {
 	tubularStart = ts;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -143,19 +143,16 @@ OtObject OtTorusClass::setTubularStart(double ts) {
 
 OtObject OtTorusClass::setTubularLength(double tl) {
 	tubularLength = tl;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
 
 //
-//	OtTorusClass::fillBuffers
+//	OtTorusClass::fillGeometry
 //
 
-void OtTorusClass::fillBuffers() {
-	// clear geometry
-	clear();
-
+void OtTorusClass::fillGeometry() {
 	// default culling
 	culling = tubularLength == std::numbers::pi * 2.0 && radialLength == std::numbers::pi;
 

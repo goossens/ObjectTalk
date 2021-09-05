@@ -39,7 +39,7 @@ public:
 
 private:
 	// generate geometry
-	void fillBuffers();
+	void fillGeometry();
 
 	// properties
 	std::string modelName;

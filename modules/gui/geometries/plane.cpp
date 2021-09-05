@@ -39,7 +39,7 @@ OtObject OtPlaneClass::init(size_t count, OtObject* parameters) {
 				OtExcept("Too many parameters [%ld] for [Plane] constructor (max 4)", count);
 		}
 
-		refreshBuffers = true;
+		refreshGeometry = true;
 	}
 
 	return nullptr;
@@ -52,7 +52,7 @@ OtObject OtPlaneClass::init(size_t count, OtObject* parameters) {
 
 OtObject OtPlaneClass::setWidth(double w) {
 	width = w;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -63,7 +63,7 @@ OtObject OtPlaneClass::setWidth(double w) {
 
 OtObject OtPlaneClass::setHeight(double h) {
 	height = h;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -74,7 +74,7 @@ OtObject OtPlaneClass::setHeight(double h) {
 
 OtObject OtPlaneClass::setWidthSegments(int ws) {
 	widthSegments = ws;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -85,19 +85,16 @@ OtObject OtPlaneClass::setWidthSegments(int ws) {
 
 OtObject OtPlaneClass::setHeightSegments(int hs) {
 	heightSegments = hs;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
 
 //
-//	OtPlaneClass::fillBuffers
+//	OtPlaneClass::fillGeometry
 //
 
-void OtPlaneClass::fillBuffers() {
-	// clear geometry
-	clear();
-
+void OtPlaneClass::fillGeometry() {
 	// add vertices
 	auto widthHalf = width / 2.0;
 	auto heightHalf = height / 2.0;
@@ -117,9 +114,8 @@ void OtPlaneClass::fillBuffers() {
 			addVertex(OtVertex(
 				glm::vec3(x, -y, 0.0),
 				glm::vec3(0, 0, 1),
-				glm::vec2((float) ix / widthSegments, 1.0 - ((float) iy / heightSegments))));
+				glm::vec2((float) ix / widthSegments, (float) iy / heightSegments)));
 		}
-
 	}
 
 	// add triangles and lines

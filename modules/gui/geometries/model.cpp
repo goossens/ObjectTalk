@@ -35,7 +35,7 @@ OtObject OtModelClass::init(size_t count, OtObject* parameters) {
 				OtExcept("Too many parameters [%ld] for [Model] constructor (max 2)", count);
 		}
 
-		refreshBuffers = true;
+		refreshGeometry = true;
 	}
 
 	return nullptr;
@@ -48,7 +48,7 @@ OtObject OtModelClass::init(size_t count, OtObject* parameters) {
 
 OtObject OtModelClass::setModel(const std::string& name) {
 	modelName = name;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -59,19 +59,16 @@ OtObject OtModelClass::setModel(const std::string& name) {
 
 OtObject OtModelClass::setScale(double s) {
 	scale = s;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
 
 //
-//	OtModelClass::fillBuffers
+//	OtModelClass::fillGeometry
 //
 
-void OtModelClass::fillBuffers() {
-	// clear geometry
-	clear();
-
+void OtModelClass::fillGeometry() {
 	// default culling
 	culling = true;
 

@@ -50,7 +50,7 @@ OtObject OtSphereClass::init(size_t count, OtObject* parameters) {
 				OtExcept("Too many parameters [%ld] for [Sphere] constructor (max 7)", count);
 		}
 
-		refreshBuffers = true;
+		refreshGeometry = true;
 	}
 
 	return nullptr;
@@ -63,7 +63,7 @@ OtObject OtSphereClass::init(size_t count, OtObject* parameters) {
 
 OtObject OtSphereClass::setRadius(double r) {
 	radius = r;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -74,7 +74,7 @@ OtObject OtSphereClass::setRadius(double r) {
 
 OtObject OtSphereClass::setWidthSegments(int segments) {
 	widthSegments = segments;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -85,7 +85,7 @@ OtObject OtSphereClass::setWidthSegments(int segments) {
 
 OtObject OtSphereClass::setHeightSegments(int segments) {
 	heightSegments = segments;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -96,7 +96,7 @@ OtObject OtSphereClass::setHeightSegments(int segments) {
 
 OtObject OtSphereClass::setPhiStart(double ps) {
 	phiStart = ps;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -107,7 +107,7 @@ OtObject OtSphereClass::setPhiStart(double ps) {
 
 OtObject OtSphereClass::setPhiLength(double pl) {
 	phiLength = pl;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -118,7 +118,7 @@ OtObject OtSphereClass::setPhiLength(double pl) {
 
 OtObject OtSphereClass::setThetaStart(double ts) {
 	thetaStart = ts;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -129,19 +129,16 @@ OtObject OtSphereClass::setThetaStart(double ts) {
 
 OtObject OtSphereClass::setThetaLength(double tl) {
 	thetaLength = tl;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
 
 //
-//	OtSphereClass::fillBuffers
+//	OtSphereClass::fillGeometry
 //
 
-void OtSphereClass::fillBuffers() {
-	// clear geometry
-	clear();
-
+void OtSphereClass::fillGeometry() {
 	// default culling
 	culling = true;
 

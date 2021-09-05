@@ -43,7 +43,7 @@ public:
 
 private:
 	// generate geometry
-	void fillBuffers();
+	void fillGeometry();
 
 	// create one side of the box
 	void buildPlane(int udir, int vdir, double w, double h, double d, int gridX, int gridY, glm::vec3 (*cb)(float, float, float));

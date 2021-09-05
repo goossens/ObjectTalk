@@ -33,6 +33,12 @@ public:
 	OtObject setWidthSegments(int widthSegments);
 	OtObject setHeightSegments(int heightSegments);
 
+	// get information
+	double getWidth() { return width; }
+	double getHeight() { return height; }
+	int getWidthSegments() { return widthSegments; }
+	int getHeightSegments() { return heightSegments; }
+
 	// get type definition
 	static OtType getMeta();
 
@@ -41,7 +47,7 @@ public:
 
 private:
 	// generate geometry
-	void fillBuffers();
+	void fillGeometry();
 
 	// attributes
 	double width = 1.0;

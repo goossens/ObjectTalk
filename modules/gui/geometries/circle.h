@@ -43,7 +43,7 @@ public:
 
 private:
 	// generate geometry
-	void fillBuffers();
+	void fillGeometry();
 
 	// geometry
 	double radius = 1.0;

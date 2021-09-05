@@ -33,6 +33,40 @@ public:
 	// destructor
 	~OtGeometryClass();
 
+	// force updates
+	void forceGeometryRefresh() { refreshGeometry = true; }
+	void forceBufferRefresh() { refreshBuffers = true; }
+
+	// does geometry have holes (or is it one-sided)?
+	bool wantsCulling() { return culling; }
+
+	// access vertices
+	OtVertex& getVertex(size_t offset) {
+		if (refreshGeometry) {
+			fillGeometry();
+		}
+
+		return vertices[offset];
+	}
+
+	// access BGFX buffers
+	bgfx::VertexBufferHandle getVertexBuffer();
+	bgfx::IndexBufferHandle getTriangleIndexBuffer();
+	bgfx::IndexBufferHandle getLineIndexBuffer();
+
+	// get type definition
+	static OtType getMeta();
+
+	// create a new object
+	static OtGeometry create();
+
+protected:
+	// handle geometry
+	void clearGeometry();
+	void updateGeometry();
+	virtual void fillGeometry() {}
+	bool refreshGeometry = true;
+
 	// add vertices/triangles/lines to the geometry
 	void addVertex(const OtVertex& vertex) {
 		vertices.push_back(vertex);
@@ -49,36 +83,16 @@ public:
 		lines.push_back(p2);
 	}
 
-	// reset geometry
-	void clear();
-
-	// does geometry have holes (or is one-sided)?
-	bool wantsCulling() { return culling; }
-
-	// access BGFX buffers
-	bgfx::VertexBufferHandle getVertexBuffer();
-	bgfx::IndexBufferHandle getTriangleIndexBuffer();
-	bgfx::IndexBufferHandle getLineIndexBuffer();
-
-	// get type definition
-	static OtType getMeta();
-
-	// create a new object
-	static OtGeometry create();
-
-protected:
-	// handle buffers
-	void clearBuffers();
-	void updateBuffers();
-	virtual void fillBuffers() {}
-	bool refreshBuffers = true;
-
 	// geometry data
 	bool culling = false;
-
 	std::vector<OtVertex> vertices;
 	std::vector<uint16_t> triangles;
 	std::vector<uint16_t> lines;
+
+	// handle buffers
+	void clearBuffers();
+	void updateBuffers();
+	bool refreshBuffers = true;
 
 	// BGFX buffers
 	bgfx::VertexBufferHandle vertexBuffer = BGFX_INVALID_HANDLE;

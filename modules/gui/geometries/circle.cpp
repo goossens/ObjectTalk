@@ -41,7 +41,7 @@ OtObject OtCircleClass::init(size_t count, OtObject* parameters) {
 				OtExcept("Too many parameters [%ld] for [Circle] constructor (max 4)", count);
 		}
 
-		refreshBuffers = true;
+		refreshGeometry = true;
 	}
 
 	return nullptr;
@@ -54,7 +54,7 @@ OtObject OtCircleClass::init(size_t count, OtObject* parameters) {
 
 OtObject OtCircleClass::setRadius(double r) {
 	radius = r;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -65,7 +65,7 @@ OtObject OtCircleClass::setRadius(double r) {
 
 OtObject OtCircleClass::setSegments(int s) {
 	segments = s;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -76,7 +76,7 @@ OtObject OtCircleClass::setSegments(int s) {
 
 OtObject OtCircleClass::setThetaStart(double ts) {
 	thetaStart = ts;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
@@ -87,19 +87,16 @@ OtObject OtCircleClass::setThetaStart(double ts) {
 
 OtObject OtCircleClass::setThetaLength(double tl) {
 	thetaLength = tl;
-	refreshBuffers = true;
+	refreshGeometry = true;
 	return shared();
 }
 
 
 //
-//	OtCircleClass::fillBuffers
+//	OtCircleClass::fillGeometry
 //
 
-void OtCircleClass::fillBuffers() {
-	// clear geometry
-	clear();
-
+void OtCircleClass::fillGeometry() {
 	// add center
 	addVertex(OtVertex(
 		glm::vec3(0, 0, 0),

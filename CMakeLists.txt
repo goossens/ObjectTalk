@@ -8,12 +8,12 @@ cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
 project(ObjectTalk VERSION 1.0 DESCRIPTION "ObjectTalk - The Completely Object-Oriented Scripting Language" LANGUAGES C CXX)
 
 if(APPLE)
-	SET(OT_GUI_DEFAULT ON CACHE BOOL "Enable GUI module" FORCE)
+	set(OT_GUI_DEFAULT ON CACHE BOOL "Enable GUI module" FORCE)
 else()
-	SET(OT_GUI_DEFAULT OFF CACHE BOOL "Enable GUI module" FORCE)
+	set(OT_GUI_DEFAULT OFF CACHE BOOL "Enable GUI module" FORCE)
 endif()
 
-OPTION(OT_GUI "Enable GUI module" ${OT_GUI_DEFAULT})
+option(OT_GUI "Enable GUI module" ${OT_GUI_DEFAULT})
 
 include(deps/CMakeLists.txt)
 

@@ -44,5 +44,5 @@ include_directories(${imgui_SOURCE_DIR} ${imgui_SOURCE_DIR}/backends)
 set_property(TARGET imgui PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 if (APPLE)
-	set_property (TARGET imgui APPEND_STRING PROPERTY COMPILE_FLAGS "-fobjc-arc")
+	set_property(TARGET imgui APPEND_STRING PROPERTY COMPILE_FLAGS "-fobjc-arc")
 endif()

@@ -6,4 +6,4 @@
 
 FetchContent_Declare(tweeny GIT_REPOSITORY "https://github.com/mobius3/tweeny" GIT_TAG "v3.2.0")
 FetchContent_MakeAvailable(tweeny)
-include_directories(${tweeny_SOURCE_DIR}/tweeny)
+include_directories(${tweeny_SOURCE_DIR}/include)

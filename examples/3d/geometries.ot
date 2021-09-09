@@ -9,14 +9,14 @@
 var gui = import("gui");
 
 // specify default values
-var defaultGeometry = "sphere";
+var defaultGeometry = "box";
 var defaultMaterial = "gold";
 var defaultRenderer = "textured";
 
 // create combobox value lists
 var geometries = [
-	"circle", "cylinder", "plane", "sphere", "torus",
-	"bunny", "column", "teapot"
+	"box", "circle", "cylinder", "plane", "sphere",
+	"torus", "bunny", "column", "teapot"
 ];
 
 var textures = {
@@ -147,11 +147,11 @@ class MyApp : gui.Application {
 	}
 
 	function setGeometry(this, name) {
-		if (name == "circle") {
-			this.geometry = gui.Circle(20, 30);
+		if (name == "box") {
+			this.geometry = gui.Box(30, 30, 30);
 
-		} elif (name == "cone") {
-			this.geometry = gui.Cone(20, 20, 30);
+		} elif (name == "circle") {
+			this.geometry = gui.Circle(20, 30);
 
 		} elif (name == "cylinder") {
 			this.geometry = gui.Cylinder(16, 16, 40, 64);

@@ -32,7 +32,7 @@ OtObject OtBoxClass::init(size_t count, OtObject* parameters) {
 				widthSegments = parameters[3]->operator int();
 
 			case 3:
-				height = parameters[2]->operator double();
+				depth = parameters[2]->operator double();
 
 			case 2:
 				height = parameters[1]->operator double();
@@ -158,8 +158,8 @@ void OtBoxClass::buildPlane(int udir, int vdir, double w, double h, double d, in
 
 			addVertex(OtVertex(
 				cb(x * udir, y * vdir, depthHalf),
-				cb(0, 0, (depth > 0) ? 1 : - 1),
-				glm::vec2((float) ix / gridX, 1.0 - ((float) iy / gridY))));
+				cb(0, 0, (d > 0) ? 1 : - 1),
+				glm::vec2((float) ix / gridX, (float) iy / gridY)));
 		}
 
 	}

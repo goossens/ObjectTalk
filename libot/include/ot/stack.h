@@ -81,7 +81,7 @@ public:
 
 	size_t size() { return stack.size(); }
 	void resize(size_t size) { stack.resize(size); }
-	void reserve(size_t size) { stack.resize(stack.size() + size); }
+	void reserve() { stack.resize(stack.size() + 1); }
 	OtObject* sp(size_t offset) { return &(stack[stack.size() - offset]); }
 
 	// stack frame access functions

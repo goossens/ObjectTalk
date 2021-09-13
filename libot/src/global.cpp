@@ -81,7 +81,7 @@ OtGlobalClass::OtGlobalClass() {
 	set("OS", OtClassClass::create(OtOSClass::getMeta()));
 	set("FS", OtClassClass::create(OtFSClass::getMeta()));
 
-	// add default instances
+	// add default class instances
 	set("io", OtIOClass::create());
 	set("os", OtOSClass::create());
 	set("fs", OtFSClass::create());

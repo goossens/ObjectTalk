@@ -40,9 +40,7 @@ public:
 		const size_t count = sizeof...(ARGS) + 1;
 		stack->push(target);
 		(stack->push(args), ...);
-		stack->openFrame(count);
 		auto result = target->get(member)->operator () (count, stack->sp(count));
-		stack->closeFrame();
 		stack->pop(count);
 		return result;
 	}
@@ -55,9 +53,7 @@ public:
 		}
 
 		count++;
-		stack->openFrame(count);
 		auto result = member->operator () (count, stack->sp(count));
-		stack->closeFrame();
 		stack->pop(count);
 		return result;
 	}

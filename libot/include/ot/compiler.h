@@ -49,7 +49,7 @@ private:
 	void declareCapture(const std::string& name, OtStackItem item);
 
 	// declare a new variable in the current scope
-	void declareVariable(const std::string& name);
+	void declareVariable(OtByteCode bytecode, const std::string& name, bool declareVariable=false);
 
 	// resolve variable name by pushing a reference to the stack
 	void resolveVariable(OtByteCode bytecode, const std::string& name);

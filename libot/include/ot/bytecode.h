@@ -64,8 +64,8 @@ public:
 	void pop(size_t count) { emitOpcode(POP_COUNT); emitByte(count); }
 	void dup() { emitOpcode(DUP); }
 	void swap() { emitOpcode(SWAP); }
+	void reserve() { emitOpcode(RESERVE); }
 	void move(size_t count) { emitOpcode(MOVE); emitByte(count); }
-	size_t reserve(size_t count) { emitOpcode(RESERVE); return emitByte(count); }
 	size_t jump(size_t offset) { emitOpcode(JUMP); return emitOffset(offset); }
 	size_t jumpTrue(size_t offset) { emitOpcode(JUMP_TRUE); return emitOffset(offset); }
 	size_t jumpFalse(size_t offset) { emitOpcode(JUMP_FALSE); return emitOffset(offset); }
@@ -75,7 +75,6 @@ public:
 	void popTry() { emitOpcode(POP_TRY); }
 
 	void patchJump(size_t offset) { offsets[offset] = bytecode.size(); }
-	void patchByte(size_t offset, size_t value) { bytecode[offset] = value; }
 
 	// get current code size
 	size_t size() { return bytecode.size(); }

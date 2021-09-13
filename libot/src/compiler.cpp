@@ -51,14 +51,14 @@ OtByteCode OtCompiler::compileModule(OtSource src, OtModule module) {
 	pushObjectScope(global);
 
 	for (auto name : global->getMembers()->names()) {
-		declareVariable(name);
+		declareVariable(bytecode, name);
 	}
 
 	// setup module scope
 	pushObjectScope(module);
 
 	for (auto name : module->getMembers()->names()) {
-		declareVariable(name);
+		declareVariable(bytecode, name);
 	}
 
 	// process all statements
@@ -101,7 +101,7 @@ OtByteCode OtCompiler::compileExpression(OtSource src) {
 	pushObjectScope(global);
 
 	for (auto name : global->getMembers()->names()) {
-		declareVariable(name);
+		declareVariable(bytecode, name);
 	}
 
 	// process expression
@@ -213,7 +213,7 @@ void OtCompiler::declareCapture(const std::string& name, OtStackItem item) {
 //	OtCompiler::declareVariable
 //
 
-void OtCompiler::declareVariable(const std::string& name) {
+void OtCompiler::declareVariable(OtByteCode bytecode, const std::string& name, bool alreadyOnStack) {
 	// get current scope
 	auto scope = &(scopeStack.back());
 
@@ -226,6 +226,11 @@ void OtCompiler::declareVariable(const std::string& name) {
 	if (scope->type == FUNCTION_SCOPE || scope->type == BLOCK_SCOPE) {
 		// variable lives on the stack
 		scope->locals[name] = scope->stackFrameOffset + scope->locals.size();
+
+		// reserve space
+		if (!alreadyOnStack) {
+			bytecode->reserve();
+		}
 
 	} else {
 		// variable lives on the heap
@@ -282,7 +287,7 @@ void OtCompiler::resolveVariable(OtByteCode bytecode, const std::string& name) {
 
 		// do some housekeeping if we had a function scope
 		if (!found && scope->type == FUNCTION_SCOPE) {
-			// track how many function levels we have to go back
+			// track how many function levels we go back
 			functionLevel++;
 		}
 	}
@@ -320,7 +325,7 @@ void OtCompiler::function(OtByteCode bytecode) {
 
 	while (!scanner.matchToken(OtScanner::RPAREN_TOKEN) && !scanner.matchToken(OtScanner::EOS_TOKEN)) {
 		scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
-		declareVariable(scanner.getText());
+		declareVariable(bytecode, scanner.getText(), true);
 		scanner.advance();
 		count++;
 
@@ -1217,9 +1222,6 @@ void OtCompiler::block(OtByteCode bytecode) {
 	// enter a new block scope
 	pushBlockScope();
 
-	// make room for local variables (number will be patched at the end)
-	auto offset = bytecode->reserve(0);
-
 	// process all statements in block
 	while (!scanner.matchToken(OtScanner::RBRACE_TOKEN) && !scanner.matchToken(OtScanner::EOS_TOKEN)) {
 		statement(bytecode);
@@ -1230,9 +1232,6 @@ void OtCompiler::block(OtByteCode bytecode) {
 
 	// get number of locals on stack
 	auto locals = scopeStack.back().locals.size();
-
-	// now that we know the number of local variables, patch the previous code
-	bytecode->patchByte(offset, locals);
 
 	// locals are going out of scope so we remove them from the stack
 	bytecode->pop(locals);
@@ -1253,8 +1252,8 @@ void OtCompiler::variableDeclaration(OtByteCode bytecode) {
 	std::string name = scanner.getText();
 	scanner.advance();
 
-	// add variable to scope
-	declareVariable(name);
+	// add variable to scope and reserve space on stack
+	declareVariable(bytecode, name);
 
 	// process initial value if required
 	if (scanner.matchToken(OtScanner::ASSIGNMENT_TOKEN)) {
@@ -1296,7 +1295,7 @@ void OtCompiler::classDeclaration(OtByteCode bytecode) {
 	bytecode->method("subClass", 1);
 
 	// add class to current scope
-	declareVariable(name);
+	declareVariable(bytecode, name);
 	assignVariable(bytecode, name);
 
 	// start new class scope
@@ -1328,7 +1327,7 @@ void OtCompiler::functionDeclaration(OtByteCode bytecode) {
 	scanner.advance();
 
 	// add function to scope to allow for recursion
-	declareVariable(name);
+	declareVariable(bytecode, name);
 
 	// parse function definition to function object on stack
 	function(bytecode);
@@ -1366,7 +1365,7 @@ void OtCompiler::doStatement(OtByteCode bytecode) {
 void OtCompiler::forStatement(OtByteCode bytecode) {
 	scanner.expect(OtScanner::FOR_TOKEN);
 
-	// "for loop" is block to handle the loop variables
+	// "for loop" is "fake" block to handle loop variables
 	pushBlockScope();
 
 	// get name of iteration variable
@@ -1374,9 +1373,8 @@ void OtCompiler::forStatement(OtByteCode bytecode) {
 	std::string name = scanner.getText();
 	scanner.advance();
 
-	// create variable on the stack
-	declareVariable(name);
-	bytecode->reserve(1);
+	// create loop variable on the stack
+	declareVariable(bytecode, name);
 
 	// get the object to be iterated on
 	scanner.expect(OtScanner::IN_TOKEN);
@@ -1385,12 +1383,12 @@ void OtCompiler::forStatement(OtByteCode bytecode) {
 		bytecode->method("__deref__", 0);
 	}
 
-	// turn it into an iterator object
+	// pretend iterator is a local variable (that can't be addressed)
+	declareVariable(bytecode, "", true);
+
+	// turn object into an iterator
 	bytecode->method("__iter__", 0);
 	size_t offset1 = bytecode->size();
-
-	// pretend iterator is a local (that can't be addressed)
-	declareVariable("");
 
 	// see if we are at the end of the iteration
 	bytecode->dup();
@@ -1402,7 +1400,7 @@ void OtCompiler::forStatement(OtByteCode bytecode) {
 	bytecode->method("__next__", 0);
 	assignVariable(bytecode, name);
 
-	// process the actual for loop
+	// process the actual for loop block
 	block(bytecode);
 
 	// jump back to the start of the iteration
@@ -1541,7 +1539,7 @@ void OtCompiler::tryStatement(OtByteCode bytecode) {
 	pushBlockScope();
 
 	// declare error variable whose value is already on stack (courtesy of the VM)
-	declareVariable(name);
+	declareVariable(bytecode, name, true);
 
 	// compile "catch" block
 	block(bytecode);

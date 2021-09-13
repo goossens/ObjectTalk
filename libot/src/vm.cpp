@@ -156,7 +156,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 					break;
 
 				case OtByteCodeClass::RESERVE:
-					stack->reserve(bytecode->getNumber(pc));
+					stack->reserve();
 					break;
 
 				case OtByteCodeClass::JUMP:
@@ -192,7 +192,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 					// get number of calling parameters
 					auto count = bytecode->getNumber(pc);
 
-					// get a stack pointer to the calling parameters and target object
+					// get a pointer to the calling parameters and target object
 					auto parameters = stack->sp(count + 1);
 
 					// sanity check
@@ -203,7 +203,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 
 					// clean up stack and put result back on stack
 					stack->pop(count + 1);
-					stack->push(result ? result : null);
+					stack->push(result);
 					break;
 				}
 

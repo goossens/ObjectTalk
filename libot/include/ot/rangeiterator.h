@@ -33,20 +33,8 @@ public:
 	OtObject iterate() { return shared(); }
 
 	// iteration operations
-	bool end() {
-		if (to > from) {
-			return index > to;
-
-		} else {
-			return index < to;
-		}
-	}
-
-	OtObject next() {
-		auto result = OtIntegerClass::create(index);
-		index += increment;
-		return result;
-	}
+	bool end() { return (to > from) ? (index > to) : (index < to); }
+	long next() { auto result = index; index += increment; return result; }
 
 	// get type definition
 	static OtType getMeta();

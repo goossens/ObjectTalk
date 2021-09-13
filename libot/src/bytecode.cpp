@@ -69,7 +69,7 @@ std::string OtByteCodeClass::disassemble() {
 				break;
 
 			case RESERVE:
-				buffer << "RESERVE" << getNumber(pc);
+				buffer << "RESERVE";
 				break;
 
 			case JUMP:

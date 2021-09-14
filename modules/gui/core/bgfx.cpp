@@ -12,10 +12,13 @@
 #include <cstring>
 
 #define GLFW_INCLUDE_NONE
-#import <GLFW/glfw3.h>
+#include <GLFW/glfw3.h>
 
+#if __APPLE__
 #define GLFW_EXPOSE_NATIVE_COCOA
-#import <GLFW/glfw3native.h>
+#endif
+
+#include <GLFW/glfw3native.h>
 
 #include <bgfx/platform.h>
 

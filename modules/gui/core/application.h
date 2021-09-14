@@ -15,7 +15,7 @@
 #include <vector>
 
 #define GLFW_INCLUDE_NONE
-#import <GLFW/glfw3.h>
+#include <GLFW/glfw3.h>
 
 #include <bgfx/bgfx.h>
 

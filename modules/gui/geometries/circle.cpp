@@ -108,8 +108,8 @@ void OtCircleClass::fillGeometry() {
 
 	for (auto c = 0; c <= segments; c++) {
 		auto angle = thetaStart + c * delta;
-		auto x = std::cosf(angle);
-		auto y = std::sinf(angle);
+		auto x = std::cos(angle);
+		auto y = std::sin(angle);
 
 		addVertex(OtVertex(
 			glm::vec3(radius * x, radius * y, 0),

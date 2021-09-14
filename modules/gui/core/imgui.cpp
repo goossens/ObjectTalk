@@ -48,15 +48,15 @@ void OtApplicationClass::initIMGUI() {
 	io.IniFilename = nullptr;
 
 	// connect IMGUI to GLFW window
-	#if __APPLE__
-		ImGui_ImplGlfw_InitForOther(window, true);
+#if __APPLE__
+	ImGui_ImplGlfw_InitForOther(window, true);
 
-	#elif define(_WIND32)
-		ImGui_ImplGlfw_InitForVulkan(window, true);
+#elif defined(_WIND32)
+	ImGui_ImplGlfw_InitForVulkan(window, true);
 
-	#else
-		ImGui_ImplGlfw_InitForOpenGL(window, true);
-	#endif
+#else
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+#endif
 
 	// Setup vertex declaration
 	imguiVertexLayout

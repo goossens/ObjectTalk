@@ -186,8 +186,8 @@ void OtCylinderClass::generateTorso() {
 			auto u = (float) x / radialSegments;
 			auto theta = u * thetaLength + thetaStart;
 
-			auto sinTheta = std::sinf(theta);
-			auto cosTheta = std::cosf(theta);
+			auto sinTheta = std::sin(theta);
+			auto cosTheta = std::cos(theta);
 
 			// add a new vertice
 			addVertex(OtVertex(
@@ -245,8 +245,8 @@ void OtCylinderClass::generateCap(bool top) {
 	for (auto x = 0; x <= radialSegments; x++) {
 		auto u = (float) x / radialSegments;
 		auto theta = u * thetaLength + thetaStart;
-		auto cosTheta = std::cosf(theta);
-		auto sinTheta = std::sinf(theta);
+		auto cosTheta = std::cos(theta);
+		auto sinTheta = std::sin(theta);
 
 		// add vertex
 		addVertex(OtVertex(

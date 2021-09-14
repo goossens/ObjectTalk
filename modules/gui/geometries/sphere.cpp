@@ -149,14 +149,14 @@ void OtSphereClass::fillGeometry() {
 	// address each ring
 	for (auto ring = 0; ring <= heightSegments; ring++) {
 		auto theta = thetaStart + ring * ringDelta;
-		auto r0 = radius * std::sinf(theta);
-		auto y0 = radius * std::cosf(theta);
+		auto r0 = radius * std::sin(theta);
+		auto y0 = radius * std::cos(theta);
 
 		// address each segment
 		for (auto seg = 0; seg <= widthSegments; seg++) {
 			auto phi = phiStart + seg * segDelta;
-			auto x0 = r0 * -std::sinf(phi);
-			auto z0 = r0 * -std::cosf(phi);
+			auto x0 = r0 * -std::sin(phi);
+			auto z0 = r0 * -std::cos(phi);
 
 			// add vertex
 			addVertex(OtVertex(

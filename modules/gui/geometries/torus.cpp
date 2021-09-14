@@ -162,18 +162,18 @@ void OtTorusClass::fillGeometry() {
 			auto u = radialStart + (float) j / radialSegments * radialLength;
 			auto v = tubularStart + (float) i / tubularSegments * tubularLength;
 
-			auto x = (radius + tubeRadius * std::cosf(v)) * std::cosf(u);
-			auto y = (radius + tubeRadius * std::cosf(v)) * std::sinf(u);
-			auto z = tubeRadius * std::sinf(v);
+			auto x = (radius + tubeRadius * std::cos(v)) * std::cos(u);
+			auto y = (radius + tubeRadius * std::cos(v)) * std::sin(u);
+			auto z = tubeRadius * std::sin(v);
 
 			glm::vec3 pos = glm::vec3(x, y, z);
-			glm::vec3 center = glm::vec3(radius * std::cosf(u), radius * std::sinf(u), 0.0);
+			glm::vec3 center = glm::vec3(radius * std::cos(u), radius * std::sin(u), 0.0);
 			glm::vec3 normal = glm::normalize(pos - center);
 
 			// add vertex
 			addVertex(OtVertex(
 				glm::vec3(x, y, z),
-				glm::normalize(glm::vec3(x, y, z) - glm::vec3(radius * std::cosf(u), radius * std::sinf(u), 0.0)),
+				glm::normalize(glm::vec3(x, y, z) - glm::vec3(radius * std::cos(u), radius * std::sin(u), 0.0)),
 				glm::vec2((float) i / (float) tubularSegments, (float) j / (float) radialSegments)));
 		}
 	}

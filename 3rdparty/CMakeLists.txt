@@ -5,7 +5,4 @@
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
 add_library(llhttp STATIC llhttp/api.c llhttp/http.c llhttp/llhttp.c llhttp/llhttp.h)
-set_property(TARGET llhttp PROPERTY POSITION_INDEPENDENT_CODE ON)
-
 add_library(multipart STATIC multipart/multipartparser.c multipart/multipartparser.h)
-set_property(TARGET multipart PROPERTY POSITION_INDEPENDENT_CODE ON)

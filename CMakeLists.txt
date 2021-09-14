@@ -15,6 +15,8 @@ endif()
 
 option(OT_GUI "Enable GUI module" ${OT_GUI_DEFAULT})
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 include(deps/CMakeLists.txt)
 
 include_directories(3rdparty)

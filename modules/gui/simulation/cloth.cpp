@@ -131,9 +131,9 @@ void OtClothClass::step(int32_t deltaMilliseconds) {
 
 	// create wind vector
 	double now = OtApplicationClass::getTime();
-	auto strength = std::cosf(now / 7.0) * 5 + 10;
+	auto strength = std::cos(now / 7.0) * 5 + 10;
 	auto direction = glm::vec3(std::sin(now / 2.0), std::cos(now / 3.0), std::sin(now / 1.0));
-	auto wind = glm::normalize(direction) * strength;
+	auto wind = glm::normalize(direction) * (float) strength;
 
 	// run simulation
 	auto gravity = glm::vec3(0.0, -65, 0.0) * (float) mass;

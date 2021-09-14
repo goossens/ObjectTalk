@@ -16,6 +16,12 @@
 
 #if __APPLE__
 #define GLFW_EXPOSE_NATIVE_COCOA
+
+#elif defined(_WIN32)
+#define GLFW_EXPOSE_NATIVE_WIN32
+
+#else
+#define GLFW_EXPOSE_NATIVE_X11
 #endif
 
 #include <GLFW/glfw3native.h>

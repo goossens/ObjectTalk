@@ -23,7 +23,7 @@
 
 OtObject OtAmbientClass::init(size_t count, OtObject* parameters) {
 	if (count == 1) {
-		setColorCSS(parameters[0]->operator std::string());
+		setColor(parameters[0]->operator std::string());
 
 	} else if (count != 0) {
 		OtExcept("[Ambient] constructor expects 0 or 1 arguments (not %ld)", count);
@@ -34,20 +34,10 @@ OtObject OtAmbientClass::init(size_t count, OtObject* parameters) {
 
 
 //
-//	OtAmbientClass::setColorRGB
+//	OtAmbientClass::setColor
 //
 
-OtObject OtAmbientClass::setColorRGB(double r, double g, double b) {
-	color = glm::vec4(r, g, b, 1.0);
-	return shared();
-}
-
-
-//
-//	OtAmbientClass::setColorCSS
-//
-
-OtObject OtAmbientClass::setColorCSS(const std::string& name) {
+OtObject OtAmbientClass::setColor(const std::string& name) {
 	color = OtColorParseToVec4(name);
 	return shared();
 }
@@ -82,8 +72,7 @@ OtType OtAmbientClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtAmbientClass>("Ambient", OtSceneObjectClass::getMeta());
 		type->set("__init__", OtFunctionClass::create(&OtAmbientClass::init));
-		type->set("setColorRGB", OtFunctionClass::create(&OtAmbientClass::setColorRGB));
-		type->set("setColorCSS", OtFunctionClass::create(&OtAmbientClass::setColorCSS));
+		type->set("setColor", OtFunctionClass::create(&OtAmbientClass::setColor));
 	}
 
 	return type;

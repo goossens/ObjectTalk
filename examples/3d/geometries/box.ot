@@ -1,10 +1,18 @@
+#!/usr/local/bin/ot
+
+//	ObjectTalk Scripting Language
+//	Copyright (c) 2020-2021 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
 var gui = import("gui");
 
 class MyApp : gui.Application {
 	function setup(this, screen) {
 		var geometry = gui.Box();
 		var gold = gui.Material("material", "gold");
-		var object = gui.Wireframe(geometry, gold);
+		var object = gui.Mesh(geometry, gold).setWireframe(true);
 
 		this.animation()
 			.from(0.0)

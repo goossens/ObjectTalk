@@ -28,40 +28,20 @@ OtObject OtLightClass::setPosition(double px, double py, double pz) {
 
 
 //
-//	OtLightClass::setDiffuseRGB
+//	OtLightClass::setDiffuse
 //
 
-OtObject OtLightClass::setDiffuseRGB(double r, double g, double b) {
-	diffuse = glm::vec4(r, g, b, 1.0);
-	return shared();
-}
-
-
-//
-//	OtLightClass::setDiffuseCSS
-//
-
-OtObject OtLightClass::setDiffuseCSS(const std::string c) {
+OtObject OtLightClass::setDiffuse(const std::string c) {
 	diffuse = OtColorParseToVec4(c);
 	return shared();
 }
 
 
 //
-//	OtLightClass::setSpecularRGB
+//	OtLightClass::setSpecular
 //
 
-OtObject OtLightClass::setSpecularRGB(double r, double g, double b) {
-	specular = glm::vec4(r, g, b, 1.0);
-	return shared();
-}
-
-
-//
-//	OtLightClass::setSpecularCSS
-//
-
-OtObject OtLightClass::setSpecularCSS(const std::string c) {
+OtObject OtLightClass::setSpecular(const std::string c) {
 	specular = OtColorParseToVec4(c);
 	return shared();
 }
@@ -101,10 +81,8 @@ OtType OtLightClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtLightClass>("Light", OtSceneObjectClass::getMeta());
 		type->set("setPosition", OtFunctionClass::create(&OtLightClass::setPosition));
-		type->set("setDiffuseRGB", OtFunctionClass::create(&OtLightClass::setDiffuseRGB));
-		type->set("setDiffuseCSS", OtFunctionClass::create(&OtLightClass::setDiffuseCSS));
-		type->set("setSpecularRGB", OtFunctionClass::create(&OtLightClass::setSpecularRGB));
-		type->set("setSpecularCSS", OtFunctionClass::create(&OtLightClass::setSpecularCSS));
+		type->set("setDiffuse", OtFunctionClass::create(&OtLightClass::setDiffuse));
+		type->set("setSpecular", OtFunctionClass::create(&OtLightClass::setSpecular));
 	}
 
 	return type;

@@ -29,10 +29,8 @@ class OtLightClass : public OtSceneObjectClass {
 public:
 	// update attributes
 	OtObject setPosition(double x, double y, double z);
-	OtObject setDiffuseRGB(double r, double g, double b);
-	OtObject setDiffuseCSS(const std::string c) ;
-	OtObject setSpecularRGB(double r, double g, double b);
-	OtObject setSpecularCSS(const std::string c);
+	OtObject setDiffuse(const std::string c) ;
+	OtObject setSpecular(const std::string c);
 
 	// GUI to change parameters
 	void renderGUI();

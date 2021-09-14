@@ -28,9 +28,6 @@
 //
 
 void OtApplicationClass::initBGFX() {
-	// single threaded mode
-	bgfx::renderFrame();
-
 	// initialize bgfx
 	bgfx::Init init;
 

@@ -14,12 +14,12 @@ var skyColor = "#cce0ff";
 class MyApp : gui.Application {
 	function setup(this, screen) {
 		// create all components
-		var background = gui.Background(gui.Material("color", skyColor));
+		var background = gui.Background().setColor(skyColor);
 
 		var grass = gui.Mesh()
 			.setGeometry(gui.Plane(200, 200, 10, 10))
 			.setMaterial(gui.Material()
-				.setTexture(__DIR__ + "/assets/grass.jpg")
+				.setTexture(gui.Texture(__DIR__ + "/assets/grass.jpg"))
 				.setUvTransform(0, 0, 5, 5, 0, 0, 0))
 			.rotateX(-pi / 2.0);
 
@@ -50,14 +50,15 @@ class MyApp : gui.Application {
 
 		var cloth = gui.Mesh()
 			.setGeometry(plane)
-			.setMaterial(gui.Material("texture", __DIR__ + "/assets/cloth.png"))
+			.setMaterial(gui.Material()
+				.setTexture(gui.Texture(__DIR__ + "/assets/cloth.png")))
 			.translate(0, 15, 50);
 
 		var light = gui.Light()
 			.setPosition(0, 200, 200);
 
 		var fog = gui.Fog()
-			.setColorCSS(skyColor)
+			.setColor(skyColor)
 			.setDistances(50, 150);
 
 		// create scene

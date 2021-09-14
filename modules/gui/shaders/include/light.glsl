@@ -23,13 +23,8 @@ uniform vec4 u_light[LIGHTS * SLOTS_PER_LIGHT + 3];
 #define u_light_specular(l) u_light[SLOTS_PER_LIGHT * l + 6]
 
 vec4 processFog(vec4 color, vec3 position) {
-	if (u_fog_enabled) {
-		float fog_factor = (u_fog_far - abs(position.z)) / (u_fog_far - u_fog_near);
-		return mix(u_fog_color, color, clamp(fog_factor, 0.0, 1.0));
-
-	} else {
-		return color;
-	}
+	float fog_factor = (u_fog_far - abs(position.z)) / (u_fog_far - u_fog_near);
+	return mix(u_fog_color, color, clamp(fog_factor, 0.0, 1.0));
 }
 
 // Process a light

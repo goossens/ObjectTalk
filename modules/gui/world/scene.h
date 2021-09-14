@@ -18,8 +18,6 @@
 #include "glm/glm.hpp"
 
 #include "component.h"
-#include "fog.h"
-#include "light.h"
 
 
 //

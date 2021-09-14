@@ -17,21 +17,33 @@
 
 
 
+//
+//	Globals
+//
+
+static int idCounter = 10;
+
+
+//
+//	OtViewClass::OtViewClass
+//
+
+OtViewClass::OtViewClass() {
+	// set view ID
+	id = idCounter;
+	idCounter += 10;
+}
+
+
+//
+//	OtViewClass::~OtViewClass
+//
+
 OtViewClass::~OtViewClass() {
 	// clear our scene (it has circular parent/child relationships)
 	if (scene) {
 		scene->clear();
 	}
-}
-
-
-//
-//	OtViewClass::setID
-//
-
-OtObject OtViewClass::setID(int i) {
-	id = i;
-	return shared();
 }
 
 
@@ -180,7 +192,6 @@ OtType OtViewClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtViewClass>("View", OtWidgetClass::getMeta());
 
-		type->set("setID", OtFunctionClass::create(&OtViewClass::setID));
 		type->set("setScreenArea", OtFunctionClass::create(&OtViewClass::setScreenArea));
 		type->set("setCamera", OtFunctionClass::create(&OtViewClass::setCamera));
 		type->set("setScene", OtFunctionClass::create(&OtViewClass::setScene));

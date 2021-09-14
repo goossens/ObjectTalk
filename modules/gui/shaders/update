@@ -17,15 +17,23 @@ function compilerPart() {
 		compute) EXT=cs;;
 	esac
 
-	${SHADERC} -f $2.${EXT} -o ${EXT}_mtl.h -i ${HOME}/include --type $1 --platform osx -p metal --bin2c ${EXT}_$2_mtl
+	if [ $2 == "instancing" ]
+	then
+		PREFIX=${EXT}i
+
+	else
+		PREFIX=${EXT}
+	fi
+
+	${SHADERC} -f $2.${EXT} -o ${PREFIX}_mtl.h -i ${HOME}/include --type $1 --platform osx -p metal --bin2c ${PREFIX}_$3_mtl
 }
 
 function compileShader() {
 	cd ${HOME}/$1
 
-	if [ -f $1.vs ]
+	if [ -f shader.vs ]
 	then
-		compilerPart vertex $1
+		compilerPart vertex shader $1
 		fakePart vs $1 glsl
 		fakePart vs $1 essl
 		fakePart vs $1 spv
@@ -33,14 +41,24 @@ function compileShader() {
 		fakePart vs $1 dx11
 	fi
 
-	if [ -f $1.fs ]
+	if [ -f shader.fs ]
 	then
-		compilerPart fragment $1
+		compilerPart fragment shader $1
 		fakePart fs $1 glsl
 		fakePart fs $1 essl
 		fakePart fs $1 spv
 		fakePart fs $1 dx9
 		fakePart fs $1 dx11
+	fi
+
+	if [ -f instancing.vs ]
+	then
+		compilerPart vertex instancing $1
+		fakePart vsi $1 glsl
+		fakePart vsi $1 essl
+		fakePart vsi $1 spv
+		fakePart vsi $1 dx9
+		fakePart vsi $1 dx11
 	fi
 
 	cd ${HOME}
@@ -52,8 +70,18 @@ function compileShader() {
 	cat $1/fs_glsl.h $1/fs_essl.h $1/fs_spv.h $1/fs_dx9.h $1/fs_dx11.h $1/fs_mtl.h >>$1shader.h
 	echo "extern const uint8_t* fs_$1_pssl;" >>$1shader.h
 	echo "extern const uint32_t fs_$1_pssl_size;" >>$1shader.h
+
+	if [ -f $1/vsi_mtl.h ]
+	then
+		cat $1/vsi_glsl.h $1/vsi_essl.h $1/vsi_spv.h $1/vsi_dx9.h $1/vsi_dx11.h $1/vsi_mtl.h >>$1shader.h
+		echo "extern const uint8_t* vsi_$1_pssl;" >>$1shader.h
+		echo "extern const uint32_t vsi_$1_pssl_size;" >>$1shader.h
+	fi
 }
 
 compileShader background
-compileShader mesh
 compileShader skybox
+compileShader fixed
+compileShader colored
+compileShader textured
+compileShader blendmapped

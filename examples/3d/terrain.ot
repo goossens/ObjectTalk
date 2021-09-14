@@ -1,0 +1,80 @@
+#!/usr/local/bin/ot
+
+//	ObjectTalk Scripting Language
+//	Copyright (c) 2020-2021 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var gui = import("gui");
+
+var skyColor = "#cce0ff";
+
+class MyApp : gui.Application {
+	function setup(this, screen) {
+		var background = gui.Background().setColor(skyColor);
+		var heightmap = gui.HeightMap(__DIR__ + "/assets/heightmap.png", 10);
+
+		var terrain = gui.Mesh()
+			.setGeometry(gui.Terrain()
+				.setWidth(200)
+				.setDepth(200)
+				.setWidthSegments(200)
+				.setDepthSegments(200)
+				.setHeightMap(heightmap))
+			.setMaterial(gui.Material()
+				.setBlendMap(gui.BlendMap(
+					gui.Texture(__DIR__ + "/assets/blendmap.png"),
+					gui.Texture(__DIR__ + "/assets/grass.png"),
+					gui.Texture(__DIR__ + "/assets/mud.png"),
+					gui.Texture(__DIR__ + "/assets/grassflowers.png"),
+					gui.Texture(__DIR__ + "/assets/path.png"))));
+
+		var ambient = gui.Ambient();
+		var light = gui.Light().setPosition(10, 20, 30);
+
+		var fog = gui.Fog()
+			.setColor(skyColor)
+			.setDistances(75, 150);
+
+		var trees = gui.Mesh()
+			.setGeometry(gui.Model(__DIR__ + "/assets/pine.obj"))
+			.setMaterial(gui.Material()
+				.setTexture(gui.Texture(__DIR__ + "/assets/pine.png")))
+			.setHoles(true);
+
+		for c in range(200) {
+			var x = 1.0.random();
+			var z = 1.0.random();
+			var y = heightmap.getHeight(x, z);
+			x = -90.0 + 180.0 * x;
+			z = -90.0 + 180.0 * z;
+
+			trees.addInstance(gui.Matrix()
+				.translate(x, y, z)
+				.scale(0.5, 0.5, 0.5));
+		}
+
+		var scene = gui.Scene()
+			.add(background)
+			.add(terrain)
+			.add(ambient)
+			.add(light)
+			.add(fog)
+			.add(trees);
+
+		var camera = gui.Camera()
+			.setPosition(0, 20, 50)
+			.setFOV(45)
+			.setClipping(0.1, 10000);
+
+		var view = gui.View()
+			.setCamera(camera)
+			.setScene(scene);
+
+		screen.add(view);
+	}
+}
+
+var app = MyApp();
+app.run("3D Terrain");

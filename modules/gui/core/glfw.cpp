@@ -133,7 +133,7 @@ void OtApplicationClass::renderGLFW() {
 //
 
 void OtApplicationClass::eventsGLFW() {
-	// poll for windows events
+	// poll for window events
 	glfwPollEvents();
 }
 

@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include "glm/ext.hpp"
 #include "glm/glm.hpp"
 
 #include "bgfx/bgfx.h"
@@ -32,8 +31,7 @@ class OtFogClass : public OtSceneObjectClass {
 
 public:
 	// update attributes
-	OtObject setColorRGB(double r, double g, double b);
-	OtObject setColorCSS(const std::string& color);
+	OtObject setColor(const std::string& color);
 	OtObject setDistances(double near, double far);
 
 	// GUI to change fog parameters

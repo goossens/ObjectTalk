@@ -73,12 +73,13 @@ class MyApp : gui.Application {
 
 		var light = gui.Light()
 			.setPosition(25, 25, 40)
-			.setDiffuseRGB(0.8, 0.8, 0.8)
-			.setSpecularRGB(0.8, 0.8, 0.8);
+			.setDiffuse("#c0c0c0")
+			.setSpecular("#c0c0c0");
 
-		var sphere = gui.Wireframe()
+		var sphere = gui.Mesh()
 			.setGeometry(gui.Sphere(20, 40, 40))
-			.setMaterial(gui.Material("material", "gold"));
+			.setMaterial(gui.Material("material", "gold"))
+			.setWireframe(true);
 
 		this.animation()
 			.from(0.0)

@@ -114,7 +114,7 @@ OtSkyboxClass::OtSkyboxClass() {
 	// initialize shader
 	bgfx::RendererType::Enum type = bgfx::getRendererType();
 
-	program = bgfx::createProgram(
+	shader = bgfx::createProgram(
 		bgfx::createEmbeddedShader(embeddedShaders, type, "vs_skybox"),
 		bgfx::createEmbeddedShader(embeddedShaders, type, "fs_skybox"),
 		true);
@@ -130,7 +130,7 @@ OtSkyboxClass::~OtSkyboxClass() {
 	bgfx::destroy(vertexBuffer);
 	bgfx::destroy(indexBuffer);
 	bgfx::destroy(cubemapUniform);
-	bgfx::destroy(program);
+	bgfx::destroy(shader);
 }
 
 
@@ -217,7 +217,7 @@ void OtSkyboxClass::render(int view, glm::mat4 parentTransform) {
 
 	// run shader
 	bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_MSAA);
-	bgfx::submit(view, program, bgfx::ViewMode::Default);
+	bgfx::submit(view, shader);
 }
 
 

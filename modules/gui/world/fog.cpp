@@ -11,6 +11,8 @@
 
 #include <imgui.h>
 
+#include "glm/ext.hpp"
+
 #include "ot/function.h"
 
 #include "color.h"
@@ -18,20 +20,10 @@
 
 
 //
-//	OtFogClass::setColorRGB
+//	OtFogClass::setColor
 //
 
-OtObject OtFogClass::setColorRGB(double r, double g, double b) {
-	color = glm::vec4(r, g, b, 1.0);
-	return shared();
-}
-
-
-//
-//	OtFogClass::setColorCSS
-//
-
-OtObject OtFogClass::setColorCSS(const std::string& c) {
+OtObject OtFogClass::setColor(const std::string& c) {
 	color = OtColorParseToVec4(c);
 	return shared();
 }
@@ -80,8 +72,7 @@ OtType OtFogClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtFogClass>("Fog", OtSceneObjectClass::getMeta());
-		type->set("setColorRGB", OtFunctionClass::create(&OtFogClass::setColorRGB));
-		type->set("setColorCSS", OtFunctionClass::create(&OtFogClass::setColorCSS));
+		type->set("setColor", OtFunctionClass::create(&OtFogClass::setColor));
 		type->set("setDistances", OtFunctionClass::create(&OtFogClass::setDistances));
 	}
 

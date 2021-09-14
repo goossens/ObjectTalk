@@ -13,9 +13,8 @@
 //
 
 #include "bgfx/bgfx.h"
+#include "bimg/decode.h"
 
-#include "geometry.h"
-#include "material.h"
 #include "sceneobject.h"
 
 
@@ -54,7 +53,7 @@ protected:
 
 	// BGFX shader
 	bgfx::UniformHandle transformUniform = BGFX_INVALID_HANDLE;
-	bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;
+	bgfx::ProgramHandle shader = BGFX_INVALID_HANDLE;
 
 	// our cubemap
 	bgfx::UniformHandle cubemapUniform = BGFX_INVALID_HANDLE;

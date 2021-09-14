@@ -12,7 +12,10 @@
 //	Include files
 //
 
+#include <vector>
+
 #include "bgfx/bgfx.h"
+#include "glm/glm.hpp"
 
 #include "object3d.h"
 #include "geometry.h"
@@ -28,8 +31,7 @@ typedef std::shared_ptr<OtMeshClass> OtMesh;
 
 class OtMeshClass : public OtObject3dClass {
 public:
-	// constructor/destructor
-	OtMeshClass();
+	// destructor
 	~OtMeshClass();
 
 	// initialize
@@ -38,7 +40,11 @@ public:
 	// set properties
 	OtObject setGeometry(OtObject geometry);
 	OtObject setMaterial(OtObject material);
+	OtObject setWireframe(bool wireframe);
 	OtObject setHoles(bool holes);
+
+	// add a new instance to this mesh
+	OtObject addInstance(OtObject matrix);
 
 	// render in BGFX
     void render(int view, glm::mat4 parentTransform);
@@ -53,11 +59,16 @@ protected:
 	// render with culling
 	void render(int view, glm::mat4 parentTransform, long flag);
 
-	// geometry, material and flag to describe holes/transparency
+	// properties
 	OtGeometry geometry;
 	OtMaterial material;
+	int materialType = -1;
+	bool wireframe = false;
 	bool holes = false;
 
+	// list of instances
+	std::vector<glm::mat4> instances;
+
 	// BGFX shader
-	bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;
+	bgfx::ProgramHandle shader = BGFX_INVALID_HANDLE;
 };

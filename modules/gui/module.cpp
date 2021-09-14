@@ -30,12 +30,16 @@
 #include "fog.h"
 
 #include "object3d.h"
-#include "group.h"
 #include "background.h"
 #include "skybox.h"
 #include "mesh.h"
-#include "wireframe.h"
+#include "group.h"
+
+#include "blendmap.h"
+#include "heightmap.h"
 #include "material.h"
+#include "texture.h"
+#include "matrix.h"
 
 #include "geometry.h"
 #include "box.h"
@@ -44,6 +48,7 @@
 #include "model.h"
 #include "plane.h"
 #include "sphere.h"
+#include "terrain.h"
 #include "torus.h"
 
 #include "simulation.h"
@@ -94,12 +99,16 @@ extern "C" void init(OtModule module) {
 	module->set("Fog", OtClassClass::create(OtFogClass::getMeta()));
 
 	module->set("Object3D", OtClassClass::create(OtObject3dClass::getMeta()));
-	module->set("Group", OtClassClass::create(OtGroupClass::getMeta()));
 	module->set("Background", OtClassClass::create(OtBackgroundClass::getMeta()));
 	module->set("Skybox", OtClassClass::create(OtSkyboxClass::getMeta()));
 	module->set("Mesh", OtClassClass::create(OtMeshClass::getMeta()));
-	module->set("Wireframe", OtClassClass::create(OtWireframeClass::getMeta()));
+	module->set("Group", OtClassClass::create(OtGroupClass::getMeta()));
+
+	module->set("BlendMap", OtClassClass::create(OtBlendMapClass::getMeta()));
+	module->set("HeightMap", OtClassClass::create(OtHeightMapClass::getMeta()));
 	module->set("Material", OtClassClass::create(OtMaterialClass::getMeta()));
+	module->set("Texture", OtClassClass::create(OtTextureClass::getMeta()));
+	module->set("Matrix", OtClassClass::create(OtMatrixClass::getMeta()));
 
 	module->set("getDefaultMaterials", OtFunctionClass::create(&OtMaterialClass::getDefaultMaterials));
 
@@ -110,6 +119,7 @@ extern "C" void init(OtModule module) {
 	module->set("Model", OtClassClass::create(OtModelClass::getMeta()));
 	module->set("Plane", OtClassClass::create(OtPlaneClass::getMeta()));
 	module->set("Sphere", OtClassClass::create(OtSphereClass::getMeta()));
+	module->set("Terrain", OtClassClass::create(OtTerrainClass::getMeta()));
 	module->set("Torus", OtClassClass::create(OtTorusClass::getMeta()));
 
 	module->set("Simulation", OtClassClass::create(OtSimulationClass::getMeta()));

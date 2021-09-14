@@ -14,9 +14,9 @@
 
 #include "bgfx/bgfx.h"
 
-#include "object3d.h"
+#include "sceneobject.h"
 #include "plane.h"
-#include "material.h"
+#include "texture.h"
 
 
 //
@@ -26,7 +26,7 @@
 class OtBackgroundClass;
 typedef std::shared_ptr<OtBackgroundClass> OtBackground;
 
-class OtBackgroundClass : public OtObject3dClass {
+class OtBackgroundClass : public OtSceneObjectClass {
 public:
 	// constructor/destructor
 	OtBackgroundClass();
@@ -35,8 +35,11 @@ public:
 	// initialize
 	OtObject init(size_t count, OtObject* parameters);
 
-	// update material
-	OtObject setMaterial(OtObject material);
+	// update color
+	OtObject setColor(const std::string& color);
+
+	// update texture
+	OtObject setTexture(OtObject texture);
 
 	// render in BGFX
     void render(int view, glm::mat4 parentTransform);
@@ -50,9 +53,14 @@ public:
 protected:
 	// geometry and material
 	OtPlane plane;
-	OtMaterial material;
+
+	glm::vec3 color = glm::vec3(0.0);
+	OtTexture texture;
 
 	// BGFX shader
 	bgfx::UniformHandle transformUniform = BGFX_INVALID_HANDLE;
-	bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;
+	bgfx::UniformHandle backgroundUniform = BGFX_INVALID_HANDLE;
+	bgfx::UniformHandle textureUniform = BGFX_INVALID_HANDLE;
+	bgfx::ProgramHandle shader = BGFX_INVALID_HANDLE;
+	bgfx::TextureHandle dummy = BGFX_INVALID_HANDLE;
 };

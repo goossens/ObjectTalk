@@ -1,3 +1,11 @@
+#!/usr/local/bin/ot
+
+//	ObjectTalk Scripting Language
+//	Copyright (c) 2020-2021 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
 var gui = import("gui");
 
 var defaultLat = 51.5;
@@ -80,19 +88,21 @@ class MyApp : gui.Application {
 	function setup(this, screen) {
 		var skybox = gui.Skybox(__DIR__ + "/assets/space.ktx");
 
-		var grid = gui.Wireframe(
-			gui.Sphere()
+		var grid = gui.Mesh()
+			.setGeometry(gui.Sphere()
 				.setRadius(0.99)
 				.setWidthSegments(60)
-				.setHeightSegments(30),
-			gui.Material().setColorCSS("#505050"));
+				.setHeightSegments(30))
+			.setMaterial(gui.Material()
+				.setColor("#505050"))
+			.setWireframe(true);
 
 		var surface = gui.Mesh()
 			.setGeometry(gui.Sphere()
 				.setWidthSegments(64)
 				.setHeightSegments(32))
 			.setMaterial(gui.Material()
-				.setTexture(__DIR__ + "/assets/earth.png"))
+				.setTexture(gui.Texture(__DIR__ + "/assets/earth.png")))
 			.setHoles(true);
 
 		var clouds = gui.Mesh()
@@ -101,7 +111,7 @@ class MyApp : gui.Application {
 				.setWidthSegments(64)
 				.setHeightSegments(32))
 			.setMaterial(gui.Material()
-				.setTexture(__DIR__ + "/assets/clouds.png"))
+				.setTexture(gui.Texture(__DIR__ + "/assets/clouds.png")))
 			.setHoles(true);
 
 		var earth = gui.Group()
@@ -113,7 +123,7 @@ class MyApp : gui.Application {
 		var light = gui.Light().setPosition(1, 4, 4);
 
 		var fog = gui.Fog()
-			.setColorCSS("black")
+			.setColor("black")
 			.setDistances(4, 5.5);
 
 		var scene = gui.Scene()

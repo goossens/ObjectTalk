@@ -20,14 +20,15 @@ release:
 xcode:
 	cmake -Bxcode -Wno-dev -GXcode
 
+gui:
+	cmake -Bdebug -Wno-dev -DOT_GUI=ON
+	cd debug && make
+
 test: debug
 	cd debug && make test
 
 rtest: release
 	cd release && make test
-
-gui: debug
-	./debug/bin/ot ./examples/3d/earth.ot
 
 install: release
 	cd release && make install/strip

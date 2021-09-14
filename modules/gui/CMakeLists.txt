@@ -31,7 +31,7 @@ endif()
 
 add_library(gui MODULE ${GUI_INCLUDES} ${GUI_SOURCES})
 
-target_link_libraries(gui libot ${UV_LIBRARY} glfw bgfx imgui tinyobjloader assimp ${GUI_LIBS})
+target_link_libraries(gui libot ${UV_LIBRARY} glfw bgfx imgui tinyobjloader ${GUI_LIBS})
 
 target_compile_features(gui PRIVATE cxx_std_17)
 set_target_properties(gui PROPERTIES CXX_EXTENSIONS OFF)

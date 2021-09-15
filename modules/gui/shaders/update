@@ -35,9 +35,9 @@ function compilePart() {
 		fakePart ${PREFIX} $3 dx11
 
 	else
-		${SHADERC} -f $2.${EXT} -o ${PREFIX}_mtl.h -i ${HOME}/include --type $1 --platform linux -p 400 --bin2c ${PREFIX}_$3_glsl
-		${SHADERC} -f $2.${EXT} -o ${PREFIX}_mtl.h -i ${HOME}/include --type $1 --platform linux -p 300_es --bin2c ${PREFIX}_$3_essl
-		${SHADERC} -f $2.${EXT} -o ${PREFIX}_mtl.h -i ${HOME}/include --type $1 --platform linux -p spirv --bin2c ${PREFIX}_$3_spv
+		${SHADERC} -f $2.${EXT} -o ${PREFIX}_glsl.h -i ${HOME}/include --type $1 --platform linux -p 150 --bin2c ${PREFIX}_$3_glsl
+		${SHADERC} -f $2.${EXT} -o ${PREFIX}_essl.h -i ${HOME}/include --type $1 --platform linux -p 300_es --bin2c ${PREFIX}_$3_essl
+		${SHADERC} -f $2.${EXT} -o ${PREFIX}_spv.h -i ${HOME}/include --type $1 --platform linux -p spirv --bin2c ${PREFIX}_$3_spv
 	fi
 }
 

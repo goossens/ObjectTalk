@@ -11,14 +11,14 @@
 uniform vec4 u_light[LIGHTS * SLOTS_PER_LIGHT + 3];
 #define u_light_ambient u_light[0]
 
-#define u_fog_enabled int(u_light[1].x)
+#define u_fog_enabled bool(u_light[1].x)
 #define u_fog_near u_light[1].y
 #define u_fog_far u_light[1].z
 #define u_fog_color u_light[2]
 
-#define u_light_on(l) int(u_light[SLOTS_PER_LIGHT * l + 3].x)
+#define u_light_on(l) bool(u_light[SLOTS_PER_LIGHT * l + 3].x)
 #define u_light_type(l) u_light[SLOTS_PER_LIGHT * l + 3].y
-#define u_light_position(l) u_light[SLOTS_PER_LIGHT * l + 4]
+#define u_light_position(l) u_light[SLOTS_PER_LIGHT * l + 4].xyz
 #define u_light_diffuse(l) u_light[SLOTS_PER_LIGHT * l + 5]
 #define u_light_specular(l) u_light[SLOTS_PER_LIGHT * l + 6]
 

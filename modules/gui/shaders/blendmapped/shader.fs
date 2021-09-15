@@ -22,7 +22,7 @@ void main() {
 	// blend texture colors based on blendmap
 	vec4 blend = texture2D(s_blendmap, v_texcoord0);
 	float b = 1.0 - blend.r - blend.g - blend.b;
-	vec2 tiled = v_texcoord0 * 40;
+	vec2 tiled = v_texcoord0 * 40.0;
 
 	vec4 color = texture2D(s_texture_n, tiled) * b +
 		texture2D(s_texture_r, tiled) * blend.r +

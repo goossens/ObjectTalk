@@ -12,8 +12,8 @@ $output v_position, v_normal, v_texcoord0
 #include <material.glsl>
 
 void main() {
-	v_position = mul(u_modelView, vec4(a_position, 1.0));
-	v_normal = normalize(mul(u_modelView, vec4(a_normal, 0.0)));
+	v_position = mul(u_modelView, vec4(a_position, 1.0)).xyz;
+	v_normal = normalize(mul(u_modelView, vec4(a_normal, 0.0))).xyz;
 	v_texcoord0 = mul(u_uv_transform, vec3(a_texcoord0, 1.0)).xy;
 	gl_Position = mul(u_modelViewProj, vec4(a_position, 1.0));
 }

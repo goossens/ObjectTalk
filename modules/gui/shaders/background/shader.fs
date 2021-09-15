@@ -9,7 +9,7 @@ $input v_position, v_texcoord0
 #include <bgfx.glsl>
 
 uniform vec4 u_background[2];
-#define u_background_textured int(u_background[0].x)
+#define u_background_textured bool(u_background[0].x)
 #define u_background_color u_background[1]
 
 SAMPLER2D(s_texture, 0);

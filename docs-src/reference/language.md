@@ -150,7 +150,8 @@ for visualizing grammar.
 
 ### function
 ![Railroad Diagram](img/function.png)
-	function ::= "function" "(" ((name ("," name)*)? | "...") ")" block
+
+	function ::= "function" "(" ((name ("," name)*)?) ")" block
 
 
 ### name

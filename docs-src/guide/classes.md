@@ -12,8 +12,8 @@ interchangeably.
 You introduce classes with the class keyword:
 
 	class Resolution : Object {
-	    var width = 0;
-	    var height = 0;
+		var width = 0;
+		var height = 0;
 	}
 
 The example above defines a new class called Resolution (that is derived
@@ -27,7 +27,7 @@ assign values to the instance member.
 		// instance member initialized in constructor
 		function__init__(this, width, height) {
 			this.width = 0;
-		    this.height = 0;
+			this.height = 0;
 		}
 	}
 
@@ -35,10 +35,10 @@ assign values to the instance member.
 		var classVariable = "mode class";
 
 		function__init__(this) {
-		    this.resolution = Resolution(1920, 1080);
-		    this.interlaced = false;
-		    this.frameRate = 0.0;
-		    this.name;
+			this.resolution = Resolution(1920, 1080);
+			this.interlaced = false;
+			this.frameRate = 0.0;
+			this.name;
 		}
 	}
 
@@ -141,18 +141,20 @@ to count the number of times an action occurs:
 
 	class Counter : Object {
 		function__init__(this) {
-		    this.count = 0;
+			this.count = 0;
 		}
 
-	    function increment(this) {
-	        this.count += 1;
-	    }
-	    function increment(this, amount) {
-	        this.count += amount;
-	    }
-	    function reset(this) {
-	        this.count = 0;
-	    }
+		function increment(this) {
+			this.count += 1;
+		}
+
+		function increment(this, amount) {
+			this.count += amount;
+		}
+
+		function reset(this) {
+			this.count = 0;
+		}
 	}
 
 The Counter class defines three instance methods:
@@ -200,9 +202,9 @@ The name of the constructor is always **\_\_init__** as you can see in the
 examples above. Here's another example:
 
 	class Fahrenheit : Object {
-	    function __init__(this) {
-	        this.temperature = 32;
-	    }
+		function __init__(this) {
+			this.temperature = 32;
+		}
 	}
 
 	var f = Fahrenheit();
@@ -259,13 +261,13 @@ all classes in ObjectTalk have a parent class with the exception of the
 **Object** class which is the root class for all others.
 
 	class A : Object {
-	    function someMethod(this) {
+		function someMethod(this) {
 			print("A.someMethod()");
 		}
 	}
 
 	class B : A {
-	    function someMethod(this) {
+		function someMethod(this) {
 			print("B.someMethod()");
 		}
 	}

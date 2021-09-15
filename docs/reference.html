@@ -526,11 +526,9 @@
             <pre><code>string ::= '&quot;' (Char - [&quot;\] | '\' [&quot;\bfnrt] | &quot;\u&quot;  [0-9A-Fa-f] [0-9A-Fa-f] [0-9A-Fa-f] [0-9A-Fa-f])* '&quot;'
 </code></pre>
             <h3>function</h3>
-            <p>
-              <img src="img/function.png" alt="Railroad Diagram" /> function ::=
-              &quot;function&quot; &quot;(&quot; ((name (&quot;,&quot; name)*)?
-              | &quot;...&quot;) &quot;)&quot; block
-            </p>
+            <p><img src="img/function.png" alt="Railroad Diagram" /></p>
+            <pre><code>function ::= &quot;function&quot; &quot;(&quot; ((name (&quot;,&quot; name)*)?) &quot;)&quot; block
+</code></pre>
             <h3>name</h3>
             <p><img src="img/name.png" alt="Railroad Diagram" /></p>
             <pre><code>name ::= [a-zA-Z_][a-zA-Z0-9_]*

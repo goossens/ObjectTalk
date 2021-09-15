@@ -24,9 +24,7 @@ add_subdirectory(3rdparty)
 
 include_directories(BEFORE libot/include)
 add_subdirectory(libot)
-
 add_subdirectory(app)
-
 add_subdirectory(modules)
 add_subdirectory(examples)
 

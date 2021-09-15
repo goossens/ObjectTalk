@@ -10,7 +10,7 @@ function fakePart() {
 	fi
 }
 
-function compilerPart() {
+function compilePart() {
 	case $1 in
 		vertex) EXT=vs;;
 		fragment) EXT=fs;;
@@ -46,17 +46,17 @@ function compileShader() {
 
 	if [ -f shader.vs ]
 	then
-		compilerPart vertex shader $1
+		compilePart vertex shader $1
 	fi
 
 	if [ -f shader.fs ]
 	then
-		compilerPart fragment shader $1
+		compilePart fragment shader $1
 	fi
 
 	if [ -f instancing.vs ]
 	then
-		compilerPart vertex instancing $1
+		compilePart vertex instancing $1
 	fi
 
 	cd ${HOME}

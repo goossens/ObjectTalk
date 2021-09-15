@@ -25,7 +25,20 @@ function compilerPart() {
 		PREFIX=${EXT}
 	fi
 
-	${SHADERC} -f $2.${EXT} -o ${PREFIX}_mtl.h -i ${HOME}/include --type $1 --platform osx -p metal --bin2c ${PREFIX}_$3_mtl
+	if [ "$(uname)" == "Darwin" ]
+	then
+		${SHADERC} -f $2.${EXT} -o ${PREFIX}_mtl.h -i ${HOME}/include --type $1 --platform osx -p metal --bin2c ${PREFIX}_$3_mtl
+		fakePart ${PREFIX} $3 glsl
+		fakePart ${PREFIX} $3 essl
+		fakePart ${PREFIX} $3 spv
+		fakePart ${PREFIX} $3 dx9
+		fakePart ${PREFIX} $3 dx11
+
+	else
+		${SHADERC} -f $2.${EXT} -o ${PREFIX}_mtl.h -i ${HOME}/include --type $1 --platform linux -p 400 --bin2c ${PREFIX}_$3_glsl
+		${SHADERC} -f $2.${EXT} -o ${PREFIX}_mtl.h -i ${HOME}/include --type $1 --platform linux -p 300_es --bin2c ${PREFIX}_$3_essl
+		${SHADERC} -f $2.${EXT} -o ${PREFIX}_mtl.h -i ${HOME}/include --type $1 --platform linux -p spirv --bin2c ${PREFIX}_$3_spv
+	fi
 }
 
 function compileShader() {
@@ -34,31 +47,16 @@ function compileShader() {
 	if [ -f shader.vs ]
 	then
 		compilerPart vertex shader $1
-		fakePart vs $1 glsl
-		fakePart vs $1 essl
-		fakePart vs $1 spv
-		fakePart vs $1 dx9
-		fakePart vs $1 dx11
 	fi
 
 	if [ -f shader.fs ]
 	then
 		compilerPart fragment shader $1
-		fakePart fs $1 glsl
-		fakePart fs $1 essl
-		fakePart fs $1 spv
-		fakePart fs $1 dx9
-		fakePart fs $1 dx11
 	fi
 
 	if [ -f instancing.vs ]
 	then
 		compilerPart vertex instancing $1
-		fakePart vsi $1 glsl
-		fakePart vsi $1 essl
-		fakePart vsi $1 spv
-		fakePart vsi $1 dx9
-		fakePart vsi $1 dx11
 	fi
 
 	cd ${HOME}

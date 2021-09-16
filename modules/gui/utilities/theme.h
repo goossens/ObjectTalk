@@ -26,10 +26,6 @@ public:
 	// initialize style;
 	static void init();
 
-	// "screen" geometry
-	static int width;
-	static int height;
-
 	// colors
 	static ImU32 color100;
 	static ImU32 color80;

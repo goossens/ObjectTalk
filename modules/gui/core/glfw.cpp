@@ -39,7 +39,7 @@ void OtApplicationClass::initGLFW(const std::string& name) {
 
 	// create a new window
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-	window = glfwCreateWindow(OtTheme::width, OtTheme::height, name.c_str(), NULL, NULL);
+	window = glfwCreateWindow(width, height, name.c_str(), NULL, NULL);
 	glfwSetWindowUserPointer(window, this);
 
 #if __APPLE__
@@ -77,7 +77,13 @@ void OtApplicationClass::initGLFW(const std::string& name) {
 	// set keyboard callback
 	glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
 		OtApplicationClass* app = (OtApplicationClass*) glfwGetWindowUserPointer(window);
-		app->onKey(key, scancode, action, mods);
+
+		if (key == GLFW_KEY_F5 && action == GLFW_PRESS) {
+			app->profiler = !app->profiler;
+
+		} else {
+			app->onKey(key, scancode, action, mods);
+		}
 	});
 
 	// set character callback
@@ -113,18 +119,7 @@ void OtApplicationClass::timeGLFW() {
 
 void OtApplicationClass::frameGLFW() {
 	// get window size
-	glfwGetFramebufferSize(window, &OtTheme::width, &OtTheme::height);
-}
-
-
-//
-//	OtApplicationClass::renderGLFW
-//
-
-void OtApplicationClass::renderGLFW() {
-#if ! __APPLE__
-	glfwSwapBuffers(window);
-#endif
+	glfwGetFramebufferSize(window, &width, &height);
 }
 
 

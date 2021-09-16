@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <bx/timer.h>
+
 #include "ot/function.h"
 #include "ot/libuv.h"
 #include "ot/vm.h"
@@ -20,6 +22,9 @@
 //
 //	Globals
 //
+
+int OtApplicationClass::width = 1280;
+int OtApplicationClass::height = 720;
 
 size_t OtApplicationClass::frameNumber = 0;
 
@@ -141,6 +146,15 @@ OtObject OtApplicationClass::addSimulation(OtObject object) {
 
 
 //
+//	OtApplicationClass::profile
+//
+
+void OtApplicationClass::profile(bool profilerState) {
+	profiler = profilerState;
+}
+
+
+//
 //	OtApplicationClass::render
 //
 
@@ -154,10 +168,30 @@ void OtApplicationClass::render() {
 	screen->update();
 	screen->render();
 
+	// add profiler (if required)
+	if (profiler) {
+		const bgfx::Stats* stats = bgfx::getStats();
+		const double toMs = 1000.0 / double(bx::getHPFrequency());
+
+		ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
+		ImGui::Begin("Profiler", nullptr, 0);
+		ImGui::Text("Framerate:"); ImGui::SameLine(150); ImGui::Text("%.1f", getFrameRate());
+		ImGui::Text("GPU [ms]:"); ImGui::SameLine(150); ImGui::Text("%0.1f", double(stats->gpuTimeEnd - stats->gpuTimeBegin) * 1000.0 / stats->gpuTimerFreq);
+		ImGui::Text("Backbuffer width:"); ImGui::SameLine(150); ImGui::Text("%d", stats->width);
+		ImGui::Text("Backbuffer height:"); ImGui::SameLine(150); ImGui::Text("%d", stats->height);
+		ImGui::Text("Draw calls:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numDraw);
+		ImGui::Text("Programs:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numPrograms);
+		ImGui::Text("Shaders:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numShaders);
+		ImGui::Text("Textures:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numTextures);
+		ImGui::Text("Uniforms:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numUniforms);
+		ImGui::Text("Vertex buffers:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numVertexBuffers);
+		ImGui::Text("Index buffers:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numIndexBuffers);
+		ImGui::End();
+	}
+
 	// put results on screen
 	renderIMGUI();
 	renderBGFX();
-	renderGLFW();
 }
 
 
@@ -230,6 +264,7 @@ OtType OtApplicationClass::getMeta() {
 		type->set("run", OtFunctionClass::create(&OtApplicationClass::run));
 		type->set("animation", OtFunctionClass::create(&OtApplicationClass::animation));
 		type->set("addSimulation", OtFunctionClass::create(&OtApplicationClass::addSimulation));
+		type->set("profile", OtFunctionClass::create(&OtApplicationClass::profile));
 	}
 
 	return type;

@@ -12,8 +12,8 @@
 #include "ot/function.h"
 #include "ot/vm.h"
 
-#include "theme.h"
 #include "view.h"
+#include "application.h"
 
 
 
@@ -102,10 +102,10 @@ void OtViewClass::render() {
 	// render view if we have a scene and a camera
 	if (scene && camera) {
 		// determine dimensions
-		float vx = x < 0 ? OtTheme::width - (x * OtTheme::width / 100.0) : x * OtTheme::width / 100.0;
-		float vy = y < 0 ? OtTheme::height - (y * OtTheme::height / 100.0) : y * OtTheme::height / 100.0;
-		float vw = w * OtTheme::width / 100.0;
-		float vh = h * OtTheme::height / 100.0;
+		float vx = x < 0 ? OtApplicationClass::getWidth() - (x * OtApplicationClass::getWidth() / 100.0) : x * OtApplicationClass::getWidth() / 100.0;
+		float vy = y < 0 ? OtApplicationClass::getHeight() - (y * OtApplicationClass::getHeight() / 100.0) : y * OtApplicationClass::getHeight() / 100.0;
+		float vw = w * OtApplicationClass::getWidth() / 100.0;
+		float vh = h * OtApplicationClass::getHeight() / 100.0;
 
 		// setup camera and viewport
 		camera->submit(id, vw / vh);
@@ -124,10 +124,10 @@ void OtViewClass::render() {
 void OtViewClass::onMouseButton(int button, int action, int mods, double xpos, double ypos) {
 	if (has("onMouseButton")) {
 		// determine dimensions
-		float vx = x < 0 ? OtTheme::width - (x * OtTheme::width / 100.0) : x * OtTheme::width / 100.0;
-		float vy = y < 0 ? OtTheme::height - (y * OtTheme::height / 100.0) : y * OtTheme::height / 100.0;
-		float vw = w * OtTheme::width / 100.0;
-		float vh = h * OtTheme::height / 100.0;
+		float vx = x < 0 ? OtApplicationClass::getWidth() - (x * OtApplicationClass::getWidth() / 100.0) : x * OtApplicationClass::getWidth() / 100.0;
+		float vy = y < 0 ? OtApplicationClass::getHeight() - (y * OtApplicationClass::getHeight() / 100.0) : y * OtApplicationClass::getHeight() / 100.0;
+		float vw = w * OtApplicationClass::getWidth() / 100.0;
+		float vh = h * OtApplicationClass::getHeight() / 100.0;
 
 		// calculate local coordinates
 		xpos -= vx;
@@ -153,8 +153,8 @@ void OtViewClass::onMouseMove(int button, double xpos, double ypos) {
 	// ensure mouse button is pressed and we have a member function
 	if (button != -1 && has("onMouseDrag")) {
 		// calculate local coordinates and call member function
-		xpos -= x < 0 ? OtTheme::width - (x * OtTheme::width / 100.0) : x * OtTheme::width / 100.0;
-		ypos -= y < 0 ? OtTheme::height - (y * OtTheme::height / 100.0) : y * OtTheme::height / 100.0;
+		xpos -= x < 0 ? OtApplicationClass::getWidth() - (x * OtApplicationClass::getWidth() / 100.0) : x * OtApplicationClass::getWidth() / 100.0;
+		ypos -= y < 0 ? OtApplicationClass::getHeight() - (y * OtApplicationClass::getHeight() / 100.0) : y * OtApplicationClass::getHeight() / 100.0;
 		OtVM::callMemberFunction(shared(), "onMouseDrag", OtObjectCreate(button), OtObjectCreate(xpos - xold), OtObjectCreate(ypos - yold));
 	}
 

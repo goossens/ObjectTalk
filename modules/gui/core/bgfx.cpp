@@ -19,9 +19,11 @@
 
 #elif defined(_WIN32)
 #define GLFW_EXPOSE_NATIVE_WIN32
+#define GLFW_EXPOSE_NATIVE_WGL
 
 #else
 #define GLFW_EXPOSE_NATIVE_X11
+#define GLFW_EXPOSE_NATIVE_GLX
 #endif
 
 #include <GLFW/glfw3native.h>
@@ -54,15 +56,15 @@ void OtApplicationClass::initBGFX() {
 	init.platformData.ndt = glfwGetX11Display();
 #endif
 
-	init.resolution.width  = OtTheme::width;
-	init.resolution.height = OtTheme::height;
+	init.resolution.width  = width;
+	init.resolution.height = height;
 	init.resolution.reset  = BGFX_RESET_VSYNC;
 	init.debug = false;
 
 	bgfx::init(init);
 
 	bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000ff, 1.0f, 0);
-	bgfx::setViewRect(0, 0, 0, OtTheme::width, OtTheme::height);
+	bgfx::setViewRect(0, 0, 0, width, height);
 }
 
 
@@ -71,8 +73,8 @@ void OtApplicationClass::initBGFX() {
 //
 
 void OtApplicationClass::frameBGFX() {
-	bgfx::reset(OtTheme::width, OtTheme::height, BGFX_RESET_VSYNC | BGFX_RESET_MSAA_X8);
-	bgfx::setViewRect(0, 0, 0, OtTheme::width, OtTheme::height);
+	bgfx::reset(width, height, BGFX_RESET_VSYNC | BGFX_RESET_MSAA_X8);
+	bgfx::setViewRect(0, 0, 0, width, height);
 	bgfx::touch(0);
 }
 

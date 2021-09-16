@@ -15,9 +15,9 @@
 
 #include "background.h"
 #include "backgroundshader.h"
+#include "application.h"
 #include "color.h"
 #include "plane.h"
-#include "theme.h"
 
 
 //
@@ -126,7 +126,7 @@ OtObject OtBackgroundClass::setTexture(OtObject object) {
 void OtBackgroundClass::render(int view, glm::mat4 parentTransform) {
 	// submit uniforms
 	glm::mat4 transform = glm::mat4(1.0);
-	float scale = (float) OtTheme::height / (float) OtTheme::width;
+	float scale = (float) OtApplicationClass::getHeight() / (float) OtApplicationClass::getWidth();
 	// transform = glm::scale(transform, glm::vec3(1.0, scale, 1.0));
 	bgfx::setUniform(transformUniform, &transform);
 

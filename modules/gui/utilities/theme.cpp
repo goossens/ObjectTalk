@@ -20,9 +20,6 @@
 //	globals
 //
 
-int OtTheme::width = 1280;
-int OtTheme::height = 720;
-
 ImU32 OtTheme::color100;
 ImU32 OtTheme::color80;
 ImU32 OtTheme::color60;
@@ -40,10 +37,6 @@ ImFont* OtTheme::dsegBoldFont = nullptr;
 //
 
 void OtTheme::init() {
-	// set default screen size (720p)
-	width = 1280;
-	height = 720;
-
 	// calculate colors
 	background = IM_COL32(0, 12, 24, 255);
 	color100 = IM_COL32(100, 180, 255, 255);

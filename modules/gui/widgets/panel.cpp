@@ -11,7 +11,7 @@
 
 #include "ot/function.h"
 
-#include "theme.h"
+#include "application.h"
 #include "screen.h"
 #include "panel.h"
 
@@ -39,15 +39,15 @@ void OtPanelClass::render() {
 		offset = parent->cast<OtScreenClass>()->getMenubarHeight();
 	}
 
-	// screen height
-	float sw = OtTheme::width;
-	float sh = OtTheme::height - offset;
+	// frame height
+	float fw = OtApplicationClass::getWidth();
+	float fh = OtApplicationClass::getHeight() - offset;
 
 	// determine dimensions
-	float vx = x < 0 ? sw + x * sw / 100.0 : x * sw / 100.0;
-	float vy = offset + (y < 0 ? sh + y * sh / 100.0 : y * sh / 100.0);
-	float vw = w * sw / 100.0;
-	float vh = h * sh / 100.0;
+	float vx = x < 0 ? fw + x * fw / 100.0 : x * fw / 100.0;
+	float vy = offset + (y < 0 ? fh + y * fh / 100.0 : y * fh / 100.0);
+	float vw = w * fw / 100.0;
+	float vh = h * fh / 100.0;
 
 	// position panel
 	ImGui::SetNextWindowPos(ImVec2(vx, vy), ImGuiCond_Always);

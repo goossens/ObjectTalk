@@ -51,6 +51,13 @@ public:
 	// add a simulation
 	OtObject addSimulation(OtObject simulation);
 
+	// (de)activate profiler
+	void profile(bool profilerState);
+
+	// get frame dimensions
+	static int getWidth() { return width; }
+	static int getHeight() { return height; }
+
 	// get system time in seconds since the epoch
 	static double getTime();
 
@@ -79,7 +86,6 @@ private:
 	void initGLFW(const std::string& name);
 	void timeGLFW();
 	void frameGLFW();
-	void renderGLFW();
 	void eventsGLFW();
 	void endGLFW();
 
@@ -97,6 +103,10 @@ private:
 
 	// main window
 	GLFWwindow* window;
+
+	// "frame" geometry
+	static int width;
+	static int height;
 
 	// time tracking
 	static size_t frameNumber;
@@ -122,4 +132,7 @@ private:
 
 	// top level widget
 	OtScreen screen;
+
+	// show/hide profiler
+	bool profiler = false;
 };

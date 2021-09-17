@@ -118,6 +118,37 @@ void OtApplicationClass::run(const std::string& name) {
 
 
 //
+//	OtApplicationClass::setAntiAliasing
+//
+
+OtObject OtApplicationClass::setAntiAliasing(int setting) {
+	switch (setting) {
+		case 0:	antiAliasing = 0; break;
+		case 1:	antiAliasing = BGFX_RESET_MSAA_X2; break;
+		case 2:	antiAliasing = BGFX_RESET_MSAA_X4; break;
+		case 3:	antiAliasing = BGFX_RESET_MSAA_X8; break;
+		case 4:	antiAliasing = BGFX_RESET_MSAA_X16; break;
+
+		default:
+			OtExcept("Anti-aliasing setting must be between 0 and 4");
+			break;
+	}
+
+	return shared();
+}
+
+
+//
+//	OtApplicationClass::setProfiler
+//
+
+OtObject OtApplicationClass::setProfiler(bool profilerState) {
+	profiler = profilerState;
+	return shared();
+}
+
+
+//
 //	OtApplicationClass::animate
 //
 
@@ -142,15 +173,6 @@ OtObject OtApplicationClass::addSimulation(OtObject object) {
 	}
 
 	return object;
-}
-
-
-//
-//	OtApplicationClass::profile
-//
-
-void OtApplicationClass::profile(bool profilerState) {
-	profiler = profilerState;
 }
 
 
@@ -264,7 +286,8 @@ OtType OtApplicationClass::getMeta() {
 		type->set("run", OtFunctionClass::create(&OtApplicationClass::run));
 		type->set("animation", OtFunctionClass::create(&OtApplicationClass::animation));
 		type->set("addSimulation", OtFunctionClass::create(&OtApplicationClass::addSimulation));
-		type->set("profile", OtFunctionClass::create(&OtApplicationClass::profile));
+		type->set("setAntiAliasing", OtFunctionClass::create(&OtApplicationClass::setAntiAliasing));
+		type->set("setProfiler", OtFunctionClass::create(&OtApplicationClass::setProfiler));
 	}
 
 	return type;

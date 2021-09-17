@@ -73,7 +73,7 @@ void OtApplicationClass::initBGFX() {
 //
 
 void OtApplicationClass::frameBGFX() {
-	bgfx::reset(width, height, BGFX_RESET_VSYNC | BGFX_RESET_MSAA_X8);
+	bgfx::reset(width, height, BGFX_RESET_VSYNC | antiAliasing);
 	bgfx::setViewRect(0, 0, 0, width, height);
 	bgfx::touch(0);
 }

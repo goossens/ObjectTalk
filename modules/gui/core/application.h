@@ -51,8 +51,11 @@ public:
 	// add a simulation
 	OtObject addSimulation(OtObject simulation);
 
+	// set anti-aliasing
+	OtObject setAntiAliasing(int level);
+
 	// (de)activate profiler
-	void profile(bool profilerState);
+	OtObject setProfiler(bool profilerState);
 
 	// get frame dimensions
 	static int getWidth() { return width; }
@@ -132,6 +135,9 @@ private:
 
 	// top level widget
 	OtScreen screen;
+
+	// anti-aliasing setting
+	int antiAliasing = 0;
 
 	// show/hide profiler
 	bool profiler = false;

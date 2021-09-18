@@ -10,6 +10,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import <QuartzCore/CAMetalLayer.h>
+#import <Metal/Metal.h>
+#import <MetalKit/MetalKit.h>
 
 #include "application.h"
 
@@ -25,4 +28,23 @@ void OtApplicationClass::fixMenuLabels(const std::string& name) {
 	[menu setTitle: appName];
 	[[menu itemAtIndex: 0] setTitle: [@"About " stringByAppendingString:appName]];
 	[[menu itemAtIndex: 8] setTitle: [@"Quit " stringByAppendingString:appName]];
+}
+
+
+//
+//	OtApplicationClass::createMetalLayer
+//
+
+void OtApplicationClass::createMetalLayer() {
+	// get content view
+	NSWindow* nsWindow = (NSWindow*) nativeDisplayHandle;
+	NSView *contentView = [nsWindow contentView];
+
+	// create metal layer
+	[contentView setWantsLayer: YES];
+	CAMetalLayer* metalLayer = [CAMetalLayer layer];
+	[contentView setLayer:metalLayer];
+
+	// store metal layer for use in BGFX
+	nativeDisplayHandle = (void*) metalLayer;
 }

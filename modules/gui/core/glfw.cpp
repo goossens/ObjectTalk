@@ -9,20 +9,29 @@
 //	Include files
 //
 
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
+
+#if __APPLE__
+#define GLFW_EXPOSE_NATIVE_COCOA
+
+#elif defined(_WIN32)
+#define GLFW_EXPOSE_NATIVE_WIN32
+#define GLFW_EXPOSE_NATIVE_WGL
+
+#else
+#define GLFW_EXPOSE_NATIVE_X11
+#define GLFW_EXPOSE_NATIVE_GLX
+#endif
+
+#include <GLFW/glfw3native.h>
+
 #include "ot/exception.h"
+#include "ot/format.h"
 #include "ot/function.h"
 
 #include "application.h"
 #include "theme.h"
-
-
-//
-//	Globals
-//
-
-double OtApplicationClass::lastTime;
-double OtApplicationClass::loopTime;
-double OtApplicationClass::loopDuration;
 
 
 //
@@ -42,14 +51,28 @@ void OtApplicationClass::initGLFW(const std::string& name) {
 	window = glfwCreateWindow(width, height, name.c_str(), NULL, NULL);
 	glfwSetWindowUserPointer(window, this);
 
+	// get native handles
+#if __APPLE__
+	nativeDisplayHandle = glfwGetCocoaWindow(window);
+	createMetalLayer();
+
+#elif defined(_WIN32)
+	nativeDisplayHandle = glfwGetWin32Window(window);
+
+#else
+	nativeDisplayHandle = (void*) glfwGetX11Window(window);
+	nativeDisplayType = glfwGetX11Display();
+#endif
+
 #if __APPLE__
 	fixMenuLabels(name);
 #endif
 
 	// setup window resize callback
-	glfwSetWindowSizeCallback(window, [](GLFWwindow* window, int width, int height) {
+	glfwSetWindowSizeCallback(window, [](GLFWwindow* window, int w, int h) {
 		OtApplicationClass* app = (OtApplicationClass*) glfwGetWindowUserPointer(window);
-		app->render();
+		width = w;
+		height = h;
 	});
 
 	// setup mouse button callback
@@ -57,7 +80,7 @@ void OtApplicationClass::initGLFW(const std::string& name) {
 		OtApplicationClass* app = (OtApplicationClass*) glfwGetWindowUserPointer(window);
 		double xpos, ypos;
 		glfwGetCursorPos(window, &xpos, &ypos);
-		app->onMouseButton(button, action, mods, xpos, ypos);
+		app->pushEvent(OtFormat("click %d %d %d %.3f %.3f", button, action, mods, xpos, ypos));
 	});
 
 	// setup mouse move callback
@@ -71,7 +94,7 @@ void OtApplicationClass::initGLFW(const std::string& name) {
 			}
 		}
 
-		app->onMouseMove(button, xpos, ypos);
+		app->pushEvent(OtFormat("move %d %.3f %.3f", button, xpos, ypos));
 	});
 
 	// set keyboard callback
@@ -82,44 +105,29 @@ void OtApplicationClass::initGLFW(const std::string& name) {
 			app->profiler = !app->profiler;
 
 		} else {
-			app->onKey(key, scancode, action, mods);
+			app->pushEvent(OtFormat("key %d %d %d %d", key, scancode, action, mods));
 		}
 	});
 
 	// set character callback
 	glfwSetCharCallback(window, [](GLFWwindow* window, unsigned int codepoint) {
 		OtApplicationClass* app = (OtApplicationClass*) glfwGetWindowUserPointer(window);
-		app->onChar(codepoint);
+		app->pushEvent(OtFormat("char %d", codepoint));
 	});
 
-	// start time tracking
-	loopTime = glfwGetTime();
-	lastTime = loopTime - 1.0 / 60.0;
-	loopDuration = loopTime - lastTime;
+	// capture mouse starting point
+	double xpos, ypos;
+	glfwGetCursorPos(window, &xpos, &ypos);
+	pushEvent(OtFormat("move -1 %.3f %.3f", xpos, ypos));
 }
 
 
 //
-//	OtApplicationClass::timeGLFW
+//	OtApplicationClass::runningGLFW
 //
 
-void OtApplicationClass::timeGLFW() {
-	// get time since epoch
-	loopTime = glfwGetTime();
-
-	// calculate loop speed
-	loopDuration = loopTime - lastTime;
-	lastTime = loopTime;
-}
-
-
-//
-//	OtApplicationClass::frameGLFW
-//
-
-void OtApplicationClass::frameGLFW() {
-	// get window size
-	glfwGetFramebufferSize(window, &width, &height);
+bool OtApplicationClass::runningGLFW() {
+	return !glfwWindowShouldClose(window);
 }
 
 
@@ -128,8 +136,8 @@ void OtApplicationClass::frameGLFW() {
 //
 
 void OtApplicationClass::eventsGLFW() {
-	// poll for window events
-	glfwPollEvents();
+	// wait for window events
+	glfwWaitEventsTimeout(0.016);
 }
 
 

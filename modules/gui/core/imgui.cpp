@@ -11,12 +11,11 @@
 
 #include <cstring>
 
-#include "bgfx/bgfx.h"
-#include "bgfx/embedded_shader.h"
 #include "bx/math.h"
 #include "bx/timer.h"
 
-#include "imgui_impl_glfw.h"
+#include "bgfx/bgfx.h"
+#include "bgfx/embedded_shader.h"
 
 #include "application.h"
 #include "imguishader.h"
@@ -48,15 +47,8 @@ void OtApplicationClass::initIMGUI() {
 	io.IniFilename = nullptr;
 
 	// connect IMGUI to GLFW window
-#if __APPLE__
-	ImGui_ImplGlfw_InitForOther(window, true);
-
-#elif defined(_WIND32)
-	ImGui_ImplGlfw_InitForVulkan(window, true);
-
-#else
-	ImGui_ImplGlfw_InitForOpenGL(window, true);
-#endif
+	io.DisplaySize = ImVec2(width, height);
+	io.DeltaTime = 1.0f / 60.0f;
 
 	// Setup vertex declaration
 	imguiVertexLayout
@@ -94,28 +86,39 @@ void OtApplicationClass::initIMGUI() {
 //
 
 void OtApplicationClass::frameIMGUI() {
+	// update ImGui state
+	ImGuiIO& io = ImGui::GetIO();
+	io.DisplaySize = ImVec2(width, height);
+	io.DeltaTime = loopTime;
+
+	// update mouse state
+	io.MousePos = ImVec2(mouseX, mouseY);
+	io.MouseDown[0] = mouseButton & GLFW_MOUSE_BUTTON_LEFT;
+	io.MouseDown[1] = mouseButton & GLFW_MOUSE_BUTTON_RIGHT;
+	io.MouseDown[2] = mouseButton & GLFW_MOUSE_BUTTON_MIDDLE;
+
+	// update keyboard state
+
+	std::memcpy(io.KeysDown, keyboardState, sizeof(bool) * sizeof(keyboardState));
+	io.KeyShift = keyboardMods & GLFW_MOD_SHIFT;
+	io.KeyCtrl = keyboardMods & GLFW_MOD_CONTROL;
+	io.KeyAlt = keyboardMods & GLFW_MOD_ALT;
+
 	// start a new frame
-	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
+
+	// don't propagate events if ImGui wants them
+	if (ImGui::GetIO().WantCaptureMouse) {
+		clickEvent = false;
+		moveEvent = false;
+	}
+
+	if (ImGui::GetIO().WantCaptureKeyboard) {
+		keyEvent = false;
+		charEvent = false;
+	}
+
 	// ImGui::ShowDemoWindow();
-}
-
-
-//
-//	OtApplicationClass::mouseIMGUI
-//
-
-bool OtApplicationClass::mouseIMGUI() {
-	return ImGui::GetIO().WantCaptureMouse;
-}
-
-
-//
-//	OtApplicationClass::keyboardIMGUI
-//
-
-bool OtApplicationClass::keyboardIMGUI() {
-	return ImGui::GetIO().WantCaptureKeyboard;
 }
 
 
@@ -124,7 +127,7 @@ bool OtApplicationClass::keyboardIMGUI() {
 //
 
 void OtApplicationClass::renderIMGUI() {
-	// render GUI into command
+	// render GUI to command lists
 	ImGui::Render();
 	ImDrawData* drawData = ImGui::GetDrawData();
 
@@ -141,71 +144,71 @@ void OtApplicationClass::renderIMGUI() {
 	drawData->ScaleClipRects(io.DisplayFramebufferScale);
 
 	// Setup render state: alpha-blending enabled, no face culling,
-	 // no depth testing, scissor enabled
-	 uint64_t state =
+	// no depth testing, scissor enabled
+	uint64_t state =
 		 BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_MSAA |
 		 BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA);
 
-	 const bgfx::Caps* caps = bgfx::getCaps();
+	const bgfx::Caps* caps = bgfx::getCaps();
 
-	 // Setup viewport, orthographic projection matrix
-	 float ortho[16];
+	// Setup viewport, orthographic projection matrix
+	float ortho[16];
 
-	 bx::mtxOrtho(
-		 ortho, 0.0f, io.DisplaySize.x, io.DisplaySize.y, 0.0f, 0.0f, 1000.0f,
-		 0.0f, caps->homogeneousDepth);
+	bx::mtxOrtho(
+		ortho, 0.0f, io.DisplaySize.x, io.DisplaySize.y, 0.0f, 0.0f, 1000.0f,
+		0.0f, caps->homogeneousDepth);
 
-	 bgfx::setViewTransform(255, nullptr, ortho);
-	 bgfx::setViewRect(255, 0, 0, fb_width, fb_height);
+	bgfx::setViewTransform(255, nullptr, ortho);
+	bgfx::setViewRect(255, 0, 0, fb_width, fb_height);
 
-	 // Render command lists
-	 for (int n = 0; n < drawData->CmdListsCount; n++) {
-		 const ImDrawList* cmd_list = drawData->CmdLists[n];
-		 uint32_t idx_buffer_offset = 0;
+	// Render command lists
+	for (int n = 0; n < drawData->CmdListsCount; n++) {
+		const ImDrawList* cmd_list = drawData->CmdLists[n];
+		uint32_t idx_buffer_offset = 0;
 
-		 bgfx::TransientVertexBuffer tvb;
-		 bgfx::TransientIndexBuffer tib;
+		bgfx::TransientVertexBuffer tvb;
+		bgfx::TransientIndexBuffer tib;
 
-		 uint32_t numVertices = (uint32_t)cmd_list->VtxBuffer.size();
-		 uint32_t numIndices = (uint32_t)cmd_list->IdxBuffer.size();
+		uint32_t numVertices = (uint32_t)cmd_list->VtxBuffer.size();
+		uint32_t numIndices = (uint32_t)cmd_list->IdxBuffer.size();
 
-		 if ((numVertices != bgfx::getAvailTransientVertexBuffer(numVertices, imguiVertexLayout)) ||
-			 (numIndices != bgfx::getAvailTransientIndexBuffer(numIndices))) {
-			 // not enough space in transient buffer, quit drawing the rest...
-			 break;
-		 }
+		if ((numVertices != bgfx::getAvailTransientVertexBuffer(numVertices, imguiVertexLayout)) ||
+		    (numIndices != bgfx::getAvailTransientIndexBuffer(numIndices))) {
+			// not enough space in transient buffer, quit drawing the rest...
+			break;
+		}
 
-		 bgfx::allocTransientVertexBuffer(&tvb, numVertices, imguiVertexLayout);
-		 bgfx::allocTransientIndexBuffer(&tib, numIndices);
+		bgfx::allocTransientVertexBuffer(&tvb, numVertices, imguiVertexLayout);
+		bgfx::allocTransientIndexBuffer(&tib, numIndices);
 
-		 ImDrawVert* verts = (ImDrawVert*) tvb.data;
-		 memcpy(verts, cmd_list->VtxBuffer.begin(), numVertices * sizeof(ImDrawVert));
+		ImDrawVert* verts = (ImDrawVert*) tvb.data;
+		memcpy(verts, cmd_list->VtxBuffer.begin(), numVertices * sizeof(ImDrawVert));
 
-		 ImDrawIdx* indices = (ImDrawIdx*) tib.data;
-		 memcpy(indices, cmd_list->IdxBuffer.begin(), numIndices * sizeof(ImDrawIdx));
+		ImDrawIdx* indices = (ImDrawIdx*) tib.data;
+		memcpy(indices, cmd_list->IdxBuffer.begin(), numIndices * sizeof(ImDrawIdx));
 
-		 for (int cmd_i = 0; cmd_i < cmd_list->CmdBuffer.Size; cmd_i++) {
-			 const ImDrawCmd* pcmd = &cmd_list->CmdBuffer[cmd_i];
+		for (int cmd_i = 0; cmd_i < cmd_list->CmdBuffer.Size; cmd_i++) {
+			const ImDrawCmd* pcmd = &cmd_list->CmdBuffer[cmd_i];
 
-			 if (pcmd->UserCallback) {
-				 pcmd->UserCallback(cmd_list, pcmd);
+		 	if (pcmd->UserCallback) {
+				pcmd->UserCallback(cmd_list, pcmd);
 
-			 } else {
-				 const uint16_t xx = (uint16_t)bx::max(pcmd->ClipRect.x, 0.0f);
-				 const uint16_t yy = (uint16_t)bx::max(pcmd->ClipRect.y, 0.0f);
+			} else {
+				const uint16_t xx = (uint16_t)bx::max(pcmd->ClipRect.x, 0.0f);
+				const uint16_t yy = (uint16_t)bx::max(pcmd->ClipRect.y, 0.0f);
 
-				 bgfx::setScissor(xx, yy, bx::min(pcmd->ClipRect.z, 65535.0f) - xx, bx::min(pcmd->ClipRect.w, 65535.0f) - yy);
-				 bgfx::setState(state);
-				 bgfx::TextureHandle texture = { (uint16_t)((intptr_t) pcmd->TextureId & 0xffff) };
-				 bgfx::setTexture(0, imguiFontUniform, texture);
-				 bgfx::setVertexBuffer(0, &tvb);
-				 bgfx::setIndexBuffer(&tib, idx_buffer_offset, pcmd->ElemCount);
-				 bgfx::submit(255, imguiProgram);
-			 }
+				bgfx::setScissor(xx, yy, bx::min(pcmd->ClipRect.z, 65535.0f) - xx, bx::min(pcmd->ClipRect.w, 65535.0f) - yy);
+				bgfx::setState(state);
+				bgfx::TextureHandle texture = { (uint16_t)((intptr_t) pcmd->TextureId & 0xffff) };
+				bgfx::setTexture(0, imguiFontUniform, texture);
+				bgfx::setVertexBuffer(0, &tvb);
+				bgfx::setIndexBuffer(&tib, idx_buffer_offset, pcmd->ElemCount);
+				bgfx::submit(255, imguiProgram);
+			}
 
-			 idx_buffer_offset += pcmd->ElemCount;
-		 }
-	 }
+			idx_buffer_offset += pcmd->ElemCount;
+		}
+	}
 }
 
 
@@ -217,6 +220,5 @@ void OtApplicationClass::endIMGUI() {
 	bgfx::destroy(imguiFontUniform);
 	bgfx::destroy(imguiFontTexture);
 	bgfx::destroy(imguiProgram);
-	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
 }

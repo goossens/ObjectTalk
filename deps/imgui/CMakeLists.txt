@@ -21,23 +21,7 @@ set(IMGUI_SOURCES
 	${imgui_SOURCE_DIR}/imgui_internal.h
 	${imgui_SOURCE_DIR}/imstb_rectpack.h
 	${imgui_SOURCE_DIR}/imstb_textedit.h
-	${imgui_SOURCE_DIR}/imstb_truetype.h
-	${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
-	${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.h)
-
-if (APPLE)
-	list(APPEND IMGUI_SOURCES
-		${imgui_SOURCE_DIR}/backends/imgui_impl_metal.mm
-		${imgui_SOURCE_DIR}/backends/imgui_impl_metal.h)
-endif()
-
-if (UNIX AND NOT APPLE)
-	# for Linux, BSD, Solaris, Minix
-endif()
-
-if (WIN32)
-	# for Windows
-endif()
+	${imgui_SOURCE_DIR}/imstb_truetype.h)
 
 add_library(imgui STATIC ${IMGUI_SOURCES})
 include_directories(${imgui_SOURCE_DIR} ${imgui_SOURCE_DIR}/backends)

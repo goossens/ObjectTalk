@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <mutex>
 #include <vector>
 
 #define GLFW_INCLUDE_NONE
@@ -38,6 +39,7 @@ class OtApplicationClass : public OtGuiClass {
 public:
 	// run the application
 	void run(const std::string& name);
+	void runThread2();
 
 	// mouse and keyboard events
 	void onMouseButton(int button, int action, int mods, double xpos, double ypos);
@@ -80,15 +82,17 @@ private:
 #if __APPLE__
 	// put the right app name in the menus
 	void fixMenuLabels(const std::string& name);
+
+	// create a Metal layer in the narive window
+	void createMetalLayer();
 #endif
 
-	// render a single frame
-	void render();
+	// render a debugging profiler
+	void renderProfiler();
 
 	// initialize, run and terminate libraries
 	void initGLFW(const std::string& name);
-	void timeGLFW();
-	void frameGLFW();
+	bool runningGLFW();
 	void eventsGLFW();
 	void endGLFW();
 
@@ -99,23 +103,38 @@ private:
 
 	void initIMGUI();
 	void frameIMGUI();
-	bool mouseIMGUI();
-	bool keyboardIMGUI();
 	void renderIMGUI();
 	void endIMGUI();
 
 	// main window
 	GLFWwindow* window;
-
-	// "frame" geometry
+	void* nativeDisplayHandle;
+	void* nativeDisplayType = nullptr;
 	static int width;
 	static int height;
+
+	// mouse state
+	int mouseButton;
+	int mouseAction;
+	int mouseMods;
+	double mouseX;
+	double mouseY;
+
+	// keyboard state
+	bool keyboardState[512] = {0};
+	int keyboardKey;
+	int keyboardScancode;
+	int keyboardAction;
+	int keyboardMods;
+	int keyboardCodepoint;
 
 	// time tracking
 	static size_t frameNumber;
 	static double lastTime;
 	static double loopTime;
 	static double loopDuration;
+	static double cpuDuration;
+	static double gpuDuration;
 
 	// animations
 	std::vector<OtAnimation> animations;
@@ -141,4 +160,22 @@ private:
 
 	// show/hide profiler
 	bool profiler = false;
+
+	// is secondary thread running?
+	bool running;
+
+	// bridge between threads
+	std::mutex lock;
+	std::vector<std::string> events;
+
+	void pushEvent(const std::string& event);
+	bool hasEvents();
+	std::string popEvent();
+	void handleEvent();
+
+	// event tracking
+	bool clickEvent;
+	bool moveEvent;
+	bool keyEvent;
+	bool charEvent;
 };

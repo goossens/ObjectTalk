@@ -152,6 +152,10 @@ extern "C" void init(OtModule module) {
 	module->set("windowNoNav", OtIntegerClass::create(ImGuiWindowFlags_NoNav));
 	module->set("windowNoDecoration", OtIntegerClass::create(ImGuiWindowFlags_NoDecoration));
 
+	module->set("mouseLeft", OtIntegerClass::create(GLFW_MOUSE_BUTTON_LEFT));
+	module->set("mouseRight", OtIntegerClass::create(GLFW_MOUSE_BUTTON_RIGHT));
+	module->set("mouseMiddle", OtIntegerClass::create(GLFW_MOUSE_BUTTON_MIDDLE));
+
 	module->set("keyLeft", OtIntegerClass::create(GLFW_KEY_LEFT));
 	module->set("keyRight", OtIntegerClass::create(GLFW_KEY_RIGHT));
 	module->set("keyUp", OtIntegerClass::create(GLFW_KEY_UP));

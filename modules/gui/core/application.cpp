@@ -9,7 +9,7 @@
 //	Include files
 //
 
-#include <bx/timer.h>
+#include <thread>
 
 #include "ot/function.h"
 #include "ot/libuv.h"
@@ -34,86 +34,165 @@ size_t OtApplicationClass::frameNumber = 0;
 //
 
 void OtApplicationClass::run(const std::string& name) {
-	// initialize theme engine
-	OtTheme::init();
+	// applications run in two threads: the main thread handles the rendering
+	// and window system events (as required in most operating systems)
+	// the second thread runs the application logic
 
-	// initialize libraries
+	// initialize window library
 	initGLFW(name);
-	initBGFX();
-	initIMGUI();
 
-	// create a screen widget
-	screen = OtScreenClass::create();
+	// start the second thread
+	running = true;
 
-	// call app's setup member (if defined)
-	if (has("setup")) {
-		OtVM::callMemberFunction(shared(), "setup", screen);
-	}
+	std::thread thread([this]() {
+		// run the second thread
+		this->runThread2();
+		return 0;
+	});
 
 	// application main loop
-	while (!glfwWindowShouldClose(window)) {
-		// update loop timings
-		frameNumber++;
-		timeGLFW();
+	while (runningGLFW()) {
+		// handle window events
+		eventsGLFW();
+	}
 
-		// update all animations
-		for (int c = animations.size() - 1; c >= 0; c--) {
-			if (!animations[c]->step(loopDuration * 1000)) {
-				animations.erase(animations.begin() + c);
-			}
+	// wait for thread to finish
+	running = false;
+	thread.join();
+
+	// close windowing library
+	endGLFW();
+}
+
+
+//
+//	OtApplicationClass::runThread2
+//
+
+void OtApplicationClass::runThread2() {
+	try {
+		// initialize theme engine
+		OtTheme::init();
+
+		// initialize libraries
+		initBGFX();
+		initIMGUI();
+
+		// create a screen widget
+		screen = OtScreenClass::create();
+
+		// call app's setup member (if defined)
+		if (has("setup")) {
+			OtVM::callMemberFunction(shared(), "setup", screen);
 		}
 
-		// update all simulations
-		for (auto& simulation : simulations) {
-			if (simulation->isRunning()) {
-				simulation->step(loopDuration * 1000);
+		// application main loop
+		while (running) {
+			// update frame number
+			frameNumber++;
+
+			// update all animations
+			for (int c = animations.size() - 1; c >= 0; c--) {
+				if (!animations[c]->step(loopDuration * 1000)) {
+					animations.erase(animations.begin() + c);
+				}
 			}
+
+			// update all simulations
+			for (auto& simulation : simulations) {
+				if (simulation->isRunning()) {
+					simulation->step(loopDuration * 1000);
+				}
+			}
+
+			// call app's update member (if defined)
+			if (has("update")) {
+				OtVM::callMemberFunction(shared(), "update");
+			}
+
+			// handle events
+			clickEvent = false;
+			moveEvent = false;
+			keyEvent = false;
+			charEvent = false;
+
+			while (hasEvents()) {
+				handleEvent();
+			}
+
+			// "run" all libraries
+			frameBGFX();
+			frameIMGUI();
+
+			// submit events (if required)
+			if (clickEvent) {
+				screen->onMouseButton(mouseButton, mouseAction, mouseMods, mouseX, mouseY);
+			}
+
+			if (moveEvent) {
+				screen->onMouseMove(mouseButton, mouseX, mouseY);
+			}
+
+			if (keyEvent && keyboardAction != GLFW_RELEASE) {
+				screen->onKey(keyboardKey, keyboardMods);
+			}
+
+			if (charEvent) {
+				screen->onChar(keyboardCodepoint);
+			}
+
+			// update and render all elements
+			screen->update();
+			screen->render();
+
+			// add profiler (if required)
+			if (profiler) {
+				renderProfiler();
+			}
+
+			// put results on screen
+			renderIMGUI();
+			renderBGFX();
+
+			// handle libuv events
+			uv_run(uv_default_loop(), UV_RUN_NOWAIT);
 		}
 
 		// call app's update member (if defined)
-		if (has("update")) {
-			OtVM::callMemberFunction(shared(), "update");
+		if (has("terminate")) {
+			OtVM::callMemberFunction(shared(), "terminate");
 		}
 
-		// render frame
-		render();
+		// remove all animations and simulations
+		animations.clear();
+		simulations.clear();
 
-		// handle window events
-		eventsGLFW();
+		// remove all children from the screen to avoid memory leaks
+		// there are circular parent/child relationships
+		screen->clear();
+		screen = nullptr;
 
-		// handle libuv events
-		uv_run(uv_default_loop(), UV_RUN_NOWAIT);
+		// also remove app instance variables that the user might have added
+		unsetAll();
+
+		// terminate libraries
+		endIMGUI();
+		endBGFX();
+
+		// properly close all libuv handles
+		uv_walk(uv_default_loop(), [](uv_handle_t* handle, void* arg) {
+			if (!uv_is_closing(handle))
+				uv_close(handle, nullptr);
+		}, nullptr);
+
+		uv_run(uv_default_loop(), UV_RUN_DEFAULT);
+		uv_loop_close(uv_default_loop());
+
+	} catch (const OtException& e) {
+		// handle all failures
+		std::wcerr << "Error: " << e.what() << std::endl;
+		exit(EXIT_FAILURE);
 	}
-
-	// call app's update member (if defined)
-	if (has("terminate")) {
-		OtVM::callMemberFunction(shared(), "terminate");
-	}
-
-	// remove all animations and simulations
-	animations.clear();
-	simulations.clear();
-
-	// remove all children from the screen to avoid memory leaks
-	// it has circular parent/child relationships
-
-	screen->clear();
-	screen = nullptr;
-	unsetAll();
-
-	// terminate libraries
-	endIMGUI();
-	endBGFX();
-	endGLFW();
-
-	// properly close all libuv handles
-	uv_walk(uv_default_loop(), [](uv_handle_t* handle, void* arg) {
-		if (!uv_is_closing(handle))
-			uv_close(handle, nullptr);
-	}, nullptr);
-
-	uv_run(uv_default_loop(), UV_RUN_DEFAULT);
-	uv_loop_close(uv_default_loop());
 }
 
 
@@ -177,100 +256,74 @@ OtObject OtApplicationClass::addSimulation(OtObject object) {
 
 
 //
-//	OtApplicationClass::render
-//
-
-void OtApplicationClass::render() {
-	// "run" all libraries
-	frameGLFW();
-	frameBGFX();
-	frameIMGUI();
-
-	// update and render all elements
-	screen->update();
-	screen->render();
-
-	// add profiler (if required)
-	if (profiler) {
-		const bgfx::Stats* stats = bgfx::getStats();
-		const double toMs = 1000.0 / double(bx::getHPFrequency());
-
-		ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
-		ImGui::Begin("Profiler", nullptr, 0);
-		ImGui::Text("Framerate:"); ImGui::SameLine(150); ImGui::Text("%.1f", getFrameRate());
-		ImGui::Text("GPU [ms]:"); ImGui::SameLine(150); ImGui::Text("%0.1f", double(stats->gpuTimeEnd - stats->gpuTimeBegin) * 1000.0 / stats->gpuTimerFreq);
-		ImGui::Text("Backbuffer width:"); ImGui::SameLine(150); ImGui::Text("%d", stats->width);
-		ImGui::Text("Backbuffer height:"); ImGui::SameLine(150); ImGui::Text("%d", stats->height);
-		ImGui::Text("Draw calls:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numDraw);
-		ImGui::Text("Programs:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numPrograms);
-		ImGui::Text("Shaders:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numShaders);
-		ImGui::Text("Textures:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numTextures);
-		ImGui::Text("Uniforms:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numUniforms);
-		ImGui::Text("Vertex buffers:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numVertexBuffers);
-		ImGui::Text("Index buffers:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numIndexBuffers);
-		ImGui::End();
-	}
-
-	// put results on screen
-	renderIMGUI();
-	renderBGFX();
-}
-
-
-//
-//	OtApplicationClass::onMouseButton
-//
-
-void OtApplicationClass::onMouseButton(int button, int action, int mods, double xpos, double ypos) {
-	// see if IMGUI wants the mouse event
-	if (!mouseIMGUI()) {
-		screen->onMouseButton(button, action, mods, xpos, ypos);
-	}
-}
-
-
-//
-//	OtApplicationClass::onMouseMove
-//
-
-void OtApplicationClass::onMouseMove(int button, double xpos, double ypos) {
-	// see if IMGUI wants the mouse event
-	if (!mouseIMGUI()) {
-		screen->onMouseMove(button, xpos, ypos);
-	}
-}
-
-
-//
-//	OtApplicationClass::onKey
-//
-
-void OtApplicationClass::onKey(int key, int scancode, int action, int mods) {
-	// see if IMGUI wants the keyboard event
-	if (!keyboardIMGUI() && action != GLFW_RELEASE) {
-		screen->onKey(key, mods);
-	}
-}
-
-
-//
-//	OtApplicationClass::onChar
-//
-
-void OtApplicationClass::onChar(unsigned int codepoint) {
-	// see if IMGUI wants the keyboard event
-	if (!keyboardIMGUI()) {
-		screen->onChar(codepoint);
-	}
-}
-
-
-//
-//	OtApplicationClass::getTime()
+//	OtApplicationClass::getTime
 //
 
 double OtApplicationClass::getTime() {
 	return loopTime;
+}
+
+
+//
+//	OtApplicationClass::pushEvent
+//
+
+void OtApplicationClass::pushEvent(const std::string& event) {
+	std::lock_guard<std::mutex> guard(lock);
+	events.push_back(event);
+}
+
+
+//
+//	OtApplicationClass::hasEvents
+//
+
+bool OtApplicationClass::hasEvents() {
+	std::lock_guard<std::mutex> guard(lock);
+	return events.size() != 0;
+}
+
+
+//
+//	OtApplicationClass::popEvent
+//
+
+std::string OtApplicationClass::popEvent() {
+	std::lock_guard<std::mutex> guard(lock);
+	std::string event = events.back();
+	events.pop_back();
+	return event;
+}
+
+
+//
+//	OtApplicationClass::handleEvent
+//
+
+void OtApplicationClass::handleEvent() {
+	auto event = popEvent();
+
+	if (event.find("click") == 0) {
+		char command[10];
+		std::sscanf(event.c_str(), "%s %d %d %d %lf %lf", command, &mouseButton, &mouseAction, &mouseMods, &mouseX, &mouseY);
+		clickEvent = true;
+
+	} else if (event.find("move") == 0) {
+		char command[10];
+		std::sscanf(event.c_str(), "%s %d %lf %lf", command, &mouseButton, &mouseX, &mouseY);
+		moveEvent = true;
+
+	} else if (event.find("key") == 0) {
+		char command[10];
+		std::sscanf(event.c_str(), "%s %d %d %d %d", command, &keyboardKey, &keyboardScancode, &keyboardAction, &keyboardMods);
+		keyboardState[keyboardKey] = keyboardAction != GLFW_RELEASE;
+		keyEvent = true;
+
+	} else if (event.find("char") == 0) {
+		char command[10];
+		std::sscanf(event.c_str(), "%s %d", command, &keyboardCodepoint);
+		charEvent = true;
+	}
 }
 
 

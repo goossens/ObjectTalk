@@ -113,6 +113,7 @@ void OtApplicationClass::runThread2() {
 			// handle events
 			clickEvent = false;
 			moveEvent = false;
+			wheelEvent = false;
 			keyEvent = false;
 			charEvent = false;
 
@@ -130,7 +131,12 @@ void OtApplicationClass::runThread2() {
 			}
 
 			if (moveEvent) {
-				screen->onMouseMove(mouseButton, mouseX, mouseY);
+				if (mouseAction) {
+					screen->onMouseDrag(mouseButton, mouseMods, mouseX, mouseY);
+
+				} else {
+					screen->onMouseMove(mouseX, mouseY);
+				}
 			}
 
 			if (keyEvent && keyboardAction != GLFW_RELEASE) {
@@ -305,13 +311,26 @@ void OtApplicationClass::handleEvent() {
 
 	if (event.find("click") == 0) {
 		char command[10];
-		std::sscanf(event.c_str(), "%s %d %d %d %lf %lf", command, &mouseButton, &mouseAction, &mouseMods, &mouseX, &mouseY);
-		clickEvent = true;
+		std::sscanf(event.c_str(), "%s %d %d %d", command, &mouseButton, &mouseAction, &mouseMods);
+
+		if (mouseButton >= 0 && mouseButton < ImGuiMouseButton_COUNT) {
+			mouseButtonState[mouseButton] = mouseAction == GLFW_PRESS;
+			clickEvent = true;
+		}
 
 	} else if (event.find("move") == 0) {
 		char command[10];
-		std::sscanf(event.c_str(), "%s %d %lf %lf", command, &mouseButton, &mouseX, &mouseY);
+		std::sscanf(event.c_str(), "%s %lf %lf", command, &mouseX, &mouseY);
 		moveEvent = true;
+
+	} else if (event.find("wheel") == 0) {
+		char command[10];
+		double offsetX;
+		double offsetY;
+		std::sscanf(event.c_str(), "%s %lf %lf", command, &offsetX, &offsetY);
+		mouseWheelDX += offsetX;
+		mouseWheelDY += offsetY;
+		wheelEvent = true;
 
 	} else if (event.find("key") == 0) {
 		char command[10];

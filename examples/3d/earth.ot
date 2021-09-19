@@ -56,7 +56,7 @@ class EarthView : gui.View {
 		}
 	}
 
-	function onMouseDrag(this, button, dx, dy) {
+	function onMouseDrag(this, button, mods, dx, dy) {
 		this.lat += dy / 10.0;
 		this.lng -= dx / 10.0;
 		this.updateCamera();

@@ -59,10 +59,23 @@ void OtScreenClass::onMouseButton(int button, int action, int mods, double xpos,
 //	OtScreenClass::onMouseMove
 //
 
-void OtScreenClass::onMouseMove(int button, double xpos, double ypos) {
+void OtScreenClass::onMouseMove(double xpos, double ypos) {
 	for (auto& child: children) {
 		if (child->isKindOf("View")) {
-			child->cast<OtViewClass>()->onMouseMove(button, xpos, ypos);
+			child->cast<OtViewClass>()->onMouseMove(xpos, ypos);
+		}
+	}
+}
+
+
+//
+//	OtScreenClass::onMouseDrag
+//
+
+void OtScreenClass::onMouseDrag(int button, int mods, double xpos, double ypos) {
+	for (auto& child: children) {
+		if (child->isKindOf("View")) {
+			child->cast<OtViewClass>()->onMouseDrag(button, mods, xpos, ypos);
 		}
 	}
 }

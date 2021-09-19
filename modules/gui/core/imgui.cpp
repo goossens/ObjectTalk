@@ -50,7 +50,31 @@ void OtApplicationClass::initIMGUI() {
 	io.DisplaySize = ImVec2(width, height);
 	io.DeltaTime = 1.0f / 60.0f;
 
-	// Setup vertex declaration
+	// setup keyboard mapping
+	io.KeyMap[ImGuiKey_Tab] = GLFW_KEY_TAB;
+	io.KeyMap[ImGuiKey_LeftArrow] = GLFW_KEY_LEFT;
+	io.KeyMap[ImGuiKey_RightArrow] = GLFW_KEY_RIGHT;
+	io.KeyMap[ImGuiKey_UpArrow] = GLFW_KEY_UP;
+	io.KeyMap[ImGuiKey_DownArrow] = GLFW_KEY_DOWN;
+	io.KeyMap[ImGuiKey_PageUp] = GLFW_KEY_PAGE_UP;
+	io.KeyMap[ImGuiKey_PageDown] = GLFW_KEY_PAGE_DOWN;
+	io.KeyMap[ImGuiKey_Home] = GLFW_KEY_HOME;
+	io.KeyMap[ImGuiKey_End] = GLFW_KEY_END;
+	io.KeyMap[ImGuiKey_Insert] = GLFW_KEY_INSERT;
+	io.KeyMap[ImGuiKey_Delete] = GLFW_KEY_DELETE;
+	io.KeyMap[ImGuiKey_Backspace] = GLFW_KEY_BACKSPACE;
+	io.KeyMap[ImGuiKey_Space] = GLFW_KEY_SPACE;
+	io.KeyMap[ImGuiKey_Enter] = GLFW_KEY_ENTER;
+	io.KeyMap[ImGuiKey_Escape] = GLFW_KEY_ESCAPE;
+	io.KeyMap[ImGuiKey_KeyPadEnter] = GLFW_KEY_KP_ENTER;
+	io.KeyMap[ImGuiKey_A] = GLFW_KEY_A;
+	io.KeyMap[ImGuiKey_C] = GLFW_KEY_C;
+	io.KeyMap[ImGuiKey_V] = GLFW_KEY_V;
+	io.KeyMap[ImGuiKey_X] = GLFW_KEY_X;
+	io.KeyMap[ImGuiKey_Y] = GLFW_KEY_Y;
+	io.KeyMap[ImGuiKey_Z] = GLFW_KEY_Z;
+
+	// setup vertex declaration
 	imguiVertexLayout
 		.begin()
 		.add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
@@ -60,7 +84,7 @@ void OtApplicationClass::initIMGUI() {
 
 	imguiFontUniform = bgfx::createUniform("g_AttribLocationTex", bgfx::UniformType::Sampler);
 
-	// Create shader program
+	// create shader program
 	bgfx::RendererType::Enum type = bgfx::getRendererType();
 
 	imguiProgram = bgfx::createProgram(
@@ -93,16 +117,21 @@ void OtApplicationClass::frameIMGUI() {
 
 	// update mouse state
 	io.MousePos = ImVec2(mouseX, mouseY);
-	io.MouseDown[0] = mouseButton & GLFW_MOUSE_BUTTON_LEFT;
-	io.MouseDown[1] = mouseButton & GLFW_MOUSE_BUTTON_RIGHT;
-	io.MouseDown[2] = mouseButton & GLFW_MOUSE_BUTTON_MIDDLE;
+
+	for (auto c = 0; c < ImGuiMouseButton_COUNT; c++) {
+		io.MouseDown[c] = mouseButtonState[c];
+	}
+
+	io.MouseWheel = mouseWheelDY;
+	io.MouseWheelH = mouseWheelDX;
 
 	// update keyboard state
-
+	int x = sizeof(bool) * sizeof(keyboardState);
 	std::memcpy(io.KeysDown, keyboardState, sizeof(bool) * sizeof(keyboardState));
 	io.KeyShift = keyboardMods & GLFW_MOD_SHIFT;
 	io.KeyCtrl = keyboardMods & GLFW_MOD_CONTROL;
 	io.KeyAlt = keyboardMods & GLFW_MOD_ALT;
+	io.KeySuper = keyboardMods & GLFW_MOD_SUPER;
 
 	// start a new frame
 	ImGui::NewFrame();
@@ -111,6 +140,9 @@ void OtApplicationClass::frameIMGUI() {
 	if (ImGui::GetIO().WantCaptureMouse) {
 		clickEvent = false;
 		moveEvent = false;
+		wheelEvent = false;
+		mouseWheelDX = 0.0;
+		mouseWheelDY = 0.0;
 	}
 
 	if (ImGui::GetIO().WantCaptureKeyboard) {
@@ -173,7 +205,7 @@ void OtApplicationClass::renderIMGUI() {
 		uint32_t numIndices = (uint32_t)cmd_list->IdxBuffer.size();
 
 		if ((numVertices != bgfx::getAvailTransientVertexBuffer(numVertices, imguiVertexLayout)) ||
-		    (numIndices != bgfx::getAvailTransientIndexBuffer(numIndices))) {
+			(numIndices != bgfx::getAvailTransientIndexBuffer(numIndices))) {
 			// not enough space in transient buffer, quit drawing the rest...
 			break;
 		}
@@ -190,7 +222,7 @@ void OtApplicationClass::renderIMGUI() {
 		for (int cmd_i = 0; cmd_i < cmd_list->CmdBuffer.Size; cmd_i++) {
 			const ImDrawCmd* pcmd = &cmd_list->CmdBuffer[cmd_i];
 
-		 	if (pcmd->UserCallback) {
+			if (pcmd->UserCallback) {
 				pcmd->UserCallback(cmd_list, pcmd);
 
 			} else {

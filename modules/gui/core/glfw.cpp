@@ -78,23 +78,19 @@ void OtApplicationClass::initGLFW(const std::string& name) {
 	// setup mouse button callback
 	glfwSetMouseButtonCallback(window, [](GLFWwindow* window, int button, int action, int mods) {
 		OtApplicationClass* app = (OtApplicationClass*) glfwGetWindowUserPointer(window);
-		double xpos, ypos;
-		glfwGetCursorPos(window, &xpos, &ypos);
-		app->pushEvent(OtFormat("click %d %d %d %.3f %.3f", button, action, mods, xpos, ypos));
+		app->pushEvent(OtFormat("click %d %d %d", button, action, mods));
 	});
 
 	// setup mouse move callback
 	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) {
 		OtApplicationClass* app = (OtApplicationClass*) glfwGetWindowUserPointer(window);
-		int button = -1;
+		app->pushEvent(OtFormat("move %.3f %.3f", xpos, ypos));
+	});
 
-		for (auto b = 0; button == -1 && b < 3; b++) {
-			if (glfwGetMouseButton(window, b) == GLFW_PRESS) {
-				button = b;
-			}
-		}
-
-		app->pushEvent(OtFormat("move %d %.3f %.3f", button, xpos, ypos));
+	// setup scroll wheel callback
+	glfwSetScrollCallback(window, [](GLFWwindow* window, double xoffset, double yoffset) {
+		OtApplicationClass* app = (OtApplicationClass*) glfwGetWindowUserPointer(window);
+		app->pushEvent(OtFormat("wheel %.3f %.3f", xoffset, yoffset));
 	});
 
 	// set keyboard callback

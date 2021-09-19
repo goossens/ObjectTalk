@@ -46,7 +46,7 @@ class MyView : gui.View {
 		}
 	}
 
-	function onMouseDrag(this, button, dx, dy) {
+	function onMouseDrag(this, button, mods, dx, dy) {
 		this.updateCameraPosition(dx / 400.0);
 		this.updateCameraDirection(dy / 2.0);
 	}

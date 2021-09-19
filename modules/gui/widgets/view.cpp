@@ -149,23 +149,29 @@ void OtViewClass::onMouseButton(int button, int action, int mods, double xpos, d
 //	OtViewClass::onMouseMove
 //
 
-void OtViewClass::onMouseMove(int button, double xpos, double ypos) {
-	// calculate local coordinates
-	xpos -= x < 0 ? OtApplicationClass::getWidth() - (x * OtApplicationClass::getWidth() / 100.0) : x * OtApplicationClass::getWidth() / 100.0;
-	ypos -= y < 0 ? OtApplicationClass::getHeight() - (y * OtApplicationClass::getHeight() / 100.0) : y * OtApplicationClass::getHeight() / 100.0;
+void OtViewClass::onMouseMove(double xpos, double ypos) {
+	if (has("onMouseMove")) {
+		// calculate local coordinates and call member function
+		xpos -= x < 0 ? OtApplicationClass::getWidth() - (x * OtApplicationClass::getWidth() / 100.0) : x * OtApplicationClass::getWidth() / 100.0;
+		ypos -= y < 0 ? OtApplicationClass::getHeight() - (y * OtApplicationClass::getHeight() / 100.0) : y * OtApplicationClass::getHeight() / 100.0;
+		OtVM::callMemberFunction(shared(), "onMouseMove", OtObjectCreate(xpos), OtObjectCreate(ypos));
+	}
 
-	// make difference between move and drag
-	if (button == -1) {
-		// ensure we have a member function
-		if (has("onMouseMove")) {
-			OtVM::callMemberFunction(shared(), "onMouseMove", OtObjectCreate(xpos), OtObjectCreate(ypos));
-		}
+	xold = xpos;
+	yold = ypos;
+}
 
-	} else {
-		// ensure we have a member function
-		if (has("onMouseDrag")) {
-			OtVM::callMemberFunction(shared(), "onMouseDrag", OtObjectCreate(button), OtObjectCreate(xpos - xold), OtObjectCreate(ypos - yold));
-		}
+
+//
+//	OtViewClass::onMouseDrag
+//
+
+void OtViewClass::onMouseDrag(int button, int mods, double xpos, double ypos) {	// ensure we have a member function
+	if (has("onMouseDrag")) {
+		// calculate local coordinates and call member function
+		xpos -= x < 0 ? OtApplicationClass::getWidth() - (x * OtApplicationClass::getWidth() / 100.0) : x * OtApplicationClass::getWidth() / 100.0;
+		ypos -= y < 0 ? OtApplicationClass::getHeight() - (y * OtApplicationClass::getHeight() / 100.0) : y * OtApplicationClass::getHeight() / 100.0;
+		OtVM::callMemberFunction(shared(), "onMouseDrag", OtObjectCreate(button), OtObjectCreate(mods), OtObjectCreate(xpos - xold), OtObjectCreate(ypos - yold));
 	}
 
 	xold = xpos;

@@ -36,11 +36,11 @@ class MyApp : gui.Application {
 			.setFOV(45);
 
 		var view = gui.View()
-			.setScreenArea(30, 0, 70, 100)
+			.setScreenArea(35, 0, 65, 100)
 			.setCamera(camera)
 			.setScene(scene);
 
-		var panel = gui.Panel(0, 0, 30, 100);
+		var panel = gui.Panel(0, 0, 35, 100);
 
 		var node = gui.TreeNode("Camera:");
 		node.add(gui.CameraController(camera));
@@ -54,24 +54,25 @@ class MyApp : gui.Application {
 		node.add(gui.LightController(light));
 		panel.add(node);
 
-		node = panel.add(gui.TreeNode("Box:"));
+		node = gui.TreeNode("Box:");
 
-		panel.add(gui.RealSlider("Width", 0.25, 4, 1, function(value) {
+		node.add(gui.RealSlider("Width", 0.25, 4, 1, function(value) {
 			geometry.setWidth(value);
 		}));
 
-		panel.add(gui.RealSlider("Height", 0.25, 4, 1, function(value) {
+		node.add(gui.RealSlider("Height", 0.25, 4, 1, function(value) {
 			geometry.setHeight(value);
 		}));
 
-		panel.add(gui.IntegerSlider("Width Segments", 1, 16, 1, function(value) {
+		node.add(gui.IntegerSlider("Width Segments", 1, 16, 1, function(value) {
 			geometry.setWidthSegments(value);
 		}));
 
-		panel.add(gui.IntegerSlider("Height Segments", 1, 16, 1, function(value) {
+		node.add(gui.IntegerSlider("Height Segments", 1, 16, 1, function(value) {
 			geometry.setHeightSegments(value);
 		}));
 
+		panel.add(node);
 		screen.add(view).add(panel);
 	}
 }

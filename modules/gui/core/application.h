@@ -114,11 +114,14 @@ private:
 	static int height;
 
 	// mouse state
+	bool mouseButtonState[ImGuiMouseButton_COUNT];
 	int mouseButton;
 	int mouseAction;
 	int mouseMods;
 	double mouseX;
 	double mouseY;
+	double mouseWheelDX = 0.0;
+	double mouseWheelDY = 0.0;
 
 	// keyboard state
 	bool keyboardState[512] = {0};
@@ -176,6 +179,7 @@ private:
 	// event tracking
 	bool clickEvent;
 	bool moveEvent;
+	bool wheelEvent;
 	bool keyEvent;
 	bool charEvent;
 };

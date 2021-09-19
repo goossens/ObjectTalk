@@ -44,7 +44,8 @@ public:
 
 	// mouse and keyboard events
 	void onMouseButton(int button, int action, int mods, double xpos, double ypos);
-	void onMouseMove(int button, double xpos, double ypos);
+	void onMouseMove(double xpos, double ypos);
+	void onMouseDrag(int button, int mods, double xpos, double ypos);
 	void onKey(int key, int mods);
 	void onChar(unsigned int codepoint);
 

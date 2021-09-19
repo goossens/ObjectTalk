@@ -36,50 +36,59 @@ class MyApp : gui.Application {
 			.setFOV(45);
 
 		var view = gui.View()
-			.setScreenArea(30, 0, 70, 100)
+			.setScreenArea(35, 0, 65, 100)
 			.setCamera(camera)
 			.setScene(scene);
 
-		var panel = gui.Panel(0, 0, 30, 100);
+		var panel = gui.Panel(0, 0, 35, 100);
 
 		var node = gui.TreeNode("Camera:");
 		node.add(gui.CameraController(camera));
 		panel.add(node);
 
-		node = panel.add(gui.TreeNode("Cylinder:"));
+		node = gui.TreeNode("Ambient Light:");
+		node.add(gui.AmbientController(ambient));
+		panel.add(node);
 
-		panel.add(gui.RealSlider("Top Radius", 0, 4, 1, function(value) {
+		node = gui.TreeNode("Point Light:");
+		node.add(gui.LightController(light));
+		panel.add(node);
+
+		node = gui.TreeNode("Cylinder:");
+
+		node.add(gui.RealSlider("Top Radius", 0, 4, 1, function(value) {
 			geometry.setTopRadius(value);
 		}));
 
-		panel.add(gui.RealSlider("Bottom Radius", 0, 4, 1, function(value) {
+		node.add(gui.RealSlider("Bottom Radius", 0, 4, 1, function(value) {
 			geometry.setBottomRadius(value);
 		}));
 
-		panel.add(gui.RealSlider("Height", 0.5, 4, 1, function(value) {
+		node.add(gui.RealSlider("Height", 0.5, 4, 1, function(value) {
 			geometry.setHeight(value);
 		}));
 
-		panel.add(gui.IntegerSlider("Radial Segments", 4, 64, 16, function(value) {
+		node.add(gui.IntegerSlider("Radial Segments", 4, 64, 16, function(value) {
 			geometry.setRadialSegments(value);
 		}));
 
-		panel.add(gui.IntegerSlider("Height Segments", 4, 64, 1, function(value) {
+		node.add(gui.IntegerSlider("Height Segments", 4, 64, 1, function(value) {
 			geometry.setHeightSegments(value);
 		}));
 
-		panel.add(gui.Checkbox("Open ended", false, function(value) {
+		node.add(gui.Checkbox("Open ended", false, function(value) {
 			geometry.setOpenEnded(value);
 		}));
 
-		panel.add(gui.RealSlider("thetaStart", 0, pi, 0, function(value) {
+		node.add(gui.RealSlider("thetaStart", 0, pi, 0, function(value) {
 			geometry.setThetaStart(value);
 		}));
 
-		panel.add(gui.RealSlider("thetaLength", 0, pi * 2, pi * 2, function(value) {
+		node.add(gui.RealSlider("thetaLength", 0, pi * 2, pi * 2, function(value) {
 			geometry.setThetaLength(value);
 		}));
 
+		panel.add(node);
 		screen.add(view).add(panel);
 	}
 }

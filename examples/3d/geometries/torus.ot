@@ -36,50 +36,59 @@ class MyApp : gui.Application {
 			.setFOV(45);
 
 		var view = gui.View()
-			.setScreenArea(30, 0, 70, 100)
+			.setScreenArea(35, 0, 65, 100)
 			.setCamera(camera)
 			.setScene(scene);
 
-		var panel = gui.Panel(0, 0, 30, 100);
+		var panel = gui.Panel(0, 0, 35, 100);
 
 		var node = gui.TreeNode("Camera:");
 		node.add(gui.CameraController(camera));
 		panel.add(node);
 
-		node = panel.add(gui.TreeNode("Cylinder:"));
+		node = gui.TreeNode("Ambient Light:");
+		node.add(gui.AmbientController(ambient));
+		panel.add(node);
 
-		panel.add(gui.RealSlider("Radius", 0, 4, 1, function(value) {
+		node = gui.TreeNode("Point Light:");
+		node.add(gui.LightController(light));
+		panel.add(node);
+
+		node = gui.TreeNode("Torus:");
+
+		node.add(gui.RealSlider("Radius", 0, 4, 1, function(value) {
 			geometry.setRadius(value);
 		}));
 
-		panel.add(gui.RealSlider("Tube Radius", 0, 4, 0.4, function(value) {
+		node.add(gui.RealSlider("Tube Radius", 0, 4, 0.4, function(value) {
 			geometry.setTubeRadius(value);
 		}));
 
-		panel.add(gui.IntegerSlider("Radial Segments", 4, 64, 32, function(value) {
+		node.add(gui.IntegerSlider("Radial Segments", 4, 64, 32, function(value) {
 			geometry.setRadialSegments(value);
 		}));
 
-		panel.add(gui.IntegerSlider("Tubular Segments", 4, 128, 16, function(value) {
+		node.add(gui.IntegerSlider("Tubular Segments", 4, 128, 16, function(value) {
 			geometry.setTubularSegments(value);
 		}));
 
-		panel.add(gui.RealSlider("Radial Start", 0, pi * 2, 0, function(value) {
+		node.add(gui.RealSlider("Radial Start", 0, pi * 2, 0, function(value) {
 			geometry.setRadialStart(value);
 		}));
 
-		panel.add(gui.RealSlider("Radial Length", 0, pi * 2, pi * 2, function(value) {
+		node.add(gui.RealSlider("Radial Length", 0, pi * 2, pi * 2, function(value) {
 			geometry.setRadialLength(value);
 		}));
 
-		panel.add(gui.RealSlider("Tubular Start", 0, pi * 2, 0, function(value) {
+		node.add(gui.RealSlider("Tubular Start", 0, pi * 2, 0, function(value) {
 			geometry.setTubularStart(value);
 		}));
 
-		panel.add(gui.RealSlider("Tubular Length", 0, pi * 2, pi * 2, function(value) {
+		node.add(gui.RealSlider("Tubular Length", 0, pi * 2, pi * 2, function(value) {
 			geometry.setTubularLength(value);
 		}));
 
+		panel.add(node);
 		screen.add(view).add(panel);
 	}
 }

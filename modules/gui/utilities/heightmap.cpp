@@ -9,10 +9,13 @@
 //	Include files
 //
 
+#include <cmath>
+
 #include "bgfx/bgfx.h"
 #include "bimg/decode.h"
 #include "bx/file.h"
 
+#include "ot/numbers.h"
 #include "ot/function.h"
 
 #include "heightmap.h"
@@ -33,9 +36,9 @@ OtHeightMapClass::~OtHeightMapClass() {
 //	packHeight
 //
 
-static inline void packHeight(void* _dst, const float* _src) {
-	double* dst = (double*) _dst;
-	dst[0] = 0.299 * _src[0] + 0.587 * _src[1] + 0.114 * _src[2];
+static inline void packHeight(void* dst, const float* src) {
+	double* d = (double*) dst;
+	d[0] = 0.299 * src[0] + 0.587 * src[1] + 0.114 * src[2];
 }
 
 
@@ -103,7 +106,19 @@ double OtHeightMapClass::getHeightAbs(int x, int y) {
 //
 
 double OtHeightMapClass::getHeight(double x, double y) {
-	return getHeightAbs(int(x * width), int(y * height));
+	auto x1 = std::floor(x);
+	auto y1 = std::floor(y);
+	auto x2 = std::clamp(x + 1.0, 0.0, 1.0);
+	auto y2 = std::clamp(y + 1.0, 0.0, 1.0);
+
+	auto h11 = getHeightAbs(x1, y1);
+	auto h21 = getHeightAbs(x2, y1);
+	auto h12 = getHeightAbs(x1, y2);
+	auto h22 = getHeightAbs(x2, y2);
+
+	auto hx1 = std::lerp(h11, h21, x - x1);
+	auto hx2 = std::lerp(h12, h22, x - x1);
+	return std::lerp(hx1, hx2, y - y1);
 }
 
 

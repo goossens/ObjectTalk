@@ -10,7 +10,7 @@
 //
 
 #define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
+#include "GLFW/glfw3.h"
 
 #if __APPLE__
 #define GLFW_EXPOSE_NATIVE_COCOA
@@ -24,7 +24,7 @@
 #define GLFW_EXPOSE_NATIVE_GLX
 #endif
 
-#include <GLFW/glfw3native.h>
+#include "GLFW/glfw3native.h"
 
 #include "ot/exception.h"
 #include "ot/format.h"

@@ -35,7 +35,7 @@ size_t OtApplicationClass::frameNumber = 0;
 
 void OtApplicationClass::run(const std::string& name) {
 	// applications run in two threads: the main thread handles the rendering
-	// and window system events (as required in most operating systems)
+	// and window events (as required in most operating systems)
 	// the second thread runs the application logic
 
 	// initialize window library
@@ -137,6 +137,12 @@ void OtApplicationClass::runThread2() {
 				} else {
 					screen->onMouseMove(mouseX, mouseY);
 				}
+			}
+
+			if (wheelEvent) {
+				screen->onScrollWheel(mouseWheelDX, mouseWheelDY);
+				mouseWheelDX = 0.0;
+				mouseWheelDY = 0.0;
 			}
 
 			if (keyEvent && keyboardAction != GLFW_RELEASE) {

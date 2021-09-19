@@ -17,6 +17,12 @@ namespace std::numbers {
 	inline constexpr double e = 2.718281828459045235360287471352662497;
 }
 
+namespace std {
+	template <typename T>
+	T lerp(T a, T b, T t) {
+		return a + t * (b - a);
+	}
+}
 
 //	Non-cryptographic random numbers
 double OtRandom(double num1, double num2);

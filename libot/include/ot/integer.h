@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <algorithm>
 #include <cmath>
 #include <string>
 
@@ -81,7 +82,7 @@ public:
 	long sign() { return (0 < value) - (value < 0); }
 	long min(long operand) { return std::min(value, operand); }
 	long max(long operand) { return std::max(value, operand); }
-	long clamp(long min, long max) { return std::max(std::min(max, value), min); }
+	long clamp(long min, long max) { return std::clamp(value, min, max); }
 	long random() { return OtRandom(value); };
 
 	// get type definition

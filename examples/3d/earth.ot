@@ -8,82 +8,6 @@
 
 var gui = import("gui");
 
-var defaultLat = 51.5;
-var defaultLng = 4.3;
-var defaultCameraDistance = 3.0;
-
-class EarthView : gui.View {
-	function __init__(this) {
-		this.setCamera(gui.Camera());
-
-		this.lat = defaultLat;
-		this.lng = defaultLng;
-
-		this.updateCamera();
-	}
-
-	function setLat(this, value) {
-		this.lat = value;
-		this.updateCamera();
-	}
-
-	function setLng(this, value) {
-		this.lng = value;
-		this.updateCamera();
-	}
-
-	function onKey(this, key, mods) {
-		if (key == gui.keyDown) {
-			this.lat -= 1.0;
-			this.updateCamera();
-
-		} elif (key == gui.keyUp) {
-			this.lat += 1.0;
-			this.updateCamera();
-
-		} elif (key == gui.keyLeft) {
-			this.lng += 2.0;
-			this.updateCamera();
-
-		} elif (key == gui.keyRight) {
-			this.lng -= 2.0;
-			this.updateCamera();
-
-		}  elif (key == gui.keyHome) {
-			this.lat = 0.0;
-			this.lng = 0.0;
-			this.updateCamera();
-		}
-	}
-
-	function onMouseDrag(this, button, mods, dx, dy) {
-		this.lat += dy / 10.0;
-		this.lng -= dx / 10.0;
-		this.updateCamera();
-	}
-
-	function updateCamera(this) {
-		this.lat = this.lat.clamp(-90.0, 90.0);
-
-		if (this.lng < -180) {
-			this.lng += 360.0;
-
-		} elif (this.lng > 180.0) {
-			this.lng -= 360.0;
-		}
-
-		var clat = this.lat.radians().cos();
-		var slat = this.lat.radians().sin();
-		var clng = this.lng.radians().cos();
-		var slng = this.lng.radians().sin();
-
-		this.getCamera().setPosition(
-			defaultCameraDistance * clat * slng,
-			defaultCameraDistance * slat,
-            defaultCameraDistance * clat * clng);
-	}
-}
-
 class MyApp : gui.Application {
 	function setup(this, screen) {
 		var skybox = gui.Skybox(__DIR__ + "/assets/space.ktx");
@@ -133,8 +57,13 @@ class MyApp : gui.Application {
 			.add(light)
 			.add(fog);
 
-		 var view = EarthView()
-			.setScreenArea(0, 0, 100, 100)
+		var camera = gui.Camera()
+			.setMouseControl(true)
+			.setDistance(3.0)
+			.setDistanceLimits(2.2, 5.0);
+
+		var view = gui.View()
+			.setCamera(camera)
 			.setScene(scene);
 
 		screen.add(view);

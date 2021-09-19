@@ -166,16 +166,30 @@ void OtViewClass::onMouseMove(double xpos, double ypos) {
 //	OtViewClass::onMouseDrag
 //
 
-void OtViewClass::onMouseDrag(int button, int mods, double xpos, double ypos) {	// ensure we have a member function
-	if (has("onMouseDrag")) {
-		// calculate local coordinates and call member function
-		xpos -= x < 0 ? OtApplicationClass::getWidth() - (x * OtApplicationClass::getWidth() / 100.0) : x * OtApplicationClass::getWidth() / 100.0;
-		ypos -= y < 0 ? OtApplicationClass::getHeight() - (y * OtApplicationClass::getHeight() / 100.0) : y * OtApplicationClass::getHeight() / 100.0;
+void OtViewClass::onMouseDrag(int button, int mods, double xpos, double ypos) {
+	// calculate local coordinates and call member function
+	xpos -= x < 0 ? OtApplicationClass::getWidth() - (x * OtApplicationClass::getWidth() / 100.0) : x * OtApplicationClass::getWidth() / 100.0;
+	ypos -= y < 0 ? OtApplicationClass::getHeight() - (y * OtApplicationClass::getHeight() / 100.0) : y * OtApplicationClass::getHeight() / 100.0;
+
+	// only process if camera doesn't want it and  we have a member function
+	if (!camera->onMouseDrag(button, mods, xpos - xold, ypos - yold) && has("onMouseDrag")) {
 		OtVM::callMemberFunction(shared(), "onMouseDrag", OtObjectCreate(button), OtObjectCreate(mods), OtObjectCreate(xpos - xold), OtObjectCreate(ypos - yold));
 	}
 
 	xold = xpos;
 	yold = ypos;
+}
+
+
+//
+//	OtViewClass::onScrollWheel
+//
+
+void OtViewClass::onScrollWheel(double dx, double dy) {
+	// only process if camera doesn't want it and  we have a member function
+	if (!camera->onScrollWheel(dx, dy) && has("onScrollWheel")) {
+		OtVM::callMemberFunction(shared(), "onScrollWheel", OtObjectCreate(dx), OtObjectCreate(dy));
+	}
 }
 
 

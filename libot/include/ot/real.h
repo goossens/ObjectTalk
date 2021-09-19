@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <algorithm>
 #include <cmath>
 
 #include "exception.h"
@@ -72,7 +73,7 @@ public:
 	long trunc() { return std::trunc(value); }
 	double min(double operand) { return std::min(value, operand); }
 	double max(double operand) { return std::max(value, operand); }
-	double clamp(double min, double max) { return std::max(std::min(max, value), min); }
+	double clamp(double min, double max) { return std::clamp(value, min, max); }
 
 	double sin() { return std::sin(value); }
 	double cos() { return std::cos(value); }

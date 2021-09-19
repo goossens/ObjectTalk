@@ -82,6 +82,19 @@ void OtScreenClass::onMouseDrag(int button, int mods, double xpos, double ypos) 
 
 
 //
+//	OtScreenClass::onScrollWheel
+//
+
+void OtScreenClass::onScrollWheel(double dx, double dy){
+	for (auto& child: children) {
+		if (child->isKindOf("View")) {
+			child->cast<OtViewClass>()->onScrollWheel(dx, dy);
+		}
+	}
+}
+
+
+//
 //	OtScreenClass::onKey
 //
 

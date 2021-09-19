@@ -16,11 +16,11 @@
 #include <vector>
 
 #define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
+#include "GLFW/glfw3.h"
 
-#include <bgfx/bgfx.h>
+#include "bgfx/bgfx.h"
 
-#include <imgui.h>
+#include "imgui.h"
 
 #include "gui.h"
 #include "animation.h"

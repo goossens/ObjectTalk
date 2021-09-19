@@ -15,6 +15,8 @@
 #include "glm/ext.hpp"
 #include "glm/glm.hpp"
 
+#include "ot/numbers.h"
+
 #include "gui.h"
 
 
@@ -36,6 +38,19 @@ public:
 	OtObject setFOV(double fov);
 	OtObject setClipping(double near, double far);
 
+	// enable/disable camera mouse control
+	OtObject setMouseControl(bool control);
+	OtObject setDistance(double distance);
+	OtObject setAngle(double angle);
+	OtObject setPitch(double pitch);
+	OtObject setDistanceLimits(double min, double max);
+	OtObject setAngleLimits(double min, double max);
+	OtObject setPitchLimits(double min, double max);
+
+	// mouse events
+	bool onMouseDrag(int button, int mods, double xpos, double ypos);
+	bool onScrollWheel(double dx, double dy);
+
 	// GUI to change camera parameters
 	void renderGUI();
 
@@ -54,10 +69,24 @@ private:
 	glm::vec3 cameraDir = { 0.0, 0.0, 0.0 };
 	glm::vec3 cameraUp = { 0.0, 1.0, 0.0 };
 
+	// mouse control
+	bool mouseControl = false;
+	glm::vec3 target = { 0.0, 0.0, 0.0 };
+	double distance = 10.0;
+	double angle = 0.0;
+	double pitch = 0.3;
+
+	double distanceMin = 0.0;
+	double distanceMax = 100.0;
+	double angleMin = -std::numbers::pi;
+	double angleMax = std::numbers::pi;
+	double pitchMin = -std::numbers::pi / 2.0;
+	double pitchMax = std::numbers::pi / 2.0;
+
 	// field-of-view and clipping
 	float fov = 60.0;
-	float nearClip = 1.0;
-	float farClip = 1000.0;
+	float nearClip = 0.1;
+	float farClip = 10000.0;
 
 	// transformation matrices;
 	glm::mat4 viewMatrix;

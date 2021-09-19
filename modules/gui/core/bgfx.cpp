@@ -11,8 +11,8 @@
 
 #include <cstring>
 
-#include <bx/timer.h>
-#include <bgfx/platform.h>
+#include "bx/timer.h"
+#include "bgfx/platform.h"
 
 #include "application.h"
 #include "theme.h"

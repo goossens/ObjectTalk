@@ -32,6 +32,7 @@
 #include "ot/io.h"
 #include "ot/os.h"
 #include "ot/fs.h"
+#include "ot/worker.h"
 
 #include "ot/class.h"
 #include "ot/module.h"
@@ -80,6 +81,7 @@ OtGlobalClass::OtGlobalClass() {
 	set("IO", OtClassClass::create(OtIOClass::getMeta()));
 	set("OS", OtClassClass::create(OtOSClass::getMeta()));
 	set("FS", OtClassClass::create(OtFSClass::getMeta()));
+	set("Worker", OtClassClass::create(OtWorkerClass::getMeta()));
 
 	// add default class instances
 	set("io", OtIOClass::create());

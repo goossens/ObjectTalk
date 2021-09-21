@@ -22,3 +22,23 @@
 //
 
 #define UV_CHECK_ERROR(action, status) if (status < 0) OtExcept("Libuv error in %s: %s", action, uv_strerror(status))
+
+
+//
+//	OtLibUvClass
+//
+
+class OtLibUv {
+public:
+	// initialize LibUV
+	static void init(int argc, char* argv[]) {
+		uv_setup_args(argc, argv);
+	}
+
+	// terminate LibUV
+	static void end() {
+#if UV_VERSION_MINOR >= 38
+		uv_library_shutdown();
+#endif
+	}
+};

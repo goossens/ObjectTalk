@@ -11,7 +11,6 @@
 
 #include <string>
 
-#include "ot/libuv.h"
 #include "ot/format.h"
 #include "ot/exception.h"
 #include "ot/string.h"
@@ -23,10 +22,9 @@
 //	Globals
 //
 
-OtStack OtVM::stack;
-OtGlobal OtVM::global;
-OtObject OtVM::null;
-bool OtVM::valgrindMode = false;
+static thread_local OtStack stack;
+static thread_local OtGlobal global;
+static thread_local OtObject null;
 
 
 //
@@ -42,24 +40,10 @@ public:
 
 
 //
-//	OtVM::init
+//	Initialize thread-specific globals
 //
 
-int OtVM::init(int argc, char* argv[]) {
-	// see if flags we care about are set
-	int newArgc = 1;
-
-	for (auto i = 1; i < argc; i++) {
-		if (std::string(argv[i]) == "--valgrind") {
-			valgrindMode = true;
-
-		} else {
-			argv[newArgc++] = argv[i];
-		}
-	}
-	// initialize libuv
-	uv_setup_args(newArgc, argv);
-
+static void initGlobals() {
 	// create stack
 	stack = OtStackClass::create();
 
@@ -68,32 +52,6 @@ int OtVM::init(int argc, char* argv[]) {
 
 	// create null object
 	null = OtObjectClass::create();
-
-	// return new argument count
-	return newArgc;
-}
-
-
-//
-//	OtVM::end
-//
-
-void OtVM::end() {
-	// we only try to cleanup in valgrind mode
-	if (valgrindMode) {
-		OT_DEBUG("valgrindMode");
-		// free all objects so we can detect true memory leaks
-
-		// clear stack and globals
-		stack = nullptr;
-		global = nullptr;
-		null = nullptr;
-
-#if UV_VERSION_MINOR >= 38
-		// free the last libuv memory
-		uv_library_shutdown();
-#endif
-	}
 }
 
 
@@ -102,6 +60,11 @@ void OtVM::end() {
 //
 
 OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
+	// initialize thread specific variables if required
+	if (!stack) {
+		initGlobals();
+	}
+
 	// try/catch stack
 	std::vector<OtTryCatch> tryCatch;
 
@@ -283,4 +246,46 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 
 	// result xecution result
 	return result;
+}
+
+
+//
+//	OtVM::getGlobal
+//
+
+OtGlobal OtVM::getGlobal() {
+	// initialize thread specific variables if required
+	if (!stack) {
+		initGlobals();
+	}
+
+	return global;
+}
+
+
+//
+//	OtVM::getStack
+//
+
+OtStack OtVM::getStack() {
+	// initialize thread specific variables if required
+	if (!stack) {
+		initGlobals();
+	}
+
+	return stack;
+}
+
+
+//
+//	OtVM::getNull
+//
+
+OtObject OtVM::getNull() {
+	// initialize thread specific variables if required
+	if (!stack) {
+		initGlobals();
+	}
+
+	return null;
 }

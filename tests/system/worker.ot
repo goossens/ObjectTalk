@@ -1,0 +1,67 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var handler1 = function(request) {
+	return request + 10;
+};
+
+var handler2 = function(request) {
+	return request + 20;
+};
+
+var worker1 = Worker(handler1);
+var worker2 = Worker(handler1);
+var worker3 = Worker(handler2);
+var worker4 = Worker(handler2);
+
+var c1 = 0;
+var c2 = 0;
+var c3 = 0;
+var c4 = 0;
+
+var iterations = 100;
+
+for x in range(iterations) {
+	c1++;
+
+	worker1.run(x, function(request, response) {
+		assert(response == request + 10);
+		c1--;
+	});
+
+	c2++;
+
+	worker2.run(x + 10, function(request, response) {
+		assert(response == request + 10);
+		c2--;
+	});
+
+	c3++;
+
+	worker3.run(x + 20, function(request, response) {
+		assert(response == request + 20);
+		c3--;
+	});
+
+	c4++;
+
+	worker4.run(x + 30, function(request, response) {
+		assert(response == request + 20);
+		c4--;
+	});
+}
+
+for x in range(iterations) {
+	worker1.update();
+	worker2.update();
+	worker3.update();
+	worker4.update();
+}
+
+assert(c1 == 0);
+assert(c2 == 0);
+assert(c3 == 0);
+assert(c4 == 0);

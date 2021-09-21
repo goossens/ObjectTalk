@@ -41,6 +41,7 @@
 #include "ot/os.h"
 #include "ot/fs.h"
 #include "ot/path.h"
+#include "ot/worker.h"
 
 #include "ot/internal.h"
 #include "ot/class.h"

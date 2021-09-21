@@ -20,8 +20,8 @@
 
 int main(int argc, char* argv[]) {
 	try {
-		// initialize ObjectTalk library
-		argc = OtVM::init(argc, argv);
+		// initialize libuv
+		OtLibUv::init(argc, argv);
 
 		// ensure we have some arguments
 		if (argc == 1) {
@@ -34,8 +34,8 @@ int main(int argc, char* argv[]) {
 			OtModuleClass::create()->import(argv[c]);
 		}
 
-		// close ObjectTalk library
-		OtVM::end();
+		// cleanup
+		OtLibUv::end();
 
 	} catch (const OtException& e) {
 		// handle all failures

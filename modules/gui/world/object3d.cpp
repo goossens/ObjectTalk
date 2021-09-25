@@ -92,7 +92,7 @@ OtObject OtObject3dClass::translate(double x, double y, double z) {
 //	OtObject3dClass::render
 //
 
-void OtObject3dClass::render(int view, glm::mat4 parentTransform) {
+void OtObject3dClass::render(int view, OtCamera camera, glm::mat4 parentTransform) {
 	// calculate object transformation
 	glm::mat4 t = parentTransform * translating * rotating * scaling;
 	bgfx::setTransform(glm::value_ptr(t));

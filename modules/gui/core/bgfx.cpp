@@ -94,8 +94,8 @@ void OtApplicationClass::renderProfiler() {
 	ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
 	ImGui::Begin("Profiler", nullptr, 0);
 	ImGui::Text("Framerate:"); ImGui::SameLine(150); ImGui::Text("%.1f", getFrameRate());
-	ImGui::Text("CPU [ms]:"); ImGui::SameLine(150); ImGui::Text("%0.1f", cpuDuration * 1000.0);
-	ImGui::Text("GPU [ms]:"); ImGui::SameLine(150); ImGui::Text("%0.1f", gpuDuration * 1000.0);
+	ImGui::Text("CPU [ms per frame]:"); ImGui::SameLine(150); ImGui::Text("%0.1f", cpuDuration * 1000.0);
+	ImGui::Text("GPU [ms per frame]:"); ImGui::SameLine(150); ImGui::Text("%0.1f", gpuDuration * 1000.0);
 	ImGui::Text("Wait render [ms]:"); ImGui::SameLine(150); ImGui::Text("%0.1f", double(stats->waitRender) * toMs);
 	ImGui::Text("Wait submit [ms]:"); ImGui::SameLine(150); ImGui::Text("%0.1f", double(stats->waitSubmit) * toMs);
 	ImGui::Text("Backbuffer width:"); ImGui::SameLine(150); ImGui::Text("%d", stats->width);

@@ -72,7 +72,6 @@
 #include "realslider.h"
 
 #include "ambientcontroller.h"
-#include "cameracontroller.h"
 #include "lightcontroller.h"
 #include "fogcontroller.h"
 
@@ -184,7 +183,6 @@ extern "C" void init(OtModule module) {
 	module->set("RealSlider", OtClassClass::create(OtRealSliderClass::getMeta()));
 
 	module->set("AmbientController", OtClassClass::create(OtAmbientControllerClass::getMeta()));
-	module->set("CameraController", OtClassClass::create(OtCameraControllerClass::getMeta()));
 	module->set("LightController", OtClassClass::create(OtLightControllerClass::getMeta()));
 	module->set("FogController", OtClassClass::create(OtFogControllerClass::getMeta()));
 

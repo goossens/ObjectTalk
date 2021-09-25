@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <limits>
+
 #include "ot/function.h"
 
 #include "geometry.h"
@@ -31,8 +33,15 @@ void OtGeometryClass::clearGeometry() {
 	vertices.clear();
 	triangles.clear();
 	lines.clear();
+
 	refreshGeometry = true;
 	refreshBuffers = true;
+
+	float min = std::numeric_limits<float>::min();
+	float max = std::numeric_limits<float>::max();
+
+	minBB = glm::vec3(max, max, max);
+	maxBB = glm::vec3(min, min, min);
 }
 
 

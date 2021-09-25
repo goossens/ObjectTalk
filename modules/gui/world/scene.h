@@ -18,6 +18,7 @@
 #include "glm/glm.hpp"
 
 #include "component.h"
+#include "camera.h"
 
 
 //
@@ -37,7 +38,7 @@ public:
 	void validateChild(OtComponent child);
 
 	// render content
-	void render(int view, const glm::mat4& viewMatrix);
+	void render(int view, OtCamera camera);
 
 	// get type definition
 	static OtType getMeta();

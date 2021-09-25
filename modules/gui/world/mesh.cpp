@@ -155,9 +155,9 @@ OtObject OtMeshClass::addInstance(OtObject object) {
 //	OtMeshClass::render
 //
 
-void OtMeshClass::render(int view, glm::mat4 parentTransform, long flag) {
+void OtMeshClass::render(int view, OtCamera camera, glm::mat4 parentTransform, long flag) {
 	// let parent class do its thing
-	OtObject3dClass::render(view, parentTransform);
+	OtObject3dClass::render(view, camera, parentTransform);
 
 	// setup material
 	material->submit();
@@ -197,7 +197,7 @@ void OtMeshClass::render(int view, glm::mat4 parentTransform, long flag) {
 //	OtMeshClass::render
 //
 
-void OtMeshClass::render(int view, glm::mat4 parentTransform) {
+void OtMeshClass::render(int view, OtCamera camera, glm::mat4 parentTransform) {
 	// sanity check
 	if (!geometry || !material) {
 		OtExcept("[Geometry] and/or [material] missing for [mesh]");
@@ -278,11 +278,11 @@ void OtMeshClass::render(int view, glm::mat4 parentTransform) {
 	// see if culling is desired
 	if (wireframe || holes || !geometry->wantsCulling()) {
 		// render back side
-		render(view, parentTransform, BGFX_STATE_CULL_CCW);
+		render(view, camera, parentTransform, BGFX_STATE_CULL_CCW);
 	}
 
 	// render front side
-	render(view, parentTransform, BGFX_STATE_CULL_CW);
+	render(view, camera, parentTransform, BGFX_STATE_CULL_CW);
 }
 
 

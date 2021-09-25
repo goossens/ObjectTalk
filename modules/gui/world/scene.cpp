@@ -65,7 +65,7 @@ void OtSceneClass::validateChild(OtComponent child) {
 //	OtSceneClass::render
 //
 
-void OtSceneClass::render(int view, const glm::mat4& viewMatrix) {
+void OtSceneClass::render(int view, OtCamera camera) {
 	// light information
 	bool hasAmbient = false;
 	glm::vec4 uniforms[TOTAL_SLOTS] = { glm::vec4(0.0) };
@@ -96,7 +96,7 @@ void OtSceneClass::render(int view, const glm::mat4& viewMatrix) {
 					OtExcept("Too many lights in scene (max %d)", LIGHTS);
 				}
 
-				child->cast<OtLightClass>()->submit(slot, viewMatrix);
+				child->cast<OtLightClass>()->submit(slot, camera);
 				slot += SLOTS_PER_LIGHT;
 				lights++;
 
@@ -115,7 +115,7 @@ void OtSceneClass::render(int view, const glm::mat4& viewMatrix) {
 	// render all children
 	for (auto const& object : objects) {
 		bgfx::setUniform(lightUniform, &uniforms, TOTAL_SLOTS);
-		object->render(view, glm::mat4(1.0));
+		object->render(view, camera, glm::mat4(1.0));
 	}
 }
 

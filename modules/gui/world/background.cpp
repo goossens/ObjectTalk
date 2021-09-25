@@ -123,7 +123,7 @@ OtObject OtBackgroundClass::setTexture(OtObject object) {
 //	OtBackgroundClass::render
 //
 
-void OtBackgroundClass::render(int view, glm::mat4 parentTransform) {
+void OtBackgroundClass::render(int view, OtCamera camera, glm::mat4 parentTransform) {
 	// submit uniforms
 	glm::mat4 transform = glm::mat4(1.0);
 	float scale = (float) OtApplicationClass::getHeight() / (float) OtApplicationClass::getWidth();
@@ -175,7 +175,7 @@ OtType OtBackgroundClass::getMeta() {
 //
 
 OtBackground OtBackgroundClass::create() {
-	OtBackground wireframe = std::make_shared<OtBackgroundClass>();
-	wireframe->setType(getMeta());
-	return wireframe;
+	OtBackground background = std::make_shared<OtBackgroundClass>();
+	background->setType(getMeta());
+	return background;
 }

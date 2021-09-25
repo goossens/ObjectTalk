@@ -36,7 +36,7 @@ public:
 	OtObject translate(double x, double y, double z);
 
 	// render in BGFX
-    virtual void render(int view, glm::mat4 parentTransform);
+    virtual void render(int view, OtCamera camera, glm::mat4 parentTransform);
 
 	// get type definition
 	static OtType getMeta();

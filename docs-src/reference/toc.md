@@ -74,7 +74,6 @@
 				* [Checkbox](#checkbox)
 				* [Combobox](#combobox)
 				* [Tron](#tron)
-				* [CameraController](#cameracontroller)
 				* [AmbientController](#ambientcontroller)
 				* [LightController](#lightcontroller)
 				* [FogController](#fogcontroller)

@@ -75,7 +75,7 @@ class MyApp : gui.Application {
 		// create camera
 		var camera = gui.Camera()
 			.setPosition(0, 15, 100)
-			.setDirection(0, 10, 0)
+			.setTarget(0, 10, 0)
 			.setFOV(45);
 
 		// create view

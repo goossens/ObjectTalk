@@ -15,6 +15,7 @@
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
 
+#include "camera.h"
 #include "sceneobject.h"
 
 
@@ -36,7 +37,7 @@ public:
 	void renderGUI();
 
 	// submit data to BGFX
-	void submit(glm::vec4* slot, const glm::mat4& viewMatrix);
+	void submit(glm::vec4* slot, OtCamera camera);
 
 	// get type definition
 	static OtType getMeta();

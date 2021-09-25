@@ -48,3 +48,19 @@ The following assets are from [OpenGameArt.Org](OpenGameArt.Org) and are
 licensed under the [Creative Commons Public Domain](https://creativecommons.org/publicdomain/zero/1.0/) license:
 
 * space.ktx - by [StumpyStrust](https://opengameart.org/content/space-skyboxes-0)
+
+## Karl "ThinMatrix"
+
+The following assets are from the OpenGL tutorials by ThinMatrix on
+[YouTube](https://www.youtube.com/channel/UCUkRj4qoT1bsWpE_C8lZYoQ).
+No license information is specified.
+
+* blendmap.png
+* grass.png
+* grassflowers.png
+* heightmap.png
+* mud.png
+* path.png
+* pine.obj
+* pine.png
+* sky.ktx

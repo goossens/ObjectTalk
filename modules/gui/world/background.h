@@ -42,7 +42,7 @@ public:
 	OtObject setTexture(OtObject texture);
 
 	// render in BGFX
-    void render(int view, glm::mat4 parentTransform);
+    void render(int view, OtCamera camera, glm::mat4 parentTransform);
 
 	// get type definition
 	static OtType getMeta();

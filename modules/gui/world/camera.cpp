@@ -12,7 +12,6 @@
 #include <algorithm>
 
 #include "bgfx/bgfx.h"
-#include "imgui.h"
 
 #include "ot/function.h"
 
@@ -25,21 +24,21 @@
 //
 
 OtObject OtCameraClass::setPosition(double x, double y, double z) {
-	cameraPos = glm::vec3(x, y, z);
+	cameraPosition = glm::vec3(x, y, z);
 	return shared();
 }
 
 
 //
-//	OtCameraClass::setDirection
+//	OtCameraClass::setTarget
 //
 
-OtObject OtCameraClass::setDirection(double x, double y, double z) {
+OtObject OtCameraClass::setTarget(double x, double y, double z) {
 	if (mouseControl) {
 		OtExcept("Camera is under mouse control and can't be adjusted");
 	}
 
-	cameraDir = glm::vec3(x, y, z);
+	cameraTarget = glm::vec3(x, y, z);
 	return shared();
 }
 
@@ -190,40 +189,20 @@ bool OtCameraClass::onScrollWheel(double dx, double dy) {
 
 
 //
-//	OtCameraClass::renderGUI
-//
-
-void OtCameraClass::renderGUI() {
-	if (mouseControl) {
-		OtExcept("Camera is under mouse control and can't be adjusted");
-	}
-
-	ImGui::SliderFloat3("Position", glm::value_ptr(cameraPos), -50.0f, 50.0f);
-	ImGui::SliderFloat3("Target", glm::value_ptr(cameraDir), -50.0f, 50.0f);
-	ImGui::SliderFloat3("Up", glm::value_ptr(cameraUp), -2.0f, 2.0f);
-    ImGui::SliderFloat("FoV (Deg)", &fov, 10.0f, 120.0f);
-}
-
-
-//
 //	OtCameraClass::submit
 //
 
 void OtCameraClass::submit(int view, float viewAspect) {
 	// update camera position in mouse control mode
 	if (mouseControl) {
-		cameraPos = glm::vec3(
+		cameraPosition = glm::vec3(
 			target.x + distance * std::cos(pitch) * std::sin(angle),
 			target.y + distance * std::sin(pitch),
 			target.z + distance * std::cos(pitch) * std::cos(angle));
-
-		cameraDir = target;
-		cameraUp = glm::vec3(0.0, 1.0, 0.0);
 	}
 
 	// determine view and projection transformations
-	viewMatrix = glm::lookAt(cameraPos, cameraDir, cameraUp);
-
+	viewMatrix = glm::lookAt(cameraPosition, cameraTarget, cameraUp);
 
 	projMatrix = glm::perspective(
 		(float) glm::radians(fov),
@@ -231,8 +210,70 @@ void OtCameraClass::submit(int view, float viewAspect) {
 		(float) nearClip,
 		(float) farClip);
 
+	// determine frustum planes (in world space)
+	glm::mat4 mat = projMatrix * viewMatrix;
+	planes[0] = glm::row(mat, 3) + glm::row(mat, 0); // left
+	planes[1] = glm::row(mat, 3) - glm::row(mat, 0); // right
+	planes[2] = glm::row(mat, 3) + glm::row(mat, 1); // bottom
+	planes[3] = glm::row(mat, 3) - glm::row(mat, 1); // top
+	planes[4] = glm::row(mat, 3) + glm::row(mat, 2); // far
+	planes[5] = glm::row(mat, 3) - glm::row(mat, 2); // near
+
 	// setup BGFX
 	bgfx::setViewTransform(view, glm::value_ptr(viewMatrix), glm::value_ptr(projMatrix));
+}
+
+
+//
+//	OtCameraClass::isVisiblePoint
+//
+
+bool OtCameraClass::isVisiblePoint(const glm::vec3& point) {
+	// check against all frustum planes
+	for (auto c = 0; c < 6; c++) {
+		if (glm::dot(planes[c].normal, point) + planes[c].d > 0) {
+			return false;
+		 }
+	}
+
+	return true;
+}
+
+
+//
+//	OtCameraClass::isVisibleAABB
+//
+
+bool OtCameraClass::isVisibleAABB(const glm::vec3& min, const glm::vec3& max) {
+	// check against all frustum planes
+	for (auto c = 0; c < 6; c++) {
+		glm::vec3 point (
+			planes[c].normal.x > 0 ? min.x : max.x,
+			planes[c].normal.y > 0 ? min.y : max.y,
+			planes[c].normal.z > 0 ? min.z : max.z);
+
+		if (glm::dot(planes[c].normal, point) + planes[c].d > 0) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+
+//
+//	OtCameraClass::isVisibleSphere
+//
+
+bool OtCameraClass::isVisibleSphere(const glm::vec3& center, double radius) {
+	// check against all frustum planes
+	for (auto c = 0; c < 6; c++) {
+		if (glm::dot(planes[c].normal, center) + planes[c].d + radius > 0) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
 
@@ -246,7 +287,7 @@ OtType OtCameraClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtCameraClass>("Camera", OtGuiClass::getMeta());
 		type->set("setPosition", OtFunctionClass::create(&OtCameraClass::setPosition));
-		type->set("setDirection", OtFunctionClass::create(&OtCameraClass::setDirection));
+		type->set("setTarget", OtFunctionClass::create(&OtCameraClass::setTarget));
 		type->set("setUp", OtFunctionClass::create(&OtCameraClass::setUp));
 		type->set("setFOV", OtFunctionClass::create(&OtCameraClass::setFOV));
 		type->set("setClipping", OtFunctionClass::create(&OtCameraClass::setClipping));

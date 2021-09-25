@@ -30,7 +30,7 @@ public:
 	void validateChild(OtComponent child);
 
 	// render in BGFX
-    virtual void render(int view, glm::mat4 parentTransform);
+    virtual void render(int view, OtCamera camera, glm::mat4 parentTransform);
 
 	// get type definition
 	static OtType getMeta();

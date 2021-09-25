@@ -31,13 +31,13 @@ void OtGroupClass::validateChild(OtComponent child) {
 //	OtGroupClass::render
 //
 
-void OtGroupClass::render(int view, glm::mat4 parentTransform) {
+void OtGroupClass::render(int view, OtCamera camera, glm::mat4 parentTransform) {
 	// calculate object transformation
 	glm::mat4 t = parentTransform * translating * rotating * scaling;
 
 	// render all children
 	for (auto& child : children) {
-		child->cast<OtObject3dClass>()->render(view, t);
+		child->cast<OtObject3dClass>()->render(view, camera, t);
 	}
 }
 

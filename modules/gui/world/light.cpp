@@ -63,9 +63,9 @@ void OtLightClass::renderGUI() {
 //	OtLightClass::submit
 //
 
-void OtLightClass::submit(glm::vec4* slot, const glm::mat4& viewMatrix) {
+void OtLightClass::submit(glm::vec4* slot, OtCamera camera) {
 	slot[0].x = enabled;
-	slot[1] = viewMatrix * position;
+	slot[1] = camera->getViewMatrix() * position;
 	slot[2] = diffuse;
 	slot[3] = specular;
 }

@@ -202,7 +202,7 @@ OtObject OtSkyboxClass::setCubemap(const std::string& file) {
 //	OtSkyboxClass::render
 //
 
-void OtSkyboxClass::render(int view, glm::mat4 parentTransform) {
+void OtSkyboxClass::render(int view, OtCamera camera, glm::mat4 parentTransform) {
 	// sanity check
 	if (!image) {
 		OtExcept("[cubemap] missing for [skybox]");

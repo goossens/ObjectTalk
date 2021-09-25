@@ -68,7 +68,7 @@ class MyApp : gui.Application {
 			.setDistance(100.0)
 			.setDistanceLimits(20.0, 200.0)
 			.setFOV(45)
-			.setClipping(0.1, 10000);
+			.setClipping(0.1, 1000);
 
 		var view = gui.View()
 			.setCamera(camera)

@@ -112,7 +112,7 @@ void OtViewClass::render() {
 		bgfx::setViewRect(id, vx, vy, vw, vh);
 
 		// render our scene
-		scene->render(id, camera->viewMatrix);
+		scene->render(id, camera);
 	}
 }
 

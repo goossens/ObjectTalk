@@ -70,6 +70,12 @@ protected:
 	// add vertices/triangles/lines to the geometry
 	void addVertex(const OtVertex& vertex) {
 		vertices.push_back(vertex);
+		minBB.x = std::min(minBB.x, vertex.position.x);
+		minBB.y = std::min(minBB.y, vertex.position.y);
+		minBB.z = std::min(minBB.z, vertex.position.z);
+		maxBB.x = std::max(minBB.x, vertex.position.x);
+		maxBB.y = std::max(minBB.y, vertex.position.y);
+		maxBB.z = std::max(minBB.z, vertex.position.z);
 	}
 
 	void addTriangle(uint16_t p1, uint16_t p2, uint16_t p3) {
@@ -88,6 +94,9 @@ protected:
 	std::vector<OtVertex> vertices;
 	std::vector<uint16_t> triangles;
 	std::vector<uint16_t> lines;
+
+	// Axis-aligned Bounding Box (BB)
+	glm::vec3 minBB, maxBB;
 
 	// handle buffers
 	void clearBuffers();

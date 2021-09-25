@@ -28,12 +28,10 @@ class OtCameraClass;
 typedef std::shared_ptr<OtCameraClass> OtCamera;
 
 class OtCameraClass : public OtGuiClass {
-	friend class OtViewClass;
-
 public:
 	// change camera geometry
 	OtObject setPosition(double x, double y, double z);
-	OtObject setDirection(double x, double y, double z);
+	OtObject setTarget(double x, double y, double z);
 	OtObject setUp(double x, double y, double z);
 	OtObject setFOV(double fov);
 	OtObject setClipping(double near, double far);
@@ -51,11 +49,21 @@ public:
 	bool onMouseDrag(int button, int mods, double xpos, double ypos);
 	bool onScrollWheel(double dx, double dy);
 
-	// GUI to change camera parameters
-	void renderGUI();
-
 	// submit data to BGFX
 	void submit(int view, float viewAspect);
+
+	// access camera information
+	glm::vec3 getPosition() { return cameraPosition; }
+	glm::vec3 getTarget() { return cameraTarget; }
+	glm::vec3 getUp() { return cameraUp; }
+
+	glm::mat4& getViewMatrix() { return viewMatrix; }
+	glm::mat4& getProjectionMatrix() { return projMatrix; }
+
+	// see if AABB object is visible in frustum
+	bool isVisiblePoint(const glm::vec3& point);
+	bool isVisibleAABB(const glm::vec3& min, const glm::vec3& max);
+	bool isVisibleSphere(const glm::vec3& center, double radius);
 
 	// get type definition
 	static OtType getMeta();
@@ -65,8 +73,8 @@ public:
 
 private:
 	// camera geometry
-	glm::vec3 cameraPos = { 0.0, 0.0, 10.0 };
-	glm::vec3 cameraDir = { 0.0, 0.0, 0.0 };
+	glm::vec3 cameraPosition = { 0.0, 0.0, 10.0 };
+	glm::vec3 cameraTarget = { 0.0, 0.0, 0.0 };
 	glm::vec3 cameraUp = { 0.0, 1.0, 0.0 };
 
 	// mouse control
@@ -91,4 +99,24 @@ private:
 	// transformation matrices;
 	glm::mat4 viewMatrix;
 	glm::mat4 projMatrix;
+
+	// a plane in our frustum
+	class Plane {
+	public:
+		// constructors
+		Plane() = default;
+
+		Plane(const glm::vec4& v) : normal(v.x, v.y, v.z), d(v.w) {
+			// normalize vector
+			float length = glm::length(normal);
+			normal /= length;
+			d /= length;
+		}
+
+		glm::vec3 normal;
+		float d;
+	};
+
+	// our viewing frustum
+	Plane planes[6];
 };

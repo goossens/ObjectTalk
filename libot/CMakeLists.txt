@@ -5,7 +5,7 @@
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
 file(GLOB_RECURSE OT_INCLUDES "*.h")
-file(GLOB_RECURSE OT_SOURCES "*.cpp")
+file(GLOB_RECURSE OT_SOURCES "*/*.cpp")
 
 add_library(libot SHARED ${OT_INCLUDES} ${OT_SOURCES})
 

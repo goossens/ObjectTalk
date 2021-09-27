@@ -15,7 +15,7 @@ var defaultRenderer = "textured";
 
 // create combobox value lists
 var geometries = [
-	"box", "circle", "cylinder", "plane", "sphere",
+	"box", "circle", "cylinder", "sphere", "surface",
 	"torus", "bunny", "column", "teapot"
 ];
 
@@ -45,7 +45,7 @@ class MyApp : gui.Application {
 			.setTarget(0, -5, -10);
 
 		this.grid = gui.Mesh()
-			.setGeometry(gui.Plane(50, 50, 10, 10))
+			.setGeometry(gui.Surface(50, 50, 10, 10))
 			.setMaterial(gui.Material().setFixed("white"))
 			.setWireframe(true)
 			.rotateX(-pi / 2.0);
@@ -101,7 +101,11 @@ class MyApp : gui.Application {
 	function createPanel(this) {
 		var panel = gui.Panel(0, 0, 30, 100);
 
-		var node = gui.TreeNode("Ambient Light:");
+		var node = gui.TreeNode("Camera:");
+		node.add(gui.CameraController(this.camera));
+		panel.add(node);
+
+		node = gui.TreeNode("Ambient Light:");
 		node.add(gui.AmbientController(this.ambient));
 		panel.add(node);
 
@@ -144,8 +148,8 @@ class MyApp : gui.Application {
 		} elif (name == "cylinder") {
 			this.geometry = gui.Cylinder(16, 16, 40, 64);
 
-		} elif (name == "plane") {
-			this.geometry = gui.Plane(40, 40);
+		} elif (name == "surface") {
+			this.geometry = gui.Surface(40, 40);
 
 		} elif (name == "sphere") {
 			this.geometry = gui.Sphere(21, 64, 64);

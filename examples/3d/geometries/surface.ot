@@ -10,7 +10,7 @@ var gui = import("gui");
 
 class MyApp : gui.Application {
 	function setup(this, screen) {
-		var geometry = gui.Plane();
+		var geometry = gui.Surface();
 		var gold = gui.Material("material", "gold");
 		var object = gui.Mesh(geometry, gold).setWireframe(true);
 
@@ -42,7 +42,11 @@ class MyApp : gui.Application {
 
 		var panel = gui.Panel(0, 0, 35, 100);
 
-		var node = gui.TreeNode("Ambient Light:");
+		var node = gui.TreeNode("Camera:");
+		node.add(gui.CameraController(camera));
+		panel.add(node);
+
+		node = gui.TreeNode("Ambient Light:");
 		node.add(gui.AmbientController(ambient));
 		panel.add(node);
 

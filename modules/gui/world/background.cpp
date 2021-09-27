@@ -17,7 +17,7 @@
 #include "backgroundshader.h"
 #include "application.h"
 #include "color.h"
-#include "plane.h"
+#include "surface.h"
 
 
 //
@@ -37,9 +37,9 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 
 OtBackgroundClass::OtBackgroundClass() {
 	// create geometry
-	plane = OtPlaneClass::create();
-	plane->setWidth(2.0);
-	plane->setHeight(2.0);
+	surface = OtSurfaceClass::create();
+	surface->setWidth(2.0);
+	surface->setHeight(2.0);
 
 	// register uniform
 	transformUniform = bgfx::createUniform("u_background_transform", bgfx::UniformType::Mat4);
@@ -143,8 +143,8 @@ void OtBackgroundClass::render(int view, OtCamera camera, glm::mat4 parentTransf
 	}
 
 	// submit vertices and triangles
-	bgfx::setVertexBuffer(0, plane->getVertexBuffer());
-	bgfx::setIndexBuffer(plane->getTriangleIndexBuffer());
+	bgfx::setVertexBuffer(0, surface->getVertexBuffer());
+	bgfx::setIndexBuffer(surface->getTriangleIndexBuffer());
 
 	// run shader
 	bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_MSAA);

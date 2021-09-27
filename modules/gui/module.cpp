@@ -46,7 +46,7 @@
 #include "circle.h"
 #include "cylinder.h"
 #include "model.h"
-#include "plane.h"
+#include "surface.h"
 #include "sphere.h"
 #include "terrain.h"
 #include "torus.h"
@@ -72,6 +72,7 @@
 #include "realslider.h"
 
 #include "ambientcontroller.h"
+#include "cameracontroller.h"
 #include "lightcontroller.h"
 #include "fogcontroller.h"
 
@@ -116,7 +117,7 @@ extern "C" void init(OtModule module) {
 	module->set("Circle", OtClassClass::create(OtCircleClass::getMeta()));
 	module->set("Cylinder", OtClassClass::create(OtCylinderClass::getMeta()));
 	module->set("Model", OtClassClass::create(OtModelClass::getMeta()));
-	module->set("Plane", OtClassClass::create(OtPlaneClass::getMeta()));
+	module->set("Surface", OtClassClass::create(OtSurfaceClass::getMeta()));
 	module->set("Sphere", OtClassClass::create(OtSphereClass::getMeta()));
 	module->set("Terrain", OtClassClass::create(OtTerrainClass::getMeta()));
 	module->set("Torus", OtClassClass::create(OtTorusClass::getMeta()));
@@ -183,6 +184,7 @@ extern "C" void init(OtModule module) {
 	module->set("RealSlider", OtClassClass::create(OtRealSliderClass::getMeta()));
 
 	module->set("AmbientController", OtClassClass::create(OtAmbientControllerClass::getMeta()));
+	module->set("CameraController", OtClassClass::create(OtCameraControllerClass::getMeta()));
 	module->set("LightController", OtClassClass::create(OtLightControllerClass::getMeta()));
 	module->set("FogController", OtClassClass::create(OtFogControllerClass::getMeta()));
 

@@ -15,7 +15,7 @@
 #include <vector>
 
 #include "simulation.h"
-#include "plane.h"
+#include "surface.h"
 
 
 //
@@ -44,8 +44,8 @@ public:
 	static OtCloth create();
 
 private:
-	// our plane
-	OtPlane plane;
+	// our surface
+	OtSurface surface;
 
 	// attributes
 	int pins = 3;

@@ -11,14 +11,14 @@
 
 #include "ot/function.h"
 
-#include "plane.h"
+#include "surface.h"
 
 
 //
-//	OtPlaneClass::init
+//	OtSurfaceClass::init
 //
 
-OtObject OtPlaneClass::init(size_t count, OtObject* parameters) {
+OtObject OtSurfaceClass::init(size_t count, OtObject* parameters) {
 	// set attributes
 	if (count) {
 		switch (count) {
@@ -36,7 +36,7 @@ OtObject OtPlaneClass::init(size_t count, OtObject* parameters) {
 				break;
 
 			default:
-				OtExcept("Too many parameters [%ld] for [Plane] constructor (max 4)", count);
+				OtExcept("Too many parameters [%ld] for [Surface] constructor (max 4)", count);
 		}
 
 		refreshGeometry = true;
@@ -47,10 +47,10 @@ OtObject OtPlaneClass::init(size_t count, OtObject* parameters) {
 
 
 //
-//	OtPlaneClass::setWidth
+//	OtSurfaceClass::setWidth
 //
 
-OtObject OtPlaneClass::setWidth(double w) {
+OtObject OtSurfaceClass::setWidth(double w) {
 	width = w;
 	refreshGeometry = true;
 	return shared();
@@ -58,10 +58,10 @@ OtObject OtPlaneClass::setWidth(double w) {
 
 
 //
-//	OtPlaneClass::setHeight
+//	OtSurfaceClass::setHeight
 //
 
-OtObject OtPlaneClass::setHeight(double h) {
+OtObject OtSurfaceClass::setHeight(double h) {
 	height = h;
 	refreshGeometry = true;
 	return shared();
@@ -69,10 +69,10 @@ OtObject OtPlaneClass::setHeight(double h) {
 
 
 //
-//	OtPlaneClass::setWidthSegments
+//	OtSurfaceClass::setWidthSegments
 //
 
-OtObject OtPlaneClass::setWidthSegments(int ws) {
+OtObject OtSurfaceClass::setWidthSegments(int ws) {
 	widthSegments = ws;
 	refreshGeometry = true;
 	return shared();
@@ -80,10 +80,10 @@ OtObject OtPlaneClass::setWidthSegments(int ws) {
 
 
 //
-//	OtPlaneClass::setHeightSegments
+//	OtSurfaceClass::setHeightSegments
 //
 
-OtObject OtPlaneClass::setHeightSegments(int hs) {
+OtObject OtSurfaceClass::setHeightSegments(int hs) {
 	heightSegments = hs;
 	refreshGeometry = true;
 	return shared();
@@ -91,10 +91,10 @@ OtObject OtPlaneClass::setHeightSegments(int hs) {
 
 
 //
-//	OtPlaneClass::fillGeometry
+//	OtSurfaceClass::fillGeometry
 //
 
-void OtPlaneClass::fillGeometry() {
+void OtSurfaceClass::fillGeometry() {
 	// add vertices
 	auto widthHalf = width / 2.0;
 	auto heightHalf = height / 2.0;
@@ -145,19 +145,19 @@ void OtPlaneClass::fillGeometry() {
 
 
 //
-//	OtPlaneClass::getMeta
+//	OtSurfaceClass::getMeta
 //
 
-OtType OtPlaneClass::getMeta() {
+OtType OtSurfaceClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtTypeClass::create<OtPlaneClass>("Plane", OtGeometryClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtPlaneClass::init));
-		type->set("setWidth", OtFunctionClass::create(&OtPlaneClass::setWidth));
-		type->set("setHeight", OtFunctionClass::create(&OtPlaneClass::setHeight));
-		type->set("setWidthSegments", OtFunctionClass::create(&OtPlaneClass::setWidthSegments));
-		type->set("setHeightSegments", OtFunctionClass::create(&OtPlaneClass::setHeightSegments));
+		type = OtTypeClass::create<OtSurfaceClass>("Surface", OtGeometryClass::getMeta());
+		type->set("__init__", OtFunctionClass::create(&OtSurfaceClass::init));
+		type->set("setWidth", OtFunctionClass::create(&OtSurfaceClass::setWidth));
+		type->set("setHeight", OtFunctionClass::create(&OtSurfaceClass::setHeight));
+		type->set("setWidthSegments", OtFunctionClass::create(&OtSurfaceClass::setWidthSegments));
+		type->set("setHeightSegments", OtFunctionClass::create(&OtSurfaceClass::setHeightSegments));
 	}
 
 	return type;
@@ -165,11 +165,11 @@ OtType OtPlaneClass::getMeta() {
 
 
 //
-//	OtPlaneClass::create
+//	OtSurfaceClass::create
 //
 
-OtPlane OtPlaneClass::create() {
-	OtPlane plane = std::make_shared<OtPlaneClass>();
-	plane->setType(getMeta());
-	return plane;
+OtSurface OtSurfaceClass::create() {
+	OtSurface surface = std::make_shared<OtSurfaceClass>();
+	surface->setType(getMeta());
+	return surface;
 }

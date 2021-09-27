@@ -57,9 +57,9 @@ OtObject OtClothClass::init(size_t count, OtObject* parameters) {
 //
 
 OtObject OtClothClass::setPlane(OtObject object) {
-	// ensure object is a plane
+	// ensure object is a surface
 	if (object->isKindOf("Plane")) {
-		plane = object->cast<OtPlaneClass>();
+		surface = object->cast<OtSurfaceClass>();
 
 	} else {
 		OtExcept("Expected a [Plane] object, not a [%s]", object->getType()->getName().c_str());
@@ -88,13 +88,13 @@ OtObject OtClothClass::setPins(int p) {
 
 void OtClothClass::step(int32_t deltaMilliseconds) {
 	// sanity check
-	if (!plane) {
+	if (!surface) {
 		OtExcept("No [Plane] specified for [Cloth]");
 	}
 
 	// get information about plane
-	int widthSegments = plane->getWidthSegments();
-	int heightSegments = plane->getHeightSegments();
+	int widthSegments = surface->getWidthSegments();
+	int heightSegments = surface->getHeightSegments();
 	int points = (widthSegments + 1) * (heightSegments + 1);
 
 	// rebuild cloth if required
@@ -104,14 +104,14 @@ void OtClothClass::step(int32_t deltaMilliseconds) {
 
 		for (auto y = 0; y <= heightSegments; y++) {
 			for (auto x = 0; x <= widthSegments; x++) {
-				particles.push_back(OtClothParticle(plane->getVertex(INDEX(x, y)).position));
+				particles.push_back(OtClothParticle(surface->getVertex(INDEX(x, y)).position));
 			}
 		}
 
 		// rebuild constraint list
 		constraints.clear();
-		auto dx = plane->getWidth() / widthSegments;
-		auto dy = plane->getHeight() / heightSegments;
+		auto dx = surface->getWidth() / widthSegments;
+		auto dy = surface->getHeight() / heightSegments;
 
 		for (auto y = 0; y < heightSegments; y++) {
 			for (auto x = 0; x < widthSegments; x++) {
@@ -142,7 +142,7 @@ void OtClothClass::step(int32_t deltaMilliseconds) {
 	for (auto y = 0; y <= heightSegments; y++) {
 		for (auto x = 0; x <= widthSegments; x++) {
 			// get vertex
-			OtVertex& v = plane->getVertex(INDEX(x, y));
+			OtVertex& v = surface->getVertex(INDEX(x, y));
 
 			// simulate gravity
 			glm::vec3 acceleration = gravity;
@@ -160,8 +160,8 @@ void OtClothClass::step(int32_t deltaMilliseconds) {
 
 	// apply constraint vectors
 	for (auto& c : constraints) {
-		OtVertex& v1 = plane->getVertex(c.particle1);
-		OtVertex& v2 = plane->getVertex(c.particle2);
+		OtVertex& v1 = surface->getVertex(c.particle1);
+		OtVertex& v2 = surface->getVertex(c.particle2);
 
 		auto diff = v2.position - v1.position;
 		auto dist = glm::length(diff);
@@ -176,23 +176,23 @@ void OtClothClass::step(int32_t deltaMilliseconds) {
 	// apply the pins
 	for (auto pin = 0; pin < pins; pin++) {
 		auto i = pins == 1 ? 0 : INDEX((pin * widthSegments) / (pins - 1), 0);
-		plane->getVertex(i).position = particles[i].original;
+		surface->getVertex(i).position = particles[i].original;
 	}
 
 	// reset the normals
 	for (auto y = 0; y <= heightSegments; y++) {
 		for (auto x = 0; x <= widthSegments; x++) {
-			plane->getVertex(INDEX(x, y)).normal = glm::vec3(0.0);
+			surface->getVertex(INDEX(x, y)).normal = glm::vec3(0.0);
 		}
 	}
 
 	// recalculate the normals
 	for (auto y = 0; y < heightSegments; y++) {
 		for (auto x = 0; x < widthSegments; x++) {
-			OtVertex& v1 = plane->getVertex(INDEX(x, y));
-			OtVertex& v2 = plane->getVertex(INDEX(x, y + 1));
-			OtVertex& v3 = plane->getVertex(INDEX(x + 1, y + 1));
-			OtVertex& v4 = plane->getVertex(INDEX(x + 1, y));
+			OtVertex& v1 = surface->getVertex(INDEX(x, y));
+			OtVertex& v2 = surface->getVertex(INDEX(x, y + 1));
+			OtVertex& v3 = surface->getVertex(INDEX(x + 1, y + 1));
+			OtVertex& v4 = surface->getVertex(INDEX(x + 1, y));
 
 			glm::vec3 normal = calculateNormal(v1.position, v2.position, v4.position);
 			v1.normal += normal;
@@ -206,7 +206,7 @@ void OtClothClass::step(int32_t deltaMilliseconds) {
 		}
 	}
 
-	plane->forceBufferRefresh();
+	surface->forceBufferRefresh();
 }
 
 

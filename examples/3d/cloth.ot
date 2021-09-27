@@ -17,7 +17,7 @@ class MyApp : gui.Application {
 		var background = gui.Background().setColor(skyColor);
 
 		var grass = gui.Mesh()
-			.setGeometry(gui.Plane(200, 200, 10, 10))
+			.setGeometry(gui.Surface(200, 200, 10, 10))
 			.setMaterial(gui.Material()
 				.setTexture(gui.Texture(__DIR__ + "/assets/grass.jpg"))
 				.setUvTransform(0, 0, 5, 5, 0, 0, 0))
@@ -42,7 +42,7 @@ class MyApp : gui.Application {
 			.rotateZ(pi / 2.0)
 			.translate(0, 25, 50);
 
-		var plane = gui.Plane(20, 20, 20, 20);
+		var plane = gui.Surface(20, 20, 20, 20);
 		this.addSimulation(gui.Cloth()
 			.setPlane(plane)
 			.setPins(2)

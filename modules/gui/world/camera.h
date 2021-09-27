@@ -65,6 +65,9 @@ public:
 	bool isVisibleAABB(const glm::vec3& min, const glm::vec3& max);
 	bool isVisibleSphere(const glm::vec3& center, double radius);
 
+	// GUI to change camera parameters
+	void renderGUI();
+
 	// get type definition
 	static OtType getMeta();
 
@@ -80,16 +83,16 @@ private:
 	// mouse control
 	bool mouseControl = false;
 	glm::vec3 target = { 0.0, 0.0, 0.0 };
-	double distance = 10.0;
-	double angle = 0.0;
-	double pitch = 0.3;
+	float distance = 10.0;
+	float angle = 0.0;
+	float pitch = 0.3;
 
-	double distanceMin = 0.0;
-	double distanceMax = 100.0;
-	double angleMin = -std::numbers::pi;
-	double angleMax = std::numbers::pi;
-	double pitchMin = -std::numbers::pi / 2.0;
-	double pitchMax = std::numbers::pi / 2.0;
+	float distanceMin = 0.0;
+	float distanceMax = 100.0;
+	float angleMin = -std::numbers::pi;
+	float angleMax = std::numbers::pi;
+	float pitchMin = -std::numbers::pi / 2.0;
+	float pitchMax = std::numbers::pi / 2.0;
 
 	// field-of-view and clipping
 	float fov = 60.0;

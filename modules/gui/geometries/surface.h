@@ -16,13 +16,13 @@
 
 
 //
-//	OtPlaneClass
+//	OtSurfaceClass
 //
 
-class OtPlaneClass;
-typedef std::shared_ptr<OtPlaneClass> OtPlane;
+class OtSurfaceClass;
+typedef std::shared_ptr<OtSurfaceClass> OtSurface;
 
-class OtPlaneClass : public OtGeometryClass {
+class OtSurfaceClass : public OtGeometryClass {
 public:
 	// initialize geometry
 	OtObject init(size_t count, OtObject* parameters);
@@ -43,7 +43,7 @@ public:
 	static OtType getMeta();
 
 	// create a new object
-	static OtPlane create();
+	static OtSurface create();
 
 private:
 	// generate geometry

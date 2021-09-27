@@ -278,6 +278,26 @@ bool OtCameraClass::isVisibleSphere(const glm::vec3& center, double radius) {
 
 
 //
+//	OtCameraClass::renderGUI
+//
+
+void OtCameraClass::renderGUI() {
+	if (mouseControl) {
+		ImGui::SliderFloat3("Target", glm::value_ptr(cameraTarget), -50.0f, 50.0f);
+		ImGui::SliderFloat("Distance", &distance, distanceMin, distanceMax);
+		ImGui::SliderFloat("Angle", &angle, angleMin, angleMax);
+		ImGui::SliderFloat("Pitch", &pitch, pitchMin, pitchMax);
+
+	} else {
+		ImGui::SliderFloat3("Position", glm::value_ptr(cameraPosition), -50.0f, 50.0f);
+		ImGui::SliderFloat3("Target", glm::value_ptr(cameraTarget), -50.0f, 50.0f);
+		ImGui::SliderFloat3("Up", glm::value_ptr(cameraUp), -2.0f, 2.0f);
+	    ImGui::SliderFloat("FoV (Deg)", &fov, 10.0f, 120.0f);
+	}
+}
+
+
+//
 //	OtCameraClass::getMeta
 //
 

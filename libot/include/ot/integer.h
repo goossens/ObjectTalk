@@ -39,7 +39,8 @@ public:
 	operator int() { return (int) value; }
 	operator long() { return value; }
 	operator size_t() { return (size_t) value; }
-	operator double() { return double(value); }
+	operator float() { return (float) value; }
+	operator double() { return (double) value; }
 	operator std::string() {return std::to_string(value); }
 
 	// debugging support

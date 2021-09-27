@@ -33,6 +33,7 @@ public:
 	operator int() { return value ? 1 : 0; }
 	operator long() { return value ? 1 : 0; }
 	operator size_t() { return value ? 1 : 0; }
+	operator float() { return value ? 1.0 : 0.0; }
 	operator double() { return value ? 1.0 : 0.0; }
 	operator std::string() { return value ? "true" : "false"; }
 

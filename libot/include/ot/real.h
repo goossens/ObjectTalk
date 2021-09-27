@@ -36,8 +36,9 @@ public:
 	// convertors
 	operator bool() { return value != 0.0; }
 	operator int() { return (int) value; }
-	operator long() { return long(value); }
+	operator long() { return (long) value; }
 	operator size_t() { return (size_t) value; }
+	operator float() { return (float) value; }
 	operator double() { return value; }
 	operator std::string() {return std::to_string(value); }
 

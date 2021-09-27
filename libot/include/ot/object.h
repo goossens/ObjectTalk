@@ -52,6 +52,7 @@ public:
 	virtual operator int() { return 0; }
 	virtual operator long() { return 0; }
 	virtual operator size_t() { return 0; }
+	virtual operator float() { return 0.0; }
 	virtual operator double() { return 0.0; }
 	virtual operator std::string() { return ""; }
 	virtual operator OtObject() { return shared_from_this(); }

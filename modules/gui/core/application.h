@@ -42,8 +42,8 @@ public:
 	void runThread2();
 
 	// mouse and keyboard events
-	void onMouseButton(int button, int action, int mods, double xpos, double ypos);
-	void onMouseMove(int button, double xpos, double ypos);
+	void onMouseButton(int button, int action, int mods, float xpos, float ypos);
+	void onMouseMove(int button, float xpos, float ypos);
 	void onKey(int key, int scancode, int action, int mods);
 	void onChar(unsigned int codepoint);
 
@@ -64,13 +64,13 @@ public:
 	static int getHeight() { return height; }
 
 	// get system time in seconds since the epoch
-	static double getTime();
+	static float getTime();
 
 	// get the current frame number
 	static size_t getFrameNumber() { return frameNumber; }
 
 	// get the current frame rate
-	static double getFrameRate() { return 1.0 / loopDuration; }
+	static float getFrameRate();
 
 	// get type definition
 	static OtType getMeta();
@@ -118,10 +118,10 @@ private:
 	int mouseButton;
 	int mouseAction;
 	int mouseMods;
-	double mouseX;
-	double mouseY;
-	double mouseWheelDX = 0.0;
-	double mouseWheelDY = 0.0;
+	float mouseX;
+	float mouseY;
+	float mouseWheelDX = 0.0;
+	float mouseWheelDY = 0.0;
 
 	// keyboard state
 	bool keyboardState[512] = {0};
@@ -133,11 +133,11 @@ private:
 
 	// time tracking
 	static size_t frameNumber;
-	static double lastTime;
-	static double loopTime;
-	static double loopDuration;
-	static double cpuDuration;
-	static double gpuDuration;
+	static int64_t lastTime;
+	static int64_t loopTime;
+	static float loopDuration;
+	static int64_t cpuDuration;
+	static int64_t gpuDuration;
 
 	// animations
 	std::vector<OtAnimation> animations;

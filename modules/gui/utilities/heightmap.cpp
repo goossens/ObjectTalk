@@ -9,7 +9,10 @@
 //	Include files
 //
 
+#include <algorithm>
 #include <cmath>
+#include <cstdlib>
+#include <ctime>
 
 #include "bgfx/bgfx.h"
 #include "bimg/decode.h"
@@ -29,6 +32,10 @@ OtHeightMapClass::~OtHeightMapClass() {
 	if (heightmap) {
 		delete [] heightmap;
 	}
+
+	if (seed) {
+		delete [] seed;
+	}
 }
 
 
@@ -37,7 +44,7 @@ OtHeightMapClass::~OtHeightMapClass() {
 //
 
 static inline void packHeight(void* dst, const float* src) {
-	double* d = (double*) dst;
+	float* d = (float*) dst;
 	d[0] = 0.299 * src[0] + 0.587 * src[1] + 0.114 * src[2];
 }
 
@@ -46,9 +53,34 @@ static inline void packHeight(void* dst, const float* src) {
 //	OtHeightMapClass::init
 //
 
-void OtHeightMapClass::init(const std::string& file, double s) {
-	// save scale
-	scale = s;
+OtObject OtHeightMapClass::init(size_t count, OtObject* parameters) {
+	switch (count) {
+		case 2:
+			scale = parameters[1]->operator float();
+
+		case 1:
+			loadMap(parameters[0]->operator std::string());
+
+		case 0:
+			break;
+
+		default:
+			OtExcept("[HeightMap] constructor expects upto 2 arguments (not %ld)", count);
+	}
+
+	return nullptr;
+}
+
+
+//
+//	OtHeightMapClass::loadMap
+//
+
+OtObject OtHeightMapClass::loadMap(const std::string& file) {
+	// delete old heightmap if required
+	if (heightmap) {
+		delete [] heightmap;
+	}
 
 	// load height map
 	static bx::DefaultAllocator allocator;
@@ -72,18 +104,113 @@ void OtHeightMapClass::init(const std::string& file, double s) {
 	// allocate heightmap
 	width = image->m_width;
 	height = image->m_height;
-	heightmap = new double[width * height];
+	heightmap = new float[width * height];
 
 	// convert image to height map
 	bimg::imageConvert(
-		(void*) heightmap, sizeof(double) * 8, packHeight,
+		(void*) heightmap, sizeof(float) * 8, packHeight,
 		image->m_data, bimg::getBitsPerPixel(image->m_format), bimg::getUnpack(image->m_format),
 		uint32_t(width), uint32_t(height), 1,
-		bimg::getBitsPerPixel(image->m_format) * width / 8, sizeof(double) * width);
+		bimg::getBitsPerPixel(image->m_format) * width / 8, sizeof(float) * width);
 
 	// free image resources
 	BX_FREE(&allocator, data);
 	bimg::imageFree(image);
+	return shared();
+}
+
+
+//
+//	OtHeightMapClass::generate
+//
+
+OtObject OtHeightMapClass::generate(int size, int octaves, float bias) {
+	// delete old seed if required
+	if (seed) {
+		delete [] seed;
+	}
+
+	// remember dimensions
+	width = size;
+	height = size;
+
+	// create new seed
+	std::srand(std::time(nullptr));
+	seed = new float[width * height];
+
+	for (auto c = 0; c < width * height; c++) {
+		seed[c] = (float) std::rand() / (float) RAND_MAX;
+	}
+
+	// delete old heightmap if required
+	if (heightmap) {
+		delete [] heightmap;
+	}
+
+	// create new heightmap based on perlin noise
+	heightmap = new float[width * height];
+
+	for (auto x = 0; x < width; x++) {
+		for (auto y = 0; y < height; y++) {
+			float noise = 0.0;
+			float multiplier = 1.0;
+			float maxMultiplier = 0.0;
+
+			for (auto o = 0; o < octaves; o++) {
+				int pitch = width >> o;
+
+				int x1 = (x / pitch) * pitch;
+				int y1 = (y / pitch) * pitch;
+				int x2 = (x1 + pitch) % width;
+				int y2 = (y1 + pitch) % height;
+
+				float blendX = (float) (x - x1) / (float) pitch;
+				float blendY = (float) (y - y1) / (float) pitch;
+
+				float top = std::lerp(seed[y1 * width + x1], seed[y1 * width + x2], blendX);
+				float bottom = std::lerp(seed[y2 * width + x1], seed[y2 * width + x2], blendX);
+
+				noise += std::lerp(top, bottom, blendY) * multiplier;
+				maxMultiplier += multiplier;
+				multiplier = multiplier / bias;
+			}
+
+			heightmap[y * width + x] = noise / maxMultiplier;
+		}
+	}
+
+	return shared();
+}
+
+
+//
+//	OtHeightMapClass::setOffset
+//
+
+OtObject OtHeightMapClass::setOffset(float o) {
+	offset = o;
+	return shared();
+}
+
+
+//
+//	OtHeightMapClass::setClamp
+//
+
+OtObject OtHeightMapClass::setClamp(float min, float max) {
+	minClamp = min;
+	maxClamp = max;
+	return shared();
+}
+
+
+//
+//	OtHeightMapClass::setScale
+//
+
+OtObject OtHeightMapClass::setScale(float s) {
+	scale = s;
+	return shared();
 }
 
 
@@ -91,12 +218,14 @@ void OtHeightMapClass::init(const std::string& file, double s) {
 //	OtHeightMapClass::getHeightAbs
 //
 
-double OtHeightMapClass::getHeightAbs(int x, int y) {
-	if (x < 0 || x >= width || y < 0 || y >= height) {
+float OtHeightMapClass::getHeightAbs(int x, int y) {
+	if (x < 0 || y < 0) {
 		return 0.0;
 
 	} else {
-		return heightmap[y * width + x] * scale;
+		x = x % width;
+		y = y % height;
+		return (std::clamp(heightmap[y * width + x], minClamp, maxClamp) + offset) * scale;
 	}
 }
 
@@ -105,11 +234,14 @@ double OtHeightMapClass::getHeightAbs(int x, int y) {
 //	OtHeightMapClass::getHeight
 //
 
-double OtHeightMapClass::getHeight(double x, double y) {
-	auto x1 = std::floor(x);
-	auto y1 = std::floor(y);
-	auto x2 = std::clamp(x + 1.0, 0.0, 1.0);
-	auto y2 = std::clamp(y + 1.0, 0.0, 1.0);
+float OtHeightMapClass::getHeight(float x, float y) {
+	x *= width - 1;
+	y *= height - 1;
+
+	int x1 = std::floor(x);
+	int y1 = std::floor(y);
+	int x2 = x + 1;
+	int y2 = y + 1;
 
 	auto h11 = getHeightAbs(x1, y1);
 	auto h21 = getHeightAbs(x2, y1);
@@ -126,14 +258,14 @@ double OtHeightMapClass::getHeight(double x, double y) {
 //	OtHeightMapClass::getNormal
 //
 
-glm::vec3 OtHeightMapClass::getNormal(double x, double y) {
+glm::vec3 OtHeightMapClass::getNormal(float x, float y) {
 	int ix = int(x * width);
 	int iy = int(y * height);
 
-	double heightL = getHeightAbs(ix - 1, iy);
-	double heightR = getHeightAbs(ix + 1, iy);
-	double heightU = getHeightAbs(ix, iy - 1);
-	double heightD = getHeightAbs(ix, iy + 1);
+	float heightL = getHeightAbs(ix - 1, iy);
+	float heightR = getHeightAbs(ix + 1, iy);
+	float heightU = getHeightAbs(ix, iy - 1);
+	float heightD = getHeightAbs(ix, iy + 1);
 	return glm::normalize(glm::vec3(heightL - heightR, 2, heightD - heightU));
 }
 
@@ -148,6 +280,11 @@ OtType OtHeightMapClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtHeightMapClass>("HeightMap", OtGuiClass::getMeta());
 		type->set("__init__", OtFunctionClass::create(&OtHeightMapClass::init));
+		type->set("loadMap", OtFunctionClass::create(&OtHeightMapClass::loadMap));
+		type->set("generate", OtFunctionClass::create(&OtHeightMapClass::generate));
+		type->set("setClamp", OtFunctionClass::create(&OtHeightMapClass::setClamp));
+		type->set("setOffset", OtFunctionClass::create(&OtHeightMapClass::setOffset));
+		type->set("setScale", OtFunctionClass::create(&OtHeightMapClass::setScale));
 		type->set("getHeight", OtFunctionClass::create(&OtHeightMapClass::getHeight));
 	}
 

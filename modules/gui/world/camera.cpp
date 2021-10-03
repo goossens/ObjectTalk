@@ -23,7 +23,7 @@
 //	OtCameraClass::setPosition
 //
 
-OtObject OtCameraClass::setPosition(double x, double y, double z) {
+OtObject OtCameraClass::setPosition(float x, float y, float z) {
 	cameraPosition = glm::vec3(x, y, z);
 	return shared();
 }
@@ -33,7 +33,7 @@ OtObject OtCameraClass::setPosition(double x, double y, double z) {
 //	OtCameraClass::setTarget
 //
 
-OtObject OtCameraClass::setTarget(double x, double y, double z) {
+OtObject OtCameraClass::setTarget(float x, float y, float z) {
 	if (mouseControl) {
 		OtExcept("Camera is under mouse control and can't be adjusted");
 	}
@@ -47,7 +47,7 @@ OtObject OtCameraClass::setTarget(double x, double y, double z) {
 //	OtCameraClass::setUp
 //
 
-OtObject OtCameraClass::setUp(double x, double y, double z) {
+OtObject OtCameraClass::setUp(float x, float y, float z) {
 	if (mouseControl) {
 		OtExcept("Camera is under mouse control and can't be adjusted");
 	}
@@ -61,7 +61,7 @@ OtObject OtCameraClass::setUp(double x, double y, double z) {
 //	OtCameraClass::setFOV
 //
 
-OtObject OtCameraClass::setFOV(double f) {
+OtObject OtCameraClass::setFOV(float f) {
 	fov = f;
 	return shared();
 }
@@ -71,7 +71,7 @@ OtObject OtCameraClass::setFOV(double f) {
 //	OtCameraClass::setClipping
 //
 
-OtObject OtCameraClass::setClipping(double near, double far) {
+OtObject OtCameraClass::setClipping(float near, float far) {
 	nearClip = near;
 	farClip = far;
 	return shared();
@@ -92,9 +92,8 @@ OtObject OtCameraClass::setMouseControl(bool control) {
 //	OtCameraClass::setDistance
 //
 
-OtObject OtCameraClass::setDistance(double d) {
-	distance = d;
-	distance = std::clamp(distance, distanceMin, distanceMax);
+OtObject OtCameraClass::setDistance(float d) {
+	distance = std::clamp(d, distanceMin, distanceMax);
 	return shared();
 }
 
@@ -103,7 +102,7 @@ OtObject OtCameraClass::setDistance(double d) {
 //	OtCameraClass::setAngle
 //
 
-OtObject OtCameraClass::setAngle(double a) {
+OtObject OtCameraClass::setAngle(float a) {
 	angle = a;
 
 	if (angle < -std::numbers::pi) {
@@ -123,7 +122,7 @@ OtObject OtCameraClass::setAngle(double a) {
 //	OtCameraClass::setPitch
 //
 
-OtObject OtCameraClass::setPitch(double p) {
+OtObject OtCameraClass::setPitch(float p) {
 	pitch = p;
 	pitch = std::clamp(pitch, pitchMin, pitchMax);
 	return shared();
@@ -134,7 +133,7 @@ OtObject OtCameraClass::setPitch(double p) {
 //	OtCameraClass::setDistanceLimits
 //
 
-OtObject OtCameraClass::setDistanceLimits(double min, double max) {
+OtObject OtCameraClass::setDistanceLimits(float min, float max) {
 	distanceMin = min;
 	distanceMax = max;
 	return shared();
@@ -145,7 +144,7 @@ OtObject OtCameraClass::setDistanceLimits(double min, double max) {
 //	OtCameraClass::setAngleLimits
 //
 
-OtObject OtCameraClass::setAngleLimits(double min, double max) {
+OtObject OtCameraClass::setAngleLimits(float min, float max) {
 	angleMin = min;
 	angleMax = max;
 	return shared();
@@ -156,7 +155,7 @@ OtObject OtCameraClass::setAngleLimits(double min, double max) {
 //	OtCameraClass::setPitchLimits
 //
 
-OtObject OtCameraClass::setPitchLimits(double min, double max) {
+OtObject OtCameraClass::setPitchLimits(float min, float max) {
 	pitchMin = min;
 	pitchMax = max;
 	return shared();
@@ -167,7 +166,7 @@ OtObject OtCameraClass::setPitchLimits(double min, double max) {
 //	OtCameraClass::onMouseDrag
 //
 
-bool OtCameraClass::onMouseDrag(int button, int mods, double xpos, double ypos) {
+bool OtCameraClass::onMouseDrag(int button, int mods, float xpos, float ypos) {
 	if (mouseControl && button == 0 && mods == GLFW_MOD_CONTROL) {
 		setAngle(angle - xpos * 0.004);
 		setPitch(pitch + ypos * 0.002);
@@ -178,7 +177,7 @@ bool OtCameraClass::onMouseDrag(int button, int mods, double xpos, double ypos) 
 }
 
 
-bool OtCameraClass::onScrollWheel(double dx, double dy) {
+bool OtCameraClass::onScrollWheel(float dx, float dy) {
 	if (mouseControl) {
 		setDistance(distance - dy * 0.2);
 		return true;
@@ -265,7 +264,7 @@ bool OtCameraClass::isVisibleAABB(const glm::vec3& min, const glm::vec3& max) {
 //	OtCameraClass::isVisibleSphere
 //
 
-bool OtCameraClass::isVisibleSphere(const glm::vec3& center, double radius) {
+bool OtCameraClass::isVisibleSphere(const glm::vec3& center, float radius) {
 	// check against all frustum planes
 	for (auto c = 0; c < 6; c++) {
 		if (glm::dot(planes[c].normal, center) + planes[c].d + radius > 0) {

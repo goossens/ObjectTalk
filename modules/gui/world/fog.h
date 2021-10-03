@@ -32,7 +32,7 @@ class OtFogClass : public OtSceneObjectClass {
 public:
 	// update attributes
 	OtObject setColor(const std::string& color);
-	OtObject setDistances(double near, double far);
+	OtObject setDistances(float near, float far);
 
 	// GUI to change fog parameters
 	void renderGUI();

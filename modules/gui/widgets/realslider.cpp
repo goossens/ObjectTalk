@@ -19,7 +19,7 @@
 //	OtRealSliderClass::init
 //
 
-void OtRealSliderClass::init(const std::string& l, double mn, double mx, double v, OtObject cb) {
+void OtRealSliderClass::init(const std::string& l, float mn, float mx, float v, OtObject cb) {
 	// save label and callback
 	label = l;
 	min = mn;

@@ -30,24 +30,24 @@ typedef std::shared_ptr<OtCameraClass> OtCamera;
 class OtCameraClass : public OtGuiClass {
 public:
 	// change camera geometry
-	OtObject setPosition(double x, double y, double z);
-	OtObject setTarget(double x, double y, double z);
-	OtObject setUp(double x, double y, double z);
-	OtObject setFOV(double fov);
-	OtObject setClipping(double near, double far);
+	OtObject setPosition(float x, float y, float z);
+	OtObject setTarget(float x, float y, float z);
+	OtObject setUp(float x, float y, float z);
+	OtObject setFOV(float fov);
+	OtObject setClipping(float near, float far);
 
 	// enable/disable camera mouse control
 	OtObject setMouseControl(bool control);
-	OtObject setDistance(double distance);
-	OtObject setAngle(double angle);
-	OtObject setPitch(double pitch);
-	OtObject setDistanceLimits(double min, double max);
-	OtObject setAngleLimits(double min, double max);
-	OtObject setPitchLimits(double min, double max);
+	OtObject setDistance(float distance);
+	OtObject setAngle(float angle);
+	OtObject setPitch(float pitch);
+	OtObject setDistanceLimits(float min, float max);
+	OtObject setAngleLimits(float min, float max);
+	OtObject setPitchLimits(float min, float max);
 
 	// mouse events
-	bool onMouseDrag(int button, int mods, double xpos, double ypos);
-	bool onScrollWheel(double dx, double dy);
+	bool onMouseDrag(int button, int mods, float xpos, float ypos);
+	bool onScrollWheel(float dx, float dy);
 
 	// submit data to BGFX
 	void submit(int view, float viewAspect);
@@ -63,7 +63,7 @@ public:
 	// see if AABB object is visible in frustum
 	bool isVisiblePoint(const glm::vec3& point);
 	bool isVisibleAABB(const glm::vec3& min, const glm::vec3& max);
-	bool isVisibleSphere(const glm::vec3& center, double radius);
+	bool isVisibleSphere(const glm::vec3& center, float radius);
 
 	// GUI to change camera parameters
 	void renderGUI();
@@ -91,8 +91,8 @@ private:
 	float distanceMax = 100.0;
 	float angleMin = -std::numbers::pi;
 	float angleMax = std::numbers::pi;
-	float pitchMin = -std::numbers::pi / 2.0;
-	float pitchMax = std::numbers::pi / 2.0;
+	float pitchMin = -std::numbers::pi / 2.0 + 0.01;
+	float pitchMax = std::numbers::pi / 2.0 - 0.01;
 
 	// field-of-view and clipping
 	float fov = 60.0;

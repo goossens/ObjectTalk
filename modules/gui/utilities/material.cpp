@@ -198,7 +198,7 @@ OtObject OtMaterialClass::setSpecular(const std::string c) {
 //	OtMaterialClass::setShininess
 //
 
-OtObject OtMaterialClass::setShininess(double s) {
+OtObject OtMaterialClass::setShininess(float s) {
 	shininess = s;
 	return shared();
 }
@@ -208,7 +208,7 @@ OtObject OtMaterialClass::setShininess(double s) {
 //	OtMaterialClass::setTransparency
 //
 
-OtObject OtMaterialClass::setTransparency(double t) {
+OtObject OtMaterialClass::setTransparency(float t) {
 	transparency = t;
 	return shared();
 }
@@ -218,7 +218,7 @@ OtObject OtMaterialClass::setTransparency(double t) {
 //	OtMaterialClass::setUvTransform
 //
 
-OtObject OtMaterialClass::setUvTransform(double ox, double oy, double rx, double ry, double r, double cx, double cy) {
+OtObject OtMaterialClass::setUvTransform(float ox, float oy, float rx, float ry, float r, float cx, float cy) {
 	// specifiy a new UV coordinate transformation matrix
 	auto c = std::cos(r);
 	auto s = std::sin(r);

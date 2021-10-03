@@ -113,7 +113,7 @@ void OtApplicationClass::frameIMGUI() {
 	// update ImGui state
 	ImGuiIO& io = ImGui::GetIO();
 	io.DisplaySize = ImVec2(width, height);
-	io.DeltaTime = loopTime;
+	io.DeltaTime = loopDuration;
 
 	// update mouse state
 	io.MousePos = ImVec2(mouseX, mouseY);

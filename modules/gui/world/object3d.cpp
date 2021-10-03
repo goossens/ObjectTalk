@@ -22,8 +22,8 @@
 //	OtObject3dClass::rotateX
 //
 
-OtObject OtObject3dClass::rotateX(double angle) {
-	rotating = glm::rotate(glm::mat4(1.0), (float) angle, glm::vec3(1.0, 0.0, 0.0));
+OtObject OtObject3dClass::rotateX(float angle) {
+	rotating = glm::rotate(glm::mat4(1.0), angle, glm::vec3(1.0, 0.0, 0.0));
 	return shared();
 }
 
@@ -32,8 +32,8 @@ OtObject OtObject3dClass::rotateX(double angle) {
 //	OtObject3dClass::rotateY
 //
 
-OtObject OtObject3dClass::rotateY(double angle) {
-	rotating = glm::rotate(glm::mat4(1.0), (float) angle, glm::vec3(0.0, 1.0, 0.0));
+OtObject OtObject3dClass::rotateY(float angle) {
+	rotating = glm::rotate(glm::mat4(1.0), angle, glm::vec3(0.0, 1.0, 0.0));
 	return shared();
 }
 
@@ -42,8 +42,8 @@ OtObject OtObject3dClass::rotateY(double angle) {
 //	OtObject3dClass::rotateZ
 //
 
-OtObject OtObject3dClass::rotateZ(double angle) {
-	rotating = glm::rotate(glm::mat4(1.0), (float) angle, glm::vec3(0.0, 0.0, 1.0));
+OtObject OtObject3dClass::rotateZ(float angle) {
+	rotating = glm::rotate(glm::mat4(1.0), angle, glm::vec3(0.0, 0.0, 1.0));
 	return shared();
 }
 
@@ -52,8 +52,8 @@ OtObject OtObject3dClass::rotateZ(double angle) {
 //	OtObject3dClass::rotateAroundVector
 //
 
-OtObject OtObject3dClass::rotateAroundVector(double angle, double x, double y, double z) {
-	rotating = glm::rotate(glm::mat4(1.0), (float) angle, glm::vec3(x, y, z));
+OtObject OtObject3dClass::rotateAroundVector(float angle, float x, float y, float z) {
+	rotating = glm::rotate(glm::mat4(1.0), angle, glm::vec3(x, y, z));
 	return shared();
 }
 
@@ -62,8 +62,8 @@ OtObject OtObject3dClass::rotateAroundVector(double angle, double x, double y, d
 //	OtObject3dClass::yawPitchRoll
 //
 
-OtObject OtObject3dClass::yawPitchRoll(double yaw, double pitch, double roll) {
-	rotating = glm::yawPitchRoll((float) yaw, (float) pitch, (float) roll);
+OtObject OtObject3dClass::yawPitchRoll(float yaw, float pitch, float roll) {
+	rotating = glm::yawPitchRoll(yaw, pitch, roll);
 	return shared();
 }
 
@@ -72,7 +72,7 @@ OtObject OtObject3dClass::yawPitchRoll(double yaw, double pitch, double roll) {
 //	OtObject3dClass::scale
 //
 
-OtObject OtObject3dClass::scale(double x, double y, double z) {
+OtObject OtObject3dClass::scale(float x, float y, float z) {
 	scaling = glm::scale(glm::mat4(1.0), glm::vec3(x, y, z));
 	return shared();
 }
@@ -82,7 +82,7 @@ OtObject OtObject3dClass::scale(double x, double y, double z) {
 //	OtObject3dClass::translate
 //
 
-OtObject OtObject3dClass::translate(double x, double y, double z) {
+OtObject OtObject3dClass::translate(float x, float y, float z) {
 	translating = glm::translate(glm::mat4(1.0), glm::vec3(x, y, z));
 	return shared();
 }

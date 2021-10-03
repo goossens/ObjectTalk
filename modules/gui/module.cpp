@@ -42,17 +42,19 @@
 #include "matrix.h"
 
 #include "geometry.h"
-#include "box.h"
-#include "circle.h"
-#include "cylinder.h"
-#include "model.h"
-#include "surface.h"
-#include "sphere.h"
-#include "terrain.h"
-#include "torus.h"
+#include "boxgeometry.h"
+#include "circlegeometry.h"
+#include "cylindergeometry.h"
+#include "modelgeometry.h"
+#include "planegeometry.h"
+#include "spheregeometry.h"
+#include "torusgeometry.h"
 
 #include "simulation.h"
 #include "cloth.h"
+
+#include "math.h"
+#include "plane.h"
 
 #include "widget.h"
 
@@ -113,14 +115,13 @@ extern "C" void init(OtModule module) {
 	module->set("getDefaultMaterials", OtFunctionClass::create(&OtMaterialClass::getDefaultMaterials));
 
 	module->set("Geometry", OtClassClass::create(OtGeometryClass::getMeta()));
-	module->set("Box", OtClassClass::create(OtBoxClass::getMeta()));
-	module->set("Circle", OtClassClass::create(OtCircleClass::getMeta()));
-	module->set("Cylinder", OtClassClass::create(OtCylinderClass::getMeta()));
-	module->set("Model", OtClassClass::create(OtModelClass::getMeta()));
-	module->set("Surface", OtClassClass::create(OtSurfaceClass::getMeta()));
-	module->set("Sphere", OtClassClass::create(OtSphereClass::getMeta()));
-	module->set("Terrain", OtClassClass::create(OtTerrainClass::getMeta()));
-	module->set("Torus", OtClassClass::create(OtTorusClass::getMeta()));
+	module->set("BoxGeometry", OtClassClass::create(OtBoxGeometryClass::getMeta()));
+	module->set("CircleGeometry", OtClassClass::create(OtCircleGeometryClass::getMeta()));
+	module->set("CylinderGeometry", OtClassClass::create(OtCylinderGeometryClass::getMeta()));
+	module->set("ModelGeometry", OtClassClass::create(OtModelGeometryClass::getMeta()));
+	module->set("PlaneGeometry", OtClassClass::create(OtPlaneGeometryClass::getMeta()));
+	module->set("SphereGeometry", OtClassClass::create(OtSphereGeometryClass::getMeta()));
+	module->set("TorusGeometry", OtClassClass::create(OtTorusGeometryClass::getMeta()));
 
 	module->set("Simulation", OtClassClass::create(OtSimulationClass::getMeta()));
 	module->set("Cloth", OtClassClass::create(OtClothClass::getMeta()));

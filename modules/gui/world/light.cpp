@@ -21,7 +21,7 @@
 //	OtLightClass::setPosition
 //
 
-OtObject OtLightClass::setPosition(double px, double py, double pz) {
+OtObject OtLightClass::setPosition(float px, float py, float pz) {
 	position = glm::vec4(px, py, pz, 1.0);
 	return shared();
 }

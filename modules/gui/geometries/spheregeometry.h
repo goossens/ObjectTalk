@@ -18,42 +18,42 @@
 
 
 //
-//	OtSphereClass
+//	OtSphereGeometryClass
 //
 
-class OtSphereClass;
-typedef std::shared_ptr<OtSphereClass> OtSphere;
+class OtSphereGeometryClass;
+typedef std::shared_ptr<OtSphereGeometryClass> OtSphereGeometry;
 
-class OtSphereClass : public OtGeometryClass {
+class OtSphereGeometryClass : public OtGeometryClass {
 public:
 	// initialize geometry
 	OtObject init(size_t count, OtObject* parameters);
 
 	// update attributes
-	OtObject setRadius(double radius);
+	OtObject setRadius(float radius);
 	OtObject setWidthSegments(int segments);
 	OtObject setHeightSegments(int segments);
-	OtObject setPhiStart(double phiStart);
-	OtObject setPhiLength(double phiLength);
-	OtObject setThetaStart(double thetaStart);
-	OtObject setThetaLength(double thetaLength);
+	OtObject setPhiStart(float phiStart);
+	OtObject setPhiLength(float phiLength);
+	OtObject setThetaStart(float thetaStart);
+	OtObject setThetaLength(float thetaLength);
 
 	// get type definition
 	static OtType getMeta();
 
 	// create a new object
-	static OtSphere create();
+	static OtSphereGeometry create();
 
 private:
 	// generate geometry
 	void fillGeometry();
 
 	// attributes
-	double radius = 1.0;
+	float radius = 1.0;
 	int widthSegments = 32;
 	int heightSegments = 16;
-	double phiStart = 0.0;
-	double phiLength = std::numbers::pi * 2.0;
-	double thetaStart = 0.0;
-	double thetaLength = std::numbers::pi;
+	float phiStart = 0.0;
+	float phiLength = std::numbers::pi * 2.0;
+	float thetaStart = 0.0;
+	float thetaLength = std::numbers::pi;
 };

@@ -18,32 +18,32 @@
 
 
 //
-//	OtCylinderClass
+//	OtCylinderGeometryClass
 //
 
-class OtCylinderClass;
-typedef std::shared_ptr<OtCylinderClass> OtCylinder;
+class OtCylinderGeometryClass;
+typedef std::shared_ptr<OtCylinderGeometryClass> OtCylinderGeometry;
 
-class OtCylinderClass : public OtGeometryClass {
+class OtCylinderGeometryClass : public OtGeometryClass {
 public:
 	// initialize geometry
 	OtObject init(size_t count, OtObject* parameters);
 
 	// update attributes
-	OtObject setTopRadius(double radius);
-	OtObject setBottomRadius(double radius);
-	OtObject setHeight(double height);
+	OtObject setTopRadius(float radius);
+	OtObject setBottomRadius(float radius);
+	OtObject setHeight(float height);
 	OtObject setRadialSegments(int radialSegments);
 	OtObject setHeightSegments(int heightSegments);
 	OtObject setOpenEnded(bool openEnded);
-	OtObject setThetaStart(double thetaStart);
-	OtObject setThetaLength(double thetaLength);
+	OtObject setThetaStart(float thetaStart);
+	OtObject setThetaLength(float thetaLength);
 
 	// get type definition
 	static OtType getMeta();
 
 	// create a new object
-	static OtCylinder create();
+	static OtCylinderGeometry create();
 
 private:
 	// generate geometry
@@ -54,9 +54,9 @@ private:
 	void generateCap(bool top);
 
 	// geometry
-	double topRadius = 1.0;
-	double bottomRadius = 1.0;
-	double height = 1.0;
+	float topRadius = 1.0;
+	float bottomRadius = 1.0;
+	float height = 1.0;
 	int radialSegments = 16;
 	int heightSegments = 1;
 	bool openEnded = false;

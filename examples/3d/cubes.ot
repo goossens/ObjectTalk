@@ -10,7 +10,7 @@ var gui = import("gui");
 
 class MyApp : gui.Application {
 	function setup(this, screen) {
-		var geometry = gui.Box();
+		var geometry = gui.BoxGeometry();
 
 		var gold = gui.Material("material", "gold");
 		var silver = gui.Material("material", "silver");

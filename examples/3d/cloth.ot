@@ -17,13 +17,13 @@ class MyApp : gui.Application {
 		var background = gui.Background().setColor(skyColor);
 
 		var grass = gui.Mesh()
-			.setGeometry(gui.Surface(200, 200, 10, 10))
+			.setGeometry(gui.PlaneGeometry(200, 200, 10, 10))
 			.setMaterial(gui.Material()
 				.setTexture(gui.Texture(__DIR__ + "/assets/grass.jpg"))
 				.setUvTransform(0, 0, 5, 5, 0, 0, 0))
 			.rotateX(-pi / 2.0);
 
-		var poleGeometry = gui.Cylinder(0.5, 0.5, 26);
+		var poleGeometry = gui.CylinderGeometry(0.5, 0.5, 26);
 		var poleMaterial = gui.Material("material", "bronze");
 
 		var pole1 = gui.Mesh()
@@ -37,15 +37,16 @@ class MyApp : gui.Application {
 			.translate(16, 13, 50);
 
 		var wire = gui.Mesh()
-			.setGeometry(gui.Cylinder(0.1, 0.1, 34))
+			.setGeometry(gui.CylinderGeometry(0.1, 0.1, 34))
 			.setMaterial(gui.Material("material", "black plastic"))
 			.rotateZ(pi / 2.0)
 			.translate(0, 25, 50);
 
-		var plane = gui.Surface(20, 20, 20, 20);
+		var plane = gui.PlaneGeometry(20, 20, 20, 20);
+
 		this.addSimulation(gui.Cloth()
 			.setPlane(plane)
-			.setPins(2)
+			.setPins(4)
 			.start());
 
 		var cloth = gui.Mesh()

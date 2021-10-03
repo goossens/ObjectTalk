@@ -14,6 +14,8 @@
 #include "bx/timer.h"
 #include "bgfx/platform.h"
 
+#include "ot/exception.h"
+
 #include "application.h"
 #include "theme.h"
 
@@ -22,12 +24,12 @@
 //	Globals
 //
 
-double OtApplicationClass::lastTime;
-double OtApplicationClass::loopTime;
-double OtApplicationClass::loopDuration;
+int64_t OtApplicationClass::lastTime;
+int64_t OtApplicationClass::loopTime;
+float OtApplicationClass::loopDuration;
 
-double OtApplicationClass::cpuDuration;
-double OtApplicationClass::gpuDuration;
+int64_t OtApplicationClass::cpuDuration;
+int64_t OtApplicationClass::gpuDuration;
 
 
 //
@@ -57,10 +59,23 @@ void OtApplicationClass::initBGFX() {
 
 	bgfx::init(init);
 
-	bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000ff, 1.0f, 0);
-	bgfx::setViewRect(0, 0, 0, width, height);
+	// ensure this platform has the right capabilities
+	const bgfx::Caps* caps = bgfx::getCaps();
 
-	lastTime = double(bx::getHPCounter()) / double(bx::getHPFrequency());
+	if (!(caps->supported & BGFX_CAPS_INDEX32)) {
+		OtExcept("Your system/graphics card does not support 32 bit vertex indexing");
+	}
+
+	if (!(caps->supported & BGFX_CAPS_INSTANCING)) {
+		OtExcept("Your system/graphics card does not support instancing");
+	}
+	
+	if (!(caps->supported & BGFX_CAPS_RENDERER_MULTITHREADED)) {
+		OtExcept("Your system/graphics card does not support multithreading");
+	}
+	
+	// initialize time management
+	lastTime = bx::getHPCounter();
 }
 
 
@@ -70,14 +85,15 @@ void OtApplicationClass::initBGFX() {
 
 void OtApplicationClass::frameBGFX() {
 	// get time since epoch
-	loopTime = double(bx::getHPCounter()) / double(bx::getHPFrequency());
+	loopTime = bx::getHPCounter();
 
 	// calculate loop speed
-	loopDuration = loopTime - lastTime;
+	loopDuration = (double) (loopTime - lastTime) / (double) bx::getHPFrequency() * 1000.0;
 	lastTime = loopTime;
 
 	// start BGFX frame
 	bgfx::reset(width, height, BGFX_RESET_VSYNC | antiAliasing);
+	bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000ff, 1.0f, 0);
 	bgfx::setViewRect(0, 0, 0, width, height);
 	bgfx::touch(0);
 }
@@ -89,15 +105,15 @@ void OtApplicationClass::frameBGFX() {
 
 void OtApplicationClass::renderProfiler() {
 	const bgfx::Stats* stats = bgfx::getStats();
-	const double toMs = 1000.0 / double(bx::getHPFrequency());
+	const double toMs = 1000.0 / (double) bx::getHPFrequency();
 
 	ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
 	ImGui::Begin("Profiler", nullptr, 0);
 	ImGui::Text("Framerate:"); ImGui::SameLine(150); ImGui::Text("%.1f", getFrameRate());
-	ImGui::Text("CPU [ms per frame]:"); ImGui::SameLine(150); ImGui::Text("%0.1f", cpuDuration * 1000.0);
-	ImGui::Text("GPU [ms per frame]:"); ImGui::SameLine(150); ImGui::Text("%0.1f", gpuDuration * 1000.0);
-	ImGui::Text("Wait render [ms]:"); ImGui::SameLine(150); ImGui::Text("%0.1f", double(stats->waitRender) * toMs);
-	ImGui::Text("Wait submit [ms]:"); ImGui::SameLine(150); ImGui::Text("%0.1f", double(stats->waitSubmit) * toMs);
+	ImGui::Text("CPU [ms per frame]:"); ImGui::SameLine(150); ImGui::Text("%0.1f", (double) cpuDuration * toMs);
+	ImGui::Text("GPU [ms per frame]:"); ImGui::SameLine(150); ImGui::Text("%0.1f", (double) gpuDuration * toMs);
+	ImGui::Text("Wait render [ms]:"); ImGui::SameLine(150); ImGui::Text("%0.1f", (double) stats->waitRender * toMs);
+	ImGui::Text("Wait submit [ms]:"); ImGui::SameLine(150); ImGui::Text("%0.1f", (double) stats->waitSubmit * toMs);
 	ImGui::Text("Backbuffer width:"); ImGui::SameLine(150); ImGui::Text("%d", stats->width);
 	ImGui::Text("Backbuffer height:"); ImGui::SameLine(150); ImGui::Text("%d", stats->height);
 	ImGui::Text("Anti-aliasing:"); ImGui::SameLine(150); ImGui::Text("%d", antiAliasing);
@@ -113,15 +129,33 @@ void OtApplicationClass::renderProfiler() {
 
 
 //
+//	OtApplicationClass::getTime
+//
+
+float OtApplicationClass::getTime() {
+	return (double) loopTime / (double) bx::getHPFrequency();
+}
+
+
+//
+//	OtApplicationClass::getFrameRate
+//
+
+float OtApplicationClass::getFrameRate() {
+	return 1000.0 / loopDuration;
+}
+
+
+//
 //	OtApplicationClass::renderBGFX
 //
 
 void OtApplicationClass::renderBGFX() {
 	// get CPU and GPU statistics
-	cpuDuration = double(bx::getHPCounter()) / double(bx::getHPFrequency()) - loopTime;
+	cpuDuration = bx::getHPCounter() - loopTime;
 
 	const bgfx::Stats* stats = bgfx::getStats();
-	gpuDuration = double(stats->gpuTimeEnd - stats->gpuTimeBegin) / double(stats->gpuTimerFreq);
+	gpuDuration = stats->gpuTimeEnd - stats->gpuTimeBegin;
 
 	// render BGFX frame
 	bgfx::frame();

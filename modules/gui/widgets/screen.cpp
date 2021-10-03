@@ -46,7 +46,7 @@ size_t OtScreenClass::getMenubarHeight() {
 //	OtScreenClass::onMouseButton
 //
 
-void OtScreenClass::onMouseButton(int button, int action, int mods, double xpos, double ypos) {
+void OtScreenClass::onMouseButton(int button, int action, int mods, float xpos, float ypos) {
 	for (auto& child: children) {
 		if (child->isKindOf("View")) {
 			child->cast<OtViewClass>()->onMouseButton(button, action, mods, xpos, ypos);
@@ -59,7 +59,7 @@ void OtScreenClass::onMouseButton(int button, int action, int mods, double xpos,
 //	OtScreenClass::onMouseMove
 //
 
-void OtScreenClass::onMouseMove(double xpos, double ypos) {
+void OtScreenClass::onMouseMove(float xpos, float ypos) {
 	for (auto& child: children) {
 		if (child->isKindOf("View")) {
 			child->cast<OtViewClass>()->onMouseMove(xpos, ypos);
@@ -72,7 +72,7 @@ void OtScreenClass::onMouseMove(double xpos, double ypos) {
 //	OtScreenClass::onMouseDrag
 //
 
-void OtScreenClass::onMouseDrag(int button, int mods, double xpos, double ypos) {
+void OtScreenClass::onMouseDrag(int button, int mods, float xpos, float ypos) {
 	for (auto& child: children) {
 		if (child->isKindOf("View")) {
 			child->cast<OtViewClass>()->onMouseDrag(button, mods, xpos, ypos);
@@ -85,7 +85,7 @@ void OtScreenClass::onMouseDrag(int button, int mods, double xpos, double ypos) 
 //	OtScreenClass::onScrollWheel
 //
 
-void OtScreenClass::onScrollWheel(double dx, double dy){
+void OtScreenClass::onScrollWheel(float dx, float dy){
 	for (auto& child: children) {
 		if (child->isKindOf("View")) {
 			child->cast<OtViewClass>()->onScrollWheel(dx, dy);

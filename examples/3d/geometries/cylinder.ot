@@ -10,7 +10,7 @@ var gui = import("gui");
 
 class MyApp : gui.Application {
 	function setup(this, screen) {
-		var geometry = gui.Cylinder();
+		var geometry = gui.CylinderGeometry();
 		var gold = gui.Material("material", "gold");
 		var object = gui.Mesh(geometry, gold).setWireframe(true);
 

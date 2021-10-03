@@ -13,7 +13,7 @@ class MyApp : gui.Application {
 		var skybox = gui.Skybox(__DIR__ + "/assets/space.ktx");
 
 		var grid = gui.Mesh()
-			.setGeometry(gui.Sphere()
+			.setGeometry(gui.SphereGeometry()
 				.setRadius(0.99)
 				.setWidthSegments(60)
 				.setHeightSegments(30))
@@ -22,7 +22,7 @@ class MyApp : gui.Application {
 			.setWireframe(true);
 
 		var surface = gui.Mesh()
-			.setGeometry(gui.Sphere()
+			.setGeometry(gui.SphereGeometry()
 				.setWidthSegments(64)
 				.setHeightSegments(32))
 			.setMaterial(gui.Material()
@@ -30,7 +30,7 @@ class MyApp : gui.Application {
 			.setHoles(true);
 
 		var clouds = gui.Mesh()
-			.setGeometry(gui.Sphere()
+			.setGeometry(gui.SphereGeometry()
 				.setRadius(1.01)
 				.setWidthSegments(64)
 				.setHeightSegments(32))

@@ -15,7 +15,7 @@
 #include <vector>
 
 #include "simulation.h"
-#include "surface.h"
+#include "planegeometry.h"
 
 
 //
@@ -44,14 +44,14 @@ public:
 	static OtCloth create();
 
 private:
-	// our surface
-	OtSurface surface;
+	// our plane
+	OtPlaneGeometry plane;
 
 	// attributes
 	int pins = 3;
-	double mass = 0.05;
-	double dampling = 0.03;
-	double drag = 1 - 0.03;
+	float mass = 0.05;
+	float dampling = 0.03;
+	float drag = 1 - 0.03;
 
 	// private classes
 	class OtClothParticle {

@@ -14,11 +14,11 @@ class MyApp : gui.Application {
 		var heightmap = gui.HeightMap(__DIR__ + "/assets/heightmap.png", 10);
 
 		var terrain = gui.Mesh()
-			.setGeometry(gui.Terrain()
+			.setGeometry(gui.PlaneGeometry()
 				.setWidth(200)
-				.setDepth(200)
+				.setHeight(200)
 				.setWidthSegments(200)
-				.setDepthSegments(200)
+				.setHeightSegments(200)
 				.setHeightMap(heightmap))
 			.setMaterial(gui.Material()
 				.setBlendMap(gui.BlendMap(
@@ -33,10 +33,10 @@ class MyApp : gui.Application {
 
 		var fog = gui.Fog()
 			.setColor("#79838e")
-			.setDistances(80, 150);
+			.setDistances(80, 250);
 
 		var trees = gui.Mesh()
-			.setGeometry(gui.Model(__DIR__ + "/assets/pine.obj"))
+			.setGeometry(gui.ModelGeometry(__DIR__ + "/assets/pine.obj"))
 			.setMaterial(gui.Material()
 				.setTexture(gui.Texture(__DIR__ + "/assets/pine.png")))
 			.setHoles(true);
@@ -63,10 +63,10 @@ class MyApp : gui.Application {
 
 		var camera = gui.Camera()
 			.setMouseControl(true)
+			.setPitchLimits(0.1, pi / 2.0 - 0.1)
 			.setPitch(0.1)
-			.setPitchLimits(0.1, pi / 2.0)
+			.setDistanceLimits(20.0, 300.0)
 			.setDistance(100.0)
-			.setDistanceLimits(20.0, 200.0)
 			.setFOV(45)
 			.setClipping(0.1, 1000);
 

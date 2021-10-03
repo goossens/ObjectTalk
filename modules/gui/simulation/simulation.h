@@ -26,10 +26,10 @@ class OtSimulationClass : public OtGuiClass {
 public:
 	// start stop simulation
 	OtObject start() { running = true; return shared(); }
-	OtObject stop() { running = false; return shared();  }
+	OtObject stop() { running = false; return shared(); }
 	bool isRunning() { return running; }
 
-	// per form simulation step
+	// perform simulation step
 	virtual void step(int32_t deltaMilliseconds) {}
 
 	// get type definition

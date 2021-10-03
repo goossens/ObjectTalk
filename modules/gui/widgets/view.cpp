@@ -121,7 +121,7 @@ void OtViewClass::render() {
 //	OtViewClass::onMouseButton
 //
 
-void OtViewClass::onMouseButton(int button, int action, int mods, double xpos, double ypos) {
+void OtViewClass::onMouseButton(int button, int action, int mods, float xpos, float ypos) {
 	if (has("onMouseButton")) {
 		// determine dimensions
 		float vx = x < 0 ? OtApplicationClass::getWidth() - (x * OtApplicationClass::getWidth() / 100.0) : x * OtApplicationClass::getWidth() / 100.0;
@@ -149,7 +149,7 @@ void OtViewClass::onMouseButton(int button, int action, int mods, double xpos, d
 //	OtViewClass::onMouseMove
 //
 
-void OtViewClass::onMouseMove(double xpos, double ypos) {
+void OtViewClass::onMouseMove(float xpos, float ypos) {
 	if (has("onMouseMove")) {
 		// calculate local coordinates and call member function
 		xpos -= x < 0 ? OtApplicationClass::getWidth() - (x * OtApplicationClass::getWidth() / 100.0) : x * OtApplicationClass::getWidth() / 100.0;
@@ -166,7 +166,7 @@ void OtViewClass::onMouseMove(double xpos, double ypos) {
 //	OtViewClass::onMouseDrag
 //
 
-void OtViewClass::onMouseDrag(int button, int mods, double xpos, double ypos) {
+void OtViewClass::onMouseDrag(int button, int mods, float xpos, float ypos) {
 	// calculate local coordinates and call member function
 	xpos -= x < 0 ? OtApplicationClass::getWidth() - (x * OtApplicationClass::getWidth() / 100.0) : x * OtApplicationClass::getWidth() / 100.0;
 	ypos -= y < 0 ? OtApplicationClass::getHeight() - (y * OtApplicationClass::getHeight() / 100.0) : y * OtApplicationClass::getHeight() / 100.0;
@@ -185,7 +185,7 @@ void OtViewClass::onMouseDrag(int button, int mods, double xpos, double ypos) {
 //	OtViewClass::onScrollWheel
 //
 
-void OtViewClass::onScrollWheel(double dx, double dy) {
+void OtViewClass::onScrollWheel(float dx, float dy) {
 	// only process if camera doesn't want it and  we have a member function
 	if (!camera->onScrollWheel(dx, dy) && has("onScrollWheel")) {
 		OtVM::callMemberFunction(shared(), "onScrollWheel", OtObjectCreate(dx), OtObjectCreate(dy));

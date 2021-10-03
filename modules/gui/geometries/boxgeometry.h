@@ -16,42 +16,43 @@
 
 
 //
-//	OtSurfaceClass
+//	OtBoxGeometryClass
 //
 
-class OtSurfaceClass;
-typedef std::shared_ptr<OtSurfaceClass> OtSurface;
+class OtBoxGeometryClass;
+typedef std::shared_ptr<OtBoxGeometryClass> OtBoxGeometry;
 
-class OtSurfaceClass : public OtGeometryClass {
+class OtBoxGeometryClass : public OtGeometryClass {
 public:
 	// initialize geometry
 	OtObject init(size_t count, OtObject* parameters);
 
 	// update attributes
-	OtObject setWidth(double width);
-	OtObject setHeight(double height);
+	OtObject setWidth(float width);
+	OtObject setHeight(float height);
+	OtObject setDepth(float depth);
 	OtObject setWidthSegments(int widthSegments);
 	OtObject setHeightSegments(int heightSegments);
-
-	// get information
-	double getWidth() { return width; }
-	double getHeight() { return height; }
-	int getWidthSegments() { return widthSegments; }
-	int getHeightSegments() { return heightSegments; }
+	OtObject setDepthSegments(int depthSegments);
 
 	// get type definition
 	static OtType getMeta();
 
 	// create a new object
-	static OtSurface create();
+	static OtBoxGeometry create();
 
 private:
 	// generate geometry
 	void fillGeometry();
 
+	// create one side of the BoxGeometry
+	void buildPlane(int udir, int vdir, float w, float h, float d, int gridX, int gridY, glm::vec3 (*cb)(float, float, float));
+
 	// attributes
-	double width = 1.0;
-	double height = 1.0;
+	float width = 1.0;
+	float height = 1.0;
+	float depth = 1.0;
 	int widthSegments = 1;
 	int heightSegments = 1;
+	int depthSegments = 1;
 };

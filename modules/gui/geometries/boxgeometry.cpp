@@ -11,14 +11,14 @@
 
 #include "ot/function.h"
 
-#include "box.h"
+#include "boxgeometry.h"
 
 
 //
-//	OtBoxClass::init
+//	OtBoxGeometryClass::init
 //
 
-OtObject OtBoxClass::init(size_t count, OtObject* parameters) {
+OtObject OtBoxGeometryClass::init(size_t count, OtObject* parameters) {
 	// set attributes
 	if (count) {
 		switch (count) {
@@ -32,17 +32,17 @@ OtObject OtBoxClass::init(size_t count, OtObject* parameters) {
 				widthSegments = parameters[3]->operator int();
 
 			case 3:
-				depth = parameters[2]->operator double();
+				depth = parameters[2]->operator float();
 
 			case 2:
-				height = parameters[1]->operator double();
+				height = parameters[1]->operator float();
 
 			case 1:
-				width = parameters[0]->operator double();
+				width = parameters[0]->operator float();
 				break;
 
 			default:
-				OtExcept("Too many parameters [%ld] for [Box] constructor (max 6)", count);
+				OtExcept("Too many parameters [%ld] for [BoxGeometry] constructor (max 6)", count);
 		}
 
 		refreshGeometry = true;
@@ -53,10 +53,10 @@ OtObject OtBoxClass::init(size_t count, OtObject* parameters) {
 
 
 //
-//	OtBoxClass::setWidth
+//	OtBoxGeometryClass::setWidth
 //
 
-OtObject OtBoxClass::setWidth(double w) {
+OtObject OtBoxGeometryClass::setWidth(float w) {
 	width = w;
 	refreshGeometry = true;
 	return shared();
@@ -64,10 +64,10 @@ OtObject OtBoxClass::setWidth(double w) {
 
 
 //
-//	OtBoxClass::setHeight
+//	OtBoxGeometryClass::setHeight
 //
 
-OtObject OtBoxClass::setHeight(double h) {
+OtObject OtBoxGeometryClass::setHeight(float h) {
 	height = h;
 	refreshGeometry = true;
 	return shared();
@@ -75,10 +75,10 @@ OtObject OtBoxClass::setHeight(double h) {
 
 
 //
-//	OtBoxClass::setDepth
+//	OtBoxGeometryClass::setDepth
 //
 
-OtObject OtBoxClass::setDepth(double d) {
+OtObject OtBoxGeometryClass::setDepth(float d) {
 	depth = d;
 	refreshGeometry = true;
 	return shared();
@@ -86,10 +86,10 @@ OtObject OtBoxClass::setDepth(double d) {
 
 
 //
-//	OtBoxClass::setWidthSegments
+//	OtBoxGeometryClass::setWidthSegments
 //
 
-OtObject OtBoxClass::setWidthSegments(int ws) {
+OtObject OtBoxGeometryClass::setWidthSegments(int ws) {
 	widthSegments = ws;
 	refreshGeometry = true;
 	return shared();
@@ -97,10 +97,10 @@ OtObject OtBoxClass::setWidthSegments(int ws) {
 
 
 //
-//	OtBoxClass::setHeightSegments
+//	OtBoxGeometryClass::setHeightSegments
 //
 
-OtObject OtBoxClass::setHeightSegments(int hs) {
+OtObject OtBoxGeometryClass::setHeightSegments(int hs) {
 	heightSegments = hs;
 	refreshGeometry = true;
 	return shared();
@@ -108,17 +108,17 @@ OtObject OtBoxClass::setHeightSegments(int hs) {
 
 
 //
-//	OtBoxClass::setSegments
+//	OtBoxGeometryClass::setSegments
 //
 
-OtObject OtBoxClass::setDepthSegments(int ds) {
+OtObject OtBoxGeometryClass::setDepthSegments(int ds) {
 	depthSegments = ds;
 	refreshGeometry = true;
 	return shared();
 }
 
 
-void OtBoxClass::fillGeometry() {
+void OtBoxGeometryClass::fillGeometry() {
 	// default culling
 	culling = true;
 
@@ -133,10 +133,10 @@ void OtBoxClass::fillGeometry() {
 
 
 //
-//	OtBoxClass::buildPlane
+//	OtBoxGeometryClass::buildPlane
 //
 
-void OtBoxClass::buildPlane(int udir, int vdir, double w, double h, double d, int gridX, int gridY, glm::vec3 (*cb)(float, float, float)) {
+void OtBoxGeometryClass::buildPlane(int udir, int vdir, float w, float h, float d, int gridX, int gridY, glm::vec3 (*cb)(float, float, float)) {
 	// add vertices
 	auto segmentWidth = w / gridX;
 	auto segmentHeight = h / gridY;
@@ -191,21 +191,21 @@ void OtBoxClass::buildPlane(int udir, int vdir, double w, double h, double d, in
 
 
 //
-//	OtBoxClass::getMeta
+//	OtBoxGeometryClass::getMeta
 //
 
-OtType OtBoxClass::getMeta() {
+OtType OtBoxGeometryClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtTypeClass::create<OtBoxClass>("Box", OtGeometryClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtBoxClass::init));
-		type->set("setWidth", OtFunctionClass::create(&OtBoxClass::setWidth));
-		type->set("setHeight", OtFunctionClass::create(&OtBoxClass::setHeight));
-		type->set("setDepth", OtFunctionClass::create(&OtBoxClass::setDepth));
-		type->set("setWidthSegments", OtFunctionClass::create(&OtBoxClass::setWidthSegments));
-		type->set("setHeightSegments", OtFunctionClass::create(&OtBoxClass::setHeightSegments));
-		type->set("setDepthSegments", OtFunctionClass::create(&OtBoxClass::setDepthSegments));
+		type = OtTypeClass::create<OtBoxGeometryClass>("BoxGeometry", OtGeometryClass::getMeta());
+		type->set("__init__", OtFunctionClass::create(&OtBoxGeometryClass::init));
+		type->set("setWidth", OtFunctionClass::create(&OtBoxGeometryClass::setWidth));
+		type->set("setHeight", OtFunctionClass::create(&OtBoxGeometryClass::setHeight));
+		type->set("setDepth", OtFunctionClass::create(&OtBoxGeometryClass::setDepth));
+		type->set("setWidthSegments", OtFunctionClass::create(&OtBoxGeometryClass::setWidthSegments));
+		type->set("setHeightSegments", OtFunctionClass::create(&OtBoxGeometryClass::setHeightSegments));
+		type->set("setDepthSegments", OtFunctionClass::create(&OtBoxGeometryClass::setDepthSegments));
 	}
 
 	return type;
@@ -213,11 +213,11 @@ OtType OtBoxClass::getMeta() {
 
 
 //
-//	OtBoxClass::create
+//	OtBoxGeometryClass::create
 //
 
-OtBox OtBoxClass::create() {
-	OtBox box = std::make_shared<OtBoxClass>();
-	box->setType(getMeta());
-	return box;
+OtBoxGeometry OtBoxGeometryClass::create() {
+	OtBoxGeometry boxgeometry = std::make_shared<OtBoxGeometryClass>();
+	boxgeometry->setType(getMeta());
+	return boxgeometry;
 }

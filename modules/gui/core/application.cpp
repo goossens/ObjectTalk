@@ -93,7 +93,7 @@ void OtApplicationClass::runThread2() {
 
 			// update all animations
 			for (int c = animations.size() - 1; c >= 0; c--) {
-				if (!animations[c]->step(loopDuration * 1000)) {
+				if (!animations[c]->step(loopDuration)) {
 					animations.erase(animations.begin() + c);
 				}
 			}
@@ -101,7 +101,7 @@ void OtApplicationClass::runThread2() {
 			// update all simulations
 			for (auto& simulation : simulations) {
 				if (simulation->isRunning()) {
-					simulation->step(loopDuration * 1000);
+					simulation->step(loopDuration);
 				}
 			}
 
@@ -268,15 +268,6 @@ OtObject OtApplicationClass::addSimulation(OtObject object) {
 
 
 //
-//	OtApplicationClass::getTime
-//
-
-double OtApplicationClass::getTime() {
-	return loopTime;
-}
-
-
-//
 //	OtApplicationClass::pushEvent
 //
 
@@ -326,14 +317,14 @@ void OtApplicationClass::handleEvent() {
 
 	} else if (event.find("move") == 0) {
 		char command[10];
-		std::sscanf(event.c_str(), "%s %lf %lf", command, &mouseX, &mouseY);
+		std::sscanf(event.c_str(), "%s %f %f", command, &mouseX, &mouseY);
 		moveEvent = true;
 
 	} else if (event.find("wheel") == 0) {
 		char command[10];
-		double offsetX;
-		double offsetY;
-		std::sscanf(event.c_str(), "%s %lf %lf", command, &offsetX, &offsetY);
+		float offsetX;
+		float offsetY;
+		std::sscanf(event.c_str(), "%s %f %f", command, &offsetX, &offsetY);
 		mouseWheelDX += offsetX;
 		mouseWheelDY += offsetY;
 		wheelEvent = true;

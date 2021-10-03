@@ -13,22 +13,22 @@
 
 #include "ot/function.h"
 
-#include "cylinder.h"
+#include "cylindergeometry.h"
 
 
 //
-//	OtCylinderClass::init
+//	OtCylinderGeometryClass::init
 //
 
-OtObject OtCylinderClass::init(size_t count, OtObject* parameters) {
+OtObject OtCylinderGeometryClass::init(size_t count, OtObject* parameters) {
 	// set attributes
 	if (count) {
 		switch (count) {
 			case 8:
-				thetaLength = parameters[7]->operator double();
+				thetaLength = parameters[7]->operator float();
 
 			case 7:
-				thetaStart = parameters[6]->operator double();
+				thetaStart = parameters[6]->operator float();
 
 			case 6:
 				openEnded = parameters[5]->operator bool();
@@ -40,17 +40,17 @@ OtObject OtCylinderClass::init(size_t count, OtObject* parameters) {
 				radialSegments = parameters[3]->operator int();
 
 			case 3:
-				height = parameters[2]->operator double();
+				height = parameters[2]->operator float();
 
 			case 2:
-				bottomRadius = parameters[1]->operator double();
+				bottomRadius = parameters[1]->operator float();
 
 			case 1:
-				topRadius = parameters[0]->operator double();
+				topRadius = parameters[0]->operator float();
 				break;
 
 			default:
-				OtExcept("Too many parameters [%ld] for [Cylinder] constructor (max 8)", count);
+				OtExcept("Too many parameters [%ld] for [CylinderGeometry] constructor (max 8)", count);
 		}
 
 		refreshGeometry = true;
@@ -61,10 +61,10 @@ OtObject OtCylinderClass::init(size_t count, OtObject* parameters) {
 
 
 //
-//	OtCylinderClass::setTopRadius
+//	OtCylinderGeometryClass::setTopRadius
 //
 
-OtObject OtCylinderClass::setTopRadius(double r) {
+OtObject OtCylinderGeometryClass::setTopRadius(float r) {
 	topRadius = r;
 	refreshGeometry = true;
 	return shared();
@@ -72,10 +72,10 @@ OtObject OtCylinderClass::setTopRadius(double r) {
 
 
 //
-//	OtCylinderClass::setBottomRadius
+//	OtCylinderGeometryClass::setBottomRadius
 //
 
-OtObject OtCylinderClass::setBottomRadius(double r) {
+OtObject OtCylinderGeometryClass::setBottomRadius(float r) {
 	bottomRadius = r;
 	refreshGeometry = true;
 	return shared();
@@ -83,10 +83,10 @@ OtObject OtCylinderClass::setBottomRadius(double r) {
 
 
 //
-//	OtCylinderClass::setHeight
+//	OtCylinderGeometryClass::setHeight
 //
 
-OtObject OtCylinderClass::setHeight(double h) {
+OtObject OtCylinderGeometryClass::setHeight(float h) {
 	height = h;
 	refreshGeometry = true;
 	return shared();
@@ -94,10 +94,10 @@ OtObject OtCylinderClass::setHeight(double h) {
 
 
 //
-//	OtCylinderClass::setRadialSegments
+//	OtCylinderGeometryClass::setRadialSegments
 //
 
-OtObject OtCylinderClass::setRadialSegments(int rs) {
+OtObject OtCylinderGeometryClass::setRadialSegments(int rs) {
 	radialSegments = rs;
 	refreshGeometry = true;
 	return shared();
@@ -105,10 +105,10 @@ OtObject OtCylinderClass::setRadialSegments(int rs) {
 
 
 //
-//	OtCylinderClass::setHeightSegments
+//	OtCylinderGeometryClass::setHeightSegments
 //
 
-OtObject OtCylinderClass::setHeightSegments(int hs) {
+OtObject OtCylinderGeometryClass::setHeightSegments(int hs) {
 	heightSegments = hs;
 	refreshGeometry = true;
 	return shared();
@@ -116,10 +116,10 @@ OtObject OtCylinderClass::setHeightSegments(int hs) {
 
 
 //
-//	OtCylinderClass::setOpenEnded
+//	OtCylinderGeometryClass::setOpenEnded
 //
 
-OtObject OtCylinderClass::setOpenEnded(bool oe) {
+OtObject OtCylinderGeometryClass::setOpenEnded(bool oe) {
 	openEnded = oe;
 	refreshGeometry = true;
 	return shared();
@@ -127,10 +127,10 @@ OtObject OtCylinderClass::setOpenEnded(bool oe) {
 
 
 //
-//	OtCylinderClass::setThetaStart
+//	OtCylinderGeometryClass::setThetaStart
 //
 
-OtObject OtCylinderClass::setThetaStart(double ts) {
+OtObject OtCylinderGeometryClass::setThetaStart(float ts) {
 	thetaStart = ts;
 	refreshGeometry = true;
 	return shared();
@@ -138,10 +138,10 @@ OtObject OtCylinderClass::setThetaStart(double ts) {
 
 
 //
-//	OtCylinderClass::setThetaLength
+//	OtCylinderGeometryClass::setThetaLength
 //
 
-OtObject OtCylinderClass::setThetaLength(double tl) {
+OtObject OtCylinderGeometryClass::setThetaLength(float tl) {
 	thetaLength = tl;
 	refreshGeometry = true;
 	return shared();
@@ -149,10 +149,10 @@ OtObject OtCylinderClass::setThetaLength(double tl) {
 
 
 //
-//	OtCylinderClass::fillGeometry
+//	OtCylinderGeometryClass::fillGeometry
 //
 
-void OtCylinderClass::fillGeometry() {
+void OtCylinderGeometryClass::fillGeometry() {
 	// generate a torso
 	generateTorso();
 
@@ -170,10 +170,10 @@ void OtCylinderClass::fillGeometry() {
 
 
 //
-//	OtCylinderClass::generateTorso
+//	OtCylinderGeometryClass::generateTorso
 //
 
-void OtCylinderClass::generateTorso() {
+void OtCylinderGeometryClass::generateTorso() {
 	auto slope = ( bottomRadius - topRadius) / height;
 
 	// generate each height segment
@@ -224,10 +224,10 @@ void OtCylinderClass::generateTorso() {
 
 
 //
-//	OtCylinderClass::generateCap
+//	OtCylinderGeometryClass::generateCap
 //
 
-void OtCylinderClass::generateCap(bool top) {
+void OtCylinderGeometryClass::generateCap(bool top) {
 	auto radius = top ? topRadius : bottomRadius;
 	auto sign = top ? 1 : - 1;
 
@@ -275,23 +275,23 @@ void OtCylinderClass::generateCap(bool top) {
 
 
 //
-//	OtCylinderClass::getMeta
+//	OtCylinderGeometryClass::getMeta
 //
 
-OtType OtCylinderClass::getMeta() {
+OtType OtCylinderGeometryClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtTypeClass::create<OtCylinderClass>("Cylinder", OtGeometryClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtCylinderClass::init));
-		type->set("setTopRadius", OtFunctionClass::create(&OtCylinderClass::setTopRadius));
-		type->set("setBottomRadius", OtFunctionClass::create(&OtCylinderClass::setBottomRadius));
-		type->set("setHeight", OtFunctionClass::create(&OtCylinderClass::setHeight));
-		type->set("setRadialSegments", OtFunctionClass::create(&OtCylinderClass::setRadialSegments));
-		type->set("setHeightSegments", OtFunctionClass::create(&OtCylinderClass::setHeightSegments));
-		type->set("setOpenEnded", OtFunctionClass::create(&OtCylinderClass::setOpenEnded));
-		type->set("setThetaStart", OtFunctionClass::create(&OtCylinderClass::setThetaStart));
-		type->set("setThetaLength", OtFunctionClass::create(&OtCylinderClass::setThetaLength));
+		type = OtTypeClass::create<OtCylinderGeometryClass>("CylinderGeometry", OtGeometryClass::getMeta());
+		type->set("__init__", OtFunctionClass::create(&OtCylinderGeometryClass::init));
+		type->set("setTopRadius", OtFunctionClass::create(&OtCylinderGeometryClass::setTopRadius));
+		type->set("setBottomRadius", OtFunctionClass::create(&OtCylinderGeometryClass::setBottomRadius));
+		type->set("setHeight", OtFunctionClass::create(&OtCylinderGeometryClass::setHeight));
+		type->set("setRadialSegments", OtFunctionClass::create(&OtCylinderGeometryClass::setRadialSegments));
+		type->set("setHeightSegments", OtFunctionClass::create(&OtCylinderGeometryClass::setHeightSegments));
+		type->set("setOpenEnded", OtFunctionClass::create(&OtCylinderGeometryClass::setOpenEnded));
+		type->set("setThetaStart", OtFunctionClass::create(&OtCylinderGeometryClass::setThetaStart));
+		type->set("setThetaLength", OtFunctionClass::create(&OtCylinderGeometryClass::setThetaLength));
 	}
 
 	return type;
@@ -299,11 +299,11 @@ OtType OtCylinderClass::getMeta() {
 
 
 //
-//	OtCylinderClass::create
+//	OtCylinderGeometryClass::create
 //
 
-OtCylinder OtCylinderClass::create() {
-	OtCylinder cylinder = std::make_shared<OtCylinderClass>();
-	cylinder->setType(getMeta());
-	return cylinder;
+OtCylinderGeometry OtCylinderGeometryClass::create() {
+	OtCylinderGeometry cylindergeometry = std::make_shared<OtCylinderGeometryClass>();
+	cylindergeometry->setType(getMeta());
+	return cylindergeometry;
 }

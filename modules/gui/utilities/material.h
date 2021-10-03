@@ -50,18 +50,18 @@ public:
 	OtObject setAmbient(const std::string c);
 	OtObject setDiffuse(const std::string c) ;
 	OtObject setSpecular(const std::string c);
-	OtObject setShininess(double s);
-	OtObject setTransparency(double t);
+	OtObject setShininess(float s);
+	OtObject setTransparency(float t);
 
 	OtObject setTexture(OtObject texture);
 	OtObject setBlendMap(OtObject blendmap);
 
 	// set UV transformation
 	OtObject setUvTransform(
-		double offsetX, double offsetY,
-		double repeatX, double repeatY,
-		double rotation,
-		double centerX, double centerY);
+		float offsetX, float offsetY,
+		float repeatX, float repeatY,
+		float rotation,
+		float centerX, float centerY);
 
 	// submit shader data to BGFX
 	void submit();
@@ -85,8 +85,8 @@ private:
 	glm::vec3 ambient = { 0.4, 0.4, 0.4 };
 	glm::vec3 diffuse = { 0.6, 0.6, 0.6 };
 	glm::vec3 specular = { 0.4, 0.4, 0.4 };
-	double shininess = 20;
-	double transparency = 1.0;
+	float shininess = 20;
+	float transparency = 1.0;
 
 	glm::mat3 uvTransform = glm::mat3(1.0);
 

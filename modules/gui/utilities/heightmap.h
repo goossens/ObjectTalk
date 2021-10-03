@@ -29,14 +29,29 @@ public:
 	// destructor
 	~OtHeightMapClass();
 
-	// initialize heightmap
-	void init(const std::string& file, double scale);
+	// initialize
+	OtObject init(size_t count, OtObject* parameters);
+
+	// load heightmap from image
+	OtObject loadMap(const std::string& file);
+
+	// generate heightmap from perlin noise
+	OtObject generate(int size, int octaves, float bias);
+
+	// set the heightmap offset (before scaling)
+	OtObject setOffset(float offset);
+
+	// clamp he heightmap (before scaling)
+	OtObject setClamp(float min, float max);
+
+	// set the heightmap scale factor
+	OtObject setScale(float scale);
 
 	// get height (0.0 to 1.0) at specified location (in relative coordinates, 0.0 to 1.0)
-	double getHeight(double x, double y);
+	float getHeight(float x, float y);
 
 	// get normal (as normalized vector) at specified location (in relative coordinates, 0.0 to 1.0)
-	glm::vec3 getNormal(double x, double y);
+	glm::vec3 getNormal(float x, float y);
 
 	// get type definition
 	static OtType getMeta();
@@ -46,11 +61,17 @@ public:
 
 private:
 	// get height (0.0 to 1.0) at specified location (in absolute coordinates)
-	double getHeightAbs(int x, int y);
+	float getHeightAbs(int x, int y);
 
-	// height data
+	// heightmap properties
 	int width;
 	int height;
-	double* heightmap = nullptr;
-	double scale = 1.0;
+
+	float* seed = nullptr;
+	float* heightmap = nullptr;
+
+	float offset = 0.0;
+	float minClamp = 0.0;
+	float maxClamp = 1.0;
+	float scale = 1.0;
 };

@@ -31,7 +31,7 @@
 //	Render a 7 segment LED
 //
 
-static void OtLed7(ImDrawList* list, double x, double y, double size, char ch, ImU32 color) {
+static void OtLed7(ImDrawList* list, float x, float y, float size, char ch, ImU32 color) {
 
 	// get segment pattern
 	int pattern = 0;

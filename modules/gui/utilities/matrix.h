@@ -27,13 +27,13 @@ typedef std::shared_ptr<OtMatrixClass> OtMatrix;
 class OtMatrixClass : public OtGuiClass {
 public:
 	// change geometry
-	OtObject rotateX(double angle);
-	OtObject rotateY(double angle);
-	OtObject rotateZ(double angle);
-	OtObject rotateAroundVector(double angle, double x, double y, double z);
-	OtObject yawPitchRoll(double yaw, double pitch, double roll);
-	OtObject scale(double x, double y, double z);
-	OtObject translate(double x, double y, double z);
+	OtObject rotateX(float angle);
+	OtObject rotateY(float angle);
+	OtObject rotateZ(float angle);
+	OtObject rotateAroundVector(float angle, float x, float y, float z);
+	OtObject yawPitchRoll(float yaw, float pitch, float roll);
+	OtObject scale(float x, float y, float z);
+	OtObject translate(float x, float y, float z);
 
 	// return composite matrix
 	glm::mat4 getComposite();

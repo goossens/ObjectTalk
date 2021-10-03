@@ -29,7 +29,7 @@ typedef std::shared_ptr<OtLightClass> OtLight;
 class OtLightClass : public OtSceneObjectClass {
 public:
 	// update attributes
-	OtObject setPosition(double x, double y, double z);
+	OtObject setPosition(float x, float y, float z);
 	OtObject setDiffuse(const std::string c) ;
 	OtObject setSpecular(const std::string c);
 

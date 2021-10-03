@@ -4,7 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-include_directories(core geometries platform shaders simulation utilities widgets world)
+include_directories(core geometries math platform shaders simulation utilities widgets world)
 
 file(GLOB_RECURSE GUI_INCLUDES */*.h)
 file(GLOB_RECURSE GUI_SOURCES module.cpp */*.cpp)

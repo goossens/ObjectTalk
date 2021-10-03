@@ -33,7 +33,7 @@ public:
 	static ImU32 color40;
 	static ImU32 color20;
 	static ImU32 background;
-	static ImU32 blend(ImU32 color1, ImU32 color2, double ratio);
+	static ImU32 blend(ImU32 color1, ImU32 color2, float ratio);
 
 	// fonts
 	static ImFont* robotoFont;

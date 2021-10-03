@@ -12,36 +12,42 @@
 //	Include files
 //
 
+#include "ot/numbers.h"
+
 #include "geometry.h"
 
 
 //
-//	OtModelClass
+//	OtCircleGeometryClass
 //
 
-class OtModelClass;
-typedef std::shared_ptr<OtModelClass> OtModel;
+class OtCircleGeometryClass;
+typedef std::shared_ptr<OtCircleGeometryClass> OtCircleGeometry;
 
-class OtModelClass : public OtGeometryClass {
+class OtCircleGeometryClass : public OtGeometryClass {
 public:
 	// initialize geometry
 	OtObject init(size_t count, OtObject* parameters);
 
 	// update attributes
-	OtObject setModel(const std::string& name);
-	OtObject setScale(double scale);
+	OtObject setRadius(float radius);
+	OtObject setSegments(int segments);
+	OtObject setThetaStart(float thetaStart);
+	OtObject setThetaLength(float thetaLength);
 
 	// get type definition
 	static OtType getMeta();
 
 	// create a new object
-	static OtModel create();
+	static OtCircleGeometry create();
 
 private:
 	// generate geometry
 	void fillGeometry();
 
-	// properties
-	std::string modelName;
-	float scale = 1.0;
+	// geometry
+	float radius = 1.0;
+	int segments = 16;
+	float thetaStart = 0.0;
+	float thetaLength = std::numbers::pi * 2.0;
 };

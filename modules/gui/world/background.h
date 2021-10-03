@@ -15,7 +15,7 @@
 #include "bgfx/bgfx.h"
 
 #include "sceneobject.h"
-#include "surface.h"
+#include "planegeometry.h"
 #include "texture.h"
 
 
@@ -52,7 +52,7 @@ public:
 
 protected:
 	// geometry and material
-	OtSurface surface;
+	OtPlaneGeometry plane;
 
 	glm::vec3 color = glm::vec3(0.0);
 	OtTexture texture;

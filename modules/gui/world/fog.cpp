@@ -33,7 +33,7 @@ OtObject OtFogClass::setColor(const std::string& c) {
 //	OtFogClass::setDistances
 //
 
-OtObject OtFogClass::setDistances(double n, double f) {
+OtObject OtFogClass::setDistances(float n, float f) {
 	near = n;
 	far = f;
 	return shared();

@@ -77,7 +77,7 @@ class MyApp : gui.Application {
 			.setSpecular("#c0c0c0");
 
 		var sphere = gui.Mesh()
-			.setGeometry(gui.Sphere(20, 40, 40))
+			.setGeometry(gui.SphereGeometry(20, 40, 40))
 			.setMaterial(gui.Material("material", "gold"))
 			.setWireframe(true);
 

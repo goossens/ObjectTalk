@@ -63,7 +63,7 @@ void OtTheme::init() {
 //	OtTheme::blend
 //
 
-ImU32 OtTheme::blend(ImU32 color1, ImU32 color2, double ratio) {
+ImU32 OtTheme::blend(ImU32 color1, ImU32 color2, float ratio) {
 	auto c1 = ImGui::ColorConvertU32ToFloat4(color1);
 	auto c2 = ImGui::ColorConvertU32ToFloat4(color2);
 	return ImGui::ColorConvertFloat4ToU32(ImVec4(

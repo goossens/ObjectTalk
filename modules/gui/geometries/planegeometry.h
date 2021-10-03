@@ -17,45 +17,45 @@
 
 
 //
-//	OtTerrainClass
+//	OtPlaneGeometryClass
 //
 
-class OtTerrainClass;
-typedef std::shared_ptr<OtTerrainClass> OtTerrain;
+class OtPlaneGeometryClass;
+typedef std::shared_ptr<OtPlaneGeometryClass> OtPlaneGeometry;
 
-class OtTerrainClass : public OtGeometryClass {
+class OtPlaneGeometryClass : public OtGeometryClass {
 public:
 	// initialize geometry
 	OtObject init(size_t count, OtObject* parameters);
 
 	// update attributes
-	OtObject setWidth(double width);
-	OtObject setDepth(double depth);
+	OtObject setWidth(float width);
+	OtObject setHeight(float height);
 	OtObject setWidthSegments(int widthSegments);
-	OtObject setDepthSegments(int depthSegments);
+	OtObject setHeightSegments(int heightSegments);
 	OtObject setHeightMap(OtObject heightmap);
 
 	// get information
-	double getWidth() { return width; }
-	double getDepth() { return depth; }
+	float getWidth() { return width; }
+	float getHeight() { return height; }
 	int getWidthSegments() { return widthSegments; }
-	int getDepthSegments() { return depthSegments; }
+	int getHeightSegments() { return heightSegments; }
 	OtHeightMap getHeightMap() { return heightmap; }
 
 	// get type definition
 	static OtType getMeta();
 
 	// create a new object
-	static OtTerrain create();
+	static OtPlaneGeometry create();
 
 private:
 	// generate geometry
 	void fillGeometry();
 
-	// attributes
-	double width = 1.0;
-	double depth = 1.0;
+	// properties
+	float width = 1.0;
+	float height = 1.0;
 	int widthSegments = 1;
-	int depthSegments = 1;
+	int heightSegments = 1;
 	OtHeightMap heightmap;
 };

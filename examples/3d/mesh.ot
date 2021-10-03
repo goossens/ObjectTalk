@@ -15,7 +15,7 @@ var defaultRenderer = "textured";
 
 // create combobox value lists
 var geometries = [
-	"box", "circle", "cylinder", "sphere", "surface",
+	"box", "circle", "cylinder", "plane", "sphere",
 	"torus", "bunny", "column", "teapot"
 ];
 
@@ -45,7 +45,7 @@ class MyApp : gui.Application {
 			.setTarget(0, -5, -10);
 
 		this.grid = gui.Mesh()
-			.setGeometry(gui.Surface(50, 50, 10, 10))
+			.setGeometry(gui.PlaneGeometry(50, 50, 10, 10))
 			.setMaterial(gui.Material().setFixed("white"))
 			.setWireframe(true)
 			.rotateX(-pi / 2.0);
@@ -140,31 +140,31 @@ class MyApp : gui.Application {
 
 	function setGeometry(this, name) {
 		if (name == "box") {
-			this.geometry = gui.Box(30, 30, 30);
+			this.geometry = gui.BoxGeometry(30, 30, 30);
 
 		} elif (name == "circle") {
-			this.geometry = gui.Circle(20, 30);
+			this.geometry = gui.CircleGeometry(20, 30);
 
 		} elif (name == "cylinder") {
-			this.geometry = gui.Cylinder(16, 16, 40, 64);
+			this.geometry = gui.CylinderGeometry(16, 16, 40, 64);
 
-		} elif (name == "surface") {
-			this.geometry = gui.Surface(40, 40);
+		} elif (name == "plane") {
+			this.geometry = gui.PlaneGeometry(40, 40);
 
 		} elif (name == "sphere") {
-			this.geometry = gui.Sphere(21, 64, 64);
+			this.geometry = gui.SphereGeometry(21, 64, 64);
 
 		} elif (name == "torus") {
-			this.geometry = gui.Torus(15, 5, 32, 32);
+			this.geometry = gui.TorusGeometry(15, 5, 32, 32);
 
 		} elif (name == "bunny") {
-			this.geometry = gui.Model(__DIR__ + "/assets/bunny.obj", 16);
+			this.geometry = gui.ModelGeometry(__DIR__ + "/assets/bunny.obj", 16);
 
 		} elif (name == "column") {
-			this.geometry = gui.Model(__DIR__ + "/assets/column.obj", 2);
+			this.geometry = gui.ModelGeometry(__DIR__ + "/assets/column.obj", 2);
 
 		} elif (name == "teapot") {
-			this.geometry = gui.Model(__DIR__ + "/assets/teapot.obj", 28);
+			this.geometry = gui.ModelGeometry(__DIR__ + "/assets/teapot.obj", 28);
 		}
 
 		if (this.has("mesh")) {

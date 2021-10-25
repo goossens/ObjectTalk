@@ -25,20 +25,12 @@ function compilePart() {
 		PREFIX=${EXT}
 	fi
 
-	if [ "$(uname)" == "Darwin" ]
-	then
-		${SHADERC} -f $2.${EXT} -o ${PREFIX}_mtl.h -i ${HOME}/include --type $1 --platform osx -p metal --bin2c ${PREFIX}_$3_mtl
-		fakePart ${PREFIX} $3 glsl
-		fakePart ${PREFIX} $3 essl
-		fakePart ${PREFIX} $3 spv
-		fakePart ${PREFIX} $3 dx9
-		fakePart ${PREFIX} $3 dx11
-
-	else
-		${SHADERC} -f $2.${EXT} -o ${PREFIX}_glsl.h -i ${HOME}/include --type $1 --platform linux -p 150 --bin2c ${PREFIX}_$3_glsl
-		${SHADERC} -f $2.${EXT} -o ${PREFIX}_essl.h -i ${HOME}/include --type $1 --platform linux -p 300_es --bin2c ${PREFIX}_$3_essl
-		${SHADERC} -f $2.${EXT} -o ${PREFIX}_spv.h -i ${HOME}/include --type $1 --platform linux -p spirv --bin2c ${PREFIX}_$3_spv
-	fi
+	${SHADERC} -f $2.${EXT} -o ${PREFIX}_mtl.h -i ${HOME}/include --type $1 --platform osx -p metal --bin2c ${PREFIX}_$3_mtl
+	${SHADERC} -f $2.${EXT} -o ${PREFIX}_glsl.h -i ${HOME}/include --type $1 --platform linux -p 150 --bin2c ${PREFIX}_$3_glsl
+	${SHADERC} -f $2.${EXT} -o ${PREFIX}_essl.h -i ${HOME}/include --type $1 --platform linux -p 300_es --bin2c ${PREFIX}_$3_essl
+	${SHADERC} -f $2.${EXT} -o ${PREFIX}_spv.h -i ${HOME}/include --type $1 --platform linux -p spirv --bin2c ${PREFIX}_$3_spv
+	fakePart ${PREFIX} $3 dx9
+	fakePart ${PREFIX} $3 dx11
 }
 
 function compileShader() {
@@ -79,6 +71,8 @@ function compileShader() {
 
 compileShader background
 compileShader skybox
+compileShader sky
+compileShader water
 compileShader fixed
 compileShader colored
 compileShader textured

@@ -63,7 +63,7 @@ static OtMaterialProperties materials[] = {
 
 OtMaterialClass::OtMaterialClass() {
 	// register uniforms
-	materialUniform = bgfx::createUniform("u_material", bgfx::UniformType::Vec4, 4);
+	materialUniform = bgfx::createUniform("u_material", bgfx::UniformType::Vec4, 5);
 	transformUniform = bgfx::createUniform("u_uv_transform", bgfx::UniformType::Mat3);
 	textureUniform = bgfx::createUniform("s_texture", bgfx::UniformType::Sampler);
 }
@@ -124,7 +124,7 @@ OtObject OtMaterialClass::init(size_t count, OtObject* parameters) {
 OtObject OtMaterialClass::setFixed(const std::string& name) {
 	// parse CSS style color
 	fixed = true;
-	ambient = OtColorParseToVec3(name);
+	color = OtColorParseToVec3(name);
 	return shared();
 }
 
@@ -156,10 +156,7 @@ OtObject OtMaterialClass::setMaterial(const std::string& name) {
 
 OtObject OtMaterialClass::setColor(const std::string& name) {
 	// parse CSS style color
-	glm::vec3 color = OtColorParseToVec3(name);
-	ambient = color * 0.4f;
-	diffuse = color * 0.6f;
-	specular = color * 0.4f;
+	color = OtColorParseToVec3(name);
 	return shared();
 }
 
@@ -278,12 +275,13 @@ void OtMaterialClass::submit() {
 	}
 
 	// pass material information
-	glm::vec4 uniforms[4];
-	uniforms[0] = glm::vec4(ambient, transparency);
-	uniforms[1] = glm::vec4(diffuse, transparency);
-	uniforms[2] = glm::vec4(specular, transparency);
-	uniforms[3].x = shininess;
-	bgfx::setUniform(materialUniform, &uniforms, 4);
+	glm::vec4 uniforms[5];
+	uniforms[0] = glm::vec4(color, transparency);
+	uniforms[1] = glm::vec4(ambient, transparency);
+	uniforms[2] = glm::vec4(diffuse, transparency);
+	uniforms[3] = glm::vec4(specular, transparency);
+	uniforms[4].x = shininess;
+	bgfx::setUniform(materialUniform, &uniforms, 5);
 }
 
 

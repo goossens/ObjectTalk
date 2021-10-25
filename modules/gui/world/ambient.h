@@ -15,6 +15,7 @@
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
 
+#include "controller.h"
 #include "sceneobject.h"
 
 
@@ -35,7 +36,7 @@ public:
 	// update attributes
 	OtObject setColor(const std::string& color);
 
-	// GUI to change parameters
+	// GUI to change ambient properties
 	void renderGUI();
 
 	// submit data to BGFX
@@ -51,3 +52,10 @@ private:
 	// light properties
 	glm::vec4 color = glm::vec4(1.0);
 };
+
+
+//
+//	Controller widget
+//
+
+OT_CONTROLLER(Ambient)

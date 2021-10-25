@@ -31,7 +31,7 @@ OtObject OtLightClass::setPosition(float px, float py, float pz) {
 //	OtLightClass::setDiffuse
 //
 
-OtObject OtLightClass::setDiffuse(const std::string c) {
+OtObject OtLightClass::setDiffuse(const std::string& c) {
 	diffuse = OtColorParseToVec4(c);
 	return shared();
 }
@@ -41,7 +41,7 @@ OtObject OtLightClass::setDiffuse(const std::string c) {
 //	OtLightClass::setSpecular
 //
 
-OtObject OtLightClass::setSpecular(const std::string c) {
+OtObject OtLightClass::setSpecular(const std::string& c) {
 	specular = OtColorParseToVec4(c);
 	return shared();
 }

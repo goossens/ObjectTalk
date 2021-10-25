@@ -32,6 +32,9 @@
 #include "object3d.h"
 #include "background.h"
 #include "skybox.h"
+#include "sun.h"
+#include "sky.h"
+#include "water.h"
 #include "mesh.h"
 #include "group.h"
 
@@ -73,11 +76,6 @@
 #include "integerslider.h"
 #include "realslider.h"
 
-#include "ambientcontroller.h"
-#include "cameracontroller.h"
-#include "lightcontroller.h"
-#include "fogcontroller.h"
-
 #include "tron.h"
 
 
@@ -103,6 +101,9 @@ extern "C" void init(OtModule module) {
 	module->set("Object3D", OtClassClass::create(OtObject3dClass::getMeta()));
 	module->set("Background", OtClassClass::create(OtBackgroundClass::getMeta()));
 	module->set("Skybox", OtClassClass::create(OtSkyboxClass::getMeta()));
+	module->set("Sun", OtClassClass::create(OtSunClass::getMeta()));
+	module->set("Sky", OtClassClass::create(OtSkyClass::getMeta()));
+	module->set("Water", OtClassClass::create(OtWaterClass::getMeta()));
 	module->set("Mesh", OtClassClass::create(OtMeshClass::getMeta()));
 	module->set("Group", OtClassClass::create(OtGroupClass::getMeta()));
 
@@ -188,6 +189,9 @@ extern "C" void init(OtModule module) {
 	module->set("CameraController", OtClassClass::create(OtCameraControllerClass::getMeta()));
 	module->set("LightController", OtClassClass::create(OtLightControllerClass::getMeta()));
 	module->set("FogController", OtClassClass::create(OtFogControllerClass::getMeta()));
+	module->set("SkyController", OtClassClass::create(OtSkyControllerClass::getMeta()));
+	module->set("SunController", OtClassClass::create(OtSunControllerClass::getMeta()));
+	module->set("WaterController", OtClassClass::create(OtWaterControllerClass::getMeta()));
 
 	module->set("Tron", OtClassClass::create(OtTronClass::getMeta()));
 }

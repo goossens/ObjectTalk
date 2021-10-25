@@ -27,9 +27,9 @@ class MyApp : gui.Application {
 		var light = gui.Light().setPosition(1, 2, 4);
 
 		var scene = gui.Scene()
-			.add(object)
 			.add(ambient)
-			.add(light);
+			.add(light)
+			.add(object);
 
 		var camera = gui.Camera()
 			.setPosition(0, 0, 4)

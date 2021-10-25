@@ -200,7 +200,7 @@ void OtMeshClass::render(int view, OtCamera camera, glm::mat4 parentTransform, l
 void OtMeshClass::render(int view, OtCamera camera, glm::mat4 parentTransform) {
 	// sanity check
 	if (!geometry || !material) {
-		OtExcept("[Geometry] and/or [material] missing for [mesh]");
+		OtExcept("[Geometry] and/or [material] properties missing for [Mesh]");
 	}
 
 	// ensure we have the right shader

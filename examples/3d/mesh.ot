@@ -35,6 +35,22 @@ var renderers = [
 // define our application
 class MyApp : gui.Application {
 	function setup(this, screen) {
+		// light and fog
+		this.ambient = gui.Ambient();
+
+		this.sun = gui.Sun();
+		this.sun.disable();
+
+		this.light = gui.Light()
+			.setPosition(25, 25, 40)
+			.setDiffuse("#c0c0c0")
+			.setSpecular("#c0c0c0");
+
+		this.fog = gui.Fog()
+			.setColor("#808080")
+			.setDistances(0, 100)
+			.disable();
+
 		// set default geometry and material
 		this.setGeometry(defaultGeometry);
 		this.setMaterial(defaultMaterial);
@@ -63,25 +79,14 @@ class MyApp : gui.Application {
 				this.mesh.rotateY(-angle);
 			});
 
-		this.ambient = gui.Ambient();
-
-		this.light = gui.Light()
-			.setPosition(25, 25, 40)
-			.setDiffuse("#c0c0c0")
-			.setSpecular("#c0c0c0");
-
-		this.fog = gui.Fog()
-			.setColor("#808080")
-			.setDistances(0, 100)
-			.disable();
-
 		// create scene
 		var scene = gui.Scene()
-			.add(this.grid)
-			.add(this.mesh)
 			.add(this.ambient)
+			.add(this.sun)
 			.add(this.light)
-			.add(this.fog);
+			.add(this.fog)
+			.add(this.grid)
+			.add(this.mesh);
 
 		// create view
 		screen.add(gui.View()
@@ -107,6 +112,10 @@ class MyApp : gui.Application {
 
 		node = gui.TreeNode("Ambient Light:");
 		node.add(gui.AmbientController(this.ambient));
+		panel.add(node);
+
+		node = gui.TreeNode("Sun:");
+		node.add(gui.SunController(this.sun));
 		panel.add(node);
 
 		node = gui.TreeNode("Point Light:");

@@ -11,5 +11,5 @@
 // main function
 void main() {
 	// return fixed color
-	gl_FragColor = u_material_ambient;
+	gl_FragColor = u_material_color;
 }

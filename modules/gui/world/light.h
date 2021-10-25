@@ -16,6 +16,7 @@
 #include "glm/ext.hpp"
 
 #include "camera.h"
+#include "controller.h"
 #include "sceneobject.h"
 
 
@@ -30,10 +31,10 @@ class OtLightClass : public OtSceneObjectClass {
 public:
 	// update attributes
 	OtObject setPosition(float x, float y, float z);
-	OtObject setDiffuse(const std::string c) ;
-	OtObject setSpecular(const std::string c);
+	OtObject setDiffuse(const std::string& color) ;
+	OtObject setSpecular(const std::string& color);
 
-	// GUI to change parameters
+	// GUI to change light properties
 	void renderGUI();
 
 	// submit data to BGFX
@@ -51,3 +52,10 @@ private:
 	glm::vec4 diffuse = glm::vec4(1.0);
 	glm::vec4 specular = glm::vec4(1.0);
 };
+
+
+//
+//	Controller widget
+//
+
+OT_CONTROLLER(Light)

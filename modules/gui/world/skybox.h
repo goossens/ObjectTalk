@@ -34,7 +34,7 @@ public:
 	// initialize
 	OtObject init(size_t count, OtObject* parameters);
 
-	// initialize wireframe
+	// set the cubemap for the skybox
 	OtObject setCubemap(const std::string& file);
 
 	// render in BGFX

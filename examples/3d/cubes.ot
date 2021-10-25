@@ -10,6 +10,9 @@ var gui = import("gui");
 
 class MyApp : gui.Application {
 	function setup(this, screen) {
+		var ambient = gui.Ambient();
+		var light = gui.Light().setPosition(1, 2, 4);
+
 		var geometry = gui.BoxGeometry();
 
 		var gold = gui.Material("material", "gold");
@@ -20,15 +23,12 @@ class MyApp : gui.Application {
 		var cube2 = this.createInstance(geometry, silver, 0);
 		var cube3 = this.createInstance(geometry, bronze, 2);
 
-		var ambient = gui.Ambient();
-		var light = gui.Light().setPosition(1, 2, 4);
-
 		var scene = gui.Scene()
+			.add(ambient)
+			.add(light)
 			.add(cube1)
 			.add(cube2)
-			.add(cube3)
-			.add(ambient)
-			.add(light);
+			.add(cube3);
 
 		var camera = gui.Camera()
 			.setPosition(0, 0, 5)

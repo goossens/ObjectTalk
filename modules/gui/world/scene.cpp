@@ -9,12 +9,11 @@
 //	Include files
 //
 
-#include "imgui.h"
-
 #include "ot/numbers.h"
 #include "ot/function.h"
 
 #include "ambient.h"
+#include "sun.h"
 #include "fog.h"
 #include "light.h"
 #include "object3d.h"
@@ -25,9 +24,14 @@
 //	Constants
 //
 
+#define AMBIENT_SLOTS 1
+#define FOG_SLOTS 2
+
 #define LIGHTS 4
 #define SLOTS_PER_LIGHT 4
-#define TOTAL_SLOTS (LIGHTS * SLOTS_PER_LIGHT + 3)
+
+#define FIXED_SLOTS (AMBIENT_SLOTS + FOG_SLOTS)
+#define TOTAL_SLOTS (FIXED_SLOTS + LIGHTS * SLOTS_PER_LIGHT)
 
 
 //
@@ -56,7 +60,21 @@ OtSceneClass::~OtSceneClass() {
 
 void OtSceneClass::validateChild(OtComponent child) {
 	if (!child->isKindOf("SceneObject")) {
-		OtExcept("A [Scene] can only have [SceneObject] subclasses as children, not [%s]", child->getType()->getName().c_str());
+		OtExcept("A [Scene] can only have [SceneObjects] as children, not [%s]", child->getType()->getName().c_str());
+	}
+}
+
+
+//
+//	OtSceneClass::preRender
+//
+
+void OtSceneClass::preRender(OtCamera camera, float viewAspect) {
+
+	for (auto const& child : children) {
+		if (child->isEnabled()) {
+			child->cast<OtSceneObjectClass>()->preRender(cast<OtSceneClass>(), viewAspect, camera);
+		}
 	}
 }
 
@@ -65,22 +83,17 @@ void OtSceneClass::validateChild(OtComponent child) {
 //	OtSceneClass::render
 //
 
-void OtSceneClass::render(int view, OtCamera camera) {
+void OtSceneClass::render(int view, OtCamera camera, float viewAspect) {
+	// setup camera
+	camera->submit(view, viewAspect);
+
 	// light information
-	bool hasAmbient = false;
 	glm::vec4 uniforms[TOTAL_SLOTS] = { glm::vec4(0.0) };
-	glm::vec4* slot = uniforms + 3;
+	glm::vec4* lightSlot = uniforms + FIXED_SLOTS;
 	int lights = 0;
 
-	// list of non-light and non-fog objects
-	std::vector<OtSceneObject> objects;
-
-	// collect all light and fog information
+	// render all scene objects
 	for (auto const& child : children) {
-		if (child->isKindOf("Ambient")) {
-			hasAmbient = true;
-		}
-
 		if (child->isEnabled()) {
 			// handle ambient light
 			if (child->isKindOf("Ambient")) {
@@ -88,34 +101,34 @@ void OtSceneClass::render(int view, OtCamera camera) {
 
 			// handle fog
 			} else if (child->isKindOf("Fog")) {
-				child->cast<OtFogClass>()->submit(uniforms + 1);
+				child->cast<OtFogClass>()->submit(uniforms + AMBIENT_SLOTS);
 
-			// handle lights
-		} else if (child->isKindOf("Light")) {
+			// handle sun
+			} else if (child->isKindOf("Sun")) {
 				if (lights == LIGHTS) {
 					OtExcept("Too many lights in scene (max %d)", LIGHTS);
 				}
 
-				child->cast<OtLightClass>()->submit(slot, camera);
-				slot += SLOTS_PER_LIGHT;
+				child->cast<OtSunClass>()->submit(lightSlot, camera);
+				lightSlot += SLOTS_PER_LIGHT;
+				lights++;
+
+			// handle lights
+			} else if (child->isKindOf("Light")) {
+				if (lights == LIGHTS) {
+					OtExcept("Too many lights in scene (max %d)", LIGHTS);
+				}
+
+				child->cast<OtLightClass>()->submit(lightSlot, camera);
+				lightSlot += SLOTS_PER_LIGHT;
 				lights++;
 
 			// handle other scene objects
 			} else {
-				objects.push_back(child->cast<OtSceneObjectClass>());
+				bgfx::setUniform(lightUniform, &uniforms, TOTAL_SLOTS);
+				child->cast<OtSceneObjectClass>()->render(view, camera, glm::mat4(1.0));
 			}
 		}
-	}
-
-	// set default ambient light if required
-	if (!hasAmbient) {
-		uniforms[0] = glm::vec4(1.0);
-	}
-
-	// render all children
-	for (auto const& object : objects) {
-		bgfx::setUniform(lightUniform, &uniforms, TOTAL_SLOTS);
-		object->render(view, camera, glm::mat4(1.0));
 	}
 }
 

@@ -37,8 +37,9 @@ public:
 	// ensure specified component is allowed as a child
 	void validateChild(OtComponent child);
 
-	// render content
-	void render(int view, OtCamera camera);
+	// rendering phases
+	void preRender(OtCamera camera, float viewAspect);
+	void render(int view, OtCamera camera, float viewAspect);
 
 	// get type definition
 	static OtType getMeta();

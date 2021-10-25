@@ -16,6 +16,7 @@
 
 #include "bgfx/bgfx.h"
 
+#include "controller.h"
 #include "sceneobject.h"
 
 
@@ -34,7 +35,7 @@ public:
 	OtObject setColor(const std::string& color);
 	OtObject setDistances(float near, float far);
 
-	// GUI to change fog parameters
+	// GUI to change fog properties
 	void renderGUI();
 
 	// submit data to BGFX
@@ -52,3 +53,10 @@ private:
 	float near = 0;
 	float far = 100;
 };
+
+
+//
+//	Controller widget
+//
+
+OT_CONTROLLER(Fog)

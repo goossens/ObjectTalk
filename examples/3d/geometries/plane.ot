@@ -10,6 +10,9 @@ var gui = import("gui");
 
 class MyApp : gui.Application {
 	function setup(this, screen) {
+		var ambient = gui.Ambient();
+		var light = gui.Light().setPosition(1, 2, 4);
+
 		var geometry = gui.PlaneGeometry();
 		var gold = gui.Material("material", "gold");
 		var object = gui.Mesh(geometry, gold).setWireframe(true);
@@ -23,13 +26,10 @@ class MyApp : gui.Application {
 				object.rotateAroundVector(angle, 1, 1, 0);
 			});
 
-		var ambient = gui.Ambient();
-		var light = gui.Light().setPosition(1, 2, 4);
-
 		var scene = gui.Scene()
-			.add(object)
 			.add(ambient)
-			.add(light);
+			.add(light)
+			.add(object);
 
 		var camera = gui.Camera()
 			.setPosition(0, 0, 4)

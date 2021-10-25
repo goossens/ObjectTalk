@@ -17,6 +17,7 @@
 
 #include "ot/numbers.h"
 
+#include "controller.h"
 #include "gui.h"
 
 
@@ -36,6 +37,10 @@ public:
 	OtObject setFOV(float fov);
 	OtObject setClipping(float near, float far);
 
+	void setPositionVector(glm::vec3 position) { cameraPosition = position; }
+	void setTargetVector(glm::vec3 target) { cameraTarget = target; }
+	void setUpVector(glm::vec3 up) { cameraUp = up; }
+
 	// enable/disable camera mouse control
 	OtObject setMouseControl(bool control);
 	OtObject setDistance(float distance);
@@ -49,6 +54,9 @@ public:
 	bool onMouseDrag(int button, int mods, float xpos, float ypos);
 	bool onScrollWheel(float dx, float dy);
 
+	// clone geometry to other camera
+	void cloneGeometry(OtCamera camera);
+
 	// submit data to BGFX
 	void submit(int view, float viewAspect);
 
@@ -56,6 +64,7 @@ public:
 	glm::vec3 getPosition() { return cameraPosition; }
 	glm::vec3 getTarget() { return cameraTarget; }
 	glm::vec3 getUp() { return cameraUp; }
+	float getFOV() { return fov; }
 
 	glm::mat4& getViewMatrix() { return viewMatrix; }
 	glm::mat4& getProjectionMatrix() { return projMatrix; }
@@ -65,7 +74,7 @@ public:
 	bool isVisibleAABB(const glm::vec3& min, const glm::vec3& max);
 	bool isVisibleSphere(const glm::vec3& center, float radius);
 
-	// GUI to change camera parameters
+	// GUI to change camera properties
 	void renderGUI();
 
 	// get type definition
@@ -123,3 +132,10 @@ private:
 	// our viewing frustum
 	Plane planes[6];
 };
+
+
+//
+//	Controller widget
+//
+
+OT_CONTROLLER(Camera)

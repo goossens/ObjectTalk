@@ -21,7 +21,7 @@
 //	Globals
 //
 
-static int idCounter = 10;
+static int idCounter = 100;
 
 
 //
@@ -64,13 +64,13 @@ OtObject OtViewClass::setScreenArea(int _x, int _y, int _w, int _h) {
 //	OtViewClass::setCamera
 //
 
-OtObject OtViewClass::setCamera(OtObject cam) {
+OtObject OtViewClass::setCamera(OtObject object) {
 	// ensure object is a camera
-	if (cam->isKindOf("Camera")) {
-		camera = cam->cast<OtCameraClass>();
+	if (object->isKindOf("Camera")) {
+		camera = object->cast<OtCameraClass>();
 
 	} else {
-		OtExcept("Expected a [Camera] object, not a [%s]", cam->getType()->getName().c_str());
+		OtExcept("Expected a [Camera] object, not a [%s]", object->getType()->getName().c_str());
 	}
 
 	return shared();
@@ -81,13 +81,13 @@ OtObject OtViewClass::setCamera(OtObject cam) {
 //	OtViewClass::setScene
 //
 
-OtObject OtViewClass::setScene(OtObject scn) {
+OtObject OtViewClass::setScene(OtObject object) {
 	// ensure object is a material
-	if (scn->isKindOf("Scene")) {
-		scene = scn->cast<OtSceneClass>();
+	if (object->isKindOf("Scene")) {
+		scene = object->cast<OtSceneClass>();
 
 	} else {
-		OtExcept("Expected a [Scene] object, not a [%s]", scn->getType()->getName().c_str());
+		OtExcept("Expected a [Scene] object, not a [%s]", object->getType()->getName().c_str());
 	}
 
 	return shared();
@@ -106,13 +106,14 @@ void OtViewClass::render() {
 		float vy = y < 0 ? OtApplicationClass::getHeight() - (y * OtApplicationClass::getHeight() / 100.0) : y * OtApplicationClass::getHeight() / 100.0;
 		float vw = w * OtApplicationClass::getWidth() / 100.0;
 		float vh = h * OtApplicationClass::getHeight() / 100.0;
+		float viewAspect = vw / vh;
 
-		// setup camera and viewport
-		camera->submit(id, vw / vh);
+		// prerender scene
+		scene->preRender(camera, viewAspect);
+
+		// setup viewport and render scene
 		bgfx::setViewRect(id, vx, vy, vw, vh);
-
-		// render our scene
-		scene->render(id, camera);
+		scene->render(id, camera, viewAspect);
 	}
 }
 
@@ -150,10 +151,12 @@ void OtViewClass::onMouseButton(int button, int action, int mods, float xpos, fl
 //
 
 void OtViewClass::onMouseMove(float xpos, float ypos) {
+	// calculate local coordinates
+	xpos -= x < 0 ? OtApplicationClass::getWidth() - (x * OtApplicationClass::getWidth() / 100.0) : x * OtApplicationClass::getWidth() / 100.0;
+	ypos -= y < 0 ? OtApplicationClass::getHeight() - (y * OtApplicationClass::getHeight() / 100.0) : y * OtApplicationClass::getHeight() / 100.0;
+
 	if (has("onMouseMove")) {
-		// calculate local coordinates and call member function
-		xpos -= x < 0 ? OtApplicationClass::getWidth() - (x * OtApplicationClass::getWidth() / 100.0) : x * OtApplicationClass::getWidth() / 100.0;
-		ypos -= y < 0 ? OtApplicationClass::getHeight() - (y * OtApplicationClass::getHeight() / 100.0) : y * OtApplicationClass::getHeight() / 100.0;
+		// call member function
 		OtVM::callMemberFunction(shared(), "onMouseMove", OtObjectCreate(xpos), OtObjectCreate(ypos));
 	}
 
@@ -167,7 +170,7 @@ void OtViewClass::onMouseMove(float xpos, float ypos) {
 //
 
 void OtViewClass::onMouseDrag(int button, int mods, float xpos, float ypos) {
-	// calculate local coordinates and call member function
+	// calculate local coordinates
 	xpos -= x < 0 ? OtApplicationClass::getWidth() - (x * OtApplicationClass::getWidth() / 100.0) : x * OtApplicationClass::getWidth() / 100.0;
 	ypos -= y < 0 ? OtApplicationClass::getHeight() - (y * OtApplicationClass::getHeight() / 100.0) : y * OtApplicationClass::getHeight() / 100.0;
 

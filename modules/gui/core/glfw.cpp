@@ -114,7 +114,7 @@ void OtApplicationClass::initGLFW(const std::string& name) {
 	// capture mouse starting point
 	double xpos, ypos;
 	glfwGetCursorPos(window, &xpos, &ypos);
-	pushEvent(OtFormat("move -1 %.3f %.3f", xpos, ypos));
+	pushEvent(OtFormat("move %.3f %.3f", xpos, ypos));
 }
 
 

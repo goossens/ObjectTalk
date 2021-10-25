@@ -9,7 +9,14 @@
 var gui = import("gui");
 
 class MyApp : gui.Application {
-	function setup(this, screen) {
+		function setup(this, screen) {
+		var ambient = gui.Ambient();
+		var light = gui.Light().setPosition(10, 20, 30);
+
+		var fog = gui.Fog()
+			.setColor("#79838e")
+			.setDistances(80, 250);
+
 		var skybox = gui.Skybox(__DIR__ + "/assets/sky.ktx");
 		var heightmap = gui.HeightMap(__DIR__ + "/assets/heightmap.png", 10);
 
@@ -27,13 +34,6 @@ class MyApp : gui.Application {
 					gui.Texture(__DIR__ + "/assets/mud.png"),
 					gui.Texture(__DIR__ + "/assets/grassflowers.png"),
 					gui.Texture(__DIR__ + "/assets/path.png"))));
-
-		var ambient = gui.Ambient();
-		var light = gui.Light().setPosition(10, 20, 30);
-
-		var fog = gui.Fog()
-			.setColor("#79838e")
-			.setDistances(80, 250);
 
 		var trees = gui.Mesh()
 			.setGeometry(gui.ModelGeometry(__DIR__ + "/assets/pine.obj"))
@@ -54,11 +54,11 @@ class MyApp : gui.Application {
 		}
 
 		var scene = gui.Scene()
-			.add(skybox)
-			.add(terrain)
 			.add(ambient)
 			.add(light)
 			.add(fog)
+			.add(skybox)
+			.add(terrain)
 			.add(trees);
 
 		var camera = gui.Camera()

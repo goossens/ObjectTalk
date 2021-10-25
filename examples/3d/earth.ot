@@ -10,6 +10,13 @@ var gui = import("gui");
 
 class MyApp : gui.Application {
 	function setup(this, screen) {
+		var ambient = gui.Ambient();
+		var light = gui.Light().setPosition(1, 4, 4);
+
+		var fog = gui.Fog()
+			.setColor("black")
+			.setDistances(4, 5.5);
+
 		var skybox = gui.Skybox(__DIR__ + "/assets/space.ktx");
 
 		var grid = gui.Mesh()
@@ -43,19 +50,12 @@ class MyApp : gui.Application {
 			.add(surface)
 			.add(clouds);
 
-		var ambient = gui.Ambient();
-		var light = gui.Light().setPosition(1, 4, 4);
-
-		var fog = gui.Fog()
-			.setColor("black")
-			.setDistances(4, 5.5);
-
 		var scene = gui.Scene()
-			.add(skybox)
-			.add(earth)
 			.add(ambient)
 			.add(light)
-			.add(fog);
+			.add(fog)
+			.add(skybox)
+			.add(earth);
 
 		var camera = gui.Camera()
 			.setMouseControl(true)

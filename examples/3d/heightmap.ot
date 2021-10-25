@@ -10,6 +10,9 @@ var gui = import("gui");
 
 class MyApp : gui.Application {
 	function setup(this, screen) {
+		var ambient = gui.Ambient();
+		var light = gui.Light().setPosition(20, 300, 40);
+
 		var heightmap = gui.HeightMap()
 			.setClamp(0.35, 1.0)
 			.setOffset(-0.35)
@@ -26,13 +29,10 @@ class MyApp : gui.Application {
 			.setMaterial(gui.Material("material", "gold"))
 			.setWireframe(true);
 
-		var ambient = gui.Ambient();
-		var light = gui.Light().setPosition(20, 300, 40);
-
 		var scene = gui.Scene()
-			.add(terrain)
 			.add(ambient)
-			.add(light);
+			.add(light)
+			.add(terrain);
 
 		var camera = gui.Camera()
 			.setMouseControl(true)

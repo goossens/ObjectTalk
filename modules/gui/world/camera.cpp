@@ -188,6 +188,30 @@ bool OtCameraClass::onScrollWheel(float dx, float dy) {
 
 
 //
+//	OtCameraClass::cloneGeometry
+//
+
+void OtCameraClass::cloneGeometry(OtCamera camera) {
+	// update camera position in mouse control mode
+	if (mouseControl) {
+		cameraPosition = glm::vec3(
+			target.x + distance * std::cos(pitch) * std::sin(angle),
+			target.y + distance * std::sin(pitch),
+			target.z + distance * std::cos(pitch) * std::cos(angle));
+	}
+
+	// clone geometry info to other camera
+	camera->cameraPosition = cameraPosition;
+	camera->cameraTarget = cameraTarget;
+	camera->cameraUp = cameraUp;
+
+	camera->fov = fov;
+	camera->nearClip = nearClip;
+	camera->farClip = farClip;
+}
+
+
+//
 //	OtCameraClass::submit
 //
 
@@ -286,6 +310,7 @@ void OtCameraClass::renderGUI() {
 		ImGui::SliderFloat("Distance", &distance, distanceMin, distanceMax);
 		ImGui::SliderFloat("Angle", &angle, angleMin, angleMax);
 		ImGui::SliderFloat("Pitch", &pitch, pitchMin, pitchMax);
+		ImGui::SliderFloat3("Position", glm::value_ptr(cameraPosition), -50.0f, 50.0f);
 
 	} else {
 		ImGui::SliderFloat3("Position", glm::value_ptr(cameraPosition), -50.0f, 50.0f);

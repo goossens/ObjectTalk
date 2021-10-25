@@ -73,6 +73,6 @@ protected:
 	float h = 100;
 
 	// old mouse postion for drag operation
-	double xold = 0.0;
-	double yold = 0.0;
+	float xold = 0.0;
+	float yold = 0.0;
 };

@@ -52,13 +52,13 @@ class MyView : gui.View {
 	}
 
 	function updateCameraDirection(this, amount) {
-		this.cameraY += amount;
+		this.cameraY -= amount;
 		this.cameraY = this.cameraY.clamp(-120, 120);
 		this.camera.setTarget(0.0, this.cameraY, 0.0);
 	}
 
 	function updateCameraPosition(this, amount) {
-		this.cameraRotation += amount;
+		this.cameraRotation -= amount;
 		var x = this.cameraRotation.sin() * cameraRadius;
 		var z = this.cameraRotation.cos() * cameraRadius;
 		this.camera.setPosition(x, 0.0, z);
@@ -69,12 +69,14 @@ class MyView : gui.View {
 class MyApp : gui.Application {
 	function setup(this, screen) {
 		// create all components
-		var skybox = gui.Skybox(__DIR__ + "/assets/yokohama.ktx");
+		var ambient = gui.Ambient();
 
 		var light = gui.Light()
 			.setPosition(25, 25, 40)
 			.setDiffuse("#c0c0c0")
 			.setSpecular("#c0c0c0");
+
+		var skybox = gui.Skybox(__DIR__ + "/assets/yokohama.ktx");
 
 		var sphere = gui.Mesh()
 			.setGeometry(gui.SphereGeometry(20, 40, 40))
@@ -92,9 +94,10 @@ class MyApp : gui.Application {
 
 		// create our view scene
 		screen.add(MyView(gui.Scene()
+			.add(ambient)
+			.add(light)
 			.add(skybox)
-			.add(sphere)
-			.add(light)));
+			.add(sphere)));
 	}
 }
 

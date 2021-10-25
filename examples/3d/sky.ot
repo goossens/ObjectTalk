@@ -1,0 +1,61 @@
+#!/usr/local/bin/ot
+
+//	ObjectTalk Scripting Language
+//	Copyright (c) 2020-2021 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var gui = import("gui");
+
+class MyApp : gui.Application {
+	function setup(this, screen) {
+		var sun = gui.Sun().setElevation(0.1);
+		var sky = gui.Sky(sun);
+
+		var water = gui.Water()
+			.setSize(10000)
+			.setNormalMap(gui.Texture(__DIR__ + "/assets/waternormals.jpg"));
+
+		var scene = gui.Scene()
+			.add(sun)
+			.add(sky)
+			.add(water);
+
+		var camera = gui.Camera()
+			.setMouseControl(true)
+			.setPitchLimits(0.01, pi / 2.0 - 0.01)
+			.setPitch(0.05)
+			.setDistanceLimits(20.0, 300.0)
+			.setDistance(200.0)
+			.setAngle(pi);
+
+		var view = gui.View()
+			.setScreenArea(35, 0, 65, 100)
+			.setCamera(camera)
+			.setScene(scene);
+
+		var panel = gui.Panel(0, 0, 35, 100);
+
+		var node = gui.TreeNode("Camera:");
+		node.add(gui.CameraController(camera));
+		panel.add(node);
+
+		node = gui.TreeNode("Sun:");
+		node.add(gui.SunController(sun));
+		panel.add(node);
+
+		node = gui.TreeNode("Sky:");
+		node.add(gui.SkyController(sky));
+		panel.add(node);
+
+		node = gui.TreeNode("Water:");
+		node.add(gui.WaterController(water));
+		panel.add(node);
+
+		screen.add(view).add(panel);
+	}
+}
+
+var app = MyApp();
+app.run("Sky and Water");

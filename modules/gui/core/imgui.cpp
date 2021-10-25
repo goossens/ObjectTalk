@@ -226,8 +226,8 @@ void OtApplicationClass::renderIMGUI() {
 				pcmd->UserCallback(cmd_list, pcmd);
 
 			} else {
-				const uint16_t xx = (uint16_t)bx::max(pcmd->ClipRect.x, 0.0f);
-				const uint16_t yy = (uint16_t)bx::max(pcmd->ClipRect.y, 0.0f);
+				const uint16_t xx = (uint16_t) bx::max(pcmd->ClipRect.x, 0.0f);
+				const uint16_t yy = (uint16_t) bx::max(pcmd->ClipRect.y, 0.0f);
 
 				bgfx::setScissor(xx, yy, bx::min(pcmd->ClipRect.z, 65535.0f) - xx, bx::min(pcmd->ClipRect.w, 65535.0f) - yy);
 				bgfx::setState(state);

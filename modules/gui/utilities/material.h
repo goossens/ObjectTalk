@@ -82,6 +82,7 @@ private:
 	// material properties
 	bool fixed = false;
 
+	glm::vec3 color = { 1.0, 1.0, 1.0 };
 	glm::vec3 ambient = { 0.4, 0.4, 0.4 };
 	glm::vec3 diffuse = { 0.6, 0.6, 0.6 };
 	glm::vec3 specular = { 0.4, 0.4, 0.4 };

@@ -208,7 +208,7 @@ void OtSkyboxClass::render(int view, OtCamera camera, glm::mat4 parentTransform)
 		OtExcept("[cubemap] missing for [skybox]");
 	}
 
-	//submit cubemap
+	// submit cubemap
 	bgfx::setTexture(0, cubemapUniform, cubemap);
 
 	// submit vertices and triangles

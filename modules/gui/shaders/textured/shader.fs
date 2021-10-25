@@ -8,8 +8,8 @@ $input v_position, v_normal, v_texcoord0
 
 #include <bgfx.glsl>
 
-#include <light.glsl>
 #include <material.glsl>
+#include <light.glsl>
 
 SAMPLER2D(s_texture, 0);
 
@@ -18,25 +18,6 @@ void main() {
 	// get texture color
 	vec4 color = texture2D(s_texture, v_texcoord0);
 
-	// material colors
-	vec4 material_diffuse = u_material_diffuse * color;
-	vec4 material_specular = u_material_specular * color;
-
-	// ambient light
-	color = u_light_ambient * u_material_ambient * color;
-
-	// process all lights
-	for (int light = 0; light < LIGHTS; light++) {
-		if (u_light_on(light)) {
-			color += processLight(light, v_position, v_normal, material_diffuse, material_specular, u_material_shininess);
-		}
-	}
-
-	// handle fog
-	if (u_fog_enabled) {
-		color = processFog(color, v_position);
-	}
-
 	// return fragment color
-	gl_FragColor = color;
+	gl_FragColor = applyLight(color, v_position, v_normal);
 }

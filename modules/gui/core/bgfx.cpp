@@ -62,6 +62,10 @@ void OtApplicationClass::initBGFX() {
 	// ensure this platform has the right capabilities
 	const bgfx::Caps* caps = bgfx::getCaps();
 
+	if (!(caps->supported & BGFX_CAPS_RENDERER_MULTITHREADED)) {
+		OtExcept("Your system/graphics card does not support multithreading");
+	}
+
 	if (!(caps->supported & BGFX_CAPS_INDEX32)) {
 		OtExcept("Your system/graphics card does not support 32 bit vertex indexing");
 	}
@@ -69,11 +73,7 @@ void OtApplicationClass::initBGFX() {
 	if (!(caps->supported & BGFX_CAPS_INSTANCING)) {
 		OtExcept("Your system/graphics card does not support instancing");
 	}
-	
-	if (!(caps->supported & BGFX_CAPS_RENDERER_MULTITHREADED)) {
-		OtExcept("Your system/graphics card does not support multithreading");
-	}
-	
+
 	// initialize time management
 	lastTime = bx::getHPCounter();
 }
@@ -91,8 +91,19 @@ void OtApplicationClass::frameBGFX() {
 	loopDuration = (double) (loopTime - lastTime) / (double) bx::getHPFrequency() * 1000.0;
 	lastTime = loopTime;
 
+	// reset graphic settings and back-buffer size (if required)
+	static int prevWidth = 0;
+	static int prevHeight = 0;
+	static int prevAA = 0;
+
+	if (width != prevWidth || height != prevHeight || antiAliasing != prevAA) {
+		bgfx::reset(width, height, BGFX_RESET_VSYNC | antiAliasing);
+		prevWidth = width;
+		prevHeight = height;
+		prevAA = antiAliasing;
+	}
+
 	// start BGFX frame
-	bgfx::reset(width, height, BGFX_RESET_VSYNC | antiAliasing);
 	bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000ff, 1.0f, 0);
 	bgfx::setViewRect(0, 0, 0, width, height);
 	bgfx::touch(0);

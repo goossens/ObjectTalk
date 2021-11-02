@@ -10,7 +10,7 @@ INC=$(wildcard libot/include/*.h libot/include/ot/*.h modules/*/*.h)
 .PHONY: debug release xcode docs alpine ubuntu
 
 debug:
-	cmake -Bdebug -Wno-dev
+	cmake -Bdebug -Wno-dev -DCMAKE_BUILD_TYPE=Debug
 	cd debug && make
 
 release:
@@ -18,10 +18,10 @@ release:
 	cd release && make
 
 xcode:
-	cmake -Bxcode -Wno-dev -GXcode
+	cmake -Bxcode -Wno-dev -GXcode -DCMAKE_BUILD_TYPE=Debug
 
 gui:
-	cmake -Bdebug -Wno-dev -DOT_GUI=ON
+	cmake -Bdebug -Wno-dev -DOT_GUI=ON -DCMAKE_BUILD_TYPE=Debug
 	cd debug && make
 
 test: debug

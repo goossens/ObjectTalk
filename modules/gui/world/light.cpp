@@ -22,7 +22,7 @@
 //
 
 OtObject OtLightClass::setPosition(float px, float py, float pz) {
-	position = glm::vec4(px, py, pz, 1.0);
+	position = glm::vec3(px, py, pz);
 	return shared();
 }
 
@@ -32,7 +32,7 @@ OtObject OtLightClass::setPosition(float px, float py, float pz) {
 //
 
 OtObject OtLightClass::setDiffuse(const std::string& c) {
-	diffuse = OtColorParseToVec4(c);
+	diffuse = OtColorParseToVec3(c);
 	return shared();
 }
 
@@ -42,7 +42,7 @@ OtObject OtLightClass::setDiffuse(const std::string& c) {
 //
 
 OtObject OtLightClass::setSpecular(const std::string& c) {
-	specular = OtColorParseToVec4(c);
+	specular = OtColorParseToVec3(c);
 	return shared();
 }
 
@@ -54,8 +54,8 @@ OtObject OtLightClass::setSpecular(const std::string& c) {
 void OtLightClass::renderGUI() {
 	ImGui::Checkbox("Enabled", &enabled);
 	ImGui::SliderFloat3("Position", glm::value_ptr(position), -50.0f, 50.0f);
-	ImGui::ColorEdit4("Diffuse", glm::value_ptr(diffuse));
-	ImGui::ColorEdit4("Specular", glm::value_ptr(specular));
+	ImGui::ColorEdit3("Diffuse", glm::value_ptr(diffuse));
+	ImGui::ColorEdit3("Specular", glm::value_ptr(specular));
 }
 
 
@@ -65,9 +65,9 @@ void OtLightClass::renderGUI() {
 
 void OtLightClass::submit(glm::vec4* slot, OtCamera camera) {
 	slot[0].x = enabled;
-	slot[1] = camera->getViewMatrix() * position;
-	slot[2] = diffuse;
-	slot[3] = specular;
+	slot[1] = camera->getViewMatrix() * glm::vec4(position, 1.0);
+	slot[2] = glm::vec4(diffuse, 1.0);
+	slot[3] = glm::vec4(specular, 1.0);
 }
 
 

@@ -60,12 +60,11 @@ OtObject OtSunClass::setAzimuth(float a) {
 }
 
 
-glm::vec4 OtSunClass::getPosition() {
-	return glm::vec4(
+glm::vec3 OtSunClass::getDirection() {
+	return glm::vec3(
 		std::cos(elevation) * std::sin(azimuth),
 		std::sin(elevation),
-		std::cos(elevation) * std::cos(azimuth),
-		1.0);
+		std::cos(elevation) * -std::cos(azimuth));
 }
 
 
@@ -75,10 +74,8 @@ glm::vec4 OtSunClass::getPosition() {
 
 void OtSunClass::renderGUI() {
 	ImGui::Checkbox("Enabled", &enabled);
-	ImGui::SliderFloat("Elevation", &elevation, -0.5, 1.0);
-	ImGui::SliderFloat("Azimuth", &azimuth, -std::numbers::pi, std::numbers::pi);
-	ImGui::SliderFloat3("Position", glm::value_ptr(pos1), -5.0f, 5.0f);
-	ImGui::SliderFloat3("Position", glm::value_ptr(pos2), -5.0f, 5.0f);
+	ImGui::SliderFloat("Elevation", &elevation, -0.99, 0.99);
+	ImGui::SliderFloat("Azimuth", &azimuth, 0.0, std::numbers::pi * 2.0);
 }
 
 
@@ -86,11 +83,11 @@ void OtSunClass::renderGUI() {
 //	OtSunClass::submit
 //
 
-void OtSunClass::submit(glm::vec4* slot, OtCamera camera) {
-	glm::vec4 direction = glm::normalize(getPosition() * camera->getViewMatrix());
+void OtSunClass::submit(glm::vec4* ambient, glm::vec4* slot, OtCamera camera) {
+	ambient[0] = glm::vec4(1.0);
+
+	glm::vec4 direction = glm::normalize(camera->getViewMatrix() * glm::vec4(getDirection(), 0.0));
 	direction.w = 0.0;
-	pos1 = getPosition();
-	pos2 = getPosition() * camera->getViewMatrix();
 
 	slot[0].x = enabled;
 	slot[1] = direction;

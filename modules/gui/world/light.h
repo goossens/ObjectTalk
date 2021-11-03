@@ -48,9 +48,9 @@ public:
 
 private:
 	// light properties
-	glm::vec4 position = glm::vec4(0.0);
-	glm::vec4 diffuse = glm::vec4(1.0);
-	glm::vec4 specular = glm::vec4(1.0);
+	glm::vec3 position = glm::vec4(0.0);
+	glm::vec3 diffuse = glm::vec4(1.0);
+	glm::vec3 specular = glm::vec4(1.0);
 };
 
 

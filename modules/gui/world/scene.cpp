@@ -92,6 +92,9 @@ void OtSceneClass::render(int view, OtCamera camera, float viewAspect) {
 	glm::vec4* lightSlot = uniforms + FIXED_SLOTS;
 	int lights = 0;
 
+	// set default ambient light
+	uniforms[0] = glm::vec4(0.0,0.0, 0.0, 1.0);
+
 	// render all scene objects
 	for (auto const& child : children) {
 		if (child->isEnabled()) {
@@ -109,7 +112,7 @@ void OtSceneClass::render(int view, OtCamera camera, float viewAspect) {
 					OtExcept("Too many lights in scene (max %d)", LIGHTS);
 				}
 
-				child->cast<OtSunClass>()->submit(lightSlot, camera);
+				child->cast<OtSunClass>()->submit(uniforms, lightSlot, camera);
 				lightSlot += SLOTS_PER_LIGHT;
 				lights++;
 

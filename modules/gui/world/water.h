@@ -71,7 +71,7 @@ protected:
 	float size = 1000.0;
 
 	// water properties
-	glm::vec4 color = { 0.0, 0.05, 0.2, 1.0 };
+	glm::vec3 color = { 0.0, 0.05, 0.2 };
 	float time = 0.0;
 	float scale = 5.0;
 	float shininess = 50.0;

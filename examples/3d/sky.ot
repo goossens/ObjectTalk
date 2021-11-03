@@ -10,17 +10,25 @@ var gui = import("gui");
 
 class MyApp : gui.Application {
 	function setup(this, screen) {
-		var sun = gui.Sun().setElevation(0.1);
+		var sun = gui.Sun()
+			.setElevation(0.1)
+			.setAzimuth(pi / 2.0);
+
 		var sky = gui.Sky(sun);
 
 		var water = gui.Water()
 			.setSize(10000)
 			.setNormalMap(gui.Texture(__DIR__ + "/assets/waternormals.jpg"));
 
+		var ball = gui.Mesh()
+			.setGeometry(gui.SphereGeometry(20, 40, 40))
+			.setMaterial(gui.Material("material", "silver"));
+
 		var scene = gui.Scene()
 			.add(sun)
 			.add(sky)
-			.add(water);
+			.add(water)
+			.add(ball);
 
 		var camera = gui.Camera()
 			.setMouseControl(true)
@@ -28,7 +36,7 @@ class MyApp : gui.Application {
 			.setPitch(0.05)
 			.setDistanceLimits(20.0, 300.0)
 			.setDistance(200.0)
-			.setAngle(pi);
+			.setAngle(-pi / 2.0);
 
 		var view = gui.View()
 			.setScreenArea(35, 0, 65, 100)

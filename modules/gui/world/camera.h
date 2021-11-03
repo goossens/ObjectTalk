@@ -69,7 +69,7 @@ public:
 	glm::mat4& getViewMatrix() { return viewMatrix; }
 	glm::mat4& getProjectionMatrix() { return projMatrix; }
 
-	// see if AABB object is visible in frustum
+	// see if object is visible in frustum
 	bool isVisiblePoint(const glm::vec3& point);
 	bool isVisibleAABB(const glm::vec3& min, const glm::vec3& max);
 	bool isVisibleSphere(const glm::vec3& center, float radius);
@@ -84,6 +84,9 @@ public:
 	static OtCamera create();
 
 private:
+	// update camera position in mouse contro mode
+	void updatePosition();
+
 	// camera geometry
 	glm::vec3 cameraPosition = { 0.0, 0.0, 10.0 };
 	glm::vec3 cameraTarget = { 0.0, 0.0, 0.0 };

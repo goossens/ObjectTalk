@@ -49,7 +49,7 @@ public:
 
 private:
 	// fog properties
-	glm::vec4 color = glm::vec4(1.0);
+	glm::vec3 color = glm::vec4(1.0);
 	float near = 0;
 	float far = 100;
 };

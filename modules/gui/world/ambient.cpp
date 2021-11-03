@@ -38,7 +38,7 @@ OtObject OtAmbientClass::init(size_t count, OtObject* parameters) {
 //
 
 OtObject OtAmbientClass::setColor(const std::string& name) {
-	color = OtColorParseToVec4(name);
+	color = OtColorParseToVec3(name);
 	return shared();
 }
 
@@ -49,7 +49,7 @@ OtObject OtAmbientClass::setColor(const std::string& name) {
 
 void OtAmbientClass::renderGUI() {
 	ImGui::Checkbox("Enabled", &enabled);
-	ImGui::ColorEdit4("Ambient", glm::value_ptr(color));
+	ImGui::ColorEdit3("Ambient", glm::value_ptr(color));
 }
 
 
@@ -58,7 +58,7 @@ void OtAmbientClass::renderGUI() {
 //
 
 void OtAmbientClass::submit(glm::vec4* slot) {
-	slot[0] = color;
+	slot[0] = glm::vec4(color, 1.0);
 }
 
 

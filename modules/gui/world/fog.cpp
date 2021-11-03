@@ -24,7 +24,7 @@
 //
 
 OtObject OtFogClass::setColor(const std::string& c) {
-	color = OtColorParseToVec4(c);
+	color = OtColorParseToVec3(c);
 	return shared();
 }
 
@@ -46,7 +46,7 @@ OtObject OtFogClass::setDistances(float n, float f) {
 
 void OtFogClass::renderGUI() {
 	ImGui::Checkbox("Enabled", &enabled);
-	ImGui::ColorEdit4("Color", glm::value_ptr(color));
+	ImGui::ColorEdit3("Color", glm::value_ptr(color));
 	ImGui::SliderFloat("Near", &near, 0.0f, 100.0f);
 	ImGui::SliderFloat("Far", &far, 0.0f, 100.0f);
 }
@@ -59,7 +59,7 @@ void OtFogClass::renderGUI() {
 void OtFogClass::submit(glm::vec4* slot) {
 	// pass fog information
 	slot[0] = { enabled, near, far, 0.0 };
-	slot[1] = color;
+	slot[1] = glm::vec4(color, 1.0);
 }
 
 

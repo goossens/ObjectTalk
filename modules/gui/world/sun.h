@@ -38,14 +38,14 @@ public:
 	OtObject setElevation(float elevation);
 	OtObject setAzimuth(float azimuth);
 
-	// get the position of the sun (in world coordinates)
-	glm::vec4 getPosition();
+	// get the direction towards the sun
+	glm::vec3 getDirection();
 
 	// GUI to change properties
 	void renderGUI();
 
 	// submit data to BGFX
-	void submit(glm::vec4* slot, OtCamera camera);
+	void submit(glm::vec4* ambient, glm::vec4* slot, OtCamera camera);
 
 	// get type definition
 	static OtType getMeta();
@@ -55,9 +55,9 @@ public:
 
 private:
 	// location of the sun
-	float elevation = 0.0;  // in radians
-	float azimuth = 0.0;	// in radians
-	glm::vec3 pos1, pos2;
+	float elevation = 0.0;  // in radians from XZ plane (positive is up)
+	float azimuth = 0.0;	// in clockwise radians from negative Z axis
+							// 0 = "north", 1/2 pi = "east", pi = "south", 1 1/2 pi = "west"
 };
 
 

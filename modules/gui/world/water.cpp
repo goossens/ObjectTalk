@@ -39,7 +39,7 @@ static glm::vec3 templateVertices[] = {
     {  1.0f, 0.0f, -1.0f }
 };
 
-static uint16_t waterIndices[] = {
+static uint32_t waterIndices[] = {
 	0, 1, 3,
 	1, 2, 3
 };
@@ -58,7 +58,7 @@ OtWaterClass::OtWaterClass() {
 		.end();
 
 	vertexBuffer = bgfx::createVertexBuffer(bgfx::makeRef(waterVertices, sizeof(waterVertices) * sizeof(glm::vec3)), layout);
-	indexBuffer = bgfx::createIndexBuffer(bgfx::makeRef(waterIndices, sizeof(waterIndices) *  sizeof(uint16_t)));
+	indexBuffer = bgfx::createIndexBuffer(bgfx::makeRef(waterIndices, sizeof(waterIndices) *  sizeof(uint32_t)), BGFX_BUFFER_INDEX32);
 
 	// register uniforms
 	materialUniform = bgfx::createUniform("u_material", bgfx::UniformType::Vec4, 5);
@@ -193,7 +193,7 @@ OtObject OtWaterClass::setNormalScale(float s) {
 void OtWaterClass::renderGUI() {
 	ImGui::SliderFloat("Scale", &scale, 0.1f, 10.0f);
 	ImGui::SliderFloat("Shininess", &shininess, 10.0f, 200.0f);
-	ImGui::ColorEdit4("Color", glm::value_ptr(color));
+	ImGui::ColorEdit3("Color", glm::value_ptr(color));
 }
 
 
@@ -274,7 +274,7 @@ void OtWaterClass::render(int view, OtCamera camera, glm::mat4 parentTransform) 
 	glm::vec4 waterUniforms[2];
 	waterUniforms[0].x = time;
 	waterUniforms[0].y = scale;
-	waterUniforms[1] = color;
+	waterUniforms[1] = glm::vec4(color, 1.0);
 	bgfx::setUniform(waterUniform, waterUniforms, 2);
 
 	// run shader

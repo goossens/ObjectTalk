@@ -24,6 +24,10 @@
 //
 
 OtObject OtCameraClass::setPosition(float x, float y, float z) {
+	if (mouseControl) {
+		OtExcept("Camera is under mouse control and can't be adjusted");
+	}
+
 	cameraPosition = glm::vec3(x, y, z);
 	return shared();
 }
@@ -84,6 +88,7 @@ OtObject OtCameraClass::setClipping(float near, float far) {
 
 OtObject OtCameraClass::setMouseControl(bool control) {
 	mouseControl = control;
+	updatePosition();
 	return shared();
 }
 
@@ -94,6 +99,7 @@ OtObject OtCameraClass::setMouseControl(bool control) {
 
 OtObject OtCameraClass::setDistance(float d) {
 	distance = std::clamp(d, distanceMin, distanceMax);
+	updatePosition();
 	return shared();
 }
 
@@ -114,6 +120,7 @@ OtObject OtCameraClass::setAngle(float a) {
 	}
 
 	angle = std::clamp(angle, angleMin, angleMax);
+	updatePosition();
 	return shared();
 }
 
@@ -125,7 +132,20 @@ OtObject OtCameraClass::setAngle(float a) {
 OtObject OtCameraClass::setPitch(float p) {
 	pitch = p;
 	pitch = std::clamp(pitch, pitchMin, pitchMax);
+	updatePosition();
 	return shared();
+}
+
+
+//
+//	OtCameraClass::updatePosition
+//
+
+void OtCameraClass::updatePosition() {
+	cameraPosition = glm::vec3(
+		target.x + distance * std::cos(pitch) * std::sin(angle),
+		target.y + distance * std::sin(pitch),
+		target.z + distance * std::cos(pitch) * std::cos(angle));
 }
 
 
@@ -192,14 +212,6 @@ bool OtCameraClass::onScrollWheel(float dx, float dy) {
 //
 
 void OtCameraClass::cloneGeometry(OtCamera camera) {
-	// update camera position in mouse control mode
-	if (mouseControl) {
-		cameraPosition = glm::vec3(
-			target.x + distance * std::cos(pitch) * std::sin(angle),
-			target.y + distance * std::sin(pitch),
-			target.z + distance * std::cos(pitch) * std::cos(angle));
-	}
-
 	// clone geometry info to other camera
 	camera->cameraPosition = cameraPosition;
 	camera->cameraTarget = cameraTarget;
@@ -216,14 +228,6 @@ void OtCameraClass::cloneGeometry(OtCamera camera) {
 //
 
 void OtCameraClass::submit(int view, float viewAspect) {
-	// update camera position in mouse control mode
-	if (mouseControl) {
-		cameraPosition = glm::vec3(
-			target.x + distance * std::cos(pitch) * std::sin(angle),
-			target.y + distance * std::sin(pitch),
-			target.z + distance * std::cos(pitch) * std::cos(angle));
-	}
-
 	// determine view and projection transformations
 	viewMatrix = glm::lookAt(cameraPosition, cameraTarget, cameraUp);
 
@@ -307,10 +311,18 @@ bool OtCameraClass::isVisibleSphere(const glm::vec3& center, float radius) {
 void OtCameraClass::renderGUI() {
 	if (mouseControl) {
 		ImGui::SliderFloat3("Target", glm::value_ptr(cameraTarget), -50.0f, 50.0f);
-		ImGui::SliderFloat("Distance", &distance, distanceMin, distanceMax);
-		ImGui::SliderFloat("Angle", &angle, angleMin, angleMax);
-		ImGui::SliderFloat("Pitch", &pitch, pitchMin, pitchMax);
-		ImGui::SliderFloat3("Position", glm::value_ptr(cameraPosition), -50.0f, 50.0f);
+
+		if (ImGui::SliderFloat("Distance", &distance, distanceMin, distanceMax)) {
+			updatePosition();
+		}
+
+		if (ImGui::SliderFloat("Angle", &angle, angleMin, angleMax)) {
+			updatePosition();
+		}
+
+		if (ImGui::SliderFloat("Pitch", &pitch, pitchMin, pitchMax)) {
+			updatePosition();
+		}
 
 	} else {
 		ImGui::SliderFloat3("Position", glm::value_ptr(cameraPosition), -50.0f, 50.0f);

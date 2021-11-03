@@ -48,7 +48,7 @@ void OtTextureClass::init(const std::string& file) {
 
 	uint32_t size = (uint32_t) bx::getSize(&reader);
 	void* data = BX_ALLOC(&allocator, size);
-	bx::read(&reader, data, size);
+	bx::read(&reader, data, size, bx::ErrorAssert{});
 	bx::close(&reader);
 
 	image = bimg::imageParse(&allocator, data, size);

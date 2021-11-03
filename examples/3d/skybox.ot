@@ -76,7 +76,13 @@ class MyApp : gui.Application {
 			.setDiffuse("#c0c0c0")
 			.setSpecular("#c0c0c0");
 
-		var skybox = gui.Skybox(__DIR__ + "/assets/yokohama.ktx");
+		var skybox = gui.Skybox(
+			__DIR__ + "/assets/yokohama/posx.jpg",
+			__DIR__ + "/assets/yokohama/negx.jpg",
+			__DIR__ + "/assets/yokohama/posy.jpg",
+			__DIR__ + "/assets/yokohama/negy.jpg",
+			__DIR__ + "/assets/yokohama/posz.jpg",
+			__DIR__ + "/assets/yokohama/negz.jpg");
 
 		var sphere = gui.Mesh()
 			.setGeometry(gui.SphereGeometry(20, 40, 40))

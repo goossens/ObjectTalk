@@ -17,7 +17,13 @@ class MyApp : gui.Application {
 			.setColor("black")
 			.setDistances(4, 5.5);
 
-		var skybox = gui.Skybox(__DIR__ + "/assets/space.ktx");
+		var skybox = gui.Skybox(
+			__DIR__ + "/assets/space/right.jpg",
+			__DIR__ + "/assets/space/left.jpg",
+			__DIR__ + "/assets/space/top.jpg",
+			__DIR__ + "/assets/space/bot.jpg",
+			__DIR__ + "/assets/space/front.jpg",
+			__DIR__ + "/assets/space/back.jpg");
 
 		var grid = gui.Mesh()
 			.setGeometry(gui.SphereGeometry()

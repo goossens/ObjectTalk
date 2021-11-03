@@ -14,6 +14,7 @@
 #include "ot/exception.h"
 #include "ot/function.h"
 
+#include "image.h"
 #include "texture.h"
 
 
@@ -39,26 +40,8 @@ OtTextureClass::~OtTextureClass() {
 
 void OtTextureClass::init(const std::string& file) {
 	// load named texture
-	static bx::DefaultAllocator allocator;
-	static bx::FileReader reader;
-
-	if (!bx::open(&reader, file.c_str())) {
-		OtExcept("Can't open texture [%s]", file.c_str());
-	}
-
-	uint32_t size = (uint32_t) bx::getSize(&reader);
-	void* data = BX_ALLOC(&allocator, size);
-	bx::read(&reader, data, size, bx::ErrorAssert{});
-	bx::close(&reader);
-
-	image = bimg::imageParse(&allocator, data, size);
-
-	if (!image)  {
-		OtExcept("Can't process texture in [%s]", file.c_str());
-	}
-
+	image = OtLoadImage(file);
 	const bgfx::Memory* mem = bgfx::makeRef(image->m_data, image->m_size);
-	BX_FREE(&allocator, data);
 
 	if (!bgfx::isTextureValid(0, false, image->m_numLayers, bgfx::TextureFormat::Enum(image->m_format), BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE)) {
 		OtExcept("Invalid texture format in [%s]", file.c_str());

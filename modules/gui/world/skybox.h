@@ -34,8 +34,11 @@ public:
 	// initialize
 	OtObject init(size_t count, OtObject* parameters);
 
+	// clear cubemap
+	void clearCubemap();
+
 	// set the cubemap for the skybox
-	OtObject setCubemap(const std::string& file);
+	OtObject setCubemap(const std::string& posx, const std::string& negx, const std::string& posy, const std::string& negy, const std::string& posz, const std::string& negz);
 
 	// render in BGFX
     void render(int view, OtCamera camera, glm::mat4 parentTransform);
@@ -57,6 +60,12 @@ protected:
 
 	// our cubemap
 	bgfx::UniformHandle cubemapUniform = BGFX_INVALID_HANDLE;
-	bimg::ImageContainer* image = nullptr;
 	bgfx::TextureHandle cubemap = BGFX_INVALID_HANDLE;
+
+	bimg::ImageContainer* posxImage = nullptr;
+	bimg::ImageContainer* negxImage = nullptr;
+	bimg::ImageContainer* posyImage = nullptr;
+	bimg::ImageContainer* negyImage = nullptr;
+	bimg::ImageContainer* poszImage = nullptr;
+	bimg::ImageContainer* negzImage = nullptr;
 };

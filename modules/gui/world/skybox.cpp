@@ -14,6 +14,7 @@
 
 #include "ot/function.h"
 
+#include "image.h"
 #include "skybox.h"
 #include "skyboxshader.h"
 
@@ -130,6 +131,9 @@ OtSkyboxClass::~OtSkyboxClass() {
 	bgfx::destroy(vertexBuffer);
 	bgfx::destroy(indexBuffer);
 	bgfx::destroy(cubemapUniform);
+
+	clearCubemap();
+
 	bgfx::destroy(shader);
 }
 
@@ -139,11 +143,17 @@ OtSkyboxClass::~OtSkyboxClass() {
 //
 
 OtObject OtSkyboxClass::init(size_t count, OtObject* parameters) {
-	if (count == 1) {
-		setCubemap(parameters[0]->operator std::string());
+	if (count == 6) {
+		setCubemap(
+			parameters[0]->operator std::string(),
+			parameters[1]->operator std::string(),
+			parameters[2]->operator std::string(),
+			parameters[3]->operator std::string(),
+			parameters[4]->operator std::string(),
+			parameters[5]->operator std::string());
 
 	} else if (count != 0) {
-		OtExcept("[Skybox] constructor expects 0 or 1 arguments (not %ld)", count);
+		OtExcept("[Skybox] constructor expects 0 or 6 arguments (not %ld)", count);
 	}
 
 	return nullptr;
@@ -151,48 +161,117 @@ OtObject OtSkyboxClass::init(size_t count, OtObject* parameters) {
 
 
 //
+//	OtSkyboxClass::clearCubemap
+//
+
+void OtSkyboxClass::clearCubemap() {
+	if (bgfx::isValid(cubemap)) {
+		bgfx::destroy(cubemap);
+		cubemap = BGFX_INVALID_HANDLE;
+	}
+
+	if (posxImage) {
+		bimg::imageFree(posxImage);
+		posxImage = nullptr;
+	}
+
+	if (negxImage) {
+		bimg::imageFree(negxImage);
+		negxImage = nullptr;
+	}
+
+	if (posyImage) {
+		bimg::imageFree(posyImage);
+		posyImage = nullptr;
+	}
+
+	if (negyImage) {
+		bimg::imageFree(negyImage);
+		negyImage = nullptr;
+	}
+
+	if (poszImage) {
+		bimg::imageFree(poszImage);
+		poszImage = nullptr;
+	}
+
+	if (negzImage) {
+		bimg::imageFree(negzImage);
+		negzImage = nullptr;
+	}
+}
+
+
+//
 //	OtSkyboxClass::setCubemap
 //
 
-OtObject OtSkyboxClass::setCubemap(const std::string& file) {
-	// load named texture
-	static bx::DefaultAllocator allocator;
-	static bx::FileReader reader;
+OtObject OtSkyboxClass::setCubemap(const std::string& posx, const std::string& negx, const std::string& posy, const std::string& negy, const std::string& posz, const std::string& negz) {
+	// clear previous cubemap
+	clearCubemap();
 
-	if (!bx::open(&reader, file.c_str())) {
-		OtExcept("Can't open texture [%s]", file.c_str());
-	}
+	// load first side
+	bimg::ImageContainer* image = OtLoadImage(posx, true, true);
+	uint16_t imageSize = image->m_width;
+	bimg::TextureFormat::Enum imageFormat = image->m_format;
 
-	uint32_t size = (uint32_t) bx::getSize(&reader);
-	void* data = BX_ALLOC(&allocator, size);
-	bx::read(&reader, data, size, bx::ErrorAssert{});
-	bx::close(&reader);
+	// create a new cubemap
+	cubemap = bgfx::createTextureCube(imageSize, 0, 1, bgfx::TextureFormat::Enum(imageFormat), BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE);
 
-	image = bimg::imageParse(&allocator, data, size);
-
-	if (!image)  {
-		OtExcept("Can't process cubemap in [%s]", file.c_str());
-	}
-
-	if (!image->m_cubeMap) {
-		OtExcept("Image provide [%s] provide the [skybox] is not a cubemap", file.c_str());
-	}
-
+	// store first side
 	const bgfx::Memory* mem = bgfx::makeRef(image->m_data, image->m_size);
-	BX_FREE(&allocator, data);
+	bgfx::updateTextureCube(cubemap, 0, 0, 0, 0, 0, imageSize, imageSize, mem);
 
-	if (bgfx::isTextureValid(0, false, image->m_numLayers, bgfx::TextureFormat::Enum(image->m_format), BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE)) {
-		cubemap = bgfx::createTextureCube(
-			uint16_t (image->m_width),
-			1 < image->m_numMips,
-			image->m_numLayers,
-			bgfx::TextureFormat::Enum(image->m_format),
-			BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
-			mem);
+	// load and store other sides
+	image = OtLoadImage(negx, true, true);
 
-	} else {
-		OtExcept("Invalid cubemap format in [%s]", file.c_str());
+	if (image->m_width != imageSize || image->m_format != imageFormat) {
+		bimg::imageFree(image);
+		OtExcept("Cubemap image (negx] does not have same size or format as others");
 	}
+
+	mem = bgfx::makeRef(image->m_data, image->m_size);
+	bgfx::updateTextureCube(cubemap, 0, 1, 0, 0, 0, imageSize, imageSize, mem);
+
+	image = OtLoadImage(posy, true, true);
+
+	if (image->m_width != imageSize || image->m_format != imageFormat) {
+		bimg::imageFree(image);
+		OtExcept("Cubemap image (posy] does not have same size or format as others");
+	}
+
+	mem = bgfx::makeRef(image->m_data, image->m_size);
+	bgfx::updateTextureCube(cubemap, 0, 2, 0, 0, 0, imageSize, imageSize, mem);
+
+	image = OtLoadImage(negy, true, true);
+
+	if (image->m_width != imageSize || image->m_format != imageFormat) {
+		bimg::imageFree(image);
+		OtExcept("Cubemap image (negy] does not have same size or format as others");
+	}
+
+	mem = bgfx::makeRef(image->m_data, image->m_size);
+	bgfx::updateTextureCube(cubemap, 0, 3, 0, 0, 0, imageSize, imageSize, mem);
+
+	image = OtLoadImage(posz, true, true);
+
+	if (image->m_width != imageSize || image->m_format != imageFormat) {
+		bimg::imageFree(image);
+		OtExcept("Cubemap image (posz] does not have same size or format as others");
+	}
+
+	mem = bgfx::makeRef(image->m_data, image->m_size);
+	bgfx::updateTextureCube(cubemap, 0, 4, 0, 0, 0, imageSize, imageSize, mem);
+
+	image = OtLoadImage(negz, true, true);
+
+	if (image->m_width != imageSize || image->m_format != imageFormat) {
+		bimg::imageFree(image);
+		OtExcept("Cubemap image (negz] does not have same size or format as others");
+	}
+
+	mem = bgfx::makeRef(image->m_data, image->m_size);
+	bgfx::updateTextureCube(cubemap, 0, 5, 0, 0, 0, imageSize, imageSize, mem);
 
 	return shared();
 }
@@ -204,7 +283,7 @@ OtObject OtSkyboxClass::setCubemap(const std::string& file) {
 
 void OtSkyboxClass::render(int view, OtCamera camera, glm::mat4 parentTransform) {
 	// sanity check
-	if (!image) {
+	if (!bgfx::isValid(cubemap)) {
 		OtExcept("[cubemap] missing for [skybox]");
 	}
 

@@ -29,7 +29,7 @@ The following assets are from Emil Persson (known as 'humus') at
 [www.humus.name](http://www.humus.name/index.php?page=Textures).
 Textures are licensed under a [Creative Commons Attribution 3.0 Unported License](https://creativecommons.org/licenses/by/3.0/).
 
-* yokohama.ktx
+* yokohama/*
 
 ## Tom Patterson
 
@@ -47,7 +47,7 @@ All Natural Earth III images and data are in the public domain.
 The following assets are from [OpenGameArt.Org](OpenGameArt.Org) and are
 licensed under the [Creative Commons Public Domain](https://creativecommons.org/publicdomain/zero/1.0/) license:
 
-* space.ktx - by [StumpyStrust](https://opengameart.org/content/space-skyboxes-0)
+* space/* - by [StumpyStrust](https://opengameart.org/content/space-skyboxes-0)
 
 ## Karl "ThinMatrix"
 
@@ -63,4 +63,4 @@ No license information is specified.
 * path.png
 * pine.obj
 * pine.png
-* sky.ktx
+* sky/*

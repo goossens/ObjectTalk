@@ -17,7 +17,14 @@ class MyApp : gui.Application {
 			.setColor("#79838e")
 			.setDistances(80, 250);
 
-		var skybox = gui.Skybox(__DIR__ + "/assets/sky.ktx");
+		var skybox = gui.Skybox(
+			__DIR__ + "/assets/sky/right.jpg",
+			__DIR__ + "/assets/sky/left.jpg",
+			__DIR__ + "/assets/sky/top.jpg",
+			__DIR__ + "/assets/sky/bottom.jpg",
+			__DIR__ + "/assets/sky/front.jpg",
+			__DIR__ + "/assets/sky/back.jpg");
+
 		var heightmap = gui.HeightMap(__DIR__ + "/assets/heightmap.png", 10);
 
 		var terrain = gui.Mesh()

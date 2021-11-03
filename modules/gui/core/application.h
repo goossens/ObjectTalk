@@ -66,7 +66,7 @@ public:
 	// get system time in seconds since the epoch
 	static float getTime();
 
-	// get loop duration
+	// get loop duration in milliseconds
 	static float getLoopDuration() { return loopDuration; }
 
 	// get the current frame number

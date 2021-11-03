@@ -72,7 +72,7 @@ protected:
 
 	// sky dome
 	std::vector<glm::vec3> vertices;
-	std::vector<uint16_t> triangles;
+	std::vector<uint32_t> triangles;
 
 	// BGFX buffers
 	bgfx::VertexBufferHandle vertexBuffer = BGFX_INVALID_HANDLE;

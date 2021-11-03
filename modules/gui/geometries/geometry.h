@@ -78,13 +78,13 @@ protected:
 		maxBB.z = std::max(minBB.z, vertex.position.z);
 	}
 
-	void addTriangle(uint16_t p1, uint16_t p2, uint16_t p3) {
+	void addTriangle(uint32_t p1, uint32_t p2, uint32_t p3) {
 		triangles.push_back(p1);
 		triangles.push_back(p2);
 		triangles.push_back(p3);
 	}
 
-	void addLine(uint16_t p1, uint16_t p2) {
+	void addLine(uint32_t p1, uint32_t p2) {
 		lines.push_back(p1);
 		lines.push_back(p2);
 	}
@@ -92,8 +92,8 @@ protected:
 	// geometry data
 	bool culling = false;
 	std::vector<OtVertex> vertices;
-	std::vector<uint16_t> triangles;
-	std::vector<uint16_t> lines;
+	std::vector<uint32_t> triangles;
+	std::vector<uint32_t> lines;
 
 	// Axis-aligned Bounding Box (BB)
 	glm::vec3 minBB, maxBB;

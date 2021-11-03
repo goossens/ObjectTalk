@@ -72,7 +72,7 @@ static glm::vec3 skyboxVertices[] = {
     {  1.0f, -1.0f,  1.0f }
 };
 
-static uint16_t skyboxIndices[] = {
+static uint32_t skyboxIndices[] = {
 	0, 1, 2,
 	3, 4, 5,
 
@@ -106,7 +106,7 @@ OtSkyboxClass::OtSkyboxClass() {
 		.end();
 
 	vertexBuffer = bgfx::createVertexBuffer(bgfx::makeRef(skyboxVertices, sizeof(skyboxVertices) * sizeof(glm::vec3)), layout);
-	indexBuffer = bgfx::createIndexBuffer(bgfx::makeRef(skyboxIndices, sizeof(skyboxIndices) *  sizeof(uint16_t)));
+	indexBuffer = bgfx::createIndexBuffer(bgfx::makeRef(skyboxIndices, sizeof(skyboxIndices) *  sizeof(uint32_t)), BGFX_BUFFER_INDEX32);
 
 	// register uniform
 	cubemapUniform = bgfx::createUniform("s_cubemap", bgfx::UniformType::Sampler);
@@ -165,7 +165,7 @@ OtObject OtSkyboxClass::setCubemap(const std::string& file) {
 
 	uint32_t size = (uint32_t) bx::getSize(&reader);
 	void* data = BX_ALLOC(&allocator, size);
-	bx::read(&reader, data, size);
+	bx::read(&reader, data, size, bx::ErrorAssert{});
 	bx::close(&reader);
 
 	image = bimg::imageParse(&allocator, data, size);

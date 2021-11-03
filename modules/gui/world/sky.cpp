@@ -84,7 +84,7 @@ OtSkyClass::OtSkyClass() {
 		.end();
 
 	vertexBuffer = bgfx::createVertexBuffer(bgfx::makeRef(vertices.data(), sizeof(glm::vec3) * vertices.size()), layout);
-	indexBuffer = bgfx::createIndexBuffer(bgfx::makeRef(triangles.data(), sizeof(uint16_t) * triangles.size()));
+	indexBuffer = bgfx::createIndexBuffer(bgfx::makeRef(triangles.data(), sizeof(uint32_t) * triangles.size()), BGFX_BUFFER_INDEX32);
 
 	// register uniforms
 	skyUniform = bgfx::createUniform("u_sky", bgfx::UniformType::Vec4, 3);
@@ -199,7 +199,7 @@ void OtSkyClass::render(int view, OtCamera camera, glm::mat4 parentTransform) {
 	uniforms[1].z = mieScattering;
 
 	if (sun) {
-		uniforms[2] = sun->getPosition();
+		uniforms[2] = glm::vec4(sun->getDirection(), 0.0);
 	}
 
 	bgfx::setUniform(skyUniform, uniforms, 3);

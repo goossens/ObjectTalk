@@ -35,12 +35,14 @@
 #include "sun.h"
 #include "sky.h"
 #include "water.h"
+#include "terrain.h"
 #include "mesh.h"
 #include "group.h"
 
 #include "blendmap.h"
 #include "heightmap.h"
 #include "material.h"
+#include "noisemap.h"
 #include "texture.h"
 #include "matrix.h"
 
@@ -104,12 +106,14 @@ extern "C" void init(OtModule module) {
 	module->set("Sun", OtClassClass::create(OtSunClass::getMeta()));
 	module->set("Sky", OtClassClass::create(OtSkyClass::getMeta()));
 	module->set("Water", OtClassClass::create(OtWaterClass::getMeta()));
+	module->set("Terrain", OtClassClass::create(OtTerrainClass::getMeta()));
 	module->set("Mesh", OtClassClass::create(OtMeshClass::getMeta()));
 	module->set("Group", OtClassClass::create(OtGroupClass::getMeta()));
 
 	module->set("BlendMap", OtClassClass::create(OtBlendMapClass::getMeta()));
 	module->set("HeightMap", OtClassClass::create(OtHeightMapClass::getMeta()));
 	module->set("Material", OtClassClass::create(OtMaterialClass::getMeta()));
+	module->set("NoiseMap", OtClassClass::create(OtNoiseMapClass::getMeta()));
 	module->set("Texture", OtClassClass::create(OtTextureClass::getMeta()));
 	module->set("Matrix", OtClassClass::create(OtMatrixClass::getMeta()));
 
@@ -189,6 +193,7 @@ extern "C" void init(OtModule module) {
 	module->set("CameraController", OtClassClass::create(OtCameraControllerClass::getMeta()));
 	module->set("LightController", OtClassClass::create(OtLightControllerClass::getMeta()));
 	module->set("FogController", OtClassClass::create(OtFogControllerClass::getMeta()));
+	module->set("NoiseMapController", OtClassClass::create(OtNoiseMapControllerClass::getMeta()));
 	module->set("SkyController", OtClassClass::create(OtSkyControllerClass::getMeta()));
 	module->set("SunController", OtClassClass::create(OtSunControllerClass::getMeta()));
 	module->set("WaterController", OtClassClass::create(OtWaterControllerClass::getMeta()));

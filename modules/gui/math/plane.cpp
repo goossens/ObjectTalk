@@ -37,6 +37,8 @@ OtObject OtPlaneClass::init(size_t count, OtObject* parameters) {
 	} else if (count != 0) {
 		OtExcept("Invalid number of constructor parameters for [Plane]");
 	}
+
+	return nullptr;
 }
 
 

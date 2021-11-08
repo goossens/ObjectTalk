@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include "bimg/decode.h"
+#include "bimg/bimg.h"
 
 
 //

@@ -13,7 +13,7 @@
 //
 
 #include "bgfx/bgfx.h"
-#include "bimg/decode.h"
+#include "bimg/bimg.h"
 
 #include "glm/glm.hpp"
 

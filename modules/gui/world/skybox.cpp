@@ -216,7 +216,7 @@ OtObject OtSkyboxClass::setCubemap(const std::string& posx, const std::string& n
 	bimg::TextureFormat::Enum imageFormat = image->m_format;
 
 	// create a new cubemap
-	cubemap = bgfx::createTextureCube(imageSize, 0, 1, bgfx::TextureFormat::Enum(imageFormat), BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE);
+	cubemap = bgfx::createTextureCube(imageSize, false, 1, bgfx::TextureFormat::Enum(imageFormat), BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE);
 
 	// store first side
 	const bgfx::Memory* mem = bgfx::makeRef(image->m_data, image->m_size);

@@ -10,7 +10,7 @@
 //
 
 #include "bgfx/bgfx.h"
-#include "bimg/decode.h"
+#include "bimg/bimg.h"
 #include "bx/file.h"
 
 #include "ot/function.h"

@@ -35,17 +35,17 @@ public:
 	// load heightmap from image
 	OtObject loadMap(const std::string& file);
 
-	// generate heightmap from perlin noise
-	OtObject generate(int size, int octaves, float bias);
-
 	// set the heightmap offset (before scaling)
 	OtObject setOffset(float offset);
 
-	// clamp he heightmap (before scaling)
+	// clamp the heightmap (before scaling)
 	OtObject setClamp(float min, float max);
 
 	// set the heightmap scale factor
 	OtObject setScale(float scale);
+
+	// set a new heightmap
+	void setHeightMap(int w, int h, float* values);
 
 	// get height (0.0 to 1.0) at specified location (in relative coordinates, 0.0 to 1.0)
 	float getHeight(float x, float y);
@@ -67,7 +67,6 @@ private:
 	int width;
 	int height;
 
-	float* seed = nullptr;
 	float* heightmap = nullptr;
 
 	float offset = 0.0;

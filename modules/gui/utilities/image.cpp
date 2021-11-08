@@ -10,6 +10,7 @@
 //
 
 #include "bx/file.h"
+#include "bimg/decode.h"
 
 #include "ot/exception.h"
 

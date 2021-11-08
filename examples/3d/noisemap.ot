@@ -13,38 +13,27 @@ class MyApp : gui.Application {
 		var ambient = gui.Ambient();
 		var light = gui.Light().setPosition(20, 300, 40);
 
-		var heightmap = gui.HeightMap()
-			.setClamp(0.35, 1.0)
-			.setOffset(-0.35)
-			.setScale(100.0);
+		var texture = gui.Texture();
 
 		var noisemap = gui.NoiseMap()
-			.applyTo(heightmap);
+			.applyTo(texture);
 
-		var terrain = gui.Mesh()
+		var plane = gui.Mesh()
 			.setGeometry(gui.PlaneGeometry()
 				.setWidth(256)
 				.setHeight(256)
 				.setWidthSegments(100)
-				.setHeightSegments(100)
-				.setHeightMap(heightmap))
-			.setMaterial(gui.Material("material", "gold"))
-			.setWireframe(true);
+				.setHeightSegments(100))
+			.setMaterial(gui.Material("texture", texture));
 
 		var scene = gui.Scene()
 			.add(ambient)
 			.add(light)
-			.add(terrain);
+			.add(plane);
 
 		var camera = gui.Camera()
-			.setMouseControl(true)
-			.setAngle(0.7)
-			.setPitchLimits(0.1, pi / 2.0)
-			.setPitch(1.2)
-			.setDistanceLimits(20.0, 1000.0)
-			.setDistance(500.0)
-			.setFOV(45)
-			.setClipping(0.1, 1000);
+			.setPosition(0, 0, 400)
+			.setFOV(45);
 
 		var view = gui.View()
 			.setScreenArea(35, 0, 65, 100)
@@ -62,4 +51,4 @@ class MyApp : gui.Application {
 }
 
 var app = MyApp();
-app.run("3D Terrain");
+app.run("Noise Map Visualizer");

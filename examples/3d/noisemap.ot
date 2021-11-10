@@ -13,10 +13,10 @@ class MyApp : gui.Application {
 		var ambient = gui.Ambient();
 		var light = gui.Light().setPosition(20, 300, 40);
 
-		var texture = gui.Texture();
+		var noisemap = gui.NoiseMap();
 
-		var noisemap = gui.NoiseMap()
-			.applyTo(texture);
+		var texture = gui.Texture()
+			.setNoiseMap(noisemap);
 
 		var plane = gui.Mesh()
 			.setGeometry(gui.PlaneGeometry()

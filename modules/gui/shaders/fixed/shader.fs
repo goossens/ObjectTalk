@@ -5,7 +5,6 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 #include <bgfx.glsl>
-
 #include <material.glsl>
 
 // main function

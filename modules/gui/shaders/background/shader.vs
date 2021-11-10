@@ -10,7 +10,6 @@ $output v_position, v_texcoord0
 uniform mat4 u_background_transform;
 
 #include <bgfx.glsl>
-
 #include <material.glsl>
 
 void main() {

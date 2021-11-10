@@ -8,7 +8,6 @@ $input a_position, a_normal, a_texcoord0, i_data0, i_data1, i_data2, i_data3
 $output v_position, v_normal, v_texcoord0
 
 #include <bgfx.glsl>
-
 #include <material.glsl>
 
 void main() {

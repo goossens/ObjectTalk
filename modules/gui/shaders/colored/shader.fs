@@ -7,8 +7,6 @@
 $input v_position, v_normal
 
 #include <bgfx.glsl>
-
-#include <material.glsl>
 #include <light.glsl>
 
 // main function

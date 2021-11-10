@@ -113,31 +113,64 @@ OtObject OtTextureClass::loadImage(const std::string& file) {
 
 
 //
-//	OtTextureClass::setPixels
+//	OtTextureClass::setNoiseMap
 //
 
-void OtTextureClass::setPixels(void* pixels, size_t size, bimg::TextureFormat::Enum f, size_t w, size_t h) {
+OtObject OtTextureClass::setNoiseMap(OtObject object) {
+	// ensure object is a noisemap
+	if (object->isKindOf("NoiseMap")) {
+		noisemap = object->cast<OtNoiseMapClass>();
+
+	} else {
+		OtExcept("Expected a [NoiseMap] object, not a [%s]", object->getType()->getName().c_str());
+	}
+
+	noisemap->attach([this]() {
+		this->processNoiseMap();
+	});
+
+	processNoiseMap();
+	return shared();
+}
+
+
+//
+//	OtTextureClass::processNoiseMap
+//
+
+void OtTextureClass::processNoiseMap() {
+	// get noisemap details
+	size_t w = noisemap->getWidth();
+	size_t h = noisemap->getHeight();
+	float* noise = noisemap->getNoise();
+
 	// create new image and texture if required
-	if (image->m_size != size || image->m_width != w || image->m_height != h || image->m_format != f) {
+	if (image->m_width != w || image->m_height != h || image->m_format != bimg::TextureFormat::RGBA8) {
 		bimg::imageFree(image);
 		bgfx::destroy(texture);
 
 		width = w;
 		height = h;
-		format = f;
+		format = bimg::TextureFormat::RGBA8;
 
-		image = bimg::imageAlloc(&allocator, format, width, height, 0, 1, false, false, pixels);
-		const bgfx::Memory* mem = bgfx::makeRef(image->m_data, image->m_size);
-
+		image = bimg::imageAlloc(&allocator, format, width, height, 0, 1, false, false);
 		texture = bgfx::createTexture2D(width, height, false, 1, bgfx::TextureFormat::Enum(format));
-		bgfx::updateTexture2D(texture, 0, 0, 0, 0, width, height, mem);
-
-	} else {
-		// update image and texture
-		std::memcpy(image->m_data, pixels, size);
-		const bgfx::Memory* mem = bgfx::makeRef(image->m_data, image->m_size);
-		bgfx::updateTexture2D(texture, 0, 0, 0, 0, width, height, mem);
 	}
+
+	// update image and texture
+	uint8_t* dest = (uint8_t*) image->m_data;
+	float* src = noise;
+
+	for (auto c = 0; c < width * height; c++) {
+		uint8_t value = (uint8_t) (*src++ * 255.0);
+		*dest++ = value;
+		*dest++ = value;
+		*dest++ = value;
+		*dest++ = 255;
+	}
+
+	const bgfx::Memory* mem = bgfx::makeRef(image->m_data, image->m_size);
+	bgfx::updateTexture2D(texture, 0, 0, 0, 0, width, height, mem);
 }
 
 
@@ -161,6 +194,7 @@ OtType OtTextureClass::getMeta() {
 		type = OtTypeClass::create<OtTextureClass>("Texture", OtGuiClass::getMeta());
 		type->set("__init__", OtFunctionClass::create(&OtTextureClass::init));
 		type->set("loadImage", OtFunctionClass::create(&OtTextureClass::loadImage));
+		type->set("setNoiseMap", OtFunctionClass::create(&OtTextureClass::setNoiseMap));
 	}
 
 	return type;

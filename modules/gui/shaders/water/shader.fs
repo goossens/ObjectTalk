@@ -7,8 +7,6 @@
 $input v_position_world, v_position_camera, v_position_screen, v_normal, v_tangent, v_bitangent
 
 #include <bgfx.glsl>
-
-#include <material.glsl>
 #include <light.glsl>
 
 uniform vec4 u_water[2];

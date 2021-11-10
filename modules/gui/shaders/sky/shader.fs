@@ -7,8 +7,6 @@
 $input v_position
 
 #include <bgfx.glsl>
-
-#include <material.glsl>
 #include <light.glsl>
 
 uniform vec4 u_sky[3];

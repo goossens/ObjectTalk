@@ -16,8 +16,6 @@
 
 #include "controller.h"
 #include "gui.h"
-#include "heightmap.h"
-#include "texture.h"
 
 
 //
@@ -48,8 +46,10 @@ public:
 	// set noisemap offset
 	OtObject setOffset(int x, int y);
 
-	// set noise map to other object
-	OtObject applyTo(OtObject object);
+	// get noisemap data
+	size_t getWidth() { return width; }
+	size_t getHeight() { return height; }
+	float* getNoise() { return noisemap; }
 
 	// GUI to change properties
 	void renderGUI();
@@ -63,10 +63,6 @@ public:
 private:
 	// generate noisemap from perlin noise
 	void generate();
-
-	// apply noise map to other objects
-	void applyToTexture();
-	void applyToHeightMap();
 
 	// permutation vector
 	std::vector<int> p;
@@ -88,11 +84,6 @@ private:
 	float offsetY = 0.0;
 
 	float* noisemap = nullptr;
-	bool dirty = true;
-
-	// objects noisemap can be applied to
-	OtTexture texture;
-	OtHeightMap heightmap;
 };
 
 

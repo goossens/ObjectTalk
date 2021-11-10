@@ -35,6 +35,7 @@
 #include "sun.h"
 #include "sky.h"
 #include "water.h"
+#include "land.h"
 #include "terrain.h"
 #include "mesh.h"
 #include "group.h"
@@ -106,6 +107,7 @@ extern "C" void init(OtModule module) {
 	module->set("Sun", OtClassClass::create(OtSunClass::getMeta()));
 	module->set("Sky", OtClassClass::create(OtSkyClass::getMeta()));
 	module->set("Water", OtClassClass::create(OtWaterClass::getMeta()));
+	module->set("Land", OtClassClass::create(OtLandClass::getMeta()));
 	module->set("Terrain", OtClassClass::create(OtTerrainClass::getMeta()));
 	module->set("Mesh", OtClassClass::create(OtMeshClass::getMeta()));
 	module->set("Group", OtClassClass::create(OtGroupClass::getMeta()));
@@ -194,9 +196,11 @@ extern "C" void init(OtModule module) {
 	module->set("LightController", OtClassClass::create(OtLightControllerClass::getMeta()));
 	module->set("FogController", OtClassClass::create(OtFogControllerClass::getMeta()));
 	module->set("NoiseMapController", OtClassClass::create(OtNoiseMapControllerClass::getMeta()));
+	module->set("HeightMapController", OtClassClass::create(OtHeightMapControllerClass::getMeta()));
 	module->set("SkyController", OtClassClass::create(OtSkyControllerClass::getMeta()));
 	module->set("SunController", OtClassClass::create(OtSunControllerClass::getMeta()));
 	module->set("WaterController", OtClassClass::create(OtWaterControllerClass::getMeta()));
+	module->set("LandController", OtClassClass::create(OtLandControllerClass::getMeta()));
 
 	module->set("Tron", OtClassClass::create(OtTronClass::getMeta()));
 }

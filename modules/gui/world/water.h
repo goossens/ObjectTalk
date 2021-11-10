@@ -18,7 +18,7 @@
 #include "glm/glm.hpp"
 
 #include "controller.h"
-#include "sceneobject.h"
+#include "object3d.h"
 #include "texture.h"
 
 
@@ -29,7 +29,7 @@
 class OtWaterClass;
 typedef std::shared_ptr<OtWaterClass> OtWater;
 
-class OtWaterClass : public OtSceneObjectClass {
+class OtWaterClass : public OtObject3dClass {
 public:
 	// constructor/destructor
 	OtWaterClass();

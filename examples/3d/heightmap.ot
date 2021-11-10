@@ -13,34 +13,34 @@ class MyApp : gui.Application {
 		var ambient = gui.Ambient();
 		var light = gui.Light().setPosition(20, 300, 40);
 
+		var noisemap = gui.NoiseMap();
+
 		var heightmap = gui.HeightMap()
-			.setClamp(0.35, 1.0)
-			.setOffset(-0.35)
-			.setScale(100.0);
+			.setScale(50.0)
+			.setClamp(0.4, 1.0)
+			.setNoiseMap(noisemap);
 
-		var noisemap = gui.NoiseMap()
-			.applyTo(heightmap);
-
-		var terrain = gui.Mesh()
-			.setGeometry(gui.PlaneGeometry()
-				.setWidth(256)
-				.setHeight(256)
-				.setWidthSegments(100)
-				.setHeightSegments(100)
-				.setHeightMap(heightmap))
-			.setMaterial(gui.Material("material", "gold"))
-			.setWireframe(true);
+		var land = gui.Land()
+			.setHeightMap(heightmap)
+			.setRegion1Texture(gui.Texture(__DIR__ + "/assets/sand.jpg"))
+			.setRegion2Texture(gui.Texture(__DIR__ + "/assets/terrain.jpg"))
+			.setRegion3Texture(gui.Texture(__DIR__ + "/assets/rock.jpg"))
+			.setRegion4Texture(gui.Texture(__DIR__ + "/assets/snow.jpg"))
+			.setRegion1Limits(0.0, 3.0)
+			.setRegion2Limits(1.0, 11.0)
+			.setRegion3Limits(9.0, 21.0)
+			.setRegion4Limits(19.0, 30.0);
 
 		var scene = gui.Scene()
 			.add(ambient)
 			.add(light)
-			.add(terrain);
+			.add(land);
 
 		var camera = gui.Camera()
 			.setMouseControl(true)
 			.setAngle(0.7)
-			.setPitchLimits(0.1, pi / 2.0)
-			.setPitch(1.2)
+			.setPitchLimits(0.1, pi / 2.0 - 0.1)
+			.setPitch(0.3)
 			.setDistanceLimits(20.0, 1000.0)
 			.setDistance(500.0)
 			.setFOV(45)
@@ -53,8 +53,16 @@ class MyApp : gui.Application {
 
 		var panel = gui.Panel(0, 0, 35, 100);
 
-		var node = gui.TreeNode("Noise:");
+		var node = gui.TreeNode("Noise Map:");
 		node.add(gui.NoiseMapController(noisemap));
+		panel.add(node);
+
+		node = gui.TreeNode("Height Map:");
+		node.add(gui.HeightMapController(heightmap));
+		panel.add(node);
+
+		node = gui.TreeNode("Land:");
+		node.add(gui.LandController(land));
 		panel.add(node);
 
 		screen.add(view).add(panel);

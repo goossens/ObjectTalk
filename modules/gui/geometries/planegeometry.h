@@ -13,7 +13,6 @@
 //
 
 #include "geometry.h"
-#include "heightmap.h"
 
 
 //
@@ -33,14 +32,12 @@ public:
 	OtObject setHeight(float height);
 	OtObject setWidthSegments(int widthSegments);
 	OtObject setHeightSegments(int heightSegments);
-	OtObject setHeightMap(OtObject heightmap);
 
 	// get information
 	float getWidth() { return width; }
 	float getHeight() { return height; }
 	int getWidthSegments() { return widthSegments; }
 	int getHeightSegments() { return heightSegments; }
-	OtHeightMap getHeightMap() { return heightmap; }
 
 	// get type definition
 	static OtType getMeta();
@@ -57,5 +54,4 @@ private:
 	float height = 1.0;
 	int widthSegments = 1;
 	int heightSegments = 1;
-	OtHeightMap heightmap;
 };

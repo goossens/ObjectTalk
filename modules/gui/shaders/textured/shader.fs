@@ -7,8 +7,6 @@
 $input v_position, v_normal, v_texcoord0
 
 #include <bgfx.glsl>
-
-#include <material.glsl>
 #include <light.glsl>
 
 SAMPLER2D(s_texture, 0);

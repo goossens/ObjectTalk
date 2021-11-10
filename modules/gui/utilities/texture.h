@@ -16,6 +16,7 @@
 #include "bimg/bimg.h"
 
 #include "gui.h"
+#include "noisemap.h"
 
 
 //
@@ -37,6 +38,9 @@ public:
 	// specify new image file
 	OtObject loadImage(const std::string& file);
 
+	// specify a noisemap to visualize
+	OtObject setNoiseMap(OtObject object);
+
 	// provide new pixels
 	void setPixels(void* pixels, size_t size, bimg::TextureFormat::Enum format, size_t width, size_t height);
 
@@ -50,6 +54,10 @@ public:
 	static OtTexture create();
 
 private:
+	// handle noisemap
+	OtNoiseMap noisemap;
+	void processNoiseMap();
+
 	// texture properties
 	size_t width = 0;
 	size_t height = 0;

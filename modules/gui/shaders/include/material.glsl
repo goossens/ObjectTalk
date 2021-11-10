@@ -4,6 +4,8 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
+#ifndef OT_MATERIAL_GLSL
+#define OT_MATERIAL_GLSL
 
 // material uniforms
 uniform vec4 u_material[5];
@@ -14,3 +16,5 @@ uniform vec4 u_material[5];
 #define u_material_shininess u_material[4].x
 
 uniform mat3 u_uv_transform;
+
+#endif

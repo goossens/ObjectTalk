@@ -44,13 +44,17 @@ OtNoiseMapClass::~OtNoiseMapClass() {
 //
 
 OtObject OtNoiseMapClass::init(size_t count, OtObject* parameters) {
+	bool changed = false;
+
 	switch (count) {
 		case 3:
 			setScale(parameters[2]->operator float());
+			changed = true;
 			break;
 
 		case 1:
-			setSize(parameters[0]->operator size_t(), parameters[1]->operator size_t());
+			setSize(parameters[0]->operator int(), parameters[1]->operator int());
+			changed = true;
 			break;
 
 		case 0:
@@ -58,6 +62,10 @@ OtObject OtNoiseMapClass::init(size_t count, OtObject* parameters) {
 
 		default:
 			OtExcept("[NoiseMap] constructor expects 0, 1 or 3 arguments (not %ld)", count);
+	}
+
+	if (changed) {
+		generate();
 	}
 
 	return nullptr;
@@ -76,6 +84,7 @@ void OtNoiseMapClass::seed(int seed) {
 	std::default_random_engine engine(seed);
 	std::shuffle(p.begin(), p.end(), engine);
 	p.insert(p.end(), p.begin(), p.end());
+	generate();
 }
 
 
@@ -87,7 +96,7 @@ OtObject OtNoiseMapClass::setSize(size_t w, size_t h) {
 	if (w != width || h != height) {
 		width = w;
 		height = h;
-		dirty = true;
+		generate();
 	}
 
 	return shared();
@@ -101,7 +110,7 @@ OtObject OtNoiseMapClass::setSize(size_t w, size_t h) {
 OtObject OtNoiseMapClass::setScale(float s) {
 	if (s != scale) {
 		scale = s;
-		dirty = true;
+		generate();
 	}
 
 	return shared();
@@ -113,30 +122,7 @@ OtObject OtNoiseMapClass::setOffset(int x, int y) {
 	if (x != offsetX || y != offsetY) {
 		offsetX = x;
 		offsetY = y;
-		dirty = true;
-	}
-
-	return shared();
-}
-
-
-//
-//	OtNoiseMapClass::setTexture
-//
-
-OtObject OtNoiseMapClass::applyTo(OtObject object) {
-	// handle texture texture
-	if (object->isKindOf("Texture")) {
-		texture = object->cast<OtTextureClass>();
-		applyToTexture();
-
-	// handle heightmap
-	} else if (object->isKindOf("HeightMap")) {
-		heightmap = object->cast<OtHeightMapClass>();
-		applyToHeightMap();
-
-	} else {
-		OtExcept("Expected a [Texture]  or [HeightMap] object, not a [%s]", object->getType()->getName().c_str());
+		generate();
 	}
 
 	return shared();
@@ -159,7 +145,7 @@ void OtNoiseMapClass::generate() {
 	float minNoiseHeight = std::numeric_limits<float>::max();
 	float maxNoiseHeight = std::numeric_limits<float>::min();
 
-	// fill noise map
+	// fill noisemap
 	for (auto x = 0; x < width; x++) {
 		for (auto y = 0; y < height; y++) {
 			float sampleX = x / scale + offsetX;
@@ -172,53 +158,13 @@ void OtNoiseMapClass::generate() {
 		}
 	}
 
-	// normalize noise map
+	// normalize noisemap
 	for (auto c = 0; c < width * height; c++) {
 		noisemap[c] = invlerp(noisemap[c], minNoiseHeight, maxNoiseHeight);
 	}
 
-	// reset diry flag;
-	dirty = false;
-
-	// update to other objects if required
-	if (texture) {
-		applyToTexture();
-	}
-
-	if (heightmap) {
-		applyToHeightMap();
-	}
-}
-
-
-//
-//	OtNoiseMapClass::applyToTexture
-//
-
-void OtNoiseMapClass::applyToTexture() {
-	uint8_t* buffer = new uint8_t[width * height * 4];
-	uint8_t* dest = buffer;
-	float* src = noisemap;
-
-	for (auto c = 0; c < width * height; c++) {
-		uint8_t value = (uint8_t) (*src++ * 255.0);
-		*dest++ = value;
-		*dest++ = value;
-		*dest++ = value;
-		*dest++ = 255;
-	}
-
-	texture->setPixels(buffer, width * height * 4, bimg::TextureFormat::RGBA8, width, height);
-	delete [] buffer;
-}
-
-
-//
-//	OtNoiseMapClass::applyToHeightMap
-//
-
-void OtNoiseMapClass::applyToHeightMap() {
-	heightmap->setHeightMap(width, height, noisemap);
+	// notify objects that depend on us
+	notify();
 }
 
 
@@ -294,32 +240,33 @@ float OtNoiseMapClass::grad(int hash, float x, float y, float z) {
 //
 
 void OtNoiseMapClass::renderGUI() {
+	bool changed = false;
+
 	if (ImGui::SliderInt("Width", &width, 16, 1024)) {
-		dirty = true;
+		changed = true;
 	}
 
 	if (ImGui::SliderInt("Height", &height, 16, 1024)) {
-		dirty = true;
+		changed = true;
 	}
 
 	if (ImGui::SliderInt("Seed", &currentSeed, 1, 1000)) {
 		seed(currentSeed);
-		dirty = true;
 	}
 
 	if (ImGui::SliderFloat("Scale", &scale, 2.0f, 100.0f)) {
-		dirty = true;
+		changed = true;
 	}
 
 	if (ImGui::SliderFloat("Offset X", &offsetX, -10.0f, 10.0f)) {
-		dirty = true;
+		changed = true;
 	}
 
 	if (ImGui::SliderFloat("Offset Y", &offsetY, -10.0f, 10.0f)) {
-		dirty = true;
+		changed = true;
 	}
 
-	if (dirty) {
+	if (changed) {
 		generate();
 	}
 }
@@ -338,7 +285,6 @@ OtType OtNoiseMapClass::getMeta() {
 		type->set("setSize", OtFunctionClass::create(&OtNoiseMapClass::setSize));
 		type->set("setScale", OtFunctionClass::create(&OtNoiseMapClass::setScale));
 		type->set("setOffset", OtFunctionClass::create(&OtNoiseMapClass::setOffset));
-		type->set("applyTo", OtFunctionClass::create(&OtNoiseMapClass::applyTo));
 	}
 
 	return type;

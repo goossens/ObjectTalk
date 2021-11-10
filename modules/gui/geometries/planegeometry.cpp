@@ -21,9 +21,6 @@
 OtObject OtPlaneGeometryClass::init(size_t count, OtObject* parameters) {
 	// set attributes
 	switch (count) {
-		case 5:
-			setHeightMap(parameters[4]);
-
 		case 4:
 			heightSegments = parameters[3]->operator int();
 
@@ -40,7 +37,7 @@ OtObject OtPlaneGeometryClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-			OtExcept("Too many parameters [%ld] for [PlaneGeometry] constructor (max 5)", count);
+			OtExcept("Too many parameters [%ld] for [PlaneGeometry] constructor (max 4)", count);
 	}
 
 	return nullptr;
@@ -92,24 +89,6 @@ OtObject OtPlaneGeometryClass::setHeightSegments(int hs) {
 
 
 //
-//	OtPlaneGeometryClass::setHeightMap
-//
-
-OtObject OtPlaneGeometryClass::setHeightMap(OtObject object) {
-	// ensure object is a material
-	if (object->isKindOf("HeightMap")) {
-		heightmap = object->cast<OtHeightMapClass>();
-
-	} else {
-		OtExcept("Expected a [HeightMap] object, not a [%s]", object->getType()->getName().c_str());
-	}
-
-	refreshGeometry = true;
-	return shared();
-}
-
-
-//
 //	OtPlaneGeometryClass::fillGeometry
 //
 
@@ -132,18 +111,10 @@ void OtPlaneGeometryClass::fillGeometry() {
 			auto u = (float) ix / (float) widthSegments;
 			auto v = (float) iy / (float) heightSegments;
 
-			if (heightmap) {
-				addVertex(OtVertex(
-					glm::vec3(x, heightmap->getHeight(u, v), y),
-					heightmap->getNormal(u, v),
-					glm::vec2(u, v)));
-
-			} else {
-				addVertex(OtVertex(
-					glm::vec3(x, -y, 0.0),
-					glm::vec3(0.0, 0.0, 1.0),
-					glm::vec2(u, v)));
-			}
+			addVertex(OtVertex(
+				glm::vec3(x, -y, 0.0),
+				glm::vec3(0.0, 0.0, 1.0),
+				glm::vec2(u, v)));
 		}
 	}
 
@@ -187,7 +158,6 @@ OtType OtPlaneGeometryClass::getMeta() {
 		type->set("setHeight", OtFunctionClass::create(&OtPlaneGeometryClass::setHeight));
 		type->set("setWidthSegments", OtFunctionClass::create(&OtPlaneGeometryClass::setWidthSegments));
 		type->set("setHeightSegments", OtFunctionClass::create(&OtPlaneGeometryClass::setHeightSegments));
-		type->set("setHeightMap", OtFunctionClass::create(&OtPlaneGeometryClass::setHeightMap));
 	}
 
 	return type;

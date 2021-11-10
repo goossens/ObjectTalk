@@ -17,9 +17,9 @@
 #include "bgfx/bgfx.h"
 #include "glm/glm.hpp"
 
-#include "object3d.h"
 #include "geometry.h"
 #include "material.h"
+#include "object3d.h"
 
 
 //

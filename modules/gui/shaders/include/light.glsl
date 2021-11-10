@@ -4,6 +4,11 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
+#ifndef OT_LIGHT_GLSL
+#define OT_LIGHT_GLSL
+
+#include <material.glsl>
+
 // light uniforms
 #define LIGHTS 4
 #define SLOTS_PER_LIGHT 4
@@ -73,3 +78,5 @@ vec4 applyLight(vec4 color, vec3 position, vec3 normal) {
 
 	return total;
 }
+
+#endif

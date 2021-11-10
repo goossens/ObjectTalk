@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <functional>
 #include <memory>
 #include <string>
 #include <utility>
@@ -94,6 +95,10 @@ public:
 	// get an object's class
 	OtClass getClass();
 
+	// support observer pattern through callbacks
+	void attach(std::function<void(void)> callback);
+	void notify();
+
 	// get type definition
 	static OtType getMeta();
 
@@ -106,6 +111,9 @@ protected:
 
 	// members
 	OtMembers members;
+
+	// observer callbacks
+	std::shared_ptr<std::vector<std::function<void(void)>>> callbacks;
 };
 
 

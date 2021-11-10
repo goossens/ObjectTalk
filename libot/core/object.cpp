@@ -125,6 +125,32 @@ OtClass OtObjectClass::getClass() {
 
 
 //
+//	OtObjectClass::attach
+//
+
+void OtObjectClass::attach(std::function<void(void)> callback) {
+	if (!callbacks) {
+		callbacks = std::make_shared<std::vector<std::function<void(void)>>>();
+	}
+
+	callbacks->push_back(callback);
+}
+
+
+//
+//	OtObjectClass::notify
+//
+
+void OtObjectClass::notify() {
+	if (callbacks) {
+		for (auto& callback : *callbacks) {
+			callback();
+		}
+	}
+}
+
+
+//
 //	OtObjectClass::getMeta
 //
 

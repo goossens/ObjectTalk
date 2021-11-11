@@ -127,7 +127,7 @@ private:
 	float mouseWheelDY = 0.0;
 
 	// keyboard state
-	bool keyboardState[512] = {0};
+	bool keyboardState[512] = {false};
 	int keyboardKey;
 	int keyboardScancode;
 	int keyboardAction;

@@ -146,6 +146,10 @@ void OtApplicationClass::frameIMGUI() {
 	}
 
 	if (ImGui::GetIO().WantCaptureKeyboard) {
+		if (charEvent) {
+			ImGui::GetIO().AddInputCharacter(keyboardCodepoint);
+		}
+
 		keyEvent = false;
 		charEvent = false;
 	}

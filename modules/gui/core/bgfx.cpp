@@ -88,7 +88,13 @@ void OtApplicationClass::frameBGFX() {
 	loopTime = bx::getHPCounter();
 
 	// calculate loop speed
-	loopDuration = (double) (loopTime - lastTime) / (double) bx::getHPFrequency() * 1000.0;
+	if (loopTime >= lastTime) {
+		loopDuration = (double) (loopTime - lastTime) / (double) bx::getHPFrequency() * 1000.0;
+
+	} else {
+		loopDuration = 1.0 / 60.0 * 1000.0;
+	}
+
 	lastTime = loopTime;
 
 	// reset graphic settings and back-buffer size (if required)

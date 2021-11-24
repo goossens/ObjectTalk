@@ -9,81 +9,87 @@
 var gui = import("gui");
 
 class MyApp : gui.Application {
-		function setup(this, screen) {
+	function setup(this, screen) {
 		var ambient = gui.Ambient();
-		var light = gui.Light().setPosition(10, 20, 30);
+		var light = gui.Light().setPosition(20, 300, 40);
+
+		var sun = gui.Sun()
+			.setElevation(0.4)
+			.setAzimuth(pi / 2.0);
+
+		var sky = gui.Sky(sun);
 
 		var fog = gui.Fog()
-			.setColor("#79838e")
-			.setDistances(80, 250);
+			.setColor("#a0a0a0")
+			.setDistances(600, 2000);
 
-		var skybox = gui.Skybox(
-			__DIR__ + "/assets/sky/right.jpg",
-			__DIR__ + "/assets/sky/left.jpg",
-			__DIR__ + "/assets/sky/top.jpg",
-			__DIR__ + "/assets/sky/bottom.jpg",
-			__DIR__ + "/assets/sky/front.jpg",
-			__DIR__ + "/assets/sky/back.jpg");
+		var water = gui.Water()
+			.setSize(4000)
+			.setNormalMap(gui.Texture(__DIR__ + "/assets/waternormals.jpg"));
 
-		var heightmap = gui.HeightMap(__DIR__ + "/assets/heightmap.png", 10);
+		var noisemap = gui.NoiseMap()
+			.setScaleZ(200.0)
+			.setOffsetZ(-100.0);
 
-		var terrain = gui.Mesh()
-			.setGeometry(gui.PlaneGeometry()
-				.setWidth(200)
-				.setHeight(200)
-				.setWidthSegments(200)
-				.setHeightSegments(200)
-				.setHeightMap(heightmap))
-			.setMaterial(gui.Material()
-				.setBlendMap(gui.BlendMap(
-					gui.Texture(__DIR__ + "/assets/blendmap.png"),
-					gui.Texture(__DIR__ + "/assets/grass.png"),
-					gui.Texture(__DIR__ + "/assets/mud.png"),
-					gui.Texture(__DIR__ + "/assets/grassflowers.png"),
-					gui.Texture(__DIR__ + "/assets/path.png"))));
-
-		var trees = gui.Mesh()
-			.setGeometry(gui.ModelGeometry(__DIR__ + "/assets/pine.obj"))
-			.setMaterial(gui.Material()
-				.setTexture(gui.Texture(__DIR__ + "/assets/pine.png")))
-			.setHoles(true);
-
-		for c in range(200) {
-			var x = 1.0.random();
-			var z = 1.0.random();
-			var y = heightmap.getHeight(x, z);
-			x = -90.0 + 180.0 * x;
-			z = -90.0 + 180.0 * z;
-
-			trees.addInstance(gui.Matrix()
-				.translate(x, y, z)
-				.scale(0.5, 0.5, 0.5));
-		}
+		var terrain = gui.Terrain()
+			.setNoiseMap(noisemap)
+			.setTextureScale(50)
+			.setRegionTransitions(1.0, 15.0, 25.0, 5.0)
+			.setRegion1Texture(gui.Texture(__DIR__ + "/assets/sand.jpg"))
+			.setRegion2Texture(gui.Texture(__DIR__ + "/assets/terrain.jpg"))
+			.setRegion3Texture(gui.Texture(__DIR__ + "/assets/rock.jpg"))
+			.setRegion4Texture(gui.Texture(__DIR__ + "/assets/snow.jpg"));
 
 		var scene = gui.Scene()
-			.add(ambient)
-			.add(light)
+			.add(sun)
+			.add(sky)
 			.add(fog)
-			.add(skybox)
-			.add(terrain)
-			.add(trees);
+			.add(water)
+			.add(terrain);
 
 		var camera = gui.Camera()
 			.setMouseControl(true)
-			.setPitchLimits(0.1, pi / 2.0 - 0.1)
+			.setPitchLimits(0.01, pi / 2.0 - 0.01)
 			.setPitch(0.1)
-			.setDistanceLimits(20.0, 300.0)
-			.setDistance(100.0)
-			.setFOV(45)
-			.setClipping(0.1, 1000);
+			.setDistanceLimits(20.0, 1000.0)
+			.setDistance(400.0)
+			.setAngle(-pi / 2.0)
+			.setClipping(0.1, 4000);
 
 		var view = gui.View()
+			.setScreenArea(25, 0, 75, 100)
 			.setCamera(camera)
 			.setScene(scene);
 
-		screen.add(view);
+		var panel = gui.Panel(0, 0, 25, 100);
+
+		var node = gui.TreeNode("Sun:");
+		node.add(gui.SunController(sun));
+		panel.add(node);
+
+		node = gui.TreeNode("Sky:");
+		node.add(gui.SkyController(sky));
+		panel.add(node);
+
+		node = gui.TreeNode("Fog:");
+		node.add(gui.FogController(fog));
+		panel.add(node);
+
+		node = gui.TreeNode("Water:");
+		node.add(gui.WaterController(water));
+		panel.add(node);
+
+		node = gui.TreeNode("Noise Map:");
+		node.add(gui.NoiseMapController(noisemap));
+		panel.add(node);
+
+		node = gui.TreeNode("Terrain:");
+		node.add(gui.TerrainController(terrain));
+		panel.add(node);
+
+		screen.add(view).add(panel);
 	}
 }
 
 var app = MyApp();
-app.run("3D Terrain");
+app.setAntiAliasing(2).run("3D Terrain");

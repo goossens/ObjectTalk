@@ -34,7 +34,7 @@ public:																					\
 	void init(OtObject object)  {														\
 		if (!object->isKindOf(#type)) {													\
 			OtExcept(																	\
-				"Expected an [##type] object, not a [%s]",								\
+				"Expected an [" #type "] object, not a [%s]",							\
 				object->getType()->getName().c_str());									\
 		}																				\
 																						\

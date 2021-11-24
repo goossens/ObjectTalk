@@ -12,8 +12,6 @@
 //	Include files
 //
 
-#include "bgfx/bgfx.h"
-
 #include "gui.h"
 #include "texture.h"
 

@@ -11,8 +11,6 @@
 
 #include <cstring>
 
-#include "bgfx/embedded_shader.h"
-
 #include "ot/function.h"
 
 #include "mesh.h"
@@ -155,9 +153,12 @@ OtObject OtMeshClass::addInstance(OtObject object) {
 //	OtMeshClass::render
 //
 
-void OtMeshClass::render(int view, OtCamera camera, glm::mat4 parentTransform, long flag) {
+void OtMeshClass::render(OtRenderingContext* context, long flag) {
 	// let parent class do its thing
-	OtObject3dClass::render(view, camera, parentTransform);
+	OtObject3dClass::render(context);
+
+	// setup context
+	context->submit();
 
 	// setup material
 	material->submit();
@@ -189,7 +190,7 @@ void OtMeshClass::render(int view, OtCamera camera, glm::mat4 parentTransform, l
 		BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA));
 
 	// run shader
-	bgfx::submit(view, shader);
+	bgfx::submit(context->view, shader);
 }
 
 
@@ -197,7 +198,7 @@ void OtMeshClass::render(int view, OtCamera camera, glm::mat4 parentTransform, l
 //	OtMeshClass::render
 //
 
-void OtMeshClass::render(int view, OtCamera camera, glm::mat4 parentTransform) {
+void OtMeshClass::render(OtRenderingContext* context) {
 	// sanity check
 	if (!geometry || !material) {
 		OtExcept("[Geometry] and/or [material] properties missing for [Mesh]");
@@ -278,11 +279,11 @@ void OtMeshClass::render(int view, OtCamera camera, glm::mat4 parentTransform) {
 	// see if culling is desired
 	if (wireframe || holes || !geometry->wantsCulling()) {
 		// render back side
-		render(view, camera, parentTransform, BGFX_STATE_CULL_CCW);
+		render(context, BGFX_STATE_CULL_CCW);
 	}
 
 	// render front side
-	render(view, camera, parentTransform, BGFX_STATE_CULL_CW);
+	render(context, BGFX_STATE_CULL_CW);
 }
 
 

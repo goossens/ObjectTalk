@@ -12,9 +12,9 @@
 #include "ot/function.h"
 #include "ot/vm.h"
 
-#include "view.h"
 #include "application.h"
-
+#include "renderingcontext.h"
+#include "view.h"
 
 
 //
@@ -106,14 +106,20 @@ void OtViewClass::render() {
 		float vy = y < 0 ? OtApplicationClass::getHeight() - (y * OtApplicationClass::getHeight() / 100.0) : y * OtApplicationClass::getHeight() / 100.0;
 		float vw = w * OtApplicationClass::getWidth() / 100.0;
 		float vh = h * OtApplicationClass::getHeight() / 100.0;
-		float viewAspect = vw / vh;
+
+		// create rendering context
+		OtRenderingContext context(id, vw / vh, scene, camera);
+
+		// get camera ready for frame
+		camera->update(&context);
 
 		// prerender scene
-		scene->preRender(camera, viewAspect);
+		scene->preRender(&context);
 
-		// setup viewport and render scene
+		// render scene
 		bgfx::setViewRect(id, vx, vy, vw, vh);
-		scene->render(id, camera, viewAspect);
+		camera->submit(&context);
+		scene->render(&context);
 	}
 }
 

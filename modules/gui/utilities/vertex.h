@@ -12,9 +12,6 @@
 //	Include files
 //
 
-#include "glm/glm.hpp"
-#include "bgfx/bgfx.h"
-
 #include "vertex.h"
 
 

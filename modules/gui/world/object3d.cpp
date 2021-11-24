@@ -9,10 +9,6 @@
 //	Include files
 //
 
-#define GLM_ENABLE_EXPERIMENTAL
-#include "glm/ext.hpp"
-#include "bgfx/bgfx.h"
-
 #include "ot/function.h"
 
 #include "object3d.h"
@@ -92,10 +88,10 @@ OtObject OtObject3dClass::translate(float x, float y, float z) {
 //	OtObject3dClass::render
 //
 
-void OtObject3dClass::render(int view, OtCamera camera, glm::mat4 parentTransform) {
+void OtObject3dClass::render(OtRenderingContext* context) {
 	// calculate object transformation
-	glm::mat4 t = parentTransform * translating * rotating * scaling;
-	bgfx::setTransform(glm::value_ptr(t));
+	glm::mat4 transform = context->transform * translating * rotating * scaling;
+	bgfx::setTransform(glm::value_ptr(transform));
 }
 
 

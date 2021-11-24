@@ -12,13 +12,8 @@
 //	Include files
 //
 
-#include <vector>
-
-#include "bgfx/bgfx.h"
-#include "glm/glm.hpp"
-
 #include "component.h"
-#include "camera.h"
+#include "renderingcontext.h"
 
 
 //
@@ -30,24 +25,16 @@ typedef std::shared_ptr<OtSceneClass> OtScene;
 
 class OtSceneClass : public OtComponentClass {
 public:
-	// constructor/destructor
-	OtSceneClass();
-	~OtSceneClass();
-
 	// ensure specified component is allowed as a child
 	void validateChild(OtComponent child);
 
 	// rendering phases
-	void preRender(OtCamera camera, float viewAspect);
-	void render(int view, OtCamera camera, float viewAspect);
+	void preRender(OtRenderingContext* context);
+	void render(OtRenderingContext* context);
 
 	// get type definition
 	static OtType getMeta();
 
 	// create a new object
 	static OtScene create();
-
-private:
-	// to pass information to shaders
-	bgfx::UniformHandle lightUniform = BGFX_INVALID_HANDLE;
 };

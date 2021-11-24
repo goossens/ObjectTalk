@@ -36,11 +36,11 @@ class MyApp : gui.Application {
 			.setFOV(45);
 
 		var view = gui.View()
-			.setScreenArea(35, 0, 65, 100)
+			.setScreenArea(25, 0, 75, 100)
 			.setCamera(camera)
 			.setScene(scene);
 
-		var panel = gui.Panel(0, 0, 35, 100);
+		var panel = gui.Panel(0, 0, 25, 100);
 
 		var node = gui.TreeNode("Camera:");
 		node.add(gui.CameraController(camera));

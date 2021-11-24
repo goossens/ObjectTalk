@@ -14,9 +14,6 @@
 
 #include <vector>
 
-#include "bgfx/bgfx.h"
-#include "glm/glm.hpp"
-
 #include "geometry.h"
 #include "material.h"
 #include "object3d.h"
@@ -47,7 +44,7 @@ public:
 	OtObject addInstance(OtObject matrix);
 
 	// render in BGFX
-    void render(int view, OtCamera camera, glm::mat4 parentTransform);
+    void render(OtRenderingContext* context);
 
 	// get type definition
 	static OtType getMeta();
@@ -57,7 +54,7 @@ public:
 
 protected:
 	// render with culling
-	void render(int view, OtCamera camera, glm::mat4 parentTransform, long flag);
+	void render(OtRenderingContext* context, long flag);
 
 	// properties
 	OtGeometry geometry;

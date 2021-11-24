@@ -12,8 +12,6 @@
 //	Include files
 //
 
-#include "glm/glm.hpp"
-
 #include "guimath.h"
 
 

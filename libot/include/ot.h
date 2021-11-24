@@ -14,12 +14,15 @@
 
 #include "ot/format.h"
 #include "ot/exception.h"
+#include "ot/numbers.h"
+#include "ot/hash.h"
+#include "ot/concurrentqueue.h"
+#include "ot/libuv.h"
+
 #include "ot/codepoint.h"
 #include "ot/text.h"
 #include "ot/source.h"
 #include "ot/members.h"
-#include "ot/numbers.h"
-#include "ot/libuv.h"
 
 #include "ot/type.h"
 #include "ot/object.h"

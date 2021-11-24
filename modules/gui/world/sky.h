@@ -14,10 +14,6 @@
 
 #include <vector>
 
-#include "bgfx/bgfx.h"
-
-#include "glm/glm.hpp"
-
 #include "controller.h"
 #include "sceneobject.h"
 #include "sun.h"
@@ -49,7 +45,7 @@ public:
 	void renderGUI();
 
 	// render in BGFX
-    void render(int view, OtCamera camera, glm::mat4 parentTransform);
+    void render(OtRenderingContext* context);
 
 	// get type definition
 	static OtType getMeta();

@@ -12,8 +12,6 @@
 //	Include files
 //
 
-#include "glm/glm.hpp"
-
 #include "sceneobject.h"
 
 
@@ -36,7 +34,7 @@ public:
 	OtObject translate(float x, float y, float z);
 
 	// render in BGFX
-    virtual void render(int view, OtCamera camera, glm::mat4 parentTransform);
+    virtual void render(OtRenderingContext* context);
 
 	// get type definition
 	static OtType getMeta();

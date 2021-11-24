@@ -12,9 +12,6 @@
 //	Include files
 //
 
-#include "glm/glm.hpp"
-#include "glm/ext.hpp"
-
 #include "controller.h"
 #include "sceneobject.h"
 
@@ -40,7 +37,7 @@ public:
 	void renderGUI();
 
 	// submit data to BGFX
-	void submit(glm::vec4* slot);
+	void render(OtRenderingContext* context);
 
 	// get type definition
 	static OtType getMeta();

@@ -118,6 +118,10 @@ OtObject OtBoxGeometryClass::setDepthSegments(int ds) {
 }
 
 
+//
+//	OtBoxGeometryClass::fillGeometry
+//
+
 void OtBoxGeometryClass::fillGeometry() {
 	// default culling
 	culling = true;

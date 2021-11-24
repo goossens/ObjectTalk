@@ -13,8 +13,6 @@
 #include "ot/class.h"
 #include "ot/function.h"
 
-#include "imgui.h"
-
 #include "gui.h"
 #include "application.h"
 #include "component.h"
@@ -35,7 +33,6 @@
 #include "sun.h"
 #include "sky.h"
 #include "water.h"
-#include "land.h"
 #include "terrain.h"
 #include "mesh.h"
 #include "group.h"
@@ -59,7 +56,8 @@
 #include "simulation.h"
 #include "cloth.h"
 
-#include "math.h"
+#include "guimath.h"
+#include "perlin.h"
 #include "plane.h"
 
 #include "widget.h"
@@ -107,7 +105,6 @@ extern "C" void init(OtModule module) {
 	module->set("Sun", OtClassClass::create(OtSunClass::getMeta()));
 	module->set("Sky", OtClassClass::create(OtSkyClass::getMeta()));
 	module->set("Water", OtClassClass::create(OtWaterClass::getMeta()));
-	module->set("Land", OtClassClass::create(OtLandClass::getMeta()));
 	module->set("Terrain", OtClassClass::create(OtTerrainClass::getMeta()));
 	module->set("Mesh", OtClassClass::create(OtMeshClass::getMeta()));
 	module->set("Group", OtClassClass::create(OtGroupClass::getMeta()));
@@ -130,8 +127,11 @@ extern "C" void init(OtModule module) {
 	module->set("SphereGeometry", OtClassClass::create(OtSphereGeometryClass::getMeta()));
 	module->set("TorusGeometry", OtClassClass::create(OtTorusGeometryClass::getMeta()));
 
-	module->set("Simulation", OtClassClass::create(OtSimulationClass::getMeta()));
+	module->set("Simulation", OtClassClass::create(OtMathClass::getMeta()));
 	module->set("Cloth", OtClassClass::create(OtClothClass::getMeta()));
+
+	module->set("Math", OtClassClass::create(OtSimulationClass::getMeta()));
+	module->set("Perlin", OtClassClass::create(OtPerlinClass::getMeta()));
 
 	module->set("Widget", OtClassClass::create(OtWidgetClass::getMeta()));
 	module->set("Screen", OtClassClass::create(OtScreenClass::getMeta()));
@@ -199,8 +199,8 @@ extern "C" void init(OtModule module) {
 	module->set("HeightMapController", OtClassClass::create(OtHeightMapControllerClass::getMeta()));
 	module->set("SkyController", OtClassClass::create(OtSkyControllerClass::getMeta()));
 	module->set("SunController", OtClassClass::create(OtSunControllerClass::getMeta()));
+	module->set("TerrainController", OtClassClass::create(OtTerrainControllerClass::getMeta()));
 	module->set("WaterController", OtClassClass::create(OtWaterControllerClass::getMeta()));
-	module->set("LandController", OtClassClass::create(OtLandControllerClass::getMeta()));
 
 	module->set("Tron", OtClassClass::create(OtTronClass::getMeta()));
 }

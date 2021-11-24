@@ -14,10 +14,6 @@
 #include <cstdlib>
 #include <ctime>
 
-#include "bgfx/bgfx.h"
-#include "bimg/decode.h"
-#include "bx/file.h"
-
 #include "ot/numbers.h"
 #include "ot/function.h"
 
@@ -121,64 +117,6 @@ OtObject OtHeightMapClass::loadMap(const std::string& file) {
 
 
 //
-//	OtHeightMapClass::setNoiseMap
-//
-
-OtObject OtHeightMapClass::setNoiseMap(OtObject object) {
-	// ensure object is a noisemap
-	if (object->isKindOf("NoiseMap")) {
-		noisemap = object->cast<OtNoiseMapClass>();
-
-	} else {
-		OtExcept("Expected a [NoiseMap] object, not a [%s]", object->getType()->getName().c_str());
-	}
-
-	noisemap->attach([this]() {
-		this->processNoiseMap();
-	});
-
-	processNoiseMap();
-	return shared();
-}
-
-
-//
-//	OtHeightMapClass::processNoiseMap
-//
-
-void OtHeightMapClass::processNoiseMap() {
-	// delete old heightmap if required
-	if (heightmap) {
-		delete [] heightmap;
-	}
-
-	// get noisemap details
-	width = noisemap->getWidth();
-	height = noisemap->getHeight();
-	float* noise = noisemap->getNoise();
-
-	// save new map
-	heightmap = new float[width * height];
-	std::memcpy(heightmap, noise, width * height * sizeof(float));
-
-	// notify observers
-	notify();
-}
-
-
-//
-//	OtHeightMapClass::setClamp
-//
-
-OtObject OtHeightMapClass::setClamp(float min, float max) {
-	minClamp = min;
-	maxClamp = max;
-	notify();
-	return shared();
-}
-
-
-//
 //	OtHeightMapClass::setScale
 //
 
@@ -190,18 +128,24 @@ OtObject OtHeightMapClass::setScale(float s) {
 
 
 //
+//	OtHeightMapClass::setOffset
+//
+
+OtObject OtHeightMapClass::setOffset(float o) {
+	offset = o;
+	notify();
+	return shared();
+}
+
+
+//
 //	OtHeightMapClass::getHeightAbs
 //
 
 float OtHeightMapClass::getHeightAbs(int x, int y) {
-	if (x < 0 || y < 0) {
-		return 0.0;
-
-	} else {
-		x = x % width;
-		y = y % height;
-		return (std::clamp(heightmap[y * width + x], minClamp, maxClamp) - minClamp) / (maxClamp - minClamp) * scale;
-	}
+	x = std::clamp(x, 0, width - 1);
+	y = std::clamp(y, 0, height - 1);
+	return heightmap[y * width + x] * scale + offset;
 }
 
 
@@ -215,8 +159,8 @@ float OtHeightMapClass::getHeight(float x, float y) {
 
 	int x1 = std::floor(x);
 	int y1 = std::floor(y);
-	int x2 = x + 1;
-	int y2 = y + 1;
+	int x2 = x1 + 1;
+	int y2 = y1 + 1;
 
 	auto h11 = getHeightAbs(x1, y1);
 	auto h21 = getHeightAbs(x2, y1);
@@ -237,11 +181,10 @@ glm::vec3 OtHeightMapClass::getNormal(float x, float y) {
 	int ix = int(x * width);
 	int iy = int(y * height);
 
-	float heightL = getHeightAbs(ix - 1, iy);
-	float heightR = getHeightAbs(ix + 1, iy);
-	float heightU = getHeightAbs(ix, iy - 1);
-	float heightD = getHeightAbs(ix, iy + 1);
-	return glm::normalize(glm::vec3(heightL - heightR, 2, heightD - heightU));
+	return glm::normalize(glm::vec3(
+		getHeightAbs(ix - 1, iy) - getHeightAbs(ix + 1, iy),
+		2.0,
+		getHeightAbs(ix, iy - 1) - getHeightAbs(ix, iy + 1)));
 }
 
 
@@ -256,11 +199,7 @@ void OtHeightMapClass::renderGUI() {
 		changed = true;
 	}
 
-	if (ImGui::SliderFloat("Min Clamp", &minClamp, 0.0f, 1.0f)) {
-		changed = true;
-	}
-
-	if (ImGui::SliderFloat("Max Clamp", &maxClamp, 0.0f, 1.0f)) {
+	if (ImGui::SliderFloat("Ofsset", &offset, -50.0f, 50.0f)) {
 		changed = true;
 	}
 
@@ -281,10 +220,9 @@ OtType OtHeightMapClass::getMeta() {
 		type = OtTypeClass::create<OtHeightMapClass>("HeightMap", OtGuiClass::getMeta());
 		type->set("__init__", OtFunctionClass::create(&OtHeightMapClass::init));
 		type->set("loadMap", OtFunctionClass::create(&OtHeightMapClass::loadMap));
-		type->set("setClamp", OtFunctionClass::create(&OtHeightMapClass::setClamp));
 		type->set("setScale", OtFunctionClass::create(&OtHeightMapClass::setScale));
+		type->set("setOffset", OtFunctionClass::create(&OtHeightMapClass::setOffset));
 		type->set("getHeight", OtFunctionClass::create(&OtHeightMapClass::getHeight));
-		type->set("setNoiseMap", OtFunctionClass::create(&OtHeightMapClass::setNoiseMap));
 	}
 
 	return type;

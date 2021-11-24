@@ -9,10 +9,6 @@
 //	Include files
 //
 
-#include "bgfx/embedded_shader.h"
-
-#include "imgui.h"
-
 #include "ot/function.h"
 #include "ot/numbers.h"
 
@@ -37,10 +33,10 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 
 OtSkyClass::OtSkyClass() {
 	// create dome
-	int widthSegments = 8;
-	int heightSegments = 4;
+	int widthSegments = 16;
+	int heightSegments = 8;
 	float widthDelta = std::numbers::pi * 2.0 / widthSegments;
-	float heightDelta = std::numbers::pi / 2.0 / heightSegments;
+	float heightDelta = (std::numbers::pi / 2.0 + 0.1) / heightSegments;
 
 	// address each ring
 	for (auto ring = 0; ring <= heightSegments; ring++) {
@@ -171,6 +167,8 @@ OtObject OtSkyClass::setClouds(float cir, float cum) {
 //
 
 void OtSkyClass::renderGUI() {
+	ImGui::Checkbox("Enabled", &enabled);
+
 	ImGui::SliderFloat("Rayleigh Coefficient", &rayleighCoefficient, 0.5f, 6.0f);
 	ImGui::SliderFloat("Mie Coefficient", &mieCoefficient, 1.0f, 10.0f);
 	ImGui::SliderFloat("Mie Scattering", &mieScattering, 0.9f, 0.99f);
@@ -184,7 +182,7 @@ void OtSkyClass::renderGUI() {
 //	OtSkyClass::render
 //
 
-void OtSkyClass::render(int view, OtCamera camera, glm::mat4 parentTransform) {
+void OtSkyClass::render(OtRenderingContext* context) {
 	// submit vertices and triangles
 	bgfx::setVertexBuffer(0, vertexBuffer);
 	bgfx::setIndexBuffer(indexBuffer);
@@ -206,7 +204,7 @@ void OtSkyClass::render(int view, OtCamera camera, glm::mat4 parentTransform) {
 
 	// run shader
 	bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_MSAA);
-	bgfx::submit(view, shader);
+	bgfx::submit(context->view, shader);
 }
 
 

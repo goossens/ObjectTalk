@@ -90,7 +90,7 @@ class MyApp : gui.Application {
 
 		// create view
 		screen.add(gui.View()
-			.setScreenArea(30, 0, 70, 100)
+			.setScreenArea(20, 0, 80, 100)
 			.setCamera(this.camera)
 			.setScene(scene));
 
@@ -104,7 +104,7 @@ class MyApp : gui.Application {
 	}
 
 	function createPanel(this) {
-		var panel = gui.Panel(0, 0, 30, 100);
+		var panel = gui.Panel(0, 0, 20, 100);
 
 		var node = gui.TreeNode("Camera:");
 		node.add(gui.CameraController(this.camera));

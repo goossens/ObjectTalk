@@ -10,10 +10,9 @@ $output v_position, v_texcoord0
 uniform mat4 u_background_transform;
 
 #include <bgfx.glsl>
-#include <material.glsl>
 
 void main() {
-	v_texcoord0 = mul(u_uv_transform, vec3(a_texcoord0, 1.0)).xy;
+	v_texcoord0 = a_texcoord0;
 	gl_Position = mul(u_background_transform, vec4(a_position, 1.0));
 	gl_Position.z = gl_Position.w;
 }

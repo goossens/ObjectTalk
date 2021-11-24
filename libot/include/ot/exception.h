@@ -17,6 +17,8 @@
 #include <string>
 #include <iostream>
 
+#include "format.h"
+
 
 //
 //	OtException
@@ -52,6 +54,7 @@ void OtExcept(const char* format, ARGS && ...args) {
 inline void OtExcept(const std::string message) {
 	throw OtException(message);
 }
+
 
 //
 //	Macros

@@ -11,12 +11,6 @@
 
 #include <cstring>
 
-#include "bx/math.h"
-#include "bx/timer.h"
-
-#include "bgfx/bgfx.h"
-#include "bgfx/embedded_shader.h"
-
 #include "application.h"
 #include "imguishader.h"
 
@@ -113,7 +107,7 @@ void OtApplicationClass::frameIMGUI() {
 	// update ImGui state
 	ImGuiIO& io = ImGui::GetIO();
 	io.DisplaySize = ImVec2(width, height);
-	io.DeltaTime = loopDuration;
+	io.DeltaTime = loopDuration / 1000.0;
 
 	// update mouse state
 	io.MousePos = ImVec2(mouseX, mouseY);

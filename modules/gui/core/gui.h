@@ -12,6 +12,29 @@
 //	Include files
 //
 
+#define GLFW_INCLUDE_NONE
+#include "GLFW/glfw3.h"
+
+#include "bx/bx.h"
+#include "bx/easing.h"
+#include "bx/math.h"
+#include "bx/timer.h"
+#include "bx/file.h"
+
+#include "bimg/bimg.h"
+#include "bimg/decode.h"
+
+#include "bgfx/bgfx.h"
+#include "bgfx/platform.h"
+#include "bgfx/embedded_shader.h"
+
+#define GLM_ENABLE_EXPERIMENTAL
+#include "glm/glm.hpp"
+#include "glm/gtx/io.hpp"
+#include "glm/ext.hpp"
+
+#include "imgui.h"
+
 #include "ot/object.h"
 
 

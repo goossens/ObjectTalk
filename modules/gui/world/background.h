@@ -12,8 +12,6 @@
 //	Include files
 //
 
-#include "bgfx/bgfx.h"
-
 #include "sceneobject.h"
 #include "planegeometry.h"
 #include "texture.h"
@@ -42,7 +40,7 @@ public:
 	OtObject setTexture(OtObject texture);
 
 	// render in BGFX
-    void render(int view, OtCamera camera, glm::mat4 parentTransform);
+    void render(OtRenderingContext* context);
 
 	// get type definition
 	static OtType getMeta();
@@ -62,5 +60,4 @@ protected:
 	bgfx::UniformHandle backgroundUniform = BGFX_INVALID_HANDLE;
 	bgfx::UniformHandle textureUniform = BGFX_INVALID_HANDLE;
 	bgfx::ProgramHandle shader = BGFX_INVALID_HANDLE;
-	bgfx::TextureHandle dummy = BGFX_INVALID_HANDLE;
 };

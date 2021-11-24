@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include "imgui.h"
-
 #include "ot/function.h"
 
 #include "ambient.h"
@@ -54,11 +52,11 @@ void OtAmbientClass::renderGUI() {
 
 
 //
-//	OtAmbientClass::submit
+//	OtAmbientClass::render
 //
 
-void OtAmbientClass::submit(glm::vec4* slot) {
-	slot[0] = glm::vec4(color, 1.0);
+void OtAmbientClass::render(OtRenderingContext* context) {
+	context->setAmbientLight(color);
 }
 
 

@@ -12,8 +12,6 @@
 //	Include files
 //
 
-#include "imgui.h"
-
 #include "component.h"
 
 

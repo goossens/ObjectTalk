@@ -16,6 +16,8 @@
 
 #include "controller.h"
 #include "gui.h"
+#include "guieasing.h"
+#include "perlin.h"
 
 
 //
@@ -27,29 +29,47 @@ typedef std::shared_ptr<OtNoiseMapClass> OtNoiseMap;
 
 class OtNoiseMapClass : public OtGuiClass {
 public:
-	// constructor/destructor
+	// constructor
 	OtNoiseMapClass();
-	~OtNoiseMapClass();
 
 	// initialize
 	OtObject init(size_t count, OtObject* parameters);
 
-	// generate a new permutation vector based on the value of seed
-	void seed(int seed);
+	// provide a new seed for the perlin noise generator
+	OtObject setSeed(int seed);
 
-	// set noisemap size
-	OtObject setSize(size_t width, size_t height);
+	// set number of perlin octaves
+	OtObject setOctaves(int octaves);
 
-	// set the noisemap scale factor
-	OtObject setScale(float scale);
+	// set perlin persistence
+	OtObject setPersistence(float persistence);
 
-	// set noisemap offset
-	OtObject setOffset(int x, int y);
+	// set the noisemap scaling factors
+	OtObject setScaleXY(float xy);
 
-	// get noisemap data
-	size_t getWidth() { return width; }
-	size_t getHeight() { return height; }
-	float* getNoise() { return noisemap; }
+	// set the noisemap scaling factors
+	OtObject setScaleZ(float z);
+
+	// set vertical noisemap offset (after scaling)
+	OtObject setOffsetZ(float z);
+
+	// set the noisemap easing function
+	OtObject setEasing(int easing);
+
+	// specify whether noisemap is normalized
+	OtObject setNormalize(bool normalize);
+
+	// get minimum noise value
+	float getMinNoise();
+
+	// get maximum noise value
+	float getMaxNoise();
+
+	// get noise value at location
+	float getNoise(float x, float y);
+
+	// create a noise array
+	void getNoiseArray(float* output, size_t width, size_t height, float x, float y);
 
 	// GUI to change properties
 	void renderGUI();
@@ -62,28 +82,20 @@ public:
 
 private:
 	// generate noisemap from perlin noise
-	void generate();
-
-	// permutation vector
-	std::vector<int> p;
-	int currentSeed;
-
-	// perlin support functions
-	float noise(float x, float y, float z);
-	float fade(float t);
-	float lerp(float t, float a, float b);
-	float invlerp(float v, float a, float b);
-	float grad(int hash, float x, float y, float z);
+	OtPerlin perlin;
+	int currentSeed = 237;
+	int octaves = 8;
+	float persistence = 0.5;
 
 	// noisemap properties
-	int width = 256;
-	int height = 256;
+	float scaleXY = 200.0;
+	float scaleZ = 1.0;
+	float offsetZ = 0.0;
 
-	float scale = 50.0;
-	float offsetX = 0.0;
-	float offsetY = 0.0;
+	int easing = 0;
+	OtEasingFunction easingFunction = OtEasingGetFunction(0);
 
-	float* noisemap = nullptr;
+	bool normalize = true;
 };
 
 

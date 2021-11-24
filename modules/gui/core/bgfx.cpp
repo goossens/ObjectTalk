@@ -11,9 +11,6 @@
 
 #include <cstring>
 
-#include "bx/timer.h"
-#include "bgfx/platform.h"
-
 #include "ot/exception.h"
 
 #include "application.h"
@@ -24,6 +21,7 @@
 //	Globals
 //
 
+int64_t OtApplicationClass::startTime;
 int64_t OtApplicationClass::lastTime;
 int64_t OtApplicationClass::loopTime;
 float OtApplicationClass::loopDuration;
@@ -75,7 +73,7 @@ void OtApplicationClass::initBGFX() {
 	}
 
 	// initialize time management
-	lastTime = bx::getHPCounter();
+	startTime = lastTime = bx::getHPCounter();
 }
 
 
@@ -103,7 +101,17 @@ void OtApplicationClass::frameBGFX() {
 	static int prevAA = 0;
 
 	if (width != prevWidth || height != prevHeight || antiAliasing != prevAA) {
-		bgfx::reset(width, height, BGFX_RESET_VSYNC | antiAliasing);
+		int AA;
+
+		switch (antiAliasing) {
+			case 1: AA = BGFX_RESET_MSAA_X2; break;
+			case 2: AA = BGFX_RESET_MSAA_X4; break;
+			case 3: AA = BGFX_RESET_MSAA_X8; break;
+			case 4: AA = BGFX_RESET_MSAA_X16; break;
+			default: AA = 0; break;
+		}
+
+		bgfx::reset(width, height, BGFX_RESET_VSYNC | AA);
 		prevWidth = width;
 		prevHeight = height;
 		prevAA = antiAliasing;
@@ -150,7 +158,7 @@ void OtApplicationClass::renderProfiler() {
 //
 
 float OtApplicationClass::getTime() {
-	return (double) loopTime / (double) bx::getHPFrequency();
+	return (double) (loopTime - startTime) / (double) bx::getHPFrequency();
 }
 
 

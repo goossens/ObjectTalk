@@ -28,6 +28,8 @@ int OtApplicationClass::height = 720;
 
 size_t OtApplicationClass::frameNumber = 0;
 
+std::vector<std::function<void(void)>> OtApplicationClass::atExitCallbacks;
+
 
 //
 //	OtApplicationClass::run
@@ -187,6 +189,11 @@ void OtApplicationClass::runThread2() {
 		// also remove app instance variables that the user might have added
 		unsetAll();
 
+		// call all atexit callbacks
+		for (auto& callback : atExitCallbacks) {
+			callback();
+		}
+
 		// terminate libraries
 		endIMGUI();
 		endBGFX();
@@ -212,19 +219,12 @@ void OtApplicationClass::runThread2() {
 //	OtApplicationClass::setAntiAliasing
 //
 
-OtObject OtApplicationClass::setAntiAliasing(int setting) {
-	switch (setting) {
-		case 0:	antiAliasing = 0; break;
-		case 1:	antiAliasing = BGFX_RESET_MSAA_X2; break;
-		case 2:	antiAliasing = BGFX_RESET_MSAA_X4; break;
-		case 3:	antiAliasing = BGFX_RESET_MSAA_X8; break;
-		case 4:	antiAliasing = BGFX_RESET_MSAA_X16; break;
-
-		default:
-			OtExcept("Anti-aliasing setting must be between 0 and 4");
-			break;
+OtObject OtApplicationClass::setAntiAliasing(int aa) {
+	if (aa < 0 || aa > 4) {
+		OtExcept("Anti-aliasing setting must be between 0 and 4");
 	}
 
+	antiAliasing = aa;
 	return shared();
 }
 
@@ -340,6 +340,15 @@ void OtApplicationClass::handleEvent() {
 		std::sscanf(event.c_str(), "%s %d", command, &keyboardCodepoint);
 		charEvent = true;
 	}
+}
+
+
+//
+//	OtApplicationClass::atexit
+//
+
+void OtApplicationClass::atexit(std::function<void(void)> callback) {
+	atExitCallbacks.push_back(callback);
 }
 
 

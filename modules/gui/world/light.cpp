@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include "imgui.h"
-
 #include "ot/function.h"
 
 #include "color.h"
@@ -60,14 +58,12 @@ void OtLightClass::renderGUI() {
 
 
 //
-//	OtLightClass::submit
+//	OtLightClass::render
 //
 
-void OtLightClass::submit(glm::vec4* slot, OtCamera camera) {
-	slot[0].x = enabled;
-	slot[1] = camera->getViewMatrix() * glm::vec4(position, 1.0);
-	slot[2] = glm::vec4(diffuse, 1.0);
-	slot[3] = glm::vec4(specular, 1.0);
+void OtLightClass::render(OtRenderingContext* context) {
+	glm::vec3 pos = (context->camera->getViewMatrix() * glm::vec4(position, 1.0));
+	context->addPointLight(pos, diffuse, specular);
 }
 
 

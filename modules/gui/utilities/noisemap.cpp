@@ -13,8 +13,6 @@
 #include <limits>
 #include <random>
 
-#include "bimg/bimg.h"
-
 #include "ot/function.h"
 
 #include "noisemap.h"
@@ -25,17 +23,7 @@
 //
 
 OtNoiseMapClass::OtNoiseMapClass() {
-	seed(237);
-	generate();
-}
-
-
-//
-//	OtNoiseMapClass::~OtNoiseMapClass
-//
-
-OtNoiseMapClass::~OtNoiseMapClass() {
-	delete [] noisemap;
+	perlin = OtPerlinClass::create(currentSeed);
 }
 
 
@@ -44,28 +32,11 @@ OtNoiseMapClass::~OtNoiseMapClass() {
 //
 
 OtObject OtNoiseMapClass::init(size_t count, OtObject* parameters) {
-	bool changed = false;
+	if (count == 1) {
+		setSeed(parameters[0]->operator int());
 
-	switch (count) {
-		case 3:
-			setScale(parameters[2]->operator float());
-			changed = true;
-			break;
-
-		case 1:
-			setSize(parameters[0]->operator int(), parameters[1]->operator int());
-			changed = true;
-			break;
-
-		case 0:
-			break;
-
-		default:
-			OtExcept("[NoiseMap] constructor expects 0, 1 or 3 arguments (not %ld)", count);
-	}
-
-	if (changed) {
-		generate();
+	} else if (count != 0) {
+		OtExcept("[NoiseMap] constructor expects 0 or 1 arguments (not %ld)", count);
 	}
 
 	return nullptr;
@@ -73,165 +44,166 @@ OtObject OtNoiseMapClass::init(size_t count, OtObject* parameters) {
 
 
 //
-//	OtNoiseMapClass::seed
+//	OtNoiseMapClass::setSeed
 //
 
-void OtNoiseMapClass::seed(int seed) {
+OtObject OtNoiseMapClass::setSeed(int seed) {
 	currentSeed = seed;
-
-	p.resize(256);
-	std::iota(p.begin(), p.end(), 0);
-	std::default_random_engine engine(seed);
-	std::shuffle(p.begin(), p.end(), engine);
-	p.insert(p.end(), p.begin(), p.end());
-	generate();
-}
-
-
-//
-//	OtNoiseMapClass::setSize
-//
-
-OtObject OtNoiseMapClass::setSize(size_t w, size_t h) {
-	if (w != width || h != height) {
-		width = w;
-		height = h;
-		generate();
-	}
-
+	perlin->seed(seed);
+	notify();
 	return shared();
 }
 
 
 //
-//	OtNoiseMapClass::setScale
+//	OtNoiseMapClass::setOctaves
 //
 
-OtObject OtNoiseMapClass::setScale(float s) {
-	if (s != scale) {
-		scale = s;
-		generate();
-	}
-
-	return shared();
-}
-
-
-// set noisemap offset
-OtObject OtNoiseMapClass::setOffset(int x, int y) {
-	if (x != offsetX || y != offsetY) {
-		offsetX = x;
-		offsetY = y;
-		generate();
-	}
-
+OtObject OtNoiseMapClass::setOctaves(int o) {
+	octaves = o;
+	notify();
 	return shared();
 }
 
 
 //
-//	OtNoiseMapClass::generate
+//	OtNoiseMapClass::setPersistence
 //
 
-void OtNoiseMapClass::generate() {
-	// create new noisemap
-	if (noisemap) {
-		delete [] noisemap;
-	}
+OtObject OtNoiseMapClass::setPersistence(float p) {
+	persistence = p;
+	notify();
+	return shared();
+}
 
-	noisemap = new float[width * height];
 
-	// track min/max value so we can normalize later
-	float minNoiseHeight = std::numeric_limits<float>::max();
-	float maxNoiseHeight = std::numeric_limits<float>::min();
+//
+//	OtNoiseMapClass::setEasing
+//
 
+OtObject OtNoiseMapClass::setEasing(int e) {
+	easing = e;
+	easingFunction = OtEasingGetFunction(easing);
+	notify();
+	return shared();
+}
+
+
+//
+//	OtNoiseMapClass::setScaleXY
+//
+
+OtObject OtNoiseMapClass::setScaleXY(float xy) {
+	scaleXY = xy;
+	notify();
+	return shared();
+}
+
+
+//
+//	OtNoiseMapClass::setScaleZ
+//
+
+OtObject OtNoiseMapClass::setScaleZ(float z) {
+	scaleZ = z;
+	notify();
+	return shared();
+}
+
+
+//
+//	OtNoiseMapClass::setOffsetZ
+//
+
+OtObject OtNoiseMapClass::setOffsetZ(float z) {
+	offsetZ = z;
+	notify();
+	return shared();
+}
+
+
+//
+//	OtNoiseMapClass::setNormalize
+//
+
+OtObject OtNoiseMapClass::setNormalize(bool n) {
+	normalize = n;
+	notify();
+	return shared();
+}
+
+
+//
+//	OtNoiseMapClass::getMinNoise
+//
+
+float OtNoiseMapClass::getMinNoise() {
+	return easingFunction(0.0) * scaleZ + offsetZ;
+}
+
+
+//
+//	OtNoiseMapClass::getMaxNoise
+//
+
+float OtNoiseMapClass::getMaxNoise() {
+	return easingFunction(1.0) * scaleZ + offsetZ;
+}
+
+
+//
+//	OtNoiseMapClass::getNoise
+//
+
+float OtNoiseMapClass::getNoise(float x, float y) {
+	return easingFunction(perlin->octaveNoise(
+		x / scaleXY, y / scaleXY, 0.5,
+		octaves, persistence)) * scaleZ + offsetZ;
+}
+
+
+//
+//	OtNoiseMapClass::getNoiseArray
+//
+
+void OtNoiseMapClass::getNoiseArray(float* output, size_t width, size_t height, float x, float y) {
 	// fill noisemap
-	for (auto x = 0; x < width; x++) {
-		for (auto y = 0; y < height; y++) {
-			float sampleX = x / scale + offsetX;
-			float sampleY = y / scale + offsetY;
-			float noiseHeight = noise(sampleX, sampleY, 0.5) * 2.0 - 1.0;
+	float* ptr = output;
 
-			noisemap[y * width + x] = noiseHeight;
-			minNoiseHeight = std::min(minNoiseHeight, noiseHeight);
-			maxNoiseHeight = std::max(maxNoiseHeight, noiseHeight);
+	for (auto y = 0; y < height; y++) {
+		for (auto x = 0; x < width; x++) {
+			*ptr++ = easingFunction(perlin->octaveNoise(
+				x / scaleXY, y / scaleXY, 0.5,
+				octaves, persistence));
 		}
 	}
 
 	// normalize noisemap
-	for (auto c = 0; c < width * height; c++) {
-		noisemap[c] = invlerp(noisemap[c], minNoiseHeight, maxNoiseHeight);
+	if (normalize) {
+		// determine limites
+		float minNoiseHeight = std::numeric_limits<float>::max();
+		float maxNoiseHeight = std::numeric_limits<float>::min();
+		ptr = output;
+
+		for (auto c = 0; c < width * height; c++, ptr++) {
+			minNoiseHeight = std::min(minNoiseHeight, *ptr);
+			maxNoiseHeight = std::max(maxNoiseHeight, *ptr);
+		}
+
+		// normalize values between 0.0 and 1.0
+		ptr = output;
+
+		for (auto c = 0; c < width * height; c++, ptr++) {
+			*ptr = (*ptr - minNoiseHeight) / (maxNoiseHeight - minNoiseHeight);
+		}
 	}
 
-	// notify objects that depend on us
-	notify();
-}
+	// apply scale and offset
+	ptr = output;
 
-
-//
-//	OtNoiseMapClass::noise
-//
-
-float OtNoiseMapClass::noise(float x, float y, float z) {
-	int X = (int) floor(x) & 255;
-	int Y = (int) floor(y) & 255;
-	int Z = (int) floor(z) & 255;
-
-	x -= floor(x);
-	y -= floor(y);
-	z -= floor(z);
-
-	float u = fade(x);
-	float v = fade(y);
-	float w = fade(z);
-
-	int A = p[X] + Y;
-	int AA = p[A] + Z;
-	int AB = p[A + 1] + Z;
-	int B = p[X + 1] + Y;
-	int BA = p[B] + Z;
-	int BB = p[B + 1] + Z;
-
-	float res = lerp(w, lerp(v, lerp(u, grad(p[AA], x, y, z), grad(p[BA], x-1, y, z)), lerp(u, grad(p[AB], x, y-1, z), grad(p[BB], x-1, y-1, z))),	lerp(v, lerp(u, grad(p[AA+1], x, y, z-1), grad(p[BA+1], x-1, y, z-1)), lerp(u, grad(p[AB+1], x, y-1, z-1),	grad(p[BB+1], x-1, y-1, z-1))));
-	return (res + 1.0) / 2.0;
-}
-
-
-//
-//	OtNoiseMapClass::fad
-//
-
-float OtNoiseMapClass::fade(float t) {
-	return t * t * t * (t * (t * 6 - 15) + 10);
-}
-
-
-//
-//	OtNoiseMapClass::lerp
-//
-
-float OtNoiseMapClass::lerp(float t, float a, float b) {
-	return a + t * (b - a);
-}
-
-
-//
-//	OtNoiseMapClass::invlerp
-//
-
-float OtNoiseMapClass::invlerp(float v, float a, float b) {
-	return (v - a) / (b - a);
-}
-
-
-//
-//	OtNoiseMapClass::grad
-//
-
-float OtNoiseMapClass::grad(int hash, float x, float y, float z) {
-	int h = hash & 15;
-	float u = h < 8 ? x : y, v = h < 4 ? y : h == 12 || h == 14 ? x : z;
-	return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
+	for (auto c = 0; c < width * height; c++, ptr++) {
+		*ptr = *ptr * scaleZ + offsetZ;
+	}
 }
 
 
@@ -242,32 +214,41 @@ float OtNoiseMapClass::grad(int hash, float x, float y, float z) {
 void OtNoiseMapClass::renderGUI() {
 	bool changed = false;
 
-	if (ImGui::SliderInt("Width", &width, 16, 1024)) {
-		changed = true;
-	}
-
-	if (ImGui::SliderInt("Height", &height, 16, 1024)) {
-		changed = true;
-	}
-
 	if (ImGui::SliderInt("Seed", &currentSeed, 1, 1000)) {
-		seed(currentSeed);
+		setSeed(currentSeed);
 	}
 
-	if (ImGui::SliderFloat("Scale", &scale, 2.0f, 100.0f)) {
+	if (ImGui::SliderInt("Octaves", &octaves, 1, 12)) {
 		changed = true;
 	}
 
-	if (ImGui::SliderFloat("Offset X", &offsetX, -10.0f, 10.0f)) {
+	if (ImGui::SliderFloat("Persistence", &persistence, 0.2f, 0.7f)) {
 		changed = true;
 	}
 
-	if (ImGui::SliderFloat("Offset Y", &offsetY, -10.0f, 10.0f)) {
+	if (ImGui::Easing("Easing", &easing)) {
+		setEasing(easing);
+		changed = true;
+	}
+
+	if (ImGui::SliderFloat("Scale XY", &scaleXY, 1.0f, 200.0f)) {
+		changed = true;
+	}
+
+	if (ImGui::SliderFloat("Scale Z", &scaleZ, 1.0f, 400.0f)) {
+		changed = true;
+	}
+
+	if (ImGui::SliderFloat("Offset Z", &offsetZ, -200.0f, 200.0f)) {
+		changed = true;
+	}
+
+	if (ImGui::Checkbox("Normalize", &normalize)) {
 		changed = true;
 	}
 
 	if (changed) {
-		generate();
+		notify();
 	}
 }
 
@@ -282,9 +263,14 @@ OtType OtNoiseMapClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtNoiseMapClass>("NoiseMap", OtGuiClass::getMeta());
 		type->set("__init__", OtFunctionClass::create(&OtNoiseMapClass::init));
-		type->set("setSize", OtFunctionClass::create(&OtNoiseMapClass::setSize));
-		type->set("setScale", OtFunctionClass::create(&OtNoiseMapClass::setScale));
-		type->set("setOffset", OtFunctionClass::create(&OtNoiseMapClass::setOffset));
+		type->set("setSeed", OtFunctionClass::create(&OtNoiseMapClass::setSeed));
+		type->set("setOctaves", OtFunctionClass::create(&OtNoiseMapClass::setOctaves));
+		type->set("setPersistence", OtFunctionClass::create(&OtNoiseMapClass::setPersistence));
+		type->set("setEasing", OtFunctionClass::create(&OtNoiseMapClass::setEasing));
+		type->set("setScaleXY", OtFunctionClass::create(&OtNoiseMapClass::setScaleXY));
+		type->set("setScaleZ", OtFunctionClass::create(&OtNoiseMapClass::setScaleZ));
+		type->set("setOffsetZ", OtFunctionClass::create(&OtNoiseMapClass::setOffsetZ));
+		type->set("setNormalize", OtFunctionClass::create(&OtNoiseMapClass::setNormalize));
 	}
 
 	return type;

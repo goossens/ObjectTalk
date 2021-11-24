@@ -13,6 +13,8 @@
 //
 
 #include "geometry.h"
+#include "heightmap.h"
+#include "noisemap.h"
 
 
 //
@@ -24,6 +26,9 @@ typedef std::shared_ptr<OtPlaneGeometryClass> OtPlaneGeometry;
 
 class OtPlaneGeometryClass : public OtGeometryClass {
 public:
+	// destructor
+	~OtPlaneGeometryClass();
+
 	// initialize geometry
 	OtObject init(size_t count, OtObject* parameters);
 
@@ -32,6 +37,8 @@ public:
 	OtObject setHeight(float height);
 	OtObject setWidthSegments(int widthSegments);
 	OtObject setHeightSegments(int heightSegments);
+	OtObject setHeightMap(OtObject heightmap);
+	OtObject setNoiseMap(OtObject noisemap, int xoffset, int yoffset);
 
 	// get information
 	float getWidth() { return width; }
@@ -54,4 +61,12 @@ private:
 	float height = 1.0;
 	int widthSegments = 1;
 	int heightSegments = 1;
+
+	OtHeightMap heightmap;
+	size_t heightmapID;
+
+	OtNoiseMap noisemap;
+	size_t noisemapID;
+	int xoffset = 0;
+	int yoffset = 0;
 };

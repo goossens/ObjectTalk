@@ -12,9 +12,7 @@
 //  Include files
 //
 
-#include "imgui.h"
-
-#include "theme.h"
+#include "gui.h"
 
 
 //

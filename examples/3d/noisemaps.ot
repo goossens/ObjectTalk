@@ -1,0 +1,72 @@
+#!/usr/local/bin/ot
+
+//	ObjectTalk Scripting Language
+//	Copyright (c) 2020-2021 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var gui = import("gui");
+
+class MyApp : gui.Application {
+	function setup(this, screen) {
+		var ambient = gui.Ambient();
+		var light = gui.Light().setPosition(20, 400, -400);
+
+		this.scene = gui.Scene()
+			.add(ambient)
+			.add(light);
+
+		this.noisemap = gui.NoiseMap()
+			.setScaleZ(200.0)
+			.setOffsetZ(-100.0);
+
+		this.material = gui.Material("material", "gold");
+
+		this.addTile(0, 0);
+		this.addTile(-1, 0);
+		this.addTile(1, 0);
+		this.addTile(0, -1);
+		this.addTile(0, 1);
+
+		var camera = gui.Camera()
+			.setMouseControl(true)
+			.setAngle(pi / 4.0)
+			.setPitchLimits(0.1, pi / 2.0 - 0.1)
+			.setPitch(0.3)
+			.setDistanceLimits(20.0, 1000.0)
+			.setDistance(700.0)
+			.setFOV(45)
+			.setClipping(0.1, 1000);
+
+		var view = gui.View()
+			.setScreenArea(20, 0, 80, 100)
+			.setCamera(camera)
+			.setScene(this.scene);
+
+		var panel = gui.Panel(0, 0, 20, 100);
+
+		var node = gui.TreeNode("Noise Map:");
+		node.add(gui.NoiseMapController(this.noisemap));
+		panel.add(node);
+
+		screen.add(view).add(panel);
+	}
+
+	function addTile(this, x, y) {
+		this.scene.add(gui.Mesh()
+			.setGeometry(gui.PlaneGeometry()
+				.setWidth(200)
+				.setHeight(200)
+				.setWidthSegments(50)
+				.setHeightSegments(50)
+				.setNoiseMap(this.noisemap, x * 200, y * 200))
+			.setMaterial(this.material)
+			.setWireframe(true)
+			.rotateX(-pi / 2.0)
+			.translate(x * 200, 0.0, y * 200));
+	}
+}
+
+var app = MyApp();
+app.run("Noise Map Demo");

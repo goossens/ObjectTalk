@@ -18,8 +18,6 @@ SAMPLER2D(s_normals, 0);
 SAMPLER2D(s_reflection, 1);
 SAMPLER2D(s_refraction, 2);
 
-const float waveStrength = 0.01;
-
 void main() {
 	mat3 tbn = mtxFromCols(v_tangent, v_normal, v_bitangent);
 
@@ -36,7 +34,7 @@ void main() {
 	vec4 reflectionColor = texture2D(s_reflection, fbuv);
 	vec4 refractionColor = texture2D(s_refraction, vec2(fbuv.x, -fbuv.y));
 
-	float refractionFactor = dot(vec3(0.0, 0.0, 1.0), normal);
-	vec4 color = mix(reflectionColor, u_water_color, refractionFactor);
-	gl_FragColor = applyLight(reflectionColor, v_position_camera, normal);
+	float reflectance = dot(vec3(0.0, 0.0, 1.0), normal);
+	vec4 color = mix(reflectionColor, u_water_color, reflectance);
+	gl_FragColor = applyLight(color, v_position_camera, normal);
 }

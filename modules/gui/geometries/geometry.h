@@ -14,9 +14,6 @@
 
 #include <vector>
 
-#include "glm/glm.hpp"
-#include "bgfx/bgfx.h"
-
 #include "gui.h"
 #include "vertex.h"
 

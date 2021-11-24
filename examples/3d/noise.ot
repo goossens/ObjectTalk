@@ -1,0 +1,54 @@
+#!/usr/local/bin/ot
+
+//	ObjectTalk Scripting Language
+//	Copyright (c) 2020-2021 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var gui = import("gui");
+
+class MyApp : gui.Application {
+	function setup(this, screen) {
+		var ambient = gui.Ambient();
+		var light = gui.Light().setPosition(20, 300, 40);
+
+		var noisemap = gui.NoiseMap();
+
+		var texture = gui.Texture()
+			.setNoiseMap(noisemap, 256, 256);
+
+		var plane = gui.Mesh()
+			.setGeometry(gui.PlaneGeometry()
+				.setWidth(256)
+				.setHeight(256)
+				.setWidthSegments(256)
+				.setHeightSegments(256))
+			.setMaterial(gui.Material("texture", texture));
+
+		var scene = gui.Scene()
+			.add(ambient)
+			.add(light)
+			.add(plane);
+
+		var camera = gui.Camera()
+			.setPosition(0, 0, 400)
+			.setFOV(45);
+
+		var view = gui.View()
+			.setScreenArea(20, 0, 80, 100)
+			.setCamera(camera)
+			.setScene(scene);
+
+		var panel = gui.Panel(0, 0, 20, 100);
+
+		var node = gui.TreeNode("Noise:");
+		node.add(gui.NoiseMapController(noisemap));
+		panel.add(node);
+
+		screen.add(view).add(panel);
+	}
+}
+
+var app = MyApp();
+app.run("Noise Map Visualizer");

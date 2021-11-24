@@ -9,15 +9,12 @@
 //	Include files
 //
 
-#include "bgfx/embedded_shader.h"
-
-#include "imgui.h"
-
 #include "ot/function.h"
 #include "ot/numbers.h"
 
 #include "application.h"
 #include "color.h"
+#include "scene.h"
 #include "water.h"
 #include "watershader.h"
 
@@ -66,10 +63,6 @@ OtWaterClass::OtWaterClass() {
 	normalsUniform = bgfx::createUniform("s_normals", bgfx::UniformType::Sampler);
 	reflectionUniform = bgfx::createUniform("s_reflection", bgfx::UniformType::Sampler);
 	refractionUniform = bgfx::createUniform("s_refraction", bgfx::UniformType::Sampler);
-
-	// create frame buffers cameras
-	reflectionCamera = OtCameraClass::create();
-	refractionCamera = OtCameraClass::create();
 
 	// initialize shader
 	bgfx::RendererType::Enum type = bgfx::getRendererType();
@@ -121,10 +114,12 @@ void OtWaterClass::updateFrameBuffers(float viewAspect) {
 		bgfx::destroy(refractionFrameBuffer);
 	}
 
+	// determine size of frame buffer
 	const uint64_t flags = BGFX_TEXTURE_RT | BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP;
 	int w = 512;
 	int h = w / viewAspect;
 
+	// create new frame buffers
 	reflectionTextures[0] = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA16F, flags);
 	reflectionTextures[1] = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::D32F, flags);
 	reflectionFrameBuffer = bgfx::createFrameBuffer(2, reflectionTextures, true);
@@ -132,7 +127,6 @@ void OtWaterClass::updateFrameBuffers(float viewAspect) {
 	refractionTextures[0] = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA16F, flags);
 	refractionTextures[1] = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::D32F, flags);
 	refractionFrameBuffer = bgfx::createFrameBuffer(2, refractionTextures, true);
-	frameBufferAspect = viewAspect;
 }
 
 
@@ -187,48 +181,45 @@ OtObject OtWaterClass::setNormalScale(float s) {
 
 
 //
-//	OtWaterClass::renderGUI
-//
-
-void OtWaterClass::renderGUI() {
-	ImGui::SliderFloat("Scale", &scale, 0.1f, 10.0f);
-	ImGui::SliderFloat("Shininess", &shininess, 10.0f, 200.0f);
-	ImGui::ColorEdit3("Color", glm::value_ptr(color));
-}
-
-
-//
 //	OtWaterClass::preRender
 //
 
-void OtWaterClass::preRender(OtScene scene, float viewAspect, OtCamera camera) {
-	// temporarily diaable ourselves so we don't draw during prerender
-	disable();
-
-	// create/update frma buffers (if required)
-	if (frameBufferAspect != viewAspect) {
-		updateFrameBuffers(viewAspect);
+void OtWaterClass::preRender(OtRenderingContext* context) {
+	// create/update frame buffers (if required)
+	if (frameBufferAspect != context->viewAspect) {
+		updateFrameBuffers(context->viewAspect);
+		frameBufferAspect = context->viewAspect;
 	}
 
-	// update reflection camera
-	camera->cloneGeometry(reflectionCamera);
-	glm::vec3 position = camera->getPosition();
-	glm::vec3 target = camera->getTarget();
+	// create reflection camera
+	glm::vec3 position = context->camera->getPosition();
+	glm::vec3 target = context->camera->getTarget();
 
 	position.y = -position.y;
 	target.y = -target.y;
 
+	OtCamera reflectionCamera = OtCameraClass::create();;
 	reflectionCamera->setPositionVector(position);
 	reflectionCamera->setTargetVector(target);
+	reflectionCamera->setUpVector(context->camera->getUp());
+	reflectionCamera->setFOV(context->camera->getFOV());
+	reflectionCamera->setClipping(context->camera->getNearClip(), context->camera->getFarClip());
 
-	int view = 1;
-	bgfx::setViewRect(view, 0, 0, 512, 512 / viewAspect);
-	bgfx::setViewFrameBuffer(view, reflectionFrameBuffer);
+	// create reflection rendering context
+	OtRenderingContext reflectionContext(1, context->viewAspect, context->scene, reflectionCamera);
+	reflectionContext.reflection = true;
 
-	reflectionCamera->submit(view, viewAspect);
+	// temporarily disable ourselves so we don't draw during prerender
+	disable();
 
-	bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS);
-	scene->render(view, reflectionCamera, viewAspect);
+	// render reflection
+	reflectionCamera->update(&reflectionContext);
+	reflectionCamera->submit(&reflectionContext);
+
+	bgfx::setViewClear(reflectionContext.view, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH);
+	bgfx::setViewRect(reflectionContext.view, 0, 0, 512, 512 / context->viewAspect);
+	bgfx::setViewFrameBuffer(reflectionContext.view, reflectionFrameBuffer);
+	context->scene->render(&reflectionContext);
 
 	// reenable so we can be seen in the final rendering
 	enable();
@@ -239,7 +230,7 @@ void OtWaterClass::preRender(OtScene scene, float viewAspect, OtCamera camera) {
 //	OtWaterClass::render
 //
 
-void OtWaterClass::render(int view, OtCamera camera, glm::mat4 parentTransform) {
+void OtWaterClass::render(OtRenderingContext* context) {
 	// sanity check
 	if (!normals) {
 		OtExcept("Normals map not specified for [Water] object");
@@ -263,6 +254,8 @@ void OtWaterClass::render(int view, OtCamera camera, glm::mat4 parentTransform) 
 	time += OtApplicationClass::getLoopDuration() / 2500.0;
 
 	// set uniforms
+	context->submit();
+
 	glm::vec4 materialUniforms[5];
 	materialUniforms[0] = glm::vec4(1.0);
 	materialUniforms[1] = glm::vec4(0.4, 0.4, 0.4, 1.0);
@@ -279,7 +272,19 @@ void OtWaterClass::render(int view, OtCamera camera, glm::mat4 parentTransform) 
 
 	// run shader
 	bgfx::setState(BGFX_STATE_DEFAULT);
-	bgfx::submit(view, shader);
+	bgfx::submit(context->view, shader);
+}
+
+
+//
+//	OtWaterClass::renderGUI
+//
+
+void OtWaterClass::renderGUI() {
+	ImGui::Checkbox("Enabled", &enabled);
+	ImGui::SliderFloat("Texture Scale", &scale, 0.1f, 10.0f);
+	ImGui::SliderFloat("Shininess", &shininess, 10.0f, 200.0f);
+	ImGui::ColorEdit3("Color", glm::value_ptr(color));
 }
 
 

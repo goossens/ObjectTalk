@@ -2,9 +2,27 @@
 
 SHADERC=~/bin/shaderc
 HOME="$(cd -P "$(dirname "${BASH_SOURCE[0]}")"; pwd)"
+FORCE=0
+
+while [ $# -gt 0 ]
+do
+	case $1 in
+		-f|--force)
+			FORCE=1
+			shift
+			;;
+		*)
+			echo "Invalid parameter [$1]"
+			exit
+	esac
+done
 
 function needsUpdate() {
-	if [ ! -f ${HOME}/$1shader.h ]
+	if [ ${FORCE} -eq 1 ]
+	then
+		true
+
+	elif [ ! -f ${HOME}/$1shader.h ]
 	then
 		true
 
@@ -95,11 +113,11 @@ function compileShader() {
 }
 
 compileShader background
-compileShader skybox
-compileShader sky
-compileShader water
-compileShader land
-compileShader fixed
-compileShader colored
-compileShader textured
 compileShader blendmapped
+compileShader colored
+compileShader fixed
+compileShader sky
+compileShader skybox
+compileShader terrain
+compileShader textured
+compileShader water

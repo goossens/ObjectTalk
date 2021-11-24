@@ -12,9 +12,6 @@
 //	Include files
 //
 
-#include "bgfx/bgfx.h"
-#include "bimg/bimg.h"
-
 #include "sceneobject.h"
 
 
@@ -41,7 +38,7 @@ public:
 	OtObject setCubemap(const std::string& posx, const std::string& negx, const std::string& posy, const std::string& negy, const std::string& posz, const std::string& negz);
 
 	// render in BGFX
-    void render(int view, OtCamera camera, glm::mat4 parentTransform);
+    void render(OtRenderingContext* context);
 
 	// get type definition
 	static OtType getMeta();

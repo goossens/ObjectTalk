@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include "imgui.h"
-
 #include "ot/function.h"
 
 #include "color.h"
@@ -80,19 +78,15 @@ void OtSunClass::renderGUI() {
 
 
 //
-//	OtSunClass::submit
+//	OtLightClass::render
 //
 
-void OtSunClass::submit(glm::vec4* ambient, glm::vec4* slot, OtCamera camera) {
-	ambient[0] = glm::vec4(1.0);
+void OtSunClass::render(OtRenderingContext* context) {
+	float ambient = std::clamp((elevation + 0.1) / 0.3, 0.0, 1.0);
+	context->setAmbientLight(glm::vec3(ambient));
 
-	glm::vec4 direction = glm::normalize(camera->getViewMatrix() * glm::vec4(getDirection(), 0.0));
-	direction.w = 0.0;
-
-	slot[0].x = enabled;
-	slot[1] = direction;
-	slot[2] = glm::vec4(1.0);
-	slot[3] = glm::vec4(1.0);
+	glm::vec3 direction = glm::normalize(context->camera->getViewMatrix() * glm::vec4(getDirection(), 0.0));
+	context->addDirectionalLight(direction, glm::vec3(1.0), glm::vec3(1.0));
 }
 
 

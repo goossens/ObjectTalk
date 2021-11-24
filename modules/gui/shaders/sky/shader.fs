@@ -7,7 +7,6 @@
 $input v_position
 
 #include <bgfx.glsl>
-#include <light.glsl>
 
 uniform vec4 u_sky[3];
 #define u_time u_sky[0].x
@@ -49,7 +48,8 @@ float fbm(vec3 p) {
 }
 
 void main() {
-	if (v_position.y < 0.0) {
+	// render just a bit below the horizon
+	if (v_position.y < -0.1) {
 		discard;
 	}
 

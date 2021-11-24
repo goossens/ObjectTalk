@@ -9,9 +9,6 @@
 //	Include files
 //
 
-#include "bx/file.h"
-#include "bimg/decode.h"
-
 #include "ot/exception.h"
 
 #include "image.h"

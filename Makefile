@@ -4,10 +4,11 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-SRC=$(wildcard app/*.cpp libot/src/*.cpp modules/*/*.cpp)
-INC=$(wildcard libot/include/*.h libot/include/ot/*.h modules/*/*.h)
+SRC=$(wildcard app/*.cpp libot/*/*.cpp modules/*/*.cpp  modules/*/*/*.cpp)
+INC=$(wildcard libot/include/*.h libot/include/ot/*.h modules/*/*.h modules/*/*/*.h)
+TST=$(wildcard tests/*/*.ot)
 
-.PHONY: debug release xcode docs alpine ubuntu
+.PHONY: debug release xcode gui docs cleanup alpine ubuntu clean distclean
 
 debug:
 	cmake -Bdebug -Wno-dev -DCMAKE_BUILD_TYPE=Debug
@@ -40,8 +41,8 @@ docs:
 	pugger --theme manual --assets --out docs docs-src
 
 cleanup:
-	perl -i -pe 's/\s+\n/\n/' $(SRC) $(INC)
-	ls $(SRC) $(INC) | xargs -o -n 1 vim -c 'set ts=4|set noet|%retab!|wq'
+	perl -i -pe 's/\s+\n/\n/' $(SRC) $(INC) $(TST)
+	ls $(SRC) $(INC) $(TST) | xargs -o -n 1 vim -c 'set ts=4|set noet|%retab!|wq'
 
 alpine:
 	cd docker/alpine && ./run

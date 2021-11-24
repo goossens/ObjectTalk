@@ -20,7 +20,7 @@ target_link_libraries(ot PRIVATE libot ${UV_LIBRARY})
 if(APPLE)
 	set_target_properties(ot PROPERTIES
 		XCODE_GENERATE_SCHEME TRUE
-	XCODE_SCHEME_ARGUMENTS "${CMAKE_SOURCE_DIR}/examples/3d/sky.ot")
+	XCODE_SCHEME_ARGUMENTS "${CMAKE_SOURCE_DIR}/examples/3d/terrain.ot")
 endif()
 
 set_target_properties(ot PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)

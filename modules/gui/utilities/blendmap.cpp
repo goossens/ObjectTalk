@@ -9,10 +9,6 @@
 //	Include files
 //
 
-#include "bgfx/bgfx.h"
-#include "bimg/bimg.h"
-#include "bx/file.h"
-
 #include "ot/function.h"
 
 #include "blendmap.h"

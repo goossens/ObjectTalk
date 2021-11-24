@@ -9,9 +9,6 @@
 //	Include files
 //
 
-#define GLM_ENABLE_EXPERIMENTAL
-#include "glm/ext.hpp"
-
 #include "ot/function.h"
 
 #include "matrix.h"

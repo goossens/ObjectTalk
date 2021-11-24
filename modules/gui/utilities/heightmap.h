@@ -12,10 +12,8 @@
 //	Include files
 //
 
-#include "glm/glm.hpp"
-
+#include "controller.h"
 #include "gui.h"
-#include "noisemap.h"
 
 
 //
@@ -36,14 +34,11 @@ public:
 	// load heightmap from image
 	OtObject loadMap(const std::string& file);
 
-	// specify a noisemap to visualize
-	OtObject setNoiseMap(OtObject object);
-
-	// clamp the heightmap (before scaling)
-	OtObject setClamp(float min, float max);
-
 	// set the heightmap scale factor
 	OtObject setScale(float scale);
+
+	// set the heightmap offset (after scaling)
+	OtObject setOffset(float offset);
 
 	// get height (0.0 to 1.0) at specified location (in relative coordinates, 0.0 to 1.0)
 	float getHeight(float x, float y);
@@ -64,17 +59,12 @@ private:
 	// get height (0.0 to 1.0) at specified location (in absolute coordinates)
 	float getHeightAbs(int x, int y);
 
-	// handle noisemap
-	OtNoiseMap noisemap;
-	void processNoiseMap();
-
 	// heightmap properties
 	int width;
 	int height;
 
 	float scale = 1.0;
-	float minClamp = 0.0;
-	float maxClamp = 1.0;
+	float offset = 0.0;
 
 	float* heightmap = nullptr;
 };

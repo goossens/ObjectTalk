@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include "bgfx/embedded_shader.h"
-
 #include "ot/function.h"
 
 #include "background.h"
@@ -44,13 +42,6 @@ OtBackgroundClass::OtBackgroundClass() {
 	transformUniform = bgfx::createUniform("u_background_transform", bgfx::UniformType::Mat4);
 	backgroundUniform = bgfx::createUniform("u_background", bgfx::UniformType::Vec4, 2);
 	textureUniform = bgfx::createUniform("s_texture", bgfx::UniformType::Sampler);
-
-	// create a dummy texture
-	dummy = bgfx::createTexture2D(
-		1, 1, false, 1,
-		bgfx::TextureFormat::RGBA32F,
-		BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
-		nullptr);
 
 	// initialize shader
 	bgfx::RendererType::Enum type = bgfx::getRendererType();
@@ -122,7 +113,7 @@ OtObject OtBackgroundClass::setTexture(OtObject object) {
 //	OtBackgroundClass::render
 //
 
-void OtBackgroundClass::render(int view, OtCamera camera, glm::mat4 parentTransform) {
+void OtBackgroundClass::render(OtRenderingContext* context) {
 	// submit uniforms
 	glm::mat4 transform = glm::mat4(1.0);
 	float scale = (float) OtApplicationClass::getHeight() / (float) OtApplicationClass::getWidth();
@@ -134,12 +125,7 @@ void OtBackgroundClass::render(int view, OtCamera camera, glm::mat4 parentTransf
 	uniforms[1] = glm::vec4(color, 1.0);
 	bgfx::setUniform(backgroundUniform, &uniforms, 2);
 
-	if (texture) {
-		texture->submit(0, textureUniform);
-
-	} else {
-		bgfx::setTexture(0, textureUniform, dummy);
-	}
+	(texture ? texture : OtTextureClass::dummy())->submit(0, textureUniform);
 
 	// submit vertices and triangles
 	bgfx::setVertexBuffer(0, plane->getVertexBuffer());
@@ -147,7 +133,7 @@ void OtBackgroundClass::render(int view, OtCamera camera, glm::mat4 parentTransf
 
 	// run shader
 	bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_MSAA);
-	bgfx::submit(view, shader);
+	bgfx::submit(context->view, shader);
 }
 
 

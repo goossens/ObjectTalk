@@ -61,6 +61,7 @@ void OtPanelClass::render() {
 
 	if (ImGui::Begin("panel", nullptr, flags)) {
 		// render all children
+		ImGui::PushItemWidth(ImGui::GetWindowWidth() * 0.4f);
 		OtWidgetClass::render();
 	}
 

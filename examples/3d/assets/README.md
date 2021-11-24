@@ -20,6 +20,7 @@ The following assets are from the examples in the
 [Three.js project](https://threejs.org) which is released under the
 [MIT License](https://opensource.org/licenses/MIT).
 
+* cloth.jpg
 * grass.jpg
 * uv.jpg
 
@@ -45,7 +46,9 @@ All Natural Earth III images and data are in the public domain.
 ## OpenGameArt.Org
 
 The following assets are from [OpenGameArt.Org](OpenGameArt.Org) and are
-licensed under the [Creative Commons Public Domain](https://creativecommons.org/publicdomain/zero/1.0/) license:
+licensed under the
+[Creative Commons Public Domain](https://creativecommons.org/publicdomain/zero/1.0/)
+license:
 
 * space/* - by [StumpyStrust](https://opengameart.org/content/space-skyboxes-0)
 
@@ -64,3 +67,15 @@ No license information is specified.
 * pine.obj
 * pine.png
 * sky/*
+
+## Procedural Scene in OpenGL 4
+
+The following assets are from the
+[Procedural Scene in OpenGL 4](https://github.com/fede-vaccaro/TerrainEngine-OpenGL)
+project by Federico Vaccaro which is released under the
+[MIT License](https://opensource.org/licenses/MIT).
+
+* rock.jpg
+* sand.jpg
+* terrain.jpg
+* snow.jpg

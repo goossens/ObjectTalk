@@ -76,6 +76,11 @@ A final special thanks goes to the team that wrote the
 [Tutorials](https://threejsfundamentals.org) for
 [Three.js](https://threejs.org). The 3D ObjectTalk tutorial is based on it.
 
+More (smaller) credits can be found in the GUI module:
+
+* [Algorithms](modules/gui/README.md)
+* [Assets](examples/3d/assets/README.md)
+
 ## License
 
 Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.

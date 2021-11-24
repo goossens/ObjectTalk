@@ -15,6 +15,21 @@
 
 
 //
+//	OtPlaneGeometryClass::~OtPlaneGeometryClass
+//
+
+OtPlaneGeometryClass::~OtPlaneGeometryClass() {
+	if (heightmap) {
+		heightmap->detach(heightmapID);
+	}
+
+	if (noisemap) {
+		noisemap->detach(noisemapID);
+	}
+}
+
+
+//
 //	OtPlaneGeometryClass::init
 //
 
@@ -89,6 +104,75 @@ OtObject OtPlaneGeometryClass::setHeightSegments(int hs) {
 
 
 //
+//	OtPlaneGeometryClass::setHeightMap
+//
+
+OtObject OtPlaneGeometryClass::setHeightMap(OtObject object) {
+	// sanity check
+	if (!object->isKindOf("HeightMap")) {
+		OtExcept("Expected a [HeightMap] object, not a [%s]", object->getType()->getName().c_str());
+	}
+
+	// cleanup
+	if (heightmap) {
+		heightmap->detach(heightmapID);
+		heightmap = nullptr;
+	}
+
+	if (noisemap) {
+		noisemap->detach(noisemapID);
+		noisemap = nullptr;
+	}
+
+	// set new heightmap
+	heightmap = object->cast<OtHeightMapClass>();
+	refreshGeometry = true;
+
+	heightmapID = heightmap->attach([this]() {
+		refreshGeometry = true;
+	});
+
+	return shared();
+}
+
+
+//
+//	OtPlaneGeometryClass::setNoiseMap
+//
+
+OtObject OtPlaneGeometryClass::setNoiseMap(OtObject object, int xo, int yo) {
+	// sanity check
+	if (!object->isKindOf("NoiseMap")) {
+		OtExcept("Expected a [NoiseMap] object, not a [%s]", object->getType()->getName().c_str());
+	}
+
+	// cleanup
+	if (heightmap) {
+		heightmap->detach(heightmapID);
+		heightmap = nullptr;
+	}
+
+	if (noisemap) {
+		noisemap->detach(noisemapID);
+		noisemap = nullptr;
+	}
+
+	// set new noisemap
+	noisemap = object->cast<OtNoiseMapClass>();
+	refreshGeometry = true;
+
+	noisemapID = noisemap->attach([this]() {
+		refreshGeometry = true;
+	});
+
+	xoffset = xo;
+	yoffset = yo;
+
+	return shared();
+}
+
+
+//
 //	OtPlaneGeometryClass::fillGeometry
 //
 
@@ -104,15 +188,24 @@ void OtPlaneGeometryClass::fillGeometry() {
 	auto segmentHeight = height / (float) heightSegments;
 
 	for (auto iy = 0; iy < gridY1; iy++) {
-		auto y = iy * segmentHeight - heightHalf;
+		auto y = heightHalf - iy * segmentHeight;
 
 		for (auto ix = 0; ix < gridX1; ix++) {
 			auto x = ix * segmentWidth - widthHalf;
 			auto u = (float) ix / (float) widthSegments;
 			auto v = (float) iy / (float) heightSegments;
+			float z = 0.0;
+
+			if (heightmap) {
+
+				z = heightmap->getHeight(u, v);
+
+			} else if (noisemap) {
+				z = noisemap->getNoise(u * width + xoffset, v * height + yoffset);
+			}
 
 			addVertex(OtVertex(
-				glm::vec3(x, -y, 0.0),
+				glm::vec3(x, y, z),
 				glm::vec3(0.0, 0.0, 1.0),
 				glm::vec2(u, v)));
 		}
@@ -158,6 +251,8 @@ OtType OtPlaneGeometryClass::getMeta() {
 		type->set("setHeight", OtFunctionClass::create(&OtPlaneGeometryClass::setHeight));
 		type->set("setWidthSegments", OtFunctionClass::create(&OtPlaneGeometryClass::setWidthSegments));
 		type->set("setHeightSegments", OtFunctionClass::create(&OtPlaneGeometryClass::setHeightSegments));
+		type->set("setHeightMap", OtFunctionClass::create(&OtPlaneGeometryClass::setHeightMap));
+		type->set("setNoiseMap", OtFunctionClass::create(&OtPlaneGeometryClass::setNoiseMap));
 	}
 
 	return type;

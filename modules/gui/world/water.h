@@ -12,11 +12,6 @@
 //	Include files
 //
 
-#include "bgfx/bgfx.h"
-#include "bimg/bimg.h"
-
-#include "glm/glm.hpp"
-
 #include "controller.h"
 #include "object3d.h"
 #include "texture.h"
@@ -47,12 +42,12 @@ public:
 	// set the scale of the normals
 	OtObject setNormalScale(float scale);
 
+	// render in BGFX
+	void preRender(OtRenderingContext* context);
+    void render(OtRenderingContext* context);
+
 	// GUI to change water properties
 	void renderGUI();
-
-	// render in BGFX
-	void preRender(OtScene scene, float viewAspect, OtCamera camera);
-    void render(int view, OtCamera camera, glm::mat4 parentTransform);
 
 	// get type definition
 	static OtType getMeta();
@@ -71,18 +66,16 @@ protected:
 	float size = 1000.0;
 
 	// water properties
-	glm::vec3 color = { 0.0, 0.05, 0.2 };
+	glm::vec3 color = { 0.5, 0.6, 0.8 };
 	float time = 0.0;
 	float scale = 5.0;
 	float shininess = 50.0;
 
 	// Frame buffers
 	float frameBufferAspect = -1;
-	OtCamera reflectionCamera;
 	bgfx::TextureHandle reflectionTextures[2];
 	bgfx::FrameBufferHandle reflectionFrameBuffer= BGFX_INVALID_HANDLE;;
 
-	OtCamera refractionCamera;
 	bgfx::TextureHandle refractionTextures[2];
 	bgfx::FrameBufferHandle refractionFrameBuffer= BGFX_INVALID_HANDLE;;
 

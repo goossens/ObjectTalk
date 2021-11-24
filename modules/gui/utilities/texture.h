@@ -12,9 +12,6 @@
 //	Include files
 //
 
-#include "bgfx/bgfx.h"
-#include "bimg/bimg.h"
-
 #include "gui.h"
 #include "noisemap.h"
 
@@ -39,7 +36,7 @@ public:
 	OtObject loadImage(const std::string& file);
 
 	// specify a noisemap to visualize
-	OtObject setNoiseMap(OtObject object);
+	OtObject setNoiseMap(OtObject object, size_t width, size_t height);
 
 	// provide new pixels
 	void setPixels(void* pixels, size_t size, bimg::TextureFormat::Enum format, size_t width, size_t height);
@@ -53,9 +50,13 @@ public:
 	// create a new object
 	static OtTexture create();
 
+	// get an umpty dummy texture
+	static OtTexture dummy();
+
 private:
 	// handle noisemap
 	OtNoiseMap noisemap;
+	size_t noisemapID;
 	void processNoiseMap();
 
 	// texture properties
@@ -65,4 +66,7 @@ private:
 
 	bimg::ImageContainer* image = nullptr;
 	bgfx::TextureHandle texture = BGFX_INVALID_HANDLE;
+
+	// static dummy texture (so we don't have to potentially create a bunch)
+	static OtTexture dummyTexture;
 };

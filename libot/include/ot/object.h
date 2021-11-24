@@ -96,7 +96,8 @@ public:
 	OtClass getClass();
 
 	// support observer pattern through callbacks
-	void attach(std::function<void(void)> callback);
+	size_t attach(std::function<void(void)> callback);
+	void detach(size_t id);
 	void notify();
 
 	// get type definition
@@ -112,8 +113,14 @@ protected:
 	// members
 	OtMembers members;
 
-	// observer callbacks
-	std::shared_ptr<std::vector<std::function<void(void)>>> callbacks;
+	// observers
+	struct OtObserver {
+		OtObserver(size_t i, std::function<void(void)> c) : id(i), callback(c) {}
+		size_t id;
+		std::function<void(void)> callback;
+	};
+
+	std::shared_ptr<std::vector<OtObserver>> observers;
 };
 
 

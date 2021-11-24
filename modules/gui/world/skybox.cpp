@@ -9,9 +9,6 @@
 //	Include files
 //
 
-#include "bx/file.h"
-#include "bgfx/embedded_shader.h"
-
 #include "ot/function.h"
 
 #include "image.h"
@@ -281,7 +278,7 @@ OtObject OtSkyboxClass::setCubemap(const std::string& posx, const std::string& n
 //	OtSkyboxClass::render
 //
 
-void OtSkyboxClass::render(int view, OtCamera camera, glm::mat4 parentTransform) {
+void OtSkyboxClass::render(OtRenderingContext* context) {
 	// sanity check
 	if (!bgfx::isValid(cubemap)) {
 		OtExcept("[cubemap] missing for [skybox]");
@@ -296,7 +293,7 @@ void OtSkyboxClass::render(int view, OtCamera camera, glm::mat4 parentTransform)
 
 	// run shader
 	bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_MSAA);
-	bgfx::submit(view, shader);
+	bgfx::submit(context->view, shader);
 }
 
 

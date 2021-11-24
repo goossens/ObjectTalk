@@ -128,12 +128,36 @@ OtClass OtObjectClass::getClass() {
 //	OtObjectClass::attach
 //
 
-void OtObjectClass::attach(std::function<void(void)> callback) {
-	if (!callbacks) {
-		callbacks = std::make_shared<std::vector<std::function<void(void)>>>();
+size_t OtObjectClass::attach(std::function<void(void)> callback) {
+	if (!observers) {
+		observers = std::make_shared<std::vector<OtObserver>>();
 	}
 
-	callbacks->push_back(callback);
+	static size_t nextID = 1;
+	size_t id = nextID++;
+
+	observers->push_back(OtObserver(id, callback));
+	return id;
+}
+
+
+//
+//	OtObjectClass::detach
+//
+
+void OtObjectClass::detach(size_t id) {
+	if (observers) {
+		auto it = observers->begin();
+
+		while (it != observers->end()) {
+			if (it->id == id) {
+				it = observers->erase(it);
+
+			} else {
+				it++;
+			}
+		}
+	}
 }
 
 
@@ -142,9 +166,9 @@ void OtObjectClass::attach(std::function<void(void)> callback) {
 //
 
 void OtObjectClass::notify() {
-	if (callbacks) {
-		for (auto& callback : *callbacks) {
-			callback();
+	if (observers) {
+		for (auto& observer : *observers) {
+			observer.callback();
 		}
 	}
 }

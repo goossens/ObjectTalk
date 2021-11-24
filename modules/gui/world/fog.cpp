@@ -9,10 +9,6 @@
 //	Include files
 //
 
-#include "imgui.h"
-
-#include "glm/ext.hpp"
-
 #include "ot/function.h"
 
 #include "color.h"
@@ -48,18 +44,16 @@ void OtFogClass::renderGUI() {
 	ImGui::Checkbox("Enabled", &enabled);
 	ImGui::ColorEdit3("Color", glm::value_ptr(color));
 	ImGui::SliderFloat("Near", &near, 0.0f, 100.0f);
-	ImGui::SliderFloat("Far", &far, 0.0f, 100.0f);
+	ImGui::SliderFloat("Far", &far, 0.0f, 500.0f);
 }
 
 
 //
-//	OtFogClass::submit
+//	OtFogClass::render
 //
 
-void OtFogClass::submit(glm::vec4* slot) {
-	// pass fog information
-	slot[0] = { enabled, near, far, 0.0 };
-	slot[1] = glm::vec4(color, 1.0);
+void OtFogClass::render(OtRenderingContext* context) {
+	context->setFog(color, near, far);
 }
 
 

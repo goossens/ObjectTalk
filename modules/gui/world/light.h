@@ -12,9 +12,6 @@
 //	Include files
 //
 
-#include "glm/glm.hpp"
-#include "glm/ext.hpp"
-
 #include "camera.h"
 #include "controller.h"
 #include "sceneobject.h"
@@ -38,7 +35,7 @@ public:
 	void renderGUI();
 
 	// submit data to BGFX
-	void submit(glm::vec4* slot, OtCamera camera);
+	void render(OtRenderingContext* context);
 
 	// get type definition
 	static OtType getMeta();
@@ -48,9 +45,9 @@ public:
 
 private:
 	// light properties
-	glm::vec3 position = glm::vec4(0.0);
-	glm::vec3 diffuse = glm::vec4(1.0);
-	glm::vec3 specular = glm::vec4(1.0);
+	glm::vec3 position = glm::vec3(0.0);
+	glm::vec3 diffuse = glm::vec3(1.0);
+	glm::vec3 specular = glm::vec3(1.0);
 };
 
 

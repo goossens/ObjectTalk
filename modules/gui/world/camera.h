@@ -12,13 +12,12 @@
 //	Include files
 //
 
-#include "glm/ext.hpp"
-#include "glm/glm.hpp"
-
 #include "ot/numbers.h"
 
 #include "controller.h"
+#include "frustum.h"
 #include "gui.h"
+#include "renderingcontext.h"
 
 
 //
@@ -54,25 +53,32 @@ public:
 	bool onMouseDrag(int button, int mods, float xpos, float ypos);
 	bool onScrollWheel(float dx, float dy);
 
-	// clone geometry to other camera
-	void cloneGeometry(OtCamera camera);
+	// update camera for next frame
+	void update(OtRenderingContext* context);
 
 	// submit data to BGFX
-	void submit(int view, float viewAspect);
+	void submit(OtRenderingContext* context);
 
 	// access camera information
 	glm::vec3 getPosition() { return cameraPosition; }
 	glm::vec3 getTarget() { return cameraTarget; }
 	glm::vec3 getUp() { return cameraUp; }
 	float getFOV() { return fov; }
+	float getNearClip() { return nearClip; }
+	float getFarClip() { return farClip; }
 
 	glm::mat4& getViewMatrix() { return viewMatrix; }
 	glm::mat4& getProjectionMatrix() { return projMatrix; }
+	glm::mat4& getViewProjectionMatrix() { return viewProjMatrix; }
+	glm::mat4& getInverseViewProjectionMatrix() { return invViewProjMatrix; }
 
 	// see if object is visible in frustum
 	bool isVisiblePoint(const glm::vec3& point);
 	bool isVisibleAABB(const glm::vec3& min, const glm::vec3& max);
 	bool isVisibleSphere(const glm::vec3& center, float radius);
+
+	// get direction from Normal Device Coordinates (NDC -1 to 1)
+	glm::vec3 getDirectionFromNDC(float x, float y);
 
 	// GUI to change camera properties
 	void renderGUI();
@@ -114,26 +120,11 @@ private:
 	// transformation matrices;
 	glm::mat4 viewMatrix;
 	glm::mat4 projMatrix;
-
-	// a plane in our frustum
-	class Plane {
-	public:
-		// constructors
-		Plane() = default;
-
-		Plane(const glm::vec4& v) : normal(v.x, v.y, v.z), d(v.w) {
-			// normalize vector
-			float length = glm::length(normal);
-			normal /= length;
-			d /= length;
-		}
-
-		glm::vec3 normal;
-		float d;
-	};
+	glm::mat4 viewProjMatrix;
+	glm::mat4 invViewProjMatrix;
 
 	// our viewing frustum
-	Plane planes[6];
+	OtFrustum frustum;
 };
 
 

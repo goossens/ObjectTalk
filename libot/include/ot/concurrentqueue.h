@@ -27,6 +27,14 @@ public:
 	// constructor
 	OtConcurrentQueue() = default;
 
+	// clear queue
+	void clear() {
+		std::unique_lock<std::mutex> mlock(mutex);
+		queue = {};
+		mlock.unlock();
+		cv.notify_one();
+	}
+
 	// put item on queue
 	void push(const T& item) {
 		std::unique_lock<std::mutex> mlock(mutex);

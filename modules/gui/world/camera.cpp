@@ -11,8 +11,6 @@
 
 #include <algorithm>
 
-#include "bgfx/bgfx.h"
-
 #include "ot/function.h"
 
 #include "application.h"
@@ -208,18 +206,18 @@ bool OtCameraClass::onScrollWheel(float dx, float dy) {
 
 
 //
-//	OtCameraClass::cloneGeometry
+//	OtCameraClass::update
 //
 
-void OtCameraClass::cloneGeometry(OtCamera camera) {
-	// clone geometry info to other camera
-	camera->cameraPosition = cameraPosition;
-	camera->cameraTarget = cameraTarget;
-	camera->cameraUp = cameraUp;
+void OtCameraClass::update(OtRenderingContext* context) {
+	// determine transformations
+	viewMatrix = glm::lookAt(cameraPosition, cameraTarget, cameraUp);
+	projMatrix = glm::perspective(glm::radians(fov), context->viewAspect, nearClip, farClip);
+	viewProjMatrix = projMatrix * viewMatrix;
+	invViewProjMatrix = glm::inverse(viewProjMatrix);
 
-	camera->fov = fov;
-	camera->nearClip = nearClip;
-	camera->farClip = farClip;
+	// determine frustum (in world space)
+	frustum = OtFrustum(viewProjMatrix);
 }
 
 
@@ -227,27 +225,8 @@ void OtCameraClass::cloneGeometry(OtCamera camera) {
 //	OtCameraClass::submit
 //
 
-void OtCameraClass::submit(int view, float viewAspect) {
-	// determine view and projection transformations
-	viewMatrix = glm::lookAt(cameraPosition, cameraTarget, cameraUp);
-
-	projMatrix = glm::perspective(
-		(float) glm::radians(fov),
-		(float) viewAspect,
-		(float) nearClip,
-		(float) farClip);
-
-	// determine frustum planes (in world space)
-	glm::mat4 mat = projMatrix * viewMatrix;
-	planes[0] = glm::row(mat, 3) + glm::row(mat, 0); // left
-	planes[1] = glm::row(mat, 3) - glm::row(mat, 0); // right
-	planes[2] = glm::row(mat, 3) + glm::row(mat, 1); // bottom
-	planes[3] = glm::row(mat, 3) - glm::row(mat, 1); // top
-	planes[4] = glm::row(mat, 3) + glm::row(mat, 2); // far
-	planes[5] = glm::row(mat, 3) - glm::row(mat, 2); // near
-
-	// setup BGFX
-	bgfx::setViewTransform(view, glm::value_ptr(viewMatrix), glm::value_ptr(projMatrix));
+void OtCameraClass::submit(OtRenderingContext* context) {
+	bgfx::setViewTransform(context->view, glm::value_ptr(viewMatrix), glm::value_ptr(projMatrix));
 }
 
 
@@ -257,12 +236,13 @@ void OtCameraClass::submit(int view, float viewAspect) {
 
 bool OtCameraClass::isVisiblePoint(const glm::vec3& point) {
 	// check against all frustum planes
+/*
 	for (auto c = 0; c < 6; c++) {
 		if (glm::dot(planes[c].normal, point) + planes[c].d > 0) {
 			return false;
 		 }
 	}
-
+*/
 	return true;
 }
 
@@ -272,19 +252,7 @@ bool OtCameraClass::isVisiblePoint(const glm::vec3& point) {
 //
 
 bool OtCameraClass::isVisibleAABB(const glm::vec3& min, const glm::vec3& max) {
-	// check against all frustum planes
-	for (auto c = 0; c < 6; c++) {
-		glm::vec3 point (
-			planes[c].normal.x > 0 ? min.x : max.x,
-			planes[c].normal.y > 0 ? min.y : max.y,
-			planes[c].normal.z > 0 ? min.z : max.z);
-
-		if (glm::dot(planes[c].normal, point) + planes[c].d > 0) {
-			return false;
-		}
-	}
-
-	return true;
+	return frustum.isVisibleAABB(min, max);
 }
 
 
@@ -294,13 +262,27 @@ bool OtCameraClass::isVisibleAABB(const glm::vec3& min, const glm::vec3& max) {
 
 bool OtCameraClass::isVisibleSphere(const glm::vec3& center, float radius) {
 	// check against all frustum planes
+/*
 	for (auto c = 0; c < 6; c++) {
 		if (glm::dot(planes[c].normal, center) + planes[c].d + radius > 0) {
 			return false;
 		}
 	}
+*/
 
 	return true;
+}
+
+
+//
+//	OtCameraClass::getDirectionFromNDC
+//
+
+glm::vec3 OtCameraClass::getDirectionFromNDC(float x, float y) {
+	glm::vec4 ndcPos = glm::vec4(x, y, 1.0, 1.0);
+	glm::vec4 worldPos = invViewProjMatrix * ndcPos;
+	glm::vec3 dir = glm::normalize(glm::vec3(worldPos));
+	return dir;
 }
 
 

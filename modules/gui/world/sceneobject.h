@@ -12,11 +12,9 @@
 //	Include files
 //
 
-#include "glm/glm.hpp"
-
 #include "camera.h"
 #include "component.h"
-#include "scene.h"
+#include "renderingcontext.h"
 
 
 //
@@ -29,8 +27,8 @@ typedef std::shared_ptr<OtSceneObjectClass> OtSceneObject;
 class OtSceneObjectClass : public OtComponentClass {
 public:
 	// render in BGFX
-	virtual void preRender(OtScene scene, float viewAspect, OtCamera camera) {}
-	virtual void render(int view, OtCamera camera, glm::mat4 parentTransform) {}
+	virtual void preRender(OtRenderingContext* context) {}
+	virtual void render(OtRenderingContext* context) {}
 
 	// get type definition
 	static OtType getMeta();

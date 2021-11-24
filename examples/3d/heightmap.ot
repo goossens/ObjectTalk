@@ -11,58 +11,48 @@ var gui = import("gui");
 class MyApp : gui.Application {
 	function setup(this, screen) {
 		var ambient = gui.Ambient();
-		var light = gui.Light().setPosition(20, 300, 40);
-
-		var noisemap = gui.NoiseMap();
+		var light = gui.Light().setPosition(20, 400, -400);
 
 		var heightmap = gui.HeightMap()
-			.setScale(50.0)
-			.setClamp(0.4, 1.0)
-			.setNoiseMap(noisemap);
+			.setScale(40.0)
+			.setOffset(-5.0)
+			.loadMap(__DIR__ + "/assets/heightmap.png");
 
-		var land = gui.Land()
-			.setHeightMap(heightmap)
-			.setRegion1Texture(gui.Texture(__DIR__ + "/assets/sand.jpg"))
-			.setRegion2Texture(gui.Texture(__DIR__ + "/assets/terrain.jpg"))
-			.setRegion3Texture(gui.Texture(__DIR__ + "/assets/rock.jpg"))
-			.setRegion4Texture(gui.Texture(__DIR__ + "/assets/snow.jpg"))
-			.setRegion1Limits(0.0, 3.0)
-			.setRegion2Limits(1.0, 11.0)
-			.setRegion3Limits(9.0, 21.0)
-			.setRegion4Limits(19.0, 30.0);
+		var terrain = gui.Mesh()
+			.setGeometry(gui.PlaneGeometry()
+				.setWidth(200)
+				.setHeight(200)
+				.setWidthSegments(100)
+				.setHeightSegments(100)
+				.setHeightMap(heightmap))
+			.setMaterial(gui.Material("material", "gold"))
+			.setWireframe(true)
+			.rotateX(-pi / 2.0);
 
 		var scene = gui.Scene()
 			.add(ambient)
 			.add(light)
-			.add(land);
+			.add(terrain);
 
 		var camera = gui.Camera()
 			.setMouseControl(true)
-			.setAngle(0.7)
+			.setAngle(pi / 4.0)
 			.setPitchLimits(0.1, pi / 2.0 - 0.1)
 			.setPitch(0.3)
 			.setDistanceLimits(20.0, 1000.0)
-			.setDistance(500.0)
+			.setDistance(300.0)
 			.setFOV(45)
 			.setClipping(0.1, 1000);
 
 		var view = gui.View()
-			.setScreenArea(35, 0, 65, 100)
+			.setScreenArea(20, 0, 80, 100)
 			.setCamera(camera)
 			.setScene(scene);
 
-		var panel = gui.Panel(0, 0, 35, 100);
+		var panel = gui.Panel(0, 0, 20, 100);
 
-		var node = gui.TreeNode("Noise Map:");
-		node.add(gui.NoiseMapController(noisemap));
-		panel.add(node);
-
-		node = gui.TreeNode("Height Map:");
+		var node = gui.TreeNode("Height Map:");
 		node.add(gui.HeightMapController(heightmap));
-		panel.add(node);
-
-		node = gui.TreeNode("Land:");
-		node.add(gui.LandController(land));
 		panel.add(node);
 
 		screen.add(view).add(panel);
@@ -70,4 +60,4 @@ class MyApp : gui.Application {
 }
 
 var app = MyApp();
-app.run("3D Terrain");
+app.run("Height Map Demo");

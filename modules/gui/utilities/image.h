@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include "bimg/bimg.h"
+#include "gui.h"
 
 
 //

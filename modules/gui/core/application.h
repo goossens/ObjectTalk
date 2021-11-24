@@ -15,13 +15,6 @@
 #include <mutex>
 #include <vector>
 
-#define GLFW_INCLUDE_NONE
-#include "GLFW/glfw3.h"
-
-#include "bgfx/bgfx.h"
-
-#include "imgui.h"
-
 #include "gui.h"
 #include "animation.h"
 #include "simulation.h"
@@ -63,7 +56,7 @@ public:
 	static int getWidth() { return width; }
 	static int getHeight() { return height; }
 
-	// get system time in seconds since the epoch
+	// get system time in seconds since application start
 	static float getTime();
 
 	// get loop duration in milliseconds
@@ -74,6 +67,9 @@ public:
 
 	// get the current frame rate
 	static float getFrameRate();
+
+	// register function to be called at exit
+	static void atexit(std::function<void(void)> callback);
 
 	// get type definition
 	static OtType getMeta();
@@ -136,6 +132,7 @@ private:
 
 	// time tracking
 	static size_t frameNumber;
+	static int64_t startTime;
 	static int64_t lastTime;
 	static int64_t loopTime;
 	static float loopDuration;
@@ -147,6 +144,9 @@ private:
 
 	// simulations
 	std::vector<OtSimulation> simulations;
+
+	// end of program callbacks
+	static std::vector<std::function<void(void)>> atExitCallbacks;
 
 	// to render IM3D
 	bgfx::VertexLayout  im3dVertexLayout;

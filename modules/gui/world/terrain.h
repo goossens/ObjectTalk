@@ -45,7 +45,10 @@ public:
 	OtObject setNoiseMap(OtObject noisemap);
 
 	// specify region parameters
-	OtObject setRegionTransitions(float transion1, float transion2, float transion3, float overlap);
+	OtObject setRegionTransitions(
+		float transion1, float overlap1,
+		float transion2, float overlap2,
+		float transion3, float overlap3);
 
 	OtObject setRegion1Color(float r, float g, float b) { region1Color = glm::vec3(r, g, b); return shared(); }
 	OtObject setRegion2Color(float r, float g, float b) { region2Color = glm::vec3(r, g, b); return shared(); }
@@ -79,7 +82,10 @@ protected:
 	float region1Transition = 1.0;
 	float region2Transition = 15.0;
 	float region3Transition = 25.0;
-	float regionOverlap = 5.0;
+
+	float region1Overlap = 1.0;
+	float region2Overlap = 5.0;
+	float region3Overlap = 5.0;
 
 	glm::vec3 region1Color = glm::vec3(0.965, 0.894, 0.678);
 	glm::vec3 region2Color = glm::vec3(0.494, 0.784, 0.314);

@@ -49,7 +49,7 @@ OtTerrainClass::OtTerrainClass() {
 
 	// register uniforms
 	materialUniform = bgfx::createUniform("u_material", bgfx::UniformType::Vec4, 5);
-	terrainUniform = bgfx::createUniform("u_terrain", bgfx::UniformType::Vec4, 6);
+	terrainUniform = bgfx::createUniform("u_terrain", bgfx::UniformType::Vec4, 7);
 	textureUniform1 = bgfx::createUniform("s_texture_1", bgfx::UniformType::Sampler);
 	textureUniform2 = bgfx::createUniform("s_texture_2", bgfx::UniformType::Sampler);
 	textureUniform3 = bgfx::createUniform("s_texture_3", bgfx::UniformType::Sampler);
@@ -139,11 +139,13 @@ OtObject OtTerrainClass::setNoiseMap(OtObject object) {
 //	OtTerrainClass::setRegionTransitions
 //
 
-OtObject OtTerrainClass::setRegionTransitions(float transion1, float transion2, float transion3, float overlap) {
+OtObject OtTerrainClass::setRegionTransitions(float transion1, float overlap1, float transion2, float overlap2, float transion3, float overlap3) {
 	region1Transition = transion1;
 	region2Transition = transion2;
 	region3Transition = transion3;
-	regionOverlap = overlap;
+	region1Overlap = overlap1;
+	region2Overlap = overlap2;
+	region3Overlap = overlap3;
 	return shared();
 }
 
@@ -376,7 +378,7 @@ void OtTerrainClass::render(OtRenderingContext* context) {
 		context->submit();
 
 		// set material uniforms
-		glm::vec4 materialUniforms[5];
+		glm::vec4 materialUniforms[6];
 		materialUniforms[0] = glm::vec4(1.0);
 		materialUniforms[1] = glm::vec4(0.6, 0.6, 0.6, 1.0);
 		materialUniforms[2] = glm::vec4(0.6, 0.6, 0.6, 1.0);
@@ -385,7 +387,7 @@ void OtTerrainClass::render(OtRenderingContext* context) {
 		bgfx::setUniform(materialUniform, &materialUniforms, 5);
 
 		// set land uniforms
-		glm::vec4 terrainUniforms[6];
+		glm::vec4 terrainUniforms[7];
 		terrainUniforms[0].x = textureScale;
 		terrainUniforms[0].y = context->reflection;
 		terrainUniforms[0].z = context->refraction;
@@ -393,14 +395,17 @@ void OtTerrainClass::render(OtRenderingContext* context) {
 		terrainUniforms[1].x = region1Transition;
 		terrainUniforms[1].y = region2Transition;
 		terrainUniforms[1].z = region3Transition;
-		terrainUniforms[1].w = regionOverlap;
 
-		terrainUniforms[2] = glm::vec4(region1Color, textureRegion1 != nullptr);
-		terrainUniforms[3] = glm::vec4(region2Color, textureRegion2 != nullptr);
-		terrainUniforms[4] = glm::vec4(region3Color, textureRegion3 != nullptr);
-		terrainUniforms[5] = glm::vec4(region4Color, textureRegion4 != nullptr);
+		terrainUniforms[2].x = region1Overlap;
+		terrainUniforms[2].y = region2Overlap;
+		terrainUniforms[2].z = region3Overlap;
 
-		bgfx::setUniform(terrainUniform, terrainUniforms, 6);
+		terrainUniforms[3] = glm::vec4(region1Color, textureRegion1 != nullptr);
+		terrainUniforms[4] = glm::vec4(region2Color, textureRegion2 != nullptr);
+		terrainUniforms[5] = glm::vec4(region3Color, textureRegion3 != nullptr);
+		terrainUniforms[6] = glm::vec4(region4Color, textureRegion4 != nullptr);
+
+		bgfx::setUniform(terrainUniform, terrainUniforms, 7);
 
 		// set textures
 		(textureRegion1 ? textureRegion1 : OtTextureClass::dummy())->submit(0, textureUniform1);
@@ -430,9 +435,11 @@ void OtTerrainClass::renderGUI() {
 	ImGui::SliderFloat("Texture Scale", &textureScale, 0, 100);
 
 	ImGui::SliderFloat("Region 1", &region1Transition, 0, 300);
+	ImGui::SliderFloat("Overlap 1", &region1Overlap, 1, 50);
 	ImGui::SliderFloat("Region 2", &region2Transition, 0, 300);
+	ImGui::SliderFloat("Overlap 2", &region2Overlap, 1, 50);
 	ImGui::SliderFloat("Region 3", &region3Transition, 0, 300);
-	ImGui::SliderFloat("Region Overlap", &regionOverlap, 1, 50);
+	ImGui::SliderFloat("Overlap 3", &region3Overlap, 1, 50);
 }
 
 

@@ -28,13 +28,14 @@ class MyApp : gui.Application {
 			.setNormalMap(gui.Texture(__DIR__ + "/assets/waternormals.jpg"));
 
 		var noisemap = gui.NoiseMap()
+			.setOctaves(6)
 			.setScaleZ(200.0)
 			.setOffsetZ(-100.0);
 
 		var terrain = gui.Terrain()
 			.setNoiseMap(noisemap)
-			.setTextureScale(50)
-			.setRegionTransitions(1.0, 15.0, 25.0, 5.0)
+			.setTextureScale(60)
+			.setRegionTransitions(0.0, 1.0, 15.0, 9.0, 30.0, 5.0)
 			.setRegion1Texture(gui.Texture(__DIR__ + "/assets/sand.jpg"))
 			.setRegion2Texture(gui.Texture(__DIR__ + "/assets/terrain.jpg"))
 			.setRegion3Texture(gui.Texture(__DIR__ + "/assets/rock.jpg"))

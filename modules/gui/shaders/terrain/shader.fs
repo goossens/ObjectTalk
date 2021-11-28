@@ -10,20 +10,22 @@ $input v_position_world, v_position_camera, v_normal_world, v_normal_camera
 #include <bgfx.glsl>
 #include <light.glsl>
 
-uniform vec4 u_terrain[6];
+uniform vec4 u_terrain[7];
 
 #define textureScale u_terrain[0].x
 #define renderReflection bool(u_terrain[0].y)
 #define renderRefraction bool(u_terrain[0].z)
 
-
 #define regionTransition1 u_terrain[1].x
 #define regionTransition2 u_terrain[1].y
 #define regionTransition3 u_terrain[1].z
-#define regionMargin u_terrain[1].w
 
-#define regionColor(i) u_terrain[i + 1].rgb
-#define regionTextured(i) bool(u_terrain[i + 1].w)
+#define regionOverlap1 u_terrain[2].x
+#define regionOverlap2 u_terrain[2].y
+#define regionOverlap3 u_terrain[2].z
+
+#define regionColor(i) u_terrain[i + 2].rgb
+#define regionTextured(i) bool(u_terrain[i + 2].w)
 
 SAMPLER2D(s_texture_region_1, 0);
 SAMPLER2D(s_texture_region_2, 1);
@@ -65,7 +67,7 @@ void main() {
 
 	// determine color based on regions
 	float height = v_position_world.y;
-	float slope = 1.0 - normalize(v_normal_world).y;
+	float slope = (1.0 - normalize(v_normal_world).y) * 1.7;
 	vec3 terrainColor;
 
 	// sand region
@@ -73,18 +75,18 @@ void main() {
 		terrainColor = getSimpleRegionColor(1, s_texture_region_1, v_position_world);
 
 	// sand to grass region
-	} else if (height < regionTransition1 + regionMargin) {
+	} else if (height < regionTransition1 + regionOverlap1) {
 		terrainColor = mix(
 			getSimpleRegionColor(1, s_texture_region_1, v_position_world),
 			getSimpleRegionColor(2, s_texture_region_2, v_position_world),
-			(height - regionTransition1) / regionMargin);
+			(height - regionTransition1) / regionOverlap1);
 
 	// grass region
 	} else if (height < regionTransition2) {
 		terrainColor = getSimpleRegionColor(2, s_texture_region_2, v_position_world);
 
 	// grass to grass/rock region
-	} else if (height < regionTransition2 + regionMargin) {
+	} else if (height < regionTransition2 + regionOverlap2) {
 		vec3 grassRock = mix(
 			getRegionColor(2, s_texture_region_2, v_position_world, v_normal_world),
 			getRegionColor(3, s_texture_region_3, v_position_world, v_normal_world),
@@ -93,7 +95,7 @@ void main() {
 		terrainColor = mix(
 			getSimpleRegionColor(2, s_texture_region_2, v_position_world),
 			grassRock,
-			(height - regionTransition2) / regionMargin);
+			(height - regionTransition2) / regionOverlap2);
 
 	// rock/grass region
 	} else if (height < regionTransition3) {
@@ -103,7 +105,7 @@ void main() {
 			slope);
 
 	// rock/grass to snow region
-	} else if (height < regionTransition3 + regionMargin) {
+	} else if (height < regionTransition3 + regionOverlap3) {
 		vec3 grassRock = mix(
 			getRegionColor(2, s_texture_region_2, v_position_world, v_normal_world),
 			getRegionColor(3, s_texture_region_3, v_position_world, v_normal_world),
@@ -112,7 +114,7 @@ void main() {
 		terrainColor = mix(
 			grassRock,
 			getSimpleRegionColor(4, s_texture_region_4, v_position_world),
-			(height - regionTransition3) / regionMargin);
+			(height - regionTransition3) / regionOverlap3);
 
 	// we must be in the snow/rock region
 	} else {

@@ -217,26 +217,32 @@ bool OtCameraClass::onScrollWheel(float dx, float dy) {
 //
 
 bool OtCameraClass::onKey(int key, int mods) {
-	switch (key) {
-		case GLFW_KEY_UP:
-			cameraPosition += forward;
-			return true;
+	if (mode == firstPersonCamera) {
+		switch (key) {
+			case GLFW_KEY_UP:
+				cameraPosition += forward;
+				return true;
 
-		case GLFW_KEY_DOWN:
-			cameraPosition -= forward;
-			return true;
+			case GLFW_KEY_DOWN:
+				cameraPosition -= forward;
+				return true;
 
-		case GLFW_KEY_LEFT:
-			cameraPosition -= right;
-			return true;
+			case GLFW_KEY_LEFT:
+				cameraPosition -= right;
+				return true;
 
-		case GLFW_KEY_RIGHT:
-			cameraPosition += right;
-			return true;
+			case GLFW_KEY_RIGHT:
+				cameraPosition += right;
+				return true;
 
-		default:
-			return false;
+			case GLFW_KEY_HOME:
+				cameraPosition.x = 0.0;
+				cameraPosition.z = 0.0;
+				return true;
+		}
 	}
+
+	return false;
 }
 
 

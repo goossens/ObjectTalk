@@ -294,8 +294,9 @@ void OtTerrainClass::render(OtRenderingContext* context) {
 	int visibleTiles = std::lround(maxViewingDist / tileSize);
 
 	// determine center tile
+	glm::vec3 center = context->camera->getPosition();
 	int terrainCenterTileX = std::lround(center.x / tileSize);
-	int terrainCenterTileY = std::lround(center.y / tileSize);
+	int terrainCenterTileY = std::lround(center.z / tileSize);
 
 	// get vertical limits
 	auto minNoise = noisemap->getMinNoise();

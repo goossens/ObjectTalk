@@ -153,11 +153,8 @@ protected:
 	OtNoiseMap noisemap;
 	size_t noisemapID;
 
-	// current center of terrain (in world coordinates)
-	glm::vec3 center = glm::vec3(0.0);
-
 	// maximum viewing distance
-	float maxViewingDist = 1500.0;
+	float maxViewingDist = 2000.0;
 
 	// current version number
 	size_t version = 1;

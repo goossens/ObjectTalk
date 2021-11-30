@@ -49,12 +49,9 @@ class MyApp : gui.Application {
 			.add(terrain);
 
 		var camera = gui.Camera()
-			.setMouseControl(true)
-			.setPitchLimits(0.01, pi / 2.0 - 0.01)
-			.setPitch(0.1)
-			.setDistanceLimits(20.0, 1000.0)
-			.setDistance(400.0)
-			.setAngle(-pi / 2.0)
+			.setFirstPersonMode()
+			.setPosition(0, 100, 0)
+			.setHeightLimits(50, 500)
 			.setClipping(0.1, 4000);
 
 		var view = gui.View()

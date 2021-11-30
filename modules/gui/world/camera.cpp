@@ -22,10 +22,6 @@
 //
 
 OtObject OtCameraClass::setPosition(float x, float y, float z) {
-	if (mouseControl) {
-		OtExcept("Camera is under mouse control and can't be adjusted");
-	}
-
 	cameraPosition = glm::vec3(x, y, z);
 	return shared();
 }
@@ -36,10 +32,6 @@ OtObject OtCameraClass::setPosition(float x, float y, float z) {
 //
 
 OtObject OtCameraClass::setTarget(float x, float y, float z) {
-	if (mouseControl) {
-		OtExcept("Camera is under mouse control and can't be adjusted");
-	}
-
 	cameraTarget = glm::vec3(x, y, z);
 	return shared();
 }
@@ -50,10 +42,6 @@ OtObject OtCameraClass::setTarget(float x, float y, float z) {
 //
 
 OtObject OtCameraClass::setUp(float x, float y, float z) {
-	if (mouseControl) {
-		OtExcept("Camera is under mouse control and can't be adjusted");
-	}
-
 	cameraUp = glm::vec3(x, y, z);
 	return shared();
 }
@@ -81,12 +69,31 @@ OtObject OtCameraClass::setClipping(float near, float far) {
 
 
 //
-//	OtCameraClass::setMouseControl
+//	OtCameraClass::setScriptControlMode
 //
 
-OtObject OtCameraClass::setMouseControl(bool control) {
-	mouseControl = control;
-	updatePosition();
+OtObject OtCameraClass::setScriptControlMode() {
+	mode = scriptControlCamera;
+	return shared();
+}
+
+
+//
+//	OtCameraClass::setCircleTargetMode
+//
+
+OtObject OtCameraClass::setCircleTargetMode() {
+	mode = circleTargetCamera;
+	return shared();
+}
+
+
+//
+//	OtCameraClass::setFlyMode
+//
+
+OtObject OtCameraClass::setFirstPersonMode() {
+	mode = firstPersonCamera;
 	return shared();
 }
 
@@ -97,28 +104,6 @@ OtObject OtCameraClass::setMouseControl(bool control) {
 
 OtObject OtCameraClass::setDistance(float d) {
 	distance = std::clamp(d, distanceMin, distanceMax);
-	updatePosition();
-	return shared();
-}
-
-
-//
-//	OtCameraClass::setAngle
-//
-
-OtObject OtCameraClass::setAngle(float a) {
-	angle = a;
-
-	if (angle < -std::numbers::pi) {
-		angle += std::numbers::pi * 2.0;
-	}
-
-	if (angle > std::numbers::pi) {
-		angle -= std::numbers::pi * 2.0;
-	}
-
-	angle = std::clamp(angle, angleMin, angleMax);
-	updatePosition();
 	return shared();
 }
 
@@ -130,20 +115,27 @@ OtObject OtCameraClass::setAngle(float a) {
 OtObject OtCameraClass::setPitch(float p) {
 	pitch = p;
 	pitch = std::clamp(pitch, pitchMin, pitchMax);
-	updatePosition();
 	return shared();
 }
 
 
 //
-//	OtCameraClass::updatePosition
+//	OtCameraClass::setYaw
 //
 
-void OtCameraClass::updatePosition() {
-	cameraPosition = glm::vec3(
-		target.x + distance * std::cos(pitch) * std::sin(angle),
-		target.y + distance * std::sin(pitch),
-		target.z + distance * std::cos(pitch) * std::cos(angle));
+OtObject OtCameraClass::setYaw(float y) {
+	yaw = y;
+
+	if (yaw < -std::numbers::pi) {
+		yaw += std::numbers::pi * 2.0;
+	}
+
+	if (yaw > std::numbers::pi) {
+		yaw -= std::numbers::pi * 2.0;
+	}
+
+	yaw = std::clamp(yaw, yawMin, yawMax);
+	return shared();
 }
 
 
@@ -154,17 +146,6 @@ void OtCameraClass::updatePosition() {
 OtObject OtCameraClass::setDistanceLimits(float min, float max) {
 	distanceMin = min;
 	distanceMax = max;
-	return shared();
-}
-
-
-//
-//	OtCameraClass::setAngleLimits
-//
-
-OtObject OtCameraClass::setAngleLimits(float min, float max) {
-	angleMin = min;
-	angleMax = max;
 	return shared();
 }
 
@@ -181,13 +162,35 @@ OtObject OtCameraClass::setPitchLimits(float min, float max) {
 
 
 //
+//	OtCameraClass::setYawLimits
+//
+
+OtObject OtCameraClass::setYawLimits(float min, float max) {
+	yawMin = min;
+	yawMax = max;
+	return shared();
+}
+
+
+//
+//	OtCameraClass::setHeightLimits
+//
+
+OtObject OtCameraClass::setHeightLimits(float min, float max) {
+	heightMin = min;
+	heightMax = max;
+	return shared();
+}
+
+
+//
 //	OtCameraClass::onMouseDrag
 //
 
 bool OtCameraClass::onMouseDrag(int button, int mods, float xpos, float ypos) {
-	if (mouseControl && button == 0 && mods == GLFW_MOD_CONTROL) {
-		setAngle(angle - xpos * 0.004);
+	if (mode != scriptControlCamera && button == 0 && mods == GLFW_MOD_CONTROL) {
 		setPitch(pitch + ypos * 0.002);
+		setYaw(yaw - xpos * 0.004);
 		return true;
 	}
 
@@ -196,8 +199,12 @@ bool OtCameraClass::onMouseDrag(int button, int mods, float xpos, float ypos) {
 
 
 bool OtCameraClass::onScrollWheel(float dx, float dy) {
-	if (mouseControl) {
+	if (mode == circleTargetCamera) {
 		setDistance(distance - dy * 0.2);
+		return true;
+
+	} else if (mode == firstPersonCamera) {
+		cameraPosition += dy * forward;
 		return true;
 	}
 
@@ -206,10 +213,62 @@ bool OtCameraClass::onScrollWheel(float dx, float dy) {
 
 
 //
+//	OtCameraClass::onKey
+//
+
+bool OtCameraClass::onKey(int key, int mods) {
+	switch (key) {
+		case GLFW_KEY_UP:
+			cameraPosition += forward;
+			return true;
+
+		case GLFW_KEY_DOWN:
+			cameraPosition -= forward;
+			return true;
+
+		case GLFW_KEY_LEFT:
+			cameraPosition -= right;
+			return true;
+
+		case GLFW_KEY_RIGHT:
+			cameraPosition += right;
+			return true;
+
+		default:
+			return false;
+	}
+}
+
+
+//
 //	OtCameraClass::update
 //
 
 void OtCameraClass::update(OtRenderingContext* context) {
+	if (mode == circleTargetCamera) {
+		// calculate new camera position
+		cameraPosition = glm::vec3(
+			cameraTarget.x + distance * std::cos(pitch) * std::sin(yaw),
+			cameraTarget.y + distance * std::sin(pitch),
+			cameraTarget.z + distance * std::cos(pitch) * std::cos(yaw));
+
+	} else if (mode == firstPersonCamera) {
+		// calculate new forward vector
+		forward.x = std::cos(yaw) * std::cos(pitch);
+        forward.y = std::sin(pitch);
+        forward.z = std::sin(yaw) * std::cos(pitch);
+        forward = glm::normalize(forward);
+
+		// limit camera position
+		cameraPosition.y = std::clamp(cameraPosition.y, heightMin, heightMax);
+
+		// set new camera target based on forward vector
+		cameraTarget = cameraPosition + forward;
+
+		// calculate right vector
+		right = glm::normalize(glm::cross(forward, cameraUp));
+	}
+
 	// determine transformations
 	viewMatrix = glm::lookAt(cameraPosition, cameraTarget, cameraUp);
 	projMatrix = glm::perspective(glm::radians(fov), context->viewAspect, nearClip, farClip);
@@ -291,26 +350,27 @@ glm::vec3 OtCameraClass::getDirectionFromNDC(float x, float y) {
 //
 
 void OtCameraClass::renderGUI() {
-	if (mouseControl) {
-		ImGui::SliderFloat3("Target", glm::value_ptr(cameraTarget), -50.0f, 50.0f);
+	ImGui::SliderFloat("FoV (Deg)", &fov, 10.0f, 120.0f);
+	ImGui::SliderFloat("Near Clipping", &nearClip, 0.1f, 10.0f);
+	ImGui::SliderFloat("Far Clipping", &farClip, 10.0f, 2000.0f);
 
-		if (ImGui::SliderFloat("Distance", &distance, distanceMin, distanceMax)) {
-			updatePosition();
-		}
-
-		if (ImGui::SliderFloat("Angle", &angle, angleMin, angleMax)) {
-			updatePosition();
-		}
-
-		if (ImGui::SliderFloat("Pitch", &pitch, pitchMin, pitchMax)) {
-			updatePosition();
-		}
-
-	} else {
+	if (mode == scriptControlCamera) {
 		ImGui::SliderFloat3("Position", glm::value_ptr(cameraPosition), -50.0f, 50.0f);
 		ImGui::SliderFloat3("Target", glm::value_ptr(cameraTarget), -50.0f, 50.0f);
 		ImGui::SliderFloat3("Up", glm::value_ptr(cameraUp), -2.0f, 2.0f);
-	    ImGui::SliderFloat("FoV (Deg)", &fov, 10.0f, 120.0f);
+
+	} else if (mode == circleTargetCamera) {
+		ImGui::SliderFloat3("Target", glm::value_ptr(cameraTarget), -50.0f, 50.0f);
+		ImGui::SliderFloat("Distance", &distance, distanceMin, distanceMax);
+		ImGui::SliderFloat("Pitch", &pitch, pitchMin, pitchMax);
+		ImGui::SliderFloat("Yaw", &yaw, yawMin, yawMax);
+
+	} else if (mode == firstPersonCamera) {
+		ImGui::SliderFloat3("Position", glm::value_ptr(cameraPosition), -50.0f, 50.0f);
+		ImGui::SliderFloat("Pitch", &pitch, pitchMin, pitchMax);
+		ImGui::SliderFloat("Yaw", &yaw, yawMin, yawMax);
+
+	} else {
 	}
 }
 
@@ -329,13 +389,18 @@ OtType OtCameraClass::getMeta() {
 		type->set("setUp", OtFunctionClass::create(&OtCameraClass::setUp));
 		type->set("setFOV", OtFunctionClass::create(&OtCameraClass::setFOV));
 		type->set("setClipping", OtFunctionClass::create(&OtCameraClass::setClipping));
-		type->set("setMouseControl", OtFunctionClass::create(&OtCameraClass::setMouseControl));
+
+		type->set("setScriptControlMode", OtFunctionClass::create(&OtCameraClass::setScriptControlMode));
+		type->set("setCircleTargetMode", OtFunctionClass::create(&OtCameraClass::setCircleTargetMode));
+		type->set("setFirstPersonMode", OtFunctionClass::create(&OtCameraClass::setFirstPersonMode));
+
 		type->set("setDistance", OtFunctionClass::create(&OtCameraClass::setDistance));
-		type->set("setAngle", OtFunctionClass::create(&OtCameraClass::setAngle));
 		type->set("setPitch", OtFunctionClass::create(&OtCameraClass::setPitch));
+		type->set("setYaw", OtFunctionClass::create(&OtCameraClass::setYaw));
 		type->set("setDistanceLimits", OtFunctionClass::create(&OtCameraClass::setDistanceLimits));
-		type->set("setAngleLimits", OtFunctionClass::create(&OtCameraClass::setAngleLimits));
 		type->set("setPitchLimits", OtFunctionClass::create(&OtCameraClass::setPitchLimits));
+		type->set("setYawLimits", OtFunctionClass::create(&OtCameraClass::setYawLimits));
+		type->set("setHeightLimits", OtFunctionClass::create(&OtCameraClass::setHeightLimits));
 	}
 
 	return type;

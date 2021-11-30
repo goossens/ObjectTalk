@@ -40,18 +40,24 @@ public:
 	void setTargetVector(glm::vec3 target) { cameraTarget = target; }
 	void setUpVector(glm::vec3 up) { cameraUp = up; }
 
-	// enable/disable camera mouse control
-	OtObject setMouseControl(bool control);
-	OtObject setDistance(float distance);
-	OtObject setAngle(float angle);
-	OtObject setPitch(float pitch);
-	OtObject setDistanceLimits(float min, float max);
-	OtObject setAngleLimits(float min, float max);
-	OtObject setPitchLimits(float min, float max);
+	// set camera modes
+	OtObject setScriptControlMode();
+	OtObject setCircleTargetMode();
+	OtObject setFirstPersonMode();
 
-	// mouse events
+	// set properties
+	OtObject setDistance(float distance);
+	OtObject setPitch(float pitch);
+	OtObject setYaw(float yaw);
+	OtObject setDistanceLimits(float min, float max);
+	OtObject setPitchLimits(float min, float max);
+	OtObject setYawLimits(float min, float max);
+	OtObject setHeightLimits(float min, float max);
+
+	// mouse/keyboard events
 	bool onMouseDrag(int button, int mods, float xpos, float ypos);
 	bool onScrollWheel(float dx, float dy);
+	bool onKey(int key, int mods);
 
 	// update camera for next frame
 	void update(OtRenderingContext* context);
@@ -90,29 +96,37 @@ public:
 	static OtCamera create();
 
 private:
-	// update camera position in mouse contro mode
-	void updatePosition();
-
 	// camera geometry
 	glm::vec3 cameraPosition = { 0.0, 0.0, 10.0 };
 	glm::vec3 cameraTarget = { 0.0, 0.0, 0.0 };
 	glm::vec3 cameraUp = { 0.0, 1.0, 0.0 };
 
-	// mouse control
-	bool mouseControl = false;
-	glm::vec3 target = { 0.0, 0.0, 0.0 };
+	// camera mode
+	enum OtCameraMode {
+		scriptControlCamera,
+		circleTargetCamera,
+		firstPersonCamera
+	};
+
+	OtCameraMode mode = scriptControlCamera;
+
+	// camera properties
 	float distance = 10.0;
-	float angle = 0.0;
-	float pitch = 0.3;
+	float pitch = 0.0;
+	float yaw = 0.0;
 
 	float distanceMin = 0.0;
 	float distanceMax = 100.0;
-	float angleMin = -std::numbers::pi;
-	float angleMax = std::numbers::pi;
 	float pitchMin = -std::numbers::pi / 2.0 + 0.01;
 	float pitchMax = std::numbers::pi / 2.0 - 0.01;
+	float yawMin = -std::numbers::pi;
+	float yawMax = std::numbers::pi;
+	float heightMin = 0.0;
+	float heightMax = 1000.0;
 
-	// field-of-view and clipping
+	glm::vec3 forward;
+	glm::vec3 right;
+
 	float fov = 60.0;
 	float nearClip = 0.1;
 	float farClip = 10000.0;

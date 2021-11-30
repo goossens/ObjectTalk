@@ -195,7 +195,7 @@ void OtViewClass::onMouseDrag(int button, int mods, float xpos, float ypos) {
 //
 
 void OtViewClass::onScrollWheel(float dx, float dy) {
-	// only process if camera doesn't want it and  we have a member function
+	// only process if camera doesn't want event and we have a member function
 	if (!camera->onScrollWheel(dx, dy) && has("onScrollWheel")) {
 		OtVM::callMemberFunction(shared(), "onScrollWheel", OtObjectCreate(dx), OtObjectCreate(dy));
 	}
@@ -207,7 +207,8 @@ void OtViewClass::onScrollWheel(float dx, float dy) {
 //
 
 void OtViewClass::onKey(int key, int mods) {
-	if (has("onKey")) {
+	// only process if camera doesn't want event and we have a member function
+	if (!camera->onKey(key, mods) && has("onKey")) {
 		OtVM::callMemberFunction(shared(), "onKey", OtObjectCreate(key), OtObjectCreate(mods));
 	}
 }

@@ -64,7 +64,7 @@ class MyApp : gui.Application {
 			.add(earth);
 
 		var camera = gui.Camera()
-			.setMouseControl(true)
+			.setCircleTargetMode()
 			.setDistance(3.0)
 			.setDistanceLimits(2.2, 5.0);
 

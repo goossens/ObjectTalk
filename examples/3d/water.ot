@@ -31,12 +31,12 @@ class MyApp : gui.Application {
 			.add(ball);
 
 		var camera = gui.Camera()
-			.setMouseControl(true)
-			.setPitchLimits(0.01, pi / 2.0 - 0.01)
-			.setPitch(0.2)
+			.setCircleTargetMode()
 			.setDistanceLimits(20.0, 300.0)
 			.setDistance(400.0)
-			.setAngle(-pi / 2.0);
+			.setPitchLimits(0.01, pi / 2.0 - 0.01)
+			.setPitch(0.2)
+			.setYaw(-pi / 2.0);
 
 		var view = gui.View()
 			.setScreenArea(25, 0, 75, 100)

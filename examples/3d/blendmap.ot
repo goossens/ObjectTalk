@@ -67,7 +67,7 @@ class MyApp : gui.Application {
 			.add(trees);
 
 		var camera = gui.Camera()
-			.setMouseControl(true)
+			.setCircleTargetMode()
 			.setPitchLimits(0.1, pi / 2.0 - 0.1)
 			.setPitch(0.2)
 			.setDistanceLimits(20.0, 300.0)

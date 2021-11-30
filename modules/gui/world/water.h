@@ -68,7 +68,7 @@ protected:
 	// water properties
 	glm::vec3 color = { 0.5, 0.6, 0.8 };
 	float time = 0.0;
-	float scale = 5.0;
+	float scale = 1.0;
 	float shininess = 50.0;
 
 	// Frame buffers

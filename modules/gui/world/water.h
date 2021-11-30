@@ -81,7 +81,7 @@ protected:
 
 	// BGFX buffers
 	glm::vec3 waterVertices[4];
-	bgfx::VertexBufferHandle vertexBuffer = BGFX_INVALID_HANDLE;
+	bgfx::DynamicVertexBufferHandle vertexBuffer = BGFX_INVALID_HANDLE;
 	bgfx::IndexBufferHandle indexBuffer = BGFX_INVALID_HANDLE;
 
 	// BGFX shader

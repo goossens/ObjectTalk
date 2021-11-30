@@ -54,7 +54,7 @@ OtWaterClass::OtWaterClass() {
 		.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
 		.end();
 
-	vertexBuffer = bgfx::createVertexBuffer(bgfx::makeRef(waterVertices, sizeof(waterVertices) * sizeof(glm::vec3)), layout);
+	vertexBuffer = bgfx::createDynamicVertexBuffer(bgfx::makeRef(waterVertices, sizeof(waterVertices) * sizeof(glm::vec3)), layout);
 	indexBuffer = bgfx::createIndexBuffer(bgfx::makeRef(waterIndices, sizeof(waterIndices) *  sizeof(uint32_t)), BGFX_BUFFER_INDEX32);
 
 	// register uniforms
@@ -236,12 +236,17 @@ void OtWaterClass::render(OtRenderingContext* context) {
 		OtExcept("Normals map not specified for [Water] object");
 	}
 
+	// determine center
+	glm::vec center = context->camera->getPosition();
+	center.y = 0.0;
+
 	// adjust water size
 	for (auto c = 0; c < 4; c ++) {
-		waterVertices[c] = templateVertices[c] * size;
+		waterVertices[c] = templateVertices[c] * size + center;
 	}
 
 	// submit vertices and triangles
+	bgfx::update(vertexBuffer, 0, bgfx::makeRef(waterVertices, sizeof(waterVertices) * sizeof(glm::vec3)));
 	bgfx::setVertexBuffer(0, vertexBuffer);
 	bgfx::setIndexBuffer(indexBuffer);
 

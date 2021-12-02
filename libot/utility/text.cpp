@@ -267,16 +267,34 @@ std::string OtText::trim(std::string text, const std::string& chars) {
 //
 
 std::string OtText::compress(const std::string& text, const std::string& chars) {
-	auto result = OtText::trim(text);
+	auto result = OtText::trim(text, chars);
 	auto begin = result.find_first_of(chars);
 
 	while (begin != std::string::npos) {
-		result.replace(begin, result.find_first_not_of(chars, begin) - begin," ");
+		result.replace(begin, result.find_first_not_of(chars, begin) - begin, " ");
 		begin = result.find_first_of(chars, begin + 1);
 	}
 
 	return result;
 }
+
+
+//
+//	OtText::removeAll
+//
+
+std::string OtText::removeAll(const std::string& text, const std::string& chars) {
+	auto result = OtText::trim(text, chars);
+	auto begin = result.find_first_of(chars);
+
+	while (begin != std::string::npos) {
+		result.replace(begin, result.find_first_not_of(chars, begin) - begin, "");
+		begin = result.find_first_of(chars, begin + 1);
+	}
+
+	return result;
+}
+
 
 //
 //	OtText::EncodeURL

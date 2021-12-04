@@ -34,6 +34,9 @@ public:
 	// clear component tree
 	void clear();
 
+	// return number of children
+	size_t size() { return children.size(); }
+
 	// update enabled flag
 	OtObject enable() { enabled = true; return shared(); }
 	OtObject disable() { enabled = false; return shared(); }

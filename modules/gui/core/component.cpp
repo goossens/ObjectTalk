@@ -117,6 +117,9 @@ OtType OtComponentClass::getMeta() {
 		type->set("add", OtFunctionClass::create(&OtComponentClass::add));
 		type->set("remove", OtFunctionClass::create(&OtComponentClass::remove));
 
+		type->set("clear", OtFunctionClass::create(&OtComponentClass::clear));
+		type->set("size", OtFunctionClass::create(&OtComponentClass::size));
+
 		type->set("enable", OtFunctionClass::create(&OtComponentClass::enable));
 		type->set("disable", OtFunctionClass::create(&OtComponentClass::disable));
 		type->set("setEnabled", OtFunctionClass::create(&OtComponentClass::setEnabled));

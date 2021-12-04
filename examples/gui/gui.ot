@@ -18,9 +18,23 @@ class MyApp : gui.Application {
 		var menubar = gui.Menubar();
 
 		var fileMenu = gui.Menu("File");
-		fileMenu.add(gui.MenuItem("New", "CMD+N"));
-		fileMenu.add(gui.MenuItem("Open...", "CMD+O"));
 		menubar.add(fileMenu);
+
+		fileMenu.add(gui.MenuItem("New", "N", function() {
+			print("New");
+		}));
+
+		fileMenu.add(gui.MenuItem("Open...", "O", function() {
+			print("Open");
+		}));
+
+		fileMenu.add(gui.MenuItem("Save", "S", function() {
+			print("Save");
+		}));
+
+		fileMenu.add(gui.MenuItem("Save As...", "", function() {
+			print("Save As");
+		}));
 
 		var editMenu = gui.Menu("Edit");
 		menubar.add(editMenu);

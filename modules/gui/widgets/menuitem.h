@@ -25,14 +25,17 @@ typedef std::shared_ptr<OtMenuItemClass> OtMenuItem;
 class OtMenuItemClass : public OtWidgetClass {
 public:
 	// initialize menu item
-	void init(const std::string& t, const std::string& s) { title = t; shortcut = s; }
+	OtObject init(size_t count, OtObject* parameters);
 
 	// adjust menu item properties
-	void setTitle(const std::string& t) { title = t; }
+	OtObject setTitle(const std::string& t) { title = t; return shared(); }
 	std::string getTitle() { return title; }
 
-	void setShortcut(const std::string& s) { shortcut = s; }
+	OtObject setShortcut(const std::string& s);
 	std::string getShortcut() { return shortcut; }
+
+	OtObject setCallback(OtObject cb) { callback = cb; return shared(); }
+	OtObject getCallback() { return callback; }
 
 	void select() { selected = true; }
 	void unselect() { selected = false; }
@@ -57,4 +60,5 @@ private:
 	std::string shortcut = "";
 	bool selected = false;
 	bool enabled = true;
+	OtObject callback;
 };

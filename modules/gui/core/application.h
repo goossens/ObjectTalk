@@ -56,6 +56,9 @@ public:
 	static int getWidth() { return width; }
 	static int getHeight() { return height; }
 
+	// add a keyboard shortcut handler
+	static void addShortcut(int modifier, int keycode, std::function<void(void)> callback);
+
 	// get system time in seconds since application start
 	static float getTime();
 
@@ -130,6 +133,16 @@ private:
 	int keyboardMods;
 	int keyboardCodepoint;
 
+	// keyboard shortcut tracking
+	struct OtKeyboardShortcut {
+		OtKeyboardShortcut(int m, int k, std::function<void(void)> c) : modifier(m), keycode(k), callback(c) {}
+		int modifier;
+		int keycode;
+		std::function<void(void)> callback;
+	};
+
+	static std::vector<OtKeyboardShortcut> shortcuts;
+
 	// time tracking
 	static size_t frameNumber;
 	static int64_t startTime;
@@ -147,10 +160,6 @@ private:
 
 	// end of program callbacks
 	static std::vector<std::function<void(void)>> atExitCallbacks;
-
-	// to render IM3D
-	bgfx::VertexLayout  im3dVertexLayout;
-	bgfx::ProgramHandle im3dProgram = BGFX_INVALID_HANDLE;
 
 	// to render IMGUI
 	bgfx::VertexLayout  imguiVertexLayout;

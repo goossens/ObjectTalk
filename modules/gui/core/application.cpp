@@ -28,6 +28,8 @@ int OtApplicationClass::height = 720;
 
 size_t OtApplicationClass::frameNumber = 0;
 
+std::vector<OtApplicationClass::OtKeyboardShortcut> OtApplicationClass::shortcuts;
+
 std::vector<std::function<void(void)>> OtApplicationClass::atExitCallbacks;
 
 
@@ -148,7 +150,18 @@ void OtApplicationClass::runThread2() {
 			}
 
 			if (keyEvent && keyboardAction != GLFW_RELEASE) {
-				screen->onKey(keyboardKey, keyboardMods);
+				bool handled = false;
+
+				for (auto& shortcut : shortcuts) {
+					if (shortcut.modifier == keyboardMods && shortcut.keycode == keyboardKey) {
+						shortcut.callback();
+						handled = true;
+					}
+				}
+
+				if (!handled) {
+					screen->onKey(keyboardKey, keyboardMods);
+				}
 			}
 
 			if (charEvent) {
@@ -264,6 +277,15 @@ OtObject OtApplicationClass::addSimulation(OtObject object) {
 	}
 
 	return object;
+}
+
+
+//
+//	OtApplicationClass::addShortcut
+//
+
+void OtApplicationClass::addShortcut(int modifier, int keycode, std::function<void(void)> callback) {
+	shortcuts.push_back(OtKeyboardShortcut(modifier, keycode, callback));
 }
 
 

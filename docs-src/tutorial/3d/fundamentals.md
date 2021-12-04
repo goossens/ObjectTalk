@@ -80,9 +80,8 @@ has one member.
 Now let's create a **Camera**:
 
 	var camera = gui.Camera()
-		.setPosition(0, 0, 2)
-		.setFOV(75)
-		.setClipping(0.1, 5);
+		.setPerspective(75, 0.1, 5)
+		.setPosition(0, 0, 2);
 
 FOV is short for Field Of View. In this case 75 degrees. Note that most
 angles in ObjectTalk's GUI module are in radians but the camera takes
@@ -131,9 +130,8 @@ Our complete App now looks like this:
 			var scene = gui.Scene().add(cube);
 
 			var camera = gui.Camera()
-				.setPosition(0, 0, 2)
-				.setFOV(75)
-				.setClipping(0.1, 5);
+				.setPerspective(75, 0.1, 5)
+				.setPosition(0, 0, 2);
 
 			var view = gui.View()
 				.setCamera(camera)
@@ -206,9 +204,8 @@ more realistic. So let's do both and change the App to:
 				.add(light);
 
 			var camera = gui.Camera()
-				.setPosition(0, 0, 2)
-				.setFOV(75)
-				.setClipping(0.1, 5);
+				.setPerspective(75, 0.1, 5)
+				.setPosition(0, 0, 2);
 
 			var view = gui.View()
 				.setCamera(camera)

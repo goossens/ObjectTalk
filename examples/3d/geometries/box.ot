@@ -32,8 +32,8 @@ class MyApp : gui.Application {
 			.add(object);
 
 		var camera = gui.Camera()
-			.setPosition(0, 0, 4)
-			.setFOV(45);
+			.setPerspective(45, 0.1, 100)
+			.setPosition(0, 0, 4);
 
 		var view = gui.View()
 			.setScreenArea(25, 0, 75, 100)

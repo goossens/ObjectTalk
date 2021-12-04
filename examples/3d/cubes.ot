@@ -31,9 +31,8 @@ class MyApp : gui.Application {
 			.add(cube3);
 
 		var camera = gui.Camera()
-			.setPosition(0, 0, 5)
-			.setFOV(45)
-			.setClipping(0.1, 10);
+			.setPerspective(45, 0.1, 10)
+			.setPosition(0, 0, 5);
 
 		var view = gui.View()
 			.setCamera(camera)

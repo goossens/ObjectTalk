@@ -72,9 +72,9 @@ class MyApp : gui.Application {
 
 		// create camera
 		var camera = gui.Camera()
+			.setPerspective(45, 0.1, 1000)
 			.setPosition(0, 15, 100)
-			.setTarget(0, 10, 0)
-			.setFOV(45);
+			.setTarget(0, 10, 0);
 
 		// create view
 		screen.add(gui.View()

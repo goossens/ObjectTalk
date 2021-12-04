@@ -67,13 +67,12 @@ class MyApp : gui.Application {
 			.add(trees);
 
 		var camera = gui.Camera()
+			.setPerspective(45, 0.1, 1000)
 			.setCircleTargetMode()
 			.setPitchLimits(0.1, pi / 2.0 - 0.1)
 			.setPitch(0.2)
 			.setDistanceLimits(20.0, 300.0)
-			.setDistance(100.0)
-			.setFOV(45)
-			.setClipping(0.1, 1000);
+			.setDistance(100.0);
 
 		var view = gui.View()
 			.setCamera(camera)

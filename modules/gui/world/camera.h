@@ -29,21 +29,22 @@ typedef std::shared_ptr<OtCameraClass> OtCamera;
 
 class OtCameraClass : public OtGuiClass {
 public:
+	// set camera modes
+	OtObject setPerspective(float fov, float near, float far);
+	OtObject setOrthographic(float width, float near, float far);
+
+	OtObject setScriptControlMode();
+	OtObject setCircleTargetMode();
+	OtObject setFirstPersonMode();
+
 	// change camera geometry
 	OtObject setPosition(float x, float y, float z);
 	OtObject setTarget(float x, float y, float z);
 	OtObject setUp(float x, float y, float z);
-	OtObject setFOV(float fov);
-	OtObject setClipping(float near, float far);
 
 	void setPositionVector(glm::vec3 position) { cameraPosition = position; }
 	void setTargetVector(glm::vec3 target) { cameraTarget = target; }
 	void setUpVector(glm::vec3 up) { cameraUp = up; }
-
-	// set camera modes
-	OtObject setScriptControlMode();
-	OtObject setCircleTargetMode();
-	OtObject setFirstPersonMode();
 
 	// set properties
 	OtObject setDistance(float distance);
@@ -70,8 +71,8 @@ public:
 	glm::vec3 getTarget() { return cameraTarget; }
 	glm::vec3 getUp() { return cameraUp; }
 	float getFOV() { return fov; }
-	float getNearClip() { return nearClip; }
-	float getFarClip() { return farClip; }
+	float getNearClip() { return near; }
+	float getFarClip() { return far; }
 
 	glm::mat4& getViewMatrix() { return viewMatrix; }
 	glm::mat4& getProjectionMatrix() { return projMatrix; }
@@ -94,21 +95,30 @@ public:
 
 	// create a new object
 	static OtCamera create();
+	static OtCamera create(OtCamera camera);
 
 private:
+	// camera style
+	enum OtCameraStyle {
+		perspectiveStyle,
+		orthographicStyle
+	};
+
+	OtCameraStyle style = perspectiveStyle;
+
+	// camera mode
+	enum OtCameraMode {
+		scriptControlMode,
+		circleTargetMode,
+		firstPersonMode
+	};
+
+	OtCameraMode mode = scriptControlMode;
+
 	// camera geometry
 	glm::vec3 cameraPosition = { 0.0, 0.0, 10.0 };
 	glm::vec3 cameraTarget = { 0.0, 0.0, 0.0 };
 	glm::vec3 cameraUp = { 0.0, 1.0, 0.0 };
-
-	// camera mode
-	enum OtCameraMode {
-		scriptControlCamera,
-		circleTargetCamera,
-		firstPersonCamera
-	};
-
-	OtCameraMode mode = scriptControlCamera;
 
 	// camera properties
 	float distance = 10.0;
@@ -124,12 +134,13 @@ private:
 	float heightMin = 0.0;
 	float heightMax = 1000.0;
 
+	float fov = 60.0;
+	float width = 100.0;
+	float near = 0.1;
+	float far = 2000.0;
+
 	glm::vec3 forward;
 	glm::vec3 right;
-
-	float fov = 60.0;
-	float nearClip = 0.1;
-	float farClip = 10000.0;
 
 	// transformation matrices;
 	glm::mat4 viewMatrix;

@@ -49,10 +49,10 @@ class MyApp : gui.Application {
 			.add(terrain);
 
 		var camera = gui.Camera()
+			.setPerspective(45, 0.1, 4000)
 			.setFirstPersonMode()
 			.setPosition(0, 100, 0)
-			.setHeightLimits(50, 500)
-			.setClipping(0.1, 4000);
+			.setHeightLimits(50, 500);
 
 		var view = gui.View()
 			.setScreenArea(25, 0, 75, 100)

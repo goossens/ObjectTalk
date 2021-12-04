@@ -57,6 +57,7 @@ class MyApp : gui.Application {
 
 		// create all components
 		this.camera = gui.Camera()
+			.setPerspective(60, 0.1, 100)
 			.setPosition(0, 40, 40)
 			.setTarget(0, -5, -10);
 

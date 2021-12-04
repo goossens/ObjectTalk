@@ -34,14 +34,13 @@ class MyApp : gui.Application {
 			.add(terrain);
 
 		var camera = gui.Camera()
+			.setPerspective(45, 0.1, 1000)
 			.setCircleTargetMode()
 			.setDistanceLimits(20.0, 1000.0)
 			.setDistance(300.0)
 			.setPitchLimits(0.1, pi / 2.0 - 0.1)
 			.setPitch(0.3)
-			.setYaw(pi / 4.0)
-			.setFOV(45)
-			.setClipping(0.1, 1000);
+			.setYaw(pi / 4.0);
 
 		var view = gui.View()
 			.setScreenArea(20, 0, 80, 100)

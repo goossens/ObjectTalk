@@ -198,12 +198,9 @@ void OtWaterClass::preRender(OtRenderingContext* context) {
 	position.y = -position.y;
 	target.y = -target.y;
 
-	OtCamera reflectionCamera = OtCameraClass::create();;
+	OtCamera reflectionCamera = OtCameraClass::create(context->camera);
 	reflectionCamera->setPositionVector(position);
 	reflectionCamera->setTargetVector(target);
-	reflectionCamera->setUpVector(context->camera->getUp());
-	reflectionCamera->setFOV(context->camera->getFOV());
-	reflectionCamera->setClipping(context->camera->getNearClip(), context->camera->getFarClip());
 
 	// create reflection rendering context
 	OtRenderingContext reflectionContext(1, context->viewAspect, context->scene, reflectionCamera);

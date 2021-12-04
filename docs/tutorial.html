@@ -227,9 +227,8 @@ var scene = gui.Scene().add(cube);
             </p>
             <p>Now let's create a <strong>Camera</strong>:</p>
             <pre><code>var camera = gui.Camera()
-	.setPosition(0, 0, 2)
-	.setFOV(75)
-	.setClipping(0.1, 5);
+	.setPerspective(75, 0.1, 5)
+	.setPosition(0, 0, 2);
 </code></pre>
             <p>
               FOV is short for Field Of View. In this case 75 degrees. Note that
@@ -295,9 +294,8 @@ class MyApp : gui.Application {
 		var scene = gui.Scene().add(cube);
 
 		var camera = gui.Camera()
-			.setPosition(0, 0, 2)
-			.setFOV(75)
-			.setClipping(0.1, 5);
+			.setPerspective(75, 0.1, 5)
+			.setPosition(0, 0, 2);
 
 		var view = gui.View()
 			.setCamera(camera)
@@ -380,9 +378,8 @@ class MyApp : gui.Application {
 			.add(light);
 
 		var camera = gui.Camera()
-			.setPosition(0, 0, 2)
-			.setFOV(75)
-			.setClipping(0.1, 5);
+			.setPerspective(75, 0.1, 5)
+			.setPosition(0, 0, 2);
 
 		var view = gui.View()
 			.setCamera(camera)

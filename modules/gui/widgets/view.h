@@ -37,7 +37,7 @@ public:
 
 	// access attributes
 	OtObject getCamera() { return camera; }
-	OtObject getScene()  { return scene; }
+	OtObject getScene() { return scene; }
 
 	// render content
 	void render();

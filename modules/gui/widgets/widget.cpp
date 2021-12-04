@@ -32,7 +32,9 @@ void OtWidgetClass::validateChild(OtComponent child) {
 void OtWidgetClass::update() {
 	// update all children
 	for (auto const& child : children) {
-		child->cast<OtWidgetClass>()->update();
+		if (child->isEnabled()) {
+			child->cast<OtWidgetClass>()->update();
+		}
 	}
 }
 

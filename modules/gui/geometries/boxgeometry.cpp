@@ -23,10 +23,10 @@ OtObject OtBoxGeometryClass::init(size_t count, OtObject* parameters) {
 	if (count) {
 		switch (count) {
 			case 6:
-				depthSegments = parameters[6]->operator int();
+				depthSegments = parameters[5]->operator int();
 
 			case 5:
-				heightSegments = parameters[5]->operator int();
+				heightSegments = parameters[4]->operator int();
 
 			case 4:
 				widthSegments = parameters[3]->operator int();

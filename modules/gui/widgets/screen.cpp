@@ -21,8 +21,8 @@
 //
 
 void OtScreenClass::validateChild(OtComponent child) {
-	if (!(child->isKindOf("Menubar") || child->isKindOf("Window") || child->isKindOf("Dialog") || child->isKindOf("Panel") || child->isKindOf("View"))) {
-		OtExcept("A [Screen] can only have [Menubar], [Window], [Dialog], [Panel] or [View] instances as children, not a [%s]", child->getType()->getName().c_str());
+	if (!(child->isKindOf("ScreenObject"))) {
+		OtExcept("A [Screen] can only have [ScreenObject] instances as children, not a [%s]", child->getType()->getName().c_str());
 	}
 }
 

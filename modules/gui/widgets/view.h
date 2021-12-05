@@ -14,7 +14,7 @@
 
 #include "camera.h"
 #include "scene.h"
-#include "widget.h"
+#include "screenobject.h"
 
 
 //
@@ -24,7 +24,7 @@
 class OtViewClass;
 typedef std::shared_ptr<OtViewClass> OtView;
 
-class OtViewClass : public OtWidgetClass {
+class OtViewClass : public OtScreenObjectClass {
 public:
 	// constructor/destructor
 	OtViewClass();

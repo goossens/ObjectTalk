@@ -58,7 +58,7 @@ OtType OtMenubarClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtTypeClass::create<OtMenubarClass>("Menubar", OtWidgetClass::getMeta());
+		type = OtTypeClass::create<OtMenubarClass>("Menubar", OtScreenObjectClass::getMeta());
 	}
 
 	return type;

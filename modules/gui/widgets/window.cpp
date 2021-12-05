@@ -50,7 +50,7 @@ OtType OtWindowClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtTypeClass::create<OtWindowClass>("Window", OtWidgetClass::getMeta());
+		type = OtTypeClass::create<OtWindowClass>("Window", OtScreenObjectClass::getMeta());
 		type->set("__init__", OtFunctionClass::create(&OtWindowClass::init));
 		type->set("setTitle", OtFunctionClass::create(&OtWindowClass::setTitle));
 		type->set("getTitle", OtFunctionClass::create(&OtWindowClass::getTitle));

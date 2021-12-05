@@ -12,6 +12,8 @@
 #include "scene.h"
 #include "sceneobject.h"
 
+#include "ot/exception.h"
+
 
 //
 //	OtSceneClass::validateChild

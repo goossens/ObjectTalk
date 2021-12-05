@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include "widget.h"
+#include "screenobject.h"
 
 
 //
@@ -22,7 +22,7 @@
 class OtMenubarClass;
 typedef std::shared_ptr<OtMenubarClass> OtMenubar;
 
-class OtMenubarClass : public OtWidgetClass {
+class OtMenubarClass : public OtScreenObjectClass {
 public:
 	// ensure specified component is allowed as a child
 	void validateChild(OtComponent child);

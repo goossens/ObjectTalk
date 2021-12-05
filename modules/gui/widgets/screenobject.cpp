@@ -5,9 +5,6 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 
-#pragma once
-
-
 //
 //	Include files
 //
@@ -16,14 +13,15 @@
 
 
 //
-//	OtDialogClass
+//	OtScreenObjectClass::getMeta
 //
 
-class OtDialogClass;
-typedef std::shared_ptr<OtDialogClass> OtDialog;
+OtType OtScreenObjectClass::getMeta() {
+	static OtType type = nullptr;
 
-class OtDialogClass : public OtScreenObjectClass {
-public:
-	// get type definition
-	static OtType getMeta();
-};
+	if (!type) {
+		type = OtTypeClass::create<OtScreenObjectClass>("ScreenObject", OtComponentClass::getMeta());
+	}
+
+	return type;
+}

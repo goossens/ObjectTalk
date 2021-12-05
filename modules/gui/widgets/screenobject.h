@@ -12,17 +12,17 @@
 //	Include files
 //
 
-#include "screenobject.h"
+#include "widget.h"
 
 
 //
-//	OtDialogClass
+//	OtScreenObject
 //
 
-class OtDialogClass;
-typedef std::shared_ptr<OtDialogClass> OtDialog;
+class OtScreenObjectClass;
+typedef std::shared_ptr<OtScreenObjectClass> OtScreenObject;
 
-class OtDialogClass : public OtScreenObjectClass {
+class OtScreenObjectClass : public OtWidgetClass {
 public:
 	// get type definition
 	static OtType getMeta();

@@ -230,7 +230,7 @@ OtType OtViewClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtTypeClass::create<OtViewClass>("View", OtWidgetClass::getMeta());
+		type = OtTypeClass::create<OtViewClass>("View", OtScreenObjectClass::getMeta());
 
 		type->set("setScreenArea", OtFunctionClass::create(&OtViewClass::setScreenArea));
 		type->set("setCamera", OtFunctionClass::create(&OtViewClass::setCamera));

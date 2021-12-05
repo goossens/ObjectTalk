@@ -22,19 +22,8 @@ OtType OtDialogClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtTypeClass::create<OtDialogClass>("Dialog", OtWidgetClass::getMeta());
+		type = OtTypeClass::create<OtDialogClass>("Dialog", OtScreenObjectClass::getMeta());
 	}
 
 	return type;
-}
-
-
-//
-//	OtDialogClass::create
-//
-
-OtDialog OtDialogClass::create() {
-	OtDialog dialog = std::make_shared<OtDialogClass>();
-	dialog->setType(getMeta());
-	return dialog;
 }

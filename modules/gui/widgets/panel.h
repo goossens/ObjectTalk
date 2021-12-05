@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include "widget.h"
+#include "screenobject.h"
 
 
 //
@@ -22,7 +22,7 @@
 class OtPanelClass;
 typedef std::shared_ptr<OtPanelClass> OtPanel;
 
-class OtPanelClass : public OtWidgetClass {
+class OtPanelClass : public OtScreenObjectClass {
 public:
 	// initialize panel
 	void init(int _x, int _y, int _w, int _h) { x = _x; y = _y; w = _w; h = _h; }

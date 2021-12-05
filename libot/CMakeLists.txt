@@ -11,11 +11,7 @@ add_library(libot SHARED ${OT_INCLUDES} ${OT_SOURCES})
 
 target_link_libraries(libot PRIVATE m dl ${UV_LIBRARY})
 
-target_compile_features(libot PRIVATE cxx_std_17)
-
-set_target_properties(libot PROPERTIES CXX_EXTENSIONS OFF)
 set_target_properties(libot PROPERTIES PREFIX "")
-
 set_target_properties(libot PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set_target_properties(libot PROPERTIES LIBRARY_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/lib)
 set_target_properties(libot PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/lib)

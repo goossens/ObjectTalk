@@ -11,11 +11,7 @@ add_library(http MODULE ${HTTP_INCLUDES} ${HTTP_SOURCES})
 
 target_link_libraries(http PRIVATE libot ${UV_LIBRARY} llhttp multipart)
 
-target_compile_features(http PRIVATE cxx_std_17)
-set_target_properties(http PROPERTIES CXX_EXTENSIONS OFF)
-
 set_target_properties(http PROPERTIES PREFIX "")
-
 set_target_properties(http PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/ot)
 set_target_properties(http PROPERTIES LIBRARY_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/lib/ot)
 set_target_properties(http PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/lib/ot)

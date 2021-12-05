@@ -12,7 +12,7 @@ if(PRIVATE_UV)
 endif()
 
 if(OT_GUI)
-	add_dependencies(ot gui glfw bgfx imgui tinyobjloader)
+	add_dependencies(ot gui)
 endif()
 
 target_link_libraries(ot PRIVATE libot ${UV_LIBRARY})
@@ -26,8 +26,5 @@ endif()
 set_target_properties(ot PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set_target_properties(ot PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/bin)
 set_target_properties(ot PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin)
-
-target_compile_features(ot PRIVATE cxx_std_17)
-set_target_properties(ot PROPERTIES CXX_EXTENSIONS OFF)
 
 install(TARGETS ot DESTINATION bin)

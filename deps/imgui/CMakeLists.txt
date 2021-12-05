@@ -5,11 +5,7 @@
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
 FetchContent_Declare(imgui GIT_REPOSITORY "https://github.com/ocornut/imgui" GIT_TAG "v1.85")
-FetchContent_GetProperties(imgui)
-
-if (NOT imgui_POPULATED)
-	FetchContent_Populate(imgui)
-endif()
+FetchContent_MakeAvailable(imgui)
 
 set(IMGUI_SOURCES
 	${imgui_SOURCE_DIR}/imgui.h
@@ -24,7 +20,7 @@ set(IMGUI_SOURCES
 	${imgui_SOURCE_DIR}/imstb_truetype.h)
 
 add_library(imgui STATIC ${IMGUI_SOURCES})
-include_directories(${imgui_SOURCE_DIR} ${imgui_SOURCE_DIR}/backends)
+include_directories(${imgui_SOURCE_DIR})
 
 if (APPLE)
 	set_property(TARGET imgui APPEND_STRING PROPERTY COMPILE_FLAGS "-fobjc-arc")

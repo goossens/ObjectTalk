@@ -34,6 +34,7 @@
 #include "glm/ext.hpp"
 
 #include "imgui.h"
+#include "ImGuiFileDialog.h"
 
 #include "ot/object.h"
 

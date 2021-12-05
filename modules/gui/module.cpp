@@ -64,11 +64,15 @@
 
 #include "screen.h"
 #include "window.h"
+#include "guidialog.h"
 #include "panel.h"
 
 #include "menubar.h"
 #include "menu.h"
 #include "menuitem.h"
+
+#include "fileopendialog.h"
+#include "filesavedialog.h"
 
 #include "treenode.h"
 #include "label.h"
@@ -136,6 +140,7 @@ extern "C" void init(OtModule module) {
 	module->set("Widget", OtClassClass::create(OtWidgetClass::getMeta()));
 	module->set("Screen", OtClassClass::create(OtScreenClass::getMeta()));
 	module->set("Window", OtClassClass::create(OtWindowClass::getMeta()));
+	module->set("Dialog", OtClassClass::create(OtDialogClass::getMeta()));
 	module->set("Panel", OtClassClass::create(OtPanelClass::getMeta()));
 
 	module->set("windowNoTitleBar", OtIntegerClass::create(ImGuiWindowFlags_NoTitleBar));
@@ -179,6 +184,9 @@ extern "C" void init(OtModule module) {
 	module->set("keyModSuper", OtIntegerClass::create(GLFW_MOD_SUPER));
 	module->set("keyModCapsLock", OtIntegerClass::create(GLFW_MOD_CAPS_LOCK));
 	module->set("keyModNumLock", OtIntegerClass::create(GLFW_MOD_NUM_LOCK));
+
+	module->set("FileOpenDialog", OtClassClass::create(OtFileOpenDialogClass::getMeta()));
+	module->set("FileSaveDialog", OtClassClass::create(OtFileSaveDialogClass::getMeta()));
 
 	module->set("Menubar", OtClassClass::create(OtMenubarClass::getMeta()));
 	module->set("Menu", OtClassClass::create(OtMenuClass::getMeta()));

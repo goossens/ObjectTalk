@@ -34,7 +34,7 @@ void OtPanelClass::validateChild(OtComponent child) {
 void OtPanelClass::render() {
 	size_t offset = 0;
 
-	// take menubar into account if we have one
+	// take menubar into account if there is one
 	if (parent) {
 		offset = parent->cast<OtScreenClass>()->getMenubarHeight();
 	}
@@ -43,7 +43,7 @@ void OtPanelClass::render() {
 	float fw = OtApplicationClass::getWidth();
 	float fh = OtApplicationClass::getHeight() - offset;
 
-	// determine dimensions
+	// determine panel dimensions
 	float vx = x < 0 ? fw + x * fw / 100.0 : x * fw / 100.0;
 	float vy = offset + (y < 0 ? fh + y * fh / 100.0 : y * fh / 100.0);
 	float vw = w * fw / 100.0;

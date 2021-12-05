@@ -32,7 +32,6 @@
 //
 
 static void OtLed7(ImDrawList* list, float x, float y, float size, char ch, ImU32 color) {
-
 	// get segment pattern
 	int pattern = 0;
 
@@ -214,7 +213,6 @@ void OtTronClass::render() {
 
 	auto pos = ImGui::GetCursorScreenPos();
 	auto center = ImVec2(pos.x + region.x / 2, pos.y + size / 2);
-	// auto center = ImVec2(pos.x + region.x / 2, pos.y + region.y / 2);
 
 	ImGui::InvisibleButton("", ImVec2(size, size), 0);
 	ImDrawList* list = ImGui::GetWindowDrawList();

@@ -12,6 +12,17 @@ class MyApp : gui.Application {
 	function setup(this, screen) {
 		screen.add(this.createMenubar());
 		screen.add(this.createPanel());
+
+		this.fileOpenDialog = gui.FileOpenDialog("Open File...", ".*", function(file) {
+			print(file);
+		});
+
+		this.fileSaveDialog = gui.FileSaveDialog("Save File to...", ".ot", function(file) {
+			print(file);
+		});
+
+		screen.add(this.fileOpenDialog);
+		screen.add(this.fileSaveDialog);
 	}
 
 	function createMenubar(this) {
@@ -25,7 +36,7 @@ class MyApp : gui.Application {
 		}));
 
 		fileMenu.add(gui.MenuItem("Open...", "O", function() {
-			print("Open");
+			this.fileOpenDialog.open();
 		}));
 
 		fileMenu.add(gui.MenuItem("Save", "S", function() {
@@ -33,7 +44,7 @@ class MyApp : gui.Application {
 		}));
 
 		fileMenu.add(gui.MenuItem("Save As...", "", function() {
-			print("Save As");
+			this.fileSaveDialog.open();
 		}));
 
 		var editMenu = gui.Menu("Edit");

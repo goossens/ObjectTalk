@@ -69,7 +69,10 @@ public:
 	static size_t getFrameNumber() { return frameNumber; }
 
 	// get the current frame rate
-	static float getFrameRate();
+	static float getFrameRate() { return 1000.0 / loopDuration; }
+
+	// get the next available view ID
+	static int getNextViewID() { return nextViewID++; }
 
 	// register function to be called at exit
 	static void atexit(std::function<void(void)> callback);
@@ -114,6 +117,7 @@ private:
 	void* nativeDisplayType = nullptr;
 	static int width;
 	static int height;
+	static int nextViewID;
 
 	// mouse state
 	bool mouseButtonState[ImGuiMouseButton_COUNT];

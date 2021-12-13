@@ -179,14 +179,12 @@ void OtApplicationClass::renderIMGUI() {
 		 BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_MSAA |
 		 BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA);
 
-	const bgfx::Caps* caps = bgfx::getCaps();
-
 	// Setup viewport, orthographic projection matrix
 	float ortho[16];
 
 	bx::mtxOrtho(
 		ortho, 0.0f, io.DisplaySize.x, io.DisplaySize.y, 0.0f, 0.0f, 1000.0f,
-		0.0f, caps->homogeneousDepth);
+		0.0f, bgfx::getCaps()->homogeneousDepth);
 
 	bgfx::setViewTransform(255, nullptr, ortho);
 	bgfx::setViewRect(255, 0, 0, fb_width, fb_height);

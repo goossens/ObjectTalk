@@ -117,7 +117,7 @@ void OtApplicationClass::frameBGFX() {
 		prevAA = antiAliasing;
 	}
 
-	// start BGFX frame
+	// start BGFX frame by clearing the screen
 	bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000ff, 1.0f, 0);
 	bgfx::setViewRect(0, 0, 0, width, height);
 	bgfx::touch(0);
@@ -142,13 +142,13 @@ void OtApplicationClass::renderProfiler() {
 	ImGui::Text("Backbuffer width:"); ImGui::SameLine(150); ImGui::Text("%d", stats->width);
 	ImGui::Text("Backbuffer height:"); ImGui::SameLine(150); ImGui::Text("%d", stats->height);
 	ImGui::Text("Anti-aliasing:"); ImGui::SameLine(150); ImGui::Text("%d", antiAliasing);
+	ImGui::Text("Views:"); ImGui::SameLine(150); ImGui::Text("%d", nextViewID + 2);
 	ImGui::Text("Draw calls:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numDraw);
 	ImGui::Text("Programs:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numPrograms);
 	ImGui::Text("Shaders:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numShaders);
 	ImGui::Text("Textures:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numTextures);
 	ImGui::Text("Uniforms:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numUniforms);
 	ImGui::Text("Vertex buffers:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numVertexBuffers);
-	ImGui::Text("Index buffers:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numIndexBuffers);
 	ImGui::End();
 }
 
@@ -159,15 +159,6 @@ void OtApplicationClass::renderProfiler() {
 
 float OtApplicationClass::getTime() {
 	return (double) (loopTime - startTime) / (double) bx::getHPFrequency();
-}
-
-
-//
-//	OtApplicationClass::getFrameRate
-//
-
-float OtApplicationClass::getFrameRate() {
-	return 1000.0 / loopDuration;
 }
 
 

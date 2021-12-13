@@ -21,3 +21,4 @@
 
 glm::vec3 OtColorParseToVec3(const std::string& color);
 glm::vec4 OtColorParseToVec4(const std::string& color);
+uint32_t OtColorParseToUint32(const std::string& color);

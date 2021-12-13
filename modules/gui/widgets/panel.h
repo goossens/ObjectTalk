@@ -40,7 +40,6 @@ public:
 	static OtPanel create();
 
 private:
-	std::string title;
 	int x = 0;
 	int y = 0;
 	int w = 30;

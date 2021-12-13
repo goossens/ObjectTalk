@@ -1,0 +1,46 @@
+#!/usr/local/bin/ot
+
+//	ObjectTalk Scripting Language
+//	Copyright (c) 2020-2021 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var gui = import("gui");
+
+class MyApp : gui.Application {
+	function setup(this, screen) {
+		var vd = gui.VectorDisplay(20, 0, 80, 100);
+
+		vd.setColor("#aaf");
+
+		vd.addText(50,  80, 1.5, "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+		vd.addText(50, 140, 1.5, "abcdefghijklmnopqrstuvwxyz");
+		vd.addText(50, 200, 1.5, "!@#$%^&*()-=<>/?;:'\"{}[]|\\+=-_");
+
+		vd.setColor("#faa");
+
+		vd.addCircle(250, 450, 10, 32);
+		vd.addCircle(300, 450, 30, 32);
+		vd.addCircle(400, 450, 60, 32);
+		vd.addCircle(500, 450, 80, 64);
+
+		vd.setColor("#afa");
+
+		vd.addRectangle(250, 600, 10, 10);
+		vd.addRectangle(300, 600, 30, 30);
+		vd.addRectangle(350, 600, 60, 60);
+		vd.addRectangle(450, 600, 80, 80);
+
+		var panel = gui.Panel(0, 0, 20, 100);
+
+		var node = gui.TreeNode("Vector Display:");
+		node.add(gui.VectorDisplayController(vd));
+		panel.add(node);
+
+		screen.add(vd).add(panel);
+	}
+}
+
+var app = MyApp();
+app.run("Vector Display Demonstration");

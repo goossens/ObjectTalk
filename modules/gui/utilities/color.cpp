@@ -341,3 +341,17 @@ glm::vec4 OtColorParseToVec4(const std::string& css) {
 	OtRgbColor color = parse(css);
 	return glm::vec4(color.r, color.g , color.b, color.a);
 }
+
+
+//
+//	OtColorParseToUint32
+//
+
+uint32_t OtColorParseToUint32(const std::string& color) {
+	glm::vec4 c = OtColorParseToVec4(color);
+	int r = c.r * 255.0;
+	int g = c.g * 255.0;
+	int b = c.b * 255.0;
+	int a = c.a * 255.0;
+	return a << 24 | b << 16 | g << 8 | r;
+}

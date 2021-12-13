@@ -83,6 +83,8 @@
 
 #include "tron.h"
 
+#include "vectordisplay.h"
+
 
 //
 //	GUI module
@@ -208,7 +210,10 @@ extern "C" void init(OtModule module) {
 	module->set("SkyController", OtClassClass::create(OtSkyControllerClass::getMeta()));
 	module->set("SunController", OtClassClass::create(OtSunControllerClass::getMeta()));
 	module->set("TerrainController", OtClassClass::create(OtTerrainControllerClass::getMeta()));
+	module->set("VectorDisplayController", OtClassClass::create(OtVectorDisplayControllerClass::getMeta()));
 	module->set("WaterController", OtClassClass::create(OtWaterControllerClass::getMeta()));
 
 	module->set("Tron", OtClassClass::create(OtTronClass::getMeta()));
+
+	module->set("VectorDisplay", OtClassClass::create(OtVectorDisplayClass::getMeta()));
 }

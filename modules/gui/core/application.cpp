@@ -25,6 +25,7 @@
 
 int OtApplicationClass::width = 1280;
 int OtApplicationClass::height = 720;
+int OtApplicationClass::nextViewID = 1;
 
 size_t OtApplicationClass::frameNumber = 0;
 
@@ -94,6 +95,9 @@ void OtApplicationClass::runThread2() {
 		while (running) {
 			// update frame number
 			frameNumber++;
+
+			// reset next view ID
+			nextViewID = 1;
 
 			// update all animations
 			for (int c = animations.size() - 1; c >= 0; c--) {

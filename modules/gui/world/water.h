@@ -46,6 +46,10 @@ public:
 	void preRender(OtRenderingContext* context);
     void render(OtRenderingContext* context);
 
+	void renderReflection(OtRenderingContext* context);
+	void renderRefraction(OtRenderingContext* context);
+	void renderWater(OtRenderingContext* context);
+
 	// GUI to change water properties
 	void renderGUI();
 
@@ -74,10 +78,14 @@ protected:
 	// Frame buffers
 	float frameBufferAspect = -1;
 	bgfx::TextureHandle reflectionTextures[2];
-	bgfx::FrameBufferHandle reflectionFrameBuffer= BGFX_INVALID_HANDLE;;
+	bgfx::FrameBufferHandle reflectionFrameBuffer = BGFX_INVALID_HANDLE;;
 
 	bgfx::TextureHandle refractionTextures[2];
-	bgfx::FrameBufferHandle refractionFrameBuffer= BGFX_INVALID_HANDLE;;
+	bgfx::FrameBufferHandle refractionFrameBuffer = BGFX_INVALID_HANDLE;;
+
+	// rendering views
+	int reflectionView;
+	int refractionView;
 
 	// BGFX buffers
 	glm::vec3 waterVertices[4];

@@ -114,10 +114,14 @@ function compileShader() {
 
 compileShader background
 compileShader blendmapped
+compileShader blit
+compileShader bloom
+compileShader blur
 compileShader colored
 compileShader fixed
 compileShader sky
 compileShader skybox
 compileShader terrain
 compileShader textured
+compileShader vectordisplay
 compileShader water

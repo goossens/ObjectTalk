@@ -28,7 +28,7 @@ public:
 	void validateChild(OtComponent child);
 
 	// render in BGFX
-    virtual void render(OtRenderingContext* context);
+    void render(OtRenderingContext* context);
 
 	// get type definition
 	static OtType getMeta();

@@ -18,24 +18,6 @@
 
 
 //
-//	Globals
-//
-
-static int idCounter = 100;
-
-
-//
-//	OtViewClass::OtViewClass
-//
-
-OtViewClass::OtViewClass() {
-	// set view ID
-	id = idCounter;
-	idCounter += 10;
-}
-
-
-//
 //	OtViewClass::~OtViewClass
 //
 
@@ -101,6 +83,9 @@ OtObject OtViewClass::setScene(OtObject object) {
 void OtViewClass::render() {
 	// render view if we have a scene and a camera
 	if (scene && camera) {
+		// get the next view ID
+		int view = OtApplicationClass::getNextViewID();
+
 		// determine dimensions
 		float vx = x < 0 ? OtApplicationClass::getWidth() - (x * OtApplicationClass::getWidth() / 100.0) : x * OtApplicationClass::getWidth() / 100.0;
 		float vy = y < 0 ? OtApplicationClass::getHeight() - (y * OtApplicationClass::getHeight() / 100.0) : y * OtApplicationClass::getHeight() / 100.0;
@@ -108,7 +93,7 @@ void OtViewClass::render() {
 		float vh = h * OtApplicationClass::getHeight() / 100.0;
 
 		// create rendering context
-		OtRenderingContext context(id, vw / vh, scene, camera);
+		OtRenderingContext context(view, vw / vh, scene, camera);
 
 		// get camera ready for frame
 		camera->update(&context);
@@ -117,7 +102,7 @@ void OtViewClass::render() {
 		scene->preRender(&context);
 
 		// render scene
-		bgfx::setViewRect(id, vx, vy, vw, vh);
+		bgfx::setViewRect(view, vx, vy, vw, vh);
 		camera->submit(&context);
 		scene->render(&context);
 	}

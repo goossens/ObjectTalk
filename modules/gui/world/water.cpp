@@ -185,41 +185,15 @@ OtObject OtWaterClass::setNormalScale(float s) {
 //
 
 void OtWaterClass::preRender(OtRenderingContext* context) {
+	// get new IDs for reflection and refraction rendering
+	reflectionView = OtApplicationClass::getNextViewID();
+	refractionView = OtApplicationClass::getNextViewID();
+
 	// create/update frame buffers (if required)
 	if (frameBufferAspect != context->viewAspect) {
 		updateFrameBuffers(context->viewAspect);
 		frameBufferAspect = context->viewAspect;
 	}
-
-	// create reflection camera
-	glm::vec3 position = context->camera->getPosition();
-	glm::vec3 target = context->camera->getTarget();
-
-	position.y = -position.y;
-	target.y = -target.y;
-
-	OtCamera reflectionCamera = OtCameraClass::create(context->camera);
-	reflectionCamera->setPositionVector(position);
-	reflectionCamera->setTargetVector(target);
-
-	// create reflection rendering context
-	OtRenderingContext reflectionContext(1, context->viewAspect, context->scene, reflectionCamera);
-	reflectionContext.reflection = true;
-
-	// temporarily disable ourselves so we don't draw during prerender
-	disable();
-
-	// render reflection
-	reflectionCamera->update(&reflectionContext);
-	reflectionCamera->submit(&reflectionContext);
-
-	bgfx::setViewClear(reflectionContext.view, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH);
-	bgfx::setViewRect(reflectionContext.view, 0, 0, 512, 512 / context->viewAspect);
-	bgfx::setViewFrameBuffer(reflectionContext.view, reflectionFrameBuffer);
-	context->scene->render(&reflectionContext);
-
-	// reenable so we can be seen in the final rendering
-	enable();
 }
 
 
@@ -233,6 +207,64 @@ void OtWaterClass::render(OtRenderingContext* context) {
 		OtExcept("Normals map not specified for [Water] object");
 	}
 
+	// render thr three parts of water
+	renderReflection(context);
+	renderRefraction(context);
+	renderWater(context);
+}
+
+
+//
+//	OtWaterClass::renderReflection
+//
+
+void OtWaterClass::renderReflection(OtRenderingContext* context) {
+	// create reflection camera
+	glm::vec3 position = context->camera->getPosition();
+	glm::vec3 target = context->camera->getTarget();
+
+	position.y = -position.y;
+	target.y = -target.y;
+
+	OtCamera reflectionCamera = OtCameraClass::create(context->camera);
+	reflectionCamera->setPositionVector(position);
+	reflectionCamera->setTargetVector(target);
+
+	// create reflection rendering context
+	OtRenderingContext reflectionContext(reflectionView, context->viewAspect, context->scene, reflectionCamera);
+	reflectionContext.reflection = true;
+
+	// temporarily disable ourselves so we don't draw ourselves
+	disable();
+
+	// render reflection
+	reflectionCamera->update(&reflectionContext);
+	reflectionCamera->submit(&reflectionContext);
+
+	bgfx::setViewClear(reflectionView, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH);
+	bgfx::setViewRect(reflectionView, 0, 0, 512, 512 / context->viewAspect);
+	bgfx::setViewFrameBuffer(reflectionView, reflectionFrameBuffer);
+	context->scene->render(&reflectionContext);
+
+	// reenable so we can be seen in the final rendering
+	enable();
+}
+
+
+//
+//	OtWaterClass::renderRefraction
+//
+
+void OtWaterClass::renderRefraction(OtRenderingContext* context) {
+
+}
+
+
+//
+//	OtWaterClass::renderWater
+//
+
+void OtWaterClass::renderWater(OtRenderingContext* context) {
 	// determine center
 	glm::vec center = context->camera->getPosition();
 	center.y = 0.0;

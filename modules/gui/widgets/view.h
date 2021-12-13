@@ -26,8 +26,7 @@ typedef std::shared_ptr<OtViewClass> OtView;
 
 class OtViewClass : public OtScreenObjectClass {
 public:
-	// constructor/destructor
-	OtViewClass();
+	// destructor
 	~OtViewClass();
 
 	// update attributes
@@ -57,9 +56,6 @@ public:
 	static OtView create();
 
 protected:
-	// view identifier
-	int id;
-
 	// our camera
 	OtCamera camera;
 

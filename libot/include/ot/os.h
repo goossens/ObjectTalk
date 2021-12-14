@@ -58,6 +58,17 @@ public:
 	// sleep for specified number of milliseconds
 	void sleep(long milliseconds);
 
+	// get parts of the current datetime
+	int getYear();
+	int getMonth();
+	int getDay();
+	int getHours();
+	int getMinutes();
+	int getSeconds();
+	int getDayOfWeek();
+	int getDayOfYear();
+	bool isDST();
+
 	// get type definition
 	static OtType getMeta();
 

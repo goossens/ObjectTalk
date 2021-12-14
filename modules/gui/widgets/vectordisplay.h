@@ -45,6 +45,9 @@ public:
 	void setColor(const std::string& color);
 	void setThickness(float thickness);
 
+	float getTextWidth(const std::string& text, float scale);
+	float getTextHeight(const std::string& text, float scale);
+
 	int addLine(float x0, float y0, float x1, float y1);
 	int addRectangle(float x, float y, float w, float h);
 	int addCircle(float x, float y, float radius, float steps);

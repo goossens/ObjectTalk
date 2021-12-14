@@ -392,6 +392,9 @@ OtType OtApplicationClass::getMeta() {
 		type->set("addSimulation", OtFunctionClass::create(&OtApplicationClass::addSimulation));
 		type->set("setAntiAliasing", OtFunctionClass::create(&OtApplicationClass::setAntiAliasing));
 		type->set("setProfiler", OtFunctionClass::create(&OtApplicationClass::setProfiler));
+
+		type->set("getWidth", OtFunctionClass::create(&OtApplicationClass::getWidth2));
+		type->set("getHeight", OtFunctionClass::create(&OtApplicationClass::getHeight2));
 	}
 
 	return type;

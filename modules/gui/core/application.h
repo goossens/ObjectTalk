@@ -53,6 +53,8 @@ public:
 	OtObject setProfiler(bool profilerState);
 
 	// get frame dimensions
+	int getWidth2() { return width; }
+	int getHeight2() { return height; }
 	static int getWidth() { return width; }
 	static int getHeight() { return height; }
 

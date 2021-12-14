@@ -1,0 +1,75 @@
+#!/usr/local/bin/ot
+
+//	ObjectTalk Scripting Language
+//	Copyright (c) 2020-2021 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var gui = import("gui");
+
+class MyApp : gui.Application {
+	var radius = 100;
+	var rh = 60;
+	var rm = 80;
+	var rs = 85;
+
+	function setup(this, screen) {
+		this.vd = gui.VectorDisplay(0, 0, 100, 100);
+		screen.add(this.vd);
+		this.createBackPlate(this.vd);
+		this.addHands(this.vd);
+	}
+
+	function createBackPlate(this, vd) {
+		vd.setBrightness(1.7);
+
+		vd.setColor("#3bf");
+		vd.addCircle(0, 0, radius, 128);
+
+		for step in range(60) {
+			var angle = (pi / 30.0) * step;
+
+			var radius1 = radius - 2;
+			var radius2 = (step % 5) == 0 ? radius - 12 : radius - 5;
+
+			vd.addLine(
+				angle.cos() * radius1, angle.sin() * radius1,
+				angle.cos() * radius2, angle.sin() * radius2);
+		}
+	}
+
+	function addHands(this, vd) {
+		vd.setThickness(2.0);
+		vd.setColor("#3bb");
+		this.hours = vd.addLine(0, 0, 0, 0);
+		this.minutes = vd.addLine(0, 0, 0, 0);
+
+		vd.setThickness(1.0);
+		vd.addCircle(0, 0, 3, 16);
+
+		vd.setColor("#b33");
+		this.seconds = vd.addLine(0, 0, 0, 0);
+	}
+
+	function update(this) {
+		var width = this.getWidth();
+		var height = this.getHeight();
+		this.vd.setTransform(width / 2, height / 2, (0.45 * height.min(width)) / radius);
+
+		var seconds = os.getSeconds();
+		var minutes = os.getMinutes().real() + seconds.real() / 60.0;
+		var hours = os.getHours().real() + minutes.real() / 60.0;
+
+		var hourAngle = (pi / 6.0) * hours - pi / 2.0;
+		var minuteAngle = (pi / 30.0) * minutes - pi / 2.0;
+		var secondAngle = (pi / 30.0) * seconds - pi / 2.0;
+
+		this.vd.updateLine(this.hours, 0, 0, hourAngle.cos() * rh, hourAngle.sin() * rh);
+		this.vd.updateLine(this.minutes, 0, 0, minuteAngle.cos() * rm, minuteAngle.sin() * rm);
+		this.vd.updateLine(this.seconds, 0, 0, secondAngle.cos() * rs, secondAngle.sin() * rs);
+	}
+}
+
+var app = MyApp();
+app.run("Vector Display Clock");

@@ -10,6 +10,7 @@
 //
 
 #include <chrono>
+#include <time.h>
 
 #include "ot/libuv.h"
 #include "ot/function.h"
@@ -252,6 +253,114 @@ void OtOSClass::sleep(long milliseconds) {
 
 
 //
+//	OtOSClass::getYear
+//
+
+int OtOSClass::getYear() {
+	time_t rawtime;
+	time(&rawtime);
+	struct tm* timeinfo = localtime(&rawtime);
+	return timeinfo->tm_year;
+}
+
+
+//
+//	OtOSClass::getMonth
+//
+
+int OtOSClass::getMonth() {
+	time_t rawtime;
+	time(&rawtime);
+	struct tm* timeinfo = localtime(&rawtime);
+	return timeinfo->tm_mon;
+}
+
+
+//
+//	OtOSClass::getDay
+//
+
+int OtOSClass::getDay() {
+	time_t rawtime;
+	time(&rawtime);
+	struct tm* timeinfo = localtime(&rawtime);
+	return timeinfo->tm_mday;
+}
+
+
+//
+//	OtOSClass::getHours
+//
+
+int OtOSClass::getHours() {
+	time_t rawtime;
+	time(&rawtime);
+	struct tm* timeinfo = localtime(&rawtime);
+	return timeinfo->tm_hour;
+}
+
+
+//
+//	OtOSClass::getMinutes
+//
+
+int OtOSClass::getMinutes() {
+	time_t rawtime;
+	time(&rawtime);
+	struct tm* timeinfo = localtime(&rawtime);
+	return timeinfo->tm_min;
+}
+
+
+//
+//	OtOSClass::getSeconds
+//
+
+int OtOSClass::getSeconds() {
+	time_t rawtime;
+	time(&rawtime);
+	struct tm* timeinfo = localtime(&rawtime);
+	return timeinfo->tm_sec;
+}
+
+
+//
+//	OtOSClass::getDayOfWeek
+//
+
+int OtOSClass::getDayOfWeek() {
+	time_t rawtime;
+	time(&rawtime);
+	struct tm* timeinfo = localtime(&rawtime);
+	return timeinfo->tm_wday;
+}
+
+
+//
+//	OtOSClass::getDayOfYear
+//
+
+int OtOSClass::getDayOfYear() {
+	time_t rawtime;
+	time(&rawtime);
+	struct tm* timeinfo = localtime(&rawtime);
+	return timeinfo->tm_yday;
+}
+
+
+//
+//	OtOSClass::isDST
+//
+
+bool OtOSClass::isDST() {
+	time_t rawtime;
+	time(&rawtime);
+	struct tm* timeinfo = localtime(&rawtime);
+	return timeinfo->tm_isdst > 0;
+}
+
+
+//
 //	OtOSClass::getMeta
 //
 
@@ -281,6 +390,16 @@ OtType OtOSClass::getMeta() {
 
 		type->set("clock", OtFunctionClass::create(&OtOSClass::clock));
 		type->set("sleep", OtFunctionClass::create(&OtOSClass::sleep));
+
+		type->set("getYear", OtFunctionClass::create(&OtOSClass::getYear));
+		type->set("getMonth", OtFunctionClass::create(&OtOSClass::getMonth));
+		type->set("getDay", OtFunctionClass::create(&OtOSClass::getDay));
+		type->set("getHours", OtFunctionClass::create(&OtOSClass::getHours));
+		type->set("getMinutes", OtFunctionClass::create(&OtOSClass::getMinutes));
+		type->set("getSeconds", OtFunctionClass::create(&OtOSClass::getSeconds));
+		type->set("getDayOfWeek", OtFunctionClass::create(&OtOSClass::getDayOfWeek));
+		type->set("getDayOfYear", OtFunctionClass::create(&OtOSClass::getDayOfYear));
+		type->set("isDST", OtFunctionClass::create(&OtOSClass::isDST));
 	}
 
 	return type;

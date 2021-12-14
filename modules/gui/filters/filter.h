@@ -34,12 +34,12 @@ public:
 	// execute filter
 	virtual void execute(int view, int w, int h) {}
 
-	// render Filter
+	// render filter
 	void render(int w, int h, bgfx::TextureHandle texture, bgfx::FrameBufferHandle fb);
 	void render(int x, int y, int w, int h, bgfx::TextureHandle texture);
 
 private:
-	// render a "single rectagle quad"
+	// render a "single rectangle quad"
 	void createQuad(int w, int h);
 
 	// the texture

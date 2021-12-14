@@ -253,7 +253,7 @@ void OtVectorDisplayClass::endDraw() {
 	size_t nlines = points.size() - 1;
 	Line* lines = new Line[nlines];
 
-	float t = std::max((0.01 * (bufferWidth + bufferHeight) / 2.0) * thickness * drawScale / 2.0, 6.0);
+	float t = std::max((0.01 * (bufferWidth + bufferHeight) / 2.0) * thickness / 2.0, 6.0);
 	bool firstIsLast = std::abs(points[0].x - points[nlines].x) < 0.1 && std::abs(points[0].y - points[nlines].y) < 0.1;
 
 	// compute basics
@@ -557,6 +557,33 @@ void OtVectorDisplayClass::setColor(const std::string& c) {
 
 void OtVectorDisplayClass::setThickness(float t) {
 	thickness = t;
+}
+
+
+//
+//	OtVectorDisplayClass::getTextWidth
+//
+
+float OtVectorDisplayClass::getTextWidth(const std::string& text, float scale) {
+	float width = 0.0;
+
+	for (auto& c : text) {
+		if (c >= 32 || c <= 126) {
+			const int8_t* chr = simplex[c - 32];
+			width += (float) chr[1] * scale;
+		}
+	}
+
+	return width;
+}
+
+
+//
+//	OtVectorDisplayClass::getTextHeight
+//
+
+float OtVectorDisplayClass::getTextHeight(const std::string& text, float scale) {
+	return scale * 32.0;
 }
 
 
@@ -921,8 +948,12 @@ OtType OtVectorDisplayClass::getMeta() {
 		type->set("setBrightness", OtFunctionClass::create(&OtVectorDisplayClass::setBrightness));
 		type->set("setDecay", OtFunctionClass::create(&OtVectorDisplayClass::setDecay));
 
-		type->set("setThickness", OtFunctionClass::create(&OtVectorDisplayClass::setThickness));
+		type->set("setTransform", OtFunctionClass::create(&OtVectorDisplayClass::setTransform));
 		type->set("setColor", OtFunctionClass::create(&OtVectorDisplayClass::setColor));
+		type->set("setThickness", OtFunctionClass::create(&OtVectorDisplayClass::setThickness));
+
+		type->set("getTextWidth", OtFunctionClass::create(&OtVectorDisplayClass::getTextWidth));
+		type->set("getTextHeight", OtFunctionClass::create(&OtVectorDisplayClass::getTextHeight));
 
 		type->set("addLine", OtFunctionClass::create(&OtVectorDisplayClass::addLine));
 		type->set("addRectangle", OtFunctionClass::create(&OtVectorDisplayClass::addRectangle));

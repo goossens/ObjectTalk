@@ -61,6 +61,7 @@ public:
 	double subtract(double operand) { return value - operand; }
 	double multiply(double operand) { return value * operand; }
 	double divide(double operand) { if (operand == 0.0) OtExcept("Divide by zero"); return value / operand; }
+	double modulo(double operand) { if (operand == 0.0) OtExcept("Divide by zero"); return std::fmod(value, operand); }
 	double power(double operand) { return std::pow(value, operand); }
 
 	// functions

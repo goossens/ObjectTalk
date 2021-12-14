@@ -53,6 +53,7 @@ OtType OtRealClass::getMeta() {
 		type->set("__sub__", OtFunctionClass::create(&OtRealClass::subtract));
 		type->set("__mul__", OtFunctionClass::create(&OtRealClass::multiply));
 		type->set("__div__", OtFunctionClass::create(&OtRealClass::divide));
+		type->set("__mod__", OtFunctionClass::create(&OtRealClass::modulo));
 		type->set("__pow__", OtFunctionClass::create(&OtRealClass::power));
 
 		type->set("__neg__", OtFunctionClass::create(&OtRealClass::negate));

@@ -16,6 +16,7 @@
 #include "ot/exception.h"
 #include "ot/numbers.h"
 #include "ot/hash.h"
+#include "ot/cache.h"
 #include "ot/concurrentqueue.h"
 #include "ot/libuv.h"
 

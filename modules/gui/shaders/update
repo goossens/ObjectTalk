@@ -119,6 +119,7 @@ compileShader bloom
 compileShader blur
 compileShader colored
 compileShader fixed
+compileShader imgui
 compileShader sky
 compileShader skybox
 compileShader terrain

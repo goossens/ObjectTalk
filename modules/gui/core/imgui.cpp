@@ -20,8 +20,8 @@
 //
 
 static const bgfx::EmbeddedShader embeddedShaders[] = {
-	BGFX_EMBEDDED_SHADER(vs_ocornut_imgui),
-	BGFX_EMBEDDED_SHADER(fs_ocornut_imgui),
+	BGFX_EMBEDDED_SHADER(vs_imgui),
+	BGFX_EMBEDDED_SHADER(fs_imgui),
 	BGFX_EMBEDDED_SHADER_END()
 };
 
@@ -82,8 +82,8 @@ void OtApplicationClass::initIMGUI() {
 	bgfx::RendererType::Enum type = bgfx::getRendererType();
 
 	imguiProgram = bgfx::createProgram(
-		bgfx::createEmbeddedShader(embeddedShaders, type, "vs_ocornut_imgui"),
-		bgfx::createEmbeddedShader(embeddedShaders, type, "fs_ocornut_imgui"),
+		bgfx::createEmbeddedShader(embeddedShaders, type, "vs_imgui"),
+		bgfx::createEmbeddedShader(embeddedShaders, type, "fs_imgui"),
 		true);
 
 	// setup default font

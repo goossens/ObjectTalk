@@ -52,7 +52,10 @@ OtTextureClass::~OtTextureClass() {
 	}
 
 	// release resources
-	bimg::imageFree(image);
+	if (image) {
+		bimg::imageFree(image);
+	}
+
 	bgfx::destroy(texture);
 }
 
@@ -84,6 +87,7 @@ OtObject OtTextureClass::init(size_t count, OtObject* parameters) {
 OtObject OtTextureClass::loadImage(const std::string& file) {
 	// clear previous image
 	bimg::imageFree(image);
+	image = nullptr;
 
 	// load named texture
 	image = OtLoadImage(file);

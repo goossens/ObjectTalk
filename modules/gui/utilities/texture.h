@@ -41,6 +41,12 @@ public:
 	// provide new pixels
 	void setPixels(void* pixels, size_t size, bimg::TextureFormat::Enum format, size_t width, size_t height);
 
+	// get texture information
+	size_t getWidth() { return width; }
+	size_t getHeight() { return height; }
+	bimg::TextureFormat::Enum getFormat() { return format; }
+	bgfx::TextureHandle getTextureHandle() { return texture; }
+
 	// submit shader data to BGFX
 	void submit(int stage, bgfx::UniformHandle uniform);
 
@@ -50,7 +56,7 @@ public:
 	// create a new object
 	static OtTexture create();
 
-	// get an umpty dummy texture
+	// get an empty dummy texture
 	static OtTexture dummy();
 
 private:

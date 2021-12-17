@@ -74,12 +74,13 @@
 #include "fileopendialog.h"
 #include "filesavedialog.h"
 
-#include "treenode.h"
-#include "label.h"
 #include "checkbox.h"
 #include "combobox.h"
 #include "integerslider.h"
+#include "label.h"
+#include "picture.h"
 #include "realslider.h"
+#include "treenode.h"
 
 #include "tron.h"
 
@@ -194,12 +195,12 @@ extern "C" void init(OtModule module) {
 	module->set("Menu", OtClassClass::create(OtMenuClass::getMeta()));
 	module->set("MenuItem", OtClassClass::create(OtMenuItemClass::getMeta()));
 
-	module->set("TreeNode", OtClassClass::create(OtTreeNodeClass::getMeta()));
-	module->set("Label", OtClassClass::create(OtLabelClass::getMeta()));
 	module->set("Checkbox", OtClassClass::create(OtCheckboxClass::getMeta()));
 	module->set("Combobox", OtClassClass::create(OtComboboxClass::getMeta()));
-	module->set("IntegerSlider", OtClassClass::create(OtIntegerSliderClass::getMeta()));
+	module->set("Picture", OtClassClass::create(OtPictureClass::getMeta()));
+	module->set("Label", OtClassClass::create(OtLabelClass::getMeta()));
 	module->set("RealSlider", OtClassClass::create(OtRealSliderClass::getMeta()));
+	module->set("TreeNode", OtClassClass::create(OtTreeNodeClass::getMeta()));
 
 	module->set("AmbientController", OtClassClass::create(OtAmbientControllerClass::getMeta()));
 	module->set("CameraController", OtClassClass::create(OtCameraControllerClass::getMeta()));

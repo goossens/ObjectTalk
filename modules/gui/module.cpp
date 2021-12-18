@@ -77,7 +77,10 @@
 #include "checkbox.h"
 #include "combobox.h"
 #include "integerslider.h"
+#include "filler.h"
+#include "knob.h"
 #include "label.h"
+#include "meter.h"
 #include "picture.h"
 #include "realslider.h"
 #include "treenode.h"
@@ -197,8 +200,11 @@ extern "C" void init(OtModule module) {
 
 	module->set("Checkbox", OtClassClass::create(OtCheckboxClass::getMeta()));
 	module->set("Combobox", OtClassClass::create(OtComboboxClass::getMeta()));
-	module->set("Picture", OtClassClass::create(OtPictureClass::getMeta()));
+	module->set("Filler", OtClassClass::create(OtFillerClass::getMeta()));
+	module->set("Knob", OtClassClass::create(OtKnobClass::getMeta()));
 	module->set("Label", OtClassClass::create(OtLabelClass::getMeta()));
+	module->set("Meter", OtClassClass::create(OtMeterClass::getMeta()));
+	module->set("Picture", OtClassClass::create(OtPictureClass::getMeta()));
 	module->set("RealSlider", OtClassClass::create(OtRealSliderClass::getMeta()));
 	module->set("TreeNode", OtClassClass::create(OtTreeNodeClass::getMeta()));
 

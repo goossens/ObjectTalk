@@ -72,8 +72,12 @@ OtObject OtPictureClass::setMargin(int m) {
 //
 
 void OtPictureClass::render() {
-	ImGui::Dummy(ImVec2(1, margin));
+	// add margin if required
+	if (margin) {
+		ImGui::Dummy(ImVec2(0, margin));
+	}
 
+	// position and render image
 	ImGui::SetCursorPos(ImVec2((
 		ImGui::GetWindowSize().x - texture->getWidth()) / 2,
 		ImGui::GetCursorPosY()));
@@ -82,7 +86,10 @@ void OtPictureClass::render() {
 		(void*)(intptr_t) texture->getTextureHandle().idx,
 		ImVec2(texture->getWidth(), texture->getHeight()));
 
-	ImGui::Dummy(ImVec2(1, margin));
+	// add margin if required
+	if (margin) {
+		ImGui::Dummy(ImVec2(0, margin));
+	}
 }
 
 
@@ -96,6 +103,9 @@ OtType OtPictureClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtPictureClass>("Picture", OtWidgetClass::getMeta());
 		type->set("__init__", OtFunctionClass::create(&OtPictureClass::init));
+
+		type->set("setTexture", OtFunctionClass::create(&OtPictureClass::setTexture));
+		type->set("setMargin", OtFunctionClass::create(&OtPictureClass::setMargin));
 	}
 
 	return type;

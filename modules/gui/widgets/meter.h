@@ -17,22 +17,29 @@
 
 
 //
-//	OtPictureClass
+//	OtMeterClass
 //
 
-class OtPictureClass;
-typedef std::shared_ptr<OtPictureClass> OtPicture;
+class OtMeterClass;
+typedef std::shared_ptr<OtMeterClass> OtMeter;
 
-class OtPictureClass : public OtWidgetClass {
+class OtMeterClass : public OtWidgetClass {
 public:
 	// initialize
 	OtObject init(size_t count, OtObject* parameters);
 
-	// specify a new picture
+	// specify a new texture
 	OtObject setTexture(OtObject texture);
 
-	// set the margin around the picture
+	// set the margin around the meter
 	OtObject setMargin(int margin);
+
+	// specify a label for the meter
+	OtObject setLabel(const std::string& label);
+
+	// access measurement (range 0-100)
+	OtObject setValue(float v) { value = v; return shared(); }
+	float getValue() { return value; }
 
 	// render content
 	void render();
@@ -41,10 +48,12 @@ public:
 	static OtType getMeta();
 
 	// create a new object
-	static OtPicture create();
+	static OtMeter create();
 
 private:
 	// properties
 	OtTexture texture;
 	int margin = 5;
+	float value;
+	std::string label;
 };

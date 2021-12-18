@@ -12,27 +12,23 @@
 //	Include files
 //
 
-#include "texture.h"
 #include "widget.h"
 
 
 //
-//	OtPictureClass
+//	OtFillerClass
 //
 
-class OtPictureClass;
-typedef std::shared_ptr<OtPictureClass> OtPicture;
+class OtFillerClass;
+typedef std::shared_ptr<OtFillerClass> OtFiller;
 
-class OtPictureClass : public OtWidgetClass {
+class OtFillerClass : public OtWidgetClass {
 public:
 	// initialize
 	OtObject init(size_t count, OtObject* parameters);
 
-	// specify a new picture
-	OtObject setTexture(OtObject texture);
-
-	// set the margin around the picture
-	OtObject setMargin(int margin);
+	// set the height of the filler
+	OtObject setSize(float size);
 
 	// render content
 	void render();
@@ -41,10 +37,9 @@ public:
 	static OtType getMeta();
 
 	// create a new object
-	static OtPicture create();
+	static OtFiller create();
 
 private:
 	// properties
-	OtTexture texture;
-	int margin = 5;
+	float size;
 };

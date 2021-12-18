@@ -552,6 +552,16 @@ void OtVectorDisplayClass::setColor(const std::string& c) {
 
 
 //
+//	OtVectorDisplayClass::setAlpha
+//
+
+void OtVectorDisplayClass::setAlpha(float alpha) {
+	int a = alpha * 255;
+	color = (color & 0xffffff) | a << 24;
+}
+
+
+//
 //	OtVectorDisplayClass::setThickness
 //
 
@@ -760,6 +770,21 @@ void OtVectorDisplayClass::updateColor(int id, const std::string& color) {
 
 
 //
+//	OtVectorDisplayClass::updateAlpha
+//
+
+void OtVectorDisplayClass::updateAlpha(int id, float alpha) {
+	for (auto& shape : shapes) {
+		if (shape.id == id) {
+			int a = alpha * 255;
+			shape.color = shape.color & 0xffffff | a << 24;
+			return;
+		}
+	}
+}
+
+
+//
 //	OtVectorDisplayClass::deleteShape
 //
 
@@ -950,6 +975,7 @@ OtType OtVectorDisplayClass::getMeta() {
 
 		type->set("setTransform", OtFunctionClass::create(&OtVectorDisplayClass::setTransform));
 		type->set("setColor", OtFunctionClass::create(&OtVectorDisplayClass::setColor));
+		type->set("setAlpha", OtFunctionClass::create(&OtVectorDisplayClass::setAlpha));
 		type->set("setThickness", OtFunctionClass::create(&OtVectorDisplayClass::setThickness));
 
 		type->set("getTextWidth", OtFunctionClass::create(&OtVectorDisplayClass::getTextWidth));
@@ -964,6 +990,10 @@ OtType OtVectorDisplayClass::getMeta() {
 		type->set("updateRectangle", OtFunctionClass::create(&OtVectorDisplayClass::updateRectangle));
 		type->set("updateCircle", OtFunctionClass::create(&OtVectorDisplayClass::updateCircle));
 		type->set("updateText", OtFunctionClass::create(&OtVectorDisplayClass::updateText));
+
+		type->set("updateThickness", OtFunctionClass::create(&OtVectorDisplayClass::updateThickness));
+		type->set("updateColor", OtFunctionClass::create(&OtVectorDisplayClass::updateColor));
+		type->set("updateAlpha", OtFunctionClass::create(&OtVectorDisplayClass::updateAlpha));
 
 		type->set("deleteShape", OtFunctionClass::create(&OtVectorDisplayClass::deleteShape));
 	}

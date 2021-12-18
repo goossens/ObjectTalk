@@ -43,6 +43,7 @@ public:
 	// shape API
 	void setTransform(float offsetX, float offsetY, float scale);
 	void setColor(const std::string& color);
+	void setAlpha(float alpha);
 	void setThickness(float thickness);
 
 	float getTextWidth(const std::string& text, float scale);
@@ -60,6 +61,7 @@ public:
 
 	void updateThickness(int id, float thickness);
 	void updateColor(int id, const std::string& color);
+	void updateAlpha(int id, float alpha);
 
 	void deleteShape(int id);
 

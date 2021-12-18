@@ -25,8 +25,14 @@ typedef std::shared_ptr<OtPictureClass> OtPicture;
 
 class OtPictureClass : public OtWidgetClass {
 public:
-	// initialize checkbox
-	void init(const std::string& filename);
+	// initialize
+	OtObject init(size_t count, OtObject* parameters);
+
+	// specify a new picture
+	OtObject setTexture(OtObject texture);
+
+	// set the margin around the picture
+	OtObject setMargin(int margin);
 
 	// render content
 	void render();
@@ -40,4 +46,5 @@ public:
 private:
 	// properties
 	OtTexture texture;
+	int margin = 50;
 };

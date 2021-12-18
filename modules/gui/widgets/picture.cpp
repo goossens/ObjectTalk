@@ -18,10 +18,52 @@
 //	OtPictureClass::init
 //
 
-void OtPictureClass::init(const std::string& filename) {
-	// load the texture
-	texture = OtTextureClass::create();
-	texture->loadImage(filename);
+OtObject OtPictureClass::init(size_t count, OtObject* parameters) {
+	switch (count) {
+		case 2:
+			setMargin(parameters[1]->operator int());
+
+		case 1:
+			setTexture(parameters[0]);
+
+		case 0:
+			break;
+
+		default:
+			OtExcept("[Picture] constructor expects up to 2 arguments (not %ld)", count);
+	}
+
+	return nullptr;
+}
+
+
+//
+//	OtPictureClass::setTexture
+//
+OtObject OtPictureClass::setTexture(OtObject object) {
+	// ensure object is a texture
+	if (object->isKindOf("Texture")) {
+		texture = object->cast<OtTextureClass>();
+
+	} else if (object->isKindOf("String")) {
+		texture = OtTextureClass::create();
+		texture->loadImage(object->operator std::string());
+
+	} else {
+		OtExcept("Expected a [Texture] or [String] object, not a [%s]", object->getType()->getName().c_str());
+	}
+
+	return shared();
+}
+
+
+//
+//	OtPictureClass::setMargin
+//
+
+OtObject OtPictureClass::setMargin(int m) {
+	margin = m;
+	return shared();
 }
 
 
@@ -30,11 +72,17 @@ void OtPictureClass::init(const std::string& filename) {
 //
 
 void OtPictureClass::render() {
-	ImGui::SetCursorPos(ImVec2((ImGui::GetWindowSize().x - texture->getWidth()) / 2, 0));
+	ImGui::Dummy(ImVec2(1, margin));
+
+	ImGui::SetCursorPos(ImVec2((
+		ImGui::GetWindowSize().x - texture->getWidth()) / 2,
+		ImGui::GetCursorPosY()));
 
 	ImGui::Image(
 		(void*)(intptr_t) texture->getTextureHandle().idx,
 		ImVec2(texture->getWidth(), texture->getHeight()));
+
+	ImGui::Dummy(ImVec2(1, margin));
 }
 
 

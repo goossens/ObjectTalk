@@ -20,17 +20,38 @@ class MyApp : gui.Application {
 
 		vd.setColor("#faa");
 
-		vd.addCircle(250, 450, 10, 32);
-		vd.addCircle(300, 450, 30, 32);
-		vd.addCircle(400, 450, 60, 32);
-		vd.addCircle(500, 450, 80, 64);
+		vd.setThickness(1);
+		vd.addCircle(260, 400, 7, 32);
+		vd.setThickness(2);
+		vd.addCircle(315, 400, 15, 32);
+		vd.setThickness(3);
+		vd.addCircle(380, 400, 30, 32);
+		vd.setThickness(4);
+		vd.addCircle(490, 400, 40, 64);
 
 		vd.setColor("#afa");
 
-		vd.addRectangle(250, 600, 10, 10);
-		vd.addRectangle(300, 600, 30, 30);
-		vd.addRectangle(350, 600, 60, 60);
-		vd.addRectangle(450, 600, 80, 80);
+		vd.setThickness(1);
+		vd.addRectangle(250, 550, 20, 20);
+		vd.setThickness(2);
+		vd.addRectangle(300, 550, 30, 30);
+		vd.setThickness(3);
+		vd.addRectangle(350, 550, 60, 60);
+		vd.setThickness(4);
+		vd.addRectangle(450, 550, 80, 80);
+
+		vd.setColor("#aff");
+		vd.setThickness(3);
+		vd.addLine(50, 260, 850, 260);
+		vd.addLine(50, 280, 850, 280);
+
+		vd.setColor("#ffa");
+
+		for i in range(0, 3) {
+			vd.setThickness(i + 1);
+			vd.addLine(50, 340 + 40 * i, 180, 340 + 40 * i);
+			vd.addLine(50 + 40 * i, 520, 50 + 40 * i, 650.0);
+		}
 
 		var panel = gui.Panel(0, 0, 20, 100);
 

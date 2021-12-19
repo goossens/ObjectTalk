@@ -63,6 +63,8 @@ public:
 	void updateColor(int id, const std::string& color);
 	void updateAlpha(int id, float alpha);
 
+	void enableShape(int id);
+	void disableShape(int id);
 	void deleteShape(int id);
 
 	// render content
@@ -153,13 +155,13 @@ private:
 	struct Shape {
 		enum {
 			lineType,
-			arrowType,
 			rectangleType,
 			circleType,
 			textType
 		};
 
 		int id;
+		bool enabled;
 		int type;
 		float thickness;
 		uint32_t color;

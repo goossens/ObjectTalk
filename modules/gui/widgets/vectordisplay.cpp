@@ -785,6 +785,34 @@ void OtVectorDisplayClass::updateAlpha(int id, float alpha) {
 
 
 //
+//	OtVectorDisplayClass::enableShape
+//
+
+void OtVectorDisplayClass::enableShape(int id) {
+	for (auto& shape : shapes) {
+		if (shape.id == id) {
+			shape.enabled = true;
+			return;
+		}
+	}
+}
+
+
+//
+//	OtVectorDisplayClass::disableShape
+//
+
+void OtVectorDisplayClass::disableShape(int id) {
+	for (auto& shape : shapes) {
+		if (shape.id == id) {
+			shape.enabled = false;
+			return;
+		}
+	}
+}
+
+
+//
 //	OtVectorDisplayClass::deleteShape
 //
 
@@ -806,25 +834,27 @@ void OtVectorDisplayClass::deleteShape(int id) {
 void OtVectorDisplayClass::render() {
 	// render all shapes
 	for (auto& shape : shapes) {
-		thickness = shape.thickness;
-		color = shape.color;
+		if (shape.enabled) {
+			thickness = shape.thickness;
+			color = shape.color;
 
-		switch (shape.type) {
-			case Shape::lineType:
-				drawLine(shape.x0, shape.y0, shape.x1, shape.y1);
-				break;
+			switch (shape.type) {
+				case Shape::lineType:
+					drawLine(shape.x0, shape.y0, shape.x1, shape.y1);
+					break;
 
-			case Shape::rectangleType:
-				drawRectangle(shape.x, shape.y, shape.w, shape.h);
-				break;
+				case Shape::rectangleType:
+					drawRectangle(shape.x, shape.y, shape.w, shape.h);
+					break;
 
-			case Shape::circleType:
-				drawCircle(shape.x, shape.y, shape.radius, shape.steps);
-				break;
+				case Shape::circleType:
+					drawCircle(shape.x, shape.y, shape.radius, shape.steps);
+					break;
 
-			case Shape::textType:
-				drawText(shape.x, shape.y, shape.scale, shape.text);
-				break;
+				case Shape::textType:
+					drawText(shape.x, shape.y, shape.scale, shape.text);
+					break;
+			}
 		}
 	}
 
@@ -995,6 +1025,8 @@ OtType OtVectorDisplayClass::getMeta() {
 		type->set("updateColor", OtFunctionClass::create(&OtVectorDisplayClass::updateColor));
 		type->set("updateAlpha", OtFunctionClass::create(&OtVectorDisplayClass::updateAlpha));
 
+		type->set("enableShape", OtFunctionClass::create(&OtVectorDisplayClass::enableShape));
+		type->set("disableShape", OtFunctionClass::create(&OtVectorDisplayClass::disableShape));
 		type->set("deleteShape", OtFunctionClass::create(&OtVectorDisplayClass::deleteShape));
 	}
 

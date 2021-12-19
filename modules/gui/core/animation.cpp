@@ -96,6 +96,16 @@ OtObject OtAnimationClass::continuous() {
 
 
 //
+//	OtAnimationClass::seek
+//
+
+OtObject OtAnimationClass::seek(float percentage) {
+	animator.seek(percentage);
+	return shared();
+}
+
+
+//
 //	OtAnimationClass::onStep
 //
 
@@ -134,6 +144,7 @@ OtType OtAnimationClass::getMeta() {
 		type->set("during", OtFunctionClass::create(&OtAnimationClass::during));
 		type->set("repeat", OtFunctionClass::create(&OtAnimationClass::repeat));
 		type->set("continuous", OtFunctionClass::create(&OtAnimationClass::continuous));
+		type->set("seek", OtFunctionClass::create(&OtAnimationClass::seek));
 		type->set("onStep", OtFunctionClass::create(&OtAnimationClass::onStep));
 	}
 

@@ -35,6 +35,8 @@ public:
 	OtObject repeat(size_t times);
 	OtObject continuous();
 
+	OtObject seek(float percentage);
+
 	OtObject onStep(OtObject callback);
 
 	// step forward in animation

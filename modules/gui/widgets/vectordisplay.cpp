@@ -604,6 +604,7 @@ float OtVectorDisplayClass::getTextHeight(const std::string& text, float scale) 
 int OtVectorDisplayClass::addLine(float x0, float y0, float x1, float y1) {
 	Shape shape;
 	shape.id = nextShapeID++;
+	shape.enabled = true;
 	shape.type = Shape::lineType;
 	shape.thickness = thickness;
 	shape.color = color;
@@ -623,6 +624,7 @@ int OtVectorDisplayClass::addLine(float x0, float y0, float x1, float y1) {
 int OtVectorDisplayClass::addRectangle(float x, float y, float w, float h) {
 	Shape shape;
 	shape.id = nextShapeID++;
+	shape.enabled = true;
 	shape.type = Shape::rectangleType;
 	shape.thickness = thickness;
 	shape.color = color;
@@ -642,6 +644,7 @@ int OtVectorDisplayClass::addRectangle(float x, float y, float w, float h) {
 int OtVectorDisplayClass::addCircle(float x, float y, float radius, float steps) {
 	Shape shape;
 	shape.id = nextShapeID++;
+	shape.enabled = true;
 	shape.type = Shape::circleType;
 	shape.thickness = thickness;
 	shape.color = color;
@@ -660,6 +663,7 @@ int OtVectorDisplayClass::addCircle(float x, float y, float radius, float steps)
 
 int OtVectorDisplayClass::addText(float x, float y, float scale, const std::string& text) {
 	Shape shape;
+	shape.enabled = true;
 	shape.id = nextShapeID++;
 	shape.type = Shape::textType;
 	shape.thickness = thickness;

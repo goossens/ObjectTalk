@@ -5,6 +5,14 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 
+//
+//	The simplex font is derived from the Hershey Vector Font originally designed
+//	by Dr. A. V. Hershey while working at the U. S. National Bureau of Standards.
+//
+//	See http://paulbourke.net/dataformats/hershey/
+//	And https://github.com/kamalmostafa/hershey-fonts
+//
+
 static const int8_t simplex[95][112] = {
 	{
 		 0, 16, /* ASCII 32 */

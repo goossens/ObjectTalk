@@ -30,9 +30,10 @@ systems, Reals are implemented using 8 bytes and have a range of
 | sin() | Returns the sine of an angle of object's value in radians.
 | cos() | Returns the cosine of an angle of object's value in radians.
 | tan() | Returns the tangent of an angle of object's value in radians.
-| asin() | Returns the principal value of the arc cosine of object's value, expressed in radians.
+| asin() | Returns the principal value of the arc sine of object's value, expressed in radians.
 | acos() | Returns the principal value of the arc cosine of object's value, expressed in radians.
-| atan() | Returns the principal value of the arc cosine of object's value, expressed in radians.
+| atan() | Returns the principal value of the arc tangent of object's value, expressed in radians.
+| atan2() | Returns the principal value of the arc tangent expressed in radians of value/operand using the signs of arguments to determine the correct quadrant.
 | radians() | Returns object's value converted from degrees to radians.
 | degrees() | Returns object's value converted from radians to degrees.
 | sqrt() | Return the square root of object's value.

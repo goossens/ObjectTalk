@@ -76,6 +76,7 @@ OtType OtRealClass::getMeta() {
 		type->set("asin", OtFunctionClass::create(&OtRealClass::asin));
 		type->set("acos", OtFunctionClass::create(&OtRealClass::acos));
 		type->set("atan", OtFunctionClass::create(&OtRealClass::atan));
+		type->set("atan2", OtFunctionClass::create(&OtRealClass::atan2));
 		type->set("radians", OtFunctionClass::create(&OtRealClass::radians));
 		type->set("degrees", OtFunctionClass::create(&OtRealClass::degrees));
 

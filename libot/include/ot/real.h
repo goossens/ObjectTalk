@@ -84,6 +84,7 @@ public:
 	double asin() { return std::asin(value); }
 	double acos() { return std::acos(value); }
 	double atan() { return std::atan(value); }
+	double atan2(double operand) { return std::atan2(value, operand); }
 	double radians() { return value * std::numbers::pi / 180.0; }
 	double degrees() { return value / std::numbers::pi * 180.0; }
 

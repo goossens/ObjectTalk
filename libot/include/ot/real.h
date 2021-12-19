@@ -76,6 +76,7 @@ public:
 	double min(double operand) { return std::min(value, operand); }
 	double max(double operand) { return std::max(value, operand); }
 	double clamp(double min, double max) { return std::clamp(value, min, max); }
+	double lerp(double min, double max) { return std::lerp(min, max, value); }
 
 	double sin() { return std::sin(value); }
 	double cos() { return std::cos(value); }

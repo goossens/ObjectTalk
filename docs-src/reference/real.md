@@ -26,6 +26,7 @@ systems, Reals are implemented using 8 bytes and have a range of
 | min(real) | Return the minimum of real and the object's value.
 | max(real) | Return the maximum of real and the object's value.
 | clamp(min, max) | Return clamped value between min and max.
+| lerp(min, max) | Return the linear interpolation between min and max based on value (as the ratio).
 | sin() | Returns the sine of an angle of object's value in radians.
 | cos() | Returns the cosine of an angle of object's value in radians.
 | tan() | Returns the tangent of an angle of object's value in radians.

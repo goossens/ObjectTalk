@@ -68,6 +68,7 @@ OtType OtRealClass::getMeta() {
 		type->set("min", OtFunctionClass::create(&OtRealClass::min));
 		type->set("max", OtFunctionClass::create(&OtRealClass::max));
 		type->set("clamp", OtFunctionClass::create(&OtRealClass::clamp));
+		type->set("lerp", OtFunctionClass::create(&OtRealClass::lerp));
 
 		type->set("sin", OtFunctionClass::create(&OtRealClass::sin));
 		type->set("cos", OtFunctionClass::create(&OtRealClass::cos));

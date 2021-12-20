@@ -1,0 +1,11 @@
+#	ObjectTalk GUI Module
+#	Copyright (c) 2020-2021 Johan A. Goossens. All rights reserved.
+#
+#	This work is licensed under the terms of the MIT license.
+#	For a copy, see <https://opensource.org/licenses/MIT>.
+
+FetchContent_Declare(box2d GIT_REPOSITORY "https://github.com/erincatto/box2d" GIT_TAG "v2.4.1")
+SET(BOX2D_BUILD_UNIT_TESTS OFF CACHE BOOL "" FORCE)
+SET(BOX2D_BUILD_TESTBED OFF CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(box2d)
+include_directories(${box2d_SOURCE_DIR}/include)

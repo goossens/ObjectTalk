@@ -59,6 +59,8 @@
 #include "guimath.h"
 #include "perlin.h"
 #include "plane.h"
+//#include "vec2.h"
+#include "vec3.h"
 
 #include "widget.h"
 
@@ -142,6 +144,8 @@ extern "C" void init(OtModule module) {
 
 	module->set("Math", OtClassClass::create(OtSimulationClass::getMeta()));
 	module->set("Perlin", OtClassClass::create(OtPerlinClass::getMeta()));
+//	module->set("Vec2", OtClassClass::create(OtVec2Class::getMeta()));
+	module->set("Vec3", OtClassClass::create(OtVec3Class::getMeta()));
 
 	module->set("Widget", OtClassClass::create(OtWidgetClass::getMeta()));
 	module->set("Screen", OtClassClass::create(OtScreenClass::getMeta()));

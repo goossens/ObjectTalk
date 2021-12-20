@@ -4,7 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-include_directories(core filters geometries math platform shaders simulation utilities widgets world)
+include_directories(core filters geometries math platform scenes shaders simulation utilities widgets)
 
 file(GLOB_RECURSE GUI_INCLUDES */*.h)
 file(GLOB_RECURSE GUI_SOURCES module.cpp */*.cpp)
@@ -30,7 +30,7 @@ if (WIN32)
 endif()
 
 add_library(gui MODULE ${GUI_INCLUDES} ${GUI_SOURCES})
-add_dependencies(gui glfw bgfx imgui imguifd tinyobjloader)
+add_dependencies(gui glfw bgfx imgui imguifd tinyobjloader box2d)
 target_link_libraries(gui libot ${UV_LIBRARY} glfw bgfx imgui imguifd tinyobjloader ${GUI_LIBS})
 
 set_target_properties(gui PROPERTIES PREFIX "")

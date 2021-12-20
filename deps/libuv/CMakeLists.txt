@@ -11,7 +11,14 @@ if(UV_INCLUDES STREQUAL "")
 	SET(BUILD_TESTING OFF CACHE BOOL "Build tests." FORCE)
 	SET(LIBUV_BUILD_TESTS OFF CACHE BOOL "Build tests." FORCE)
 	SET(LIBUV_BUILD_BENCH OFF CACHE BOOL "Build benchmarks." FORCE)
-	FetchContent_MakeAvailable(libuv)
+
+	FetchContent_GetProperties(libuv)
+
+	if(NOT libuv_POPULATED)
+		FetchContent_Populate(libuv)
+		add_subdirectory(${libuv_SOURCE_DIR} ${libuv_BINARY_DIR} EXCLUDE_FROM_ALL)
+	endif()
+
 	include_directories(${libuv_SOURCE_DIR}/include)
 	set(UV_LIBRARY uv)
 	set(PRIVATE_UV ON)

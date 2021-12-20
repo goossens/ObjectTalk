@@ -5,5 +5,12 @@
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
 FetchContent_Declare(tinyobjloader GIT_REPOSITORY "https://github.com/tinyobjloader/tinyobjloader")
-FetchContent_MakeAvailable(tinyobjloader)
+
+FetchContent_GetProperties(tinyobjloader)
+
+if(NOT tinyobjloader_POPULATED)
+	FetchContent_Populate(tinyobjloader)
+	add_subdirectory(${tinyobjloader_SOURCE_DIR} ${tinyobjloader_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
+
 include_directories(${tinyobjloader_SOURCE_DIR})

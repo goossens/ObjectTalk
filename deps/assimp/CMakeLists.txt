@@ -10,5 +10,12 @@ set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_SAMPLES OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(INJECT_DEBUG_POSTFIX OFF CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(assimp)
+
+FetchContent_GetProperties(assimp)
+
+if(NOT assimp_POPULATED)
+	FetchContent_Populate(assimp)
+	add_subdirectory(${assimp_SOURCE_DIR} ${assimp_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
+
 include_directories(${assimp_SOURCE_DIR}/include)

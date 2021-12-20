@@ -5,5 +5,12 @@
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
 FetchContent_Declare(tweeny GIT_REPOSITORY "https://github.com/mobius3/tweeny" GIT_TAG "v3.2.0")
-FetchContent_MakeAvailable(tweeny)
+
+FetchContent_GetProperties(tweeny)
+
+if(NOT tweeny_POPULATED)
+	FetchContent_Populate(tweeny)
+	add_subdirectory(${tweeny_SOURCE_DIR} ${tweeny_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
+
 include_directories(${tweeny_SOURCE_DIR}/include)

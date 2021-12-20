@@ -11,8 +11,6 @@ set(IMGUIFD_SOURCES
 	${imguifd_SOURCE_DIR}/ImGuiFileDialog.h
 	${imguifd_SOURCE_DIR}/ImGuiFileDialogConfig.h
 	${imguifd_SOURCE_DIR}/ImGuiFileDialog.cpp)
-#	${imguifd_SOURCE_DIR}/stb/stb_image.h
-#	${imguifd_SOURCE_DIR}/stb/stb_image_resize.h)
 
 add_library(imguifd STATIC ${IMGUIFD_SOURCES})
 add_dependencies(imguifd glfw)

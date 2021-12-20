@@ -9,6 +9,13 @@ SET(BGFX_BUILD_TOOLS OFF CACHE BOOL "" FORCE)
 SET(BGFX_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(BGFX_CONFIG_DEBUG OFF CACHE INTERNAL "" FORCE)
 set(BGFX_INSTALL OFF CACHE INTERNAL "" FORCE)
-FetchContent_MakeAvailable(bgfx)
+
+FetchContent_GetProperties(bgfx)
+
+if(NOT bgfx_POPULATED)
+	FetchContent_Populate(bgfx)
+	add_subdirectory(${bgfx_SOURCE_DIR} ${bgfx_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
+
 include_directories(${bgfx_SOURCE_DIR}/bx/include)
 include_directories(${bgfx_SOURCE_DIR}/bimg/include)

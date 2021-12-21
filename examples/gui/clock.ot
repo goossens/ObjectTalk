@@ -16,6 +16,7 @@ class MyApp : gui.Application {
 
 	function setup(this, screen) {
 		this.vd = gui.VectorDisplay(0, 0, 100, 100);
+		this.vd.setCenterOrigin();
 		screen.add(this.vd);
 		this.createBackPlate(this.vd);
 		this.addHands(this.vd);
@@ -55,15 +56,15 @@ class MyApp : gui.Application {
 	function update(this) {
 		var width = this.getWidth();
 		var height = this.getHeight();
-		this.vd.setTransform(width / 2, height / 2, (0.45 * height.min(width)) / radius);
+		this.vd.setTransform(0, 0, (0.45 * height.min(width)) / radius);
 
 		var seconds = os.getSeconds();
 		var minutes = os.getMinutes().real() + seconds.real() / 60.0;
 		var hours = os.getHours().real() + minutes.real() / 60.0;
 
-		var hourAngle = (pi / 6.0) * hours - pi / 2.0;
-		var minuteAngle = (pi / 30.0) * minutes - pi / 2.0;
-		var secondAngle = (pi / 30.0) * seconds - pi / 2.0;
+		var hourAngle = (-pi / 6.0) * hours + pi / 2.0;
+		var minuteAngle = (-pi / 30.0) * minutes + pi / 2.0;
+		var secondAngle = (-pi / 30.0) * seconds + pi / 2.0;
 
 		this.vd.updateLine(this.hours, 0, 0, hourAngle.cos() * rh, hourAngle.sin() * rh);
 		this.vd.updateLine(this.minutes, 0, 0, minuteAngle.cos() * rm, minuteAngle.sin() * rm);

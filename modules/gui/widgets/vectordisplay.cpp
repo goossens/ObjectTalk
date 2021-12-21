@@ -68,9 +68,6 @@ OtVectorDisplayClass::OtVectorDisplayClass() {
 	const uint32_t flags = BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP | BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT;
 	lineTexture = bgfx::createTexture2D(TEXTURE_SIZE, TEXTURE_SIZE, false, 1, bgfx::TextureFormat::BGRA8, flags, mem);
 
-	// set initial number of decay steps
-	setDecay(4, 0.1, 0.8);
-
 	// create filters
 	blur = std::make_shared<OtBlurClass>();
 	blit = std::make_shared<OtBlitClass>();
@@ -130,6 +127,27 @@ void OtVectorDisplayClass::updateFrameBuffers() {
 	frameBuffer0 = bgfx::createFrameBuffer(bufferWidth, bufferHeight, bgfx::TextureFormat::RGBA16F, flags);
 	frameBuffer1 = bgfx::createFrameBuffer(glowWidth, glowHeight, bgfx::TextureFormat::RGBA16F, flags);
 	frameBuffer2 = bgfx::createFrameBuffer(glowWidth, glowHeight, bgfx::TextureFormat::RGBA16F, flags);
+}
+
+
+//
+//	OtVectorDisplayClass::updateVertexBuffers
+//
+
+void OtVectorDisplayClass::updateVertexBuffers() {
+	if (vertexBuffers.size() != 0) {
+		for (auto& buffer : vertexBuffers) {
+			bgfx::destroy(buffer);
+		}
+
+		vertexBuffers.clear();
+		vertexBuffersSize.clear();
+	}
+
+	for (size_t i = 0; i < decaySteps; i++) {
+		vertexBuffers.push_back(bgfx::createDynamicVertexBuffer(MAX_NUMBER_VERTICES, Vertex::getLayout()));
+		vertexBuffersSize.push_back(0);
+	}
 }
 
 
@@ -415,36 +433,97 @@ void OtVectorDisplayClass::endDraw() {
 
 
 //
-//	OtVectorDisplayClass::setDecay
+//	OtVectorDisplayClass::setBrightness
 //
 
-void OtVectorDisplayClass::setDecay(int s, float i, float d) {
-	decaySteps = s;
-	decayStart = i;
-	decayValue = d;
-
-	if (vertexBuffers.size() != 0) {
-		for (auto& buffer : vertexBuffers) {
-			bgfx::destroy(buffer);
-		}
-
-		vertexBuffers.clear();
-		vertexBuffersSize.clear();
-	}
-
-	for (size_t i = 0; i < decaySteps; i++) {
-		vertexBuffers.push_back(bgfx::createDynamicVertexBuffer(MAX_NUMBER_VERTICES, Vertex::getLayout()));
-		vertexBuffersSize.push_back(0);
-	}
+OtObject OtVectorDisplayClass::setBrightness(float b) {
+	brightness = b;
+	return shared();
 }
 
 
 //
-//	OtVectorDisplayClass::setBrightness
+//	OtVectorDisplayClass::setDecay
 //
 
-void OtVectorDisplayClass::setBrightness(float b) {
-	brightness = b;
+OtObject OtVectorDisplayClass::setDecay(int s, float i, float d) {
+	decaySteps = s;
+	decayStart = i;
+	decayValue = d;
+	return shared();
+}
+
+
+//
+//	OtVectorDisplayClass::setTopLeftOrigin
+//
+
+OtObject OtVectorDisplayClass::setTopLeftOrigin() {
+	origin = topLeftOrigin;
+	return shared();
+}
+
+
+//
+//	OtVectorDisplayClass::setBottomLeftOrigin
+//
+
+OtObject OtVectorDisplayClass::setBottomLeftOrigin() {
+	origin = bottomLeftOrigin;
+	return shared();
+}
+
+
+//
+//	OtVectorDisplayClass::setCenterOrigin
+//
+
+OtObject OtVectorDisplayClass::setCenterOrigin() {
+	origin = centerOrigin;
+	return shared();
+}
+
+
+//
+//	OtVectorDisplayClass::setTransform
+//
+
+OtObject OtVectorDisplayClass::setTransform(float offsetX, float offsetY, float scale) {
+	drawOffsetX = offsetX;
+	drawOffsetY = offsetY;
+	drawScale   = scale;
+	return shared();
+}
+
+
+//
+//	OtVectorDisplayClass::setColor
+//
+
+OtObject OtVectorDisplayClass::setColor(const std::string& c) {
+	color = OtColorParseToUint32(c);
+	return shared();
+}
+
+
+//
+//	OtVectorDisplayClass::setAlpha
+//
+
+OtObject OtVectorDisplayClass::setAlpha(float alpha) {
+	int a = alpha * 255;
+	color = (color & 0xffffff) | a << 24;
+	return shared();
+}
+
+
+//
+//	OtVectorDisplayClass::setThickness
+//
+
+OtObject OtVectorDisplayClass::setThickness(float t) {
+	thickness = t;
+	return shared();
 }
 
 
@@ -528,45 +607,6 @@ void OtVectorDisplayClass::drawText(float x, float y, float scale, const std::st
 			x += chr[1] * scale;
 		}
 	}
-}
-
-
-//
-//	OtVectorDisplayClass::setTransform
-//
-
-void OtVectorDisplayClass::setTransform(float offsetX, float offsetY, float scale) {
-	drawOffsetX = offsetX;
-	drawOffsetY = offsetY;
-	drawScale   = scale;
-}
-
-
-//
-//	OtVectorDisplayClass::setColor
-//
-
-void OtVectorDisplayClass::setColor(const std::string& c) {
-	color = OtColorParseToUint32(c);
-}
-
-
-//
-//	OtVectorDisplayClass::setAlpha
-//
-
-void OtVectorDisplayClass::setAlpha(float alpha) {
-	int a = alpha * 255;
-	color = (color & 0xffffff) | a << 24;
-}
-
-
-//
-//	OtVectorDisplayClass::setThickness
-//
-
-void OtVectorDisplayClass::setThickness(float t) {
-	thickness = t;
 }
 
 
@@ -781,7 +821,7 @@ void OtVectorDisplayClass::updateAlpha(int id, float alpha) {
 	for (auto& shape : shapes) {
 		if (shape.id == id) {
 			int a = alpha * 255;
-			shape.color = shape.color & 0xffffff | a << 24;
+			shape.color = (shape.color & 0xffffff) | a << 24;
 			return;
 		}
 	}
@@ -836,6 +876,11 @@ void OtVectorDisplayClass::deleteShape(int id) {
 //
 
 void OtVectorDisplayClass::render() {
+	// update vertexBuffers if required
+	if (decaySteps != vertexBuffers.size()) {
+		updateVertexBuffers();
+	}
+
 	// render all shapes
 	for (auto& shape : shapes) {
 		if (shape.enabled) {
@@ -887,7 +932,22 @@ void OtVectorDisplayClass::render() {
 	bgfx::setViewRect(view, 0.0, 0.0, vw, vh);
 	bgfx::setViewFrameBuffer(view, frameBuffer0);
 
-	glm::mat4 matrix = glm::ortho(0.0f, (float) vw, (float) vh, 0.0f, -1.0f, 1.0f);
+	glm::mat4 matrix;
+
+	switch (origin) {
+		case topLeftOrigin:
+			matrix = glm::ortho(0.0f, (float) vw, (float) vh, 0.0f, -1.0f, 1.0f);
+			break;
+
+		case bottomLeftOrigin:
+			matrix = glm::ortho(0.0f, (float) vw, 0.0f, (float) vh, -1.0f, 1.0f);
+			break;
+
+		case centerOrigin:
+			matrix = glm::ortho((float) (-vw / 2), (float) (vw / 2), (float) (-vh / 2), (float) (vh / 2), -1.0f, 1.0f);
+			break;
+	}
+
 	bgfx::setViewTransform(view, nullptr, glm::value_ptr(matrix));
 
 	// advance to next draw step
@@ -1006,6 +1066,9 @@ OtType OtVectorDisplayClass::getMeta() {
 
 		type->set("setBrightness", OtFunctionClass::create(&OtVectorDisplayClass::setBrightness));
 		type->set("setDecay", OtFunctionClass::create(&OtVectorDisplayClass::setDecay));
+		type->set("setTopLeftOrigin", OtFunctionClass::create(&OtVectorDisplayClass::setTopLeftOrigin));
+		type->set("setBottomLeftOrigin", OtFunctionClass::create(&OtVectorDisplayClass::setBottomLeftOrigin));
+		type->set("setCenterOrigin", OtFunctionClass::create(&OtVectorDisplayClass::setCenterOrigin));
 
 		type->set("setTransform", OtFunctionClass::create(&OtVectorDisplayClass::setTransform));
 		type->set("setColor", OtFunctionClass::create(&OtVectorDisplayClass::setColor));

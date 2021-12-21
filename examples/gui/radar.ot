@@ -86,6 +86,7 @@ class Target : Object {
 class MyApp : gui.Application {
 	function setup(this, screen) {
 		this.vd = gui.VectorDisplay(0, 0, 80, 100);
+		this.vd.setCenterOrigin();
 		this.vd.setBrightness(brightness);
 
 		this.createBackPlate();
@@ -149,11 +150,11 @@ class MyApp : gui.Application {
 		// ensure radar is scaled correctly
 		var width = 0.8 * this.getWidth();
 		var height = this.getHeight();
-		this.vd.setTransform(width / 2, height / 2, (0.45 * height.min(width)) / radius);
+		this.vd.setTransform(0, 0, (0.45 * height.min(width)) / radius);
 
 		// determine angle of radar sweep based on clock
 		var time = os.clock();
-		var angle = (2.0 * time) % (pi * 2.0);
+		var angle = (-2.0 * time) % (pi * 2.0);
 
 		// update targets
 		for target in this.targets {
@@ -165,7 +166,7 @@ class MyApp : gui.Application {
 		this.vd.updateLine(this.beam, 0, 0, angle.cos() * r1, angle.sin() * r1);
 
 		for i in range(0, decaySteps - 1) {
-			angle -= decayStep;
+			angle += decayStep;
 			var r2 = 12 * (i + 1);
 			var cos = angle.cos();
 			var sin = angle.sin();

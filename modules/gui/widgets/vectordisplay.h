@@ -37,14 +37,17 @@ public:
 	void init(int _x, int _y, int _w, int _h) { x = _x; y = _y; w = _w; h = _h; }
 
 	// display properties
-	void setBrightness(float brightness);
-	void setDecay(int steps, float decayStart, float decay);
+	OtObject setBrightness(float brightness);
+	OtObject setDecay(int steps, float decayStart, float decay);
+	OtObject setTopLeftOrigin();
+	OtObject setBottomLeftOrigin();
+	OtObject setCenterOrigin();
 
 	// shape API
-	void setTransform(float offsetX, float offsetY, float scale);
-	void setColor(const std::string& color);
-	void setAlpha(float alpha);
-	void setThickness(float thickness);
+	OtObject setTransform(float offsetX, float offsetY, float scale);
+	OtObject setColor(const std::string& color);
+	OtObject setAlpha(float alpha);
+	OtObject setThickness(float thickness);
 
 	float getTextWidth(const std::string& text, float scale);
 	float getTextHeight(const std::string& text, float scale);
@@ -117,8 +120,9 @@ private:
 	// texture to draw lines
 	bgfx::TextureHandle lineTexture;
 
-	// create/update frame buffers
+	// create/update buffers
 	void updateFrameBuffers();
+	void updateVertexBuffers();
 
 	// vector display vertex definition
 	struct Vertex {
@@ -199,15 +203,24 @@ private:
 	uint32_t color = 0xffffffff;
 	float thickness = 1.0;
 
-	int decaySteps = 0;
+	int decaySteps = 4;
 	int currentDrawStep = 0;
-	float decayStart = 0.04;
+	float decayStart = 0.1;
 	float decayValue = 0.8;
 
 	float brightness = 1.0;
 	float drawScale = 1.0;
 	float drawOffsetX = 0.0;
 	float drawOffsetY = 0.0;
+
+	// rendering origin
+	enum {
+		topLeftOrigin,
+		bottomLeftOrigin,
+		centerOrigin
+	};
+
+	int origin = topLeftOrigin;
 
 	// filters
 	OtBlur blur;

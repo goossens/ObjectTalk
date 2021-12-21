@@ -58,6 +58,11 @@ OtObject OtIOClass::readJSON(const std::string& name) {
 
 	try {
 		std::ifstream stream(name.c_str());
+
+		if (stream.fail()) {
+			OtExcept("Can't read from file [%s]", name.c_str());
+		}
+
 		buffer << stream.rdbuf();
 		stream.close();
 
@@ -80,6 +85,11 @@ OtObject OtIOClass::readJSON(const std::string& name) {
 void OtIOClass::writeJSON(const std::string& name, OtObject object) {
 	try {
 		std::ofstream stream(name.c_str());
+
+		if (stream.fail()) {
+			OtExcept("Can't write to file [%s]", name.c_str());
+		}
+
 		stream << object->json();
 		stream.close();
 
@@ -98,6 +108,11 @@ OtObject OtIOClass::readText(const std::string& name) {
 
 	try {
 		std::ifstream stream(name.c_str());
+
+		if (stream.fail()) {
+			OtExcept("Can't read from file [%s]", name.c_str());
+		}
+
 		buffer << stream.rdbuf();
 		stream.close();
 
@@ -116,6 +131,11 @@ OtObject OtIOClass::readText(const std::string& name) {
 void OtIOClass::writeText(const std::string& name, OtObject object) {
 	try {
 		std::ofstream stream(name.c_str());
+
+		if (stream.fail()) {
+			OtExcept("Can't write to file [%s]", name.c_str());
+		}
+
 		stream << object->operator std::string();
 		stream.close();
 

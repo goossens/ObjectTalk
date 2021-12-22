@@ -219,7 +219,7 @@ void OtCompiler::declareVariable(OtByteCode bytecode, const std::string& name, b
 
 	// avoid double declaration
 	if (scope->locals.count(name)) {
-		OtExcept("Variable [%s] already defined in this scope", name.c_str());
+		scanner.error(OtFormat("Variable [%s] already defined in this scope", name.c_str()));
 	}
 
 	// add variable to compiler scope
@@ -294,7 +294,7 @@ void OtCompiler::resolveVariable(OtByteCode bytecode, const std::string& name) {
 
 	// generate error if variable is not found
 	if (!found) {
-		OtExcept("Unknown variable [%s]", name.c_str());
+		scanner.error(OtFormat("Unknown variable [%s]", name.c_str()));
 	}
 }
 

@@ -35,6 +35,14 @@
 
 
 //
+//	Globals
+//
+
+int OtApplicationClass::width = 1280;
+int OtApplicationClass::height = 720;
+
+
+//
 //	OtApplicationClass::initGLFW
 //
 
@@ -49,6 +57,7 @@ void OtApplicationClass::initGLFW(const std::string& name) {
 	// create a new window
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	window = glfwCreateWindow(width, height, name.c_str(), NULL, NULL);
+	glfwSetWindowAspectRatio(window, 16, 9);
 	glfwSetWindowUserPointer(window, this);
 
 	// get native handles

@@ -23,10 +23,7 @@
 //	Globals
 //
 
-int OtApplicationClass::width = 1280;
-int OtApplicationClass::height = 720;
 int OtApplicationClass::nextViewID = 1;
-
 size_t OtApplicationClass::frameNumber = 0;
 
 std::vector<OtApplicationClass::OtKeyboardShortcut> OtApplicationClass::shortcuts;
@@ -164,7 +161,12 @@ void OtApplicationClass::runThread2() {
 				}
 
 				if (!handled) {
-					screen->onKey(keyboardKey, keyboardMods);
+					if (has("onKey")) {
+						OtVM::callMemberFunction(shared(), "onKey", OtObjectCreate(keyboardKey), OtObjectCreate(keyboardMods));
+
+					} else {
+						screen->onKey(keyboardKey, keyboardMods);
+					}
 				}
 			}
 

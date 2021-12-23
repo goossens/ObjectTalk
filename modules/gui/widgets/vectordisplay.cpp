@@ -157,8 +157,8 @@ void OtVectorDisplayClass::updateVertexBuffers() {
 
 void OtVectorDisplayClass::beginDraw(float x, float y) {
 	glm::vec2 point;
-	point.x = x * drawScale + drawOffsetX;
-	point.y = y * drawScale + drawOffsetY;
+	point.x = x * style.drawScale + style.drawOffsetX;
+	point.y = y * style.drawScale + style.drawOffsetY;
 	points.push_back(point);
 }
 
@@ -169,8 +169,8 @@ void OtVectorDisplayClass::beginDraw(float x, float y) {
 
 void OtVectorDisplayClass::drawTo(float x, float y) {
 	glm::vec2 point;
-	point.x = x * drawScale + drawOffsetX;
-	point.y = y * drawScale + drawOffsetY;
+	point.x = x * style.drawScale + style.drawOffsetX;
+	point.y = y * style.drawScale + style.drawOffsetY;
 	points.push_back(point);
 }
 
@@ -183,7 +183,7 @@ void OtVectorDisplayClass::addVertex(float x, float y, float u, float v) {
 	Vertex vertex;
 	vertex.position = glm::vec3(x, y, 0.0);
 	vertex.uv = glm::vec2(u / TEXTURE_SIZE, 1.0f - v / TEXTURE_SIZE);
-	vertex.color = color;
+	vertex.color = style.color;
 	vertices.push_back(vertex);
 }
 
@@ -271,7 +271,7 @@ void OtVectorDisplayClass::endDraw() {
 	size_t nlines = points.size() - 1;
 	Line* lines = new Line[nlines];
 
-	float t = std::max((0.01 * (bufferWidth + bufferHeight) / 2.0) * thickness / 2.0, 6.0);
+	float t = std::max((0.01 * (bufferWidth + bufferHeight) / 2.0) * style.thickness / 2.0, 6.0);
 	bool firstIsLast = std::abs(points[0].x - points[nlines].x) < 0.1 && std::abs(points[0].y - points[nlines].y) < 0.1;
 
 	// compute basics
@@ -485,23 +485,11 @@ OtObject OtVectorDisplayClass::setCenterOrigin() {
 
 
 //
-//	OtVectorDisplayClass::setTransform
-//
-
-OtObject OtVectorDisplayClass::setTransform(float offsetX, float offsetY, float scale) {
-	drawOffsetX = offsetX;
-	drawOffsetY = offsetY;
-	drawScale   = scale;
-	return shared();
-}
-
-
-//
 //	OtVectorDisplayClass::setColor
 //
 
-OtObject OtVectorDisplayClass::setColor(const std::string& c) {
-	color = OtColorParseToUint32(c);
+OtObject OtVectorDisplayClass::setColor(const std::string& color) {
+	style.color = OtColorParseToUint32(color);
 	return shared();
 }
 
@@ -512,7 +500,7 @@ OtObject OtVectorDisplayClass::setColor(const std::string& c) {
 
 OtObject OtVectorDisplayClass::setAlpha(float alpha) {
 	int a = alpha * 255;
-	color = (color & 0xffffff) | a << 24;
+	style.color = (style.color & 0xffffff) | a << 24;
 	return shared();
 }
 
@@ -521,9 +509,40 @@ OtObject OtVectorDisplayClass::setAlpha(float alpha) {
 //	OtVectorDisplayClass::setThickness
 //
 
-OtObject OtVectorDisplayClass::setThickness(float t) {
-	thickness = t;
+OtObject OtVectorDisplayClass::setThickness(float thickness) {
+	style.thickness = thickness;
 	return shared();
+}
+
+
+//
+//	OtVectorDisplayClass::setTransform
+//
+
+OtObject OtVectorDisplayClass::setTransform(float offsetX, float offsetY, float scale) {
+	style.drawOffsetX = offsetX;
+	style.drawOffsetY = offsetY;
+	style.drawScale   = scale;
+	return shared();
+}
+
+
+//
+//	OtVectorDisplayClass::pushStyle
+//
+
+void OtVectorDisplayClass::pushStyle() {
+	styles.push_back(style);
+}
+
+
+//
+//	OtVectorDisplayClass::popStyle
+//
+
+void OtVectorDisplayClass::popStyle() {
+	style = styles.back();
+	styles.pop_back();
 }
 
 
@@ -646,8 +665,8 @@ int OtVectorDisplayClass::addLine(float x0, float y0, float x1, float y1) {
 	shape.id = nextShapeID++;
 	shape.enabled = true;
 	shape.type = Shape::lineType;
-	shape.thickness = thickness;
-	shape.color = color;
+	shape.thickness = style.thickness;
+	shape.color = style.color;
 	shape.x0 = x0;
 	shape.y0 = y0;
 	shape.x1 = x1;
@@ -666,8 +685,8 @@ int OtVectorDisplayClass::addRectangle(float x, float y, float w, float h) {
 	shape.id = nextShapeID++;
 	shape.enabled = true;
 	shape.type = Shape::rectangleType;
-	shape.thickness = thickness;
-	shape.color = color;
+	shape.thickness = style.thickness;
+	shape.color = style.color;
 	shape.x = x;
 	shape.y = y;
 	shape.w = w;
@@ -686,8 +705,8 @@ int OtVectorDisplayClass::addCircle(float x, float y, float radius, float steps)
 	shape.id = nextShapeID++;
 	shape.enabled = true;
 	shape.type = Shape::circleType;
-	shape.thickness = thickness;
-	shape.color = color;
+	shape.thickness = style.thickness;
+	shape.color = style.color;
 	shape.x = x;
 	shape.y = y;
 	shape.radius = radius;
@@ -706,8 +725,8 @@ int OtVectorDisplayClass::addText(float x, float y, float scale, const std::stri
 	shape.enabled = true;
 	shape.id = nextShapeID++;
 	shape.type = Shape::textType;
-	shape.thickness = thickness;
-	shape.color = color;
+	shape.thickness = style.thickness;
+	shape.color = style.color;
 	shape.x = x;
 	shape.y = y;
 	shape.scale = scale;
@@ -882,10 +901,12 @@ void OtVectorDisplayClass::render() {
 	}
 
 	// render all shapes
+	pushStyle();
+
 	for (auto& shape : shapes) {
 		if (shape.enabled) {
-			thickness = shape.thickness;
-			color = shape.color;
+			style.thickness = shape.thickness;
+			style.color = shape.color;
 
 			switch (shape.type) {
 				case Shape::lineType:
@@ -906,6 +927,8 @@ void OtVectorDisplayClass::render() {
 			}
 		}
 	}
+
+	popStyle();
 
 	// get frame size
 	int fw = OtApplicationClass::getWidth();
@@ -1070,10 +1093,13 @@ OtType OtVectorDisplayClass::getMeta() {
 		type->set("setBottomLeftOrigin", OtFunctionClass::create(&OtVectorDisplayClass::setBottomLeftOrigin));
 		type->set("setCenterOrigin", OtFunctionClass::create(&OtVectorDisplayClass::setCenterOrigin));
 
-		type->set("setTransform", OtFunctionClass::create(&OtVectorDisplayClass::setTransform));
 		type->set("setColor", OtFunctionClass::create(&OtVectorDisplayClass::setColor));
 		type->set("setAlpha", OtFunctionClass::create(&OtVectorDisplayClass::setAlpha));
 		type->set("setThickness", OtFunctionClass::create(&OtVectorDisplayClass::setThickness));
+		type->set("setTransform", OtFunctionClass::create(&OtVectorDisplayClass::setTransform));
+
+		type->set("pushStyle", OtFunctionClass::create(&OtVectorDisplayClass::pushStyle));
+		type->set("popStyle", OtFunctionClass::create(&OtVectorDisplayClass::popStyle));
 
 		type->set("getTextWidth", OtFunctionClass::create(&OtVectorDisplayClass::getTextWidth));
 		type->set("getTextHeight", OtFunctionClass::create(&OtVectorDisplayClass::getTextHeight));

@@ -44,10 +44,13 @@ public:
 	OtObject setCenterOrigin();
 
 	// shape API
-	OtObject setTransform(float offsetX, float offsetY, float scale);
 	OtObject setColor(const std::string& color);
 	OtObject setAlpha(float alpha);
 	OtObject setThickness(float thickness);
+	OtObject setTransform(float offsetX, float offsetY, float scale);
+
+	void pushStyle();
+	void popStyle();
 
 	float getTextWidth(const std::string& text, float scale);
 	float getTextHeight(const std::string& text, float scale);
@@ -200,18 +203,23 @@ private:
 	int nextShapeID = 1;
 
 	// rendering properties
-	uint32_t color = 0xffffffff;
-	float thickness = 1.0;
+	struct Style {
+		uint32_t color = 0xffffffff;
+		float thickness = 1.0;
+		float drawOffsetX = 0.0;
+		float drawOffsetY = 0.0;
+		float drawScale = 1.0;
+	};
+
+	Style style;
+	std::vector<Style> styles;
+
+	float brightness = 1.0;
 
 	int decaySteps = 4;
 	int currentDrawStep = 0;
 	float decayStart = 0.1;
 	float decayValue = 0.8;
-
-	float brightness = 1.0;
-	float drawScale = 1.0;
-	float drawOffsetX = 0.0;
-	float drawOffsetY = 0.0;
 
 	// rendering origin
 	enum {

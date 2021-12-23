@@ -611,11 +611,24 @@ void OtVectorDisplayClass::drawText(float x, float y, float scale, const std::st
 					}
 
 				} else if (!isDrawing) {
-					beginDraw(x + vx * scale, y - vy * scale);
+					if (origin == topLeftOrigin) {
+						beginDraw(x + vx * scale, y - vy * scale);
+
+					} else {
+						beginDraw(x + vx * scale, y + vy * scale);
+
+					}
+
 					isDrawing = true;
 
 				} else {
-					drawTo(x + vx * scale, y - vy * scale);
+					if (origin == topLeftOrigin) {
+						drawTo(x + vx * scale, y - vy * scale);
+
+					} else {
+						drawTo(x + vx * scale, y + vy * scale);
+
+					}
 				}
 			}
 
@@ -983,10 +996,12 @@ void OtVectorDisplayClass::render() {
 
 	vertexBuffersSize[currentDrawStep] = vertices.size();
 
+	// render all decay steps
 	for (auto c = 0; c < decaySteps; c++) {
 		int stepi = decaySteps - c - 1;
 		int i = (currentDrawStep + decaySteps - stepi) % decaySteps;
 
+		// don't render empty buffers
 		if (vertexBuffersSize[i] != 0) {
 			float alpha;
 

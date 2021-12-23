@@ -977,7 +977,10 @@ void OtVectorDisplayClass::render() {
 	currentDrawStep = (currentDrawStep + 1) % decaySteps;
 
 	// update the vertex buffer
-	bgfx::update(vertexBuffers[currentDrawStep], 0, bgfx::copy(vertices.data(), vertices.size() * sizeof(Vertex)));
+	if (vertices.size()) {
+		bgfx::update(vertexBuffers[currentDrawStep], 0, bgfx::copy(vertices.data(), vertices.size() * sizeof(Vertex)));
+	}
+
 	vertexBuffersSize[currentDrawStep] = vertices.size();
 
 	for (auto c = 0; c < decaySteps; c++) {

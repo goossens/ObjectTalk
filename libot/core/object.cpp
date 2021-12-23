@@ -194,7 +194,7 @@ OtType OtObjectClass::getMeta() {
 		type->set("set", OtFunctionClass::create(&OtObjectClass::set));
 		type->set("get", OtFunctionClass::create(&OtObjectClass::get));
 		type->set("unset", OtFunctionClass::create(&OtObjectClass::unset));
-		type->set("unsetAll", OtFunctionClass::create(&OtObjectClass::unset));
+		type->set("unsetAll", OtFunctionClass::create(&OtObjectClass::unsetAll));
 
 		type->set("__member__", OtFunctionClass::create(&OtObjectClass::member));
 

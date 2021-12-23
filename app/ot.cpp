@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
 
 		// run each script
 		for (auto c = 1; c < argc; c++) {
-			OtModuleClass::create()->import(argv[c]);
+			OtModuleClass::create(argv[c]);
 		}
 
 		// cleanup

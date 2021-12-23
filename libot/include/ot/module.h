@@ -26,16 +26,23 @@ typedef std::shared_ptr<OtModuleClass> OtModule;
 
 class OtModuleClass : public OtInternalClass {
 public:
-	// import module
-	void import(const std::string& name);
-
 	// get type definition
 	static OtType getMeta();
 
 	// create a new object
-	static OtModule create();
+	static OtModule create(const std::string& name);
 
 private:
 	// list of directories to search for modules in
-	std::vector<std::filesystem::path> modulePath;
+	static std::vector<std::filesystem::path> modulePath;
+	static std::vector<std::filesystem::path> localPath;
+	static void buildModulePath();
+
+	// determine full path name for module
+	static std::filesystem::path checkPath(const std::string& name);
+	static std::filesystem::path getFullPath(const std::string& name);
+
+	// actually load the module (by type)
+	static void loadBinaryModule(std::filesystem::path path, OtModule module);
+	static void loadSourceModule(std::filesystem::path path, OtModule module);
 };

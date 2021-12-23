@@ -12,8 +12,10 @@
 //	Include files
 //
 
+#include <string>
 #include <unordered_map>
-#include <vector>
+
+#include "exception.h"
 
 
 //
@@ -25,24 +27,28 @@ class OtRegistry {
 public:
 	// add a new member to the registry
 	void set(const std::string& name, T member) {
-		if (index.count(name)) {
+		if (registry.count(name)) {
 			OtExcept("Member [%s] already in registry", name.c_str());
 		}
 
-		index[name] = members.size();
-		members.push_back(member);
+		registry[name] = member;
 	}
 
+	// get member from registry
 	T get(const std::string& name) {
-		if (!index.count(name)) {
+		if (!registry.count(name)) {
 			OtExcept("Member [%s] not in registry", name.c_str());
 		}
 
-		return members[index[name]];
+		return registry[name];
+	}
+
+	// see if registry has specified member
+	bool has(const std::string& name) {
+		return registry.count(name) != 0;
 	}
 
 private:
-	// registry of registered types
-	std::vector<T> members;
-	std::unordered_map<std::string, size_t> index;
+	// registry member
+	std::unordered_map<std::string, T> registry;
 };

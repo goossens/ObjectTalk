@@ -18,9 +18,6 @@
 #include "ot/real.h"
 #include "ot/string.h"
 
-#include "ot/array.h"
-#include "ot/dict.h"
-
 #include "ot/throw.h"
 #include "ot/bytecodefunction.h"
 
@@ -424,7 +421,9 @@ bool OtCompiler::primary(OtByteCode bytecode) {
 		case OtScanner::LBRACKET_TOKEN:
 			// handle array constant
 			scanner.advance();
-			bytecode->push(OtArrayClass::create());
+			resolveVariable(bytecode, "Array");
+			bytecode->method("__deref__", 0);
+			bytecode->method("__call__", 0);
 
 			if (scanner.getToken() != OtScanner::RBRACKET_TOKEN) {
 				bytecode->method("__init__", expressions(bytecode));
@@ -437,7 +436,9 @@ bool OtCompiler::primary(OtByteCode bytecode) {
 		case OtScanner::LBRACE_TOKEN:
 			// handle dictionary constant
 			scanner.advance();
-			bytecode->push(OtDictClass::create());
+			resolveVariable(bytecode, "Dict");
+			bytecode->method("__deref__", 0);
+			bytecode->method("__call__", 0);
 
 			while (scanner.getToken() != OtScanner::RBRACE_TOKEN && scanner.getToken() != OtScanner::EOS_TOKEN) {
 				scanner.expect(OtScanner::STRING_TOKEN, false);

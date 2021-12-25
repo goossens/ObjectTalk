@@ -94,6 +94,8 @@ public:
 
 	OtObject split(const std::string& delimiter);
 
+	OtObject format(size_t count, OtObject* parameters);
+
 	// get type definition
 	static OtType getMeta();
 

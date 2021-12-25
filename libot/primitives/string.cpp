@@ -9,6 +9,10 @@
 //	Include files
 //
 
+#include <cctype>
+#include <iomanip>
+#include <sstream>
+
 #include "ot/codepoint.h"
 #include "ot/text.h"
 
@@ -91,6 +95,201 @@ OtObject OtStringClass::split(const std::string& delimiter) {
 
 
 //
+//	OtStringClass::format
+//
+
+struct formatParameters {
+	bool left = false;
+	char sign = 0;
+	char pad = ' ';
+	bool alternative = false;
+	int width = -1;
+	int precision = -1;
+	int radix = 10;
+	char type;
+};
+
+
+static const char* parseFormat(formatParameters& format, const char* string) {
+	// decode flags
+	while (*string == '-' || *string == '+' || *string == '#' || *string == ' ' || *string == '0') {
+		if (*string == '-')	format.left = true;
+		else if (*string == '+') format.sign = '+';
+		else if (*string == '#') format.alternative = true;
+		else if (*string == ' ') format.sign = ' ';
+		else if (*string == '0') format.pad = '0';
+		string++;
+	}
+
+	// decode field width
+	if (*string == '*') {
+		format.width = -2;
+		string++;
+
+	} else if (std::isdigit(*string)) {
+		format.width = 0;
+
+		while (std::isdigit(*string)) {
+			format.width = (10 * format.width) + (*string++ - '0');
+		}
+	}
+
+	// decode precision
+	if (*string == '.') {
+		string++;
+
+		if (*string == '*') {
+			format.precision = -2;
+			string++;
+
+		} else {
+			format.precision = 0;
+
+			while (std::isdigit(*string)) {
+				format.precision = (10 * format.precision) + (*string++ - '0');
+			}
+		}
+	}
+
+	// ignore decode flags
+	while (*string == 'h' || *string == 'l' || *string == 'L') {
+		string++;
+	}
+
+	// get format
+	format.type = *string++;
+
+	// return pointer
+	return string;
+}
+
+
+#define SANITY_CHECK() if (index == count) { OtExcept("Not enough parameters for string.format"); }
+
+
+OtObject OtStringClass::format(size_t count, OtObject* objects) {
+	// setup parser
+	const char* mask = value.c_str();
+	size_t index = 0;
+	std::stringstream ss;
+
+	// process entire mask
+	while (*mask) {
+		// handle parameter references
+		if (*mask == '%') {
+			// parse format definition
+			formatParameters format;
+			mask = parseFormat(format, ++mask);
+
+			// get field width if required
+			if (format.width == -2) {
+				SANITY_CHECK();
+				format.width = objects[index++]->operator int();
+
+				if (format.width < 0) {
+					format.left = true;
+					format.width = -format.width;
+				}
+			}
+
+			// get precision if required
+			if (format.precision == -2) {
+				SANITY_CHECK();
+				format.precision = objects[index++]->operator int();
+
+				if (format.precision < 0) {
+					format.left = true;
+					format.precision = -format.precision;
+				}
+			}
+
+			switch (format.type) {
+				case 'd':
+				case 'i':
+					// get integer number
+					if (format.sign) { ss << format.sign; }
+
+					if (format.width != -1) {
+						ss << std::setw(format.width)
+							<< std::setfill(format.pad)
+							<< (format.left ? std::left : std::right);
+					}
+
+					SANITY_CHECK();
+					ss << objects[index++]->operator long();
+					break;
+
+				case 'o':
+				case 'p':
+				case 'u':
+				case 'x':
+				case 'X':
+					// get number base
+					if (format.type == 'o') { ss << std::oct; }
+					if (format.type == 'p' || format.type == 'x' || format.type == 'X') { ss << std::hex; }
+
+					SANITY_CHECK();
+					ss << std::showbase << objects[index++]->operator long();
+					break;
+
+				case 'f':
+				case 'F':
+				case 'g':
+				case 'G':
+					if (format.sign) { ss << format.sign; }
+					if (format.precision != -1) { ss << std::setprecision(format.precision); }
+
+					if (format.width != -1) {
+						ss << std::setw(format.width)
+							<< std::setfill(format.pad)
+							<< (format.left ? std::left : std::right);
+					}
+
+					SANITY_CHECK();
+					ss << std::fixed << objects[index++]->operator double();
+					break;
+
+				case 'e':
+				case 'E':
+					if (format.sign) { ss << format.sign; }
+					if (format.precision != -1) { ss << std::setprecision(format.precision); }
+
+					if (format.width != -1) {
+						ss << std::setw(format.width)
+							<< std::setfill(format.pad)
+						<< (format.left ? std::left: std::right);
+					}
+
+					SANITY_CHECK();
+					ss << std::scientific << objects[index++]->operator double();
+					break;
+
+				case 'c':
+					SANITY_CHECK();
+					ss << (char) objects[index++]->operator int();
+					break;
+
+				case 's':
+					SANITY_CHECK();
+					ss << objects[index++]->operator std::string();
+					break;
+
+				case '%':
+					ss << '%';
+					break;
+			}
+
+		} else {
+			ss << *mask++;
+		}
+	}
+
+	// return result
+	return OtStringClass::create(ss.str());
+}
+
+
+//
 //	OtStringClass::getMeta
 //
 
@@ -139,6 +338,8 @@ OtType OtStringClass::getMeta() {
 		type->set("upper", OtFunctionClass::create(&OtStringClass::upper));
 
 		type->set("split", OtFunctionClass::create(&OtStringClass::split));
+
+		type->set("format", OtFunctionClass::create(&OtStringClass::format));
 	}
 
 	return type;

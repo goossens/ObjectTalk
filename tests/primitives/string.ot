@@ -94,3 +94,20 @@ assert("Hello World".upper() == "HELLO WORLD");
 
 assert("1. 2. 3".split(". ") == ["1", "2", "3"]);
 assert(". 2. 3. ".split(". ") == ["", "2", "3", ""]);
+
+assert("a %% b".format() == "a % b");
+assert("a %i b".format(1) == "a 1 b");
+assert("a %i b".format(-1) == "a -1 b");
+assert("a %+i b".format(1) == "a +1 b");
+assert("a %3i b".format(1) == "a   1 b");
+assert("a %-3i b".format(1) == "a 1   b");
+assert("a %03i b".format(1) == "a 001 b");
+assert("a %0*i b".format(3, 1) == "a 001 b");
+assert("a %o b".format(10) == "a 012 b");
+assert("a %x b".format(10) == "a 0xa b");
+assert("a %f b".format(1.1) == "a 1.100000 b");
+assert("a %.1f b".format(1.1) == "a 1.1 b");
+assert("a %e b".format(1.1) == "a 1.100000e+00 b");
+assert("a %.1e b".format(1.1) == "a 1.1e+00 b");
+assert("a %c b".format(99) == "a c b");
+assert("a %s b".format("test") == "a test b");

@@ -6,7 +6,7 @@
 
 find_path(UV_INCLUDES uv.h)
 
-if(UV_INCLUDES STREQUAL "")
+if(NOT UV_INCLUDES)
 	FetchContent_Declare(libuv GIT_REPOSITORY "https://github.com/libuv/libuv" GIT_TAG "v1.42.0")
 	SET(BUILD_TESTING OFF CACHE BOOL "Build tests." FORCE)
 	SET(LIBUV_BUILD_TESTS OFF CACHE BOOL "Build tests." FORCE)

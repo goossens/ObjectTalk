@@ -9,7 +9,6 @@
 //	Include files
 //
 
-#include "application.h"
 #include "bloom.h"
 #include "bloomshader.h"
 

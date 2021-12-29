@@ -9,7 +9,6 @@
 //	Include files
 //
 
-#include "application.h"
 #include "blur.h"
 #include "blurshader.h"
 

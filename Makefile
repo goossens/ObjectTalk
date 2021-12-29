@@ -21,6 +21,9 @@ release:
 xcode:
 	cmake -Bxcode -Wno-dev -GXcode -DCMAKE_BUILD_TYPE=Debug
 
+vs:
+	cmake -Bvs -Wno-dev -G"Visual Studio 17 2022" -DCMAKE_BUILD_TYPE=Debug
+
 gui:
 	cmake -Bdebug -Wno-dev -DOT_GUI=ON -DCMAKE_BUILD_TYPE=Debug
 	cd debug && make
@@ -51,7 +54,7 @@ ubuntu:
 	cd docker/ubuntu && ./run
 
 clean:
-	rm -rf debug release xcode
+	rm -rf debug release xcode vs
 
 distclean: clean
 	cd docker/alpine && ./clean

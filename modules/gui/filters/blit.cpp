@@ -9,7 +9,6 @@
 //	Include files
 //
 
-#include "application.h"
 #include "blit.h"
 #include "blitshader.h"
 

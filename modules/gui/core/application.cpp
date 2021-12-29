@@ -115,63 +115,148 @@ void OtApplicationClass::runThread2() {
 				OtVM::callMemberFunction(shared(), "update");
 			}
 
-			// handle events
-			clickEvent = false;
-			moveEvent = false;
-			wheelEvent = false;
-			keyEvent = false;
-			charEvent = false;
+			// collect events
+			std::vector<OtAppEvent> events;
 
-			while (hasEvents()) {
-				handleEvent();
+			while (!eventQueue.empty()) {
+				events.emplace_back(eventQueue.pop());
 			}
 
-			// "run" all libraries
+			// start new frame in libraries
 			frameBGFX();
-			frameIMGUI();
+			frameIMGUI(events);
 
-			// submit events (if required)
-			if (clickEvent) {
-				screen->onMouseButton(mouseButton, mouseAction, mouseMods, mouseX, mouseY);
-			}
+			// submit events (if still required; ImGui might take some)
+			for (auto& event : events) {
+				switch (event.type) {
+					case OtAppEvent::mouseButtonEvent:
+						if (has("onMouseButton")) {
+							OtVM::callMemberFunction(shared(), "onMouseButton",
+								OtObjectCreate(event.mouseButton.button),
+								OtObjectCreate(event.mouseButton.action),
+								OtObjectCreate(event.mouseButton.mods),
+								OtObjectCreate(event.mouseButton.x),
+								OtObjectCreate(event.mouseButton.y));
 
-			if (moveEvent) {
-				if (mouseAction) {
-					screen->onMouseDrag(mouseButton, mouseMods, mouseX, mouseY);
+						} else {
+							screen->onMouseButton(
+								event.mouseButton.button,
+								event.mouseButton.action,
+								event.mouseButton.mods,
+								event.mouseButton.x,
+								event.mouseButton.y);
+						}
 
-				} else {
-					screen->onMouseMove(mouseX, mouseY);
+						break;
+
+					case OtAppEvent::mouseMoveEvent:
+						if (has("onMouseMove")) {
+							OtVM::callMemberFunction(shared(), "onMouseMove",
+								OtObjectCreate(event.mouseMove.x),
+								OtObjectCreate(event.mouseMove.y));
+
+						} else {
+							screen->onMouseMove(event.mouseMove.x, event.mouseMove.y);
+						}
+
+						break;
+
+					case OtAppEvent::mouseDragEvent:
+						if (has("onMouseDrag")) {
+							OtVM::callMemberFunction(shared(), "onMouseDrag",
+								OtObjectCreate(event.mouseDrag.button),
+								OtObjectCreate(event.mouseDrag.mods),
+								OtObjectCreate(event.mouseDrag.x),
+								OtObjectCreate(event.mouseDrag.y));
+
+						} else {
+							screen->onMouseDrag(
+									event.mouseDrag.button,
+									event.mouseDrag.mods,
+									event.mouseDrag.x,
+									event.mouseDrag.y);
+						}
+
+						break;
+
+					case OtAppEvent::mouseWheelEvent:
+						if (has("onScrollWheel")) {
+							OtVM::callMemberFunction(shared(), "onScrollWheel",
+								OtObjectCreate(event.mouseWheel.xOffset),
+								OtObjectCreate(event.mouseWheel.yOffset));
+
+						} else {
+							screen->onScrollWheel(
+								event.mouseWheel.xOffset,
+								event.mouseWheel.yOffset);
+						}
+
+						break;
+
+					case OtAppEvent::keyboardEvent:
+						if (event.keyboard.action != GLFW_RELEASE) {
+							bool handled = false;
+
+							for (auto& shortcut : shortcuts) {
+								if (shortcut.modifier == event.keyboard.mods && shortcut.key == event.keyboard.key) {
+									shortcut.callback();
+									handled = true;
+								}
+							}
+
+							if (!handled) {
+								if (has("onKey")) {
+									OtVM::callMemberFunction(shared(), "onKey", OtObjectCreate(event.keyboard.key), OtObjectCreate(event.keyboard.mods));
+
+								} else {
+									screen->onKey(event.keyboard.key, event.keyboard.mods);
+								}
+							}
+						}
+						break;
+
+					case OtAppEvent::characterEvent:
+						if (has("onChar")) {
+							OtVM::callMemberFunction(shared(), "onChar", OtObjectCreate(event.character.codepoint));
+
+						} else {
+							screen->onChar(event.character.codepoint);
+						}
+
+						break;
+
+					case OtAppEvent::gamepadAxisEvent:
+						if (has("onGamepadAxis")) {
+							OtVM::callMemberFunction(shared(), "onGamepadAxis",
+								OtObjectCreate(event.gamepadAxis.gamepad),
+								OtObjectCreate(event.gamepadAxis.axis),
+								OtObjectCreate(event.gamepadAxis.value));
+
+						} else {
+							screen->onGamepadAxis(
+								event.gamepadAxis.gamepad,
+								event.gamepadAxis.axis,
+								event.gamepadAxis.value);
+						}
+
+						break;
+
+					case OtAppEvent::gamepadButtonEvent:
+						if (has("onGamepadButton")) {
+							OtVM::callMemberFunction(shared(), "onGamepadButton",
+								OtObjectCreate(event.gamepadButton.gamepad),
+								OtObjectCreate(event.gamepadButton.button),
+								OtObjectCreate(event.gamepadButton.action));
+
+						} else {
+							screen->onGamepadButton(
+								event.gamepadButton.gamepad,
+								event.gamepadButton.button,
+								event.gamepadButton.action);
+						}
+
+						break;
 				}
-			}
-
-			if (wheelEvent) {
-				screen->onScrollWheel(mouseWheelDX, mouseWheelDY);
-				mouseWheelDX = 0.0;
-				mouseWheelDY = 0.0;
-			}
-
-			if (keyEvent && keyboardAction != GLFW_RELEASE) {
-				bool handled = false;
-
-				for (auto& shortcut : shortcuts) {
-					if (shortcut.modifier == keyboardMods && shortcut.keycode == keyboardKey) {
-						shortcut.callback();
-						handled = true;
-					}
-				}
-
-				if (!handled) {
-					if (has("onKey")) {
-						OtVM::callMemberFunction(shared(), "onKey", OtObjectCreate(keyboardKey), OtObjectCreate(keyboardMods));
-
-					} else {
-						screen->onKey(keyboardKey, keyboardMods);
-					}
-				}
-			}
-
-			if (charEvent) {
-				screen->onChar(keyboardCodepoint);
 			}
 
 			// update and render all elements
@@ -292,82 +377,6 @@ OtObject OtApplicationClass::addSimulation(OtObject object) {
 
 void OtApplicationClass::addShortcut(int modifier, int keycode, std::function<void(void)> callback) {
 	shortcuts.push_back(OtKeyboardShortcut(modifier, keycode, callback));
-}
-
-
-//
-//	OtApplicationClass::pushEvent
-//
-
-void OtApplicationClass::pushEvent(const std::string& event) {
-	std::lock_guard<std::mutex> guard(lock);
-	events.push_back(event);
-}
-
-
-//
-//	OtApplicationClass::hasEvents
-//
-
-bool OtApplicationClass::hasEvents() {
-	std::lock_guard<std::mutex> guard(lock);
-	return events.size() != 0;
-}
-
-
-//
-//	OtApplicationClass::popEvent
-//
-
-std::string OtApplicationClass::popEvent() {
-	std::lock_guard<std::mutex> guard(lock);
-	std::string event = events.back();
-	events.pop_back();
-	return event;
-}
-
-
-//
-//	OtApplicationClass::handleEvent
-//
-
-void OtApplicationClass::handleEvent() {
-	auto event = popEvent();
-
-	if (event.find("click") == 0) {
-		char command[10];
-		std::sscanf(event.c_str(), "%s %d %d %d", command, &mouseButton, &mouseAction, &mouseMods);
-
-		if (mouseButton >= 0 && mouseButton < ImGuiMouseButton_COUNT) {
-			mouseButtonState[mouseButton] = mouseAction == GLFW_PRESS;
-			clickEvent = true;
-		}
-
-	} else if (event.find("move") == 0) {
-		char command[10];
-		std::sscanf(event.c_str(), "%s %f %f", command, &mouseX, &mouseY);
-		moveEvent = true;
-
-	} else if (event.find("wheel") == 0) {
-		char command[10];
-		float offsetX;
-		float offsetY;
-		std::sscanf(event.c_str(), "%s %f %f", command, &offsetX, &offsetY);
-		mouseWheelDX += offsetX;
-		mouseWheelDY += offsetY;
-		wheelEvent = true;
-
-	} else if (event.find("key") == 0) {
-		char command[10];
-		std::sscanf(event.c_str(), "%s %d %d %d %d", command, &keyboardKey, &keyboardScancode, &keyboardAction, &keyboardMods);
-		keyboardState[keyboardKey] = keyboardAction != GLFW_RELEASE;
-		keyEvent = true;
-
-	} else if (event.find("char") == 0) {
-		char command[10];
-		std::sscanf(event.c_str(), "%s %d", command, &keyboardCodepoint);
-		charEvent = true;
-	}
 }
 
 

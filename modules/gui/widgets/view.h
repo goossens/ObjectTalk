@@ -42,12 +42,12 @@ public:
 	void render();
 
 	// mouse and keyboard events
-	void onMouseButton(int button, int action, int mods, float xpos, float ypos);
-	void onMouseMove(float xpos, float ypos);
-	void onMouseDrag(int button, int mods, float xpos, float ypos);
-	void onScrollWheel(float dx, float dy);
-	void onKey(int key, int mods);
-	void onChar(unsigned int codepoint);
+	bool onMouseButton(int button, int action, int mods, float xpos, float ypos);
+	bool onMouseMove(float xpos, float ypos);
+	bool onMouseDrag(int button, int mods, float xpos, float ypos);
+	bool onScrollWheel(float dx, float dy);
+	bool onKey(int key, int mods);
+	bool onChar(unsigned int codepoint);
 
 	// get type definition
 	static OtType getMeta();

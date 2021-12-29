@@ -113,7 +113,7 @@ void OtViewClass::render() {
 //	OtViewClass::onMouseButton
 //
 
-void OtViewClass::onMouseButton(int button, int action, int mods, float xpos, float ypos) {
+bool OtViewClass::onMouseButton(int button, int action, int mods, float xpos, float ypos) {
 	if (has("onMouseButton")) {
 		// determine dimensions
 		float vx = x < 0 ? OtApplicationClass::getWidth() - (x * OtApplicationClass::getWidth() / 100.0) : x * OtApplicationClass::getWidth() / 100.0;
@@ -133,6 +133,11 @@ void OtViewClass::onMouseButton(int button, int action, int mods, float xpos, fl
 				OtObjectCreate(xpos), OtObjectCreate(ypos)
 			);
 		}
+
+		return true;
+
+	} else {
+		return false;
 	}
 }
 
@@ -141,18 +146,22 @@ void OtViewClass::onMouseButton(int button, int action, int mods, float xpos, fl
 //	OtViewClass::onMouseMove
 //
 
-void OtViewClass::onMouseMove(float xpos, float ypos) {
+bool OtViewClass::onMouseMove(float xpos, float ypos) {
 	// calculate local coordinates
 	xpos -= x < 0 ? OtApplicationClass::getWidth() - (x * OtApplicationClass::getWidth() / 100.0) : x * OtApplicationClass::getWidth() / 100.0;
 	ypos -= y < 0 ? OtApplicationClass::getHeight() - (y * OtApplicationClass::getHeight() / 100.0) : y * OtApplicationClass::getHeight() / 100.0;
 
+	bool handled = false;
+
 	if (has("onMouseMove")) {
 		// call member function
 		OtVM::callMemberFunction(shared(), "onMouseMove", OtObjectCreate(xpos), OtObjectCreate(ypos));
+		handled = true;
 	}
-
+	
 	xold = xpos;
 	yold = ypos;
+	return handled;
 }
 
 
@@ -160,18 +169,22 @@ void OtViewClass::onMouseMove(float xpos, float ypos) {
 //	OtViewClass::onMouseDrag
 //
 
-void OtViewClass::onMouseDrag(int button, int mods, float xpos, float ypos) {
+bool OtViewClass::onMouseDrag(int button, int mods, float xpos, float ypos) {
 	// calculate local coordinates
 	xpos -= x < 0 ? OtApplicationClass::getWidth() - (x * OtApplicationClass::getWidth() / 100.0) : x * OtApplicationClass::getWidth() / 100.0;
 	ypos -= y < 0 ? OtApplicationClass::getHeight() - (y * OtApplicationClass::getHeight() / 100.0) : y * OtApplicationClass::getHeight() / 100.0;
 
+	bool handled = false;
+
 	// only process if camera doesn't want it and  we have a member function
 	if (!camera->onMouseDrag(button, mods, xpos - xold, ypos - yold) && has("onMouseDrag")) {
 		OtVM::callMemberFunction(shared(), "onMouseDrag", OtObjectCreate(button), OtObjectCreate(mods), OtObjectCreate(xpos - xold), OtObjectCreate(ypos - yold));
+		handled = true;
 	}
 
 	xold = xpos;
 	yold = ypos;
+	return handled;
 }
 
 
@@ -179,10 +192,17 @@ void OtViewClass::onMouseDrag(int button, int mods, float xpos, float ypos) {
 //	OtViewClass::onScrollWheel
 //
 
-void OtViewClass::onScrollWheel(float dx, float dy) {
+bool OtViewClass::onScrollWheel(float dx, float dy) {
 	// only process if camera doesn't want event and we have a member function
-	if (!camera->onScrollWheel(dx, dy) && has("onScrollWheel")) {
+	if (camera->onScrollWheel(dx, dy)) {
+		return true;
+
+	} else if (has("onScrollWheel")) {
 		OtVM::callMemberFunction(shared(), "onScrollWheel", OtObjectCreate(dx), OtObjectCreate(dy));
+		return true;
+
+	} else {
+		return false;
 	}
 }
 
@@ -191,10 +211,17 @@ void OtViewClass::onScrollWheel(float dx, float dy) {
 //	OtViewClass::onKey
 //
 
-void OtViewClass::onKey(int key, int mods) {
+bool OtViewClass::onKey(int key, int mods) {
 	// only process if camera doesn't want event and we have a member function
-	if (!camera->onKey(key, mods) && has("onKey")) {
+	if (camera->onKey(key, mods)) {
+		return true;
+
+	} else if (has("onKey")) {
 		OtVM::callMemberFunction(shared(), "onKey", OtObjectCreate(key), OtObjectCreate(mods));
+		return true;
+
+	} else {
+		return false;
 	}
 }
 
@@ -203,7 +230,14 @@ void OtViewClass::onKey(int key, int mods) {
 //	OtViewClass::onChar
 //
 
-void OtViewClass::onChar(unsigned int codepoint) {
+bool OtViewClass::onChar(unsigned int codepoint) {
+	if (has("onChar")) {
+		OtVM::callMemberFunction(shared(), "onChar", OtObjectCreate((int) codepoint));
+		return true;
+
+	} else {
+		return false;
+	}
 }
 
 

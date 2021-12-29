@@ -11,6 +11,8 @@
 
 #include <cstring>
 
+#include "ot/integer.h"
+
 #include "application.h"
 #include "imguishader.h"
 
@@ -103,49 +105,77 @@ void OtApplicationClass::initIMGUI() {
 //	OtApplicationClass::frameIMGUI
 //
 
-void OtApplicationClass::frameIMGUI() {
+void OtApplicationClass::frameIMGUI(std::vector<OtAppEvent>& events) {
 	// update ImGui state
 	ImGuiIO& io = ImGui::GetIO();
 	io.DisplaySize = ImVec2(width, height);
 	io.DeltaTime = loopDuration / 1000.0;
 
-	// update mouse state
-	io.MousePos = ImVec2(mouseX, mouseY);
+	// get information from events
+	for (auto& event : events) {
+		switch (event.type) {
+			case OtAppEvent::mouseButtonEvent:
+				io.MouseDown[event.mouseButton.button] = event.mouseButton.action == GLFW_PRESS;
+				break;
 
-	for (auto c = 0; c < ImGuiMouseButton_COUNT; c++) {
-		io.MouseDown[c] = mouseButtonState[c];
+			case OtAppEvent::mouseMoveEvent:
+				io.MousePos = ImVec2(event.mouseMove.x, event.mouseMove.y);
+				break;
+
+			case OtAppEvent::mouseDragEvent:
+				io.MousePos = ImVec2(event.mouseDrag.x, event.mouseDrag.y);
+				break;
+
+			case OtAppEvent::mouseWheelEvent:
+				io.MouseWheel = event.mouseWheel.xOffset;
+				io.MouseWheelH = event.mouseWheel.yOffset;
+				break;
+
+			case OtAppEvent::keyboardEvent:
+				io.KeysDown[event.keyboard.key] = event.keyboard.action != GLFW_RELEASE;
+				io.KeyShift = event.keyboard.mods & GLFW_MOD_SHIFT;
+				io.KeyCtrl = event.keyboard.mods & GLFW_MOD_CONTROL;
+				io.KeyAlt = event.keyboard.mods & GLFW_MOD_ALT;
+				io.KeySuper = event.keyboard.mods & GLFW_MOD_SUPER;
+				break;
+
+			case OtAppEvent::characterEvent:
+				io.AddInputCharacter(event.character.codepoint);
+				break;
+
+			default:
+				break;
+		}
 	}
-
-	io.MouseWheel = mouseWheelDY;
-	io.MouseWheelH = mouseWheelDX;
-
-	// update keyboard state
-	int x = sizeof(bool) * sizeof(keyboardState);
-	std::memcpy(io.KeysDown, keyboardState, sizeof(bool) * sizeof(keyboardState));
-	io.KeyShift = keyboardMods & GLFW_MOD_SHIFT;
-	io.KeyCtrl = keyboardMods & GLFW_MOD_CONTROL;
-	io.KeyAlt = keyboardMods & GLFW_MOD_ALT;
-	io.KeySuper = keyboardMods & GLFW_MOD_SUPER;
 
 	// start a new frame
 	ImGui::NewFrame();
 
-	// don't propagate events if ImGui wants them
-	if (ImGui::GetIO().WantCaptureMouse) {
-		clickEvent = false;
-		moveEvent = false;
-		wheelEvent = false;
-		mouseWheelDX = 0.0;
-		mouseWheelDY = 0.0;
+	// filter out events if ImGui wants them (use std::remove_if in C++20)
+	if (io.WantCaptureMouse) {
+		auto event = events.begin();
+
+		while (event != events.end()) {
+			if (event->isMouseEvent()) {
+				event = events.erase(event);
+
+			} else {
+				event++;
+			}
+		}
 	}
 
-	if (ImGui::GetIO().WantCaptureKeyboard) {
-		if (charEvent) {
-			ImGui::GetIO().AddInputCharacter(keyboardCodepoint);
-		}
+	if (io.WantCaptureKeyboard) {
+		auto event = events.begin();
 
-		keyEvent = false;
-		charEvent = false;
+		while (event != events.end()) {
+			if (event->isKeyboardEvent()) {
+				event = events.erase(event);
+
+			} else {
+				event++;
+			}
+		}
 	}
 
 	// ImGui::ShowDemoWindow();
@@ -249,4 +279,33 @@ void OtApplicationClass::endIMGUI() {
 	bgfx::destroy(imguiFontTexture);
 	bgfx::destroy(imguiProgram);
 	ImGui::DestroyContext();
+}
+
+
+//
+//	OtApplicationClass::addEnumsIMGUI
+//
+
+void OtApplicationClass::addEnumsIMGUI(OtObject module) {
+	module->set("windowNoTitleBar", OtIntegerClass::create(ImGuiWindowFlags_NoTitleBar));
+	module->set("windowNoResize", OtIntegerClass::create(ImGuiWindowFlags_NoResize));
+	module->set("windowNoMove", OtIntegerClass::create(ImGuiWindowFlags_NoMove));
+	module->set("windowNoScrollbar", OtIntegerClass::create(ImGuiWindowFlags_NoScrollbar));
+	module->set("windowNoScrollWithMouse", OtIntegerClass::create(ImGuiWindowFlags_NoScrollWithMouse));
+	module->set("windowNoCollapse", OtIntegerClass::create(ImGuiWindowFlags_NoCollapse));
+	module->set("windowAlwaysAutoResize", OtIntegerClass::create(ImGuiWindowFlags_AlwaysAutoResize));
+	module->set("windowNoSavedSettings", OtIntegerClass::create(ImGuiWindowFlags_NoSavedSettings));
+	module->set("windowNoMouseInputs", OtIntegerClass::create(ImGuiWindowFlags_NoMouseInputs));
+	module->set("windowMenuBar", OtIntegerClass::create(ImGuiWindowFlags_MenuBar));
+	module->set("windowHorizontalScrollbar", OtIntegerClass::create(ImGuiWindowFlags_HorizontalScrollbar));
+	module->set("windowNoFocusOnAppearing", OtIntegerClass::create(ImGuiWindowFlags_NoFocusOnAppearing));
+	module->set("windowNoBringToFrontOnFocus", OtIntegerClass::create(ImGuiWindowFlags_NoBringToFrontOnFocus));
+	module->set("windowAlwaysVerticalScrollbar", OtIntegerClass::create(ImGuiWindowFlags_AlwaysVerticalScrollbar));
+	module->set("windowAlwaysHorizontalScrollbar", OtIntegerClass::create(ImGuiWindowFlags_AlwaysHorizontalScrollbar));
+	module->set("windowAlwaysUseWindowPadding", OtIntegerClass::create(ImGuiWindowFlags_AlwaysUseWindowPadding));
+	module->set("windowNoNavInputs", OtIntegerClass::create(ImGuiWindowFlags_NoNavInputs));
+	module->set("windowNoNavFocus", OtIntegerClass::create(ImGuiWindowFlags_NoNavFocus));
+	module->set("windowUnsavedDocument", OtIntegerClass::create(ImGuiWindowFlags_UnsavedDocument));
+	module->set("windowNoNav", OtIntegerClass::create(ImGuiWindowFlags_NoNav));
+	module->set("windowNoDecoration", OtIntegerClass::create(ImGuiWindowFlags_NoDecoration));
 }

@@ -47,10 +47,10 @@ size_t OtScreenClass::getMenubarHeight() {
 //
 
 void OtScreenClass::onMouseButton(int button, int action, int mods, float xpos, float ypos) {
-	for (auto& child: children) {
-		if (child->isKindOf("View")) {
-			child->cast<OtViewClass>()->onMouseButton(button, action, mods, xpos, ypos);
-		}
+	bool handled = false;
+
+	for (auto it = children.begin(); !handled && it != children.end(); it++) {
+		handled = (*it)->cast<OtScreenObjectClass>()->onMouseButton(button, action, mods, xpos, ypos);
 	}
 }
 
@@ -60,10 +60,10 @@ void OtScreenClass::onMouseButton(int button, int action, int mods, float xpos, 
 //
 
 void OtScreenClass::onMouseMove(float xpos, float ypos) {
-	for (auto& child: children) {
-		if (child->isKindOf("View")) {
-			child->cast<OtViewClass>()->onMouseMove(xpos, ypos);
-		}
+	bool handled = false;
+
+	for (auto it = children.begin(); !handled && it != children.end(); it++) {
+		handled = (*it)->cast<OtScreenObjectClass>()->onMouseMove(xpos, ypos);
 	}
 }
 
@@ -73,10 +73,10 @@ void OtScreenClass::onMouseMove(float xpos, float ypos) {
 //
 
 void OtScreenClass::onMouseDrag(int button, int mods, float xpos, float ypos) {
-	for (auto& child: children) {
-		if (child->isKindOf("View")) {
-			child->cast<OtViewClass>()->onMouseDrag(button, mods, xpos, ypos);
-		}
+	bool handled = false;
+
+	for (auto it = children.begin(); !handled && it != children.end(); it++) {
+		handled = (*it)->cast<OtScreenObjectClass>()->onMouseDrag(button, mods, xpos, ypos);
 	}
 }
 
@@ -86,10 +86,10 @@ void OtScreenClass::onMouseDrag(int button, int mods, float xpos, float ypos) {
 //
 
 void OtScreenClass::onScrollWheel(float dx, float dy){
-	for (auto& child: children) {
-		if (child->isKindOf("View")) {
-			child->cast<OtViewClass>()->onScrollWheel(dx, dy);
-		}
+	bool handled = false;
+
+	for (auto it = children.begin(); !handled && it != children.end(); it++) {
+		handled = (*it)->cast<OtScreenObjectClass>()->onScrollWheel(dx, dy);
 	}
 }
 
@@ -99,10 +99,10 @@ void OtScreenClass::onScrollWheel(float dx, float dy){
 //
 
 void OtScreenClass::onKey(int key, int mods) {
-	for (auto& child: children) {
-		if (child->isKindOf("View")) {
-			child->cast<OtViewClass>()->onKey(key, mods);
-		}
+	bool handled = false;
+
+	for (auto it = children.begin(); !handled && it != children.end(); it++) {
+		handled = (*it)->cast<OtScreenObjectClass>()->onKey(key, mods);
 	}
 }
 
@@ -112,10 +112,36 @@ void OtScreenClass::onKey(int key, int mods) {
 //
 
 void OtScreenClass::onChar(unsigned int codepoint) {
-	for (auto& child: children) {
-		if (child->isKindOf("View")) {
-			child->cast<OtViewClass>()->onChar(codepoint);
-		}
+	bool handled = false;
+
+	for (auto it = children.begin(); !handled && it != children.end(); it++) {
+		handled = (*it)->cast<OtScreenObjectClass>()->onChar(codepoint);
+	}
+}
+
+
+//
+//	OtScreenClass::onGamepadAxis
+//
+
+void OtScreenClass::onGamepadAxis(int gamepad, int axis, int value) {
+	bool handled = false;
+
+	for (auto it = children.begin(); !handled && it != children.end(); it++) {
+		handled = (*it)->cast<OtScreenObjectClass>()->onGamepadAxis(gamepad, axis, value);
+	}
+}
+
+
+//
+//	OtScreenClass::onGamepadButton
+//
+
+void OtScreenClass::onGamepadButton(int gamepad, int button, int action) {
+	bool handled = false;
+
+	for (auto it = children.begin(); !handled && it != children.end(); it++) {
+		handled = (*it)->cast<OtScreenObjectClass>()->onGamepadButton(gamepad, button, action);
 	}
 }
 

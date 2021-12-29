@@ -12,13 +12,14 @@
 //	Include files
 //
 
-#include <mutex>
+#include <array>
 #include <vector>
 
-#include "gui.h"
 #include "animation.h"
-#include "simulation.h"
+#include "appevents.h"
+#include "gui.h"
 #include "screen.h"
+#include "simulation.h"
 
 
 //
@@ -33,12 +34,6 @@ public:
 	// run the application
 	void run(const std::string& name);
 	void runThread2();
-
-	// mouse and keyboard events
-	void onMouseButton(int button, int action, int mods, float xpos, float ypos);
-	void onMouseMove(int button, float xpos, float ypos);
-	void onKey(int key, int scancode, int action, int mods);
-	void onChar(unsigned int codepoint);
 
 	// add an animation
 	OtObject animation();
@@ -79,6 +74,10 @@ public:
 	// register function to be called at exit
 	static void atexit(std::function<void(void)> callback);
 
+	// add enums to specified module
+	static void addEnumsGLFW(OtObject module);
+	static void addEnumsIMGUI(OtObject module);
+
 	// get type definition
 	static OtType getMeta();
 
@@ -109,7 +108,7 @@ private:
 	void endBGFX();
 
 	void initIMGUI();
-	void frameIMGUI();
+	void frameIMGUI(std::vector<OtAppEvent>& events);
 	void renderIMGUI();
 	void endIMGUI();
 
@@ -121,29 +120,11 @@ private:
 	static int height;
 	static int nextViewID;
 
-	// mouse state
-	bool mouseButtonState[ImGuiMouseButton_COUNT];
-	int mouseButton;
-	int mouseAction;
-	int mouseMods;
-	float mouseX;
-	float mouseY;
-	float mouseWheelDX = 0.0;
-	float mouseWheelDY = 0.0;
-
-	// keyboard state
-	bool keyboardState[512] = {false};
-	int keyboardKey;
-	int keyboardScancode;
-	int keyboardAction;
-	int keyboardMods;
-	int keyboardCodepoint;
-
 	// keyboard shortcut tracking
 	struct OtKeyboardShortcut {
-		OtKeyboardShortcut(int m, int k, std::function<void(void)> c) : modifier(m), keycode(k), callback(c) {}
+		OtKeyboardShortcut(int m, int k, std::function<void(void)> c) : modifier(m), key(k), callback(c) {}
 		int modifier;
-		int keycode;
+		int key;
 		std::function<void(void)> callback;
 	};
 
@@ -186,18 +167,16 @@ private:
 	bool running;
 
 	// bridge between threads
-	std::mutex lock;
-	std::vector<std::string> events;
+	OtAppEventQueue eventQueue;
 
-	void pushEvent(const std::string& event);
-	bool hasEvents();
-	std::string popEvent();
-	void handleEvent();
+	// track keyboard modifier state
+	int modifiers = 0;
 
-	// event tracking
-	bool clickEvent;
-	bool moveEvent;
-	bool wheelEvent;
-	bool keyEvent;
-	bool charEvent;
+	// track gamepad status
+	struct Gamepad {
+		int axes[8] = {0};
+		int buttons[8] = {0};
+	};
+
+	std::array<Gamepad, 4> gamepads;
 };

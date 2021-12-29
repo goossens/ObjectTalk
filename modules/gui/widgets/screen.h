@@ -37,6 +37,8 @@ public:
 	void onScrollWheel(float dx, float dy);
 	void onKey(int key, int mods);
 	void onChar(unsigned int codepoint);
+	void onGamepadAxis(int gamepad, int axis, int value);
+	void onGamepadButton(int gamepad, int buttom, int action);
 
 	// get type definition
 	static OtType getMeta();

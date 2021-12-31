@@ -10,6 +10,8 @@
 //
 
 #if defined(_WIN32)
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #else
 #include <dlfcn.h>
@@ -81,8 +83,8 @@ void OtModuleClass::buildModulePath() {
 	}
 
 	// figure out where we live
-	char buffer[PATH_MAX];
-	size_t length = PATH_MAX;
+	char buffer[1024];
+	size_t length = 1024;
 	auto status = uv_exepath(buffer, &length);
 	UV_CHECK_ERROR("uv_exepath", status);
 	std::string home(buffer, length);
@@ -149,7 +151,7 @@ std::filesystem::path OtModuleClass::getFullPath(const std::string& name) {
 
 void OtModuleClass::loadBinaryModule(std::filesystem::path path, OtModule module) {
 #if defined(_WIN32)
-	HMODULE lib = LoadLibrary(path.c_str());
+	HMODULE lib = LoadLibrary((LPCSTR) path.c_str());
 
 	if (!lib) {
 		OtExcept("Can't import module [%s], error [%d]", path.c_str(), GetLastError());

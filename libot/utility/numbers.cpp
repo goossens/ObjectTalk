@@ -13,11 +13,6 @@
 #include <cstdlib>
 #include <ctime>
 
-#if defined(_WIN32)
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-#endif
-
 #include "ot/numbers.h"
 
 
@@ -29,13 +24,7 @@ double OtRandom(double num1, double num2) {
 	static bool initialized = false;
 
 	if (!initialized) {
-#if defined(_WIN32)
-		srand(GetTickCount());
-
-#else
 		srand(time(0));
-#endif
-
 		initialized = true;
 	}
 

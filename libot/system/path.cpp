@@ -27,7 +27,7 @@ OtObject OtPathClass::init(size_t count, OtObject* parameters) {
 		path = parameters[0]->operator std::string();
 
 		for (auto c = 1; c < count; c++) {
-			path / parameters[c]->operator std::string();
+			path /= parameters[c]->operator std::string();
 		}
 	}
 

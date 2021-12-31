@@ -205,7 +205,7 @@ OtObject OtOSClass::networks() {
 	UV_CHECK_ERROR("uv_interface_addresses", status);
 
 	OtArray result = OtArrayClass::create();
-	char buffer[PATH_MAX];
+	char buffer[256];
 
 	for (auto c = 0; c < count; c++) {
 		OtDict network = OtDictClass::create();
@@ -213,13 +213,13 @@ OtObject OtOSClass::networks() {
 		network->setEntry("internal", OtBooleanClass::create(info[c].is_internal));
 
 		if (info[c].address.address4.sin_family == AF_INET) {
-			status = uv_ip4_name(&info[c].address.address4, buffer, PATH_MAX);
+			status = uv_ip4_name(&info[c].address.address4, buffer, 256);
 			UV_CHECK_ERROR("uv_ip4_name", status);
 			network->setEntry("address", OtStringClass::create(buffer));
 			network->setEntry("family", OtStringClass::create("IPV4"));
 
 		} else if (info[c].address.address4.sin_family == AF_INET6) {
-			status = uv_ip6_name(&info[c].address.address6, buffer, PATH_MAX);
+			status = uv_ip6_name(&info[c].address.address6, buffer, 256);
 			UV_CHECK_ERROR("address6", status);
 			network->setEntry("address", OtStringClass::create(buffer));
 			network->setEntry("family", OtStringClass::create("IPV6"));

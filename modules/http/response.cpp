@@ -165,7 +165,7 @@ void OtHttpResponseClass::sendHeaders() {
 
 	// send response
 	std::string text = stream.str();
-	uv_buf_t buffer = uv_buf_init(strndup((char*) text.c_str(), text.size()), text.size());
+	uv_buf_t buffer = uv_buf_init(strdup(text.c_str()), text.size());
 	uv_write_t* uv_write_req = (uv_write_t*) malloc(sizeof(uv_write_t));
 	uv_write_req->data = buffer.base;
 
@@ -188,7 +188,10 @@ OtObject OtHttpResponseClass::write(const char* data, size_t size) {
 	}
 
 	// send body
-	uv_buf_t buffer = uv_buf_init(strndup(data, size), size);
+	char* text = (char*) malloc(size + 1);
+	memcpy(text, data, size);
+	text[size] = 0;
+	uv_buf_t buffer = uv_buf_init(text, size);
 	uv_write_t* uv_write_req = (uv_write_t*) malloc(sizeof(uv_write_t));
 	uv_write_req->data = buffer.base;
 

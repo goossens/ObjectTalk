@@ -22,7 +22,7 @@ xcode:
 	cmake -Bxcode -Wno-dev -GXcode -DCMAKE_BUILD_TYPE=Debug
 
 vs:
-	cmake -Bvs -Wno-dev -G"Visual Studio 17 2022" -DCMAKE_BUILD_TYPE=Debug
+	cmake -Bvs -Wno-dev -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Debug
 
 gui:
 	cmake -Bdebug -Wno-dev -DOT_GUI=ON -DCMAKE_BUILD_TYPE=Debug

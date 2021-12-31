@@ -281,10 +281,10 @@ void OtHttpRequestClass::onMultipartHeadersComplete() {
 					multipartFileName = val;
 
 					// create temporary file
-					std::string tmpl = std::filesystem::temp_directory_path() / "ot-XXXXXX";
+					std::filesystem::path tmpl = std::filesystem::temp_directory_path() / "ot-XXXXXX";
 
 					uv_fs_t req;
-					uv_fs_mkstemp(uv_default_loop(), &req, tmpl.c_str(), 0);
+					uv_fs_mkstemp(uv_default_loop(), &req, (const char*) tmpl.c_str(), 0);
 					multipartFile = req.path;
 					multipartFD = req.result;
 					uv_fs_req_cleanup(&req);

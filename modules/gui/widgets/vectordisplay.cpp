@@ -122,7 +122,6 @@ void OtVectorDisplayClass::updateFrameBuffers() {
 	}
 
 	// create new framebuffer
-	OT_DEBUG(OtFormat("updateFrameBuffers %d %d", bufferWidth, bufferHeight));
 	const uint64_t flags = BGFX_TEXTURE_RT | BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP;
 	frameBuffer0 = bgfx::createFrameBuffer(bufferWidth, bufferHeight, bgfx::TextureFormat::RGBA16F, flags);
 	frameBuffer1 = bgfx::createFrameBuffer(glowWidth, glowHeight, bgfx::TextureFormat::RGBA16F, flags);
@@ -271,7 +270,7 @@ void OtVectorDisplayClass::endDraw() {
 	size_t nlines = points.size() - 1;
 	Line* lines = new Line[nlines];
 
-	float t = std::max((0.01 * (bufferWidth + bufferHeight) / 2.0) * style.thickness / 2.0, 6.0);
+	float t = std::max((0.01 * (bufferWidth + bufferHeight) / 2.0) * style.width / 2.0, 6.0);
 	bool firstIsLast = std::abs(points[0].x - points[nlines].x) < 0.1 && std::abs(points[0].y - points[nlines].y) < 0.1;
 
 	// compute basics
@@ -295,7 +294,7 @@ void OtVectorDisplayClass::endDraw() {
 		line->has_prev = (!line->is_first || (line->is_first && firstIsLast));
 		line->has_next = (!line->is_last || (line->is_last && firstIsLast));
 
-		// initialize thicknesses/shortens to default values
+		// initialize to default values
 		line->tl0 = line->tl1 = line->tr0 = line->tr1 = t;
 		line->s0 = line->s1 = 0.0;
 	}
@@ -506,11 +505,11 @@ OtObject OtVectorDisplayClass::setAlpha(float alpha) {
 
 
 //
-//	OtVectorDisplayClass::setThickness
+//	OtVectorDisplayClass::setWidth
 //
 
-OtObject OtVectorDisplayClass::setThickness(float thickness) {
-	style.thickness = thickness;
+OtObject OtVectorDisplayClass::setWidth(float width) {
+	style.width = width;
 	return shared();
 }
 
@@ -590,10 +589,156 @@ void OtVectorDisplayClass::drawCircle(float x, float y, float radius, float step
 
 
 //
+//	OtVectorDisplayClass::drawSevenSegment
+//
+
+void OtVectorDisplayClass::drawSevenSegment(float x, float y, float size, const std::string& text) {
+	// calculate scaling
+	auto s = size / 100.0;
+	auto t = origin == topLeftOrigin ? s : -s;
+
+	// render each digit
+	for (auto& c : text) {
+		// get segment pattern
+		int pattern = 0;
+
+		switch (c) {
+			case ' ': pattern = 0b0000000; break;
+			case '0': pattern = 0b0111111; break;
+			case '1': pattern = 0b0000110; break;
+			case '2': pattern = 0b1011011; break;
+			case '3': pattern = 0b1001111; break;
+			case '4': pattern = 0b1100110; break;
+			case '5': pattern = 0b1101101; break;
+			case '6': pattern = 0b1111101; break;
+			case '7': pattern = 0b0000111; break;
+			case '8': pattern = 0b1111111; break;
+			case '9': pattern = 0b1100111; break;
+			case 'A': pattern = 0b1110111; break;
+			case 'B': pattern = 0b1111111; break;
+			case 'C': pattern = 0b0111001; break;
+			case 'D': pattern = 0b0111111; break;
+			case 'E': pattern = 0b1111001; break;
+			case 'F': pattern = 0b1110001; break;
+			case 'G': pattern = 0b1111101; break;
+			case 'H': pattern = 0b1110110; break;
+			case 'I': pattern = 0b0000110; break;
+			case 'J': pattern = 0b0011110; break;
+			case 'K': pattern = 0b1110000; break;
+			case 'L': pattern = 0b0111000; break;
+			case 'M': pattern = 0b0110111; break;
+			case 'N': pattern = 0b0110111; break;
+			case 'O': pattern = 0b0111111; break;
+			case 'P': pattern = 0b1110011; break;
+			case 'Q': pattern = 0b0111111; break;
+			case 'R': pattern = 0b1110111; break;
+			case 'S': pattern = 0b1101101; break;
+			case 'T': pattern = 0b0000111; break;
+			case 'U': pattern = 0b0111110; break;
+			case 'V': pattern = 0b0111110; break;
+			case 'W': pattern = 0b0111110; break;
+			case 'X': pattern = 0b1110000; break;
+			case 'Y': pattern = 0b1110010; break;
+			case 'Z': pattern = 0b1011011; break;
+			case '-': pattern = 0b1000000; break;
+			default: pattern = 0b0000000; break;
+		}
+
+		// segment A
+		if (pattern & 0b0000001) {
+			beginDraw(x + 2.7 * s, y + 0.0);
+			drawTo(x + 49.0 * s, y + 0.0);
+			drawTo(x + 49.0 * s, y + 0.5 * t);
+			drawTo(x + 41.0 * s, y + 8.0 * t);
+			drawTo(x + 9.8 * s, y + 8.0 * t);
+			drawTo(x + 2.2 * s, y + 0.5 * t);
+			drawTo(x + 2.7 * s, y + 0.0);
+			endDraw();
+		}
+
+		// segment B
+		if (pattern & 0b0000010) {
+			beginDraw(x + 50.0 * s, y + 2.7 * t);
+			drawTo(x + 50.0 * s, y + 49.0 * t);
+			drawTo(x + 46.0 * s, y + 49.0 * t);
+			drawTo(x + 42.0 * s, y + 45.0 * t);
+			drawTo(x + 42.0 * s, y + 9.8 * t);
+			drawTo(x + 50.0 * s, y + 2.2 * t);
+			drawTo(x + 50.0 * s, y + 2.7 * t);
+			endDraw();
+		}
+
+		// segment C
+		if (pattern & 0b0000100) {
+			beginDraw(x + 50.0 * s, y + 98.0 * t);
+			drawTo(x + 42.0 * s, y + 91.0 * t);
+			drawTo(x + 42.0 * s, y + 55.0 * t);
+			drawTo(x + 46.0 * s, y + 51.0 * t);
+			drawTo(x + 50.0 * s, y + 51.0 * t);
+			drawTo(x + 50.0 * s, y + 98.0 * t);
+			endDraw();
+		}
+
+		// segment D
+		if (pattern & 0b0001000) {
+			beginDraw(x + 2.2 * s, y + 100.0 * t);
+			drawTo(x + 9.8 * s, y + 92.0 * t);
+			drawTo(x + 41.0 * s, y + 92.0 * t);
+			drawTo(x + 49.0 * s, y + 100.0 * t);
+			drawTo(x + 2.7 * s, y + 100.0 * t);
+			drawTo(x + 2.2 * s, y + 100.0 * t);
+			endDraw();
+		}
+
+		// segment E
+		if (pattern & 0b0010000) {
+			beginDraw(x + 0.0, y + 98.0 * t);
+			drawTo(x + 0.0, y + 51.0 * t);
+			drawTo(x + 4.0 * s, y + 51.0 * t);
+			drawTo(x + 8.0 * s, y + 55.0 * t);
+			drawTo(x + 8.0 * s, y + 91.0 * t);
+			drawTo(x + 0.5 * s, y + 98.0 * t);
+			drawTo(x + 0.0, y + 98.0 * t);
+			endDraw();
+		}
+
+		// segment F
+		if (pattern & 0b0100000) {
+			beginDraw(x + 0.5 * s, y + 2.2 * t);
+			drawTo(x + 8.0 * s, y + 9.8 * t);
+			drawTo(x + 8.0 * s, y + 45.0 * t);
+			drawTo(x + 4.0 * s, y + 49.0 * t);
+			drawTo(x + 0.0 * s, y + 49.0 * t);
+			drawTo(x + 0.0 * s, y + 2.7 * t);
+			drawTo(x + 0.5 * s, y + 2.2 * t);
+			endDraw();
+		}
+
+		// segment G
+		if (pattern & 0b1000000) {
+			beginDraw(x + 10.2 * s, y + 46.0 * t);
+			drawTo(x + 40.0 * s, y + 46.0 * t);
+			drawTo(x + 44.0 * s, y + 50.0 * t);
+			drawTo(x + 40.0 * s, y + 54.0 * t);
+			drawTo(x + 10.2 * s, y + 54.0 * t);
+			drawTo(x + 6.2 * s, y + 50.0 * t);
+			drawTo(x + 10.2 * s, y + 46.0 * t);
+			endDraw();
+		}
+
+		x += size * 0.8;
+	}
+}
+
+
+//
 //	OtVectorDisplayClass::drawText
 //
 
-void OtVectorDisplayClass::drawText(float x, float y, float scale, const std::string& text) {
+void OtVectorDisplayClass::drawText(float x, float y, float size, const std::string& text) {
+	auto scaleX = size / 32.0;
+	auto scaleY = scaleX * (origin == topLeftOrigin ? -1.0 : 1.0);
+
 	for (auto& c : text) {
 		if (c >= 32 || c <= 126) {
 			const int8_t* chr = simplex[c - 32];
@@ -611,24 +756,11 @@ void OtVectorDisplayClass::drawText(float x, float y, float scale, const std::st
 					}
 
 				} else if (!isDrawing) {
-					if (origin == topLeftOrigin) {
-						beginDraw(x + vx * scale, y - vy * scale);
-
-					} else {
-						beginDraw(x + vx * scale, y + vy * scale);
-
-					}
-
+					beginDraw(x + vx * scaleX, y + vy * scaleY);
 					isDrawing = true;
 
 				} else {
-					if (origin == topLeftOrigin) {
-						drawTo(x + vx * scale, y - vy * scale);
-
-					} else {
-						drawTo(x + vx * scale, y + vy * scale);
-
-					}
+					drawTo(x + vx * scaleX, y + vy * scaleY);
 				}
 			}
 
@@ -636,9 +768,18 @@ void OtVectorDisplayClass::drawText(float x, float y, float scale, const std::st
 				endDraw();
 			}
 
-			x += chr[1] * scale;
+			x += chr[1] * scaleX;
 		}
 	}
+}
+
+
+//
+//	OtVectorDisplayClass::getSevenSegmentWidth
+//
+
+float OtVectorDisplayClass::getSevenSegmentWidth(const std::string& text, float size) {
+	return text.size() * 0.8 * size - 0.3 * size;
 }
 
 
@@ -646,7 +787,8 @@ void OtVectorDisplayClass::drawText(float x, float y, float scale, const std::st
 //	OtVectorDisplayClass::getTextWidth
 //
 
-float OtVectorDisplayClass::getTextWidth(const std::string& text, float scale) {
+float OtVectorDisplayClass::getTextWidth(const std::string& text, float size) {
+	auto scale = size / 32.0;
 	float width = 0.0;
 
 	for (auto& c : text) {
@@ -661,15 +803,6 @@ float OtVectorDisplayClass::getTextWidth(const std::string& text, float scale) {
 
 
 //
-//	OtVectorDisplayClass::getTextHeight
-//
-
-float OtVectorDisplayClass::getTextHeight(const std::string& text, float scale) {
-	return scale * 32.0;
-}
-
-
-//
 //	OtVectorDisplayClass::addLine
 //
 
@@ -678,7 +811,7 @@ int OtVectorDisplayClass::addLine(float x0, float y0, float x1, float y1) {
 	shape.id = nextShapeID++;
 	shape.enabled = true;
 	shape.type = Shape::lineType;
-	shape.thickness = style.thickness;
+	shape.width = style.width;
 	shape.color = style.color;
 	shape.x0 = x0;
 	shape.y0 = y0;
@@ -698,7 +831,7 @@ int OtVectorDisplayClass::addRectangle(float x, float y, float w, float h) {
 	shape.id = nextShapeID++;
 	shape.enabled = true;
 	shape.type = Shape::rectangleType;
-	shape.thickness = style.thickness;
+	shape.width = style.width;
 	shape.color = style.color;
 	shape.x = x;
 	shape.y = y;
@@ -718,7 +851,7 @@ int OtVectorDisplayClass::addCircle(float x, float y, float radius, float steps)
 	shape.id = nextShapeID++;
 	shape.enabled = true;
 	shape.type = Shape::circleType;
-	shape.thickness = style.thickness;
+	shape.width = style.width;
 	shape.color = style.color;
 	shape.x = x;
 	shape.y = y;
@@ -730,19 +863,39 @@ int OtVectorDisplayClass::addCircle(float x, float y, float radius, float steps)
 
 
 //
+//	OtVectorDisplayClass::addSevenSegment
+//
+
+int OtVectorDisplayClass::addSevenSegment(float x, float y, float size, const std::string& text) {
+	Shape shape;
+	shape.enabled = true;
+	shape.id = nextShapeID++;
+	shape.type = Shape::sevenSegmentType;
+	shape.width = style.width;
+	shape.color = style.color;
+	shape.x = x;
+	shape.y = y;
+	shape.size = size;
+	shape.text = text;
+	shapes.push_back(shape);
+	return shape.id;
+}
+
+
+//
 //	OtVectorDisplayClass::addText
 //
 
-int OtVectorDisplayClass::addText(float x, float y, float scale, const std::string& text) {
+int OtVectorDisplayClass::addText(float x, float y, float size, const std::string& text) {
 	Shape shape;
 	shape.enabled = true;
 	shape.id = nextShapeID++;
 	shape.type = Shape::textType;
-	shape.thickness = style.thickness;
+	shape.width = style.width;
 	shape.color = style.color;
 	shape.x = x;
 	shape.y = y;
-	shape.scale = scale;
+	shape.size = size;
 	shape.text = text;
 	shapes.push_back(shape);
 	return shape.id;
@@ -801,15 +954,15 @@ void OtVectorDisplayClass::updateCircle(int id, float x, float y, float radius, 
 
 
 //
-//	OtVectorDisplayClass::updateText
+//	OtVectorDisplayClass::updateSevenSegment
 //
 
-void OtVectorDisplayClass::updateText(int id, float x, float y, float scale, const std::string& text) {
+void OtVectorDisplayClass::updateSevenSegment(int id, float x, float y, float size, const std::string& text) {
 	for (auto& shape : shapes) {
 		if (shape.id == id) {
 			shape.x = x;
 			shape.y = y;
-			shape.radius = scale;
+			shape.size = size;
 			shape.text = text;
 			return;
 		}
@@ -818,13 +971,58 @@ void OtVectorDisplayClass::updateText(int id, float x, float y, float scale, con
 
 
 //
-//	OtVectorDisplayClass::updateThickness
+//	OtVectorDisplayClass::updateSevenSegmentString
 //
 
-void OtVectorDisplayClass::updateThickness(int id, float thickness) {
+void OtVectorDisplayClass::updateSevenSegmentString(int id, const std::string& text) {
 	for (auto& shape : shapes) {
 		if (shape.id == id) {
-			shape.thickness = thickness;
+			shape.text = text;
+			return;
+		}
+	}
+}
+
+
+//
+//	OtVectorDisplayClass::updateText
+//
+
+void OtVectorDisplayClass::updateText(int id, float x, float y, float size, const std::string& text) {
+	for (auto& shape : shapes) {
+		if (shape.id == id) {
+			shape.x = x;
+			shape.y = y;
+			shape.size = size;
+			shape.text = text;
+			return;
+		}
+	}
+}
+
+
+//
+//	OtVectorDisplayClass::updateTextString
+//
+
+void OtVectorDisplayClass::updateTextString(int id, const std::string& text) {
+	for (auto& shape : shapes) {
+		if (shape.id == id) {
+			shape.text = text;
+			return;
+		}
+	}
+}
+
+
+//
+//	OtVectorDisplayClass::updateWidth
+//
+
+void OtVectorDisplayClass::updateWidth(int id, float width) {
+	for (auto& shape : shapes) {
+		if (shape.id == id) {
+			shape.width = width;
 			return;
 		}
 	}
@@ -918,7 +1116,7 @@ void OtVectorDisplayClass::render() {
 
 	for (auto& shape : shapes) {
 		if (shape.enabled) {
-			style.thickness = shape.thickness;
+			style.width = shape.width;
 			style.color = shape.color;
 
 			switch (shape.type) {
@@ -934,8 +1132,12 @@ void OtVectorDisplayClass::render() {
 					drawCircle(shape.x, shape.y, shape.radius, shape.steps);
 					break;
 
+				case Shape::sevenSegmentType:
+					drawSevenSegment(shape.x, shape.y, shape.size, shape.text);
+					break;
+
 				case Shape::textType:
-					drawText(shape.x, shape.y, shape.scale, shape.text);
+					drawText(shape.x, shape.y, shape.size, shape.text);
 					break;
 			}
 		}
@@ -1081,7 +1283,7 @@ void OtVectorDisplayClass::renderGUI() {
 
 	bool dirty = false;
 
-	if (ImGui::SliderInt("Decay Steps", &decaySteps, 1, 60)) {
+	if (ImGui::SliderInt("Decay Steps", &decaySteps, 1, 10)) {
 		dirty = true;
 	}
 
@@ -1113,28 +1315,32 @@ OtType OtVectorDisplayClass::getMeta() {
 
 		type->set("setColor", OtFunctionClass::create(&OtVectorDisplayClass::setColor));
 		type->set("setAlpha", OtFunctionClass::create(&OtVectorDisplayClass::setAlpha));
-		type->set("setThickness", OtFunctionClass::create(&OtVectorDisplayClass::setThickness));
+		type->set("setWidth", OtFunctionClass::create(&OtVectorDisplayClass::setWidth));
 		type->set("setTransform", OtFunctionClass::create(&OtVectorDisplayClass::setTransform));
 
 		type->set("pushStyle", OtFunctionClass::create(&OtVectorDisplayClass::pushStyle));
 		type->set("popStyle", OtFunctionClass::create(&OtVectorDisplayClass::popStyle));
 
+		type->set("getSevenSegmentWidth", OtFunctionClass::create(&OtVectorDisplayClass::getSevenSegmentWidth));
 		type->set("getTextWidth", OtFunctionClass::create(&OtVectorDisplayClass::getTextWidth));
-		type->set("getTextHeight", OtFunctionClass::create(&OtVectorDisplayClass::getTextHeight));
 
 		type->set("addLine", OtFunctionClass::create(&OtVectorDisplayClass::addLine));
 		type->set("addRectangle", OtFunctionClass::create(&OtVectorDisplayClass::addRectangle));
 		type->set("addCircle", OtFunctionClass::create(&OtVectorDisplayClass::addCircle));
+		type->set("addSevenSegment", OtFunctionClass::create(&OtVectorDisplayClass::addSevenSegment));
 		type->set("addText", OtFunctionClass::create(&OtVectorDisplayClass::addText));
 
 		type->set("updateLine", OtFunctionClass::create(&OtVectorDisplayClass::updateLine));
 		type->set("updateRectangle", OtFunctionClass::create(&OtVectorDisplayClass::updateRectangle));
 		type->set("updateCircle", OtFunctionClass::create(&OtVectorDisplayClass::updateCircle));
+		type->set("updateSevenSegment", OtFunctionClass::create(&OtVectorDisplayClass::updateSevenSegment));
+		type->set("updateSevenSegmentString", OtFunctionClass::create(&OtVectorDisplayClass::updateSevenSegmentString));
 		type->set("updateText", OtFunctionClass::create(&OtVectorDisplayClass::updateText));
+		type->set("updateTextString", OtFunctionClass::create(&OtVectorDisplayClass::updateTextString));
 
-		type->set("updateThickness", OtFunctionClass::create(&OtVectorDisplayClass::updateThickness));
 		type->set("updateColor", OtFunctionClass::create(&OtVectorDisplayClass::updateColor));
 		type->set("updateAlpha", OtFunctionClass::create(&OtVectorDisplayClass::updateAlpha));
+		type->set("updateWidth", OtFunctionClass::create(&OtVectorDisplayClass::updateWidth));
 
 		type->set("enableShape", OtFunctionClass::create(&OtVectorDisplayClass::enableShape));
 		type->set("disableShape", OtFunctionClass::create(&OtVectorDisplayClass::disableShape));

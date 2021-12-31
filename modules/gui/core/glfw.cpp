@@ -163,12 +163,7 @@ void OtApplicationClass::eventsGLFW() {
 
 		if (axes) {
 			for (auto axis = 0; axis < std::min(numAxes, 2); axis++) {
-				int value = std::round(axes[axis] * 100.0);
-
-				if (value != gamepads[gamepad].axes[axis]) {
-					gamepads[gamepad].axes[axis] = value;
-					eventQueue.pushGamepadAxisEvent(gamepad, axis, axes[axis]);
-				}
+				eventQueue.pushGamepadAxisEvent(gamepad, axis, std::round(axes[axis] * 100.0));
 			}
 		}
 
@@ -178,7 +173,6 @@ void OtApplicationClass::eventsGLFW() {
 		if (buttons) {
 			for (auto button = 0; button < std::min(numButtons, 8); button++) {
 				if (buttons[button] != gamepads[gamepad].buttons[button]) {
-					OT_DEBUG(OtFormat("%d %d %d %d %d", button, numButtons, button, gamepads[gamepad].buttons[button], buttons[button]));
 					gamepads[gamepad].buttons[button] = buttons[button];
 					eventQueue.pushGamepadButtonEvent(gamepad, button, buttons[button]);
 				}

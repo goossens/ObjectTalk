@@ -116,12 +116,12 @@ class MyApp : gui.Application {
 	function createSweep(this) {
 		// create radar beam
 		this.vd.setColor("#164");
-		this.vd.setThickness(beamWidth);
+		this.vd.setWidth(beamWidth);
 		this.beam = this.vd.addLine(0, 0, 0, 0);
 
 		// create radar decay (afterglow)
 		var increment = (decayAlphaStart - decayAlphaEnd) / decaySteps;
-		this.vd.setThickness(decayWidth);
+		this.vd.setWidth(decayWidth);
 		this.vd.setColor("#041");
 		this.afterglow = [];
 
@@ -132,7 +132,7 @@ class MyApp : gui.Application {
 	}
 
 	function createTargets(this) {
-		this.vd.setThickness(6);
+		this.vd.setWidth(6);
 		this.vd.setColor("#3b8");
 
 		this.targets = [];

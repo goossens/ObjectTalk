@@ -41,12 +41,12 @@ class MyApp : gui.Application {
 	}
 
 	function addHands(this, vd) {
-		vd.setThickness(2.0);
+		vd.setWidth(2.0);
 		vd.setColor("#3bb");
 		this.hours = vd.addLine(0, 0, 0, 0);
 		this.minutes = vd.addLine(0, 0, 0, 0);
 
-		vd.setThickness(1.0);
+		vd.setWidth(1.0);
 		vd.addCircle(0, 0, 3, 16);
 
 		vd.setColor("#b33");

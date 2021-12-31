@@ -14,41 +14,42 @@ class MyApp : gui.Application {
 
 		vd.setColor("#aaf");
 
-		vd.addText(50,  80, 1.5, "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-		vd.addText(50, 140, 1.5, "abcdefghijklmnopqrstuvwxyz");
-		vd.addText(50, 200, 1.5, "!@#$%^&*()-=<>/?;:'\"{}[]|\\+=-_");
+		vd.addText(50,  80, 50, "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+		vd.addText(50, 140, 50, "abcdefghijklmnopqrstuvwxyz");
+		vd.addText(50, 200, 50, "!@#$%^&*()-=<>/?;:'\"{}[]|\\+=-_");
+
+		vd.setColor("#aff");
+
+		vd.setWidth(2);
+		vd.addLine(50, 240, 900, 240);
+		vd.addLine(50, 260, 900, 260);
 
 		vd.setColor("#faa");
 
-		vd.setThickness(1);
+		vd.setWidth(1);
 		vd.addCircle(260, 400, 7, 32);
-		vd.setThickness(2);
+		vd.setWidth(2);
 		vd.addCircle(315, 400, 15, 32);
-		vd.setThickness(3);
+		vd.setWidth(3);
 		vd.addCircle(380, 400, 30, 32);
-		vd.setThickness(4);
+		vd.setWidth(4);
 		vd.addCircle(490, 400, 40, 64);
 
 		vd.setColor("#afa");
 
-		vd.setThickness(1);
+		vd.setWidth(1);
 		vd.addRectangle(250, 550, 20, 20);
-		vd.setThickness(2);
+		vd.setWidth(2);
 		vd.addRectangle(300, 550, 30, 30);
-		vd.setThickness(3);
+		vd.setWidth(3);
 		vd.addRectangle(350, 550, 60, 60);
-		vd.setThickness(4);
+		vd.setWidth(4);
 		vd.addRectangle(450, 550, 80, 80);
-
-		vd.setColor("#aff");
-		vd.setThickness(3);
-		vd.addLine(50, 260, 850, 260);
-		vd.addLine(50, 280, 850, 280);
 
 		vd.setColor("#ffa");
 
 		for i in range(0, 3) {
-			vd.setThickness(i + 1);
+			vd.setWidth(i + 1);
 			vd.addLine(50, 340 + 40 * i, 180, 340 + 40 * i);
 			vd.addLine(50 + 40 * i, 520, 50 + 40 * i, 650.0);
 		}

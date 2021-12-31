@@ -46,28 +46,32 @@ public:
 	// shape API
 	OtObject setColor(const std::string& color);
 	OtObject setAlpha(float alpha);
-	OtObject setThickness(float thickness);
+	OtObject setWidth(float width);
 	OtObject setTransform(float offsetX, float offsetY, float scale);
 
 	void pushStyle();
 	void popStyle();
 
-	float getTextWidth(const std::string& text, float scale);
-	float getTextHeight(const std::string& text, float scale);
+	float getSevenSegmentWidth(const std::string& text, float size);
+	float getTextWidth(const std::string& text, float size);
 
 	int addLine(float x0, float y0, float x1, float y1);
 	int addRectangle(float x, float y, float w, float h);
 	int addCircle(float x, float y, float radius, float steps);
-	int addText(float x, float y, float scale, const std::string& text);
+	int addSevenSegment(float x, float y, float size, const std::string& text);
+	int addText(float x, float y, float size, const std::string& text);
 
 	void updateLine(int id, float x0, float y0, float x1, float y1);
 	void updateRectangle(int id, float x, float y, float w, float h);
 	void updateCircle(int id, float x, float y, float radius, float steps);
-	void updateText(int id, float x, float y, float scale, const std::string& text);
+	void updateSevenSegment(int id, float x, float y, float size, const std::string& text);
+	void updateSevenSegmentString(int id, const std::string& text);
+	void updateText(int id, float x, float y, float size, const std::string& text);
+	void updateTextString(int id, const std::string& text);
 
-	void updateThickness(int id, float thickness);
 	void updateColor(int id, const std::string& color);
 	void updateAlpha(int id, float alpha);
+	void updateWidth(int id, float width);
 
 	void enableShape(int id);
 	void disableShape(int id);
@@ -95,7 +99,8 @@ private:
 	void drawLine(float x0, float y0, float x1, float y1);
 	void drawRectangle(float x, float y, float w, float h);
 	void drawCircle(float x, float y, float radius, float steps);
-	void drawText(float x, float y, float scale, const std::string& text);
+	void drawSevenSegment(float x, float y, float size, const std::string& text);
+	void drawText(float x, float y, float size, const std::string& text);
 
 	// vector display dimensions (in % of screen)
 	int x = 0;
@@ -164,13 +169,14 @@ private:
 			lineType,
 			rectangleType,
 			circleType,
+			sevenSegmentType,
 			textType
 		};
 
 		int id;
 		bool enabled;
 		int type;
-		float thickness;
+		float width;
 		uint32_t color;
 
 		union {
@@ -187,7 +193,7 @@ private:
 			float x1;
 			float w;
 			float radius;
-			float scale;
+			float size;
 		};
 
 		union {
@@ -205,7 +211,7 @@ private:
 	// rendering properties
 	struct Style {
 		uint32_t color = 0xffffffff;
-		float thickness = 1.0;
+		float width = 1.0;
 		float drawOffsetX = 0.0;
 		float drawOffsetY = 0.0;
 		float drawScale = 1.0;

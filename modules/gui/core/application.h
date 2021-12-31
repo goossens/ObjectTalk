@@ -174,7 +174,6 @@ private:
 
 	// track gamepad status
 	struct Gamepad {
-		int axes[8] = {0};
 		int buttons[8] = {0};
 	};
 

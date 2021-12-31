@@ -60,6 +60,7 @@ In case the GUI module is included, we also use:
 * [bgfx](https://github.com/bkaradzic/bgfx) - cross-platform, graphics API agnostic rendering library.
 * [Dear ImGui](https://github.com/ocornut/imgui) - graphical user interface library.
 * [glm](https://github.com/g-truc/glm) - mathematics library for graphics software.
+* [Box2D](https://box2d.org) - 2D Physics Engine for Games.
 * [tweeny](https://github.com/mobius3/tweeny) - animation library.
 * [ImGuiFileDialog](https://github.com/aiekick/ImGuiFileDialog) - file selection dialog built for Dear ImGui.
 

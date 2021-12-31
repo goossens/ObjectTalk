@@ -31,7 +31,7 @@ endif()
 
 add_library(gui MODULE ${GUI_INCLUDES} ${GUI_SOURCES})
 add_dependencies(gui glfw bgfx imgui imguifd tinyobjloader box2d)
-target_link_libraries(gui libot ${UV_LIBRARY} glfw bgfx imgui imguifd tinyobjloader ${GUI_LIBS})
+target_link_libraries(gui libot ${UV_LIBRARY} glfw bgfx imgui imguifd tinyobjloader box2d ${GUI_LIBS})
 
 set_target_properties(gui PROPERTIES PREFIX "")
 set_target_properties(gui PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/ot)

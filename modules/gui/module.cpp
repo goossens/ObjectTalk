@@ -55,6 +55,7 @@
 
 #include "simulation.h"
 #include "cloth.h"
+#include "world.h"
 
 #include "guimath.h"
 #include "perlin.h"
@@ -86,7 +87,6 @@
 #include "picture.h"
 #include "realslider.h"
 #include "treenode.h"
-
 #include "tron.h"
 
 #include "vectordisplay.h"
@@ -141,6 +141,7 @@ extern "C" void init(OtModule module) {
 
 	module->set("Simulation", OtClassClass::create(OtMathClass::getMeta()));
 	module->set("Cloth", OtClassClass::create(OtClothClass::getMeta()));
+	module->set("World", OtClassClass::create(OtWorldClass::getMeta()));
 
 	module->set("Math", OtClassClass::create(OtSimulationClass::getMeta()));
 	module->set("Perlin", OtClassClass::create(OtPerlinClass::getMeta()));
@@ -152,48 +153,6 @@ extern "C" void init(OtModule module) {
 	module->set("Window", OtClassClass::create(OtWindowClass::getMeta()));
 	module->set("Dialog", OtClassClass::create(OtDialogClass::getMeta()));
 	module->set("Panel", OtClassClass::create(OtPanelClass::getMeta()));
-
-	module->set("windowNoTitleBar", OtIntegerClass::create(ImGuiWindowFlags_NoTitleBar));
-	module->set("windowNoResize", OtIntegerClass::create(ImGuiWindowFlags_NoResize));
-	module->set("windowNoMove", OtIntegerClass::create(ImGuiWindowFlags_NoMove));
-	module->set("windowNoScrollbar", OtIntegerClass::create(ImGuiWindowFlags_NoScrollbar));
-	module->set("windowNoScrollWithMouse", OtIntegerClass::create(ImGuiWindowFlags_NoScrollWithMouse));
-	module->set("windowNoCollapse", OtIntegerClass::create(ImGuiWindowFlags_NoCollapse));
-	module->set("windowAlwaysAutoResize", OtIntegerClass::create(ImGuiWindowFlags_AlwaysAutoResize));
-	module->set("windowNoSavedSettings", OtIntegerClass::create(ImGuiWindowFlags_NoSavedSettings));
-	module->set("windowNoMouseInputs", OtIntegerClass::create(ImGuiWindowFlags_NoMouseInputs));
-	module->set("windowMenuBar", OtIntegerClass::create(ImGuiWindowFlags_MenuBar));
-	module->set("windowHorizontalScrollbar", OtIntegerClass::create(ImGuiWindowFlags_HorizontalScrollbar));
-	module->set("windowNoFocusOnAppearing", OtIntegerClass::create(ImGuiWindowFlags_NoFocusOnAppearing));
-	module->set("windowNoBringToFrontOnFocus", OtIntegerClass::create(ImGuiWindowFlags_NoBringToFrontOnFocus));
-	module->set("windowAlwaysVerticalScrollbar", OtIntegerClass::create(ImGuiWindowFlags_AlwaysVerticalScrollbar));
-	module->set("windowAlwaysHorizontalScrollbar", OtIntegerClass::create(ImGuiWindowFlags_AlwaysHorizontalScrollbar));
-	module->set("windowAlwaysUseWindowPadding", OtIntegerClass::create(ImGuiWindowFlags_AlwaysUseWindowPadding));
-	module->set("windowNoNavInputs", OtIntegerClass::create(ImGuiWindowFlags_NoNavInputs));
-	module->set("windowNoNavFocus", OtIntegerClass::create(ImGuiWindowFlags_NoNavFocus));
-	module->set("windowUnsavedDocument", OtIntegerClass::create(ImGuiWindowFlags_UnsavedDocument));
-	module->set("windowNoNav", OtIntegerClass::create(ImGuiWindowFlags_NoNav));
-	module->set("windowNoDecoration", OtIntegerClass::create(ImGuiWindowFlags_NoDecoration));
-
-	module->set("mouseLeft", OtIntegerClass::create(GLFW_MOUSE_BUTTON_LEFT));
-	module->set("mouseRight", OtIntegerClass::create(GLFW_MOUSE_BUTTON_RIGHT));
-	module->set("mouseMiddle", OtIntegerClass::create(GLFW_MOUSE_BUTTON_MIDDLE));
-
-	module->set("keyLeft", OtIntegerClass::create(GLFW_KEY_LEFT));
-	module->set("keyRight", OtIntegerClass::create(GLFW_KEY_RIGHT));
-	module->set("keyUp", OtIntegerClass::create(GLFW_KEY_UP));
-	module->set("keyDown", OtIntegerClass::create(GLFW_KEY_DOWN));
-	module->set("keyPageUp", OtIntegerClass::create(GLFW_KEY_PAGE_UP));
-	module->set("keyPageDown", OtIntegerClass::create(GLFW_KEY_PAGE_DOWN));
-	module->set("keyHome", OtIntegerClass::create(GLFW_KEY_HOME));
-	module->set("keyEnd", OtIntegerClass::create(GLFW_KEY_END));
-
-	module->set("keyModShift", OtIntegerClass::create(GLFW_MOD_SHIFT));
-	module->set("keyModCtrl", OtIntegerClass::create(GLFW_MOD_CONTROL));
-	module->set("keyModAlt", OtIntegerClass::create(GLFW_MOD_ALT));
-	module->set("keyModSuper", OtIntegerClass::create(GLFW_MOD_SUPER));
-	module->set("keyModCapsLock", OtIntegerClass::create(GLFW_MOD_CAPS_LOCK));
-	module->set("keyModNumLock", OtIntegerClass::create(GLFW_MOD_NUM_LOCK));
 
 	module->set("FileOpenDialog", OtClassClass::create(OtFileOpenDialogClass::getMeta()));
 	module->set("FileSaveDialog", OtClassClass::create(OtFileSaveDialogClass::getMeta()));
@@ -227,4 +186,7 @@ extern "C" void init(OtModule module) {
 	module->set("Tron", OtClassClass::create(OtTronClass::getMeta()));
 
 	module->set("VectorDisplay", OtClassClass::create(OtVectorDisplayClass::getMeta()));
+
+	OtApplicationClass::addEnumsGLFW(module);
+	OtApplicationClass::addEnumsIMGUI(module);
 }

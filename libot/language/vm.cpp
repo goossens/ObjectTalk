@@ -19,15 +19,6 @@
 
 
 //
-//	Globals
-//
-
-static thread_local OtStack stack;
-static thread_local OtGlobal global;
-static thread_local OtObject null;
-
-
-//
 //	OtTryCatch
 //
 
@@ -40,10 +31,10 @@ public:
 
 
 //
-//	Initialize thread-specific globals
+//	OtVM::OtVM
 //
 
-static void initGlobals() {
+OtVM::OtVM() {
 	// create stack
 	stack = OtStackClass::create();
 
@@ -56,15 +47,10 @@ static void initGlobals() {
 
 
 //
-//	OtVM::execute
+//	OtVM::exec
 //
 
-OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
-	// initialize thread specific variables if required
-	if (!stack) {
-		initGlobals();
-	}
-
+OtObject OtVM::exec(OtByteCode bytecode, size_t callingParameters) {
 	// try/catch stack
 	std::vector<OtTryCatch> tryCatch;
 
@@ -246,46 +232,4 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 
 	// result xecution result
 	return result;
-}
-
-
-//
-//	OtVM::getGlobal
-//
-
-OtGlobal OtVM::getGlobal() {
-	// initialize thread specific variables if required
-	if (!stack) {
-		initGlobals();
-	}
-
-	return global;
-}
-
-
-//
-//	OtVM::getStack
-//
-
-OtStack OtVM::getStack() {
-	// initialize thread specific variables if required
-	if (!stack) {
-		initGlobals();
-	}
-
-	return stack;
-}
-
-
-//
-//	OtVM::getNull
-//
-
-OtObject OtVM::getNull() {
-	// initialize thread specific variables if required
-	if (!stack) {
-		initGlobals();
-	}
-
-	return null;
 }

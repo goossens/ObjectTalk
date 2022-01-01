@@ -33,3 +33,23 @@ public:
 protected:
 	OtSingleton() {}
 };
+
+
+//
+//	OtPerThreadSingleton
+//
+
+template<typename T>
+class OtPerThreadSingleton {
+public:
+	static T& instance() {
+		thread_local std::unique_ptr<T> instance = std::make_unique<T>();
+		return *instance;
+	}
+
+	OtPerThreadSingleton(const OtPerThreadSingleton&) = delete;
+	OtPerThreadSingleton& operator= (const OtPerThreadSingleton) = delete;
+
+protected:
+	OtPerThreadSingleton() {}
+};

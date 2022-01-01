@@ -8,8 +8,9 @@ file(GLOB_RECURSE HTTP_INCLUDES "*.h")
 file(GLOB_RECURSE HTTP_SOURCES "*.cpp")
 
 add_library(http MODULE ${HTTP_INCLUDES} ${HTTP_SOURCES})
+add_dependencies(http ot)
 
-target_link_libraries(http PRIVATE libot ${UV_LIBRARY} llhttp multipart)
+target_link_libraries(http ot llhttp multipart)
 
 set_target_properties(http PROPERTIES PREFIX "")
 set_target_properties(http PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/ot)

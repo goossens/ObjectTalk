@@ -9,9 +9,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Setup libuv
-      run: brew install libuv
-
     - name: Setup cmake
       uses: jwlawson/actions-setup-cmake@v1.8
       with:

@@ -5,23 +5,12 @@
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
 add_executable(ot ot.cpp)
-add_dependencies(ot libot http)
+add_dependencies(ot libot)
 
-if(PRIVATE_UV)
-	add_dependencies(ot uv)
-endif()
+target_link_libraries(ot PUBLIC libot)
 
-if(OT_GUI)
-	add_dependencies(ot gui)
-endif()
-
-target_link_libraries(ot PRIVATE libot ${UV_LIBRARY})
-
-if(APPLE)
-	set_target_properties(ot PROPERTIES
-		XCODE_GENERATE_SCHEME TRUE
-	XCODE_SCHEME_ARGUMENTS "${CMAKE_SOURCE_DIR}/examples/3d/terrain.ot")
-endif()
+set_target_properties(ot PROPERTIES ENABLE_EXPORTS ON)
+set_target_properties(ot PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 set_target_properties(ot PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set_target_properties(ot PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/bin)

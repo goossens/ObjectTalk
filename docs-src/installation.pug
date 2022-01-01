@@ -1,0 +1,29 @@
+include /manual.pug
+
++page("ObjectTalk Installation Guide")
+	+manual()
+		+manual-header("img/icon.png", "Documentation")
+			+manual-link("Tour", "tour.html")
+			+manual-link("Guide", "guide.html")
+			+manual-link("Reference", "reference.html")
+			+manual-link("Install", "installation.html")
+			+manual-link("Tutorial", "tutorial.html")
+
+		+manual-body()
+			+manual-toc("ObjectTalk Installation")
+				include:markdown-it installation/toc.md
+
+			+manual-content()
+				+manual-chapter("overview", "Installation Overview")
+					include:markdown-it installation/overview.md
+
+				+manual-chapter("macos", "Build and Install on MacOS")
+					include:markdown-it installation/macos.md
+
+				+manual-chapter("linux", "Build and Install on Linux")
+					include:markdown-it installation/linux.md
+
+				+manual-chapter("windows", "Build and Install on Windows")
+					include:markdown-it installation/windows.md
+
+		+manual-footer("1993-2021", "Johan A. Goossens")

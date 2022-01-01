@@ -28,20 +28,11 @@ languages will probably know what I mean.
 Full documentation for ObjectTalk can be found in
 [the manual](https://goossens.github.io/ObjectTalk/).
 
-## Prerequisites
+## Building and Installing ObjectTalk
 
-ObjectTalk has a few dependencies. For UNIX based systems like Ubuntu
-or Alpine Linux, Docker containers are provided in the docker folder.
-If you are running on bare metal or in your own VMs or containers, the
-Dockerfiles show which packages are required to build and run ObjectTalk.
-
-On MacOS, you need Xcode installed and a few packages that can be easily
-setup using homebrew.
-
-	brew install cmake libuv
-
-Theoretically, ObjectTalk also runs on Windows but since I don't own
-a BillyBox, I'll leave it to the community to make that work.
+Instructions for building ObjectTalk can be found in the
+[installation manual](https://goossens.github.io/ObjectTalk/installation.html).
+Currently, instructions are available for MacOS, Linux and Windows.
 
 ## Special Thanks
 

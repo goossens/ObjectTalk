@@ -1,4 +1,4 @@
-FROM alpine:3.13
+FROM alpine:3.15
 
 RUN apk add --no-cache \
 	gcc \
@@ -8,7 +8,6 @@ RUN apk add --no-cache \
 	cmake \
 	valgrind \
 	musl-dev \
-	libuv-dev \
 	alpine-sdk \
 	linux-headers \
 	openssh-client

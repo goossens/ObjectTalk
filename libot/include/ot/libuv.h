@@ -42,8 +42,6 @@ public:
 
 	// terminate LibUV
 	static void end() {
-#if UV_VERSION_MINOR >= 38
 		uv_library_shutdown();
-#endif
 	}
 };

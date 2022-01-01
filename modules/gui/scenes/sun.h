@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.
+//	Copyright (c) 1993-2022 Johan A. Goossens. All rights reserved.
 //
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
@@ -52,7 +52,7 @@ public:
 
 private:
 	// location of the sun
-	float elevation = 0.0;  // in radians from XZ plane (positive is up)
+	float elevation = 0.0;	// in radians from XZ plane (positive is up)
 	float azimuth = 0.0;	// in clockwise radians from negative Z axis
 							// 0 = "north", 1/2 pi = "east", pi = "south", 1 1/2 pi = "west"
 };

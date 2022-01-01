@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.
+//	Copyright (c) 1993-2022 Johan A. Goossens. All rights reserved.
 //
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
@@ -129,7 +129,7 @@ void OtBoxGeometryClass::fillGeometry() {
 	// create all six planes
 	buildPlane(-1, -1, depth, height,  width, depthSegments, heightSegments, [](float u, float v, float w) { return glm::vec3(w, v, u); });
 	buildPlane( 1, -1, depth, height, -width, depthSegments, heightSegments, [](float u, float v, float w) { return glm::vec3(w, v, u); });
-	buildPlane( 1,  1, width, depth,  height, widthSegments,  depthSegments, [](float u, float v, float w) { return glm::vec3(u, w, v); });
+	buildPlane( 1,	1, width, depth,  height, widthSegments,  depthSegments, [](float u, float v, float w) { return glm::vec3(u, w, v); });
 	buildPlane( 1, -1, width, depth, -height, widthSegments,  depthSegments, [](float u, float v, float w) { return glm::vec3(u, w, v); });
 	buildPlane( 1, -1, width, height,  depth, widthSegments, heightSegments, [](float u, float v, float w) { return glm::vec3(u, v, w); });
 	buildPlane(-1, -1, width, height, -depth, widthSegments, heightSegments, [](float u, float v, float w) { return glm::vec3(u, v, w); });

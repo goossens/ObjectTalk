@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.
+//	Copyright (c) 1993-2022 Johan A. Goossens. All rights reserved.
 //
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
@@ -266,9 +266,9 @@ void OtCameraClass::update(OtRenderingContext* context) {
 	} else if (mode == firstPersonMode) {
 		// calculate new forward vector
 		forward.x = std::cos(yaw) * std::cos(pitch);
-        forward.y = std::sin(pitch);
-        forward.z = std::sin(yaw) * std::cos(pitch);
-        forward = glm::normalize(forward);
+		forward.y = std::sin(pitch);
+		forward.z = std::sin(yaw) * std::cos(pitch);
+		forward = glm::normalize(forward);
 
 		// limit camera position
 		cameraPosition.y = std::clamp(cameraPosition.y, heightMin, heightMax);

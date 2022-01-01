@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.
+//	Copyright (c) 1993-2022 Johan A. Goossens. All rights reserved.
 //
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
@@ -238,7 +238,7 @@ OtModule OtModuleClass::create(const std::string& name) {
 	}
 
 	// see if module is already loaded
-	if 	(OtModuleRegistry::instance().has(fullPath.string())) {
+	if (OtModuleRegistry::instance().has(fullPath.string())) {
 		return OtModuleRegistry::instance().get(fullPath.string());
 
 	} else {

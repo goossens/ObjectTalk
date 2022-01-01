@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.
+//	Copyright (c) 1993-2022 Johan A. Goossens. All rights reserved.
 //
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
@@ -164,6 +164,7 @@ OT_MODULE void init(OtModule module) {
 	module->set("Checkbox", OtClassClass::create(OtCheckboxClass::getMeta()));
 	module->set("Combobox", OtClassClass::create(OtComboboxClass::getMeta()));
 	module->set("Filler", OtClassClass::create(OtFillerClass::getMeta()));
+	module->set("IntegerSlider", OtClassClass::create(OtIntegerSliderClass::getMeta()));
 	module->set("Knob", OtClassClass::create(OtKnobClass::getMeta()));
 	module->set("Label", OtClassClass::create(OtLabelClass::getMeta()));
 	module->set("Meter", OtClassClass::create(OtMeterClass::getMeta()));

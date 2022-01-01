@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.
+//	Copyright (c) 1993-2022 Johan A. Goossens. All rights reserved.
 //
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
@@ -40,7 +40,7 @@ public:
 	OtObject setTexture(OtObject texture);
 
 	// render in BGFX
-    void render(OtRenderingContext* context);
+	void render(OtRenderingContext* context);
 
 	// get type definition
 	static OtType getMeta();

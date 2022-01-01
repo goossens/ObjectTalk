@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.
+//	Copyright (c) 1993-2022 Johan A. Goossens. All rights reserved.
 //
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
@@ -149,7 +149,7 @@ private:
 	static std::vector<std::function<void(void)>> atExitCallbacks;
 
 	// to render IMGUI
-	bgfx::VertexLayout  imguiVertexLayout;
+	bgfx::VertexLayout imguiVertexLayout;
 	bgfx::TextureHandle imguiFontTexture = BGFX_INVALID_HANDLE;
 	bgfx::UniformHandle imguiFontUniform = BGFX_INVALID_HANDLE;
 	bgfx::ProgramHandle imguiProgram = BGFX_INVALID_HANDLE;

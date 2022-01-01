@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.
+//	Copyright (c) 1993-2022 Johan A. Goossens. All rights reserved.
 //
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
@@ -246,22 +246,22 @@ void OtVectorDisplayClass::endDraw() {
 
 	// build a list of lines from the list of points
 	struct Line {
-		float x0, y0, x1, y1;                     // nominal points
-		float a;                                  // angle
-		float sin_a, cos_a;                       // precomputed trig
+		float x0, y0, x1, y1;					  // nominal points
+		float a;								  // angle
+		float sin_a, cos_a;						  // precomputed trig
 
-		float xl0, yl0, xl1, yl1;                 // left side of the box
-		float xr0, yr0, xr1, yr1;                 // right side of the box
+		float xl0, yl0, xl1, yl1;				  // left side of the box
+		float xr0, yr0, xr1, yr1;				  // right side of the box
 
 		bool is_first, is_last;
-		bool has_next, has_prev;                  // booleans indicating whether this line connects to prev/next
+		bool has_next, has_prev;				  // booleans indicating whether this line connects to prev/next
 
-		float xlt0, ylt0, xlt1, ylt1;             // coordinates of endcaps (if !has_prev/!has_next)
-		float xrt0, yrt0, xrt1, yrt1;             // coordinates of endcaps (if !has_prev/!has_next)
+		float xlt0, ylt0, xlt1, ylt1;			  // coordinates of endcaps (if !has_prev/!has_next)
+		float xrt0, yrt0, xrt1, yrt1;			  // coordinates of endcaps (if !has_prev/!has_next)
 
 		float tl0, tl1, tr0, tr1;
 
-		float s0, s1;                             // shorten line by this amount
+		float s0, s1;							  // shorten line by this amount
 
 		float len;
 	};
@@ -285,10 +285,10 @@ void OtVectorDisplayClass::endDraw() {
 		line->y0 = points[i - 1].y;
 		line->x1 = points[i].x;
 		line->y1 = points[i].y;
-		line->a     = std::atan2(line->y1 - line->y0, line->x1 - line->x0); // angle from positive x axis, increasing ccw, [-pi, pi]
+		line->a		= std::atan2(line->y1 - line->y0, line->x1 - line->x0); // angle from positive x axis, increasing ccw, [-pi, pi]
 		line->sin_a = std::sin(line->a);
 		line->cos_a = std::cos(line->a);
-		line->len   = std::sqrt( (line->x1 - line->x0) * (line->x1 - line->x0) + (line->y1 - line->y0) * (line->y1 - line->y0) );
+		line->len	= std::sqrt( (line->x1 - line->x0) * (line->x1 - line->x0) + (line->y1 - line->y0) * (line->y1 - line->y0) );
 
 		// figure out what connections we have
 		line->has_prev = (!line->is_first || (line->is_first && firstIsLast));

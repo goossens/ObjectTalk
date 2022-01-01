@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright 1993-2021 Johan A. Goossens
+//	Copyright 1993-2022 Johan A. Goossens
 //
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.

@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.
+//	Copyright (c) 1993-2022 Johan A. Goossens. All rights reserved.
 //
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
@@ -125,15 +125,15 @@ static OtNamedColor namedColors[] = {
 //
 
 static std::vector<std::string> split(const std::string& str, char delimeter) {
-    std::vector<std::string> elements;
-    std::stringstream ss(str);
-    std::string item;
+	std::vector<std::string> elements;
+	std::stringstream ss(str);
+	std::string item;
 
-    while (std::getline(ss, item, delimeter)) {
-        elements.push_back(item);
-    }
+	while (std::getline(ss, item, delimeter)) {
+		elements.push_back(item);
+	}
 
-    return elements;
+	return elements;
 }
 
 

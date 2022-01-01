@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.
+//	Copyright (c) 1993-2022 Johan A. Goossens. All rights reserved.
 //
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
@@ -28,10 +28,10 @@ public:
 	void validateChild(OtComponent child);
 
 	// update state (called every frame so be carefull)
-    virtual void update();
+	virtual void update();
 
-    // render content
-    virtual void render();
+	// render content
+	virtual void render();
 
 	// get type definition
 	static OtType getMeta();

@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.
+//	Copyright (c) 1993-2022 Johan A. Goossens. All rights reserved.
 //
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
@@ -24,14 +24,14 @@
 
 #define OT_CONTROLLER_STRINGIFY(x) #x
 
-#define OT_CONTROLLER(type) 															\
+#define OT_CONTROLLER(type)																\
 																						\
 class Ot##type##ControllerClass;														\
 typedef std::shared_ptr<Ot##type##ControllerClass> Ot##type##Controller;				\
 																						\
 class Ot##type##ControllerClass : public OtWidgetClass {								\
 public:																					\
-	void init(OtObject object)  {														\
+	void init(OtObject object)	{														\
 		if (!object->isKindOf(#type)) {													\
 			OtExcept(																	\
 				"Expected a [" #type "] object, not a [%s]",							\

@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.
+//	Copyright (c) 1993-2022 Johan A. Goossens. All rights reserved.
 //
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
@@ -47,19 +47,19 @@ public:
 			glm::cross(glm::vec3(planes[BOTTOM]), glm::vec3(planes[TOP])),
 			glm::cross(glm::vec3(planes[BOTTOM]), glm::vec3(planes[NEAR])),
 			glm::cross(glm::vec3(planes[BOTTOM]), glm::vec3(planes[FAR])),
-			glm::cross(glm::vec3(planes[TOP]),    glm::vec3(planes[NEAR])),
-			glm::cross(glm::vec3(planes[TOP]),    glm::vec3(planes[FAR])),
+			glm::cross(glm::vec3(planes[TOP]),	  glm::vec3(planes[NEAR])),
+			glm::cross(glm::vec3(planes[TOP]),	  glm::vec3(planes[FAR])),
 			glm::cross(glm::vec3(planes[NEAR]),   glm::vec3(planes[FAR]))
 		};
 
-		points[0] = intersection<LEFT,  BOTTOM, NEAR>(crosses);
-		points[1] = intersection<LEFT,  TOP,    NEAR>(crosses);
+		points[0] = intersection<LEFT,	BOTTOM, NEAR>(crosses);
+		points[1] = intersection<LEFT,	TOP,	NEAR>(crosses);
 		points[2] = intersection<RIGHT, BOTTOM, NEAR>(crosses);
-		points[3] = intersection<RIGHT, TOP,    NEAR>(crosses);
-		points[4] = intersection<LEFT,  BOTTOM, FAR>(crosses);
-		points[5] = intersection<LEFT,  TOP,    FAR>(crosses);
+		points[3] = intersection<RIGHT, TOP,	NEAR>(crosses);
+		points[4] = intersection<LEFT,	BOTTOM, FAR>(crosses);
+		points[5] = intersection<LEFT,	TOP,	FAR>(crosses);
 		points[6] = intersection<RIGHT, BOTTOM, FAR>(crosses);
-		points[7] = intersection<RIGHT, TOP,    FAR>(crosses);
+		points[7] = intersection<RIGHT, TOP,	FAR>(crosses);
 	}
 
 	// see if AABB box is visible

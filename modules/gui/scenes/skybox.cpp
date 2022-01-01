@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.
+//	Copyright (c) 1993-2022 Johan A. Goossens. All rights reserved.
 //
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
@@ -27,47 +27,47 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 };
 
 static glm::vec3 skyboxVertices[] = {
-    { -1.0f,  1.0f, -1.0f },
-    { -1.0f, -1.0f, -1.0f },
-    {  1.0f, -1.0f, -1.0f },
-    {  1.0f, -1.0f, -1.0f },
-    {  1.0f,  1.0f, -1.0f },
-    { -1.0f,  1.0f, -1.0f },
+	{ -1.0f,  1.0f, -1.0f },
+	{ -1.0f, -1.0f, -1.0f },
+	{  1.0f, -1.0f, -1.0f },
+	{  1.0f, -1.0f, -1.0f },
+	{  1.0f,  1.0f, -1.0f },
+	{ -1.0f,  1.0f, -1.0f },
 
-    { -1.0f, -1.0f,  1.0f },
-    { -1.0f, -1.0f, -1.0f },
-    { -1.0f,  1.0f, -1.0f },
-    { -1.0f,  1.0f, -1.0f },
-    { -1.0f,  1.0f,  1.0f },
-    { -1.0f, -1.0f,  1.0f },
+	{ -1.0f, -1.0f,  1.0f },
+	{ -1.0f, -1.0f, -1.0f },
+	{ -1.0f,  1.0f, -1.0f },
+	{ -1.0f,  1.0f, -1.0f },
+	{ -1.0f,  1.0f,  1.0f },
+	{ -1.0f, -1.0f,  1.0f },
 
-    {  1.0f, -1.0f, -1.0f },
-    {  1.0f, -1.0f,  1.0f },
-    {  1.0f,  1.0f,  1.0f },
-    {  1.0f,  1.0f,  1.0f },
-    {  1.0f,  1.0f, -1.0f },
-    {  1.0f, -1.0f, -1.0f },
+	{  1.0f, -1.0f, -1.0f },
+	{  1.0f, -1.0f,  1.0f },
+	{  1.0f,  1.0f,  1.0f },
+	{  1.0f,  1.0f,  1.0f },
+	{  1.0f,  1.0f, -1.0f },
+	{  1.0f, -1.0f, -1.0f },
 
-    { -1.0f, -1.0f,  1.0f },
-    { -1.0f,  1.0f,  1.0f },
-    {  1.0f,  1.0f,  1.0f },
-    {  1.0f,  1.0f,  1.0f },
-    {  1.0f, -1.0f,  1.0f },
-    { -1.0f, -1.0f,  1.0f },
+	{ -1.0f, -1.0f,  1.0f },
+	{ -1.0f,  1.0f,  1.0f },
+	{  1.0f,  1.0f,  1.0f },
+	{  1.0f,  1.0f,  1.0f },
+	{  1.0f, -1.0f,  1.0f },
+	{ -1.0f, -1.0f,  1.0f },
 
-    { -1.0f,  1.0f, -1.0f },
-    {  1.0f,  1.0f, -1.0f },
-    {  1.0f,  1.0f,  1.0f },
-    {  1.0f,  1.0f,  1.0f },
-    { -1.0f,  1.0f,  1.0f },
-    { -1.0f,  1.0f, -1.0f },
+	{ -1.0f,  1.0f, -1.0f },
+	{  1.0f,  1.0f, -1.0f },
+	{  1.0f,  1.0f,  1.0f },
+	{  1.0f,  1.0f,  1.0f },
+	{ -1.0f,  1.0f,  1.0f },
+	{ -1.0f,  1.0f, -1.0f },
 
-    { -1.0f, -1.0f, -1.0f },
-    { -1.0f, -1.0f,  1.0f },
-    {  1.0f, -1.0f, -1.0f },
-    {  1.0f, -1.0f, -1.0f },
-    { -1.0f, -1.0f,  1.0f },
-    {  1.0f, -1.0f,  1.0f }
+	{ -1.0f, -1.0f, -1.0f },
+	{ -1.0f, -1.0f,  1.0f },
+	{  1.0f, -1.0f, -1.0f },
+	{  1.0f, -1.0f, -1.0f },
+	{ -1.0f, -1.0f,  1.0f },
+	{  1.0f, -1.0f,  1.0f }
 };
 
 static uint32_t skyboxIndices[] = {
@@ -104,7 +104,7 @@ OtSkyboxClass::OtSkyboxClass() {
 		.end();
 
 	vertexBuffer = bgfx::createVertexBuffer(bgfx::makeRef(skyboxVertices, sizeof(skyboxVertices) * sizeof(glm::vec3)), layout);
-	indexBuffer = bgfx::createIndexBuffer(bgfx::makeRef(skyboxIndices, sizeof(skyboxIndices) *  sizeof(uint32_t)), BGFX_BUFFER_INDEX32);
+	indexBuffer = bgfx::createIndexBuffer(bgfx::makeRef(skyboxIndices, sizeof(skyboxIndices) *	sizeof(uint32_t)), BGFX_BUFFER_INDEX32);
 
 	// register uniform
 	cubemapUniform = bgfx::createUniform("s_cubemap", bgfx::UniformType::Sampler);

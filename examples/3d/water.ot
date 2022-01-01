@@ -1,7 +1,7 @@
 #!/usr/local/bin/ot
 
 //	ObjectTalk Scripting Language
-//	Copyright (c) 2020-2021 Johan A. Goossens. All rights reserved.
+//	Copyright (c) 2020-2022 Johan A. Goossens. All rights reserved.
 //
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
@@ -20,15 +20,10 @@ class MyApp : gui.Application {
 			.setSize(10000)
 			.setNormalMap(gui.Texture(__DIR__ + "/assets/waternormals.jpg"));
 
-		var ball = gui.Mesh()
-			.setGeometry(gui.SphereGeometry(20, 40, 40))
-			.setMaterial(gui.Material("material", "silver"));
-
 		var scene = gui.Scene()
 			.add(sun)
 			.add(sky)
-			.add(water)
-			.add(ball);
+			.add(water);
 
 		var camera = gui.Camera()
 			.setCircleTargetMode()

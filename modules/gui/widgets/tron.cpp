@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright (c) 1993-2021 Johan A. Goossens. All rights reserved.
+//	Copyright (c) 1993-2022 Johan A. Goossens. All rights reserved.
 //
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
@@ -157,7 +157,7 @@ static void OtLed7(ImDrawList* list, float x, float y, float size, char ch, ImU3
 
 
 //
-//  OtTronClass::update
+//	OtTronClass::update
 //
 
 void OtTronClass::update() {
@@ -201,7 +201,7 @@ void OtTronClass::update() {
 
 
 //
-//  OtTronClass::render
+//	OtTronClass::render
 //
 
 void OtTronClass::render() {
@@ -257,7 +257,7 @@ void OtTronClass::render() {
 
 
 //
-//  OtTron::createArcs
+//	OtTron::createArcs
 //
 
 void OtTronClass::createArcs() {

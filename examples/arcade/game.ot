@@ -1,0 +1,81 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 2020-2021 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var gui = import("gui");
+
+//
+//	This an abstract game class that implements state-transition logic
+//	to simplify actual games. The state of a game is stored in the "state"
+//	property of an instance. Here is the life of a game within the arcade:
+//
+//	1.	Each game instance must have a "name" property and a "renderIcon" member
+//		function. These are used by the arcade to display the initial menu.
+//
+//	2.	At the start, games are in the "startup" state. When entering this state,
+//		this class creates a vector display for the game and stores a reference
+//		in the "vd" property. This class adds the vector display to the screen
+//		and manages it's visibility. At the same time, the game's "initialize"
+//		member function is called to allow the game to setup itself. The
+//		"startup"
+//
+//	3.	Once a game is selected, it enters the "startup" state. The "startup"
+//		member function is called and the game needs to get its internal state
+//		in order and its display ready.
+//
+//	4.	xvcxf
+//
+
+class Game : Object {
+	function setup(this, app, screen) {
+		// entering the startup state
+		this.state = "startup";
+
+		// create a vector display
+		this.vd = gui.VectorDisplay(0, 0, 100, 100);
+		this.vd.setBottomLeftOrigin();
+		this.vd.setBrightness(1.1);
+		screen.add(this.vd);
+		this.initialize(app);
+
+		// moving on to the "idle state"
+		this.state = "idle";
+	}
+
+	function terminate(this) {
+		this.unsetAll();
+	}
+
+	function enable(this) {
+		this.vd.enable();
+	}
+
+	function disable(this) {
+		this.vd.disable();
+	}
+
+	function onEnd(this, callback) {
+		this.OnEndCallback = callback;
+	}
+
+	function scale(this, scale) {
+		this.vd.setTransform(0, 0, scale);
+	}
+
+	function onKey(this, key, mods) {
+		if (key == gui.keyEscape) {
+			this.OnEndCallback();
+		}
+	}
+
+	function onGamepadAxis(this, gamepad, axis, value) {
+	}
+
+	function onGamepadButton(this, gamepad, button, action) {
+		if (gamepad == 0 && button == 1) {
+			this.OnEndCallback();
+		}
+	}
+}

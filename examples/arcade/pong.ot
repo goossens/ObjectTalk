@@ -1,0 +1,41 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 2020-2021 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var gui = import("gui");
+var game = import("game");
+
+class Pong : game.Game {
+	var name = "Pong";
+
+	function initialize(this, app) {
+		this.vd.addText(5.5, 4, 2, "Pong");
+	}
+
+	function start(this) {
+
+	}
+
+	function stop(this) {
+
+	}
+
+	function renderIcon(this, vd, x, y, w, h) {
+		vd.pushStyle();
+
+		vd.popStyle();
+	}
+
+	function update(this) {
+
+	}
+
+	function onKey(this, key, mods) {
+		super(this, "onKey", key, mods);
+	}
+
+	function onGamepadAxis(this, gamepad, axis, value) {
+	}
+}

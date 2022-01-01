@@ -1,0 +1,79 @@
+#!/usr/local/bin/ot
+
+//	ObjectTalk Scripting Language
+//	Copyright (c) 2020-2021 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var gui = import("gui");
+
+var menu = import("menu");
+var pong = import("pong");
+var breakout = import("breakout");
+var tetris = import("tetris");
+
+class Arcade : gui.Application {
+	function setup(this, screen) {
+		// create and activate menu screen
+		this.menu = menu.ArcadeMenu();
+		this.menu.setup(screen);
+		this.menu.enable();
+		this.active = this.menu;
+
+		this.games = [];
+		this.addGame(screen, pong.Pong());
+		this.addGame(screen, breakout.Breakout());
+		this.addGame(screen, tetris.Tetris());
+		this.menu.buildMenu(this.games);
+
+		this.menu.onChoice(function(choice) {
+			this.active.disable();
+			choice.enable();
+			choice.start();
+			this.active = choice;
+		});
+	}
+
+	function terminate(this) {
+		for game in this.games {
+			game.terminate();
+		}
+	}
+
+	function addGame(this, screen, game) {
+		game.setup(this, screen);
+		game.disable();
+		this.games.append(game);
+
+		game.onEnd(function() {
+			this.active.stop();
+			this.active.disable();
+			this.menu.enable();
+			this.active = this.menu;
+		});
+	}
+
+	function update(this) {
+		// ensure display scaling is correct
+		this.active.scale(this.getHeight().real() / 9.0);
+
+		// update active screen
+		this.active.update();
+	}
+
+	function onKey(this, key, mods) {
+		this.active.onKey(key, mods);
+	}
+
+	function onGamepadAxis(this, gamepad, axis, value) {
+		this.active.onGamepadAxis(gamepad, axis, value);
+	}
+
+	function onGamepadButton(this, gamepad, button, action) {
+		this.active.onGamepadButton(gamepad, button, action);
+	}
+}
+
+var app = Arcade();
+app.run("ObjectTalk Arcade");

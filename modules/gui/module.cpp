@@ -96,7 +96,7 @@
 //	GUI module
 //
 
-extern "C" void init(OtModule module) {
+OT_MODULE void init(OtModule module) {
 	module->set("GUI", OtClassClass::create(OtGuiClass::getMeta()));
 	module->set("Application", OtClassClass::create(OtApplicationClass::getMeta()));
 	module->set("Component", OtClassClass::create(OtComponentClass::getMeta()));

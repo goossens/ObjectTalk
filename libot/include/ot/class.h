@@ -55,6 +55,3 @@ public:
 protected:
 	OtType classType;
 };
-
-
-// OtObject OtObjectCreate(OtType type) { return OtClassClass::create(type); };

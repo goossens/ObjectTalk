@@ -38,10 +38,21 @@ assert(path == "/var/lib/test.o");
 assert(Path("/crazy/lib/test.a").exists() == false);
 assert(Path("").isEmpty() == true);
 assert(Path("/var/lib/test.a").isEmpty() == false);
-assert(Path("/var/lib/test.a").isAbsolute() == true);
-assert(Path("var/lib/test.a").isAbsolute() == false);
-assert(Path("/var/lib/test.a").isRelative() == false);
-assert(Path("var/lib/test.a").isRelative() == true);
+
+if (os.sysname() == "Windows_NT") {
+	assert(Path("C:/var/lib/test.a").isAbsolute() == true);
+	assert(Path("/var/lib/test.a").isAbsolute() == false);
+	assert(Path("var/lib/test.a").isAbsolute() == false);
+	assert(Path("C:/var/lib/test.a").isRelative() == false);
+	assert(Path("/var/lib/test.a").isRelative() == true);
+	assert(Path("var/lib/test.a").isRelative() == true);
+
+} else {
+	assert(Path("/var/lib/test.a").isAbsolute() == true);
+	assert(Path("var/lib/test.a").isAbsolute() == false);
+	assert(Path("/var/lib/test.a").isRelative() == false);
+	assert(Path("var/lib/test.a").isRelative() == true);
+}
 
 assert(Path("/var/lib/test.a").hasRootPath() == true);
 assert(Path("var/lib/test.a").hasRootPath() == false);

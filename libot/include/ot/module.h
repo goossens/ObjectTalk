@@ -34,15 +34,24 @@ public:
 
 private:
 	// list of directories to search for modules in
-	static std::vector<std::filesystem::path> modulePath;
-	static std::vector<std::filesystem::path> localPath;
 	static void buildModulePath();
 
 	// determine full path name for module
-	static std::filesystem::path checkPath(const std::string& name);
-	static std::filesystem::path getFullPath(const std::string& name);
+	static std::filesystem::path checkPath(std::filesystem::path path);
+	static std::filesystem::path getFullPath(std::filesystem::path path);
 
 	// actually load the module (by type)
 	static void loadBinaryModule(std::filesystem::path path, OtModule module);
 	static void loadSourceModule(std::filesystem::path path, OtModule module);
 };
+
+
+//
+//	Deal with Windows linking nonsense
+//
+
+#if defined(_WIN32)
+#define OT_MODULE extern "C" __declspec(dllexport)
+#else
+#define OT_MODULE extern "C"
+#endif

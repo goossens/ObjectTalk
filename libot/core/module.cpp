@@ -20,6 +20,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <system_error>
 
 #include "ot/exception.h"
 #include "ot/registry.h"
@@ -50,8 +51,8 @@ const std::string libext = ".so";
 //	Module search path
 //
 
-std::vector<std::filesystem::path> OtModuleClass::modulePath;
-std::vector<std::filesystem::path> OtModuleClass::localPath;
+static std::vector<std::filesystem::path> modulePath;
+static std::vector<std::filesystem::path> localPath;
 
 
 //
@@ -104,18 +105,16 @@ void OtModuleClass::buildModulePath() {
 //	OtModuleClass::checkPath
 //
 
-std::filesystem::path OtModuleClass::checkPath(const std::string& name) {
-	std::filesystem::path pathName = std::filesystem::path(name);
-
-	if (std::filesystem::exists(pathName)) {
-		return std::filesystem::canonical(pathName);
+std::filesystem::path OtModuleClass::checkPath(std::filesystem::path path) {
+	if (std::filesystem::exists(path)) {
+		return std::filesystem::canonical(path);
 
 	// see if module exists without a path prepended yet an extension appended?
-	} else if (std::filesystem::exists(pathName.replace_extension(".ot"))) {
-		return std::filesystem::canonical(pathName.replace_extension(".ot"));
+	} else if (std::filesystem::exists(path.replace_extension(".ot"))) {
+		return std::filesystem::canonical(path.replace_extension(".ot"));
 
-	} else if (std::filesystem::exists(pathName.replace_extension(libext))) {
-		return std::filesystem::canonical(pathName.replace_extension(libext));
+	} else if (std::filesystem::exists(path.replace_extension(libext))) {
+		return std::filesystem::canonical(path.replace_extension(libext));
 
 	} else {
 		return std::filesystem::path();
@@ -127,18 +126,18 @@ std::filesystem::path OtModuleClass::checkPath(const std::string& name) {
 //	OtModuleClass::getFullPath
 //
 
-std::filesystem::path OtModuleClass::getFullPath(const std::string& name) {
+std::filesystem::path OtModuleClass::getFullPath(std::filesystem::path path) {
 	// see if name addresses a module
-	std::filesystem::path fullName = checkPath(name);
+	std::filesystem::path fullName = checkPath(path);
 
 	// find module on path (if still required)
 	for (size_t i = 0; i < modulePath.size() && fullName.empty(); i++) {
-		fullName = checkPath(modulePath[i] / name);
+		fullName = checkPath(modulePath[i] / path);
 	}
 
 	// find module in local path (if still required)
 	if (fullName.empty() && localPath.size()) {
-		fullName = checkPath(localPath.back() / name);
+		fullName = checkPath(localPath.back() / path);
 	}
 
 	return fullName;
@@ -151,26 +150,28 @@ std::filesystem::path OtModuleClass::getFullPath(const std::string& name) {
 
 void OtModuleClass::loadBinaryModule(std::filesystem::path path, OtModule module) {
 #if defined(_WIN32)
-	HMODULE lib = LoadLibrary((LPCSTR) path.c_str());
+	HMODULE lib = LoadLibrary((LPCSTR) path.string().c_str());
 
 	if (!lib) {
-		OtExcept("Can't import module [%s], error [%d]", path.c_str(), GetLastError());
+		DWORD error = GetLastError();
+		std::string message = std::system_category().message(error);
+		OtExcept("Can't import module [%s], error [%s]", path.string().c_str(), message.c_str());
 	}
 
 	void (*init)(OtObject) = (void (*)(OtObject)) GetProcAddress(lib, "init");
 
 #else
-	void* lib = dlopen(path.c_str(), RTLD_LAZY);
+	void* lib = dlopen(path.string().c_str(), RTLD_LAZY | RTLD_GLOBAL);
 
 	if (!lib) {
-		OtExcept("Can't import module [%s], error [%s]", path.c_str(), dlerror());
+		OtExcept("Can't import module [%s], error [%s]", path.string().c_str(), dlerror());
 	}
 
 	void (*init)(OtObject) = (void (*)(OtObject)) dlsym(lib, "init");
 #endif
 
 	if (!init) {
-		OtExcept("Module [%s] does not have an [init] function", path.c_str());
+		OtExcept("Module [%s] does not have an [init] function", path.string().c_str());
 	}
 
 	// initialize module
@@ -187,14 +188,14 @@ void OtModuleClass::loadSourceModule(std::filesystem::path path, OtModule module
 	localPath.push_back(path.parent_path());
 
 	// load source code
-	std::ifstream stream(path.c_str());
+	std::ifstream stream(path.string().c_str());
 	std::stringstream buffer;
 	buffer << stream.rdbuf();
 	stream.close();
 
 	// compile and run module code
 	OtCompiler compiler;
-	OtSource source = OtSourceClass::create(path, buffer.str());
+	OtSource source = OtSourceClass::create(path.string(), buffer.str());
 	OtByteCode bytecode = compiler.compileModule(source, module);
 	OtVM::execute(bytecode);
 
@@ -237,8 +238,8 @@ OtModule OtModuleClass::create(const std::string& name) {
 	}
 
 	// see if module is already loaded
-	if 	(OtModuleRegistry::instance().has(fullPath)) {
-		return OtModuleRegistry::instance().get(fullPath);
+	if 	(OtModuleRegistry::instance().has(fullPath.string())) {
+		return OtModuleRegistry::instance().get(fullPath.string());
 
 	} else {
 		// create a new module
@@ -246,7 +247,7 @@ OtModule OtModuleClass::create(const std::string& name) {
 		module->setType(getMeta());
 
 		// add it to registry for reuse
-		OtModuleRegistry::instance().set(fullPath, module);
+		OtModuleRegistry::instance().set(fullPath.string(), module);
 
 		// setup module's meta data
 		module->set("__FILE__", OtStringClass::create(fullPath.string()));

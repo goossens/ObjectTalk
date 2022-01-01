@@ -22,7 +22,7 @@
 //	Http module
 //
 
-extern "C" void init(OtModule module) {
+OT_MODULE void init(OtModule module) {
 	module->set("Http", OtClassClass::create(OtHttpClass::getMeta()));
 	module->set("URL", OtClassClass::create(OtURLClass::getMeta()));
 	module->set("HttpRouter", OtClassClass::create(OtHttpRouterClass::getMeta()));

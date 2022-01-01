@@ -57,15 +57,17 @@ fs.rm(clone);
 assert(name.exists());
 assert(!clone.exists());
 
-fs.lns(name, clone);
-assert(name.exists());
-assert(clone.exists());
+if (os.sysname() != "Windows_NT") {
+	fs.lns(name, clone);
+	assert(name.exists());
+	assert(clone.exists());
+	fs.rm(clone);
+}
 
 fs.resize(name, 100);
 assert(fs.filesize(name) == 100);
 
 fs.rm(name);
-fs.rm(clone);
 
 var dir1 = tmp + "test";
 assert(!dir1.exists());

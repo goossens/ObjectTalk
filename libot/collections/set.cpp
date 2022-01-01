@@ -204,10 +204,13 @@ void OtSetClass::insert(OtObject object) {
 void OtSetClass::erase(OtObject object) {
 	bool found = false;
 
-	for (auto it = set.begin(); !found && it != set.end(); it++) {
+	for (auto it = set.begin(); !found && it != set.end();) {
 		if ((*it)->equal(object)) {
-			set.erase(it);
+			it = set.erase(it);
 			found = true;
+
+		} else {
+			it++;
 		}
 	}
 }

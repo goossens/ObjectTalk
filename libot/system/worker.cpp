@@ -56,10 +56,10 @@ void OtWorkerClass::init(OtObject object) {
 
 				} else {
 					// execute request in module
-					auto r = OtVM::callMemberFunction(handler, "__call__", request.request);
+					auto response = OtVM::callMemberFunction(handler, "__call__", request.request);
 
 					// return result
-					responses.push(OtWorkerResponse(request.request, r, request.callback));
+					responses.push(OtWorkerResponse(request.request, response, request.callback));
 				}
 			}
 

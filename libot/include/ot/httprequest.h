@@ -16,8 +16,8 @@
 
 #include "multipart/multipartparser.h"
 
-#include "http.h"
-#include "headers.h"
+#include "ot/http.h"
+#include "ot/httpheaders.h"
 
 
 //

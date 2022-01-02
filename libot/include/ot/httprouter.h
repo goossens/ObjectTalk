@@ -14,9 +14,9 @@
 
 #include <vector>
 
-#include "http.h"
-#include "request.h"
-#include "response.h"
+#include "ot/http.h"
+#include "ot/httprequest.h"
+#include "ot/httpresponse.h"
 
 
 //

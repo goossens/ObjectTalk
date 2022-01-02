@@ -15,8 +15,8 @@
 #include "ot/exception.h"
 #include "ot/function.h"
 
-#include "response.h"
-#include "mimetypes.h"
+#include "ot/httpresponse.h"
+#include "ot/mimetypes.h"
 
 
 //

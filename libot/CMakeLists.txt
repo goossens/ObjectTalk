@@ -5,7 +5,7 @@
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
 file(GLOB_RECURSE OT_INCLUDES "*.h")
-file(GLOB_RECURSE OT_SOURCES "*/*.cpp")
+file(GLOB_RECURSE OT_SOURCES "*.cpp")
 
 add_library(libot STATIC ${OT_INCLUDES} ${OT_SOURCES})
 
@@ -13,7 +13,7 @@ if (UNIX)
 	set(OT_EXTRA_LIBS m dl)
 endif()
 
-target_link_libraries(libot PUBLIC uv_a ${OT_EXTRA_LIBS})
+target_link_libraries(libot PUBLIC uv_a llhttp multipart ${OT_EXTRA_LIBS})
 
 set_target_properties(libot PROPERTIES PREFIX "")
 set_target_properties(libot PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)

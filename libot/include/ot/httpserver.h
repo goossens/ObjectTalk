@@ -12,12 +12,11 @@
 #include <string>
 #include <vector>
 
+#include "ot/httprouter.h"
+#include "ot/httprequest.h"
+#include "ot/httpresponse.h"
+#include "ot/httpsession.h"
 #include "ot/libuv.h"
-
-#include "router.h"
-#include "request.h"
-#include "response.h"
-#include "session.h"
 
 
 //

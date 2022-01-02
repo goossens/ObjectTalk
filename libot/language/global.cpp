@@ -34,6 +34,11 @@
 #include "ot/fs.h"
 #include "ot/worker.h"
 
+#include "ot/http.h"
+#include "ot/url.h"
+#include "ot/httprouter.h"
+#include "ot/httpserver.h"
+
 #include "ot/class.h"
 #include "ot/module.h"
 
@@ -82,6 +87,11 @@ OtGlobalClass::OtGlobalClass() {
 	set("OS", OtClassClass::create(OtOSClass::getMeta()));
 	set("FS", OtClassClass::create(OtFSClass::getMeta()));
 	set("Worker", OtClassClass::create(OtWorkerClass::getMeta()));
+
+	set("Http", OtClassClass::create(OtHttpClass::getMeta()));
+	set("URL", OtClassClass::create(OtURLClass::getMeta()));
+	set("HttpRouter", OtClassClass::create(OtHttpRouterClass::getMeta()));
+	set("HttpServer", OtClassClass::create(OtHttpServerClass::getMeta()));
 
 	// add default class instances
 	set("io", OtIOClass::create());

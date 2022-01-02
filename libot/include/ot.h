@@ -47,6 +47,16 @@
 #include "ot/path.h"
 #include "ot/worker.h"
 
+#include "ot/http.h"
+#include "ot/url.h"
+#include "ot/mimetypes.h"
+#include "ot/httpheaders.h"
+#include "ot/httprequest.h"
+#include "ot/httpresponse.h"
+#include "ot/httprouter.h"
+#include "ot/httpserver.h"
+#include "ot/httpsession.h"
+
 #include "ot/internal.h"
 #include "ot/class.h"
 #include "ot/closure.h"

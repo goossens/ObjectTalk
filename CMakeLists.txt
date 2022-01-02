@@ -45,7 +45,7 @@ add_subdirectory(tests)
 add_custom_target(other SOURCES LICENSE Makefile README.md)
 
 add_custom_target(ObjectTalk)
-add_dependencies(ObjectTalk libot ot http)
+add_dependencies(ObjectTalk libot ot)
 
 if(OT_GUI)
 	add_dependencies(ObjectTalk gui)

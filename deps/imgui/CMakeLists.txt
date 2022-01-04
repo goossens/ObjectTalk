@@ -25,3 +25,5 @@ include_directories(${imgui_SOURCE_DIR})
 if (APPLE)
 	set_property(TARGET imgui APPEND_STRING PROPERTY COMPILE_FLAGS "-fobjc-arc")
 endif()
+
+set_target_properties(imgui PROPERTIES FOLDER deps)

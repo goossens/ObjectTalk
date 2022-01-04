@@ -6,3 +6,5 @@
 
 add_library(llhttp STATIC llhttp/api.c llhttp/http.c llhttp/llhttp.c llhttp/llhttp.h)
 add_library(multipart STATIC multipart/multipartparser.c multipart/multipartparser.h)
+
+set_target_properties(llhttp multipart PROPERTIES FOLDER 3rdParty)

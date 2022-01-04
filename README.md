@@ -1,5 +1,6 @@
-[![Ubuntu status](https://github.com/goossens/ObjectTalk/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/goossens/ObjectTalk/actions)
 [![MacOS status](https://github.com/goossens/ObjectTalk/actions/workflows/macos.yml/badge.svg)](https://github.com/goossens/ObjectTalk/actions)
+[![Ubuntu status](https://github.com/goossens/ObjectTalk/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/goossens/ObjectTalk/actions)
+[![Windows status](https://github.com/goossens/ObjectTalk/actions/workflows/windows.yml/badge.svg)](https://github.com/goossens/ObjectTalk/actions)
 
 # ObjectTalk Scripting Language
 
@@ -7,11 +8,12 @@
 
 Welcome to the ObjectTalk scripting language. ObjectTalk is a simple
 object-oriented scripting language that has evolved over decades and
-was heavily influenced by other languages. As a long time IT professional,
-I've seen a lot of software development with all its greatness and flaws.
-ObjectTalk represents what I think is a well-balanced scripting language
-that is easy to learn and can make even a novice look good quickly.
-If you are interested in how I got to where we are today, please see the
+was heavily influenced by other languages. As a long time IT
+professional, I've seen a lot of software development with all its
+greatness and flaws. ObjectTalk represents what I think is a
+well-balanced scripting language that is easy to learn and can make
+even a novice look good quickly. If you are interested in how I got
+to where we are today, please see the
 [history](https://goossens.github.io/ObjectTalk/tour.html#history)
 page for the story behind ObjectTalk.
 
@@ -20,9 +22,9 @@ heck would the world need another scripting language? Well, the simple
 answer is: it doesn't as we already have more than enough of them! I
 wouldn't even suggest ObjectTalk is a language for serious software
 development. If you need to deploy code, look elsewhere. ObjectTalk is
-however is a good starting point to learn programming and it's also good
-if you want to learn language development. Those of you who have ever
-looked at the code for compilers and interpreters of populars
+however is a good starting point to learn programming and it's also
+good if you want to learn language development. Those of you who have
+ever looked at the code for compilers and interpreters of populars
 languages will probably know what I mean.
 
 Full documentation for ObjectTalk can be found in
@@ -30,7 +32,8 @@ Full documentation for ObjectTalk can be found in
 
 ## Building and Installing ObjectTalk
 
-Instructions for building ObjectTalk can be found in the
+Instructions for building and installing ObjectTalk on various
+platforms can be found in the
 [installation manual](https://goossens.github.io/ObjectTalk/installation.html).
 Currently, instructions are available for MacOS, Linux and Windows.
 
@@ -57,13 +60,13 @@ In case the GUI module is included, we also use:
 
 A special thanks also goes to
 [Gunther Rademacher](https://github.com/GuntherRademacher) for his
-["RailRoad Diagram Generator"](https://www.bottlecaps.de/rr/ui) which is
-used in the documentation to visualize the ObjectTalk grammar.
+["RailRoad Diagram Generator"](https://www.bottlecaps.de/rr/ui) which
+is used in the documentation to visualize the ObjectTalk grammar.
 
 A another special thanks goes to the team that wrote the
 [Swift](https://swift.org) computer language
-[documentation](https://swift.org/documentation/). It is awesome and I've
-respectfully reused a lot of it to document ObjectTalk.
+[documentation](https://swift.org/documentation/). It is awesome and
+I've respectfully reused a lot of it to document ObjectTalk.
 
 A final special thanks goes to the team that wrote the
 [Tutorials](https://threejsfundamentals.org) for
@@ -71,7 +74,7 @@ A final special thanks goes to the team that wrote the
 
 More (smaller) credits can be found in the GUI module:
 
-* [Algorithms](modules/gui/README.md)
+* [Algorithms](gui/README.md)
 * [Assets](examples/3d/assets/README.md)
 
 ## License

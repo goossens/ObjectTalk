@@ -204,6 +204,7 @@ void OtSetClass::insert(OtObject object) {
 void OtSetClass::erase(OtObject object) {
 	bool found = false;
 
+	// use remove_if when we move the C++20
 	for (auto it = set.begin(); !found && it != set.end();) {
 		if ((*it)->equal(object)) {
 			it = set.erase(it);

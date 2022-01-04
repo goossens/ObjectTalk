@@ -38,8 +38,6 @@ rtest: release
 install: release
 	cd release && make install/strip
 	ls -l /usr/local/bin/ot
-	ls -l /usr/local/lib/libot.*
-	ls -l /usr/local/lib/ot
 
 docs:
 	pugger --theme manual --assets --out docs docs-src

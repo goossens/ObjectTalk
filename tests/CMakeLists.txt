@@ -11,3 +11,5 @@ foreach(TEST ${OT_TESTS})
 endforeach()
 
 add_custom_target(tests SOURCES ${OT_TESTS})
+
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${OT_TESTS})

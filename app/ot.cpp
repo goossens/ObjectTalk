@@ -13,6 +13,10 @@
 
 #include "ot.h"
 
+#if defined(INCLUDE_GUI)
+#include "guimodule.h"
+#endif
+
 
 //
 //	ObjectTalk interpreter main function
@@ -22,6 +26,11 @@ int main(int argc, char* argv[]) {
 	try {
 		// initialize libuv
 		OtLibUv::init(argc, argv);
+
+#if defined(INCLUDE_GUI)
+		// initialize GUI module (if available on this platform)
+		OtGuiModuleInit();
+#endif
 
 		// ensure we have some arguments
 		if (argc == 1) {

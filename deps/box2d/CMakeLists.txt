@@ -16,3 +16,5 @@ if(NOT box2d_POPULATED)
 endif()
 
 include_directories(${box2d_SOURCE_DIR}/include)
+
+set_target_properties(box2d PROPERTIES FOLDER deps)

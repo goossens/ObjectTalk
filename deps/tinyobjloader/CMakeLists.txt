@@ -14,3 +14,5 @@ if(NOT tinyobjloader_POPULATED)
 endif()
 
 include_directories(${tinyobjloader_SOURCE_DIR})
+
+set_target_properties(tinyobjloader uninstall PROPERTIES FOLDER deps)

@@ -6,3 +6,5 @@
 
 file(GLOB_RECURSE OT_EXAMPLES "*.ot")
 add_custom_target(examples SOURCES ${OT_EXAMPLES})
+
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${OT_EXAMPLES})

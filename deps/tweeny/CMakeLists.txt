@@ -14,3 +14,5 @@ if(NOT tweeny_POPULATED)
 endif()
 
 include_directories(${tweeny_SOURCE_DIR}/include)
+
+set_target_properties(tweeny-dummy PROPERTIES FOLDER deps)

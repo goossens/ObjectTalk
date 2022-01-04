@@ -16,6 +16,7 @@
 #include <memory>
 #include <string>
 #include <utility>
+#include <vector>
 
 #include "type.h"
 #include "members.h"

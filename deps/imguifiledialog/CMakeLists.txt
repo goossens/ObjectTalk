@@ -20,3 +20,5 @@ include_directories(${imguifd_SOURCE_DIR} ${CMAKE_CURRENT_LIST_DIR})
 if (APPLE)
 	set_property(TARGET imguifd APPEND_STRING PROPERTY COMPILE_FLAGS "-fobjc-arc")
 endif()
+
+set_target_properties(imguifd PROPERTIES FOLDER deps)

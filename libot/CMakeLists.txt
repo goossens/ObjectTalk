@@ -13,12 +13,14 @@ if (UNIX)
 	set(OT_EXTRA_LIBS m dl)
 endif()
 
-target_link_libraries(libot PUBLIC uv_a llhttp multipart ${OT_EXTRA_LIBS})
+target_link_libraries(libot PRIVATE uv_a llhttp multipart ${OT_EXTRA_LIBS})
 
 set_target_properties(libot PROPERTIES PREFIX "")
 set_target_properties(libot PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set_target_properties(libot PROPERTIES LIBRARY_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/lib)
 set_target_properties(libot PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/lib)
 
-install(TARGETS libot DESTINATION lib)
-install(DIRECTORY include/ DESTINATION include FILES_MATCHING PATTERN "*.h")
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${OT_INCLUDES} ${OT_SOURCES})
+
+# install(TARGETS libot DESTINATION lib)
+# install(DIRECTORY include/ DESTINATION include FILES_MATCHING PATTERN "*.h")

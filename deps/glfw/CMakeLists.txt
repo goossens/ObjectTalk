@@ -18,3 +18,5 @@ if(NOT glfw_POPULATED)
 endif()
 
 include_directories(${glfw_SOURCE_DIR}/include)
+
+set_target_properties(glfw update_mappings PROPERTIES FOLDER deps)

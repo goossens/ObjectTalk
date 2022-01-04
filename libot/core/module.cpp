@@ -224,43 +224,64 @@ OtType OtModuleClass::getMeta() {
 //
 
 OtModule OtModuleClass::create(const std::string& name) {
-	// build module path (if required)
-	if (modulePath.size() == 0) {
-		buildModulePath();
-	}
-
-	// get full path to module
-	std::filesystem::path fullPath = getFullPath(name);
-
-	// ensure module exists
-	if (fullPath.empty()) {
-		OtExcept("Can't find module [%s]", name.c_str());
-	}
-
-	// see if module is already loaded
-	if (OtModuleRegistry::instance().has(fullPath.string())) {
-		return OtModuleRegistry::instance().get(fullPath.string());
+	// see if this is an "internal" module that was already registered
+	if (OtModuleRegistry::instance().has(name)) {
+		return OtModuleRegistry::instance().get(name);
 
 	} else {
-		// create a new module
-		OtModule module = std::make_shared<OtModuleClass>();
-		module->setType(getMeta());
-
-		// add it to registry for reuse
-		OtModuleRegistry::instance().set(fullPath.string(), module);
-
-		// setup module's meta data
-		module->set("__FILE__", OtStringClass::create(fullPath.string()));
-		module->set("__DIR__", OtStringClass::create(fullPath.parent_path().string()));
-
-		// handle different module types
-		if (fullPath.extension() == libext) {
-			loadBinaryModule(fullPath, module);
-
-		} else {
-			loadSourceModule(fullPath, module);
+		// build module path (if required)
+		if (modulePath.size() == 0) {
+			buildModulePath();
 		}
 
-		return module;
+		// get full path to module
+		std::filesystem::path fullPath = getFullPath(name);
+
+		// ensure module exists
+		if (fullPath.empty()) {
+			OtExcept("Can't find module [%s]", name.c_str());
+		}
+
+		// see if module is already loaded
+		if (OtModuleRegistry::instance().has(fullPath.string())) {
+			return OtModuleRegistry::instance().get(fullPath.string());
+
+		} else {
+			// create a new module
+			OtModule module = std::make_shared<OtModuleClass>();
+			module->setType(getMeta());
+
+			// add it to registry for reuse
+			OtModuleRegistry::instance().set(fullPath.string(), module);
+
+			// setup module's meta data
+			module->set("__FILE__", OtStringClass::create(fullPath.string()));
+			module->set("__DIR__", OtStringClass::create(fullPath.parent_path().string()));
+
+			// handle different module types
+			if (fullPath.extension() == libext) {
+				loadBinaryModule(fullPath, module);
+
+			} else {
+				loadSourceModule(fullPath, module);
+			}
+
+			return module;
+		}
 	}
+}
+
+
+//
+//	OtModuleClass::internal
+//
+
+OtModule OtModuleClass::internal(const std::string& name) {
+	// create a new module
+	OtModule module = std::make_shared<OtModuleClass>();
+	module->setType(getMeta());
+
+	// add it to registry for reuse
+	OtModuleRegistry::instance().set(name, module);
+	return module;
 }

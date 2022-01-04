@@ -7,17 +7,15 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 project(ObjectTalk VERSION 1.0 DESCRIPTION "ObjectTalk - The Completely Object-Oriented Scripting Language" LANGUAGES C CXX)
 
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+
+include("gui")
+getGuiDefault()
+option(OT_GUI "Enable GUI module" ${OT_GUI_DEFAULT})
+
 if(NOT CMAKE_BUILD_TYPE)
    set(CMAKE_BUILD_TYPE Debug)
 endif()
-
-if(APPLE)
-	set(OT_GUI_DEFAULT ON CACHE BOOL "Enable GUI module" FORCE)
-else()
-	set(OT_GUI_DEFAULT OFF CACHE BOOL "Enable GUI module" FORCE)
-endif()
-
-option(OT_GUI "Enable GUI module" ${OT_GUI_DEFAULT})
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_CXX_STANDARD 17)
@@ -34,26 +32,18 @@ add_subdirectory(3rdparty)
 include_directories(BEFORE libot/include)
 add_subdirectory(libot)
 
+if(OT_GUI)
+	include_directories(BEFORE gui)
+	add_subdirectory(gui)
+endif()
+
 add_subdirectory(app)
-add_subdirectory(modules)
 add_subdirectory(examples)
 
 enable_testing()
 list(APPEND CMAKE_CTEST_ARGUMENTS "--output-on-failure")
 add_subdirectory(tests)
 
-add_custom_target(other SOURCES LICENSE Makefile README.md)
+set_target_properties(examples tests PROPERTIES FOLDER other)
 
-add_custom_target(ObjectTalk)
-add_dependencies(ObjectTalk libot ot)
-
-if(OT_GUI)
-	add_dependencies(ObjectTalk gui)
-endif()
-
-set_target_properties(ObjectTalk PROPERTIES XCODE_GENERATE_SCHEME TRUE)
-set_target_properties(ObjectTalk PROPERTIES XCODE_SCHEME_EXECUTABLE "${CMAKE_BINARY_DIR}/bin/ot")
-set_target_properties(ObjectTalk PROPERTIES XCODE_SCHEME_ARGUMENTS "${CMAKE_SOURCE_DIR}/examples/3d/terrain.ot")
-
-set_target_properties(ObjectTalk PROPERTIES VS_DEBUGGER_COMMAND "${CMAKE_BINARY_DIR}/bin/ot")
-set_target_properties(ObjectTalk PROPERTIES VS_DEBUGGER_COMMAND_ARGUMENTS "${CMAKE_SOURCE_DIR}/tests/system/worker.ot")
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ot)

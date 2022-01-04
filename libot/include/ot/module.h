@@ -13,6 +13,7 @@
 //
 
 #include <filesystem>
+#include <functional>
 
 #include "internal.h"
 
@@ -31,6 +32,9 @@ public:
 
 	// create a new object
 	static OtModule create(const std::string& name);
+
+	// register an internal module
+	static OtModule internal(const std::string& name);
 
 private:
 	// list of directories to search for modules in

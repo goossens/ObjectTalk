@@ -147,6 +147,7 @@ size_t OtObjectClass::attach(std::function<void(void)> callback) {
 
 void OtObjectClass::detach(size_t id) {
 	if (observers) {
+		// use remove_if when we move the C++20
 		auto it = observers->begin();
 
 		while (it != observers->end()) {

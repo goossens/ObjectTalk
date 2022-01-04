@@ -12,7 +12,7 @@ jobs:
     - name: Setup cmake
       uses: jwlawson/actions-setup-cmake@v1.11
       with:
-        cmake-version: '3.19.x'
+        cmake-version: '3.22.x'
 
     - name: Configure
       run: mkdir build && cd build && cmake ..

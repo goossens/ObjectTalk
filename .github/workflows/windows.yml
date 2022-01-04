@@ -26,7 +26,7 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake ..
+        cmake .. -G "${{ matrix.config.toolchain }}" -A ${{ matrix.config.arch }}
 
     - name: Build
       run: cmake --build build

@@ -10,9 +10,9 @@ add_dependencies(ot libot)
 target_link_libraries(ot libot)
 
 if(OT_GUI)
-	add_dependencies(ot gui)
+	add_dependencies(ot gui ide)
 	target_compile_definitions(ot PRIVATE INCLUDE_GUI)
-	target_link_libraries(ot gui)
+	target_link_libraries(ot gui ide)
 endif()
 
 set_target_properties(ot PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)

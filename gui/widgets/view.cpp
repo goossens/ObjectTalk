@@ -84,13 +84,16 @@ void OtViewClass::render() {
 	// render view if we have a scene and a camera
 	if (scene && camera) {
 		// get the next view ID
-		int view = OtApplicationClass::getNextViewID();
+		int view = OtApplicationClass::instance()->getNextViewID();
 
 		// determine dimensions
-		float vx = x < 0 ? OtApplicationClass::getWidth() - (x * OtApplicationClass::getWidth() / 100.0) : x * OtApplicationClass::getWidth() / 100.0;
-		float vy = y < 0 ? OtApplicationClass::getHeight() - (y * OtApplicationClass::getHeight() / 100.0) : y * OtApplicationClass::getHeight() / 100.0;
-		float vw = w * OtApplicationClass::getWidth() / 100.0;
-		float vh = h * OtApplicationClass::getHeight() / 100.0;
+		float sw = OtApplicationClass::instance()->getWidth();
+		float sh = OtApplicationClass::instance()->getHeight();
+
+		float vx = x < 0 ? sw - (x * sw / 100.0) : x * sw / 100.0;
+		float vy = y < 0 ? sw - (y * sh / 100.0) : y * sh / 100.0;
+		float vw = w * sw / 100.0;
+		float vh = h * sh / 100.0;
 
 		// create rendering context
 		OtRenderingContext context(view, vw / vh, scene, camera);
@@ -116,10 +119,13 @@ void OtViewClass::render() {
 bool OtViewClass::onMouseButton(int button, int action, int mods, float xpos, float ypos) {
 	if (has("onMouseButton")) {
 		// determine dimensions
-		float vx = x < 0 ? OtApplicationClass::getWidth() - (x * OtApplicationClass::getWidth() / 100.0) : x * OtApplicationClass::getWidth() / 100.0;
-		float vy = y < 0 ? OtApplicationClass::getHeight() - (y * OtApplicationClass::getHeight() / 100.0) : y * OtApplicationClass::getHeight() / 100.0;
-		float vw = w * OtApplicationClass::getWidth() / 100.0;
-		float vh = h * OtApplicationClass::getHeight() / 100.0;
+		float sw = OtApplicationClass::instance()->getWidth();
+		float sh = OtApplicationClass::instance()->getHeight();
+
+		float vx = x < 0 ? sw - (x * sw / 100.0) : x * sw / 100.0;
+		float vy = y < 0 ? sw - (y * sh / 100.0) : y * sh / 100.0;
+		float vw = w * sw / 100.0;
+		float vh = h * sh / 100.0;
 
 		// calculate local coordinates
 		xpos -= vx;
@@ -148,8 +154,11 @@ bool OtViewClass::onMouseButton(int button, int action, int mods, float xpos, fl
 
 bool OtViewClass::onMouseMove(float xpos, float ypos) {
 	// calculate local coordinates
-	xpos -= x < 0 ? OtApplicationClass::getWidth() - (x * OtApplicationClass::getWidth() / 100.0) : x * OtApplicationClass::getWidth() / 100.0;
-	ypos -= y < 0 ? OtApplicationClass::getHeight() - (y * OtApplicationClass::getHeight() / 100.0) : y * OtApplicationClass::getHeight() / 100.0;
+	float sw = OtApplicationClass::instance()->getWidth();
+	float sh = OtApplicationClass::instance()->getHeight();
+
+	xpos -= x < 0 ? sw - (x * sw / 100.0) : x * sw / 100.0;
+	ypos -= y < 0 ? sh - (y * sh / 100.0) : y * sh / 100.0;
 
 	bool handled = false;
 
@@ -171,8 +180,11 @@ bool OtViewClass::onMouseMove(float xpos, float ypos) {
 
 bool OtViewClass::onMouseDrag(int button, int mods, float xpos, float ypos) {
 	// calculate local coordinates
-	xpos -= x < 0 ? OtApplicationClass::getWidth() - (x * OtApplicationClass::getWidth() / 100.0) : x * OtApplicationClass::getWidth() / 100.0;
-	ypos -= y < 0 ? OtApplicationClass::getHeight() - (y * OtApplicationClass::getHeight() / 100.0) : y * OtApplicationClass::getHeight() / 100.0;
+	float sw = OtApplicationClass::instance()->getWidth();
+	float sh = OtApplicationClass::instance()->getHeight();
+
+	xpos -= x < 0 ? sw - (x * sw / 100.0) : x * sw / 100.0;
+	ypos -= y < 0 ? sh - (y * sh / 100.0) : y * sh / 100.0;
 
 	bool handled = false;
 

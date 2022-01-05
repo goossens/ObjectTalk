@@ -40,8 +40,8 @@ void OtPanelClass::render() {
 	}
 
 	// frame height
-	float fw = OtApplicationClass::getWidth();
-	float fh = OtApplicationClass::getHeight() - offset;
+	float fw = OtApplicationClass::instance()->getWidth();
+	float fh = OtApplicationClass::instance()->getHeight() - offset;
 
 	// determine panel dimensions
 	float vx = x < 0 ? fw + x * fw / 100.0 : x * fw / 100.0;

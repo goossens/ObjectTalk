@@ -5,7 +5,6 @@
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
 FetchContent_Declare(tinyobjloader GIT_REPOSITORY "https://github.com/tinyobjloader/tinyobjloader")
-
 FetchContent_GetProperties(tinyobjloader)
 
 if(NOT tinyobjloader_POPULATED)
@@ -15,4 +14,5 @@ endif()
 
 include_directories(${tinyobjloader_SOURCE_DIR})
 
-set_target_properties(tinyobjloader uninstall PROPERTIES FOLDER deps)
+set_target_properties(tinyobjloader PROPERTIES FOLDER deps)
+set_target_properties(uninstall PROPERTIES FOLDER deps/tinyobjloader)

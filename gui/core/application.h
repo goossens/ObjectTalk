@@ -15,6 +15,9 @@
 #include <array>
 #include <vector>
 
+#include "ot/exception.h"
+#include "ot/singleton.h"
+
 #include "animation.h"
 #include "appevents.h"
 #include "gui.h"
@@ -29,7 +32,7 @@
 class OtApplicationClass;
 typedef std::shared_ptr<OtApplicationClass> OtApplication;
 
-class OtApplicationClass : public OtGuiClass {
+class OtApplicationClass : public OtGuiClass, public OtObjectSingleton<OtApplicationClass> {
 public:
 	// run the application
 	void run(const std::string& name);
@@ -48,35 +51,33 @@ public:
 	OtObject setProfiler(bool profilerState);
 
 	// get frame dimensions
-	int getWidth2() { return width; }
-	int getHeight2() { return height; }
-	static int getWidth() { return width; }
-	static int getHeight() { return height; }
+	int getWidth() { return width; }
+	int getHeight() { return height; }
 
 	// add a keyboard shortcut handler
-	static void addShortcut(int modifier, int keycode, std::function<void(void)> callback);
+	void addShortcut(int modifier, int keycode, std::function<void(void)> callback);
 
 	// get system time in seconds since application start
-	static float getTime();
+	float getTime();
 
 	// get loop duration in milliseconds
-	static float getLoopDuration() { return loopDuration; }
+	float getLoopDuration() { return loopDuration; }
 
 	// get the current frame number
-	static size_t getFrameNumber() { return frameNumber; }
+	size_t getFrameNumber() { return frameNumber; }
 
 	// get the current frame rate
-	static float getFrameRate() { return 1000.0 / loopDuration; }
+	float getFrameRate() { return 1000.0 / loopDuration; }
 
 	// get the next available view ID
-	static int getNextViewID() { return nextViewID++; }
+	int getNextViewID() { return nextViewID++; }
 
 	// register function to be called at exit
-	static void atexit(std::function<void(void)> callback);
+	void atexit(std::function<void(void)> callback);
 
 	// add enums to specified module
-	static void addEnumsGLFW(OtObject module);
-	static void addEnumsIMGUI(OtObject module);
+	void addEnumsGLFW(OtObject module);
+	void addEnumsIMGUI(OtObject module);
 
 	// get type definition
 	static OtType getMeta();
@@ -116,9 +117,9 @@ private:
 	GLFWwindow* window;
 	void* nativeDisplayHandle;
 	void* nativeDisplayType = nullptr;
-	static int width;
-	static int height;
-	static int nextViewID;
+	int width = 1280;
+	int height = 720;
+	int nextViewID;
 
 	// keyboard shortcut tracking
 	struct OtKeyboardShortcut {
@@ -128,16 +129,16 @@ private:
 		std::function<void(void)> callback;
 	};
 
-	static std::vector<OtKeyboardShortcut> shortcuts;
+	std::vector<OtKeyboardShortcut> shortcuts;
 
 	// time tracking
-	static size_t frameNumber;
-	static int64_t startTime;
-	static int64_t lastTime;
-	static int64_t loopTime;
-	static float loopDuration;
-	static int64_t cpuDuration;
-	static int64_t gpuDuration;
+	size_t frameNumber;
+	int64_t startTime;
+	int64_t lastTime;
+	int64_t loopTime;
+	float loopDuration;
+	int64_t cpuDuration;
+	int64_t gpuDuration;
 
 	// animations
 	std::vector<OtAnimation> animations;
@@ -146,7 +147,7 @@ private:
 	std::vector<OtSimulation> simulations;
 
 	// end of program callbacks
-	static std::vector<std::function<void(void)>> atExitCallbacks;
+	std::vector<std::function<void(void)>> atExitCallbacks;
 
 	// to render IMGUI
 	bgfx::VertexLayout imguiVertexLayout;

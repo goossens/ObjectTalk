@@ -27,20 +27,20 @@ class OtTypeRegistry : public OtSingleton<OtTypeRegistry>, public OtRegistry<OtS
 //	OtTypeClass::OtTypeClass
 //
 
-OtTypeClass::OtTypeClass(const std::string& n, OtType p, OtConstructor c) {
+OtTypeClass::OtTypeClass(const std::string& n, OtType p, OtAllocator a) {
 	name = n;
 	parent = p;
-	constructor = c ? c : parent->constructor;
+	allocator = a ? a : parent->allocator;
 	members = OtMembersClass::create();
 }
 
 
 //
-//	OtTypeClass::construct
+//	OtTypeClass::allocate
 //
 
-OtObject OtTypeClass::construct() {
-	return constructor();
+OtObject OtTypeClass::allocate() {
+	return allocator();
 }
 
 
@@ -49,7 +49,7 @@ OtObject OtTypeClass::construct() {
 //
 
 OtType OtTypeClass::subType(const std::string& name) {
-	OtSharedType type = std::make_shared<OtTypeClass>(name, this, constructor);
+	OtSharedType type = std::make_shared<OtTypeClass>(name, this, allocator);
 	OtTypeRegistry::instance().set(name, type);
 	return type.get();
 }

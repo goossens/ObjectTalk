@@ -79,7 +79,7 @@ OtObject OtMenuItemClass::setShortcut(const std::string& s) {
 #endif
 
 		// register shortcut
-		OtApplicationClass::addShortcut(modifier, keycode, [this] (){
+		OtApplicationClass::instance()->addShortcut(modifier, keycode, [this] (){
 			if (this->callback) {
 				OtVM::callMemberFunction(this->callback, "__call__");
 			}

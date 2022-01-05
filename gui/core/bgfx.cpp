@@ -18,19 +18,6 @@
 
 
 //
-//	Globals
-//
-
-int64_t OtApplicationClass::startTime;
-int64_t OtApplicationClass::lastTime;
-int64_t OtApplicationClass::loopTime;
-float OtApplicationClass::loopDuration;
-
-int64_t OtApplicationClass::cpuDuration;
-int64_t OtApplicationClass::gpuDuration;
-
-
-//
 //	OtApplicationClass::initBGFX
 //
 

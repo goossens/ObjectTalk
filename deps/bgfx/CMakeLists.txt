@@ -25,4 +25,4 @@ include_directories(${bgfx_SOURCE_DIR}/bx/include/compat/msvc)
 endif()
 
 set_target_properties(bx bimg bgfx PROPERTIES FOLDER deps)
-set_target_properties(astc astc-codec edtaa3 etc1 etc2 iqa squish nvtt pvrtc tinyexr PROPERTIES FOLDER deps)
+set_target_properties(astc astc-codec edtaa3 etc1 etc2 iqa squish nvtt pvrtc tinyexr PROPERTIES FOLDER deps/bimg)

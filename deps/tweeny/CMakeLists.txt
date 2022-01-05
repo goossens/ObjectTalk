@@ -5,14 +5,10 @@
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
 FetchContent_Declare(tweeny GIT_REPOSITORY "https://github.com/mobius3/tweeny")
-
 FetchContent_GetProperties(tweeny)
 
 if(NOT tweeny_POPULATED)
 	FetchContent_Populate(tweeny)
-	add_subdirectory(${tweeny_SOURCE_DIR} ${tweeny_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif()
 
 include_directories(${tweeny_SOURCE_DIR}/include)
-
-set_target_properties(tweeny-dummy PROPERTIES FOLDER deps)

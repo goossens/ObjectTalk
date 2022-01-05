@@ -84,7 +84,7 @@ void OtFilterClass::createQuad(int w, int h) {
 
 void OtFilterClass::render(int w, int h, bgfx::TextureHandle texture, bgfx::FrameBufferHandle fb) {
 	// get next view ID
-	int view = OtApplicationClass::getNextViewID();
+	int view = OtApplicationClass::instance()->getNextViewID();
 
 	// create "single triangle quad" to cover area
 	createQuad(w, h);
@@ -109,7 +109,7 @@ void OtFilterClass::render(int w, int h, bgfx::TextureHandle texture, bgfx::Fram
 
 void OtFilterClass::render(int x, int y, int w, int h, bgfx::TextureHandle texture) {
 	// get next view ID
-	int view = OtApplicationClass::getNextViewID();
+	int view = OtApplicationClass::instance()->getNextViewID();
 
 	// create "single triangle quad" to cover area
 	createQuad(w, h);

@@ -234,7 +234,7 @@ OtTexture OtTextureClass::dummy() {
 	if (!dummyTexture) {
 		dummyTexture = create();
 
-		OtApplicationClass::atexit([]() {
+		OtApplicationClass::instance()->atexit([]() {
 			dummyTexture = nullptr;
 		});
 	}

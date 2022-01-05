@@ -186,8 +186,8 @@ OtObject OtWaterClass::setNormalScale(float s) {
 
 void OtWaterClass::preRender(OtRenderingContext* context) {
 	// get new IDs for reflection and refraction rendering
-	reflectionView = OtApplicationClass::getNextViewID();
-	refractionView = OtApplicationClass::getNextViewID();
+	reflectionView = OtApplicationClass::instance()->getNextViewID();
+	refractionView = OtApplicationClass::instance()->getNextViewID();
 
 	// create/update frame buffers (if required)
 	if (frameBufferAspect != context->viewAspect) {
@@ -285,7 +285,7 @@ void OtWaterClass::renderWater(OtRenderingContext* context) {
 	bgfx::setTexture(2, refractionUniform, refractionTextures[0]);
 
 	// update time for water ripples
-	time += OtApplicationClass::getLoopDuration() / 2500.0;
+	time += OtApplicationClass::instance()->getLoopDuration() / 2500.0;
 
 	// set uniforms
 	context->submit();

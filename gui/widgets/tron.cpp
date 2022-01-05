@@ -162,7 +162,7 @@ static void OtLed7(ImDrawList* list, float x, float y, float size, char ch, ImU3
 
 void OtTronClass::update() {
 	// get current frame rate
-	auto framerate = OtApplicationClass::getFrameRate();
+	auto framerate = OtApplicationClass::instance()->getFrameRate();
 
 	// update internal rotation
 	tronRotation += 0.360 / framerate;

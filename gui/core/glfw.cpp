@@ -38,14 +38,6 @@
 
 
 //
-//	Globals
-//
-
-int OtApplicationClass::width = 1280;
-int OtApplicationClass::height = 720;
-
-
-//
 //	OtApplicationClass::initGLFW
 //
 
@@ -82,8 +74,9 @@ void OtApplicationClass::initGLFW(const std::string& name) {
 
 	// setup window resize callback
 	glfwSetWindowSizeCallback(window, [](GLFWwindow* window, int w, int h) {
-		width = w;
-		height = h;
+		OtApplicationClass* app = (OtApplicationClass*) glfwGetWindowUserPointer(window);
+		app->width = w;
+		app->height = h;
 	});
 
 	// setup mouse button callback

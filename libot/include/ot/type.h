@@ -33,14 +33,14 @@ typedef std::shared_ptr<OtTypeClass> OtSharedType;
 
 class OtTypeClass {
 private:
-	typedef OtObject(*OtConstructor)();
+	typedef OtObject(*OtAllocator)();
 
 public:
 	// constructor
-	OtTypeClass(const std::string& n, OtType p, OtConstructor c=nullptr);
+	OtTypeClass(const std::string& n, OtType p, OtAllocator a=nullptr);
 
-	// construct a new instance
-	OtObject construct();
+	// allocate a new instance
+	OtObject allocate();
 
 	// create a sub-type
 	OtType subType(const std::string& n);
@@ -66,12 +66,14 @@ public:
 
 	// create a new type
 	template <class CLASS>
-	static OtType create(const std::string& name, OtType parent) {
-		OtSharedType type = std::make_shared<OtTypeClass>(name, parent, []() {
-			return (OtObject) std::make_shared<CLASS>();
-		});
+	static OtType create(const std::string& name, OtType parent, OtAllocator allocator=nullptr) {
+		if (!allocator) {
+			allocator = []() {
+				return (OtObject) std::make_shared<CLASS>();
+			};
+		}
 
-		return registerType(type);
+		return registerType(std::make_shared<OtTypeClass>(name, parent, allocator));
 	}
 
 private:
@@ -79,5 +81,5 @@ private:
 	std::string name;
 	OtType parent;
 	OtMembers members;
-	OtConstructor constructor;
+	OtAllocator allocator;
 };

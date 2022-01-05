@@ -104,8 +104,8 @@ void OtFileOpenDialogClass::open() {
 //
 
 void OtFileOpenDialogClass::render() {
-	int width = OtApplicationClass::getWidth();
-	int height = OtApplicationClass::getHeight();
+	int width = OtApplicationClass::instance()->getWidth();
+	int height = OtApplicationClass::instance()->getHeight();
 	ImVec2 maxSize = ImVec2(width, height);
 	ImVec2 minSize = ImVec2(width * 0.66, height * 0.66);
 

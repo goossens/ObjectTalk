@@ -1,6 +1,8 @@
 [![MacOS status](https://github.com/goossens/ObjectTalk/actions/workflows/macos.yml/badge.svg)](https://github.com/goossens/ObjectTalk/actions)
 [![Ubuntu status](https://github.com/goossens/ObjectTalk/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/goossens/ObjectTalk/actions)
 [![Windows status](https://github.com/goossens/ObjectTalk/actions/workflows/windows.yml/badge.svg)](https://github.com/goossens/ObjectTalk/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![version](https://img.shields.io/badge/version-0.2-blue)
 
 # ObjectTalk Scripting Language
 
@@ -45,6 +47,7 @@ the following communities:
 
 * [CMake](https://cmake.org) - cross-platform family of tools designed to build, test and package software.
 * [libuv](https://libuv.org) - multi-platform support library with a focus on asynchronous I/O.
+* [argparse](https://github.com/p-ranav/argparse) - command line argument parser.
 * [llhttp](https://llhttp.org) - HTTP protocol parser.
 * [multipart-parser](https://github.com/francoiscolas/multipart-parser) - HTTP multipart body parser.
 
@@ -57,6 +60,7 @@ In case the GUI module is included, we also use:
 * [Box2D](https://box2d.org) - 2D physics engine.
 * [tweeny](https://github.com/mobius3/tweeny) - animation library.
 * [ImGuiFileDialog](https://github.com/aiekick/ImGuiFileDialog) - file selection dialog built for Dear ImGui.
+* [ImGuiColorTextEdit](https://github.com/BalazsJako/ImGuiColorTextEdit) - syntax highlighting text editor for Dear ImGui.
 
 A special thanks also goes to
 [Gunther Rademacher](https://github.com/GuntherRademacher) for his

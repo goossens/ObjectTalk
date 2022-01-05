@@ -31,14 +31,15 @@ set(GUI_INCLUDE_DIRS "")
 
 foreach(HEADER ${GUI_INCLUDES})
     get_filename_component(DIR ${HEADER} PATH)
-    list (APPEND GUI_INCLUDE_DIRS ${DIR})
+    list(APPEND GUI_INCLUDE_DIRS ${DIR})
 endforeach()
 
 list(REMOVE_DUPLICATES GUI_INCLUDE_DIRS)
+set(GUI_INCLUDE_DIRS ${GUI_INCLUDE_DIRS} PARENT_SCOPE)
 
 add_library(gui STATIC ${GUI_INCLUDES} ${GUI_SOURCES})
-add_dependencies(gui libot glfw bgfx imgui imguifd tinyobjloader box2d)
+add_dependencies(gui libot glfw bgfx imgui imguifd imguieditor tinyobjloader box2d)
 target_include_directories(gui PRIVATE ${GUI_INCLUDE_DIRS})
-target_link_libraries(gui glfw bgfx imgui imguifd tinyobjloader box2d ${GUI_LIBS})
+target_link_libraries(gui glfw bgfx imgui imguifd imguieditor tinyobjloader box2d ${GUI_LIBS})
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${GUI_INCLUDES} ${GUI_SOURCES})

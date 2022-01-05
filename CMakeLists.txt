@@ -35,6 +35,8 @@ add_subdirectory(libot)
 if(OT_GUI)
 	include_directories(BEFORE gui)
 	add_subdirectory(gui)
+	include_directories(BEFORE ide)
+	add_subdirectory(ide)
 endif()
 
 add_subdirectory(app)

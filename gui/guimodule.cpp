@@ -190,6 +190,6 @@ void OtGuiModuleInit() {
 
 	module->set("VectorDisplay", OtClassClass::create(OtVectorDisplayClass::getMeta()));
 
-	OtApplicationClass::addEnumsGLFW(module);
-	OtApplicationClass::addEnumsIMGUI(module);
+	OtApplicationClass::instance()->addEnumsGLFW(module);
+	OtApplicationClass::instance()->addEnumsIMGUI(module);
 }

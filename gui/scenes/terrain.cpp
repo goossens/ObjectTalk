@@ -251,7 +251,7 @@ void OtTerrainClass::render(OtRenderingContext* context) {
 	}
 
 	// remove old tiles (use std::remove_if in C++20)
-	auto now = OtApplicationClass::getTime();
+	auto now = OtApplicationClass::instance()->getTime();
 	auto entry = tiles.begin();
 
 	while (entry != tiles.end()) {

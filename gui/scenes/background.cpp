@@ -116,7 +116,9 @@ OtObject OtBackgroundClass::setTexture(OtObject object) {
 void OtBackgroundClass::render(OtRenderingContext* context) {
 	// submit uniforms
 	glm::mat4 transform = glm::mat4(1.0);
-	float scale = (float) OtApplicationClass::getHeight() / (float) OtApplicationClass::getWidth();
+	float sw = OtApplicationClass::instance()->getWidth();
+	float sh = OtApplicationClass::instance()->getHeight();
+	float scale = sh / sw;
 	// transform = glm::scale(transform, glm::vec3(1.0, scale, 1.0));
 	bgfx::setUniform(transformUniform, &transform);
 

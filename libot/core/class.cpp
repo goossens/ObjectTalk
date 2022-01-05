@@ -21,7 +21,7 @@
 
 OtObject OtClassClass::instantiate(size_t count, OtObject* parameters) {
 	// create new instance
-	OtObject object = classType->construct();
+	OtObject object = classType->allocate();
 	object->setType(classType);
 
 	// run possible init function

@@ -20,18 +20,6 @@
 
 
 //
-//	Globals
-//
-
-int OtApplicationClass::nextViewID = 1;
-size_t OtApplicationClass::frameNumber = 0;
-
-std::vector<OtApplicationClass::OtKeyboardShortcut> OtApplicationClass::shortcuts;
-
-std::vector<std::function<void(void)>> OtApplicationClass::atExitCallbacks;
-
-
-//
 //	OtApplicationClass::run
 //
 
@@ -397,15 +385,19 @@ OtType OtApplicationClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtTypeClass::create<OtApplicationClass>("Application", OtGuiClass::getMeta());
+		type = OtTypeClass::create<OtApplicationClass>(
+			"Application",
+			OtGuiClass::getMeta(),
+			[]() { return (OtObject) OtApplicationClass::instance(); });
+
 		type->set("run", OtFunctionClass::create(&OtApplicationClass::run));
 		type->set("animation", OtFunctionClass::create(&OtApplicationClass::animation));
 		type->set("addSimulation", OtFunctionClass::create(&OtApplicationClass::addSimulation));
 		type->set("setAntiAliasing", OtFunctionClass::create(&OtApplicationClass::setAntiAliasing));
 		type->set("setProfiler", OtFunctionClass::create(&OtApplicationClass::setProfiler));
 
-		type->set("getWidth", OtFunctionClass::create(&OtApplicationClass::getWidth2));
-		type->set("getHeight", OtFunctionClass::create(&OtApplicationClass::getHeight2));
+		type->set("getWidth", OtFunctionClass::create(&OtApplicationClass::getWidth));
+		type->set("getHeight", OtFunctionClass::create(&OtApplicationClass::getHeight));
 	}
 
 	return type;
@@ -417,7 +409,5 @@ OtType OtApplicationClass::getMeta() {
 //
 
 OtApplication OtApplicationClass::create() {
-	OtApplication application = std::make_shared<OtApplicationClass>();
-	application->setType(getMeta());
-	return application;
+	return OtApplicationClass::instance();
 }

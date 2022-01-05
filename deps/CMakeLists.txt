@@ -6,6 +6,7 @@
 
 include(FetchContent)
 
+include(deps/argparse/CMakeLists.txt)
 include(deps/libuv/CMakeLists.txt)
 
 if(OT_GUI)
@@ -14,6 +15,7 @@ if(OT_GUI)
 	include(deps/glm/CMakeLists.txt)
 	include(deps/imgui/CMakeLists.txt)
 	include(deps/imguifiledialog/CMakeLists.txt)
+	include(deps/imguieditor/CMakeLists.txt)
 	include(deps/tinyobjloader/CMakeLists.txt)
 	include(deps/box2d/CMakeLists.txt)
 	include(deps/tweeny/CMakeLists.txt)

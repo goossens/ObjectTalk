@@ -19,4 +19,5 @@ endif()
 
 include_directories(${glfw_SOURCE_DIR}/include)
 
-set_target_properties(glfw update_mappings PROPERTIES FOLDER deps)
+set_target_properties(glfw PROPERTIES FOLDER deps)
+set_target_properties(update_mappings PROPERTIES FOLDER deps/glfw)

@@ -53,3 +53,29 @@ public:
 protected:
 	OtPerThreadSingleton() {}
 };
+
+
+//
+//	OtSharedSingleton
+//
+
+template<typename T>
+class OtObjectSingleton {
+public:
+	static std::shared_ptr<T> instance() {
+		static std::shared_ptr<T> instance;
+
+		if (!instance) {
+			instance = std::make_shared<T>();
+			instance->setType(T::getMeta());
+		}
+
+		return instance;
+	}
+
+	OtObjectSingleton(const OtObjectSingleton&) = delete;
+	OtObjectSingleton& operator= (const OtObjectSingleton) = delete;
+
+protected:
+	OtObjectSingleton() {}
+};

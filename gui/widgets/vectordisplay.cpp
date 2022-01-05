@@ -1145,15 +1145,15 @@ void OtVectorDisplayClass::render() {
 
 	popStyle();
 
-	// get frame size
-	int fw = OtApplicationClass::getWidth();
-	int fh = OtApplicationClass::getHeight();
+	// get screen size
+	int sw = OtApplicationClass::instance()->getWidth();
+	int sh = OtApplicationClass::instance()->getHeight();
 
 	// determine vector display dimensions
-	int vx = x < 0 ? fw + (x * fw) / 100 : (x * fw) / 100;
-	int vy = y < 0 ? fh + (y * fh) / 100 : (y * fh) / 100;
-	int vw = (w * fw) / 100;
-	int vh = (h * fh) / 100;
+	int vx = x < 0 ? sw + (x * sw) / 100 : (x * sw) / 100;
+	int vy = y < 0 ? sh + (y * sh) / 100 : (y * sh) / 100;
+	int vw = (w * sw) / 100;
+	int vh = (h * sh) / 100;
 
 	// update frame buffers if required
 	if (vw != bufferWidth || vh != bufferHeight) {
@@ -1165,7 +1165,7 @@ void OtVectorDisplayClass::render() {
 	}
 
 	// setup BGFX view
-	int view = OtApplicationClass::getNextViewID();
+	int view = OtApplicationClass::instance()->getNextViewID();
 	bgfx::setViewClear(view, BGFX_CLEAR_COLOR);
 	bgfx::setViewRect(view, 0.0, 0.0, vw, vh);
 	bgfx::setViewFrameBuffer(view, frameBuffer0);

@@ -16,7 +16,6 @@
 #include "ot/vm.h"
 
 #include "application.h"
-#include "theme.h"
 
 
 //
@@ -61,9 +60,6 @@ void OtApplicationClass::run(const std::string& name) {
 
 void OtApplicationClass::runThread2() {
 	try {
-		// initialize theme engine
-		OtTheme::init();
-
 		// initialize libraries
 		initBGFX();
 		initIMGUI();

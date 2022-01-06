@@ -14,7 +14,6 @@
 #include "ot/exception.h"
 
 #include "application.h"
-#include "theme.h"
 
 
 //

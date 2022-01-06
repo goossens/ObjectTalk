@@ -16,7 +16,6 @@
 #include "ot/numbers.h"
 
 #include "application.h"
-#include "theme.h"
 #include "tron.h"
 
 
@@ -236,21 +235,21 @@ void OtTronClass::render() {
 		list->AddLine(
 			ImVec2(center.x + inner * sin(angle), center.y + inner * -cos(angle)),
 			ImVec2(center.x + outer * sin(angle), center.y + outer * -cos(angle)),
-			(c == now->tm_sec) ? OtTheme::color100 : OtTheme::color20,
+			(c == now->tm_sec) ? color100 : color20,
 			15 * scale);
 	}
 
 	// render hours and minutes
-	OtLed7(list, center.x - 200 * scale, center.y - 80 * scale, 160 * scale, '8', OtTheme::color20);
-	OtLed7(list, center.x - 200 * scale, center.y - 80 * scale, 160 * scale, '0' + now->tm_hour / 12, OtTheme::color100);
-	OtLed7(list, center.x - 100 * scale, center.y - 80 * scale, 160 * scale, '8', OtTheme::color20);
-	OtLed7(list, center.x - 100 * scale, center.y - 80 * scale, 160 * scale, '0' + now->tm_hour % 12, OtTheme::color100);
-	list->AddCircleFilled(ImVec2(center.x, center.y - 30 * scale), 10 * scale, OtTheme::color100);
-	list->AddCircleFilled(ImVec2(center.x, center.y + 30 * scale), 10 * scale, OtTheme::color100);
-	OtLed7(list, center.x + 20 * scale, center.y - 80 * scale, 160 * scale, '8', OtTheme::color20);
-	OtLed7(list, center.x + 20 * scale, center.y - 80 * scale, 160 * scale, '0' + now->tm_min / 10, OtTheme::color100);
-	OtLed7(list, center.x + 120 * scale, center.y - 80 * scale, 160 * scale, '8', OtTheme::color20);
-	OtLed7(list, center.x + 120 * scale, center.y - 80 * scale, 160 * scale, '0' + now->tm_min % 10, OtTheme::color100);
+	OtLed7(list, center.x - 200 * scale, center.y - 80 * scale, 160 * scale, '8', color20);
+	OtLed7(list, center.x - 200 * scale, center.y - 80 * scale, 160 * scale, '0' + now->tm_hour / 12, color100);
+	OtLed7(list, center.x - 100 * scale, center.y - 80 * scale, 160 * scale, '8', color20);
+	OtLed7(list, center.x - 100 * scale, center.y - 80 * scale, 160 * scale, '0' + now->tm_hour % 12, color100);
+	list->AddCircleFilled(ImVec2(center.x, center.y - 30 * scale), 10 * scale, color100);
+	list->AddCircleFilled(ImVec2(center.x, center.y + 30 * scale), 10 * scale, color100);
+	OtLed7(list, center.x + 20 * scale, center.y - 80 * scale, 160 * scale, '8', color20);
+	OtLed7(list, center.x + 20 * scale, center.y - 80 * scale, 160 * scale, '0' + now->tm_min / 10, color100);
+	OtLed7(list, center.x + 120 * scale, center.y - 80 * scale, 160 * scale, '8', color20);
+	OtLed7(list, center.x + 120 * scale, center.y - 80 * scale, 160 * scale, '0' + now->tm_min % 10, color100);
 
 	ImGui::PopID();
 }
@@ -287,7 +286,7 @@ void OtTronClass::createArcs() {
 			}
 
 			// assign random color to arc
-			arc.color = OtTheme::blend(OtTheme::color20, OtTheme::color100, OtRandom());
+			arc.color = blend(color20, color100, OtRandom());
 
 			// add arc to list
 			arcs.push_back(arc);
@@ -304,6 +303,22 @@ void OtTronClass::createArcs() {
 			nextCircle = false;
 		}
 	}
+}
+
+
+//
+//	OtTronClass::blend
+//
+
+ImU32 OtTronClass::blend(ImU32 color1, ImU32 color2, float ratio) {
+	auto c1 = ImGui::ColorConvertU32ToFloat4(color1);
+	auto c2 = ImGui::ColorConvertU32ToFloat4(color2);
+
+	return ImGui::ColorConvertFloat4ToU32(ImVec4(
+		c1.x + (c2.x - c1.x) * ratio,
+		c1.y + (c2.y - c1.y) * ratio,
+		c1.z + (c2.z - c1.z) * ratio,
+		c1.w + (c2.w - c1.w) * ratio));
 }
 
 

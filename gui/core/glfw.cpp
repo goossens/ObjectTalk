@@ -34,7 +34,6 @@
 #include "ot/integer.h"
 
 #include "application.h"
-#include "theme.h"
 
 
 //

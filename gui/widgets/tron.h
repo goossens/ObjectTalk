@@ -61,4 +61,14 @@ private:
 	};
 
 	std::vector<OtTronArc> arcs;
+
+	// color management
+	ImU32 color100 = IM_COL32(100, 180, 255, 255);
+	ImU32 color80 = IM_COL32(80, 144, 200, 255);
+	ImU32 color60 = IM_COL32(60, 108, 150, 255);
+	ImU32 color40 = IM_COL32(40, 72, 100, 255);
+	ImU32 color20 = IM_COL32(20, 36, 50, 255);
+	ImU32 background = IM_COL32(0, 12, 24, 255);
+
+	ImU32 blend(ImU32 color1, ImU32 color2, float ratio);
 };

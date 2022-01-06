@@ -15,8 +15,8 @@ many member functions to manipulate the content of an array.
 | Function | Description |
 | ------ | ----------- |
 | \_\_init__(...) | Construct an array. This member function is called when you use the **execution** [()] operator on the Array class. Every value passed to this function becomes a member of the new array. You typically don't call this member function directly. |
-| \_\_index__(integer) | Return an [ArrayReference](ArrayReference.md) object to address individual objects in an array. This member function is called when you use the **index** ([]) operator. You typically don't call this member function directly. |
-| \_\_iter__() | Return an [ArrayIterator](ArrayIterator.md) object to iterate through objects in an array. This member function is called when you use the **for in** statement. You typically don't call this member function directly. |
+| \_\_index__(integer) | Return an [ArrayReference](#arrayreference) object to address individual objects in an array. This member function is called when you use the **index** ([]) operator. You typically don't call this member function directly. |
+| \_\_iter__() | Return an [ArrayIterator](#arrayiterator) object to iterate through objects in an array. This member function is called when you use the **for in** statement. You typically don't call this member function directly. |
 | \_\_add__(object) | Append object to the array and return a new array. This member function is called when you use the **addition** (+) operator. If the object is another array, it will be added as a single member creating an array hierarchy. If you want to join two arrays, use the join member function. |
 | \_\_contains__(object) | Determine if object is member of array. |
 | size() | Return number of objects in array. |

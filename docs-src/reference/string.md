@@ -30,7 +30,7 @@ characters (like "€") or use JSON style encoding like
 | lower() | Convert all characters in the object's value to lowercase and return result. |
 | upper() | Convert all characters in the object's value to uppercase and return result. |
 | split(delimiter) | Split string based on delimiter and return array of substrings. |
-| split(paramerters...) | Format a string using the value as a mask and the parameters to substitue (like printf). |
+| format(parameters...) | Format a string using the value as a mask and the parameters to substitute (like printf). |
 
 **Overrides**
 

@@ -101,6 +101,7 @@ void OtHttpServerClass::run() {
 //
 
 OtObject OtHttpServerClass::timer(long wait, long repeat, OtObject callback) {
+
 	return OtHttpTimerClass::create(wait, repeat, callback);
 }
 

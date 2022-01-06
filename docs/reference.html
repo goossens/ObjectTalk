@@ -113,7 +113,7 @@
                     </li>
                     <li>
                       <a class="page-scroll" href="#bytecodefunction"
-                        >BytecodeFunction</a
+                        >ByteCodeFunction</a
                       >
                     </li>
                     <li><a class="page-scroll" href="#Throw">Throw</a></li>
@@ -564,7 +564,7 @@
 | block
 | &quot;var&quot; name (&quot;=&quot; expression)? &quot;;&quot;
 | &quot;class&quot; name &quot;:&quot; expression block
-| &quot;function&quot; name &quot;(&quot; ((name (&quot;,&quot; name)*)? | &quot;...&quot;) &quot;)&quot; block
+| &quot;function&quot; name &quot;(&quot; ((name (&quot;,&quot; name)*)?) &quot;)&quot; block
 | &quot;if&quot; expression block (&quot;elif&quot; expression block)* (&quot;else&quot; block)?
 | &quot;while&quot; expression block
 | &quot;do&quot; block &quot;while&quot; expression &quot;;&quot;
@@ -688,7 +688,7 @@
             <h1 class="pb-2">ObjectTalk Classes</h1>
             <p>
               Below is the reference documentation for all classes included in
-              the default ObjectTalk runtime.
+              the ObjectTalk runtime.
             </p>
           </div>
           <div id="object">
@@ -1663,10 +1663,10 @@ assert(b.dosomething() == &quot;I did it&quot;);
                   </td>
                 </tr>
                 <tr>
-                  <td>split(paramerters...)</td>
+                  <td>format(parameters...)</td>
                   <td>
                     Format a string using the value as a mask and the parameters
-                    to substitue (like printf).
+                    to substitute (like printf).
                   </td>
                 </tr>
               </tbody>
@@ -1803,21 +1803,26 @@ var array3 = [3.14, [3, 5, 4], 34, 1];
                   <td>__index__(integer)</td>
                   <td>
                     Return an
-                    <a href="ArrayReference.md">ArrayReference</a> object to
-                    address individual objects in an array. This member function
-                    is called when you use the <strong>index</strong> ([])
-                    operator. You typically don't call this member function
-                    directly.
+                    <a class="page-scroll" href="#arrayreference"
+                      >ArrayReference</a
+                    >
+                    object to address individual objects in an array. This
+                    member function is called when you use the
+                    <strong>index</strong> ([]) operator. You typically don't
+                    call this member function directly.
                   </td>
                 </tr>
                 <tr>
                   <td>__iter__()</td>
                   <td>
                     Return an
-                    <a href="ArrayIterator.md">ArrayIterator</a> object to
-                    iterate through objects in an array. This member function is
-                    called when you use the <strong>for in</strong> statement.
-                    You typically don't call this member function directly.
+                    <a class="page-scroll" href="#arrayiterator"
+                      >ArrayIterator</a
+                    >
+                    object to iterate through objects in an array. This member
+                    function is called when you use the
+                    <strong>for in</strong> statement. You typically don't call
+                    this member function directly.
                   </td>
                 </tr>
                 <tr>
@@ -1976,9 +1981,12 @@ var name = dict2[&quot;Name&quot;];
                 <tr>
                   <td>__index__(string)</td>
                   <td>
-                    Return a <a href="DictReference.md">DictReference</a> object
-                    to address individual objects in a dictionary. This member
-                    function is called when you use the
+                    Return a
+                    <a class="page-scroll" href="#dictreference"
+                      >DictReference</a
+                    >
+                    object to address individual objects in a dictionary. This
+                    member function is called when you use the
                     <strong>index</strong> ([]) operator. You typically don't
                     call this member function directly.
                   </td>
@@ -2182,6 +2190,594 @@ assert(set.subtract(set2) == Set(2, 5));
             <ul>
               <li>string</li>
             </ul>
+          </div>
+          <div id="system">
+            <h1 class="pb-2">System Class</h1>
+            <p>
+              The System class is an abstract class without any functionality
+              derived from <a href="Object.md">Object</a>. The purpose of it in
+              ObjectTalk is simply to group all operating and file system
+              classes.
+            </p>
+          </div>
+          <div id="path">
+            <h1 class="pb-2">Path Class</h1>
+            <p>
+              Objects of type path represent paths on a filesystem. A path name
+              has the following syntax:
+            </p>
+            <ul>
+              <li>
+                <strong>root-name</strong> (optional): identifies the root on a
+                filesystem with multiple roots (such as &quot;C:&quot; or
+                &quot;//myserver&quot;). In case of ambiguity, the longest
+                sequence of characters that forms a valid root-name is treated
+                as the root-name.
+              </li>
+              <li>
+                <strong>root-directory</strong> (optional): a directory
+                separator that, if present, marks this path as absolute. If it
+                is missing (and the first element other than the root name is a
+                file name), then the path is relative and requires another path
+                as the starting location to resolve to a file name.
+              </li>
+              <li>
+                Zero or more of the following:
+                <ul>
+                  <li>
+                    <strong>file-name</strong>: sequence of characters that
+                    aren't directory separators or preferred directory
+                    separators (additional limitations may be imposed by the OS
+                    or file system). This name may identify a file, a hard link,
+                    a symbolic link, or a directory. Two special file-names are
+                    recognized:
+                    <ul>
+                      <li>
+                        <strong>dot</strong>: the file name consisting of a
+                        single dot character . is a directory name that refers
+                        to the current directory
+                      </li>
+                      <li>
+                        <strong>dot-dot</strong>: the file name consisting of
+                        two dot characters .. is a directory name that refers to
+                        the parent directory.
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <strong>directory-separators</strong>: the forward slash
+                    character / or the alternative character provided by the
+                    operating system. If this character is repeated, it is
+                    treated as a single directory separator: /usr///////lib is
+                    the same as /usr/lib.
+                  </li>
+                </ul>
+              </li>
+            </ul>
+            <p><strong>Member Functions</strong></p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Function</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>__init__(...)</td>
+                  <td>
+                    Construct a filesystem Path by combining all provided
+                    directories. An operating system directory separator is
+                    automatically inserted.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__add__(operand)</td>
+                  <td>
+                    Concatenate two paths without introducing a directory
+                    separator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__div__(operand)</td>
+                  <td>
+                    Append elements to the path with a directory separator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__iter__()</td>
+                  <td>
+                    Return a
+                    <a class="page-scroll" href="#pathiterator">PathIterator</a>
+                    object to iterate through the directories in a path. This
+                    member function is called when you use the
+                    <strong>for in</strong> statement. You typically don't call
+                    this member function directly.
+                  </td>
+                </tr>
+                <tr>
+                  <td>clear()</td>
+                  <td>Erase the contents of the path.</td>
+                </tr>
+                <tr>
+                  <td>exists()</td>
+                  <td>See if the path exists on this system.</td>
+                </tr>
+                <tr>
+                  <td>isAbsolute()</td>
+                  <td>Check whether the path is absolute.</td>
+                </tr>
+                <tr>
+                  <td>isRelative()</td>
+                  <td>Check whether the path is relative.</td>
+                </tr>
+                <tr>
+                  <td>isEmpty()</td>
+                  <td>Check if the path is empty.</td>
+                </tr>
+                <tr>
+                  <td>relative(operand)</td>
+                  <td>Return relative path from operand.</td>
+                </tr>
+                <tr>
+                  <td>directory()</td>
+                  <td>Return the parent path.</td>
+                </tr>
+                <tr>
+                  <td>filename()</td>
+                  <td>Return the filename.</td>
+                </tr>
+                <tr>
+                  <td>extension()</td>
+                  <td>Return the file extension.</td>
+                </tr>
+                <tr>
+                  <td>rootDirectory()</td>
+                  <td>Return the root directory.</td>
+                </tr>
+                <tr>
+                  <td>rootName()</td>
+                  <td>Return the root name.</td>
+                </tr>
+                <tr>
+                  <td>rootPath()</td>
+                  <td>Return the root path.</td>
+                </tr>
+                <tr>
+                  <td>stem()</td>
+                  <td>
+                    Return the stem (filename without the final extension).
+                  </td>
+                </tr>
+                <tr>
+                  <td>removeFilename()</td>
+                  <td>Remove the filename component.</td>
+                </tr>
+                <tr>
+                  <td>replaceExtension()</td>
+                  <td>Replace the file extension.</td>
+                </tr>
+                <tr>
+                  <td>replaceFilename()</td>
+                  <td>Replace the filename.</td>
+                </tr>
+                <tr>
+                  <td>hasExtension()</td>
+                  <td>
+                    Check if the extension element of the path is not empty.
+                  </td>
+                </tr>
+                <tr>
+                  <td>hasFilename()</td>
+                  <td>
+                    Check if the filename element of the path is not empty.
+                  </td>
+                </tr>
+                <tr>
+                  <td>hasParentPath()</td>
+                  <td>Check if the parent element of the path is not empty.</td>
+                </tr>
+                <tr>
+                  <td>hasRelativePath()</td>
+                  <td>
+                    Check if the relative path element of the path is not empty.
+                  </td>
+                </tr>
+                <tr>
+                  <td>hasRootDirectory()</td>
+                  <td>
+                    Check if the root directory element of the path is not
+                    empty.
+                  </td>
+                </tr>
+                <tr>
+                  <td>hasRootName()</td>
+                  <td>
+                    Check if the root name element of the path is not empty.
+                  </td>
+                </tr>
+                <tr>
+                  <td>hasRootPath()</td>
+                  <td>
+                    Check if the root path element of the path is not empty.
+                  </td>
+                </tr>
+                <tr>
+                  <td>hasStem()</td>
+                  <td>Check if the stem element of the path is not empty.</td>
+                </tr>
+              </tbody>
+            </table>
+            <p><strong>Overrides</strong></p>
+            <p>
+              The String class overrides the following member functions from the
+              Object class:
+            </p>
+            <ul>
+              <li>string</li>
+              <li>__eq__</li>
+              <li>__ne__</li>
+            </ul>
+          </div>
+          <div id="os">
+            <h1 class="pb-2">OS Class</h1>
+            <p>
+              The OS (Operating System) class encapsulates an interface to the
+              native operating system. Filesystem operations are not included as
+              they are covered by the
+              <a class="page-scroll" href="#fs">FS (File System)</a> class. The
+              <a class="page-scroll" href="#global">Global</a> scope predefines
+              an OS instance under the name <strong>os</strong>.
+            </p>
+            <p><strong>Member Functions</strong></p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Function</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>clock()</td>
+                  <td>
+                    Return the number of seconds since the epoch as a floating
+                    point number.
+                  </td>
+                </tr>
+                <tr>
+                  <td>cores()</td>
+                  <td>
+                    Return an array of dictionaries giving details about the
+                    CPUs cores.
+                  </td>
+                </tr>
+                <tr>
+                  <td>networks()</td>
+                  <td>
+                    Return an array of dictionaries giving details about the
+                    network connections.
+                  </td>
+                </tr>
+                <tr>
+                  <td>totalMemory()</td>
+                  <td>
+                    Get the total available memory on this machine (in bytes).
+                  </td>
+                </tr>
+                <tr>
+                  <td>freeMemory()</td>
+                  <td>
+                    Get the amount of free memory available in the system (in
+                    bytes).
+                  </td>
+                </tr>
+                <tr>
+                  <td>getDay()</td>
+                  <td>Get the day in the month (1-31).</td>
+                </tr>
+                <tr>
+                  <td>getDayOfWeek()</td>
+                  <td>Get the day of the week (0-6). Sunday is day 0.</td>
+                </tr>
+                <tr>
+                  <td>getDayOfYear()</td>
+                  <td>Get day of the year (1-366).</td>
+                </tr>
+                <tr>
+                  <td>getHours()</td>
+                  <td>Get hours (0-23).</td>
+                </tr>
+                <tr>
+                  <td>getMinutes()</td>
+                  <td>Get minutes (0-59).</td>
+                </tr>
+                <tr>
+                  <td>getMonth()</td>
+                  <td>Get month (1-12).</td>
+                </tr>
+                <tr>
+                  <td>getSeconds()</td>
+                  <td>Get seconds (0.59).</td>
+                </tr>
+                <tr>
+                  <td>getYear()</td>
+                  <td>Get year.</td>
+                </tr>
+                <tr>
+                  <td>isDST()</td>
+                  <td>Is daylight savings time active.</td>
+                </tr>
+                <tr>
+                  <td>getenv(name)</td>
+                  <td>Get value of named environment variable.</td>
+                </tr>
+                <tr>
+                  <td>hasenv(name)</td>
+                  <td>See if named environment variable exists.</td>
+                </tr>
+                <tr>
+                  <td>setenv(name, value)</td>
+                  <td>Set named environment variable to provided value.</td>
+                </tr>
+                <tr>
+                  <td>unsetenv(name)</td>
+                  <td>Remove the named environment variable.</td>
+                </tr>
+                <tr>
+                  <td>hostname()</td>
+                  <td>Return the computer's hostname.</td>
+                </tr>
+                <tr>
+                  <td>machine()</td>
+                  <td>Return the hardware identification for the system.</td>
+                </tr>
+                <tr>
+                  <td>sysname()</td>
+                  <td>Return the Operating System name.</td>
+                </tr>
+                <tr>
+                  <td>release()</td>
+                  <td>Return the Operating System release.</td>
+                </tr>
+                <tr>
+                  <td>version()</td>
+                  <td>Return the Operating System version.</td>
+                </tr>
+                <tr>
+                  <td>sleep()</td>
+                  <td>
+                    Causes the calling thread to sleep for a specified number of
+                    milliseconds.
+                  </td>
+                </tr>
+                <tr>
+                  <td>uptime()</td>
+                  <td>Return the systems uptime in seconds.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="fs">
+            <h1 class="pb-2">FS Class</h1>
+            <p>
+              The FS (File System) class encapsulates an interface to the native
+              file system.
+            </p>
+            <p><strong>Member Functions</strong></p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Function</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>capacity()</td>
+                  <td>
+                    Return the total amount of space on the current file system
+                    in bytes.
+                  </td>
+                </tr>
+                <tr>
+                  <td>available()</td>
+                  <td>
+                    Return the amount of available space on the current file
+                    system in bytes.
+                  </td>
+                </tr>
+                <tr>
+                  <td>free()</td>
+                  <td>
+                    Return the amount of free space on the current file system
+                    in bytes.
+                  </td>
+                </tr>
+                <tr>
+                  <td>getcwd()</td>
+                  <td>Return the current working directory.</td>
+                </tr>
+                <tr>
+                  <td>chdir(path)</td>
+                  <td>Set the current working directory to specified path.</td>
+                </tr>
+                <tr>
+                  <td>gettmp()</td>
+                  <td>Return the path the the system's temporary directory.</td>
+                </tr>
+                <tr>
+                  <td>tmpnam()</td>
+                  <td>Return path for a temporary file.</td>
+                </tr>
+                <tr>
+                  <td>mktmpdir()</td>
+                  <td>Create a temporary directory and return path.</td>
+                </tr>
+                <tr>
+                  <td>filesize(file)</td>
+                  <td>Return the size of the specified file in bytes.</td>
+                </tr>
+                <tr>
+                  <td>cp(from, to)</td>
+                  <td>
+                    Copy filesystem object represented by a path (file or
+                    directory) to a new location. If object is a directory, the
+                    copy will be recursive.
+                  </td>
+                </tr>
+                <tr>
+                  <td>mv(from, to)</td>
+                  <td>
+                    Move filesystem object represented by a path (file or
+                    directory) to a new location.
+                  </td>
+                </tr>
+                <tr>
+                  <td>mkdir(path)</td>
+                  <td>Create a new directory. Parent path must exist.</td>
+                </tr>
+                <tr>
+                  <td>mkdirs(path)</td>
+                  <td>
+                    Create a new directory and all the intermediate directories
+                    if required.
+                  </td>
+                </tr>
+                <tr>
+                  <td>ln(from, to)</td>
+                  <td>Link a file system object to a new path.</td>
+                </tr>
+                <tr>
+                  <td>lns(from, to)</td>
+                  <td>symbolically link a file system object to a new path.</td>
+                </tr>
+                <tr>
+                  <td>ls(directory)</td>
+                  <td>
+                    Return an array of file system object names contains in
+                    specified directory.
+                  </td>
+                </tr>
+                <tr>
+                  <td>resize(file, newSize)</td>
+                  <td>
+                    Change the size of the file: if the file size was previously
+                    larger than newSize, the remainder of the file is discarded.
+                    If the file was previously smaller than newSize, the file
+                    size is increased and the new area appears as if
+                    zero-filled.
+                  </td>
+                </tr>
+                <tr>
+                  <td>rm(file)</td>
+                  <td>Delete the specified file.</td>
+                </tr>
+                <tr>
+                  <td>rmdir(directory)</td>
+                  <td>
+                    Delete the specified directory. If the directory is not
+                    empty, this operation will fail.
+                  </td>
+                </tr>
+                <tr>
+                  <td>rmdirs(directory)</td>
+                  <td>
+                    Delete the specified directory and its content recursively.
+                  </td>
+                </tr>
+                <tr>
+                  <td>touch(file)</td>
+                  <td>
+                    Touch a file by updating its last access time without
+                    changing the contents.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="worker">
+            <h1 class="pb-2">Worker Class</h1>
+            <p>
+              The Worker class provides a mechanism to offload tasks to another
+              thread. When creating a worker, a function is provided that
+              performs the work. This function must be able to receive an object
+              (the task) and return the result.
+            </p>
+            <p>
+              To run a job a task is passed with a callback function. This
+              callback is called with the request (the task) and the response
+              (the result) when the worker is done.
+            </p>
+            <p>
+              The main thread must call the update function until the worker
+              reports all the work done.
+            </p>
+            <p>Here is a trivial example:</p>
+            <pre><code>var worker = Worker(function(input) {
+	return input.sqrt() * input.cos().abs();
+});
+
+var total = 0.0;
+
+for i in range(100) {
+	worker.run(1000.0.random(), function(request, response) {
+		total += response;
+	});
+}
+
+while (!worker.done()) {
+	worker.update();
+}
+
+print(total);
+</code></pre>
+            <p>
+              Obviously, workers are more valuable when run in parallel with
+              other workers or with intensive operations like 3D apps with high
+              frame rates.
+            </p>
+            <p><strong>Member Functions</strong></p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Function</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>__init__(function)</td>
+                  <td>
+                    Initialize a Worker object by providing the function that
+                    will do the heavy lifting. The function must take 1
+                    parameter (the request) and return the result.
+                  </td>
+                </tr>
+                <tr>
+                  <td>run(request, callback)</td>
+                  <td>
+                    Add a new request to the worker's queue. Once the worker is
+                    done, the callback will be called with 2 parameters (the
+                    request and the response).
+                  </td>
+                </tr>
+                <tr>
+                  <td>requests()</td>
+                  <td>Return the number of open requests.</td>
+                </tr>
+                <tr>
+                  <td>update()</td>
+                  <td>
+                    This function must be called until all worker are done.
+                  </td>
+                </tr>
+                <tr>
+                  <td>done()</td>
+                  <td>Returns true when all work is done and processed.</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

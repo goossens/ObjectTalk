@@ -13,7 +13,7 @@ also has many member functions to manipulate the content of a dictionary.
 | Function | Description |
 | ------ | ----------- |
 | \_\_init__(...) | Construct a dictionary. This member function is called when you use the **execution** [()] operator on the Dict class. Every two parameters will become a dictionary entry. The first is the index and the second is the value. You typically don't call this member function directly. |
-| \_\_index__(string) | Return a [DictReference](DictReference.md) object to address individual objects in a dictionary. This member function is called when you use the **index** ([]) operator. You typically don't call this member function directly. |
+| \_\_index__(string) | Return a [DictReference](#dictreference) object to address individual objects in a dictionary. This member function is called when you use the **index** ([]) operator. You typically don't call this member function directly. |
 | \_\_add__(dict) | Concatenates objects from the dictionary to this object's value and return a new dictionary. This member function is called when you use the **addition** (+) operator. In case there are duplicates, the entries in the operand will win. You typically don't call this member function directly. |
 | \_\_contains__(string) | Determine if named object is member of dictionary. This member function is called when you use the **(not) in** operator. You typically don't call this member function directly. |
 | size() | Return number of objects in the dictionary. |

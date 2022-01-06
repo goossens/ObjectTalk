@@ -25,7 +25,7 @@
 		* [Global](#global)
 		* [Module](#module)
 		* [BoundFunction](#boundfunction)
-		* [BytecodeFunction](#bytecodefunction)
+		* [ByteCodeFunction](#bytecodefunction)
 		* [Throw](#Throw)
 		* [Reference](#reference)
 			* [MemberReference](#memberreference)

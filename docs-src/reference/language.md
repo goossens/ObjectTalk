@@ -1,9 +1,9 @@
 Below is a formal expression of the ObjectTalk scripting language in
-Extended Backus–Naur Form (EBNF). You can read more about this notation
-on [Wikipedia](https://en.wikipedia.org/wiki/Extended_Backus–Naur_form). The pretty diagrams were created using the
-["RailRoad Diagram Generator"](https://www.bottlecaps.de/rr/ui) which
-translates EBNF into HTML with pictures. This tool is highly recommended
-for visualizing grammar.
+Extended Backus–Naur Form (EBNF). You can read more about this
+notation on [Wikipedia](https://en.wikipedia.org/wiki/Extended_Backus–Naur_form). The pretty diagrams were created using
+the ["RailRoad Diagram Generator"](https://www.bottlecaps.de/rr/ui)
+which translates EBNF into HTML with pictures. This tool is highly
+recommended for visualizing grammar.
 
 ## module
 ![Railroad Diagram](img/module.png)
@@ -17,7 +17,7 @@ for visualizing grammar.
 	| block
 	| "var" name ("=" expression)? ";"
 	| "class" name ":" expression block
-	| "function" name "(" ((name ("," name)*)? | "...") ")" block
+	| "function" name "(" ((name ("," name)*)?) ")" block
 	| "if" expression block ("elif" expression block)* ("else" block)?
 	| "while" expression block
 	| "do" block "while" expression ";"

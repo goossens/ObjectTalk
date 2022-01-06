@@ -1,0 +1,23 @@
+#!/usr/local/bin/ot
+
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2022 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var classMembers = members(Worker(function() {}).getClass());
+classMembers.sort();
+
+print("**Member Functions**");
+print();
+print("| Function | Description |");
+print("| ------ | ----------- |");
+
+for member in classMembers {
+	if member.startsWith("__") {
+		member = "\\_\\_" + member.right(member.len() - 2);
+	}
+
+	print("| ", member, "() | |");
+}

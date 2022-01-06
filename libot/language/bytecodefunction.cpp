@@ -44,7 +44,7 @@ OtType OtByteCodeFunctionClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtTypeClass::create<OtByteCodeFunctionClass>("BytecodeFunction", OtInternalClass::getMeta());
+		type = OtTypeClass::create<OtByteCodeFunctionClass>("ByteCodeFunction", OtInternalClass::getMeta());
 		type->set("__call__", OtFunctionClass::create(&OtByteCodeFunctionClass::operator()));
 	}
 

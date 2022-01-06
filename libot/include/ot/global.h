@@ -48,4 +48,7 @@ private:
 
 	// call member function on super class
 	static OtObject super(size_t count, OtObject* parameters);
+
+	// get list of objects member names
+	static OtObject members(OtObject object);
 };

@@ -11,6 +11,7 @@
 
 #include <regex>
 
+#include "ot/callback.h"
 #include "ot/function.h"
 #include "ot/httpnext.h"
 #include "ot/httprouter.h"
@@ -24,6 +25,9 @@
 class OtHttpMethodHandler : public OtHttpRouterClass::OtHandler {
 public:
 	OtHttpMethodHandler(const std::string& m, const std::string& p, OtObject cb) : method(m), path(p), callback(cb) {
+		// sanity check
+		OtCallbackValidate(callback, 3);
+
 		if (method.length() == 0) {
 			type = USE;
 

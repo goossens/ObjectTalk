@@ -43,12 +43,29 @@ public:
 		cv.notify_one();
 	}
 
+	// return number of queue entries
+	int size() {
+		return queue.size();
+	}
+
 	// see if queue has entries
 	bool empty() {
 		std::unique_lock<std::mutex> mlock(mutex);
 		auto empty = queue.empty();
 		mlock.unlock();
 		return empty;
+	}
+
+	// wait until queue is not empty
+	void wait() {
+		std::unique_lock<std::mutex> mlock(mutex);
+
+		while (queue.empty()) {
+			cv.wait(mlock);
+		}
+
+		mlock.unlock();
+		cv.notify_one();
 	}
 
 	// pop item from queue and wait if queue is empty

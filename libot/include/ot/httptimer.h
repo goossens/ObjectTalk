@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include "ot/callback.h"
 #include "ot/internal.h"
 #include "ot/libuv.h"
 #include "ot/vm.h"
@@ -28,6 +29,9 @@ class OtHttpTimerClass : public OtInternalClass {
 public:
 	OtHttpTimerClass() = default;
 	OtHttpTimerClass(long wait, long repeat, OtObject cb) : callback(cb) {
+		// sanity check
+		OtCallbackValidate(callback, 0);
+
 		uv_timer_init(uv_default_loop(), &uv_timer);
 		uv_timer.data = this;
 

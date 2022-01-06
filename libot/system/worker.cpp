@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include "ot/callback.h"
 #include "ot/exception.h"
 #include "ot/function.h"
 #include "ot/vm.h"
@@ -34,10 +35,7 @@ OtWorkerClass::~OtWorkerClass() {
 
 void OtWorkerClass::init(OtObject object) {
 	// sanity check
-	if (!(object->isKindOf("Function") || object->isKindOf("BytecodeFunction"))) {
-		OtExcept("Expected a [Function] object, not a [%s]", object->getType()->getName().c_str());
-	}
-
+	OtCallbackValidate(object, 1);
 	handler = object;
 
 	// start a thread
@@ -49,6 +47,8 @@ void OtWorkerClass::init(OtObject object) {
 			bool done = false;
 
 			while (!done) {
+				requests.wait();
+				inRequest = true;
 				OtWorkerRequest request = requests.pop();
 
 				if (request.done) {
@@ -61,6 +61,8 @@ void OtWorkerClass::init(OtObject object) {
 					// return result
 					responses.push(OtWorkerResponse(request.request, response, request.callback));
 				}
+
+				inRequest = false;
 			}
 
 			running = false;
@@ -79,6 +81,9 @@ void OtWorkerClass::init(OtObject object) {
 //
 
 void OtWorkerClass::run(OtObject request, OtObject callback) {
+	// sanity check
+	OtCallbackValidate(callback, 2);
+
 	// add request to queue
 	requests.push(OtWorkerRequest(request, callback));
 }
@@ -99,6 +104,15 @@ void OtWorkerClass::update() {
 
 
 //
+//	OtWorkerClass::done
+//
+
+bool OtWorkerClass::done() {
+	return requests.size() == 0 && !inRequest && responses.size() == 0;
+}
+
+
+//
 //	OtWorkerClass::getMeta
 //
 
@@ -110,6 +124,7 @@ OtType OtWorkerClass::getMeta() {
 		type->set("__init__", OtFunctionClass::create(&OtWorkerClass::init));
 		type->set("run", OtFunctionClass::create(&OtWorkerClass::run));
 		type->set("update", OtFunctionClass::create(&OtWorkerClass::update));
+		type->set("done", OtFunctionClass::create(&OtWorkerClass::done));
 	}
 
 	return type;

@@ -57,6 +57,7 @@ public:
 	OtObject set(const std::string& name, OtObject value) { members->set(name, value); return value; }
 	OtObject get(const std::string& name) { return members->has(name) ? members->get(name) : nullptr; }
 	void unset(const std::string& name);
+	OtMembers getMembers() { return members; }
 
 	// register a type
 	static OtType registerType(OtSharedType type);

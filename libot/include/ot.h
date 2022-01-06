@@ -83,6 +83,7 @@
 #include "ot/setiterator.h"
 #include "ot/stringiterator.h"
 
+#include "ot/callback.h"
 #include "ot/registry.h"
 #include "ot/singleton.h"
 #include "ot/stack.h"

@@ -26,7 +26,7 @@ OtObject OtMemberReferenceClass::deref() {
 		return result;
 
 	// create bound function if required
-} else if (result && (result->isKindOf("Function") || result->isKindOf("BytecodeFunction"))) {
+	} else if (result && (result->isKindOf("Function") || result->isKindOf("ByteCodeFunction"))) {
 		return OtBoundFunctionClass::create(object, result);
 
 	// it's just a member variable

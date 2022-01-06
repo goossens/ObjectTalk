@@ -41,6 +41,9 @@ public:
 	// see if results are available
 	void update();
 
+	// see if all requests are processed and results returned
+	bool done();
+
 	// get type definition
 	static OtType getMeta();
 
@@ -70,6 +73,7 @@ private:
 
 	// managing our thread
 	bool running = false;
+	bool inRequest = false;
 	std::thread worker;
 	OtConcurrentQueue<OtWorkerRequest> requests;
 	OtConcurrentQueue<OtWorkerResponse> responses;

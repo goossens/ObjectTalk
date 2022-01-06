@@ -65,6 +65,7 @@ OtGlobalClass::OtGlobalClass() {
 	set("import", OtFunctionClass::create(&OtGlobalClass::import));
 	set("print", OtFunctionClass::create(&OtGlobalClass::print));
 	set("super", OtFunctionClass::create(&OtGlobalClass::super));
+	set("members", OtFunctionClass::create(&OtGlobalClass::members));
 
 	// add default classes
 	set("Object", OtClassClass::create(OtObjectClass::getMeta()));
@@ -207,6 +208,33 @@ OtObject OtGlobalClass::super(size_t count, OtObject* parameters) {
 	return OtVM::callMemberFunction(parameters[0], member, count - 2, &(parameters[2]));
 }
 
+
+//
+//	OtGlobalClass::members
+//
+
+OtObject OtGlobalClass::members(OtObject object) {
+	OtArray array = OtArrayClass::create();
+	OtMembers members;
+
+	// special treatment for class objects
+	if (object->isKindOf("Class")) {
+		members = object->cast<OtClassClass>()->getClassType()->getMembers();
+
+	} else {
+		members = object->getMembers();
+	}
+
+	// process all members (if required)
+	if (members) {
+		for (auto& name : members->names()) {
+			array->append(OtStringClass::create(name));
+		}
+	}
+
+	// return results
+	return array;
+}
 
 
 //

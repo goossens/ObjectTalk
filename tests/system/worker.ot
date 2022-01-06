@@ -17,7 +17,6 @@ var worker2 = Worker(handler1);
 var worker3 = Worker(handler2);
 var worker4 = Worker(handler2);
 
-var c = 0;
 var c1 = 0;
 var c2 = 0;
 var c3 = 0;
@@ -26,44 +25,36 @@ var c4 = 0;
 var iterations = 100;
 
 for x in range(iterations) {
-	c++;
 	c1++;
 
 	worker1.run(x, function(request, response) {
 		assert(response == request + 10);
-		c--;
 		c1--;
 	});
 
-	c++;
 	c2++;
 
 	worker2.run(x + 10, function(request, response) {
 		assert(response == request + 10);
-		c--;
 		c2--;
 	});
 
-	c++;
 	c3++;
 
 	worker3.run(x + 20, function(request, response) {
 		assert(response == request + 20);
-		c--;
 		c3--;
 	});
 
-	c++;
 	c4++;
 
 	worker4.run(x + 30, function(request, response) {
 		assert(response == request + 20);
-		c--;
 		c4--;
 	});
 }
 
-while (c) {
+while (!worker1.done() && !worker2.done() && !worker3.done() && !worker4.done()) {
 	worker1.update();
 	worker2.update();
 	worker3.update();

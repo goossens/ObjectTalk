@@ -82,6 +82,11 @@ public:
 	// erase member from until specified locations
 	void eraseMultiple(size_t index1, size_t index2);
 
+	// sort array in place
+	void sort();
+	void rsort();
+	void csort(OtObject function);
+
 	// push object to end of array
 	void push(OtObject object);
 

@@ -64,6 +64,28 @@ You can iterate over the entire set of values in an array with the
 		print(item);
 	}
 
+**Sorting an Array**
+
+You can sort an array using the **sort**, **rsort** and **csort**
+member functions. **sort** puts the array elements in ascending
+order, **rsort** is a reverse sort putting the elements in a
+decending order and **csort** is a custom sort that allows you to
+provide a function to determine the order.
+
+	var array = [1, 2, 3, 4];
+
+	array.rsort();
+	// array is now [4, 3, 2, 1]
+
+	array.sort();
+	// array is now [1, 2, 3, 4]
+
+	array.csort(function(a, b) {
+		return a > b;
+	});
+
+	// array is now [4, 3, 2, 1]
+
 ### Dictionaries
 
 A dictionary stores associations between string keys and values in a

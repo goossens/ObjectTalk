@@ -14,13 +14,7 @@
   </head>
   <body id="page-top">
     <div
-      class="
-        container-fluid
-        d-flex
-        flex-column flex-grow-1
-        vh-100
-        overflow-hidden
-      "
+      class="container-fluid d-flex flex-column flex-grow-1 vh-100 overflow-hidden"
     >
       <nav
         class="navbar navbar-expand px-0 pt-1 pb-0 flex-shrink-0 manual-header"
@@ -363,6 +357,30 @@ var item = stack.pop();
 for item in array {
 	print(item);
 }
+</code></pre>
+            <p><strong>Sorting an Array</strong></p>
+            <p>
+              You can sort an array using the <strong>sort</strong>,
+              <strong>rsort</strong> and <strong>csort</strong> member
+              functions. <strong>sort</strong> puts the array elements in
+              ascending order, <strong>rsort</strong> is a reverse sort putting
+              the elements in a decending order and <strong>csort</strong> is a
+              custom sort that allows you to provide a function to determine the
+              order.
+            </p>
+            <pre><code>var array = [1, 2, 3, 4];
+
+array.rsort();
+// array is now [4, 3, 2, 1]
+
+array.sort();
+// array is now [1, 2, 3, 4]
+
+array.csort(function(a, b) {
+	return a &gt; b;
+});
+
+// array is now [4, 3, 2, 1]
 </code></pre>
             <h3>Dictionaries</h3>
             <p>

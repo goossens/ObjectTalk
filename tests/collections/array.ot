@@ -86,3 +86,15 @@ array6.fill(5, 1);
 assert(array6 == [1, 1, 1, 1, 1]);
 
 assert(array5.join(" ") == "1 2 3 4 5");
+
+array5.rsort();
+assert(array5 == [5, 4, 3, 2, 1]);
+
+array5.sort();
+assert(array5 == [1, 2, 3, 4, 5]);
+
+array5.csort(function(a, b) {
+	return a > b;
+});
+
+assert(array5 == [5, 4, 3, 2, 1]);

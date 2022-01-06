@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include <algorithm>
 #include <sstream>
 
 #include "ot/exception.h"
@@ -16,6 +17,7 @@
 #include "ot/arrayreference.h"
 #include "ot/arrayiterator.h"
 #include "ot/function.h"
+#include "ot/vm.h"
 
 
 //
@@ -303,6 +305,40 @@ void OtArrayClass::eraseMultiple(size_t index1, size_t index2) {
 
 
 //
+//	OtArrayClass::sort
+//
+
+void OtArrayClass::sort() {
+	std::sort(array.begin(), array.end(), [](OtObject a, OtObject b) {
+		return *a < *b;
+	});
+}
+
+
+//
+//	OtArrayClass::rsort
+//
+
+void OtArrayClass::rsort() {
+	std::sort(array.begin(), array.end(), [](OtObject a, OtObject b) {
+		return !(*a < *b);
+	});
+}
+
+
+//
+//	OtArrayClass::csort
+//
+
+void OtArrayClass::csort(OtObject function) {
+	std::sort(array.begin(), array.end(), [function](OtObject a, OtObject b) {
+		auto result = OtVM::callMemberFunction(function, "__call__", a, b);
+		return result->operator bool();
+	});
+}
+
+
+//
 //	OtArrayClass::push
 //
 
@@ -390,6 +426,10 @@ OtType OtArrayClass::getMeta() {
 
 		type->set("erase", OtFunctionClass::create(&OtArrayClass::erase));
 		type->set("eraseMultiple", OtFunctionClass::create(&OtArrayClass::eraseMultiple));
+
+		type->set("sort", OtFunctionClass::create(&OtArrayClass::sort));
+		type->set("rsort", OtFunctionClass::create(&OtArrayClass::rsort));
+		type->set("csort", OtFunctionClass::create(&OtArrayClass::csort));
 
 		type->set("push", OtFunctionClass::create(&OtArrayClass::push));
 		type->set("pop", OtFunctionClass::create(&OtArrayClass::pop));

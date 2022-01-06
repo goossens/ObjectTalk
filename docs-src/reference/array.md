@@ -29,6 +29,9 @@ many member functions to manipulate the content of an array.
 | insert(index, object) | Insert object at specified location. |
 | erase(index) | Remove object at specified location. |
 | eraseMultiple(from, to) | Remove all objects between specified locations. |
+| sort() | Sort array in ascending order. Sort is performed in place. |
+| rsort() | Reverse sort array in ascending order. Sort is performed in place. |
+| csort(function) | Sort array in an order controlled by a provided function. The function must take two parameters and return true if they are in the right order or false if they need to be reversed. Sort is performed in place. |
 | push(object) | Push object to array. This is the same as append but makes it more logical if you use an array as a stack. |
 | pop() | Pop object from the end of the array allowing it to be used as a stack. |
 | fill(count, object) |  Fill array with N copies of provided object. |

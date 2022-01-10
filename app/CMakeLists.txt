@@ -21,10 +21,8 @@ set_target_properties(ot PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BIN
 
 set_target_properties(ot PROPERTIES XCODE_GENERATE_SCHEME TRUE)
 set_target_properties(ot PROPERTIES XCODE_SCHEME_EXECUTABLE "${CMAKE_BINARY_DIR}/bin/ot")
-set_target_properties(ot PROPERTIES XCODE_SCHEME_ARGUMENTS "${CMAKE_SOURCE_DIR}/examples/3d/terrain.ot")
 
 set_target_properties(ot PROPERTIES VS_DEBUGGER_COMMAND "${CMAKE_BINARY_DIR}/bin/ot")
-set_target_properties(ot PROPERTIES VS_DEBUGGER_COMMAND_ARGUMENTS "${CMAKE_SOURCE_DIR}/tests/system/worker.ot")
 
 install(TARGETS ot DESTINATION bin)
 

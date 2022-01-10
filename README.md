@@ -59,7 +59,7 @@ In case the GUI module is included, we also use:
 * [glm](https://github.com/g-truc/glm) - mathematics library for graphics software.
 * [Box2D](https://box2d.org) - 2D physics engine.
 * [tweeny](https://github.com/mobius3/tweeny) - animation library.
-* [ImGuiFileDialog](https://github.com/aiekick/ImGuiFileDialog) - file selection dialog built for Dear ImGui.
+* [ImGuiFileDialog](https://github.com/aiekick/ImGuiFileDialog) - file selection dialog for Dear ImGui.
 * [ImGuiColorTextEdit](https://github.com/BalazsJako/ImGuiColorTextEdit) - syntax highlighting text editor for Dear ImGui.
 
 A special thanks also goes to
@@ -80,6 +80,7 @@ More (smaller) credits can be found in the GUI module:
 
 * [Algorithms](gui/README.md)
 * [Assets](examples/3d/assets/README.md)
+* [Fonts](gui/utilities/README.md)
 
 ## License
 

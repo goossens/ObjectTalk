@@ -4,7 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Declare(imguieditor GIT_REPOSITORY "https://github.com/BalazsJako/ImGuiColorTextEdit")
+FetchContent_Declare(imguieditor GIT_REPOSITORY "https://github.com/goossens/ImGuiColorTextEdit")
 FetchContent_MakeAvailable(imguieditor)
 
 set(IMGUIEDITOR_SOURCES

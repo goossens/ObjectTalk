@@ -11,6 +11,6 @@ add_library(ide STATIC ${IDE_INCLUDES} ${IDE_SOURCES})
 add_dependencies(ide libot gui)
 target_include_directories(ide PRIVATE ${GUI_INCLUDE_DIRS})
 
-target_link_libraries(ide glfw bgfx imgui imguifd imguieditor tinyobjloader box2d)
+target_link_libraries(ide glfw bgfx imgui imguifd tinyobjloader box2d)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${IDE_INCLUDES} ${IDE_SOURCES})

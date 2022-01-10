@@ -70,25 +70,28 @@ void OtApplicationClass::initIMGUI() {
 	io.KeyMap[ImGuiKey_Y] = GLFW_KEY_Y;
 	io.KeyMap[ImGuiKey_Z] = GLFW_KEY_Z;
 
-	// setup vertex declaration
-	imguiVertexLayout
-		.begin()
-		.add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
-		.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
-		.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
-		.end();
+	// setup clipboard functions
+	io.ClipboardUserData = this;
 
-	imguiFontUniform = bgfx::createUniform("g_AttribLocationTex", bgfx::UniformType::Sampler);
+	io.SetClipboardTextFn = [](void* data, const char* text) {
+		OtApplicationClass* app = (OtApplicationClass*) data;
+		glfwSetClipboardString(app->window, text);
+	};
 
-	// create shader program
-	bgfx::RendererType::Enum type = bgfx::getRendererType();
+	io.GetClipboardTextFn = [](void* data) {
+		OtApplicationClass* app = (OtApplicationClass*) data;
+		return glfwGetClipboardString(app->window);
+	};
 
-	imguiProgram = bgfx::createProgram(
-		bgfx::createEmbeddedShader(embeddedShaders, type, "vs_imgui"),
-		bgfx::createEmbeddedShader(embeddedShaders, type, "fs_imgui"),
-		true);
+	// add default font
+	io.Fonts->AddFontDefault();
 
-	// setup default font
+	// call font callbacks
+	for (auto& callback : atFontCallbacks) {
+		callback();
+	}
+
+	// setup font atlas in texture
 	unsigned char* pixels;
 	int fw, fh;
 	io.Fonts->GetTexDataAsRGBA32(&pixels, &fw, &fh);
@@ -98,6 +101,25 @@ void OtApplicationClass::initIMGUI() {
 		0, bgfx::copy(pixels, fw * fh * 4));
 
 	io.Fonts->TexID = (void*)(intptr_t) imguiFontTexture.idx;
+
+	// setup vertex declaration
+	imguiVertexLayout
+		.begin()
+		.add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
+		.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
+		.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
+		.end();
+
+	// setup font texture
+	imguiFontUniform = bgfx::createUniform("g_AttribLocationTex", bgfx::UniformType::Sampler);
+
+	// create shader program
+	bgfx::RendererType::Enum type = bgfx::getRendererType();
+
+	imguiProgram = bgfx::createProgram(
+		bgfx::createEmbeddedShader(embeddedShaders, type, "vs_imgui"),
+		bgfx::createEmbeddedShader(embeddedShaders, type, "fs_imgui"),
+		true);
 }
 
 
@@ -127,8 +149,8 @@ void OtApplicationClass::frameIMGUI(std::vector<OtAppEvent>& events) {
 				break;
 
 			case OtAppEvent::mouseWheelEvent:
-				io.MouseWheel = event.mouseWheel.xOffset;
-				io.MouseWheelH = event.mouseWheel.yOffset;
+				io.MouseWheel = event.mouseWheel.yOffset;
+				io.MouseWheelH = event.mouseWheel.xOffset;
 				break;
 
 			case OtAppEvent::keyboardEvent:

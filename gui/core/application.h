@@ -72,8 +72,11 @@ public:
 	// get the next available view ID
 	int getNextViewID() { return nextViewID++; }
 
-	// register function to be called at exit
-	void atexit(std::function<void(void)> callback);
+	// register callback functions
+	void atinit(std::function<void(void)> callback) { atInitCallbacks.push_back(callback); }
+	void atfont(std::function<void(void)> callback) { atFontCallbacks.push_back(callback); }
+	void atrender(std::function<void(void)> callback) { atRenderCallbacks.push_back(callback); }
+	void atexit(std::function<void(void)> callback) { atExitCallbacks.push_back(callback); }
 
 	// add enums to specified module
 	void addEnumsGLFW(OtObject module);
@@ -146,7 +149,10 @@ private:
 	// simulations
 	std::vector<OtSimulation> simulations;
 
-	// end of program callbacks
+	// callbacks
+	std::vector<std::function<void(void)>> atInitCallbacks;
+	std::vector<std::function<void(void)>> atFontCallbacks;
+	std::vector<std::function<void(void)>> atRenderCallbacks;
 	std::vector<std::function<void(void)>> atExitCallbacks;
 
 	// to render IMGUI

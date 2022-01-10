@@ -69,20 +69,16 @@ int main(int argc, char* argv[]) {
 		if (scripts.size() == 0) {
 			// no, do we start the editor?
 #if defined(INCLUDE_GUI)
-			if (program["--editor"] == true) {
-				OtWorkspaceClass::instance()->init();
-				OtWorkspaceClass::instance()->newFile();
-				OtWorkspaceClass::instance()->run();
+			OtWorkspaceClass::instance()->init();
+			OtWorkspaceClass::instance()->newFile();
+			OtWorkspaceClass::instance()->run();
 
-			} else {
+#else
+			std::cerr << "No scripts specified" << std::endl << std::endl;
+			std::cerr << program;
+			exit(EXIT_FAILURE);
 #endif
 
-				std::cerr << "No scripts specified" << std::endl << std::endl;
-				std::cerr << program;
-				exit(EXIT_FAILURE);
-#if defined(INCLUDE_GUI)
-			}
-#endif
 
 		} else {
 #if defined(INCLUDE_GUI)

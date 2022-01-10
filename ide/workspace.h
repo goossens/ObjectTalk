@@ -48,4 +48,7 @@ public:
 private:
 	// list of open editors
 	std::vector<OtEditor> editors;
+
+	// render all windows
+	void render();
 };

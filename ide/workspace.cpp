@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include "application.h"
+
 #include "workspace.h"
 
 
@@ -17,7 +19,7 @@
 //
 
 void OtWorkspaceClass::init() {
-
+	OtApplicationClass::instance()->atrender(std::bind(&OtWorkspaceClass::render, this));
 }
 
 
@@ -26,7 +28,7 @@ void OtWorkspaceClass::init() {
 //
 
 void OtWorkspaceClass::newFile() {
-
+	editors.push_back(OtEditorClass::create());
 }
 
 
@@ -35,7 +37,7 @@ void OtWorkspaceClass::newFile() {
 //
 
 void OtWorkspaceClass::openFile(const std::string& filename) {
-
+	editors.push_back(OtEditorClass::create(filename));
 }
 
 
@@ -44,7 +46,19 @@ void OtWorkspaceClass::openFile(const std::string& filename) {
 //
 
 void OtWorkspaceClass::run() {
+	OtApplicationClass::instance()->run("ObjectTalk IDE");
+}
 
+
+//
+//	OtWorkspaceClass::render
+//
+
+void OtWorkspaceClass::render() {
+	// refresh all editors
+	for (auto& editor : editors) {
+		editor->render();
+	}
 }
 
 

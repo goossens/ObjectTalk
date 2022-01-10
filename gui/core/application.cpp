@@ -67,6 +67,11 @@ void OtApplicationClass::runThread2() {
 		// create a screen widget
 		screen = OtScreenClass::create();
 
+		// call init callbacks
+		for (auto& callback : atInitCallbacks) {
+			callback();
+		}
+
 		// call app's setup member (if defined)
 		if (has("setup")) {
 			OtVM::callMemberFunction(shared(), "setup", screen);
@@ -247,6 +252,11 @@ void OtApplicationClass::runThread2() {
 			screen->update();
 			screen->render();
 
+			// call render callbacks
+			for (auto& callback : atRenderCallbacks) {
+				callback();
+			}
+
 			// add profiler (if required)
 			if (profiler) {
 				renderProfiler();
@@ -277,7 +287,7 @@ void OtApplicationClass::runThread2() {
 		// also remove app instance variables that the user might have added
 		unsetAll();
 
-		// call all atexit callbacks
+		// call exit callbacks
 		for (auto& callback : atExitCallbacks) {
 			callback();
 		}
@@ -361,15 +371,6 @@ OtObject OtApplicationClass::addSimulation(OtObject object) {
 
 void OtApplicationClass::addShortcut(int modifier, int keycode, std::function<void(void)> callback) {
 	shortcuts.push_back(OtKeyboardShortcut(modifier, keycode, callback));
-}
-
-
-//
-//	OtApplicationClass::atexit
-//
-
-void OtApplicationClass::atexit(std::function<void(void)> callback) {
-	atExitCallbacks.push_back(callback);
 }
 
 

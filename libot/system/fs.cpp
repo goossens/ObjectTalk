@@ -25,9 +25,23 @@
 //	OtFSClass::gettmp
 //
 
+OtObject OtFSClass::gethome() {
+	size_t length = 1024;
+	char buffer[length];
+	auto status = uv_os_homedir(buffer, &length);
+	UV_CHECK_ERROR("uv_os_homedir", status);
+	std::string home(buffer, length);
+	return OtPathClass::create(std::filesystem::canonical(std::string(buffer, length)));
+}
+
+
+//
+//	OtFSClass::gettmp
+//
+
 OtObject OtFSClass::gettmp() {
-	 return OtPathClass::create(std::filesystem::canonical(
-		 std::filesystem::temp_directory_path()));
+	return OtPathClass::create(std::filesystem::canonical(
+		std::filesystem::temp_directory_path()));
 }
 
 
@@ -371,6 +385,7 @@ OtType OtFSClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtFSClass>("FS", OtSystemClass::getMeta());
 
+		type->set("gethome", OtFunctionClass::create(&OtFSClass::gethome));
 		type->set("gettmp", OtFunctionClass::create(&OtFSClass::gettmp));
 		type->set("tmpnam", OtFunctionClass::create(&OtFSClass::tmpnam));
 		type->set("getcwd", OtFunctionClass::create(&OtFSClass::getcwd));

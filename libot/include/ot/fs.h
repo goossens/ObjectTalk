@@ -26,6 +26,9 @@ typedef std::shared_ptr<OtFSClass> OtFS;
 
 class OtFSClass : public OtSystemClass {
 public:
+	// get currrent user's home directory
+	OtObject gethome();
+
 	// get temporary directory
 	OtObject gettmp();
 

@@ -8,6 +8,7 @@ the native file system.
 | capacity() | Return the total amount of space on the current file system in bytes. |
 | available() | Return the amount of available space on the current file system in bytes. |
 | free() | Return the amount of free space on the current file system in bytes. |
+| gethome() | Return the current user's home directory. |
 | getcwd() | Return the current working directory. |
 | chdir(path) | Set the current working directory to specified path. |
 | gettmp() | Return the path the the system's temporary directory. |

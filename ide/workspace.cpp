@@ -222,7 +222,7 @@ std::string OtWorkspaceClass::getDefaultDirectory() {
 
 	// start with examples folder if we are
 	if (std::filesystem::is_directory(examples)) {
-		return examples;
+		return examples.string();
 
 	} else {
 		// just start with user's home directory
@@ -231,9 +231,6 @@ std::string OtWorkspaceClass::getDefaultDirectory() {
 		std::string home(buffer, length);
 		return std::filesystem::canonical(std::string(buffer, length)).string();
 	}
-
-	// find lib directory
-	auto lib = root / "lib" / "ot";
 }
 
 

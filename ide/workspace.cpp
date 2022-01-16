@@ -165,6 +165,7 @@ void OtWorkspaceClass::render() {
 			ImGui::Separator();
 
 			if (ImGui::Button("OK", ImVec2(120, 0))) {
+				application->quit();
 				ImGui::CloseCurrentPopup();
 				confirmQuit = false;
 			}
@@ -208,8 +209,8 @@ bool OtWorkspaceClass::close() {
 
 std::string OtWorkspaceClass::getDefaultDirectory() {
 	// figure out where we live
+	char buffer[1024];
 	size_t length = 1024;
-	char buffer[length];
 	auto status = uv_exepath(buffer, &length);
 	UV_CHECK_ERROR("uv_exepath", status);
 	std::string home(buffer, length);

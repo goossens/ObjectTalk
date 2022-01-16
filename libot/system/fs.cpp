@@ -26,8 +26,8 @@
 //
 
 OtObject OtFSClass::gethome() {
+	char buffer[1024];
 	size_t length = 1024;
-	char buffer[length];
 	auto status = uv_os_homedir(buffer, &length);
 	UV_CHECK_ERROR("uv_os_homedir", status);
 	std::string home(buffer, length);

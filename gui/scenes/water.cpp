@@ -186,8 +186,9 @@ OtObject OtWaterClass::setNormalScale(float s) {
 
 void OtWaterClass::preRender(OtRenderingContext* context) {
 	// get new IDs for reflection and refraction rendering
-	reflectionView = OtApplicationClass::instance()->getNextViewID();
-	refractionView = OtApplicationClass::instance()->getNextViewID();
+	OtApplication application = OtApplicationClass::instance();
+	reflectionView = application->getNextViewID();
+	refractionView = application->getNextViewID();
 
 	// create/update frame buffers (if required)
 	if (frameBufferAspect != context->viewAspect) {

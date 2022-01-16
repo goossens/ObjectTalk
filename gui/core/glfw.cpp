@@ -71,6 +71,18 @@ void OtApplicationClass::initGLFW(const std::string& name) {
 	fixMenuLabels(name);
 #endif
 
+	// setup window close callback
+	glfwSetWindowCloseCallback(window, [](GLFWwindow* window) {
+		OtApplicationClass* app = (OtApplicationClass*) glfwGetWindowUserPointer(window);
+
+		// call close callbacks
+		for (auto& callback : app->atCloseCallbacks) {
+			if (!callback()) {
+				glfwSetWindowShouldClose(window, GLFW_FALSE);
+			}
+		}
+	});
+
 	// setup window resize callback
 	glfwSetWindowSizeCallback(window, [](GLFWwindow* window, int w, int h) {
 		OtApplicationClass* app = (OtApplicationClass*) glfwGetWindowUserPointer(window);
@@ -173,6 +185,15 @@ void OtApplicationClass::eventsGLFW() {
 			}
 		}
 	}
+}
+
+
+//
+//	OtApplicationClass::quitGLFW
+//
+
+void OtApplicationClass::quitGLFW() {
+	glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
 

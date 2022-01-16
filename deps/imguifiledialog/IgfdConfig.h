@@ -9,3 +9,12 @@
 
 #define USE_DIALOG_EXIT_WITH_KEY
 #define IGFD_EXIT_KEY GLFW_KEY_ESCAPE
+
+#define fileSizeBytes "bytes"
+#define fileSizeKiloBytes "KB"
+#define fileSizeMegaBytes "MB"
+#define fileSizeGigaBytes "GB"
+
+#define OverWriteDialogTitleString "Confirm overwrite..."
+#define OverWriteDialogMessageString "The file already exists!\nWould you like to overwrite it?\n\n"
+#define OverWriteDialogConfirmButtonString "OK"

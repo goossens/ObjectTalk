@@ -188,10 +188,10 @@ static bool TokenizeCStylePunctuation(const char* in_begin, const char* in_end, 
 }
 
 const TextEditor::LanguageDefinition& OtLanguageGetDefinition() {
-	static bool inited = false;
+	static bool initialized = false;
 	static TextEditor::LanguageDefinition langDef;
 
-	if (!inited) {
+	if (!initialized) {
 		static const char* const otKeywords[] = {
 			"catch", "class", "do", "elif", "else", "for", "function", "if", "in", "not", "return", "throw", "try", "var", "while"
 		};
@@ -214,7 +214,7 @@ const TextEditor::LanguageDefinition& OtLanguageGetDefinition() {
 		};
 
 		for (auto& k : otConstants) {
-			TextEditor::	Identifier id;
+			TextEditor::Identifier id;
 			id.mDeclaration = "Built-in constant";
 			langDef.mIdentifiers.insert(std::make_pair(std::string(k), id));
 		}
@@ -230,19 +230,19 @@ const TextEditor::LanguageDefinition& OtLanguageGetDefinition() {
 				out_begin = in_end;
 				out_end = in_end;
 				paletteIndex = TextEditor::PaletteIndex::Default;
-			}
 
-			else if (TokenizeCStyleString(in_begin, in_end, out_begin, out_end))
+			} else if (TokenizeCStyleString(in_begin, in_end, out_begin, out_end)) {
 				paletteIndex = TextEditor::PaletteIndex::String;
 
-			else if (TokenizeCStyleIdentifier(in_begin, in_end, out_begin, out_end))
+			} else if (TokenizeCStyleIdentifier(in_begin, in_end, out_begin, out_end)) {
 				paletteIndex = TextEditor::PaletteIndex::Identifier;
 
-			else if (TokenizeCStyleNumber(in_begin, in_end, out_begin, out_end))
+			} else if (TokenizeCStyleNumber(in_begin, in_end, out_begin, out_end)) {
 				paletteIndex = TextEditor::PaletteIndex::Number;
 
-			else if (TokenizeCStylePunctuation(in_begin, in_end, out_begin, out_end))
+			} else if (TokenizeCStylePunctuation(in_begin, in_end, out_begin, out_end)) {
 				paletteIndex = TextEditor::PaletteIndex::Punctuation;
+			}
 
 			return paletteIndex != TextEditor::PaletteIndex::Max;
 		};
@@ -255,8 +255,7 @@ const TextEditor::LanguageDefinition& OtLanguageGetDefinition() {
 		langDef.mAutoIndentation = true;
 
 		langDef.mName = "ObjectTalk";
-
-		inited = true;
+		initialized = true;
 	}
 
 	return langDef;

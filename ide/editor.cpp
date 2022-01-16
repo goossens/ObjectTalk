@@ -9,8 +9,17 @@
 //	Include files
 //
 
+#include <fstream>
+#include <iostream>
+#include <sstream>
+
+#include "ot/exception.h"
+#include "ot/numbers.h"
+
+#include "application.h"
 #include "editor.h"
 #include "language.h"
+#include "workspace.h"
 
 
 //
@@ -18,64 +27,264 @@
 //
 
 void OtEditorClass::render() {
-	auto cpos = editor.GetCursorPosition();
+	// calculate size and position for editor window
+	OtApplication application = OtApplicationClass::instance();
+	int width = application->getWidth();
+	int height = application->getHeight();
+	ImVec2 size = ImVec2(width * 0.6, height * 0.6);
 
-	ImGui::Begin(filename.c_str(), nullptr, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_MenuBar);
-	ImGui::SetWindowSize(ImVec2(800, 600), ImGuiCond_FirstUseEver);
+	ImVec2 pos = ImVec2(
+		width * 0.05 + OtRandom(width * 0.9 - size.x),
+		height * 0.05 + OtRandom(height * 0.9 - size.y));
 
+	// determine window title (while keeping constant window ID)
+	bool dirty = editor.GetUndoCount() != version;
+	std::string title = (dirty ? filename + " *" : filename) + "###" + id;
+
+	// create the window
+	ImGui::Begin(title.c_str(), nullptr, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_MenuBar);
+	ImGui::SetWindowSize(size, ImGuiCond_FirstUseEver);
+	ImGui::SetWindowPos(pos, ImGuiCond_FirstUseEver);
+	ImGui::PushID(this);
+
+	// only handle shortcuts if we have the focus
+	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows)) {
+		// get keyboard state to handle keyboard shortcuts
+		ImGuiIO& io = ImGui::GetIO();
+		auto isOSX = io.ConfigMacOSXBehaviors;
+		auto alt = io.KeyAlt;
+		auto ctrl = io.KeyCtrl;
+		auto shift = io.KeyShift;
+		auto super = io.KeySuper;
+		auto isShortcut = (isOSX ? (super && !ctrl) : (ctrl && !super)) && !alt && !shift;
+
+		// handle keyboard shortcuts
+		if (isShortcut) {
+			if (dirty && filename != "untitled" && ImGui::IsKeyPressed('S')) {
+				saveFile();
+
+			} else if (ImGui::IsKeyPressed('W')) {
+				if (dirty) {
+					confirmClose = true;
+
+				} else {
+					closeFile();
+				}
+			}
+		}
+	}
+
+#if __APPLE__
+#define SHORTCUT "Cmd-"
+#else
+#define SHORTCUT "Ctrl-"
+#endif
+
+	// create menubar
 	if (ImGui::BeginMenuBar()) {
 		if (ImGui::BeginMenu("File")) {
-			if (ImGui::MenuItem("New")) {
-			}
-
-			if (ImGui::MenuItem("Open...")) {
-			}
+			if (ImGui::MenuItem("New", SHORTCUT "N")) { newFile(); } // shortcut handled by workspace
+			if (ImGui::MenuItem("Open...", SHORTCUT "O")) { openFile(); } // shortcut handled by workspace
 
 			ImGui::Separator();
+			if (ImGui::MenuItem("Save", SHORTCUT "S", nullptr, dirty && filename != "untitled")) { saveFile(); }
+			if (ImGui::MenuItem("Save As...")) { saveAsFile(); }
 
-			if (ImGui::MenuItem("Save")) {
-			}
+			ImGui::Separator();
+			if (ImGui::MenuItem("Close", SHORTCUT "W")) {
+				if (dirty) {
+					confirmClose = true;
 
-			if (ImGui::MenuItem("Save As...")) {
+				} else {
+					closeFile();
+				}
 			}
 
 			ImGui::EndMenu();
 		}
 
 		if (ImGui::BeginMenu("Edit")) {
-			if (ImGui::MenuItem("Undo", "ALT-Backspace", nullptr, editor.CanUndo()))
-				editor.Undo();
-
-			if (ImGui::MenuItem("Redo", "Ctrl-Y", nullptr, editor.CanRedo()))
-				editor.Redo();
-
-			ImGui::Separator();
-
-			if (ImGui::MenuItem("Copy", "Ctrl-C", nullptr, editor.HasSelection()))
-				editor.Copy();
-
-			if (ImGui::MenuItem("Cut", "Ctrl-X", nullptr, editor.HasSelection()))
-				editor.Cut();
-
-			if (ImGui::MenuItem("Delete", "Del", nullptr, editor.HasSelection()))
-				editor.Delete();
-
-			if (ImGui::MenuItem("Paste", "Ctrl-V", nullptr, ImGui::GetClipboardText() != nullptr))
-				editor.Paste();
+			if (ImGui::MenuItem("Undo", SHORTCUT "Z", nullptr, editor.CanUndo())) { editor.Undo(); }
+#if __APPLE__
+			if (ImGui::MenuItem("Redo", "^" SHORTCUT "Z", nullptr, editor.CanRedo())) { editor.Redo(); }
+#else
+			if (ImGui::MenuItem("Redo", SHORTCUT "Y", nullptr, editor.CanRedo())) { editor.Redo(); }
+#endif
 
 			ImGui::Separator();
+			if (ImGui::MenuItem("Copy", SHORTCUT "C", nullptr, editor.HasSelection())) { editor.Copy(); }
+			if (ImGui::MenuItem("Cut", SHORTCUT "X", nullptr, editor.HasSelection())) { editor.Cut(); }
+			if (ImGui::MenuItem("Paste", SHORTCUT "V", nullptr, ImGui::GetClipboardText() != nullptr)) { editor.Paste(); }
 
-			if (ImGui::MenuItem("Select all", nullptr, nullptr))
-				editor.SetSelection(TextEditor::Coordinates(), TextEditor::Coordinates(editor.GetTotalLines(), 0));
-
+			ImGui::Separator();
+			if (ImGui::MenuItem("Select All", SHORTCUT "A", nullptr, editor.GetText().size() != 0)) { editor.SelectAll(); }
 			ImGui::EndMenu();
 		}
 
 		ImGui::EndMenuBar();
 	}
 
+	// create the editor
 	editor.Render("TextEditor");
+
+	// handle "close" confirmation (when user closes editor without saving)
+	if (confirmClose) {
+		ImGui::OpenPopup("Delete?");
+		ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+		ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5, 0.5));
+
+		if (ImGui::BeginPopupModal("Delete?", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+			ImGui::Text("This file has changed!\nDo you really want to delete it?\n\n");
+			ImGui::Separator();
+
+			if (ImGui::Button("OK", ImVec2(120, 0))) {
+				OtWorkspaceClass::instance()->closeEditor(cast<OtEditorClass>());
+				ImGui::CloseCurrentPopup();
+				confirmClose = false;
+			}
+
+			ImGui::SetItemDefaultFocus();
+			ImGui::SameLine();
+
+			if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+				ImGui::CloseCurrentPopup();
+				confirmClose = false;
+			}
+
+			ImGui::EndPopup();
+		}
+	}
+
+	// handle "save as" dialog
+	ImVec2 maxSize = ImVec2(width, height);
+	ImVec2 minSize = ImVec2(width * 0.6, height * 0.6);
+
+	if (ImGuiFileDialog::Instance()->Display(id + "-saveas", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
+		// open selected file if required
+		if (ImGuiFileDialog::Instance()->IsOk()) {
+			filename = ImGuiFileDialog::Instance()->GetFilePathName();
+			saveFile();
+		}
+
+		// close dialog
+		ImGuiFileDialog::Instance()->Close();
+
+	}
+
+	ImGui::PopID();
 	ImGui::End();
+}
+
+
+//
+//	OtEditorClass::loadFile
+//
+
+void OtEditorClass::loadFile() {
+	// load text from file
+	std::stringstream buffer;
+
+	try {
+		std::ifstream stream(filename.c_str());
+
+		if (stream.fail()) {
+			OtExcept("Can't read from file [%s]", filename.c_str());
+		}
+
+		buffer << stream.rdbuf();
+		stream.close();
+
+	} catch (std::exception& e) {
+		OtExcept("Can't read from file [%s], error: %s", filename.c_str(), e.what());
+	}
+
+	editor.SetText(buffer.str());
+	version = editor.GetUndoCount();
+}
+
+
+//
+//	OtEditorClass::newFile
+//
+
+void OtEditorClass::newFile() {
+	OtWorkspaceClass::instance()->newFile();
+}
+
+
+//
+//	OtEditorClass::openFile
+//
+
+void OtEditorClass::openFile() {
+	OtWorkspaceClass::instance()->openFile();
+}
+
+
+//
+//	OtEditorClass::saveFile
+//
+
+void OtEditorClass::saveFile() {
+	try {
+		// write text to file
+		std::ofstream stream(filename.c_str());
+
+		if (stream.fail()) {
+			OtExcept("Can't write to file [%s]", filename.c_str());
+		}
+
+		stream << editor.GetText();
+		stream.close();
+
+	} catch (std::exception& e) {
+		OtExcept("Can't write to file [%s], error: %s", filename.c_str(), e.what());
+	}
+
+	// reset current version number (marking the contents as clean)
+	version = editor.GetUndoCount();
+}
+
+
+//
+//	OtEditorClass::saveAsFile
+//
+
+void OtEditorClass::saveAsFile() {
+	// open file save dialog
+	if (!ImGuiFileDialog::Instance()->IsOpened()) {
+		ImGui::PushID(this);
+
+		ImGuiFileDialog::Instance()->OpenModal(
+			id + "-saveas",
+			"Save File as...",
+			".ot",
+			filename,
+			1,
+			nullptr,
+			ImGuiFileDialogFlags_DontShowHiddenFiles |
+				ImGuiFileDialogFlags_ConfirmOverwrite);
+
+		ImGui::PopID();
+	}
+}
+
+
+//
+//	OtEditorClass::closeFile
+//
+
+void OtEditorClass::closeFile() {
+	OtWorkspaceClass::instance()->closeEditor(cast<OtEditorClass>());
+}
+
+
+//
+//	OtEditorClass::isDirty
+//
+
+bool OtEditorClass::isDirty() {
+	return editor.GetUndoCount() != version;
 }
 
 
@@ -101,12 +310,21 @@ OtType OtEditorClass::getMeta() {
 OtEditor OtEditorClass::create() {
 	OtEditor editor = std::make_shared<OtEditorClass>();
 	editor->setType(getMeta());
+
+	// configure editor
 	editor->editor.SetLanguageDefinition(OtLanguageGetDefinition());
 	editor->editor.SetShowWhitespaces(false);
 	editor->filename = "untitled";
+
+	// determine window ID
+	static int nextID = 1;
+	std::ostringstream name;
+	name << "editor" << nextID++;
+	editor->id = name.str();
+
+	// return new editor
 	return editor;
 }
-
 
 
 //
@@ -116,5 +334,6 @@ OtEditor OtEditorClass::create() {
 OtEditor OtEditorClass::create(const std::string& filename) {
 	OtEditor editor = create();
 	editor->filename = filename;
+	editor->loadFile();
 	return editor;
 }

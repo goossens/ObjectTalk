@@ -34,7 +34,11 @@ public:
 	void newFile();
 
 	// open a file
+	void openFile();
 	void openFile(const std::string& filename);
+
+	// close editor
+	void closeEditor(OtEditor editor);
 
 	// run IDE
 	void run();
@@ -46,9 +50,24 @@ public:
 	static OtWorkspace create();
 
 private:
+	// render all windows
+	void render();
+
+	// see if we can close app
+	bool close();
+
+	// get default directory
+	std::string getDefaultDirectory();
+
+	// get current working directory
+	std::string getCWD();
+
 	// list of open editors
 	std::vector<OtEditor> editors;
 
-	// render all windows
-	void render();
+	// current working directory
+	std::string cwd;
+
+	// quit confirmation
+	bool confirmQuit = false;
 };

@@ -84,11 +84,12 @@ void OtViewClass::render() {
 	// render view if we have a scene and a camera
 	if (scene && camera) {
 		// get the next view ID
-		int view = OtApplicationClass::instance()->getNextViewID();
+		OtApplication application = OtApplicationClass::instance();
+		int view = application->getNextViewID();
 
 		// determine dimensions
-		float sw = OtApplicationClass::instance()->getWidth();
-		float sh = OtApplicationClass::instance()->getHeight();
+		float sw = application->getWidth();
+		float sh = application->getHeight();
 
 		float vx = x < 0 ? sw - (x * sw / 100.0) : x * sw / 100.0;
 		float vy = y < 0 ? sw - (y * sh / 100.0) : y * sh / 100.0;
@@ -119,8 +120,9 @@ void OtViewClass::render() {
 bool OtViewClass::onMouseButton(int button, int action, int mods, float xpos, float ypos) {
 	if (has("onMouseButton")) {
 		// determine dimensions
-		float sw = OtApplicationClass::instance()->getWidth();
-		float sh = OtApplicationClass::instance()->getHeight();
+		OtApplication application = OtApplicationClass::instance();
+		float sw = application->getWidth();
+		float sh = application->getHeight();
 
 		float vx = x < 0 ? sw - (x * sw / 100.0) : x * sw / 100.0;
 		float vy = y < 0 ? sw - (y * sh / 100.0) : y * sh / 100.0;
@@ -154,8 +156,9 @@ bool OtViewClass::onMouseButton(int button, int action, int mods, float xpos, fl
 
 bool OtViewClass::onMouseMove(float xpos, float ypos) {
 	// calculate local coordinates
-	float sw = OtApplicationClass::instance()->getWidth();
-	float sh = OtApplicationClass::instance()->getHeight();
+	OtApplication application = OtApplicationClass::instance();
+	float sw = application->getWidth();
+	float sh = application->getHeight();
 
 	xpos -= x < 0 ? sw - (x * sw / 100.0) : x * sw / 100.0;
 	ypos -= y < 0 ? sh - (y * sh / 100.0) : y * sh / 100.0;
@@ -180,8 +183,9 @@ bool OtViewClass::onMouseMove(float xpos, float ypos) {
 
 bool OtViewClass::onMouseDrag(int button, int mods, float xpos, float ypos) {
 	// calculate local coordinates
-	float sw = OtApplicationClass::instance()->getWidth();
-	float sh = OtApplicationClass::instance()->getHeight();
+	OtApplication application = OtApplicationClass::instance();
+	float sw = application->getWidth();
+	float sh = application->getHeight();
 
 	xpos -= x < 0 ? sw - (x * sw / 100.0) : x * sw / 100.0;
 	ypos -= y < 0 ? sh - (y * sh / 100.0) : y * sh / 100.0;

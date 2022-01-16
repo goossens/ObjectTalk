@@ -29,6 +29,17 @@ public:
 	// render the editor
 	void render();
 
+	// file actions
+	void loadFile();
+	void newFile();
+	void openFile();
+	void saveFile();
+	void saveAsFile();
+	void closeFile();
+
+	// is the editor's content "dirty" (unsaved);
+	bool isDirty();
+
 	// get type definition
 	static OtType getMeta();
 
@@ -40,6 +51,13 @@ private:
 	// the file we are editing
 	std::string filename;
 
-	// text edit state
+	// visual text editor
 	TextEditor editor;
+
+	// window ID
+	std::string id;
+
+	// dirty state
+	int version = 0;
+	bool confirmClose = false;
 };

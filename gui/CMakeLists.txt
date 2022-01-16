@@ -9,7 +9,7 @@ file(GLOB_RECURSE GUI_SOURCES guimodule.cpp */*.cpp)
 
 if (APPLE)
 	# for MacOS
-	list(APPEND GUI_SOURCES platform/macos.mm)
+	list(APPEND GUI_SOURCES core/macos.mm)
 
 	find_library(COCOA Cocoa REQUIRED)
 	find_library(QUARTZCORE QuartzCore REQUIRED)
@@ -17,14 +17,6 @@ if (APPLE)
 	find_library(METALKIT MetalKit REQUIRED)
 
 	set(GUI_LIBS ${COCOA} ${QUARTZCORE} ${METAL} ${METALKIT})
-endif()
-
-if (UNIX AND NOT APPLE)
-	# for Linux, BSD, Solaris, Minix
-endif()
-
-if (WIN32)
-	# for Windows
 endif()
 
 set(GUI_INCLUDE_DIRS "")

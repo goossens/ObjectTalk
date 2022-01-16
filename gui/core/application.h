@@ -38,6 +38,9 @@ public:
 	void run(const std::string& name);
 	void runThread2();
 
+	// quit application
+	void quit();
+
 	// add an animation
 	OtObject animation();
 
@@ -76,6 +79,7 @@ public:
 	void atinit(std::function<void(void)> callback) { atInitCallbacks.push_back(callback); }
 	void atfont(std::function<void(void)> callback) { atFontCallbacks.push_back(callback); }
 	void atrender(std::function<void(void)> callback) { atRenderCallbacks.push_back(callback); }
+	void atclose(std::function<bool(void)> callback) { atCloseCallbacks.push_back(callback); }
 	void atexit(std::function<void(void)> callback) { atExitCallbacks.push_back(callback); }
 
 	// add enums to specified module
@@ -104,6 +108,7 @@ private:
 	void initGLFW(const std::string& name);
 	bool runningGLFW();
 	void eventsGLFW();
+	void quitGLFW();
 	void endGLFW();
 
 	void initBGFX();
@@ -153,6 +158,7 @@ private:
 	std::vector<std::function<void(void)>> atInitCallbacks;
 	std::vector<std::function<void(void)>> atFontCallbacks;
 	std::vector<std::function<void(void)>> atRenderCallbacks;
+	std::vector<std::function<bool(void)>> atCloseCallbacks;
 	std::vector<std::function<void(void)>> atExitCallbacks;
 
 	// to render IMGUI

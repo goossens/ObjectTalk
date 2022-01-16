@@ -1146,8 +1146,9 @@ void OtVectorDisplayClass::render() {
 	popStyle();
 
 	// get screen size
-	int sw = OtApplicationClass::instance()->getWidth();
-	int sh = OtApplicationClass::instance()->getHeight();
+	OtApplication application = OtApplicationClass::instance();
+	int sw = application->getWidth();
+	int sh = application->getHeight();
 
 	// determine vector display dimensions
 	int vx = x < 0 ? sw + (x * sw) / 100 : (x * sw) / 100;

@@ -314,6 +314,15 @@ void OtApplicationClass::runThread2() {
 
 
 //
+//	OtApplicationClass::quit
+//
+
+void OtApplicationClass::quit() {
+	// quiting is realized by closing the app's window
+	quitGLFW();
+}
+
+//
 //	OtApplicationClass::setAntiAliasing
 //
 

@@ -96,8 +96,8 @@ void OtApplicationClass::initGLFW(const std::string& name) {
 
 		double xpos, ypos;
 		glfwGetCursorPos(window, &xpos, &ypos);
-		app->modifiers = (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS) ? mods : 0;
 
+		app->modifiers = (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS) ? mods : 0;
 		app->eventQueue.pushMouseButtonEvent(button, action, mods, xpos, ypos);
 	});
 
@@ -126,6 +126,9 @@ void OtApplicationClass::initGLFW(const std::string& name) {
 
 		if (key == GLFW_KEY_F5 && action == GLFW_PRESS) {
 			app->profiler = !app->profiler;
+
+		} else if (key == GLFW_KEY_F6 && action == GLFW_PRESS) {
+			app->demo = !app->demo;
 
 		} else {
 			app->eventQueue.pushKeyboardEvent(key, scancode, action, mods);

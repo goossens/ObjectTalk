@@ -28,6 +28,10 @@ typedef std::shared_ptr<OtHttpServerClass> OtHttpServer;
 
 class OtHttpServerClass : public OtHttpRouterClass {
 public:
+	// constructor/destructor
+	OtHttpServerClass();
+	~OtHttpServerClass();
+
 	// handle connection requests
 	void onConnect();
 

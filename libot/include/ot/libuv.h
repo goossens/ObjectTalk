@@ -37,11 +37,22 @@ class OtLibUv {
 public:
 	// initialize LibUV
 	static void init(int argc, char* argv[]) {
+		// setup the calling arguments
 		uv_setup_args(argc, argv);
 	}
 
 	// terminate LibUV
 	static void end() {
+		// properly close all libuv handles
+		uv_walk(uv_default_loop(), [](uv_handle_t* handle, void* arg) {
+			if (!uv_is_closing(handle))
+				uv_close(handle, nullptr);
+		}, nullptr);
+
+		uv_run(uv_default_loop(), UV_RUN_DEFAULT);
+		uv_loop_close(uv_default_loop());
+
+		// close the library
 		uv_library_shutdown();
 	}
 };

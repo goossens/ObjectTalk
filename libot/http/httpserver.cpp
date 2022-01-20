@@ -18,6 +18,39 @@
 
 
 //
+//	OtHttpServerClass::OtHttpServerClass
+//
+
+OtHttpServerClass::OtHttpServerClass() {
+	// setup our session watchdog
+	uv_timer_init(uv_default_loop(), &uv_watchdog);
+	uv_watchdog.data = this;
+
+	uv_timer_start(&uv_watchdog, [](uv_timer_t* handle) {
+		auto server = (OtHttpServerClass*) (handle->data);
+
+		// remove dead sessions
+		server->sessions.erase(std::remove_if(
+			server->sessions.begin(),
+			server->sessions.end(),
+			[] (const OtHttpSession& session) {
+				return !session->isAlive();
+			}), server->sessions.end());
+	}, 0, 60 * 1000);
+}
+
+
+//
+//	OtHttpServerClass::~OtHttpServerClass
+//
+
+OtHttpServerClass::~OtHttpServerClass() {
+	// stop the watchdog
+	uv_timer_stop(&uv_watchdog);
+}
+
+
+//
 //	OtHttpServerClass::onConnect
 //
 
@@ -60,39 +93,8 @@ OtObject OtHttpServerClass::listen(const std::string& ip, long port) {
 //
 
 void OtHttpServerClass::run() {
-	// setup our session watchdog
-	uv_timer_init(uv_default_loop(), &uv_watchdog);
-	uv_watchdog.data = this;
-
-	uv_timer_start(&uv_watchdog, [](uv_timer_t* handle) {
-		auto server = (OtHttpServerClass*) (handle->data);
-
-		// remove dead sessions
-		server->sessions.erase(std::remove_if(
-			server->sessions.begin(),
-			server->sessions.end(),
-			[] (const OtHttpSession& session) {
-				return !session->isAlive();
-			}), server->sessions.end());
-	}, 0, 60 * 1000);
-
 	// run the libuv loop
 	uv_run(uv_default_loop(), UV_RUN_DEFAULT);
-
-	// stop the watchdog
-	uv_timer_stop(&uv_watchdog);
-
-	// properly close all libuv handles
-	uv_walk(uv_default_loop(), [](uv_handle_t* handle, void* arg) {
-		if (!uv_is_closing(handle))
-			uv_close(handle, nullptr);
-	}, nullptr);
-
-	uv_run(uv_default_loop(), UV_RUN_DEFAULT);
-	uv_loop_close(uv_default_loop());
-
-	// drop all remaining sessions
-	sessions.clear();
 }
 
 

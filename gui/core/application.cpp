@@ -394,7 +394,9 @@ OtType OtApplicationClass::getMeta() {
 		type = OtTypeClass::create<OtApplicationClass>(
 			"Application",
 			OtGuiClass::getMeta(),
-			[]() { return (OtObject) OtApplicationClass::instance(); });
+			[]() {
+				return (OtObject) OtApplicationClass::instance();
+			});
 
 		type->set("run", OtFunctionClass::create(&OtApplicationClass::run));
 		type->set("animation", OtFunctionClass::create(&OtApplicationClass::animation));

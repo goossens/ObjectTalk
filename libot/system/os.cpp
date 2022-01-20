@@ -368,7 +368,12 @@ OtType OtOSClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtTypeClass::create<OtOSClass>("OS", OtSystemClass::getMeta());
+		type = OtTypeClass::create<OtOSClass>(
+			"OS",
+			OtSystemClass::getMeta(),
+			[]() {
+				return (OtObject) OtOSClass::instance();
+			});
 
 		type->set("hasenv", OtFunctionClass::create(&OtOSClass::hasenv));
 		type->set("getenv", OtFunctionClass::create(&OtOSClass::getenv));
@@ -411,7 +416,5 @@ OtType OtOSClass::getMeta() {
 //
 
 OtOS OtOSClass::create() {
-	OtOS fs = std::make_shared<OtOSClass>();
-	fs->setType(getMeta());
-	return fs;
+	return OtOSClass::instance();
 }

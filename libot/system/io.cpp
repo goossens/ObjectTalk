@@ -153,7 +153,12 @@ OtType OtIOClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtTypeClass::create<OtIOClass>("IO", OtSystemClass::getMeta());
+		type = OtTypeClass::create<OtIOClass>(
+			"IO",
+			OtSystemClass::getMeta(),
+			[]() {
+				return (OtObject) OtIOClass::instance();
+			});
 
 		type->set("readJSON", OtFunctionClass::create(&OtIOClass::readJSON));
 		type->set("writeJSON", OtFunctionClass::create(&OtIOClass::writeJSON));
@@ -170,7 +175,5 @@ OtType OtIOClass::getMeta() {
 //
 
 OtIO OtIOClass::create() {
-	OtIO io = std::make_shared<OtIOClass>();
-	io->setType(getMeta());
-	return io;
+	return OtIOClass::instance();
 }

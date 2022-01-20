@@ -14,6 +14,7 @@
 
 #include <string>
 
+#include "singleton.h"
 #include "system.h"
 
 
@@ -24,7 +25,7 @@
 class OtFSClass;
 typedef std::shared_ptr<OtFSClass> OtFS;
 
-class OtFSClass : public OtSystemClass {
+class OtFSClass : public OtSystemClass, public OtObjectSingleton<OtFSClass> {
 public:
 	// get currrent user's home directory
 	OtObject gethome();

@@ -14,6 +14,7 @@
 
 #include <string>
 
+#include "singleton.h"
 #include "system.h"
 
 
@@ -24,7 +25,7 @@
 class OtIOClass;
 typedef std::shared_ptr<OtIOClass> OtIO;
 
-class OtIOClass : public OtSystemClass {
+class OtIOClass : public OtSystemClass, public OtObjectSingleton<OtIOClass> {
 public:
 	// print objects to STDOUT
 	void print(size_t count, OtObject* parameters);

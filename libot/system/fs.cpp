@@ -383,7 +383,12 @@ OtType OtFSClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtTypeClass::create<OtFSClass>("FS", OtSystemClass::getMeta());
+		type = OtTypeClass::create<OtFSClass>(
+			"FS",
+			OtSystemClass::getMeta(),
+			[]() {
+				return (OtObject) OtFSClass::instance();
+			});
 
 		type->set("gethome", OtFunctionClass::create(&OtFSClass::gethome));
 		type->set("gettmp", OtFunctionClass::create(&OtFSClass::gettmp));
@@ -418,7 +423,5 @@ OtType OtFSClass::getMeta() {
 //
 
 OtFS OtFSClass::create() {
-	OtFS fs = std::make_shared<OtFSClass>();
-	fs->setType(getMeta());
-	return fs;
+	return OtFSClass::instance();
 }

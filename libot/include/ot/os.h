@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include "singleton.h"
 #include <string>
 
 #include "system.h"
@@ -24,7 +25,7 @@
 class OtOSClass;
 typedef std::shared_ptr<OtOSClass> OtOS;
 
-class OtOSClass : public OtSystemClass {
+class OtOSClass : public OtSystemClass, public OtObjectSingleton<OtOSClass> {
 public:
 	// see if environment variable exists
 	bool hasenv(const std::string& name);

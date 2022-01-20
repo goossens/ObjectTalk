@@ -197,7 +197,7 @@ void OtModuleClass::loadSourceModule(std::filesystem::path path, OtModule module
 	OtCompiler compiler;
 	OtSource source = OtSourceClass::create(path.string(), buffer.str());
 	OtByteCode bytecode = compiler.compileModule(source, module);
-	OtVM::instance().execute(bytecode);
+	OtVM::instance()->execute(bytecode);
 
 	// restore search path
 	localPath.pop_back();
@@ -225,8 +225,8 @@ OtType OtModuleClass::getMeta() {
 
 OtModule OtModuleClass::create(const std::string& name) {
 	// see if this is an "internal" module that was already registered
-	if (OtModuleRegistry::instance().has(name)) {
-		return OtModuleRegistry::instance().get(name);
+	if (OtModuleRegistry::instance()->has(name)) {
+		return OtModuleRegistry::instance()->get(name);
 
 	} else {
 		// build module path (if required)
@@ -243,8 +243,8 @@ OtModule OtModuleClass::create(const std::string& name) {
 		}
 
 		// see if module is already loaded
-		if (OtModuleRegistry::instance().has(fullPath.string())) {
-			return OtModuleRegistry::instance().get(fullPath.string());
+		if (OtModuleRegistry::instance()->has(fullPath.string())) {
+			return OtModuleRegistry::instance()->get(fullPath.string());
 
 		} else {
 			// create a new module
@@ -252,7 +252,7 @@ OtModule OtModuleClass::create(const std::string& name) {
 			module->setType(getMeta());
 
 			// add it to registry for reuse
-			OtModuleRegistry::instance().set(fullPath.string(), module);
+			OtModuleRegistry::instance()->set(fullPath.string(), module);
 
 			// setup module's meta data
 			module->set("__FILE__", OtStringClass::create(fullPath.string()));
@@ -282,6 +282,6 @@ OtModule OtModuleClass::internal(const std::string& name) {
 	module->setType(getMeta());
 
 	// add it to registry for reuse
-	OtModuleRegistry::instance().set(name, module);
+	OtModuleRegistry::instance()->set(name, module);
 	return module;
 }

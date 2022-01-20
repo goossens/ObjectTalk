@@ -205,7 +205,7 @@ OtObject OtGlobalClass::super(size_t count, OtObject* parameters) {
 	}
 
 	// call member function
-	return OtVM::instance().callMemberFunction(parameters[0], member, count - 2, &(parameters[2]));
+	return OtVM::instance()->callMemberFunction(parameters[0], member, count - 2, &(parameters[2]));
 }
 
 

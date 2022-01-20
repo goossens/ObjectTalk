@@ -35,7 +35,7 @@ void OtRealSliderClass::init(const std::string& l, float mn, float mx, float v, 
 
 void OtRealSliderClass::render() {
 	if (ImGui::SliderFloat(label.c_str(), &value, min, max)) {
-		OtVM::instance().callMemberFunction(callback, "__call__", OtObjectCreate(value));
+		OtVM::instance()->callMemberFunction(callback, "__call__", OtObjectCreate(value));
 	}
 }
 

@@ -33,7 +33,7 @@ void OtCheckboxClass::init(const std::string& l, bool chk, OtObject cb) {
 
 void OtCheckboxClass::render() {
 	if (ImGui::Checkbox(label.c_str(), &checked)) {
-		OtVM::instance().callMemberFunction(callback, "__call__", OtObjectCreate(checked));
+		OtVM::instance()->callMemberFunction(callback, "__call__", OtObjectCreate(checked));
 	}
 }
 

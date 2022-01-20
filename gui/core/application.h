@@ -173,8 +173,9 @@ private:
 	// anti-aliasing setting
 	int antiAliasing = 0;
 
-	// show/hide profiler
+	// show/hide profiler/demo
 	bool profiler = false;
+	bool demo = false;
 
 	// is secondary thread running?
 	bool running;

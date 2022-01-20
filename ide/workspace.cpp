@@ -28,6 +28,9 @@ void OtWorkspaceClass::init() {
 	OtApplication application = OtApplicationClass::instance();
 	application->atrender(std::bind(&OtWorkspaceClass::render, this));
 	application->atclose(std::bind(&OtWorkspaceClass::close, this));
+
+	// add a console window
+	console = OtConsoleClass::create();
 }
 
 
@@ -108,6 +111,9 @@ void OtWorkspaceClass::run() {
 //
 
 void OtWorkspaceClass::render() {
+	// render console
+	console->render();
+
 	// make clone of editor list since renderers might change it
 	std::vector<OtEditor> clone = editors;
 
@@ -121,7 +127,7 @@ void OtWorkspaceClass::render() {
 	int width = application->getWidth();
 	int height = application->getHeight();
 	ImVec2 maxSize = ImVec2(width, height);
-	ImVec2 minSize = ImVec2(width * 0.6, height * 0.6);
+	ImVec2 minSize = ImVec2(width * 0.5, height * 0.5);
 
 	if (ImGuiFileDialog::Instance()->Display("workspace-open", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
 		// open selected file if required
@@ -259,7 +265,9 @@ OtType OtWorkspaceClass::getMeta() {
 		type = OtTypeClass::create<OtWorkspaceClass>(
 			"Workspace",
 			OtIdeClass::getMeta(),
-			[]() { return (OtObject) OtWorkspaceClass::instance(); });
+			[]() {
+				return (OtObject) OtWorkspaceClass::instance();
+			});
 	}
 
 	return type;

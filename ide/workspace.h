@@ -14,6 +14,7 @@
 
 #include "ot/singleton.h"
 
+#include "console.h"
 #include "ide.h"
 #include "editor.h"
 
@@ -61,6 +62,9 @@ private:
 
 	// get current working directory
 	std::string getCWD();
+
+	// our console
+	OtConsole console;
 
 	// list of open editors
 	std::vector<OtEditor> editors;

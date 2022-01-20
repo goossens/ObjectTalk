@@ -10,6 +10,10 @@
 #define USE_DIALOG_EXIT_WITH_KEY
 #define IGFD_EXIT_KEY GLFW_KEY_ESCAPE
 
+#define searchString "Search:"
+#define fileNameString "File name:"
+#define dirNameString "Directory path:"
+
 #define fileSizeBytes "bytes"
 #define fileSizeKiloBytes "KB"
 #define fileSizeMegaBytes "MB"
@@ -18,3 +22,5 @@
 #define OverWriteDialogTitleString "Confirm overwrite..."
 #define OverWriteDialogMessageString "The file already exists!\nWould you like to overwrite it?\n\n"
 #define OverWriteDialogConfirmButtonString "OK"
+
+#define ImGuiKey_KeypadEnter ImGuiKey_KeyPadEnter

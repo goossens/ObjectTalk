@@ -70,7 +70,6 @@ int main(int argc, char* argv[]) {
 			// no, do we start the editor?
 #if defined(INCLUDE_GUI)
 			OtWorkspaceClass::instance()->init();
-			OtWorkspaceClass::instance()->newFile();
 			OtWorkspaceClass::instance()->run();
 
 #else

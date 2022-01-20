@@ -81,11 +81,9 @@ OtObject OtMenuItemClass::setShortcut(const std::string& s) {
 		// register shortcut
 		OtApplicationClass::instance()->addShortcut(modifier, keycode, [this] (){
 			if (this->callback) {
-				OtVM::callMemberFunction(this->callback, "__call__");
+				OtVM::instance()->callMemberFunction(this->callback, "__call__");
 			}
 		});
-
-		shortcut = s;
 
 	} else {
 		OtExcept("MenuItem shortcut should be one character, not [%s]", s.c_str());
@@ -102,7 +100,7 @@ OtObject OtMenuItemClass::setShortcut(const std::string& s) {
 void OtMenuItemClass::render() {
 	if (ImGui::MenuItem(title.c_str(), shortcut.c_str(), selected, enabled)) {
 		if (callback) {
-			OtVM::callMemberFunction(callback, "__call__");
+			OtVM::instance()->callMemberFunction(callback, "__call__");
 		}
 	}
 }

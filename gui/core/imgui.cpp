@@ -200,7 +200,9 @@ void OtApplicationClass::frameIMGUI(std::vector<OtAppEvent>& events) {
 		}
 	}
 
-	// ImGui::ShowDemoWindow();
+	if (demo) {
+		ImGui::ShowDemoWindow();
+	}
 }
 
 
@@ -244,7 +246,6 @@ void OtApplicationClass::renderIMGUI() {
 	// Render command lists
 	for (int n = 0; n < drawData->CmdListsCount; n++) {
 		const ImDrawList* cmd_list = drawData->CmdLists[n];
-		uint32_t idx_buffer_offset = 0;
 
 		bgfx::TransientVertexBuffer tvb;
 		bgfx::TransientIndexBuffer tib;
@@ -282,11 +283,9 @@ void OtApplicationClass::renderIMGUI() {
 				bgfx::TextureHandle texture = { (uint16_t)((intptr_t) pcmd->TextureId & 0xffff) };
 				bgfx::setTexture(0, imguiFontUniform, texture);
 				bgfx::setVertexBuffer(0, &tvb);
-				bgfx::setIndexBuffer(&tib, idx_buffer_offset, pcmd->ElemCount);
+				bgfx::setIndexBuffer(&tib, pcmd->IdxOffset, pcmd->ElemCount);
 				bgfx::submit(255, imguiProgram);
 			}
-
-			idx_buffer_offset += pcmd->ElemCount;
 		}
 	}
 }

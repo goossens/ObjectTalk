@@ -47,10 +47,10 @@ OtVM::OtVM() {
 
 
 //
-//	OtVM::exec
+//	OtVM::execute
 //
 
-OtObject OtVM::exec(OtByteCode bytecode, size_t callingParameters) {
+OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 	// try/catch stack
 	std::vector<OtTryCatch> tryCatch;
 
@@ -230,6 +230,6 @@ OtObject OtVM::exec(OtByteCode bytecode, size_t callingParameters) {
 	OT_ASSERT(tryCatch.size() == 0);
 	OT_ASSERT(stack->size() == sp);
 
-	// result xecution result
+	// return execution result
 	return result;
 }

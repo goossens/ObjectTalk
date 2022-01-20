@@ -197,7 +197,7 @@ void OtModuleClass::loadSourceModule(std::filesystem::path path, OtModule module
 	OtCompiler compiler;
 	OtSource source = OtSourceClass::create(path.string(), buffer.str());
 	OtByteCode bytecode = compiler.compileModule(source, module);
-	OtVM::execute(bytecode);
+	OtVM::instance().execute(bytecode);
 
 	// restore search path
 	localPath.pop_back();

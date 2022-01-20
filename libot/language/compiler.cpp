@@ -44,7 +44,7 @@ OtByteCode OtCompiler::compileModule(OtSource src, OtModule module) {
 	OtByteCode bytecode = OtByteCodeClass::create(src);
 
 	// setup global scope
-	OtGlobal global = OtVM::getGlobal();
+	OtGlobal global = OtVM::instance().getGlobal();
 	pushObjectScope(global);
 
 	for (auto name : global->getMembers()->names()) {
@@ -74,7 +74,7 @@ OtByteCode OtCompiler::compileModule(OtSource src, OtModule module) {
 	scopeStack.clear();
 
 	// return compiled code
-	bytecode->push(OtVM::getNull());
+	bytecode->push(OtVM::instance().getNull());
 	return bytecode;
 }
 
@@ -94,7 +94,7 @@ OtByteCode OtCompiler::compileExpression(OtSource src) {
 	OtByteCode bytecode = OtByteCodeClass::create(src);
 
 	// setup global scope
-	OtGlobal global = OtVM::getGlobal();
+	OtGlobal global = OtVM::instance().getGlobal();
 	pushObjectScope(global);
 
 	for (auto name : global->getMembers()->names()) {
@@ -340,7 +340,7 @@ void OtCompiler::function(OtByteCode bytecode) {
 	block(functionCode);
 
 	// default return value in case function does not have return statement
-	functionCode->push(OtVM::getNull());
+	functionCode->push(OtVM::instance().getNull());
 
 	// create a new bytecode function
 	auto function = OtByteCodeFunctionClass::create(functionCode, count);

@@ -74,7 +74,7 @@ void OtApplicationClass::runThread2() {
 
 		// call app's setup member (if defined)
 		if (has("setup")) {
-			OtVM::callMemberFunction(shared(), "setup", screen);
+			OtVM::instance().callMemberFunction(shared(), "setup", screen);
 		}
 
 		// application main loop
@@ -101,7 +101,7 @@ void OtApplicationClass::runThread2() {
 
 			// call app's update member (if defined)
 			if (has("update")) {
-				OtVM::callMemberFunction(shared(), "update");
+				OtVM::instance().callMemberFunction(shared(), "update");
 			}
 
 			// collect events
@@ -120,7 +120,7 @@ void OtApplicationClass::runThread2() {
 				switch (event.type) {
 					case OtAppEvent::mouseButtonEvent:
 						if (has("onMouseButton")) {
-							OtVM::callMemberFunction(shared(), "onMouseButton",
+							OtVM::instance().callMemberFunction(shared(), "onMouseButton",
 								OtObjectCreate(event.mouseButton.button),
 								OtObjectCreate(event.mouseButton.action),
 								OtObjectCreate(event.mouseButton.mods),
@@ -140,7 +140,7 @@ void OtApplicationClass::runThread2() {
 
 					case OtAppEvent::mouseMoveEvent:
 						if (has("onMouseMove")) {
-							OtVM::callMemberFunction(shared(), "onMouseMove",
+							OtVM::instance().callMemberFunction(shared(), "onMouseMove",
 								OtObjectCreate(event.mouseMove.x),
 								OtObjectCreate(event.mouseMove.y));
 
@@ -152,7 +152,7 @@ void OtApplicationClass::runThread2() {
 
 					case OtAppEvent::mouseDragEvent:
 						if (has("onMouseDrag")) {
-							OtVM::callMemberFunction(shared(), "onMouseDrag",
+							OtVM::instance().callMemberFunction(shared(), "onMouseDrag",
 								OtObjectCreate(event.mouseDrag.button),
 								OtObjectCreate(event.mouseDrag.mods),
 								OtObjectCreate(event.mouseDrag.x),
@@ -170,7 +170,7 @@ void OtApplicationClass::runThread2() {
 
 					case OtAppEvent::mouseWheelEvent:
 						if (has("onScrollWheel")) {
-							OtVM::callMemberFunction(shared(), "onScrollWheel",
+							OtVM::instance().callMemberFunction(shared(), "onScrollWheel",
 								OtObjectCreate(event.mouseWheel.xOffset),
 								OtObjectCreate(event.mouseWheel.yOffset));
 
@@ -195,7 +195,7 @@ void OtApplicationClass::runThread2() {
 
 							if (!handled) {
 								if (has("onKey")) {
-									OtVM::callMemberFunction(shared(), "onKey", OtObjectCreate(event.keyboard.key), OtObjectCreate(event.keyboard.mods));
+									OtVM::instance().callMemberFunction(shared(), "onKey", OtObjectCreate(event.keyboard.key), OtObjectCreate(event.keyboard.mods));
 
 								} else {
 									screen->onKey(event.keyboard.key, event.keyboard.mods);
@@ -206,7 +206,7 @@ void OtApplicationClass::runThread2() {
 
 					case OtAppEvent::characterEvent:
 						if (has("onChar")) {
-							OtVM::callMemberFunction(shared(), "onChar", OtObjectCreate(event.character.codepoint));
+							OtVM::instance().callMemberFunction(shared(), "onChar", OtObjectCreate(event.character.codepoint));
 
 						} else {
 							screen->onChar(event.character.codepoint);
@@ -216,7 +216,7 @@ void OtApplicationClass::runThread2() {
 
 					case OtAppEvent::gamepadAxisEvent:
 						if (has("onGamepadAxis")) {
-							OtVM::callMemberFunction(shared(), "onGamepadAxis",
+							OtVM::instance().callMemberFunction(shared(), "onGamepadAxis",
 								OtObjectCreate(event.gamepadAxis.gamepad),
 								OtObjectCreate(event.gamepadAxis.axis),
 								OtObjectCreate(event.gamepadAxis.value));
@@ -232,7 +232,7 @@ void OtApplicationClass::runThread2() {
 
 					case OtAppEvent::gamepadButtonEvent:
 						if (has("onGamepadButton")) {
-							OtVM::callMemberFunction(shared(), "onGamepadButton",
+							OtVM::instance().callMemberFunction(shared(), "onGamepadButton",
 								OtObjectCreate(event.gamepadButton.gamepad),
 								OtObjectCreate(event.gamepadButton.button),
 								OtObjectCreate(event.gamepadButton.action));
@@ -272,7 +272,7 @@ void OtApplicationClass::runThread2() {
 
 		// call app's update member (if defined)
 		if (has("terminate")) {
-			OtVM::callMemberFunction(shared(), "terminate");
+			OtVM::instance().callMemberFunction(shared(), "terminate");
 		}
 
 		// remove all animations and simulations

@@ -56,7 +56,7 @@ protected:
 
 
 //
-//	OtSharedSingleton
+//	OtObjectSingleton
 //
 
 template<typename T>

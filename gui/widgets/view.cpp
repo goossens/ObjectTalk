@@ -135,7 +135,7 @@ bool OtViewClass::onMouseButton(int button, int action, int mods, float xpos, fl
 
 		// is click in view?
 		if (xpos >= 0 && xpos < vw && ypos >= 0 && ypos < vh) {
-			OtVM::callMemberFunction(
+			OtVM::instance().callMemberFunction(
 				shared(), "onMouseButton",
 				OtObjectCreate(button), OtObjectCreate(action), OtObjectCreate(mods),
 				OtObjectCreate(xpos), OtObjectCreate(ypos)
@@ -167,7 +167,7 @@ bool OtViewClass::onMouseMove(float xpos, float ypos) {
 
 	if (has("onMouseMove")) {
 		// call member function
-		OtVM::callMemberFunction(shared(), "onMouseMove", OtObjectCreate(xpos), OtObjectCreate(ypos));
+		OtVM::instance().callMemberFunction(shared(), "onMouseMove", OtObjectCreate(xpos), OtObjectCreate(ypos));
 		handled = true;
 	}
 
@@ -194,7 +194,7 @@ bool OtViewClass::onMouseDrag(int button, int mods, float xpos, float ypos) {
 
 	// only process if camera doesn't want it and  we have a member function
 	if (!camera->onMouseDrag(button, mods, xpos - xold, ypos - yold) && has("onMouseDrag")) {
-		OtVM::callMemberFunction(shared(), "onMouseDrag", OtObjectCreate(button), OtObjectCreate(mods), OtObjectCreate(xpos - xold), OtObjectCreate(ypos - yold));
+		OtVM::instance().callMemberFunction(shared(), "onMouseDrag", OtObjectCreate(button), OtObjectCreate(mods), OtObjectCreate(xpos - xold), OtObjectCreate(ypos - yold));
 		handled = true;
 	}
 
@@ -214,7 +214,7 @@ bool OtViewClass::onScrollWheel(float dx, float dy) {
 		return true;
 
 	} else if (has("onScrollWheel")) {
-		OtVM::callMemberFunction(shared(), "onScrollWheel", OtObjectCreate(dx), OtObjectCreate(dy));
+		OtVM::instance().callMemberFunction(shared(), "onScrollWheel", OtObjectCreate(dx), OtObjectCreate(dy));
 		return true;
 
 	} else {
@@ -233,7 +233,7 @@ bool OtViewClass::onKey(int key, int mods) {
 		return true;
 
 	} else if (has("onKey")) {
-		OtVM::callMemberFunction(shared(), "onKey", OtObjectCreate(key), OtObjectCreate(mods));
+		OtVM::instance().callMemberFunction(shared(), "onKey", OtObjectCreate(key), OtObjectCreate(mods));
 		return true;
 
 	} else {
@@ -248,7 +248,7 @@ bool OtViewClass::onKey(int key, int mods) {
 
 bool OtViewClass::onChar(unsigned int codepoint) {
 	if (has("onChar")) {
-		OtVM::callMemberFunction(shared(), "onChar", OtObjectCreate((int) codepoint));
+		OtVM::instance().callMemberFunction(shared(), "onChar", OtObjectCreate((int) codepoint));
 		return true;
 
 	} else {

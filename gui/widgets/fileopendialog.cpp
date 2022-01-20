@@ -114,7 +114,7 @@ void OtFileOpenDialogClass::render() {
 		// call callback if required
 		if (ImGuiFileDialog::Instance()->IsOk() && callback) {
 			std::map<std::string, std::string> selected = ImGuiFileDialog::Instance()->GetSelection();
-			OtVM::callMemberFunction(callback, "__call__", OtPathClass::create(selected.begin()->second));
+			OtVM::instance().callMemberFunction(callback, "__call__", OtPathClass::create(selected.begin()->second));
 		}
 
 		// close dialog

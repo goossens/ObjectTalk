@@ -110,7 +110,7 @@ void OtFileSaveDialogClass::render() {
 	if (ImGuiFileDialog::Instance()->Display("SaveFileDialog", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
 		// call callback if required
 		if (ImGuiFileDialog::Instance()->IsOk() && callback) {
-			OtVM::callMemberFunction(callback, "__call__", OtPathClass::create(ImGuiFileDialog::Instance()->GetFilePathName()));
+			OtVM::instance().callMemberFunction(callback, "__call__", OtPathClass::create(ImGuiFileDialog::Instance()->GetFilePathName()));
 		}
 
 		// close dialog

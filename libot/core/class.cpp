@@ -26,7 +26,7 @@ OtObject OtClassClass::instantiate(size_t count, OtObject* parameters) {
 
 	// run possible init function
 	if (object->has("__init__")) {
-		OtVM::redirectMemberFunction(object, "__init__", count);
+		OtVM::instance().redirectMemberFunction(object, "__init__", count);
 
 	} else if (count) {
 		OtExcept(

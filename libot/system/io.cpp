@@ -74,7 +74,7 @@ OtObject OtIOClass::readJSON(const std::string& name) {
 	OtSource source = OtSourceClass::create(name, buffer.str());
 	OtByteCode bytecode = compiler.compileExpression(source);
 
-	return OtVM::execute(bytecode);
+	return OtVM::instance().execute(bytecode);
 }
 
 

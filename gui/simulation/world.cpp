@@ -154,7 +154,7 @@ void OtWorldClass::step(int32_t deltaMilliseconds) {
 		world->Step(secondsPerUpdate, 8, 1);
 
 		for (auto& callback : callbacks) {
-			OtVM::callMemberFunction(callback.callback, "__call__", callback.body1, callback.body2);
+			OtVM::instance().callMemberFunction(callback.callback, "__call__", callback.body1, callback.body2);
 		}
 
 		callbacks.clear();

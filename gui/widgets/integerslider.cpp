@@ -35,7 +35,7 @@ void OtIntegerSliderClass::init(const std::string& l, int mn, int mx, int v, OtO
 
 void OtIntegerSliderClass::render() {
 	if (ImGui::SliderInt(label.c_str(), &value, min, max)) {
-		OtVM::callMemberFunction(callback, "__call__", OtObjectCreate(value));
+		OtVM::instance().callMemberFunction(callback, "__call__", OtObjectCreate(value));
 	}
 }
 

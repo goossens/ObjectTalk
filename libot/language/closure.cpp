@@ -25,7 +25,7 @@ OtObject OtClosureClass::capture() {
 
 	// setup all captured variables
 	for (auto const& capture : captures) {
-		clone->set(capture.first, OtVM::getStack()->getFrameItem(capture.second));
+		clone->set(capture.first, OtVM::instance().getStack()->getFrameItem(capture.second));
 	}
 
 	// return a cloned closure with the captured variables
@@ -39,13 +39,14 @@ OtObject OtClosureClass::capture() {
 
 OtObject OtClosureClass::operator () (size_t count, OtObject* parameters) {
 	// register closure on the stack
-	OtVM::getStack()->pushClosure(shared());
+	auto stack = OtVM::instance().getStack();
+	stack->pushClosure(shared());
 
 	// execute the enclosed function
 	auto result = function->operator () (count, parameters);
 
 	// remove this closure from the stack
-	OtVM::getStack()->popClosure();
+	stack->popClosure();
 
 	// the result of the function is our result
 	return result;

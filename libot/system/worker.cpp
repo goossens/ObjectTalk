@@ -56,7 +56,7 @@ void OtWorkerClass::init(OtObject object) {
 
 				} else {
 					// execute request in module
-					auto response = OtVM::callMemberFunction(handler, "__call__", request.request);
+					auto response = OtVM::instance().callMemberFunction(handler, "__call__", request.request);
 
 					// return result
 					responses.push(OtWorkerResponse(request.request, response, request.callback));
@@ -98,7 +98,7 @@ void OtWorkerClass::update() {
 	if (!responses.empty()) {
 		// get response and execute callback
 		auto response = responses.pop();
-		OtVM::callMemberFunction(response.callback, "__call__", response.request, response.response);
+		OtVM::instance().callMemberFunction(response.callback, "__call__", response.request, response.response);
 	}
 }
 

@@ -20,7 +20,7 @@
 //
 
 OtObject OtCaptureReferenceClass::deref() {
-	return OtVM::getStack()->getClosure()->cast<OtClosureClass>()->get(name);
+	return OtVM::instance().getStack()->getClosure()->cast<OtClosureClass>()->get(name);
 }
 
 
@@ -29,7 +29,7 @@ OtObject OtCaptureReferenceClass::deref() {
 //
 
 OtObject OtCaptureReferenceClass::assign(OtObject value) {
-	return OtVM::getStack()->getClosure()->cast<OtClosureClass>()->set(name, value);
+	return OtVM::instance().getStack()->getClosure()->cast<OtClosureClass>()->set(name, value);
 }
 
 

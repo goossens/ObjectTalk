@@ -54,7 +54,7 @@ void OtComboboxClass::render() {
 			if (ImGui::Selectable(value.c_str(), isSelectedOne)) {
 				if (selected != value) {
 					selected = value;
-					OtVM::callMemberFunction(callback, "__call__", OtObjectCreate(selected));
+					OtVM::instance().callMemberFunction(callback, "__call__", OtObjectCreate(selected));
 				}
 			}
 

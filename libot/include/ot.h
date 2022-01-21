@@ -47,6 +47,10 @@
 #include "ot/path.h"
 #include "ot/worker.h"
 
+#include "ot/stream.h"
+#include "ot/cout.h"
+#include "ot/cerr.h"
+
 #include "ot/http.h"
 #include "ot/url.h"
 #include "ot/mimetypes.h"
@@ -69,7 +73,6 @@
 #include "ot/reference.h"
 #include "ot/arrayreference.h"
 #include "ot/capturereference.h"
-#include "ot/classreference.h"
 #include "ot/dictreference.h"
 #include "ot/memberreference.h"
 #include "ot/objectreference.h"

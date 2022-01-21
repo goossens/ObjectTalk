@@ -34,6 +34,10 @@
 #include "ot/fs.h"
 #include "ot/worker.h"
 
+#include "ot/stream.h"
+#include "ot/cout.h"
+#include "ot/cerr.h"
+
 #include "ot/http.h"
 #include "ot/url.h"
 #include "ot/httprouter.h"
@@ -89,6 +93,10 @@ OtGlobalClass::OtGlobalClass() {
 	set("FS", OtClassClass::create(OtFSClass::getMeta()));
 	set("Worker", OtClassClass::create(OtWorkerClass::getMeta()));
 
+	set("Stream", OtClassClass::create(OtStreamClass::getMeta()));
+	set("Cout", OtClassClass::create(OtCoutClass::getMeta()));
+	set("Cerr", OtClassClass::create(OtCerrClass::getMeta()));
+
 	set("Http", OtClassClass::create(OtHttpClass::getMeta()));
 	set("URL", OtClassClass::create(OtURLClass::getMeta()));
 	set("HttpRouter", OtClassClass::create(OtHttpRouterClass::getMeta()));
@@ -98,6 +106,8 @@ OtGlobalClass::OtGlobalClass() {
 	set("io", OtIOClass::create());
 	set("os", OtOSClass::create());
 	set("fs", OtFSClass::create());
+
+	set("cout", OtCoutClass::create());
 }
 
 
@@ -169,10 +179,10 @@ OtObject OtGlobalClass::range(size_t count, OtObject* parameters) {
 
 void OtGlobalClass::print(size_t count, OtObject* parameters) {
 	for (size_t i = 0; i < count; i++) {
-		std::cout << (std::string) *parameters[i];
+		OtCoutClass::instance()->write(parameters[i]->operator std::string());
 	}
 
-	std::cout << std::endl;
+	OtCoutClass::instance()->write("\n");
 }
 
 

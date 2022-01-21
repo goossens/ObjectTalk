@@ -9,7 +9,6 @@
 //	Include files
 //
 
-#include <iostream>
 #include <fstream>
 #include <sstream>
 
@@ -23,30 +22,6 @@
 #include "ot/vm.h"
 
 #include "ot/io.h"
-
-
-//
-//	OtIOClass::print
-//
-
-void OtIOClass::print(size_t count, OtObject* parameters) {
-	for (size_t i = 0; i < count; i++) {
-		std::cout << (std::string) *parameters[i];
-	}
-}
-
-
-//
-//	OtIOClass::println
-//
-
-void OtIOClass::println(size_t count, OtObject* parameters) {
-	for (size_t i = 0; i < count; i++) {
-		std::cout << (std::string) *parameters[i];
-	}
-
-	std::cout << std::endl;
-}
 
 
 //

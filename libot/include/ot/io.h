@@ -27,12 +27,6 @@ typedef std::shared_ptr<OtIOClass> OtIO;
 
 class OtIOClass : public OtSystemClass, public OtObjectSingleton<OtIOClass> {
 public:
-	// print objects to STDOUT
-	void print(size_t count, OtObject* parameters);
-
-	// print objects to STDOUT with end of line
-	void println(size_t count, OtObject* parameters);
-
 	// read a JSON file
 	OtObject readJSON(const std::string& name);
 

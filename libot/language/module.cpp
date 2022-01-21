@@ -56,18 +56,10 @@ static std::vector<std::filesystem::path> localPath;
 
 
 //
-//	OtInternalModuleRegistry
+//	OtModuleRegistry
 //
 
-class OtInternalModuleRegistry : public OtSingleton<OtInternalModuleRegistry>, public OtRegistry<OtModule> {
-};
-
-
-//
-//	OtExternalModuleRegistry
-//
-
-class OtExternalModuleRegistry : public OtPerThreadSingleton<OtExternalModuleRegistry>, public OtRegistry<OtModule> {
+class OtModuleRegistry : public OtSingleton<OtModuleRegistry>, public OtRegistry<OtModule> {
 };
 
 
@@ -233,12 +225,8 @@ OtType OtModuleClass::getMeta() {
 
 OtModule OtModuleClass::create(const std::string& name) {
 	// see if this is an "internal" module
-	if (OtInternalModuleRegistry::instance()->has(name)) {
-		return OtInternalModuleRegistry::instance()->get(name);
-
-	// see if this is an "external" module that was already registered
-	} else if (OtExternalModuleRegistry::instance()->has(name)) {
-		return OtExternalModuleRegistry::instance()->get(name);
+	if (OtModuleRegistry::instance()->has(name)) {
+		return OtModuleRegistry::instance()->get(name);
 
 	} else {
 		// build module path (if required)
@@ -257,9 +245,6 @@ OtModule OtModuleClass::create(const std::string& name) {
 		// create a new module
 		OtModule module = std::make_shared<OtModuleClass>();
 		module->setType(getMeta());
-
-		// add it to the external registry for reuse
-		OtExternalModuleRegistry::instance()->set(name, module);
 
 		// setup module's meta data
 		module->set("__FILE__", OtStringClass::create(fullPath.string()));
@@ -288,6 +273,6 @@ OtModule OtModuleClass::internal(const std::string& name) {
 	module->setType(getMeta());
 
 	// add it to internal registry for reuse
-	OtInternalModuleRegistry::instance()->set(name, module);
+	OtModuleRegistry::instance()->set(name, module);
 	return module;
 }

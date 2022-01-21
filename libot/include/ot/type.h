@@ -28,8 +28,7 @@ typedef std::shared_ptr<OtObjectClass> OtObject;
 //
 
 class OtTypeClass;
-typedef OtTypeClass* OtType;
-typedef std::shared_ptr<OtTypeClass> OtSharedType;
+typedef std::shared_ptr<OtTypeClass> OtType;
 
 class OtTypeClass {
 private:
@@ -37,20 +36,20 @@ private:
 
 public:
 	// constructor
-	OtTypeClass(const std::string& n, OtType p, OtAllocator a=nullptr);
+	OtTypeClass(const std::string& n, OtType p=nullptr, OtAllocator a=nullptr);
 
 	// allocate a new instance
 	OtObject allocate();
 
-	// create a sub-type
-	OtType subType(const std::string& n);
+	// set the type's parent type
+	void setParent(OtType p);
 
 	// see if type is kind of
 	bool isKindOf(const std::string& className);
 
 	// get information
 	std::string getName() { return name; }
-	OtType getParent() { return parent; }
+	OtType getParent() { return parent.lock(); }
 
 	// member access
 	bool has(const std::string& name) { return members->has(name) != 0; }
@@ -58,12 +57,6 @@ public:
 	OtObject get(const std::string& name) { return members->has(name) ? members->get(name) : nullptr; }
 	void unset(const std::string& name);
 	OtMembers getMembers() { return members; }
-
-	// register a type
-	static OtType registerType(OtSharedType type);
-
-	// retrieve a registered type
-	static OtType getRegistered(const std::string& name);
 
 	// create a new type
 	template <class CLASS>
@@ -74,13 +67,13 @@ public:
 			};
 		}
 
-		return registerType(std::make_shared<OtTypeClass>(name, parent, allocator));
+		return std::make_shared<OtTypeClass>(name, parent, allocator);
 	}
 
 private:
 	// attributes
 	std::string name;
-	OtType parent;
+	std::weak_ptr<OtTypeClass> parent;
 	OtMembers members;
 	OtAllocator allocator;
 };

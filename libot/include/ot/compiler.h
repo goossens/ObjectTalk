@@ -38,7 +38,6 @@ public:
 private:
 	// push a new scope onto the scope stack
 	void pushObjectScope(OtObject object);
-	void pushClassScope(const std::string& className);
 	void pushFunctionScope();
 	void pushBlockScope();
 
@@ -158,7 +157,6 @@ private:
 	typedef enum {
 		UNDEFINED_SCOPE,
 		OBJECT_SCOPE,
-		CLASS_SCOPE,
 		FUNCTION_SCOPE,
 		BLOCK_SCOPE
 	} OtScopeType;
@@ -167,14 +165,12 @@ private:
 	public:
 		// constructors
 		OtScope(OtScopeType t, OtObject o) : type(t), object(o) {}
-		OtScope(OtScopeType t, const std::string& cn) : type(t), className(cn) {}
 		OtScope(OtScopeType t) : type(t), stackFrameOffset(0) {}
 		OtScope(OtScopeType t, size_t sfo) : type(t), stackFrameOffset(sfo) {}
 
 		// scope details
 		OtScopeType type = UNDEFINED_SCOPE;
 		OtObject object = nullptr;
-		std::string className;
 		size_t stackFrameOffset = 0;
 		std::unordered_map<std::string, size_t> locals;
 		std::unordered_map<std::string, OtStackItem> captures;

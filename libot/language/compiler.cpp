@@ -17,6 +17,7 @@
 #include "ot/integer.h"
 #include "ot/real.h"
 #include "ot/string.h"
+#include "ot/class.h"
 
 #include "ot/throw.h"
 #include "ot/bytecodefunction.h"
@@ -24,7 +25,6 @@
 #include "ot/closure.h"
 
 #include "ot/objectreference.h"
-#include "ot/classreference.h"
 #include "ot/stackreference.h"
 #include "ot/capturereference.h"
 
@@ -129,15 +129,6 @@ OtByteCode OtCompiler::compileExpression(OtSource src) {
 
 void OtCompiler::pushObjectScope(OtObject object) {
 	scopeStack.emplace_back(OtScope(OBJECT_SCOPE, object));
-}
-
-
-//
-//	OtCompiler::pushClassScope
-//
-
-void OtCompiler::pushClassScope(const std::string& className) {
-	scopeStack.emplace_back(OtScope(CLASS_SCOPE, className));
 }
 
 
@@ -254,11 +245,6 @@ void OtCompiler::resolveVariable(OtByteCode bytecode, const std::string& name) {
 				case OBJECT_SCOPE:
 					// variable is object member
 					bytecode->push(OtObjectReferenceClass::create(scope->object, name));
-					break;
-
-				case CLASS_SCOPE:
-					// variable is class member
-					bytecode->push(OtClassReferenceClass::create(scope->className, name));
 					break;
 
 				case FUNCTION_SCOPE:
@@ -1284,23 +1270,27 @@ void OtCompiler::classDeclaration(OtByteCode bytecode) {
 	std::string name = scanner.getText();
 	scanner.advance();
 
-	// handle parent
+	// create new class
+	OtClass cls = OtClassClass::create(name);
+
+	// add class to current scope
+	declareVariable(bytecode, name);
+	bytecode->push(cls);
+	assignVariable(bytecode, name);
+
+	// handle parent class
 	scanner.expect(OtScanner::COLON_TOKEN);
+	bytecode->push(cls);
 
 	if (expression(bytecode)) {
 		bytecode->method("__deref__", 0);
 	}
 
-	// create new class
-	bytecode->push(OtStringClass::create(name));
-	bytecode->method("subClass", 1);
-
-	// add class to current scope
-	declareVariable(bytecode, name);
-	assignVariable(bytecode, name);
+	bytecode->method("setParent", 1);
+	bytecode->pop();
 
 	// start new class scope
-	pushClassScope(name);
+	pushObjectScope(cls);
 
 	// process class content
 	scanner.expect(OtScanner::LBRACE_TOKEN);

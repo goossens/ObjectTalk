@@ -29,15 +29,13 @@ public:
 	std::string describe() { return classType->getName(); }
 
 	// access member information
+	void setParent(OtObject parent);
 	std::string getName() { return classType->getName(); }
 	bool hasParent() { return classType->getParent() != nullptr; }
 	OtObject getParent() { return OtClassClass::create(classType->getParent()); }
 
 	// create a new class instance
 	OtObject instantiate(size_t count, OtObject* parameters);
-
-	// create a sub class
-	OtObject subClass(const std::string& name) { return OtClassClass::create(classType->subType(name)); }
 
 	// see if class is kind of
 	bool isKindOf(const std::string& className) { return classType->isKindOf(className); }
@@ -53,6 +51,7 @@ public:
 	static OtType getMeta();
 
 	// create a new object
+	static OtClass create(const std::string& name);
 	static OtClass create(OtType type);
 
 protected:

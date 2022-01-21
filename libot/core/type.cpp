@@ -10,17 +10,7 @@
 //
 
 #include "ot/exception.h"
-#include "ot/registry.h"
-#include "ot/singleton.h"
 #include "ot/type.h"
-
-
-//
-//	OtTypeRegistry
-//
-
-class OtTypeRegistry : public OtSingleton<OtTypeRegistry>, public OtRegistry<OtSharedType> {
-};
 
 
 //
@@ -30,7 +20,7 @@ class OtTypeRegistry : public OtSingleton<OtTypeRegistry>, public OtRegistry<OtS
 OtTypeClass::OtTypeClass(const std::string& n, OtType p, OtAllocator a) {
 	name = n;
 	parent = p;
-	allocator = a ? a : parent->allocator;
+	allocator = a ? a : p ? p->allocator : nullptr;
 	members = OtMembersClass::create();
 }
 
@@ -40,18 +30,20 @@ OtTypeClass::OtTypeClass(const std::string& n, OtType p, OtAllocator a) {
 //
 
 OtObject OtTypeClass::allocate() {
+	if (!allocator) {
+		OtExcept("Can't allocation incomplete type [%s]", name.c_str());
+	}
+
 	return allocator();
 }
 
 
-//
-//	OtTypeClass::subType
-//
+void OtTypeClass::setParent(OtType p) {
+	if (!allocator) {
+		allocator = p->allocator;
+	}
 
-OtType OtTypeClass::subType(const std::string& name) {
-	OtSharedType type = std::make_shared<OtTypeClass>(name, this, allocator);
-	OtTypeRegistry::instance()->set(name, type);
-	return type.get();
+	parent = p;
 }
 
 
@@ -60,7 +52,7 @@ OtType OtTypeClass::subType(const std::string& name) {
 //
 
 bool OtTypeClass::isKindOf(const std::string& className) {
-	for (auto p = this; p; p = p->parent) {
+	for (auto p = this; p; p = p->parent.lock().get()) {
 		if (p->name == className) {
 			return true;
 		}
@@ -81,23 +73,4 @@ void OtTypeClass::unset(const std::string& name) {
 	} else {
 		OtExcept("Unknown member [%s] in type [%s]", name.c_str(), getName().c_str());
 	}
-}
-
-
-//
-//	OtTypeClass::registerType
-//
-
-OtType OtTypeClass::registerType(OtSharedType type) {
-	OtTypeRegistry::instance()->set(type->getName(), type);
-	return type.get();
-}
-
-
-//
-//	OtTypeClass::getRegistered
-//
-
-OtType OtTypeClass::getRegistered(const std::string& name) {
-	return OtTypeRegistry::instance()->get(name).get();
 }

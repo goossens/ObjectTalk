@@ -16,6 +16,20 @@
 
 
 //
+//	OtClassClass::setParent
+//
+
+void OtClassClass::setParent(OtObject object) {
+	if (object->isKindOf("Class")) {
+		classType->setParent(object->cast<OtClassClass>()->classType);
+
+	} else {
+		OtExcept("Expected a [Class] instance, not a [%s]", object->getType()->getName().c_str());
+	}
+}
+
+
+//
 //	OtClassClass::instantiate
 //
 
@@ -50,9 +64,9 @@ OtType OtClassClass::getMeta() {
 		type = OtTypeClass::create<OtClassClass>("Class", OtInternalClass::getMeta());
 		type->set("__call__", OtFunctionClass::create(&OtClassClass::instantiate));
 		type->set("getName", OtFunctionClass::create(&OtClassClass::getName));
+		type->set("setParent", OtFunctionClass::create(&OtClassClass::setParent));
 		type->set("hasParent", OtFunctionClass::create(&OtClassClass::hasParent));
 		type->set("getParent", OtFunctionClass::create(&OtClassClass::getParent));
-		type->set("subClass", OtFunctionClass::create(&OtClassClass::subClass));
 		type->set("isKindOf", OtFunctionClass::create(&OtClassClass::isKindOf));
 	}
 
@@ -63,6 +77,14 @@ OtType OtClassClass::getMeta() {
 //
 //	OtClassClass::create
 //
+
+OtClass OtClassClass::create(const std::string& name) {
+	OtType type = std::make_shared<OtTypeClass>(name);
+	OtClass cls = std::make_shared<OtClassClass>(type);
+	cls->setType(getMeta());
+	return cls;
+}
+
 
 OtClass OtClassClass::create(OtType type) {
 	OtClass cls = std::make_shared<OtClassClass>(type);

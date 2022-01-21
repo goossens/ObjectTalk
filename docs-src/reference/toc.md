@@ -33,7 +33,6 @@
 			* [ArrayReference](#arrayreference)
 			* [DictReference](#dictreference)
 			* [ObjectReference](#objectreference)
-			* [ClassReference](#classreference)
 			* [StackReference](#stackreference)
 			* [CaptureReference](#capturereference)
 		* [Iterator](#iterator)

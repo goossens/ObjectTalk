@@ -577,7 +577,7 @@ var test = function(var1) {
 	var y = 10;
 
 	function add() {
-		y += 5
+		y += 5;
 	}
 
 	add();
@@ -658,15 +658,16 @@ var shapeDescription = shape.simpleDescription();
               initializer (constructor) to set up the class when an instance is
               created. Use __init__ to create one.
             </p>
-            <p>
-              class NamedShape : Shape { function <strong>init</strong>(this,
-              name) { this.name = name; }
-            </p>
-            <pre><code>function simpleDescription(this) {
-	return &quot;A named shape called &quot; + this.name;
+            <pre><code>class NamedShape : Shape {
+	function __init__(this, name) {
+		this.name = name;
+	}
+
+	function simpleDescription(this) {
+		return &quot;A named shape called &quot; + this.name;
+	}
 }
 </code></pre>
-            <p>}</p>
             <p>
               Notice how &quot;this&quot; is used to distinguish the name
               property from the name argument to the initializer. In some

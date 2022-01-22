@@ -264,7 +264,7 @@ organize the code in a function that’s long or complex.
 		var y = 10;
 
 		function add() {
-			y += 5
+			y += 5;
 		}
 
 		add();
@@ -339,15 +339,15 @@ This version of the Shape class is missing something important: an
 initializer (constructor) to set up the class when an instance is created.
 Use \_\_init\_\_ to create one.
 
-class NamedShape : Shape {
-	function __init__(this, name) {
-		this.name = name;
-	}
+	class NamedShape : Shape {
+		function __init__(this, name) {
+			this.name = name;
+		}
 
-	function simpleDescription(this) {
-		return "A named shape called " + this.name;
+		function simpleDescription(this) {
+			return "A named shape called " + this.name;
+		}
 	}
-}
 
 Notice how "this" is used to distinguish the name property from the name
 argument to the initializer. In some computer language, the "this" or

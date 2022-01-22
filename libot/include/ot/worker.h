@@ -71,7 +71,7 @@ private:
 		OtObject callback;
 	};
 
-	// managing our thread
+	// managing our worker thread
 	bool running = false;
 	bool inRequest = false;
 	std::thread worker;

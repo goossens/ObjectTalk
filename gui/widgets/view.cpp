@@ -262,7 +262,7 @@ bool OtViewClass::onChar(unsigned int codepoint) {
 //
 
 OtType OtViewClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtViewClass>("View", OtScreenObjectClass::getMeta());

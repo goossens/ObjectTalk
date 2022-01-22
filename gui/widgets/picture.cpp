@@ -98,7 +98,7 @@ void OtPictureClass::render() {
 //
 
 OtType OtPictureClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtPictureClass>("Picture", OtWidgetClass::getMeta());

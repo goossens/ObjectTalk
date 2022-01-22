@@ -136,7 +136,7 @@ void OtCircleGeometryClass::fillGeometry() {
 //
 
 OtType OtCircleGeometryClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtCircleGeometryClass>("CircleGeometry", OtGeometryClass::getMeta());

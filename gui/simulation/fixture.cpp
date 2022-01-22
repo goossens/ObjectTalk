@@ -52,7 +52,7 @@ OtObject OtFixtureClass::setRestitution(float restitution) {
 //
 
 OtType OtFixtureClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtFixtureClass>("Fixture", OtGuiClass::getMeta());

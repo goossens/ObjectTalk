@@ -47,7 +47,7 @@ void OtWindowClass::render() {
 //
 
 OtType OtWindowClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtWindowClass>("Window", OtScreenObjectClass::getMeta());

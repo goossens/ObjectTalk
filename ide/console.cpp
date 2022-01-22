@@ -207,7 +207,7 @@ void OtConsoleClass::writeError(const std::string& text) {
 //
 
 OtType OtConsoleClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtConsoleClass>("Console", OtIdeClass::getMeta());

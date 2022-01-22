@@ -37,7 +37,7 @@ OtObject OtFunctionClass::operator () (size_t count, OtObject* parameters) {
 //
 
 OtType OtFunctionClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtFunctionClass>("Function", OtPrimitiveClass::getMeta());

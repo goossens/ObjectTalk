@@ -488,7 +488,7 @@ void OtTerrainClass::parametersHaveChanged() {
 //
 
 OtType OtTerrainClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtTerrainClass>("Terrain", OtSceneObjectClass::getMeta());

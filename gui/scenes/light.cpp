@@ -72,7 +72,7 @@ void OtLightClass::render(OtRenderingContext* context) {
 //
 
 OtType OtLightClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtLightClass>("Light", OtSceneObjectClass::getMeta());

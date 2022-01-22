@@ -38,7 +38,7 @@ public:
 
 	// get type definition
 	static OtType getMeta() {
-		static OtType type = nullptr;
+		static OtType type;
 
 		if (!type) {
 			type = OtTypeClass::create<OtHttpNextClass>("HttpNext", OtInternalClass::getMeta());

@@ -98,7 +98,7 @@ glm::mat4 OtMatrixClass::getComposite() {
 //
 
 OtType OtMatrixClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtMatrixClass>("Matrix", OtGuiClass::getMeta());

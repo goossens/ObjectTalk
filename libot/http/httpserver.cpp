@@ -132,7 +132,7 @@ void OtHttpServerClass::stop() {
 //
 
 OtType OtHttpServerClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtHttpServerClass>("HttpServer", OtHttpRouterClass::getMeta());

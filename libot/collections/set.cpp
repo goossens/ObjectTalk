@@ -322,7 +322,7 @@ OtObject OtSetClass::subtractFrom(OtObject object) {
 //
 
 OtType OtSetClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtSetClass>("Set", OtCollectionClass::getMeta());

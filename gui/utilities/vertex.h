@@ -26,7 +26,7 @@ struct OtVertex {
 	glm::vec2 uv;
 
 	// constructors
-	OtVertex() {}
+	OtVertex() = default;
 	OtVertex(glm::vec3 p, glm::vec3 n, glm::vec2 u) : position(p), normal(n), uv(u) {}
 
 	// get a BGFX vertex description

@@ -292,7 +292,7 @@ void OtMeshClass::render(OtRenderingContext* context) {
 //
 
 OtType OtMeshClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtMeshClass>("Mesh", OtObject3dClass::getMeta());

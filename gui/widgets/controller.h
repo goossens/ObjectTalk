@@ -46,7 +46,7 @@ public:																					\
 	}																					\
 																						\
 	static OtType getMeta() {															\
-		static OtType type = nullptr;													\
+		static OtType type;													\
 																						\
 		if (!type) {																	\
 			type = OtTypeClass::create<Ot##type##ControllerClass>(						\

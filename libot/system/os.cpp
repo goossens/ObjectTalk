@@ -365,7 +365,7 @@ bool OtOSClass::isDST() {
 //
 
 OtType OtOSClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtOSClass>(

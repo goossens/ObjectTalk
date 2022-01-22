@@ -199,7 +199,7 @@ void OtBoxGeometryClass::buildPlane(int udir, int vdir, float w, float h, float 
 //
 
 OtType OtBoxGeometryClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtBoxGeometryClass>("BoxGeometry", OtGeometryClass::getMeta());

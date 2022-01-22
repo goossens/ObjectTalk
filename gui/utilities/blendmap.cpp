@@ -85,7 +85,7 @@ void OtBlendMapClass::submit() {
 //
 
 OtType OtBlendMapClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtBlendMapClass>("BlendMap", OtGuiClass::getMeta());

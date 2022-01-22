@@ -43,7 +43,7 @@ void OtCheckboxClass::render() {
 //
 
 OtType OtCheckboxClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtCheckboxClass>("Checkbox", OtWidgetClass::getMeta());

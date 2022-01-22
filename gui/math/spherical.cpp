@@ -37,7 +37,7 @@ OtObject OtSphericalClass::init(size_t count, OtObject* parameters) {
 //
 
 OtType OtSphericalClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtSphericalClass>("Spherical", OtMathClass::getMeta());

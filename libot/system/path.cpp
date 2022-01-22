@@ -49,7 +49,7 @@ OtObject OtPathClass::iterate() {
 //
 
 OtType OtPathClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtPathClass>("Path", OtSystemClass::getMeta());

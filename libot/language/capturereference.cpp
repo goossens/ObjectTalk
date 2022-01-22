@@ -38,7 +38,7 @@ OtObject OtCaptureReferenceClass::assign(OtObject value) {
 //
 
 OtType OtCaptureReferenceClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtCaptureReferenceClass>("CaptureReference", OtReferenceClass::getMeta());

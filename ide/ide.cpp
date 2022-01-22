@@ -17,7 +17,7 @@
 //
 
 OtType OtIdeClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtIdeClass>("Ide", OtObjectClass::getMeta());

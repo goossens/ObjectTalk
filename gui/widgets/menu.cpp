@@ -44,7 +44,7 @@ void OtMenuClass::render() {
 //
 
 OtType OtMenuClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtMenuClass>("Menu", OtWidgetClass::getMeta());

@@ -132,7 +132,7 @@ void OtBodyClass::applyLinearImpulse(float x, float y) {
 //
 
 OtType OtBodyClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtBodyClass>("Body", OtGuiClass::getMeta());

@@ -18,7 +18,7 @@
 //
 
 OtType OtStringReferenceClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtStringReferenceClass>("StringReference", OtReferenceClass::getMeta());

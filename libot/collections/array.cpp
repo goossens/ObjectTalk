@@ -399,7 +399,7 @@ std::string OtArrayClass::join(const std::string& separator) {
 //
 
 OtType OtArrayClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtArrayClass>("Array", OtCollectionClass::getMeta());

@@ -136,7 +136,7 @@ void OtURLClass::parse(const std::string& url) {
 //
 
 OtType OtURLClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtURLClass>("URL", OtHttpClass::getMeta());

@@ -95,7 +95,7 @@ void OtSunClass::render(OtRenderingContext* context) {
 //
 
 OtType OtSunClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtSunClass>("Sun", OtSceneObjectClass::getMeta());

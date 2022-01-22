@@ -358,7 +358,7 @@ OtObject OtHttpResponseClass::download(const std::string& name) {
 //
 
 OtType OtHttpResponseClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtHttpResponseClass>("HttpResponse", OtHttpClass::getMeta());

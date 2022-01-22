@@ -25,7 +25,7 @@ typedef std::shared_ptr<OtVec3Class> OtVec3;
 class OtVec3Class : public OtMathClass {
 public:
 	// constructors
-	OtVec3Class() {}
+	OtVec3Class() = default;
 	OtVec3Class(float scalar) : vector(scalar) {}
 	OtVec3Class(float x, float y, float z) : vector(x, y, z) {}
 

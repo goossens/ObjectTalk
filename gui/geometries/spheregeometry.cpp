@@ -193,7 +193,7 @@ void OtSphereGeometryClass::fillGeometry() {
 //
 
 OtType OtSphereGeometryClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtSphereGeometryClass>("SphereGeometry", OtGeometryClass::getMeta());

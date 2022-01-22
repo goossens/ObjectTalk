@@ -547,7 +547,7 @@ const std::string OtHttpRequestClass::debug() {
 //
 
 OtType OtHttpRequestClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtHttpRequestClass>("HttpRequest", OtHttpClass::getMeta());

@@ -121,7 +121,7 @@ std::string OtByteCodeClass::disassemble() {
 //
 
 OtType OtByteCodeClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtByteCodeClass>("Code", OtInternalClass::getMeta());

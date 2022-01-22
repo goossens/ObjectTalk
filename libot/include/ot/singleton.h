@@ -31,7 +31,7 @@ public:
 	OtSingleton& operator= (const OtSingleton) = delete;
 
 protected:
-	OtSingleton() {}
+	OtSingleton() = default;
 };
 
 
@@ -51,7 +51,7 @@ public:
 	OtPerThreadSingleton& operator= (const OtPerThreadSingleton) = delete;
 
 protected:
-	OtPerThreadSingleton() {}
+	OtPerThreadSingleton() = default;
 };
 
 
@@ -77,5 +77,5 @@ public:
 	OtObjectSingleton& operator= (const OtObjectSingleton) = delete;
 
 protected:
-	OtObjectSingleton() {}
+	OtObjectSingleton() = default;
 };

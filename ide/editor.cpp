@@ -328,7 +328,7 @@ bool OtEditorClass::isDirty() {
 //
 
 OtType OtEditorClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtEditorClass>("Editor", OtIdeClass::getMeta());

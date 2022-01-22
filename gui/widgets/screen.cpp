@@ -151,7 +151,7 @@ void OtScreenClass::onGamepadButton(int gamepad, int button, int action) {
 //
 
 OtType OtScreenClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtScreenClass>("Screen", OtWidgetClass::getMeta());

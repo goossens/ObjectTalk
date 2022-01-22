@@ -17,7 +17,7 @@
 //
 
 OtType OtHttpClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtHttpClass>("Http", OtObjectClass::getMeta());

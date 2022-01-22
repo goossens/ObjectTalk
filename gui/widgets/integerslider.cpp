@@ -45,7 +45,7 @@ void OtIntegerSliderClass::render() {
 //
 
 OtType OtIntegerSliderClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtIntegerSliderClass>("IntegerSlider", OtWidgetClass::getMeta());

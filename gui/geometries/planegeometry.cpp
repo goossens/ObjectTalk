@@ -242,7 +242,7 @@ void OtPlaneGeometryClass::fillGeometry() {
 //
 
 OtType OtPlaneGeometryClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtPlaneGeometryClass>("PlaneGeometry", OtGeometryClass::getMeta());

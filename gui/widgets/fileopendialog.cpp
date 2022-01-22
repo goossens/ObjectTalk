@@ -128,7 +128,7 @@ void OtFileOpenDialogClass::render() {
 //
 
 OtType OtFileOpenDialogClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtFileOpenDialogClass>("FileOpenDialog", OtDialogClass::getMeta());

@@ -145,7 +145,7 @@ void OtBackgroundClass::render(OtRenderingContext* context) {
 //
 
 OtType OtBackgroundClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtBackgroundClass>("Background", OtSceneObjectClass::getMeta());

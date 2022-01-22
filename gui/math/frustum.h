@@ -23,7 +23,7 @@ class OtFrustum
 {
 public:
 	// constructors
-	OtFrustum() {}
+	OtFrustum() = default;
 
 	OtFrustum(glm::mat4 m) {
 		m = glm::transpose(m);

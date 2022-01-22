@@ -74,7 +74,7 @@ void OtComboboxClass::render() {
 //
 
 OtType OtComboboxClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtComboboxClass>("Combobox", OtWidgetClass::getMeta());

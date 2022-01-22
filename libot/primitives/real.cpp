@@ -32,7 +32,7 @@ std::string OtRealClass::toFixed(size_t precision) {
 //
 
 OtType OtRealClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtRealClass>("Real", OtPrimitiveClass::getMeta());

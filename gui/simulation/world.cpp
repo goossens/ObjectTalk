@@ -195,7 +195,7 @@ void OtWorldClass::EndContact(b2Contact* contact) {
 //
 
 OtType OtWorldClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtWorldClass>("World", OtSimulationClass::getMeta());

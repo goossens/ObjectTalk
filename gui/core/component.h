@@ -21,12 +21,16 @@
 
 class OtComponentClass;
 typedef std::shared_ptr<OtComponentClass> OtComponent;
+typedef std::weak_ptr<OtComponentClass> OtComponentWeak;
 
 class OtComponentClass : public OtGuiClass {
 public:
 	// add / remove components
 	OtObject add(OtObject object);
 	OtObject remove(OtObject object);
+
+	// get our parent
+	OtComponent getParent() { return parent.lock(); }
 
 	// ensure specified component is allowed as a child
 	virtual void validateChild(OtComponent child);
@@ -51,7 +55,7 @@ public:
 
 protected:
 	// parent component
-	OtComponent parent = nullptr;
+	OtComponentWeak parent;
 
 	// our children
 	std::vector<OtComponent> children;

@@ -134,7 +134,7 @@ bool OtAnimationClass::step(int32_t deltaMilliseconds) {
 //
 
 OtType OtAnimationClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtAnimationClass>("Animation", OtGuiClass::getMeta());

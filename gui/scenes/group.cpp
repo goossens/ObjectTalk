@@ -49,7 +49,7 @@ void OtGroupClass::render(OtRenderingContext* context) {
 //
 
 OtType OtGroupClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtGroupClass>("Group", OtObject3dClass::getMeta());

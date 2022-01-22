@@ -29,6 +29,7 @@ typedef std::shared_ptr<OtObjectClass> OtObject;
 
 class OtTypeClass;
 typedef std::shared_ptr<OtTypeClass> OtType;
+typedef std::weak_ptr<OtTypeClass> OtTypeWeak;
 
 class OtTypeClass {
 private:
@@ -70,10 +71,14 @@ public:
 		return std::make_shared<OtTypeClass>(name, parent, allocator);
 	}
 
+	static OtType create(const std::string& name) {
+		return std::make_shared<OtTypeClass>(name);
+	}
+
 private:
 	// attributes
 	std::string name;
-	std::weak_ptr<OtTypeClass> parent;
+	OtTypeWeak parent;
 	OtMembers members;
 	OtAllocator allocator;
 };

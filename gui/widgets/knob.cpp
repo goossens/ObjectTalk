@@ -172,7 +172,7 @@ void OtKnobClass::render() {
 //
 
 OtType OtKnobClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtKnobClass>("Knob", OtWidgetClass::getMeta());

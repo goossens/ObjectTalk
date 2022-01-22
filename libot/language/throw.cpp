@@ -28,7 +28,7 @@ void OtThrowClass::call(const std::string& error) {
 //
 
 OtType OtThrowClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtThrowClass>("Throw", OtInternalClass::getMeta());

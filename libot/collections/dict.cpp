@@ -239,7 +239,7 @@ OtObject OtDictClass::values() {
 //
 
 OtType OtDictClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtDictClass>("Dict", OtCollectionClass::getMeta());

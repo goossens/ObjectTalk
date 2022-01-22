@@ -126,7 +126,7 @@ void OtModelGeometryClass::fillGeometry() {
 //
 
 OtType OtModelGeometryClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtModelGeometryClass>("ModelGeometry", OtGeometryClass::getMeta());

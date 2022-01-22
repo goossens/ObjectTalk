@@ -49,7 +49,7 @@ void OtLabelClass::render() {
 //
 
 OtType OtLabelClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtLabelClass>("Label", OtWidgetClass::getMeta());

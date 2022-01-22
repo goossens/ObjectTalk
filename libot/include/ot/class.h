@@ -24,6 +24,7 @@ public:
 	// constructors
 	OtClassClass() = default;
 	OtClassClass(OtType t) : classType(t) {}
+	OtClassClass(const std::string& name);
 
 	// debugging support
 	std::string describe() { return classType->getName(); }

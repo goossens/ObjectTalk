@@ -252,7 +252,7 @@ OtObject OtGlobalClass::members(OtObject object) {
 //
 
 OtType OtGlobalClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtGlobalClass>("Global", OtInternalClass::getMeta());

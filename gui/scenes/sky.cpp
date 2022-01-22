@@ -217,7 +217,7 @@ void OtSkyClass::render(OtRenderingContext* context) {
 //
 
 OtType OtSkyClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtSkyClass>("Sky", OtSceneObjectClass::getMeta());

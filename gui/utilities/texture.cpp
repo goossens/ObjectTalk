@@ -206,7 +206,7 @@ void OtTextureClass::submit(int stage, bgfx::UniformHandle uniform) {
 //
 
 OtType OtTextureClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtTextureClass>("Texture", OtGuiClass::getMeta());

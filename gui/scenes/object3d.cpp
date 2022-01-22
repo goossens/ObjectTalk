@@ -100,7 +100,7 @@ void OtObject3dClass::render(OtRenderingContext* context) {
 //
 
 OtType OtObject3dClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtObject3dClass>("Object3D", OtSceneObjectClass::getMeta());

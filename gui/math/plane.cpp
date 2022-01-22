@@ -77,7 +77,7 @@ float OtPlaneClass::distanceToPoint(float x, float y, float z) {
 //
 
 OtType OtPlaneClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtPlaneClass>("Plane", OtMathClass::getMeta());

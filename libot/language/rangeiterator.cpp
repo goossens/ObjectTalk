@@ -18,7 +18,7 @@
 //
 
 OtType OtRangeIteratorClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtRangeIteratorClass>("RangeIterator", OtIteratorClass::getMeta());

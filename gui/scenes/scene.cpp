@@ -59,7 +59,7 @@ void OtSceneClass::render(OtRenderingContext* context) {
 //
 
 OtType OtSceneClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtSceneClass>("Scene", OtComponentClass::getMeta());

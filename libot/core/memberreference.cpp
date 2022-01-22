@@ -50,7 +50,7 @@ OtObject OtMemberReferenceClass::assign(OtObject value) {
 //
 
 OtType OtMemberReferenceClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtMemberReferenceClass>("MemberReference", OtReferenceClass::getMeta());

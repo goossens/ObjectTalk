@@ -18,7 +18,7 @@
 //
 
 OtType OtBooleanClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtBooleanClass>("Boolean", OtPrimitiveClass::getMeta());

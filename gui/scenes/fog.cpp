@@ -62,7 +62,7 @@ void OtFogClass::render(OtRenderingContext* context) {
 //
 
 OtType OtFogClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtFogClass>("Fog", OtSceneObjectClass::getMeta());

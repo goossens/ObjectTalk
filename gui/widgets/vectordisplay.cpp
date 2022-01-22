@@ -1302,7 +1302,7 @@ void OtVectorDisplayClass::renderGUI() {
 //
 
 OtType OtVectorDisplayClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtVectorDisplayClass>("VectorDisplay", OtScreenObjectClass::getMeta());

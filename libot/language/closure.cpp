@@ -58,7 +58,7 @@ OtObject OtClosureClass::operator () (size_t count, OtObject* parameters) {
 //
 
 OtType OtClosureClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtClosureClass>("Closure", OtInternalClass::getMeta());

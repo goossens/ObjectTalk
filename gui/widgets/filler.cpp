@@ -58,7 +58,7 @@ void OtFillerClass::render() {
 //
 
 OtType OtFillerClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtFillerClass>("Filler", OtWidgetClass::getMeta());

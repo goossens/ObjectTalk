@@ -16,6 +16,15 @@
 
 
 //
+//	OtClassClass::OtClassClass
+//
+
+OtClassClass::OtClassClass(const std::string& name) {
+	classType = OtTypeClass::create(name);
+}
+
+
+//
 //	OtClassClass::setParent
 //
 
@@ -58,7 +67,7 @@ OtObject OtClassClass::instantiate(size_t count, OtObject* parameters) {
 //
 
 OtType OtClassClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtClassClass>("Class", OtInternalClass::getMeta());
@@ -78,16 +87,14 @@ OtType OtClassClass::getMeta() {
 //	OtClassClass::create
 //
 
-OtClass OtClassClass::create(const std::string& name) {
-	OtType type = std::make_shared<OtTypeClass>(name);
+OtClass OtClassClass::create(OtType type) {
 	OtClass cls = std::make_shared<OtClassClass>(type);
 	cls->setType(getMeta());
 	return cls;
 }
 
-
-OtClass OtClassClass::create(OtType type) {
-	OtClass cls = std::make_shared<OtClassClass>(type);
+OtClass OtClassClass::create(const std::string& name) {
+	OtClass cls = std::make_shared<OtClassClass>(name);
 	cls->setType(getMeta());
 	return cls;
 }

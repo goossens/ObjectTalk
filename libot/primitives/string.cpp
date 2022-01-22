@@ -294,7 +294,7 @@ OtObject OtStringClass::format(size_t count, OtObject* objects) {
 //
 
 OtType OtStringClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtStringClass>("String", OtPrimitiveClass::getMeta());

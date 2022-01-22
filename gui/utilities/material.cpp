@@ -310,7 +310,7 @@ int OtMaterialClass::getType() {
 //
 
 OtType OtMaterialClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtMaterialClass>("Material", OtGuiClass::getMeta());

@@ -45,7 +45,7 @@ void OtRealSliderClass::render() {
 //
 
 OtType OtRealSliderClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtRealSliderClass>("RealSlider", OtWidgetClass::getMeta());

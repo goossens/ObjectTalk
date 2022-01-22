@@ -215,7 +215,7 @@ void OtClothClass::step(int32_t deltaMilliseconds) {
 //
 
 OtType OtClothClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtClothClass>("Cloth", OtSimulationClass::getMeta());

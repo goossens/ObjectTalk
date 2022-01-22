@@ -140,7 +140,7 @@ float OtPerlinClass::octaveNoise(float x, float y, float z, int octaves, float p
 //
 
 OtType OtPerlinClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtPerlinClass>("Perlin", OtMathClass::getMeta());

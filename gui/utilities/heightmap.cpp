@@ -214,7 +214,7 @@ void OtHeightMapClass::renderGUI() {
 //
 
 OtType OtHeightMapClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtHeightMapClass>("HeightMap", OtGuiClass::getMeta());

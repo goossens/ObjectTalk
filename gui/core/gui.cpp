@@ -17,7 +17,7 @@
 //
 
 OtType OtGuiClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtGuiClass>("GUI", OtObjectClass::getMeta());

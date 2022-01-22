@@ -35,8 +35,8 @@ void OtPanelClass::render() {
 	size_t offset = 0;
 
 	// take menubar into account if there is one
-	if (parent) {
-		offset = parent->cast<OtScreenClass>()->getMenubarHeight();
+	if (getParent()) {
+		offset = getParent()->cast<OtScreenClass>()->getMenubarHeight();
 	}
 
 	// frame height
@@ -75,7 +75,7 @@ void OtPanelClass::render() {
 //
 
 OtType OtPanelClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtPanelClass>("Panel", OtScreenObjectClass::getMeta());

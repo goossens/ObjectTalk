@@ -209,7 +209,7 @@ void OtModuleClass::loadSourceModule(std::filesystem::path path, OtModule module
 //
 
 OtType OtModuleClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtModuleClass>("Module", OtInternalClass::getMeta());

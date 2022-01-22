@@ -58,7 +58,7 @@ void OtWidgetClass::render() {
 //
 
 OtType OtWidgetClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtWidgetClass>("Widget", OtComponentClass::getMeta());

@@ -380,7 +380,7 @@ size_t OtFSClass::available(const std::string& path) {
 //
 
 OtType OtFSClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtFSClass>(

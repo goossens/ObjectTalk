@@ -258,7 +258,7 @@ void OtNoiseMapClass::renderGUI() {
 //
 
 OtType OtNoiseMapClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtNoiseMapClass>("NoiseMap", OtGuiClass::getMeta());

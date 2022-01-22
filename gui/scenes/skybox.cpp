@@ -306,7 +306,7 @@ void OtSkyboxClass::render(OtRenderingContext* context) {
 //
 
 OtType OtSkyboxClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtSkyboxClass>("Skybox", OtSceneObjectClass::getMeta());

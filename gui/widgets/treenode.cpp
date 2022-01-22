@@ -54,7 +54,7 @@ void OtTreeNodeClass::render() {
 //
 
 OtType OtTreeNodeClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtTreeNodeClass>("TreeNode", OtWidgetClass::getMeta());

@@ -129,7 +129,7 @@ OtObject OtVec2Class::divide(OtObject object) {
 //
 
 OtType OtVec2Class::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtVec2Class>("Vec2", OtMathClass::getMeta());

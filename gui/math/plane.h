@@ -25,7 +25,7 @@ typedef std::shared_ptr<OtPlaneClass> OtPlane;
 class OtPlaneClass : public OtMathClass {
 public:
 	// constructors
-	OtPlaneClass() {}
+	OtPlaneClass() = default;
 	OtPlaneClass(float a, float b, float c, float _d) : normal(glm::vec3(a, b, c)), d(_d) {}
 	OtPlaneClass(const glm::vec3& n, float _d) : normal(n), d(_d) {}
 

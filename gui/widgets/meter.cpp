@@ -137,7 +137,7 @@ void OtMeterClass::render() {
 //
 
 OtType OtMeterClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtMeterClass>("Meter", OtWidgetClass::getMeta());

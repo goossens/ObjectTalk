@@ -35,8 +35,8 @@ OtObject OtComponentClass::add(OtObject object) {
 	validateChild(child);
 
 	// remove from previous parent if required
-	if (child->parent) {
-		child->parent->remove(object);
+	if (child->parent.lock()) {
+		child->parent.lock()->remove(object);
 	}
 
 	// set new parent
@@ -58,18 +58,13 @@ OtObject OtComponentClass::remove(OtObject object) {
 		OtExcept("Can't have a [%s] as a child of a [Component]", object->getType()->getName().c_str());
 	}
 
-	// cast the object to the child type
-	OtComponent child = object->cast<OtComponentClass>();
-
-	// detach from this object
-	child->parent = nullptr;
-
 	// delete child from list
 	bool found = false;
 
 	// use remove_if when we move the C++20
 	for (auto it = children.begin(); !found && it != children.end();) {
 		if ((*it)->equal(object)) {
+			object->cast<OtComponentClass>()->parent.reset();
 			it = children.erase(it);
 			found = true;
 
@@ -113,7 +108,7 @@ void OtComponentClass::clear() {
 //
 
 OtType OtComponentClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtComponentClass>("Component", OtGuiClass::getMeta());

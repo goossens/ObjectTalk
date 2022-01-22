@@ -25,7 +25,7 @@ typedef std::shared_ptr<OtSphericalClass> OtSpherical;
 class OtSphericalClass : public OtMathClass {
 public:
 	// constructors
-	OtSphericalClass() {}
+	OtSphericalClass() = default;
 	OtSphericalClass(float r, float p, float t) : radius(r), phi(p), theta(t) {}
 
 	// initialize plane

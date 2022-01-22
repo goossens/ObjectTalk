@@ -117,7 +117,7 @@ bool OtWorkerClass::done() {
 //
 
 OtType OtWorkerClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtWorkerClass>("Worker", OtSystemClass::getMeta());

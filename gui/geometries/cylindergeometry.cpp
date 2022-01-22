@@ -279,7 +279,7 @@ void OtCylinderGeometryClass::generateCap(bool top) {
 //
 
 OtType OtCylinderGeometryClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtCylinderGeometryClass>("CylinderGeometry", OtGeometryClass::getMeta());

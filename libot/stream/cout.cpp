@@ -67,7 +67,7 @@ void OtCoutClass::setOutputFunction(std::function<void(const std::string&)> func
 //
 
 OtType OtCoutClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtCoutClass>(

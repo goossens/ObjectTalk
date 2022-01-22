@@ -18,7 +18,7 @@
 //
 
 OtType OtSetIteratorClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtSetIteratorClass>("SetIterator", OtIteratorClass::getMeta());

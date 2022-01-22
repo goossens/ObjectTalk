@@ -327,7 +327,7 @@ ImU32 OtTronClass::blend(ImU32 color1, ImU32 color2, float ratio) {
 //
 
 OtType OtTronClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtTronClass>("Tron", OtWidgetClass::getMeta());

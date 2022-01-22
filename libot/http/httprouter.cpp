@@ -258,7 +258,7 @@ void OtHttpRouterClass::clearHandlers() {
 //
 
 OtType OtHttpRouterClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtHttpRouterClass>("HttpRouter", OtHttpClass::getMeta());

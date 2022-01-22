@@ -125,7 +125,7 @@ void OtIOClass::writeText(const std::string& name, OtObject object) {
 //
 
 OtType OtIOClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtIOClass>(

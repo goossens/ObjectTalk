@@ -328,7 +328,7 @@ void OtWaterClass::renderGUI() {
 //
 
 OtType OtWaterClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtWaterClass>("Water", OtObject3dClass::getMeta());

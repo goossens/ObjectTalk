@@ -407,7 +407,7 @@ void OtCameraClass::renderGUI() {
 //
 
 OtType OtCameraClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtCameraClass>("Camera", OtGuiClass::getMeta());

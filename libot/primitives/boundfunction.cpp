@@ -30,7 +30,7 @@ OtObject OtBoundFunctionClass::operator () (size_t count, OtObject* parameters) 
 //
 
 OtType OtBoundFunctionClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtBoundFunctionClass>("BoundFunction", OtInternalClass::getMeta());

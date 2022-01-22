@@ -379,7 +379,7 @@ void OtApplicationClass::addShortcut(int modifier, int keycode, std::function<vo
 //
 
 OtType OtApplicationClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtApplicationClass>(

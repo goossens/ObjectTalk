@@ -31,7 +31,7 @@ void OtMenubarClass::validateChild(OtComponent child) {
 
 void OtMenubarClass::render() {
 	// see what type of menubar we need
-	if (parent->isKindOf("Screen")) {
+	if (getParent()->isKindOf("Screen")) {
 		// it's a screen-level main menubar
 		if (ImGui::BeginMainMenuBar()) {
 			height = ImGui::GetWindowSize().y;
@@ -55,7 +55,7 @@ void OtMenubarClass::render() {
 //
 
 OtType OtMenubarClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtMenubarClass>("Menubar", OtScreenObjectClass::getMeta());

@@ -57,7 +57,7 @@ private:
 	class OtClothParticle {
 	public:
 		// constructors
-		OtClothParticle() {}
+		OtClothParticle() = default;
 		OtClothParticle(glm::vec3 p) : original(p), oldPos(p) {}
 
 		// attributes
@@ -67,7 +67,7 @@ private:
 
 	class OtClothConstraint {
 	public:
-		OtClothConstraint() {}
+		OtClothConstraint() = default;
 		OtClothConstraint(size_t p1, size_t p2, float d) : particle1(p1), particle2(p2), distance(d) {}
 
 		size_t particle1;

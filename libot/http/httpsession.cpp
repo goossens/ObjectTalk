@@ -208,7 +208,7 @@ void OtHttpSessionClass::onRead(const uv_buf_t* buffer, ssize_t nread) {
 //
 
 OtType OtHttpSessionClass::getMeta() {
-	static OtType type = nullptr;
+	static OtType type;
 
 	if (!type) {
 		type = OtTypeClass::create<OtHttpResponseClass>("HttpSession", OtInternalClass::getMeta());

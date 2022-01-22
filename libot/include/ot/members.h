@@ -49,7 +49,9 @@ public:
 	}
 
 	// create a new members hash table
-	static OtMembers create() { return std::make_shared<OtMembersClass>(); }
+	static OtMembers create() {
+		return std::make_shared<OtMembersClass>();
+	}
 
 private:
 	// the actual members

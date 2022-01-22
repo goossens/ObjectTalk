@@ -24,7 +24,7 @@
 
 void OtApplicationClass::run(const std::string& name) {
 	// applications run in two threads: the main thread handles the rendering
-	// and window events (as required in most operating systems)
+	// and window events (as required by most operating systems)
 	// the second thread runs the application logic
 
 	// initialize window library
@@ -111,7 +111,7 @@ void OtApplicationClass::runThread2() {
 				events.emplace_back(eventQueue.pop());
 			}
 
-			// start new frame in libraries
+			// start new frame
 			frameBGFX();
 			frameIMGUI(events);
 
@@ -257,7 +257,7 @@ void OtApplicationClass::runThread2() {
 				callback();
 			}
 
-			// add profiler (if required)
+			// show profiler (if required)
 			if (profiler) {
 				renderProfiler();
 			}
@@ -295,15 +295,6 @@ void OtApplicationClass::runThread2() {
 		// terminate libraries
 		endIMGUI();
 		endBGFX();
-
-		// properly close all libuv handles
-		uv_walk(uv_default_loop(), [](uv_handle_t* handle, void* arg) {
-			if (!uv_is_closing(handle))
-				uv_close(handle, nullptr);
-		}, nullptr);
-
-		uv_run(uv_default_loop(), UV_RUN_DEFAULT);
-		uv_loop_close(uv_default_loop());
 
 	} catch (const OtException& e) {
 		// handle all failures

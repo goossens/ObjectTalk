@@ -9,7 +9,10 @@
 //	Include files
 //
 
+#include "ot/cerr.h"
+#include "ot/cout.h"
 #include "ot/numbers.h"
+#include "ot/string.h"
 #include "ot/text.h"
 
 #include "application.h"
@@ -22,13 +25,21 @@
 //
 
 OtConsoleClass::OtConsoleClass() {
+	// intercept cout
+	OtCoutClass::instance()->setOutputFunction([this](const std::string& text) {
+		write(text);
+	});
+
+	// intercept cerr
+	OtCerrClass::instance()->setOutputFunction([this](const std::string& text) {
+		writeError(text);
+	});
+
+	// send welcome message
 	writeHelp(
 		"Welcome to the ObjectTalk Integrated Development Environment (IDE)\n"
 		"Right click here or type 'help' below for options"
 	);
-
-	writeInput("i did it");
-	writeError("that was a mistake");
 }
 
 
@@ -135,25 +146,32 @@ void OtConsoleClass::clear() {
 
 
 //
-//	OtConsoleClass::write
-//
-
-void OtConsoleClass::write(const std::string& text) {
-
-}
-
-
-//
 //	OtConsoleClass::writeColored
 //
 
 void OtConsoleClass::writeColored(LineType type, const std::string& text) {
 	std::vector<std::string> parts;
 	OtText::split(text, parts,'\n');
+	bool append = lines.size() && lines.back().type == type;
 
 	for (auto& part : parts) {
-		lines.push_back(Line(type, part));
+		if (append) {
+			lines.back().text += text;
+			append = false;
+
+		} else {
+			lines.push_back(Line(type, part));
+		}
 	}
+}
+
+
+//
+//	OtConsoleClass::write
+//
+
+void OtConsoleClass::write(const std::string& text) {
+	writeColored(Normal, text);
 }
 
 

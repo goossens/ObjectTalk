@@ -11,7 +11,10 @@
 
 #include <filesystem>
 
+#include "ot/cout.h"
+#include "ot/exception.h"
 #include "ot/libuv.h"
+#include "ot/module.h"
 
 #include "application.h"
 
@@ -97,6 +100,31 @@ void OtWorkspaceClass::closeEditor(OtEditor editor) {
 
 
 //
+//	OtWorkspaceClass::runFile
+//
+
+void OtWorkspaceClass::runFile(const std::string& filename) {
+	// start a new thread
+	started = true;
+	running = true;
+
+	thread = std::thread([this, filename]() {
+		try {
+			// loadd an run module
+			OtModuleClass::create(filename);
+
+		} catch (const OtException& e) {
+			// handle error
+			OtCoutClass::instance()->write(e.what());
+		}
+
+		// little house keeping
+		running = false;
+	});
+};
+
+
+//
 //	OtWorkspaceClass::run
 //
 
@@ -111,6 +139,12 @@ void OtWorkspaceClass::run() {
 //
 
 void OtWorkspaceClass::render() {
+	// cleapup last script run if required
+	if (started && ! running) {
+		thread.join();
+		started = false;
+	}
+
 	// render console
 	console->render();
 

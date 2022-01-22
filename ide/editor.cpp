@@ -13,7 +13,6 @@
 #include <iostream>
 #include <sstream>
 
-#include "ot/exception.h"
 #include "ot/numbers.h"
 
 #include "application.h"
@@ -37,8 +36,11 @@ void OtEditorClass::render() {
 		width * 0.05 + OtRandom(width * 0.9 - size.x),
 		height * 0.05 + OtRandom(height * 0.9 - size.y));
 
-	// determine window title (while keeping constant window ID)
+	// determine status
 	bool dirty = editor.GetUndoCount() != version;
+	bool runnable = OtWorkspaceClass::instance()->canRunFile() && !dirty && filename != "untitled";
+
+	// determine window title (while keeping constant window ID)
 	std::string title = (dirty ? filename + " *" : filename) + "###" + id;
 
 	// create the window
@@ -69,6 +71,14 @@ void OtEditorClass::render() {
 
 				} else {
 					closeFile();
+				}
+
+			} else if (ImGui::IsKeyPressed('B')) {
+				compileFile();
+
+			} else if (ImGui::IsKeyPressed('R')) {
+				if (runnable) {
+					runFile();
 				}
 			}
 		}
@@ -118,6 +128,13 @@ void OtEditorClass::render() {
 
 			ImGui::Separator();
 			if (ImGui::MenuItem("Select All", SHORTCUT "A", nullptr, editor.GetText().size() != 0)) { editor.SelectAll(); }
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Program")) {
+			if (ImGui::MenuItem("Build", SHORTCUT "B")) { compileFile(); }
+			if (ImGui::MenuItem("Run", SHORTCUT "R", nullptr, runnable)) { runFile(); }
+
 			ImGui::EndMenu();
 		}
 
@@ -276,6 +293,24 @@ void OtEditorClass::saveAsFile() {
 
 void OtEditorClass::closeFile() {
 	OtWorkspaceClass::instance()->closeEditor(cast<OtEditorClass>());
+}
+
+
+//
+//	OtEditorClass::compileFile
+//
+
+void OtEditorClass::compileFile() {
+}
+
+
+//
+//	OtEditorClass::runFile
+//
+
+void OtEditorClass::runFile() {
+	// ask workspace to run the file
+	OtWorkspaceClass::instance()->runFile(filename);
 }
 
 

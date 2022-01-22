@@ -36,6 +36,8 @@ public:
 	void saveFile();
 	void saveAsFile();
 	void closeFile();
+	void compileFile();
+	void runFile();
 
 	// is the editor's content "dirty" (unsaved);
 	bool isDirty();

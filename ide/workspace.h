@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include <thread>
+
 #include "ot/singleton.h"
 
 #include "console.h"
@@ -40,6 +42,11 @@ public:
 
 	// close editor
 	void closeEditor(OtEditor editor);
+
+	// see if we can run a file
+	bool canRunFile() { return !started && !running; }
+	// run a file
+	void runFile(const std::string& filename);
 
 	// run IDE
 	void run();
@@ -74,4 +81,9 @@ private:
 
 	// quit confirmation
 	bool confirmQuit = false;
+
+	// here is where we run code
+	std::thread thread;
+	bool started = false;
+	bool running = false;
 };

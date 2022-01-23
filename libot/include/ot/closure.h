@@ -38,6 +38,9 @@ public:
 	// call enclosed function
 	OtObject operator () (size_t count, OtObject* parameters);
 
+	// get parameter count
+	size_t getParameterCount() { return function->getParameterCount(); }
+
 	// get type definition
 	static OtType getMeta();
 

@@ -13,6 +13,7 @@
 //
 
 #include "bytecodefunction.h"
+#include "closure.h"
 #include "exception.h"
 #include "function.h"
 
@@ -37,7 +38,14 @@ inline void OtCallbackValidate(OtObject callback, size_t pars) {
 			OtExcept("Callback must accept %d parameters, not %d", pars, parameters);
 		}
 
+	} else if (callback->isKindOf("Closure")) {
+		auto parameters = callback->cast<OtClosureClass>()->getParameterCount();
+
+		if (parameters != pars) {
+			OtExcept("Callback must accept %d parameters, not %d", pars, parameters);
+		}
+
 	} else {
-		OtExcept("Expected a [Function] object, not a [%s]", callback->getType()->getName().c_str());
+		OtExcept("Expected a [Function], not a [%s]", callback->getType()->getName().c_str());
 	}
 }

@@ -4,57 +4,53 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
+print();
+print("Running HTTP server");
+
 function info(req, res, next) {
 	res.send("info");
 }
 
-class MyHttpRouter : HttpRouter {
-	function __init__(this) {
-		this.use(function(req, res, next) {
-			res.setHeader("hello", "world");
-			next();
+var router = HttpRouter()
+	.static("/static", __DIR__ + "/static")
+	.get("/info", info)
+
+	.use(function(req, res, next) {
+		res.setHeader("hello", "world");
+		next();
+	})
+
+	.get("/info2", function(req, res, next) {
+		res.json({
+			"id": 12,
+			"name": "john",
+			"amount": 12.3,
+			"data" : [2, 3, 4, 5]
 		});
+	})
 
-		this.static("/static", __DIR__ + "/static");
+	.get("/info3", function(req, res, next) {
+		res.json(req.getHeaders());
+	})
 
-		this.get("/info", info);
+	.get("/info4", function(req, res, next) {
+		next();
+	})
 
-		this.get("/info2", function(req, res, next) {
-			res.json({
-				"id": 12,
-				"name": "john",
-				"amount": 12.3,
-				"data" : [2, 3, 4, 5]
-			});
-		});
+	.all("/debug", function(req, res, next) {
+		res.send(req.debug());
+	})
 
-		this.get("/info3", function(req, res, next) {
-			res.json(req.getHeaders());
-		});
+	.get("/file", function(req, res, next) {
+		res.sendfile(__DIR__ + "/static/test.txt");
+	})
 
-		this.get("/info4", function(req, res, next) {
-			next();
-		});
+	.get("/stop", function(req, res, next) {
+		res.send("Server stopping");
+		os.stopServer();
+	});
 
-		this.all("/debug", function(req, res, next) {
-			res.send(req.debug());
-		});
-
-		this.get("/file", function(req, res, next) {
-			res.sendfile(__DIR__ + "/static/test.txt");
-		});
-
-		this.get("/stop", function(req, res, next) {
-			res.send("Server stopping");
-			os.stopServer();
-		});
-	}
-}
-
-print();
-print("Running HTTP server");
-
-var server = HttpServer(MyHttpRouter()).listen("0.0.0.0", 80);
+var server = HttpServer(router).listen("0.0.0.0", 80);
 os.runServer();
 
 print();

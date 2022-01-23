@@ -1,5 +1,5 @@
 * Install Windows (10, 11, Server 2019 or Server 2022)
-* Install Visual Studio 17 2022, arch: x64 (make sure you pick the "Desktop development with C++" option)
+* Install Visual Studio 17 2022 (make sure you pick the "Desktop development with C++" option)
 
 * Install git from https://git-scm.com/download/win using defaults
 * Install cmake from https://cmake.org/download/ (ensure you select  the "add cmake to the system PATH" option)

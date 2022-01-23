@@ -67,11 +67,11 @@ OtObject OtClassClass::instantiate(size_t count, OtObject* parameters) {
 //
 
 bool OtClassClass::has(const std::string& name) {
-	if (classType->has(name)) {
+	if (OtInternalClass::has(name)) {
 		return true;
 
 	} else {
-		return OtInternalClass::has(name);
+		return classType->has(name);
 	}
 }
 
@@ -81,11 +81,11 @@ bool OtClassClass::has(const std::string& name) {
 //
 
 OtObject OtClassClass::get(const std::string& name) {
-	if (classType->has(name)) {
-		return classType->get(name);
+	if (OtInternalClass::has(name)) {
+		return OtInternalClass::get(name);
 
 	} else {
-		return OtInternalClass::get(name);
+		return classType->get(name);
 	}
 }
 

@@ -62,7 +62,7 @@ private:
 		// destructor
 		virtual ~OtHandler() {}
 
-		// run the handler
+		// run as a the handler
 		virtual void run(OtHttpRequest req, OtHttpResponse res, OtObject next) {}
 	};
 

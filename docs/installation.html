@@ -86,7 +86,74 @@
           </div>
           <div id="windows">
             <h1 class="pb-2">Build and Install on Windows</h1>
-            <p>To be written</p>
+            <p><strong>Windows 10 or Server 2019</strong></p>
+            <ul>
+              <li>Install Windows</li>
+              <li>
+                Install Visual Studio 16 2019, arch: x64 (make sure you pick the
+                &quot;Desktop development with C++&quot; option)
+              </li>
+            </ul>
+            <p>** Windows 11 or Server 2022**</p>
+            <ul>
+              <li>Install Windows</li>
+              <li>
+                Install Visual Studio 17 2022, arch: x64 (make sure you pick the
+                &quot;Desktop development with C++&quot; option)
+              </li>
+            </ul>
+            <p><strong>Common for all Windows versions</strong></p>
+            <ul>
+              <li>
+                Install git from https://git-scm.com/download/win using defaults
+              </li>
+              <li>
+                Install cmake from https://cmake.org/download/ (ensure you
+                select the &quot;add cmake to the system PATH&quot; option)
+              </li>
+              <li>Lauch <strong>cmd</strong></li>
+              <li><strong>cd</strong> &lt;to your favorite directory&gt;</li>
+              <li>
+                <strong
+                  >git clone https://github.com/goossens/ObjectTalk.git</strong
+                >
+              </li>
+              <li><strong>cd ObjectTalk</strong></li>
+              <li>
+                Configure your Visual Studio project
+                <ul>
+                  <li>
+                    For Windows 10 or Server 2019,
+                    <strong
+                      >cmake -Bvs -Wno-dev -G &quot;Visual Studio 16 2019&quot;
+                      -A x64 -DCMAKE_BUILD_TYPE=Debug</strong
+                    >
+                  </li>
+                  <li>
+                    For Windows 11 or Server 202,
+                    <strong
+                      >cmake -Bvs -Wno-dev -G &quot;Visual Studio 17 2022&quot;
+                      -A x64 -DCMAKE_BUILD_TYPE=Debug</strong
+                    >
+                  </li>
+                </ul>
+              </li>
+            </ul>
+            <p><strong>Build ObjectTalk by Hand</strong></p>
+            <ul>
+              <li><strong>cd vs</strong></li>
+              <li><strong>cmake --build .</strong></li>
+              <li>
+                Run the tests:
+                <strong>ctest -C Debug --output-on-failure</strong>
+              </li>
+            </ul>
+            <p><strong>Build ObjectTalk in Visual Studio</strong></p>
+            <ul>
+              <li>
+                Open the ObjectTalk solution in the vs folder and go crazy.
+              </li>
+            </ul>
           </div>
         </div>
       </div>

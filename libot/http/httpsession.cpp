@@ -99,7 +99,7 @@ OtHttpSessionClass::OtHttpSessionClass(uv_stream_t* stream, OtHttpRouter r) : ro
 	// pass client socket to response object for writes
 	response->setStream((uv_stream_t*) &(uv_client));
 
-	// set sesion status
+	// set session status
 	active = true;
 	lastRequest = uv_now(uv_default_loop());
 }

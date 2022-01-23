@@ -4,13 +4,11 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-var http = import("http");
-
 function info(req, res, next) {
 	res.send("info");
 }
 
-class MyHttpServer : http.HttpServer {
+class MyHttpRouter : HttpRouter {
 	function __init__(this) {
 		this.use(function(req, res, next) {
 			res.setHeader("hello", "world");
@@ -46,14 +44,9 @@ class MyHttpServer : http.HttpServer {
 			res.sendfile(__DIR__ + "/static/test.txt");
 		});
 
-		this.get("/stop2", function(req, res, next) {
-			res.send("Server stopping");
-			this.stop();
-		});
-
 		this.get("/stop", function(req, res, next) {
 			res.send("Server stopping");
-			this.stop();
+			os.stopServer();
 		});
 	}
 }
@@ -61,9 +54,8 @@ class MyHttpServer : http.HttpServer {
 print();
 print("Running HTTP server");
 
-var server = MyHttpServer();
-server.listen("0.0.0.0", 80).run();
-server.clearHandlers();
+var server = HttpServer(MyHttpRouter()).listen("0.0.0.0", 80);
+os.runServer();
 
 print();
 print("Stopped HTTP server");

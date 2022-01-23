@@ -26,11 +26,14 @@
 class OtHttpServerClass;
 typedef std::shared_ptr<OtHttpServerClass> OtHttpServer;
 
-class OtHttpServerClass : public OtHttpRouterClass {
+class OtHttpServerClass : public OtHttpClass {
 public:
 	// constructor/destructor
 	OtHttpServerClass();
 	~OtHttpServerClass();
+
+	// initialize server
+	void init(OtObject object);
 
 	// handle connection requests
 	void onConnect();
@@ -38,14 +41,8 @@ public:
 	// listen for requests on specified IP address and port
 	OtObject listen(const std::string& ip, long port);
 
-	// run server
-	void run();
-
-	// set a timer
-	OtObject timer(long wait, long repeat, OtObject callback);
-
-	// stop server
-	void stop();
+	// cleaup connections
+	void cleanup();
 
 	// get type definition
 	static OtType getMeta();
@@ -56,7 +53,7 @@ public:
 private:
 	uv_tcp_t uv_server;
 	uv_timer_t uv_watchdog;
-	uv_timer_t uv_shutdown;
 
+	OtHttpRouter router;
 	std::vector<OtHttpSession> sessions;
 };

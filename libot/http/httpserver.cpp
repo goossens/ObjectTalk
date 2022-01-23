@@ -14,7 +14,6 @@
 #include "ot/function.h"
 #include "ot/httpserver.h"
 #include "ot/httpsession.h"
-#include "ot/httptimer.h"
 
 
 //
@@ -27,15 +26,7 @@ OtHttpServerClass::OtHttpServerClass() {
 	uv_watchdog.data = this;
 
 	uv_timer_start(&uv_watchdog, [](uv_timer_t* handle) {
-		auto server = (OtHttpServerClass*) (handle->data);
-
-		// remove dead sessions
-		server->sessions.erase(std::remove_if(
-			server->sessions.begin(),
-			server->sessions.end(),
-			[] (const OtHttpSession& session) {
-				return !session->isAlive();
-			}), server->sessions.end());
+		((OtHttpServerClass*) (handle->data))->cleanup();
 	}, 0, 60 * 1000);
 }
 
@@ -51,12 +42,26 @@ OtHttpServerClass::~OtHttpServerClass() {
 
 
 //
+//	OtHttpServerClass::init
+//
+
+void OtHttpServerClass::init(OtObject object) {
+	// ensure object is a texture
+	if (!object->isKindOf("HttpRouter")) {
+		OtExcept("Expected a [HttpRouter] object, not a [%s]", object->getType()->getName().c_str());
+	}
+
+	router = object->cast<OtHttpRouterClass>();
+};
+
+
+//
 //	OtHttpServerClass::onConnect
 //
 
 void OtHttpServerClass::onConnect() {
 	// create new session
-	auto session = OtHttpSessionClass::create((uv_stream_t*) &uv_server, cast<OtHttpRouterClass>());
+	auto session = OtHttpSessionClass::create((uv_stream_t*) &uv_server, router);
 	sessions.push_back(session);
 }
 
@@ -89,41 +94,14 @@ OtObject OtHttpServerClass::listen(const std::string& ip, long port) {
 
 
 //
-//	OtHttpServerClass::run
+//	OtHttpServerClass::cleanup
 //
 
-void OtHttpServerClass::run() {
-	// run the libuv loop
-	uv_run(uv_default_loop(), UV_RUN_DEFAULT);
-}
-
-
-//
-//	OtHttpServerClass::timer
-//
-
-OtObject OtHttpServerClass::timer(long wait, long repeat, OtObject callback) {
-
-	return OtHttpTimerClass::create(wait, repeat, callback);
-}
-
-
-//
-//	OtHttpServerClass::stop
-//
-
-void OtHttpServerClass::stop() {
-	// use timer so "stop" transaction can complete
-	uv_timer_init(uv_default_loop(), &uv_shutdown);
-
-	uv_timer_start(&uv_shutdown, [](uv_timer_t* handle) {
-		// close all handles which will end libuv's loop
-		uv_walk(uv_default_loop(), [](uv_handle_t* handle, void* arg) {
-			if (!uv_is_closing(handle)) {
-				uv_close(handle, nullptr);
-			}
-		}, nullptr);
-	}, 1000, 0);
+void OtHttpServerClass::cleanup() {
+	// remove dead sessions
+	sessions.erase(std::remove_if(sessions.begin(), sessions.end(), [] (const OtHttpSession& session) {
+		return !session->isAlive();
+	}), sessions.end());
 }
 
 
@@ -135,11 +113,9 @@ OtType OtHttpServerClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtHttpServerClass>("HttpServer", OtHttpRouterClass::getMeta());
+		type = OtTypeClass::create<OtHttpServerClass>("HttpServer", OtHttpClass::getMeta());
+		type->set("__init__", OtFunctionClass::create(&OtHttpServerClass::init));
 		type->set("listen", OtFunctionClass::create(&OtHttpServerClass::listen));
-		type->set("run", OtFunctionClass::create(&OtHttpServerClass::run));
-		type->set("timer", OtFunctionClass::create(&OtHttpServerClass::timer));
-		type->set("stop", OtFunctionClass::create(&OtHttpServerClass::stop));
 	}
 
 	return type;

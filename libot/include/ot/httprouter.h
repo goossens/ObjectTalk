@@ -44,8 +44,8 @@ public:
 	// dispatch requests
 	OtObject call(OtObject req, OtObject res, OtObject next);
 
-	// clear all handlers in router
-	void clearHandlers();
+	// set a timer
+	OtObject timer(long wait, long repeat, OtObject callback);
 
 	// get type definition
 	static OtType getMeta();

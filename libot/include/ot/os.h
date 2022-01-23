@@ -70,6 +70,10 @@ public:
 	int getDayOfYear();
 	bool isDST();
 
+	// handle event loop for servers
+	void runServer();
+	void stopServer();
+
 	// get type definition
 	static OtType getMeta();
 

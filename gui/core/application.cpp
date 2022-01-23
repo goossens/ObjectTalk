@@ -25,6 +25,7 @@
 void OtApplicationClass::run(const std::string& name) {
 	// applications run in two threads: the main thread handles the rendering
 	// and window events (as required by most operating systems)
+	// as well as the asynchronous libuv events
 	// the second thread runs the application logic
 
 	// initialize window library
@@ -43,6 +44,9 @@ void OtApplicationClass::run(const std::string& name) {
 	while (runningGLFW()) {
 		// handle window events
 		eventsGLFW();
+
+		// handle libuv events
+		uv_run(uv_default_loop(), UV_RUN_NOWAIT);
 	}
 
 	// wait for thread to finish
@@ -265,9 +269,6 @@ void OtApplicationClass::runThread2() {
 			// put results on screen
 			renderIMGUI();
 			renderBGFX();
-
-			// handle libuv events
-			uv_run(uv_default_loop(), UV_RUN_NOWAIT);
 		}
 
 		// call app's update member (if defined)

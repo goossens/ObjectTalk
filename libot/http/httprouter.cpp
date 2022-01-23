@@ -15,6 +15,7 @@
 #include "ot/function.h"
 #include "ot/httpnext.h"
 #include "ot/httprouter.h"
+#include "ot/httptimer.h"
 #include "ot/vm.h"
 
 
@@ -150,6 +151,7 @@ private:
 //
 
 OtObject OtHttpRouterClass::addHandler(const std::string& method, const std::string& path, OtObject callback) {
+	OtCallbackValidate(callback, 3);
 	handlers.push_back(std::make_shared<OtHttpMethodHandler>(method, path, callback));
 	return shared();
 }
@@ -174,6 +176,7 @@ void OtHttpRouterClass::runHandler(const size_t index, OtHttpRequest req, OtHttp
 //
 
 OtObject OtHttpRouterClass::useHandler(OtObject callback) {
+	OtCallbackValidate(callback, 3);
 	handlers.push_back(std::make_shared<OtHttpMethodHandler>("", "*", callback));
 	return shared();
 }
@@ -245,11 +248,12 @@ OtObject OtHttpRouterClass::call(OtObject req, OtObject res, OtObject next) {
 
 
 //
-//	OtHttpRouterClass::clearHandlers
+//	OtHttpRouterClass::timer
 //
 
-void OtHttpRouterClass::clearHandlers() {
-	handlers.clear();
+OtObject OtHttpRouterClass::timer(long wait, long repeat, OtObject callback) {
+	OtCallbackValidate(callback, 0);
+	return OtHttpTimerClass::create(wait, repeat, callback);
 }
 
 
@@ -269,8 +273,8 @@ OtType OtHttpRouterClass::getMeta() {
 		type->set("post", OtFunctionClass::create(&OtHttpRouterClass::postHandler));
 		type->set("delete", OtFunctionClass::create(&OtHttpRouterClass::deleleteHandler));
 		type->set("static", OtFunctionClass::create(&OtHttpRouterClass::staticFiles));
+		type->set("timer", OtFunctionClass::create(&OtHttpRouterClass::timer));
 		type->set("__call__", OtFunctionClass::create(&OtHttpRouterClass::call));
-		type->set("clearHandlers", OtFunctionClass::create(&OtHttpRouterClass::clearHandlers));
 	}
 
 	return type;

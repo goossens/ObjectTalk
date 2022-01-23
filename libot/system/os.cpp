@@ -361,6 +361,24 @@ bool OtOSClass::isDST() {
 
 
 //
+//	OtOSClass::runServer
+//
+
+void OtOSClass::runServer() {
+	OtLibUv::run();
+}
+
+
+//
+//	OtOSClass::stopServer
+//
+
+void OtOSClass::stopServer() {
+	OtLibUv::stop();
+}
+
+
+//
 //	OtOSClass::getMeta
 //
 
@@ -405,6 +423,9 @@ OtType OtOSClass::getMeta() {
 		type->set("getDayOfWeek", OtFunctionClass::create(&OtOSClass::getDayOfWeek));
 		type->set("getDayOfYear", OtFunctionClass::create(&OtOSClass::getDayOfYear));
 		type->set("isDST", OtFunctionClass::create(&OtOSClass::isDST));
+
+		type->set("runServer", OtFunctionClass::create(&OtOSClass::runServer));
+		type->set("stopServer", OtFunctionClass::create(&OtOSClass::stopServer));
 	}
 
 	return type;

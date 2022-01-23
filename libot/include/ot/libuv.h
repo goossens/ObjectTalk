@@ -41,6 +41,27 @@ public:
 		uv_setup_args(argc, argv);
 	}
 
+	// run the libUV loop
+	static void run() {
+		uv_run(uv_default_loop(), UV_RUN_DEFAULT);
+	}
+
+	// stop the libUV loop
+	static void stop() {
+		// use timer so "stop" transaction can complete
+		static 	uv_timer_t uv_shutdown;
+		uv_timer_init(uv_default_loop(), &uv_shutdown);
+
+		uv_timer_start(&uv_shutdown, [](uv_timer_t* handle) {
+			// close all handles which will end libuv's loop
+			uv_walk(uv_default_loop(), [](uv_handle_t* handle, void* arg) {
+				if (!uv_is_closing(handle)) {
+					uv_close(handle, nullptr);
+				}
+			}, nullptr);
+		}, 1000, 0);
+	}
+
 	// terminate LibUV
 	static void end() {
 		// properly close all libuv handles

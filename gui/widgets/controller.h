@@ -32,12 +32,7 @@ typedef std::shared_ptr<Ot##type##ControllerClass> Ot##type##Controller;				\
 class Ot##type##ControllerClass : public OtWidgetClass {								\
 public:																					\
 	void init(OtObject object)	{														\
-		if (!object->isKindOf(#type)) {													\
-			OtExcept(																	\
-				"Expected a [" #type "] object, not a [%s]",							\
-				object->getType()->getName().c_str());									\
-		}																				\
-																						\
+		object->expectKindOf(#type);													\
 		target = object->cast<Ot##type##Class>();										\
 	}																					\
 																						\
@@ -46,7 +41,7 @@ public:																					\
 	}																					\
 																						\
 	static OtType getMeta() {															\
-		static OtType type;													\
+		static OtType type;																\
 																						\
 		if (!type) {																	\
 			type = OtTypeClass::create<Ot##type##ControllerClass>(						\

@@ -29,12 +29,8 @@ OtClassClass::OtClassClass(const std::string& name) {
 //
 
 void OtClassClass::setParent(OtObject object) {
-	if (object->isKindOf("Class")) {
-		classType->setParent(object->cast<OtClassClass>()->classType);
-
-	} else {
-		OtExcept("Expected a [Class] instance, not a [%s]", object->getType()->getName().c_str());
-	}
+	object->expectKindOf("Class");
+	classType->setParent(object->cast<OtClassClass>()->classType);
 }
 
 

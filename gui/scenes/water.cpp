@@ -163,11 +163,7 @@ OtObject OtWaterClass::setSize(int s) {
 //
 
 OtObject OtWaterClass::setNormalMap(OtObject object) {
-	// ensure object is a texture
-	if (!object->isKindOf("Texture")) {
-		OtExcept("Expected a [Texture] object, not a [%s]", object->getType()->getName().c_str());
-	}
-
+	object->expectKindOf("Texture");
 	normals = object->cast<OtTextureClass>();
 	return shared();
 }

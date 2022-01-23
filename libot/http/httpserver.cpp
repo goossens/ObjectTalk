@@ -46,11 +46,7 @@ OtHttpServerClass::~OtHttpServerClass() {
 //
 
 void OtHttpServerClass::init(OtObject object) {
-	// ensure object is a texture
-	if (!object->isKindOf("HttpRouter")) {
-		OtExcept("Expected a [HttpRouter] object, not a [%s]", object->getType()->getName().c_str());
-	}
-
+	object->expectKindOf("HttpRouter");
 	router = object->cast<OtHttpRouterClass>();
 };
 

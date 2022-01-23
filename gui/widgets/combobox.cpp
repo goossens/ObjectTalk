@@ -26,9 +26,7 @@ void OtComboboxClass::init(const std::string& t, OtObject vals, OtObject sel, Ot
 	title = t;
 
 	// sanity check
-	if (!vals->isKindOf("Array")) {
-		OtExcept("Expected an [Array] object with values, not a [%s]", vals->getType()->getName().c_str());
-	}
+	vals->expectKindOf("Array");
 
 	// get list of values
 	for (auto& member : vals->cast<OtArrayClass>()->raw()) {

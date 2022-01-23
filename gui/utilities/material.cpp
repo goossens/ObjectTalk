@@ -235,11 +235,7 @@ OtObject OtMaterialClass::setUvTransform(float ox, float oy, float rx, float ry,
 //
 
 OtObject OtMaterialClass::setTexture(OtObject object) {
-	// ensure object is a texture
-	if (!object->isKindOf("Texture")) {
-		OtExcept("Expected a [Texture] object, not a [%s]", object->getType()->getName().c_str());
-	}
-
+	object->expectKindOf("Texture");
 	texture = object->cast<OtTextureClass>();
 	return shared();
 }
@@ -250,11 +246,7 @@ OtObject OtMaterialClass::setTexture(OtObject object) {
 //
 
 OtObject OtMaterialClass::setBlendMap(OtObject object) {
-	// ensure object is a blendmap
-	if (!object->isKindOf("BlendMap")) {
-		OtExcept("Expected a [BlendMap] object, not a [%s]", object->getType()->getName().c_str());
-	}
-
+	object->expectKindOf("BlendMap");
 	blendmap = object->cast<OtBlendMapClass>();
 	return shared();
 }

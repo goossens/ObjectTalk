@@ -83,14 +83,8 @@ OtObject OtMeshClass::init(size_t count, OtObject* parameters) {
 //
 
 OtObject OtMeshClass::setGeometry(OtObject object) {
-	// ensure object is a geometry
-	if (object->isKindOf("Geometry")) {
-		geometry = object->cast<OtGeometryClass>();
-
-	} else {
-		OtExcept("Expected a [Geometry] object, not a [%s]", object->getType()->getName().c_str());
-	}
-
+	object->expectKindOf("Geometry");
+	geometry = object->cast<OtGeometryClass>();
 	return shared();
 }
 
@@ -100,14 +94,8 @@ OtObject OtMeshClass::setGeometry(OtObject object) {
 //
 
 OtObject OtMeshClass::setMaterial(OtObject object) {
-	// ensure object is a material
-	if (object->isKindOf("Material")) {
-		material = object->cast<OtMaterialClass>();
-
-	} else {
-		OtExcept("Expected a [Material] object, not a [%s]", object->getType()->getName().c_str());
-	}
-
+	object->expectKindOf("Material");
+	material = object->cast<OtMaterialClass>();
 	return shared();
 }
 
@@ -137,14 +125,8 @@ OtObject OtMeshClass::setHoles(bool h) {
 //
 
 OtObject OtMeshClass::addInstance(OtObject object) {
-	// ensure object is a material
-	if (object->isKindOf("Matrix")) {
-		instances.push_back(object->cast<OtMatrixClass>()->getComposite());
-
-	} else {
-		OtExcept("Expected a [Matrix] object, not a [%s]", object->getType()->getName().c_str());
-	}
-
+	object->expectKindOf("Matrix");
+	instances.push_back(object->cast<OtMatrixClass>()->getComposite());
 	return shared();
 }
 

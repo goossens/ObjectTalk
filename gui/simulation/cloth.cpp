@@ -57,15 +57,8 @@ OtObject OtClothClass::init(size_t count, OtObject* parameters) {
 //
 
 OtObject OtClothClass::setPlane(OtObject object) {
-	// ensure object is a plane
-	if (object->isKindOf("PlaneGeometry")) {
-		plane = object->cast<OtPlaneGeometryClass>();
-
-	} else {
-		OtExcept("Expected a [PlaneGeometry] object, not a [%s]", object->getType()->getName().c_str());
-	}
-
-	// clear particles and constraints
+	object->expectKindOf("PlaneGeometry");
+	plane = object->cast<OtPlaneGeometryClass>();
 	particles.clear();
 	constraints.clear();
 	return shared();

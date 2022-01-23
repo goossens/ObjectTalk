@@ -49,6 +49,9 @@ public:
 	// see if object "is kind of"
 	bool isKindOf(const std::string& className) { return type->isKindOf(className); }
 
+	// expect object "is kind of" (exception is raised in case it is not)
+	void expectKindOf(const std::string& className);
+
 	// default conversion operators
 	virtual operator bool() { return false; }
 	virtual operator int() { return 0; }

@@ -113,9 +113,7 @@ OtObject OtTerrainClass::init(size_t count, OtObject* parameters) {
 
 OtObject OtTerrainClass::setNoiseMap(OtObject object) {
 	// sanity check
-	if (!object->isKindOf("NoiseMap")) {
-		OtExcept("Expected a [NoiseMap] object, not a [%s]", object->getType()->getName().c_str());
-	}
+	object->expectKindOf("NoiseMap");
 
 	// cleanup
 	if (noisemap) {
@@ -169,11 +167,9 @@ OtObject OtTerrainClass::setRegion1Texture(OtObject object) {
 	if (!object) {
 		textureRegion1 = nullptr;
 
-	} else if (object->isKindOf("Texture")) {
-		textureRegion1 = object->cast<OtTextureClass>();
-
 	} else {
-		OtExcept("Expected a [Texture] object, not a [%s]", object->getType()->getName().c_str());
+		object->expectKindOf("Texture");
+		textureRegion1 = object->cast<OtTextureClass>();
 	}
 
 	return shared();
@@ -189,11 +185,9 @@ OtObject OtTerrainClass::setRegion2Texture(OtObject object) {
 	if (!object) {
 		textureRegion2 = nullptr;
 
-	} else if (object->isKindOf("Texture")) {
-		textureRegion2 = object->cast<OtTextureClass>();
-
 	} else {
-		OtExcept("Expected a [Texture] object, not a [%s]", object->getType()->getName().c_str());
+		object->expectKindOf("Texture");
+		textureRegion2 = object->cast<OtTextureClass>();
 	}
 
 	return shared();
@@ -209,11 +203,9 @@ OtObject OtTerrainClass::setRegion3Texture(OtObject object) {
 	if (!object) {
 		textureRegion3 = nullptr;
 
-	} else if (object->isKindOf("Texture")) {
-		textureRegion3 = object->cast<OtTextureClass>();
-
 	} else {
-		OtExcept("Expected a [Texture] object, not a [%s]", object->getType()->getName().c_str());
+		object->expectKindOf("Texture");
+		textureRegion3 = object->cast<OtTextureClass>();
 	}
 
 	return shared();
@@ -229,11 +221,9 @@ OtObject OtTerrainClass::setRegion4Texture(OtObject object) {
 	if (!object) {
 		textureRegion4 = nullptr;
 
-	} else if (object->isKindOf("Texture")) {
-		textureRegion4 = object->cast<OtTextureClass>();
-
 	} else {
-		OtExcept("Expected a [Texture] object, not a [%s]", object->getType()->getName().c_str());
+		object->expectKindOf("Texture");
+		textureRegion4 = object->cast<OtTextureClass>();
 	}
 
 	return shared();

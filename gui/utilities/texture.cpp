@@ -127,10 +127,8 @@ OtObject OtTextureClass::loadImage(const std::string& file) {
 //
 
 OtObject OtTextureClass::setNoiseMap(OtObject object, size_t w, size_t h) {
-	// ensure object is a noisemap
-	if (!object->isKindOf("NoiseMap")) {
-		OtExcept("Expected a [NoiseMap] object, not a [%s]", object->getType()->getName().c_str());
-	}
+	// sanity check
+	object->expectKindOf("NoiseMap");
 
 	// release previous noisemap if required
 	if (noisemap) {

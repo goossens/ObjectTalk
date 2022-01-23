@@ -354,14 +354,8 @@ OtObject OtApplicationClass::animation() {
 //
 
 OtObject OtApplicationClass::addSimulation(OtObject object) {
-	// ensure object is a simulation
-	if (object->isKindOf("Simulation")) {
-		simulations.push_back(object->cast<OtSimulationClass>());
-
-	} else {
-		OtExcept("Expected a [Simulation] object, not a [%s]", object->getType()->getName().c_str());
-	}
-
+	object->expectKindOf("Simulation");
+	simulations.push_back(object->cast<OtSimulationClass>());
 	return object;
 }
 

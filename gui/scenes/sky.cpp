@@ -139,14 +139,7 @@ OtObject OtSkyClass::init(size_t count, OtObject* parameters) {
 //
 
 OtObject OtSkyClass::setSun(OtObject object) {
-	// ensure object is a material
-	if (object->isKindOf("Sun")) {
-		sun = object->cast<OtSunClass>();
-
-	} else {
-		OtExcept("Expected a [Sun] object, not a [%s]", object->getType()->getName().c_str());
-	}
-
+	object->expectKindOf("Sun");
 	return shared();
 }
 

@@ -116,6 +116,26 @@ bool OtObjectClass::operator < (OtObject operand) {
 
 
 //
+//	OtObjectClass::expectKindOf
+//
+
+static bool isvowel(char ch) {
+	ch = tolower(ch);
+	return ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u';
+}
+
+void OtObjectClass::expectKindOf(const std::string& className) {
+	// ensure object is of the right kind
+	if (!isKindOf(className)) {
+		OtExcept("Expected %s [%s] instance, not a [%s]",
+			isvowel(className[0]) ? "an" : "a",
+			className.c_str(),
+			getType()->getName().c_str());
+	}
+}
+
+
+//
 //	OtObjectClass::getClass
 //
 

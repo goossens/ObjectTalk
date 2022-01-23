@@ -109,9 +109,7 @@ OtObject OtPlaneGeometryClass::setHeightSegments(int hs) {
 
 OtObject OtPlaneGeometryClass::setHeightMap(OtObject object) {
 	// sanity check
-	if (!object->isKindOf("HeightMap")) {
-		OtExcept("Expected a [HeightMap] object, not a [%s]", object->getType()->getName().c_str());
-	}
+	object->expectKindOf("HeightMap");
 
 	// cleanup
 	if (heightmap) {
@@ -142,9 +140,7 @@ OtObject OtPlaneGeometryClass::setHeightMap(OtObject object) {
 
 OtObject OtPlaneGeometryClass::setNoiseMap(OtObject object, int xo, int yo) {
 	// sanity check
-	if (!object->isKindOf("NoiseMap")) {
-		OtExcept("Expected a [NoiseMap] object, not a [%s]", object->getType()->getName().c_str());
-	}
+	object->expectKindOf("NoiseMap");
 
 	// cleanup
 	if (heightmap) {

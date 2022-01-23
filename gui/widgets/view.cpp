@@ -47,14 +47,8 @@ OtObject OtViewClass::setScreenArea(int _x, int _y, int _w, int _h) {
 //
 
 OtObject OtViewClass::setCamera(OtObject object) {
-	// ensure object is a camera
-	if (object->isKindOf("Camera")) {
-		camera = object->cast<OtCameraClass>();
-
-	} else {
-		OtExcept("Expected a [Camera] object, not a [%s]", object->getType()->getName().c_str());
-	}
-
+	object->expectKindOf("Camera");
+	camera = object->cast<OtCameraClass>();
 	return shared();
 }
 
@@ -64,14 +58,8 @@ OtObject OtViewClass::setCamera(OtObject object) {
 //
 
 OtObject OtViewClass::setScene(OtObject object) {
-	// ensure object is a material
-	if (object->isKindOf("Scene")) {
-		scene = object->cast<OtSceneClass>();
-
-	} else {
-		OtExcept("Expected a [Scene] object, not a [%s]", object->getType()->getName().c_str());
-	}
-
+	object->expectKindOf("Scene");
+	scene = object->cast<OtSceneClass>();
 	return shared();
 }
 

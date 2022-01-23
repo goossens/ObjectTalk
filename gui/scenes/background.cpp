@@ -97,14 +97,8 @@ OtObject OtBackgroundClass::setColor(const std::string& name) {
 //
 
 OtObject OtBackgroundClass::setTexture(OtObject object) {
-	// ensure object is a material
-	if (object->isKindOf("Texture")) {
-		texture = object->cast<OtTextureClass>();
-
-	} else {
-		OtExcept("Expected a [Texture] object, not a [%s]", object->getType()->getName().c_str());
-	}
-
+	object->expectKindOf("Texture");
+	texture = object->cast<OtTextureClass>();
 	return shared();
 }
 

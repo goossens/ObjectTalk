@@ -58,11 +58,7 @@ void OtBlendMapClass::init(OtObject bm, OtObject tn, OtObject tr, OtObject tg, O
 //
 
 OtTexture OtBlendMapClass::toTexture(OtObject object) {
-	// ensure object is a texture
-	if (!object->isKindOf("Texture")) {
-		OtExcept("Expected a [Texture] object, not a [%s]", object->getType()->getName().c_str());
-	}
-
+	object->expectKindOf("Texture");
 	return object->cast<OtTextureClass>();
 }
 

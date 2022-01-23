@@ -20,7 +20,6 @@ var decayAlphaStart = 0.3;
 var decayAlphaEnd = 0.1;
 
 class Target : Object {
-	var size = 0.5;
 	function __init__(this, x1, y1, x2, y2, vd) {
 		this.x1 = x1;
 		this.y1 = y1;
@@ -29,16 +28,16 @@ class Target : Object {
 		this.loopTime = 150.0 + 50.0.random();
 
 		vd.setAlpha(0.6);
-		this.circle1 = vd.addCircle(-200, -200, size, 32);
+		this.circle1 = vd.addCircle(-200, -200, 0.5, 32);
 
 		vd.setAlpha(0.2);
-		this.circle2 = vd.addCircle(-200, -200, size, 32);
+		this.circle2 = vd.addCircle(-200, -200, 0.5, 32);
 
 		vd.setAlpha(0.15);
-		this.circle3 = vd.addCircle(-200, -200, size, 32);
+		this.circle3 = vd.addCircle(-200, -200, 0.5, 32);
 
 		vd.setAlpha(0.1);
-		this.circle4 = vd.addCircle(-200, -200, size, 32);
+		this.circle4 = vd.addCircle(-200, -200, 0.5, 32);
 	}
 
 	function update(this, time, vd, beam) {
@@ -59,25 +58,25 @@ class Target : Object {
 
 			} else {
 				vd.enableShape(this.circle1);
-				vd.updateCircle(this.circle1, x, y, size, 32);
+				vd.updateCircle(this.circle1, x, y, 0.5, 32);
 
 				ratio -= 0.02;
 				x = ratio.lerp(this.x1, this.x2);
 				y = ratio.lerp(this.y1, this.y2);
 				vd.enableShape(this.circle2);
-				vd.updateCircle(this.circle2, x, y, size, 32);
+				vd.updateCircle(this.circle2, x, y, 0.5, 32);
 
 				ratio -= 0.02;
 				x = ratio.lerp(this.x1, this.x2);
 				y = ratio.lerp(this.y1, this.y2);
 				vd.enableShape(this.circle3);
-				vd.updateCircle(this.circle3, x, y, size, 32);
+				vd.updateCircle(this.circle3, x, y, 0.5, 32);
 
 				ratio -= 0.02;
 				x = ratio.lerp(this.x1, this.x2);
 				y = ratio.lerp(this.y1, this.y2);
 				vd.enableShape(this.circle4);
-				vd.updateCircle(this.circle4, x, y, size, 32);
+				vd.updateCircle(this.circle4, x, y, 0.5, 32);
 			}
 		}
 	}

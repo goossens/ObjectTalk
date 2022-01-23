@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include "ot/callback.h"
 #include "ot/function.h"
 #include "ot/vm.h"
 
@@ -23,6 +24,8 @@ void OtCheckboxClass::init(const std::string& l, bool chk, OtObject cb) {
 	// save label and callback
 	label = l;
 	checked = chk;
+
+	OtCallbackValidate(cb, 1);
 	callback = cb;
 }
 

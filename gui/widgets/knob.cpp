@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include "ot/callback.h"
 #include "ot/function.h"
 #include "ot/vm.h"
 
@@ -89,8 +90,9 @@ OtObject OtKnobClass::setLabel(const std::string& l) {
 //	OtKnobClass::setCallback
 //
 
-OtObject OtKnobClass::setCallback(OtObject c) {
-	callback = c;
+OtObject OtKnobClass::setCallback(OtObject cb) {
+	OtCallbackValidate(cb, 1);
+	callback = cb;
 	return shared();
 }
 

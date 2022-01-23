@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include "ot/callback.h"
 #include "ot/function.h"
 #include "ot/vm.h"
 
@@ -25,6 +26,8 @@ void OtIntegerSliderClass::init(const std::string& l, int mn, int mx, int v, OtO
 	min = mn;
 	max = mx;
 	value = v;
+
+	OtCallbackValidate(cb, 1);
 	callback = cb;
 }
 

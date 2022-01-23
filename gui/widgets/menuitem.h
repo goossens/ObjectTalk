@@ -34,7 +34,7 @@ public:
 	OtObject setShortcut(const std::string& s);
 	std::string getShortcut() { return shortcut; }
 
-	OtObject setCallback(OtObject cb) { callback = cb; return shared(); }
+	OtObject setCallback(OtObject callback);
 	OtObject getCallback() { return callback; }
 
 	void select() { selected = true; }

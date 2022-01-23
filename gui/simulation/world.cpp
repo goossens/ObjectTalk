@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include "ot/callback.h"
 #include "ot/function.h"
 #include "ot/vm.h"
 
@@ -84,6 +85,7 @@ OtObject OtWorldClass::continuousPhysics(bool continuous) {
 //
 
 OtObject OtWorldClass::addBeginContactCallback(OtObject callback) {
+	OtCallbackValidate(callback, 2);
 	beginContactCallback = callback;
 	return shared();
 }
@@ -94,6 +96,7 @@ OtObject OtWorldClass::addBeginContactCallback(OtObject callback) {
 //
 
 OtObject OtWorldClass::addEndContactCallback(OtObject callback) {
+	OtCallbackValidate(callback, 2);
 	endContactCallback = callback;
 	return shared();
 }

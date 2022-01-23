@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include "ot/callback.h"
 #include "ot/function.h"
 #include "ot/vm.h"
 
@@ -89,6 +90,17 @@ OtObject OtMenuItemClass::setShortcut(const std::string& s) {
 		OtExcept("MenuItem shortcut should be one character, not [%s]", s.c_str());
 	}
 
+	return shared();
+}
+
+
+//
+//	OtMenuItemClass::setCallback
+//
+
+OtObject OtMenuItemClass::setCallback(OtObject cb)  {
+	OtCallbackValidate(cb, 0);
+	callback = cb;
 	return shared();
 }
 

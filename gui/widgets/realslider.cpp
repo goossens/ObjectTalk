@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include "ot/callback.h"
 #include "ot/function.h"
 #include "ot/vm.h"
 
@@ -25,6 +26,7 @@ void OtRealSliderClass::init(const std::string& l, float mn, float mx, float v, 
 	min = mn;
 	max = mx;
 	value = v;
+	OtCallbackValidate(cb, 1);
 	callback = cb;
 }
 

@@ -10,6 +10,7 @@
 //
 
 #include "ot/array.h"
+#include "ot/callback.h"
 #include "ot/function.h"
 #include "ot/vm.h"
 
@@ -36,6 +37,8 @@ void OtComboboxClass::init(const std::string& t, OtObject vals, OtObject sel, Ot
 
 	// save current selection and callback;
 	selected = sel->operator std::string();
+
+	OtCallbackValidate(cb, 1);
 	callback = cb;
 }
 

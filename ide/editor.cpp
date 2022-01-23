@@ -30,7 +30,7 @@ void OtEditorClass::render() {
 	OtApplication application = OtApplicationClass::instance();
 	int width = application->getWidth();
 	int height = application->getHeight();
-	ImVec2 size = ImVec2(width * 0.6, height * 0.6);
+	ImVec2 size = ImVec2(width * 0.5, height * 0.5);
 
 	ImVec2 pos = ImVec2(
 		width * 0.05 + OtRandom(width * 0.9 - size.x),

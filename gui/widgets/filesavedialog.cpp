@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include "ot/callback.h"
 #include "ot/function.h"
 #include "ot/path.h"
 #include "ot/vm.h"
@@ -69,6 +70,7 @@ OtObject OtFileSaveDialogClass::setTypeFilters(const std::string& f) {
 //
 
 OtObject OtFileSaveDialogClass::setCallback(OtObject cb) {
+	OtCallbackValidate(cb, 1);
 	callback = cb;
 	return shared();
 }
@@ -105,7 +107,7 @@ void OtFileSaveDialogClass::render() {
 	int width = application->getWidth();
 	int height = application->getHeight();
 	ImVec2 maxSize = ImVec2(width, height);
-	ImVec2 minSize = ImVec2(width * 0.66, height * 0.66);
+	ImVec2 minSize = ImVec2(width * 0.5, height * 0.5);
 
 	if (ImGuiFileDialog::Instance()->Display("SaveFileDialog", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
 		// call callback if required

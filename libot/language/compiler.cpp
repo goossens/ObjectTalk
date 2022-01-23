@@ -331,7 +331,7 @@ void OtCompiler::function(OtByteCode bytecode) {
 	// create a new bytecode function
 	auto function = OtByteCodeFunctionClass::create(functionCode, count);
 
-	// see if this function captures variables and needs a closure
+	// see if this function captures variables and needs a closure?
 	auto scope = &(scopeStack.back());
 
 	if (scope->captures.size()) {

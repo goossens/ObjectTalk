@@ -24,15 +24,10 @@
 template <typename T>
 class OtConcurrentQueue {
 public:
-	// constructor
-	OtConcurrentQueue() = default;
-
 	// clear queue
 	void clear() {
 		std::unique_lock<std::mutex> mlock(mutex);
 		queue = {};
-		mlock.unlock();
-		cv.notify_one();
 	}
 
 	// put item on queue
@@ -45,15 +40,14 @@ public:
 
 	// return number of queue entries
 	int size() {
+		std::unique_lock<std::mutex> mlock(mutex);
 		return queue.size();
 	}
 
 	// see if queue has entries
 	bool empty() {
 		std::unique_lock<std::mutex> mlock(mutex);
-		auto empty = queue.empty();
-		mlock.unlock();
-		return empty;
+		return queue.empty();
 	}
 
 	// wait until queue is not empty
@@ -63,9 +57,6 @@ public:
 		while (queue.empty()) {
 			cv.wait(mlock);
 		}
-
-		mlock.unlock();
-		cv.notify_one();
 	}
 
 	// pop item from queue and wait if queue is empty
@@ -76,11 +67,9 @@ public:
 			cv.wait(mlock);
 		}
 
-		auto val = queue.front();
+		auto item = queue.front();
 		queue.pop();
-		mlock.unlock();
-		cv.notify_one();
-		return val;
+		return item;
 	}
 
 private:

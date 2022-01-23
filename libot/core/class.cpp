@@ -63,6 +63,34 @@ OtObject OtClassClass::instantiate(size_t count, OtObject* parameters) {
 
 
 //
+//	OtClassClass::has
+//
+
+bool OtClassClass::has(const std::string& name) {
+	if (classType->has(name)) {
+		return true;
+
+	} else {
+		return OtInternalClass::has(name);
+	}
+}
+
+
+//
+//	OtClassClass::get
+//
+
+OtObject OtClassClass::get(const std::string& name) {
+	if (classType->has(name)) {
+		return classType->get(name);
+
+	} else {
+		return OtInternalClass::get(name);
+	}
+}
+
+
+//
 //	OtClassClass::getMeta
 //
 

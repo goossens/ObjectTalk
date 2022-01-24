@@ -72,5 +72,5 @@ private:
 	void writeColored(LineType type, const std::string& text);
 
 	// properties
-	bool autoscroll = true;
+	bool autoScroll = true;
 };

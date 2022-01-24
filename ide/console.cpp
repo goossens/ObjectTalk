@@ -13,7 +13,6 @@
 #include "ot/cout.h"
 #include "ot/numbers.h"
 #include "ot/string.h"
-#include "ot/text.h"
 
 #include "application.h"
 
@@ -36,6 +35,8 @@ OtConsoleClass::OtConsoleClass() {
 	});
 
 	// send welcome message
+	lines.push_back(Line(Normal, ""));
+
 	writeHelp(
 		"Welcome to the ObjectTalk Integrated Development Environment (IDE)\n"
 		"Right click here or type 'help' below for options"
@@ -65,12 +66,12 @@ void OtConsoleClass::render() {
 	ImGui::PushID(this);
 
 	float footerHeight = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
-	ImGui::BeginChild("ScrollingRegion", ImVec2(0, -footerHeight), false, ImGuiWindowFlags_HorizontalScrollbar);
+	ImGui::BeginChild("scrolling", ImVec2(0, -footerHeight), false, ImGuiWindowFlags_HorizontalScrollbar);
 
 	if (ImGui::BeginPopupContextWindow()) {
 		if (ImGui::MenuItem("Help")) { help(); }
 		if (ImGui::MenuItem("Clear")) { clear(); }
-		ImGui::MenuItem("Auto scroll", "", &autoscroll);
+		ImGui::MenuItem("Auto-scroll", "", &autoScroll);
 		ImGui::EndPopup();
 	}
 
@@ -99,8 +100,8 @@ void OtConsoleClass::render() {
 		}
 	}
 
-	if (autoscroll) {
-		ImGui::SetScrollHereY(1.0f);
+	if (autoScroll) {
+		ImGui::SetScrollHereY(1.0);
 	}
 
 	ImGui::EndChild();
@@ -142,6 +143,7 @@ void OtConsoleClass::help() {
 
 void OtConsoleClass::clear() {
 	lines.clear();
+	lines.push_back(Line(Normal, ""));
 }
 
 
@@ -150,18 +152,24 @@ void OtConsoleClass::clear() {
 //
 
 void OtConsoleClass::writeColored(LineType type, const std::string& text) {
-	std::vector<std::string> parts;
-	OtText::split(text, parts,'\n');
-	bool append = lines.size() && lines.back().type == type;
+	std::string part;
 
-	for (auto& part : parts) {
-		if (append) {
-			lines.back().text += text;
-			append = false;
+	for (char const &c: text) {
+		if (c == '\n') {
+			lines.back().type = type;
+			lines.back().text += part;
+			part.clear();
+
+			lines.push_back(Line(type, ""));
 
 		} else {
-			lines.push_back(Line(type, part));
+			part += c;
 		}
+	}
+
+	if (part.size()) {
+		lines.back().type = type;
+		lines.back().text += part;
 	}
 }
 

@@ -86,6 +86,9 @@ public:
 	void addEnumsGLFW(OtObject module);
 	void addEnumsIMGUI(OtObject module);
 
+	// enable IDE mode (so run can be called twice, once by the IDE and once by the app)
+	void enableIDE() { haveIDE = true; }
+
 	// get type definition
 	static OtType getMeta();
 
@@ -177,8 +180,9 @@ private:
 	bool profiler = false;
 	bool demo = false;
 
-	// is secondary thread running?
+	// is we running?
 	bool running;
+	bool haveIDE = false;
 
 	// bridge between threads
 	OtAppEventQueue eventQueue;

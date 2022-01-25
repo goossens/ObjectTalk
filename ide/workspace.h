@@ -18,6 +18,7 @@
 
 #include "console.h"
 #include "ide.h"
+#include "ideevents.h"
 #include "editor.h"
 
 
@@ -43,10 +44,17 @@ public:
 	// close editor
 	void closeEditor(OtEditor editor);
 
+	// find a named editor
+	OtEditor findEditor(const std::string& filename);
+
 	// see if we can run a file
 	bool canRunFile() { return !started && !running; }
+
 	// run a file
 	void runFile(const std::string& filename);
+
+	// highlight error in editor
+	void highlightError(const std::string module, size_t line, const std::string error);
 
 	// run IDE
 	void run();
@@ -60,6 +68,9 @@ public:
 private:
 	// render all windows
 	void render();
+
+	// process events
+	void procesEvents();
 
 	// see if we can close app
 	bool close();
@@ -86,4 +97,7 @@ private:
 	std::thread thread;
 	bool started = false;
 	bool running = false;
+
+	// for cross thread comminication
+	OtIdeEventQueue events;
 };

@@ -37,6 +37,9 @@ OtByteCode OtCompiler::compileModule(OtSource src, OtModule module) {
 	// rememember source code
 	source = src;
 
+	// clear scope stack
+	scopeStack.clear();
+
 	// load scanner
 	scanner.loadSource(src);
 
@@ -59,15 +62,8 @@ OtByteCode OtCompiler::compileModule(OtSource src, OtModule module) {
 	}
 
 	// process all statements
-	try {
-		while (!scanner.matchToken(OtScanner::EOS_TOKEN)) {
-			statement(bytecode);
-		}
-
-	} catch (const OtException& e) {
-		// clear scope stack
-		scopeStack.clear();
-		throw e;
+	while (!scanner.matchToken(OtScanner::EOS_TOKEN)) {
+		statement(bytecode);
 	}
 
 	// clear scope stack
@@ -90,6 +86,9 @@ OtByteCode OtCompiler::compileExpression(OtSource src) {
 	// load scanner
 	scanner.loadSource(src);
 
+	// clear scope stack
+	scopeStack.clear();
+
 	// setup bytecode
 	OtByteCode bytecode = OtByteCodeClass::create(src);
 
@@ -102,18 +101,11 @@ OtByteCode OtCompiler::compileExpression(OtSource src) {
 	}
 
 	// process expression
-	try {
-		if (expression(bytecode)) {
-			bytecode->method("__deref__", 0);
-		}
-
-		scanner.expect(OtScanner::EOS_TOKEN);
-
-	} catch (const OtException& e) {
-		// clear scope stack
-		scopeStack.clear();
-		throw e;
+	if (expression(bytecode)) {
+		bytecode->method("__deref__", 0);
 	}
+
+	scanner.expect(OtScanner::EOS_TOKEN);
 
 	// clear scope stack
 	scopeStack.clear();
@@ -398,8 +390,8 @@ bool OtCompiler::primary(OtByteCode bytecode) {
 		case OtScanner::IDENTIFIER_TOKEN: {
 			// handle named reference
 			auto name = scanner.getText();
-			scanner.advance();
 			resolveVariable(bytecode, name);
+			scanner.advance();
 			reference = true;
 			break;
 		}
@@ -1237,10 +1229,10 @@ void OtCompiler::variableDeclaration(OtByteCode bytecode) {
 	scanner.expect(OtScanner::VAR_TOKEN);
 	scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
 	std::string name = scanner.getText();
-	scanner.advance();
 
 	// add variable to scope and reserve space on stack
 	declareVariable(bytecode, name);
+	scanner.advance();
 
 	// process initial value if required
 	if (scanner.matchToken(OtScanner::ASSIGNMENT_TOKEN)) {
@@ -1268,7 +1260,6 @@ void OtCompiler::classDeclaration(OtByteCode bytecode) {
 	scanner.expect(OtScanner::CLASS_TOKEN);
 	scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
 	std::string name = scanner.getText();
-	scanner.advance();
 
 	// create new class
 	OtClass cls = OtClassClass::create(name);
@@ -1277,6 +1268,7 @@ void OtCompiler::classDeclaration(OtByteCode bytecode) {
 	declareVariable(bytecode, name);
 	bytecode->push(cls);
 	assignVariable(bytecode, name);
+	scanner.advance();
 
 	// handle parent class
 	scanner.expect(OtScanner::COLON_TOKEN);
@@ -1315,10 +1307,10 @@ void OtCompiler::functionDeclaration(OtByteCode bytecode) {
 	scanner.expect(OtScanner::FUNCTION_TOKEN);
 	scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
 	std::string name = scanner.getText();
-	scanner.advance();
 
 	// add function to scope to allow for recursion
 	declareVariable(bytecode, name);
+	scanner.advance();
 
 	// parse function definition to function object on stack
 	function(bytecode);
@@ -1362,12 +1354,12 @@ void OtCompiler::forStatement(OtByteCode bytecode) {
 	// get name of iteration variable
 	scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
 	std::string name = scanner.getText();
-	scanner.advance();
 
 	// create loop variable on the stack
 	declareVariable(bytecode, name);
 
 	// get the object to be iterated on
+	scanner.advance();
 	scanner.expect(OtScanner::IN_TOKEN);
 
 	if (expression(bytecode)) {
@@ -1524,13 +1516,13 @@ void OtCompiler::tryStatement(OtByteCode bytecode) {
 	scanner.expect(OtScanner::CATCH_TOKEN);
 	scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
 	std::string name = scanner.getText();
-	scanner.advance();
 
 	// create a new block scope to handle error variable
 	pushBlockScope();
 
 	// declare error variable whose value is already on stack (courtesy of the VM)
 	declareVariable(bytecode, name, true);
+	scanner.advance();
 
 	// compile "catch" block
 	block(bytecode);

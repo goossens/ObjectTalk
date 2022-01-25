@@ -11,8 +11,10 @@
 
 #include <thread>
 
+#include "ot/cerr.h"
 #include "ot/function.h"
 #include "ot/libuv.h"
+#include "ot/os.h"
 #include "ot/vm.h"
 
 #include "application.h"
@@ -25,36 +27,45 @@
 void OtApplicationClass::run(const std::string& name) {
 	// applications run in two threads: the main thread handles the rendering
 	// and window events (as required by most operating systems)
-	// as well as the asynchronous libuv events
 	// the second thread runs the application logic
+	// as well as the asynchronous libuv events
+	if (running) {
+		if (haveIDE) {
+			// this is the app calling run which we have to allow
+			// so this will just be a placeholder
+			while (running) {
+				OtOSClass::instance()->sleep(1000);
+			}
 
-	// initialize window library
-	initGLFW(name);
+		} else {
+			OtExcept("You can't call [run] on an application twice");
+		}
 
-	// start the second thread
-	running = true;
+	} else {
+		running = true;
 
-	std::thread thread([this]() {
-		// run the second thread
-		this->runThread2();
-		return 0;
-	});
+		// initialize window library
+		initGLFW(name);
 
-	// application main loop
-	while (runningGLFW()) {
-		// handle window events
-		eventsGLFW();
+		// start the second thread
+		std::thread thread([this]() {
+			this->runThread2();
+			return 0;
+		});
 
-		// handle libuv events
-		uv_run(uv_default_loop(), UV_RUN_NOWAIT);
+		// application main loop
+		while (runningGLFW()) {
+			// handle window events
+			eventsGLFW();
+		}
+
+		// wait for second thread to finish
+		running = false;
+		thread.join();
+
+		// close windowing library
+		endGLFW();
 	}
-
-	// wait for thread to finish
-	running = false;
-	thread.join();
-
-	// close windowing library
-	endGLFW();
 }
 
 
@@ -68,13 +79,13 @@ void OtApplicationClass::runThread2() {
 		initBGFX();
 		initIMGUI();
 
-		// create a screen widget
-		screen = OtScreenClass::create();
-
 		// call init callbacks
 		for (auto& callback : atInitCallbacks) {
 			callback();
 		}
+
+		// create a screen widget
+		screen = OtScreenClass::create();
 
 		// call app's setup member (if defined)
 		if (has("setup")) {
@@ -269,6 +280,9 @@ void OtApplicationClass::runThread2() {
 			// put results on screen
 			renderIMGUI();
 			renderBGFX();
+
+			// handle libuv events
+			uv_run(uv_default_loop(), UV_RUN_NOWAIT);
 		}
 
 		// call app's update member (if defined)

@@ -16,7 +16,54 @@
 #include <unordered_map>
 #include <vector>
 
+#include "exception.h"
 #include "source.h"
+
+
+//
+//	OtScannerException
+//
+
+class OtScannerException : public OtException {
+public:
+	OtScannerException(
+		const std::string& m,
+		size_t l,
+		size_t s,
+	 	size_t e,
+		const std::string& sm,
+		const std::string& fm) :
+			module(m),
+			lineNumber(l),
+			start(s),
+			end(e),
+			shortMessage(sm),
+			OtException(fm) {
+	}
+
+	// access properties
+	std::string getModule() const { return module; }
+	size_t getLineNumber() const { return lineNumber; }
+	size_t getStart() const { return start; }
+	size_t getEnd() const { return end; }
+	std::string getShortErrorMessage() const { return shortMessage; }
+
+private:
+	// the module in which the error happened
+	std::string module;
+
+	// line number causing the error (starting at 1)
+	size_t lineNumber;
+
+	// start of token causing the error (in bytes from start of source)
+	size_t start;
+
+	// end of token causing the error (in bytes from start of source)
+	size_t end;
+
+	// the short error message
+	std::string shortMessage;
+};
 
 
 //

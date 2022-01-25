@@ -14,6 +14,7 @@
 
 #include <stdio.h>
 
+#include <exception>
 #include <string>
 #include <iostream>
 
@@ -24,10 +25,10 @@
 //	OtException
 //
 
-class OtException {
+class OtException : public std::exception {
 public:
 	OtException(std::string m) : message(m) {}
-	virtual const char* what() const throw() { return message.c_str(); }
+	const char* what() const throw() { return message.c_str(); }
 
 private:
 	std::string message;

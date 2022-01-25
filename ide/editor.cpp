@@ -134,6 +134,8 @@ void OtEditorClass::render() {
 		if (ImGui::BeginMenu("Program")) {
 			if (ImGui::MenuItem("Build", SHORTCUT "B")) { compileFile(); }
 			if (ImGui::MenuItem("Run", SHORTCUT "R", nullptr, runnable)) { runFile(); }
+			ImGui::Separator();
+			if (ImGui::MenuItem("Clear Error")) { clearError(); }
 
 			ImGui::EndMenu();
 		}
@@ -320,6 +322,28 @@ void OtEditorClass::runFile() {
 
 bool OtEditorClass::isDirty() {
 	return editor.GetUndoCount() != version;
+}
+
+
+//
+//	OtEditorClass::highlightError
+//
+
+void OtEditorClass::highlightError(size_t line, const std::string error) {
+	TextEditor::ErrorMarkers markers;
+	markers[line] = error;
+	editor.SetErrorMarkers(markers);
+	editor.SetCursorPosition(TextEditor::Coordinates(line - 1, 0));
+}
+
+
+//
+//	OtEditorClass::clearError
+//
+
+void OtEditorClass::clearError() {
+	TextEditor::ErrorMarkers markers;
+	editor.SetErrorMarkers(markers);
 }
 
 

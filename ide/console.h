@@ -38,6 +38,9 @@ public:
 	// clear the console
 	void clear();
 
+	// scroll to the bottom
+	void scrollToBottom() { scrollBottom = true; }
+
 	// write to console
 	void write(const std::string& text);
 	void writeHelp(const std::string& text);
@@ -72,5 +75,5 @@ private:
 	void writeColored(LineType type, const std::string& text);
 
 	// properties
-	bool autoScroll = true;
+	bool scrollBottom = false;
 };

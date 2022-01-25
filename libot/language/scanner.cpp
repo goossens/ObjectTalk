@@ -327,13 +327,15 @@ OtToken OtScanner::advance() {
 
 void OtScanner::error(std::string message) {
 	// extract line and create marker
+	auto moduleName = source->getModule();
 	auto start = source->getStartOfLine(tokenStart);
-	auto line = source->getLine(tokenStart);
+	auto lineText = source->getLine(tokenStart);
+	auto lineNumber = source->getLineNumber(tokenStart);
 	std::string marker;
 
 	for (auto c = 0; c < tokenStart - start; c++) {
-		if (std::isspace(line[c])) {
-			marker += line[c];
+		if (std::isspace(lineText[c])) {
+			marker += lineText[c];
 
 		} else {
 			marker +=' ';
@@ -342,13 +344,16 @@ void OtScanner::error(std::string message) {
 
 	marker +='^';
 
-	// throw exception
-	OtExcept("Module: %s, Line %ld: %s:\n%s\n%s",
-		source->getModule().c_str(),
-		source->getLineNumber(tokenStart),
+	auto fullMessage = OtFormat(
+		"Module: %s, Line %ld: %s:\n%s\n%s",
+		moduleName.c_str(),
+		lineNumber,
 		message.c_str(),
-		line.c_str(),
+		lineText.c_str(),
 		marker.c_str());
+
+	// throw exception
+	throw OtScannerException(moduleName, lineNumber, tokenStart, tokenEnd, message, fullMessage);
 }
 
 

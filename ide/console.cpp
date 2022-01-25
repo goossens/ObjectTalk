@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include "ot/cerr.h"
-#include "ot/cout.h"
 #include "ot/numbers.h"
 #include "ot/string.h"
 
@@ -24,22 +22,12 @@
 //
 
 OtConsoleClass::OtConsoleClass() {
-	// intercept cout
-	OtCoutClass::instance()->setOutputFunction([this](const std::string& text) {
-		write(text);
-	});
-
-	// intercept cerr
-	OtCerrClass::instance()->setOutputFunction([this](const std::string& text) {
-		writeError(text);
-	});
-
 	// send welcome message
 	lines.push_back(Line(Normal, ""));
 
 	writeHelp(
 		"Welcome to the ObjectTalk Integrated Development Environment (IDE)\n"
-		"Right click here or type 'help' below for options"
+		"Right click here or type 'help' below for options\n"
 	);
 }
 
@@ -71,7 +59,6 @@ void OtConsoleClass::render() {
 	if (ImGui::BeginPopupContextWindow()) {
 		if (ImGui::MenuItem("Help")) { help(); }
 		if (ImGui::MenuItem("Clear")) { clear(); }
-		ImGui::MenuItem("Auto-scroll", "", &autoScroll);
 		ImGui::EndPopup();
 	}
 
@@ -100,7 +87,8 @@ void OtConsoleClass::render() {
 		}
 	}
 
-	if (autoScroll) {
+	if (scrollBottom || ImGui::GetScrollY() >= ImGui::GetScrollMaxY()) {
+		scrollBottom = false;
 		ImGui::SetScrollHereY(1.0);
 	}
 

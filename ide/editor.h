@@ -39,8 +39,15 @@ public:
 	void compileFile();
 	void runFile();
 
+	// get the name of the file being edited
+	std::string getFileName() { return filename; }
+
 	// is the editor's content "dirty" (unsaved);
 	bool isDirty();
+
+	// update error markers
+	void highlightError(size_t line, const std::string error);
+	void clearError();
 
 	// get type definition
 	static OtType getMeta();

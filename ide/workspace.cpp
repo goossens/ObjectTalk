@@ -11,10 +11,12 @@
 
 #include <filesystem>
 
+#include "ot/cerr.h"
 #include "ot/cout.h"
 #include "ot/exception.h"
 #include "ot/libuv.h"
 #include "ot/module.h"
+#include "ot/scanner.h"
 
 #include "application.h"
 
@@ -34,6 +36,16 @@ void OtWorkspaceClass::init() {
 
 	// add a console window
 	console = OtConsoleClass::create();
+
+	// intercept cout
+	OtCoutClass::instance()->setOutputFunction([this](const std::string& text) {
+		events.writeToOutEvent(text);
+	});
+
+	// intercept cerr
+	OtCerrClass::instance()->setOutputFunction([this](const std::string& text) {
+		events.writeToErrEvent(text);
+	});
 }
 
 
@@ -100,6 +112,21 @@ void OtWorkspaceClass::closeEditor(OtEditor editor) {
 
 
 //
+//	OtWorkspaceClass::findEditor
+//
+
+OtEditor OtWorkspaceClass::findEditor(const std::string& filename) {
+	for (auto& editor : editors) {
+		if (editor->getFileName() == filename) {
+			return editor;
+		}
+	}
+
+	return nullptr;
+}
+
+
+//
 //	OtWorkspaceClass::runFile
 //
 
@@ -108,14 +135,20 @@ void OtWorkspaceClass::runFile(const std::string& filename) {
 	started = true;
 	running = true;
 
+	console->write("\n");
+	console->scrollToBottom();
+
 	thread = std::thread([this, filename]() {
 		try {
-			// loadd an run module
+			// load and run module
 			OtModuleClass::create(filename);
+			events.pushFinishedWithoutErrorsEvent();
+
+		} catch (const OtScannerException& e) {
+			events.pushFinishedWithScannerExceptionEvent(e);
 
 		} catch (const OtException& e) {
-			// handle error
-			OtCoutClass::instance()->write(e.what());
+			events.pushFinishedWithExceptionEvent(e);
 		}
 
 		// little house keeping
@@ -125,12 +158,32 @@ void OtWorkspaceClass::runFile(const std::string& filename) {
 
 
 //
+//	OtWorkspaceClass::highlightError
+//
+
+void OtWorkspaceClass::highlightError(const std::string module, size_t line, std::string error) {
+	OtEditor editor = findEditor(module);
+
+	if (!editor) {
+		openFile(module);
+		editor = findEditor(module);
+	}
+
+	editor->highlightError(line, error);
+}
+
+
+//
 //	OtWorkspaceClass::run
 //
 
 void OtWorkspaceClass::run() {
+	// tell the app we have an IDE (so we can call run twice, once for us and once for the app)
+	OtApplication application = OtApplicationClass::instance();
+	application->enableIDE();
+
 	// simply run the app framework (we get the callbacks)
-	OtApplicationClass::instance()->run("ObjectTalk IDE");
+	application->run("ObjectTalk IDE");
 }
 
 
@@ -139,11 +192,8 @@ void OtWorkspaceClass::run() {
 //
 
 void OtWorkspaceClass::render() {
-	// cleapup last script run if required
-	if (started && ! running) {
-		thread.join();
-		started = false;
-	}
+	// process all events
+	procesEvents();
 
 	// render console
 	console->render();
@@ -219,6 +269,47 @@ void OtWorkspaceClass::render() {
 			}
 
 			ImGui::EndPopup();
+		}
+	}
+}
+
+
+//
+//	OtWorkspaceClass::procesEvents
+//
+
+void OtWorkspaceClass::procesEvents() {
+	while (events.size()) {
+		OtIdeEvent event = events.pop();
+
+		switch (event.type) {
+			case OtIdeEvent::writeToOut:
+				console->write(event.longMessage);
+				break;
+
+			case OtIdeEvent::writeToErr:
+				console->writeError(event.longMessage);
+				break;
+
+			case OtIdeEvent::finishedWithScannerException:
+				OtCerrClass::instance()->write(event.longMessage);
+				OtCerrClass::instance()->write("\n");
+				highlightError(event.module, event.lineNumber, event.shortMessage);
+				thread.join();
+				started = false;
+				break;
+
+			case OtIdeEvent::finishedWithException:
+				OtCerrClass::instance()->write(event.longMessage);
+				OtCerrClass::instance()->write("\n");
+				thread.join();
+				started = false;
+				break;
+
+			case OtIdeEvent::finishedWithoutErrors:
+				thread.join();
+				started = false;
+				break;
 		}
 	}
 }

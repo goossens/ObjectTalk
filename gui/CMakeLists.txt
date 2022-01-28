@@ -4,12 +4,12 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-file(GLOB_RECURSE GUI_INCLUDES */*.h)
-file(GLOB_RECURSE GUI_SOURCES guimodule.cpp */*.cpp)
+file(GLOB GUI_INCLUDES */*.h)
+file(GLOB GUI_SOURCES */*.cpp)
 
 if (APPLE)
 	# for MacOS
-	list(APPEND GUI_SOURCES core/macos.mm)
+	list(APPEND GUI_SOURCES framework/OtMacos.mm)
 
 	find_library(COCOA Cocoa REQUIRED)
 	find_library(QUARTZCORE QuartzCore REQUIRED)
@@ -30,8 +30,9 @@ list(REMOVE_DUPLICATES GUI_INCLUDE_DIRS)
 set(GUI_INCLUDE_DIRS ${GUI_INCLUDE_DIRS} PARENT_SCOPE)
 
 add_library(gui STATIC ${GUI_INCLUDES} ${GUI_SOURCES})
-add_dependencies(gui libot glfw bgfx imgui imguifd imguieditor tinyobjloader box2d)
-target_include_directories(gui PRIVATE ${GUI_INCLUDE_DIRS})
+add_dependencies(gui ot glfw bgfx imgui imguifd imguieditor tinyobjloader box2d)
+
+target_include_directories(gui PRIVATE ${OT_INCLUDE_DIRS} ${GUI_INCLUDE_DIRS})
 target_link_libraries(gui glfw bgfx imgui imguifd imguieditor tinyobjloader box2d ${GUI_LIBS})
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${GUI_INCLUDES} ${GUI_SOURCES})

@@ -12,6 +12,7 @@ $input v_position_world, v_position_camera, v_position_screen, v_normal, v_tange
 uniform vec4 u_water[2];
 #define u_time u_water[0].x
 #define u_scale u_water[0].y
+#define u_orientation u_water[0].z
 #define u_water_color u_water[1]
 
 SAMPLER2D(s_normals, 0);
@@ -31,8 +32,8 @@ void main() {
 	vec3 normal = normalize(mul(tbn, (noise.xzy * vec3(1.5, 1.0, 1.5))));
 
 	vec2 fbuv = (v_position_screen.xy / v_position_screen.w) / 2.0 + 0.5;
-	vec4 reflectionColor = texture2D(s_reflection, fbuv);
-	vec4 refractionColor = texture2D(s_refraction, vec2(fbuv.x, -fbuv.y));
+	vec4 reflectionColor = texture2D(s_reflection, vec2(fbuv.x, fbuv.y * u_orientation));
+	vec4 refractionColor = texture2D(s_refraction, vec2(fbuv.x, -fbuv.y * u_orientation));
 
 	float reflectance = dot(vec3(0.0, 0.0, 1.0), normal);
 	vec4 color = mix(reflectionColor, u_water_color, reflectance);

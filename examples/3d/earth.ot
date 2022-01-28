@@ -8,8 +8,8 @@
 
 var gui = import("gui");
 
-class MyApp : gui.Application {
-	function setup(this, screen) {
+class App : gui.App {
+	function setup(this) {
 		var ambient = gui.Ambient();
 		var light = gui.Light().setPosition(1, 4, 4);
 
@@ -72,9 +72,9 @@ class MyApp : gui.Application {
 			.setCamera(camera)
 			.setScene(scene);
 
-		screen.add(view);
+		this.add(view);
 	}
 }
 
-var app = MyApp();
-app.run("Transparent Earth");
+var app = App();
+os.runGUI();

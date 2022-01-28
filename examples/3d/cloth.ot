@@ -11,8 +11,8 @@ var gui = import("gui");
 var skyColor = "#cce0ff";
 
 // define our application
-class MyApp : gui.Application {
-	function setup(this, screen) {
+class App : gui.App {
+	function setup(this) {
 		// create all components
 		var ambient = gui.Ambient();
 		var light = gui.Light().setPosition(0, 200, 200);
@@ -77,12 +77,12 @@ class MyApp : gui.Application {
 			.setTarget(0, 10, 0);
 
 		// create view
-		screen.add(gui.View()
+		this.add(gui.View()
 			.setCamera(camera)
 			.setScene(scene));
 	}
 }
 
 // instantiate application and run it
-var app = MyApp();
-app.run("Cloth Demonstration");
+var app = App();
+os.runGUI();

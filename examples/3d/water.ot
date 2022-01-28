@@ -8,8 +8,8 @@
 
 var gui = import("gui");
 
-class MyApp : gui.Application {
-	function setup(this, screen) {
+class App : gui.App {
+	function setup(this) {
 		var sun = gui.Sun()
 			.setElevation(0.1)
 			.setAzimuth(pi / 2.0);
@@ -17,7 +17,7 @@ class MyApp : gui.Application {
 		var sky = gui.Sky(sun);
 
 		var water = gui.Water()
-			.setSize(10000)
+			.setSize(4000)
 			.setNormalMap(gui.Texture(__DIR__ + "/assets/waternormals.jpg"));
 
 		var scene = gui.Scene()
@@ -56,9 +56,9 @@ class MyApp : gui.Application {
 		node.add(gui.WaterController(water));
 		panel.add(node);
 
-		screen.add(view).add(panel);
+		this.add(view).add(panel);
 	}
 }
 
-var app = MyApp();
-app.run("Sky and Water");
+var app = App();
+os.runGUI();

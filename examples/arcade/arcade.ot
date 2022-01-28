@@ -13,18 +13,18 @@ var pong = import("pong");
 var breakout = import("breakout");
 var tetris = import("tetris");
 
-class Arcade : gui.Application {
-	function setup(this, screen) {
-		// create and activate menu screen
+class Arcade : gui.App {
+	function setup(this) {
+		// create and activate menu
 		this.menu = menu.ArcadeMenu();
-		this.menu.setup(screen);
+		this.menu.setup(this);
 		this.menu.enable();
 		this.active = this.menu;
 
 		this.games = [];
-		this.addGame(screen, pong.Pong());
-		this.addGame(screen, breakout.Breakout());
-		this.addGame(screen, tetris.Tetris());
+		this.addGame(pong.Pong());
+		this.addGame(breakout.Breakout());
+		this.addGame(tetris.Tetris());
 		this.menu.buildMenu(this.games);
 
 		this.menu.onChoice(function(choice) {
@@ -41,8 +41,8 @@ class Arcade : gui.Application {
 		}
 	}
 
-	function addGame(this, screen, game) {
-		game.setup(this, screen);
+	function addGame(this, game) {
+		game.setup(this);
 		game.disable();
 		this.games.append(game);
 
@@ -76,4 +76,4 @@ class Arcade : gui.Application {
 }
 
 var app = Arcade();
-app.run("ObjectTalk Arcade");
+os.runGUI();

@@ -11,7 +11,7 @@ var gui = import("gui");
 var cameraRadius = 120.0;
 
 // define our view
-class MyView : gui.View {
+class View : gui.View {
 	function __init__(this, scene) {
 		this.setScreenArea(0, 0, 100, 100);
 
@@ -66,8 +66,8 @@ class MyView : gui.View {
 }
 
 // define our application
-class MyApp : gui.Application {
-	function setup(this, screen) {
+class App : gui.App {
+	function setup(this) {
 		// create all components
 		var ambient = gui.Ambient();
 
@@ -89,17 +89,17 @@ class MyApp : gui.Application {
 			.setMaterial(gui.Material("material", "gold"))
 			.setWireframe(true);
 
-		this.animation()
+		this.addAnimation(gui.Animation()
 			.from(0.0)
 			.to(pi * 2.0)
 			.during(15000)
 			.continuous()
 			.onStep(function(angle) {
 				sphere.rotateY(-angle);
-			});
+			}));
 
 		// create our view scene
-		screen.add(MyView(gui.Scene()
+		this.add(View(gui.Scene()
 			.add(ambient)
 			.add(light)
 			.add(skybox)
@@ -108,5 +108,5 @@ class MyApp : gui.Application {
 }
 
 // instantiate application and run it
-var app = MyApp();
-app.run("Skybox Demonstration");
+var app = App();
+os.runGUI();

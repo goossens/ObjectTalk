@@ -31,19 +31,19 @@ function needsUpdate() {
 	then
 		true
 
-	elif [ ! -f ${HOME}/$1shader.h ]
+	elif [ ! -f ${HOME}/Ot$1Shader.h ]
 	then
 		true
 
-	elif [ -f ${HOME}/$1/shader.vs -a ${HOME}/$1/shader.vs -nt ${HOME}/$1shader.h ]
+	elif [ -f ${SHADER_DIR}/shader.vs -a ${SHADER_DIR}/shader.vs -nt ${HOME}/Ot$1Shader.h ]
 	then
 		true
 
-	elif [ -f ${HOME}/$1/shader.fs -a ${HOME}/$1/shader.fs -nt ${HOME}/$1shader.h ]
+	elif [ -f ${SHADER_DIR}/shader.fs -a ${SHADER_DIR}/shader.fs -nt ${HOME}/Ot$1Shader.h ]
 	then
 		true
 
-	elif [ -f ${HOME}/$1/instancing.vs -a ${HOME}/$1/instancing.vs -nt ${HOME}/$1shader.h ]
+	elif [ -f ${SHADER_DIR}/instancing.vs -a ${SHADER_DIR}/instancing.vs -nt ${HOME}/Ot$1Shader.h ]
 	then
 		true
 
@@ -73,6 +73,8 @@ function compilePart() {
 		PREFIX=${EXT}
 	fi
 
+	UPREFIX=$(echo "${PREFIX}" |  tr '[:lower:]' '[:upper:]')
+
 	if [ ${UPDATEBATCH} -eq 1 ]
 	then
 		if [ $1 == "vertex" ]
@@ -83,23 +85,26 @@ function compilePart() {
 			PROFILE="ps"
 		fi
 
-		echo "%HOMEPATH%\\bin\\shaderc -f $3/$2.${EXT} -o $3/${PREFIX}_dx9.h -i include --type $1 --platform windows -p ${PROFILE}_3_0 -O 3 --bin2c ${PREFIX}_$3_dx9" >>${HOME}/update.bat
-		echo "%HOMEPATH%\\bin\\shaderc -f $3/$2.${EXT} -o $3/${PREFIX}_dx11.h -i include --type $1 --platform windows -p ${PROFILE}_4_0 -O 3 --bin2c ${PREFIX}_$3_dx11" >>${HOME}/update.bat
+		DIR=$(echo "$3" |  tr '[:upper:]' '[:lower:]')
+		echo "%HOMEDRIVE%%HOMEPATH%\\bin\\shaderc -f ${DIR}/$2.${EXT} -o ${DIR}/${PREFIX}_dx9.h -i include --type $1 --platform windows -p ${PROFILE}_3_0 -O 3 --bin2c Ot$3${UPREFIX}_dx9" >>${HOME}/update.bat
+		echo "%HOMEDRIVE%%HOMEPATH%\\bin\\shaderc -f ${DIR}/$2.${EXT} -o ${DIR}/${PREFIX}_dx11.h -i include --type $1 --platform windows -p ${PROFILE}_5_0 -O 3 --bin2c Ot$3${UPREFIX}_dx11" >>${HOME}/update.bat
 
 	else
-		${SHADERC} -f $2.${EXT} -o ${PREFIX}_mtl.h -i ${HOME}/include --type $1 --platform osx -p metal --bin2c ${PREFIX}_$3_mtl
-		${SHADERC} -f $2.${EXT} -o ${PREFIX}_glsl.h -i ${HOME}/include --type $1 --platform linux -p 150 --bin2c ${PREFIX}_$3_glsl
-		${SHADERC} -f $2.${EXT} -o ${PREFIX}_essl.h -i ${HOME}/include --type $1 --platform linux -p 300_es --bin2c ${PREFIX}_$3_essl
-		${SHADERC} -f $2.${EXT} -o ${PREFIX}_spv.h -i ${HOME}/include --type $1 --platform linux -p spirv --bin2c ${PREFIX}_$3_spv
+		${SHADERC} -f $2.${EXT} -o ${PREFIX}_mtl.h -i ${HOME}/include --type $1 --platform osx -p metal --bin2c Ot$3${UPREFIX}_mtl
+		${SHADERC} -f $2.${EXT} -o ${PREFIX}_glsl.h -i ${HOME}/include --type $1 --platform linux -p 120 --bin2c Ot$3${UPREFIX}_glsl
+		${SHADERC} -f $2.${EXT} -o ${PREFIX}_essl.h -i ${HOME}/include --type $1 --platform linux -p 300_es --bin2c Ot$3${UPREFIX}_essl
+		${SHADERC} -f $2.${EXT} -o ${PREFIX}_spv.h -i ${HOME}/include --type $1 --platform linux -p spirv --bin2c Ot$3${UPREFIX}_spv
 		fakePart ${PREFIX} $3 dx9
 		fakePart ${PREFIX} $3 dx11
 	fi
 }
 
 function compileShader() {
+	SHADER_DIR=${HOME}/$(echo "$1" |  tr '[:upper:]' '[:lower:]')
+
 	if needsUpdate $1
 	then
-		cd ${HOME}/$1
+		cd ${SHADER_DIR}
 
 		if [ -f shader.vs ]
 		then
@@ -116,22 +121,15 @@ function compileShader() {
 			compilePart vertex instancing $1
 		fi
 
-		cd ${HOME}
+		cat vs_glsl.h vs_essl.h vs_spv.h vs_dx9.h vs_dx11.h vs_mtl.h >../Ot$1Shader.h
+		cat fs_glsl.h fs_essl.h fs_spv.h fs_dx9.h fs_dx11.h fs_mtl.h >>../Ot$1Shader.h
 
-		cat $1/vs_glsl.h $1/vs_essl.h $1/vs_spv.h $1/vs_dx9.h $1/vs_dx11.h $1/vs_mtl.h >$1shader.h
-		echo "extern const uint8_t* vs_$1_pssl;" >>$1shader.h
-		echo "extern const uint32_t vs_$1_pssl_size;" >>$1shader.h
-
-		cat $1/fs_glsl.h $1/fs_essl.h $1/fs_spv.h $1/fs_dx9.h $1/fs_dx11.h $1/fs_mtl.h >>$1shader.h
-		echo "extern const uint8_t* fs_$1_pssl;" >>$1shader.h
-		echo "extern const uint32_t fs_$1_pssl_size;" >>$1shader.h
-
-		if [ -f $1/vsi_mtl.h ]
+		if [ -f vsi_mtl.h ]
 		then
-			cat $1/vsi_glsl.h $1/vsi_essl.h $1/vsi_spv.h $1/vsi_dx9.h $1/vsi_dx11.h $1/vsi_mtl.h >>$1shader.h
-			echo "extern const uint8_t* vsi_$1_pssl;" >>$1shader.h
-			echo "extern const uint32_t vsi_$1_pssl_size;" >>$1shader.h
+			cat vsi_glsl.h vsi_essl.h vsi_spv.h vsi_dx9.h vsi_dx11.h vsi_mtl.h >>../Ot$1Shader.h
 		fi
+
+		cd ${HOME}
 	fi
 }
 
@@ -140,17 +138,17 @@ then
 	echo 'cd /D "%~dp0"' >${HOME}/update.bat
 fi
 
-compileShader background
-compileShader blendmapped
-compileShader blit
-compileShader bloom
-compileShader blur
-compileShader colored
-compileShader fixed
-compileShader imgui
-compileShader sky
-compileShader skybox
-compileShader terrain
-compileShader textured
-compileShader vectordisplay
-compileShader water
+compileShader Background
+compileShader BlendMapped
+compileShader Blit
+compileShader Bloom
+compileShader Blur
+compileShader Colored
+compileShader Fixed
+compileShader ImGui
+compileShader Sky
+compileShader Skybox
+compileShader Terrain
+compileShader Textured
+compileShader VectorDisplay
+compileShader Water

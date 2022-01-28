@@ -82,8 +82,8 @@ class Target : Object {
 	}
 }
 
-class MyApp : gui.Application {
-	function setup(this, screen) {
+class App : gui.App {
+	function setup(this) {
 		this.vd = gui.VectorDisplay(0, 0, 80, 100);
 		this.vd.setCenterOrigin();
 		this.vd.setBrightness(brightness);
@@ -92,8 +92,8 @@ class MyApp : gui.Application {
 		this.createSweep();
 		this.createTargets();
 
-		screen.add(this.vd);
-		screen.add(this.createControlPanel());
+		this.add(this.vd);
+		this.add(this.createControlPanel());
 	}
 
 	function createBackPlate(this) {
@@ -198,5 +198,5 @@ class MyApp : gui.Application {
 	}
 }
 
-var app = MyApp();
-app.run("Vector Display Radar");
+var app = App();
+os.runGUI();

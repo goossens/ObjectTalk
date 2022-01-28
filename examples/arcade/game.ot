@@ -29,7 +29,7 @@ var gui = import("gui");
 //
 
 class Game : Object {
-	function setup(this, app, screen) {
+	function setup(this, app) {
 		// entering the startup state
 		this.state = "startup";
 
@@ -37,7 +37,7 @@ class Game : Object {
 		this.vd = gui.VectorDisplay(0, 0, 100, 100);
 		this.vd.setBottomLeftOrigin();
 		this.vd.setBrightness(1.1);
-		screen.add(this.vd);
+		app.add(this.vd);
 		this.initialize(app);
 
 		// moving on to the "idle state"

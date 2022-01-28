@@ -8,16 +8,16 @@
 
 var gui = import("gui");
 
-class MyApp : gui.Application {
+class App : gui.App {
 	var radius = 100;
 	var rh = 60;
 	var rm = 80;
 	var rs = 85;
 
-	function setup(this, screen) {
+	function setup(this) {
 		this.vd = gui.VectorDisplay(0, 0, 100, 100);
 		this.vd.setCenterOrigin();
-		screen.add(this.vd);
+		this.add(this.vd);
 		this.createBackPlate(this.vd);
 		this.addHands(this.vd);
 	}
@@ -72,5 +72,5 @@ class MyApp : gui.Application {
 	}
 }
 
-var app = MyApp();
-app.run("Vector Display Clock");
+var app = App();
+os.runGUI();

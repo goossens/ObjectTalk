@@ -8,8 +8,8 @@
 
 var gui = import("gui");
 
-class MyApp : gui.Application {
-	function setup(this, screen) {
+class App : gui.App {
+	function setup(this) {
 		var vd = gui.VectorDisplay(20, 0, 80, 100);
 
 		vd.setColor("#aaf");
@@ -60,9 +60,9 @@ class MyApp : gui.Application {
 		node.add(gui.VectorDisplayController(vd));
 		panel.add(node);
 
-		screen.add(vd).add(panel);
+		this.add(vd).add(panel);
 	}
 }
 
-var app = MyApp();
-app.run("Vector Display Demonstration");
+var app = App();
+os.runGUI();

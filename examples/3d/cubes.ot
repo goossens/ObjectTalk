@@ -8,8 +8,8 @@
 
 var gui = import("gui");
 
-class MyApp : gui.Application {
-	function setup(this, screen) {
+class App : gui.App {
+	function setup(this) {
 		var ambient = gui.Ambient();
 		var light = gui.Light().setPosition(1, 2, 4);
 
@@ -38,25 +38,25 @@ class MyApp : gui.Application {
 			.setCamera(camera)
 			.setScene(scene);
 
-		screen.add(view);
+		this.add(view);
 	}
 
 	function createInstance(this, geometry, material, offset) {
 		var cube = gui.Mesh(geometry, material)
 			.translate(offset, 0, 0);
 
-		this.animation()
+		this.addAnimation(gui.Animation()
 			.from(0.0)
 			.to(pi * 2.0)
 			.during(5000 + 10000.random())
 			.continuous()
 			.onStep(function(angle) {
 				cube.rotateAroundVector(angle, 1, 1, 0);
-			});
+			}));
 
 		return cube;
 	}
 }
 
-var app = MyApp();
-app.run("3D Rotating Cubes");
+var app = App();
+os.runGUI();

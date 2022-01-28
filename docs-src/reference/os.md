@@ -33,3 +33,7 @@ name **os**.
 | version() | Return the Operating System version. |
 | sleep() | Causes the calling thread to sleep for a specified number of milliseconds. |
 | uptime() | Return the systems uptime in seconds. |
+| runServer() | Run the event loop for a server app. |
+| stopServer() | Stop the event loop for a server app. |
+| runGUI() | Run the event loop for a GUI app. |
+| stopGUI() | Stop the event loop for a GUI app. |

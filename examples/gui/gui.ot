@@ -8,10 +8,10 @@
 
 var gui = import("gui");
 
-class MyApp : gui.Application {
-	function setup(this, screen) {
-		screen.add(this.createMenubar());
-		screen.add(this.createPanel());
+class App : gui.App {
+	function setup(this) {
+		this.add(this.createMenubar());
+		this.add(this.createPanel());
 
 		this.fileOpenDialog = gui.FileOpenDialog("Open File...", ".*", function(file) {
 			print(file);
@@ -21,8 +21,8 @@ class MyApp : gui.Application {
 			print(file);
 		});
 
-		screen.add(this.fileOpenDialog);
-		screen.add(this.fileSaveDialog);
+		this.add(this.fileOpenDialog);
+		this.add(this.fileSaveDialog);
 	}
 
 	function createMenubar(this) {
@@ -60,5 +60,5 @@ class MyApp : gui.Application {
 	}
 }
 
-var app = MyApp();
-app.run("Widget Demonstration");
+var app = App();
+os.runGUI();

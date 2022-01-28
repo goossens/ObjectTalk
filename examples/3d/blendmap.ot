@@ -8,8 +8,8 @@
 
 var gui = import("gui");
 
-class MyApp : gui.Application {
-		function setup(this, screen) {
+class App : gui.App {
+		function setup(this) {
 		var ambient = gui.Ambient();
 		var light = gui.Light().setPosition(10, 20, 30);
 
@@ -78,9 +78,9 @@ class MyApp : gui.Application {
 			.setCamera(camera)
 			.setScene(scene);
 
-		screen.add(view);
+		this.add(view);
 	}
 }
 
-var app = MyApp();
-app.run("Blend Map Demo");
+var app = App();
+os.runGUI();

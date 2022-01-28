@@ -78,11 +78,108 @@
           </div>
           <div id="macos">
             <h1 class="pb-2">Build and Install on MacOS</h1>
-            <p>To be written</p>
+            <ul>
+              <li>Install MacOS Monterey or Big Sur</li>
+              <li>Install Xcode</li>
+              <li>
+                Install <strong>homebrew</strong> using the instructions at
+                https://brew.sh
+              </li>
+              <li>Install Cmake using <strong>brew install cmake</strong></li>
+              <li><strong>cd [to your favorite build directory]</strong></li>
+              <li>
+                <strong
+                  >git clone https://github.com/goossens/ObjectTalk.git</strong
+                >
+              </li>
+              <li><strong>cd ObjectTalk</strong></li>
+              <li>
+                Create a debug version with <strong>make debug</strong> or
+                create a release version with <strong>make release</strong>
+              </li>
+              <li>
+                You can run the test suite for the language with
+                <strong>make test</strong>
+              </li>
+              <li>
+                The created binary will be <strong>./debug/bin/ot</strong> or
+                <strong>./release/bin/ot</strong> depending on the build type
+              </li>
+              <li>
+                By just running the binary, an Integrated Development
+                Environment (IDE) is launched
+              </li>
+              <li>
+                You can directly run an ObjectTalk script using
+                <strong>./debug/bin/ot [script name]</strong>
+              </li>
+              <li>
+                You can also build an Xcode project with
+                <strong>make xcode</strong>: the project will be in the xcode
+                directory
+              </li>
+            </ul>
           </div>
           <div id="linux">
             <h1 class="pb-2">Build and Install on Linux</h1>
-            <p>To be written</p>
+            <ul>
+              <li>
+                <p>Install Ubuntu 20.04 Desktop</p>
+              </li>
+              <li>
+                <p>
+                  Install additional software using
+                  <strong
+                    >sudo apt-get install build-essential cmake git
+                    xorg-dev</strong
+                  >
+                </p>
+              </li>
+              <li>
+                <p><strong>cd [to your favorite build directory]</strong></p>
+              </li>
+              <li>
+                <p>
+                  <strong
+                    >git clone
+                    https://github.com/goossens/ObjectTalk.git</strong
+                  >
+                </p>
+              </li>
+              <li>
+                <p><strong>cd ObjectTalk</strong></p>
+              </li>
+              <li>
+                <p>
+                  Create a debug version with <strong>make debug</strong> or
+                  create a release version with <strong>make release</strong>
+                </p>
+              </li>
+              <li>
+                <p>
+                  You can run the test suite for the language with
+                  <strong>make test</strong>
+                </p>
+              </li>
+              <li>
+                <p>
+                  The created binary will be <strong>./debug/bin/ot</strong> or
+                  <strong>./release/bin/ot</strong> depending on the build type
+                </p>
+              </li>
+              <li>
+                <p>
+                  By just running the binary, an Integrated Development
+                  Environment (IDE) is launched
+                </p>
+              </li>
+              <li>
+                <p>
+                  You can directly run an ObjectTalk script using
+                  <strong>./debug/bin/ot [script name]</strong>
+                </p>
+              </li>
+            </ul>
           </div>
           <div id="windows">
             <h1 class="pb-2">Build and Install on Windows</h1>
@@ -92,9 +189,12 @@
               </li>
               <li>
                 <p>
-                  Install Visual Studio 17 2022, arch: x64 (make sure you pick
-                  the &quot;Desktop development with C++&quot; option)
+                  Install Visual Studio 17 2022 (make sure you pick the
+                  &quot;Desktop development with C++&quot; option)
                 </p>
+                <ul>
+                  <li>Visual Studio 16 2019 also works</li>
+                </ul>
               </li>
               <li>
                 <p>

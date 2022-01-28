@@ -254,12 +254,10 @@
                         <li>
                           <a class="page-scroll" href="#widget">Widget</a>
                           <ul>
-                            <li>
-                              <a class="page-scroll" href="#screen">Screen</a>
-                            </li>
+                            <li><a class="page-scroll" href="#app">App</a></li>
                             <li>
                               <a class="page-scroll" href="#screenobject"
-                                >ScreenObject</a
+                                >AppObject</a
                               >
                               <ul>
                                 <li>
@@ -2553,6 +2551,22 @@ assert(set.subtract(set2) == Set(2, 5));
                 <tr>
                   <td>uptime()</td>
                   <td>Return the systems uptime in seconds.</td>
+                </tr>
+                <tr>
+                  <td>runServer()</td>
+                  <td>Run the event loop for a server app.</td>
+                </tr>
+                <tr>
+                  <td>stopServer()</td>
+                  <td>Stop the event loop for a server app.</td>
+                </tr>
+                <tr>
+                  <td>runGUI()</td>
+                  <td>Run the event loop for a GUI app.</td>
+                </tr>
+                <tr>
+                  <td>stopGUI()</td>
+                  <td>Stop the event loop for a GUI app.</td>
                 </tr>
               </tbody>
             </table>

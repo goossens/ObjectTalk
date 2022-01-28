@@ -7,14 +7,21 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 project(ObjectTalk VERSION 1.0 DESCRIPTION "ObjectTalk - The Completely Object-Oriented Scripting Language" LANGUAGES C CXX)
 
-set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
-
-include("gui")
-getGuiDefault()
-option(OT_GUI "Enable GUI module" ${OT_GUI_DEFAULT})
-
 if(NOT CMAKE_BUILD_TYPE)
    set(CMAKE_BUILD_TYPE Debug)
+endif()
+
+if (APPLE)
+	set(OT_GUI ON)
+endif()
+
+if (UNIX AND NOT APPLE)
+	include(FindX11)
+	set(OT_GUI ${X11_FOUND})
+endif()
+
+if (WIN32)
+	set(OT_GUI ON)
 endif()
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -29,17 +36,20 @@ include(deps/CMakeLists.txt)
 include_directories(3rdparty)
 add_subdirectory(3rdparty)
 
-include_directories(BEFORE libot/include)
-add_subdirectory(libot)
+add_subdirectory(ot)
+include_directories(BEFORE ${OT_INCLUDE_DIRS})
+
+add_subdirectory(http)
+include_directories(BEFORE ${HTTP_INCLUDE_DIRS})
 
 if(OT_GUI)
-	include_directories(BEFORE gui)
 	add_subdirectory(gui)
-	include_directories(BEFORE ide)
+	include_directories(BEFORE ${GUI_INCLUDE_DIRS})
 	add_subdirectory(ide)
+	include_directories(BEFORE ${IDE_INCLUDE_DIRS})
 endif()
 
-add_subdirectory(app)
+add_subdirectory(main)
 add_subdirectory(examples)
 
 enable_testing()

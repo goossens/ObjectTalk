@@ -4,6 +4,8 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
+var http = import("http");
+
 print();
 print("Running HTTP server");
 
@@ -11,7 +13,7 @@ function info(req, res, next) {
 	res.send("info");
 }
 
-var router = HttpRouter()
+var router = http.Router()
 	.static("/static", __DIR__ + "/static")
 	.get("/info", info)
 
@@ -50,7 +52,7 @@ var router = HttpRouter()
 		os.stopServer();
 	});
 
-var server = HttpServer(router).listen("0.0.0.0", 80);
+var server = http.Server(router).listen("0.0.0.0", 80);
 os.runServer();
 
 print();

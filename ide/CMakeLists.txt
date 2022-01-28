@@ -4,13 +4,23 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-file(GLOB_RECURSE IDE_INCLUDES *.h)
-file(GLOB_RECURSE IDE_SOURCES idemodule.cpp *.cpp)
+file(GLOB IDE_INCLUDES *.h)
+file(GLOB IDE_SOURCES *.cpp)
+
+set(IDE_INCLUDE_DIRS "")
+
+foreach(HEADER ${IDE_INCLUDES})
+    get_filename_component(DIR ${HEADER} PATH)
+    list(APPEND IDE_INCLUDE_DIRS ${DIR})
+endforeach()
+
+list(REMOVE_DUPLICATES IDE_INCLUDE_DIRS)
+set(IDE_INCLUDE_DIRS ${IDE_INCLUDE_DIRS} PARENT_SCOPE)
 
 add_library(ide STATIC ${IDE_INCLUDES} ${IDE_SOURCES})
-add_dependencies(ide libot gui)
-target_include_directories(ide PRIVATE ${GUI_INCLUDE_DIRS})
+add_dependencies(ide ot gui)
 
+target_include_directories(ide PRIVATE ${OT_INCLUDE_DIRS} ${IDE_INCLUDE_DIRS} ${IDE_INCLUDE_DIRS})
 target_link_libraries(ide glfw bgfx imgui imguifd tinyobjloader box2d)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${IDE_INCLUDES} ${IDE_SOURCES})

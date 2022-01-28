@@ -15,5 +15,5 @@ uniform vec4 u_blit;
 #define u_alpha u_blit.y
 
 void main() {
-	gl_FragColor = texture2D(s_texture, v_texcoord0.xy) * vec4(u_mult, u_mult, u_mult, u_mult * u_alpha);
+	gl_FragColor = texture2D(s_texture, v_texcoord0) * vec4(u_mult, u_mult, u_mult, u_mult * u_alpha);
 }

@@ -4,7 +4,9 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-var url = URL("http://user:password@test.org:8080/a/b/c/d/test.txt?a=1&b=2#frag");
+var http = import("http");
+
+var url = http.URL("http://user:password@test.org:8080/a/b/c/d/test.txt?a=1&b=2#frag");
 assert(url.string() == "http://user:password@test.org:8080/a/b/c/d/test.txt?a=1&b=2#frag");
 assert(url.url() == "http://user:password@test.org:8080/a/b/c/d/test.txt?a=1&b=2#frag");
 assert(url.scheme() == "http");

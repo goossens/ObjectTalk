@@ -25,10 +25,6 @@ vs:
 	cmake -Bvs -Wno-dev -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Debug
 	cd vs && cmake --build .
 
-gui:
-	cmake -Bdebug -Wno-dev -DOT_GUI=ON -DCMAKE_BUILD_TYPE=Debug
-	cd debug && make
-
 test: debug
 	cd debug && make test
 

@@ -9,8 +9,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Setup libuv
-      run: sudo apt-get install libuv1-dev
+    - name: Setup libraries
+      run: sudo apt-get install xorg-dev
 
     - name: Setup cmake
       uses: jwlawson/actions-setup-cmake@v1.11

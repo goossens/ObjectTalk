@@ -20,7 +20,6 @@ file(
 )
 
 add_library(nvtt STATIC ${NVTT_SOURCES})
-target_compile_definitions(nvtt PUBLIC "BX_CONFIG_DEBUG=0")
 target_include_directories(nvtt PUBLIC ${bimg_SOURCE_DIR}/3rdparty ${bimg_SOURCE_DIR}/3rdparty/nvtt)
 target_link_libraries(nvtt PUBLIC bx)
 

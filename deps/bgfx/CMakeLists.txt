@@ -28,7 +28,6 @@ endif()
 
 add_library(bgfx STATIC ${BGFX_SOURCES})
 add_dependencies(bgfx bx bimg)
-target_compile_definitions(bgfx PUBLIC "BX_CONFIG_DEBUG=0")
 
 target_include_directories(bgfx
 	PRIVATE ${bgfx_SOURCE_DIR}/3rdparty

@@ -1,4 +1,10 @@
-FROM alpine:3.15
+#	ObjectTalk Scripting Language
+#	Copyright (c) 2020-2022 Johan A. Goossens. All rights reserved.
+#
+#	This work is licensed under the terms of the MIT license.
+#	For a copy, see <https://opensource.org/licenses/MIT>.
+
+FROM alpine:latest
 
 RUN apk add --no-cache \
 	gcc \

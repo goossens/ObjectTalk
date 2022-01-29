@@ -1,4 +1,10 @@
 #!/bin/sh
+#
+#	ObjectTalk Scripting Language
+#	Copyright (c) 2020-2022 Johan A. Goossens. All rights reserved.
+#
+#	This work is licensed under the terms of the MIT license.
+#	For a copy, see <https://opensource.org/licenses/MIT>.
 
 docker container rm ot-alpine; true
 docker image rm ot-alpine; true

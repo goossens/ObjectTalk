@@ -108,7 +108,6 @@ size_t OtAppClass::getMenubarHeight() {
 void OtAppClass::onError(OtException e) {
 	OtFrameworkClass::instance()->removeCustomer(this);
 	OtOSClass::instance()->errorGUI(e);
-	std::cout << "Error" << std::endl;
 }
 
 

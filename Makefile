@@ -19,10 +19,10 @@ release:
 	cd release && make
 
 xcode:
-	cmake -Bxcode -Wno-dev -GXcode -DCMAKE_BUILD_TYPE=Debug
+	cmake -Bxcode -Wno-dev -GXcode
 
 vs:
-	cmake -Bvs -Wno-dev -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Debug
+	cmake -Bvs -Wno-dev -G "Visual Studio 17 2022" -A x64
 	cd vs && cmake --build .
 
 test: debug

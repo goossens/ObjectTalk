@@ -1,6 +1,0 @@
-#!/bin/sh
-
-cd "$(cd "$(dirname "$0")"; pwd)/.."
-make debug
-
-valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes debug/bin/ot --valgrind examples/http.ot

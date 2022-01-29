@@ -12,7 +12,6 @@ RUN apk add --no-cache \
 	gdb \
 	make \
 	cmake \
-	valgrind \
 	musl-dev \
 	alpine-sdk \
 	linux-headers \

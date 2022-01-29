@@ -69,23 +69,62 @@
             <li>
               <a class="page-scroll" href="#windows">Install on Windows</a>
             </li>
+            <li>
+              <a class="page-scroll" href="#running">Running ObjectTalk</a>
+            </li>
           </ul>
         </div>
         <div class="col mh-100 overflow-auto py-2 manual-content">
           <div id="overview">
-            <h1 class="pb-2">Installation Overview</h1>
-            <p>To be written</p>
+            <h1 class="pb-2">Installation</h1>
+            <p>
+              The ObjectTalk package is written in C++ and can be compiled on
+              MacOS, Linux (Ubuntu and Alpine are tested) and Windows. To
+              simplify the build process,
+              <a href="https://cmake.org">Cmake</a> is used to deal with
+              cross-platform challenges. Right now, all platforms support the
+              build process from the command line using very simple
+              instructions. MacOS and Windows also support using visual
+              development environments like Xcode and Visual Studio. For Linux,
+              visual tool support is on the agenda.
+            </p>
+            <p>
+              ObjectTalk uses a large number of 3rd party Open Source packages.
+              The Cmake process automatically loads the correct versions,
+              compiles them and links them into the ObjectTalk executable
+              (simply named <strong>ot</strong>). No endless downloads,
+              frustrations over each package's peculiarities or countless Google
+              searches. The plan is to just support it out of the box.
+            </p>
+            <p>
+              Below are simple instructions for each of the supported platforms
+              followed by some hints that apply to all platforms.
+            </p>
           </div>
           <div id="macos">
             <h1 class="pb-2">Build and Install on MacOS</h1>
+            <p>
+              ObjectTalk is supported on Monterey (MacOS 12) or Big Sur (MacOS
+              11). There are 4 simple requirements to get your machine ready for
+              ObjectTalk development:
+            </p>
             <ul>
-              <li>Install MacOS Monterey or Big Sur</li>
-              <li>Install Xcode</li>
+              <li>Install Xcode from the App Store</li>
               <li>
                 Install <strong>homebrew</strong> using the instructions at
                 https://brew.sh
               </li>
-              <li>Install Cmake using <strong>brew install cmake</strong></li>
+              <li>
+                Install git using <strong>brew install git</strong> from the
+                command line
+              </li>
+              <li>
+                Install Cmake using <strong>brew install cmake</strong> from the
+                command line
+              </li>
+            </ul>
+            <p>To build ObjectTalk, do the following from the command line:</p>
+            <ul>
               <li><strong>cd [to your favorite build directory]</strong></li>
               <li>
                 <strong
@@ -106,14 +145,6 @@
                 <strong>./release/bin/ot</strong> depending on the build type
               </li>
               <li>
-                By just running the binary, an Integrated Development
-                Environment (IDE) is launched
-              </li>
-              <li>
-                You can directly run an ObjectTalk script using
-                <strong>./debug/bin/ot [script name]</strong>
-              </li>
-              <li>
                 You can also build an Xcode project with
                 <strong>make xcode</strong>: the project will be in the xcode
                 directory
@@ -122,119 +153,101 @@
           </div>
           <div id="linux">
             <h1 class="pb-2">Build and Install on Linux</h1>
+            <p>
+              ObjectTalk is supported on Linux. Given the large number of
+              flavors, the core team only tests the build process on Alpine
+              Linux and Ubuntu 20.04 Desktop. The Alpine environment is used to
+              test a headless version (just a command line tool without a GUI)
+              and the Ubuntu version is used to test the GUI version. In
+              practice, any combination should work as it just depends on the
+              availability of X-Windows and OpenGL. Other flavors of Linux will
+              likely work as well but we'll let the community provide the
+              instructions.
+            </p>
+            <p>
+              The headless versions can be easily tested with Docker. The
+              <strong>docker</strong> folder contains the recipes and you can
+              quickly spawn a docker container by doing a
+              <strong>make alpine</strong> or <strong>make ubuntu</strong> from
+              the top-level directory. You obviously have to have Docker and
+              make installed on your host platform. The developers use this
+              frequently on a MacOS platform.
+            </p>
+            <p>
+              To build the full version of ObjectTalk on Ubuntu 20.04 Desktop
+              with GUI and IDE, run the following commands:
+            </p>
             <ul>
               <li>
-                <p>Install Ubuntu 20.04 Desktop</p>
+                Install additional software using
+                <strong
+                  >sudo apt-get install build-essential cmake git
+                  xorg-dev</strong
+                >
+              </li>
+              <li><strong>cd [to your favorite build directory]</strong></li>
+              <li>
+                <strong
+                  >git clone https://github.com/goossens/ObjectTalk.git</strong
+                >
+              </li>
+              <li><strong>cd ObjectTalk</strong></li>
+              <li>
+                Create a debug version with <strong>make debug</strong> or
+                create a release version with <strong>make release</strong>
               </li>
               <li>
-                <p>
-                  Install additional software using
-                  <strong
-                    >sudo apt-get install build-essential cmake git
-                    xorg-dev</strong
-                  >
-                </p>
+                You can run the test suite for the language with
+                <strong>make test</strong>
               </li>
               <li>
-                <p><strong>cd [to your favorite build directory]</strong></p>
-              </li>
-              <li>
-                <p>
-                  <strong
-                    >git clone
-                    https://github.com/goossens/ObjectTalk.git</strong
-                  >
-                </p>
-              </li>
-              <li>
-                <p><strong>cd ObjectTalk</strong></p>
-              </li>
-              <li>
-                <p>
-                  Create a debug version with <strong>make debug</strong> or
-                  create a release version with <strong>make release</strong>
-                </p>
-              </li>
-              <li>
-                <p>
-                  You can run the test suite for the language with
-                  <strong>make test</strong>
-                </p>
-              </li>
-              <li>
-                <p>
-                  The created binary will be <strong>./debug/bin/ot</strong> or
-                  <strong>./release/bin/ot</strong> depending on the build type
-                </p>
-              </li>
-              <li>
-                <p>
-                  By just running the binary, an Integrated Development
-                  Environment (IDE) is launched
-                </p>
-              </li>
-              <li>
-                <p>
-                  You can directly run an ObjectTalk script using
-                  <strong>./debug/bin/ot [script name]</strong>
-                </p>
+                The created binary will be <strong>./debug/bin/ot</strong> or
+                <strong>./release/bin/ot</strong> depending on the build type
               </li>
             </ul>
+            <p>
+              If you don't want the GUI, look at the Dockerfiles to see what
+              packages are required.
+            </p>
           </div>
           <div id="windows">
             <h1 class="pb-2">Build and Install on Windows</h1>
+            <p>
+              ObjectTalk is supported on Windows 10, 11, Server 2019 or Server
+              2022). There are 3 simple requirements to get your machine ready
+              for ObjectTalk development:
+            </p>
             <ul>
               <li>
-                <p>Install Windows (10, 11, Server 2019 or Server 2022)</p>
+                Install Visual Studio 17 2022 (make sure you pick the
+                &quot;Desktop development with C++&quot; option): Visual Studio
+                16 2019 also works
               </li>
               <li>
-                <p>
-                  Install Visual Studio 17 2022 (make sure you pick the
-                  &quot;Desktop development with C++&quot; option)
-                </p>
-                <ul>
-                  <li>Visual Studio 16 2019 also works</li>
-                </ul>
+                Install git from https://git-scm.com/download/win using defaults
               </li>
               <li>
-                <p>
-                  Install git from https://git-scm.com/download/win using
-                  defaults
-                </p>
+                Install cmake from https://cmake.org/download/ (ensure you
+                select the &quot;add cmake to the system PATH&quot; option)
+              </li>
+            </ul>
+            <p>To build ObjectTalk, do the following from the command line:</p>
+            <ul>
+              <li><strong>cd [to your favorite build directory]</strong></li>
+              <li>
+                <strong
+                  >git clone https://github.com/goossens/ObjectTalk.git</strong
+                >
+              </li>
+              <li><strong>cd ObjectTalk</strong></li>
+              <li>
+                <strong
+                  >cmake -Bvs -Wno-dev -G &quot;Visual Studio 17 2022&quot; -A
+                  x64</strong
+                >
               </li>
               <li>
-                <p>
-                  Install cmake from https://cmake.org/download/ (ensure you
-                  select the &quot;add cmake to the system PATH&quot; option)
-                </p>
-              </li>
-              <li>
-                <p>Lauch <strong>cmd</strong></p>
-              </li>
-              <li>
-                <p><strong>cd [to your favorite build directory]</strong></p>
-              </li>
-              <li>
-                <p>
-                  <strong
-                    >git clone
-                    https://github.com/goossens/ObjectTalk.git</strong
-                  >
-                </p>
-              </li>
-              <li>
-                <p><strong>cd ObjectTalk</strong></p>
-              </li>
-              <li>
-                <p>
-                  <strong
-                    >cmake -Bvs -Wno-dev -G &quot;Visual Studio 17 2022&quot; -A
-                    x64 -DCMAKE_BUILD_TYPE=Debug</strong
-                  >
-                </p>
-              </li>
-              <li>
-                <p>Build ObjectTalk by Hand:</p>
+                Build ObjectTalk by Hand:
                 <ul>
                   <li><strong>cd vs</strong></li>
                   <li><strong>cmake --build .</strong></li>
@@ -245,12 +258,56 @@
                 </ul>
               </li>
               <li>
-                <p>Build ObjectTalk in Visual Studio:</p>
+                Build ObjectTalk in Visual Studio:
                 <ul>
                   <li>
-                    Open the ObjectTalk solution in the vs folder and go crazy.
+                    Open the <strong>ObjectTalk.sln</strong> solution in the
+                    <strong>vs</strong> folder and go crazy.
                   </li>
                 </ul>
+              </li>
+            </ul>
+          </div>
+          <div id="running">
+            <h1 class="pb-2">Running ObjectTalk</h1>
+            <p>
+              Once you have compiled ObjectTalk, you end up with a single
+              executable the is either in the <strong>debug/bin</strong>,
+              <strong>debug/release</strong>, <strong>debug/xcode</strong> or
+              <strong>debug/vs</strong> directories depending on the platform or
+              the method used. This executable can be moved anywhere and in the
+              future is will be distributed in a package suitable for the
+              platform.
+            </p>
+            <p>
+              In priciple, the ObjectTalk executable (<strong>ot</strong>) is a
+              command line tool that take parameters. Here is the help you get
+              when you run <strong>ot -h</strong>:
+            </p>
+            <pre><code>Usage: ot [options] scripts
+
+Positional arguments:
+scripts      	scripts to execute
+
+Optional arguments:
+-h --help    	shows help message and exits
+-v --version 	prints version information and exits
+-i --ide     	edit code instead of running it [default: false]
+</code></pre>
+            <p>So for example:</p>
+            <ul>
+              <li>
+                Just running the executable without parameters launches an
+                Integrated Development Environment (IDE) that allow you to edit
+                ObjectTalk scripts, run them as see possible errors.
+              </li>
+              <li>
+                You can directly run an ObjectTalk script using
+                <strong>ot [script name]</strong>
+              </li>
+              <li>
+                you can also open a sccript directly in the IDE by using
+                <strong>ot -i [script name]</strong>
               </li>
             </ul>
           </div>

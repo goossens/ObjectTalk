@@ -1,4 +1,4 @@
-#	ObjectTalk GUI Module
+#	ObjectTalk Scripting Language
 #	Copyright (c) 2020-2022 Johan A. Goossens. All rights reserved.
 #
 #	This work is licensed under the terms of the MIT license.
@@ -15,4 +15,4 @@ add_library(imguieditor STATIC ${IMGUIEDITOR_SOURCES})
 add_dependencies(imguieditor imgui)
 include_directories(${imguieditor_SOURCE_DIR})
 
-set_target_properties(imguieditor PROPERTIES FOLDER deps/imgui)
+set_target_properties(imguieditor PROPERTIES FOLDER deps/imguieditor)

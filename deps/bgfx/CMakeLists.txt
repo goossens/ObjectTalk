@@ -1,28 +1,51 @@
-#	ObjectTalk GUI Module
+#	ObjectTalk Scripting Language
 #	Copyright (c) 2020-2022 Johan A. Goossens. All rights reserved.
 #
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Declare(bgfx GIT_REPOSITORY "https://github.com/bkaradzic/bgfx.cmake")
-SET(BGFX_BUILD_TOOLS OFF CACHE BOOL "" FORCE)
-SET(BGFX_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-set(BGFX_CONFIG_DEBUG OFF CACHE INTERNAL "" FORCE)
-set(BGFX_INSTALL OFF CACHE INTERNAL "" FORCE)
+FetchContent_Declare(bgfx GIT_REPOSITORY "https://github.com/bkaradzic/bgfx")
+FetchContent_MakeAvailable(bgfx)
 
-FetchContent_GetProperties(bgfx)
+file(GLOB BGFX_SOURCES
+	${bgfx_SOURCE_DIR}/src/*.cpp
+	${bgfx_SOURCE_DIR}/src/*.h
+	${bgfx_SOURCE_DIR}/include/bgfx/*.h
+	${bgfx_SOURCE_DIR}/include/bgfx/c99/*.h)
 
-if(NOT bgfx_POPULATED)
-	FetchContent_Populate(bgfx)
-	add_subdirectory(${bgfx_SOURCE_DIR} ${bgfx_BINARY_DIR} EXCLUDE_FROM_ALL)
+list(REMOVE_ITEM BGFX_SOURCES ${bgfx_SOURCE_DIR}/src/amalgamated.cpp)
+
+if (APPLE)
+	set_source_files_properties(${bgfx_SOURCE_DIR}/src/renderer_vk.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
+	file(GLOB BGFX_MAC_SOURCES ${bgfx_SOURCE_DIR}/src/*.mm)
+	list(REMOVE_ITEM BGFX_MAC_SOURCES ${bgfx_SOURCE_DIR}/src/amalgamated.mm)
+	list(APPEND BGFX_SOURCES ${BGFX_MAC_SOURCES})
 endif()
 
-include_directories(${bgfx_SOURCE_DIR}/bx/include)
-include_directories(${bgfx_SOURCE_DIR}/bimg/include)
-
-if (WIN32)
-include_directories(${bgfx_SOURCE_DIR}/bx/include/compat/msvc)
+if(NOT UNIX OR APPLE)
+	list(REMOVE_ITEM BGFX_SOURCES ${bgfx_SOURCE_DIR}/src/glcontext_glx.cp)
 endif()
 
-set_target_properties(bx bimg bgfx PROPERTIES FOLDER deps)
-set_target_properties(astc astc-codec edtaa3 etc1 etc2 iqa squish nvtt pvrtc tinyexr PROPERTIES FOLDER deps/bimg)
+add_library(bgfx STATIC ${BGFX_SOURCES})
+add_dependencies(bgfx bx bimg)
+target_compile_definitions(bgfx PUBLIC "BX_CONFIG_DEBUG=0")
+
+target_include_directories(bgfx
+	PRIVATE ${bgfx_SOURCE_DIR}/3rdparty
+		${bgfx_SOURCE_DIR}/3rdparty/khronos
+		${bgfx_SOURCE_DIR}/3rdparty/dxsdk/include
+	PUBLIC ${bgfx_SOURCE_DIR}/include)
+
+target_link_libraries(bgfx PUBLIC bx bimg)
+
+if(UNIX AND NOT APPLE)
+	find_package(X11 REQUIRED)
+	find_package(OpenGL REQUIRED)
+	target_link_libraries(bgfx PUBLIC ${X11_LIBRARIES} ${OPENGL_LIBRARIES})
+endif()
+
+if(WIN32)
+	target_compile_definitions(bgfx PRIVATE "_CRT_SECURE_NO_WARNINGS")
+endif()
+
+set_target_properties(bgfx PROPERTIES FOLDER deps)

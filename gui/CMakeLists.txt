@@ -1,4 +1,4 @@
-#	ObjectTalk GUI Module
+#	ObjectTalk Scripting Language
 #	Copyright (c) 2020-2022 Johan A. Goossens. All rights reserved.
 #
 #	This work is licensed under the terms of the MIT license.
@@ -33,6 +33,6 @@ add_library(gui STATIC ${GUI_INCLUDES} ${GUI_SOURCES})
 add_dependencies(gui ot glfw bgfx imgui imguifd imguieditor tinyobjloader box2d)
 
 target_include_directories(gui PRIVATE ${OT_INCLUDE_DIRS} ${GUI_INCLUDE_DIRS})
-target_link_libraries(gui glfw bgfx imgui imguifd imguieditor tinyobjloader box2d ${GUI_LIBS})
+target_link_libraries(gui PUBLIC glfw bgfx imgui imguifd imguieditor tinyobjloader box2d ${GUI_LIBS})
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${GUI_INCLUDES} ${GUI_SOURCES})

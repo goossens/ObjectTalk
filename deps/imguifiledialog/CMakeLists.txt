@@ -1,4 +1,4 @@
-#	ObjectTalk GUI Module
+#	ObjectTalk Scripting Language
 #	Copyright (c) 2020-2022 Johan A. Goossens. All rights reserved.
 #
 #	This work is licensed under the terms of the MIT license.
@@ -17,4 +17,4 @@ add_dependencies(imguifd imgui)
 target_compile_definitions(imguifd PUBLIC CUSTOM_IMGUIFILEDIALOG_CONFIG="IgfdConfig.h")
 include_directories(${imguifd_SOURCE_DIR} ${CMAKE_CURRENT_LIST_DIR})
 
-set_target_properties(imguifd PROPERTIES FOLDER deps/imgui)
+set_target_properties(imguifd PROPERTIES FOLDER deps/imguifd)

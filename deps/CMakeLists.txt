@@ -1,4 +1,4 @@
-#	ObjectTalk GUI Module
+#	ObjectTalk Scripting Language
 #	Copyright (c) 2020-2022 Johan A. Goossens. All rights reserved.
 #
 #	This work is licensed under the terms of the MIT license.
@@ -11,6 +11,8 @@ include(deps/libuv/CMakeLists.txt)
 
 if(OT_GUI)
 	include(deps/glfw/CMakeLists.txt)
+	include(deps/bx/CMakeLists.txt)
+	include(deps/bimg/CMakeLists.txt)
 	include(deps/bgfx/CMakeLists.txt)
 	include(deps/glm/CMakeLists.txt)
 	include(deps/imgui/CMakeLists.txt)

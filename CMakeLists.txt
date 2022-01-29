@@ -7,20 +7,16 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 project(ObjectTalk VERSION 1.0 DESCRIPTION "ObjectTalk - The Completely Object-Oriented Scripting Language" LANGUAGES C CXX)
 
-if(NOT CMAKE_BUILD_TYPE)
-   set(CMAKE_BUILD_TYPE Debug)
-endif()
-
-if (APPLE)
+if(APPLE)
 	set(OT_GUI ON)
 endif()
 
-if (UNIX AND NOT APPLE)
+if(UNIX AND NOT APPLE)
 	include(FindX11)
 	set(OT_GUI ${X11_FOUND})
 endif()
 
-if (WIN32)
+if(WIN32)
 	set(OT_GUI ON)
 endif()
 
@@ -58,4 +54,4 @@ add_subdirectory(tests)
 
 set_target_properties(examples tests PROPERTIES FOLDER other)
 
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ot)
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT main)

@@ -4,11 +4,8 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Declare(glm GIT_REPOSITORY "https://github.com/g-truc/glm" GIT_TAG "0.9.9.8")
-FetchContent_GetProperties(glm)
+file(GLOB ASTC_SOURCES ${bimg_SOURCE_DIR}/3rdparty/astc/*.cpp ${bimg_SOURCE_DIR}/3rdparty/astc/*.h)
 
-if(NOT glm_POPULATED)
-	FetchContent_Populate(glm)
-endif()
+add_library(astc STATIC ${ASTC_SOURCES})
 
-include_directories(${glm_SOURCE_DIR})
+set_target_properties(astc PROPERTIES FOLDER "deps/bimg-3rdparty")

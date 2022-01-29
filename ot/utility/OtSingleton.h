@@ -22,9 +22,14 @@
 template<typename T>
 class OtSingleton {
 public:
-	static T* instance() {
-		static std::unique_ptr<T> instance = std::make_unique<T>();
-		return instance.get();
+	static std::shared_ptr<T> instance() {
+		static std::shared_ptr<T> instance;
+
+		if (!instance) {
+			instance = std::make_shared<T>();
+		}
+
+		return instance;
 	}
 
 	OtSingleton(const OtSingleton&) = delete;
@@ -42,9 +47,15 @@ protected:
 template<typename T>
 class OtPerThreadSingleton {
 public:
-	static T* instance() {
-		thread_local std::unique_ptr<T> instance = std::make_unique<T>();
-		return instance.get();
+	static std::shared_ptr<T> instance() {
+		thread_local std::shared_ptr<T> instance;
+
+
+		if (!instance) {
+			instance = std::make_shared<T>();
+		}
+
+		return instance;
 	}
 
 	OtPerThreadSingleton(const OtPerThreadSingleton&) = delete;

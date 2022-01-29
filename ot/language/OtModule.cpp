@@ -172,7 +172,7 @@ OtType OtModuleClass::getMeta() {
 
 OtModule OtModuleClass::create(const std::string& name) {
 	// see if this is an "internal" module
-	OtModuleRegistry* registry = OtModuleRegistry::instance();
+	std::shared_ptr<OtModuleRegistry> registry = OtModuleRegistry::instance();
 
 	if (registry->has(name)) {
 		OtModuleRegistryEntry& entry = registry->at(name);

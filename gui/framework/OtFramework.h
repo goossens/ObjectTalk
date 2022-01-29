@@ -33,7 +33,7 @@
 //
 
 class OtFrameworkClass;
-typedef OtFrameworkClass* OtFramework;
+typedef std::shared_ptr<OtFrameworkClass> OtFramework;
 
 class OtFrameworkClass : public OtSingleton<OtFrameworkClass> {
 public:

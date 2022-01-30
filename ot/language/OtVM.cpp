@@ -222,13 +222,24 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 					statement.c_str());
 
 				// throw exception
-				throw OtException(
-					source->getModule(),
-					source->getLineNumber(startMarker),
-					startMarker,
-					endMarker,
-					e.what(),
-					fullMessage);
+				if (e.getLineNumber()) {
+					throw OtException(
+						e.getModule(),
+						e.getLineNumber(),
+						e.getStart(),
+						e.getEnd(),
+						e.what(),
+						fullMessage);
+
+				} else {
+					throw OtException(
+						source->getModule(),
+						source->getLineNumber(startMarker),
+						startMarker,
+						endMarker,
+						e.what(),
+						fullMessage);
+				}
 			}
 		}
 	}

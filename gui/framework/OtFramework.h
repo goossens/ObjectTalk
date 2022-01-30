@@ -90,9 +90,6 @@ private:
 #if __APPLE__
 	// put the right app name in the menu
 	void fixMenuLabels();
-
-	// create a Metal layer in the narive window
-	void createMetalLayer();
 #endif
 
 	// render a debugging profiler

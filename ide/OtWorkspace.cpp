@@ -16,7 +16,6 @@
 #include "OtCerr.h"
 #include "OtCout.h"
 #include "OtLibuv.h"
-#include "OtModule.h"
 #include "OtOS.h"
 
 #include "OtFramework.h"
@@ -47,14 +46,17 @@ void OtWorkspaceClass::run() {
 		showConsole = true;
 	});
 
-	// intercept calls to start and stop the framework (we're in charge now)
+	// intercept calls to start and stop the GUI framework (we're in charge now)
 	OtOSClass::instance()->registerGUI(
-		std::bind(&OtWorkspaceClass::onRunApp, this),
-		std::bind(&OtWorkspaceClass::onErrorApp, this, std::placeholders::_1),
-		std::bind(&OtWorkspaceClass::onStopApp, this));
+		std::bind(&OtWorkspaceClass::onRunGUI, this),
+		std::bind(&OtWorkspaceClass::onErrorGUI, this, std::placeholders::_1),
+		std::bind(&OtWorkspaceClass::onStopGUI, this));
 
 	// run the GUI framework
 	OtFrameworkClass::instance()->run();
+
+	// we're done
+	OtFrameworkClass::instance()->removeCustomer(this);
 }
 
 
@@ -136,22 +138,6 @@ OtEditor OtWorkspaceClass::findEditor(const std::string& filename) {
 
 
 //
-//	OtWorkspaceClass::highlightError
-//
-
-void OtWorkspaceClass::highlightError(const std::string module, size_t line, std::string error) {
-	OtEditor editor = findEditor(module);
-
-	if (!editor) {
-		openFile(module);
-		editor = findEditor(module);
-	}
-
-	editor->highlightError(line, error);
-}
-
-
-//
 //	OtWorkspaceClass::runFile
 //
 
@@ -164,8 +150,6 @@ void OtWorkspaceClass::runFile(const std::string& filename) {
 	console->scrollToBottom();
 
 	thread = std::thread([this, filename]() {
-		OtModule module;
-
 		// hide editors and console
 		showEditors = false;
 		showConsole = false;
@@ -181,7 +165,7 @@ void OtWorkspaceClass::runFile(const std::string& filename) {
 
 		// if this module had a GUI, do the cleanup
 		if (customer) {
-			customer->onTerminate();
+			OtFrameworkClass::instance()->removeCustomer(customer);
 		}
 
 		// little house keeping
@@ -193,10 +177,10 @@ void OtWorkspaceClass::runFile(const std::string& filename) {
 
 
 //
-//	OtWorkspaceClass::onRunApp
+//	OtWorkspaceClass::onRunGUI
 //
 
-void OtWorkspaceClass::onRunApp() {
+void OtWorkspaceClass::onRunGUI() {
 	// this gets called when a script runs os.runGUI()
 	// we simply wait until the app quits
 	// as the framework is already running the main loop
@@ -206,10 +190,10 @@ void OtWorkspaceClass::onRunApp() {
 
 
 //
-//	OtWorkspaceClass::onErrorApp
+//	OtWorkspaceClass::onErrorGUI
 //
 
-void OtWorkspaceClass::onErrorApp(OtException e) {
+void OtWorkspaceClass::onErrorGUI(OtException e) {
 	// something happend in the script; let's handle exception and stop script
 	events.pushFinishedWithExceptionEvent(e);
 	cv.notify_all();
@@ -217,10 +201,10 @@ void OtWorkspaceClass::onErrorApp(OtException e) {
 
 
 //
-//	OtWorkspaceClass::stopApp
+//	OtWorkspaceClass::onStopGUI
 //
 
-void OtWorkspaceClass::onStopApp() {
+void OtWorkspaceClass::onStopGUI() {
 	// this gets called when a script runs os.stopGUI()
 	cv.notify_all();
 }
@@ -231,6 +215,7 @@ void OtWorkspaceClass::onStopApp() {
 //
 
 void OtWorkspaceClass::onAddCustomer(OtCustomer* c) {
+	// the customer is the script we are running
 	customer = c;
 }
 
@@ -240,7 +225,55 @@ void OtWorkspaceClass::onAddCustomer(OtCustomer* c) {
 //
 
 void OtWorkspaceClass::onRemoveCustomer(OtCustomer* c) {
+	// the customer was the script we were running
 	customer = nullptr;
+}
+
+
+//
+//	OtWorkspaceClass::onUpdate
+//
+
+void OtWorkspaceClass::onUpdate() {
+	while (events.size()) {
+		OtIdeEvent event = events.pop();
+		OtEditor editor;
+
+		switch (event.type) {
+			case OtIdeEvent::writeToOut:
+				console->write(event.longMessage);
+				break;
+
+			case OtIdeEvent::writeToErr:
+				console->writeError(event.longMessage);
+				break;
+
+			case OtIdeEvent::finishedWithException:
+				OtCerrClass::instance()->write(event.longMessage);
+				OtCerrClass::instance()->write("\n");
+
+				editor = findEditor(event.module);
+
+				if (!editor) {
+					openFile(event.module);
+					editor = findEditor(event.module);
+				}
+
+				editor->highlightError(event.lineNumber, event.shortMessage);
+
+				thread.join();
+				started = false;
+				break;
+
+			case OtIdeEvent::finishedWithoutErrors:
+				if (started) {
+					thread.join();
+					started = false;
+				}
+
+				break;
+		}
+	}
 }
 
 
@@ -249,9 +282,6 @@ void OtWorkspaceClass::onRemoveCustomer(OtCustomer* c) {
 //
 
 void OtWorkspaceClass::onRender() {
-	// process all events
-	procesEvents();
-
 	// render console (if required)
 	if (showConsole) {
 		console->render();
@@ -343,7 +373,7 @@ bool OtWorkspaceClass::onCanQuit() {
 	// is a script running at the moment?
 	if (running) {
 		// just stop the script and keep the IDE going
-		onStopApp();
+		onStopGUI();
 		return false;
 
 	} else {
@@ -358,43 +388,6 @@ bool OtWorkspaceClass::onCanQuit() {
 		}
 
 		return canQuit;
-	}
-}
-
-
-//
-//	OtWorkspaceClass::procesEvents
-//
-
-void OtWorkspaceClass::procesEvents() {
-	while (events.size()) {
-		OtIdeEvent event = events.pop();
-
-		switch (event.type) {
-			case OtIdeEvent::writeToOut:
-				console->write(event.longMessage);
-				break;
-
-			case OtIdeEvent::writeToErr:
-				console->writeError(event.longMessage);
-				break;
-
-			case OtIdeEvent::finishedWithException:
-				OtCerrClass::instance()->write(event.longMessage);
-				OtCerrClass::instance()->write("\n");
-				highlightError(event.module, event.lineNumber, event.shortMessage);
-				thread.join();
-				started = false;
-				break;
-
-			case OtIdeEvent::finishedWithoutErrors:
-				if (started) {
-					thread.join();
-					started = false;
-				}
-
-				break;
-		}
 	}
 }
 

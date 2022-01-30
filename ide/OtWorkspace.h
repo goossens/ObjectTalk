@@ -16,6 +16,7 @@
 #include <mutex>
 #include <thread>
 
+#include "OtModule.h"
 #include "OtSingleton.h"
 
 #include "OtCustomer.h"
@@ -51,17 +52,14 @@ public:
 	// find a named editor
 	OtEditor findEditor(const std::string& filename);
 
-	// highlight error in editor
-	void highlightError(const std::string module, size_t line, const std::string error);
-
 	// see if we can run a file
 	bool canRunFile() { return !started && !running; }
 
 	// run a file
 	void runFile(const std::string& filename);
-	void onRunApp();
-	void onErrorApp(OtException e);
-	void onStopApp();
+	void onRunGUI();
+	void onErrorGUI(OtException e);
+	void onStopGUI();
 
 	// get type definition
 	static OtType getMeta();
@@ -74,14 +72,14 @@ private:
 	void onAddCustomer(OtCustomer* customer);
 	void onRemoveCustomer(OtCustomer* customer);
 
+	// update state and process events
+	void onUpdate();
+
 	// render all windows
 	void onRender();
 
 	// see if we can quit app
 	bool onCanQuit();
-
-	// process events
-	void procesEvents();
 
 	// get default directory
 	std::string getDefaultDirectory();
@@ -112,6 +110,9 @@ private:
 	std::mutex mutex;
 	std::condition_variable cv;
 	OtCustomer* customer;
+
+	// the module that we are running
+	OtModule module;
 
 	// for cross thread comminication
 	OtIdeEventQueue events;

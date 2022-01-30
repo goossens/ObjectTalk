@@ -15,4 +15,4 @@ add_library(imguieditor STATIC ${IMGUIEDITOR_SOURCES})
 add_dependencies(imguieditor imgui)
 include_directories(${imguieditor_SOURCE_DIR})
 
-set_target_properties(imguieditor PROPERTIES FOLDER deps/imguieditor)
+set_target_properties(imguieditor PROPERTIES FOLDER deps)

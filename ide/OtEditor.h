@@ -57,16 +57,16 @@ public:
 	static OtEditor create(const std::string& filename);
 
 private:
-	// the file we are editing
-	std::string filename;
-
 	// visual text editor
 	TextEditor editor;
 
-	// window ID
+	// properties
+	std::string filename;
 	std::string id;
 
-	// dirty state
 	int version = 0;
 	bool confirmClose = false;
+
+	bool focus = false;
+	int scrollToLine = 0;
 };

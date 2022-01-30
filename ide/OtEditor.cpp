@@ -52,6 +52,12 @@ void OtEditorClass::render() {
 	ImGui::SetWindowPos(pos, ImGuiCond_FirstUseEver);
 	ImGui::PushID(this);
 
+	// set focus if required
+	if (focus) {
+		ImGui::SetWindowFocus();
+		focus = false;
+	}
+
 	// only handle shortcuts if we have the focus
 	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows)) {
 		// get keyboard state to handle keyboard shortcuts
@@ -148,6 +154,13 @@ void OtEditorClass::render() {
 
 	// create the editor
 	editor.Render("TextEditor");
+
+	// scroll to line if required
+	// (this has to be done here as the editor doesn't handle this well on open)
+	if (scrollToLine) {
+		editor.SetCursorPosition(TextEditor::Coordinates(scrollToLine - 1, 0));
+		scrollToLine = 0;
+	}
 
 	// handle "close" confirmation (when user closes editor without saving)
 	if (confirmClose) {
@@ -339,7 +352,8 @@ void OtEditorClass::highlightError(size_t line, const std::string error) {
 	TextEditor::ErrorMarkers markers;
 	markers[line] = error;
 	editor.SetErrorMarkers(markers);
-	editor.SetCursorPosition(TextEditor::Coordinates(line - 1, 0));
+	scrollToLine = line;
+	focus = true;
 }
 
 

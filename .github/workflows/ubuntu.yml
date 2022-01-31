@@ -13,7 +13,7 @@ jobs:
       run: sudo apt-get install xorg-dev
 
     - name: Setup cmake
-      uses: "jwlawson/actions-setup-cmake@v1.11"
+      uses: "jwlawson/actions-setup-cmake@v1.12"
       with:
         cmake-version: "3.22.x"
 
@@ -21,7 +21,7 @@ jobs:
       run: mkdir build && cd build && cmake ..
 
     - name: Build
-      run: cmake --build build -DCMAKE_BUILD_TYPE=Release
+      run: cmake --build build -D CMAKE_BUILD_TYPE=Release
 
     - name: Test
       run: cd build && ctest

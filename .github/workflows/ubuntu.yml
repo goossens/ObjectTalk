@@ -28,6 +28,6 @@ jobs:
       uses: "svenstaro/upload-release-action@v2"
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
-        tag: ${{ github.ref }}
+        tag: "development"
         file: ubuntu.tgz
         overwrite: true

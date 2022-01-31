@@ -29,7 +29,7 @@ var colors = [
 class Breakout : game.Game {
 	var name = "Breakout";
 
-	function initialize(this, app) {
+	function onSetup(this, app) {
 		// create physics simulation
 		this.world = gui.World();
 		this.world.continuousPhysics(true);
@@ -66,8 +66,6 @@ class Breakout : game.Game {
 		this.paddle.name = "paddle";
 		this.paddle.gfx = this.vd.addRectangle(0, 0, 0, 0);
 		this.paddle.addRectangularFixture(0.0, 0.0, paddleWidth, paddleHeight);
-		this.paddlePos = worldWidth / 2.0;
-		this.updatePaddlePos(0.0);
 
 		// add all the bricks
 		this.bricks = [];
@@ -101,6 +99,49 @@ class Breakout : game.Game {
 		x = worldWidth - 0.25 - this.vd.getTextWidth("Points 000", 0.6);
 		this.scoreCounter = this.vd.addText(x, y, 0.6, "Points 000");
 		this.vd.popStyle();
+
+		// create the startup splash screen
+		this.splashShapes = [];
+		this.vd.pushStyle();
+		this.vd.setCenteredText();
+		this.vd.setColor("#47f");
+
+		this.splashShapes.append(this.vd.addText(8, 4, 0.6, "Welcome to the Game of Breakout"));
+		this.splashShapes.append(this.vd.addText(8, 3, 0.6, "Hit any button to start..."));
+
+		for shape in this.splashShapes {
+			this.vd.disableShape(shape);
+		}
+
+		this.vd.popStyle();
+
+		// create the pause screen
+		this.pauseShapes = [];
+		this.vd.pushStyle();
+		this.vd.setCenteredText();
+		this.vd.setColor("#47f");
+
+		this.pauseShapes.append(this.vd.addText(8, 4, 0.6, "You missed but you still have some life left"));
+		this.pauseShapes.append(this.vd.addText(8, 3, 0.6, "Hit any button to continue..."));
+
+		for shape in this.pauseShapes {
+			this.vd.disableShape(shape);
+		}
+
+		this.vd.popStyle();
+
+		// create gameover screen
+		this.gameoverShapes = [];
+		this.vd.pushStyle();
+		this.vd.setCenteredText();
+		this.vd.setColor("#47f");
+
+		this.gameoverShapes.append(this.vd.addText(8, 4, 0.6, "GAME OVER!"));
+		this.gameoverShapes.append(this.vd.addText(8, 3, 0.6, "Hit any button to continue..."));
+
+		for shape in this.gameoverShapes {
+			this.vd.disableShape(shape);
+		}
 	}
 
 	function loadBoard(this, level) {
@@ -142,29 +183,113 @@ class Breakout : game.Game {
 		this.updateBallVelocity();
 	}
 
-	function start(this) {
+	function onSelect(this) {
 		// load level 1 board
 		this.loadBoard(1);
-		this.resetBall();
-		this.world.start();
 
 		// reset counters
+		this.lives = 3;
+		this.vd.updateTextString(this.livesCounter, "3 Lives");
+
 		this.startTime = os.clock();
 		this.time = 0;
+		this.vd.updateTextString(this.timeCounter, "Time %03i".format(this.time));
+
 		this.score = 0;
-		this.lives = 3;
+		this.vd.updateTextString(this.scoreCounter, "Points %03i".format(this.score));
+
+		// hide the ball
+		this.vd.disableShape(this.ball.gfx);
+
+		// center the paddle
+		this.paddlePos = worldWidth / 2.0;
+		this.updatePaddlePos(0.0);
 	}
 
-	function stop(this) {
+	function onShowSplash(this) {
+		for shape in this.splashShapes {
+			this.vd.enableShape(shape);
+		}
+	}
+
+	function onHideSplash(this) {
+		for shape in this.splashShapes {
+			this.vd.disableShape(shape);
+		}
+	}
+
+	function onStart(this) {
+		// show the ball
+		this.resetBall();
+		this.vd.enableShape(this.ball.gfx);
+
+		// start the simulation
+		this.world.start();
+	}
+
+	function onPause(this) {
+		// stop the simulation
+		this.world.stop();
+
+		// hide the ball
+		this.vd.disableShape(this.ball.gfx);
+
+		// show the message
+		for shape in this.pauseShapes {
+			this.vd.enableShape(shape);
+		}
+	}
+
+	function onResume(this) {
+		// update counter
+		this.lives--;
+
+		if (this.lives == 1) {
+			this.vd.updateTextString(this.livesCounter, "1 Life");
+
+		} else {
+			this.vd.updateTextString(this.livesCounter, "%i Lives".format(this.lives));
+		}
+
+		// hide the message
+		for shape in this.pauseShapes {
+			this.vd.disableShape(shape);
+		}
+
+		// show the ball
+		this.resetBall();
+		this.vd.enableShape(this.ball.gfx);
+
+		// start the simulation
+		this.world.start();
+	}
+
+	function onStop(this) {
+		// hide the ball
+		this.vd.disableShape(this.ball.gfx);
+
+		// stop the simulation
 		this.world.stop();
 	}
 
-	function gameOver(this) {
-		this.stop();
+	function onShowGameOver(this) {
+		// stop the simulation
+		this.world.stop();
+
+		// hide the ball
+		this.vd.disableShape(this.ball.gfx);
+
+		// show the message
+		for shape in this.gameoverShapes {
+			this.vd.enableShape(shape);
+		}
 	}
 
-	function youDidIt(this) {
-		this.stop();
+	function onHideGameOver(this) {
+		// hide the message
+		for shape in this.gameoverShapes {
+			this.vd.disableShape(shape);
+		}
 	}
 
 	function update(this) {
@@ -176,14 +301,22 @@ class Breakout : game.Game {
 		var y = this.paddle.getY() - paddleHeight / 2.0;
 		this.vd.updateRectangle(this.paddle.gfx, x, y, paddleWidth, paddleHeight);
 
-		// update counters
-		this.vd.updateTextString(this.livesCounter, "%i Lives".format(this.lives));
-		this.vd.updateTextString(this.timeCounter, "Time %03i".format(os.clock() - this.startTime));
-		this.vd.updateTextString(this.scoreCounter, "Points %03i".format(this.score));
+		// update timer if required
+		if (this.state != "gameover") {
+			this.time = os.clock() - this.startTime;
+		}
+
+		this.vd.updateTextString(this.timeCounter, "Time %03i".format(this.time));
 	}
 
 	function updatePaddlePos(this, offset) {
 		this.paddlePos += offset;
+		this.paddlePos = this.paddlePos.clamp(paddleWidth / 2.0, worldWidth - paddleWidth / 2.0);
+		this.paddle.setPosition(this.paddlePos, 1.5 * paddleHeight);
+	}
+
+	function onMouseMove(this, x, y) {
+		this.paddlePos = x / this.displayScale;
 		this.paddlePos = this.paddlePos.clamp(paddleWidth / 2.0, worldWidth - paddleWidth / 2.0);
 		this.paddle.setPosition(this.paddlePos, 1.5 * paddleHeight);
 	}
@@ -205,6 +338,9 @@ class Breakout : game.Game {
 	function onGamepadAxis(this, gamepad, axis, value) {
 		if (gamepad == 0 && axis == 2) {
 			this.updatePaddlePos(value.real() / 400.0);
+
+		} else {
+			super(this, "onGamepadAxis", gamepad, axis, value);
 		}
 	}
 
@@ -234,22 +370,23 @@ class Breakout : game.Game {
 		} elif (body1.name == "brick") {
 			if (body1.destructible) {
 				this.score += body1.points;
+				this.vd.updateTextString(this.scoreCounter, "Points %03i".format(this.score));
+
 				body1.disable();
 				this.vd.disableShape(body1.gfx);
 				this.brickCount--;
 
 				if (this.brickCount == 0) {
-					this.youDidIt();
+					this.gameover();
 				}
 			}
 
 		} elif (body1.name == "bottom") {
 			if (this.lives == 0) {
-				this.gameOver();
+				this.gameover();
 
 			} else {
-				this.lives--;
-				this.resetBall();
+				this.pause();
 			}
 		}
 

@@ -18,8 +18,8 @@ class Arcade : gui.App {
 		// create and activate menu
 		this.menu = menu.ArcadeMenu();
 		this.menu.setup(this);
-		this.menu.enable();
 		this.active = this.menu;
+		this.active.scale(this.getHeight().real() / 9.0);
 
 		this.games = [];
 		this.addGame(pong.Pong());
@@ -28,27 +28,25 @@ class Arcade : gui.App {
 		this.menu.buildMenu(this.games);
 
 		this.menu.onChoice(function(choice) {
-			this.active.disable();
-			choice.enable();
-			choice.start();
+			this.menu.disable();
+			choice.select();
 			this.active = choice;
 		});
 	}
 
 	function terminate(this) {
 		for game in this.games {
-			game.terminate();
+			game.unsetAll();
 		}
+
+		this.unsetAll();
 	}
 
 	function addGame(this, game) {
 		game.setup(this);
-		game.disable();
 		this.games.append(game);
 
 		game.onEnd(function() {
-			this.active.stop();
-			this.active.disable();
 			this.menu.enable();
 			this.active = this.menu;
 		});
@@ -60,6 +58,14 @@ class Arcade : gui.App {
 
 		// update active screen
 		this.active.update();
+	}
+
+	function onMouseButton(this, button, action, mods, x, y) {
+		this.active.onMouseButton(button, action, mods, x, y);
+	}
+
+	function onMouseMove(this, x, y) {
+		this.active.onMouseMove(x, y);
 	}
 
 	function onKey(this, key, mods) {

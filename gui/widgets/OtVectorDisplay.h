@@ -48,6 +48,7 @@ public:
 	OtObject setAlpha(float alpha);
 	OtObject setWidth(float width);
 	OtObject setTransform(float offsetX, float offsetY, float scale);
+	OtObject setCenteredText();
 
 	void pushStyle();
 	void popStyle();
@@ -100,7 +101,7 @@ private:
 	void drawRectangle(float x, float y, float w, float h);
 	void drawCircle(float x, float y, float radius, float steps);
 	void drawSevenSegment(float x, float y, float size, const std::string& text);
-	void drawText(float x, float y, float size, const std::string& text);
+	void drawText(float x, float y, float size, bool centered, const std::string& text);
 
 	// vector display dimensions (in % of screen)
 	int x = 0;
@@ -200,6 +201,7 @@ private:
 			float y1;
 			float h;
 			float steps;
+			bool centered;
 		};
 
 		std::string text;
@@ -215,6 +217,7 @@ private:
 		float drawOffsetX = 0.0;
 		float drawOffsetY = 0.0;
 		float drawScale = 1.0;
+		bool centeredText = false;
 	};
 
 	Style style;

@@ -532,6 +532,16 @@ OtObject OtVectorDisplayClass::setTransform(float offsetX, float offsetY, float 
 
 
 //
+//	OtVectorDisplayClass::setCenteredText
+//
+
+OtObject OtVectorDisplayClass::setCenteredText() {
+	style.centeredText = true;
+	return shared();
+}
+
+
+//
 //	OtVectorDisplayClass::pushStyle
 //
 
@@ -740,9 +750,13 @@ void OtVectorDisplayClass::drawSevenSegment(float x, float y, float size, const 
 //	OtVectorDisplayClass::drawText
 //
 
-void OtVectorDisplayClass::drawText(float x, float y, float size, const std::string& text) {
+void OtVectorDisplayClass::drawText(float x, float y, float size, bool centered, const std::string& text) {
 	auto scaleX = size / 32.0;
 	auto scaleY = scaleX * (origin == topLeftOrigin ? -1.0 : 1.0);
+
+	if (centered) {
+		x -= getTextWidth(text, size) / 2.0;
+	}
 
 	for (auto& c : text) {
 		if (c >= 32 || c <= 126) {
@@ -898,6 +912,7 @@ int OtVectorDisplayClass::addText(float x, float y, float size, const std::strin
 	shape.type = Shape::textType;
 	shape.width = style.width;
 	shape.color = style.color;
+	shape.centered = style.centeredText;
 	shape.x = x;
 	shape.y = y;
 	shape.size = size;
@@ -1142,7 +1157,7 @@ void OtVectorDisplayClass::render() {
 					break;
 
 				case Shape::textType:
-					drawText(shape.x, shape.y, shape.size, shape.text);
+					drawText(shape.x, shape.y, shape.size, shape.centered, shape.text);
 					break;
 			}
 		}
@@ -1323,6 +1338,7 @@ OtType OtVectorDisplayClass::getMeta() {
 		type->set("setAlpha", OtFunctionClass::create(&OtVectorDisplayClass::setAlpha));
 		type->set("setWidth", OtFunctionClass::create(&OtVectorDisplayClass::setWidth));
 		type->set("setTransform", OtFunctionClass::create(&OtVectorDisplayClass::setTransform));
+		type->set("setCenteredText", OtFunctionClass::create(&OtVectorDisplayClass::setCenteredText));
 
 		type->set("pushStyle", OtFunctionClass::create(&OtVectorDisplayClass::pushStyle));
 		type->set("popStyle", OtFunctionClass::create(&OtVectorDisplayClass::popStyle));

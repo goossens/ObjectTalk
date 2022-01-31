@@ -8,74 +8,178 @@ var gui = import("gui");
 
 //
 //	This an abstract game class that implements state-transition logic
-//	to simplify actual games. The state of a game is stored in the "state"
+//	to simplify game development. The state of a game is stored in the "state"
 //	property of an instance. Here is the life of a game within the arcade:
 //
 //	1.	Each game instance must have a "name" property and a "renderIcon" member
 //		function. These are used by the arcade to display the initial menu.
 //
-//	2.	At the start, games are in the "startup" state. When entering this state,
+//	2.	At the start, games are in the "setup" state. When entering this state,
 //		this class creates a vector display for the game and stores a reference
-//		in the "vd" property. This class adds the vector display to the screen
-//		and manages it's visibility. At the same time, the game's "initialize"
-//		member function is called to allow the game to setup itself. The
-//		"startup"
+//		in the "vd" property. This class adds the vector display to the app
+//		and manages its visibility. At the same time, the game's "onSetup"
+//		member function is called to allow the game to initialize. Once all
+//		startup activities are done, the game enters the "idle" state.
 //
-//	3.	Once a game is selected, it enters the "startup" state. The "startup"
-//		member function is called and the game needs to get its internal state
-//		in order and its display ready.
+//	3.	In the "idle" state, the game is dormant and the vector display is
+//		disabled. The player is actually looking at the menu is this state so
+//		all games are idling at this point.
 //
-//	4.	xvcxf
+//	4.	When a game is selected, it enters the "splash" state. When this happens,
+//		the game's "onSelect" member function is called followed by a call to
+//		"onShowSplash". When the player hits a button on the keyboard or the game
+//		controller, an "onHideSplash" is sent and the game enters the "running"
+//		state. The game now gets a "onStart" call.
 //
+//	5.	From now on, the game is in charge until the player aborts the game
+//		using the escape key, hitting the X button on the controller or
+//		when the game calls gameover.
+//
+//	6.	An optional "pause" state is available and the game can determine
+//		when to do this. On entering this state, the "onPause" method is called.
+//		After the player hits a button, the "onResume" method is called.
+//
+//	7.	When entering the "gameover" state, the game receive an "onStop" call
+//		followed by an "onShowGameOver" call. Once the player hits a button,
+//		"onHideGameOver" is called and the game returns to the idle state.
+//		At this point the game is hidden and the menu is shown again.
 
 class Game : Object {
 	function setup(this, app) {
 		// entering the startup state
-		this.state = "startup";
+		this.state = "setup";
 
 		// create a vector display
 		this.vd = gui.VectorDisplay(0, 0, 100, 100);
 		this.vd.setBottomLeftOrigin();
 		this.vd.setBrightness(1.1);
+		this.vd.disable();
 		app.add(this.vd);
-		this.initialize(app);
+
+		// let game initialize itself
+		this.onSetup(app);
 
 		// moving on to the "idle state"
 		this.state = "idle";
 	}
 
-	function terminate(this) {
-		this.unsetAll();
-	}
-
-	function enable(this) {
+	function select(this) {
+		// game has been selected from the menu, enter the "splash" state
+		this.onSelect();
+		this.state = "splash";
+		this.onShowSplash();
 		this.vd.enable();
 	}
 
-	function disable(this) {
+	function run(this) {
+		// enter the running state
+		this.onHideSplash();
+		this.state = "running";
+		this.onStart();
+	}
+
+	function pause(this) {
+		// enter the pause state
+		this.state = "pause";
+		this.onPause();
+	}
+
+	function resume(this) {
+		// re-enter the running state
+		this.state = "running";
+		this.onResume();
+	}
+
+	function abort(this) {
+		// abort the current game and return to the menu
+		if (this.state == "splash") {
+			this.onHideSplash();
+
+		} elif (this.state == "running") {
+			this.onStop();
+
+		} elif (this.state == "pause") {
+			this.onResume();
+			this.onStop();
+		}
+
 		this.vd.disable();
+		this.state = "idle";
+		this.OnEndCallback();
 	}
 
-	function onEnd(this, callback) {
-		this.OnEndCallback = callback;
+	function gameover(this) {
+		// enter the gameover state
+		this.onStop();
+		this.state = "gameover";
+		this.onShowGameOver();
 	}
 
-	function scale(this, scale) {
-		this.vd.setTransform(0, 0, scale);
+	function end(this) {
+		// re-enter the idle state
+		this.onHideGameOver();
+		this.state = "idle";
+		this.vd.disable();
+		this.OnEndCallback();
+	}
+
+	// keyboard and game controller callbacks
+	// games must call these if they override them
+
+	function handleButton(this, abort) {
+		if (abort) {
+			this.abort();
+
+		} elif (this.state == "splash") {
+			this.run();
+
+		} elif (this.state == "pause") {
+			this.resume();
+
+		} elif (this.state == "gameover") {
+			this.end();
+		}
+	}
+
+	function onMouseButton(this, button, action, mods, x, y) {
+		this.handleButton(false);
+	}
+
+	function onMouseMove(this, x, y) {
 	}
 
 	function onKey(this, key, mods) {
-		if (key == gui.keyEscape) {
-			this.OnEndCallback();
-		}
+		this.handleButton(key == gui.keyEscape);
 	}
 
 	function onGamepadAxis(this, gamepad, axis, value) {
 	}
 
 	function onGamepadButton(this, gamepad, button, action) {
-		if (gamepad == 0 && button == 1) {
-			this.OnEndCallback();
-		}
+		this.handleButton(gamepad == 0 && button == 1);
+	}
+
+	// these member functions must be overridden by games
+	function onSetup(this) {}
+	function onSelect(this) {}
+	function onShowSplash(this) {}
+	function onHideSplash(this) {}
+	function onStart(this) {}
+	function update(this) {}
+	function onPause(this) {}
+	function onResume(this) {}
+	function onStop(this) {}
+	function onShowGameOver(this) {}
+	function onHideGameOver(this) {}
+
+	// callback for end of game
+	function onEnd(this, callback) {
+		this.OnEndCallback = callback;
+	}
+
+	// internal method to keep the scale right when screen is resized
+	function scale(this, scale) {
+		this.vd.setTransform(0, 0, scale);
+		this.displayScale = scale;
 	}
 }

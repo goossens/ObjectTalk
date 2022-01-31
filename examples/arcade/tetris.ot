@@ -10,32 +10,16 @@ var game = import("game");
 class Tetris : game.Game {
 	var name = "Tetris";
 
-	function initialize(this, app) {
-		this.vd.addText(5.3, 4, 2, "Tetris");
-	}
-
-	function start(this) {
-
-	}
-
-	function stop(this) {
-
+	function onSetup(this, app) {
+		this.vd.pushStyle();
+		this.vd.setCenteredText();
+		this.vd.addText(8, 4, 2, "Tetris");
+		this.vd.popStyle();
 	}
 
 	function renderIcon(this, vd, x, y, w, h) {
 		vd.pushStyle();
 
 		vd.popStyle();
-	}
-
-	function update(this) {
-
-	}
-
-	function onKey(this, key, mods) {
-		super(this, "onKey", key, mods);
-	}
-
-	function onGamepadAxis(this, gamepad, axis, value) {
 	}
 }

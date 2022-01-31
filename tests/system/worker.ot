@@ -54,7 +54,7 @@ for x in range(iterations) {
 	});
 }
 
-while (!worker1.done() && !worker2.done() && !worker3.done() && !worker4.done()) {
+while !(worker1.done() && worker2.done() && worker3.done() && worker4.done()) {
 	worker1.update();
 	worker2.update();
 	worker3.update();

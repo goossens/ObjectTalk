@@ -1,8 +1,14 @@
 [![MacOS status](https://github.com/goossens/ObjectTalk/actions/workflows/macos.yml/badge.svg)](https://github.com/goossens/ObjectTalk/actions)
 [![Ubuntu status](https://github.com/goossens/ObjectTalk/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/goossens/ObjectTalk/actions)
 [![Windows status](https://github.com/goossens/ObjectTalk/actions/workflows/windows.yml/badge.svg)](https://github.com/goossens/ObjectTalk/actions)
+
+[![Repo size](https://img.shields.io/github/repo-size/goossens/ObjectTalk)](https://github.com/goossens/ObjectTalk/actions)
+[![Lines of code](https://img.shields.io/tokei/lines/github/goossens/ObjectTalk)](https://github.com/goossens/ObjectTalk/actions)
+[![Repo activity](https://img.shields.io/github/commit-activity/w/goossens/ObjectTalk)](https://github.com/goossens/ObjectTalk/actions)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![version](https://img.shields.io/badge/version-0.2-blue)
+![Maintained](https://img.shields.io/maintenance/yes/2022)
+![Version](https://img.shields.io/badge/version-0.2-blue)
 
 # ObjectTalk Scripting Language
 

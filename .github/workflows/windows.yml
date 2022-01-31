@@ -23,7 +23,7 @@ jobs:
         cmake-version: "3.22.x"
 
     - name: Setup zip
-      uses: "montudor/action-zip@latest"
+      uses: "montudor/action-zip@v1"
 
     - name: Configure
       run: |
@@ -32,7 +32,7 @@ jobs:
         cmake .. -G "${{ matrix.config.toolchain }}" -A ${{ matrix.config.arch }}
 
     - name: Build
-      run: cmake --build build -DCMAKE_BUILD_TYPE=Release
+      run: cmake --build build
 
     - name: Package
       run: zip -qq -r windows.zip ot.exe

@@ -27,10 +27,8 @@ jobs:
       run: cd build/bin && tar cvfz ../../macos.tgz ot
 
     - name: Release
-      uses: "marvinpinto/action-automatic-releases@latest"
+      uses: "svenstaro/upload-release-action@v2"
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
-        automatic_release_tag: "latest"
-        prerelease: true
-        title: "Development Build"
-        files: macos.tgz
+        tag: ${{ github.ref }}
+        file: macos.tgz

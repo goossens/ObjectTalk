@@ -17,14 +17,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Setup cmake
-      uses: "jwlawson/actions-setup-cmake@v1.12"
-      with:
-        cmake-version: "3.22.x"
-
-    - name: Setup zip
-      uses: "montudor/action-zip@v1"
-
     - name: Configure
       run: |
         mkdir build
@@ -34,20 +26,19 @@ jobs:
     - name: Build
       run: cmake --build build
 
-    - name: Package
-      run: zip -qq -r windows.zip ot.exe
-      working-directory: build/bin
-
-    - name: Release
-      uses: "marvinpinto/action-automatic-releases@latest"
-      with:
-        repo_token: "${{ secrets.GITHUB_TOKEN }}"
-        automatic_release_tag: "latest"
-        prerelease: true
-        title: "Development Build"
-        files: windows.zip
-
     - name: Test
       run: |
         cd build
         ctest -C Debug --output-on-failure
+
+    - name: Package
+      run: |
+        cd build/bin
+        7z a ../../windows.zip ot.exe
+
+    - name: Release
+      uses: "svenstaro/upload-release-action@v2"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        tag: ${{ github.ref }}
+        file: windows.zip

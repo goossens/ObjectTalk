@@ -13,17 +13,13 @@ jobs:
       run: sudo apt-get install xorg-dev
 
     - name: Configure
-      run: mkdir build && cd build && cmake ..
+      run: cmake -Brelease -DCMAKE_BUILD_TYPE=Release
 
     - name: Build
-      run: |
-        cmake -Brelease -DCMAKE_BUILD_TYPE=Release
-        cd release && make
+      run: cd release && make
 
     - name: Test
-      run: |
-        cd release
-        make test
+      run: cd release && make test
 
     - name: Package
       run: cd release/bin && tar cvfz ../../ubuntu.tgz ot
@@ -34,3 +30,4 @@ jobs:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         tag: ${{ github.ref }}
         file: ubuntu.tgz
+        overwrite: true

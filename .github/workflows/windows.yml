@@ -5,7 +5,7 @@ on: [push]
 jobs:
   verify-windows:
     runs-on: windows-${{ matrix.config.server }}
-    name: build-${{ matrix.config.toolchain}}-${{ matrix.config.arch}}
+    name: build-${{ matrix.config.toolchain }}-${{ matrix.config.arch }}
 
     strategy:
       fail-fast: false
@@ -34,11 +34,12 @@ jobs:
     - name: Package
       run: |
         cd build/bin
-        7z a ../../windows.zip ot.exe
+        7z a ../../windows-${{ matrix.config.server }}.zip ot.exe
 
     - name: Release
       uses: "svenstaro/upload-release-action@v2"
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         tag: ${{ github.ref }}
-        file: windows.zip
+        file: windows-${{ matrix.config.server }}.zip
+        overwrite: true

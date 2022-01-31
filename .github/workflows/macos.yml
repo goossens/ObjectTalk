@@ -9,19 +9,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Setup cmake
-      uses: "jwlawson/actions-setup-cmake@v1.12"
-      with:
-        cmake-version: "3.22.x"
-
     - name: Configure
-      run: mkdir build && cd build && cmake ..
+      run: cmake -Brelease -DCMAKE_BUILD_TYPE=Release
 
     - name: Build
-      run: cmake --build build
+      run: cd release && make
 
     - name: Test
-      run: cd build && ctest
+      run: cd release && make test
 
     - name: Package
       run: cd build/bin && tar cvfz ../../macos.tgz ot
@@ -32,3 +27,4 @@ jobs:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         tag: ${{ github.ref }}
         file: macos.tgz
+        overwrite: true

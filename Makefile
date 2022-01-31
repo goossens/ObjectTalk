@@ -11,18 +11,18 @@ TST=$(wildcard tests/*/*.ot)
 .PHONY: debug release xcode gui docs cleanup alpine ubuntu clean distclean
 
 debug:
-	cmake -Bdebug -Wno-dev -DCMAKE_BUILD_TYPE=Debug
+	cmake -Bdebug -DCMAKE_BUILD_TYPE=Debug
 	cd debug && make
 
 release:
-	cmake -Brelease -Wno-dev -DCMAKE_BUILD_TYPE=Release
+	cmake -Brelease -DCMAKE_BUILD_TYPE=Release
 	cd release && make
 
 xcode:
-	cmake -Bxcode -Wno-dev -GXcode
+	cmake -Bxcode -GXcode
 
 vs:
-	cmake -Bvs -Wno-dev -G "Visual Studio 17 2022" -A x64
+	cmake -Bvs -G "Visual Studio 17 2022" -A x64
 	cd vs && cmake --build .
 
 test: debug

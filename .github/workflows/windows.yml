@@ -18,9 +18,12 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Setup cmake
-      uses: jwlawson/actions-setup-cmake@v1.11
+      uses: "jwlawson/actions-setup-cmake@latest"
       with:
-        cmake-version: '3.22.x'
+        cmake-version: "3.22.x"
+
+    - name: Setup zip
+      uses: "montudor/action-zip@latest"
 
     - name: Configure
       run: |
@@ -29,7 +32,20 @@ jobs:
         cmake .. -G "${{ matrix.config.toolchain }}" -A ${{ matrix.config.arch }}
 
     - name: Build
-      run: cmake --build build
+      run: cmake --build build -DCMAKE_BUILD_TYPE=Release
+
+    - name: Package
+      run: zip -qq -r windows.zip ot.exe
+      working-directory: build/bin
+
+    - name: Release
+      uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "latest"
+        prerelease: true
+        title: "Development Build"
+        files: windows.zip
 
     - name: Test
       run: |

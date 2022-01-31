@@ -13,15 +13,27 @@ jobs:
       run: sudo apt-get install xorg-dev
 
     - name: Setup cmake
-      uses: jwlawson/actions-setup-cmake@v1.11
+      uses: "jwlawson/actions-setup-cmake@v1.11"
       with:
-        cmake-version: '3.22.x'
+        cmake-version: "3.22.x"
 
     - name: Configure
       run: mkdir build && cd build && cmake ..
 
     - name: Build
-      run: cmake --build build
+      run: cmake --build build -DCMAKE_BUILD_TYPE=Release
 
     - name: Test
       run: cd build && ctest
+
+    - name: Package
+      run: cd build/bin && tar cvfz ../../ubuntu.tgz ot
+
+    - name: Release
+      uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "latest"
+        prerelease: true
+        title: "Development Build"
+        files: ubuntu.tgz

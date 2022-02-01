@@ -1,14 +1,14 @@
-[![MacOS status](https://github.com/goossens/ObjectTalk/actions/workflows/macos.yml/badge.svg)](https://github.com/goossens/ObjectTalk/actions)
-[![Ubuntu status](https://github.com/goossens/ObjectTalk/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/goossens/ObjectTalk/actions)
-[![Windows status](https://github.com/goossens/ObjectTalk/actions/workflows/windows.yml/badge.svg)](https://github.com/goossens/ObjectTalk/actions)
+![MacOS status](https://img.shields.io/github/workflow/status/goossens/ObjectTalk/MacOS?label=MacOS&style=for-the-badge)
+![Ubuntu status](https://img.shields.io/github/workflow/status/goossens/ObjectTalk/Ubuntu?label=Linux&style=for-the-badge)
+![Windows status](https://img.shields.io/github/workflow/status/goossens/ObjectTalk/Windows?label=Windows&style=for-the-badge)
 
-[![Repo size](https://img.shields.io/github/repo-size/goossens/ObjectTalk)](https://github.com/goossens/ObjectTalk/actions)
-[![Lines of code](https://img.shields.io/tokei/lines/github/goossens/ObjectTalk)](https://github.com/goossens/ObjectTalk/actions)
-[![Repo activity](https://img.shields.io/github/commit-activity/w/goossens/ObjectTalk)](https://github.com/goossens/ObjectTalk/actions)
+![Repo size](https://img.shields.io/github/repo-size/goossens/ObjectTalk?style=for-the-badge)
+![Lines of code](https://img.shields.io/tokei/lines/github/goossens/ObjectTalk?style=for-the-badge)
+![Repo activity](https://img.shields.io/github/commit-activity/m/goossens/ObjectTalk?label=Commits&style=for-the-badge)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![Maintained](https://img.shields.io/maintenance/yes/2022)
-![Version](https://img.shields.io/badge/version-0.2-blue)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+![Maintained](https://img.shields.io/maintenance/yes/2022?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-0.2-blue?style=for-the-badge)
 
 # ObjectTalk Scripting Language
 

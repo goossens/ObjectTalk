@@ -56,9 +56,6 @@ public:
 	// set the noisemap easing function
 	OtObject setEasing(int easing);
 
-	// specify whether noisemap is normalized
-	OtObject setNormalize(bool normalize);
-
 	// get minimum noise value
 	float getMinNoise();
 
@@ -69,7 +66,7 @@ public:
 	float getNoise(float x, float y);
 
 	// create a noise array
-	void getNoiseArray(float* output, size_t width, size_t height, float x, float y);
+	void getNoiseArray(float* output, size_t width, size_t height, float x, float y, bool normalize=false);
 
 	// GUI to change properties
 	void renderGUI();
@@ -94,8 +91,6 @@ private:
 
 	int easing = 0;
 	OtEasingFunction easingFunction = OtEasingGetFunction(0);
-
-	bool normalize = true;
 };
 
 

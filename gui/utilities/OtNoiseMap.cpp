@@ -126,22 +126,11 @@ OtObject OtNoiseMapClass::setOffsetZ(float z) {
 
 
 //
-//	OtNoiseMapClass::setNormalize
-//
-
-OtObject OtNoiseMapClass::setNormalize(bool n) {
-	normalize = n;
-	notify();
-	return shared();
-}
-
-
-//
 //	OtNoiseMapClass::getMinNoise
 //
 
 float OtNoiseMapClass::getMinNoise() {
-	return easingFunction(0.0) * scaleZ + offsetZ;
+	return offsetZ;
 }
 
 
@@ -150,7 +139,7 @@ float OtNoiseMapClass::getMinNoise() {
 //
 
 float OtNoiseMapClass::getMaxNoise() {
-	return easingFunction(1.0) * scaleZ + offsetZ;
+	return scaleZ + offsetZ;
 }
 
 
@@ -169,14 +158,14 @@ float OtNoiseMapClass::getNoise(float x, float y) {
 //	OtNoiseMapClass::getNoiseArray
 //
 
-void OtNoiseMapClass::getNoiseArray(float* output, size_t width, size_t height, float x, float y) {
+void OtNoiseMapClass::getNoiseArray(float* output, size_t width, size_t height, float x, float y, bool normalize) {
 	// fill noisemap
 	float* ptr = output;
 
-	for (auto y = 0; y < height; y++) {
-		for (auto x = 0; x < width; x++) {
+	for (auto iy = 0; iy < height; iy++) {
+		for (auto ix = 0; ix < width; ix++) {
 			*ptr++ = easingFunction(perlin->octaveNoise(
-				x / scaleXY, y / scaleXY, 0.5,
+				(x + ix) / scaleXY, (y + iy) / scaleXY, 0.5,
 				octaves, persistence));
 		}
 	}
@@ -246,10 +235,6 @@ void OtNoiseMapClass::renderGUI() {
 		changed = true;
 	}
 
-	if (ImGui::Checkbox("Normalize", &normalize)) {
-		changed = true;
-	}
-
 	if (changed) {
 		notify();
 	}
@@ -273,7 +258,6 @@ OtType OtNoiseMapClass::getMeta() {
 		type->set("setScaleXY", OtFunctionClass::create(&OtNoiseMapClass::setScaleXY));
 		type->set("setScaleZ", OtFunctionClass::create(&OtNoiseMapClass::setScaleZ));
 		type->set("setOffsetZ", OtFunctionClass::create(&OtNoiseMapClass::setOffsetZ));
-		type->set("setNormalize", OtFunctionClass::create(&OtNoiseMapClass::setNormalize));
 	}
 
 	return type;

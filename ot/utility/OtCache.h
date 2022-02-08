@@ -12,8 +12,8 @@
 //	Include files
 //
 
-#include<list>
-#include<unordered_map>
+#include <list>
+#include <unordered_map>
 
 #include "OtException.h"
 
@@ -28,7 +28,7 @@ class OtCache
 public:
 	// constructor
 	OtCache() : size(1024) {}
-	OtCache(size_t s) :size(s) {}
+	OtCache(size_t s) : size(s) {}
 
 	void setSize(size_t s) {
 		size = s;
@@ -50,8 +50,8 @@ public:
 
 		if (pos == index.end()) {
 			// add new cache entry
-			items.push_front({key, value});
-			index[key] = items.begin();
+			items.emplace_front(key, value);
+			index.emplace(key, items.begin());
 
 			// trim cache if required
 			if (index.size() > size) {
@@ -61,9 +61,8 @@ public:
 
 		} else {
 			// replace existing cache entry
-			items.erase(pos->second);
-			items.push_front({key, value});
-			index[key] = items.begin();
+			pos->second->second = value;
+			items.splice(items.begin(), items, pos->second);
 		}
 	}
 
@@ -78,11 +77,8 @@ public:
 			OtExcept("Invalid key for cache");
 		}
 
-		V result = pos->second->second;
-		items.erase(pos->second);
-		items.push_front({key, result});
-		index[key] = items.begin();
-		return result;
+		items.splice(items.begin(), items, pos->second);
+		return pos->second->second;
 	}
 
 private:

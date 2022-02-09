@@ -27,6 +27,20 @@ void OtSceneClass::validateChild(OtComponent child) {
 
 
 //
+//	OtSceneClass::update
+//
+
+void OtSceneClass::update(OtRenderingContext* context) {
+
+	for (auto const& child : children) {
+		if (child->isEnabled()) {
+			child->cast<OtSceneObjectClass>()->update(context);
+		}
+	}
+}
+
+
+//
 //	OtSceneClass::preRender
 //
 

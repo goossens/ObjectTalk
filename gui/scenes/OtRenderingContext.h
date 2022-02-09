@@ -49,8 +49,9 @@ typedef std::shared_ptr<OtSceneClass> OtScene;
 
 class OtRenderingContext {
 public:
-	// constructor/destructor
-	OtRenderingContext(int view, float viewAspect, OtScene scene, OtCamera camera);
+	// constructors/destructor
+	OtRenderingContext() = default;
+	OtRenderingContext(int view, float x, float y, float w, float h, OtScene scene, OtCamera camera);
 	~OtRenderingContext();
 
 	// specify the ambient light color
@@ -72,6 +73,10 @@ public:
 	int view;
 
 	// view dimensions
+	float viewX;
+	float viewY;
+	float viewW;
+	float viewH;
 	float viewAspect;
 
 	// the scene to be rendered

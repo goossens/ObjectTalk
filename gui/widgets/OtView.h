@@ -14,6 +14,7 @@
 
 #include "OtAppObject.h"
 #include "OtCamera.h"
+#include "OtRenderingContext.h"
 #include "OtScene.h"
 
 
@@ -37,6 +38,9 @@ public:
 	// access attributes
 	OtObject getCamera() { return camera; }
 	OtObject getScene() { return scene; }
+
+	// update state
+	void update();
 
 	// render content
 	void render();
@@ -68,7 +72,10 @@ protected:
 	float w = 100;
 	float h = 100;
 
-	// old mouse postion for drag operation
+	// old mouse position for drag operation
 	float xold = 0.0;
 	float yold = 0.0;
+
+	// per frame rendering context
+	OtRenderingContext context;
 };

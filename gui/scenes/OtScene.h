@@ -28,6 +28,9 @@ public:
 	// ensure specified component is allowed as a child
 	void validateChild(OtComponent child);
 
+	// update state
+	void update(OtRenderingContext* context);
+
 	// rendering phases
 	void preRender(OtRenderingContext* context);
 	void render(OtRenderingContext* context);

@@ -18,10 +18,14 @@
 //	OtRenderingContext::OtRenderingContext
 //
 
-OtRenderingContext::OtRenderingContext(int v, float va, OtScene s, OtCamera c) {
+OtRenderingContext::OtRenderingContext(int v, float x, float y, float w, float h, OtScene s, OtCamera c) {
 	// set state
 	view = v;
-	viewAspect = va;
+	viewX = x;
+	viewY = y;
+	viewW = w;
+	viewH = h;
+	viewAspect = w / h;
 	scene = s;
 	camera = c;
 	transform = glm::mat4(1.0);

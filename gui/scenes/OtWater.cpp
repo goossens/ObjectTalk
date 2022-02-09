@@ -233,7 +233,11 @@ void OtWaterClass::renderReflection(OtRenderingContext* context) {
 	reflectionCamera->setTargetVector(target);
 
 	// create reflection rendering context
-	OtRenderingContext reflectionContext(reflectionView, context->viewAspect, context->scene, reflectionCamera);
+	OtRenderingContext reflectionContext(
+		reflectionView,
+		context->viewX, context->viewY, context->viewW, context->viewH,
+		context->scene, reflectionCamera);
+
 	reflectionContext.reflection = true;
 
 	// temporarily disable ourselves so we don't draw ourselves

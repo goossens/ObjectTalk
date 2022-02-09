@@ -13,7 +13,6 @@
 #include "OtVM.h"
 
 #include "OtFramework.h"
-#include "OtRenderingContext.h"
 #include "OtView.h"
 
 
@@ -65,12 +64,15 @@ OtObject OtViewClass::setScene(OtObject object) {
 
 
 //
-//	OtViewClass::render
+//	OtViewClass::update
 //
 
-void OtViewClass::render() {
-	// render view if we have a scene and a camera
+void OtViewClass::update() {
+	// update view if we have a scene and a camera
 	if (scene && camera) {
+		// get camera ready for frame
+		camera->update(&context);
+
 		// get the next view ID
 		OtFramework framework = OtFrameworkClass::instance();
 		int view = framework->getNextViewID();
@@ -84,17 +86,27 @@ void OtViewClass::render() {
 		float vw = w * sw / 100.0;
 		float vh = h * sh / 100.0;
 
-		// create rendering context
-		OtRenderingContext context(view, vw / vh, scene, camera);
+		// update rendering context
+		context = OtRenderingContext(view, vx, vy, vw, vh, scene, camera);
 
-		// get camera ready for frame
-		camera->update(&context);
+		// update all objects in scene
+		scene->update(&context);
+	}
+}
 
+
+//
+//	OtViewClass::render
+//
+
+void OtViewClass::render() {
+	// render view if we have a scene and a camera
+	if (scene && camera) {
 		// prerender scene
 		scene->preRender(&context);
 
 		// render scene
-		bgfx::setViewRect(view, vx, vy, vw, vh);
+		bgfx::setViewRect(context.view, context.viewX, context.viewY, context.viewW, context.viewH);
 		camera->submit(&context);
 		scene->render(&context);
 	}

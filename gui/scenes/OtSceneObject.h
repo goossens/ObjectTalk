@@ -26,6 +26,9 @@ typedef std::shared_ptr<OtSceneObjectClass> OtSceneObject;
 
 class OtSceneObjectClass : public OtComponentClass {
 public:
+	// update state
+	virtual void update(OtRenderingContext* context) {}
+
 	// render in BGFX
 	virtual void preRender(OtRenderingContext* context) {}
 	virtual void render(OtRenderingContext* context) {}

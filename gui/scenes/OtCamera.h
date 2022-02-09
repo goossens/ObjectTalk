@@ -42,9 +42,9 @@ public:
 	OtObject setTarget(float x, float y, float z);
 	OtObject setUp(float x, float y, float z);
 
-	void setPositionVector(glm::vec3 position) { cameraPosition = position; }
-	void setTargetVector(glm::vec3 target) { cameraTarget = target; }
-	void setUpVector(glm::vec3 up) { cameraUp = up; }
+	void setPositionVector(glm::vec3 position);
+	void setTargetVector(glm::vec3 target);
+	void setUpVector(glm::vec3 up);
 
 	// set properties
 	OtObject setDistance(float distance);
@@ -86,6 +86,9 @@ public:
 
 	// get direction from Normal Device Coordinates (NDC -1 to 1)
 	glm::vec3 getDirectionFromNDC(float x, float y);
+
+	// has camera changed?
+	bool hasChanged() { return changed; }
 
 	// GUI to change camera properties
 	void renderGUI();
@@ -150,6 +153,9 @@ private:
 
 	// our viewing frustum
 	OtFrustum frustum;
+
+	// has camera changed since last frame
+	bool changed = true;
 };
 
 

@@ -30,6 +30,7 @@ OtObject OtCameraClass::setPerspective(float fv, float n, float f) {
 	fov = fv;
 	near = n;
 	far = f;
+	changed = true;
 	return shared();
 }
 
@@ -43,6 +44,7 @@ OtObject OtCameraClass::setOrthographic(float w, float n, float f) {
 	width = w;
 	near = n;
 	far = f;
+	changed = true;
 	return shared();
 }
 
@@ -83,6 +85,7 @@ OtObject OtCameraClass::setFirstPersonMode() {
 
 OtObject OtCameraClass::setPosition(float x, float y, float z) {
 	cameraPosition = glm::vec3(x, y, z);
+	changed = true;
 	return shared();
 }
 
@@ -93,6 +96,7 @@ OtObject OtCameraClass::setPosition(float x, float y, float z) {
 
 OtObject OtCameraClass::setTarget(float x, float y, float z) {
 	cameraTarget = glm::vec3(x, y, z);
+	changed = true;
 	return shared();
 }
 
@@ -103,7 +107,38 @@ OtObject OtCameraClass::setTarget(float x, float y, float z) {
 
 OtObject OtCameraClass::setUp(float x, float y, float z) {
 	cameraUp = glm::vec3(x, y, z);
+	changed = true;
 	return shared();
+}
+
+
+//
+//	OtCameraClass::setPositionVector
+//
+
+void OtCameraClass::setPositionVector(glm::vec3 position) {
+	cameraPosition = position;
+	changed = true;
+}
+
+
+//
+//	OtCameraClass::setTargetVector
+//
+
+void OtCameraClass::setTargetVector(glm::vec3 target) {
+	cameraTarget = target;
+	changed = true;
+}
+
+
+//
+//	OtCameraClass::setUpVector
+//
+
+void OtCameraClass::setUpVector(glm::vec3 up) {
+	cameraUp = up;
+	changed = true;
 }
 
 
@@ -113,6 +148,7 @@ OtObject OtCameraClass::setUp(float x, float y, float z) {
 
 OtObject OtCameraClass::setDistance(float d) {
 	distance = std::clamp(d, distanceMin, distanceMax);
+	changed = true;
 	return shared();
 }
 
@@ -124,6 +160,7 @@ OtObject OtCameraClass::setDistance(float d) {
 OtObject OtCameraClass::setPitch(float p) {
 	pitch = p;
 	pitch = std::clamp(pitch, pitchMin, pitchMax);
+	changed = true;
 	return shared();
 }
 
@@ -144,6 +181,7 @@ OtObject OtCameraClass::setYaw(float y) {
 	}
 
 	yaw = std::clamp(yaw, yawMin, yawMax);
+	changed = true;
 	return shared();
 }
 
@@ -213,7 +251,7 @@ bool OtCameraClass::onScrollWheel(float dx, float dy) {
 		return true;
 
 	} else if (mode == firstPersonMode) {
-		cameraPosition += dy * forward;
+		setPositionVector(cameraPosition + dy * forward);
 		return true;
 	}
 
@@ -229,24 +267,23 @@ bool OtCameraClass::onKey(int key, int mods) {
 	if (mode == firstPersonMode) {
 		switch (key) {
 			case GLFW_KEY_UP:
-				cameraPosition += forward;
+				setPositionVector(cameraPosition + forward);
 				return true;
 
 			case GLFW_KEY_DOWN:
-				cameraPosition -= forward;
+				setPositionVector(cameraPosition - forward);
 				return true;
 
 			case GLFW_KEY_LEFT:
-				cameraPosition -= right;
+				setPositionVector(cameraPosition - right);
 				return true;
 
 			case GLFW_KEY_RIGHT:
-				cameraPosition += right;
+				setPositionVector(cameraPosition + right);
 				return true;
 
 			case GLFW_KEY_HOME:
-				cameraPosition.x = 0.0;
-				cameraPosition.z = 0.0;
+				setPositionVector(glm::vec3(0.0, cameraPosition.y, 0.0));
 				return true;
 		}
 	}
@@ -310,6 +347,7 @@ void OtCameraClass::update(OtRenderingContext* context) {
 
 void OtCameraClass::submit(OtRenderingContext* context) {
 	bgfx::setViewTransform(context->view, glm::value_ptr(viewMatrix), glm::value_ptr(projMatrix));
+	changed = false;
 }
 
 
@@ -434,6 +472,8 @@ OtType OtCameraClass::getMeta() {
 		type->set("setPitchLimits", OtFunctionClass::create(&OtCameraClass::setPitchLimits));
 		type->set("setYawLimits", OtFunctionClass::create(&OtCameraClass::setYawLimits));
 		type->set("setHeightLimits", OtFunctionClass::create(&OtCameraClass::setHeightLimits));
+
+		type->set("hasChanged", OtFunctionClass::create(&OtCameraClass::hasChanged));
 	}
 
 	return type;

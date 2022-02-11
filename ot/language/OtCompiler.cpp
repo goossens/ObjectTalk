@@ -1226,7 +1226,7 @@ void OtCompiler::variableDeclaration(OtByteCode bytecode) {
 	scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
 	std::string name = scanner.getText();
 
-	// add variable to scope and reserve space on stack
+	// add variable to scope
 	declareVariable(bytecode, name);
 	scanner.advance();
 

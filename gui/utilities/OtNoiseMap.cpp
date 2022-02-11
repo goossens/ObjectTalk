@@ -174,7 +174,7 @@ void OtNoiseMapClass::getNoiseArray(float* output, size_t width, size_t height, 
 	if (normalize) {
 		// determine limites
 		float minNoiseHeight = std::numeric_limits<float>::max();
-		float maxNoiseHeight = std::numeric_limits<float>::min();
+		float maxNoiseHeight = std::numeric_limits<float>::lowest();
 		ptr = output;
 
 		for (auto c = 0; c < width * height; c++, ptr++) {

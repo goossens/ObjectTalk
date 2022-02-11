@@ -37,7 +37,7 @@ void OtGeometryClass::clearGeometry() {
 	refreshGeometry = true;
 	refreshBuffers = true;
 
-	float min = std::numeric_limits<float>::min();
+	float min = std::numeric_limits<float>::lowest();
 	float max = std::numeric_limits<float>::max();
 
 	minBB = glm::vec3(max, max, max);

@@ -27,6 +27,10 @@ cd /D "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f colored/shader.fs -o colored/fs_dx11.h -i include --type fragment --platform windows -p ps_5_0 -O 3 --bin2c OtColoredFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f colored/instancing.vs -o colored/vsi_dx9.h -i include --type vertex --platform windows -p vs_3_0 -O 3 --bin2c OtColoredVSI_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f colored/instancing.vs -o colored/vsi_dx11.h -i include --type vertex --platform windows -p vs_5_0 -O 3 --bin2c OtColoredVSI_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f debug/shader.vs -o debug/vs_dx9.h -i include --type vertex --platform windows -p vs_3_0 -O 3 --bin2c OtDebugVS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f debug/shader.vs -o debug/vs_dx11.h -i include --type vertex --platform windows -p vs_5_0 -O 3 --bin2c OtDebugVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f debug/shader.fs -o debug/fs_dx9.h -i include --type fragment --platform windows -p ps_3_0 -O 3 --bin2c OtDebugFS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f debug/shader.fs -o debug/fs_dx11.h -i include --type fragment --platform windows -p ps_5_0 -O 3 --bin2c OtDebugFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f fixed/shader.vs -o fixed/vs_dx9.h -i include --type vertex --platform windows -p vs_3_0 -O 3 --bin2c OtFixedVS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f fixed/shader.vs -o fixed/vs_dx11.h -i include --type vertex --platform windows -p vs_5_0 -O 3 --bin2c OtFixedVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f fixed/shader.fs -o fixed/fs_dx9.h -i include --type fragment --platform windows -p ps_3_0 -O 3 --bin2c OtFixedFS_dx9

@@ -21,7 +21,8 @@ class App : gui.App {
 
 		var fog = gui.Fog()
 			.setColor("#a0a0a0")
-			.setDistances(600, 2000);
+			.setLimits(100, 1000, 1000, 5000)
+			.setDistances(800, 2000);
 
 		var water = gui.Water()
 			.setSize(4000)

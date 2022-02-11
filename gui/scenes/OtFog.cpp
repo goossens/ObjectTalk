@@ -34,8 +34,21 @@ OtObject OtFogClass::setColor(const std::string& c) {
 //
 
 OtObject OtFogClass::setDistances(float n, float f) {
-	near = n;
-	far = f;
+	near = std::clamp(n, minNear, maxNear);
+	far = std::clamp(f, minFar, maxFar);
+	return shared();
+}
+
+
+//
+//	OtFogClass::setLimits
+//
+
+OtObject OtFogClass::setLimits(float mnn, float mxn, float mnf, float mxf) {
+	minNear = mnn;
+	maxNear = mxn;
+	minFar = mnf;
+	maxFar = mxf;
 	return shared();
 }
 
@@ -47,8 +60,8 @@ OtObject OtFogClass::setDistances(float n, float f) {
 void OtFogClass::renderGUI() {
 	ImGui::Checkbox("Enabled", &enabled);
 	ImGui::ColorEdit3("Color", glm::value_ptr(color));
-	ImGui::SliderFloat("Near", &near, 0.0f, 100.0f);
-	ImGui::SliderFloat("Far", &far, 0.0f, 500.0f);
+	ImGui::SliderFloat("Near", &near, minNear, maxNear);
+	ImGui::SliderFloat("Far", &far, minFar, maxFar);
 }
 
 
@@ -72,6 +85,7 @@ OtType OtFogClass::getMeta() {
 		type = OtTypeClass::create<OtFogClass>("Fog", OtSceneObjectClass::getMeta());
 		type->set("setColor", OtFunctionClass::create(&OtFogClass::setColor));
 		type->set("setDistances", OtFunctionClass::create(&OtFogClass::setDistances));
+		type->set("setLimits", OtFunctionClass::create(&OtFogClass::setLimits));
 	}
 
 	return type;

@@ -30,6 +30,7 @@ public:
 	// update attributes
 	OtObject setColor(const std::string& color);
 	OtObject setDistances(float near, float far);
+	OtObject setLimits(float minNear, float maxNear, float minFar, float maxFar);
 
 	// GUI to change fog properties
 	void renderGUI();
@@ -48,6 +49,12 @@ private:
 	glm::vec3 color = glm::vec4(1.0);
 	float near = 0;
 	float far = 100;
+
+	float minNear = 0;
+	float maxNear = 10;
+
+	float minFar = 50;
+	float maxFar = 150;
 };
 
 

@@ -1,3 +1,5 @@
+<div align="center">
+
 ![MacOS status](https://img.shields.io/github/workflow/status/goossens/ObjectTalk/MacOS?label=MacOS&style=for-the-badge)
 ![Ubuntu status](https://img.shields.io/github/workflow/status/goossens/ObjectTalk/Ubuntu?label=Linux&style=for-the-badge)
 ![Windows status](https://img.shields.io/github/workflow/status/goossens/ObjectTalk/Windows?label=Windows&style=for-the-badge)
@@ -13,6 +15,8 @@
 # ObjectTalk Scripting Language
 
 ![Logo](docs/img/logo-small.png)
+
+</div>
 
 Welcome to the ObjectTalk scripting language. ObjectTalk is a simple
 object-oriented scripting language that has evolved over decades and

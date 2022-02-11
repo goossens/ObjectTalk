@@ -1,0 +1,14 @@
+name: Retag
+
+on: [push]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Tag Repository
+        uses: "richardsimko/update-tag@v1"
+        with:
+          tag_name: "development"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

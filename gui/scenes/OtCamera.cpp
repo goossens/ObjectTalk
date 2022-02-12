@@ -50,6 +50,19 @@ OtObject OtCameraClass::setOrthographic(float w, float n, float f) {
 
 
 //
+//	OtCameraClass::setNearFarLimits
+//
+
+OtObject OtCameraClass::setNearFarLimits(float nmn, float nmx, float fmn, float fmx) {
+	nearMin = nmn;
+	nearMax = nmx;
+	farMin = fmn;
+	farMax = fmx;
+	return shared();
+}
+
+
+//
 //	OtCameraClass::setScriptControlMode
 //
 
@@ -414,8 +427,8 @@ glm::vec3 OtCameraClass::getDirectionFromNDC(float x, float y) {
 void OtCameraClass::renderGUI() {
 	if (style == perspectiveStyle) {
 		ImGui::SliderFloat("FoV (Deg)", &fov, 10.0f, 120.0f);
-		ImGui::SliderFloat("Near Clipping", &near, 0.1f, 10.0f);
-		ImGui::SliderFloat("Far Clipping", &far, 10.0f, 2000.0f);
+		ImGui::SliderFloat("Near Clipping", &near, nearMin, nearMax);
+		ImGui::SliderFloat("Far Clipping", &far, farMin, farMax);
 
 	} else {
 		ImGui::SliderFloat("Width", &width, 10.0f, 1000.0f);
@@ -456,6 +469,7 @@ OtType OtCameraClass::getMeta() {
 
 		type->set("setOrthographic", OtFunctionClass::create(&OtCameraClass::setOrthographic));
 		type->set("setPerspective", OtFunctionClass::create(&OtCameraClass::setPerspective));
+		type->set("setNearFarLimits", OtFunctionClass::create(&OtCameraClass::setNearFarLimits));
 
 		type->set("setScriptControlMode", OtFunctionClass::create(&OtCameraClass::setScriptControlMode));
 		type->set("setCircleTargetMode", OtFunctionClass::create(&OtCameraClass::setCircleTargetMode));

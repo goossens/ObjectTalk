@@ -32,6 +32,7 @@ public:
 	// set camera modes
 	OtObject setPerspective(float fov, float near, float far);
 	OtObject setOrthographic(float width, float near, float far);
+	OtObject setNearFarLimits(float nearMin, float nearMax, float farMin, float farMax);
 
 	OtObject setScriptControlMode();
 	OtObject setCircleTargetMode();
@@ -141,6 +142,11 @@ private:
 	float width = 100.0;
 	float near = 0.1;
 	float far = 2000.0;
+
+	float nearMin = 0.1;
+	float nearMax = 10.0;
+	float farMin = 10.0;
+	float farMax = 2000.0;
 
 	glm::vec3 forward;
 	glm::vec3 right;

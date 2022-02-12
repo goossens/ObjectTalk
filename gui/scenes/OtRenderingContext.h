@@ -57,6 +57,9 @@ public:
 	// specify the ambient light color
 	void setAmbientLight(const glm::vec3& ambient);
 
+	// get the ambient light color
+	glm::vec3 getAmbientLight();
+
 	// add a directional light
 	void addDirectionalLight(const glm::vec3& dir, const glm::vec3& diffuse, const glm::vec3& specular);
 

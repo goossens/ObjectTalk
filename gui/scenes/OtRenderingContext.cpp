@@ -63,6 +63,15 @@ void OtRenderingContext::setAmbientLight(const glm::vec3& ambient) {
 
 
 //
+//	OtRenderingContext::getAmbientLight
+//
+
+glm::vec3 OtRenderingContext::getAmbientLight() {
+	return glm::vec3(uniforms[0]);
+}
+
+
+//
 //	OtRenderingContext::addDirectionalLight
 //
 

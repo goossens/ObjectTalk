@@ -70,7 +70,7 @@ void OtFogClass::renderGUI() {
 //
 
 void OtFogClass::render(OtRenderingContext* context) {
-	context->setFog(color, near, far);
+	context->setFog(color * context->getAmbientLight() / 1.5f, near, far);
 }
 
 

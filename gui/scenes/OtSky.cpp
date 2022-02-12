@@ -37,55 +37,8 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 //
 
 OtSkyClass::OtSkyClass() {
-	// create dome
-	int widthSegments = 16;
-	int heightSegments = 8;
-	float widthDelta = std::numbers::pi * 2.0 / widthSegments;
-	float heightDelta = (std::numbers::pi / 2.0 + 0.1) / heightSegments;
-
-	// address each ring
-	for (auto ring = 0; ring <= heightSegments; ring++) {
-		auto theta = ring * heightDelta;
-		auto r0 = std::sin(theta);
-		auto y0 = std::cos(theta);
-
-		// address each segment
-		for (auto seg = 0; seg <= widthSegments; seg++) {
-			auto phi = seg * widthDelta;
-			auto x0 = r0 * -std::sin(phi);
-			auto z0 = r0 * -std::cos(phi);
-
-			// add vertex
-			vertices.push_back(glm::vec3(x0, y0, z0));
-		}
-	}
-
-	// add triangles
-	for (auto ring = 0; ring < heightSegments; ring++) {
-		for (auto seg = 0; seg < widthSegments; seg++) {
-			auto a = ring * (widthSegments + 1) + seg;
-			auto b = a + (widthSegments + 1);
-			auto c = b + 1;
-			auto d = a + 1;
-
-			triangles.push_back(a);
-			triangles.push_back(b);
-			triangles.push_back(d);
-			triangles.push_back(b);
-			triangles.push_back(c);
-			triangles.push_back(d);
-		}
-	}
-
-	// create geometry
-	bgfx::VertexLayout layout;
-
-	layout.begin()
-		.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-		.end();
-
-	vertexBuffer = bgfx::createVertexBuffer(bgfx::makeRef(vertices.data(), sizeof(glm::vec3) * vertices.size()), layout);
-	indexBuffer = bgfx::createIndexBuffer(bgfx::makeRef(triangles.data(), sizeof(uint32_t) * triangles.size()), BGFX_BUFFER_INDEX32);
+	// create our dome
+	createSkyDome();
 
 	// register uniforms
 	skyUniform = bgfx::createUniform("u_sky", bgfx::UniformType::Vec4, 3);
@@ -119,10 +72,13 @@ OtSkyClass::~OtSkyClass() {
 
 OtObject OtSkyClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
+		case 4:
+			setRadius(parameters[3]->operator float());
+
 		case 3:
 			setClouds(
-				parameters[2]->operator float(),
-				parameters[3]->operator float());
+				parameters[1]->operator float(),
+				parameters[2]->operator float());
 
 		case 1:
 			setSun(parameters[0]);
@@ -132,7 +88,7 @@ OtObject OtSkyClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-			OtExcept("[Sky] constructor expects 0, 1 or 3 arguments (not %ld)", count);
+			OtExcept("[Sky] constructor expects 0, 1, 3 or 4 arguments (not %ld)", count);
 	}
 
 	return nullptr;
@@ -157,6 +113,17 @@ OtObject OtSkyClass::setSun(OtObject object) {
 OtObject OtSkyClass::setClouds(float cir, float cum) {
 	cirrus = cir;
 	cumulus = cum;
+	return shared();
+}
+
+
+//
+//	OtSkyClass::setRadius
+//
+
+OtObject OtSkyClass::setRadius(float r) {
+	radius = r;
+	createSkyDome();
 	return shared();
 }
 
@@ -212,6 +179,75 @@ void OtSkyClass::render(OtRenderingContext* context) {
 
 
 //
+//	OtSkyClass::createSkyDome
+//
+
+void OtSkyClass::createSkyDome() {
+	// create dome
+	vertices.clear();
+	triangles.clear();
+
+	int widthSegments = 16;
+	int heightSegments = 8;
+	float widthDelta = std::numbers::pi * 2.0 / widthSegments;
+	float heightDelta = (std::numbers::pi / 2.0 + 0.1) / heightSegments;
+
+	// address each ring
+	for (auto ring = 0; ring <= heightSegments; ring++) {
+		auto theta = ring * heightDelta;
+		auto r0 = radius * std::sin(theta);
+		auto y0 = radius * std::cos(theta);
+
+		// address each segment
+		for (auto seg = 0; seg <= widthSegments; seg++) {
+			auto phi = seg * widthDelta;
+			auto x0 = r0 * -std::sin(phi);
+			auto z0 = r0 * -std::cos(phi);
+
+			// add vertex
+			vertices.push_back(glm::vec3(x0, y0, z0));
+		}
+	}
+
+	// add triangles
+	for (auto ring = 0; ring < heightSegments; ring++) {
+		for (auto seg = 0; seg < widthSegments; seg++) {
+			auto a = ring * (widthSegments + 1) + seg;
+			auto b = a + (widthSegments + 1);
+			auto c = b + 1;
+			auto d = a + 1;
+
+			triangles.push_back(a);
+			triangles.push_back(b);
+			triangles.push_back(d);
+			triangles.push_back(b);
+			triangles.push_back(c);
+			triangles.push_back(d);
+		}
+	}
+
+	// cleanup (if required)
+	if (bgfx::isValid(vertexBuffer)) {
+		bgfx::destroy(vertexBuffer);
+	}
+
+	if (bgfx::isValid(vertexBuffer)) {
+		bgfx::destroy(indexBuffer);
+	}
+
+	// create vertex buffer
+	bgfx::VertexLayout layout;
+
+	layout.begin()
+		.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+		.end();
+
+	vertexBuffer = bgfx::createVertexBuffer(bgfx::makeRef(vertices.data(), sizeof(glm::vec3) * vertices.size()), layout);
+	indexBuffer = bgfx::createIndexBuffer(bgfx::makeRef(triangles.data(), sizeof(uint32_t) * triangles.size()), BGFX_BUFFER_INDEX32);
+}
+
+
+//
 //	OtSkyClass::getMeta
 //
 
@@ -223,6 +259,7 @@ OtType OtSkyClass::getMeta() {
 		type->set("__init__", OtFunctionClass::create(&OtSkyClass::init));
 		type->set("setSun", OtFunctionClass::create(&OtSkyClass::setSun));
 		type->set("setClouds", OtFunctionClass::create(&OtSkyClass::setClouds));
+		type->set("setRadius", OtFunctionClass::create(&OtSkyClass::setRadius));
 	}
 
 	return type;

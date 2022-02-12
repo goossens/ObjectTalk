@@ -41,6 +41,9 @@ public:
 	// set the cloud density
 	OtObject setClouds(float cirrus, float cumulus);
 
+	// set radius of sky dome
+	OtObject setRadius(float radius);
+
 	// GUI to change sky properties
 	void renderGUI();
 
@@ -67,8 +70,12 @@ protected:
 	float cumulus = 0.8;
 
 	// sky dome
+	float radius = 1.0;
 	std::vector<glm::vec3> vertices;
 	std::vector<uint32_t> triangles;
+
+	// function to create the skyd ome
+	void createSkyDome();
 
 	// BGFX buffers
 	bgfx::VertexBufferHandle vertexBuffer = BGFX_INVALID_HANDLE;

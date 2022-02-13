@@ -1,0 +1,26 @@
+name: Release
+
+on: [push]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Update Development Tag
+        uses: "richardsimko/update-tag@v1"
+        with:
+          tag_name: "development"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update Development Release
+        uses: "ncipollo/release-action@v1"
+        with:
+          tag: "development"
+          allowUpdates: true
+          omitNameDuringUpdate: true
+          omitBodyDuringUpdate: true
+          omitPrereleaseDuringUpdate: true
+          token: ${{ secrets.GITHUB_TOKEN }}

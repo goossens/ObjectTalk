@@ -19,31 +19,31 @@
 
 
 //
-//	OtCache class
+//	OtCache class (using Least Recently Used (LRU) algorithm)
 //
 
-template<typename K, typename V>
+template<typename K, typename V, size_t S = 1024>
 class OtCache
 {
 public:
-	// constructor
-	OtCache() : size(1024) {}
-	OtCache(size_t s) : size(s) {}
-
+	// change the cache size
 	void setSize(size_t s) {
 		size = s;
 
+		// remove entries if required
 		while (index.size() > size) {
 			index.erase(items.back().first);
 			items.pop_back();
 		}
 	}
 
+	// remove all entries
 	void clear() {
 		items.clear();
 		index.clear();
 	}
 
+	// set or update an entry
 	void set(const K key, const V value) {
 		// see if this is a known entry
 		auto pos = index.find(key);
@@ -66,10 +66,12 @@ public:
 		}
 	}
 
+	// see if entry is in cache
 	bool has(const K key) {
 		return index.find(key) != index.end();
 	}
 
+	// get a cache entry and move it to the front for LRU
 	V get(const K key) {
 		auto pos = index.find(key);
 
@@ -83,6 +85,6 @@ public:
 
 private:
 	std::list<std::pair<K, V>> items;
-	std::unordered_map <K, typename std::list<std::pair<K, V>>::iterator> index;
-	size_t size;
+	std::unordered_map<K, typename std::list<std::pair<K, V>>::iterator> index;
+	size_t size = S;
 };

@@ -20,8 +20,9 @@
 #include "OtHash.h"
 
 #include "OtController.h"
-#include "OtNoiseMap.h"
 #include "OtSceneObject.h"
+#include "OtTerrainMap.h"
+#include "OtTerrainTile.h"
 #include "OtTexture.h"
 
 
@@ -41,8 +42,11 @@ public:
 	// initialize
 	OtObject init(size_t count, OtObject* parameters);
 
-	// specify a noisemap
-	OtObject setNoiseMap(OtObject noisemap);
+	// specify a terrainmap
+	OtObject setTerrainMap(OtObject terrainmap);
+
+	// set maximum viewing distance
+	OtObject setViewingDistance(float distance);
 
 	// specify region parameters
 	OtObject setRegionTransitions(
@@ -110,48 +114,9 @@ protected:
 	// BGFX shader
 	bgfx::ProgramHandle shader = BGFX_INVALID_HANDLE;
 
-	// a single terrain vertex
-	struct OtTerrainVertex {
-		// constructor
-		OtTerrainVertex(glm::vec3 p, glm::vec3 n) : position(p), normal(n) {}
-
-		// properties
-		glm::vec3 position;
-		glm::vec3 normal;
-	};
-
-	// a single terrain tile
-	struct OtTerrainTile {
-		// constructor
-		OtTerrainTile(int _x, int _y, int _l, size_t _v) : x(_x), y(_y), lod(_l), version(_v) {
-			OtHash(hash, x, y, lod, version);
-		}
-
-		// destructor
-		~OtTerrainTile();
-
-		// generate tile
-		void generate(OtNoiseMap noisemap);
-
-		// properties
-		int x, y;
-		int lod;
-		size_t version;
-		size_t hash = 0;
-		float lastUsed = 0.0;
-
-		// tile mesh
-		std::vector<OtTerrainVertex> vertices;
-		std::vector<uint32_t> triangles;
-
-		// BGFX buffers
-		bgfx::VertexBufferHandle vertexBuffer = BGFX_INVALID_HANDLE;
-		bgfx::IndexBufferHandle indexBuffer = BGFX_INVALID_HANDLE;
-	};
-
-	// noisemap to generate terrain
-	OtNoiseMap noisemap;
-	size_t noisemapID;
+	// terrainmap
+	OtTerrainMap terrainmap;
+	size_t terrainmapID;
 
 	// maximum viewing distance
 	float maxViewingDist = 2000.0;
@@ -160,7 +125,7 @@ protected:
 	size_t version = 1;
 
 	// terrain tiles in use
-	std::unordered_map<size_t, std::shared_ptr<OtTerrainTile>> tiles;
+	std::unordered_map<size_t, OtTerrainTile> tiles;
 
 	bool tileExists(int x, int y, int lod, int version) {
 		size_t hash = 0;
@@ -174,7 +139,7 @@ protected:
 		return requested.count(hash) != 0;
 	}
 
-	std::shared_ptr<OtTerrainTile> tileGet(int x, int y, int lod, int version) {
+	OtTerrainTile tileGet(int x, int y, int lod, int version) {
 		size_t hash = 0;
 		OtHash(hash, x, y, lod, version);
 		return tiles[hash];
@@ -183,9 +148,9 @@ protected:
 	// worker thread to generate tiles
 	std::thread worker;
 	std::set<size_t> requested;
-	OtConcurrentQueue<std::shared_ptr<OtTerrainTile>> requests;
-	OtConcurrentQueue<std::shared_ptr<OtTerrainTile>> responses;
-	void generateTiles(OtTerrainClass* noisemap);
+	OtConcurrentQueue<OtTerrainTile> requests;
+	OtConcurrentQueue<OtTerrainTile> responses;
+	void generateTiles();
 };
 
 

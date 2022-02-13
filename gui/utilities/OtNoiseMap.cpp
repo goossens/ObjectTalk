@@ -200,7 +200,7 @@ void OtNoiseMapClass::getNoiseArray(float* output, size_t width, size_t height, 
 
 
 //
-//	OtAmbientClass::renderGUI
+//	OtNoiseMapClass::renderGUI
 //
 
 void OtNoiseMapClass::renderGUI() {

@@ -34,6 +34,7 @@
 #include "OtSkybox.h"
 #include "OtSun.h"
 #include "OtTerrain.h"
+#include "OtTerrainMap.h"
 #include "OtWater.h"
 
 #include "OtBlendMap.h"
@@ -119,6 +120,7 @@ void OtGuiClass::registerModule() {
 		module->set("Sky", OtClassClass::create(OtSkyClass::getMeta()));
 		module->set("Water", OtClassClass::create(OtWaterClass::getMeta()));
 		module->set("Terrain", OtClassClass::create(OtTerrainClass::getMeta()));
+		module->set("TerrainMap", OtClassClass::create(OtTerrainMapClass::getMeta()));
 		module->set("Mesh", OtClassClass::create(OtMeshClass::getMeta()));
 		module->set("Group", OtClassClass::create(OtGroupClass::getMeta()));
 
@@ -185,6 +187,7 @@ void OtGuiClass::registerModule() {
 		module->set("SkyController", OtClassClass::create(OtSkyControllerClass::getMeta()));
 		module->set("SunController", OtClassClass::create(OtSunControllerClass::getMeta()));
 		module->set("TerrainController", OtClassClass::create(OtTerrainControllerClass::getMeta()));
+		module->set("TerrainMapController", OtClassClass::create(OtTerrainMapControllerClass::getMeta()));
 		module->set("VectorDisplayController", OtClassClass::create(OtVectorDisplayControllerClass::getMeta()));
 		module->set("WaterController", OtClassClass::create(OtWaterControllerClass::getMeta()));
 

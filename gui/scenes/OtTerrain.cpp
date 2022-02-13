@@ -46,7 +46,7 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 OtTerrainClass::OtTerrainClass() {
 	// create a worker thread to generate tiles
 	worker = std::thread([this]() {
-		this->generateTiles(this);
+		this->generateTiles();
 		return 0;
 	});
 
@@ -78,8 +78,8 @@ OtTerrainClass::~OtTerrainClass() {
 	worker.join();
 
 	// detach from noisemap (if required)
-	if (noisemap) {
-		noisemap->detach(noisemapID);
+	if (terrainmap) {
+		terrainmap->detach(terrainmapID);
 	}
 
 	// cleanup
@@ -111,27 +111,37 @@ OtObject OtTerrainClass::init(size_t count, OtObject* parameters) {
 
 
 //
-//	OtTerrainClass::setNoiseMap
+//	OtTerrainClass::setTerrainMap
 //
 
-OtObject OtTerrainClass::setNoiseMap(OtObject object) {
+OtObject OtTerrainClass::setTerrainMap(OtObject object) {
 	// sanity check
-	object->expectKindOf("NoiseMap");
+	object->expectKindOf("TerrainMap");
 
 	// cleanup
-	if (noisemap) {
-		noisemap->detach(noisemapID);
-		noisemap = nullptr;
+	if (terrainmap) {
+		terrainmap->detach(terrainmapID);
+		terrainmap = nullptr;
 	}
 
-	// set new noisemap
-	noisemap = object->cast<OtNoiseMapClass>();
+	// set new terrainmap
+	terrainmap = object->cast<OtTerrainMapClass>();
 	parametersHaveChanged();
 
-	noisemapID = noisemap->attach([this]() {
+	terrainmapID = terrainmap->attach([this]() {
 		parametersHaveChanged();
 	});
 
+	return shared();
+}
+
+
+//
+//	OtTerrainClass::setViewingDistance
+//
+
+OtObject OtTerrainClass::setViewingDistance(float distance) {
+	maxViewingDist = distance;
 	return shared();
 }
 
@@ -239,8 +249,8 @@ OtObject OtTerrainClass::setRegion4Texture(OtObject object) {
 
 void OtTerrainClass::render(OtRenderingContext* context) {
 	// sanity check
-	if (!noisemap) {
-		OtExcept("[NoiseMap] properties not set for [Terrain]");
+	if (!terrainmap) {
+		OtExcept("TerrainMap] properties not set for [Terrain]");
 	}
 
 	// remove old tiles (use std::remove_if in C++20)
@@ -260,7 +270,7 @@ void OtTerrainClass::render(OtRenderingContext* context) {
 
 	// process worker outputs
 	if (!responses.empty()) {
-		std::shared_ptr<OtTerrainTile> tile = responses.pop();
+		OtTerrainTile tile = responses.pop();
 
 		if (tile->version == version) {
 			tiles[tile->hash] = tile;
@@ -269,7 +279,7 @@ void OtTerrainClass::render(OtRenderingContext* context) {
 	}
 
 	// list of tiles that are visible (and available)
-	std::vector<std::shared_ptr<OtTerrainTile>> visible;
+	std::vector<OtTerrainTile> visible;
 
 	// list of tiles needed
 	struct neededTile {
@@ -292,8 +302,8 @@ void OtTerrainClass::render(OtRenderingContext* context) {
 	int terrainCenterTileY = std::lround(center.z / tileSize);
 
 	// get vertical limits
-	auto minNoise = noisemap->getMinNoise();
-	auto maxNoise = noisemap->getMaxNoise();
+	auto minHeight = terrainmap->getMinHeight();
+	auto maxHeight = terrainmap->getMaxHeight();
 
 	// process all possible visible tiles
 	for (auto yOffset = -visibleTiles; yOffset <= visibleTiles; yOffset++) {
@@ -305,19 +315,19 @@ void OtTerrainClass::render(OtRenderingContext* context) {
 			auto cx = x * tileSize;
 			auto cy = y * tileSize;
 
-			glm::vec3 minValues = glm::vec3(cx - tileSize / 2, minNoise, cy - tileSize / 2);
-			glm::vec3 maxValues = glm::vec3(cx + tileSize / 2, maxNoise, cy + tileSize / 2);
+			glm::vec3 minValues = glm::vec3(cx - tileSize / 2, minHeight, cy - tileSize / 2);
+			glm::vec3 maxValues = glm::vec3(cx + tileSize / 2, maxHeight, cy + tileSize / 2);
 
 			if (context->camera->isVisibleAABB(minValues, maxValues)) {
 				// determine level of detail for tile
 				float distanceToTile = glm::distance(glm::vec3(cx, 0.0, cy), context->camera->getPosition());
-				int distanceInTiles = std::lround(distanceToTile / tileSize);
+				int distanceInTiles = std::floorl(distanceToTile / tileSize);
 				int lod = distanceInTiles <= 6 ? 6 - distanceInTiles : 0;
 
 				// see if tile already exists?
 				if (tileExists(x, y, lod, version)) {
 					// yes, add it to list of visible tiles
-					std::shared_ptr<OtTerrainTile> tile = tileGet(x, y, lod, version);
+					OtTerrainTile tile = tileGet(x, y, lod, version);
 					tile->lastUsed = now;
 					visible.push_back(tile);
 
@@ -330,19 +340,27 @@ void OtTerrainClass::render(OtRenderingContext* context) {
 
 					// see if we have a substitude for now
 					if (tileExists(x, y, lod, version - 1)) {
-						std::shared_ptr<OtTerrainTile> tile = tileGet(x, y, lod, version - 1);
+						OtTerrainTile tile = tileGet(x, y, lod, version - 1);
 						tile->lastUsed = now;
 						visible.push_back(tile);
 
-					} else if (tileExists(x, y, lod + 1, version)) {
-						std::shared_ptr<OtTerrainTile> tile = tileGet(x, y, lod + 1, version);
-						tile->lastUsed = now;
-						visible.push_back(tile);
+					} else {
+						OtTerrainTile tile = nullptr;
+						int lodDistance = 7;
 
-					} else if (tileExists(x, y, lod - 1, version)) {
-						std::shared_ptr<OtTerrainTile> tile = tileGet(x, y, lod - 1, version);
-						tile->lastUsed = now;
-						visible.push_back(tile);
+						for (auto l = 0; l <= 6; l++) {
+							if (tileExists(x, y, l, version)) {
+								if (std::abs(lod - l) < lodDistance) {
+									lodDistance = std::abs(lod - l);
+									tile = tileGet(x, y, l, version);
+								}
+							}
+
+							if (tile) {
+								tile->lastUsed = now;
+								visible.push_back(tile);
+							}
+						}
 					}
 				}
 			}
@@ -356,12 +374,7 @@ void OtTerrainClass::render(OtRenderingContext* context) {
 
 	// request all needed tiles (closest ones first)
 	for (auto& n : needed) {
-		std::shared_ptr<OtTerrainTile> tile = std::make_shared<OtTerrainTile>(
-			n.x,
-			n.y,
-			n.lod,
-			n.version);
-
+		OtTerrainTile tile = OtTerrainTileClass::create(n.x, n.y, n.lod, n.version);
 		requested.insert(tile->hash);
 		requests.push(tile);
 	}
@@ -407,9 +420,8 @@ void OtTerrainClass::render(OtRenderingContext* context) {
 		(textureRegion3 ? textureRegion3 : OtTextureClass::dummy())->submit(2, textureUniform3);
 		(textureRegion4 ? textureRegion4 : OtTextureClass::dummy())->submit(3, textureUniform4);
 
-		// render tileExists	// submit vertices and triangles
-		bgfx::setVertexBuffer(0, tile->vertexBuffer);
-		bgfx::setIndexBuffer(tile->indexBuffer);
+		// submit vertices and triangles
+		tile->submit();
 
 		// run shader
 		bgfx::setState(BGFX_STATE_DEFAULT);
@@ -423,10 +435,13 @@ void OtTerrainClass::render(OtRenderingContext* context) {
 //
 
 void OtTerrainClass::renderGUI() {
-	bool changed = false;
+	int visibleTiles = tiles.size();
 
 	ImGui::Checkbox("Enabled", &enabled);
-	ImGui::SliderFloat("Texture Scale", &textureScale, 0, 100);
+	ImGui::Text("Visible tiles: %d", visibleTiles);
+
+	ImGui::SliderFloat("Viewing Distance", &maxViewingDist, 200, 10000);
+	ImGui::SliderFloat("Texture Scale", &textureScale, 1, 400);
 
 	ImGui::SliderFloat("Region 1", &region1Transition, 0, 300);
 	ImGui::SliderFloat("Overlap 1", &region1Overlap, 1, 50);
@@ -441,13 +456,13 @@ void OtTerrainClass::renderGUI() {
 //	OtTerrainClass::generateTiles
 //
 
-void OtTerrainClass::generateTiles(OtTerrainClass* terrain) {
+void OtTerrainClass::generateTiles() {
 	// keep this thread running until we get told to stop
 	bool done = false;
 
 	while (!done) {
 		// get next tile request
-		std::shared_ptr<OtTerrainTile> tile = requests.pop();
+		OtTerrainTile tile = requests.pop();
 
 		// a nullptr indicates that we are done
 		if (!tile) {
@@ -455,7 +470,7 @@ void OtTerrainClass::generateTiles(OtTerrainClass* terrain) {
 
 		} else {
 			// generate tile
-			tile->generate(terrain->noisemap);
+			tile->generate(terrainmap);
 
 			// return result
 			responses.push(tile);
@@ -487,7 +502,8 @@ OtType OtTerrainClass::getMeta() {
 		type = OtTypeClass::create<OtTerrainClass>("Terrain", OtSceneObjectClass::getMeta());
 		type->set("__init__", OtFunctionClass::create(&OtTerrainClass::init));
 
-		type->set("setNoiseMap", OtFunctionClass::create(&OtTerrainClass::setNoiseMap));
+		type->set("setTerrainMap", OtFunctionClass::create(&OtTerrainClass::setTerrainMap));
+		type->set("setViewingDistance", OtFunctionClass::create(&OtTerrainClass::setViewingDistance));
 
 		type->set("setRegionTransitions", OtFunctionClass::create(&OtTerrainClass::setRegionTransitions));
 
@@ -516,337 +532,4 @@ OtTerrain OtTerrainClass::create() {
 	OtTerrain terrain = std::make_shared<OtTerrainClass>();
 	terrain->setType(getMeta());
 	return terrain;
-}
-
-
-//
-//	OtTerrainTile::~OtTerrainTile
-//
-
-OtTerrainClass::OtTerrainTile::~OtTerrainTile() {
-	// release resources
-	if (bgfx::isValid(vertexBuffer)) {
-		bgfx::destroy(vertexBuffer);
-	}
-
-	if (bgfx::isValid(indexBuffer)) {
-		bgfx::destroy(indexBuffer);
-	}
-}
-
-//
-//	OtTerrainTile::generate
-//
-
-void OtTerrainClass::OtTerrainTile::generate(OtNoiseMap noisemap) {
-	// dimensions
-	auto tileOffsetX = x * tileSize - tileSize / 2;
-	auto tileOffsetY = y * tileSize - tileSize / 2;
-
-	auto lodSize = tileSize - 2;
-	auto lodIncrement = lod >= 6 ? 1 : (6 - lod) * 2;
-	auto lodSegments = lodSize / lodIncrement;
-	auto lodVertices = lodSegments + 1;
-	auto lodOffsetX = tileOffsetX + 1;
-	auto lodOffsetY = tileOffsetY + 1;
-
-	auto heightMapVertices = lodVertices + 2;
-	auto heightMapOffsetX = lodOffsetX - lodIncrement;
-	auto heightMapOffsetY = lodOffsetY - lodIncrement;
-
-	auto borderSize = tileSize;
-	auto borderVertices = borderSize + 1;
-	auto borderOffsetX = tileOffsetX;
-	auto borderOffsetY = tileOffsetY;
-
-	auto borderHeightMapVertices = borderVertices + 2;
-	auto borderHeightMapOffsetX = borderOffsetX - 1;
-	auto borderHeightMapOffsetY = borderOffsetY - 1;
-
-	// create temporary heightmap with border so we can calculate normals
-	float* map = new float[heightMapVertices * heightMapVertices];
-	float* ptr = map;
-
-	for (auto iy = 0; iy < heightMapVertices; iy++) {
-		auto wy = heightMapOffsetY + iy * lodIncrement;
-
-		for (auto ix = 0; ix < heightMapVertices; ix++) {
-			auto wx = heightMapOffsetX + ix * lodIncrement;
-			*ptr++ = noisemap->getNoise(wx, wy);
-		}
-	}
-
-	// add LOD vertices
-#define HEIGHT(x, y) map[(y + 1) * heightMapVertices + (x + 1)]
-
-	for (auto iy = 0; iy < lodVertices; iy++) {
-		auto wy = lodOffsetY + iy * lodIncrement;
-
-		for (auto ix = 0; ix < lodVertices; ix++) {
-			auto wx = lodOffsetX + ix * lodIncrement;
-
-			vertices.push_back(OtTerrainVertex(
-				glm::vec3(wx, HEIGHT(ix, iy), wy),
-				glm::normalize(glm::vec3(
-					HEIGHT(ix - 1, iy) - HEIGHT(ix + 1, iy),
-					2.0,
-					HEIGHT(ix, iy - 1) - HEIGHT(ix, iy + 1)))));
-		}
-	}
-
-#undef HEIGHT
-
-	// cleanup
-	delete [] map;
-
-	// add LOD triangles
-	for (auto iy = 0; iy < lodSegments; iy++) {
-		for (auto ix = 0; ix < lodSegments; ix ++) {
-			auto a = ix + lodVertices * iy;
-			auto b = ix + lodVertices * (iy + 1);
-			auto c = (ix + 1) + lodVertices * (iy + 1);
-			auto d = (ix + 1) + lodVertices * iy;
-
-			triangles.push_back(a);
-			triangles.push_back(b);
-			triangles.push_back(d);
-
-			triangles.push_back(b);
-			triangles.push_back(c);
-			triangles.push_back(d);
-		}
-	}
-
-	// add border vertices
-	map = new float[borderHeightMapVertices * 3];
-
-#define HEIGHT(x, y) map[(y + 1) * 3 + (x + 1)]
-
-	//
-	// LEFT BORDER
-	//
-
-	// create left border heightmap
-	ptr = map;
-
-	for (auto iy = 0; iy < borderHeightMapVertices; iy++) {
-		auto wy = borderHeightMapOffsetY + iy;
-
-		for (auto ix = 0; ix < 3; ix++) {
-			auto wx = borderHeightMapOffsetX + ix;
-			*ptr++ = noisemap->getNoise(wx, wy);
-		}
-	}
-
-	// add left border vertices
-	auto index = vertices.size();
-
-	for (auto iy = 0; iy < borderVertices; iy++) {
-		vertices.push_back(OtTerrainVertex(
-			glm::vec3(borderOffsetX, HEIGHT(0, iy), borderOffsetY + iy),
-
-			glm::normalize(glm::vec3(
-				HEIGHT(-1, iy) - HEIGHT(1, iy),
-				2.0,
-				HEIGHT(0, iy - 1) - HEIGHT(0, iy + 1)))));
-	}
-
-	// add left border triangles
-	triangles.push_back(index);
-	triangles.push_back(index + 1);
-	triangles.push_back(0);
-
-	for (auto s = 0; s < lodSegments; s++) {
-		auto borderIndex = index + 1 + s * lodIncrement;
-		auto lodIndex = s * lodVertices;
-
-		triangles.push_back(lodIndex);
-		lodIndex += lodVertices;
-		triangles.push_back(borderIndex);
-		triangles.push_back(lodIndex);
-
-		for (auto i = 0; i < lodIncrement; i++) {
-			triangles.push_back(borderIndex++);
-			triangles.push_back(borderIndex);
-			triangles.push_back(lodIndex);
-		}
-	}
-
-	triangles.push_back(index + borderVertices - 2);
-	triangles.push_back(index + borderVertices - 1);
-	triangles.push_back(lodSegments * lodVertices);
-
-	//
-	// RIGHT BORDER
-	//
-
-	// create right border heightmap
-	ptr = map;
-
-	for (auto iy = 0; iy < borderHeightMapVertices; iy++) {
-		auto wy = borderHeightMapOffsetY + iy;
-
-		for (auto ix = 0; ix < 3; ix++) {
-			auto wx = borderHeightMapOffsetX + borderSize + ix;
-			*ptr++ = noisemap->getNoise(wx, wy);
-		}
-	}
-
-	// add right border vertices
-	index = vertices.size();
-
-	for (auto iy = 0; iy < borderVertices; iy++) {
-		vertices.push_back(OtTerrainVertex(
-			glm::vec3(borderOffsetX + borderSize, HEIGHT(0, iy), borderOffsetY + iy),
-			glm::normalize(glm::vec3(
-				HEIGHT(-1, iy) - HEIGHT(1, iy),
-				2.0,
-				HEIGHT(0, iy - 1) - HEIGHT(0, iy + 1)))));
-	}
-
-	// add right border triangles
-	triangles.push_back(index);
-	triangles.push_back(lodSegments);
-	triangles.push_back(index + 1);
-
-	for (auto s = 0; s < lodSegments; s++) {
-		auto borderIndex = index + 1 + s * lodIncrement;
-		auto lodIndex = lodSegments + s * lodVertices;
-
-		triangles.push_back(lodIndex);
-		lodIndex += lodVertices;
-		triangles.push_back(lodIndex);
-		triangles.push_back(borderIndex);
-
-		for (auto i = 0; i < lodIncrement; i++) {
-			triangles.push_back(borderIndex++);
-			triangles.push_back(lodIndex);
-			triangles.push_back(borderIndex);
-		}
-	}
-
-	triangles.push_back(index + borderSize);
-	triangles.push_back(index + borderSize - 1);
-	triangles.push_back(lodVertices * lodVertices - 1);
-
-#undef HEIGHT
-#define HEIGHT(x, y) map[(y + 1) * borderHeightMapVertices + (x + 1)]
-
-	//
-	// TOP BORDER
-	//
-
-	// create top border heightmap
-	ptr = map;
-
-	for (auto iy = 0; iy < 3; iy++) {
-		auto wy = borderHeightMapOffsetY + iy;
-
-		for (auto ix = 0; ix < borderHeightMapVertices; ix++) {
-			auto wx = borderHeightMapOffsetX + ix;
-			*ptr++ = noisemap->getNoise(wx, wy);
-		}
-	}
-
-	// add top border vertices
-	index = vertices.size();
-
-	for (auto ix = 0; ix < borderVertices; ix++) {
-		vertices.push_back(OtTerrainVertex(
-			glm::vec3(borderOffsetX + ix, HEIGHT(ix, 0), borderOffsetY),
-			glm::normalize(glm::vec3(
-				HEIGHT(ix - 1, 0) - HEIGHT(ix + 1, 0),
-				2.0,
-				HEIGHT(ix, -1) - HEIGHT(ix, 1)))));
-	}
-
-	// add top border triangles
-	triangles.push_back(index);
-	triangles.push_back(0);
-	triangles.push_back(index + 1);
-
-	for (auto s = 0; s < lodSegments; s++) {
-		auto borderIndex = index + 1 + s * lodIncrement;
-		auto lodIndex = s;
-
-		triangles.push_back(lodIndex++);
-		triangles.push_back(lodIndex);
-		triangles.push_back(borderIndex);
-
-		for (auto i = 0; i < lodIncrement; i++) {
-			triangles.push_back(borderIndex++);
-			triangles.push_back(lodIndex);
-			triangles.push_back(borderIndex);
-		}
-	}
-
-	triangles.push_back(index + borderVertices - 2);
-	triangles.push_back(lodSegments);
-	triangles.push_back(index + borderVertices - 1);
-
-	//
-	// BOTTOM BORDER
-	//
-
-	// create bottom border heightmap
-	ptr = map;
-
-	for (auto iy = 0; iy < 3; iy++) {
-		auto wy = borderHeightMapOffsetY + borderSize + iy;
-
-		for (auto ix = 0; ix < borderHeightMapVertices; ix++) {
-			auto wx = borderHeightMapOffsetX + ix;
-			*ptr++ = noisemap->getNoise(wx, wy);
-		}
-	}
-
-	// add bottom border vertices
-	index = vertices.size();
-
-	for (auto ix = 0; ix < borderVertices; ix++) {
-		vertices.push_back(OtTerrainVertex(
-			glm::vec3(borderOffsetX + ix, HEIGHT(ix, 0), borderOffsetY + borderSize),
-			glm::normalize(glm::vec3(
-				HEIGHT(ix - 1, 0) - HEIGHT(ix + 1, 0),
-				2.0,
-				HEIGHT(ix, -1) - HEIGHT(ix, 1)))));
-	}
-
-	// add bottom border triangles
-	triangles.push_back(index);
-	triangles.push_back(index + 1);
-	triangles.push_back(lodSegments * lodVertices);
-
-	for (auto s = 0; s < lodSegments; s++) {
-		auto borderIndex = index + 1 + s * lodIncrement;
-		auto lodIndex = lodSegments * lodVertices + s;
-
-		triangles.push_back(lodIndex++);
-		triangles.push_back(borderIndex);
-		triangles.push_back(lodIndex);
-
-		for (auto i = 0; i < lodIncrement; i++) {
-			triangles.push_back(borderIndex++);
-			triangles.push_back(borderIndex);
-			triangles.push_back(lodIndex);
-		}
-	}
-
-	triangles.push_back(lodVertices * lodVertices - 1);
-	triangles.push_back(index + borderVertices - 2);
-	triangles.push_back(index + borderVertices - 1);
-
-	// cleanup
-	delete [] map;
-
-	// create buffers
-	bgfx::VertexLayout layout;
-
-	layout.begin()
-		.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-		.add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
-		.end();
-
-	vertexBuffer = bgfx::createVertexBuffer(bgfx::makeRef(vertices.data(), sizeof(OtTerrainVertex) * vertices.size()), layout);
-	indexBuffer = bgfx::createIndexBuffer(bgfx::makeRef(triangles.data(), sizeof(uint32_t) * triangles.size()), BGFX_BUFFER_INDEX32);
 }

@@ -17,26 +17,29 @@ class App : gui.App {
 			.setElevation(0.4)
 			.setAzimuth(pi / 2.0);
 
-		var sky = gui.Sky(sun);
+		var sky = gui.Sky()
+			.setSun(sun)
+			.setRadius(100);
 
 		var fog = gui.Fog()
 			.setColor("#a0a0a0")
 			.setLimits(100, 1000, 1000, 5000)
-			.setDistances(800, 2000);
+			.setDistances(800, 3000);
 
 		var water = gui.Water()
 			.setSize(4000)
 			.setNormalMap(gui.Texture(__DIR__ + "/assets/waternormals.jpg"));
 
-		var noisemap = gui.NoiseMap()
+		var terrainmap = gui.TerrainMap()
 			.setOctaves(6)
 			.setScaleZ(200.0)
 			.setOffsetZ(-100.0);
 
 		var terrain = gui.Terrain()
-			.setNoiseMap(noisemap)
-			.setTextureScale(60)
-			.setRegionTransitions(0.0, 1.0, 15.0, 9.0, 30.0, 5.0)
+			.setTerrainMap(terrainmap)
+			.setViewingDistance(3000)
+			.setTextureScale(100)
+			.setRegionTransitions(0, 2, 5, 5, 20, 7)
 			.setRegion1Texture(gui.Texture(__DIR__ + "/assets/sand.jpg"))
 			.setRegion2Texture(gui.Texture(__DIR__ + "/assets/terrain.jpg"))
 			.setRegion3Texture(gui.Texture(__DIR__ + "/assets/rock.jpg"))
@@ -51,9 +54,11 @@ class App : gui.App {
 
 		var camera = gui.Camera()
 			.setPerspective(45, 0.1, 4000)
+			.setNearFarLimits(0.1, 5, 1000, 5000)
 			.setFirstPersonMode()
 			.setPosition(0, 100, 0)
-			.setHeightLimits(50, 500);
+			.setPitchLimits(-0.4, 0.4)
+			.setHeightLimits(50, 200);
 
 		var view = gui.View()
 			.setScreenArea(25, 0, 75, 100)
@@ -62,7 +67,11 @@ class App : gui.App {
 
 		var panel = gui.Panel(0, 0, 25, 100);
 
-		var node = gui.TreeNode("Sun:");
+		var node = gui.TreeNode("Camera:");
+		node.add(gui.CameraController(camera));
+		panel.add(node);
+
+		node = gui.TreeNode("Sun:");
 		node.add(gui.SunController(sun));
 		panel.add(node);
 
@@ -78,8 +87,8 @@ class App : gui.App {
 		node.add(gui.WaterController(water));
 		panel.add(node);
 
-		node = gui.TreeNode("Noise Map:");
-		node.add(gui.NoiseMapController(noisemap));
+		node = gui.TreeNode("Terrain Map:");
+		node.add(gui.TerrainMapController(terrainmap));
 		panel.add(node);
 
 		node = gui.TreeNode("Terrain:");

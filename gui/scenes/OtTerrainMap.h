@@ -12,7 +12,11 @@
 //	Include files
 //
 
-#include <vector>
+#include <cstdint>
+
+#include "glm/glm.hpp"
+
+#include "OtCache.h"
 
 #include "OtController.h"
 #include "OtGui.h"
@@ -21,16 +25,16 @@
 
 
 //
-//	OtNoiseMapClass
+//	OtTerrainMapClass
 //
 
-class OtNoiseMapClass;
-typedef std::shared_ptr<OtNoiseMapClass> OtNoiseMap;
+class OtTerrainMapClass;
+typedef std::shared_ptr<OtTerrainMapClass> OtTerrainMap;
 
-class OtNoiseMapClass : public OtGuiClass {
+class OtTerrainMapClass : public OtGuiClass {
 public:
 	// constructor
-	OtNoiseMapClass();
+	OtTerrainMapClass();
 
 	// initialize
 	OtObject init(size_t count, OtObject* parameters);
@@ -56,17 +60,17 @@ public:
 	// set the noisemap easing function
 	OtObject setEasing(int easing);
 
-	// get minimum noise value
-	float getMinNoise();
+	// get minimum height
+	float getMinHeight();
 
-	// get maximum noise value
-	float getMaxNoise();
+	// get maximum height
+	float getMaxHeight();
 
-	// get noise value at location
-	float getNoise(float x, float y);
+	// get height at location
+	float getHeight(int32_t x, int32_t y);
 
-	// create a noise array
-	void getNoiseArray(float* output, size_t width, size_t height, float x, float y, bool normalize=false);
+	// get normal at location
+	glm::vec3 getNormal(int32_t x, int32_t y);
 
 	// GUI to change properties
 	void renderGUI();
@@ -75,7 +79,7 @@ public:
 	static OtType getMeta();
 
 	// create a new object
-	static OtNoiseMap create();
+	static OtTerrainMap create();
 
 private:
 	// generate noisemap from perlin noise
@@ -91,6 +95,29 @@ private:
 
 	int easing = 0;
 	OtEasingFunction easingFunction = OtEasingGetFunction(0);
+
+	// function to handle property changes
+	void propertiesChanged();
+
+	// height cache
+	OtCache<uint64_t, float, 1000000> cache;
+	bool cacheDirty = false;
+
+	// create cache hash from coordinates
+	size_t hash(int32_t x, int32_t y) {
+		union {
+			struct {
+				int32_t x;
+				int32_t y;
+			};
+
+			uint64_t hash;
+		} h;
+
+		h.x = x;
+		h.y = y;
+		return h.hash;
+	}
 };
 
 
@@ -98,4 +125,4 @@ private:
 //	Controller widget
 //
 
-OT_CONTROLLER(NoiseMap)
+OT_CONTROLLER(TerrainMap)

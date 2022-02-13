@@ -7,26 +7,42 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
 
-      - name: delete Release and Tag
-        uses: dev-drprasad/delete-tag-and-release@v0.2.0
-        with:
-          delete_release: true
-          tag_name: "development"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create Example Archieves
+      run: |
+        tar cvfz examples.tgz examples
+        zip -r examples.zip examples
 
-      - name: Create Development Tag
-        uses: "richardsimko/update-tag@v1"
-        with:
-          tag_name: "development"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: delete Release and Tag
+      uses: dev-drprasad/delete-tag-and-release@v0.2.0
+      with:
+        delete_release: true
+        tag_name: "development"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create Development Release
-        uses: "ncipollo/release-action@v1"
-        with:
-          tag: "development"
-          prerelease: true
-          generateReleaseNotes: true
-          token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create Development Tag
+      uses: "richardsimko/update-tag@v1"
+      with:
+        tag_name: "development"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create Development Release
+      uses: "ncipollo/release-action@v1"
+      with:
+        tag: "development"
+        prerelease: true
+        generateReleaseNotes: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Release Examples
+      uses: "svenstaro/upload-release-action@v2"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        tag: "development"
+        file: "examples.*"
+        file_glob: true
+        overwrite: true

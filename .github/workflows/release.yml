@@ -19,8 +19,9 @@ jobs:
         uses: "ncipollo/release-action@v1"
         with:
           tag: "development"
+          name: "development"
           allowUpdates: true
-          omitNameDuringUpdate: true
+          prerelease: true
           omitBodyDuringUpdate: true
-          omitPrereleaseDuringUpdate: true
+          generateReleaseNotes: true
           token: ${{ secrets.GITHUB_TOKEN }}

@@ -2,7 +2,8 @@
 
 ![MacOS status](https://img.shields.io/github/workflow/status/goossens/ObjectTalk/MacOS?label=MacOS&style=for-the-badge)
 ![Ubuntu status](https://img.shields.io/github/workflow/status/goossens/ObjectTalk/Ubuntu?label=Linux&style=for-the-badge)
-![Windows status](https://img.shields.io/github/workflow/status/goossens/ObjectTalk/Windows?label=Windows&style=for-the-badge)<br/>
+![Windows status](https://img.shields.io/github/workflow/status/goossens/ObjectTalk/Windows?label=Windows&style=for-the-badge)
+<br/>
 ![Repo size](https://img.shields.io/github/repo-size/goossens/ObjectTalk?style=for-the-badge)
 ![Lines of code](https://img.shields.io/tokei/lines/github/goossens/ObjectTalk?style=for-the-badge)
 ![Repo activity](https://img.shields.io/github/commit-activity/m/goossens/ObjectTalk?label=Commits&style=for-the-badge)

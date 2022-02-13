@@ -321,7 +321,7 @@ void OtTerrainClass::render(OtRenderingContext* context) {
 			if (context->camera->isVisibleAABB(minValues, maxValues)) {
 				// determine level of detail for tile
 				float distanceToTile = glm::distance(glm::vec3(cx, 0.0, cy), context->camera->getPosition());
-				int distanceInTiles = std::floorl(distanceToTile / tileSize);
+				int distanceInTiles = distanceToTile / tileSize;
 				int lod = distanceInTiles <= 6 ? 6 - distanceInTiles : 0;
 
 				// see if tile already exists?

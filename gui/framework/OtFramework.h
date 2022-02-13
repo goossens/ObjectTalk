@@ -90,6 +90,12 @@ private:
 #if __APPLE__
 	// put the right app name in the menu
 	void fixMenuLabels();
+
+	// create a Metal layer in the narive window
+	// this is required since we are running in a multithreaded configuration
+	// BGFX would create the metal layer automatically but in the wrong thread
+	// MacOS only allows certain API calls from the main thread
+	void createMetalLayer();
 #endif
 
 	// render a debugging profiler

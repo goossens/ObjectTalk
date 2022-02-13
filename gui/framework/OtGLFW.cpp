@@ -58,7 +58,7 @@ void OtFrameworkClass::initGLFW() {
 	// get native handles
 #if __APPLE__
 	nativeDisplayHandle = glfwGetCocoaWindow(window);
-//	createMetalLayer();
+	createMetalLayer();
 
 #elif defined(_WIN32)
 	nativeDisplayHandle = glfwGetWin32Window(window);

@@ -8,20 +8,25 @@ jobs:
 
     steps:
 
-      - name: Update Development Tag
+      - name: delete Release and Tag
+        uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        with:
+          delete_release: true
+          tag_name: "development"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Development Tag
         uses: "richardsimko/update-tag@v1"
         with:
           tag_name: "development"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Update Development Release
+      - name: Create Development Release
         uses: "ncipollo/release-action@v1"
         with:
           tag: "development"
-          name: "development"
-          allowUpdates: true
           prerelease: true
-          omitBodyDuringUpdate: true
           generateReleaseNotes: true
           token: ${{ secrets.GITHUB_TOKEN }}

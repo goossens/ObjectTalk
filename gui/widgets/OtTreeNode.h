@@ -25,7 +25,14 @@ typedef std::shared_ptr<OtTreeNodeClass> OtTreeNode;
 class OtTreeNodeClass : public OtWidgetClass {
 public:
 	// initialize
-	void init(const std::string& label);
+	OtObject init(size_t count, OtObject* parameters);
+
+	// adjust properties
+	OtObject setTitle(const std::string& t) { title = t; return shared(); }
+	std::string getTitle() { return title; }
+
+	OtObject setOpen(bool o) { open = 0; return shared(); }
+	bool getOpen() { return open; }
 
 	// ensure specified component is allowed as a child
 	void validateChild(OtComponent child);
@@ -41,5 +48,6 @@ public:
 
 private:
 	// properties
-	std::string label;
+	std::string title;
+	bool open = true;
 };

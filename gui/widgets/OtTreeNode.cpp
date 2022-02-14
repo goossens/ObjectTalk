@@ -20,9 +20,23 @@
 //	OtTreeNodeClass::init
 //
 
-void OtTreeNodeClass::init(const std::string& l) {
-	// save label
-	label = l;
+OtObject OtTreeNodeClass::init(size_t count, OtObject* parameters) {
+	// set attributes
+	if (count) {
+		switch (count) {
+			case 2:
+				setOpen(parameters[1]->operator bool());
+
+			case 1:
+				setTitle(parameters[0]->operator std::string());
+				break;
+
+			default:
+			OtExcept("A [TreeNode] constructor can only have 1 or 2 parameters, not [%ld]", count);
+		}
+	}
+
+	return nullptr;
 }
 
 
@@ -42,11 +56,19 @@ void OtTreeNodeClass::validateChild(OtComponent child) {
 //
 
 void OtTreeNodeClass::render() {
-	int flags = ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen;
+	int flags = ImGuiTreeNodeFlags_Framed;
 
-	if (ImGui::TreeNodeEx(this, flags, "%s", label.c_str())) {
+	if (open) {
+		flags |= ImGuiTreeNodeFlags_DefaultOpen;
+	}
+
+	if (ImGui::TreeNodeEx(this, flags, "%s", title.c_str())) {
 		OtWidgetClass::render();
 		ImGui::TreePop();
+		open = true;
+
+	} else {
+		open = false;
 	}
 }
 
@@ -61,6 +83,12 @@ OtType OtTreeNodeClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtTreeNodeClass>("TreeNode", OtWidgetClass::getMeta());
 		type->set("__init__", OtFunctionClass::create(&OtTreeNodeClass::init));
+
+		type->set("getTitle", OtFunctionClass::create(&OtTreeNodeClass::getTitle));
+		type->set("setTitle", OtFunctionClass::create(&OtTreeNodeClass::setTitle));
+
+		type->set("getOpen", OtFunctionClass::create(&OtTreeNodeClass::getOpen));
+		type->set("setOpen", OtFunctionClass::create(&OtTreeNodeClass::setOpen));
 	}
 
 	return type;

@@ -118,6 +118,10 @@ private:
 		h.y = y;
 		return h.hash;
 	}
+
+	// statistics
+	size_t requests = 0;
+	size_t cachehits = 0;
 };
 
 

@@ -154,10 +154,14 @@ float OtTerrainMapClass::getHeight(int32_t x, int32_t y) {
 		cacheDirty = false;
 	}
 
+	// statistics
+	requests++;
+
 	// check cache first
 	uint64_t h = hash(x, y);
 
 	if (cache.has(h)) {
+		cachehits++;
 		return cache.get(h);
 
 	} else {
@@ -221,6 +225,12 @@ void OtTerrainMapClass::renderGUI() {
 
 	if (changed) {
 		propertiesChanged();
+	}
+
+	if (ImGui::TreeNodeEx("Debug", ImGuiTreeNodeFlags_Framed)) {
+		ImGui::Text("Cache size: %ld", cache.getNumberOfEntries());
+		ImGui::Text("Cache hits: %.1f%%", (double) cachehits / (double) requests * 100.0);
+		ImGui::TreePop();
 	}
 }
 

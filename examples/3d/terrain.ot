@@ -23,8 +23,8 @@ class App : gui.App {
 
 		var fog = gui.Fog()
 			.setColor("#a0a0a0")
-			.setLimits(100, 1000, 1000, 5000)
-			.setDistances(800, 3000);
+			.setLimits(100, 2000, 2000, 5000)
+			.setDistances(1000, 3000);
 
 		var water = gui.Water()
 			.setSize(4000)
@@ -53,8 +53,8 @@ class App : gui.App {
 			.add(terrain);
 
 		var camera = gui.Camera()
-			.setPerspective(45, 0.1, 4000)
-			.setNearFarLimits(0.1, 5, 1000, 5000)
+			.setPerspective(45, 20, 4000)
+			.setNearFarLimits(10, 35, 1000, 5000)
 			.setFirstPersonMode()
 			.setPosition(0, 100, 0)
 			.setPitchLimits(-0.4, 0.4)
@@ -67,7 +67,7 @@ class App : gui.App {
 
 		var panel = gui.Panel(0, 0, 25, 100);
 
-		var node = gui.TreeNode("Camera:");
+		var node = gui.TreeNode("Camera:", false);
 		node.add(gui.CameraController(camera));
 		panel.add(node);
 
@@ -79,7 +79,7 @@ class App : gui.App {
 		node.add(gui.SkyController(sky));
 		panel.add(node);
 
-		node = gui.TreeNode("Fog:");
+		node = gui.TreeNode("Fog:", false);
 		node.add(gui.FogController(fog));
 		panel.add(node);
 

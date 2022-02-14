@@ -435,10 +435,7 @@ void OtTerrainClass::render(OtRenderingContext* context) {
 //
 
 void OtTerrainClass::renderGUI() {
-	int visibleTiles = tiles.size();
-
 	ImGui::Checkbox("Enabled", &enabled);
-	ImGui::Text("Visible tiles: %d", visibleTiles);
 
 	ImGui::SliderFloat("Viewing Distance", &maxViewingDist, 200, 10000);
 	ImGui::SliderFloat("Texture Scale", &textureScale, 1, 400);
@@ -449,6 +446,26 @@ void OtTerrainClass::renderGUI() {
 	ImGui::SliderFloat("Overlap 2", &region2Overlap, 1, 50);
 	ImGui::SliderFloat("Region 3", &region3Transition, 0, 300);
 	ImGui::SliderFloat("Overlap 3", &region3Overlap, 1, 50);
+
+	if (ImGui::TreeNodeEx("Debug", ImGuiTreeNodeFlags_Framed)) {
+		int visibleTiles = tiles.size();
+		int count[7] = {0};
+
+		for (auto& entry : tiles) {
+			count[entry.second->lod]++;
+		}
+
+		ImGui::Text("Visible tiles: %d", visibleTiles);
+		ImGui::Text("Tiles LOD 0: %d", count[0]);
+		ImGui::Text("Tiles LOD 1: %d", count[1]);
+		ImGui::Text("Tiles LOD 2: %d", count[2]);
+		ImGui::Text("Tiles LOD 3: %d", count[3]);
+		ImGui::Text("Tiles LOD 4: %d", count[4]);
+		ImGui::Text("Tiles LOD 5: %d", count[5]);
+		ImGui::Text("Tiles LOD 6: %d", count[6]);
+
+		ImGui::TreePop();
+	}
 }
 
 

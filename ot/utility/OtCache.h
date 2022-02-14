@@ -37,6 +37,16 @@ public:
 		}
 	}
 
+	// return the cache size
+	size_t getSize() {
+		return size;
+	}
+
+	// return number of cache entries
+	size_t getNumberOfEntries() {
+		return items.size();
+	}
+
 	// remove all entries
 	void clear() {
 		items.clear();

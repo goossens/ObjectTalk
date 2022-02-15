@@ -91,6 +91,17 @@ void OtFrameworkClass::initGLFW() {
 		fw->height = h;
 	});
 
+	// setup window focus callback
+	glfwSetWindowFocusCallback(window, [](GLFWwindow* window, int focused) {
+		OtFrameworkClass* fw = (OtFrameworkClass*) glfwGetWindowUserPointer(window);
+
+		if (focused) {
+			double xpos, ypos;
+			glfwGetCursorPos(window, &xpos, &ypos);
+			fw->eventQueue.pushMouseMoveEvent(xpos, ypos);
+		}
+	});
+
 	// setup mouse button callback
 	glfwSetMouseButtonCallback(window, [](GLFWwindow* window, int button, int action, int mods) {
 		OtFrameworkClass* fw = (OtFrameworkClass*) glfwGetWindowUserPointer(window);
@@ -105,7 +116,6 @@ void OtFrameworkClass::initGLFW() {
 	// setup mouse move callback
 	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) {
 		OtFrameworkClass* fw = (OtFrameworkClass*) glfwGetWindowUserPointer(window);
-		int button = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1);
 
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
 			fw->eventQueue.pushMouseDragEvent(GLFW_MOUSE_BUTTON_1, fw->modifiers, xpos, ypos);

@@ -63,21 +63,20 @@ OtFilterClass::~OtFilterClass() {
 
 void OtFilterClass::createQuad(int w, int h) {
 	if (bgfx::getAvailTransientVertexBuffer(3, Vertex::getLayout()) == 3) {
-		bgfx::RendererType::Enum renderer = bgfx::getRendererType();
-		bool originBottomLeft = renderer == bgfx::RendererType::OpenGL || renderer == bgfx::RendererType::OpenGLES;
+		const bgfx::Caps* caps = bgfx::getCaps();
 
 		bgfx::TransientVertexBuffer vb;
 		bgfx::allocTransientVertexBuffer(&vb, 3, Vertex::getLayout());
 		Vertex* vertex = (Vertex*) vb.data;
 
 		vertex[0].position = glm::vec3(-w, 0.0, 0.0);
-		vertex[0].uv = originBottomLeft ? glm::vec2(-1.0, 1.0) : glm::vec2(-1.0, 0.0);
+		vertex[0].uv = caps->originBottomLeft ? glm::vec2(-1.0, 1.0) : glm::vec2(-1.0, 0.0);
 
 		vertex[1].position = glm::vec3(w, 0.0, 0.0);
-		vertex[1].uv = originBottomLeft ? glm::vec2(1.0, 1.0) : glm::vec2(1.0, 0.0);
+		vertex[1].uv = caps->originBottomLeft ? glm::vec2(1.0, 1.0) : glm::vec2(1.0, 0.0);
 
 		vertex[2].position = glm::vec3(w, h * 2.0, 0.0);
-		vertex[2].uv = originBottomLeft ? glm::vec2(1.0, -1.0) : glm::vec2(1.0, 2.0);
+		vertex[2].uv = caps->originBottomLeft ? glm::vec2(1.0, -1.0) : glm::vec2(1.0, 2.0);
 
 		bgfx::setVertexBuffer(0, &vb);
 	}

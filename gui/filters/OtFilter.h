@@ -48,5 +48,5 @@ private:
 	bgfx::UniformHandle textureUniform = BGFX_INVALID_HANDLE;
 
 	// rendering state
-	int state = BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A;
+	uint64_t state = BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A;
 };

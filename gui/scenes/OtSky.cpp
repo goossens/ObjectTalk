@@ -148,33 +148,36 @@ void OtSkyClass::renderGUI() {
 //	OtSkyClass::render
 //
 
-void OtSkyClass::render(OtRenderingContext* context) {
-	// ensure sky is centered at camera position
-	glm::mat4 transform = glm::translate(glm::mat4(1.0), context->camera->getPosition());
-	bgfx::setTransform(glm::value_ptr(transform));
+void OtSkyClass::render(OtRenderingContext context) {
+	// no sun, no sky
+	if (!(sun && !sun->isEnabled())) {
+		// ensure sky is centered at camera position
+		glm::mat4 transform = glm::translate(glm::mat4(1.0), context->getCamera()->getPosition());
+		bgfx::setTransform(glm::value_ptr(transform));
 
-	// submit vertices and triangles
-	bgfx::setVertexBuffer(0, vertexBuffer);
-	bgfx::setIndexBuffer(indexBuffer);
+		// submit vertices and triangles
+		bgfx::setVertexBuffer(0, vertexBuffer);
+		bgfx::setIndexBuffer(indexBuffer);
 
-	// set uniforms
-	glm::vec4 uniforms[3];
-	uniforms[0].x = 0.0;
-	uniforms[0].y = cirrus;
-	uniforms[0].z = cumulus;
-	uniforms[1].x = rayleighCoefficient / 1000.0;
-	uniforms[1].y = mieCoefficient / 1000.0;
-	uniforms[1].z = mieScattering;
+		// set uniforms
+		glm::vec4 uniforms[3];
+		uniforms[0].x = 0.0;
+		uniforms[0].y = cirrus;
+		uniforms[0].z = cumulus;
+		uniforms[1].x = rayleighCoefficient / 1000.0;
+		uniforms[1].y = mieCoefficient / 1000.0;
+		uniforms[1].z = mieScattering;
 
-	if (sun) {
-		uniforms[2] = glm::vec4(sun->getDirection(), 0.0);
+		if (sun) {
+			uniforms[2] = glm::vec4(sun->getDirection(), 0.0);
+		}
+
+		bgfx::setUniform(skyUniform, uniforms, 3);
+
+		// run shader
+		bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_MSAA);
+		bgfx::submit(context->getView(), shader);
 	}
-
-	bgfx::setUniform(skyUniform, uniforms, 3);
-
-	// run shader
-	bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_MSAA);
-	bgfx::submit(context->view, shader);
 }
 
 

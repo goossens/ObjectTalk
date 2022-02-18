@@ -14,6 +14,7 @@
 
 #include "OtController.h"
 #include "OtSceneObject.h"
+#include "OtSun.h"
 
 
 //
@@ -31,12 +32,13 @@ public:
 	OtObject setColor(const std::string& color);
 	OtObject setDistances(float near, float far);
 	OtObject setLimits(float minNear, float maxNear, float minFar, float maxFar);
+	OtObject setSun(OtObject sun);
+
+	// update state
+	void update(OtRenderingContext context);
 
 	// GUI to change fog properties
 	void renderGUI();
-
-	// submit data to BGFX
-	void render(OtRenderingContext* context);
 
 	// get type definition
 	static OtType getMeta();
@@ -47,14 +49,16 @@ public:
 private:
 	// fog properties
 	glm::vec3 color = glm::vec4(1.0);
-	float near = 0;
+	float near = 10;
 	float far = 100;
 
 	float minNear = 0;
-	float maxNear = 10;
+	float maxNear = 10000;
 
-	float minFar = 50;
-	float maxFar = 150;
+	float minFar = 0;
+	float maxFar = 10000;
+
+	OtSun sun;
 };
 
 

@@ -77,7 +77,7 @@ public:
 	float getFrameRate() { return 1000.0 / loopDuration; }
 
 	// get the next available view ID
-	int getNextViewID() { return nextViewID++; }
+	bgfx::ViewId getNextViewID() { return nextViewID++; }
 
 	// add enums to specified module
 	void addEnumsGLFW(OtObject module);
@@ -124,7 +124,7 @@ private:
 	void* nativeDisplayType = nullptr;
 	int width = 1280;
 	int height = 720;
-	int nextViewID;
+	bgfx::ViewId nextViewID;
 
 	// keyboard shortcut tracking
 	struct OtKeyboardShortcut {

@@ -137,7 +137,7 @@ OtObject OtMeshClass::addInstance(OtObject object) {
 //	OtMeshClass::render
 //
 
-void OtMeshClass::render(OtRenderingContext* context, long flag) {
+void OtMeshClass::render(OtRenderingContext context, long flag) {
 	// let parent class do its thing
 	OtObject3dClass::render(context);
 
@@ -174,7 +174,7 @@ void OtMeshClass::render(OtRenderingContext* context, long flag) {
 		BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA));
 
 	// run shader
-	bgfx::submit(context->view, shader);
+	bgfx::submit(context->getView(), shader);
 }
 
 
@@ -182,7 +182,7 @@ void OtMeshClass::render(OtRenderingContext* context, long flag) {
 //	OtMeshClass::render
 //
 
-void OtMeshClass::render(OtRenderingContext* context) {
+void OtMeshClass::render(OtRenderingContext context) {
 	// sanity check
 	if (!geometry || !material) {
 		OtExcept("[Geometry] and/or [material] properties missing for [Mesh]");

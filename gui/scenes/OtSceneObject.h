@@ -27,11 +27,11 @@ typedef std::shared_ptr<OtSceneObjectClass> OtSceneObject;
 class OtSceneObjectClass : public OtComponentClass {
 public:
 	// update state
-	virtual void update(OtRenderingContext* context) {}
+	virtual void update(OtRenderingContext context) {}
 
 	// render in BGFX
-	virtual void preRender(OtRenderingContext* context) {}
-	virtual void render(OtRenderingContext* context) {}
+	virtual void renderShadow(bgfx::ViewId view, uint64_t state, bgfx::ProgramHandle shader) {}
+	virtual void render(OtRenderingContext context) {}
 
 	// get type definition
 	static OtType getMeta();

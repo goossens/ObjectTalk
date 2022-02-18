@@ -4,12 +4,12 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-$input v_position, v_normal, v_texcoord0
+$input v_position, v_normal, v_texcoord0, v_shadow
 
 #include <bgfx.glsl>
 #include <light.glsl>
 
-SAMPLER2D(s_texture, 0);
+SAMPLER2D(s_texture, 1);
 
 // main function
 void main() {
@@ -17,5 +17,5 @@ void main() {
 	vec4 color = texture2D(s_texture, v_texcoord0);
 
 	// return fragment color
-	gl_FragColor = applyLight(color, v_position, v_normal);
+	gl_FragColor = applyLight(color, v_position, v_normal, v_shadow);
 }

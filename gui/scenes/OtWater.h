@@ -42,13 +42,16 @@ public:
 	// set the scale of the normals
 	OtObject setNormalScale(float scale);
 
-	// render in BGFX
-	void preRender(OtRenderingContext* context);
-	void render(OtRenderingContext* context);
+	// update state
+	void update(OtRenderingContext context);
 
-	void renderReflection(OtRenderingContext* context);
-	void renderRefraction(OtRenderingContext* context);
-	void renderWater(OtRenderingContext* context);
+	// render in BGFX
+	void renderShadow(bgfx::ViewId view, uint64_t state, bgfx::ProgramHandle shader);
+	void render(OtRenderingContext context);
+
+	void renderReflection(OtRenderingContext context);
+	void renderRefraction(OtRenderingContext context);
+	void renderWater(OtRenderingContext context);
 
 	// GUI to change water properties
 	void renderGUI();
@@ -61,7 +64,7 @@ public:
 
 protected:
 	// create/update frame buffers
-	void updateFrameBuffers(float viewAspect);
+	void updateFrameBuffers(float aspectRatio);
 
 	// normal map
 	OtTexture normals;
@@ -76,16 +79,14 @@ protected:
 	float shininess = 50.0;
 
 	// Frame buffers
-	float frameBufferAspect = -1;
+	float frameBufferAspectRation = -1;
 	bgfx::TextureHandle reflectionTextures[2];
-	bgfx::FrameBufferHandle reflectionFrameBuffer = BGFX_INVALID_HANDLE;;
+	bgfx::FrameBufferHandle reflectionFrameBuffer = BGFX_INVALID_HANDLE;
+	bgfx::ViewId reflectionView;
 
 	bgfx::TextureHandle refractionTextures[2];
-	bgfx::FrameBufferHandle refractionFrameBuffer = BGFX_INVALID_HANDLE;;
-
-	// rendering views
-	int reflectionView;
-	int refractionView;
+	bgfx::FrameBufferHandle refractionFrameBuffer = BGFX_INVALID_HANDLE;
+	bgfx::ViewId refractionView;
 
 	// BGFX buffers
 	glm::vec3 waterVertices[4];

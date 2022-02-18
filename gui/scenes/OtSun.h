@@ -38,11 +38,14 @@ public:
 	// get the direction towards the sun
 	glm::vec3 getDirection();
 
+	// get ambient light emitted by sun
+	float getAmbientLight();
+
+	// update state
+	void update(OtRenderingContext context);
+
 	// GUI to change properties
 	void renderGUI();
-
-	// submit data to BGFX
-	void render(OtRenderingContext* context);
 
 	// get type definition
 	static OtType getMeta();

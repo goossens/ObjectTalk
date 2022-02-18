@@ -92,9 +92,9 @@ OtObject OtObject3dClass::translate(float x, float y, float z) {
 //	OtObject3dClass::render
 //
 
-void OtObject3dClass::render(OtRenderingContext* context) {
+void OtObject3dClass::render(OtRenderingContext context) {
 	// calculate object transformation
-	glm::mat4 transform = context->transform * translating * rotating * scaling;
+	glm::mat4 transform = context->getTransform() * translating * rotating * scaling;
 	bgfx::setTransform(glm::value_ptr(transform));
 }
 

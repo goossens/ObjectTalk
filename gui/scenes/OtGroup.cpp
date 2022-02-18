@@ -29,10 +29,10 @@ void OtGroupClass::validateChild(OtComponent child) {
 //	OtGroupClass::render
 //
 
-void OtGroupClass::render(OtRenderingContext* context) {
+void OtGroupClass::render(OtRenderingContext context) {
 	// update parent transformation
-	glm::mat4 oldTransform = context->transform;
-	context->transform = context->transform * translating * rotating * scaling;
+	glm::mat4 oldTransform = context->getTransform();
+	context->setTransform(oldTransform * translating * rotating * scaling);
 
 	// render all children
 	for (auto& child : children) {
@@ -40,7 +40,7 @@ void OtGroupClass::render(OtRenderingContext* context) {
 	}
 
 	// restore old transform
-	context->transform = oldTransform;
+	context->setTransform(oldTransform);
 }
 
 

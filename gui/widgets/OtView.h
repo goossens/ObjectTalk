@@ -14,7 +14,6 @@
 
 #include "OtAppObject.h"
 #include "OtCamera.h"
-#include "OtRenderingContext.h"
 #include "OtScene.h"
 
 
@@ -66,16 +65,19 @@ protected:
 	// the scene we are looking at
 	OtScene scene;
 
-	// view geometry
+	// view geometry (in percentages)
 	float x = 0;
 	float y = 0;
 	float w = 100;
 	float h = 100;
 
+	// view geometry (in pixels)
+	float vx;
+	float vy;
+	float vw;
+	float vh;
+
 	// old mouse position for drag operation
 	float xold = 0.0;
 	float yold = 0.0;
-
-	// per frame rendering context
-	OtRenderingContext context;
 };

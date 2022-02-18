@@ -4,7 +4,7 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-$input v_position_world, v_position_camera, v_position_screen, v_normal, v_tangent, v_bitangent
+$input v_position_world, v_position_screen, v_normal, v_tangent, v_bitangent, v_shadow
 
 #include <bgfx.glsl>
 #include <light.glsl>
@@ -15,12 +15,12 @@ uniform vec4 u_water[2];
 #define u_orientation u_water[0].z
 #define u_water_color u_water[1]
 
-SAMPLER2D(s_normals, 0);
-SAMPLER2D(s_reflection, 1);
-SAMPLER2D(s_refraction, 2);
+SAMPLER2D(s_normals, 1);
+SAMPLER2D(s_reflection, 2);
+SAMPLER2D(s_refraction, 3);
 
 void main() {
-	mat3 tbn = mtxFromCols(v_tangent, v_normal, v_bitangent);
+	mat3 tbn = mtxFromCols(normalize(v_tangent), normalize(v_normal), normalize(v_bitangent));
 
 	vec2 uv = v_position_world.xz * u_scale;
 	vec2 uv0 = uv / 103.0 + vec2(u_time / 17.0, u_time / 29.0);
@@ -37,5 +37,5 @@ void main() {
 
 	float reflectance = dot(vec3(0.0, 0.0, 1.0), normal);
 	vec4 color = mix(reflectionColor, u_water_color, reflectance);
-	gl_FragColor = applyLight(color, v_position_camera, normal);
+	gl_FragColor = applyLight(color, v_position_world, normal, v_shadow);
 }

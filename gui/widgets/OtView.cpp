@@ -24,6 +24,7 @@ OtViewClass::~OtViewClass() {
 	// clear our scene (it has circular parent/child relationships)
 	if (scene) {
 		scene->clear();
+		scene = nullptr;
 	}
 }
 
@@ -70,27 +71,19 @@ OtObject OtViewClass::setScene(OtObject object) {
 void OtViewClass::update() {
 	// update view if we have a scene and a camera
 	if (scene && camera) {
-		// get camera ready for frame
-		camera->update(&context);
-
-		// get the next view ID
-		OtFramework framework = OtFrameworkClass::instance();
-		int view = framework->getNextViewID();
-
 		// determine dimensions
+		OtFramework framework = OtFrameworkClass::instance();
 		float sw = framework->getWidth();
 		float sh = framework->getHeight();
 
-		float vx = x < 0 ? sw - (x * sw / 100.0) : x * sw / 100.0;
-		float vy = y < 0 ? sw - (y * sh / 100.0) : y * sh / 100.0;
-		float vw = w * sw / 100.0;
-		float vh = h * sh / 100.0;
+		vx = x < 0 ? sw - (x * sw / 100.0) : x * sw / 100.0;
+		vy = y < 0 ? sw - (y * sh / 100.0) : y * sh / 100.0;
+		vw = w * sw / 100.0;
+		vh = h * sh / 100.0;
 
-		// update rendering context
-		context = OtRenderingContext(view, vx, vy, vw, vh, scene, camera);
-
-		// update all objects in scene
-		scene->update(&context);
+		// update camera and scene
+		camera->update(vw / vh);
+		scene->update(camera, vx, vy, vw, vh);
 	}
 }
 
@@ -102,13 +95,7 @@ void OtViewClass::update() {
 void OtViewClass::render() {
 	// render view if we have a scene and a camera
 	if (scene && camera) {
-		// prerender scene
-		scene->preRender(&context);
-
-		// render scene
-		bgfx::setViewRect(context.view, context.viewX, context.viewY, context.viewW, context.viewH);
-		camera->submit(&context);
-		scene->render(&context);
+		scene->render();
 	}
 }
 

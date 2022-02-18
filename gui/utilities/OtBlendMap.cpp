@@ -68,11 +68,11 @@ OtTexture OtBlendMapClass::toTexture(OtObject object) {
 //
 
 void OtBlendMapClass::submit() {
-	blendmap->submit(0, blendmapUniform);
-	textureN->submit(1, textureUniformN);
-	textureR->submit(2, textureUniformR);
-	textureG->submit(3, textureUniformG);
-	textureB->submit(4, textureUniformB);
+	blendmap->submit(1, blendmapUniform);
+	textureN->submit(2, textureUniformN);
+	textureR->submit(3, textureUniformR);
+	textureG->submit(4, textureUniformG);
+	textureB->submit(5, textureUniformB);
 }
 
 

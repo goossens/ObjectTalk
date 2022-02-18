@@ -109,7 +109,7 @@ OtObject OtBackgroundClass::setTexture(OtObject object) {
 //	OtBackgroundClass::render
 //
 
-void OtBackgroundClass::render(OtRenderingContext* context) {
+void OtBackgroundClass::render(OtRenderingContext context) {
 	// submit uniforms
 	glm::mat4 transform = glm::mat4(1.0);
 	OtFramework framework = OtFrameworkClass::instance();
@@ -132,7 +132,7 @@ void OtBackgroundClass::render(OtRenderingContext* context) {
 
 	// run shader
 	bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_MSAA);
-	bgfx::submit(context->view, shader);
+	bgfx::submit(context->getView(), shader);
 }
 
 

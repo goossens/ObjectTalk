@@ -34,7 +34,7 @@ public:
 	OtObject translate(float x, float y, float z);
 
 	// render in BGFX
-	void render(OtRenderingContext* context);
+	void render(OtRenderingContext context);
 
 	// get type definition
 	static OtType getMeta();

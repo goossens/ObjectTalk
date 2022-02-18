@@ -33,11 +33,11 @@ public:
 	// update attributes
 	OtObject setColor(const std::string& color);
 
+	// update state
+	void update(OtRenderingContext context);
+
 	// GUI to change ambient properties
 	void renderGUI();
-
-	// submit data to BGFX
-	void render(OtRenderingContext* context);
 
 	// get type definition
 	static OtType getMeta();

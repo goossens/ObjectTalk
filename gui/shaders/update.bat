@@ -41,6 +41,10 @@ cd /D "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f imgui/shader.vs -o imgui/vs_dx11.h -i include --type vertex --platform windows -p vs_5_0 -O 3 --bin2c OtImGuiVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f imgui/shader.fs -o imgui/fs_dx9.h -i include --type fragment --platform windows -p ps_3_0 -O 3 --bin2c OtImGuiFS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f imgui/shader.fs -o imgui/fs_dx11.h -i include --type fragment --platform windows -p ps_5_0 -O 3 --bin2c OtImGuiFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f shadow/shader.vs -o shadow/vs_dx9.h -i include --type vertex --platform windows -p vs_3_0 -O 3 --bin2c OtShadowVS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f shadow/shader.vs -o shadow/vs_dx11.h -i include --type vertex --platform windows -p vs_5_0 -O 3 --bin2c OtShadowVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f shadow/shader.fs -o shadow/fs_dx9.h -i include --type fragment --platform windows -p ps_3_0 -O 3 --bin2c OtShadowFS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f shadow/shader.fs -o shadow/fs_dx11.h -i include --type fragment --platform windows -p ps_5_0 -O 3 --bin2c OtShadowFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f sky/shader.vs -o sky/vs_dx9.h -i include --type vertex --platform windows -p vs_3_0 -O 3 --bin2c OtSkyVS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f sky/shader.vs -o sky/vs_dx11.h -i include --type vertex --platform windows -p vs_5_0 -O 3 --bin2c OtSkyVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f sky/shader.fs -o sky/fs_dx9.h -i include --type fragment --platform windows -p ps_3_0 -O 3 --bin2c OtSkyFS_dx9

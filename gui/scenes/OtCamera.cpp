@@ -258,6 +258,10 @@ bool OtCameraClass::onMouseDrag(int button, int mods, float xpos, float ypos) {
 }
 
 
+//
+//	OtCameraClass::onScrollWheel
+//
+
 bool OtCameraClass::onScrollWheel(float dx, float dy) {
 	if (mode == circleTargetMode) {
 		setDistance(distance - dy * 0.2);
@@ -309,7 +313,7 @@ bool OtCameraClass::onKey(int key, int mods) {
 //	OtCameraClass::update
 //
 
-void OtCameraClass::update(OtRenderingContext* context) {
+void OtCameraClass::update(float aspectRatio) {
 	if (mode == circleTargetMode) {
 		// calculate new camera position
 		cameraPosition = glm::vec3(
@@ -339,11 +343,11 @@ void OtCameraClass::update(OtRenderingContext* context) {
 
 	if (style == orthographicStyle) {
 		float w = width / 2.0;
-		float h = width / context->viewAspect / 2.0;
+		float h = width / aspectRatio / 2.0;
 		projMatrix = glm::ortho(-w, w, -h, h, near, far);
 
 	} else {
-		projMatrix = glm::perspective(glm::radians(fov), context->viewAspect, near, far);
+		projMatrix = glm::perspective(glm::radians(fov), aspectRatio, near, far);
 	}
 
 	viewProjMatrix = projMatrix * viewMatrix;
@@ -358,8 +362,8 @@ void OtCameraClass::update(OtRenderingContext* context) {
 //	OtCameraClass::submit
 //
 
-void OtCameraClass::submit(OtRenderingContext* context) {
-	bgfx::setViewTransform(context->view, glm::value_ptr(viewMatrix), glm::value_ptr(projMatrix));
+void OtCameraClass::submit(OtRenderingContext context) {
+	bgfx::setViewTransform(context->getView(), glm::value_ptr(viewMatrix), glm::value_ptr(projMatrix));
 	changed = false;
 }
 

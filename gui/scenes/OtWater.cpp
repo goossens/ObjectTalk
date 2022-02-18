@@ -108,8 +108,7 @@ OtWaterClass::~OtWaterClass() {
 //	OtWaterClass::updateFrameBuffers
 //
 
-
-void OtWaterClass::updateFrameBuffers(float viewAspect) {
+void OtWaterClass::updateFrameBuffers(float aspectRatio) {
 	// release resources
 	if (bgfx::isValid(reflectionFrameBuffer)) {
 		bgfx::destroy(reflectionFrameBuffer);
@@ -122,7 +121,7 @@ void OtWaterClass::updateFrameBuffers(float viewAspect) {
 	// determine size of frame buffer
 	const uint64_t flags = BGFX_TEXTURE_RT | BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP;
 	int w = 512;
-	int h = w / viewAspect;
+	int h = w / aspectRatio;
 
 	// create new frame buffers
 	reflectionTextures[0] = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA16F, flags);
@@ -156,7 +155,6 @@ OtObject OtWaterClass::init(size_t count, OtObject* parameters) {
 //	OtWaterClass::setSize
 //
 
-
 OtObject OtWaterClass::setSize(int s) {
 	size = s;
 	return shared();
@@ -174,7 +172,10 @@ OtObject OtWaterClass::setNormalMap(OtObject object) {
 }
 
 
-// set the scale of the normals
+//
+//	OtWaterClass::setNormalScale
+//
+
 OtObject OtWaterClass::setNormalScale(float s) {
 	scale = s;
 	return shared();
@@ -182,20 +183,54 @@ OtObject OtWaterClass::setNormalScale(float s) {
 
 
 //
-//	OtWaterClass::preRender
+//	OtWaterClass::update
 //
 
-void OtWaterClass::preRender(OtRenderingContext* context) {
-	// get new IDs for reflection and refraction rendering
+void OtWaterClass::update(OtRenderingContext context) {
+	// create/update frame buffers (if required)
+	auto aspectRatio = context->getViewAspectRatio();
+
+	if (frameBufferAspectRation != aspectRatio) {
+		updateFrameBuffers(aspectRatio);
+		frameBufferAspectRation = aspectRatio;
+	}
+
+	// update vertices if camera has changed
+	auto camera = context->getCamera();
+
+	if (camera->hasChanged()) {
+		// determine center
+		glm::vec center = camera->getPosition();
+		center.y = 0.0;
+
+		// adjust vertices
+		for (auto c = 0; c < 4; c ++) {
+			waterVertices[c] = templateVertices[c] * size + center;
+		}
+
+		// tell BGFX about it
+		bgfx::update(vertexBuffer, 0, bgfx::makeRef(waterVertices, sizeof(waterVertices) * sizeof(glm::vec3)));
+	}
+
+	// reserve views for reflection and refraction
 	OtFramework framework = OtFrameworkClass::instance();
 	reflectionView = framework->getNextViewID();
 	refractionView = framework->getNextViewID();
+}
 
-	// create/update frame buffers (if required)
-	if (frameBufferAspect != context->viewAspect) {
-		updateFrameBuffers(context->viewAspect);
-		frameBufferAspect = context->viewAspect;
-	}
+
+//
+//	OtWaterClass::renderShadow
+//
+
+void OtWaterClass::renderShadow(bgfx::ViewId view, uint64_t state, bgfx::ProgramHandle shader) {
+	// submit vertices and triangles
+	bgfx::setVertexBuffer(0, vertexBuffer);
+	bgfx::setIndexBuffer(indexBuffer);
+
+	// run shader
+	bgfx::setState(state);
+	bgfx::submit(view, shader);
 }
 
 
@@ -203,13 +238,8 @@ void OtWaterClass::preRender(OtRenderingContext* context) {
 //	OtWaterClass::render
 //
 
-void OtWaterClass::render(OtRenderingContext* context) {
-	// sanity check
-	if (!normals) {
-		OtExcept("Normals map not specified for [Water] object");
-	}
-
-	// render thr three parts of water
+void OtWaterClass::render(OtRenderingContext context) {
+	// render the water's parts
 	renderReflection(context);
 	renderRefraction(context);
 	renderWater(context);
@@ -220,37 +250,39 @@ void OtWaterClass::render(OtRenderingContext* context) {
 //	OtWaterClass::renderReflection
 //
 
-void OtWaterClass::renderReflection(OtRenderingContext* context) {
+void OtWaterClass::renderReflection(OtRenderingContext context) {
 	// create reflection camera
-	glm::vec3 position = context->camera->getPosition();
-	glm::vec3 target = context->camera->getTarget();
+	auto camera = context->getCamera();
+	glm::vec3 position = camera->getPosition();
+	glm::vec3 target = camera->getTarget();
 
 	position.y = -position.y;
 	target.y = -target.y;
 
-	OtCamera reflectionCamera = OtCameraClass::create(context->camera);
+	OtCamera reflectionCamera = OtCameraClass::create(camera);
 	reflectionCamera->setPositionVector(position);
 	reflectionCamera->setTargetVector(target);
 
 	// create reflection rendering context
-	OtRenderingContext reflectionContext(
-		reflectionView,
-		context->viewX, context->viewY, context->viewW, context->viewH,
-		context->scene, reflectionCamera);
+	auto aspectRatio = context->getViewAspectRatio();
+	OtRenderingContextClass reflectionContext = *context;
+	reflectionContext.setView(reflectionView);
+	reflectionContext.setViewRect(0, 0, 512, 512 / aspectRatio);
+	reflectionContext.setCamera(reflectionCamera);
+	reflectionContext.setReflection(true);
 
-	reflectionContext.reflection = true;
-
-	// temporarily disable ourselves so we don't draw ourselves
+	// temporarily disable ourselves so we don't get draw
 	disable();
 
-	// render reflection
-	reflectionCamera->update(&reflectionContext);
+	// update and submit reflection camera
+	reflectionCamera->update(aspectRatio);
 	reflectionCamera->submit(&reflectionContext);
 
+	// render reflection
 	bgfx::setViewClear(reflectionView, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH);
-	bgfx::setViewRect(reflectionView, 0, 0, 512, 512 / context->viewAspect);
+	bgfx::setViewRect(reflectionView, 0, 0, 512, 512 / aspectRatio);
 	bgfx::setViewFrameBuffer(reflectionView, reflectionFrameBuffer);
-	context->scene->render(&reflectionContext);
+	context->getScene()->renderChildren(&reflectionContext);
 
 	// reenable so we can be seen in the final rendering
 	enable();
@@ -261,8 +293,7 @@ void OtWaterClass::renderReflection(OtRenderingContext* context) {
 //	OtWaterClass::renderRefraction
 //
 
-void OtWaterClass::renderRefraction(OtRenderingContext* context) {
-
+void OtWaterClass::renderRefraction(OtRenderingContext context) {
 }
 
 
@@ -270,25 +301,20 @@ void OtWaterClass::renderRefraction(OtRenderingContext* context) {
 //	OtWaterClass::renderWater
 //
 
-void OtWaterClass::renderWater(OtRenderingContext* context) {
-	// determine center
-	glm::vec center = context->camera->getPosition();
-	center.y = 0.0;
-
-	// adjust water size
-	for (auto c = 0; c < 4; c ++) {
-		waterVertices[c] = templateVertices[c] * size + center;
+void OtWaterClass::renderWater(OtRenderingContext context) {
+	// sanity check
+	if (!normals) {
+		OtExcept("Normals map not specified for [Water] object");
 	}
 
 	// submit vertices and triangles
-	bgfx::update(vertexBuffer, 0, bgfx::makeRef(waterVertices, sizeof(waterVertices) * sizeof(glm::vec3)));
 	bgfx::setVertexBuffer(0, vertexBuffer);
 	bgfx::setIndexBuffer(indexBuffer);
 
 	// set normal map, reflection and refraction
-	normals->submit(0, normalsUniform);
-	bgfx::setTexture(1, reflectionUniform, reflectionTextures[0]);
-	bgfx::setTexture(2, refractionUniform, refractionTextures[0]);
+	normals->submit(1, normalsUniform);
+	bgfx::setTexture(2, reflectionUniform, reflectionTextures[0]);
+	bgfx::setTexture(3, refractionUniform, refractionTextures[0]);
 
 	// update time for water ripples
 	time += OtFrameworkClass::instance()->getLoopDuration() / 2500.0;
@@ -304,19 +330,16 @@ void OtWaterClass::renderWater(OtRenderingContext* context) {
 	materialUniforms[4].x = shininess;
 	bgfx::setUniform(materialUniform, &materialUniforms, 5);
 
-	bgfx::RendererType::Enum renderer = bgfx::getRendererType();
-	bool originBottomLeft = renderer == bgfx::RendererType::OpenGL || renderer == bgfx::RendererType::OpenGLES;
-
 	glm::vec4 waterUniforms[2];
 	waterUniforms[0].x = time;
 	waterUniforms[0].y = scale;
-	waterUniforms[0].z = originBottomLeft ? -1.0 : 1.0;
+	waterUniforms[0].z = bgfx::getCaps()->originBottomLeft ? -1.0 : 1.0;
 	waterUniforms[1] = glm::vec4(color, 1.0);
 	bgfx::setUniform(waterUniform, waterUniforms, 2);
 
 	// run shader
 	bgfx::setState(BGFX_STATE_DEFAULT);
-	bgfx::submit(context->view, shader);
+	bgfx::submit(context->getView(), shader);
 }
 
 

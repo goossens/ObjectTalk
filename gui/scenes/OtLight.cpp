@@ -50,6 +50,15 @@ OtObject OtLightClass::setSpecular(const std::string& c) {
 
 
 //
+//	OtLightClass::update
+//
+
+void OtLightClass::update(OtRenderingContext context) {
+	context->setPointLight(position, diffuse, specular);
+}
+
+
+//
 //	OtLightClass::renderGUI
 //
 
@@ -58,16 +67,6 @@ void OtLightClass::renderGUI() {
 	ImGui::SliderFloat3("Position", glm::value_ptr(position), -50.0f, 50.0f);
 	ImGui::ColorEdit3("Diffuse", glm::value_ptr(diffuse));
 	ImGui::ColorEdit3("Specular", glm::value_ptr(specular));
-}
-
-
-//
-//	OtLightClass::render
-//
-
-void OtLightClass::render(OtRenderingContext* context) {
-	glm::vec3 pos = (context->camera->getViewMatrix() * glm::vec4(position, 1.0));
-	context->addPointLight(pos, diffuse, specular);
 }
 
 

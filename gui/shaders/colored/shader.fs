@@ -4,7 +4,7 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-$input v_position, v_normal
+$input v_position, v_normal, v_shadow
 
 #include <bgfx.glsl>
 #include <light.glsl>
@@ -12,5 +12,5 @@ $input v_position, v_normal
 // main function
 void main() {
 	// return fragment color
-	gl_FragColor = applyLight(u_material_color, v_position, v_normal);
+	gl_FragColor = applyLight(u_material_color, v_position, v_normal, v_shadow);
 }

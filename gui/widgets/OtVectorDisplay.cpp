@@ -1186,7 +1186,7 @@ void OtVectorDisplayClass::render() {
 	}
 
 	// setup BGFX view
-	int view = OtFrameworkClass::instance()->getNextViewID();
+	bgfx::ViewId view = OtFrameworkClass::instance()->getNextViewID();
 	bgfx::setViewClear(view, BGFX_CLEAR_COLOR);
 	bgfx::setViewRect(view, 0.0, 0.0, vw, vh);
 	bgfx::setViewFrameBuffer(view, frameBuffer0);

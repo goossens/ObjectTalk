@@ -8,8 +8,8 @@
 
 var gui = import("gui");
 
-class MyApp : gui.Application {
-	function setup(this, screen) {
+class App : gui.App {
+	function setup(this) {
 		var ambient = gui.Ambient();
 		var light = gui.Light().setPosition(1, 2, 4);
 
@@ -17,14 +17,14 @@ class MyApp : gui.Application {
 		var gold = gui.Material("material", "gold");
 		var object = gui.Mesh(geometry, gold).setWireframe(true);
 
-		this.animation()
+		this.addAnimation(gui.Animation()
 			.from(0.0)
 			.to(pi * 2.0)
 			.during(15000)
 			.continuous()
 			.onStep(function(angle) {
 				object.rotateAroundVector(angle, 1, 1, 0);
-			});
+			}));
 
 		var scene = gui.Scene()
 			.add(ambient)
@@ -73,9 +73,9 @@ class MyApp : gui.Application {
 		}));
 
 		panel.add(node);
-		screen.add(view).add(panel);
+		this.add(view).add(panel);
 	}
 }
 
-var app = MyApp();
-app.run("3D Geometry");
+var app = App();
+os.runGUI();

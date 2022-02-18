@@ -244,10 +244,10 @@ OtObject OtTerrainClass::setRegion4Texture(OtObject object) {
 
 
 //
-//	OtTerrainClass::render
+//	OtTerrainClass::update
 //
 
-void OtTerrainClass::render(OtRenderingContext* context) {
+void OtTerrainClass::update(OtRenderingContext context) {
 	// sanity check
 	if (!terrainmap) {
 		OtExcept("TerrainMap] properties not set for [Terrain]");
@@ -255,13 +255,13 @@ void OtTerrainClass::render(OtRenderingContext* context) {
 
 	// remove old tiles (use std::remove_if in C++20)
 	auto now = OtFrameworkClass::instance()->getTime();
-	auto entry = tiles.begin();
+	auto entry = usedTiles.begin();
 
-	while (entry != tiles.end()) {
+	while (entry != usedTiles.end()) {
 		auto const& [hash, tile] = *entry;
 
 		if (now - tile->lastUsed > 5.0) {
-			entry = tiles.erase(entry);
+			entry = usedTiles.erase(entry);
 
 		} else {
 			entry++;
@@ -273,13 +273,10 @@ void OtTerrainClass::render(OtRenderingContext* context) {
 		OtTerrainTile tile = responses.pop();
 
 		if (tile->version == version) {
-			tiles[tile->hash] = tile;
+			usedTiles[tile->hash] = tile;
 			requested.erase(tile->hash);
 		}
 	}
-
-	// list of tiles that are visible (and available)
-	std::vector<OtTerrainTile> visible;
 
 	// list of tiles needed
 	struct neededTile {
@@ -293,11 +290,14 @@ void OtTerrainClass::render(OtRenderingContext* context) {
 
 	std::vector<neededTile> needed;
 
+	// clear list of visible tiles
+	visibleTiles.clear();
+
 	// determine number of tiles visible from center
-	int visibleTiles = std::lround(maxViewingDist / tileSize);
+	int visibleFromCenter = std::lround(maxViewingDist / tileSize);
 
 	// determine center tile
-	glm::vec3 center = context->camera->getPosition();
+	glm::vec3 center = context->getCamera()->getPosition();
 	int terrainCenterTileX = std::lround(center.x / tileSize);
 	int terrainCenterTileY = std::lround(center.z / tileSize);
 
@@ -306,8 +306,8 @@ void OtTerrainClass::render(OtRenderingContext* context) {
 	auto maxHeight = terrainmap->getMaxHeight();
 
 	// process all possible visible tiles
-	for (auto yOffset = -visibleTiles; yOffset <= visibleTiles; yOffset++) {
-		for (auto xOffset = -visibleTiles; xOffset <= visibleTiles; xOffset++) {
+	for (auto yOffset = -visibleFromCenter; yOffset <= visibleFromCenter; yOffset++) {
+		for (auto xOffset = -visibleFromCenter; xOffset <= visibleFromCenter; xOffset++) {
 			auto x = terrainCenterTileX + xOffset;
 			auto y = terrainCenterTileY + yOffset;
 
@@ -318,9 +318,11 @@ void OtTerrainClass::render(OtRenderingContext* context) {
 			glm::vec3 minValues = glm::vec3(cx - tileSize / 2, minHeight, cy - tileSize / 2);
 			glm::vec3 maxValues = glm::vec3(cx + tileSize / 2, maxHeight, cy + tileSize / 2);
 
-			if (context->camera->isVisibleAABB(minValues, maxValues)) {
+			auto camera = context->getCamera();
+
+			if (camera->isVisibleAABB(minValues, maxValues)) {
 				// determine level of detail for tile
-				float distanceToTile = glm::distance(glm::vec3(cx, 0.0, cy), context->camera->getPosition());
+				float distanceToTile = glm::distance(glm::vec3(cx, 0.0, cy), camera->getPosition());
 				int distanceInTiles = distanceToTile / tileSize;
 				int lod = distanceInTiles <= 6 ? 6 - distanceInTiles : 0;
 
@@ -329,7 +331,7 @@ void OtTerrainClass::render(OtRenderingContext* context) {
 					// yes, add it to list of visible tiles
 					OtTerrainTile tile = tileGet(x, y, lod, version);
 					tile->lastUsed = now;
-					visible.push_back(tile);
+					visibleTiles.push_back(tile);
 
 				} else {
 					// no, mark tile as needed if not already requested
@@ -342,7 +344,7 @@ void OtTerrainClass::render(OtRenderingContext* context) {
 					if (tileExists(x, y, lod, version - 1)) {
 						OtTerrainTile tile = tileGet(x, y, lod, version - 1);
 						tile->lastUsed = now;
-						visible.push_back(tile);
+						visibleTiles.push_back(tile);
 
 					} else {
 						OtTerrainTile tile = nullptr;
@@ -358,7 +360,7 @@ void OtTerrainClass::render(OtRenderingContext* context) {
 
 							if (tile) {
 								tile->lastUsed = now;
-								visible.push_back(tile);
+								visibleTiles.push_back(tile);
 							}
 						}
 					}
@@ -378,9 +380,33 @@ void OtTerrainClass::render(OtRenderingContext* context) {
 		requested.insert(tile->hash);
 		requests.push(tile);
 	}
+}
 
-	// render all tiles
-	for (auto& tile : visible) {
+
+//
+//	OtTerrainClass::renderShadow
+//
+
+void OtTerrainClass::renderShadow(bgfx::ViewId view, uint64_t state, bgfx::ProgramHandle shader) {
+	// render all visible tiles
+	for (auto& tile : visibleTiles) {
+		// submit vertices and triangles
+		tile->submit();
+
+		// run shader
+		bgfx::setState(state);
+		bgfx::submit(view, shader);
+	}
+}
+
+
+//
+//	OtTerrainClass::render
+//
+
+void OtTerrainClass::render(OtRenderingContext context) {
+	// render all visible tiles
+	for (auto& tile : visibleTiles) {
 		// set context uniforms
 		context->submit();
 
@@ -396,8 +422,8 @@ void OtTerrainClass::render(OtRenderingContext* context) {
 		// set land uniforms
 		glm::vec4 terrainUniforms[7];
 		terrainUniforms[0].x = textureScale;
-		terrainUniforms[0].y = context->reflection;
-		terrainUniforms[0].z = context->refraction;
+		terrainUniforms[0].y = context->getReflection();
+		terrainUniforms[0].z = context->getRefraction();
 
 		terrainUniforms[1].x = region1Transition;
 		terrainUniforms[1].y = region2Transition;
@@ -415,17 +441,17 @@ void OtTerrainClass::render(OtRenderingContext* context) {
 		bgfx::setUniform(terrainUniform, terrainUniforms, 7);
 
 		// set textures
-		(textureRegion1 ? textureRegion1 : OtTextureClass::dummy())->submit(0, textureUniform1);
-		(textureRegion2 ? textureRegion2 : OtTextureClass::dummy())->submit(1, textureUniform2);
-		(textureRegion3 ? textureRegion3 : OtTextureClass::dummy())->submit(2, textureUniform3);
-		(textureRegion4 ? textureRegion4 : OtTextureClass::dummy())->submit(3, textureUniform4);
+		(textureRegion1 ? textureRegion1 : OtTextureClass::dummy())->submit(1, textureUniform1);
+		(textureRegion2 ? textureRegion2 : OtTextureClass::dummy())->submit(2, textureUniform2);
+		(textureRegion3 ? textureRegion3 : OtTextureClass::dummy())->submit(3, textureUniform3);
+		(textureRegion4 ? textureRegion4 : OtTextureClass::dummy())->submit(4, textureUniform4);
 
 		// submit vertices and triangles
 		tile->submit();
 
 		// run shader
 		bgfx::setState(BGFX_STATE_DEFAULT);
-		bgfx::submit(context->view, shader);
+		bgfx::submit(context->getView(), shader);
 	}
 }
 
@@ -448,14 +474,14 @@ void OtTerrainClass::renderGUI() {
 	ImGui::SliderFloat("Overlap 3", &region3Overlap, 1, 50);
 
 	if (ImGui::TreeNodeEx("Debug", ImGuiTreeNodeFlags_Framed)) {
-		int visibleTiles = tiles.size();
+		int tilesInUse = usedTiles.size();
 		int count[7] = {0};
 
-		for (auto& entry : tiles) {
+		for (auto& entry : usedTiles) {
 			count[entry.second->lod]++;
 		}
 
-		ImGui::Text("Visible tiles: %d", visibleTiles);
+		ImGui::Text("Tiles in use: %d", tilesInUse);
 		ImGui::Text("Tiles LOD 0: %d", count[0]);
 		ImGui::Text("Tiles LOD 1: %d", count[1]);
 		ImGui::Text("Tiles LOD 2: %d", count[2]);

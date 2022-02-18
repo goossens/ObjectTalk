@@ -31,6 +31,7 @@ done
 function needsUpdate() {
 	if [ ${FORCE} -eq 1 ]
 	then
+		echo "--------------------------------------- $1"
 		true
 
 	elif [ ${UPDATEBATCH} -eq 1 ]
@@ -153,6 +154,7 @@ compileShader Colored
 compileShader Debug
 compileShader Fixed
 compileShader ImGui
+compileShader Shadow
 compileShader Sky
 compileShader Skybox
 compileShader Terrain

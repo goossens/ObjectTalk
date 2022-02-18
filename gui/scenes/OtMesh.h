@@ -44,7 +44,7 @@ public:
 	OtObject addInstance(OtObject matrix);
 
 	// render in BGFX
-	void render(OtRenderingContext* context);
+	void render(OtRenderingContext context);
 
 	// get type definition
 	static OtType getMeta();
@@ -54,7 +54,7 @@ public:
 
 protected:
 	// render with culling
-	void render(OtRenderingContext* context, long flag);
+	void render(OtRenderingContext context, long flag);
 
 	// properties
 	OtGeometry geometry;

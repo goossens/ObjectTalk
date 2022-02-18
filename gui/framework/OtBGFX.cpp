@@ -61,6 +61,10 @@ void OtFrameworkClass::initBGFX() {
 		OtExcept("Your system/graphics card does not support instancing");
 	}
 
+	if (!(caps->supported & BGFX_CAPS_TEXTURE_COMPARE_LEQUAL)) {
+		OtExcept("Your system/graphics card does not support texture '<='");
+	}
+
 	// initialize time management
 	startTime = lastTime = bx::getHPCounter();
 }

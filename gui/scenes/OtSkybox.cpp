@@ -282,14 +282,14 @@ OtObject OtSkyboxClass::setCubemap(const std::string& posx, const std::string& n
 //	OtSkyboxClass::render
 //
 
-void OtSkyboxClass::render(OtRenderingContext* context) {
+void OtSkyboxClass::render(OtRenderingContext context) {
 	// sanity check
 	if (!bgfx::isValid(cubemap)) {
 		OtExcept("[cubemap] missing for [skybox]");
 	}
 
 	// ensure skybox is centered at camera position
-	glm::mat4 transform = glm::translate(glm::mat4(1.0), context->camera->getPosition());
+	glm::mat4 transform = glm::translate(glm::mat4(1.0), context->getCamera()->getPosition());
 	bgfx::setTransform(glm::value_ptr(transform));
 
 	// submit cubemap
@@ -301,7 +301,7 @@ void OtSkyboxClass::render(OtRenderingContext* context) {
 
 	// run shader
 	bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_MSAA);
-	bgfx::submit(context->view, shader);
+	bgfx::submit(context->getView(), shader);
 }
 
 

@@ -54,6 +54,31 @@ OtObject OtFogClass::setLimits(float mnn, float mxn, float mnf, float mxf) {
 
 
 //
+//	OtFogClass::setSun(
+//
+
+OtObject OtFogClass::setSun(OtObject object) {
+	object->expectKindOf("Sun");
+	sun = object->cast<OtSunClass>();
+	return shared();
+}
+
+
+//
+//	OtFogClass::update
+//
+
+void OtFogClass::update(OtRenderingContext context) {
+	if (sun) {
+		context->setFog(color * sun->getAmbientLight() / 1.5f, near, far);
+
+	} else {
+		context->setFog(color, near, far);
+	}
+}
+
+
+//
 //	OtFogClass::renderGUI
 //
 
@@ -62,15 +87,6 @@ void OtFogClass::renderGUI() {
 	ImGui::ColorEdit3("Color", glm::value_ptr(color));
 	ImGui::SliderFloat("Near", &near, minNear, maxNear);
 	ImGui::SliderFloat("Far", &far, minFar, maxFar);
-}
-
-
-//
-//	OtFogClass::render
-//
-
-void OtFogClass::render(OtRenderingContext* context) {
-	context->setFog(color * context->getAmbientLight() / 1.5f, near, far);
 }
 
 
@@ -86,6 +102,7 @@ OtType OtFogClass::getMeta() {
 		type->set("setColor", OtFunctionClass::create(&OtFogClass::setColor));
 		type->set("setDistances", OtFunctionClass::create(&OtFogClass::setDistances));
 		type->set("setLimits", OtFunctionClass::create(&OtFogClass::setLimits));
+		type->set("setSun", OtFunctionClass::create(&OtFogClass::setSun));
 	}
 
 	return type;

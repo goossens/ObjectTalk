@@ -60,11 +60,37 @@ OtObject OtSunClass::setAzimuth(float a) {
 }
 
 
+//
+//	OtSunClass::getDirection
+//
+
 glm::vec3 OtSunClass::getDirection() {
 	return glm::vec3(
 		std::cos(elevation) * std::sin(azimuth),
 		std::sin(elevation),
 		std::cos(elevation) * -std::cos(azimuth));
+}
+
+
+//
+//	OtSunClass::getAmbientLight
+//
+
+float OtSunClass::getAmbientLight() {
+	return std::clamp((elevation + 0.1) / 0.3, 0.0, 1.0);
+}
+
+
+//
+//	OtSunClass::update
+//
+
+void OtSunClass::update(OtRenderingContext context) {
+	float ambient = getAmbientLight();
+	context->setAmbientLight(glm::vec3(ambient));
+
+	glm::vec3 direction = glm::normalize(getDirection());
+	context->setDirectionalLight(direction, glm::vec3(1.0), glm::vec3(1.0));
 }
 
 
@@ -76,19 +102,6 @@ void OtSunClass::renderGUI() {
 	ImGui::Checkbox("Enabled", &enabled);
 	ImGui::SliderFloat("Elevation", &elevation, -0.99, 0.99);
 	ImGui::SliderFloat("Azimuth", &azimuth, 0.0, std::numbers::pi * 2.0);
-}
-
-
-//
-//	OtLightClass::render
-//
-
-void OtSunClass::render(OtRenderingContext* context) {
-	float ambient = std::clamp((elevation + 0.1) / 0.3, 0.0, 1.0);
-	context->setAmbientLight(glm::vec3(ambient));
-
-	glm::vec3 direction = glm::normalize(context->camera->getViewMatrix() * glm::vec4(getDirection(), 0.0));
-	context->addDirectionalLight(direction, glm::vec3(1.0), glm::vec3(1.0));
 }
 
 

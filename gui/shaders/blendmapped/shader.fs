@@ -4,16 +4,16 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-$input v_position, v_normal, v_texcoord0
+$input v_position, v_normal, v_texcoord0, v_shadow
 
 #include <bgfx.glsl>
 #include <light.glsl>
 
-SAMPLER2D(s_blendmap, 0);
-SAMPLER2D(s_texture_n, 1);
-SAMPLER2D(s_texture_r, 2);
-SAMPLER2D(s_texture_g, 3);
-SAMPLER2D(s_texture_b, 4);
+SAMPLER2D(s_blendmap, 1);
+SAMPLER2D(s_texture_n, 2);
+SAMPLER2D(s_texture_r, 3);
+SAMPLER2D(s_texture_g, 4);
+SAMPLER2D(s_texture_b, 5);
 
 // main function
 void main() {
@@ -28,5 +28,5 @@ void main() {
 		texture2D(s_texture_b, tiled) * blend.b;
 
 	// return fragment color
-	gl_FragColor = applyLight(color, v_position, v_normal);
+	gl_FragColor = applyLight(color, v_position, v_normal, v_shadow);
 }

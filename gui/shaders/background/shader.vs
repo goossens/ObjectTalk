@@ -5,7 +5,7 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 $input a_position, a_texcoord0
-$output v_position, v_texcoord0
+$output v_texcoord0
 
 uniform mat4 u_background_transform;
 

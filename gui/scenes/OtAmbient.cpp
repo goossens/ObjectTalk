@@ -47,21 +47,21 @@ OtObject OtAmbientClass::setColor(const std::string& name) {
 
 
 //
+//	OtAmbientClass::update
+//
+
+void OtAmbientClass::update(OtRenderingContext context) {
+	context->setAmbientLight(color);
+}
+
+
+//
 //	OtAmbientClass::renderGUI
 //
 
 void OtAmbientClass::renderGUI() {
 	ImGui::Checkbox("Enabled", &enabled);
 	ImGui::ColorEdit3("Ambient", glm::value_ptr(color));
-}
-
-
-//
-//	OtAmbientClass::render
-//
-
-void OtAmbientClass::render(OtRenderingContext* context) {
-	context->setAmbientLight(color);
 }
 
 

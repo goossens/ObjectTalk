@@ -62,16 +62,17 @@ public:
 	bool onKey(int key, int mods);
 
 	// update camera for next frame
-	void update(OtRenderingContext* context);
+	void update(float aspectRatio);
 
 	// submit data to BGFX
-	void submit(OtRenderingContext* context);
+	void submit(OtRenderingContext context);
 
 	// access camera information
 	glm::vec3 getPosition() { return cameraPosition; }
 	glm::vec3 getTarget() { return cameraTarget; }
 	glm::vec3 getUp() { return cameraUp; }
 	float getFOV() { return fov; }
+	float getWidth() { return width; }
 	float getNearClip() { return near; }
 	float getFarClip() { return far; }
 

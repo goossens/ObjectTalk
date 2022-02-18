@@ -66,8 +66,12 @@ public:
 	OtObject setRegion3Texture(OtObject object);
 	OtObject setRegion4Texture(OtObject object);
 
+	// update state
+	void update(OtRenderingContext context);
+
 	// render in BGFX
-	void render(OtRenderingContext* context);
+	void renderShadow(bgfx::ViewId view, uint64_t state, bgfx::ProgramHandle shader);
+	void render(OtRenderingContext context);
 
 	// GUI to change properties
 	void renderGUI();
@@ -124,13 +128,15 @@ protected:
 	// current version number
 	size_t version = 1;
 
-	// terrain tiles in use
-	std::unordered_map<size_t, OtTerrainTile> tiles;
+	// terrain tiles in use and/or visible
+	std::unordered_map<size_t, OtTerrainTile> usedTiles;
+	std::vector<OtTerrainTile> visibleTiles;
+
 
 	bool tileExists(int x, int y, int lod, int version) {
 		size_t hash = 0;
 		OtHash(hash, x, y, lod, version);
-		return tiles.count(hash) != 0;
+		return usedTiles.count(hash) != 0;
 	}
 
 	bool tileRequested(int x, int y, int lod, int version) {
@@ -142,7 +148,7 @@ protected:
 	OtTerrainTile tileGet(int x, int y, int lod, int version) {
 		size_t hash = 0;
 		OtHash(hash, x, y, lod, version);
-		return tiles[hash];
+		return usedTiles[hash];
 	}
 
 	// worker thread to generate tiles

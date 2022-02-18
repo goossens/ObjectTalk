@@ -262,7 +262,7 @@ void OtMaterialClass::submit() {
 		bgfx::setUniform(transformUniform, &uvTransform);
 
 	} else if (texture) {
-		texture->submit(0, textureUniform);
+		texture->submit(1, textureUniform);
 		bgfx::setUniform(transformUniform, &uvTransform);
 	}
 

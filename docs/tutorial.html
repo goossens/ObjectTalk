@@ -193,13 +193,13 @@
             </p>
             <pre><code>var gui = import(&quot;gui&quot;);
 
-class MyApp : gui.Application {
-	function setup(this, screen) {
+class App : gui.App {
+	function setup(this) {
 	}
 }
 
-var app = MyApp();
-app.run(&quot;3D Tutorial&quot;);
+var app = App();
+os.runGUI();
 </code></pre>
             <p>
               This is a complete and valid App even though it doesn't do
@@ -284,8 +284,8 @@ screen.add(view);
             <p>Our complete App now looks like this:</p>
             <pre><code>var gui = import(&quot;gui&quot;);
 
-class MyApp : gui.Application {
-	function setup(this, screen) {
+class App : gui.App {
+	function setup(this) {
 		var geometry = gui.Box();
 		var material = gui.Material(&quot;material&quot;, &quot;gold&quot;);
 
@@ -300,12 +300,12 @@ class MyApp : gui.Application {
 			.setCamera(camera)
 			.setScene(scene);
 
-		screen.add(view);
+		this.add(view);
 	}
 }
 
-var app = MyApp();
-app.run(&quot;3D Tutorial&quot;);
+var app = App();
+os.runGUI();
 </code></pre>
             <p>
               Let's run this App and be amazed how underwhelming to result is.
@@ -319,14 +319,14 @@ app.run(&quot;3D Tutorial&quot;);
               it's being drawn in 3D. To animate it we'll add an animation to
               the App:
             </p>
-            <pre><code>this.animation()
+            <pre><code>this.addAnimation(gui.Animation()
 	.from(0.0)
 	.to(pi * 2.0)
 	.during(15000)
 	.continuous()
 	.onStep(function(angle) {
 		cube.rotateAroundVector(angle, 1, 1, 0);
-	});
+	}));
 </code></pre>
             <p>
               This animation animates a real from 0.0 to 2PI during 15000
@@ -352,21 +352,21 @@ app.run(&quot;3D Tutorial&quot;);
             </p>
             <pre><code>var gui = import(&quot;gui&quot;);
 
-class MyApp : gui.Application {
-	function setup(this, screen) {
+class App : gui.App {
+	function setup(this) {
 		var geometry = gui.Box();
 		var material = gui.Material(&quot;material&quot;, &quot;gold&quot;);
 
 		var cube = gui.Mesh(geometry, material);
 
-		this.animation()
+		this.addAnimation(gui.Animation()
 			.from(0.0)
 			.to(pi * 2.0)
 			.during(15000)
 			.continuous()
 			.onStep(function(angle) {
 				cube.rotateAroundVector(angle, 1, 1, 0);
-			});
+			}));
 
 		var ambient = gui.Ambient();
 		var light = gui.Light().setPosition(1, 2, 4);
@@ -384,12 +384,12 @@ class MyApp : gui.Application {
 			.setCamera(camera)
 			.setScene(scene);
 
-		screen.add(view);
+		this.add(view);
 	}
 }
 
-var app = MyApp();
-app.run(&quot;3D Tutorial&quot;);
+var app = App();
+os.runGUI();
 </code></pre>
             <p>
               It should now be pretty clearly 3D. Point lights have a position

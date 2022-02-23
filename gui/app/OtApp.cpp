@@ -13,8 +13,8 @@
 #include "OtVM.h"
 
 #include "OtApp.h"
+#include "OtAppMenubar.h"
 #include "OtFramework.h"
-#include "OtMenubar.h"
 #include "OtOS.h"
 #include "OtView.h"
 
@@ -96,8 +96,8 @@ OtObject OtAppClass::addSimulation(OtObject object) {
 
 size_t OtAppClass::getMenubarHeight() {
 	for (auto& child: children) {
-		if (child->isKindOf("Menubar")) {
-			return child->cast<OtMenubarClass>()->getHeight();
+		if (child->isKindOf("AppMenubar")) {
+			return child->cast<OtAppMenubarClass>()->getHeight();
 		}
 	}
 
@@ -160,7 +160,11 @@ void OtAppClass::onUpdate() {
 		}
 
 		// update all our children
-		update();
+		for (auto const& child : children) {
+			if (child->isEnabled()) {
+				child->cast<OtAppObjectClass>()->update();
+			}
+		}
 
 	} catch (const OtException& e) {
 		onError(e);
@@ -175,7 +179,11 @@ void OtAppClass::onUpdate() {
 void OtAppClass::onRender() {
 	try {
 		// render all our children
-		render();
+		for (auto const& child : children) {
+			if (child->isEnabled()) {
+				child->cast<OtAppObjectClass>()->render();
+			}
+		}
 
 	} catch (const OtException& e) {
 		onError(e);
@@ -488,7 +496,7 @@ OtType OtAppClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtAppClass>("App", OtWidgetClass::getMeta());
+		type = OtTypeClass::create<OtAppClass>("App", OtComponentClass::getMeta());
 
 		type->set("addAnimation", OtFunctionClass::create(&OtAppClass::addAnimation));
 		type->set("addSimulation", OtFunctionClass::create(&OtAppClass::addSimulation));

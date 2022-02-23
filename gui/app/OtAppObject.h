@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include "OtWidget.h"
+#include "OtComponent.h"
 
 
 //
@@ -22,8 +22,17 @@
 class OtAppObjectClass;
 typedef std::shared_ptr<OtAppObjectClass> OtAppObject;
 
-class OtAppObjectClass : public OtWidgetClass {
+class OtAppObjectClass : public OtComponentClass {
 public:
+	// ensure specified component is allowed as a child
+	void validateChild(OtComponent child);
+
+	// update state (called every frame so be carefull)
+	virtual void update();
+
+	// render content
+	virtual void render();
+
 	// event handlers
 	virtual bool onMouseButton(int button, int action, int mods, float xpos, float ypos) { return false; }
 	virtual bool onMouseMove(float xpos, float ypos) { return false; }

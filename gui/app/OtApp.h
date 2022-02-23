@@ -13,6 +13,7 @@
 //
 
 #include "OtAnimation.h"
+#include "OtComponent.h"
 #include "OtCustomer.h"
 #include "OtSimulation.h"
 #include "OtWidget.h"
@@ -25,7 +26,7 @@
 class OtAppClass;
 typedef std::shared_ptr<OtAppClass> OtApp;
 
-class OtAppClass : public OtWidgetClass, public OtCustomer {
+class OtAppClass : public OtComponentClass, public OtCustomer {
 public:
 	// constructor/destructor
 	OtAppClass();

@@ -14,10 +14,13 @@
 
 #include <vector>
 
+#include "bgfx/bgfx.h"
+#include "glm/glm.hpp"
+
 #include "OtAppObject.h"
+#include "OtBlit.h"
 #include "OtBlur.h"
 #include "OtController.h"
-#include "OtBlit.h"
 
 
 //

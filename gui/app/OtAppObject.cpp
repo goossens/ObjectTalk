@@ -9,27 +9,26 @@
 //	Include files
 //
 
-#include <algorithm>
+#include "OtException.h"
 
-#include "OtFunction.h"
-
+#include "OtAppObject.h"
 #include "OtWidget.h"
 
 
 //
-//	OtWidgetClass::validateChild
+//	OtAppObjectClass::validateChild
 //
 
-void OtWidgetClass::validateChild(OtComponent child) {
+void OtAppObjectClass::validateChild(OtComponent child) {
 	OtExcept("A [%s] can't have children", getType()->getName().c_str());
 }
 
 
 //
-//	OtWidgetClass::update
+//	OtAppObjectClass::update
 //
 
-void OtWidgetClass::update() {
+void OtAppObjectClass::update() {
 	// update all children
 	for (auto const& child : children) {
 		if (child->isEnabled()) {
@@ -40,10 +39,10 @@ void OtWidgetClass::update() {
 
 
 //
-//	OtWidgetClass::render
+//	OtAppObjectClass::render
 //
 
-void OtWidgetClass::render() {
+void OtAppObjectClass::render() {
 	// render all children
 	for (auto const& child : children) {
 		if (child->isEnabled()) {
@@ -54,26 +53,15 @@ void OtWidgetClass::render() {
 
 
 //
-//	OtWidgetClass::getMeta
+//	OtAppObjectClass::getMeta
 //
 
-OtType OtWidgetClass::getMeta() {
+OtType OtAppObjectClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtWidgetClass>("Widget", OtComponentClass::getMeta());
+		type = OtTypeClass::create<OtAppObjectClass>("AppObject", OtComponentClass::getMeta());
 	}
 
 	return type;
-}
-
-
-//
-//	OtWidgetClass::create
-//
-
-OtWidget OtWidgetClass::create() {
-	OtWidget widget = std::make_shared<OtWidgetClass>();
-	widget->setType(getMeta());
-	return widget;
 }

@@ -37,7 +37,7 @@ void OtWindowClass::render() {
 
 	if (ImGui::Begin(title.c_str(), nullptr, flags)) {
 		// render all children
-		OtWidgetClass::render();
+		OtAppObjectClass::render();
 	}
 
 	ImGui::End();

@@ -32,22 +32,10 @@ void OtMenubarClass::validateChild(OtComponent child) {
 //
 
 void OtMenubarClass::render() {
-	// see what type of menubar we need
-	if (getParent()->isKindOf("App")) {
-		// it's an app-level main menubar
-		if (ImGui::BeginMainMenuBar()) {
-			height = ImGui::GetWindowSize().y;
-			OtWidgetClass::render();
-			ImGui::EndMainMenuBar();
-		}
-
-	} else {
-		// it's a regular menubar
-		if (ImGui::BeginMenuBar()) {
-			height = ImGui::GetWindowSize().y;
-			OtWidgetClass::render();
-			ImGui::EndMenuBar();
-		}
+	if (ImGui::BeginMenuBar()) {
+		height = ImGui::GetWindowSize().y;
+		OtWidgetClass::render();
+		ImGui::EndMenuBar();
 	}
 }
 
@@ -60,7 +48,7 @@ OtType OtMenubarClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtMenubarClass>("Menubar", OtAppObjectClass::getMeta());
+		type = OtTypeClass::create<OtMenubarClass>("Menubar", OtWidgetClass::getMeta());
 	}
 
 	return type;

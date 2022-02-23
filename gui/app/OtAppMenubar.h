@@ -12,17 +12,17 @@
 //	Include files
 //
 
-#include "OtWidget.h"
+#include "OtAppObject.h"
 
 
 //
-//	OtMenubarClass
+//	OtAppMenubarClass
 //
 
-class OtMenubarClass;
-typedef std::shared_ptr<OtMenubarClass> OtMenubar;
+class OtAppMenubarClass;
+typedef std::shared_ptr<OtAppMenubarClass> OtAppMenubar;
 
-class OtMenubarClass : public OtWidgetClass {
+class OtAppMenubarClass : public OtAppObjectClass {
 public:
 	// ensure specified component is allowed as a child
 	void validateChild(OtComponent child);
@@ -37,7 +37,7 @@ public:
 	static OtType getMeta();
 
 	// create a new object
-	static OtMenubar create();
+	static OtAppMenubar create();
 
 private:
 	size_t height;

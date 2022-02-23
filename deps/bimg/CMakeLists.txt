@@ -7,16 +7,16 @@
 FetchContent_Declare(bimg GIT_REPOSITORY "https://github.com/bkaradzic/bimg")
 FetchContent_MakeAvailable(bimg)
 
-include(deps/bimg/3rdparty/astc-codec.cmake)
-include(deps/bimg/3rdparty/astc.cmake)
-include(deps/bimg/3rdparty/edtaa3.cmake)
-include(deps/bimg/3rdparty/etc1.cmake)
-include(deps/bimg/3rdparty/etc2.cmake)
-include(deps/bimg/3rdparty/iqa.cmake)
-include(deps/bimg/3rdparty/libsquish.cmake)
-include(deps/bimg/3rdparty/nvtt.cmake)
-include(deps/bimg/3rdparty/pvrtc.cmake)
-include(deps/bimg/3rdparty/tinyexr.cmake)
+include(3rdparty/astc-codec.cmake)
+include(3rdparty/astc.cmake)
+include(3rdparty/edtaa3.cmake)
+include(3rdparty/etc1.cmake)
+include(3rdparty/etc2.cmake)
+include(3rdparty/iqa.cmake)
+include(3rdparty/libsquish.cmake)
+include(3rdparty/nvtt.cmake)
+include(3rdparty/pvrtc.cmake)
+include(3rdparty/tinyexr.cmake)
 
 file(GLOB BIMG_SOURCES
 	${bimg_SOURCE_DIR}/src/*.cpp

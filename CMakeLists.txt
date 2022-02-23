@@ -27,22 +27,14 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-include(deps/CMakeLists.txt)
-
-include_directories(3rdparty)
+add_subdirectory(deps)
 add_subdirectory(3rdparty)
-
 add_subdirectory(ot)
-include_directories(BEFORE ${OT_INCLUDE_DIRS})
-
 add_subdirectory(http)
-include_directories(BEFORE ${HTTP_INCLUDE_DIRS})
 
 if(OT_GUI)
 	add_subdirectory(gui)
-	include_directories(BEFORE ${GUI_INCLUDE_DIRS})
 	add_subdirectory(ide)
-	include_directories(BEFORE ${IDE_INCLUDE_DIRS})
 endif()
 
 add_subdirectory(main)

@@ -15,11 +15,10 @@ foreach(HEADER ${HTTP_INCLUDES})
 endforeach()
 
 list(REMOVE_DUPLICATES HTTP_INCLUDE_DIRS)
-set(HTTP_INCLUDE_DIRS ${HTTP_INCLUDE_DIRS} PARENT_SCOPE)
 
 add_library(http STATIC ${HTTP_INCLUDES} ${HTTP_SOURCES})
-add_dependencies(http ot)
-
-target_include_directories(http PRIVATE ${OT_INCLUDE_DIRS} ${HTTP_INCLUDE_DIRS})
+add_dependencies(http ot llhttp multipart)
+target_include_directories(http PUBLIC ${HTTP_INCLUDE_DIRS})
+target_link_libraries(http PUBLIC ot PRIVATE llhttp multipart)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${HTTP_INCLUDES} ${HTTP_SOURCES})

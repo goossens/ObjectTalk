@@ -1,6 +1,6 @@
 #define USE_STD_FILESYSTEM
 
-#include <GLFW/glfw3.h>
+#include "GLFW/glfw3.h"
 #define USE_EXPLORATION_BY_KEYS
 #define IGFD_KEY_UP GLFW_KEY_UP
 #define IGFD_KEY_DOWN GLFW_KEY_DOWN

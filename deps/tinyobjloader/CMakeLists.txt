@@ -12,7 +12,5 @@ if(NOT tinyobjloader_POPULATED)
 	add_subdirectory(${tinyobjloader_SOURCE_DIR} ${tinyobjloader_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif()
 
-include_directories(${tinyobjloader_SOURCE_DIR})
-
 set_target_properties(tinyobjloader PROPERTIES FOLDER deps)
 set_target_properties(uninstall PROPERTIES FOLDER deps/tinyobjloader)

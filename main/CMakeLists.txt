@@ -6,8 +6,7 @@
 
 add_executable(main main.cpp)
 add_dependencies(main ot http)
-
-target_link_libraries(main ot http)
+target_link_libraries(main ot http argparse)
 
 if(OT_GUI)
 	add_dependencies(main gui ide)

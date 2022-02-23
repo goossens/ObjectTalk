@@ -11,4 +11,5 @@ if(NOT tweeny_POPULATED)
 	FetchContent_Populate(tweeny)
 endif()
 
-include_directories(${tweeny_SOURCE_DIR}/include)
+add_library(tweeny INTERFACE)
+target_include_directories(tweeny INTERFACE ${tweeny_SOURCE_DIR}/include)

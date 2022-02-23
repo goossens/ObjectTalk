@@ -15,6 +15,4 @@ if(NOT box2d_POPULATED)
 	add_subdirectory(${box2d_SOURCE_DIR} ${box2d_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif()
 
-include_directories(${box2d_SOURCE_DIR}/include)
-
 set_target_properties(box2d PROPERTIES FOLDER deps)

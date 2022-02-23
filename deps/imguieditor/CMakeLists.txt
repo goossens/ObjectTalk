@@ -13,6 +13,7 @@ set(IMGUIEDITOR_SOURCES
 
 add_library(imguieditor STATIC ${IMGUIEDITOR_SOURCES})
 add_dependencies(imguieditor imgui)
-include_directories(${imguieditor_SOURCE_DIR})
+target_include_directories(imguieditor PUBLIC ${imguieditor_SOURCE_DIR})
+target_link_libraries(imguieditor imgui)
 
 set_target_properties(imguieditor PROPERTIES FOLDER deps)

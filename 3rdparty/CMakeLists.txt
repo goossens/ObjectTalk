@@ -5,6 +5,9 @@
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
 add_library(llhttp STATIC llhttp/api.c llhttp/http.c llhttp/llhttp.c llhttp/llhttp.h)
+target_include_directories(llhttp PUBLIC llhttp)
+
 add_library(multipart STATIC multipart/multipartparser.c multipart/multipartparser.h)
+target_include_directories(llhttp PUBLIC multipart)
 
 set_target_properties(llhttp multipart PROPERTIES FOLDER 3rdParty)

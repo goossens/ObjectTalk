@@ -17,7 +17,5 @@ if(NOT glfw_POPULATED)
 	add_subdirectory(${glfw_SOURCE_DIR} ${glfw_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif()
 
-include_directories(${glfw_SOURCE_DIR}/include)
-
 set_target_properties(glfw PROPERTIES FOLDER deps)
 set_target_properties(update_mappings PROPERTIES FOLDER deps/glfw)

@@ -11,4 +11,5 @@ if(NOT argparse_POPULATED)
 	FetchContent_Populate(argparse)
 endif()
 
-include_directories(${argparse_SOURCE_DIR}/include)
+add_library(argparse INTERFACE)
+target_include_directories(argparse INTERFACE ${argparse_SOURCE_DIR}/include)

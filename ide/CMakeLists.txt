@@ -15,12 +15,10 @@ foreach(HEADER ${IDE_INCLUDES})
 endforeach()
 
 list(REMOVE_DUPLICATES IDE_INCLUDE_DIRS)
-set(IDE_INCLUDE_DIRS ${IDE_INCLUDE_DIRS} PARENT_SCOPE)
 
 add_library(ide STATIC ${IDE_INCLUDES} ${IDE_SOURCES})
 add_dependencies(ide ot gui)
-
-target_include_directories(ide PRIVATE ${OT_INCLUDE_DIRS} ${IDE_INCLUDE_DIRS} ${IDE_INCLUDE_DIRS})
-target_link_libraries(ide glfw bgfx imgui imguifd tinyobjloader box2d)
+target_include_directories(ide PUBLIC ${IDE_INCLUDE_DIRS})
+target_link_libraries(ide PUBLIC ot gui)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${IDE_INCLUDES} ${IDE_SOURCES})

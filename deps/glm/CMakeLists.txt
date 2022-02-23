@@ -11,4 +11,5 @@ if(NOT glm_POPULATED)
 	FetchContent_Populate(glm)
 endif()
 
-include_directories(${glm_SOURCE_DIR})
+add_library(glm INTERFACE)
+target_include_directories(glm INTERFACE ${glm_SOURCE_DIR})

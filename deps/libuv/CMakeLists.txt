@@ -16,6 +16,4 @@ if(NOT libuv_POPULATED)
 	add_subdirectory(${libuv_SOURCE_DIR} ${libuv_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif()
 
-include_directories(${libuv_SOURCE_DIR}/include)
-
 set_target_properties(uv uv_a PROPERTIES FOLDER deps/libuv)

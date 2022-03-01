@@ -11,7 +11,9 @@ file(GLOB BGFX_SOURCES
 	${bgfx_SOURCE_DIR}/src/*.cpp
 	${bgfx_SOURCE_DIR}/src/*.h
 	${bgfx_SOURCE_DIR}/include/bgfx/*.h
-	${bgfx_SOURCE_DIR}/include/bgfx/c99/*.h)
+	${bgfx_SOURCE_DIR}/include/bgfx/c99/*.h
+	${bgfx_SOURCE_DIR}/examples/common/debugdraw/debugdraw.cpp
+	${bgfx_SOURCE_DIR}/examples/common/debugdraw/debugdraw.h)
 
 list(REMOVE_ITEM BGFX_SOURCES ${bgfx_SOURCE_DIR}/src/amalgamated.cpp)
 
@@ -30,10 +32,13 @@ add_library(bgfx STATIC ${BGFX_SOURCES})
 add_dependencies(bgfx bx bimg)
 
 target_include_directories(bgfx
-	PRIVATE ${bgfx_SOURCE_DIR}/3rdparty
+	PRIVATE
+		${bgfx_SOURCE_DIR}/3rdparty
 		${bgfx_SOURCE_DIR}/3rdparty/khronos
 		${bgfx_SOURCE_DIR}/3rdparty/dxsdk/include
-	PUBLIC ${bgfx_SOURCE_DIR}/include)
+	PUBLIC
+		${bgfx_SOURCE_DIR}/include
+		${bgfx_SOURCE_DIR}/examples/common/debugdraw)
 
 target_link_libraries(bgfx PUBLIC bx bimg)
 

@@ -12,6 +12,7 @@
 #include <cstring>
 
 #include "bx/timer.h"
+#include "debugdraw.h"
 #include "imgui.h"
 
 #include "OtException.h"
@@ -64,6 +65,9 @@ void OtFrameworkClass::initBGFX() {
 	if (!(caps->supported & BGFX_CAPS_TEXTURE_COMPARE_LEQUAL)) {
 		OtExcept("Your system/graphics card does not support texture '<='");
 	}
+
+	// initialize debug draw
+	ddInit();
 
 	// initialize time management
 	startTime = lastTime = bx::getHPCounter();
@@ -176,5 +180,6 @@ void OtFrameworkClass::renderBGFX() {
 //
 
 void OtFrameworkClass::endBGFX() {
+	ddShutdown();
 	bgfx::shutdown();
 }

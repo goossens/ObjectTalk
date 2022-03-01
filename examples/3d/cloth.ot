@@ -15,11 +15,16 @@ class App : gui.App {
 	function setup(this) {
 		// create all components
 		var ambient = gui.Ambient();
-		var light = gui.Light().setPosition(0, 200, 200);
+
+		var light = gui.Light()
+			.setDirection(100, 70, 100)
+			.castShadow(50, 0, 200, false);
+
 		var fog = gui.Fog().setColor(skyColor).setDistances(50, 150);
 		var background = gui.Background().setColor(skyColor);
 
 		var grass = gui.Mesh()
+			.receiveShadow(true)
 			.setGeometry(gui.PlaneGeometry(200, 200, 10, 10))
 			.setMaterial(gui.Material()
 				.setTexture(gui.Texture(__DIR__ + "/assets/grass.jpg"))
@@ -30,16 +35,19 @@ class App : gui.App {
 		var poleMaterial = gui.Material("material", "bronze");
 
 		var pole1 = gui.Mesh()
+			.castShadow(true)
 			.setGeometry(poleGeometry)
 			.setMaterial(poleMaterial)
 			.translate(-16, 13, 50);
 
 		var pole2 = gui.Mesh()
+			.castShadow(true)
 			.setGeometry(poleGeometry)
 			.setMaterial(poleMaterial)
 			.translate(16, 13, 50);
 
 		var wire = gui.Mesh()
+			.castShadow(true)
 			.setGeometry(gui.CylinderGeometry(0.1, 0.1, 34))
 			.setMaterial(gui.Material("material", "black plastic"))
 			.rotateZ(pi / 2.0)
@@ -53,6 +61,7 @@ class App : gui.App {
 			.start());
 
 		var cloth = gui.Mesh()
+			.castShadow(true)
 			.setGeometry(plane)
 			.setMaterial(gui.Material()
 				.setTexture(gui.Texture(__DIR__ + "/assets/cloth.png")))
@@ -73,8 +82,14 @@ class App : gui.App {
 		// create camera
 		var camera = gui.Camera()
 			.setPerspective(45, 0.1, 1000)
-			.setPosition(0, 15, 100)
-			.setTarget(0, 10, 0);
+			.setCircleTargetMode()
+			.setTarget(0, 10, 50)
+			.setPitchLimits(0.0, pi / 2.0 - 0.1)
+			.setPitch(0.3)
+			.setYaw(-pi / 8.0)
+			.setDistanceLimits(20.0, 100.0)
+			.setDistance(50.0);
+
 
 		// create view
 		this.add(gui.View()

@@ -26,13 +26,23 @@ typedef std::shared_ptr<OtSceneObjectClass> OtSceneObject;
 
 class OtSceneObjectClass : public OtComponentClass {
 public:
+	// access shadow flags
+	OtObject castShadow(bool flag) { castShadowFlag = flag; return shared(); }
+	bool castsShadow() { return castShadowFlag; }
+	OtObject receiveShadow(bool flag) { receiveShadowFlag = flag; return shared(); }
+	bool receivesShadow() { return receiveShadowFlag; }
+
 	// update state
 	virtual void update(OtRenderingContext context) {}
 
 	// render in BGFX
-	virtual void renderShadow(bgfx::ViewId view, uint64_t state, bgfx::ProgramHandle shader) {}
 	virtual void render(OtRenderingContext context) {}
 
 	// get type definition
 	static OtType getMeta();
+
+protected:
+	// shadow flags
+	bool castShadowFlag = false;
+	bool receiveShadowFlag = false;
 };

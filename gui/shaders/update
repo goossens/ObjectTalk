@@ -107,7 +107,8 @@ function compilePart() {
 }
 
 function compileShader() {
-	SHADER_DIR=${HOME}/$(echo "$1" |  tr '[:upper:]' '[:lower:]')
+	SHADER_LOWERCASE=$(echo "$1" |  tr '[:upper:]' '[:lower:]')
+	SHADER_DIR=${HOME}/${SHADER_LOWERCASE}
 
 	if needsUpdate $1
 	then
@@ -128,12 +129,39 @@ function compileShader() {
 			compilePart vertex instancing $1
 		fi
 
-		cat vs_glsl.h vs_essl.h vs_spv.h vs_dx9.h vs_dx11.h vs_mtl.h >../Ot$1Shader.h
-		cat fs_glsl.h fs_essl.h fs_spv.h fs_dx9.h fs_dx11.h fs_mtl.h >>../Ot$1Shader.h
+		cat >../Ot$1Shader.h <<END
+//	ObjectTalk Scripting Language
+//	Copyright (c) 2020-2022 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+#include "${SHADER_LOWERCASE}/vs_mtl.h"
+#include "${SHADER_LOWERCASE}/vs_glsl.h"
+#include "${SHADER_LOWERCASE}/vs_essl.h"
+#include "${SHADER_LOWERCASE}/vs_spv.h"
+#include "${SHADER_LOWERCASE}/vs_dx9.h"
+#include "${SHADER_LOWERCASE}/vs_dx11.h"
+
+#include "${SHADER_LOWERCASE}/fs_mtl.h"
+#include "${SHADER_LOWERCASE}/fs_glsl.h"
+#include "${SHADER_LOWERCASE}/fs_essl.h"
+#include "${SHADER_LOWERCASE}/fs_spv.h"
+#include "${SHADER_LOWERCASE}/fs_dx9.h"
+#include "${SHADER_LOWERCASE}/fs_dx11.h"
+END
 
 		if [ -f vsi_mtl.h ]
 		then
-			cat vsi_glsl.h vsi_essl.h vsi_spv.h vsi_dx9.h vsi_dx11.h vsi_mtl.h >>../Ot$1Shader.h
+			cat >>../Ot$1Shader.h <<END
+
+#include "${SHADER_LOWERCASE}/vsi_mtl.h"
+#include "${SHADER_LOWERCASE}/vsi_glsl.h"
+#include "${SHADER_LOWERCASE}/vsi_essl.h"
+#include "${SHADER_LOWERCASE}/vsi_spv.h"
+#include "${SHADER_LOWERCASE}/vsi_dx9.h"
+#include "${SHADER_LOWERCASE}/vsi_dx11.h"
+END
 		fi
 
 		cd ${HOME}

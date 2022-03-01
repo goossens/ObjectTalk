@@ -196,7 +196,7 @@ more realistic. So let's do both and change the App to:
 				}));
 
 			var ambient = gui.Ambient();
-			var light = gui.Light().setPosition(1, 2, 4);
+			var light = gui.Light().setDirection(1, 2, 4);
 
 			var scene = gui.Scene()
 				.add(cube)

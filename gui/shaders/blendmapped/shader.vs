@@ -15,6 +15,6 @@ void main() {
 	v_position = mul(u_model[0], vec4(a_position, 1.0));
 	v_normal = mul(u_model[0], vec4(a_normal, 0.0)).xyz;
 	v_texcoord0 = mul(u_uv_transform, vec3(a_texcoord0, 1.0)).xy;
-	v_shadow = mul(u_shadowMatrix, vec4(a_position, 1.0));
+	v_shadow = mul(u_shadowMatrix, mul(u_model[0], vec4(a_position, 1.0)));
 	gl_Position = mul(u_modelViewProj, vec4(a_position, 1.0));
 }

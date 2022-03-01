@@ -11,7 +11,7 @@ var gui = import("gui");
 class App : gui.App {
 	function setup(this) {
 		var ambient = gui.Ambient();
-		var light = gui.Light().setPosition(20, 400, -400);
+		var light = gui.Light().setDirection(20, 400, -400);
 
 		var heightmap = gui.HeightMap()
 			.setScale(40.0)

@@ -11,7 +11,10 @@ var gui = import("gui");
 class App : gui.App {
 		function setup(this) {
 		var ambient = gui.Ambient();
-		var light = gui.Light().setPosition(10, 20, 30);
+
+		var light = gui.Light()
+			.setDirection(50, 70, 30)
+			.castShadow(200, 1, 200, false);
 
 		var fog = gui.Fog()
 			.setColor("#79838e")
@@ -38,13 +41,17 @@ class App : gui.App {
 					gui.Texture(__DIR__ + "/assets/mud.png"),
 					gui.Texture(__DIR__ + "/assets/grassflowers.png"),
 					gui.Texture(__DIR__ + "/assets/path.png"))))
+			.castShadow(true)
+			.receiveShadow(true)
 			.rotateX(-pi / 2.0);
 
 		var trees = gui.Mesh()
 			.setGeometry(gui.ModelGeometry(__DIR__ + "/assets/pine.obj"))
 			.setMaterial(gui.Material()
 				.setTexture(gui.Texture(__DIR__ + "/assets/pine.png")))
-			.setHoles(true);
+			.setHoles(true)
+			.castShadow(true)
+			.receiveShadow(true);
 
 		for c in range(200) {
 			var x = 1.0.random();

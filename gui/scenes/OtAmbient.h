@@ -32,6 +32,7 @@ public:
 
 	// update attributes
 	OtObject setColor(const std::string& color);
+	OtObject setColorVector(const glm::vec3 color);
 
 	// update state
 	void update(OtRenderingContext context);

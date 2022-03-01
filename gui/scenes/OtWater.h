@@ -13,6 +13,7 @@
 //
 
 #include "OtController.h"
+#include "OtMaterial.h"
 #include "OtObject3d.h"
 #include "OtTexture.h"
 
@@ -30,9 +31,6 @@ public:
 	OtWaterClass();
 	~OtWaterClass();
 
-	// initialize
-	OtObject init(size_t count, OtObject* parameters);
-
 	// set the size of the water object
 	OtObject setSize(int size);
 
@@ -46,7 +44,6 @@ public:
 	void update(OtRenderingContext context);
 
 	// render in BGFX
-	void renderShadow(bgfx::ViewId view, uint64_t state, bgfx::ProgramHandle shader);
 	void render(OtRenderingContext context);
 
 	void renderReflection(OtRenderingContext context);
@@ -78,6 +75,9 @@ protected:
 	float scale = 1.0;
 	float shininess = 50.0;
 
+	// material
+	OtMaterial material;
+
 	// Frame buffers
 	float frameBufferAspectRation = -1;
 	bgfx::TextureHandle reflectionTextures[2];
@@ -94,7 +94,6 @@ protected:
 	bgfx::IndexBufferHandle indexBuffer = BGFX_INVALID_HANDLE;
 
 	// BGFX shader
-	bgfx::UniformHandle materialUniform = BGFX_INVALID_HANDLE;
 	bgfx::UniformHandle waterUniform = BGFX_INVALID_HANDLE;
 	bgfx::UniformHandle normalsUniform = BGFX_INVALID_HANDLE;
 	bgfx::UniformHandle reflectionUniform = BGFX_INVALID_HANDLE;

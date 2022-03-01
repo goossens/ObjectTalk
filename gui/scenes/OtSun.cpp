@@ -18,6 +18,18 @@
 
 
 //
+//	OtSunClass::OtSunClass
+//
+
+OtSunClass::OtSunClass() {
+	ambient = OtAmbientClass::create();
+	light = OtLightClass::create();
+	light->setDiffuseVector(glm::vec3(1.0));
+	light->setSpecularVector(glm::vec3(1.0));
+}
+
+
+//
 //	OtSunClass::init
 //
 
@@ -33,7 +45,7 @@ OtObject OtSunClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-			OtExcept("[Sky] constructor expects up to 2 arguments (not %ld)", count);
+			OtExcept("[Sun] constructor expects up to 2 arguments (not %ld)", count);
 	}
 
 	return nullptr;
@@ -56,6 +68,17 @@ OtObject OtSunClass::setElevation(float e) {
 
 OtObject OtSunClass::setAzimuth(float a) {
 	azimuth = a;
+	return shared();
+}
+
+
+//
+//	OtSunClass::castShadow
+//
+
+OtObject OtSunClass::castShadow(float width, float dist, float near, float far, bool debug) {
+	distance = dist;
+	light->castShadow(width, near, far, debug);
 	return shared();
 }
 
@@ -86,11 +109,24 @@ float OtSunClass::getAmbientLight() {
 //
 
 void OtSunClass::update(OtRenderingContext context) {
-	float ambient = getAmbientLight();
-	context->setAmbientLight(glm::vec3(ambient));
+	// update ambient light
+	ambient->setColorVector(glm::vec3(getAmbientLight()));
+	ambient->update(context);
 
-	glm::vec3 direction = glm::normalize(getDirection());
-	context->setDirectionalLight(direction, glm::vec3(1.0), glm::vec3(1.0));
+	light->setDirectionVector(getDirection() * distance);
+	light->update(context);
+}
+
+
+//
+//	OtSunClass::render
+//
+
+void OtSunClass::render(OtRenderingContext context) {
+	if (!context->inShadowmapPhase()) {
+		ambient->render(context);
+		light->render(context);
+	}
 }
 
 
@@ -102,6 +138,12 @@ void OtSunClass::renderGUI() {
 	ImGui::Checkbox("Enabled", &enabled);
 	ImGui::SliderFloat("Elevation", &elevation, -0.99, 0.99);
 	ImGui::SliderFloat("Azimuth", &azimuth, 0.0, std::numbers::pi * 2.0);
+	ImGui::SliderFloat("Distance", &distance, 1.0, 2000.0);
+
+	if (ImGui::TreeNodeEx("Directional Light", ImGuiTreeNodeFlags_Framed)) {
+		light->renderGUI();
+		ImGui::TreePop();
+	}
 }
 
 
@@ -117,6 +159,7 @@ OtType OtSunClass::getMeta() {
 		type->set("__init__", OtFunctionClass::create(&OtSunClass::init));
 		type->set("setElevation", OtFunctionClass::create(&OtSunClass::setElevation));
 		type->set("setAzimuth", OtFunctionClass::create(&OtSunClass::setAzimuth));
+		type->set("castShadow", OtFunctionClass::create(&OtSunClass::castShadow));
 	}
 
 	return type;

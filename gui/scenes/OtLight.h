@@ -12,6 +12,9 @@
 //	Include files
 //
 
+#include "bgfx/bgfx.h"
+#include "glm/glm.hpp"
+
 #include "OtCamera.h"
 #include "OtController.h"
 #include "OtSceneObject.h"
@@ -26,13 +29,28 @@ typedef std::shared_ptr<OtLightClass> OtLight;
 
 class OtLightClass : public OtSceneObjectClass {
 public:
+	// constructor/destructor
+	OtLightClass();
+	~OtLightClass();
+
 	// update attributes
-	OtObject setPosition(float x, float y, float z);
+	OtObject setDirection(float x, float y, float z);
 	OtObject setDiffuse(const std::string& color) ;
 	OtObject setSpecular(const std::string& color);
 
+	void setDirectionVector(const glm::vec3& d) { direction = d; }
+	void setDiffuseVector(const glm::vec3& c) { diffuse = c; }
+	void setSpecularVector(const glm::vec3& c) { specular = c; }
+
+	// enable shadow casting
+	OtObject castShadow(float width, float near, float far, bool debug);
+
 	// update state
 	void update(OtRenderingContext context);
+
+	// render in BGFX
+	void render(OtRenderingContext context);
+	void renderShadowmap(OtRenderingContext context);
 
 	// GUI to change light properties
 	void renderGUI();
@@ -45,9 +63,16 @@ public:
 
 private:
 	// light properties
-	glm::vec3 position = glm::vec3(0.0);
+	glm::vec3 direction = glm::vec3(0.0, 1.0, 0.0);
 	glm::vec3 diffuse = glm::vec3(1.0);
 	glm::vec3 specular = glm::vec3(1.0);
+
+	// shadowmap
+	bool shadow = false;
+	bgfx::TextureHandle shadowmapTexture = BGFX_INVALID_HANDLE;
+	bgfx::FrameBufferHandle shadowmapFrameBuffer = BGFX_INVALID_HANDLE;
+	OtCamera shadowCamera;
+	bgfx::ViewId shadowView;
 };
 
 

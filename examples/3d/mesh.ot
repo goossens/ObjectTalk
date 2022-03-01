@@ -42,7 +42,7 @@ class App : gui.App {
 		this.sun.disable();
 
 		this.light = gui.Light()
-			.setPosition(25, 25, 40)
+			.setDirection(25, 25, 40)
 			.setDiffuse("#c0c0c0")
 			.setSpecular("#c0c0c0");
 

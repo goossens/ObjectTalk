@@ -20,6 +20,7 @@
 #include "OtHash.h"
 
 #include "OtController.h"
+#include "OtMaterial.h"
 #include "OtSceneObject.h"
 #include "OtTerrainMap.h"
 #include "OtTerrainTile.h"
@@ -70,7 +71,6 @@ public:
 	void update(OtRenderingContext context);
 
 	// render in BGFX
-	void renderShadow(bgfx::ViewId view, uint64_t state, bgfx::ProgramHandle shader);
 	void render(OtRenderingContext context);
 
 	// GUI to change properties
@@ -85,6 +85,9 @@ public:
 protected:
 	// mark changes and trigger tile regeneration
 	void parametersHaveChanged();
+
+	// material
+	OtMaterial material;
 
 	// region information
 	float region1Transition = 1.0;
@@ -108,15 +111,15 @@ protected:
 	OtTexture textureRegion4;
 
 	// uniforms
-	bgfx::UniformHandle materialUniform = BGFX_INVALID_HANDLE;
 	bgfx::UniformHandle terrainUniform = BGFX_INVALID_HANDLE;
 	bgfx::UniformHandle textureUniform1 = BGFX_INVALID_HANDLE;
 	bgfx::UniformHandle textureUniform2 = BGFX_INVALID_HANDLE;
 	bgfx::UniformHandle textureUniform3 = BGFX_INVALID_HANDLE;
 	bgfx::UniformHandle textureUniform4 = BGFX_INVALID_HANDLE;
 
-	// BGFX shader
+	// BGFX embeddedShaders
 	bgfx::ProgramHandle shader = BGFX_INVALID_HANDLE;
+	bgfx::ProgramHandle shadowShader = BGFX_INVALID_HANDLE;
 
 	// terrainmap
 	OtTerrainMap terrainmap;

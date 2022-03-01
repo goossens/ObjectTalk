@@ -47,6 +47,16 @@ OtObject OtAmbientClass::setColor(const std::string& name) {
 
 
 //
+//	OtAmbientClass::setColorVector
+//
+
+OtObject OtAmbientClass::setColorVector(const glm::vec3 c) {
+	color = c;
+	return shared();
+}
+
+
+//
 //	OtAmbientClass::update
 //
 

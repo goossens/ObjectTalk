@@ -50,6 +50,28 @@ OtObject OtCameraClass::setOrthographic(float w, float n, float f) {
 
 
 //
+//	OtCameraClass::setFovLimits
+//
+
+OtObject OtCameraClass::setFovLimits(float fmn, float fmx) {
+	fovMin = fmn;
+	fovMax = fmx;
+	return shared();
+}
+
+
+//
+//	OtCameraClass::setWidthLimits
+//mn
+
+OtObject OtCameraClass::setWidthLimits(float wmn, float wmx) {
+	widthMin = wmn;
+	widthMax = wmx;
+	return shared();
+}
+
+
+//
 //	OtCameraClass::setNearFarLimits
 //
 
@@ -244,6 +266,16 @@ OtObject OtCameraClass::setHeightLimits(float min, float max) {
 
 
 //
+//	OtCameraClass::renderFrustum
+//
+
+OtObject OtCameraClass::renderFrustum(bool flag) {
+	renderFrustumFlag = flag;
+	return shared();
+}
+
+
+//
 //	OtCameraClass::onMouseDrag
 //
 
@@ -339,19 +371,24 @@ void OtCameraClass::update(float aspectRatio) {
 	}
 
 	// determine transformations
+	auto caps = bgfx::getCaps();
 	viewMatrix = glm::lookAt(cameraPosition, cameraTarget, cameraUp);
 
 	if (style == orthographicStyle) {
 		float w = width / 2.0;
-		float h = width / aspectRatio / 2.0;
-		projMatrix = glm::ortho(-w, w, -h, h, near, far);
+		float h = w / aspectRatio;
+
+		projMatrix = caps->homogeneousDepth
+			? glm::orthoRH_NO(-w, w, -h, h, near, far)
+			: glm::orthoRH_ZO(-w, w, -h, h, near, far);
 
 	} else {
-		projMatrix = glm::perspective(glm::radians(fov), aspectRatio, near, far);
+		projMatrix = caps->homogeneousDepth
+			? glm::perspectiveRH_NO(glm::radians(fov), aspectRatio, near, far)
+			: glm::perspectiveRH_ZO(glm::radians(fov), aspectRatio, near, far);
 	}
 
 	viewProjMatrix = projMatrix * viewMatrix;
-	invViewProjMatrix = glm::inverse(viewProjMatrix);
 
 	// determine frustum (in world space)
 	frustum = OtFrustum(viewProjMatrix);
@@ -359,11 +396,36 @@ void OtCameraClass::update(float aspectRatio) {
 
 
 //
+//	OtCameraClass::render
+//
+
+inline glm::vec4 h(const glm::vec4& v) {
+	return glm::vec4(v.x / v.w, v.y / v.w, v.z / v.w, 1.0f);
+}
+
+inline glm::vec4 p(const glm::mat4& matrix, const glm::vec4& ndc) {
+	return h(matrix * ndc);
+}
+
+#include <glm/gtx/io.hpp>
+
+void OtCameraClass::render(DebugDrawEncoder* debugDraw) {
+	// render frustum if required
+	if (renderFrustumFlag) {
+		frustum.render(debugDraw);
+	}
+}
+
+
+//
 //	OtCameraClass::submit
 //
 
-void OtCameraClass::submit(OtRenderingContext context) {
-	bgfx::setViewTransform(context->getView(), glm::value_ptr(viewMatrix), glm::value_ptr(projMatrix));
+void OtCameraClass::submit(bgfx::ViewId view) {
+	// submit view and projection matrices
+	bgfx::setViewTransform(view, glm::value_ptr(viewMatrix), glm::value_ptr(projMatrix));
+
+	// reset change flag for next frame
 	changed = false;
 }
 
@@ -413,32 +475,20 @@ bool OtCameraClass::isVisibleSphere(const glm::vec3& center, float radius) {
 
 
 //
-//	OtCameraClass::getDirectionFromNDC
-//
-
-glm::vec3 OtCameraClass::getDirectionFromNDC(float x, float y) {
-	glm::vec4 ndcPos = glm::vec4(x, y, 1.0, 1.0);
-	glm::vec4 worldPos = invViewProjMatrix * ndcPos;
-	glm::vec3 dir = glm::normalize(glm::vec3(worldPos));
-	return dir;
-}
-
-
-//
 //	OtCameraClass::renderGUI
 //
 
 void OtCameraClass::renderGUI() {
 	if (style == perspectiveStyle) {
-		ImGui::SliderFloat("FoV (Deg)", &fov, 10.0f, 120.0f);
-		ImGui::SliderFloat("Near Clipping", &near, nearMin, nearMax);
-		ImGui::SliderFloat("Far Clipping", &far, farMin, farMax);
+		ImGui::SliderFloat("FoV (Deg)", &fov, fovMin, fovMax);
 
 	} else {
-		ImGui::SliderFloat("Width", &width, 10.0f, 1000.0f);
-		ImGui::SliderFloat("Near Clipping", &near, 0.1f, 10.0f);
-		ImGui::SliderFloat("Far Clipping", &far, 10.0f, 2000.0f);
+		ImGui::SliderFloat("Width", &width, widthMin, widthMax);
 	}
+
+	ImGui::SliderFloat("Near Clipping", &near, nearMin, nearMax);
+	ImGui::SliderFloat("Far Clipping", &far, farMin, farMax);
+	ImGui::Checkbox("Render Frustum", &renderFrustumFlag);
 
 	if (mode == scriptControlMode) {
 		ImGui::SliderFloat3("Position", glm::value_ptr(cameraPosition), -50.0f, 50.0f);

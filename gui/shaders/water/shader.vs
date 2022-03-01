@@ -18,7 +18,7 @@ void main() {
 	v_tangent = mul(u_modelView, vec4(1.0, 0.0, 0.0, 0.0)).xyz;
 	v_bitangent = mul(u_modelView, vec4(0.0, 0.0, 1.0, 0.0)).xyz;
 
-	v_shadow = mul(u_shadowMatrix, vec4(a_position, 1.0));
+	v_shadow = mul(u_shadowMatrix, mul(u_model[0], vec4(a_position, 1.0)));
 
 	gl_Position = v_position_screen;
 }

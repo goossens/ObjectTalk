@@ -142,7 +142,7 @@ void OtMeshClass::render(OtRenderingContext context, long flag) {
 	OtObject3dClass::render(context);
 
 	// setup context
-	context->submit();
+	context->submit(receivesShadow());
 
 	// setup material
 	material->submit();
@@ -188,86 +188,89 @@ void OtMeshClass::render(OtRenderingContext context) {
 		OtExcept("[Geometry] and/or [material] properties missing for [Mesh]");
 	}
 
-	// ensure we have the right shader
-	auto mt = material->getType();
-	auto instancing = instances.size() ? 10 : 0;
+	// don't render if this is a shadowmap and we cast no shadow
+	if (!context->inShadowmapPhase() || castShadowFlag) {
+		// ensure we have the right shader
+		auto mt = material->getType();
+		auto instancing = instances.size() ? 10 : 0;
 
-	if (materialType != mt + instancing) {
-		materialType = mt + instancing;
+		if (materialType != mt + instancing) {
+			materialType = mt + instancing;
 
-		if (bgfx::isValid(shader)) {
-			bgfx::destroy(shader);
+			if (bgfx::isValid(shader)) {
+				bgfx::destroy(shader);
+			}
+
+			// initialize shader
+			bgfx::RendererType::Enum type = bgfx::getRendererType();
+
+			if (mt == OtMaterialClass::BLENDMAPPED) {
+				if (instancing) {
+					shader = bgfx::createProgram(
+						bgfx::createEmbeddedShader(embeddedShaders, type, "OtBlendMappedVSI"),
+						bgfx::createEmbeddedShader(embeddedShaders, type, "OtBlendMappedFS"),
+						true);
+
+				} else {
+					shader = bgfx::createProgram(
+						bgfx::createEmbeddedShader(embeddedShaders, type, "OtBlendMappedVS"),
+						bgfx::createEmbeddedShader(embeddedShaders, type, "OtBlendMappedFS"),
+						true);
+				}
+
+			} else if (mt == OtMaterialClass::TEXTURED) {
+				if (instancing) {
+					shader = bgfx::createProgram(
+						bgfx::createEmbeddedShader(embeddedShaders, type, "OtTexturedVSI"),
+						bgfx::createEmbeddedShader(embeddedShaders, type, "OtTexturedFS"),
+						true);
+
+				} else {
+					shader = bgfx::createProgram(
+						bgfx::createEmbeddedShader(embeddedShaders, type, "OtTexturedVS"),
+						bgfx::createEmbeddedShader(embeddedShaders, type, "OtTexturedFS"),
+						true);
+				}
+
+			} else if (mt == OtMaterialClass::COLORED) {
+				if (instancing) {
+					shader = bgfx::createProgram(
+						bgfx::createEmbeddedShader(embeddedShaders, type, "OtColoredVSI"),
+						bgfx::createEmbeddedShader(embeddedShaders, type, "OtColoredFS"),
+						true);
+
+				} else {
+					shader = bgfx::createProgram(
+						bgfx::createEmbeddedShader(embeddedShaders, type, "OtColoredVS"),
+						bgfx::createEmbeddedShader(embeddedShaders, type, "OtColoredFS"),
+						true);
+				}
+
+			} else {
+				if (instancing) {
+					shader = bgfx::createProgram(
+						bgfx::createEmbeddedShader(embeddedShaders, type, "OtFixedVSI"),
+						bgfx::createEmbeddedShader(embeddedShaders, type, "OtFixedFS"),
+						true);
+
+				} else {
+					shader = bgfx::createProgram(
+						bgfx::createEmbeddedShader(embeddedShaders, type, "OtFixedVS"),
+						bgfx::createEmbeddedShader(embeddedShaders, type, "OtFixedFS"),
+						true);
+				}
+			}
 		}
 
-		// initialize shader
-		bgfx::RendererType::Enum type = bgfx::getRendererType();
-
-		if (mt == OtMaterialClass::BLENDMAPPED) {
-			if (instancing) {
-				shader = bgfx::createProgram(
-					bgfx::createEmbeddedShader(embeddedShaders, type, "OtBlendMappedVSI"),
-					bgfx::createEmbeddedShader(embeddedShaders, type, "OtBlendMappedFS"),
-					true);
-
-			} else {
-				shader = bgfx::createProgram(
-					bgfx::createEmbeddedShader(embeddedShaders, type, "OtBlendMappedVS"),
-					bgfx::createEmbeddedShader(embeddedShaders, type, "OtBlendMappedFS"),
-					true);
-			}
-
-		} else if (mt == OtMaterialClass::TEXTURED) {
-			if (instancing) {
-				shader = bgfx::createProgram(
-					bgfx::createEmbeddedShader(embeddedShaders, type, "OtTexturedVSI"),
-					bgfx::createEmbeddedShader(embeddedShaders, type, "OtTexturedFS"),
-					true);
-
-			} else {
-				shader = bgfx::createProgram(
-					bgfx::createEmbeddedShader(embeddedShaders, type, "OtTexturedVS"),
-					bgfx::createEmbeddedShader(embeddedShaders, type, "OtTexturedFS"),
-					true);
-			}
-
-		} else if (mt == OtMaterialClass::COLORED) {
-			if (instancing) {
-				shader = bgfx::createProgram(
-					bgfx::createEmbeddedShader(embeddedShaders, type, "OtColoredVSI"),
-					bgfx::createEmbeddedShader(embeddedShaders, type, "OtColoredFS"),
-					true);
-
-			} else {
-				shader = bgfx::createProgram(
-					bgfx::createEmbeddedShader(embeddedShaders, type, "OtColoredVS"),
-					bgfx::createEmbeddedShader(embeddedShaders, type, "OtColoredFS"),
-					true);
-			}
-
-		} else {
-			if (instancing) {
-				shader = bgfx::createProgram(
-					bgfx::createEmbeddedShader(embeddedShaders, type, "OtFixedVSI"),
-					bgfx::createEmbeddedShader(embeddedShaders, type, "OtFixedFS"),
-					true);
-
-			} else {
-				shader = bgfx::createProgram(
-					bgfx::createEmbeddedShader(embeddedShaders, type, "OtFixedVS"),
-					bgfx::createEmbeddedShader(embeddedShaders, type, "OtFixedFS"),
-					true);
-			}
+		// see if culling is desired
+		if (wireframe || holes || !geometry->wantsCulling()) {
+			// render back side
+			render(context, BGFX_STATE_CULL_CCW);
 		}
-	}
 
-	// see if culling is desired
-	if (wireframe || holes || !geometry->wantsCulling()) {
-		// render back side
-		render(context, BGFX_STATE_CULL_CCW);
+		// render front side
+		render(context, BGFX_STATE_CULL_CW);
 	}
-
-	// render front side
-	render(context, BGFX_STATE_CULL_CW);
 }
 
 

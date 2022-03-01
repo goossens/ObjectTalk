@@ -83,7 +83,7 @@ public:
 	void addEnumsGLFW(OtObject module);
 	void addEnumsIMGUI(OtObject module);
 
-	// function tobe called at exit to clean up
+	// register function to be called at exit
 	void atexit(std::function<void(void)> callback) { atExitCallbacks.push_back(callback); }
 
 private:

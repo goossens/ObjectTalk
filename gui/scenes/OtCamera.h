@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include "debugdraw.h"
+
 #include "OtNumbers.h"
 
 #include "OtController.h"
@@ -32,6 +34,9 @@ public:
 	// set camera modes
 	OtObject setPerspective(float fov, float near, float far);
 	OtObject setOrthographic(float width, float near, float far);
+
+	OtObject setFovLimits(float fovMin, float fovMax);
+	OtObject setWidthLimits(float widthMin, float widthMax);
 	OtObject setNearFarLimits(float nearMin, float nearMax, float farMin, float farMax);
 
 	OtObject setScriptControlMode();
@@ -55,6 +60,7 @@ public:
 	OtObject setPitchLimits(float min, float max);
 	OtObject setYawLimits(float min, float max);
 	OtObject setHeightLimits(float min, float max);
+	OtObject renderFrustum(bool flag);
 
 	// mouse/keyboard events
 	bool onMouseDrag(int button, int mods, float xpos, float ypos);
@@ -62,10 +68,13 @@ public:
 	bool onKey(int key, int mods);
 
 	// update camera for next frame
-	void update(float aspectRatio);
+	void update(float aspectRatio=1.0);
+
+	// render frustum (if required)
+	void render(DebugDrawEncoder* debugDraw);
 
 	// submit data to BGFX
-	void submit(OtRenderingContext context);
+	void submit(bgfx::ViewId view);
 
 	// access camera information
 	glm::vec3 getPosition() { return cameraPosition; }
@@ -79,15 +88,15 @@ public:
 	glm::mat4& getViewMatrix() { return viewMatrix; }
 	glm::mat4& getProjectionMatrix() { return projMatrix; }
 	glm::mat4& getViewProjectionMatrix() { return viewProjMatrix; }
-	glm::mat4& getInverseViewProjectionMatrix() { return invViewProjMatrix; }
+
+	// get the camera's frustum
+	OtFrustum getFrustum() { return frustum; }
+
 
 	// see if object is visible in frustum
 	bool isVisiblePoint(const glm::vec3& point);
 	bool isVisibleAABB(const glm::vec3& min, const glm::vec3& max);
 	bool isVisibleSphere(const glm::vec3& center, float radius);
-
-	// get direction from Normal Device Coordinates (NDC -1 to 1)
-	glm::vec3 getDirectionFromNDC(float x, float y);
 
 	// has camera changed?
 	bool hasChanged() { return changed; }
@@ -144,6 +153,10 @@ private:
 	float near = 0.1;
 	float far = 2000.0;
 
+	float fovMin = 10.0;
+	float fovMax = 120.0;
+	float widthMin = 10.0;
+	float widthMax = 1000.0;
 	float nearMin = 0.1;
 	float nearMax = 10.0;
 	float farMin = 10.0;
@@ -156,10 +169,10 @@ private:
 	glm::mat4 viewMatrix;
 	glm::mat4 projMatrix;
 	glm::mat4 viewProjMatrix;
-	glm::mat4 invViewProjMatrix;
 
 	// our viewing frustum
 	OtFrustum frustum;
+	bool renderFrustumFlag = false;
 
 	// has camera changed since last frame
 	bool changed = true;

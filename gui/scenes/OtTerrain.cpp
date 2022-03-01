@@ -18,6 +18,8 @@
 
 #include "OtFramework.h"
 #include "OtTerrain.h"
+
+#include "OtShadowShader.h"
 #include "OtTerrainShader.h"
 
 
@@ -35,6 +37,8 @@ static const int tileSize = 242;
 static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtTerrainVS),
 	BGFX_EMBEDDED_SHADER(OtTerrainFS),
+	BGFX_EMBEDDED_SHADER(OtShadowVS),
+	BGFX_EMBEDDED_SHADER(OtShadowFS),
 	BGFX_EMBEDDED_SHADER_END()
 };
 
@@ -51,19 +55,31 @@ OtTerrainClass::OtTerrainClass() {
 	});
 
 	// register uniforms
-	materialUniform = bgfx::createUniform("u_material", bgfx::UniformType::Vec4, 5);
 	terrainUniform = bgfx::createUniform("u_terrain", bgfx::UniformType::Vec4, 7);
 	textureUniform1 = bgfx::createUniform("s_texture_1", bgfx::UniformType::Sampler);
 	textureUniform2 = bgfx::createUniform("s_texture_2", bgfx::UniformType::Sampler);
 	textureUniform3 = bgfx::createUniform("s_texture_3", bgfx::UniformType::Sampler);
 	textureUniform4 = bgfx::createUniform("s_texture_4", bgfx::UniformType::Sampler);
 
-	// initialize shader
+	// setup material
+	material = OtMaterialClass::create();
+	material->setColorVector(glm::vec3(1.0));
+	material->setAmbientVector(glm::vec3(0.6, 0.6, 0.6));
+	material->setDiffuseVector(glm::vec3(0.6, 0.6, 0.6));
+	material->setSpecularVector(glm::vec3(0.5, 0.5, 0.5));
+	material->setShininess(20.0);
+
+	// initialize shaders
 	bgfx::RendererType::Enum type = bgfx::getRendererType();
 
 	shader = bgfx::createProgram(
 		bgfx::createEmbeddedShader(embeddedShaders, type, "OtTerrainVS"),
 		bgfx::createEmbeddedShader(embeddedShaders, type, "OtTerrainFS"),
+		true);
+
+	shadowShader = bgfx::createProgram(
+		bgfx::createEmbeddedShader(embeddedShaders, type, "OtShadowVS"),
+		bgfx::createEmbeddedShader(embeddedShaders, type, "OtShadowFS"),
 		true);
 }
 
@@ -83,15 +99,14 @@ OtTerrainClass::~OtTerrainClass() {
 	}
 
 	// cleanup
-	bgfx::destroy(materialUniform);
 	bgfx::destroy(terrainUniform);
-
 	bgfx::destroy(textureUniform1);
 	bgfx::destroy(textureUniform2);
 	bgfx::destroy(textureUniform3);
 	bgfx::destroy(textureUniform4);
 
 	bgfx::destroy(shader);
+	bgfx::destroy(shadowShader);
 }
 
 
@@ -384,74 +399,62 @@ void OtTerrainClass::update(OtRenderingContext context) {
 
 
 //
-//	OtTerrainClass::renderShadow
-//
-
-void OtTerrainClass::renderShadow(bgfx::ViewId view, uint64_t state, bgfx::ProgramHandle shader) {
-	// render all visible tiles
-	for (auto& tile : visibleTiles) {
-		// submit vertices and triangles
-		tile->submit();
-
-		// run shader
-		bgfx::setState(state);
-		bgfx::submit(view, shader);
-	}
-}
-
-
-//
 //	OtTerrainClass::render
 //
 
 void OtTerrainClass::render(OtRenderingContext context) {
-	// render all visible tiles
-	for (auto& tile : visibleTiles) {
-		// set context uniforms
-		context->submit();
+	// don't render if this is a shadowmap and we cast no shadow
+	if (!context->inShadowmapPhase() || castShadowFlag) {
+		// render all visible tiles
+		for (auto& tile : visibleTiles) {
+			// set context uniforms
+			context->submit(receivesShadow());
 
-		// set material uniforms
-		glm::vec4 materialUniforms[6];
-		materialUniforms[0] = glm::vec4(1.0);
-		materialUniforms[1] = glm::vec4(0.6, 0.6, 0.6, 1.0);
-		materialUniforms[2] = glm::vec4(0.6, 0.6, 0.6, 1.0);
-		materialUniforms[3] = glm::vec4(0.5, 0.5, 0.5, 1.0);
-		materialUniforms[4].x = 20.0;
-		bgfx::setUniform(materialUniform, &materialUniforms, 5);
+			// set material uniforms
+			material->submit();
 
-		// set land uniforms
-		glm::vec4 terrainUniforms[7];
-		terrainUniforms[0].x = textureScale;
-		terrainUniforms[0].y = context->getReflection();
-		terrainUniforms[0].z = context->getRefraction();
+			// set land uniforms
+			glm::vec4 terrainUniforms[7];
+			terrainUniforms[0].x = textureScale;
+			terrainUniforms[0].y = context->inReflectionPhase();
+			terrainUniforms[0].z = context->inRefractionPhase();
 
-		terrainUniforms[1].x = region1Transition;
-		terrainUniforms[1].y = region2Transition;
-		terrainUniforms[1].z = region3Transition;
+			terrainUniforms[1].x = region1Transition;
+			terrainUniforms[1].y = region2Transition;
+			terrainUniforms[1].z = region3Transition;
 
-		terrainUniforms[2].x = region1Overlap;
-		terrainUniforms[2].y = region2Overlap;
-		terrainUniforms[2].z = region3Overlap;
+			terrainUniforms[2].x = region1Overlap;
+			terrainUniforms[2].y = region2Overlap;
+			terrainUniforms[2].z = region3Overlap;
 
-		terrainUniforms[3] = glm::vec4(region1Color, textureRegion1 != nullptr);
-		terrainUniforms[4] = glm::vec4(region2Color, textureRegion2 != nullptr);
-		terrainUniforms[5] = glm::vec4(region3Color, textureRegion3 != nullptr);
-		terrainUniforms[6] = glm::vec4(region4Color, textureRegion4 != nullptr);
+			terrainUniforms[3] = glm::vec4(region1Color, textureRegion1 != nullptr);
+			terrainUniforms[4] = glm::vec4(region2Color, textureRegion2 != nullptr);
+			terrainUniforms[5] = glm::vec4(region3Color, textureRegion3 != nullptr);
+			terrainUniforms[6] = glm::vec4(region4Color, textureRegion4 != nullptr);
 
-		bgfx::setUniform(terrainUniform, terrainUniforms, 7);
+			bgfx::setUniform(terrainUniform, terrainUniforms, 7);
 
-		// set textures
-		(textureRegion1 ? textureRegion1 : OtTextureClass::dummy())->submit(1, textureUniform1);
-		(textureRegion2 ? textureRegion2 : OtTextureClass::dummy())->submit(2, textureUniform2);
-		(textureRegion3 ? textureRegion3 : OtTextureClass::dummy())->submit(3, textureUniform3);
-		(textureRegion4 ? textureRegion4 : OtTextureClass::dummy())->submit(4, textureUniform4);
+			// set textures
+			(textureRegion1 ? textureRegion1 : OtTextureClass::dummy())->submit(1, textureUniform1);
+			(textureRegion2 ? textureRegion2 : OtTextureClass::dummy())->submit(2, textureUniform2);
+			(textureRegion3 ? textureRegion3 : OtTextureClass::dummy())->submit(3, textureUniform3);
+			(textureRegion4 ? textureRegion4 : OtTextureClass::dummy())->submit(4, textureUniform4);
 
-		// submit vertices and triangles
-		tile->submit();
+			// submit vertices and triangles
+			tile->submit();
 
-		// run shader
-		bgfx::setState(BGFX_STATE_DEFAULT);
-		bgfx::submit(context->getView(), shader);
+			// run shader
+			if (context->inShadowmapPhase()) {
+				// we use a cheap shader if we are creating a shadowmap
+				bgfx::setState(BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_CULL_CCW | BGFX_STATE_MSAA);
+				bgfx::submit(context->getView(), shadowShader);
+
+			} else {
+				// we go all out with our terrain shader
+				bgfx::setState(BGFX_STATE_DEFAULT);
+				bgfx::submit(context->getView(), shader);
+			}
+		}
 	}
 }
 
@@ -462,6 +465,8 @@ void OtTerrainClass::render(OtRenderingContext context) {
 
 void OtTerrainClass::renderGUI() {
 	ImGui::Checkbox("Enabled", &enabled);
+	ImGui::Checkbox("Casts Shadow", &castShadowFlag);
+	ImGui::Checkbox("Receives Shadow", &receiveShadowFlag);
 
 	ImGui::SliderFloat("Viewing Distance", &maxViewingDist, 200, 10000);
 	ImGui::SliderFloat("Texture Scale", &textureScale, 1, 400);

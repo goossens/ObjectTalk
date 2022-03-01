@@ -11,7 +11,7 @@ var gui = import("gui");
 class App : gui.App {
 	function setup(this) {
 		var ambient = gui.Ambient();
-		var light = gui.Light().setPosition(1, 2, 4);
+		var light = gui.Light().setDirection(1, 2, 4);
 
 		var geometry = gui.SphereGeometry();
 		var gold = gui.Material("material", "gold");

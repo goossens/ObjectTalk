@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include "glm/glm.hpp"
+
 #include "OtGui.h"
 #include "OtTexture.h"
 #include "OtBlendMap.h"
@@ -55,6 +57,11 @@ public:
 
 	OtObject setTexture(OtObject texture);
 	OtObject setBlendMap(OtObject blendmap);
+
+	void setColorVector(const glm::vec3& c) { color = c; }
+	void setAmbientVector(const glm::vec3& c) { ambient = c; }
+	void setDiffuseVector(const glm::vec3& c) { diffuse = c; }
+	void setSpecularVector(const glm::vec3& c) { specular = c; }
 
 	// set UV transformation
 	OtObject setUvTransform(

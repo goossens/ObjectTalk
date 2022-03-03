@@ -31,6 +31,9 @@ typedef std::shared_ptr<OtCameraClass> OtCamera;
 
 class OtCameraClass : public OtGuiClass {
 public:
+	// constructor
+	OtCameraClass();
+
 	// set camera modes
 	OtObject setPerspective(float fov, float near, float far);
 	OtObject setOrthographic(float width, float near, float far);

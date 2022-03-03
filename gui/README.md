@@ -9,3 +9,8 @@ The Sky shader is based on a
 [MIT License](https://opensource.org/licenses/MIT).
 
 ## Water Shader
+
+The Water shader is based a presentation by Jonas Wagner available on
+[his website](https://29a.ch/slides/2012/webglwater/). Source code is on
+[Github](https://github.com/jwagner/terrain). A license is not
+provided.

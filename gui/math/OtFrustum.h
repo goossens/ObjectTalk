@@ -12,36 +12,38 @@
 //	Include files
 //
 
+#include <array>
+
 #include "bgfx/bgfx.h"
 #include "debugdraw.h"
 #include "glm/glm.hpp"
 
-#include "OtRenderingContext.h"
+#include "OtMath.h"
+#include "OtPlane.h"
 
 
 //
 //	OtFrustum
 //
 
-class OtFrustum
-{
-public:
-	// constructors
-	OtFrustum() = default;
+class OtFrustumClass;
+typedef std::shared_ptr<OtFrustumClass> OtFrustum;
 
-	OtFrustum(const glm::mat4& matrix) {
+class OtFrustumClass : public OtMathClass {
+public:
+	void update(const glm::mat4& matrix) {
 		// determine planes
 		glm::mat4 m = glm::transpose(matrix);
-		planes[left] = m[3] + m[0];
-		planes[right] = m[3] - m[0];
-		planes[bottom] = m[3] + m[1];
-		planes[top] = m[3] - m[1];
-		planes[near] = bgfx::getCaps()->homogeneousDepth ? m[3] + m[2] : m[2];
-		planes[far] = m[3] - m[2];
+		planes[left] = OtPlaneClass::create(m[3] + m[0]);
+		planes[right] = OtPlaneClass::create(m[3] - m[0]);
+		planes[bottom] = OtPlaneClass::create(m[3] + m[1]);
+		planes[top] = OtPlaneClass::create(m[3] - m[1]);
+		planes[near] = OtPlaneClass::create(bgfx::getCaps()->homogeneousDepth ? m[3] + m[2] : m[2]);
+		planes[far] = OtPlaneClass::create(m[3] - m[2]);
 
 		// normalize planes
 		for (auto c = 0; c < planeCount; c++) {
-			planes[c] /= glm::length(glm::vec3(planes[c]));
+			planes[c]->normalize();
 		}
 
 		// determine corners
@@ -59,30 +61,43 @@ public:
 		points[farBottomRight] = project(inverse, glm::vec4(1.0, -1.0, 1.0, 1.0));
 	}
 
-	// see if AABB box is visible
-	bool isVisibleAABB(const glm::vec3& minp, const glm::vec3& maxp) const {
-		// check box outside/inside of frustum
+	// see if a point is visible
+	bool isVisiblePoint(const glm::vec3& point) {
 		for (auto i = 0; i < planeCount; i++) {
-			if ((glm::dot(planes[i], glm::vec4(minp.x, minp.y, minp.z, 1.0f)) < 0.0) &&
-				(glm::dot(planes[i], glm::vec4(maxp.x, minp.y, minp.z, 1.0f)) < 0.0) &&
-				(glm::dot(planes[i], glm::vec4(minp.x, maxp.y, minp.z, 1.0f)) < 0.0) &&
-				(glm::dot(planes[i], glm::vec4(maxp.x, maxp.y, minp.z, 1.0f)) < 0.0) &&
-				(glm::dot(planes[i], glm::vec4(minp.x, minp.y, maxp.z, 1.0f)) < 0.0) &&
-				(glm::dot(planes[i], glm::vec4(maxp.x, minp.y, maxp.z, 1.0f)) < 0.0) &&
-				(glm::dot(planes[i], glm::vec4(minp.x, maxp.y, maxp.z, 1.0f)) < 0.0) &&
-				(glm::dot(planes[i], glm::vec4(maxp.x, maxp.y, maxp.z, 1.0f)) < 0.0)) {
-					return false;
+			if (glm::dot(planes[i]->getNormal(), point) + planes[i]->getDistance() < 0) {
+				return false;
+			 }
+		}
+
+		return true;
+	}
+
+	// see if an AABB box is visible
+	bool isVisibleAABB(const glm::vec3& minp, const glm::vec3& maxp) const {
+		glm::vec3 v;
+
+		for (auto i = 0; i < planeCount; i++) {
+			glm::vec3 normal = planes[i]->getNormal();
+
+			v.x = normal.x < 0 ? minp.x : maxp.x;
+			v.y = normal.y < 0 ? minp.y : maxp.y;
+			v.z = normal.z < 0 ? minp.z : maxp.z;
+
+			if (glm::dot(normal, v) + planes[i]->getDistance() < 0) {
+				return false;
 			}
 		}
 
-		// check frustum outside/inside box
-		int out;
-		out = 0; for (auto i = 0; i < pointCount; i++) out += ((points[i].x > maxp.x) ? 1 : 0); if (out == 8) return false;
-		out = 0; for (auto i = 0; i < pointCount; i++) out += ((points[i].x < minp.x) ? 1 : 0); if (out == 8) return false;
-		out = 0; for (auto i = 0; i < pointCount; i++) out += ((points[i].y > maxp.y) ? 1 : 0); if (out == 8) return false;
-		out = 0; for (auto i = 0; i < pointCount; i++) out += ((points[i].y < minp.y) ? 1 : 0); if (out == 8) return false;
-		out = 0; for (auto i = 0; i < pointCount; i++) out += ((points[i].z > maxp.z) ? 1 : 0); if (out == 8) return false;
-		out = 0; for (auto i = 0; i < pointCount; i++) out += ((points[i].z < minp.z) ? 1 : 0); if (out == 8) return false;
+		return true;
+	}
+
+	// see if a sphere is visible
+	bool isVisibleSphere(const glm::vec3& center, float radius) {
+		for (auto i = 0; i < planeCount; i++) {
+			if (glm::dot(planes[i]->getNormal(), center) + planes[i]->getDistance() + radius < 0) {
+				return false;
+			}
+		}
 
 		return true;
 	}
@@ -115,6 +130,24 @@ public:
 		debugDraw->lineTo(points[farTopLeft].x, points[farTopLeft].y, points[farTopLeft].z);
 	}
 
+	// get type definition
+	static OtType getMeta() {
+		static OtType type;
+
+		if (!type) {
+			type = OtTypeClass::create<OtPlaneClass>("Frustum", OtMathClass::getMeta());
+		}
+
+		return type;
+	}
+
+	// create a new object
+	static OtFrustum create() {
+		OtFrustum frustum = std::make_shared<OtFrustumClass>();
+		frustum->setType(getMeta());
+		return frustum;
+	}
+
 private:
 	static inline glm::vec4 project(const glm::mat4& matrix, const glm::vec4& ndc) {
 		glm::vec4 v = matrix * ndc;
@@ -143,6 +176,6 @@ private:
 		pointCount
 	};
 
-	glm::vec4 planes[planeCount];
+	std::array<OtPlane, planeCount> planes;
 	glm::vec3 points[pointCount];
 };

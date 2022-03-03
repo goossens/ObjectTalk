@@ -22,6 +22,15 @@
 
 
 //
+//	OtCameraClass::OtCameraClass
+//
+
+OtCameraClass::OtCameraClass() {
+	frustum = OtFrustumClass::create();
+}
+
+
+//
 //	OtCameraClass::setPerspective
 //
 
@@ -346,52 +355,55 @@ bool OtCameraClass::onKey(int key, int mods) {
 //
 
 void OtCameraClass::update(float aspectRatio) {
-	if (mode == circleTargetMode) {
-		// calculate new camera position
-		cameraPosition = glm::vec3(
-			cameraTarget.x + distance * std::cos(pitch) * std::sin(yaw),
-			cameraTarget.y + distance * std::sin(pitch),
-			cameraTarget.z + distance * std::cos(pitch) * std::cos(yaw));
+	// only update on change
+	if (changed) {
+		if (mode == circleTargetMode) {
+			// calculate new camera position
+			cameraPosition = glm::vec3(
+				cameraTarget.x + distance * std::cos(pitch) * std::sin(yaw),
+				cameraTarget.y + distance * std::sin(pitch),
+				cameraTarget.z + distance * std::cos(pitch) * std::cos(yaw));
 
-	} else if (mode == firstPersonMode) {
-		// calculate new forward vector
-		forward.x = std::cos(yaw) * std::cos(pitch);
-		forward.y = std::sin(pitch);
-		forward.z = std::sin(yaw) * std::cos(pitch);
-		forward = glm::normalize(forward);
+		} else if (mode == firstPersonMode) {
+			// calculate new forward vector
+			forward.x = std::cos(yaw) * std::cos(pitch);
+			forward.y = std::sin(pitch);
+			forward.z = std::sin(yaw) * std::cos(pitch);
+			forward = glm::normalize(forward);
 
-		// limit camera position
-		cameraPosition.y = std::clamp(cameraPosition.y, heightMin, heightMax);
+			// limit camera position
+			cameraPosition.y = std::clamp(cameraPosition.y, heightMin, heightMax);
 
-		// set new camera target based on forward vector
-		cameraTarget = cameraPosition + forward;
+			// set new camera target based on forward vector
+			cameraTarget = cameraPosition + forward;
 
-		// calculate right vector
-		right = glm::normalize(glm::cross(forward, cameraUp));
+			// calculate right vector
+			right = glm::normalize(glm::cross(forward, cameraUp));
+		}
+
+		// determine transformations
+		auto caps = bgfx::getCaps();
+		viewMatrix = glm::lookAt(cameraPosition, cameraTarget, cameraUp);
+
+		if (style == orthographicStyle) {
+			float w = width / 2.0;
+			float h = w / aspectRatio;
+
+			projMatrix = caps->homogeneousDepth
+				? glm::orthoRH_NO(-w, w, -h, h, near, far)
+				: glm::orthoRH_ZO(-w, w, -h, h, near, far);
+
+		} else {
+			projMatrix = caps->homogeneousDepth
+				? glm::perspectiveRH_NO(glm::radians(fov), aspectRatio, near, far)
+				: glm::perspectiveRH_ZO(glm::radians(fov), aspectRatio, near, far);
+		}
+
+		viewProjMatrix = projMatrix * viewMatrix;
+
+		// update frustum (in world space)
+		frustum->update(viewProjMatrix);
 	}
-
-	// determine transformations
-	auto caps = bgfx::getCaps();
-	viewMatrix = glm::lookAt(cameraPosition, cameraTarget, cameraUp);
-
-	if (style == orthographicStyle) {
-		float w = width / 2.0;
-		float h = w / aspectRatio;
-
-		projMatrix = caps->homogeneousDepth
-			? glm::orthoRH_NO(-w, w, -h, h, near, far)
-			: glm::orthoRH_ZO(-w, w, -h, h, near, far);
-
-	} else {
-		projMatrix = caps->homogeneousDepth
-			? glm::perspectiveRH_NO(glm::radians(fov), aspectRatio, near, far)
-			: glm::perspectiveRH_ZO(glm::radians(fov), aspectRatio, near, far);
-	}
-
-	viewProjMatrix = projMatrix * viewMatrix;
-
-	// determine frustum (in world space)
-	frustum = OtFrustum(viewProjMatrix);
 }
 
 
@@ -412,7 +424,7 @@ inline glm::vec4 p(const glm::mat4& matrix, const glm::vec4& ndc) {
 void OtCameraClass::render(DebugDrawEncoder* debugDraw) {
 	// render frustum if required
 	if (renderFrustumFlag) {
-		frustum.render(debugDraw);
+		frustum->render(debugDraw);
 	}
 }
 
@@ -435,15 +447,7 @@ void OtCameraClass::submit(bgfx::ViewId view) {
 //
 
 bool OtCameraClass::isVisiblePoint(const glm::vec3& point) {
-	// check against all frustum planes
-/*
-	for (auto c = 0; c < 6; c++) {
-		if (glm::dot(planes[c].normal, point) + planes[c].d > 0) {
-			return false;
-		 }
-	}
-*/
-	return true;
+	return frustum->isVisiblePoint(point);
 }
 
 
@@ -452,7 +456,7 @@ bool OtCameraClass::isVisiblePoint(const glm::vec3& point) {
 //
 
 bool OtCameraClass::isVisibleAABB(const glm::vec3& min, const glm::vec3& max) {
-	return frustum.isVisibleAABB(min, max);
+	return frustum->isVisibleAABB(min, max);
 }
 
 
@@ -461,16 +465,7 @@ bool OtCameraClass::isVisibleAABB(const glm::vec3& min, const glm::vec3& max) {
 //
 
 bool OtCameraClass::isVisibleSphere(const glm::vec3& center, float radius) {
-	// check against all frustum planes
-/*
-	for (auto c = 0; c < 6; c++) {
-		if (glm::dot(planes[c].normal, center) + planes[c].d + radius > 0) {
-			return false;
-		}
-	}
-*/
-
-	return true;
+	return frustum->isVisibleSphere(center, radius);
 }
 
 

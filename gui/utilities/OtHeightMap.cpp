@@ -14,13 +14,10 @@
 #include <cstdlib>
 #include <ctime>
 
-#include "bx/allocator.h"
-#include "bx/file.h"
-#include "bimg/bimg.h"
-#include "bimg/decode.h"
 #include "imgui.h"
 
 #include "OtException.h"
+#include "OtImage.h"
 #include "OtNumbers.h"
 #include "OtFunction.h"
 
@@ -83,23 +80,7 @@ OtObject OtHeightMapClass::loadMap(const std::string& file) {
 	}
 
 	// load height map
-	static bx::DefaultAllocator allocator;
-	static bx::FileReader reader;
-
-	if (!bx::open(&reader, file.c_str())) {
-		OtExcept("Can't open heightmap [%s]", file.c_str());
-	}
-
-	uint32_t size = (uint32_t) bx::getSize(&reader);
-	void* data = BX_ALLOC(&allocator, size);
-	bx::read(&reader, data, size, bx::ErrorAssert{});
-	bx::close(&reader);
-
-	bimg::ImageContainer* image = bimg::imageParse(&allocator, data, size);
-
-	if (!image)  {
-		OtExcept("Can't process heightmap in [%s]", file.c_str());
-	}
+	bimg::ImageContainer* image = OtLoadImage(file);
 
 	// allocate heightmap
 	width = image->m_width;
@@ -114,7 +95,6 @@ OtObject OtHeightMapClass::loadMap(const std::string& file) {
 		bimg::getBitsPerPixel(image->m_format) * width / 8, sizeof(float) * width);
 
 	// free image resources
-	BX_FREE(&allocator, data);
 	bimg::imageFree(image);
 
 	// notify observers

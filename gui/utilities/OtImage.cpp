@@ -65,7 +65,7 @@ bimg::ImageContainer* OtLoadImage(const std::string& file, bool powerof2, bool s
 		OtExcept("Image height %d is not a power of 2", image->m_height);
 	}
 
-	// validate aquareness (if required)
+	// validate squareness (if required)
 	if (square && image->m_width != image->m_height) {
 		bimg::imageFree(image);
 		OtExcept("Image must be square not %d by %d", image->m_width, image->m_height);

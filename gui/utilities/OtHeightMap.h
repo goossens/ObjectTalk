@@ -15,6 +15,7 @@
 #include "glm/glm.hpp"
 
 #include "OtController.h"
+#include "OtImage.h"
 #include "OtGui.h"
 
 
@@ -58,6 +59,15 @@ public:
 	static OtHeightMap create();
 
 private:
+	// convert 8-bit unsigned image to heightmap
+	void convert8bit(uint8_t* data);
+
+	// convert 8-bit unsigned image to heightmap
+	void convert16bit(uint16_t* data);
+
+	// convert other image types
+	void convertImage(bimg::ImageContainer* image);
+
 	// get height (0.0 to 1.0) at specified location (in absolute coordinates)
 	float getHeightAbs(int x, int y);
 

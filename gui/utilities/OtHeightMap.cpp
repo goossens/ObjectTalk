@@ -17,7 +17,6 @@
 #include "imgui.h"
 
 #include "OtException.h"
-#include "OtImage.h"
 #include "OtNumbers.h"
 #include "OtFunction.h"
 
@@ -33,16 +32,6 @@ OtHeightMapClass::~OtHeightMapClass() {
 	if (heightmap) {
 		delete [] heightmap;
 	}
-}
-
-
-//
-//	packHeight
-//
-
-static inline void packHeight(void* dst, const float* src) {
-	float* d = (float*) dst;
-	d[0] = 0.299 * src[0] + 0.587 * src[1] + 0.114 * src[2];
 }
 
 
@@ -87,12 +76,20 @@ OtObject OtHeightMapClass::loadMap(const std::string& file) {
 	height = image->m_height;
 	heightmap = new float[width * height];
 
-	// convert image to height map
-	bimg::imageConvert(
-		(void*) heightmap, sizeof(float) * 8, packHeight,
-		image->m_data, bimg::getBitsPerPixel(image->m_format), bimg::getUnpack(image->m_format),
-		uint32_t(width), uint32_t(height), 1,
-		bimg::getBitsPerPixel(image->m_format) * width / 8, sizeof(float) * width);
+	// see if we can do the conversion the easy or the hard way
+	switch (image->m_format) {
+		case bimg::TextureFormat::R8:
+			convert8bit((uint8_t*) image->m_data);
+			break;
+
+		case bimg::TextureFormat::R16:
+			convert16bit((uint16_t*) image->m_data);
+			break;
+
+		default:
+			convertImage(image);
+			break;
+	}
 
 	// free image resources
 	bimg::imageFree(image);
@@ -193,6 +190,50 @@ void OtHeightMapClass::renderGUI() {
 	if (changed) {
 		notify();
 	}
+}
+
+
+//
+//	OtHeightMapClass::convert8bit
+//
+
+void OtHeightMapClass::convert8bit(uint8_t* data) {
+	float* p = heightmap;
+
+	for (auto c = 0; c < width * height; c++) {
+		*p++ = (float) *data++ / 255.0;
+	}
+}
+
+
+//
+//	OtHeightMapClass::convert16bit
+//
+
+void OtHeightMapClass::convert16bit(uint16_t* data) {
+	float* p = heightmap;
+
+	for (auto c = 0; c < width * height; c++) {
+		*p++ = (float) *data++;
+	}
+}
+
+
+//
+//	OtHeightMapClass::convert16bit
+//
+
+static void packHeight(void* dst, const float* src) {
+	float* d = (float*) dst;
+	d[0] = 0.299 * src[0] + 0.587 * src[1] + 0.114 * src[2];
+}
+
+void OtHeightMapClass::convertImage(bimg::ImageContainer* image) {
+	bimg::imageConvert(
+		(void*) heightmap, sizeof(float) * 8, packHeight,
+		image->m_data, bimg::getBitsPerPixel(image->m_format), bimg::getUnpack(image->m_format),
+		(uint32_t) width, (uint32_t) height, 1,
+		bimg::getBitsPerPixel(image->m_format) * width / 8, sizeof(float) * width);
 }
 
 

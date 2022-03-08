@@ -123,9 +123,6 @@ OtObject OtBoxGeometryClass::setDepthSegments(int ds) {
 //
 
 void OtBoxGeometryClass::fillGeometry() {
-	// default culling
-	culling = true;
-
 	// create all six planes
 	buildPlane(-1, -1, depth, height,  width, depthSegments, heightSegments, [](float u, float v, float w) { return glm::vec3(w, v, u); });
 	buildPlane( 1, -1, depth, height, -width, depthSegments, heightSegments, [](float u, float v, float w) { return glm::vec3(w, v, u); });

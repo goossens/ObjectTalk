@@ -34,6 +34,9 @@ void OtSceneClass::validateChild(OtComponent child) {
 //
 
 void OtSceneClass::update(OtCamera camera, float x, float y, float w, float h) {
+	// update the camera
+	camera->update(w / h);
+
 	// reset context state
 	context.clear();
 	context.setViewRect(x, y, w, h);

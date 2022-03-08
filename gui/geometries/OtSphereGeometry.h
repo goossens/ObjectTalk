@@ -15,6 +15,7 @@
 #include "OtNumbers.h"
 
 #include "OtGeometry.h"
+#include "OtHeightMap.h"
 
 
 //
@@ -26,6 +27,9 @@ typedef std::shared_ptr<OtSphereGeometryClass> OtSphereGeometry;
 
 class OtSphereGeometryClass : public OtGeometryClass {
 public:
+	// destructor
+	~OtSphereGeometryClass();
+
 	// initialize geometry
 	OtObject init(size_t count, OtObject* parameters);
 
@@ -37,6 +41,9 @@ public:
 	OtObject setPhiLength(float phiLength);
 	OtObject setThetaStart(float thetaStart);
 	OtObject setThetaLength(float thetaLength);
+
+	OtObject setHeightMap(OtObject heightmap);
+	OtObject setTextureAbsolute(bool flag);
 
 	// get type definition
 	static OtType getMeta();
@@ -56,4 +63,8 @@ private:
 	float phiLength = std::numbers::pi * 2.0;
 	float thetaStart = 0.0;
 	float thetaLength = std::numbers::pi;
+	bool textureAbsolute = false;
+
+	OtHeightMap heightmap;
+	size_t heightmapID;
 };

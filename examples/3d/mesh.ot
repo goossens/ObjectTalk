@@ -184,10 +184,14 @@ class App : gui.App {
 
 	function setMaterial(this, name) {
 		if (name in gui.getDefaultMaterials()) {
-			this.material = gui.Material().setMaterial(name);
+			this.material = gui.Material()
+				.setMaterial(name)
+				.setDoubleSided();
 
 		} else {
-			this.material = gui.Material().setTexture(gui.Texture(textures[name]));
+			this.material = gui.Material()
+				.setTexture(gui.Texture(textures[name]))
+				.setDoubleSided();
 		}
 
 		if (this.has("mesh")) {

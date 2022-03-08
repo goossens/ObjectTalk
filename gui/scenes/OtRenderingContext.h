@@ -129,6 +129,7 @@ private:
 	OtCamera camera;
 
 	// to support hierarchical scene objects
+	// transforming local to world space
 	glm::mat4 transform = glm::mat4(1.0);
 
 	// light slot indices

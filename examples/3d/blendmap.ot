@@ -48,8 +48,8 @@ class App : gui.App {
 		var trees = gui.Mesh()
 			.setGeometry(gui.ModelGeometry(__DIR__ + "/assets/pine.obj"))
 			.setMaterial(gui.Material()
-				.setTexture(gui.Texture(__DIR__ + "/assets/pine.png")))
-			.setHoles(true)
+				.setTexture(gui.Texture(__DIR__ + "/assets/pine.png"))
+				.setDoubleSided())
 			.castShadow(true)
 			.receiveShadow(true);
 

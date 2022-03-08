@@ -39,8 +39,8 @@ class App : gui.App {
 				.setWidthSegments(64)
 				.setHeightSegments(32))
 			.setMaterial(gui.Material()
-				.setTexture(gui.Texture(__DIR__ + "/assets/earth.png")))
-			.setHoles(true);
+				.setTexture(gui.Texture(__DIR__ + "/assets/earth.png"))
+				.setDoubleSided());
 
 		var clouds = gui.Mesh()
 			.setGeometry(gui.SphereGeometry()
@@ -48,8 +48,8 @@ class App : gui.App {
 				.setWidthSegments(64)
 				.setHeightSegments(32))
 			.setMaterial(gui.Material()
-				.setTexture(gui.Texture(__DIR__ + "/assets/clouds.png")))
-			.setHoles(true);
+				.setTexture(gui.Texture(__DIR__ + "/assets/clouds.png"))
+				.setDoubleSided());
 
 		var earth = gui.Group()
 			.add(grid)

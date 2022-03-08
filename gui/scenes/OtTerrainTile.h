@@ -38,7 +38,7 @@ public:
 	~OtTerrainTileClass();
 
 	// generate tile
-	void generate(OtTerrainMap terrainmapmap);
+	void generate(OtTerrainMap terrainmap);
 
 	// submit rendering buffers to BGFX
 	void submit();

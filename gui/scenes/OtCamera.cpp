@@ -411,16 +411,6 @@ void OtCameraClass::update(float aspectRatio) {
 //	OtCameraClass::render
 //
 
-inline glm::vec4 h(const glm::vec4& v) {
-	return glm::vec4(v.x / v.w, v.y / v.w, v.z / v.w, 1.0f);
-}
-
-inline glm::vec4 p(const glm::mat4& matrix, const glm::vec4& ndc) {
-	return h(matrix * ndc);
-}
-
-#include <glm/gtx/io.hpp>
-
 void OtCameraClass::render(DebugDrawEncoder* debugDraw) {
 	// render frustum if required
 	if (renderFrustumFlag) {
@@ -536,6 +526,7 @@ OtType OtCameraClass::getMeta() {
 		type->set("setYawLimits", OtFunctionClass::create(&OtCameraClass::setYawLimits));
 		type->set("setHeightLimits", OtFunctionClass::create(&OtCameraClass::setHeightLimits));
 
+		type->set("renderFrustum", OtFunctionClass::create(&OtCameraClass::renderFrustum));
 		type->set("hasChanged", OtFunctionClass::create(&OtCameraClass::hasChanged));
 	}
 

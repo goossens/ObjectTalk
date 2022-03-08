@@ -89,9 +89,9 @@ void OtGeometryClass::updateBuffers() {
 	clearBuffers();
 
 	bgfx::VertexLayout layout = OtVertex::getVertexLayout();
-	vertexBuffer = bgfx::createVertexBuffer(bgfx::makeRef(vertices.data(), sizeof(OtVertex) * vertices.size()), layout);
-	triagleIndexBuffer = bgfx::createIndexBuffer(bgfx::makeRef(triangles.data(), sizeof(uint32_t) * triangles.size()), BGFX_BUFFER_INDEX32);
-	lineIndexBuffer = bgfx::createIndexBuffer(bgfx::makeRef(lines.data(), sizeof(uint32_t) * lines.size()), BGFX_BUFFER_INDEX32);
+	vertexBuffer = bgfx::createVertexBuffer(bgfx::copy(vertices.data(), sizeof(OtVertex) * vertices.size()), layout);
+	triagleIndexBuffer = bgfx::createIndexBuffer(bgfx::copy(triangles.data(), sizeof(uint32_t) * triangles.size()), BGFX_BUFFER_INDEX32);
+	lineIndexBuffer = bgfx::createIndexBuffer(bgfx::copy(lines.data(), sizeof(uint32_t) * lines.size()), BGFX_BUFFER_INDEX32);
 	refreshBuffers = false;
 }
 

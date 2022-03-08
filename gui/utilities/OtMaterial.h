@@ -14,9 +14,9 @@
 
 #include "glm/glm.hpp"
 
+#include "OtBlendMap.h"
 #include "OtGui.h"
 #include "OtTexture.h"
-#include "OtBlendMap.h"
 
 
 //
@@ -33,6 +33,7 @@ public:
 		FIXED,
 		COLORED,
 		TEXTURED,
+		NORMALED,
 		BLENDMAPPED
 	};
 
@@ -53,9 +54,11 @@ public:
 	OtObject setDiffuse(const std::string c) ;
 	OtObject setSpecular(const std::string c);
 	OtObject setShininess(float s);
-	OtObject setTransparency(float t);
+	OtObject setOpacity(float t);
+	OtObject setTransparent(bool flag);
 
 	OtObject setTexture(OtObject texture);
+	OtObject setNormals(OtObject texture, OtObject normals);
 	OtObject setBlendMap(OtObject blendmap);
 
 	void setColorVector(const glm::vec3& c) { color = c; }
@@ -69,6 +72,13 @@ public:
 		float repeatX, float repeatY,
 		float rotation,
 		float centerX, float centerY);
+
+	// determines which side of faces will be rendered
+	OtObject setFrontSide() { frontside = true; backside = false; return shared(); }
+	OtObject setBackSide() { frontside = false; backside = true; return shared(); }
+	OtObject setDoubleSided() { frontside = true; backside = true; return shared(); }
+	bool getFrontSide() { return frontside; }
+	bool getBackSide() { return backside; }
 
 	// submit shader data to BGFX
 	void submit();
@@ -94,15 +104,21 @@ private:
 	glm::vec3 diffuse = { 0.6, 0.6, 0.6 };
 	glm::vec3 specular = { 0.4, 0.4, 0.4 };
 	float shininess = 20;
-	float transparency = 1.0;
+	float opacity = 1.0;
+	bool transparent = false;
 
 	glm::mat3 uvTransform = glm::mat3(1.0);
+
+	bool frontside = true;
+	bool backside = false;
 
 	// material information
 	bgfx::UniformHandle materialUniform = BGFX_INVALID_HANDLE;
 	bgfx::UniformHandle transformUniform = BGFX_INVALID_HANDLE;
 	bgfx::UniformHandle textureUniform = BGFX_INVALID_HANDLE;
+	bgfx::UniformHandle normalsUniform = BGFX_INVALID_HANDLE;
 
 	OtTexture texture;
+	OtTexture normals;
 	OtBlendMap blendmap;
 };

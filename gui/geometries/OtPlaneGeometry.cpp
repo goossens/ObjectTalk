@@ -193,7 +193,6 @@ void OtPlaneGeometryClass::fillGeometry() {
 			float z = 0.0;
 
 			if (heightmap) {
-
 				z = heightmap->getHeight(u, v);
 
 			} else if (noisemap) {

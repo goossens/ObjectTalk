@@ -38,20 +38,20 @@ class App : gui.App {
 			.castShadow(true)
 			.setGeometry(poleGeometry)
 			.setMaterial(poleMaterial)
-			.translate(-16, 13, 50);
+			.translate(-16, 13, 0);
 
 		var pole2 = gui.Mesh()
 			.castShadow(true)
 			.setGeometry(poleGeometry)
 			.setMaterial(poleMaterial)
-			.translate(16, 13, 50);
+			.translate(16, 13, 0);
 
 		var wire = gui.Mesh()
 			.castShadow(true)
 			.setGeometry(gui.CylinderGeometry(0.1, 0.1, 34))
 			.setMaterial(gui.Material("material", "black plastic"))
 			.rotateZ(pi / 2.0)
-			.translate(0, 25, 50);
+			.translate(0, 25, 0);
 
 		var plane = gui.PlaneGeometry(20, 20, 20, 20);
 
@@ -64,8 +64,9 @@ class App : gui.App {
 			.castShadow(true)
 			.setGeometry(plane)
 			.setMaterial(gui.Material()
-				.setTexture(gui.Texture(__DIR__ + "/assets/cloth.png")))
-			.translate(0, 15, 50);
+				.setTexture(gui.Texture(__DIR__ + "/assets/cloth.png"))
+				.setDoubleSided())
+			.translate(0, 15, 0);
 
 		// create scene
 		var scene = gui.Scene()
@@ -81,14 +82,15 @@ class App : gui.App {
 
 		// create camera
 		var camera = gui.Camera()
-			.setPerspective(45, 0.1, 1000)
+			.setPerspective(45, 0.1, 500)
 			.setCircleTargetMode()
-			.setTarget(0, 10, 50)
+			.setTarget(0, 10, 0)
 			.setPitchLimits(0.0, pi / 2.0 - 0.1)
 			.setPitch(0.3)
 			.setYaw(-pi / 8.0)
 			.setDistanceLimits(20.0, 100.0)
-			.setDistance(50.0);
+			.setDistance(50.0)
+			.renderFrustum(true);
 
 
 		// create view

@@ -69,9 +69,6 @@ OtObject OtModelGeometryClass::setScale(float s) {
 //
 
 void OtModelGeometryClass::fillGeometry() {
-	// default culling
-	culling = true;
-
 	// load the object model
 	tinyobj::attrib_t attrib;
 	std::vector<tinyobj::shape_t> shapes;

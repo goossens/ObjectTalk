@@ -261,13 +261,7 @@ void OtTerrainTileClass::generate(OtTerrainMap terrainmap) {
 void OtTerrainTileClass::submit() {
 	// create buffers (if required)
 	if (!bgfx::isValid(vertexBuffer)) {
-		bgfx::VertexLayout layout;
-
-		layout.begin()
-			.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-			.add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
-			.end();
-
+		bgfx::VertexLayout layout = OtTerrainVertex::getVertexLayout();
 		vertexBuffer = bgfx::createVertexBuffer(bgfx::makeRef(vertices.data(), sizeof(OtTerrainVertex) * vertices.size()), layout);
 		indexBuffer = bgfx::createIndexBuffer(bgfx::makeRef(triangles.data(), sizeof(uint32_t) * triangles.size()), BGFX_BUFFER_INDEX32);
 	}

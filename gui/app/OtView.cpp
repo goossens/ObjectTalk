@@ -81,8 +81,7 @@ void OtViewClass::update() {
 		vw = w * sw / 100.0;
 		vh = h * sh / 100.0;
 
-		// update camera and scene
-		camera->update(vw / vh);
+		// update scene
 		scene->update(camera, vx, vy, vw, vh);
 	}
 }

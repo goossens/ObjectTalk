@@ -38,7 +38,6 @@ public:
 	OtObject setGeometry(OtObject geometry);
 	OtObject setMaterial(OtObject material);
 	OtObject setWireframe(bool wireframe);
-	OtObject setHoles(bool holes);
 
 	// add a new instance to this mesh
 	OtObject addInstance(OtObject matrix);
@@ -61,7 +60,6 @@ protected:
 	OtMaterial material;
 	int materialType = -1;
 	bool wireframe = false;
-	bool holes = false;
 
 	// list of instances
 	std::vector<glm::mat4> instances;

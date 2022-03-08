@@ -68,7 +68,7 @@ class App : gui.App {
 			geometry.setHeightSegments(value);
 		}));
 
-		node.add(gui.RealSlider("phiStart", 0, pi, 0, function(value) {
+		node.add(gui.RealSlider("phiStart", 0, pi * 2.0, 0, function(value) {
 			geometry.setPhiStart(value);
 		}));
 

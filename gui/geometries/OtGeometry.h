@@ -34,9 +34,6 @@ public:
 	void forceGeometryRefresh() { refreshGeometry = true; }
 	void forceBufferRefresh() { refreshBuffers = true; }
 
-	// does geometry have holes (or is it one-sided)?
-	bool wantsCulling() { return culling; }
-
 	// access vertices
 	OtVertex& getVertex(size_t offset) {
 		if (refreshGeometry) {
@@ -45,6 +42,10 @@ public:
 
 		return vertices[offset];
 	}
+
+	// access bounding box
+	glm::vec3 getMinBB() { return minBB; }
+	glm::vec3 getMaxBB() { return maxBB; }
 
 	// access BGFX buffers
 	bgfx::VertexBufferHandle getVertexBuffer();
@@ -70,9 +71,9 @@ protected:
 		minBB.x = std::min(minBB.x, vertex.position.x);
 		minBB.y = std::min(minBB.y, vertex.position.y);
 		minBB.z = std::min(minBB.z, vertex.position.z);
-		maxBB.x = std::max(minBB.x, vertex.position.x);
-		maxBB.y = std::max(minBB.y, vertex.position.y);
-		maxBB.z = std::max(minBB.z, vertex.position.z);
+		maxBB.x = std::max(maxBB.x, vertex.position.x);
+		maxBB.y = std::max(maxBB.y, vertex.position.y);
+		maxBB.z = std::max(maxBB.z, vertex.position.z);
 	}
 
 	void addTriangle(uint32_t p1, uint32_t p2, uint32_t p3) {
@@ -87,7 +88,6 @@ protected:
 	}
 
 	// geometry data
-	bool culling = false;
 	std::vector<OtVertex> vertices;
 	std::vector<uint32_t> triangles;
 	std::vector<uint32_t> lines;

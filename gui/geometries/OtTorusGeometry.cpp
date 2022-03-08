@@ -153,9 +153,6 @@ OtObject OtTorusGeometryClass::setTubularLength(float tl) {
 //
 
 void OtTorusGeometryClass::fillGeometry() {
-	// default culling
-	culling = tubularLength == std::numbers::pi * 2.0 && radialLength == std::numbers::pi;
-
 	// generate vertices
 	for (auto j = 0; j <= radialSegments; j++) {
 		for (auto i = 0; i <= tubularSegments; i++) {

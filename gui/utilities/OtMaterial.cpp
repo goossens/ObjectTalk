@@ -66,6 +66,7 @@ OtMaterialClass::OtMaterialClass() {
 	materialUniform = bgfx::createUniform("u_material", bgfx::UniformType::Vec4, 5);
 	transformUniform = bgfx::createUniform("u_uv_transform", bgfx::UniformType::Mat3);
 	textureUniform = bgfx::createUniform("s_texture", bgfx::UniformType::Sampler);
+	normalsUniform = bgfx::createUniform("s_normals", bgfx::UniformType::Sampler);
 }
 
 
@@ -78,6 +79,7 @@ OtMaterialClass::~OtMaterialClass() {
 	bgfx::destroy(materialUniform);
 	bgfx::destroy(transformUniform);
 	bgfx::destroy(textureUniform);
+	bgfx::destroy(normalsUniform);
 }
 
 
@@ -86,18 +88,27 @@ OtMaterialClass::~OtMaterialClass() {
 //
 
 OtObject OtMaterialClass::init(size_t count, OtObject* parameters) {
-	if (count == 2) {
+	if (count == 3) {
 		std::string type = parameters[0]->operator std::string();
-		std::string material = parameters[1]->operator std::string();
+
+		if (type == "normals") {
+			setNormals(parameters[1], parameters[2]);
+
+		} else {
+			OtExcept("Invalid material type [%s]", type.c_str());
+		}
+
+	} else if (count == 2) {
+		std::string type = parameters[0]->operator std::string();
 
 		if (type == "fixed") {
-			setFixed(material);
+			setFixed(parameters[1]->operator std::string());
 
 		} else if (type == "material") {
-			setMaterial(material);
+			setMaterial(parameters[1]->operator std::string());
 
 		} else if (type == "color") {
-			setColor(material);
+			setColor(parameters[1]->operator std::string());
 
 		} else if (type == "texture") {
 			setTexture(parameters[1]);
@@ -110,7 +121,7 @@ OtObject OtMaterialClass::init(size_t count, OtObject* parameters) {
 		}
 
 	} else if (count != 0) {
-		OtExcept("[Material] constructor expects 0 or 2 arguments (not %ld)", count);
+		OtExcept("[Material] constructor expects 0, 2 or 3 arguments (not %ld)", count);
 	}
 
 	return nullptr;
@@ -202,11 +213,22 @@ OtObject OtMaterialClass::setShininess(float s) {
 
 
 //
-//	OtMaterialClass::setTransparency
+//	OtMaterialClass::setOpacity
 //
 
-OtObject OtMaterialClass::setTransparency(float t) {
-	transparency = t;
+OtObject OtMaterialClass::setOpacity(float o) {
+	opacity = o;
+	return shared();
+}
+
+
+//
+//	OtMaterialClass::setTransparent
+//
+
+OtObject OtMaterialClass::setTransparent(bool flag)
+{
+	transparent = flag;
 	return shared();
 }
 
@@ -241,6 +263,16 @@ OtObject OtMaterialClass::setTexture(OtObject object) {
 }
 
 
+OtObject OtMaterialClass::setNormals(OtObject object1, OtObject object2) {
+	object1->expectKindOf("Texture");
+	object2->expectKindOf("Texture");
+
+	texture = object1->cast<OtTextureClass>();
+	normals = object2->cast<OtTextureClass>();
+	return shared();
+}
+
+
 //
 //	OtMaterialClass::setBlendMap
 //
@@ -261,6 +293,11 @@ void OtMaterialClass::submit() {
 		blendmap->submit();
 		bgfx::setUniform(transformUniform, &uvTransform);
 
+	} else if (normals) {
+		texture->submit(1, textureUniform);
+		texture->submit(2, normalsUniform);
+		bgfx::setUniform(transformUniform, &uvTransform);
+
 	} else if (texture) {
 		texture->submit(1, textureUniform);
 		bgfx::setUniform(transformUniform, &uvTransform);
@@ -268,10 +305,10 @@ void OtMaterialClass::submit() {
 
 	// pass material information
 	glm::vec4 uniforms[5];
-	uniforms[0] = glm::vec4(color, transparency);
-	uniforms[1] = glm::vec4(ambient, transparency);
-	uniforms[2] = glm::vec4(diffuse, transparency);
-	uniforms[3] = glm::vec4(specular, transparency);
+	uniforms[0] = glm::vec4(color, opacity);
+	uniforms[1] = glm::vec4(ambient, opacity);
+	uniforms[2] = glm::vec4(diffuse, opacity);
+	uniforms[3] = glm::vec4(specular, opacity);
 	uniforms[4].x = shininess;
 	bgfx::setUniform(materialUniform, &uniforms, 5);
 }
@@ -284,6 +321,9 @@ void OtMaterialClass::submit() {
 int OtMaterialClass::getType() {
 	if (blendmap) {
 		return BLENDMAPPED;
+
+	} else if (normals) {
+		return NORMALED;
 
 	} else if (texture) {
 		return TEXTURED;
@@ -318,11 +358,20 @@ OtType OtMaterialClass::getMeta() {
 		type->set("setSpecular", OtFunctionClass::create(&OtMaterialClass::setSpecular));
 
 		type->set("setShininess", OtFunctionClass::create(&OtMaterialClass::setShininess));
-		type->set("setTransparency", OtFunctionClass::create(&OtMaterialClass::setTransparency));
+		type->set("setOpacity", OtFunctionClass::create(&OtMaterialClass::setOpacity));
+		type->set("setTransparent", OtFunctionClass::create(&OtMaterialClass::setTransparent));
 
 		type->set("setTexture", OtFunctionClass::create(&OtMaterialClass::setTexture));
 		type->set("setBlendMap", OtFunctionClass::create(&OtMaterialClass::setBlendMap));
+		type->set("setNormals", OtFunctionClass::create(&OtMaterialClass::setNormals));
 		type->set("setUvTransform", OtFunctionClass::create(&OtMaterialClass::setUvTransform));
+
+
+		type->set("setFrontSide", OtFunctionClass::create(&OtMaterialClass::setFrontSide));
+		type->set("setBackSide", OtFunctionClass::create(&OtMaterialClass::setBackSide));
+		type->set("setDoubleSided", OtFunctionClass::create(&OtMaterialClass::setDoubleSided));
+		type->set("getFrontSide", OtFunctionClass::create(&OtMaterialClass::getFrontSide));
+		type->set("getBackSide", OtFunctionClass::create(&OtMaterialClass::getBackSide));
 	}
 
 	return type;

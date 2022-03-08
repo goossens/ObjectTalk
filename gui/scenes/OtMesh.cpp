@@ -15,11 +15,13 @@
 
 #include "OtFunction.h"
 
+#include "OtGlm.h"
 #include "OtMesh.h"
 #include "OtMatrix.h"
 
 #include "OtFixedShader.h"
 #include "OtColoredShader.h"
+#include "OtNormaledShader.h"
 #include "OtTexturedShader.h"
 #include "OtBlendMappedShader.h"
 
@@ -35,6 +37,9 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtColoredVS),
 	BGFX_EMBEDDED_SHADER(OtColoredVSI),
 	BGFX_EMBEDDED_SHADER(OtColoredFS),
+	BGFX_EMBEDDED_SHADER(OtNormaledVS),
+	BGFX_EMBEDDED_SHADER(OtNormaledVSI),
+	BGFX_EMBEDDED_SHADER(OtNormaledFS),
 	BGFX_EMBEDDED_SHADER(OtTexturedVS),
 	BGFX_EMBEDDED_SHADER(OtTexturedVSI),
 	BGFX_EMBEDDED_SHADER(OtTexturedFS),
@@ -113,16 +118,6 @@ OtObject OtMeshClass::setWireframe(bool w) {
 
 
 //
-//	OtMeshClass::setHoles
-//
-
-OtObject OtMeshClass::setHoles(bool h) {
-	holes = h;
-	return shared();
-}
-
-
-//
 //	OtMeshClass::addInstance
 //
 
@@ -141,40 +136,47 @@ void OtMeshClass::render(OtRenderingContext context, long flag) {
 	// let parent class do its thing
 	OtObject3dClass::render(context);
 
-	// setup context
-	context->submit(receivesShadow());
+	// determine visibility
+	glm::vec3 minBB = glm::vec3(OtGlmHomogonize(context->getTransform() * glm::vec4(geometry->getMinBB(), 1.0)));
+	glm::vec3 maxBB = glm::vec3(OtGlmHomogonize(context->getTransform() * glm::vec4(geometry->getMaxBB(), 1.0)));
 
-	// setup material
-	material->submit();
+	// don't bother if we're out of sight and out of mind
+	if (context->getCamera()->isVisibleAABB(minBB, maxBB)) {
+		// setup context
+		context->submit(receivesShadow());
 
-	// submit vertices and triangles/lines
-	bgfx::setVertexBuffer(0, geometry->getVertexBuffer());
+		// setup material
+		material->submit();
 
-	if (wireframe) {
-		bgfx::setIndexBuffer(geometry->getLineIndexBuffer());
-		flag |= BGFX_STATE_PT_LINES;
+		// submit vertices and triangles/lines
+		bgfx::setVertexBuffer(0, geometry->getVertexBuffer());
 
-	} else {
-		bgfx::setIndexBuffer(geometry->getTriangleIndexBuffer());
+		if (wireframe) {
+			bgfx::setIndexBuffer(geometry->getLineIndexBuffer());
+			flag |= BGFX_STATE_PT_LINES;
+
+		} else {
+			bgfx::setIndexBuffer(geometry->getTriangleIndexBuffer());
+		}
+
+		// handle instancing (if required)
+		if (instances.size()) {
+			bgfx::InstanceDataBuffer idb;
+			bgfx::allocInstanceDataBuffer(&idb, instances.size(), sizeof(glm::mat4));
+			std::memcpy(idb.data, instances.data(), idb.size);
+			bgfx::setInstanceDataBuffer(&idb);
+		}
+
+		// set rendering options
+		bgfx::setState(
+			BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_MSAA |
+			BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
+			flag |
+			BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA));
+
+		// run shader
+		bgfx::submit(context->getView(), shader);
 	}
-
-	// handle instancing (if required)
-	if (instances.size()) {
-		bgfx::InstanceDataBuffer idb;
-		bgfx::allocInstanceDataBuffer(&idb, instances.size(), sizeof(glm::mat4));
-		std::memcpy(idb.data, instances.data(), idb.size);
-		bgfx::setInstanceDataBuffer(&idb);
-	}
-
-	// set rendering options
-	bgfx::setState(
-		BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_MSAA |
-		BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
-		flag |
-		BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA));
-
-	// run shader
-	bgfx::submit(context->getView(), shader);
 }
 
 
@@ -215,6 +217,20 @@ void OtMeshClass::render(OtRenderingContext context) {
 					shader = bgfx::createProgram(
 						bgfx::createEmbeddedShader(embeddedShaders, type, "OtBlendMappedVS"),
 						bgfx::createEmbeddedShader(embeddedShaders, type, "OtBlendMappedFS"),
+						true);
+				}
+
+			} else if (mt == OtMaterialClass::NORMALED) {
+				if (instancing) {
+					shader = bgfx::createProgram(
+						bgfx::createEmbeddedShader(embeddedShaders, type, "OtNormaledVSI"),
+						bgfx::createEmbeddedShader(embeddedShaders, type, "OtNormaledFS"),
+						true);
+
+				} else {
+					shader = bgfx::createProgram(
+						bgfx::createEmbeddedShader(embeddedShaders, type, "OtNormaledVS"),
+						bgfx::createEmbeddedShader(embeddedShaders, type, "OtNormaledFS"),
 						true);
 				}
 
@@ -262,14 +278,15 @@ void OtMeshClass::render(OtRenderingContext context) {
 			}
 		}
 
-		// see if culling is desired
-		if (wireframe || holes || !geometry->wantsCulling()) {
-			// render back side
+		// see if we need to render the back side?
+		if (wireframe || material->getBackSide()) {
 			render(context, BGFX_STATE_CULL_CCW);
 		}
 
-		// render front side
-		render(context, BGFX_STATE_CULL_CW);
+		// see if we need to render the front side?
+		if (material->getFrontSide()) {
+			render(context, BGFX_STATE_CULL_CW);
+		}
 	}
 }
 
@@ -288,7 +305,6 @@ OtType OtMeshClass::getMeta() {
 		type->set("setGeometry", OtFunctionClass::create(&OtMeshClass::setGeometry));
 		type->set("setMaterial", OtFunctionClass::create(&OtMeshClass::setMaterial));
 		type->set("setWireframe", OtFunctionClass::create(&OtMeshClass::setWireframe));
-		type->set("setHoles", OtFunctionClass::create(&OtMeshClass::setHoles));
 		type->set("addInstance", OtFunctionClass::create(&OtMeshClass::addInstance));
 	}
 

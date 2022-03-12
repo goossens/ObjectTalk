@@ -72,6 +72,9 @@
                     >Fundamentals</a
                   >
                 </li>
+                <li>
+                  <a class="page-scroll" href="#3d-geometries">Geometries</a>
+                </li>
               </ul>
             </li>
           </ul>
@@ -89,7 +92,7 @@
           <div id="3d">
             <h1 class="pb-2">3D Tutorial</h1>
             <p>
-              Below is a set of tutorial that explore the 3D part of the
+              Below is a set of tutorials that explore the 3D part of the
               Graphical User Interface (GUI) module. These tutorials assume you
               are already a little familiar with the ObjectTalk language and
               have read the <a href="tour.html">tour</a> and
@@ -128,15 +131,15 @@
               <li>
                 There is a Scenegraph which is a tree like structure, consisting
                 of various objects like a <strong>Background</strong>,
-                <strong>Skycube</strong>, <strong>Meshes</strong>,
-                <strong>Wireframes</strong>, <strong>Lights</strong> and
-                <strong>Fog</strong>. A <strong>Scene</strong> object defines
-                the root of the Scenegraph in which objects define a
-                hierarchical parent/child tree like structure and represent
-                where objects appear and how they are oriented. Children are
-                positioned and oriented relative to their parent. For example
-                the wheels on a car might be children of the car so that moving
-                and orienting the car's object automatically moves the wheels.
+                <strong>Skybox</strong>, <strong>Meshes</strong>,
+                <strong>Lights</strong> and <strong>Fog</strong>. A
+                <strong>Scene</strong> object defines the root of the Scenegraph
+                in which objects define a hierarchical parent/child tree like
+                structure and represent where objects appear and how they are
+                oriented. Children are positioned and oriented relative to their
+                parent. For example the wheels on a car might be children of the
+                car so that moving and orienting the car's object automatically
+                moves the wheels.
               </li>
               <li>
                 <strong>Mesh</strong> and <strong>Wireframe</strong> objects
@@ -144,10 +147,10 @@
                 specific <strong>Material</strong>. Both
                 <strong>Material</strong> objects and
                 <strong>Geometry</strong> objects can be used by multiple
-                <strong>Mesh</strong> or <strong>Wireframe</strong> objects. For
-                example to draw two blue cubes in different locations we could
-                need two <strong>Mesh</strong> objects to represent the position
-                and orientation of each cube. We would only need one
+                <strong>Mesh</strong> objects. For example to draw two blue
+                cubes in different locations we could need two
+                <strong>Mesh</strong> objects to represent the position and
+                orientation of each cube. We would only need one
                 <strong>Geometry</strong> to hold the vertex data for a cube and
                 we would only need one <strong>Material</strong> to specify the
                 color blue. Both <strong>Mesh</strong> objects could reference
@@ -210,14 +213,21 @@ os.runGUI();
               So let's start to populate the <strong>setup</strong> member
               function and first create a <strong>Scene</strong>.
             </p>
-            <pre><code>var geometry = gui.Cube();
+            <pre><code>var ambient = gui.Ambient();
+
+var geometry = gui.BoxGeometry();
 var material = gui.Material(&quot;material&quot;, &quot;gold&quot;);
 
 var cube = gui.Mesh(geometry, material);
-var scene = gui.Scene().add(cube);
+
+var scene = gui.Scene()
+	.add(ambient)
+	.add(cube);
 </code></pre>
             <p>
-              Here we create a <strong>Cube</strong> geometry followed by a
+              Here we turn on the light (a simple ambient light source in this
+              case) to ensure we can actusally see our creation. Then we create
+              a <strong>BoxGeometry</strong> geometry followed by a
               <strong>Material</strong> instance. Please note that we are going
               for the gold here in our first App (this is not a low budget
               tutorial, is it). The <strong>Mesh</strong> uses the created
@@ -286,11 +296,15 @@ screen.add(view);
 
 class App : gui.App {
 	function setup(this) {
-		var geometry = gui.Box();
-		var material = gui.Material(&quot;material&quot;, &quot;gold&quot;);
+		var ambient = gui.Ambient();
 
+		var geometry = gui.BoxGeometry();
+		var material = gui.Material(&quot;material&quot;, &quot;gold&quot;);
 		var cube = gui.Mesh(geometry, material);
-		var scene = gui.Scene().add(cube);
+
+		var scene = gui.Scene()
+			.add(ambient)
+			.add(cube);
 
 		var camera = gui.Camera()
 			.setPerspective(75, 0.1, 5)
@@ -308,7 +322,7 @@ var app = App();
 os.runGUI();
 </code></pre>
             <p>
-              Let's run this App and be amazed how underwhelming to result is.
+              Let's run this App and be amazed how underwhelming the result is.
               It looks like we drew just a square. Yes, It's kind of hard to
               tell that is a 3D cube since we're viewing it directly down the -Z
               axis and the cube itself is axis aligned so we're only seeing a
@@ -342,21 +356,19 @@ os.runGUI();
               a cube.
             </p>
             <p>
-              The better solution is to add light to make it more realistic. By
-              default, a <strong>Scene</strong> includes a dim
-              <strong>Ambient</strong> light so we can see our creations. You
-              can add your own <strong>Ambient</strong> light which will
-              override the default. You can also add point
-              <strong>Lights</strong> that make it easier to make the scene more
-              realistic. So let's do both and change the App to:
+              The better solution is to add light to make it more realistic. So
+              far, our <strong>Scene</strong> only included a dim
+              <strong>Ambient</strong> light so we could see our creations. You
+              can also add directional <strong>Lights</strong> that make it
+              easier to make the scene more realistic. So let's change the App
+              to:
             </p>
             <pre><code>var gui = import(&quot;gui&quot;);
 
 class App : gui.App {
 	function setup(this) {
-		var geometry = gui.Box();
+		var geometry = gui.BoxGeometry();
 		var material = gui.Material(&quot;material&quot;, &quot;gold&quot;);
-
 		var cube = gui.Mesh(geometry, material);
 
 		this.addAnimation(gui.Animation()
@@ -392,12 +404,40 @@ var app = App();
 os.runGUI();
 </code></pre>
             <p>
-              It should now be pretty clearly 3D. Point lights have a position
-              and it defaults to 0, 0, 0. In our case we're setting the light's
-              position to 1, 2, 4 so it's slightly on the right, above, and
-              behind our camera. A slightly more complex version with three
+              It should now be pretty clearly 3D. Directional lights have a
+              direction as the name suggests In our case we're setting the
+              light's direction to 1, 2, 4 so it's coming from the right, above,
+              and behind our camera. A slightly more complex version with three
               rotating cubes can be found in the examples folder.
             </p>
+          </div>
+          <div id="3d-geometries">
+            <h1 class="pb-2">3D Geometries</h1>
+            <p>
+              ObjectTalk has a large number of primitives or geometries.
+              Geometries are generally 3D shapes that are generated at runtime
+              with a bunch of parameters.
+            </p>
+            <p>
+              It's common to use geometries for things like a sphere for a globe
+              or a bunch of boxes to draw a 3D graph. It's especially common to
+              use geometries to experiment and get started with 3D. For the
+              majority of 3D apps it's more common to have an artist make 3D
+              models in a 3D modeling program like Blender or Maya or Cinema 4D.
+              These models can also be loaded in as geometries but later you
+              will see that complex models can also be loaded complete with
+              their own materials. For now let's go over some of the available
+              geometries.
+            </p>
+            <p>
+              Many of the geometries below have defaults for some or all of
+              their parameters so you can use more or less depending on your
+              needs. For each geometry supported by ObjectTalk, a small test
+              program is available in the examples folder
+              (examples/3d/geometries). These little programs allow you to play
+              with the parameters of a geometry so you can see the effect life.
+            </p>
+            <h2>BoxGeometry</h2>
           </div>
         </div>
       </div>

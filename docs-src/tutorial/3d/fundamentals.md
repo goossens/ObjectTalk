@@ -14,8 +14,8 @@ Things to notice about the diagram above:
 widgets to an app and the **View** widget is used to render a 3D scene via
 a specified **Camera**.
 * There is a Scenegraph which is a tree like structure, consisting of
-various objects like a **Background**, **Skycube**, **Meshes**,
-**Wireframes**, **Lights** and **Fog**. A **Scene** object defines the
+various objects like a **Background**, **Skybox**, **Meshes**, **Lights**
+and **Fog**. A **Scene** object defines the
 root of the Scenegraph in which objects define a hierarchical parent/child
 tree like structure and represent where objects appear and how they are
 oriented. Children are positioned and oriented relative to their parent.
@@ -23,8 +23,8 @@ For example the wheels on a car might be children of the car so that moving
 and orienting the car's object automatically moves the wheels.
 * **Mesh** and **Wireframe** objects represent drawing a specific
 **Geometry** with a specific **Material**. Both **Material** objects and
-**Geometry** objects can be used by multiple **Mesh** or **Wireframe**
-objects. For example to draw two blue cubes in different locations we could
+**Geometry** objects can be used by multiple **Mesh** objects.
+For example to draw two blue cubes in different locations we could
 need two **Mesh** objects to represent the position and orientation of each
 cube. We would only need one **Geometry** to hold the vertex data for a
 cube and we would only need one **Material** to specify the color blue.
@@ -65,14 +65,21 @@ application. You simply subclass the **Application** class, populate the
  So let's start to populate the **setup** member function and first create
  a **Scene**.
 
-	var geometry = gui.Cube();
+ 	var ambient = gui.Ambient();
+
+	var geometry = gui.BoxGeometry();
 	var material = gui.Material("material", "gold");
 
 	var cube = gui.Mesh(geometry, material);
-	var scene = gui.Scene().add(cube);
 
-Here we create a **Cube** geometry followed by a **Material** instance.
-Please note that we are going for the gold here in our first App
+	var scene = gui.Scene()
+		.add(ambient)
+		.add(cube);
+
+Here we turn on the light (a simple ambient light source in this case)
+to ensure we can actusally see our creation. Then we create a
+**BoxGeometry** geometry followed by a **Material**
+instance. Please note that we are going for the gold here in our first App
 (this is not a low budget tutorial, is it). The **Mesh** uses the created
 geometry and material. Our simple **Scene** can now be created as it only
 has one member.
@@ -123,11 +130,15 @@ Our complete App now looks like this:
 
 	class App : gui.App {
 		function setup(this) {
-			var geometry = gui.Box();
-			var material = gui.Material("material", "gold");
+			var ambient = gui.Ambient();
 
+			var geometry = gui.BoxGeometry();
+			var material = gui.Material("material", "gold");
 			var cube = gui.Mesh(geometry, material);
-			var scene = gui.Scene().add(cube);
+
+			var scene = gui.Scene()
+				.add(ambient)
+				.add(cube);
 
 			var camera = gui.Camera()
 				.setPerspective(75, 0.1, 5)
@@ -144,7 +155,7 @@ Our complete App now looks like this:
 	var app = App();
 	os.runGUI();
 
-Let's run this App and be amazed how underwhelming to result is.
+Let's run this App and be amazed how underwhelming the result is.
 It looks like we drew just a square. Yes, It's kind of hard to tell
 that is a 3D cube since we're viewing it directly down the -Z axis and
 the cube itself is axis aligned so we're only seeing a single face.
@@ -171,19 +182,17 @@ as all sides are colored the same way. The first thing we can do is
 change the **Mesh** 3D object to a **Wireframe**. This makes it clear
 that we truly have a cube.
 
-The better solution is to add light to make it more realistic. By default,
-a **Scene** includes a dim **Ambient** light so we can see our creations.
-You can add your own **Ambient** light which will override the default.
-You can also add point **Lights** that make it easier to make the scene
-more realistic. So let's do both and change the App to:
+The better solution is to add light to make it more realistic. So far,
+our **Scene** only included a dim **Ambient** light so we could see our
+creations. You can also add directional **Lights** that make it easier to
+make the scene more realistic. So let's change the App to:
 
 	var gui = import("gui");
 
 	class App : gui.App {
 		function setup(this) {
-			var geometry = gui.Box();
+			var geometry = gui.BoxGeometry();
 			var material = gui.Material("material", "gold");
-
 			var cube = gui.Mesh(geometry, material);
 
 			this.addAnimation(gui.Animation()
@@ -218,7 +227,8 @@ more realistic. So let's do both and change the App to:
 	var app = App();
 	os.runGUI();
 
-It should now be pretty clearly 3D. Point lights have a position and it
-defaults to 0, 0, 0. In our case we're setting the light's position to 1, 2, 4 so it's slightly on the right, above, and behind our camera. A
+It should now be pretty clearly 3D. Directional lights have a direction as
+the name suggests In our case we're setting the light's direction to
+1, 2, 4 so it's coming from the right, above, and behind our camera. A
 slightly more complex version with three rotating cubes can be found
 in the examples folder.

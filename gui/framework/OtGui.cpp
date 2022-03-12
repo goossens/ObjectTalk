@@ -74,9 +74,14 @@
 #include "OtBoxGeometry.h"
 #include "OtCircleGeometry.h"
 #include "OtCylinderGeometry.h"
+#include "OtDodecahedronGeometry.h"
+#include "OtIcosahedronGeometry.h"
 #include "OtModelGeometry.h"
+#include "OtOctahedronGeometry.h"
 #include "OtPlaneGeometry.h"
 #include "OtSphereGeometry.h"
+#include "OtSphericalCubeGeometry.h"
+#include "OtTetrahedronGeometry.h"
 #include "OtTorusGeometry.h"
 
 #include "OtAnimation.h"
@@ -143,9 +148,14 @@ void OtGuiClass::registerModule() {
 		module->set("BoxGeometry", OtClassClass::create(OtBoxGeometryClass::getMeta()));
 		module->set("CircleGeometry", OtClassClass::create(OtCircleGeometryClass::getMeta()));
 		module->set("CylinderGeometry", OtClassClass::create(OtCylinderGeometryClass::getMeta()));
+		module->set("DodecahedronGeometry", OtClassClass::create(OtDodecahedronGeometryClass::getMeta()));
+		module->set("IcosahedronGeometry", OtClassClass::create(OtIcosahedronGeometryClass::getMeta()));
 		module->set("ModelGeometry", OtClassClass::create(OtModelGeometryClass::getMeta()));
+		module->set("OctahedronGeometry", OtClassClass::create(OtOctahedronGeometryClass::getMeta()));
 		module->set("PlaneGeometry", OtClassClass::create(OtPlaneGeometryClass::getMeta()));
 		module->set("SphereGeometry", OtClassClass::create(OtSphereGeometryClass::getMeta()));
+		module->set("SphericalCubeGeometry", OtClassClass::create(OtSphericalCubeGeometryClass::getMeta()));
+		module->set("TetrahedronGeometry", OtClassClass::create(OtTetrahedronGeometryClass::getMeta()));
 		module->set("TorusGeometry", OtClassClass::create(OtTorusGeometryClass::getMeta()));
 
 		module->set("Animation", OtClassClass::create(OtAnimationClass::getMeta()));

@@ -28,8 +28,3 @@ namespace std {
 double OtRandom(double num1, double num2);
 inline double OtRandom(double num) { return OtRandom(0.0, num); }
 inline double OtRandom() { return OtRandom(0.0, 1.0); }
-
-//	Clamp a number between two limits
-inline double OtClamp(double value, double min, double max) {
-	return value < min ? min : value > max ? max : value;
-}

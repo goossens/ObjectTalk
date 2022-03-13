@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <algorithm>
+
 #include "imgui.h"
 
 #include "OtCallback.h"
@@ -131,7 +133,7 @@ void OtKnobClass::render() {
 
 		// detect mouse activity
 		if (ImGui::IsItemActive() && io.MouseDelta.y != 0.0) {
-			auto newValue = OtClamp(value - io.MouseDelta.y / 2.0, 0.0, 100.0);
+			auto newValue = std::clamp(value - io.MouseDelta.y / 2.0, 0.0, 100.0);
 
 			// call user callback if value has changed
 			if (callback && newValue != value) {

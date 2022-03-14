@@ -15,7 +15,7 @@ file(GLOB GLM_SOURCES
 	${glm_SOURCE_DIR}/glm/*.hpp
 	${glm_SOURCE_DIR}/glm/*/*.h
 	${glm_SOURCE_DIR}/glm/*/*.hpp
-${glm_SOURCE_DIR}/glm/*/*.inl)
+	${glm_SOURCE_DIR}/glm/*/*.inl)
 
 add_library(glm INTERFACE ${GLM_SOURCES})
 target_include_directories(glm INTERFACE ${glm_SOURCE_DIR})

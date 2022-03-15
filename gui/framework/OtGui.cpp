@@ -75,6 +75,7 @@
 #include "OtCircleGeometry.h"
 #include "OtCylinderGeometry.h"
 #include "OtDodecahedronGeometry.h"
+#include "OtExtrudedGeometry.h"
 #include "OtIcosahedronGeometry.h"
 #include "OtModelGeometry.h"
 #include "OtOctahedronGeometry.h"
@@ -89,6 +90,8 @@
 #include "OtSimulation.h"
 #include "OtCloth.h"
 #include "OtWorld.h"
+
+#include "OtShape.h"
 
 #include "OtMath.h"
 #include "OtPerlin.h"
@@ -149,6 +152,7 @@ void OtGuiClass::registerModule() {
 		module->set("CircleGeometry", OtClassClass::create(OtCircleGeometryClass::getMeta()));
 		module->set("CylinderGeometry", OtClassClass::create(OtCylinderGeometryClass::getMeta()));
 		module->set("DodecahedronGeometry", OtClassClass::create(OtDodecahedronGeometryClass::getMeta()));
+		module->set("ExtrudedGeometry", OtClassClass::create(OtExtrudedGeometryClass::getMeta()));
 		module->set("IcosahedronGeometry", OtClassClass::create(OtIcosahedronGeometryClass::getMeta()));
 		module->set("ModelGeometry", OtClassClass::create(OtModelGeometryClass::getMeta()));
 		module->set("OctahedronGeometry", OtClassClass::create(OtOctahedronGeometryClass::getMeta()));
@@ -163,6 +167,8 @@ void OtGuiClass::registerModule() {
 		module->set("Simulation", OtClassClass::create(OtSimulationClass::getMeta()));
 		module->set("Cloth", OtClassClass::create(OtClothClass::getMeta()));
 		module->set("World", OtClassClass::create(OtWorldClass::getMeta()));
+
+		module->set("Shape", OtClassClass::create(OtShapeClass::getMeta()));
 
 		module->set("Math", OtClassClass::create(OtSimulationClass::getMeta()));
 		module->set("Perlin", OtClassClass::create(OtPerlinClass::getMeta()));

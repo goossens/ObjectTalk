@@ -87,6 +87,43 @@ protected:
 		lines.push_back(p2);
 	}
 
+	// quick way to add complete faces
+	virtual void addFace(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c) {
+		auto n = glm::normalize(glm::cross(c - b, a - b));
+		auto offset = vertices.size();
+
+		addVertex(OtVertex(a, n));
+		addVertex(OtVertex(b, n));
+		addVertex(OtVertex(c, n));
+
+		addTriangle(offset, offset + 1, offset + 2);
+
+		addLine(offset, offset + 1);
+		addLine(offset + 1, offset + 2);
+		addLine(offset + 2, offset);
+	}
+
+	virtual void addFace(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c, const glm::vec3& d) {
+		auto n = glm::normalize(glm::cross(c - b, a - b));
+		auto offset = vertices.size();
+
+		addVertex(OtVertex(a, n));
+		addVertex(OtVertex(b, n));
+		addVertex(OtVertex(c, n));
+		addVertex(OtVertex(d, n));
+
+		addTriangle(offset, offset + 1, offset + 2);
+		addTriangle(offset, offset + 2, offset + 3);
+
+		addLine(offset, offset + 1);
+		addLine(offset + 1, offset + 2);
+		addLine(offset + 2, offset);
+
+		addLine(offset, offset + 2);
+		addLine(offset + 2, offset + 3);
+		addLine(offset + 3, offset);
+	}
+
 	// geometry data
 	std::vector<OtVertex> vertices;
 	std::vector<uint32_t> triangles;

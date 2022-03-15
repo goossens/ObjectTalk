@@ -30,7 +30,10 @@ struct OtVertex {
 
 	// constructors
 	OtVertex() = default;
-	OtVertex(glm::vec3 p, glm::vec3 n, glm::vec2 u) : position(p), normal(n), uv(u) {}
+
+	OtVertex(glm::vec3 p, glm::vec3 n=glm::vec3(0.0), glm::vec2 u=glm::vec2(0.0)) :
+		position(p), normal(n), uv(u) {
+	}
 
 	// get a BGFX vertex description
 	static bgfx::VertexLayout getVertexLayout() {

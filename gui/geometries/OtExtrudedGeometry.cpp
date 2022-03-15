@@ -1,0 +1,205 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2022 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+
+//
+//	Include files
+//
+
+#include "tesselator.h"
+
+#include "OtFunction.h"
+
+#include "OtExtrudedGeometry.h"
+
+
+//
+//	OtExtrudedGeometryClass::init
+//
+
+OtObject OtExtrudedGeometryClass::init(size_t count, OtObject* parameters) {
+	// set attributes
+	if (count) {
+		switch (count) {
+			case 3:
+				segments = parameters[2]->operator int();
+
+			case 2:
+				depth = parameters[1]->operator float();
+
+			case 1:
+				setShape(parameters[0]);
+				break;
+
+			default:
+				OtExcept("Too many parameters [%ld] for [ExtrudedGeometry] constructor (max 3)", count);
+		}
+
+		refreshGeometry = true;
+	}
+
+	return nullptr;
+}
+
+
+//
+//	OtExtrudedGeometryClass::setWidth
+//
+
+OtObject OtExtrudedGeometryClass::setShape(OtObject object) {
+	object->expectKindOf("Shape");
+	shape = object->cast<OtShapeClass>();
+	refreshGeometry = true;
+	return shared();
+}
+
+
+//
+//	OtExtrudedGeometryClass::setDepth
+//
+
+OtObject OtExtrudedGeometryClass::setDepth(float d) {
+	depth = d;
+	refreshGeometry = true;
+	return shared();
+}
+
+
+//
+//	OtExtrudedGeometryClass::setSegments
+//
+
+OtObject OtExtrudedGeometryClass::setSegments(int s) {
+	segments = s;
+	refreshGeometry = true;
+	return shared();
+}
+
+
+//
+//	OtExtrudedGeometryClass::fillGeometry
+//
+
+void OtExtrudedGeometryClass::fillGeometry() {
+	// sanity check
+	if (!shape) {
+		OtExcept("No [Shape] specified for [ExtrudedGeometry]");
+	}
+
+	auto polygonCount = shape->getPolygonCount();
+
+	if (!polygonCount) {
+		OtExcept("[ExtrudedGeometry] can't extrude an empty [Shape]");
+	}
+
+	// create a tesselator
+	TESStesselator *tess = tessNewTess(NULL);
+    tessSetOption(tess, TESS_CONSTRAINED_DELAUNAY_TRIANGULATION, 1);
+
+	// process all polygons
+	std::vector<glm::vec2> polygon;
+
+	for (auto i = 0; i < polygonCount; i++) {
+		// get the points on the polygon
+		shape->getPolygon(polygon, i, segments);
+
+		// add polygon to tesselator
+		tessAddContour(tess, 2, polygon.data(), sizeof(glm::vec2), polygon.size());
+
+		// create faces to connect front and back
+		for (auto j = 0; j < polygon.size() - 1; j++) {
+			addFace(
+				glm::vec3(polygon[j].x, polygon[j].y, 0.0),
+				glm::vec3(polygon[j].x, polygon[j].y, -depth),
+				glm::vec3(polygon[j + 1].x, polygon[j + 1].y, -depth),
+				glm::vec3(polygon[j + 1].x, polygon[j + 1].y, 0.0));
+		}
+	}
+
+	// perform the tessalation
+	auto result = tessTesselate(tess, TESS_WINDING_ODD, TESS_POLYGONS, 3, 2, nullptr);
+	int vertexCount = tessGetVertexCount(tess);
+	int indexCount = tessGetElementCount(tess);
+	int offset = vertices.size();
+
+	// create the front and back-facing vertices (interwoven)
+	const TESSreal* verts = tessGetVertices(tess);
+
+	for (auto i = 0; i < vertexCount; i++) {
+		auto x = *verts++;
+		auto y = *verts++;
+
+		// front-facing
+		addVertex(OtVertex(
+			glm::vec3(x, y, 0.0),
+			glm::vec3(0.0, 0.0, 1.0),
+			glm::vec2(0.0)));
+
+		// back-facing
+		addVertex(OtVertex(
+			glm::vec3(x, y, -depth),
+			glm::vec3(0.0, 0.0, -1.0),
+			glm::vec2(0.0)));
+	}
+
+	// create the front and back-facing triangles and lines
+	const TESSindex* indices = tessGetElements(tess);
+
+	for (auto i = 0; i < indexCount; i++) {
+		auto i1 = offset + *indices++ * 2;
+		auto i2 = offset + *indices++ * 2;
+		auto i3 = offset + *indices++ * 2;
+
+		// front-facing
+		addTriangle(i1, i2, i3);
+		addLine(i1, i2);
+		addLine(i2, i3);
+		addLine(i3, i1);
+
+		// back-facing
+		i1++;
+		i2++;
+		i3++;
+
+		addTriangle(i1, i3, i2);
+		addLine(i1, i2);
+		addLine(i2, i3);
+		addLine(i3, i1);
+	}
+
+	// cleanup
+	tessDeleteTess(tess);
+}
+
+
+//
+//	OtExtrudedGeometryClass::getMeta
+//
+
+OtType OtExtrudedGeometryClass::getMeta() {
+	static OtType type;
+
+	if (!type) {
+		type = OtTypeClass::create<OtExtrudedGeometryClass>("ExtrudedGeometry", OtGeometryClass::getMeta());
+		type->set("__init__", OtFunctionClass::create(&OtExtrudedGeometryClass::init));
+		type->set("setShape", OtFunctionClass::create(&OtExtrudedGeometryClass::setShape));
+		type->set("setDepth", OtFunctionClass::create(&OtExtrudedGeometryClass::setDepth));
+		type->set("setSegments", OtFunctionClass::create(&OtExtrudedGeometryClass::setSegments));
+	}
+
+	return type;
+}
+
+
+//
+//	OtExtrudedGeometryClass::create
+//
+
+OtExtrudedGeometry OtExtrudedGeometryClass::create() {
+	OtExtrudedGeometry geometry = std::make_shared<OtExtrudedGeometryClass>();
+	geometry->setType(getMeta());
+	return geometry;
+}

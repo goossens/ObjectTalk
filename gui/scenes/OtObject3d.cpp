@@ -14,6 +14,7 @@
 #include "glm/ext.hpp"
 
 #include "OtFunction.h"
+#include "OtText.h"
 
 #include "OtObject3d.h"
 
@@ -89,12 +90,72 @@ OtObject OtObject3dClass::translate(float x, float y, float z) {
 
 
 //
+//	OtObject3dClass::transformationOrder
+//
+
+OtObject OtObject3dClass::transformationOrder(const std::string& orderString) {
+	std::string os = OtText::lower(orderString);
+
+	if (os == "srt") {
+		order = orderSRT;
+
+	} else if (os == "str") {
+		order = orderSTR;
+
+	} else if (os == "rts") {
+		order = orderRTS;
+
+	} else if (os == "rst") {
+		order = orderRST;
+
+	} else if (os == "tsr") {
+		order = orderTSR;
+
+	} else if (os == "trs") {
+		order = orderTRS;
+
+	} else {
+		OtExcept("Invalid transformation order [%s] for [%s]", orderString.c_str(), getType()->getName().c_str());
+	}
+
+	return shared();
+}
+
+
+//
 //	OtObject3dClass::render
 //
 
 void OtObject3dClass::render(OtRenderingContext context) {
 	// calculate object transformation
-	glm::mat4 transform = context->getTransform() * translating * rotating * scaling;
+	glm::mat4 transform;
+
+	switch (order) {
+		case orderSRT:
+			transform = context->getTransform() * translating * rotating * scaling;
+			break;
+
+		case orderSTR:
+			transform = context->getTransform() * rotating * translating  * scaling;
+			break;
+
+		case orderRTS:
+			transform = context->getTransform() * scaling * translating * rotating;
+			break;
+
+		case orderRST:
+			transform = context->getTransform() * translating * scaling * rotating;
+			break;
+
+		case orderTSR:
+			transform = context->getTransform() * rotating * scaling * translating;
+			break;
+
+		case orderTRS:
+			transform = context->getTransform() * scaling * rotating * translating;
+			break;
+	}
+
 	bgfx::setTransform(glm::value_ptr(transform));
 }
 
@@ -115,6 +176,7 @@ OtType OtObject3dClass::getMeta() {
 		type->set("yawPitchRoll", OtFunctionClass::create(&OtObject3dClass::yawPitchRoll));
 		type->set("scale", OtFunctionClass::create(&OtObject3dClass::scale));
 		type->set("translate", OtFunctionClass::create(&OtObject3dClass::translate));
+		type->set("transformationOrder", OtFunctionClass::create(&OtObject3dClass::transformationOrder));
 	}
 
 	return type;

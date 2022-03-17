@@ -33,6 +33,9 @@ public:
 	OtObject scale(float x, float y, float z);
 	OtObject translate(float x, float y, float z);
 
+	// set transformation order
+	OtObject transformationOrder(const std::string& order);
+
 	// render in BGFX
 	void render(OtRenderingContext context);
 
@@ -43,6 +46,16 @@ public:
 	static OtObject3d create();
 
 protected:
+	// matrix multiplication order
+	enum {
+		orderSRT,
+		orderSTR,
+		orderRTS,
+		orderRST,
+		orderTSR,
+		orderTRS
+	} order = orderSRT;
+
 	// object geometry
 	glm::mat4 translating = glm::mat4(1.0);
 	glm::mat4 rotating = glm::mat4(1.0);

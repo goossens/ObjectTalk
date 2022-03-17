@@ -28,14 +28,14 @@ inline float OtPolygonArea(const std::vector<glm::vec2>& points) {
 	float area = 0.0;
 
 	for (int p = n - 1, q = 0; q < n; p = q++) {
-		a += points[p].x * points[q].y - points[q].x * points[p].y;
+		area += points[p].x * points[q].y - points[q].x * points[p].y;
 	}
 
-	return a * 0.5;
+	return area * 0.5;
 }
 
 
 // see if polygon winding is clockwise
-inline bool OtPolygonIsClockWise(const std::vector<glm::vec2>& points) {
+inline bool OtPolygonIsClockwise(const std::vector<glm::vec2>& points) {
 	return OtPolygonArea(points) < 0;
 }

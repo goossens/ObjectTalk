@@ -38,6 +38,7 @@ public:
 
 	// add simple geometries
 	OtObject circle(float x, float y, float radius, bool clockwise=false);
+	OtObject text(OtObject font, const std::string& text);
 
 	// get number of polygons in shape
 	size_t getPolygonCount() {
@@ -46,7 +47,7 @@ public:
 
 	// get Nth polygon
 	void getPolygon(std::vector<glm::vec2>& polygon, size_t n, size_t division) {
-		return paths[n]->getPoints(polygon, division);
+		return paths[n]->getSpacedPoints(polygon, division);
 	}
 
 	// get type definition

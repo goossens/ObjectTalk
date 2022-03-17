@@ -79,3 +79,10 @@ project by Federico Vaccaro which is released under the
 * sand.jpg
 * terrain.jpg
 * snow.jpg
+
+## Roboto font
+
+The roboto font is made available by
+[Google](https://fonts.google.com/specimen/Roboto)
+under the
+[Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)

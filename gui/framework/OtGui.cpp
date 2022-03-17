@@ -64,6 +64,7 @@
 #include "OtMesh.h"
 
 #include "OtBlendMap.h"
+#include "OtFont.h"
 #include "OtHeightMap.h"
 #include "OtMaterial.h"
 #include "OtNoiseMap.h"
@@ -139,6 +140,7 @@ void OtGuiClass::registerModule() {
 		module->set("Group", OtClassClass::create(OtGroupClass::getMeta()));
 
 		module->set("BlendMap", OtClassClass::create(OtBlendMapClass::getMeta()));
+		module->set("Font", OtClassClass::create(OtFontClass::getMeta()));
 		module->set("HeightMap", OtClassClass::create(OtHeightMapClass::getMeta()));
 		module->set("Material", OtClassClass::create(OtMaterialClass::getMeta()));
 		module->set("NoiseMap", OtClassClass::create(OtNoiseMapClass::getMeta()));

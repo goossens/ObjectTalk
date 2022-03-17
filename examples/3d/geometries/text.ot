@@ -10,16 +10,19 @@ var gui = import("gui");
 
 class App : gui.App {
 	function setup(this) {
-		var heart = gui.Shape();
-		heart.bezierCurveTo(0.0, 0.6, -1.0, 0.6, -1.0, 0.0);
-		heart.bezierCurveTo(-1.0, -0.6, 0.0, -0.7, 0.0, -1.2);
-		heart.bezierCurveTo(0.0, -0.7, 1.0, -0.6, 1.0, 0.0);
-		heart.bezierCurveTo(1.0, 0.6, 0.0, 0.6, 0.0, 0.0);
-		heart.circle(0.0, -0.4, 0.3, true);
+		var font = gui.Font(__DIR__ + "/../assets/roboto.ttf", 0.8);
+		var text = "ObjectTalk";
+		var width = font.getWidth(text);
+		var letters = gui.Shape().text(font, text);
 
-		var geometry = gui.ExtrudedGeometry(heart, 0.2, 50);
+		var geometry = gui.ExtrudedGeometry(letters, 0.2, 100);
 		var gold = gui.Material("material", "gold");
-		var object = gui.Mesh(geometry, gold).setWireframe(true);
+
+		var object = gui.Mesh(geometry, gold)
+			.transformationOrder("STR")
+			.translate(-width / 2.0, 0, 0)
+		//	.setWireframe(true)
+			;
 
 		this.addAnimation(gui.Animation()
 			.from(0.0)
@@ -27,7 +30,7 @@ class App : gui.App {
 			.during(15000)
 			.continuous()
 			.onStep(function(angle) {
-				object.rotateAroundVector(angle, 1, 1, 0);
+				object.rotateAroundVector(angle, 0, 1, 0);
 			}));
 
 		var ambient = gui.Ambient();
@@ -61,13 +64,13 @@ class App : gui.App {
 		node.add(gui.LightController(light));
 		panel.add(node);
 
-		node = gui.TreeNode("Extrusion:");
+		node = gui.TreeNode("Text:");
 
 		node.add(gui.RealSlider("Depth", 0.05, 2, 0.2, function(value) {
 			geometry.setDepth(value);
 		}));
 
-		node.add(gui.IntegerSlider("Segments", 10, 200, 50, function(value) {
+		node.add(gui.IntegerSlider("Segments", 10, 200, 100, function(value) {
 			geometry.setSegments(value);
 		}));
 

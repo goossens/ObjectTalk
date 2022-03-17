@@ -13,6 +13,7 @@
 #include "OtFunction.h"
 
 #include "OtShape.h"
+#include "OtFont.h"
 
 
 //
@@ -109,6 +110,17 @@ OtObject OtShapeClass::circle(float x, float y, float radius, bool clockwise) {
 
 
 //
+//	OtShapeClass::text
+//
+
+OtObject OtShapeClass::text(OtObject object, const std::string& text) {
+	object->expectKindOf("Font");
+	object->cast<OtFontClass>()->createShape(cast<OtShapeClass>(), text);
+	return shared();
+}
+
+
+//
 //	OtShapeClass::getMeta
 //
 
@@ -124,6 +136,7 @@ OtType OtShapeClass::getMeta() {
 		type->set("close", OtFunctionClass::create(&OtShapeClass::close));
 
 		type->set("circle", OtFunctionClass::create(&OtShapeClass::circle));
+		type->set("text", OtFunctionClass::create(&OtShapeClass::text));
 	}
 
 	return type;

@@ -87,6 +87,13 @@ protected:
 		lines.push_back(p2);
 	}
 
+	void addIndex(uint32_t p1, uint32_t p2, uint32_t p3) {
+		addTriangle(p1, p2, p3);
+		addLine(p1, p2);
+		addLine(p2, p3);
+		addLine(p3, p1);
+	}
+
 	// quick way to add complete faces
 	virtual void addFace(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c) {
 		auto n = glm::normalize(glm::cross(c - b, a - b));

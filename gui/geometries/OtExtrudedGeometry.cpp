@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <algorithm>
+
 #include "tesselator.h"
 
 #include "OtFunction.h"
@@ -108,9 +110,14 @@ void OtExtrudedGeometryClass::fillGeometry() {
 		// get the points on the polygon
 		shape->getPolygon(polygon, i, segments);
 
-		// determine winding order
+		// determine winding order of first polygon
 		if (i == 0) {
 			cw = OtPolygonIsClockwise(polygon);
+		}
+
+		// reverse polygon order if shape uses clockwise order for external contours
+		if (cw) {
+			std::reverse(polygon.begin(), polygon.end());
 		}
 
 		// add polygon to tesselator
@@ -118,25 +125,11 @@ void OtExtrudedGeometryClass::fillGeometry() {
 
 		// create faces to connect front and back
 		for (auto j = 0; j < polygon.size() - 1; j++) {
-			float x1 = polygon[j].x;
-			float y1 = polygon[j].y;
-			float x2 = polygon[j + 1].x;
-			float y2 = polygon[j + 1].y;
-
-			if (cw) {
-				addFace(
-					glm::vec3(x1, y1, 0.0),
-					glm::vec3(x2, y2, 0.0),
-					glm::vec3(x2, y2, -depth),
-					glm::vec3(x1, y1, -depth));
-
-			} else {
-				addFace(
-					glm::vec3(x1, y1, 0.0),
-					glm::vec3(x1, y1, -depth),
-					glm::vec3(x2, y2, -depth),
-					glm::vec3(x2, y2, 0.0));
-			}
+			addFace(
+				glm::vec3(polygon[j].x, polygon[j].y, 0.0),
+				glm::vec3(polygon[j].x, polygon[j].y, -depth),
+				glm::vec3(polygon[j + 1].x, polygon[j + 1].y, -depth),
+				glm::vec3(polygon[j + 1].x, polygon[j + 1].y, 0.0));
 		}
 	}
 
@@ -171,7 +164,6 @@ void OtExtrudedGeometryClass::fillGeometry() {
 	glm::vec3 p1 = vertices[offset + indices[0] * 2].position;
 	glm::vec3 p2 = vertices[offset + indices[1] * 2].position;
 	glm::vec3 p3 = vertices[offset + indices[2] * 2].position;
-	bool ccw = ((p2.y - p1.y) * (p3.x - p2.x) - (p2.x - p1.x) * (p3.y - p2.y)) < 0.0;
 
 	// create the front and back faces
 	for (auto i = 0; i < indexCount; i++) {
@@ -179,14 +171,8 @@ void OtExtrudedGeometryClass::fillGeometry() {
 		auto i2 = offset + *indices++ * 2;
 		auto i3 = offset + *indices++ * 2;
 
-		if (ccw) {
-			addIndex(i1, i2, i3);
-			addIndex(i1 + 1, i3 + 1, i2 + 1);
-
-		} else {
-			addIndex(i1, i3, i2);
-			addIndex(i1 + 1, i2 + 1, i3 + 1);
-		}
+		addIndex(i1, i2, i3);
+		addIndex(i1 + 1, i3 + 1, i2 + 1);
 	}
 
 	// cleanup

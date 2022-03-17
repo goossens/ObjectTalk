@@ -10,6 +10,7 @@
 //
 
 #include <cmath>
+#include <vector>
 
 #include "OtFunction.h"
 #include "OtNumbers.h"
@@ -94,7 +95,7 @@ static float correctUV(const glm::vec3& normal, float u, float azimuth) {
 void OtPolyhedronGeometryClass::fillGeometry() {
 	// setup
 	auto cols = detail + 1;
-	glm::vec3 v[cols + 1][cols + 1];
+	std::vector<std::vector<glm::vec3>> v(cols + 1, std::vector<glm::vec3>(cols + 1));
 
 	// process all base faces
 	for (auto f = 0; f < baseIndexCount; f += 3) {

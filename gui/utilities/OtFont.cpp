@@ -184,8 +184,6 @@ void OtFontClass::createShape(OtShape shape, const std::string& text) {
 
 #undef X
 #undef Y
-
-	return shape;
 }
 
 

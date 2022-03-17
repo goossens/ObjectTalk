@@ -42,7 +42,7 @@ public:
 	void getPoints(std::vector<glm::vec2>& result, size_t division = 5) {
 		result.clear();
 
-		for (auto i = 0; i< division; i++) {
+		for (auto i = 0; i <= division; i++) {
 			result.push_back(getPoint((float) i / (float) division));
 		}
 	}
@@ -51,7 +51,7 @@ public:
 	void getSpacedPoints(std::vector<glm::vec2>& result, size_t division = 5) {
 		result.clear();
 
-		for (auto i = 0; i< division; i++) {
+		for (auto i = 0; i <= division; i++) {
 			result.push_back(getPointAt((float) i / (float) division));
 		}
 	}

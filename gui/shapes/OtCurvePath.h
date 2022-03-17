@@ -133,8 +133,14 @@ private:
 				high = i - 1;
 
 			} else {
-				*fraction = 0.0;
-				return curves[i];
+				if (i == lengths.size() - 1) {
+					*fraction = 1.0;
+					return curves[i - 1];
+
+				} else {
+					*fraction = 0.0;
+					return curves[i];
+				}
 			}
 		}
 

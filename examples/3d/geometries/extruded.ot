@@ -62,30 +62,14 @@ class App : gui.App {
 		node.add(gui.LightController(light));
 		panel.add(node);
 
-		node = gui.TreeNode("Box:");
+		node = gui.TreeNode("Extrusion:");
 
-		node.add(gui.RealSlider("Width", 0.25, 4, 1, function(value) {
-			geometry.setWidth(value);
-		}));
-
-		node.add(gui.RealSlider("Height", 0.25, 4, 1, function(value) {
-			geometry.setHeight(value);
-		}));
-
-		node.add(gui.RealSlider("Depth", 0.25, 4, 1, function(value) {
+		node.add(gui.RealSlider("Depth", 0.05, 2, 0.2, function(value) {
 			geometry.setDepth(value);
 		}));
 
-		node.add(gui.IntegerSlider("Width Segments", 1, 16, 1, function(value) {
-			geometry.setWidthSegments(value);
-		}));
-
-		node.add(gui.IntegerSlider("Height Segments", 1, 16, 1, function(value) {
-			geometry.setHeightSegments(value);
-		}));
-
-		node.add(gui.IntegerSlider("Depth Segments", 1, 16, 1, function(value) {
-			geometry.setDepthSegments(value);
+		node.add(gui.IntegerSlider("Segments", 10, 200, 50, function(value) {
+			geometry.setSegments(value);
 		}));
 
 		panel.add(node);

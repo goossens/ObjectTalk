@@ -67,8 +67,10 @@ In case the GUI module is included, we also use:
 * [bgfx](https://github.com/bkaradzic/bgfx) - cross-platform, graphics API agnostic rendering library.
 * [Dear ImGui](https://github.com/ocornut/imgui) - graphical user interface library.
 * [glm](https://github.com/g-truc/glm) - mathematics library for graphics software.
+* [libtess2](https://github.com/memononen/libtess2) - library to convert (tesssallate) polygons into triangles.
 * [Box2D](https://box2d.org) - 2D physics engine.
 * [tweeny](https://github.com/mobius3/tweeny) - animation library.
+* [tinyobjloader](https://github.com/tinyobjloader/tinyobjloader) - to load 3D models in the .obj format.
 * [ImGuiFileDialog](https://github.com/aiekick/ImGuiFileDialog) - file selection dialog for Dear ImGui.
 * [ImGuiColorTextEdit](https://github.com/BalazsJako/ImGuiColorTextEdit) - syntax highlighting text editor for Dear ImGui.
 

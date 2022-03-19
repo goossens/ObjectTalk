@@ -61,9 +61,6 @@ public:
 	int getWidth() { return width; }
 	int getHeight() { return height; }
 
-	// add a keyboard shortcut handler
-	void addShortcut(int modifier, int keycode, std::function<void(void)> callback);
-
 	// get system time in seconds since application start
 	float getTime();
 
@@ -125,16 +122,6 @@ private:
 	int width = 1280;
 	int height = 720;
 	bgfx::ViewId nextViewID;
-
-	// keyboard shortcut tracking
-	struct OtKeyboardShortcut {
-		OtKeyboardShortcut(int m, int k, std::function<void(void)> c) : modifier(m), key(k), callback(c) {}
-		int modifier;
-		int key;
-		std::function<void(void)> callback;
-	};
-
-	std::vector<OtKeyboardShortcut> shortcuts;
 
 	// time tracking
 	size_t frameNumber;

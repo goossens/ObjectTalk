@@ -13,9 +13,9 @@ set(IMGUIFD_SOURCES
 	${imguifd_SOURCE_DIR}/ImGuiFileDialog.cpp)
 
 add_library(imguifd STATIC ${IMGUIFD_SOURCES})
-add_dependencies(imguifd glfw imgui)
+add_dependencies(imguifd imgui)
 target_compile_definitions(imguifd PUBLIC CUSTOM_IMGUIFILEDIALOG_CONFIG="IgfdConfig.h")
 target_include_directories(imguifd PUBLIC ${imguifd_SOURCE_DIR} ${CMAKE_CURRENT_LIST_DIR})
-target_link_libraries(imguifd glfw imgui)
+target_link_libraries(imguifd imgui)
 
 set_target_properties(imguifd PROPERTIES FOLDER deps)

@@ -148,17 +148,8 @@ void OtFrameworkClass::runThread2() {
 
 					case OtFwEvent::keyboardEvent:
 						if (event.keyboard.action != GLFW_RELEASE) {
-							for (auto& shortcut : shortcuts) {
-								if (shortcut.modifier == event.keyboard.mods && shortcut.key == event.keyboard.key) {
-									shortcut.callback();
-									handled = true;
-								}
-							}
-
-							if (!handled) {
-								for (auto i = customers.begin(); !handled && i < customers.end(); i++) {
-									handled = (*i)->onKey(event.keyboard.key, event.keyboard.mods);
-								}
+							for (auto i = customers.begin(); !handled && i < customers.end(); i++) {
+								handled = (*i)->onKey(event.keyboard.key, event.keyboard.mods);
 							}
 						}
 
@@ -310,13 +301,4 @@ void OtFrameworkClass::setAntiAliasing(int aa) {
 	}
 
 	antiAliasing = aa;
-}
-
-
-//
-//	OtFrameworkClass::addShortcut
-//
-
-void OtFrameworkClass::addShortcut(int modifier, int keycode, std::function<void(void)> callback) {
-	shortcuts.push_back(OtKeyboardShortcut(modifier, keycode, callback));
 }

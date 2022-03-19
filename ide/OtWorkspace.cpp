@@ -28,8 +28,11 @@
 //
 
 void OtWorkspaceClass::run() {
+	// get access to framework
+	OtFramework framework = OtFrameworkClass::instance();
+
 	// add ourselves to the GUI framework as a customer
-	OtFrameworkClass::instance()->addCustomer(this);
+	framework->addCustomer(this);
 
 	// add a console window
 	console = OtConsoleClass::create();
@@ -53,10 +56,10 @@ void OtWorkspaceClass::run() {
 		std::bind(&OtWorkspaceClass::onStopGUI, this));
 
 	// run the GUI framework
-	OtFrameworkClass::instance()->run();
+	framework->run();
 
 	// we're done
-	OtFrameworkClass::instance()->removeCustomer(this);
+	framework->removeCustomer(this);
 }
 
 
@@ -326,10 +329,10 @@ void OtWorkspaceClass::onRender() {
 
 		// handle new file shortcut
 		if (isShortcut) {
-			if (ImGui::IsKeyPressed('N')) {
+			if (ImGui::IsKeyPressed(ImGuiKey_N)) {
 				newFile();
 
-			} else if (ImGui::IsKeyPressed('O')) {
+			} else if (ImGui::IsKeyPressed(ImGuiKey_O)) {
 				openFile();
 			}
 		}

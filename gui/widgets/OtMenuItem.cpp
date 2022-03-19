@@ -15,7 +15,6 @@
 
 #include "OtCallback.h"
 #include "OtException.h"
-#include "OtFramework.h"
 #include "OtFunction.h"
 #include "OtVM.h"
 
@@ -59,37 +58,14 @@ OtObject OtMenuItemClass::setShortcut(const std::string& s) {
 		shortcut.clear();
 
 	} else if (s.size() == 1) {
-		// determine shortcut keycodes
-		char ch = s[0];
-		int keycode;
-
-		if (ch >= '0' && ch <= '9') {
-			keycode = GLFW_KEY_0 + ch - '0';
-
-		} else if (ch >= 'a' && ch <= 'z') {
-			keycode = GLFW_KEY_A + ch - 'a';
-
-		} else if (ch >= 'A' && ch <= 'Z') {
-			keycode = GLFW_KEY_A + ch - 'A';
-
-		} else {
-			OtExcept("Invalid shortcut for MenuItem [%s]", s.c_str());
-		}
-
 #if __APPLE__
 		int modifier = GLFW_MOD_SUPER;
 		shortcut = "Cmd-" + s;
+
 #else
 		int modifier = GLFW_MOD_CONTROL;
 		shortcut = "Ctrl-" + s;
 #endif
-
-		// register shortcut
-		OtFrameworkClass::instance()->addShortcut(modifier, keycode, [this] (){
-			if (this->callback) {
-				OtVM::instance()->callMemberFunction(this->callback, "__call__");
-			}
-		});
 
 	} else {
 		OtExcept("MenuItem shortcut should be one character, not [%s]", s.c_str());

@@ -71,10 +71,10 @@ void OtEditorClass::render() {
 
 		// handle keyboard shortcuts
 		if (isShortcut) {
-			if (dirty && filename != "untitled" && ImGui::IsKeyPressed('S')) {
+			if (dirty && filename != "untitled" && ImGui::IsKeyPressed(ImGuiKey_S)) {
 				saveFile();
 
-			} else if (ImGui::IsKeyPressed('W')) {
+			} else if (ImGui::IsKeyPressed(ImGuiKey_W)) {
 				if (dirty) {
 					confirmClose = true;
 
@@ -82,10 +82,10 @@ void OtEditorClass::render() {
 					closeFile();
 				}
 
-			} else if (ImGui::IsKeyPressed('B')) {
+			} else if (ImGui::IsKeyPressed(ImGuiKey_B)) {
 				compileFile();
 
-			} else if (ImGui::IsKeyPressed('R')) {
+			} else if (ImGui::IsKeyPressed(ImGuiKey_R)) {
 				if (runnable) {
 					runFile();
 				}

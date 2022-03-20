@@ -77,6 +77,7 @@ OtObject OtSunClass::setAzimuth(float a) {
 //
 
 OtObject OtSunClass::castShadow(float width, float dist, float near, float far, bool debug) {
+	shadow = true;
 	distance = dist;
 	light->castShadow(width, near, far, debug);
 	return shared();
@@ -136,13 +137,17 @@ void OtSunClass::render(OtRenderingContext context) {
 
 void OtSunClass::renderGUI() {
 	ImGui::Checkbox("Enabled", &enabled);
+
+	if (ImGui::Checkbox("Casts Shadow", &shadow)) {
+		light->toggleShadow(shadow);
+	}
+
 	ImGui::SliderFloat("Elevation", &elevation, -0.99, 0.99);
 	ImGui::SliderFloat("Azimuth", &azimuth, 0.0, std::numbers::pi * 2.0);
 	ImGui::SliderFloat("Distance", &distance, 1.0, 2000.0);
 
-	if (ImGui::TreeNodeEx("Directional Light", ImGuiTreeNodeFlags_Framed)) {
-		light->renderGUI();
-		ImGui::TreePop();
+	if (shadow) {
+		light->renderShadowCameraGUI();
 	}
 }
 

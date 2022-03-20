@@ -44,6 +44,7 @@ public:
 
 	// enable shadow casting
 	OtObject castShadow(float width, float near, float far, bool debug);
+	void toggleShadow(bool flag) { shadow = flag; }
 
 	// update state
 	void update(OtRenderingContext context);
@@ -54,6 +55,7 @@ public:
 
 	// GUI to change light properties
 	void renderGUI();
+	void renderShadowCameraGUI();
 
 	// get type definition
 	static OtType getMeta();

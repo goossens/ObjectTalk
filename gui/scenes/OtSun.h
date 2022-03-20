@@ -73,6 +73,7 @@ private:
 	// light produced by sun
 	OtAmbient ambient;
 	OtLight light;
+	bool shadow = false;
 };
 
 

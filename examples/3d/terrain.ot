@@ -12,7 +12,8 @@ class App : gui.App {
 	function setup(this) {
 		var sun = gui.Sun()
 			.setElevation(0.4)
-			.setAzimuth(pi / 2.0);
+			.setAzimuth(pi / 2.0)
+			.castShadow(1500, 2000, 500, 3000, false);
 
 		var sky = gui.Sky()
 			.setSun(sun)
@@ -26,6 +27,7 @@ class App : gui.App {
 
 		var water = gui.Water()
 			.setSize(4000)
+			.receiveShadow(true)
 			.setNormalMap(gui.Texture(__DIR__ + "/assets/waternormals.jpg"));
 
 		var terrainmap = gui.TerrainMap()
@@ -34,6 +36,8 @@ class App : gui.App {
 			.setOffsetZ(-100.0);
 
 		var terrain = gui.Terrain()
+			.castShadow(true)
+			.receiveShadow(true)
 			.setTerrainMap(terrainmap)
 			.setViewingDistance(3000)
 			.setTextureScale(100)

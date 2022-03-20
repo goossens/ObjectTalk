@@ -161,10 +161,13 @@ void OtLightClass::render(OtRenderingContext context) {
 			// add shadowmap matrix to rendering context
 			glm::mat4 shadowmapMatrix = cropMatrix * shadowCamera->getViewProjectionMatrix();
 			context->setShadowMap(shadowmapTexture, shadowmapMatrix);
-		}
 
-		// render camera frustum (if required)
-		shadowCamera->render(context->getDebugDraw());
+			// render camera frustum (if required)
+			shadowCamera->render(context->getDebugDraw());
+
+		} else {
+			context->setShadowMap(BGFX_INVALID_HANDLE, glm::mat4(1.0));
+		}
 	}
 }
 
@@ -181,10 +184,22 @@ void OtLightClass::renderGUI() {
 	ImGui::ColorEdit3("Specular", glm::value_ptr(specular));
 
 	if (shadow) {
-		if (ImGui::TreeNodeEx("Shadow Camera", ImGuiTreeNodeFlags_Framed)) {
-			shadowCamera->renderGUI();
-			ImGui::TreePop();
-		}
+		renderShadowCameraGUI();
+	}
+}
+
+
+//
+//	OtLightClass::renderShadowCameraGUI
+//
+
+void OtLightClass::renderShadowCameraGUI() {
+	if (ImGui::TreeNodeEx("Shadow Camera", ImGuiTreeNodeFlags_Framed)) {
+		shadowCamera->renderGUI();
+
+		float width = ImGui::GetContentRegionAvail().x;
+		ImGui::Image((void*)(intptr_t) shadowmapTexture.idx, ImVec2(width, width));
+		ImGui::TreePop();
 	}
 }
 

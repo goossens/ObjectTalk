@@ -20,9 +20,7 @@ class App : gui.App {
 
 		var object = gui.Mesh(geometry, gold)
 			.transformationOrder("STR")
-			.translate(-width / 2.0, 0, 0)
-		//	.setWireframe(true)
-			;
+			.translate(-width / 2.0, 0, 0);
 
 		this.addAnimation(gui.Animation()
 			.from(0.0)
@@ -34,7 +32,10 @@ class App : gui.App {
 			}));
 
 		var ambient = gui.Ambient();
-		var light = gui.Light().setDirection(1, 2, 4);
+
+		var light = gui.Light()
+			.setDirection(1, 2, 4)
+			.castShadow(5, 3, 100, false);
 
 		var scene = gui.Scene()
 			.add(ambient)
@@ -65,6 +66,18 @@ class App : gui.App {
 		panel.add(node);
 
 		node = gui.TreeNode("Text:");
+
+		node.add(gui.Checkbox("Wireframe", false, function(value) {
+			object.setWireframe(value);
+		}));
+
+		node.add(gui.Checkbox("Cast shadow", false, function(value) {
+			object.castShadow(value);
+		}));
+
+		node.add(gui.Checkbox("Receive shadow", false, function(value) {
+			object.receiveShadow(value);
+		}));
 
 		node.add(gui.RealSlider("Depth", 0.05, 2, 0.2, function(value) {
 			geometry.setDepth(value);

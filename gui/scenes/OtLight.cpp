@@ -136,6 +136,7 @@ void OtLightClass::render(OtRenderingContext context) {
 			bgfx::setViewClear(shadowView, BGFX_CLEAR_DEPTH);
 			bgfx::setViewRect(shadowView, 0, 0, shadowmapSize, shadowmapSize);
 			bgfx::setViewFrameBuffer(shadowView, shadowmapFrameBuffer);
+			bgfx::touch(shadowView);
 
 			// create shadowmap rendering context
 			OtRenderingContextClass shadowMapContext = *context;

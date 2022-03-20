@@ -465,31 +465,31 @@ bool OtCameraClass::isVisibleSphere(const glm::vec3& center, float radius) {
 
 void OtCameraClass::renderGUI() {
 	if (style == perspectiveStyle) {
-		ImGui::SliderFloat("FoV (Deg)", &fov, fovMin, fovMax);
+		if (ImGui::SliderFloat("FoV (Deg)", &fov, fovMin, fovMax)) { changed = true; }
 
 	} else {
-		ImGui::SliderFloat("Width", &width, widthMin, widthMax);
+		if (ImGui::SliderFloat("Width", &width, widthMin, widthMax)) { changed = true; }
 	}
 
-	ImGui::SliderFloat("Near Clipping", &near, nearMin, nearMax);
-	ImGui::SliderFloat("Far Clipping", &far, farMin, farMax);
-	ImGui::Checkbox("Render Frustum", &renderFrustumFlag);
+	if (ImGui::SliderFloat("Near Clipping", &near, nearMin, nearMax)) { changed = true; }
+	if (ImGui::SliderFloat("Far Clipping", &far, farMin, farMax)) { changed = true; }
+	if (ImGui::Checkbox("Render Frustum", &renderFrustumFlag)) { changed = true; }
 
 	if (mode == scriptControlMode) {
-		ImGui::SliderFloat3("Position", glm::value_ptr(cameraPosition), -50.0f, 50.0f);
-		ImGui::SliderFloat3("Target", glm::value_ptr(cameraTarget), -50.0f, 50.0f);
-		ImGui::SliderFloat3("Up", glm::value_ptr(cameraUp), -2.0f, 2.0f);
+		if (ImGui::SliderFloat3("Position", glm::value_ptr(cameraPosition), -50.0f, 50.0f)) { changed = true; }
+		if (ImGui::SliderFloat3("Target", glm::value_ptr(cameraTarget), -50.0f, 50.0f)) { changed = true; }
+		if (ImGui::SliderFloat3("Up", glm::value_ptr(cameraUp), -2.0f, 2.0f)) { changed = true; }
 
 	} else if (mode == circleTargetMode) {
-		ImGui::SliderFloat3("Target", glm::value_ptr(cameraTarget), -50.0f, 50.0f);
-		ImGui::SliderFloat("Distance", &distance, distanceMin, distanceMax);
-		ImGui::SliderFloat("Pitch", &pitch, pitchMin, pitchMax);
-		ImGui::SliderFloat("Yaw", &yaw, yawMin, yawMax);
+		if (ImGui::SliderFloat3("Target", glm::value_ptr(cameraTarget), -50.0f, 50.0f)) { changed = true; }
+		if (ImGui::SliderFloat("Distance", &distance, distanceMin, distanceMax)) { changed = true; }
+		if (ImGui::SliderFloat("Pitch", &pitch, pitchMin, pitchMax)) { changed = true; }
+		if (ImGui::SliderFloat("Yaw", &yaw, yawMin, yawMax)) { changed = true; }
 
 	} else if (mode == firstPersonMode) {
-		ImGui::SliderFloat3("Position", glm::value_ptr(cameraPosition), -50.0f, 50.0f);
-		ImGui::SliderFloat("Pitch", &pitch, pitchMin, pitchMax);
-		ImGui::SliderFloat("Yaw", &yaw, yawMin, yawMax);
+		if (ImGui::SliderFloat3("Position", glm::value_ptr(cameraPosition), -50.0f, 50.0f)) { changed = true; }
+		if (ImGui::SliderFloat("Pitch", &pitch, pitchMin, pitchMax)) { changed = true; }
+		if (ImGui::SliderFloat("Yaw", &yaw, yawMin, yawMax)) { changed = true; }
 
 	} else {
 	}

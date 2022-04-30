@@ -87,7 +87,7 @@ public:
 	std::string trim() { return OtText::trim(value); }
 	std::string ltrim() { return OtText::leftTrim(value); }
 	std::string rtrim() { return OtText::rightTrim(value); }
-	std::string compress() { return OtText::compress(value); }
+	std::string compress() { return OtText::compressWhitespace(value); }
 
 	std::string lower() { return OtText::lower(value); }
 	std::string upper() { return OtText::upper(value); }

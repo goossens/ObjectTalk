@@ -106,10 +106,26 @@ OtObject OtWorldClass::addEndContactCallback(OtObject callback) {
 //	OtWorldClass::addStaticBody
 //
 
-OtObject OtWorldClass::addStaticBody() {
+OtObject OtWorldClass::addStaticBody(size_t count, OtObject* parameters) {
+	// sanity check
+	if (count > 1) {
+		OtExcept("[addStaticBody] expect up to 1 parameter, not %ld", count);
+	}
+
 	b2BodyDef def;
 	def.type = b2_staticBody;
-	OtObject body = OtBodyClass::create(world->CreateBody(&def));
+	b2Body* b = world->CreateBody(&def);
+	OtBody body;
+
+	if (count) {
+		parameters[0]->expectKindOf("Body");
+		body = parameters[0]->cast<OtBodyClass>();
+		body->setBody(b);
+
+	} else {
+		body = OtBodyClass::create(b);
+	}
+
 	bodies.push_back(body);
 	return body;
 }
@@ -119,10 +135,26 @@ OtObject OtWorldClass::addStaticBody() {
 //	OtWorldClass::addKinematicBody
 //
 
-OtObject OtWorldClass::addKinematicBody() {
+OtObject OtWorldClass::addKinematicBody(size_t count, OtObject* parameters) {
+	// sanity check
+	if (count > 1) {
+		OtExcept("[addKinematicBody] expect up to 1 parameter, not %ld", count);
+	}
+
 	b2BodyDef def;
 	def.type = b2_kinematicBody;
-	OtObject body = OtBodyClass::create(world->CreateBody(&def));
+	b2Body* b = world->CreateBody(&def);
+	OtBody body;
+
+	if (count) {
+		parameters[0]->expectKindOf("Body");
+		body = parameters[0]->cast<OtBodyClass>();
+		body->setBody(b);
+
+	} else {
+		body = OtBodyClass::create(b);
+	}
+
 	bodies.push_back(body);
 	return body;
 }
@@ -132,10 +164,26 @@ OtObject OtWorldClass::addKinematicBody() {
 //	OtWorldClass::addDynamicBody
 //
 
-OtObject OtWorldClass::addDynamicBody() {
+OtObject OtWorldClass::addDynamicBody(size_t count, OtObject* parameters) {
+	// sanity check
+	if (count > 1) {
+		OtExcept("[addDynamicBody] expect up to 1 parameter, not %ld", count);
+	}
+
 	b2BodyDef def;
 	def.type = b2_dynamicBody;
-	OtObject body = OtBodyClass::create(world->CreateBody(&def));
+	b2Body* b = world->CreateBody(&def);
+	OtBody body;
+
+	if (count) {
+		parameters[0]->expectKindOf("Body");
+		body = parameters[0]->cast<OtBodyClass>();
+		body->setBody(b);
+
+	} else {
+		body = OtBodyClass::create(b);
+	}
+
 	bodies.push_back(body);
 	return body;
 }

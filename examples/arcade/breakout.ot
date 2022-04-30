@@ -107,7 +107,8 @@ class Breakout : game.Game {
 		this.vd.setColor("#47f");
 
 		this.splashShapes.append(this.vd.addText(8, 4, 0.6, "Welcome to the Game of Breakout"));
-		this.splashShapes.append(this.vd.addText(8, 3, 0.6, "Hit any button to start..."));
+		this.splashShapes.append(this.vd.addText(8, 3, 0.6, "Hit any button/key to start..."));
+		this.splashShapes.append(this.vd.addText(8, 2, 0.6, "Hit ESC to return to the menu..."));
 
 		for shape in this.splashShapes {
 			this.vd.disableShape(shape);
@@ -361,8 +362,8 @@ class Breakout : game.Game {
 	}
 
 	function contact(this, body1, body2) {
-		// change horizontal velocity of ball based on where paddle was hit
 		if (body1.name == "paddle") {
+			// change horizontal velocity of ball based on where paddle was hit
 			this.ball.setLinearVelocity(
 				(body2.getX() - body1.getX()) * 3.0,
 				this.ball.getLinearVelocityY());

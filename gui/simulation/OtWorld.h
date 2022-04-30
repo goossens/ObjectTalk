@@ -45,9 +45,9 @@ public:
 	OtObject addEndContactCallback(OtObject callback);
 
 	// create a new body
-	OtObject addStaticBody();
-	OtObject addKinematicBody();
-	OtObject addDynamicBody();
+	OtObject addStaticBody(size_t count, OtObject* parameters);
+	OtObject addKinematicBody(size_t count, OtObject* parameters);
+	OtObject addDynamicBody(size_t count, OtObject* parameters);
 
 	// run simulation
 	void step(int32_t deltaMilliseconds);

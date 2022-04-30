@@ -91,6 +91,7 @@
 #include "OtSimulation.h"
 #include "OtCloth.h"
 #include "OtWorld.h"
+#include "OtBody.h"
 
 #include "OtShape.h"
 
@@ -169,6 +170,7 @@ void OtGuiClass::registerModule() {
 		module->set("Simulation", OtClassClass::create(OtSimulationClass::getMeta()));
 		module->set("Cloth", OtClassClass::create(OtClothClass::getMeta()));
 		module->set("World", OtClassClass::create(OtWorldClass::getMeta()));
+		module->set("Body", OtClassClass::create(OtBodyClass::getMeta()));
 
 		module->set("Shape", OtClassClass::create(OtShapeClass::getMeta()));
 

@@ -128,6 +128,16 @@ void OtBodyClass::applyLinearImpulse(float x, float y) {
 
 
 //
+//	OtBodyClass::setBody
+//
+
+void OtBodyClass::setBody(b2Body* b) {
+	body = b;
+	b->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+}
+
+
+//
 //	OtBodyClass::getMeta
 //
 

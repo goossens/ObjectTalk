@@ -862,6 +862,26 @@ int OtVectorDisplayClass::addRectangle(float x, float y, float w, float h) {
 
 
 //
+//	OtVectorDisplayClass::addCenteredRectangle
+//
+
+int OtVectorDisplayClass::addCenteredRectangle(float x, float y, float w, float h) {
+	Shape shape;
+	shape.id = nextShapeID++;
+	shape.enabled = true;
+	shape.type = Shape::rectangleType;
+	shape.width = style.width;
+	shape.color = style.color;
+	shape.x = x - w / 2.0;
+	shape.y = y - h / 2.0;
+	shape.w = w;
+	shape.h = h;
+	shapes.push_back(shape);
+	return shape.id;
+}
+
+
+//
 //	OtVectorDisplayClass::addCircle
 //
 
@@ -948,6 +968,23 @@ void OtVectorDisplayClass::updateRectangle(int id, float x, float y, float w, fl
 		if (shape.id == id) {
 			shape.x = x;
 			shape.y = y;
+			shape.w = w;
+			shape.h = h;
+			return;
+		}
+	}
+}
+
+
+//
+//	OtVectorDisplayClass::updateCenteredRectangle
+//
+
+void OtVectorDisplayClass::updateCenteredRectangle(int id, float x, float y, float w, float h) {
+	for (auto& shape : shapes) {
+		if (shape.id == id) {
+			shape.x = x - w / 2.0;
+			shape.y = y - h / 2.0;
 			shape.w = w;
 			shape.h = h;
 			return;
@@ -1348,12 +1385,14 @@ OtType OtVectorDisplayClass::getMeta() {
 
 		type->set("addLine", OtFunctionClass::create(&OtVectorDisplayClass::addLine));
 		type->set("addRectangle", OtFunctionClass::create(&OtVectorDisplayClass::addRectangle));
+		type->set("addCenteredRectangle", OtFunctionClass::create(&OtVectorDisplayClass::addCenteredRectangle));
 		type->set("addCircle", OtFunctionClass::create(&OtVectorDisplayClass::addCircle));
 		type->set("addSevenSegment", OtFunctionClass::create(&OtVectorDisplayClass::addSevenSegment));
 		type->set("addText", OtFunctionClass::create(&OtVectorDisplayClass::addText));
 
 		type->set("updateLine", OtFunctionClass::create(&OtVectorDisplayClass::updateLine));
 		type->set("updateRectangle", OtFunctionClass::create(&OtVectorDisplayClass::updateRectangle));
+		type->set("updateCenteredRectangle", OtFunctionClass::create(&OtVectorDisplayClass::updateCenteredRectangle));
 		type->set("updateCircle", OtFunctionClass::create(&OtVectorDisplayClass::updateCircle));
 		type->set("updateSevenSegment", OtFunctionClass::create(&OtVectorDisplayClass::updateSevenSegment));
 		type->set("updateSevenSegmentString", OtFunctionClass::create(&OtVectorDisplayClass::updateSevenSegmentString));

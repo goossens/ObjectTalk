@@ -183,3 +183,34 @@ class Game : Object {
 		this.displayScale = scale;
 	}
 }
+
+class SplashScreen : Object {
+	function __init__(this, vd, y, text) {
+		this.vd = vd;
+		this.gfx = [];
+
+		vd.pushStyle();
+		vd.setCenteredText();
+		vd.setColor("#47f");
+
+		for line in text {
+			this.gfx.append(vd.addText(8, y, 0.6, line));
+			y -= 1;
+		}
+
+		vd.popStyle();
+		this.hide();
+	}
+
+	function show(this) {
+		for line in this.gfx {
+			this.vd.enableShape(line);
+		}
+	}
+
+	function hide(this) {
+		for line in this.gfx {
+			this.vd.disableShape(line);
+		}
+	}
+}

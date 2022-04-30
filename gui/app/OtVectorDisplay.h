@@ -61,12 +61,14 @@ public:
 
 	int addLine(float x0, float y0, float x1, float y1);
 	int addRectangle(float x, float y, float w, float h);
+	int addCenteredRectangle(float x, float y, float w, float h);
 	int addCircle(float x, float y, float radius, float steps);
 	int addSevenSegment(float x, float y, float size, const std::string& text);
 	int addText(float x, float y, float size, const std::string& text);
 
 	void updateLine(int id, float x0, float y0, float x1, float y1);
 	void updateRectangle(int id, float x, float y, float w, float h);
+	void updateCenteredRectangle(int id, float x, float y, float w, float h);
 	void updateCircle(int id, float x, float y, float radius, float steps);
 	void updateSevenSegment(int id, float x, float y, float size, const std::string& text);
 	void updateSevenSegmentString(int id, const std::string& text);

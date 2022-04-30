@@ -61,11 +61,11 @@ class Arcade : gui.App {
 	}
 
 	function onMouseButton(this, button, action, mods, x, y) {
-		this.active.onMouseButton(button, action, mods, x, y);
+		this.active.onMouseButton(button, action, mods, x, this.getHeight().real() - y);
 	}
 
 	function onMouseMove(this, x, y) {
-		this.active.onMouseMove(x, y);
+		this.active.onMouseMove(x, this.getHeight().real() - y);
 	}
 
 	function onKey(this, key, mods) {

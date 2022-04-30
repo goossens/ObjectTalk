@@ -51,8 +51,8 @@ public:
 	static std::string leftTrim(std::string text, const std::string& chars="\t\n\v\f\r ");
 	static std::string rightTrim(std::string text, const std::string& chars="\t\n\v\f\r ");
 	static std::string trim(std::string text, const std::string& chars="\t\n\v\f\r ");
-	static std::string compress(const std::string& text, const std::string& chars="\t\n\v\f\r ");
-	static std::string removeAll(const std::string& text, const std::string& chars="\t\n\v\f\r ");
+	static std::string compressWhitespace(const std::string& text, const std::string& chars="\t\n\v\f\r ");
+	static std::string removeAllWhitespace(const std::string& text, const std::string& chars="\t\n\v\f\r ");
 
 	// split UTF-8 string by delimeter into a container
 	template <class CONTAINER>

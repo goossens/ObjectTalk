@@ -54,6 +54,9 @@ public:
 	// manipulate body
 	void applyLinearImpulse(float x, float y);
 
+	// specify a new body
+	void setBody(b2Body* body);
+
 	// get type definition
 	static OtType getMeta();
 

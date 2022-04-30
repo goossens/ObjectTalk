@@ -295,7 +295,7 @@ static OtRgbColor name2rgb(const std::string& text) {
 static OtRgbColor parse(const std::string& text) {
 	try {
 		// remove all whitespaces
-		std::string str = OtText::removeAll(text);
+		std::string str = OtText::removeAllWhitespace(text);
 
 		// convert to lowercase
 		str = OtText::lower(str);
@@ -314,7 +314,7 @@ static OtRgbColor parse(const std::string& text) {
 			return name2rgb(str);
 		}
 
-	} catch (const std::exception& e) {
+	} catch (std::exception& e) {
 		OtExcept("Invalid color [%s], error: %s", text.c_str(), e.what());
 	}
 

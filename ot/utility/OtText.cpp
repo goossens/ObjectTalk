@@ -263,10 +263,10 @@ std::string OtText::trim(std::string text, const std::string& chars) {
 
 
 //
-//	OtText::compress
+//	OtText::compressWhitespace
 //
 
-std::string OtText::compress(const std::string& text, const std::string& chars) {
+std::string OtText::compressWhitespace(const std::string& text, const std::string& chars) {
 	auto result = OtText::trim(text, chars);
 	auto begin = result.find_first_of(chars);
 
@@ -280,10 +280,10 @@ std::string OtText::compress(const std::string& text, const std::string& chars) 
 
 
 //
-//	OtText::removeAll
+//	OtText::removeAllWhitespace
 //
 
-std::string OtText::removeAll(const std::string& text, const std::string& chars) {
+std::string OtText::removeAllWhitespace(const std::string& text, const std::string& chars) {
 	auto result = OtText::trim(text, chars);
 	auto begin = result.find_first_of(chars);
 

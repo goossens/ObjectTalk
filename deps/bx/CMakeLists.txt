@@ -18,6 +18,8 @@ if(WIN32)
 	target_link_libraries(bx PUBLIC psapi)
 	target_include_directories(bx PUBLIC ${bx_SOURCE_DIR}/include/compat/msvc)
 
+	target_compile_options(bx PUBLIC "/Zc:__cplusplus")
+
 	target_compile_definitions(bx PUBLIC "__STDC_LIMIT_MACROS")
 	target_compile_definitions(bx PUBLIC "__STDC_FORMAT_MACROS")
 	target_compile_definitions(bx PUBLIC "__STDC_CONSTANT_MACROS")

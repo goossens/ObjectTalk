@@ -4,7 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Declare(argparse GIT_REPOSITORY "https://github.com/p-ranav/argparse" GIT_TAG "v2.2")
+FetchContent_Declare(argparse GIT_REPOSITORY "https://github.com/p-ranav/argparse" GIT_TAG "v2.6")
 FetchContent_GetProperties(argparse)
 
 if(NOT argparse_POPULATED)

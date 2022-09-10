@@ -37,31 +37,55 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav ml-auto">
-            <li class="nav-item text-right">
+            <li class="nav-item">
               <a class="nav-link page-scroll" href="installation.html"
                 >Installation</a
               >
             </li>
-            <li class="nav-item text-right">
+            <li class="nav-item">
               <a class="nav-link page-scroll" href="tour.html">Tour</a>
             </li>
-            <li class="nav-item text-right">
+            <li class="nav-item">
               <a class="nav-link page-scroll" href="guide.html">Guide</a>
             </li>
-            <li class="nav-item text-right">
-              <a class="nav-link page-scroll" href="reference.html"
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Reference"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
                 >Reference</a
               >
+              <div class="dropdown-menu" aria-labelledby="Reference">
+                <a class="nav-link page-scroll" href="language.html">Language</a
+                ><a class="nav-link page-scroll" href="classes.html">Classes</a>
+              </div>
             </li>
-            <li class="nav-item text-right">
-              <a class="nav-link page-scroll" href="tutorial.html">Tutorial</a>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Tutorials"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Tutorials</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Tutorials">
+                <a class="nav-link page-scroll" href="web.html">Web</a
+                ><a class="nav-link page-scroll" href="3d.html">3D</a>
+              </div>
             </li>
           </ul>
         </div>
       </nav>
       <div class="row flex-grow-1 overflow-hidden vh-100">
         <div class="col-2 mh-100 overflow-auto py-2 manual-toc">
-          <p class="pt-2"><strong>ObjectTalk Guide</strong></p>
+          <p><strong>ObjectTalk Guide</strong></p>
           <ul>
             <li><a class="page-scroll" href="#basics">The Basics</a></li>
             <li><a class="page-scroll" href="#collections">Collections</a></li>
@@ -323,7 +347,7 @@ var array4 = Array(1, 2, 3.14, &quot;test);
             <pre><code>var array = [1, 2, 3.14, &quot;test&quot;];
 
 array.append(&quot;name&quot;);
-array.insert(3);
+array.insert(3, &quot;insert&quot;);
 array += 9;
 
 var size = array.size();
@@ -335,7 +359,7 @@ array.erase(2);
 array.eraseMultiple(1, 2);
 array.clear();
 </code></pre>
-            <p>You can combine arrays:</p>
+            <p>You can merge arrays:</p>
             <pre><code>var array1 = [1, 2, 3.14, &quot;test&quot;];
 var array2 = [8, 9];
 
@@ -1589,7 +1613,7 @@ for number in range(10, 6, -2) {
             <p>
               A module is a single unit of code that’s built and shipped as a
               single unit and that can be imported by another module with
-              ObjectTalk's import keyword.
+              ObjectTalk's import function.
             </p>
             <p>
               A source file is a single ObjectTalk module (in effect, a single
@@ -1600,7 +1624,7 @@ for number in range(10, 6, -2) {
             <p>
               When the ObjectTalk interpreter is started, it will load the
               specified script (source code) as the first module. Additional
-              modules can be loaded with the import script. Here is an example
+              modules can be loaded with the import function. Here is an example
               based on two files; one containing a class definition and the
               other containing the main program.
             </p>
@@ -1653,7 +1677,9 @@ assert(tracker.count == 0);
               instance are used interchangeably.
             </p>
             <p><strong>Definition Syntax</strong></p>
-            <p>You introduce classes with the class keyword:</p>
+            <p>
+              You introduce classes with the <strong>class</strong> keyword:
+            </p>
             <pre><code>class Resolution : Object {
 	var width = 0;
 	var height = 0;
@@ -1683,7 +1709,7 @@ class VideoMode : Object {
 		this.resolution = Resolution(1920, 1080);
 		this.interlaced = false;
 		this.frameRate = 0.0;
-		this.name;
+		this.name = null;
 	}
 }
 
@@ -1698,8 +1724,7 @@ mode.name = &quot;Test Mode&quot;; // assign value to instance variable
               Resolution. For the other three properties, new VideoMode
               instances will be initialized with an interlaced setting of false
               (meaning “noninterlaced video”), a playback frame rate of 0.0, and
-              an optional String value called name. The name property is
-              automatically given a default value of <strong>null</strong>.
+              an optional String value called name.
             </p>
             <p><strong>Class Instances</strong></p>
             <p>
@@ -1722,7 +1747,7 @@ var someVideoMode = VideoMode();
             <p>
               You can access the members of an instance using dot syntax. In dot
               syntax, you write the property name immediately after the instance
-              name, separated by a period (.):
+              name, separated by a dot (.):
             </p>
             <pre><code>print(&quot;The width of someResolution is &quot;, someResolution.width);
 // Prints &quot;The width of someResolution is 1920&quot;
@@ -1826,12 +1851,11 @@ GrandChild.value3 = null; // setting a class member;
             <p>
               You call instance methods with the same dot syntax as properties:
             </p>
-            <p>
-              var counter = Counter(); // the initial counter value is 0
-              counter.increment(); // the counter's value is now 1
-              counter.increment(5); // the counter's value is now 6
-              counter.reset(); // the counter's value is now 0
-            </p>
+            <pre><code>var counter = Counter(); // the initial counter value is 0
+counter.increment();     // the counter's value is now 1
+counter.increment(5);    // the counter's value is now 6
+counter.reset();         // the counter's value is now 0
+</code></pre>
             <p><strong>The this Property</strong></p>
             <p>
               Notice in the examples above how &quot;this&quot; is used to
@@ -2004,7 +2028,7 @@ class newestObjectClass : Object {
 </code></pre>
             <p>
               Traditional and lambda functions will be described in this
-              section. Member Functions will be covered in the
+              section. Member Functions are covered in the
               <a class="page-scroll" href="#classes">Classes</a> section.
             </p>
             <p>
@@ -2075,12 +2099,9 @@ greet(&quot;Dave&quot;);
               without a defined return will automatically return
               <strong>null</strong>.
             </p>
-            <p>Return values can be ignored.</p>
+            <p><strong>Functions as Return Value</strong></p>
             <p>
-              <strong>Function Types as Return Types</strong> You can use a
-              function as the return value of another function.
-            </p>
-            <p>
+              You can use a function as the return value of another function.
               The next example defines two simple functions called stepForward()
               and stepBackward(). The stepForward() function returns a value one
               more than its input value, and the stepBackward() function returns

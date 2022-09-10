@@ -36,7 +36,7 @@ install: release
 	ls -l /usr/local/bin/ot
 
 docs:
-	pugger --theme manual --assets --out docs docs-src
+	cd docs-src && pugger --theme manual --assets --out ../docs *.pug
 
 cleanup:
 	perl -i -pe 's/\s+\n/\n/' $(SRC) $(INC) $(TST)

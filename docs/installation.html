@@ -37,31 +37,55 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav ml-auto">
-            <li class="nav-item text-right">
+            <li class="nav-item">
+              <a class="nav-link page-scroll" href="installation.html"
+                >Installation</a
+              >
+            </li>
+            <li class="nav-item">
               <a class="nav-link page-scroll" href="tour.html">Tour</a>
             </li>
-            <li class="nav-item text-right">
+            <li class="nav-item">
               <a class="nav-link page-scroll" href="guide.html">Guide</a>
             </li>
-            <li class="nav-item text-right">
-              <a class="nav-link page-scroll" href="reference.html"
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Reference"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
                 >Reference</a
               >
+              <div class="dropdown-menu" aria-labelledby="Reference">
+                <a class="nav-link page-scroll" href="language.html">Language</a
+                ><a class="nav-link page-scroll" href="classes.html">Classes</a>
+              </div>
             </li>
-            <li class="nav-item text-right">
-              <a class="nav-link page-scroll" href="installation.html"
-                >Install</a
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Tutorials"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Tutorials</a
               >
-            </li>
-            <li class="nav-item text-right">
-              <a class="nav-link page-scroll" href="tutorial.html">Tutorial</a>
+              <div class="dropdown-menu" aria-labelledby="Tutorials">
+                <a class="nav-link page-scroll" href="web.html">Web</a
+                ><a class="nav-link page-scroll" href="3d.html">3D</a>
+              </div>
             </li>
           </ul>
         </div>
       </nav>
       <div class="row flex-grow-1 overflow-hidden vh-100">
         <div class="col-2 mh-100 overflow-auto py-2 manual-toc">
-          <p class="pt-2"><strong>ObjectTalk Installation</strong></p>
+          <p><strong>ObjectTalk Installation</strong></p>
           <ul>
             <li><a class="page-scroll" href="#overview">Overview</a></li>
             <li><a class="page-scroll" href="#macos">Install on MacOS</a></li>

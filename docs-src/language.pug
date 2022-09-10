@@ -1,0 +1,84 @@
+include /manual.pug
+
++page("ObjectTalk Reference")
+	+manual()
+		include common/header.pug
+
+		+manual-body()
+			+manual-toc()
+				include:markdown-it language/toc.md
+
+			+manual-content()
+				+manual-chapter("overview", "overview")
+					include:markdown-it language/overview.md
+
+				+manual-chapter("module", "module")
+					include:markdown-it language/module.md
+					
+				+manual-chapter("statement", "statement")
+					include:markdown-it language/statement.md
+
+				+manual-chapter("block", "block")
+					include:markdown-it language/block.md
+
+				+manual-chapter("expressions", "expressions")
+					include:markdown-it language/expressions.md
+
+				+manual-chapter("expression", "expression")
+					include:markdown-it language/expression.md
+
+				+manual-chapter("conditional", "conditional")
+					include:markdown-it language/conditional.md
+
+				+manual-chapter("or", "or")
+					include:markdown-it language/or.md
+
+				+manual-chapter("and", "and")
+					include:markdown-it language/and.md
+
+				+manual-chapter("bytewise-or", "bytewise-or")
+					include:markdown-it language/bytewise-or.md
+
+				+manual-chapter("bytewise-xor", "bytewise-xor")
+					include:markdown-it language/bytewise-xor.md
+
+				+manual-chapter("bytewise-and", "bytewise-and")
+					include:markdown-it language/bytewise-and.md
+
+				+manual-chapter("equal", "equal")
+					include:markdown-it language/equal.md
+
+				+manual-chapter("relation", "relation")
+					include:markdown-it language/relation.md
+
+				+manual-chapter("shift", "shift")
+					include:markdown-it language/shift.md
+
+				+manual-chapter("addition", "addition")
+					include:markdown-it language/addition.md
+
+				+manual-chapter("multiplication", "multiplication")
+					include:markdown-it language/multiplication.md
+
+				+manual-chapter("postfix", "postfix")
+					include:markdown-it language/postfix.md
+
+				+manual-chapter("primary", "primary")
+					include:markdown-it language/primary.md
+
+				+manual-chapter("integer", "integer")
+					include:markdown-it language/integer.md
+
+				+manual-chapter("real", "real")
+					include:markdown-it language/real.md
+
+				+manual-chapter("string", "string")
+					include:markdown-it language/string.md
+
+				+manual-chapter("function", "function")
+					include:markdown-it language/function.md
+
+				+manual-chapter("name", "name")
+					include:markdown-it language/name.md
+
+		include common/footer.pug

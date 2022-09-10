@@ -1,0 +1,15 @@
+include /manual.pug
+
++page("ObjectTalk Web Tutorial")
+	+manual()
+		include common/header.pug
+
+		+manual-body()
+			+manual-toc()
+				include:markdown-it tutorials/web/toc.md
+
+			+manual-content()
+				+manual-chapter("overview", "Overview")
+					include:markdown-it tutorials/web/overview.md
+
+		include common/footer.pug

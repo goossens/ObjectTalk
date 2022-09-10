@@ -3,7 +3,7 @@ international setting. As was true for most software development at that
 time, memory and disk capacities were a scarce commodity and optimization
 strategies were always important. In the system I worked on, our custom
 Operating System and real-time applications were written in assembler.
-You can probably imagine that that became a rats nest over time.
+You can probably imagine that it became a rats nest over time.
 In one case, a programmer was so smart that he patched jump instructions
 to "efficiently" create a switch/case type statement. As you probably
 already expect, this was not maintainable and pre-deployment testing
@@ -22,13 +22,13 @@ I write my first compiler that took higher level code and translated it
 to the assembler required for our mainframe. This worked very well and
 my interest in computer language development was born.
 
-In the late 80s, early 90s, I move to the US and was in charge of a team
-of software developers. Of the 20 people or so, five were really good
-and could handle the demands posed by our HPUX machines loaded with
-X Windows, Motif, Oracle DB and a number of low level packages. The
-others struggled with the complexity of the C code and certainly the
+In the late 80s, early 90s, I moved to the US and was in charge of a
+team of software developers. Of the 20 people or so, five were really
+good and could handle the demands posed by our HPUX machines loaded
+with X Windows, Motif, Oracle DB and a number of low level packages.
+The others struggled with the complexity of the C code and certainly the
 APIs to Motif and Oracle. In order to make the team more effective, I
-developed a scripting language called Talk that was easier to learn,
+developed a scripting language called Talk that was easy to learn,
 abstracted away all the Motif and Oracle complexities and ensured that
 GUI guidelines were enforces and bad coding habits like endless "jumps",
 "breaks" and "continues" were no longer possible. This became very

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>ObjectTalk Reference</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/theme.css" />
+  </head>
+  <body id="page-top">
+    <div
+      class="container-fluid d-flex flex-column flex-grow-1 vh-100 overflow-hidden"
+    >
+      <nav
+        class="navbar navbar-expand px-0 pt-1 pb-0 flex-shrink-0 manual-header"
+      >
+        <a class="navbar-brand" href="index.html"
+          ><img src="img/icon.png" height="40" alt="" /><span class="ml-2"
+            >Documentation</span
+          ></a
+        ><button
+          class="navbar-toggler navbar-toggler-right"
+          data-toggle="collapse"
+          data-target="#navbarResponsive"
+          type="button"
+          data-toogle="collapse"
+          aria-controls="navbarResponsive"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <i class="fa fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link page-scroll" href="installation.html"
+                >Installation</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link page-scroll" href="tour.html">Tour</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link page-scroll" href="guide.html">Guide</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Reference"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Reference</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Reference">
+                <a class="nav-link page-scroll" href="language.html">Language</a
+                ><a class="nav-link page-scroll" href="classes.html">Classes</a>
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Tutorials"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Tutorials</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Tutorials">
+                <a class="nav-link page-scroll" href="web.html">Web</a
+                ><a class="nav-link page-scroll" href="3d.html">3D</a>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <div class="row flex-grow-1 overflow-hidden vh-100">
+        <div class="col-2 mh-100 overflow-auto py-2 manual-toc">
+          <p><strong>Language Reference</strong></p>
+          <ul>
+            <li><a class="page-scroll" href="#module">module</a></li>
+            <li><a class="page-scroll" href="#statement">statement</a></li>
+            <li><a class="page-scroll" href="#block">block</a></li>
+            <li><a class="page-scroll" href="#expressions">expressions</a></li>
+            <li><a class="page-scroll" href="#expression">expression</a></li>
+            <li><a class="page-scroll" href="#conditional">conditional</a></li>
+            <li><a class="page-scroll" href="#or">or</a></li>
+            <li><a class="page-scroll" href="#and">and</a></li>
+            <li><a class="page-scroll" href="#bytewise-or">bytewise-or</a></li>
+            <li>
+              <a class="page-scroll" href="#bytewise-xor">bytewise-xor</a>
+            </li>
+            <li>
+              <a class="page-scroll" href="#bytewise-and">bytewise-and</a>
+            </li>
+            <li><a class="page-scroll" href="#equal">equal</a></li>
+            <li><a class="page-scroll" href="#relation">relation</a></li>
+            <li><a class="page-scroll" href="#shift">shift</a></li>
+            <li><a class="page-scroll" href="#addition">addition</a></li>
+            <li>
+              <a class="page-scroll" href="#multiplication">multiplication</a>
+            </li>
+            <li><a class="page-scroll" href="#prefix">prefix</a></li>
+            <li><a class="page-scroll" href="#postfix">postfix</a></li>
+            <li><a class="page-scroll" href="#primary">primary</a></li>
+            <li><a class="page-scroll" href="#integer">integer</a></li>
+            <li><a class="page-scroll" href="#real">real</a></li>
+            <li><a class="page-scroll" href="#string">string</a></li>
+            <li><a class="page-scroll" href="#function">function</a></li>
+            <li><a class="page-scroll" href="#name">name</a></li>
+          </ul>
+        </div>
+        <div class="col mh-100 overflow-auto py-2 manual-content">
+          <div id="overview">
+            <h1 class="pb-2">overview</h1>
+            <p>
+              Below is a formal expression of the ObjectTalk scripting language
+              in Extended Backus–Naur Form (EBNF). You can read more about this
+              notation on
+              <a
+                href="https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form"
+                >Wikipedia</a
+              >. The pretty diagrams were created using the
+              <a href="https://www.bottlecaps.de/rr/ui"
+                >&quot;RailRoad Diagram Generator&quot;</a
+              >
+              which translates EBNF into HTML with pictures. This tool is highly
+              recommended for visualizing grammar.
+            </p>
+          </div>
+          <div id="module">
+            <h1 class="pb-2">module</h1>
+            <p><img src="img/module.png" alt="Railroad Diagram" /></p>
+            <pre><code>module ::= statement*
+</code></pre>
+          </div>
+          <div id="statement">
+            <h1 class="pb-2">statement</h1>
+            <p><img src="img/statement.png" alt="Railroad Diagram" /></p>
+            <pre><code>statement ::= expression &quot;;&quot;
+| block
+| &quot;var&quot; name (&quot;=&quot; expression)? &quot;;&quot;
+| &quot;class&quot; name &quot;:&quot; expression block
+| &quot;function&quot; name &quot;(&quot; ((name (&quot;,&quot; name)*)?) &quot;)&quot; block
+| &quot;if&quot; expression block (&quot;elif&quot; expression block)* (&quot;else&quot; block)?
+| &quot;while&quot; expression block
+| &quot;do&quot; block &quot;while&quot; expression &quot;;&quot;
+| &quot;for&quot; name &quot;in&quot; expression block
+| &quot;throw&quot; expression &quot;;&quot;
+| &quot;try&quot; block &quot;catch&quot; name block
+| &quot;return&quot; expression &quot;;&quot;
+</code></pre>
+          </div>
+          <div id="block">
+            <h1 class="pb-2">block</h1>
+            <p><img src="img/block.png" alt="Railroad Diagram" /></p>
+            <pre><code>block ::= &quot;{&quot; statement* &quot;}&quot;
+</code></pre>
+          </div>
+          <div id="expressions">
+            <h1 class="pb-2">expressions</h1>
+            <p><img src="img/expressions.png" alt="Railroad Diagram" /></p>
+            <pre><code>expressions ::= expression (&quot;,&quot; expression)*
+</code></pre>
+          </div>
+          <div id="expression">
+            <h1 class="pb-2">expression</h1>
+            <p><img src="img/expression.png" alt="Railroad Diagram" /></p>
+            <pre><code>expression ::= conditional (
+    &quot;=&quot; expression |
+    &quot;*=&quot; expression |
+    &quot;/=&quot; expression |
+    &quot;%=&quot; expression |
+    &quot;+=&quot; expression |
+    &quot;-=&quot; expression |
+    &quot;|=&quot; expression |
+    &quot;^=&quot; expression |
+    &quot;&amp;=&quot; expression)*
+</code></pre>
+          </div>
+          <div id="conditional">
+            <h1 class="pb-2">conditional</h1>
+            <p><img src="img/conditional.png" alt="Railroad Diagram" /></p>
+            <pre><code>conditional ::= or (&quot;?&quot; expression &quot;:&quot; expression)?
+</code></pre>
+          </div>
+          <div id="or">
+            <h1 class="pb-2">or</h1>
+            <p><img src="img/or.png" alt="Railroad Diagram" /></p>
+            <pre><code>or ::= and (&quot;||&quot; and)*
+</code></pre>
+          </div>
+          <div id="and">
+            <h1 class="pb-2">and</h1>
+            <p><img src="img/and.png" alt="Railroad Diagram" /></p>
+            <pre><code>and ::= bytewise-or (&quot;&amp;&amp;&quot; bytewise-or)*
+</code></pre>
+          </div>
+          <div id="bytewise-or">
+            <h1 class="pb-2">bytewise-or</h1>
+            <p><img src="img/bytewise-or.png" alt="Railroad Diagram" /></p>
+            <pre><code>bytewise-or ::= bytewise-xor (&quot;|&quot; bytewise-xor)*
+</code></pre>
+          </div>
+          <div id="bytewise-xor">
+            <h1 class="pb-2">bytewise-xor</h1>
+            <p><img src="img/bytewise-xor.png" alt="Railroad Diagram" /></p>
+            <pre><code>bytewise-xor ::= bytewise-and (&quot;^&quot; bytewise-and)*
+</code></pre>
+          </div>
+          <div id="bytewise-and">
+            <h1 class="pb-2">bytewise-and</h1>
+            <p><img src="img/bytewise-and.png" alt="Railroad Diagram" /></p>
+            <pre><code>bytewise-and ::= equal (&quot;&amp;&quot; equal)*
+</code></pre>
+          </div>
+          <div id="equal">
+            <h1 class="pb-2">equal</h1>
+            <p><img src="img/equal.png" alt="Railroad Diagram" /></p>
+            <pre><code>equal ::= relation (&quot;==&quot; relation  | &quot;!=&quot; relation)*
+</code></pre>
+          </div>
+          <div id="relation">
+            <h1 class="pb-2">relation</h1>
+            <p><img src="img/relation.png" alt="Railroad Diagram" /></p>
+            <pre><code>relation ::= shift (
+    &quot;&lt;&quot; shift |
+    &quot;&lt;=&quot; shift |
+    &quot;&gt;&quot; shift |
+    &quot;&gt;=&quot; shift |
+    &quot;in&quot; shift |
+    &quot;not in&quot; shift)*
+</code></pre>
+          </div>
+          <div id="shift">
+            <h1 class="pb-2">shift</h1>
+            <p><img src="img/shift.png" alt="Railroad Diagram" /></p>
+            <pre><code>shift ::= addition (&quot;&lt;&lt;&quot; addition | &quot;&gt;&gt;&quot; addition)*
+</code></pre>
+          </div>
+          <div id="addition">
+            <h1 class="pb-2">addition</h1>
+            <p><img src="img/addition.png" alt="Railroad Diagram" /></p>
+            <pre><code>addition ::= multiplication (&quot;+&quot; multiplication | &quot;-&quot; multiplication)*
+</code></pre>
+          </div>
+          <div id="multiplication">
+            <h1 class="pb-2">multiplication</h1>
+            <p><img src="img/multiplication.png" alt="Railroad Diagram" /></p>
+            <pre><code>multiplication ::= prefix (&quot;*&quot; prefix | &quot;/&quot; prefix | &quot;%&quot; prefix)*
+</code></pre>
+          </div>
+          <div id="postfix">
+            <h1 class="pb-2">postfix</h1>
+            <p><img src="img/postfix.png" alt="Railroad Diagram" /></p>
+            <pre><code>postfix ::= primary (&quot;[&quot; expression &quot;]&quot; | &quot;(&quot; expressions &quot;)&quot; | &quot;.&quot; name | &quot;++&quot; | &quot;--&quot;)*
+</code></pre>
+          </div>
+          <div id="primary">
+            <h1 class="pb-2">primary</h1>
+            <p><img src="img/primary.png" alt="Railroad Diagram" /></p>
+            <pre><code>primary ::= &quot;(&quot; expression &quot;)&quot;
+| &quot;[&quot; expressions &quot;]&quot;
+| &quot;{&quot; string &quot;:&quot; expression (&quot;,&quot; string &quot;:&quot; expression)* &quot;}&quot;
+| integer
+| real
+| string
+| function
+| name
+</code></pre>
+          </div>
+          <div id="integer">
+            <h1 class="pb-2">integer</h1>
+            <p><img src="img/integer.png" alt="Railroad Diagram" /></p>
+            <pre><code>integer ::= [-+]? [0-9][0-9]*
+</code></pre>
+          </div>
+          <div id="real">
+            <h1 class="pb-2">real</h1>
+            <p><img src="img/real.png" alt="Railroad Diagram" /></p>
+            <pre><code>real ::= [-]? [0-9][0-9]*.[0-9][0-9]* ([Ee] [-]? [0-9][0-9]*)?
+</code></pre>
+          </div>
+          <div id="string">
+            <h1 class="pb-2">string</h1>
+            <p><img src="img/string.png" alt="Railroad Diagram" /></p>
+            <pre><code>string ::= '&quot;' (Char - [&quot;\] | '\' [&quot;\bfnrt] | &quot;\u&quot;  [0-9A-Fa-f] [0-9A-Fa-f] [0-9A-Fa-f] [0-9A-Fa-f])* '&quot;'
+</code></pre>
+          </div>
+          <div id="function">
+            <h1 class="pb-2">function</h1>
+            <p><img src="img/function.png" alt="Railroad Diagram" /></p>
+            <pre><code>function ::= &quot;function&quot; &quot;(&quot; ((name (&quot;,&quot; name)*)?) &quot;)&quot; block
+</code></pre>
+          </div>
+          <div id="name">
+            <h1 class="pb-2">name</h1>
+            <p><img src="img/name.png" alt="Railroad Diagram" /></p>
+            <pre><code>name ::= [a-zA-Z_][a-zA-Z0-9_]*
+</code></pre>
+          </div>
+        </div>
+      </div>
+      <div class="row flex-shrink-0 py-1 manual-footer" id="copyright">
+        <p class="mx-auto py-0 my-0 small">
+          Copyright (c) 1993-2022 Johan A. Goossens. All rights reserved.
+        </p>
+      </div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/theme.js"></script>
+  </body>
+</html>

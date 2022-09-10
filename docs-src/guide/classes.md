@@ -9,7 +9,7 @@ interchangeably.
 
 **Definition Syntax**
 
-You introduce classes with the class keyword:
+You introduce classes with the **class** keyword:
 
 	class Resolution : Object {
 		var width = 0;
@@ -38,7 +38,7 @@ assign values to the instance member.
 			this.resolution = Resolution(1920, 1080);
 			this.interlaced = false;
 			this.frameRate = 0.0;
-			this.name;
+			this.name = null;
 		}
 	}
 
@@ -51,8 +51,7 @@ variables. The first, resolution, is initialized with a new Resolution
 instance, which infers a property type of Resolution. For the other
 three properties, new VideoMode instances will be initialized with an
 interlaced setting of false (meaning “noninterlaced video”), a playback
-frame rate of 0.0, and an optional String value called name. The name
-property is automatically given a default value of **null**.
+frame rate of 0.0, and an optional String value called name.
 
 **Class Instances**
 
@@ -74,7 +73,7 @@ initialize a class instance.
 
 You can access the members of an instance using dot syntax. In dot syntax,
 you write the property name immediately after the instance name, separated
-by a period (.):
+by a dot (.):
 
 	print("The width of someResolution is ", someResolution.width);
 	// Prints "The width of someResolution is 1920"
@@ -164,10 +163,10 @@ The Counter class defines three instance methods:
 
 You call instance methods with the same dot syntax as properties:
 
-var counter = Counter(); // the initial counter value is 0
-counter.increment();     // the counter's value is now 1
-counter.increment(5);    // the counter's value is now 6
-counter.reset();         // the counter's value is now 0
+	var counter = Counter(); // the initial counter value is 0
+	counter.increment();     // the counter's value is now 1
+	counter.increment(5);    // the counter's value is now 6
+	counter.reset();         // the counter's value is now 0
 
 **The this Property**
 

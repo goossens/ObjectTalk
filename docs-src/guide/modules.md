@@ -1,5 +1,5 @@
 A module is a single unit of code that’s built and shipped as a single unit
-and that can be imported by another module with ObjectTalk's import keyword.
+and that can be imported by another module with ObjectTalk's import function.
 
 A source file is a single ObjectTalk module (in effect, a single file within
 an app). Although it’s common to define individual types in separate source
@@ -8,7 +8,7 @@ functions, and so on.
 
 When the ObjectTalk interpreter is started, it will load the specified
 script (source code) as the first module. Additional modules can be
-loaded with the import script. Here is an example based on two files; one
+loaded with the import function. Here is an example based on two files; one
 containing a class definition and the other containing the main program.
 
 	// Module "counter.ot"

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>ObjectTalk Tutorial</title>
+    <title>ObjectTalk 3D Tutorial</title>
     <meta charset="utf-8" />
     <meta
       name="viewport"
@@ -37,60 +37,66 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav ml-auto">
-            <li class="nav-item text-right">
+            <li class="nav-item">
               <a class="nav-link page-scroll" href="installation.html"
                 >Installation</a
               >
             </li>
-            <li class="nav-item text-right">
+            <li class="nav-item">
               <a class="nav-link page-scroll" href="tour.html">Tour</a>
             </li>
-            <li class="nav-item text-right">
+            <li class="nav-item">
               <a class="nav-link page-scroll" href="guide.html">Guide</a>
             </li>
-            <li class="nav-item text-right">
-              <a class="nav-link page-scroll" href="reference.html"
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Reference"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
                 >Reference</a
               >
+              <div class="dropdown-menu" aria-labelledby="Reference">
+                <a class="nav-link page-scroll" href="language.html">Language</a
+                ><a class="nav-link page-scroll" href="classes.html">Classes</a>
+              </div>
             </li>
-            <li class="nav-item text-right">
-              <a class="nav-link page-scroll" href="tutorial.html">Tutorial</a>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Tutorials"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Tutorials</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Tutorials">
+                <a class="nav-link page-scroll" href="web.html">Web</a
+                ><a class="nav-link page-scroll" href="3d.html">3D</a>
+              </div>
             </li>
           </ul>
         </div>
       </nav>
       <div class="row flex-grow-1 overflow-hidden vh-100">
         <div class="col-2 mh-100 overflow-auto py-2 manual-toc">
-          <p class="pt-2"><strong>ObjectTalk Tutorial</strong></p>
+          <p><strong>3D Tutorial</strong></p>
           <ul>
             <li><a class="page-scroll" href="#overview">Overview</a></li>
             <li>
-              <a class="page-scroll" href="#3d">3D Tutorial</a>
-              <ul>
-                <li>
-                  <a class="page-scroll" href="#3d-fundamentals"
-                    >Fundamentals</a
-                  >
-                </li>
-                <li>
-                  <a class="page-scroll" href="#3d-geometries">Geometries</a>
-                </li>
-              </ul>
+              <a class="page-scroll" href="#fundamentals">Fundamentals</a>
             </li>
+            <li><a class="page-scroll" href="#geometries">Geometries</a></li>
           </ul>
         </div>
         <div class="col mh-100 overflow-auto py-2 manual-content">
           <div id="overview">
-            <h1 class="pb-2">Tutorial Overview</h1>
-            <p>
-              This section contains a set of tutorials for the ObjectTalk
-              language and its modules. The intent is to make it as easy as
-              possible to get started with ObjectTalk and learn the language and
-              its libraries through a set of examples.
-            </p>
-          </div>
-          <div id="3d">
-            <h1 class="pb-2">3D Tutorial</h1>
+            <h1 class="pb-2">Overview</h1>
             <p>
               Below is a set of tutorials that explore the 3D part of the
               Graphical User Interface (GUI) module. These tutorials assume you
@@ -99,8 +105,8 @@
               <a href="guide.html">guide</a> parts of the documentation.
             </p>
           </div>
-          <div id="3d-fundamentals">
-            <h1 class="pb-2">3D Fundamentals</h1>
+          <div id="fundamentals">
+            <h1 class="pb-2">Fundamentals</h1>
             <p>
               When learning most programming languages the first thing people do
               is make the computer print &quot;Hello World!&quot;. For 3D, one
@@ -411,8 +417,8 @@ os.runGUI();
               rotating cubes can be found in the examples folder.
             </p>
           </div>
-          <div id="3d-geometries">
-            <h1 class="pb-2">3D Geometries</h1>
+          <div id="geometries">
+            <h1 class="pb-2">Geometries</h1>
             <p>
               ObjectTalk has a large number of primitives or geometries.
               Geometries are generally 3D shapes that are generated at runtime

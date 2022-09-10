@@ -24,7 +24,7 @@ The objectives for the development of ObjectTalk are:
 * Learn computer language development.
 * Learn how to write a lexical scanner and language compiler.
 * Learn how to implement a simple stack-based virtual machine.
-* Learn how the develop a language that is:
+* Learn how to develop a language that is:
 	* Fully object-oriented.
 	* Dynamically typed.
 	* Lexically scoped.

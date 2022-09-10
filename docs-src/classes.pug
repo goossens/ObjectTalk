@@ -1,0 +1,63 @@
+include /manual.pug
+
++page("ObjectTalk Reference")
+	+manual()
+		include common/header.pug
+
+		+manual-body()
+			+manual-toc()
+				include:markdown-it classes/toc.md
+
+			+manual-content()
+				+manual-chapter("classes", "ObjectTalk Classes")
+					include:markdown-it classes/classes.md
+
+				+manual-chapter("object", "Object Class")
+					include:markdown-it classes/object.md
+
+				+manual-chapter("primitive", "Primitive Class")
+					include:markdown-it classes/primitive.md
+
+				+manual-chapter("boolean", "Boolean Class")
+					include:markdown-it classes/boolean.md
+
+				+manual-chapter("integer", "Integer Class")
+					include:markdown-it classes/integer.md
+
+				+manual-chapter("real", "Real Class")
+					include:markdown-it classes/real.md
+
+				+manual-chapter("string", "String Class")
+					include:markdown-it classes/String.md
+
+				+manual-chapter("function", "Function Class")
+					include:markdown-it classes/function.md
+
+				+manual-chapter("collection", "Collection Class")
+					include:markdown-it classes/collection.md
+
+				+manual-chapter("array", "Array Class")
+					include:markdown-it classes/array.md
+
+				+manual-chapter("dict", "Dict Class")
+					include:markdown-it classes/dict.md
+
+				+manual-chapter("set", "Set Class")
+					include:markdown-it classes/set.md
+
+				+manual-chapter("system", "System Class")
+					include:markdown-it classes/system.md
+
+				+manual-chapter("path", "Path Class")
+					include:markdown-it classes/path.md
+
+				+manual-chapter("os", "OS Class")
+					include:markdown-it classes/os.md
+
+				+manual-chapter("fs", "FS Class")
+					include:markdown-it classes/fs.md
+
+				+manual-chapter("worker", "Worker Class")
+					include:markdown-it classes/worker.md
+
+		include common/footer.pug

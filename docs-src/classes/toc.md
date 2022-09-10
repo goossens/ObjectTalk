@@ -1,8 +1,4 @@
-* [Language](#language)
-* [Classes](#classes)
-
-
-## Core Classes:
+**Core Classes**
 
 * [Object](#object)
 	* [Primitive](#primitive)
@@ -44,7 +40,7 @@
 			* [DictIterator](#dictiterator)
 			* [SetIterator](#setiterator)
 
-## HTTP Classes
+**HTTP Classes**
 
 * [Object](#object)
 	* [Http](#http)
@@ -58,7 +54,7 @@
 		* [HttpNotFound](#httpnotfound)
 		* [HttpTimer](#httptimer)
 
-## GUI Classes
+**GUI Classes**
 
 * [Object](#object)
 	* [Gui](#gui)

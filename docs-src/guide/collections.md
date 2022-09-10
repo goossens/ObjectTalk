@@ -27,7 +27,7 @@ the index  (**[]**) and addition  (**+**) operators.
 	var array = [1, 2, 3.14, "test"];
 
 	array.append("name");
-	array.insert(3);
+	array.insert(3, "insert");
 	array += 9;
 
 	var size = array.size();
@@ -39,7 +39,7 @@ the index  (**[]**) and addition  (**+**) operators.
 	array.eraseMultiple(1, 2);
 	array.clear();
 
-You can combine arrays:
+You can merge arrays:
 
 	var array1 = [1, 2, 3.14, "test"];
 	var array2 = [8, 9];

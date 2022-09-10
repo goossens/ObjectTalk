@@ -27,7 +27,7 @@ that class. This is what they looks like:
 	}
 
 Traditional and lambda functions will be described in this section.
-Member Functions will be covered in the [Classes](#classes) section.
+Member Functions are covered in the [Classes](#classes) section.
 
 When you define a function, you can optionally define one or more named,
 values that the function takes as input, known as parameters.
@@ -85,11 +85,9 @@ returning it:
 Strictly speaking, this version of the greet() function does still return
 a value, even though no return value is defined. Functions without a defined return will automatically return **null**.
 
-Return values can be ignored.
+**Functions as Return Value**
 
-**Function Types as Return Types**
 You can use a function as the return value of another function.
-
 The next example defines two simple functions called stepForward() and
 stepBackward(). The stepForward() function returns a value one more than
 its input value, and the stepBackward() function returns a value one less

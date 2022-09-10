@@ -2,19 +2,14 @@ include /manual.pug
 
 +page("ObjectTalk Documentation")
 	+manual()
-		+manual-header("img/icon.png", "Documentation")
-			+manual-link("Installation", "installation.html")
-			+manual-link("Tour", "tour.html")
-			+manual-link("Guide", "guide.html")
-			+manual-link("Reference", "reference.html")
-			+manual-link("Tutorial", "tutorial.html")
+		include common/header.pug
 
 		+manual-body()
-			+manual-toc("Overview")
-				include:markdown-it toc.md
+			+manual-toc()
+				include:markdown-it main/toc.md
 
 			+manual-content()
 				+manual-chapter("intro", "")
-					include:markdown-it intro.md
+					include:markdown-it main/intro.md
 
-		+manual-footer("1993-2022", "Johan A. Goossens")
+		include common/footer.pug

@@ -329,6 +329,10 @@ class Pong : game.Game {
 		]);
 	}
 
+	function onSelect(this) {
+		this.scoreboard.reset();
+	}
+
 	function onShowSplash(this) {
 		this.net.hide();
 		this.ball.hide();
@@ -336,9 +340,9 @@ class Pong : game.Game {
 	}
 
 	function onHideSplash(this) {
-		this.net.show();
-		this.ball.show();
 		this.startupSplash.hide();
+		this.ball.show();
+		this.net.show();
 	}
 
 	function onStart(this) {

@@ -90,7 +90,6 @@
             <li><a class="page-scroll" href="#module">module</a></li>
             <li><a class="page-scroll" href="#statement">statement</a></li>
             <li><a class="page-scroll" href="#block">block</a></li>
-            <li><a class="page-scroll" href="#expressions">expressions</a></li>
             <li><a class="page-scroll" href="#expression">expression</a></li>
             <li><a class="page-scroll" href="#conditional">conditional</a></li>
             <li><a class="page-scroll" href="#or">or</a></li>
@@ -164,12 +163,6 @@
             <h1 class="pb-2">block</h1>
             <p><img src="img/block.png" alt="Railroad Diagram" /></p>
             <pre><code>block ::= &quot;{&quot; statement* &quot;}&quot;
-</code></pre>
-          </div>
-          <div id="expressions">
-            <h1 class="pb-2">expressions</h1>
-            <p><img src="img/expressions.png" alt="Railroad Diagram" /></p>
-            <pre><code>expressions ::= expression (&quot;,&quot; expression)*
 </code></pre>
           </div>
           <div id="expression">
@@ -262,14 +255,14 @@
           <div id="postfix">
             <h1 class="pb-2">postfix</h1>
             <p><img src="img/postfix.png" alt="Railroad Diagram" /></p>
-            <pre><code>postfix ::= primary (&quot;[&quot; expression &quot;]&quot; | &quot;(&quot; expressions &quot;)&quot; | &quot;.&quot; name | &quot;++&quot; | &quot;--&quot;)*
+            <pre><code>postfix ::= primary (&quot;[&quot; expression &quot;]&quot; | &quot;(&quot; expression (&quot;,&quot; expression)* &quot;)&quot; | &quot;.&quot; name | &quot;++&quot; | &quot;--&quot;)*
 </code></pre>
           </div>
           <div id="primary">
             <h1 class="pb-2">primary</h1>
             <p><img src="img/primary.png" alt="Railroad Diagram" /></p>
             <pre><code>primary ::= &quot;(&quot; expression &quot;)&quot;
-| &quot;[&quot; expressions &quot;]&quot;
+| &quot;[&quot; expression (&quot;,&quot; expression)* &quot;]&quot;
 | &quot;{&quot; string &quot;:&quot; expression (&quot;,&quot; string &quot;:&quot; expression)* &quot;}&quot;
 | integer
 | real

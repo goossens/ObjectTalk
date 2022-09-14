@@ -15,8 +15,6 @@ statement ::= expression ";"
 
 block ::= "{" statement* "}"
 
-expressions ::= expression ("," expression)*
-
 expression ::= conditional (
 	"=" expression |
 	"*=" expression |
@@ -47,10 +45,10 @@ addition ::= multiplication ("+" multiplication | "-" multiplication)*
 multiplication ::= prefix ("*" prefix | "/" prefix | "%" prefix)*
 
 prefix ::= ("-" | "+" | "!" | "^" | "++" | "--")? postfix
-postfix ::= primary ("[" expression "]" | "(" expressions ")" | "." name | "++" | "--")*
+postfix ::= primary ("[" expression "]" | "(" expression ("," expression)* ")" | "." name | "++" | "--")*
 
 primary ::= "(" expression ")"
-| "[" expressions "]"
+| "[" expression ("," expression)* "]"
 | "{" string ":" expression ("," string ":" expression)* "}"
 | integer
 | real

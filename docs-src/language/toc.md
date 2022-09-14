@@ -3,7 +3,6 @@
 * [module](#module)
 * [statement](#statement)
 * [block](#block)
-* [expressions](#expressions)
 * [expression](#expression)
 * [conditional](#conditional)
 * [or](#or)

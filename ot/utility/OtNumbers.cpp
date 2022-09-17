@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
+#include <limits>
 
 #include "OtNumbers.h"
 

@@ -3,8 +3,8 @@ or Server 2022). There are 3 simple requirements
 to get your machine ready for ObjectTalk development:
 
 * Install Visual Studio 17 2022 (make sure you pick the "Desktop development with C++" option): Visual Studio 16 2019 also works
-* Install git from https://git-scm.com/download/win using defaults
-* Install cmake from https://cmake.org/download/ (ensure you select  the "add cmake to the system PATH" option)
+* Install git from [https://git-scm.com/download/win](https://git-scm.com/download/win) using defaults
+* Install cmake from [https://cmake.org/download/](https://cmake.org/download/) (ensure you select  the "add cmake to the system PATH" option)
 
 To build ObjectTalk, do the following from the command line:
 

@@ -35,9 +35,6 @@ target_include_directories(bgfx
 	PRIVATE
 		${bgfx_SOURCE_DIR}/3rdparty
 		${bgfx_SOURCE_DIR}/3rdparty/khronos
-		${bgfx_SOURCE_DIR}/3rdparty/directx-headers/include/directx
-		${bgfx_SOURCE_DIR}/3rdparty/directx-headers/include
-		${bgfx_SOURCE_DIR}/3rdparty/directx-headers/include/wsl/stubs
 	PUBLIC
 		${bgfx_SOURCE_DIR}/include
 		${bgfx_SOURCE_DIR}/examples/common/debugdraw)
@@ -48,10 +45,21 @@ if(UNIX AND NOT APPLE)
 	find_package(X11 REQUIRED)
 	find_package(OpenGL REQUIRED)
 	target_link_libraries(bgfx PUBLIC ${X11_LIBRARIES} ${OPENGL_LIBRARIES})
+
+	target_include_directories(bgfx
+		PRIVATE
+		${bgfx_SOURCE_DIR}/3rdparty/directx-headers/include/directx
+		${bgfx_SOURCE_DIR}/3rdparty/directx-headers/include
+		${bgfx_SOURCE_DIR}/3rdparty/directx-headers/include/wsl/stubs)
+
 endif()
 
 if(WIN32)
 	target_compile_definitions(bgfx PRIVATE "_CRT_SECURE_NO_WARNINGS")
+
+	target_include_directories(bgfx
+		PRIVATE
+		${bgfx_SOURCE_DIR}/3rdparty/directx-headers/include/directx)
 endif()
 
 set_target_properties(bgfx PROPERTIES FOLDER deps)

@@ -24,6 +24,9 @@ if(WIN32)
 	target_compile_definitions(bx PUBLIC "__STDC_FORMAT_MACROS")
 	target_compile_definitions(bx PUBLIC "__STDC_CONSTANT_MACROS")
 
+elseif(UNIX AND NOT APPLE)
+	target_include_directories(bx PUBLIC ${bx_SOURCE_DIR}/include/compat/linux)
+
 elseif(APPLE)
 	target_include_directories(bx PUBLIC ${bx_SOURCE_DIR}/include/compat/osx)
 endif()

@@ -35,7 +35,9 @@ target_include_directories(bgfx
 	PRIVATE
 		${bgfx_SOURCE_DIR}/3rdparty
 		${bgfx_SOURCE_DIR}/3rdparty/khronos
-		${bgfx_SOURCE_DIR}/3rdparty/dxsdk/include
+		${bgfx_SOURCE_DIR}/3rdparty/directx-headers/include/directx
+		${bgfx_SOURCE_DIR}/3rdparty/directx-headers/include
+		${bgfx_SOURCE_DIR}/3rdparty/directx-headers/include/wsl/stubs
 	PUBLIC
 		${bgfx_SOURCE_DIR}/include
 		${bgfx_SOURCE_DIR}/examples/common/debugdraw)

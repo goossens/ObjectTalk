@@ -9,5 +9,5 @@
 export DOCKER_BUILDKIT=0
 
 docker build -t ot-alpine .
-docker run --interactive --tty --name ot-alpine --publish 80:80 --volume $(cd ../..; pwd):/ot ot-alpine sh
+docker run --interactive --tty --name ot-alpine --volume $(cd ../..; pwd):/ot ot-alpine sh
 docker container rm ot-alpine

@@ -9,5 +9,5 @@
 export DOCKER_BUILDKIT=0
 
 docker build -t ot-ubuntu .
-docker run --interactive --tty --name ot-ubuntu --publish 80:80 --volume $(cd ../..; pwd):/ot ot-ubuntu bash
+docker run --interactive --tty --name ot-ubuntu --volume $(cd ../..; pwd):/ot ot-ubuntu bash
 docker container rm ot-ubuntu

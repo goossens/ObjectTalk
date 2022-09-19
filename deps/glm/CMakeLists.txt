@@ -11,14 +11,15 @@ if(NOT glm_POPULATED)
 	FetchContent_Populate(glm)
 endif()
 
-file(GLOB GLM_SOURCES
-	${glm_SOURCE_DIR}/glm/*.hpp
-	${glm_SOURCE_DIR}/glm/*/*.h
-	${glm_SOURCE_DIR}/glm/*/*.hpp
-	${glm_SOURCE_DIR}/glm/*/*.inl)
-
-add_library(glm INTERFACE ${GLM_SOURCES})
+add_library(glm INTERFACE)
 target_include_directories(glm INTERFACE ${glm_SOURCE_DIR})
 
-source_group(TREE "${glm_SOURCE_DIR}/glm" FILES ${GLM_SOURCES})
-set_target_properties(glm PROPERTIES FOLDER deps)
+#file(GLOB GLM_SOURCES
+#	${glm_SOURCE_DIR}/glm/*.hpp
+#	${glm_SOURCE_DIR}/glm/*/*.h
+#	${glm_SOURCE_DIR}/glm/*/*.hpp
+#	${glm_SOURCE_DIR}/glm/*/*.inl)
+
+#add_custom_target(glm_src SOURCES ${glm_SOURCE_DIR})
+#source_group(TREE "${glm_SOURCE_DIR}/glm" FILES ${GLM_SOURCES})
+#set_target_properties(glm_src PROPERTIES FOLDER deps)

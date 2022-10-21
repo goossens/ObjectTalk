@@ -4,7 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Declare(tinyobjloader GIT_REPOSITORY "https://github.com/tinyobjloader/tinyobjloader")
+FetchContent_Declare(tinyobjloader GIT_REPOSITORY "https://github.com/tinyobjloader/tinyobjloader" GIT_TAG "release")
 FetchContent_GetProperties(tinyobjloader)
 
 if(NOT tinyobjloader_POPULATED)

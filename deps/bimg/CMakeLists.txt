@@ -7,7 +7,6 @@
 FetchContent_Declare(bimg GIT_REPOSITORY "https://github.com/bkaradzic/bimg")
 FetchContent_MakeAvailable(bimg)
 
-include(3rdparty/astc-codec.cmake)
 include(3rdparty/astc-encoder.cmake)
 include(3rdparty/edtaa3.cmake)
 include(3rdparty/etc1.cmake)
@@ -25,6 +24,6 @@ file(GLOB BIMG_SOURCES
 add_library(bimg STATIC ${BIMG_SOURCES})
 add_dependencies(bimg bx)
 target_include_directories(bimg PUBLIC ${bimg_SOURCE_DIR}/include ${bimg_SOURCE_DIR}/3rdparty)
-target_link_libraries(bimg PUBLIC bx PRIVATE astc-codec astc-encoder edtaa3 etc1 etc2 iqa squish nvtt pvrtc tinyexr)
+target_link_libraries(bimg PUBLIC bx PRIVATE astc-encoder edtaa3 etc1 etc2 iqa squish nvtt pvrtc tinyexr)
 
 set_target_properties(bimg PROPERTIES FOLDER "deps")

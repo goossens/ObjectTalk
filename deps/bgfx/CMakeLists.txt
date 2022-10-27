@@ -41,6 +41,9 @@ target_include_directories(bgfx
 
 target_link_libraries(bgfx PUBLIC bx bimg)
 
+# suppress compiler warnings
+target_compile_definitions(bgfx PRIVATE "BGFX_CONFIG_RENDERER_OPENGLES_MIN_VERSION=1")
+
 if(UNIX AND NOT APPLE)
 	find_package(X11 REQUIRED)
 	find_package(OpenGL REQUIRED)

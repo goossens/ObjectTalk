@@ -445,8 +445,8 @@ bool OtCameraClass::isVisiblePoint(const glm::vec3& point) {
 //	OtCameraClass::isVisibleAABB
 //
 
-bool OtCameraClass::isVisibleAABB(const glm::vec3& min, const glm::vec3& max) {
-	return frustum->isVisibleAABB(min, max);
+bool OtCameraClass::isVisibleAABB(OtAABB aabb) {
+	return frustum->isVisibleAABB(aabb);
 }
 
 

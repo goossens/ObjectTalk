@@ -16,6 +16,7 @@
 
 #include "OtFunction.h"
 
+#include "OtAABB.h"
 #include "OtFramework.h"
 #include "OtTerrain.h"
 
@@ -330,12 +331,13 @@ void OtTerrainClass::update(OtRenderingContext context) {
 			auto cx = x * tileSize;
 			auto cy = y * tileSize;
 
-			glm::vec3 minValues = glm::vec3(cx - tileSize / 2, minHeight, cy - tileSize / 2);
-			glm::vec3 maxValues = glm::vec3(cx + tileSize / 2, maxHeight, cy + tileSize / 2);
-
 			auto camera = context->getCamera();
+	
+			auto aabb = OtAABBClass::create();
+			aabb->addPoint(glm::vec3(cx - tileSize / 2, minHeight, cy - tileSize / 2));
+			aabb->addPoint(glm::vec3(cx + tileSize / 2, maxHeight, cy + tileSize / 2));
 
-			if (camera->isVisibleAABB(minValues, maxValues)) {
+			if (camera->isVisibleAABB(aabb)) {
 				// determine level of detail for tile
 				float distanceToTile = glm::distance(glm::vec3(cx, 0.0, cy), camera->getPosition());
 				int distanceInTiles = distanceToTile / tileSize;

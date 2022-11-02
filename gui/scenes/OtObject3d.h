@@ -36,8 +36,9 @@ public:
 	// set transformation order
 	OtObject transformationOrder(const std::string& order);
 
-	// render in BGFX
-	void render(OtRenderingContext context);
+	// get the transformation matrices
+	glm::mat4 getLocalTransform();
+	glm::mat4 getGlobalTransform();
 
 	// get type definition
 	static OtType getMeta();

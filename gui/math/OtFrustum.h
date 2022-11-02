@@ -73,11 +73,13 @@ public:
 	}
 
 	// see if an AABB box is visible
-	bool isVisibleAABB(const glm::vec3& minp, const glm::vec3& maxp) const {
-		glm::vec3 v;
+	bool isVisibleAABB(OtAABB aabb) const {
+		glm::vec3 minp = aabb->getMin();
+		glm::vec3 maxp = aabb->getMax();
 
 		for (auto i = 0; i < planeCount; i++) {
 			glm::vec3 normal = planes[i]->getNormal();
+			glm::vec3 v;
 
 			v.x = normal.x < 0 ? minp.x : maxp.x;
 			v.y = normal.y < 0 ? minp.y : maxp.y;
@@ -102,6 +104,7 @@ public:
 		return true;
 	}
 
+	// render the frustum for debugging purposes
 	void render(DebugDrawEncoder* debugDraw) {
 		debugDraw->setColor(0xff00ff00);
 
@@ -135,7 +138,7 @@ public:
 		static OtType type;
 
 		if (!type) {
-			type = OtTypeClass::create<OtPlaneClass>("Frustum", OtMathClass::getMeta());
+			type = OtTypeClass::create<OtFrustumClass>("Frustum", OtMathClass::getMeta());
 		}
 
 		return type;

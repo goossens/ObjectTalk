@@ -16,6 +16,7 @@
 
 #include "OtNumbers.h"
 
+#include "OtAABB.h"
 #include "OtController.h"
 #include "OtFrustum.h"
 #include "OtGui.h"
@@ -73,7 +74,7 @@ public:
 	// update camera for next frame
 	void update(float aspectRatio=1.0);
 
-	// render frustum (if required)
+	// render camera frustum (if required)
 	void render(DebugDrawEncoder* debugDraw);
 
 	// submit data to BGFX
@@ -98,7 +99,7 @@ public:
 
 	// see if object is visible in frustum
 	bool isVisiblePoint(const glm::vec3& point);
-	bool isVisibleAABB(const glm::vec3& min, const glm::vec3& max);
+	bool isVisibleAABB(OtAABB aabb);
 	bool isVisibleSphere(const glm::vec3& center, float radius);
 
 	// has camera changed?

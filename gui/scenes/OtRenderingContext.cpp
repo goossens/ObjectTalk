@@ -42,7 +42,6 @@ OtRenderingContextClass::OtRenderingContextClass(const OtRenderingContextClass &
 	viewAspectRatio = c.viewAspectRatio;
 	scene = c.scene;
 	camera = c.camera;
-	transform = c.transform;
 	std::copy(std::begin(c.lightUniforms), std::end(c.lightUniforms), std::begin(lightUniforms));
 	shadowMatrix  = c.shadowMatrix;
 
@@ -70,8 +69,6 @@ OtRenderingContextClass::~OtRenderingContextClass() {
 //
 
 void OtRenderingContextClass::clear() {
-	transform = glm::mat4(1.0);
-
 	for (auto c = 0; c < totalLightSlots; c++) {
 		lightUniforms[c] = glm::vec4(0.0);
 	}

@@ -11,6 +11,8 @@
 
 #include <cstring>
 
+#include "glm/ext.hpp"
+
 #include "bgfx/embedded_shader.h"
 
 #include "OtFunction.h"
@@ -133,15 +135,16 @@ OtObject OtMeshClass::addInstance(OtObject object) {
 //
 
 void OtMeshClass::render(OtRenderingContext context, long flag) {
-	// let parent class do its thing
-	OtObject3dClass::render(context);
-
 	// determine visibility
-	glm::vec3 minBB = glm::vec3(OtGlmHomogonize(context->getTransform() * glm::vec4(geometry->getMinBB(), 1.0)));
-	glm::vec3 maxBB = glm::vec3(OtGlmHomogonize(context->getTransform() * glm::vec4(geometry->getMaxBB(), 1.0)));
+	OtAABB aabb = geometry->getAABB();
+	glm::mat4 transform = getGlobalTransform();
+	aabb = aabb->transform(transform);
 
-	// don't bother if we're out of sight and out of mind
-	if (context->getCamera()->isVisibleAABB(minBB, maxBB)) {
+	// don't bother if we're out of sight
+	if (context->getCamera()->isVisibleAABB(aabb)) {
+		// set transformation
+		bgfx::setTransform(glm::value_ptr(transform));
+
 		// setup context
 		context->submit(receivesShadow());
 

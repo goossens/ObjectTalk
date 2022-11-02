@@ -84,10 +84,6 @@ public:
 	void setScene(OtScene s) { scene = s; }
 	OtScene getScene() { return scene; }
 
-	// access transform
-	void setTransform(const glm::mat4& t) { transform = t; }
-	glm::mat4 getTransform() { return transform; }
-
 	// access ambient color
 	void setAmbientLight(const glm::vec3& ambient);
 	glm::vec3 getAmbientLight();
@@ -127,10 +123,6 @@ private:
 
 	// camera to render scene with
 	OtCamera camera;
-
-	// to support hierarchical scene objects
-	// transforming local to world space
-	glm::mat4 transform = glm::mat4(1.0);
 
 	// light slot indices
 	enum {

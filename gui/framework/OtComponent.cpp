@@ -28,14 +28,14 @@ OtObject OtComponentClass::add(OtObject object) {
 			getType()->getName().c_str());
 	}
 
-	// cast the object to the child type
+	// cast the object to a component
 	OtComponent child = object->cast<OtComponentClass>();
 
 	// ensure new child is a valid type
 	validateChild(child);
 
 	// remove from previous parent if required
-	if (child->parent.lock()) {
+	if (child->hasParent()) {
 		child->parent.lock()->remove(object);
 	}
 

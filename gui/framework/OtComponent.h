@@ -25,17 +25,18 @@ typedef std::weak_ptr<OtComponentClass> OtComponentWeak;
 
 class OtComponentClass : public OtGuiClass {
 public:
-	// add / remove components
+	// add / remove child components
 	OtObject add(OtObject object);
 	OtObject remove(OtObject object);
 
 	// get our parent
 	OtComponent getParent() { return parent.lock(); }
+	bool hasParent() { return !parent.expired(); }
 
 	// ensure specified component is allowed as a child
 	virtual void validateChild(OtComponent child);
 
-	// clear component tree
+	// remove all children
 	void clear();
 
 	// return number of children

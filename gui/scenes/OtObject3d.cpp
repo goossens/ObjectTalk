@@ -123,40 +123,60 @@ OtObject OtObject3dClass::transformationOrder(const std::string& orderString) {
 
 
 //
-//	OtObject3dClass::render
+//	OtObject3dClass::getLocalTransform
 //
 
-void OtObject3dClass::render(OtRenderingContext context) {
-	// calculate object transformation
+glm::mat4 OtObject3dClass::getLocalTransform() {
 	glm::mat4 transform;
 
 	switch (order) {
 		case orderSRT:
-			transform = context->getTransform() * translating * rotating * scaling;
+			transform = translating * rotating * scaling;
 			break;
 
 		case orderSTR:
-			transform = context->getTransform() * rotating * translating  * scaling;
+			transform = rotating * translating  * scaling;
 			break;
 
 		case orderRTS:
-			transform = context->getTransform() * scaling * translating * rotating;
+			transform = scaling * translating * rotating;
 			break;
 
 		case orderRST:
-			transform = context->getTransform() * translating * scaling * rotating;
+			transform = translating * scaling * rotating;
 			break;
 
 		case orderTSR:
-			transform = context->getTransform() * rotating * scaling * translating;
+			transform = rotating * scaling * translating;
 			break;
 
 		case orderTRS:
-			transform = context->getTransform() * scaling * rotating * translating;
+			transform = scaling * rotating * translating;
 			break;
 	}
 
-	bgfx::setTransform(glm::value_ptr(transform));
+	return transform;
+}
+
+
+//
+//	OtObject3dClass::getGlobalTransform
+//
+
+glm::mat4 OtObject3dClass::getGlobalTransform() {
+	if (hasParent()) {
+		OtObject parent = getParent();
+		
+		if (parent->isKindOf("Object3D")) {
+			return parent->cast<OtObject3dClass>()->getGlobalTransform() * getLocalTransform();
+
+		} else {
+			return getLocalTransform();
+		}
+
+	} else {
+		return getLocalTransform();
+	}
 }
 
 

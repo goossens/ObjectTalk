@@ -88,7 +88,7 @@ OtHttpSessionClass::OtHttpSessionClass(uv_stream_t* stream, OtHttpRouter r) : ro
 	status = uv_read_start(
 		(uv_stream_t*) &uv_client,
 		[](uv_handle_t* handle, size_t size, uv_buf_t* buffer) {
-			*buffer = uv_buf_init((char*) malloc(size), size);
+			*buffer = uv_buf_init((char*) malloc(size), (unsigned int) size);
 		},
 		[](uv_stream_t* socket, ssize_t nread, const uv_buf_t* buffer) {
 			((OtHttpSessionClass*)(socket->data))->onRead(buffer, nread);
@@ -197,7 +197,7 @@ void OtHttpSessionClass::onRead(const uv_buf_t* buffer, ssize_t nread) {
 		free(buffer->base);
 
 	} else if (nread < 0) {
-		OT_DEBUG(OtFormat("libuv error in read: %s", uv_strerror(nread)));
+		OT_DEBUG(OtFormat("libuv error in read: %s", uv_strerror((int) nread)));
 		close();
 	}
 }

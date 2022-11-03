@@ -105,7 +105,7 @@ void OtModelGeometryClass::fillGeometry() {
 					hasUV ? attrib.texcoords[2 * index.texcoord_index + 0] : 0.0,
 					hasUV ? attrib.texcoords[2 * index.texcoord_index + 1] : 0.0)));
 
-			auto size = vertices.size();
+			auto size = (uint32_t) vertices.size();
 
 			if (size && ((size % 3) == 0)) {
 				addTriangle(size -3, size -2, size - 1);

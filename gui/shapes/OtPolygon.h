@@ -27,7 +27,7 @@ inline float OtPolygonArea(const std::vector<glm::vec2>& points) {
 	auto n = points.size();
 	float area = 0.0;
 
-	for (int p = n - 1, q = 0; q < n; p = q++) {
+	for (size_t p = n - 1, q = 0; q < n; p = q++) {
 		area += points[p].x * points[q].y - points[q].x * points[p].y;
 	}
 

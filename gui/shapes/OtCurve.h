@@ -103,9 +103,9 @@ protected:
 		}
 
 		float target = lengths.back() * u;
-		int low = 0;
-		int high = lengths.size() - 1;
-		int i;
+		size_t low = 0;
+		size_t high = lengths.size() - 1;
+		size_t i;
 
 		while (low <= high) {
 			i = (low + high) / 2;

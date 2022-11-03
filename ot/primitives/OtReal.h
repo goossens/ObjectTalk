@@ -97,7 +97,7 @@ public:
 
 	double random() { return OtRandom(value); };
 
-	std::string toFixed(size_t precision);
+	std::string toFixed(int precision);
 
 	// get type definition
 	static OtType getMeta();

@@ -350,9 +350,9 @@ bool OtEditorClass::isDirty() {
 
 void OtEditorClass::highlightError(size_t line, const std::string error) {
 	TextEditor::ErrorMarkers markers;
-	markers[line] = error;
+	markers[(int) line] = error;
 	editor.SetErrorMarkers(markers);
-	scrollToLine = line;
+	scrollToLine = (int) line;
 	focus = true;
 }
 

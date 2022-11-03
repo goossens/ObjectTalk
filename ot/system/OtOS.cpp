@@ -249,7 +249,7 @@ double OtOSClass::clock() {
 //
 
 void OtOSClass::sleep(long milliseconds) {
-	uv_sleep(milliseconds);
+	uv_sleep((unsigned int) milliseconds);
 }
 
 

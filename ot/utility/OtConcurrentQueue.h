@@ -39,7 +39,7 @@ public:
 	}
 
 	// return number of queue entries
-	int size() {
+	size_t size() {
 		std::unique_lock<std::mutex> mlock(mutex);
 		return queue.size();
 	}

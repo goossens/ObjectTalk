@@ -20,7 +20,7 @@
 //	OtRealClass::toFixed
 //
 
-std::string OtRealClass::toFixed(size_t precision) {
+std::string OtRealClass::toFixed(int precision) {
 	std::ostringstream stream;
 	stream << std::fixed << std::setprecision(precision) << value;
 	return stream.str();

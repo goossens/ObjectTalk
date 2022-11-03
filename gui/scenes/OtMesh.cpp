@@ -165,7 +165,7 @@ void OtMeshClass::render(OtRenderingContext context, long flag) {
 		// handle instancing (if required)
 		if (instances.size()) {
 			bgfx::InstanceDataBuffer idb;
-			bgfx::allocInstanceDataBuffer(&idb, instances.size(), sizeof(glm::mat4));
+			bgfx::allocInstanceDataBuffer(&idb, (uint32_t) instances.size(), sizeof(glm::mat4));
 			std::memcpy(idb.data, instances.data(), idb.size);
 			bgfx::setInstanceDataBuffer(&idb);
 		}

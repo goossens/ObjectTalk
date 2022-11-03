@@ -66,7 +66,7 @@ void OtHttpServerClass::onConnect() {
 //	OtHttpServerClass::listen
 //
 
-OtObject OtHttpServerClass::listen(const std::string& ip, long port) {
+OtObject OtHttpServerClass::listen(const std::string& ip, int port) {
 	uv_tcp_init(uv_default_loop(), &uv_server);
 	uv_server.data = (void*) this;
 

@@ -18,6 +18,7 @@
 
 #include "OtHttp.h"
 #include "OtHttpHeaders.h"
+#include "OtLibuv.h"
 
 
 //
@@ -115,7 +116,7 @@ private:
 	std::string multipartValue;
 
 	std::string multipartFile;
-	int multipartFD;
+	uv_file multipartFD;
 
 	multipartparser_callbacks multipartCallbacks;
 	multipartparser multipartParser;

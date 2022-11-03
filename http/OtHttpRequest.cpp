@@ -15,7 +15,6 @@
 #include "OtException.h"
 #include "OtFunction.h"
 #include "OtHttpRequest.h"
-#include "OtLibuv.h"
 
 
 //
@@ -285,7 +284,7 @@ void OtHttpRequestClass::onMultipartHeadersComplete() {
 					uv_fs_t req;
 					uv_fs_mkstemp(uv_default_loop(), &req, (const char*) tmpl.c_str(), 0);
 					multipartFile = req.path;
-					multipartFD = req.result;
+					multipartFD = (uv_file) req.result;
 					uv_fs_req_cleanup(&req);
 				}
 			}
@@ -305,7 +304,7 @@ void OtHttpRequestClass::onMultipartData(const char *data, size_t length) {
 	// handle file uploads
 	if (multipartFileName.size()) {
 		uv_fs_t req;
-		uv_buf_t buffer = uv_buf_init((char*) data, length);
+		uv_buf_t buffer = uv_buf_init((char*) data, (unsigned int) length);
 		uv_fs_write(0, &req, multipartFD, &buffer, 1, -1, 0);
 		UV_CHECK_ERROR("uv_fs_write", req.result);
 		uv_fs_req_cleanup(&req);

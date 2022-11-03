@@ -149,7 +149,7 @@ void OtBoxGeometryClass::buildPlane(int udir, int vdir, float w, float h, float 
 	auto gridX1 = gridX + 1;
 	auto gridY1 = gridY + 1;
 
-	auto offset = vertices.size();
+	auto offset = (uint32_t) vertices.size();
 
 	for (auto iy = 0; iy < gridY1; iy++) {
 		auto y = iy * segmentHeight - heightHalf;

@@ -25,7 +25,7 @@ double OtRandom(double num1, double num2) {
 	static bool initialized = false;
 
 	if (!initialized) {
-		srand(time(0));
+		std::srand((unsigned) std::time(nullptr));
 		initialized = true;
 	}
 

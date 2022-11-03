@@ -310,12 +310,12 @@ void OtTerrainClass::update(OtRenderingContext context) {
 	visibleTiles.clear();
 
 	// determine number of tiles visible from center
-	int visibleFromCenter = std::lround(maxViewingDist / tileSize);
+	auto visibleFromCenter = (int) std::lround(maxViewingDist / tileSize);
 
 	// determine center tile
 	glm::vec3 center = context->getCamera()->getPosition();
-	int terrainCenterTileX = std::lround(center.x / tileSize);
-	int terrainCenterTileY = std::lround(center.z / tileSize);
+	auto terrainCenterTileX = (int) std::lround(center.x / tileSize);
+	auto terrainCenterTileY = (int) std::lround(center.z / tileSize);
 
 	// get vertical limits
 	auto minHeight = terrainmap->getMinHeight();
@@ -481,7 +481,7 @@ void OtTerrainClass::renderGUI() {
 	ImGui::SliderFloat("Overlap 3", &region3Overlap, 1, 50);
 
 	if (ImGui::TreeNodeEx("Debug", ImGuiTreeNodeFlags_Framed)) {
-		int tilesInUse = usedTiles.size();
+		auto tilesInUse = (int) usedTiles.size();
 		int count[7] = {0};
 
 		for (auto& entry : usedTiles) {

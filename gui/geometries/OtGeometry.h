@@ -103,7 +103,7 @@ protected:
 	// quick way to add complete faces
 	virtual void addFace(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c) {
 		auto n = glm::normalize(glm::cross(c - b, a - b));
-		auto offset = vertices.size();
+		auto offset = (uint32_t) vertices.size();
 
 		addVertex(OtVertex(a, n));
 		addVertex(OtVertex(b, n));
@@ -118,7 +118,7 @@ protected:
 
 	virtual void addFace(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c, const glm::vec3& d) {
 		auto n = glm::normalize(glm::cross(c - b, a - b));
-		auto offset = vertices.size();
+		auto offset = (uint32_t) vertices.size();
 
 		addVertex(OtVertex(a, n));
 		addVertex(OtVertex(b, n));

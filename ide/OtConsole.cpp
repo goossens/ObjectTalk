@@ -66,7 +66,7 @@ void OtConsoleClass::render() {
 	}
 
 	ImGuiListClipper clipper;
-	clipper.Begin(lines.size());
+	clipper.Begin((int) lines.size());
 
 	while (clipper.Step()) {
 		for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {

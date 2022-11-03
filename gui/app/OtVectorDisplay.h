@@ -129,7 +129,7 @@ private:
 	bgfx::FrameBufferHandle frameBuffer2 = BGFX_INVALID_HANDLE;
 
 	std::vector<bgfx::DynamicVertexBufferHandle> vertexBuffers;
-	std::vector<int> vertexBuffersSize;
+	std::vector<uint32_t> vertexBuffersSize;
 
 	// texture to draw lines
 	bgfx::TextureHandle lineTexture;

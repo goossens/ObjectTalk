@@ -136,19 +136,19 @@ protected:
 	std::vector<OtTerrainTile> visibleTiles;
 
 
-	bool tileExists(int x, int y, int lod, int version) {
+	bool tileExists(int x, int y, int lod, size_t version) {
 		size_t hash = 0;
 		OtHash(hash, x, y, lod, version);
 		return usedTiles.count(hash) != 0;
 	}
 
-	bool tileRequested(int x, int y, int lod, int version) {
+	bool tileRequested(int x, int y, int lod, size_t version) {
 		size_t hash = 0;
 		OtHash(hash, x, y, lod, version);
 		return requested.count(hash) != 0;
 	}
 
-	OtTerrainTile tileGet(int x, int y, int lod, int version) {
+	OtTerrainTile tileGet(int x, int y, int lod, size_t version) {
 		size_t hash = 0;
 		OtHash(hash, x, y, lod, version);
 		return usedTiles[hash];

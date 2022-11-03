@@ -232,7 +232,7 @@ void OtCylinderGeometryClass::generateCap(bool top) {
 	auto sign = top ? 1 : - 1;
 
 	// add center
-	auto center = vertices.size();
+	auto center = (uint32_t) vertices.size();
 
 	addVertex(OtVertex(
 		glm::vec3(0, height / 2.0 * sign, 0),
@@ -240,7 +240,7 @@ void OtCylinderGeometryClass::generateCap(bool top) {
 		glm::vec2(0.5, 0.5)));
 
 	// add outside vertices
-	auto offset = vertices.size();
+	auto offset = (uint32_t) vertices.size();
 
 	for (auto x = 0; x <= radialSegments; x++) {
 		auto u = (float) x / radialSegments;

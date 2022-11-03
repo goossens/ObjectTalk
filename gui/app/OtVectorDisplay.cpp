@@ -1251,10 +1251,10 @@ void OtVectorDisplayClass::render() {
 
 	// update the vertex buffer
 	if (vertices.size()) {
-		bgfx::update(vertexBuffers[currentDrawStep], 0, bgfx::copy(vertices.data(), vertices.size() * sizeof(Vertex)));
+		bgfx::update(vertexBuffers[currentDrawStep], 0, bgfx::copy(vertices.data(), (uint32_t) vertices.size() * sizeof(Vertex)));
 	}
 
-	vertexBuffersSize[currentDrawStep] = vertices.size();
+	vertexBuffersSize[currentDrawStep] = (uint32_t) vertices.size();
 
 	// render all decay steps
 	for (auto c = 0; c < decaySteps; c++) {

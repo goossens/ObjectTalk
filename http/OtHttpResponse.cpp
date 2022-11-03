@@ -164,7 +164,7 @@ void OtHttpResponseClass::sendHeaders() {
 
 	// send response
 	std::string text = stream.str();
-	uv_buf_t buffer = uv_buf_init(strdup(text.c_str()), text.size());
+	uv_buf_t buffer = uv_buf_init(strdup(text.c_str()), (unsigned int) text.size());
 	uv_write_t* uv_write_req = (uv_write_t*) malloc(sizeof(uv_write_t));
 	uv_write_req->data = buffer.base;
 
@@ -190,7 +190,7 @@ OtObject OtHttpResponseClass::write(const char* data, size_t size) {
 	char* text = (char*) malloc(size + 1);
 	memcpy(text, data, size);
 	text[size] = 0;
-	uv_buf_t buffer = uv_buf_init(text, size);
+	uv_buf_t buffer = uv_buf_init(text, (unsigned int) size);
 	uv_write_t* uv_write_req = (uv_write_t*) malloc(sizeof(uv_write_t));
 	uv_write_req->data = buffer.base;
 
@@ -289,7 +289,7 @@ OtObject OtHttpResponseClass::sendfile(const std::string& name) {
 		auto status = uv_fs_open(uv_default_loop(), &open_req, name.c_str(), O_RDONLY, 0, nullptr);
 		UV_CHECK_ERROR("uv_fs_open", status);
 		uv_fs_req_cleanup(&open_req);
-		uv_read_fd = open_req.result;
+		uv_read_fd = (uv_file) open_req.result;
 
 		uv_read_req.data = this;
 		uv_read_buffer = (char*) malloc(64 * 1024);

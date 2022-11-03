@@ -39,7 +39,7 @@ public:
 	void onConnect();
 
 	// listen for requests on specified IP address and port
-	OtObject listen(const std::string& ip, long port);
+	OtObject listen(const std::string& ip, int port);
 
 	// cleaup connections
 	void cleanup();

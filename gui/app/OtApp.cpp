@@ -141,7 +141,7 @@ void OtAppClass::onUpdate() {
 		float loopDuration = OtFrameworkClass::instance()->getLoopDuration();
 
 		// update all animations
-		for (int c = animations.size() - 1; c >= 0; c--) {
+		for (auto c = animations.size() - 1; c >= 0; c--) {
 			if (!animations[c]->step(loopDuration)) {
 				animations.erase(animations.begin() + c);
 			}

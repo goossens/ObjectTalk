@@ -94,7 +94,7 @@ void OtTerrainTileClass::generate(OtTerrainMap terrainmap) {
 	//
 
 	// add left border vertices
-	auto index = vertices.size();
+	auto index = (uint32_t) vertices.size();
 	auto wx = borderOffsetX;
 	auto wy = borderOffsetY;
 
@@ -136,7 +136,7 @@ void OtTerrainTileClass::generate(OtTerrainMap terrainmap) {
 	//
 
 	// add right border vertices
-	index = vertices.size();
+	index = (uint32_t) vertices.size();
 	wx = borderOffsetX + borderSize;
 
 	for (auto iy = 0; iy < borderVertices; iy++) {
@@ -177,7 +177,7 @@ void OtTerrainTileClass::generate(OtTerrainMap terrainmap) {
 	//
 
 	// add top border vertices
-	index = vertices.size();
+	index = (uint32_t) vertices.size();
 	wy = borderOffsetY;
 
 	for (auto ix = 0; ix < borderVertices; ix++) {
@@ -217,7 +217,7 @@ void OtTerrainTileClass::generate(OtTerrainMap terrainmap) {
 	//
 
 	// add bottom border vertices
-	index = vertices.size();
+	index = (uint32_t) vertices.size();
 	wy = borderOffsetY + borderSize;
 
 	for (auto ix = 0; ix < borderVertices; ix++) {
@@ -262,8 +262,8 @@ void OtTerrainTileClass::submit() {
 	// create buffers (if required)
 	if (!bgfx::isValid(vertexBuffer)) {
 		bgfx::VertexLayout layout = OtTerrainVertex::getVertexLayout();
-		vertexBuffer = bgfx::createVertexBuffer(bgfx::makeRef(vertices.data(), sizeof(OtTerrainVertex) * vertices.size()), layout);
-		indexBuffer = bgfx::createIndexBuffer(bgfx::makeRef(triangles.data(), sizeof(uint32_t) * triangles.size()), BGFX_BUFFER_INDEX32);
+		vertexBuffer = bgfx::createVertexBuffer(bgfx::makeRef(vertices.data(), sizeof(OtTerrainVertex) * (uint32_t) vertices.size()), layout);
+		indexBuffer = bgfx::createIndexBuffer(bgfx::makeRef(triangles.data(), sizeof(uint32_t) * (uint32_t) triangles.size()), BGFX_BUFFER_INDEX32);
 	}
 
 	// submit vertices and triangles

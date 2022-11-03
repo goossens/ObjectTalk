@@ -121,7 +121,7 @@ void OtExtrudedGeometryClass::fillGeometry() {
 		}
 
 		// add polygon to tesselator
-		tessAddContour(tess, 2, polygon.data(), sizeof(glm::vec2), polygon.size());
+		tessAddContour(tess, 2, polygon.data(), sizeof(glm::vec2), (int) polygon.size());
 
 		// create faces to connect front and back
 		for (auto j = 0; j < polygon.size() - 1; j++) {
@@ -137,7 +137,7 @@ void OtExtrudedGeometryClass::fillGeometry() {
 	auto result = tessTesselate(tess, TESS_WINDING_ODD, TESS_POLYGONS, 3, 2, nullptr);
 	int vertexCount = tessGetVertexCount(tess);
 	int indexCount = tessGetElementCount(tess);
-	int offset = vertices.size();
+	int offset = (uint32_t) vertices.size();
 
 	// create the front and back-facing vertices (interwoven)
 	const TESSreal* verts = tessGetVertices(tess);

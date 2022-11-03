@@ -245,8 +245,8 @@ void OtSkyClass::createSkyDome() {
 		.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
 		.end();
 
-	vertexBuffer = bgfx::createVertexBuffer(bgfx::makeRef(vertices.data(), sizeof(glm::vec3) * vertices.size()), layout);
-	indexBuffer = bgfx::createIndexBuffer(bgfx::makeRef(triangles.data(), sizeof(uint32_t) * triangles.size()), BGFX_BUFFER_INDEX32);
+	vertexBuffer = bgfx::createVertexBuffer(bgfx::makeRef(vertices.data(), sizeof(glm::vec3) * (uint32_t) vertices.size()), layout);
+	indexBuffer = bgfx::createIndexBuffer(bgfx::makeRef(triangles.data(), sizeof(uint32_t) * (uint32_t) triangles.size()), BGFX_BUFFER_INDEX32);
 }
 
 

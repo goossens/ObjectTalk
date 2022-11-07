@@ -47,10 +47,10 @@ public:
 	void toggleShadow(bool flag) { shadow = flag; }
 
 	// update state
-	void update(OtRenderingContext context);
+	void update(OtRenderingContext context) override;
 
 	// render in BGFX
-	void render(OtRenderingContext context);
+	void render(OtRenderingContext context) override;
 	void renderShadowmap(OtRenderingContext context);
 
 	// GUI to change light properties

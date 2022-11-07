@@ -47,7 +47,7 @@ public:
 
 private:
 	// generate geometry
-	void fillGeometry();
+	void fillGeometry() override;
 
 	// generate parts
 	void generateTorso();

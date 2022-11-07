@@ -47,10 +47,10 @@ public:
 	float getAmbientLight();
 
 	// update state
-	void update(OtRenderingContext context);
+	void update(OtRenderingContext context) override;
 
 	// render in BGFX
-	void render(OtRenderingContext context);
+	void render(OtRenderingContext context) override;
 
 	// GUI to change properties
 	void renderGUI();

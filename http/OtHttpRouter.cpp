@@ -93,7 +93,7 @@ public:
 		return false;
 	}
 
-	void run(OtHttpRequest req, OtHttpResponse res, OtObject next) {
+	void run(OtHttpRequest req, OtHttpResponse res, OtObject next) override {
 		// execute callback if method and path matches
 		if (match(req)) {
 			OtVM::instance()->callMemberFunction(callback, "__call__", req, res, next);
@@ -129,7 +129,7 @@ class OtStaticHandler : public OtHttpRouterClass::OtHandler {
 public:
 	OtStaticHandler(const std::string& p, const std::string& f) : serverPath(p), fsPath(f) {}
 
-	void run(OtHttpRequest req, OtHttpResponse res, OtObject next) {
+	void run(OtHttpRequest req, OtHttpResponse res, OtObject next) override {
 		if (OtText::startsWith(req->getPath(), serverPath)) {
 			// send file
 			res->sendfile(fsPath + req->getPath().substr(serverPath.size(), -1));

@@ -34,20 +34,20 @@ public:
 	OtRealClass(double real) : value(real) {}
 
 	// convertors
-	operator bool() { return value != 0.0; }
-	operator int() { return (int) value; }
-	operator long() { return (long) value; }
-	operator size_t() { return (size_t) value; }
-	operator float() { return (float) value; }
-	operator double() { return value; }
-	operator std::string() {return std::to_string(value); }
+	operator bool() override { return value != 0.0; }
+	operator int() override { return (int) value; }
+	operator long() override { return (long) value; }
+	operator size_t() override { return (size_t) value; }
+	operator float() override { return (float) value; }
+	operator double() override { return value; }
+	operator std::string() override {return std::to_string(value); }
 
 	// debugging support
-	std::string describe() { return operator std::string(); }
+	std::string describe() override { return operator std::string(); }
 
 	// comparison
-	bool operator == (OtObject operand) { return value == operand->operator double(); }
-	bool operator < (OtObject operand) { return value < operand->operator double(); }
+	bool operator == (OtObject operand) override { return value == operand->operator double(); }
+	bool operator < (OtObject operand) override { return value < operand->operator double(); }
 
 	bool equal(double operand) { return value == operand; }
 	bool notEqual(double operand) { return value != operand; }

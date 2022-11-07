@@ -27,7 +27,7 @@ public:
 	OtClassClass(const std::string& name);
 
 	// debugging support
-	std::string describe() { return classType->getName(); }
+	std::string describe() override { return classType->getName(); }
 
 	// access member information
 	void setParent(OtObject parent);
@@ -42,10 +42,10 @@ public:
 	bool isKindOf(const std::string& className) { return classType->isKindOf(className); }
 
 	// special member acccess (so we can manipulate metaclass members via class)	virtual OtObject get(const std::string& name);
-	bool has(const std::string& name);
-	OtObject get(const std::string& name);
-	OtObject set(const std::string& name, OtObject value) { return classType->set(name, value); }
-	void unset(const std::string& name) { return classType->unset(name); }
+	bool has(const std::string& name) override;
+	OtObject get(const std::string& name) override;
+	OtObject set(const std::string& name, OtObject value) override { return classType->set(name, value); }
+	void unset(const std::string& name) override { return classType->unset(name); }
 
 	// get the classes type
 	OtType getClassType() { return classType; }

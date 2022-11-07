@@ -39,10 +39,10 @@ public:
 	int getFlags() { return flags; }
 
 	// ensure specified component is allowed as a child
-	void validateChild(OtComponent child);
+	void validateChild(OtComponent child) override;
 
 	// render content
-	void render();
+	void render() override;
 
 	// get type definition
 	static OtType getMeta();

@@ -54,7 +54,7 @@ public:
 
 private:
 	// generate geometry
-	void fillGeometry();
+	void fillGeometry() override;
 
 	// properties
 	float width = 1.0;

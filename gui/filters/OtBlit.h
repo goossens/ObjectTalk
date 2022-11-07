@@ -35,7 +35,7 @@ public:
 	void setAlpha(float a) { alpha = a; }
 
 	// execute filter
-	void execute(int view, int w, int h);
+	void execute(int view, int w, int h) override;
 
 private:
 	// blur properties

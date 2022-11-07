@@ -53,7 +53,7 @@ public:
 
 private:
 	// generate geometry
-	void fillGeometry();
+	void fillGeometry() override;
 
 	// attributes
 	float radius = 1.0;

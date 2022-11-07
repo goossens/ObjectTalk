@@ -35,7 +35,7 @@ public:
 	OtObject setMargin(int margin);
 
 	// render content
-	void render();
+	void render() override;
 
 	// get type definition
 	static OtType getMeta();

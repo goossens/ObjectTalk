@@ -25,9 +25,9 @@ typedef std::shared_ptr<OtAppObjectClass> OtAppObject;
 class OtAppObjectClass : public OtComponentClass {
 public:
 	// ensure specified component is allowed as a child
-	void validateChild(OtComponent child);
+	void validateChild(OtComponent child) override;
 
-	// update state (called every frame so be carefull)
+	// update state (called every frame so be careful)
 	virtual void update();
 
 	// render content

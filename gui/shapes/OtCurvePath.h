@@ -72,30 +72,30 @@ public:
 	}
 
 	// get a point on the path at t [0, 1]
-	glm::vec2 getPoint(float t) {
+	glm::vec2 getPoint(float t) override {
 		return getPointAt(t);
 	}
 
 	// get a point on the path at distance n [0, 1]
-	glm::vec2 getPointAt(float u) {
+	glm::vec2 getPointAt(float u) override {
 		float fraction;
 		OtCurve curve = findSegment(u, &fraction);
 		return curve->getPointAt(fraction);
 	}
 
 	// get a unit vector tangent
-	glm::vec2 getTangent(float t) {
+	glm::vec2 getTangent(float t) override {
 		return getTangentAt(t);
 	}
 
-	glm::vec2 getTangentAt(float u) {
+	glm::vec2 getTangentAt(float u) override {
 		float fraction;
 		OtCurve curve = findSegment(u, &fraction);
 		return curve->getTangentAt(fraction);
 	}
 
 	// get the length of the curve
-	float getLength() {
+	float getLength() override {
 		return currentLength;
 	}
 

@@ -43,7 +43,7 @@ public:
 	OtObject addInstance(OtObject matrix);
 
 	// render in BGFX
-	void render(OtRenderingContext context);
+	void render(OtRenderingContext context) override;
 
 	// get type definition
 	static OtType getMeta();

@@ -23,8 +23,7 @@
 //
 
 template<typename K, typename V, size_t S = 1024>
-class OtCache
-{
+class OtCache {
 public:
 	// change the cache size
 	void setSize(size_t s) {

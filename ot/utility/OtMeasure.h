@@ -23,7 +23,7 @@
 // auto OtMeasureFunction = [](auto&& func, auto&&... params) {
 
 template<typename F, typename... Args>
-double OtMeasureFunction(F func, Args&&... args){
+double OtMeasureFunction(F func, Args&&... args) {
 	const auto& start = std::chrono::high_resolution_clock::now();
 	std::forward<decltype(func)>(func)(std::forward<decltype(args)>(args)...);
 	const auto& stop = std::chrono::high_resolution_clock::now();

@@ -27,7 +27,7 @@ typedef std::shared_ptr<OtSceneClass> OtScene;
 class OtSceneClass : public OtComponentClass {
 public:
 	// ensure specified component is allowed as a child
-	void validateChild(OtComponent child);
+	void validateChild(OtComponent child) override;
 
 	// update state
 	void update(OtCamera camera, float x, float y, float w, float h);

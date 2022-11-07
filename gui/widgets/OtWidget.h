@@ -25,7 +25,7 @@ typedef std::shared_ptr<OtWidgetClass> OtWidget;
 class OtWidgetClass : public OtComponentClass {
 public:
 	// ensure specified component is allowed as a child
-	void validateChild(OtComponent child);
+	void validateChild(OtComponent child) override;
 
 	// update state (called every frame so be carefull)
 	virtual void update();

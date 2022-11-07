@@ -30,7 +30,7 @@ public:
 	}
 
 	// get a point on the curve at t [0, 1]
-	glm::vec2 getPoint(float t) {
+	glm::vec2 getPoint(float t) override {
 		return glm::vec2(cubicBezier(t, p1.x, p2.x, p3.x, p4.x), cubicBezier(t, p1.y, p2.y, p3.y, p4.y));
 	}
 

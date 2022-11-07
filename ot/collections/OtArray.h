@@ -28,16 +28,16 @@ typedef std::shared_ptr<OtArrayClass> OtArray;
 class OtArrayClass : public OtCollectionClass {
 public:
 	// convert array to string
-	operator std::string();
+	operator std::string() override;
 
 	// debugging support
-	std::string describe() { return std::to_string(array.size()) + " entries"; }
+	std::string describe() override { return std::to_string(array.size()) + " entries"; }
 
 	// clear array and add all parameters
 	OtObject init(size_t count, OtObject* parameters);
 
 	// comparison
-	bool operator == (OtObject operand);
+	bool operator == (OtObject operand) override;
 
 	// access array members
 	OtObject getEntry(size_t index);

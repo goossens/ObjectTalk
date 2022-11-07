@@ -35,7 +35,7 @@ public:
 	OtObject setColorVector(const glm::vec3 color);
 
 	// update state
-	void update(OtRenderingContext context);
+	void update(OtRenderingContext context) override;
 
 	// GUI to change ambient properties
 	void renderGUI();

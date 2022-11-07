@@ -39,18 +39,18 @@ public:
 	OtObject getScene() { return scene; }
 
 	// update state
-	void update();
+	void update() override;
 
 	// render content
-	void render();
+	void render() override;
 
 	// mouse and keyboard events
-	bool onMouseButton(int button, int action, int mods, float xpos, float ypos);
-	bool onMouseMove(float xpos, float ypos);
-	bool onMouseDrag(int button, int mods, float xpos, float ypos);
-	bool onScrollWheel(float dx, float dy);
-	bool onKey(int key, int mods);
-	bool onChar(unsigned int codepoint);
+	bool onMouseButton(int button, int action, int mods, float xpos, float ypos) override;
+	bool onMouseMove(float xpos, float ypos) override;
+	bool onMouseDrag(int button, int mods, float xpos, float ypos) override;
+	bool onScrollWheel(float dx, float dy) override;
+	bool onKey(int key, int mods) override;
+	bool onChar(unsigned int codepoint) override;
 
 	// get type definition
 	static OtType getMeta();

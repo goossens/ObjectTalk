@@ -25,10 +25,10 @@ typedef std::shared_ptr<OtGroupClass> OtGroup;
 class OtGroupClass : public OtObject3dClass {
 public:
 	// ensure specified component is allowed as a child
-	void validateChild(OtComponent child);
+	void validateChild(OtComponent child) override;
 
-	// render in BGFX
-	void render(OtRenderingContext context);
+	// render children
+	void render(OtRenderingContext context) override;
 
 	// get type definition
 	static OtType getMeta();

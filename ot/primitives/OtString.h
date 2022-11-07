@@ -34,22 +34,22 @@ public:
 	OtStringClass(const std::string& string) : value(string) {}
 
 	// convertors
-	operator bool() { auto v = value; std::transform(v.begin(), v.end(), v.begin(), ::tolower); return v == "true"; }
-	operator int() { try { return std::stoi(value); } catch(...) { return 0; }}
-	operator long() { try { return std::stol(value); } catch(...) { return 0; }}
-	operator size_t() { try { return (size_t) std::stol(value); } catch(...) { return 0; }}
-	operator float() { try { return std::stof(value); } catch(...) { return 0.0; }}
-	operator double() { try { return std::stod(value); } catch(...) { return 0.0; }}
-	operator std::string() {return value; }
+	operator bool() override { auto v = value; std::transform(v.begin(), v.end(), v.begin(), ::tolower); return v == "true"; }
+	operator int() override { try { return std::stoi(value); } catch(...) { return 0; }}
+	operator long() override { try { return std::stol(value); } catch(...) { return 0; }}
+	operator size_t() override { try { return (size_t) std::stol(value); } catch(...) { return 0; }}
+	operator float() override { try { return std::stof(value); } catch(...) { return 0.0; }}
+	operator double() override { try { return std::stod(value); } catch(...) { return 0.0; }}
+	operator std::string() override {return value; }
 
-	std::string json() { return OtText::toJSON(value); }
+	std::string json() override { return OtText::toJSON(value); }
 
 	// debugging support
-	std::string describe() { return "\"" + (len() > 32 ? left(32) + "...\"" : value) + "\""; }
+	std::string describe() override { return "\"" + (len() > 32 ? left(32) + "...\"" : value) + "\""; }
 
 	// comparison
-	bool operator == (OtObject operand) { return value == operand->operator std::string(); }
-	bool operator < (OtObject operand) { return value < operand->operator std::string(); }
+	bool operator == (OtObject operand) override { return value == operand->operator std::string(); }
+	bool operator < (OtObject operand) override { return value < operand->operator std::string(); }
 
 	bool equal(const std::string& operand) { return value == operand; }
 	bool notEqual(const std::string& operand) { return value != operand; }

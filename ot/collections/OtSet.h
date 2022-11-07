@@ -29,16 +29,16 @@ class OtSetClass : public OtCollectionClass {
 
 public:
 	// convert set to string
-	operator std::string();
+	operator std::string() override;
 
 	// debugging support
-	std::string describe() { return std::to_string(set.size()) + " entries"; }
+	std::string describe() override { return std::to_string(set.size()) + " entries"; }
 
 	// clear array and add all parameters
 	OtObject init(size_t count, OtObject* parameters);
 
 	// comparison
-	bool operator == (OtObject object);
+	bool operator == (OtObject object) override;
 
 	// start iterator
 	OtObject iterate();

@@ -74,6 +74,7 @@ public:
 	size_t pushTry() { emitOpcode(PUSH_TRY); return emitOffset(0); }
 	void popTry() { emitOpcode(POP_TRY); }
 
+	// patch previous jump
 	void patchJump(size_t offset) { offsets[offset] = bytecode.size(); }
 
 	// get current code size

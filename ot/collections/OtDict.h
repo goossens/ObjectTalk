@@ -28,16 +28,16 @@ typedef std::shared_ptr<OtDictClass> OtDict;
 class OtDictClass : public OtCollectionClass {
 public:
 	// convert dictionary to string
-	operator std::string();
+	operator std::string() override;
 
 	// debugging support
-	std::string describe() { return std::to_string(dict.size()) + " entries"; }
+	std::string describe() override { return std::to_string(dict.size()) + " entries"; }
 
 	// initializer
 	OtObject init(size_t count, OtObject* parameters);
 
 	// comparison
-	bool operator == (OtObject operand);
+	bool operator == (OtObject operand) override;
 
 	// access dict members
 	OtObject getEntry(const std::string& index);

@@ -30,10 +30,10 @@ public:
 	OtBoundFunctionClass(OtObject o, OtObject f) : object(o), function(f) {}
 
 	// debugging support
-	std::string describe() { return object->getType()->getName() + " " + "function"; }
+	std::string describe() override { return object->getType()->getName() + " " + "function"; }
 
 	// call bound function
-	OtObject operator () (size_t count, OtObject* parameters);
+	OtObject operator () (size_t count, OtObject* parameters) override;
 
 	// get type definition
 	static OtType getMeta();

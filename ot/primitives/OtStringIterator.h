@@ -37,7 +37,9 @@ public:
 	}
 
 	// iteration operations
-	bool end() { return pos == last; }
+	bool end() {
+		return pos == last;
+	}
 
 	std::string next() {
 		size_t size = OtCodePoint::size(pos);

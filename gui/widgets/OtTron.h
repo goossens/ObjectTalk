@@ -29,10 +29,10 @@ typedef std::shared_ptr<OtTronClass> OtTron;
 class OtTronClass : public OtWidgetClass {
 public:
 	// update widget state
-	void update();
+	void update() override;
 
 	// render widget
-	void render();
+	void render() override;
 
 	// get type definition
 	static OtType getMeta();

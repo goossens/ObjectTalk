@@ -69,17 +69,17 @@ public:
 
 private:
 	// track other framework customers
-	void onAddCustomer(OtCustomer* customer);
-	void onRemoveCustomer(OtCustomer* customer);
+	void onAddCustomer(OtCustomer* customer) override;
+	void onRemoveCustomer(OtCustomer* customer) override;
 
 	// update state and process events
-	void onUpdate();
+	void onUpdate() override;
 
 	// render all windows
-	void onRender();
+	void onRender() override;
 
 	// see if we can quit app
-	bool onCanQuit();
+	bool onCanQuit() override;
 
 	// get default directory
 	std::string getDefaultDirectory();

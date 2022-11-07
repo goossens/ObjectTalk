@@ -33,8 +33,14 @@ public:
 	OtObject iterate() { return shared(); }
 
 	// iteration operations
-	bool end() { return (to > from) ? (index > to) : (index < to); }
-	long next() { auto result = index; index += increment; return result; }
+	bool end() {
+		return (to > from) ? (index > to) : (index < to);
+	}
+
+	long next() {
+		auto result = index; index += increment;
+		return result;
+	}
 
 	// get type definition
 	static OtType getMeta();

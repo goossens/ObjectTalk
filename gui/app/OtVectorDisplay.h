@@ -84,7 +84,7 @@ public:
 	void deleteShape(int id);
 
 	// render content
-	void render();
+	void render() override;
 
 	// GUI to change properties
 	void renderGUI();

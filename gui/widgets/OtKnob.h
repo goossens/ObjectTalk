@@ -45,7 +45,7 @@ public:
 	float getValue() { return value; }
 
 	// render content
-	void render();
+	void render() override;
 
 	// get type definition
 	static OtType getMeta();

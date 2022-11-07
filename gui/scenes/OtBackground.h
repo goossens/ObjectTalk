@@ -40,7 +40,7 @@ public:
 	OtObject setTexture(OtObject texture);
 
 	// render in BGFX
-	void render(OtRenderingContext context);
+	void render(OtRenderingContext context) override;
 
 	// get type definition
 	static OtType getMeta();

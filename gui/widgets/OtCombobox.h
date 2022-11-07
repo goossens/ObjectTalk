@@ -30,7 +30,7 @@ public:
 	void init(const std::string& title, OtObject values, OtObject selected, OtObject callback);
 
 	// render content
-	void render();
+	void render() override;
 
 	// get type definition
 	static OtType getMeta();

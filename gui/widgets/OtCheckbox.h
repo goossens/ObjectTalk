@@ -28,7 +28,7 @@ public:
 	void init(const std::string& label, bool checked, OtObject callback);
 
 	// render content
-	void render();
+	void render() override;
 
 	// get type definition
 	static OtType getMeta();

@@ -36,7 +36,7 @@ public:
 	OtObject capture();
 
 	// call enclosed function
-	OtObject operator () (size_t count, OtObject* parameters);
+	OtObject operator () (size_t count, OtObject* parameters) override;
 
 	// get parameter count
 	size_t getParameterCount() { return function->getParameterCount(); }

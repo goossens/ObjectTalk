@@ -29,7 +29,7 @@ public:
 	OtObjectReferenceClass(OtObject o, const std::string& m) : object(o), member(m) {}
 
 	// debugging support
-	std::string describe() { return object->getType()->getName() + " " + member; }
+	std::string describe() override { return object->getType()->getName() + " " + member; }
 
 	// (de)reference functions
 	OtObject deref() { return object->get(member); }

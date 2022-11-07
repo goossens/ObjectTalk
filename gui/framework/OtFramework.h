@@ -42,7 +42,6 @@ public:
 
 	// run the GUI framework
 	void run();
-	void runThread2();
 
 	// stop the GUI framework because of an error
 	void error(OtException e);
@@ -94,6 +93,9 @@ private:
 	// MacOS only allows certain API calls from the main thread
 	void createMetalLayer();
 #endif
+
+	// the second thread runs the application logic as well as the asynchronous libuv events
+	void runThread2();
 
 	// render a debugging profiler
 	void renderProfiler();

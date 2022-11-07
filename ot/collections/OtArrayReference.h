@@ -32,7 +32,7 @@ public:
 	OtArrayReferenceClass(OtArray a, size_t i) : array(a), index(i) {}
 
 	// debugging support
-	std::string describe() { return "[" + std::to_string(index) + "]"; }
+	std::string describe() override { return "[" + std::to_string(index) + "]"; }
 
 	// (de)reference functions
 	OtObject deref() { return array->getEntry(index); }

@@ -45,7 +45,7 @@ public:
 	}
 
 	// get a point on the curve at t [0, 1]
-	glm::vec2 getPoint(float t) {
+	glm::vec2 getPoint(float t) override {
 		float angle = startAngle + t * delta;
 		float x = center.x + xRadius * std::cos(angle);
 		float y = center.y + yRadius * std::sin(angle);

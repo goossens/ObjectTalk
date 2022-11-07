@@ -35,7 +35,7 @@ public:
 	OtObject setSun(OtObject sun);
 
 	// update state
-	void update(OtRenderingContext context);
+	void update(OtRenderingContext context) override;
 
 	// GUI to change fog properties
 	void renderGUI();

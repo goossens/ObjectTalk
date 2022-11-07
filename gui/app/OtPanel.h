@@ -28,10 +28,10 @@ public:
 	void init(int _x, int _y, int _w, int _h) { x = _x; y = _y; w = _w; h = _h; }
 
 	// ensure specified component is allowed as a child
-	void validateChild(OtComponent child);
+	void validateChild(OtComponent child) override;
 
 	// render content
-	void render();
+	void render() override;
 
 	// get type definition
 	static OtType getMeta();

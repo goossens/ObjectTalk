@@ -41,7 +41,7 @@ public:
 
 private:
 	// generate geometry
-	void fillGeometry();
+	void fillGeometry() override;
 
 	// attributes
 	OtShape shape;

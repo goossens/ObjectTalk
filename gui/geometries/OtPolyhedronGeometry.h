@@ -46,8 +46,8 @@ protected:
 
 private:
 	// generate geometry
-	void fillGeometry();
-	void addFace(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c);
+	void fillGeometry() override;
+	void addFace(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c) override;
 	glm::vec2 generateUV(const glm::vec3& normal);
 
 	float azimuth(const glm::vec3& normal) {

@@ -39,7 +39,7 @@ public:
 
 private:
 	// generate geometry
-	void fillGeometry();
+	void fillGeometry() override;
 
 	// properties
 	std::string modelName;

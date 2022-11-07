@@ -32,7 +32,7 @@ public:
 	OtStackReferenceClass(const std::string& n, size_t s) : name(n), slot(s) {}
 
 	// debugging support
-	std::string describe() { return name + " slot " + std::to_string(slot); }
+	std::string describe() override { return name + " slot " + std::to_string(slot); }
 
 	// (de)reference functions
 	OtObject deref();

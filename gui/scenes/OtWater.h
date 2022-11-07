@@ -41,10 +41,10 @@ public:
 	OtObject setNormalScale(float scale);
 
 	// update state
-	void update(OtRenderingContext context);
+	void update(OtRenderingContext context) override;
 
 	// render in BGFX
-	void render(OtRenderingContext context);
+	void render(OtRenderingContext context) override;
 
 	void renderReflection(OtRenderingContext context);
 	void renderRefraction(OtRenderingContext context);

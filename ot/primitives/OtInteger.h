@@ -35,20 +35,20 @@ public:
 	OtIntegerClass(long integer) : value(integer) {}
 
 	// convertors
-	operator bool() { return value != 0; }
-	operator int() { return (int) value; }
-	operator long() { return value; }
-	operator size_t() { return (size_t) value; }
-	operator float() { return (float) value; }
-	operator double() { return (double) value; }
-	operator std::string() {return std::to_string(value); }
+	operator bool() override { return value != 0; }
+	operator int() override { return (int) value; }
+	operator long()  override{ return value; }
+	operator size_t() override { return (size_t) value; }
+	operator float() override { return (float) value; }
+	operator double() override { return (double) value; }
+	operator std::string() override {return std::to_string(value); }
 
 	// debugging support
-	std::string describe() { return operator std::string(); }
+	std::string describe() override { return operator std::string(); }
 
 	// comparison
-	bool operator == (OtObject operand) { return value == operand->operator long(); }
-	bool operator < (OtObject operand) { return value < operand->operator long(); }
+	bool operator == (OtObject operand) override { return value == operand->operator long(); }
+	bool operator < (OtObject operand) override { return value < operand->operator long(); }
 
 	bool equal(long operand) { return value == operand; }
 	bool notEqual(long operand) { return value != operand; }

@@ -29,7 +29,7 @@ public:
 	OtCaptureReferenceClass(const std::string& n) :  name(n) {}
 
 	// debugging support
-	std::string describe() { return name; }
+	std::string describe() override { return name; }
 
 	// (de)reference functions
 	OtObject deref();

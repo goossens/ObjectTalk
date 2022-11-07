@@ -29,19 +29,19 @@ public:
 	OtBooleanClass(bool boolean) : value(boolean) {}
 
 	// conversions
-	operator bool() { return value; }
-	operator int() { return value ? 1 : 0; }
-	operator long() { return value ? 1 : 0; }
-	operator size_t() { return value ? 1 : 0; }
-	operator float() { return value ? 1.0 : 0.0; }
-	operator double() { return value ? 1.0 : 0.0; }
-	operator std::string() { return value ? "true" : "false"; }
+	operator bool() override { return value; }
+	operator int() override { return value ? 1 : 0; }
+	operator long() override { return value ? 1 : 0; }
+	operator size_t() override { return value ? 1 : 0; }
+	operator float() override { return value ? 1.0 : 0.0; }
+	operator double() override { return value ? 1.0 : 0.0; }
+	operator std::string() override { return value ? "true" : "false"; }
 
-	std::string describe() { return operator std::string(); }
+	std::string describe() override { return operator std::string(); }
 
 	// comparison
-	bool operator == (OtObject operand) { return value == operand->operator bool(); }
-	bool operator < (OtObject operand) { return value < operand->operator bool(); }
+	bool operator == (OtObject operand) override { return value == operand->operator bool(); }
+	bool operator < (OtObject operand) override { return value < operand->operator bool(); }
 
 	bool equal(bool operand) { return value == operand; }
 	bool notEqual(bool operand) { return value != operand; }

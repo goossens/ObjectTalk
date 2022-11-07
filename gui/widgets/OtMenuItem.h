@@ -46,7 +46,7 @@ public:
 	bool isEnabled() { return enabled; }
 
 	// render content
-	void render();
+	void render() override;
 
 	// get type definition
 	static OtType getMeta();

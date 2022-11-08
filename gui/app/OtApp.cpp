@@ -140,12 +140,10 @@ void OtAppClass::onUpdate() {
 		// get loop duration
 		float loopDuration = OtFrameworkClass::instance()->getLoopDuration();
 
-		// update all animations
-		for (auto c = animations.size() - 1; c >= 0; c--) {
-			if (!animations[c]->step(loopDuration)) {
-				animations.erase(animations.begin() + c);
-			}
-		}
+		// update all animations (and remove them from the list if they are done)
+		animations.erase(std::remove_if(animations.begin(), animations.end(), [loopDuration] (OtAnimation animation) {
+			return !animation->step(loopDuration);
+		}), animations.end());
 
 		// update all simulations
 		for (auto& simulation : simulations) {

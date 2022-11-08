@@ -76,10 +76,20 @@ OtObject OtSunClass::setAzimuth(float a) {
 //	OtSunClass::castShadow
 //
 
-OtObject OtSunClass::castShadow(float width, float dist, float near, float far, bool debug) {
+OtObject OtSunClass::castShadow(float width, float dist, float near, float far) {
 	shadow = true;
 	distance = dist;
-	light->castShadow(width, near, far, debug);
+	light->castShadow(width, near, far);
+	return shared();
+}
+
+
+//
+//	OtSunClass::renderFrustum
+//
+
+OtObject OtSunClass::renderFrustum(bool flag) {
+	light->renderFrustum(flag);
 	return shared();
 }
 

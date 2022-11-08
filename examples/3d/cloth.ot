@@ -18,7 +18,7 @@ class App : gui.App {
 
 		var light = gui.Light()
 			.setDirection(100, 70, 100)
-			.castShadow(50, 0, 200, false);
+			.castShadow(50, 0, 200);
 
 		var fog = gui.Fog().setColor(skyColor).setDistances(50, 150);
 		var background = gui.Background().setColor(skyColor);

@@ -38,7 +38,8 @@ public:
 	// update attributes
 	OtObject setElevation(float elevation);
 	OtObject setAzimuth(float azimuth);
-	OtObject castShadow(float width, float distance, float near, float far, bool debug);
+	OtObject castShadow(float width, float distance, float near, float far);
+	OtObject renderFrustum(bool flag);
 
 	// get the direction towards the sun
 	glm::vec3 getDirection();

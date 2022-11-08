@@ -43,8 +43,11 @@ public:
 	void setSpecularVector(const glm::vec3& c) { specular = c; }
 
 	// enable shadow casting
-	OtObject castShadow(float width, float near, float far, bool debug);
+	OtObject castShadow(float width, float near, float far);
 	void toggleShadow(bool flag) { shadow = flag; }
+
+	// enable/disable frustum rendering (debugging)
+	OtObject renderFrustum(bool flag);
 
 	// update state
 	void update(OtRenderingContext context) override;

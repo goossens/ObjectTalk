@@ -85,12 +85,21 @@ OtObject OtLightClass::setSpecular(const std::string& c) {
 //	OtLightClass::castShadow
 //
 
-OtObject OtLightClass::castShadow(float width, float near, float far, bool debug) {
+OtObject OtLightClass::castShadow(float width, float near, float far) {
 	shadowCamera->setOrthographic(width, near, far);
 	shadowCamera->setWidthLimits(width / 10.0, width * 10.0);
 	shadowCamera->setNearFarLimits(near / 10.0, near * 10.0, far / 10.0, far * 10.0);
-	shadowCamera->renderFrustum(debug);
 	shadow = true;
+	return shared();
+}
+
+
+//
+//	OtLightClass::renderFrustum
+//
+
+OtObject OtLightClass::renderFrustum(bool flag) {
+	shadowCamera->renderFrustum(flag);
 	return shared();
 }
 

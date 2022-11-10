@@ -85,9 +85,9 @@ void OtExcept(const char* format, ARGS && ...args) {
 
 	} else {
 		auto size = std::snprintf(nullptr, 0, format, std::forward<ARGS>(args)...);
-		std::string result(size, '\0');
-		std::snprintf(&result[0], size, format, std::forward<ARGS>(args)...);
-		throw OtException(result);
+		char result[size + 1];
+		std::snprintf(result, size + 1, format, std::forward<ARGS>(args)...);
+		throw OtException(std::string(result));
 	}
 }
 

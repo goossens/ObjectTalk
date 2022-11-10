@@ -24,7 +24,7 @@
 template <typename... ARGS>
 std::string OtFormat(const char* format, ARGS && ...args) {
 	auto size = std::snprintf(nullptr, 0, format, std::forward<ARGS>(args)...);
-	std::string result(size, '\0');
-	std::snprintf(&result[0], size, format, std::forward<ARGS>(args)...);
-	return result;
+	char result[size + 1];
+	std::snprintf(result, size + 1, format, std::forward<ARGS>(args)...);
+	return std::string(result);
 }

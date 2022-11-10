@@ -9,9 +9,8 @@
 //	Include files
 //
 
-#define GLM_ENABLE_EXPERIMENTAL
 #include "glm/glm.hpp"
-#include "glm/ext.hpp"
+#include "glm/gtx/euler_angles.hpp"
 
 #include "OtFunction.h"
 

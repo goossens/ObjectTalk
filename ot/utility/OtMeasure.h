@@ -20,8 +20,6 @@
 //	Measure time to execute function
 //
 
-// auto OtMeasureFunction = [](auto&& func, auto&&... params) {
-
 template<typename F, typename... Args>
 double OtMeasureFunction(F func, Args&&... args) {
 	const auto& start = std::chrono::high_resolution_clock::now();

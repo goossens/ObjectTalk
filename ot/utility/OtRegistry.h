@@ -14,6 +14,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <utility>
 
 #include "OtException.h"
 
@@ -55,6 +56,25 @@ public:
 	// see if registry has specified member
 	bool has(const std::string& name) {
 		return registry.count(name) != 0;
+	}
+
+	// iterate through registry members
+	void iterate(std::function<void(const std::string&, T&)> callback) {
+		for (std::pair<std::string, T> entry : registry) {
+			callback(entry.first, entry.second);
+		}
+	}
+
+	void iterateKeys(std::function<void(const std::string&)> callback) {
+		for (std::pair<std::string, T> entry : registry) {
+			callback(entry.first);
+		}
+	}
+
+	void iterateValues(std::function<void(T&)> callback) {
+		for (std::pair<std::string, T> entry : registry) {
+			callback(entry.second);
+		}
 	}
 
 private:

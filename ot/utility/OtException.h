@@ -15,8 +15,9 @@
 #include <stdio.h>
 
 #include <exception>
-#include <string>
 #include <iostream>
+#include <string>
+#include <vector>
 
 #include "OtFormat.h"
 
@@ -44,7 +45,6 @@ public:
 
 	OtException(std::string m) : shortMessage(m), longMessage(m) {}
 
-	// regular
 	const char* what() const throw() { return longMessage.c_str(); }
 
 	// access properties
@@ -85,9 +85,9 @@ void OtExcept(const char* format, ARGS && ...args) {
 
 	} else {
 		auto size = std::snprintf(nullptr, 0, format, std::forward<ARGS>(args)...);
-		char result[size + 1];
-		std::snprintf(result, size + 1, format, std::forward<ARGS>(args)...);
-		throw OtException(std::string(result));
+		std::vector<char> buffer(size + 1);
+		std::snprintf(buffer.data(), size + 1, format, std::forward<ARGS>(args)...);
+		throw OtException(std::string(buffer.data()));
 	}
 }
 

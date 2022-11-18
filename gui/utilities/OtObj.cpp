@@ -32,29 +32,23 @@
 
 OtObject OtObjLoad(const std::string& filename) {
 	// load the object model
-	tinyobj::attrib_t attrs;
-	std::vector<tinyobj::shape_t> shapes;
-	std::vector<tinyobj::material_t> materials;
-	std::string warn;
-	std::string err;
+	tinyobj::ObjReader reader;
 
-	std::filesystem::path path = filename;
-	path = path.parent_path();
-
-	tinyobj::LoadObj(
-		&attrs, &shapes, &materials,
-		&warn, &err,
-		filename.c_str(), path.c_str());
-
-	// handle warnings
-	if (!warn.empty()) {
-		OT_DEBUG(warn);
+	if (!reader.ParseFromFile(filename)) {
+		if (!reader.Error().empty()) {
+			OtExcept("Error while loading model [%s]: %s",
+				filename.c_str(),
+				reader.Error().c_str());
+		}
 	}
 
-	// handle errors
-	if (!err.empty()) {
-		OtExcept("Error while loading model [%s]: %s", filename.c_str(), err.c_str());
+	if (!reader.Warning().empty()) {
+		OT_DEBUG(reader.Warning());
 	}
+
+	auto& attrs = reader.GetAttrib();
+	auto& shapes = reader.GetShapes();
+	auto& materials = reader.GetMaterials();
 
 	// OT_DEBUG(OtFormat("# of shapes    = %d", (int) shapes.size()));
 	// OT_DEBUG(OtFormat("# of materials = %d", (int) materials.size()));
@@ -65,6 +59,9 @@ OtObject OtObjLoad(const std::string& filename) {
 	// process all materials
 	OtMaterial defaultMaterial = OtMaterialClass::create();
 	std::vector<OtMaterial> materialList;
+
+	std::filesystem::path path = filename;
+	path = path.parent_path();
 
 	for (auto i = materials.begin(); i < materials.end(); i++) {
 		// create a new material object

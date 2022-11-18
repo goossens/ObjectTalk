@@ -70,22 +70,23 @@ OtObject OtModelGeometryClass::setScale(float s) {
 
 void OtModelGeometryClass::fillGeometry() {
 	// load the object model
-	tinyobj::attrib_t attrib;
-	std::vector<tinyobj::shape_t> shapes;
-	std::vector<tinyobj::material_t> materials;
-	std::string warn;
-	std::string err;
-	tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, modelName.c_str());
+	tinyobj::ObjReader reader;
 
-	// handle warnings
-	if (!warn.empty()) {
-		OT_DEBUG(warn);
+	if (!reader.ParseFromFile(modelName)) {
+		if (!reader.Error().empty()) {
+			OtExcept("Error while loading model [%s]: %s",
+				modelName.c_str(),
+				reader.Error().c_str());
+		}
 	}
 
-	// handle errors
-	if (!err.empty()) {
-		OtExcept("Error while loading model [%s]: %s", modelName.c_str(), err.c_str());
+	if (!reader.Warning().empty()) {
+		OT_DEBUG(reader.Warning());
 	}
+
+	auto& attrib = reader.GetAttrib();
+	auto& shapes = reader.GetShapes();
+	auto& materials = reader.GetMaterials();
 
 	// process all model shapes (and created vertices and indices)
 	bool hasUV = attrib.texcoords.size() > 0;

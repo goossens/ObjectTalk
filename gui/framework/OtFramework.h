@@ -14,14 +14,17 @@
 
 #include <array>
 #include <functional>
+#include <unordered_map>
 #include <vector>
 
 #define GLFW_INCLUDE_NONE
 #include "GLFW/glfw3.h"
 #include "bgfx/bgfx.h"
+#include "bimg/bimg.h"
 
 #include "OtException.h"
 #include "OtObject.h"
+#include "OtRegistry.h"
 #include "OtSingleton.h"
 
 #include "OtCustomer.h"
@@ -75,12 +78,19 @@ public:
 	// get the next available view ID
 	bgfx::ViewId getNextViewID() { return nextViewID++; }
 
+	// image/texture functions
+	bimg::ImageContainer* getImage(const std::string& file, bool powerof2 = false, bool square = false);
+	bgfx::TextureHandle getTexture(const std::string& file, bimg::ImageContainer** image = nullptr);
+	bgfx::TextureHandle getDummyTexture() { return dummyTexture; }
+
 	// add enums to specified module
 	void addEnumsGLFW(OtObject module);
 	void addEnumsIMGUI(OtObject module);
 
 	// register function to be called at exit
-	void atexit(std::function<void(void)> callback) { atExitCallbacks.push_back(callback); }
+	void atexit(std::function<void(void)> callback) {
+		atExitCallbacks.push_back(callback);
+	}
 
 private:
 #if __APPLE__
@@ -133,6 +143,14 @@ private:
 	float loopDuration;
 	int64_t cpuDuration;
 	int64_t gpuDuration;
+
+	// image/texture registries
+	OtRegistry<bimg::ImageContainer*> imageRegistry;
+	OtRegistry<bgfx::TextureHandle> textureRegistry;
+	std::unordered_map<uint16_t, bimg::ImageContainer*> textureImageMap;
+
+	bimg::ImageContainer* dummyImage;
+	bgfx::TextureHandle dummyTexture;
 
 	// to render IMGUI
 	bgfx::VertexLayout imguiVertexLayout;

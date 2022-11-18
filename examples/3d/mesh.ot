@@ -190,7 +190,7 @@ class App : gui.App {
 
 		} else {
 			this.material = gui.Material()
-				.setTexture(gui.Texture(textures[name]))
+				.setTexture(textures[name])
 				.setDoubleSided();
 		}
 

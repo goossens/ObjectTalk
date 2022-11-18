@@ -16,8 +16,8 @@
 #include "OtException.h"
 
 #include "OtCamera.h"
+#include "OtFramework.h"
 #include "OtRenderingContext.h"
-#include "OtTexture.h"
 
 
 //
@@ -145,7 +145,7 @@ void OtRenderingContextClass::submit(bool receiveShadow) {
 
 	} else {
 		shadowUniforms[shadowEnabledSlot] = glm::vec4(0.0);
-		OtTextureClass::dummy()->submit(0, shadowmapUniform);
+		bgfx::setTexture(0, shadowmapUniform, OtFrameworkClass::instance()->getDummyTexture());
 	}
 
 	bgfx::setUniform(shadowUniform, shadowUniforms, totalShadowSlots);

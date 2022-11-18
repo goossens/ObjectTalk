@@ -9,10 +9,14 @@
 //	Include files
 //
 
+#include "bimg/bimg.h"
+
 #include "imgui.h"
 
+#include "OtException.h"
 #include "OtFunction.h"
 
+#include "OtFramework.h"
 #include "OtPicture.h"
 
 
@@ -26,7 +30,7 @@ OtObject OtPictureClass::init(size_t count, OtObject* parameters) {
 			setMargin(parameters[1]->operator int());
 
 		case 1:
-			setTexture(parameters[0]);
+			setTexture(parameters[0]->operator std::string());
 
 		case 0:
 			break;
@@ -42,19 +46,16 @@ OtObject OtPictureClass::init(size_t count, OtObject* parameters) {
 //
 //	OtPictureClass::setTexture
 //
-OtObject OtPictureClass::setTexture(OtObject object) {
-	// ensure object is a texture
-	if (object->isKindOf("Texture")) {
-		texture = object->cast<OtTextureClass>();
 
-	} else if (object->isKindOf("String")) {
-		texture = OtTextureClass::create();
-		texture->loadImage(object->operator std::string());
-
-	} else {
-		OtExcept("Expected a [Texture] or [String] object, not a [%s]", object->getType()->getName().c_str());
+OtObject OtPictureClass::setTexture(const std::string& textureName) {
+	if (bgfx::isValid(texture)) {
+		OtExcept("Texture already set for [Picture] widget");
 	}
 
+	bimg::ImageContainer* image;
+	texture = OtFrameworkClass::instance()->getTexture(textureName, &image);
+	width = image->m_width;
+	height = image->m_height;
 	return shared();
 }
 
@@ -74,19 +75,25 @@ OtObject OtPictureClass::setMargin(int m) {
 //
 
 void OtPictureClass::render() {
+	// sanity check
+	if (!bgfx::isValid(texture)) {
+		OtExcept("No image provided for [Picture] widget");
+	}
+
 	// add margin if required
 	if (margin) {
 		ImGui::Dummy(ImVec2(0, margin));
 	}
 
 	// position and render image
-	ImGui::SetCursorPos(ImVec2((
-		ImGui::GetWindowSize().x - texture->getWidth()) / 2,
+	float indent = ImGui::GetCursorPosX();
+	float availableSpace = ImGui::GetWindowSize().x - indent;
+
+	ImGui::SetCursorPos(ImVec2(
+		indent + (availableSpace - width) / 2,
 		ImGui::GetCursorPosY()));
 
-	ImGui::Image(
-		(void*)(intptr_t) texture->getTextureHandle().idx,
-		ImVec2(texture->getWidth(), texture->getHeight()));
+	ImGui::Image((void*)(intptr_t) texture.idx, ImVec2(width, height));
 
 	// add margin if required
 	if (margin) {

@@ -191,16 +191,12 @@ OtObject OtTerrainClass::setTextureScale(float scale) {
 //	OtTerrainClass::setRegion1Texture
 //
 
-OtObject OtTerrainClass::setRegion1Texture(OtObject object) {
-	// ensure object is a valid texture
-	if (!object) {
-		textureRegion1 = nullptr;
-
-	} else {
-		object->expectKindOf("Texture");
-		textureRegion1 = object->cast<OtTextureClass>();
+OtObject OtTerrainClass::setRegion1Texture(const std::string& textureName) {
+	if (bgfx::isValid(textureRegion1)) {
+		OtExcept("Texture 1 already set for [Terrain] widget");
 	}
 
+	textureRegion1 = OtFrameworkClass::instance()->getTexture(textureName);
 	return shared();
 }
 
@@ -209,16 +205,12 @@ OtObject OtTerrainClass::setRegion1Texture(OtObject object) {
 //	OtTerrainClass::setRegion2Texture
 //
 
-OtObject OtTerrainClass::setRegion2Texture(OtObject object) {
-	// ensure object is a valid texture
-	if (!object) {
-		textureRegion2 = nullptr;
-
-	} else {
-		object->expectKindOf("Texture");
-		textureRegion2 = object->cast<OtTextureClass>();
+OtObject OtTerrainClass::setRegion2Texture(const std::string& textureName) {
+	if (bgfx::isValid(textureRegion2)) {
+		OtExcept("Texture 2 already set for [Terrain] widget");
 	}
 
+	textureRegion2 = OtFrameworkClass::instance()->getTexture(textureName);
 	return shared();
 }
 
@@ -227,16 +219,12 @@ OtObject OtTerrainClass::setRegion2Texture(OtObject object) {
 //	OtTerrainClass::setRegion3Texture
 //
 
-OtObject OtTerrainClass::setRegion3Texture(OtObject object) {
-	// ensure object is a valid texture
-	if (!object) {
-		textureRegion3 = nullptr;
-
-	} else {
-		object->expectKindOf("Texture");
-		textureRegion3 = object->cast<OtTextureClass>();
+OtObject OtTerrainClass::setRegion3Texture(const std::string& textureName) {
+	if (bgfx::isValid(textureRegion3)) {
+		OtExcept("Texture 3 already set for [Terrain] widget");
 	}
 
+	textureRegion3 = OtFrameworkClass::instance()->getTexture(textureName);
 	return shared();
 }
 
@@ -245,16 +233,12 @@ OtObject OtTerrainClass::setRegion3Texture(OtObject object) {
 //	OtTerrainClass::setRegion4Texture
 //
 
-OtObject OtTerrainClass::setRegion4Texture(OtObject object) {
-	// ensure object is a texture
-	if (!object) {
-		textureRegion4 = nullptr;
-
-	} else {
-		object->expectKindOf("Texture");
-		textureRegion4 = object->cast<OtTextureClass>();
+OtObject OtTerrainClass::setRegion4Texture(const std::string& textureName) {
+	if (bgfx::isValid(textureRegion4)) {
+		OtExcept("Texture 4 already set for [Terrain] widget");
 	}
 
+	textureRegion4 = OtFrameworkClass::instance()->getTexture(textureName);
 	return shared();
 }
 
@@ -332,7 +316,7 @@ void OtTerrainClass::update(OtRenderingContext context) {
 			auto cy = y * tileSize;
 
 			auto camera = context->getCamera();
-	
+
 			auto aabb = OtAABBClass::create();
 			aabb->addPoint(glm::vec3(cx - tileSize / 2, minHeight, cy - tileSize / 2));
 			aabb->addPoint(glm::vec3(cx + tileSize / 2, maxHeight, cy + tileSize / 2));
@@ -429,18 +413,19 @@ void OtTerrainClass::render(OtRenderingContext context) {
 			terrainUniforms[2].y = region2Overlap;
 			terrainUniforms[2].z = region3Overlap;
 
-			terrainUniforms[3] = glm::vec4(region1Color, textureRegion1 != nullptr);
-			terrainUniforms[4] = glm::vec4(region2Color, textureRegion2 != nullptr);
-			terrainUniforms[5] = glm::vec4(region3Color, textureRegion3 != nullptr);
-			terrainUniforms[6] = glm::vec4(region4Color, textureRegion4 != nullptr);
+			terrainUniforms[3] = glm::vec4(region1Color, bgfx::isValid(textureRegion1));
+			terrainUniforms[4] = glm::vec4(region2Color, bgfx::isValid(textureRegion2));
+			terrainUniforms[5] = glm::vec4(region3Color, bgfx::isValid(textureRegion1));
+			terrainUniforms[6] = glm::vec4(region4Color, bgfx::isValid(textureRegion2));
 
 			bgfx::setUniform(terrainUniform, terrainUniforms, 7);
 
 			// set textures
-			(textureRegion1 ? textureRegion1 : OtTextureClass::dummy())->submit(1, textureUniform1);
-			(textureRegion2 ? textureRegion2 : OtTextureClass::dummy())->submit(2, textureUniform2);
-			(textureRegion3 ? textureRegion3 : OtTextureClass::dummy())->submit(3, textureUniform3);
-			(textureRegion4 ? textureRegion4 : OtTextureClass::dummy())->submit(4, textureUniform4);
+			bgfx::TextureHandle dummy = OtFrameworkClass::instance()->getDummyTexture();
+			bgfx::setTexture(1, textureUniform1, bgfx::isValid(textureRegion1) ? textureRegion1 : dummy);
+			bgfx::setTexture(2, textureUniform2, bgfx::isValid(textureRegion2) ? textureRegion2 : dummy);
+			bgfx::setTexture(3, textureUniform3, bgfx::isValid(textureRegion3) ? textureRegion3 : dummy);
+			bgfx::setTexture(4, textureUniform4, bgfx::isValid(textureRegion4) ? textureRegion4 : dummy);
 
 			// submit vertices and triangles
 			tile->submit();

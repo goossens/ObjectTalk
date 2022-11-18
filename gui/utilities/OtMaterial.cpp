@@ -14,6 +14,7 @@
 #include "OtFunction.h"
 
 #include "OtColor.h"
+#include "OtFramework.h"
 #include "OtMaterial.h"
 
 
@@ -92,7 +93,7 @@ OtObject OtMaterialClass::init(size_t count, OtObject* parameters) {
 		std::string type = parameters[0]->operator std::string();
 
 		if (type == "normals") {
-			setNormals(parameters[1], parameters[2]);
+			setNormals(parameters[1]->operator std::string(), parameters[2]->operator std::string());
 
 		} else {
 			OtExcept("Invalid material type [%s]", type.c_str());
@@ -111,7 +112,7 @@ OtObject OtMaterialClass::init(size_t count, OtObject* parameters) {
 			setColor(parameters[1]->operator std::string());
 
 		} else if (type == "texture") {
-			setTexture(parameters[1]);
+			setTexture(parameters[1]->operator std::string());
 
 		} else if (type == "blendmap") {
 			setBlendMap(parameters[1]);
@@ -176,7 +177,7 @@ OtObject OtMaterialClass::setColor(const std::string& name) {
 //	OtMaterialClass::setAmbient
 //
 
-OtObject OtMaterialClass::setAmbient(const std::string c) {
+OtObject OtMaterialClass::setAmbient(const std::string& c) {
 	ambient = OtColorParseToVec3(c);
 	return shared();
 }
@@ -186,7 +187,7 @@ OtObject OtMaterialClass::setAmbient(const std::string c) {
 //	OtMaterialClass::setDiffuse
 //
 
-OtObject OtMaterialClass::setDiffuse(const std::string c) {
+OtObject OtMaterialClass::setDiffuse(const std::string& c) {
 	diffuse = OtColorParseToVec3(c);
 	return shared();
 }
@@ -196,7 +197,7 @@ OtObject OtMaterialClass::setDiffuse(const std::string c) {
 //	OtMaterialClass::setSpecular
 //
 
-OtObject OtMaterialClass::setSpecular(const std::string c) {
+OtObject OtMaterialClass::setSpecular(const std::string& c) {
 	specular = OtColorParseToVec3(c);
 	return shared();
 }
@@ -218,17 +219,6 @@ OtObject OtMaterialClass::setShininess(float s) {
 
 OtObject OtMaterialClass::setOpacity(float o) {
 	opacity = o;
-	return shared();
-}
-
-
-//
-//	OtMaterialClass::setTransparent
-//
-
-OtObject OtMaterialClass::setTransparent(bool flag)
-{
-	transparent = flag;
 	return shared();
 }
 
@@ -256,19 +246,28 @@ OtObject OtMaterialClass::setUvTransform(float ox, float oy, float rx, float ry,
 //	OtMaterialClass::setTexture
 //
 
-OtObject OtMaterialClass::setTexture(OtObject object) {
-	object->expectKindOf("Texture");
-	texture = object->cast<OtTextureClass>();
+OtObject OtMaterialClass::setTexture(const std::string& textureName) {
+	if (bgfx::isValid(texture)) {
+		OtExcept("Texture already specified for [Material]");
+	}
+
+	texture = OtFrameworkClass::instance()->getTexture(textureName);
 	return shared();
 }
 
 
-OtObject OtMaterialClass::setNormals(OtObject object1, OtObject object2) {
-	object1->expectKindOf("Texture");
-	object2->expectKindOf("Texture");
+OtObject OtMaterialClass::setNormals(const std::string& textureName, const std::string& normalsName) {
+	if (bgfx::isValid(texture)) {
+		OtExcept("Texture already specified for [Material]");
+	}
 
-	texture = object1->cast<OtTextureClass>();
-	normals = object2->cast<OtTextureClass>();
+	if (bgfx::isValid(normals)) {
+		OtExcept("Normals already specified for [Material]");
+	}
+
+	auto framework = OtFrameworkClass::instance();
+	texture = framework->getTexture(textureName);
+	normals = framework->getTexture(normalsName);
 	return shared();
 }
 
@@ -293,13 +292,13 @@ void OtMaterialClass::submit() {
 		blendmap->submit();
 		bgfx::setUniform(transformUniform, &uvTransform);
 
-	} else if (normals) {
-		texture->submit(1, textureUniform);
-		texture->submit(2, normalsUniform);
+	} else if (bgfx::isValid(normals)) {
+		bgfx::setTexture(1, textureUniform, texture);
+		bgfx::setTexture(2, normalsUniform, normals);
 		bgfx::setUniform(transformUniform, &uvTransform);
 
-	} else if (texture) {
-		texture->submit(1, textureUniform);
+	} else if (bgfx::isValid(texture)) {
+		bgfx::setTexture(1, textureUniform, texture);
 		bgfx::setUniform(transformUniform, &uvTransform);
 	}
 
@@ -322,10 +321,10 @@ int OtMaterialClass::getType() {
 	if (blendmap) {
 		return BLENDMAPPED;
 
-	} else if (normals) {
+	} else if (bgfx::isValid(normals)) {
 		return NORMALED;
 
-	} else if (texture) {
+	} else if (bgfx::isValid(texture)) {
 		return TEXTURED;
 
 	} else if (fixed) {
@@ -359,7 +358,6 @@ OtType OtMaterialClass::getMeta() {
 
 		type->set("setShininess", OtFunctionClass::create(&OtMaterialClass::setShininess));
 		type->set("setOpacity", OtFunctionClass::create(&OtMaterialClass::setOpacity));
-		type->set("setTransparent", OtFunctionClass::create(&OtMaterialClass::setTransparent));
 
 		type->set("setTexture", OtFunctionClass::create(&OtMaterialClass::setTexture));
 		type->set("setBlendMap", OtFunctionClass::create(&OtMaterialClass::setBlendMap));

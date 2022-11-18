@@ -9,10 +9,13 @@
 //	Include files
 //
 
+#include "bimg/bimg.h"
+
 #include "imgui.h"
 
 #include "OtFunction.h"
 
+#include "OtFramework.h"
 #include "OtMeter.h"
 
 
@@ -29,7 +32,7 @@ OtObject OtMeterClass::init(size_t count, OtObject* parameters) {
 			setMargin(parameters[1]->operator int());
 
 		case 1:
-			setTexture(parameters[0]);
+			setTexture(parameters[0]->operator std::string());
 
 		case 0:
 			break;
@@ -45,19 +48,16 @@ OtObject OtMeterClass::init(size_t count, OtObject* parameters) {
 //
 //	OtMeterClass::setTexture
 //
-OtObject OtMeterClass::setTexture(OtObject object) {
-	// a texture can be a texture object or the name of an inamge file
-	if (object->isKindOf("Texture")) {
-		texture = object->cast<OtTextureClass>();
 
-	} else if (object->isKindOf("String")) {
-		texture = OtTextureClass::create();
-		texture->loadImage(object->operator std::string());
-
-	} else {
-		OtExcept("Expected a [Texture] or [String] object, not a [%s]", object->getType()->getName().c_str());
+OtObject OtMeterClass::setTexture(const std::string& textureName) {
+	if (bgfx::isValid(texture)) {
+		OtExcept("Texture already set for [Meter] widget");
 	}
 
+	bimg::ImageContainer* image;
+	texture = OtFrameworkClass::instance()->getTexture(textureName, &image);
+	width = image->m_width;
+	height = image->m_height;
 	return shared();
 }
 
@@ -87,44 +87,45 @@ OtObject OtMeterClass::setLabel(const std::string& l) {
 //
 
 void OtMeterClass::render() {
+	// sanity check
+	if (!bgfx::isValid(texture)) {
+		OtExcept("No image provided for [Meter] widget");
+	}
+
 	// add margin if required
 	if (margin) {
 		ImGui::Dummy(ImVec2(0, margin));
 	}
 
-	if (texture) {
-		// calculate image dimensions
-		float width = texture->getWidth();
-		float fullHeight = texture->getHeight();
-		float steps = fullHeight / width;
-		float height = fullHeight / steps;
+	// calculate image dimensions
+	float steps = height / width;
+	float h = height / steps;
 
-		// calculate and set position
-		float indent = ImGui::GetCursorPosX();
-		float availableSpace = ImGui::GetWindowSize().x - indent;
+	// calculate and set position
+	float indent = ImGui::GetCursorPosX();
+	float availableSpace = ImGui::GetWindowSize().x - indent;
 
-		ImGui::SetCursorPos(ImVec2(
-			indent + (availableSpace - width) / 2,
-			ImGui::GetCursorPosY()));
+	ImGui::SetCursorPos(ImVec2(
+		indent + (availableSpace - width) / 2,
+		ImGui::GetCursorPosY()));
 
-			// render correct frame of image strip
-		float offset1 = std::floor(value / 100.0 * (steps - 1)) * height;
-		float offset2 = offset1 + height;
+	// render correct frame of image strip
+	float offset1 = std::floor(value / 100.0 * (steps - 1)) * h;
+	float offset2 = offset1 + h;
 
-		ImGui::Image(
-			(void*)(intptr_t) texture->getTextureHandle().idx,
-			ImVec2(width, height),
-			ImVec2(0, offset1 / fullHeight),
-			ImVec2(1, offset2 / fullHeight));
+	ImGui::Image(
+		(void*)(intptr_t) texture.idx,
+		ImVec2(width, h),
+		ImVec2(0, offset1 / height),
+		ImVec2(1, offset2 / height));
 
-			// render label if required
-		if (label.size()) {
-			ImGui::Dummy(ImVec2(0, 5));
-			ImVec2 size = ImGui::CalcTextSize(label.c_str());
-			ImVec2 pos = ImGui::GetCursorPos();
-			ImGui::SetCursorPos(ImVec2(indent + (availableSpace - size.x) / 2, pos.y));
-			ImGui::TextUnformatted(label.c_str());
-		}
+		// render label if required
+	if (label.size()) {
+		ImGui::Dummy(ImVec2(0, 5));
+		ImVec2 size = ImGui::CalcTextSize(label.c_str());
+		ImVec2 pos = ImGui::GetCursorPos();
+		ImGui::SetCursorPos(ImVec2(indent + (availableSpace - size.x) / 2, pos.y));
+		ImGui::TextUnformatted(label.c_str());
 	}
 
 	// add margin if required

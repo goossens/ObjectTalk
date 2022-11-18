@@ -12,10 +12,10 @@
 //	Include files
 //
 
+#include "bimg/bimg.h"
 #include "glm/glm.hpp"
 
 #include "OtController.h"
-#include "OtImage.h"
 #include "OtGui.h"
 
 

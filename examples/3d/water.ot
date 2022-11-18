@@ -18,7 +18,7 @@ class App : gui.App {
 
 		var water = gui.Water()
 			.setSize(4000)
-			.setNormalMap(gui.Texture(__DIR__ + "/assets/waternormals.jpg"));
+			.setNormalMap(__DIR__ + "/assets/waternormals.jpg");
 
 		var scene = gui.Scene()
 			.add(sun)

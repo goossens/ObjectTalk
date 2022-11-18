@@ -68,7 +68,6 @@
 #include "OtHeightMap.h"
 #include "OtMaterial.h"
 #include "OtNoiseMap.h"
-#include "OtTexture.h"
 #include "OtMatrix.h"
 
 #include "OtGeometry.h"
@@ -100,6 +99,8 @@
 #include "OtPlane.h"
 #include "OtVec2.h"
 #include "OtVec3.h"
+
+#include "OtObj.h"
 
 
 //
@@ -145,10 +146,10 @@ void OtGuiClass::registerModule() {
 		module->set("HeightMap", OtClassClass::create(OtHeightMapClass::getMeta()));
 		module->set("Material", OtClassClass::create(OtMaterialClass::getMeta()));
 		module->set("NoiseMap", OtClassClass::create(OtNoiseMapClass::getMeta()));
-		module->set("Texture", OtClassClass::create(OtTextureClass::getMeta()));
 		module->set("Matrix", OtClassClass::create(OtMatrixClass::getMeta()));
 
 		module->set("getDefaultMaterials", OtFunctionClass::create(&OtMaterialClass::getDefaultMaterials));
+		module->set("loadObj", OtFunctionClass::create(&OtObjLoad));
 
 		module->set("Geometry", OtClassClass::create(OtGeometryClass::getMeta()));
 		module->set("BoxGeometry", OtClassClass::create(OtBoxGeometryClass::getMeta()));

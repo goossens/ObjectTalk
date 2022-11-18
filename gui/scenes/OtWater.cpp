@@ -156,9 +156,12 @@ OtObject OtWaterClass::setSize(int s) {
 //	OtWaterClass::setNormalMap
 //
 
-OtObject OtWaterClass::setNormalMap(OtObject object) {
-	object->expectKindOf("Texture");
-	normals = object->cast<OtTextureClass>();
+OtObject OtWaterClass::setNormalMap(const std::string& normalsName) {
+	if (bgfx::isValid(normals)) {
+		OtExcept("Normal map already set for [Water]");
+	}
+
+	normals = OtFrameworkClass::instance()->getTexture(normalsName);
 	return shared();
 }
 
@@ -281,7 +284,7 @@ void OtWaterClass::renderRefraction(OtRenderingContext context) {
 
 void OtWaterClass::renderWater(OtRenderingContext context) {
 	// sanity check
-	if (!normals) {
+	if (!bgfx::isValid(normals)) {
 		OtExcept("Normals map not specified for [Water] object");
 	}
 
@@ -290,7 +293,7 @@ void OtWaterClass::renderWater(OtRenderingContext context) {
 	bgfx::setIndexBuffer(indexBuffer);
 
 	// set normal map, reflection and refraction
-	normals->submit(1, normalsUniform);
+	bgfx::setTexture(1, normalsUniform, normals);
 	bgfx::setTexture(2, reflectionUniform, reflectionTextures[0]);
 	bgfx::setTexture(3, refractionUniform, refractionTextures[0]);
 

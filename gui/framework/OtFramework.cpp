@@ -13,6 +13,7 @@
 #include <thread>
 
 #include "OtCerr.h"
+#include "OtException.h"
 #include "OtFunction.h"
 #include "OtLibuv.h"
 #include "OtOS.h"

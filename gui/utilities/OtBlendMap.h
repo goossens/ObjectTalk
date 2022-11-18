@@ -12,8 +12,9 @@
 //	Include files
 //
 
+#include "bgfx/bgfx.h"
+
 #include "OtGui.h"
-#include "OtTexture.h"
 
 
 //
@@ -29,8 +30,8 @@ public:
 	OtBlendMapClass();
 	~OtBlendMapClass();
 
-	// initialize heightmap
-	void init(OtObject blendmap, OtObject textureN, OtObject textureR, OtObject textureG, OtObject textureB);
+	// initialize blendmap
+	void init(const std::string& bm, const std::string& tn, const std::string& tr, const std::string& tg, const std::string& tb);
 
 	// submit shader data to BGFX
 	void submit();
@@ -42,20 +43,17 @@ public:
 	static OtBlendMap create();
 
 private:
-	// validate and cast object to a texture
-	OtTexture toTexture(OtObject object);
-
-	// textures
-	OtTexture blendmap;
-	OtTexture textureN;
-	OtTexture textureR;
-	OtTexture textureG;
-	OtTexture textureB;
-
 	// uniforms
 	bgfx::UniformHandle blendmapUniform = BGFX_INVALID_HANDLE;
 	bgfx::UniformHandle textureUniformN = BGFX_INVALID_HANDLE;
 	bgfx::UniformHandle textureUniformR = BGFX_INVALID_HANDLE;
 	bgfx::UniformHandle textureUniformG = BGFX_INVALID_HANDLE;
 	bgfx::UniformHandle textureUniformB = BGFX_INVALID_HANDLE;
+
+	// textures
+	bgfx::TextureHandle blendmap = BGFX_INVALID_HANDLE;
+	bgfx::TextureHandle textureN = BGFX_INVALID_HANDLE;
+	bgfx::TextureHandle textureR = BGFX_INVALID_HANDLE;
+	bgfx::TextureHandle textureG = BGFX_INVALID_HANDLE;
+	bgfx::TextureHandle textureB = BGFX_INVALID_HANDLE;
 };

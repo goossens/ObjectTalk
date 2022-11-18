@@ -12,6 +12,9 @@
 #include <cstring>
 
 #include "bx/timer.h"
+#include "bx/allocator.h"
+#include "bx/file.h"
+#include "bimg/decode.h"
 #include "debugdraw.h"
 #include "imgui.h"
 
@@ -71,6 +74,17 @@ void OtFrameworkClass::initBGFX() {
 
 	// initialize time management
 	startTime = lastTime = bx::getHPCounter();
+
+	// create dummy image and texture
+	static bx::DefaultAllocator allocator;
+	dummyImage = bimg::imageAlloc(&allocator, bimg::TextureFormat::R8, 1, 1, 0, 1, false, false);
+	const bgfx::Memory* mem = bgfx::makeRef(dummyImage->m_data, dummyImage->m_size);
+
+	dummyTexture = bgfx::createTexture2D(
+		1, 1, 0, 1,
+		bgfx::TextureFormat::Enum(bimg::TextureFormat::R8),
+		BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
+		mem);
 }
 
 
@@ -159,6 +173,102 @@ float OtFrameworkClass::getTime() {
 }
 
 
+
+
+//
+//	OtFrameworkClass::getImage
+//
+
+bimg::ImageContainer* OtFrameworkClass::getImage(const std::string& file, bool powerof2, bool square) {
+	// load image if required
+	if (!imageRegistry.has(file)) {
+		// load named image
+		static bx::DefaultAllocator allocator;
+		static bx::FileReader reader;
+
+		if (!bx::open(&reader, file.c_str())) {
+			OtExcept("Can't open image [%s]", file.c_str());
+		}
+
+		uint32_t size = (uint32_t) bx::getSize(&reader);
+		void* data = BX_ALLOC(&allocator, size);
+		bx::read(&reader, data, size, bx::ErrorAssert{});
+		bx::close(&reader);
+
+		bimg::ImageContainer* image = bimg::imageParse(&allocator, data, size);
+		BX_FREE(&allocator, data);
+
+		if (!image) {
+			OtExcept("Can't process image in [%s]", file.c_str());
+		}
+
+		// validate sides are power of 2 (if required)
+		if (powerof2 && !(bx::isPowerOf2(image->m_width))) {
+			bimg::imageFree(image);
+			OtExcept("Image width %d is not a power of 2", image->m_width);
+		}
+
+		if (powerof2 && !(bx::isPowerOf2(image->m_height))) {
+			bimg::imageFree(image);
+			OtExcept("Image height %d is not a power of 2", image->m_height);
+		}
+
+		// validate squareness (if required)
+		if (square && image->m_width != image->m_height) {
+			bimg::imageFree(image);
+			OtExcept("Image must be square not %d by %d", image->m_width, image->m_height);
+		}
+
+		// add image to registry
+		imageRegistry.set(file, image);
+	}
+
+	// return image
+	return imageRegistry.get(file);
+}
+
+
+//
+//	OtFrameworkClass::getTexture
+//
+
+bgfx::TextureHandle OtFrameworkClass::getTexture(const std::string& file, bimg::ImageContainer** image) {
+	bgfx::TextureHandle texture;
+
+	// create texture if required
+	if (!textureRegistry.has(file)) {
+		// get the image
+		bimg::ImageContainer* image = getImage(file);
+		const bgfx::Memory* mem = bgfx::makeRef(image->m_data, image->m_size);
+
+		// create texture
+		texture = bgfx::createTexture2D(
+			uint16_t(image->m_width),
+			uint16_t(image->m_height),
+			1 < image->m_numMips,
+			image->m_numLayers,
+			bgfx::TextureFormat::Enum(image->m_format),
+			BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
+			mem);
+
+		// add texture to registry
+		textureRegistry.set(file, texture);
+		textureImageMap[texture.idx] = image;
+
+	} else {
+		texture = textureRegistry.get(file);
+	}
+
+	// return (if required)
+	if (image) {
+		*image = textureImageMap[texture.idx];
+	}
+
+	// return texture
+	return texture;
+}
+
+
 //
 //	OtFrameworkClass::renderBGFX
 //
@@ -180,6 +290,17 @@ void OtFrameworkClass::renderBGFX() {
 //
 
 void OtFrameworkClass::endBGFX() {
+	bimg::imageFree(dummyImage);
+	bgfx::destroy(dummyTexture);
+
+	textureRegistry.iterateValues([] (bgfx::TextureHandle& texture){
+		bgfx::destroy(texture);
+	});
+
+	imageRegistry.iterateValues([] (bimg::ImageContainer*& image){
+		bimg::imageFree(image);
+	});
+
 	ddShutdown();
 	bgfx::shutdown();
 }

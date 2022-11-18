@@ -12,7 +12,8 @@
 //	Include files
 //
 
-#include "OtTexture.h"
+#include "bgfx/bgfx.h"
+
 #include "OtWidget.h"
 
 
@@ -29,7 +30,7 @@ public:
 	OtObject init(size_t count, OtObject* parameters);
 
 	// specify a new picture
-	OtObject setTexture(OtObject texture);
+	OtObject setTexture(const std::string& texture);
 
 	// set the margin around the picture
 	OtObject setMargin(int margin);
@@ -45,6 +46,9 @@ public:
 
 private:
 	// properties
-	OtTexture texture;
+	bgfx::TextureHandle texture = BGFX_INVALID_HANDLE;
 	int margin = 5;
+
+	size_t width;
+	size_t height;
 };

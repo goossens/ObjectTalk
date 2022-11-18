@@ -12,7 +12,8 @@
 //	Include files
 //
 
-#include "OtTexture.h"
+#include "bgfx/bgfx.h"
+
 #include "OtWidget.h"
 
 
@@ -29,7 +30,7 @@ public:
 	OtObject init(size_t count, OtObject* parameters);
 
 	// specify a new texture
-	OtObject setTexture(OtObject texture);
+	OtObject setTexture(const std::string& texture);
 
 	// set the margin around the knob
 	OtObject setMargin(int margin);
@@ -55,9 +56,12 @@ public:
 
 private:
 	// properties
-	OtTexture texture;
+	bgfx::TextureHandle texture = BGFX_INVALID_HANDLE;
 	std::string label;
 	int margin = 5;
 	float value;
 	OtObject callback;
+
+	size_t width;
+	size_t height;
 };

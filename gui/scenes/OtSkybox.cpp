@@ -15,7 +15,7 @@
 
 #include "OtFunction.h"
 
-#include "OtImage.h"
+#include "OtFramework.h"
 #include "OtSkybox.h"
 #include "OtSkyboxShader.h"
 
@@ -133,7 +133,9 @@ OtSkyboxClass::~OtSkyboxClass() {
 	bgfx::destroy(indexBuffer);
 	bgfx::destroy(cubemapUniform);
 
-	clearCubemap();
+	if (bgfx::isValid(cubemap)) {
+		bgfx::destroy(cubemap);
+	}
 
 	bgfx::destroy(shader);
 }
@@ -162,57 +164,18 @@ OtObject OtSkyboxClass::init(size_t count, OtObject* parameters) {
 
 
 //
-//	OtSkyboxClass::clearCubemap
-//
-
-void OtSkyboxClass::clearCubemap() {
-	if (bgfx::isValid(cubemap)) {
-		bgfx::destroy(cubemap);
-		cubemap = BGFX_INVALID_HANDLE;
-	}
-
-	if (posxImage) {
-		bimg::imageFree(posxImage);
-		posxImage = nullptr;
-	}
-
-	if (negxImage) {
-		bimg::imageFree(negxImage);
-		negxImage = nullptr;
-	}
-
-	if (posyImage) {
-		bimg::imageFree(posyImage);
-		posyImage = nullptr;
-	}
-
-	if (negyImage) {
-		bimg::imageFree(negyImage);
-		negyImage = nullptr;
-	}
-
-	if (poszImage) {
-		bimg::imageFree(poszImage);
-		poszImage = nullptr;
-	}
-
-	if (negzImage) {
-		bimg::imageFree(negzImage);
-		negzImage = nullptr;
-	}
-}
-
-
-//
 //	OtSkyboxClass::setCubemap
 //
 
 OtObject OtSkyboxClass::setCubemap(const std::string& posx, const std::string& negx, const std::string& posy, const std::string& negy, const std::string& posz, const std::string& negz) {
-	// clear previous cubemap
-	clearCubemap();
+	// sanity check
+	if (bgfx::isValid(cubemap)) {
+		OtExcept("Cubemap already set for [Skybox]");
+	}
 
 	// load first side
-	bimg::ImageContainer* image = OtLoadImage(posx, true, true);
+	auto framework = OtFrameworkClass::instance();
+	bimg::ImageContainer* image = framework->getImage(posx, true, true);
 	uint16_t imageSize = image->m_width;
 	bimg::TextureFormat::Enum imageFormat = image->m_format;
 
@@ -224,50 +187,45 @@ OtObject OtSkyboxClass::setCubemap(const std::string& posx, const std::string& n
 	bgfx::updateTextureCube(cubemap, 0, 0, 0, 0, 0, imageSize, imageSize, mem);
 
 	// load and store other sides
-	image = OtLoadImage(negx, true, true);
+	image = framework->getImage(negx, true, true);
 
 	if (image->m_width != imageSize || image->m_format != imageFormat) {
-		bimg::imageFree(image);
 		OtExcept("Cubemap image (negx] does not have same size or format as others");
 	}
 
 	mem = bgfx::makeRef(image->m_data, image->m_size);
 	bgfx::updateTextureCube(cubemap, 0, 1, 0, 0, 0, imageSize, imageSize, mem);
 
-	image = OtLoadImage(posy, true, true);
+	image = framework->getImage(posy, true, true);
 
 	if (image->m_width != imageSize || image->m_format != imageFormat) {
-		bimg::imageFree(image);
 		OtExcept("Cubemap image (posy] does not have same size or format as others");
 	}
 
 	mem = bgfx::makeRef(image->m_data, image->m_size);
 	bgfx::updateTextureCube(cubemap, 0, 2, 0, 0, 0, imageSize, imageSize, mem);
 
-	image = OtLoadImage(negy, true, true);
+	image = framework->getImage(negy, true, true);
 
 	if (image->m_width != imageSize || image->m_format != imageFormat) {
-		bimg::imageFree(image);
 		OtExcept("Cubemap image (negy] does not have same size or format as others");
 	}
 
 	mem = bgfx::makeRef(image->m_data, image->m_size);
 	bgfx::updateTextureCube(cubemap, 0, 3, 0, 0, 0, imageSize, imageSize, mem);
 
-	image = OtLoadImage(posz, true, true);
+	image = framework->getImage(posz, true, true);
 
 	if (image->m_width != imageSize || image->m_format != imageFormat) {
-		bimg::imageFree(image);
 		OtExcept("Cubemap image (posz] does not have same size or format as others");
 	}
 
 	mem = bgfx::makeRef(image->m_data, image->m_size);
 	bgfx::updateTextureCube(cubemap, 0, 4, 0, 0, 0, imageSize, imageSize, mem);
 
-	image = OtLoadImage(negz, true, true);
+	image = framework->getImage(negz, true, true);
 
 	if (image->m_width != imageSize || image->m_format != imageFormat) {
-		bimg::imageFree(image);
 		OtExcept("Cubemap image (negz] does not have same size or format as others");
 	}
 
@@ -285,7 +243,7 @@ OtObject OtSkyboxClass::setCubemap(const std::string& posx, const std::string& n
 void OtSkyboxClass::render(OtRenderingContext context) {
 	// sanity check
 	if (!bgfx::isValid(cubemap)) {
-		OtExcept("[cubemap] missing for [skybox]");
+		OtExcept("[cubemap] missing for [Skybox]");
 	}
 
 	// ensure skybox is centered at camera position

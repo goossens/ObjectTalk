@@ -16,6 +16,8 @@
 #include <thread>
 #include <unordered_map>
 
+#include "bgfx/bgfx.h"
+
 #include "OtConcurrentQueue.h"
 #include "OtHash.h"
 
@@ -24,7 +26,6 @@
 #include "OtSceneObject.h"
 #include "OtTerrainMap.h"
 #include "OtTerrainTile.h"
-#include "OtTexture.h"
 
 
 //
@@ -62,10 +63,10 @@ public:
 
 	OtObject setTextureScale(float scale);
 
-	OtObject setRegion1Texture(OtObject object);
-	OtObject setRegion2Texture(OtObject object);
-	OtObject setRegion3Texture(OtObject object);
-	OtObject setRegion4Texture(OtObject object);
+	OtObject setRegion1Texture(const std::string& texture);
+	OtObject setRegion2Texture(const std::string& texture);
+	OtObject setRegion3Texture(const std::string& texture);
+	OtObject setRegion4Texture(const std::string& texture);
 
 	// update state
 	void update(OtRenderingContext context) override;
@@ -105,10 +106,10 @@ protected:
 
 	float textureScale = 50.0;
 
-	OtTexture textureRegion1;
-	OtTexture textureRegion2;
-	OtTexture textureRegion3;
-	OtTexture textureRegion4;
+	bgfx::TextureHandle textureRegion1 = BGFX_INVALID_HANDLE;
+	bgfx::TextureHandle textureRegion2 = BGFX_INVALID_HANDLE;
+	bgfx::TextureHandle textureRegion3 = BGFX_INVALID_HANDLE;
+	bgfx::TextureHandle textureRegion4 = BGFX_INVALID_HANDLE;
 
 	// uniforms
 	bgfx::UniformHandle terrainUniform = BGFX_INVALID_HANDLE;

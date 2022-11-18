@@ -12,11 +12,11 @@
 //	Include files
 //
 
+#include "bgfx/bgfx.h"
 #include "glm/glm.hpp"
 
 #include "OtBlendMap.h"
 #include "OtGui.h"
-#include "OtTexture.h"
 
 
 //
@@ -50,21 +50,25 @@ public:
 	OtObject setMaterial(const std::string& name);
 	OtObject setColor(const std::string& color);
 
-	OtObject setAmbient(const std::string c);
-	OtObject setDiffuse(const std::string c) ;
-	OtObject setSpecular(const std::string c);
+	OtObject setAmbient(const std::string& c);
+	OtObject setDiffuse(const std::string& c) ;
+	OtObject setSpecular(const std::string& c);
 	OtObject setShininess(float s);
 	OtObject setOpacity(float t);
-	OtObject setTransparent(bool flag);
 
-	OtObject setTexture(OtObject texture);
-	OtObject setNormals(OtObject texture, OtObject normals);
+	OtObject setTexture(const std::string& texture);
+	OtObject setNormals(const std::string& texture, const std::string& normals);
 	OtObject setBlendMap(OtObject blendmap);
 
 	void setColorVector(const glm::vec3& c) { color = c; }
 	void setAmbientVector(const glm::vec3& c) { ambient = c; }
 	void setDiffuseVector(const glm::vec3& c) { diffuse = c; }
 	void setSpecularVector(const glm::vec3& c) { specular = c; }
+
+	void setColorRGB(float r, float g, float b) { color = glm::vec3(r, g, b); }
+	void setAmbientRGB(float r, float g, float b) { ambient = glm::vec3(r, g, b); }
+	void setDiffuseRGB(float r, float g, float b) { diffuse = glm::vec3(r, g, b); }
+	void setSpecularRGB(float r, float g, float b) { specular = glm::vec3(r, g, b); }
 
 	// set UV transformation
 	OtObject setUvTransform(
@@ -105,7 +109,6 @@ private:
 	glm::vec3 specular = { 0.4, 0.4, 0.4 };
 	float shininess = 20;
 	float opacity = 1.0;
-	bool transparent = false;
 
 	glm::mat3 uvTransform = glm::mat3(1.0);
 
@@ -118,7 +121,7 @@ private:
 	bgfx::UniformHandle textureUniform = BGFX_INVALID_HANDLE;
 	bgfx::UniformHandle normalsUniform = BGFX_INVALID_HANDLE;
 
-	OtTexture texture;
-	OtTexture normals;
+	bgfx::TextureHandle texture = BGFX_INVALID_HANDLE;
+	bgfx::TextureHandle normals = BGFX_INVALID_HANDLE;
 	OtBlendMap blendmap;
 };

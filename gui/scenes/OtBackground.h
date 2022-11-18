@@ -12,9 +12,10 @@
 //	Include files
 //
 
+#include "bgfx/bgfx.h"
+
 #include "OtSceneObject.h"
 #include "OtPlaneGeometry.h"
-#include "OtTexture.h"
 
 
 //
@@ -37,7 +38,7 @@ public:
 	OtObject setColor(const std::string& color);
 
 	// update texture
-	OtObject setTexture(OtObject texture);
+	OtObject setTexture(const std::string& texture);
 
 	// render in BGFX
 	void render(OtRenderingContext context) override;
@@ -49,11 +50,12 @@ public:
 	static OtBackground create();
 
 protected:
-	// geometry and material
+	// properties
 	OtPlaneGeometry plane;
 
 	glm::vec3 color = glm::vec3(0.0);
-	OtTexture texture;
+	bgfx::TextureHandle texture = BGFX_INVALID_HANDLE;
+	bool hasTexture = false;
 
 	// BGFX shader
 	bgfx::UniformHandle transformUniform = BGFX_INVALID_HANDLE;

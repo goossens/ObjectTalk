@@ -12,6 +12,7 @@
 #include "OtFunction.h"
 
 #include "OtBlendMap.h"
+#include "OtFramework.h"
 
 
 //
@@ -44,22 +45,13 @@ OtBlendMapClass::~OtBlendMapClass() {
 //	OtBlendMapClass::init
 //
 
-void OtBlendMapClass::init(OtObject bm, OtObject tn, OtObject tr, OtObject tg, OtObject tb) {
-	blendmap = toTexture(bm);
-	textureN = toTexture(tn);
-	textureR = toTexture(tr);
-	textureG = toTexture(tg);
-	textureB = toTexture(tb);
-}
-
-
-//
-//	OtBlendMapClass::toTexture
-//
-
-OtTexture OtBlendMapClass::toTexture(OtObject object) {
-	object->expectKindOf("Texture");
-	return object->cast<OtTextureClass>();
+void OtBlendMapClass::init(const std::string& bm, const std::string& tn, const std::string& tr, const std::string& tg, const std::string& tb) {
+	auto framework = OtFrameworkClass::instance();
+	blendmap = framework->getTexture(bm);
+	textureN = framework->getTexture(tn);
+	textureR = framework->getTexture(tr);
+	textureG = framework->getTexture(tg);
+	textureB = framework->getTexture(tb);
 }
 
 
@@ -68,11 +60,11 @@ OtTexture OtBlendMapClass::toTexture(OtObject object) {
 //
 
 void OtBlendMapClass::submit() {
-	blendmap->submit(1, blendmapUniform);
-	textureN->submit(2, textureUniformN);
-	textureR->submit(3, textureUniformR);
-	textureG->submit(4, textureUniformG);
-	textureB->submit(5, textureUniformB);
+	bgfx::setTexture(1, blendmapUniform, blendmap);
+	bgfx::setTexture(2, textureUniformN, textureN);
+	bgfx::setTexture(3, textureUniformR, textureR);
+	bgfx::setTexture(4, textureUniformG, textureG);
+	bgfx::setTexture(5, textureUniformB, textureB);
 }
 
 

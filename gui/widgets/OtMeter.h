@@ -12,7 +12,8 @@
 //	Include files
 //
 
-#include "OtTexture.h"
+#include "bgfx/bgfx.h"
+
 #include "OtWidget.h"
 
 
@@ -29,7 +30,7 @@ public:
 	OtObject init(size_t count, OtObject* parameters);
 
 	// specify a new texture
-	OtObject setTexture(OtObject texture);
+	OtObject setTexture(const std::string& texture);
 
 	// set the margin around the meter
 	OtObject setMargin(int margin);
@@ -52,8 +53,11 @@ public:
 
 private:
 	// properties
-	OtTexture texture;
+	bgfx::TextureHandle texture = BGFX_INVALID_HANDLE;
 	int margin = 5;
 	float value;
 	std::string label;
+
+	size_t width;
+	size_t height;
 };

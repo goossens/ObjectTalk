@@ -39,7 +39,7 @@ class App : gui.App {
 				.setWidthSegments(64)
 				.setHeightSegments(32))
 			.setMaterial(gui.Material()
-				.setTexture(gui.Texture(__DIR__ + "/assets/earth.png"))
+				.setTexture(__DIR__ + "/assets/earth.png")
 				.setDoubleSided());
 
 		var clouds = gui.Mesh()
@@ -48,7 +48,7 @@ class App : gui.App {
 				.setWidthSegments(64)
 				.setHeightSegments(32))
 			.setMaterial(gui.Material()
-				.setTexture(gui.Texture(__DIR__ + "/assets/clouds.png"))
+				.setTexture(__DIR__ + "/assets/clouds.png")
 				.setDoubleSided());
 
 		var earth = gui.Group()

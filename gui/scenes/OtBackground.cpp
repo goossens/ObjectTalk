@@ -45,6 +45,9 @@ OtBackgroundClass::OtBackgroundClass() {
 	backgroundUniform = bgfx::createUniform("u_background", bgfx::UniformType::Vec4, 2);
 	textureUniform = bgfx::createUniform("s_texture", bgfx::UniformType::Sampler);
 
+	// get dummy texture
+	texture = OtFrameworkClass::instance()->getDummyTexture();
+
 	// initialize shader
 	bgfx::RendererType::Enum type = bgfx::getRendererType();
 
@@ -74,7 +77,7 @@ OtBackgroundClass::~OtBackgroundClass() {
 
 OtObject OtBackgroundClass::init(size_t count, OtObject* parameters) {
 	if (count == 1) {
-		setTexture(parameters[0]);
+		setTexture(parameters[0]->operator std::string());
 
 	} else if (count != 0) {
 		OtExcept("[Background] constructor expects 0 or 1 arguments (not %ld)", count);
@@ -98,9 +101,13 @@ OtObject OtBackgroundClass::setColor(const std::string& name) {
 //	OtBackgroundClass::setTexture
 //
 
-OtObject OtBackgroundClass::setTexture(OtObject object) {
-	object->expectKindOf("Texture");
-	texture = object->cast<OtTextureClass>();
+OtObject OtBackgroundClass::setTexture(const std::string& textureName) {
+	if (hasTexture) {
+		OtExcept("Texture already set for [Background]");
+	}
+
+	texture = OtFrameworkClass::instance()->getTexture(textureName);
+	hasTexture = true;
 	return shared();
 }
 
@@ -120,11 +127,11 @@ void OtBackgroundClass::render(OtRenderingContext context) {
 	bgfx::setUniform(transformUniform, &transform);
 
 	glm::vec4 uniforms[2];
-	uniforms[0].x = texture ? 1.0 : 0.0;
+	uniforms[0].x = hasTexture ? 1.0 : 0.0;
 	uniforms[1] = glm::vec4(color, 1.0);
 	bgfx::setUniform(backgroundUniform, &uniforms, 2);
 
-	(texture ? texture : OtTextureClass::dummy())->submit(0, textureUniform);
+	bgfx::setTexture(0, textureUniform, texture);
 
 	// submit vertices and triangles
 	bgfx::setVertexBuffer(0, plane->getVertexBuffer());

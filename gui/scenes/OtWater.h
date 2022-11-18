@@ -12,10 +12,11 @@
 //	Include files
 //
 
+#include "bgfx/bgfx.h"
+
 #include "OtController.h"
 #include "OtMaterial.h"
 #include "OtObject3d.h"
-#include "OtTexture.h"
 
 
 //
@@ -35,7 +36,7 @@ public:
 	OtObject setSize(int size);
 
 	// set normal map
-	OtObject setNormalMap(OtObject normals);
+	OtObject setNormalMap(const std::string& normals);
 
 	// set the scale of the normals
 	OtObject setNormalScale(float scale);
@@ -64,7 +65,7 @@ protected:
 	void updateFrameBuffers(float aspectRatio);
 
 	// normal map
-	OtTexture normals;
+	bgfx::TextureHandle normals = BGFX_INVALID_HANDLE;
 
 	// size of water plane
 	float size = 1000.0;

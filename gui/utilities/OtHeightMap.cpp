@@ -21,6 +21,7 @@
 #include "OtFunction.h"
 
 #include "OtController.h"
+#include "OtFramework.h"
 #include "OtHeightMap.h"
 
 
@@ -69,7 +70,7 @@ OtObject OtHeightMapClass::loadMap(const std::string& file) {
 	}
 
 	// load height map
-	bimg::ImageContainer* image = OtLoadImage(file);
+	bimg::ImageContainer* image = OtFrameworkClass::instance()->getImage(file);
 
 	// allocate heightmap
 	width = image->m_width;
@@ -90,9 +91,6 @@ OtObject OtHeightMapClass::loadMap(const std::string& file) {
 			convertImage(image);
 			break;
 	}
-
-	// free image resources
-	bimg::imageFree(image);
 
 	// notify observers
 	notify();

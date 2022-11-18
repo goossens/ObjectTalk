@@ -76,7 +76,7 @@ OtObject OtObjLoad(const std::string& filename) {
 
 		// do we have a texture?
 		if (i->diffuse_texname.length() > 0) {
-			material->setTexture(path / i->diffuse_texname);
+			material->setTexture((path / i->diffuse_texname).string());
 		}
 
 		// add material to registry

@@ -86,3 +86,12 @@ The roboto font is made available by
 [Google](https://fonts.google.com/specimen/Roboto)
 under the
 [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+## Trees
+
+* Hazelnut Tree by
+[felixbdesign](https://free3d.com/3d-model/hazelnut-bush-290678.html)
+released under a Personal Use License
+* Maple Tree by
+[felixbdesign](https://free3d.com/3d-model/maple-tree-262328.html)
+released under a Personal Use License

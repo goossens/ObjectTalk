@@ -1,0 +1,57 @@
+#!/usr/local/bin/ot
+
+//	ObjectTalk Scripting Language
+//	Copyright (c) 2020-2022 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var gui = import("gui");
+
+class App : gui.App {
+		function setup(this) {
+		var ambient = gui.Ambient();
+
+		var light = gui.Light()
+			.setDirection(50, 70, 30)
+			.castShadow(200, 1, 200);
+
+		var fog = gui.Fog()
+			.setColor("#79838e")
+			.setDistances(80, 250);
+
+		var skybox = gui.Skybox(
+			__DIR__ + "/assets/sky/right.jpg",
+			__DIR__ + "/assets/sky/left.jpg",
+			__DIR__ + "/assets/sky/top.jpg",
+			__DIR__ + "/assets/sky/bottom.jpg",
+			__DIR__ + "/assets/sky/front.jpg",
+			__DIR__ + "/assets/sky/back.jpg");
+
+		var model = gui.loadObj(__DIR__ + "/assets/maple.obj");
+
+		var scene = gui.Scene()
+			.add(ambient)
+			.add(light)
+			.add(fog)
+			.add(model)
+			.add(skybox);
+
+		var camera = gui.Camera()
+			.setPerspective(45, 0.1, 1000)
+			.setCircleTargetMode()
+			.setPitchLimits(0.1, pi / 2.0 - 0.1)
+			.setPitch(0.2)
+			.setDistanceLimits(20.0, 300.0)
+			.setDistance(100.0);
+
+		var view = gui.View()
+			.setCamera(camera)
+			.setScene(scene);
+
+		this.add(view);
+	}
+}
+
+var app = App();
+os.runGUI();

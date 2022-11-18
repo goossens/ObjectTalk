@@ -36,11 +36,11 @@ class App : gui.App {
 				.setHeightSegments(200))
 			.setMaterial(gui.Material()
 				.setBlendMap(gui.BlendMap(
-					gui.Texture(__DIR__ + "/assets/blendmap.png"),
-					gui.Texture(__DIR__ + "/assets/grass.png"),
-					gui.Texture(__DIR__ + "/assets/mud.png"),
-					gui.Texture(__DIR__ + "/assets/grassflowers.png"),
-					gui.Texture(__DIR__ + "/assets/path.png"))))
+					__DIR__ + "/assets/blendmap.png",
+					__DIR__ + "/assets/grass.png",
+					__DIR__ + "/assets/mud.png",
+					__DIR__ + "/assets/grassflowers.png",
+					__DIR__ + "/assets/path.png")))
 			.castShadow(true)
 			.receiveShadow(true)
 			.rotateX(-pi / 2.0);
@@ -48,7 +48,7 @@ class App : gui.App {
 		var trees = gui.Mesh()
 			.setGeometry(gui.ModelGeometry(__DIR__ + "/assets/pine.obj"))
 			.setMaterial(gui.Material()
-				.setTexture(gui.Texture(__DIR__ + "/assets/pine.png"))
+				.setTexture(__DIR__ + "/assets/pine.png")
 				.setDoubleSided())
 			.castShadow(true)
 			.receiveShadow(true);

@@ -228,6 +228,8 @@ OtType OtLightClass::getMeta() {
 		type->set("setSpecular", OtFunctionClass::create(&OtLightClass::setSpecular));
 
 		type->set("castShadow", OtFunctionClass::create(&OtLightClass::castShadow));
+
+		type->set("renderFrustum", OtFunctionClass::create(&OtLightClass::renderFrustum));
 	}
 
 	return type;

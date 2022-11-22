@@ -215,9 +215,9 @@ var alsoNothing = Object();
 </code></pre>
             <p><strong>Booleans</strong></p>
             <p>
-              <a href="reference.html#boolean">Booleans</a> in ObjectTalk can
-              only hold two logical values: true and false. The default global
-              scope defines the variables <strong>true</strong> and
+              <a href="classes.html#boolean">Booleans</a> in ObjectTalk can only
+              hold two logical values: true and false. The default global scope
+              defines the variables <strong>true</strong> and
               <strong>false</strong> as a convenience. A large number of
               language operators or member functions return Booleans as a
               result.
@@ -228,7 +228,7 @@ var bool3 = !bool2;
 </code></pre>
             <p><strong>Integers</strong></p>
             <p>
-              <a href="reference.html#integer">Integers</a> are signed whole
+              <a href="classes.html#integer">Integers</a> are signed whole
               numbers with no fractional component, such as 42, +1 and -23. On
               most systems, this number is implemented as a 64-bit number
               meaning that the extremes are -9,223,372,036,854,775,808 and
@@ -251,7 +251,7 @@ var hexadecimalInteger = 0x11;     // 17 in hexadecimal notation
 </code></pre>
             <p><strong>Reals</strong></p>
             <p>
-              <a href="reference.html#real">Reals</a> are signed floating point
+              <a href="classes.html#real">Reals</a> are signed floating point
               numbers with a fractional component, such as 3.14159, 0.1, and
               -273.15. Reals are implemented using 8 bytes and have a range of
               1.7E +/- 308 (15 digits).
@@ -270,7 +270,7 @@ var exponentDouble = -1.21875e1;
             </p>
             <p><strong>Strings</strong></p>
             <p>
-              <a href="reference.html#string">Strings</a> are a series of
+              <a href="classes.html#string">Strings</a> are a series of
               characters, such as &quot;hello, world&quot; or
               &quot;albatross&quot;. ObjectTalk strings are instances of the
               String class. Strings are made up of unicode characters encoded in
@@ -296,10 +296,12 @@ var message = &quot;\tMost Europeans like the \u00C4.\n&quot;;
 </code></pre>
             <p><strong>Functions</strong></p>
             <p>
-              <a href="reference.html#function">Functions</a> are self-contained
+              <a href="classes.html#function">Functions</a> are self-contained
               chunks of code that perform a specific task. You give a function a
               name that identifies what it does, and this name is used to “call”
-              the function to perform its task when needed.
+              the function to perform its task when needed. See the
+              <a class="page-scroll" href="#functions">Functions section</a>
+              below for more details.
             </p>
             <pre><code>function test1(callback) {
 	callback();
@@ -316,9 +318,9 @@ test1(test2);
             <h1 class="pb-2">Collections</h1>
             <p>
               ObjectTalk provides three primary collection types, known as
-              <a href="reference.html#array">Arrays</a>,
-              <a href="reference.html#dict">Dictionaries</a> and
-              <a href="reference.html#set">Sets</a>. Arrays are ordered
+              <a href="classes.html#array">Arrays</a>,
+              <a href="classes.html#dict">Dictionaries</a> and
+              <a href="classes.html#set">Sets</a>. Arrays are ordered
               collections of values. Dictionaries are unordered collections of
               key-value associations. Sets are unordered collections of unique
               values.
@@ -1563,7 +1565,7 @@ for number in range(10, 6, -2) {
                 false), a few high level functions (import, print, and assert)
                 and the list of classes that can be instantiated by the user.
                 For a detailed description see the documentation on the
-                <a href="reference.html#global">Global class</a>. Global scope
+                <a href="classes.html#global">Global class</a>. Global scope
                 members are stored on the heap.
               </li>
               <li>

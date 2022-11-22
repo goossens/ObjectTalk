@@ -61,11 +61,11 @@ is only visible in the inner scope.
 
 ## Primitive Values
 
-ObjectTalk supports 6 [Primitives](reference.html#primitive)
+ObjectTalk supports 6 [Primitives](classes.html#primitive)
 that are derived from the
-[Object](reference.html#object), [Boolean](reference.html#boolean),
-[Integer](reference.html#integer), [Real](reference.html#real),
-[String](reference.html#string) and [Function](reference.html#function)
+[Object](classes.html#object), [Boolean](classes.html#boolean),
+[Integer](classes.html#integer), [Real](classes.html#real),
+[String](classes.html#string) and [Function](classes.html#function)
 classes. The following statements assign primitive values to variables.
 
 	var a = null;
@@ -85,31 +85,31 @@ operator is applied to e (a String object) which wants its
 argument also as a string.
 
 In ObjectTalk, The **null** object is the only instance of the abstract
-[Object](reference.html#object) class. It's a special object as it can't
+[Object](classes.html#object) class. It's a special object as it can't
 do anything. It is however helpful as a non-value. The default global
 scope defines the variable **null** as a convenience.
 
-[Booleans](reference.html#boolean) in ObjectTalk can only hold two values:
+[Booleans](classes.html#boolean) in ObjectTalk can only hold two values:
 true and false. The default global language context defines the variables
 **true** and **false** as a convenience.
 
-[Integers](reference.html#integer) represent negative and positive whole
+[Integers](classes.html#integer) represent negative and positive whole
 numbers. On most systems, this number is implemented as a 64-bit number
 meaning that the extremes are -9,223,372,036,854,775,808 and
 9,223,372,036,854,775,807 (inclusive).
 
-[Reals](reference.html#real) in ObjectTalk are double-precision floating
+[Reals](classes.html#real) in ObjectTalk are double-precision floating
 point numbers. On most systems, Reals are implemented using 8 bytes
 and have a range of 1.7E +/- 308 (15 digits). The default global language
 context predefines the variable **pi** (3.14...) and **e** (2.71...)
 as a convenience.
 
-In ObjectTalk, [Strings](reference.html#string) are captured in double
+In ObjectTalk, [Strings](classes.html#string) are captured in double
 quotes and can span multiple lines. Strings may contain UTF-8 characters
 (like "€") or use JSON style encoding like "Most Europeans like the
 \u00C4.\n".
 
-[Functions](reference.html#function) in ObjectTalk are primitive values.
+[Functions](classes.html#function) in ObjectTalk are primitive values.
 This means that we can pass a function around like any other primitive.
 The following code might be a little too complex for this overview, so
 we'll defer an explanation until we'll get to the
@@ -130,13 +130,13 @@ The point is that a function is a first class citizen in ObjectTalk.
 ## Collections
 
 ObjectTalk supports three types of
-[Collections](reference.html#collections)
-([Arrays](reference.html#array) arrays,
-[Dictionaries](reference.html#dict) and
-[Sets](reference.html#set))
+[Collections](classes.html#collections)
+([Arrays](classes.html#array),
+[Dictionaries](classes.html#dict) and
+[Sets](classes.html#set))
 that can be nested if required.
 
-[Arrays](reference.html#array) are sequences of objects that can be
+[Arrays](classes.html#array) are sequences of objects that can be
 constructed using square brackets ([]) or through the Array class
 constructor. The Array class has many member functions to manipulate
 the content of an array.
@@ -147,7 +147,7 @@ the content of an array.
 	array1.append("new value");
 	var thirdValue = array1[3];
 
-[Dictionaries](reference.html#dict) contain indexed key/value pairs that
+[Dictionaries](classes.html#dict) contain indexed key/value pairs that
 are constructed using curly brackets ({}) or through the Dict class
 constructor. The Dict class also has many member functions to manipulate
 the content of a dictionary.
@@ -163,7 +163,7 @@ compiler can therefore ingest JSON without any trouble.
 This should also make it easier for those who are already familiar
 with JSON encoding.
 
-[Sets](reference.html#set) store distinct values in a collection without
+[Sets](classes.html#set) store distinct values in a collection without
 defined order. You can use a set instead of an array when the order of
 items isn’t important, or when you need to ensure that an item only
 appears once. Sets can be created using the Set class constructor.

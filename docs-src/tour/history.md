@@ -34,12 +34,12 @@ GUI guidelines were enforces and bad coding habits like endless "jumps",
 "breaks" and "continues" were no longer possible. This became very
 successful and 30 years later the language is still in use.
 
-Off course you can ask why we don't use an existing language? Well, in
+Off course you can ask why we didn't use an existing language? Well, in
 those early days, we just couldn't find one that met our criteria.
 Existing higher level languages like Cobol, Fortran, Pascal and Ada were
 too complex and creating binding to other packages was not easy. If we had
 done this later, we might have picked Python or Lua but those languages
-have also become complex over time (but at least, bindings are easy).
+have also become complex (but at least, bindings are easy).
 
 As I started to move up the management chain, I got further and further
 away from programing and at the end, I spent more time in international

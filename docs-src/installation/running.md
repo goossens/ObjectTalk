@@ -7,7 +7,7 @@ is will be distributed in a package suitable for the
 platform.
 
 In priciple, the ObjectTalk executable (**ot**) is a
-command line tool that take parameters. Here is the
+command line tool that takes parameters. Here is the
 help you get when you run **ot -h**:
 
 	Usage: ot [options] scripts
@@ -28,5 +28,5 @@ you to edit ObjectTalk scripts, run them as see possible
 errors.
 * You can directly run an ObjectTalk script using
 **ot [script name]**
-* you can also open a sccript directly in the IDE by
+* you can also open a script directly in the IDE by
 using **ot -i [script name]**

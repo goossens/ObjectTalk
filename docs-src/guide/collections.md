@@ -1,7 +1,7 @@
 ObjectTalk provides three primary collection types, known as
-[Arrays](reference.html#array),
-[Dictionaries](reference.html#dict) and
-[Sets](reference.html#set). Arrays are ordered collections of
+[Arrays](classes.html#array),
+[Dictionaries](classes.html#dict) and
+[Sets](classes.html#set). Arrays are ordered collections of
 values. Dictionaries are unordered collections of key-value associations.
 Sets are unordered collections of unique values.
 

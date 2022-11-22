@@ -17,7 +17,7 @@ a default global scope is created. This is the root scope and contains
 a small set of useful variables (null, true, false), a few high level
 functions (import, print, and assert) and the list of classes that can be
 instantiated by the user. For a detailed description see the documentation
-on the [Global class](reference.html#global). Global scope members
+on the [Global class](classes.html#global). Global scope members
 are stored on the heap.
 * **Module Scope** - An ObjectTalk [module](#modules) is derived from
 a single source code file. Any object defined at the module's root level

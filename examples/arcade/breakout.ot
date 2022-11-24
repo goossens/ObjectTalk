@@ -146,7 +146,7 @@ class Breakout : game.Game {
 	}
 
 	function loadBoard(this, level) {
-		var board = io.readJSON(__DIR__ + "/assets/breakout" + level + ".json");
+		var board = io.readJSON(Path(__DIR__, "assets", "breakout" + level + ".json"));
 		assert(board.size() == brickRows * brickCols);
 
 		var index = 0;

@@ -16,7 +16,7 @@ class App : gui.App {
 		var heightmap = gui.HeightMap()
 			.setScale(40.0)
 			.setOffset(-5.0)
-			.loadMap(__DIR__ + "/assets/heightmap.png");
+			.loadMap(Path(__DIR__, "assets", "heightmap.png"));
 
 		var terrain = gui.Mesh()
 			.setGeometry(gui.PlaneGeometry()

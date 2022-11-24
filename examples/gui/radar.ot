@@ -176,15 +176,15 @@ class App : gui.App {
 
 	function createControlPanel(this) {
 		var panel = gui.Panel(80, 0, 20, 100);
-		panel.add(gui.Picture(__DIR__ + "/assets/atc.png", 10));
+		panel.add(gui.Picture(Path(__DIR__, "assets", "atc.png"), 10));
 		panel.add(gui.Filler(50));
 
-		this.meter = gui.Meter(__DIR__ + "/assets/meter.png")
+		this.meter = gui.Meter(Path(__DIR__, "assets", "meter.png"))
 			.setMargin(10)
 			.setLabel("Power Usage")
 			.setValue(brightness / 2.0 * 100.0);
 
-		this.knob = gui.Knob(__DIR__ + "/assets/knob.png")
+		this.knob = gui.Knob(Path(__DIR__, "assets", "knob.png"))
 			.setMargin(10)
 			.setLabel("Tube Brightness")
 			.setValue(brightness / 2.0 * 100.0)

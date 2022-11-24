@@ -20,10 +20,10 @@ var geometries = [
 ];
 
 var textures = {
-	"earth" : __DIR__ + "/assets/earth.png",
-	"moon"  : __DIR__ + "/assets/moon.png",
-	"grass" : __DIR__ + "/assets/grass.jpg",
-	"uvmap" : __DIR__ + "/assets/uv.jpg"
+	"earth" : Path(__DIR__, "assets", "earth.png"),
+	"moon"  : Path(__DIR__, "assets", "moon.png"),
+	"grass" : Path(__DIR__, "assets", "grass.jpg"),
+	"uvmap" : Path(__DIR__, "assets", "uv.jpg")
 };
 
 var materials = gui.getDefaultMaterials().merge(textures.keys());
@@ -168,13 +168,13 @@ class App : gui.App {
 			this.geometry = gui.TorusGeometry(15, 5, 32, 32);
 
 		} elif (name == "bunny") {
-			this.geometry = gui.ModelGeometry(__DIR__ + "/assets/bunny.obj", 16);
+			this.geometry = gui.ModelGeometry(Path(__DIR__, "assets", "bunny.obj"), 16);
 
 		} elif (name == "column") {
-			this.geometry = gui.ModelGeometry(__DIR__ + "/assets/column.obj", 2);
+			this.geometry = gui.ModelGeometry(Path(__DIR__, "assets", "column.obj"), 2);
 
 		} elif (name == "teapot") {
-			this.geometry = gui.ModelGeometry(__DIR__ + "/assets/teapot.obj", 28);
+			this.geometry = gui.ModelGeometry(Path(__DIR__, "assets", "teapot.obj"), 28);
 		}
 
 		if (this.has("mesh")) {

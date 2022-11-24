@@ -18,12 +18,12 @@ class App : gui.App {
 			.setDistances(4, 5.5);
 
 		var skybox = gui.Skybox(
-			__DIR__ + "/assets/space/right.jpg",
-			__DIR__ + "/assets/space/left.jpg",
-			__DIR__ + "/assets/space/top.jpg",
-			__DIR__ + "/assets/space/bot.jpg",
-			__DIR__ + "/assets/space/front.jpg",
-			__DIR__ + "/assets/space/back.jpg");
+			Path(__DIR__, "assets", "space", "right.jpg"),
+			Path(__DIR__, "assets", "space", "left.jpg"),
+			Path(__DIR__, "assets", "space", "top.jpg"),
+			Path(__DIR__, "assets", "space", "bottom.jpg"),
+			Path(__DIR__, "assets", "space", "front.jpg"),
+			Path(__DIR__, "assets", "space", "back.jpg"));
 
 		var grid = gui.Mesh()
 			.setGeometry(gui.SphereGeometry()
@@ -39,7 +39,7 @@ class App : gui.App {
 				.setWidthSegments(64)
 				.setHeightSegments(32))
 			.setMaterial(gui.Material()
-				.setTexture(__DIR__ + "/assets/earth.png")
+				.setTexture(Path(__DIR__, "assets", "earth.png"))
 				.setDoubleSided());
 
 		var clouds = gui.Mesh()
@@ -48,7 +48,7 @@ class App : gui.App {
 				.setWidthSegments(64)
 				.setHeightSegments(32))
 			.setMaterial(gui.Material()
-				.setTexture(__DIR__ + "/assets/clouds.png")
+				.setTexture(Path(__DIR__, "assets", "clouds.png"))
 				.setDoubleSided());
 
 		var earth = gui.Group()

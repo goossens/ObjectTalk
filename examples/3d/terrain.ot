@@ -28,7 +28,7 @@ class App : gui.App {
 		var water = gui.Water()
 			.setSize(4000)
 			.receiveShadow(true)
-			.setNormalMap(__DIR__ + "/assets/waternormals.jpg");
+			.setNormalMap(Path(__DIR__, "assets", "waternormals.jpg"));
 
 		var terrainmap = gui.TerrainMap()
 			.setOctaves(6)
@@ -42,10 +42,10 @@ class App : gui.App {
 			.setViewingDistance(3000)
 			.setTextureScale(100)
 			.setRegionTransitions(0, 2, 5, 5, 20, 7)
-			.setRegion1Texture(__DIR__ + "/assets/sand.jpg")
-			.setRegion2Texture(__DIR__ + "/assets/terrain.jpg")
-			.setRegion3Texture(__DIR__ + "/assets/rock.jpg")
-			.setRegion4Texture(__DIR__ + "/assets/snow.jpg");
+			.setRegion1Texture(Path(__DIR__, "assets", "sand.jpg"))
+			.setRegion2Texture(Path(__DIR__, "assets", "terrain.jpg"))
+			.setRegion3Texture(Path(__DIR__, "assets", "rock.jpg"))
+			.setRegion4Texture(Path(__DIR__, "assets", "snow.jpg"));
 
 		var scene = gui.Scene()
 			.add(sun)

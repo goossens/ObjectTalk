@@ -27,7 +27,7 @@ class App : gui.App {
 			.receiveShadow(true)
 			.setGeometry(gui.PlaneGeometry(200, 200, 10, 10))
 			.setMaterial(gui.Material()
-				.setTexture(__DIR__ + "/assets/grass.jpg")
+				.setTexture(Path(__DIR__, "assets", "grass.jpg"))
 				.setUvTransform(0, 0, 5, 5, 0, 0, 0))
 			.rotateX(-pi / 2.0);
 
@@ -36,12 +36,14 @@ class App : gui.App {
 
 		var pole1 = gui.Mesh()
 			.castShadow(true)
+			.receiveShadow(true)
 			.setGeometry(poleGeometry)
 			.setMaterial(poleMaterial)
 			.translate(-16, 13, 0);
 
 		var pole2 = gui.Mesh()
 			.castShadow(true)
+			.receiveShadow(true)
 			.setGeometry(poleGeometry)
 			.setMaterial(poleMaterial)
 			.translate(16, 13, 0);
@@ -64,7 +66,7 @@ class App : gui.App {
 			.castShadow(true)
 			.setGeometry(plane)
 			.setMaterial(gui.Material()
-				.setTexture(__DIR__ + "/assets/cloth.png")
+				.setTexture(Path(__DIR__, "assets", "cloth.png"))
 				.setDoubleSided())
 			.translate(0, 15, 0);
 

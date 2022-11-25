@@ -9,7 +9,10 @@ $input v_position, v_normal, v_texcoord0, v_shadow
 #include <bgfx.glsl>
 #include <light.glsl>
 
-SAMPLER2D(s_blendmap, 1);
+uniform vec4 u_blendmap[1];
+#define u_blendmapScale u_blendmap[0].x
+
+SAMPLER2D(s_texture_m, 1);
 SAMPLER2D(s_texture_n, 2);
 SAMPLER2D(s_texture_r, 3);
 SAMPLER2D(s_texture_g, 4);
@@ -18,9 +21,9 @@ SAMPLER2D(s_texture_b, 5);
 // main function
 void main() {
 	// blend texture colors based on blendmap
-	vec4 blend = texture2D(s_blendmap, v_texcoord0);
+	vec4 blend = texture2D(s_texture_m, v_texcoord0);
 	float b = 1.0 - blend.r - blend.g - blend.b;
-	vec2 tiled = v_texcoord0 * 40.0;
+	vec2 tiled = v_texcoord0 * u_blendmapScale;
 
 	vec4 color = texture2D(s_texture_n, tiled) * b +
 		texture2D(s_texture_r, tiled) * blend.r +

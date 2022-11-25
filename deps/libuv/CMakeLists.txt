@@ -5,10 +5,9 @@
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
 FetchContent_Declare(libuv GIT_REPOSITORY "https://github.com/libuv/libuv" GIT_TAG "v1.44.2")
-SET(BUILD_TESTING OFF CACHE BOOL "Build tests." FORCE)
-SET(LIBUV_BUILD_TESTS OFF CACHE BOOL "Build tests." FORCE)
-SET(LIBUV_BUILD_BENCH OFF CACHE BOOL "Build benchmarks." FORCE)
-
+set(BUILD_TESTING OFF CACHE BOOL "Build tests." FORCE)
+set(LIBUV_BUILD_TESTS OFF CACHE BOOL "Build tests." FORCE)
+set(LIBUV_BUILD_BENCH OFF CACHE BOOL "Build benchmarks." FORCE)
 FetchContent_GetProperties(libuv)
 
 if(NOT libuv_POPULATED)

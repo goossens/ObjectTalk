@@ -27,6 +27,10 @@ public:
 	// ensure specified component is allowed as a child
 	void validateChild(OtComponent child) override;
 
+	// pass shadow flag to all children
+	OtObject castShadow(bool flag) override;
+	OtObject receiveShadow(bool flag) override;
+
 	// render children
 	void render(OtRenderingContext context) override;
 

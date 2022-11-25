@@ -26,6 +26,34 @@ void OtGroupClass::validateChild(OtComponent child) {
 
 
 //
+//	OtGroupClass::castShadow
+//
+
+OtObject OtGroupClass::castShadow(bool flag) {
+	for (auto& child : children) {
+		child->cast<OtObject3dClass>()->castShadow(flag);
+	}
+
+	OtObject3dClass::castShadow(flag);
+	return shared();
+}
+
+
+//
+//	OtGroupClass::receiveShadow
+//
+
+OtObject OtGroupClass::receiveShadow(bool flag) {
+	for (auto& child : children) {
+		child->cast<OtObject3dClass>()->receiveShadow(flag);
+	}
+
+	OtObject3dClass::receiveShadow(flag);
+	return shared();
+}
+
+
+//
 //	OtGroupClass::render
 //
 

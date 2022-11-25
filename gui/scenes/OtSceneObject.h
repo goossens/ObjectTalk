@@ -27,9 +27,9 @@ typedef std::shared_ptr<OtSceneObjectClass> OtSceneObject;
 class OtSceneObjectClass : public OtComponentClass {
 public:
 	// access shadow flags
-	OtObject castShadow(bool flag) { castShadowFlag = flag; return shared(); }
+	virtual OtObject castShadow(bool flag) { castShadowFlag = flag; return shared(); }
 	bool castsShadow() { return castShadowFlag; }
-	OtObject receiveShadow(bool flag) { receiveShadowFlag = flag; return shared(); }
+	virtual OtObject receiveShadow(bool flag) { receiveShadowFlag = flag; return shared(); }
 	bool receivesShadow() { return receiveShadowFlag; }
 
 	// update state

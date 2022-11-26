@@ -77,6 +77,11 @@ public:
 		}
 	}
 
+	// clear the registry
+	void clear() {
+		registry.clear();
+	}
+
 private:
 	// registry member
 	std::unordered_map<std::string, T> registry;

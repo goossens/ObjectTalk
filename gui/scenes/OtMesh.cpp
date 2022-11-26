@@ -23,7 +23,7 @@
 
 #include "OtFixedShader.h"
 #include "OtColoredShader.h"
-#include "OtNormaledShader.h"
+#include "OtNormalledShader.h"
 #include "OtTexturedShader.h"
 #include "OtBlendMappedShader.h"
 
@@ -39,9 +39,9 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtColoredVS),
 	BGFX_EMBEDDED_SHADER(OtColoredVSI),
 	BGFX_EMBEDDED_SHADER(OtColoredFS),
-	BGFX_EMBEDDED_SHADER(OtNormaledVS),
-	BGFX_EMBEDDED_SHADER(OtNormaledVSI),
-	BGFX_EMBEDDED_SHADER(OtNormaledFS),
+	BGFX_EMBEDDED_SHADER(OtNormalledVS),
+	BGFX_EMBEDDED_SHADER(OtNormalledVSI),
+	BGFX_EMBEDDED_SHADER(OtNormalledFS),
 	BGFX_EMBEDDED_SHADER(OtTexturedVS),
 	BGFX_EMBEDDED_SHADER(OtTexturedVSI),
 	BGFX_EMBEDDED_SHADER(OtTexturedFS),
@@ -223,17 +223,17 @@ void OtMeshClass::render(OtRenderingContext context) {
 						true);
 				}
 
-			} else if (mt == OtMaterialClass::NORMALED) {
+			} else if (mt == OtMaterialClass::NORMALLED) {
 				if (instancing) {
 					shader = bgfx::createProgram(
-						bgfx::createEmbeddedShader(embeddedShaders, type, "OtNormaledVSI"),
-						bgfx::createEmbeddedShader(embeddedShaders, type, "OtNormaledFS"),
+						bgfx::createEmbeddedShader(embeddedShaders, type, "OtNormalledVSI"),
+						bgfx::createEmbeddedShader(embeddedShaders, type, "OtNormalledFS"),
 						true);
 
 				} else {
 					shader = bgfx::createProgram(
-						bgfx::createEmbeddedShader(embeddedShaders, type, "OtNormaledVS"),
-						bgfx::createEmbeddedShader(embeddedShaders, type, "OtNormaledFS"),
+						bgfx::createEmbeddedShader(embeddedShaders, type, "OtNormalledVS"),
+						bgfx::createEmbeddedShader(embeddedShaders, type, "OtNormalledFS"),
 						true);
 				}
 

@@ -33,7 +33,7 @@ public:
 		FIXED,
 		COLORED,
 		TEXTURED,
-		NORMALED,
+		NORMALLED,
 		BLENDMAPPED
 	};
 
@@ -57,6 +57,7 @@ public:
 	OtObject setOpacity(float t);
 
 	OtObject setTexture(const std::string& texture);
+	OtObject setMipMap(const std::string& texture);
 	OtObject setNormals(const std::string& texture, const std::string& normals);
 	OtObject setBlendMap(OtObject blendmap);
 

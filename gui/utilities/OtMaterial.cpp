@@ -256,6 +256,20 @@ OtObject OtMaterialClass::setTexture(const std::string& textureName) {
 }
 
 
+//
+//	OtMaterialClass::setTexture
+//
+
+OtObject OtMaterialClass::setMipMap(const std::string& textureName) {
+	if (bgfx::isValid(texture)) {
+		OtExcept("Texture already specified for [Material]");
+	}
+
+	texture = OtFrameworkClass::instance()->getTexture(textureName, true);
+	return shared();
+}
+
+
 OtObject OtMaterialClass::setNormals(const std::string& textureName, const std::string& normalsName) {
 	if (bgfx::isValid(texture)) {
 		OtExcept("Texture already specified for [Material]");
@@ -322,7 +336,7 @@ int OtMaterialClass::getType() {
 		return BLENDMAPPED;
 
 	} else if (bgfx::isValid(normals)) {
-		return NORMALED;
+		return NORMALLED;
 
 	} else if (bgfx::isValid(texture)) {
 		return TEXTURED;
@@ -360,6 +374,7 @@ OtType OtMaterialClass::getMeta() {
 		type->set("setOpacity", OtFunctionClass::create(&OtMaterialClass::setOpacity));
 
 		type->set("setTexture", OtFunctionClass::create(&OtMaterialClass::setTexture));
+		type->set("setMipMap", OtFunctionClass::create(&OtMaterialClass::setMipMap));
 		type->set("setBlendMap", OtFunctionClass::create(&OtMaterialClass::setBlendMap));
 		type->set("setNormals", OtFunctionClass::create(&OtMaterialClass::setNormals));
 		type->set("setUvTransform", OtFunctionClass::create(&OtMaterialClass::setUvTransform));

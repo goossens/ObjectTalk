@@ -182,7 +182,7 @@ compileShader Colored
 compileShader Debug
 compileShader Fixed
 compileShader ImGui
-compileShader Normaled
+compileShader Normalled
 compileShader Shadow
 compileShader Sky
 compileShader Skybox

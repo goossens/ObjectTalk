@@ -45,12 +45,18 @@ All Natural Earth III images and data are in the public domain.
 
 ## OpenGameArt.Org
 
-The following assets are from [OpenGameArt.Org](OpenGameArt.Org) and are
-licensed under the
+The following assets are from [OpenGameArt.org](https://opengameart.org)
+and are licensed under the
 [Creative Commons Public Domain](https://creativecommons.org/publicdomain/zero/1.0/)
 license:
 
 * space/* - by [StumpyStrust](https://opengameart.org/content/space-skyboxes-0)
+
+The following assets are released under
+[CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)
+
+* [forest.png](https://opengameart.org/node/21657)
+* [leaves.png](https://opengameart.org/node/21693)
 
 ## Karl "ThinMatrix"
 
@@ -80,12 +86,15 @@ project by Federico Vaccaro which is released under the
 * terrain.jpg
 * snow.jpg
 
-## Roboto font
+## JungleIN
 
-The roboto font is made available by
-[Google](https://fonts.google.com/specimen/Roboto)
-under the
-[Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+The following assets are from the
+[JungleIN](https://github.com/redagito/JungleIN) project.
+No license information is specified.
+
+* forest.png
+* moss.png
+* woodchips.png
 
 ## Trees
 
@@ -95,3 +104,10 @@ released under a Personal Use License
 * Maple Tree by
 [felixbdesign](https://free3d.com/3d-model/maple-tree-262328.html)
 released under a Personal Use License
+
+## Roboto font
+
+The roboto font is made available by
+[Google](https://fonts.google.com/specimen/Roboto)
+under the
+[Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)

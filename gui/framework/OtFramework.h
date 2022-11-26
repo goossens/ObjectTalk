@@ -80,7 +80,7 @@ public:
 
 	// image/texture functions
 	bimg::ImageContainer* getImage(const std::string& file, bool powerof2 = false, bool square = false);
-	bgfx::TextureHandle getTexture(const std::string& file, bimg::ImageContainer** image = nullptr);
+	bgfx::TextureHandle getTexture(const std::string& file, bool mipmap = false, bimg::ImageContainer** image = nullptr);
 	bgfx::TextureHandle getDummyTexture() { return dummyTexture; }
 
 	// add enums to specified module

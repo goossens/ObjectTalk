@@ -10,6 +10,7 @@ To build ObjectTalk, do the following from the command line:
 
 * **cd [to your favorite build directory]**
 * **git clone https://github.com/goossens/ObjectTalk.git**
+* If your favorite directory is on a mounted drive, you might have to do a **git config --global --replace-all safe.directory "*"**
 * **cd ObjectTalk**
 * **cmake -Bvs -G "Visual Studio 17 2022" -A x64**
 * Build ObjectTalk by Hand:

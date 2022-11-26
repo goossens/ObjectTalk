@@ -8,8 +8,10 @@
 
 var gui = import("gui");
 
+var skyColor = "#cce0ff";
+
 class App : gui.App {
-		function setup(this) {
+	function setup(this) {
 		var ambient = gui.Ambient();
 
 		var light = gui.Light()
@@ -17,33 +19,47 @@ class App : gui.App {
 			.castShadow(200, 1, 200);
 
 		var fog = gui.Fog()
-			.setColor("#79838e")
-			.setDistances(80, 250);
+			.setColor(skyColor)
+			.setDistances(150, 250);
 
-		var skybox = gui.Skybox(
-			__DIR__ + "/assets/sky/right.jpg",
-			__DIR__ + "/assets/sky/left.jpg",
-			__DIR__ + "/assets/sky/top.jpg",
-			__DIR__ + "/assets/sky/bottom.jpg",
-			__DIR__ + "/assets/sky/front.jpg",
-			__DIR__ + "/assets/sky/back.jpg");
+		var background = gui.Background().setColor(skyColor);
 
-		var model = gui.loadObj(__DIR__ + "/assets/maple.obj");
+		var terrain = gui.Mesh()
+			.setGeometry(gui.PlaneGeometry()
+				.setWidth(400)
+				.setHeight(400)
+				.setWidthSegments(200)
+				.setHeightSegments(200))
+			.setMaterial(gui.Material()
+				.setBlendMap(gui.BlendMap(
+					Path(__DIR__, "assets", "blendmap.png"),
+					Path(__DIR__, "assets", "forest.jpg"),
+					Path(__DIR__, "assets", "forestfloor.jpg"),
+					Path(__DIR__, "assets", "moss.jpg"),
+					Path(__DIR__, "assets", "woodchips.jpg"))
+						.setScale(30)))
+			.receiveShadow(true)
+			.rotateX(-pi / 2.0);
+
+		var model = gui.loadObj(Path(__DIR__, "assets", "maple.obj"))
+			.castShadow(true)
+			.receiveShadow(true);
 
 		var scene = gui.Scene()
 			.add(ambient)
 			.add(light)
 			.add(fog)
-			.add(model)
-			.add(skybox);
+			.add(background)
+			.add(terrain)
+			.add(model);
 
 		var camera = gui.Camera()
 			.setPerspective(45, 0.1, 1000)
 			.setCircleTargetMode()
 			.setPitchLimits(0.1, pi / 2.0 - 0.1)
 			.setPitch(0.2)
-			.setDistanceLimits(20.0, 300.0)
-			.setDistance(100.0);
+			.setDistanceLimits(20.0, 400.0)
+			.setDistance(150.0);
 
 		var view = gui.View()
 			.setCamera(camera)

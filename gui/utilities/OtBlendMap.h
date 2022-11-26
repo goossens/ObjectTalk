@@ -14,6 +14,7 @@
 
 #include "bgfx/bgfx.h"
 
+#include "OtController.h"
 #include "OtGui.h"
 
 
@@ -33,8 +34,14 @@ public:
 	// initialize blendmap
 	void init(const std::string& bm, const std::string& tn, const std::string& tr, const std::string& tg, const std::string& tb);
 
+	// set the texture scale
+	OtObject setScale(float scale);
+
 	// submit shader data to BGFX
 	void submit();
+
+	// GUI to change properties
+	void renderGUI();
 
 	// get type definition
 	static OtType getMeta();
@@ -43,8 +50,12 @@ public:
 	static OtBlendMap create();
 
 private:
+	// properties
+	float scale = 40.0;
+
 	// uniforms
 	bgfx::UniformHandle blendmapUniform = BGFX_INVALID_HANDLE;
+	bgfx::UniformHandle textureUniformM = BGFX_INVALID_HANDLE;
 	bgfx::UniformHandle textureUniformN = BGFX_INVALID_HANDLE;
 	bgfx::UniformHandle textureUniformR = BGFX_INVALID_HANDLE;
 	bgfx::UniformHandle textureUniformG = BGFX_INVALID_HANDLE;
@@ -57,3 +68,10 @@ private:
 	bgfx::TextureHandle textureG = BGFX_INVALID_HANDLE;
 	bgfx::TextureHandle textureB = BGFX_INVALID_HANDLE;
 };
+
+
+//
+//	Controller widget
+//
+
+OT_CONTROLLER(BlendMap)

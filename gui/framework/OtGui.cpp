@@ -197,6 +197,7 @@ void OtGuiClass::registerModule() {
 		module->set("Tron", OtClassClass::create(OtTronClass::getMeta()));
 
 		module->set("AmbientController", OtClassClass::create(OtAmbientControllerClass::getMeta()));
+		module->set("BlendMapController", OtClassClass::create(OtBlendMapControllerClass::getMeta()));
 		module->set("CameraController", OtClassClass::create(OtCameraControllerClass::getMeta()));
 		module->set("LightController", OtClassClass::create(OtLightControllerClass::getMeta()));
 		module->set("FogController", OtClassClass::create(OtFogControllerClass::getMeta()));

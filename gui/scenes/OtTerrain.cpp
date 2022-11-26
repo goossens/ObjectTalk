@@ -196,7 +196,7 @@ OtObject OtTerrainClass::setRegion1Texture(const std::string& textureName) {
 		OtExcept("Texture 1 already set for [Terrain] widget");
 	}
 
-	textureRegion1 = OtFrameworkClass::instance()->getTexture(textureName);
+	textureRegion1 = OtFrameworkClass::instance()->getTexture(textureName, true);
 	return shared();
 }
 
@@ -210,7 +210,7 @@ OtObject OtTerrainClass::setRegion2Texture(const std::string& textureName) {
 		OtExcept("Texture 2 already set for [Terrain] widget");
 	}
 
-	textureRegion2 = OtFrameworkClass::instance()->getTexture(textureName);
+	textureRegion2 = OtFrameworkClass::instance()->getTexture(textureName, true);
 	return shared();
 }
 
@@ -224,7 +224,7 @@ OtObject OtTerrainClass::setRegion3Texture(const std::string& textureName) {
 		OtExcept("Texture 3 already set for [Terrain] widget");
 	}
 
-	textureRegion3 = OtFrameworkClass::instance()->getTexture(textureName);
+	textureRegion3 = OtFrameworkClass::instance()->getTexture(textureName, true);
 	return shared();
 }
 
@@ -238,7 +238,7 @@ OtObject OtTerrainClass::setRegion4Texture(const std::string& textureName) {
 		OtExcept("Texture 4 already set for [Terrain] widget");
 	}
 
-	textureRegion4 = OtFrameworkClass::instance()->getTexture(textureName);
+	textureRegion4 = OtFrameworkClass::instance()->getTexture(textureName, true);
 	return shared();
 }
 

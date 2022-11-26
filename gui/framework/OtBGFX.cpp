@@ -17,6 +17,7 @@
 #include "bimg/decode.h"
 #include "debugdraw.h"
 #include "imgui.h"
+#include "mipmap.h"
 
 #include "OtException.h"
 
@@ -81,7 +82,7 @@ void OtFrameworkClass::initBGFX() {
 	const bgfx::Memory* mem = bgfx::makeRef(dummyImage->m_data, dummyImage->m_size);
 
 	dummyTexture = bgfx::createTexture2D(
-		1, 1, 0, 1,
+		1, 1, false, 1,
 		bgfx::TextureFormat::Enum(bimg::TextureFormat::R8),
 		BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
 		mem);
@@ -173,8 +174,6 @@ float OtFrameworkClass::getTime() {
 }
 
 
-
-
 //
 //	OtFrameworkClass::getImage
 //
@@ -229,27 +228,147 @@ bimg::ImageContainer* OtFrameworkClass::getImage(const std::string& file, bool p
 
 
 //
+//	createRegularTexture
+//
+
+static bgfx::TextureHandle createRegularTexture(bimg::ImageContainer* image) {
+	return bgfx::createTexture2D(
+		uint16_t(image->m_width),
+		uint16_t(image->m_height),
+		false,
+		image->m_numLayers,
+		bgfx::TextureFormat::Enum(image->m_format),
+		BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
+		bgfx::makeRef(image->m_data, image->m_size));
+}
+
+
+//
+//	createMipmapTexture
+//
+
+static bgfx::TextureHandle createMipmapTexture(bimg::ImageContainer* image) {
+	// create a new empty texture
+	bgfx::TextureHandle texture = bgfx::createTexture2D(
+		uint16_t(image->m_width),
+		uint16_t(image->m_height),
+		true,
+		image->m_numLayers,
+		bgfx::TextureFormat::Enum(image->m_format),
+		BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE);
+
+	const bimg::ImageBlockInfo& blockInfo = getBlockInfo(image->m_format);
+	const uint32_t blockWidth  = blockInfo.blockWidth;
+	const uint32_t blockHeight = blockInfo.blockHeight;
+
+	uint32_t width = image->m_width;
+	uint32_t height = image->m_height;
+
+	// process all mip levels
+	for (auto lod = 0; lod < image->m_numMips; lod++) {
+		width = std::max(blockWidth,  width);
+		height = std::max(blockHeight, height);
+
+		bimg::ImageMip mip;
+
+		if (bimg::imageGetRawData(*image, 0, lod, image->m_data, image->m_size, mip)) {
+			bgfx::updateTexture2D(
+				texture,
+				0, lod,
+				0, 0,
+				uint16_t(width), uint16_t(height),
+				bgfx::copy(mip.m_data, mip.m_size));
+		}
+
+		width  >>= 1;
+		height >>= 1;
+	}
+
+	return texture;
+}
+
+
+//
+//	generateMipmapTexture
+//
+
+static bgfx::TextureHandle generateMipmapTexture(bimg::ImageContainer* image) {
+	// sanity check
+	auto bpp = bimg::getBitsPerPixel(image->m_format);
+
+	if (bpp != 24 && bpp != 32) {
+		OtExcept("Can't generate MipMap for image with %d bits per pixel", bpp);
+	}
+
+	// create a new empty texture
+	bgfx::TextureHandle texture = bgfx::createTexture2D(
+		uint16_t(image->m_width),
+		uint16_t(image->m_height),
+		true,
+		image->m_numLayers,
+		bgfx::TextureFormat::Enum(image->m_format),
+		BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE);
+
+	// add first level
+	bgfx::updateTexture2D(
+		texture,
+		0, 0, 0, 0,
+		uint16_t(image->m_width), uint16_t(image->m_height),
+		bgfx::makeRef(image->m_data, image->m_size));
+
+	// create mipmaps
+	AdmBitmap bitmap;
+	bitmap.width = image->m_width;
+	bitmap.height = image->m_height;
+	bitmap.bytes_per_pixel = bpp / 8;
+	bitmap.pixels = image->m_data;
+
+	int levels;
+	AdmBitmap* mipmaps = adm_generate_mipmaps_no_base(&levels, &bitmap);
+
+	for (auto level = 0; level < levels; level++) {
+		auto width = mipmaps[level].width;
+		auto height = mipmaps[level].height;
+		auto bpp = mipmaps[level].bytes_per_pixel;
+		auto pixels = mipmaps[level].pixels;
+
+		bgfx::updateTexture2D(
+			texture,
+			0, level + 1,
+			0, 0,
+			uint16_t(width), uint16_t(height),
+			bgfx::copy(pixels, width * height * bpp));
+	}
+
+	// cleanup
+	adm_free_mipmaps(mipmaps, levels);
+
+	return texture;
+}
+
+
+//
 //	OtFrameworkClass::getTexture
 //
 
-bgfx::TextureHandle OtFrameworkClass::getTexture(const std::string& file, bimg::ImageContainer** image) {
+bgfx::TextureHandle OtFrameworkClass::getTexture(const std::string& file, bool mipmap, bimg::ImageContainer** image) {
 	bgfx::TextureHandle texture;
 
 	// create texture if required
 	if (!textureRegistry.has(file)) {
 		// get the image
 		bimg::ImageContainer* image = getImage(file);
-		const bgfx::Memory* mem = bgfx::makeRef(image->m_data, image->m_size);
 
 		// create texture
-		texture = bgfx::createTexture2D(
-			uint16_t(image->m_width),
-			uint16_t(image->m_height),
-			1 < image->m_numMips,
-			image->m_numLayers,
-			bgfx::TextureFormat::Enum(image->m_format),
-			BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
-			mem);
+		if (image->m_numMips > 1) {
+			texture = createMipmapTexture(image);
+
+		} else if (mipmap) {
+			texture = generateMipmapTexture(image);
+
+		} else {
+			texture = createRegularTexture(image);
+		}
 
 		// add texture to registry
 		textureRegistry.set(file, texture);
@@ -290,8 +409,9 @@ void OtFrameworkClass::renderBGFX() {
 //
 
 void OtFrameworkClass::endBGFX() {
-	bimg::imageFree(dummyImage);
+	// destroy our textures and images
 	bgfx::destroy(dummyTexture);
+	bimg::imageFree(dummyImage);
 
 	textureRegistry.iterateValues([] (bgfx::TextureHandle& texture){
 		bgfx::destroy(texture);
@@ -301,6 +421,7 @@ void OtFrameworkClass::endBGFX() {
 		bimg::imageFree(image);
 	});
 
+	// shutdown BGFX
 	ddShutdown();
 	bgfx::shutdown();
 }

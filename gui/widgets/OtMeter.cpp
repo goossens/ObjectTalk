@@ -55,7 +55,7 @@ OtObject OtMeterClass::setTexture(const std::string& textureName) {
 	}
 
 	bimg::ImageContainer* image;
-	texture = OtFrameworkClass::instance()->getTexture(textureName, &image);
+	texture = OtFrameworkClass::instance()->getTexture(textureName, false, &image);
 	width = image->m_width;
 	height = image->m_height;
 	return shared();

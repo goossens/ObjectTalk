@@ -21,6 +21,7 @@
 #include "GLFW/glfw3.h"
 #include "bgfx/bgfx.h"
 #include "bimg/bimg.h"
+#include "bgfx/embedded_shader.h"
 
 #include "OtException.h"
 #include "OtObject.h"
@@ -78,9 +79,10 @@ public:
 	// get the next available view ID
 	bgfx::ViewId getNextViewID() { return nextViewID++; }
 
-	// image/texture functions
-	bimg::ImageContainer* getImage(const std::string& file, bool powerof2 = false, bool square = false);
+	// program/image/texture functions
+	bgfx::ProgramHandle getProgram(const bgfx::EmbeddedShader* shaders, const char* vertex, const char* fragment);
 	bgfx::TextureHandle getTexture(const std::string& file, bool mipmap = false, bimg::ImageContainer** image = nullptr);
+	bimg::ImageContainer* getImage(const std::string& file, bool powerof2 = false, bool square = false);
 	bgfx::TextureHandle getDummyTexture() { return dummyTexture; }
 
 	// add enums to specified module
@@ -144,9 +146,10 @@ private:
 	int64_t cpuDuration;
 	int64_t gpuDuration;
 
-	// image/texture registries
-	OtRegistry<bimg::ImageContainer*> imageRegistry;
+	// program/image/texture registries
+	OtRegistry<bgfx::ProgramHandle> programRegistry;
 	OtRegistry<bgfx::TextureHandle> textureRegistry;
+	OtRegistry<bimg::ImageContainer*> imageRegistry;
 	std::unordered_map<uint16_t, bimg::ImageContainer*> textureImageMap;
 
 	bimg::ImageContainer* dummyImage;

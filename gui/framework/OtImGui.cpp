@@ -206,12 +206,7 @@ void OtFrameworkClass::initIMGUI() {
 	imguiFontUniform = bgfx::createUniform("g_AttribLocationTex", bgfx::UniformType::Sampler);
 
 	// create shader program
-	bgfx::RendererType::Enum type = bgfx::getRendererType();
-
-	imguiProgram = bgfx::createProgram(
-		bgfx::createEmbeddedShader(embeddedShaders, type, "OtImGuiVS"),
-		bgfx::createEmbeddedShader(embeddedShaders, type, "OtImGuiFS"),
-		true);
+	imguiProgram = getProgram(embeddedShaders, "OtImGuiVS", "OtImGuiFS");
 }
 
 
@@ -391,7 +386,6 @@ void OtFrameworkClass::renderIMGUI() {
 void OtFrameworkClass::endIMGUI() {
 	bgfx::destroy(imguiFontUniform);
 	bgfx::destroy(imguiFontTexture);
-	bgfx::destroy(imguiProgram);
 	ImGui::DestroyContext();
 }
 

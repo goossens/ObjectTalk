@@ -20,6 +20,7 @@
 #include "mipmap.h"
 
 #include "OtException.h"
+#include "OtFormat.h"
 
 #include "OtFramework.h"
 
@@ -175,55 +176,26 @@ float OtFrameworkClass::getTime() {
 
 
 //
-//	OtFrameworkClass::getImage
+//	OtFrameworkClass::getProgram
 //
 
-bimg::ImageContainer* OtFrameworkClass::getImage(const std::string& file, bool powerof2, bool square) {
-	// load image if required
-	if (!imageRegistry.has(file)) {
-		// load named image
-		static bx::DefaultAllocator allocator;
-		static bx::FileReader reader;
+bgfx::ProgramHandle OtFrameworkClass::getProgram(const bgfx::EmbeddedShader* shaders, const char* vertex, const char* fragment) {
+	std::string index = OtFormat("*s:%s", vertex, fragment);
 
-		if (!bx::open(&reader, file.c_str())) {
-			OtExcept("Can't open image [%s]", file.c_str());
-		}
+	// create program (if required)
+	if (!programRegistry.has(index)) {
+		bgfx::RendererType::Enum type = bgfx::getRendererType();
 
-		uint32_t size = (uint32_t) bx::getSize(&reader);
-		void* data = BX_ALLOC(&allocator, size);
-		bx::read(&reader, data, size, bx::ErrorAssert{});
-		bx::close(&reader);
+		bgfx::ProgramHandle program =  bgfx::createProgram(
+			bgfx::createEmbeddedShader(shaders, type, vertex),
+			bgfx::createEmbeddedShader(shaders, type, fragment),
+			true);
 
-		bimg::ImageContainer* image = bimg::imageParse(&allocator, data, size);
-		BX_FREE(&allocator, data);
-
-		if (!image) {
-			OtExcept("Can't process image in [%s]", file.c_str());
-		}
-
-		// validate sides are power of 2 (if required)
-		if (powerof2 && !(bx::isPowerOf2(image->m_width))) {
-			bimg::imageFree(image);
-			OtExcept("Image width %d is not a power of 2", image->m_width);
-		}
-
-		if (powerof2 && !(bx::isPowerOf2(image->m_height))) {
-			bimg::imageFree(image);
-			OtExcept("Image height %d is not a power of 2", image->m_height);
-		}
-
-		// validate squareness (if required)
-		if (square && image->m_width != image->m_height) {
-			bimg::imageFree(image);
-			OtExcept("Image must be square not %d by %d", image->m_width, image->m_height);
-		}
-
-		// add image to registry
-		imageRegistry.set(file, image);
+		programRegistry.set(index, program);
 	}
 
-	// return image
-	return imageRegistry.get(file);
+	// return program
+	return programRegistry.get(index);
 }
 
 
@@ -389,6 +361,58 @@ bgfx::TextureHandle OtFrameworkClass::getTexture(const std::string& file, bool m
 
 
 //
+//	OtFrameworkClass::getImage
+//
+
+bimg::ImageContainer* OtFrameworkClass::getImage(const std::string& file, bool powerof2, bool square) {
+	// load image (if required)
+	if (!imageRegistry.has(file)) {
+		static bx::DefaultAllocator allocator;
+		static bx::FileReader reader;
+
+		if (!bx::open(&reader, file.c_str())) {
+			OtExcept("Can't open image [%s]", file.c_str());
+		}
+
+		uint32_t size = (uint32_t) bx::getSize(&reader);
+		void* data = BX_ALLOC(&allocator, size);
+		bx::read(&reader, data, size, bx::ErrorAssert{});
+		bx::close(&reader);
+
+		bimg::ImageContainer* image = bimg::imageParse(&allocator, data, size);
+		BX_FREE(&allocator, data);
+
+		if (!image) {
+			OtExcept("Can't process image in [%s]", file.c_str());
+		}
+
+		// validate sides are power of 2 (if required)
+		if (powerof2 && !(bx::isPowerOf2(image->m_width))) {
+			bimg::imageFree(image);
+			OtExcept("Image width %d is not a power of 2", image->m_width);
+		}
+
+		if (powerof2 && !(bx::isPowerOf2(image->m_height))) {
+			bimg::imageFree(image);
+			OtExcept("Image height %d is not a power of 2", image->m_height);
+		}
+
+		// validate squareness (if required)
+		if (square && image->m_width != image->m_height) {
+			bimg::imageFree(image);
+			OtExcept("Image must be square not %d by %d", image->m_width, image->m_height);
+		}
+
+		// add image to registry
+		imageRegistry.set(file, image);
+	}
+
+	// return image
+	return imageRegistry.get(file);
+}
+
+
+//
 //	OtFrameworkClass::renderBGFX
 //
 
@@ -412,6 +436,10 @@ void OtFrameworkClass::endBGFX() {
 	// destroy our textures and images
 	bgfx::destroy(dummyTexture);
 	bimg::imageFree(dummyImage);
+
+	programRegistry.iterateValues([] (bgfx::ProgramHandle& program){
+		bgfx::destroy(program);
+	});
 
 	textureRegistry.iterateValues([] (bgfx::TextureHandle& texture){
 		bgfx::destroy(texture);

@@ -20,13 +20,12 @@
 //	OtURLClass::init
 //
 
-OtObject OtURLClass::init(size_t count, OtObject* parameters) {
+void OtURLClass::init(size_t count, OtObject* parameters) {
 	if (count != 1) {
 		OtExcept("URL initializer expected 1 parameter not [%d]", count);
 	}
 
 	parse(parameters[0]->operator std::string());
-	return shared();
 }
 
 

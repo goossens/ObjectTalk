@@ -53,7 +53,7 @@ public:
 	float getDistance() { return distance; }
 
 	// initialize plane
-	OtObject init(size_t count, OtObject* parameters);
+	void init(size_t count, OtObject* parameters);
 
 	// normalize this plane
 	void normalize();

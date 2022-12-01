@@ -34,15 +34,13 @@ OtTerrainMapClass::OtTerrainMapClass() {
 //	OtTerrainMapClass::init
 //
 
-OtObject OtTerrainMapClass::init(size_t count, OtObject* parameters) {
+void OtTerrainMapClass::init(size_t count, OtObject* parameters) {
 	if (count == 1) {
 		setSeed(parameters[0]->operator int());
 
 	} else if (count != 0) {
 		OtExcept("[TerrainMap] constructor expects 0 or 1 arguments (not %ld)", count);
 	}
-
-	return nullptr;
 }
 
 

@@ -31,7 +31,7 @@ public:
 	~OtSphereGeometryClass();
 
 	// initialize geometry
-	OtObject init(size_t count, OtObject* parameters);
+	void init(size_t count, OtObject* parameters);
 
 	// update attributes
 	OtObject setRadius(float radius);

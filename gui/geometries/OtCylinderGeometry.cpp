@@ -20,7 +20,7 @@
 //	OtCylinderGeometryClass::init
 //
 
-OtObject OtCylinderGeometryClass::init(size_t count, OtObject* parameters) {
+void OtCylinderGeometryClass::init(size_t count, OtObject* parameters) {
 	// set attributes
 	if (count) {
 		switch (count) {
@@ -55,8 +55,6 @@ OtObject OtCylinderGeometryClass::init(size_t count, OtObject* parameters) {
 
 		refreshGeometry = true;
 	}
-
-	return nullptr;
 }
 
 

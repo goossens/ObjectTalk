@@ -20,7 +20,7 @@
 //	OtTreeNodeClass::init
 //
 
-OtObject OtTreeNodeClass::init(size_t count, OtObject* parameters) {
+void OtTreeNodeClass::init(size_t count, OtObject* parameters) {
 	// set attributes
 	if (count) {
 		switch (count) {
@@ -35,8 +35,6 @@ OtObject OtTreeNodeClass::init(size_t count, OtObject* parameters) {
 			OtExcept("A [TreeNode] constructor can only have 1 or 2 parameters, not [%ld]", count);
 		}
 	}
-
-	return nullptr;
 }
 
 

@@ -27,7 +27,7 @@ typedef std::shared_ptr<OtMeterClass> OtMeter;
 class OtMeterClass : public OtWidgetClass {
 public:
 	// initialize
-	OtObject init(size_t count, OtObject* parameters);
+	void init(size_t count, OtObject* parameters);
 
 	// specify a new texture
 	OtObject setTexture(const std::string& texture);

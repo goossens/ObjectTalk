@@ -30,7 +30,7 @@ public:
 	~OtPlaneGeometryClass();
 
 	// initialize geometry
-	OtObject init(size_t count, OtObject* parameters);
+	void init(size_t count, OtObject* parameters);
 
 	// update attributes
 	OtObject setWidth(float width);

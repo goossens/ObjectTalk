@@ -31,7 +31,7 @@ public:
 	OtPerlinClass(int seed) : seedValue(seed) { generateSeedVector(); }
 
 	// initialize
-	OtObject init(size_t count, OtObject* parameters);
+	void init(size_t count, OtObject* parameters);
 
 	// use a new seed
 	void seed(int seed) { seedValue = seed; generateSeedVector(); }

@@ -88,7 +88,7 @@ OtMaterialClass::~OtMaterialClass() {
 //	OtMaterialClass::init
 //
 
-OtObject OtMaterialClass::init(size_t count, OtObject* parameters) {
+void OtMaterialClass::init(size_t count, OtObject* parameters) {
 	if (count == 3) {
 		std::string type = parameters[0]->operator std::string();
 
@@ -124,8 +124,6 @@ OtObject OtMaterialClass::init(size_t count, OtObject* parameters) {
 	} else if (count != 0) {
 		OtExcept("[Material] constructor expects 0, 2 or 3 arguments (not %ld)", count);
 	}
-
-	return nullptr;
 }
 
 
@@ -378,7 +376,6 @@ OtType OtMaterialClass::getMeta() {
 		type->set("setBlendMap", OtFunctionClass::create(&OtMaterialClass::setBlendMap));
 		type->set("setNormals", OtFunctionClass::create(&OtMaterialClass::setNormals));
 		type->set("setUvTransform", OtFunctionClass::create(&OtMaterialClass::setUvTransform));
-
 
 		type->set("setFrontSide", OtFunctionClass::create(&OtMaterialClass::setFrontSide));
 		type->set("setBackSide", OtFunctionClass::create(&OtMaterialClass::setBackSide));

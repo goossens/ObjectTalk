@@ -27,9 +27,8 @@
 //
 //	OtKnobClass::init
 //
-OtObject callback;
 
-OtObject OtKnobClass::init(size_t count, OtObject* parameters) {
+void OtKnobClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
 		case 4:
 			setCallback(parameters[3]);
@@ -49,8 +48,6 @@ OtObject OtKnobClass::init(size_t count, OtObject* parameters) {
 		default:
 			OtExcept("[Knob] constructor expects up to 4 arguments (not %ld)", count);
 	}
-
-	return nullptr;
 }
 
 

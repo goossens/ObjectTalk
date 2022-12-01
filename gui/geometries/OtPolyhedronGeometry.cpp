@@ -27,7 +27,7 @@
 //	OtPolyhedronGeometryClass::init
 //
 
-OtObject OtPolyhedronGeometryClass::init(size_t count, OtObject* parameters) {
+void OtPolyhedronGeometryClass::init(size_t count, OtObject* parameters) {
 	// set attributes
 	if (count) {
 		switch (count) {
@@ -41,11 +41,7 @@ OtObject OtPolyhedronGeometryClass::init(size_t count, OtObject* parameters) {
 			default:
 				OtExcept("Too many parameters [%ld] for [PolyhedronGeometry] constructor (max 2)", count);
 		}
-
-		refreshGeometry = true;
 	}
-
-	return nullptr;
 }
 
 

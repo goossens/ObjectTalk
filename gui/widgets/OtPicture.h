@@ -27,7 +27,7 @@ typedef std::shared_ptr<OtPictureClass> OtPicture;
 class OtPictureClass : public OtWidgetClass {
 public:
 	// initialize
-	OtObject init(size_t count, OtObject* parameters);
+	void init(size_t count, OtObject* parameters);
 
 	// specify a new picture
 	OtObject setTexture(const std::string& texture);

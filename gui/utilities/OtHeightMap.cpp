@@ -40,7 +40,7 @@ OtHeightMapClass::~OtHeightMapClass() {
 //	OtHeightMapClass::init
 //
 
-OtObject OtHeightMapClass::init(size_t count, OtObject* parameters) {
+void OtHeightMapClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
 		case 2:
 			scale = parameters[1]->operator float();
@@ -54,8 +54,6 @@ OtObject OtHeightMapClass::init(size_t count, OtObject* parameters) {
 		default:
 			OtExcept("[HeightMap] constructor expects up to 2 arguments (not %ld)", count);
 	}
-
-	return nullptr;
 }
 
 

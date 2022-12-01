@@ -32,7 +32,7 @@ public:
 	OtVec2Class(float x, float y) : vector(x, y) {}
 
 	// initialize
-	OtObject init(size_t count, OtObject* parameters);
+	void init(size_t count, OtObject* parameters);
 
 	// access members
 	operator glm::vec2() { return vector; }

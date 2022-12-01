@@ -398,11 +398,13 @@ bool OtCompiler::primary(OtByteCode bytecode) {
 			resolveVariable(bytecode, "Array");
 			bytecode->method("__deref__", 0);
 			bytecode->method("__call__", 0);
+			bytecode->dup();
 
 			if (scanner.getToken() != OtScanner::RBRACKET_TOKEN) {
 				bytecode->method("__init__", expressions(bytecode));
 			}
 
+			bytecode->pop();
 			scanner.expect(OtScanner::RBRACKET_TOKEN);
 			reference = false;
 			break;
@@ -413,6 +415,7 @@ bool OtCompiler::primary(OtByteCode bytecode) {
 			resolveVariable(bytecode, "Dict");
 			bytecode->method("__deref__", 0);
 			bytecode->method("__call__", 0);
+			bytecode->dup();
 
 			while (scanner.getToken() != OtScanner::RBRACE_TOKEN && scanner.getToken() != OtScanner::EOS_TOKEN) {
 				scanner.expect(OtScanner::STRING_TOKEN, false);
@@ -437,6 +440,7 @@ bool OtCompiler::primary(OtByteCode bytecode) {
 				bytecode->method("__init__", count);
 			}
 
+			bytecode->pop();
 			reference = false;
 			break;
 

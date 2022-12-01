@@ -37,7 +37,7 @@ public:
 	OtTerrainMapClass();
 
 	// initialize
-	OtObject init(size_t count, OtObject* parameters);
+	void init(size_t count, OtObject* parameters);
 
 	// provide a new seed for the perlin noise generator
 	OtObject setSeed(int seed);

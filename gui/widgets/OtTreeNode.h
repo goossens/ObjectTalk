@@ -25,7 +25,7 @@ typedef std::shared_ptr<OtTreeNodeClass> OtTreeNode;
 class OtTreeNodeClass : public OtWidgetClass {
 public:
 	// initialize
-	OtObject init(size_t count, OtObject* parameters);
+	void init(size_t count, OtObject* parameters);
 
 	// adjust properties
 	OtObject setTitle(const std::string& t) { title = t; return shared(); }

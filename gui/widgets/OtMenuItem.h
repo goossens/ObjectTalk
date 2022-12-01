@@ -25,7 +25,7 @@ typedef std::shared_ptr<OtMenuItemClass> OtMenuItem;
 class OtMenuItemClass : public OtWidgetClass {
 public:
 	// initialize menu item
-	OtObject init(size_t count, OtObject* parameters);
+	void init(size_t count, OtObject* parameters);
 
 	// adjust menu item properties
 	OtObject setTitle(const std::string& t) { title = t; return shared(); }

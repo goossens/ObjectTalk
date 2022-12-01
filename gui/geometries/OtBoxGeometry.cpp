@@ -18,7 +18,7 @@
 //	OtBoxGeometryClass::init
 //
 
-OtObject OtBoxGeometryClass::init(size_t count, OtObject* parameters) {
+void OtBoxGeometryClass::init(size_t count, OtObject* parameters) {
 	// set attributes
 	if (count) {
 		switch (count) {
@@ -47,8 +47,6 @@ OtObject OtBoxGeometryClass::init(size_t count, OtObject* parameters) {
 
 		refreshGeometry = true;
 	}
-
-	return nullptr;
 }
 
 

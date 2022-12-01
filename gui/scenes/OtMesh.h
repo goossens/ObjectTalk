@@ -32,7 +32,7 @@ public:
 	~OtMeshClass();
 
 	// initialize
-	OtObject init(size_t count, OtObject* parameters);
+	void init(size_t count, OtObject* parameters);
 
 	// set properties
 	OtObject setGeometry(OtObject geometry);

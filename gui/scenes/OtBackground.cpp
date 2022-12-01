@@ -75,15 +75,13 @@ OtBackgroundClass::~OtBackgroundClass() {
 //	OtBackgroundClass::init
 //
 
-OtObject OtBackgroundClass::init(size_t count, OtObject* parameters) {
+void OtBackgroundClass::init(size_t count, OtObject* parameters) {
 	if (count == 1) {
 		setTexture(parameters[0]->operator std::string());
 
 	} else if (count != 0) {
 		OtExcept("[Background] constructor expects 0 or 1 arguments (not %ld)", count);
 	}
-
-	return nullptr;
 }
 
 

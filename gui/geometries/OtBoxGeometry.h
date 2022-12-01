@@ -25,7 +25,7 @@ typedef std::shared_ptr<OtBoxGeometryClass> OtBoxGeometry;
 class OtBoxGeometryClass : public OtGeometryClass {
 public:
 	// initialize geometry
-	OtObject init(size_t count, OtObject* parameters);
+	void init(size_t count, OtObject* parameters);
 
 	// update attributes
 	OtObject setWidth(float width);

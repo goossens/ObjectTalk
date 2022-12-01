@@ -19,7 +19,7 @@
 //	OtSphericalClass::init
 //
 
-OtObject OtSphericalClass::init(size_t count, OtObject* parameters) {
+void OtSphericalClass::init(size_t count, OtObject* parameters) {
 	if (count == 3) {
 		radius = parameters[0]->operator float();
 		phi = parameters[1]->operator float();
@@ -28,8 +28,6 @@ OtObject OtSphericalClass::init(size_t count, OtObject* parameters) {
 	} else if (count != 0) {
 		OtExcept("Invalid number of constructor parameters for [Spherical]");
 	}
-
-	return nullptr;
 }
 
 //

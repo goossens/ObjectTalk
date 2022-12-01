@@ -42,7 +42,7 @@ public:
 	~OtTerrainClass();
 
 	// initialize
-	OtObject init(size_t count, OtObject* parameters);
+	void init(size_t count, OtObject* parameters);
 
 	// specify a terrainmap
 	OtObject setTerrainMap(OtObject terrainmap);

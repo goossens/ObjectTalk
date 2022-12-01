@@ -24,7 +24,7 @@
 //	OtPictureClass::init
 //
 
-OtObject OtPictureClass::init(size_t count, OtObject* parameters) {
+void OtPictureClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
 		case 2:
 			setMargin(parameters[1]->operator int());
@@ -38,8 +38,6 @@ OtObject OtPictureClass::init(size_t count, OtObject* parameters) {
 		default:
 			OtExcept("[Picture] constructor expects up to 2 arguments (not %ld)", count);
 	}
-
-	return nullptr;
 }
 
 

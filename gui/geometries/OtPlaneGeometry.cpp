@@ -33,7 +33,7 @@ OtPlaneGeometryClass::~OtPlaneGeometryClass() {
 //	OtPlaneGeometryClass::init
 //
 
-OtObject OtPlaneGeometryClass::init(size_t count, OtObject* parameters) {
+void OtPlaneGeometryClass::init(size_t count, OtObject* parameters) {
 	// set attributes
 	switch (count) {
 		case 4:
@@ -54,8 +54,6 @@ OtObject OtPlaneGeometryClass::init(size_t count, OtObject* parameters) {
 		default:
 			OtExcept("Too many parameters [%ld] for [PlaneGeometry] constructor (max 4)", count);
 	}
-
-	return nullptr;
 }
 
 

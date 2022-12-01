@@ -43,7 +43,7 @@ OtFontClass::~OtFontClass() {
 //	OtFontClass::init
 //
 
-OtObject OtFontClass::init(size_t count, OtObject* parameters) {
+void OtFontClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
 		case 2:
 			setSize(parameters[1]->operator float());
@@ -57,8 +57,6 @@ OtObject OtFontClass::init(size_t count, OtObject* parameters) {
 		default:
 			OtExcept("[Font] constructor expects up to 2 arguments (not %ld)", count);
 	}
-
-	return nullptr;
 }
 
 

@@ -23,7 +23,7 @@
 //	OtExtrudedGeometryClass::init
 //
 
-OtObject OtExtrudedGeometryClass::init(size_t count, OtObject* parameters) {
+void OtExtrudedGeometryClass::init(size_t count, OtObject* parameters) {
 	// set attributes
 	if (count) {
 		switch (count) {
@@ -43,8 +43,6 @@ OtObject OtExtrudedGeometryClass::init(size_t count, OtObject* parameters) {
 
 		refreshGeometry = true;
 	}
-
-	return nullptr;
 }
 
 

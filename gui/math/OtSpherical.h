@@ -29,7 +29,7 @@ public:
 	OtSphericalClass(float r, float p, float t) : radius(r), phi(p), theta(t) {}
 
 	// initialize plane
-	OtObject init(size_t count, OtObject* parameters);
+	void init(size_t count, OtObject* parameters);
 
 	// get type definition
 	static OtType getMeta();

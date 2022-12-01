@@ -20,7 +20,7 @@
 //	OtFillerClass::init
 //
 
-OtObject OtFillerClass::init(size_t count, OtObject* parameters) {
+void OtFillerClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
 		case 1:
 			setSize(parameters[0]->operator float());
@@ -31,8 +31,6 @@ OtObject OtFillerClass::init(size_t count, OtObject* parameters) {
 		default:
 			OtExcept("[Filler] constructor expects up to 1 argument (not %ld)", count);
 	}
-
-	return nullptr;
 }
 
 

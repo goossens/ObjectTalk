@@ -70,7 +70,7 @@ OtSkyClass::~OtSkyClass() {
 //	OtSkyClass::init
 //
 
-OtObject OtSkyClass::init(size_t count, OtObject* parameters) {
+void OtSkyClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
 		case 4:
 			setRadius(parameters[3]->operator float());
@@ -90,8 +90,6 @@ OtObject OtSkyClass::init(size_t count, OtObject* parameters) {
 		default:
 			OtExcept("[Sky] constructor expects 0, 1, 3 or 4 arguments (not %ld)", count);
 	}
-
-	return nullptr;
 }
 
 

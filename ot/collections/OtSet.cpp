@@ -48,14 +48,10 @@ OtSetClass::operator std::string() {
 //	OtSetClass::init
 //
 
-OtObject OtSetClass::init(size_t count, OtObject* parameters) {
-	set.clear();
-
+void OtSetClass::init(size_t count, OtObject* parameters) {
 	for (auto c = 0; c < count; c++) {
 		set.insert(parameters[c]);
 	}
-
-	return shared();
 }
 
 

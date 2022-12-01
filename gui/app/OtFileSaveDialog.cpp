@@ -25,7 +25,7 @@
 //	OtFileSaveDialogClass::init
 //
 
-OtObject OtFileSaveDialogClass::init(size_t count, OtObject* parameters) {
+void OtFileSaveDialogClass::init(size_t count, OtObject* parameters) {
 	// set attributes
 	if (count) {
 		switch (count) {
@@ -43,8 +43,6 @@ OtObject OtFileSaveDialogClass::init(size_t count, OtObject* parameters) {
 				OtExcept("Too many parameters [%ld] for [FileSaveDialog] constructor (max 3)", count);
 		}
 	}
-
-	return nullptr;
 }
 
 

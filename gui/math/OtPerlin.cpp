@@ -23,7 +23,7 @@
 //	OtPerlinClass::init
 //
 
-OtObject OtPerlinClass::init(size_t count, OtObject* parameters) {
+void OtPerlinClass::init(size_t count, OtObject* parameters) {
 	if (count == 1) {
 		seedValue = parameters[0]->operator int();
 
@@ -32,7 +32,6 @@ OtObject OtPerlinClass::init(size_t count, OtObject* parameters) {
 	}
 
 	generateSeedVector();
-	return nullptr;
 }
 
 

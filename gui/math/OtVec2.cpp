@@ -19,7 +19,7 @@
 //	OtVec2Class::init
 //
 
-OtObject OtVec2Class::init(size_t count, OtObject* parameters) {
+void OtVec2Class::init(size_t count, OtObject* parameters) {
 	if (count == 2) {
 		vector = glm::vec2(
 			parameters[0]->operator float(),
@@ -31,8 +31,6 @@ OtObject OtVec2Class::init(size_t count, OtObject* parameters) {
 	} else if (count != 0) {
 		OtExcept("[Vec2] constructor expects 0, 1 or 2 arguments (not %ld)", count);
 	}
-
-	return nullptr;
 }
 
 

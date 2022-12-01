@@ -25,7 +25,7 @@ typedef std::shared_ptr<OtFileOpenDialogClass> OtFileOpenDialog;
 class OtFileOpenDialogClass : public OtDialogClass {
 public:
 	// initialize dialog
-	OtObject init(size_t count, OtObject* parameters);
+	void init(size_t count, OtObject* parameters);
 
 	// set title
 	OtObject setTitle(const std::string& title);

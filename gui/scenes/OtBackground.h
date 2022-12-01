@@ -32,7 +32,7 @@ public:
 	~OtBackgroundClass();
 
 	// initialize
-	OtObject init(size_t count, OtObject* parameters);
+	void init(size_t count, OtObject* parameters);
 
 	// update color
 	OtObject setColor(const std::string& color);

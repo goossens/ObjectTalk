@@ -67,7 +67,7 @@ OtMeshClass::~OtMeshClass() {
 //	OtMeshClass::init
 //
 
-OtObject OtMeshClass::init(size_t count, OtObject* parameters) {
+void OtMeshClass::init(size_t count, OtObject* parameters) {
 	// set attributes
 	if (count) {
 		switch (count) {
@@ -82,8 +82,6 @@ OtObject OtMeshClass::init(size_t count, OtObject* parameters) {
 				OtExcept("Too many parameters [%ld] for [Mesh] constructor (max 2)", count);
 		}
 	}
-
-	return nullptr;
 }
 
 
@@ -189,8 +187,12 @@ void OtMeshClass::render(OtRenderingContext context, long flag) {
 
 void OtMeshClass::render(OtRenderingContext context) {
 	// sanity check
-	if (!geometry || !material) {
-		OtExcept("[Geometry] and/or [material] properties missing for [Mesh]");
+	if (!geometry) {
+		OtExcept("[Geometry] missing for [Mesh]");
+	}
+
+	if (!material) {
+		OtExcept("[Material] missing for [Mesh]");
 	}
 
 	// don't render if this is a shadowmap and we cast no shadow

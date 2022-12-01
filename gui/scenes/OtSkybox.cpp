@@ -145,7 +145,7 @@ OtSkyboxClass::~OtSkyboxClass() {
 //	OtSkyboxClass::init
 //
 
-OtObject OtSkyboxClass::init(size_t count, OtObject* parameters) {
+void OtSkyboxClass::init(size_t count, OtObject* parameters) {
 	if (count == 6) {
 		setCubemap(
 			parameters[0]->operator std::string(),
@@ -158,8 +158,6 @@ OtObject OtSkyboxClass::init(size_t count, OtObject* parameters) {
 	} else if (count != 0) {
 		OtExcept("[Skybox] constructor expects 0 or 6 arguments (not %ld)", count);
 	}
-
-	return nullptr;
 }
 
 

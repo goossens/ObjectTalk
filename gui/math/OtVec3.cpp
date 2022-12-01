@@ -19,7 +19,7 @@
 //	OtVec3Class::init
 //
 
-OtObject OtVec3Class::init(size_t count, OtObject* parameters) {
+void OtVec3Class::init(size_t count, OtObject* parameters) {
 	if (count == 3) {
 		vector = glm::vec3(
 			parameters[0]->operator float(),
@@ -37,8 +37,6 @@ OtObject OtVec3Class::init(size_t count, OtObject* parameters) {
 	} else if (count != 0) {
 		OtExcept("[Vec3] constructor expects 0, 1 or 3 arguments (not %ld)", count);
 	}
-
-	return nullptr;
 }
 
 

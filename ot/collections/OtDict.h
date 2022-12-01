@@ -34,7 +34,7 @@ public:
 	std::string describe() override { return std::to_string(dict.size()) + " entries"; }
 
 	// initializer
-	OtObject init(size_t count, OtObject* parameters);
+	void init(size_t count, OtObject* parameters);
 
 	// comparison
 	bool operator == (OtObject operand) override;

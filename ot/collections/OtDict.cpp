@@ -45,7 +45,7 @@ OtDictClass::operator std::string() {
 //	OtDictClass::init
 //
 
-OtObject OtDictClass::init(size_t count, OtObject* parameters) {
+void OtDictClass::init(size_t count, OtObject* parameters) {
 	if (count %2 != 0) {
 		OtExcept("Dict constructor expects an even number of parameters not [%ld]", count);
 	}
@@ -56,8 +56,6 @@ OtObject OtDictClass::init(size_t count, OtObject* parameters) {
 	for (size_t c = 0; c < count; c += 2) {
 		dict.insert(std::make_pair((std::string) *parameters[c], parameters[c + 1]));
 	}
-
-	return shared();
 }
 
 

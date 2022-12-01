@@ -20,7 +20,7 @@
 //	OtCircleGeometryClass::init
 //
 
-OtObject OtCircleGeometryClass::init(size_t count, OtObject* parameters) {
+void OtCircleGeometryClass::init(size_t count, OtObject* parameters) {
 	// set attributes
 	if (count) {
 		switch (count) {
@@ -43,8 +43,6 @@ OtObject OtCircleGeometryClass::init(size_t count, OtObject* parameters) {
 
 		refreshGeometry = true;
 	}
-
-	return nullptr;
 }
 
 

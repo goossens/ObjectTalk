@@ -32,7 +32,7 @@ public:
 	OtVec3Class(float x, float y, float z) : vector(x, y, z) {}
 
 	// initialize
-	OtObject init(size_t count, OtObject* parameters);
+	void init(size_t count, OtObject* parameters);
 
 	// access members
 	operator glm::vec3() { return vector; }

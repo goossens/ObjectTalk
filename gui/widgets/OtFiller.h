@@ -25,7 +25,7 @@ typedef std::shared_ptr<OtFillerClass> OtFiller;
 class OtFillerClass : public OtWidgetClass {
 public:
 	// initialize
-	OtObject init(size_t count, OtObject* parameters);
+	void init(size_t count, OtObject* parameters);
 
 	// set the height of the filler
 	OtObject setSize(float size);

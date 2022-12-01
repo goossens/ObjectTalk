@@ -28,7 +28,7 @@
 //	OtFileOpenDialogClass::init
 //
 
-OtObject OtFileOpenDialogClass::init(size_t count, OtObject* parameters) {
+void OtFileOpenDialogClass::init(size_t count, OtObject* parameters) {
 	// set attributes
 	if (count) {
 		switch (count) {
@@ -46,8 +46,6 @@ OtObject OtFileOpenDialogClass::init(size_t count, OtObject* parameters) {
 				OtExcept("Too many parameters [%ld] for [FileOpenDialog] constructor (max 3)", count);
 		}
 	}
-
-	return nullptr;
 }
 
 

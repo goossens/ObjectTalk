@@ -33,7 +33,7 @@ public:
 	~OtSkyClass();
 
 	// initialize
-	OtObject init(size_t count, OtObject* parameters);
+	void init(size_t count, OtObject* parameters);
 
 	// connect to sun object
 	OtObject setSun(OtObject sun);

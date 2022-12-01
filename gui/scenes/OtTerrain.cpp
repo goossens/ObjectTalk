@@ -115,14 +115,12 @@ OtTerrainClass::~OtTerrainClass() {
 //	OtTerrainClass::init
 //
 
-OtObject OtTerrainClass::init(size_t count, OtObject* parameters) {
+void OtTerrainClass::init(size_t count, OtObject* parameters) {
 	if (count == 1) {
 
 	} else if (count != 0) {
 		OtExcept("[Terrain] constructor expects 0 or 1 arguments (not %ld)", count);
 	}
-
-	return nullptr;
 }
 
 

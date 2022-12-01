@@ -32,7 +32,7 @@ static glm::vec3 calculateNormal(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3) {
 //	OtClothClass::init
 //
 
-OtObject OtClothClass::init(size_t count, OtObject* parameters) {
+void OtClothClass::init(size_t count, OtObject* parameters) {
 	// set attributes
 	if (count) {
 		switch (count) {
@@ -47,8 +47,6 @@ OtObject OtClothClass::init(size_t count, OtObject* parameters) {
 				OtExcept("Too many parameters [%ld] for [Cloth] constructor (max 2)", count);
 		}
 	}
-
-	return nullptr;
 }
 
 

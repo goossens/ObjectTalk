@@ -42,7 +42,7 @@ public:
 	~OtMaterialClass();
 
 	// initialize
-	OtObject init(size_t count, OtObject* parameters);
+	void init(size_t count, OtObject* parameters);
 
 	// set properties
 	OtObject setFixed(const std::string& color);

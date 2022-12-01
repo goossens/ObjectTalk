@@ -23,7 +23,7 @@
 //	OtMeterClass::init
 //
 
-OtObject OtMeterClass::init(size_t count, OtObject* parameters) {
+void OtMeterClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
 		case 3:
 			setLabel(parameters[2]->operator std::string());
@@ -40,8 +40,6 @@ OtObject OtMeterClass::init(size_t count, OtObject* parameters) {
 		default:
 			OtExcept("[Meter] constructor expects up to 3 arguments (not %ld)", count);
 	}
-
-	return nullptr;
 }
 
 

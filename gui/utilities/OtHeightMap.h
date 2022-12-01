@@ -32,7 +32,7 @@ public:
 	~OtHeightMapClass();
 
 	// initialize
-	OtObject init(size_t count, OtObject* parameters);
+	void init(size_t count, OtObject* parameters);
 
 	// load heightmap from image
 	OtObject loadMap(const std::string& file);

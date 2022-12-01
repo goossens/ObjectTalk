@@ -27,7 +27,7 @@ typedef std::shared_ptr<OtCylinderGeometryClass> OtCylinderGeometry;
 class OtCylinderGeometryClass : public OtGeometryClass {
 public:
 	// initialize geometry
-	OtObject init(size_t count, OtObject* parameters);
+	void init(size_t count, OtObject* parameters);
 
 	// update attributes
 	OtObject setTopRadius(float radius);

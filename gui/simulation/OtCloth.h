@@ -28,7 +28,7 @@ typedef std::shared_ptr<OtClothClass> OtCloth;
 class OtClothClass : public OtSimulationClass {
 public:
 	// initialize geometry
-	OtObject init(size_t count, OtObject* parameters);
+	void init(size_t count, OtObject* parameters);
 
 	// update attributes
 	OtObject setPlane(OtObject plane);

@@ -19,7 +19,7 @@
 //	OtPlaneClass::init
 //
 
-OtObject OtPlaneClass::init(size_t count, OtObject* parameters) {
+void OtPlaneClass::init(size_t count, OtObject* parameters) {
 	if (count == 2) {
 		// TODO
 
@@ -37,8 +37,6 @@ OtObject OtPlaneClass::init(size_t count, OtObject* parameters) {
 	} else if (count != 0) {
 		OtExcept("Invalid number of constructor parameters for [Plane]");
 	}
-
-	return nullptr;
 }
 
 

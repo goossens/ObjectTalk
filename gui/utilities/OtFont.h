@@ -31,7 +31,7 @@ public:
 	~OtFontClass();
 
 	// initialize
-	OtObject init(size_t count, OtObject* parameters);
+	void init(size_t count, OtObject* parameters);
 
 	// update properties
 	OtObject setFont(const std::string& file);

@@ -22,7 +22,7 @@
 //	OtPathClass::init
 //
 
-OtObject OtPathClass::init(size_t count, OtObject* parameters) {
+void OtPathClass::init(size_t count, OtObject* parameters) {
 	if (count >= 1) {
 		path = parameters[0]->operator std::string();
 
@@ -30,8 +30,6 @@ OtObject OtPathClass::init(size_t count, OtObject* parameters) {
 			path /= parameters[c]->operator std::string();
 		}
 	}
-
-	return shared();
 }
 
 

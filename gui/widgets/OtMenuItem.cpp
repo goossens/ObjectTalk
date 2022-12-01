@@ -25,7 +25,7 @@
 //	OtMenuItemClass::init
 //
 
-OtObject OtMenuItemClass::init(size_t count, OtObject* parameters) {
+void OtMenuItemClass::init(size_t count, OtObject* parameters) {
 	// set attributes
 	if (count) {
 		switch (count) {
@@ -43,8 +43,6 @@ OtObject OtMenuItemClass::init(size_t count, OtObject* parameters) {
 				OtExcept("Too many parameters [%ld] for [MenuItem] constructor (max 3)", count);
 		}
 	}
-
-	return nullptr;
 }
 
 

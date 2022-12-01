@@ -25,7 +25,7 @@ typedef std::shared_ptr<OtModelGeometryClass> OtModelGeometry;
 class OtModelGeometryClass : public OtGeometryClass {
 public:
 	// initialize geometry
-	OtObject init(size_t count, OtObject* parameters);
+	void init(size_t count, OtObject* parameters);
 
 	// update attributes
 	OtObject setModel(const std::string& name);

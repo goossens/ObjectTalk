@@ -50,14 +50,10 @@ OtArrayClass::operator std::string() {
 //	OtArrayClass::init
 //
 
-OtObject OtArrayClass::init(size_t count, OtObject* parameters) {
-	array.clear();
-
+void OtArrayClass::init(size_t count, OtObject* parameters) {
 	for (auto c = 0; c < count; c++) {
 		array.push_back(parameters[c]);
 	}
-
-	return shared();
 }
 
 

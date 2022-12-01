@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include "OtException.h"
 #include "OtFunction.h"
 #include "OtVM.h"
 
@@ -25,6 +26,25 @@ OtViewClass::~OtViewClass() {
 	if (scene) {
 		scene->clear();
 		scene = nullptr;
+	}
+}
+
+
+//
+//	OtViewClass::init
+//
+
+void OtViewClass::init(size_t count, OtObject* parameters) {
+	if (count == 4) {
+		setScreenArea(
+			parameters[0]->operator int(),
+			parameters[1]->operator int(),
+			parameters[2]->operator int(),
+			parameters[3]->operator int()
+		);
+
+	} else if (count != 0) {
+		OtExcept("[View] constructor expects 0 or 4 arguments (not %ld)", count);
 	}
 }
 
@@ -178,7 +198,7 @@ bool OtViewClass::onMouseDrag(int button, int mods, float xpos, float ypos) {
 
 	bool handled = false;
 
-	// only process if camera doesn't want it and  we have a member function
+	// only process if camera doesn't want it and we have a member function
 	if (!camera->onMouseDrag(button, mods, xpos - xold, ypos - yold) && has("onMouseDrag")) {
 		OtVM::instance()->callMemberFunction(shared(), "onMouseDrag", OtObjectCreate(button), OtObjectCreate(mods), OtObjectCreate(xpos - xold), OtObjectCreate(ypos - yold));
 		handled = true;
@@ -252,6 +272,8 @@ OtType OtViewClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtViewClass>("View", OtAppObjectClass::getMeta());
+
+		type->set("__init__", OtFunctionClass::create(&OtViewClass::init));
 
 		type->set("setScreenArea", OtFunctionClass::create(&OtViewClass::setScreenArea));
 		type->set("setCamera", OtFunctionClass::create(&OtViewClass::setCamera));

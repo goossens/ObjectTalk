@@ -29,7 +29,10 @@ public:
 	// destructor
 	~OtViewClass();
 
-	// update attributes
+	// initialize
+	void init(size_t count, OtObject* parameters);
+
+	// update properties
 	OtObject setScreenArea(int x, int y, int w, int h);
 	OtObject setCamera(OtObject camera);
 	OtObject setScene(OtObject scene);

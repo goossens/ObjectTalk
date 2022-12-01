@@ -109,6 +109,38 @@ OtVectorDisplayClass::~OtVectorDisplayClass() {
 
 
 //
+//	OtVectorDisplayClass::init
+//
+
+void OtVectorDisplayClass::init(size_t count, OtObject* parameters) {
+	if (count == 4) {
+		setScreenArea(
+			parameters[0]->operator int(),
+			parameters[1]->operator int(),
+			parameters[2]->operator int(),
+			parameters[3]->operator int()
+		);
+
+	} else if (count != 0) {
+		OtExcept("[VectorDisplay] constructor expects 0 or 4 arguments (not %ld)", count);
+	}
+}
+
+
+//
+//	OtVectorDisplayClass::setScreenArea
+//
+
+OtObject OtVectorDisplayClass::setScreenArea(int _x, int _y, int _w, int _h) {
+	x = _x;
+	y = _y;
+	w = _w;
+	h = _h;
+	return shared();
+}
+
+
+//
 //	OtVectorDisplayClass::updateFrameBuffers
 //
 
@@ -1365,6 +1397,7 @@ OtType OtVectorDisplayClass::getMeta() {
 		type = OtTypeClass::create<OtVectorDisplayClass>("VectorDisplay", OtAppObjectClass::getMeta());
 		type->set("__init__", OtFunctionClass::create(&OtVectorDisplayClass::init));
 
+		type->set("setScreenArea", OtFunctionClass::create(&OtVectorDisplayClass::setScreenArea));
 		type->set("setBrightness", OtFunctionClass::create(&OtVectorDisplayClass::setBrightness));
 		type->set("setDecay", OtFunctionClass::create(&OtVectorDisplayClass::setDecay));
 		type->set("setTopLeftOrigin", OtFunctionClass::create(&OtVectorDisplayClass::setTopLeftOrigin));

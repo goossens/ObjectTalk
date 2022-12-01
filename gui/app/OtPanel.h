@@ -25,7 +25,10 @@ typedef std::shared_ptr<OtPanelClass> OtPanel;
 class OtPanelClass : public OtAppObjectClass {
 public:
 	// initialize panel
-	void init(int _x, int _y, int _w, int _h) { x = _x; y = _y; w = _w; h = _h; }
+	void init(size_t count, OtObject* parameters);
+
+	// update properties
+	OtObject setScreenArea(int x, int y, int w, int h);
 
 	// ensure specified component is allowed as a child
 	void validateChild(OtComponent child) override;

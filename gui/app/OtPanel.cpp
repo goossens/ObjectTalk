@@ -20,6 +20,38 @@
 
 
 //
+//	OtPanelClass::init
+//
+
+void OtPanelClass::init(size_t count, OtObject* parameters) {
+	if (count == 4) {
+		setScreenArea(
+			parameters[0]->operator int(),
+			parameters[1]->operator int(),
+			parameters[2]->operator int(),
+			parameters[3]->operator int()
+		);
+
+	} else if (count != 0) {
+		OtExcept("[Panel] constructor expects 0 or 4 arguments (not %ld)", count);
+	}
+}
+
+
+//
+//	OtPanelClass::setScreenArea
+//
+
+OtObject OtPanelClass::setScreenArea(int _x, int _y, int _w, int _h) {
+	x = _x;
+	y = _y;
+	w = _w;
+	h = _h;
+	return shared();
+}
+
+
+//
 //	OtPanelClass::validateChild
 //
 
@@ -83,6 +115,7 @@ OtType OtPanelClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtPanelClass>("Panel", OtAppObjectClass::getMeta());
 		type->set("__init__", OtFunctionClass::create(&OtPanelClass::init));
+		type->set("setScreenArea", OtFunctionClass::create(&OtPanelClass::setScreenArea));
 	}
 
 	return type;

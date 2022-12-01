@@ -13,8 +13,6 @@ var cameraRadius = 120.0;
 // define our view
 class View : gui.View {
 	function __init__(this, scene) {
-		this.setScreenArea(0, 0, 100, 100);
-
 		this.camera = gui.Camera();
 		this.setCamera(this.camera);
 

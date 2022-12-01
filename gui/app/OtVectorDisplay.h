@@ -37,9 +37,10 @@ public:
 	~OtVectorDisplayClass();
 
 	// initialize vector display
-	void init(int _x, int _y, int _w, int _h) { x = _x; y = _y; w = _w; h = _h; }
+	void init(size_t count, OtObject* parameters);
 
-	// display properties
+	// update properties
+	OtObject setScreenArea(int x, int y, int w, int h);
 	OtObject setBrightness(float brightness);
 	OtObject setDecay(int steps, float decayStart, float decay);
 	OtObject setTopLeftOrigin();

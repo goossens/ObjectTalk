@@ -79,7 +79,8 @@ public:
 	// get the next available view ID
 	bgfx::ViewId getNextViewID() { return nextViewID++; }
 
-	// program/image/texture functions
+	// asset functions
+	bgfx::UniformHandle getUniform(const char* name, bgfx::UniformType::Enum type, uint16_t size = 1);
 	bgfx::ProgramHandle getProgram(const bgfx::EmbeddedShader* shaders, const char* vertex, const char* fragment);
 	bgfx::TextureHandle getTexture(const std::string& file, bool mipmap = false, bimg::ImageContainer** image = nullptr);
 	bimg::ImageContainer* getImage(const std::string& file, bool powerof2 = false, bool square = false);
@@ -146,7 +147,8 @@ private:
 	int64_t cpuDuration;
 	int64_t gpuDuration;
 
-	// program/image/texture registries
+	// asset registries
+	OtRegistry<bgfx::UniformHandle> uniformRegistry;
 	OtRegistry<bgfx::ProgramHandle> programRegistry;
 	OtRegistry<bgfx::TextureHandle> textureRegistry;
 	OtRegistry<bimg::ImageContainer*> imageRegistry;

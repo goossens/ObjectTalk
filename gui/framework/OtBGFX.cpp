@@ -176,6 +176,23 @@ float OtFrameworkClass::getTime() {
 
 
 //
+//	OtFrameworkClass::getUniform
+//
+
+bgfx::UniformHandle OtFrameworkClass::getUniform(const char* name, bgfx::UniformType::Enum type, uint16_t size) {
+	// create program (if required)
+	if (!uniformRegistry.has(name)) {
+		bgfx::UniformHandle uniform = bgfx::createUniform(name, type, size);
+		uniformRegistry.set(name, uniform);
+		return uniform;
+
+	} else {
+		return uniformRegistry.get(name);
+	}
+}
+
+
+//
 //	OtFrameworkClass::getProgram
 //
 
@@ -192,10 +209,11 @@ bgfx::ProgramHandle OtFrameworkClass::getProgram(const bgfx::EmbeddedShader* sha
 			true);
 
 		programRegistry.set(index, program);
-	}
+		return program;
 
-	// return program
-	return programRegistry.get(index);
+	} else {
+		return programRegistry.get(index);
+	}
 }
 
 
@@ -405,10 +423,12 @@ bimg::ImageContainer* OtFrameworkClass::getImage(const std::string& file, bool p
 
 		// add image to registry
 		imageRegistry.set(file, image);
-	}
+		return image;
 
-	// return image
-	return imageRegistry.get(file);
+	} else {
+		// return image
+		return imageRegistry.get(file);
+	}
 }
 
 

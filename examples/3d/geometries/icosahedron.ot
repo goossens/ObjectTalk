@@ -10,11 +10,11 @@ var gui = import("gui");
 
 class App : gui.App {
 	function setup(this) {
-		var ambient = gui.Ambient();
-		var light = gui.Light().setDirection(1, 2, 4);
+		var ambient = gui.AmbientLight();
+		var light = gui.DirectionalLight(-1, -2, -4);
 
 		var geometry = gui.IcosahedronGeometry();
-		var gold = gui.Material("material", "gold");
+		var gold = gui.ColoredMaterial("gold");
 		var object = gui.Mesh(geometry, gold).setWireframe(true);
 
 		this.addAnimation(gui.Animation()
@@ -47,11 +47,11 @@ class App : gui.App {
 		panel.add(node);
 
 		node = gui.TreeNode("Ambient Light:");
-		node.add(gui.AmbientController(ambient));
+		node.add(gui.AmbientLightController(ambient));
 		panel.add(node);
 
 		node = gui.TreeNode("Point Light:");
-		node.add(gui.LightController(light));
+		node.add(gui.DirectionalLightController(light));
 		panel.add(node);
 
 		node = gui.TreeNode("Icosahedron:");

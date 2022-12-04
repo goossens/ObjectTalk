@@ -46,5 +46,5 @@ public:
 
 private:
 	// our rendering context
-	OtRenderingContextClass context;
+	OtRenderingContext context;
 };

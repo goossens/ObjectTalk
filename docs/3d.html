@@ -219,10 +219,10 @@ os.runGUI();
               So let's start to populate the <strong>setup</strong> member
               function and first create a <strong>Scene</strong>.
             </p>
-            <pre><code>var ambient = gui.Ambient();
+            <pre><code>var ambient = gui.AmbientLight();
 
 var geometry = gui.BoxGeometry();
-var material = gui.Material(&quot;material&quot;, &quot;gold&quot;);
+var material = gui.ColoredMaterial(&quot;gold&quot;);
 
 var cube = gui.Mesh(geometry, material);
 
@@ -302,10 +302,10 @@ screen.add(view);
 
 class App : gui.App {
 	function setup(this) {
-		var ambient = gui.Ambient();
+		var ambient = gui.AmbientLight();
 
 		var geometry = gui.BoxGeometry();
-		var material = gui.Material(&quot;material&quot;, &quot;gold&quot;);
+		var material = gui.ColoredMaterial(&quot;gold&quot;);
 		var cube = gui.Mesh(geometry, material);
 
 		var scene = gui.Scene()
@@ -374,7 +374,7 @@ os.runGUI();
 class App : gui.App {
 	function setup(this) {
 		var geometry = gui.BoxGeometry();
-		var material = gui.Material(&quot;material&quot;, &quot;gold&quot;);
+		var material = gui.ColoredMaterial(&quot;gold&quot;);
 		var cube = gui.Mesh(geometry, material);
 
 		this.addAnimation(gui.Animation()
@@ -386,8 +386,8 @@ class App : gui.App {
 				cube.rotateAroundVector(angle, 1, 1, 0);
 			}));
 
-		var ambient = gui.Ambient();
-		var light = gui.Light().setDirection(1, 2, 4);
+		var ambient = gui.AmbientLight();
+		var light = gui.DirectionalLight(-1, -2, -4);
 
 		var scene = gui.Scene()
 			.add(cube)

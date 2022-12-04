@@ -10,8 +10,8 @@ var gui = import("gui");
 
 class App : gui.App {
 	function setup(this) {
-		var ambient = gui.Ambient();
-		var light = gui.Light().setDirection(1, 4, 4);
+		var ambient = gui.AmbientLight();
+		var light = gui.DirectionalLight(-1, -4, -4);
 
 		var fog = gui.Fog()
 			.setColor("black")
@@ -30,15 +30,14 @@ class App : gui.App {
 				.setRadius(0.99)
 				.setWidthSegments(60)
 				.setHeightSegments(30))
-			.setMaterial(gui.Material()
-				.setColor("#505050"))
+			.setMaterial(gui.ColoredMaterial("#505050"))
 			.setWireframe(true);
 
 		var surface = gui.Mesh()
 			.setGeometry(gui.SphereGeometry()
 				.setWidthSegments(64)
 				.setHeightSegments(32))
-			.setMaterial(gui.Material()
+			.setMaterial(gui.TexturedMaterial()
 				.setTexture(Path(__DIR__, "assets", "earth.png"))
 				.setDoubleSided());
 
@@ -47,7 +46,7 @@ class App : gui.App {
 				.setRadius(1.01)
 				.setWidthSegments(64)
 				.setHeightSegments(32))
-			.setMaterial(gui.Material()
+			.setMaterial(gui.TexturedMaterial()
 				.setTexture(Path(__DIR__, "assets", "clouds.png"))
 				.setDoubleSided());
 

@@ -10,10 +10,10 @@ var gui = import("gui");
 
 class App : gui.App {
 		function setup(this) {
-		var ambient = gui.Ambient();
+		var ambient = gui.AmbientLight();
 
-		var light = gui.Light()
-			.setDirection(50, 70, 30)
+		var light = gui.DirectionalLight()
+			.setDirection(-50, -70, -30)
 			.castShadow(200, 1, 200);
 
 		var fog = gui.Fog()
@@ -34,20 +34,21 @@ class App : gui.App {
 				.setHeight(200)
 				.setWidthSegments(200)
 				.setHeightSegments(200))
-			.setMaterial(gui.Material()
-				.setBlendMap(gui.BlendMap(
+			.setMaterial(gui.BlendMappedMaterial()
+				.setTextures(
 					Path(__DIR__, "assets", "blendmap.png"),
 					Path(__DIR__, "assets", "grass.png"),
 					Path(__DIR__, "assets", "mud.png"),
 					Path(__DIR__, "assets", "grassflowers.png"),
-					Path(__DIR__, "assets", "path.png"))))
+					Path(__DIR__, "assets", "path.png"))
+				.setScale(0.04))
 			.castShadow(true)
 			.receiveShadow(true)
 			.rotateX(-pi / 2.0);
 
 		var trees = gui.Mesh()
 			.setGeometry(gui.ModelGeometry(Path(__DIR__, "assets", "pine.obj")))
-			.setMaterial(gui.Material()
+			.setMaterial(gui.TexturedMaterial()
 				.setTexture(Path(__DIR__, "assets", "pine.png"))
 				.setDoubleSided())
 			.castShadow(true)

@@ -262,10 +262,14 @@
                   <a class="page-scroll" href="#gui">Gui</a>
                   <ul>
                     <li>
-                      <a class="page-scroll" href="#annimation">Annimation</a>
+                      <p>
+                        <a class="page-scroll" href="#annimation">Annimation</a>
+                      </p>
                     </li>
                     <li>
-                      <a class="page-scroll" href="#component">Component</a>
+                      <p>
+                        <a class="page-scroll" href="#component">Component</a>
+                      </p>
                       <ul>
                         <li><a class="page-scroll" href="#app">App</a></li>
                         <li>
@@ -367,8 +371,10 @@
                               <a class="page-scroll" href="#tron">Tron</a>
                             </li>
                             <li>
-                              <a class="page-scroll" href="#ambientcontroller"
-                                >AmbientController</a
+                              <a
+                                class="page-scroll"
+                                href="#ambientlightcontroller"
+                                >AmbientLightController</a
                               >
                             </li>
                             <li>
@@ -377,8 +383,10 @@
                               >
                             </li>
                             <li>
-                              <a class="page-scroll" href="#lightcontroller"
-                                >LightController</a
+                              <a
+                                class="page-scroll"
+                                href="#directionallightcontroller"
+                                >DirectionalLightController</a
                               >
                             </li>
                             <li>
@@ -397,8 +405,20 @@
                               >
                             </li>
                             <li>
+                              <a
+                                class="page-scroll"
+                                href="#pointlightcontroller"
+                                >PointLightController</a
+                              >
+                            </li>
+                            <li>
                               <a class="page-scroll" href="#skycontroller"
                                 >SkyController</a
+                              >
+                            </li>
+                            <li>
+                              <a class="page-scroll" href="#spotlightcontroller"
+                                >SpotLightController</a
                               >
                             </li>
                             <li>
@@ -432,16 +452,42 @@
                           >
                           <ul>
                             <li>
-                              <a class="page-scroll" href="#ambient">Ambient</a>
-                            </li>
-                            <li>
                               <a class="page-scroll" href="#background"
                                 >Background</a
                               >
                             </li>
-                            <li><a class="page-scroll" href="#fog">Fog</a></li>
                             <li>
                               <a class="page-scroll" href="#light">Light</a>
+                              <ul>
+                                <li>
+                                  <a class="page-scroll" href="#ambientlight"
+                                    >AmbientLight</a
+                                  >
+                                </li>
+                                <li>
+                                  <a
+                                    class="page-scroll"
+                                    href="#directionallight"
+                                    >DirectionalLight</a
+                                  >
+                                </li>
+                                <li>
+                                  <a class="page-scroll" href="#fog">Fog</a>
+                                </li>
+                                <li>
+                                  <a class="page-scroll" href="#pointlight"
+                                    >PointLight</a
+                                  >
+                                </li>
+                                <li>
+                                  <a class="page-scroll" href="#spotlight"
+                                    >SpotLight</a
+                                  >
+                                </li>
+                                <li>
+                                  <a class="page-scroll" href="#sun">Sun</a>
+                                </li>
+                              </ul>
                             </li>
                             <li><a class="page-scroll" href="#sky">Sky</a></li>
                             <li>
@@ -450,7 +496,6 @@
                             <li>
                               <a class="page-scroll" href="#terrain">Terrain</a>
                             </li>
-                            <li><a class="page-scroll" href="#sun">Sun</a></li>
                             <li>
                               <a class="page-scroll" href="#water">Water</a>
                             </li>
@@ -471,9 +516,13 @@
                         </li>
                       </ul>
                     </li>
-                    <li><a class="page-scroll" href="#camera">Camera</a></li>
                     <li>
-                      <a class="page-scroll" href="#geometry">Geometry</a>
+                      <p><a class="page-scroll" href="#camera">Camera</a></p>
+                    </li>
+                    <li>
+                      <p>
+                        <a class="page-scroll" href="#geometry">Geometry</a>
+                      </p>
                       <ul>
                         <li>
                           <a class="page-scroll" href="#boxgeometry"
@@ -496,6 +545,21 @@
                           >
                         </li>
                         <li>
+                          <a class="page-scroll" href="#dodecahedrongeometry"
+                            >DodecahedronGeometry</a
+                          >
+                        </li>
+                        <li>
+                          <a class="page-scroll" href="#extrudedgeometry"
+                            >ExtrudedGeometry</a
+                          >
+                        </li>
+                        <li>
+                          <a class="page-scroll" href="#icosahedrongeometry"
+                            >IcosahedronGeometry</a
+                          >
+                        </li>
+                        <li>
                           <a class="page-scroll" href="#modelgeometry"
                             >ModelGeometry</a
                           >
@@ -506,8 +570,28 @@
                           >
                         </li>
                         <li>
+                          <a class="page-scroll" href="#octahedrongeometry"
+                            >OctahedronGeometry</a
+                          >
+                        </li>
+                        <li>
                           <a class="page-scroll" href="#spheregeometry"
                             >SphereGeometry</a
+                          >
+                        </li>
+                        <li>
+                          <a class="page-scroll" href="#sphericalcubegeometry"
+                            >SphericalCubeGeometry</a
+                          >
+                        </li>
+                        <li>
+                          <a class="page-scroll" href="#tetrahedrongeometry"
+                            >TetrahedronGeometry</a
+                          >
+                        </li>
+                        <li>
+                          <a class="page-scroll" href="#textgeometry"
+                            >TextGeometry</a
                           >
                         </li>
                         <li>
@@ -518,27 +602,62 @@
                       </ul>
                     </li>
                     <li>
-                      <a href="math">Math</a>
+                      <p><a href="math">Math</a></p>
                       <ul>
+                        <li><a class="page-scroll" href="#aabb">AABB</a></li>
+                        <li>
+                          <a class="page-scroll" href="#frustum">Frustum</a>
+                        </li>
+                        <li>
+                          <a class="page-scroll" href="#matrix">Matrix</a>
+                        </li>
                         <li>
                           <a class="page-scroll" href="#perlin">Perlin</a>
+                        </li>
+                        <li><a class="page-scroll" href="#vec2">Vec2</a></li>
+                        <li><a class="page-scroll" href="#vec3">Vec3</a></li>
+                      </ul>
+                    </li>
+                    <li>
+                      <p>
+                        <a class="page-scroll" href="#material">Material</a>
+                      </p>
+                      <ul>
+                        <li>
+                          <a class="page-scroll" href="#blenmappedmaterial"
+                            >BlendMappedMaterial</a
+                          >
+                        </li>
+                        <li>
+                          <a class="page-scroll" href="#coloredmaterial"
+                            >ColoredMaterial</a
+                          >
+                        </li>
+                        <li>
+                          <a class="page-scroll" href="#fixedmaterial"
+                            >FixedMaterial</a
+                          >
+                        </li>
+                        <li>
+                          <a class="page-scroll" href="#texturedmaterial"
+                            >TexturedMaterial</a
+                          >
                         </li>
                       </ul>
                     </li>
                     <li>
-                      <a class="page-scroll" href="#material">Material</a>
-                    </li>
-                    <li><a class="page-scroll" href="#texture">Texture</a></li>
-                    <li>
-                      <a class="page-scroll" href="#blendmap">BlendMap</a>
+                      <p><a class="page-scroll" href="#texture">Texture</a></p>
                     </li>
                     <li>
-                      <a class="page-scroll" href="#heightmap">HeightMap</a>
+                      <p>
+                        <a class="page-scroll" href="#heightmap">HeightMap</a>
+                      </p>
                     </li>
                     <li>
-                      <a class="page-scroll" href="#noisemap">NoiseMap</a>
+                      <p>
+                        <a class="page-scroll" href="#noisemap">NoiseMap</a>
+                      </p>
                     </li>
-                    <li><a class="page-scroll" href="#matrix">Matrix</a></li>
                   </ul>
                 </li>
               </ul>

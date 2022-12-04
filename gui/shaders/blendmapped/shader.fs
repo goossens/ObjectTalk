@@ -8,28 +8,35 @@ $input v_position, v_normal, v_texcoord0, v_shadow
 
 #include <bgfx.glsl>
 #include <light.glsl>
+#include <material.glsl>
 
-uniform vec4 u_blendmap[1];
-#define u_blendmapScale u_blendmap[0].x
+// uniforms
+uniform vec4 u_material[3];
 
-SAMPLER2D(s_texture_m, 1);
-SAMPLER2D(s_texture_n, 2);
-SAMPLER2D(s_texture_r, 3);
-SAMPLER2D(s_texture_g, 4);
-SAMPLER2D(s_texture_b, 5);
+#define u_ambient u_material[0].rgb
+#define u_scale u_material[0].a
+#define u_diffuse u_material[1].rgb
+#define u_specular u_material[2].rgb
+#define u_shininess u_material[2].a
+
+SAMPLER2D(s_material1, 1);
+SAMPLER2D(s_material2, 2);
+SAMPLER2D(s_material3, 3);
+SAMPLER2D(s_material4, 4);
+SAMPLER2D(s_material5, 5);
 
 // main function
 void main() {
 	// blend texture colors based on blendmap
-	vec4 blend = texture2D(s_texture_m, v_texcoord0);
+	vec4 blend = texture2D(s_material1, v_texcoord0);
 	float b = 1.0 - blend.r - blend.g - blend.b;
-	vec2 tiled = v_texcoord0 * u_blendmapScale;
+	vec2 tiled = v_texcoord0 / u_scale;
 
-	vec4 color = texture2D(s_texture_n, tiled) * b +
-		texture2D(s_texture_r, tiled) * blend.r +
-		texture2D(s_texture_g, tiled) * blend.g +
-		texture2D(s_texture_b, tiled) * blend.b;
+	vec4 color = texture2D(s_material2, tiled) * b +
+		texture2D(s_material3, tiled) * blend.r +
+		texture2D(s_material4, tiled) * blend.g +
+		texture2D(s_material5, tiled) * blend.b;
 
-	// return fragment color
-	gl_FragColor = applyLight(color, v_position, v_normal, v_shadow);
+	Material material = createMaterial(u_ambient, u_diffuse, u_specular, u_shininess);
+	gl_FragColor = applyLightAndFog(color, material, v_position, normalize(v_normal), v_shadow);
 }

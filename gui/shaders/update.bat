@@ -1,4 +1,4 @@
-cd /D "%~dp0"
+pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f background/shader.vs -o background/vs_dx9.h -i include --type vertex --platform windows -p vs_3_0 -O 3 --bin2c OtBackgroundVS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f background/shader.vs -o background/vs_dx11.h -i include --type vertex --platform windows -p vs_5_0 -O 3 --bin2c OtBackgroundVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f background/shader.fs -o background/fs_dx9.h -i include --type fragment --platform windows -p ps_3_0 -O 3 --bin2c OtBackgroundFS_dx9
@@ -41,12 +41,6 @@ cd /D "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f imgui/shader.vs -o imgui/vs_dx11.h -i include --type vertex --platform windows -p vs_5_0 -O 3 --bin2c OtImGuiVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f imgui/shader.fs -o imgui/fs_dx9.h -i include --type fragment --platform windows -p ps_3_0 -O 3 --bin2c OtImGuiFS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f imgui/shader.fs -o imgui/fs_dx11.h -i include --type fragment --platform windows -p ps_5_0 -O 3 --bin2c OtImGuiFS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f normalled/shader.vs -o normalled/vs_dx9.h -i include --type vertex --platform windows -p vs_3_0 -O 3 --bin2c OtNormalledVS_dx9
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f normalled/shader.vs -o normalled/vs_dx11.h -i include --type vertex --platform windows -p vs_5_0 -O 3 --bin2c OtNormalledVS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f normalled/shader.fs -o normalled/fs_dx9.h -i include --type fragment --platform windows -p ps_3_0 -O 3 --bin2c OtNormalledFS_dx9
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f normalled/shader.fs -o normalled/fs_dx11.h -i include --type fragment --platform windows -p ps_5_0 -O 3 --bin2c OtNormalledFS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f normalled/instancing.vs -o normalled/vsi_dx9.h -i include --type vertex --platform windows -p vs_3_0 -O 3 --bin2c OtNormalledVSI_dx9
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f normalled/instancing.vs -o normalled/vsi_dx11.h -i include --type vertex --platform windows -p vs_5_0 -O 3 --bin2c OtNormalledVSI_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f shadow/shader.vs -o shadow/vs_dx9.h -i include --type vertex --platform windows -p vs_3_0 -O 3 --bin2c OtShadowVS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f shadow/shader.vs -o shadow/vs_dx11.h -i include --type vertex --platform windows -p vs_5_0 -O 3 --bin2c OtShadowVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f shadow/shader.fs -o shadow/fs_dx9.h -i include --type fragment --platform windows -p ps_3_0 -O 3 --bin2c OtShadowFS_dx9
@@ -77,3 +71,4 @@ cd /D "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f water/shader.vs -o water/vs_dx11.h -i include --type vertex --platform windows -p vs_5_0 -O 3 --bin2c OtWaterVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f water/shader.fs -o water/fs_dx9.h -i include --type fragment --platform windows -p ps_3_0 -O 3 --bin2c OtWaterFS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f water/shader.fs -o water/fs_dx11.h -i include --type fragment --platform windows -p ps_5_0 -O 3 --bin2c OtWaterFS_dx11
+popd

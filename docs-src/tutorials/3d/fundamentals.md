@@ -65,10 +65,10 @@ application. You simply subclass the **Application** class, populate the
  So let's start to populate the **setup** member function and first create
  a **Scene**.
 
- 	var ambient = gui.Ambient();
+ 	var ambient = gui.AmbientLight();
 
 	var geometry = gui.BoxGeometry();
-	var material = gui.Material("material", "gold");
+	var material = gui.ColoredMaterial("gold");
 
 	var cube = gui.Mesh(geometry, material);
 
@@ -130,10 +130,10 @@ Our complete App now looks like this:
 
 	class App : gui.App {
 		function setup(this) {
-			var ambient = gui.Ambient();
+			var ambient = gui.AmbientLight();
 
 			var geometry = gui.BoxGeometry();
-			var material = gui.Material("material", "gold");
+			var material = gui.ColoredMaterial("gold");
 			var cube = gui.Mesh(geometry, material);
 
 			var scene = gui.Scene()
@@ -192,7 +192,7 @@ make the scene more realistic. So let's change the App to:
 	class App : gui.App {
 		function setup(this) {
 			var geometry = gui.BoxGeometry();
-			var material = gui.Material("material", "gold");
+			var material = gui.ColoredMaterial("gold");
 			var cube = gui.Mesh(geometry, material);
 
 			this.addAnimation(gui.Animation()
@@ -204,8 +204,8 @@ make the scene more realistic. So let's change the App to:
 					cube.rotateAroundVector(angle, 1, 1, 0);
 				}));
 
-			var ambient = gui.Ambient();
-			var light = gui.Light().setDirection(1, 2, 4);
+			var ambient = gui.AmbientLight();
+			var light = gui.DirectionalLight(-1, -2, -4);
 
 			var scene = gui.Scene()
 				.add(cube)

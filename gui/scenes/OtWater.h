@@ -15,7 +15,6 @@
 #include "bgfx/bgfx.h"
 
 #include "OtController.h"
-#include "OtMaterial.h"
 #include "OtObject3d.h"
 
 
@@ -44,7 +43,7 @@ public:
 	// update state
 	void update(OtRenderingContext context) override;
 
-	// render in BGFX
+	// submit to GPU
 	void render(OtRenderingContext context) override;
 
 	void renderReflection(OtRenderingContext context);
@@ -75,9 +74,6 @@ protected:
 	float time = 0.0;
 	float scale = 1.0;
 	float shininess = 50.0;
-
-	// material
-	OtMaterial material;
 
 	// Frame buffers
 	float frameBufferAspectRation = -1;

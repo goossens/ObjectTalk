@@ -16,7 +16,7 @@ class App : gui.App {
 		var letters = gui.Shape().text(font, text);
 
 		var geometry = gui.ExtrudedGeometry(letters, 0.2, 100);
-		var gold = gui.Material("material", "gold");
+		var gold = gui.ColoredMaterial("gold");
 
 		var object = gui.Mesh(geometry, gold)
 			.transformationOrder("STR")
@@ -31,10 +31,10 @@ class App : gui.App {
 				object.rotateAroundVector(angle, 0, 1, 0);
 			}));
 
-		var ambient = gui.Ambient();
+		var ambient = gui.AmbientLight();
 
-		var light = gui.Light()
-			.setDirection(1, 2, 4)
+		var light = gui.DirectionalLight()
+			.setDirection(-1, -2, -4)
 			.castShadow(5, 3, 100);
 
 		var scene = gui.Scene()
@@ -58,11 +58,11 @@ class App : gui.App {
 		panel.add(node);
 
 		node = gui.TreeNode("Ambient Light:");
-		node.add(gui.AmbientController(ambient));
+		node.add(gui.AmbientLightController(ambient));
 		panel.add(node);
 
 		node = gui.TreeNode("Point Light:");
-		node.add(gui.LightController(light));
+		node.add(gui.DirectionalLightController(light));
 		panel.add(node);
 
 		node = gui.TreeNode("Text:");

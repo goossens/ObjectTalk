@@ -13,54 +13,11 @@
 
 #include "glm/ext.hpp"
 
-#include "bgfx/embedded_shader.h"
-
 #include "OtFunction.h"
 
 #include "OtGlm.h"
 #include "OtMesh.h"
 #include "OtMatrix.h"
-
-#include "OtFixedShader.h"
-#include "OtColoredShader.h"
-#include "OtNormalledShader.h"
-#include "OtTexturedShader.h"
-#include "OtBlendMappedShader.h"
-
-
-//
-//	Globals
-//
-
-static const bgfx::EmbeddedShader embeddedShaders[] = {
-	BGFX_EMBEDDED_SHADER(OtFixedVS),
-	BGFX_EMBEDDED_SHADER(OtFixedVSI),
-	BGFX_EMBEDDED_SHADER(OtFixedFS),
-	BGFX_EMBEDDED_SHADER(OtColoredVS),
-	BGFX_EMBEDDED_SHADER(OtColoredVSI),
-	BGFX_EMBEDDED_SHADER(OtColoredFS),
-	BGFX_EMBEDDED_SHADER(OtNormalledVS),
-	BGFX_EMBEDDED_SHADER(OtNormalledVSI),
-	BGFX_EMBEDDED_SHADER(OtNormalledFS),
-	BGFX_EMBEDDED_SHADER(OtTexturedVS),
-	BGFX_EMBEDDED_SHADER(OtTexturedVSI),
-	BGFX_EMBEDDED_SHADER(OtTexturedFS),
-	BGFX_EMBEDDED_SHADER(OtBlendMappedVS),
-	BGFX_EMBEDDED_SHADER(OtBlendMappedVSI),
-	BGFX_EMBEDDED_SHADER(OtBlendMappedFS),
-	BGFX_EMBEDDED_SHADER_END()
-};
-
-
-//
-//	OtMeshClass::~OtMeshClass
-//
-
-OtMeshClass::~OtMeshClass() {
-	if (bgfx::isValid(shader)) {
-		bgfx::destroy(shader);
-	}
-}
 
 
 //
@@ -143,12 +100,6 @@ void OtMeshClass::render(OtRenderingContext context, long flag) {
 		// set transformation
 		bgfx::setTransform(glm::value_ptr(transform));
 
-		// setup context
-		context->submit(receivesShadow());
-
-		// setup material
-		material->submit();
-
 		// submit vertices and triangles/lines
 		bgfx::setVertexBuffer(0, geometry->getVertexBuffer());
 
@@ -161,7 +112,7 @@ void OtMeshClass::render(OtRenderingContext context, long flag) {
 		}
 
 		// handle instancing (if required)
-		if (instances.size()) {
+		if (instances.size() > 0) {
 			bgfx::InstanceDataBuffer idb;
 			bgfx::allocInstanceDataBuffer(&idb, (uint32_t) instances.size(), sizeof(glm::mat4));
 			std::memcpy(idb.data, instances.data(), idb.size);
@@ -175,8 +126,9 @@ void OtMeshClass::render(OtRenderingContext context, long flag) {
 			flag |
 			BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA));
 
-		// run shader
-		bgfx::submit(context->getView(), shader);
+		// setup context and material
+		context->submit(receivesShadow());
+		material->submit(context->getView(), instances.size() > 0);
 	}
 }
 
@@ -196,100 +148,14 @@ void OtMeshClass::render(OtRenderingContext context) {
 	}
 
 	// don't render if this is a shadowmap and we cast no shadow
-	if (!context->inShadowmapPhase() || castShadowFlag) {
-		// ensure we have the right shader
-		auto mt = material->getType();
-		auto instancing = instances.size() ? 10 : 0;
-
-		if (materialType != mt + instancing) {
-			materialType = mt + instancing;
-
-			if (bgfx::isValid(shader)) {
-				bgfx::destroy(shader);
-			}
-
-			// initialize shader
-			bgfx::RendererType::Enum type = bgfx::getRendererType();
-
-			if (mt == OtMaterialClass::BLENDMAPPED) {
-				if (instancing) {
-					shader = bgfx::createProgram(
-						bgfx::createEmbeddedShader(embeddedShaders, type, "OtBlendMappedVSI"),
-						bgfx::createEmbeddedShader(embeddedShaders, type, "OtBlendMappedFS"),
-						true);
-
-				} else {
-					shader = bgfx::createProgram(
-						bgfx::createEmbeddedShader(embeddedShaders, type, "OtBlendMappedVS"),
-						bgfx::createEmbeddedShader(embeddedShaders, type, "OtBlendMappedFS"),
-						true);
-				}
-
-			} else if (mt == OtMaterialClass::NORMALLED) {
-				if (instancing) {
-					shader = bgfx::createProgram(
-						bgfx::createEmbeddedShader(embeddedShaders, type, "OtNormalledVSI"),
-						bgfx::createEmbeddedShader(embeddedShaders, type, "OtNormalledFS"),
-						true);
-
-				} else {
-					shader = bgfx::createProgram(
-						bgfx::createEmbeddedShader(embeddedShaders, type, "OtNormalledVS"),
-						bgfx::createEmbeddedShader(embeddedShaders, type, "OtNormalledFS"),
-						true);
-				}
-
-			} else if (mt == OtMaterialClass::TEXTURED) {
-				if (instancing) {
-					shader = bgfx::createProgram(
-						bgfx::createEmbeddedShader(embeddedShaders, type, "OtTexturedVSI"),
-						bgfx::createEmbeddedShader(embeddedShaders, type, "OtTexturedFS"),
-						true);
-
-				} else {
-					shader = bgfx::createProgram(
-						bgfx::createEmbeddedShader(embeddedShaders, type, "OtTexturedVS"),
-						bgfx::createEmbeddedShader(embeddedShaders, type, "OtTexturedFS"),
-						true);
-				}
-
-			} else if (mt == OtMaterialClass::COLORED) {
-				if (instancing) {
-					shader = bgfx::createProgram(
-						bgfx::createEmbeddedShader(embeddedShaders, type, "OtColoredVSI"),
-						bgfx::createEmbeddedShader(embeddedShaders, type, "OtColoredFS"),
-						true);
-
-				} else {
-					shader = bgfx::createProgram(
-						bgfx::createEmbeddedShader(embeddedShaders, type, "OtColoredVS"),
-						bgfx::createEmbeddedShader(embeddedShaders, type, "OtColoredFS"),
-						true);
-				}
-
-			} else {
-				if (instancing) {
-					shader = bgfx::createProgram(
-						bgfx::createEmbeddedShader(embeddedShaders, type, "OtFixedVSI"),
-						bgfx::createEmbeddedShader(embeddedShaders, type, "OtFixedFS"),
-						true);
-
-				} else {
-					shader = bgfx::createProgram(
-						bgfx::createEmbeddedShader(embeddedShaders, type, "OtFixedVS"),
-						bgfx::createEmbeddedShader(embeddedShaders, type, "OtFixedFS"),
-						true);
-				}
-			}
-		}
-
+	if (!context->inShadowmapPass() || castShadowFlag) {
 		// see if we need to render the back side?
-		if (wireframe || material->getBackSide()) {
+		if (wireframe || material->isBackSided()) {
 			render(context, BGFX_STATE_CULL_CCW);
 		}
 
 		// see if we need to render the front side?
-		if (material->getFrontSide()) {
+		if (material->isFrontSided()) {
 			render(context, BGFX_STATE_CULL_CW);
 		}
 	}

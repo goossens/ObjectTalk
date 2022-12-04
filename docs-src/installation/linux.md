@@ -22,6 +22,7 @@ Desktop with GUI and IDE, run the following commands:
 
 * Install additional software using **sudo apt-get install build-essential cmake git xorg-dev**
 * **cd [to your favorite build directory]**
+* If your favorite directory is on a mounted drive, you might have to do a **git config --global --replace-all safe.directory '*'**
 * **git clone https://github.com/goossens/ObjectTalk.git**
 * **cd ObjectTalk**
 * Create a debug version with **make debug** or create a release version with **make release**

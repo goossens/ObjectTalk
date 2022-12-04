@@ -35,7 +35,7 @@ public:
 	// update state
 	virtual void update(OtRenderingContext context) {}
 
-	// render in BGFX
+	// submit to GPU
 	virtual void render(OtRenderingContext context) {}
 
 	// get type definition

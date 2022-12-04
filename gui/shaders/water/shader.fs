@@ -8,11 +8,13 @@ $input v_position_world, v_position_screen, v_normal, v_tangent, v_bitangent, v_
 
 #include <bgfx.glsl>
 #include <light.glsl>
+#include <material.glsl>
 
 uniform vec4 u_water[2];
 #define u_time u_water[0].x
 #define u_scale u_water[0].y
 #define u_orientation u_water[0].z
+#define u_shininess u_water[0].w
 #define u_water_color u_water[1]
 
 SAMPLER2D(s_normals, 1);
@@ -22,7 +24,7 @@ SAMPLER2D(s_refraction, 3);
 void main() {
 	mat3 tbn = mtxFromCols(normalize(v_tangent), normalize(v_normal), normalize(v_bitangent));
 
-	vec2 uv = v_position_world.xz * u_scale;
+	vec2 uv = v_position_world.xz / u_scale;
 	vec2 uv0 = uv / 103.0 + vec2(u_time / 17.0, u_time / 29.0);
 	vec2 uv1 = uv / 107.0 - vec2(u_time / -19.0, u_time / 31.0);
 	vec2 uv2 = uv / vec2(8907.0, 9803.0) + vec2(u_time / 101.0, u_time / 97.0);
@@ -37,5 +39,8 @@ void main() {
 
 	float reflectance = dot(vec3(0.0, 0.0, 1.0), normal);
 	vec4 color = mix(reflectionColor, u_water_color, reflectance);
-	gl_FragColor = applyLight(color, v_position_world, normal, v_shadow);
+
+	Material material = createMaterial(vec3(0.4, 0.4, 0.4), vec3(0.6, 0.6, 0.6), vec3_splat(1.0), u_shininess);
+	gl_FragColor = applyLightAndFog(color, material, v_position_world, normal, v_shadow);
+
 }

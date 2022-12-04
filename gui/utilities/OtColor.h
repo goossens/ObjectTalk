@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include <string>
+
 #include "glm/glm.hpp"
 
 

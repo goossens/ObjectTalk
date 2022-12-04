@@ -10,8 +10,8 @@ var gui = import("gui");
 
 class App : gui.App {
 	function setup(this) {
-		var ambient = gui.Ambient();
-		var light = gui.Light().setDirection(20, 400, -400);
+		var ambient = gui.AmbientLight();
+		var light = gui.DirectionalLight(-20, -400, 400);
 
 		this.scene = gui.Scene()
 			.add(ambient)
@@ -21,7 +21,7 @@ class App : gui.App {
 			.setScaleZ(200.0)
 			.setOffsetZ(-100.0);
 
-		this.material = gui.Material("material", "gold");
+		this.material = gui.ColoredMaterial("gold");
 
 		this.addTile(0, 0);
 		this.addTile(-1, 0);

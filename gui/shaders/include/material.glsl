@@ -1,4 +1,4 @@
-//	ObjectTalk Scripting Language
+#//	ObjectTalk Scripting Language
 //	Copyright (c) 2020-2022 Johan A. Goossens. All rights reserved.
 //
 //	This work is licensed under the terms of the MIT license.
@@ -7,14 +7,31 @@
 #ifndef OT_MATERIAL_GLSL
 #define OT_MATERIAL_GLSL
 
-// material uniforms
-uniform vec4 u_material[5];
-#define u_material_color u_material[0]
-#define u_material_ambient u_material[1].rgb
-#define u_material_diffuse u_material[2].rgb
-#define u_material_specular u_material[3].rgb
-#define u_material_shininess u_material[4].x
 
-uniform mat3 u_uv_transform;
+//
+//	Material structure
+//
+
+struct Material {
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+	float shininess;
+};
+
+
+//
+//	Create a material structure
+//
+
+Material createMaterial(vec3 ambient, vec3 diffuse, vec3 specular, float shininess) {
+	Material material;
+	material.ambient = ambient;
+	material.diffuse = diffuse;
+	material.specular = specular;
+	material.shininess = shininess;
+	return material;
+}
+
 
 #endif

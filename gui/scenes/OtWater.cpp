@@ -25,6 +25,13 @@
 
 
 //
+//	Constants
+//
+
+static constexpr int frameBufferWidth = 512;
+
+
+//
 //	Globals
 //
 
@@ -62,27 +69,16 @@ OtWaterClass::OtWaterClass() {
 	vertexBuffer = bgfx::createDynamicVertexBuffer(bgfx::makeRef(waterVertices, sizeof(waterVertices) * sizeof(glm::vec3)), layout);
 	indexBuffer = bgfx::createIndexBuffer(bgfx::makeRef(waterIndices, sizeof(waterIndices) *  sizeof(uint32_t)), BGFX_BUFFER_INDEX32);
 
-	// setup material
-	material = OtMaterialClass::create();
-	material->setColorVector(glm::vec3(0.5, 0.6, 0.8));
-	material->setAmbientVector(glm::vec3(0.4, 0.4, 0.4));
-	material->setDiffuseVector(glm::vec3(0.6, 0.6, 0.6));
-	material->setSpecularVector(glm::vec3(1.0));
-	material->setShininess(50.0);
-
 	// register uniforms
-	waterUniform = bgfx::createUniform("u_water", bgfx::UniformType::Vec4, 2);
-	normalsUniform = bgfx::createUniform("s_normals", bgfx::UniformType::Sampler);
-	reflectionUniform = bgfx::createUniform("s_reflection", bgfx::UniformType::Sampler);
-	refractionUniform = bgfx::createUniform("s_refraction", bgfx::UniformType::Sampler);
+	auto framework = OtFrameworkClass::instance();
+
+	waterUniform = framework->getUniform("u_water", bgfx::UniformType::Vec4, 2);
+	normalsUniform = framework->getUniform("s_normals", bgfx::UniformType::Sampler);
+	reflectionUniform = framework->getUniform("s_reflection", bgfx::UniformType::Sampler);
+	refractionUniform = framework->getUniform("s_refraction", bgfx::UniformType::Sampler);
 
 	// initialize shader
-	bgfx::RendererType::Enum type = bgfx::getRendererType();
-
-	shader = bgfx::createProgram(
-		bgfx::createEmbeddedShader(embeddedShaders, type, "OtWaterVS"),
-		bgfx::createEmbeddedShader(embeddedShaders, type, "OtWaterFS"),
-		true);
+	shader = framework->getProgram(embeddedShaders, "OtWaterVS", "OtWaterFS");
 }
 
 
@@ -102,13 +98,6 @@ OtWaterClass::~OtWaterClass() {
 
 	bgfx::destroy(vertexBuffer);
 	bgfx::destroy(indexBuffer);
-
-	bgfx::destroy(waterUniform);
-	bgfx::destroy(normalsUniform);
-	bgfx::destroy(reflectionUniform);
-	bgfx::destroy(refractionUniform);
-
-	bgfx::destroy(shader);
 }
 
 
@@ -128,7 +117,7 @@ void OtWaterClass::updateFrameBuffers(float aspectRatio) {
 
 	// determine size of frame buffer
 	const uint64_t flags = BGFX_TEXTURE_RT | BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP;
-	int w = 512;
+	int w = frameBufferWidth;
 	int h = w / aspectRatio;
 
 	// create new frame buffers
@@ -202,13 +191,9 @@ void OtWaterClass::update(OtRenderingContext context) {
 			waterVertices[c] = templateVertices[c] * size + center;
 		}
 
-		// tell BGFX about it
+		// tell GPU about it
 		bgfx::update(vertexBuffer, 0, bgfx::makeRef(waterVertices, sizeof(waterVertices) * sizeof(glm::vec3)));
 	}
-
-	// update material
-	material->setColorVector(color);
-	material->setShininess(shininess);
 
 	// reserve views for reflection and refraction
 	OtFramework framework = OtFrameworkClass::instance();
@@ -223,8 +208,8 @@ void OtWaterClass::update(OtRenderingContext context) {
 
 void OtWaterClass::render(OtRenderingContext context) {
 	// water doesn't cause shadows
-	// and don't render while we are creating the reflection and refraction
-	if (context->inMainPhase()) {
+	// and we don't render while we're creating reflections and refractions
+	if (context->inLightingPass()) {
 		// render the water's parts
 		renderReflection(context);
 		renderRefraction(context);
@@ -250,21 +235,23 @@ void OtWaterClass::renderReflection(OtRenderingContext context) {
 	reflectionCamera->setPositionVector(position);
 	reflectionCamera->setTargetVector(target);
 
-	// create reflection rendering context
-	auto aspectRatio = context->getViewAspectRatio();
-	OtRenderingContextClass reflectionContext = *context;
-	reflectionContext.setPhase(OtRenderingContextClass::reflectionPhase);
-	reflectionContext.setView(reflectionView);
-	reflectionContext.setViewRect(0, 0, 512, 512 / aspectRatio);
-	reflectionContext.setCamera(reflectionCamera);
-
 	// update and submit reflection camera
+	auto aspectRatio = context->getViewAspectRatio();
 	reflectionCamera->update(aspectRatio);
-	reflectionCamera->submit(reflectionContext.getView());
+	reflectionCamera->submit(reflectionView);
+
+	// create reflection rendering context
+	OtRenderingContextClass reflectionContext;
+	reflectionContext.setPass(OtRenderingContextClass::reflectionPass);
+	reflectionContext.setView(reflectionView);
+	reflectionContext.setViewRect(0, 0, frameBufferWidth, frameBufferWidth / aspectRatio);
+	reflectionContext.setCamera(reflectionCamera);
+	reflectionContext.setScene(context->getScene());
+	reflectionContext.copyLightProperties(context);
 
 	// render reflection
 	bgfx::setViewClear(reflectionView, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH);
-	bgfx::setViewRect(reflectionView, 0, 0, 512, 512 / aspectRatio);
+	bgfx::setViewRect(reflectionView, 0, 0, frameBufferWidth, frameBufferWidth / aspectRatio);
 	bgfx::setViewFrameBuffer(reflectionView, reflectionFrameBuffer);
 	context->getScene()->renderChildren(&reflectionContext);
 }
@@ -302,12 +289,12 @@ void OtWaterClass::renderWater(OtRenderingContext context) {
 
 	// set uniforms
 	context->submit(receivesShadow());
-	material->submit();
 
 	glm::vec4 waterUniforms[2];
 	waterUniforms[0].x = time;
 	waterUniforms[0].y = scale;
 	waterUniforms[0].z = bgfx::getCaps()->originBottomLeft ? -1.0 : 1.0;
+	waterUniforms[0].w = shininess;
 	waterUniforms[1] = glm::vec4(color, 1.0);
 	bgfx::setUniform(waterUniform, waterUniforms, 2);
 

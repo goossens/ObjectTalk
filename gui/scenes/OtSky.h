@@ -47,7 +47,7 @@ public:
 	// GUI to change sky properties
 	void renderGUI();
 
-	// render in BGFX
+	// submit to GPU
 	void render(OtRenderingContext context) override;
 
 	// get type definition

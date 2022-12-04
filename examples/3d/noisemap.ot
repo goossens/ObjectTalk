@@ -10,8 +10,8 @@ var gui = import("gui");
 
 class App : gui.App {
 	function setup(this) {
-		var ambient = gui.Ambient();
-		var light = gui.Light().setDirection(20, 400, -400);
+		var ambient = gui.AmbientLight();
+		var light = gui.DirectionalLight(-20, -400, 400);
 
 		var noisemap = gui.NoiseMap()
 			.setScaleZ(200.0)
@@ -24,7 +24,7 @@ class App : gui.App {
 				.setWidthSegments(100)
 				.setHeightSegments(100)
 				.setNoiseMap(noisemap, 0.0, 0.0))
-			.setMaterial(gui.Material("material", "gold"))
+			.setMaterial(gui.ColoredMaterial("gold"))
 			.setWireframe(true)
 			.rotateX(-pi / 2.0);
 

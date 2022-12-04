@@ -67,12 +67,11 @@ class View : gui.View {
 class App : gui.App {
 	function setup(this) {
 		// create all components
-		var ambient = gui.Ambient();
+		var ambient = gui.AmbientLight();
 
-		var light = gui.Light()
+		var light = gui.DirectionalLight()
 			.setDirection(25, 25, 40)
-			.setDiffuse("#c0c0c0")
-			.setSpecular("#c0c0c0");
+			.setColor("#c0c0c0");
 
 		var skybox = gui.Skybox(
 			Path(__DIR__, "assets", "yokohama", "posx.jpg"),
@@ -84,7 +83,7 @@ class App : gui.App {
 
 		var sphere = gui.Mesh()
 			.setGeometry(gui.SphereGeometry(20, 40, 40))
-			.setMaterial(gui.Material("material", "gold"))
+			.setMaterial(gui.ColoredMaterial("gold"))
 			.setWireframe(true);
 
 		this.addAnimation(gui.Animation()

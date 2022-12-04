@@ -10,24 +10,24 @@ var gui = import("gui");
 
 class App : gui.App {
 	function setup(this) {
-		var ambient = gui.Ambient();
+		var ambient = gui.AmbientLight();
 
-		var light = gui.Light()
-			.setDirection(0, 8, 5)
+		var light = gui.DirectionalLight()
+			.setDirection(0, -8, -5)
 			.castShadow(6, 3, 15)
 			.renderFrustum(true);
 
 		var floor = gui.Mesh()
 			.receiveShadow(true)
 			.setGeometry(gui.PlaneGeometry(10, 10))
-			.setMaterial(gui.Material("color", "white"))
+			.setMaterial(gui.ColoredMaterial("white"))
 			.translate(0.0, -3.0, 0.0)
 			.rotateX(-pi / 2.0);
 
 		var object = gui.Mesh()
 			.castShadow(true)
 			.setGeometry(gui.TorusGeometry())
-			.setMaterial(gui.Material("material", "gold"))
+			.setMaterial(gui.ColoredMaterial("gold"))
 			.translate(0, 0, 1);
 
 		this.addAnimation(gui.Animation()
@@ -62,7 +62,7 @@ class App : gui.App {
 		var panel = gui.Panel(0, 0, 25, 100);
 
 		var node = gui.TreeNode("Light:");
-		node.add(gui.LightController(light));
+		node.add(gui.DirectionalLightController(light));
 		panel.add(node);
 
 		this.add(view).add(panel);

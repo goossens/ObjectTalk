@@ -8,6 +8,7 @@ $input v_position, v_normal, v_shadow
 
 #include <bgfx.glsl>
 #include <light.glsl>
+#include <material.glsl>
 
 uniform vec4 u_terrain[7];
 
@@ -32,13 +33,13 @@ SAMPLER2D(s_texture_region_3, 3);
 SAMPLER2D(s_texture_region_4, 4);
 
 // determine terrain color by region
-vec3 getSimpleRegionColor(int region, sampler2D s, vec4 position) {
+vec3 getSimpleRegionColor(int region, sampler2D s, vec3 position) {
 	return regionTextured(region)
-		? texture2D(s, position.xz / textureScale).rgb
+		? texture2D(s, position.xz * textureScale).rgb
 		: regionColor(region);
 }
 
-vec3 getRegionColor(int region, sampler2D s, vec4 position, vec3 normal) {
+vec3 getRegionColor(int region, sampler2D s, vec3 position, vec3 normal) {
 	normal = normalize(normal);
 
 	if (regionTextured(region)) {
@@ -123,5 +124,7 @@ void main() {
 	}
 
 	// apply lighting
-	gl_FragColor = applyLight(vec4(terrainColor, 1.0), v_position, v_normal, v_shadow);
+	Material material = createMaterial(vec3_splat(0.6), vec3_splat(0.6), vec3_splat(0.5), 20.0);
+	gl_FragColor = applyLightAndFog(vec4(terrainColor, 1.0), material, v_position, normalize(v_normal), v_shadow);
+
 }

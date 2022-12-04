@@ -19,9 +19,9 @@
 #include "OtException.h"
 #include "OtFormat.h"
 
+#include "OtColoredMaterial.h"
 #include "OtCustomGeometry.h"
 #include "OtGroup.h"
-#include "OtMaterial.h"
 #include "OtMesh.h"
 #include "OtObj.h"
 
@@ -57,30 +57,32 @@ OtObject OtObjLoad(const std::string& filename) {
 	// OT_DEBUG(OtFormat("# of texcoords = %d", (int) (attrs.texcoords.size()) / 2));
 
 	// process all materials
-	OtMaterial defaultMaterial = OtMaterialClass::create();
+	OtColoredMaterial defaultMaterial = OtColoredMaterialClass::create();
 	std::vector<OtMaterial> materialList;
 
 	std::filesystem::path path = filename;
 	path = path.parent_path();
 
 	for (auto i = materials.begin(); i < materials.end(); i++) {
-		// create a new material object
-		OtMaterial material = OtMaterialClass::create();
-
-		// set colors
-		material->setAmbientRGB(i->ambient[0], i->ambient[1], i->ambient[2]);
-		material->setDiffuseRGB(i->diffuse[0], i->diffuse[1], i->diffuse[2]);
-		material->setSpecularRGB(i->specular[0], i->specular[1], i->specular[2]);
-		material->setShininess(i->shininess);
-		material->setOpacity(i->dissolve);
-
 		// do we have a texture?
 		if (i->diffuse_texname.length() > 0) {
-			material->setTexture((path / i->diffuse_texname).string());
-		}
+			// create a textured material
+			// material->setTexture((path / i->diffuse_texname).string());
 
-		// add material to registry
-		materialList.push_back(material);
+		} else {
+			// create a colored material object
+			OtColoredMaterial material = OtColoredMaterialClass::create();
+			
+			// set colors
+			material->setAmbientRGB(i->ambient[0], i->ambient[1], i->ambient[2]);
+			material->setDiffuseRGB(i->diffuse[0], i->diffuse[1], i->diffuse[2]);
+			material->setSpecularRGB(i->specular[0], i->specular[1], i->specular[2]);
+			material->setShininess(i->shininess);
+			material->setOpacity(i->dissolve);
+
+			// add material to registry
+			materialList.push_back(material);
+		}
 	}
 
 	// process all shapes in model

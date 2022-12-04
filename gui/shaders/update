@@ -170,7 +170,7 @@ END
 
 if [ ${UPDATEBATCH} -eq 1 ]
 then
-	echo 'cd /D "%~dp0"' >${HOME}/update.bat
+	echo 'pushd "%~dp0"' >${HOME}/update.bat
 fi
 
 compileShader Background
@@ -182,7 +182,6 @@ compileShader Colored
 compileShader Debug
 compileShader Fixed
 compileShader ImGui
-compileShader Normalled
 compileShader Shadow
 compileShader Sky
 compileShader Skybox
@@ -190,3 +189,8 @@ compileShader Terrain
 compileShader Textured
 compileShader VectorDisplay
 compileShader Water
+
+if [ ${UPDATEBATCH} -eq 1 ]
+then
+	echo "popd" >${HOME}/update.bat
+fi

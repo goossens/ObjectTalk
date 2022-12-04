@@ -37,21 +37,18 @@ void OtSceneClass::update(OtCamera camera, float x, float y, float w, float h) {
 	// update the camera
 	camera->update(w / h);
 
-	// reset context state
-	context.clear();
-	context.setViewRect(x, y, w, h);
-	context.setScene(cast<OtSceneClass>());
-	context.setCamera(camera);
+	// create a new rendering context
+	context = new OtRenderingContextClass();
+	context->setViewRect(x, y, w, h);
+	context->setScene(cast<OtSceneClass>());
+	context->setCamera(camera);
 
 	// update all children
 	for (auto const& child : children) {
 		if (child->isEnabled()) {
-			child->cast<OtSceneObjectClass>()->update(&context);
+			child->cast<OtSceneObjectClass>()->update(context);
 		}
 	}
-
-	// don't keep circular references
-	context.setScene(nullptr);
 }
 
 
@@ -61,14 +58,14 @@ void OtSceneClass::update(OtCamera camera, float x, float y, float w, float h) {
 
 void OtSceneClass::render() {
 	// get our camera
-	auto camera = context.getCamera();
+	auto camera = context->getCamera();
 
 	// setup debug drawing view
-	bgfx::setViewRect(254, context.getViewX(), context.getViewY(), context.getViewW(), context.getViewH());
+	bgfx::setViewRect(254, context->getViewX(), context->getViewY(), context->getViewW(), context->getViewH());
 	camera->submit(254);
 
 	DebugDrawEncoder debugDraw;
-	context.setDebugDraw(&debugDraw);
+	context->setDebugDraw(&debugDraw);
 	debugDraw.begin(254);
 	debugDraw.setState(true, true, true);
 	camera->render(&debugDraw);
@@ -77,41 +74,28 @@ void OtSceneClass::render() {
 	//debugDraw->drawOrb(cameraTarget.x, cameraTarget.y, cameraTarget.z, 1);
 
 	// reference ourselves in context
-	context.setScene(cast<OtSceneClass>());
+	context->setScene(cast<OtSceneClass>());
 
 	// setup scene and render it for real
-	context.setPhase(OtRenderingContextClass::mainPhase);
-	context.setView(OtFrameworkClass::instance()->getNextViewID());
+	context->setPass(OtRenderingContextClass::lightingPass);
+	context->setView(OtFrameworkClass::instance()->getNextViewID());
 
 	bgfx::setViewRect(
-		context.getView(),
-		context.getViewX(),
-		context.getViewY(),
-		context.getViewW(),
-		context.getViewH());
+		context->getView(),
+		context->getViewX(),
+		context->getViewY(),
+		context->getViewW(),
+		context->getViewH());
 
-	camera->submit(context.getView());
-	renderChildren(&context);
-
-	// don't keep circular references
-	context.setScene(nullptr);
+	camera->submit(context->getView());
+	renderChildren(context);
 
 	// render debug drawing
 	debugDraw.end();
 
-/*
-	if (shadow) {
-		ImGui::SetNextWindowContentSize(ImVec2(shadowmapSize, shadowmapSize));
-
-		if (ImGui::Begin("Shadow Map", nullptr, 0)) {
-			ImGui::Image(
-				(void*)(intptr_t) shadowmapTexture.idx,
-				ImVec2(shadowmapSize, shadowmapSize));
-		}
-
-		ImGui::End();
-	}
-*/
+	// delete rendering context
+	delete context;
+	context = nullptr;
 }
 
 

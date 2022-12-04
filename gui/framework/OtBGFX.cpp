@@ -197,7 +197,7 @@ bgfx::UniformHandle OtFrameworkClass::getUniform(const char* name, bgfx::Uniform
 //
 
 bgfx::ProgramHandle OtFrameworkClass::getProgram(const bgfx::EmbeddedShader* shaders, const char* vertex, const char* fragment) {
-	std::string index = OtFormat("*s:%s", vertex, fragment);
+	std::string index = OtFormat("%s:%s", vertex, fragment);
 
 	// create program (if required)
 	if (!programRegistry.has(index)) {
@@ -453,9 +453,13 @@ void OtFrameworkClass::renderBGFX() {
 //
 
 void OtFrameworkClass::endBGFX() {
-	// destroy our textures and images
+	// cleanup
 	bgfx::destroy(dummyTexture);
 	bimg::imageFree(dummyImage);
+
+	uniformRegistry.iterateValues([] (bgfx::UniformHandle& uniform){
+		bgfx::destroy(uniform);
+	});
 
 	programRegistry.iterateValues([] (bgfx::ProgramHandle& program){
 		bgfx::destroy(program);

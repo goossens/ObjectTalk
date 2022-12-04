@@ -48,25 +48,31 @@
 #include "OtScene.h"
 
 #include "OtSceneObject.h"
-#include "OtAmbient.h"
 #include "OtBackground.h"
-#include "OtLight.h"
-#include "OtFog.h"
 #include "OtSky.h"
 #include "OtSkybox.h"
-#include "OtSun.h"
 #include "OtTerrain.h"
 #include "OtTerrainMap.h"
 #include "OtWater.h"
+
+#include "OtAmbientLight.h"
+#include "OtDirectionalLight.h"
+#include "OtFog.h"
+#include "OtPointLight.h"
+#include "OtSpotLight.h"
+#include "OtSun.h"
+
+#include "OtBlendMappedMaterial.h"
+#include "OtColoredMaterial.h"
+#include "OtFixedMaterial.h"
+#include "OtTexturedMaterial.h"
 
 #include "OtObject3d.h"
 #include "OtGroup.h"
 #include "OtMesh.h"
 
-#include "OtBlendMap.h"
 #include "OtFont.h"
 #include "OtHeightMap.h"
-#include "OtMaterial.h"
 #include "OtNoiseMap.h"
 #include "OtMatrix.h"
 
@@ -126,29 +132,35 @@ void OtGuiClass::registerModule() {
 		module->set("Scene", OtClassClass::create(OtSceneClass::getMeta()));
 
 		module->set("SceneObject", OtClassClass::create(OtSceneObjectClass::getMeta()));
-		module->set("Ambient", OtClassClass::create(OtAmbientClass::getMeta()));
 		module->set("Background", OtClassClass::create(OtBackgroundClass::getMeta()));
-		module->set("Light", OtClassClass::create(OtLightClass::getMeta()));
-		module->set("Fog", OtClassClass::create(OtFogClass::getMeta()));
 		module->set("Skybox", OtClassClass::create(OtSkyboxClass::getMeta()));
-		module->set("Sun", OtClassClass::create(OtSunClass::getMeta()));
 		module->set("Sky", OtClassClass::create(OtSkyClass::getMeta()));
 		module->set("Water", OtClassClass::create(OtWaterClass::getMeta()));
 		module->set("Terrain", OtClassClass::create(OtTerrainClass::getMeta()));
 		module->set("TerrainMap", OtClassClass::create(OtTerrainMapClass::getMeta()));
 
+		module->set("AmbientLight", OtClassClass::create(OtAmbientLightClass::getMeta()));
+		module->set("DirectionalLight", OtClassClass::create(OtDirectionalLightClass::getMeta()));
+		module->set("Fog", OtClassClass::create(OtFogClass::getMeta()));
+		module->set("PointLight", OtClassClass::create(OtPointLightClass::getMeta()));
+		module->set("SpotLight", OtClassClass::create(OtSpotLightClass::getMeta()));
+		module->set("Sun", OtClassClass::create(OtSunClass::getMeta()));
+
+		module->set("BlendMappedMaterial", OtClassClass::create(OtBlendMappedMaterialClass::getMeta()));
+		module->set("ColoredMaterial", OtClassClass::create(OtColoredMaterialClass::getMeta()));
+		module->set("FixedMaterial", OtClassClass::create(OtFixedMaterialClass::getMeta()));
+		module->set("TexturedMaterial", OtClassClass::create(OtTexturedMaterialClass::getMeta()));
+
 		module->set("Object3D", OtClassClass::create(OtObject3dClass::getMeta()));
 		module->set("Mesh", OtClassClass::create(OtMeshClass::getMeta()));
 		module->set("Group", OtClassClass::create(OtGroupClass::getMeta()));
 
-		module->set("BlendMap", OtClassClass::create(OtBlendMapClass::getMeta()));
 		module->set("Font", OtClassClass::create(OtFontClass::getMeta()));
 		module->set("HeightMap", OtClassClass::create(OtHeightMapClass::getMeta()));
-		module->set("Material", OtClassClass::create(OtMaterialClass::getMeta()));
 		module->set("NoiseMap", OtClassClass::create(OtNoiseMapClass::getMeta()));
 		module->set("Matrix", OtClassClass::create(OtMatrixClass::getMeta()));
 
-		module->set("getDefaultMaterials", OtFunctionClass::create(&OtMaterialClass::getDefaultMaterials));
+		module->set("getDefaultMaterialNames", OtFunctionClass::create(&OtColoredMaterialClass::getDefaultMaterialNames));
 		module->set("loadObj", OtFunctionClass::create(&OtObjLoad));
 
 		module->set("Geometry", OtClassClass::create(OtGeometryClass::getMeta()));
@@ -196,13 +208,14 @@ void OtGuiClass::registerModule() {
 		module->set("TreeNode", OtClassClass::create(OtTreeNodeClass::getMeta()));
 		module->set("Tron", OtClassClass::create(OtTronClass::getMeta()));
 
-		module->set("AmbientController", OtClassClass::create(OtAmbientControllerClass::getMeta()));
-		module->set("BlendMapController", OtClassClass::create(OtBlendMapControllerClass::getMeta()));
+		module->set("AmbientLightController", OtClassClass::create(OtAmbientLightControllerClass::getMeta()));
+		module->set("BlendMappedMaterialController", OtClassClass::create(OtBlendMappedMaterialControllerClass::getMeta()));
 		module->set("CameraController", OtClassClass::create(OtCameraControllerClass::getMeta()));
-		module->set("LightController", OtClassClass::create(OtLightControllerClass::getMeta()));
+		module->set("DirectionalLightController", OtClassClass::create(OtDirectionalLightControllerClass::getMeta()));
 		module->set("FogController", OtClassClass::create(OtFogControllerClass::getMeta()));
 		module->set("NoiseMapController", OtClassClass::create(OtNoiseMapControllerClass::getMeta()));
 		module->set("HeightMapController", OtClassClass::create(OtHeightMapControllerClass::getMeta()));
+		module->set("PointLightController", OtClassClass::create(OtPointLightControllerClass::getMeta()));
 		module->set("SkyController", OtClassClass::create(OtSkyControllerClass::getMeta()));
 		module->set("SunController", OtClassClass::create(OtSunControllerClass::getMeta()));
 		module->set("TerrainController", OtClassClass::create(OtTerrainControllerClass::getMeta()));

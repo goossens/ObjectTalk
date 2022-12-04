@@ -167,7 +167,7 @@ void OtSkyClass::render(OtRenderingContext context) {
 		uniforms[1].z = mieScattering;
 
 		if (sun) {
-			uniforms[2] = glm::vec4(sun->getDirection(), 0.0);
+			uniforms[2] = glm::vec4(sun->getDirectionToSun(), 0.0);
 		}
 
 		bgfx::setUniform(skyUniform, uniforms, 3);

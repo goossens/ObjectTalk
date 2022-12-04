@@ -18,7 +18,7 @@ class App : gui.App {
 		heart.circle(0.0, -0.4, 0.3, true);
 
 		var geometry = gui.ExtrudedGeometry(heart, 0.2, 50);
-		var gold = gui.Material("material", "gold");
+		var gold = gui.ColoredMaterial("gold");
 		var object = gui.Mesh(geometry, gold).setWireframe(true);
 
 		this.addAnimation(gui.Animation()
@@ -30,8 +30,8 @@ class App : gui.App {
 				object.rotateAroundVector(angle, 1, 1, 0);
 			}));
 
-		var ambient = gui.Ambient();
-		var light = gui.Light().setDirection(1, 2, 4);
+		var ambient = gui.AmbientLight();
+		var light = gui.DirectionalLight(-1, -2, -4);
 
 		var scene = gui.Scene()
 			.add(ambient)
@@ -54,11 +54,11 @@ class App : gui.App {
 		panel.add(node);
 
 		node = gui.TreeNode("Ambient Light:");
-		node.add(gui.AmbientController(ambient));
+		node.add(gui.AmbientLightController(ambient));
 		panel.add(node);
 
 		node = gui.TreeNode("Point Light:");
-		node.add(gui.LightController(light));
+		node.add(gui.DirectionalLightController(light));
 		panel.add(node);
 
 		node = gui.TreeNode("Extrusion:");

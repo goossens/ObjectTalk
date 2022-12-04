@@ -10,14 +10,14 @@ var gui = import("gui");
 
 class App : gui.App {
 	function setup(this) {
-		var ambient = gui.Ambient();
-		var light = gui.Light().setDirection(1, 2, 4);
+		var ambient = gui.AmbientLight();
+		var light = gui.DirectionalLight(-1, -2, -4);
 
 		var geometry = gui.BoxGeometry();
 
-		var gold = gui.Material("material", "gold");
-		var silver = gui.Material("material", "silver");
-		var bronze = gui.Material("material", "bronze");
+		var gold = gui.ColoredMaterial("gold");
+		var silver = gui.ColoredMaterial("silver");
+		var bronze = gui.ColoredMaterial("bronze");
 
 		var cube1 = this.createInstance(geometry, gold, -2);
 		var cube2 = this.createInstance(geometry, silver, 0);

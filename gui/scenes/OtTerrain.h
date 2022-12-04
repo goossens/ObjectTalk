@@ -22,7 +22,6 @@
 #include "OtHash.h"
 
 #include "OtController.h"
-#include "OtMaterial.h"
 #include "OtSceneObject.h"
 #include "OtTerrainMap.h"
 #include "OtTerrainTile.h"
@@ -71,7 +70,7 @@ public:
 	// update state
 	void update(OtRenderingContext context) override;
 
-	// render in BGFX
+	// submit to GPU
 	void render(OtRenderingContext context) override;
 
 	// GUI to change properties
@@ -86,9 +85,6 @@ public:
 protected:
 	// mark changes and trigger tile regeneration
 	void parametersHaveChanged();
-
-	// material
-	OtMaterial material;
 
 	// region information
 	float region1Transition = 1.0;

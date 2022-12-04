@@ -40,7 +40,7 @@ public:
 	// update texture
 	OtObject setTexture(const std::string& texture);
 
-	// render in BGFX
+	// submit to GPU
 	void render(OtRenderingContext context) override;
 
 	// get type definition

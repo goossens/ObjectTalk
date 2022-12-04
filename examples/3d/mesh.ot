@@ -26,7 +26,7 @@ var textures = {
 	"uvmap" : Path(__DIR__, "assets", "uv.jpg")
 };
 
-var materials = gui.getDefaultMaterials().merge(textures.keys());
+var materials = gui.getDefaultMaterialNames().merge(textures.keys());
 
 var renderers = [
 	"textured", "wireframe"
@@ -36,15 +36,11 @@ var renderers = [
 class App : gui.App {
 	function setup(this) {
 		// light and fog
-		this.ambient = gui.Ambient();
+		this.ambient = gui.AmbientLight();
 
-		this.sun = gui.Sun();
-		this.sun.disable();
-
-		this.light = gui.Light()
-			.setDirection(25, 25, 40)
-			.setDiffuse("#c0c0c0")
-			.setSpecular("#c0c0c0");
+		this.light = gui.DirectionalLight()
+			.setDirection(-25, -25, -40)
+			.setColor("#c0c0c0");
 
 		this.fog = gui.Fog()
 			.setColor("#808080")
@@ -63,7 +59,7 @@ class App : gui.App {
 
 		this.grid = gui.Mesh()
 			.setGeometry(gui.PlaneGeometry(50, 50, 10, 10))
-			.setMaterial(gui.Material().setFixed("white"))
+			.setMaterial(gui.FixedMaterial("white"))
 			.setWireframe(true)
 			.rotateX(-pi / 2.0);
 
@@ -83,7 +79,6 @@ class App : gui.App {
 		// create scene
 		var scene = gui.Scene()
 			.add(this.ambient)
-			.add(this.sun)
 			.add(this.light)
 			.add(this.fog)
 			.add(this.grid)
@@ -112,15 +107,11 @@ class App : gui.App {
 		panel.add(node);
 
 		node = gui.TreeNode("Ambient Light:");
-		node.add(gui.AmbientController(this.ambient));
-		panel.add(node);
-
-		node = gui.TreeNode("Sun:");
-		node.add(gui.SunController(this.sun));
+		node.add(gui.AmbientLightController(this.ambient));
 		panel.add(node);
 
 		node = gui.TreeNode("Point Light:");
-		node.add(gui.LightController(this.light));
+		node.add(gui.DirectionalLightController(this.light));
 		panel.add(node);
 
 		node = gui.TreeNode("Fog:");
@@ -183,14 +174,12 @@ class App : gui.App {
 	}
 
 	function setMaterial(this, name) {
-		if (name in gui.getDefaultMaterials()) {
-			this.material = gui.Material()
-				.setMaterial(name)
+		if (name in gui.getDefaultMaterialNames()) {
+			this.material = gui.ColoredMaterial(name)
 				.setDoubleSided();
 
 		} else {
-			this.material = gui.Material()
-				.setTexture(textures[name])
+			this.material = gui.TexturedMaterial(textures[name])
 				.setDoubleSided();
 		}
 

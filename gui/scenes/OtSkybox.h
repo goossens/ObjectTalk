@@ -36,7 +36,7 @@ public:
 	// set the cubemap for the skybox
 	OtObject setCubemap(const std::string& posx, const std::string& negx, const std::string& posy, const std::string& negy, const std::string& posz, const std::string& negz);
 
-	// render in BGFX
+	// submit to GPU
 	void render(OtRenderingContext context) override;
 
 	// get type definition

@@ -1,4 +1,4 @@
-vec4 v_position  : TEXCOORD1;
+vec3 v_position  : TEXCOORD1;
 vec3 v_normal    : NORMAL;
 vec4 v_shadow    : TEXCOORD2;
 

@@ -40,7 +40,7 @@ public:
 	// generate tile
 	void generate(OtTerrainMap terrainmap);
 
-	// submit rendering buffers to BGFX
+	// submit to GPU
 	void submit();
 
 	// create a new terrain tile

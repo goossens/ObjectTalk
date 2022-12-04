@@ -28,9 +28,6 @@ typedef std::shared_ptr<OtMeshClass> OtMesh;
 
 class OtMeshClass : public OtObject3dClass {
 public:
-	// destructor
-	~OtMeshClass();
-
 	// initialize
 	void init(size_t count, OtObject* parameters);
 
@@ -42,7 +39,7 @@ public:
 	// add a new instance to this mesh
 	OtObject addInstance(OtObject matrix);
 
-	// render in BGFX
+	// submit to GPU
 	void render(OtRenderingContext context) override;
 
 	// get type definition
@@ -58,12 +55,8 @@ protected:
 	// properties
 	OtGeometry geometry;
 	OtMaterial material;
-	int materialType = -1;
 	bool wireframe = false;
 
 	// list of instances
 	std::vector<glm::mat4> instances;
-
-	// BGFX shader
-	bgfx::ProgramHandle shader = BGFX_INVALID_HANDLE;
 };

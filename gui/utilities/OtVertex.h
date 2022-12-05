@@ -26,13 +26,14 @@ struct OtVertex {
 	// elements of a vertex
 	glm::vec3 position;
 	glm::vec3 normal;
+	glm::vec3 tangent;
 	glm::vec2 uv;
 
 	// constructors
 	OtVertex() = default;
 
-	OtVertex(glm::vec3 p, glm::vec3 n=glm::vec3(0.0), glm::vec2 u=glm::vec2(0.0)) :
-		position(p), normal(n), uv(u) {
+	OtVertex(glm::vec3 p, glm::vec3 n=glm::vec3(0.0), glm::vec2 u=glm::vec2(0.0), glm::vec3 t=glm::vec3(0.0)) :
+		position(p), normal(n), uv(u), tangent(t) {
 	}
 
 	// get a BGFX vertex description
@@ -42,6 +43,7 @@ struct OtVertex {
 		layout.begin()
 			.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
 			.add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
+			.add(bgfx::Attrib::Tangent, 3, bgfx::AttribType::Float)
 			.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
 			.end();
 

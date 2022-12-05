@@ -95,7 +95,7 @@ OtObject OtAppClass::addSimulation(OtObject object) {
 //
 
 size_t OtAppClass::getMenubarHeight() {
-	for (auto& child: children) {
+	for (auto& child : children) {
 		if (child->isKindOf("AppMenubar")) {
 			return child->cast<OtAppMenubarClass>()->getHeight();
 		}

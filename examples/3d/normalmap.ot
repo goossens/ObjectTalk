@@ -1,0 +1,83 @@
+#!/usr/local/bin/ot
+
+//	ObjectTalk Scripting Language
+//	Copyright (c) 2020-2022 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var gui = import("gui");
+
+class App : gui.App {
+	function setup(this) {
+		var ambient = gui.AmbientLight();
+		var light = gui.DirectionalLight(-1, -2, -4);
+
+		var geometry = gui.BoxGeometry()
+			.computeTangents();
+
+		var textured = gui.TexturedMaterial()
+			.setTexture(Path(__DIR__, "assets", "bricktexture.jpg"));
+
+		var normalmapped = gui.TexturedMaterial()
+			.setTexture(Path(__DIR__, "assets", "bricktexture.jpg"))
+			.setNormalMap(Path(__DIR__, "assets", "bricknormals.jpg"));
+
+		var cube1 = this.createInstance(geometry, textured, -1);
+		var cube2 = this.createInstance(geometry, normalmapped, 1);
+
+		var font = gui.Font(__DIR__ + "/assets/roboto.ttf", 0.8);
+		var label1 = this.createLabel(font, "without NormalMap", -5.0);
+		var label2 = this.createLabel(font, "with NormalMap", 5.0);
+
+		var scene = gui.Scene()
+			.add(ambient)
+			.add(light)
+			.add(cube1)
+			.add(cube2)
+			.add(label1)
+			.add(label2);
+
+		var camera = gui.Camera()
+			.setPerspective(45, 0.1, 10)
+			.setPosition(0, 0, 3);
+
+		var view = gui.View()
+			.setCamera(camera)
+			.setScene(scene);
+
+		this.add(view);
+	}
+
+	function createLabel(this, font, text, offset) {
+		var width = font.getWidth(text);
+		var letters = gui.Shape().text(font, text);
+
+		return gui.Mesh(
+				gui.ExtrudedGeometry(letters, 0.2, 100),
+				gui.ColoredMaterial("gold"))
+			.transformationOrder("TRS")
+			.scale(0.2, 0.2, 0.2)
+			.translate(offset - width / 2.0, -5.0, 0);
+
+	}
+
+	function createInstance(this, geometry, material, offset) {
+		var cube = gui.Mesh(geometry, material)
+			.translate(offset, 0.2, 0);
+
+		this.addAnimation(gui.Animation()
+			.from(0.0)
+			.to(pi * 2.0)
+			.during(20000)
+			.continuous()
+			.onStep(function(angle) {
+				cube.rotateAroundVector(angle, 1, 1, 0);
+			}));
+
+		return cube;
+	}
+}
+
+var app = App();
+os.runGUI();

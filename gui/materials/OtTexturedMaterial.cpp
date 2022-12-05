@@ -37,15 +37,20 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 //
 
 void OtTexturedMaterialClass::init(size_t count, OtObject* parameters) {
-	if (count == 2) {
+	if (count == 3) {
 		setTexture(parameters[0]->operator std::string());
+		setNormalMap(parameters[2]->operator std::string());
 		setScale(parameters[1]->operator float());
+
+	} else if (count == 2) {
+		setTexture(parameters[0]->operator std::string());
+		setNormalMap(parameters[2]->operator std::string());
 
 	} else if (count == 1) {
 		setTexture(parameters[0]->operator std::string());
 
 	} else if (count != 0) {
-		OtExcept("[TexturedMaterial] constructor expects 0, 1 or 2 arguments (not %ld)", count);
+		OtExcept("[TexturedMaterial] constructor expects up to 3 arguments (not %ld)", count);
 	}
 }
 
@@ -60,6 +65,20 @@ OtObject OtTexturedMaterialClass::setTexture(const std::string& textureName) {
 	}
 
 	texture = OtFrameworkClass::instance()->getTexture(textureName);
+	return shared();
+}
+
+
+//
+//	OtTexturedMaterialClass::setNormalMap
+//
+
+OtObject OtTexturedMaterialClass::setNormalMap(const std::string& normalmapName) {
+	if (bgfx::isValid(normalmap)) {
+		OtExcept("NormapMap already specified for [TexturedMaterial]");
+	}
+
+	normalmap = OtFrameworkClass::instance()->getTexture(normalmapName);
 	return shared();
 }
 
@@ -129,7 +148,7 @@ size_t OtTexturedMaterialClass::getNumberOfUniforms() {
 
 void OtTexturedMaterialClass::getUniforms(glm::vec4* uniforms) {
 	uniforms[0] = glm::vec4(ambient, scale);
-	uniforms[1] = glm::vec4(diffuse, 0.0);
+	uniforms[1] = glm::vec4(diffuse, bgfx::isValid(normalmap));
 	uniforms[2] = glm::vec4(specular, shininess);
 }
 
@@ -139,7 +158,7 @@ void OtTexturedMaterialClass::getUniforms(glm::vec4* uniforms) {
 //
 
 size_t OtTexturedMaterialClass::getNumberOfSamplers() {
-	return 1;
+	return 2;
 }
 
 
@@ -148,11 +167,19 @@ size_t OtTexturedMaterialClass::getNumberOfSamplers() {
 //
 
 bgfx::TextureHandle OtTexturedMaterialClass::getSamplerTexture(size_t index) {
-	if (!bgfx::isValid(texture)) {
-		OtExcept("[Texture] not set for [TexturedMaterial]");
-	}
+	if (index == 1) {
+		if (!bgfx::isValid(texture)) {
+			OtExcept("[Texture] not set for [TexturedMaterial]");
+		}
 
-	return texture;
+		return texture;
+
+	} else if (bgfx::isValid(normalmap)) {
+		return normalmap;
+
+	} else {
+		return OtFrameworkClass::instance()->getDummyTexture();
+	}
 }
 
 
@@ -186,6 +213,7 @@ OtType OtTexturedMaterialClass::getMeta() {
 		type->set("__init__", OtFunctionClass::create(&OtTexturedMaterialClass::init));
 
 		type->set("setTexture", OtFunctionClass::create(&OtTexturedMaterialClass::setTexture));
+		type->set("setNormalMap", OtFunctionClass::create(&OtTexturedMaterialClass::setNormalMap));
 		type->set("setScale", OtFunctionClass::create(&OtTexturedMaterialClass::setScale));
 
 		type->set("setAmbient", OtFunctionClass::create(&OtTexturedMaterialClass::setAmbient));

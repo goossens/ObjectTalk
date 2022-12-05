@@ -36,25 +36,22 @@ public:
 	// destructor
 	~OtGeometryClass();
 
+	// ensure tangents are automatically generated
+	OtObject computeTangents();
+
 	// force updates
 	void forceGeometryRefresh() { refreshGeometry = true; }
 	void forceBufferRefresh() { refreshBuffers = true; }
 
 	// access vertices
 	OtVertex& getVertex(size_t offset) {
-		if (refreshGeometry) {
-			updateGeometry();
-		}
-
+		validateGeometry();
 		return vertices[offset];
 	}
 
 	// access bounding box
 	OtAABB getAABB() {
-		if (refreshGeometry) {
-			updateGeometry();
-		}
-
+		validateGeometry();
 		return aabb;
 	}
 
@@ -73,6 +70,7 @@ protected:
 	// handle geometry
 	void clearGeometry();
 	void updateGeometry();
+	void validateGeometry();
 	virtual void fillGeometry() {}
 	bool refreshGeometry = true;
 
@@ -145,9 +143,13 @@ protected:
 	// Axis-aligned Bounding Box (AABB)
 	OtAABB aabb;
 
+	// tangent generation flag
+	bool tangent = false;
+
 	// handle buffers
 	void clearBuffers();
 	void updateBuffers();
+	void validateBuffers();
 	bool refreshBuffers = true;
 
 	// BGFX buffers

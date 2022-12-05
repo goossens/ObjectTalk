@@ -86,6 +86,17 @@ project by Federico Vaccaro which is released under the
 * terrain.jpg
 * snow.jpg
 
+## Benkyou Studio
+
+The following assets are from
+[Benkyou Studio](http://www.benkyoustudio.com/Textures/). Disclaimer says:
+'You are free to use them for any purpose such as games or artwork,
+commercial or non commercial with the exception that you may not sell
+them unaltered in as is as part of a "texture collection".'
+
+* bricktexture.jpg
+* bricknormals.jpg
+
 ## JungleIN
 
 The following assets are from the

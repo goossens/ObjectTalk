@@ -33,7 +33,8 @@ public:
 	void init(size_t count, OtObject* parameters);
 
 	// set properties
-	OtObject setTexture(const std::string& textur);
+	OtObject setTexture(const std::string& textureName);
+	OtObject setNormalMap(const std::string& normalmapName);
 	OtObject setScale(float scale);
 
 	OtObject setAmbient(const std::string& color);
@@ -54,6 +55,7 @@ public:
 private:
 	// properties
 	bgfx::TextureHandle texture = BGFX_INVALID_HANDLE;
+	bgfx::TextureHandle normalmap = BGFX_INVALID_HANDLE;
 	float scale = 1.0;
 
 	glm::vec3 ambient = { 0.4, 0.4, 0.4 };

@@ -112,7 +112,7 @@ OtObject OtFSClass::ls(const std::string& path) {
 		// get content of directory
 		OtArray content = OtArrayClass::create();
 
-		for (auto& p: std::filesystem::directory_iterator(path)) {
+		for (auto& p : std::filesystem::directory_iterator(path)) {
 			content->append(OtPathClass::create(p.path()));
 		}
 

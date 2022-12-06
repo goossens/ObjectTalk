@@ -26,9 +26,8 @@ typedef std::shared_ptr<OtBlurClass> OtBlur;
 
 class OtBlurClass : public OtFilterClass {
 public:
-	// constructor/destructor
+	// constructor
 	OtBlurClass();
-	~OtBlurClass();
 
 	// set properties
 	void setHorizontalScale(float scale) { horizontalScale = scale; }

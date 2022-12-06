@@ -15,6 +15,7 @@
 
 #include "OtBlit.h"
 #include "OtBlitShader.h"
+#include "OtFramework.h"
 
 
 //
@@ -34,25 +35,11 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 
 OtBlitClass::OtBlitClass() {
 	// setup uniforms
-	blitUniform = bgfx::createUniform("u_blit", bgfx::UniformType::Vec4, 1);
+	auto framework = OtFrameworkClass::instance();
+	blitUniform = framework->getUniform("u_blit", bgfx::UniformType::Vec4, 1);
 
 	// initialize shader
-	bgfx::RendererType::Enum type = bgfx::getRendererType();
-
-	shader = bgfx::createProgram(
-		bgfx::createEmbeddedShader(embeddedShaders, type, "OtBlitVS"),
-		bgfx::createEmbeddedShader(embeddedShaders, type, "OtBlitFS"),
-		true);
-}
-
-
-//
-//	OtBlitClass::~OtBlitClass
-//
-
-OtBlitClass::~OtBlitClass() {
-	bgfx::destroy(blitUniform);
-	bgfx::destroy(shader);
+	shader = framework->getProgram(embeddedShaders, "OtBlitVS", "OtBlitFS");
 }
 
 

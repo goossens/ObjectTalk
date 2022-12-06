@@ -45,16 +45,12 @@ const int HALF_TEXTURE_SIZE = TEXTURE_SIZE / 2;
 
 OtVectorDisplayClass::OtVectorDisplayClass() {
 	// register uniforms
-	paramsUniform = bgfx::createUniform("u_params", bgfx::UniformType::Vec4, 1);
-	textureUniform = bgfx::createUniform("s_texture", bgfx::UniformType::Sampler);
+	auto framework = OtFrameworkClass::instance();
+	paramsUniform = framework->getUniform("u_params", bgfx::UniformType::Vec4, 1);
+	textureUniform = framework->getUniform("s_texture", bgfx::UniformType::Sampler);
 
 	// initialize shader
-	bgfx::RendererType::Enum type = bgfx::getRendererType();
-
-	shader = bgfx::createProgram(
-		bgfx::createEmbeddedShader(embeddedShaders, type, "OtVectorDisplayVS"),
-		bgfx::createEmbeddedShader(embeddedShaders, type, "OtVectorDisplayFS"),
-		true);
+	shader = framework->getProgram(embeddedShaders, "OtVectorDisplayVS", "OtVectorDisplayFS");
 
 	// create line texture
 	const bgfx::Memory* mem = bgfx::alloc(TEXTURE_SIZE * TEXTURE_SIZE * 4);
@@ -101,10 +97,7 @@ OtVectorDisplayClass::~OtVectorDisplayClass() {
 		bgfx::destroy(buffer);
 	}
 
-	bgfx::destroy(paramsUniform);
-	bgfx::destroy(textureUniform);
 	bgfx::destroy(lineTexture);
-	bgfx::destroy(shader);
 }
 
 

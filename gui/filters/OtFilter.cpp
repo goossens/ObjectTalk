@@ -22,16 +22,7 @@
 //
 
 OtFilterClass::OtFilterClass() {
-	textureUniform = bgfx::createUniform("s_texture", bgfx::UniformType::Sampler);
-}
-
-
-//
-//	OtFilterClass::~OtFilterClass
-//
-
-OtFilterClass::~OtFilterClass() {
-	bgfx::destroy(textureUniform);
+	textureUniform = OtFrameworkClass::instance()->getUniform("s_texture", bgfx::UniformType::Sampler);
 }
 
 

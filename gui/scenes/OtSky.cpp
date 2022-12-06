@@ -17,6 +17,7 @@
 #include "OtFunction.h"
 #include "OtNumbers.h"
 
+#include "OtFramework.h"
 #include "OtSky.h"
 #include "OtSkyShader.h"
 
@@ -41,15 +42,11 @@ OtSkyClass::OtSkyClass() {
 	createSkyDome();
 
 	// register uniforms
-	skyUniform = bgfx::createUniform("u_sky", bgfx::UniformType::Vec4, 3);
+	auto framework = OtFrameworkClass::instance();
+	skyUniform = framework->getUniform("u_sky", bgfx::UniformType::Vec4, 3);
 
 	// initialize shader
-	bgfx::RendererType::Enum type = bgfx::getRendererType();
-
-	shader = bgfx::createProgram(
-		bgfx::createEmbeddedShader(embeddedShaders, type, "OtSkyVS"),
-		bgfx::createEmbeddedShader(embeddedShaders, type, "OtSkyFS"),
-		true);
+	shader = framework->getProgram(embeddedShaders, "OtSkyVS", "OtSkyFS");
 }
 
 
@@ -61,8 +58,6 @@ OtSkyClass::~OtSkyClass() {
 	// release resources
 	bgfx::destroy(vertexBuffer);
 	bgfx::destroy(indexBuffer);
-	bgfx::destroy(skyUniform);
-	bgfx::destroy(shader);
 }
 
 

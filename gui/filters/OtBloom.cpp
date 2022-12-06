@@ -15,6 +15,7 @@
 
 #include "OtBloom.h"
 #include "OtBloomShader.h"
+#include "OtFramework.h"
 
 
 //
@@ -34,25 +35,11 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 
 OtBloomClass::OtBloomClass() {
 	// setup uniforms
-	bloomUniform = bgfx::createUniform("u_bloom", bgfx::UniformType::Vec4, 1);
+	auto framework = OtFrameworkClass::instance();
+	bloomUniform = framework->getUniform("u_bloom", bgfx::UniformType::Vec4, 1);
 
 	// initialize shader
-	bgfx::RendererType::Enum type = bgfx::getRendererType();
-
-	shader = bgfx::createProgram(
-		bgfx::createEmbeddedShader(embeddedShaders, type, "OtBloomVS"),
-		bgfx::createEmbeddedShader(embeddedShaders, type, "OtBloomFS"),
-		true);
-}
-
-
-//
-//	OtBloomClass::~OtBloomClass
-//
-
-OtBloomClass::~OtBloomClass() {
-	bgfx::destroy(bloomUniform);
-	bgfx::destroy(shader);
+	shader = framework->getProgram(embeddedShaders, "OtBloomVS", "OtBloomFS");
 }
 
 

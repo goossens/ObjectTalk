@@ -26,9 +26,8 @@ typedef std::shared_ptr<OtBloomClass> OtBloom;
 
 class OtBloomClass : public OtFilterClass {
 public:
-	// constructor/destructor
+	// constructor
 	OtBloomClass();
-	~OtBloomClass();
 
 	// execute filter
 	void execute(int view, int w, int h) override;

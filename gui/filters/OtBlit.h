@@ -26,9 +26,8 @@ typedef std::shared_ptr<OtBlitClass> OtBlit;
 
 class OtBlitClass : public OtFilterClass {
 public:
-	// constructor/destructor
+	// constructor
 	OtBlitClass();
-	~OtBlitClass();
 
 	// set properties
 	void setIntensity(float i) { intensity = i; }

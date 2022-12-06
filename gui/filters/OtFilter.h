@@ -28,7 +28,7 @@ class OtFilterClass {
 public:
 	// constructor/destructor
 	OtFilterClass();
-	virtual ~OtFilterClass();
+	virtual ~OtFilterClass() {}
 
 	// set rendering state
 	void setState(int s) { state = s; }

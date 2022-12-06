@@ -111,15 +111,11 @@ OtSkyboxClass::OtSkyboxClass() {
 	indexBuffer = bgfx::createIndexBuffer(bgfx::makeRef(skyboxIndices, sizeof(skyboxIndices) *	sizeof(uint32_t)), BGFX_BUFFER_INDEX32);
 
 	// register uniform
-	cubemapUniform = bgfx::createUniform("s_cubemap", bgfx::UniformType::Sampler);
+	auto framework = OtFrameworkClass::instance();
+	cubemapUniform = framework->getUniform("s_cubemap", bgfx::UniformType::Sampler);
 
 	// initialize shader
-	bgfx::RendererType::Enum type = bgfx::getRendererType();
-
-	shader = bgfx::createProgram(
-		bgfx::createEmbeddedShader(embeddedShaders, type, "OtSkyboxVS"),
-		bgfx::createEmbeddedShader(embeddedShaders, type, "OtSkyboxFS"),
-		true);
+	shader = framework->getProgram(embeddedShaders, "OtSkyboxVS", "OtSkyboxFS");
 }
 
 
@@ -131,13 +127,10 @@ OtSkyboxClass::~OtSkyboxClass() {
 	// release resources
 	bgfx::destroy(vertexBuffer);
 	bgfx::destroy(indexBuffer);
-	bgfx::destroy(cubemapUniform);
 
 	if (bgfx::isValid(cubemap)) {
 		bgfx::destroy(cubemap);
 	}
-
-	bgfx::destroy(shader);
 }
 
 

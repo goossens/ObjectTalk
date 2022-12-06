@@ -15,6 +15,7 @@
 
 #include "OtBlur.h"
 #include "OtBlurShader.h"
+#include "OtFramework.h"
 
 
 //
@@ -34,25 +35,11 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 
 OtBlurClass::OtBlurClass() {
 	// setup uniforms
-	blurUniform = bgfx::createUniform("u_blur", bgfx::UniformType::Vec4, 1);
+	auto framework = OtFrameworkClass::instance();
+	blurUniform = framework->getUniform("u_blur", bgfx::UniformType::Vec4, 1);
 
 	// initialize shader
-	bgfx::RendererType::Enum type = bgfx::getRendererType();
-
-	shader = bgfx::createProgram(
-		bgfx::createEmbeddedShader(embeddedShaders, type, "OtBlurVS"),
-		bgfx::createEmbeddedShader(embeddedShaders, type, "OtBlurFS"),
-		true);
-}
-
-
-//
-//	OtBlurClass::~OtBlurClass
-//
-
-OtBlurClass::~OtBlurClass() {
-	bgfx::destroy(blurUniform);
-	bgfx::destroy(shader);
+	shader = framework->getProgram(embeddedShaders, "OtBlurVS", "OtBlurFS");
 }
 
 

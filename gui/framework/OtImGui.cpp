@@ -203,7 +203,7 @@ void OtFrameworkClass::initIMGUI() {
 		.end();
 
 	// setup font texture
-	imguiFontUniform = bgfx::createUniform("g_AttribLocationTex", bgfx::UniformType::Sampler);
+	imguiFontUniform = getUniform("g_AttribLocationTex", bgfx::UniformType::Sampler);
 
 	// create shader program
 	imguiProgram = getProgram(embeddedShaders, "OtImGuiVS", "OtImGuiFS");
@@ -384,7 +384,6 @@ void OtFrameworkClass::renderIMGUI() {
 //
 
 void OtFrameworkClass::endIMGUI() {
-	bgfx::destroy(imguiFontUniform);
 	bgfx::destroy(imguiFontTexture);
 	ImGui::DestroyContext();
 }

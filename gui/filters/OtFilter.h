@@ -41,9 +41,6 @@ public:
 	void render(int x, int y, int w, int h, bgfx::TextureHandle texture);
 
 private:
-	// render a "single rectangle quad"
-	void createQuad(int w, int h);
-
 	// the texture
 	bgfx::UniformHandle textureUniform = BGFX_INVALID_HANDLE;
 

@@ -80,9 +80,6 @@ void OtFrameworkClass::runThread2() {
 
 		// run this thread until we are told to stop
 		while (running) {
-			// update frame number
-			frameNumber++;
-
 			// reset next view ID
 			nextViewID = 1;
 

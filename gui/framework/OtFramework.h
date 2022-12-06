@@ -70,9 +70,6 @@ public:
 	// get loop duration in milliseconds
 	float getLoopDuration() { return loopDuration; }
 
-	// get the current frame number
-	size_t getFrameNumber() { return frameNumber; }
-
 	// get the current frame rate
 	float getFrameRate() { return 1000.0 / loopDuration; }
 
@@ -139,7 +136,6 @@ private:
 	bgfx::ViewId nextViewID;
 
 	// time tracking
-	size_t frameNumber;
 	int64_t startTime;
 	int64_t lastTime;
 	int64_t loopTime;

@@ -173,7 +173,6 @@ then
 	echo 'pushd "%~dp0"' >${HOME}/update.bat
 fi
 
-compileShader Background
 compileShader BlendMapped
 compileShader Blit
 compileShader Bloom

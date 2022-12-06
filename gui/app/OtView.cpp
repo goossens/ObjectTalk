@@ -24,8 +24,8 @@
 OtViewClass::~OtViewClass() {
 	// clear our scene (it has circular parent/child relationships)
 	if (scene) {
-		scene->clear();
-		scene = nullptr;
+//		scene->clear();
+//		scene = nullptr;
 	}
 }
 

@@ -1,8 +1,4 @@
 pushd "%~dp0"
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f background/shader.vs -o background/vs_dx9.h -i include --type vertex --platform windows -p vs_3_0 -O 3 --bin2c OtBackgroundVS_dx9
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f background/shader.vs -o background/vs_dx11.h -i include --type vertex --platform windows -p vs_5_0 -O 3 --bin2c OtBackgroundVS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f background/shader.fs -o background/fs_dx9.h -i include --type fragment --platform windows -p ps_3_0 -O 3 --bin2c OtBackgroundFS_dx9
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f background/shader.fs -o background/fs_dx11.h -i include --type fragment --platform windows -p ps_5_0 -O 3 --bin2c OtBackgroundFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f blendmapped/shader.vs -o blendmapped/vs_dx9.h -i include --type vertex --platform windows -p vs_3_0 -O 3 --bin2c OtBlendMappedVS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f blendmapped/shader.vs -o blendmapped/vs_dx11.h -i include --type vertex --platform windows -p vs_5_0 -O 3 --bin2c OtBlendMappedVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f blendmapped/shader.fs -o blendmapped/fs_dx9.h -i include --type fragment --platform windows -p ps_3_0 -O 3 --bin2c OtBlendMappedFS_dx9

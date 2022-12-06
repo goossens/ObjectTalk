@@ -48,7 +48,6 @@
 #include "OtScene.h"
 
 #include "OtSceneObject.h"
-#include "OtBackground.h"
 #include "OtSky.h"
 #include "OtSkybox.h"
 #include "OtTerrain.h"
@@ -132,7 +131,6 @@ void OtGuiClass::registerModule() {
 		module->set("Scene", OtClassClass::create(OtSceneClass::getMeta()));
 
 		module->set("SceneObject", OtClassClass::create(OtSceneObjectClass::getMeta()));
-		module->set("Background", OtClassClass::create(OtBackgroundClass::getMeta()));
 		module->set("Skybox", OtClassClass::create(OtSkyboxClass::getMeta()));
 		module->set("Sky", OtClassClass::create(OtSkyClass::getMeta()));
 		module->set("Water", OtClassClass::create(OtWaterClass::getMeta()));

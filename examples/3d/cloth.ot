@@ -6,9 +6,8 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-var gui = import("gui");
 
-var skyColor = "#cce0ff";
+var gui = import("gui");
 
 // define our application
 class App : gui.App {
@@ -20,8 +19,9 @@ class App : gui.App {
 			.setDirection(-100, -70, -100)
 			.castShadow(50, 0, 200);
 
-		var fog = gui.Fog().setColor(skyColor).setDistances(50, 150);
-		var background = gui.Background().setColor(skyColor);
+		var fog = gui.Fog()
+			.setColor("#cce0ff")
+			.setDistances(50, 150);
 
 		var grass = gui.Mesh()
 			.receiveShadow(true)
@@ -75,7 +75,6 @@ class App : gui.App {
 			.add(ambient)
 			.add(light)
 			.add(fog)
-			.add(background)
 			.add(grass)
 			.add(pole1)
 			.add(pole2)

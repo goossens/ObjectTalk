@@ -14,29 +14,7 @@
 
 #include "OtFilter.h"
 #include "OtFramework.h"
-
-
-// vertex definition
-struct Vertex {
-	glm::vec3 position;
-	glm::vec2 uv;
-
-	static bgfx::VertexLayout getLayout() {
-		static bool ready = false;
-		static bgfx::VertexLayout layout;
-
-		if (!ready) {
-			layout.begin()
-				.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-				.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
-				.end();
-
-			ready = true;
-		}
-
-		return layout;
-	}
-};
+#include "OtQuad.h"
 
 
 //
@@ -58,32 +36,6 @@ OtFilterClass::~OtFilterClass() {
 
 
 //
-//	OtFilterClass::createQuad
-//
-
-void OtFilterClass::createQuad(int w, int h) {
-	if (bgfx::getAvailTransientVertexBuffer(3, Vertex::getLayout()) == 3) {
-		const bgfx::Caps* caps = bgfx::getCaps();
-
-		bgfx::TransientVertexBuffer vb;
-		bgfx::allocTransientVertexBuffer(&vb, 3, Vertex::getLayout());
-		Vertex* vertex = (Vertex*) vb.data;
-
-		vertex[0].position = glm::vec3(-w, 0.0, 0.0);
-		vertex[0].uv = caps->originBottomLeft ? glm::vec2(-1.0, 1.0) : glm::vec2(-1.0, 0.0);
-
-		vertex[1].position = glm::vec3(w, 0.0, 0.0);
-		vertex[1].uv = caps->originBottomLeft ? glm::vec2(1.0, 1.0) : glm::vec2(1.0, 0.0);
-
-		vertex[2].position = glm::vec3(w, h * 2.0, 0.0);
-		vertex[2].uv = caps->originBottomLeft ? glm::vec2(1.0, -1.0) : glm::vec2(1.0, 2.0);
-
-		bgfx::setVertexBuffer(0, &vb);
-	}
-}
-
-
-//
 //	OtFilterClass::render
 //
 
@@ -92,7 +44,7 @@ void OtFilterClass::render(int w, int h, bgfx::TextureHandle texture, bgfx::Fram
 	bgfx::ViewId view = OtFrameworkClass::instance()->getNextViewID();
 
 	// create "single triangle quad" to cover area
-	createQuad(w, h);
+	OtQuadSubmit(w, h);
 
 	// setup BGFX context
 	bgfx::setTexture(0, textureUniform, texture);
@@ -103,7 +55,7 @@ void OtFilterClass::render(int w, int h, bgfx::TextureHandle texture, bgfx::Fram
 	glm::mat4 matrix = glm::ortho(0.0f, (float) w, (float) h, 0.0f, -1.0f, 1.0f);
 	bgfx::setViewTransform(view, nullptr, glm::value_ptr(matrix));
 
-	// execure filter
+	// execute filter
 	execute(view, w, h);
 }
 
@@ -117,7 +69,7 @@ void OtFilterClass::render(int x, int y, int w, int h, bgfx::TextureHandle textu
 	bgfx::ViewId view = OtFrameworkClass::instance()->getNextViewID();
 
 	// create "single triangle quad" to cover area
-	createQuad(w, h);
+	OtQuadSubmit(w, h);
 
 	// setup BGFX context
 	bgfx::setTexture(0, textureUniform, texture);

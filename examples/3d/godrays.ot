@@ -8,8 +8,6 @@
 
 var gui = import("gui");
 
-var skyColor = "#cce0ff";
-
 class App : gui.App {
 	function setup(this) {
 		var ambient = gui.AmbientLight();
@@ -19,10 +17,8 @@ class App : gui.App {
 			.castShadow(200, 1, 200);
 
 		var fog = gui.Fog()
-			.setColor(skyColor)
+			.setColor("#cce0ff")
 			.setDistances(150, 250);
-
-		var background = gui.Background().setColor(skyColor);
 
 		var terrain = gui.Mesh()
 			.setGeometry(gui.PlaneGeometry()

@@ -83,11 +83,11 @@ A another special thanks goes to the team that wrote the
 [documentation](https://swift.org/documentation/). It is awesome and
 I've respectfully reused a lot of it to document ObjectTalk.
 
-A final special thanks goes to the team that wrote the
-[Tutorials](https://threejsfundamentals.org) for
-[Three.js](https://threejs.org). The 3D ObjectTalk tutorial is based on it.
+A final special thanks goes to the team that wrote the tutorials for
+[Three.js](https://threejs.org). The 3D ObjectTalk tutorial uses some of
+those ideas.
 
-More (smaller) credits can be found in the GUI module:
+More credits can be found in the GUI module:
 
 * [Algorithms](gui/README.md)
 * [Assets](examples/3d/assets/README.md)

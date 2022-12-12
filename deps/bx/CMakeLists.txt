@@ -7,7 +7,7 @@
 FetchContent_Declare(bx GIT_REPOSITORY "https://github.com/bkaradzic/bx")
 FetchContent_MakeAvailable(bx)
 
-file(GLOB BX_SOURCES ${bx_SOURCE_DIR}/src/*.cpp ${bx_SOURCE_DIR}/include/bx/*.h)
+file(GLOB BX_SOURCES ${bx_SOURCE_DIR}/src/*.cpp ${bx_SOURCE_DIR}/include/bx/*.h  ${bx_SOURCE_DIR}/include/bx/inline/*.inl)
 list(REMOVE_ITEM BX_SOURCES ${bx_SOURCE_DIR}/src/amalgamated.cpp)
 
 add_library(bx STATIC ${BX_SOURCES})

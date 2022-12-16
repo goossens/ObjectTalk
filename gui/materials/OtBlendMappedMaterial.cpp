@@ -9,34 +9,20 @@
 //	Include files
 //
 
-#include "bgfx/embedded_shader.h"
-
 #include "OtException.h"
 #include "OtFunction.h"
 
 #include "OtColor.h"
 #include "OtFramework.h"
 #include "OtBlendMappedMaterial.h"
-#include "OtBlendMappedShader.h"
-
-
-//
-//	Globals
-//
-
-static const bgfx::EmbeddedShader embeddedShaders[] = {
-	BGFX_EMBEDDED_SHADER(OtBlendMappedVS),
-	BGFX_EMBEDDED_SHADER(OtBlendMappedVSI),
-	BGFX_EMBEDDED_SHADER(OtBlendMappedFS),
-	BGFX_EMBEDDED_SHADER_END()
-};
 
 
 //
 //	OtBlendMappedMaterialClass::init
 //
 
-void OtBlendMappedMaterialClass::init(size_t count, OtObject* parameters) {
+void OtBlendMappedMaterialClass::init(size_t count, OtObject *parameters)
+{
 	switch (count) {
 		case 6:
 			setScale(parameters[5]->operator float());
@@ -59,22 +45,20 @@ void OtBlendMappedMaterialClass::init(size_t count, OtObject* parameters) {
 	}
 }
 
-
 //
 //	OtBlendMappedMaterialClass::setMaps
 //
 
 OtObject OtBlendMappedMaterialClass::setTextures(const std::string& bm, const std::string& tn, const std::string& tr, const std::string& tg, const std::string& tb) {
-	if (bgfx::isValid(blendmap)) {
+	if (blendmap.isValid()) {
 		OtExcept("Textures already specified for [BlendMappedMaterial]");
 	}
 
-	auto framework = OtFrameworkClass::instance();
-	blendmap = framework->getTexture(bm, true);
-	textureN = framework->getTexture(tn, true);
-	textureR = framework->getTexture(tr, true);
-	textureG = framework->getTexture(tg, true);
-	textureB = framework->getTexture(tb, true);
+	blendmap.loadFromFile(bm, true);
+	textureNone.loadFromFile(tn, true);
+	textureRed.loadFromFile(tr, true);
+	textureGreen.loadFromFile(tg, true);
+	textureBlue.loadFromFile(tb, true);
 	return shared();
 }
 
@@ -130,76 +114,30 @@ OtObject OtBlendMappedMaterialClass::setShininess(float s) {
 
 
 //
-//	OtBlendMappedMaterialClass::getNumberOfUniforms
+//	OtBlendMappedMaterialClass::submit
 //
 
-size_t OtBlendMappedMaterialClass::getNumberOfUniforms() {
-	return 3;
-}
+void OtBlendMappedMaterialClass::submit(OtRenderer& renderer, bool instancing) {
+	// submit uniform
+	uniform.set(0, glm::vec4(ambient, scale));
+	uniform.set(1, glm::vec4(diffuse, 0.0));
+	uniform.set(2, glm::vec4(specular, shininess));
+	uniform.submit();
 
+	// set samplers
+	blendmapSampler.submit(1, blendmap);
+	textureNoneSampler.submit(2, textureNone);
+	textureRedSampler.submit(3, textureRed);
+	textureGreenSampler.submit(4, textureGreen);
+	textureBlueSampler.submit(5, textureBlue);
 
-//
-//	OtBlendMappedMaterialClass::getUniforms
-//
-
-void OtBlendMappedMaterialClass::getUniforms(glm::vec4* uniforms) {
-	uniforms[0] = glm::vec4(ambient, scale);
-	uniforms[1] = glm::vec4(diffuse, 0.0);
-	uniforms[2] = glm::vec4(specular, shininess);
-}
-
-
-//
-//	OtBlendMappedMaterialClass::getNumberOfSamplers
-//
-
-size_t OtBlendMappedMaterialClass::getNumberOfSamplers() {
-	return 5;
-}
-
-
-//
-//	OtBlendMappedMaterialClass::getSamplerTexture
-//
-
-bgfx::TextureHandle OtBlendMappedMaterialClass::getSamplerTexture(size_t index) {
-	if (!bgfx::isValid(blendmap)) {
-		OtExcept("[Textures] not set for [BlendMappedMaterial]");
-	}
-
-	if (index == 1) {
-		return blendmap;
-
-	} else if (index == 2) {
-		return textureN;
-
-	} else if (index == 3) {
-		return textureR;
-
-	} else if (index == 4) {
-		return textureG;
+	// run appropriate shader
+	if (instancing) {
+		renderer.runShader(instancingShader);
 
 	} else {
-		return textureB;
+		renderer.runShader(shader);
 	}
-}
-
-
-//
-//	OtBlendMappedMaterialClass::createShader
-//
-
-bgfx::ProgramHandle OtBlendMappedMaterialClass::createShader() {
-	return OtFrameworkClass::instance()->getProgram(embeddedShaders, "OtBlendMappedVS", "OtBlendMappedFS");
-}
-
-
-//
-//	OtBlendMappedMaterialClass::createInstancingShader
-//
-
-bgfx::ProgramHandle OtBlendMappedMaterialClass::createInstancingShader() {
-	return OtFrameworkClass::instance()->getProgram(embeddedShaders, "OtBlendMappedVSI", "OtBlendMappedFS");
 }
 
 

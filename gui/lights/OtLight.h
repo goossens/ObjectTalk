@@ -13,6 +13,7 @@
 //
 
 #include "OtCamera.h"
+#include "OtFrameBuffer.h"
 #include "OtSceneObject.h"
 
 
@@ -25,33 +26,27 @@ typedef std::shared_ptr<OtLightClass> OtLight;
 
 class OtLightClass : public OtSceneObjectClass {
 public:
-	// destructor
-	~OtLightClass();
-
 	// enable shadow casting
 	OtObject castShadow();
-	void toggleShadow(bool flag) { shadow = flag; }
-
-	// enable/disable frustum rendering (debugging)
-	OtObject renderFrustum(bool flag);
+	bool castsShadow() { return castShadowFlag; }
+	OtObject toggleShadow(bool flag);
 
 	// update state
-	void update(OtRenderingContext context) override;
+	void update(OtRenderer& renderer) override;
 
 	// submit to GPU
-	void render(OtRenderingContext context) override;
-
-	// render GUI for controllers
-	void renderShadowCameraGUI();
+	void render(OtRenderer& renderer) override;
 
 	// get type definition
 	static OtType getMeta();
 
 protected:
-	// shadowing
-	bool shadow = false;
+	// shadowing properties
+	bool castShadowFlag = false;
 	OtCamera shadowCamera;
-	bgfx::ViewId shadowView;
-	bgfx::TextureHandle shadowmapTexture = BGFX_INVALID_HANDLE;
-	bgfx::FrameBufferHandle shadowmapFrameBuffer = BGFX_INVALID_HANDLE;
+	OtPass shadowPass;
+
+	OtFrameBuffer framebuffer = OtFrameBuffer(
+		OtFrameBuffer::noTexture,
+		OtFrameBuffer::dFloatTexture);
 };

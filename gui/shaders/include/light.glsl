@@ -22,6 +22,7 @@
 uniform vec4 u_light[BASE_UNIFORM_COUNT + POINT_SPOT_LIGHT_COUNT * UNIFORMS_PER_LIGHT];
 #define u_camera_position u_light[0].xyz				// in worldspace
 #define u_ambient_light_color u_light[1].rgb
+
 #define u_directional_light_direction u_light[2].xyz	// from object to light (normalized)
 #define u_directional_light_color u_light[3].rgb
 

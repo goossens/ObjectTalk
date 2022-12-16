@@ -66,7 +66,7 @@ public:
 	virtual std::string json() { return operator std::string(); }
 
 	// describe object for debugging purposes
-	virtual std::string describe() { return ""; }
+	virtual std::string describe();
 
 	// get shared pointer
 	OtObject shared() { return shared_from_this(); }

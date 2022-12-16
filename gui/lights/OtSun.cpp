@@ -65,6 +65,11 @@ OtObject OtSunClass::setAzimuth(float a) {
 OtObject OtSunClass::castShadow(float width, float dist, float near, float far) {
 	OtLightClass::castShadow();
 
+	// create camera (if required)
+	if (!shadowCamera) {
+		shadowCamera = OtCameraClass::create();
+	}
+
 	shadowCamera->setOrthographic(width, near, far);
 	shadowCamera->setWidthLimits(width / 10.0, width * 10.0);
 	shadowCamera->setNearFarLimits(near / 10.0, near * 10.0, far / 10.0, far * 10.0);
@@ -99,25 +104,25 @@ glm::vec3 OtSunClass::getLightDirection() {
 //	OtSunClass::update
 //
 
-void OtSunClass::update(OtRenderingContext context) {
-	OtLightClass::update(context);
+void OtSunClass::update(OtRenderer& renderer) {
+	OtLightClass::update(renderer);
 
 	// handle shadows (if required)
-	if (shadow) {
+	if (castShadowFlag) {
 		// update "light" camera
-		auto target = context->getCamera()->getTarget();
+		auto target = renderer.getCamera()->getTarget();
 		shadowCamera->setPositionVector(target - distance * getDirectionToSun());
 		shadowCamera->setTargetVector(target);
-		shadowCamera->update();
+		shadowCamera->update(renderer);
 	}
 
 	// add ambient light
 	glm::vec3 ambient = glm::vec3(std::clamp((elevation + 0.1) / 0.3, 0.0, 0.8));
-	context->addAmbientLight(ambient);
+	renderer.addAmbientLight(ambient);
 
 	// add direct light
 	glm::vec3 direct = glm::vec3(0.2 + std::clamp(elevation / 0.1, 0.0, 0.6));
-	context->setDirectionalLight(getLightDirection(), direct);
+	renderer.setDirectionalLight(getLightDirection(), direct);
 }
 
 
@@ -131,11 +136,15 @@ void OtSunClass::renderGUI() {
 	ImGui::SliderFloat("Azimuth", &azimuth, 0.0, std::numbers::pi * 2.0);
 
 	if (shadowCamera) {
-		ImGui::Checkbox("Casts Shadow", &shadow);
+		ImGui::Checkbox("Casts Shadow", &castShadowFlag);
 	}
 
-	if (shadow) {
-		renderShadowCameraGUI();
+	if (castShadowFlag) {
+		if (ImGui::TreeNodeEx("Shadowmap:", ImGuiTreeNodeFlags_Framed)) {
+			float width = ImGui::GetContentRegionAvail().x;
+			ImGui::Image((void*)(intptr_t) framebuffer.getDepthTextureIndex(), ImVec2(width, width));
+			ImGui::TreePop();
+		}
 	}
 }
 

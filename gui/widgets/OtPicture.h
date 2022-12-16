@@ -12,8 +12,7 @@
 //	Include files
 //
 
-#include "bgfx/bgfx.h"
-
+#include "OtTexture.h"
 #include "OtWidget.h"
 
 
@@ -46,7 +45,7 @@ public:
 
 private:
 	// properties
-	bgfx::TextureHandle texture = BGFX_INVALID_HANDLE;
+	OtTexture texture;
 	int margin = 5;
 
 	size_t width;

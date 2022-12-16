@@ -12,9 +12,9 @@
 //	Include files
 //
 
-#include "bgfx/bgfx.h"
-
 #include "OtFilter.h"
+#include "OtShader.h"
+#include "OtUniform.h"
 
 
 //
@@ -26,22 +26,19 @@ typedef std::shared_ptr<OtBlitClass> OtBlit;
 
 class OtBlitClass : public OtFilterClass {
 public:
-	// constructor
-	OtBlitClass();
-
 	// set properties
 	void setIntensity(float i) { intensity = i; }
 	void setAlpha(float a) { alpha = a; }
 
 	// execute filter
-	void execute(int view, int w, int h) override;
+	void execute(OtPass& pass, int w, int h) override;
 
 private:
 	// blur properties
 	float intensity = -1.0;
 	float alpha = -1.0;
 
-	// BGFX shader
-	bgfx::UniformHandle blitUniform = BGFX_INVALID_HANDLE;
-	bgfx::ProgramHandle shader = BGFX_INVALID_HANDLE;
+	// GPU assets
+	OtUniform uniform = OtUniform("u_blit", 1);
+	OtShader shader = OtShader("OtBlitVS", "OtBlitFS");
 };

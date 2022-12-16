@@ -9,15 +9,14 @@
 SHADERC=~/bin/shaderc
 HOME="$(cd -P "$(dirname "${BASH_SOURCE[0]}")"; pwd)"
 FORCE=0
-UPDATEBATCH=0
+
+SHADER_INCLUDES=""
+SHADER_DEFINES=""
+SHADER_BAT=""
 
 while [ $# -gt 0 ]
 do
 	case $1 in
-		-b|--updatebatch)
-			UPDATEBATCH=1
-			shift
-			;;
 		-f|--force)
 			FORCE=1
 			shift
@@ -28,13 +27,13 @@ do
 	esac
 done
 
+
+#
+#	needsUpdate
+#
+
 function needsUpdate() {
 	if [ ${FORCE} -eq 1 ]
-	then
-		echo "--------------------------------------- $1"
-		true
-
-	elif [ ${UPDATEBATCH} -eq 1 ]
 	then
 		true
 
@@ -42,15 +41,11 @@ function needsUpdate() {
 	then
 		true
 
-	elif [ -f ${SHADER_DIR}/shader.vs -a ${SHADER_DIR}/shader.vs -nt ${HOME}/Ot$1Shader.h ]
+	elif [ $2 -nt $3 ]
 	then
 		true
 
-	elif [ -f ${SHADER_DIR}/shader.fs -a ${SHADER_DIR}/shader.fs -nt ${HOME}/Ot$1Shader.h ]
-	then
-		true
-
-	elif [ -f ${SHADER_DIR}/instancing.vs -a ${SHADER_DIR}/instancing.vs -nt ${HOME}/Ot$1Shader.h ]
+	elif [ ../include/bgfx.glsl -nt $3 -o ../include/light.glsl -nt $3 -o ../include/material.glsl -nt $3 ]
 	then
 		true
 
@@ -59,18 +54,36 @@ function needsUpdate() {
 	fi
 }
 
+
+#
+#	fakePart
+#
+
 function fakePart() {
-	if [ -f $1_mtl.h -a ! -f $1_$3.h ]
+	if [ -f $1_mtl.h -a ! -f $1_$2.h ]
 	then
-		sed "s/_mtl/_$3/" <$1_mtl.h >$1_$3.h
+		sed "s/_mtl/_$2/" <$1_mtl.h >$1_$2.h
 	fi
 }
 
-function compilePart() {
+
+#
+#	processShader
+#
+
+function processShader() {
 	case $1 in
 		vertex) EXT=vs;;
 		fragment) EXT=fs;;
 	esac
+
+	if [ $1 == "vertex" ]
+	then
+		PROFILE="vs"
+
+	else
+		PROFILE="ps"
+	fi
 
 	if [ $2 == "instancing" ]
 	then
@@ -82,59 +95,63 @@ function compilePart() {
 
 	UPREFIX=$(echo "${PREFIX}" |  tr '[:lower:]' '[:upper:]')
 
-	if [ ${UPDATEBATCH} -eq 1 ]
+	if needsUpdate $3 $2.${EXT} ${PREFIX}_mtl.h
 	then
-		if [ $1 == "vertex" ]
-		then
-			PROFILE="vs"
-
-		else
-			PROFILE="ps"
-		fi
-
-		DIR=$(echo "$3" |  tr '[:upper:]' '[:lower:]')
-		echo "%HOMEDRIVE%%HOMEPATH%\\bin\\shaderc -f ${DIR}/$2.${EXT} -o ${DIR}/${PREFIX}_dx9.h -i include --type $1 --platform windows -p ${PROFILE}_3_0 -O 3 --bin2c Ot$3${UPREFIX}_dx9" >>${HOME}/update.bat
-		echo "%HOMEDRIVE%%HOMEPATH%\\bin\\shaderc -f ${DIR}/$2.${EXT} -o ${DIR}/${PREFIX}_dx11.h -i include --type $1 --platform windows -p ${PROFILE}_5_0 -O 3 --bin2c Ot$3${UPREFIX}_dx11" >>${HOME}/update.bat
-
-	else
+		echo "--------------------------------------- Compiling $1 $2 $3"
 		${SHADERC} -f $2.${EXT} -o ${PREFIX}_mtl.h -i ${HOME}/include --type $1 --platform osx -p metal --bin2c Ot$3${UPREFIX}_mtl
 		${SHADERC} -f $2.${EXT} -o ${PREFIX}_glsl.h -i ${HOME}/include --type $1 --platform linux -p 120 --bin2c Ot$3${UPREFIX}_glsl
 		${SHADERC} -f $2.${EXT} -o ${PREFIX}_essl.h -i ${HOME}/include --type $1 --platform linux -p 300_es --bin2c Ot$3${UPREFIX}_essl
 		${SHADERC} -f $2.${EXT} -o ${PREFIX}_spv.h -i ${HOME}/include --type $1 --platform linux -p spirv --bin2c Ot$3${UPREFIX}_spv
-		fakePart ${PREFIX} $3 dx9
-		fakePart ${PREFIX} $3 dx11
+		fakePart ${PREFIX} dx9
+		fakePart ${PREFIX} dx11
 	fi
+
+	SHADER_BAT+="%HOMEDRIVE%%HOMEPATH%\\\\bin\\\\shaderc -f $4/$2.${EXT} -o $4/${PREFIX}_dx9.h -i include --type $1 --platform windows -p ${PROFILE}_3_0 -O 3 --bin2c Ot$3${UPREFIX}_dx9\n"
+	SHADER_BAT+="%HOMEDRIVE%%HOMEPATH%\\\\bin\\\\shaderc -f $4/$2.${EXT} -o $4/${PREFIX}_dx11.h -i include --type $1 --platform windows -p ${PROFILE}_5_0 -O 3 --bin2c Ot$3${UPREFIX}_dx11\n"
 }
 
-function compileShader() {
+
+#
+#	processDirectory
+#
+
+function processDirectory() {
+	SHADER_INCLUDES+="#include \"Ot$1Shader.h\"\n"
 	SHADER_LOWERCASE=$(echo "$1" |  tr '[:upper:]' '[:lower:]')
-	SHADER_DIR=${HOME}/${SHADER_LOWERCASE}
 
-	if needsUpdate $1
+	cd ${HOME}/${SHADER_LOWERCASE}
+
+	if [ -f shader.vs ]
 	then
-		cd ${SHADER_DIR}
+		processShader vertex shader $1 ${SHADER_LOWERCASE}
+		SHADER_DEFINES+="\tBGFX_EMBEDDED_SHADER(Ot$1VS),\n"
+	fi
 
-		if [ -f shader.vs ]
-		then
-			compilePart vertex shader $1
-		fi
+	if [ -f shader.fs ]
+	then
+		processShader fragment shader $1 ${SHADER_LOWERCASE}
+		SHADER_DEFINES+="\tBGFX_EMBEDDED_SHADER(Ot$1FS),\n"
+	fi
 
-		if [ -f shader.fs ]
-		then
-			compilePart fragment shader $1
-		fi
+	if [ -f instancing.vs ]
+	then
+		processShader vertex instancing $1 ${SHADER_LOWERCASE}
+		SHADER_DEFINES+="\tBGFX_EMBEDDED_SHADER(Ot$1VSI),\n"
+	fi
 
-		if [ -f instancing.vs ]
-		then
-			compilePart vertex instancing $1
-		fi
+	SHADER_BAT+="\n"
 
-		cat >../Ot$1Shader.h <<END
+	cat >../Ot$1Shader.h <<END
 //	ObjectTalk Scripting Language
 //	Copyright (c) 2020-2022 Johan A. Goossens. All rights reserved.
 //
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
+
+
+//
+//	Include files
+//
 
 #include "${SHADER_LOWERCASE}/vs_mtl.h"
 #include "${SHADER_LOWERCASE}/vs_glsl.h"
@@ -151,9 +168,9 @@ function compileShader() {
 #include "${SHADER_LOWERCASE}/fs_dx11.h"
 END
 
-		if [ -f vsi_mtl.h ]
-		then
-			cat >>../Ot$1Shader.h <<END
+	if [ -f instancing.vs ]
+	then
+		cat >>../Ot$1Shader.h <<END
 
 #include "${SHADER_LOWERCASE}/vsi_mtl.h"
 #include "${SHADER_LOWERCASE}/vsi_glsl.h"
@@ -162,34 +179,71 @@ END
 #include "${SHADER_LOWERCASE}/vsi_dx9.h"
 #include "${SHADER_LOWERCASE}/vsi_dx11.h"
 END
-		fi
 
-		cd ${HOME}
 	fi
+
+	cd ${HOME}
 }
 
-if [ ${UPDATEBATCH} -eq 1 ]
-then
-	echo 'pushd "%~dp0"' >${HOME}/update.bat
-fi
 
-compileShader BlendMapped
-compileShader Blit
-compileShader Bloom
-compileShader Blur
-compileShader Colored
-compileShader Debug
-compileShader Fixed
-compileShader ImGui
-compileShader Shadow
-compileShader Sky
-compileShader Skybox
-compileShader Terrain
-compileShader Textured
-compileShader VectorDisplay
-compileShader Water
+#
+#	Main
+#
 
-if [ ${UPDATEBATCH} -eq 1 ]
-then
-	echo "popd" >${HOME}/update.bat
-fi
+processDirectory BlendMapped
+processDirectory Blit
+processDirectory Bloom
+processDirectory Blur
+processDirectory Colored
+processDirectory Debug
+processDirectory Fixed
+processDirectory ImGui
+processDirectory Shadow
+processDirectory Sky
+processDirectory Skybox
+processDirectory Terrain
+processDirectory Textured
+processDirectory VectorDisplay
+processDirectory Water
+
+cat >${HOME}//OtShaders.h <<END
+//	ObjectTalk Scripting Language
+//	Copyright (c) 2020-2022 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+
+//
+//	Include files
+//
+
+#include "bgfx/embedded_shader.h"
+
+$(echo -e ${SHADER_INCLUDES})
+
+
+//
+//	Globals
+//
+
+static const bgfx::EmbeddedShader embeddedShaders[] = {
+$(echo -e ${SHADER_DEFINES})
+	BGFX_EMBEDDED_SHADER_END()
+};
+END
+
+cat >${HOME}//update.bat <<END
+::	ObjectTalk Scripting Language
+::	Copyright (c) 2020-2022 Johan A. Goossens. All rights reserved.
+::
+::	This work is licensed under the terms of the MIT license.
+::	For a copy, see <https://opensource.org/licenses/MIT>.
+
+
+pushd "%~dp0"
+
+$(echo -e ${SHADER_BAT})
+
+popd
+END

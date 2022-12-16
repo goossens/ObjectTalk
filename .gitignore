@@ -28,10 +28,12 @@
 
 # MacOS files
 .DS_Store
-._*
+
+# Editor files
+/.vscode
 
 # Local files
-debug/*
-release/*
-xcode/*
-vs/*
+/debug
+/release
+/xcode
+/vs

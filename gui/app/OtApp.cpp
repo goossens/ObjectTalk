@@ -157,13 +157,6 @@ void OtAppClass::onUpdate() {
 			OtVM::instance()->callMemberFunction(shared(), "update");
 		}
 
-		// update all our children
-		for (auto const& child : children) {
-			if (child->isEnabled()) {
-				child->cast<OtAppObjectClass>()->update();
-			}
-		}
-
 	} catch (const OtException& e) {
 		onError(e);
 	}

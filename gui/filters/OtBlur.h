@@ -12,9 +12,9 @@
 //	Include files
 //
 
-#include "bgfx/bgfx.h"
-
 #include "OtFilter.h"
+#include "OtShader.h"
+#include "OtUniform.h"
 
 
 //
@@ -26,9 +26,6 @@ typedef std::shared_ptr<OtBlurClass> OtBlur;
 
 class OtBlurClass : public OtFilterClass {
 public:
-	// constructor
-	OtBlurClass();
-
 	// set properties
 	void setHorizontalScale(float scale) { horizontalScale = scale; }
 	void setVerticalScale(float scale) { verticalScale = scale; }
@@ -36,7 +33,7 @@ public:
 	void setAlpha(float a) { alpha = a; }
 
 	// execute filter
-	void execute(int view, int w, int h) override;
+	void execute(OtPass& pass, int w, int h) override;
 
 private:
 	// blur properties
@@ -45,7 +42,7 @@ private:
 	float intensity = -1.0;
 	float alpha = -1.0;
 
-	// BGFX shader
-	bgfx::UniformHandle blurUniform = BGFX_INVALID_HANDLE;
-	bgfx::ProgramHandle shader = BGFX_INVALID_HANDLE;
+	// GPU assets
+	OtUniform uniform = OtUniform("u_blur", 1);
+	OtShader shader = OtShader("OtBlurVS", "OtBlurFS");
 };

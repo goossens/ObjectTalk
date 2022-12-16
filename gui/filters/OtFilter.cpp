@@ -9,45 +9,36 @@
 //	Include files
 //
 
+#include "bgfx/bgfx.h"
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
 
 #include "OtFilter.h"
-#include "OtFramework.h"
 #include "OtQuad.h"
-
-
-//
-//	OtFilterClass::OtFilterClass
-//
-
-OtFilterClass::OtFilterClass() {
-	textureUniform = OtFrameworkClass::instance()->getUniform("s_texture", bgfx::UniformType::Sampler);
-}
+#include "OtPass.h"
 
 
 //
 //	OtFilterClass::render
 //
 
-void OtFilterClass::render(int w, int h, bgfx::TextureHandle texture, bgfx::FrameBufferHandle fb) {
-	// get next view ID
-	bgfx::ViewId view = OtFrameworkClass::instance()->getNextViewID();
-
-	// create "single triangle quad" to cover area
-	OtQuadSubmit(w, h);
-
-	// setup BGFX context
-	bgfx::setTexture(0, textureUniform, texture);
-	bgfx::setViewRect(view, 0, 0, w, h);
-	bgfx::setViewFrameBuffer(view, fb);
-	bgfx::setState(state);
+void OtFilterClass::render(int w, int h, OtFrameBuffer& origin, OtFrameBuffer& destination) {
+	// setup a filtering pass
+	OtPass pass;
+	pass.reserveRenderingSlot();
+	pass.setRectangle(0, 0, w, h);
+	pass.setFrameBuffer(destination);
 
 	glm::mat4 matrix = glm::ortho(0.0f, (float) w, (float) h, 0.0f, -1.0f, 1.0f);
-	bgfx::setViewTransform(view, nullptr, glm::value_ptr(matrix));
+	pass.setTransform(glm::mat4(1.0), matrix);
+
+	// create single "triangular quad" to cover area
+	OtQuadSubmit(w, h);
+	bgfx::setState(state);
+	origin.bindColorTexture(textureSampler, 0);
 
 	// execute filter
-	execute(view, w, h);
+	execute(pass, w, h);
 }
 
 
@@ -55,21 +46,20 @@ void OtFilterClass::render(int w, int h, bgfx::TextureHandle texture, bgfx::Fram
 //	OtFilterClass::render
 //
 
-void OtFilterClass::render(int x, int y, int w, int h, bgfx::TextureHandle texture) {
-	// get next view ID
-	bgfx::ViewId view = OtFrameworkClass::instance()->getNextViewID();
+void OtFilterClass::render(int x, int y, int w, int h, OtFrameBuffer& origin) {
+	// setup a filtering pass
+	OtPass pass;
+	pass.reserveRenderingSlot();
+	pass.setRectangle(x, y, w, h);
+
+	glm::mat4 matrix = glm::ortho(0.0f, (float) w, (float) h, 0.0f, -1.0f, 1.0f);
+	pass.setTransform(glm::mat4(1.0), matrix);
 
 	// create "single triangle quad" to cover area
 	OtQuadSubmit(w, h);
-
-	// setup BGFX context
-	bgfx::setTexture(0, textureUniform, texture);
-	bgfx::setViewRect(view, x, y, w, h);
 	bgfx::setState(state);
-
-	glm::mat4 matrix = glm::ortho(0.0f, (float) w, (float) h, 0.0f, -1.0f, 1.0f);
-	bgfx::setViewTransform(view, nullptr, glm::value_ptr(matrix));
+	origin.bindColorTexture(textureSampler, 0);
 
 	// execure filter
-	execute(view, w, h);
+	execute(pass, w, h);
 }

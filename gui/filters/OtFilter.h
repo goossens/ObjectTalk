@@ -16,6 +16,11 @@
 
 #include "bgfx/bgfx.h"
 
+#include "OtFrameBuffer.h"
+#include "OtTexture.h"
+#include "OtSampler.h"
+#include "OtPass.h"
+
 
 //
 //	OtFilterClass
@@ -26,23 +31,22 @@ typedef std::shared_ptr<OtFilterClass> OtFilter;
 
 class OtFilterClass {
 public:
-	// constructor/destructor
-	OtFilterClass();
+	// destructor
 	virtual ~OtFilterClass() {}
 
 	// set rendering state
 	void setState(int s) { state = s; }
 
 	// execute filter
-	virtual void execute(int view, int w, int h) {}
+	virtual void execute(OtPass& pass, int w, int h) {}
 
 	// render filter
-	void render(int w, int h, bgfx::TextureHandle texture, bgfx::FrameBufferHandle fb);
-	void render(int x, int y, int w, int h, bgfx::TextureHandle texture);
+	void render(int w, int h, OtFrameBuffer& origin, OtFrameBuffer& destination);
+	void render(int x, int y, int w, int h, OtFrameBuffer& origin);
 
 private:
-	// the texture
-	bgfx::UniformHandle textureUniform = BGFX_INVALID_HANDLE;
+	// the texture sampler
+	OtSampler textureSampler = OtSampler("s_texture");
 
 	// rendering state
 	uint64_t state = BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A;

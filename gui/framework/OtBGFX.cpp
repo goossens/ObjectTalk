@@ -12,10 +12,6 @@
 #include <cstring>
 
 #include "bx/timer.h"
-#include "bx/allocator.h"
-#include "bx/file.h"
-#include "bimg/decode.h"
-#include "debugdraw.h"
 #include "imgui.h"
 #include "mipmap.h"
 
@@ -23,6 +19,7 @@
 #include "OtFormat.h"
 
 #include "OtFramework.h"
+#include "OtPass.h"
 
 
 //
@@ -71,22 +68,8 @@ void OtFrameworkClass::initBGFX() {
 		OtExcept("Your system/graphics card does not support texture '<='");
 	}
 
-	// initialize debug draw
-	ddInit();
-
 	// initialize time management
 	startTime = lastTime = bx::getHPCounter();
-
-	// create dummy image and texture
-	static bx::DefaultAllocator allocator;
-	dummyImage = bimg::imageAlloc(&allocator, bimg::TextureFormat::R8, 1, 1, 0, 1, false, false);
-	const bgfx::Memory* mem = bgfx::makeRef(dummyImage->m_data, dummyImage->m_size);
-
-	dummyTexture = bgfx::createTexture2D(
-		1, 1, false, 1,
-		bgfx::TextureFormat::Enum(bimg::TextureFormat::R8),
-		BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
-		mem);
 }
 
 
@@ -155,7 +138,7 @@ void OtFrameworkClass::renderProfiler() {
 	ImGui::Text("Backbuffer width:"); ImGui::SameLine(150); ImGui::Text("%d", stats->width);
 	ImGui::Text("Backbuffer height:"); ImGui::SameLine(150); ImGui::Text("%d", stats->height);
 	ImGui::Text("Anti-aliasing:"); ImGui::SameLine(150); ImGui::Text("%d", antiAliasing);
-	ImGui::Text("Views:"); ImGui::SameLine(150); ImGui::Text("%d", nextViewID + 2);
+	ImGui::Text("Views:"); ImGui::SameLine(150); ImGui::Text("%d", OtPassCount() + 2);
 	ImGui::Text("Draw calls:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numDraw);
 	ImGui::Text("Programs:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numPrograms);
 	ImGui::Text("Shaders:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numShaders);
@@ -172,263 +155,6 @@ void OtFrameworkClass::renderProfiler() {
 
 float OtFrameworkClass::getTime() {
 	return (double) (loopTime - startTime) / (double) bx::getHPFrequency();
-}
-
-
-//
-//	OtFrameworkClass::getUniform
-//
-
-bgfx::UniformHandle OtFrameworkClass::getUniform(const char* name, bgfx::UniformType::Enum type, uint16_t size) {
-	// create program (if required)
-	if (!uniformRegistry.has(name)) {
-		bgfx::UniformHandle uniform = bgfx::createUniform(name, type, size);
-		uniformRegistry.set(name, uniform);
-		return uniform;
-
-	} else {
-		return uniformRegistry.get(name);
-	}
-}
-
-
-//
-//	OtFrameworkClass::getProgram
-//
-
-bgfx::ProgramHandle OtFrameworkClass::getProgram(const bgfx::EmbeddedShader* shaders, const char* vertex, const char* fragment) {
-	std::string index = OtFormat("%s:%s", vertex, fragment);
-
-	// create program (if required)
-	if (!programRegistry.has(index)) {
-		bgfx::RendererType::Enum type = bgfx::getRendererType();
-
-		bgfx::ProgramHandle program =  bgfx::createProgram(
-			bgfx::createEmbeddedShader(shaders, type, vertex),
-			bgfx::createEmbeddedShader(shaders, type, fragment),
-			true);
-
-		programRegistry.set(index, program);
-		return program;
-
-	} else {
-		return programRegistry.get(index);
-	}
-}
-
-
-//
-//	createRegularTexture
-//
-
-static bgfx::TextureHandle createRegularTexture(bimg::ImageContainer* image) {
-	return bgfx::createTexture2D(
-		uint16_t(image->m_width),
-		uint16_t(image->m_height),
-		false,
-		image->m_numLayers,
-		bgfx::TextureFormat::Enum(image->m_format),
-		BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
-		bgfx::makeRef(image->m_data, image->m_size));
-}
-
-
-//
-//	createMipmapTexture
-//
-
-static bgfx::TextureHandle createMipmapTexture(bimg::ImageContainer* image) {
-	// create a new empty texture
-	bgfx::TextureHandle texture = bgfx::createTexture2D(
-		uint16_t(image->m_width),
-		uint16_t(image->m_height),
-		true,
-		image->m_numLayers,
-		bgfx::TextureFormat::Enum(image->m_format),
-		BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE);
-
-	const bimg::ImageBlockInfo& blockInfo = getBlockInfo(image->m_format);
-	const uint32_t blockWidth  = blockInfo.blockWidth;
-	const uint32_t blockHeight = blockInfo.blockHeight;
-
-	uint32_t width = image->m_width;
-	uint32_t height = image->m_height;
-
-	// process all mip levels
-	for (auto lod = 0; lod < image->m_numMips; lod++) {
-		width = std::max(blockWidth,  width);
-		height = std::max(blockHeight, height);
-
-		bimg::ImageMip mip;
-
-		if (bimg::imageGetRawData(*image, 0, lod, image->m_data, image->m_size, mip)) {
-			bgfx::updateTexture2D(
-				texture,
-				0, lod,
-				0, 0,
-				uint16_t(width), uint16_t(height),
-				bgfx::copy(mip.m_data, mip.m_size));
-		}
-
-		width  >>= 1;
-		height >>= 1;
-	}
-
-	return texture;
-}
-
-
-//
-//	generateMipmapTexture
-//
-
-static bgfx::TextureHandle generateMipmapTexture(bimg::ImageContainer* image) {
-	// sanity check
-	auto bpp = bimg::getBitsPerPixel(image->m_format);
-
-	if (bpp != 24 && bpp != 32) {
-		OtExcept("Can't generate MipMap for image with %d bits per pixel", bpp);
-	}
-
-	// create a new empty texture
-	bgfx::TextureHandle texture = bgfx::createTexture2D(
-		uint16_t(image->m_width),
-		uint16_t(image->m_height),
-		true,
-		image->m_numLayers,
-		bgfx::TextureFormat::Enum(image->m_format),
-		BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE);
-
-	// add first level
-	bgfx::updateTexture2D(
-		texture,
-		0, 0, 0, 0,
-		uint16_t(image->m_width), uint16_t(image->m_height),
-		bgfx::makeRef(image->m_data, image->m_size));
-
-	// create mipmaps
-	AdmBitmap bitmap;
-	bitmap.width = image->m_width;
-	bitmap.height = image->m_height;
-	bitmap.bytes_per_pixel = bpp / 8;
-	bitmap.pixels = image->m_data;
-
-	int levels;
-	AdmBitmap* mipmaps = adm_generate_mipmaps_no_base(&levels, &bitmap);
-
-	for (auto level = 0; level < levels; level++) {
-		auto width = mipmaps[level].width;
-		auto height = mipmaps[level].height;
-		auto bpp = mipmaps[level].bytes_per_pixel;
-		auto pixels = mipmaps[level].pixels;
-
-		bgfx::updateTexture2D(
-			texture,
-			0, level + 1,
-			0, 0,
-			uint16_t(width), uint16_t(height),
-			bgfx::copy(pixels, width * height * bpp));
-	}
-
-	// cleanup
-	adm_free_mipmaps(mipmaps, levels);
-
-	return texture;
-}
-
-
-//
-//	OtFrameworkClass::getTexture
-//
-
-bgfx::TextureHandle OtFrameworkClass::getTexture(const std::string& file, bool mipmap, bimg::ImageContainer** image) {
-	bgfx::TextureHandle texture;
-
-	// create texture if required
-	if (!textureRegistry.has(file)) {
-		// get the image
-		bimg::ImageContainer* image = getImage(file);
-
-		// create texture
-		if (image->m_numMips > 1) {
-			texture = createMipmapTexture(image);
-
-		} else if (mipmap) {
-			texture = generateMipmapTexture(image);
-
-		} else {
-			texture = createRegularTexture(image);
-		}
-
-		// add texture to registry
-		textureRegistry.set(file, texture);
-		textureImageMap[texture.idx] = image;
-
-	} else {
-		texture = textureRegistry.get(file);
-	}
-
-	// return (if required)
-	if (image) {
-		*image = textureImageMap[texture.idx];
-	}
-
-	// return texture
-	return texture;
-}
-
-
-//
-//	OtFrameworkClass::getImage
-//
-
-bimg::ImageContainer* OtFrameworkClass::getImage(const std::string& file, bool powerof2, bool square) {
-	// load image (if required)
-	if (!imageRegistry.has(file)) {
-		static bx::DefaultAllocator allocator;
-		static bx::FileReader reader;
-
-		if (!bx::open(&reader, file.c_str())) {
-			OtExcept("Can't open image [%s]", file.c_str());
-		}
-
-		uint32_t size = (uint32_t) bx::getSize(&reader);
-		void* data = BX_ALLOC(&allocator, size);
-		bx::read(&reader, data, size, bx::ErrorAssert{});
-		bx::close(&reader);
-
-		bimg::ImageContainer* image = bimg::imageParse(&allocator, data, size);
-		BX_FREE(&allocator, data);
-
-		if (!image) {
-			OtExcept("Can't process image in [%s]", file.c_str());
-		}
-
-		// validate sides are power of 2 (if required)
-		if (powerof2 && !(bx::isPowerOf2(image->m_width))) {
-			bimg::imageFree(image);
-			OtExcept("Image width %d is not a power of 2", image->m_width);
-		}
-
-		if (powerof2 && !(bx::isPowerOf2(image->m_height))) {
-			bimg::imageFree(image);
-			OtExcept("Image height %d is not a power of 2", image->m_height);
-		}
-
-		// validate squareness (if required)
-		if (square && image->m_width != image->m_height) {
-			bimg::imageFree(image);
-			OtExcept("Image must be square not %d by %d", image->m_width, image->m_height);
-		}
-
-		// add image to registry
-		imageRegistry.set(file, image);
-		return image;
-
-	} else {
-		// return image
-		return imageRegistry.get(file);
-	}
 }
 
 
@@ -453,27 +179,6 @@ void OtFrameworkClass::renderBGFX() {
 //
 
 void OtFrameworkClass::endBGFX() {
-	// cleanup
-	bgfx::destroy(dummyTexture);
-	bimg::imageFree(dummyImage);
-
-	uniformRegistry.iterateValues([] (bgfx::UniformHandle& uniform){
-		bgfx::destroy(uniform);
-	});
-
-	programRegistry.iterateValues([] (bgfx::ProgramHandle& program){
-		bgfx::destroy(program);
-	});
-
-	textureRegistry.iterateValues([] (bgfx::TextureHandle& texture){
-		bgfx::destroy(texture);
-	});
-
-	imageRegistry.iterateValues([] (bimg::ImageContainer*& image){
-		bimg::imageFree(image);
-	});
-
 	// shutdown BGFX
-	ddShutdown();
 	bgfx::shutdown();
 }

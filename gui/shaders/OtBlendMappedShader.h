@@ -4,6 +4,11 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
+
+//
+//	Include files
+//
+
 #include "blendmapped/vs_mtl.h"
 #include "blendmapped/vs_glsl.h"
 #include "blendmapped/vs_essl.h"

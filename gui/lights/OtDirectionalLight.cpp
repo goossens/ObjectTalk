@@ -15,8 +15,10 @@
 #include "OtException.h"
 #include "OtFunction.h"
 
-#include "OtDirectionalLight.h"
+#include "OtAABB.h"
 #include "OtColor.h"
+#include "OtDirectionalLight.h"
+#include "OtFrustum.h"
 
 
 //
@@ -86,37 +88,60 @@ OtObject OtDirectionalLightClass::setColorRGB(float r, float g, float b) {
 
 
 //
-//	OtDirectionalLightClass::castShadow
-//
-
-OtObject OtDirectionalLightClass::castShadow(float width, float near, float far) {
-	OtLightClass::castShadow();
-
-	shadowCamera->setOrthographic(width, near, far);
-	shadowCamera->setWidthLimits(width / 10.0, width * 10.0);
-	shadowCamera->setNearFarLimits(near / 10.0, near * 10.0, far / 10.0, far * 10.0);
-
-	return shared();
-}
-
-
-//
 //	OtDirectionalLightClass::update
 //
 
-void OtDirectionalLightClass::update(OtRenderingContext context) {
-	OtLightClass::update(context);
+void OtDirectionalLightClass::update(OtRenderer& renderer) {
+	OtLightClass::update(renderer);
 
-	// handle shadow (if required)
-	if (shadow) {
+	// handle shadows (if required)
+	if (castShadowFlag) {
+		// get frustum of regular camera
+		OtCamera camera = renderer.getCamera();
+		OtFrustum frustum = renderer.getCamera()->getFrustum();
+
+		// calculate center of that frustum
+		glm::vec3 center = frustum->getCenter();
+
+		// create light "view" matrix
+		glm::mat4 viewMatrix = glm::lookAt(center - direction, center, glm::vec3(0.0, 1.0, 0.0));
+
+		// determine AABB of scene camera frustum in light camera space
+		OtAABB aabb = OtAABBClass::create();
+
+		for (auto p = 0; p < frustum->pointCount; p++) {
+			aabb->addPoint(viewMatrix * glm::vec4(frustum->getCorner(p), 1.0));
+		}
+
+		// get min and max values of AABB
+		glm::vec3 min = aabb->getMin();
+		glm::vec3 max = aabb->getMax();
+
+		// increase near and far plane of light frustum (to include out of sight objects that create shadows)
+		constexpr float factor = 1.2;
+
+		if (min.z < 0) {
+			min.z *= factor;
+
+		} else {
+			min.z /= factor;
+		}
+
+		if (max.z < 0) {
+			max.z /= factor;
+
+		} else {
+			max.z *= factor;
+		}
+
 		// update "light" camera
-		auto target = context->getCamera()->getTarget();
-		shadowCamera->setPositionVector(target - direction);
-		shadowCamera->setTargetVector(target);
-		shadowCamera->update();
+		shadowCamera->setPositionVector(center - direction);
+		shadowCamera->setTargetVector(center);
+		shadowCamera->setOrthographicCustom(min.x, max.x, min.y, max.y, min.z, max.z);
+		shadowCamera->update(renderer);
 	}
 
-	context->setDirectionalLight(direction, color);
+	renderer.setDirectionalLight(direction, color);
 }
 
 
@@ -129,13 +154,14 @@ void OtDirectionalLightClass::renderGUI() {
 
 	ImGui::InputFloat3("Direction", glm::value_ptr(direction));
 	ImGui::ColorEdit3("Color", glm::value_ptr(color));
+	ImGui::Checkbox("Casts Shadow", &castShadowFlag);
 
-	if (shadowCamera) {
-		ImGui::Checkbox("Casts Shadow", &shadow);
-	}
-
-	if (shadow) {
-		renderShadowCameraGUI();
+	if (castShadowFlag) {
+		if (ImGui::TreeNodeEx("Shadowmap:", ImGuiTreeNodeFlags_Framed)) {
+			float width = ImGui::GetContentRegionAvail().x;
+			ImGui::Image((void*)(intptr_t) framebuffer.getDepthTextureIndex(), ImVec2(width, width));
+			ImGui::TreePop();
+		}
 	}
 }
 
@@ -156,6 +182,7 @@ OtType OtDirectionalLightClass::getMeta() {
 		type->set("setColorRGB", OtFunctionClass::create(&OtDirectionalLightClass::setColorRGB));
 
 		type->set("castShadow", OtFunctionClass::create(&OtDirectionalLightClass::castShadow));
+		type->set("castsShadow", OtFunctionClass::create(&OtDirectionalLightClass::castsShadow));
 	}
 
 	return type;

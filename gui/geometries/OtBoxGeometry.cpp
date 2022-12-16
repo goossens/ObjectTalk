@@ -160,7 +160,6 @@ void OtBoxGeometryClass::buildPlane(int udir, int vdir, float w, float h, float 
 				cb(0, 0, (d > 0) ? 1 : - 1),
 				glm::vec2((float) ix / gridX, (float) iy / gridY)));
 		}
-
 	}
 
 	// add triangles and lines

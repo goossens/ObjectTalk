@@ -11,7 +11,6 @@
 
 #include <cstring>
 
-#include "bgfx/embedded_shader.h"
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
 #include "imgui.h"
@@ -19,18 +18,6 @@
 #include "OtInteger.h"
 
 #include "OtFramework.h"
-#include "OtImGuiShader.h"
-
-
-//
-//	Globals
-//
-
-static const bgfx::EmbeddedShader embeddedShaders[] = {
-	BGFX_EMBEDDED_SHADER(OtImGuiVS),
-	BGFX_EMBEDDED_SHADER(OtImGuiFS),
-	BGFX_EMBEDDED_SHADER_END()
-};
 
 
 //
@@ -187,12 +174,8 @@ void OtFrameworkClass::initIMGUI() {
 	unsigned char* pixels;
 	int fw, fh;
 	io.Fonts->GetTexDataAsRGBA32(&pixels, &fw, &fh);
-
-	imguiFontTexture = bgfx::createTexture2D(
-		fw, fh, false, 1, bgfx::TextureFormat::BGRA8,
-		0, bgfx::copy(pixels, fw * fh * 4));
-
-	io.Fonts->TexID = (void*)(intptr_t) imguiFontTexture.idx;
+	imguiFontTexture.loadFromMemory(fw, fh, pixels);
+	io.Fonts->TexID = (void*)(intptr_t) imguiFontTexture.getTextureIndex();
 
 	// setup vertex declaration
 	imguiVertexLayout
@@ -202,11 +185,9 @@ void OtFrameworkClass::initIMGUI() {
 		.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
 		.end();
 
-	// setup font texture
-	imguiFontUniform = getUniform("g_AttribLocationTex", bgfx::UniformType::Sampler);
-
-	// create shader program
-	imguiProgram = getProgram(embeddedShaders, "OtImGuiVS", "OtImGuiFS");
+	// initialize sampler and shader
+	imguiFontSampler.initialize("g_AttribLocationTex");
+	imguiShader.initialize("OtImGuiVS", "OtImGuiFS");
 }
 
 
@@ -338,8 +319,8 @@ void OtFrameworkClass::renderIMGUI() {
 		bgfx::TransientVertexBuffer tvb;
 		bgfx::TransientIndexBuffer tib;
 
-		uint32_t numVertices = (uint32_t)cmd_list->VtxBuffer.size();
-		uint32_t numIndices = (uint32_t)cmd_list->IdxBuffer.size();
+		uint32_t numVertices = (uint32_t) cmd_list->VtxBuffer.size();
+		uint32_t numIndices = (uint32_t) cmd_list->IdxBuffer.size();
 
 		if ((numVertices != bgfx::getAvailTransientVertexBuffer(numVertices, imguiVertexLayout)) ||
 			(numIndices != bgfx::getAvailTransientIndexBuffer(numIndices))) {
@@ -369,10 +350,10 @@ void OtFrameworkClass::renderIMGUI() {
 				bgfx::setScissor(xx, yy, bx::min(pcmd->ClipRect.z, 65535.0f) - xx, bx::min(pcmd->ClipRect.w, 65535.0f) - yy);
 				bgfx::setState(state);
 				bgfx::TextureHandle texture = { (uint16_t)((intptr_t) pcmd->TextureId & 0xffff) };
-				bgfx::setTexture(0, imguiFontUniform, texture);
+				imguiFontSampler.submit(0, texture);
 				bgfx::setVertexBuffer(0, &tvb);
 				bgfx::setIndexBuffer(&tib, pcmd->IdxOffset, pcmd->ElemCount);
-				bgfx::submit(255, imguiProgram);
+				imguiShader.submit(255);
 			}
 		}
 	}
@@ -384,7 +365,12 @@ void OtFrameworkClass::renderIMGUI() {
 //
 
 void OtFrameworkClass::endIMGUI() {
-	bgfx::destroy(imguiFontTexture);
+	// we have to manually clear our resources since it's too late to let the destructors
+	// do it since they run after we shutdown the libraries (causing 'memory leaks')
+	imguiFontTexture.clear();
+	imguiFontSampler.clear();
+	imguiShader.clear();
+
 	ImGui::DestroyContext();
 }
 

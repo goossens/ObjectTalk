@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include "bimg/bimg.h"
-
 #include "imgui.h"
 
 #include "OtException.h"
@@ -46,14 +44,9 @@ void OtPictureClass::init(size_t count, OtObject* parameters) {
 //
 
 OtObject OtPictureClass::setTexture(const std::string& textureName) {
-	if (bgfx::isValid(texture)) {
-		OtExcept("Texture already set for [Picture] widget");
-	}
-
-	bimg::ImageContainer* image;
-	texture = OtFrameworkClass::instance()->getTexture(textureName, false, &image);
-	width = image->m_width;
-	height = image->m_height;
+	texture.loadFromFile(textureName);
+	width = texture.getWidth();
+	height = texture.getHeight();
 	return shared();
 }
 
@@ -74,7 +67,7 @@ OtObject OtPictureClass::setMargin(int m) {
 
 void OtPictureClass::render() {
 	// sanity check
-	if (!bgfx::isValid(texture)) {
+	if (!texture.isValid()) {
 		OtExcept("No image provided for [Picture] widget");
 	}
 
@@ -91,7 +84,7 @@ void OtPictureClass::render() {
 		indent + (availableSpace - width) / 2,
 		ImGui::GetCursorPosY()));
 
-	ImGui::Image((void*)(intptr_t) texture.idx, ImVec2(width, height));
+	ImGui::Image((void*)(intptr_t) texture.getTextureIndex(), ImVec2(width, height));
 
 	// add margin if required
 	if (margin) {

@@ -15,11 +15,11 @@
 
 
 //
-//	OtGeometryClass::~OtGeometryClass
+//	OtGeometryClass::OtGeometryClass
 //
 
-OtGeometryClass::~OtGeometryClass() {
-	clearBuffers();
+OtGeometryClass::OtGeometryClass() {
+	aabb = OtAABBClass::create();
 }
 
 
@@ -27,7 +27,8 @@ OtGeometryClass::~OtGeometryClass() {
 //	OtGeometryClass::computeTangents
 //
 
-OtObject OtGeometryClass::computeTangents() {
+OtObject OtGeometryClass::computeTangents()
+{
 	if (!tangent) {
 		tangent = true;
 		refreshBuffers = true;
@@ -35,7 +36,6 @@ OtObject OtGeometryClass::computeTangents() {
 
 	return shared();
 }
-
 
 //
 //	OtGeometryClass::clear
@@ -75,36 +75,10 @@ void OtGeometryClass::validateGeometry() {
 
 
 //
-//	OtGeometryClass::clearBuffers
-//
-
-void OtGeometryClass::clearBuffers() {
-	if (bgfx::isValid(vertexBuffer)) {
-		bgfx::destroy(vertexBuffer);
-		vertexBuffer = BGFX_INVALID_HANDLE;
-	}
-
-	if (bgfx::isValid(triagleIndexBuffer)) {
-		bgfx::destroy(triagleIndexBuffer);
-		triagleIndexBuffer = BGFX_INVALID_HANDLE;
-	}
-
-	if (bgfx::isValid(lineIndexBuffer)) {
-		bgfx::destroy(lineIndexBuffer);
-		lineIndexBuffer = BGFX_INVALID_HANDLE;
-	}
-
-	refreshBuffers = true;
-}
-
-
-//
 //	OtGeometryClass::updateBuffers
 //
 
 void OtGeometryClass::updateBuffers() {
-	clearBuffers();
-
 	// do we need to generate the tangents?
 	if (tangent) {
 		// clear tangents
@@ -156,10 +130,9 @@ void OtGeometryClass::updateBuffers() {
 	}
 
 	// update the buffers
-	bgfx::VertexLayout layout = OtVertex::getVertexLayout();
-	vertexBuffer = bgfx::createVertexBuffer(bgfx::copy(vertices.data(), sizeof(OtVertex) * (uint32_t) vertices.size()), layout);
-	triagleIndexBuffer = bgfx::createIndexBuffer(bgfx::copy(triangles.data(), sizeof(uint32_t) * (uint32_t) triangles.size()), BGFX_BUFFER_INDEX32);
-	lineIndexBuffer = bgfx::createIndexBuffer(bgfx::copy(lines.data(), sizeof(uint32_t) * (uint32_t) lines.size()), BGFX_BUFFER_INDEX32);
+	vertexBuffer.set(vertices.data(), vertices.size(), OtVertex::getLayout());
+	triangleIndexBuffer.set(triangles.data(), triangles.size());
+	lineIndexBuffer.set(lines.data(), lines.size());
 	refreshBuffers = false;
 }
 
@@ -176,35 +149,28 @@ void OtGeometryClass::validateBuffers() {
 
 
 //
-//	OtGeometryClass::getVertexBuffer
+//	OtGeometryClass::submitTriangles
 //
 
-bgfx::VertexBufferHandle OtGeometryClass::getVertexBuffer() {
+void OtGeometryClass::submitTriangles() {
 	validateGeometry();
 	validateBuffers();
-	return vertexBuffer;
+
+	vertexBuffer.submit();
+	triangleIndexBuffer.submit();
 }
 
 
 //
-//	OtGeometryClass::getTriangleIndexBuffer
+//	OtGeometryClass::submitLines
 //
 
-bgfx::IndexBufferHandle OtGeometryClass::getTriangleIndexBuffer() {
+void OtGeometryClass::submitLines() {
 	validateGeometry();
 	validateBuffers();
-	return triagleIndexBuffer;
-}
 
-
-//
-//	OtGeometryClass::getLineIndexBuffer
-//
-
-bgfx::IndexBufferHandle OtGeometryClass::getLineIndexBuffer() {
-	validateGeometry();
-	validateBuffers();
-	return lineIndexBuffer;
+	vertexBuffer.submit();
+	lineIndexBuffer.submit();
 }
 
 
@@ -212,7 +178,8 @@ bgfx::IndexBufferHandle OtGeometryClass::getLineIndexBuffer() {
 //	OtGeometryClass::getMeta
 //
 
-OtType OtGeometryClass::getMeta() {
+OtType OtGeometryClass::getMeta()
+{
 	static OtType type;
 
 	if (!type) {
@@ -223,7 +190,6 @@ OtType OtGeometryClass::getMeta() {
 
 	return type;
 }
-
 
 //
 //	OtGeometryClass::create

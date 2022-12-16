@@ -38,7 +38,7 @@ public:
 	glm::vec3 getLightDirection();
 
 	// update state
-	void update(OtRenderingContext context) override;
+	void update(OtRenderer& renderer) override;
 
 	// GUI to change properties
 	void renderGUI();

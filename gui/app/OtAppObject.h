@@ -27,9 +27,6 @@ public:
 	// ensure specified component is allowed as a child
 	void validateChild(OtComponent child) override;
 
-	// update state (called every frame so be careful)
-	virtual void update();
-
 	// render content
 	virtual void render();
 

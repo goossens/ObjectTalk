@@ -20,6 +20,7 @@
 #include "OtVM.h"
 
 #include "OtFramework.h"
+#include "OtPass.h"
 
 
 //
@@ -80,8 +81,8 @@ void OtFrameworkClass::runThread2() {
 
 		// run this thread until we are told to stop
 		while (running) {
-			// reset next view ID
-			nextViewID = 1;
+			// reset view ID
+			OtPassReset();
 
 			// collect events
 			std::vector<OtFwEvent> events;

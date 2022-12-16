@@ -37,9 +37,9 @@ public:
 	void setColorVector(const glm::vec3 c) { color = c; }
 
 	// update state
-	void update(OtRenderingContext context) override;
+	void update(OtRenderer& renderer) override;
 
-	// GUI to change ambient properties
+	// GUI to change properties
 	void renderGUI();
 
 	// get type definition

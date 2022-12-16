@@ -4,6 +4,11 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
+
+//
+//	Include files
+//
+
 #include "skybox/vs_mtl.h"
 #include "skybox/vs_glsl.h"
 #include "skybox/vs_essl.h"

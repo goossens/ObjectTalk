@@ -25,20 +25,6 @@ void OtAppObjectClass::validateChild(OtComponent child) {
 
 
 //
-//	OtAppObjectClass::update
-//
-
-void OtAppObjectClass::update() {
-	// update all children
-	for (auto const& child : children) {
-		if (child->isEnabled()) {
-			child->cast<OtWidgetClass>()->update();
-		}
-	}
-}
-
-
-//
 //	OtAppObjectClass::render
 //
 

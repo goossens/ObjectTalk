@@ -9,28 +9,12 @@
 //	Include files
 //
 
-#include "bgfx/embedded_shader.h"
-
 #include "OtArray.h"
 #include "OtException.h"
 #include "OtFunction.h"
 
 #include "OtColor.h"
 #include "OtColoredMaterial.h"
-#include "OtColoredShader.h"
-#include "OtFramework.h"
-
-
-//
-//	Globals
-//
-
-static const bgfx::EmbeddedShader embeddedShaders[] = {
-	BGFX_EMBEDDED_SHADER(OtColoredVS),
-	BGFX_EMBEDDED_SHADER(OtColoredVSI),
-	BGFX_EMBEDDED_SHADER(OtColoredFS),
-	BGFX_EMBEDDED_SHADER_END()
-};
 
 
 //
@@ -183,41 +167,24 @@ OtObject OtColoredMaterialClass::setShininess(float s) {
 
 
 //
-//	OtColoredMaterialClass::getNumberOfUniforms
+//	OtColoredMaterialClass::submit
 //
 
-size_t OtColoredMaterialClass::getNumberOfUniforms() {
-	return 4;
-}
+void OtColoredMaterialClass::submit(OtRenderer& renderer, bool instancing) {
+	// submit uniform
+	uniform.set(0, glm::vec4(color, opacity));
+	uniform.set(1, glm::vec4(ambient, 0.0));
+	uniform.set(2, glm::vec4(diffuse, 0.0));
+	uniform.set(3, glm::vec4(specular, shininess));
+	uniform.submit();
 
+	// run appropriate shader
+	if (instancing) {
+		renderer.runShader(instancingShader);
 
-//
-//	OtColoredMaterialClass::getUniforms
-//
-
-void OtColoredMaterialClass::getUniforms(glm::vec4* uniforms) {
-	uniforms[0] = glm::vec4(color, opacity);
-	uniforms[1] = glm::vec4(ambient, 0.0);
-	uniforms[2] = glm::vec4(diffuse, 0.0);
-	uniforms[3] = glm::vec4(specular, shininess);
-}
-
-
-//
-//	OtColoredMaterialClass::createShader
-//
-
-bgfx::ProgramHandle OtColoredMaterialClass::createShader() {
-	return OtFrameworkClass::instance()->getProgram(embeddedShaders, "OtColoredVS", "OtColoredFS");
-}
-
-
-//
-//	OtColoredMaterialClass::createInstancingShader
-//
-
-bgfx::ProgramHandle OtColoredMaterialClass::createInstancingShader() {
-	return OtFrameworkClass::instance()->getProgram(embeddedShaders, "OtColoredVSI", "OtColoredFS");
+	} else {
+		renderer.runShader(shader);
+	}
 }
 
 

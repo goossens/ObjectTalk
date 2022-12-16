@@ -4,6 +4,11 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
+
+//
+//	Include files
+//
+
 #include "shadow/vs_mtl.h"
 #include "shadow/vs_glsl.h"
 #include "shadow/vs_essl.h"

@@ -14,10 +14,11 @@
 
 #include <string>
 
-#include "bgfx/bgfx.h"
 #include "glm/glm.hpp"
 
 #include "OtMaterial.h"
+#include "OtShader.h"
+#include "OtUniform.h"
 
 
 //
@@ -39,6 +40,9 @@ public:
 
 	void setColorVector(const glm::vec3& c) { color = c; }
 
+	// submit to GPU
+	void submit(OtRenderer& renderer, bool instancing) override;
+
 	// get type definition
 	static OtType getMeta();
 
@@ -50,10 +54,9 @@ private:
 	glm::vec3 color = { 1.0, 1.0, 1.0 };
 	float opacity = 1.0;
 
-	// uniform and shader functions
-	size_t getNumberOfUniforms() override;
-	void getUniforms(glm::vec4* uniforms) override;
+	// GPU assets
+	OtUniform uniform = OtUniform("u_material", 1);
 
-	bgfx::ProgramHandle createShader() override;
-	bgfx::ProgramHandle createInstancingShader() override;
+	OtShader shader = OtShader("OtFixedVS", "OtFixedFS");
+	OtShader instancingShader = OtShader("OtFixedVSI", "OtFixedFS");
 };

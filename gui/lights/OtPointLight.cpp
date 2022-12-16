@@ -129,9 +129,9 @@ OtObject OtPointLightClass::setAttenuation(float constant, float linear, float q
 //	OtPointLightClass::update
 //
 
-void OtPointLightClass::update(OtRenderingContext context) {
-	OtLightClass::update(context);
-	context->addPointLight(position, color, attenuation);
+void OtPointLightClass::update(OtRenderer& renderer) {
+	OtLightClass::update(renderer);
+	renderer.addPointLight(position, color, attenuation);
 }
 
 

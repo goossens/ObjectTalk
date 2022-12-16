@@ -22,7 +22,7 @@ uniform vec4 u_material[3];
 
 // samplers
 SAMPLER2D(s_texture, 1);
-SAMPLER2D(s_normals, 2);
+SAMPLER2D(s_normalmap, 2);
 
 // main function
 void main() {
@@ -42,7 +42,7 @@ void main() {
 		vec3 tangent = normalize(v_tangent);
 		tangent = normalize(tangent - dot(tangent, normal) * normal);
 		vec3 bitangent = cross(tangent, normal);
-		vec3 bumpMapNormal = texture2D(s_normals, v_texcoord0 / u_scale).xyz;
+		vec3 bumpMapNormal = texture2D(s_normalmap, v_texcoord0 / u_scale).xyz;
 		bumpMapNormal = 2.0 * bumpMapNormal - vec3_splat(1.0);
 		mat3 TBN = mtxFromCols(tangent, bitangent, normal);
 		normal = normalize(mul(TBN, bumpMapNormal));

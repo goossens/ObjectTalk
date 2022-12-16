@@ -9,27 +9,12 @@
 //	Include files
 //
 
-#include "bgfx/embedded_shader.h"
-
 #include "OtException.h"
 #include "OtFunction.h"
 
 #include "OtColor.h"
 #include "OtFixedMaterial.h"
-#include "OtFixedShader.h"
 #include "OtFramework.h"
-
-
-//
-//	Globals
-//
-
-static const bgfx::EmbeddedShader embeddedShaders[] = {
-	BGFX_EMBEDDED_SHADER(OtFixedVS),
-	BGFX_EMBEDDED_SHADER(OtFixedVSI),
-	BGFX_EMBEDDED_SHADER(OtFixedFS),
-	BGFX_EMBEDDED_SHADER_END()
-};
 
 
 //
@@ -91,39 +76,18 @@ OtObject OtFixedMaterialClass::setOpacity(float o) {
 }
 
 
-//
-//	OtFixedMaterialClass::getNumberOfUniforms
-//
+void OtFixedMaterialClass::submit(OtRenderer& renderer, bool instancing) {
+		// submit uniform
+	uniform.set(0, glm::vec4(color, opacity));
+	uniform.submit();
 
-size_t OtFixedMaterialClass::getNumberOfUniforms() {
-	return 1;
-}
+	// run appropriate shader
+	if (instancing) {
+		renderer.runShader(instancingShader);
 
-
-//
-//	OtFixedMaterialClass::getUniforms
-//
-
-void OtFixedMaterialClass::getUniforms(glm::vec4* uniforms) {
-	uniforms[0] = glm::vec4(color, opacity);
-}
-
-
-//
-//	OtFixedMaterialClass::createShader
-//
-
-bgfx::ProgramHandle OtFixedMaterialClass::createShader() {
-	return OtFrameworkClass::instance()->getProgram(embeddedShaders, "OtFixedVS", "OtFixedFS");
-}
-
-
-//
-//	OtFixedMaterialClass::createInstancingShader
-//
-
-bgfx::ProgramHandle OtFixedMaterialClass::createInstancingShader() {
-	return OtFrameworkClass::instance()->getProgram(embeddedShaders, "OtFixedVSI", "OtFixedFS");
+	} else {
+		renderer.runShader(shader);
+	}
 }
 
 
@@ -131,7 +95,8 @@ bgfx::ProgramHandle OtFixedMaterialClass::createInstancingShader() {
 //	OtFixedMaterialClass::getMeta
 //
 
-OtType OtFixedMaterialClass::getMeta() {
+OtType OtFixedMaterialClass::getMeta()
+{
 	static OtType type;
 
 	if (!type) {
@@ -145,7 +110,6 @@ OtType OtFixedMaterialClass::getMeta() {
 
 	return type;
 }
-
 
 //
 //	OtFixedMaterialClass::create

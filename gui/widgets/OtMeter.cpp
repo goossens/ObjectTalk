@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include "bimg/bimg.h"
-
 #include "imgui.h"
 
 #include "OtFunction.h"
@@ -48,14 +46,9 @@ void OtMeterClass::init(size_t count, OtObject* parameters) {
 //
 
 OtObject OtMeterClass::setTexture(const std::string& textureName) {
-	if (bgfx::isValid(texture)) {
-		OtExcept("Texture already set for [Meter] widget");
-	}
-
-	bimg::ImageContainer* image;
-	texture = OtFrameworkClass::instance()->getTexture(textureName, false, &image);
-	width = image->m_width;
-	height = image->m_height;
+	texture.loadFromFile(textureName);
+	width = texture.getWidth();
+	height = texture.getHeight();
 	return shared();
 }
 
@@ -86,7 +79,7 @@ OtObject OtMeterClass::setLabel(const std::string& l) {
 
 void OtMeterClass::render() {
 	// sanity check
-	if (!bgfx::isValid(texture)) {
+	if (!texture.isValid()) {
 		OtExcept("No image provided for [Meter] widget");
 	}
 
@@ -112,7 +105,7 @@ void OtMeterClass::render() {
 	float offset2 = offset1 + h;
 
 	ImGui::Image(
-		(void*)(intptr_t) texture.idx,
+		(void*)(intptr_t) texture.getTextureIndex(),
 		ImVec2(width, h),
 		ImVec2(0, offset1 / height),
 		ImVec2(1, offset2 / height));

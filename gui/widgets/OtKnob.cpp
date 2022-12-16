@@ -56,14 +56,9 @@ void OtKnobClass::init(size_t count, OtObject* parameters) {
 //
 
 OtObject OtKnobClass::setTexture(const std::string& textureName) {
-	if (bgfx::isValid(texture)) {
-		OtExcept("Texture already set for [Knob] widget");
-	}
-
-	bimg::ImageContainer* image;
-	texture = OtFrameworkClass::instance()->getTexture(textureName, false, &image);
-	width = image->m_width;
-	height = image->m_height;
+	texture.loadFromFile(textureName);
+	width = texture.getWidth();
+	height = texture.getHeight();
 	return shared();
 }
 
@@ -105,7 +100,7 @@ OtObject OtKnobClass::setCallback(OtObject cb) {
 
 void OtKnobClass::render() {
 	// sanity check
-	if (!bgfx::isValid(texture)) {
+	if (!texture.isValid()) {
 		OtExcept("No image provided for [Knob] widget");
 	}
 
@@ -150,7 +145,7 @@ void OtKnobClass::render() {
 	float offset2 = offset1 + h;
 
 	ImGui::Image(
-		(void*)(intptr_t) texture.idx,
+		(void*)(intptr_t) texture.getTextureIndex(),
 		ImVec2(width, h),
 		ImVec2(0, offset1 / height),
 		ImVec2(1, offset2 / height));

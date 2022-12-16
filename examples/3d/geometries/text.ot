@@ -35,7 +35,7 @@ class App : gui.App {
 
 		var light = gui.DirectionalLight()
 			.setDirection(-1, -2, -4)
-			.castShadow(5, 3, 100);
+			.castShadow();
 
 		var scene = gui.Scene()
 			.add(ambient)

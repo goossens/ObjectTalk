@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <functional>
 #include <string>
 #include <unordered_map>
 #include <utility>
@@ -75,6 +76,11 @@ public:
 		for (std::pair<std::string, T> entry : registry) {
 			callback(entry.second);
 		}
+	}
+
+	// get size of registry
+	size_t size() {
+		return registry.size();
 	}
 
 	// clear the registry

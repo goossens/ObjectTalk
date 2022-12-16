@@ -14,10 +14,11 @@
 
 #include <string>
 
-#include "bgfx/bgfx.h"
 #include "glm/glm.hpp"
 
 #include "OtMaterial.h"
+#include "OtShader.h"
+#include "OtUniform.h"
 
 
 //
@@ -29,6 +30,7 @@ typedef std::shared_ptr<OtColoredMaterialClass> OtColoredMaterial;
 
 class OtColoredMaterialClass : public OtMaterialClass {
 public:
+
 	// initialize
 	void init(size_t count, OtObject* parameters);
 
@@ -46,6 +48,9 @@ public:
 	void setAmbientRGB(float r, float g, float b) { ambient = glm::vec3(r, g, b); }
 	void setDiffuseRGB(float r, float g, float b) { diffuse = glm::vec3(r, g, b); }
 	void setSpecularRGB(float r, float g, float b) { specular = glm::vec3(r, g, b); }
+
+	// submit to GPU
+	void submit(OtRenderer& renderer, bool instancing) override;
 
 	// get type definition
 	static OtType getMeta();
@@ -66,10 +71,9 @@ private:
 	glm::vec3 specular = { 0.4, 0.4, 0.4 };
 	float shininess = 20;
 
-	// uniform and shader functions
-	size_t getNumberOfUniforms() override;
-	void getUniforms(glm::vec4* uniforms) override;
+	// GPU assets
+	OtUniform uniform = OtUniform("u_material", 4);
 
-	bgfx::ProgramHandle createShader() override;
-	bgfx::ProgramHandle createInstancingShader() override;
+	OtShader shader = OtShader("OtColoredVS", "OtColoredFS");
+	OtShader instancingShader = OtShader("OtColoredVSI", "OtColoredFS");
 };

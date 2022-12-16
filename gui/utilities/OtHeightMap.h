@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include "bimg/bimg.h"
 #include "glm/glm.hpp"
 
 #include "OtController.h"
@@ -31,11 +30,14 @@ public:
 	// destructor
 	~OtHeightMapClass();
 
+	// clear the resources
+	void clear();
+
 	// initialize
 	void init(size_t count, OtObject* parameters);
 
-	// load heightmap from image
-	OtObject loadMap(const std::string& file);
+	// load heightmap from file
+	OtObject loadMap(const std::string& filename);
 
 	// set the heightmap scale factor
 	OtObject setScale(float scale);
@@ -59,15 +61,6 @@ public:
 	static OtHeightMap create();
 
 private:
-	// convert 8-bit unsigned image to heightmap
-	void convert8bit(uint8_t* data);
-
-	// convert 8-bit unsigned image to heightmap
-	void convert16bit(uint16_t* data);
-
-	// convert other image types
-	void convertImage(bimg::ImageContainer* image);
-
 	// get height (0.0 to 1.0) at specified location (in absolute coordinates)
 	float getHeightAbs(int x, int y);
 

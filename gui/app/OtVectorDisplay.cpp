@@ -9,7 +9,6 @@
 //	Include files
 //
 
-#include "bgfx/embedded_shader.h"
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
 #include "imgui.h"
@@ -22,17 +21,12 @@
 #include "OtSimplexFont.h"
 #include "OtVectorDisplay.h"
 #include "OtVectorDisplayShader.h"
+#include "OtPass.h"
 
 
 //
 //	globals
 //
-
-static const bgfx::EmbeddedShader embeddedShaders[] = {
-	BGFX_EMBEDDED_SHADER(OtVectorDisplayVS),
-	BGFX_EMBEDDED_SHADER(OtVectorDisplayFS),
-	BGFX_EMBEDDED_SHADER_END()
-};
 
 const int MAX_NUMBER_VERTICES = 20000;
 const int TEXTURE_SIZE = 64;
@@ -44,17 +38,9 @@ const int HALF_TEXTURE_SIZE = TEXTURE_SIZE / 2;
 //
 
 OtVectorDisplayClass::OtVectorDisplayClass() {
-	// register uniforms
-	auto framework = OtFrameworkClass::instance();
-	paramsUniform = framework->getUniform("u_params", bgfx::UniformType::Vec4, 1);
-	textureUniform = framework->getUniform("s_texture", bgfx::UniformType::Sampler);
-
-	// initialize shader
-	shader = framework->getProgram(embeddedShaders, "OtVectorDisplayVS", "OtVectorDisplayFS");
-
 	// create line texture
-	const bgfx::Memory* mem = bgfx::alloc(TEXTURE_SIZE * TEXTURE_SIZE * 4);
-	unsigned char* p = (unsigned char*) mem->data;
+	uint8_t* pixels = new uint8_t[TEXTURE_SIZE * TEXTURE_SIZE * 4];
+	uint8_t* p = pixels;
 
 	for (auto y = -HALF_TEXTURE_SIZE; y < HALF_TEXTURE_SIZE; y++) {
 		for (auto x = -HALF_TEXTURE_SIZE; x < HALF_TEXTURE_SIZE; x++) {
@@ -62,12 +48,12 @@ OtVectorDisplayClass::OtVectorDisplayClass() {
 			*p++ = 0xff;
 			*p++ = 0xff;
 			auto distance = std::min(1.0, std::sqrt((double) (x * x + y * y)) / (double) HALF_TEXTURE_SIZE);
-			*p++ = (unsigned char) (std::clamp(std::pow(16.0, -2.0 * distance), 0.0, 1.0) * 255.0);
+			*p++ = (uint8_t) (std::clamp(std::pow(16.0, -2.0 * distance), 0.0, 1.0) * 255.0);
 		}
 	}
 
-	const uint32_t flags = BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP | BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT;
-	lineTexture = bgfx::createTexture2D(TEXTURE_SIZE, TEXTURE_SIZE, false, 1, bgfx::TextureFormat::BGRA8, flags, mem);
+	lineTexture.loadFromMemory(TEXTURE_SIZE, TEXTURE_SIZE, pixels);
+	delete [] pixels;
 
 	// create filters
 	blur = std::make_shared<OtBlurClass>();
@@ -80,24 +66,9 @@ OtVectorDisplayClass::OtVectorDisplayClass() {
 //
 
 OtVectorDisplayClass::~OtVectorDisplayClass() {
-	// release resources
-	if (bgfx::isValid(frameBuffer0)) {
-		bgfx::destroy(frameBuffer0);
-	}
-
-	if (bgfx::isValid(frameBuffer1)) {
-		bgfx::destroy(frameBuffer1);
-	}
-
-	if (bgfx::isValid(frameBuffer2)) {
-		bgfx::destroy(frameBuffer2);
-	}
-
 	for (auto& buffer : vertexBuffers) {
 		bgfx::destroy(buffer);
 	}
-
-	bgfx::destroy(lineTexture);
 }
 
 
@@ -134,32 +105,6 @@ OtObject OtVectorDisplayClass::setScreenArea(int _x, int _y, int _w, int _h) {
 
 
 //
-//	OtVectorDisplayClass::updateFrameBuffers
-//
-
-void OtVectorDisplayClass::updateFrameBuffers() {
-	// release resources (if required)
-	if (bgfx::isValid(frameBuffer0)) {
-		bgfx::destroy(frameBuffer0);
-	}
-
-	if (bgfx::isValid(frameBuffer1)) {
-		bgfx::destroy(frameBuffer1);
-	}
-
-	if (bgfx::isValid(frameBuffer2)) {
-		bgfx::destroy(frameBuffer2);
-	}
-
-	// create new framebuffer
-	const uint64_t flags = BGFX_TEXTURE_RT | BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP;
-	frameBuffer0 = bgfx::createFrameBuffer(bufferWidth, bufferHeight, bgfx::TextureFormat::BGRA8, flags);
-	frameBuffer1 = bgfx::createFrameBuffer(glowWidth, glowHeight, bgfx::TextureFormat::BGRA8, flags);
-	frameBuffer2 = bgfx::createFrameBuffer(glowWidth, glowHeight, bgfx::TextureFormat::BGRA8, flags);
-}
-
-
-//
 //	OtVectorDisplayClass::updateVertexBuffers
 //
 
@@ -170,12 +115,12 @@ void OtVectorDisplayClass::updateVertexBuffers() {
 		}
 
 		vertexBuffers.clear();
-		vertexBuffersSize.clear();
+		vertexBufferSizes.clear();
 	}
 
 	for (size_t i = 0; i < decaySteps; i++) {
 		vertexBuffers.push_back(bgfx::createDynamicVertexBuffer(MAX_NUMBER_VERTICES, Vertex::getLayout()));
-		vertexBuffersSize.push_back(0);
+		vertexBufferSizes.push_back(0);
 	}
 }
 
@@ -1238,20 +1183,22 @@ void OtVectorDisplayClass::render() {
 	int vw = (w * sw) / 100;
 	int vh = (h * sh) / 100;
 
-	// update frame buffers if required
-	if (vw != bufferWidth || vh != bufferHeight) {
-		bufferWidth = vw;
-		bufferHeight = vh;
-		glowWidth = vw / 3;
-		glowHeight = vh / 3;
-		updateFrameBuffers();
-	}
+	// update frame buffers sizes
+	bufferWidth = vw;
+	bufferHeight = vh;
+	glowWidth = vw / 3;
+	glowHeight = vh / 3;
 
-	// setup BGFX view
-	bgfx::ViewId view = OtFrameworkClass::instance()->getNextViewID();
-	bgfx::setViewClear(view, BGFX_CLEAR_COLOR);
-	bgfx::setViewRect(view, 0.0, 0.0, vw, vh);
-	bgfx::setViewFrameBuffer(view, frameBuffer0);
+	frameBuffer0.update(bufferWidth, bufferHeight);
+	frameBuffer1.update(glowWidth, glowHeight);
+	frameBuffer2.update(glowWidth, glowHeight);
+
+	// setup a rendering pass
+	OtPass pass;
+	pass.reserveRenderingSlot();
+	pass.setClear(true, false);
+	pass.setRectangle(0, 0, vw, vh);
+	pass.setFrameBuffer(frameBuffer0);
 
 	glm::mat4 matrix;
 
@@ -1269,7 +1216,7 @@ void OtVectorDisplayClass::render() {
 			break;
 	}
 
-	bgfx::setViewTransform(view, nullptr, glm::value_ptr(matrix));
+	pass.setTransform(glm::mat4(1.0), matrix);
 
 	// advance to next draw step
 	currentDrawStep = (currentDrawStep + 1) % decaySteps;
@@ -1279,7 +1226,7 @@ void OtVectorDisplayClass::render() {
 		bgfx::update(vertexBuffers[currentDrawStep], 0, bgfx::copy(vertices.data(), (uint32_t) vertices.size() * sizeof(Vertex)));
 	}
 
-	vertexBuffersSize[currentDrawStep] = (uint32_t) vertices.size();
+	vertexBufferSizes[currentDrawStep] = (uint32_t) vertices.size();
 
 	// render all decay steps
 	for (auto c = 0; c < decaySteps; c++) {
@@ -1287,7 +1234,7 @@ void OtVectorDisplayClass::render() {
 		int i = (currentDrawStep + decaySteps - stepi) % decaySteps;
 
 		// don't render empty buffers
-		if (vertexBuffersSize[i] != 0) {
+		if (vertexBufferSizes[i] != 0) {
 			float alpha;
 
 			if (stepi == 0) {
@@ -1300,10 +1247,10 @@ void OtVectorDisplayClass::render() {
 				alpha = std::pow(decayValue, stepi - 1.0f) * decayStart;
 			}
 
-			glm::vec4 params = glm::vec4(alpha, 0.0, 0.0, 0.0);
-			bgfx::setUniform(paramsUniform, &params);
-			bgfx::setTexture(0, textureUniform, lineTexture);
-			bgfx::setVertexBuffer(0, vertexBuffers[i], 0, vertexBuffersSize[i]);
+			uniform.set(0, glm::vec4(alpha, 0.0, 0.0, 0.0));
+			uniform.submit();
+			sampler.submit(0, lineTexture);
+			bgfx::setVertexBuffer(0, vertexBuffers[i], 0, vertexBufferSizes[i]);
 
 			bgfx::setState(
 				BGFX_STATE_WRITE_RGB |
@@ -1311,7 +1258,7 @@ void OtVectorDisplayClass::render() {
 				BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_DST_ALPHA) |
 				BGFX_STATE_BLEND_EQUATION_SEPARATE(BGFX_STATE_BLEND_EQUATION_ADD, BGFX_STATE_BLEND_EQUATION_MAX));
 
-			bgfx::submit(view, shader);
+			pass.runShader(shader);
 		}
 	}
 
@@ -1327,16 +1274,16 @@ void OtVectorDisplayClass::render() {
 		blur->setVerticalScale(0.0);
 
 		if (p == 0) {
-			blur->render(glowWidth, glowHeight, bgfx::getTexture(frameBuffer0), frameBuffer1);
+			blur->render(glowWidth, glowHeight, frameBuffer0, frameBuffer1);
 
 		} else {
-			blur->render(glowWidth, glowHeight, bgfx::getTexture(frameBuffer2), frameBuffer1);
+			blur->render(glowWidth, glowHeight, frameBuffer2, frameBuffer1);
 		}
 
 		// run vertical blur
 		blur->setHorizontalScale(0.0);
 		blur->setVerticalScale(1.0 / glowHeight);
-		blur->render(glowWidth, glowHeight, bgfx::getTexture(frameBuffer1), frameBuffer2);
+		blur->render(glowWidth, glowHeight, frameBuffer1, frameBuffer2);
 	}
 
 	// combine original rendering with glow
@@ -1349,11 +1296,11 @@ void OtVectorDisplayClass::render() {
 		BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_ONE, BGFX_STATE_BLEND_ONE));
 
 	// render original
-	blit->render(vx, vy, vw, vh, bgfx::getTexture(frameBuffer0));
+	blit->render(vx, vy, vw, vh, frameBuffer0);
 
 	// render glow
 	blit->setIntensity(1.25 + ((brightness - 1.0) / 2.0));
-	blit->render(vx, vy, vw, vh, bgfx::getTexture(frameBuffer2));
+	blit->render(vx, vy, vw, vh, frameBuffer2);
 }
 
 

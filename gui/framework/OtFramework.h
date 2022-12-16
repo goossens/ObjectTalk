@@ -25,11 +25,13 @@
 
 #include "OtException.h"
 #include "OtObject.h"
-#include "OtRegistry.h"
 #include "OtSingleton.h"
 
 #include "OtCustomer.h"
 #include "OtFrameworkEvents.h"
+#include "OtSampler.h"
+#include "OtShader.h"
+#include "OtTexture.h"
 
 
 //
@@ -73,16 +75,6 @@ public:
 	// get the current frame rate
 	float getFrameRate() { return 1000.0 / loopDuration; }
 
-	// get the next available view ID
-	bgfx::ViewId getNextViewID() { return nextViewID++; }
-
-	// asset functions
-	bgfx::UniformHandle getUniform(const char* name, bgfx::UniformType::Enum type, uint16_t size = 1);
-	bgfx::ProgramHandle getProgram(const bgfx::EmbeddedShader* shaders, const char* vertex, const char* fragment);
-	bgfx::TextureHandle getTexture(const std::string& file, bool mipmap = false, bimg::ImageContainer** image = nullptr);
-	bimg::ImageContainer* getImage(const std::string& file, bool powerof2 = false, bool square = false);
-	bgfx::TextureHandle getDummyTexture() { return dummyTexture; }
-
 	// add enums to specified module
 	void addEnumsGLFW(OtObject module);
 	void addEnumsIMGUI(OtObject module);
@@ -97,7 +89,7 @@ private:
 	// put the right app name in the menu
 	void fixMenuLabels();
 
-	// create a Metal layer in the narive window
+	// create a Metal layer in the native window
 	// this is required since we are running in a multithreaded configuration
 	// BGFX would create the metal layer automatically but in the wrong thread
 	// MacOS only allows certain API calls from the main thread
@@ -133,7 +125,6 @@ private:
 	void* nativeDisplayType = nullptr;
 	int width = 1280;
 	int height = 720;
-	bgfx::ViewId nextViewID;
 
 	// time tracking
 	int64_t startTime;
@@ -143,21 +134,11 @@ private:
 	int64_t cpuDuration;
 	int64_t gpuDuration;
 
-	// asset registries
-	OtRegistry<bgfx::UniformHandle> uniformRegistry;
-	OtRegistry<bgfx::ProgramHandle> programRegistry;
-	OtRegistry<bgfx::TextureHandle> textureRegistry;
-	OtRegistry<bimg::ImageContainer*> imageRegistry;
-	std::unordered_map<uint16_t, bimg::ImageContainer*> textureImageMap;
-
-	bimg::ImageContainer* dummyImage;
-	bgfx::TextureHandle dummyTexture;
-
 	// to render IMGUI
 	bgfx::VertexLayout imguiVertexLayout;
-	bgfx::TextureHandle imguiFontTexture = BGFX_INVALID_HANDLE;
-	bgfx::UniformHandle imguiFontUniform = BGFX_INVALID_HANDLE;
-	bgfx::ProgramHandle imguiProgram = BGFX_INVALID_HANDLE;
+	OtTexture imguiFontTexture;
+	OtSampler imguiFontSampler;
+	OtShader imguiShader;
 
 	// anti-aliasing setting
 	int antiAliasing = 0;

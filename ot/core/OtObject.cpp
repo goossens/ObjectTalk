@@ -17,10 +17,20 @@
 
 
 //
+//	OtObjectClass::describe
+//
+
+std::string OtObjectClass::describe() {
+	return type->getName();
+}
+
+
+//
 //	OtObjectClass::has
 //
 
-bool OtObjectClass::has(const std::string& name) {
+bool OtObjectClass::has(const std::string &name)
+{
 	if (members && members->has(name)) {
 		return true;
 	}
@@ -33,7 +43,6 @@ bool OtObjectClass::has(const std::string& name) {
 
 	return false;
 }
-
 
 //
 //	OtObjectClass::set

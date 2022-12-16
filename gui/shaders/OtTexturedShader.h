@@ -4,6 +4,11 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
+
+//
+//	Include files
+//
+
 #include "textured/vs_mtl.h"
 #include "textured/vs_glsl.h"
 #include "textured/vs_essl.h"

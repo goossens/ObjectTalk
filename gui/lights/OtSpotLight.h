@@ -46,9 +46,9 @@ public:
 	void setAttenuationVector(const glm::vec3 a) { attenuation = a; }
 
 	// update state
-	void update(OtRenderingContext context) override;
+	void update(OtRenderer& renderer) override;
 
-	// GUI to change ambient properties
+	// GUI to change properties
 	void renderGUI();
 
 	// get type definition

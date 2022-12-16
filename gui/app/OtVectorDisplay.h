@@ -21,6 +21,11 @@
 #include "OtBlit.h"
 #include "OtBlur.h"
 #include "OtController.h"
+#include "OtFrameBuffer.h"
+#include "OtSampler.h"
+#include "OtShader.h"
+#include "OtTexture.h"
+#include "OtUniform.h"
 
 
 //
@@ -115,28 +120,26 @@ private:
 	int w = 100;
 	int h = 100;
 
-	// BGFX shader
-	bgfx::UniformHandle paramsUniform = BGFX_INVALID_HANDLE;
-	bgfx::UniformHandle textureUniform = BGFX_INVALID_HANDLE;
-	bgfx::ProgramHandle shader = BGFX_INVALID_HANDLE;
+	// GPU assets
+	OtUniform uniform = OtUniform("u_params", 1);
+	OtTexture lineTexture;
+	OtSampler sampler = OtSampler("s_texture");
+	OtShader shader = OtShader("OtVectorDisplayVS", "OtVectorDisplayFS");
+
+	OtFrameBuffer frameBuffer0 = OtFrameBuffer(OtFrameBuffer::rgba8Texture, OtFrameBuffer::noTexture);
+	OtFrameBuffer frameBuffer1 = OtFrameBuffer(OtFrameBuffer::rgba8Texture, OtFrameBuffer::noTexture);
+	OtFrameBuffer frameBuffer2 = OtFrameBuffer(OtFrameBuffer::rgba8Texture, OtFrameBuffer::noTexture);
 
 	// buffers
 	int bufferWidth = -1;
 	int bufferHeight = -1;
 	int glowWidth = -1;
 	int glowHeight = -1;
-	bgfx::FrameBufferHandle frameBuffer0 = BGFX_INVALID_HANDLE;
-	bgfx::FrameBufferHandle frameBuffer1 = BGFX_INVALID_HANDLE;
-	bgfx::FrameBufferHandle frameBuffer2 = BGFX_INVALID_HANDLE;
 
 	std::vector<bgfx::DynamicVertexBufferHandle> vertexBuffers;
-	std::vector<uint32_t> vertexBuffersSize;
-
-	// texture to draw lines
-	bgfx::TextureHandle lineTexture;
+	std::vector<uint32_t> vertexBufferSizes;
 
 	// create/update buffers
-	void updateFrameBuffers();
 	void updateVertexBuffers();
 
 	// vector display vertex definition
@@ -170,7 +173,7 @@ private:
 	// list of points (used while drawing lines)
 	std::vector<glm::vec2> points;
 
-	// shpaes that make up display
+	// shapes that make up the display
 	struct Shape {
 		enum {
 			lineType,

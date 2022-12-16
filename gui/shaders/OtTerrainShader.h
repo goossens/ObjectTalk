@@ -4,6 +4,11 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
+
+//
+//	Include files
+//
+
 #include "terrain/vs_mtl.h"
 #include "terrain/vs_glsl.h"
 #include "terrain/vs_essl.h"

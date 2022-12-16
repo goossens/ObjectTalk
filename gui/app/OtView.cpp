@@ -14,20 +14,9 @@
 #include "OtVM.h"
 
 #include "OtFramework.h"
+#include "OtPass.h"
+#include "OtRenderer.h"
 #include "OtView.h"
-
-
-//
-//	OtViewClass::~OtViewClass
-//
-
-OtViewClass::~OtViewClass() {
-	// clear our scene (it has circular parent/child relationships)
-	if (scene) {
-//		scene->clear();
-//		scene = nullptr;
-	}
-}
 
 
 //
@@ -63,17 +52,6 @@ OtObject OtViewClass::setScreenArea(int _x, int _y, int _w, int _h) {
 
 
 //
-//	OtViewClass::setCamera
-//
-
-OtObject OtViewClass::setCamera(OtObject object) {
-	object->expectKindOf("Camera");
-	camera = object->cast<OtCameraClass>();
-	return shared();
-}
-
-
-//
 //	OtViewClass::setScene
 //
 
@@ -85,25 +63,13 @@ OtObject OtViewClass::setScene(OtObject object) {
 
 
 //
-//	OtViewClass::update
+//	OtViewClass::setCamera
 //
 
-void OtViewClass::update() {
-	// update view if we have a scene and a camera
-	if (scene && camera) {
-		// determine dimensions
-		OtFramework framework = OtFrameworkClass::instance();
-		float sw = framework->getWidth();
-		float sh = framework->getHeight();
-
-		vx = x < 0 ? sw - (x * sw / 100.0) : x * sw / 100.0;
-		vy = y < 0 ? sw - (y * sh / 100.0) : y * sh / 100.0;
-		vw = w * sw / 100.0;
-		vh = h * sh / 100.0;
-
-		// update scene
-		scene->update(camera, vx, vy, vw, vh);
-	}
+OtObject OtViewClass::setCamera(OtObject object) {
+	object->expectKindOf("Camera");
+	camera = object->cast<OtCameraClass>();
+	return shared();
 }
 
 
@@ -112,10 +78,31 @@ void OtViewClass::update() {
 //
 
 void OtViewClass::render() {
-	// render view if we have a scene and a camera
-	if (scene && camera) {
-		scene->render();
+	if (!scene) {
+		OtExcept("No [Scene] specified for [View]");
 	}
+
+	if (!camera) {
+		OtExcept("No [Camera] specified for [View]");
+	}
+
+	// determine screen/window dimensions
+	OtFramework framework = OtFrameworkClass::instance();
+	float sw = framework->getWidth();
+	float sh = framework->getHeight();
+
+	// determine view rectangle in pixels
+	float vx = x < 0 ? sw - (x * sw / 100.0) : x * sw / 100.0;
+	float vy = y < 0 ? sw - (y * sh / 100.0) : y * sh / 100.0;
+	float vw = w * sw / 100.0;
+	float vh = h * sh / 100.0;
+
+	// run renderer
+	OtRenderer renderer;
+	renderer.runLightingPass(scene, camera, vx, vy, vw, vh);
+
+	// reset the camera's changed state
+	camera->resetChanged();
 }
 
 
@@ -276,11 +263,11 @@ OtType OtViewClass::getMeta() {
 		type->set("__init__", OtFunctionClass::create(&OtViewClass::init));
 
 		type->set("setScreenArea", OtFunctionClass::create(&OtViewClass::setScreenArea));
-		type->set("setCamera", OtFunctionClass::create(&OtViewClass::setCamera));
 		type->set("setScene", OtFunctionClass::create(&OtViewClass::setScene));
+		type->set("setCamera", OtFunctionClass::create(&OtViewClass::setCamera));
 
-		type->set("getCamera", OtFunctionClass::create(&OtViewClass::getCamera));
 		type->set("getScene", OtFunctionClass::create(&OtViewClass::getScene));
+		type->set("getCamera", OtFunctionClass::create(&OtViewClass::getCamera));
 	}
 
 	return type;

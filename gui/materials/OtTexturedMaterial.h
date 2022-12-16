@@ -14,10 +14,13 @@
 
 #include <string>
 
-#include "bgfx/bgfx.h"
 #include "glm/glm.hpp"
 
 #include "OtMaterial.h"
+#include "OtSampler.h"
+#include "OtShader.h"
+#include "OtTexture.h"
+#include "OtUniform.h"
 
 
 //
@@ -46,6 +49,9 @@ public:
 	void setDiffuseRGB(float r, float g, float b) { diffuse = glm::vec3(r, g, b); }
 	void setSpecularRGB(float r, float g, float b) { specular = glm::vec3(r, g, b); }
 
+	// submit to GPU
+	void submit(OtRenderer& renderer, bool instancing) override;
+
 	// get type definition
 	static OtType getMeta();
 
@@ -54,8 +60,8 @@ public:
 
 private:
 	// properties
-	bgfx::TextureHandle texture = BGFX_INVALID_HANDLE;
-	bgfx::TextureHandle normalmap = BGFX_INVALID_HANDLE;
+	OtTexture texture;
+	OtTexture normalmap;
 	float scale = 1.0;
 
 	glm::vec3 ambient = { 0.4, 0.4, 0.4 };
@@ -63,13 +69,12 @@ private:
 	glm::vec3 specular = { 0.4, 0.4, 0.4 };
 	float shininess = 20;
 
-	// uniform and shader functions
-	size_t getNumberOfUniforms() override;
-	void getUniforms(glm::vec4* uniforms) override;
+	// GPU assets
+	OtUniform uniform = OtUniform("u_material", 3);
 
-	size_t getNumberOfSamplers() override;
-	bgfx::TextureHandle getSamplerTexture(size_t index) override;
+	OtSampler textureSampler = OtSampler("s_texture");
+	OtSampler normalmapSampler = OtSampler("s_normalmap");
 
-	bgfx::ProgramHandle createShader() override;
-	bgfx::ProgramHandle createInstancingShader() override;
+	OtShader shader = OtShader("OtTexturedVS", "OtTexturedFS");
+	OtShader instancingShader = OtShader("OtTexturedVSI", "OtTexturedFS");
 };

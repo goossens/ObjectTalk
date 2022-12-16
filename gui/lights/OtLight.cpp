@@ -10,31 +10,19 @@
 //
 
 #include "glm/glm.hpp"
-#include "glm/ext.hpp"
 #include "imgui.h"
 
-#include "OtFramework.h"
 #include "OtLight.h"
 #include "OtScene.h"
+#include "OtPass.h"
+#include "OtViewPort.h"
 
 
 //
-//	Globals
+//	Constants
 //
 
-const static int shadowmapSize = 512;
-
-
-//
-//	OtLightClass::~OtLightClass
-//
-
-OtLightClass::~OtLightClass() {
-	// release resources
-	if (bgfx::isValid(shadowmapFrameBuffer)) {
-		bgfx::destroy(shadowmapFrameBuffer);
-	}
-}
+constexpr int shadowmapSize = 1024;
 
 
 //
@@ -42,33 +30,17 @@ OtLightClass::~OtLightClass() {
 //
 
 OtObject OtLightClass::castShadow() {
-	// create camera (if required)
-	if (!shadowCamera) {
-		shadowCamera = OtCameraClass::create();
-	}
-
-	// create shadowmap frame buffer (if required)
-	if (!bgfx::isValid(shadowmapFrameBuffer)) {
-		shadowmapTexture = bgfx::createTexture2D(shadowmapSize, shadowmapSize, false, 1, bgfx::TextureFormat::D32F, BGFX_TEXTURE_RT);
-		shadowmapFrameBuffer = bgfx::createFrameBuffer(1, &shadowmapTexture, true);
-	}
-
-	shadow = true;
+	castShadowFlag = true;
 	return shared();
 }
 
 
 //
-//	OtLightClass::renderFrustum
+//	OtLightClass::toggleShadow
 //
 
-OtObject OtLightClass::renderFrustum(bool flag) {
-	// create camera (if required)
-	if (!shadowCamera) {
-		shadowCamera = OtCameraClass::create();
-	}
-
-	shadowCamera->renderFrustum(flag);
+OtObject OtLightClass::toggleShadow(bool flag) {
+	castShadowFlag = flag;
 	return shared();
 }
 
@@ -77,12 +49,19 @@ OtObject OtLightClass::renderFrustum(bool flag) {
 //	OtLightClass::update
 //
 
-void OtLightClass::update(OtRenderingContext context) {
+void OtLightClass::update(OtRenderer& renderer) {
 	// handle shadow (if required)
-	if (shadow) {
+	if (castShadowFlag) {
+		// create camera (if required)
+		if (!shadowCamera) {
+			shadowCamera = OtCameraClass::create();
+		}
+
 		// reserve shadow rendering view
-		shadowView = OtFrameworkClass::instance()->getNextViewID();
+		shadowPass.reserveRenderingSlot();
 	}
+
+	// note: derived classes must configure camera
 }
 
 
@@ -90,61 +69,23 @@ void OtLightClass::update(OtRenderingContext context) {
 //	OtLightClass::render
 //
 
-void OtLightClass::render(OtRenderingContext context) {
+void OtLightClass::render(OtRenderer& renderer) {
 	// only respond to lighting pass
-	if (context->inLightingPass()) {
+	if (renderer.inLightingPass()) {
 		// render shadowmap if required
-		if (shadow) {
-			// render shadow map
-			bgfx::setViewClear(shadowView, BGFX_CLEAR_DEPTH);
-			bgfx::setViewRect(shadowView, 0, 0, shadowmapSize, shadowmapSize);
-			bgfx::setViewFrameBuffer(shadowView, shadowmapFrameBuffer);
-			bgfx::touch(shadowView);
+		if (castShadowFlag) {
+			// update framebuffer
+			framebuffer.update(shadowmapSize, shadowmapSize);
 
-			// create shadowmap rendering context
-			OtRenderingContextClass shadowMapContext;
-			shadowMapContext.setPass(OtRenderingContextClass::shadowmapPass);
-			shadowMapContext.setView(shadowView);
-			shadowMapContext.setViewRect(0, 0, shadowmapSize, shadowmapSize);
-			shadowMapContext.setCamera(shadowCamera);
-			shadowMapContext.copyLightProperties(context);
+			// run shadow pass
+			OtRenderer shadowMapRenderer;
+			shadowMapRenderer.copyLightProperties(renderer);
+			shadowMapRenderer.runShadowPass(shadowPass, renderer.getScene(), shadowCamera, framebuffer);
 
-			// render shadow
-			shadowCamera->submit(shadowView);
-			context->getScene()->renderChildren(&shadowMapContext);
-
-			// determine crop matrix to ensure shadow matrix ends up with platform correct texture coordinates
-			auto caps = bgfx::getCaps();
-			float sy = caps->originBottomLeft ? 0.5f : -0.5f;
-			float sz = caps->homogeneousDepth ? 0.5f :  1.0f;
-			float tz = caps->homogeneousDepth ? 0.5f :  0.0f;
-
-			glm::mat4 cropMatrix = glm::mat4(1.0);
-			cropMatrix = glm::translate(cropMatrix, glm::vec3(0.5, 0.5, tz));
-			cropMatrix = glm::scale(cropMatrix, glm::vec3(0.5, sy, sz));
-
-			// add shadowmap matrix to rendering context
-			glm::mat4 shadowmapMatrix = cropMatrix * shadowCamera->getViewProjectionMatrix();
-			context->setShadowMap(shadowmapTexture, shadowmapMatrix);
-
-			// render camera frustum (if required)
-			shadowCamera->render(context->getDebugDraw());
+			// add shadowmap settings to renderer
+			glm::mat4 shadowmapMatrix = OtViewPortGetMatrix() * shadowCamera->getViewProjectionMatrix();
+			renderer.setShadowMap(framebuffer, shadowmapMatrix);
 		}
-	}
-}
-
-
-//
-//	OtLightClass::renderShadowCameraGUI
-//
-
-void OtLightClass::renderShadowCameraGUI() {
-	if (ImGui::TreeNodeEx("Shadow Camera", ImGuiTreeNodeFlags_Framed)) {
-		shadowCamera->renderGUI();
-
-		float width = ImGui::GetContentRegionAvail().x;
-		ImGui::Image((void*)(intptr_t) shadowmapTexture.idx, ImVec2(width, width));
-		ImGui::TreePop();
 	}
 }
 
@@ -158,7 +99,6 @@ OtType OtLightClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtLightClass>("Light", OtSceneObjectClass::getMeta());
-		type->set("renderFrustum", OtFunctionClass::create(&OtLightClass::renderFrustum));
 	}
 
 	return type;

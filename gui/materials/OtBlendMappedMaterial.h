@@ -14,13 +14,16 @@
 
 #include <string>
 
-#include "bgfx/bgfx.h"
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
 #include "imgui.h"
 
 #include "OtController.h"
 #include "OtMaterial.h"
+#include "OtSampler.h"
+#include "OtShader.h"
+#include "OtTexture.h"
+#include "OtUniform.h"
 
 
 //
@@ -48,6 +51,9 @@ public:
 	void setDiffuseRGB(float r, float g, float b) { diffuse = glm::vec3(r, g, b); }
 	void setSpecularRGB(float r, float g, float b) { specular = glm::vec3(r, g, b); }
 
+	// submit to GPU
+	void submit(OtRenderer& renderer, bool instancing) override;
+
 	// GUI to change properties
 	void renderGUI();
 
@@ -59,11 +65,11 @@ public:
 
 private:
 	// properties
-	bgfx::TextureHandle blendmap = BGFX_INVALID_HANDLE;
-	bgfx::TextureHandle textureN = BGFX_INVALID_HANDLE;
-	bgfx::TextureHandle textureR = BGFX_INVALID_HANDLE;
-	bgfx::TextureHandle textureG = BGFX_INVALID_HANDLE;
-	bgfx::TextureHandle textureB = BGFX_INVALID_HANDLE;
+	OtTexture blendmap;
+	OtTexture textureNone;
+	OtTexture textureRed;
+	OtTexture textureGreen;
+	OtTexture textureBlue;
 	float scale = 1.0;
 
 	glm::vec3 ambient = { 0.4, 0.4, 0.4 };
@@ -71,15 +77,17 @@ private:
 	glm::vec3 specular = { 0.4, 0.4, 0.4 };
 	float shininess = 20;
 
-	// uniform and shader functions
-	size_t getNumberOfUniforms() override;
-	void getUniforms(glm::vec4* uniforms) override;
+	// GPU assets
+	OtUniform uniform = OtUniform("u_material", 3);
 
-	size_t getNumberOfSamplers() override;
-	bgfx::TextureHandle getSamplerTexture(size_t index) override;
+	OtSampler blendmapSampler = OtSampler("s_blendmap");
+	OtSampler textureNoneSampler = OtSampler("s_textureN");
+	OtSampler textureRedSampler = OtSampler("s_textureR");
+	OtSampler textureGreenSampler = OtSampler("s_textureG");
+	OtSampler textureBlueSampler = OtSampler("s_textureB");
 
-	bgfx::ProgramHandle createShader() override;
-	bgfx::ProgramHandle createInstancingShader() override;
+	OtShader shader = OtShader("OtBlendMappedVS", "OtBlendMappedFS");
+	OtShader instancingShader = OtShader("OtBlendMappedVSI", "OtBlendMappedFS");
 };
 
 

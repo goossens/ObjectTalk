@@ -26,23 +26,17 @@ typedef std::shared_ptr<OtViewClass> OtView;
 
 class OtViewClass : public OtAppObjectClass {
 public:
-	// destructor
-	~OtViewClass();
-
 	// initialize
 	void init(size_t count, OtObject* parameters);
 
 	// update properties
 	OtObject setScreenArea(int x, int y, int w, int h);
-	OtObject setCamera(OtObject camera);
 	OtObject setScene(OtObject scene);
+	OtObject setCamera(OtObject camera);
 
 	// access attributes
-	OtObject getCamera() { return camera; }
 	OtObject getScene() { return scene; }
-
-	// update state
-	void update() override;
+	OtObject getCamera() { return camera; }
 
 	// render content
 	void render() override;
@@ -61,26 +55,20 @@ public:
 	// create a new object
 	static OtView create();
 
-protected:
-	// our camera
-	OtCamera camera;
-
+private:
 	// the scene we are looking at
 	OtScene scene;
 
-	// view geometry (in percentages)
-	float x = 0;
-	float y = 0;
-	float w = 100;
-	float h = 100;
+	// camera to render scene
+	OtCamera camera;
 
-	// view geometry (in pixels)
-	float vx;
-	float vy;
-	float vw;
-	float vh;
+	// view geometry (in percentage of screen/window size)
+	float x = 0.0;
+	float y = 0.0;
+	float w = 100.0;
+	float h = 100.0;
 
-	// old mouse position for drag operation
+	// old mouse position for drag operations
 	float xold = 0.0;
 	float yold = 0.0;
 };

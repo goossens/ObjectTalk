@@ -15,8 +15,10 @@
 #include <vector>
 
 #include "OtAABB.h"
+#include "OtIndexBuffer.h"
 #include "OtGui.h"
 #include "OtVertex.h"
+#include "OtVertexBuffer.h"
 
 
 //
@@ -29,12 +31,7 @@ typedef std::shared_ptr<OtGeometryClass> OtGeometry;
 class OtGeometryClass : public OtGuiClass {
 public:
 	// constructor
-	OtGeometryClass() {
-		aabb = OtAABBClass::create();
-	}
-
-	// destructor
-	~OtGeometryClass();
+	OtGeometryClass();
 
 	// ensure tangents are automatically generated
 	OtObject computeTangents();
@@ -55,10 +52,9 @@ public:
 		return aabb;
 	}
 
-	// access BGFX buffers
-	bgfx::VertexBufferHandle getVertexBuffer();
-	bgfx::IndexBufferHandle getTriangleIndexBuffer();
-	bgfx::IndexBufferHandle getLineIndexBuffer();
+	// submit to GPU
+	void submitTriangles();
+	void submitLines();
 
 	// get type definition
 	static OtType getMeta();
@@ -152,8 +148,8 @@ protected:
 	void validateBuffers();
 	bool refreshBuffers = true;
 
-	// BGFX buffers
-	bgfx::VertexBufferHandle vertexBuffer = BGFX_INVALID_HANDLE;
-	bgfx::IndexBufferHandle triagleIndexBuffer = BGFX_INVALID_HANDLE;
-	bgfx::IndexBufferHandle lineIndexBuffer = BGFX_INVALID_HANDLE;
+	// GPU assets
+	OtVertexBuffer vertexBuffer;
+	OtIndexBuffer triangleIndexBuffer;
+	OtIndexBuffer lineIndexBuffer;
 };

@@ -4,6 +4,11 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
+
+//
+//	Include files
+//
+
 #include "blur/vs_mtl.h"
 #include "blur/vs_glsl.h"
 #include "blur/vs_essl.h"

@@ -38,13 +38,10 @@ public:
 	void setDirectionVector(const glm::vec3 d) { direction = d; }
 	void setColorVector(const glm::vec3 c) { color = c; }
 
-	// enable shadow casting
-	OtObject castShadow(float width, float near, float far);
-
 	// update state
-	void update(OtRenderingContext context) override;
+	void update(OtRenderer& renderer) override;
 
-	// GUI to change ambient properties
+	// GUI to change properties
 	void renderGUI();
 
 	// get type definition

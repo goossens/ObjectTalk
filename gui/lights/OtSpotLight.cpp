@@ -150,9 +150,9 @@ OtObject OtSpotLightClass::setCone(float i, float o) {
 //	OtSpotLightClass::update
 //
 
-void OtSpotLightClass::update(OtRenderingContext context) {
-	OtLightClass::update(context);
-	context->addSpotLight(position, direction, color, attenuation, inner, outer);
+void OtSpotLightClass::update(OtRenderer& renderer) {
+	OtLightClass::update(renderer);
+	renderer.addSpotLight(position, direction, color, attenuation, inner, outer);
 }
 
 

@@ -12,9 +12,9 @@
 //	Include files
 //
 
-#include "bgfx/bgfx.h"
-
 #include "OtFilter.h"
+#include "OtShader.h"
+#include "OtUniform.h"
 
 
 //
@@ -26,14 +26,11 @@ typedef std::shared_ptr<OtBloomClass> OtBloom;
 
 class OtBloomClass : public OtFilterClass {
 public:
-	// constructor
-	OtBloomClass();
-
 	// execute filter
-	void execute(int view, int w, int h) override;
+	void execute(OtPass& pass, int w, int h) override;
 
 private:
-	// BGFX shader
-	bgfx::UniformHandle bloomUniform = BGFX_INVALID_HANDLE;
-	bgfx::ProgramHandle shader = BGFX_INVALID_HANDLE;
+	// GPU assets
+	OtUniform uniform = OtUniform("u_bloom", 1);
+	OtShader shader = OtShader("OtBloomVS", "OtBloomFS");
 };

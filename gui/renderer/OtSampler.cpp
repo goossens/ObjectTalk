@@ -1,0 +1,97 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2022 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+
+//
+//	Include files
+//
+
+#include "OtException.h"
+
+#include "OtFramework.h"
+#include "OtSampler.h"
+
+
+//
+//	OtSampler::OtSampler
+//
+
+OtSampler::OtSampler(const char *name) {
+	initialize(name);
+}
+
+
+//
+//	OtSampler::~OtSampler
+//
+
+OtSampler::~OtSampler() {
+	clear();
+}
+
+
+//
+//	OtSampler::initialize
+//
+
+void OtSampler::initialize(const char *name) {
+	if (bgfx::isValid(uniform)) {
+		OtExcept("internal error: sampler already initialized");
+	}
+
+	uniform = bgfx::createUniform(name, bgfx::UniformType::Sampler);
+}
+
+
+//
+//	OtSampler::clear
+//
+
+void OtSampler::clear() {
+	// release resources
+	if (bgfx::isValid(uniform)) {
+		bgfx::destroy(uniform);
+		uniform = BGFX_INVALID_HANDLE;
+	}
+}
+
+
+//
+//	OtSampler::submit
+//
+
+void OtSampler::submit(int unit) {
+	if (!bgfx::isValid(uniform)) {
+		OtExcept("internal error: sampler not initialized");
+	}
+
+	OtTexture dummy;
+	bgfx::setTexture(unit, uniform, dummy.getTextureHandle());
+}
+
+void OtSampler::submit(int unit, OtTexture &texture) {
+	if (!bgfx::isValid(uniform)) {
+		OtExcept("internal error: sampler not initialized");
+	}
+
+	bgfx::setTexture(unit, uniform, texture.getTextureHandle());
+}
+
+void OtSampler::submit(int unit, bgfx::TextureHandle texture) {
+	if (!bgfx::isValid(uniform)) {
+		OtExcept("internal error: sampler not initialized");
+	}
+
+	bgfx::setTexture(unit, uniform, texture);
+}
+
+void OtSampler::submit(int unit, OtCubeMap& cubemap) {
+	if (!bgfx::isValid(uniform)) {
+		OtExcept("internal error: sampler not initialized");
+	}
+
+	bgfx::setTexture(unit, uniform, cubemap.getTextureHandle());
+}

@@ -11,7 +11,7 @@
 
 #include <algorithm>
 #include <cmath>
-#include <cstdlib>
+#include <cstring>
 #include <ctime>
 
 #include "imgui.h"
@@ -21,8 +21,8 @@
 #include "OtFunction.h"
 
 #include "OtController.h"
-#include "OtFramework.h"
 #include "OtHeightMap.h"
+#include "OtImage.h"
 
 
 //
@@ -30,8 +30,18 @@
 //
 
 OtHeightMapClass::~OtHeightMapClass() {
+	clear();
+}
+
+
+//
+//	OtHeightMapClass::clear
+//
+
+void OtHeightMapClass::clear() {
 	if (heightmap) {
 		delete [] heightmap;
+		heightmap = nullptr;
 	}
 }
 
@@ -61,34 +71,19 @@ void OtHeightMapClass::init(size_t count, OtObject* parameters) {
 //	OtHeightMapClass::loadMap
 //
 
-OtObject OtHeightMapClass::loadMap(const std::string& file) {
+OtObject OtHeightMapClass::loadMap(const std::string& filename) {
 	// delete old heightmap if required
-	if (heightmap) {
-		delete [] heightmap;
-	}
+	clear();
 
-	// load height map
-	bimg::ImageContainer* image = OtFrameworkClass::instance()->getImage(file);
+	// load height map from image
+	OtImage image;
+	image.loadAsGrayscale(filename);
 
 	// allocate heightmap
-	width = image->m_width;
-	height = image->m_height;
+	width = image.getWidth();
+	height = image.getHeight();
 	heightmap = new float[width * height];
-
-	// see if we can do the conversion the easy or the hard way
-	switch (image->m_format) {
-		case bimg::TextureFormat::R8:
-			convert8bit((uint8_t*) image->m_data);
-			break;
-
-		case bimg::TextureFormat::R16:
-			convert16bit((uint16_t*) image->m_data);
-			break;
-
-		default:
-			convertImage(image);
-			break;
-	}
+	std::memcpy(heightmap, image.getPixels(), width * height * sizeof(float));
 
 	// notify observers
 	notify();
@@ -186,50 +181,6 @@ void OtHeightMapClass::renderGUI() {
 	if (changed) {
 		notify();
 	}
-}
-
-
-//
-//	OtHeightMapClass::convert8bit
-//
-
-void OtHeightMapClass::convert8bit(uint8_t* data) {
-	float* p = heightmap;
-
-	for (auto c = 0; c < width * height; c++) {
-		*p++ = (float) *data++ / 255.0;
-	}
-}
-
-
-//
-//	OtHeightMapClass::convert16bit
-//
-
-void OtHeightMapClass::convert16bit(uint16_t* data) {
-	float* p = heightmap;
-
-	for (auto c = 0; c < width * height; c++) {
-		*p++ = (float) *data++;
-	}
-}
-
-
-//
-//	OtHeightMapClass::convert16bit
-//
-
-static void packHeight(void* dst, const float* src) {
-	float* d = (float*) dst;
-	d[0] = 0.299 * src[0] + 0.587 * src[1] + 0.114 * src[2];
-}
-
-void OtHeightMapClass::convertImage(bimg::ImageContainer* image) {
-	bimg::imageConvert(
-		(void*) heightmap, sizeof(float) * 8, packHeight,
-		image->m_data, bimg::getBitsPerPixel(image->m_format), bimg::getUnpack(image->m_format),
-		(uint32_t) width, (uint32_t) height, 1,
-		bimg::getBitsPerPixel(image->m_format) * width / 8, sizeof(float) * width);
 }
 
 

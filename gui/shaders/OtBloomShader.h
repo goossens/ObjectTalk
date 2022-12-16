@@ -4,6 +4,11 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
+
+//
+//	Include files
+//
+
 #include "bloom/vs_mtl.h"
 #include "bloom/vs_glsl.h"
 #include "bloom/vs_essl.h"

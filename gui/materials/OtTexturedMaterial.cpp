@@ -9,27 +9,11 @@
 //	Include files
 //
 
-#include "bgfx/embedded_shader.h"
-
 #include "OtException.h"
 #include "OtFunction.h"
 
 #include "OtColor.h"
-#include "OtFramework.h"
 #include "OtTexturedMaterial.h"
-#include "OtTexturedShader.h"
-
-
-//
-//	Globals
-//
-
-static const bgfx::EmbeddedShader embeddedShaders[] = {
-	BGFX_EMBEDDED_SHADER(OtTexturedVS),
-	BGFX_EMBEDDED_SHADER(OtTexturedVSI),
-	BGFX_EMBEDDED_SHADER(OtTexturedFS),
-	BGFX_EMBEDDED_SHADER_END()
-};
 
 
 //
@@ -60,11 +44,11 @@ void OtTexturedMaterialClass::init(size_t count, OtObject* parameters) {
 //
 
 OtObject OtTexturedMaterialClass::setTexture(const std::string& textureName) {
-	if (bgfx::isValid(texture)) {
+	if (texture.isValid()) {
 		OtExcept("Texture already specified for [TexturedMaterial]");
 	}
 
-	texture = OtFrameworkClass::instance()->getTexture(textureName);
+	texture.loadFromFile(textureName);
 	return shared();
 }
 
@@ -74,11 +58,11 @@ OtObject OtTexturedMaterialClass::setTexture(const std::string& textureName) {
 //
 
 OtObject OtTexturedMaterialClass::setNormalMap(const std::string& normalmapName) {
-	if (bgfx::isValid(normalmap)) {
-		OtExcept("NormapMap already specified for [TexturedMaterial]");
+	if (normalmap.isValid()) {
+		OtExcept("NormalMap already specified for [TexturedMaterial]");
 	}
 
-	normalmap = OtFrameworkClass::instance()->getTexture(normalmapName);
+	normalmap.loadFromFile(normalmapName);
 	return shared();
 }
 
@@ -134,70 +118,27 @@ OtObject OtTexturedMaterialClass::setShininess(float s) {
 
 
 //
-//	OtTexturedMaterialClass::getNumberOfUniforms
+//	OtTexturedMaterialClass::submit
 //
 
-size_t OtTexturedMaterialClass::getNumberOfUniforms() {
-	return 3;
-}
+void OtTexturedMaterialClass::submit(OtRenderer& renderer, bool instancing) {
+	// submit uniform
+	uniform.set(0, glm::vec4(ambient, scale));
+	uniform.set(1, glm::vec4(diffuse, normalmap.isValid()));
+	uniform.set(2, glm::vec4(specular, shininess));
+	uniform.submit();
 
+	// set samplers
+	textureSampler.submit(1, texture);
+	normalmapSampler.submit(2, normalmap);
 
-//
-//	OtTexturedMaterialClass::getUniforms
-//
-
-void OtTexturedMaterialClass::getUniforms(glm::vec4* uniforms) {
-	uniforms[0] = glm::vec4(ambient, scale);
-	uniforms[1] = glm::vec4(diffuse, bgfx::isValid(normalmap));
-	uniforms[2] = glm::vec4(specular, shininess);
-}
-
-
-//
-//	OtTexturedMaterialClass::getNumberOfSamplers
-//
-
-size_t OtTexturedMaterialClass::getNumberOfSamplers() {
-	return 2;
-}
-
-
-//
-//	OtTexturedMaterialClass::getSamplerTexture
-//
-
-bgfx::TextureHandle OtTexturedMaterialClass::getSamplerTexture(size_t index) {
-	if (index == 1) {
-		if (!bgfx::isValid(texture)) {
-			OtExcept("[Texture] not set for [TexturedMaterial]");
-		}
-
-		return texture;
-
-	} else if (bgfx::isValid(normalmap)) {
-		return normalmap;
+	// run appropriate shader
+	if (instancing) {
+		renderer.runShader(instancingShader);
 
 	} else {
-		return OtFrameworkClass::instance()->getDummyTexture();
+		renderer.runShader(shader);
 	}
-}
-
-
-//
-//	OtTexturedMaterialClass::createShader
-//
-
-bgfx::ProgramHandle OtTexturedMaterialClass::createShader() {
-	return OtFrameworkClass::instance()->getProgram(embeddedShaders, "OtTexturedVS", "OtTexturedFS");
-}
-
-
-//
-//	OtTexturedMaterialClass::createInstancingShader
-//
-
-bgfx::ProgramHandle OtTexturedMaterialClass::createInstancingShader() {
-	return OtFrameworkClass::instance()->getProgram(embeddedShaders, "OtTexturedVSI", "OtTexturedFS");
 }
 
 
@@ -205,7 +146,8 @@ bgfx::ProgramHandle OtTexturedMaterialClass::createInstancingShader() {
 //	OtTexturedMaterialClass::getMeta
 //
 
-OtType OtTexturedMaterialClass::getMeta() {
+OtType OtTexturedMaterialClass::getMeta()
+{
 	static OtType type;
 
 	if (!type) {
@@ -224,7 +166,6 @@ OtType OtTexturedMaterialClass::getMeta() {
 
 	return type;
 }
-
 
 //
 //	OtTexturedMaterialClass::create

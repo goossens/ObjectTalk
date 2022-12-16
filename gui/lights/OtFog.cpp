@@ -57,8 +57,8 @@ OtObject OtFogClass::setLimits(float mnn, float mxn, float mnf, float mxf) {
 //	OtFogClass::update
 //
 
-void OtFogClass::update(OtRenderingContext context) {
-	context->setFog(color, near, far);
+void OtFogClass::update(OtRenderer& renderer) {
+	renderer.setFog(color, near, far);
 }
 
 

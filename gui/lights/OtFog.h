@@ -33,7 +33,7 @@ public:
 	OtObject setLimits(float minNear, float maxNear, float minFar, float maxFar);
 
 	// update state
-	void update(OtRenderingContext context) override;
+	void update(OtRenderer& renderer) override;
 
 	// GUI to change fog properties
 	void renderGUI();

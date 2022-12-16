@@ -1,8 +1,8 @@
 <div align="center">
 
-![MacOS status](https://img.shields.io/github/workflow/status/goossens/ObjectTalk/MacOS?label=MacOS&style=for-the-badge)
-![Ubuntu status](https://img.shields.io/github/workflow/status/goossens/ObjectTalk/Ubuntu?label=Linux&style=for-the-badge)
-![Windows status](https://img.shields.io/github/workflow/status/goossens/ObjectTalk/Windows?label=Windows&style=for-the-badge)
+![MacOS status](https://img.shields.io/github/actions/workflow/status/goossens/ObjectTalk/macos.yml?branch=master&label=MacOS&style=for-the-badge)
+![Ubuntu status](https://img.shields.io/github/actions/workflow/status/goossens/ObjectTalk/ubuntu.yml?branch=master&label=Ubuntu&style=for-the-badge)
+![Windows status](https://img.shields.io/github/actions/workflow/status/goossens/ObjectTalk/windows.yml?branch=master&label=Windows&style=for-the-badge)
 <br/>
 ![Repo size](https://img.shields.io/github/repo-size/goossens/ObjectTalk?style=for-the-badge)
 ![Repo activity](https://img.shields.io/github/commit-activity/m/goossens/ObjectTalk?label=Commits&style=for-the-badge)

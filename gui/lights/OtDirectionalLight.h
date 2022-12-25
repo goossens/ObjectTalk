@@ -12,9 +12,14 @@
 //	Include files
 //
 
+#include <array>
+
 #include "glm/glm.hpp"
 
+#include "OtCamera.h"
+#include "OtCascadedShadowMap.h"
 #include "OtController.h"
+#include "OtFrameBuffer.h"
 #include "OtLight.h"
 
 
@@ -38,8 +43,8 @@ public:
 	void setDirectionVector(const glm::vec3 d) { direction = d; }
 	void setColorVector(const glm::vec3 c) { color = c; }
 
-	// update state
-	void update(OtRenderer& renderer) override;
+	// add light properties to renderer
+	void addPropertiesToRenderer(OtRenderer& renderer) override;
 
 	// GUI to change properties
 	void renderGUI();
@@ -50,10 +55,13 @@ public:
 	// create a new object
 	static OtDirectionalLight create();
 
-private:
+protected:
 	// properties
 	glm::vec3 direction = glm::vec3(0.0, 0.0, 1.0);
 	glm::vec3 color = glm::vec3(1.0);
+
+	// shadowmaps
+	OtCascadedShadowMap csm;
 };
 
 

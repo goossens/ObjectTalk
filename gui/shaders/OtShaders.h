@@ -24,6 +24,7 @@
 #include "OtSkyboxShader.h"
 #include "OtTerrainShader.h"
 #include "OtTexturedShader.h"
+#include "OtTransparentShadowShader.h"
 #include "OtVectorDisplayShader.h"
 #include "OtWaterShader.h"
 
@@ -54,6 +55,7 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtImGuiFS),
 	BGFX_EMBEDDED_SHADER(OtShadowVS),
 	BGFX_EMBEDDED_SHADER(OtShadowFS),
+	BGFX_EMBEDDED_SHADER(OtShadowVSI),
 	BGFX_EMBEDDED_SHADER(OtSkyVS),
 	BGFX_EMBEDDED_SHADER(OtSkyFS),
 	BGFX_EMBEDDED_SHADER(OtSkyboxVS),
@@ -63,6 +65,9 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtTexturedVS),
 	BGFX_EMBEDDED_SHADER(OtTexturedFS),
 	BGFX_EMBEDDED_SHADER(OtTexturedVSI),
+	BGFX_EMBEDDED_SHADER(OtTransparentShadowVS),
+	BGFX_EMBEDDED_SHADER(OtTransparentShadowFS),
+	BGFX_EMBEDDED_SHADER(OtTransparentShadowVSI),
 	BGFX_EMBEDDED_SHADER(OtVectorDisplayVS),
 	BGFX_EMBEDDED_SHADER(OtVectorDisplayFS),
 	BGFX_EMBEDDED_SHADER(OtWaterVS),

@@ -40,8 +40,8 @@ public:
 	void setColorVector(const glm::vec3 c) { color = c; }
 	void setAttenuationVector(const glm::vec3 a) { attenuation = a; }
 
-	// update state
-	void update(OtRenderer& renderer) override;
+	// add light properties to renderer
+	void addPropertiesToRenderer(OtRenderer& renderer) override;
 
 	// GUI to change properties
 	void renderGUI();

@@ -78,6 +78,16 @@ OtObject OtTexturedMaterialClass::setScale(float s) {
 
 
 //
+//	OtTexturedMaterialClass::setTransparent
+//
+
+OtObject OtTexturedMaterialClass::setTransparent(bool t) {
+	transparent = t;
+	return shared();
+}
+
+
+//
 //	OtTexturedMaterialClass::setAmbient
 //
 
@@ -121,23 +131,50 @@ OtObject OtTexturedMaterialClass::setShininess(float s) {
 //	OtTexturedMaterialClass::submit
 //
 
-void OtTexturedMaterialClass::submit(OtRenderer& renderer, bool instancing) {
-	// submit uniform
-	uniform.set(0, glm::vec4(ambient, scale));
-	uniform.set(1, glm::vec4(diffuse, normalmap.isValid()));
-	uniform.set(2, glm::vec4(specular, shininess));
-	uniform.submit();
+void OtTexturedMaterialClass::submit(OtRenderer& renderer, bool wireframe, bool instancing) {
+	if (renderer.inShadowmapPass()) {
+		if (transparent) {
+			scaleUniform.set(0, glm::vec4(scale, 0.0, 0.0, 0.0));
+			scaleUniform.submit();
+			textureSampler.submit(1, texture);
 
-	// set samplers
-	textureSampler.submit(1, texture);
-	normalmapSampler.submit(2, normalmap);
+			if (instancing) {
+				renderer.runShader(transparentShadowInstancingShader);
 
-	// run appropriate shader
-	if (instancing) {
-		renderer.runShader(instancingShader);
+			} else {
+				renderer.runShader(transparentShadowShader);
+			}
+
+		} else {
+			if (instancing) {
+				renderer.runShader(shadowInstancingShader);
+
+			} else {
+				renderer.runShader(shadowShader);
+			}
+		}
 
 	} else {
-		renderer.runShader(shader);
+		// submit uniform
+		materialUniform.set(0, glm::vec4(ambient, scale));
+		materialUniform.set(1, glm::vec4(diffuse, normalmap.isValid()));
+		materialUniform.set(2, glm::vec4(specular, shininess));
+		materialUniform.submit();
+
+		// set samplers
+		textureSampler.submit(1, texture);
+		normalmapSampler.submit(2, normalmap);
+
+		// set rendering state
+		renderer.setState(wireframe, frontside, backside, transparent);
+
+		// run appropriate shader
+		if (instancing) {
+			renderer.runShader(instancingShader);
+
+		} else {
+			renderer.runShader(regularShader);
+		}
 	}
 }
 
@@ -157,6 +194,7 @@ OtType OtTexturedMaterialClass::getMeta()
 		type->set("setTexture", OtFunctionClass::create(&OtTexturedMaterialClass::setTexture));
 		type->set("setNormalMap", OtFunctionClass::create(&OtTexturedMaterialClass::setNormalMap));
 		type->set("setScale", OtFunctionClass::create(&OtTexturedMaterialClass::setScale));
+		type->set("setTransparent", OtFunctionClass::create(&OtTexturedMaterialClass::setTransparent));
 
 		type->set("setAmbient", OtFunctionClass::create(&OtTexturedMaterialClass::setAmbient));
 		type->set("setDiffuse", OtFunctionClass::create(&OtTexturedMaterialClass::setDiffuse));

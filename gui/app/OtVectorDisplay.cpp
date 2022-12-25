@@ -20,7 +20,6 @@
 #include "OtFramework.h"
 #include "OtSimplexFont.h"
 #include "OtVectorDisplay.h"
-#include "OtVectorDisplayShader.h"
 #include "OtPass.h"
 
 

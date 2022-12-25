@@ -20,7 +20,7 @@
 #include "OtSampler.h"
 #include "OtShader.h"
 #include "OtTexture.h"
-#include "OtUniform.h"
+#include "OtUniformVec4.h"
 
 
 //
@@ -39,6 +39,7 @@ public:
 	OtObject setTexture(const std::string& textureName);
 	OtObject setNormalMap(const std::string& normalmapName);
 	OtObject setScale(float scale);
+	OtObject setTransparent(bool tranparent);
 
 	OtObject setAmbient(const std::string& color);
 	OtObject setDiffuse(const std::string& color);
@@ -50,7 +51,7 @@ public:
 	void setSpecularRGB(float r, float g, float b) { specular = glm::vec3(r, g, b); }
 
 	// submit to GPU
-	void submit(OtRenderer& renderer, bool instancing) override;
+	void submit(OtRenderer& renderer, bool wireframe, bool instancing) override;
 
 	// get type definition
 	static OtType getMeta();
@@ -63,6 +64,7 @@ private:
 	OtTexture texture;
 	OtTexture normalmap;
 	float scale = 1.0;
+	bool transparent = false;
 
 	glm::vec3 ambient = { 0.4, 0.4, 0.4 };
 	glm::vec3 diffuse = { 0.6, 0.6, 0.6 };
@@ -70,11 +72,18 @@ private:
 	float shininess = 20;
 
 	// GPU assets
-	OtUniform uniform = OtUniform("u_material", 3);
+	OtUniformVec4 materialUniform = OtUniformVec4("u_material", 3);
+	OtUniformVec4 scaleUniform = OtUniformVec4("u_scale", 1);
 
 	OtSampler textureSampler = OtSampler("s_texture");
 	OtSampler normalmapSampler = OtSampler("s_normalmap");
 
-	OtShader shader = OtShader("OtTexturedVS", "OtTexturedFS");
+	OtShader regularShader = OtShader("OtTexturedVS", "OtTexturedFS");
 	OtShader instancingShader = OtShader("OtTexturedVSI", "OtTexturedFS");
+
+	OtShader shadowShader = OtShader("OtShadowVS", "OtShadowFS");
+	OtShader transparentShadowShader = OtShader("OtTransparentShadowVS", "OtTransparentShadowFS");
+
+	OtShader shadowInstancingShader = OtShader("OtShadowVSI", "OtShadowFS");
+	OtShader transparentShadowInstancingShader = OtShader("OtTransparentShadowVSI", "OtTransparentShadowFS");
 };

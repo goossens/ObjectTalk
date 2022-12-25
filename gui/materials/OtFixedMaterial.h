@@ -18,7 +18,7 @@
 
 #include "OtMaterial.h"
 #include "OtShader.h"
-#include "OtUniform.h"
+#include "OtUniformVec4.h"
 
 
 //
@@ -41,7 +41,7 @@ public:
 	void setColorVector(const glm::vec3& c) { color = c; }
 
 	// submit to GPU
-	void submit(OtRenderer& renderer, bool instancing) override;
+	void submit(OtRenderer& renderer, bool wireframe, bool instancing) override;
 
 	// get type definition
 	static OtType getMeta();
@@ -55,8 +55,10 @@ private:
 	float opacity = 1.0;
 
 	// GPU assets
-	OtUniform uniform = OtUniform("u_material", 1);
+	OtUniformVec4 uniform = OtUniformVec4("u_material", 1);
 
-	OtShader shader = OtShader("OtFixedVS", "OtFixedFS");
+	OtShader regularShader = OtShader("OtFixedVS", "OtFixedFS");
 	OtShader instancingShader = OtShader("OtFixedVSI", "OtFixedFS");
+	OtShader shadowShader = OtShader("OtShadowVS", "OtShadowFS");
+	OtShader shadowInstancingShader = OtShader("OtShadowVSI", "OtShadowFS");
 };

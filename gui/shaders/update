@@ -203,6 +203,7 @@ processDirectory Sky
 processDirectory Skybox
 processDirectory Terrain
 processDirectory Textured
+processDirectory TransparentShadow
 processDirectory VectorDisplay
 processDirectory Water
 

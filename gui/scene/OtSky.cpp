@@ -16,6 +16,7 @@
 #include "OtFunction.h"
 #include "OtNumbers.h"
 
+#include "OtColor.h"
 #include "OtSky.h"
 #include "OtVertex.h"
 
@@ -25,8 +26,49 @@
 //
 
 OtSkyClass::OtSkyClass() {
-	// create our dome
-	createSkyDome();
+	// create dome
+	int widthSegments = 16;
+	int heightSegments = 8;
+	float widthDelta = std::numbers::pi * 2.0 / widthSegments;
+	float heightDelta = (std::numbers::pi / 2.0 + 0.5) / heightSegments;
+
+	// address each ring
+	for (auto ring = 0; ring <= heightSegments; ring++) {
+		auto theta = ring * heightDelta;
+		auto r0 = std::sin(theta);
+		auto y0 = std::cos(theta);
+
+		// address each segment
+		for (auto seg = 0; seg <= widthSegments; seg++) {
+			auto phi = seg * widthDelta;
+			auto x0 = r0 * -std::sin(phi);
+			auto z0 = r0 * -std::cos(phi);
+
+			// add vertex
+			vertices.push_back(glm::vec3(x0, y0, z0));
+		}
+	}
+
+	// add triangles
+	for (auto ring = 0; ring < heightSegments; ring++) {
+		for (auto seg = 0; seg < widthSegments; seg++) {
+			auto a = ring * (widthSegments + 1) + seg;
+			auto b = a + (widthSegments + 1);
+			auto c = b + 1;
+			auto d = a + 1;
+
+			triangles.push_back(a);
+			triangles.push_back(b);
+			triangles.push_back(d);
+			triangles.push_back(b);
+			triangles.push_back(c);
+			triangles.push_back(d);
+		}
+	}
+
+	// create buffers
+	vertexBuffer.set(vertices.data(), vertices.size(), OtVertexPos::getLayout());
+	indexBuffer.set(triangles.data(), triangles.size());
 }
 
 
@@ -58,6 +100,26 @@ void OtSkyClass::init(size_t count, OtObject* parameters) {
 
 
 //
+//	OtSkyClass::setColor
+//
+
+OtObject OtSkyClass::setColor(const std::string &colorName) {
+	color = OtColorParseToVec3(colorName);
+	return shared();
+}
+
+
+//
+//	OtSkyClass::setColorRGB
+//
+
+OtObject OtSkyClass::setColorRGB(float r, float g, float b) {
+	color = glm::vec3(r, g, b);
+	return shared();
+}
+
+
+//
 //	OtSkyClass::setSun(
 //
 
@@ -85,7 +147,6 @@ OtObject OtSkyClass::setClouds(float cir, float cum) {
 
 OtObject OtSkyClass::setRadius(float r) {
 	radius = r;
-	createSkyDome();
 	return shared();
 }
 
@@ -97,12 +158,17 @@ OtObject OtSkyClass::setRadius(float r) {
 void OtSkyClass::renderGUI() {
 	ImGui::Checkbox("Enabled", &enabled);
 
-	ImGui::SliderFloat("Rayleigh Coefficient", &rayleighCoefficient, 0.5f, 6.0f);
-	ImGui::SliderFloat("Mie Coefficient", &mieCoefficient, 1.0f, 10.0f);
-	ImGui::SliderFloat("Mie Scattering", &mieScattering, 0.9f, 0.99f);
+	if (sun) {
+		ImGui::SliderFloat("Rayleigh Coefficient", &rayleighCoefficient, 0.5f, 6.0f);
+		ImGui::SliderFloat("Mie Coefficient", &mieCoefficient, 1.0f, 10.0f);
+		ImGui::SliderFloat("Mie Scattering", &mieScattering, 0.9f, 0.99f);
 
-	ImGui::SliderFloat("Cirrus", &cirrus, 0.0f, 1.0f);
-	ImGui::SliderFloat("Cumulus", &cumulus, 0.0f, 1.0f);
+		ImGui::SliderFloat("Cirrus", &cirrus, 0.0f, 1.0f);
+		ImGui::SliderFloat("Cumulus", &cumulus, 0.0f, 1.0f);
+
+	} else {
+		ImGui::ColorEdit3("Color", glm::value_ptr(color));
+	}
 }
 
 
@@ -111,80 +177,39 @@ void OtSkyClass::renderGUI() {
 //
 
 void OtSkyClass::render(OtRenderer& renderer) {
-	// no sun, no sky
-	if (!(sun && !sun->isEnabled())) {
-		// ensure sky is centered at camera position
-		glm::mat4 transform = glm::translate(glm::mat4(1.0), renderer.getCamera()->getPosition());
-		renderer.setTransform(transform);
+	// ensure sky is centered at camera position and scaled for the right radius
+	auto center = renderer.getCamera()->getPosition();
+	glm::mat4 transform = glm::translate(glm::mat4(1.0), glm::vec3(center));
+	transform = glm::scale(transform, glm::vec3(radius));
+	renderer.setTransform(transform);
 
-		// submit vertices and triangles
-		vertexBuffer.submit();
-		indexBuffer.submit();
+	// submit vertices and triangles
+	vertexBuffer.submit();
+	indexBuffer.submit();
 
-		// set uniforms
-		uniform.set(0, glm::vec4(0.0, cirrus, cumulus, 0.0));
-		uniform.set(1, glm::vec4(rayleighCoefficient / 1000.0, mieCoefficient / 1000.0, mieScattering, 0.0));
-		uniform.set(2, sun ? glm::vec4(sun->getDirectionToSun(), 0.0) : glm::vec4(0.0));
-		uniform.submit();
+	// handle different modes
+	if (sun) {
+		if (sun->isEnabled()) {
+			// set uniform
+			skyUniform.set(0, glm::vec4(0.0, cirrus, cumulus, 0.0));
+			skyUniform.set(1, glm::vec4(rayleighCoefficient / 1000.0, mieCoefficient / 1000.0, mieScattering, 0.0));
+			skyUniform.set(2, sun ? glm::vec4(sun->getDirectionToSun(), 0.0) : glm::vec4(0.0));
+			skyUniform.submit();
+
+			// run shader
+			renderer.setNoDepthState();
+			renderer.runShader(skyShader);
+		}
+
+	} else {
+		// set uniform
+		colorUniform.set(0, glm::vec4(color, 0.0));
+		colorUniform.submit();
 
 		// run shader
-		renderer.setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_MSAA);
-		renderer.runShader(shader);
+		renderer.setNoDepthState();
+		renderer.runShader(colorShader);
 	}
-}
-
-
-//
-//	OtSkyClass::createSkyDome
-//
-
-void OtSkyClass::createSkyDome() {
-	// create dome
-	vertices.clear();
-	triangles.clear();
-
-	int widthSegments = 16;
-	int heightSegments = 8;
-	float widthDelta = std::numbers::pi * 2.0 / widthSegments;
-	float heightDelta = (std::numbers::pi / 2.0 + 0.1) / heightSegments;
-
-	// address each ring
-	for (auto ring = 0; ring <= heightSegments; ring++) {
-		auto theta = ring * heightDelta;
-		auto r0 = radius * std::sin(theta);
-		auto y0 = radius * std::cos(theta);
-
-		// address each segment
-		for (auto seg = 0; seg <= widthSegments; seg++) {
-			auto phi = seg * widthDelta;
-			auto x0 = r0 * -std::sin(phi);
-			auto z0 = r0 * -std::cos(phi);
-
-			// add vertex
-			vertices.push_back(glm::vec3(x0, y0, z0));
-		}
-	}
-
-	// add triangles
-	for (auto ring = 0; ring < heightSegments; ring++) {
-		for (auto seg = 0; seg < widthSegments; seg++) {
-			auto a = ring * (widthSegments + 1) + seg;
-			auto b = a + (widthSegments + 1);
-			auto c = b + 1;
-			auto d = a + 1;
-
-			triangles.push_back(a);
-			triangles.push_back(b);
-			triangles.push_back(d);
-			triangles.push_back(b);
-			triangles.push_back(c);
-			triangles.push_back(d);
-		}
-	}
-
-	// create/update buffers
-	vertexBuffer.set(vertices.data(), vertices.size(), OtVertexPos::getLayout());
-	indexBuffer.set(triangles.data(), triangles.size());
 }
 
 
@@ -198,6 +223,10 @@ OtType OtSkyClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtSkyClass>("Sky", OtSceneObjectClass::getMeta());
 		type->set("__init__", OtFunctionClass::create(&OtSkyClass::init));
+
+		type->set("setColor", OtFunctionClass::create(&OtSkyClass::setColor));
+		type->set("setColorRGB", OtFunctionClass::create(&OtSkyClass::setColorRGB));
+
 		type->set("setSun", OtFunctionClass::create(&OtSkyClass::setSun));
 		type->set("setClouds", OtFunctionClass::create(&OtSkyClass::setClouds));
 		type->set("setRadius", OtFunctionClass::create(&OtSkyClass::setRadius));

@@ -76,17 +76,30 @@ OtObject OtFixedMaterialClass::setOpacity(float o) {
 }
 
 
-void OtFixedMaterialClass::submit(OtRenderer& renderer, bool instancing) {
-		// submit uniform
-	uniform.set(0, glm::vec4(color, opacity));
-	uniform.submit();
+void OtFixedMaterialClass::submit(OtRenderer& renderer, bool wireframe, bool instancing) {
+	if (renderer.inShadowmapPass()) {
+		if (instancing) {
+			renderer.runShader(shadowInstancingShader);
 
-	// run appropriate shader
-	if (instancing) {
-		renderer.runShader(instancingShader);
+		} else {
+			renderer.runShader(shadowShader);
+		}
 
 	} else {
-		renderer.runShader(shader);
+			// submit uniform
+		uniform.set(0, glm::vec4(color, opacity));
+		uniform.submit();
+
+		// set rendering state
+		renderer.setState(wireframe, frontside, backside, transparent);
+
+		// run appropriate shader
+		if (instancing) {
+			renderer.runShader(instancingShader);
+
+		} else {
+			renderer.runShader(regularShader);
+		}
 	}
 }
 

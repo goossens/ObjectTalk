@@ -23,15 +23,6 @@
 
 
 //
-//	OtCameraClass::OtCameraClass
-//
-
-OtCameraClass::OtCameraClass() {
-	frustum = OtFrustumClass::create();
-}
-
-
-//
 //	OtCameraClass::setPerspective
 //
 
@@ -200,6 +191,18 @@ void OtCameraClass::setUpVector(glm::vec3 up) {
 
 
 //
+//	OtCameraClass::setAspectRatio
+//
+
+void OtCameraClass::setAspectRatio(float ar) {
+	if (ar != aspectRatio) {
+		aspectRatio = ar;
+	changed = true;
+	}
+}
+
+
+//
 //	OtCameraClass::setDistance
 //
 
@@ -357,65 +360,59 @@ bool OtCameraClass::onKey(int key, int mods) {
 //	OtCameraClass::update
 //
 
-void OtCameraClass::update(OtRenderer& renderer) {
-	// only update on change
-	if (changed) {
-		if (mode == circleTargetMode) {
-			// calculate new camera position
-			cameraPosition = glm::vec3(
-				cameraTarget.x + distance * std::cos(pitch) * std::sin(yaw),
-				cameraTarget.y + distance * std::sin(pitch),
-				cameraTarget.z + distance * std::cos(pitch) * std::cos(yaw));
+void OtCameraClass::update() {
+	if (mode == circleTargetMode) {
+		// calculate new camera position
+		cameraPosition = glm::vec3(
+			cameraTarget.x + distance * std::cos(pitch) * std::sin(yaw),
+			cameraTarget.y + distance * std::sin(pitch),
+			cameraTarget.z + distance * std::cos(pitch) * std::cos(yaw));
 
-		} else if (mode == firstPersonMode) {
-			// calculate new forward vector
-			forward.x = std::cos(yaw) * std::cos(pitch);
-			forward.y = std::sin(pitch);
-			forward.z = std::sin(yaw) * std::cos(pitch);
-			forward = glm::normalize(forward);
+	} else if (mode == firstPersonMode) {
+		// calculate new forward vector
+		forward.x = std::cos(yaw) * std::cos(pitch);
+		forward.y = std::sin(pitch);
+		forward.z = std::sin(yaw) * std::cos(pitch);
+		forward = glm::normalize(forward);
 
-			// limit camera position
-			cameraPosition.y = std::clamp(cameraPosition.y, heightMin, heightMax);
+		// limit camera position
+		cameraPosition.y = std::clamp(cameraPosition.y, heightMin, heightMax);
 
-			// set new camera target based on forward vector
-			cameraTarget = cameraPosition + forward;
+		// set new camera target based on forward vector
+		cameraTarget = cameraPosition + forward;
 
-			// calculate right vector
-			right = glm::normalize(glm::cross(forward, cameraUp));
-		}
-
-		// determine transformations
-		viewMatrix = glm::lookAt(cameraPosition, cameraTarget, cameraUp);
-
-		// get view aspect ratio
-		float aspectRatio = renderer.getViewW() / renderer.getViewH();
-
-		// determine projection matrix for camera
-		if (style == perspectiveStyle) {
-			projMatrix = OtGpuHasHomogeneousDepth()
-				? glm::perspectiveRH_NO(glm::radians(fov), aspectRatio, near, far)
-				: glm::perspectiveRH_ZO(glm::radians(fov), aspectRatio, near, far);
-
-		} else if (style == orthographicStyle) {
-			float w = width / 2.0;
-			float h = w / aspectRatio;
-
-			projMatrix = OtGpuHasHomogeneousDepth()
-				? glm::orthoRH_NO(-w, w, -h, h, near, far)
-				: glm::orthoRH_ZO(-w, w, -h, h, near, far);
-
-		} else {
-			projMatrix = OtGpuHasHomogeneousDepth()
-				? glm::orthoRH_NO(xmin, xmax, ymin, ymax, zmin, zmax)
-				: glm::orthoRH_ZO(xmin, xmax, ymin, ymax, zmin, zmax);
-		}
-
-		// calculate combined view and projection matrix
-		viewProjMatrix = projMatrix * viewMatrix;
-
-		// update frustum (in world space)
-		frustum->update(viewProjMatrix);
+		// calculate right vector
+		right = glm::normalize(glm::cross(forward, cameraUp));
 	}
+
+	// determine transformations
+	viewMatrix = glm::lookAt(cameraPosition, cameraTarget, cameraUp);
+
+	// determine projection matrix for camera
+	if (style == perspectiveStyle) {
+		projMatrix = OtGpuHasHomogeneousDepth()
+			? glm::perspectiveRH_NO(glm::radians(fov), aspectRatio, near, far)
+			: glm::perspectiveRH_ZO(glm::radians(fov), aspectRatio, near, far);
+
+	} else if (style == orthographicStyle) {
+		float w = width / 2.0;
+		float h = w / aspectRatio;
+
+		projMatrix = OtGpuHasHomogeneousDepth()
+			? glm::orthoRH_NO(-w, w, -h, h, near, far)
+			: glm::orthoRH_ZO(-w, w, -h, h, near, far);
+
+	} else {
+		projMatrix = OtGpuHasHomogeneousDepth()
+			? glm::orthoRH_NO(xmin, xmax, ymin, ymax, zmin, zmax)
+			: glm::orthoRH_ZO(xmin, xmax, ymin, ymax, zmin, zmax);
+	}
+
+	// calculate combined view and projection matrix
+	viewProjMatrix = projMatrix * viewMatrix;
+
+	// update frustum (in world space)
+	frustum = OtFrustum(viewProjMatrix);
 }
 
 
@@ -424,7 +421,7 @@ void OtCameraClass::update(OtRenderer& renderer) {
 //
 
 bool OtCameraClass::isVisiblePoint(const glm::vec3& point) {
-	return frustum->isVisiblePoint(point);
+	return frustum.isVisiblePoint(point);
 }
 
 
@@ -433,7 +430,7 @@ bool OtCameraClass::isVisiblePoint(const glm::vec3& point) {
 //
 
 bool OtCameraClass::isVisibleAABB(OtAABB aabb) {
-	return frustum->isVisibleAABB(aabb);
+	return frustum.isVisibleAABB(aabb);
 }
 
 
@@ -442,7 +439,7 @@ bool OtCameraClass::isVisibleAABB(OtAABB aabb) {
 //
 
 bool OtCameraClass::isVisibleSphere(const glm::vec3& center, float radius) {
-	return frustum->isVisibleSphere(center, radius);
+	return frustum.isVisibleSphere(center, radius);
 }
 
 
@@ -462,18 +459,18 @@ void OtCameraClass::renderGUI() {
 	if (ImGui::SliderFloat("Far Clipping", &far, farMin, farMax)) { changed = true; }
 
 	if (mode == scriptControlMode) {
-		if (ImGui::SliderFloat3("Position", glm::value_ptr(cameraPosition), -50.0f, 50.0f)) { changed = true; }
-		if (ImGui::SliderFloat3("Target", glm::value_ptr(cameraTarget), -50.0f, 50.0f)) { changed = true; }
-		if (ImGui::SliderFloat3("Up", glm::value_ptr(cameraUp), -2.0f, 2.0f)) { changed = true; }
+		if (ImGui::InputFloat3("Position", glm::value_ptr(cameraPosition))) { changed = true; }
+		if (ImGui::InputFloat3("Target", glm::value_ptr(cameraTarget))) { changed = true; }
+		if (ImGui::SliderFloat3("Up", glm::value_ptr(cameraUp), -1.0f, 1.0f)) { changed = true; }
 
 	} else if (mode == circleTargetMode) {
-		if (ImGui::SliderFloat3("Target", glm::value_ptr(cameraTarget), -50.0f, 50.0f)) { changed = true; }
+		if (ImGui::InputFloat3("Target", glm::value_ptr(cameraTarget))) { changed = true; }
 		if (ImGui::SliderFloat("Distance", &distance, distanceMin, distanceMax)) { changed = true; }
 		if (ImGui::SliderFloat("Pitch", &pitch, pitchMin, pitchMax)) { changed = true; }
 		if (ImGui::SliderFloat("Yaw", &yaw, yawMin, yawMax)) { changed = true; }
 
 	} else if (mode == firstPersonMode) {
-		if (ImGui::SliderFloat3("Position", glm::value_ptr(cameraPosition), -50.0f, 50.0f)) { changed = true; }
+		if (ImGui::InputFloat3("Position", glm::value_ptr(cameraPosition))) { changed = true; }
 		if (ImGui::SliderFloat("Pitch", &pitch, pitchMin, pitchMax)) { changed = true; }
 		if (ImGui::SliderFloat("Yaw", &yaw, yawMin, yawMax)) { changed = true; }
 
@@ -511,8 +508,6 @@ OtType OtCameraClass::getMeta() {
 		type->set("setPitchLimits", OtFunctionClass::create(&OtCameraClass::setPitchLimits));
 		type->set("setYawLimits", OtFunctionClass::create(&OtCameraClass::setYawLimits));
 		type->set("setHeightLimits", OtFunctionClass::create(&OtCameraClass::setHeightLimits));
-
-		type->set("hasChanged", OtFunctionClass::create(&OtCameraClass::hasChanged));
 	}
 
 	return type;
@@ -550,6 +545,7 @@ OtCamera OtCameraClass::create(OtCamera camera) {
 	clone->width = camera->width;
 	clone->near = camera->near;
 	clone->far = camera->far;
+	clone->aspectRatio = camera->aspectRatio;
 
 	return clone;
 }

@@ -17,19 +17,17 @@
 
 #include "glm/glm.hpp"
 
+#include "OtAABB.h"
+#include "OtCascadedShadowMap.h"
 #include "OtFrameBuffer.h"
+#include "OtFrustum.h"
+#include "OtGeometry.h"
 #include "OtPass.h"
 #include "OtSampler.h"
 #include "OtShader.h"
-#include "OtUniform.h"
+#include "OtUniformMat4.h"
+#include "OtUniformVec4.h"
 #include "OtVertex.h"
-
-
-//
-//	Constants
-//
-
-inline constexpr size_t maxPointSpotLights = 4;
 
 
 //
@@ -53,15 +51,17 @@ public:
 	OtRenderer();
 
 	// run various rendering passes
-	void runLightingPass(OtScene scene, OtCamera camera, float x, float y, float w, float h);
-	void runShadowPass(OtPass pass, OtScene scene, OtCamera camera, OtFrameBuffer& framebuffer);
-	void runReflectionPass(OtPass pass, OtScene scene, OtCamera camera, OtFrameBuffer& framebuffer);
+	void run(OtScene scene, OtCamera camera, float x, float y, float w, float h);
+	void runShadowPass(OtScene scene, OtCamera camera, OtFrameBuffer& framebuffer);
+	void runReflectionPass(OtScene scene, OtCamera camera, OtFrameBuffer& framebuffer);
+	void runDebugPass(OtCamera debugCamera, OtScene scene, OtCamera camera, OtFrameBuffer& framebuffer);
 
 	// validate pass
 	bool inShadowmapPass() { return renderingPass == shadowmapPass; }
 	bool inReflectionPass() { return renderingPass == reflectionPass; }
 	bool inRefractionPass() { return renderingPass == refractionPass; }
 	bool inLightingPass() { return renderingPass == lightingPass; }
+	bool inDebugPass() { return renderingPass == debugPass; }
 
 	// access view rectangle
 	float getViewX() { return viewX; }
@@ -71,7 +71,8 @@ public:
 
 	// update rendering state
 	void setTransform(const glm::mat4& matrix);
-	void setState(uint64_t state);
+	void setState(bool wireframe=false, bool frontside=false, bool backside=false, bool transparent=false);
+	void setNoDepthState();
 	void setDefaultState();
 	void setInstanceData(void* data, size_t count, size_t size);
 
@@ -104,8 +105,8 @@ public:
 	// copy light properties from another renderer
 	void copyLightProperties(OtRenderer& renderer);
 
-	// activate shadow matrix
-	void setShadowMap(OtFrameBuffer& framebuffer, const glm::mat4& matrix);
+	// activate cascaded shadow matrix for directional lights
+	void setCascadedShadowMap(OtCascadedShadowMap& csm);
 
 	// submit rendering context to GPU
 	void submit(bool receiveShadow);
@@ -117,15 +118,25 @@ public:
 	void debugSetColor(uint32_t color) {debugColor = color; }
 	void debugMoveTo(const glm::vec3& point) { debugPoint = point; }
 	void debugLineTo(const glm::vec3& point);
-	void debugAxis(float scale);
+	void debugRenderAxis(float scale);
+	void debugRenderAABB(const OtAABB& aabb);
+	void debugRenderFrustum(const OtFrustum& frustum);
+	void debugRenderCamera(OtCamera camera);
+	void debugRenderCascadedShadowMap(OtCascadedShadowMap* csm);
+	void debugRenderGeometry(OtGeometry geometry, const glm::mat4& matrix=glm::mat4(1.0));
+	void debugRender();
 
 private:
+	// reset renderer state
+	void reset();
+
 	// track rendering pass
 	enum RenderingPass{
 		shadowmapPass,
 		reflectionPass,
 		refractionPass,
-		lightingPass
+		lightingPass,
+		debugPass
 	};
 
 	RenderingPass renderingPass;
@@ -168,6 +179,7 @@ private:
 		float coneOuter = 0.0;
 	};
 
+	constexpr static size_t maxPointSpotLights = 2;
 	PointSpotLight pointSpotLight[maxPointSpotLights];
 	size_t lightCount = 0;
 
@@ -176,18 +188,39 @@ private:
 	float fogNear = 0.0;
 	float fogFar = 0.0;
 
-	bool shadowEnabled = false;
-	OtFrameBuffer* shadowFrameBuffer = nullptr;
-	glm::mat4 shadowMatrix = glm::mat4(1.0);
+	OtCascadedShadowMap* csm = nullptr;
+
+	// light uniform layout
+	enum {
+		cameraPositionSlot = 0,
+		ambientColorSlot,
+		directionalLightDirectionSlot,
+		directionalLightColorSlot,
+		directionalLightShadowSlot,
+		directionalLightDistancesSlot,
+		fogPropertiesSlot,
+		fogColorSlot,
+		lightingSlot
+	};
+
+	enum {
+		lightPositionSlot = 0,
+		lightColorSlot,
+		lighAttenuationSlot,
+		lightConeSlot,
+		lastLightPropertiesSlot
+	};
+
+	constexpr static size_t maxUniformSlots = lightingSlot + maxPointSpotLights * lastLightPropertiesSlot;
 
 	// to pass light information to shaders
-	OtUniform lightUniform;
-	OtSampler shadowSampler = OtSampler("s_shadowmap");
+	OtUniformVec4 lightUniform = OtUniformVec4("u_light", maxUniformSlots);
+	OtUniformMat4 directionalShadowMapTransform = OtUniformMat4("u_directional_shadow_transform", OtCascadedShadowMap::cascades);
+	OtSampler directionalShadowMapSamplers[OtCascadedShadowMap::cascades];
 
 	// support for debug drawing
 	uint32_t debugColor = 0;
 	glm::vec3 debugPoint = glm::vec3(0.0);
 	std::vector<OtVertexPosCol> debugVertices;
 	std::vector<uint32_t> debugIndices;
-	void debugRender();
 };

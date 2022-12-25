@@ -17,18 +17,22 @@ class App : gui.App {
 
 		var light = gui.DirectionalLight()
 			.setDirection(-100, -70, -100)
-			.castShadow();
+			.castShadow(true);
 
 		var fog = gui.Fog()
 			.setColor("#cce0ff")
 			.setDistances(50, 150);
 
+		var sky = gui.Sky()
+			.setRadius(100)
+			.setColor("#cce0ff");
+
 		var grass = gui.Mesh()
 			.receiveShadow(true)
-			.setGeometry(gui.PlaneGeometry(200, 200, 10, 10))
+			.setGeometry(gui.PlaneGeometry(400, 400, 10, 10))
 			.setMaterial(gui.TexturedMaterial()
 				.setTexture(Path(__DIR__, "assets", "grass.jpg"))
-				.setScale(0.2))
+				.setScale(0.1))
 			.rotateX(-pi / 2.0);
 
 		var poleGeometry = gui.CylinderGeometry(0.5, 0.5, 26);
@@ -67,7 +71,8 @@ class App : gui.App {
 			.setGeometry(plane)
 			.setMaterial(gui.TexturedMaterial()
 				.setTexture(Path(__DIR__, "assets", "cloth.png"))
-				.setDoubleSided())
+				.setDoubleSided()
+				.setTransparent(true))
 			.translate(0, 15, 0);
 
 		// create scene
@@ -75,6 +80,7 @@ class App : gui.App {
 			.add(ambient)
 			.add(light)
 			.add(fog)
+			.add(sky)
 			.add(grass)
 			.add(pole1)
 			.add(pole2)
@@ -83,7 +89,7 @@ class App : gui.App {
 
 		// create camera
 		var camera = gui.Camera()
-			.setPerspective(45, 20, 500)
+			.setPerspective(45, 1.0, 200.0)
 			.setCircleTargetMode()
 			.setTarget(0, 10, 0)
 			.setPitchLimits(0.0, pi / 2.0 - 0.1)

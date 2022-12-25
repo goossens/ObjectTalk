@@ -49,9 +49,6 @@ public:
 	static OtMesh create();
 
 protected:
-	// render with culling
-	void render(OtRenderer& renderer, long flag);
-
 	// properties
 	OtGeometry geometry;
 	OtMaterial material;

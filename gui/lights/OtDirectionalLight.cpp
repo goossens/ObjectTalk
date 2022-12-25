@@ -9,16 +9,24 @@
 //	Include files
 //
 
+#include "glm/glm.hpp"
 #include "glm/ext.hpp"
 #include "imgui.h"
 
 #include "OtException.h"
 #include "OtFunction.h"
 
-#include "OtAABB.h"
+#include "OtScene.h"
 #include "OtColor.h"
 #include "OtDirectionalLight.h"
-#include "OtFrustum.h"
+#include "OtViewPort.h"
+
+
+//
+//	Constants
+//
+
+constexpr int shadowmapSize = 512;
 
 
 //
@@ -88,59 +96,26 @@ OtObject OtDirectionalLightClass::setColorRGB(float r, float g, float b) {
 
 
 //
-//	OtDirectionalLightClass::update
+//	OtDirectionalLightClass::addPropertiesToRenderer
 //
 
-void OtDirectionalLightClass::update(OtRenderer& renderer) {
-	OtLightClass::update(renderer);
-
+void OtDirectionalLightClass::addPropertiesToRenderer(OtRenderer &renderer) {
 	// handle shadows (if required)
 	if (castShadowFlag) {
-		// get frustum of regular camera
-		OtCamera camera = renderer.getCamera();
-		OtFrustum frustum = renderer.getCamera()->getFrustum();
+		csm.update(shadowmapSize, renderer.getCamera(), direction);
+		OtRenderer shadowMapRenderer;
 
-		// calculate center of that frustum
-		glm::vec3 center = frustum->getCenter();
-
-		// create light "view" matrix
-		glm::mat4 viewMatrix = glm::lookAt(center - direction, center, glm::vec3(0.0, 1.0, 0.0));
-
-		// determine AABB of scene camera frustum in light camera space
-		OtAABB aabb = OtAABBClass::create();
-
-		for (auto p = 0; p < frustum->pointCount; p++) {
-			aabb->addPoint(viewMatrix * glm::vec4(frustum->getCorner(p), 1.0));
+		for (auto cascade = 0; cascade < OtCascadedShadowMap::cascades; cascade++) {
+			shadowMapRenderer.runShadowPass(
+				renderer.getScene(),
+				csm.getCascadeCamera(cascade),
+				csm.getCascadeFramebuffer(cascade));
 		}
 
-		// get min and max values of AABB
-		glm::vec3 min = aabb->getMin();
-		glm::vec3 max = aabb->getMax();
-
-		// increase near and far plane of light frustum (to include out of sight objects that create shadows)
-		constexpr float factor = 1.2;
-
-		if (min.z < 0) {
-			min.z *= factor;
-
-		} else {
-			min.z /= factor;
-		}
-
-		if (max.z < 0) {
-			max.z /= factor;
-
-		} else {
-			max.z *= factor;
-		}
-
-		// update "light" camera
-		shadowCamera->setPositionVector(center - direction);
-		shadowCamera->setTargetVector(center);
-		shadowCamera->setOrthographicCustom(min.x, max.x, min.y, max.y, min.z, max.z);
-		shadowCamera->update(renderer);
+		renderer.setCascadedShadowMap(csm);
 	}
 
+	// add light properties to renderer
 	renderer.setDirectionalLight(direction, color);
 }
 
@@ -157,9 +132,13 @@ void OtDirectionalLightClass::renderGUI() {
 	ImGui::Checkbox("Casts Shadow", &castShadowFlag);
 
 	if (castShadowFlag) {
-		if (ImGui::TreeNodeEx("Shadowmap:", ImGuiTreeNodeFlags_Framed)) {
-			float width = ImGui::GetContentRegionAvail().x;
-			ImGui::Image((void*)(intptr_t) framebuffer.getDepthTextureIndex(), ImVec2(width, width));
+		if (ImGui::TreeNodeEx("Cascaded Shadows:", ImGuiTreeNodeFlags_Framed)) {
+			for (auto cascade = 0; cascade < OtCascadedShadowMap::cascades; cascade++) {
+				ImGui::Text("Cascade %d:", cascade);
+				float width = ImGui::GetContentRegionAvail().x;
+				ImGui::Image((void*)(intptr_t) csm.getCascadeDepthTextureIndex(cascade), ImVec2(width, width));
+			}
+
 			ImGui::TreePop();
 		}
 	}

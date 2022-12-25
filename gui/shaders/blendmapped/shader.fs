@@ -4,7 +4,7 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-$input v_position, v_normal, v_texcoord0, v_shadow
+$input v_position, v_view, v_normal, v_texcoord0
 
 #include <bgfx.glsl>
 #include <light.glsl>
@@ -38,5 +38,5 @@ void main() {
 		texture2D(s_material5, tiled) * blend.b;
 
 	Material material = createMaterial(u_ambient, u_diffuse, u_specular, u_shininess);
-	gl_FragColor = applyLightAndFog(color, material, v_position, normalize(v_normal), v_shadow);
+	gl_FragColor = applyLightAndFog(color, material, v_position, v_view, normalize(v_normal));
 }

@@ -38,18 +38,19 @@ void OtDynamicVertexBuffer::clear() {
 //
 
 void OtDynamicVertexBuffer::set(void *data, size_t count, const bgfx::VertexLayout& l) {
-	clear();
-	layout = l;
-	vertexBuffer = bgfx::createDynamicVertexBuffer(bgfx::copy(data, layout.getSize((uint32_t) count)), layout);
-}
+/*
+ if (layout != l) {
+		clear();
+	}
+*/
+	
+	if (bgfx::isValid(vertexBuffer)) {
+		bgfx::update(vertexBuffer, 0, bgfx::copy(data, layout.getSize((uint32_t) count)));
 
-
-//
-//	OtDynamicVertexBuffer::update
-//
-
-void OtDynamicVertexBuffer::update(void *data, size_t count) {
-	bgfx::update(vertexBuffer, 0, bgfx::copy(data, layout.getSize((uint32_t) count)));
+	} else {
+		layout = l;
+		vertexBuffer = bgfx::createDynamicVertexBuffer(bgfx::copy(data, layout.getSize((uint32_t) count)), layout);
+	}
 }
 
 

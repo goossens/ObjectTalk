@@ -57,6 +57,8 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f shadow/shader.vs -o shadow/vs_dx11.h -i include --type vertex --platform windows -p vs_5_0 -O 3 --bin2c OtShadowVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f shadow/shader.fs -o shadow/fs_dx9.h -i include --type fragment --platform windows -p ps_3_0 -O 3 --bin2c OtShadowFS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f shadow/shader.fs -o shadow/fs_dx11.h -i include --type fragment --platform windows -p ps_5_0 -O 3 --bin2c OtShadowFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f shadow/instancing.vs -o shadow/vsi_dx9.h -i include --type vertex --platform windows -p vs_3_0 -O 3 --bin2c OtShadowVSI_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f shadow/instancing.vs -o shadow/vsi_dx11.h -i include --type vertex --platform windows -p vs_5_0 -O 3 --bin2c OtShadowVSI_dx11
 
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f sky/shader.vs -o sky/vs_dx9.h -i include --type vertex --platform windows -p vs_3_0 -O 3 --bin2c OtSkyVS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f sky/shader.vs -o sky/vs_dx11.h -i include --type vertex --platform windows -p vs_5_0 -O 3 --bin2c OtSkyVS_dx11
@@ -79,6 +81,13 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f textured/shader.fs -o textured/fs_dx11.h -i include --type fragment --platform windows -p ps_5_0 -O 3 --bin2c OtTexturedFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f textured/instancing.vs -o textured/vsi_dx9.h -i include --type vertex --platform windows -p vs_3_0 -O 3 --bin2c OtTexturedVSI_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f textured/instancing.vs -o textured/vsi_dx11.h -i include --type vertex --platform windows -p vs_5_0 -O 3 --bin2c OtTexturedVSI_dx11
+
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f transparentshadow/shader.vs -o transparentshadow/vs_dx9.h -i include --type vertex --platform windows -p vs_3_0 -O 3 --bin2c OtTransparentShadowVS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f transparentshadow/shader.vs -o transparentshadow/vs_dx11.h -i include --type vertex --platform windows -p vs_5_0 -O 3 --bin2c OtTransparentShadowVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f transparentshadow/shader.fs -o transparentshadow/fs_dx9.h -i include --type fragment --platform windows -p ps_3_0 -O 3 --bin2c OtTransparentShadowFS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f transparentshadow/shader.fs -o transparentshadow/fs_dx11.h -i include --type fragment --platform windows -p ps_5_0 -O 3 --bin2c OtTransparentShadowFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f transparentshadow/instancing.vs -o transparentshadow/vsi_dx9.h -i include --type vertex --platform windows -p vs_3_0 -O 3 --bin2c OtTransparentShadowVSI_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f transparentshadow/instancing.vs -o transparentshadow/vsi_dx11.h -i include --type vertex --platform windows -p vs_5_0 -O 3 --bin2c OtTransparentShadowVSI_dx11
 
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f vectordisplay/shader.vs -o vectordisplay/vs_dx9.h -i include --type vertex --platform windows -p vs_3_0 -O 3 --bin2c OtVectorDisplayVS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f vectordisplay/shader.vs -o vectordisplay/vs_dx11.h -i include --type vertex --platform windows -p vs_5_0 -O 3 --bin2c OtVectorDisplayVS_dx11

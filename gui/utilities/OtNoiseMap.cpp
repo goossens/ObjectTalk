@@ -22,15 +22,6 @@
 
 
 //
-//	OtNoiseMapClass::OtNoiseMapClass
-//
-
-OtNoiseMapClass::OtNoiseMapClass() {
-	perlin = OtPerlinClass::create(currentSeed);
-}
-
-
-//
 //	OtNoiseMapClass::init
 //
 
@@ -50,7 +41,7 @@ void OtNoiseMapClass::init(size_t count, OtObject* parameters) {
 
 OtObject OtNoiseMapClass::setSeed(int seed) {
 	currentSeed = seed;
-	perlin->seed(seed);
+	perlin.seed(seed);
 	notify();
 	return shared();
 }
@@ -146,7 +137,7 @@ float OtNoiseMapClass::getMaxNoise() {
 //
 
 float OtNoiseMapClass::getNoise(float x, float y) {
-	return easingFunction(perlin->octaveNoise(
+	return easingFunction(perlin.octaveNoise(
 		x / scaleXY, y / scaleXY, 0.5,
 		octaves, persistence)) * scaleZ + offsetZ;
 }
@@ -162,7 +153,7 @@ void OtNoiseMapClass::getNoiseArray(float* output, size_t width, size_t height, 
 
 	for (auto iy = 0; iy < height; iy++) {
 		for (auto ix = 0; ix < width; ix++) {
-			*ptr++ = easingFunction(perlin->octaveNoise(
+			*ptr++ = easingFunction(perlin.octaveNoise(
 				(x + ix) / scaleXY, (y + iy) / scaleXY, 0.5,
 				octaves, persistence));
 		}

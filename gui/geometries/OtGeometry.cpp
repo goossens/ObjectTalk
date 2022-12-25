@@ -15,15 +15,6 @@
 
 
 //
-//	OtGeometryClass::OtGeometryClass
-//
-
-OtGeometryClass::OtGeometryClass() {
-	aabb = OtAABBClass::create();
-}
-
-
-//
 //	OtGeometryClass::computeTangents
 //
 
@@ -42,7 +33,7 @@ OtObject OtGeometryClass::computeTangents()
 //
 
 void OtGeometryClass::clearGeometry() {
-	aabb->clear();
+	aabb.clear();
 	vertices.clear();
 	triangles.clear();
 	lines.clear();

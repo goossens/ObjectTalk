@@ -28,14 +28,13 @@ void OtSceneClass::validateChild(OtComponent child) {
 
 
 //
-//	OtSceneClass::update
+//	OtSceneClass::preRender
 //
 
-void OtSceneClass::update(OtRenderer& renderer) {
-	// update all children
+void OtSceneClass::preRender(OtRenderer& renderer) {
 	for (auto const& child : children) {
 		if (child->isEnabled()) {
-			child->cast<OtSceneObjectClass>()->update(renderer);
+			child->cast<OtSceneObjectClass>()->preRender(renderer);
 		}
 	}
 }

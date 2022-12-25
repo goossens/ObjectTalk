@@ -61,11 +61,10 @@ OtObject OtAmbientLightClass::setColorRGB(float r, float g, float b) {
 
 
 //
-//	OtAmbientLightClass::update
+//	OtAmbientLightClass::addPropertiesToRenderer
 //
 
-void OtAmbientLightClass::update(OtRenderer& renderer) {
-	OtLightClass::update(renderer);
+void OtAmbientLightClass::addPropertiesToRenderer(OtRenderer& renderer) {
 	renderer.addAmbientLight(color);
 }
 

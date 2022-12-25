@@ -13,6 +13,7 @@
 
 #include "tesselator.h"
 
+#include "OtException.h"
 #include "OtFunction.h"
 
 #include "OtExtrudedGeometry.h"
@@ -131,8 +132,11 @@ void OtExtrudedGeometryClass::fillGeometry() {
 		}
 	}
 
-	// perform the tessalation
-	auto result = tessTesselate(tess, TESS_WINDING_ODD, TESS_POLYGONS, 3, 2, nullptr);
+	// perform the tesselation
+	if (!tessTesselate(tess, TESS_WINDING_ODD, TESS_POLYGONS, 3, 2, nullptr)) {
+		OtExcept("[ExtrudedGeometry] can't tesselate geometry");
+	}
+
 	int vertexCount = tessGetVertexCount(tess);
 	int indexCount = tessGetElementCount(tess);
 	int offset = (uint32_t) vertices.size();

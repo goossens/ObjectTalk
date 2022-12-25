@@ -45,8 +45,8 @@ public:
 	void setColorVector(const glm::vec3 c) { color = c; }
 	void setAttenuationVector(const glm::vec3 a) { attenuation = a; }
 
-	// update state
-	void update(OtRenderer& renderer) override;
+	// add light properties to renderer
+	void addPropertiesToRenderer(OtRenderer& renderer) override;
 
 	// GUI to change properties
 	void renderGUI();
@@ -59,12 +59,12 @@ public:
 
 private:
 	// properties
-	glm::vec3 position = glm::vec3(0.0, 0.0, 1.0);
+	glm::vec3 position = glm::vec3(0.0, 0.0, 5.0);
 	glm::vec3 direction = glm::vec3(0.0, 0.0, -1.0);
 	glm::vec3 color = glm::vec3(1.0);
 	glm::vec3 attenuation = glm::vec3(1.0, 0.1, 0.1);
-	float inner = std::numbers::pi / 2.0;
-	float outer = std::numbers::pi / 2.0;
+	float inner = std::numbers::pi / 5.0;
+	float outer = std::numbers::pi / 4.0;
 };
 
 

@@ -26,7 +26,7 @@
 #include "OtTerrainMap.h"
 #include "OtTerrainTile.h"
 #include "OtTexture.h"
-#include "OtUniform.h"
+#include "OtUniformVec4.h"
 
 
 //
@@ -68,9 +68,6 @@ public:
 	OtObject setRegion2Texture(const std::string& texture);
 	OtObject setRegion3Texture(const std::string& texture);
 	OtObject setRegion4Texture(const std::string& texture);
-
-	// update state
-	void update(OtRenderer& renderer) override;
 
 	// submit to GPU
 	void render(OtRenderer& renderer) override;
@@ -115,7 +112,7 @@ protected:
 	OtSampler textureRegion3Sampler = OtSampler("s_texture_3");
 	OtSampler textureRegion4Sampler = OtSampler("s_texture_4");
 
-	OtUniform uniform = OtUniform("u_terrain", 7);
+	OtUniformVec4 uniform = OtUniformVec4("u_terrain", 7);
 	OtShader shader = OtShader("OtTerrainVS", "OtTerrainFS");
 	OtShader shadowShader = OtShader("OtShadowVS", "OtShadowFS");
 

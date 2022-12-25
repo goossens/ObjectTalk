@@ -170,20 +170,33 @@ OtObject OtColoredMaterialClass::setShininess(float s) {
 //	OtColoredMaterialClass::submit
 //
 
-void OtColoredMaterialClass::submit(OtRenderer& renderer, bool instancing) {
-	// submit uniform
-	uniform.set(0, glm::vec4(color, opacity));
-	uniform.set(1, glm::vec4(ambient, 0.0));
-	uniform.set(2, glm::vec4(diffuse, 0.0));
-	uniform.set(3, glm::vec4(specular, shininess));
-	uniform.submit();
+void OtColoredMaterialClass::submit(OtRenderer& renderer, bool wireframe, bool instancing) {
+	if (renderer.inShadowmapPass()) {
+		if (instancing) {
+			renderer.runShader(shadowInstancingShader);
 
-	// run appropriate shader
-	if (instancing) {
-		renderer.runShader(instancingShader);
+		} else {
+			renderer.runShader(shadowShader);
+		}
 
 	} else {
-		renderer.runShader(shader);
+		// submit uniform
+		uniform.set(0, glm::vec4(color, opacity));
+		uniform.set(1, glm::vec4(ambient, 0.0));
+		uniform.set(2, glm::vec4(diffuse, 0.0));
+		uniform.set(3, glm::vec4(specular, shininess));
+		uniform.submit();
+
+		// set rendering state
+		renderer.setState(wireframe, frontside, backside, transparent);
+
+		// run appropriate shader
+		if (instancing) {
+			renderer.runShader(instancingShader);
+
+		} else {
+			renderer.runShader(regularShader);
+		}
 	}
 }
 

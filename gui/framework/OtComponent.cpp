@@ -61,7 +61,6 @@ OtObject OtComponentClass::remove(OtObject object) {
 	// delete child from list
 	bool found = false;
 
-	// use remove_if when we move the C++20
 	for (auto it = children.begin(); !found && it != children.end();) {
 		if ((*it)->equal(object)) {
 			object->cast<OtComponentClass>()->parent.reset();

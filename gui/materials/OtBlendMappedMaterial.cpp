@@ -117,26 +117,39 @@ OtObject OtBlendMappedMaterialClass::setShininess(float s) {
 //	OtBlendMappedMaterialClass::submit
 //
 
-void OtBlendMappedMaterialClass::submit(OtRenderer& renderer, bool instancing) {
-	// submit uniform
-	uniform.set(0, glm::vec4(ambient, scale));
-	uniform.set(1, glm::vec4(diffuse, 0.0));
-	uniform.set(2, glm::vec4(specular, shininess));
-	uniform.submit();
+void OtBlendMappedMaterialClass::submit(OtRenderer& renderer, bool wireframe, bool instancing) {
+	if (renderer.inShadowmapPass()) {
+		if (instancing) {
+			renderer.runShader(shadowInstancingShader);
 
-	// set samplers
-	blendmapSampler.submit(1, blendmap);
-	textureNoneSampler.submit(2, textureNone);
-	textureRedSampler.submit(3, textureRed);
-	textureGreenSampler.submit(4, textureGreen);
-	textureBlueSampler.submit(5, textureBlue);
-
-	// run appropriate shader
-	if (instancing) {
-		renderer.runShader(instancingShader);
+		} else {
+			renderer.runShader(shadowShader);
+		}
 
 	} else {
-		renderer.runShader(shader);
+		// submit uniform
+		uniform.set(0, glm::vec4(ambient, scale));
+		uniform.set(1, glm::vec4(diffuse, 0.0));
+		uniform.set(2, glm::vec4(specular, shininess));
+		uniform.submit();
+
+		// set samplers
+		blendmapSampler.submit(1, blendmap);
+		textureNoneSampler.submit(2, textureNone);
+		textureRedSampler.submit(3, textureRed);
+		textureGreenSampler.submit(4, textureGreen);
+		textureBlueSampler.submit(5, textureBlue);
+
+		// set rendering state
+		renderer.setState(wireframe, frontside, backside, transparent);
+
+		// run appropriate shader
+		if (instancing) {
+			renderer.runShader(instancingShader);
+
+		} else {
+			renderer.runShader(regularShader);
+		}
 	}
 }
 

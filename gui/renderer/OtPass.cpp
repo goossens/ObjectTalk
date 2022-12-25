@@ -24,12 +24,31 @@ static bgfx::ViewId nextViewID = 1;
 
 
 //
+//	OtPassReset
+//
+
+void OtPassReset() {
+	nextViewID = 1;
+}
+
+
+//
+//	OtPassCount
+//
+
+int OtPassCount() {
+	return nextViewID - 1;
+}
+
+
+//
 //	OtPass::reserveRenderingSlot
 //
 
 void OtPass::reserveRenderingSlot() {
 	view = nextViewID++;
 	bgfx::resetView(view);
+	bgfx::touch(view);
 }
 
 
@@ -94,22 +113,4 @@ void OtPass::setTransform(const glm::mat4 &viewTransform, const glm::mat4 &proje
 
 void OtPass::runShader(OtShader &shader) {
 	shader.submit(view);
-}
-
-
-//
-//	OtPassReset
-//
-
-void OtPassReset() {
-	nextViewID = 1;
-}
-
-
-//
-//	OtPassCount
-//
-
-int OtPassCount() {
-	return nextViewID - 1;
 }

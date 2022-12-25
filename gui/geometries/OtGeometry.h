@@ -30,9 +30,6 @@ typedef std::shared_ptr<OtGeometryClass> OtGeometry;
 
 class OtGeometryClass : public OtGuiClass {
 public:
-	// constructor
-	OtGeometryClass();
-
 	// ensure tangents are automatically generated
 	OtObject computeTangents();
 
@@ -40,17 +37,19 @@ public:
 	void forceGeometryRefresh() { refreshGeometry = true; }
 	void forceBufferRefresh() { refreshBuffers = true; }
 
-	// access vertices
-	OtVertex& getVertex(size_t offset) {
-		validateGeometry();
-		return vertices[offset];
-	}
+	// access vertices and indices
+	size_t getVertexCount() { validateGeometry(); return vertices.size(); }
+	size_t getTriangleIndexCount() { validateGeometry(); return triangles.size(); }
+	size_t getLineIndexCount() { validateGeometry(); return lines.size(); }
+	std::vector<OtVertex>& getVertexes() { validateGeometry(); return vertices; }
+	std::vector<uint32_t>& getTriangles() { validateGeometry(); return triangles; }
+	std::vector<uint32_t>& getLines() { validateGeometry();return lines; }
+	OtVertex& getVertex(size_t offset) { validateGeometry(); return vertices[offset]; }
+	uint32_t getTriangleIndex(size_t offset) { validateGeometry(); return triangles[offset]; }
+	uint32_t getLineIndex(size_t offset) { validateGeometry(); return lines[offset]; }
 
 	// access bounding box
-	OtAABB getAABB() {
-		validateGeometry();
-		return aabb;
-	}
+	OtAABB& getAABB() { validateGeometry(); return aabb; }
 
 	// submit to GPU
 	void submitTriangles();
@@ -73,7 +72,7 @@ protected:
 	// add vertices/triangles/lines to the geometry
 	void addVertex(const OtVertex& vertex) {
 		vertices.push_back(vertex);
-		aabb->addPoint(vertex.position);
+		aabb.addPoint(vertex.position);
 	}
 
 	void addTriangle(uint32_t p1, uint32_t p2, uint32_t p3) {

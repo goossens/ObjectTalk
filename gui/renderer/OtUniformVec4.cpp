@@ -11,39 +11,35 @@
 
 #include "OtException.h"
 
-#include "OtUniform.h"
+#include "OtUniformVec4.h"
 
 
 //
-//	OtUniform::OtUniform
+//	OtUniformVec4::OtUniformVec4
 //
 
-OtUniform::OtUniform(const char *name, size_t s) {
-	// remember size
-	size = s;
-
-	// register uniform
-	uniform = bgfx::createUniform(name, bgfx::UniformType::Vec4, size);
-
-	// allocate space for uniform values
-	values = new glm::vec4[size];
+OtUniformVec4::OtUniformVec4(const char *name, size_t size) {
+	initialize(name, size);
 }
 
 
 //
-//	OtUniform::~OtUniform
+//	OtUniformVec4::~OtUniformVec4
 //
 
-OtUniform::~OtUniform() {
+OtUniformVec4::~OtUniformVec4() {
 	clear();
 }
 
 
 //
-//	OtUniform::initialize
+//	OtUniformVec4::initialize
 //
 
-void OtUniform::initialize(const char *name, size_t s) {
+void OtUniformVec4::initialize(const char *name, size_t s) {
+	// clear uniform
+	clear();
+
 	// remember size
 	size = s;
 
@@ -56,10 +52,10 @@ void OtUniform::initialize(const char *name, size_t s) {
 
 
 //
-//	OtUniform::clear
+//	OtUniformVec4::clear
 //
 
-void OtUniform::clear() {
+void OtUniformVec4::clear() {
 		// release values
 	if (values) {
 		delete [] values;
@@ -75,10 +71,10 @@ void OtUniform::clear() {
 
 
 //
-//	OtUniform::submit
+//	OtUniformVec4::submit
 //
 
-void OtUniform::submit() {
+void OtUniformVec4::submit() {
 	// sanity check
 	if (!size) {
 		OtExcept("Internal error: Uniform not initialized");

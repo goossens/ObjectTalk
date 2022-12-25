@@ -52,6 +52,7 @@ void OtShader::initialize(const char* vertex, const char* fragment) {
 			});
 
 			registry.clear();
+			initialized = false;
 		});
 
 		initialized = true;

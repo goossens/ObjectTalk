@@ -110,7 +110,7 @@ class App : gui.App {
 		node.add(gui.AmbientLightController(this.ambient));
 		panel.add(node);
 
-		node = gui.TreeNode("Point Light:");
+		node = gui.TreeNode("Directional Light:");
 		node.add(gui.DirectionalLightController(this.light));
 		panel.add(node);
 

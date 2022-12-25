@@ -89,49 +89,6 @@ OtObject OtMeshClass::addInstance(OtObject object) {
 //	OtMeshClass::render
 //
 
-void OtMeshClass::render(OtRenderer& renderer, long flag) {
-	// determine visibility
-	OtAABB aabb = geometry->getAABB();
-	glm::mat4 transform = getGlobalTransform();
-	aabb = aabb->transform(transform);
-
-	// don't bother if we're out of sight
-	if (renderer.getCamera()->isVisibleAABB(aabb)) {
-		// set transformation
-		renderer.setTransform(transform);
-
-		// submit vertices and triangles/lines
-		if (wireframe) {
-			geometry->submitLines();
-			flag |= BGFX_STATE_PT_LINES;
-
-		} else {
-			geometry->submitTriangles();
-		}
-
-		// handle instancing (if required)
-		if (instances.size() > 0) {
-			renderer.setInstanceData(instances.data(), instances.size(), sizeof(glm::mat4));
-		}
-
-		// set rendering options
-		renderer.setState(
-			BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_MSAA |
-			BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
-			flag |
-			BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA));
-
-		// setup context and material (material will invoke shader)
-		renderer.submit(receivesShadow());
-		material->submit(renderer, instances.size() > 0);
-	}
-}
-
-
-//
-//	OtMeshClass::render
-//
-
 void OtMeshClass::render(OtRenderer& renderer) {
 	// sanity check
 	if (!geometry) {
@@ -144,14 +101,33 @@ void OtMeshClass::render(OtRenderer& renderer) {
 
 	// don't render if this is a shadowmap and we cast no shadow
 	if (!renderer.inShadowmapPass() || castShadowFlag) {
-		// see if we need to render the back side?
-		if (wireframe || material->isBackSided()) {
-			render(renderer, BGFX_STATE_CULL_CCW);
-		}
+		// determine visibility
+		OtAABB aabb = geometry->getAABB();
+		glm::mat4 transform = getGlobalTransform();
+		aabb = aabb.transform(transform);
 
-		// see if we need to render the front side?
-		if (material->isFrontSided()) {
-			render(renderer, BGFX_STATE_CULL_CW);
+		// don't bother if we're out of sight
+		if (true) {
+//		if (renderer.getCamera()->isVisibleAABB(aabb)) {
+			// set transformation
+			renderer.setTransform(transform);
+
+			// handle instancing (if required)
+			if (instances.size() > 0) {
+				renderer.setInstanceData(instances.data(), instances.size(), sizeof(glm::mat4));
+			}
+
+			// submit triangles or lines
+			if (wireframe) {
+				geometry->submitLines();
+
+			} else {
+				geometry->submitTriangles();
+			}
+
+			// setup context and material (material will invoke shader)
+			renderer.submit(receivesShadow());
+			material->submit(renderer, wireframe, instances.size() > 0);
 		}
 	}
 }

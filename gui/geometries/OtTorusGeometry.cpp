@@ -161,10 +161,6 @@ void OtTorusGeometryClass::fillGeometry() {
 			auto y = (radius + tubeRadius * std::cos(v)) * std::sin(u);
 			auto z = tubeRadius * std::sin(v);
 
-			glm::vec3 pos = glm::vec3(x, y, z);
-			glm::vec3 center = glm::vec3(radius * std::cos(u), radius * std::sin(u), 0.0);
-			glm::vec3 normal = glm::normalize(pos - center);
-
 			// add vertex
 			addVertex(OtVertex(
 				glm::vec3(x, y, z),

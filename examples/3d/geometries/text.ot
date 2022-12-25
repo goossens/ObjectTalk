@@ -35,7 +35,7 @@ class App : gui.App {
 
 		var light = gui.DirectionalLight()
 			.setDirection(-1, -2, -4)
-			.castShadow();
+			.castShadow(true);
 
 		var scene = gui.Scene()
 			.add(ambient)
@@ -61,7 +61,7 @@ class App : gui.App {
 		node.add(gui.AmbientLightController(ambient));
 		panel.add(node);
 
-		node = gui.TreeNode("Point Light:");
+		node = gui.TreeNode("Directional Light:");
 		node.add(gui.DirectionalLightController(light));
 		panel.add(node);
 

@@ -171,16 +171,16 @@ OtObject OtTerrainClass::setRegion4Texture(const std::string& textureName) {
 
 
 //
-//	OtTerrainClass::update
+//	OtTerrainClass::render
 //
 
-void OtTerrainClass::update(OtRenderer& renderer) {
+void OtTerrainClass::render(OtRenderer& renderer) {
 	// sanity check
 	if (!terrainmap) {
 		OtExcept("TerrainMap] properties not set for [Terrain]");
 	}
 
-	// remove old tiles (use std::remove_if in C++20)
+	// remove old tiles
 	auto now = OtFrameworkClass::instance()->getTime();
 	auto entry = usedTiles.begin();
 
@@ -244,9 +244,9 @@ void OtTerrainClass::update(OtRenderer& renderer) {
 
 			auto camera = renderer.getCamera();
 
-			auto aabb = OtAABBClass::create();
-			aabb->addPoint(glm::vec3(cx - tileSize / 2, minHeight, cy - tileSize / 2));
-			aabb->addPoint(glm::vec3(cx + tileSize / 2, maxHeight, cy + tileSize / 2));
+			OtAABB aabb;
+			aabb.addPoint(glm::vec3(cx - tileSize / 2, minHeight, cy - tileSize / 2));
+			aabb.addPoint(glm::vec3(cx + tileSize / 2, maxHeight, cy + tileSize / 2));
 
 			if (camera->isVisibleAABB(aabb)) {
 				// determine level of detail for tile
@@ -308,14 +308,7 @@ void OtTerrainClass::update(OtRenderer& renderer) {
 		requested.insert(tile->hash);
 		requests.push(tile);
 	}
-}
 
-
-//
-//	OtTerrainClass::render
-//
-
-void OtTerrainClass::render(OtRenderer& renderer) {
 	// don't render if this is a shadowmap and we cast no shadow
 	if (!renderer.inShadowmapPass() || castShadowFlag) {
 		// render all visible tiles
@@ -345,12 +338,11 @@ void OtTerrainClass::render(OtRenderer& renderer) {
 			// run shader
 			if (renderer.inShadowmapPass()) {
 				// we use a cheap shader if we are creating a shadowmap
-				renderer.setState(BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_CULL_CCW | BGFX_STATE_MSAA);
 				renderer.runShader(shader);
 
 			} else {
 				// we go all out with our terrain shader
-				renderer.setState(BGFX_STATE_DEFAULT);
+				renderer.setDefaultState();
 				renderer.runShader(shader);
 			}
 		}

@@ -22,15 +22,6 @@
 
 
 //
-//	OtTerrainMapClass::OtTerrainMapClass
-//
-
-OtTerrainMapClass::OtTerrainMapClass() {
-	perlin = OtPerlinClass::create(currentSeed);
-}
-
-
-//
 //	OtTerrainMapClass::init
 //
 
@@ -50,7 +41,7 @@ void OtTerrainMapClass::init(size_t count, OtObject* parameters) {
 
 OtObject OtTerrainMapClass::setSeed(int seed) {
 	currentSeed = seed;
-	perlin->seed(seed);
+	perlin.seed(seed);
 	propertiesChanged();
 	return shared();
 }
@@ -163,7 +154,7 @@ float OtTerrainMapClass::getHeight(int32_t x, int32_t y) {
 		return cache.get(h);
 
 	} else {
-		float height = easingFunction(perlin->octaveNoise(
+		float height = easingFunction(perlin.octaveNoise(
 			(float) x / scaleXY, (float) y / scaleXY, 0.5,
 			octaves, persistence)) * scaleZ + offsetZ;
 

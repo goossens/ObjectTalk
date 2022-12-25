@@ -4,7 +4,7 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-$input v_position_world, v_position_screen, v_normal, v_tangent, v_bitangent, v_shadow
+$input v_position_world, v_position_view, v_position_screen, v_normal, v_tangent, v_bitangent
 
 #include <bgfx.glsl>
 #include <light.glsl>
@@ -41,6 +41,6 @@ void main() {
 	vec4 color = mix(reflectionColor, u_water_color, reflectance);
 
 	Material material = createMaterial(vec3(0.4, 0.4, 0.4), vec3(0.6, 0.6, 0.6), vec3_splat(1.0), u_shininess);
-	gl_FragColor = applyLightAndFog(color, material, v_position_world, normal, v_shadow);
+	gl_FragColor = applyLightAndFog(color, material, v_position_world, v_position_view, normal);
 
 }

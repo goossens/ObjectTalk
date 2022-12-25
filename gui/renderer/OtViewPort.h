@@ -22,14 +22,21 @@
 //	OtViewPortGetMatrix
 //
 
-inline glm::mat4 OtViewPortGetMatrix() {
+inline glm::mat4& OtViewPortGetMatrix() {
 	// calculate viewport projection matrix based on platform
-	float sy = OtGpuHasOriginBottomLeft() ? 0.5f : -0.5f;
-	float sz = OtGpuHasHomogeneousDepth() ? 0.5f :  1.0f;
-	float tz = OtGpuHasHomogeneousDepth() ? 0.5f :  0.0f;
+	static bool initialized = false;
+	static glm::mat4 matrix;
 
-	glm::mat4 matrix = glm::mat4(1.0);
-	matrix = glm::translate(matrix, glm::vec3(0.5, 0.5, tz));
-	matrix = glm::scale(matrix, glm::vec3(0.5, sy, sz));
+	if (!initialized) {
+		float tz = OtGpuHasHomogeneousDepth() ? 0.5 : 0.0;
+		matrix = glm::translate(glm::mat4(1.0), glm::vec3(0.5, 0.5, tz));
+
+		float sy = OtGpuHasOriginBottomLeft() ? 0.5 : -0.5;
+		float sz = OtGpuHasHomogeneousDepth() ? 0.5 : 1.0;
+		matrix = glm::scale(matrix, glm::vec3(0.5, sy, sz));
+
+		initialized = true;
+	}
+
 	return matrix;
 }

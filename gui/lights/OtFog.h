@@ -13,7 +13,7 @@
 //
 
 #include "OtController.h"
-#include "OtSceneObject.h"
+#include "OtLight.h"
 
 
 //
@@ -23,7 +23,7 @@
 class OtFogClass;
 typedef std::shared_ptr<OtFogClass> OtFog;
 
-class OtFogClass : public OtSceneObjectClass {
+class OtFogClass : public OtLightClass {
 	friend class OtViewClass;
 
 public:
@@ -32,8 +32,8 @@ public:
 	OtObject setDistances(float near, float far);
 	OtObject setLimits(float minNear, float maxNear, float minFar, float maxFar);
 
-	// update state
-	void update(OtRenderer& renderer) override;
+	// add light properties to renderer
+	void addPropertiesToRenderer(OtRenderer& renderer) override;
 
 	// GUI to change fog properties
 	void renderGUI();

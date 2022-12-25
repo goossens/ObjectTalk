@@ -8,6 +8,7 @@
 #define OT_LIGHT_GLSL
 
 
+#include <bgfx.glsl>
 #include <material.glsl>
 
 
@@ -15,8 +16,8 @@
 //	Light uniforms
 //
 
-#define BASE_UNIFORM_COUNT 11
-#define POINT_SPOT_LIGHT_COUNT 4
+#define BASE_UNIFORM_COUNT 8
+#define POINT_SPOT_LIGHT_COUNT 2
 #define UNIFORMS_PER_LIGHT 4
 
 uniform vec4 u_light[BASE_UNIFORM_COUNT + POINT_SPOT_LIGHT_COUNT * UNIFORMS_PER_LIGHT];
@@ -25,17 +26,27 @@ uniform vec4 u_light[BASE_UNIFORM_COUNT + POINT_SPOT_LIGHT_COUNT * UNIFORMS_PER_
 
 #define u_directional_light_direction u_light[2].xyz	// from object to light (normalized)
 #define u_directional_light_color u_light[3].rgb
+#define u_directional_shadow_enabled bool(u_light[4].x)
+#define u_directional_shadow_texel_size u_light[4].y
+#define u_directional_shadow_cascade_distance0 u_light[5].x
+#define u_directional_shadow_cascade_distance1 u_light[5].y
+#define u_directional_shadow_cascade_distance2 u_light[5].z
+#define u_directional_shadow_cascade_distance3 u_light[5].w
 
-#define u_fog_enabled bool(u_light[4].x)
-#define u_fog_near u_light[4].y
-#define u_fog_far u_light[4].z
-#define u_fog_color u_light[5]
+#define u_fog_enabled bool(u_light[6].x)
+#define u_fog_near u_light[6].y
+#define u_fog_far u_light[6].z
+#define u_fog_color u_light[7]
 
-#define u_shadow_enabled bool(u_light[6].x)
-#define u_shadow_texel_size u_light[6].yz
-#define u_shadow_matrix mtxFromCols(u_light[7], u_light[8], u_light[9], u_light[10])
+uniform mat4 u_directional_shadow_transform[4];
 
-SAMPLER2D(s_shadowmap, 0);
+SAMPLER2D(s_directional_shadow_map0, 10);
+SAMPLER2D(s_directional_shadow_map1, 11);
+SAMPLER2D(s_directional_shadow_map2, 12);
+SAMPLER2D(s_directional_shadow_map3, 13);
+
+//SAMPLER2D(s_spot_shadowmap1, 14);
+//SAMPLER2D(s_spot_shadowmap2, 15);
 
 
 //
@@ -113,7 +124,7 @@ Light getLight(int index) {
 vec3 processLight(Light light, Material material, vec3 position, vec3 normal) {
 	// determine normalized light direction and distance
 	vec3 toLight = light.position - position;
-		float distance = length(toLight);
+	float distance = length(toLight);
 	toLight = normalize(toLight);
 
 	// determine diffuse color
@@ -137,7 +148,7 @@ vec3 processLight(Light light, Material material, vec3 position, vec3 normal) {
 
 	if (light.coneOuter > 0.0) {
 		// only apply to spot lights
-	    cone = clamp(
+		cone = clamp(
 			(dot(toLight, normalize(-light.coneDirection)) - light.coneOuter) /
 				(light.coneInner - light.coneOuter),
 			0.0,
@@ -153,20 +164,9 @@ vec3 processLight(Light light, Material material, vec3 position, vec3 normal) {
 //	hardShadow
 //
 
-float hardShadow(vec4 shadowCoord) {
-	vec3 projCoords = (shadowCoord.xyz / shadowCoord.w);
-
-	bool outside =
-		any(lessThan(projCoords.xy, vec2_splat(0.0))) ||
-		any(greaterThan(projCoords.xy, vec2_splat(1.0))) ||
-		projCoords.z < 0.0 || projCoords.z > 1.0;
-
-	if (outside) {
-		return 1.0;
-	}
-
-	float occluder = texture2D(s_shadowmap, projCoords.xy).r;
-	return step(projCoords.z, occluder);
+float hardShadow(sampler2D shadowmap, vec3 shadowCoord) {
+	float occluder = texture2D(shadowmap, shadowCoord.xy).r;
+	return step(shadowCoord.z, occluder);
 }
 
 
@@ -174,31 +174,59 @@ float hardShadow(vec4 shadowCoord) {
 //	getShadow
 //
 
-float getShadow(vec4 shadowCoord) {
+float getShadow(sampler2D shadowmap, vec3 shadowCoord) {
 	float shadow = 0.0;
+	float offset = u_directional_shadow_texel_size;
 
 	// Percentage-Closer Filtering (PCF)
-	shadow += hardShadow(shadowCoord + vec4(vec2(-1.5, -1.5) * u_shadow_texel_size, 0.0, 0.0));
-	shadow += hardShadow(shadowCoord + vec4(vec2(-1.5, -0.5) * u_shadow_texel_size, 0.0, 0.0));
-	shadow += hardShadow(shadowCoord + vec4(vec2(-1.5,  0.5) * u_shadow_texel_size, 0.0, 0.0));
-	shadow += hardShadow(shadowCoord + vec4(vec2(-1.5,  1.5) * u_shadow_texel_size, 0.0, 0.0));
+	shadow += hardShadow(shadowmap, shadowCoord + vec3(-1.5, -1.5, 0.0) * offset);
+	shadow += hardShadow(shadowmap, shadowCoord + vec3(-1.5, -0.5, 0.0) * offset);
+	shadow += hardShadow(shadowmap, shadowCoord + vec3(-1.5,  0.5, 0.0) * offset);
+	shadow += hardShadow(shadowmap, shadowCoord + vec3(-1.5,  1.5, 0.0) * offset);
 
-	shadow += hardShadow(shadowCoord + vec4(vec2(-0.5, -1.5) * u_shadow_texel_size, 0.0, 0.0));
-	shadow += hardShadow(shadowCoord + vec4(vec2(-0.5, -0.5) * u_shadow_texel_size, 0.0, 0.0));
-	shadow += hardShadow(shadowCoord + vec4(vec2(-0.5,  0.5) * u_shadow_texel_size, 0.0, 0.0));
-	shadow += hardShadow(shadowCoord + vec4(vec2(-0.5,  1.5) * u_shadow_texel_size, 0.0, 0.0));
+	shadow += hardShadow(shadowmap, shadowCoord + vec3(-0.5, -1.5, 0.0) * offset);
+	shadow += hardShadow(shadowmap, shadowCoord + vec3(-0.5, -0.5, 0.0) * offset);
+	shadow += hardShadow(shadowmap, shadowCoord + vec3(-0.5,  0.5, 0.0) * offset);
+	shadow += hardShadow(shadowmap, shadowCoord + vec3(-0.5,  1.5, 0.0) * offset);
 
-	shadow += hardShadow(shadowCoord + vec4(vec2(0.5, -1.5) * u_shadow_texel_size, 0.0, 0.0));
-	shadow += hardShadow(shadowCoord + vec4(vec2(0.5, -0.5) * u_shadow_texel_size, 0.0, 0.0));
-	shadow += hardShadow(shadowCoord + vec4(vec2(0.5,  0.5) * u_shadow_texel_size, 0.0, 0.0));
-	shadow += hardShadow(shadowCoord + vec4(vec2(0.5,  1.5) * u_shadow_texel_size, 0.0, 0.0));
+	shadow += hardShadow(shadowmap, shadowCoord + vec3(0.5, -1.5, 0.0) * offset);
+	shadow += hardShadow(shadowmap, shadowCoord + vec3(0.5, -0.5, 0.0) * offset);
+	shadow += hardShadow(shadowmap, shadowCoord + vec3(0.5,  0.5, 0.0) * offset);
+	shadow += hardShadow(shadowmap, shadowCoord + vec3(0.5,  1.5, 0.0) * offset);
 
-	shadow += hardShadow(shadowCoord + vec4(vec2(1.5, -1.5) * u_shadow_texel_size, 0.0, 0.0));
-	shadow += hardShadow(shadowCoord + vec4(vec2(1.5, -0.5) * u_shadow_texel_size, 0.0, 0.0));
-	shadow += hardShadow(shadowCoord + vec4(vec2(1.5,  0.5) * u_shadow_texel_size, 0.0, 0.0));
-	shadow += hardShadow(shadowCoord + vec4(vec2(1.5,  1.5) * u_shadow_texel_size, 0.0, 0.0));
+	shadow += hardShadow(shadowmap, shadowCoord + vec3(1.5, -1.5, 0.0) * offset);
+	shadow += hardShadow(shadowmap, shadowCoord + vec3(1.5, -0.5, 0.0) * offset);
+	shadow += hardShadow(shadowmap, shadowCoord + vec3(1.5,  0.5, 0.0) * offset);
+	shadow += hardShadow(shadowmap, shadowCoord + vec3(1.5,  1.5, 0.0) * offset);
 
 	return shadow / 16.0;
+}
+
+
+//
+//	processDirectionalShadow
+//
+
+float processDirectionalShadow(vec3 position, vec3 view) {
+	if (-view.z < u_directional_shadow_cascade_distance0) {
+		vec3 coord0 = mul(u_directional_shadow_transform[0], vec4(position, 1.0)).xyz;
+		return getShadow(s_directional_shadow_map0, coord0);
+
+	} else if (-view.z < u_directional_shadow_cascade_distance1) {
+		vec3 coord1 = mul(u_directional_shadow_transform[1], vec4(position, 1.0)).xyz;
+		return getShadow(s_directional_shadow_map1, coord1);
+
+	} else if (-view.z < u_directional_shadow_cascade_distance2) {
+		vec3 coord2 = mul(u_directional_shadow_transform[2], vec4(position, 1.0)).xyz;
+		return getShadow(s_directional_shadow_map2, coord2);
+
+	} else if (-view.z < u_directional_shadow_cascade_distance3) {
+		vec3 coord3 = mul(u_directional_shadow_transform[3], vec4(position, 1.0)).xyz;
+		return getShadow(s_directional_shadow_map3, coord3);
+
+	} else {
+		return 1.0;
+	}
 }
 
 
@@ -206,7 +234,7 @@ float getShadow(vec4 shadowCoord) {
 //	processAllLights
 //
 
-vec3 processAllLights(Material material, vec3 position, vec3 normal, vec4 shadow) {
+vec3 processAllLights(Material material, vec3 position, vec3 view, vec3 normal) {
 	vec3 totalLight = getDirectionalLight(material, position, normal);
 
 	for (int i = 0; i < POINT_SPOT_LIGHT_COUNT; i++) {
@@ -217,7 +245,12 @@ vec3 processAllLights(Material material, vec3 position, vec3 normal, vec4 shadow
 		}
 	}
 
-	float shade = u_shadow_enabled ? getShadow(shadow) : 1.0;
+	float shade = 1.0;
+
+	if (u_directional_shadow_enabled) {
+		shade = processDirectionalShadow(position, view);
+	}
+
 	return getAmbientLight(material) + shade * totalLight;
 }
 
@@ -237,8 +270,8 @@ vec4 calculateFog(vec3 position, vec4 color) {
 //	applyLightAndFog
 //
 
-vec4 applyLightAndFog(vec4 color, Material material, vec3 position, vec3 normal, vec4 shadow) {
-	vec3 light = processAllLights(material, position, normal, shadow);
+vec4 applyLightAndFog(vec4 color, Material material, vec3 position, vec3 view, vec3 normal) {
+	vec3 light = processAllLights(material, position, view, normal);
 	vec4 result = color * vec4(light, 1.0);
 	return u_fog_enabled ? calculateFog(position, result) : result;
 }

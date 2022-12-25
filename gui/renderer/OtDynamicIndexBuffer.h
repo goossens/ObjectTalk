@@ -30,9 +30,6 @@ public:
 	// set vertices
 	void set(void* data, size_t count);
 
-	// update vertices
-	void update(void* data, size_t count);
-
 	// see if buffer is valid
 	bool isValid() { return bgfx::isValid(indexBuffer); }
 

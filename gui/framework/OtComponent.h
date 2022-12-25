@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <functional>
 #include "OtGui.h"
 
 
@@ -35,6 +36,13 @@ public:
 
 	// ensure specified component is allowed as a child
 	virtual void validateChild(OtComponent child);
+
+	// iterate through children
+	inline void iterate(std::function<void(OtComponent)> callback) {
+		for (auto child : children) {
+			callback(child);
+		}
+	}
 
 	// remove all children
 	void clear();

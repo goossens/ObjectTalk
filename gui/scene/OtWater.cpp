@@ -21,7 +21,6 @@
 #include "OtGpu.h"
 #include "OtScene.h"
 #include "OtVertex.h"
-#include "OtPass.h"
 #include "OtWater.h"
 
 
@@ -29,7 +28,7 @@
 //	Globals
 //
 
-static glm::vec3 templateVertices[] = {
+static glm::vec3 waterVertices[] = {
 	{ -1.0f, 0.0f, -1.0f },
 	{ -1.0f, 0.0f,	1.0f },
 	{  1.0f, 0.0f,	1.0f },
@@ -87,30 +86,12 @@ OtObject OtWaterClass::setNormalScale(float s) {
 
 
 //
-//	OtWaterClass::update
+//	OtWaterClass::preRender
 //
 
-void OtWaterClass::update(OtRenderer& renderer) {
-	// update vertices if camera has changed
-	auto camera = renderer.getCamera();
-
-	if (camera->hasChanged()) {
-		// determine center
-		glm::vec center = camera->getPosition();
-		center.y = 0.0;
-
-		// adjust vertices
-		for (auto c = 0; c < 4; c ++) {
-			waterVertices[c] = templateVertices[c] * size + center;
-		}
-
-		// tell GPU about it
-		vertexBuffer.update(waterVertices, sizeof(waterVertices));
-	}
-
-	// reserve views for reflection and refraction
-	reflectionPass.reserveRenderingSlot();
-	refractionPass.reserveRenderingSlot();
+void OtWaterClass::preRender(OtRenderer& renderer) {
+	renderReflection(renderer);
+	renderRefraction(renderer);
 }
 
 
@@ -119,13 +100,41 @@ void OtWaterClass::update(OtRenderer& renderer) {
 //
 
 void OtWaterClass::render(OtRenderer& renderer) {
+	// sanity check
+	if (!normals.isValid()) {
+		OtExcept("Normalmap not specified for [Water] object");
+	}
+
 	// water doesn't cause shadows
 	// and we don't render while we're creating reflections and refractions
 	if (renderer.inLightingPass()) {
-		// render the water's parts
-		renderReflection(renderer);
-		renderRefraction(renderer);
-		renderWater(renderer);
+		// ensure water is centered at camera position
+		auto center = renderer.getCamera()->getPosition();
+		glm::mat4 transform = glm::translate(glm::mat4(1.0), glm::vec3(center.x, 0.0, center.z));
+		transform = glm::scale(transform, glm::vec3(size, 1.0, size));
+		renderer.setTransform(transform);
+
+		// submit vertices and triangles
+		vertexBuffer.submit();
+		indexBuffer.submit();
+
+		// set normal map, reflection and refraction
+		normalsSampler.submit(1, normals);
+		reflectionFrameBuffer.bindColorTexture(reflectionSampler, 2);
+		refractionFrameBuffer.bindColorTexture(refractionSampler, 3);
+
+		// update time for water ripples
+		time += OtFrameworkClass::instance()->getLoopDuration() / 2500.0;
+
+		// set uniforms
+		renderer.submit(receivesShadow());
+		waterUniform.set(0, glm::vec4(time, scale, OtGpuHasOriginBottomLeft() ? -1.0 : 1.0, shininess));
+		waterUniform.set(1, glm::vec4(color, 1.0));
+		waterUniform.submit();
+
+		// run shader
+		renderer.setDefaultState();
+		renderer.runShader(shader);
 	}
 }
 
@@ -149,12 +158,11 @@ void OtWaterClass::renderReflection(OtRenderer& renderer) {
 	OtCamera reflectionCamera = OtCameraClass::create(camera);
 	reflectionCamera->setPositionVector(position);
 	reflectionCamera->setTargetVector(target);
-	reflectionCamera->update(renderer);
 
 	// run shadow pass
 	OtRenderer reflectionRenderer;
 	reflectionRenderer.copyLightProperties(renderer);
-	reflectionRenderer.runReflectionPass(reflectionPass, renderer.getScene(), reflectionCamera, reflectionFrameBuffer);
+	reflectionRenderer.runReflectionPass(renderer.getScene(), reflectionCamera, reflectionFrameBuffer);
 }
 
 
@@ -165,40 +173,6 @@ void OtWaterClass::renderReflection(OtRenderer& renderer) {
 void OtWaterClass::renderRefraction(OtRenderer& renderer) {
 	// update framebuffer
 	refractionFrameBuffer.update(renderer.getViewW() / 2.0, renderer.getViewH() / 2.0);
-}
-
-
-//
-//	OtWaterClass::renderWater
-//
-
-void OtWaterClass::renderWater(OtRenderer& renderer) {
-	// sanity check
-	if (!normals.isValid()) {
-		OtExcept("Normals map not specified for [Water] object");
-	}
-
-	// submit vertices and triangles
-	vertexBuffer.submit();
-	indexBuffer.submit();
-
-	// set normal map, reflection and refraction
-	normalsSampler.submit(1, normals);
-	reflectionFrameBuffer.bindColorTexture(reflectionSampler, 2);
-	refractionFrameBuffer.bindColorTexture(refractionSampler, 3);
-
-	// update time for water ripples
-	time += OtFrameworkClass::instance()->getLoopDuration() / 2500.0;
-
-	// set uniforms
-	renderer.submit(receivesShadow());
-	waterUniform.set(0, glm::vec4(time, scale, OtGpuHasOriginBottomLeft() ? -1.0 : 1.0, shininess));
-	waterUniform.set(1, glm::vec4(color, 1.0));
-	waterUniform.submit();
-
-	// run shader
-	renderer.setState(BGFX_STATE_DEFAULT);
-	renderer.runShader(shader);
 }
 
 

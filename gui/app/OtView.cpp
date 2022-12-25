@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include "imgui.h"
+
 #include "OtException.h"
 #include "OtFunction.h"
 #include "OtVM.h"
@@ -97,12 +99,14 @@ void OtViewClass::render() {
 	float vw = w * sw / 100.0;
 	float vh = h * sh / 100.0;
 
-	// run renderer
-	OtRenderer renderer;
-	renderer.runLightingPass(scene, camera, vx, vy, vw, vh);
+	// update camera and scene
+	camera->setAspectRatio(vw / vh);
 
-	// reset the camera's changed state
-	camera->resetChanged();
+	// run renderer
+	renderer.run(scene, camera, vx, vy, vw, vh);
+
+	// render debugging GUI
+//	renderDebugGUI();
 }
 
 
@@ -247,6 +251,38 @@ bool OtViewClass::onChar(unsigned int codepoint) {
 	} else {
 		return false;
 	}
+}
+
+
+//
+//	OtViewClass::renderDebugGUI
+//
+
+void OtViewClass::renderDebugGUI() {
+	// create resources (if required)
+	if (!debugCamera) {
+		debugCamera = OtCameraClass::create();
+		debugCamera->setCircleTargetMode();
+		debugCamera->setDistance(50.0);
+		framebuffer.initialize(OtFrameBuffer::rgba8Texture, OtFrameBuffer::dFloatTexture);
+		framebuffer.update(400, 400);
+	}
+
+	// render the scene in debug mode
+	OtRenderer debugRenderer;
+	debugRenderer.copyLightProperties(renderer);
+	debugRenderer.runDebugPass(debugCamera, scene, camera, framebuffer);
+
+	// render the debug GUI
+	ImGui::SetNextWindowPos(ImVec2(800, 10), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(420, 0));
+	ImGui::Begin("View Debugger", nullptr, 0);
+
+	debugCamera->renderGUI();
+
+	float width = ImGui::GetContentRegionAvail().x;
+	ImGui::Image((void*)(intptr_t) framebuffer.getColorTextureIndex(), ImVec2(400, 400));
+	ImGui::End();
 }
 
 

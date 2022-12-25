@@ -17,28 +17,28 @@
 
 
 //
-//	OtUniform
+//	OtUniformMat4
 //
 
-class OtUniform {
+class OtUniformMat4 {
 public:
 	// constructors/destructor
-	OtUniform() = default;
-	OtUniform(const char* name, size_t size);
-	~OtUniform();
+	OtUniformMat4() = default;
+	OtUniformMat4(const char* name, size_t size=1);
+	~OtUniformMat4();
 
 	// initialize uniform
-	void initialize(const char* name, size_t size);
+	void initialize(const char* name, size_t size=1);
 
 	// clear the resources
 	void clear();
 
 	// get access to values
-	glm::vec4* getValues() { return values; }
+	glm::mat4* getValues() { return values; }
 	size_t getValueCount() { return size; }
 
 	// set uniform value(s)
-	inline void set(size_t index, const glm::vec4 value) { values[index] = value; }
+	inline void set(size_t index, const glm::mat4& value) { values[index] = value; }
 
 	// submit uniform to GPU
 	void submit();
@@ -51,5 +51,5 @@ private:
 	bgfx::UniformHandle uniform = BGFX_INVALID_HANDLE;
 
 	// actual values
-	glm::vec4* values = nullptr;
+	glm::mat4* values = nullptr;
 };

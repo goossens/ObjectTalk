@@ -24,22 +24,32 @@ static inline glm::vec4 project(const glm::mat4& matrix, const glm::vec4& ndc) {
 
 
 //
-//	OtFrustumClass::update
+//	OtFrustum::OtFrustum
 //
 
-void OtFrustumClass::update(const glm::mat4& matrix) {
+OtFrustum::OtFrustum() {
+	for (auto& plane : planes) {
+		plane = OtPlane();
+	}
+
+	for (auto& point : points) {
+		point = glm::vec3(0.0);
+	}
+}
+
+OtFrustum::OtFrustum(const glm::mat4& matrix) {
 	// determine planes
 	glm::mat4 m = glm::transpose(matrix);
-	planes[left] = OtPlaneClass::create(m[3] + m[0]);
-	planes[right] = OtPlaneClass::create(m[3] - m[0]);
-	planes[bottom] = OtPlaneClass::create(m[3] + m[1]);
-	planes[top] = OtPlaneClass::create(m[3] - m[1]);
-	planes[near] = OtPlaneClass::create(OtGpuHasHomogeneousDepth() ? m[3] + m[2] : m[2]);
-	planes[far] = OtPlaneClass::create(m[3] - m[2]);
+	planes[left] = OtPlane(m[3] + m[0]);
+	planes[right] = OtPlane(m[3] - m[0]);
+	planes[bottom] = OtPlane(m[3] + m[1]);
+	planes[top] = OtPlane(m[3] - m[1]);
+	planes[near] = OtPlane(OtGpuHasHomogeneousDepth() ? m[3] + m[2] : m[2]);
+	planes[far] = OtPlane(m[3] - m[2]);
 
 	// normalize planes
 	for (auto c = 0; c < planeCount; c++) {
-		planes[c]->normalize();
+		planes[c].normalize();
 	}
 
 	// determine corners
@@ -57,14 +67,27 @@ void OtFrustumClass::update(const glm::mat4& matrix) {
 	points[farBottomRight] = project(inverse, glm::vec4(1.0, -1.0, 1.0, 1.0));
 }
 
+OtFrustum::OtFrustum(glm::vec3 &nbl, glm::vec3 &ntl, glm::vec3 &ntr, glm::vec3 &nbr, glm::vec3 &fbl, glm::vec3 &ftl, glm::vec3 &ftr, glm::vec3 &fbr) {
+	// set corners
+	points[nearBottomLeft] = nbl;
+	points[nearTopLeft] = ntl;
+	points[nearTopRight] = ntr;
+	points[nearBottomRight] = nbr;
+
+	points[farBottomLeft] = fbl;
+	points[farTopLeft] = ftl;
+	points[farTopRight] = ftr;
+	points[farBottomRight] = fbr;
+}
+
 
 //
-//	OtFrustumClass::isVisiblePoint
+//	OtFrustum::isVisiblePoint
 //
 
-bool OtFrustumClass::isVisiblePoint(const glm::vec3& point) {
+bool OtFrustum::isVisiblePoint(const glm::vec3& point) {
 	for (auto i = 0; i < planeCount; i++) {
-		if (glm::dot(planes[i]->getNormal(), point) + planes[i]->getDistance() < 0) {
+		if (glm::dot(planes[i].getNormal(), point) + planes[i].getDistance() < 0) {
 			return false;
 		}
 	}
@@ -74,22 +97,22 @@ bool OtFrustumClass::isVisiblePoint(const glm::vec3& point) {
 
 
 //
-//	OtFrustumClass::isVisibleAABB
+//	OtFrustum::isVisibleAABB
 //
 
-bool OtFrustumClass::isVisibleAABB(OtAABB aabb) {
-	glm::vec3 minp = aabb->getMin();
-	glm::vec3 maxp = aabb->getMax();
+bool OtFrustum::isVisibleAABB(const OtAABB& aabb) {
+	glm::vec3 minp = aabb.getMin();
+	glm::vec3 maxp = aabb.getMax();
 
 	for (auto i = 0; i < planeCount; i++) {
-		glm::vec3 normal = planes[i]->getNormal();
+		glm::vec3 normal = planes[i].getNormal();
 		glm::vec3 v;
 
 		v.x = normal.x < 0 ? minp.x : maxp.x;
 		v.y = normal.y < 0 ? minp.y : maxp.y;
 		v.z = normal.z < 0 ? minp.z : maxp.z;
 
-		if (glm::dot(normal, v) + planes[i]->getDistance() < 0) {
+		if (glm::dot(normal, v) + planes[i].getDistance() < 0) {
 			return false;
 		}
 	}
@@ -99,12 +122,12 @@ bool OtFrustumClass::isVisibleAABB(OtAABB aabb) {
 
 
 //
-//	OtFrustumClass::isVisibleSphere
+//	OtFrustum::isVisibleSphere
 //
 
-bool OtFrustumClass::isVisibleSphere(const glm::vec3 &center, float radius) {
+bool OtFrustum::isVisibleSphere(const glm::vec3& center, float radius) {
 	for (auto i = 0; i < planeCount; i++) {
-		if (glm::dot(planes[i]->getNormal(), center) + planes[i]->getDistance() + radius < 0) {
+		if (glm::dot(planes[i].getNormal(), center) + planes[i].getDistance() + radius < 0) {
 			return false;
 		}
 	}
@@ -114,10 +137,10 @@ bool OtFrustumClass::isVisibleSphere(const glm::vec3 &center, float radius) {
 
 
 //
-//	OtFrustumClass::getCenter
+//	OtFrustum::getCenter
 //
 
-glm::vec3 OtFrustumClass::getCenter() {
+glm::vec3 OtFrustum::getCenter() {
 	glm::vec3 center = glm::vec3(0.0);
 
 	for (auto& point : points) {
@@ -129,59 +152,15 @@ glm::vec3 OtFrustumClass::getCenter() {
 
 
 //
-//	OtFrustumClass::render
+//	OtFrustum::getAABB
 //
 
-void OtFrustumClass::render(OtRenderer& renderer) {
-	renderer.debugSetColor(0xff00ff00);
+OtAABB OtFrustum::getAABB() {
+	OtAABB aabb;
 
-	renderer.debugMoveTo(points[nearBottomLeft]);
-	renderer.debugLineTo(points[nearBottomRight]);
-	renderer.debugLineTo(points[nearTopRight]);
-	renderer.debugLineTo(points[nearTopLeft]);
-	renderer.debugLineTo(points[nearBottomLeft]);
-
-	renderer.debugMoveTo(points[farBottomLeft]);
-	renderer.debugLineTo(points[farBottomRight]);
-	renderer.debugLineTo(points[farTopRight]);
-	renderer.debugLineTo(points[farTopLeft]);
-	renderer.debugLineTo(points[farBottomLeft]);
-
-	renderer.debugMoveTo(points[nearBottomLeft]);
-	renderer.debugLineTo(points[farBottomLeft]);
-
-	renderer.debugMoveTo(points[nearBottomRight]);
-	renderer.debugLineTo(points[farBottomRight]);
-
-	renderer.debugMoveTo(points[nearTopRight]);
-	renderer.debugLineTo(points[farTopRight]);
-
-	renderer.debugMoveTo(points[nearTopLeft]);
-	renderer.debugLineTo(points[farTopLeft]);
-}
-
-
-//
-//	OtFrustumClass::getMeta
-//
-
-OtType OtFrustumClass::getMeta() {
-	static OtType type;
-
-	if (!type) {
-		type = OtTypeClass::create<OtFrustumClass>("Frustum", OtMathClass::getMeta());
+	for (auto& point : points) {
+		aabb.addPoint(point);
 	}
 
-	return type;
-}
-
-
-//
-//	OtFrustumClass::create
-//
-
-OtFrustum OtFrustumClass::create() {
-	OtFrustum frustum = std::make_shared<OtFrustumClass>();
-	frustum->setType(getMeta());
-	return frustum;
+	return aabb;
 }

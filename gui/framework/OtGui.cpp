@@ -99,12 +99,6 @@
 
 #include "OtShape.h"
 
-#include "OtMath.h"
-#include "OtPerlin.h"
-#include "OtPlane.h"
-#include "OtVec2.h"
-#include "OtVec3.h"
-
 #include "OtObj.h"
 
 
@@ -185,11 +179,6 @@ void OtGuiClass::registerModule() {
 
 		module->set("Shape", OtClassClass::create(OtShapeClass::getMeta()));
 
-		module->set("Math", OtClassClass::create(OtSimulationClass::getMeta()));
-		module->set("Perlin", OtClassClass::create(OtPerlinClass::getMeta()));
-		module->set("Vec2", OtClassClass::create(OtVec2Class::getMeta()));
-		module->set("Vec3", OtClassClass::create(OtVec3Class::getMeta()));
-
 		module->set("Widget", OtClassClass::create(OtWidgetClass::getMeta()));
 		module->set("Checkbox", OtClassClass::create(OtCheckboxClass::getMeta()));
 		module->set("Combobox", OtClassClass::create(OtComboboxClass::getMeta()));
@@ -216,6 +205,7 @@ void OtGuiClass::registerModule() {
 		module->set("PointLightController", OtClassClass::create(OtPointLightControllerClass::getMeta()));
 		module->set("SkyController", OtClassClass::create(OtSkyControllerClass::getMeta()));
 		module->set("SunController", OtClassClass::create(OtSunControllerClass::getMeta()));
+		module->set("SpotLightController", OtClassClass::create(OtSpotLightControllerClass::getMeta()));
 		module->set("TerrainController", OtClassClass::create(OtTerrainControllerClass::getMeta()));
 		module->set("TerrainMapController", OtClassClass::create(OtTerrainMapControllerClass::getMeta()));
 		module->set("VectorDisplayController", OtClassClass::create(OtVectorDisplayControllerClass::getMeta()));

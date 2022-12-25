@@ -14,21 +14,15 @@
 
 #include "glm/glm.hpp"
 
-#include "OtRenderer.h"
-#include "OtMath.h"
-
 
 //
 //	OtAABB (Axis-Alligned bounding box)
 //
 
-class OtAABBClass;
-typedef std::shared_ptr<OtAABBClass> OtAABB;
-
-class OtAABBClass : public OtMathClass {
+class OtAABB {
 public:
 	// constructor
-	OtAABBClass();
+	OtAABB();
 
 	// clear the bounding box
 	void clear();
@@ -37,22 +31,13 @@ public:
 	void addPoint(const glm::vec3& point);
 
 	// get min/max values
-	glm::vec3 getMin() { return minp; }
-	glm::vec3 getMax() { return maxp; }
+	glm::vec3 getMin() const { return minp; }
+	glm::vec3 getMax() const { return maxp; }
 
 	// transform bounding box
 	OtAABB transform(const glm::mat4& matrix);
 
-	// render the bounding box for debugging purposes
-	void render(OtRenderer& renderer);
-
-	// get type definition
-	static OtType getMeta();
-
-	// create a new object
-	static OtAABB create();
-
 private:
-	glm::vec3 minp = glm::vec3(0.0);
-	glm::vec3 maxp = glm::vec3(0.0);
+	glm::vec3 minp;
+	glm::vec3 maxp;
 };

@@ -12,8 +12,7 @@
 //	Include files
 //
 
-#include "OtCamera.h"
-#include "OtFrameBuffer.h"
+#include "OtRenderer.h"
 #include "OtSceneObject.h"
 
 
@@ -26,27 +25,9 @@ typedef std::shared_ptr<OtLightClass> OtLight;
 
 class OtLightClass : public OtSceneObjectClass {
 public:
-	// enable shadow casting
-	OtObject castShadow();
-	bool castsShadow() { return castShadowFlag; }
-	OtObject toggleShadow(bool flag);
-
-	// update state
-	void update(OtRenderer& renderer) override;
-
-	// submit to GPU
-	void render(OtRenderer& renderer) override;
+	// add light properties to renderer
+	virtual void addPropertiesToRenderer(OtRenderer& renderer) {};
 
 	// get type definition
 	static OtType getMeta();
-
-protected:
-	// shadowing properties
-	bool castShadowFlag = false;
-	OtCamera shadowCamera;
-	OtPass shadowPass;
-
-	OtFrameBuffer framebuffer = OtFrameBuffer(
-		OtFrameBuffer::noTexture,
-		OtFrameBuffer::dFloatTexture);
 };

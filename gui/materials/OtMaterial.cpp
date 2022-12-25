@@ -9,10 +9,8 @@
 //	Include files
 //
 
-#include "OtFormat.h"
 #include "OtFunction.h"
 
-#include "OtFramework.h"
 #include "OtMaterial.h"
 
 

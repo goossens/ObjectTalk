@@ -23,7 +23,7 @@
 #include "OtSampler.h"
 #include "OtShader.h"
 #include "OtTexture.h"
-#include "OtUniform.h"
+#include "OtUniformVec4.h"
 
 
 //
@@ -52,7 +52,7 @@ public:
 	void setSpecularRGB(float r, float g, float b) { specular = glm::vec3(r, g, b); }
 
 	// submit to GPU
-	void submit(OtRenderer& renderer, bool instancing) override;
+	void submit(OtRenderer& renderer, bool wireframe, bool instancing) override;
 
 	// GUI to change properties
 	void renderGUI();
@@ -78,7 +78,7 @@ private:
 	float shininess = 20;
 
 	// GPU assets
-	OtUniform uniform = OtUniform("u_material", 3);
+	OtUniformVec4 uniform = OtUniformVec4("u_material", 3);
 
 	OtSampler blendmapSampler = OtSampler("s_blendmap");
 	OtSampler textureNoneSampler = OtSampler("s_textureN");
@@ -86,8 +86,10 @@ private:
 	OtSampler textureGreenSampler = OtSampler("s_textureG");
 	OtSampler textureBlueSampler = OtSampler("s_textureB");
 
-	OtShader shader = OtShader("OtBlendMappedVS", "OtBlendMappedFS");
+	OtShader regularShader = OtShader("OtBlendMappedVS", "OtBlendMappedFS");
 	OtShader instancingShader = OtShader("OtBlendMappedVSI", "OtBlendMappedFS");
+	OtShader shadowShader = OtShader("OtShadowVS", "OtShadowFS");
+	OtShader shadowInstancingShader = OtShader("OtShadowVSI", "OtShadowFS");
 };
 
 

@@ -33,9 +33,6 @@ typedef std::shared_ptr<OtTerrainMapClass> OtTerrainMap;
 
 class OtTerrainMapClass : public OtGuiClass {
 public:
-	// constructor
-	OtTerrainMapClass();
-
 	// initialize
 	void init(size_t count, OtObject* parameters);
 

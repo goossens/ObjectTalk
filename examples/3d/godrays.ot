@@ -14,7 +14,7 @@ class App : gui.App {
 
 		var light = gui.DirectionalLight()
 			.setDirection(-50, -70, -30)
-			.castShadow();
+			.castShadow(true);
 
 		var fog = gui.Fog()
 			.setColor("#cce0ff")

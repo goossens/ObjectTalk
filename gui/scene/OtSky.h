@@ -14,12 +14,14 @@
 
 #include <vector>
 
+#include "glm/glm.hpp"
+
 #include "OtController.h"
 #include "OtIndexBuffer.h"
 #include "OtSceneObject.h"
 #include "OtShader.h"
 #include "OtSun.h"
-#include "OtUniform.h"
+#include "OtUniformVec4.h"
 #include "OtVertexBuffer.h"
 
 
@@ -37,6 +39,11 @@ public:
 
 	// initialize
 	void init(size_t count, OtObject* parameters);
+
+	// set the static sky color
+	OtObject setColor(const std::string& color);
+	OtObject setColorRGB(float r, float g, float b);
+	void setColorVector(const glm::vec3& c) { color = c; }
 
 	// connect to sun object
 	OtObject setSun(OtObject sun);
@@ -60,6 +67,9 @@ public:
 	static OtSky create();
 
 protected:
+	// sky color (only used if no sun is specified)
+	glm::vec3 color = glm::vec3(0.2, 0.6, 0.8);
+
 	// sun reference
 	OtSun sun;
 
@@ -83,8 +93,11 @@ protected:
 	// GPU assets
 	OtVertexBuffer vertexBuffer;
 	OtIndexBuffer indexBuffer;
-	OtUniform uniform = OtUniform("u_sky", 3);
-	OtShader shader = OtShader("OtSkyVS", "OtSkyFS");
+	OtUniformVec4 skyUniform = OtUniformVec4("u_sky", 3);
+	OtUniformVec4 colorUniform = OtUniformVec4("u_material", 1);
+
+	OtShader skyShader = OtShader("OtSkyVS", "OtSkyFS");
+	OtShader colorShader = OtShader("OtFixedVS", "OtFixedFS");
 };
 
 

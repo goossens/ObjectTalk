@@ -33,11 +33,14 @@ public:
 		dFloatTexture = bgfx::TextureFormat::D32F
 	};
 
-	// constructor/destructor
-	OtFrameBuffer(int c=rgba8Texture, int d=dFloatTexture, int a=1) :
-		colorTextureType(c), depthTextureType(d), antiAliasing(a) {}
+	// constructors/destructor
+	OtFrameBuffer() = default;
+	OtFrameBuffer(int colorTextureType, int depthTextureType, int antiAliasing=1);
 
 	~OtFrameBuffer();
+
+	// initialize framebuffer
+	void initialize(int colorTextureType, int depthTextureType, int antiAliasing=1);
 
 	// clear all resources
 	void clear();
@@ -48,6 +51,10 @@ public:
 	// get framebuffer dimensions
 	int getWidth() { return width; }
 	int getHeight() { return height; }
+
+	// get textures
+	bgfx::TextureHandle getColorTexture() { return colorTexture; }
+	bgfx::TextureHandle getDepthTexture() { return depthTexture; }
 
 	// get texture indices
 	int getColorTextureIndex() { return colorTexture.idx; }

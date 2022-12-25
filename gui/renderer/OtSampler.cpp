@@ -10,6 +10,7 @@
 //
 
 #include "OtException.h"
+#include "OtRegistry.h"
 
 #include "OtFramework.h"
 #include "OtSampler.h"
@@ -37,12 +38,32 @@ OtSampler::~OtSampler() {
 //	OtSampler::initialize
 //
 
-void OtSampler::initialize(const char *name) {
-	if (bgfx::isValid(uniform)) {
-		OtExcept("internal error: sampler already initialized");
+void OtSampler::initialize(const char* name) {
+	// initialize registry if required
+	static bool initialized = false;
+	static OtRegistry<bgfx::UniformHandle> registry;
+
+	if (!initialized) {
+		OtFrameworkClass::instance()->atexit([] {
+			registry.iterateValues([] (bgfx::UniformHandle uniform) {
+				bgfx::destroy(uniform);
+			});
+
+			registry.clear();
+			initialized = false;
+		});
+
+		initialized = true;
 	}
 
-	uniform = bgfx::createUniform(name, bgfx::UniformType::Sampler);
+	// see if we already have this shader
+	if (registry.has(name)) {
+		uniform = registry.get(name);
+
+	} else {
+		uniform = bgfx::createUniform(name, bgfx::UniformType::Sampler);
+		registry.set(name, uniform);
+	}
 }
 
 
@@ -51,11 +72,7 @@ void OtSampler::initialize(const char *name) {
 //
 
 void OtSampler::clear() {
-	// release resources
-	if (bgfx::isValid(uniform)) {
-		bgfx::destroy(uniform);
-		uniform = BGFX_INVALID_HANDLE;
-	}
+	uniform = BGFX_INVALID_HANDLE;
 }
 
 

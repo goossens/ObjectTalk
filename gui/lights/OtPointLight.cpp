@@ -126,11 +126,10 @@ OtObject OtPointLightClass::setAttenuation(float constant, float linear, float q
 
 
 //
-//	OtPointLightClass::update
+//	OtPointLightClass::addPropertiesToRenderer
 //
 
-void OtPointLightClass::update(OtRenderer& renderer) {
-	OtLightClass::update(renderer);
+void OtPointLightClass::addPropertiesToRenderer(OtRenderer& renderer) {
 	renderer.addPointLight(position, color, attenuation);
 }
 

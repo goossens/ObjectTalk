@@ -14,7 +14,7 @@ class App : gui.App {
 
 		var light = gui.DirectionalLight()
 			.setDirection(0, -8, -5)
-			.castShadow();
+			.castShadow(true);
 
 		var floor = gui.Mesh()
 			.receiveShadow(true)
@@ -45,14 +45,15 @@ class App : gui.App {
 			.add(object);
 
 		var camera = gui.Camera()
-			.setPerspective(30, 10.0, 50.0)
+			.setPerspective(30, 5.0, 60.0)
 			.setTarget(0.0, -2.0, 0.0)
 			.setCircleTargetMode()
 			.setPitchLimits(0.0, pi / 2.0 - 0.1)
 			.setPitch(0.3)
-			.setYaw(pi / 4.0)
-			.setDistanceLimits(5.0, 80.0)
-			.setDistance(20.0);
+			.setYaw(0.5)
+			.setDistanceLimits(10.0, 50.0)
+			.setDistance(20.0)
+			.setNearFarLimits(1.0, 20, 20.0, 100.0);
 
 		var view = gui.View()
 			.setScreenArea(25, 0, 75, 100)

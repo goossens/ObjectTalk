@@ -18,7 +18,7 @@
 
 #include "OtMaterial.h"
 #include "OtShader.h"
-#include "OtUniform.h"
+#include "OtUniformVec4.h"
 
 
 //
@@ -50,7 +50,7 @@ public:
 	void setSpecularRGB(float r, float g, float b) { specular = glm::vec3(r, g, b); }
 
 	// submit to GPU
-	void submit(OtRenderer& renderer, bool instancing) override;
+	void submit(OtRenderer& renderer, bool wireframe, bool instancing) override;
 
 	// get type definition
 	static OtType getMeta();
@@ -72,8 +72,10 @@ private:
 	float shininess = 20;
 
 	// GPU assets
-	OtUniform uniform = OtUniform("u_material", 4);
+	OtUniformVec4 uniform = OtUniformVec4("u_material", 4);
 
-	OtShader shader = OtShader("OtColoredVS", "OtColoredFS");
+	OtShader regularShader = OtShader("OtColoredVS", "OtColoredFS");
 	OtShader instancingShader = OtShader("OtColoredVSI", "OtColoredFS");
+	OtShader shadowShader = OtShader("OtShadowVS", "OtShadowFS");
+	OtShader shadowInstancingShader = OtShader("OtShadowVSI", "OtShadowFS");
 };

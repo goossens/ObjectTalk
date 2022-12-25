@@ -17,13 +17,14 @@
 
 //
 //	Functions
+//
 
-// see if origin is in bottom left corner
+// see if origin is in the bottom-left corner otherwise it's in the top-left corner
 inline bool OtGpuHasOriginBottomLeft() {
 	return bgfx::getCaps()->originBottomLeft;
 }
 
-// see if Z coordinates are homogeneous (-1.0 to 1.0)
+// see if NDC depth is in [-1, 1] range, otherwise it's in the [0, 1] range
 inline bool OtGpuHasHomogeneousDepth() {
 	return bgfx::getCaps()->homogeneousDepth;
 }

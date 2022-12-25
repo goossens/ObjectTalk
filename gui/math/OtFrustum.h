@@ -17,19 +17,14 @@
 #include "glm/glm.hpp"
 
 #include "OtAABB.h"
-#include "OtMath.h"
 #include "OtPlane.h"
-#include "OtRenderer.h"
 
 
 //
 //	OtFrustum
 //
 
-class OtFrustumClass;
-typedef std::shared_ptr<OtFrustumClass> OtFrustum;
-
-class OtFrustumClass : public OtMathClass {
+class OtFrustum {
 public:
 	enum {
 		left = 0,
@@ -53,14 +48,26 @@ public:
 		pointCount
 	};
 
-	// update the frustum to match the provided matrix
-	void update(const glm::mat4& matrix);
+	// constructors
+	OtFrustum();
+	OtFrustum(const glm::mat4& matrix);
+
+	// initialize the frustum based on provided points
+	OtFrustum(
+		glm::vec3& nearBottomLeft,
+		glm::vec3& nearTopLeft,
+		glm::vec3& nearTopRight,
+		glm::vec3& nearBottomRight,
+		glm::vec3& farBottomLeft,
+		glm::vec3& farTopLeft,
+		glm::vec3& farTopRight,
+		glm::vec3& farBottomRight);
 
 	// see if a point is visible
 	bool isVisiblePoint(const glm::vec3& point);
 
 	// see if an AABB box is visible
-	bool isVisibleAABB(OtAABB aabb);
+	bool isVisibleAABB(const OtAABB& aabb);
 
 	// see if a sphere is visible
 	bool isVisibleSphere(const glm::vec3& center, float radius);
@@ -69,19 +76,13 @@ public:
 	glm::vec3 getCenter();
 
 	// get specified corner
-	glm::vec3 getCorner(int point) { return points[point]; }
+	glm::vec3 getCorner(int point) const { return points[point]; }
 
 	// get specified plane
-	OtPlane getPlane(int plane) { return planes[plane]; }
+	OtPlane getPlane(int plane) const { return planes[plane]; }
 
-	// render the frustum for debugging purposes
-	void render(OtRenderer& renderer);
-
-	// get type definition
-	static OtType getMeta();
-
-	// create a new object
-	static OtFrustum create();
+	// get AABB (Axis-Alligned bounding box)
+	OtAABB getAABB();
 
 private:
 	std::array<OtPlane, planeCount> planes;

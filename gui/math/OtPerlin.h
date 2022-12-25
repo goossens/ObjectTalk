@@ -14,24 +14,16 @@
 
 # include <vector>
 
-#include "OtMath.h"
-
 
 //
 //	OtPerlin
 //
 
-class OtPerlinClass;
-typedef std::shared_ptr<OtPerlinClass> OtPerlin;
-
-class OtPerlinClass : public OtMathClass {
+class OtPerlin {
 public:
 	// constructors
-	OtPerlinClass() { generateSeedVector(); }
-	OtPerlinClass(int seed) : seedValue(seed) { generateSeedVector(); }
-
-	// initialize
-	void init(size_t count, OtObject* parameters);
+	OtPerlin() { generateSeedVector(); }
+	OtPerlin(int seed) : seedValue(seed) { generateSeedVector(); }
 
 	// use a new seed
 	void seed(int seed) { seedValue = seed; generateSeedVector(); }
@@ -39,13 +31,6 @@ public:
 	// get perlin noise value
 	float noise(float x, float y, float z);
 	float octaveNoise(float x, float y, float z, int octaves, float persistence);
-
-	// get type definition
-	static OtType getMeta();
-
-	// create a new object
-	static OtPerlin create();
-	static OtPerlin create(int seed);
 
 private:
 	// seed properties

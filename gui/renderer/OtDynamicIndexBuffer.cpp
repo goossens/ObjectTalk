@@ -38,17 +38,12 @@ void OtDynamicIndexBuffer::clear() {
 //
 
 void OtDynamicIndexBuffer::set(void *data, size_t count) {
-	clear();
-	indexBuffer = bgfx::createDynamicIndexBuffer(bgfx::copy(data, (uint32_t) (count * sizeof(uint32_t))), BGFX_BUFFER_INDEX32);
-}
+	if (bgfx::isValid(indexBuffer)) {
+		bgfx::update(indexBuffer, 0, bgfx::copy(data, (uint32_t) (count * sizeof(uint32_t))));
 
-
-//
-//	OtDynamicIndexBuffer::update
-//
-
-void OtDynamicIndexBuffer::update(void *data, size_t count) {
-	bgfx::update(indexBuffer, 0, bgfx::copy(data, (uint32_t) (count * sizeof(uint32_t))));
+	} else {
+		indexBuffer = bgfx::createDynamicIndexBuffer(bgfx::copy(data, (uint32_t) (count * sizeof(uint32_t))), BGFX_BUFFER_INDEX32);
+	}
 }
 
 

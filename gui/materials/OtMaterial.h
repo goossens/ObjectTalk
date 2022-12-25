@@ -39,15 +39,15 @@ public:
 	OtObject setTransparent() { transparent = true; return shared(); }
 	OtObject setOpaque() { transparent = false; return shared(); }
 	bool isTransparent() { return transparent; }
-	bool isOpaque() { return transparent; }
+	bool isOpaque() { return !transparent; }
 
 	// submit to GPU
-	virtual void submit(OtRenderer& renderer, bool instancing) {}
+	virtual void submit(OtRenderer& renderer, bool wireframe, bool instancing) {}
 
 	// get type definition
 	static OtType getMeta();
 
-private:
+protected:
 	// properties
 	bool frontside = true;
 	bool backside = false;

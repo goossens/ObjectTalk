@@ -54,10 +54,10 @@ OtObject OtFogClass::setLimits(float mnn, float mxn, float mnf, float mxf) {
 
 
 //
-//	OtFogClass::update
+//	OtFogClass::addPropertiesToRenderer
 //
 
-void OtFogClass::update(OtRenderer& renderer) {
+void OtFogClass::addPropertiesToRenderer(OtRenderer& renderer) {
 	renderer.setFog(color, near, far);
 }
 
@@ -82,7 +82,7 @@ OtType OtFogClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtFogClass>("Fog", OtSceneObjectClass::getMeta());
+		type = OtTypeClass::create<OtFogClass>("Fog", OtLightClass::getMeta());
 		type->set("setColor", OtFunctionClass::create(&OtFogClass::setColor));
 		type->set("setDistances", OtFunctionClass::create(&OtFogClass::setDistances));
 		type->set("setLimits", OtFunctionClass::create(&OtFogClass::setLimits));

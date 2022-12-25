@@ -18,8 +18,6 @@
 #include "OtController.h"
 #include "OtFrustum.h"
 #include "OtGui.h"
-#include "OtPass.h"
-#include "OtRenderer.h"
 
 
 //
@@ -31,9 +29,6 @@ typedef std::shared_ptr<OtCameraClass> OtCamera;
 
 class OtCameraClass : public OtGuiClass {
 public:
-	// constructor
-	OtCameraClass();
-
 	// set camera modes
 	OtObject setPerspective(float fov, float near, float far);
 	OtObject setOrthographic(float width, float near, float far);
@@ -55,6 +50,7 @@ public:
 	void setPositionVector(glm::vec3 position);
 	void setTargetVector(glm::vec3 target);
 	void setUpVector(glm::vec3 up);
+	void setAspectRatio(float aspectRatio);
 
 	// set properties
 	OtObject setDistance(float distance);
@@ -70,33 +66,25 @@ public:
 	bool onScrollWheel(float dx, float dy);
 	bool onKey(int key, int mods);
 
-	// update camera for next frame
-	void update(OtRenderer& renderer);
-
 	// access camera information
-	glm::vec3 getPosition() { return cameraPosition; }
-	glm::vec3 getTarget() { return cameraTarget; }
-	glm::vec3 getUp() { return cameraUp; }
-	float getFOV() { return fov; }
-	float getWidth() { return width; }
-	float getNearClip() { return near; }
-	float getFarClip() { return far; }
+	glm::vec3 getPosition() { validate(); return cameraPosition; }
+	glm::vec3 getTarget() { validate(); return cameraTarget; }
+	glm::vec3 getUp() { validate(); return cameraUp; }
+	float getFOV() { validate(); return fov; }
+	float getWidth() { validate(); return width; }
+	float getNearClip() { validate(); return near; }
+	float getFarClip() { validate(); return far; }
+	float getAspectRatio() { validate(); return aspectRatio; }
 
-	glm::mat4& getViewMatrix() { return viewMatrix; }
-	glm::mat4& getProjectionMatrix() { return projMatrix; }
-	glm::mat4& getViewProjectionMatrix() { return viewProjMatrix; }
-
-	// get the camera's frustum
-	OtFrustum getFrustum() { return frustum; }
+	glm::mat4& getViewMatrix() { validate(); return viewMatrix; }
+	glm::mat4& getProjectionMatrix() { validate(); return projMatrix; }
+	glm::mat4& getViewProjectionMatrix() { validate(); return viewProjMatrix; }
+	OtFrustum getFrustum() { validate(); return frustum; }
 
 	// see if object is visible in frustum
 	bool isVisiblePoint(const glm::vec3& point);
 	bool isVisibleAABB(OtAABB aabb);
 	bool isVisibleSphere(const glm::vec3& center, float radius);
-
-	// has camera changed?
-	bool hasChanged() { return changed; }
-	void resetChanged() { changed = false; }
 
 	// GUI to change camera properties
 	void renderGUI();
@@ -109,6 +97,16 @@ public:
 	static OtCamera create(OtCamera camera);
 
 private:
+	// validate camera properties and update if required
+	inline void validate() {
+		if (changed) {
+			update();
+			changed = false;
+		}
+	}
+
+	void update();
+
 	// camera style
 	enum OtCameraStyle {
 		perspectiveStyle,
@@ -169,6 +167,7 @@ private:
 
 	glm::vec3 forward;
 	glm::vec3 right;
+	float aspectRatio = 1.0;
 
 	// transformation matrices;
 	glm::mat4 viewMatrix;

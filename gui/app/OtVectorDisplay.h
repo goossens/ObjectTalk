@@ -25,7 +25,7 @@
 #include "OtSampler.h"
 #include "OtShader.h"
 #include "OtTexture.h"
-#include "OtUniform.h"
+#include "OtUniformVec4.h"
 
 
 //
@@ -121,7 +121,7 @@ private:
 	int h = 100;
 
 	// GPU assets
-	OtUniform uniform = OtUniform("u_params", 1);
+	OtUniformVec4 uniform = OtUniformVec4("u_params", 1);
 	OtTexture lineTexture;
 	OtSampler sampler = OtSampler("s_texture");
 	OtShader shader = OtShader("OtVectorDisplayVS", "OtVectorDisplayFS");

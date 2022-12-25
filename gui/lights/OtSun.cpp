@@ -59,27 +59,6 @@ OtObject OtSunClass::setAzimuth(float a) {
 
 
 //
-//	OtSunClass::castShadow
-//
-
-OtObject OtSunClass::castShadow(float width, float dist, float near, float far) {
-	OtLightClass::castShadow();
-
-	// create camera (if required)
-	if (!shadowCamera) {
-		shadowCamera = OtCameraClass::create();
-	}
-
-	shadowCamera->setOrthographic(width, near, far);
-	shadowCamera->setWidthLimits(width / 10.0, width * 10.0);
-	shadowCamera->setNearFarLimits(near / 10.0, near * 10.0, far / 10.0, far * 10.0);
-	distance = dist;
-
-	return shared();
-}
-
-
-//
 //	OtSunClass::getDirectionToSun
 //
 
@@ -101,28 +80,20 @@ glm::vec3 OtSunClass::getLightDirection() {
 
 
 //
-//	OtSunClass::update
+//	OtSunClass::addPropertiesToRenderer
 //
 
-void OtSunClass::update(OtRenderer& renderer) {
-	OtLightClass::update(renderer);
-
-	// handle shadows (if required)
-	if (castShadowFlag) {
-		// update "light" camera
-		auto target = renderer.getCamera()->getTarget();
-		shadowCamera->setPositionVector(target - distance * getDirectionToSun());
-		shadowCamera->setTargetVector(target);
-		shadowCamera->update(renderer);
-	}
-
-	// add ambient light
+void OtSunClass::addPropertiesToRenderer(OtRenderer& renderer) {
+	// the sun adds ambient light
 	glm::vec3 ambient = glm::vec3(std::clamp((elevation + 0.1) / 0.3, 0.0, 0.8));
 	renderer.addAmbientLight(ambient);
 
-	// add direct light
-	glm::vec3 direct = glm::vec3(0.2 + std::clamp(elevation / 0.1, 0.0, 0.6));
-	renderer.setDirectionalLight(getLightDirection(), direct);
+	// set directional light values
+	direction = getLightDirection();
+	color = glm::vec3(0.2 + std::clamp(elevation / 0.1, 0.0, 0.6));
+
+	// let parent class do it's thing
+	OtDirectionalLightClass::addPropertiesToRenderer(renderer);
 }
 
 
@@ -134,18 +105,7 @@ void OtSunClass::renderGUI() {
 	ImGui::Checkbox("Enabled", &enabled);
 	ImGui::SliderFloat("Elevation", &elevation, -0.99, 0.99);
 	ImGui::SliderFloat("Azimuth", &azimuth, 0.0, std::numbers::pi * 2.0);
-
-	if (shadowCamera) {
-		ImGui::Checkbox("Casts Shadow", &castShadowFlag);
-	}
-
-	if (castShadowFlag) {
-		if (ImGui::TreeNodeEx("Shadowmap:", ImGuiTreeNodeFlags_Framed)) {
-			float width = ImGui::GetContentRegionAvail().x;
-			ImGui::Image((void*)(intptr_t) framebuffer.getDepthTextureIndex(), ImVec2(width, width));
-			ImGui::TreePop();
-		}
-	}
+	ImGui::Checkbox("Casts Shadow", &castShadowFlag);
 }
 
 
@@ -161,7 +121,6 @@ OtType OtSunClass::getMeta() {
 		type->set("__init__", OtFunctionClass::create(&OtSunClass::init));
 		type->set("setElevation", OtFunctionClass::create(&OtSunClass::setElevation));
 		type->set("setAzimuth", OtFunctionClass::create(&OtSunClass::setAzimuth));
-		type->set("castShadow", OtFunctionClass::create(&OtSunClass::castShadow));
 	}
 
 	return type;

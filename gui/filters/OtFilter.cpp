@@ -28,9 +28,7 @@ void OtFilterClass::render(int w, int h, OtFrameBuffer& origin, OtFrameBuffer& d
 	pass.reserveRenderingSlot();
 	pass.setRectangle(0, 0, w, h);
 	pass.setFrameBuffer(destination);
-
-	glm::mat4 matrix = glm::ortho(0.0f, (float) w, (float) h, 0.0f, -1.0f, 1.0f);
-	pass.setTransform(glm::mat4(1.0), matrix);
+	pass.setTransform(glm::mat4(1.0), glm::ortho(0.0f, (float) w, (float) h, 0.0f, -1.0f, 1.0f));
 
 	// create single "triangular quad" to cover area
 	OtQuadSubmit(w, h);
@@ -51,15 +49,13 @@ void OtFilterClass::render(int x, int y, int w, int h, OtFrameBuffer& origin) {
 	OtPass pass;
 	pass.reserveRenderingSlot();
 	pass.setRectangle(x, y, w, h);
-
-	glm::mat4 matrix = glm::ortho(0.0f, (float) w, (float) h, 0.0f, -1.0f, 1.0f);
-	pass.setTransform(glm::mat4(1.0), matrix);
+	pass.setTransform(glm::mat4(1.0), glm::ortho(0.0f, (float) w, (float) h, 0.0f, -1.0f, 1.0f));
 
 	// create "single triangle quad" to cover area
 	OtQuadSubmit(w, h);
 	bgfx::setState(state);
 	origin.bindColorTexture(textureSampler, 0);
 
-	// execure filter
+	// execute filter
 	execute(pass, w, h);
 }

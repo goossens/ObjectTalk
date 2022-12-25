@@ -145,7 +145,7 @@ void OtSkyboxClass::render(OtRenderer& renderer) {
 	indexBuffer.submit();
 
 	// run shader
-	renderer.setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_MSAA);
+	renderer.setNoDepthState();
 	renderer.runShader(shader);
 }
 

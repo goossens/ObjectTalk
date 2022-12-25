@@ -15,6 +15,7 @@
 
 #include "OtException.h"
 #include "OtFunction.h"
+#include "OtNumbers.h"
 
 #include "OtSpotLight.h"
 #include "OtColor.h"
@@ -142,16 +143,16 @@ OtObject OtSpotLightClass::setAttenuation(float constant, float linear, float qu
 OtObject OtSpotLightClass::setCone(float i, float o) {
 	inner = i;
 	outer = o;
+	inner = std::min(inner, outer);
 	return shared();
 }
 
 
 //
-//	OtSpotLightClass::update
+//	OtSpotLightClass::addPropertiesToRenderer
 //
 
-void OtSpotLightClass::update(OtRenderer& renderer) {
-	OtLightClass::update(renderer);
+void OtSpotLightClass::addPropertiesToRenderer(OtRenderer& renderer) {
 	renderer.addSpotLight(position, direction, color, attenuation, inner, outer);
 }
 
@@ -163,11 +164,12 @@ void OtSpotLightClass::update(OtRenderer& renderer) {
 void OtSpotLightClass::renderGUI() {
 	ImGui::Checkbox("Enabled", &enabled);
 	ImGui::InputFloat3("Position", glm::value_ptr(position));
-	ImGui::InputFloat3("Direction", glm::value_ptr(direction));
+	ImGui::SliderFloat3("Direction", glm::value_ptr(direction), -1.0f, 1.0f);
 	ImGui::ColorEdit3("Color", glm::value_ptr(color));
-	ImGui::InputFloat3("Attenuation", glm::value_ptr(attenuation));
-	ImGui::InputFloat("Inner cone", &inner);
-	ImGui::InputFloat("Outer cone", &outer);
+	ImGui::SliderFloat3("Attenuation", glm::value_ptr(attenuation), 0.0, 1.0);
+	ImGui::SliderFloat("Outer cone", &outer, 0.0, std::numbers::pi / 2.0);
+	ImGui::SliderFloat("Inner cone", &inner, 0.0, outer);
+	inner = std::min(inner, outer);
 }
 
 

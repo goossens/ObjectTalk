@@ -22,3 +22,10 @@
 #include "shadow/fs_spv.h"
 #include "shadow/fs_dx9.h"
 #include "shadow/fs_dx11.h"
+
+#include "shadow/vsi_mtl.h"
+#include "shadow/vsi_glsl.h"
+#include "shadow/vsi_essl.h"
+#include "shadow/vsi_spv.h"
+#include "shadow/vsi_dx9.h"
+#include "shadow/vsi_dx11.h"

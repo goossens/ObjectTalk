@@ -32,8 +32,8 @@ public:
 	virtual OtObject receiveShadow(bool flag) { receiveShadowFlag = flag; return shared(); }
 	bool receivesShadow() { return receiveShadowFlag; }
 
-	// update state
-	virtual void update(OtRenderer& renderer) {}
+	// pre-render any content that is required for the rendering phase (e.g shadows and reflections)
+	virtual void preRender(OtRenderer& renderer) {}
 
 	// submit to GPU
 	virtual void render(OtRenderer& renderer) {}

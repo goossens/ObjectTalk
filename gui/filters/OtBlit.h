@@ -14,7 +14,7 @@
 
 #include "OtFilter.h"
 #include "OtShader.h"
-#include "OtUniform.h"
+#include "OtUniformVec4.h"
 
 
 //
@@ -39,6 +39,6 @@ private:
 	float alpha = -1.0;
 
 	// GPU assets
-	OtUniform uniform = OtUniform("u_blit", 1);
+	OtUniformVec4 uniform = OtUniformVec4("u_blit", 1);
 	OtShader shader = OtShader("OtBlitVS", "OtBlitFS");
 };

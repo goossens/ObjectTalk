@@ -275,13 +275,9 @@ void OtFrameworkClass::removeCustomer(OtCustomer* customer) {
 	eventQueue.pushCustomerTerminateEvent(customer);
 
 	// remove from the list
-	customers.erase(std::remove_if(
-		customers.begin(),
-		customers.end(),
-		[customer] (OtCustomer* c) {
+	customers.erase(std::remove_if(customers.begin(), customers.end(), [customer] (OtCustomer* c) {
 			return c == customer;
-		}),
-		customers.end());
+		}), customers.end());
 
 	// tell other customers that "Elvis" has left the building
 	for (auto& c : customers) {

@@ -14,6 +14,8 @@
 
 #include "OtAppObject.h"
 #include "OtCamera.h"
+#include "OtFrameBuffer.h"
+#include "OtRenderer.h"
 #include "OtScene.h"
 
 
@@ -62,6 +64,9 @@ private:
 	// camera to render scene
 	OtCamera camera;
 
+	// scene renderer
+	OtRenderer renderer;
+
 	// view geometry (in percentage of screen/window size)
 	float x = 0.0;
 	float y = 0.0;
@@ -71,4 +76,9 @@ private:
 	// old mouse position for drag operations
 	float xold = 0.0;
 	float yold = 0.0;
+
+	// debugging support
+	void renderDebugGUI();
+	OtCamera debugCamera;
+	OtFrameBuffer framebuffer;
 };

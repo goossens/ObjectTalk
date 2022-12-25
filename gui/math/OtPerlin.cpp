@@ -20,26 +20,10 @@
 
 
 //
-//	OtPerlinClass::init
+//	OtPerlin::generateSeedVector
 //
 
-void OtPerlinClass::init(size_t count, OtObject* parameters) {
-	if (count == 1) {
-		seedValue = parameters[0]->operator int();
-
-	} else if (count != 0) {
-		OtExcept("[Perlin] constructor expects 0 or 1 arguments (not %ld)", count);
-	}
-
-	generateSeedVector();
-}
-
-
-//
-//	OtPerlinClass::generateSeedVector
-//
-
-void OtPerlinClass::generateSeedVector() {
+void OtPerlin::generateSeedVector() {
 	p.resize(256);
 	std::iota(p.begin(), p.end(), 0);
 	std::default_random_engine engine(seedValue);
@@ -49,10 +33,10 @@ void OtPerlinClass::generateSeedVector() {
 
 
 //
-//	OtPerlinClass::noise
+//	OtPerlin::noise
 //
 
-float OtPerlinClass::noise(float x, float y, float z) {
+float OtPerlin::noise(float x, float y, float z) {
 	int X = (int) floor(x) & 255;
 	int Y = (int) floor(y) & 255;
 	int Z = (int) floor(z) & 255;
@@ -85,28 +69,28 @@ float OtPerlinClass::noise(float x, float y, float z) {
 
 
 //
-//	OtPerlinClass::fade
+//	OtPerlin::fade
 //
 
-float OtPerlinClass::fade(float t) {
+float OtPerlin::fade(float t) {
 	return t * t * t * (t * (t * 6 - 15) + 10);
 }
 
 
 //
-//	OtPerlinClass::lerp
+//	OtPerlin::lerp
 //
 
-float OtPerlinClass::lerp(float t, float a, float b) {
+float OtPerlin::lerp(float t, float a, float b) {
 	return a + t * (b - a);
 }
 
 
 //
-//	OtPerlinClass::grad
+//	OtPerlin::grad
 //
 
-float OtPerlinClass::grad(int hash, float x, float y, float z) {
+float OtPerlin::grad(int hash, float x, float y, float z) {
 	int h = hash & 15;
 	float u = h < 8 ? x : y, v = h < 4 ? y : h == 12 || h == 14 ? x : z;
 	return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
@@ -114,10 +98,10 @@ float OtPerlinClass::grad(int hash, float x, float y, float z) {
 
 
 //
-//	OtPerlinClass::octaveNoise
+//	OtPerlin::octaveNoise
 //
 
-float OtPerlinClass::octaveNoise(float x, float y, float z, int octaves, float persistence) {
+float OtPerlin::octaveNoise(float x, float y, float z, int octaves, float persistence) {
 	float total = 0.0;
 	float frequency = 1.0;
 	float amplitude = 1.0;
@@ -131,39 +115,4 @@ float OtPerlinClass::octaveNoise(float x, float y, float z, int octaves, float p
 	}
 
 	return total / maxValue;
-}
-
-
-//
-//	OtPerlinClass::getMeta
-//
-
-OtType OtPerlinClass::getMeta() {
-	static OtType type;
-
-	if (!type) {
-		type = OtTypeClass::create<OtPerlinClass>("Perlin", OtMathClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtPerlinClass::init));
-		type->set("seed", OtFunctionClass::create(&OtPerlinClass::seed));
-		type->set("noise", OtFunctionClass::create(&OtPerlinClass::noise));
-	}
-
-	return type;
-}
-
-
-//
-//	OtPerlinClass::create
-//
-
-OtPerlin OtPerlinClass::create() {
-	OtPerlin perlin = std::make_shared<OtPerlinClass>();
-	perlin->setType(getMeta());
-	return perlin;
-}
-
-OtPerlin OtPerlinClass::create(int seed) {
-	OtPerlin perlin = std::make_shared<OtPerlinClass>(seed);
-	perlin->setType(getMeta());
-	return perlin;
 }

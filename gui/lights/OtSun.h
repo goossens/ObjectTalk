@@ -13,7 +13,7 @@
 //
 
 #include "OtController.h"
-#include "OtLight.h"
+#include "OtDirectionalLight.h"
 
 
 //
@@ -23,7 +23,7 @@
 class OtSunClass;
 typedef std::shared_ptr<OtSunClass> OtSun;
 
-class OtSunClass : public OtLightClass {
+class OtSunClass : public OtDirectionalLightClass {
 public:
 	// initialize
 	void init(size_t count, OtObject* parameters);
@@ -31,14 +31,13 @@ public:
 	// update attributes
 	OtObject setElevation(float elevation);
 	OtObject setAzimuth(float azimuth);
-	OtObject castShadow(float width, float distance, float near, float far);
 
 	// get the direction yo and from the sun
 	glm::vec3 getDirectionToSun();
 	glm::vec3 getLightDirection();
 
-	// update state
-	void update(OtRenderer& renderer) override;
+	// add light properties to renderer
+	void addPropertiesToRenderer(OtRenderer& renderer) override;
 
 	// GUI to change properties
 	void renderGUI();
@@ -54,9 +53,6 @@ private:
 	float elevation = 0.0;	// in radians from XZ plane (positive is up)
 	float azimuth = 0.0;	// in clockwise radians from negative Z axis
 							// 0 = "north", 1/2 pi = "east", pi = "south", 1 1/2 pi = "west"
-
-	// for shadow calculations
-	float distance = 1.0;
 };
 
 

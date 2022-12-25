@@ -4,7 +4,7 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-$input v_position, v_normal, v_shadow
+$input v_position, v_view, v_normal
 
 #include <bgfx.glsl>
 #include <light.glsl>
@@ -125,6 +125,6 @@ void main() {
 
 	// apply lighting
 	Material material = createMaterial(vec3_splat(0.6), vec3_splat(0.6), vec3_splat(0.5), 20.0);
-	gl_FragColor = applyLightAndFog(vec4(terrainColor, 1.0), material, v_position, normalize(v_normal), v_shadow);
+	gl_FragColor = applyLightAndFog(vec4(terrainColor, 1.0), material, v_position, v_view, normalize(v_normal));
 
 }

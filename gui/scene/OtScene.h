@@ -29,8 +29,8 @@ public:
 	// ensure specified component is allowed as a child
 	void validateChild(OtComponent child) override;
 
-	// update state
-	void update(OtRenderer& renderer);
+	// pre-render any content that is required for the rendering phase (e.g shadows and reflections)
+	void preRender(OtRenderer& renderer);
 
 	// render contents
 	void render(OtRenderer& renderer);

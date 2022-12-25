@@ -29,9 +29,6 @@ typedef std::shared_ptr<OtNoiseMapClass> OtNoiseMap;
 
 class OtNoiseMapClass : public OtGuiClass {
 public:
-	// constructor
-	OtNoiseMapClass();
-
 	// initialize
 	void init(size_t count, OtObject* parameters);
 

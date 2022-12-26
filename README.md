@@ -48,50 +48,12 @@ platforms can be found in the
 [installation manual](https://goossens.github.io/ObjectTalk/installation.html).
 Currently, instructions are available for MacOS, Linux and Windows.
 
+## Future
 ## Special Thanks
 
-This project uses Open Source products without which it would have
-been a lot harder to implement ObjectTalk. Special thanks goes to
-the following communities:
-
-* [CMake](https://cmake.org) - cross-platform family of tools designed to build, test and package software.
-* [libuv](https://libuv.org) - multi-platform support library with a focus on asynchronous I/O.
-* [argparse](https://github.com/p-ranav/argparse) - command line argument parser.
-* [llhttp](https://llhttp.org) - HTTP protocol parser.
-* [multipart-parser](https://github.com/francoiscolas/multipart-parser) - HTTP multipart body parser.
-
-In case the GUI module is included, we also use:
-
-* [GLFW](https://www.glfw.org) - multi-platform library for desktop application development.
-* [bgfx](https://github.com/bkaradzic/bgfx) - cross-platform, graphics API agnostic rendering library.
-* [Dear ImGui](https://github.com/ocornut/imgui) - graphical user interface library.
-* [glm](https://github.com/g-truc/glm) - mathematics library for graphics software.
-* [libtess2](https://github.com/memononen/libtess2) - library to convert (tesssallate) polygons into triangles.
-* [Box2D](https://box2d.org) - 2D physics engine.
-* [tweeny](https://github.com/mobius3/tweeny) - animation library.
-* [tinyobjloader](https://github.com/tinyobjloader/tinyobjloader) - to load 3D models in the .obj format.
-* [ImGuiFileDialog](https://github.com/aiekick/ImGuiFileDialog) - file selection dialog for Dear ImGui.
-* [ImGuiColorTextEdit](https://github.com/BalazsJako/ImGuiColorTextEdit) - syntax highlighting text editor for Dear ImGui.
-
-A special thanks also goes to
-[Gunther Rademacher](https://github.com/GuntherRademacher) for his
-["RailRoad Diagram Generator"](https://www.bottlecaps.de/rr/ui) which
-is used in the documentation to visualize the ObjectTalk grammar.
-
-A another special thanks goes to the team that wrote the
-[Swift](https://swift.org) computer language
-[documentation](https://swift.org/documentation/). It is awesome and
-I've respectfully reused a lot of it to document ObjectTalk.
-
-A final special thanks goes to the team that wrote the tutorials for
-[Three.js](https://threejs.org). The 3D ObjectTalk tutorial uses some of
-those ideas.
-
-More credits can be found in the GUI module:
-
-* [Algorithms](gui/README.md)
-* [Assets](examples/3d/assets/README.md)
-* [Fonts](gui/utilities/README.md)
+This project uses a lot of Open Source products without which it would have
+been a lot harder to implement ObjectTalk. You can find a full list on the
+[credits page](CREDITS.md).
 
 ## License
 

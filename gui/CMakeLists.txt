@@ -30,8 +30,21 @@ list(REMOVE_DUPLICATES GUI_INCLUDE_DIRS)
 set(GUI_INCLUDE_DIRS ${GUI_INCLUDE_DIRS} PARENT_SCOPE)
 
 add_library(gui STATIC ${GUI_INCLUDES} ${GUI_SOURCES})
-add_dependencies(gui ot glm glfw bgfx tess2 imgui imguifd imguieditor tinyobjloader box2d tweeny)
 target_include_directories(gui PUBLIC ${GUI_INCLUDE_DIRS})
-target_link_libraries(gui PUBLIC ot glm glfw bgfx mipmap tess2 imgui imguifd imguieditor tinyobjloader tinygltf box2d tweeny ${GUI_LIBS})
+
+add_dependencies(gui
+	ot
+	glfw bgfx
+	imgui imguifd imguieditor
+	glm tess2 tinyobjloader tinygltf entt
+	box2d tweeny)
+
+target_link_libraries(gui PUBLIC
+	ot
+	glfw bgfx
+	imgui imguifd imguieditor
+	glm mipmap tess2 tinyobjloader tinygltf entt
+	box2d tweeny
+	${GUI_LIBS})
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${GUI_INCLUDES} ${GUI_SOURCES})

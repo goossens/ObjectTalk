@@ -56,6 +56,9 @@ public:
 	long totalMemory();
 	long freeMemory();
 
+	// generate a UUID
+	std::string uuid();
+
 	// get number of seconds since epoch
 	double clock();
 

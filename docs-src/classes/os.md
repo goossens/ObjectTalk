@@ -31,6 +31,7 @@ name **os**.
 | sysname() | Return the Operating System name. |
 | release() | Return the Operating System release. |
 | version() | Return the Operating System version. |
+| uuid() | Return a Universally Unique Identifier (UUID). |
 | sleep() | Causes the calling thread to sleep for a specified number of milliseconds. |
 | uptime() | Return the systems uptime in seconds. |
 | runServer() | Run the event loop for a server app. |

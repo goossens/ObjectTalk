@@ -10,6 +10,7 @@
 //
 
 #include <chrono>
+#include <random>
 #include <time.h>
 
 #include "OtArray.h"
@@ -163,6 +164,31 @@ long OtOSClass::totalMemory() {
 
 long OtOSClass::freeMemory() {
 	return uv_get_free_memory();
+}
+
+
+//
+//	OtOSClass::uuid
+//
+
+std::string OtOSClass::uuid() {
+	static std::random_device device;
+	static std::mt19937 generator(device());
+	static std::uniform_int_distribution<uint64_t> distribution(0, 15);
+
+	const char* digits = "0123456789abcdef";
+	std:: string result;
+
+	for (auto dash : { 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0 }) {
+		if (dash) {
+			result += "-";
+		}
+
+		result += digits[distribution(generator)];
+		result += digits[distribution(generator)];
+	}
+
+	return result;
 }
 
 
@@ -462,6 +488,7 @@ OtType OtOSClass::getMeta() {
 		type->set("machine", OtFunctionClass::create(&OtOSClass::machine));
 		type->set("uptime", OtFunctionClass::create(&OtOSClass::uptime));
 		type->set("hostname", OtFunctionClass::create(&OtOSClass::hostname));
+		type->set("uuid", OtFunctionClass::create(&OtOSClass::hostname));
 
 		type->set("cores", OtFunctionClass::create(&OtOSClass::cores));
 		type->set("networks", OtFunctionClass::create(&OtOSClass::networks));

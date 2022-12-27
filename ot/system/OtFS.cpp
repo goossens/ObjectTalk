@@ -50,8 +50,8 @@ OtObject OtFSClass::gettmp() {
 //
 
 OtObject OtFSClass::tmpnam() {
-	std::random_device rd;
-	std::mt19937 generator(rd());
+	static std::random_device device;
+	static std::mt19937 generator(device());
 	std::uniform_int_distribution<uint64_t> rand(0);
 
 	auto tmp = std::filesystem::temp_directory_path();
@@ -280,9 +280,9 @@ void OtFSClass::mkdirs(const std::string& path) {
 //
 
 OtObject OtFSClass::mktmpdir() {
-	std::random_device rd;
-	std::mt19937 generator(rd());
-	std::uniform_int_distribution<uint64_t> rand(0);
+	static std::random_device rd;
+	static std::mt19937 generator(rd());
+	static std::uniform_int_distribution<uint64_t> distribution;
 
 	auto tmp = std::filesystem::temp_directory_path();
 	std::filesystem::path path;
@@ -290,7 +290,7 @@ OtObject OtFSClass::mktmpdir() {
 
 	while (!done) {
 		std::stringstream ss;
-		ss << std::hex << rand(generator);
+		ss << std::hex << distribution(generator);
 		path = tmp / ss.str();
 
 		if (std::filesystem::create_directory(path)) {

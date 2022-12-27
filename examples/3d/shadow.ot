@@ -45,13 +45,13 @@ class App : gui.App {
 			.add(object);
 
 		var camera = gui.Camera()
-			.setPerspective(30, 5.0, 60.0)
+			.setPerspective(30, 5.0, 45.0)
 			.setTarget(0.0, -2.0, 0.0)
 			.setCircleTargetMode()
 			.setPitchLimits(0.0, pi / 2.0 - 0.1)
 			.setPitch(0.3)
 			.setYaw(0.5)
-			.setDistanceLimits(10.0, 50.0)
+			.setDistanceLimits(10.0, 35.0)
 			.setDistance(20.0)
 			.setNearFarLimits(1.0, 20, 20.0, 100.0);
 

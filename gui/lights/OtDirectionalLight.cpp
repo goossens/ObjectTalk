@@ -26,7 +26,7 @@
 //	Constants
 //
 
-constexpr int shadowmapSize = 512;
+constexpr int shadowmapSize = 1024;
 
 
 //

@@ -31,7 +31,12 @@ a private fork is used from [https://github.com/goossens/ImGuiColorTextEdit](htt
 * [glm](https://github.com/g-truc/glm) - mathematics library for graphics software
 released under the [MIT license](https://opensource.org/licenses/MIT).
 * [libtess2](https://github.com/memononen/libtess2) - library to convert (tesssallate) polygons into triangles
+by [Mikko Mononen](https://github.com/memononen)
 released under the [SGI Free Sofware License B, version 2](https://directory.fsf.org/wiki/License:SGI-B-2.0)
+* [ad_mipmap](https://github.com/Vavassor/ad_mipmap) - library to create mipmap textures
+by [Andrew Dawson](https://vavassor.github.io)
+released under the [CC0 license](https://creativecommons.org/publicdomain/zero/1.0/).
+
 * [EnTT](https://github.com/skypjack/entt) - Entity Component System (ECS)
 released under the [MIT license](https://opensource.org/licenses/MIT).
 * [Box2D](https://box2d.org) - 2D physics engine

@@ -12,15 +12,22 @@
 //	Include files
 //
 
+#include <string>
+
 #include "glm/glm.hpp"
+#include "entt/entity/registry.hpp"
 
 
 //
-//	OtUuidComponent
+//	OtIdComponent
 //
 
-struct OtUuidComponent {
+struct OtIdComponent {
+	// constructors
+	OtIdComponent(uint64_t i) : id(i) {}
 
+	// properties
+	uint64_t id;
 };
 
 
@@ -29,7 +36,25 @@ struct OtUuidComponent {
 //
 
 struct OtTagComponent {
+	// constructors
+	OtTagComponent() = default;
+	OtTagComponent(const std::string& t) : tag(t) {}
 
+	// properties
+	std::string tag;
+};
+
+
+//
+//	OtHierarchyComponent
+//
+
+struct OtHierarchyComponent {
+	// properties
+	entt::entity parent{entt::null};
+	entt::entity first{entt::null};
+	entt::entity prev{entt::null};
+	entt::entity next{entt::null};
 };
 
 
@@ -38,5 +63,10 @@ struct OtTagComponent {
 //
 
 struct OtTransformComponent {
-	glm::mat4 matrix;
+	// constructors
+	OtTransformComponent() = default;
+	OtTransformComponent(const glm::mat4& t) : transform(t) {}
+
+	// properties
+	glm::mat4 transform{1.0};
 };

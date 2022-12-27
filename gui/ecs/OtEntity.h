@@ -56,6 +56,19 @@ public:
 		return registry->all_of<T>(entity);
 	}
 
+	// see if entity is valid
+	bool isValid() { return entity != entt::null; }
+
+	// conversions
+	operator entt::entity() {
+		return entity;
+	}
+
+	// see if entity is valid
+	operator bool() const {
+		return registry != nullptr && entity != entt::null;
+	}
+
 private:
 	// registry and entity handle
 	entt::registry* registry = nullptr;

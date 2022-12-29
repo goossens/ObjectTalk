@@ -84,6 +84,13 @@ public:
 	// get AABB (Axis-Alligned bounding box)
 	OtAABB getAABB();
 
+	// transform frustum
+	OtFrustum transform(const glm::mat4& transform);
+
+	// debugging support
+	void debugPlanes();
+	void debugPoints();
+
 private:
 	std::array<OtPlane, planeCount> planes;
 	std::array<glm::vec3, pointCount> points;

@@ -35,7 +35,7 @@ public:
 	// get cascade specific information
 	float getCascadeNear(int cascade) { return distances[cascade * 2]; }
 	float getCascadeFar(int cascade) { return distances[cascade * 2 + 1]; }
-	OtFrustum getCascadeFrustum(int cascade) { return frustums[cascade]; }
+	OtFrustum& getCascadeFrustum(int cascade) { return frustums[cascade]; }
 	OtCamera getCascadeCamera(int cascade) { return cameras[cascade]; }
 	glm::mat4& getCascadeTransform(int cascade) { return transforms[cascade]; }
 	OtFrameBuffer& getCascadeFramebuffer(int cascade) { return framebuffers[cascade]; }

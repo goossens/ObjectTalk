@@ -10,6 +10,7 @@
 //
 
 #include "OtFrustum.h"
+#include "OtGlm.h"
 #include "OtGpu.h"
 
 
@@ -78,6 +79,14 @@ OtFrustum::OtFrustum(glm::vec3 &nbl, glm::vec3 &ntl, glm::vec3 &ntr, glm::vec3 &
 	points[farTopLeft] = ftl;
 	points[farTopRight] = ftr;
 	points[farBottomRight] = fbr;
+
+	// set planes
+	planes[left] = OtPlane(nbl, ntl, ftl);
+	planes[right] = OtPlane(nbr, ntr, ftr);
+	planes[bottom] = OtPlane(nbl, nbr, fbr);
+	planes[top] = OtPlane(ntl, ntr, ftr);
+	planes[near] = OtPlane(nbl, ntl, ntr);
+	planes[far] = OtPlane(fbl, ftl, ftr);
 }
 
 
@@ -163,4 +172,48 @@ OtAABB OtFrustum::getAABB() {
 	}
 
 	return aabb;
+}
+
+
+//
+//	OtFrustum::transform
+//
+
+OtFrustum OtFrustum::transform(const glm::mat4& transform) {
+	glm::vec3 newPoints[pointCount] = {
+		OtGlmMul(transform, points[nearBottomLeft]),
+		OtGlmMul(transform, points[nearTopLeft]),
+		OtGlmMul(transform, points[nearTopRight]),
+		OtGlmMul(transform, points[nearBottomRight]),
+		OtGlmMul(transform, points[farBottomLeft]),
+		OtGlmMul(transform, points[farTopLeft]),
+		OtGlmMul(transform, points[farTopRight]),
+		OtGlmMul(transform, points[farBottomRight])
+	};
+
+	return OtFrustum(
+		newPoints[0], newPoints[1], newPoints[2], newPoints[3],
+		newPoints[4], newPoints[5], newPoints[6], newPoints[7]);
+}
+
+
+//
+//	OtFrustum::debugPlanes
+//
+
+void OtFrustum::debugPlanes() {
+	for (auto& plane : planes) {
+		plane.debug();
+	}
+}
+
+
+//
+//	OtFrustum::debugPoints
+//
+
+void OtFrustum::debugPoints() {
+	for (auto& point : points) {
+		OtGlmDebug(point);
+	}
 }

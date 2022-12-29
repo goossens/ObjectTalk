@@ -15,6 +15,7 @@
 
 #include "OtAABB.h"
 #include "OtCascadedShadowMap.h"
+#include "OtGlm.h"
 #include "OtViewPort.h"
 
 
@@ -43,7 +44,8 @@ static void calculateSplits(float* result, size_t splits, float near, float far,
 //	OtCascadedShadowMap::update
 //
 
-void OtCascadedShadowMap::update(int s, OtCamera camera, const glm::vec3& lightDirection) {
+void OtCascadedShadowMap::update(int s, OtCamera camera, const glm::vec3 &lightDirection)
+{
 	// create resources if required
 	if (!initialized) {
 		for (auto i = 0; i < cascades; i++) {
@@ -67,81 +69,36 @@ void OtCascadedShadowMap::update(int s, OtCamera camera, const glm::vec3& lightD
 	calculateSplits(distances, cascades, camera->getNearClip(), camera->getFarClip());
 
 	// determine a transform for each cascade
-	auto fov = camera->getFOV();
-	float tanHalfHFOV = std::tan(glm::radians(fov / 2.0));
-	float tanHalfVFOV = std::tan(glm::radians(fov / 2.0 / camera->getAspectRatio()));
-	auto invViewMatrix = glm::inverse(camera->getViewMatrix());
+	auto tmpCamera = OtCameraClass::create(camera);
 
-	for (auto i = 0, nn = 0, ff = 1; i < cascades; i++, nn += 2, ff += 2) {
-		// determine the world space frustum
-		float xn = distances[nn] * tanHalfHFOV;
-		float xf = distances[ff] * tanHalfHFOV;
-		float yn = distances[nn] * tanHalfVFOV;
-		float yf = distances[ff] * tanHalfVFOV;
+	for (auto cascade = 0, nn = 0, ff = 1; cascade < cascades; cascade++, nn += 2, ff += 2) {
+		// get cascade frustum in worldspace
+		tmpCamera->setPerspective(camera->getFOV(), distances[nn], distances[ff]);
+		frustums[cascade] = tmpCamera->getFrustum();
 
-		glm::vec3 corners[8] = {
-			// near plane
-			invViewMatrix * glm::vec4(-xn, -yn, -distances[nn], 1.0),
-			invViewMatrix * glm::vec4(-xn, yn, -distances[nn], 1.0),
-			invViewMatrix * glm::vec4(xn, yn, -distances[nn], 1.0),
-			invViewMatrix * glm::vec4(xn, -yn, -distances[nn], 1.0),
+		// get center of frustum in worldspace and calculate radius of enclosing sphere
+		glm::vec3 center = frustums[cascade].getCenter();
+		float radius = 0.0;
 
-			// far plane
-			invViewMatrix * glm::vec4(-xf, -yf, -distances[ff], 1.0),
-			invViewMatrix * glm::vec4(-xf, yf, -distances[ff], 1.0),
-			invViewMatrix * glm::vec4(xf, yf, -distances[ff], 1.0),
-			invViewMatrix * glm::vec4(xf, -yf, -distances[ff], 1.0)
-		};
-
-		frustums[i] = OtFrustum(corners[0], corners[1], corners[2], corners[3], corners[4], corners[5], corners[6], corners[7]);
-		glm::vec3 center = frustums[i].getCenter();
-
-		// determine light space matrix
-		cameras[i] = OtCameraClass::create();
-		cameras[i]->setPositionVector(center - lightDirection);
-		cameras[i]->setTargetVector(center);
-		auto lightViewMatrix = cameras[i]->getViewMatrix();
-
-		// translate the frustum corners to light space and create AABB
-		float minX = std::numeric_limits<float>::max();
-		float maxX = std::numeric_limits<float>::lowest();
-		float minY = std::numeric_limits<float>::max();
-		float maxY = std::numeric_limits<float>::lowest();
-		float minZ = std::numeric_limits<float>::max();
-		float maxZ = std::numeric_limits<float>::lowest();
-
-		for (auto corner : corners) {
-			auto lightSpace = lightViewMatrix * glm::vec4(corner, 1.0);
-
-			minX = std::min(minX, lightSpace.x);
-			maxX = std::max(maxX, lightSpace.x);
-			minY = std::min(minY, lightSpace.y);
-			maxY = std::max(maxY, lightSpace.y);
-			minZ = std::min(minZ, lightSpace.z);
-			maxZ = std::max(maxZ, lightSpace.z);
+		for (auto corner = 0; corner < OtFrustum::pointCount; corner++) {
+			radius = std::max(radius, glm::distance(center, frustums[cascade].getCorner(corner)));
 		}
 
-		// increase near and far planes (to include out of sight objects that create shadows)
-/*
-		constexpr float factor = 1.1;
+		// determine lightspace view matrix
+		cameras[cascade]->setPositionVector(center - (glm::normalize(lightDirection) * (radius * 1.5f)));
+		cameras[cascade]->setTargetVector(center);
+		auto lightViewMatrix = cameras[cascade]->getViewMatrix();
 
-		if (minZ < 0.0) {
-			minZ *= factor;
+		// transform frustum to lightspace and create AABB (from light's POV)
+		auto lightSpaceFrustum = frustums[cascade].transform(lightViewMatrix);
+		auto lightSpaceAABB = lightSpaceFrustum.getAABB();
 
-		} else {
-			minZ /= factor;
-		}
+		// set "light" camera projection and create the transformation matrix
+		cameras[cascade]->setOrthographicCustom(
+			lightSpaceAABB.getMin().x, lightSpaceAABB.getMax().x,
+			lightSpaceAABB.getMin().y, lightSpaceAABB.getMax().y,
+			-lightSpaceAABB.getMax().z, -lightSpaceAABB.getMin().z);
 
-		if (maxZ < 0.0) {
-			maxZ /= factor;
-
-		} else {
-			maxZ *= factor;
-		}
-*/
-
-		// set camera projection and create the transformation matrix
-		cameras[i]->setOrthographicCustom(minX, maxX, minY, maxY, -maxZ, -minZ);
-		transforms[i] = OtViewPortGetMatrix() * cameras[i]->getViewProjectionMatrix();
+		transforms[cascade] = OtViewPortGetMatrix() * cameras[cascade]->getViewProjectionMatrix();
 	}
 }

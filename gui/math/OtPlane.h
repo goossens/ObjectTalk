@@ -32,6 +32,7 @@ public:
 	}
 
 	OtPlane(const glm::vec3& n, const glm::vec3& p) : normal(n) {
+		normal = n;
 		distance = -glm::dot(p, n);
 	}
 
@@ -47,12 +48,14 @@ public:
 	glm::vec3 getNormal() { return normal; }
 	float getDistance() { return distance; }
 
-	// initialize plane
 	// normalize this plane
 	void normalize();
 
 	// negate plane
 	void negate();
+
+	// transform plane
+	OtPlane transform(const glm::mat4& transform);
 
 	// distance to other entities
 	float distanceToPoint(float x, float y, float z) {
@@ -62,6 +65,9 @@ public:
 	float distanceToVec3(glm::vec3& p) {
 		return glm::dot(normal, p) + distance;
 	}
+
+	// debugging support
+	void debug();
 
 private:
 	// normal and distance to origin

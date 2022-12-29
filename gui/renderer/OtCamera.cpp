@@ -164,7 +164,7 @@ OtObject OtCameraClass::setUp(float x, float y, float z) {
 //	OtCameraClass::setPositionVector
 //
 
-void OtCameraClass::setPositionVector(glm::vec3 position) {
+void OtCameraClass::setPositionVector(const glm::vec3& position) {
 	cameraPosition = position;
 	changed = true;
 }
@@ -174,7 +174,7 @@ void OtCameraClass::setPositionVector(glm::vec3 position) {
 //	OtCameraClass::setTargetVector
 //
 
-void OtCameraClass::setTargetVector(glm::vec3 target) {
+void OtCameraClass::setTargetVector(const glm::vec3& target) {
 	cameraTarget = target;
 	changed = true;
 }
@@ -184,7 +184,7 @@ void OtCameraClass::setTargetVector(glm::vec3 target) {
 //	OtCameraClass::setUpVector
 //
 
-void OtCameraClass::setUpVector(glm::vec3 up) {
+void OtCameraClass::setUpVector(const glm::vec3& up) {
 	cameraUp = up;
 	changed = true;
 }

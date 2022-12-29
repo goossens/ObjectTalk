@@ -214,7 +214,8 @@ void OtRenderer::runDebugPass(OtCamera debugCamera, OtScene s, OtCamera viewCame
 
 	// render debug information
 	debugRenderAxis(10.0);
-	debugRenderCamera(viewCamera);
+	debugSetColor(0xffff00ff);
+	debugRenderCamera(viewCamera, !csm);
 
 	if (csm) {
 		debugRenderCascadedShadowMap(csm);
@@ -584,9 +585,10 @@ void OtRenderer::debugRenderFrustum(const OtFrustum& frustum) {
 //	OtRenderer::debugRenderCamera
 //
 
-void OtRenderer::debugRenderCamera(OtCamera camera) {
-	debugSetColor(0xffff00ff);
-//	debugRenderFrustum(camera->getFrustum());
+void OtRenderer::debugRenderCamera(OtCamera camera, bool frustum) {
+	if (frustum) {
+		debugRenderFrustum(camera->getFrustum());
+	}
 
 	auto cone = OtCylinderGeometryClass::create();
 	cone->setTopRadius(0.0);

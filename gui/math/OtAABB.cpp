@@ -13,6 +13,7 @@
 #include <limits>
 
 #include "OtAABB.h"
+#include "OtGlm.h"
 
 
 //
@@ -75,4 +76,11 @@ OtAABB OtAABB::transform(const glm::mat4& matrix) {
 	}
 
 	return aabb;
+}
+
+
+// debugging support
+void OtAABB::debug() {
+	OtGlmDebug(minp);
+	OtGlmDebug(maxp);
 }

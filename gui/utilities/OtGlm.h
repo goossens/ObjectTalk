@@ -45,6 +45,11 @@ inline void OtGlmDebug(const glm::mat4& m) {
 	std::cout << m << std::endl;
 }
 
+inline glm::vec3 OtGlmMul(const glm::mat4& m, const glm::vec3& v) {
+	auto r = m * glm::vec4(v, 1.0);
+	return glm::vec3(r.x / r.w, r.y / r.w, r.z / r.w);
+}
+
 inline glm::vec4 OtGlmHomogonize(const glm::vec4& v) {
 	return glm::vec4(v.x / v.w, v.y / v.w, v.z / v.w, 1.0f);
 }

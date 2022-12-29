@@ -31,11 +31,17 @@ public:
 	void addPoint(const glm::vec3& point);
 
 	// get min/max values
-	glm::vec3 getMin() const { return minp; }
-	glm::vec3 getMax() const { return maxp; }
+	const glm::vec3& getMin() const { return minp; }
+	const glm::vec3& getMax() const { return maxp; }
+
+	glm::vec3& getMin() { return minp; }
+	glm::vec3& getMax() { return maxp; }
 
 	// transform bounding box
 	OtAABB transform(const glm::mat4& matrix);
+
+	// debugging support
+	void debug();
 
 private:
 	glm::vec3 minp;

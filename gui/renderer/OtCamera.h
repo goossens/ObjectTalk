@@ -47,9 +47,9 @@ public:
 	OtObject setTarget(float x, float y, float z);
 	OtObject setUp(float x, float y, float z);
 
-	void setPositionVector(glm::vec3 position);
-	void setTargetVector(glm::vec3 target);
-	void setUpVector(glm::vec3 up);
+	void setPositionVector(const glm::vec3& position);
+	void setTargetVector(const glm::vec3& target);
+	void setUpVector(const glm::vec3& up);
 	void setAspectRatio(float aspectRatio);
 
 	// set properties

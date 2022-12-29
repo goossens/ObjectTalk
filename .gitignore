@@ -33,6 +33,7 @@
 /.vscode
 
 # Local files
+/build
 /debug
 /release
 /xcode

@@ -121,7 +121,7 @@ public:
 	void debugRenderAxis(float scale);
 	void debugRenderAABB(const OtAABB& aabb);
 	void debugRenderFrustum(const OtFrustum& frustum);
-	void debugRenderCamera(OtCamera camera);
+	void debugRenderCamera(OtCamera camera, bool frustum=true);
 	void debugRenderCascadedShadowMap(OtCascadedShadowMap* csm);
 	void debugRenderGeometry(OtGeometry geometry, const glm::mat4& matrix=glm::mat4(1.0));
 	void debugRender();

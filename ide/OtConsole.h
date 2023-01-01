@@ -14,7 +14,10 @@
 
 #include <vector>
 
+/*
 #include "OtCaptureStdio.h"
+*/
+
 #include "OtConcurrentQueue.h"
 #include "OtSingleton.h"
 
@@ -72,6 +75,7 @@ private:
 	// properties
 	bool scrollBottom = false;
 
+/*
 	// capture stdin and stderr
 	OtCaptureStdout stdout{std::function([this](const char* text, size_t size) {
 		write(std::string(text, size));
@@ -80,6 +84,7 @@ private:
 	OtCaptureStdout stderr{std::function([this](const char* text, size_t size) {
 		writeError(std::string(text, size));
 	})};
+*/
 
 	// concurrent queue to capture events form other threads
 	struct Event {

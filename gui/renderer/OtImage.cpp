@@ -158,11 +158,28 @@ void OtImage::loadAsRGBA(const std::string &file, bool powerof2, bool square) {
 
 
 //
+//	OtImage::load
+//
+
+void OtImage::load(void *data, uint32_t size) {
+	// clear old image (if required)
+	clear();
+
+	// create the image
+	image = bimg::imageParse(&allocator, data, size);
+
+	// check for errors
+	if (!image) {
+		OtExcept("Internal error: Can't process in-memory image");
+	}
+}
+
+
+//
 //	OtImage::getContainer
 //
 
-bimg::ImageContainer *OtImage::getContainer()
-{
+bimg::ImageContainer *OtImage::getContainer() {
 	// unsure we have a valid image
 	if (isValid()) {
 		return image;

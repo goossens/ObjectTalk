@@ -108,8 +108,7 @@ void OtFixedMaterialClass::submit(OtRenderer& renderer, bool wireframe, bool ins
 //	OtFixedMaterialClass::getMeta
 //
 
-OtType OtFixedMaterialClass::getMeta()
-{
+OtType OtFixedMaterialClass::getMeta() {
 	static OtType type;
 
 	if (!type) {

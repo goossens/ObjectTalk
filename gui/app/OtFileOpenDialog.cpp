@@ -95,10 +95,10 @@ OtObject OtFileOpenDialogClass::setCurrentDirectory(const std::string& p) {
 //
 
 void OtFileOpenDialogClass::open() {
-	ImGuiFileDialog::Instance()->OpenModal(
+	ImGuiFileDialog::Instance()->OpenDialog(
 		"OpenFileDialog",
 		title, filters.c_str(), path, 1, nullptr,
-		ImGuiFileDialogFlags_DontShowHiddenFiles);
+		ImGuiFileDialogFlags_Modal | ImGuiFileDialogFlags_DontShowHiddenFiles);
 }
 
 

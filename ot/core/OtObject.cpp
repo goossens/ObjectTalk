@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <algorithm>
+
 #include "OtException.h"
 #include "OtClass.h"
 #include "OtFunction.h"
@@ -29,8 +31,7 @@ std::string OtObjectClass::describe() {
 //	OtObjectClass::has
 //
 
-bool OtObjectClass::has(const std::string &name)
-{
+bool OtObjectClass::has(const std::string &name) {
 	if (members && members->has(name)) {
 		return true;
 	}
@@ -99,6 +100,19 @@ void OtObjectClass::unset(const std::string& name) {
 OtObject OtObjectClass::member(const std::string& name) {
 	return OtMemberReferenceClass::create(shared(), name);
 }
+
+
+//
+//	OtObjectClass::getMembers
+//
+
+OtMembers OtObjectClass::getMembers() {
+	if (!members) {
+		members = OtMembersClass::create();
+	}
+
+	return members;
+ }
 
 
 //
@@ -176,17 +190,9 @@ size_t OtObjectClass::attach(std::function<void(void)> callback) {
 
 void OtObjectClass::detach(size_t id) {
 	if (observers) {
-		// use remove_if when we move the C++20
-		auto it = observers->begin();
-
-		while (it != observers->end()) {
-			if (it->id == id) {
-				it = observers->erase(it);
-
-			} else {
-				it++;
-			}
-		}
+		observers->erase(std::remove_if(observers->begin(), observers->end(), [id] (OtObserver& observer) {
+			return observer.id == id;
+		}), observers->end());
 	}
 }
 

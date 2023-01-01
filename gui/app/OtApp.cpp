@@ -15,6 +15,7 @@
 #include "OtApp.h"
 #include "OtAppMenubar.h"
 #include "OtFramework.h"
+#include "OtGui.h"
 #include "OtOS.h"
 #include "OtView.h"
 
@@ -24,8 +25,7 @@
 //
 
 OtAppClass::OtAppClass() {
-	// add ourselves to the GUI framework as a customer
-	OtFrameworkClass::instance()->addCustomer(this);
+	OtGuiClass::registerApp(this);
 }
 
 
@@ -34,8 +34,7 @@ OtAppClass::OtAppClass() {
 //
 
 OtAppClass::~OtAppClass() {
-	// remove ourselves from the GUI framework as a customer
-	OtFrameworkClass::instance()->removeCustomer(this);
+	OtGuiClass::unregisterApp();
 }
 
 
@@ -69,7 +68,7 @@ int OtAppClass::getHeight() {
 
 
 //
-//	OtFrameworkClass::animate
+//	OtAppClass::animate
 //
 
 OtObject OtAppClass::addAnimation(OtObject object) {
@@ -80,7 +79,7 @@ OtObject OtAppClass::addAnimation(OtObject object) {
 
 
 //
-//	OtFrameworkClass::addSimulation
+//	OtAppClass::addSimulation
 //
 
 OtObject OtAppClass::addSimulation(OtObject object) {
@@ -106,16 +105,6 @@ size_t OtAppClass::getMenubarHeight() {
 
 
 //
-//	OtAppClass::onError
-//
-
-void OtAppClass::onError(OtException e) {
-	OtFrameworkClass::instance()->removeCustomer(this);
-	OtOSClass::instance()->errorGUI(e);
-}
-
-
-//
 //	OtAppClass::onSetup
 //
 
@@ -127,7 +116,7 @@ void OtAppClass::onSetup() {
 		}
 
 	} catch (const OtException& e) {
-		onError(e);
+		OtOSClass::instance()->errorGUI(e);
 	}
 }
 
@@ -158,7 +147,7 @@ void OtAppClass::onUpdate() {
 		}
 
 	} catch (const OtException& e) {
-		onError(e);
+		OtOSClass::instance()->errorGUI(e);
 	}
 }
 
@@ -177,7 +166,7 @@ void OtAppClass::onRender() {
 		}
 
 	} catch (const OtException& e) {
-		onError(e);
+		OtOSClass::instance()->errorGUI(e);
 	}
 }
 
@@ -194,7 +183,7 @@ void OtAppClass::onTerminate() {
 		}
 
 	} catch (const OtException& e) {
-		onError(e);
+		OtOSClass::instance()->errorGUI(e);
 	}
 
 	// remove all animations and simulations
@@ -202,7 +191,6 @@ void OtAppClass::onTerminate() {
 	simulations.clear();
 
 	// remove all children from the app to avoid memory leaks
-	// there are circular parent/child relationships
 	clear();
 
 	// also remove app instance variables that the user might have added
@@ -239,7 +227,7 @@ bool OtAppClass::onMouseButton(int button, int action, int mods, float xpos, flo
 		}
 
 	} catch (const OtException& e) {
-		onError(e);
+		OtOSClass::instance()->errorGUI(e);
 	}
 
 	return handled;
@@ -272,7 +260,7 @@ bool OtAppClass::onMouseMove(float xpos, float ypos) {
 		}
 
 	} catch (const OtException& e) {
-		onError(e);
+		OtOSClass::instance()->errorGUI(e);
 	}
 
 	return handled;
@@ -307,7 +295,7 @@ bool OtAppClass::onMouseDrag(int button, int mods, float xpos, float ypos) {
 		}
 
 	} catch (const OtException& e) {
-		onError(e);
+		OtOSClass::instance()->errorGUI(e);
 	}
 
 	return handled;
@@ -340,7 +328,7 @@ bool OtAppClass::onScrollWheel(float dx, float dy){
 		}
 
 	} catch (const OtException& e) {
-		onError(e);
+		OtOSClass::instance()->errorGUI(e);
 	}
 
 	return handled;
@@ -373,7 +361,7 @@ bool OtAppClass::onKey(int key, int mods) {
 		}
 
 	} catch (const OtException& e) {
-		onError(e);
+		OtOSClass::instance()->errorGUI(e);
 	}
 
 	return handled;
@@ -405,7 +393,7 @@ bool OtAppClass::onChar(unsigned int codepoint) {
 		}
 
 	} catch (const OtException& e) {
-		onError(e);
+		OtOSClass::instance()->errorGUI(e);
 	}
 
 	return handled;
@@ -438,7 +426,7 @@ bool OtAppClass::onGamepadAxis(int gamepad, int axis, int value) {
 		}
 
 	} catch (const OtException& e) {
-		onError(e);
+		OtOSClass::instance()->errorGUI(e);
 	}
 
 	return handled;
@@ -472,7 +460,7 @@ bool OtAppClass::onGamepadButton(int gamepad, int button, int action) {
 		}
 
 	} catch (const OtException& e) {
-		onError(e);
+		OtOSClass::instance()->errorGUI(e);
 	}
 
 	return handled;
@@ -505,7 +493,7 @@ OtType OtAppClass::getMeta() {
 //
 
 OtApp OtAppClass::create() {
-	OtApp screen = std::make_shared<OtAppClass>();
-	screen->setType(getMeta());
-	return screen;
+	OtApp app = std::make_shared<OtAppClass>();
+	app->setType(getMeta());
+	return app;
 }

@@ -9,7 +9,7 @@
 //	Include files
 //
 
-#include <functional>
+#include <cstdlib>
 #include <thread>
 
 #include "OtCerr.h"
@@ -21,19 +21,6 @@
 
 #include "OtFramework.h"
 #include "OtPass.h"
-
-
-//
-//	OtFrameworkClass::OtFrameworkClass
-//
-
-OtFrameworkClass::OtFrameworkClass() {
-	// connect to the OS class so people can start and stop us
-	OtOSClass::instance()->registerGUI(
-		std::bind(&OtFrameworkClass::run, this),
-		std::bind(&OtFrameworkClass::error, this, std::placeholders::_1),
-		std::bind(&OtFrameworkClass::stop, this));
-}
 
 
 //
@@ -223,18 +210,8 @@ void OtFrameworkClass::runThread2() {
 	} catch (const OtException& e) {
 		// handle all failures
 		std::wcerr << "Error: " << e.what() << std::endl;
-		exit(EXIT_FAILURE);
+			std::_Exit(EXIT_FAILURE);
 	}
-}
-
-
-//
-//	OtFrameworkClass::error
-//
-
-void OtFrameworkClass::error(OtException e) {
-	std::wcerr << "Error: " << e.what() << std::endl;
-	exit(EXIT_FAILURE);
 }
 
 
@@ -243,8 +220,23 @@ void OtFrameworkClass::error(OtException e) {
 //
 
 void OtFrameworkClass::stop() {
-	// stopping the framewok is realized by closing the app's window
+	// stopping the framework is realized by closing the app's window
 	stopGLFW();
+}
+
+
+//
+//	OtFrameworkClass::canQuit
+//
+
+bool OtFrameworkClass::canQuit() {
+	for (auto& customer : customers) {
+		if (!customer->onCanQuit()) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
 
@@ -252,12 +244,7 @@ void OtFrameworkClass::stop() {
 //	OtFrameworkClass::addCustomer
 //
 
-void OtFrameworkClass::addCustomer(OtCustomer* customer) {
-	// tell other customers about new kid in town
-	for (auto& c : customers) {
-		c->onAddCustomer(customer);
-	}
-
+void OtFrameworkClass::addCustomer(OtFrameworkCustomer* customer) {
 	// add to list of customers
 	customers.push_back(customer);
 
@@ -270,19 +257,14 @@ void OtFrameworkClass::addCustomer(OtCustomer* customer) {
 //	OtFrameworkClass::removeCustomer
 //
 
-void OtFrameworkClass::removeCustomer(OtCustomer* customer) {
+void OtFrameworkClass::removeCustomer(OtFrameworkCustomer* customer) {
 	// tell customer they are done
 	eventQueue.pushCustomerTerminateEvent(customer);
 
 	// remove from the list
-	customers.erase(std::remove_if(customers.begin(), customers.end(), [customer] (OtCustomer* c) {
-			return c == customer;
-		}), customers.end());
-
-	// tell other customers that "Elvis" has left the building
-	for (auto& c : customers) {
-		c->onRemoveCustomer(customer);
-	}
+	customers.erase(std::remove_if(customers.begin(), customers.end(), [customer] (OtFrameworkCustomer* c) {
+		return c == customer;
+	}), customers.end());
 }
 
 

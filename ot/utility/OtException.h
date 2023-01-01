@@ -28,6 +28,8 @@
 
 class OtException : public std::exception {
 public:
+	OtException() = default;
+
 	OtException(
 		const std::string& m,
 		size_t l,

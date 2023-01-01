@@ -18,4 +18,4 @@
 //
 //	Get the ObjectTalk language definition
 
-const TextEditor::LanguageDefinition& OtIdeLanguageGetDefinition();
+const TextEditor::LanguageDefinition& OtObjectTalkLanguageGetDefinition();

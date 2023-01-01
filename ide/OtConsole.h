@@ -14,7 +14,9 @@
 
 #include <vector>
 
-#include "OtIde.h"
+#include "OtCaptureStdio.h"
+#include "OtConcurrentQueue.h"
+#include "OtSingleton.h"
 
 
 //
@@ -24,16 +26,16 @@
 class OtConsoleClass;
 typedef std::shared_ptr<OtConsoleClass> OtConsole;
 
-class OtConsoleClass : public OtIdeClass {
+class OtConsoleClass : public OtSingleton<OtConsoleClass> {
 public:
 	// constructor
 	OtConsoleClass();
 
-	// render the editor
-	void render();
+	// update the console
+	void update();
 
-	// show help
-	void help();
+	// render the console
+	void render();
 
 	// clear the console
 	void clear();
@@ -43,12 +45,7 @@ public:
 
 	// write to console
 	void write(const std::string& text);
-	void writeHelp(const std::string& text);
-	void writeInput(const std::string& text);
 	void writeError(const std::string& text);
-
-	// get type definition
-	static OtType getMeta();
 
 	// create a new object
 	static OtConsole create();
@@ -57,8 +54,6 @@ private:
 	// screen text
 	enum LineType {
 		Normal,
-		Help,
-		Input,
 		Error
 	};
 
@@ -76,5 +71,42 @@ private:
 
 	// properties
 	bool scrollBottom = false;
-	char inputBuffer[256] = {0};
+
+	// capture stdin and stderr
+	OtCaptureStdout stdout{std::function([this](const char* text, size_t size) {
+		write(std::string(text, size));
+	})};
+
+	OtCaptureStdout stderr{std::function([this](const char* text, size_t size) {
+		writeError(std::string(text, size));
+	})};
+
+	// concurrent queue to capture events form other threads
+	struct Event {
+		enum {
+			stdoutEvent,
+			stderrEvent
+		} type;
+
+		std::string text;
+	};
+
+	class EventQueue : public OtConcurrentQueue<Event> {
+	public:
+		void pushStdoutEvent(const std::string& text) {
+			Event event;
+			event.type = Event::stdoutEvent;
+			event.text = text;
+			push(event);
+		}
+
+		void pushStderrEvent(const std::string& text) {
+			Event event;
+			event.type = Event::stderrEvent;
+			event.text = text;
+			push(event);
+		}
+	};
+
+	EventQueue events;
 };

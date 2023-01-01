@@ -27,14 +27,20 @@ typedef std::shared_ptr<OtModuleClass> OtModule;
 
 class OtModuleClass : public OtInternalClass {
 public:
+	// register an internal module
+	static void registerInternal(const std::string& name, std::function<void(OtModule)> creator);
+
+	// load the module
+	void load(const std::string& filename);
+
 	// get type definition
 	static OtType getMeta();
 
 	// create a new object
-	static OtModule create(const std::string& name);
+	static OtModule create();
 
-	// register an internal module
-	static void registerInternal(const std::string& name, std::function<void(OtModule)> creator);
+	// import a module (either load from disk or get from the memory cash)
+	static OtModule import(const std::string& filename);
 
 private:
 	// list of directories to search for modules in
@@ -43,7 +49,4 @@ private:
 	// determine full path name for module
 	static std::filesystem::path checkPath(std::filesystem::path path);
 	static std::filesystem::path getFullPath(std::filesystem::path path);
-
-	// actually load the module
-	static void loadModule(std::filesystem::path path, OtModule module);
 };

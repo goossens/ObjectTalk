@@ -21,8 +21,7 @@
 //	OtBlendMappedMaterialClass::init
 //
 
-void OtBlendMappedMaterialClass::init(size_t count, OtObject *parameters)
-{
+void OtBlendMappedMaterialClass::init(size_t count, OtObject *parameters) {
 	switch (count) {
 		case 6:
 			setScale(parameters[5]->operator float());

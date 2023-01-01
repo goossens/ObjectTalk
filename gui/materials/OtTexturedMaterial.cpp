@@ -183,8 +183,7 @@ void OtTexturedMaterialClass::submit(OtRenderer& renderer, bool wireframe, bool 
 //	OtTexturedMaterialClass::getMeta
 //
 
-OtType OtTexturedMaterialClass::getMeta()
-{
+OtType OtTexturedMaterialClass::getMeta() {
 	static OtType type;
 
 	if (!type) {

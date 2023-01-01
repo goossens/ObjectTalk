@@ -92,10 +92,12 @@ OtObject OtFileSaveDialogClass::setCurrentDirectory(const std::string& p) {
 //
 
 void OtFileSaveDialogClass::open() {
-	ImGuiFileDialog::Instance()->OpenModal(
+	ImGuiFileDialog::Instance()->OpenDialog(
 		"SaveFileDialog",
 		title, filters.c_str(), path, 1, nullptr,
-		ImGuiFileDialogFlags_ConfirmOverwrite | ImGuiFileDialogFlags_DontShowHiddenFiles);
+		ImGuiFileDialogFlags_Modal |
+			ImGuiFileDialogFlags_ConfirmOverwrite |
+			ImGuiFileDialogFlags_DontShowHiddenFiles);
 }
 
 

@@ -21,6 +21,7 @@
 #include <uv.h>
 
 #include "OtException.h"
+#include "OtOS.h"
 
 
 //
@@ -40,6 +41,12 @@ public:
 	static void init(int argc, char* argv[]) {
 		// setup the calling arguments
 		uv_setup_args(argc, argv);
+
+		// set callbacks
+		OtOSClass::instance()->registerServer(
+			[]() { run(); },
+			[](OtException e) { throw e; },
+			[]() { stop(); });
 	}
 
 	// run the libUV loop

@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include <cstdlib>
 #include <iostream>
 
 #include <argparse/argparse.hpp>
@@ -47,7 +48,7 @@ int main(int argc, char* argv[]) {
 	} catch (const std::runtime_error& err) {
 		std::cerr << err.what() << std::endl;
 		std::cerr << program;
-		exit(EXIT_FAILURE);
+		std::_Exit(EXIT_FAILURE);
 	}
 
 	// get all the script file names
@@ -80,7 +81,7 @@ int main(int argc, char* argv[]) {
 #else
 			std::cerr << "No scripts specified" << std::endl << std::endl;
 			std::cerr << program;
-			exit(EXIT_FAILURE);
+			std::_Exit(EXIT_FAILURE);
 #endif
 
 
@@ -98,7 +99,9 @@ int main(int argc, char* argv[]) {
 
 				// run each script
 				for (auto& script : scripts) {
-					OtModuleClass::create(script);
+					auto module = OtModuleClass::create();
+					module->load(script);
+					module->unsetAll();
 				}
 #if defined(INCLUDE_GUI)
 			}
@@ -111,7 +114,7 @@ int main(int argc, char* argv[]) {
 	} catch (const OtException& e) {
 		// handle all failures
 		std::wcerr << "Error: " << e.what() << std::endl;
-		exit(EXIT_FAILURE);
+		std::_Exit(EXIT_FAILURE);
 	}
 
 	return 0;

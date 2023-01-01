@@ -5,23 +5,21 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 
+#pragma once
+
+
 //
 //	Include files
 //
 
-#include "OtIde.h"
+#include <cstdint>
+#include <stddef.h>
 
 
 //
-//	OtWorkspaceClass::getMeta
+//	Static variables
 //
 
-OtType OtIdeClass::getMeta() {
-	static OtType type;
-
-	if (!type) {
-		type = OtTypeClass::create<OtIdeClass>("Ide", OtObjectClass::getMeta());
-	}
-
-	return type;
-}
+constexpr size_t OtLogoWidth = 429;
+constexpr size_t OtLogoHeight = 350;
+extern const uint8_t OtLogoData[74578];

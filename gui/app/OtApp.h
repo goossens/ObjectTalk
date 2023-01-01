@@ -14,7 +14,7 @@
 
 #include "OtAnimation.h"
 #include "OtComponent.h"
-#include "OtCustomer.h"
+#include "OtFrameworkCustomer.h"
 #include "OtSimulation.h"
 #include "OtWidget.h"
 
@@ -26,7 +26,7 @@
 class OtAppClass;
 typedef std::shared_ptr<OtAppClass> OtApp;
 
-class OtAppClass : public OtComponentClass, public OtCustomer {
+class OtAppClass : public OtComponentClass, public OtFrameworkCustomer {
 public:
 	// constructor/destructor
 	OtAppClass();
@@ -47,9 +47,6 @@ public:
 
 	// get menubar height
 	size_t getMenubarHeight();
-
-	// handler to deal with script errors
-	void onError(OtException e);
 
 	// lifetime events
 	void onSetup() override;

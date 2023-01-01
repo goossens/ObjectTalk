@@ -12,18 +12,11 @@
 //	Include files
 //
 
-#include <condition_variable>
-#include <mutex>
-#include <thread>
-
-#include "OtModule.h"
 #include "OtSingleton.h"
 
-#include "OtCustomer.h"
+#include "OtFrameworkCustomer.h"
+#include "OtTexture.h"
 
-#include "OtConsole.h"
-#include "OtIde.h"
-#include "OtIdeEvents.h"
 #include "OtEditor.h"
 
 
@@ -34,7 +27,7 @@
 class OtWorkspaceClass;
 typedef std::shared_ptr<OtWorkspaceClass> OtWorkspace;
 
-class OtWorkspaceClass : public OtIdeClass, public OtCustomer, public OtObjectSingleton<OtWorkspaceClass> {
+class OtWorkspaceClass : public OtFrameworkCustomer, public OtSingleton<OtWorkspaceClass> {
 public:
 	// run the IDE
 	void run();
@@ -44,7 +37,7 @@ public:
 
 	// open a file
 	void openFile();
-	void openFile(const std::string& filename);
+	OtEditor openFile(const std::string& filename);
 
 	// close editor
 	void closeEditor(OtEditor editor);
@@ -52,26 +45,17 @@ public:
 	// find a named editor
 	OtEditor findEditor(const std::string& filename);
 
-	// see if we can run a file
-	bool canRunFile() { return !started && !running; }
+	// make a specified editor tab active
+	void activateEditor(OtEditor editor);
 
-	// run a file
-	void runFile(const std::string& filename);
-	void onRunGUI();
-	void onErrorGUI(OtException e);
-	void onStopGUI();
-
-	// get type definition
-	static OtType getMeta();
+	// track running scripts
+	void scriptStarted() { runningScripts++; }
+	void scriptStopped() { runningScripts--; }
 
 	// create a new object
 	static OtWorkspace create();
 
 private:
-	// track other framework customers
-	void onAddCustomer(OtCustomer* customer) override;
-	void onRemoveCustomer(OtCustomer* customer) override;
-
 	// update state and process events
 	void onUpdate() override;
 
@@ -80,6 +64,7 @@ private:
 
 	// see if we can quit app
 	bool onCanQuit() override;
+	size_t runningScripts = 0;
 
 	// get default directory
 	std::string getDefaultDirectory();
@@ -88,32 +73,24 @@ private:
 	std::string getCWD();
 	std::string cwd;
 
+	// render parts of wokspace
+	void renderSplashScreen();
+	void renderEditors();
+	void renderFileOpen();
+	void renderQuitConfirmation();
+
+	// splash screen logo
+	OtTexture logo;
+
 	// list of open editors
 	std::vector<OtEditor> editors;
 
-	// our console
-	OtConsole console;
+	// vertical size of editors
+	float editorHeight = -1.0;
 
-	// visibility of editors and console
-	bool showEditors = true;
-	bool showConsole = true;
+	// tab to activate durong next frame
+	OtEditor activateEditorTab;
 
 	// quit confirmation
 	bool confirmQuit = false;
-
-	// here is where we run code
-	std::thread thread;
-	bool started = false;
-	bool running = false;
-
-	// tracking state of thread (when a GUI app is running)
-	std::mutex mutex;
-	std::condition_variable cv;
-	OtCustomer* customer;
-
-	// the module that we are running
-	OtModule module;
-
-	// for cross thread comminication
-	OtIdeEventQueue events;
 };

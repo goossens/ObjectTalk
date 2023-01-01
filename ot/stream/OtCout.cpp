@@ -10,23 +10,9 @@
 //
 
 #include <iostream>
-#include <fstream>
-#include <sstream>
 
 #include "OtCout.h"
 #include "OtFunction.h"
-
-
-//
-//	OtCoutClass::OtCoutClass
-//
-
-OtCoutClass::OtCoutClass() {
-	// set default output function
-	setOutputFunction([](const std::string& text) {
-		std::cout << text;
-	});
-}
 
 
 //
@@ -34,7 +20,7 @@ OtCoutClass::OtCoutClass() {
 //
 
 OtObject OtCoutClass::operator << (OtObject object) {
-	outputFunction(object->operator std::string());
+	std::cout << object->operator std::string();
 	return shared();
 }
 
@@ -44,21 +30,12 @@ OtObject OtCoutClass::operator << (OtObject object) {
 //
 
 void OtCoutClass::write(const char* string) {
-	outputFunction(std::string(string));
+	std::cout << string;
 }
 
 
 void OtCoutClass::write(const std::string& string) {
-	outputFunction(string);
-}
-
-
-//
-//	OtCoutClass::setOutputFunction
-//
-
-void OtCoutClass::setOutputFunction(std::function<void(const std::string&)> function) {
-	outputFunction = function;
+	std::cout << string;
 }
 
 

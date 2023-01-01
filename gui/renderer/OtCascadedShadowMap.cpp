@@ -44,8 +44,7 @@ static void calculateSplits(float* result, size_t splits, float near, float far,
 //	OtCascadedShadowMap::update
 //
 
-void OtCascadedShadowMap::update(int s, OtCamera camera, const glm::vec3 &lightDirection)
-{
+void OtCascadedShadowMap::update(int s, OtCamera camera, const glm::vec3 &lightDirection) {
 	// create resources if required
 	if (!initialized) {
 		for (auto i = 0; i < cascades; i++) {

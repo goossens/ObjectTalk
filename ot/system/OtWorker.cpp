@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <cstdlib>
+
 #include "OtCallback.h"
 #include "OtException.h"
 #include "OtFunction.h"
@@ -70,7 +72,7 @@ void OtWorkerClass::init(OtObject object) {
 		} catch (const OtException& e) {
 			// handle all failures
 			std::wcerr << "Error: " << e.what() << std::endl;
-			exit(EXIT_FAILURE);
+			std::_Exit(EXIT_FAILURE);
 		}
 	});
 }

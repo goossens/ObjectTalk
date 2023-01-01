@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include <algorithm>
 #include <cstring>
 
 #include "glm/glm.hpp"
@@ -154,17 +155,20 @@ void OtFrameworkClass::initIMGUI() {
 	io.DisplaySize = ImVec2(width, height);
 	io.DeltaTime = 1.0f / 60.0f;
 
+	// setup main viewport
+	ImGui::GetMainViewport()->PlatformHandleRaw = nativeDisplayHandle;
+
 	// setup clipboard functions
 	io.ClipboardUserData = this;
 
 	io.SetClipboardTextFn = [](void* data, const char* text) {
-		OtFrameworkClass* app = (OtFrameworkClass*) data;
-		glfwSetClipboardString(app->window, text);
+		OtFrameworkClass* framework = (OtFrameworkClass*) data;
+		glfwSetClipboardString(framework->window, text);
 	};
 
 	io.GetClipboardTextFn = [](void* data) {
-		OtFrameworkClass* app = (OtFrameworkClass*) data;
-		return glfwGetClipboardString(app->window);
+		OtFrameworkClass* framework = (OtFrameworkClass*) data;
+		return glfwGetClipboardString(framework->window);
 	};
 
 	// add default font
@@ -205,11 +209,11 @@ void OtFrameworkClass::frameIMGUI(std::vector<OtFwEvent>& events) {
 	for (auto& event : events) {
 		switch (event.type) {
 			case OtFwEvent::mouseButtonEvent:
+				io.AddKeyEvent(ImGuiMod_Ctrl, (event.mouseButton.mods & GLFW_MOD_CONTROL) != 0);
+				io.AddKeyEvent(ImGuiMod_Shift, (event.mouseButton.mods & GLFW_MOD_SHIFT) != 0);
+				io.AddKeyEvent(ImGuiMod_Alt, (event.mouseButton.mods & GLFW_MOD_ALT) != 0);
+				io.AddKeyEvent(ImGuiMod_Super, (event.mouseButton.mods & GLFW_MOD_SUPER) != 0);
 				io.AddMouseButtonEvent(event.mouseButton.button, event.mouseButton.action == GLFW_PRESS);
-				io.KeyShift = event.mouseButton.mods & GLFW_MOD_SHIFT;
-				io.KeyCtrl = event.mouseButton.mods & GLFW_MOD_CONTROL;
-				io.KeyAlt = event.mouseButton.mods & GLFW_MOD_ALT;
-				io.KeySuper = event.mouseButton.mods & GLFW_MOD_SUPER;
 				break;
 
 			case OtFwEvent::mouseMoveEvent:
@@ -225,13 +229,11 @@ void OtFrameworkClass::frameIMGUI(std::vector<OtFwEvent>& events) {
 				break;
 
 			case OtFwEvent::keyboardEvent:
+				io.AddKeyEvent(ImGuiMod_Ctrl, (event.keyboard.mods & GLFW_MOD_CONTROL) != 0);
+				io.AddKeyEvent(ImGuiMod_Shift, (event.keyboard.mods & GLFW_MOD_SHIFT) != 0);
+				io.AddKeyEvent(ImGuiMod_Alt, (event.keyboard.mods & GLFW_MOD_ALT) != 0);
+				io.AddKeyEvent(ImGuiMod_Super, (event.keyboard.mods & GLFW_MOD_SUPER) != 0);
 				io.AddKeyEvent(toImGuiKey(event.keyboard.key), (event.keyboard.action == GLFW_PRESS));
-
-//				io.KeysDown[event.keyboard.key] = event.keyboard.action != GLFW_RELEASE;
-				io.KeyShift = event.keyboard.mods & GLFW_MOD_SHIFT;
-				io.KeyCtrl = event.keyboard.mods & GLFW_MOD_CONTROL;
-				io.KeyAlt = event.keyboard.mods & GLFW_MOD_ALT;
-				io.KeySuper = event.keyboard.mods & GLFW_MOD_SUPER;
 				break;
 
 			case OtFwEvent::characterEvent:
@@ -246,31 +248,17 @@ void OtFrameworkClass::frameIMGUI(std::vector<OtFwEvent>& events) {
 	// start a new frame
 	ImGui::NewFrame();
 
-	// filter out events if ImGui wants them (use std::remove_if in C++20)
+	// filter out events if ImGui wants them
 	if (io.WantCaptureMouse) {
-		auto event = events.begin();
-
-		while (event != events.end()) {
-			if (event->isMouseEvent()) {
-				event = events.erase(event);
-
-			} else {
-				event++;
-			}
-		}
+		events.erase(std::remove_if(events.begin(), events.end(), [] (OtFwEvent& event) {
+			return event.isMouseEvent();
+		}), events.end());
 	}
 
 	if (io.WantCaptureKeyboard) {
-		auto event = events.begin();
-
-		while (event != events.end()) {
-			if (event->isKeyboardEvent()) {
-				event = events.erase(event);
-
-			} else {
-				event++;
-			}
-		}
+		events.erase(std::remove_if(events.begin(), events.end(), [] (OtFwEvent& event) {
+			return event.isKeyboardEvent();
+		}), events.end());
 	}
 
 	if (demo) {

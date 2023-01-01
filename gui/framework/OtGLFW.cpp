@@ -49,6 +49,36 @@ void OtFrameworkClass::initGLFW() {
 
 	glfwInit();
 
+	// determine best default window size
+	int x, y, w, h;
+	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+	glfwGetMonitorWorkarea(monitor, &x, &y, &w, &h);
+
+	if (w >= 1600 && h >= 900) {
+		width = 1600;
+		height = 900;
+
+	} else if (w >= 1440 && h >= 810) {
+		width = 1440;
+		height = 810;
+
+	} else if (w >= 1280 && h >= 720) {
+		width = 1280;
+		height = 720;
+
+	} else if (w >= 1024 && h >= 576) {
+		width = 1024;
+		height = 576;
+
+	} else if (w >= 800 && h >= 450) {
+		width = 800;
+		height = 450;
+
+	} else {
+		width = 640;
+		height = 360;
+	}
+
 	// create a new window
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	window = glfwCreateWindow(width, height, "ObjectTalk", NULL, NULL);
@@ -77,10 +107,8 @@ void OtFrameworkClass::initGLFW() {
 		OtFrameworkClass* fw = (OtFrameworkClass*) glfwGetWindowUserPointer(window);
 
 		// call close callbacks
-		for (auto& customer : fw->customers) {
-			if (!customer->onCanQuit()) {
-				glfwSetWindowShouldClose(window, GLFW_FALSE);
-			}
+		if (!fw->canQuit()) {
+			glfwSetWindowShouldClose(window, GLFW_FALSE);
 		}
 	});
 
@@ -140,6 +168,14 @@ void OtFrameworkClass::initGLFW() {
 
 		} else if (key == GLFW_KEY_F6 && action == GLFW_PRESS) {
 			fw->demo = !fw->demo;
+
+#if !__APPLE__
+		} else if ((mods & GLFW_MOD_CONTROL) && key == GLFW_KEY_Q && action == GLFW_PRESS) {
+			if (fw->canQuit()) {
+				fw->stopGLFW();
+			}
+
+#endif
 
 		} else {
 			fw->eventQueue.pushKeyboardEvent(key, scancode, action, mods);

@@ -72,8 +72,7 @@ void OtPass::setClear(bool color, bool depth) {
 //	OtPass::setRectangle
 //
 
-void OtPass::setRectangle(int x, int y, int w, int h)
-{
+void OtPass::setRectangle(int x, int y, int w, int h) {
 	if (!view) {
 		OtExcept("Internal error: rendering slot for pass not reserved");
 	}

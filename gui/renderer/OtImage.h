@@ -30,10 +30,13 @@ public:
 	// clear the resources
 	void clear();
 
-	// load the image from disk or from our cache
+	// load the image from disk
 	void load(const std::string& file, bool powerof2 = false, bool square = false);
 	void loadAsGrayscale(const std::string& file, bool powerof2 = false, bool square = false);
 	void loadAsRGBA(const std::string& file, bool powerof2 = false, bool square = false);
+
+	// load the image from a file in memory
+	void load(void* data, uint32_t size);
 
 	// see if image is valid
 	bool isValid() { return image != nullptr; }

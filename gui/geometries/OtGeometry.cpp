@@ -18,8 +18,7 @@
 //	OtGeometryClass::computeTangents
 //
 
-OtObject OtGeometryClass::computeTangents()
-{
+OtObject OtGeometryClass::computeTangents() {
 	if (!tangent) {
 		tangent = true;
 		refreshBuffers = true;
@@ -169,8 +168,7 @@ void OtGeometryClass::submitLines() {
 //	OtGeometryClass::getMeta
 //
 
-OtType OtGeometryClass::getMeta()
-{
+OtType OtGeometryClass::getMeta() {
 	static OtType type;
 
 	if (!type) {

@@ -9,7 +9,7 @@
 //	Include files
 //
 
-#include "OtIdeLanguage.h"
+#include "OtObjectTalkLanguage.h"
 
 
 //
@@ -187,7 +187,7 @@ static bool TokenizeCStylePunctuation(const char* in_begin, const char* in_end, 
 	return false;
 }
 
-const TextEditor::LanguageDefinition& OtIdeLanguageGetDefinition() {
+const TextEditor::LanguageDefinition& OtObjectTalkLanguageGetDefinition() {
 	static bool initialized = false;
 	static TextEditor::LanguageDefinition langDef;
 

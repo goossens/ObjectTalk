@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include <functional>
 #include <string>
 
 #include "OtSingleton.h"
@@ -25,12 +24,10 @@
 
 class OtCerrClass;
 typedef std::shared_ptr<OtCerrClass> OtCerr;
+typedef std::function<void(const std::string&)> OtCerrOutputFunction;
 
 class OtCerrClass : public OtStreamClass, public OtObjectSingleton<OtCerrClass> {
 public:
-	// constructor
-	OtCerrClass();
-
 	// output an object (will internally be converted to a String)
 	OtObject operator << (OtObject object);
 
@@ -38,16 +35,9 @@ public:
 	void write(const char* string);
 	void write(const std::string& string);
 
-	// set output function
-	void setOutputFunction(std::function<void(const std::string&)> function);
-
 	// get type definition
 	static OtType getMeta();
 
 	// create a new object
 	static OtCerr create();
-
-private:
-	// the output function currently in use
-	std::function<void(const std::string&)> outputFunction;
 };

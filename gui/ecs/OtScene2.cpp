@@ -126,8 +126,7 @@ bool OtScene2::hasEntity(entt::entity entity) {
 	return mapEntityToId.count(entity) != 0;
 }
 
-bool OtScene2::hasEntity(uint64_t id)
-{
+bool OtScene2::hasEntity(uint64_t id) {
 	return mapIdToEntity.count(id) != 0;
 }
 

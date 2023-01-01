@@ -388,11 +388,44 @@ bool OtOSClass::isDST() {
 
 
 //
+//	OtOSClass::registerServer
+//
+
+void OtOSClass::registerServer(
+		std::function<void(void)> run,
+		std::function<void(OtException e)> error,
+		std::function<void(void)> stop) {
+	serverRunner = run;
+	serverError = error;
+	serverStopper = stop;
+}
+
+
+//
 //	OtOSClass::runServer
 //
 
 void OtOSClass::runServer() {
-	OtLibUv::run();
+	if (serverRunner) {
+		serverRunner();
+
+	} else {
+		OtExcept("This platform does not support servers");
+	}
+}
+
+
+//
+//	OtOSClass::errorServer
+//
+
+void OtOSClass::errorServer(OtException e) {
+	if (serverError) {
+		serverError(e);
+
+	} else {
+		OtExcept("This platform does not support servers");
+	}
 }
 
 
@@ -401,7 +434,12 @@ void OtOSClass::runServer() {
 //
 
 void OtOSClass::stopServer() {
-	OtLibUv::stop();
+	if (serverStopper) {
+		serverStopper();
+
+	} else {
+		OtExcept("This platform does not support servers");
+	}
 }
 
 
@@ -434,8 +472,7 @@ void OtOSClass::runGUI() {
 
 
 //
-//	OtOSClass::void OtOSClass::errorGUI() {
-
+//	OtOSClass::errorGUI() {
 //
 
 void OtOSClass::errorGUI(OtException e) {

@@ -14,7 +14,7 @@
 
 #include "OtConcurrentQueue.h"
 
-#include "OtCustomer.h"
+#include "OtFrameworkCustomer.h"
 
 
 //
@@ -37,11 +37,11 @@ struct OtFwEvent {
 
 	union {
 		struct {
-			OtCustomer* customer;
+			OtFrameworkCustomer* customer;
 		} customerSetup;
 
 		struct {
-			OtCustomer* customer;
+			OtFrameworkCustomer* customer;
 		} customerTerminate;
 
 		struct {
@@ -118,14 +118,14 @@ struct OtFwEvent {
 
 class OtFwEventQueue : public OtConcurrentQueue<OtFwEvent> {
 public:
-	void pushCustomerSetupEvent(OtCustomer* customer) {
+	void pushCustomerSetupEvent(OtFrameworkCustomer* customer) {
 		OtFwEvent event;
 		event.type = OtFwEvent::customerSetupEvent;
 		event.customerSetup.customer = customer;
 		push(event);
 	}
 
-	void pushCustomerTerminateEvent(OtCustomer* customer) {
+	void pushCustomerTerminateEvent(OtFrameworkCustomer* customer) {
 		OtFwEvent event;
 		event.type = OtFwEvent::customerTerminateEvent;
 		event.customerTerminate.customer = customer;

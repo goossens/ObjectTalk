@@ -222,6 +222,25 @@ void OtTexture::loadFromFile(const std::string &filename, bool mipmap) {
 
 
 //
+//	OtTexture::loadFromFileInMemory
+//
+
+void OtTexture::loadFromFileInMemory(void* data, uint32_t size) {
+	// get the image
+	OtImage image;
+	image.load(data, size);
+	bimg::ImageContainer* container = image.getContainer();
+
+	// remember size
+	width = container->m_width;
+	height = container->m_height;
+
+	// create texture
+	texture = createRegularTexture(container);
+}
+
+
+//
 //	OtTexture::getTextureHandle
 //
 

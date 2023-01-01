@@ -307,8 +307,7 @@ void OtRenderer::setInstanceData(void* data, size_t count, size_t size) {
 //	OtRenderer::addAmbientLight
 //
 
-void OtRenderer::addAmbientLight(const glm::vec3& ambient)
-{
+void OtRenderer::addAmbientLight(const glm::vec3& ambient) {
 	ambientLightColor += ambient;
 }
 
@@ -643,8 +642,7 @@ void OtRenderer::debugRenderGeometry(OtGeometry geometry, const glm::mat4& matri
 //	OtRenderer::debugRender
 //
 
-void OtRenderer::debugRender()
-{
+void OtRenderer::debugRender() {
 	if (debugVertices.size()) {
 		OtShader shader = OtShader("OtDebugVS", "OtDebugFS");
 

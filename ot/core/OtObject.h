@@ -84,7 +84,7 @@ public:
 
 	// support member operator
 	OtObject member(const std::string& name);
-	OtMembers getMembers() { return members; }
+	OtMembers getMembers();
 
 	// comparison
 	virtual bool operator == (OtObject operand);

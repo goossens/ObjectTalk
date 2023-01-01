@@ -37,6 +37,9 @@ public:
 	// load from file
 	void loadFromFile(const std::string& filename, bool mipmap=false);
 
+	// load from file in memory
+	void loadFromFileInMemory(void* data, uint32_t size);
+
 	// see if texture is valid
 	bool isValid() { return bgfx::isValid(texture); }
 

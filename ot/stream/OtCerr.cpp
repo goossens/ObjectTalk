@@ -10,23 +10,9 @@
 //
 
 #include <iostream>
-#include <fstream>
-#include <sstream>
 
 #include "OtCerr.h"
 #include "OtFunction.h"
-
-
-//
-//	OtCerrClass::OtCerrClass
-//
-
-OtCerrClass::OtCerrClass() {
-	// set default output function
-	setOutputFunction([](const std::string& text) {
-		std::cerr << text;
-	});
-}
 
 
 //
@@ -34,7 +20,7 @@ OtCerrClass::OtCerrClass() {
 //
 
 OtObject OtCerrClass::operator << (OtObject object) {
-	outputFunction(object->operator std::string());
+	std::cerr << object->operator std::string();
 	return shared();
 }
 
@@ -44,21 +30,12 @@ OtObject OtCerrClass::operator << (OtObject object) {
 //
 
 void OtCerrClass::write(const char* string) {
-	outputFunction(std::string(string));
+	std::cerr << string;
 }
 
 
 void OtCerrClass::write(const std::string& string) {
-	outputFunction(string);
-}
-
-
-//
-//	OtCerrClass::setOutputFunction
-//
-
-void OtCerrClass::setOutputFunction(std::function<void(const std::string&)> function) {
-	outputFunction = function;
+	std::cerr << string;
 }
 
 

@@ -117,7 +117,7 @@ void OtGlobalClass::doAssert(bool condition) {
 //
 
 OtObject OtGlobalClass::import(const std::string name) {
-	return OtModuleClass::create(name);
+	return OtModuleClass::import(name);
 }
 
 

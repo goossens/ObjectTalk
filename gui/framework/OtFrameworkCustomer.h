@@ -9,18 +9,15 @@
 
 
 //
-//	OtCustomer class
+//	OtFrameworkCustomer class
 //
 
-class OtCustomer {
+class OtFrameworkCustomer {
 public:
 	// destructor
-	virtual ~OtCustomer() {}
+	virtual ~OtFrameworkCustomer() {}
 
 	// event handlers
-	virtual void onAddCustomer(OtCustomer* customer) {}
-	virtual void onRemoveCustomer(OtCustomer* customer) {}
-
 	virtual void onSetup() {}
 	virtual void onUpdate() {}
 	virtual void onRender() {}

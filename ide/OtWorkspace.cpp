@@ -9,17 +9,21 @@
 //	Include files
 //
 
+#include <algorithm>
 #include <filesystem>
 
+#include "imgui.h"
 #include "ImGuiFileDialog.h"
 
-#include "OtCerr.h"
-#include "OtCout.h"
 #include "OtLibuv.h"
 #include "OtOS.h"
 
 #include "OtFramework.h"
 
+#include "OtConsole.h"
+#include "OtLogo.h"
+#include "OtObjectTalkEditor.h"
+#include "OtScriptRunner.h"
 #include "OtWorkspace.h"
 
 
@@ -33,27 +37,6 @@ void OtWorkspaceClass::run() {
 
 	// add ourselves to the GUI framework as a customer
 	framework->addCustomer(this);
-
-	// add a console window
-	console = OtConsoleClass::create();
-
-	// intercept cout
-	OtCoutClass::instance()->setOutputFunction([this](const std::string& text) {
-		events.writeToOutEvent(text);
-		showConsole = true;
-	});
-
-	// intercept cerr
-	OtCerrClass::instance()->setOutputFunction([this](const std::string& text) {
-		events.writeToErrEvent(text);
-		showConsole = true;
-	});
-
-	// intercept calls to start and stop the GUI framework (we're in charge now)
-	OtOSClass::instance()->registerGUI(
-		std::bind(&OtWorkspaceClass::onRunGUI, this),
-		std::bind(&OtWorkspaceClass::onErrorGUI, this, std::placeholders::_1),
-		std::bind(&OtWorkspaceClass::onStopGUI, this));
 
 	// run the GUI framework
 	framework->run();
@@ -70,7 +53,7 @@ void OtWorkspaceClass::run() {
 void OtWorkspaceClass::newFile() {
 	// don't create new files when we're in the process of opening one
 	if (!ImGuiFileDialog::Instance()->IsOpened()) {
-		editors.push_back(OtEditorClass::create());
+		editors.push_back(OtObjectTalkEditorClass::create());
 	}
 }
 
@@ -82,14 +65,15 @@ void OtWorkspaceClass::newFile() {
 void OtWorkspaceClass::openFile() {
 	// open file select dialog (if one isn't open already)
 	if (!ImGuiFileDialog::Instance()->IsOpened()) {
-		ImGuiFileDialog::Instance()->OpenModal(
+		ImGuiFileDialog::Instance()->OpenDialog(
 			"workspace-open",
 			"Select File to Open...",
 			".ot",
 			getCWD(),
 			1,
 			nullptr,
-			ImGuiFileDialogFlags_DontShowHiddenFiles |
+		   ImGuiFileDialogFlags_Modal |
+				ImGuiFileDialogFlags_DontShowHiddenFiles |
 				ImGuiFileDialogFlags_ReadOnlyFileNameField);
 	}
 }
@@ -99,12 +83,22 @@ void OtWorkspaceClass::openFile() {
 //	OtWorkspaceClass::openFile
 //
 
-void OtWorkspaceClass::openFile(const std::string& filename) {
+OtEditor OtWorkspaceClass::openFile(const std::string& filename) {
+	OtEditor editor;
+
+	// don't reopen if it is already open
+	if ((editor = findEditor(filename)) != nullptr) {
+
+	} else {
+		// open a new editor
+		editor = OtObjectTalkEditorClass::create(filename);
+		editors.push_back(editor);
+
+	}
 	// save the file's path as the current working directory
 	cwd = std::filesystem::path(filename).parent_path().string();
 
-	// open a new editor
-	editors.push_back(OtEditorClass::create(filename));
+	return editor;
 }
 
 
@@ -113,15 +107,10 @@ void OtWorkspaceClass::openFile(const std::string& filename) {
 //
 
 void OtWorkspaceClass::closeEditor(OtEditor editor) {
-	// use remove_if when we move the C++20
-	for (auto it = editors.begin(); it != editors.end();) {
-		if ((*it)->equal(editor)) {
-			it = editors.erase(it);
-
-		} else {
-			it++;
-		}
-	}
+	// remove specified editor from list
+	editors.erase(std::remove_if(editors.begin(), editors.end(), [editor] (OtEditor candidate) {
+		return candidate == editor;
+	}), editors.end());
 }
 
 
@@ -141,95 +130,11 @@ OtEditor OtWorkspaceClass::findEditor(const std::string& filename) {
 
 
 //
-//	OtWorkspaceClass::runFile
+//	OtWorkspaceClass::activateEditor
 //
 
-void OtWorkspaceClass::runFile(const std::string& filename) {
-	// start a new thread
-	started = true;
-	running = true;
-
-	console->write("\n");
-	console->scrollToBottom();
-
-	thread = std::thread([this, filename]() {
-		// hide editors and console
-		showEditors = false;
-		showConsole = false;
-
-		try {
-			// load and run module
-			module = OtModuleClass::create(filename);
-			events.pushFinishedWithoutErrorsEvent();
-
-		} catch (const OtException& e) {
-			events.pushFinishedWithExceptionEvent(e);
-		}
-
-		// if this module had a GUI, do the cleanup
-		if (customer) {
-			OtFrameworkClass::instance()->removeCustomer(customer);
-		}
-
-		// little house keeping
-		running = false;
-		showEditors = true;
-		showConsole = true;
-	});
-};
-
-
-//
-//	OtWorkspaceClass::onRunGUI
-//
-
-void OtWorkspaceClass::onRunGUI() {
-	// this gets called when a script runs os.runGUI()
-	// we simply wait until the app quits
-	// as the framework is already running the main loop
-	std::unique_lock<std::mutex> lock(mutex);
-	cv.wait(lock);
-}
-
-
-//
-//	OtWorkspaceClass::onErrorGUI
-//
-
-void OtWorkspaceClass::onErrorGUI(OtException e) {
-	// something happend in the script; let's handle exception and stop script
-	events.pushFinishedWithExceptionEvent(e);
-	cv.notify_all();
-}
-
-
-//
-//	OtWorkspaceClass::onStopGUI
-//
-
-void OtWorkspaceClass::onStopGUI() {
-	// this gets called when a script runs os.stopGUI()
-	cv.notify_all();
-}
-
-
-//
-//	OtWorkspaceClass::onAddCustomer
-//
-
-void OtWorkspaceClass::onAddCustomer(OtCustomer* c) {
-	// the customer is the script we are running
-	customer = c;
-}
-
-
-//
-//	OtWorkspaceClass::onRemoveCustomer
-//
-
-void OtWorkspaceClass::onRemoveCustomer(OtCustomer* c) {
-	// the customer was the script we were running
-	customer = nullptr;
+void OtWorkspaceClass::activateEditor(OtEditor editor) {
+	activateEditorTab = editor;
 }
 
 
@@ -238,45 +143,9 @@ void OtWorkspaceClass::onRemoveCustomer(OtCustomer* c) {
 //
 
 void OtWorkspaceClass::onUpdate() {
-	while (events.size()) {
-		OtIdeEvent event = events.pop();
-		OtEditor editor;
-
-		switch (event.type) {
-			case OtIdeEvent::writeToOut:
-				console->write(event.longMessage);
-				break;
-
-			case OtIdeEvent::writeToErr:
-				console->writeError(event.longMessage);
-				break;
-
-			case OtIdeEvent::finishedWithException:
-				OtCerrClass::instance()->write(event.longMessage);
-				OtCerrClass::instance()->write("\n");
-
-				editor = findEditor(event.module);
-
-				if (!editor) {
-					openFile(event.module);
-					editor = findEditor(event.module);
-				}
-
-				editor->highlightError(event.lineNumber, event.shortMessage);
-
-				thread.join();
-				started = false;
-				break;
-
-			case OtIdeEvent::finishedWithoutErrors:
-				if (started) {
-					thread.join();
-					started = false;
-				}
-
-				break;
-		}
-	}
+	// update the console and script runner
+	OtConsoleClass::instance()->update();
+	OtScriptRunnerClass::instance()->update();
 }
 
 
@@ -285,27 +154,142 @@ void OtWorkspaceClass::onUpdate() {
 //
 
 void OtWorkspaceClass::onRender() {
-	// render console (if required)
-	if (showConsole) {
-		console->render();
+	// render all editors (if required)
+	if (!OtScriptRunnerClass::instance()->isRunningGUI()) {
+		// create workspace (if required)
+		if (editors.size()) {
+			// render all editors as tabs
+			renderEditors();
+
+		} else {
+			// just show splash screen
+			renderSplashScreen();
+		}
+
+		renderFileOpen();
+		renderQuitConfirmation();
+	}
+}
+
+
+//
+//	OtWorkspaceClass::renderSplashScreen
+//
+
+static void centerText(const char* text) {
+	ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(text).x) * 0.5f);
+	ImGui::Text("%s", text);
+}
+
+void OtWorkspaceClass::renderSplashScreen() {
+	// setup log (if required)
+	if (!logo.isValid()) {
+		// load it from file that lives in memory (to keep ot as a single file)
+		logo.loadFromFileInMemory((void*) &OtLogoData, sizeof(OtLogoData));
+
+		// ensure logo is cleared at exit to avoid a memory leak
+		OtFrameworkClass::instance()->atexit([this] {
+			logo.clear();
+		});
 	}
 
-	// render all editors (if required)
-	if (showEditors) {
+	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5, 0.5));
+
+	ImGui::Begin(
+		"SplashScreen",
+		nullptr,
+		ImGuiWindowFlags_NoDecoration |
+			ImGuiWindowFlags_AlwaysAutoResize |
+			ImGuiWindowFlags_NoResize |
+			ImGuiWindowFlags_NoMove);
+
+	ImGui::Image((void*)(intptr_t) logo.getTextureIndex(), ImVec2(OtLogoWidth, OtLogoHeight));
+
+	centerText("Welcome to the ObjectTalk");
+	centerText("Integrated Development Environment (IDE)");
+	centerText("");
+
+	if (ImGui::GetIO().ConfigMacOSXBehaviors) {
+		centerText("Use Cmd-N to create a new file");
+		centerText("Use Cmd-O to open an existing file");
+
+	} else {
+		centerText("Use Ctrl-N to create a new file");
+		centerText("Use Ctrl-O to open an existing file");
+	}
+
+	ImGui::End();
+}
+
+
+//
+//	OtWorkspaceClass::renderEditors
+//
+
+void OtWorkspaceClass::renderEditors() {
+	// create workspace window
+	ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
+	ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+	ImGui::Begin("Workspace", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize);
+
+	// render all editors as tabs
+	if (ImGui::BeginTabBar("TabBar", ImGuiTabBarFlags_AutoSelectNewTabs)) {
+		auto displaySize = ImGui::GetIO().DisplaySize.y;
+
+		if (editorHeight < 0.0) {
+			editorHeight =  displaySize * 0.8;
+
+		} else {
+			editorHeight = std::clamp(editorHeight, displaySize * 0.1f, displaySize * 0.9f);
+		}
+
 		// make clone of editor list since renderers might change it
 		std::vector<OtEditor> clone = editors;
 
 		for (auto& editor : clone) {
-			editor->render();
+			ImGuiTabItemFlags flags = 0;
+
+			if (activateEditorTab == editor) {
+				flags = ImGuiTabItemFlags_SetSelected;
+			}
+
+			if (ImGui::BeginTabItem(editor->getShortName().c_str(), nullptr, flags)) {
+				editor->render(0.0, editorHeight);
+				ImGui::EndTabItem();
+			}
 		}
+
+		activateEditorTab = nullptr;
+		ImGui::EndTabBar();
 	}
 
+	// render splitter
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,0));
+	ImGui::InvisibleButton("splitter", ImVec2(-1,8.0f));
+
+	if (ImGui::IsItemActive()) {
+		editorHeight += ImGui::GetIO().MouseDelta.y;
+	}
+
+	// render console
+	OtConsoleClass::instance()->render();
+	ImGui::PopStyleVar();
+
+	ImGui::End();
+	ImGui::PopStyleVar();
+}
+
+
+//
+//	OtWorkspaceClass::renderFileOpen
+//
+
+void OtWorkspaceClass::renderFileOpen() {
 	// handle file open dialog
-	OtFramework framework = OtFrameworkClass::instance();
-	int width = framework->getWidth();
-	int height = framework->getHeight();
-	ImVec2 maxSize = ImVec2(width, height);
-	ImVec2 minSize = ImVec2(width * 0.5, height * 0.5);
+	ImVec2 maxSize = ImGui::GetIO().DisplaySize;
+	ImVec2 minSize = ImVec2(maxSize.x * 0.5, maxSize.y * 0.5);
 
 	if (ImGuiFileDialog::Instance()->Display("workspace-open", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
 		// open selected file if required
@@ -337,7 +321,14 @@ void OtWorkspaceClass::onRender() {
 			}
 		}
 	}
+}
 
+
+//
+//	OtWorkspaceClass::renderQuitConfirmation
+//
+
+void OtWorkspaceClass::renderQuitConfirmation() {
 	// handle "quit" confirmation (when user quits without saving)
 	if (confirmQuit) {
 		ImGui::OpenPopup("Quit Application?");
@@ -345,11 +336,11 @@ void OtWorkspaceClass::onRender() {
 		ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5, 0.5));
 
 		if (ImGui::BeginPopupModal("Quit Application?", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-			ImGui::Text("You have unsaved files!\nDo you really want to Quit?\n\n");
+			ImGui::Text("You have unsaved files!\nDo you really want to quit?\n\n");
 			ImGui::Separator();
 
 			if (ImGui::Button("OK", ImVec2(120, 0))) {
-				framework->stop();
+				OtFrameworkClass::instance()->stop();
 				ImGui::CloseCurrentPopup();
 				confirmQuit = false;
 			}
@@ -373,24 +364,31 @@ void OtWorkspaceClass::onRender() {
 //
 
 bool OtWorkspaceClass::onCanQuit() {
-	// is a script running at the moment?
-	if (running) {
+	auto runner = OtScriptRunnerClass::instance();
+	auto os = OtOSClass::instance();
+
+	// are we currently running a server script
+	if (runner->isRunningServer()) {
 		// just stop the script and keep the IDE going
-		onStopGUI();
+		os->stopServer();
+		return false;
+
+	// are we currently running a GUI script
+	} else if (runner->isRunningGUI()) {
+		// just stop the script and keep the IDE going
+		os->stopGUI();
 		return false;
 
 	} else {
 		// we can't quit if we still have a "dirty" editor
-		bool canQuit = true;
-
 		for (auto& editor : editors) {
 			if (editor->isDirty()) {
-				canQuit = false;
 				confirmQuit = true;
+				return false;
 			}
 		}
 
-		return canQuit;
+		return true;
 	}
 }
 
@@ -437,26 +435,6 @@ std::string OtWorkspaceClass::getCWD() {
 	}
 
 	return cwd;
-}
-
-
-//
-//	OtWorkspaceClass::getMeta
-//
-
-OtType OtWorkspaceClass::getMeta() {
-	static OtType type;
-
-	if (!type) {
-		type = OtTypeClass::create<OtWorkspaceClass>(
-			"Workspace",
-			OtIdeClass::getMeta(),
-			[]() {
-				return (OtObject) OtWorkspaceClass::instance();
-			});
-	}
-
-	return type;
 }
 
 

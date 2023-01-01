@@ -12,9 +12,9 @@
 //	Include files
 //
 
-#include "TextEditor.h"
+#include <memory>
 
-#include "OtIde.h"
+#include "OtException.h"
 
 
 //
@@ -24,49 +24,31 @@
 class OtEditorClass;
 typedef std::shared_ptr<OtEditorClass> OtEditor;
 
-class OtEditorClass : public OtIdeClass {
+class OtEditorClass : public std::enable_shared_from_this<OtEditorClass> {
 public:
+	// constructor/destructor
+	OtEditorClass();
+	virtual ~OtEditorClass() {}
+
 	// render the editor
-	void render();
+	virtual void render(float width, float height) {}
 
-	// file actions
-	void loadFile();
-	void newFile();
-	void openFile();
-	void saveFile();
-	void saveAsFile();
-	void closeFile();
-	void compileFile();
-	void runFile();
-
-	// get the name of the file being edited
+	// get the properties
 	std::string getFileName() { return filename; }
+	std::string getShortName();
 
-	// is the editor's content "dirty" (unsaved);
-	bool isDirty();
+	// see if editor content is dirty
+	virtual bool isDirty() { return false; }
 
-	// update error markers
-	void highlightError(size_t line, const std::string error);
-	void clearError();
+	// handle exception during a "run"
+	virtual void error(OtException e) {}
 
-	// get type definition
-	static OtType getMeta();
+	// get casted shared pointer
+	template <typename CLASS>
+	std::shared_ptr<CLASS> cast() { return std::dynamic_pointer_cast<CLASS>(shared_from_this()); }
 
-	// create a new object
-	static OtEditor create();
-	static OtEditor create(const std::string& filename);
-
-private:
-	// visual text editor
-	TextEditor editor;
-
+protected:
 	// properties
-	std::string filename;
 	std::string id;
-
-	int version = 0;
-	bool confirmClose = false;
-
-	bool focus = false;
-	int scrollToLine = 0;
+	std::string filename;
 };

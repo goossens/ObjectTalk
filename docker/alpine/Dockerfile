@@ -7,14 +7,9 @@
 FROM alpine:latest
 
 RUN apk add --no-cache \
-	gcc \
-	g++ \
 	gdb \
-	make \
 	cmake \
-	musl-dev \
 	alpine-sdk \
-	linux-headers \
-	openssh-client
+	linux-headers
 
 WORKDIR /ot

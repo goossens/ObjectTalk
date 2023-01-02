@@ -48,6 +48,8 @@ public:
 
 	// write to console
 	void write(const std::string& text);
+	void writeHelp(const std::string& text);
+	void writeInput(const std::string& text);
 	void writeError(const std::string& text);
 
 	// create a new object
@@ -57,6 +59,8 @@ private:
 	// screen text
 	enum LineType {
 		Normal,
+		Help,
+		Input,
 		Error
 	};
 

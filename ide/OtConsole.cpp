@@ -20,6 +20,7 @@
 
 OtConsoleClass::OtConsoleClass() {
 	clear();
+	writeHelp("Welcome to ObjectTalk");
 }
 
 
@@ -59,7 +60,13 @@ void OtConsoleClass::render() {
 	while (clipper.Step()) {
 		for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
 			if (lines[i].type) {
-				if (lines[i].type == LineType::Error) {
+				if (lines[i].type == LineType::Help) {
+					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0, 0.7, 0.7, 1.0));
+
+				} else if (lines[i].type == LineType::Input) {
+					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0, 0.7, 1.0, 1.0));
+
+				} else if (lines[i].type == LineType::Error) {
 					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0, 0.0, 0.0, 1.0));
 				}
 			}
@@ -126,6 +133,23 @@ void OtConsoleClass::write(const std::string& text) {
 	writeColored(Normal, text);
 }
 
+
+//
+//	OtConsoleClass::writeHelp
+//
+
+void OtConsoleClass::writeHelp(const std::string& text) {
+	writeColored(Help, text);
+}
+
+
+//
+//	OtConsoleClass::writeInput
+//
+
+void OtConsoleClass::writeInput(const std::string& text) {
+	writeColored(Input, std::string("<< ") + text);
+}
 
 //
 //	OtConsoleClass::writeError

@@ -57,7 +57,7 @@ been a lot harder to implement ObjectTalk. You can find a full list on the
 
 ## License
 
-Copyright (c) 1993-2022 Johan A. Goossens. All rights reserved.
+Copyright (c) 1993-2023 Johan A. Goossens. All rights reserved.
 
 This work is licensed under the terms of the MIT license.
 For a copy, see <https://opensource.org/licenses/MIT>.

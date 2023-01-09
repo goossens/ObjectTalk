@@ -12,8 +12,8 @@
 //	Include files
 //
 
+#include <cstddef>
 #include <cstdint>
-#include <stddef.h>
 
 
 //

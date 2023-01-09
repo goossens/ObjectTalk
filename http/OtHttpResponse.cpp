@@ -9,7 +9,7 @@
 //	Include files
 //
 
-#include <string.h>
+#include <cstring>
 #include <filesystem>
 
 #include "OtException.h"

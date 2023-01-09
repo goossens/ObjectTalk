@@ -10,8 +10,8 @@
 //
 
 #include <chrono>
+#include <ctime>
 #include <random>
-#include <time.h>
 
 #include "OtArray.h"
 #include "OtDict.h"

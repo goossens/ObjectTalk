@@ -12,7 +12,7 @@
 //	  Include files
 //
 
-#include <stdio.h>
+#include <cstdio>
 
 #include <exception>
 #include <iostream>

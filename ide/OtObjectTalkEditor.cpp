@@ -31,6 +31,7 @@ OtObjectTalkEditorClass::OtObjectTalkEditorClass() {
 	editor.SetLanguageDefinition(OtObjectTalkLanguageGetDefinition());
 	editor.SetShowWhitespaces(true);
 	editor.SetShowShortTabGlyphs(true);
+	editor.SetImGuiChildIgnored(true);
 	filename = "untitled";
 }
 

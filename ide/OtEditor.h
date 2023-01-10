@@ -31,7 +31,7 @@ public:
 	virtual ~OtEditorClass() {}
 
 	// render the editor
-	virtual void render(float width, float height) {}
+	virtual void render() {}
 
 	// get the properties
 	std::string getFileName() { return filename; }

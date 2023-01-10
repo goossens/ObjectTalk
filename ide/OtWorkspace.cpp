@@ -9,7 +9,6 @@
 //	Include files
 //
 
-#include <algorithm>
 #include <filesystem>
 
 #include "imgui.h"
@@ -236,15 +235,6 @@ void OtWorkspaceClass::renderEditors() {
 
 	// render all editors as tabs
 	if (ImGui::BeginTabBar("TabBar", ImGuiTabBarFlags_AutoSelectNewTabs)) {
-		auto displaySize = ImGui::GetIO().DisplaySize.y;
-
-		if (editorHeight < 0.0) {
-			editorHeight =  displaySize * 0.8;
-
-		} else {
-			editorHeight = std::clamp(editorHeight, displaySize * 0.1f, displaySize * 0.9f);
-		}
-
 		// make clone of editor list since renderers might change it
 		std::vector<OtEditor> clone = editors;
 
@@ -256,7 +246,7 @@ void OtWorkspaceClass::renderEditors() {
 			}
 
 			if (ImGui::BeginTabItem(editor->getShortName().c_str(), nullptr, flags)) {
-				editor->render(0.0, editorHeight);
+				editor->render();
 				ImGui::EndTabItem();
 			}
 		}
@@ -264,18 +254,6 @@ void OtWorkspaceClass::renderEditors() {
 		activateEditorTab = nullptr;
 		ImGui::EndTabBar();
 	}
-
-	// render splitter
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,0));
-	ImGui::InvisibleButton("splitter", ImVec2(-1,8.0f));
-
-	if (ImGui::IsItemActive()) {
-		editorHeight += ImGui::GetIO().MouseDelta.y;
-	}
-
-	// render console
-	OtConsoleClass::instance()->render();
-	ImGui::PopStyleVar();
 
 	ImGui::End();
 	ImGui::PopStyleVar();

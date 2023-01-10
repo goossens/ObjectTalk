@@ -30,7 +30,7 @@ public:
 	OtObjectTalkEditorClass();
 
 	// render the editor
-	void render(float width, float height) override;
+	void render() override;
 
 	// is the editor's content "dirty" (unsaved);
 	bool isDirty() override;
@@ -61,4 +61,5 @@ private:
 	int version = 0;
 	bool confirmClose = false;
 	int scrollToLine = 0;
+	float editorHeight = -1.0;
 };

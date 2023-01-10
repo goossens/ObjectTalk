@@ -20,7 +20,6 @@
 
 OtConsoleClass::OtConsoleClass() {
 	clear();
-	writeHelp("Welcome to ObjectTalk");
 }
 
 

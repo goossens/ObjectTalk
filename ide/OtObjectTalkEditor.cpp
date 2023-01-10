@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -73,7 +74,17 @@ OtObjectTalkEditorClass::OtObjectTalkEditorClass() {
 //	OtObjectTalkEditorClass::render
 //
 
-void OtObjectTalkEditorClass::render(float width, float height) {
+void OtObjectTalkEditorClass::render() {
+	// deternie editor height
+	auto displaySize = ImGui::GetIO().DisplaySize.y;
+
+	if (editorHeight < 0.0) {
+		editorHeight =  displaySize * 0.8;
+
+	} else {
+		editorHeight = std::clamp(editorHeight, displaySize * 0.1f, displaySize * 0.9f);
+	}
+
 	// determine status
 	bool dirty = editor.GetUndoCount() != version;
 	bool runnable = !OtScriptRunnerClass::instance()->isRunning() && !dirty && filename != "untitled";
@@ -81,7 +92,7 @@ void OtObjectTalkEditorClass::render(float width, float height) {
 	// create the window
 	ImGui::BeginChild(
 		id.c_str(),
-		ImVec2(width, height),
+		ImVec2(0.0, editorHeight),
 		true,
 		ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_MenuBar);
 
@@ -246,6 +257,18 @@ void OtObjectTalkEditorClass::render(float width, float height) {
 
 	ImGui::PopID();
 	ImGui::EndChild();
+
+	// render splitter
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,0));
+	ImGui::InvisibleButton("splitter", ImVec2(-1,8.0f));
+
+	if (ImGui::IsItemActive()) {
+		editorHeight += ImGui::GetIO().MouseDelta.y;
+	}
+
+	// render console
+	OtConsoleClass::instance()->render();
+	ImGui::PopStyleVar();
 }
 
 //

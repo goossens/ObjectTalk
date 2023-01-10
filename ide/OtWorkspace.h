@@ -85,9 +85,6 @@ private:
 	// list of open editors
 	std::vector<OtEditor> editors;
 
-	// vertical size of editors
-	float editorHeight = -1.0;
-
 	// tab to activate durong next frame
 	OtEditor activateEditorTab;
 

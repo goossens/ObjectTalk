@@ -18,6 +18,7 @@
 
 #include "OtInteger.h"
 
+#include "OtBitstreamVeraMono.h"
 #include "OtFramework.h"
 
 
@@ -171,8 +172,15 @@ void OtFrameworkClass::initIMGUI() {
 		return glfwGetClipboardString(framework->window);
 	};
 
-	// add default font
-	io.Fonts->AddFontDefault();
+	// add custom font
+	ImFontConfig config;
+	config.FontDataOwnedByAtlas = false;
+
+	io.Fonts->AddFontFromMemoryTTF(
+		(void*) &OtBitstreamVeraMono,
+		sizeof(OtBitstreamVeraMono),
+		17.0,
+		&config);
 
 	// setup font atlas in texture
 	unsigned char* pixels;

@@ -24,11 +24,44 @@
 
 
 //
+//	colorPalette (** means changed from default dark palette)
+//
+
+const static TextEditor::Palette colorPalette = { {
+	0xff7f7f7f,	// Default
+	0xffc086c5,	// Keyword **
+	0xffa8ceb5,	// Number **
+	0xff7891ce,	// String **
+	0xff7891ce, // Char literal **
+	0xffffffff, // Punctuation
+	0xff408080,	// Preprocessor
+	0xfffedc9c, // Identifier **
+	0xffffc14f, // Known identifier **
+	0xffc040a0, // Preproc identifier
+	0xff55996a, // Comment (single line) **
+	0xff55996a, // Comment (multi line) **
+	0xff101010, // Background
+	0xffe0e0e0, // Cursor
+	0x80a06020, // Selection
+	0x800020ff, // ErrorMarker
+	0xffaf00af, // BracketHighlighting
+	0x40f08000, // Breakpoint
+	0xff707000, // Line number
+	0x40000000, // Current line fill
+	0x40808080, // Current line fill (inactive)
+	0x40a0a0a0, // Current line edge
+	0xff505050, // White Space
+	0xff404040, // White Space Tab
+} };
+
+
+//
 //	OtObjectTalkEditorClass::OtObjectTalkEditorClass
 //
 
 OtObjectTalkEditorClass::OtObjectTalkEditorClass() {
 	editor.SetLanguageDefinition(OtObjectTalkLanguageGetDefinition());
+	editor.SetPalette(colorPalette);
 	editor.SetShowWhitespaces(true);
 	editor.SetShowShortTabGlyphs(true);
 	editor.SetImGuiChildIgnored(true);

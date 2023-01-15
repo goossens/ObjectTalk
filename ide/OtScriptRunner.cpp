@@ -163,7 +163,8 @@ void OtScriptRunnerClass::update() {
 				editor = workspace->findEditor(event.exception.getModule());
 
 				if (!editor) {
-					editor = workspace->openFile(event.exception.getModule());
+					workspace->openFile(event.exception.getModule());
+					editor = workspace->findEditor(event.exception.getModule());
 				}
 
 				// highlight error in code

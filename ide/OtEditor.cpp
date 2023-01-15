@@ -33,12 +33,30 @@ OtEditorClass::OtEditorClass() {
 //
 
 std::string OtEditorClass::getShortName() {
-	std::string shortName = std::filesystem::path(filename).filename().string();
+	return std::filesystem::path(filename).filename().string();
+}
 
-	if (isDirty()) {
-		return shortName + " *";
+
+//
+//	OtEditorClass::setFileName
+//
+
+void OtEditorClass::setFileName(const std::string& name) {
+	auto path = std::filesystem::path(name);
+
+	if (path.extension() == getFileExtension()) {
+		filename = name;
 
 	} else {
-		return shortName;
+		filename = path.replace_extension(std::filesystem::path(getFileExtension()));
 	}
+}
+
+
+//
+//	OtEditorClass::fileExists
+//
+
+bool OtEditorClass::fileExists() {
+	return std::filesystem::is_regular_file(std::filesystem::path(filename));
 }

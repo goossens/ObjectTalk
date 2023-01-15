@@ -15,9 +15,9 @@
 #include <sstream>
 
 #include "imgui.h"
-#include "ImGuiFileDialog.h"
 
 #include "OtConsole.h"
+#include "OtIdeUi.h"
 #include "OtObjectTalkEditor.h"
 #include "OtObjectTalkLanguage.h"
 #include "OtScriptRunner.h"
@@ -66,7 +66,58 @@ OtObjectTalkEditorClass::OtObjectTalkEditorClass() {
 	editor.SetShowWhitespaces(true);
 	editor.SetShowShortTabGlyphs(true);
 	editor.SetImGuiChildIgnored(true);
-	filename = "untitled";
+}
+
+
+//
+//	OtObjectTalkEditorClass::load
+//
+
+void OtObjectTalkEditorClass::load() {
+	// load text from file
+	std::stringstream buffer;
+
+	try {
+		std::ifstream stream(filename.c_str());
+
+		if (stream.fail()) {
+			OtExcept("Can't read from file [%s]", filename.c_str());
+		}
+
+		buffer << stream.rdbuf();
+		stream.close();
+
+	} catch (std::exception& e) {
+		OtExcept("Can't read from file [%s], error: %s", filename.c_str(), e.what());
+	}
+
+	editor.SetText(buffer.str());
+	version = editor.GetUndoCount();
+}
+
+
+//
+//	OtObjectTalkEditorClass::save
+//
+
+void OtObjectTalkEditorClass::save() {
+	try {
+		// write text to file
+		std::ofstream stream(filename.c_str());
+
+		if (stream.fail()) {
+			OtExcept("Can't write to file [%s]", filename.c_str());
+		}
+
+		stream << editor.GetText();
+		stream.close();
+
+	} catch (std::exception& e) {
+		OtExcept("Can't write to file [%s], error: %s", filename.c_str(), e.what());
+	}
+
+	// reset current version number (marking the content as clean)
+	version = editor.GetUndoCount();
 }
 
 
@@ -75,28 +126,47 @@ OtObjectTalkEditorClass::OtObjectTalkEditorClass() {
 //
 
 void OtObjectTalkEditorClass::render() {
-	// deternie editor height
+	// determine editor height
 	auto displaySize = ImGui::GetIO().DisplaySize.y;
+	auto minEditorWidth = displaySize * 0.05f;
+	auto maxEditorWidth = displaySize * 0.90f;
 
 	if (editorHeight < 0.0) {
 		editorHeight =  displaySize * 0.8;
 
 	} else {
-		editorHeight = std::clamp(editorHeight, displaySize * 0.1f, displaySize * 0.9f);
+		editorHeight = std::clamp(editorHeight, minEditorWidth, maxEditorWidth);
 	}
-
-	// determine status
-	bool dirty = editor.GetUndoCount() != version;
-	bool runnable = !OtScriptRunnerClass::instance()->isRunning() && !dirty && filename != "untitled";
 
 	// create the window
 	ImGui::BeginChild(
-		id.c_str(),
-		ImVec2(0.0, editorHeight),
+		(id).c_str(),
+		ImVec2(0.0, 0.0),
 		true,
 		ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_MenuBar);
 
-	ImGui::PushID(this);
+	// render the menu
+	renderMenu();
+
+	// render splitter
+	OtIdeUiSplitterVertical(&editorHeight, minEditorWidth, maxEditorWidth);
+
+	// render the editor
+	renderEditor();
+
+	// render the console
+	OtConsoleClass::instance()->render();
+	ImGui::EndChild();
+}
+
+
+//
+//	OtObjectTalkEditorClass::renderMenu
+//
+
+void OtObjectTalkEditorClass::renderMenu() {
+	// determine status
+	bool runnable = !OtScriptRunnerClass::instance()->isRunning() && !isDirty() && fileExists();
 
 	// get keyboard state to handle keyboard shortcuts
 	ImGuiIO& io = ImGui::GetIO();
@@ -109,29 +179,11 @@ void OtObjectTalkEditorClass::render() {
 
 	// handle keyboard shortcuts
 	if (isShortcut) {
-		if (dirty && ImGui::IsKeyPressed(ImGuiKey_S)) {
-			if (filename == "untitled") {
-				saveAsFile();
+		if (ImGui::IsKeyPressed(ImGuiKey_B)) {
+			compile();
 
-			} else {
-				saveFile();
-			}
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_W)) {
-			if (dirty) {
-				confirmClose = true;
-
-			} else {
-				closeFile();
-			}
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_B)) {
-			compileFile();
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_R)) {
-			if (runnable) {
-				runFile();
-			}
+		} else if (ImGui::IsKeyPressed(ImGuiKey_R) && runnable) {
+			run();
 		}
 	}
 
@@ -143,29 +195,21 @@ void OtObjectTalkEditorClass::render() {
 
 	// create menubar
 	if (ImGui::BeginMenuBar()) {
-		if (ImGui::BeginMenu("File")) {
-			if (ImGui::MenuItem("New", SHORTCUT "N")) { newFile(); } // shortcut handled by workspace
-			if (ImGui::MenuItem("Open...", SHORTCUT "O")) { openFile(); } // shortcut handled by workspace
-
+		if (ImGui::BeginMenu("File")) {  // shortcuts handled by workspace
+			if (ImGui::MenuItem("New", SHORTCUT "N")) { OtWorkspaceClass::instance()->newFile(); }
+			if (ImGui::MenuItem("Open...", SHORTCUT "O")) { OtWorkspaceClass::instance()->openFile(); }
 			ImGui::Separator();
 
-			if (filename == "untitled") {
-				if (ImGui::MenuItem("Save As...", SHORTCUT "S", nullptr, dirty)) { saveAsFile(); }
+			if (fileExists()) {
+				if (ImGui::MenuItem("Save", SHORTCUT "S", nullptr, isDirty())) { OtWorkspaceClass::instance()->saveFile(); }
+				if (ImGui::MenuItem("Save As...")) { OtWorkspaceClass::instance()->saveAsFile(); }
 
 			} else {
-				if (ImGui::MenuItem("Save", SHORTCUT "S", nullptr, dirty)) { saveFile(); }
-				if (ImGui::MenuItem("Save As...")) { saveAsFile(); }
+				if (ImGui::MenuItem("Save As...", SHORTCUT "S", nullptr, isDirty())) { OtWorkspaceClass::instance()->saveAsFile(); }
 			}
 
 			ImGui::Separator();
-			if (ImGui::MenuItem("Close", SHORTCUT "W")) {
-				if (dirty) {
-					confirmClose = true;
-
-				} else {
-					closeFile();
-				}
-			}
+			if (ImGui::MenuItem("Close", SHORTCUT "W")) { OtWorkspaceClass::instance()->closeFile(); }
 
 			ImGui::EndMenu();
 		}
@@ -189,8 +233,8 @@ void OtObjectTalkEditorClass::render() {
 		}
 
 		if (ImGui::BeginMenu("Program")) {
-			if (ImGui::MenuItem("Build", SHORTCUT "B")) { compileFile(); }
-			if (ImGui::MenuItem("Run", SHORTCUT "R", nullptr, runnable)) { runFile(); }
+			if (ImGui::MenuItem("Build", SHORTCUT "B")) { compile(); }
+			if (ImGui::MenuItem("Run", SHORTCUT "R", nullptr, runnable)) { run(); }
 			ImGui::Separator();
 			if (ImGui::MenuItem("Clear Error")) { clearError(); }
 			if (ImGui::MenuItem("Clear Console")) { OtConsoleClass::instance()->clear(); }
@@ -200,6 +244,16 @@ void OtObjectTalkEditorClass::render() {
 
 		ImGui::EndMenuBar();
 	}
+}
+
+
+//
+//	OtObjectTalkEditorClass::renderEditor
+//
+
+void OtObjectTalkEditorClass::renderEditor() {
+	// create the window
+	ImGui::BeginChild((id + "editor").c_str(), ImVec2(0.0, editorHeight), true);
 
 	// create the editor
 	editor.Render("TextEditor");
@@ -211,184 +265,23 @@ void OtObjectTalkEditorClass::render() {
 		scrollToLine = 0;
 	}
 
-	// handle "close" confirmation (when user closes editor without saving)
-	if (confirmClose) {
-		ImGui::OpenPopup("Delete?");
-		ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-		ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5, 0.5));
-
-		if (ImGui::BeginPopupModal("Delete?", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-			ImGui::Text("This file has changed!\nDo you really want to delete it?\n\n");
-			ImGui::Separator();
-
-			if (ImGui::Button("OK", ImVec2(120, 0))) {
-				OtWorkspaceClass::instance()->closeEditor(cast<OtEditorClass>());
-				ImGui::CloseCurrentPopup();
-				confirmClose = false;
-			}
-
-			ImGui::SetItemDefaultFocus();
-			ImGui::SameLine();
-
-			if (ImGui::Button("Cancel", ImVec2(120, 0))) {
-				ImGui::CloseCurrentPopup();
-				confirmClose = false;
-			}
-
-			ImGui::EndPopup();
-		}
-	}
-
-	// handle "save as" dialog
-	ImVec2 maxSize = ImGui::GetIO().DisplaySize;
-	ImVec2 minSize = ImVec2(maxSize.x * 0.6, maxSize.y * 0.6);
-
-	if (ImGuiFileDialog::Instance()->Display(id + "-saveas", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
-		// open selected file if required
-		if (ImGuiFileDialog::Instance()->IsOk()) {
-			filename = ImGuiFileDialog::Instance()->GetFilePathName();
-			saveFile();
-		}
-
-		// close dialog
-		ImGuiFileDialog::Instance()->Close();
-
-	}
-
-	ImGui::PopID();
 	ImGui::EndChild();
-
-	// render splitter
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,0));
-	ImGui::InvisibleButton("splitter", ImVec2(-1,8.0f));
-
-	if (ImGui::IsItemActive()) {
-		editorHeight += ImGui::GetIO().MouseDelta.y;
-	}
-
-	// render console
-	OtConsoleClass::instance()->render();
-	ImGui::PopStyleVar();
-}
-
-//
-//	OtObjectTalkEditorClass::loadFile
-//
-
-void OtObjectTalkEditorClass::loadFile(const std::string& name) {
-	// load text from file
-	std::stringstream buffer;
-	filename = name;
-
-	try {
-		std::ifstream stream(filename.c_str());
-
-		if (stream.fail()) {
-			OtExcept("Can't read from file [%s]", filename.c_str());
-		}
-
-		buffer << stream.rdbuf();
-		stream.close();
-
-	} catch (std::exception& e) {
-		OtExcept("Can't read from file [%s], error: %s", filename.c_str(), e.what());
-	}
-
-	editor.SetText(buffer.str());
-	version = editor.GetUndoCount();
 }
 
 
 //
-//	OtObjectTalkEditorClass::newFile
+//	OtObjectTalkEditorClass::compile
 //
 
-void OtObjectTalkEditorClass::newFile() {
-	OtWorkspaceClass::instance()->newFile();
+void OtObjectTalkEditorClass::compile() {
 }
 
 
 //
-//	OtObjectTalkEditorClass::openFile
+//	OtObjectTalkEditorClass::run
 //
 
-void OtObjectTalkEditorClass::openFile() {
-	OtWorkspaceClass::instance()->openFile();
-}
-
-
-//
-//	OtObjectTalkEditorClass::saveFile
-//
-
-void OtObjectTalkEditorClass::saveFile() {
-	try {
-		// write text to file
-		std::ofstream stream(filename.c_str());
-
-		if (stream.fail()) {
-			OtExcept("Can't write to file [%s]", filename.c_str());
-		}
-
-		stream << editor.GetText();
-		stream.close();
-
-	} catch (std::exception& e) {
-		OtExcept("Can't write to file [%s], error: %s", filename.c_str(), e.what());
-	}
-
-	// reset current version number (marking the contents as clean)
-	version = editor.GetUndoCount();
-}
-
-
-//
-//	OtObjectTalkEditorClass::saveAsFile
-//
-
-void OtObjectTalkEditorClass::saveAsFile() {
-	// open file save dialog
-	if (!ImGuiFileDialog::Instance()->IsOpened()) {
-		ImGui::PushID(this);
-
-		ImGuiFileDialog::Instance()->OpenDialog(
-			id + "-saveas",
-			"Save File as...",
-			".ot",
-			filename,
-			1,
-			nullptr,
-			ImGuiFileDialogFlags_Modal |
-				ImGuiFileDialogFlags_DontShowHiddenFiles |
-				ImGuiFileDialogFlags_ConfirmOverwrite);
-
-		ImGui::PopID();
-	}
-}
-
-
-//
-//	OtObjectTalkEditorClass::closeFile
-//
-
-void OtObjectTalkEditorClass::closeFile() {
-	OtWorkspaceClass::instance()->closeEditor(cast<OtEditorClass>());
-}
-
-
-//
-//	OtObjectTalkEditorClass::compileFile
-//
-
-void OtObjectTalkEditorClass::compileFile() {
-}
-
-
-//
-//	OtObjectTalkEditorClass::runFile
-//
-
-void OtObjectTalkEditorClass::runFile() {
+void OtObjectTalkEditorClass::run() {
 	// reset errors
 	clearError();
 
@@ -432,17 +325,13 @@ void OtObjectTalkEditorClass::clearError() {
 //	OtObjectTalkEditorClass::create
 //
 
-OtObjectTalkEditor OtObjectTalkEditorClass::create() {
-	return std::make_shared<OtObjectTalkEditorClass>();
-}
-
-
-//
-//	OtObjectTalkEditorClass::create
-//
-
 OtObjectTalkEditor OtObjectTalkEditorClass::create(const std::string& filename) {
 	OtObjectTalkEditor editor = std::make_shared<OtObjectTalkEditorClass>();
-	editor->loadFile(filename);
+	editor->setFileName(filename);
+
+	if (editor->fileExists()) {
+		editor->load();
+	}
+
 	return editor;
 }

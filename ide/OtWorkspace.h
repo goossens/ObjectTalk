@@ -34,13 +34,22 @@ public:
 
 	// create a new file
 	void newFile();
+	void newScript();
+	void newScene();
 
 	// open a file
 	void openFile();
-	OtEditor openFile(const std::string& filename);
+	void openFile(const std::string& filename);
 
-	// close editor
-	void closeEditor(OtEditor editor);
+	// save file content
+	void saveFile();
+	void saveAsFile();
+
+	// close file
+	void closeFile();
+
+	// delete an editor
+	void deleteEditor(OtEditor editor);
 
 	// find a named editor
 	OtEditor findEditor(const std::string& filename);
@@ -48,14 +57,13 @@ public:
 	// make a specified editor tab active
 	void activateEditor(OtEditor editor);
 
-	// track running scripts
-	void scriptStarted() { runningScripts++; }
-	void scriptStopped() { runningScripts--; }
-
-	// create a new object
+	// create a new workspace object
 	static OtWorkspace create();
 
 private:
+	// create a name for an untitled file
+	std::string getUntitledName();
+
 	// update state and process events
 	void onUpdate() override;
 
@@ -64,7 +72,6 @@ private:
 
 	// see if we can quit app
 	bool onCanQuit() override;
-	size_t runningScripts = 0;
 
 	// get default directory
 	std::string getDefaultDirectory();
@@ -73,11 +80,14 @@ private:
 	std::string getCWD();
 	std::string cwd;
 
-	// render parts of wokspace
+	// render parts of workspace
 	void renderSplashScreen();
 	void renderEditors();
+	void renderNewFileType();
 	void renderFileOpen();
-	void renderQuitConfirmation();
+	void renderSaveAs();
+	void renderConfirmClose();
+	void renderConfirmQuit();
 
 	// splash screen logo
 	OtTexture logo;
@@ -85,9 +95,21 @@ private:
 	// list of open editors
 	std::vector<OtEditor> editors;
 
-	// tab to activate durong next frame
+	// track editors
+	OtEditor activeEditor;
 	OtEditor activateEditorTab;
 
-	// quit confirmation
-	bool confirmQuit = false;
+	// tab for save as dialog
+	OtEditor saveAsEditor;
+
+	// workspace state
+	enum {
+		splashState,
+		editState,
+		newFileState,
+		openFileState,
+		saveFileAsState,
+		confirmCloseState,
+		confirmQuitState
+	} state = splashState;
 };

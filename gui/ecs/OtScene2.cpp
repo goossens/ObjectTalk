@@ -16,22 +16,6 @@
 
 
 //
-//	OtScene2::OtScene2
-//
-
-OtScene2::OtScene2() {
-}
-
-
-//
-//	OtScene2::~OtScene2
-//
-
-OtScene2::~OtScene2() {
-}
-
-
-//
 //	createID
 //
 
@@ -44,15 +28,31 @@ static uint64_t createID() {
 
 
 //
-//	OtScene2::createEntity
+//	OtScene2Class::OtScene2Class
 //
 
-OtEntity OtScene2::createEntity(const std::string& tag) {
+OtScene2Class::OtScene2Class() {
+	id = createID();
+}
+
+
+//
+//	OtScene2::~OtScene2
+//
+
+OtScene2Class::~OtScene2Class() {
+}
+
+
+//
+//	OtScene2Class::createEntity
+//
+
+OtEntity OtScene2Class::createEntity(const std::string& name) {
 	auto entity = OtEntity(&registry, registry.create());
 	auto entityId = createID();
 	entity.addComponent<OtIdComponent>(entityId);
-	entity.addComponent<OtTagComponent>(tag);
-	entity.addComponent<OtHierarchyComponent>();
+	entity.addComponent<OtNameComponent>(name);
 	entity.addComponent<OtTransformComponent>();
 	mapIdToEntity[entityId] = entity;
 	mapEntityToId[entity] = entityId;
@@ -61,7 +61,7 @@ OtEntity OtScene2::createEntity(const std::string& tag) {
 
 
 //
-//	OtScene2::cloneEntity
+//	OtScene2Class::cloneEntity
 //
 
 template<typename T>
@@ -71,18 +71,17 @@ static void cloneComponentIfExists(OtEntity dst, OtEntity src, entt::registry& r
 	}
 }
 
-OtEntity OtScene2::cloneEntity(OtEntity entity) {
+OtEntity OtScene2Class::cloneEntity(OtEntity entity) {
 	OtEntity newEntity;
 
-	if (entity.hasComponent<OtTagComponent>()) {
-		newEntity = createEntity(entity.getComponent<OtTagComponent>().tag);
+	if (entity.hasComponent<OtNameComponent>()) {
+		newEntity = createEntity(entity.getComponent<OtNameComponent>().name);
 
 	} else {
 		newEntity = createEntity();
 	}
 
-	cloneComponentIfExists<OtTagComponent>(newEntity, entity, registry);
-	cloneComponentIfExists<OtTransformComponent>(newEntity, entity, registry);
+	cloneComponentIfExists<OtNameComponent>(newEntity, entity, registry);
 	cloneComponentIfExists<OtTransformComponent>(newEntity, entity, registry);
 	return newEntity;
 }
@@ -92,11 +91,11 @@ OtEntity OtScene2::cloneEntity(OtEntity entity) {
 //	OtScene2::getEntity
 //
 
-OtEntity OtScene2::getEntity(entt::entity entity) {
+OtEntity OtScene2Class::getEntity(entt::entity entity) {
 	return OtEntity(&registry, entity);
 }
 
-OtEntity OtScene2::getEntity(uint64_t id) {
+OtEntity OtScene2Class::getEntity(uint64_t id) {
 	if (mapIdToEntity.count(id)) {
 		return OtEntity(&registry, mapIdToEntity[id]);
 
@@ -105,11 +104,11 @@ OtEntity OtScene2::getEntity(uint64_t id) {
 	}
 }
 
-OtEntity OtScene2::getEntity(const std::string &tag) {
-	auto view = registry.view<OtTagComponent>();
+OtEntity OtScene2Class::getEntity(const std::string &name) {
+	auto view = registry.view<OtNameComponent>();
 
-	for (auto entity : registry.view<OtTagComponent>()) {
-		if (view.get<OtTagComponent>(entity).tag == tag) {
+	for (auto entity : registry.view<OtNameComponent>()) {
+		if (view.get<OtNameComponent>(entity).name == name) {
 			return OtEntity(&registry, entity);
 		}
 	}
@@ -119,17 +118,52 @@ OtEntity OtScene2::getEntity(const std::string &tag) {
 
 
 //
-//	OtScene2::hasEntity
+//	OtScene2Class::hasEntity
 //
 
-bool OtScene2::hasEntity(entt::entity entity) {
+bool OtScene2Class::hasEntity(entt::entity entity) {
 	return mapEntityToId.count(entity) != 0;
 }
 
-bool OtScene2::hasEntity(uint64_t id) {
+bool OtScene2Class::hasEntity(uint64_t id) {
 	return mapIdToEntity.count(id) != 0;
 }
 
-bool OtScene2::hasEntity(const std::string &tag) {
-	return getEntity(tag).isValid();
+bool OtScene2Class::hasEntity(const std::string &name) {
+	return getEntity(name).isValid();
+}
+
+
+//
+//	OtScene2Class::removeEntity
+//
+
+void OtScene2Class::removeEntity(OtEntity entity) {
+	registry.destroy(entity);
+}
+
+
+//
+//	OtScene2Class::getMeta
+//
+
+OtType OtScene2Class::getMeta() {
+	static OtType type;
+
+	if (!type) {
+		type = OtTypeClass::create<OtScene2Class>("Scene2", OtGuiClass::getMeta());
+	}
+
+	return type;
+}
+
+
+//
+//	OtScene2Class::create
+//
+
+OtScene2 OtScene2Class::create() {
+	OtScene2 scene = std::make_shared<OtScene2Class>();
+	scene->setType(getMeta());
+	return scene;
 }

@@ -4,7 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Declare(tinygltf GIT_REPOSITORY "https://github.com/syoyo/tinygltf" GIT_TAG "release")
+FetchContent_Declare(tinygltf GIT_REPOSITORY "https://github.com/syoyo/tinygltf" GIT_TAG "v2.8.0")
 FetchContent_GetProperties(tinygltf)
 
 if(NOT tinygltf_POPULATED)

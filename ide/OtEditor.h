@@ -30,15 +30,25 @@ public:
 	OtEditorClass();
 	virtual ~OtEditorClass() {}
 
+	// load/save the document content
+	virtual void load() {}
+	virtual void save() {}
+
 	// render the editor
 	virtual void render() {}
 
 	// get the properties
+	std::string getID() { return id; }
+	virtual std::string getFileExtension() { return ""; }
 	std::string getFileName() { return filename; }
 	std::string getShortName();
 
-	// see if editor content is dirty
+	// get the properties
+	void setFileName(const std::string& filename);
+
+	// get editor status
 	virtual bool isDirty() { return false; }
+	bool fileExists();
 
 	// handle exception during a "run"
 	virtual void error(OtException e) {}

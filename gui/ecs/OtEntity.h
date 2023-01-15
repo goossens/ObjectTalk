@@ -64,6 +64,11 @@ public:
 		return entity;
 	}
 
+	// compare entities
+	bool operator == (OtEntity otherEntity) {
+		return registry == otherEntity.registry && entity == otherEntity.entity;
+	}
+
 	// see if entity is valid
 	operator bool() const {
 		return registry != nullptr && entity != entt::null;

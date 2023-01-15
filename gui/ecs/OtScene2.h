@@ -13,25 +13,32 @@
 //
 
 #include <cstdint>
+#include <functional>
 #include <unordered_map>
 
 #include "entt/entity/registry.hpp"
 
+#include "OtGui.h"
+
 #include "OtEntity.h"
+#include "OtComponents.h"
 
 
 //
 //	OtScene2
 //
 
-class OtScene2 {
+class OtScene2Class;
+typedef std::shared_ptr<OtScene2Class> OtScene2;
+
+class OtScene2Class : public OtGuiClass {
 public:
 	// constructor/destructor
-	OtScene2();
-	~OtScene2();
+	OtScene2Class();
+	~OtScene2Class();
 
 	// create a new entity
-	OtEntity createEntity(const std::string& tag=std::string("Unknown"));
+	OtEntity createEntity(const std::string& tag=std::string("untitled"));
 
 	// clone an entity
 	OtEntity cloneEntity(OtEntity entity);
@@ -39,21 +46,37 @@ public:
 	// get an existing entity from an identifier
 	OtEntity getEntity(entt::entity entity);
 	OtEntity getEntity(uint64_t id);
-	OtEntity getEntity(const std::string& tag);
+	OtEntity getEntity(const std::string& name);
 
-	// see if entity exists based on identifier
+	// see if entity exists based on an identifier
 	bool hasEntity(entt::entity entity);
 	bool hasEntity(uint64_t id);
-	bool hasEntity(const std::string& tag);
+	bool hasEntity(const std::string& name);
+
+	// remove entity
+	void removeEntity(OtEntity entity);
+
+	// iterate through entities in scene
+	void each(std::function<void(OtEntity)> callback) {
+		registry.each([this, callback](entt::entity entity) {
+			callback(getEntity(entity));
+		});
+	}
+
+	// get type definition
+	static OtType getMeta();
+
+	// create a new object
+	static OtScene2 create();
 
 private:
 	// scene identifier
 	uint64_t id;
 
-	// registry for all entities and components in ths scene
+	// registry for all entities and components in this scene
 	entt::registry registry;
 
-	// entity lookup by ID
+	// entity mapping (entity <-> unique ID)
 	std::unordered_map<uint64_t, entt::entity> mapIdToEntity;
 	std::unordered_map<entt::entity, uint64_t> mapEntityToId;
 };

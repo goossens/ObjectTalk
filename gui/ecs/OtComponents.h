@@ -15,6 +15,8 @@
 #include <string>
 
 #include "glm/glm.hpp"
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include "entt/entity/registry.hpp"
 
 
@@ -32,29 +34,16 @@ struct OtIdComponent {
 
 
 //
-//	OtTagComponent
+//	OtNameComponent
 //
 
-struct OtTagComponent {
+struct OtNameComponent {
 	// constructors
-	OtTagComponent() = default;
-	OtTagComponent(const std::string& t) : tag(t) {}
+	OtNameComponent() = default;
+	OtNameComponent(const std::string& n) : name(n) {}
 
 	// properties
-	std::string tag;
-};
-
-
-//
-//	OtHierarchyComponent
-//
-
-struct OtHierarchyComponent {
-	// properties
-	entt::entity parent{entt::null};
-	entt::entity first{entt::null};
-	entt::entity prev{entt::null};
-	entt::entity next{entt::null};
+	std::string name;
 };
 
 
@@ -65,8 +54,40 @@ struct OtHierarchyComponent {
 struct OtTransformComponent {
 	// constructors
 	OtTransformComponent() = default;
-	OtTransformComponent(const glm::mat4& t) : transform(t) {}
+
+	OtTransformComponent(const glm::vec3& t, const glm::vec3& r, const glm::vec3& s) :
+		translation(t), rotation(r), scale(s), active(true) {}
+
+	// get the full transform
+	glm::mat4 getTransform() const {
+		return glm::translate(glm::mat4(1.0f), translation) *
+			glm::toMat4(glm::quat(rotation)) *
+			glm::scale(glm::mat4(1.0f), scale);
+	}
+
+	// reset the transform
+	void reset() {
+		translation = { 0.0f, 0.0f, 0.0f };
+		rotation = { 0.0f, 0.0f, 0.0f };
+		scale = { 1.0f, 1.0f, 1.0f };
+	}
 
 	// properties
-	glm::mat4 transform{1.0};
+	glm::vec3 translation = { 0.0f, 0.0f, 0.0f };
+	glm::vec3 rotation = { 0.0f, 0.0f, 0.0f };
+	glm::vec3 scale = { 1.0f, 1.0f, 1.0f };
+	bool active = true;
+};
+
+
+//
+//	OtGeometryComponent
+//
+
+struct OtGeometryComponent {
+	// constructors
+	OtGeometryComponent() = default;
+
+	// properties
+	bool active = true;
 };

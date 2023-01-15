@@ -14,6 +14,7 @@
 #include "imgui.h"
 #include "ImGuiFileDialog.h"
 
+#include "OtFormat.h"
 #include "OtLibuv.h"
 #include "OtOS.h"
 
@@ -23,6 +24,7 @@
 #include "OtLogo.h"
 #include "OtObjectTalkEditor.h"
 #include "OtScriptRunner.h"
+#include "OtSceneEditor.h"
 #include "OtWorkspace.h"
 
 
@@ -31,16 +33,9 @@
 //
 
 void OtWorkspaceClass::run() {
-	// get access to framework
 	OtFramework framework = OtFrameworkClass::instance();
-
-	// add ourselves to the GUI framework as a customer
 	framework->addCustomer(this);
-
-	// run the GUI framework
 	framework->run();
-
-	// we're done
 	framework->removeCustomer(this);
 }
 
@@ -50,10 +45,47 @@ void OtWorkspaceClass::run() {
 //
 
 void OtWorkspaceClass::newFile() {
-	// don't create new files when we're in the process of opening one
-	if (!ImGuiFileDialog::Instance()->IsOpened()) {
-		editors.push_back(OtObjectTalkEditorClass::create());
+	state = newFileState;
+}
+
+
+//
+//	OtWorkspaceClass::getUntitledName
+//
+
+std::string OtWorkspaceClass::getUntitledName() {
+	static int seqno = 1;
+	std::string name;
+
+	while (!name.size()) {
+		std::string temp = OtFormat("untitled%d", seqno++);
+
+		if (!findEditor(temp)) {
+			name = temp;
+		}
 	}
+
+	return name;
+}
+
+
+//
+//	OtWorkspaceClass::newScript
+//
+
+void OtWorkspaceClass::newScript() {
+	editors.push_back(OtObjectTalkEditorClass::create(getUntitledName()));
+	state = editState;
+}
+
+
+//
+//	OtWorkspaceClass::newScene
+//
+
+void OtWorkspaceClass::newScene() {
+	editors.push_back(OtSceneEditorClass::create(getUntitledName()));
+	state = editState;
 }
 
 
@@ -62,19 +94,18 @@ void OtWorkspaceClass::newFile() {
 //
 
 void OtWorkspaceClass::openFile() {
-	// open file select dialog (if one isn't open already)
-	if (!ImGuiFileDialog::Instance()->IsOpened()) {
-		ImGuiFileDialog::Instance()->OpenDialog(
-			"workspace-open",
-			"Select File to Open...",
-			".ot",
-			getCWD(),
-			1,
-			nullptr,
-		   ImGuiFileDialogFlags_Modal |
-				ImGuiFileDialogFlags_DontShowHiddenFiles |
-				ImGuiFileDialogFlags_ReadOnlyFileNameField);
-	}
+	ImGuiFileDialog::Instance()->OpenDialog(
+		"workspace-open",
+		"Select File to Open...",
+		".ot,.ots",
+		getCWD(),
+		1,
+		nullptr,
+		ImGuiFileDialogFlags_Modal |
+			ImGuiFileDialogFlags_DontShowHiddenFiles |
+			ImGuiFileDialogFlags_ReadOnlyFileNameField);
+
+	state = openFileState;
 }
 
 
@@ -82,7 +113,7 @@ void OtWorkspaceClass::openFile() {
 //	OtWorkspaceClass::openFile
 //
 
-OtEditor OtWorkspaceClass::openFile(const std::string& filename) {
+void OtWorkspaceClass::openFile(const std::string& filename) {
 	OtEditor editor;
 
 	// don't reopen if it is already open
@@ -97,19 +128,78 @@ OtEditor OtWorkspaceClass::openFile(const std::string& filename) {
 	// save the file's path as the current working directory
 	cwd = std::filesystem::path(filename).parent_path().string();
 
-	return editor;
+	// set workspace state
+	state = editState;
 }
 
 
 //
-//	OtWorkspaceClass::closeEditor
+//	OtWorkspaceClass::saveFile
 //
 
-void OtWorkspaceClass::closeEditor(OtEditor editor) {
+void OtWorkspaceClass::saveFile() {
+	activeEditor->save();
+}
+
+
+//
+//	OtWorkspaceClass::saveAsFile
+//
+
+void OtWorkspaceClass::saveAsFile() {
+	std::string path;
+
+	if (activeEditor->fileExists()) {
+		path = std::filesystem::path(activeEditor->getFileName()).parent_path().string();
+
+	} else {
+		path = getCWD();
+	}
+
+	ImGuiFileDialog::Instance()->OpenDialog(
+		"workspace-saveas",
+		"Save File as...",
+		activeEditor->getFileExtension().c_str(),
+		path,
+		activeEditor->getShortName(),
+		1,
+		nullptr,
+		ImGuiFileDialogFlags_Modal |
+			ImGuiFileDialogFlags_DontShowHiddenFiles |
+			ImGuiFileDialogFlags_ConfirmOverwrite);
+
+	state = saveFileAsState;
+}
+
+
+//
+//	OtWorkspaceClass::closeFile
+//
+
+void OtWorkspaceClass::closeFile() {
+	// see if editor is dirty
+	if (activeEditor->isDirty()) {
+		state = confirmCloseState;
+
+	} else {
+		deleteEditor(activeEditor);
+	}
+}
+
+
+//
+//	OtWorkspaceClass::deleteEditor
+//
+
+void OtWorkspaceClass::deleteEditor(OtEditor editor) {
 	// remove specified editor from list
-	editors.erase(std::remove_if(editors.begin(), editors.end(), [editor] (OtEditor candidate) {
-		return candidate == editor;
+	editors.erase(std::remove_if(editors.begin(), editors.end(), [this] (OtEditor candidate) {
+		return candidate == activeEditor;
 	}), editors.end());
+
+	if (editors.size() == 0) {
+		state = splashState;
+	}
 }
 
 
@@ -117,9 +207,9 @@ void OtWorkspaceClass::closeEditor(OtEditor editor) {
 //	OtWorkspaceClass::findEditor
 //
 
-OtEditor OtWorkspaceClass::findEditor(const std::string& filename) {
+OtEditor OtWorkspaceClass::findEditor(const std::string& name) {
 	for (auto& editor : editors) {
-		if (editor->getFileName() == filename) {
+		if (editor->getFileName() == name || editor->getShortName() == name) {
 			return editor;
 		}
 	}
@@ -153,20 +243,65 @@ void OtWorkspaceClass::onUpdate() {
 //
 
 void OtWorkspaceClass::onRender() {
-	// render all editors (if required)
+	// we don't render workspace when a GUI app is running
 	if (!OtScriptRunnerClass::instance()->isRunningGUI()) {
-		// create workspace (if required)
-		if (editors.size()) {
-			// render all editors as tabs
-			renderEditors();
+		// show splash screen if required
+		if (state == splashState) {
+			renderSplashScreen();
+			activeEditor = nullptr;
 
 		} else {
-			// just show splash screen
-			renderSplashScreen();
+			// render all editors as tabs
+			renderEditors();
 		}
 
-		renderFileOpen();
-		renderQuitConfirmation();
+		if (state == newFileState) {
+			renderNewFileType();
+
+		} else if (state == openFileState) {
+			renderFileOpen();
+
+		} else if (state == saveFileAsState) {
+			renderSaveAs();
+
+		} else if (state == confirmCloseState) {
+			renderConfirmClose();
+
+		} else if (state == confirmQuitState) {
+			renderConfirmQuit();
+		}
+	}
+
+	// get keyboard state to handle keyboard shortcuts
+	ImGuiIO& io = ImGui::GetIO();
+	auto isOSX = io.ConfigMacOSXBehaviors;
+	auto alt = io.KeyAlt;
+	auto ctrl = io.KeyCtrl;
+	auto shift = io.KeyShift;
+	auto super = io.KeySuper;
+	auto isShortcut = (isOSX ? (super && !ctrl) : (ctrl && !super)) && !alt && !shift;
+
+	// handle shortcuts based on state
+	if (isShortcut) {
+		if (ImGui::IsKeyPressed(ImGuiKey_N) && (state == splashState || state == editState)) {
+			newFile();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_O) && (state == splashState || state == editState)) {
+			openFile();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_S) && (state == editState)) {
+			if (activeEditor->isDirty()) {
+				if (activeEditor->fileExists()) {
+					saveFile();
+
+				} else {
+					saveAsFile();
+				}
+			}
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_W) && (state == editState)) {
+			closeFile();
+		}
 	}
 }
 
@@ -233,30 +368,80 @@ void OtWorkspaceClass::renderEditors() {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 	ImGui::Begin("Workspace", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize);
 
-	// render all editors as tabs
-	if (ImGui::BeginTabBar("TabBar", ImGuiTabBarFlags_AutoSelectNewTabs)) {
+	// start a tab bar
+	if (ImGui::BeginTabBar("Tabs", ImGuiTabBarFlags_AutoSelectNewTabs)) {
 		// make clone of editor list since renderers might change it
 		std::vector<OtEditor> clone = editors;
 
+		// render all editors as tabs
 		for (auto& editor : clone) {
+			// determine flags for tab
 			ImGuiTabItemFlags flags = 0;
 
 			if (activateEditorTab == editor) {
-				flags = ImGuiTabItemFlags_SetSelected;
+				flags |= ImGuiTabItemFlags_SetSelected;
+				activateEditorTab = nullptr;
 			}
 
-			if (ImGui::BeginTabItem(editor->getShortName().c_str(), nullptr, flags)) {
+			if (editor->isDirty()) {
+				flags |= ImGuiTabItemFlags_UnsavedDocument;
+			}
+
+			// determine label and ID of tab
+			std::string name = editor->getShortName() + "##" + editor->getID() + "tab";
+
+			// create tab and editor
+			if (ImGui::BeginTabItem(name.c_str(), nullptr, flags)) {
 				editor->render();
+				activeEditor = editor;
 				ImGui::EndTabItem();
 			}
 		}
 
-		activateEditorTab = nullptr;
 		ImGui::EndTabBar();
 	}
 
 	ImGui::End();
 	ImGui::PopStyleVar();
+}
+
+
+//
+//	OtWorkspaceClass::renderNewFileType
+//
+
+void OtWorkspaceClass::renderNewFileType() {
+	ImGui::OpenPopup("New File...");
+	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5, 0.5));
+
+	if (ImGui::BeginPopupModal("New File...", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+		ImGui::Text("Please select a file type:");
+		ImGui::Separator();
+
+		if (ImGui::Button("Script", ImVec2(120, 0))) {
+			// create a new text editor
+			newScript();
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::SetItemDefaultFocus();
+		ImGui::SameLine();
+
+		if (ImGui::Button("Scene", ImVec2(120, 0))) {
+			newScene();
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+			state = editors.size() ? editState : splashState;
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();
+	}
 }
 
 
@@ -274,68 +459,105 @@ void OtWorkspaceClass::renderFileOpen() {
 		if (ImGuiFileDialog::Instance()->IsOk()) {
 			std::map<std::string, std::string> selected = ImGuiFileDialog::Instance()->GetSelection();
 			openFile(selected.begin()->second);
+			state = editState;
+
+		} else {
+			state = editors.size() ? editState : splashState;
 		}
 
 		// close dialog
 		ImGuiFileDialog::Instance()->Close();
-
-	} else {
-		// get keyboard state to handle keyboard shortcuts
-		ImGuiIO& io = ImGui::GetIO();
-		auto isOSX = io.ConfigMacOSXBehaviors;
-		auto alt = io.KeyAlt;
-		auto ctrl = io.KeyCtrl;
-		auto shift = io.KeyShift;
-		auto super = io.KeySuper;
-		auto isShortcut = (isOSX ? (super && !ctrl) : (ctrl && !super)) && !alt && !shift;
-
-		// handle new file shortcut
-		if (isShortcut) {
-			if (ImGui::IsKeyPressed(ImGuiKey_N)) {
-				newFile();
-
-			} else if (ImGui::IsKeyPressed(ImGuiKey_O)) {
-				openFile();
-			}
-		}
 	}
 }
 
 
 //
-//	OtWorkspaceClass::renderQuitConfirmation
+//	OtWorkspaceClass::renderSaveAs
 //
 
-void OtWorkspaceClass::renderQuitConfirmation() {
-	// handle "quit" confirmation (when user quits without saving)
-	if (confirmQuit) {
-		ImGui::OpenPopup("Quit Application?");
-		ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-		ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5, 0.5));
+void OtWorkspaceClass::renderSaveAs() {
+	// handle saveas dialog
+	ImVec2 maxSize = ImGui::GetIO().DisplaySize;
+	ImVec2 minSize = ImVec2(maxSize.x * 0.5, maxSize.y * 0.5);
 
-		if (ImGui::BeginPopupModal("Quit Application?", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-			ImGui::Text("You have unsaved files!\nDo you really want to quit?\n\n");
-			ImGui::Separator();
+	if (ImGuiFileDialog::Instance()->Display("workspace-saveas", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
+		// open selected file if required
+		if (ImGuiFileDialog::Instance()->IsOk()) {
+			activeEditor->setFileName(ImGuiFileDialog::Instance()->GetFilePathName());
+			activeEditor->save();
+			state = editState;
 
-			if (ImGui::Button("OK", ImVec2(120, 0))) {
-				OtFrameworkClass::instance()->stop();
-				ImGui::CloseCurrentPopup();
-				confirmQuit = false;
-			}
-
-			ImGui::SetItemDefaultFocus();
-			ImGui::SameLine();
-
-			if (ImGui::Button("Cancel", ImVec2(120, 0))) {
-				ImGui::CloseCurrentPopup();
-				confirmQuit = false;
-			}
-
-			ImGui::EndPopup();
+		} else {
+			state = editors.size() ? editState : splashState;
 		}
+
+		// close dialog
+		ImGuiFileDialog::Instance()->Close();
 	}
 }
 
+
+//
+//	OtWorkspaceClass::renderConfirmClose
+//
+
+void OtWorkspaceClass::renderConfirmClose() {
+	ImGui::OpenPopup("Delete?");
+	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5, 0.5));
+
+	if (ImGui::BeginPopupModal("Delete?", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+		ImGui::Text("This file has changed!\nDo you really want to delete it?\n\n");
+		ImGui::Separator();
+
+		if (ImGui::Button("OK", ImVec2(120, 0))) {
+			deleteEditor(activeEditor);
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::SetItemDefaultFocus();
+		ImGui::SameLine();
+
+		if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+			state = editState;
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();
+	}
+}
+
+
+//
+//	OtWorkspaceClass::renderConfirmQuit
+//
+
+void OtWorkspaceClass::renderConfirmQuit() {
+	ImGui::OpenPopup("Quit Application?");
+	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5, 0.5));
+
+	if (ImGui::BeginPopupModal("Quit Application?", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+		ImGui::Text("You have unsaved files!\nDo you really want to quit?\n\n");
+		ImGui::Separator();
+
+		if (ImGui::Button("OK", ImVec2(120, 0))) {
+			OtFrameworkClass::instance()->stop();
+			state = editState;
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::SetItemDefaultFocus();
+		ImGui::SameLine();
+
+		if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+			state = editState;
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();
+	}
+}
 
 //
 //	OtWorkspaceClass::onCanQuit
@@ -345,8 +567,12 @@ bool OtWorkspaceClass::onCanQuit() {
 	auto runner = OtScriptRunnerClass::instance();
 	auto os = OtOSClass::instance();
 
+	// are we currently showing a dialog
+	if (state != splashState && state != editState) {
+		return false;
+
 	// are we currently running a server script
-	if (runner->isRunningServer()) {
+	} else if (runner->isRunningServer()) {
 		// just stop the script and keep the IDE going
 		os->stopServer();
 		return false;
@@ -361,7 +587,7 @@ bool OtWorkspaceClass::onCanQuit() {
 		// we can't quit if we still have a "dirty" editor
 		for (auto& editor : editors) {
 			if (editor->isDirty()) {
-				confirmQuit = true;
+				state = confirmQuitState;
 				return false;
 			}
 		}

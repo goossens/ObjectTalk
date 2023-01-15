@@ -29,6 +29,13 @@ public:
 	// constructor
 	OtObjectTalkEditorClass();
 
+	// get file extension
+	std::string getFileExtension() override { return ".ot"; }
+
+	// load save content
+	void load() override;
+	void save() override;
+
 	// render the editor
 	void render() override;
 
@@ -40,26 +47,22 @@ public:
 	void clearError();
 
 	// create a new object
-	static OtObjectTalkEditor create();
 	static OtObjectTalkEditor create(const std::string& filename);
 
 private:
+	// render the parts
+	void renderMenu();
+	void renderEditor();
+
 	// file actions
-	void loadFile(const std::string& filename);
-	void newFile();
-	void openFile();
-	void saveFile();
-	void saveAsFile();
-	void closeFile();
-	void compileFile();
-	void runFile();
+	void compile();
+	void run();
 
 	// visual text editor
 	TextEditor editor;
 
 	// properties
 	int version = 0;
-	bool confirmClose = false;
 	int scrollToLine = 0;
 	float editorHeight = -1.0;
 };

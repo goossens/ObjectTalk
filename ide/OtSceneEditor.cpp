@@ -310,7 +310,7 @@ void OtSceneEditorClass::renderComponentsPanel() {
 					nameComponent.name = std::string(buffer);
 				}
 
-				// render component editors
+				// render node editors
 				renderComponent<OtTransformComponent>("Transform", [this] (OtTransformComponent& transform) {
 					// render transformation matrix
 					OtIdeUiDragFloat("Translate", glm::value_ptr(transform.translation), 3, 0.1, 0.0, 0.0, "%.2f");
@@ -381,23 +381,23 @@ void OtSceneEditorClass::renderPanel(const std::string& name, bool canAdd, std::
 
 template<typename T, typename R>
 void OtSceneEditorClass::renderComponent(const std::string& name, R render) {
-	// only render if entity has this component
+	// only render if entity has this node
 	if (selectedEntity.hasComponent<T>()) {
 		// add a new ID to the stack to avoid collisions
 		ImGui::PushID(reinterpret_cast<void*>(typeid(T).hash_code()));
 
-		// create a tree node for the component
+		// create a tree node for the node
 		ImGuiTreeNodeFlags flags =
 			ImGuiTreeNodeFlags_Framed |
 			ImGuiTreeNodeFlags_AllowItemOverlap;
 
 		bool open = ImGui::TreeNodeEx("##header", flags, "%s", name.c_str());
 
-		// add button to remove component
+		// add button to remove node
 		ImGui::SameLine(spaceAvailable - lineHeight * 0.5);
 		bool remove = ImGui::Button(("x##" + id + "remove").c_str(), ImVec2(lineHeight, lineHeight));
 
-		// render the component editor (if required)
+		// render the node editor (if required)
 		if (open) {
 			render(selectedEntity.getComponent<T>());
 			ImGui::TreePop();

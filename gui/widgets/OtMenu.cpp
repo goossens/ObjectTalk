@@ -20,7 +20,7 @@
 //	OtMenuClass::validateChild
 //
 
-void OtMenuClass::validateChild(OtComponent child) {
+void OtMenuClass::validateChild(OtNode child) {
 	if (!child->isKindOf("MenuItem")) {
 		OtExcept("A [Menu] can only have [MenuItem]s as children, not [%s]", child->getType()->getName().c_str());
 	}

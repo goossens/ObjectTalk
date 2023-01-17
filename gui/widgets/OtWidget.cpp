@@ -20,7 +20,7 @@
 //	OtWidgetClass::validateChild
 //
 
-void OtWidgetClass::validateChild(OtComponent child) {
+void OtWidgetClass::validateChild(OtNode child) {
 	OtExcept("A [%s] can't have children", getType()->getName().c_str());
 }
 
@@ -61,7 +61,7 @@ OtType OtWidgetClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtWidgetClass>("Widget", OtComponentClass::getMeta());
+		type = OtTypeClass::create<OtWidgetClass>("Widget", OtNodeClass::getMeta());
 	}
 
 	return type;

@@ -13,7 +13,7 @@
 //
 
 #include "OtCamera.h"
-#include "OtComponent.h"
+#include "OtNode.h"
 #include "OtRenderer.h"
 
 
@@ -24,7 +24,7 @@
 class OtSceneObjectClass;
 typedef std::shared_ptr<OtSceneObjectClass> OtSceneObject;
 
-class OtSceneObjectClass : public OtComponentClass {
+class OtSceneObjectClass : public OtNodeClass {
 public:
 	// access shadow flags
 	virtual OtObject castShadow(bool flag) { castShadowFlag = flag; return shared(); }

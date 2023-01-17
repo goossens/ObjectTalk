@@ -18,7 +18,7 @@
 //	OtGroupClass::validateChild
 //
 
-void OtGroupClass::validateChild(OtComponent child) {
+void OtGroupClass::validateChild(OtNode child) {
 	if (!child->isKindOf("Object3D")) {
 		OtExcept("A [Group] can only have [Object3D] subclasses as children, not [%s]", child->getType()->getName().c_str());
 	}

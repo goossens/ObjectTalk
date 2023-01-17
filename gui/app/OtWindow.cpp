@@ -20,7 +20,7 @@
 //	OtWindowClass::validateChild
 //
 
-void OtWindowClass::validateChild(OtComponent child) {
+void OtWindowClass::validateChild(OtNode child) {
 	if (!child->isKindOf("Widget")) {
 		OtExcept("A [Window] can only have [Widget] subclasses as children, not [%s]", child->getType()->getName().c_str());
 	}

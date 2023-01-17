@@ -24,8 +24,8 @@ typedef std::shared_ptr<OtAppMenubarClass> OtAppMenubar;
 
 class OtAppMenubarClass : public OtAppObjectClass {
 public:
-	// ensure specified component is allowed as a child
-	void validateChild(OtComponent child) override;
+	// ensure specified node is allowed as a child
+	void validateChild(OtNode child) override;
 
 	// what is our height?
 	size_t getHeight() { return height; }

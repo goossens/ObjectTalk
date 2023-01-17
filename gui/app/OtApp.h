@@ -13,7 +13,7 @@
 //
 
 #include "OtAnimation.h"
-#include "OtComponent.h"
+#include "OtNode.h"
 #include "OtFrameworkCustomer.h"
 #include "OtSimulation.h"
 #include "OtWidget.h"
@@ -26,14 +26,14 @@
 class OtAppClass;
 typedef std::shared_ptr<OtAppClass> OtApp;
 
-class OtAppClass : public OtComponentClass, public OtFrameworkCustomer {
+class OtAppClass : public OtNodeClass, public OtFrameworkCustomer {
 public:
 	// constructor/destructor
 	OtAppClass();
 	~OtAppClass();
 
-	// ensure specified component is allowed as a child
-	void validateChild(OtComponent child) override;
+	// ensure specified node is allowed as a child
+	void validateChild(OtNode child) override;
 
 	// get frame dimensions
 	int getWidth();

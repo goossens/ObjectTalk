@@ -13,7 +13,7 @@
 //
 
 #include "OtCamera.h"
-#include "OtComponent.h"
+#include "OtNode.h"
 #include "OtRenderer.h"
 
 
@@ -24,10 +24,10 @@
 class OtSceneClass;
 typedef std::shared_ptr<OtSceneClass> OtScene;
 
-class OtSceneClass : public OtComponentClass {
+class OtSceneClass : public OtNodeClass {
 public:
-	// ensure specified component is allowed as a child
-	void validateChild(OtComponent child) override;
+	// ensure specified node is allowed as a child
+	void validateChild(OtNode child) override;
 
 	// pre-render any content that is required for the rendering phase (e.g shadows and reflections)
 	void preRender(OtRenderer& renderer);

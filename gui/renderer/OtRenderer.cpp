@@ -89,16 +89,16 @@ void OtRenderer::run(OtScene s, OtCamera c, float x, float y, float w, float h) 
 	viewH = h;
 
 	// get all light properties
-	scene->iterate([this] (OtComponent component) {
-		if (component->isKindOf("Light") && component->isEnabled()) {
-			component->cast<OtLightClass>()->addPropertiesToRenderer(*this);
+	scene->iterate([this] (OtNode node) {
+		if (node->isKindOf("Light") && node->isEnabled()) {
+			node->cast<OtLightClass>()->addPropertiesToRenderer(*this);
 		}
 	});
 
 	// pre-render all scene components
-	scene->iterate([this] (OtComponent component) {
-		if (component->isEnabled()) {
-			component->cast<OtSceneObjectClass>()->preRender(*this);
+	scene->iterate([this] (OtNode node) {
+		if (node->isEnabled()) {
+			node->cast<OtSceneObjectClass>()->preRender(*this);
 		}
 	});
 
@@ -108,9 +108,9 @@ void OtRenderer::run(OtScene s, OtCamera c, float x, float y, float w, float h) 
 	pass.setTransform(camera->getViewMatrix(), camera->getProjectionMatrix());
 
 	// render scene
-	scene->iterate([this] (OtComponent component) {
-		if (component->isEnabled()) {
-			component->cast<OtSceneObjectClass>()->render(*this);
+	scene->iterate([this] (OtNode node) {
+		if (node->isEnabled()) {
+			node->cast<OtSceneObjectClass>()->render(*this);
 		}
 	});
 }
@@ -138,9 +138,9 @@ void OtRenderer::runShadowPass(OtScene s, OtCamera c, OtFrameBuffer& framebuffer
 	pass.setTransform(camera->getViewMatrix(), camera->getProjectionMatrix());
 
 	// render shadow
-	scene->iterate([this] (OtComponent component) {
-		if (component->isEnabled()) {
-			component->cast<OtSceneObjectClass>()->render(*this);
+	scene->iterate([this] (OtNode node) {
+		if (node->isEnabled()) {
+			node->cast<OtSceneObjectClass>()->render(*this);
 		}
 	});
 
@@ -172,9 +172,9 @@ void OtRenderer::runReflectionPass(OtScene s, OtCamera c, OtFrameBuffer& framebu
 	pass.setTransform(camera->getViewMatrix(), camera->getProjectionMatrix());
 
 	// render reflection
-	scene->iterate([this] (OtComponent component) {
-		if (component->isEnabled()) {
-		component->cast<OtSceneObjectClass>()->render(*this);
+	scene->iterate([this] (OtNode node) {
+		if (node->isEnabled()) {
+		node->cast<OtSceneObjectClass>()->render(*this);
 		}
 	});
 
@@ -206,9 +206,9 @@ void OtRenderer::runDebugPass(OtCamera debugCamera, OtScene s, OtCamera viewCame
 	pass.setTransform(debugCamera->getViewMatrix(), debugCamera->getProjectionMatrix());
 
 	// render scene
-	scene->iterate([this] (OtComponent component) {
-		if (component->isEnabled()) {
-			component->cast<OtSceneObjectClass>()->render(*this);
+	scene->iterate([this] (OtNode node) {
+		if (node->isEnabled()) {
+			node->cast<OtSceneObjectClass>()->render(*this);
 		}
 	});
 

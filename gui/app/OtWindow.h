@@ -38,8 +38,8 @@ public:
 	OtObject setFlags(int f) { flags = f; return shared(); }
 	int getFlags() { return flags; }
 
-	// ensure specified component is allowed as a child
-	void validateChild(OtComponent child) override;
+	// ensure specified node is allowed as a child
+	void validateChild(OtNode child) override;
 
 	// render content
 	void render() override;

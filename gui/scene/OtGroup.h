@@ -24,8 +24,8 @@ typedef std::shared_ptr<OtGroupClass> OtGroup;
 
 class OtGroupClass : public OtObject3dClass {
 public:
-	// ensure specified component is allowed as a child
-	void validateChild(OtComponent child) override;
+	// ensure specified node is allowed as a child
+	void validateChild(OtNode child) override;
 
 	// pass shadow flag to all children
 	OtObject castShadow(bool flag) override;

@@ -29,28 +29,28 @@ public:
 	OtEntity() = default;
 	OtEntity(entt::registry* r, entt::entity e) : registry(r), entity(e) {}
 
-	// add a new component to this entity
+	// add a new node to this entity
 	template<typename T, typename... Args>
 	T& addComponent(Args&&... args) {
 		OT_ASSERT(!hasComponent<T>());
 		return registry->emplace<T>(entity, std::forward<Args>(args)...);
 	}
 
-	// get a specified component
+	// get a specified node
 	template<typename T>
 	T& getComponent() {
 		OT_ASSERT(hasComponent<T>());
 		return registry->get<T>(entity);
 	}
 
-	// remove a specified component
+	// remove a specified node
 	template<typename T>
 	bool removeComponent() {
 		OT_ASSERT(hasComponent<T>());
 		return registry->remove<T>(entity);
 	}
 
-	// see if we have the specified component
+	// see if we have the specified node
 	template<typename T>
 	bool hasComponent() {
 		return registry->all_of<T>(entity);

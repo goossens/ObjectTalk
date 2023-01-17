@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include "OtComponent.h"
+#include "OtNode.h"
 
 
 //
@@ -22,10 +22,10 @@
 class OtWidgetClass;
 typedef std::shared_ptr<OtWidgetClass> OtWidget;
 
-class OtWidgetClass : public OtComponentClass {
+class OtWidgetClass : public OtNodeClass {
 public:
-	// ensure specified component is allowed as a child
-	void validateChild(OtComponent child) override;
+	// ensure specified node is allowed as a child
+	void validateChild(OtNode child) override;
 
 	// update state (called every frame so be carefull)
 	virtual void update();

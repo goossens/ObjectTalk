@@ -17,28 +17,28 @@
 
 
 //
-//	OtComponentClass
+//	OtNodeClass
 //
 
-class OtComponentClass;
-typedef std::shared_ptr<OtComponentClass> OtComponent;
-typedef std::weak_ptr<OtComponentClass> OtComponentWeak;
+class OtNodeClass;
+typedef std::shared_ptr<OtNodeClass> OtNode;
+typedef std::weak_ptr<OtNodeClass> OtNodeWeak;
 
-class OtComponentClass : public OtGuiClass {
+class OtNodeClass : public OtGuiClass {
 public:
 	// add / remove child components
 	OtObject add(OtObject object);
 	OtObject remove(OtObject object);
 
 	// get our parent
-	OtComponent getParent() { return parent.lock(); }
+	OtNode getParent() { return parent.lock(); }
 	bool hasParent() { return !parent.expired(); }
 
-	// ensure specified component is allowed as a child
-	virtual void validateChild(OtComponent child);
+	// ensure specified node is allowed as a child
+	virtual void validateChild(OtNode child);
 
 	// iterate through children
-	inline void iterate(std::function<void(OtComponent)> callback) {
+	inline void iterate(std::function<void(OtNode)> callback) {
 		for (auto child : children) {
 			callback(child);
 		}
@@ -60,14 +60,14 @@ public:
 	static OtType getMeta();
 
 	// create a new object
-	static OtComponent create();
+	static OtNode create();
 
 protected:
-	// parent component
-	OtComponentWeak parent;
+	// parent node
+	OtNodeWeak parent;
 
 	// our children
-	std::vector<OtComponent> children;
+	std::vector<OtNode> children;
 
 	// enabled flag
 	bool enabled = true;

@@ -19,7 +19,7 @@
 //	OtAppObjectClass::validateChild
 //
 
-void OtAppObjectClass::validateChild(OtComponent child) {
+void OtAppObjectClass::validateChild(OtNode child) {
 	OtExcept("A [%s] can't have children", getType()->getName().c_str());
 }
 
@@ -46,7 +46,7 @@ OtType OtAppObjectClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtAppObjectClass>("AppObject", OtComponentClass::getMeta());
+		type = OtTypeClass::create<OtAppObjectClass>("AppObject", OtNodeClass::getMeta());
 	}
 
 	return type;

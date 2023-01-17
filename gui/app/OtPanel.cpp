@@ -55,7 +55,7 @@ OtObject OtPanelClass::setScreenArea(int _x, int _y, int _w, int _h) {
 //	OtPanelClass::validateChild
 //
 
-void OtPanelClass::validateChild(OtComponent child) {
+void OtPanelClass::validateChild(OtNode child) {
 	if (!child->isKindOf("Widget")) {
 		OtExcept("A [Panel] can only have [Widget]s as children, not [%s]", child->getType()->getName().c_str());
 	}

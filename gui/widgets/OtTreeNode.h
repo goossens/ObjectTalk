@@ -34,8 +34,8 @@ public:
 	OtObject setOpen(bool o) { open = 0; return shared(); }
 	bool getOpen() { return open; }
 
-	// ensure specified component is allowed as a child
-	void validateChild(OtComponent child) override;
+	// ensure specified node is allowed as a child
+	void validateChild(OtNode child) override;
 
 	// render content
 	void render() override;

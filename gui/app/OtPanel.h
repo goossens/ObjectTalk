@@ -30,8 +30,8 @@ public:
 	// update properties
 	OtObject setScreenArea(int x, int y, int w, int h);
 
-	// ensure specified component is allowed as a child
-	void validateChild(OtComponent child) override;
+	// ensure specified node is allowed as a child
+	void validateChild(OtNode child) override;
 
 	// render content
 	void render() override;

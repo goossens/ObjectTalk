@@ -42,7 +42,7 @@ void OtTreeNodeClass::init(size_t count, OtObject* parameters) {
 //	OtTreeNodeClass::validateChild
 //
 
-void OtTreeNodeClass::validateChild(OtComponent child) {
+void OtTreeNodeClass::validateChild(OtNode child) {
 	if (!child->isKindOf("Widget")) {
 		OtExcept("A [TreeNode] can only have [Widget]s as children, not [%s]", child->getType()->getName().c_str());
 	}

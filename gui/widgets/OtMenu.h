@@ -31,8 +31,8 @@ public:
 	OtObject setTitle(const std::string& t) { title = t; return shared(); }
 	std::string getTitle() { return title; }
 
-	// ensure specified component is allowed as a child
-	void validateChild(OtComponent child) override;
+	// ensure specified node is allowed as a child
+	void validateChild(OtNode child) override;
 
 	// render content
 	void render() override;

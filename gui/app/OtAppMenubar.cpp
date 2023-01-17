@@ -20,7 +20,7 @@
 //	OtAppMenubarClass::validateChild
 //
 
-void OtAppMenubarClass::validateChild(OtComponent child) {
+void OtAppMenubarClass::validateChild(OtNode child) {
 	if (!child->isKindOf("Menu")) {
 		OtExcept("An [AppMenubar] can only have [Menu]s as children, not [%s]", child->getType()->getName().c_str());
 	}

@@ -20,7 +20,7 @@
 //	OtSceneClass::validateChild
 //
 
-void OtSceneClass::validateChild(OtComponent child) {
+void OtSceneClass::validateChild(OtNode child) {
 	if (!child->isKindOf("SceneObject")) {
 		OtExcept("A [Scene] can only have [SceneObjects] as children, not [%s]", child->getType()->getName().c_str());
 	}
@@ -61,7 +61,7 @@ OtType OtSceneClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtSceneClass>("Scene", OtComponentClass::getMeta());
+		type = OtTypeClass::create<OtSceneClass>("Scene", OtNodeClass::getMeta());
 	}
 
 	return type;

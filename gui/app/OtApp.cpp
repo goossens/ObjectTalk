@@ -42,7 +42,7 @@ OtAppClass::~OtAppClass() {
 //	OtAppClass::validateChild
 //
 
-void OtAppClass::validateChild(OtComponent child) {
+void OtAppClass::validateChild(OtNode child) {
 	if (!(child->isKindOf("AppObject"))) {
 		OtExcept("An [App] can only have [AppObject] instances as children, not a [%s]", child->getType()->getName().c_str());
 	}
@@ -475,7 +475,7 @@ OtType OtAppClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtAppClass>("App", OtComponentClass::getMeta());
+		type = OtTypeClass::create<OtAppClass>("App", OtNodeClass::getMeta());
 
 		type->set("addAnimation", OtFunctionClass::create(&OtAppClass::addAnimation));
 		type->set("addSimulation", OtFunctionClass::create(&OtAppClass::addSimulation));

@@ -20,7 +20,7 @@
 #include "OtOS.h"
 
 #include "OtFramework.h"
-#include "OtComponent.h"
+#include "OtNode.h"
 
 #include "OtApp.h"
 
@@ -123,7 +123,6 @@ OtAppClass* OtGuiClass::app;
 void OtGuiClass::registerModule() {
 	OtModuleClass::registerInternal("gui", [](OtModule module) {
 		module->set("GUI", OtClassClass::create(OtGuiClass::getMeta()));
-		module->set("Component", OtClassClass::create(OtComponentClass::getMeta()));
 
 		module->set("App", OtClassClass::create(OtAppClass::getMeta()));
 		module->set("AppMenubar", OtClassClass::create(OtAppMenubarClass::getMeta()));

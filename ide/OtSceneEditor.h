@@ -55,8 +55,8 @@ private:
 	// rendering helpers
 	void renderPanel(const std::string& name, bool canAdd, std::function<void()> menu, std::function<void()> content);
 
-	template<typename T, typename R>
-	void renderComponent(const std::string& name, R render);
+	template<typename T>
+	void renderComponent(const std::string& name);
 
 	// file actions
 	void run();

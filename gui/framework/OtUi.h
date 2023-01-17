@@ -19,10 +19,10 @@
 
 
 //
-//	OtIdeUiSplitter
+//	OtUiSplitter
 //
 
-inline void OtIdeUiSplitter(bool vertical, float* size, float minSize, float maxSize) {
+inline void OtUiSplitter(bool vertical, float* size, float minSize, float maxSize) {
 	ImVec2 pos = ImGui::GetCursorPos();
 
 	if (vertical) {
@@ -49,20 +49,20 @@ inline void OtIdeUiSplitter(bool vertical, float* size, float minSize, float max
 	ImGui::SetCursorPos(pos);
 }
 
-inline void OtIdeUiSplitterVertical(float* size, float minSize, float maxSize) {
-	OtIdeUiSplitter(true, size, minSize, maxSize);
+inline void OtUiSplitterVertical(float* size, float minSize, float maxSize) {
+	OtUiSplitter(true, size, minSize, maxSize);
 }
 
-inline void OtIdeUiSplitterHorizontal(float* size, float minSize, float maxSize) {
-	OtIdeUiSplitter(false, size, minSize, maxSize);
+inline void OtUiSplitterHorizontal(float* size, float minSize, float maxSize) {
+	OtUiSplitter(false, size, minSize, maxSize);
 }
 
 
 //
-//	OtIdeUiDragFloat
+//	OtUiDragFloat
 //
 
-inline bool OtIdeUiDragFloat(const char* label, float* v, int components, float minv, float maxv, float speed, const char* format) {
+inline bool OtUiDragFloat(const char* label, float* v, int components, float minv, float maxv, float speed, const char* format) {
 	ImGuiWindow* window = ImGui::GetCurrentWindow();
 
 	if (window->SkipItems) {

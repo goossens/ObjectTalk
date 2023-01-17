@@ -16,8 +16,9 @@
 
 #include "imgui.h"
 
+#include "OtUi.h"
+
 #include "OtConsole.h"
-#include "OtIdeUi.h"
 #include "OtObjectTalkEditor.h"
 #include "OtObjectTalkLanguage.h"
 #include "OtScriptRunner.h"
@@ -149,7 +150,7 @@ void OtObjectTalkEditorClass::render() {
 	renderMenu();
 
 	// render splitter
-	OtIdeUiSplitterVertical(&editorHeight, minEditorWidth, maxEditorWidth);
+	OtUiSplitterVertical(&editorHeight, minEditorWidth, maxEditorWidth);
 
 	// render the editor
 	renderEditor();

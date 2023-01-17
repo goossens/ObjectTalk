@@ -12,46 +12,21 @@
 //	Include files
 //
 
-#include <string>
-
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
-#include "entt/entity/registry.hpp"
+#include "glm/ext.hpp"
 
-
-//
-//	OtIdComponent
-//
-
-struct OtIdComponent {
-	// constructors
-	OtIdComponent(uint64_t i) : id(i) {}
-
-	// properties
-	uint64_t id;
-};
-
-
-//
-//	OtNameComponent
-//
-
-struct OtNameComponent {
-	// constructors
-	OtNameComponent() = default;
-	OtNameComponent(const std::string& n) : name(n) {}
-
-	// properties
-	std::string name;
-};
+#include "OtComponent.h"
+#include "OtUi.h"
 
 
 //
 //	OtTransformComponent
 //
 
-struct OtTransformComponent {
+class OtTransformComponent : public OtComponent {
+public:
 	// constructors
 	OtTransformComponent() = default;
 
@@ -72,22 +47,19 @@ struct OtTransformComponent {
 		scale = { 1.0f, 1.0f, 1.0f };
 	}
 
+	// GUI to change component properties
+	void renderGUI() override {
+		// render transformation matrix
+		OtUiDragFloat("Translate", glm::value_ptr(translation), 3, 0.1, 0.0, 0.0, "%.2f");
+		glm::vec3 rot = glm::degrees(rotation);
+		OtUiDragFloat("Rotate", glm::value_ptr(rot), 3, 0.1, 0.0, 0.0, "%.2f");
+		rotation = glm::radians(rot);
+		OtUiDragFloat("Scale", glm::value_ptr(scale), 3, 0.1, 0.0, 0.0, "%.2f");
+	}
+
 	// properties
 	glm::vec3 translation = { 0.0f, 0.0f, 0.0f };
 	glm::vec3 rotation = { 0.0f, 0.0f, 0.0f };
 	glm::vec3 scale = { 1.0f, 1.0f, 1.0f };
-	bool active = true;
-};
-
-
-//
-//	OtGeometryComponent
-//
-
-struct OtGeometryComponent {
-	// constructors
-	OtGeometryComponent() = default;
-
-	// properties
 	bool active = true;
 };

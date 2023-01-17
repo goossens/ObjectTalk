@@ -12,11 +12,11 @@
 #include <cstring>
 #include <functional>
 
-#include "glm/ext.hpp"
 #include "imgui.h"
 #include "ImGuizmo.h"
 
-#include "OtIdeUi.h"
+#include "OtUi.h"
+
 #include "OtSceneEditor.h"
 #include "OtScriptRunner.h"
 #include "OtWorkspace.h"
@@ -62,7 +62,7 @@ void OtSceneEditorClass::render() {
 	renderMenu();
 
 	// render splitter
-	OtIdeUiSplitterHorizontal(&panelWidth, minPanelWidth, maxPanelWidth);
+	OtUiSplitterHorizontal(&panelWidth, minPanelWidth, maxPanelWidth);
 
 	// render the panels
 	renderPanels();
@@ -179,7 +179,7 @@ void OtSceneEditorClass::renderMenu() {
 			// render snap control
 			if (ImGui::BeginMenu("Gizmo Snap", guizmoVisible)) {
 				ImGui::Checkbox("Snaping", &guizmoSnapping);
-				OtIdeUiDragFloat("##Snap", glm::value_ptr(snap), 3, 0.0, 0.0, 0.1, "%.2f");
+				OtUiDragFloat("##Snap", glm::value_ptr(snap), 3, 0.0, 0.0, 0.1, "%.2f");
 				ImGui::EndMenu();
 			}
 
@@ -209,6 +209,7 @@ void OtSceneEditorClass::renderPanels() {
 
 	// render our panels
 	renderEntitiesPanel();
+	ImGui::Dummy(ImVec2(0.0, lineHeight));
 	renderComponentsPanel();
 
 	// close window
@@ -245,6 +246,9 @@ void OtSceneEditorClass::renderEntitiesPanel() {
 				if (entity == selectedEntity) {
 					flags |= ImGuiTreeNodeFlags_Selected;
 				}
+
+// GetColorU32(ImGuiCol_FrameBg)
+
 
 				bool open = ImGui::TreeNodeEx(id.c_str(), flags, "%s", name.c_str());
 
@@ -310,18 +314,9 @@ void OtSceneEditorClass::renderComponentsPanel() {
 					nameComponent.name = std::string(buffer);
 				}
 
-				// render node editors
-				renderComponent<OtTransformComponent>("Transform", [this] (OtTransformComponent& transform) {
-					// render transformation matrix
-					OtIdeUiDragFloat("Translate", glm::value_ptr(transform.translation), 3, 0.1, 0.0, 0.0, "%.2f");
-					glm::vec3 rotation = glm::degrees(transform.rotation);
-					OtIdeUiDragFloat("Rotate", glm::value_ptr(rotation), 3, 0.1, 0.0, 0.0, "%.2f");
-					transform.rotation = glm::radians(rotation);
-					OtIdeUiDragFloat("Scale", glm::value_ptr(transform.scale), 3, 0.1, 0.0, 0.0, "%.2f");
-				});
-
-				renderComponent<OtGeometryComponent>("Geometry", [] (OtGeometryComponent& geometry) {
-			});
+				// render component editors
+				renderComponent<OtTransformComponent>("Transform");
+				renderComponent<OtGeometryComponent>("Geometry");
 		}
 	});
 }
@@ -379,27 +374,27 @@ void OtSceneEditorClass::renderPanel(const std::string& name, bool canAdd, std::
 //	OtSceneEditorClass::renderComponent
 //
 
-template<typename T, typename R>
-void OtSceneEditorClass::renderComponent(const std::string& name, R render) {
+template<typename T>
+void OtSceneEditorClass::renderComponent(const std::string& name) {
 	// only render if entity has this node
 	if (selectedEntity.hasComponent<T>()) {
 		// add a new ID to the stack to avoid collisions
 		ImGui::PushID(reinterpret_cast<void*>(typeid(T).hash_code()));
 
-		// create a tree node for the node
+		// create a tree node for the component
 		ImGuiTreeNodeFlags flags =
 			ImGuiTreeNodeFlags_Framed |
 			ImGuiTreeNodeFlags_AllowItemOverlap;
 
 		bool open = ImGui::TreeNodeEx("##header", flags, "%s", name.c_str());
 
-		// add button to remove node
+		// add button to remove the component
 		ImGui::SameLine(spaceAvailable - lineHeight * 0.5);
 		bool remove = ImGui::Button(("x##" + id + "remove").c_str(), ImVec2(lineHeight, lineHeight));
 
-		// render the node editor (if required)
+		// render the component editor (if required)
 		if (open) {
-			render(selectedEntity.getComponent<T>());
+			selectedEntity.getComponent<T>().renderGUI();
 			ImGui::TreePop();
 		}
 

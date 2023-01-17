@@ -61,6 +61,51 @@ void OtModuleClass::registerInternal(const std::string &name, std::function<void
 
 
 //
+//	OtModuleClass::load
+//
+
+void OtModuleClass::load(const std::string& filename) {
+	// get full path of module
+	auto fullPath = getFullPath(filename);
+
+	// ensure module exists
+	if (fullPath.empty()) {
+		OtExcept("Can't find module [%s]", filename.c_str());
+	}
+
+	// start with a clean slate
+	unsetAll();
+
+	// add metadata to module
+	set("__FILE__", OtStringClass::create(fullPath.string()));
+	set("__DIR__", OtStringClass::create(fullPath.parent_path().string()));
+
+	// load source code
+	std::ifstream stream(fullPath.string().c_str());
+	std::stringstream buffer;
+	buffer << stream.rdbuf();
+	stream.close();
+
+	// compile and run module code
+	OtCompiler compiler;
+	OtSource source = OtSourceClass::create(fullPath.string(), buffer.str());
+
+	localPath.push_back(fullPath.parent_path());
+
+	try {
+		OtByteCode bytecode = compiler.compileModule(source, cast<OtModuleClass>());
+		OtVM::instance()->execute(bytecode);
+
+	} catch (std::exception& e) {
+		localPath.pop_back();
+		throw e;
+	}
+
+	localPath.pop_back();
+}
+
+
+//
 //	OtModuleClass::buildModulePath
 //
 
@@ -136,46 +181,12 @@ std::filesystem::path OtModuleClass::getFullPath(std::filesystem::path path) {
 
 	// find module in local path (if still required)
 	if (fullName.empty() && localPath.size()) {
-		fullName = checkPath(localPath.back() / path);
+		for (size_t i = localPath.size() - 1; i >= 0 && fullName.empty(); i++) {
+			fullName = checkPath(localPath[i] / path);
+		}
 	}
 
 	return fullName;
-}
-
-
-//
-//	OtModuleClass::load
-//
-
-void OtModuleClass::load(const std::string& filename) {
-	// get full path of module (temporarily adding parent path to catch relative imports)
-	localPath.push_back(std::filesystem::path(filename).parent_path());
-	auto fullPath = getFullPath(filename);
-	localPath.pop_back();
-
-	// ensure module exists
-	if (fullPath.empty()) {
-		OtExcept("Can't find module [%s]", filename.c_str());
-	}
-
-	// start with a clean slate
-	unsetAll();
-
-	// add metadata to module
-	set("__FILE__", OtStringClass::create(fullPath.string()));
-	set("__DIR__", OtStringClass::create(fullPath.parent_path().string()));
-
-	// load source code
-	std::ifstream stream(fullPath.string().c_str());
-	std::stringstream buffer;
-	buffer << stream.rdbuf();
-	stream.close();
-
-	// compile and run module code
-	OtCompiler compiler;
-	OtSource source = OtSourceClass::create(fullPath.string(), buffer.str());
-	OtByteCode bytecode = compiler.compileModule(source, cast<OtModuleClass>());
-	OtVM::instance()->execute(bytecode);
 }
 
 

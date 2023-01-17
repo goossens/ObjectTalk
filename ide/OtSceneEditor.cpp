@@ -12,7 +12,9 @@
 #include <cstring>
 #include <functional>
 
+#include "glm/ext.hpp"
 #include "imgui.h"
+#include "ImGuizmo.h"
 
 #include "OtIdeUi.h"
 #include "OtSceneEditor.h"
@@ -92,8 +94,17 @@ void OtSceneEditorClass::renderMenu() {
 
 	// handle keyboard shortcuts
 	if (isShortcut) {
-		if (ImGui::IsKeyPressed(ImGuiKey_R) && runnable) {
-			run();
+		if (ImGui::IsKeyPressed(ImGuiKey_G)) {
+			guizmoVisible = !guizmoVisible;
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_T)) {
+			guizmoOperation = ImGuizmo::TRANSLATE;
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_R)) {
+			guizmoOperation = ImGuizmo::ROTATE;
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_S)) {
+			guizmoOperation = ImGuizmo::SCALE;
 		}
 	}
 
@@ -136,6 +147,42 @@ void OtSceneEditorClass::renderMenu() {
 			if (ImGui::MenuItem("Copy", SHORTCUT "C", nullptr, false)) { }
 			if (ImGui::MenuItem("Cut", SHORTCUT "X", nullptr, false)) { }
 			if (ImGui::MenuItem("Paste", SHORTCUT "V", nullptr, false)) { }
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("View")) {
+			ImGui::MenuItem("Gizmo", SHORTCUT "G", &guizmoVisible);
+
+			if (ImGui::BeginMenu("Gizmo Mode", guizmoVisible)) {
+				if (ImGui::RadioButton("Translate", guizmoOperation == ImGuizmo::TRANSLATE)) {
+					guizmoOperation = ImGuizmo::TRANSLATE;
+					guizmoVisible = true;
+				}
+
+				ImGui::SameLine();
+
+				if (ImGui::RadioButton("Rotate", guizmoOperation == ImGuizmo::ROTATE)) {
+					guizmoOperation = ImGuizmo::ROTATE;
+					guizmoVisible = true;
+				}
+
+				ImGui::SameLine();
+
+				if (ImGui::RadioButton("Scale", guizmoOperation == ImGuizmo::SCALE)) {
+					guizmoOperation = ImGuizmo::SCALE;
+					guizmoVisible = true;
+				}
+
+				ImGui::EndMenu();
+			}
+
+			// render snap control
+			if (ImGui::BeginMenu("Gizmo Snap", guizmoVisible)) {
+				ImGui::Checkbox("Snaping", &guizmoSnapping);
+				OtIdeUiDragFloat("##Snap", glm::value_ptr(snap), 3, 0.0, 0.0, 0.1, "%.2f");
+				ImGui::EndMenu();
+			}
+
 			ImGui::EndMenu();
 		}
 
@@ -252,49 +299,25 @@ void OtSceneEditorClass::renderComponentsPanel() {
 		[this]() {
 			// only work on the selected entity
 			if (selectedEntity) {
-				// create a table
-				if (ImGui::BeginTable("##idAndName", 2)) {
-					// setup columns
-					ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_None);
-					ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthFixed, 300);
+				auto id = std::to_string(selectedEntity.getComponent<OtIdComponent>().id);
+				ImGui::InputText("Unique ID", (char*) id.c_str(), id.size(), ImGuiInputTextFlags_ReadOnly);
 
-					// show entity ID
-					ImGui::TableNextColumn();
-					ImGui::TextUnformatted("Unique ID:");
-					ImGui::TableNextColumn();
-					ImGui::TextUnformatted(std::to_string(selectedEntity.getComponent<OtIdComponent>().id).c_str());
+				char buffer[256];
+				auto& nameComponent = selectedEntity.getComponent<OtNameComponent>();
+				std::strncpy(buffer, nameComponent.name.c_str(), sizeof(buffer) - 1);
 
-					// allow editing of name
-					ImGui::TableNextColumn();
-					ImGui::TextUnformatted("Name:");
-					ImGui::TableNextColumn();
-
-					char buffer[256];
-					auto& nameComponent = selectedEntity.getComponent<OtNameComponent>();
-					std::strncpy(buffer, nameComponent.name.c_str(), sizeof(buffer) - 1);
-
-					if (ImGui::InputText("##entityName", buffer, sizeof(buffer) - 1)) {
-						nameComponent.name = std::string(buffer);
-					}
-
-					ImGui::EndTable();
+				if (ImGui::InputText("Name", buffer, sizeof(buffer) - 1)) {
+					nameComponent.name = std::string(buffer);
 				}
 
 				// render component editors
 				renderComponent<OtTransformComponent>("Transform", [this] (OtTransformComponent& transform) {
-					if (ImGui::BeginTable("##transformTable", 2)) {
-						// setup columns
-						ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_None);
-						ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthFixed, 300);
-
-						// render transformation matrix
-						renderVec3Control("Translation:", transform.translation);
-						glm::vec3 rotation = glm::degrees(transform.rotation);
-						renderVec3Control("Rotation:", rotation);
-						transform.rotation = glm::radians(rotation);
-						renderVec3Control("Scale:", transform.scale, 1.0);
-						ImGui::EndTable();
-					}
+					// render transformation matrix
+					OtIdeUiDragFloat("Translate", glm::value_ptr(transform.translation), 3, 0.1, 0.0, 0.0, "%.2f");
+					glm::vec3 rotation = glm::degrees(transform.rotation);
+					OtIdeUiDragFloat("Rotate", glm::value_ptr(rotation), 3, 0.1, 0.0, 0.0, "%.2f");
+					transform.rotation = glm::radians(rotation);
+					OtIdeUiDragFloat("Scale", glm::value_ptr(transform.scale), 3, 0.1, 0.0, 0.0, "%.2f");
 				});
 
 				renderComponent<OtGeometryComponent>("Geometry", [] (OtGeometryComponent& geometry) {
@@ -388,72 +411,6 @@ void OtSceneEditorClass::renderComponent(const std::string& name, R render) {
 		// clean ID stack
 		ImGui::PopID();
 	}
-}
-
-
-//
-//	OtSceneEditorClass::renderVec3Control
-//
-
-void OtSceneEditorClass::renderVec3Control(const std::string& label, glm::vec3& value, float defaultValue) {
-	// show label
-	ImGui::PushID(label.c_str());
-	ImGui::TableNextColumn();
-	ImGui::TextUnformatted(label.c_str());
-
-	ImGui::TableNextColumn();
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
-	auto buttonSize = ImVec2(lineHeight + 2.0, lineHeight);
-
-	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8, 0.1, 0.15, 1.0));
-	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.9, 0.2, 0.2, 1.0));
-	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.8, 0.1, 0.15, 1.0));
-
-	if (ImGui::Button("X", buttonSize)) {
-		value.x = defaultValue;
-	}
-
-	ImGui::PopStyleColor(3);
-
-	ImGui::SameLine();
-	ImGui::PushItemWidth(70);
-	ImGui::DragFloat("##X", &value.x, 0.1, 0.0, 0.0, "%.2f");
-	ImGui::PopItemWidth();
-	ImGui::SameLine();
-
-	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2, 0.7, 0.2, 1.0));
-	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.3, 0.8, 0.3, 1.0));
-	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.2, 0.7, 0.2, 1.0));
-
-	if (ImGui::Button("Y", buttonSize)) {
-		value.y = defaultValue;
-	}
-
-	ImGui::PopStyleColor(3);
-
-	ImGui::SameLine();
-	ImGui::PushItemWidth(70);
-	ImGui::DragFloat("##Y", &value.y, 0.1, 0.0, 0.0, "%.2f");
-	ImGui::PopItemWidth();
-	ImGui::SameLine();
-
-	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.1, 0.25, 0.8, 1.0));
-	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.2, 0.35, 0.9, 1.0));
-	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.1, 0.25, 0.8, 1.0));
-
-	if (ImGui::Button("Z", buttonSize)) {
-		value.z = defaultValue;
-	}
-
-	ImGui::PopStyleColor(3);
-
-	ImGui::SameLine();
-	ImGui::PushItemWidth(70);
-	ImGui::DragFloat("##Z", &value.z, 0.1, 0.0, 0.0, "%.2f");
-	ImGui::PopItemWidth();
-
-	ImGui::PopStyleVar();
-	ImGui::PopID();
 }
 
 

@@ -179,7 +179,7 @@ void OtFrameworkClass::initIMGUI() {
 	io.Fonts->AddFontFromMemoryTTF(
 		(void*) &OtBitstreamVeraMono,
 		sizeof(OtBitstreamVeraMono),
-		17.0,
+		16.0,
 		&config);
 
 	// setup font atlas in texture

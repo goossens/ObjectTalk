@@ -35,14 +35,14 @@ target_include_directories(gui PUBLIC ${GUI_INCLUDE_DIRS})
 add_dependencies(gui
 	ot
 	glfw bgfx
-	imgui imguifd imguieditor
+	imgui imguifd imguieditor imguizmo
 	glm tess2 tinyobjloader tinygltf entt
 	box2d tweeny)
 
 target_link_libraries(gui PUBLIC
 	ot
 	glfw bgfx
-	imgui imguifd imguieditor
+	imgui imguifd imguieditor imguizmo
 	glm mipmap tess2 tinyobjloader tinygltf entt
 	box2d tweeny
 	${GUI_LIBS})

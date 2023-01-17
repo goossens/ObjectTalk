@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include "ImGuizmo.h"
+
 #include "OtScene2.h"
 
 #include "OtEditor.h"
@@ -56,8 +58,6 @@ private:
 	template<typename T, typename R>
 	void renderComponent(const std::string& name, R render);
 
-	void renderVec3Control(const std::string& label, glm::vec3& value, float defaultValue=0.0);
-
 	// file actions
 	void run();
 
@@ -65,8 +65,14 @@ private:
 	OtScene2 scene;
 	OtEntity selectedEntity;
 
-	//	properties
+	// work variables
 	float panelWidth = -1;
 	float spaceAvailable;
 	float lineHeight;
+
+	bool guizmoVisible = false;
+	ImGuizmo::OPERATION guizmoOperation = ImGuizmo::TRANSLATE;
+
+	bool guizmoSnapping = false;
+	glm::vec3 snap = glm::vec3(1.0);
 };

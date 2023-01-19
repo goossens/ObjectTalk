@@ -37,6 +37,10 @@ public:
 	OtScene2Class();
 	~OtScene2Class();
 
+	// manipulate the scene's ID
+	uint64_t getID() { return id; }
+	void setID(uint64_t i) { id = i; }
+
 	// create a new entity
 	OtEntity createEntity(const std::string& tag=std::string("untitled"), OtEntity parent=OtNullEntity);
 
@@ -49,11 +53,11 @@ public:
 	OtEntity cloneEntity(OtEntity entity);
 
 	// get an existing entity from an identifier
+	OtEntity getEntity(const std::string& name);
+
 	OtEntity getEntity(uint64_t id) {
 		return mapIdToEntity.count(id) ? mapIdToEntity[id] : OtNullEntity;
 	}
-
-	OtEntity getEntity(const std::string& name);
 
 	// see if entity exists based on an identifier
 	bool hasEntity(uint64_t id) {
@@ -79,7 +83,7 @@ public:
 		return getComponent<OtHierarchyComponent>(entity).firstChild != OtNullEntity;
 	}
 
-	// access neighbors in tree
+	// access neighbors in parent-child hierarchy
 	OtEntity getParent(OtEntity entity) { return getComponent<OtHierarchyComponent>(entity).parent; }
 	OtEntity getFirstChild(OtEntity entity) { return getComponent<OtHierarchyComponent>(entity).firstChild; }
 	OtEntity getLastChild(OtEntity entity) { return getComponent<OtHierarchyComponent>(entity).lastChild; }
@@ -89,6 +93,7 @@ public:
 	// iterate through entities in scene
 	void each(std::function<void(OtEntity)> callback) {
 		registry.each([this, callback](OtEntity entity) {
+			// don't expose the hidden root entity
 			if (entity != root) {
 				callback(entity);
 			}

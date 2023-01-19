@@ -47,6 +47,9 @@ void OtSceneEditorClass::render() {
 	ImGui::BeginChild((id).c_str(), ImVec2(0.0, 0.0), true, ImGuiWindowFlags_MenuBar);
 	determinePanelSizes();
 
+	// determine button size
+	buttonSize = ImGui::GetFrameHeight();
+
 	// render the enditor parts
 	renderMenu();
 	renderPanels();
@@ -207,8 +210,6 @@ void OtSceneEditorClass::renderMenu() {
 void OtSceneEditorClass::renderPanels() {
 	// create a new child window
 	ImGui::BeginChild((id + "panels").c_str(), ImVec2(panelWidth, 0.0));
-	lineHeight = ImGui::GetFrameHeight();
-	spaceAvailable = ImGui::GetContentRegionAvail().x;
 
 	// create the entities panel
 	ImGui::BeginChild((id + "entities").c_str(), ImVec2(0.0, entityPanelHeight), true);
@@ -233,8 +234,6 @@ void OtSceneEditorClass::renderPanels() {
 //
 
 void OtSceneEditorClass::renderEntitiesPanel() {
-	spaceAvailable = ImGui::GetContentRegionAvail().x;
-
 	renderPanel(
 		"Entities",
 		true,
@@ -254,8 +253,6 @@ void OtSceneEditorClass::renderEntitiesPanel() {
 //
 
 void OtSceneEditorClass::renderComponentsPanel() {
-	spaceAvailable = ImGui::GetContentRegionAvail().x;
-
 	renderPanel(
 		"Components",
 		scene->isValidEntity(selectedEntity),
@@ -340,21 +337,28 @@ void OtSceneEditorClass::determinePanelSizes() {
 //	OtSceneEditorClass::renderPanel
 //
 
-void OtSceneEditorClass::renderPanel(const std::string &name, bool canAdd, std::function<void()> menu, std::function<void()> content) {
-	// create a tree node for the entities list
-	ImGuiTreeNodeFlags flags =
-		ImGuiTreeNodeFlags_DefaultOpen |
-		ImGuiTreeNodeFlags_AllowItemOverlap |
-		ImGuiTreeNodeFlags_Framed;
+void OtSceneEditorClass::renderPanel(const std::string& name, bool canAdd, std::function<void()> menu, std::function<void()> content) {
+	// render a header
+	auto windowPos = ImGui::GetWindowPos();
+	auto cursorPos = ImGui::GetCursorPos();
+	auto padding = ImGui::GetStyle().FramePadding;
 
-	bool open = ImGui::TreeNodeEx(name.c_str(), flags);
+	float buttonSpace = canAdd ? buttonSize + padding.y : 0;
+	ImVec2 topLeft(windowPos.x + cursorPos.x, windowPos.y + cursorPos.y);
+	ImVec2 bottomRight(windowPos.x + ImGui::GetWindowContentRegionMax().x - buttonSpace, topLeft.y + buttonSize);
+
+	auto color = ImGui::ColorConvertFloat4ToU32(ImGui::GetStyle().Colors[ImGuiCol_TitleBg]);
+	ImGui::GetWindowDrawList()->AddRectFilled(topLeft, bottomRight, color);
+	ImGui::SameLine(cursorPos.x + padding.x);
+	ImGui::AlignTextToFramePadding();
+	ImGui::Text("%s", name.c_str());
 
 	// add a button to add more things (if required)
 	if (canAdd) {
-		ImGui::SameLine(spaceAvailable - lineHeight * 0.5);
+		ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - buttonSize);
 		auto popupName = name + "Menu";
 
-		if (ImGui::Button("+", ImVec2(lineHeight, lineHeight))) {
+		if (ImGui::Button("+", ImVec2(buttonSize, buttonSize))) {
 			ImGui::OpenPopup((popupName.c_str()));
 		}
 
@@ -365,11 +369,8 @@ void OtSceneEditorClass::renderPanel(const std::string &name, bool canAdd, std::
 		}
 	}
 
-	// render things if tree node is open
-	if (open) {
-		content();
-		ImGui::TreePop();
-	}
+	// render panel context
+	content();
 }
 
 //
@@ -434,17 +435,18 @@ void OtSceneEditorClass::renderEntity(OtEntity entity) {
 	}
 
 	// add button to remove an entity
-	ImGui::SameLine(spaceAvailable - lineHeight * 1.5 - ImGui::GetStyle().FramePadding.y);
+	auto right = ImGui::GetWindowContentRegionMax().x;
+	ImGui::SameLine(right - buttonSize * 2 - ImGui::GetStyle().FramePadding.y);
 
-	if (ImGui::Button(("x##" + id + "remove").c_str(), ImVec2(lineHeight, lineHeight))) {
+	if (ImGui::Button(("x##" + id + "remove").c_str(), ImVec2(buttonSize, buttonSize))) {
 		entityToBeRemoved = entity;
 	}
 
 	// add button to add an entity
-	ImGui::SameLine(spaceAvailable - lineHeight * 0.5);
+	ImGui::SameLine(right - buttonSize);
 	auto popupName = id + "addmenu";
 
-	if (ImGui::Button(("+##" + id + "add").c_str(), ImVec2(lineHeight, lineHeight))) {
+	if (ImGui::Button(("+##" + id + "add").c_str(), ImVec2(buttonSize, buttonSize))) {
 		ImGui::OpenPopup((popupName.c_str()));
 	}
 
@@ -469,15 +471,15 @@ void OtSceneEditorClass::renderChildEntities(OtEntity entity) {
 	// spacing between child is provided by invisible drop targets
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
 
-	// determine height of drop targets
-	auto height = ImGui::GetStyle().FramePadding.y;
-
 	// process all children
 	auto child = scene->getFirstChild(entity);
 
 	while (scene->isValidEntity(child)) {
 		// create drop target
-		ImGui::InvisibleButton(("##before" + std::to_string((uint32_t) child)).c_str(), ImVec2(spaceAvailable, height));
+		ImGui::InvisibleButton((
+			"##before" + std::to_string((uint32_t) child)).c_str(),
+			ImVec2(ImGui::GetWindowContentRegionMax().x - ImGui::GetCursorPos().x, ImGui::GetStyle().FramePadding.y));
+
 		ImGui::PushStyleColor(ImGuiCol_DragDropTarget, 0x8000b0b0);
 
 		if (ImGui::BeginDragDropTarget()) {
@@ -525,14 +527,15 @@ void OtSceneEditorClass::renderComponent(const std::string& name) {
 		// create a tree node for the component
 		ImGuiTreeNodeFlags flags =
 			ImGuiTreeNodeFlags_DefaultOpen |
-			ImGuiTreeNodeFlags_Framed |
+			ImGuiTreeNodeFlags_OpenOnArrow |
+			ImGuiTreeNodeFlags_FramePadding |
 			ImGuiTreeNodeFlags_AllowItemOverlap;
 
 		bool open = ImGui::TreeNodeEx("##header", flags, "%s", name.c_str());
 
 		// add button to remove the component
-		ImGui::SameLine(spaceAvailable - lineHeight * 0.5);
-		bool remove = ImGui::Button(("x##" + id + "remove").c_str(), ImVec2(lineHeight, lineHeight));
+		ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - buttonSize);
+		bool remove = ImGui::Button(("x##" + id + "remove").c_str(), ImVec2(buttonSize, buttonSize));
 
 		// render the component editor (if required)
 		if (open) {
@@ -564,7 +567,7 @@ void OtSceneEditorClass::run() {
 //
 
 bool OtSceneEditorClass::isDirty() {
-	return false;
+	return true;
 }
 
 

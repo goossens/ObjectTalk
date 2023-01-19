@@ -76,8 +76,7 @@ private:
 	float entityPanelHeight = -1;
 	float minEntityPanelHeight = -1;
 	float maxEntityPanelHeight = -1;
-	float spaceAvailable;
-	float lineHeight;
+	float buttonSize;
 
 	bool guizmoVisible = false;
 	ImGuizmo::OPERATION guizmoOperation = ImGuizmo::TRANSLATE;

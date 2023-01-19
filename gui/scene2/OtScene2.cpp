@@ -128,6 +128,10 @@ void OtScene2Class::removeEntity(OtEntity entity) {
 	// remove entity from hierarchy
 	removeEntityFromParent(entity);
 
+	// remove entity from mappings
+	mapIdToEntity.erase(mapEntityToId[entity]);
+	mapEntityToId.erase(entity);
+
 	// remove entity from registry
 	registry.destroy(entity);
 }

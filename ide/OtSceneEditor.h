@@ -53,7 +53,11 @@ private:
 	void renderScene();
 
 	// rendering helpers
+	void determinePanelSizes();
 	void renderPanel(const std::string& name, bool canAdd, std::function<void()> menu, std::function<void()> content);
+	void renderEntity(OtEntity entity);
+	void renderChildEntities(OtEntity entity);
+	void renderNewEntitiesMenu(OtEntity entity);
 
 	template<typename T>
 	void renderComponent(const std::string& name);
@@ -63,10 +67,15 @@ private:
 
 	// the scene being edited
 	OtScene2 scene;
-	OtEntity selectedEntity;
+	OtEntity selectedEntity = OtNullEntity;
 
 	// work variables
 	float panelWidth = -1;
+	float minPanelWidth = -1;
+	float maxPanelWidth = -1;
+	float entityPanelHeight = -1;
+	float minEntityPanelHeight = -1;
+	float maxEntityPanelHeight = -1;
 	float spaceAvailable;
 	float lineHeight;
 
@@ -75,4 +84,13 @@ private:
 
 	bool guizmoSnapping = false;
 	glm::vec3 snap = glm::vec3(1.0);
+
+	// immediate mode GUIs make it difficult to change hierarchies
+	// while there being rendered which is why we collect all
+	// deletions and moves here so they can be processed at the end
+	// of the current frame
+	OtEntity entityToBeRemoved = OtNullEntity;
+	OtEntity entityToBeMoved = OtNullEntity;
+	OtEntity entityToBeMovedBefore = OtNullEntity;
+	OtEntity entityToBeMovedInto = OtNullEntity;
 };

@@ -12,10 +12,12 @@
 //	Include files
 //
 
-#include "OtComponent.h"
+#include "entt/entity/registry.hpp"
 
-#include "OtIdComponent.h"
-#include "OtNameComponent.h"
-#include "OtHierarchyComponent.h"
-#include "OtTransformComponent.h"
-#include "OtGeometryComponent.h"
+
+//
+//	Entity
+//
+
+using OtEntity = entt::entity;
+#define OtNullEntity entt::null

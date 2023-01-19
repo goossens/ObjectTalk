@@ -127,24 +127,25 @@ void OtFrameworkClass::frameBGFX() {
 void OtFrameworkClass::renderProfiler() {
 	const bgfx::Stats* stats = bgfx::getStats();
 	const double toMs = 1000.0 / (double) bx::getHPFrequency();
+	auto labelWith = ImGui::CalcTextSize("                     ").x;
 
 	ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
 	ImGui::Begin("Profiler", nullptr, 0);
-	ImGui::Text("Framerate:"); ImGui::SameLine(150); ImGui::Text("%.1f", getFrameRate());
-	ImGui::Text("CPU [ms per frame]:"); ImGui::SameLine(150); ImGui::Text("%0.1f", (double) cpuDuration * toMs);
-	ImGui::Text("GPU [ms per frame]:"); ImGui::SameLine(150); ImGui::Text("%0.1f", (double) gpuDuration * toMs);
-	ImGui::Text("Wait render [ms]:"); ImGui::SameLine(150); ImGui::Text("%0.1f", (double) stats->waitRender * toMs);
-	ImGui::Text("Wait submit [ms]:"); ImGui::SameLine(150); ImGui::Text("%0.1f", (double) stats->waitSubmit * toMs);
-	ImGui::Text("Backbuffer width:"); ImGui::SameLine(150); ImGui::Text("%d", stats->width);
-	ImGui::Text("Backbuffer height:"); ImGui::SameLine(150); ImGui::Text("%d", stats->height);
-	ImGui::Text("Anti-aliasing:"); ImGui::SameLine(150); ImGui::Text("%d", antiAliasing);
-	ImGui::Text("Views:"); ImGui::SameLine(150); ImGui::Text("%d", OtPassCount() + 2);
-	ImGui::Text("Draw calls:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numDraw);
-	ImGui::Text("Programs:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numPrograms);
-	ImGui::Text("Shaders:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numShaders);
-	ImGui::Text("Textures:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numTextures);
-	ImGui::Text("Uniforms:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numUniforms);
-	ImGui::Text("Vertex buffers:"); ImGui::SameLine(150); ImGui::Text("%d", stats->numVertexBuffers);
+	ImGui::Text("Framerate:"); ImGui::SameLine(labelWith); ImGui::Text("%.1f", getFrameRate());
+	ImGui::Text("CPU [ms per frame]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.1f", (double) cpuDuration * toMs);
+	ImGui::Text("GPU [ms per frame]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.1f", (double) gpuDuration * toMs);
+	ImGui::Text("Wait render [ms]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.1f", (double) stats->waitRender * toMs);
+	ImGui::Text("Wait submit [ms]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.1f", (double) stats->waitSubmit * toMs);
+	ImGui::Text("Backbuffer width:"); ImGui::SameLine(labelWith); ImGui::Text("%d", stats->width);
+	ImGui::Text("Backbuffer height:"); ImGui::SameLine(labelWith); ImGui::Text("%d", stats->height);
+	ImGui::Text("Anti-aliasing:"); ImGui::SameLine(labelWith); ImGui::Text("%d", antiAliasing);
+	ImGui::Text("Views:"); ImGui::SameLine(labelWith); ImGui::Text("%d", OtPassCount() + 2);
+	ImGui::Text("Draw calls:"); ImGui::SameLine(labelWith); ImGui::Text("%d", stats->numDraw);
+	ImGui::Text("Programs:"); ImGui::SameLine(labelWith); ImGui::Text("%d", stats->numPrograms);
+	ImGui::Text("Shaders:"); ImGui::SameLine(labelWith); ImGui::Text("%d", stats->numShaders);
+	ImGui::Text("Textures:"); ImGui::SameLine(labelWith); ImGui::Text("%d", stats->numTextures);
+	ImGui::Text("Uniforms:"); ImGui::SameLine(labelWith); ImGui::Text("%d", stats->numUniforms);
+	ImGui::Text("Vertex buffers:"); ImGui::SameLine(labelWith); ImGui::Text("%d", stats->numVertexBuffers);
 	ImGui::End();
 }
 

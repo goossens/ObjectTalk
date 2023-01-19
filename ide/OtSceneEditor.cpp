@@ -43,35 +43,40 @@ void OtSceneEditorClass::save() {
 //
 
 void OtSceneEditorClass::render() {
-	// determine panel width
-	auto displaySize = ImGui::GetIO().DisplaySize.x;
-	auto minPanelWidth = displaySize * 0.05f;
-	auto maxPanelWidth = displaySize * 0.90f;
-
-	if (panelWidth < 0.0) {
-		panelWidth =  displaySize * 0.3;
-
-	} else {
-		panelWidth = std::clamp(panelWidth, minPanelWidth, maxPanelWidth);
-	}
-
 	// create the window
 	ImGui::BeginChild((id).c_str(), ImVec2(0.0, 0.0), true, ImGuiWindowFlags_MenuBar);
+	determinePanelSizes();
 
-	// render the menu
+	// render the enditor parts
 	renderMenu();
-
-	// render splitter
-	OtUiSplitterHorizontal(&panelWidth, minPanelWidth, maxPanelWidth);
-
-	// render the panels
 	renderPanels();
-
-	// render the scene
-	ImGui::SameLine();
+	OtUiSplitterHorizontal(&panelWidth, minPanelWidth, maxPanelWidth);
 	renderScene();
 
 	ImGui::EndChild();
+
+	// perform any hierarchy removals
+	if (scene->isValidEntity(entityToBeRemoved)) {
+		if (entityToBeRemoved == selectedEntity) {
+			selectedEntity = OtNullEntity;
+		}
+
+		scene->removeEntity(entityToBeRemoved);
+		entityToBeRemoved = OtNullEntity;
+	}
+
+	// perform any hierarchy moves
+	if (scene->isValidEntity(entityToBeMovedBefore)) {
+		scene->moveEntityBefore(entityToBeMovedBefore, entityToBeMoved);
+		entityToBeMovedBefore = OtNullEntity;
+		entityToBeMoved = OtNullEntity;
+	}
+
+	if (scene->isValidEntity(entityToBeMovedInto)) {
+		scene->moveEntityTo(entityToBeMovedInto, entityToBeMoved);
+		entityToBeMovedInto = OtNullEntity;
+		entityToBeMoved = OtNullEntity;
+	}
 }
 
 
@@ -201,18 +206,24 @@ void OtSceneEditorClass::renderMenu() {
 
 void OtSceneEditorClass::renderPanels() {
 	// create a new child window
-	ImGui::BeginChild((id + "panels").c_str(), ImVec2(panelWidth, 0.0), true);
-
-	// determine available space and line height
+	ImGui::BeginChild((id + "panels").c_str(), ImVec2(panelWidth, 0.0));
+	lineHeight = ImGui::GetFrameHeight();
 	spaceAvailable = ImGui::GetContentRegionAvail().x;
-	lineHeight = ImGui::GetFontSize() + ImGui::GetStyle().FramePadding.y * 2.0;
 
-	// render our panels
+	// create the entities panel
+	ImGui::BeginChild((id + "entities").c_str(), ImVec2(0.0, entityPanelHeight), true);
 	renderEntitiesPanel();
-	ImGui::Dummy(ImVec2(0.0, lineHeight));
-	renderComponentsPanel();
+	ImGui::EndChild();
 
-	// close window
+	// render splitter between entity and component panels
+	OtUiSplitterVertical(&entityPanelHeight, minEntityPanelHeight, maxEntityPanelHeight);
+
+	// create the components panel
+	ImGui::BeginChild((id + "components").c_str(), ImVec2(0.0, 0.0), true);
+	renderComponentsPanel();
+	ImGui::EndChild();
+
+	// close the panels
 	ImGui::EndChild();
 }
 
@@ -222,62 +233,18 @@ void OtSceneEditorClass::renderPanels() {
 //
 
 void OtSceneEditorClass::renderEntitiesPanel() {
+	spaceAvailable = ImGui::GetContentRegionAvail().x;
+
 	renderPanel(
 		"Entities",
 		true,
 		[this]() {
 			// create menu to add entities
-			if (ImGui::MenuItem("Empty Entity")) {
-				selectedEntity = scene->createEntity();
-			}
+			renderNewEntitiesMenu(scene->getRootEntity());
 		},
 		[this]() {
-			scene->each([&](OtEntity entity) {
-				// get entity ID and name
-				auto id = std::to_string(entity.getComponent<OtIdComponent>().id);
-				auto& name = entity.getComponent<OtNameComponent>().name;
-
-				// create a tree node with a bullet to act as a leave
-				ImGuiTreeNodeFlags flags =
-					ImGuiTreeNodeFlags_Bullet |
-					ImGuiTreeNodeFlags_FramePadding |
-					ImGuiTreeNodeFlags_AllowItemOverlap;
-
-				if (entity == selectedEntity) {
-					flags |= ImGuiTreeNodeFlags_Selected;
-				}
-
-// GetColorU32(ImGuiCol_FrameBg)
-
-
-				bool open = ImGui::TreeNodeEx(id.c_str(), flags, "%s", name.c_str());
-
-				// select/deselect current entity
-				if (ImGui::IsItemClicked()) {
-					if (selectedEntity == entity) {
-						selectedEntity = {};
-
-					} else {
-						selectedEntity = entity;
-					}
-				}
-
-				// add button to remove an entity
-				ImGui::SameLine(spaceAvailable - lineHeight * 0.5);
-
-				if (ImGui::Button(("x##" + id + "remove").c_str(), ImVec2(lineHeight, lineHeight))) {
-					scene->removeEntity(entity);
-
-					if (entity == selectedEntity) {
-						selectedEntity = OtEntity();
-					}
-				}
-
-				// do some cleanup (if required)
-				if (open) {
-					ImGui::TreePop();
-				}
-			});
+			// render all root entities
+			renderChildEntities(scene->getRootEntity());
 		});
 }
 
@@ -287,32 +254,36 @@ void OtSceneEditorClass::renderEntitiesPanel() {
 //
 
 void OtSceneEditorClass::renderComponentsPanel() {
+	spaceAvailable = ImGui::GetContentRegionAvail().x;
+
 	renderPanel(
 		"Components",
-		selectedEntity,
+		scene->isValidEntity(selectedEntity),
 		[this]() {
 			// create menu to add components
-			if (ImGui::MenuItem("Transform", nullptr, false, !selectedEntity.hasComponent<OtTransformComponent>())) {
-				selectedEntity.addComponent<OtTransformComponent>();
+			if (ImGui::MenuItem("Transform", nullptr, false, !scene->hasComponent<OtTransformComponent>(selectedEntity))) {
+				scene->addComponent<OtTransformComponent>(selectedEntity);
 			}
 
-			if (ImGui::MenuItem("Geometry", nullptr, false, !selectedEntity.hasComponent<OtGeometryComponent>())) {
-				selectedEntity.addComponent<OtGeometryComponent>();
+			if (ImGui::MenuItem("Geometry", nullptr, false, !scene->hasComponent<OtGeometryComponent>(selectedEntity))) {
+				scene->addComponent<OtGeometryComponent>(selectedEntity);
 			}
 		},
 		[this]() {
-			// only work on the selected entity
-			if (selectedEntity) {
-				auto id = std::to_string(selectedEntity.getComponent<OtIdComponent>().id);
-				ImGui::InputText("Unique ID", (char*) id.c_str(), id.size(), ImGuiInputTextFlags_ReadOnly);
-
+			// only work if we have a selected entity
+			if (scene->isValidEntity(selectedEntity)) {
+				// render entity name
 				char buffer[256];
-				auto& nameComponent = selectedEntity.getComponent<OtNameComponent>();
+				auto& nameComponent = scene->getComponent<OtNameComponent>(selectedEntity);
 				std::strncpy(buffer, nameComponent.name.c_str(), sizeof(buffer) - 1);
 
-				if (ImGui::InputText("Name", buffer, sizeof(buffer) - 1)) {
+				if (ImGui::InputText("Entity name", buffer, sizeof(buffer) - 1)) {
 					nameComponent.name = std::string(buffer);
 				}
+
+				// render entity ID
+				auto id = std::to_string(scene->getComponent<OtIdComponent>(selectedEntity).id);
+				ImGui::InputText("Entity ID", (char*) id.c_str(), id.size(), ImGuiInputTextFlags_ReadOnly);
 
 				// render component editors
 				renderComponent<OtTransformComponent>("Transform");
@@ -334,10 +305,42 @@ void OtSceneEditorClass::renderScene() {
 
 
 //
+//	OtSceneEditorClass::determinePanelSizes
+//
+
+void OtSceneEditorClass::determinePanelSizes() {
+	// get available space in window
+	auto available = ImGui::GetContentRegionAvail();
+
+	// determine panel width
+	minPanelWidth = available.x * 0.05;
+	maxPanelWidth = available.x * 0.9;
+
+	if (panelWidth < 0.0) {
+		panelWidth =  available.x * 0.3;
+
+	} else {
+		panelWidth = std::clamp(panelWidth, minPanelWidth, maxPanelWidth);
+	}
+
+	// determine entity panel height
+	minEntityPanelHeight = available.y * 0.05;
+	maxEntityPanelHeight = available.y * 0.9;
+
+	if (entityPanelHeight < 0.0) {
+		entityPanelHeight =  available.y * 0.3;
+
+	} else {
+		entityPanelHeight = std::clamp(entityPanelHeight, minEntityPanelHeight, maxEntityPanelHeight);
+	}
+}
+
+
+//
 //	OtSceneEditorClass::renderPanel
 //
 
-void OtSceneEditorClass::renderPanel(const std::string& name, bool canAdd, std::function<void()> menu, std::function<void()> content) {
+void OtSceneEditorClass::renderPanel(const std::string &name, bool canAdd, std::function<void()> menu, std::function<void()> content) {
 	// create a tree node for the entities list
 	ImGuiTreeNodeFlags flags =
 		ImGuiTreeNodeFlags_DefaultOpen |
@@ -369,6 +372,144 @@ void OtSceneEditorClass::renderPanel(const std::string& name, bool canAdd, std::
 	}
 }
 
+//
+//	OtSceneEditorClass::renderEntity
+//
+
+void OtSceneEditorClass::renderEntity(OtEntity entity) {
+	// get information on the entity
+	auto id = std::to_string(scene->getComponent<OtIdComponent>(entity).id);
+	auto& name = scene->getComponent<OtNameComponent>(entity).name;
+
+	// determine flags
+	ImGuiTreeNodeFlags flags =
+		ImGuiTreeNodeFlags_DefaultOpen |
+		ImGuiTreeNodeFlags_OpenOnArrow |
+		ImGuiTreeNodeFlags_FramePadding |
+		ImGuiTreeNodeFlags_AllowItemOverlap;
+
+	// is this a leave node?
+	if (!scene->hasChildren(entity)) {
+		flags |= ImGuiTreeNodeFlags_Bullet;
+	}
+
+	// is this entity selected
+	if (entity == selectedEntity) {
+		flags |= ImGuiTreeNodeFlags_Selected;
+	}
+
+	// create a tree node
+	bool open = ImGui::TreeNodeEx(id.c_str(), flags, "%s", name.c_str());
+
+	// entities are drag sources
+	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+		ImGui::SetDragDropPayload("entity", &entity, sizeof(entity));
+		ImGui::Text("%s", name.c_str());
+		ImGui::EndDragDropSource();
+	}
+
+	// entities are drag targets
+	OtEntity dragSourceEntity = OtNullEntity;
+	ImGui::PushStyleColor(ImGuiCol_DragDropTarget, 0x8000b0b0);
+
+	if (ImGui::BeginDragDropTarget()) {
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("entity")) {
+			entityToBeMovedInto = entity;
+			std::memcpy(&entityToBeMoved, payload->Data, sizeof(OtEntity));
+		}
+
+		ImGui::EndDragDropTarget();
+	}
+
+	ImGui::PopStyleColor();
+
+	// select/deselect current entity
+	if (ImGui::IsItemClicked()) {
+		if (selectedEntity == entity) {
+			selectedEntity = OtNullEntity;
+
+		} else {
+			selectedEntity = entity;
+		}
+	}
+
+	// add button to remove an entity
+	ImGui::SameLine(spaceAvailable - lineHeight * 1.5 - ImGui::GetStyle().FramePadding.y);
+
+	if (ImGui::Button(("x##" + id + "remove").c_str(), ImVec2(lineHeight, lineHeight))) {
+		entityToBeRemoved = entity;
+	}
+
+	// add button to add an entity
+	ImGui::SameLine(spaceAvailable - lineHeight * 0.5);
+	auto popupName = id + "addmenu";
+
+	if (ImGui::Button(("+##" + id + "add").c_str(), ImVec2(lineHeight, lineHeight))) {
+		ImGui::OpenPopup((popupName.c_str()));
+	}
+
+	if (ImGui::BeginPopup(popupName.c_str())) {
+		renderNewEntitiesMenu(entity);
+		ImGui::EndPopup();
+	}
+
+	// render children (if required)
+	if (open) {
+		renderChildEntities(entity);
+		ImGui::TreePop();
+	}
+}
+
+
+//
+//	OtSceneEditorClass::renderChildEntities
+//
+
+void OtSceneEditorClass::renderChildEntities(OtEntity entity) {
+	// spacing between child is provided by invisible drop targets
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
+
+	// determine height of drop targets
+	auto height = ImGui::GetStyle().FramePadding.y;
+
+	// process all children
+	auto child = scene->getFirstChild(entity);
+
+	while (scene->isValidEntity(child)) {
+		// create drop target
+		ImGui::InvisibleButton(("##before" + std::to_string((uint32_t) child)).c_str(), ImVec2(spaceAvailable, height));
+		ImGui::PushStyleColor(ImGuiCol_DragDropTarget, 0x8000b0b0);
+
+		if (ImGui::BeginDragDropTarget()) {
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("entity")) {
+				entityToBeMovedBefore = child;
+				std::memcpy(&entityToBeMoved, payload->Data, sizeof(OtEntity));
+			}
+
+			ImGui::EndDragDropTarget();
+		}
+
+		ImGui::PopStyleColor();
+
+		// render the child entity
+		renderEntity(child);
+		child = scene->getNextSibling(child);
+	};
+
+	ImGui::PopStyleVar();
+}
+
+
+//
+//	OtSceneEditorClass::renderNewEntitiesMenu
+//
+
+void OtSceneEditorClass::renderNewEntitiesMenu(OtEntity entity) {
+	if (ImGui::MenuItem("Empty Entity")) {
+		selectedEntity = scene->createEntity("untitiled", entity);
+	}
+}
+
 
 //
 //	OtSceneEditorClass::renderComponent
@@ -376,13 +517,14 @@ void OtSceneEditorClass::renderPanel(const std::string& name, bool canAdd, std::
 
 template<typename T>
 void OtSceneEditorClass::renderComponent(const std::string& name) {
-	// only render if entity has this node
-	if (selectedEntity.hasComponent<T>()) {
+	// only render if entity has this component
+	if (scene->hasComponent<T>(selectedEntity)) {
 		// add a new ID to the stack to avoid collisions
 		ImGui::PushID(reinterpret_cast<void*>(typeid(T).hash_code()));
 
 		// create a tree node for the component
 		ImGuiTreeNodeFlags flags =
+			ImGuiTreeNodeFlags_DefaultOpen |
 			ImGuiTreeNodeFlags_Framed |
 			ImGuiTreeNodeFlags_AllowItemOverlap;
 
@@ -394,13 +536,13 @@ void OtSceneEditorClass::renderComponent(const std::string& name) {
 
 		// render the component editor (if required)
 		if (open) {
-			selectedEntity.getComponent<T>().renderGUI();
+			scene->getComponent<T>(selectedEntity).renderGUI();
 			ImGui::TreePop();
 		}
 
 		// remove entity if required
 		if (remove) {
-			selectedEntity.removeComponent<T>();
+			scene->removeComponent<T>(selectedEntity);
 		}
 
 		// clean ID stack

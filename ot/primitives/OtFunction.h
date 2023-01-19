@@ -20,7 +20,7 @@
 
 
 //
-//	Overloaded conversion function for ObjectTalk function calls
+//	Overloaded conversion functions for ObjectTalk function calls
 //
 
 inline OtObject OtObjectCreate() { return OtObjectClass::create(); }

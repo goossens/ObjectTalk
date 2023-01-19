@@ -23,30 +23,33 @@
 //
 
 inline void OtUiSplitter(bool vertical, float* size, float minSize, float maxSize) {
-	ImVec2 pos = ImGui::GetCursorPos();
+	auto thickness = ImGui::GetStyle().ItemSpacing.y * 2;
 
-	if (vertical) {
-		ImGui::SetCursorPosY(pos.y + *size);
+	ImGui::PushID(size);
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.5, 0.5, 0.5 ,0.4));
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.5, 0.5, 0.5 ,0.3));
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
 
-	} else {
-		ImGui::SetCursorPosX(pos.x + *size);
+	if (!vertical) {
+		ImGui::SameLine();
 	}
 
-	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.5, 0.5, 0.5 ,0.2));
-	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.5, 0.5, 0.5 ,0.2));
-	auto thickness = (vertical ? ImGui::GetStyle().ItemSpacing.y : ImGui::GetStyle().ItemSpacing.y * 2.0);
-	ImGui::Button("##splitter", ImVec2(!vertical ? thickness : -1.0, vertical ? thickness : -1.0));
-	ImGui::PopStyleColor(3);
+	ImGui::Button("##splitter", ImVec2(vertical ? -1 : thickness, vertical ? thickness : -1));
 
-	ImGui::SetItemAllowOverlap();
+	if (!vertical) {
+		ImGui::SameLine();
+	}
+
+	ImGui::PopStyleVar();
+	ImGui::PopStyleColor(3);
 
 	if (ImGui::IsItemActive()) {
 		*size += vertical ? ImGui::GetIO().MouseDelta.y : ImGui::GetIO().MouseDelta.x;
 		*size = std::clamp(*size, minSize, maxSize);
 	}
 
-	ImGui::SetCursorPos(pos);
+	ImGui::PopID();
 }
 
 inline void OtUiSplitterVertical(float* size, float minSize, float maxSize) {

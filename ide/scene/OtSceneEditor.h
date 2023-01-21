@@ -12,11 +12,14 @@
 //	Include files
 //
 
+#include <filesystem>
+
 #include "ImGuizmo.h"
 
 #include "OtScene2.h"
 
 #include "OtEditor.h"
+#include "OtTaskManager.h"
 
 
 //
@@ -42,7 +45,7 @@ public:
 	bool isDirty() override;
 
 	// create a new object
-	static OtSceneEditor create(const std::string& filename);
+	static OtSceneEditor create(const std::filesystem::path& path);
 
 private:
 	// render the parts
@@ -50,7 +53,7 @@ private:
 	void renderPanels();
 	void renderEntitiesPanel();
 	void renderComponentsPanel();
-	void renderScene();
+	void renderViewPort();
 
 	// rendering helpers
 	void determinePanelSizes();
@@ -67,29 +70,25 @@ private:
 
 	// the scene being edited
 	OtScene2 scene;
-	OtEntity selectedEntity = OtNullEntity;
+	OtEntity selectedEntity = OtEntityNull;
+
+	// to handle do/undo/redo
+	OtTaskManager taskManager;
+	std::shared_ptr<OtEditorTask> nextTask = nullptr;
+	size_t version = 0;
 
 	// work variables
-	float panelWidth = -1;
-	float minPanelWidth = -1;
-	float maxPanelWidth = -1;
-	float entityPanelHeight = -1;
-	float minEntityPanelHeight = -1;
-	float maxEntityPanelHeight = -1;
+	float panelWidth = -1.0f;
+	float minPanelWidth = -1.0f;
+	float maxPanelWidth = -1.0f;
+	float entityPanelHeight = -1.0f;
+	float minEntityPanelHeight = -1.0f;
+	float maxEntityPanelHeight = -1.0f;
 	float buttonSize;
 
 	bool guizmoVisible = false;
 	ImGuizmo::OPERATION guizmoOperation = ImGuizmo::TRANSLATE;
 
 	bool guizmoSnapping = false;
-	glm::vec3 snap = glm::vec3(1.0);
-
-	// immediate mode GUIs make it difficult to change hierarchies
-	// while there being rendered which is why we collect all
-	// deletions and moves here so they can be processed at the end
-	// of the current frame
-	OtEntity entityToBeRemoved = OtNullEntity;
-	OtEntity entityToBeMoved = OtNullEntity;
-	OtEntity entityToBeMovedBefore = OtNullEntity;
-	OtEntity entityToBeMovedInto = OtNullEntity;
+	glm::vec3 snap = glm::vec3(1.0f);
 };

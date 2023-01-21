@@ -1,0 +1,60 @@
+[
+	{
+		"children": [
+			{
+				"children": [],
+				"components": [
+					{
+						"type": "uuid",
+						"uuid": 1957313696
+					},
+					{
+						"name": "Child",
+						"type": "name"
+					},
+					{
+						"rotation": [
+							0.0,
+							0.0,
+							0.0
+						],
+						"scale": [
+							1.0,
+							1.0,
+							1.0
+						],
+						"translation": [
+							0.0,
+							0.0,
+							0.0
+						],
+						"type": "transform"
+					}
+				]
+			}
+		],
+		"components": [
+			{
+				"type": "uuid",
+				"uuid": 2354452319
+			},
+			{
+				"name": "Parent",
+				"type": "name"
+			}
+		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"type": "uuid",
+				"uuid": 9936982084
+			},
+			{
+				"name": "Other",
+				"type": "name"
+			}
+		]
+	}
+]

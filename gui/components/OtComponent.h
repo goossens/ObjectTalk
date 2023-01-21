@@ -9,6 +9,13 @@
 
 
 //
+//	Include files
+//
+
+#include "nlohmann/json_fwd.hpp"
+
+
+//
 //	OtComponent
 //
 
@@ -19,4 +26,8 @@ public:
 
 	// GUI to change component properties
 	virtual void renderGUI() {}
+
+	// (de)serialize component
+	virtual nlohmann::json serialize() = 0;
+	virtual void deserialize(nlohmann::json data) = 0;
 };

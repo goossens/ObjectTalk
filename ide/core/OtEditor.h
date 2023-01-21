@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <filesystem>
 #include <memory>
 
 #include "OtException.h"
@@ -26,8 +27,7 @@ typedef std::shared_ptr<OtEditorClass> OtEditor;
 
 class OtEditorClass : public std::enable_shared_from_this<OtEditorClass> {
 public:
-	// constructor/destructor
-	OtEditorClass();
+	// destructor
 	virtual ~OtEditorClass() {}
 
 	// load/save the document content
@@ -38,13 +38,13 @@ public:
 	virtual void render() {}
 
 	// get the properties
-	std::string getID() { return id; }
 	virtual std::string getFileExtension() { return ""; }
-	std::string getFileName() { return filename; }
-	std::string getShortName();
+	std::filesystem::path getFilePath() { return path; }
+	std::string getFileName() { return path.string(); }
+	std::string getShortName() { return path.filename().string(); }
 
 	// get the properties
-	void setFileName(const std::string& filename);
+	void setFilePath(const std::filesystem::path& path);
 
 	// get editor status
 	virtual bool isDirty() { return false; }
@@ -59,6 +59,5 @@ public:
 
 protected:
 	// properties
-	std::string id;
-	std::string filename;
+	std::filesystem::path path;
 };

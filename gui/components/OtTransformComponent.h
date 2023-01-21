@@ -13,12 +13,8 @@
 //
 
 #include "glm/glm.hpp"
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/quaternion.hpp>
-#include "glm/ext.hpp"
 
 #include "OtComponent.h"
-#include "OtUi.h"
 
 
 //
@@ -34,32 +30,20 @@ public:
 		translation(t), rotation(r), scale(s), active(true) {}
 
 	// get the full transform
-	glm::mat4 getTransform() const {
-		return glm::translate(glm::mat4(1.0f), translation) *
-			glm::toMat4(glm::quat(rotation)) *
-			glm::scale(glm::mat4(1.0f), scale);
-	}
+	glm::mat4 getTransform() const;
 
 	// reset the transform
-	void reset() {
-		translation = { 0.0f, 0.0f, 0.0f };
-		rotation = { 0.0f, 0.0f, 0.0f };
-		scale = { 1.0f, 1.0f, 1.0f };
-	}
+	void reset();
 
 	// GUI to change component properties
-	void renderGUI() override {
-		// render transformation matrix
-		OtUiDragFloat("Translate", glm::value_ptr(translation), 3, 0.1, 0.0, 0.0, "%.2f");
-		glm::vec3 rot = glm::degrees(rotation);
-		OtUiDragFloat("Rotate", glm::value_ptr(rot), 3, 0.1, 0.0, 0.0, "%.2f");
-		rotation = glm::radians(rot);
-		OtUiDragFloat("Scale", glm::value_ptr(scale), 3, 0.1, 0.0, 0.0, "%.2f");
-	}
+	void renderGUI() override;
 
 	// properties
 	glm::vec3 translation = { 0.0f, 0.0f, 0.0f };
 	glm::vec3 rotation = { 0.0f, 0.0f, 0.0f };
 	glm::vec3 scale = { 1.0f, 1.0f, 1.0f };
 	bool active = true;
+
+	nlohmann::json serialize() override;
+	void deserialize(nlohmann::json data) override;
 };

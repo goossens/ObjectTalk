@@ -12,20 +12,23 @@
 //	Include files
 //
 
+#include <cstdint>
+
 #include "OtComponent.h"
 
 
 //
-//	OtGeometryComponent
+//	OtUuidComponent
 //
 
-class OtGeometryComponent : public OtComponent {
+class OtUuidComponent : public OtComponent {
 public:
 	// constructors
-	OtGeometryComponent() = default;
+	OtUuidComponent() = default;
+	OtUuidComponent(uint32_t u) : uuid(u) {}
 
 	// properties
-	bool active = true;
+	uint32_t uuid;
 
 	nlohmann::json serialize() override;
 	void deserialize(nlohmann::json data) override;

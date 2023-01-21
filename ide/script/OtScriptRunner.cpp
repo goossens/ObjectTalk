@@ -112,19 +112,19 @@ OtScriptRunnerClass::OtScriptRunnerClass() {
 //	OtScriptRunnerClass::run
 //
 
-void OtScriptRunnerClass::run(const std::string& filename) {
+void OtScriptRunnerClass::run(const std::filesystem::path& path) {
 	// clear the console
 	OtConsoleClass::instance()->clear();
 
 	// run the script in a new thread
-	thread = std::thread([this, filename]() {
+	thread = std::thread([this, path]() {
 		// the module gets destroyed in the main GUI thread (to avoid race conditions)
 		runningScript = true;
 		OtModule module = OtModuleClass::create();
 
 		try {
 			// load and run module
-			module->load(filename);
+			module->load(path);
 			events.pushFinishedNormallyEvent(module);
 
 		} catch (const OtException& e) {

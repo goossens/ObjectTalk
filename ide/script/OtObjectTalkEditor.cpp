@@ -79,17 +79,17 @@ void OtObjectTalkEditorClass::load() {
 	std::stringstream buffer;
 
 	try {
-		std::ifstream stream(filename.c_str());
+		std::ifstream stream(path.c_str());
 
 		if (stream.fail()) {
-			OtExcept("Can't read from file [%s]", filename.c_str());
+			OtExcept("Can't read from file [%s]", path.c_str());
 		}
 
 		buffer << stream.rdbuf();
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtExcept("Can't read from file [%s], error: %s", filename.c_str(), e.what());
+		OtExcept("Can't read from file [%s], error: %s", path.c_str(), e.what());
 	}
 
 	editor.SetText(buffer.str());
@@ -104,17 +104,17 @@ void OtObjectTalkEditorClass::load() {
 void OtObjectTalkEditorClass::save() {
 	try {
 		// write text to file
-		std::ofstream stream(filename.c_str());
+		std::ofstream stream(path.c_str());
 
 		if (stream.fail()) {
-			OtExcept("Can't write to file [%s]", filename.c_str());
+			OtExcept("Can't write to file [%s]", path.c_str());
 		}
 
 		stream << editor.GetText();
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtExcept("Can't write to file [%s], error: %s", filename.c_str(), e.what());
+		OtExcept("Can't write to file [%s], error: %s", path.c_str(), e.what());
 	}
 
 	// reset current version number (marking the content as clean)
@@ -141,7 +141,7 @@ void OtObjectTalkEditorClass::render() {
 
 	// create the window
 	ImGui::BeginChild(
-		(id).c_str(),
+		"scene",
 		ImVec2(0.0, 0.0),
 		true,
 		ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_MenuBar);
@@ -254,7 +254,7 @@ void OtObjectTalkEditorClass::renderMenu() {
 
 void OtObjectTalkEditorClass::renderEditor() {
 	// create the window
-	ImGui::BeginChild((id + "editor").c_str(), ImVec2(0.0, editorHeight), true);
+	ImGui::BeginChild("editor", ImVec2(0.0, editorHeight), true);
 
 	// create the editor
 	editor.Render("TextEditor");
@@ -287,7 +287,7 @@ void OtObjectTalkEditorClass::run() {
 	clearError();
 
 	// let the script runner do its job
-	OtScriptRunnerClass::instance()->run(filename);
+	OtScriptRunnerClass::instance()->run(path);
 }
 
 
@@ -326,9 +326,9 @@ void OtObjectTalkEditorClass::clearError() {
 //	OtObjectTalkEditorClass::create
 //
 
-OtObjectTalkEditor OtObjectTalkEditorClass::create(const std::string& filename) {
+OtObjectTalkEditor OtObjectTalkEditorClass::create(const std::filesystem::path& path) {
 	OtObjectTalkEditor editor = std::make_shared<OtObjectTalkEditorClass>();
-	editor->setFileName(filename);
+	editor->setFilePath(path);
 
 	if (editor->fileExists()) {
 		editor->load();

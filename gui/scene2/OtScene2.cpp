@@ -11,6 +11,8 @@
 
 #include <random>
 
+#include "nlohmann/json.hpp"
+
 #include "OtComponents.h"
 #include "OtScene2.h"
 
@@ -19,10 +21,10 @@
 //	createID
 //
 
-static uint64_t createID() {
+static uint32_t createUuid() {
 	static std::random_device device;
 	static std::mt19937_64 engine(device());
-	static std::uniform_int_distribution<uint64_t> distribution;
+	static std::uniform_int_distribution<uint32_t> distribution;
 	return distribution(engine);
 }
 
@@ -32,12 +34,8 @@ static uint64_t createID() {
 //
 
 OtScene2Class::OtScene2Class() {
-	// assign ourselves an ID
-	id = createID();
-
 	// create a hidden root entity to build hierarchies
-	root = registry.create();
-	addComponent<OtHierarchyComponent>(root);
+	root = createEntity();
 }
 
 
@@ -53,20 +51,25 @@ OtScene2Class::~OtScene2Class() {
 //	OtScene2Class::createEntity
 //
 
-OtEntity OtScene2Class::createEntity(const std::string& name, OtEntity parent) {
+OtEntity OtScene2Class::createEntity() {
 	// create a new entity
 	auto entity = registry.create();
+	auto uuid = createUuid();
+
+	// register mappings
+	mapUuidToEntity[uuid] = entity;
+	mapEntityToUuid[entity] = uuid;
 
 	// add default components
-	auto entityId = createID();
-	addComponent<OtIdComponent>(entity, entityId);
-	addComponent<OtNameComponent>(entity, name);
-	addComponent<OtTransformComponent>(entity);
+	addComponent<OtUuidComponent>(entity).uuid = uuid;
+	addComponent<OtNameComponent>(entity).name = "untitled";
 	addComponent<OtHierarchyComponent>(entity);
+	return entity;
+}
 
-	// ensure we have id <-> entity mapppings
-	mapIdToEntity[entityId] = entity;
-	mapEntityToId[entity] = entityId;
+OtEntity OtScene2Class::createEntity(OtEntity parent) {
+	// create a new entity
+	auto entity = createEntity();
 
 	// setup the entity hierarchy
 	if (!isValidEntity(parent)) {
@@ -91,7 +94,7 @@ static void cloneComponentIfExists(OtEntity dst, OtEntity src, entt::registry& r
 }
 
 OtEntity OtScene2Class::cloneEntity(OtEntity entity) {
-	OtEntity newEntity = createEntity(getComponent<OtNameComponent>(entity).name);
+	OtEntity newEntity = createEntity();
 	cloneComponentIfExists<OtNameComponent>(newEntity, entity, registry);
 	cloneComponentIfExists<OtTransformComponent>(newEntity, entity, registry);
 	return newEntity;
@@ -111,7 +114,7 @@ OtEntity OtScene2Class::getEntity(const std::string &name) {
 		}
 	}
 
-	return OtNullEntity;
+	return OtEntityNull;
 }
 
 
@@ -125,12 +128,12 @@ void OtScene2Class::removeEntity(OtEntity entity) {
 		removeEntity(child);
 	});
 
+	// remove entity from mappings
+	mapUuidToEntity.erase(mapEntityToUuid[entity]);
+	mapEntityToUuid.erase(entity);
+
 	// remove entity from hierarchy
 	removeEntityFromParent(entity);
-
-	// remove entity from mappings
-	mapIdToEntity.erase(mapEntityToId[entity]);
-	mapEntityToId.erase(entity);
 
 	// remove entity from registry
 	registry.destroy(entity);
@@ -162,17 +165,62 @@ void OtScene2Class::moveEntityTo(OtEntity parent, OtEntity child) {
 
 
 //
+//	OtScene2Class::serialize
+//
+
+nlohmann::json OtScene2Class::serialize() {
+	// write entities and components
+	auto data = nlohmann::json::array();
+
+	eachChild(getRootEntity(), [&](OtEntity entity) {
+		data.push_back(OtEntitySerialize(cast<OtScene2Class>(), entity));
+	});
+
+	return data;
+}
+
+
+//
+//	OtScene2Class::deserialize
+//
+
+void OtScene2Class::deserialize(nlohmann::json data) {
+	for (auto& entity : data) {
+		addEntityToParent(root, OtEntityDeserialize(cast<OtScene2Class>(), entity));
+	}
+}
+
+
+//
+//	OtScene2Class::updateEntityUuid
+//
+
+void OtScene2Class::updateEntityUuid(OtEntity entity, uint32_t uuid) {
+	// remove old mappings
+	mapUuidToEntity.erase(mapEntityToUuid[entity]);
+	mapEntityToUuid.erase(entity);
+
+	// store new UUID
+	getComponent<OtUuidComponent>(entity).uuid = uuid;
+
+	// create new mappings
+	mapUuidToEntity[uuid] = entity;
+	mapEntityToUuid[entity] = uuid;
+}
+
+
+//
 //	OtScene2Class::addEntityToParent
 //
 
 void OtScene2Class::addEntityToParent(OtEntity parent, OtEntity child) {
-	// get details on future parent and child
+	// get details on parent and child
 	auto& parentHierarchy = getComponent<OtHierarchyComponent>(parent);
 	auto& childHierarchy = getComponent<OtHierarchyComponent>(child);
 
 	// sort out the child's siblings (child will added to the end of the parent's children)
 	childHierarchy.previousSibling = parentHierarchy.lastChild;
-	childHierarchy.nextSibling = OtNullEntity;
+	childHierarchy.nextSibling = OtEntityNull;
 
 	// update new parent
 	childHierarchy.parent = parent;
@@ -191,13 +239,12 @@ void OtScene2Class::addEntityToParent(OtEntity parent, OtEntity child) {
 	parentHierarchy.lastChild = child;
 }
 
-
 //
 //	OtScene2Class::insertEntityBefore
 //
 
 void OtScene2Class::insertEntityBefore(OtEntity sibling, OtEntity child) {
-	// get details on sibling, future parent and child
+	// get details on sibling, parent and child
 	auto& siblingHierarchy = getComponent<OtHierarchyComponent>(sibling);
 	auto& parentHierarchy = getComponent<OtHierarchyComponent>(siblingHierarchy.parent);
 	auto& childHierarchy = getComponent<OtHierarchyComponent>(child);
@@ -227,32 +274,36 @@ void OtScene2Class::insertEntityBefore(OtEntity sibling, OtEntity child) {
 void OtScene2Class::removeEntityFromParent(OtEntity entity) {
 	// get details on entity and parent
 	auto& entityHierarchy = getComponent<OtHierarchyComponent>(entity);
-	auto& parentHierarchy = getComponent<OtHierarchyComponent>(entityHierarchy.parent);
 
-	// disconnect from parent
-	if (parentHierarchy.firstChild == entity) {
-		parentHierarchy.firstChild = entityHierarchy.nextSibling;
+	// don't worry if the entity has no parent
+	if (!OtEntityIsNull(entityHierarchy.parent)) {
+		auto& parentHierarchy = getComponent<OtHierarchyComponent>(entityHierarchy.parent);
+
+		// disconnect from parent
+		if (parentHierarchy.firstChild == entity) {
+			parentHierarchy.firstChild = entityHierarchy.nextSibling;
+		}
+
+		if (parentHierarchy.lastChild == entity) {
+			parentHierarchy.lastChild = entityHierarchy.previousSibling;
+		}
+
+		// disconnect from siblings
+		if (isValidEntity(entityHierarchy.previousSibling)) {
+			auto& siblingHierarchy = getComponent<OtHierarchyComponent>(entityHierarchy.previousSibling);
+			siblingHierarchy.nextSibling = entityHierarchy.nextSibling;
+		}
+
+		if (isValidEntity(entityHierarchy.nextSibling)) {
+			auto& siblingHierarchy = getComponent<OtHierarchyComponent>(entityHierarchy.nextSibling);
+			siblingHierarchy.previousSibling = entityHierarchy.previousSibling;
+		}
+
+		// let the entity dangle (caller must reparent enitty)
+		entityHierarchy.parent = OtEntityNull;
+		entityHierarchy.previousSibling = OtEntityNull;
+		entityHierarchy.nextSibling = OtEntityNull;
 	}
-
-	if (parentHierarchy.lastChild == entity) {
-		parentHierarchy.lastChild = entityHierarchy.previousSibling;
-	}
-
-	// disconnect from siblings
-	if (isValidEntity(entityHierarchy.previousSibling)) {
-		auto& siblingHierarchy = getComponent<OtHierarchyComponent>(entityHierarchy.previousSibling);
-		siblingHierarchy.nextSibling = entityHierarchy.nextSibling;
-	}
-
-	if (isValidEntity(entityHierarchy.nextSibling)) {
-		auto& siblingHierarchy = getComponent<OtHierarchyComponent>(entityHierarchy.nextSibling);
-		siblingHierarchy.previousSibling = entityHierarchy.previousSibling;
-	}
-
-	// let the entity dangle (caller must reparent enitty)
-	entityHierarchy.parent = OtNullEntity;
-	entityHierarchy.previousSibling = OtNullEntity;
-	entityHierarchy.nextSibling = OtNullEntity;
 }
 
 

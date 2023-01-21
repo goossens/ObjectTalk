@@ -10,16 +10,34 @@
 //
 
 #include <cstring>
+#include <fstream>
 #include <functional>
+#include <sstream>
 
+#include "glm/ext.hpp"
 #include "imgui.h"
 #include "ImGuizmo.h"
+#include "nlohmann/json.hpp"
 
 #include "OtUi.h"
 
 #include "OtSceneEditor.h"
 #include "OtScriptRunner.h"
+#include "OtTaskManager.h"
 #include "OtWorkspace.h"
+
+#include "OtCreateEntityTask.h"
+#include "OtDeleteEntityTask.h"
+#include "OtMoveEntityTask.h"
+
+
+//
+//	createID
+//
+
+static inline void* createID(OtEntity entity, uint32_t key) {
+	return (void*) ((((uint64_t) key) << 32) | (uint64_t) entity);
+}
 
 
 //
@@ -27,6 +45,25 @@
 //
 
 void OtSceneEditorClass::load() {
+	// load scene from file
+	std::stringstream buffer;
+
+	try {
+		std::ifstream stream(path.c_str());
+
+		if (stream.fail()) {
+			OtExcept("Can't read from file [%s]", path.c_str());
+		}
+
+		buffer << stream.rdbuf();
+		stream.close();
+
+	} catch (std::exception& e) {
+		OtExcept("Can't read from file [%s], error: %s", path.c_str(), e.what());
+	}
+
+	// recreate the scene
+	scene->deserialize(nlohmann::json::parse(buffer.str()));
 }
 
 
@@ -35,6 +72,24 @@ void OtSceneEditorClass::load() {
 //
 
 void OtSceneEditorClass::save() {
+	try {
+		// write scene to file
+		std::ofstream stream(path.c_str());
+
+		if (stream.fail()) {
+			OtExcept("Can't write to file [%s]", path.c_str());
+		}
+
+		auto json = scene->serialize();
+		stream << json.dump(1, '\t');
+		stream.close();
+
+	} catch (std::exception& e) {
+		OtExcept("Can't write to file [%s], error: %s", path.c_str(), e.what());
+	}
+
+	// reset current version number (marking the content as clean)
+	version = taskManager.getUndoCount();
 }
 
 
@@ -44,7 +99,7 @@ void OtSceneEditorClass::save() {
 
 void OtSceneEditorClass::render() {
 	// create the window
-	ImGui::BeginChild((id).c_str(), ImVec2(0.0, 0.0), true, ImGuiWindowFlags_MenuBar);
+	ImGui::BeginChild("script", ImVec2(0.0, 0.0), true, ImGuiWindowFlags_MenuBar);
 	determinePanelSizes();
 
 	// determine button size
@@ -54,31 +109,19 @@ void OtSceneEditorClass::render() {
 	renderMenu();
 	renderPanels();
 	OtUiSplitterHorizontal(&panelWidth, minPanelWidth, maxPanelWidth);
-	renderScene();
+	renderViewPort();
 
 	ImGui::EndChild();
 
-	// perform any hierarchy removals
-	if (scene->isValidEntity(entityToBeRemoved)) {
-		if (entityToBeRemoved == selectedEntity) {
-			selectedEntity = OtNullEntity;
+	// perform editing task (if required)
+	if (nextTask) {
+		taskManager.perform(nextTask);
+		nextTask = nullptr;
+
+		// unset selected entity if it is no longer valid
+		if (!scene->isValidEntity(selectedEntity)) {
+			selectedEntity = OtEntityNull;
 		}
-
-		scene->removeEntity(entityToBeRemoved);
-		entityToBeRemoved = OtNullEntity;
-	}
-
-	// perform any hierarchy moves
-	if (scene->isValidEntity(entityToBeMovedBefore)) {
-		scene->moveEntityBefore(entityToBeMovedBefore, entityToBeMoved);
-		entityToBeMovedBefore = OtNullEntity;
-		entityToBeMoved = OtNullEntity;
-	}
-
-	if (scene->isValidEntity(entityToBeMovedInto)) {
-		scene->moveEntityTo(entityToBeMovedInto, entityToBeMoved);
-		entityToBeMovedInto = OtNullEntity;
-		entityToBeMoved = OtNullEntity;
 	}
 }
 
@@ -95,14 +138,22 @@ void OtSceneEditorClass::renderMenu() {
 	auto ctrl = io.KeyCtrl;
 	auto shift = io.KeyShift;
 	auto super = io.KeySuper;
-	auto isShortcut = (isOSX ? (super && !ctrl) : (ctrl && !super)) && !alt && !shift;
+	auto isShortcut = isOSX ? super : ctrl;
 
 	// get status
 	bool runnable = !OtScriptRunnerClass::instance()->isRunning() && !isDirty() && fileExists();
 
 	// handle keyboard shortcuts
 	if (isShortcut) {
-		if (ImGui::IsKeyPressed(ImGuiKey_G)) {
+		if (shift && ImGui::IsKeyPressed(ImGuiKey_Z) ) {
+			if (taskManager.canRedo()) {
+				taskManager.redo();
+			}
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_Z) && taskManager.canUndo()) {
+			taskManager.undo();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_G)) {
 			guizmoVisible = !guizmoVisible;
 
 		} else if (ImGui::IsKeyPressed(ImGuiKey_T)) {
@@ -144,11 +195,11 @@ void OtSceneEditorClass::renderMenu() {
 		}
 
 		if (ImGui::BeginMenu("Edit")) {
-			if (ImGui::MenuItem("Undo", SHORTCUT "Z", nullptr, isDirty())) { }
+			if (ImGui::MenuItem("Undo", SHORTCUT "Z", nullptr, taskManager.canUndo())) { taskManager.undo(); }
 #if __APPLE__
-			if (ImGui::MenuItem("Redo", "^" SHORTCUT "Z", nullptr, false)) { }
+			if (ImGui::MenuItem("Redo", "^" SHORTCUT "Z", nullptr, taskManager.canRedo())) { taskManager.redo(); }
 #else
-			if (ImGui::MenuItem("Redo", SHORTCUT "Y", nullptr, false)) { }
+			if (ImGui::MenuItem("Redo", SHORTCUT "Y", nullptr, taskManager.canRedo())) { taskManager.redo(); }
 #endif
 
 			ImGui::Separator();
@@ -187,7 +238,7 @@ void OtSceneEditorClass::renderMenu() {
 			// render snap control
 			if (ImGui::BeginMenu("Gizmo Snap", guizmoVisible)) {
 				ImGui::Checkbox("Snaping", &guizmoSnapping);
-				OtUiDragFloat("##Snap", glm::value_ptr(snap), 3, 0.0, 0.0, 0.1, "%.2f");
+				OtUiDragFloat("##snap", glm::value_ptr(snap), 3, 0.0, 0.0, 0.1, "%.2f");
 				ImGui::EndMenu();
 			}
 
@@ -209,10 +260,10 @@ void OtSceneEditorClass::renderMenu() {
 
 void OtSceneEditorClass::renderPanels() {
 	// create a new child window
-	ImGui::BeginChild((id + "panels").c_str(), ImVec2(panelWidth, 0.0));
+	ImGui::BeginChild("panels", ImVec2(panelWidth, 0.0));
 
 	// create the entities panel
-	ImGui::BeginChild((id + "entities").c_str(), ImVec2(0.0, entityPanelHeight), true);
+	ImGui::BeginChild("entities", ImVec2(0.0, entityPanelHeight), true);
 	renderEntitiesPanel();
 	ImGui::EndChild();
 
@@ -220,7 +271,7 @@ void OtSceneEditorClass::renderPanels() {
 	OtUiSplitterVertical(&entityPanelHeight, minEntityPanelHeight, maxEntityPanelHeight);
 
 	// create the components panel
-	ImGui::BeginChild((id + "components").c_str(), ImVec2(0.0, 0.0), true);
+	ImGui::BeginChild("components", ImVec2(0.0, 0.0), true);
 	renderComponentsPanel();
 	ImGui::EndChild();
 
@@ -274,13 +325,9 @@ void OtSceneEditorClass::renderComponentsPanel() {
 				auto& nameComponent = scene->getComponent<OtNameComponent>(selectedEntity);
 				std::strncpy(buffer, nameComponent.name.c_str(), sizeof(buffer) - 1);
 
-				if (ImGui::InputText("Entity name", buffer, sizeof(buffer) - 1)) {
+				if (ImGui::InputText("Entity", buffer, sizeof(buffer) - 1)) {
 					nameComponent.name = std::string(buffer);
 				}
-
-				// render entity ID
-				auto id = std::to_string(scene->getComponent<OtIdComponent>(selectedEntity).id);
-				ImGui::InputText("Entity ID", (char*) id.c_str(), id.size(), ImGuiInputTextFlags_ReadOnly);
 
 				// render component editors
 				renderComponent<OtTransformComponent>("Transform");
@@ -291,12 +338,12 @@ void OtSceneEditorClass::renderComponentsPanel() {
 
 
 //
-//	OtSceneEditorClass::renderScene
+//	OtSceneEditorClass::renderViewPort
 //
 
-void OtSceneEditorClass::renderScene() {
+void OtSceneEditorClass::renderViewPort() {
 	// create the window
-	ImGui::BeginChild((id + "scene").c_str(), ImVec2(0.0, 0.0), true);
+	ImGui::BeginChild("viewport", ImVec2(0.0, 0.0), true);
 	ImGui::EndChild();
 }
 
@@ -378,10 +425,6 @@ void OtSceneEditorClass::renderPanel(const std::string& name, bool canAdd, std::
 //
 
 void OtSceneEditorClass::renderEntity(OtEntity entity) {
-	// get information on the entity
-	auto id = std::to_string(scene->getComponent<OtIdComponent>(entity).id);
-	auto& name = scene->getComponent<OtNameComponent>(entity).name;
-
 	// determine flags
 	ImGuiTreeNodeFlags flags =
 		ImGuiTreeNodeFlags_DefaultOpen |
@@ -400,7 +443,9 @@ void OtSceneEditorClass::renderEntity(OtEntity entity) {
 	}
 
 	// create a tree node
-	bool open = ImGui::TreeNodeEx(id.c_str(), flags, "%s", name.c_str());
+	ImGui::PushID(createID(entity, 1));
+	auto& name = scene->getComponent<OtNameComponent>(entity).name;
+	bool open = ImGui::TreeNodeEx("node", flags, "%s", name.c_str());
 
 	// entities are drag sources
 	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
@@ -410,13 +455,14 @@ void OtSceneEditorClass::renderEntity(OtEntity entity) {
 	}
 
 	// entities are drag targets
-	OtEntity dragSourceEntity = OtNullEntity;
+	OtEntity dragSourceEntity = OtEntityNull;
 	ImGui::PushStyleColor(ImGuiCol_DragDropTarget, 0x8000b0b0);
 
 	if (ImGui::BeginDragDropTarget()) {
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("entity")) {
-			entityToBeMovedInto = entity;
+			OtEntity entityToBeMoved;
 			std::memcpy(&entityToBeMoved, payload->Data, sizeof(OtEntity));
+			nextTask = std::make_shared<OtMoveEntityTask>(scene, entity, entityToBeMoved, false);
 		}
 
 		ImGui::EndDragDropTarget();
@@ -427,7 +473,7 @@ void OtSceneEditorClass::renderEntity(OtEntity entity) {
 	// select/deselect current entity
 	if (ImGui::IsItemClicked()) {
 		if (selectedEntity == entity) {
-			selectedEntity = OtNullEntity;
+			selectedEntity = OtEntityNull;
 
 		} else {
 			selectedEntity = entity;
@@ -438,19 +484,18 @@ void OtSceneEditorClass::renderEntity(OtEntity entity) {
 	auto right = ImGui::GetWindowContentRegionMax().x;
 	ImGui::SameLine(right - buttonSize * 2 - ImGui::GetStyle().FramePadding.y);
 
-	if (ImGui::Button(("x##" + id + "remove").c_str(), ImVec2(buttonSize, buttonSize))) {
-		entityToBeRemoved = entity;
+	if (ImGui::Button("x##remove", ImVec2(buttonSize, buttonSize))) {
+		nextTask = std::make_shared<OtDeleteEntityTask>(scene, entity);
 	}
 
 	// add button to add an entity
 	ImGui::SameLine(right - buttonSize);
-	auto popupName = id + "addmenu";
 
-	if (ImGui::Button(("+##" + id + "add").c_str(), ImVec2(buttonSize, buttonSize))) {
-		ImGui::OpenPopup((popupName.c_str()));
+	if (ImGui::Button("+##add", ImVec2(buttonSize, buttonSize))) {
+		ImGui::OpenPopup(("addmenu"));
 	}
 
-	if (ImGui::BeginPopup(popupName.c_str())) {
+	if (ImGui::BeginPopup("addmenu")) {
 		renderNewEntitiesMenu(entity);
 		ImGui::EndPopup();
 	}
@@ -460,6 +505,8 @@ void OtSceneEditorClass::renderEntity(OtEntity entity) {
 		renderChildEntities(entity);
 		ImGui::TreePop();
 	}
+
+	ImGui::PopID();
 }
 
 
@@ -476,22 +523,22 @@ void OtSceneEditorClass::renderChildEntities(OtEntity entity) {
 
 	while (scene->isValidEntity(child)) {
 		// create drop target
-		ImGui::InvisibleButton((
-			"##before" + std::to_string((uint32_t) child)).c_str(),
-			ImVec2(ImGui::GetWindowContentRegionMax().x - ImGui::GetCursorPos().x, ImGui::GetStyle().FramePadding.y));
-
+		ImGui::PushID(createID(child, 2));
+		ImGui::InvisibleButton("##", ImVec2(ImGui::GetWindowContentRegionMax().x - ImGui::GetCursorPos().x, ImGui::GetStyle().FramePadding.y));
 		ImGui::PushStyleColor(ImGuiCol_DragDropTarget, 0x8000b0b0);
 
 		if (ImGui::BeginDragDropTarget()) {
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("entity")) {
-				entityToBeMovedBefore = child;
+				OtEntity entityToBeMoved;
 				std::memcpy(&entityToBeMoved, payload->Data, sizeof(OtEntity));
+				nextTask = std::make_shared<OtMoveEntityTask>(scene, child, entityToBeMoved, true);
 			}
 
 			ImGui::EndDragDropTarget();
 		}
 
 		ImGui::PopStyleColor();
+		ImGui::PopID();
 
 		// render the child entity
 		renderEntity(child);
@@ -508,7 +555,7 @@ void OtSceneEditorClass::renderChildEntities(OtEntity entity) {
 
 void OtSceneEditorClass::renderNewEntitiesMenu(OtEntity entity) {
 	if (ImGui::MenuItem("Empty Entity")) {
-		selectedEntity = scene->createEntity("untitiled", entity);
+		nextTask = std::make_shared<OtCreateEntityTask>(scene, entity, OtCreateEntityTask::empty);
 	}
 }
 
@@ -531,11 +578,12 @@ void OtSceneEditorClass::renderComponent(const std::string& name) {
 			ImGuiTreeNodeFlags_FramePadding |
 			ImGuiTreeNodeFlags_AllowItemOverlap;
 
+		ImGui::Separator();
 		bool open = ImGui::TreeNodeEx("##header", flags, "%s", name.c_str());
 
 		// add button to remove the component
 		ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - buttonSize);
-		bool remove = ImGui::Button(("x##" + id + "remove").c_str(), ImVec2(buttonSize, buttonSize));
+		bool remove = ImGui::Button("x##remove", ImVec2(buttonSize, buttonSize));
 
 		// render the component editor (if required)
 		if (open) {
@@ -567,7 +615,7 @@ void OtSceneEditorClass::run() {
 //
 
 bool OtSceneEditorClass::isDirty() {
-	return true;
+	return version != taskManager.getUndoCount();
 }
 
 
@@ -575,15 +623,13 @@ bool OtSceneEditorClass::isDirty() {
 //	OtSceneEditorClass::create
 //
 
-OtSceneEditor OtSceneEditorClass::create(const std::string& filename) {
+OtSceneEditor OtSceneEditorClass::create(const std::filesystem::path& path) {
 	OtSceneEditor editor = std::make_shared<OtSceneEditorClass>();
-	editor->setFileName(filename);
+	editor->setFilePath(path);
+	editor->scene = OtScene2Class::create();
 
 	if (editor->fileExists()) {
 		editor->load();
-
-	} else {
-		editor->scene = OtScene2Class::create();
 	}
 
 	return editor;

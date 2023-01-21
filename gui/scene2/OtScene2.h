@@ -17,6 +17,7 @@
 #include <unordered_map>
 
 #include "entt/entity/registry.hpp"
+#include "nlohmann/json_fwd.hpp"
 
 #include "OtGui.h"
 
@@ -37,16 +38,13 @@ public:
 	OtScene2Class();
 	~OtScene2Class();
 
-	// manipulate the scene's ID
-	uint64_t getID() { return id; }
-	void setID(uint64_t i) { id = i; }
-
 	// create a new entity
-	OtEntity createEntity(const std::string& tag=std::string("untitled"), OtEntity parent=OtNullEntity);
+	OtEntity createEntity();
+	OtEntity createEntity(OtEntity parent);
 
 	// see if entity is valid
 	bool isValidEntity(OtEntity entity) {
-		return entity != OtNullEntity;
+		return registry.valid(entity);
 	}
 
 	// clone an entity
@@ -55,15 +53,7 @@ public:
 	// get an existing entity from an identifier
 	OtEntity getEntity(const std::string& name);
 
-	OtEntity getEntity(uint64_t id) {
-		return mapIdToEntity.count(id) ? mapIdToEntity[id] : OtNullEntity;
-	}
-
 	// see if entity exists based on an identifier
-	bool hasEntity(uint64_t id) {
-		return mapIdToEntity.count(id) != 0;
-	}
-
 	bool hasEntity(const std::string& name) {
 		return isValidEntity(getEntity(name));
 	}
@@ -80,7 +70,7 @@ public:
 
 	// see if entity has children
 	bool hasChildren(OtEntity entity) {
-		return getComponent<OtHierarchyComponent>(entity).firstChild != OtNullEntity;
+		return getComponent<OtHierarchyComponent>(entity).firstChild != OtEntityNull;
 	}
 
 	// access neighbors in parent-child hierarchy
@@ -135,6 +125,22 @@ public:
 		return registry.all_of<T>(entity);
 	}
 
+	// translate entity <-> UUID
+	uint32_t getEntityUuid(OtEntity entity) { return mapEntityToUuid[entity]; }
+	OtEntity getEntityFromUuid(uint32_t uuid) { return mapUuidToEntity[uuid]; }
+
+	// change an entity's UUID and update translation tables
+	void updateEntityUuid(OtEntity entity, uint32_t uuid);
+
+	// hierarchy support functions
+	void addEntityToParent(OtEntity parent, OtEntity child);
+	void insertEntityBefore(OtEntity sibling, OtEntity child);
+	void removeEntityFromParent(OtEntity entity);
+
+	// (de)serialize the scene
+	nlohmann::json serialize();
+	void deserialize(nlohmann::json data);
+
 	// get type definition
 	static OtType getMeta();
 
@@ -142,21 +148,13 @@ public:
 	static OtScene2 create();
 
 private:
-	// scene identifier
-	uint64_t id;
-
 	// registry for all entities and components in this scene
 	entt::registry registry;
 
-	// entity mapping (entity <-> unique ID)
-	std::unordered_map<uint64_t, OtEntity> mapIdToEntity;
-	std::unordered_map<OtEntity, uint64_t> mapEntityToId;
+	// entity lookup by ID
+	std::unordered_map<uint32_t, entt::entity> mapUuidToEntity;
+	std::unordered_map<entt::entity, uint32_t> mapEntityToUuid;
 
 	// scene hierarchy support
 	OtEntity root;
-
-	// hierarchy support functions
-	void addEntityToParent(OtEntity parent, OtEntity child);
-	void insertEntityBefore(OtEntity sibling, OtEntity child);
-	void removeEntityFromParent(OtEntity entity);
 };

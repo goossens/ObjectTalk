@@ -8,7 +8,6 @@ file(GLOB GUI_INCLUDES */*.h)
 file(GLOB GUI_SOURCES */*.cpp)
 
 if (APPLE)
-	# for MacOS
 	list(APPEND GUI_SOURCES framework/OtMacos.mm)
 
 	find_library(COCOA Cocoa REQUIRED)
@@ -22,8 +21,8 @@ endif()
 set(GUI_INCLUDE_DIRS "")
 
 foreach(HEADER ${GUI_INCLUDES})
-    get_filename_component(DIR ${HEADER} PATH)
-    list(APPEND GUI_INCLUDE_DIRS ${DIR})
+	get_filename_component(DIR ${HEADER} PATH)
+	list(APPEND GUI_INCLUDE_DIRS ${DIR})
 endforeach()
 
 list(REMOVE_DUPLICATES GUI_INCLUDE_DIRS)
@@ -36,14 +35,18 @@ add_dependencies(gui
 	ot
 	glfw bgfx
 	imgui imguifd imguieditor imguizmo
-	glm tess2 tinyobjloader tinygltf entt
+	glm tess2 tinyobjloader
+#	tinygltf
+	entt json
 	box2d tweeny)
 
 target_link_libraries(gui PUBLIC
 	ot
 	glfw bgfx
 	imgui imguifd imguieditor imguizmo
-	glm mipmap tess2 tinyobjloader tinygltf entt
+	glm mipmap tess2 tinyobjloader
+#	tinygltf
+	entt json
 	box2d tweeny
 	${GUI_LIBS})
 

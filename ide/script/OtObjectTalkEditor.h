@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include <filesystem>
+
 #include "TextEditor.h"
 
 #include "OtEditor.h"
@@ -47,7 +49,7 @@ public:
 	void clearError();
 
 	// create a new object
-	static OtObjectTalkEditor create(const std::string& filename);
+	static OtObjectTalkEditor create(const std::filesystem::path& path);
 
 private:
 	// render the parts

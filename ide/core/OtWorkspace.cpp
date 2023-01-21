@@ -97,7 +97,7 @@ void OtWorkspaceClass::openFile() {
 	ImGuiFileDialog::Instance()->OpenDialog(
 		"workspace-open",
 		"Select File to Open...",
-		".ot,.ots",
+		".*",
 		getCWD(),
 		1,
 		nullptr,
@@ -113,23 +113,37 @@ void OtWorkspaceClass::openFile() {
 //	OtWorkspaceClass::openFile
 //
 
-void OtWorkspaceClass::openFile(const std::string& filename) {
+void OtWorkspaceClass::openFile(const std::filesystem::path& path) {
 	OtEditor editor;
 
 	// don't reopen if it is already open
-	if ((editor = findEditor(filename)) != nullptr) {
+	if ((editor = findEditor(path)) == nullptr) {
+		// get file extension to determine editor type
+		auto extension = path.extension();
+
+		// open correct editor
+		if (extension == ".ot") {
+			editor = OtObjectTalkEditorClass::create(path);
+			editors.push_back(editor);
+			state = editState;
+
+		} else if (extension == ".ots") {
+			editor = OtSceneEditorClass::create(path);
+			editors.push_back(editor);
+			state = editState;
+
+		} else {
+			state = confirmErrorState;
+			errorMessage = OtFormat("Can't open file with extension: %s", extension.c_str());
+		}
 
 	} else {
-		// open a new editor
-		editor = OtObjectTalkEditorClass::create(filename);
-		editors.push_back(editor);
-
+		// editor already exists, just active it
+		activateEditor(editor);
 	}
-	// save the file's path as the current working directory
-	cwd = std::filesystem::path(filename).parent_path().string();
 
-	// set workspace state
-	state = editState;
+	// save the file's path as the current working directory
+	cwd = path.parent_path();
 }
 
 
@@ -207,9 +221,9 @@ void OtWorkspaceClass::deleteEditor(OtEditor editor) {
 //	OtWorkspaceClass::findEditor
 //
 
-OtEditor OtWorkspaceClass::findEditor(const std::string& name) {
+OtEditor OtWorkspaceClass::findEditor(const std::filesystem::path& path) {
 	for (auto& editor : editors) {
-		if (editor->getFileName() == name || editor->getShortName() == name) {
+		if (editor->getFileName() == path.string() || editor->getShortName() == path.string()) {
 			return editor;
 		}
 	}
@@ -246,7 +260,7 @@ void OtWorkspaceClass::onRender() {
 	// we don't render workspace when a GUI app is running
 	if (!OtScriptRunnerClass::instance()->isRunningGUI()) {
 		// show splash screen if required
-		if (state == splashState) {
+		if (editors.size() == 0) {
 			renderSplashScreen();
 			activeEditor = nullptr;
 
@@ -269,6 +283,9 @@ void OtWorkspaceClass::onRender() {
 
 		} else if (state == confirmQuitState) {
 			renderConfirmQuit();
+
+		} else if (state == confirmErrorState) {
+			renderConfirmError();
 		}
 	}
 
@@ -387,15 +404,16 @@ void OtWorkspaceClass::renderEditors() {
 				flags |= ImGuiTabItemFlags_UnsavedDocument;
 			}
 
-			// determine label and ID of tab
-			std::string name = editor->getShortName() + "##" + editor->getID() + "tab";
-
 			// create tab and editor
-			if (ImGui::BeginTabItem(name.c_str(), nullptr, flags)) {
+			ImGui::PushID(this);
+
+			if (ImGui::BeginTabItem(editor->getShortName().c_str(), nullptr, flags)) {
 				editor->render();
 				activeEditor = editor;
 				ImGui::EndTabItem();
 			}
+
+			ImGui::PopID();
 		}
 
 		ImGui::EndTabBar();
@@ -459,7 +477,10 @@ void OtWorkspaceClass::renderFileOpen() {
 		if (ImGuiFileDialog::Instance()->IsOk()) {
 			std::map<std::string, std::string> selected = ImGuiFileDialog::Instance()->GetSelection();
 			openFile(selected.begin()->second);
-			state = editState;
+
+			if (state != confirmErrorState) {
+				state = editState;
+			}
 
 		} else {
 			state = editors.size() ? editState : splashState;
@@ -483,7 +504,7 @@ void OtWorkspaceClass::renderSaveAs() {
 	if (ImGuiFileDialog::Instance()->Display("workspace-saveas", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
 		// open selected file if required
 		if (ImGuiFileDialog::Instance()->IsOk()) {
-			activeEditor->setFileName(ImGuiFileDialog::Instance()->GetFilePathName());
+			activeEditor->setFilePath(ImGuiFileDialog::Instance()->GetFilePathName());
 			activeEditor->save();
 			state = editState;
 
@@ -559,6 +580,30 @@ void OtWorkspaceClass::renderConfirmQuit() {
 	}
 }
 
+
+//
+//	OtWorkspaceClass::renderConfirmError
+//
+
+void OtWorkspaceClass::renderConfirmError() {
+	ImGui::OpenPopup("Error");
+	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5, 0.5));
+
+	if (ImGui::BeginPopupModal("Error", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+		ImGui::Text("%s\n", errorMessage.c_str());
+		ImGui::Separator();
+
+		if (ImGui::Button("OK", ImVec2(120, 0))) {
+			state = editors.size() ? editState : splashState;
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();
+	}
+}
+
+
 //
 //	OtWorkspaceClass::onCanQuit
 //
@@ -601,7 +646,7 @@ bool OtWorkspaceClass::onCanQuit() {
 //	OtWorkspaceClass::getDefaultDirectory
 //
 
-std::string OtWorkspaceClass::getDefaultDirectory() {
+std::filesystem::path OtWorkspaceClass::getDefaultDirectory() {
 	// figure out where we live
 	char buffer[1024];
 	size_t length = 1024;
@@ -616,14 +661,14 @@ std::string OtWorkspaceClass::getDefaultDirectory() {
 
 	// start with examples folder if we are
 	if (std::filesystem::is_directory(examples)) {
-		return examples.string();
+		return examples;
 
 	} else {
 		// just start with user's home directory
 		auto status = uv_os_homedir(buffer, &length);
 		UV_CHECK_ERROR("uv_os_homedir", status);
 		std::string home(buffer, length);
-		return std::filesystem::canonical(std::string(buffer, length)).string();
+		return std::filesystem::canonical(std::string(buffer, length));
 	}
 }
 
@@ -632,9 +677,9 @@ std::string OtWorkspaceClass::getDefaultDirectory() {
 //	OtWorkspaceClass::getCWD
 //
 
-std::string OtWorkspaceClass::getCWD() {
+std::filesystem::path OtWorkspaceClass::getCWD() {
 	// return our working directory
-	if (cwd.size() == 0) {
+	if (cwd.empty()) {
 		cwd = getDefaultDirectory();
 	}
 

@@ -28,6 +28,8 @@ released under the [MIT license](https://opensource.org/licenses/MIT).
 * [ImGuiColorTextEdit](https://github.com/BalazsJako/ImGuiColorTextEdit) - syntax highlighting text editor for Dear ImGui
 released under the [MIT license](https://opensource.org/licenses/MIT). As this looks like an abandoned library,
 a private fork is used from [https://github.com/goossens/ImGuiColorTextEdit](https://github.com/goossens/ImGuiColorTextEdit).
+* [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo) - Gizmo to visually manipulate 4x4 matrices
+released under the [MIT license](https://opensource.org/licenses/MIT).
 * [glm](https://github.com/g-truc/glm) - mathematics library for graphics software
 released under the [MIT license](https://opensource.org/licenses/MIT).
 * [libtess2](https://github.com/memononen/libtess2) - library to convert (tesssallate) polygons into triangles
@@ -38,6 +40,8 @@ by [Andrew Dawson](https://vavassor.github.io)
 released under the [CC0 license](https://creativecommons.org/publicdomain/zero/1.0/).
 
 * [EnTT](https://github.com/skypjack/entt) - Entity Component System (ECS)
+released under the [MIT license](https://opensource.org/licenses/MIT).
+* [JSON for Modern C++](https://github.com/nlohmann/json) - JSON creation/parsing library
 released under the [MIT license](https://opensource.org/licenses/MIT).
 * [Box2D](https://box2d.org) - 2D physics engine
 released under the [MIT license](https://opensource.org/licenses/MIT).
@@ -53,7 +57,7 @@ released under the [MIT license](https://opensource.org/licenses/MIT).
 * [Threejs](https://threejs.org) - This Javascript library was used for inspiration for a number of 3D ObjectTalk classes.
 * The sky shader is based on a [GitHub project](https://github.com/shff/opengl_sky)
 released under the [MIT License](https://opensource.org/licenses/MIT).
-* The water shader is based a presentation by Jonas Wagner available on
+* The water shader is based on a presentation by Jonas Wagner available on
 [his website](https://29a.ch/slides/2012/webglwater/).
 Source code is on [Github](https://github.com/jwagner/terrain). A license is not provided.
 
@@ -79,16 +83,17 @@ A another special thanks goes to the team that wrote the [Swift](https://swift.o
 The following tutorials were used in the development of some of the 3D GUI:
 
 * [Crafting Interpreters](https://www.craftinginterpreters.com) by [Robert Nystrom](http://journal.stuffwithstuff.com)
-release under the [MIT License](https://opensource.org/licenses/MIT) and the
-[CC BY-NC-ND 4.0 license](https://creativecommons.org/licenses/by-nc-nd/4.0/). Please see his
-[github repository](https://github.com/munificent/craftinginterpreters/blob/master/LICENSE) for an explanation on
+release under the [MIT License](https://opensource.org/licenses/MIT)
+and the [CC BY-NC-ND 4.0 license](https://creativecommons.org/licenses/by-nc-nd/4.0/).
+Please see his [github repository](https://github.com/munificent/craftinginterpreters/blob/master/LICENSE) for an explanation on
 what applies where.
 * [Learn OpenGL](https://learnopengl.com) by [Joey de Vries](http://joeydevries.com/#home) released under the [Creative Commons Attribution-NonCommercial 4.0 International License](https://creativecommons.org/licenses/by-nc/4.0/legalcode).
-* [OGLdev](https://ogldev.org/index.html) by [Etay Meiri](https://ogldev.org/contact.html) release under the [GNU General Public License Version 3](https://www.gnu.org/licenses/gpl-3.0.txt). You can find his videos on
-[YouTube](https://www.youtube.com/channel/UC7Z1FTCdSln_qFKK95AWplw).
-* [Hazel](https://github.com/TheCherno/Hazel) by [Yan Chernikov (The Cherno)]() released under the
-[Apache License version 2.0](http://www.apache.org/licenses/LICENSE-2.0). You can find his videos on
-[YouTube](https://www.youtube.com/@TheCherno).
+* [OGLdev](https://ogldev.org/index.html) by [Etay Meiri](https://ogldev.org/contact.html)
+release under the [GNU General Public License Version 3](https://www.gnu.org/licenses/gpl-3.0.txt).
+You can find his videos on [YouTube](https://www.youtube.com/channel/UC7Z1FTCdSln_qFKK95AWplw).
+* [Hazel](https://github.com/TheCherno/Hazel) by [Yan Chernikov (The Cherno)](https://www.youtube.com/@TheCherno/about)
+released under the [Apache License version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+You can find his videos on [YouTube](https://www.youtube.com/@TheCherno).
 
 ## Assets
 

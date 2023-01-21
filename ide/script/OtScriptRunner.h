@@ -13,8 +13,8 @@
 //
 
 #include <condition_variable>
+#include <filesystem>
 #include <mutex>
-#include <string>
 #include <thread>
 #include <vector>
 
@@ -38,7 +38,7 @@ public:
 	OtScriptRunnerClass();
 
 	// run the specified script
-	void run(const std::string& filename);
+	void run(const std::filesystem::path& path);
 
 	// update the runner's state by processing events
 	void update();
@@ -50,7 +50,7 @@ public:
 
 private:
 	// properties
-	std::string filename;
+	std::filesystem::path path;
 
 	bool runningScript = false;
 	bool runningServer = false;

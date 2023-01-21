@@ -12,20 +12,30 @@
 //	Include files
 //
 
-#include <cstdint>
-
-#include "OtComponent.h"
+#include "OtEditorTask.h"
 
 
 //
-//	OtIdComponent
+//	OtTask
 //
 
-class OtIdComponent : public OtComponent {
+class OtTask : public OtEditorTask {
 public:
-	// constructors
-	OtIdComponent(uint64_t i) : id(i) {}
+	// constructor
+	OtTask() {}
 
+	// get task name
+	std::string name() { return ""; }
+
+	// perform action
+	virtual void perform() {
+	}
+
+	// undo action
+	virtual void undo() {
+	}
+
+private:
 	// properties
-	uint64_t id;
 };
+

@@ -12,8 +12,6 @@
 //	Include files
 //
 
-#include "entt/entity/registry.hpp"
-
 #include "OtComponent.h"
 #include "OtEntity.h"
 
@@ -25,9 +23,12 @@
 class OtHierarchyComponent : public OtComponent {
 public:
 	// properties
-	entt::entity parent{OtNullEntity};
-	entt::entity firstChild{OtNullEntity};
-	entt::entity lastChild{OtNullEntity};
-	entt::entity previousSibling{OtNullEntity};
-	entt::entity nextSibling{OtNullEntity};
+	OtEntity parent{OtEntityNull};
+	OtEntity firstChild{OtEntityNull};
+	OtEntity lastChild{OtEntityNull};
+	OtEntity previousSibling{OtEntityNull};
+	OtEntity nextSibling{OtEntityNull};
+
+	nlohmann::json serialize() override;
+	void deserialize(nlohmann::json data) override;
 };

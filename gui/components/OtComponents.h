@@ -14,7 +14,7 @@
 
 #include "OtComponent.h"
 
-#include "OtIdComponent.h"
+#include "OtUuidComponent.h"
 #include "OtNameComponent.h"
 #include "OtHierarchyComponent.h"
 #include "OtTransformComponent.h"

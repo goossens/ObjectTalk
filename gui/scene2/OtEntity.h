@@ -13,6 +13,7 @@
 //
 
 #include "entt/entity/registry.hpp"
+#include "nlohmann/json_fwd.hpp"
 
 
 //
@@ -20,4 +21,26 @@
 //
 
 using OtEntity = entt::entity;
-#define OtNullEntity entt::null
+#define OtEntityNull entt::null
+
+
+//
+//	Forward references
+//
+
+class OtScene2Class;
+typedef std::shared_ptr<OtScene2Class> OtScene2;
+
+
+//
+//	Functions
+//
+
+// see if an entity is valid
+static inline bool OtEntityIsNull(OtEntity entity) {
+	return entity == OtEntityNull;
+}
+
+// (de)serialize an entity
+nlohmann::json OtEntitySerialize(OtScene2 scene, OtEntity entity);
+OtEntity OtEntityDeserialize(OtScene2 scene, nlohmann::json data);

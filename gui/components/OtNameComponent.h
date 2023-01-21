@@ -29,4 +29,7 @@ public:
 
 	// properties
 	std::string name;
+
+	nlohmann::json serialize() override;
+	void deserialize(nlohmann::json data) override;
 };

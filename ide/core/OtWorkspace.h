@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include <filesystem>
+
 #include "OtSingleton.h"
 
 #include "OtFrameworkCustomer.h"
@@ -39,7 +41,7 @@ public:
 
 	// open a file
 	void openFile();
-	void openFile(const std::string& filename);
+	void openFile(const std::filesystem::path& filename);
 
 	// save file content
 	void saveFile();
@@ -52,7 +54,7 @@ public:
 	void deleteEditor(OtEditor editor);
 
 	// find a named editor
-	OtEditor findEditor(const std::string& filename);
+	OtEditor findEditor(const std::filesystem::path& filename);
 
 	// make a specified editor tab active
 	void activateEditor(OtEditor editor);
@@ -74,11 +76,11 @@ private:
 	bool onCanQuit() override;
 
 	// get default directory
-	std::string getDefaultDirectory();
+	std::filesystem::path getDefaultDirectory();
 
 	// get current working directory
-	std::string getCWD();
-	std::string cwd;
+	std::filesystem::path getCWD();
+	std::filesystem::path cwd;
 
 	// render parts of workspace
 	void renderSplashScreen();
@@ -88,6 +90,7 @@ private:
 	void renderSaveAs();
 	void renderConfirmClose();
 	void renderConfirmQuit();
+	void renderConfirmError();
 
 	// splash screen logo
 	OtTexture logo;
@@ -102,6 +105,9 @@ private:
 	// tab for save as dialog
 	OtEditor saveAsEditor;
 
+	// error message
+	std::string errorMessage;
+
 	// workspace state
 	enum {
 		splashState,
@@ -110,6 +116,7 @@ private:
 		openFileState,
 		saveFileAsState,
 		confirmCloseState,
-		confirmQuitState
+		confirmQuitState,
+		confirmErrorState
 	} state = splashState;
 };

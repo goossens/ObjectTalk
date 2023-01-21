@@ -12,21 +12,22 @@
 //	Include files
 //
 
-#include "OtComponent.h"
+#include <string>
 
 
 //
-//	OtGeometryComponent
+//	OtEditorTask
 //
 
-class OtGeometryComponent : public OtComponent {
+class OtEditorTask {
 public:
-	// constructors
-	OtGeometryComponent() = default;
+	// destructor
+	virtual ~OtEditorTask() {}
 
-	// properties
-	bool active = true;
+	// get task name
+	std::string name() { return ""; }
 
-	nlohmann::json serialize() override;
-	void deserialize(nlohmann::json data) override;
+	// perform/undo action
+	virtual void perform() {}
+	virtual void undo() {}
 };

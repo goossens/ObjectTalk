@@ -25,7 +25,7 @@ class OtDeleteEntityTask : public OtEditorTask {
 public:
 	// constructor
 	OtDeleteEntityTask(OtScene2 s, OtEntity e) : scene(s) {
-		entityUuid = scene->getEntityUuid(e);
+		entityUuid = scene->getUuidFromEntity(e);
 	}
 
 	// get task name
@@ -38,16 +38,16 @@ public:
 		auto hierarchy = scene->getComponent<OtHierarchyComponent>(entity);
 
 		if (OtEntityIsNull(hierarchy.nextSibling)) {
-			undoTargetUuid = scene->getEntityUuid(hierarchy.parent);
+			undoTargetUuid = scene->getUuidFromEntity(hierarchy.parent);
 			undoBefore = false;
 
 		} else {
-			undoTargetUuid = scene->getEntityUuid(hierarchy.nextSibling);
+			undoTargetUuid = scene->getUuidFromEntity(hierarchy.nextSibling);
 			undoBefore = true;
 		}
 
 		// serialize the entity to be deleted
-		json = OtEntitySerialize(scene, entity).dump();
+		json = OtEntitySerializeToString(scene, entity);
 
 		// now delete the entity
 		scene->removeEntity(entity);
@@ -56,7 +56,7 @@ public:
 	// undo action
 	virtual void undo() {
 		// recreate the entity
-		auto entity = OtEntityDeserialize(scene, nlohmann::json::parse(json));
+		auto entity = OtEntityDeserializeFromString(scene, json);
 		auto target = scene->getEntityFromUuid(undoTargetUuid);
 
 		if (undoBefore) {
@@ -67,7 +67,7 @@ public:
 		}
 	}
 
-private:
+protected:
 	// properties
 	OtScene2 scene;
 	uint32_t entityUuid;

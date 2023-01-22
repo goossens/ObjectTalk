@@ -83,25 +83,6 @@ OtEntity OtScene2Class::createEntity(OtEntity parent) {
 
 
 //
-//	OtScene2Class::cloneEntity
-//
-
-template<typename T>
-static void cloneComponentIfExists(OtEntity dst, OtEntity src, entt::registry& registry) {
-	if (registry.all_of<T>(src)) {
-		registry.emplace_or_replace<T>(dst, registry.get<T>(src));
-	}
-}
-
-OtEntity OtScene2Class::cloneEntity(OtEntity entity) {
-	OtEntity newEntity = createEntity();
-	cloneComponentIfExists<OtNameComponent>(newEntity, entity, registry);
-	cloneComponentIfExists<OtTransformComponent>(newEntity, entity, registry);
-	return newEntity;
-}
-
-
-//
 //	OtScene2::getEntity
 //
 
@@ -168,7 +149,7 @@ void OtScene2Class::moveEntityTo(OtEntity parent, OtEntity child) {
 //	OtScene2Class::serialize
 //
 
-nlohmann::json OtScene2Class::serialize() {
+std::string OtScene2Class::serialize(int indent, char character) {
 	// write entities and components
 	auto data = nlohmann::json::array();
 
@@ -176,7 +157,7 @@ nlohmann::json OtScene2Class::serialize() {
 		data.push_back(OtEntitySerialize(cast<OtScene2Class>(), entity));
 	});
 
-	return data;
+	return data.dump(indent, character);
 }
 
 
@@ -184,9 +165,11 @@ nlohmann::json OtScene2Class::serialize() {
 //	OtScene2Class::deserialize
 //
 
-void OtScene2Class::deserialize(nlohmann::json data) {
-	for (auto& entity : data) {
-		addEntityToParent(root, OtEntityDeserialize(cast<OtScene2Class>(), entity));
+void OtScene2Class::deserialize(const std::string& data, bool preserveUuid) {
+	auto tree = nlohmann::json::parse(data);
+
+	for (auto& entity : tree) {
+		addEntityToParent(root, OtEntityDeserialize(cast<OtScene2Class>(), entity, preserveUuid));
 	}
 }
 
@@ -239,6 +222,7 @@ void OtScene2Class::addEntityToParent(OtEntity parent, OtEntity child) {
 	parentHierarchy.lastChild = child;
 }
 
+
 //
 //	OtScene2Class::insertEntityBefore
 //
@@ -262,8 +246,34 @@ void OtScene2Class::insertEntityBefore(OtEntity sibling, OtEntity child) {
 
 	childHierarchy.previousSibling = siblingHierarchy.previousSibling;
 	childHierarchy.nextSibling = sibling;
-
 	siblingHierarchy.previousSibling = child;
+}
+
+
+//
+//	OtScene2Class::insertEntityAfter
+//
+
+void OtScene2Class::insertEntityAfter(OtEntity sibling, OtEntity child) {
+	// get details on sibling, parent and child
+	auto& siblingHierarchy = getComponent<OtHierarchyComponent>(sibling);
+	auto& parentHierarchy = getComponent<OtHierarchyComponent>(siblingHierarchy.parent);
+	auto& childHierarchy = getComponent<OtHierarchyComponent>(child);
+
+	// parent the child
+	childHierarchy.parent = siblingHierarchy.parent;
+
+	// update the sibling chain
+	if (parentHierarchy.lastChild == sibling) {
+		parentHierarchy.lastChild = child;
+
+	} else {
+		getComponent<OtHierarchyComponent>(siblingHierarchy.nextSibling).previousSibling = child;
+	}
+
+	childHierarchy.previousSibling = sibling;
+	childHierarchy.nextSibling = siblingHierarchy.nextSibling;
+	siblingHierarchy.nextSibling = child;
 }
 
 

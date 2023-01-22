@@ -55,7 +55,7 @@ nlohmann::json OtEntitySerialize(OtScene2 scene, OtEntity entity) {
 //	OtEntityDeserialize
 //
 
-OtEntity OtEntityDeserialize(OtScene2 scene, nlohmann::json data) {
+OtEntity OtEntityDeserialize(OtScene2 scene, nlohmann::json data, bool preserveUuid) {
 	// create a new entity
 	auto entity = scene->createEntity();
 
@@ -64,7 +64,9 @@ OtEntity OtEntityDeserialize(OtScene2 scene, nlohmann::json data) {
 		auto type = component["type"];
 
 		if (type == "uuid") {
-			scene->updateEntityUuid(entity, component["uuid"]);
+			if (preserveUuid) {
+				scene->updateEntityUuid(entity, component["uuid"]);
+			}
 
 		} else if (type == "name") {
 			scene->getComponent<OtNameComponent>(entity).deserialize(component);
@@ -76,8 +78,26 @@ OtEntity OtEntityDeserialize(OtScene2 scene, nlohmann::json data) {
 
 	// create all its children
 	for (auto child : data["children"]) {
-		scene->addEntityToParent(entity, OtEntityDeserialize(scene, child));
+		scene->addEntityToParent(entity, OtEntityDeserialize(scene, child, preserveUuid));
 	}
 
 	return entity;
+}
+
+
+//
+//	OtEntitySerializeToString
+//
+
+std::string OtEntitySerializeToString(OtScene2 scene, OtEntity entity) {
+	return OtEntitySerialize(scene, entity).dump();
+}
+
+
+//
+//	OtEntityDeserializeFromString
+//
+
+OtEntity OtEntityDeserializeFromString(OtScene2 scene, const std::string &data, bool preserveUuid) {
+	return OtEntityDeserialize(scene, nlohmann::json::parse(data), preserveUuid);
 }

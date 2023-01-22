@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include <string>
+
 #include "entt/entity/registry.hpp"
 #include "nlohmann/json_fwd.hpp"
 
@@ -43,4 +45,7 @@ static inline bool OtEntityIsNull(OtEntity entity) {
 
 // (de)serialize an entity
 nlohmann::json OtEntitySerialize(OtScene2 scene, OtEntity entity);
-OtEntity OtEntityDeserialize(OtScene2 scene, nlohmann::json data);
+OtEntity OtEntityDeserialize(OtScene2 scene, nlohmann::json data, bool preserveUuid=true);
+
+std::string OtEntitySerializeToString(OtScene2 scene, OtEntity entity);
+OtEntity OtEntityDeserializeFromString(OtScene2 scene, const std::string& data, bool preserveUuid=true);

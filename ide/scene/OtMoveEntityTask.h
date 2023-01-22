@@ -25,8 +25,8 @@ class OtMoveEntityTask : public OtEditorTask {
 public:
 	// constructor
 	OtMoveEntityTask(OtScene2 s, OtEntity t, OtEntity e, bool b) : scene(s), before(b) {
-		targetUuid = scene->getEntityUuid(t);
-		entityUuid = scene->getEntityUuid(e);
+		targetUuid = scene->getUuidFromEntity(t);
+		entityUuid = scene->getUuidFromEntity(e);
 	}
 
 	// get task name
@@ -40,11 +40,11 @@ public:
 		auto hierarchy = scene->getComponent<OtHierarchyComponent>(entity);
 
 		if (OtEntityIsNull(hierarchy.nextSibling)) {
-			undoTargetUuid = scene->getEntityUuid(hierarchy.parent);
+			undoTargetUuid = scene->getUuidFromEntity(hierarchy.parent);
 			undoBefore = false;
 
 		} else {
-			undoTargetUuid = scene->getEntityUuid(hierarchy.nextSibling);
+			undoTargetUuid = scene->getUuidFromEntity(hierarchy.nextSibling);
 			undoBefore = true;
 		}
 

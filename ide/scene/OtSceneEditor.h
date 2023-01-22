@@ -44,6 +44,12 @@ public:
 	// is the editor's content "dirty" (unsaved);
 	bool isDirty() override;
 
+	// clipboard operations
+	void cutEntity();
+	void copyEntity();
+	void pasteEntity();
+	void duplicateEntity();
+
 	// create a new object
 	static OtSceneEditor create(const std::filesystem::path& path);
 
@@ -76,6 +82,9 @@ private:
 	OtTaskManager taskManager;
 	std::shared_ptr<OtEditorTask> nextTask = nullptr;
 	size_t version = 0;
+
+	// to handle cut/copy/paste
+	std::string clipboard;
 
 	// work variables
 	float panelWidth = -1.0f;

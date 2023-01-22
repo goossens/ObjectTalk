@@ -17,7 +17,6 @@
 #include <unordered_map>
 
 #include "entt/entity/registry.hpp"
-#include "nlohmann/json_fwd.hpp"
 
 #include "OtGui.h"
 
@@ -46,9 +45,6 @@ public:
 	bool isValidEntity(OtEntity entity) {
 		return registry.valid(entity);
 	}
-
-	// clone an entity
-	OtEntity cloneEntity(OtEntity entity);
 
 	// get an existing entity from an identifier
 	OtEntity getEntity(const std::string& name);
@@ -126,7 +122,7 @@ public:
 	}
 
 	// translate entity <-> UUID
-	uint32_t getEntityUuid(OtEntity entity) { return mapEntityToUuid[entity]; }
+	uint32_t getUuidFromEntity(OtEntity entity) { return mapEntityToUuid[entity]; }
 	OtEntity getEntityFromUuid(uint32_t uuid) { return mapUuidToEntity[uuid]; }
 
 	// change an entity's UUID and update translation tables
@@ -135,11 +131,12 @@ public:
 	// hierarchy support functions
 	void addEntityToParent(OtEntity parent, OtEntity child);
 	void insertEntityBefore(OtEntity sibling, OtEntity child);
+	void insertEntityAfter(OtEntity sibling, OtEntity child);
 	void removeEntityFromParent(OtEntity entity);
 
 	// (de)serialize the scene
-	nlohmann::json serialize();
-	void deserialize(nlohmann::json data);
+	std::string serialize(int indent=-1, char character=' ');
+	void deserialize(const std::string& data, bool preserveUuid=true);
 
 	// get type definition
 	static OtType getMeta();

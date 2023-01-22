@@ -22,13 +22,16 @@
 #include "OtUi.h"
 
 #include "OtSceneEditor.h"
-#include "OtScriptRunner.h"
 #include "OtTaskManager.h"
 #include "OtWorkspace.h"
 
 #include "OtCreateEntityTask.h"
 #include "OtDeleteEntityTask.h"
+#include "OtDuplicateEntityTask.h"
 #include "OtMoveEntityTask.h"
+#include "OtCutEntityTask.h"
+#include "OtCopyEntityTask.h"
+#include "OtPasteEntityTask.h"
 
 
 //
@@ -63,7 +66,7 @@ void OtSceneEditorClass::load() {
 	}
 
 	// recreate the scene
-	scene->deserialize(nlohmann::json::parse(buffer.str()));
+	scene->deserialize(buffer.str());
 }
 
 
@@ -80,8 +83,7 @@ void OtSceneEditorClass::save() {
 			OtExcept("Can't write to file [%s]", path.c_str());
 		}
 
-		auto json = scene->serialize();
-		stream << json.dump(1, '\t');
+		stream << scene->serialize(1, '\t');
 		stream.close();
 
 	} catch (std::exception& e) {
@@ -141,28 +143,42 @@ void OtSceneEditorClass::renderMenu() {
 	auto isShortcut = isOSX ? super : ctrl;
 
 	// get status
-	bool runnable = !OtScriptRunnerClass::instance()->isRunning() && !isDirty() && fileExists();
+	bool selected = !OtEntityIsNull(selectedEntity);
+	bool clipable = clipboard.size() > 0;
+	bool runnable = !isDirty() && fileExists();
 
 	// handle keyboard shortcuts
 	if (isShortcut) {
-		if (shift && ImGui::IsKeyPressed(ImGuiKey_Z) ) {
+		if (shift && ImGui::IsKeyPressed(ImGuiKey_Z, false) ) {
 			if (taskManager.canRedo()) {
 				taskManager.redo();
 			}
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_Z) && taskManager.canUndo()) {
+		} else if (ImGui::IsKeyPressed(ImGuiKey_Z, false) && taskManager.canUndo()) {
 			taskManager.undo();
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_G)) {
+		} else if (ImGui::IsKeyPressed(ImGuiKey_X, false) && selected) {
+			cutEntity();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_C, false) && selected) {
+			copyEntity();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_V, false) && selected && clipable) {
+			pasteEntity();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_D, false) && selected) {
+			duplicateEntity();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_G, false)) {
 			guizmoVisible = !guizmoVisible;
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_T)) {
+		} else if (ImGui::IsKeyPressed(ImGuiKey_T, false)) {
 			guizmoOperation = ImGuizmo::TRANSLATE;
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_R)) {
+		} else if (ImGui::IsKeyPressed(ImGuiKey_R, false)) {
 			guizmoOperation = ImGuizmo::ROTATE;
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_S)) {
+		} else if (ImGui::IsKeyPressed(ImGuiKey_S, false)) {
 			guizmoOperation = ImGuizmo::SCALE;
 		}
 	}
@@ -203,9 +219,10 @@ void OtSceneEditorClass::renderMenu() {
 #endif
 
 			ImGui::Separator();
-			if (ImGui::MenuItem("Copy", SHORTCUT "C", nullptr, false)) { }
-			if (ImGui::MenuItem("Cut", SHORTCUT "X", nullptr, false)) { }
-			if (ImGui::MenuItem("Paste", SHORTCUT "V", nullptr, false)) { }
+			if (ImGui::MenuItem("Cut", SHORTCUT "X", nullptr, selected)) { cutEntity(); }
+			if (ImGui::MenuItem("Copy", SHORTCUT "C", nullptr, selected)) { copyEntity(); }
+			if (ImGui::MenuItem("Paste", SHORTCUT "V", nullptr, selected && clipable)) { pasteEntity(); }
+			if (ImGui::MenuItem("Duplicate", SHORTCUT "D", nullptr, selected)) { duplicateEntity(); }
 			ImGui::EndMenu();
 		}
 
@@ -616,6 +633,42 @@ void OtSceneEditorClass::run() {
 
 bool OtSceneEditorClass::isDirty() {
 	return version != taskManager.getUndoCount();
+}
+
+
+//
+//	OtSceneEditorClass::cutEntity
+//
+
+void OtSceneEditorClass::cutEntity() {
+	nextTask = std::make_shared<OtCutEntityTask>(scene, selectedEntity, clipboard);
+}
+
+
+//
+//	OtSceneEditorClass::copyEntity
+//
+
+void OtSceneEditorClass::copyEntity() {
+	nextTask = std::make_shared<OtCopyEntityTask>(scene, selectedEntity, clipboard);
+}
+
+
+//
+//	OtSceneEditorClass::pasteEntity
+//
+
+void OtSceneEditorClass::pasteEntity() {
+	nextTask = std::make_shared<OtPasteEntityTask>(scene, selectedEntity, clipboard);
+}
+
+
+//
+//	OtSceneEditorClass::duplicateEntity
+//
+
+void OtSceneEditorClass::duplicateEntity() {
+	nextTask = std::make_shared<OtDuplicateEntityTask>(scene, selectedEntity);
 }
 
 

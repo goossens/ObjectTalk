@@ -34,7 +34,7 @@ public:
 
 	// constructor
 	OtCreateEntityTask(OtScene2 s, OtEntity p, Type t) : scene(s), type(t) {
-		parentUuid = scene->getEntityUuid(p);
+		parentUuid = scene->getUuidFromEntity(p);
 	}
 
 	// get task name

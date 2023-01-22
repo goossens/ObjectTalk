@@ -87,12 +87,9 @@ inline bool OtUiDragFloat(const char* label, float* v, int components, float min
 
 		const ImVec2 min = ImGui::GetItemRectMin();
 		const ImVec2 max = ImGui::GetItemRectMax();
-		const float spacing = g.Style.FrameRounding;
-		const float halfSpacing = spacing / 2;
+		window->DrawList->AddLine(ImVec2(min.x, max.y - 1), ImVec2(max.x, max.y - 1), colors[i], 1);
 
-		window->DrawList->AddLine({ min.x + spacing, max.y - halfSpacing }, { max.x - spacing, max.y - halfSpacing }, colors[i], 2);
 		ImGui::SameLine(0, g.Style.ItemInnerSpacing.x);
-
 		ImGui::PopID();
 		ImGui::PopItemWidth();
 	}

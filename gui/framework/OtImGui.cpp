@@ -146,8 +146,6 @@ void OtFrameworkClass::initIMGUI() {
 	// initialize ImGui library
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-	ImGui::StyleColorsClassic();
-//	ImGui::StyleColorsDark();
 
 	// deactiviate ImGui automatic .ini file handling
 	ImGuiIO& io = ImGui::GetIO();

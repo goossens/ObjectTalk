@@ -539,7 +539,7 @@ void OtWorkspaceClass::renderConfirmClose() {
 		ImGui::SetItemDefaultFocus();
 		ImGui::SameLine();
 
-		if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+		if (ImGui::Button("Cancel", ImVec2(120, 0)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
 			state = editState;
 			ImGui::CloseCurrentPopup();
 		}
@@ -571,7 +571,7 @@ void OtWorkspaceClass::renderConfirmQuit() {
 		ImGui::SetItemDefaultFocus();
 		ImGui::SameLine();
 
-		if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+		if (ImGui::Button("Cancel", ImVec2(120, 0)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
 			state = editState;
 			ImGui::CloseCurrentPopup();
 		}
@@ -594,7 +594,7 @@ void OtWorkspaceClass::renderConfirmError() {
 		ImGui::Text("%s\n", errorMessage.c_str());
 		ImGui::Separator();
 
-		if (ImGui::Button("OK", ImVec2(120, 0))) {
+		if (ImGui::Button("OK", ImVec2(120, 0)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
 			state = editors.size() ? editState : splashState;
 			ImGui::CloseCurrentPopup();
 		}

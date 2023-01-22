@@ -29,9 +29,6 @@
 # MacOS files
 .DS_Store
 
-# Editor files
-/.vscode
-
 # Local files
 /build
 /debug

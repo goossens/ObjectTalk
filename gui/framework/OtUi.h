@@ -14,8 +14,31 @@
 
 #include <algorithm>
 
+#include "glm/glm.hpp"
+#include "glm/ext.hpp"
 #include "imgui.h"
 #include "imgui_internal.h"
+
+
+//
+//	OtUiInputText
+//
+
+inline bool OtUiInputText(const char* label, std::string& value) {
+	ImGuiInputTextFlags flags =
+		ImGuiInputTextFlags_NoUndoRedo |
+		ImGuiInputTextFlags_CallbackResize;
+
+	return ImGui::InputText(label, (char*) value.c_str(), value.capacity() + 1, flags, [](ImGuiInputTextCallbackData* data) {
+		if (data->EventFlag == ImGuiInputTextFlags_CallbackResize) {
+			std::string* value = (std::string*) data->UserData;
+			value->resize(data->BufTextLen);
+			data->Buf = (char*) value->c_str();
+		}
+
+		return 0;
+	}, &value);
+}
 
 
 //
@@ -62,10 +85,10 @@ inline void OtUiSplitterHorizontal(float* size, float minSize, float maxSize) {
 
 
 //
-//	OtUiDragFloat
+//	OtUiEditVecX
 //
 
-inline bool OtUiDragFloat(const char* label, float* v, int components, float minv, float maxv, float speed, const char* format) {
+inline bool OtUiEditVecX(const char* label, float* v, int components, float speed, float minv, float maxv, const char* format) {
 	ImGuiWindow* window = ImGui::GetCurrentWindow();
 
 	if (window->SkipItems) {
@@ -99,4 +122,22 @@ inline bool OtUiDragFloat(const char* label, float* v, int components, float min
 	ImGui::EndGroup();
 
 	return changed;
+}
+
+
+//
+//	OtUiEditVec3
+//
+
+static inline bool OtUiEditVec3(const char* label, glm::vec3& vector, float speed, float minv, float maxv, const char* format) {
+	return OtUiEditVecX(label, glm::value_ptr(vector), 3, speed, minv, maxv, format);
+}
+
+
+//
+//	OtUiEditVec4
+//
+
+static inline bool OtUiEditVec4(const char* label, glm::vec4& vector, float speed, float minv, float maxv, const char* format) {
+	return OtUiEditVecX(label, glm::value_ptr(vector), 4, speed, minv, maxv, format);
 }

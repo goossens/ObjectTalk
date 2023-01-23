@@ -29,6 +29,9 @@ public:
 	OtTransformComponent(const glm::vec3& t, const glm::vec3& r, const glm::vec3& s) :
 		translation(t), rotation(r), scale(s), active(true) {}
 
+	// return component name
+	static const char* getName() { return "Transform"; }
+
 	// get the full transform
 	glm::mat4 getTransform() const;
 
@@ -36,14 +39,15 @@ public:
 	void reset();
 
 	// GUI to change component properties
-	void renderGUI() override;
+	bool renderGUI() override;
+
+	// (de)serialize component
+	nlohmann::json serialize() override;
+	void deserialize(nlohmann::json data) override;
 
 	// properties
 	glm::vec3 translation = { 0.0f, 0.0f, 0.0f };
 	glm::vec3 rotation = { 0.0f, 0.0f, 0.0f };
 	glm::vec3 scale = { 1.0f, 1.0f, 1.0f };
 	bool active = true;
-
-	nlohmann::json serialize() override;
-	void deserialize(nlohmann::json data) override;
 };

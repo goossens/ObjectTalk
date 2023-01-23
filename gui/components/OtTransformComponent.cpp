@@ -11,7 +11,6 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
-#include "glm/ext.hpp"
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
@@ -46,13 +45,15 @@ void OtTransformComponent::reset() {
 //	OtTransformComponent::renderGUI
 //
 
-void OtTransformComponent::renderGUI() {
+bool OtTransformComponent::renderGUI() {
 	// render transformation matrix
-	OtUiDragFloat("Translate", glm::value_ptr(translation), 3, 0.1f, 0.0f, 0.0f, "%.2f");
+	bool changed = false;
+	changed |= OtUiEditVec3("Translate", translation, 0.1f, 0.0f, 0.0f, "%.2f");
 	glm::vec3 rot = glm::degrees(rotation);
-	OtUiDragFloat("Rotate", glm::value_ptr(rot), 3, 0.1f, 0.0f, 0.0f, "%.2f");
+	changed |= OtUiEditVec3("Rotate", rot, 0.1f, 0.0f, 0.0f, "%.2f");
 	rotation = glm::radians(rot);
-	OtUiDragFloat("Scale", glm::value_ptr(scale), 3, 0.1f, 0.0f, 0.0f, "%.2f");
+	changed |= OtUiEditVec3("Scale", scale, 0.1f, 0.0f, 0.0f, "%.2f");
+	return changed;
 }
 
 

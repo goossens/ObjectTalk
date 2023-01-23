@@ -22,13 +22,17 @@
 
 class OtHierarchyComponent : public OtComponent {
 public:
+	// return component name
+	static const char* getName() { return "Hierarchy"; }
+
+	// (de)serialize component
+	nlohmann::json serialize() override;
+	void deserialize(nlohmann::json data) override;
+
 	// properties
 	OtEntity parent{OtEntityNull};
 	OtEntity firstChild{OtEntityNull};
 	OtEntity lastChild{OtEntityNull};
 	OtEntity previousSibling{OtEntityNull};
 	OtEntity nextSibling{OtEntityNull};
-
-	nlohmann::json serialize() override;
-	void deserialize(nlohmann::json data) override;
 };

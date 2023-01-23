@@ -220,7 +220,17 @@ void OtFrameworkClass::frameIMGUI(std::vector<OtFwEvent>& events) {
 				io.AddKeyEvent(ImGuiMod_Shift, (event.mouseButton.mods & GLFW_MOD_SHIFT) != 0);
 				io.AddKeyEvent(ImGuiMod_Alt, (event.mouseButton.mods & GLFW_MOD_ALT) != 0);
 				io.AddKeyEvent(ImGuiMod_Super, (event.mouseButton.mods & GLFW_MOD_SUPER) != 0);
+
+#if __APPLE__
+				if (event.mouseButton.mods & GLFW_MOD_CONTROL && event.mouseButton.button == 0) {
+					io.AddMouseButtonEvent(1, event.mouseButton.action == GLFW_PRESS);
+
+				} else {
+					io.AddMouseButtonEvent(event.mouseButton.button, event.mouseButton.action == GLFW_PRESS);
+				}
+#else
 				io.AddMouseButtonEvent(event.mouseButton.button, event.mouseButton.action == GLFW_PRESS);
+#endif
 				break;
 
 			case OtFwEvent::mouseMoveEvent:

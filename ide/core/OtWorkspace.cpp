@@ -453,7 +453,7 @@ void OtWorkspaceClass::renderNewFileType() {
 
 		ImGui::SameLine();
 
-		if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+		if (ImGui::Button("Cancel", ImVec2(120, 0)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
 			state = editors.size() ? editState : splashState;
 			ImGui::CloseCurrentPopup();
 		}

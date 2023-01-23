@@ -27,9 +27,16 @@ public:
 	OtNameComponent() = default;
 	OtNameComponent(const std::string& n) : name(n) {}
 
-	// properties
-	std::string name;
+	// return component name
+	static const char* getName() { return "Name"; }
 
+	// GUI to change component properties
+	bool renderGUI() override;
+
+	// (de)serialize component
 	nlohmann::json serialize() override;
 	void deserialize(nlohmann::json data) override;
+
+	// properties
+	std::string name;
 };

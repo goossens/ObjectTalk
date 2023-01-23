@@ -27,8 +27,14 @@ public:
 	// perform a task
 	void perform(std::shared_ptr<OtEditorTask> task) {
 		task->perform();
-		undoStack.push_back(task);
-		redoStack.clear();
+
+		if (undoStack.size() && undoStack.back()->isMergeable(task)) {
+			undoStack.back()->merge(task);
+
+		} else {
+			undoStack.push_back(task);
+			redoStack.clear();
+		}
 	}
 
 	// undo a task

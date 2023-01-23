@@ -97,6 +97,12 @@ public:
 		}
 	}
 
+	// get the ID of a component type
+	template<typename T>
+	uint32_t getComponentTypeId() {
+		return entt::type_id<T>().index();
+	}
+
 	// add a new component to an entity
 	template<typename T, typename... Args>
 	T& addComponent(OtEntity entity, Args&&... args) {

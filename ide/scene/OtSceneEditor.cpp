@@ -27,11 +27,16 @@
 
 #include "OtCreateEntityTask.h"
 #include "OtDeleteEntityTask.h"
-#include "OtDuplicateEntityTask.h"
 #include "OtMoveEntityTask.h"
+
+#include "OtCreateComponentTask.h"
+#include "OtDeleteComponentTask.h"
+#include "OtEditComponentTask.h"
+
 #include "OtCutEntityTask.h"
 #include "OtCopyEntityTask.h"
 #include "OtPasteEntityTask.h"
+#include "OtDuplicateEntityTask.h"
 
 
 //
@@ -107,13 +112,16 @@ void OtSceneEditorClass::render() {
 	// determine button size
 	buttonSize = ImGui::GetFrameHeight();
 
-	// render the enditor parts
+	// render the editor parts
 	renderMenu();
 	renderPanels();
 	OtUiSplitterHorizontal(&panelWidth, minPanelWidth, maxPanelWidth);
 	renderViewPort();
 
 	ImGui::EndChild();
+
+	// handle keyboard
+	handleShortcuts();
 
 	// perform editing task (if required)
 	if (nextTask) {
@@ -133,55 +141,9 @@ void OtSceneEditorClass::render() {
 //
 
 void OtSceneEditorClass::renderMenu() {
-	// get keyboard state to handle keyboard shortcuts
-	ImGuiIO& io = ImGui::GetIO();
-	auto isOSX = io.ConfigMacOSXBehaviors;
-	auto alt = io.KeyAlt;
-	auto ctrl = io.KeyCtrl;
-	auto shift = io.KeyShift;
-	auto super = io.KeySuper;
-	auto isShortcut = isOSX ? super : ctrl;
-
 	// get status
 	bool selected = !OtEntityIsNull(selectedEntity);
 	bool clipable = clipboard.size() > 0;
-	bool runnable = !isDirty() && fileExists();
-
-	// handle keyboard shortcuts
-	if (isShortcut) {
-		if (shift && ImGui::IsKeyPressed(ImGuiKey_Z, false) ) {
-			if (taskManager.canRedo()) {
-				taskManager.redo();
-			}
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_Z, false) && taskManager.canUndo()) {
-			taskManager.undo();
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_X, false) && selected) {
-			cutEntity();
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_C, false) && selected) {
-			copyEntity();
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_V, false) && selected && clipable) {
-			pasteEntity();
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_D, false) && selected) {
-			duplicateEntity();
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_G, false)) {
-			guizmoVisible = !guizmoVisible;
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_T, false)) {
-			guizmoOperation = ImGuizmo::TRANSLATE;
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_R, false)) {
-			guizmoOperation = ImGuizmo::ROTATE;
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_S, false)) {
-			guizmoOperation = ImGuizmo::SCALE;
-		}
-	}
 
 #if __APPLE__
 #define SHORTCUT "Cmd-"
@@ -255,7 +217,7 @@ void OtSceneEditorClass::renderMenu() {
 			// render snap control
 			if (ImGui::BeginMenu("Gizmo Snap", guizmoVisible)) {
 				ImGui::Checkbox("Snaping", &guizmoSnapping);
-				OtUiDragFloat("##snap", glm::value_ptr(snap), 3, 0.0f, 0.0f, 0.1f, "%.2f");
+				OtUiEditVec3("##snap", snap, 0.0f, 0.0f, 0.1f, "%.2f");
 				ImGui::EndMenu();
 			}
 
@@ -263,7 +225,7 @@ void OtSceneEditorClass::renderMenu() {
 		}
 
 		if (ImGui::BeginMenu("Program")) {
-			if (ImGui::MenuItem("Run", SHORTCUT "R", nullptr, runnable)) { run(); }
+			if (ImGui::MenuItem("Run", SHORTCUT "R", nullptr, !isDirty() && fileExists())) { run(); }
 			ImGui::EndMenu();
 		}
 
@@ -326,29 +288,15 @@ void OtSceneEditorClass::renderComponentsPanel() {
 		scene->isValidEntity(selectedEntity),
 		[this]() {
 			// create menu to add components
-			if (ImGui::MenuItem("Transform", nullptr, false, !scene->hasComponent<OtTransformComponent>(selectedEntity))) {
-				scene->addComponent<OtTransformComponent>(selectedEntity);
-			}
-
-			if (ImGui::MenuItem("Geometry", nullptr, false, !scene->hasComponent<OtGeometryComponent>(selectedEntity))) {
-				scene->addComponent<OtGeometryComponent>(selectedEntity);
-			}
+			renderNewComponent<OtTransformComponent>();
+			renderNewComponent<OtGeometryComponent>();
 		},
 		[this]() {
-			// only work if we have a selected entity
+			// render component editors if we have a selected entity
 			if (scene->isValidEntity(selectedEntity)) {
-				// render entity name
-				char buffer[256];
-				auto& nameComponent = scene->getComponent<OtNameComponent>(selectedEntity);
-				std::strncpy(buffer, nameComponent.name.c_str(), sizeof(buffer) - 1);
-
-				if (ImGui::InputText("Entity", buffer, sizeof(buffer) - 1)) {
-					nameComponent.name = std::string(buffer);
-				}
-
-				// render component editors
-				renderComponent<OtTransformComponent>("Transform");
-				renderComponent<OtGeometryComponent>("Geometry");
+				renderComponent<OtNameComponent>(false);
+				renderComponent<OtTransformComponent>();
+				renderComponent<OtGeometryComponent>();
 		}
 	});
 }
@@ -502,14 +450,18 @@ void OtSceneEditorClass::renderEntity(OtEntity entity) {
 	ImGui::PopStyleColor();
 
 	// select/deselect current entity
-	if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
-		if (selectedEntity == entity) {
-			selectedEntity = OtEntityNull;
-
-		} else {
-			selectedEntity = entity;
-		}
+	if ((ImGui::IsItemClicked() || ImGui::IsItemClicked(1)) && !ImGui::IsItemToggledOpen()) {
+		selectedEntity = ImGui::GetIO().KeyShift ? OtEntityNull : entity;
 	}
+
+	if (ImGui::BeginPopupContextWindow()) {
+		if (ImGui::MenuItem("Cut")) { cutEntity(); }
+		if (ImGui::MenuItem("Copy")) { copyEntity(); }
+		if (ImGui::MenuItem("Paste")) { pasteEntity(); }
+		if (ImGui::MenuItem("Duplicate")) { duplicateEntity(); }
+		ImGui::EndPopup();
+	}
+
 
 	// add button to remove an entity
 	auto right = ImGui::GetWindowContentRegionMax().x;
@@ -592,11 +544,23 @@ void OtSceneEditorClass::renderNewEntitiesMenu(OtEntity entity) {
 
 
 //
+//	OtSceneEditorClass::renderNewComponent
+//
+
+template <typename T>
+void OtSceneEditorClass::renderNewComponent() {
+	if (ImGui::MenuItem(T::getName(), nullptr, false, !scene->hasComponent<T>(selectedEntity))) {
+		nextTask = std::make_shared<OtCreateComponentTask<T>>( scene, selectedEntity);
+	}
+}
+
+
+//
 //	OtSceneEditorClass::renderComponent
 //
 
-template<typename T>
-void OtSceneEditorClass::renderComponent(const std::string& name) {
+template <typename T>
+void OtSceneEditorClass::renderComponent(bool canRemove) {
 	// only render if entity has this component
 	if (scene->hasComponent<T>(selectedEntity)) {
 		// add a new ID to the stack to avoid collisions
@@ -610,26 +574,97 @@ void OtSceneEditorClass::renderComponent(const std::string& name) {
 			ImGuiTreeNodeFlags_SpanAvailWidth |
 			ImGuiTreeNodeFlags_AllowItemOverlap;
 
-		ImGui::Separator();
-		bool open = ImGui::TreeNodeEx("##header", flags, "%s", name.c_str());
+		bool open = ImGui::TreeNodeEx("##header", flags, "%s", T::getName());
+		bool removeComponent = false;
 
 		// add button to remove the component
-		ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - buttonSize);
-		bool remove = ImGui::Button("x##remove", ImVec2(buttonSize, buttonSize));
+		if (canRemove) {
+			ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - buttonSize);
+			removeComponent = ImGui::Button("x##remove", ImVec2(buttonSize, buttonSize));
+		}
 
 		// render the component editor (if required)
 		if (open) {
-			scene->getComponent<T>(selectedEntity).renderGUI();
+			auto component = scene->getComponent<T>(selectedEntity);
+
+			if (component.renderGUI()) {
+				nextTask = std::make_shared<OtEditComponentTask<T>>(scene, selectedEntity, component);
+			}
+
 			ImGui::TreePop();
 		}
 
-		// remove entity if required
-		if (remove) {
-			scene->removeComponent<T>(selectedEntity);
+		// render a seperator line
+		ImGui::Separator();
+
+		// remove component (if required)
+		if (removeComponent) {
+			nextTask = std::make_shared<OtDeleteComponentTask<T>>(scene, selectedEntity);
 		}
 
 		// clean ID stack
 		ImGui::PopID();
+	}
+}
+
+
+//
+//	OtSceneEditorClass::handleShortcuts
+//
+
+void OtSceneEditorClass::handleShortcuts() {
+	// get keyboard state to handle keyboard shortcuts
+	ImGuiIO& io = ImGui::GetIO();
+	auto isOSX = io.ConfigMacOSXBehaviors;
+	auto alt = io.KeyAlt;
+	auto ctrl = io.KeyCtrl;
+	auto shift = io.KeyShift;
+	auto super = io.KeySuper;
+	auto isShortcut = isOSX ? super : ctrl;
+
+	// get status
+	bool selected = !OtEntityIsNull(selectedEntity);
+	bool clipable = clipboard.size() > 0;
+
+	// handle keyboard shortcuts
+	if (isShortcut) {
+		if (shift && ImGui::IsKeyPressed(ImGuiKey_Z, false)) {
+			if (taskManager.canRedo()) {
+				taskManager.redo();
+			}
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_Z, false) && taskManager.canUndo()) {
+			// this is a hack as ImGui's InputText keeps a private copy of its content
+			// ClearActiveID() takes the possible focus away and allows undo to work
+			// see ImGuiInputTextFlags_NoUndoRedo documentation in imgui.h
+			// so much for immediate mode :-)
+			ImGui::ClearActiveID();
+			taskManager.undo();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_X, false) && selected) {
+			cutEntity();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_C, false) && selected) {
+			copyEntity();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_V, false) && selected && clipable) {
+			pasteEntity();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_D, false) && selected) {
+			duplicateEntity();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_G, false)) {
+			guizmoVisible = !guizmoVisible;
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_T, false)) {
+			guizmoOperation = ImGuizmo::TRANSLATE;
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_R, false)) {
+			guizmoOperation = ImGuizmo::ROTATE;
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_S, false)) {
+			guizmoOperation = ImGuizmo::SCALE;
+		}
 	}
 }
 

@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <memory>
 #include <string>
 
 
@@ -30,4 +31,8 @@ public:
 	// perform/undo action
 	virtual void perform() {}
 	virtual void undo() {}
+
+	// support task merging
+	virtual bool isMergeable(std::shared_ptr<OtEditorTask> task) { return false; }
+	virtual void merge(std::shared_ptr<OtEditorTask> task) {}
 };

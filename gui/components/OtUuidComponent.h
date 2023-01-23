@@ -27,9 +27,13 @@ public:
 	OtUuidComponent() = default;
 	OtUuidComponent(uint32_t u) : uuid(u) {}
 
-	// properties
-	uint32_t uuid;
+	// return component name
+	static const char* getName() { return "UUID"; }
 
+	// (de)serialize component
 	nlohmann::json serialize() override;
 	void deserialize(nlohmann::json data) override;
+
+	// properties
+	uint32_t uuid;
 };

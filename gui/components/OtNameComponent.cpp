@@ -9,9 +9,20 @@
 //	Include files
 //
 
+#include "imgui.h"
 #include "nlohmann/json.hpp"
 
+#include "OtUi.h"
 #include "OtNameComponent.h"
+
+
+//
+//	OtNameComponent::renderGUI
+//
+
+bool OtNameComponent::renderGUI() {
+	return OtUiInputText("##", name);
+}
 
 
 //

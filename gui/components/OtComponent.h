@@ -24,10 +24,13 @@ public:
 	// destructor
 	virtual ~OtComponent() {}
 
-	// GUI to change component properties
-	virtual void renderGUI() {}
+	// GUI to change component properties (returns true if changes are made)
+	virtual bool renderGUI() { return false; }
 
 	// (de)serialize component
 	virtual nlohmann::json serialize() = 0;
 	virtual void deserialize(nlohmann::json data) = 0;
+
+	std::string serializeToString();
+	void deserializeFromString(const std::string& data);
 };

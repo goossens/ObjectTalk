@@ -68,8 +68,14 @@ private:
 	void renderChildEntities(OtEntity entity);
 	void renderNewEntitiesMenu(OtEntity entity);
 
+	template <typename T>
+	void renderNewComponent();
+
 	template<typename T>
-	void renderComponent(const std::string& name);
+	void renderComponent(bool canRemove=true);
+
+	// handle keyboard shortcuts
+	void handleShortcuts();
 
 	// file actions
 	void run();

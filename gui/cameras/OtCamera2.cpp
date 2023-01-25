@@ -11,6 +11,7 @@
 
 #include "glm/ext.hpp"
 #include "imgui.h"
+#include "nlohmann/json.hpp"
 
 #include "OtCamera2.h"
 
@@ -21,6 +22,7 @@
 
 void OtCamera2Class::updateViewMatrix() {
 	viewMatrix = glm::lookAt(position, target, up);
+	OtCamera2Class::updateDerived();
 }
 
 
@@ -29,7 +31,7 @@ void OtCamera2Class::updateViewMatrix() {
 //
 
 void OtCamera2Class::updateDerived() {
-	// derived classes are responsible for setting the projection and view matrices
+	// derived classes are responsible for setting the projection matrix
 	viewProjMatrix = projMatrix * viewMatrix;
 	frustum = OtFrustum(viewProjMatrix);
 }
@@ -39,16 +41,53 @@ void OtCamera2Class::updateDerived() {
 //	OtCamera2Class::renderGUI
 //
 
-void OtCamera2Class::renderGUI() {
+bool OtCamera2Class::renderGUI() {
 	bool changed = false;
-
-	if (ImGui::InputFloat3("Position", glm::value_ptr(position))) { changed = true; }
-	if (ImGui::InputFloat3("Target", glm::value_ptr(target))) { changed = true; }
-	if (ImGui::SliderFloat3("Up", glm::value_ptr(up), -1.0f, 1.0f)) { changed = true; }
+	changed |= ImGui::InputFloat3("Position", glm::value_ptr(position));
+	changed |= ImGui::InputFloat3("Target", glm::value_ptr(target));
+	changed |= ImGui::SliderFloat3("Up", glm::value_ptr(up), -1.0f, 1.0f);
 
 	if (changed) {
 		updateViewMatrix();
 	}
+
+	return changed;
+}
+
+
+//
+//	OtCamera2Class::serialize
+//
+
+nlohmann::json OtCamera2Class::serialize() {
+	auto data = nlohmann::json::object();
+	return data;
+}
+
+
+//
+//	OtCamera2Class::deserialize
+//
+
+void OtCamera2Class::deserialize(nlohmann::json data) {
+}
+
+
+//
+//	OtCamera2Class::serializeToString
+//
+
+std::string OtCamera2Class::serializeToString() {
+	 return serialize().dump();
+}
+
+
+//
+//	OtCamera2Class::deserializeFromString
+//
+
+void OtCamera2Class::deserializeFromString(const std::string& data) {
+	return deserialize(nlohmann::json::parse(data));
 }
 
 

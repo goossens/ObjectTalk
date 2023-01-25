@@ -29,9 +29,6 @@ public:
 	OtTransformComponent(const glm::vec3& t, const glm::vec3& r, const glm::vec3& s) :
 		translation(t), rotation(r), scale(s), active(true) {}
 
-	// return component name
-	static const char* getName() { return "Transform"; }
-
 	// get the full transform
 	glm::mat4 getTransform() const;
 
@@ -44,6 +41,9 @@ public:
 	// (de)serialize component
 	nlohmann::json serialize() override;
 	void deserialize(nlohmann::json data) override;
+
+	// component name
+	static constexpr char const* name = "Transform";
 
 	// properties
 	glm::vec3 translation = { 0.0f, 0.0f, 0.0f };

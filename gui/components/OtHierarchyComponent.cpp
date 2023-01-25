@@ -20,6 +20,7 @@
 
 nlohmann::json OtHierarchyComponent::serialize() {
 	auto data = nlohmann::json::object();
+	data["component"] = name;
 	return data;
 }
 

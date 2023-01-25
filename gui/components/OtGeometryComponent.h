@@ -24,12 +24,12 @@ public:
 	// constructors
 	OtGeometryComponent() = default;
 
-	// return component name
-	static const char* getName() { return "Geometry"; }
-
 	// (de)serialize component
 	nlohmann::json serialize() override;
 	void deserialize(nlohmann::json data) override;
+
+	// component name
+	static constexpr char const* name = "Geometry";
 
 	// properties
 	bool active = true;

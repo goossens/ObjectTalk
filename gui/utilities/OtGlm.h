@@ -16,34 +16,14 @@
 
 #include "glm/glm.hpp"
 #include "glm/gtx/io.hpp"
+#include "nlohmann/json_fwd.hpp"
 
 #include "OtNumbers.h"
 
 
 //
-//	Functions
+//	Calculation functions
 //
-
-inline void OtGlmDebug(const glm::vec2& v) {
-	std::cout << v << std::endl;
-}
-
-inline void OtGlmDebug(const glm::vec3& v) {
-	std::cout << v << std::endl;
-}
-
-inline void OtGlmDebug(const glm::vec4& v) {
-	std::cout << v << std::endl;
-}
-
-
-inline void OtGlmDebug(const glm::mat3& m) {
-	std::cout << m << std::endl;
-}
-
-inline void OtGlmDebug(const glm::mat4& m) {
-	std::cout << m << std::endl;
-}
 
 inline glm::vec3 OtGlmMul(const glm::mat4& m, const glm::vec3& v) {
 	auto r = m * glm::vec4(v, 1.0);
@@ -81,4 +61,43 @@ inline glm::vec3 OtGlmUvToNormal(const glm::vec2& uv) {
 	return OtGlmLatLonToNormal(glm::vec2(
 		(uv.y * -std::numbers::pi) + std::numbers::pi,
 		uv.x * std::numbers::pi * 2.0 - std::numbers::pi));
+}
+
+
+//
+//	(De)serialization to/from JSON
+//
+
+namespace glm {
+	void to_json(nlohmann::json& j, const glm::vec3& v);
+	void to_json(nlohmann::json& j, const glm::vec4& v);
+
+	void from_json(const nlohmann::json& j, glm::vec3& v);
+	void from_json(const nlohmann::json& j, glm::vec4& v);
+}
+
+
+//
+//	Debug functions
+//
+
+inline void OtGlmDebug(const glm::vec2& v) {
+	std::cout << v << std::endl;
+}
+
+inline void OtGlmDebug(const glm::vec3& v) {
+	std::cout << v << std::endl;
+}
+
+inline void OtGlmDebug(const glm::vec4& v) {
+	std::cout << v << std::endl;
+}
+
+
+inline void OtGlmDebug(const glm::mat3& m) {
+	std::cout << m << std::endl;
+}
+
+inline void OtGlmDebug(const glm::mat4& m) {
+	std::cout << m << std::endl;
 }

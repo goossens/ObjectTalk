@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include "nlohmann/json_fwd.hpp"
+
 #include "OtController.h"
 #include "OtPerspectiveCamera.h"
 
@@ -36,13 +38,20 @@ public:
 	float getYaw() { return yaw; }
 
 	// GUI to change camera properties
-	void renderGUI() override;
+	bool renderGUI() override;
+
+	// (de)serialize component
+	nlohmann::json serialize() override;
+	void deserialize(nlohmann::json data) override;
 
 	// get type definition
 	static OtType getMeta();
 
 	// create a new object
 	static OtOrbitalCamera create();
+
+	// camera name
+	static constexpr char const* name = "Orbital Perspective";
 
 private:
 	// update the view matrix when camera settings are changed

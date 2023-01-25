@@ -12,11 +12,8 @@
 //	Include files
 //
 
-#include "OtComponent.h"
-
-#include "OtUuidComponent.h"
-#include "OtTagComponent.h"
-#include "OtHierarchyComponent.h"
-#include "OtTransformComponent.h"
-#include "OtCameraComponent.h"
-#include "OtGeometryComponent.h"
+#include "OtCamera2.h"
+#include "OtPerspectiveCamera.h"
+#include "OtOrbitalCamera.h"
+#include "OtFirstPersonCamera.h"
+#include "OtOrthographicCamera.h"

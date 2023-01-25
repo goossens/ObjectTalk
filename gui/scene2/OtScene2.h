@@ -131,8 +131,8 @@ public:
 	uint32_t getUuidFromEntity(OtEntity entity) { return mapEntityToUuid[entity]; }
 	OtEntity getEntityFromUuid(uint32_t uuid) { return mapUuidToEntity[uuid]; }
 
-	// change an entity's UUID and update translation tables
-	void updateEntityUuid(OtEntity entity, uint32_t uuid);
+	// assign new UUIDs to an entity and all its children
+	void assignNewEntityUUids(OtEntity entity);
 
 	// hierarchy support functions
 	void addEntityToParent(OtEntity parent, OtEntity child);
@@ -142,7 +142,7 @@ public:
 
 	// (de)serialize the scene
 	std::string serialize(int indent=-1, char character=' ');
-	void deserialize(const std::string& data, bool preserveUuid=true);
+	void deserialize(const std::string& data);
 
 	// get type definition
 	static OtType getMeta();

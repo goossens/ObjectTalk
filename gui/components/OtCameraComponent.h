@@ -14,21 +14,22 @@
 
 #include <string>
 
+#include "OtCamera2.h"
 #include "OtComponent.h"
 
 
 //
-//	OtNameComponent
+//	OtCameraComponent
 //
 
-class OtNameComponent : public OtComponent {
+class OtCameraComponent : public OtComponent {
 public:
 	// constructors
-	OtNameComponent() = default;
-	OtNameComponent(const std::string& n) : name(n) {}
+	OtCameraComponent();
+	OtCameraComponent(const std::string& type);
 
-	// return component name
-	static const char* getName() { return "Name"; }
+	// update the camera instance after type property change
+	void updateCamera();
 
 	// GUI to change component properties
 	bool renderGUI() override;
@@ -37,6 +38,10 @@ public:
 	nlohmann::json serialize() override;
 	void deserialize(nlohmann::json data) override;
 
+	// component name
+	static constexpr char const* name = "Camera";
+
 	// properties
-	std::string name;
+	std::string type = "Perspective";
+	OtCamera2 camera;
 };

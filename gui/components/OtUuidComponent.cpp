@@ -9,9 +9,32 @@
 //	Include files
 //
 
+#include <random>
+
 #include "nlohmann/json.hpp"
 
 #include "OtUuidComponent.h"
+
+
+//
+//	OtUuidComponent::OtUuidComponent
+//
+
+OtUuidComponent::OtUuidComponent() {
+	assignNewUuid();
+}
+
+
+//
+//	OtUuidComponent::assignNewUuid
+//
+
+void OtUuidComponent::assignNewUuid() {
+	static std::random_device device;
+	static std::mt19937_64 engine(device());
+	static std::uniform_int_distribution<uint32_t> distribution;
+	uuid = distribution(engine);
+}
 
 
 //
@@ -20,7 +43,7 @@
 
 nlohmann::json OtUuidComponent::serialize() {
 	auto data = nlohmann::json::object();
-	data["type"] = "uuid";
+	data["component"] = name;
 	data["uuid"] = uuid;
 	return data;
 }

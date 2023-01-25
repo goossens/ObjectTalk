@@ -13,6 +13,7 @@
 //
 
 #include "glm/glm.hpp"
+#include "nlohmann/json_fwd.hpp"
 
 #include "OtFrustum.h"
 #include "OtGui.h"
@@ -43,10 +44,20 @@ public:
 	OtFrustum& getFrustum() { return frustum; }
 
 	// GUI to change camera properties
-	virtual void renderGUI();
+	virtual bool renderGUI();
+
+	// (de)serialize component
+	virtual nlohmann::json serialize();
+	virtual void deserialize(nlohmann::json data);
+
+	std::string serializeToString();
+	void deserializeFromString(const std::string& data);
 
 	// get type definition
 	static OtType getMeta();
+
+	// camera name
+	static constexpr char const* name = "Camera";
 
 protected:
 	// update camera

@@ -289,13 +289,15 @@ void OtSceneEditorClass::renderComponentsPanel() {
 		[this]() {
 			// create menu to add components
 			renderNewComponent<OtTransformComponent>();
+			renderNewComponent<OtCameraComponent>();
 			renderNewComponent<OtGeometryComponent>();
 		},
 		[this]() {
 			// render component editors if we have a selected entity
 			if (scene->isValidEntity(selectedEntity)) {
-				renderComponent<OtNameComponent>(false);
+				renderComponent<OtTagComponent>(false);
 				renderComponent<OtTransformComponent>();
+				renderComponent<OtCameraComponent>();
 				renderComponent<OtGeometryComponent>();
 		}
 	});
@@ -415,8 +417,8 @@ void OtSceneEditorClass::renderEntity(OtEntity entity) {
 
 	// create a tree node
 	ImGui::PushID(createID(entity, 1));
-	auto& name = scene->getComponent<OtNameComponent>(entity).name;
-	bool open = ImGui::TreeNodeEx("node", flags, "%s", name.c_str());
+	auto tag = scene->getComponent<OtTagComponent>(entity).tag;
+	bool open = ImGui::TreeNodeEx("node", flags, "%s", tag.c_str());
 
 	// is this entity selected
 	if (entity == selectedEntity) {
@@ -429,7 +431,7 @@ void OtSceneEditorClass::renderEntity(OtEntity entity) {
 	// entities are drag sources
 	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
 		ImGui::SetDragDropPayload("entity", &entity, sizeof(entity));
-		ImGui::Text("%s", name.c_str());
+		ImGui::Text("%s", tag.c_str());
 		ImGui::EndDragDropSource();
 	}
 
@@ -549,7 +551,7 @@ void OtSceneEditorClass::renderNewEntitiesMenu(OtEntity entity) {
 
 template <typename T>
 void OtSceneEditorClass::renderNewComponent() {
-	if (ImGui::MenuItem(T::getName(), nullptr, false, !scene->hasComponent<T>(selectedEntity))) {
+	if (ImGui::MenuItem(T::name, nullptr, false, !scene->hasComponent<T>(selectedEntity))) {
 		nextTask = std::make_shared<OtCreateComponentTask<T>>( scene, selectedEntity);
 	}
 }
@@ -574,7 +576,7 @@ void OtSceneEditorClass::renderComponent(bool canRemove) {
 			ImGuiTreeNodeFlags_SpanAvailWidth |
 			ImGuiTreeNodeFlags_AllowItemOverlap;
 
-		bool open = ImGui::TreeNodeEx("##header", flags, "%s", T::getName());
+		bool open = ImGui::TreeNodeEx("##header", flags, T::name);
 		bool removeComponent = false;
 
 		// add button to remove the component

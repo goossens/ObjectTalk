@@ -12,27 +12,31 @@
 //	Include files
 //
 
+#include <string>
+
 #include "OtComponent.h"
-#include "OtEntity.h"
 
 
 //
-//	OtHierarchyComponent
+//	OtTagComponent
 //
 
-class OtHierarchyComponent : public OtComponent {
+class OtTagComponent : public OtComponent {
 public:
+	// constructors
+	OtTagComponent() = default;
+	OtTagComponent(const std::string& t) : tag(t) {}
+
+	// GUI to change component properties
+	bool renderGUI() override;
+
 	// (de)serialize component
 	nlohmann::json serialize() override;
 	void deserialize(nlohmann::json data) override;
 
 	// component name
-	static constexpr char const* name = "Hierarchy";
+	static constexpr char const* name = "Tag";
 
 	// properties
-	OtEntity parent = OtEntityNull;
-	OtEntity firstChild = OtEntityNull;
-	OtEntity lastChild = OtEntityNull;
-	OtEntity previousSibling = OtEntityNull;
-	OtEntity nextSibling = OtEntityNull;
+	std::string tag;
 };

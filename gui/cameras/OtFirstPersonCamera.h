@@ -12,10 +12,11 @@
 //	Include files
 //
 
+#include "glm/glm.hpp"
+#include "nlohmann/json_fwd.hpp"
+
 #include "OtController.h"
 #include "OtPerspectiveCamera.h"
-
-#include "glm/glm.hpp"
 
 
 //
@@ -40,13 +41,20 @@ public:
 	glm::vec3& getRight() { return right; }
 
 	// GUI to change camera properties
-	void renderGUI() override;
+	bool renderGUI() override;
+
+	// (de)serialize component
+	nlohmann::json serialize() override;
+	void deserialize(nlohmann::json data) override;
 
 	// get type definition
 	static OtType getMeta();
 
 	// create a new object
 	static OtFirstPersonCamera create();
+
+	// camera name
+	static constexpr char const* name = "First Person Perspective";
 
 private:
 	// update the view matrix when camera settings are changed

@@ -13,6 +13,7 @@
 //
 
 #include "glm/glm.hpp"
+#include "nlohmann/json_fwd.hpp"
 
 #include "OtCamera2.h"
 #include "OtController.h"
@@ -39,10 +40,17 @@ public:
 	float getFar() { return far; }
 
 	// GUI to change camera properties
-	void renderGUI() override;
+	bool renderGUI() override;
+
+	// (de)serialize component
+	nlohmann::json serialize() override;
+	void deserialize(nlohmann::json data) override;
 
 	// get type definition
 	static OtType getMeta();
+
+	// camera name
+	static constexpr char const* name = "Perspective";
 
 	// create a new object
 	static OtPerspectiveCamera create();

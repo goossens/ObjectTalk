@@ -32,7 +32,8 @@ public:
 	// perform action
 	virtual void perform() {
 		// create an entity from the clipboard content (without preserving UUIDs, i.e. new copies)
-		auto entity = OtEntityDeserializeFromString(scene, clipboard, false);
+		auto entity = OtEntityDeserializeFromString(scene, clipboard);
+		scene->assignNewEntityUUids(entity);
 		entityUuid = scene->getUuidFromEntity(entity);
 
 		// add it to the target

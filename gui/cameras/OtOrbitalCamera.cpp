@@ -13,6 +13,7 @@
 
 #include "glm/ext.hpp"
 #include "imgui.h"
+#include "nlohmann/json.hpp"
 
 #include "OtOrbitalCamera.h"
 
@@ -36,21 +37,46 @@ void OtOrbitalCameraClass::updateViewMatrix() {
 //	OtOrbitalCameraClass::renderGUI
 //
 
-void OtOrbitalCameraClass::renderGUI() {
-	bool changed = false;
+bool OtOrbitalCameraClass::renderGUI() {
+	bool viewChanged = false;
+	bool projectionChanged = false;
 
-	if (ImGui::SliderFloat("FoV (Deg)", &fov, 10, 160)) { changed = true; }
-	if (ImGui::DragFloat("Near Clipping", &near, 1.0, 0.0, 0.0, ".0f")) { changed = true; }
-	if (ImGui::DragFloat("Far Clipping", &far, 1.0, 0.0, 0.0, ".0f")) { changed = true; }
+	viewChanged |= ImGui::InputFloat3("Target", glm::value_ptr(target));
+	viewChanged |= ImGui::DragFloat("Distance", &distance, 1.0, 0.0, 0.0, "%.2f");
+	viewChanged |= ImGui::DragFloat("Pitch", &pitch, 0.1, 0.0, 0.0, "%.2f");
+	viewChanged |= ImGui::DragFloat("Yaw", &yaw, 0.1, 0.0, 0.0, "%.2f");
 
-	if (ImGui::InputFloat3("Target", glm::value_ptr(target))) { changed = true; }
-	if (ImGui::DragFloat("Distance", &distance, 1.0, 0.0, 0.0, "%.2f")) { changed = true; }
-	if (ImGui::DragFloat("Pitch", &pitch, 0.1, 0.0, 0.0, "%.2f")) { changed = true; }
-	if (ImGui::DragFloat("Yaw", &yaw, 0.1, 0.0, 0.0, "%.2f")) { changed = true; }
-
-	if (changed) {
+	if (viewChanged) {
 		updateViewMatrix();
 	}
+
+	projectionChanged |= ImGui::SliderFloat("FoV (Deg)", &fov, 10, 160);
+	projectionChanged |= ImGui::DragFloat("Near Clipping", &near, 1.0, 0.0, 0.0, ".0f");
+	projectionChanged |= ImGui::DragFloat("Far Clipping", &far, 1.0, 0.0, 0.0, ".0f");
+
+	if (projectionChanged) {
+		OtPerspectiveCameraClass::updateProjectionMatrix();
+	}
+
+	return viewChanged || projectionChanged;
+}
+
+
+//
+//	OtOrbitalCameraClass::serialize
+//
+
+nlohmann::json OtOrbitalCameraClass::serialize() {
+	auto data = nlohmann::json::object();
+	return data;
+}
+
+
+//
+//	OtOrbitalCameraClass::deserialize
+//
+
+void OtOrbitalCameraClass::deserialize(nlohmann::json data) {
 }
 
 

@@ -24,15 +24,18 @@
 class OtUuidComponent : public OtComponent {
 public:
 	// constructors
-	OtUuidComponent() = default;
+	OtUuidComponent();
 	OtUuidComponent(uint32_t u) : uuid(u) {}
 
-	// return component name
-	static const char* getName() { return "UUID"; }
+	// assign a new UUI to the component
+	void assignNewUuid();
 
 	// (de)serialize component
 	nlohmann::json serialize() override;
 	void deserialize(nlohmann::json data) override;
+
+	// component name
+	static constexpr char const* name = "UUID";
 
 	// properties
 	uint32_t uuid;

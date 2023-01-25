@@ -14,6 +14,7 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
+#include "OtGlm.h"
 #include "OtTransformComponent.h"
 #include "OtUi.h"
 
@@ -63,10 +64,10 @@ bool OtTransformComponent::renderGUI() {
 
 nlohmann::json OtTransformComponent::serialize() {
 	auto data = nlohmann::json::object();
-	data["type"] = "transform";
-	data["translation"] = { translation.x, translation.y, translation.z };
-	data["rotation"] = { rotation.x, rotation.y, rotation.z };
-	data["scale"] = { scale.x, scale.y, scale.z };
+	data["component"] = name;
+	data["translation"] = translation;
+	data["rotation"] = rotation;
+	data["scale"] = scale;
 	return data;
 }
 
@@ -76,15 +77,7 @@ nlohmann::json OtTransformComponent::serialize() {
 //
 
 void OtTransformComponent::deserialize(nlohmann::json data) {
-	translation.x = data["translation"][0];
-	translation.y = data["translation"][1];
-	translation.z = data["translation"][2];
-
-	rotation.x = data["rotation"][0];
-	rotation.y = data["rotation"][1];
-	rotation.z = data["rotation"][2];
-
-	scale.x = data["scale"][0];
-	scale.y = data["scale"][1];
-	scale.z = data["scale"][2];
+	translation = data["translation"];
+	rotation = data["rotation"];
+	scale = data["scale"];
 }

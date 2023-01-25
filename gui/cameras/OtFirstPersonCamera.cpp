@@ -11,7 +11,9 @@
 
 #include <cmath>
 
+#include "glm/ext.hpp"
 #include "imgui.h"
+#include "nlohmann/json.hpp"
 
 #include "OtFirstPersonCamera.h"
 
@@ -33,7 +35,7 @@ void OtFirstPersonCameraClass::updateViewMatrix() {
 	// calculate right vector
 	right = glm::normalize(glm::cross(forward, up));
 
-	// update matrices
+	// update matrix
 	OtPerspectiveCameraClass::updateViewMatrix();
 }
 
@@ -42,20 +44,46 @@ void OtFirstPersonCameraClass::updateViewMatrix() {
 //	OtFirstPersonCameraClass::renderGUI
 //
 
-void OtFirstPersonCameraClass::renderGUI() {
-	bool changed = false;
+bool OtFirstPersonCameraClass::renderGUI() {
+	bool viewChanged = false;
+	bool projectionChanged = false;
 
-	if (ImGui::SliderFloat("FoV (Deg)", &fov, 10, 160)) { changed = true; }
-	if (ImGui::DragFloat("Near Clipping", &near, 1.0, 0.0, 0.0, ".0f")) { changed = true; }
-	if (ImGui::DragFloat("Far Clipping", &far, 1.0, 0.0, 0.0, ".0f")) { changed = true; }
+	viewChanged |= ImGui::InputFloat3("Position", glm::value_ptr(position));
+	viewChanged |= ImGui::DragFloat("Distance", &distance, 1.0, 0.0, 0.0, "%.2f");
+	viewChanged |= ImGui::DragFloat("Pitch", &pitch, 0.1, 0.0, 0.0, "%.2f");
+	viewChanged |= ImGui::DragFloat("Yaw", &yaw, 0.1, 0.0, 0.0, "%.2f");
 
-	if (ImGui::DragFloat("Distance", &distance, 1.0, 0.0, 0.0, "%.2f")) { changed = true; }
-	if (ImGui::DragFloat("Pitch", &pitch, 0.1, 0.0, 0.0, "%.2f")) { changed = true; }
-	if (ImGui::DragFloat("Yaw", &yaw, 0.1, 0.0, 0.0, "%.2f")) { changed = true; }
-
-	if (changed) {
+	if (viewChanged) {
 		updateViewMatrix();
 	}
+
+	projectionChanged |= ImGui::SliderFloat("FoV (Deg)", &fov, 10, 160);
+	projectionChanged |= ImGui::DragFloat("Near Clipping", &near, 1.0, 0.0, 0.0, ".0f");
+	projectionChanged |= ImGui::DragFloat("Far Clipping", &far, 1.0, 0.0, 0.0, ".0f");
+
+	if (projectionChanged) {
+		OtPerspectiveCameraClass::updateProjectionMatrix();
+	}
+
+	return viewChanged || projectionChanged;
+}
+
+
+//
+//	OtFirstPersonCameraClass::serialize
+//
+
+nlohmann::json OtFirstPersonCameraClass::serialize() {
+	auto data = nlohmann::json::object();
+	return data;
+}
+
+
+//
+//	OtFirstPersonCameraClass::deserialize
+//
+
+void OtFirstPersonCameraClass::deserialize(nlohmann::json data) {
 }
 
 

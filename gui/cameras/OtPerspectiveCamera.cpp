@@ -11,6 +11,7 @@
 
 #include "glm/ext.hpp"
 #include "imgui.h"
+#include "nlohmann/json.hpp"
 
 #include "OtGpu.h"
 #include "OtPerspectiveCamera.h"
@@ -33,18 +34,18 @@ void OtPerspectiveCameraClass::updateProjectionMatrix() {
 //	OtPerspectiveCameraClass::renderGUI
 //
 
-void OtPerspectiveCameraClass::renderGUI() {
-	OtCamera2Class::renderGUI();
+bool OtPerspectiveCameraClass::renderGUI() {
+	bool changed = OtCamera2Class::renderGUI();
 
-	bool changed = false;
-
-	if (ImGui::SliderFloat("FoV (Deg)", &fov, 10, 160)) { changed = true; }
-	if (ImGui::DragFloat("Near Clipping", &near, 1.0, 0.0, 0.0, ".0f")) { changed = true; }
-	if (ImGui::DragFloat("Far Clipping", &far, 1.0, 0.0, 0.0, ".0f")) { changed = true; }
+	changed |= ImGui::SliderFloat("FoV (Deg)", &fov, 10, 160);
+	changed |= ImGui::DragFloat("Near Clipping", &near, 1.0, 0.0, 0.0, ".0f");
+	changed |= ImGui::DragFloat("Far Clipping", &far, 1.0, 0.0, 0.0, ".0f");
 
 	if (changed) {
 		updateProjectionMatrix();
 	}
+
+	return changed;
 }
 
 
@@ -60,6 +61,24 @@ OtType OtPerspectiveCameraClass::getMeta() {
 	}
 
 	return type;
+}
+
+
+//
+//	OtPerspectiveCameraClass::serialize
+//
+
+nlohmann::json OtPerspectiveCameraClass::serialize() {
+	auto data = nlohmann::json::object();
+	return data;
+}
+
+
+//
+//	OtPerspectiveCameraClass::deserialize
+//
+
+void OtPerspectiveCameraClass::deserialize(nlohmann::json data) {
 }
 
 

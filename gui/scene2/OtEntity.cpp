@@ -34,13 +34,13 @@ nlohmann::json OtEntitySerialize(OtScene2 scene, OtEntity entity) {
 	// serialize the components
 	auto components = nlohmann::json::array();
 	SerializeComponent<OtUuidComponent>(components, scene, entity);
-	SerializeComponent<OtNameComponent>(components, scene, entity);
+	SerializeComponent<OtTagComponent>(components, scene, entity);
+	SerializeComponent<OtCameraComponent>(components, scene, entity);
 	SerializeComponent<OtTransformComponent>(components, scene, entity);
 	data["components"] = components;
 
 	// serialize the children
 	auto children = nlohmann::json::array();
-	auto hierarchy = nlohmann::json::array();
 
 	scene->eachChild(entity, [&](OtEntity child) {
 		children.push_back(OtEntitySerialize(scene, child));
@@ -55,30 +55,34 @@ nlohmann::json OtEntitySerialize(OtScene2 scene, OtEntity entity) {
 //	OtEntityDeserialize
 //
 
-OtEntity OtEntityDeserialize(OtScene2 scene, nlohmann::json data, bool preserveUuid) {
+OtEntity OtEntityDeserialize(OtScene2 scene, nlohmann::json data) {
 	// create a new entity
 	auto entity = scene->createEntity();
 
 	// create all its components
 	for (auto component : data["components"]) {
-		auto type = component["type"];
+		auto type = component["component"];
 
-		if (type == "uuid") {
-			if (preserveUuid) {
-				scene->updateEntityUuid(entity, component["uuid"]);
-			}
+		if (type == OtUuidComponent::name) {
+			scene->getComponent<OtUuidComponent>(entity).deserialize(component);
 
-		} else if (type == "name") {
-			scene->getComponent<OtNameComponent>(entity).deserialize(component);
+		} else if (type == OtTagComponent::name) {
+			scene->getComponent<OtTagComponent>(entity).deserialize(component);
 
-		} else if (type == "transform") {
+		} else if (type == OtCameraComponent::name) {
+			scene->addComponent<OtCameraComponent>(entity).deserialize(component);
+
+		} else if (type == OtTransformComponent::name) {
 			scene->addComponent<OtTransformComponent>(entity).deserialize(component);
+
+		} else if (type == OtCameraComponent::name) {
+			scene->addComponent<OtCameraComponent>(entity).deserialize(component);
 		}
 	}
 
 	// create all its children
 	for (auto child : data["children"]) {
-		scene->addEntityToParent(entity, OtEntityDeserialize(scene, child, preserveUuid));
+		scene->addEntityToParent(entity, OtEntityDeserialize(scene, child));
 	}
 
 	return entity;
@@ -98,6 +102,6 @@ std::string OtEntitySerializeToString(OtScene2 scene, OtEntity entity) {
 //	OtEntityDeserializeFromString
 //
 
-OtEntity OtEntityDeserializeFromString(OtScene2 scene, const std::string &data, bool preserveUuid) {
-	return OtEntityDeserialize(scene, nlohmann::json::parse(data), preserveUuid);
+OtEntity OtEntityDeserializeFromString(OtScene2 scene, const std::string &data) {
+	return OtEntityDeserialize(scene, nlohmann::json::parse(data));
 }

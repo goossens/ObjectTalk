@@ -35,7 +35,8 @@ public:
 	virtual void perform() {
 		// duplicate the target entity
 		auto target = scene->getEntityFromUuid(targetUuid);
-		auto entity = OtEntityDeserialize(scene, OtEntitySerialize(scene, target), false);
+		auto entity = OtEntityDeserialize(scene, OtEntitySerialize(scene, target));
+		scene->assignNewEntityUUids(entity);
 		entityUuid = scene->getUuidFromEntity(entity);
 
 		// add duplicate after target

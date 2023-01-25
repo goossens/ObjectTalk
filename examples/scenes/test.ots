@@ -1,18 +1,36 @@
 [
 	{
+		"children": [],
+		"components": [
+			{
+				"component": "UUID",
+				"uuid": 4024814341
+			},
+			{
+				"component": "Tag",
+				"tag": "Scene Camera"
+			},
+			{
+				"component": "Camera",
+				"type": "First Person Perspective"
+			}
+		]
+	},
+	{
 		"children": [
 			{
 				"children": [],
 				"components": [
 					{
-						"type": "uuid",
+						"component": "UUID",
 						"uuid": 1957313696
 					},
 					{
-						"name": "Child",
-						"type": "name"
+						"component": "Tag",
+						"tag": "Child"
 					},
 					{
+						"component": "Transform",
 						"rotation": [
 							0.0,
 							0.0,
@@ -27,20 +45,19 @@
 							0.0,
 							0.0,
 							0.0
-						],
-						"type": "transform"
+						]
 					}
 				]
 			}
 		],
 		"components": [
 			{
-				"type": "uuid",
+				"component": "UUID",
 				"uuid": 2354452319
 			},
 			{
-				"name": "Parent",
-				"type": "name"
+				"component": "Tag",
+				"tag": "Parent"
 			}
 		]
 	},
@@ -48,12 +65,12 @@
 		"children": [],
 		"components": [
 			{
-				"type": "uuid",
-				"uuid": 9936982084
+				"component": "UUID",
+				"uuid": 1347047492
 			},
 			{
-				"name": "Other",
-				"type": "name"
+				"component": "Tag",
+				"tag": "Other"
 			}
 		]
 	}

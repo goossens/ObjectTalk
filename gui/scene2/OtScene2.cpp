@@ -62,7 +62,7 @@ OtEntity OtScene2Class::createEntity() {
 
 	// add default components
 	addComponent<OtUuidComponent>(entity).uuid = uuid;
-	addComponent<OtNameComponent>(entity).name = "untitled";
+	addComponent<OtTagComponent>(entity).tag = "untitled";
 	addComponent<OtHierarchyComponent>(entity);
 	return entity;
 }
@@ -87,10 +87,10 @@ OtEntity OtScene2Class::createEntity(OtEntity parent) {
 //
 
 OtEntity OtScene2Class::getEntity(const std::string &name) {
-	auto view = registry.view<OtNameComponent>();
+	auto view = registry.view<OtTagComponent>();
 
-	for (auto entity : registry.view<OtNameComponent>()) {
-		if (view.get<OtNameComponent>(entity).name == name) {
+	for (auto entity : registry.view<OtTagComponent>()) {
+		if (view.get<OtTagComponent>(entity).name == name) {
 			return entity;
 		}
 	}
@@ -165,30 +165,37 @@ std::string OtScene2Class::serialize(int indent, char character) {
 //	OtScene2Class::deserialize
 //
 
-void OtScene2Class::deserialize(const std::string& data, bool preserveUuid) {
+void OtScene2Class::deserialize(const std::string& data) {
 	auto tree = nlohmann::json::parse(data);
 
 	for (auto& entity : tree) {
-		addEntityToParent(root, OtEntityDeserialize(cast<OtScene2Class>(), entity, preserveUuid));
+		addEntityToParent(root, OtEntityDeserialize(cast<OtScene2Class>(), entity));
 	}
 }
 
 
 //
-//	OtScene2Class::updateEntityUuid
+//	OtScene2Class::assignNewEntityUUids
 //
 
-void OtScene2Class::updateEntityUuid(OtEntity entity, uint32_t uuid) {
+void OtScene2Class::assignNewEntityUUids(OtEntity entity) {
 	// remove old mappings
 	mapUuidToEntity.erase(mapEntityToUuid[entity]);
 	mapEntityToUuid.erase(entity);
 
-	// store new UUID
-	getComponent<OtUuidComponent>(entity).uuid = uuid;
+	// assign new UUID to entity
+	auto& component = getComponent<OtUuidComponent>(entity);
+	component.assignNewUuid();
 
 	// create new mappings
+	auto uuid = component.uuid;
 	mapUuidToEntity[uuid] = entity;
 	mapEntityToUuid[entity] = uuid;
+
+	// assign new UUIDs to entity and all its children
+	eachChild(entity, [this](OtEntity child) {
+		assignNewEntityUUids(child);
+	});
 }
 
 

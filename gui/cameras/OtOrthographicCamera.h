@@ -13,6 +13,7 @@
 //
 
 #include "glm/glm.hpp"
+#include "nlohmann/json_fwd.hpp"
 
 #include "OtCamera2.h"
 #include "OtController.h"
@@ -44,13 +45,20 @@ public:
 	float getFar() { return far; }
 
 	// GUI to change camera properties
-	void renderGUI() override;
+	bool renderGUI() override;
+
+	// (de)serialize component
+	nlohmann::json serialize() override;
+	void deserialize(nlohmann::json data) override;
 
 	// get type definition
 	static OtType getMeta();
 
 	// create a new object
 	static OtOrthographicCamera create();
+
+	// camera name
+	static constexpr char const* name = "Orthograpic";
 
 protected:
 	// update the matrices when camera settings are changed

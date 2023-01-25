@@ -13,34 +13,34 @@
 #include "nlohmann/json.hpp"
 
 #include "OtUi.h"
-#include "OtNameComponent.h"
+#include "OtTagComponent.h"
 
 
 //
-//	OtNameComponent::renderGUI
+//	OtTagComponent::renderGUI
 //
 
-bool OtNameComponent::renderGUI() {
-	return OtUiInputText("##", name);
+bool OtTagComponent::renderGUI() {
+	return OtUiInputText("##", tag);
 }
 
 
 //
-//	OtNameComponent::serialize
+//	OtTagComponent::serialize
 //
 
-nlohmann::json OtNameComponent::serialize() {
+nlohmann::json OtTagComponent::serialize() {
 	auto data = nlohmann::json::object();
-	data["type"] = "name";
-	data["name"] = name;
+	data["component"] = name;
+	data["tag"] = tag;
 	return data;
 }
 
 
 //
-//	OtNameComponent::deserialize
+//	OtTagComponent::deserialize
 //
 
-void OtNameComponent::deserialize(nlohmann::json data) {
-	name = data["name"];
+void OtTagComponent::deserialize(nlohmann::json data) {
+	tag = data["tag"];
 }

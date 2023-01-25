@@ -11,6 +11,7 @@
 
 #include "glm/ext.hpp"
 #include "imgui.h"
+#include "nlohmann/json.hpp"
 
 #include "OtGpu.h"
 #include "OtOrthographicCamera.h"
@@ -84,18 +85,36 @@ void OtOrthographicCameraClass::updateProjectionMatrix() {
 //	OtOrthographicCameraClass::renderGUI
 //
 
-void OtOrthographicCameraClass::renderGUI() {
-	OtCamera2Class::renderGUI();
+bool OtOrthographicCameraClass::renderGUI() {
+	bool changed = OtCamera2Class::renderGUI();
 
-	bool changed = false;
-
-	if (ImGui::DragFloat("Width", &width, 1.0, 0.0, 0.0, ".0f")) { changed = true; }
-	if (ImGui::DragFloat("Near Clipping", &near, 1.0, 0.0, 0.0, ".0f")) { changed = true; }
-	if (ImGui::DragFloat("Far Clipping", &far, 1.0, 0.0, 0.0, ".0f")) { changed = true; }
+	changed |= ImGui::DragFloat("Width", &width, 1.0, 0.0, 0.0, ".0f");
+	changed |= ImGui::DragFloat("Near Clipping", &near, 1.0, 0.0, 0.0, ".0f");
+	changed |= ImGui::DragFloat("Far Clipping", &far, 1.0, 0.0, 0.0, ".0f");
 
 	if (changed) {
 		updateProjectionMatrix();
 	}
+
+	return changed;
+}
+
+
+//
+//	OtOrthographicCameraClass::serialize
+//
+
+nlohmann::json OtOrthographicCameraClass::serialize() {
+	auto data = nlohmann::json::object();
+	return data;
+}
+
+
+//
+//	OtOrthographicCameraClass::deserialize
+//
+
+void OtOrthographicCameraClass::deserialize(nlohmann::json data) {
 }
 
 

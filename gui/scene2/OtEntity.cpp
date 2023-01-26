@@ -27,16 +27,18 @@ static inline void SerializeComponent(nlohmann::json& json, OtScene2 scene, OtEn
 	}
 }
 
+template<typename... T>
+static inline void SerializeComponents(nlohmann::json& json, OtScene2 scene, OtEntity entity) {
+	(SerializeComponent<T>(json, scene, entity), ...);
+}
+
 nlohmann::json OtEntitySerialize(OtScene2 scene, OtEntity entity) {
 	// serialize the entity information
 	auto data = nlohmann::json::object();
 
 	// serialize the components
 	auto components = nlohmann::json::array();
-	SerializeComponent<OtUuidComponent>(components, scene, entity);
-	SerializeComponent<OtTagComponent>(components, scene, entity);
-	SerializeComponent<OtCameraComponent>(components, scene, entity);
-	SerializeComponent<OtTransformComponent>(components, scene, entity);
+	SerializeComponents<OtSceneSaveableComponents>(components, scene, entity);
 	data["components"] = components;
 
 	// serialize the children
@@ -55,29 +57,25 @@ nlohmann::json OtEntitySerialize(OtScene2 scene, OtEntity entity) {
 //	OtEntityDeserialize
 //
 
+template<typename T>
+static inline void DeserializeComponent(nlohmann::json& json, OtScene2 scene, OtEntity entity) {
+	if (json["component"] == T::name) {
+		scene->getOrAddComponent<T>(entity).deserialize(json);
+	}
+}
+
+template<typename... T>
+static inline void DeserializeComponents(nlohmann::json& json, OtScene2 scene, OtEntity entity) {
+	(DeserializeComponent<T>(json, scene, entity), ...);
+}
+
 OtEntity OtEntityDeserialize(OtScene2 scene, nlohmann::json data) {
 	// create a new entity
 	auto entity = scene->createEntity();
 
 	// create all its components
 	for (auto component : data["components"]) {
-		auto type = component["component"];
-
-		if (type == OtUuidComponent::name) {
-			scene->getComponent<OtUuidComponent>(entity).deserialize(component);
-
-		} else if (type == OtTagComponent::name) {
-			scene->getComponent<OtTagComponent>(entity).deserialize(component);
-
-		} else if (type == OtCameraComponent::name) {
-			scene->addComponent<OtCameraComponent>(entity).deserialize(component);
-
-		} else if (type == OtTransformComponent::name) {
-			scene->addComponent<OtTransformComponent>(entity).deserialize(component);
-
-		} else if (type == OtCameraComponent::name) {
-			scene->addComponent<OtCameraComponent>(entity).deserialize(component);
-		}
+		DeserializeComponents<OtSceneSaveableComponents>(component, scene, entity);
 	}
 
 	// create all its children

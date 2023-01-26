@@ -20,3 +20,25 @@
 #include "OtTransformComponent.h"
 #include "OtCameraComponent.h"
 #include "OtGeometryComponent.h"
+
+
+//
+//	Component lists
+//
+
+#define OtSceneAddableComponents \
+	OtTransformComponent, \
+	OtCameraComponent, \
+	OtGeometryComponent
+
+#define OtSceneRenderableComponents \
+	OtTagComponent, \
+	OtSceneAddableComponents
+
+#define OtSceneSaveableComponents \
+	OtUuidComponent, \
+	OtSceneRenderableComponents
+
+#define OtSceneAllComponents \
+	OtHierarchyComponent, \
+	OtSceneSaveableComponents

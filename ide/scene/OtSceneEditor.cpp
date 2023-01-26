@@ -288,17 +288,12 @@ void OtSceneEditorClass::renderComponentsPanel() {
 		scene->isValidEntity(selectedEntity),
 		[this]() {
 			// create menu to add components
-			renderNewComponent<OtTransformComponent>();
-			renderNewComponent<OtCameraComponent>();
-			renderNewComponent<OtGeometryComponent>();
+			renderNewComponents<OtSceneAddableComponents>();
 		},
 		[this]() {
 			// render component editors if we have a selected entity
 			if (scene->isValidEntity(selectedEntity)) {
-				renderComponent<OtTagComponent>(false);
-				renderComponent<OtTransformComponent>();
-				renderComponent<OtCameraComponent>();
-				renderComponent<OtGeometryComponent>();
+				renderComponents<OtSceneRenderableComponents>();
 		}
 	});
 }

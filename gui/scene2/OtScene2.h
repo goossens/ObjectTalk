@@ -115,6 +115,17 @@ public:
 		return registry.get<T>(entity);
 	}
 
+	// get an specified component from and entity and add one if it doesn;t exist
+	template<typename T>
+	T& getOrAddComponent(OtEntity entity) {
+		if (registry.all_of<T>(entity)) {
+			return registry.get<T>(entity);
+
+		} else {
+			return registry.emplace<T>(entity);
+		}
+	}
+
 	// remove a specified component
 	template<typename T>
 	bool removeComponent(OtEntity entity) {

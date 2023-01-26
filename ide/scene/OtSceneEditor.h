@@ -71,8 +71,18 @@ private:
 	template <typename T>
 	void renderNewComponent();
 
+	template<typename... T>
+	void renderNewComponents() {
+		(renderNewComponent<T>(), ...);
+	}
+
 	template<typename T>
 	void renderComponent(bool canRemove=true);
+
+	template<typename... T>
+	void renderComponents() {
+		(renderComponent<T>(), ...);
+	}
 
 	// handle keyboard shortcuts
 	void handleShortcuts();

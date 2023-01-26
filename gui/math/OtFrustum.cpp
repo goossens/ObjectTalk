@@ -41,12 +41,12 @@ OtFrustum::OtFrustum() {
 OtFrustum::OtFrustum(const glm::mat4& matrix) {
 	// determine planes
 	glm::mat4 m = glm::transpose(matrix);
-	planes[left] = OtPlane(m[3] + m[0]);
-	planes[right] = OtPlane(m[3] - m[0]);
-	planes[bottom] = OtPlane(m[3] + m[1]);
-	planes[top] = OtPlane(m[3] - m[1]);
-	planes[near] = OtPlane(OtGpuHasHomogeneousDepth() ? m[3] + m[2] : m[2]);
-	planes[far] = OtPlane(m[3] - m[2]);
+	planes[leftPlane] = OtPlane(m[3] + m[0]);
+	planes[rightPlane] = OtPlane(m[3] - m[0]);
+	planes[bottomPlane] = OtPlane(m[3] + m[1]);
+	planes[topPlane] = OtPlane(m[3] - m[1]);
+	planes[nearPlane] = OtPlane(OtGpuHasHomogeneousDepth() ? m[3] + m[2] : m[2]);
+	planes[farPlane] = OtPlane(m[3] - m[2]);
 
 	// normalize planes
 	for (auto c = 0; c < planeCount; c++) {
@@ -81,12 +81,12 @@ OtFrustum::OtFrustum(glm::vec3 &nbl, glm::vec3 &ntl, glm::vec3 &ntr, glm::vec3 &
 	points[farBottomRight] = fbr;
 
 	// set planes
-	planes[left] = OtPlane(nbl, ntl, ftl);
-	planes[right] = OtPlane(nbr, ntr, ftr);
-	planes[bottom] = OtPlane(nbl, nbr, fbr);
-	planes[top] = OtPlane(ntl, ntr, ftr);
-	planes[near] = OtPlane(nbl, ntl, ntr);
-	planes[far] = OtPlane(fbl, ftl, ftr);
+	planes[leftPlane] = OtPlane(nbl, ntl, ftl);
+	planes[rightPlane] = OtPlane(nbr, ntr, ftr);
+	planes[bottomPlane] = OtPlane(nbl, nbr, fbr);
+	planes[topPlane] = OtPlane(ntl, ntr, ftr);
+	planes[nearPlane] = OtPlane(nbl, ntl, ntr);
+	planes[farPlane] = OtPlane(fbl, ftl, ftr);
 }
 
 

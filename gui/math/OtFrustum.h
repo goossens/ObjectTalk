@@ -27,12 +27,12 @@
 class OtFrustum {
 public:
 	enum {
-		left = 0,
-		right,
-		bottom,
-		top,
-		near,
-		far,
+		leftPlane = 0,
+		rightPlane,
+		bottomPlane,
+		topPlane,
+		nearPlane,
+		farPlane,
 		planeCount
 	};
 

@@ -12,31 +12,28 @@
 //	Include files
 //
 
-#include <string>
-
-#include "OtComponent.h"
+#include "nlohmann/json_fwd.hpp"
 
 
 //
-//	OtTagComponent
+//	OtGeometryComponent
 //
 
-class OtTagComponent : public OtComponent {
+class OtGeometryComponent {
 public:
 	// constructors
-	OtTagComponent() = default;
-	OtTagComponent(const std::string& t) : tag(t) {}
+	OtGeometryComponent() = default;
 
 	// GUI to change component properties
-	bool renderGUI() override;
+	bool renderGUI();
 
 	// (de)serialize component
-	nlohmann::json serialize() override;
-	void deserialize(nlohmann::json data) override;
+	nlohmann::json serialize();
+	void deserialize(nlohmann::json data);
 
 	// component name
-	static constexpr char const* name = "Tag";
+	static constexpr char const* name = "Geometry";
 
 	// properties
-	std::string tag;
+	bool active = true;
 };

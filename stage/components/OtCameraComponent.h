@@ -14,15 +14,16 @@
 
 #include <string>
 
+#include "nlohmann/json_fwd.hpp"
+
 #include "OtCamera2.h"
-#include "OtComponent.h"
 
 
 //
 //	OtCameraComponent
 //
 
-class OtCameraComponent : public OtComponent {
+class OtCameraComponent {
 public:
 	// constructors
 	OtCameraComponent();
@@ -32,11 +33,11 @@ public:
 	void updateCamera();
 
 	// GUI to change component properties
-	bool renderGUI() override;
+	bool renderGUI();
 
 	// (de)serialize component
-	nlohmann::json serialize() override;
-	void deserialize(nlohmann::json data) override;
+	nlohmann::json serialize();
+	void deserialize(nlohmann::json data);
 
 	// component name
 	static constexpr char const* name = "Camera";

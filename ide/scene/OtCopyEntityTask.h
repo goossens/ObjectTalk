@@ -35,7 +35,7 @@ public:
 	virtual void perform() {
 		// serialize entity to clipboard
 		oldClipboard = clipboard;
-		clipboard = OtEntitySerializeToString(scene, scene->getEntityFromUuid(entityUuid));
+		clipboard = scene->serializeEntity(scene->getEntityFromUuid(entityUuid));
 	}
 
 	// undo action

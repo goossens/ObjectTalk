@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include "OtComponents.h"
 #include "OtEditorTask.h"
 #include "OtEntity.h"
 #include "OtScene2.h"

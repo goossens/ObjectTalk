@@ -547,7 +547,7 @@ void OtSceneEditorClass::renderNewEntitiesMenu(OtEntity entity) {
 template <typename T>
 void OtSceneEditorClass::renderNewComponent() {
 	if (ImGui::MenuItem(T::name, nullptr, false, !scene->hasComponent<T>(selectedEntity))) {
-		nextTask = std::make_shared<OtCreateComponentTask<T>>( scene, selectedEntity);
+		nextTask = std::make_shared<OtCreateComponentTask<T>>(scene, selectedEntity);
 	}
 }
 

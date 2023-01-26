@@ -15,7 +15,6 @@
 #include <string>
 
 #include "entt/entity/registry.hpp"
-#include "nlohmann/json_fwd.hpp"
 
 
 //
@@ -27,14 +26,6 @@ using OtEntity = entt::entity;
 
 
 //
-//	Forward references
-//
-
-class OtScene2Class;
-typedef std::shared_ptr<OtScene2Class> OtScene2;
-
-
-//
 //	Functions
 //
 
@@ -42,10 +33,3 @@ typedef std::shared_ptr<OtScene2Class> OtScene2;
 static inline bool OtEntityIsNull(OtEntity entity) {
 	return entity == OtEntityNull;
 }
-
-// (de)serialize an entity
-nlohmann::json OtEntitySerialize(OtScene2 scene, OtEntity entity);
-OtEntity OtEntityDeserialize(OtScene2 scene, nlohmann::json data);
-
-std::string OtEntitySerializeToString(OtScene2 scene, OtEntity entity);
-OtEntity OtEntityDeserializeFromString(OtScene2 scene, const std::string& data);

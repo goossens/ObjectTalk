@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include "OtComponent.h"
 #include "OtEntity.h"
 
 
@@ -20,12 +19,8 @@
 //	OtHierarchyComponent
 //
 
-class OtHierarchyComponent : public OtComponent {
+class OtHierarchyComponent {
 public:
-	// (de)serialize component
-	nlohmann::json serialize() override;
-	void deserialize(nlohmann::json data) override;
-
 	// component name
 	static constexpr char const* name = "Hierarchy";
 

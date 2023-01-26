@@ -14,14 +14,14 @@
 
 #include <cstdint>
 
-#include "OtComponent.h"
+#include "nlohmann/json_fwd.hpp"
 
 
 //
 //	OtUuidComponent
 //
 
-class OtUuidComponent : public OtComponent {
+class OtUuidComponent {
 public:
 	// constructors
 	OtUuidComponent();
@@ -31,8 +31,8 @@ public:
 	void assignNewUuid();
 
 	// (de)serialize component
-	nlohmann::json serialize() override;
-	void deserialize(nlohmann::json data) override;
+	nlohmann::json serialize();
+	void deserialize(nlohmann::json data);
 
 	// component name
 	static constexpr char const* name = "UUID";

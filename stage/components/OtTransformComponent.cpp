@@ -47,7 +47,7 @@ void OtTransformComponent::reset() {
 //
 
 bool OtTransformComponent::renderGUI() {
-	// render transformation matrix
+	// render transformation editor
 	bool changed = false;
 	changed |= OtUiEditVec3("Translate", translation, 0.1f, 0.0f, 0.0f, "%.2f");
 	glm::vec3 rot = glm::degrees(rotation);

@@ -34,6 +34,8 @@ add_subdirectory(http)
 
 if(OT_GUI)
 	add_subdirectory(gui)
+	add_subdirectory(stage)
+#	add_subdirectory(board)
 	add_subdirectory(ide)
 endif()
 

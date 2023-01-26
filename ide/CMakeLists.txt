@@ -17,8 +17,8 @@ endforeach()
 list(REMOVE_DUPLICATES IDE_INCLUDE_DIRS)
 
 add_library(ide STATIC ${IDE_INCLUDES} ${IDE_SOURCES})
-add_dependencies(ide ot gui)
+add_dependencies(ide ot gui stage imguizmo)
 target_include_directories(ide PUBLIC ${IDE_INCLUDE_DIRS})
-target_link_libraries(ide PUBLIC ot gui)
+target_link_libraries(ide PUBLIC ot gui stage imguizmo)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${IDE_INCLUDES} ${IDE_SOURCES})

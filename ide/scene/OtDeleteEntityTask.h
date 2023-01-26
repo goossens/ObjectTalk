@@ -47,7 +47,7 @@ public:
 		}
 
 		// serialize the entity to be deleted
-		json = OtEntitySerializeToString(scene, entity);
+		json = scene->serializeEntity(entity);
 
 		// now delete the entity
 		scene->removeEntity(entity);
@@ -56,7 +56,7 @@ public:
 	// undo action
 	virtual void undo() {
 		// recreate the entity
-		auto entity = OtEntityDeserializeFromString(scene, json);
+		auto entity = scene->deserializeEntity(json);
 		auto target = scene->getEntityFromUuid(undoTargetUuid);
 
 		if (undoBefore) {

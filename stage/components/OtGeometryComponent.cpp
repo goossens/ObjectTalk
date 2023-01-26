@@ -15,6 +15,15 @@
 
 
 //
+//	OtGeometryComponent::renderGUI
+//
+
+bool OtGeometryComponent::renderGUI() {
+	return false;
+}
+
+
+//
 //	OtGeometryComponent::serialize
 //
 

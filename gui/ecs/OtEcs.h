@@ -18,24 +18,21 @@
 
 #include "entt/entity/registry.hpp"
 
-#include "OtGui.h"
-
-#include "OtComponents.h"
 #include "OtEntity.h"
+#include "OtUuidComponent.h"
+#include "OtTagComponent.h"
+#include "OtHierarchyComponent.h"
 
 
 //
-//	OtScene2
+//	OtEcs (Entity Component System)
 //
 
-class OtScene2Class;
-typedef std::shared_ptr<OtScene2Class> OtScene2;
-
-class OtScene2Class : public OtGuiClass {
+class OtEcs {
 public:
 	// constructor/destructor
-	OtScene2Class();
-	~OtScene2Class();
+	OtEcs();
+	~OtEcs();
 
 	// create a new entity
 	OtEntity createEntity();
@@ -47,11 +44,11 @@ public:
 	}
 
 	// get an existing entity from an identifier
-	OtEntity getEntity(const std::string& name);
+	OtEntity getEntity(const std::string& tag);
 
 	// see if entity exists based on an identifier
-	bool hasEntity(const std::string& name) {
-		return isValidEntity(getEntity(name));
+	bool hasEntity(const std::string& tag) {
+		return isValidEntity(getEntity(tag));
 	}
 
 	// remove entity
@@ -61,7 +58,7 @@ public:
 	void moveEntityBefore(OtEntity sibling, OtEntity child);
 	void moveEntityTo(OtEntity parent, OtEntity child);
 
-	// get root entity in scene
+	// get root entity
 	OtEntity getRootEntity() { return root; }
 
 	// see if entity has children
@@ -76,7 +73,7 @@ public:
 	OtEntity getPreviousSibling(OtEntity entity) { return getComponent<OtHierarchyComponent>(entity).previousSibling; }
 	OtEntity getNextSibling(OtEntity entity) { return getComponent<OtHierarchyComponent>(entity).nextSibling; }
 
-	// iterate through entities in scene
+	// iterate through entities
 	void each(std::function<void(OtEntity)> callback) {
 		registry.each([this, callback](OtEntity entity) {
 			// don't expose the hidden root entity
@@ -95,12 +92,6 @@ public:
 			callback(child);
 			child = nextChild;
 		}
-	}
-
-	// get the ID of a component type
-	template<typename T>
-	uint32_t getComponentTypeId() {
-		return entt::type_id<T>().index();
 	}
 
 	// add a new component to an entity
@@ -151,24 +142,14 @@ public:
 	void insertEntityAfter(OtEntity sibling, OtEntity child);
 	void removeEntityFromParent(OtEntity entity);
 
-	// (de)serialize the scene
-	std::string serialize(int indent=-1, char character=' ');
-	void deserialize(const std::string& data);
-
-	// get type definition
-	static OtType getMeta();
-
-	// create a new object
-	static OtScene2 create();
-
 private:
-	// registry for all entities and components in this scene
+	// registry for all entities and components
 	entt::registry registry;
 
 	// entity lookup by ID
 	std::unordered_map<uint32_t, entt::entity> mapUuidToEntity;
 	std::unordered_map<entt::entity, uint32_t> mapEntityToUuid;
 
-	// scene hierarchy support
+	// hierarchy support
 	OtEntity root;
 };

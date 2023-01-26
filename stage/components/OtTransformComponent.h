@@ -13,15 +13,14 @@
 //
 
 #include "glm/glm.hpp"
-
-#include "OtComponent.h"
+#include "nlohmann/json_fwd.hpp"
 
 
 //
 //	OtTransformComponent
 //
 
-class OtTransformComponent : public OtComponent {
+class OtTransformComponent {
 public:
 	// constructors
 	OtTransformComponent() = default;
@@ -36,11 +35,11 @@ public:
 	void reset();
 
 	// GUI to change component properties
-	bool renderGUI() override;
+	bool renderGUI();
 
 	// (de)serialize component
-	nlohmann::json serialize() override;
-	void deserialize(nlohmann::json data) override;
+	nlohmann::json serialize();
+	void deserialize(nlohmann::json data);
 
 	// component name
 	static constexpr char const* name = "Transform";

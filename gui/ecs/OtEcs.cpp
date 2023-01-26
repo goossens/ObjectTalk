@@ -9,69 +9,51 @@
 //	Include files
 //
 
-#include <random>
-
-#include "nlohmann/json.hpp"
-
-#include "OtComponents.h"
-#include "OtScene2.h"
+#include "OtEcs.h"
 
 
 //
-//	createID
+//	OtEcs::OtEcs
 //
 
-static uint32_t createUuid() {
-	static std::random_device device;
-	static std::mt19937_64 engine(device());
-	static std::uniform_int_distribution<uint32_t> distribution;
-	return distribution(engine);
-}
-
-
-//
-//	OtScene2Class::OtScene2Class
-//
-
-OtScene2Class::OtScene2Class() {
+OtEcs::OtEcs() {
 	// create a hidden root entity to build hierarchies
 	root = createEntity();
 }
 
 
 //
-//	OtScene2::~OtScene2
+//	OtEcs::~OtEcs
 //
 
-OtScene2Class::~OtScene2Class() {
+OtEcs::~OtEcs() {
 }
 
 
 //
-//	OtScene2Class::createEntity
+//	OtEcs::createEntity
 //
 
-OtEntity OtScene2Class::createEntity() {
+OtEntity OtEcs::createEntity() {
 	// create a new entity
 	auto entity = registry.create();
-	auto uuid = createUuid();
-
-	// register mappings
-	mapUuidToEntity[uuid] = entity;
-	mapEntityToUuid[entity] = uuid;
 
 	// add default components
-	addComponent<OtUuidComponent>(entity).uuid = uuid;
+	auto uuid = addComponent<OtUuidComponent>(entity).uuid;
 	addComponent<OtTagComponent>(entity).tag = "untitled";
 	addComponent<OtHierarchyComponent>(entity);
+
+	// register entity <-> UUID mappings
+	mapUuidToEntity[uuid] = entity;
+	mapEntityToUuid[entity] = uuid;
 	return entity;
 }
 
-OtEntity OtScene2Class::createEntity(OtEntity parent) {
+OtEntity OtEcs::createEntity(OtEntity parent) {
 	// create a new entity
 	auto entity = createEntity();
 
-	// setup the entity hierarchy
+	// use the root entity is parent is invalid
 	if (!isValidEntity(parent)) {
 		parent = root;
 	}
@@ -83,14 +65,14 @@ OtEntity OtScene2Class::createEntity(OtEntity parent) {
 
 
 //
-//	OtScene2::getEntity
+//	OtEcs::getEntity
 //
 
-OtEntity OtScene2Class::getEntity(const std::string &name) {
+OtEntity OtEcs::getEntity(const std::string &tag) {
 	auto view = registry.view<OtTagComponent>();
 
 	for (auto entity : registry.view<OtTagComponent>()) {
-		if (view.get<OtTagComponent>(entity).name == name) {
+		if (view.get<OtTagComponent>(entity).tag == tag) {
 			return entity;
 		}
 	}
@@ -100,21 +82,21 @@ OtEntity OtScene2Class::getEntity(const std::string &name) {
 
 
 //
-//	OtScene2Class::removeEntity
+//	OtEcs::removeEntity
 //
 
-void OtScene2Class::removeEntity(OtEntity entity) {
+void OtEcs::removeEntity(OtEntity entity) {
 	// remove all children
 	eachChild(entity, [this](OtEntity child) {
 		removeEntity(child);
 	});
 
-	// remove entity from mappings
-	mapUuidToEntity.erase(mapEntityToUuid[entity]);
-	mapEntityToUuid.erase(entity);
-
 	// remove entity from hierarchy
 	removeEntityFromParent(entity);
+
+	// remove entity from entity <-> UUID mappings
+	mapUuidToEntity.erase(mapEntityToUuid[entity]);
+	mapEntityToUuid.erase(entity);
 
 	// remove entity from registry
 	registry.destroy(entity);
@@ -122,10 +104,10 @@ void OtScene2Class::removeEntity(OtEntity entity) {
 
 
 //
-//	OtScene2Class::moveEntityBefore
+//	OtEcs::moveEntityBefore
 //
 
-void OtScene2Class::moveEntityBefore(OtEntity sibling, OtEntity child) {
+void OtEcs::moveEntityBefore(OtEntity sibling, OtEntity child) {
 	// don't move before yourself
 	if (sibling != child) {
 		// remove entity from old parent
@@ -136,49 +118,20 @@ void OtScene2Class::moveEntityBefore(OtEntity sibling, OtEntity child) {
 
 
 //
-//	OtScene2Class::moveEntityTo
+//	OtEcs::moveEntityTo
 //
 
-void OtScene2Class::moveEntityTo(OtEntity parent, OtEntity child) {
+void OtEcs::moveEntityTo(OtEntity parent, OtEntity child) {
 	removeEntityFromParent(child);
 	addEntityToParent(parent, child);
 }
 
 
 //
-//	OtScene2Class::serialize
+//	OtEcs::assignNewEntityUUids
 //
 
-std::string OtScene2Class::serialize(int indent, char character) {
-	// write entities and components
-	auto data = nlohmann::json::array();
-
-	eachChild(getRootEntity(), [&](OtEntity entity) {
-		data.push_back(OtEntitySerialize(cast<OtScene2Class>(), entity));
-	});
-
-	return data.dump(indent, character);
-}
-
-
-//
-//	OtScene2Class::deserialize
-//
-
-void OtScene2Class::deserialize(const std::string& data) {
-	auto tree = nlohmann::json::parse(data);
-
-	for (auto& entity : tree) {
-		addEntityToParent(root, OtEntityDeserialize(cast<OtScene2Class>(), entity));
-	}
-}
-
-
-//
-//	OtScene2Class::assignNewEntityUUids
-//
-
-void OtScene2Class::assignNewEntityUUids(OtEntity entity) {
+void OtEcs::assignNewEntityUUids(OtEntity entity) {
 	// remove old mappings
 	mapUuidToEntity.erase(mapEntityToUuid[entity]);
 	mapEntityToUuid.erase(entity);
@@ -200,10 +153,10 @@ void OtScene2Class::assignNewEntityUUids(OtEntity entity) {
 
 
 //
-//	OtScene2Class::addEntityToParent
+//	OtEcs::addEntityToParent
 //
 
-void OtScene2Class::addEntityToParent(OtEntity parent, OtEntity child) {
+void OtEcs::addEntityToParent(OtEntity parent, OtEntity child) {
 	// get details on parent and child
 	auto& parentHierarchy = getComponent<OtHierarchyComponent>(parent);
 	auto& childHierarchy = getComponent<OtHierarchyComponent>(child);
@@ -231,10 +184,10 @@ void OtScene2Class::addEntityToParent(OtEntity parent, OtEntity child) {
 
 
 //
-//	OtScene2Class::insertEntityBefore
+//	OtEcs::insertEntityBefore
 //
 
-void OtScene2Class::insertEntityBefore(OtEntity sibling, OtEntity child) {
+void OtEcs::insertEntityBefore(OtEntity sibling, OtEntity child) {
 	// get details on sibling, parent and child
 	auto& siblingHierarchy = getComponent<OtHierarchyComponent>(sibling);
 	auto& parentHierarchy = getComponent<OtHierarchyComponent>(siblingHierarchy.parent);
@@ -258,10 +211,10 @@ void OtScene2Class::insertEntityBefore(OtEntity sibling, OtEntity child) {
 
 
 //
-//	OtScene2Class::insertEntityAfter
+//	OtEcs::insertEntityAfter
 //
 
-void OtScene2Class::insertEntityAfter(OtEntity sibling, OtEntity child) {
+void OtEcs::insertEntityAfter(OtEntity sibling, OtEntity child) {
 	// get details on sibling, parent and child
 	auto& siblingHierarchy = getComponent<OtHierarchyComponent>(sibling);
 	auto& parentHierarchy = getComponent<OtHierarchyComponent>(siblingHierarchy.parent);
@@ -285,10 +238,10 @@ void OtScene2Class::insertEntityAfter(OtEntity sibling, OtEntity child) {
 
 
 //
-//	OtScene2Class::removeEntityFromParent
+//	OtEcs::removeEntityFromParent
 //
 
-void OtScene2Class::removeEntityFromParent(OtEntity entity) {
+void OtEcs::removeEntityFromParent(OtEntity entity) {
 	// get details on entity and parent
 	auto& entityHierarchy = getComponent<OtHierarchyComponent>(entity);
 
@@ -321,30 +274,4 @@ void OtScene2Class::removeEntityFromParent(OtEntity entity) {
 		entityHierarchy.previousSibling = OtEntityNull;
 		entityHierarchy.nextSibling = OtEntityNull;
 	}
-}
-
-
-//
-//	OtScene2Class::getMeta
-//
-
-OtType OtScene2Class::getMeta() {
-	static OtType type;
-
-	if (!type) {
-		type = OtTypeClass::create<OtScene2Class>("Scene2", OtGuiClass::getMeta());
-	}
-
-	return type;
-}
-
-
-//
-//	OtScene2Class::create
-//
-
-OtScene2 OtScene2Class::create() {
-	OtScene2 scene = std::make_shared<OtScene2Class>();
-	scene->setType(getMeta());
-	return scene;
 }

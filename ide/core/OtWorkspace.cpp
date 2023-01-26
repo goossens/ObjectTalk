@@ -98,7 +98,7 @@ void OtWorkspaceClass::openFile() {
 		"workspace-open",
 		"Select File to Open...",
 		".*",
-		getCWD(),
+		getCWD().string(),
 		1,
 		nullptr,
 		ImGuiFileDialogFlags_Modal |
@@ -161,10 +161,10 @@ void OtWorkspaceClass::saveFile() {
 //
 
 void OtWorkspaceClass::saveAsFile() {
-	std::string path;
+	std::filesystem::path path;
 
 	if (activeEditor->fileExists()) {
-		path = std::filesystem::path(activeEditor->getFileName()).parent_path().string();
+		path = std::filesystem::path(activeEditor->getFileName()).parent_path();
 
 	} else {
 		path = getCWD();
@@ -174,7 +174,7 @@ void OtWorkspaceClass::saveAsFile() {
 		"workspace-saveas",
 		"Save File as...",
 		activeEditor->getFileExtension().c_str(),
-		path,
+		path.string(),
 		activeEditor->getShortName(),
 		1,
 		nullptr,

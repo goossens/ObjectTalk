@@ -31,7 +31,7 @@ public:
 	static void registerInternal(const std::string& name, std::function<void(OtModule)> creator);
 
 	// load the module
-	void load(const std::string& filename);
+	void load(const std::filesystem::path& path);
 
 	// get type definition
 	static OtType getMeta();
@@ -40,7 +40,7 @@ public:
 	static OtModule create();
 
 	// import a module (either load from disk or get from the memory cash)
-	static OtModule import(const std::string& filename);
+	static OtModule import(const std::string& path);
 
 private:
 	// list of directories to search for modules in

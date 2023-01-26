@@ -64,13 +64,13 @@ void OtModuleClass::registerInternal(const std::string &name, std::function<void
 //	OtModuleClass::load
 //
 
-void OtModuleClass::load(const std::string& filename) {
+void OtModuleClass::load(const std::filesystem::path& path) {
 	// get full path of module
-	auto fullPath = getFullPath(filename);
+	auto fullPath = getFullPath(path);
 
 	// ensure module exists
 	if (fullPath.empty()) {
-		OtExcept("Can't find module [%s]", filename.c_str());
+		OtExcept("Can't find module [%s]", path.string().c_str());
 	}
 
 	// start with a clean slate
@@ -220,12 +220,12 @@ OtModule OtModuleClass::create() {
 //	OtModuleClass::import
 //
 
-OtModule OtModuleClass::import(const std::string& filename) {
+OtModule OtModuleClass::import(const std::string& name) {
 	// see if this is an "internal" module
 	std::shared_ptr<OtModuleRegistry> registry = OtModuleRegistry::instance();
 
-	if (registry->has(filename)) {
-		OtModuleRegistryEntry& entry = registry->at(filename);
+	if (registry->has(name)) {
+		OtModuleRegistryEntry& entry = registry->at(name);
 
 		// instantiate the module if required
 		if (!entry.module) {
@@ -240,7 +240,7 @@ OtModule OtModuleClass::import(const std::string& filename) {
 	} else {
 		// create a new module and load it
 		OtModule module = create();
-		module->load(filename);
+		module->load(name);
 		return module;
 	}
 }

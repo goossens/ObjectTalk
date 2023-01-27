@@ -51,8 +51,8 @@ bool OtOrbitalCameraClass::renderGUI() {
 	}
 
 	projectionChanged |= ImGui::SliderFloat("FoV (Deg)", &fov, 10, 160);
-	projectionChanged |= ImGui::DragFloat("Near Clipping", &near, 1.0, 0.0, 0.0, ".0f");
-	projectionChanged |= ImGui::DragFloat("Far Clipping", &far, 1.0, 0.0, 0.0, ".0f");
+	projectionChanged |= ImGui::DragFloat("Near Plane", &near, 1.0, 0.0, 0.0, ".0f");
+	projectionChanged |= ImGui::DragFloat("Far Plane", &far, 1.0, 0.0, 0.0, ".0f");
 
 	if (projectionChanged) {
 		OtPerspectiveCameraClass::updateProjectionMatrix();

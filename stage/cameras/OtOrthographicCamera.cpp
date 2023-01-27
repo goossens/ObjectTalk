@@ -89,8 +89,8 @@ bool OtOrthographicCameraClass::renderGUI() {
 	bool changed = OtCamera2Class::renderGUI();
 
 	changed |= ImGui::DragFloat("Width", &width, 1.0, 0.0, 0.0, ".0f");
-	changed |= ImGui::DragFloat("Near Clipping", &near, 1.0, 0.0, 0.0, ".0f");
-	changed |= ImGui::DragFloat("Far Clipping", &far, 1.0, 0.0, 0.0, ".0f");
+	changed |= ImGui::DragFloat("Near Plane", &near, 1.0, 0.0, 0.0, ".0f");
+	changed |= ImGui::DragFloat("Far Plane", &far, 1.0, 0.0, 0.0, ".0f");
 
 	if (changed) {
 		updateProjectionMatrix();

@@ -333,7 +333,7 @@ static void centerText(const char* text) {
 }
 
 void OtWorkspaceClass::renderSplashScreen() {
-	// setup log (if required)
+	// load logo (if required)
 	if (!logo.isValid()) {
 		// load it from file that lives in memory (to keep ot as a single file)
 		logo.loadFromFileInMemory((void*) &OtLogoData, sizeof(OtLogoData));

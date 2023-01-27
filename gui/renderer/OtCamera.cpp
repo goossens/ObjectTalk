@@ -455,8 +455,8 @@ void OtCameraClass::renderGUI() {
 		if (ImGui::SliderFloat("Width", &width, widthMin, widthMax)) { changed = true; }
 	}
 
-	if (ImGui::SliderFloat("Near Clipping", &near, nearMin, nearMax)) { changed = true; }
-	if (ImGui::SliderFloat("Far Clipping", &far, farMin, farMax)) { changed = true; }
+	if (ImGui::SliderFloat("Near Plane", &near, nearMin, nearMax)) { changed = true; }
+	if (ImGui::SliderFloat("Far Plane", &far, farMin, farMax)) { changed = true; }
 
 	if (mode == scriptControlMode) {
 		if (ImGui::InputFloat3("Position", glm::value_ptr(cameraPosition))) { changed = true; }

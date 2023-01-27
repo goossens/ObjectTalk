@@ -174,11 +174,13 @@ void OtFrameworkClass::initIMGUI() {
 	// add custom font
 	ImFontConfig config;
 	config.FontDataOwnedByAtlas = false;
+	config.OversampleH = 1;
+	config.OversampleV = 1;
 
 	io.Fonts->AddFontFromMemoryTTF(
 		(void*) &OtBitstreamVeraMono,
 		sizeof(OtBitstreamVeraMono),
-		16.0,
+		15.0,
 		&config);
 
 	// setup font atlas in texture

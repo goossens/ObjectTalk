@@ -1,0 +1,112 @@
+[
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "UUID",
+				"uuid": 4024814341
+			},
+			{
+				"component": "Tag",
+				"tag": "Scene Camera"
+			},
+			{
+				"camera": {
+					"distance": 120.0,
+					"far": 1000.0,
+					"fov": 60.0,
+					"near": 0.10000000149011612,
+					"pitch": 0.0,
+					"target": [
+						0.0,
+						0.0,
+						0.0
+					],
+					"type": "Orbital Perspective",
+					"up": [
+						0.0,
+						1.0,
+						0.0
+					],
+					"yaw": 0.0
+				},
+				"component": "Camera"
+			}
+		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "UUID",
+				"uuid": 1317054617
+			},
+			{
+				"component": "Tag",
+				"tag": "Sky Sphere"
+			},
+			{
+				"component": "Sky Sphere",
+				"image": "assets/fields.jpg"
+			}
+		]
+	},
+	{
+		"children": [
+			{
+				"children": [],
+				"components": [
+					{
+						"component": "UUID",
+						"uuid": 1957313696
+					},
+					{
+						"component": "Tag",
+						"tag": "Child"
+					},
+					{
+						"component": "Transform",
+						"rotation": [
+							0.0,
+							0.0,
+							0.0
+						],
+						"scale": [
+							1.0,
+							1.0,
+							1.0
+						],
+						"translation": [
+							0.0,
+							0.0,
+							0.0
+						]
+					}
+				]
+			}
+		],
+		"components": [
+			{
+				"component": "UUID",
+				"uuid": 2354452319
+			},
+			{
+				"component": "Tag",
+				"tag": "Parent"
+			}
+		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "UUID",
+				"uuid": 1347047492
+			},
+			{
+				"component": "Tag",
+				"tag": "Other"
+			}
+		]
+	}
+]

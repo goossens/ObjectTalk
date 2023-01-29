@@ -11,8 +11,48 @@
 				"tag": "Scene Camera"
 			},
 			{
-				"component": "Camera",
-				"type": "First Person Perspective"
+				"camera": {
+					"distance": 10.0,
+					"far": 1000.0,
+					"fov": 60.0,
+					"near": 0.10000000149011612,
+					"pitch": 0.0,
+					"target": [
+						0.0,
+						0.0,
+						0.0
+					],
+					"type": "Orbital Perspective",
+					"up": [
+						0.0,
+						1.0,
+						0.0
+					],
+					"yaw": 0.0
+				},
+				"component": "Camera"
+			}
+		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "UUID",
+				"uuid": 3648896075
+			},
+			{
+				"component": "Tag",
+				"tag": "Outer Space"
+			},
+			{
+				"back": "assets/space/back.jpg",
+				"bottom": "assets/space/bottom.jpg",
+				"component": "Sky Box",
+				"front": "assets/space/front.jpg",
+				"left": "assets/space/left.jpg",
+				"right": "assets/space/right.jpg",
+				"top": "assets/space/top.jpg"
 			}
 		]
 	},

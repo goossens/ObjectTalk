@@ -56,7 +56,7 @@ void OtSampler::initialize(const char* name) {
 		initialized = true;
 	}
 
-	// see if we already have this shader
+	// see if we already have this uniform
 	if (registry.has(name)) {
 		uniform = registry.get(name);
 
@@ -64,6 +64,9 @@ void OtSampler::initialize(const char* name) {
 		uniform = bgfx::createUniform(name, bgfx::UniformType::Sampler);
 		registry.set(name, uniform);
 	}
+
+	// remember the name
+	uniformName = name;
 }
 
 
@@ -73,6 +76,7 @@ void OtSampler::initialize(const char* name) {
 
 void OtSampler::clear() {
 	uniform = BGFX_INVALID_HANDLE;
+	uniformName.clear();
 }
 
 
@@ -80,7 +84,11 @@ void OtSampler::clear() {
 //	OtSampler::submit
 //
 
-void OtSampler::submit(int unit) {
+void OtSampler::submit(int unit, const char* name) {
+	if (name && name != uniformName) {
+		initialize(name);
+	}
+
 	if (!bgfx::isValid(uniform)) {
 		OtExcept("internal error: sampler not initialized");
 	}
@@ -89,7 +97,11 @@ void OtSampler::submit(int unit) {
 	bgfx::setTexture(unit, uniform, dummy.getTextureHandle());
 }
 
-void OtSampler::submit(int unit, OtTexture &texture) {
+void OtSampler::submit(int unit, OtTexture &texture, const char* name) {
+	if (name && name != uniformName) {
+		initialize(name);
+	}
+
 	if (!bgfx::isValid(uniform)) {
 		OtExcept("internal error: sampler not initialized");
 	}
@@ -97,7 +109,11 @@ void OtSampler::submit(int unit, OtTexture &texture) {
 	bgfx::setTexture(unit, uniform, texture.getTextureHandle());
 }
 
-void OtSampler::submit(int unit, bgfx::TextureHandle texture) {
+void OtSampler::submit(int unit, bgfx::TextureHandle texture, const char* name) {
+	if (name && name != uniformName) {
+		initialize(name);
+	}
+
 	if (!bgfx::isValid(uniform)) {
 		OtExcept("internal error: sampler not initialized");
 	}
@@ -105,7 +121,11 @@ void OtSampler::submit(int unit, bgfx::TextureHandle texture) {
 	bgfx::setTexture(unit, uniform, texture);
 }
 
-void OtSampler::submit(int unit, OtCubeMap& cubemap) {
+void OtSampler::submit(int unit, OtCubeMap& cubemap, const char* name) {
+	if (name && name != uniformName) {
+		initialize(name);
+	}
+
 	if (!bgfx::isValid(uniform)) {
 		OtExcept("internal error: sampler not initialized");
 	}

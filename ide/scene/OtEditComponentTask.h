@@ -28,7 +28,7 @@ template <typename T>
 class OtEditComponentTask : public OtEditorTask {
 public:
 	// constructor
-	OtEditComponentTask(OtScene2 s, OtEntity e, T& n) : scene(s), newValue(n) {
+	OtEditComponentTask(OtScene2 s, OtEntity e, const std::string& o, const std::string& n) : scene(s), oldValue(o), newValue(n) {
 		entityUuid = scene->getUuidFromEntity(e);
 	}
 
@@ -39,16 +39,18 @@ public:
 	virtual void perform() {
 		// save old value and store new value
 		auto entity = scene->getEntityFromUuid(entityUuid);
-		auto& value = scene->getComponent<T>(entity);
-		oldValue = value;
-		value = newValue;
+		auto& component = scene->getComponent<T>(entity);
+		auto data = nlohmann::json::parse(newValue);
+		component.deserialize(data, nullptr);
 	}
 
 	// undo action
 	virtual void undo() {
 		// restore old value
 		auto entity = scene->getEntityFromUuid(entityUuid);
-		scene->getComponent<T>(entity) = oldValue;
+		auto& component = scene->getComponent<T>(entity);
+		auto data = nlohmann::json::parse(oldValue);
+		component.deserialize(data, nullptr);
 	}
 
 	// support task merging
@@ -66,7 +68,7 @@ private:
 	// properties
 	OtScene2 scene;
 	uint32_t entityUuid;
-	T oldValue;
-	T newValue;
+	std::string oldValue;
+	std::string newValue;
 	std::size_t type = typeid(T).hash_code();
 };

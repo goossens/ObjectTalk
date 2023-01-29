@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include "glm/ext.hpp"
+
 #include "OtException.h"
 #include "OtFormat.h"
 #include "OtRegistry.h"
@@ -83,6 +85,75 @@ void OtShader::initialize(const char* vertex, const char* fragment) {
 
 void OtShader::clear() {
 	shader = BGFX_INVALID_HANDLE;
+}
+
+
+//
+//	OtShader::setState
+//
+
+void OtShader::setState(states state) {
+	if (state == noDepth) {
+		bgfx::setState(
+			BGFX_STATE_WRITE_RGB |
+			BGFX_STATE_WRITE_A |
+			BGFX_STATE_MSAA);
+
+	} else if (state == wireframe) {
+		bgfx::setState(
+			BGFX_STATE_WRITE_RGB |
+			BGFX_STATE_WRITE_A |
+			BGFX_STATE_WRITE_Z |
+			BGFX_STATE_DEPTH_TEST_LESS |
+			BGFX_STATE_MSAA |
+			BGFX_STATE_PT_LINES |
+			BGFX_STATE_LINEAA |
+			BGFX_STATE_BLEND_ALPHA);
+
+	} else if (state == noCulling) {
+		bgfx::setState(
+			BGFX_STATE_WRITE_RGB |
+			BGFX_STATE_WRITE_A |
+			BGFX_STATE_WRITE_Z |
+			BGFX_STATE_DEPTH_TEST_LESS |
+			BGFX_STATE_MSAA);
+
+	} else if (state == cullFront) {
+		bgfx::setState(
+			BGFX_STATE_WRITE_RGB |
+			BGFX_STATE_WRITE_A |
+			BGFX_STATE_WRITE_Z |
+			BGFX_STATE_DEPTH_TEST_LESS |
+			BGFX_STATE_MSAA |
+			BGFX_STATE_CULL_CW);
+
+	} else if (state == cullBack) {
+		bgfx::setState(
+			BGFX_STATE_WRITE_RGB |
+			BGFX_STATE_WRITE_A |
+			BGFX_STATE_WRITE_Z |
+			BGFX_STATE_DEPTH_TEST_LESS |
+			BGFX_STATE_MSAA |
+			BGFX_STATE_CULL_CCW);
+
+	} else if (state == blending) {
+		bgfx::setState(
+			BGFX_STATE_WRITE_RGB |
+			BGFX_STATE_WRITE_A |
+			BGFX_STATE_WRITE_Z |
+			BGFX_STATE_DEPTH_TEST_LESS |
+			BGFX_STATE_MSAA |
+			BGFX_STATE_BLEND_ALPHA);
+	}
+}
+
+
+//
+//	OtShader::setTransform
+//
+
+void OtShader::setTransform(const glm::mat4 &transform) {
+	bgfx::setTransform(glm::value_ptr(transform));
 }
 
 

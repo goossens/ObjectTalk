@@ -13,6 +13,8 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
+#include "OtGlm.h"
+
 #include "OtGpu.h"
 #include "OtPerspectiveCamera.h"
 
@@ -23,8 +25,8 @@
 
 void OtPerspectiveCameraClass::updateProjectionMatrix() {
 	projMatrix = OtGpuHasHomogeneousDepth()
-		? glm::perspectiveRH_NO(glm::radians(fov), aspectRatio, near, far)
-		: glm::perspectiveRH_ZO(glm::radians(fov), aspectRatio, near, far);
+		? glm::perspectiveRH_NO(glm::radians(fov), aspectRatio, nearPlane, farPlane)
+		: glm::perspectiveRH_ZO(glm::radians(fov), aspectRatio, nearPlane, farPlane);
 
 	OtCamera2Class::updateDerived();
 }
@@ -37,9 +39,9 @@ void OtPerspectiveCameraClass::updateProjectionMatrix() {
 bool OtPerspectiveCameraClass::renderGUI() {
 	bool changed = OtCamera2Class::renderGUI();
 
-	changed |= ImGui::SliderFloat("FoV (Deg)", &fov, 10, 160);
-	changed |= ImGui::DragFloat("Near Plane", &near, 1.0, 0.0, 0.0, ".0f");
-	changed |= ImGui::DragFloat("Far Plane", &far, 1.0, 0.0, 0.0, ".0f");
+	changed |= ImGui::DragFloat("FoV (Deg)", &fov, 1.0f, 10.0f, 160.0f, "%.0f");
+	changed |= ImGui::DragFloat("Near Plane", &nearPlane, 1.0f, 0.0f, 0.0f, "%.1f");
+	changed |= ImGui::DragFloat("Far Plane", &farPlane, 1.0f, 0.0f, 0.0f, "%.1f");
 
 	if (changed) {
 		updateProjectionMatrix();
@@ -70,6 +72,16 @@ OtType OtPerspectiveCameraClass::getMeta() {
 
 nlohmann::json OtPerspectiveCameraClass::serialize() {
 	auto data = nlohmann::json::object();
+	data["type"] = name;
+
+	data["position"] = position;
+	data["target"] = target;
+	data["up"] = up;
+
+	data["fov"] = fov;
+	data["near"] = nearPlane;
+	data["far"] = farPlane;
+
 	return data;
 }
 
@@ -79,6 +91,16 @@ nlohmann::json OtPerspectiveCameraClass::serialize() {
 //
 
 void OtPerspectiveCameraClass::deserialize(nlohmann::json data) {
+	position = data["position"];
+	target = data["target"];
+	up = data["up"];
+
+	fov = data["fov"];
+	nearPlane = data["near"];
+	farPlane = data["far"];
+
+	updateViewMatrix();
+	updateProjectionMatrix();
 }
 
 

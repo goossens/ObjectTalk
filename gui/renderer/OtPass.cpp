@@ -63,8 +63,7 @@ void OtPass::setClear(bool color, bool depth) {
 
 	bgfx::setViewClear(
 		view,
-		(color ? BGFX_CLEAR_COLOR : BGFX_CLEAR_NONE) |
-					   (depth ? BGFX_CLEAR_DEPTH : BGFX_CLEAR_NONE));
+		(color ? BGFX_CLEAR_COLOR : BGFX_CLEAR_NONE) | (depth ? BGFX_CLEAR_DEPTH : BGFX_CLEAR_NONE));
 }
 
 
@@ -111,5 +110,9 @@ void OtPass::setTransform(const glm::mat4 &viewTransform, const glm::mat4 &proje
 //
 
 void OtPass::runShader(OtShader &shader) {
+	if (!view) {
+		OtExcept("Internal error: rendering slot for pass not reserved");
+	}
+
 	shader.submit(view);
 }

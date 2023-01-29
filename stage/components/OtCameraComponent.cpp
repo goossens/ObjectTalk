@@ -23,28 +23,11 @@
 //
 
 OtCameraComponent::OtCameraComponent() {
-	updateCamera();
+	createCamera("Perspective");
 }
 
-OtCameraComponent::OtCameraComponent(const std::string &t) {
-	type = t;
-	updateCamera();
-}
-
-
-//
-//	OtCameraComponent::updateCamera
-//
-
-void OtCameraComponent::updateCamera() {
-	auto factory = OtCameraFactory::instance();
-
-	if (factory->exists(type)) {
-		camera = factory->create(type);
-
-	} else {
-		OtExcept("Invalid camera type [%s]", type.c_str());
-	}
+OtCameraComponent::OtCameraComponent(const std::string &type) {
+	createCamera(type);
 }
 
 
@@ -53,16 +36,16 @@ void OtCameraComponent::updateCamera() {
 //
 
 bool OtCameraComponent::renderGUI() {
+	auto type = camera->getTypeName();
 	bool changed = false;
 
-	if (ImGui::BeginCombo("Type", type.c_str())) {
+	if (ImGui::BeginCombo("Type", type)) {
 		OtCameraFactory::instance()->each([&](const char* name) {
-			bool isSelectedOne = type == name;
+			bool isSelectedOne = !std::strcmp(type, name);
 
 			if (ImGui::Selectable(name, isSelectedOne)) {
-				if (type != name) {
-					type = name;
-					changed = true;
+				if (std::strcmp(type, name)) {
+					createCamera(name);
 				}
 			}
 
@@ -75,10 +58,6 @@ bool OtCameraComponent::renderGUI() {
 		ImGui::EndCombo();
 	}
 
-	if (changed) {
-		updateCamera();
-	}
-
 	changed |= camera->renderGUI();
 	return changed;
 }
@@ -88,10 +67,10 @@ bool OtCameraComponent::renderGUI() {
 //	OtCameraComponent::serialize
 //
 
-nlohmann::json OtCameraComponent::serialize() {
+nlohmann::json OtCameraComponent::serialize(std::filesystem::path* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
-	data["type"] = type;
+	data["camera"] = camera->serialize();
 	return data;
 }
 
@@ -100,7 +79,25 @@ nlohmann::json OtCameraComponent::serialize() {
 //	OtCameraComponent::deserialize
 //
 
-void OtCameraComponent::deserialize(nlohmann::json data) {
-	type = data["type"];
-	updateCamera();
+void OtCameraComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+	createCamera(data["camera"]["type"]);
+	camera->deserialize(data["camera"]);
 }
+
+
+//
+//	OtCameraComponent::createCamera
+//
+
+void OtCameraComponent::createCamera(const std::string& type) {
+	auto factory = OtCameraFactory::instance();
+
+	if (factory->exists(type)) {
+		camera = factory->create(type);
+
+	} else {
+		OtExcept("Invalid camera type [%s]", type.c_str());
+	}
+}
+
+

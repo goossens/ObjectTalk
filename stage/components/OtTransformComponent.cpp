@@ -62,7 +62,7 @@ bool OtTransformComponent::renderGUI() {
 //	OtTransformComponent::serialize
 //
 
-nlohmann::json OtTransformComponent::serialize() {
+nlohmann::json OtTransformComponent::serialize(std::filesystem::path* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
 	data["translation"] = translation;
@@ -76,7 +76,7 @@ nlohmann::json OtTransformComponent::serialize() {
 //	OtTransformComponent::deserialize
 //
 
-void OtTransformComponent::deserialize(nlohmann::json data) {
+void OtTransformComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
 	translation = data["translation"];
 	rotation = data["rotation"];
 	scale = data["scale"];

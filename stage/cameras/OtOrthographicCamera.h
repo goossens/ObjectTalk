@@ -29,14 +29,9 @@ typedef std::shared_ptr<OtOrthographicCameraClass> OtOrthographicCamera;
 class OtOrthographicCameraClass : public OtCamera2Class {
 public:
 	// setters
-	void setWidth(float width);
-	void setAspectRatio(float aspectRatio);
-	void setNearFar(float n, float f) { near = n; far = f; updateProjectionMatrix(); }
 	void setFrustum(float left, float right, float top, float bottom, float near, float far);
 
 	// getters
-	float getWidth() { return width; }
-	float getAspectRatio() { return aspectRatio; }
 	float getLeft() { return left; }
 	float getRight() { return right; }
 	float getTop() { return top; }
@@ -57,6 +52,9 @@ public:
 	// create a new object
 	static OtOrthographicCamera create();
 
+	// get type name of camera
+	const char* getTypeName() override { return name; }
+
 	// camera name
 	static constexpr char const* name = "Orthograpic";
 
@@ -65,12 +63,10 @@ protected:
 	void updateProjectionMatrix();
 
 	// properties
-	float width = 16.0;
-	float aspectRatio = 16.0 / 9.0;
-	float left = -8.0;
-	float right = 8.0;
-	float top = 4.5;
-	float bottom = -4.5;
-	float near = 0.1;
-	float far = 1000.0;
+	float left = -8.0f;
+	float right = 8.0f;
+	float top = 4.5f;
+	float bottom = -4.5f;
+	float near = 0.1f;
+	float far = 1000.0f;
 };

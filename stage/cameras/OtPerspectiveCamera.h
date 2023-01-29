@@ -31,13 +31,13 @@ public:
 	// setters
 	void setFov(float f) { fov = f; updateProjectionMatrix(); }
 	void setAspectRatio(float a) { aspectRatio = a; updateProjectionMatrix(); }
-	void setNearFar(float n, float f) { near = n; far = f; updateProjectionMatrix(); }
+	void setNearFar(float n, float f) { nearPlane = n; farPlane = f; updateProjectionMatrix(); }
 
 	// getters
 	float getFov() { return fov; }
 	float getAspectRatio() { return aspectRatio; }
-	float getNear() { return near; }
-	float getFar() { return far; }
+	float getNear() { return nearPlane; }
+	float getFar() { return farPlane; }
 
 	// GUI to change camera properties
 	bool renderGUI() override;
@@ -49,19 +49,23 @@ public:
 	// get type definition
 	static OtType getMeta();
 
-	// camera name
-	static constexpr char const* name = "Perspective";
+	// get type name of camera
+	const char* getTypeName() override { return name; }
 
 	// create a new object
 	static OtPerspectiveCamera create();
+
+	// camera name
+	static constexpr char const* name = "Perspective";
 
 protected:
 	// update the matrices when camera settings are changed
 	void updateProjectionMatrix();
 
 	// properties
-	float fov = 60.0;
-	float aspectRatio = 16.0 / 9.0;
-	float near = 0.1;
-	float far = 1000.0;
+	float fov = 60.0f;
+	float nearPlane = 0.1f;
+	float farPlane = 1000.0f;
+
+	float aspectRatio;
 };

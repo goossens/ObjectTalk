@@ -34,6 +34,15 @@
 
 void OtWorkspaceClass::run() {
 	OtFramework framework = OtFrameworkClass::instance();
+
+	// clear all editor references on exit so we release resources at the right time
+	framework->atexit([this]() {
+		editors.clear();
+		activeEditor = nullptr;
+		activateEditorTab = nullptr;
+	});
+
+	// run the IDE workspace as an app
 	framework->addCustomer(this);
 	framework->run();
 	framework->removeCustomer(this);

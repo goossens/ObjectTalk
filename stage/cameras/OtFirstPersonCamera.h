@@ -29,9 +29,9 @@ typedef std::shared_ptr<OtFirstPersonCameraClass> OtFirstPersonCamera;
 class OtFirstPersonCameraClass : public OtPerspectiveCameraClass {
 public:
 	// setters
-	void setDistance(float d) { distance = d; updateViewMatrix(); }
-	void setPitch(float p) { pitch = p; updateViewMatrix(); }
-	void setYaw(float y) { yaw = y; updateViewMatrix(); }
+	void setDistance(float d);
+	void setPitch(float p);
+	void setYaw(float y);
 
 	// getters
 	float getDistance() { return distance; }
@@ -53,6 +53,9 @@ public:
 	// create a new object
 	static OtFirstPersonCamera create();
 
+	// get type name of camera
+	const char* getTypeName() override { return name; }
+
 	// camera name
 	static constexpr char const* name = "First Person Perspective";
 
@@ -61,11 +64,11 @@ private:
 	void updateViewMatrix();
 
 	// properties
-	float distance = 10.0;
-	float pitch = 0.0;
-	float yaw = 0.0;
+	float distance = 10.0f;
+	float pitch = 0.0f;
+	float yaw = 0.0f;
 
 	// derived values
-	glm::vec3 forward = { 0.0, 0.0, 1.0 };
-	glm::vec3 right= { 1.0, 0.0, 0.0 };
+	glm::vec3 forward = { 0.0f, 0.0f, 1.0f };
+	glm::vec3 right= { 1.0f, 0.0f, 0.0f };
 };

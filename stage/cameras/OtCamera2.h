@@ -46,7 +46,10 @@ public:
 	// GUI to change camera properties
 	virtual bool renderGUI();
 
-	// (de)serialize component
+	// mouse/keyboard events
+	virtual void handleMouseKeyboard() {}
+
+	// (de)serialize camera
 	virtual nlohmann::json serialize();
 	virtual void deserialize(nlohmann::json data);
 
@@ -55,6 +58,9 @@ public:
 
 	// get type definition
 	static OtType getMeta();
+
+	// get type name of camera
+	virtual const char* getTypeName() { return name; }
 
 	// camera name
 	static constexpr char const* name = "Camera";
@@ -65,14 +71,13 @@ protected:
 	void updateDerived();
 
 	// properties
-	glm::vec3 position = { 0.0, 0.0, 10.0 };
-	glm::vec3 target = { 0.0, 0.0, 0.0 };
-	glm::vec3 up = { 0.0, 1.0, 0.0 };
-
-	glm::mat4 viewMatrix = glm::mat4(1.0);
-	glm::mat4 projMatrix = glm::mat4(1.0);
+	glm::vec3 position = { 0.0f, 0.0f, 10.0f };
+	glm::vec3 target = { 0.0f, 0.0f, 0.0f };
+	glm::vec3 up = { 0.0f, 1.0f, 0.0f };
 
 	// derived products
-	glm::mat4 viewProjMatrix = glm::mat4(1.0);
+	glm::mat4 viewMatrix = glm::mat4(1.0f);
+	glm::mat4 projMatrix = glm::mat4(1.0f);
+	glm::mat4 viewProjMatrix = glm::mat4(1.0f);
 	OtFrustum frustum;
 };

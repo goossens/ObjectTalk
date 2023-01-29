@@ -16,7 +16,9 @@
 
 #include "ImGuizmo.h"
 
+#include "OtOrbitalCamera.h"
 #include "OtScene2.h"
+#include "OtSceneRenderer.h"
 
 #include "OtEditor.h"
 #include "OtTaskManager.h"
@@ -93,6 +95,7 @@ private:
 	// the scene being edited
 	OtScene2 scene;
 	OtEntity selectedEntity = OtEntityNull;
+	OtSceneRenderer renderer;
 
 	// to handle do/undo/redo
 	OtTaskManager taskManager;
@@ -110,6 +113,8 @@ private:
 	float minEntityPanelHeight = -1.0f;
 	float maxEntityPanelHeight = -1.0f;
 	float buttonSize;
+
+	OtOrbitalCamera editorCamera;
 
 	bool guizmoVisible = false;
 	ImGuizmo::OPERATION guizmoOperation = ImGuizmo::TRANSLATE;

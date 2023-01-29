@@ -21,7 +21,7 @@
 //
 
 bool OtTagComponent::renderGUI() {
-	return OtUiInputText("##", tag);
+	return OtUiInputText("Name", tag);
 }
 
 
@@ -29,7 +29,7 @@ bool OtTagComponent::renderGUI() {
 //	OtTagComponent::serialize
 //
 
-nlohmann::json OtTagComponent::serialize() {
+nlohmann::json OtTagComponent::serialize(std::filesystem::path* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
 	data["tag"] = tag;
@@ -41,6 +41,6 @@ nlohmann::json OtTagComponent::serialize() {
 //	OtTagComponent::deserialize
 //
 
-void OtTagComponent::deserialize(nlohmann::json data) {
+void OtTagComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
 	tag = data["tag"];
 }

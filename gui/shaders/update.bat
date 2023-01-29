@@ -70,6 +70,11 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f skybox/shader.fs -o skybox/fs_dx9.h -i include --type fragment --platform windows -p ps_3_0 -O 3 --bin2c OtSkyboxFS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f skybox/shader.fs -o skybox/fs_dx11.h -i include --type fragment --platform windows -p ps_5_0 -O 3 --bin2c OtSkyboxFS_dx11
 
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f skysphere/shader.vs -o skysphere/vs_dx9.h -i include --type vertex --platform windows -p vs_3_0 -O 3 --bin2c OtSkySphereVS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f skysphere/shader.vs -o skysphere/vs_dx11.h -i include --type vertex --platform windows -p vs_5_0 -O 3 --bin2c OtSkySphereVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f skysphere/shader.fs -o skysphere/fs_dx9.h -i include --type fragment --platform windows -p ps_3_0 -O 3 --bin2c OtSkySphereFS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f skysphere/shader.fs -o skysphere/fs_dx11.h -i include --type fragment --platform windows -p ps_5_0 -O 3 --bin2c OtSkySphereFS_dx11
+
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f terrain/shader.vs -o terrain/vs_dx9.h -i include --type vertex --platform windows -p vs_3_0 -O 3 --bin2c OtTerrainVS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f terrain/shader.vs -o terrain/vs_dx11.h -i include --type vertex --platform windows -p vs_5_0 -O 3 --bin2c OtTerrainVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f terrain/shader.fs -o terrain/fs_dx9.h -i include --type fragment --platform windows -p ps_3_0 -O 3 --bin2c OtTerrainFS_dx9

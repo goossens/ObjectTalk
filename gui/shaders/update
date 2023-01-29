@@ -201,6 +201,7 @@ processDirectory ImGui
 processDirectory Shadow
 processDirectory Sky
 processDirectory Skybox
+processDirectory SkySphere
 processDirectory Terrain
 processDirectory Textured
 processDirectory TransparentShadow

@@ -27,7 +27,7 @@ bool OtGeometryComponent::renderGUI() {
 //	OtGeometryComponent::serialize
 //
 
-nlohmann::json OtGeometryComponent::serialize() {
+nlohmann::json OtGeometryComponent::serialize(std::filesystem::path* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
 	return data;
@@ -38,5 +38,5 @@ nlohmann::json OtGeometryComponent::serialize() {
 //	OtGeometryComponent::deserialize
 //
 
-void OtGeometryComponent::deserialize(nlohmann::json data) {
+void OtGeometryComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
 }

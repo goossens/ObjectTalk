@@ -129,6 +129,12 @@ public:
 		return registry.all_of<T>(entity);
 	}
 
+	// get a view
+	template<typename T>
+	auto view() {
+		return registry.view<T>();
+	}
+
 	// translate entity <-> UUID
 	uint32_t getUuidFromEntity(OtEntity entity) { return mapEntityToUuid[entity]; }
 	OtEntity getEntityFromUuid(uint32_t uuid) { return mapUuidToEntity[uuid]; }

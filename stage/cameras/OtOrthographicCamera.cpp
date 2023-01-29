@@ -13,40 +13,10 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
+#include "OtGlm.h"
+
 #include "OtGpu.h"
 #include "OtOrthographicCamera.h"
-
-
-//
-//	OtOrthographicCameraClass::setWidth
-//
-
-void OtOrthographicCameraClass::setWidth(float w) {
-	width = w;
-	auto height = width / aspectRatio;
-
-	left = -width / 2.0;
-	right = width / 2.0;
-	top = height / 2.0;
-	bottom = -height / 2.0;
-
-	updateProjectionMatrix();
-}
-
-
-//
-//	OtOrthographicCameraClass::setAspectRatio
-//
-
-void OtOrthographicCameraClass::setAspectRatio(float ar) {
-	aspectRatio = ar;
-	auto height = width / aspectRatio;
-
-	top = height / 2.0;
-	bottom = -height / 2.0;
-
-	updateProjectionMatrix();
-}
 
 
 //
@@ -60,9 +30,6 @@ void OtOrthographicCameraClass::setFrustum(float l, float r, float t, float b, f
 	bottom = b;
 	near = n;
 	far = f;
-
-	width = right - left;
-	aspectRatio = width / (top - bottom);
 
 	updateProjectionMatrix();
 }
@@ -88,9 +55,23 @@ void OtOrthographicCameraClass::updateProjectionMatrix() {
 bool OtOrthographicCameraClass::renderGUI() {
 	bool changed = OtCamera2Class::renderGUI();
 
-	changed |= ImGui::DragFloat("Width", &width, 1.0, 0.0, 0.0, ".0f");
-	changed |= ImGui::DragFloat("Near Plane", &near, 1.0, 0.0, 0.0, ".0f");
-	changed |= ImGui::DragFloat("Far Plane", &far, 1.0, 0.0, 0.0, ".0f");
+	auto centerX = (left + right) / 2.0f;
+	auto centerY = (bottom + top) / 2.0f;
+	auto width = right - left;
+	auto aspectRatio = width / (top - bottom);
+
+	changed |= ImGui::DragFloat("Width", &width, 1.0f, 0.0f, 0.0f, "%.0f");
+
+	if (changed) {
+		left = centerX - width / 2.0f;
+		right = centerX + width / 2.0f;
+		auto height = width / aspectRatio;
+		bottom = centerY - height / 2.0f;
+		top = centerY + height / 2.0f;
+	}
+
+	changed |= ImGui::DragFloat("Near Plane", &near, 1.0f, 0.0f, 0.0f, "%.1f");
+	changed |= ImGui::DragFloat("Far Plane", &far, 1.0f, 0.0f, 0.0f, "%.1f");
 
 	if (changed) {
 		updateProjectionMatrix();
@@ -106,6 +87,19 @@ bool OtOrthographicCameraClass::renderGUI() {
 
 nlohmann::json OtOrthographicCameraClass::serialize() {
 	auto data = nlohmann::json::object();
+	data["type"] = name;
+
+	data["position"] = target;
+	data["target"] = target;
+	data["up"] = up;
+
+	data["left"] = left;
+	data["right"] = right;
+	data["top"] = top;
+	data["bottom"] = bottom;
+	data["near"] = near;
+	data["far"] = far;
+
 	return data;
 }
 
@@ -115,6 +109,19 @@ nlohmann::json OtOrthographicCameraClass::serialize() {
 //
 
 void OtOrthographicCameraClass::deserialize(nlohmann::json data) {
+	position = data["position"];
+	target = data["target"];
+	up = data["up"];
+
+	left = data["left"];
+	right = data["right"];
+	top = data["top"];
+	bottom = data["bottom"];
+	near = data["near"];
+	far = data["far"];
+
+	updateViewMatrix();
+	updateProjectionMatrix();
 }
 
 

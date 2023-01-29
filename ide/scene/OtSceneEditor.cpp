@@ -71,7 +71,8 @@ void OtSceneEditorClass::load() {
 	}
 
 	// recreate the scene
-	scene->deserialize(buffer.str());
+	auto basedir = path.parent_path();
+	scene->deserialize(buffer.str(), &basedir);
 }
 
 
@@ -88,7 +89,8 @@ void OtSceneEditorClass::save() {
 			OtExcept("Can't write to file [%s]", path.c_str());
 		}
 
-		stream << scene->serialize(1, '\t');
+		auto basedir = path.parent_path();
+		stream << scene->serialize(1, '\t', &basedir);
 		stream.close();
 
 	} catch (std::exception& e) {
@@ -304,8 +306,27 @@ void OtSceneEditorClass::renderComponentsPanel() {
 //
 
 void OtSceneEditorClass::renderViewPort() {
+	// create camera (if required)
+	if (!editorCamera) {
+		editorCamera = OtOrbitalCameraClass::create();
+	}
+
 	// create the window
 	ImGui::BeginChild("viewport", ImVec2(), true);
+	auto size = ImGui::GetContentRegionAvail();
+
+	// update the camera and render the scene
+	editorCamera->setAspectRatio(size.x / size.y);
+	auto textureIndex = renderer.render(scene, editorCamera, size.x, size.y);
+
+	// show it on the screen
+	ImGui::Image((void*)(intptr_t) textureIndex, size);
+
+	// handle mouse and keyboard interactions
+	if (ImGui::IsItemHovered() && ImGui::IsKeyDown(ImGuiMod_Alt)) {
+		editorCamera->handleMouseKeyboard();
+	}
+
 	ImGui::EndChild();
 }
 
@@ -367,7 +388,7 @@ void OtSceneEditorClass::renderPanel(const std::string& name, bool canAdd, std::
 
 	ImGui::SameLine(cursorPos.x + padding.x);
 	ImGui::AlignTextToFramePadding();
-	ImGui::Text("%s", name.c_str());
+	ImGui::TextUnformatted(name.c_str());
 
 	// add a button to add more things (if required)
 	if (canAdd) {
@@ -582,10 +603,12 @@ void OtSceneEditorClass::renderComponent(bool canRemove) {
 
 		// render the component editor (if required)
 		if (open) {
-			auto component = scene->getComponent<T>(selectedEntity);
+			auto& component = scene->getComponent<T>(selectedEntity);
+			auto oldValue = component.serialize(nullptr).dump();
 
 			if (component.renderGUI()) {
-				nextTask = std::make_shared<OtEditComponentTask<T>>(scene, selectedEntity, component);
+				auto newValue = component.serialize(nullptr).dump();
+				nextTask = std::make_shared<OtEditComponentTask<T>>(scene, selectedEntity, oldValue, newValue);
 			}
 
 			ImGui::TreePop();

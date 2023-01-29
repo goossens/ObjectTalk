@@ -50,11 +50,6 @@ void OtFrameBuffer::initialize(int c, int d, int a) {
 
 void OtFrameBuffer::clear() {
 	// release resources (if required)
-	if (bgfx::isValid(framebuffer)) {
-		bgfx::destroy(framebuffer);
-		framebuffer = BGFX_INVALID_HANDLE;
-	}
-
 	if (bgfx::isValid(colorTexture)) {
 		bgfx::destroy(colorTexture);
 		colorTexture = BGFX_INVALID_HANDLE;
@@ -63,6 +58,11 @@ void OtFrameBuffer::clear() {
 	if (bgfx::isValid(depthTexture)) {
 		bgfx::destroy(depthTexture);
 		depthTexture = BGFX_INVALID_HANDLE;
+	}
+
+	if (bgfx::isValid(framebuffer)) {
+		bgfx::destroy(framebuffer);
+		framebuffer = BGFX_INVALID_HANDLE;
 	}
 
 	// clear other fields

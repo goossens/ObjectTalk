@@ -13,6 +13,8 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
+#include "OtGlm.h"
+
 #include "OtCamera2.h"
 
 
@@ -61,6 +63,10 @@ bool OtCamera2Class::renderGUI() {
 
 nlohmann::json OtCamera2Class::serialize() {
 	auto data = nlohmann::json::object();
+	data["type"] = name;
+	data["position"] = position;
+	data["target"] = target;
+	data["up"] = up;
 	return data;
 }
 
@@ -70,6 +76,11 @@ nlohmann::json OtCamera2Class::serialize() {
 //
 
 void OtCamera2Class::deserialize(nlohmann::json data) {
+	position = data["position"];
+	target = data["target"];
+	up = data["up"];
+
+	updateViewMatrix();
 }
 
 

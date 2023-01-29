@@ -35,12 +35,12 @@ public:
 
 	// constructors/destructor
 	OtFrameBuffer() = default;
-	OtFrameBuffer(int colorTextureType, int depthTextureType, int antiAliasing=1);
+	OtFrameBuffer(int colorTextureType, int depthTextureType=noTexture, int antiAliasing=1);
 
 	~OtFrameBuffer();
 
 	// initialize framebuffer
-	void initialize(int colorTextureType, int depthTextureType, int antiAliasing=1);
+	void initialize(int colorTextureType, int depthTextureType=noTexture, int antiAliasing=1);
 
 	// clear all resources
 	void clear();

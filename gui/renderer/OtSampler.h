@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include <string>
+
 #include "bgfx/bgfx.h"
 
 #include "OtCubeMap.h"
@@ -35,13 +37,17 @@ public:
 	// clear the resources
 	void clear();
 
+	// see if sampler is valid
+	bool isValid() { return bgfx::isValid(uniform); }
+
 	// bind texture to sampler and submit to GPU
-	void submit(int unit);
-	void submit(int unit, OtTexture& texture);
-	void submit(int unit, bgfx::TextureHandle texture);
-	void submit(int unit, OtCubeMap& cubemap);
+	void submit(int unit, const char* name=nullptr); // bind dummy texture
+	void submit(int unit, OtTexture& texture, const char* name=nullptr);
+	void submit(int unit, bgfx::TextureHandle texture, const char* name=nullptr);
+	void submit(int unit, OtCubeMap& cubemap, const char* name=nullptr);
 
 private:
 	// uniform
+	std::string uniformName;
 	bgfx::UniformHandle uniform = BGFX_INVALID_HANDLE;
 };

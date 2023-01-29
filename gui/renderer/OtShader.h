@@ -13,6 +13,7 @@
 //
 
 #include "bgfx/bgfx.h"
+#include "glm/glm.hpp"
 
 
 //
@@ -21,6 +22,16 @@
 
 class OtShader {
 public:
+	// states
+	enum states {
+		noDepth,
+		wireframe,
+		noCulling,
+		cullFront,
+		cullBack,
+		blending
+	};
+
 	// constructors/destructor
 	OtShader() = default;
 	OtShader(const char* vertex, const char* fragment);
@@ -31,6 +42,13 @@ public:
 
 	// clear the resources
 	void clear();
+
+	// see if shader is valid
+	bool isValid() { return bgfx::isValid(shader); }
+
+	// set parameters for the next run
+	void setState(states state);
+	void setTransform(const glm::mat4& transform);
 
 	// run shader for specified view on GPU
 	void submit(bgfx::ViewId view);

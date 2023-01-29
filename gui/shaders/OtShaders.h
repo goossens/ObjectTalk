@@ -22,6 +22,7 @@
 #include "OtShadowShader.h"
 #include "OtSkyShader.h"
 #include "OtSkyboxShader.h"
+#include "OtSkySphereShader.h"
 #include "OtTerrainShader.h"
 #include "OtTexturedShader.h"
 #include "OtTransparentShadowShader.h"
@@ -60,6 +61,8 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtSkyFS),
 	BGFX_EMBEDDED_SHADER(OtSkyboxVS),
 	BGFX_EMBEDDED_SHADER(OtSkyboxFS),
+	BGFX_EMBEDDED_SHADER(OtSkySphereVS),
+	BGFX_EMBEDDED_SHADER(OtSkySphereFS),
 	BGFX_EMBEDDED_SHADER(OtTerrainVS),
 	BGFX_EMBEDDED_SHADER(OtTerrainFS),
 	BGFX_EMBEDDED_SHADER(OtTexturedVS),

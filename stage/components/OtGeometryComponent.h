@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include <filesystem>
+
 #include "nlohmann/json_fwd.hpp"
 
 
@@ -28,8 +30,8 @@ public:
 	bool renderGUI();
 
 	// (de)serialize component
-	nlohmann::json serialize();
-	void deserialize(nlohmann::json data);
+	nlohmann::json serialize(std::filesystem::path* basedir);
+	void deserialize(nlohmann::json data, std::filesystem::path* basedir);
 
 	// component name
 	static constexpr char const* name = "Geometry";

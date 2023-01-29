@@ -41,7 +41,7 @@ void OtUuidComponent::assignNewUuid() {
 //	OtUuidComponent::serialize
 //
 
-nlohmann::json OtUuidComponent::serialize() {
+nlohmann::json OtUuidComponent::serialize(std::filesystem::path* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
 	data["uuid"] = uuid;
@@ -53,6 +53,6 @@ nlohmann::json OtUuidComponent::serialize() {
 //	OtUuidComponent::deserialize
 //
 
-void OtUuidComponent::deserialize(nlohmann::json data) {
+void OtUuidComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
 	uuid = data["uuid"];
 }

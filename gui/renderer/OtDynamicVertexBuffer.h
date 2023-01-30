@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include "bgfx/bgfx.h"
+#include "OtBgfxHelpers.h"
 
 
 //
@@ -21,17 +21,14 @@
 
 class OtDynamicVertexBuffer {
 public:
-	// destructor
-	~OtDynamicVertexBuffer();
-
 	// clear the resources
-	void clear();
+	void clear() { vertexBuffer.clear(); }
 
 	// set vertices
 	void set(void* data, size_t count, const bgfx::VertexLayout& layout);
 
 	// see if buffer is valid
-	bool isValid() { return bgfx::isValid(vertexBuffer); }
+	bool isValid() { return vertexBuffer.isValid(); }
 
 	// submit to GPU
 	void submit(uint8_t stream=0);
@@ -39,5 +36,5 @@ public:
 private:
 	// vertex layout and the actual buffer
 	bgfx::VertexLayout layout;
-	bgfx::DynamicVertexBufferHandle vertexBuffer = BGFX_INVALID_HANDLE;
+	OtBgfxHandle<bgfx::DynamicVertexBufferHandle> vertexBuffer;
 };

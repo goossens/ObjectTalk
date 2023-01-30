@@ -37,11 +37,6 @@ OtCubeMap::~OtCubeMap() {
 //
 
 void OtCubeMap::load(const std::string &posx, const std::string &negx, const std::string &posy, const std::string &negy, const std::string &posz, const std::string &negz) {
-	// cleanup (if required)
-	if (bgfx::isValid(cubemap)) {
-		bgfx::destroy(cubemap);
-	}
-
 	// load first side
 	bimg::ImageContainer* image = OtImage(posx, true, true).getContainer();
 	uint16_t imageSize = image->m_width;
@@ -52,7 +47,7 @@ void OtCubeMap::load(const std::string &posx, const std::string &negx, const std
 
 	// store first side
 	const bgfx::Memory* mem = bgfx::copy(image->m_data, image->m_size);
-	bgfx::updateTextureCube(cubemap, 0, 0, 0, 0, 0, imageSize, imageSize, mem);
+	bgfx::updateTextureCube(cubemap.getHandle(), 0, 0, 0, 0, 0, imageSize, imageSize, mem);
 
 	// load and store other sides
 	image = OtImage(negx, true, true).getContainer();
@@ -62,7 +57,7 @@ void OtCubeMap::load(const std::string &posx, const std::string &negx, const std
 	}
 
 	mem = bgfx::copy(image->m_data, image->m_size);
-	bgfx::updateTextureCube(cubemap, 0, 1, 0, 0, 0, imageSize, imageSize, mem);
+	bgfx::updateTextureCube(cubemap.getHandle(), 0, 1, 0, 0, 0, imageSize, imageSize, mem);
 
 	image = OtImage(posy, true, true).getContainer();
 
@@ -71,7 +66,7 @@ void OtCubeMap::load(const std::string &posx, const std::string &negx, const std
 	}
 
 	mem = bgfx::copy(image->m_data, image->m_size);
-	bgfx::updateTextureCube(cubemap, 0, 2, 0, 0, 0, imageSize, imageSize, mem);
+	bgfx::updateTextureCube(cubemap.getHandle(), 0, 2, 0, 0, 0, imageSize, imageSize, mem);
 
 	image = OtImage(negy, true, true).getContainer();
 
@@ -80,7 +75,7 @@ void OtCubeMap::load(const std::string &posx, const std::string &negx, const std
 	}
 
 	mem = bgfx::copy(image->m_data, image->m_size);
-	bgfx::updateTextureCube(cubemap, 0, 3, 0, 0, 0, imageSize, imageSize, mem);
+	bgfx::updateTextureCube(cubemap.getHandle(), 0, 3, 0, 0, 0, imageSize, imageSize, mem);
 
 	image = OtImage(posz, true, true).getContainer();
 
@@ -89,7 +84,7 @@ void OtCubeMap::load(const std::string &posx, const std::string &negx, const std
 	}
 
 	mem = bgfx::copy(image->m_data, image->m_size);
-	bgfx::updateTextureCube(cubemap, 0, 4, 0, 0, 0, imageSize, imageSize, mem);
+	bgfx::updateTextureCube(cubemap.getHandle(), 0, 4, 0, 0, 0, imageSize, imageSize, mem);
 
 	image = OtImage(negz, true, true).getContainer();
 
@@ -98,17 +93,5 @@ void OtCubeMap::load(const std::string &posx, const std::string &negx, const std
 	}
 
 	mem = bgfx::copy(image->m_data, image->m_size);
-	bgfx::updateTextureCube(cubemap, 0, 5, 0, 0, 0, imageSize, imageSize, mem);
-}
-
-
-//
-//	OtCubeMap::clear
-//
-
-void OtCubeMap::clear() {
-	if (bgfx::isValid(cubemap)) {
-		bgfx::destroy(cubemap);
-		cubemap = BGFX_INVALID_HANDLE;
-	}
+	bgfx::updateTextureCube(cubemap.getHandle(), 0, 5, 0, 0, 0, imageSize, imageSize, mem);
 }

@@ -24,15 +24,6 @@ OtFrameBuffer::OtFrameBuffer(int colorTextureType, int depthTextureType, int ant
 
 
 //
-//	OtFrameBuffer:~OtFrameBuffer
-//
-
-OtFrameBuffer::~OtFrameBuffer() {
-	clear();
-}
-
-
-//
 //	OtFrameBuffer::initialize
 //
 
@@ -50,20 +41,9 @@ void OtFrameBuffer::initialize(int c, int d, int a) {
 
 void OtFrameBuffer::clear() {
 	// release resources (if required)
-	if (bgfx::isValid(colorTexture)) {
-		bgfx::destroy(colorTexture);
-		colorTexture = BGFX_INVALID_HANDLE;
-	}
-
-	if (bgfx::isValid(depthTexture)) {
-		bgfx::destroy(depthTexture);
-		depthTexture = BGFX_INVALID_HANDLE;
-	}
-
-	if (bgfx::isValid(framebuffer)) {
-		bgfx::destroy(framebuffer);
-		framebuffer = BGFX_INVALID_HANDLE;
-	}
+	colorTexture.clear();
+	depthTexture.clear();
+	framebuffer.clear();
 
 	// clear other fields
 	width = -1;
@@ -101,7 +81,7 @@ static inline uint64_t computeTextureRtMsaaFlag(int aa) {
 
 void OtFrameBuffer::update(int w, int h) {
 	// update framebuffer if required
-	if (!bgfx::isValid(framebuffer) || w != width || h != height) {
+	if (!framebuffer.isValid() || w != width || h != height) {
 		// clear old resources
 		clear();
 
@@ -117,15 +97,16 @@ void OtFrameBuffer::update(int w, int h) {
 		}
 
 		// create framebuffer
+		bgfx::TextureHandle textures[2] = {colorTexture.getHandle(), depthTexture.getHandle()};
+
 		if (colorTextureType && depthTextureType) {
-			bgfx::TextureHandle textures[2] = {colorTexture, depthTexture};
 			framebuffer = bgfx::createFrameBuffer(2, textures);
 
 		} else if (colorTextureType) {
-			framebuffer = bgfx::createFrameBuffer(1, &colorTexture);
+			framebuffer = bgfx::createFrameBuffer(1, &textures[0]);
 
 		} else if (depthTextureType) {
-			framebuffer = bgfx::createFrameBuffer(1, &depthTexture);
+			framebuffer = bgfx::createFrameBuffer(1, &textures[1]);
 
 		} else {
 			OtExcept("Internal error: You can't have a FrameBuffer without Textures");
@@ -143,7 +124,7 @@ void OtFrameBuffer::update(int w, int h) {
 //
 
 void OtFrameBuffer::bindColorTexture(OtSampler& sampler, int unit) {
-	sampler.submit(unit, colorTexture);
+	sampler.submit(unit, colorTexture.getHandle());
 }
 
 
@@ -152,7 +133,7 @@ void OtFrameBuffer::bindColorTexture(OtSampler& sampler, int unit) {
 //
 
 void OtFrameBuffer::bindDepthTexture(OtSampler& sampler, int unit) {
-	sampler.submit(unit, depthTexture);
+	sampler.submit(unit, depthTexture.getHandle());
 }
 
 
@@ -162,5 +143,10 @@ void OtFrameBuffer::bindDepthTexture(OtSampler& sampler, int unit) {
 
 void OtFrameBuffer::submit(bgfx::ViewId view) {
 	// attach framebuffer to view
-	bgfx::setViewFrameBuffer(view, framebuffer);
+	if (isValid()) {
+		bgfx::setViewFrameBuffer(view, framebuffer.getHandle());
+
+	} else {
+		OtExcept("Internal error: IndexBuffer not initialized before submission");
+	}
 }

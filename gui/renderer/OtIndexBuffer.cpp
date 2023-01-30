@@ -9,28 +9,9 @@
 //	Include files
 //
 
+#include "OtException.h"
+
 #include "OtIndexBuffer.h"
-
-
-//
-//	OtIndexBuffer::~OtIndexBuffer
-//
-
-OtIndexBuffer::~OtIndexBuffer() {
-	clear();
-}
-
-
-//
-//	OtIndexBuffer::clear
-//
-
-void OtIndexBuffer::clear() {
-	if (bgfx::isValid(indexBuffer)) {
-		bgfx::destroy(indexBuffer);
-		indexBuffer = BGFX_INVALID_HANDLE;
-	}
-}
 
 
 //
@@ -48,5 +29,10 @@ void OtIndexBuffer::set(uint32_t* data, size_t count) {
 //
 
 void OtIndexBuffer::submit() {
-	bgfx::setIndexBuffer(indexBuffer);
+	if (isValid()) {
+		bgfx::setIndexBuffer(indexBuffer.getHandle());
+
+	} else {
+		OtExcept("Internal error: IndexBuffer not initialized before submission");
+	}
 }

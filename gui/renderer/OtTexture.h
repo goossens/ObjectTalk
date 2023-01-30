@@ -14,7 +14,7 @@
 
 #include <string>
 
-#include "bgfx/bgfx.h"
+#include "OtBgfxHelpers.h"
 
 
 //
@@ -23,13 +23,15 @@
 
 class OtTexture {
 public:
-	// constructor/destructor
+	// constructor
 	OtTexture() = default;
 	OtTexture(const std::string& filename, bool mipmap=false);
-	~OtTexture();
 
 	// clear the resources
-	void clear();
+	void clear() { texture.clear(); }
+
+	// see if texture is valid
+	bool isValid() { return texture.isValid(); }
 
 	// load from memory (pixels must be RGBA in row order)
 	void loadFromMemory(int width, int height, uint8_t* pixels);
@@ -40,14 +42,11 @@ public:
 	// load from file in memory
 	void loadFromFileInMemory(void* data, uint32_t size);
 
-	// see if texture is valid
-	bool isValid() { return bgfx::isValid(texture); }
-
 	// return texture handle
 	bgfx::TextureHandle getTextureHandle();
 
 	// return texture index
-	int getTextureIndex() { return texture.idx; }
+	int getTextureIndex() { return texture.getIndex(); }
 
 	// get texture size
 	size_t getWidth() { return width; }
@@ -55,7 +54,7 @@ public:
 
 private:
 	// texture
-	bgfx::TextureHandle texture = BGFX_INVALID_HANDLE;
+	OtBgfxHandle<bgfx::TextureHandle> texture;
 	size_t width = 1;
 	size_t height = 1;
 };

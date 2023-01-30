@@ -14,7 +14,7 @@
 
 #include <string>
 
-#include "bgfx/bgfx.h"
+#include "OtBgfxHelpers.h"
 
 
 //
@@ -32,18 +32,18 @@ public:
 	void load(const std::string& posx, const std::string& negx, const std::string& posy, const std::string& negy, const std::string& posz, const std::string& negz);
 
 	// clear the resources
-	void clear();
+	void clear() { cubemap.clear(); }
 
 	// see if cubemap is valid
-	bool isValid() { return bgfx::isValid(cubemap); }
+	bool isValid() { return cubemap.isValid(); }
 
 	// return cubemap handle
-	bgfx::TextureHandle getTextureHandle() { return cubemap; }
+	bgfx::TextureHandle getTextureHandle() { return cubemap.getHandle(); }
 
 	// return cubemap index
-	int getTextureIndex() { return cubemap.idx; }
+	int getTextureIndex() { return cubemap.getIndex(); }
 
 private:
 	// cubemap texture
-	bgfx::TextureHandle cubemap = BGFX_INVALID_HANDLE;
+	OtBgfxHandle<bgfx::TextureHandle> cubemap;
 };

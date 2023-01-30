@@ -37,9 +37,6 @@ OtUniformVec4::~OtUniformVec4() {
 //
 
 void OtUniformVec4::initialize(const char *name, size_t s) {
-	// clear uniform
-	clear();
-
 	// remember size
 	size = s;
 
@@ -63,10 +60,7 @@ void OtUniformVec4::clear() {
 	}
 
 	// release uniform
-	if (bgfx::isValid(uniform)) {
-		bgfx::destroy(uniform);
-		uniform = BGFX_INVALID_HANDLE;
-	}
+	uniform.clear();
 }
 
 
@@ -81,5 +75,5 @@ void OtUniformVec4::submit() {
 	}
 
 	// submit uniform to GPU
-	bgfx::setUniform(uniform, values, size);
+	bgfx::setUniform(uniform.getHandle(), values, size);
 }

@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include "bgfx/bgfx.h"
+#include "OtBgfxHelpers.h"
 
 
 //
@@ -21,22 +21,19 @@
 
 class OtDynamicIndexBuffer {
 public:
-	// destructor
-	~OtDynamicIndexBuffer();
-
 	// clear the resources
-	void clear();
+	void clear() { indexBuffer.clear(); }
 
 	// set vertices
 	void set(void* data, size_t count);
 
 	// see if buffer is valid
-	bool isValid() { return bgfx::isValid(indexBuffer); }
+	bool isValid() { return indexBuffer.isValid(); }
 
 	// submit to GPU
 	void submit();
 
 private:
 	// the actual buffer
-	bgfx::DynamicIndexBufferHandle indexBuffer = BGFX_INVALID_HANDLE;
+	OtBgfxHandle<bgfx::DynamicIndexBufferHandle> indexBuffer;
 };

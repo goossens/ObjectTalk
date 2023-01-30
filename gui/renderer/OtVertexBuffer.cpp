@@ -9,28 +9,9 @@
 //	Include files
 //
 
+#include "OtException.h"
+
 #include "OtVertexBuffer.h"
-
-
-//
-//	OtVertexBuffer::~OtVertexBuffer
-//
-
-OtVertexBuffer::~OtVertexBuffer() {
-	clear();
-}
-
-
-//
-//	OtVertexBuffer::clear
-//
-
-void OtVertexBuffer::clear() {
-	if (bgfx::isValid(vertexBuffer)) {
-		bgfx::destroy(vertexBuffer);
-		vertexBuffer = BGFX_INVALID_HANDLE;
-	}
-}
 
 
 //
@@ -49,5 +30,10 @@ void OtVertexBuffer::set(void *data, size_t count, const bgfx::VertexLayout& l) 
 //
 
 void OtVertexBuffer::submit(uint8_t stream) {
-	bgfx::setVertexBuffer(stream, vertexBuffer);
+	if (isValid()) {
+		bgfx::setVertexBuffer(stream, vertexBuffer.getHandle());
+
+	} else {
+		OtExcept("Internal error: VertexBuffer not initialized before submission");
+	}
 }

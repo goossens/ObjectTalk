@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include "bgfx/bgfx.h"
+#include "OtBgfxHelpers.h"
 
 #include "OtSampler.h"
 
@@ -33,17 +33,18 @@ public:
 		dFloatTexture = bgfx::TextureFormat::D32F
 	};
 
-	// constructors/destructor
+	// constructors
 	OtFrameBuffer() = default;
 	OtFrameBuffer(int colorTextureType, int depthTextureType=noTexture, int antiAliasing=1);
-
-	~OtFrameBuffer();
 
 	// initialize framebuffer
 	void initialize(int colorTextureType, int depthTextureType=noTexture, int antiAliasing=1);
 
 	// clear all resources
 	void clear();
+
+	// see if framebuffer is valid
+	bool isValid() { return framebuffer.isValid(); }
 
 	// update frame buffer
 	void update(int width, int height);
@@ -53,12 +54,12 @@ public:
 	int getHeight() { return height; }
 
 	// get textures
-	bgfx::TextureHandle getColorTexture() { return colorTexture; }
-	bgfx::TextureHandle getDepthTexture() { return depthTexture; }
+	bgfx::TextureHandle getColorTexture() { return colorTexture.getHandle(); }
+	bgfx::TextureHandle getDepthTexture() { return depthTexture.getHandle(); }
 
 	// get texture indices
-	int getColorTextureIndex() { return colorTexture.idx; }
-	int getDepthTextureIndex() { return depthTexture.idx; }
+	int getColorTextureIndex() { return colorTexture.getIndex(); }
+	int getDepthTextureIndex() { return depthTexture.getIndex(); }
 
 	// bind textures
 	void bindColorTexture(OtSampler& sampler, int unit);
@@ -78,7 +79,7 @@ private:
 	int height = -1;
 
 	// resource handles
-	bgfx::TextureHandle colorTexture = BGFX_INVALID_HANDLE;
-	bgfx::TextureHandle depthTexture = BGFX_INVALID_HANDLE;
-	bgfx::FrameBufferHandle framebuffer = BGFX_INVALID_HANDLE;
+	OtBgfxHandle<bgfx::TextureHandle> colorTexture;
+	OtBgfxHandle<bgfx::TextureHandle> depthTexture;
+	OtBgfxHandle<bgfx::FrameBufferHandle> framebuffer;
 };

@@ -25,6 +25,10 @@ public:
 	// constructors/destructor
 	OtImage() = default;
 	OtImage(const std::string& file, bool powerof2 = false, bool square = false);
+	OtImage(const OtImage&) = delete; // no copy constructor
+	OtImage& operator=(const OtImage&) = delete; // no copy assignment
+	OtImage(OtImage&&) = default;
+	OtImage& operator=(OtImage&&) = default;
 	~OtImage();
 
 	// clear the resources

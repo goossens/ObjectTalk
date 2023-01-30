@@ -14,7 +14,7 @@
 
 #include <string>
 
-#include "bgfx/bgfx.h"
+#include "OtBgfxHelpers.h"
 
 #include "OtCubeMap.h"
 #include "OtTexture.h"
@@ -29,16 +29,15 @@ public:
 	// constructor/destructor
 	OtSampler() = default;
 	OtSampler(const char* name);
-	~OtSampler();
 
 	// initialize sampler
 	void initialize(const char* name);
 
 	// clear the resources
-	void clear();
+	void clear() { uniformName.clear(); uniform.clear(); }
 
 	// see if sampler is valid
-	bool isValid() { return bgfx::isValid(uniform); }
+	bool isValid() { return uniform.isValid(); }
 
 	// bind texture to sampler and submit to GPU
 	void submit(int unit, const char* name=nullptr); // bind dummy texture
@@ -49,5 +48,5 @@ public:
 private:
 	// uniform
 	std::string uniformName;
-	bgfx::UniformHandle uniform = BGFX_INVALID_HANDLE;
+	OtBgfxHandle<bgfx::UniformHandle> uniform;
 };

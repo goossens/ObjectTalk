@@ -12,8 +12,9 @@
 //	Include files
 //
 
-#include "bgfx/bgfx.h"
 #include "glm/glm.hpp"
+
+#include "OtBgfxHelpers.h"
 
 
 //
@@ -25,6 +26,10 @@ public:
 	// constructors/destructor
 	OtUniformVec4() = default;
 	OtUniformVec4(const char* name, size_t size=1);
+	OtUniformVec4(const OtUniformVec4&) = delete; // no copy constructor
+	OtUniformVec4& operator=(const OtUniformVec4&) = delete; // no copy assignment
+	OtUniformVec4(OtUniformVec4&&) = default;
+	OtUniformVec4& operator=(OtUniformVec4&&) = default;
 	~OtUniformVec4();
 
 	// initialize uniform
@@ -32,6 +37,9 @@ public:
 
 	// clear the resources
 	void clear();
+
+	// see if sampler is valid
+	bool isValid() { return uniform.isValid(); }
 
 	// get access to values
 	glm::vec4* getValues() { return values; }
@@ -48,7 +56,7 @@ private:
 	size_t size = 0;
 
 	// handle for uniform
-	bgfx::UniformHandle uniform = BGFX_INVALID_HANDLE;
+	OtBgfxHandle<bgfx::UniformHandle> uniform;
 
 	// actual values
 	glm::vec4* values = nullptr;

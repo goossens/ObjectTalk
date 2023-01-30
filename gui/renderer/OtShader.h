@@ -12,8 +12,9 @@
 //	Include files
 //
 
-#include "bgfx/bgfx.h"
 #include "glm/glm.hpp"
+
+#include "OtBgfxHelpers.h"
 
 
 //
@@ -35,16 +36,15 @@ public:
 	// constructors/destructor
 	OtShader() = default;
 	OtShader(const char* vertex, const char* fragment);
-	~OtShader();
 
 	// initialize uniform
 	void initialize(const char* vertex, const char* fragment);
 
 	// clear the resources
-	void clear();
+	void clear() { shader.clear(); }
 
 	// see if shader is valid
-	bool isValid() { return bgfx::isValid(shader); }
+	bool isValid() { return shader.isValid(); }
 
 	// set parameters for the next run
 	void setState(states state);
@@ -55,5 +55,5 @@ public:
 
 private:
 	// uniform
-	bgfx::ProgramHandle shader = BGFX_INVALID_HANDLE;
+	OtBgfxHandle<bgfx::ProgramHandle> shader;
 };

@@ -28,36 +28,10 @@ OtTexture::OtTexture(const std::string &filename, bool mipmap) {
 
 
 //
-//	OtTexture::~OtTexture
-//
-
-OtTexture::~OtTexture() {
-	clear();
-}
-
-
-//
-//	OtTexture::clear
-//
-
-void OtTexture::clear() {
-	if (bgfx::isValid(texture)) {
-		bgfx::destroy(texture);
-		texture = BGFX_INVALID_HANDLE;
-	}
-}
-
-
-//
 //	OtTexture::loadFromMemory
 //
 
 void OtTexture::loadFromMemory(int w, int h, uint8_t* pixels) {
-	// release resources (if required)
-	if (bgfx::isValid(texture)) {
-		bgfx::destroy(texture);
-	}
-
 	// remember size
 	width = w;
 	height = h;
@@ -195,11 +169,6 @@ static bgfx::TextureHandle generateMipmapTexture(bimg::ImageContainer* image) {
 //
 
 void OtTexture::loadFromFile(const std::string &filename, bool mipmap) {
-	// release resources (if required)
-	if (bgfx::isValid(texture)) {
-		bgfx::destroy(texture);
-	}
-
 	// get the image
 	OtImage image(filename);
 	bimg::ImageContainer* container = image.getContainer();
@@ -247,7 +216,7 @@ void OtTexture::loadFromFileInMemory(void* data, uint32_t size) {
 bgfx::TextureHandle OtTexture::getTextureHandle() {
 	// unsure we have a valid texture
 	if (isValid()) {
-		return texture;
+		return texture.getHandle();
 
 	} else {
 		static bgfx::TextureHandle dummy = BGFX_INVALID_HANDLE;

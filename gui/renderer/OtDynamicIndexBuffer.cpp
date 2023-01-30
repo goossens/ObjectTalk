@@ -9,28 +9,9 @@
 //	Include files
 //
 
+#include "OtException.h"
+
 #include "OtDynamicIndexBuffer.h"
-
-
-//
-//	OtDynamicIndexBuffer::~OtDynamicIndexBuffer
-//
-
-OtDynamicIndexBuffer::~OtDynamicIndexBuffer() {
-	clear();
-}
-
-
-//
-//	OtDynamicIndexBuffer::clear
-//
-
-void OtDynamicIndexBuffer::clear() {
-	if (bgfx::isValid(indexBuffer)) {
-		bgfx::destroy(indexBuffer);
-		indexBuffer = BGFX_INVALID_HANDLE;
-	}
-}
 
 
 //
@@ -38,8 +19,8 @@ void OtDynamicIndexBuffer::clear() {
 //
 
 void OtDynamicIndexBuffer::set(void *data, size_t count) {
-	if (bgfx::isValid(indexBuffer)) {
-		bgfx::update(indexBuffer, 0, bgfx::copy(data, (uint32_t) (count * sizeof(uint32_t))));
+	if (isValid()) {
+		bgfx::update(indexBuffer.getHandle(), 0, bgfx::copy(data, (uint32_t) (count * sizeof(uint32_t))));
 
 	} else {
 		indexBuffer = bgfx::createDynamicIndexBuffer(bgfx::copy(data, (uint32_t) (count * sizeof(uint32_t))), BGFX_BUFFER_INDEX32);
@@ -52,5 +33,10 @@ void OtDynamicIndexBuffer::set(void *data, size_t count) {
 //
 
 void OtDynamicIndexBuffer::submit() {
-	bgfx::setIndexBuffer(indexBuffer);
+	if (isValid()) {
+		bgfx::setIndexBuffer(indexBuffer.getHandle());
+
+	} else {
+		OtExcept("Internal error: DynamicIndexBuffer not initialized before submission");
+	}
 }

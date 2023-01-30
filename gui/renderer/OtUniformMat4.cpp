@@ -65,10 +65,7 @@ void OtUniformMat4::clear() {
 	}
 
 	// release uniform
-	if (bgfx::isValid(uniform)) {
-		bgfx::destroy(uniform);
-		uniform = BGFX_INVALID_HANDLE;
-	}
+	uniform.clear();
 }
 
 
@@ -83,5 +80,5 @@ void OtUniformMat4::submit() {
 	}
 
 	// submit uniform to GPU
-	bgfx::setUniform(uniform, values, size);
+	bgfx::setUniform(uniform.getHandle(), values, size);
 }

@@ -245,9 +245,14 @@ void OtSceneEditorClass::renderPanels() {
 	ImGui::BeginChild("panels", ImVec2(panelWidth, 0.0f));
 
 	// create the entities panel
+	auto spacing = ImGui::GetStyle().ItemSpacing;
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 	ImGui::BeginChild("entities", ImVec2(0.0, entityPanelHeight), true);
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, spacing);
 	renderEntitiesPanel();
+	ImGui::PopStyleVar();
 	ImGui::EndChild();
+	ImGui::PopStyleVar();
 
 	// render splitter between entity and component panels
 	OtUiSplitterVertical(&entityPanelHeight, minEntityPanelHeight, maxEntityPanelHeight);

@@ -107,7 +107,7 @@ static bool OtUiEditVecX(const char* label, float* v, int components, float spee
 
 		const ImVec2 min = ImGui::GetItemRectMin();
 		const ImVec2 max = ImGui::GetItemRectMax();
-		window->DrawList->AddLine(ImVec2(min.x, max.y - 1), ImVec2(max.x, max.y - 1), colors[i], 1);
+		window->DrawList->AddLine(ImVec2(min.x, max.y - 1.0f), ImVec2(max.x, max.y - 1.0f), colors[i]);
 
 		ImGui::SameLine(0, g.Style.ItemInnerSpacing.x);
 		ImGui::PopID();
@@ -207,7 +207,7 @@ bool OtUiFileSelector(const char* label, std::filesystem::path& path) {
 	}
 
 	ImVec2 maxSize = ImGui::GetIO().DisplaySize;
-	ImVec2 minSize = ImVec2(maxSize.x * 0.5, maxSize.y * 0.5);
+	ImVec2 minSize = ImVec2(maxSize.x * 0.5f, maxSize.y * 0.5f);
 	bool changed = false;
 
 	if (dialog->Display(dialogID.c_str(), ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
@@ -229,19 +229,19 @@ bool OtUiFileSelector(const char* label, std::filesystem::path& path) {
 //
 
 static void OtUiSplitter(bool vertical, float* size, float minSize, float maxSize) {
-	auto thickness = ImGui::GetStyle().ItemSpacing.y * 2;
+	auto thickness = ImGui::GetStyle().ItemSpacing.y * 2.0f;
 
 	ImGui::PushID(size);
-	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.5, 0.5, 0.5 ,0.4));
-	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.5, 0.5, 0.5 ,0.3));
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.5f, 0.5f, 0.5f, 0.4f));
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.5f, 0.5f, 0.5f, 0.3f));
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 
 	if (!vertical) {
 		ImGui::SameLine();
 	}
 
-	ImGui::Button("##splitter", ImVec2(vertical ? -1 : thickness, vertical ? thickness : -1));
+	ImGui::Button("##splitter", ImVec2(vertical ? -1.0f : thickness, vertical ? thickness : -1.0f));
 
 	if (!vertical) {
 		ImGui::SameLine();

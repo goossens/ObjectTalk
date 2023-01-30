@@ -79,6 +79,9 @@ private:
 	}
 
 	template<typename T>
+	void renderComponentEditor();
+
+	template<typename T>
 	void renderComponent(bool canRemove=true);
 
 	template<typename... T>

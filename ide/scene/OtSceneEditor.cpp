@@ -16,6 +16,7 @@
 
 #include "glm/ext.hpp"
 #include "imgui.h"
+#include "imgui_internal.h"
 #include "ImGuizmo.h"
 #include "nlohmann/json.hpp"
 
@@ -285,17 +286,24 @@ void OtSceneEditorClass::renderEntitiesPanel() {
 //
 
 void OtSceneEditorClass::renderComponentsPanel() {
+	// render selected entity info and let user change its properties
+	if (scene->isValidEntity(selectedEntity)) {
+		OtUiHeader("Selected Entity", ImGui::GetWindowContentRegionMax().x - ImGui::GetCursorPos().x);
+		renderComponentEditor<OtCoreComponent>();
+	}
+
+	// render the panel
 	renderPanel(
 		"Components",
 		scene->isValidEntity(selectedEntity),
 		[this]() {
 			// create menu to add components
-			renderNewComponents<OtSceneAddableComponents>();
+			renderNewComponents<OtSceneComponents>();
 		},
 		[this]() {
 			// render component editors if we have a selected entity
 			if (scene->isValidEntity(selectedEntity)) {
-				renderComponents<OtSceneRenderableComponents>();
+				renderComponents<OtSceneComponents>();
 		}
 	});
 }
@@ -369,26 +377,9 @@ void OtSceneEditorClass::determinePanelSizes() {
 
 void OtSceneEditorClass::renderPanel(const std::string& name, bool canAdd, std::function<void()> menu, std::function<void()> content) {
 	// render a header
-	auto windowPos = ImGui::GetWindowPos();
-	auto cursorPos = ImGui::GetCursorPos();
 	auto padding = ImGui::GetStyle().FramePadding;
-
 	float buttonSpace = canAdd ? buttonSize + padding.x : 0.0f;
-	ImVec2 min(windowPos.x + cursorPos.x, windowPos.y + cursorPos.y);
-	ImVec2 max(windowPos.x + ImGui::GetWindowContentRegionMax().x - buttonSpace + 1, min.y + buttonSize);
-
-	auto drawlist = ImGui::GetWindowDrawList();
-	drawlist->AddRectFilled(min, max, ImGui::ColorConvertFloat4ToU32(ImGui::GetStyle().Colors[ImGuiCol_Header]));
-
-	drawlist->AddLine(
-		ImVec2(min.x, max.y - 1.0f),
-		ImVec2(max.x, max.y - 1.0f),
-		ImGui::ColorConvertFloat4ToU32(ImGui::GetStyle().Colors[ImGuiCol_TabActive]),
-		1);
-
-	ImGui::SameLine(cursorPos.x + padding.x);
-	ImGui::AlignTextToFramePadding();
-	ImGui::TextUnformatted(name.c_str());
+	OtUiHeader(name.c_str(), ImGui::GetWindowContentRegionMax().x - ImGui::GetCursorPos().x - buttonSpace + 1.0f);
 
 	// add a button to add more things (if required)
 	if (canAdd) {
@@ -407,8 +398,11 @@ void OtSceneEditorClass::renderPanel(const std::string& name, bool canAdd, std::
 	}
 
 	// render panel context
+	ImGui::BeginChild("content");
 	content();
+	ImGui::EndChild();
 }
+
 
 //
 //	OtSceneEditorClass::renderEntity
@@ -433,7 +427,7 @@ void OtSceneEditorClass::renderEntity(OtEntity entity) {
 
 	// create a tree node
 	ImGui::PushID(createID(entity, 1));
-	auto tag = scene->getComponent<OtTagComponent>(entity).tag;
+	auto tag = scene->getEntityTag(entity);
 	bool open = ImGui::TreeNodeEx("node", flags, "%s", tag.c_str());
 
 	// is this entity selected
@@ -441,7 +435,7 @@ void OtSceneEditorClass::renderEntity(OtEntity entity) {
 		ImGui::GetWindowDrawList()->AddRect(
 			ImGui::GetItemRectMin(),
 			ImGui::GetItemRectMax(),
-			0x800000FF);
+			0x8000FF00);
 	}
 
 	// entities are drag sources
@@ -574,6 +568,22 @@ void OtSceneEditorClass::renderNewComponent() {
 
 
 //
+//	OtSceneEditorClass::renderComponentEditor
+//
+
+template <typename T>
+void OtSceneEditorClass::renderComponentEditor() {
+	auto& component = scene->getComponent<T>(selectedEntity);
+	auto oldValue = component.serialize(nullptr).dump();
+
+	if (component.renderGUI()) {
+		auto newValue = component.serialize(nullptr).dump();
+		nextTask = std::make_shared<OtEditComponentTask<T>>(scene, selectedEntity, oldValue, newValue);
+	}
+}
+
+
+//
 //	OtSceneEditorClass::renderComponent
 //
 
@@ -603,14 +613,7 @@ void OtSceneEditorClass::renderComponent(bool canRemove) {
 
 		// render the component editor (if required)
 		if (open) {
-			auto& component = scene->getComponent<T>(selectedEntity);
-			auto oldValue = component.serialize(nullptr).dump();
-
-			if (component.renderGUI()) {
-				auto newValue = component.serialize(nullptr).dump();
-				nextTask = std::make_shared<OtEditComponentTask<T>>(scene, selectedEntity, oldValue, newValue);
-			}
-
+			renderComponentEditor<T>();
 			ImGui::TreePop();
 		}
 

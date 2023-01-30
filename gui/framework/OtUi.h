@@ -12,220 +12,29 @@
 //	Include files
 //
 
-#include <algorithm>
 #include <filesystem>
+#include <string>
 
 #include "glm/glm.hpp"
-#include "glm/ext.hpp"
-
-#define IMGUI_DEFINE_MATH_OPERATORS
-#include "imgui.h"
-#include "imgui_internal.h"
-#include "ImGuiFileDialog.h"
 
 
 //
-//	OtUiInputText
+//	Functions
 //
 
-inline bool OtUiInputText(const char* label, std::string& value) {
-	ImGuiInputTextFlags flags =
-		ImGuiInputTextFlags_NoUndoRedo |
-		ImGuiInputTextFlags_CallbackResize;
+// create a header with specified width
+void OtUiHeader(const char* label, float width);
 
-	return ImGui::InputText(label, (char*) value.c_str(), value.capacity() + 1, flags, [](ImGuiInputTextCallbackData* data) {
-		if (data->EventFlag == ImGuiInputTextFlags_CallbackResize) {
-			std::string* value = (std::string*) data->UserData;
-			value->resize(data->BufTextLen);
-			data->Buf = (char*) value->c_str();
-		}
+// create an input field based on a std::string
+bool OtUiInputText(const char* label, std::string& value);
 
-		return 0;
-	}, &value);
-}
+// create a field to edit glm vectors
+bool OtUiEditVec3(const char* label, glm::vec3& vector, float speed, float minv, float maxv, const char* format);
+bool OtUiEditVec4(const char* label, glm::vec4& vector, float speed, float minv, float maxv, const char* format);
 
+// create a file path field with file selector popup
+bool OtUiFileSelector(const char* label, std::filesystem::path& path);
 
-//
-//	OtUiEditVecX
-//
-
-inline bool OtUiEditVecX(const char* label, float* v, int components, float speed, float minv, float maxv, const char* format) {
-	ImGuiWindow* window = ImGui::GetCurrentWindow();
-
-	if (window->SkipItems) {
-		return false;
-	}
-
-	ImGuiContext& g = *GImGui;
-	bool changed = false;
-
-	ImGui::BeginGroup();
-	ImGui::PushID(label);
-	ImGui::PushMultiItemsWidths(components, ImGui::CalcItemWidth());
-
-	for (int i = 0; i < components; i++) {
-		static const ImU32 colors[] = { 0xBB0000FF, 0xBB00FF00, 0xBBFF0000, 0xBBFFFFFF };
-
-		ImGui::PushID(i);
-		changed |= ImGui::DragFloat("##v", &v[i], speed, minv, maxv, format);
-
-		const ImVec2 min = ImGui::GetItemRectMin();
-		const ImVec2 max = ImGui::GetItemRectMax();
-		window->DrawList->AddLine(ImVec2(min.x, max.y - 1), ImVec2(max.x, max.y - 1), colors[i], 1);
-
-		ImGui::SameLine(0, g.Style.ItemInnerSpacing.x);
-		ImGui::PopID();
-		ImGui::PopItemWidth();
-	}
-
-	ImGui::PopID();
-	ImGui::TextUnformatted(label);
-	ImGui::EndGroup();
-
-	return changed;
-}
-
-
-//
-//	OtUiEditVec3
-//
-
-static inline bool OtUiEditVec3(const char* label, glm::vec3& vector, float speed, float minv, float maxv, const char* format) {
-	return OtUiEditVecX(label, glm::value_ptr(vector), 3, speed, minv, maxv, format);
-}
-
-
-//
-//	OtUiEditVec4
-//
-
-static inline bool OtUiEditVec4(const char* label, glm::vec4& vector, float speed, float minv, float maxv, const char* format) {
-	return OtUiEditVecX(label, glm::value_ptr(vector), 4, speed, minv, maxv, format);
-}
-
-
-//
-//	OtUiFileSelector
-//
-
-static inline bool OtUiFileSelector(const char* label, std::filesystem::path& path) {
-	// get meta information
-    ImGuiContext& g = *GImGui;
-	ImGuiWindow* window = ImGui::GetCurrentWindow();
-    ImGuiID id = window->GetID(label);
-	ImGuiStyle& style = g.Style;
-
-	// calculate size of field
-	ImVec2 labelSize = ImGui::CalcTextSize(label, nullptr, true);
-	float itemWidth = ImGui::CalcItemWidth();
-    ImRect bb(window->DC.CursorPos, window->DC.CursorPos + ImVec2(itemWidth, labelSize.y + style.FramePadding.y * 2.0f));
-    ImRect totalBB(bb.Min, bb.Max + ImVec2(labelSize.x > 0.0f ? style.ItemInnerSpacing.x + labelSize.x : 0.0f, 0.0f));
-
-	ImGui::ItemSize(totalBB, style.FramePadding.y);
-	ImGui::ItemAdd(totalBB, id, &bb);
-
-	bool hovered, held;
-    bool pressed = ImGui::ButtonBehavior(bb, id, &hovered, &held);
-
-	// render background
-	window->DrawList->AddRectFilled(
-		bb.Min,
-		bb.Max,
-		ImGui::GetColorU32((hovered) ? ImGuiCol_ButtonHovered : ImGuiCol_Button),
-		style.FrameRounding,
-		ImDrawFlags_RoundCornersAll);
-
-	ImGui::RenderFrameBorder(bb.Min, bb.Max, style.FrameRounding);
-
-	// render path
-	auto filename = path.filename().string();
-
-	ImGui::RenderTextClipped(
-		bb.Min + style.FramePadding,
-		bb.Max - style.FramePadding,
-		filename.c_str(),
-		nullptr,
-		nullptr);
-
-	// render label
-	if (labelSize.x > 0) {
-		ImGui::RenderText(ImVec2(bb.Max.x + style.ItemInnerSpacing.x, bb.Min.y + style.FramePadding.y), label);
-	}
-
-	// show file selector if required
-	auto dialog = ImGuiFileDialog::Instance();
-	auto pathString = path.string();
-	auto dialogID = std::string("select-file-") + label;
-
-	if (pressed && !dialog->IsOpened()) {
-		dialog->OpenDialog(
-			dialogID.c_str(),
-			"Select file...",
-			".*",
-			pathString,
-			1,
-			nullptr,
-			ImGuiFileDialogFlags_Modal |
-				ImGuiFileDialogFlags_DontShowHiddenFiles |
-				ImGuiFileDialogFlags_ReadOnlyFileNameField);
-	}
-
-	ImVec2 maxSize = ImGui::GetIO().DisplaySize;
-	ImVec2 minSize = ImVec2(maxSize.x * 0.5, maxSize.y * 0.5);
-	bool changed = false;
-
-	if (dialog->Display(dialogID.c_str(), ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
-		if (dialog->IsOk()) {
-			auto selected = dialog->GetSelection();
-			path = selected.begin()->second;
-			changed = true;
-		}
-
-		dialog->Close();
-	}
-
-	return changed;
-}
-
-
-//
-//	OtUiSplitter
-//
-
-inline void OtUiSplitter(bool vertical, float* size, float minSize, float maxSize) {
-	auto thickness = ImGui::GetStyle().ItemSpacing.y * 2;
-
-	ImGui::PushID(size);
-	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.5, 0.5, 0.5 ,0.4));
-	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.5, 0.5, 0.5 ,0.3));
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
-
-	if (!vertical) {
-		ImGui::SameLine();
-	}
-
-	ImGui::Button("##splitter", ImVec2(vertical ? -1 : thickness, vertical ? thickness : -1));
-
-	if (!vertical) {
-		ImGui::SameLine();
-	}
-
-	ImGui::PopStyleVar();
-	ImGui::PopStyleColor(3);
-
-	if (ImGui::IsItemActive()) {
-		*size += vertical ? ImGui::GetIO().MouseDelta.y : ImGui::GetIO().MouseDelta.x;
-		*size = std::clamp(*size, minSize, maxSize);
-	}
-
-	ImGui::PopID();
-}
-
-inline void OtUiSplitterVertical(float* size, float minSize, float maxSize) {
-	OtUiSplitter(true, size, minSize, maxSize);
-}
-
-inline void OtUiSplitterHorizontal(float* size, float minSize, float maxSize) {
-	OtUiSplitter(false, size, minSize, maxSize);
-}
+// create a splitter widget
+void OtUiSplitterVertical(float* size, float minSize, float maxSize);
+void OtUiSplitterHorizontal(float* size, float minSize, float maxSize);

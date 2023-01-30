@@ -42,16 +42,10 @@ public:
 
 	// perform action
 	virtual void perform() {
-		// create an empty entity
-		entity = scene->createEntity(scene->getEntityFromUuid(parentUuid));
-		auto& component = scene->getComponent<OtUuidComponent>(entity);
-
-		if (entityUuid) {
-			component.uuid = entityUuid;
-
-		} else {
-			entityUuid = component.uuid;
-		}
+		// create an empty entity (preserving UUID on redo)
+		entity = scene->createEntity(entityUuid);
+		entityUuid = scene->getUuidFromEntity(entity);
+		scene->addEntityToParent(scene->getEntityFromUuid(parentUuid), entity);
 
 		// add components based on type
 		switch (type) {

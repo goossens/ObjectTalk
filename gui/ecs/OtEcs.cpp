@@ -34,32 +34,18 @@ OtEcs::~OtEcs() {
 //	OtEcs::createEntity
 //
 
-OtEntity OtEcs::createEntity() {
+OtEntity OtEcs::createEntity(uint32_t uuid, const std::string& tag) {
 	// create a new entity
 	auto entity = registry.create();
 
-	// add default components
-	auto uuid = addComponent<OtUuidComponent>(entity).uuid;
-	addComponent<OtTagComponent>(entity).tag = "untitled";
-	addComponent<OtHierarchyComponent>(entity);
+	// add core component
+	auto newUuid = addComponent<OtCoreComponent>(entity, uuid, tag).uuid;
 
 	// register entity <-> UUID mappings
-	mapUuidToEntity[uuid] = entity;
-	mapEntityToUuid[entity] = uuid;
-	return entity;
-}
+	mapUuidToEntity[newUuid] = entity;
+	mapEntityToUuid[entity] = newUuid;
 
-OtEntity OtEcs::createEntity(OtEntity parent) {
-	// create a new entity
-	auto entity = createEntity();
-
-	// use the root entity is parent is invalid
-	if (!isValidEntity(parent)) {
-		parent = root;
-	}
-
-	// add entity to parent
-	addEntityToParent(parent, entity);
+	// return new entity
 	return entity;
 }
 
@@ -69,10 +55,8 @@ OtEntity OtEcs::createEntity(OtEntity parent) {
 //
 
 OtEntity OtEcs::getEntity(const std::string &tag) {
-	auto view = registry.view<OtTagComponent>();
-
-	for (auto entity : registry.view<OtTagComponent>()) {
-		if (view.get<OtTagComponent>(entity).tag == tag) {
+	for (auto entity : registry.view<OtCoreComponent>()) {
+		if (getComponent<OtCoreComponent>(entity).tag == tag) {
 			return entity;
 		}
 	}
@@ -137,7 +121,7 @@ void OtEcs::assignNewEntityUUids(OtEntity entity) {
 	mapEntityToUuid.erase(entity);
 
 	// assign new UUID to entity
-	auto& component = getComponent<OtUuidComponent>(entity);
+	auto& component = getComponent<OtCoreComponent>(entity);
 	component.assignNewUuid();
 
 	// create new mappings
@@ -153,13 +137,32 @@ void OtEcs::assignNewEntityUUids(OtEntity entity) {
 
 
 //
+//	OtEcs::getEntityTag
+//
+
+std::string OtEcs::getEntityTag(OtEntity entity) {
+	return getComponent<OtCoreComponent>(entity).tag;
+}
+
+
+//
+//	OtEcs::setEntityTag
+//
+
+void OtEcs::setEntityTag(OtEntity entity, const std::string &tag) {
+	auto& component = getComponent<OtCoreComponent>(entity);
+	component.tag = tag;
+}
+
+
+//
 //	OtEcs::addEntityToParent
 //
 
 void OtEcs::addEntityToParent(OtEntity parent, OtEntity child) {
 	// get details on parent and child
-	auto& parentHierarchy = getComponent<OtHierarchyComponent>(parent);
-	auto& childHierarchy = getComponent<OtHierarchyComponent>(child);
+	auto& parentHierarchy = getComponent<OtCoreComponent>(parent);
+	auto& childHierarchy = getComponent<OtCoreComponent>(child);
 
 	// sort out the child's siblings (child will added to the end of the parent's children)
 	childHierarchy.previousSibling = parentHierarchy.lastChild;
@@ -171,7 +174,7 @@ void OtEcs::addEntityToParent(OtEntity parent, OtEntity child) {
 	// does parent have any kids?
 	if (isValidEntity(parentHierarchy.firstChild)) {
 		// yes, add child to the end
-		registry.get<OtHierarchyComponent>(parentHierarchy.lastChild).nextSibling = child;
+		registry.get<OtCoreComponent>(parentHierarchy.lastChild).nextSibling = child;
 
 	} else {
 		// no, this is now the parent's only child
@@ -189,9 +192,9 @@ void OtEcs::addEntityToParent(OtEntity parent, OtEntity child) {
 
 void OtEcs::insertEntityBefore(OtEntity sibling, OtEntity child) {
 	// get details on sibling, parent and child
-	auto& siblingHierarchy = getComponent<OtHierarchyComponent>(sibling);
-	auto& parentHierarchy = getComponent<OtHierarchyComponent>(siblingHierarchy.parent);
-	auto& childHierarchy = getComponent<OtHierarchyComponent>(child);
+	auto& siblingHierarchy = getComponent<OtCoreComponent>(sibling);
+	auto& parentHierarchy = getComponent<OtCoreComponent>(siblingHierarchy.parent);
+	auto& childHierarchy = getComponent<OtCoreComponent>(child);
 
 	// parent the child
 	childHierarchy.parent = siblingHierarchy.parent;
@@ -201,7 +204,7 @@ void OtEcs::insertEntityBefore(OtEntity sibling, OtEntity child) {
 		parentHierarchy.firstChild = child;
 
 	} else {
-		getComponent<OtHierarchyComponent>(siblingHierarchy.previousSibling).nextSibling = child;
+		getComponent<OtCoreComponent>(siblingHierarchy.previousSibling).nextSibling = child;
 	}
 
 	childHierarchy.previousSibling = siblingHierarchy.previousSibling;
@@ -216,9 +219,9 @@ void OtEcs::insertEntityBefore(OtEntity sibling, OtEntity child) {
 
 void OtEcs::insertEntityAfter(OtEntity sibling, OtEntity child) {
 	// get details on sibling, parent and child
-	auto& siblingHierarchy = getComponent<OtHierarchyComponent>(sibling);
-	auto& parentHierarchy = getComponent<OtHierarchyComponent>(siblingHierarchy.parent);
-	auto& childHierarchy = getComponent<OtHierarchyComponent>(child);
+	auto& siblingHierarchy = getComponent<OtCoreComponent>(sibling);
+	auto& parentHierarchy = getComponent<OtCoreComponent>(siblingHierarchy.parent);
+	auto& childHierarchy = getComponent<OtCoreComponent>(child);
 
 	// parent the child
 	childHierarchy.parent = siblingHierarchy.parent;
@@ -228,7 +231,7 @@ void OtEcs::insertEntityAfter(OtEntity sibling, OtEntity child) {
 		parentHierarchy.lastChild = child;
 
 	} else {
-		getComponent<OtHierarchyComponent>(siblingHierarchy.nextSibling).previousSibling = child;
+		getComponent<OtCoreComponent>(siblingHierarchy.nextSibling).previousSibling = child;
 	}
 
 	childHierarchy.previousSibling = sibling;
@@ -243,11 +246,11 @@ void OtEcs::insertEntityAfter(OtEntity sibling, OtEntity child) {
 
 void OtEcs::removeEntityFromParent(OtEntity entity) {
 	// get details on entity and parent
-	auto& entityHierarchy = getComponent<OtHierarchyComponent>(entity);
+	auto& entityHierarchy = getComponent<OtCoreComponent>(entity);
 
 	// don't worry if the entity has no parent
 	if (!OtEntityIsNull(entityHierarchy.parent)) {
-		auto& parentHierarchy = getComponent<OtHierarchyComponent>(entityHierarchy.parent);
+		auto& parentHierarchy = getComponent<OtCoreComponent>(entityHierarchy.parent);
 
 		// disconnect from parent
 		if (parentHierarchy.firstChild == entity) {
@@ -260,12 +263,12 @@ void OtEcs::removeEntityFromParent(OtEntity entity) {
 
 		// disconnect from siblings
 		if (isValidEntity(entityHierarchy.previousSibling)) {
-			auto& siblingHierarchy = getComponent<OtHierarchyComponent>(entityHierarchy.previousSibling);
+			auto& siblingHierarchy = getComponent<OtCoreComponent>(entityHierarchy.previousSibling);
 			siblingHierarchy.nextSibling = entityHierarchy.nextSibling;
 		}
 
 		if (isValidEntity(entityHierarchy.nextSibling)) {
-			auto& siblingHierarchy = getComponent<OtHierarchyComponent>(entityHierarchy.nextSibling);
+			auto& siblingHierarchy = getComponent<OtCoreComponent>(entityHierarchy.nextSibling);
 			siblingHierarchy.previousSibling = entityHierarchy.previousSibling;
 		}
 

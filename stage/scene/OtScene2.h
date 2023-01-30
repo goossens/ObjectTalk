@@ -30,24 +30,12 @@
 //	Scene component lists
 //
 
-#define OtSceneAddableComponents \
+#define OtSceneComponents \
 	OtTransformComponent, \
 	OtCameraComponent, \
 	OtSkyBoxComponent, \
 	OtSkySphereComponent, \
 	OtGeometryComponent
-
-#define OtSceneRenderableComponents \
-	OtTagComponent, \
-	OtSceneAddableComponents
-
-#define OtSceneSaveableComponents \
-	OtUuidComponent, \
-	OtSceneRenderableComponents
-
-#define OtSceneAllComponents \
-	OtHierarchyComponent, \
-	OtSceneSaveableComponents
 
 
 //

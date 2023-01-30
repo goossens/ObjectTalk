@@ -19,9 +19,7 @@
 #include "entt/entity/registry.hpp"
 
 #include "OtEntity.h"
-#include "OtUuidComponent.h"
-#include "OtTagComponent.h"
-#include "OtHierarchyComponent.h"
+#include "OtCoreComponent.h"
 
 
 //
@@ -35,8 +33,7 @@ public:
 	~OtEcs();
 
 	// create a new entity
-	OtEntity createEntity();
-	OtEntity createEntity(OtEntity parent);
+	OtEntity createEntity(uint32_t uuid=0, const std::string& tag="untitled");
 
 	// see if entity is valid
 	bool isValidEntity(OtEntity entity) {
@@ -63,15 +60,15 @@ public:
 
 	// see if entity has children
 	bool hasChildren(OtEntity entity) {
-		return getComponent<OtHierarchyComponent>(entity).firstChild != OtEntityNull;
+		return getComponent<OtCoreComponent>(entity).firstChild != OtEntityNull;
 	}
 
 	// access neighbors in parent-child hierarchy
-	OtEntity getParent(OtEntity entity) { return getComponent<OtHierarchyComponent>(entity).parent; }
-	OtEntity getFirstChild(OtEntity entity) { return getComponent<OtHierarchyComponent>(entity).firstChild; }
-	OtEntity getLastChild(OtEntity entity) { return getComponent<OtHierarchyComponent>(entity).lastChild; }
-	OtEntity getPreviousSibling(OtEntity entity) { return getComponent<OtHierarchyComponent>(entity).previousSibling; }
-	OtEntity getNextSibling(OtEntity entity) { return getComponent<OtHierarchyComponent>(entity).nextSibling; }
+	OtEntity getParent(OtEntity entity) { return getComponent<OtCoreComponent>(entity).parent; }
+	OtEntity getFirstChild(OtEntity entity) { return getComponent<OtCoreComponent>(entity).firstChild; }
+	OtEntity getLastChild(OtEntity entity) { return getComponent<OtCoreComponent>(entity).lastChild; }
+	OtEntity getPreviousSibling(OtEntity entity) { return getComponent<OtCoreComponent>(entity).previousSibling; }
+	OtEntity getNextSibling(OtEntity entity) { return getComponent<OtCoreComponent>(entity).nextSibling; }
 
 	// iterate through entities
 	void each(std::function<void(OtEntity)> callback) {
@@ -85,10 +82,10 @@ public:
 
 	// iterate through an entity's children
 	void eachChild(OtEntity entity, std::function<void(OtEntity)> callback) {
-		auto child = getComponent<OtHierarchyComponent>(entity).firstChild;
+		auto child = getComponent<OtCoreComponent>(entity).firstChild;
 
 		while (isValidEntity(child)) {
-			auto nextChild = getComponent<OtHierarchyComponent>(child).nextSibling;
+			auto nextChild = getComponent<OtCoreComponent>(child).nextSibling;
 			callback(child);
 			child = nextChild;
 		}
@@ -141,6 +138,10 @@ public:
 
 	// assign new UUIDs to an entity and all its children
 	void assignNewEntityUUids(OtEntity entity);
+
+	// set/get an entity's tag
+	std::string getEntityTag(OtEntity entity);
+	void setEntityTag(OtEntity entity, const std::string& tag);
 
 	// hierarchy support functions
 	void addEntityToParent(OtEntity parent, OtEntity child);

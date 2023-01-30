@@ -82,7 +82,8 @@ nlohmann::json OtScene2Class::serializeEntityToJson(OtEntity entity, std::filesy
 	// serialize the entity's components
 	auto data = nlohmann::json::object();
 	auto components = nlohmann::json::array();
-	serializeComponentsToJson<OtSceneSaveableComponents>(components, this, entity, basedir);
+	serializeComponentToJson<OtCoreComponent>(components, this, entity, basedir);
+	serializeComponentsToJson<OtSceneComponents>(components, this, entity, basedir);
 	data["components"] = components;
 
 	// serialize the entity's children
@@ -119,7 +120,8 @@ OtEntity OtScene2Class::deserializeEntityFromJson(nlohmann::json &data, std::fil
 
 	// deserialize all its components
 	for (auto component : data["components"]) {
-		deserializeComponentsFromJson<OtSceneSaveableComponents>(component, this, entity, basedir);
+		deserializeComponentFromJson<OtCoreComponent>(component, this, entity, basedir);
+		deserializeComponentsFromJson<OtSceneComponents>(component, this, entity, basedir);
 	}
 
 	// deserialize all its children

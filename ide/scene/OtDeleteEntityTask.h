@@ -35,14 +35,14 @@ public:
 	virtual void perform() {
 		// get information for undo
 		auto entity = scene->getEntityFromUuid(entityUuid);
-		auto hierarchy = scene->getComponent<OtHierarchyComponent>(entity);
+		auto nextSibling = scene->getNextSibling(entity);
 
-		if (OtEntityIsNull(hierarchy.nextSibling)) {
-			undoTargetUuid = scene->getUuidFromEntity(hierarchy.parent);
+		if (OtEntityIsNull(nextSibling)) {
+			undoTargetUuid = scene->getUuidFromEntity(scene->getParent(entity));
 			undoBefore = false;
 
 		} else {
-			undoTargetUuid = scene->getUuidFromEntity(hierarchy.nextSibling);
+			undoTargetUuid = scene->getUuidFromEntity(nextSibling);
 			undoBefore = true;
 		}
 

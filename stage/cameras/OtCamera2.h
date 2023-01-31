@@ -56,14 +56,14 @@ public:
 	std::string serializeToString();
 	void deserializeFromString(const std::string& data);
 
-	// get type definition
-	static OtType getMeta();
-
 	// get type name of camera
 	virtual const char* getTypeName() { return name; }
 
 	// camera name
 	static constexpr char const* name = "Camera";
+
+	// get type definition
+	static OtType getMeta();
 
 protected:
 	// update camera

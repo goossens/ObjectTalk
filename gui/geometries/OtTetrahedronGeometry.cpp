@@ -9,6 +9,9 @@
 //	Include files
 //
 
+#include "imgui.h"
+#include "nlohmann/json.hpp"
+
 #include "OtFunction.h"
 
 #include "OtTetrahedronGeometry.h"
@@ -41,6 +44,33 @@ OtTetrahedronGeometryClass::OtTetrahedronGeometryClass() {
 	baseIndices = bi;
 	baseVertexCount = sizeof(bv) / sizeof(bv[0]);
 	baseIndexCount = sizeof(bi) / sizeof(bi[0]);
+}
+
+
+//
+//	OtTetrahedronGeometryClass::renderGUI
+//
+
+bool OtTetrahedronGeometryClass::renderGUI() {
+	return false;
+}
+
+
+//
+//	OtTetrahedronGeometryClass::serialize
+//
+
+nlohmann::json OtTetrahedronGeometryClass::serialize() {
+	auto data = nlohmann::json::object();
+	return data;
+}
+
+
+//
+//	OtTetrahedronGeometryClass::deserialize
+//
+
+void OtTetrahedronGeometryClass::deserialize(nlohmann::json data) {
 }
 
 

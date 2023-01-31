@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include "imgui.h"
+#include "nlohmann/json.hpp"
 #include "tiny_obj_loader.h"
 
 #include "OtFunction.h"
@@ -114,6 +116,33 @@ void OtModelGeometryClass::fillGeometry() {
 			}
 		}
 	}
+}
+
+
+//
+//	OtModelGeometryClass::renderGUI
+//
+
+bool OtModelGeometryClass::renderGUI() {
+	return false;
+}
+
+
+//
+//	OtModelGeometryClass::serialize
+//
+
+nlohmann::json OtModelGeometryClass::serialize() {
+	auto data = nlohmann::json::object();
+	return data;
+}
+
+
+//
+//	OtModelGeometryClass::deserialize
+//
+
+void OtModelGeometryClass::deserialize(nlohmann::json data) {
 }
 
 

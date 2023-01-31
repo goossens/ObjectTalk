@@ -9,6 +9,9 @@
 //	Include files
 //
 
+#include "imgui.h"
+#include "nlohmann/json.hpp"
+
 #include "OtFunction.h"
 
 #include "OtGeometry.h"
@@ -161,6 +164,51 @@ void OtGeometryClass::submitLines() {
 
 	vertexBuffer.submit();
 	lineIndexBuffer.submit();
+}
+
+
+//
+//	OtGeometryClass::renderGUI
+//
+
+bool OtGeometryClass::renderGUI() {
+	return false;
+}
+
+
+//
+//	OtGeometryClass::serialize
+//
+
+nlohmann::json OtGeometryClass::serialize() {
+	auto data = nlohmann::json::object();
+	return data;
+}
+
+
+//
+//	Class::deserialize
+//
+
+void OtGeometryClass::deserialize(nlohmann::json data) {
+}
+
+
+//
+//	OtGeometryClass::serializeToString
+//
+
+std::string OtGeometryClass::serializeToString() {
+	 return serialize().dump();
+}
+
+
+//
+//	OtGeometryClass::deserializeFromString
+//
+
+void OtGeometryClass::deserializeFromString(const std::string& data) {
+	return deserialize(nlohmann::json::parse(data));
 }
 
 

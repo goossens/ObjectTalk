@@ -12,6 +12,9 @@
 #include <cmath>
 #include <vector>
 
+#include "imgui.h"
+#include "nlohmann/json.hpp"
+
 #include "OtFunction.h"
 #include "OtNumbers.h"
 
@@ -190,6 +193,33 @@ glm::vec2 OtPolyhedronGeometryClass::generateUV(const glm::vec3& normal) {
 		inclination(normal) / std::numbers::pi + 0.5);
 
 	return uv;
+}
+
+
+//
+//	OtPolyhedronGeometryClass::renderGUI
+//
+
+bool OtPolyhedronGeometryClass::renderGUI() {
+	return false;
+}
+
+
+//
+//	OtPolyhedronGeometryClass::serialize
+//
+
+nlohmann::json OtPolyhedronGeometryClass::serialize() {
+	auto data = nlohmann::json::object();
+	return data;
+}
+
+
+//
+//	OtPolyhedronGeometryClass::deserialize
+//
+
+void OtPolyhedronGeometryClass::deserialize(nlohmann::json data) {
 }
 
 

@@ -9,6 +9,9 @@
 //	Include files
 //
 
+#include "imgui.h"
+#include "nlohmann/json.hpp"
+
 #include "OtFunction.h"
 
 #include "OtIcosahedronGeometry.h"
@@ -48,6 +51,33 @@ OtIcosahedronGeometryClass::OtIcosahedronGeometryClass() {
 	baseIndices = bi;
 	baseVertexCount = sizeof(bv) / sizeof(bv[0]);
 	baseIndexCount = sizeof(bi) / sizeof(bi[0]);
+}
+
+
+//
+//	OtIcosahedronGeometryClass::renderGUI
+//
+
+bool OtIcosahedronGeometryClass::renderGUI() {
+	return false;
+}
+
+
+//
+//	OtIcosahedronGeometryClass::serialize
+//
+
+nlohmann::json OtIcosahedronGeometryClass::serialize() {
+	auto data = nlohmann::json::object();
+	return data;
+}
+
+
+//
+//	OtIcosahedronGeometryClass::deserialize
+//
+
+void OtIcosahedronGeometryClass::deserialize(nlohmann::json data) {
 }
 
 

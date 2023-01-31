@@ -46,17 +46,17 @@ public:
 	nlohmann::json serialize() override;
 	void deserialize(nlohmann::json data) override;
 
-	// get type definition
-	static OtType getMeta();
-
-	// create a new object
-	static OtOrthographicCamera create();
-
 	// get type name of camera
 	const char* getTypeName() override { return name; }
 
 	// camera name
 	static constexpr char const* name = "Orthograpic";
+
+	// get type definition
+	static OtType getMeta();
+
+	// create a new object
+	static OtOrthographicCamera create();
 
 protected:
 	// update the matrices when camera settings are changed

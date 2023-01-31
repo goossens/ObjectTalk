@@ -16,6 +16,8 @@
 
 #include "nlohmann/json_fwd.hpp"
 
+#include "OtGeometry.h"
+
 
 //
 //	OtGeometryComponent
@@ -24,7 +26,8 @@
 class OtGeometryComponent {
 public:
 	// constructors
-	OtGeometryComponent() = default;
+	OtGeometryComponent();
+	OtGeometryComponent(const std::string& type);
 
 	// GUI to change component properties
 	bool renderGUI();
@@ -36,6 +39,10 @@ public:
 	// component name
 	static constexpr char const* name = "Geometry";
 
-	// properties
-	bool active = true;
+	// stored properties
+	OtGeometry geometry;
+
+private:
+	// create a new named geometry instance
+	void createGeometry(const std::string& type);
 };

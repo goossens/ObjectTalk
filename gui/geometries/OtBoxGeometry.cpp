@@ -9,6 +9,9 @@
 //	Include files
 //
 
+#include "imgui.h"
+#include "nlohmann/json.hpp"
+
 #include "OtFunction.h"
 
 #include "OtBoxGeometry.h"
@@ -113,6 +116,43 @@ OtObject OtBoxGeometryClass::setDepthSegments(int ds) {
 	depthSegments = ds;
 	refreshGeometry = true;
 	return shared();
+}
+
+
+//
+//	OtBoxGeometryClass::renderGUI
+//
+
+bool OtBoxGeometryClass::renderGUI() {
+	bool changed = OtGeometryClass::renderGUI();
+	changed |= ImGui::SliderInt("X Segments", &widthSegments, 1, 20);
+	changed |= ImGui::SliderInt("Y Segments", &heightSegments, 1, 20);
+	changed |= ImGui::SliderInt("Z Segments", &depthSegments, 1, 20);
+	return changed;
+}
+
+
+//
+//	OtBoxGeometryClass::serialize
+//
+
+nlohmann::json OtBoxGeometryClass::serialize() {
+	auto data = nlohmann::json::object();
+	data["xsegments"] = widthSegments;
+	data["ysegments"] = heightSegments;
+	data["zsegments"] = depthSegments;
+	return data;
+}
+
+
+//
+//	OtBoxGeometryClass::deserialize
+//
+
+void OtBoxGeometryClass::deserialize(nlohmann::json data) {
+	widthSegments = data["xsegments"];
+	heightSegments = data["ysegments"];
+	depthSegments = data["zsegments"];
 }
 
 

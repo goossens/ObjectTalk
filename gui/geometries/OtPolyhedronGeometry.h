@@ -14,6 +14,8 @@
 
 #include <cmath>
 
+#include "nlohmann/json_fwd.hpp"
+
 #include "OtNumbers.h"
 
 #include "OtGeometry.h"
@@ -34,6 +36,19 @@ public:
 	// update attributes
 	OtObject setRadius(float radius);
 	OtObject setDetail(int detail);
+
+	// GUI to change geometry properties
+	bool renderGUI() override;
+
+	// (de)serialize geometry
+	nlohmann::json serialize() override;
+	void deserialize(nlohmann::json data) override;
+
+	// get type name of geometry
+	const char* getTypeName() override { return name; }
+
+	// geometry name
+	static constexpr char const* name = "Polyhedron";
 
 	// get type definition
 	static OtType getMeta();

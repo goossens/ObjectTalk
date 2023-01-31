@@ -11,6 +11,10 @@
 
 #include <cmath>
 
+#include "glm/glm.hpp"
+#include "imgui.h"
+#include "nlohmann/json.hpp"
+
 #include "OtFunction.h"
 
 #include "OtCircleGeometry.h"
@@ -126,6 +130,56 @@ void OtCircleGeometryClass::fillGeometry() {
 			addLine(0, c + 1);
 		}
 	}
+}
+
+
+//
+//	OtCircleGeometryClass::renderGUI
+//
+
+bool OtCircleGeometryClass::renderGUI() {
+	bool changed = OtGeometryClass::renderGUI();
+	changed |= ImGui::SliderInt("Segments", &segments, 1, 50);
+
+	int start = glm::degrees(thetaStart);
+
+	if (ImGui::SliderInt("Theta Start", &start, 0, 359)) {
+		thetaStart = glm::radians((float) start);
+		changed |= true;
+	}
+
+	int length = glm::degrees(thetaLength);
+
+	if (ImGui::SliderInt("Theta Length", &length, 1, 360)) {
+		thetaLength = glm::radians((float) length);
+		changed |= true;
+	}
+
+	return changed;
+}
+
+
+//
+//	OtCircleGeometryClass::serialize
+//
+
+nlohmann::json OtCircleGeometryClass::serialize() {
+	auto data = nlohmann::json::object();
+	data["segments"] = segments;
+	data["thetaStart"] = thetaStart;
+	data["thetaLength"] = thetaLength;
+	return data;
+}
+
+
+//
+//	OtCircleGeometryClass::deserialize
+//
+
+void OtCircleGeometryClass::deserialize(nlohmann::json data) {
+	segments = data["segments"];
+	thetaStart = data["thetaStart"];
+	thetaLength = data["thetaLength"];
 }
 
 

@@ -9,6 +9,9 @@
 //	Include files
 //
 
+#include "imgui.h"
+#include "nlohmann/json.hpp"
+
 #include "OtFunction.h"
 
 #include "OtPlaneGeometry.h"
@@ -227,6 +230,33 @@ void OtPlaneGeometryClass::fillGeometry() {
 			}
 		}
 	}
+}
+
+
+//
+//	OtPlaneGeometryClass::renderGUI
+//
+
+bool OtPlaneGeometryClass::renderGUI() {
+	return false;
+}
+
+
+//
+//	OtPlaneGeometryClass::serialize
+//
+
+nlohmann::json OtPlaneGeometryClass::serialize() {
+	auto data = nlohmann::json::object();
+	return data;
+}
+
+
+//
+//	OtPlaneGeometryClass::deserialize
+//
+
+void OtPlaneGeometryClass::deserialize(nlohmann::json data) {
 }
 
 

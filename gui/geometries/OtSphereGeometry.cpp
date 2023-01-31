@@ -11,6 +11,9 @@
 
 #include <cmath>
 
+#include "imgui.h"
+#include "nlohmann/json.hpp"
+
 #include "OtFunction.h"
 
 #include "OtSphereGeometry.h"
@@ -234,6 +237,33 @@ void OtSphereGeometryClass::fillGeometry() {
 			addLine(b, c);
 		}
 	}
+}
+
+
+//
+//	OtSphereGeometryClass::renderGUI
+//
+
+bool OtSphereGeometryClass::renderGUI() {
+	return false;
+}
+
+
+//
+//	OtSphereGeometryClass::serialize
+//
+
+nlohmann::json OtSphereGeometryClass::serialize() {
+	auto data = nlohmann::json::object();
+	return data;
+}
+
+
+//
+//	OtSphereGeometryClass::deserialize
+//
+
+void OtSphereGeometryClass::deserialize(nlohmann::json data) {
 }
 
 

@@ -14,6 +14,8 @@
 
 #include <vector>
 
+#include "nlohmann/json_fwd.hpp"
+
 #include "OtAABB.h"
 #include "OtIndexBuffer.h"
 #include "OtGui.h"
@@ -54,6 +56,22 @@ public:
 	// submit to GPU
 	void submitTriangles();
 	void submitLines();
+
+	// GUI to change geometry properties
+	virtual bool renderGUI();
+
+	// (de)serialize geometry
+	virtual nlohmann::json serialize();
+	virtual void deserialize(nlohmann::json data);
+
+	std::string serializeToString();
+	void deserializeFromString(const std::string& data);
+
+	// get type name of geometry
+	virtual const char* getTypeName() { return name; }
+
+	// geometry name
+	static constexpr char const* name = "Geometry";
 
 	// get type definition
 	static OtType getMeta();
@@ -142,7 +160,6 @@ protected:
 	bool tangent = false;
 
 	// handle buffers
-	void clearBuffers();
 	void updateBuffers();
 	void validateBuffers();
 	bool refreshBuffers = true;

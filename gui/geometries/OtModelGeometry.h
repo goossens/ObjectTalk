@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include "nlohmann/json_fwd.hpp"
+
 #include "OtGeometry.h"
 
 
@@ -30,6 +32,19 @@ public:
 	// update attributes
 	OtObject setModel(const std::string& name);
 	OtObject setScale(float scale);
+
+	// GUI to change geometry properties
+	bool renderGUI() override;
+
+	// (de)serialize geometry
+	nlohmann::json serialize() override;
+	void deserialize(nlohmann::json data) override;
+
+	// get type name of geometry
+	const char* getTypeName() override { return name; }
+
+	// geometry name
+	static constexpr char const* name = "Model";
 
 	// get type definition
 	static OtType getMeta();

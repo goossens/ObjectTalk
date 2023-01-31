@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include "nlohmann/json_fwd.hpp"
+
 #include "OtGeometry.h"
 
 
@@ -34,6 +36,19 @@ public:
 	OtObject setWidthSegments(int widthSegments);
 	OtObject setHeightSegments(int heightSegments);
 	OtObject setDepthSegments(int depthSegments);
+
+	// GUI to change geometry properties
+	bool renderGUI() override;
+
+	// (de)serialize geometry
+	nlohmann::json serialize() override;
+	void deserialize(nlohmann::json data) override;
+
+	// get type name of geometry
+	const char* getTypeName() override { return name; }
+
+	// geometry name
+	static constexpr char const* name = "Box";
 
 	// get type definition
 	static OtType getMeta();

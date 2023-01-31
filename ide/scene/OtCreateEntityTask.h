@@ -29,7 +29,7 @@ public:
 		camera,
 		directionalLight,
 		pointLight,
-		mesh
+		geometry
 	};
 
 	// constructor
@@ -53,6 +53,7 @@ public:
 				break;
 
 			case camera:
+				scene->addComponent<OtCameraComponent>(entity);
 				break;
 
 			case directionalLight:
@@ -61,7 +62,9 @@ public:
 			case pointLight:
 				break;
 
-			case mesh:
+			case geometry:
+				scene->addComponent<OtTransformComponent>(entity);
+				scene->addComponent<OtGeometryComponent>(entity);
 				break;
 		}
 	}

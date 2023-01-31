@@ -11,6 +11,9 @@
 
 #include <cmath>
 
+#include "imgui.h"
+#include "nlohmann/json.hpp"
+
 #include "OtFunction.h"
 
 #include "OtTorusGeometry.h"
@@ -189,6 +192,33 @@ void OtTorusGeometryClass::fillGeometry() {
 			addLine(d, a);
 		}
 	}
+}
+
+
+//
+//	OtTorusGeometryClass::renderGUI
+//
+
+bool OtTorusGeometryClass::renderGUI() {
+	return false;
+}
+
+
+//
+//	OtTorusGeometryClass::serialize
+//
+
+nlohmann::json OtTorusGeometryClass::serialize() {
+	auto data = nlohmann::json::object();
+	return data;
+}
+
+
+//
+//	OtTorusGeometryClass::deserialize
+//
+
+void OtTorusGeometryClass::deserialize(nlohmann::json data) {
 }
 
 

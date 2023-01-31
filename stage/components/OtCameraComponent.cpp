@@ -99,5 +99,3 @@ void OtCameraComponent::createCamera(const std::string& type) {
 		OtExcept("Invalid camera type [%s]", type.c_str());
 	}
 }
-
-

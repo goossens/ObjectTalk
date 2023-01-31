@@ -11,6 +11,8 @@
 
 #include <algorithm>
 
+#include "imgui.h"
+#include "nlohmann/json.hpp"
 #include "tesselator.h"
 
 #include "OtException.h"
@@ -179,6 +181,33 @@ void OtExtrudedGeometryClass::fillGeometry() {
 
 	// cleanup
 	tessDeleteTess(tess);
+}
+
+
+//
+//	OtExtrudedGeometryClass::renderGUI
+//
+
+bool OtExtrudedGeometryClass::renderGUI() {
+	return false;
+}
+
+
+//
+//	OtExtrudedGeometryClass::serialize
+//
+
+nlohmann::json OtExtrudedGeometryClass::serialize() {
+	auto data = nlohmann::json::object();
+	return data;
+}
+
+
+//
+//	OtExtrudedGeometryClass::deserialize
+//
+
+void OtExtrudedGeometryClass::deserialize(nlohmann::json data) {
 }
 
 

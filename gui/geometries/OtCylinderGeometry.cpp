@@ -11,6 +11,9 @@
 
 #include <cmath>
 
+#include "imgui.h"
+#include "nlohmann/json.hpp"
+
 #include "OtFunction.h"
 
 #include "OtCylinderGeometry.h"
@@ -269,6 +272,33 @@ void OtCylinderGeometryClass::generateCap(bool top) {
 			addLine(center, offset + c + 1);
 		}
 	}
+}
+
+
+//
+//	OtCylinderGeometryClass::renderGUI
+//
+
+bool OtCylinderGeometryClass::renderGUI() {
+	return false;
+}
+
+
+//
+//	OtCylinderGeometryClass::serialize
+//
+
+nlohmann::json OtCylinderGeometryClass::serialize() {
+	auto data = nlohmann::json::object();
+	return data;
+}
+
+
+//
+//	OtCylinderGeometryClass::deserialize
+//
+
+void OtCylinderGeometryClass::deserialize(nlohmann::json data) {
 }
 
 

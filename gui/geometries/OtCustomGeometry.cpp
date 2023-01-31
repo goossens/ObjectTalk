@@ -9,9 +9,39 @@
 //	Include files
 //
 
+#include "imgui.h"
+#include "nlohmann/json.hpp"
+
 #include "OtFunction.h"
 
 #include "OtCustomGeometry.h"
+
+
+//
+//	OtCustomGeometryClass::renderGUI
+//
+
+bool OtCustomGeometryClass::renderGUI() {
+	return false;
+}
+
+
+//
+//	OtCustomGeometryClass::serialize
+//
+
+nlohmann::json OtCustomGeometryClass::serialize() {
+	auto data = nlohmann::json::object();
+	return data;
+}
+
+
+//
+//	OtCustomGeometryClass::deserialize
+//
+
+void OtCustomGeometryClass::deserialize(nlohmann::json data) {
+}
 
 
 //

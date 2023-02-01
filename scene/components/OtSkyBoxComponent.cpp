@@ -73,10 +73,10 @@ void OtSkyBoxComponent::deserialize(nlohmann::json data, std::filesystem::path* 
 
 
 //
-//	OtSkyBoxComponent::render
+//	OtSkyBoxComponent::isValid
 //
 
-void OtSkyBoxComponent::render(OtPass & pass) {
+bool OtSkyBoxComponent::isValid() {
 	// update the cubemap (if required)
 	if (update) {
 		update = false;
@@ -98,25 +98,5 @@ void OtSkyBoxComponent::render(OtPass & pass) {
 		}
 	}
 
-	// only continue if we have a valid cubemap
-	if (cubemap.isValid()) {
-		// submit texture via sampler
-		sampler.submit(0, cubemap, "s_cubemap");
-
-		// setup the mesh
-		if (!geometry) {
-			geometry = OtBoxGeometryClass::create();
-		}
-
-		geometry->submitTriangles();
-
-		// load the shader (if required)
-		if (!shader.isValid()) {
-			shader.initialize("OtSkyboxVS", "OtSkyboxFS");
-		}
-
-		// run the shader
-		shader.setState(OtShader::noDepth);
-		pass.runShader(shader);
-	}
+	return cubemap.isValid();
 }

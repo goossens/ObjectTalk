@@ -59,10 +59,10 @@ void OtSkySphereComponent::deserialize(nlohmann::json data, std::filesystem::pat
 
 
 //
-//	OtSkySphereComponent::render
+//	OtSkySphereComponent::isValid
 //
 
-void OtSkySphereComponent::render(OtPass& pass) {
+bool OtSkySphereComponent::isValid() {
 	// update the texture (if required)
 	if (update) {
 		update = false;
@@ -77,25 +77,5 @@ void OtSkySphereComponent::render(OtPass& pass) {
 		}
 	}
 
-	// only continue if we have a valid texture
-	if (texture.isValid()) {
-		// submit texture via sampler
-		sampler.submit(0, texture, "s_skySphereTexture");
-
-		// setup the mesh
-		if (!geometry) {
-			geometry = OtSphereGeometryClass::create();
-		}
-
-		geometry->submitTriangles();
-
-		// load the shader (if required)
-		if (!shader.isValid()) {
-			shader.initialize("OtSkySphereVS", "OtSkySphereFS");
-		}
-
-		// run the shader
-		shader.setState(OtShader::noDepth);
-		pass.runShader(shader);
-	}
+	return texture.isValid();
 }

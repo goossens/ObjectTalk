@@ -16,11 +16,7 @@
 
 #include "nlohmann/json_fwd.hpp"
 
-#include "OtBoxGeometry.h"
 #include "OtCubeMap.h"
-#include "OtPass.h"
-#include "OtSampler.h"
-#include "OtShader.h"
 
 
 //
@@ -39,6 +35,9 @@ public:
 	// component name
 	static constexpr char const* name = "Sky Box";
 
+	// see if sky box is complete and valid
+	bool isValid();
+
 	// stored properties
 	std::filesystem::path right;
 	std::filesystem::path left;
@@ -47,13 +46,7 @@ public:
 	std::filesystem::path front;
 	std::filesystem::path back;
 
-	// render the sky sphere
-	void render(OtPass& pass);
-
 	// runtime properties
 	bool update = false;
-	OtBoxGeometry geometry;
 	OtCubeMap cubemap;
-	OtSampler sampler;
-	OtShader shader;
 };

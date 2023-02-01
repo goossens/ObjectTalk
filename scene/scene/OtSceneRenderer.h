@@ -12,8 +12,12 @@
 //	Include files
 //
 
+#include "OtBoxGeometry.h"
 #include "OtFrameBuffer.h"
 #include "OtPass.h"
+#include "OtSampler.h"
+#include "OtShader.h"
+#include "OtSphereGeometry.h"
 
 #include "OtCamera2.h"
 #include "OtEntity.h"
@@ -38,6 +42,10 @@ private:
 	void renderEnvironmentPass(OtScene2 scene);
 	void renderCompositePass(OtScene2 scene);
 
+	// render entitities
+	void renderSkyBox(OtSkyBoxComponent& component);
+	void renderSkySphere(OtSkySphereComponent& component);
+
 	// target camera
 	OtCamera2 camera;
 
@@ -54,8 +62,30 @@ private:
 	// gbuffer
 	// light buffer
 	// post process buffers
+
+	// image dimensions
 	int width;
 	int height;
 
+	// framebuffers
 	OtFrameBuffer composite{OtFrameBuffer::rgba8Texture};
+
+	// standard geometries
+	OtBoxGeometry unityBoxGeometry;
+	OtSphereGeometry unitySphereGeometry;
+
+	// samplers
+	OtSampler skyMapSampler;
+	OtSampler skySphereSampler;
+
+	OtSampler albedoSampler;
+	OtSampler normalSampler;
+	OtSampler metalicSampler;
+	OtSampler roughnessSampler;
+	OtSampler aoSampler;
+
+	// shaders
+	OtShader skyBoxShader;
+	OtShader skySphereShader;
+
 };

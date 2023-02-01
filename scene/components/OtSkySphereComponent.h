@@ -16,10 +16,6 @@
 
 #include "nlohmann/json_fwd.hpp"
 
-#include "OtPass.h"
-#include "OtSampler.h"
-#include "OtShader.h"
-#include "OtSphereGeometry.h"
 #include "OtTexture.h"
 
 
@@ -39,16 +35,13 @@ public:
 	// component name
 	static constexpr char const* name = "Sky Sphere";
 
+	// see if texture is valid
+	bool isValid();
+
 	// stored properties
 	std::filesystem::path image;
 
-	// render the sky sphere
-	void render(OtPass& pass);
-
 	// runtime properties
 	bool update = false;
-	OtSphereGeometry geometry;
 	OtTexture texture;
-	OtSampler sampler;
-	OtShader shader;
 };

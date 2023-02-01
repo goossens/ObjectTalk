@@ -64,8 +64,10 @@ void OtSceneRenderer::renderEnvironmentPass(OtScene2 scene) {
 	// see if we have any sky boxes
 	scene->view<OtSkyBoxComponent>().each([&](auto& component) {
 		if (!environmentComponent) {
-			component.render(environmentPass);
-			environmentComponent = true;
+			if (component.isValid()) {
+				renderSkyBox(component);
+				environmentComponent = true;
+			}
 
 		} else {
 			tooManyEnvironmentComponents = true;
@@ -75,8 +77,10 @@ void OtSceneRenderer::renderEnvironmentPass(OtScene2 scene) {
 	// see if we have any sky spheres
 	scene->view<OtSkySphereComponent>().each([&](auto& component) {
 		if (!environmentComponent) {
-			component.render(environmentPass);
-			environmentComponent = true;
+			if (component.isValid()) {
+				renderSkySphere(component);
+				environmentComponent = true;
+			}
 
 		} else {
 			tooManyEnvironmentComponents = true;
@@ -86,11 +90,61 @@ void OtSceneRenderer::renderEnvironmentPass(OtScene2 scene) {
 }
 
 
-
-
 //
 //	OtSceneRenderer::renderCompositePass
 //
 
 void OtSceneRenderer::renderCompositePass(OtScene2 scene) {
+}
+
+
+//
+//	OtSceneRenderer::renderSkyBox
+//
+
+void OtSceneRenderer::renderSkyBox(OtSkyBoxComponent& component) {
+	// setup the mesh
+	if (!unityBoxGeometry) {
+		unityBoxGeometry = OtBoxGeometryClass::create();
+	}
+
+	unityBoxGeometry->submitTriangles();
+
+	// submit texture via sampler
+	skyMapSampler.submit(0, component.cubemap, "s_cubemap");
+
+	// load the shader (if required)
+	if (!skyBoxShader.isValid()) {
+		skyBoxShader.initialize("OtSkyboxVS", "OtSkyboxFS");
+	}
+
+	// run the shader
+	skyBoxShader.setState(OtShader::noDepth);
+	environmentPass.runShader(skyBoxShader);
+}
+
+
+//
+//	OtSceneRenderer::renderSkySphere
+//
+
+void OtSceneRenderer::renderSkySphere(OtSkySphereComponent& component) {
+	// setup the mesh
+	if (!unitySphereGeometry) {
+		unitySphereGeometry = OtSphereGeometryClass::create();
+	}
+
+	unitySphereGeometry->submitTriangles();
+
+	// submit texture via sampler
+	skySphereSampler.submit(0, component.texture, "s_skySphereTexture");
+
+	// load the shader (if required)
+	if (!skySphereShader.isValid()) {
+		skySphereShader.initialize("OtSkySphereVS", "OtSkySphereFS");
+	}
+
+	// run the shader
+	skySphereShader.setState(OtShader::noDepth);
+	environmentPass.runShader(skySphereShader);
 }

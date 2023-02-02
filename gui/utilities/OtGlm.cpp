@@ -41,5 +41,5 @@ void glm::from_json(const nlohmann::json &j, glm::vec4 &v) {
 	v.x = j[0];
 	v.y = j[1];
 	v.z = j[2];
-	v.w = j[4];
+	v.w = j[3];
 }

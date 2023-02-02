@@ -22,6 +22,16 @@
 
 
 //
+//	OtFirstPersonCameraClass::OtFirstPersonCameraClass
+//
+
+OtFirstPersonCameraClass::OtFirstPersonCameraClass() {
+	updateViewMatrix();
+	OtPerspectiveCameraClass::updateProjectionMatrix();
+}
+
+
+//
 //	OtFirstPersonCameraClass::updateViewMatrix
 //
 

@@ -46,6 +46,7 @@ bool OtCameraComponent::renderGUI() {
 			if (ImGui::Selectable(name, isSelectedOne)) {
 				if (std::strcmp(type, name)) {
 					createCamera(name);
+					changed = true;
 				}
 			}
 

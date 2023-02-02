@@ -28,6 +28,9 @@ typedef std::shared_ptr<OtPerspectiveCameraClass> OtPerspectiveCamera;
 
 class OtPerspectiveCameraClass : public OtCamera2Class {
 public:
+	// constructor
+	OtPerspectiveCameraClass();
+
 	// setters
 	void setFov(float f) { fov = f; updateProjectionMatrix(); }
 	void setAspectRatio(float a) { aspectRatio = a; updateProjectionMatrix(); }

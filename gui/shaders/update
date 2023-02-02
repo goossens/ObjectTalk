@@ -197,6 +197,7 @@ processDirectory Blur
 processDirectory Colored
 processDirectory Debug
 processDirectory Fixed
+processDirectory Geometry
 processDirectory ImGui
 processDirectory Shadow
 processDirectory Sky

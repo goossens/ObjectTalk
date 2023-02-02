@@ -128,6 +128,11 @@ bool OtBoxGeometryClass::renderGUI() {
 	changed |= ImGui::SliderInt("X Segments", &widthSegments, 1, 20);
 	changed |= ImGui::SliderInt("Y Segments", &heightSegments, 1, 20);
 	changed |= ImGui::SliderInt("Z Segments", &depthSegments, 1, 20);
+
+	if (changed) {
+		refreshGeometry = true;
+	}
+
 	return changed;
 }
 
@@ -138,6 +143,7 @@ bool OtBoxGeometryClass::renderGUI() {
 
 nlohmann::json OtBoxGeometryClass::serialize() {
 	auto data = nlohmann::json::object();
+	data["type"] = name;
 	data["xsegments"] = widthSegments;
 	data["ysegments"] = heightSegments;
 	data["zsegments"] = depthSegments;

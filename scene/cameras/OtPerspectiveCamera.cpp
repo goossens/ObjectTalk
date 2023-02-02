@@ -20,6 +20,16 @@
 
 
 //
+//	OtPerspectiveCameraClass::OtPerspectiveCameraClass
+//
+
+OtPerspectiveCameraClass::OtPerspectiveCameraClass() {
+	OtCamera2Class::updateViewMatrix();
+	updateProjectionMatrix();
+}
+
+
+//
 //	OtPerspectiveCameraClass::updateProjectionMatrix
 //
 

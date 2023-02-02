@@ -155,6 +155,10 @@ bool OtCircleGeometryClass::renderGUI() {
 		changed |= true;
 	}
 
+	if (changed) {
+		refreshGeometry = true;
+	}
+
 	return changed;
 }
 
@@ -165,6 +169,7 @@ bool OtCircleGeometryClass::renderGUI() {
 
 nlohmann::json OtCircleGeometryClass::serialize() {
 	auto data = nlohmann::json::object();
+	data["type"] = name;
 	data["segments"] = segments;
 	data["thetaStart"] = thetaStart;
 	data["thetaLength"] = thetaLength;

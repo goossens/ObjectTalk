@@ -65,6 +65,7 @@ public:
 			case geometry:
 				scene->addComponent<OtTransformComponent>(entity);
 				scene->addComponent<OtGeometryComponent>(entity);
+				scene->addComponent<OtMaterialComponent>(entity);
 				break;
 		}
 	}

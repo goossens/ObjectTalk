@@ -245,7 +245,42 @@ void OtSphereGeometryClass::fillGeometry() {
 //
 
 bool OtSphereGeometryClass::renderGUI() {
-	return false;
+	bool changed = OtGeometryClass::renderGUI();
+	changed |= ImGui::SliderInt("Phi Segments", &widthSegments, 1, 50);
+	int startPhi = glm::degrees(phiStart);
+
+	if (ImGui::SliderInt("Phi Start", &startPhi, 0, 359)) {
+		phiStart = glm::radians((float) startPhi);
+		changed |= true;
+	}
+
+	int lengthPhi = glm::degrees(phiLength);
+
+	if (ImGui::SliderInt("Phi Length", &lengthPhi, 1, 360)) {
+		phiLength = glm::radians((float) lengthPhi);
+		changed |= true;
+	}
+
+	changed |= ImGui::SliderInt("Theta Segments", &heightSegments, 1, 50);
+	int startTheta = glm::degrees(thetaStart);
+
+	if (ImGui::SliderInt("Theta Start", &startTheta, 0, 359)) {
+		thetaStart = glm::radians((float) startTheta);
+		changed |= true;
+	}
+
+	int lengthTheta = glm::degrees(thetaLength);
+
+	if (ImGui::SliderInt("Theta Length", &lengthTheta, 1, 360)) {
+		thetaLength = glm::radians((float) lengthTheta);
+		changed |= true;
+	}
+
+	if (changed) {
+		refreshGeometry = true;
+	}
+
+	return changed;
 }
 
 
@@ -255,6 +290,13 @@ bool OtSphereGeometryClass::renderGUI() {
 
 nlohmann::json OtSphereGeometryClass::serialize() {
 	auto data = nlohmann::json::object();
+	data["type"] = name;
+	data["phiSegments"] = widthSegments;
+	data["phiStart"] = phiStart;
+	data["phiLength"] = phiLength;
+	data["thetaSegments"] = heightSegments;
+	data["thetaStart"] = thetaStart;
+	data["thetaLength"] = thetaLength;
 	return data;
 }
 
@@ -264,6 +306,12 @@ nlohmann::json OtSphereGeometryClass::serialize() {
 //
 
 void OtSphereGeometryClass::deserialize(nlohmann::json data) {
+	widthSegments = data["phiSegments"];
+	phiStart = data["phiStart"];
+	phiLength = data["phiLength"];
+	heightSegments = data["thetaSegments"];
+	thetaStart = data["thetaStart"];
+	thetaLength = data["thetaLength"];
 }
 
 

@@ -18,6 +18,7 @@
 #include "OtSampler.h"
 #include "OtShader.h"
 #include "OtSphereGeometry.h"
+#include "OtUniformVec4.h"
 
 #include "OtCamera2.h"
 #include "OtEntity.h"
@@ -36,7 +37,7 @@ public:
 private:
 	// render passes
 	// void renderShadowPass(OtScene2 scene);
-	// void renderGeometryPass(OtScene2 scene);
+	void renderGeometryPass(OtScene2 scene);
 	// void renderLightingPass();
 	// void renderPostProcessingPass();
 	void renderEnvironmentPass(OtScene2 scene);
@@ -45,6 +46,7 @@ private:
 	// render entitities
 	void renderSkyBox(OtSkyBoxComponent& component);
 	void renderSkySphere(OtSkySphereComponent& component);
+	void renderGeometry(OtScene2 scene, OtEntity entity);
 
 	// target camera
 	OtCamera2 camera;
@@ -74,17 +76,21 @@ private:
 	OtBoxGeometry unityBoxGeometry;
 	OtSphereGeometry unitySphereGeometry;
 
-	// samplers
-	OtSampler skyMapSampler;
-	OtSampler skySphereSampler;
+	// uniforms
+	OtUniformVec4 materialUniforms;
 
+	// samplers
 	OtSampler albedoSampler;
 	OtSampler normalSampler;
 	OtSampler metalicSampler;
 	OtSampler roughnessSampler;
 	OtSampler aoSampler;
 
+	OtSampler skyMapSampler;
+	OtSampler skySphereSampler;
+
 	// shaders
+	OtShader geometryShader;
 	OtShader skyBoxShader;
 	OtShader skySphereShader;
 

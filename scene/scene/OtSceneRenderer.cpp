@@ -25,11 +25,38 @@ int OtSceneRenderer::render(OtScene2 scene, OtCamera2 c, int w, int h) {
 	width = w;
 	height = h;
 
-	// run composite pass
+	// update buffers
 	composite.update(width, height);
+
+	// run composite pass
 	renderEnvironmentPass(scene);
 	renderCompositePass(scene);
+
+	// render geometry pass
+	renderGeometryPass(scene);
+
 	return composite.getColorTextureIndex();
+}
+
+
+//
+//	OtSceneRenderer::renderGeometryPass
+//
+
+void OtSceneRenderer::renderGeometryPass(OtScene2 scene) {
+	// setup pass
+	geometryPass.reserveRenderingSlot();
+//	geometryPass.setClear(true, false);
+	geometryPass.setRectangle(0, 0, width, height);
+	geometryPass.setFrameBuffer(composite);
+	geometryPass.setTransform(camera->getViewMatrix(), camera->getProjectionMatrix());
+
+	// render all geometries
+	for (auto entity : scene->view<OtGeometryComponent>()) {
+		if (scene->hasComponent<OtTransformComponent>(entity) && scene->hasComponent<OtMaterialComponent>(entity)) {
+			renderGeometry(scene, entity);
+		}
+	}
 }
 
 
@@ -59,7 +86,6 @@ void OtSceneRenderer::renderEnvironmentPass(OtScene2 scene) {
 
 	// we can only have one environment component
 	bool environmentComponent = false;
-	bool tooManyEnvironmentComponents = false;
 
 	// see if we have any sky boxes
 	scene->view<OtSkyBoxComponent>().each([&](auto& component) {
@@ -68,9 +94,6 @@ void OtSceneRenderer::renderEnvironmentPass(OtScene2 scene) {
 				renderSkyBox(component);
 				environmentComponent = true;
 			}
-
-		} else {
-			tooManyEnvironmentComponents = true;
 		}
 	});
 
@@ -81,12 +104,8 @@ void OtSceneRenderer::renderEnvironmentPass(OtScene2 scene) {
 				renderSkySphere(component);
 				environmentComponent = true;
 			}
-
-		} else {
-			tooManyEnvironmentComponents = true;
 		}
 	});
-
 }
 
 
@@ -147,4 +166,77 @@ void OtSceneRenderer::renderSkySphere(OtSkySphereComponent& component) {
 	// run the shader
 	skySphereShader.setState(OtShader::noDepth);
 	environmentPass.runShader(skySphereShader);
+}
+
+
+//
+//	OtSceneRenderer::renderGeometry
+//
+
+void OtSceneRenderer::renderGeometry(OtScene2 scene, OtEntity entity) {
+	// get all relevant components
+	auto& geometry = scene->getComponent<OtGeometryComponent>(entity);
+	auto& transform = scene->getComponent<OtTransformComponent>(entity);
+	auto& material = scene->getComponent<OtMaterialComponent>(entity);
+
+	// submit the geometry
+	if (geometry.wireframe) {
+		geometry.geometry->submitLines();
+
+	} else {
+		geometry.geometry->submitTriangles();
+	}
+
+	// create the material uniforms (if required)
+	if (!materialUniforms.isValid()) {
+		materialUniforms.initialize("u_material", 3);
+	}
+
+	// set the material uniform values and submit to GPU
+	glm::vec4* uniforms = materialUniforms.getValues();
+	uniforms[0] = material.albedo;
+
+	uniforms[1] = glm::vec4(
+		material.metalic,
+		material.roughness,
+		material.ao,
+		material.albedoTexture.isValid());
+
+	uniforms[2] = glm::vec4(
+		material.metalicTexture.isValid(),
+		material.roughnessTexture.isValid(),
+		material.aoTexture.isValid(),
+		material.normalTexture.isValid());
+
+	materialUniforms.submit();
+
+	// submit all textures (or dummies if they are not set)
+	albedoSampler.submit(0, material.albedoTexture, "s_albedoTexture");
+	albedoSampler.submit(1, material.normalTexture, "s_normalTexture");
+	albedoSampler.submit(2, material.metalicTexture, "s_metalicTexture");
+	albedoSampler.submit(3, material.roughnessTexture, "s_roughnessTexture");
+	albedoSampler.submit(4, material.aoTexture, "s_aoTexture");
+
+	// load the shader (if required)
+	if (!geometryShader.isValid()) {
+		geometryShader.initialize("OtGeometryVS", "OtGeometryFS");
+	}
+
+	// set the shader state
+	if (geometry.wireframe) {
+		geometryShader.setState(OtShader::wireframe);
+
+	} else if (geometry.cullback) {
+		geometryShader.setState(OtShader::cullBack);
+
+	} else {
+		geometryShader.setState(OtShader::noCulling);
+	}
+
+	// set the model transform
+	auto matrix = transform.getTransform();
+	geometryShader.setTransform(matrix);
+
+	// run the shader
+	geometryPass.runShader(geometryShader);
 }

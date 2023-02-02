@@ -28,6 +28,9 @@ typedef std::shared_ptr<OtOrthographicCameraClass> OtOrthographicCamera;
 
 class OtOrthographicCameraClass : public OtCamera2Class {
 public:
+	// constructor
+	OtOrthographicCameraClass();
+
 	// setters
 	void setFrustum(float left, float right, float top, float bottom, float near, float far);
 

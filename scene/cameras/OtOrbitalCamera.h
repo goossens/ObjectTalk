@@ -27,6 +27,9 @@ typedef std::shared_ptr<OtOrbitalCameraClass> OtOrbitalCamera;
 
 class OtOrbitalCameraClass : public OtPerspectiveCameraClass {
 public:
+	// constructor
+	OtOrbitalCameraClass();
+
 	// setters
 	void setDistance(float d);
 	void setPitch(float p);

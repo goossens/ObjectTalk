@@ -20,6 +20,16 @@
 
 
 //
+//	OtOrthographicCameraClass::OtOrthographicCameraClass
+//
+
+OtOrthographicCameraClass::OtOrthographicCameraClass() {
+	OtCamera2Class::updateViewMatrix();
+	updateProjectionMatrix();
+}
+
+
+//
 //	OtOrthographicCameraClass::setFrustum
 //
 

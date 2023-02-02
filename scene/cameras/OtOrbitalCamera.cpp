@@ -22,6 +22,16 @@
 
 
 //
+//	OtOrbitalCameraClass::OtOrbitalCameraClass
+//
+
+OtOrbitalCameraClass::OtOrbitalCameraClass() {
+	updateViewMatrix();
+	OtPerspectiveCameraClass::updateProjectionMatrix();
+}
+
+
+//
 //	OtOrbitalCameraClass::updateViewMatrix
 //
 
@@ -135,6 +145,7 @@ void OtOrbitalCameraClass::handleMouseKeyboard() {
 		setFov(getFov() - 2.0f);
 
 	} else if (ImGui::IsKeyPressed(ImGuiKey_Home)) {
+		setDistance(10.0f);
 		setPitch(0.0f);
 		setYaw(0.0f);
 		setFov(60.0f);

@@ -404,7 +404,9 @@ void OtSceneEditorClass::renderPanel(const std::string& name, bool canAdd, std::
 
 	// render panel context
 	ImGui::BeginChild("content");
+	ImGui::PushItemWidth(200.0f);
 	content();
+	ImGui::PopItemWidth();
 	ImGui::EndChild();
 }
 

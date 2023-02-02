@@ -41,6 +41,8 @@ public:
 
 	// stored properties
 	OtGeometry geometry;
+	bool wireframe = false;
+	bool cullback = true;
 
 private:
 	// create a new named geometry instance

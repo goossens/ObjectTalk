@@ -44,6 +44,7 @@ bool OtGeometryComponent::renderGUI() {
 			if (ImGui::Selectable(name, isSelectedOne)) {
 				if (std::strcmp(type, name)) {
 					createGeometry(name);
+					changed = true;
 				}
 			}
 
@@ -56,6 +57,8 @@ bool OtGeometryComponent::renderGUI() {
 		ImGui::EndCombo();
 	}
 
+	changed |= ImGui::Checkbox("Wireframe", &wireframe);
+	changed |= ImGui::Checkbox("Cull Back", &cullback);
 	changed |= geometry->renderGUI();
 	return changed;
 }
@@ -68,6 +71,9 @@ bool OtGeometryComponent::renderGUI() {
 nlohmann::json OtGeometryComponent::serialize(std::filesystem::path* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
+	data["wireframe"] = wireframe;
+	data["cullback"] = cullback;
+	data["geometry"] = geometry->serialize();
 	return data;
 }
 
@@ -77,6 +83,10 @@ nlohmann::json OtGeometryComponent::serialize(std::filesystem::path* basedir) {
 //
 
 void OtGeometryComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+	wireframe = data["wireframe"];
+	cullback = data["cullback"];
+	createGeometry(data["geometry"]["type"]);
+	geometry->deserialize(data["geometry"]);
 }
 
 

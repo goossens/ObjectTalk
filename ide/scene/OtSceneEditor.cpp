@@ -123,6 +123,8 @@ void OtSceneEditorClass::render() {
 
 	ImGui::EndChild();
 
+	// renderer.visualizeGbuffer();
+
 	// handle keyboard
 	handleShortcuts();
 

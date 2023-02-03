@@ -58,7 +58,7 @@ bool OtGeometryComponent::renderGUI() {
 	}
 
 	changed |= ImGui::Checkbox("Wireframe", &wireframe);
-	changed |= ImGui::Checkbox("Cull Back", &cullback);
+	changed |= ImGui::Checkbox("Cull Back Faces", &cullback);
 	changed |= geometry->renderGUI();
 	return changed;
 }
@@ -99,6 +99,7 @@ void OtGeometryComponent::createGeometry(const std::string& type) {
 
 	if (factory->exists(type)) {
 		geometry = factory->create(type);
+		geometry->computeTangents();
 
 	} else {
 		OtExcept("Invalid geometry type [%s]", type.c_str());

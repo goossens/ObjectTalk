@@ -199,6 +199,7 @@ processDirectory Debug
 processDirectory Fixed
 processDirectory Geometry
 processDirectory ImGui
+processDirectory Lighting
 processDirectory Shadow
 processDirectory Sky
 processDirectory Skybox

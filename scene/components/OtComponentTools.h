@@ -24,8 +24,13 @@
 static inline std::filesystem::path OtComponentGetRelativePath(std::filesystem::path path, std::filesystem::path* basedir) {
 	// make a path relative to the provided base directory
 	if (basedir) {
-		auto relative = std::filesystem::relative(path, *basedir);
-		return relative == "." ? std::filesystem::path() : relative;
+		if (path.empty()) {
+			return path;
+
+		} else {
+			auto relative = std::filesystem::relative(path, *basedir);
+			return relative == "." ? std::filesystem::path() : relative;
+		}
 
 	} else {
 		return path;

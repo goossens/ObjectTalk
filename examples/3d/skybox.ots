@@ -97,15 +97,15 @@
 					0.16528311371803284,
 					1.0
 				],
-				"albedoTexture": "../../build/bin",
-				"ao": 0.0,
-				"aoTexture": "../../build/bin",
+				"albedoTexture": "",
+				"ao": 0.6000000238418579,
+				"aoTexture": "",
 				"component": "Material",
-				"metalic": 0.0,
-				"metalicTexture": "../../build/bin",
-				"normalTexture": "../../build/bin",
+				"metallic": 0.699999988079071,
+				"metallicTexture": "",
+				"normalTexture": "",
 				"roughness": 0.5,
-				"roughnessTexture": "../../build/bin"
+				"roughnessTexture": ""
 			}
 		]
 	}

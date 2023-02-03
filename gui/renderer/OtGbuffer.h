@@ -25,13 +25,13 @@ public:
 	// clear all resources
 	void clear();
 
-	// see if framebuffer is valid
+	// see if gbuffer is valid
 	bool isValid() { return gbuffer.isValid(); }
 
-	// update frame buffer
+	// update gbuffer
 	void update(int width, int height);
 
-	// get framebuffer dimensions
+	// get framebgbufferuffer dimensions
 	int getWidth() { return width; }
 	int getHeight() { return height; }
 
@@ -51,12 +51,12 @@ public:
 
 	// bind textures
 	void bindAlbedoTexture(OtSampler& sampler, int unit);
-	void bindSpecularTexture(OtSampler& sampler, int unit);
 	void bindPositionTexture(OtSampler& sampler, int unit);
 	void bindNormalTexture(OtSampler& sampler, int unit);
+	void bindPbrTexture(OtSampler& sampler, int unit);
 	void bindDepthTexture(OtSampler& sampler, int unit);
 
-	// activate framebuffer in GPU for specified view
+	// activate gbuffer in GPU for specified view
 	void submit(bgfx::ViewId view);
 
 private:

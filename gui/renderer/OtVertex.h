@@ -27,13 +27,14 @@ struct OtVertex {
 	glm::vec3 position;
 	glm::vec3 normal;
 	glm::vec3 tangent;
+	glm::vec3 bitangent;
 	glm::vec2 uv;
 
 	// constructors
 	OtVertex() = default;
 
-	OtVertex(const glm::vec3& p, const glm::vec3& n=glm::vec3(0.0), const glm::vec2& u=glm::vec2(0.0), const glm::vec3 t=glm::vec3(0.0)) :
-		position(p), normal(n), uv(u), tangent(t) {
+	OtVertex(const glm::vec3& p, const glm::vec3& n=glm::vec3(0.0), const glm::vec2& u=glm::vec2(0.0), const glm::vec3 t=glm::vec3(0.0), const glm::vec3 b=glm::vec3(0.0)) :
+		position(p), normal(n), uv(u), tangent(t), bitangent(b) {
 	}
 
 	// get vertex description
@@ -44,6 +45,7 @@ struct OtVertex {
 			.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
 			.add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
 			.add(bgfx::Attrib::Tangent, 3, bgfx::AttribType::Float)
+			.add(bgfx::Attrib::Bitangent, 3, bgfx::AttribType::Float)
 			.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
 			.end();
 

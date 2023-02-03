@@ -36,29 +36,30 @@ public:
 	// component name
 	static constexpr char const* name = "Material";
 
-	// see if material is valid
-	bool isValid();
+	// update material (if required)
+	void update();
 
 	// stored properties
 	glm::vec4 albedo{1.0f};
-	float metalic = 0.0f;
+	float metallic = 0.5f;
 	float roughness = 0.5f;
-	float ao = 0.0f;
+	float ao = 1.0f;
 	std::filesystem::path albedoTexturePath;
 	std::filesystem::path normalTexturePath;
-	std::filesystem::path metalicTexturePath;
+	std::filesystem::path metallicTexturePath;
 	std::filesystem::path roughnessTexturePath;
 	std::filesystem::path aoTexturePath;
 
 	// runtime properties
-	bool update = false;
 	OtTexture albedoTexture;
 	OtTexture normalTexture;
-	OtTexture metalicTexture;
+	OtTexture metallicTexture;
 	OtTexture roughnessTexture;
 	OtTexture aoTexture;
 
-private:
-	// helper functions
-	bool editPath(const char* label, std::filesystem::path& path, OtTexture& texture);
+	bool updateAlbedoTexture = false;
+	bool updateNormalTexture = false;
+	bool updateMetallicTexture = false;
+	bool updateRoughnessTexture = false;
+	bool updateAoTexture = false;
 };

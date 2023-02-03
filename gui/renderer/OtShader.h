@@ -28,9 +28,12 @@ public:
 		noDepth,
 		wireframe,
 		noCulling,
-		cullFront,
-		cullBack,
-		blending
+		cullFrontFace,
+		cullBackFace,
+		blendAlpha,
+		blendAdditive,
+		filter,
+		filterAdditive
 	};
 
 	// constructors/destructor

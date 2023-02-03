@@ -56,14 +56,16 @@ void OtPass::reserveRenderingSlot() {
 //	OtPass::setClear
 //
 
-void OtPass::setClear(bool color, bool depth) {
+void OtPass::setClear(bool color, bool depth, uint32_t rgba, float depthValue) {
 	if (!view) {
 		OtExcept("Internal error: rendering slot for pass not reserved");
 	}
 
 	bgfx::setViewClear(
 		view,
-		(color ? BGFX_CLEAR_COLOR : BGFX_CLEAR_NONE) | (depth ? BGFX_CLEAR_DEPTH : BGFX_CLEAR_NONE));
+		(color ? BGFX_CLEAR_COLOR : BGFX_CLEAR_NONE) | (depth ? BGFX_CLEAR_DEPTH : BGFX_CLEAR_NONE),
+		rgba,
+		depthValue);
 }
 
 
@@ -89,6 +91,19 @@ void OtPass::setFrameBuffer(OtFrameBuffer& framebuffer) {
 	}
 
 	framebuffer.submit(view);
+}
+
+
+//
+//	OtPass::setFrameBuffer
+//
+
+void OtPass::setFrameBuffer(OtGbuffer &gbuffer) {
+	if (!view) {
+		OtExcept("Internal error: rendering slot for pass not reserved");
+	}
+
+	gbuffer.submit(view);
 }
 
 

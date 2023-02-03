@@ -50,16 +50,16 @@ void OtGbuffer::update(int w, int h) {
 		// create new textures
 		albedoTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA8, flags);
 		positionTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA32F, flags);
-		normalTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA32F, flags);
-		pbrTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA8, flags);
+		normalTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA16F, flags);
+		pbrTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA16F, flags);
 		depthTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::D32F, flags);
 
 		// create gbuffer
 		bgfx::TextureHandle textures[5] = {
 			albedoTexture.getHandle(),
-			pbrTexture.getHandle(),
 			positionTexture.getHandle(),
 			normalTexture.getHandle(),
+			pbrTexture.getHandle(),
 			depthTexture.getHandle()
 		};
 
@@ -82,15 +82,6 @@ void OtGbuffer::bindAlbedoTexture(OtSampler& sampler, int unit) {
 
 
 //
-//	OtGbuffer::bindSpecularTexture
-//
-
-void OtGbuffer::bindSpecularTexture(OtSampler& sampler, int unit) {
-	sampler.submit(unit, pbrTexture.getHandle());
-}
-
-
-//
 //	OtGbuffer::bindPositionTexture
 //
 
@@ -105,6 +96,15 @@ void OtGbuffer::bindPositionTexture(OtSampler& sampler, int unit) {
 
 void OtGbuffer::bindNormalTexture(OtSampler& sampler, int unit) {
 	sampler.submit(unit, normalTexture.getHandle());
+}
+
+
+//
+//	OtGbuffer::bindPbrTexture
+//
+
+void OtGbuffer::bindPbrTexture(OtSampler& sampler, int unit) {
+	sampler.submit(unit, pbrTexture.getHandle());
 }
 
 

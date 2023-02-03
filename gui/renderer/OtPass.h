@@ -17,6 +17,7 @@
 
 
 #include "OtFrameBuffer.h"
+#include "OtGbuffer.h"
 #include "OtShader.h"
 
 
@@ -30,9 +31,10 @@ public:
 	void reserveRenderingSlot();
 
 	// set properties
-	void setClear(bool color, bool depth);
+	void setClear(bool color, bool depth, uint32_t rgba=0x000000ff, float depthValue=1.0f);
 	void setRectangle(int x, int y, int w, int h);
 	void setFrameBuffer(OtFrameBuffer& framebuffer);
+	void setFrameBuffer(OtGbuffer& gbuffer);
 	void setTransform(const glm::mat4& view, const glm::mat4& projection);
 	void runShader(OtShader& shader);
 

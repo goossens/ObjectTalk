@@ -77,7 +77,7 @@ void OtGeometryClass::updateBuffers() {
 		// clear tangents
 		for (auto& vertex : vertices) {
 			vertex.tangent = glm::vec3(0.0);
-//			vertex.bitangent = glm::vec3(0.0);
+			vertex.bitangent = glm::vec3(0.0);
 		}
 
 		// generate new tangents
@@ -105,20 +105,20 @@ void OtGeometryClass::updateBuffers() {
 			v1.tangent += tangent;
 			v2.tangent += tangent;
 
-//			glm::vec3 bitangent;
-//			bitangent.x = f * (-deltaU2 * edge1.x + deltaU1 * edge2.x);
-//			bitangent.y = f * (-deltaU2 * edge1.y + deltaU1 * edge2.y);
-//			bitangent.z = f * (-deltaU2 * edge1.z + deltaU1 * edge2.z);
+			glm::vec3 bitangent;
+			bitangent.x = f * (-deltaU2 * edge1.x + deltaU1 * edge2.x);
+			bitangent.y = f * (-deltaU2 * edge1.y + deltaU1 * edge2.y);
+			bitangent.z = f * (-deltaU2 * edge1.z + deltaU1 * edge2.z);
 
-//			v0.bitangent += bitangent;
-//			v1.bitangent += bitangent;
-//			v2.bitangent += bitangent;
+			v0.bitangent += bitangent;
+			v1.bitangent += bitangent;
+			v2.bitangent += bitangent;
 		}
 
 		// normalize the tangents
 		for (auto& vertex : vertices) {
 			vertex.tangent = glm::normalize(vertex.tangent);
-//			vertex.bitangent = glm::normalize(vertex.bitangent);
+			vertex.bitangent = glm::normalize(vertex.bitangent);
 		}
 	}
 

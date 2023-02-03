@@ -70,16 +70,7 @@ void OtShader::setState(states state) {
 			BGFX_STATE_DEPTH_TEST_LESS |
 			BGFX_STATE_MSAA);
 
-	} else if (state == cullFront) {
-		bgfx::setState(
-			BGFX_STATE_WRITE_RGB |
-			BGFX_STATE_WRITE_A |
-			BGFX_STATE_WRITE_Z |
-			BGFX_STATE_DEPTH_TEST_LESS |
-			BGFX_STATE_MSAA |
-			BGFX_STATE_CULL_CW);
-
-	} else if (state == cullBack) {
+	} else if (state == cullFrontFace) {
 		bgfx::setState(
 			BGFX_STATE_WRITE_RGB |
 			BGFX_STATE_WRITE_A |
@@ -88,7 +79,16 @@ void OtShader::setState(states state) {
 			BGFX_STATE_MSAA |
 			BGFX_STATE_CULL_CCW);
 
-	} else if (state == blending) {
+	} else if (state == cullBackFace) {
+		bgfx::setState(
+			BGFX_STATE_WRITE_RGB |
+			BGFX_STATE_WRITE_A |
+			BGFX_STATE_WRITE_Z |
+			BGFX_STATE_DEPTH_TEST_LESS |
+			BGFX_STATE_MSAA |
+			BGFX_STATE_CULL_CW);
+
+	} else if (state == blendAlpha) {
 		bgfx::setState(
 			BGFX_STATE_WRITE_RGB |
 			BGFX_STATE_WRITE_A |
@@ -96,6 +96,26 @@ void OtShader::setState(states state) {
 			BGFX_STATE_DEPTH_TEST_LESS |
 			BGFX_STATE_MSAA |
 			BGFX_STATE_BLEND_ALPHA);
+
+	} else if (state == blendAdditive) {
+		bgfx::setState(
+			BGFX_STATE_WRITE_RGB |
+			BGFX_STATE_WRITE_A |
+			BGFX_STATE_WRITE_Z |
+			BGFX_STATE_DEPTH_TEST_LESS |
+			BGFX_STATE_MSAA |
+			BGFX_STATE_BLEND_ADD);
+
+	} else if (state == filter) {
+		bgfx::setState(
+			BGFX_STATE_WRITE_RGB |
+			BGFX_STATE_WRITE_A);
+
+	} else if (state == filterAdditive) {
+		bgfx::setState(
+			BGFX_STATE_WRITE_RGB |
+			BGFX_STATE_WRITE_A |
+			BGFX_STATE_BLEND_ADD);
 	}
 }
 

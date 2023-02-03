@@ -20,6 +20,7 @@
 #include "OtFixedShader.h"
 #include "OtGeometryShader.h"
 #include "OtImGuiShader.h"
+#include "OtLightingShader.h"
 #include "OtShadowShader.h"
 #include "OtSkyShader.h"
 #include "OtSkyboxShader.h"
@@ -57,6 +58,8 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtGeometryFS),
 	BGFX_EMBEDDED_SHADER(OtImGuiVS),
 	BGFX_EMBEDDED_SHADER(OtImGuiFS),
+	BGFX_EMBEDDED_SHADER(OtLightingVS),
+	BGFX_EMBEDDED_SHADER(OtLightingFS),
 	BGFX_EMBEDDED_SHADER(OtShadowVS),
 	BGFX_EMBEDDED_SHADER(OtShadowFS),
 	BGFX_EMBEDDED_SHADER(OtShadowVSI),

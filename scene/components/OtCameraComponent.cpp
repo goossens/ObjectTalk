@@ -81,8 +81,13 @@ nlohmann::json OtCameraComponent::serialize(std::filesystem::path* basedir) {
 //
 
 void OtCameraComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
-	createCamera(data["camera"]["type"]);
-	camera->deserialize(data["camera"]);
+	if (data.contains("camera") && data["camera"].contains("type")) {
+		createCamera(data["camera"]["type"]);
+		camera->deserialize(data["camera"]);
+
+	} else {
+		createCamera("Perspective");
+	}
 }
 
 

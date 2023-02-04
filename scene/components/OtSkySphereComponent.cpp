@@ -32,6 +32,8 @@ bool OtSkySphereComponent::renderGUI() {
 		update = true;
 	}
 
+	changed |= ImGui::SliderFloat("Brightness", &brightness, 0.1f, 4.0f, "%.1f");
+	changed |= ImGui::SliderFloat("Gamma", &gamma, 0.5f, 3.0f, "%.1f");
 	return changed;
 }
 
@@ -44,6 +46,8 @@ nlohmann::json OtSkySphereComponent::serialize(std::filesystem::path* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
 	data["image"] = OtComponentGetRelativePath(image, basedir);
+	data["brightness"] = brightness;
+	data["gamma"] = gamma;
 	return data;
 }
 
@@ -54,6 +58,8 @@ nlohmann::json OtSkySphereComponent::serialize(std::filesystem::path* basedir) {
 
 void OtSkySphereComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
 	image = OtComponentGetAbsolutePath(data, "image", basedir);
+	brightness = data.value("brightness", 1.0f);
+	gamma = data.value("gamma", 1.0f);
 	update = true;
 }
 

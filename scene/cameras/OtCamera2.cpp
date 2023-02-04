@@ -76,10 +76,9 @@ nlohmann::json OtCamera2Class::serialize() {
 //
 
 void OtCamera2Class::deserialize(nlohmann::json data) {
-	position = data["position"];
-	target = data["target"];
-	up = data["up"];
-
+	position = data.value("position", glm::vec3(0.0f, 0.0f, 10.0f));
+	target = data.value("target", glm::vec3(0.0f, 0.0f, 0.0f));
+	up = data.value("up", glm::vec3(0.0f, 1.0f, 0.0f));
 	updateViewMatrix();
 }
 

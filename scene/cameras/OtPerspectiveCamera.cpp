@@ -101,15 +101,12 @@ nlohmann::json OtPerspectiveCameraClass::serialize() {
 //
 
 void OtPerspectiveCameraClass::deserialize(nlohmann::json data) {
-	position = data["position"];
-	target = data["target"];
-	up = data["up"];
+	OtCamera2Class::deserialize(data);
 
-	fov = data["fov"];
-	nearPlane = data["near"];
-	farPlane = data["far"];
+	fov = data.value("fov", 60.0f);
+	nearPlane = data.value("near", 0.1f);
+	farPlane = data.value("far", 1000.0f);
 
-	updateViewMatrix();
 	updateProjectionMatrix();
 }
 

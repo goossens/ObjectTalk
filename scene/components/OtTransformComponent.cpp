@@ -77,7 +77,7 @@ nlohmann::json OtTransformComponent::serialize(std::filesystem::path* basedir) {
 //
 
 void OtTransformComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
-	translation = data["translation"];
-	rotation = data["rotation"];
-	scale = data["scale"];
+	translation = data.value("translation", glm::vec3(0.0f, 0.0f, 0.0f));
+	rotation = data.value("rotation", glm::vec3(0.0f, 0.0f, 0.0f));
+	scale = data.value("scale", glm::vec3(1.0f, 1.0f, 1.0f));
 }

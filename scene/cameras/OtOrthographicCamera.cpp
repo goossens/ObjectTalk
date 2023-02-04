@@ -119,18 +119,15 @@ nlohmann::json OtOrthographicCameraClass::serialize() {
 //
 
 void OtOrthographicCameraClass::deserialize(nlohmann::json data) {
-	position = data["position"];
-	target = data["target"];
-	up = data["up"];
+	OtCamera2Class::deserialize(data);
 
-	left = data["left"];
-	right = data["right"];
-	top = data["top"];
-	bottom = data["bottom"];
-	near = data["near"];
-	far = data["far"];
+	left = data.value("left", -8.0f);
+	right = data.value("right", 8.0f);
+	top = data.value("top", 4.5f);
+	bottom = data.value("bottom", -4.5f);
+	near = data.value("near", 0.1f);
+	far = data.value("far", 1000.0f);
 
-	updateViewMatrix();
 	updateProjectionMatrix();
 }
 

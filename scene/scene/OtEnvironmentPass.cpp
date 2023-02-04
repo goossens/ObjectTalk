@@ -78,6 +78,11 @@ void OtSceneRenderer::renderSkyBox(OtSkyBoxComponent& component) {
 
 	unityBoxGeometry->submitTriangles();
 
+	// set the uniform values
+	glm::vec4* uniforms = environmentUniforms.getValues();
+	uniforms[0] = glm::vec4(component.brightness, component.gamma, 0.0f, 0.0f);
+	environmentUniforms.submit();
+
 	// submit texture via sampler
 	skyMapSampler.submit(0, component.cubemap, "s_cubemap");
 
@@ -103,6 +108,11 @@ void OtSceneRenderer::renderSkySphere(OtSkySphereComponent& component) {
 	}
 
 	unitySphereGeometry->submitTriangles();
+
+	// set the uniform values
+	glm::vec4* uniforms = environmentUniforms.getValues();
+	uniforms[0] = glm::vec4(component.brightness, component.gamma, 0.0f, 0.0f);
+	environmentUniforms.submit();
 
 	// submit texture via sampler
 	skySphereSampler.submit(0, component.texture, "s_skySphereTexture");

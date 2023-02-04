@@ -56,7 +56,7 @@ void OtSceneRenderer::renderGeometry(OtScene2 scene, OtEntity entity) {
 		geometry.geometry->submitTriangles();
 	}
 
-	// set the material uniform values and submit to GPU
+	// set the uniform values
 	glm::vec4* uniforms = materialUniforms.getValues();
 	uniforms[0] = material.albedo;
 

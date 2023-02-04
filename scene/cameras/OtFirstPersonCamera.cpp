@@ -150,15 +150,15 @@ nlohmann::json OtFirstPersonCameraClass::serialize() {
 //
 
 void OtFirstPersonCameraClass::deserialize(nlohmann::json data) {
-	position = data["position"];
-	distance = data["distance"];
-	pitch = data["pitch"];
-	yaw = data["yaw"];
-	up = data["up"];
+	position = data.value("position", glm::vec3(0.0f, 0.0f, 10.0f));
+	distance = data.value("distance", 10.0f);
+	pitch = data.value("pitch", 0.0f);
+	yaw = data.value("yaw", 0.0f);
+	up = data.value("up", glm::vec3(0.0f, 1.0f, 0.0f));
 
-	fov = data["fov"];
-	nearPlane = data["near"];
-	farPlane = data["far"];
+	fov = data.value("fov", 60.0f);
+	nearPlane = data.value("near", 0.1f);
+	farPlane = data.value("far", 1000.0f);
 
 	updateViewMatrix();
 	updateProjectionMatrix();

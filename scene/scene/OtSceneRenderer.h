@@ -83,6 +83,7 @@ private:
 
 	// uniforms
 	OtUniformVec4 materialUniforms{"u_material", 3};
+	OtUniformVec4 environmentUniforms{"u_environment", 1};
 	OtUniformVec4 lightingUniforms{"u_lighting", 3};
 
 	// samplers

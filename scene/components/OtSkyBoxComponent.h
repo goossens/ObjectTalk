@@ -45,6 +45,8 @@ public:
 	std::filesystem::path bottom;
 	std::filesystem::path front;
 	std::filesystem::path back;
+	float brightness = 1.0f;
+	float gamma = 1.0f;
 
 	// runtime properties
 	bool update = false;

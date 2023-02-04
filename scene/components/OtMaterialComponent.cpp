@@ -38,13 +38,13 @@ static inline bool editPath(const char* label, std::filesystem::path& path, bool
 bool OtMaterialComponent::renderGUI() {
 	bool changed = false;
 	changed |= ImGui::ColorEdit3("Albedo Color", glm::value_ptr(albedo));
+	changed |= ImGui::SliderFloat("Metallic", &metallic, 0.0f, 1.0f, "%.2f");
+	changed |= ImGui::SliderFloat("Roughness", &roughness, 0.0f, 1.0f, "%.2f");
+	changed |= ImGui::SliderFloat("Ambient Occlusion", &ao, 0.0f, 1.0f, "%.2f");
 	changed |= editPath("Albedo Texture", albedoTexturePath, updateAlbedoTexture);
 	changed |= editPath("Normal Texture", normalTexturePath, updateNormalTexture);
-	changed |= ImGui::SliderFloat("Metallic", &metallic, 0.0f, 1.0f, "%.2f");
 	changed |= editPath("Metallic Texture", metallicTexturePath, updateMetallicTexture);
-	changed |= ImGui::SliderFloat("Roughness", &roughness, 0.0f, 1.0f, "%.2f");
 	changed |= editPath("Roughness Texture", roughnessTexturePath, updateRoughnessTexture);
-	changed |= ImGui::SliderFloat("Ambient Occlusion", &ao, 0.0f, 1.0f, "%.2f");
 	changed |= editPath("AO Texture", aoTexturePath, updateAoTexture);
 	return changed;
 }
@@ -58,13 +58,13 @@ nlohmann::json OtMaterialComponent::serialize(std::filesystem::path* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
 	data["albedo"] = albedo;
+	data["metallic"] = metallic;
+	data["roughness"] = roughness;
+	data["ao"] = ao;
 	data["albedoTexture"] = OtComponentGetRelativePath(albedoTexturePath, basedir);
 	data["normalTexture"] = OtComponentGetRelativePath(normalTexturePath, basedir);
-	data["metallic"] = metallic;
 	data["metallicTexture"] = OtComponentGetRelativePath(metallicTexturePath, basedir);
-	data["roughness"] = roughness;
 	data["roughnessTexture"] = OtComponentGetRelativePath(roughnessTexturePath, basedir);
-	data["ao"] = ao;
 	data["aoTexture"] = OtComponentGetRelativePath(aoTexturePath, basedir);
 	return data;
 }
@@ -75,14 +75,14 @@ nlohmann::json OtMaterialComponent::serialize(std::filesystem::path* basedir) {
 //
 
 void OtMaterialComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
-	albedo = data["albedo"];
+	albedo = data.value("albedo", glm::vec4(1.0f));
+	metallic = data.value("metallic", 0.5f);
+	roughness = data.value("roughness", 0.5f);
+	ao = data.value("ao", 1.0f);
 	albedoTexturePath = OtComponentGetAbsolutePath(data, "albedoTexture", basedir);
 	normalTexturePath = OtComponentGetAbsolutePath(data, "normalTexture", basedir);
-	metallic = data["metallic"];
 	metallicTexturePath = OtComponentGetAbsolutePath(data, "metallicTexture", basedir);
-	roughness = data["roughness"];
 	roughnessTexturePath = OtComponentGetAbsolutePath(data, "roughnessTexture", basedir);
-	ao = data["ao"];
 	aoTexturePath = OtComponentGetAbsolutePath(data, "aoTexture", basedir);
 
 	updateAlbedoTexture = true;

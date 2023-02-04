@@ -8,8 +8,16 @@ $input v_texcoord0
 
 #include <bgfx.glsl>
 
+// uniforms
+uniform vec4 u_environment[3];
+#define u_brightness u_environment[0].x
+#define u_gamma u_environment[0].y
+
 SAMPLER2D(s_skySphereTexture, 0);
 
 void main() {
-	gl_FragColor = texture2D(s_skySphereTexture, v_texcoord0);
+	vec3 color = texture2D(s_skySphereTexture, v_texcoord0).rgb;
+    color = pow(color, vec3_splat(u_gamma));
+    color = u_brightness * color;
+    gl_FragColor = vec4(color, 1.0f);
 }

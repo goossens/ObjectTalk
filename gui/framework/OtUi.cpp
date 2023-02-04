@@ -175,12 +175,10 @@ bool OtUiFileSelector(const char* label, std::filesystem::path& path) {
 	ImGui::RenderFrameBorder(bb.Min, bb.Max, style.FrameRounding);
 
 	// render path
-	auto filename = path.filename().string();
-
 	ImGui::RenderTextClipped(
 		bb.Min + style.FramePadding,
 		bb.Max - style.FramePadding,
-		filename.c_str(),
+		path.filename().string().c_str(),
 		nullptr,
 		nullptr);
 

@@ -16,7 +16,7 @@
 
 #include "glm/glm.hpp"
 
-#include "OtBgfxHelpers.h"
+#include "OtBgfxHandle.h"
 
 
 //

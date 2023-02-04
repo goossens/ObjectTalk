@@ -47,7 +47,7 @@ void main() {
 		vec3 tangent = normalize(v_tangent);
 		vec3 bitangent = normalize(v_bitangent);
 		mat3 TBN = mtxFromCols(tangent, bitangent, normal);
-		normal = normalize(mul(TBN, texture2D(s_geometryNormalTexture, v_texcoord0).xyz));
+		normal = normalize(mul(TBN, texture2D(s_geometryNormalTexture, v_texcoord0).rgb * 2.0 - 1.0));
 	}
 
 	// determine PBR parameters

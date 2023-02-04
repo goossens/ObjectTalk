@@ -108,8 +108,7 @@ void OtSceneRenderer::renderGeometry(OtScene2 scene, OtEntity entity) {
 			OtStateWriteRgb |
 			OtStateWriteA |
 			OtStateWriteZ |
-			OtStateDepthTestLess |
-			OtStateMsaa);
+			OtStateDepthTestLess);
 	}
 
 	// set the model transform

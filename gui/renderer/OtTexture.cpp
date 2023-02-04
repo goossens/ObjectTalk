@@ -168,7 +168,7 @@ static bgfx::TextureHandle generateMipmapTexture(bimg::ImageContainer* image) {
 //	OtTexture::loadFromFile
 //
 
-void OtTexture::loadFromFile(const std::string &filename, bool mipmap) {
+void OtTexture::loadFromFile(const std::string& filename, bool mipmap) {
 	// get the image
 	OtImage image(filename);
 	bimg::ImageContainer* container = image.getContainer();

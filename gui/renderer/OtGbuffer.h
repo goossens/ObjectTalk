@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include "OtBgfxHelpers.h"
+#include "OtBgfxHandle.h"
 #include "OtSampler.h"
 
 

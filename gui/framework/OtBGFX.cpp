@@ -68,6 +68,10 @@ void OtFrameworkClass::initBGFX() {
 		OtExcept("Your system/graphics card does not support texture '<='");
 	}
 
+	if (!(caps->supported & BGFX_CAPS_TEXTURE_BLIT)) {
+		OtExcept("Your system/graphics card does not support blitting between textures");
+	}
+
 	// initialize time management
 	startTime = lastTime = bx::getHPCounter();
 }

@@ -14,7 +14,7 @@
 
 #include <string>
 
-#include "OtBgfxHelpers.h"
+#include "OtBgfxHandle.h"
 
 
 //

@@ -92,7 +92,7 @@ void OtSceneRenderer::renderSkyBox(OtSkyBoxComponent& component) {
 	}
 
 	// run the shader
-	skyBoxShader.setState(OtShader::noDepth);
+	skyBoxShader.setState(OtStateWriteRgb | OtStateWriteA);
 	environmentPass.runShader(skyBoxShader);
 }
 
@@ -123,6 +123,6 @@ void OtSceneRenderer::renderSkySphere(OtSkySphereComponent& component) {
 	}
 
 	// run the shader
-	skySphereShader.setState(OtShader::noDepth);
+	skySphereShader.setState(OtStateWriteRgb | OtStateWriteA);
 	environmentPass.runShader(skySphereShader);
 }

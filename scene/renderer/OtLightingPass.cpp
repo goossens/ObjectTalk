@@ -51,6 +51,6 @@ void OtSceneRenderer::renderLightingPass(OtScene2 scene) {
 	}
 
 	// run the shader
-	lightingShader.setState(OtShader::blendAlpha);
+	lightingShader.setState(OtStateWriteRgb | OtStateWriteA | OtStateDepthTestAlways);
 	lightingPass.runShader(lightingShader);
 }

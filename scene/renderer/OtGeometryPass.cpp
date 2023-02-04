@@ -88,13 +88,28 @@ void OtSceneRenderer::renderGeometry(OtScene2 scene, OtEntity entity) {
 
 	// set the shader state
 	if (geometry.wireframe) {
-		geometryShader.setState(OtShader::wireframe);
+		geometryShader.setState(
+			OtStateWriteRgb |
+			OtStateWriteA |
+			OtStateWriteZ |
+			OtStateDepthTestLess |
+			OtStateLines);
 
 	} else if (geometry.cullback) {
-		geometryShader.setState(OtShader::cullBackFace);
+		geometryShader.setState(
+			OtStateWriteRgb |
+			OtStateWriteA |
+			OtStateWriteZ |
+			OtStateDepthTestLess |
+			OtStateCullCw);
 
 	} else {
-		geometryShader.setState(OtShader::noCulling);
+		geometryShader.setState(
+			OtStateWriteRgb |
+			OtStateWriteA |
+			OtStateWriteZ |
+			OtStateDepthTestLess |
+			OtStateMsaa);
 	}
 
 	// set the model transform

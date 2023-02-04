@@ -22,12 +22,12 @@ target_include_directories(scene PUBLIC ${SCENE_INCLUDE_DIRS})
 
 add_dependencies(scene
 	gui
-#	tinygltf
+	assimp
 	tinyobjloader)
 
 target_link_libraries(scene PUBLIC
 	gui
-#	tinygltf
+	assimp
 	tinyobjloader)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${SCENE_INCLUDES} ${SCENE_SOURCES})

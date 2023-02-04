@@ -306,12 +306,12 @@ nlohmann::json OtSphereGeometryClass::serialize() {
 //
 
 void OtSphereGeometryClass::deserialize(nlohmann::json data) {
-	widthSegments = data["phiSegments"];
-	phiStart = data["phiStart"];
-	phiLength = data["phiLength"];
-	heightSegments = data["thetaSegments"];
-	thetaStart = data["thetaStart"];
-	thetaLength = data["thetaLength"];
+	widthSegments = data.value("phiSegments", 32);
+	heightSegments = data.value("heightSegments", 16);
+	phiStart = data.value("phiStart", 0.0f);
+	phiLength = data.value("phiLength", std::numbers::pi * 2.0f);
+	thetaStart = data.value("thetaStart", 0.0f);
+	thetaLength = data.value("thetaLength", std::numbers::pi);
 }
 
 

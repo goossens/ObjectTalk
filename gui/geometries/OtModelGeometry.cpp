@@ -134,6 +134,7 @@ bool OtModelGeometryClass::renderGUI() {
 
 nlohmann::json OtModelGeometryClass::serialize() {
 	auto data = nlohmann::json::object();
+	data["type"] = name;
 	return data;
 }
 

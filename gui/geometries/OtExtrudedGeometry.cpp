@@ -199,6 +199,7 @@ bool OtExtrudedGeometryClass::renderGUI() {
 
 nlohmann::json OtExtrudedGeometryClass::serialize() {
 	auto data = nlohmann::json::object();
+	data["type"] = name;
 	return data;
 }
 

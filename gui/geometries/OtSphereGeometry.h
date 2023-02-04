@@ -71,12 +71,12 @@ private:
 	void fillGeometry() override;
 
 	// attributes
-	float radius = 1.0;
+	float radius = 1.0f;
 	int widthSegments = 32;
 	int heightSegments = 16;
-	float phiStart = 0.0;
-	float phiLength = std::numbers::pi * 2.0;
-	float thetaStart = 0.0;
+	float phiStart = 0.0f;
+	float phiLength = std::numbers::pi * 2.0f;
+	float thetaStart = 0.0f;
 	float thetaLength = std::numbers::pi;
 	bool textureAbsolute = false;
 

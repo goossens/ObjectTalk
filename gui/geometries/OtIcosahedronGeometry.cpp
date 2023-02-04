@@ -69,6 +69,8 @@ bool OtIcosahedronGeometryClass::renderGUI() {
 
 nlohmann::json OtIcosahedronGeometryClass::serialize() {
 	auto data = nlohmann::json::object();
+	data["type"] = name;
+	OtPolyhedronGeometryClass::serialize(data);
 	return data;
 }
 
@@ -78,6 +80,7 @@ nlohmann::json OtIcosahedronGeometryClass::serialize() {
 //
 
 void OtIcosahedronGeometryClass::deserialize(nlohmann::json data) {
+	OtPolyhedronGeometryClass::deserialize(data);
 }
 
 

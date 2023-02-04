@@ -209,17 +209,26 @@ bool OtPolyhedronGeometryClass::renderGUI() {
 //	OtPolyhedronGeometryClass::serialize
 //
 
-nlohmann::json OtPolyhedronGeometryClass::serialize() {
-	auto data = nlohmann::json::object();
-	return data;
+void OtPolyhedronGeometryClass::serialize(nlohmann::json &data) {
+	data["radius"] = radius;
+	data["detail"] = detail;
 }
 
+nlohmann::json OtPolyhedronGeometryClass::serialize()
+{
+	auto data = nlohmann::json::object();
+	data["type"] = name;
+	serialize(data);
+	return data;
+}
 
 //
 //	OtPolyhedronGeometryClass::deserialize
 //
 
 void OtPolyhedronGeometryClass::deserialize(nlohmann::json data) {
+	radius = data.value("radius", 1.0f);
+	detail = data.value("detail", 1);
 }
 
 

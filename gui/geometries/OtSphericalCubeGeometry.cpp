@@ -68,6 +68,8 @@ bool OtSphericalCubeGeometryClass::renderGUI() {
 
 nlohmann::json OtSphericalCubeGeometryClass::serialize() {
 	auto data = nlohmann::json::object();
+	data["type"] = name;
+	OtPolyhedronGeometryClass::serialize(data);
 	return data;
 }
 
@@ -77,6 +79,7 @@ nlohmann::json OtSphericalCubeGeometryClass::serialize() {
 //
 
 void OtSphericalCubeGeometryClass::deserialize(nlohmann::json data) {
+	OtPolyhedronGeometryClass::deserialize(data);
 }
 
 

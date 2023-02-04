@@ -41,6 +41,7 @@ public:
 	bool renderGUI() override;
 
 	// (de)serialize geometry
+	void serialize(nlohmann::json& data);
 	nlohmann::json serialize() override;
 	void deserialize(nlohmann::json data) override;
 
@@ -74,6 +75,6 @@ private:
 	}
 
 	// attributes
-	float radius = 1.0;
+	float radius = 1.0f;
 	int detail = 0;
 };

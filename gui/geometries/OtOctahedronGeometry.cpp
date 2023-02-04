@@ -67,6 +67,8 @@ bool OtOctahedronGeometryClass::renderGUI() {
 
 nlohmann::json OtOctahedronGeometryClass::serialize() {
 	auto data = nlohmann::json::object();
+	data["type"] = name;
+	OtPolyhedronGeometryClass::serialize(data);
 	return data;
 }
 
@@ -76,6 +78,7 @@ nlohmann::json OtOctahedronGeometryClass::serialize() {
 //
 
 void OtOctahedronGeometryClass::deserialize(nlohmann::json data) {
+	OtPolyhedronGeometryClass::deserialize(data);
 }
 
 

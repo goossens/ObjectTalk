@@ -182,9 +182,9 @@ nlohmann::json OtCircleGeometryClass::serialize() {
 //
 
 void OtCircleGeometryClass::deserialize(nlohmann::json data) {
-	segments = data["segments"];
-	thetaStart = data["thetaStart"];
-	thetaLength = data["thetaLength"];
+	segments = data.value("segments", 16);
+	thetaStart = data.value("thetaStart", 0.0f);
+	thetaLength = data.value("thetaLength", std::numbers::pi * 2.0f);
 }
 
 

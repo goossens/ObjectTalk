@@ -61,8 +61,8 @@ private:
 	void fillGeometry() override;
 
 	// geometry
-	float radius = 1.0;
+	float radius = 1.0f;
 	int segments = 16;
-	float thetaStart = 0.0;
-	float thetaLength = std::numbers::pi * 2.0;
+	float thetaStart = 0.0f;
+	float thetaLength = std::numbers::pi * 2.0f;
 };

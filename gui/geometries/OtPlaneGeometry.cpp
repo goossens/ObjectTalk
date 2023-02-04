@@ -248,6 +248,11 @@ bool OtPlaneGeometryClass::renderGUI() {
 
 nlohmann::json OtPlaneGeometryClass::serialize() {
 	auto data = nlohmann::json::object();
+	data["type"] = name;
+	data["width"] = width;
+	data["height"] = height;
+	data["widthSegments"] = widthSegments;
+	data["heightSegments"] = heightSegments;
 	return data;
 }
 
@@ -257,6 +262,10 @@ nlohmann::json OtPlaneGeometryClass::serialize() {
 //
 
 void OtPlaneGeometryClass::deserialize(nlohmann::json data) {
+	width = data.value("width", 1.0f);
+	height = data.value("height", 1.0f);
+	widthSegments = data.value("widthSegments", 1);
+	heightSegments = data.value("heightSegments", 1);
 }
 
 

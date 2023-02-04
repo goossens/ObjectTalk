@@ -72,8 +72,8 @@ private:
 	void fillGeometry() override;
 
 	// properties
-	float width = 1.0;
-	float height = 1.0;
+	float width = 1.0f;
+	float height = 1.0f;
 	int widthSegments = 1;
 	int heightSegments = 1;
 

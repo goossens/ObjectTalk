@@ -290,6 +290,15 @@ bool OtCylinderGeometryClass::renderGUI() {
 
 nlohmann::json OtCylinderGeometryClass::serialize() {
 	auto data = nlohmann::json::object();
+	data["type"] = name;
+	data["topRadius"] = topRadius;
+	data["bottomRadius"] = bottomRadius;
+	data["height"] = height;
+	data["radialSegments"] = radialSegments;
+	data["heightSegments"] = heightSegments;
+	data["openEnded"] = openEnded;
+	data["thetaStart"] = thetaStart;
+	data["thetaLength"] = thetaLength;
 	return data;
 }
 
@@ -299,6 +308,14 @@ nlohmann::json OtCylinderGeometryClass::serialize() {
 //
 
 void OtCylinderGeometryClass::deserialize(nlohmann::json data) {
+	topRadius = data.value("topRadius", 1.0f);
+	bottomRadius = data.value("bottomRadius", 1.0f);
+	height = data.value("height", 1.0f);
+	radialSegments = data.value("radialSegments", 16);
+	heightSegments = data.value("heightSegments", 1);
+	openEnded = data.value("openEnded", false);
+	thetaStart = data.value("thetaStart", 0.0f);
+	thetaLength = data.value("thetaLength", std::numbers::pi * 2.0f);
 }
 
 

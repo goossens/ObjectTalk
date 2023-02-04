@@ -32,6 +32,7 @@ bool OtCustomGeometryClass::renderGUI() {
 
 nlohmann::json OtCustomGeometryClass::serialize() {
 	auto data = nlohmann::json::object();
+	data["type"] = name;
 	return data;
 }
 

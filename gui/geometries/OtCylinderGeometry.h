@@ -69,12 +69,12 @@ private:
 	void generateCap(bool top);
 
 	// geometry
-	float topRadius = 1.0;
-	float bottomRadius = 1.0;
-	float height = 1.0;
+	float topRadius = 1.0f;
+	float bottomRadius = 1.0f;
+	float height = 1.0f;
 	int radialSegments = 16;
 	int heightSegments = 1;
 	bool openEnded = false;
-	float thetaStart = 0.0;
-	float thetaLength = std::numbers::pi * 2.0;
+	float thetaStart = 0.0f;
+	float thetaLength = std::numbers::pi * 2.0f;
 };

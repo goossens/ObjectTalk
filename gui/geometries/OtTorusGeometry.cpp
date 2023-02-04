@@ -210,6 +210,15 @@ bool OtTorusGeometryClass::renderGUI() {
 
 nlohmann::json OtTorusGeometryClass::serialize() {
 	auto data = nlohmann::json::object();
+	data["type"] = name;
+	data["radius"] = radius;
+	data["tubeRadius"] = tubeRadius;
+	data["radialSegments"] = radialSegments;
+	data["tubularSegments"] = tubularSegments;
+	data["radialStart"] = radialStart;
+	data["radialLength"] = radialLength;
+	data["tubularStart"] = tubularStart;
+	data["tubularLength"] = tubularLength;
 	return data;
 }
 
@@ -219,6 +228,14 @@ nlohmann::json OtTorusGeometryClass::serialize() {
 //
 
 void OtTorusGeometryClass::deserialize(nlohmann::json data) {
+	radius = data.value("radius", 1.0f);
+	tubeRadius = data.value("tubeRadius", 0.4f);
+	radialSegments = data.value("radialSegments", 32);
+	tubularSegments = data.value("tubularSegments", 16);
+	radialStart = data.value("radialStart", 0.0f);
+	radialLength = data.value("phiSegments", std::numbers::pi * 2.0f);
+	tubularStart = data.value("phiSegments", 0.0f);
+	tubularLength = data.value("phiSegments", std::numbers::pi * 2.0f);
 }
 
 

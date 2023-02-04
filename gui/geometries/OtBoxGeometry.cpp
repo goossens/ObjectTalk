@@ -156,9 +156,9 @@ nlohmann::json OtBoxGeometryClass::serialize() {
 //
 
 void OtBoxGeometryClass::deserialize(nlohmann::json data) {
-	widthSegments = data["xsegments"];
-	heightSegments = data["ysegments"];
-	depthSegments = data["zsegments"];
+	widthSegments = data.value("xsegments", 1);
+	heightSegments = data.value("ysegments", 1);
+	depthSegments = data.value("zsegments", 1);
 }
 
 

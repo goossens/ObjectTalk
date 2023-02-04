@@ -65,12 +65,12 @@ private:
 	void fillGeometry() override;
 
 	// attributes
-	float radius = 1.0;
-	float tubeRadius = 0.4;
+	float radius = 1.0f;
+	float tubeRadius = 0.4f;
 	int radialSegments = 32;
 	int tubularSegments = 16;
-	float radialStart = 0.0;
-	float radialLength = std::numbers::pi * 2.0;
-	float tubularStart = 0.0;
-	float tubularLength = std::numbers::pi * 2.0;
+	float radialStart = 0.0f;
+	float radialLength = std::numbers::pi * 2.0f;
+	float tubularStart = 0.0f;
+	float tubularLength = std::numbers::pi * 2.0f;
 };

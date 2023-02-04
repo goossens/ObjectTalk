@@ -93,7 +93,7 @@ void main() {
 
 	// determine direct light radiance
 	float NdotL = max(dot(N, L), 0.0);
-	vec3 color = (vec3(0.03) * albedo * ao) + ((kD * albedo / PI + specular) * NdotL);
+	vec3 color = (vec3_splat(0.03) * albedo * ao) + ((kD * albedo / PI + specular) * NdotL);
 
 	// HDR tonemapping
 	color = color / (color + vec3_splat(1.0));

@@ -100,7 +100,7 @@ void OtMaterialComponent::deserialize(nlohmann::json data, std::filesystem::path
 static inline void updateTexture(OtTexture& texture, const std::filesystem::path& path, bool& flag) {
 	if (flag) {
 		if (std::filesystem::is_regular_file(path)) {
-			texture.loadFromFile(path);
+			texture.loadFromFile(path.string());
 
 		} else {
 			texture.clear();

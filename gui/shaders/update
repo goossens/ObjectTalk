@@ -77,14 +77,6 @@ function processShader() {
 		fragment) EXT=fs;;
 	esac
 
-	if [ $1 == "vertex" ]
-	then
-		PROFILE="vs"
-
-	else
-		PROFILE="ps"
-	fi
-
 	if [ $2 == "instancing" ]
 	then
 		PREFIX=${EXT}i
@@ -106,8 +98,8 @@ function processShader() {
 		fakePart ${PREFIX} dx11
 	fi
 
-	SHADER_BAT+="%HOMEDRIVE%%HOMEPATH%\\\\bin\\\\shaderc -f $4/$2.${EXT} -o $4/${PREFIX}_dx9.h -i include --type $1 --platform windows -p ${PROFILE}_3_0 -O 3 --bin2c Ot$3${UPREFIX}_dx9\n"
-	SHADER_BAT+="%HOMEDRIVE%%HOMEPATH%\\\\bin\\\\shaderc -f $4/$2.${EXT} -o $4/${PREFIX}_dx11.h -i include --type $1 --platform windows -p ${PROFILE}_5_0 -O 3 --bin2c Ot$3${UPREFIX}_dx11\n"
+	SHADER_BAT+="%HOMEDRIVE%%HOMEPATH%\\\\bin\\\\shaderc -f $4/$2.${EXT} -o $4/${PREFIX}_dx9.h -i include --type $1 --platform windows -p s_3_0 -O 3 --bin2c Ot$3${UPREFIX}_dx9\n"
+	SHADER_BAT+="%HOMEDRIVE%%HOMEPATH%\\\\bin\\\\shaderc -f $4/$2.${EXT} -o $4/${PREFIX}_dx11.h -i include --type $1 --platform windows -p s_5_0 -O 3 --bin2c Ot$3${UPREFIX}_dx11\n"
 }
 
 

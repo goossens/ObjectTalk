@@ -28,17 +28,8 @@ int OtSceneRenderer::render(OtScene2 scene, OtCamera2 c, int w, int h) {
 
 	// render all passes
 	renderGeometryPass(scene);
-	renderEnvironmentPass(scene);
-	renderCompositePass(scene);
+	renderBackgroundPass(scene);
 	renderLightingPass(scene);
 
 	return composite.getColorTextureIndex();
-}
-
-
-//
-//	OtSceneRenderer::renderCompositePass
-//
-
-void OtSceneRenderer::renderCompositePass(OtScene2 scene) {
 }

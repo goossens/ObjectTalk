@@ -20,6 +20,7 @@
 
 #include "OtTransformComponent.h"
 #include "OtCameraComponent.h"
+#include "OtBackgroundComponent.h"
 #include "OtSkyBoxComponent.h"
 #include "OtSkySphereComponent.h"
 #include "OtGeometryComponent.h"
@@ -34,6 +35,7 @@
 #define OtSceneComponents \
 	OtTransformComponent, \
 	OtCameraComponent, \
+	OtBackgroundComponent, \
 	OtSkyBoxComponent, \
 	OtSkySphereComponent, \
 	OtGeometryComponent, \

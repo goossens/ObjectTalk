@@ -16,10 +16,26 @@
 
 
 //
-//	OtSceneRenderer::renderEnvironmentPass
+//	OtSceneRenderer::renderBackgroundPass
 //
 
-void OtSceneRenderer::renderEnvironmentPass(OtScene2 scene) {
+void OtSceneRenderer::renderBackgroundPass(OtScene2 scene) {
+	// we can only have one background component
+	bool backgroundComponent = false;
+
+	// determine background color
+	glm::vec3 backgroundColor{0.0f};
+
+	scene->view<OtBackgroundComponent>().each([&](auto& component) {
+		if (!backgroundComponent) {
+			backgroundColor = component.color;
+			backgroundComponent = true;
+		}
+	});
+
+	glm::u8vec3 result = glm::u8vec3(glm::round(backgroundColor * 255.0f));
+	uint32_t clearColor = (result[0] << 24) | (result[1] << 16) | (result[2] << 8) | 255;
+
 	// get the camera's view matrix and decompose it
 	auto viewMatrix = camera->getViewMatrix();
 	glm::vec3 scale;
@@ -33,37 +49,35 @@ void OtSceneRenderer::renderEnvironmentPass(OtScene2 scene) {
 	glm::mat4 newViewMatrix = glm::toMat4(rotate);
 
 	// setup pass
-	environmentPass.reserveRenderingSlot();
-	environmentPass.setClear(true, false);
-	environmentPass.setRectangle(0, 0, width, height);
-	environmentPass.setFrameBuffer(composite);
-	environmentPass.setTransform(newViewMatrix, camera->getProjectionMatrix());
+	backgroundPass.reserveRenderingSlot();
+	backgroundPass.setClear(true, false, clearColor);
+	backgroundPass.setRectangle(0, 0, width, height);
+	backgroundPass.setFrameBuffer(composite);
+	backgroundPass.setTransform(newViewMatrix, camera->getProjectionMatrix());
 
-	// we can only have one environment component
-	bool environmentComponent = false;
+	// copy depth buffer from geometry gbuffer to the composite framebuffer
+	backgroundPass.blit(composite.getDepthTexture(), 0, 0, gbuffer.getDepthTexture());
 
 	// see if we have any sky boxes
 	scene->view<OtSkyBoxComponent>().each([&](auto& component) {
-		if (!environmentComponent) {
+		if (!backgroundComponent) {
 			if (component.isValid()) {
 				renderSkyBox(component);
-				environmentComponent = true;
+				backgroundComponent = true;
 			}
 		}
 	});
 
 	// see if we have any sky spheres
 	scene->view<OtSkySphereComponent>().each([&](auto& component) {
-		if (!environmentComponent) {
+		if (!backgroundComponent) {
 			if (component.isValid()) {
 				renderSkySphere(component);
-				environmentComponent = true;
+				backgroundComponent = true;
 			}
 		}
 	});
 }
-
-
 
 
 //
@@ -79,9 +93,9 @@ void OtSceneRenderer::renderSkyBox(OtSkyBoxComponent& component) {
 	unityBoxGeometry->submitTriangles();
 
 	// set the uniform values
-	glm::vec4* uniforms = environmentUniforms.getValues();
+	glm::vec4* uniforms = backgroundUniforms.getValues();
 	uniforms[0] = glm::vec4(component.brightness, component.gamma, 0.0f, 0.0f);
-	environmentUniforms.submit();
+	backgroundUniforms.submit();
 
 	// submit texture via sampler
 	skyMapSampler.submit(0, component.cubemap, "s_cubemap");
@@ -93,7 +107,7 @@ void OtSceneRenderer::renderSkyBox(OtSkyBoxComponent& component) {
 
 	// run the shader
 	skyBoxShader.setState(OtStateWriteRgb | OtStateWriteA);
-	environmentPass.runShader(skyBoxShader);
+	backgroundPass.runShader(skyBoxShader);
 }
 
 
@@ -110,9 +124,9 @@ void OtSceneRenderer::renderSkySphere(OtSkySphereComponent& component) {
 	unitySphereGeometry->submitTriangles();
 
 	// set the uniform values
-	glm::vec4* uniforms = environmentUniforms.getValues();
+	glm::vec4* uniforms = backgroundUniforms.getValues();
 	uniforms[0] = glm::vec4(component.brightness, component.gamma, 0.0f, 0.0f);
-	environmentUniforms.submit();
+	backgroundUniforms.submit();
 
 	// submit texture via sampler
 	skySphereSampler.submit(0, component.texture, "s_skySphereTexture");
@@ -124,5 +138,5 @@ void OtSceneRenderer::renderSkySphere(OtSkySphereComponent& component) {
 
 	// run the shader
 	skySphereShader.setState(OtStateWriteRgb | OtStateWriteA);
-	environmentPass.runShader(skySphereShader);
+	backgroundPass.runShader(skySphereShader);
 }

@@ -38,6 +38,13 @@ public:
 	void setTransform(const glm::mat4& view, const glm::mat4& projection);
 	void runShader(OtShader& shader);
 
+	void blit(
+		bgfx::TextureHandle dest,
+		uint16_t dx, uint16_t dy,
+		bgfx::TextureHandle src,
+		uint16_t sx=0, uint16_t sy=0,
+		uint16_t sw=UINT16_MAX, uint16_t sh=UINT16_MAX);
+
 private:
 	// properties
 	bgfx::ViewId view = 0;

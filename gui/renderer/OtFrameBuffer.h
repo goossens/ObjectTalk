@@ -35,10 +35,10 @@ public:
 
 	// constructors
 	OtFrameBuffer() = default;
-	OtFrameBuffer(int colorTextureType, int depthTextureType=noTexture, int antiAliasing=1);
+	OtFrameBuffer(int colorTextureType, int depthTextureType=noTexture, int antiAliasing=1, bool blitTarget=false);
 
 	// initialize framebuffer
-	void initialize(int colorTextureType, int depthTextureType=noTexture, int antiAliasing=1);
+	void initialize(int colorTextureType, int depthTextureType=noTexture, int antiAliasing=1, bool blitTarget=false);
 
 	// clear all resources
 	void clear();
@@ -73,6 +73,7 @@ private:
 	int colorTextureType = noTexture;
 	int depthTextureType = noTexture;
 	int antiAliasing = 1;
+	bool blitTarget=false;
 
 	// dimensions of framebuffer;
 	int width = -1;

@@ -131,3 +131,16 @@ void OtPass::runShader(OtShader &shader) {
 
 	shader.submit(view);
 }
+
+
+//
+//	OtPass::blit
+//
+
+void OtPass::blit(bgfx::TextureHandle dest, uint16_t dx, uint16_t dy, bgfx::TextureHandle src, uint16_t sx, uint16_t sy, uint16_t sw, uint16_t sh) {
+	if (!view) {
+		OtExcept("Internal error: rendering slot for pass not reserved");
+	}
+
+	bgfx::blit(view, dest, dx, dy, src, sx, sy, sw, sh);
+}

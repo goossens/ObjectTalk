@@ -42,10 +42,8 @@ private:
 	// render passes
 	// void renderShadowPass(OtScene2 scene);
 	void renderGeometryPass(OtScene2 scene);
+	void renderBackgroundPass(OtScene2 scene);
 	void renderLightingPass(OtScene2 scene);
-	// void renderPostProcessingPass(OtScene2 scene);
-	void renderEnvironmentPass(OtScene2 scene);
-	void renderCompositePass(OtScene2 scene);
 
 	// render entitities
 	void renderSkyBox(OtSkyBoxComponent& component);
@@ -58,16 +56,8 @@ private:
 	// various passes
 	OtPass shadowPass;
 	OtPass geometryPass;
+	OtPass backgroundPass;
 	OtPass lightingPass;
-	OtPass postProcessingPasses[4];
-	OtPass environmentPass;
-	OtPass compositePass;
-
-	// graphical resources
-	// CSM
-	// gbuffer
-	// light buffer
-	// post process buffers
 
 	// image dimensions
 	int width;
@@ -75,7 +65,7 @@ private:
 
 	// framebuffers
 	OtGbuffer gbuffer;
-	OtFrameBuffer composite{OtFrameBuffer::rgba8Texture};
+	OtFrameBuffer composite{OtFrameBuffer::rgba8Texture, OtFrameBuffer::dFloatTexture, 1, true};
 
 	// standard geometries
 	OtBoxGeometry unityBoxGeometry;
@@ -83,7 +73,7 @@ private:
 
 	// uniforms
 	OtUniformVec4 materialUniforms{"u_material", 3};
-	OtUniformVec4 environmentUniforms{"u_environment", 1};
+	OtUniformVec4 backgroundUniforms{"u_background", 1};
 	OtUniformVec4 lightingUniforms{"u_lighting", 3};
 
 	// samplers

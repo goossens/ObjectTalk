@@ -18,8 +18,8 @@
 //	OtFrameBuffer:OtFrameBuffer
 //
 
-OtFrameBuffer::OtFrameBuffer(int colorTextureType, int depthTextureType, int antiAliasing) {
-	initialize(colorTextureType, depthTextureType, antiAliasing);
+OtFrameBuffer::OtFrameBuffer(int colorTextureType, int depthTextureType, int antiAliasing, bool blitTarget) {
+	initialize(colorTextureType, depthTextureType, antiAliasing, blitTarget);
 }
 
 
@@ -27,11 +27,12 @@ OtFrameBuffer::OtFrameBuffer(int colorTextureType, int depthTextureType, int ant
 //	OtFrameBuffer::initialize
 //
 
-void OtFrameBuffer::initialize(int c, int d, int a) {
+void OtFrameBuffer::initialize(int c, int d, int a, bool b) {
 	clear();
 	colorTextureType = c;
 	depthTextureType = d;
 	antiAliasing = a;
+	blitTarget = b;
 }
 
 
@@ -86,14 +87,15 @@ void OtFrameBuffer::update(int w, int h) {
 		clear();
 
 		// create new textures
-		auto flags = computeTextureRtMsaaFlag(antiAliasing) | BGFX_SAMPLER_COMPARE_LEQUAL | BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP;
+		uint64_t flags = computeTextureRtMsaaFlag(antiAliasing) | BGFX_SAMPLER_COMPARE_LEQUAL | BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP;
+		uint64_t blit = blitTarget ? BGFX_TEXTURE_BLIT_DST : 0;
 
 		if (colorTextureType != noTexture) {
 			colorTexture = bgfx::createTexture2D(w, h, false, 1, (bgfx::TextureFormat::Enum) colorTextureType, flags);
 		}
 
 		if (depthTextureType != noTexture) {
-			depthTexture = bgfx::createTexture2D(w, h, false, 1, (bgfx::TextureFormat::Enum) depthTextureType, flags);
+			depthTexture = bgfx::createTexture2D(w, h, false, 1, (bgfx::TextureFormat::Enum) depthTextureType, flags | blit);
 		}
 
 		// create framebuffer

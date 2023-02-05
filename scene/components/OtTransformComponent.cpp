@@ -25,8 +25,10 @@
 
 glm::mat4 OtTransformComponent::getTransform() const
 {
+	auto rot = glm::radians(rotation);
+
 	return glm::translate(glm::mat4(1.0f), translation) *
-		glm::toMat4(glm::quat(rotation)) *
+		glm::toMat4(glm::quat(rot)) *
 		glm::scale(glm::mat4(1.0f), scale);
 }
 
@@ -50,9 +52,7 @@ bool OtTransformComponent::renderGUI() {
 	// render transformation editor
 	bool changed = false;
 	changed |= OtUiEditVec3("Translate", translation, 0.1f, 0.0f, 0.0f, "%.2f");
-	glm::vec3 rot = glm::degrees(rotation);
-	changed |= OtUiEditVec3("Rotate", rot, 0.1f, 0.0f, 0.0f, "%.2f");
-	rotation = glm::radians(rot);
+	changed |= OtUiEditVec3("Rotate", rotation, 1.0f, 0.0f, 0.0f, "%.2f");
 	changed |= OtUiEditVec3("Scale", scale, 0.1f, 0.0f, 0.0f, "%.2f");
 	return changed;
 }

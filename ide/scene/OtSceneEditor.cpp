@@ -328,6 +328,7 @@ void OtSceneEditorClass::renderViewPort() {
 
 	// create the window
 	ImGui::BeginChild("viewport", ImVec2(), true);
+
 	auto size = ImGui::GetContentRegionAvail();
 
 	// update the camera and render the scene
@@ -340,6 +341,50 @@ void OtSceneEditorClass::renderViewPort() {
 	// handle mouse and keyboard interactions
 	if (ImGui::IsItemHovered() && ImGui::IsKeyDown(ImGuiMod_Alt)) {
 		editorCamera->handleMouseKeyboard();
+	}
+
+	// only show guizmo if its visibility in on and the selected entiy has a transform
+	if (guizmoVisible && scene->isValidEntity(selectedEntity) && scene->hasComponent<OtTransformComponent>(selectedEntity)) {
+		// configure the guizmo
+		ImGuizmo::SetOrthographic(false);
+		ImGuizmo::SetDrawlist(ImGui::GetWindowDrawList());
+
+		ImGuizmo::SetRect(
+			ImGui::GetWindowPos().x,
+			ImGui::GetWindowPos().y,
+			ImGui::GetWindowWidth(),
+			ImGui::GetWindowHeight());
+
+		// get camera information
+		glm::mat4 cameraView = editorCamera->getViewMatrix();
+		glm::mat4 cameraProjection = editorCamera->getProjectionMatrix();
+
+		// get the target transform
+		auto& component = scene->getComponent<OtTransformComponent>(selectedEntity);
+		auto transform = component.getTransform();
+
+		// show the guizmo
+		ImGuizmo::Manipulate(
+			glm::value_ptr(cameraView),
+			glm::value_ptr(cameraProjection),
+			guizmoOperation,
+			ImGuizmo::LOCAL,
+			glm::value_ptr(transform),
+			nullptr,
+			guizmoSnapping ? glm::value_ptr(snap) : nullptr);
+
+		if (ImGuizmo::IsUsing()) {
+			auto oldValue = component.serialize(nullptr).dump();
+
+			ImGuizmo::DecomposeMatrixToComponents(
+				glm::value_ptr(transform),
+				glm::value_ptr(component.translation),
+				glm::value_ptr(component.rotation),
+				glm::value_ptr(component.scale));
+
+			auto newValue = component.serialize(nullptr).dump();
+			nextTask = std::make_shared<OtEditComponentTask<OtTransformComponent>>(scene, selectedEntity, oldValue, newValue);
+		}
 	}
 
 	ImGui::EndChild();

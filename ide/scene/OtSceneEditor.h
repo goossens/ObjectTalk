@@ -123,5 +123,5 @@ private:
 	ImGuizmo::OPERATION guizmoOperation = ImGuizmo::TRANSLATE;
 
 	bool guizmoSnapping = false;
-	glm::vec3 snap = glm::vec3(1.0f);
+	glm::vec3 snap = glm::vec3(0.1f);
 };

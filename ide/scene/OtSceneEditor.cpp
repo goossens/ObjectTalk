@@ -20,6 +20,7 @@
 #include "ImGuizmo.h"
 #include "nlohmann/json.hpp"
 
+#include "OtGpu.h"
 #include "OtUi.h"
 
 #include "OtSceneEditor.h"
@@ -336,7 +337,12 @@ void OtSceneEditorClass::renderViewPort() {
 	auto textureIndex = renderer.render(scene, editorCamera, size.x, size.y);
 
 	// show it on the screen
-	ImGui::Image((void*)(intptr_t) textureIndex, size);
+	if (OtGpuHasOriginBottomLeft()) {
+		ImGui::Image((void*)(intptr_t) textureIndex, size, ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
+
+	} else {
+		ImGui::Image((void*)(intptr_t) textureIndex, size);
+	}
 
 	// handle mouse and keyboard interactions
 	if (ImGui::IsItemHovered() && ImGui::IsKeyDown(ImGuiMod_Alt)) {

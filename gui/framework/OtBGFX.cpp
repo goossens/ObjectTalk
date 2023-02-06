@@ -37,7 +37,7 @@ void OtFrameworkClass::initBGFX() {
 	init.type = bgfx::RendererType::Direct3D12;
 
 #else
-	init.type = bgfx::RendererType::OpenGLES;
+	init.type = bgfx::RendererType::OpenGL;
 #endif
 
 	init.platformData.nwh = nativeDisplayHandle;

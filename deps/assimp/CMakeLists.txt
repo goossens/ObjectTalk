@@ -26,4 +26,4 @@ if(NOT assimp_POPULATED)
 	add_subdirectory(${assimp_SOURCE_DIR} ${assimp_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif()
 
-set_target_properties(assimp PROPERTIES FOLDER deps/assimp)
+set_target_properties(assimp zlibstatic PROPERTIES FOLDER deps)

@@ -127,9 +127,9 @@ public:
 	}
 
 	// get a view
-	template<typename T>
+	template<typename... T>
 	auto view() {
-		return registry.view<T>();
+		return registry.view<T...>();
 	}
 
 	// translate entity <-> UUID

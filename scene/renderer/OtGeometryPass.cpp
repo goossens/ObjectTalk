@@ -26,11 +26,9 @@ void OtSceneRenderer::renderGeometryPass(OtScene2 scene) {
 	geometryPass.setFrameBuffer(gbuffer);
 	geometryPass.setTransform(camera->getViewMatrix(), camera->getProjectionMatrix());
 
-	// render all geometries
-	for (auto entity : scene->view<OtGeometryComponent>()) {
-		if (scene->hasComponent<OtTransformComponent>(entity) && scene->hasComponent<OtMaterialComponent>(entity)) {
-			renderGeometry(scene, entity);
-		}
+	// render all geometries (that have transform and material components)
+	for (auto entity : scene->view<OtGeometryComponent, OtTransformComponent, OtMaterialComponent>()) {
+		renderGeometry(scene, entity);
 	}
 }
 

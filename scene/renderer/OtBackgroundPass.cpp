@@ -26,12 +26,12 @@ void OtSceneRenderer::renderBackgroundPass(OtScene2 scene) {
 	// determine background color
 	glm::vec3 backgroundColor{0.0f};
 
-	scene->view<OtBackgroundComponent>().each([&](auto& component) {
+	for (auto [entity, component] : scene->view<OtBackgroundComponent>().each()) {
 		if (!backgroundComponent) {
 			backgroundColor = component.color;
 			backgroundComponent = true;
 		}
-	});
+	}
 
 	glm::u8vec3 result = glm::u8vec3(glm::round(backgroundColor * 255.0f));
 	uint32_t clearColor = (result[0] << 24) | (result[1] << 16) | (result[2] << 8) | 255;
@@ -59,24 +59,24 @@ void OtSceneRenderer::renderBackgroundPass(OtScene2 scene) {
 	backgroundPass.blit(composite.getDepthTexture(), 0, 0, gbuffer.getDepthTexture());
 
 	// see if we have any sky boxes
-	scene->view<OtSkyBoxComponent>().each([&](auto& component) {
+	for (auto [entity, component] : scene->view<OtSkyBoxComponent>().each()) {
 		if (!backgroundComponent) {
 			if (component.isValid()) {
 				renderSkyBox(component);
 				backgroundComponent = true;
 			}
 		}
-	});
+	};
 
 	// see if we have any sky spheres
-	scene->view<OtSkySphereComponent>().each([&](auto& component) {
+	for (auto [entity, component] : scene->view<OtSkySphereComponent>().each()) {
 		if (!backgroundComponent) {
 			if (component.isValid()) {
 				renderSkySphere(component);
 				backgroundComponent = true;
 			}
 		}
-	});
+	};
 }
 
 

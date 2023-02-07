@@ -143,6 +143,23 @@ void OtSceneEditorClass::render() {
 
 
 //
+//	OtSceneEditorClass::setSceneCamera
+//
+
+void OtSceneEditorClass::setSceneCamera(int cameraNumber) {
+	int seqno = 1;
+
+	for (auto [entity, component] : scene->view<OtCameraComponent>().each()) {
+		if (seqno == cameraNumber) {
+			camera = component.camera;
+		}
+
+		seqno++;
+	}
+}
+
+
+//
 //	OtSceneEditorClass::renderMenu
 //
 
@@ -195,6 +212,33 @@ void OtSceneEditorClass::renderMenu() {
 		}
 
 		if (ImGui::BeginMenu("View")) {
+			if (ImGui::BeginMenu("Camera")) {
+				bool cameraStillValid = false;
+
+				for (auto [entity, component] : scene->view<OtCameraComponent>().each()) {
+					if (camera == component.camera) {
+						cameraStillValid = true;
+					}
+				}
+
+				if (!cameraStillValid) {
+					camera = editorCamera;
+				}
+
+				if (ImGui::RadioButton("Editor Camera", camera == editorCamera)) {
+					camera = editorCamera;
+				}
+
+				for (auto [entity, component] : scene->view<OtCameraComponent>().each()) {
+					if (ImGui::RadioButton(scene->getTag(entity).c_str(), camera == component.camera)) {
+						camera = component.camera;
+					}
+				}
+
+				ImGui::EndMenu();
+			}
+
+			ImGui::Separator();
 			ImGui::MenuItem("Gizmo", SHORTCUT "G", &guizmoVisible);
 
 			if (ImGui::BeginMenu("Gizmo Mode", guizmoVisible)) {
@@ -238,6 +282,7 @@ void OtSceneEditorClass::renderMenu() {
 		ImGui::EndMenuBar();
 	}
 }
+
 
 //
 //	OtSceneEditorClass::renderPanels
@@ -325,6 +370,7 @@ void OtSceneEditorClass::renderViewPort() {
 	// create camera (if required)
 	if (!editorCamera) {
 		editorCamera = OtOrbitalCameraClass::create();
+		camera = editorCamera;
 	}
 
 	// create the window
@@ -333,8 +379,8 @@ void OtSceneEditorClass::renderViewPort() {
 	auto size = ImGui::GetContentRegionAvail();
 
 	// update the camera and render the scene
-	editorCamera->setAspectRatio(size.x / size.y);
-	auto textureIndex = renderer.render(scene, editorCamera, size.x, size.y);
+	camera->setAspectRatio(size.x / size.y);
+	auto textureIndex = renderer.render(scene, camera, size.x, size.y);
 
 	// show it on the screen
 	if (OtGpuHasOriginBottomLeft()) {
@@ -346,7 +392,7 @@ void OtSceneEditorClass::renderViewPort() {
 
 	// handle mouse and keyboard interactions
 	if (ImGui::IsItemHovered() && ImGui::IsKeyDown(ImGuiMod_Alt)) {
-		editorCamera->handleMouseKeyboard();
+		camera->handleMouseKeyboard();
 	}
 
 	// only show guizmo if its visibility in on and the selected entiy has a transform
@@ -362,8 +408,8 @@ void OtSceneEditorClass::renderViewPort() {
 			ImGui::GetWindowHeight());
 
 		// get camera information
-		glm::mat4 cameraView = editorCamera->getViewMatrix();
-		glm::mat4 cameraProjection = editorCamera->getProjectionMatrix();
+		glm::mat4 cameraView = camera->getViewMatrix();
+		glm::mat4 cameraProjection = camera->getProjectionMatrix();
 
 		// get the target transform
 		auto& component = scene->getComponent<OtTransformComponent>(selectedEntity);
@@ -755,6 +801,42 @@ void OtSceneEditorClass::handleShortcuts() {
 
 		} else if (ImGui::IsKeyPressed(ImGuiKey_S, false)) {
 			guizmoOperation = ImGuizmo::SCALE;
+		}
+
+	// handle camera switching shortcuts
+	} else if (alt) {
+		if (ImGui::IsKeyPressed(ImGuiKey_0, false)) {
+			camera = editorCamera;
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_1, false)) {
+			setSceneCamera(1);
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_1, false)) {
+			setSceneCamera(1);
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_2, false)) {
+			setSceneCamera(2);
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_3, false)) {
+			setSceneCamera(3);
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_4, false)) {
+			setSceneCamera(4);
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_5, false)) {
+			setSceneCamera(5);
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_6, false)) {
+			setSceneCamera(6);
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_7, false)) {
+			setSceneCamera(7);
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_8, false)) {
+			setSceneCamera(8);
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_9, false)) {
+			setSceneCamera(9);
 		}
 	}
 }

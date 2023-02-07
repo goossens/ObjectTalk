@@ -16,16 +16,18 @@
 
 #include "nlohmann/json_fwd.hpp"
 
+#include "OtObject.h"
+
 #include "OtEcs.h"
 
-#include "OtTransformComponent.h"
-#include "OtCameraComponent.h"
 #include "OtBackgroundComponent.h"
-#include "OtSkyBoxComponent.h"
-#include "OtSkySphereComponent.h"
+#include "OtCameraComponent.h"
 #include "OtGeometryComponent.h"
 #include "OtMaterialComponent.h"
-#include "OtWorld.h"
+#include "OtSkyBoxComponent.h"
+#include "OtPostProcessingComponent.h"
+#include "OtSkySphereComponent.h"
+#include "OtTransformComponent.h"
 
 
 //
@@ -34,12 +36,13 @@
 
 #define OtSceneComponents \
 	OtTransformComponent, \
+	OtGeometryComponent, \
+	OtMaterialComponent, \
 	OtCameraComponent, \
 	OtBackgroundComponent, \
 	OtSkyBoxComponent, \
 	OtSkySphereComponent, \
-	OtGeometryComponent, \
-	OtMaterialComponent
+	OtPostProcessingComponent
 
 
 //
@@ -49,7 +52,7 @@
 class OtScene2Class;
 typedef std::shared_ptr<OtScene2Class> OtScene2;
 
-class OtScene2Class : public OtWorldClass, public OtEcs {
+class OtScene2Class : public OtObjectClass, public OtEcs {
 public:
 	// (de)serialize from/to string
 	std::string serialize(int indent=-1, char character=' ', std::filesystem::path* basedir=nullptr);

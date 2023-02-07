@@ -33,7 +33,7 @@ public:
 
 	// setters
 	void setFov(float f) { fov = f; updateProjectionMatrix(); }
-	void setAspectRatio(float a) { aspectRatio = a; updateProjectionMatrix(); }
+	void setAspectRatio(float a) override { aspectRatio = a; updateProjectionMatrix(); }
 	void setNearFar(float n, float f) { nearPlane = n; farPlane = f; updateProjectionMatrix(); }
 
 	// getters

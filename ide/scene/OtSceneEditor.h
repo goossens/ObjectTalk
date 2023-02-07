@@ -56,6 +56,9 @@ public:
 	static OtSceneEditor create(const std::filesystem::path& path);
 
 private:
+	// switch scene camera
+	void setSceneCamera(int cameraNumber);
+
 	// render the parts
 	void renderMenu();
 	void renderPanels();
@@ -117,6 +120,8 @@ private:
 	float maxEntityPanelHeight = -1.0f;
 	float buttonSize;
 
+	// cameras
+	OtCamera2 camera;
 	OtOrbitalCamera editorCamera;
 
 	bool guizmoVisible = false;

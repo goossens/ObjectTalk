@@ -35,7 +35,7 @@ void main() {
 	vec4 albedo = u_hasAlbedoTexture ? texture2D(s_geometryAlbedoTexture, v_texcoord0) : u_albedo;
 
 	// discard pixel if too transparent
-	if (albedo.w < 0.1) {
+	if (albedo.w < 0.05) {
 		discard;
 	}
 

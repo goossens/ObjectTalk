@@ -63,7 +63,9 @@ public:
 		return getComponent<OtCoreComponent>(entity).firstChild != OtEntityNull;
 	}
 
-	// access neighbors in parent-child hierarchy
+	// get core information about entity
+	uint32_t getUuid(OtEntity entity) { return getComponent<OtCoreComponent>(entity).uuid; }
+	std::string getTag(OtEntity entity) { return getComponent<OtCoreComponent>(entity).tag; }
 	OtEntity getParent(OtEntity entity) { return getComponent<OtCoreComponent>(entity).parent; }
 	OtEntity getFirstChild(OtEntity entity) { return getComponent<OtCoreComponent>(entity).firstChild; }
 	OtEntity getLastChild(OtEntity entity) { return getComponent<OtCoreComponent>(entity).lastChild; }

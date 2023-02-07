@@ -13,10 +13,15 @@ $input v_texcoord0
 const float PI = 3.14159265359;
 
 // uniforms
-uniform vec4 u_lighting[3];
+uniform vec4 u_lighting[5];
 #define u_cameraPosition u_lighting[0].xyz
+#define u_cameraExposure u_lighting[0].w
 #define u_directionalLightDirection u_lighting[1].xyz
 #define u_directionalLightColor u_lighting[2].xyz
+#define u_fogEnabled bool(u_lighting[3].x)
+#define u_fogNear u_lighting[3].y
+#define u_fogFar u_lighting[3].z
+#define u_fogColor u_lighting[4].rgb
 
 // texture samplers
 SAMPLER2D(s_lightingAlbedoTexture, 0);
@@ -52,12 +57,22 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0) {
 	return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }
 
+float getFogFactor(float distance) {
+	if (u_fogEnabled) {
+		float fogFactor = (u_fogFar - distance) / (u_fogFar - u_fogNear);
+		return clamp(fogFactor, 0.0, 1.0);
+
+	} else {
+		return 1.0;
+	}
+}
+
 // main function
 void main() {
 	// discard pixel if too transparent
 	vec4 albedoSample = texture2D(s_lightingAlbedoTexture, v_texcoord0);
 
-	if (albedoSample.a < 0.1) {
+	if (albedoSample.a < 0.05) {
 		discard;
 	}
 
@@ -95,11 +110,17 @@ void main() {
 	float NdotL = max(dot(N, L), 0.0);
 	vec3 color = (vec3_splat(0.03) * albedo * ao) + ((kD * albedo / PI + specular) * NdotL);
 
+	// apply fog
+	color = mix(u_fogColor, color, getFogFactor(distance(u_cameraPosition, pos)));
+
 	// HDR tonemapping
 	color = color / (color + vec3_splat(1.0));
 
 	// gamma correction
 	color = pow(color, vec3_splat(1.0 / 2.2));
+
+	// apply exposure
+	color *= u_cameraExposure;
 
 	// set final color
 	gl_FragColor = vec4(color, albedoSample.a);

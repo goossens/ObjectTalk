@@ -43,6 +43,8 @@ public:
 	glm::mat4& getViewProjectionMatrix() { return viewProjMatrix; }
 	OtFrustum& getFrustum() { return frustum; }
 
+	virtual void setAspectRatio(float aspectRatio) {}
+
 	// GUI to change camera properties
 	virtual bool renderGUI();
 

@@ -28,7 +28,8 @@ public:
 		noTexture = 0,
 		rgba8Texture = bgfx::TextureFormat::RGBA8,
 		rgba16Texture = bgfx::TextureFormat::RGBA16,
-		rgbaFloatTexture = bgfx::TextureFormat::RGBA32F,
+		rgbaFloat16Texture = bgfx::TextureFormat::RGBA16F,
+		rgbaFloat32Texture = bgfx::TextureFormat::RGBA32F,
 		d16Texture = bgfx::TextureFormat::D16,
 		dFloatTexture = bgfx::TextureFormat::D32F
 	};

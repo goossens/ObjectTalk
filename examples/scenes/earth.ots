@@ -1,0 +1,197 @@
+[
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Camera",
+				"uuid": 182459982
+			},
+			{
+				"camera": {
+					"distance": 3.0,
+					"far": 10.0,
+					"fov": 60.0,
+					"near": 0.10000000149011612,
+					"pitch": 34.95009994506836,
+					"target": [
+						0.0,
+						0.0,
+						0.0
+					],
+					"type": "Orbital Perspective",
+					"up": [
+						0.0,
+						1.0,
+						0.0
+					],
+					"yaw": -11.700021743774414
+				},
+				"component": "Camera"
+			},
+			{
+				"Exposure": 1.2000000476837158,
+				"bloomIntensity": 0.8999999761581421,
+				"component": "Post Processing",
+				"fogColor": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"fogEnabled": false,
+				"fogFar": 5.5,
+				"fogNear": 4.0
+			}
+		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Stars",
+				"uuid": 2003886846
+			},
+			{
+				"back": "assets/space/back.jpg",
+				"bottom": "assets/space/bottom.jpg",
+				"brightness": 0.5,
+				"component": "Sky Box",
+				"front": "assets/space/front.jpg",
+				"gamma": 2.200000047683716,
+				"left": "assets/space/left.jpg",
+				"right": "assets/space/right.jpg",
+				"top": "assets/space/top.jpg"
+			}
+		]
+	},
+	{
+		"children": [
+			{
+				"children": [],
+				"components": [
+					{
+						"component": "Core",
+						"tag": "Grid",
+						"uuid": 3890719025
+					},
+					{
+						"component": "Transform",
+						"rotation": [
+							0.0,
+							0.0,
+							0.0
+						],
+						"scale": [
+							0.9900000095367432,
+							0.9900000095367432,
+							0.9900000095367432
+						],
+						"translation": [
+							0.0,
+							0.0,
+							0.0
+						]
+					},
+					{
+						"component": "Geometry",
+						"cullback": false,
+						"geometry": {
+							"phiLength": 6.2831854820251465,
+							"phiSegments": 50,
+							"phiStart": 0.0,
+							"thetaLength": 3.1415927410125732,
+							"thetaSegments": 16,
+							"thetaStart": 0.0,
+							"type": "Sphere"
+						},
+						"wireframe": true
+					},
+					{
+						"albedo": [
+							0.1568627506494522,
+							0.1568627506494522,
+							0.1568627506494522,
+							1.0
+						],
+						"albedoTexture": "",
+						"ao": 1.0,
+						"aoTexture": "",
+						"component": "Material",
+						"metallic": 0.5,
+						"metallicTexture": "",
+						"normalTexture": "",
+						"roughness": 0.5,
+						"roughnessTexture": ""
+					}
+				]
+			},
+			{
+				"children": [],
+				"components": [
+					{
+						"component": "Core",
+						"tag": "Ground",
+						"uuid": 1076804477
+					},
+					{
+						"component": "Transform",
+						"rotation": [
+							0.0,
+							0.0,
+							0.0
+						],
+						"scale": [
+							1.0,
+							1.0,
+							1.0
+						],
+						"translation": [
+							0.0,
+							0.0,
+							0.0
+						]
+					},
+					{
+						"component": "Geometry",
+						"cullback": true,
+						"geometry": {
+							"phiLength": 6.2831854820251465,
+							"phiSegments": 50,
+							"phiStart": 0.0,
+							"thetaLength": 3.1415927410125732,
+							"thetaSegments": 16,
+							"thetaStart": 0.0,
+							"type": "Sphere"
+						},
+						"wireframe": false
+					},
+					{
+						"albedo": [
+							1.0,
+							1.0,
+							1.0,
+							1.0
+						],
+						"albedoTexture": "assets/earth.png",
+						"ao": 1.0,
+						"aoTexture": "",
+						"component": "Material",
+						"metallic": 0.23000000417232513,
+						"metallicTexture": "",
+						"normalTexture": "",
+						"roughness": 0.4000000059604645,
+						"roughnessTexture": ""
+					}
+				]
+			}
+		],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Earth",
+				"uuid": 3968805914
+			}
+		]
+	}
+]

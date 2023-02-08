@@ -57,10 +57,12 @@ nlohmann::json OtSkySphereComponent::serialize(std::filesystem::path* basedir) {
 //
 
 void OtSkySphereComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+	auto oldImage = image;
 	image = OtComponentGetAbsolutePath(data, "image", basedir);
+	update = image != oldImage;
+
 	brightness = data.value("brightness", 1.0f);
-	gamma = data.value("gamma", 1.0f);
-	update = true;
+	gamma = data.value("gamma", 2.2f);
 }
 
 

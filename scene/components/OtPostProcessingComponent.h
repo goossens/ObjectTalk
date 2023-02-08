@@ -36,6 +36,7 @@ public:
 	static constexpr char const* name = "Post Processing";
 
 	// stored properties
+	float bloomIntensity = 0.8f;
 	float exposure = 1.0f;
 	bool fogEnabled = false;
 	glm::vec3 fogColor{1.0f};

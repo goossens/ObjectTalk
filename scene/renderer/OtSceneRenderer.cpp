@@ -22,14 +22,11 @@ int OtSceneRenderer::render(OtScene2 scene, OtCamera2 c, int w, int h) {
 	width = w;
 	height = h;
 
-	// update buffers
-	gbuffer.update(width, height);
-	composite.update(width, height);
-
 	// render all passes
 	renderGeometryPass(scene);
 	renderBackgroundPass(scene);
 	renderLightingPass(scene);
+	renderPostProcessingPass(scene);
 
-	return composite.getColorTextureIndex();
+	return postProcessBuffer.getColorTextureIndex();
 }

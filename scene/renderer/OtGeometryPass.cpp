@@ -19,16 +19,20 @@
 //
 
 void OtSceneRenderer::renderGeometryPass(OtScene2 scene) {
+	// update gbuffer
+	gbuffer.update(width, height);
+
 	// setup pass
-	geometryPass.reserveRenderingSlot();
-	geometryPass.setClear(true, true, 0);
-	geometryPass.setRectangle(0, 0, width, height);
-	geometryPass.setFrameBuffer(gbuffer);
-	geometryPass.setTransform(camera->getViewMatrix(), camera->getProjectionMatrix());
+	OtPass pass;
+	pass.reserveRenderingSlot();
+	pass.setClear(true, true, 0);
+	pass.setRectangle(0, 0, width, height);
+	pass.setFrameBuffer(gbuffer);
+	pass.setTransform(camera->getViewMatrix(), camera->getProjectionMatrix());
 
 	// render all geometries (that have transform and material components)
 	for (auto entity : scene->view<OtGeometryComponent, OtTransformComponent, OtMaterialComponent>()) {
-		renderGeometry(scene, entity);
+		renderGeometry(pass, scene, entity);
 	}
 }
 
@@ -39,7 +43,7 @@ void OtSceneRenderer::renderGeometryPass(OtScene2 scene) {
 //	OtSceneRenderer::renderGeometry
 //
 
-void OtSceneRenderer::renderGeometry(OtScene2 scene, OtEntity entity) {
+void OtSceneRenderer::renderGeometry(OtPass& pass, OtScene2 scene, OtEntity entity) {
 	// get all relevant components
 	auto& geometry = scene->getComponent<OtGeometryComponent>(entity);
 	auto& transform = scene->getComponent<OtTransformComponent>(entity);
@@ -79,11 +83,6 @@ void OtSceneRenderer::renderGeometry(OtScene2 scene, OtEntity entity) {
 	geometryAoSampler.submit(3, material.aoTexture);
 	geometryNormalSampler.submit(4, material.normalTexture);
 
-	// load the shader (if required)
-	if (!geometryShader.isValid()) {
-		geometryShader.initialize("OtGeometryVS", "OtGeometryFS");
-	}
-
 	// set the shader state
 	if (geometry.wireframe) {
 		geometryShader.setState(
@@ -114,7 +113,7 @@ void OtSceneRenderer::renderGeometry(OtScene2 scene, OtEntity entity) {
 	geometryShader.setTransform(matrix);
 
 	// run the shader
-	geometryPass.runShader(geometryShader);
+	pass.runShader(geometryShader);
 }
 
 

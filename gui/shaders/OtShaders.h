@@ -14,6 +14,8 @@
 #include "OtBlendMappedShader.h"
 #include "OtBlitShader.h"
 #include "OtBloomShader.h"
+#include "OtBloomDownSampleShader.h"
+#include "OtBloomUpSampleShader.h"
 #include "OtBlurShader.h"
 #include "OtColoredShader.h"
 #include "OtDebugShader.h"
@@ -21,9 +23,11 @@
 #include "OtGeometryShader.h"
 #include "OtImGuiShader.h"
 #include "OtLightingShader.h"
+#include "OtPostProcessShader.h"
 #include "OtShadowShader.h"
 #include "OtSkyShader.h"
 #include "OtSkyboxShader.h"
+#include "OtSkybox2Shader.h"
 #include "OtSkySphereShader.h"
 #include "OtTerrainShader.h"
 #include "OtTexturedShader.h"
@@ -44,6 +48,10 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtBlitFS),
 	BGFX_EMBEDDED_SHADER(OtBloomVS),
 	BGFX_EMBEDDED_SHADER(OtBloomFS),
+	BGFX_EMBEDDED_SHADER(OtBloomDownSampleVS),
+	BGFX_EMBEDDED_SHADER(OtBloomDownSampleFS),
+	BGFX_EMBEDDED_SHADER(OtBloomUpSampleVS),
+	BGFX_EMBEDDED_SHADER(OtBloomUpSampleFS),
 	BGFX_EMBEDDED_SHADER(OtBlurVS),
 	BGFX_EMBEDDED_SHADER(OtBlurFS),
 	BGFX_EMBEDDED_SHADER(OtColoredVS),
@@ -60,6 +68,8 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtImGuiFS),
 	BGFX_EMBEDDED_SHADER(OtLightingVS),
 	BGFX_EMBEDDED_SHADER(OtLightingFS),
+	BGFX_EMBEDDED_SHADER(OtPostProcessVS),
+	BGFX_EMBEDDED_SHADER(OtPostProcessFS),
 	BGFX_EMBEDDED_SHADER(OtShadowVS),
 	BGFX_EMBEDDED_SHADER(OtShadowFS),
 	BGFX_EMBEDDED_SHADER(OtShadowVSI),
@@ -67,6 +77,8 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtSkyFS),
 	BGFX_EMBEDDED_SHADER(OtSkyboxVS),
 	BGFX_EMBEDDED_SHADER(OtSkyboxFS),
+	BGFX_EMBEDDED_SHADER(OtSkybox2VS),
+	BGFX_EMBEDDED_SHADER(OtSkybox2FS),
 	BGFX_EMBEDDED_SHADER(OtSkySphereVS),
 	BGFX_EMBEDDED_SHADER(OtSkySphereFS),
 	BGFX_EMBEDDED_SHADER(OtTerrainVS),

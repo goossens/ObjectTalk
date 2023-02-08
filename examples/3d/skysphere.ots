@@ -4,8 +4,8 @@
 		"components": [
 			{
 				"component": "Core",
-				"uuid": 4024814341,
-				"tag": "Scene Camera"
+				"tag": "Scene Camera",
+				"uuid": 4024814341
 			},
 			{
 				"camera": {
@@ -28,6 +28,19 @@
 					"yaw": 0.0
 				},
 				"component": "Camera"
+			},
+			{
+				"Exposure": 0.7599999904632568,
+				"bloomIntensity": 0.10000000149011612,
+				"component": "Post Processing",
+				"fogColor": [
+					1.0,
+					1.0,
+					1.0
+				],
+				"fogEnabled": false,
+				"fogFar": 1000.0,
+				"fogNear": 0.10000000149011612
 			}
 		]
 	},
@@ -36,11 +49,13 @@
 		"components": [
 			{
 				"component": "Core",
-				"uuid": 1317054617,
-				"tag": "Sky Sphere"
+				"tag": "Sky Sphere",
+				"uuid": 1317054617
 			},
 			{
+				"brightness": 1.0,
 				"component": "Sky Sphere",
+				"gamma": 2.200000047683716,
 				"image": "assets/fields.jpg"
 			}
 		]
@@ -52,8 +67,8 @@
 				"components": [
 					{
 						"component": "Core",
-						"uuid": 1957313696,
-						"tag": "Child"
+						"tag": "Child",
+						"uuid": 1957313696
 					},
 					{
 						"component": "Transform",
@@ -79,8 +94,8 @@
 		"components": [
 			{
 				"component": "Core",
-				"uuid": 2354452319,
-				"tag": "Parent"
+				"tag": "Parent",
+				"uuid": 2354452319
 			}
 		]
 	},
@@ -89,8 +104,8 @@
 		"components": [
 			{
 				"component": "Core",
-				"uuid": 1347047492,
-				"tag": "Other"
+				"tag": "Other",
+				"uuid": 1347047492
 			}
 		]
 	}

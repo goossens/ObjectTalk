@@ -10,7 +10,7 @@ var gui = import("gui");
 
 class App : gui.App {
 	function setup(this) {
-		var vd = gui.VectorDisplay(20, 0, 80, 100);
+		var vd = gui.VectorDisplay(0, 0, 70, 100);
 
 		vd.setColor("#aaf");
 
@@ -54,7 +54,7 @@ class App : gui.App {
 			vd.addLine(50 + 40 * i, 520, 50 + 40 * i, 650.0);
 		}
 
-		var panel = gui.Panel(0, 0, 20, 100);
+		var panel = gui.Panel(70, 0, 20, 100);
 
 		var node = gui.TreeNode("Vector Display:");
 		node.add(gui.VectorDisplayController(vd));

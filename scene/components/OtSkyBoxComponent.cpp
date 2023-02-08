@@ -36,8 +36,8 @@ bool OtSkyBoxComponent::renderGUI() {
 		update = true;
 	}
 
-	changed |= ImGui::SliderFloat("Brightness", &brightness, 0.1f, 4.0f, "%.1f");
-	changed |= ImGui::SliderFloat("Gamma", &gamma, 0.5f, 3.0f, "%.1f");
+	changed |= ImGui::SliderFloat("Brightness", &brightness, 0.1f, 4.0f, "%.2f");
+	changed |= ImGui::SliderFloat("Gamma", &gamma, 0.1f, 4.0f, "%.2f");
 
 	return changed;
 }
@@ -66,16 +66,21 @@ nlohmann::json OtSkyBoxComponent::serialize(std::filesystem::path* basedir) {
 //	OtSkyBoxComponent::deserialize
 //
 
+static inline bool didPathChange(std::filesystem::path& value, nlohmann::json data, const char* name, std::filesystem::path* basedir) {
+	auto oldValue = value;
+	value = OtComponentGetAbsolutePath(data, name, basedir);
+	return value != oldValue;
+}
+
 void OtSkyBoxComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
-	right = OtComponentGetAbsolutePath(data, "right", basedir);
-	left = OtComponentGetAbsolutePath(data, "left", basedir);
-	top = OtComponentGetAbsolutePath(data, "top", basedir);
-	bottom = OtComponentGetAbsolutePath(data, "bottom", basedir);
-	front = OtComponentGetAbsolutePath(data, "front", basedir);
-	back = OtComponentGetAbsolutePath(data, "back", basedir);
+	update |= didPathChange(right, data, "right", basedir);
+	update |= didPathChange(left, data, "left", basedir);
+	update |= didPathChange(top, data, "top", basedir);
+	update |= didPathChange(bottom, data, "bottom", basedir);
+	update |= didPathChange(front, data, "front", basedir);
+	update |= didPathChange(back, data, "back", basedir);
 	brightness = data.value("brightness", 1.0f);
-	gamma = data.value("gamma", 1.0f);
-	update = true;
+	gamma = data.value("gamma", 2.2f);
 }
 
 

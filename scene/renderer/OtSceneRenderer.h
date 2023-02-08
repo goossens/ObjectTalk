@@ -44,20 +44,16 @@ private:
 	void renderGeometryPass(OtScene2 scene);
 	void renderBackgroundPass(OtScene2 scene);
 	void renderLightingPass(OtScene2 scene);
+	void renderPostProcessingPass(OtScene2 scene);
 
 	// render entitities
-	void renderSkyBox(OtSkyBoxComponent& component);
-	void renderSkySphere(OtSkySphereComponent& component);
-	void renderGeometry(OtScene2 scene, OtEntity entity);
+	void renderSkyBox(OtPass& pass, OtSkyBoxComponent& component);
+	void renderSkySphere(OtPass& pass, OtSkySphereComponent& component);
+	void renderGeometry(OtPass& pass, OtScene2 scene, OtEntity entity);
+	void renderBloom(float bloomIntensity);
 
 	// target camera
 	OtCamera2 camera;
-
-	// various passes
-	OtPass shadowPass;
-	OtPass geometryPass;
-	OtPass backgroundPass;
-	OtPass lightingPass;
 
 	// image dimensions
 	int width;
@@ -65,7 +61,11 @@ private:
 
 	// framebuffers
 	OtGbuffer gbuffer;
-	OtFrameBuffer composite{OtFrameBuffer::rgba8Texture, OtFrameBuffer::dFloatTexture, 1, true};
+	OtFrameBuffer compositeBuffer{OtFrameBuffer::rgbaFloat16Texture, OtFrameBuffer::dFloatTexture, 1, true};
+	OtFrameBuffer postProcessBuffer{OtFrameBuffer::rgba8Texture, OtFrameBuffer::noTexture};
+
+	static constexpr int bloomDepth = 5;
+	OtFrameBuffer bloomBuffer[bloomDepth];
 
 	// standard geometries
 	OtBoxGeometry unityBoxGeometry;
@@ -75,6 +75,8 @@ private:
 	OtUniformVec4 materialUniforms{"u_material", 3};
 	OtUniformVec4 backgroundUniforms{"u_background", 1};
 	OtUniformVec4 lightingUniforms{"u_lighting", 5};
+	OtUniformVec4 bloomUniforms{"u_bloom", 1};
+	OtUniformVec4 postProcessUniforms{"u_postProcess", 1};
 
 	// samplers
 	OtSampler geometryAlbedoSampler{"s_geometryAlbedoTexture"};
@@ -83,18 +85,23 @@ private:
 	OtSampler geometryRoughnessSampler{"s_geometryRoughnessTexture"};
 	OtSampler geometryAoSampler{"s_geometryAoTexture"};
 
-	OtSampler skyMapSampler;
-	OtSampler skySphereSampler;
+	OtSampler skyBoxSampler{"s_skyBoxTexture"};
+	OtSampler skySphereSampler{"s_skySphereTexture"};
 
 	OtSampler lightingAlbedoSampler{"s_lightingAlbedoTexture"};
 	OtSampler lightingPositionSampler{"s_lightingPositionTexture"};
 	OtSampler lightingNormalSampler{"s_lightingNormalTexture"};
 	OtSampler lightingPbrSampler{"s_lightingPbrTexture"};
-	OtSampler lightingDepthSampler{"s_lightingDepthTexture"};
+
+	OtSampler postProcessSampler{"s_postProcessTexture"};
+	OtSampler bloomSampler{"s_bloomTexture"};
 
 	// shaders
-	OtShader geometryShader;
-	OtShader skyBoxShader;
-	OtShader skySphereShader;
-	OtShader lightingShader;
+	OtShader geometryShader{"OtGeometryVS", "OtGeometryFS"};
+	OtShader skyBoxShader{"OtSkybox2VS", "OtSkybox2FS"};
+	OtShader skySphereShader{"OtSkySphereVS", "OtSkySphereFS"};
+	OtShader lightingShader{"OtLightingVS", "OtLightingFS"};
+	OtShader bloomDownSampleShader{"OtBloomDownSampleVS", "OtBloomDownSampleFS"};
+	OtShader bloomUpSampleShader{"OtBloomUpSampleVS", "OtBloomUpSampleFS"};
+	OtShader postProcessShader{"OtPostProcessVS", "OtPostProcessFS"};
 };

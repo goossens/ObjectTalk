@@ -36,6 +36,7 @@ public:
 	void setFrameBuffer(OtFrameBuffer& framebuffer);
 	void setFrameBuffer(OtGbuffer& gbuffer);
 	void setTransform(const glm::mat4& view, const glm::mat4& projection);
+	void submitQuad(int w, int h);
 	void runShader(OtShader& shader);
 
 	void blit(

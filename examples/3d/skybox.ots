@@ -28,6 +28,19 @@
 					"yaw": 0.0
 				},
 				"component": "Camera"
+			},
+			{
+				"Exposure": 0.7599999904632568,
+				"bloomIntensity": 0.6700000166893005,
+				"component": "Post Processing",
+				"fogColor": [
+					1.0,
+					1.0,
+					1.0
+				],
+				"fogEnabled": false,
+				"fogFar": 1000.0,
+				"fogNear": 0.10000000149011612
 			}
 		]
 	},
@@ -42,8 +55,10 @@
 			{
 				"back": "assets/yokohama/negz.jpg",
 				"bottom": "assets/yokohama/negy.jpg",
+				"brightness": 1.0,
 				"component": "Sky Box",
 				"front": "assets/yokohama/posz.jpg",
+				"gamma": 2.200000047683716,
 				"left": "assets/yokohama/negx.jpg",
 				"right": "assets/yokohama/posx.jpg",
 				"top": "assets/yokohama/posy.jpg"
@@ -98,13 +113,13 @@
 					1.0
 				],
 				"albedoTexture": "",
-				"ao": 0.6000000238418579,
+				"ao": 0.6600000262260437,
 				"aoTexture": "",
 				"component": "Material",
-				"metallic": 0.699999988079071,
+				"metallic": 0.2800000011920929,
 				"metallicTexture": "",
 				"normalTexture": "",
-				"roughness": 0.5,
+				"roughness": 0.41999998688697815,
 				"roughnessTexture": ""
 			}
 		]

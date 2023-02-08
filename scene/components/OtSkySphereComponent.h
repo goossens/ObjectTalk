@@ -41,7 +41,7 @@ public:
 	// stored properties
 	std::filesystem::path image;
 	float brightness = 1.0f;
-	float gamma = 1.0f;
+	float gamma = 2.2f;
 
 	// runtime properties
 	bool update = false;

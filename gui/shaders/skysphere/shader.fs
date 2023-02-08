@@ -17,7 +17,7 @@ SAMPLER2D(s_skySphereTexture, 0);
 
 void main() {
 	vec3 color = texture2D(s_skySphereTexture, v_texcoord0).rgb;
-    color = pow(color, vec3_splat(u_gamma));
-    color = u_brightness * color;
-    gl_FragColor = vec4(color, 1.0f);
+	color = pow(color, vec3_splat(u_gamma));
+	color = u_brightness * color;
+	gl_FragColor = vec4(color, 1.0f);
 }

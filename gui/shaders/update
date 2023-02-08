@@ -185,6 +185,8 @@ END
 processDirectory BlendMapped
 processDirectory Blit
 processDirectory Bloom
+processDirectory BloomDownSample
+processDirectory BloomUpSample
 processDirectory Blur
 processDirectory Colored
 processDirectory Debug
@@ -192,9 +194,11 @@ processDirectory Fixed
 processDirectory Geometry
 processDirectory ImGui
 processDirectory Lighting
+processDirectory PostProcess
 processDirectory Shadow
 processDirectory Sky
 processDirectory Skybox
+processDirectory Skybox2
 processDirectory SkySphere
 processDirectory Terrain
 processDirectory Textured

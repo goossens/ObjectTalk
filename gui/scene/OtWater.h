@@ -77,11 +77,11 @@ protected:
 
 	// Frame buffers
 	OtFrameBuffer reflectionFrameBuffer = OtFrameBuffer(
-		OtFrameBuffer::rgbaFloatTexture,
+		OtFrameBuffer::rgbaFloat16Texture,
 		OtFrameBuffer::dFloatTexture);
 
 	OtFrameBuffer refractionFrameBuffer = OtFrameBuffer(
-		OtFrameBuffer::rgbaFloatTexture,
+		OtFrameBuffer::rgbaFloat16Texture,
 		OtFrameBuffer::dFloatTexture);
 
 	// GPU assets

@@ -20,6 +20,9 @@
 //
 
 void OtSceneRenderer::renderBackgroundPass(OtScene2 scene) {
+	// update composite buffer
+	compositeBuffer.update(width, height);
+
 	// we can only have one background component
 	bool backgroundComponent = false;
 
@@ -49,20 +52,21 @@ void OtSceneRenderer::renderBackgroundPass(OtScene2 scene) {
 	glm::mat4 newViewMatrix = glm::toMat4(rotate);
 
 	// setup pass
-	backgroundPass.reserveRenderingSlot();
-	backgroundPass.setClear(true, false, clearColor);
-	backgroundPass.setRectangle(0, 0, width, height);
-	backgroundPass.setFrameBuffer(composite);
-	backgroundPass.setTransform(newViewMatrix, camera->getProjectionMatrix());
+	OtPass pass;
+	pass.reserveRenderingSlot();
+	pass.setClear(true, false, clearColor);
+	pass.setRectangle(0, 0, width, height);
+	pass.setFrameBuffer(compositeBuffer);
+	pass.setTransform(newViewMatrix, camera->getProjectionMatrix());
 
 	// copy depth buffer from geometry gbuffer to the composite framebuffer
-	backgroundPass.blit(composite.getDepthTexture(), 0, 0, gbuffer.getDepthTexture());
+	pass.blit(compositeBuffer.getDepthTexture(), 0, 0, gbuffer.getDepthTexture());
 
 	// see if we have any sky boxes
 	for (auto [entity, component] : scene->view<OtSkyBoxComponent>().each()) {
 		if (!backgroundComponent) {
 			if (component.isValid()) {
-				renderSkyBox(component);
+				renderSkyBox(pass, component);
 				backgroundComponent = true;
 			}
 		}
@@ -72,7 +76,7 @@ void OtSceneRenderer::renderBackgroundPass(OtScene2 scene) {
 	for (auto [entity, component] : scene->view<OtSkySphereComponent>().each()) {
 		if (!backgroundComponent) {
 			if (component.isValid()) {
-				renderSkySphere(component);
+				renderSkySphere(pass, component);
 				backgroundComponent = true;
 			}
 		}
@@ -84,7 +88,7 @@ void OtSceneRenderer::renderBackgroundPass(OtScene2 scene) {
 //	OtSceneRenderer::renderSkyBox
 //
 
-void OtSceneRenderer::renderSkyBox(OtSkyBoxComponent& component) {
+void OtSceneRenderer::renderSkyBox(OtPass& pass, OtSkyBoxComponent& component) {
 	// setup the mesh
 	if (!unityBoxGeometry) {
 		unityBoxGeometry = OtBoxGeometryClass::create();
@@ -98,16 +102,11 @@ void OtSceneRenderer::renderSkyBox(OtSkyBoxComponent& component) {
 	backgroundUniforms.submit();
 
 	// submit texture via sampler
-	skyMapSampler.submit(0, component.cubemap, "s_cubemap");
-
-	// load the shader (if required)
-	if (!skyBoxShader.isValid()) {
-		skyBoxShader.initialize("OtSkyboxVS", "OtSkyboxFS");
-	}
+	skyBoxSampler.submit(0, component.cubemap);
 
 	// run the shader
 	skyBoxShader.setState(OtStateWriteRgb | OtStateWriteA);
-	backgroundPass.runShader(skyBoxShader);
+	pass.runShader(skyBoxShader);
 }
 
 
@@ -115,7 +114,7 @@ void OtSceneRenderer::renderSkyBox(OtSkyBoxComponent& component) {
 //	OtSceneRenderer::renderSkySphere
 //
 
-void OtSceneRenderer::renderSkySphere(OtSkySphereComponent& component) {
+void OtSceneRenderer::renderSkySphere(OtPass& pass, OtSkySphereComponent& component) {
 	// setup the mesh
 	if (!unitySphereGeometry) {
 		unitySphereGeometry = OtSphereGeometryClass::create();
@@ -129,14 +128,9 @@ void OtSceneRenderer::renderSkySphere(OtSkySphereComponent& component) {
 	backgroundUniforms.submit();
 
 	// submit texture via sampler
-	skySphereSampler.submit(0, component.texture, "s_skySphereTexture");
-
-	// load the shader (if required)
-	if (!skySphereShader.isValid()) {
-		skySphereShader.initialize("OtSkySphereVS", "OtSkySphereFS");
-	}
+	skySphereSampler.submit(0, component.texture);
 
 	// run the shader
 	skySphereShader.setState(OtStateWriteRgb | OtStateWriteA);
-	backgroundPass.runShader(skySphereShader);
+	pass.runShader(skySphereShader);
 }

@@ -24,6 +24,16 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f bloom/shader.fs -o bloom/fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtBloomFS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f bloom/shader.fs -o bloom/fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtBloomFS_dx11
 
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f bloomdownsample/shader.vs -o bloomdownsample/vs_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtBloomDownSampleVS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f bloomdownsample/shader.vs -o bloomdownsample/vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtBloomDownSampleVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f bloomdownsample/shader.fs -o bloomdownsample/fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtBloomDownSampleFS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f bloomdownsample/shader.fs -o bloomdownsample/fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtBloomDownSampleFS_dx11
+
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f bloomupsample/shader.vs -o bloomupsample/vs_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtBloomUpSampleVS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f bloomupsample/shader.vs -o bloomupsample/vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtBloomUpSampleVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f bloomupsample/shader.fs -o bloomupsample/fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtBloomUpSampleFS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f bloomupsample/shader.fs -o bloomupsample/fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtBloomUpSampleFS_dx11
+
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f blur/shader.vs -o blur/vs_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtBlurVS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f blur/shader.vs -o blur/vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtBlurVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f blur/shader.fs -o blur/fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtBlurFS_dx9
@@ -63,6 +73,11 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f lighting/shader.fs -o lighting/fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtLightingFS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f lighting/shader.fs -o lighting/fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtLightingFS_dx11
 
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f postprocess/shader.vs -o postprocess/vs_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtPostProcessVS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f postprocess/shader.vs -o postprocess/vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtPostProcessVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f postprocess/shader.fs -o postprocess/fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtPostProcessFS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f postprocess/shader.fs -o postprocess/fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtPostProcessFS_dx11
+
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f shadow/shader.vs -o shadow/vs_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtShadowVS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f shadow/shader.vs -o shadow/vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtShadowVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f shadow/shader.fs -o shadow/fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtShadowFS_dx9
@@ -79,6 +94,11 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f skybox/shader.vs -o skybox/vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtSkyboxVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f skybox/shader.fs -o skybox/fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtSkyboxFS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f skybox/shader.fs -o skybox/fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtSkyboxFS_dx11
+
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f skybox2/shader.vs -o skybox2/vs_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtSkybox2VS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f skybox2/shader.vs -o skybox2/vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtSkybox2VS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f skybox2/shader.fs -o skybox2/fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtSkybox2FS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f skybox2/shader.fs -o skybox2/fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtSkybox2FS_dx11
 
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f skysphere/shader.vs -o skysphere/vs_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtSkySphereVS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f skysphere/shader.vs -o skysphere/vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtSkySphereVS_dx11

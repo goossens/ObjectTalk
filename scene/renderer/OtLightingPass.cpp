@@ -9,10 +9,6 @@
 //	Include files
 //
 
-#include "glm/gtc/matrix_transform.hpp"
-
-#include "OtQuad.h"
-
 #include "OtSceneRenderer.h"
 
 
@@ -22,14 +18,10 @@
 
 void OtSceneRenderer::renderLightingPass(OtScene2 scene) {
 	// setup pass
-	lightingPass.reserveRenderingSlot();
-	lightingPass.setClear(false, false);
-	lightingPass.setRectangle(0, 0, width, height);
-	lightingPass.setFrameBuffer(composite);
-	lightingPass.setTransform(glm::mat4(1.0), glm::ortho(0.0f, (float) width, (float) height, 0.0f, -1.0f, 1.0f));
-
-	// submit geometry
-	OtQuadSubmit(width, height);
+	OtPass pass;
+	pass.reserveRenderingSlot();
+	pass.setFrameBuffer(compositeBuffer);
+	pass.submitQuad(width, height);
 
 	// get the post-processing information
 	float exposure = 1.0f;
@@ -62,14 +54,8 @@ void OtSceneRenderer::renderLightingPass(OtScene2 scene) {
 	gbuffer.bindPositionTexture(lightingPositionSampler, 1);
 	gbuffer.bindNormalTexture(lightingNormalSampler, 2);
 	gbuffer.bindPbrTexture(lightingPbrSampler, 3);
-	gbuffer.bindDepthTexture(lightingDepthSampler, 4);
-
-	// load the shader (if required)
-	if (!lightingShader.isValid()) {
-		lightingShader.initialize("OtLightingVS", "OtLightingFS");
-	}
 
 	// run the shader
 	lightingShader.setState(OtStateWriteRgb | OtStateWriteA | OtStateDepthTestAlways);
-	lightingPass.runShader(lightingShader);
+	pass.runShader(lightingShader);
 }

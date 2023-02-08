@@ -362,7 +362,9 @@ void OtWorkspaceClass::renderSplashScreen() {
 		ImGuiWindowFlags_NoDecoration |
 			ImGuiWindowFlags_AlwaysAutoResize |
 			ImGuiWindowFlags_NoResize |
-			ImGuiWindowFlags_NoMove);
+			ImGuiWindowFlags_NoMove |
+			ImGuiWindowFlags_NoBringToFrontOnFocus |
+			ImGuiWindowFlags_NoInputs);
 
 	ImGui::Image((void*)(intptr_t) logo.getTextureIndex(), ImVec2(OtLogoWidth, OtLogoHeight));
 
@@ -392,7 +394,13 @@ void OtWorkspaceClass::renderEditors() {
 	ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
 	ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-	ImGui::Begin("Workspace", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize);
+
+	ImGui::Begin(
+		"Workspace",
+		nullptr,
+		ImGuiWindowFlags_NoDecoration |
+		ImGuiWindowFlags_NoResize |
+		ImGuiWindowFlags_NoBringToFrontOnFocus);
 
 	// start a tab bar
 	if (ImGui::BeginTabBar("Tabs", ImGuiTabBarFlags_AutoSelectNewTabs)) {

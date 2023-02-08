@@ -28,7 +28,6 @@ SAMPLER2D(s_lightingAlbedoTexture, 0);
 SAMPLER2D(s_lightingPositionTexture, 1);
 SAMPLER2D(s_lightingNormalTexture, 2);
 SAMPLER2D(s_lightingPbrTexture, 3);
-SAMPLER2D(s_lightingDepthTexture, 4);
 
 float DistributionGGX(vec3 N, vec3 H, float roughness) {
 	float a = roughness * roughness;
@@ -77,14 +76,13 @@ void main() {
 	}
 
 	// sample gbuffer
-	vec3 albedo = pow(albedoSample.rgb, vec3_splat(2.2));
+	vec3 albedo = albedoSample.rgb;
 	vec3 pos = texture2D(s_lightingPositionTexture, v_texcoord0).rgb;
 	vec3 N = normalize(texture2D(s_lightingNormalTexture, v_texcoord0).rgb);
 	vec4 pbr = texture2D(s_lightingPbrTexture, v_texcoord0);
 	float metallic = pbr.r;
 	float roughness = pbr.g;
 	float ao = pbr.b;
-	float D = texture2D(s_lightingDepthTexture, v_texcoord0).r;
 
 	// determine view, directional light and halfway vectors
 	vec3 V = normalize(u_cameraPosition - pos);
@@ -112,15 +110,6 @@ void main() {
 
 	// apply fog
 	color = mix(u_fogColor, color, getFogFactor(distance(u_cameraPosition, pos)));
-
-	// HDR tonemapping
-	color = color / (color + vec3_splat(1.0));
-
-	// gamma correction
-	color = pow(color, vec3_splat(1.0 / 2.2));
-
-	// apply exposure
-	color *= u_cameraExposure;
 
 	// set final color
 	gl_FragColor = vec4(color, albedoSample.a);

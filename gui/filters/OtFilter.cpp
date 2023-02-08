@@ -11,10 +11,8 @@
 
 #include "bgfx/bgfx.h"
 #include "glm/glm.hpp"
-#include "glm/ext.hpp"
 
 #include "OtFilter.h"
-#include "OtQuad.h"
 #include "OtPass.h"
 
 
@@ -26,16 +24,12 @@ void OtFilterClass::render(int w, int h, OtFrameBuffer& origin, OtFrameBuffer& d
 	// setup a filtering pass
 	OtPass pass;
 	pass.reserveRenderingSlot();
-	pass.setRectangle(0, 0, w, h);
 	pass.setFrameBuffer(destination);
-	pass.setTransform(glm::mat4(1.0), glm::ortho(0.0f, (float) w, (float) h, 0.0f, -1.0f, 1.0f));
-
-	// create single "triangular quad" to cover area
-	OtQuadSubmit(w, h);
-	bgfx::setState(state);
-	origin.bindColorTexture(textureSampler, 0);
+	pass.submitQuad(w, h);
 
 	// execute filter
+	origin.bindColorTexture(textureSampler, 0);
+	bgfx::setState(state);
 	execute(pass, w, h);
 }
 
@@ -48,14 +42,10 @@ void OtFilterClass::render(int x, int y, int w, int h, OtFrameBuffer& origin) {
 	// setup a filtering pass
 	OtPass pass;
 	pass.reserveRenderingSlot();
-	pass.setRectangle(x, y, w, h);
-	pass.setTransform(glm::mat4(1.0), glm::ortho(0.0f, (float) w, (float) h, 0.0f, -1.0f, 1.0f));
-
-	// create "single triangle quad" to cover area
-	OtQuadSubmit(w, h);
-	bgfx::setState(state);
-	origin.bindColorTexture(textureSampler, 0);
+	pass.submitQuad(w, h);
 
 	// execute filter
+	origin.bindColorTexture(textureSampler, 0);
+	bgfx::setState(state);
 	execute(pass, w, h);
 }

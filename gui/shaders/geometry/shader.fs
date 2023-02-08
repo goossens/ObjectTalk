@@ -32,7 +32,13 @@ SAMPLER2D(s_geometryNormalTexture, 4);
 // main function
 void main() {
 	// determine albedo
-	vec4 albedo = u_hasAlbedoTexture ? texture2D(s_geometryAlbedoTexture, v_texcoord0) : u_albedo;
+	vec4 albedo = u_albedo;
+
+	if (u_hasAlbedoTexture) {
+		// use texture and convert to gamma space
+		vec4 albedoSample = texture2D(s_geometryAlbedoTexture, v_texcoord0);
+		albedo = vec4(pow(albedoSample.rgb, vec3_splat(2.2)), albedoSample.a);
+	}
 
 	// discard pixel if too transparent
 	if (albedo.w < 0.05) {

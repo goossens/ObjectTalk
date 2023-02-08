@@ -24,7 +24,8 @@
 
 bool OtPostProcessingComponent::renderGUI() {
 	bool changed;
-	changed |= ImGui::SliderFloat("Exposure", &exposure, 0.5f, 2.0f, "%.1f");
+	changed |= ImGui::SliderFloat("Bloom Intensity", &bloomIntensity, 0.1f, 3.0f, "%.2f");
+	changed |= ImGui::SliderFloat("Exposure", &exposure, 0.1f, 3.0f, "%.2f");
 	changed |= ImGui::Checkbox("Fog Enabled", &fogEnabled);
 	changed |= ImGui::ColorEdit3("Fog Color", glm::value_ptr(fogColor));
 	changed |= ImGui::DragFloat("Fog Near", &fogNear, 1.0f, 0.0f, 0.0f, "%.1f");
@@ -40,6 +41,7 @@ bool OtPostProcessingComponent::renderGUI() {
 nlohmann::json OtPostProcessingComponent::serialize(std::filesystem::path* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
+	data["bloomIntensity"] = bloomIntensity;
 	data["Exposure"] = exposure;
 	data["fogEnabled"] = fogEnabled;
 	data["fogColor"] = fogColor;
@@ -54,6 +56,7 @@ nlohmann::json OtPostProcessingComponent::serialize(std::filesystem::path* based
 //
 
 void OtPostProcessingComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+	bloomIntensity = data.value("bloomIntensity", 0.8f);
 	exposure = data.value("Exposure", 1.0f);
 	fogEnabled = data.value("fogEnabled", false);
 	fogColor = data.value("fogColor", glm::vec3(1.0f));

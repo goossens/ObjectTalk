@@ -110,7 +110,7 @@ void OtSceneEditorClass::save() {
 
 void OtSceneEditorClass::render() {
 	// create the window
-	ImGui::BeginChild("script", ImVec2(), true, ImGuiWindowFlags_MenuBar);
+	ImGui::BeginChild("scene", ImVec2(), true, ImGuiWindowFlags_MenuBar);
 	determinePanelSizes();
 
 	// determine button size
@@ -132,6 +132,15 @@ void OtSceneEditorClass::render() {
 	// perform editing task (if required)
 	if (nextTask) {
 		taskManager.perform(nextTask);
+
+		// special handling for "new entity" task so we can automatically select the new kid on the block
+		auto task = std::dynamic_pointer_cast<OtCreateEntityTask>(nextTask);
+
+		if (task) {
+			selectedEntity = task->getEntity();
+		}
+
+		// clear task so we don't perform it again
 		nextTask = nullptr;
 
 		// unset selected entity if it is no longer valid

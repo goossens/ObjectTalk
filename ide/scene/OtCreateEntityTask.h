@@ -75,6 +75,9 @@ public:
 		scene->removeEntity(entity);
 	}
 
+	// get the created entity
+	OtEntity getEntity() { return entity; }
+
 private:
 	// properties
 	OtScene2 scene;

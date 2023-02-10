@@ -10,7 +10,6 @@
 //
 
 #include <algorithm>
-#include <filesystem>
 
 #include "glm/ext.hpp"
 
@@ -86,7 +85,7 @@ bool OtUiInputText(const char* label, std::string& value) {
 //	OtUiEditVecX
 //
 
-static bool OtUiEditVecX(const char* label, float* v, int components, float speed, float minv, float maxv, const char* format) {
+static bool OtUiEditVecX(const char* label, float* v, int components, float speed, float minv, float maxv) {
 	ImGuiWindow* window = ImGui::GetCurrentWindow();
 
 	if (window->SkipItems) {
@@ -100,11 +99,12 @@ static bool OtUiEditVecX(const char* label, float* v, int components, float spee
 	ImGui::PushID(label);
 	ImGui::PushMultiItemsWidths(components, ImGui::CalcItemWidth());
 
-	for (int i = 0; i < components; i++) {
-		static const ImU32 colors[] = { 0xBB0000FF, 0xBB00FF00, 0xBBFF0000, 0xBBFFFFFF };
+	static const ImU32 colors[] = { 0xBB0000FF, 0xBB00FF00, 0xBBFF0000, 0xBBFFFFFF };
+	static const char* format[] = { "X:%.1f", "Y:%.1f", "Z:%.1f", "W:%.1f" };
 
+	for (int i = 0; i < components; i++) {
 		ImGui::PushID(i);
-		changed |= ImGui::DragFloat("##v", &v[i], speed, minv, maxv, format);
+		changed |= ImGui::DragFloat("##v", &v[i], speed, minv, maxv, format[i]);
 
 		const ImVec2 min = ImGui::GetItemRectMin();
 		const ImVec2 max = ImGui::GetItemRectMax();
@@ -116,9 +116,8 @@ static bool OtUiEditVecX(const char* label, float* v, int components, float spee
 	}
 
 	ImGui::PopID();
-	ImGui::TextUnformatted(label);
+	ImGui::TextUnformatted(label, ImGui::FindRenderedTextEnd(label));
 	ImGui::EndGroup();
-
 	return changed;
 }
 
@@ -127,8 +126,8 @@ static bool OtUiEditVecX(const char* label, float* v, int components, float spee
 //	OtUiEditVec3
 //
 
-bool OtUiEditVec3(const char* label, glm::vec3& vector, float speed, float minv, float maxv, const char* format) {
-	return OtUiEditVecX(label, glm::value_ptr(vector), 3, speed, minv, maxv, format);
+bool OtUiEditVec3(const char* label, glm::vec3& vector, float speed, float minv, float maxv) {
+	return OtUiEditVecX(label, glm::value_ptr(vector), 3, speed, minv, maxv);
 }
 
 
@@ -136,8 +135,8 @@ bool OtUiEditVec3(const char* label, glm::vec3& vector, float speed, float minv,
 //	OtUiEditVec4
 //
 
-bool OtUiEditVec4(const char* label, glm::vec4& vector, float speed, float minv, float maxv, const char* format) {
-	return OtUiEditVecX(label, glm::value_ptr(vector), 4, speed, minv, maxv, format);
+bool OtUiEditVec4(const char* label, glm::vec4& vector, float speed, float minv, float maxv) {
+	return OtUiEditVecX(label, glm::value_ptr(vector), 4, speed, minv, maxv);
 }
 
 
@@ -175,10 +174,12 @@ bool OtUiFileSelector(const char* label, std::filesystem::path& path) {
 	ImGui::RenderFrameBorder(bb.Min, bb.Max, style.FrameRounding);
 
 	// render path
+	auto filename = path.filename().string();
+
 	ImGui::RenderTextClipped(
 		bb.Min + style.FramePadding,
 		bb.Max - style.FramePadding,
-		path.filename().string().c_str(),
+		filename.c_str(),
 		nullptr,
 		nullptr);
 

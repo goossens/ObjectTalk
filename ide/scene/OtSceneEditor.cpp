@@ -284,7 +284,7 @@ void OtSceneEditorClass::renderMenu() {
 			// render snap control
 			if (ImGui::BeginMenu("Gizmo Snap", guizmoVisible)) {
 				ImGui::Checkbox("Snaping", &guizmoSnapping);
-				OtUiEditVec3("##snap", snap, 0.0f, 0.0f, 0.1f, "%.2f");
+				OtUiEditVec3("##snap", snap, 0.0f, 0.0f, 0.1f);
 				ImGui::EndMenu();
 			}
 

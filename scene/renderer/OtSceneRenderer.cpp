@@ -26,6 +26,11 @@ int OtSceneRenderer::render(OtScene2 scene, OtCamera2 c, int w, int h) {
 	renderGeometryPass(scene);
 	renderBackgroundPass(scene);
 	renderLightingPass(scene);
+
+	if (gridScale > 0.0) {
+		renderGridPass();
+	}
+
 	renderPostProcessingPass(scene);
 
 	return postProcessBuffer.getColorTextureIndex();

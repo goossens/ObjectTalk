@@ -63,6 +63,11 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f geometry/shader.fs -o geometry/fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtGeometryFS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f geometry/shader.fs -o geometry/fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtGeometryFS_dx11
 
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f grid/shader.vs -o grid/vs_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtGridVS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f grid/shader.vs -o grid/vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtGridVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f grid/shader.fs -o grid/fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtGridFS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f grid/shader.fs -o grid/fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtGridFS_dx11
+
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f imgui/shader.vs -o imgui/vs_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtImGuiVS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f imgui/shader.vs -o imgui/vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtImGuiVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f imgui/shader.fs -o imgui/fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtImGuiFS_dx9

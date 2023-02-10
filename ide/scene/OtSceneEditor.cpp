@@ -248,6 +248,14 @@ void OtSceneEditorClass::renderMenu() {
 			}
 
 			ImGui::Separator();
+			ImGui::MenuItem("Grid", SHORTCUT "D", &gridVisible);
+
+			if (ImGui::BeginMenu("Grid Scale", gridVisible)) {
+				ImGui::DragFloat("##scale", &gridScale, 0.1, 0.1f, 100.0f, "%.1f");
+				ImGui::EndMenu();
+			}
+
+			ImGui::Separator();
 			ImGui::MenuItem("Gizmo", SHORTCUT "G", &guizmoVisible);
 
 			if (ImGui::BeginMenu("Gizmo Mode", guizmoVisible)) {
@@ -387,8 +395,13 @@ void OtSceneEditorClass::renderViewPort() {
 
 	auto size = ImGui::GetContentRegionAvail();
 
-	// update the camera and render the scene
+	// update the camera
 	camera->setAspectRatio(size.x / size.y);
+
+	// update the grid
+	renderer.setGridScale(gridVisible ? gridScale : 0.0f);
+
+	// render the scene
 	auto textureIndex = renderer.render(scene, camera, size.x, size.y);
 
 	// show it on the screen

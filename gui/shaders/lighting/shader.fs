@@ -4,7 +4,8 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-// inspired by Joey de Vries' Learn OpenGL: https://learnopengl.com/PBR/Lighting
+//	Inspired by Joey de Vries' Learn OpenGL:
+//	https://learnopengl.com/PBR/Lighting
 
 $input v_texcoord0
 

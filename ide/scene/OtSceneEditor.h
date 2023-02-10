@@ -124,6 +124,11 @@ private:
 	OtCamera2 camera;
 	OtOrbitalCamera editorCamera;
 
+	// grid controls
+	bool gridVisible = false;
+	float gridScale = 1.0f;
+
+	// guizmo controls
 	bool guizmoVisible = false;
 	ImGuizmo::OPERATION guizmoOperation = ImGuizmo::TRANSLATE;
 

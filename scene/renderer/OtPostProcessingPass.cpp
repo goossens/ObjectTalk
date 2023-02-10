@@ -18,7 +18,7 @@
 
 void OtSceneRenderer::renderPostProcessingPass(OtScene2 scene) {
 	// get post-processing information
-	float bloomIntensity = 1.0f;
+	float bloomIntensity = 0.0f;
 	float exposure = 1.0f;
 
 	for (auto [entity, component] : scene->view<OtPostProcessingComponent>().each()) {

@@ -21,6 +21,7 @@
 #include "OtDebugShader.h"
 #include "OtFixedShader.h"
 #include "OtGeometryShader.h"
+#include "OtGridShader.h"
 #include "OtImGuiShader.h"
 #include "OtLightingShader.h"
 #include "OtPostProcessShader.h"
@@ -64,6 +65,8 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtFixedVSI),
 	BGFX_EMBEDDED_SHADER(OtGeometryVS),
 	BGFX_EMBEDDED_SHADER(OtGeometryFS),
+	BGFX_EMBEDDED_SHADER(OtGridVS),
+	BGFX_EMBEDDED_SHADER(OtGridFS),
 	BGFX_EMBEDDED_SHADER(OtImGuiVS),
 	BGFX_EMBEDDED_SHADER(OtImGuiFS),
 	BGFX_EMBEDDED_SHADER(OtLightingVS),

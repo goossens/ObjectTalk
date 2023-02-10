@@ -35,6 +35,9 @@ public:
 	// render the specified scene
 	int render(OtScene2 scene, OtCamera2 camera, int width, int height);
 
+	// set the grid scale
+	void setGridScale(float gs) { gridScale = gs; }
+
 	// get the gbuffer (for debugging purposes)
 	void visualizeGbuffer();
 
@@ -44,6 +47,7 @@ private:
 	void renderGeometryPass(OtScene2 scene);
 	void renderBackgroundPass(OtScene2 scene);
 	void renderLightingPass(OtScene2 scene);
+	void renderGridPass();
 	void renderPostProcessingPass(OtScene2 scene);
 
 	// render entitities
@@ -58,6 +62,9 @@ private:
 	// image dimensions
 	int width;
 	int height;
+
+	// grid scale (0.0 means no grid)
+	float gridScale = 0.0f;
 
 	// framebuffers
 	OtGbuffer gbuffer;
@@ -75,6 +82,7 @@ private:
 	OtUniformVec4 materialUniforms{"u_material", 3};
 	OtUniformVec4 backgroundUniforms{"u_background", 1};
 	OtUniformVec4 lightingUniforms{"u_lighting", 5};
+	OtUniformVec4 gridUniforms{"u_grid", 1};
 	OtUniformVec4 bloomUniforms{"u_bloom", 1};
 	OtUniformVec4 postProcessUniforms{"u_postProcess", 1};
 
@@ -101,6 +109,7 @@ private:
 	OtShader skyBoxShader{"OtSkybox2VS", "OtSkybox2FS"};
 	OtShader skySphereShader{"OtSkySphereVS", "OtSkySphereFS"};
 	OtShader lightingShader{"OtLightingVS", "OtLightingFS"};
+	OtShader gridShader{"OtGridVS", "OtGridFS"};
 	OtShader bloomDownSampleShader{"OtBloomDownSampleVS", "OtBloomDownSampleFS"};
 	OtShader bloomUpSampleShader{"OtBloomUpSampleVS", "OtBloomUpSampleFS"};
 	OtShader postProcessShader{"OtPostProcessVS", "OtPostProcessFS"};

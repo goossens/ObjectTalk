@@ -122,6 +122,7 @@ private:
 
 	// cameras
 	OtCamera2 camera;
+	OtEntity selectedCamera = OtEntityNull;
 	OtOrbitalCamera editorCamera;
 
 	// grid controls

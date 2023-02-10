@@ -156,11 +156,12 @@ void OtSceneEditorClass::render() {
 //
 
 void OtSceneEditorClass::setSceneCamera(int cameraNumber) {
+	selectedCamera = OtEntityNull;
 	int seqno = 1;
 
 	for (auto [entity, component] : scene->view<OtCameraComponent>().each()) {
 		if (seqno == cameraNumber) {
-			camera = component.camera;
+			selectedCamera = entity;
 		}
 
 		seqno++;
@@ -222,25 +223,13 @@ void OtSceneEditorClass::renderMenu() {
 
 		if (ImGui::BeginMenu("View")) {
 			if (ImGui::BeginMenu("Camera")) {
-				bool cameraStillValid = false;
-
-				for (auto [entity, component] : scene->view<OtCameraComponent>().each()) {
-					if (camera == component.camera) {
-						cameraStillValid = true;
-					}
-				}
-
-				if (!cameraStillValid) {
-					camera = editorCamera;
-				}
-
-				if (ImGui::RadioButton("Editor Camera", camera == editorCamera)) {
-					camera = editorCamera;
+				if (ImGui::RadioButton("Editor Camera", OtEntityIsNull(selectedCamera))) {
+					selectedCamera = OtEntityNull;
 				}
 
 				for (auto [entity, component] : scene->view<OtCameraComponent>().each()) {
-					if (ImGui::RadioButton(scene->getTag(entity).c_str(), camera == component.camera)) {
-						camera = component.camera;
+					if (ImGui::RadioButton(scene->getTag(entity).c_str(), selectedCamera == entity)) {
+						selectedCamera = entity;
 					}
 				}
 
@@ -384,16 +373,23 @@ void OtSceneEditorClass::renderComponentsPanel() {
 //
 
 void OtSceneEditorClass::renderViewPort() {
-	// create camera (if required)
-	if (!editorCamera) {
-		editorCamera = OtOrbitalCameraClass::create();
-		camera = editorCamera;
-	}
-
 	// create the window
 	ImGui::BeginChild("viewport", ImVec2(), true);
-
 	auto size = ImGui::GetContentRegionAvail();
+
+	// create editor camera (if required)
+	if (!editorCamera) {
+		editorCamera = OtOrbitalCameraClass::create();
+	}
+
+	// determine current camera
+	if (OtEntityIsNull(selectedCamera) || !scene->isValidEntity(selectedCamera)) {
+		camera = editorCamera;
+		selectedCamera = OtEntityNull;
+
+	} else {
+		camera = scene->getComponent<OtCameraComponent>(selectedCamera).camera;
+	}
 
 	// update the camera
 	camera->setAspectRatio(size.x / size.y);
@@ -828,7 +824,7 @@ void OtSceneEditorClass::handleShortcuts() {
 	// handle camera switching shortcuts
 	} else if (alt) {
 		if (ImGui::IsKeyPressed(ImGuiKey_0, false)) {
-			camera = editorCamera;
+			setSceneCamera(0);
 
 		} else if (ImGui::IsKeyPressed(ImGuiKey_1, false)) {
 			setSceneCamera(1);

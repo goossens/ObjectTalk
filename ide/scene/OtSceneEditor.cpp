@@ -383,12 +383,12 @@ void OtSceneEditorClass::renderViewPort() {
 	}
 
 	// determine current camera
-	if (OtEntityIsNull(selectedCamera) || !scene->isValidEntity(selectedCamera)) {
-		camera = editorCamera;
-		selectedCamera = OtEntityNull;
+	if (scene->isValidEntity(selectedCamera) && scene->hasComponent<OtCameraComponent>(selectedCamera)) {
+		camera = scene->getComponent<OtCameraComponent>(selectedCamera).camera;
 
 	} else {
-		camera = scene->getComponent<OtCameraComponent>(selectedCamera).camera;
+		selectedCamera = OtEntityNull;
+		camera = editorCamera;
 	}
 
 	// update the camera

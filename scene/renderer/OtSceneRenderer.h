@@ -81,7 +81,7 @@ private:
 	// uniforms
 	OtUniformVec4 materialUniforms{"u_material", 3};
 	OtUniformVec4 backgroundUniforms{"u_background", 1};
-	OtUniformVec4 lightingUniforms{"u_lighting", 5};
+	OtUniformVec4 lightingUniforms{"u_lighting", 3};
 	OtUniformVec4 gridUniforms{"u_grid", 1};
 	OtUniformVec4 bloomUniforms{"u_bloom", 1};
 	OtUniformVec4 postProcessUniforms{"u_postProcess", 1};

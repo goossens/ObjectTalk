@@ -22,6 +22,7 @@
 
 #include "OtBackgroundComponent.h"
 #include "OtCameraComponent.h"
+#include "OtDirectionalLightComponent.h"
 #include "OtGeometryComponent.h"
 #include "OtMaterialComponent.h"
 #include "OtSkyBoxComponent.h"
@@ -39,6 +40,7 @@
 	OtGeometryComponent, \
 	OtMaterialComponent, \
 	OtCameraComponent, \
+	OtDirectionalLightComponent, \
 	OtBackgroundComponent, \
 	OtSkyBoxComponent, \
 	OtSkySphereComponent, \

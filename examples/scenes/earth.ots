@@ -4,7 +4,7 @@
 		"components": [
 			{
 				"component": "Core",
-				"tag": "Camera",
+				"tag": "Main Camera",
 				"uuid": 182459982
 			},
 			{
@@ -32,15 +32,75 @@
 			{
 				"Exposure": 1.2000000476837158,
 				"bloomIntensity": 0.8999999761581421,
-				"component": "Post Processing",
-				"fogColor": [
+				"component": "Post Processing"
+			}
+		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Top Camera",
+				"uuid": 2485054175
+			},
+			{
+				"camera": {
+					"distance": 3.0,
+					"far": 10.0,
+					"fov": 60.0,
+					"near": 0.10000000149011612,
+					"pitch": 90.0,
+					"target": [
+						0.0,
+						0.0,
+						0.0
+					],
+					"type": "Orbital Perspective",
+					"up": [
+						0.0,
+						1.0,
+						0.0
+					],
+					"yaw": 0.0
+				},
+				"component": "Camera"
+			}
+		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Directional Light",
+				"uuid": 4124851624
+			},
+			{
+				"component": "Transform",
+				"rotation": [
 					0.0,
-					0.0,
+					-0.0,
 					0.0
 				],
-				"fogEnabled": false,
-				"fogFar": 5.5,
-				"fogNear": 4.0
+				"scale": [
+					0.9900000095367432,
+					0.9900000095367432,
+					0.9900000095367432
+				],
+				"translation": [
+					3.0,
+					3.0,
+					3.0
+				]
+			},
+			{
+				"color": [
+					1.0,
+					1.0,
+					1.0
+				],
+				"component": "Directional Light"
 			}
 		]
 	},

@@ -57,14 +57,16 @@ public:
 				break;
 
 			case directionalLight:
+				scene->addComponent<OtDirectionalLightComponent>(entity);
+				scene->addComponent<OtTransformComponent>(entity);
 				break;
 
 			case pointLight:
 				break;
 
 			case geometry:
-				scene->addComponent<OtTransformComponent>(entity);
 				scene->addComponent<OtGeometryComponent>(entity);
+				scene->addComponent<OtTransformComponent>(entity);
 				scene->addComponent<OtMaterialComponent>(entity);
 				break;
 		}

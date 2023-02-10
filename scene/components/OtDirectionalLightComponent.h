@@ -17,13 +17,14 @@
 
 
 //
-//	OtPostProcessingComponent
+//	OtDirectionalLightComponent
 //
 
-class OtPostProcessingComponent {
+class OtDirectionalLightComponent {
 public:
-	// constructor
-	OtPostProcessingComponent() = default;
+	// constructors
+	OtDirectionalLightComponent() = default;
+	OtDirectionalLightComponent(const glm::vec3& c) : color(c) {}
 
 	// GUI to change component properties
 	bool renderGUI();
@@ -33,9 +34,8 @@ public:
 	void deserialize(nlohmann::json data, std::filesystem::path* basedir);
 
 	// component name
-	static constexpr char const* name = "Post Processing";
+	static constexpr char const* name = "Directional Light";
 
 	// stored properties
-	float bloomIntensity = 0.8f;
-	float exposure = 1.0f;
+	glm::vec3 color{1.0f};
 };

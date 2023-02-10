@@ -14,15 +14,10 @@ $input v_texcoord0
 const float PI = 3.14159265359;
 
 // uniforms
-uniform vec4 u_lighting[5];
+uniform vec4 u_lighting[3];
 #define u_cameraPosition u_lighting[0].xyz
-#define u_cameraExposure u_lighting[0].w
 #define u_directionalLightDirection u_lighting[1].xyz
 #define u_directionalLightColor u_lighting[2].xyz
-#define u_fogEnabled bool(u_lighting[3].x)
-#define u_fogNear u_lighting[3].y
-#define u_fogFar u_lighting[3].z
-#define u_fogColor u_lighting[4].rgb
 
 // texture samplers
 SAMPLER2D(s_lightingAlbedoTexture, 0);
@@ -30,6 +25,7 @@ SAMPLER2D(s_lightingPositionTexture, 1);
 SAMPLER2D(s_lightingNormalTexture, 2);
 SAMPLER2D(s_lightingPbrTexture, 3);
 
+// Normal Distribution Function (NDF)
 float DistributionGGX(vec3 N, vec3 H, float roughness) {
 	float a = roughness * roughness;
 	float a2 = a * a;
@@ -39,6 +35,7 @@ float DistributionGGX(vec3 N, vec3 H, float roughness) {
 	return a2 / (PI * denominator * denominator);
 }
 
+// geometry function
 float GeometrySchlickGGX(float NdotV, float roughness) {
 	float r = (roughness + 1.0);
 	float k = (r*r) / 8.0;
@@ -53,18 +50,9 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness) {
 	return ggx1 * ggx2;
 }
 
+// fresnel equation
 vec3 fresnelSchlick(float cosTheta, vec3 F0) {
 	return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
-}
-
-float getFogFactor(float distance) {
-	if (u_fogEnabled) {
-		float fogFactor = (u_fogFar - distance) / (u_fogFar - u_fogNear);
-		return clamp(fogFactor, 0.0, 1.0);
-
-	} else {
-		return 1.0;
-	}
 }
 
 // main function
@@ -93,7 +81,7 @@ void main() {
 	// calculate reflectance
 	vec3 F0 = mix(vec3_splat(0.04), albedo, metallic);
 
-	// Cook-Torrance BRDF
+	// Cook-Torrance Bidirectional Reflective Distribution Function (BRDF)
 	float NDF = DistributionGGX(N, H, roughness);
 	float G = GeometrySmith(N, V, L, roughness);
 	vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);
@@ -108,9 +96,6 @@ void main() {
 	// determine direct light radiance
 	float NdotL = max(dot(N, L), 0.0);
 	vec3 color = (vec3_splat(0.03) * albedo * ao) + ((kD * albedo / PI + specular) * NdotL);
-
-	// apply fog
-	color = mix(u_fogColor, color, getFogFactor(distance(u_cameraPosition, pos)));
 
 	// set final color
 	gl_FragColor = vec4(color, albedoSample.a);

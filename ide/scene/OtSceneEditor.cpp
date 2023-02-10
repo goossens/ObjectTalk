@@ -155,16 +155,33 @@ void OtSceneEditorClass::render() {
 //	OtSceneEditorClass::setSceneCamera
 //
 
-void OtSceneEditorClass::setSceneCamera(int cameraNumber) {
-	selectedCamera = OtEntityNull;
-	int seqno = 1;
-
-	for (auto [entity, component] : scene->view<OtCameraComponent>().each()) {
-		if (seqno == cameraNumber) {
-			selectedCamera = entity;
+static void makeCameraList(OtScene2 scene, OtEntity entity, OtEntity* list, int& count) {
+	if (count < 9) {
+		if (scene->hasComponent<OtCameraComponent>(entity)) {
+			list[count++] = entity;
 		}
 
-		seqno++;
+		auto child = scene->getFirstChild(entity);
+
+		while (scene->isValidEntity(child)) {
+			makeCameraList(scene, child, list, count);
+			child = scene->getNextSibling(child);
+		}
+	}
+}
+
+void OtSceneEditorClass::setSceneCamera(int cameraNumber) {
+	// the default answer is the editor camera
+	selectedCamera = OtEntityNull;
+
+	// get a list of cameras
+	OtEntity list[9];
+	int entries = 0;
+	makeCameraList(scene, scene->getRootEntity(), list, entries);
+
+	// see if selected camera is avalable
+	if (cameraNumber - 1 < entries) {
+		selectedCamera = list[cameraNumber - 1];
 	}
 }
 
@@ -679,6 +696,10 @@ void OtSceneEditorClass::renderNewEntitiesMenu(OtEntity entity) {
 
 	if (ImGui::MenuItem("Camera Entity")) {
 		nextTask = std::make_shared<OtCreateEntityTask>(scene, entity, OtCreateEntityTask::camera);
+	}
+
+	if (ImGui::MenuItem("Directional Light")) {
+		nextTask = std::make_shared<OtCreateEntityTask>(scene, entity, OtCreateEntityTask::directionalLight);
 	}
 
 	if (ImGui::MenuItem("Geometry Entity")) {

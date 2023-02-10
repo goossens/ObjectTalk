@@ -23,28 +23,20 @@ void OtSceneRenderer::renderLightingPass(OtScene2 scene) {
 	pass.setFrameBuffer(compositeBuffer);
 	pass.submitQuad(width, height);
 
-	// get the post-processing information
-	float exposure = 1.0f;
-	bool fogEnabled = false;
-	glm::vec3 fogColor{0.0f};
-	float fogNear = 0.1;
-	float fogFar = 1000.0;
+	// get the directional light information
+	glm::vec3 direction = glm::vec3(0.0);
+	glm::vec3 color = glm::vec3(0.0);
 
-	for (auto [entity, component] : scene->view<OtPostProcessingComponent>().each()) {
-		exposure = component.exposure;
-		fogEnabled = component.fogEnabled;
-		fogColor = component.fogColor;
-		fogNear = component.fogNear;
-		fogFar = component.fogFar;
+	for (auto&& [entity, light, transform] : scene->view<OtDirectionalLightComponent, OtTransformComponent>().each()) {
+		direction = transform.getTransform()[3];
+		color = light.color;
 	}
 
 	// build the uniforms
 	glm::vec4* uniforms = lightingUniforms.getValues();
-	uniforms[0] = glm::vec4(camera->getPosition(), exposure);
-	uniforms[1] = glm::vec4(10.0f, 10.0f, 10.0f, 0.0f);
-	uniforms[2] = glm::vec4(1.0f);
-	uniforms[3] = glm::vec4(fogEnabled, fogNear, fogFar, 0.0f);
-	uniforms[4] = glm::vec4(fogColor, 0.0f);
+	uniforms[0] = glm::vec4(camera->getPosition(), 0.0f);
+	uniforms[1] = glm::vec4(direction, 0.0f);
+	uniforms[2] = glm::vec4(color, 0.0f);
 
 	// submit uniforms
 	lightingUniforms.submit();

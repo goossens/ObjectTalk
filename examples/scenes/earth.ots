@@ -50,7 +50,7 @@
 					"far": 10.0,
 					"fov": 60.0,
 					"near": 0.10000000149011612,
-					"pitch": 90.0,
+					"pitch": 89.5,
 					"target": [
 						0.0,
 						0.0,
@@ -171,13 +171,14 @@
 						"albedo": [
 							0.1568627506494522,
 							0.1568627506494522,
-							0.1568627506494522,
-							1.0
+							0.1568627506494522
 						],
 						"albedoTexture": "",
 						"ao": 1.0,
 						"aoTexture": "",
 						"component": "Material",
+						"emissive": 0.0,
+						"emissiveTexture": "",
 						"metallic": 0.5,
 						"metallicTexture": "",
 						"normalTexture": "",
@@ -230,13 +231,14 @@
 						"albedo": [
 							1.0,
 							1.0,
-							1.0,
 							1.0
 						],
 						"albedoTexture": "assets/earth.png",
 						"ao": 1.0,
 						"aoTexture": "",
 						"component": "Material",
+						"emissive": 0.0,
+						"emissiveTexture": "",
 						"metallic": 0.23000000417232513,
 						"metallicTexture": "",
 						"normalTexture": "",

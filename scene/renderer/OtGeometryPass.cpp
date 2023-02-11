@@ -60,19 +60,25 @@ void OtSceneRenderer::renderGeometry(OtPass& pass, OtScene2 scene, OtEntity enti
 
 	// set the uniform values
 	glm::vec4* uniforms = materialUniforms.getValues();
-	uniforms[0] = material.albedo;
+	uniforms[0] = glm::vec4(material.albedo, 0.0f);
 
 	uniforms[1] = glm::vec4(
 		material.metallic,
 		material.roughness,
-		material.ao,
-		material.albedoTexture.isValid());
+		material.emissive,
+		material.ao);
 
 	uniforms[2] = glm::vec4(
+		material.albedoTexture.isValid(),
 		material.metallicTexture.isValid(),
 		material.roughnessTexture.isValid(),
+		0.0f);
+
+	uniforms[3] = glm::vec4(
+		material.emissiveTexture.isValid(),
 		material.aoTexture.isValid(),
-		material.normalTexture.isValid());
+		material.normalTexture.isValid(),
+		0.0);
 
 	materialUniforms.submit();
 
@@ -80,8 +86,9 @@ void OtSceneRenderer::renderGeometry(OtPass& pass, OtScene2 scene, OtEntity enti
 	geometryAlbedoSampler.submit(0, material.albedoTexture);
 	geometryMetallicSampler.submit(1, material.metallicTexture);
 	geometryRoughnessSampler.submit(2, material.roughnessTexture);
-	geometryAoSampler.submit(3, material.aoTexture);
-	geometryNormalSampler.submit(4, material.normalTexture);
+	geometryEmissiveSampler.submit(3, material.emissiveTexture);
+	geometryAoSampler.submit(4, material.aoTexture);
+	geometryNormalSampler.submit(5, material.normalTexture);
 
 	// set the shader state
 	if (geometry.wireframe) {
@@ -128,11 +135,6 @@ void OtSceneRenderer::visualizeGbuffer() {
 	if (ImGui::BeginTabBar("Textures")) {
 		if (ImGui::BeginTabItem("Albado")) {
 			ImGui::Image((void*)(intptr_t) gbuffer.getAlbedoTextureIndex(), size);
-			ImGui::EndTabItem();
-		}
-
-		if (ImGui::BeginTabItem("Position")) {
-			ImGui::Image((void*)(intptr_t) gbuffer.getPositionTextureIndex(), size);
 			ImGui::EndTabItem();
 		}
 

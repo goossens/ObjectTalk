@@ -132,7 +132,7 @@ void OtPass::submitQuad(int w, int h) {
 		OtExcept("Internal error: rendering slot for pass not reserved");
 	}
 
-	// submit a "single triangle" as a quad covering a complete rectangle
+	// submit a "single triangle" covering the rectangular quad
 	if (bgfx::getAvailTransientVertexBuffer(3, OtVertexPosTex::getLayout()) == 3) {
 		bool originBottomLeft = OtGpuHasOriginBottomLeft();
 

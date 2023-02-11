@@ -14,6 +14,8 @@ $input v_texcoord0
 const float PI = 3.14159265359;
 
 // uniforms
+uniform mat4 u_inverseTransform;
+
 uniform vec4 u_lighting[3];
 #define u_cameraPosition u_lighting[0].xyz
 #define u_directionalLightDirection u_lighting[1].xyz
@@ -21,9 +23,23 @@ uniform vec4 u_lighting[3];
 
 // texture samplers
 SAMPLER2D(s_lightingAlbedoTexture, 0);
-SAMPLER2D(s_lightingPositionTexture, 1);
-SAMPLER2D(s_lightingNormalTexture, 2);
-SAMPLER2D(s_lightingPbrTexture, 3);
+SAMPLER2D(s_lightingNormalTexture, 1);
+SAMPLER2D(s_lightingPbrTexture, 2);
+SAMPLER2D(s_lightingDepthTexture, 3);
+
+// determine world coordinates from UV and depth
+vec3 uvToWorld(vec2 uv, float depth) {
+
+#if BGFX_SHADER_LANGUAGE_GLSL
+	vec3 ndc = vec3(uv * 2.0 - 1.0, depth * 2.0 - 1.0);
+#else
+	vec3 ndc = vec3(uv * 2.0 - 1.0, depth);
+	ndc.y = -ndc.y;
+#endif
+
+	vec4 world = mul(u_inverseTransform, vec4(ndc, 1.0));
+	return world.xyz / world.w;
+}
 
 // Normal Distribution Function (NDF)
 float DistributionGGX(vec3 N, vec3 H, float roughness) {
@@ -57,21 +73,24 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0) {
 
 // main function
 void main() {
-	// discard pixel if too transparent
+	// ignore pixels without geometry
 	vec4 albedoSample = texture2D(s_lightingAlbedoTexture, v_texcoord0);
 
-	if (albedoSample.a < 0.05) {
+	if (albedoSample.a == 0.0) {
 		discard;
 	}
 
 	// sample gbuffer
 	vec3 albedo = albedoSample.rgb;
-	vec3 pos = texture2D(s_lightingPositionTexture, v_texcoord0).rgb;
 	vec3 N = normalize(texture2D(s_lightingNormalTexture, v_texcoord0).rgb);
 	vec4 pbr = texture2D(s_lightingPbrTexture, v_texcoord0);
 	float metallic = pbr.r;
 	float roughness = pbr.g;
-	float ao = pbr.b;
+	float emissive = pbr.b;
+	float ao = pbr.a;
+
+	// determine world coordinates
+	vec3 pos = uvToWorld(v_texcoord0, texture2D(s_lightingDepthTexture, v_texcoord0).x);
 
 	// determine view, directional light and halfway vectors
 	vec3 V = normalize(u_cameraPosition - pos);
@@ -95,8 +114,14 @@ void main() {
 
 	// determine direct light radiance
 	float NdotL = max(dot(N, L), 0.0);
-	vec3 color = (vec3_splat(0.03) * albedo * ao) + ((kD * albedo / PI + specular) * NdotL);
+	vec3 color = (kD * albedo / PI + specular) * u_directionalLightColor * NdotL;
 
-	// set final color
-	gl_FragColor = vec4(color, albedoSample.a);
+	// add ambient color
+	color += vec3_splat(0.03) * albedo * ao;
+
+	// add emissive light
+	color += emissive * albedo;
+
+	// set the HDR color (tonemapping and Gamma correction are done during post-processing)
+	gl_FragColor = vec4(color, 1.0);
 }

@@ -40,11 +40,13 @@ bool OtMaterialComponent::renderGUI() {
 	changed |= ImGui::ColorEdit3("Albedo Color", glm::value_ptr(albedo));
 	changed |= ImGui::SliderFloat("Metallic", &metallic, 0.0f, 1.0f, "%.2f");
 	changed |= ImGui::SliderFloat("Roughness", &roughness, 0.0f, 1.0f, "%.2f");
+	changed |= ImGui::SliderFloat("Emissive", &emissive, 0.0f, 4.0f, "%.2f");
 	changed |= ImGui::SliderFloat("Ambient Occlusion", &ao, 0.0f, 1.0f, "%.2f");
 	changed |= editPath("Albedo Texture", albedoTexturePath, updateAlbedoTexture);
 	changed |= editPath("Normal Texture", normalTexturePath, updateNormalTexture);
 	changed |= editPath("Metallic Texture", metallicTexturePath, updateMetallicTexture);
 	changed |= editPath("Roughness Texture", roughnessTexturePath, updateRoughnessTexture);
+	changed |= editPath("Emissive Texture", emissiveTexturePath, updateEmissiveTexture);
 	changed |= editPath("AO Texture", aoTexturePath, updateAoTexture);
 	return changed;
 }
@@ -60,11 +62,13 @@ nlohmann::json OtMaterialComponent::serialize(std::filesystem::path* basedir) {
 	data["albedo"] = albedo;
 	data["metallic"] = metallic;
 	data["roughness"] = roughness;
+	data["emissive"] = emissive;
 	data["ao"] = ao;
 	data["albedoTexture"] = OtComponentGetRelativePath(albedoTexturePath, basedir);
 	data["normalTexture"] = OtComponentGetRelativePath(normalTexturePath, basedir);
 	data["metallicTexture"] = OtComponentGetRelativePath(metallicTexturePath, basedir);
 	data["roughnessTexture"] = OtComponentGetRelativePath(roughnessTexturePath, basedir);
+	data["emissiveTexture"] = OtComponentGetRelativePath(emissiveTexturePath, basedir);
 	data["aoTexture"] = OtComponentGetRelativePath(aoTexturePath, basedir);
 	return data;
 }
@@ -75,26 +79,29 @@ nlohmann::json OtMaterialComponent::serialize(std::filesystem::path* basedir) {
 //
 
 void OtMaterialComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
-	albedo = data.value("albedo", glm::vec4(1.0f));
+	albedo = data.value("albedo", glm::vec3(1.0f));
 	metallic = data.value("metallic", 0.5f);
 	roughness = data.value("roughness", 0.5f);
+	emissive = data.value("emissive", 0.0f);
 	ao = data.value("ao", 1.0f);
 	albedoTexturePath = OtComponentGetAbsolutePath(data, "albedoTexture", basedir);
 	normalTexturePath = OtComponentGetAbsolutePath(data, "normalTexture", basedir);
 	metallicTexturePath = OtComponentGetAbsolutePath(data, "metallicTexture", basedir);
 	roughnessTexturePath = OtComponentGetAbsolutePath(data, "roughnessTexture", basedir);
+	emissiveTexturePath = OtComponentGetAbsolutePath(data, "emissiveTexture", basedir);
 	aoTexturePath = OtComponentGetAbsolutePath(data, "aoTexture", basedir);
 
 	updateAlbedoTexture = true;
 	updateNormalTexture = true;
 	updateMetallicTexture = true;
 	updateRoughnessTexture = true;
+	updateEmissiveTexture = true;
 	updateAoTexture = true;
 }
 
 
 //
-//	OtMaterialComponent::isValid
+//	OtMaterialComponent::update
 //
 
 static inline void updateTexture(OtTexture& texture, const std::filesystem::path& path, bool& flag) {
@@ -115,5 +122,6 @@ void OtMaterialComponent::update() {
 	updateTexture(normalTexture, normalTexturePath, updateNormalTexture);
 	updateTexture(metallicTexture, metallicTexturePath, updateMetallicTexture);
 	updateTexture(roughnessTexture, roughnessTexturePath, updateRoughnessTexture);
+	updateTexture(emissiveTexture, emissiveTexturePath, updateEmissiveTexture);
 	updateTexture(aoTexture, aoTexturePath, updateAoTexture);
 }

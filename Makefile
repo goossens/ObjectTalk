@@ -8,7 +8,7 @@ SRC=$(wildcard app/*.cpp libot/*/*.cpp modules/*/*.cpp  modules/*/*/*.cpp)
 INC=$(wildcard libot/include/*.h libot/include/ot/*.h modules/*/*.h modules/*/*/*.h)
 TST=$(wildcard tests/*/*.ot)
 
-.PHONY: debug release xcode gui docs cleanup alpine ubuntu clean distclean
+.PHONY: debug release shaders xcode gui docs cleanup alpine ubuntu clean distclean
 
 debug:
 	cmake -Bdebug -DCMAKE_BUILD_TYPE=Debug
@@ -17,6 +17,12 @@ debug:
 release:
 	cmake -Brelease -DCMAKE_BUILD_TYPE=Release
 	cd release && make
+
+shaders:
+	./gui/shaders/update
+
+shaders-force:
+	./gui/shaders/update --force
 
 xcode:
 	cmake -Bxcode -GXcode

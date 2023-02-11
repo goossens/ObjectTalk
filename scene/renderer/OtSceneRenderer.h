@@ -19,6 +19,7 @@
 #include "OtSampler.h"
 #include "OtShader.h"
 #include "OtSphereGeometry.h"
+#include "OtUniformMat4.h"
 #include "OtUniformVec4.h"
 
 #include "OtCamera2.h"
@@ -79,18 +80,20 @@ private:
 	OtSphereGeometry unitySphereGeometry;
 
 	// uniforms
-	OtUniformVec4 materialUniforms{"u_material", 3};
+	OtUniformVec4 materialUniforms{"u_material", 4};
 	OtUniformVec4 backgroundUniforms{"u_background", 1};
 	OtUniformVec4 lightingUniforms{"u_lighting", 3};
 	OtUniformVec4 gridUniforms{"u_grid", 1};
 	OtUniformVec4 bloomUniforms{"u_bloom", 1};
 	OtUniformVec4 postProcessUniforms{"u_postProcess", 1};
+	OtUniformMat4 inverseTransform{"u_inverseTransform", 1};
 
 	// samplers
 	OtSampler geometryAlbedoSampler{"s_geometryAlbedoTexture"};
 	OtSampler geometryNormalSampler{"s_geometryNormalTexture"};
 	OtSampler geometryMetallicSampler{"s_geometryMetallicTexture"};
 	OtSampler geometryRoughnessSampler{"s_geometryRoughnessTexture"};
+	OtSampler geometryEmissiveSampler{"s_geometryEmissiveSampler"};
 	OtSampler geometryAoSampler{"s_geometryAoTexture"};
 
 	OtSampler skyBoxSampler{"s_skyBoxTexture"};
@@ -100,6 +103,7 @@ private:
 	OtSampler lightingPositionSampler{"s_lightingPositionTexture"};
 	OtSampler lightingNormalSampler{"s_lightingNormalTexture"};
 	OtSampler lightingPbrSampler{"s_lightingPbrTexture"};
+	OtSampler lightingDepthSampler{"s_lightingDepthTexture"};
 
 	OtSampler postProcessSampler{"s_postProcessTexture"};
 	OtSampler bloomSampler{"s_bloomTexture"};

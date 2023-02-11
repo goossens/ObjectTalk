@@ -32,20 +32,21 @@ void OtSceneRenderer::renderLightingPass(OtScene2 scene) {
 		color = light.color;
 	}
 
-	// build the uniforms
+	// build and submit the uniforms
 	glm::vec4* uniforms = lightingUniforms.getValues();
 	uniforms[0] = glm::vec4(camera->getPosition(), 0.0f);
 	uniforms[1] = glm::vec4(direction, 0.0f);
 	uniforms[2] = glm::vec4(color, 0.0f);
-
-	// submit uniforms
 	lightingUniforms.submit();
+
+	inverseTransform.set(0, glm::inverse(camera->getViewProjectionMatrix()));
+	inverseTransform.submit();
 
 	// bind all textures
 	gbuffer.bindAlbedoTexture(lightingAlbedoSampler, 0);
-	gbuffer.bindPositionTexture(lightingPositionSampler, 1);
-	gbuffer.bindNormalTexture(lightingNormalSampler, 2);
-	gbuffer.bindPbrTexture(lightingPbrSampler, 3);
+	gbuffer.bindNormalTexture(lightingNormalSampler, 1);
+	gbuffer.bindPbrTexture(lightingPbrSampler, 2);
+	gbuffer.bindDepthTexture(lightingDepthSampler, 3);
 
 	// run the shader
 	lightingShader.setState(OtStateWriteRgb | OtStateWriteA | OtStateDepthTestAlways);

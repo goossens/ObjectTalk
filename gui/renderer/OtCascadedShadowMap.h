@@ -45,7 +45,7 @@ public:
 	// get dimensions
 	int getSize() { return size; }
 
-	// number of layers in shadowmap
+	// number of cascades in shadowmap
 	constexpr static int cascades = 4;
 
 private:

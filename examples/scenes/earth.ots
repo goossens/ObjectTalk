@@ -65,6 +65,11 @@
 					"yaw": 0.0
 				},
 				"component": "Camera"
+			},
+			{
+				"Exposure": 1.2000000476837158,
+				"bloomIntensity": 0.8999999761581421,
+				"component": "Post Processing"
 			}
 		]
 	},
@@ -109,7 +114,7 @@
 		"components": [
 			{
 				"component": "Core",
-				"tag": "Stars",
+				"tag": "Outer Space",
 				"uuid": 2003886846
 			},
 			{

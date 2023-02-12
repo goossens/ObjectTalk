@@ -30,7 +30,7 @@ public:
 	// reserve a rendering slot for this pass
 	void reserveRenderingSlot();
 
-	// set properties
+	// manipulate pass
 	void setClear(bool color, bool depth, uint32_t rgba=0x000000ff, float depthValue=1.0f);
 	void setRectangle(int x, int y, int w, int h);
 	void setFrameBuffer(OtFrameBuffer& framebuffer);

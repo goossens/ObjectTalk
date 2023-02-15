@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include "glm/glm.hpp"
+
 #include "OtBoxGeometry.h"
 #include "OtFrameBuffer.h"
 #include "OtGbuffer.h"
@@ -22,7 +24,6 @@
 #include "OtUniformMat4.h"
 #include "OtUniformVec4.h"
 
-#include "OtCamera2.h"
 #include "OtEntity.h"
 #include "OtScene2.h"
 
@@ -33,13 +34,17 @@
 
 class OtSceneRenderer {
 public:
-	// render the specified scene
-	int render(OtScene2 scene, OtCamera2 camera, int width, int height);
-
-	// set the grid scale
+	// set the properties
+	void setCameraPosition(const glm::vec3 pos) { cameraPosition = pos; }
+	void setViewMatrix(const glm::mat4& view) { viewMatrix = view; viewProjectionMatrix = projectionMatrix * view; }
+	void setProjectionMatrix(const glm::mat4& proj) { projectionMatrix = proj; viewProjectionMatrix = proj * viewMatrix; }
+	void setSize(int w, int h) { width = w; height = h; }
 	void setGridScale(float gs) { gridScale = gs; }
 
-	// get the gbuffer (for debugging purposes)
+	// render the specified scene
+	int render(OtScene2 scene);
+
+	// show the gbuffer (for debugging purposes)
 	void visualizeGbuffer();
 
 private:
@@ -57,8 +62,11 @@ private:
 	void renderGeometry(OtPass& pass, OtScene2 scene, OtEntity entity);
 	void renderBloom(float bloomIntensity);
 
-	// target camera
-	OtCamera2 camera;
+	// camera information
+	glm::vec3 cameraPosition;
+	glm::mat4 viewMatrix;
+	glm::mat4 projectionMatrix;
+	glm::mat4 viewProjectionMatrix;
 
 	// image dimensions
 	int width;

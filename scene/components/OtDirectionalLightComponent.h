@@ -22,10 +22,6 @@
 
 class OtDirectionalLightComponent {
 public:
-	// constructors
-	OtDirectionalLightComponent() = default;
-	OtDirectionalLightComponent(const glm::vec3& c) : color(c) {}
-
 	// GUI to change component properties
 	bool renderGUI();
 

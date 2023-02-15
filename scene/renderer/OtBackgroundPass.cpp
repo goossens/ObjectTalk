@@ -40,7 +40,6 @@ void OtSceneRenderer::renderBackgroundPass(OtScene2 scene) {
 	uint32_t clearColor = (result[0] << 24) | (result[1] << 16) | (result[2] << 8) | 255;
 
 	// get the camera's view matrix and decompose it
-	auto viewMatrix = camera->getViewMatrix();
 	glm::vec3 scale;
 	glm::quat rotate;
 	glm::vec3 translate;
@@ -57,7 +56,7 @@ void OtSceneRenderer::renderBackgroundPass(OtScene2 scene) {
 	pass.setClear(true, false, clearColor);
 	pass.setRectangle(0, 0, width, height);
 	pass.setFrameBuffer(compositeBuffer);
-	pass.setTransform(newViewMatrix, camera->getProjectionMatrix());
+	pass.setTransform(newViewMatrix, projectionMatrix);
 
 	// copy depth buffer from geometry gbuffer to the composite framebuffer
 	pass.blit(compositeBuffer.getDepthTexture(), 0, 0, gbuffer.getDepthTexture());

@@ -15,9 +15,8 @@
 #include <filesystem>
 #include <string>
 
+#include "glm/glm.hpp"
 #include "nlohmann/json_fwd.hpp"
-
-#include "OtCamera2.h"
 
 
 //
@@ -26,9 +25,8 @@
 
 class OtCameraComponent {
 public:
-	// constructors
-	OtCameraComponent();
-	OtCameraComponent(const std::string& type);
+	// get the matrix
+	glm::mat4 getProjectionMatrix(float aspectRatio);
 
 	// GUI to change component properties
 	bool renderGUI();
@@ -41,9 +39,7 @@ public:
 	static constexpr char const* name = "Camera";
 
 	// stored properties
-	OtCamera2 camera;
-
-private:
-	// create a new named camera instance
-	void createCamera(const std::string& type);
+	float fov = 60.0f;
+	float nearPlane = 0.1f;
+	float farPlane = 100.0f;
 };

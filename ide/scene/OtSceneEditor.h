@@ -14,10 +14,11 @@
 
 #include <filesystem>
 
+#include "glm/glm.hpp"
 #include "ImGuizmo.h"
 
-#include "OtOrbitalCamera.h"
 #include "OtScene2.h"
+#include "OtSceneEditorCamera.h"
 #include "OtSceneRenderer.h"
 
 #include "OtEditor.h"
@@ -120,10 +121,9 @@ private:
 	float maxEntityPanelHeight = -1.0f;
 	float buttonSize;
 
-	// cameras
-	OtCamera2 camera;
+	// camera information
 	OtEntity selectedCamera = OtEntityNull;
-	OtOrbitalCamera editorCamera;
+	OtSceneEditorCamera editorCamera;
 
 	// grid controls
 	bool gridVisible = false;

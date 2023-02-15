@@ -252,7 +252,7 @@ void OtFrameworkClass::frameIMGUI(std::vector<OtFwEvent>& events) {
 				io.AddKeyEvent(ImGuiMod_Shift, (event.keyboard.mods & GLFW_MOD_SHIFT) != 0);
 				io.AddKeyEvent(ImGuiMod_Alt, (event.keyboard.mods & GLFW_MOD_ALT) != 0);
 				io.AddKeyEvent(ImGuiMod_Super, (event.keyboard.mods & GLFW_MOD_SUPER) != 0);
-				io.AddKeyEvent(toImGuiKey(event.keyboard.key), (event.keyboard.action == GLFW_PRESS));
+				io.AddKeyEvent(toImGuiKey(event.keyboard.key), (event.keyboard.action != GLFW_RELEASE));
 				break;
 
 			case OtFwEvent::characterEvent:

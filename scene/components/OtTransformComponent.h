@@ -24,17 +24,8 @@
 
 class OtTransformComponent {
 public:
-	// constructors
-	OtTransformComponent() = default;
-
-	OtTransformComponent(const glm::vec3& t, const glm::vec3& r, const glm::vec3& s) :
-		translation(t), rotation(r), scale(s), active(true) {}
-
-	// get the full transform
-	glm::mat4 getTransform() const;
-
-	// reset the transform
-	void reset();
+	// get the transform
+	glm::mat4 getTransform();
 
 	// GUI to change component properties
 	bool renderGUI();
@@ -50,5 +41,4 @@ public:
 	glm::vec3 translation = { 0.0f, 0.0f, 0.0f };
 	glm::vec3 rotation = { 0.0f, 0.0f, 0.0f };
 	glm::vec3 scale = { 1.0f, 1.0f, 1.0f };
-	bool active = true;
 };

@@ -22,10 +22,6 @@
 
 class OtBackgroundComponent {
 public:
-	// constructors
-	OtBackgroundComponent() = default;
-	OtBackgroundComponent(const glm::vec3& c) : color(c) {}
-
 	// GUI to change component properties
 	bool renderGUI();
 

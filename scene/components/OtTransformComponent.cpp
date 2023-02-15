@@ -23,24 +23,10 @@
 //	OtTransformComponent::getTransform
 //
 
-glm::mat4 OtTransformComponent::getTransform() const
-{
-	auto rot = glm::radians(rotation);
-
+glm::mat4 OtTransformComponent::getTransform() {
 	return glm::translate(glm::mat4(1.0f), translation) *
-		glm::toMat4(glm::quat(rot)) *
+		glm::toMat4(glm::quat(glm::radians(rotation))) *
 		glm::scale(glm::mat4(1.0f), scale);
-}
-
-
-//
-//	OtTransformComponent::reset
-//
-
-void OtTransformComponent::reset() {
-	translation = { 0.0f, 0.0f, 0.0f };
-	rotation = { 0.0f, 0.0f, 0.0f };
-	scale = { 1.0f, 1.0f, 1.0f };
 }
 
 

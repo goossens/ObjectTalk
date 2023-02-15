@@ -16,12 +16,7 @@
 //	OtSceneRenderer::render
 //
 
-int OtSceneRenderer::render(OtScene2 scene, OtCamera2 c, int w, int h) {
-	// save information
-	camera = c;
-	width = w;
-	height = h;
-
+int OtSceneRenderer::render(OtScene2 scene) {
 	// render all passes
 	renderGeometryPass(scene);
 	renderBackgroundPass(scene);

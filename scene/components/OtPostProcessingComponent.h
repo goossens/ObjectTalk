@@ -22,9 +22,6 @@
 
 class OtPostProcessingComponent {
 public:
-	// constructor
-	OtPostProcessingComponent() = default;
-
 	// GUI to change component properties
 	bool renderGUI();
 

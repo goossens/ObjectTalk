@@ -8,26 +8,28 @@
 				"uuid": 182459982
 			},
 			{
-				"camera": {
-					"distance": 3.0,
-					"far": 10.0,
-					"fov": 60.0,
-					"near": 0.10000000149011612,
-					"pitch": 34.95009994506836,
-					"target": [
-						0.0,
-						0.0,
-						0.0
-					],
-					"type": "Orbital Perspective",
-					"up": [
-						0.0,
-						1.0,
-						0.0
-					],
-					"yaw": -11.700021743774414
-				},
-				"component": "Camera"
+				"component": "Transform",
+				"rotation": [
+					-19.0,
+					-18.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				],
+				"translation": [
+					-0.699999988079071,
+					1.100000023841858,
+					2.799999952316284
+				]
+			},
+			{
+				"component": "Camera",
+				"far": 1000.0,
+				"fov": 60.0,
+				"near": 0.10000000149011612
 			},
 			{
 				"Exposure": 1.2000000476837158,
@@ -45,26 +47,28 @@
 				"uuid": 2485054175
 			},
 			{
-				"camera": {
-					"distance": 3.0,
-					"far": 10.0,
-					"fov": 60.0,
-					"near": 0.10000000149011612,
-					"pitch": 89.5,
-					"target": [
-						0.0,
-						0.0,
-						0.0
-					],
-					"type": "Orbital Perspective",
-					"up": [
-						0.0,
-						1.0,
-						0.0
-					],
-					"yaw": 0.0
-				},
-				"component": "Camera"
+				"component": "Transform",
+				"rotation": [
+					-90.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				],
+				"translation": [
+					0.0,
+					3.0,
+					0.0
+				]
+			},
+			{
+				"component": "Camera",
+				"far": 1000.0,
+				"fov": 60.0,
+				"near": 0.10000000149011612
 			},
 			{
 				"Exposure": 1.2000000476837158,

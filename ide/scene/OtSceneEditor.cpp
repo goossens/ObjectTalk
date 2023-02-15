@@ -157,7 +157,7 @@ void OtSceneEditorClass::render() {
 
 static void makeCameraList(OtScene2 scene, OtEntity entity, OtEntity* list, int& count) {
 	if (count < 9) {
-		if (scene->hasComponent<OtCameraComponent>(entity)) {
+		if (scene->hasComponent<OtCameraComponent>(entity) && scene->hasComponent<OtTransformComponent>(entity)) {
 			list[count++] = entity;
 		}
 
@@ -244,9 +244,14 @@ void OtSceneEditorClass::renderMenu() {
 					selectedCamera = OtEntityNull;
 				}
 
-				for (auto [entity, component] : scene->view<OtCameraComponent>().each()) {
-					if (ImGui::RadioButton(scene->getTag(entity).c_str(), selectedCamera == entity)) {
-						selectedCamera = entity;
+				// get a list of cameras
+				OtEntity list[9];
+				int entries = 0;
+				makeCameraList(scene, scene->getRootEntity(), list, entries);
+
+				for (auto i = 0; i < entries; i++) {
+					if (ImGui::RadioButton(scene->getTag(list[i]).c_str(), selectedCamera == list[i])) {
+						selectedCamera = list[i];
 					}
 				}
 
@@ -394,28 +399,39 @@ void OtSceneEditorClass::renderViewPort() {
 	ImGui::BeginChild("viewport", ImVec2(), true);
 	auto size = ImGui::GetContentRegionAvail();
 
-	// create editor camera (if required)
-	if (!editorCamera) {
-		editorCamera = OtOrbitalCameraClass::create();
+	// ensure we still have a valid selected camera
+	if (scene->isValidEntity(selectedCamera)) {
+		if (!scene->hasComponent<OtCameraComponent>(selectedCamera) || !scene->hasComponent<OtTransformComponent>(selectedCamera)) {
+			selectedCamera = OtEntityNull;
+		}
 	}
 
-	// determine current camera
-	if (scene->isValidEntity(selectedCamera) && scene->hasComponent<OtCameraComponent>(selectedCamera)) {
-		camera = scene->getComponent<OtCameraComponent>(selectedCamera).camera;
+	// get camera information
+	glm::vec3 cameraPosition;
+	glm::mat4 camerViewMatrix;
+	glm::mat4 cameraProjectionMatrix;
+
+	if (scene->isValidEntity(selectedCamera)) {
+		auto transform = scene->getComponent<OtTransformComponent>(selectedCamera);
+		auto camera = scene->getComponent<OtCameraComponent>(selectedCamera);
+		camerViewMatrix = glm::inverse(transform.getTransform());
+		cameraPosition = glm::vec3(camerViewMatrix[3]);
+		cameraProjectionMatrix = camera.getProjectionMatrix(size.x / size.y);
 
 	} else {
-		selectedCamera = OtEntityNull;
-		camera = editorCamera;
+		editorCamera.update();
+		cameraPosition = editorCamera.getPosition();
+		camerViewMatrix = editorCamera.getViewMatrix();
+		cameraProjectionMatrix = editorCamera.getProjectionMatrix(size.x / size.y);
 	}
 
-	// update the camera
-	camera->setAspectRatio(size.x / size.y);
-
-	// update the grid
-	renderer.setGridScale(gridVisible ? gridScale : 0.0f);
-
 	// render the scene
-	auto textureIndex = renderer.render(scene, camera, size.x, size.y);
+	renderer.setCameraPosition(cameraPosition);
+	renderer.setViewMatrix(camerViewMatrix);
+	renderer.setProjectionMatrix(cameraProjectionMatrix);
+	renderer.setSize(size.x, size.y);
+	renderer.setGridScale(gridVisible ? gridScale : 0.0f);
+	auto textureIndex = renderer.render(scene);
 
 	// show it on the screen
 	if (OtGpuHasOriginBottomLeft()) {
@@ -426,11 +442,11 @@ void OtSceneEditorClass::renderViewPort() {
 	}
 
 	// handle mouse and keyboard interactions
-	if (ImGui::IsItemHovered() && ImGui::IsKeyDown(ImGuiMod_Alt)) {
-		camera->handleMouseKeyboard();
+	if (ImGui::IsItemHovered() && !scene->isValidEntity(selectedCamera)) {
+		editorCamera.handleKeyboardAndMouse();
 	}
 
-	// only show guizmo if its visibility in on and the selected entiy has a transform
+	// only show guizmo if its visibility is on and the selected entiy has a transform
 	if (guizmoVisible && scene->isValidEntity(selectedEntity) && scene->hasComponent<OtTransformComponent>(selectedEntity)) {
 		// configure the guizmo
 		ImGuizmo::SetOrthographic(false);
@@ -442,18 +458,14 @@ void OtSceneEditorClass::renderViewPort() {
 			ImGui::GetWindowWidth(),
 			ImGui::GetWindowHeight());
 
-		// get camera information
-		glm::mat4 cameraView = camera->getViewMatrix();
-		glm::mat4 cameraProjection = camera->getProjectionMatrix();
-
 		// get the target transform
 		auto& component = scene->getComponent<OtTransformComponent>(selectedEntity);
 		auto transform = component.getTransform();
 
 		// show the guizmo
 		ImGuizmo::Manipulate(
-			glm::value_ptr(cameraView),
-			glm::value_ptr(cameraProjection),
+			glm::value_ptr(camerViewMatrix),
+			glm::value_ptr(cameraProjectionMatrix),
 			guizmoOperation,
 			ImGuizmo::LOCAL,
 			glm::value_ptr(transform),

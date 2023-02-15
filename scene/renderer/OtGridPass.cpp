@@ -30,7 +30,7 @@ void OtSceneRenderer::renderGridPass() {
 	pass.setClear(false, false);
 	pass.setRectangle(0, 0, width, height);
 	pass.setFrameBuffer(compositeBuffer);
-	pass.setTransform(camera->getViewMatrix(), camera->getProjectionMatrix());
+	pass.setTransform(viewMatrix, projectionMatrix);
 
 	// send out geometry
 	static glm::vec3 vertices[] = {

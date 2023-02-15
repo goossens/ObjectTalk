@@ -34,12 +34,12 @@ void OtSceneRenderer::renderLightingPass(OtScene2 scene) {
 
 	// build and submit the uniforms
 	glm::vec4* uniforms = lightingUniforms.getValues();
-	uniforms[0] = glm::vec4(camera->getPosition(), 0.0f);
+	uniforms[0] = glm::vec4(cameraPosition, 0.0f);
 	uniforms[1] = glm::vec4(direction, 0.0f);
 	uniforms[2] = glm::vec4(color, 0.0f);
 	lightingUniforms.submit();
 
-	inverseTransform.set(0, glm::inverse(camera->getViewProjectionMatrix()));
+	inverseTransform.set(0, glm::inverse(viewProjectionMatrix));
 	inverseTransform.submit();
 
 	// bind all textures

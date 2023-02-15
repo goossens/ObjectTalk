@@ -5,36 +5,41 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 
+#pragma once
+
+
 //
 //	Include files
 //
 
 #include "bgfx/embedded_shader.h"
 
-#include "OtBlendMappedShader.h"
-#include "OtBlitShader.h"
-#include "OtBloomShader.h"
-#include "OtBloomDownSampleShader.h"
-#include "OtBloomUpSampleShader.h"
-#include "OtBlurShader.h"
-#include "OtColoredShader.h"
-#include "OtDebugShader.h"
-#include "OtFixedShader.h"
-#include "OtGeometryShader.h"
-#include "OtGridShader.h"
-#include "OtImGuiShader.h"
-#include "OtLightingShader.h"
-#include "OtPostProcessShader.h"
-#include "OtShadowShader.h"
-#include "OtSkyShader.h"
-#include "OtSkyboxShader.h"
-#include "OtSkybox2Shader.h"
-#include "OtSkySphereShader.h"
-#include "OtTerrainShader.h"
-#include "OtTexturedShader.h"
-#include "OtTransparentShadowShader.h"
-#include "OtVectorDisplayShader.h"
-#include "OtWaterShader.h"
+#include "generated/OtBlendMappedShader.h"
+#include "generated/OtBlitShader.h"
+#include "generated/OtBloomShader.h"
+#include "generated/OtBloomDownSampleShader.h"
+#include "generated/OtBloomUpSampleShader.h"
+#include "generated/OtBlurShader.h"
+#include "generated/OtColoredShader.h"
+#include "generated/OtDebugShader.h"
+#include "generated/OtFixedShader.h"
+#include "generated/OtGeometryShader.h"
+#include "generated/OtGridShader.h"
+#include "generated/OtImGuiShader.h"
+#include "generated/OtLightingShader.h"
+#include "generated/OtOutlineShader.h"
+#include "generated/OtPostProcessShader.h"
+#include "generated/OtSelectShader.h"
+#include "generated/OtShadowShader.h"
+#include "generated/OtSkyShader.h"
+#include "generated/OtSkySphereShader.h"
+#include "generated/OtSkyboxShader.h"
+#include "generated/OtSkybox2Shader.h"
+#include "generated/OtTerrainShader.h"
+#include "generated/OtTexturedShader.h"
+#include "generated/OtTransparentShadowShader.h"
+#include "generated/OtVectorDisplayShader.h"
+#include "generated/OtWaterShader.h"
 
 
 //
@@ -71,19 +76,23 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtImGuiFS),
 	BGFX_EMBEDDED_SHADER(OtLightingVS),
 	BGFX_EMBEDDED_SHADER(OtLightingFS),
+	BGFX_EMBEDDED_SHADER(OtOutlineVS),
+	BGFX_EMBEDDED_SHADER(OtOutlineFS),
 	BGFX_EMBEDDED_SHADER(OtPostProcessVS),
 	BGFX_EMBEDDED_SHADER(OtPostProcessFS),
+	BGFX_EMBEDDED_SHADER(OtSelectVS),
+	BGFX_EMBEDDED_SHADER(OtSelectFS),
 	BGFX_EMBEDDED_SHADER(OtShadowVS),
 	BGFX_EMBEDDED_SHADER(OtShadowFS),
 	BGFX_EMBEDDED_SHADER(OtShadowVSI),
 	BGFX_EMBEDDED_SHADER(OtSkyVS),
 	BGFX_EMBEDDED_SHADER(OtSkyFS),
+	BGFX_EMBEDDED_SHADER(OtSkySphereVS),
+	BGFX_EMBEDDED_SHADER(OtSkySphereFS),
 	BGFX_EMBEDDED_SHADER(OtSkyboxVS),
 	BGFX_EMBEDDED_SHADER(OtSkyboxFS),
 	BGFX_EMBEDDED_SHADER(OtSkybox2VS),
 	BGFX_EMBEDDED_SHADER(OtSkybox2FS),
-	BGFX_EMBEDDED_SHADER(OtSkySphereVS),
-	BGFX_EMBEDDED_SHADER(OtSkySphereFS),
 	BGFX_EMBEDDED_SHADER(OtTerrainVS),
 	BGFX_EMBEDDED_SHADER(OtTerrainFS),
 	BGFX_EMBEDDED_SHADER(OtTexturedVS),

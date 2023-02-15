@@ -37,7 +37,7 @@ function needsUpdate() {
 	then
 		true
 
-	elif [ ! -f ${HOME}/Ot$1Shader.h ]
+	elif [ ! -f ${HOME}/generated/Ot$1Shader.h ]
 	then
 		true
 
@@ -87,19 +87,19 @@ function processShader() {
 
 	UPREFIX=$(echo "${PREFIX}" |  tr '[:lower:]' '[:upper:]')
 
-	if needsUpdate $3 $2.${EXT} ${PREFIX}_mtl.h
+	if needsUpdate $3 $2.${EXT} ${HOME}/generated/$3/${PREFIX}_mtl.h
 	then
 		echo "--------------------------------------- Compiling $1 $2 $3"
-		${SHADERC} -f $2.${EXT} -o ${PREFIX}_mtl.h -i ${HOME}/include --type $1 --platform osx -p metal --bin2c Ot$3${UPREFIX}_mtl
-		${SHADERC} -f $2.${EXT} -o ${PREFIX}_glsl.h -i ${HOME}/include --type $1 --platform linux -p 120 --bin2c Ot$3${UPREFIX}_glsl
-		${SHADERC} -f $2.${EXT} -o ${PREFIX}_essl.h -i ${HOME}/include --type $1 --platform linux -p 300_es --bin2c Ot$3${UPREFIX}_essl
-		${SHADERC} -f $2.${EXT} -o ${PREFIX}_spv.h -i ${HOME}/include --type $1 --platform linux -p spirv --bin2c Ot$3${UPREFIX}_spv
-		fakePart ${PREFIX} dx9
-		fakePart ${PREFIX} dx11
+		${SHADERC} -f $2.${EXT} -o ${HOME}/generated/$3/${PREFIX}_mtl.h -i ${HOME}/include --type $1 --platform osx -p metal --bin2c Ot$3${UPREFIX}_mtl
+		${SHADERC} -f $2.${EXT} -o ${HOME}/generated/$3/${PREFIX}_glsl.h -i ${HOME}/include --type $1 --platform linux -p 120 --bin2c Ot$3${UPREFIX}_glsl
+		${SHADERC} -f $2.${EXT} -o ${HOME}/generated/$3/${PREFIX}_essl.h -i ${HOME}/include --type $1 --platform linux -p 300_es --bin2c Ot$3${UPREFIX}_essl
+		${SHADERC} -f $2.${EXT} -o ${HOME}/generated/$3/${PREFIX}_spv.h -i ${HOME}/include --type $1 --platform linux -p spirv --bin2c Ot$3${UPREFIX}_spv
+		fakePart ${HOME}/generated/$3/${PREFIX} dx9
+		fakePart ${HOME}/generated/$3/${PREFIX} dx11
 	fi
 
-	SHADER_BAT+="%HOMEDRIVE%%HOMEPATH%\\\\bin\\\\shaderc -f $4/$2.${EXT} -o $4/${PREFIX}_dx9.h -i include --type $1 --platform windows -p s_3_0 -O 3 --bin2c Ot$3${UPREFIX}_dx9\n"
-	SHADER_BAT+="%HOMEDRIVE%%HOMEPATH%\\\\bin\\\\shaderc -f $4/$2.${EXT} -o $4/${PREFIX}_dx11.h -i include --type $1 --platform windows -p s_5_0 -O 3 --bin2c Ot$3${UPREFIX}_dx11\n"
+	SHADER_BAT+="%HOMEDRIVE%%HOMEPATH%\\\\bin\\\\shaderc -f $3/$2.${EXT} -o generated/$3/${PREFIX}_dx9.h -i include --type $1 --platform windows -p s_3_0 -O 3 --bin2c Ot$3${UPREFIX}_dx9\n"
+	SHADER_BAT+="%HOMEDRIVE%%HOMEPATH%\\\\bin\\\\shaderc -f $3/$2.${EXT} -o generated/$3/${PREFIX}_dx11.h -i include --type $1 --platform windows -p s_5_0 -O 3 --bin2c Ot$3${UPREFIX}_dx11\n"
 }
 
 
@@ -108,32 +108,32 @@ function processShader() {
 #
 
 function processDirectory() {
-	SHADER_INCLUDES+="#include \"Ot$1Shader.h\"\n"
-	SHADER_LOWERCASE=$(echo "$1" |  tr '[:upper:]' '[:lower:]')
+	SHADER_INCLUDES+="#include \"generated/Ot$1Shader.h\"\n"
 
-	cd ${HOME}/${SHADER_LOWERCASE}
+	mkdir -p ${HOME}/generated/$1
+	cd ${HOME}/$1
 
 	if [ -f shader.vs ]
 	then
-		processShader vertex shader $1 ${SHADER_LOWERCASE}
+		processShader vertex shader $1
 		SHADER_DEFINES+="\tBGFX_EMBEDDED_SHADER(Ot$1VS),\n"
 	fi
 
 	if [ -f shader.fs ]
 	then
-		processShader fragment shader $1 ${SHADER_LOWERCASE}
+		processShader fragment shader $1
 		SHADER_DEFINES+="\tBGFX_EMBEDDED_SHADER(Ot$1FS),\n"
 	fi
 
 	if [ -f instancing.vs ]
 	then
-		processShader vertex instancing $1 ${SHADER_LOWERCASE}
+		processShader vertex instancing $1
 		SHADER_DEFINES+="\tBGFX_EMBEDDED_SHADER(Ot$1VSI),\n"
 	fi
 
 	SHADER_BAT+="\n"
 
-	cat >../Ot$1Shader.h <<END
+	cat >${HOME}/generated/Ot$1Shader.h <<END
 //	ObjectTalk Scripting Language
 //	Copyright (c) 2020-2023 Johan A. Goossens. All rights reserved.
 //
@@ -145,31 +145,31 @@ function processDirectory() {
 //	Include files
 //
 
-#include "${SHADER_LOWERCASE}/vs_mtl.h"
-#include "${SHADER_LOWERCASE}/vs_glsl.h"
-#include "${SHADER_LOWERCASE}/vs_essl.h"
-#include "${SHADER_LOWERCASE}/vs_spv.h"
-#include "${SHADER_LOWERCASE}/vs_dx9.h"
-#include "${SHADER_LOWERCASE}/vs_dx11.h"
+#include "$1/vs_mtl.h"
+#include "$1/vs_glsl.h"
+#include "$1/vs_essl.h"
+#include "$1/vs_spv.h"
+#include "$1/vs_dx9.h"
+#include "$1/vs_dx11.h"
 
-#include "${SHADER_LOWERCASE}/fs_mtl.h"
-#include "${SHADER_LOWERCASE}/fs_glsl.h"
-#include "${SHADER_LOWERCASE}/fs_essl.h"
-#include "${SHADER_LOWERCASE}/fs_spv.h"
-#include "${SHADER_LOWERCASE}/fs_dx9.h"
-#include "${SHADER_LOWERCASE}/fs_dx11.h"
+#include "$1/fs_mtl.h"
+#include "$1/fs_glsl.h"
+#include "$1/fs_essl.h"
+#include "$1/fs_spv.h"
+#include "$1/fs_dx9.h"
+#include "$1/fs_dx11.h"
 END
 
 	if [ -f instancing.vs ]
 	then
-		cat >>../Ot$1Shader.h <<END
+		cat >>${HOME}/generated/Ot$1Shader.h <<END
 
-#include "${SHADER_LOWERCASE}/vsi_mtl.h"
-#include "${SHADER_LOWERCASE}/vsi_glsl.h"
-#include "${SHADER_LOWERCASE}/vsi_essl.h"
-#include "${SHADER_LOWERCASE}/vsi_spv.h"
-#include "${SHADER_LOWERCASE}/vsi_dx9.h"
-#include "${SHADER_LOWERCASE}/vsi_dx11.h"
+#include "$1/vsi_mtl.h"
+#include "$1/vsi_glsl.h"
+#include "$1/vsi_essl.h"
+#include "$1/vsi_spv.h"
+#include "$1/vsi_dx9.h"
+#include "$1/vsi_dx11.h"
 END
 
 	fi
@@ -182,30 +182,13 @@ END
 #	Main
 #
 
-processDirectory BlendMapped
-processDirectory Blit
-processDirectory Bloom
-processDirectory BloomDownSample
-processDirectory BloomUpSample
-processDirectory Blur
-processDirectory Colored
-processDirectory Debug
-processDirectory Fixed
-processDirectory Geometry
-processDirectory Grid
-processDirectory ImGui
-processDirectory Lighting
-processDirectory PostProcess
-processDirectory Shadow
-processDirectory Sky
-processDirectory Skybox
-processDirectory Skybox2
-processDirectory SkySphere
-processDirectory Terrain
-processDirectory Textured
-processDirectory TransparentShadow
-processDirectory VectorDisplay
-processDirectory Water
+cd ${HOME}
+mkdir -p generated
+
+for P in */varying.def.sc
+do
+	processDirectory $(dirname ${P})
+done
 
 cat >${HOME}//OtShaders.h <<END
 //	ObjectTalk Scripting Language
@@ -213,6 +196,9 @@ cat >${HOME}//OtShaders.h <<END
 //
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
+
+
+#pragma once
 
 
 //
@@ -234,7 +220,7 @@ $(echo -e ${SHADER_DEFINES})
 };
 END
 
-cat >${HOME}//update.bat <<END
+cat >${HOME}/update.bat <<END
 ::	ObjectTalk Scripting Language
 ::	Copyright (c) 2020-2023 Johan A. Goossens. All rights reserved.
 ::

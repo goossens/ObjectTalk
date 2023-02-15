@@ -134,6 +134,28 @@ OtEntity OtScene2Class::deserializeEntityFromJson(nlohmann::json &data, std::fil
 
 
 //
+//	OtScene2Class::getGlobalTransform
+//
+
+glm::mat4 OtScene2Class::getGlobalTransform(OtEntity entity) {
+	if (hasComponent<OtTransformComponent>(entity)) {
+		auto& transform = getComponent<OtTransformComponent>(entity);
+		auto parent = getParent(entity);
+
+		if (isValidEntity(parent)) {
+			return getGlobalTransform(parent) * transform.getTransform();
+
+		} else {
+			return transform.getTransform();
+		}
+
+	} else {
+		return glm::mat4(1.0f);
+	}
+}
+
+
+//
 //	OtScene2Class::getMeta
 //
 

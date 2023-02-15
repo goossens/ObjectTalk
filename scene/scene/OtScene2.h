@@ -14,6 +14,7 @@
 
 #include <filesystem>
 
+#include "glm/glm.hpp"
 #include "nlohmann/json_fwd.hpp"
 
 #include "OtObject.h"
@@ -62,6 +63,9 @@ public:
 
 	std::string serializeEntity(OtEntity entity, int indent=-1, char character=' ', std::filesystem::path* basedir=nullptr);
 	OtEntity deserializeEntity(const std::string& data, std::filesystem::path* basedir=nullptr);
+
+	// get the composite worldspace trnasform for the specified entity
+	glm::mat4 getGlobalTransform(OtEntity entity);
 
 	// get type definition
 	static OtType getMeta();

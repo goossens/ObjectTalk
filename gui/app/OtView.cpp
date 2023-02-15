@@ -280,7 +280,6 @@ void OtViewClass::renderDebugGUI() {
 
 	debugCamera->renderGUI();
 
-	float width = ImGui::GetContentRegionAvail().x;
 	ImGui::Image((void*)(intptr_t) framebuffer.getColorTextureIndex(), ImVec2(400, 400));
 	ImGui::End();
 }

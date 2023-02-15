@@ -42,7 +42,7 @@ public:
 	void setGridScale(float gs) { gridScale = gs; }
 
 	// render the specified scene
-	int render(OtScene2 scene);
+	int render(OtScene2 scene, OtEntity selected=OtEntityNull);
 
 	// show the gbuffer (for debugging purposes)
 	void visualizeGbuffer();
@@ -54,12 +54,14 @@ private:
 	void renderBackgroundPass(OtScene2 scene);
 	void renderLightingPass(OtScene2 scene);
 	void renderGridPass();
+	void renderHighlightPass(OtScene2 scene, OtEntity entity);
 	void renderPostProcessingPass(OtScene2 scene);
 
 	// render entitities
 	void renderSkyBox(OtPass& pass, OtSkyBoxComponent& component);
 	void renderSkySphere(OtPass& pass, OtSkySphereComponent& component);
 	void renderGeometry(OtPass& pass, OtScene2 scene, OtEntity entity);
+	void renderHighlight(OtPass& pass, OtScene2 scene, OtEntity entity);
 	void renderBloom(float bloomIntensity);
 
 	// camera information
@@ -79,6 +81,7 @@ private:
 	OtGbuffer gbuffer;
 	OtFrameBuffer compositeBuffer{OtFrameBuffer::rgbaFloat16Texture, OtFrameBuffer::dFloatTexture, 1, true};
 	OtFrameBuffer postProcessBuffer{OtFrameBuffer::rgba8Texture, OtFrameBuffer::noTexture};
+	OtFrameBuffer selectedBuffer{OtFrameBuffer::r8Texture, OtFrameBuffer::noTexture};
 
 	static constexpr int bloomDepth = 5;
 	OtFrameBuffer bloomBuffer[bloomDepth];
@@ -92,6 +95,7 @@ private:
 	OtUniformVec4 backgroundUniforms{"u_background", 1};
 	OtUniformVec4 lightingUniforms{"u_lighting", 3};
 	OtUniformVec4 gridUniforms{"u_grid", 1};
+	OtUniformVec4 outlineUniforms{"u_outline", 1};
 	OtUniformVec4 bloomUniforms{"u_bloom", 1};
 	OtUniformVec4 postProcessUniforms{"u_postProcess", 1};
 	OtUniformMat4 inverseTransform{"u_inverseTransform", 1};
@@ -113,6 +117,8 @@ private:
 	OtSampler lightingPbrSampler{"s_lightingPbrTexture"};
 	OtSampler lightingDepthSampler{"s_lightingDepthTexture"};
 
+	OtSampler selectedSampler{"s_selectedTexture"};
+
 	OtSampler postProcessSampler{"s_postProcessTexture"};
 	OtSampler bloomSampler{"s_bloomTexture"};
 
@@ -122,6 +128,8 @@ private:
 	OtShader skySphereShader{"OtSkySphereVS", "OtSkySphereFS"};
 	OtShader lightingShader{"OtLightingVS", "OtLightingFS"};
 	OtShader gridShader{"OtGridVS", "OtGridFS"};
+	OtShader selectShader{"OtSelectVS", "OtSelectFS"};
+	OtShader outlineShader{"OtOutlineVS", "OtOutlineFS"};
 	OtShader bloomDownSampleShader{"OtBloomDownSampleVS", "OtBloomDownSampleFS"};
 	OtShader bloomUpSampleShader{"OtBloomUpSampleVS", "OtBloomUpSampleFS"};
 	OtShader postProcessShader{"OtPostProcessVS", "OtPostProcessFS"};

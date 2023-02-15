@@ -46,7 +46,6 @@ void OtSceneRenderer::renderGeometryPass(OtScene2 scene) {
 void OtSceneRenderer::renderGeometry(OtPass& pass, OtScene2 scene, OtEntity entity) {
 	// get all relevant components
 	auto& geometry = scene->getComponent<OtGeometryComponent>(entity);
-	auto& transform = scene->getComponent<OtTransformComponent>(entity);
 	auto& material = scene->getComponent<OtMaterialComponent>(entity);
 	material.update();
 
@@ -115,9 +114,8 @@ void OtSceneRenderer::renderGeometry(OtPass& pass, OtScene2 scene, OtEntity enti
 			OtStateDepthTestLess);
 	}
 
-	// set the model transform
-	auto matrix = transform.getTransform();
-	geometryShader.setTransform(matrix);
+	// set the transform
+	geometryShader.setTransform(scene->getGlobalTransform(entity));
 
 	// run the shader
 	pass.runShader(geometryShader);

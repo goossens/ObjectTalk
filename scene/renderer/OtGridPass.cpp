@@ -9,9 +9,6 @@
 //	Include files
 //
 
-#include <glm/gtx/quaternion.hpp>
-#include "glm/gtx/matrix_decompose.hpp"
-
 #include "OtTransientIndexBuffer.h"
 #include "OtTransientVertexBuffer.h"
 #include "OtVertex.h"

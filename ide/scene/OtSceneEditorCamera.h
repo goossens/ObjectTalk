@@ -49,9 +49,9 @@ public:
 
 private:
 	// camera properties
-	glm::vec3 position{5.0f, 5.0f, 5.0f};
-	float pitch = -45.0f;
-	float yaw = -20.0f;
+	glm::vec3 position{0.0f, 2.0f, 5.0f};
+	float pitch = -20.0f;
+	float yaw = 0.0f;
 
 	float fov = 60.0f;
 	float nearPlane = 0.1f;

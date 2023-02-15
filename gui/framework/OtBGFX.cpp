@@ -117,7 +117,7 @@ void OtFrameworkClass::frameBGFX() {
 		prevAA = antiAliasing;
 	}
 
-	// start BGFX frame by clearing the screen
+	// start BGFX frame by clearing the backbuffer
 	bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000ff, 1.0f, 0);
 	bgfx::setViewRect(0, 0, 0, width, height);
 	bgfx::touch(0);
@@ -130,16 +130,17 @@ void OtFrameworkClass::frameBGFX() {
 
 void OtFrameworkClass::renderProfiler() {
 	const bgfx::Stats* stats = bgfx::getStats();
-	const double toMs = 1000.0 / (double) bx::getHPFrequency();
+	const double toMsCpu = 1000.0 / stats->cpuTimerFreq;
+	const double toMsGpu = 1000.0 / stats->gpuTimerFreq;
 	auto labelWith = ImGui::CalcTextSize("                     ").x;
 
 	ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
 	ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Framerate:"); ImGui::SameLine(labelWith); ImGui::Text("%.1f", getFrameRate());
-	ImGui::Text("CPU [ms per frame]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.1f", (double) cpuDuration * toMs);
-	ImGui::Text("GPU [ms per frame]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.1f", (double) gpuDuration * toMs);
-	ImGui::Text("Wait render [ms]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.1f", (double) stats->waitRender * toMs);
-	ImGui::Text("Wait submit [ms]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.1f", (double) stats->waitSubmit * toMs);
+	ImGui::Text("CPU [ms per frame]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.1f", (double) (stats->cpuTimeEnd - stats->cpuTimeBegin) * toMsCpu);
+	ImGui::Text("GPU [ms per frame]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.1f", (double) (stats->gpuTimeEnd - stats->gpuTimeBegin) * toMsGpu);
+	ImGui::Text("Wait render [ms]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.1f", (double) stats->waitRender * toMsCpu);
+	ImGui::Text("Wait submit [ms]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.1f", (double) stats->waitSubmit * toMsCpu);
 	ImGui::Text("Backbuffer width:"); ImGui::SameLine(labelWith); ImGui::Text("%d", stats->width);
 	ImGui::Text("Backbuffer height:"); ImGui::SameLine(labelWith); ImGui::Text("%d", stats->height);
 	ImGui::Text("Anti-aliasing:"); ImGui::SameLine(labelWith); ImGui::Text("%d", antiAliasing);
@@ -168,12 +169,6 @@ float OtFrameworkClass::getTime() {
 //
 
 void OtFrameworkClass::renderBGFX() {
-	// get CPU and GPU statistics
-	cpuDuration = bx::getHPCounter() - loopTime;
-
-	const bgfx::Stats* stats = bgfx::getStats();
-	gpuDuration = stats->gpuTimeEnd - stats->gpuTimeBegin;
-
 	// render BGFX frame
 	bgfx::frame();
 }

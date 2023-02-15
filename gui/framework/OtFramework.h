@@ -128,8 +128,6 @@ private:
 	int64_t lastTime;
 	int64_t loopTime;
 	float loopDuration;
-	int64_t cpuDuration;
-	int64_t gpuDuration;
 
 	// to render IMGUI
 	bgfx::VertexLayout imguiVertexLayout;

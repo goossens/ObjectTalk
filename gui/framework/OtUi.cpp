@@ -18,6 +18,8 @@
 #include "imgui_internal.h"
 #include "ImGuiFileDialog.h"
 
+#include "OtUi.h"
+
 
 //
 //	OtUiHeader

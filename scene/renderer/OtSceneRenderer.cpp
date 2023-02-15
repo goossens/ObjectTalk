@@ -16,7 +16,7 @@
 //	OtSceneRenderer::render
 //
 
-int OtSceneRenderer::render(OtScene2 scene) {
+int OtSceneRenderer::render(OtScene2 scene, OtEntity selected) {
 	// render all passes
 	renderGeometryPass(scene);
 	renderBackgroundPass(scene);
@@ -24,6 +24,10 @@ int OtSceneRenderer::render(OtScene2 scene) {
 
 	if (gridScale > 0.0) {
 		renderGridPass();
+	}
+
+	if (!OtEntityIsNull(selected)) {
+		renderHighlightPass(scene, selected);
 	}
 
 	renderPostProcessingPass(scene);

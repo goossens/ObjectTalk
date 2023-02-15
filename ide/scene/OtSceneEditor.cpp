@@ -412,11 +412,10 @@ void OtSceneEditorClass::renderViewPort() {
 	glm::mat4 cameraProjectionMatrix;
 
 	if (scene->isValidEntity(selectedCamera)) {
-		auto transform = scene->getComponent<OtTransformComponent>(selectedCamera);
 		auto camera = scene->getComponent<OtCameraComponent>(selectedCamera);
-		camerViewMatrix = glm::inverse(transform.getTransform());
 		cameraPosition = glm::vec3(camerViewMatrix[3]);
 		cameraProjectionMatrix = camera.getProjectionMatrix(size.x / size.y);
+		camerViewMatrix = glm::inverse(scene->getGlobalTransform(selectedCamera));
 
 	} else {
 		editorCamera.update();
@@ -431,7 +430,7 @@ void OtSceneEditorClass::renderViewPort() {
 	renderer.setProjectionMatrix(cameraProjectionMatrix);
 	renderer.setSize(size.x, size.y);
 	renderer.setGridScale(gridVisible ? gridScale : 0.0f);
-	auto textureIndex = renderer.render(scene);
+	auto textureIndex = renderer.render(scene, selectedEntity);
 
 	// show it on the screen
 	if (OtGpuHasOriginBottomLeft()) {

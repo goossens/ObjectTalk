@@ -26,6 +26,7 @@ public:
 	// texture types
 	enum {
 		noTexture = 0,
+		r8Texture = bgfx::TextureFormat::R8,
 		rgba8Texture = bgfx::TextureFormat::RGBA8,
 		rgba16Texture = bgfx::TextureFormat::RGBA16,
 		rgbaFloat16Texture = bgfx::TextureFormat::RGBA16F,

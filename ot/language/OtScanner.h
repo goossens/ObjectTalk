@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <cstdint>
 #include <limits>
 #include <string>
 #include <unordered_map>
@@ -125,7 +126,7 @@ public:
 	size_t getTokenStart() { return tokenStart; }
 	size_t getLastTokenEnd() { return lastTokenEnd; }
 	std::string getText() { return source->substr(tokenStart, position - tokenStart); }
-	long getInteger() { return integerValue; }
+	int64_t getInteger() { return integerValue; }
 	double getReal() { return realValue; }
 	std::string getString() { return stringValue; }
 
@@ -178,7 +179,7 @@ private:
 	size_t lastTokenEnd;
 
 	OtToken token;
-	long integerValue;
+	int64_t integerValue;
 	double realValue;
 	std::string stringValue;
 };

@@ -32,12 +32,12 @@ class OtIntegerClass : public OtPrimitiveClass {
 public:
 	// constructors
 	OtIntegerClass() = default;
-	OtIntegerClass(long integer) : value(integer) {}
+	OtIntegerClass(int64_t integer) : value(integer) {}
 
 	// convertors
 	operator bool() override { return value != 0; }
 	operator int() override { return (int) value; }
-	operator long()  override{ return value; }
+	operator int64_t()  override{ return value; }
 	operator size_t() override { return (size_t) value; }
 	operator float() override { return (float) value; }
 	operator double() override { return (double) value; }
@@ -47,51 +47,51 @@ public:
 	std::string describe() override { return operator std::string(); }
 
 	// comparison
-	bool operator == (OtObject operand) override { return value == operand->operator long(); }
-	bool operator < (OtObject operand) override { return value < operand->operator long(); }
+	bool operator == (OtObject operand) override { return value == operand->operator int64_t(); }
+	bool operator < (OtObject operand) override { return value < operand->operator int64_t(); }
 
-	bool equal(long operand) { return value == operand; }
-	bool notEqual(long operand) { return value != operand; }
-	bool greaterThan(long operand) { return value > operand; }
-	bool lessThan(long operand) { return value < operand; }
-	bool greaterEqual(long operand) { return value >= operand; }
-	bool lessEqual(long operand) { return value <= operand; }
+	bool equal(int64_t operand) { return value == operand; }
+	bool notEqual(int64_t operand) { return value != operand; }
+	bool greaterThan(int64_t operand) { return value > operand; }
+	bool lessThan(int64_t operand) { return value < operand; }
+	bool greaterEqual(int64_t operand) { return value >= operand; }
+	bool lessEqual(int64_t operand) { return value <= operand; }
 
 	// arithmetic
-	long add(long operand) { return value + operand; }
-	long subtract(long operand) { return value - operand; }
-	long multiply(long operand) { return value * operand; }
-	long divide(long operand) { if (operand == 0) OtExcept("Divide by zero"); return value / operand; }
-	long modulo(long operand) { if (operand == 0) OtExcept("Divide by zero"); return value % operand; }
-	long power(long operand) { return std::pow(value, operand); }
+	int64_t add(int64_t operand) { return value + operand; }
+	int64_t subtract(int64_t operand) { return value - operand; }
+	int64_t multiply(int64_t operand) { return value * operand; }
+	int64_t divide(int64_t operand) { if (operand == 0) OtExcept("Divide by zero"); return value / operand; }
+	int64_t modulo(int64_t operand) { if (operand == 0) OtExcept("Divide by zero"); return value % operand; }
+	int64_t power(int64_t operand) { return std::pow(value, operand); }
 
-	long increment() { return value + 1; }
-	long decrement() { return value - 1; }
+	int64_t increment() { return value + 1; }
+	int64_t decrement() { return value - 1; }
 
-	long shiftLeft(long operand) { return value << operand; }
-	long shiftRight(long operand) { return value >> operand; }
+	int64_t shiftLeft(int64_t operand) { return value << operand; }
+	int64_t shiftRight(int64_t operand) { return value >> operand; }
 
-	long bitwiseAnd(long operand) { return value & operand; }
-	long bitwiseOr(long operand) { return value | operand; }
-	long bitwiseXor(long operand) { return value ^ operand; }
-	long bitwiseNot() { return ~value; }
+	int64_t bitwiseAnd(int64_t operand) { return value & operand; }
+	int64_t bitwiseOr(int64_t operand) { return value | operand; }
+	int64_t bitwiseXor(int64_t operand) { return value ^ operand; }
+	int64_t bitwiseNot() { return ~value; }
 
 	// functions
-	long negate() { return -value; }
-	long positive() { return value; }
-	long abs() { return std::abs(value); }
-	long sign() { return (0 < value) - (value < 0); }
-	long min(long operand) { return std::min(value, operand); }
-	long max(long operand) { return std::max(value, operand); }
-	long clamp(long min, long max) { return std::clamp(value, min, max); }
-	long random() { return OtRandom(value); };
+	int64_t negate() { return -value; }
+	int64_t positive() { return value; }
+	int64_t abs() { return std::abs(value); }
+	int64_t sign() { return (0 < value) - (value < 0); }
+	int64_t min(int64_t operand) { return std::min(value, operand); }
+	int64_t max(int64_t operand) { return std::max(value, operand); }
+	int64_t clamp(int64_t min, int64_t max) { return std::clamp(value, min, max); }
+	int64_t random() { return OtRandom(value); };
 
 	// get type definition
 	static OtType getMeta();
 
 	// create a new object
-	static OtInteger create(long value);
+	static OtInteger create(int64_t value);
 
 private:
-	long value = 0;
+	int64_t value = 0;
 };

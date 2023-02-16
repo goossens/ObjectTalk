@@ -36,7 +36,7 @@ public:
 	// convertors
 	operator bool() override { return value != 0.0; }
 	operator int() override { return (int) value; }
-	operator long() override { return (long) value; }
+	operator int64_t() override { return (int64_t) value; }
 	operator size_t() override { return (size_t) value; }
 	operator float() override { return (float) value; }
 	operator double() override { return value; }
@@ -68,11 +68,11 @@ public:
 	double negate() { return -value; }
 	double positive() { return value; }
 	double abs() { return std::abs(value); }
-	long sign() { return (0.0 < value) - (value < 0.0); }
-	long round() { return std::round(value); }
-	long ceil() { return std::ceil(value); }
-	long floor() { return std::floor(value); }
-	long trunc() { return std::trunc(value); }
+	int64_t sign() { return (0.0 < value) - (value < 0.0); }
+	int64_t round() { return std::round(value); }
+	int64_t ceil() { return std::ceil(value); }
+	int64_t floor() { return std::floor(value); }
+	int64_t trunc() { return std::trunc(value); }
 	double min(double operand) { return std::min(value, operand); }
 	double max(double operand) { return std::max(value, operand); }
 	double clamp(double min, double max) { return std::clamp(value, min, max); }

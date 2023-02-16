@@ -215,7 +215,7 @@ OtObject OtStringClass::format(size_t count, OtObject* objects) {
 					}
 
 					SANITY_CHECK();
-					ss << objects[index++]->operator long();
+					ss << objects[index++]->operator int64_t();
 					break;
 
 				case 'o':
@@ -228,7 +228,7 @@ OtObject OtStringClass::format(size_t count, OtObject* objects) {
 					if (format.type == 'p' || format.type == 'x' || format.type == 'X') { ss << std::hex; }
 
 					SANITY_CHECK();
-					ss << std::showbase << objects[index++]->operator long();
+					ss << std::showbase << objects[index++]->operator int64_t();
 					break;
 
 				case 'f':
@@ -299,7 +299,7 @@ OtType OtStringClass::getMeta() {
 		type = OtTypeClass::create<OtStringClass>("String", OtPrimitiveClass::getMeta());
 
 		type->set("boolean", OtFunctionClass::create(&OtStringClass::operator bool));
-		type->set("integer", OtFunctionClass::create(&OtStringClass::operator long));
+		type->set("integer", OtFunctionClass::create(&OtStringClass::operator int64_t));
 		type->set("real", OtFunctionClass::create(&OtStringClass::operator double));
 		type->set("string", OtFunctionClass::create(&OtStringClass::operator std::string));
 		type->set("json", OtFunctionClass::create(&OtStringClass::json));

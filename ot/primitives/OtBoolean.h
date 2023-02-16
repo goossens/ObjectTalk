@@ -31,7 +31,7 @@ public:
 	// conversions
 	operator bool() override { return value; }
 	operator int() override { return value ? 1 : 0; }
-	operator long() override { return value ? 1 : 0; }
+	operator int64_t() override { return value ? 1 : 0; }
 	operator size_t() override { return value ? 1 : 0; }
 	operator float() override { return value ? 1.0 : 0.0; }
 	operator double() override { return value ? 1.0 : 0.0; }

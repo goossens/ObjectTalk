@@ -28,7 +28,7 @@ typedef std::shared_ptr<OtHttpTimerClass> OtHttpTimer;
 class OtHttpTimerClass : public OtInternalClass {
 public:
 	OtHttpTimerClass() = default;
-	OtHttpTimerClass(long wait, long repeat, OtObject cb) : callback(cb) {
+	OtHttpTimerClass(int64_t wait, int64_t repeat, OtObject cb) : callback(cb) {
 		// sanity check
 		OtCallbackValidate(callback, 0);
 
@@ -53,7 +53,7 @@ public:
 	}
 
 	// create a new object
-	static OtHttpTimer create(long wait, long repeat, OtObject callback) {
+	static OtHttpTimer create(int64_t wait, int64_t repeat, OtObject callback) {
 		OtHttpTimer timer = std::make_shared<OtHttpTimerClass>(wait, repeat, callback);
 		timer->setType(getMeta());
 		return timer;

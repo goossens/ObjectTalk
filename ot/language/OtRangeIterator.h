@@ -27,7 +27,7 @@ class OtRangeIteratorClass : public OtIteratorClass {
 public:
 	// constructors
 	OtRangeIteratorClass() = default;
-	OtRangeIteratorClass(long f, long t, long i) : from(f), to(t), increment(i), index(f) {}
+	OtRangeIteratorClass(int64_t f, int64_t t, int64_t i) : from(f), to(t), increment(i), index(f) {}
 
 	// start iterator
 	OtObject iterate() { return shared(); }
@@ -37,7 +37,7 @@ public:
 		return (to > from) ? (index > to) : (index < to);
 	}
 
-	long next() {
+	int64_t next() {
 		auto result = index; index += increment;
 		return result;
 	}
@@ -46,11 +46,11 @@ public:
 	static OtType getMeta();
 
 	// create a new object
-	static OtRangeIterator create(long from, long to, long increment);
+	static OtRangeIterator create(int64_t from, int64_t to, int64_t increment);
 
 private:
-	long from;
-	long to;
-	long increment;
-	long index;
+	int64_t from;
+	int64_t to;
+	int64_t increment;
+	int64_t index;
 };

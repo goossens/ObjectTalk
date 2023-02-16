@@ -176,9 +176,9 @@ bool OtArrayClass::contains(OtObject object) {
 //	OtArrayClass::find
 //
 
-long OtArrayClass::find(OtObject object) {
-	long result = -1;
-	long c = 0;
+int64_t OtArrayClass::find(OtObject object) {
+	int64_t result = -1;
+	int64_t c = 0;
 
 	for (auto i = array.begin(); result == -1 && i != array.end(); i++, c++) {
 		if ((*i)->equal(object)) {

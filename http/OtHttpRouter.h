@@ -45,7 +45,7 @@ public:
 	OtObject call(OtObject req, OtObject res, OtObject next);
 
 	// set a timer
-	OtObject timer(long wait, long repeat, OtObject callback);
+	OtObject timer(int64_t wait, int64_t repeat, OtObject callback);
 
 	// get type definition
 	static OtType getMeta();

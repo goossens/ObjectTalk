@@ -24,7 +24,7 @@ OtType OtBooleanClass::getMeta() {
 		type = OtTypeClass::create<OtBooleanClass>("Boolean", OtPrimitiveClass::getMeta());
 
 		type->set("boolean", OtFunctionClass::create(&OtBooleanClass::operator bool));
-		type->set("integer", OtFunctionClass::create(&OtBooleanClass::operator long));
+		type->set("integer", OtFunctionClass::create(&OtBooleanClass::operator int64_t));
 		type->set("real", OtFunctionClass::create(&OtBooleanClass::operator double));
 		type->set("string", OtFunctionClass::create(&OtBooleanClass::operator std::string));
 

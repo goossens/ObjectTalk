@@ -53,8 +53,8 @@ public:
 	OtObject cores();
 	OtObject networks();
 
-	long totalMemory();
-	long freeMemory();
+	int64_t totalMemory();
+	int64_t freeMemory();
 
 	// generate a UUID
 	std::string uuid();
@@ -63,7 +63,7 @@ public:
 	double clock();
 
 	// sleep for specified number of milliseconds
-	void sleep(long milliseconds);
+	void sleep(int64_t milliseconds);
 
 	// get parts of the current datetime
 	int getYear();

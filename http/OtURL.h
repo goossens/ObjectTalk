@@ -44,7 +44,7 @@ public:
 	const std::string& getUsername() { return username; }
 	const std::string& getPassword() { return password; }
 	const std::string& getHost() { return host; }
-	const long getPort() { return port; }
+	const int getPort() { return port; }
 	const std::string& getPath() { return path; }
 	const std::string& getDirectory() { return directory; }
 	const std::string& getFilename() { return filename; }

@@ -24,7 +24,7 @@ OtType OtIntegerClass::getMeta() {
 		type = OtTypeClass::create<OtIntegerClass>("Integer", OtPrimitiveClass::getMeta());
 
 		type->set("boolean", OtFunctionClass::create(&OtIntegerClass::operator bool));
-		type->set("integer", OtFunctionClass::create(&OtIntegerClass::operator long));
+		type->set("integer", OtFunctionClass::create(&OtIntegerClass::operator int64_t));
 		type->set("real", OtFunctionClass::create(&OtIntegerClass::operator double));
 		type->set("string", OtFunctionClass::create(&OtIntegerClass::operator std::string));
 
@@ -72,7 +72,7 @@ OtType OtIntegerClass::getMeta() {
 //	OtIntegerClass::create
 //
 
-OtInteger OtIntegerClass::create(long value) {
+OtInteger OtIntegerClass::create(int64_t value) {
 	OtInteger integer = std::make_shared<OtIntegerClass>(value);
 	integer->setType(getMeta());
 	return integer;

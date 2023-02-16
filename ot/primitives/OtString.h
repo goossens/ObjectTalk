@@ -36,7 +36,7 @@ public:
 	// convertors
 	operator bool() override { auto v = value; std::transform(v.begin(), v.end(), v.begin(), ::tolower); return v == "true"; }
 	operator int() override { try { return std::stoi(value); } catch(...) { return 0; }}
-	operator long() override { try { return std::stol(value); } catch(...) { return 0; }}
+	operator int64_t() override { try { return std::stol(value); } catch(...) { return 0; }}
 	operator size_t() override { try { return (size_t) std::stol(value); } catch(...) { return 0; }}
 	operator float() override { try { return std::stof(value); } catch(...) { return 0.0; }}
 	operator double() override { try { return std::stod(value); } catch(...) { return 0.0; }}
@@ -58,7 +58,7 @@ public:
 	bool greaterEqual(const std::string& operand) { return value >= operand; }
 	bool lessEqual(const std::string& operand) { return value <= operand; }
 
-	long casecmp(const std::string& operand) { return OtText::caseCmp(value, operand); }
+	int64_t casecmp(const std::string& operand) { return OtText::caseCmp(value, operand); }
 
 	// access string members (i.e. code points)
 	std::string getEntry(size_t index);

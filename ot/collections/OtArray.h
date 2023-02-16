@@ -59,7 +59,7 @@ public:
 	size_t size() { return array.size(); }
 
 	// find an array entry and return index (-1 if not found)
-	long find(OtObject object);
+	int64_t find(OtObject object);
 
 	// clone an array
 	OtObject clone();

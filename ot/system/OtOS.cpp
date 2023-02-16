@@ -153,7 +153,7 @@ std::string OtOSClass::hostname() {
 //	OtOSClass::totalMemory
 //
 
-long OtOSClass::totalMemory() {
+int64_t OtOSClass::totalMemory() {
 	return uv_get_total_memory();
 }
 
@@ -162,7 +162,7 @@ long OtOSClass::totalMemory() {
 //	OtOSClass::freeMemory
 //
 
-long OtOSClass::freeMemory() {
+int64_t OtOSClass::freeMemory() {
 	return uv_get_free_memory();
 }
 
@@ -274,7 +274,7 @@ double OtOSClass::clock() {
 //	OtOSClass::sleep
 //
 
-void OtOSClass::sleep(long milliseconds) {
+void OtOSClass::sleep(int64_t milliseconds) {
 	uv_sleep((unsigned int) milliseconds);
 }
 

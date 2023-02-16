@@ -126,24 +126,24 @@ OtObject OtGlobalClass::import(const std::string name) {
 //
 
 OtObject OtGlobalClass::range(size_t count, OtObject* parameters) {
-	long from;
-	long to;
-	long increment;
+	int64_t from;
+	int64_t to;
+	int64_t increment;
 
 	if (count == 1) {
 		from = 1;
-		to = parameters[0]->operator long();
+		to = parameters[0]->operator int64_t();
 		increment = 1;
 
 	} else if (count == 2) {
-		from = parameters[0]->operator long();
-		to = parameters[1]->operator long();
+		from = parameters[0]->operator int64_t();
+		to = parameters[1]->operator int64_t();
 		increment = 1;
 
 	} else if (count == 3) {
-		from = parameters[0]->operator long();
-		to = parameters[1]->operator long();
-		increment = parameters[2]->operator long();
+		from = parameters[0]->operator int64_t();
+		to = parameters[1]->operator int64_t();
+		increment = parameters[2]->operator int64_t();
 
 	}else {
 		OtExcept("Range functions required 1, 2 or 3 parameters, not %ld", count);

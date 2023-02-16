@@ -221,7 +221,7 @@ OtType OtObjectClass::getMeta() {
 		type = OtTypeClass::create<OtObjectClass>("Object", nullptr);
 
 		type->set("boolean", OtFunctionClass::create(&OtObjectClass::operator bool));
-		type->set("integer", OtFunctionClass::create(&OtObjectClass::operator long));
+		type->set("integer", OtFunctionClass::create(&OtObjectClass::operator int64_t));
 		type->set("real", OtFunctionClass::create(&OtObjectClass::operator double));
 		type->set("string", OtFunctionClass::create(&OtObjectClass::operator std::string));
 		type->set("json", OtFunctionClass::create(&OtObjectClass::json));

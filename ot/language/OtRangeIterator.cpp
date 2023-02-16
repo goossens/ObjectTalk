@@ -34,7 +34,7 @@ OtType OtRangeIteratorClass::getMeta() {
 //	OtRangeIteratorClass::create
 //
 
-OtRangeIterator OtRangeIteratorClass::create(long from, long to, long increment) {
+OtRangeIterator OtRangeIteratorClass::create(int64_t from, int64_t to, int64_t increment) {
 	OtRangeIterator iterator = std::make_shared<OtRangeIteratorClass>(from, to, increment);
 	iterator->setType(getMeta());
 	return iterator;

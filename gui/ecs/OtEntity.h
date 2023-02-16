@@ -23,13 +23,3 @@
 
 using OtEntity = entt::entity;
 #define OtEntityNull entt::null
-
-
-//
-//	Functions
-//
-
-// see if an entity is valid
-static inline bool OtEntityIsNull(OtEntity entity) {
-	return entity == OtEntityNull;
-}

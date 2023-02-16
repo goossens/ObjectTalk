@@ -52,5 +52,4 @@ then
 fi
 
 cd ..
-
 cp bgfx/src/bgfx_shader.sh ${OT_HOME}/gui/shaders/include/bgfx.glsl

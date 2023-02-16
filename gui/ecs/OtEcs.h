@@ -37,7 +37,7 @@ public:
 
 	// see if entity is valid
 	bool isValidEntity(OtEntity entity) {
-		return registry.valid(entity);
+		return entity != OtEntityNull && registry.valid(entity);
 	}
 
 	// get an existing entity from an identifier
@@ -45,7 +45,7 @@ public:
 
 	// see if entity exists based on an identifier
 	bool hasEntity(const std::string& tag) {
-		return isValidEntity(getEntity(tag));
+		return getEntity(tag) != OtEntityNull;
 	}
 
 	// remove entity

@@ -68,7 +68,7 @@ void OtSceneRenderer::renderHighlight(OtPass& pass, OtScene2 scene, OtEntity ent
 	// also render all the children
 	OtEntity child = scene->getFirstChild(entity);
 
-	while (!OtEntityIsNull(child)) {
+	while (scene->isValidEntity(child)) {
 		renderHighlight(pass, scene, child);
 		child = scene->getNextSibling(child);
 	}

@@ -37,13 +37,13 @@ public:
 		auto entity = scene->getEntityFromUuid(entityUuid);
 		auto nextSibling = scene->getNextSibling(entity);
 
-		if (OtEntityIsNull(nextSibling)) {
-			undoTargetUuid = scene->getUuidFromEntity(scene->getParent(entity));
-			undoBefore = false;
-
-		} else {
+		if (scene->isValidEntity(nextSibling)) {
 			undoTargetUuid = scene->getUuidFromEntity(nextSibling);
 			undoBefore = true;
+
+		} else {
+			undoTargetUuid = scene->getUuidFromEntity(scene->getParent(entity));
+			undoBefore = false;
 		}
 
 		// serialize the entity to be deleted

@@ -121,10 +121,7 @@ void OtSceneEditorClass::render() {
 	renderPanels();
 	OtUiSplitterHorizontal(&panelWidth, minPanelWidth, maxPanelWidth);
 	renderViewPort();
-
 	ImGui::EndChild();
-
-	// renderer.visualizeGbuffer();
 
 	// handle keyboard
 	handleShortcuts();
@@ -142,11 +139,6 @@ void OtSceneEditorClass::render() {
 
 		// clear task so we don't perform it again
 		nextTask = nullptr;
-
-		// unset selected entity if it is no longer valid
-		if (!scene->isValidEntity(selectedEntity)) {
-			selectedEntity = OtEntityNull;
-		}
 	}
 }
 
@@ -192,7 +184,7 @@ void OtSceneEditorClass::setSceneCamera(int cameraNumber) {
 
 void OtSceneEditorClass::renderMenu() {
 	// get status
-	bool selected = !OtEntityIsNull(selectedEntity);
+	bool selected = scene->isValidEntity(selectedEntity);
 	bool clipable = clipboard.size() > 0;
 
 #if __APPLE__
@@ -240,7 +232,7 @@ void OtSceneEditorClass::renderMenu() {
 
 		if (ImGui::BeginMenu("View")) {
 			if (ImGui::BeginMenu("Camera")) {
-				if (ImGui::RadioButton("Editor Camera", OtEntityIsNull(selectedCamera))) {
+				if (ImGui::RadioButton("Editor Camera", selectedCamera == OtEntityNull)) {
 					selectedCamera = OtEntityNull;
 				}
 
@@ -399,11 +391,19 @@ void OtSceneEditorClass::renderViewPort() {
 	ImGui::BeginChild("viewport", ImVec2(), true);
 	auto size = ImGui::GetContentRegionAvail();
 
-	// ensure we still have a valid selected camera
+	// unset selected entity if it is no longer valid
+	if (!scene->isValidEntity(selectedEntity)) {
+		selectedEntity = OtEntityNull;
+	}
+
+	// ensure we still have a valid selected camera (no valid scene camera means we use the editor camara)
 	if (scene->isValidEntity(selectedCamera)) {
 		if (!scene->hasComponent<OtCameraComponent>(selectedCamera) || !scene->hasComponent<OtTransformComponent>(selectedCamera)) {
 			selectedCamera = OtEntityNull;
 		}
+
+	} else {
+			selectedCamera = OtEntityNull;
 	}
 
 	// get camera information
@@ -810,7 +810,7 @@ void OtSceneEditorClass::handleShortcuts() {
 	auto isShortcut = isOSX ? super : ctrl;
 
 	// get status
-	bool selected = !OtEntityIsNull(selectedEntity);
+	bool selected = scene->isValidEntity(selectedEntity);
 	bool clipable = clipboard.size() > 0;
 
 	// handle keyboard shortcuts

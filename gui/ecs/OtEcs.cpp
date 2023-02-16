@@ -249,7 +249,7 @@ void OtEcs::removeEntityFromParent(OtEntity entity) {
 	auto& entityHierarchy = getComponent<OtCoreComponent>(entity);
 
 	// don't worry if the entity has no parent
-	if (!OtEntityIsNull(entityHierarchy.parent)) {
+	if (isValidEntity(entityHierarchy.parent)) {
 		auto& parentHierarchy = getComponent<OtCoreComponent>(entityHierarchy.parent);
 
 		// disconnect from parent

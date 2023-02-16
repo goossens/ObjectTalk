@@ -26,11 +26,10 @@ int OtSceneRenderer::render(OtScene2 scene, OtEntity selected) {
 		renderGridPass();
 	}
 
-	if (!OtEntityIsNull(selected)) {
+	if (scene->isValidEntity(selected)) {
 		renderHighlightPass(scene, selected);
 	}
 
 	renderPostProcessingPass(scene);
-
 	return postProcessBuffer.getColorTextureIndex();
 }

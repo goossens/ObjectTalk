@@ -312,6 +312,7 @@ void OtSphereGeometryClass::deserialize(nlohmann::json data) {
 	phiLength = data.value("phiLength", std::numbers::pi * 2.0f);
 	thetaStart = data.value("thetaStart", 0.0f);
 	thetaLength = data.value("thetaLength", std::numbers::pi);
+	refreshGeometry = true;
 }
 
 

@@ -57,7 +57,7 @@ OtOctahedronGeometryClass::OtOctahedronGeometryClass() {
 //
 
 bool OtOctahedronGeometryClass::renderGUI() {
-	return false;
+	return OtPolyhedronGeometryClass::renderGUI();
 }
 
 

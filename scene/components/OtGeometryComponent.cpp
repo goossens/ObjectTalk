@@ -21,7 +21,7 @@
 //
 
 OtGeometryComponent::OtGeometryComponent() {
-	createGeometry("Box");
+	createGeometry("Sphere");
 }
 
 OtGeometryComponent::OtGeometryComponent(const std::string &type) {
@@ -91,7 +91,7 @@ void OtGeometryComponent::deserialize(nlohmann::json data, std::filesystem::path
 		geometry->deserialize(data["geometry"]);
 
 	} else {
-		createGeometry("Box");
+		createGeometry("Sphere");
 	}
 }
 

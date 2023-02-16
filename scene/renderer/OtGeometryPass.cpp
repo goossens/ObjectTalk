@@ -37,8 +37,6 @@ void OtSceneRenderer::renderGeometryPass(OtScene2 scene) {
 }
 
 
-
-
 //
 //	OtSceneRenderer::renderGeometry
 //

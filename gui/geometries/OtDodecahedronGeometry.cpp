@@ -78,7 +78,7 @@ OtDodecahedronGeometryClass::OtDodecahedronGeometryClass() {
 //
 
 bool OtDodecahedronGeometryClass::renderGUI() {
-	return false;
+	return OtPolyhedronGeometryClass::renderGUI();
 }
 
 

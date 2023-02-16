@@ -58,7 +58,7 @@ OtSphericalCubeGeometryClass::OtSphericalCubeGeometryClass() {
 //
 
 bool OtSphericalCubeGeometryClass::renderGUI() {
-	return false;
+	return OtPolyhedronGeometryClass::renderGUI();
 }
 
 

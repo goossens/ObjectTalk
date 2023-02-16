@@ -30,29 +30,24 @@ OtObject OtGeometryClass::computeTangents() {
 	return shared();
 }
 
-//
-//	OtGeometryClass::clear
-//
-
-void OtGeometryClass::clearGeometry() {
-	aabb.clear();
-	vertices.clear();
-	triangles.clear();
-	lines.clear();
-
-	refreshGeometry = true;
-	refreshBuffers = true;
-}
-
 
 //
 //	OtGeometryClass::updateGeometry
 //
 
 void OtGeometryClass::updateGeometry() {
-	clearGeometry();
+	// first clear to existing geometry
+	aabb.clear();
+	vertices.clear();
+	triangles.clear();
+	lines.clear();
+
+	// create new geometry
 	fillGeometry();
+
+	// set correct flags
 	refreshGeometry = false;
+	refreshBuffers = true;
 }
 
 

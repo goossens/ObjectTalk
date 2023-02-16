@@ -52,7 +52,7 @@ OtTetrahedronGeometryClass::OtTetrahedronGeometryClass() {
 //
 
 bool OtTetrahedronGeometryClass::renderGUI() {
-	return false;
+	return OtPolyhedronGeometryClass::renderGUI();
 }
 
 

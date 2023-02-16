@@ -200,7 +200,45 @@ void OtTorusGeometryClass::fillGeometry() {
 //
 
 bool OtTorusGeometryClass::renderGUI() {
-	return false;
+	bool changed = OtGeometryClass::renderGUI();
+	changed |= ImGui::SliderFloat("Radius", &radius, 0.0f, 1.0f);
+	changed |= ImGui::SliderFloat("Tube Radius", &tubeRadius, 0.0f, 1.0f);
+	changed |= ImGui::SliderInt("Radial Segments", &radialSegments, 1, 64);
+	changed |= ImGui::SliderInt("Tubular Segments", &tubularSegments, 1, 32);
+
+	int startRadial = glm::degrees(radialStart);
+
+	if (ImGui::SliderInt("Radial Start", &startRadial, 0, 359)) {
+		radialStart = glm::radians((float) startRadial);
+		changed |= true;
+	}
+
+	int lengthRadial = glm::degrees(radialLength);
+
+	if (ImGui::SliderInt("Radial Length", &lengthRadial, 1, 360)) {
+		radialLength = glm::radians((float) lengthRadial);
+		changed |= true;
+	}
+
+	int startTubular = glm::degrees(tubularStart);
+
+	if (ImGui::SliderInt("Tubular Start", &startTubular, 0, 359)) {
+		tubularStart = glm::radians((float) startTubular);
+		changed |= true;
+	}
+
+	int lengthTubular = glm::degrees(tubularLength);
+
+	if (ImGui::SliderInt("Tubular Length", &lengthTubular, 1, 360)) {
+		tubularLength = glm::radians((float) lengthTubular);
+		changed |= true;
+	}
+
+	if (changed) {
+		refreshGeometry = true;
+	}
+
+	return changed;
 }
 
 
@@ -233,9 +271,10 @@ void OtTorusGeometryClass::deserialize(nlohmann::json data) {
 	radialSegments = data.value("radialSegments", 32);
 	tubularSegments = data.value("tubularSegments", 16);
 	radialStart = data.value("radialStart", 0.0f);
-	radialLength = data.value("phiSegments", std::numbers::pi * 2.0f);
-	tubularStart = data.value("phiSegments", 0.0f);
-	tubularLength = data.value("phiSegments", std::numbers::pi * 2.0f);
+	radialLength = data.value("radialLength", std::numbers::pi * 2.0f);
+	tubularStart = data.value("tubularStart", 0.0f);
+	tubularLength = data.value("tubularLength", std::numbers::pi * 2.0f);
+	refreshGeometry = true;
 }
 
 

@@ -59,7 +59,7 @@ OtIcosahedronGeometryClass::OtIcosahedronGeometryClass() {
 //
 
 bool OtIcosahedronGeometryClass::renderGUI() {
-	return false;
+	return OtPolyhedronGeometryClass::renderGUI();
 }
 
 

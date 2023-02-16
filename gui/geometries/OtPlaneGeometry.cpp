@@ -238,7 +238,15 @@ void OtPlaneGeometryClass::fillGeometry() {
 //
 
 bool OtPlaneGeometryClass::renderGUI() {
-	return false;
+	bool changed = OtGeometryClass::renderGUI();
+	changed |= ImGui::SliderInt("Width Segments", &widthSegments, 1, 20);
+	changed |= ImGui::SliderInt("Height Segments", &heightSegments, 1, 20);
+
+	if (changed) {
+		refreshGeometry = true;
+	}
+
+	return changed;
 }
 
 
@@ -266,6 +274,7 @@ void OtPlaneGeometryClass::deserialize(nlohmann::json data) {
 	height = data.value("height", 1.0f);
 	widthSegments = data.value("widthSegments", 1);
 	heightSegments = data.value("heightSegments", 1);
+	refreshGeometry = true;
 }
 
 

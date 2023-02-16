@@ -81,7 +81,6 @@ public:
 
 protected:
 	// handle geometry
-	void clearGeometry();
 	void updateGeometry();
 	void validateGeometry();
 	virtual void fillGeometry() {}

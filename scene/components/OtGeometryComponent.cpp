@@ -58,6 +58,7 @@ bool OtGeometryComponent::renderGUI() {
 	}
 
 	changed |= ImGui::Checkbox("Wireframe", &wireframe);
+	changed |= ImGui::Checkbox("Transparent", &transparent);
 	changed |= ImGui::Checkbox("Cull Back Faces", &cullback);
 	changed |= geometry->renderGUI();
 	return changed;
@@ -72,6 +73,7 @@ nlohmann::json OtGeometryComponent::serialize(std::filesystem::path* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
 	data["wireframe"] = wireframe;
+	data["transparent"] = transparent;
 	data["cullback"] = cullback;
 	data["geometry"] = geometry->serialize();
 	return data;
@@ -84,6 +86,7 @@ nlohmann::json OtGeometryComponent::serialize(std::filesystem::path* basedir) {
 
 void OtGeometryComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
 	wireframe = data.value("wireframe", false);
+	transparent = data.value("transparent", false);
 	cullback = data.value("cullback", true);
 
 	if (data.contains("geometry") && data["geometry"].contains("type")) {

@@ -41,12 +41,6 @@ void main() {
 	if (u_hasAlbedoTexture) {
 		// use texture and convert to gamma space
 		vec4 albedoSample = texture2D(s_geometryAlbedoTexture, v_texcoord0);
-
-		// discard pixel if it represents a hole
-		if (albedoSample.a < 0.5) {
-			discard;
-		}
-
 		albedo = pow(albedoSample.rgb, vec3_splat(2.2));
 	}
 

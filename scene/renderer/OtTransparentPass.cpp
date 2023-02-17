@@ -15,37 +15,40 @@
 
 
 //
-//	OtSceneRenderer::renderGeometryPass
+//	OtSceneRenderer::renderTransparentPass
 //
 
-void OtSceneRenderer::renderGeometryPass(OtScene2 scene) {
-	// update gbuffer
-	gbuffer.update(width, height);
-
+void OtSceneRenderer::renderTransparentPass(OtScene2 scene) {
 	// setup pass
 	OtPass pass;
 	pass.reserveRenderingSlot();
-	pass.setClear(true, true, 0);
+	pass.setClear(false, false);
 	pass.setRectangle(0, 0, width, height);
-	pass.setFrameBuffer(gbuffer);
+	pass.setFrameBuffer(compositeBuffer);
 	pass.setTransform(viewMatrix, projectionMatrix);
 
-	// render all non-transparent geometries (that have transform and material components)
-	for (auto entity : scene->view<OtGeometryComponent, OtTransformComponent, OtMaterialComponent>()) {
-		if (!scene->getComponent<OtGeometryComponent>(entity).transparent) {
-			renderGeometry(pass, scene, entity);
+	// render all transparent geometries (in scene hierarchical order)
+	scene->eachEntityDepthFirst([&](OtEntity entity) {
+		if (scene->hasComponent<OtGeometryComponent>(entity) &&
+			scene->hasComponent<OtTransformComponent>(entity) &&
+			scene->hasComponent<OtMaterialComponent>(entity)) {
+
+			if (scene->getComponent<OtGeometryComponent>(entity).transparent) {
+				renderTransparentGeometry(pass, scene, entity);
+			}
 		}
-	}
+	});
 }
 
 
 //
-//	OtSceneRenderer::renderGeometry
+//	OtSceneRenderer::renderTransparentGeometry
 //
 
-void OtSceneRenderer::renderGeometry(OtPass& pass, OtScene2 scene, OtEntity entity) {
-	// submit the material information
+void OtSceneRenderer::renderTransparentGeometry(OtPass& pass, OtScene2 scene, OtEntity entity) {
+	// submit the material and light uniforms
 	submitMaterialUniforms(scene, entity);
+	submitLightUniforms(scene);
 
 	// submit the geometry
 	auto& geometry = scene->getComponent<OtGeometryComponent>(entity);
@@ -64,7 +67,8 @@ void OtSceneRenderer::renderGeometry(OtPass& pass, OtScene2 scene, OtEntity enti
 			OtStateWriteA |
 			OtStateWriteZ |
 			OtStateDepthTestLess |
-			OtStateLines);
+			OtStateLines |
+			OtStateBlendAlpha);
 
 	} else if (geometry.cullback) {
 		geometryShader.setState(
@@ -72,19 +76,21 @@ void OtSceneRenderer::renderGeometry(OtPass& pass, OtScene2 scene, OtEntity enti
 			OtStateWriteA |
 			OtStateWriteZ |
 			OtStateDepthTestLess |
-			OtStateCullCw);
+			OtStateCullCw |
+			OtStateBlendAlpha);
 
 	} else {
 		geometryShader.setState(
 			OtStateWriteRgb |
 			OtStateWriteA |
 			OtStateWriteZ |
-			OtStateDepthTestLess);
+			OtStateDepthTestLess |
+			OtStateBlendAlpha);
 	}
 
 	// set the transform
-	geometryShader.setTransform(scene->getGlobalTransform(entity));
+	transparentShader.setTransform(scene->getGlobalTransform(entity));
 
 	// run the shader
-	pass.runShader(geometryShader);
+	pass.runShader(transparentShader);
 }

@@ -174,6 +174,7 @@
 							"thetaStart": 0.0,
 							"type": "Sphere"
 						},
+						"transparent": false,
 						"wireframe": true
 					},
 					{
@@ -234,6 +235,7 @@
 							"thetaStart": 0.0,
 							"type": "Sphere"
 						},
+						"transparent": true,
 						"wireframe": false
 					},
 					{
@@ -252,6 +254,67 @@
 						"metallicTexture": "",
 						"normalTexture": "",
 						"roughness": 0.4000000059604645,
+						"roughnessTexture": ""
+					}
+				]
+			},
+			{
+				"children": [],
+				"components": [
+					{
+						"component": "Core",
+						"tag": "Clouds",
+						"uuid": 830609709
+					},
+					{
+						"component": "Transform",
+						"rotation": [
+							0.0,
+							0.0,
+							0.0
+						],
+						"scale": [
+							1.0499999523162842,
+							1.0499999523162842,
+							1.0499999523162842
+						],
+						"translation": [
+							0.0,
+							0.0,
+							0.0
+						]
+					},
+					{
+						"component": "Geometry",
+						"cullback": true,
+						"geometry": {
+							"phiLength": 6.2831854820251465,
+							"phiSegments": 32,
+							"phiStart": 0.0,
+							"thetaLength": 3.1415927410125732,
+							"thetaSegments": 16,
+							"thetaStart": 0.0,
+							"type": "Sphere"
+						},
+						"transparent": true,
+						"wireframe": false
+					},
+					{
+						"albedo": [
+							1.0,
+							1.0,
+							1.0
+						],
+						"albedoTexture": "assets/clouds.png",
+						"ao": 1.0,
+						"aoTexture": "",
+						"component": "Material",
+						"emissive": 0.0,
+						"emissiveTexture": "",
+						"metallic": 0.5,
+						"metallicTexture": "",
+						"normalTexture": "",
+						"roughness": 0.5,
 						"roughnessTexture": ""
 					}
 				]

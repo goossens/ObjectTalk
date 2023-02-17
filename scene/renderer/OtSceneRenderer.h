@@ -44,15 +44,13 @@ public:
 	// render the specified scene
 	int render(OtScene2 scene, OtEntity selected=OtEntityNull);
 
-	// show the gbuffer (for debugging purposes)
-	void visualizeGbuffer();
-
 private:
 	// render passes
 	// void renderShadowPass(OtScene2 scene);
 	void renderGeometryPass(OtScene2 scene);
 	void renderBackgroundPass(OtScene2 scene);
 	void renderLightingPass(OtScene2 scene);
+	void renderTransparentPass(OtScene2 scene);
 	void renderGridPass();
 	void renderHighlightPass(OtScene2 scene, OtEntity entity);
 	void renderPostProcessingPass(OtScene2 scene);
@@ -61,8 +59,13 @@ private:
 	void renderSkyBox(OtPass& pass, OtSkyBoxComponent& component);
 	void renderSkySphere(OtPass& pass, OtSkySphereComponent& component);
 	void renderGeometry(OtPass& pass, OtScene2 scene, OtEntity entity);
+	void renderTransparentGeometry(OtPass& pass, OtScene2 scene, OtEntity entity);
 	void renderHighlight(OtPass& pass, OtScene2 scene, OtEntity entity);
 	void renderBloom(float bloomIntensity);
+
+	// rendering tools
+	void submitMaterialUniforms(OtScene2 scene, OtEntity entity);
+	void submitLightUniforms(OtScene2 scene);
 
 	// camera information
 	glm::vec3 cameraPosition;
@@ -127,6 +130,7 @@ private:
 	OtShader skyBoxShader{"OtSkybox2VS", "OtSkybox2FS"};
 	OtShader skySphereShader{"OtSkySphereVS", "OtSkySphereFS"};
 	OtShader lightingShader{"OtLightingVS", "OtLightingFS"};
+	OtShader transparentShader{"OtTransparentVS", "OtTransparentFS"};
 	OtShader gridShader{"OtGridVS", "OtGridFS"};
 	OtShader selectShader{"OtSelectVS", "OtSelectFS"};
 	OtShader outlineShader{"OtOutlineVS", "OtOutlineFS"};

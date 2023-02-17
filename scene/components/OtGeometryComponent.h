@@ -42,6 +42,7 @@ public:
 	// stored properties
 	OtGeometry geometry;
 	bool wireframe = false;
+	bool transparent = false;
 	bool cullback = true;
 
 private:

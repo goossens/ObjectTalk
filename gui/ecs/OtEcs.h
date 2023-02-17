@@ -72,7 +72,7 @@ public:
 	OtEntity getPreviousSibling(OtEntity entity) { return getComponent<OtCoreComponent>(entity).previousSibling; }
 	OtEntity getNextSibling(OtEntity entity) { return getComponent<OtCoreComponent>(entity).nextSibling; }
 
-	// iterate through entities
+	// iterate through all entities (order is not garuenteed)
 	void each(std::function<void(OtEntity)> callback) {
 		registry.each([this, callback](OtEntity entity) {
 			// don't expose the hidden root entity
@@ -82,7 +82,7 @@ public:
 		});
 	}
 
-	// iterate through an entity's children
+	// iterate through an entity's children (just one level)
 	void eachChild(OtEntity entity, std::function<void(OtEntity)> callback) {
 		auto child = getComponent<OtCoreComponent>(entity).firstChild;
 
@@ -92,6 +92,21 @@ public:
 			child = nextChild;
 		}
 	}
+
+	// iterate through all of an entity's children (depth-first)
+	void eachChildDepthFirst(OtEntity entity, std::function<void(OtEntity)> callback) {
+		auto child = getComponent<OtCoreComponent>(entity).firstChild;
+
+		while (isValidEntity(child)) {
+			auto nextChild = getComponent<OtCoreComponent>(child).nextSibling;
+			callback(child);
+			eachChild(child, callback);
+			child = nextChild;
+		}
+	}
+
+	// iterate through all entities in depth-first order (based on hierarchy)
+	void eachEntityDepthFirst(std::function<void(OtEntity)> callback) { eachChildDepthFirst(root, callback); }
 
 	// add a new component to an entity
 	template<typename T, typename... Args>

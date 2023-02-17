@@ -23,21 +23,8 @@ void OtSceneRenderer::renderLightingPass(OtScene2 scene) {
 	pass.setFrameBuffer(compositeBuffer);
 	pass.submitQuad(width, height);
 
-	// get the directional light information
-	glm::vec3 direction = glm::vec3(0.0);
-	glm::vec3 color = glm::vec3(0.0);
-
-	for (auto&& [entity, light, transform] : scene->view<OtDirectionalLightComponent, OtTransformComponent>().each()) {
-		direction = transform.getTransform()[3];
-		color = light.color;
-	}
-
-	// build and submit the uniforms
-	glm::vec4* uniforms = lightingUniforms.getValues();
-	uniforms[0] = glm::vec4(cameraPosition, 0.0f);
-	uniforms[1] = glm::vec4(direction, 0.0f);
-	uniforms[2] = glm::vec4(color, 0.0f);
-	lightingUniforms.submit();
+	// submit the uniforms
+	submitLightUniforms(scene);
 
 	inverseTransform.set(0, glm::inverse(viewProjectionMatrix));
 	inverseTransform.submit();

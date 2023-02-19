@@ -38,6 +38,7 @@ keep the code and documentation synchronized.
 
 * [ObjectTalk Language Reference in EBNF](language.html)
 * [ObjectTalk Classes](classes.html)
+* [ObjectTalk Architecture](architecture.html)
 
 **Tutorials**
 

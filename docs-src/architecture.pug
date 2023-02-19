@@ -1,0 +1,21 @@
+include /manual.pug
+
++page("ObjectTalk Architecture")
+	+manual()
+		include common/header.pug
+
+		+manual-body()
+			+manual-toc()
+				include:markdown-it architecture/toc.md
+
+			+manual-content()
+				+manual-chapter("overview", "Overview")
+					include:markdown-it architecture/overview.md
+
+				+manual-chapter("software", "Software Architecture")
+					include:markdown-it architecture/software.md
+
+				+manual-chapter("runtime", "Runtime Architecture")
+					include:markdown-it architecture/runtime.md
+
+		include common/footer.pug

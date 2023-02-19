@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>ObjectTalk Architecture</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/theme.css" />
+  </head>
+  <body id="page-top">
+    <div
+      class="container-fluid d-flex flex-column flex-grow-1 vh-100 overflow-hidden"
+    >
+      <nav
+        class="navbar navbar-expand px-0 pt-1 pb-0 flex-shrink-0 manual-header"
+      >
+        <a class="navbar-brand" href="index.html"
+          ><img src="img/icon.png" height="40" alt="" /><span class="ml-2"
+            >Documentation</span
+          ></a
+        ><button
+          class="navbar-toggler navbar-toggler-right"
+          data-toggle="collapse"
+          data-target="#navbarResponsive"
+          type="button"
+          data-toogle="collapse"
+          aria-controls="navbarResponsive"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <i class="fa fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link page-scroll" href="installation.html"
+                >Installation</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link page-scroll" href="tour.html">Tour</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link page-scroll" href="guide.html">Guide</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Reference"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Reference</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Reference">
+                <a class="nav-link page-scroll" href="language.html">Language</a
+                ><a class="nav-link page-scroll" href="classes.html">Classes</a
+                ><a class="nav-link page-scroll" href="architecture.html"
+                  >Architecture</a
+                >
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Tutorials"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Tutorials</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Tutorials">
+                <a class="nav-link page-scroll" href="web.html">Web</a
+                ><a class="nav-link page-scroll" href="3d.html">3D</a>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <div class="row flex-grow-1 overflow-hidden vh-100">
+        <div class="col-2 mh-100 overflow-auto py-2 manual-toc">
+          <p><strong>ObjectTalk Architecture</strong></p>
+          <ul>
+            <li><a class="page-scroll" href="#overview">Overview</a></li>
+            <li>
+              <a class="page-scroll" href="#software">Software Architecture</a>
+            </li>
+            <li>
+              <a class="page-scroll" href="#runtime">Runtime Architecture</a>
+            </li>
+          </ul>
+        </div>
+        <div class="col mh-100 overflow-auto py-2 manual-content">
+          <div id="overview">
+            <h1 class="pb-2">Overview</h1>
+            <p>
+              The ObjectTalk ecosystem is contained in a single executable file
+              that embeds all subsystems and their resources/assets together in
+              one unit. The original design called for a simple executable that
+              would load shared modules and assets on demand. It was decided not
+              to continue with this approach as dealing with that DLL hell on
+              Windows, keeping versions synchronized and the need to put things
+              all over the filesystem would lead to fragmentation and possibly
+              missing/incompatible pieces.
+            </p>
+            <p>
+              Today, the ObjectTalk ecosystem compiles into a single file that
+              contains all the libraries, resources and assets. The file “ot”,
+              which contains everything, can be moved around with easy and will
+              always be complete and in sync. During the compilation of
+              ObjectTalk it is decided whether the user interface subsystems are
+              included. On headless Linux systems, they are omitted and the “ot”
+              executable can only run simple scripts or scripts that can be used
+              to build a server. When the GUI libraries are available on the
+              host system, “ot” is compiled to offer all subsystems. On MacOS
+              and Windows this is the default but even here a stripped-down
+              version can be compiled by setting a flag during compilation.
+            </p>
+            <p>
+              Github is used as the
+              <a href="https://github.com/goossens/ObjectTalk"
+                >source code repository</a
+              >
+              and on every hand-in, the latest versions of the “ot” executable
+              are built for MacOS, Linux and Windows and can be downloaded.
+              Stable versions will also be made available from the same Github
+              repository. Documentation for ObjectTalk is also included in the
+              repository and the
+              <a href="https://goossens.github.io/ObjectTalk"
+                >documentation website</a
+              >
+              is automatically updated on every hand-in (off course the
+              developer has to ensure the documentation is inline with the
+              software. Documentation still doesn’t write itself).
+            </p>
+          </div>
+          <div id="software">
+            <h1 class="pb-2">Software Architecture</h1>
+            <p>
+              The diagram below depicts the subsystems included in the
+              ObjectTalk ecosystem. As mentioned above, the four boxes on the
+              right are available on both ObjectTalk configurations whereas the
+              five boxes on the left are only available when the host operating
+              system offers GUI libraries.
+            </p>
+            <p>
+              <img
+                src="img/software-architecture.png"
+                alt="Software Architecture"
+              />
+            </p>
+            <p><strong>Operating System Foundation</strong></p>
+            <p>
+              ObjectTalk currently runs on MacOS, Linux and Windows. In general,
+              the main development platform is macOS and typically the latest
+              version is used (Maverick as of now). For Linux, Ubuntu 22.04 is
+              used and on Billy boxes, Window 11. The Github continues
+              integration tasks also use the latest versions of these operating
+              systems. For those that use other Linux distributions, it is
+              likely that ObjectTalk will compile out-of-the-box, but this is
+              not verified.
+            </p>
+            <p>
+              The entire ObjectTalk ecosystem is written in C++17 which is the
+              most recent version that is best supported on all platforms. Once
+              C++20 finds better support, we will switch to it.
+            </p>
+            <p>
+              To simplify the ObjectTalk code baseline, the C++ standard library
+              is used to the maximum extend possible. Basic I/O function,
+              filesystem access, containers and memory managent are simply used
+              as is. Compiler developers typically do a good job optimizing
+              things on each platform.
+            </p>
+            <p>
+              I know there are lot of people out there that believe they can do
+              better than the standard library (and they might be right) but the
+              time required to optimize on multiple platforms is not worth it.
+              I’m old enough to have written operating systems in assembler and
+              had to maintain C libraries for even the most simple memory
+              management or data structures. These days, I gladly take free
+              cross platform solutions and sacrifice a few CPU cycles (I have
+              more of those than braincells).
+            </p>
+            <p><strong>ObjectTalk Language Engine</strong></p>
+            <p>
+              The language engine uses some simple components to implement
+              ObjectTalk. A lexical scanner turns source code into tokens, the
+              compiler translates these tokens to bytecode for a
+              platform-independent imaginary CPU, an inline optimizer turns
+              simple code sequence into super instructions and the stack-based
+              virtual machine executes this bytecode.
+            </p>
+            <p>
+              <img
+                src="img/language-architecture.png"
+                alt="Language Architecture"
+              />
+            </p>
+            <p><strong>Core Classes</strong></p>
+            <p>
+              Given that ObjectTalk’s virtual machine only understands a stack
+              of opaque objects, there members, member functions and basic
+              branching, even the most fundamental operations like additions,
+              string manipulation and I/O must be implemented in ObjectTalk
+              classes. The core classes subsystem provides fundamental classes
+              for primitives (booleans, integers, reals, strings and functions),
+              collections (arrays, dictionaries and sets) as well as a set of
+              operating system, filesystem and stream classes.
+            </p>
+            <p><strong>Asynchronous I/O</strong></p>
+            <p>
+              When implementing servers or I/O heavy applications, you typically
+              have two options. Firstly, you can go multithreaded and use many
+              threads and thread pools to handle I/O request. This approach
+              however has proven not to be too scaleable and most web servers
+              today don’t use it or have complicated strategies to deal with
+              performance and bottlenecks. The other approach is to use a single
+              thread with an event loop that runs as fast as possible and simply
+              responds to operating system events whenever they happen.
+              ObjectTalk uses this last approach based on the
+              <a href="http://docs.libuv.org/">Libuv</a> library that offers
+              asynchronous operations as a cross-platform solutions. Libuv was
+              originally developed for
+              <a href="https://nodejs.org/">Node.js</a> and is still in use
+              there. This means that it is well tested and maintained.
+            </p>
+            <p><strong>HTTP Server</strong></p>
+            <p>
+              ObjectTalk provides a number of classes that make it easy to
+              implement a webserver on top of the Async I/O library. For those
+              familiar with <a href="https://nodejs.org/">Node.js</a> and the
+              <a href="https://expressjs.com">Express package</a>, you will
+              recognize the similarities. If you need an operational
+              asynchronous web server, use
+              <a href="https://nodejs.org/">Node.js</a>. If you want to use a
+              simple server using a few lines of code, this ObjectTalk library
+              might be the ticket.
+            </p>
+            <p><strong>Graphics Framework</strong></p>
+            <p>
+              As mentioned above, the graphics framework is optional and will
+              only be compiled in when the host operating system provided the
+              required GUI libraries. The foundation of this framework is
+              provided by a number of open source cross-platform libraries.
+              <a href="https://www.glfw.org">GLFW</a>
+              is used as an system independent abstraction for windows and
+              user/system interactions.
+              <a href="https://github.com/bkaradzic/bgfx">BGFX</a> is used as a
+              system independent abstraction to render graphics to support
+              Metal, OpenGL, Vulkan and DirectX APIs.
+              <a href="https://github.com/ocornut/imgui">Dear ImGui</a> is used
+              as a neutral user interface library and all widgets are
+              implemented with it. The framework glues all of this together and
+              ObjectTalk users will never have to deal with this level of
+              detail.
+            </p>
+            <p>
+              In the original design for the graphics framework, the ObjectTalk
+              language was used to construct all the components for a user
+              interface. Unfortunately, this led to very verbose code and it
+              would take pages of code to create all the things you would need
+              for a user interface, board or 3D display. In fact, the ratio
+              between construction code and functionality was so bad that a new
+              approach was implemented.
+            </p>
+            <p>
+              Today, the framework uses an Entity Component System (ECS) as an
+              architectural pattern to represent user interfaces, 2D (game)
+              boards and 3D scenes. The Integrated Development Environment
+              (IDE), which is explained later, provides editors to manipulates
+              ECS objects. By doing this, the ObjectTalk language is no longer
+              used to construct visual objects but it is used for runtime logic
+              and interaction. For those old enough to remember the
+              Model-View-Controller architectural pattern, the model is
+              expressed in the ECS, the view is provided internally by the
+              ObjectTalk ecosystem based on the model and the controller is
+              written in ObjectTalk.
+            </p>
+            <p><strong>GUI Widgets</strong></p>
+            <p>
+              ObjectTalk has a rich set of platform independent widgets that can
+              be used to create user interfaces and apps.
+            </p>
+            <p><strong>2D Boards</strong></p>
+            <p>
+              ObjectTalk has a rich set of 2D components that can be used to
+              create 2D billboards or board games.
+            </p>
+            <p><strong>3D Scenes</strong></p>
+            <p>
+              ObjectTalk has a rich set of 3D components that can be used to
+              create pretty 3D environments or games. Modern graphics techniques
+              like Physically Based rendering (PBR), deferred and forward
+              rendering, High Dynamic Range (HDR) pipelines, Screen-Space
+              Ambient Occlusion (SSAO), and post-processing filter like bloom,
+              depth-of-field, lens flatre, gamma correction and brightness are
+              all available.
+            </p>
+            <p><strong>Integrated Development Environment (IDE)</strong></p>
+            <p>
+              To top it all off, ObjectTalk comes with its own IDE to edit
+              ObjectTalk scripts, GUIs, boards and scenes. The IDE runs in a
+              single window (with tabs) and has full undo/redo/cut/copy/paste
+              capabilities for all content types. From the IDE, script, GUIs,
+              boards and scenes can be validated and run. Errors are highlighted
+              inline making it easy and fast to finish a project.
+            </p>
+          </div>
+          <div id="runtime">
+            <h1 class="pb-2">Runtime Architecture</h1>
+            <p>
+              As was explained above the ObjectTalk ecosystem comes as a single
+              executable file called “ot”. This single executable can run in
+              four different modes depending on how it was launched.
+            </p>
+            <p><strong>Simple Mode</strong></p>
+            <p><img src="img/simple-mode.png" alt="Simple Mode" /></p>
+            <p>
+              In its simplest form, “ot” is a scripting engine that can execute
+              ObjectTalk scripts from the command line. In this mode, the main
+              (and only) thread compiles and executes the code until the script
+              ends.
+            </p>
+            <p><strong>Server Mode</strong></p>
+            <p><img src="img/server-mode.png" alt="Server Mode" /></p>
+            <p>
+              In server mode, a script is started like described above in Simple
+              Mode. The difference is that at some point a server script starts
+              the event loop after which control passed to the engine. Only
+              callbacks are made from that point forward similar to other
+              asynchronous frameworks like Node.js. The startup script as well
+              as the event loop are all executed from the main thread.
+            </p>
+            <p>
+              Additional worker threads can be used to speed up tasks by
+              spreading them over multiple CPU cores and to ensure we don't hold
+              up event processing in the main thread. ObjectTalk's worker thread
+              logic is pretty simply. You construct one or more objects
+              representing tasks to be performed and pass them to one or more
+              worker threads. When the tasks are completed, results, in the form
+              of (another) object, are returned to the main thread.
+            </p>
+            <p><strong>Graphics Mode</strong></p>
+            <p><img src="img/graphics-mode.png" alt="Graphics Mode" /></p>
+            <p>
+              In graphics mode, the starting point is not a script but rather a
+              JSON file that contains the entity component system detailing the
+              structure and capabilities of the GUI, board or scene to be
+              rendered. The JSON file will refer to external assets such as
+              images, sprites or models and will also refer to ObjectTalk
+              scripts that act as controllers in the created graphical world.
+            </p>
+            <p>
+              The required JSON file can be constructed by hand but this is not
+              recommended. The provided IDE has dedicated editors for all the
+              graphical ECS JSON files.
+            </p>
+            <p>
+              In graphical mode a number of threads are used to run the
+              application which might be slightly different based on host
+              operating system. The main thread will be used as the windowing
+              and rendering thread. This thread interacts with the native
+              windows system and communicates with the GPU. It might be more
+              intuitive to make this a secondary thread but most operating
+              systems require that these tasks are execute from the primary or
+              startup thread.
+            </p>
+            <p>
+              A second thread will therefore be used to run the application, do
+              most of the CPU work and run the event loop. The ObjectTalk
+              callback will also run in this thread. As usual, worker threads
+              can also be used.
+            </p>
+            <p>
+              The graphical framework automatically and transparently connects
+              the main (graphical) thread with the application or scripts
+              thread.
+            </p>
+            <p><strong>Integrate Development Environment (IDE) Mode</strong></p>
+            <p><img src="img/ide-mode.png" alt="IDE Mode" /></p>
+            <p>
+              In the Integrate Development Environment (IDE) mode is the IDE
+              will act as the main application just like any other program in
+              graphics mode. When the IDE test runs a script or graphics
+              application, a subprocess is spawned in the applicable mode.
+              Bi-directional Inter Process Communication (IPC) is setup to allow
+              the IDE to communicate with the ObjectTalk script, GUI, board or
+              scene being tested.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="row flex-shrink-0 py-1 manual-footer" id="copyright">
+        <p class="mx-auto py-0 my-0 small">
+          Copyright (c) 1993-2023 Johan A. Goossens. All rights reserved.
+        </p>
+      </div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/theme.js"></script>
+  </body>
+</html>

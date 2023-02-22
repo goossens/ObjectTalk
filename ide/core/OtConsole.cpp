@@ -15,41 +15,19 @@
 
 
 //
-//	OtConsoleClass::OtConsoleClass
+//	OtConsole::OtConsole
 //
 
-OtConsoleClass::OtConsoleClass() {
+OtConsole::OtConsole() {
 	clear();
 }
 
 
 //
-//	OtConsoleClass::update
+//	OtConsole::render
 //
 
-void OtConsoleClass::update() {
-	// process console events
-	while (events.size()) {
-		Event event = events.pop();
-
-		switch (event.type) {
-			case Event::stdoutEvent:
-				write(event.text);
-				break;
-
-			case Event::stderrEvent:
-				writeError(event.text);
-				break;
-		}
-	}
-}
-
-
-//
-//	OtConsoleClass::render
-//
-
-void OtConsoleClass::render() {
+void OtConsole::render() {
 	// create the window
 	ImGui::BeginChild("Console", ImVec2(0.0, 0.0), true, ImGuiWindowFlags_HorizontalScrollbar);
 
@@ -88,20 +66,20 @@ void OtConsoleClass::render() {
 
 
 //
-//	OtConsoleClass::clear
+//	OtConsole::clear
 //
 
-void OtConsoleClass::clear() {
+void OtConsole::clear() {
 	lines.clear();
 	lines.push_back(Line(Normal, ""));
 }
 
 
 //
-//	OtConsoleClass::writeColored
+//	OtConsole::writeColored
 //
 
-void OtConsoleClass::writeColored(LineType type, const std::string& text) {
+void OtConsole::writeColored(LineType type, const std::string& text) {
 	std::string part;
 
 	for (auto& c : text) {
@@ -125,44 +103,35 @@ void OtConsoleClass::writeColored(LineType type, const std::string& text) {
 
 
 //
-//	OtConsoleClass::write
+//	OtConsole::write
 //
 
-void OtConsoleClass::write(const std::string& text) {
+void OtConsole::write(const std::string& text) {
 	writeColored(Normal, text);
 }
 
 
 //
-//	OtConsoleClass::writeHelp
+//	OtConsole::writeHelp
 //
 
-void OtConsoleClass::writeHelp(const std::string& text) {
+void OtConsole::writeHelp(const std::string& text) {
 	writeColored(Help, text);
 }
 
 
 //
-//	OtConsoleClass::writeInput
+//	OtConsole::writeInput
 //
 
-void OtConsoleClass::writeInput(const std::string& text) {
+void OtConsole::writeInput(const std::string& text) {
 	writeColored(Input, std::string("<< ") + text);
 }
 
 //
-//	OtConsoleClass::writeError
+//	OtConsole::writeError
 //
 
-void OtConsoleClass::writeError(const std::string& text) {
+void OtConsole::writeError(const std::string& text) {
 	writeColored(Error, text);
-}
-
-
-//
-//	OtConsoleClass::create
-//
-
-OtConsole OtConsoleClass::create() {
-	return OtConsoleClass::instance();
 }

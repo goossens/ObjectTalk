@@ -19,7 +19,9 @@
 #include "OtFrameworkCustomer.h"
 #include "OtTexture.h"
 
+#include "OtConsole.h"
 #include "OtEditor.h"
+#include "OtSubProcess.h"
 
 
 //
@@ -43,20 +45,23 @@ public:
 	void openFile();
 	void openFile(const std::filesystem::path& filename);
 
-	// save file content
+	// save content of active file/editor
 	void saveFile();
 	void saveAsFile();
 
-	// close file
+	// close active file/editor
 	void closeFile();
 
-	// delete an editor
+	// run the current file
+	void runFile();
+
+	// delete a specified editor
 	void deleteEditor(OtEditor editor);
 
 	// find a named editor
 	OtEditor findEditor(const std::filesystem::path& filename);
 
-	// make a specified editor tab active
+	// make a specified editor active
 	void activateEditor(OtEditor editor);
 
 	// create a new workspace object
@@ -66,14 +71,14 @@ private:
 	// create a name for an untitled file
 	std::string getUntitledName();
 
-	// update state and process events
-	void onUpdate() override;
-
 	// render all windows
 	void onRender() override;
 
 	// see if we can quit app
 	bool onCanQuit() override;
+
+	// get executable path
+	std::filesystem::path getExecutablePath();
 
 	// get default directory
 	std::filesystem::path getDefaultDirectory();
@@ -91,6 +96,7 @@ private:
 	void renderConfirmClose();
 	void renderConfirmQuit();
 	void renderConfirmError();
+	void renderSubProcess();
 
 	// splash screen logo
 	OtTexture logo;
@@ -102,7 +108,7 @@ private:
 	OtEditor activeEditor;
 	OtEditor activateEditorTab;
 
-	// tab for save as dialog
+	// tab for "save as" dialog
 	OtEditor saveAsEditor;
 
 	// error message
@@ -119,4 +125,13 @@ private:
 		confirmQuitState,
 		confirmErrorState
 	} state = splashState;
+
+	// stuff to run things and show the console
+	OtSubProcess subprocess;
+	std::filesystem::path currentRunnable;
+
+	OtConsole console;
+	bool consoleFullScreen = false;
+	bool consoleVisible = false;
+	float editorsHeight = -1.0f;
 };

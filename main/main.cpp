@@ -10,6 +10,7 @@
 //
 
 #include <cstdlib>
+#include <filesystem>
 #include <iostream>
 
 #include <argparse/argparse.hpp>
@@ -26,7 +27,7 @@
 
 
 //
-//	ObjectTalk interpreter main function
+//	ObjectTalk main function
 //
 
 int main(int argc, char* argv[]) {
@@ -34,12 +35,12 @@ int main(int argc, char* argv[]) {
 	argparse::ArgumentParser program(argv[0], "0.2");
 
 	program.add_argument("-i", "--ide")
-		.help("edit code instead of running it")
+		.help("edit files instead of running them")
 		.default_value(false)
 		.implicit_value(true);
 
-	program.add_argument("scripts")
-		.help("scripts to execute")
+	program.add_argument("files")
+		.help("files to execute")
 		.remaining();
 
 	try {
@@ -51,11 +52,11 @@ int main(int argc, char* argv[]) {
 		std::_Exit(EXIT_FAILURE);
 	}
 
-	// get all the script file names
-	std::vector<std::string> scripts;
+	// get all the target filenames
+	std::vector<std::string> files;
 
 	try {
-		scripts = program.get<std::vector<std::string>>("scripts");
+		files = program.get<std::vector<std::string>>("files");
 
 	} catch (std::logic_error& e) {
 	}
@@ -72,14 +73,14 @@ int main(int argc, char* argv[]) {
 		OtGuiClass::registerModule();
 #endif
 
-		// where any script specified?
-		if (scripts.size() == 0) {
-			// no, do we start the IDE workspace?
+		// where any files specified?
+		if (files.size() == 0) {
+			// no, do we start an IDE workspace?
 #if defined(INCLUDE_GUI)
 			OtWorkspaceClass::instance()->run();
 
 #else
-			std::cerr << "No scripts specified" << std::endl << std::endl;
+			std::cerr << "No files specified" << std::endl << std::endl;
 			std::cerr << program;
 			std::_Exit(EXIT_FAILURE);
 #endif
@@ -88,8 +89,8 @@ int main(int argc, char* argv[]) {
 		} else {
 #if defined(INCLUDE_GUI)
 			if (program["--ide"] == true) {
-				for (auto& script : scripts) {
-					OtWorkspaceClass::instance()->openFile(script);
+				for (auto& file : files) {
+					OtWorkspaceClass::instance()->openFile(file);
 				}
 
 				OtWorkspaceClass::instance()->run();
@@ -97,11 +98,15 @@ int main(int argc, char* argv[]) {
 			} else {
 #endif
 
-				// run each script
-				for (auto& script : scripts) {
-					auto module = OtModuleClass::create();
-					module->load(script);
-					module->unsetAll();
+				// run each file
+				for (auto& file : files) {
+					auto extension = std::filesystem::path(file).extension();
+
+					if (extension == ".ot" || extension == "") {
+						auto module = OtModuleClass::create();
+						module->load(file);
+						module->unsetAll();
+					}
 				}
 #if defined(INCLUDE_GUI)
 			}

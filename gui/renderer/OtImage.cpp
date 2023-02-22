@@ -180,7 +180,7 @@ void OtImage::load(void *data, uint32_t size) {
 //
 
 bimg::ImageContainer *OtImage::getContainer() {
-	// unsure we have a valid image
+	// ensure we have a valid image
 	if (isValid()) {
 		return image;
 

@@ -21,7 +21,6 @@
 #include "OtConsole.h"
 #include "OtObjectTalkEditor.h"
 #include "OtObjectTalkLanguage.h"
-#include "OtScriptRunner.h"
 #include "OtWorkspace.h"
 
 
@@ -127,18 +126,6 @@ void OtObjectTalkEditorClass::save() {
 //
 
 void OtObjectTalkEditorClass::render() {
-	// determine editor height
-	auto displaySize = ImGui::GetIO().DisplaySize.y;
-	auto minEditorWidth = displaySize * 0.05f;
-	auto maxEditorWidth = displaySize * 0.90f;
-
-	if (editorHeight < 0.0) {
-		editorHeight =  displaySize * 0.8;
-
-	} else {
-		editorHeight = std::clamp(editorHeight, minEditorWidth, maxEditorWidth);
-	}
-
 	// create the window
 	ImGui::BeginChild(
 		"scene",
@@ -149,14 +136,8 @@ void OtObjectTalkEditorClass::render() {
 	// render the menu
 	renderMenu();
 
-	// render splitter
-	OtUiSplitterVertical(&editorHeight, minEditorWidth, maxEditorWidth);
-
 	// render the editor
 	renderEditor();
-
-	// render the console
-	OtConsoleClass::instance()->render();
 	ImGui::EndChild();
 }
 
@@ -166,9 +147,6 @@ void OtObjectTalkEditorClass::render() {
 //
 
 void OtObjectTalkEditorClass::renderMenu() {
-	// determine status
-	bool runnable = !OtScriptRunnerClass::instance()->isRunning() && !isDirty() && fileExists();
-
 	// get keyboard state to handle keyboard shortcuts
 	ImGuiIO& io = ImGui::GetIO();
 	auto isOSX = io.ConfigMacOSXBehaviors;
@@ -183,7 +161,7 @@ void OtObjectTalkEditorClass::renderMenu() {
 		if (ImGui::IsKeyPressed(ImGuiKey_B)) {
 			compile();
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_R) && runnable) {
+		} else if (ImGui::IsKeyPressed(ImGuiKey_R)) {
 			run();
 		}
 	}
@@ -235,10 +213,9 @@ void OtObjectTalkEditorClass::renderMenu() {
 
 		if (ImGui::BeginMenu("Program")) {
 			if (ImGui::MenuItem("Build", SHORTCUT "B")) { compile(); }
-			if (ImGui::MenuItem("Run", SHORTCUT "R", nullptr, runnable)) { run(); }
+			if (ImGui::MenuItem("Run", SHORTCUT "R")) { run(); }
 			ImGui::Separator();
 			if (ImGui::MenuItem("Clear Error")) { clearError(); }
-			if (ImGui::MenuItem("Clear Console")) { OtConsoleClass::instance()->clear(); }
 
 			ImGui::EndMenu();
 		}
@@ -254,7 +231,7 @@ void OtObjectTalkEditorClass::renderMenu() {
 
 void OtObjectTalkEditorClass::renderEditor() {
 	// create the window
-	ImGui::BeginChild("editor", ImVec2(0.0, editorHeight), true);
+	ImGui::BeginChild("editor", ImVec2(0.0f, 0.0f), true);
 
 	// create the editor
 	editor.Render("TextEditor");
@@ -286,8 +263,8 @@ void OtObjectTalkEditorClass::run() {
 	// reset errors
 	clearError();
 
-	// let the script runner do its job
-	OtScriptRunnerClass::instance()->run(path);
+	// run the script
+	OtWorkspaceClass::instance()->runFile();
 }
 
 

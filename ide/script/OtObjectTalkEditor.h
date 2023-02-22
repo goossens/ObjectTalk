@@ -66,5 +66,4 @@ private:
 	// properties
 	int version = 0;
 	int scrollToLine = 0;
-	float editorHeight = -1.0;
 };

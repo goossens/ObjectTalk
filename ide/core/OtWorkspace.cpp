@@ -15,15 +15,11 @@
 #include "ImGuiFileDialog.h"
 
 #include "OtFormat.h"
-#include "OtLibuv.h"
-#include "OtOS.h"
 
 #include "OtFramework.h"
 
-#include "OtConsole.h"
 #include "OtLogo.h"
 #include "OtObjectTalkEditor.h"
-#include "OtScriptRunner.h"
 #include "OtSceneEditor.h"
 #include "OtWorkspace.h"
 
@@ -211,6 +207,45 @@ void OtWorkspaceClass::closeFile() {
 
 
 //
+//	OtWorkspaceClass::runFile
+//
+
+void OtWorkspaceClass::runFile() {
+	// clear the console
+	console.clear();
+
+	// compose the argument array
+	std::vector<std::string> args;
+	currentRunnable = activeEditor->getFileName();
+	args.push_back(currentRunnable.string());
+
+	// launch a subprocess
+	subprocess.start(
+		getExecutablePath(),
+		args,
+		[this](int64_t status, int signal) {
+			if (status || signal != 0) {
+				console.writeError(OtFormat("\n[%s] terminated with status %d and signal %d", currentRunnable.c_str(), status, signal));
+
+			} else {
+				console.writeHelp(OtFormat("\n[%s] terminated normally", currentRunnable.c_str()));
+			}
+		},
+
+		[this](const std::string& text) {
+			console.write(text);
+		},
+
+		[this](const std::string& text) {
+			console.writeError(text);
+		});
+
+	// show the console
+	consoleFullScreen = true;
+}
+
+
+//
 //	OtWorkspaceClass::deleteEditor
 //
 
@@ -251,24 +286,16 @@ void OtWorkspaceClass::activateEditor(OtEditor editor) {
 
 
 //
-//	OtWorkspaceClass::onUpdate
-//
-
-void OtWorkspaceClass::onUpdate() {
-	// update the console and script runner
-	OtConsoleClass::instance()->update();
-	OtScriptRunnerClass::instance()->update();
-}
-
-
-//
 //	OtWorkspaceClass::onRender
 //
 
 void OtWorkspaceClass::onRender() {
-	// we don't render workspace when a GUI app is running
-	if (!OtScriptRunnerClass::instance()->isRunningGUI()) {
-		// show splash screen if required
+	// show the "control bar" and the console if required
+	if (consoleFullScreen) {
+		renderSubProcess();
+
+	} else {
+		// show splash screen if we have no editors open
 		if (editors.size() == 0) {
 			renderSplashScreen();
 			activeEditor = nullptr;
@@ -278,6 +305,7 @@ void OtWorkspaceClass::onRender() {
 			renderEditors();
 		}
 
+		// render any dialog boxes
 		if (state == newFileState) {
 			renderNewFileType();
 
@@ -296,37 +324,37 @@ void OtWorkspaceClass::onRender() {
 		} else if (state == confirmErrorState) {
 			renderConfirmError();
 		}
-	}
 
-	// get keyboard state to handle keyboard shortcuts
-	ImGuiIO& io = ImGui::GetIO();
-	auto isOSX = io.ConfigMacOSXBehaviors;
-	auto alt = io.KeyAlt;
-	auto ctrl = io.KeyCtrl;
-	auto shift = io.KeyShift;
-	auto super = io.KeySuper;
-	auto isShortcut = (isOSX ? (super && !ctrl) : (ctrl && !super)) && !alt && !shift;
+		// get keyboard state to handle keyboard shortcuts
+		ImGuiIO& io = ImGui::GetIO();
+		auto isOSX = io.ConfigMacOSXBehaviors;
+		auto alt = io.KeyAlt;
+		auto ctrl = io.KeyCtrl;
+		auto shift = io.KeyShift;
+		auto super = io.KeySuper;
+		auto isShortcut = (isOSX ? (super && !ctrl) : (ctrl && !super)) && !alt && !shift;
 
-	// handle shortcuts based on state
-	if (isShortcut) {
-		if (ImGui::IsKeyPressed(ImGuiKey_N) && (state == splashState || state == editState)) {
-			newFile();
+		// handle shortcuts based on state
+		if (isShortcut) {
+			if (ImGui::IsKeyPressed(ImGuiKey_N) && (state == splashState || state == editState)) {
+				newFile();
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_O) && (state == splashState || state == editState)) {
-			openFile();
+			} else if (ImGui::IsKeyPressed(ImGuiKey_O) && (state == splashState || state == editState)) {
+				openFile();
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_S) && (state == editState)) {
-			if (activeEditor->isDirty()) {
-				if (activeEditor->fileExists()) {
-					saveFile();
+			} else if (ImGui::IsKeyPressed(ImGuiKey_S) && (state == editState)) {
+				if (activeEditor->isDirty()) {
+					if (activeEditor->fileExists()) {
+						saveFile();
 
-				} else {
-					saveAsFile();
+					} else {
+						saveAsFile();
+					}
 				}
-			}
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_W) && (state == editState)) {
-			closeFile();
+			} else if (ImGui::IsKeyPressed(ImGuiKey_W) && (state == editState)) {
+				closeFile();
+			}
 		}
 	}
 }
@@ -622,31 +650,63 @@ void OtWorkspaceClass::renderConfirmError() {
 
 
 //
+//	OtWorkspaceClass::renderSubProcess
+//
+
+void OtWorkspaceClass::renderSubProcess() {
+	// create console window
+	ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
+	ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+
+	ImGui::Begin(
+		"SubProcess",
+		nullptr,
+		ImGuiWindowFlags_NoDecoration |
+		ImGuiWindowFlags_NoResize |
+		ImGuiWindowFlags_NoBringToFrontOnFocus);
+
+	// render the subprocess control bar
+	std::string title = OtFormat("Runnning [%s]...", currentRunnable.c_str());
+	ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "%s", title.c_str());
+	ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - 150.0f);
+
+	if (subprocess.isRunning()) {
+		if (ImGui::Button("Kill Process")) {
+			subprocess.kill(SIGINT);
+		}
+
+	} else {
+		if (ImGui::Button("Close Console", ImVec2(150.0f, 0.0f))) {
+			consoleFullScreen = false;
+		}
+	}
+
+	// render the console
+	console.render();
+
+	ImGui::End();
+	ImGui::PopStyleVar();
+}
+
+
+//
 //	OtWorkspaceClass::onCanQuit
 //
 
 bool OtWorkspaceClass::onCanQuit() {
-	auto runner = OtScriptRunnerClass::instance();
-	auto os = OtOSClass::instance();
-
-	// are we currently showing a dialog
-	if (state != splashState && state != editState) {
+	// are we currently running something?
+	if (subprocess.isRunning()) {
+		// then we can't quit
 		return false;
 
-	// are we currently running a server script
-	} else if (runner->isRunningServer()) {
-		// just stop the script and keep the IDE going
-		os->stopServer();
+	// are we showing a dialog box that we shouldn't quit?
+	} else if (state == saveFileAsState || state == confirmCloseState || state == confirmQuitState) {
+		// then we can't quit
 		return false;
 
-	// are we currently running a GUI script
-	} else if (runner->isRunningGUI()) {
-		// just stop the script and keep the IDE going
-		os->stopGUI();
-		return false;
-
+	// we can't quit if we still have a "dirty" editor
 	} else {
-		// we can't quit if we still have a "dirty" editor
 		for (auto& editor : editors) {
 			if (editor->isDirty()) {
 				state = confirmQuitState;
@@ -654,8 +714,24 @@ bool OtWorkspaceClass::onCanQuit() {
 			}
 		}
 
+		// nothing stops us now from quiting
 		return true;
 	}
+}
+
+
+//
+//	OtWorkspaceClass::getExecutablePath
+//
+
+std::filesystem::path OtWorkspaceClass::getExecutablePath() {
+	// figure out where we live
+	char buffer[1024];
+	size_t length = 1024;
+	auto status = uv_exepath(buffer, &length);
+	UV_CHECK_ERROR("uv_exepath", status);
+	buffer[length] = 0;
+	return std::filesystem::canonical(std::filesystem::path(buffer));
 }
 
 
@@ -664,16 +740,9 @@ bool OtWorkspaceClass::onCanQuit() {
 //
 
 std::filesystem::path OtWorkspaceClass::getDefaultDirectory() {
-	// figure out where we live
-	char buffer[1024];
-	size_t length = 1024;
-	auto status = uv_exepath(buffer, &length);
-	UV_CHECK_ERROR("uv_exepath", status);
-	std::string home(buffer, length);
-
 	// see if we are development mode
-	auto exec = std::filesystem::path(home);
-	auto root = std::filesystem::canonical(exec).parent_path().parent_path();
+	auto exec = getExecutablePath();
+	auto root = exec.parent_path().parent_path();
 	auto examples = root.parent_path() / "examples";
 
 	// start with examples folder if we are
@@ -682,6 +751,8 @@ std::filesystem::path OtWorkspaceClass::getDefaultDirectory() {
 
 	} else {
 		// just start with user's home directory
+		char buffer[1024];
+		size_t length = 1024;
 		auto status = uv_os_homedir(buffer, &length);
 		UV_CHECK_ERROR("uv_os_homedir", status);
 		std::string home(buffer, length);

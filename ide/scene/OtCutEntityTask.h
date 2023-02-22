@@ -24,7 +24,7 @@
 class OtCutEntityTask : public OtDeleteEntityTask {
 public:
 	// constructor
-	OtCutEntityTask(OtScene2 s, OtEntity e, std::string& c) : OtDeleteEntityTask(s, e), clipboard(c) {}
+	OtCutEntityTask(std::shared_ptr<OtScene2> s, OtEntity e, std::string& c) : OtDeleteEntityTask(s, e), clipboard(c) {}
 
 	// get task name
 	std::string name() { return "cut entity"; }

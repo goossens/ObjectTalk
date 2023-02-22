@@ -25,10 +25,11 @@
 
 
 //
-//	aceClass::onSetup
+//	OtWorkspaceClass::run
 //
 
-void OtWorkspaceClass::onSetup() {
+void OtWorkspaceClass::run() {
+	OtFrameworkClass::instance()->run(this);
 }
 
 
@@ -184,7 +185,7 @@ std::string OtWorkspaceClass::getUntitledName() {
 //
 
 void OtWorkspaceClass::newScript() {
-	editors.push_back(OtObjectTalkEditorClass::create(getUntitledName()));
+	editors.push_back(OtObjectTalkEditor::create(getUntitledName()));
 	state = editState;
 }
 
@@ -194,7 +195,7 @@ void OtWorkspaceClass::newScript() {
 //
 
 void OtWorkspaceClass::newScene() {
-	editors.push_back(OtSceneEditorClass::create(getUntitledName()));
+	editors.push_back(OtSceneEditor::create(getUntitledName()));
 	state = editState;
 }
 
@@ -224,7 +225,7 @@ void OtWorkspaceClass::openFile() {
 //
 
 void OtWorkspaceClass::openFile(const std::filesystem::path& path) {
-	OtEditor editor;
+	std::shared_ptr<OtEditor> editor;
 
 	// don't reopen if it is already open
 	if ((editor = findEditor(path)) == nullptr) {
@@ -233,12 +234,12 @@ void OtWorkspaceClass::openFile(const std::filesystem::path& path) {
 
 		// open correct editor
 		if (extension == ".ot") {
-			editor = OtObjectTalkEditorClass::create(path);
+			editor = OtObjectTalkEditor::create(path);
 			editors.push_back(editor);
 			state = editState;
 
 		} else if (extension == ".ots") {
-			editor = OtSceneEditorClass::create(path);
+			editor = OtSceneEditor::create(path);
 			editors.push_back(editor);
 			state = editState;
 
@@ -354,9 +355,9 @@ void OtWorkspaceClass::runFile() {
 //	OtWorkspaceClass::deleteEditor
 //
 
-void OtWorkspaceClass::deleteEditor(OtEditor editor) {
+void OtWorkspaceClass::deleteEditor(std::shared_ptr<OtEditor> editor) {
 	// remove specified editor from list
-	editors.erase(std::remove_if(editors.begin(), editors.end(), [this] (OtEditor candidate) {
+	editors.erase(std::remove_if(editors.begin(), editors.end(), [this] (std::shared_ptr<OtEditor> candidate) {
 		return candidate == activeEditor;
 	}), editors.end());
 
@@ -370,7 +371,7 @@ void OtWorkspaceClass::deleteEditor(OtEditor editor) {
 //	OtWorkspaceClass::findEditor
 //
 
-OtEditor OtWorkspaceClass::findEditor(const std::filesystem::path& path) {
+std::shared_ptr<OtEditor> OtWorkspaceClass::findEditor(const std::filesystem::path& path) {
 	for (auto& editor : editors) {
 		if (editor->getFileName() == path.string() || editor->getShortName() == path.string()) {
 			return editor;
@@ -385,7 +386,7 @@ OtEditor OtWorkspaceClass::findEditor(const std::filesystem::path& path) {
 //	OtWorkspaceClass::activateEditor
 //
 
-void OtWorkspaceClass::activateEditor(OtEditor editor) {
+void OtWorkspaceClass::activateEditor(std::shared_ptr<OtEditor> editor) {
 	activateEditorTab = editor;
 }
 
@@ -463,7 +464,7 @@ void OtWorkspaceClass::renderEditors() {
 	// start a tab bar
 	if (ImGui::BeginTabBar("Tabs", ImGuiTabBarFlags_AutoSelectNewTabs)) {
 		// make clone of editor list since renderers might change it
-		std::vector<OtEditor> clone = editors;
+		std::vector<std::shared_ptr<OtEditor>> clone = editors;
 
 		// render all editors as tabs
 		for (auto& editor : clone) {

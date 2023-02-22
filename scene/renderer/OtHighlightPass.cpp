@@ -16,7 +16,7 @@
 //	OtSceneRenderer::renderHighlightPass
 //
 
-void OtSceneRenderer::renderHighlightPass(OtScene2 scene, OtEntity entity) {
+void OtSceneRenderer::renderHighlightPass(std::shared_ptr<OtScene2> scene, OtEntity entity) {
 	// update framebuffer size
 	selectedBuffer.update(width, height);
 
@@ -52,7 +52,7 @@ void OtSceneRenderer::renderHighlightPass(OtScene2 scene, OtEntity entity) {
 //	OtSceneRenderer::renderHighlight
 //
 
-void OtSceneRenderer::renderHighlight(OtPass& pass, OtScene2 scene, OtEntity entity) {
+void OtSceneRenderer::renderHighlight(OtPass& pass, std::shared_ptr<OtScene2> scene, OtEntity entity) {
 	// only render if all components are available
 	if (scene->hasComponent<OtGeometryComponent>(entity) &&
 		scene->hasComponent<OtTransformComponent>(entity) &&

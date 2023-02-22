@@ -9,16 +9,72 @@
 //	Include files
 //
 
+#include <fstream>
+#include <sstream>
+
 #include "nlohmann/json.hpp"
+
+#include "OtException.h"
 
 #include "OtScene2.h"
 
 
 //
-//	OtScene2Class::serialize
+//	OtScene2::load
 //
 
-std::string OtScene2Class::serialize(int indent, char character, std::filesystem::path* basedir) {
+void OtScene2::load(const std::filesystem::path& path) {
+	// load scene from file
+	std::stringstream buffer;
+
+	try {
+		std::ifstream stream(path.c_str());
+
+		if (stream.fail()) {
+			OtExcept("Can't read from file [%s]", path.c_str());
+		}
+
+		buffer << stream.rdbuf();
+		stream.close();
+
+	} catch (std::exception& e) {
+		OtExcept("Can't read from file [%s], error: %s", path.c_str(), e.what());
+	}
+
+	// recreate the scene
+	auto basedir = path.parent_path();
+	deserialize(buffer.str(), &basedir);
+}
+
+
+//
+//	OtScene2::save
+//
+
+void OtScene2::save(const std::filesystem::path& path) {
+	try {
+		// write scene to file
+		std::ofstream stream(path.c_str());
+
+		if (stream.fail()) {
+			OtExcept("Can't open file [%s] for writing", path.c_str());
+		}
+
+		auto basedir = path.parent_path();
+		stream << serialize(1, '\t', &basedir);
+		stream.close();
+
+	} catch (std::exception& e) {
+		OtExcept("Can't write to file [%s], error: %s", path.c_str(), e.what());
+	}
+}
+
+
+//
+//	OtScene2::serialize
+//
+
+std::string OtScene2::serialize(int indent, char character, std::filesystem::path* basedir) {
 	// write entities and components
 	auto data = nlohmann::json::array();
 
@@ -31,10 +87,10 @@ std::string OtScene2Class::serialize(int indent, char character, std::filesystem
 
 
 //
-//	OtScene2Class::deserialize
+//	OtScene2::deserialize
 //
 
-void OtScene2Class::deserialize(const std::string& data, std::filesystem::path* basedir) {
+void OtScene2::deserialize(const std::string& data, std::filesystem::path* basedir) {
 	auto tree = nlohmann::json::parse(data);
 
 	for (auto& entity : tree) {
@@ -44,41 +100,41 @@ void OtScene2Class::deserialize(const std::string& data, std::filesystem::path* 
 
 
 //
-//	OtScene2Class::serializeEntity
+//	OtScene2::serializeEntity
 //
 
-std::string OtScene2Class::serializeEntity(OtEntity entity, int indent, char character, std::filesystem::path* basedir) {
+std::string OtScene2::serializeEntity(OtEntity entity, int indent, char character, std::filesystem::path* basedir) {
 	return serializeEntityToJson(entity, basedir).dump(indent, character);
 }
 
 
 //
-//	OtScene2Class::deserializeEntity
+//	OtScene2::deserializeEntity
 //
 
-OtEntity OtScene2Class::deserializeEntity(const std::string &json, std::filesystem::path* basedir) {
+OtEntity OtScene2::deserializeEntity(const std::string &json, std::filesystem::path* basedir) {
 	auto data = nlohmann::json::parse(json);
 	return deserializeEntityFromJson(data, basedir);
 }
 
 
 //
-//	OtScene2Class::serializeEntityToJson
+//	OtScene2::serializeEntityToJson
 //
 
 template<typename T>
-static inline void serializeComponentToJson(nlohmann::json& json, OtScene2Class* scene, OtEntity entity, std::filesystem::path* basedir) {
+static inline void serializeComponentToJson(nlohmann::json& json, OtScene2* scene, OtEntity entity, std::filesystem::path* basedir) {
 	if (scene->hasComponent<T>(entity)) {
 		json.push_back(scene->getComponent<T>(entity).serialize(basedir));
 	}
 }
 
 template<typename... T>
-static inline void serializeComponentsToJson(nlohmann::json& json, OtScene2Class* scene, OtEntity entity, std::filesystem::path* basedir) {
+static inline void serializeComponentsToJson(nlohmann::json& json, OtScene2* scene, OtEntity entity, std::filesystem::path* basedir) {
 	(serializeComponentToJson<T>(json, scene, entity, basedir), ...);
 }
 
-nlohmann::json OtScene2Class::serializeEntityToJson(OtEntity entity, std::filesystem::path* basedir) {
+nlohmann::json OtScene2::serializeEntityToJson(OtEntity entity, std::filesystem::path* basedir) {
 	// serialize the entity's components
 	auto data = nlohmann::json::object();
 	auto components = nlohmann::json::array();
@@ -99,22 +155,22 @@ nlohmann::json OtScene2Class::serializeEntityToJson(OtEntity entity, std::filesy
 
 
 //
-//	OtScene2Class::deserializeEntityFromJson
+//	OtScene2::deserializeEntityFromJson
 //
 
 template<typename T>
-static inline void deserializeComponentFromJson(nlohmann::json& json, OtScene2Class* scene, OtEntity entity, std::filesystem::path* basedir) {
+static inline void deserializeComponentFromJson(nlohmann::json& json, OtScene2* scene, OtEntity entity, std::filesystem::path* basedir) {
 	if (json["component"] == T::name) {
 		scene->getOrAddComponent<T>(entity).deserialize(json, basedir);
 	}
 }
 
 template<typename... T>
-static inline void deserializeComponentsFromJson(nlohmann::json& json, OtScene2Class* scene, OtEntity entity, std::filesystem::path* basedir) {
+static inline void deserializeComponentsFromJson(nlohmann::json& json, OtScene2* scene, OtEntity entity, std::filesystem::path* basedir) {
 	(deserializeComponentFromJson<T>(json, scene, entity, basedir), ...);
 }
 
-OtEntity OtScene2Class::deserializeEntityFromJson(nlohmann::json &data, std::filesystem::path* basedir) {
+OtEntity OtScene2::deserializeEntityFromJson(nlohmann::json &data, std::filesystem::path* basedir) {
 	// create a new entity
 	auto entity = createEntity();
 
@@ -134,10 +190,10 @@ OtEntity OtScene2Class::deserializeEntityFromJson(nlohmann::json &data, std::fil
 
 
 //
-//	OtScene2Class::getGlobalTransform
+//	OtScene2::getGlobalTransform
 //
 
-glm::mat4 OtScene2Class::getGlobalTransform(OtEntity entity) {
+glm::mat4 OtScene2::getGlobalTransform(OtEntity entity) {
 	if (hasComponent<OtTransformComponent>(entity)) {
 		auto& transform = getComponent<OtTransformComponent>(entity);
 		auto parent = getParent(entity);
@@ -152,30 +208,4 @@ glm::mat4 OtScene2Class::getGlobalTransform(OtEntity entity) {
 	} else {
 		return glm::mat4(1.0f);
 	}
-}
-
-
-//
-//	OtScene2Class::getMeta
-//
-
-OtType OtScene2Class::getMeta() {
-	static OtType type;
-
-	if (!type) {
-		type = OtTypeClass::create<OtScene2Class>("Scene2", OtObjectClass::getMeta());
-	}
-
-	return type;
-}
-
-
-//
-//	OtScene2Class::create
-//
-
-OtScene2 OtScene2Class::create() {
-	OtScene2 scene = std::make_shared<OtScene2Class>();
-	scene->setType(getMeta());
-	return scene;
 }

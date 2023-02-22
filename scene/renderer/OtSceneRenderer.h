@@ -42,30 +42,30 @@ public:
 	void setGridScale(float gs) { gridScale = gs; }
 
 	// render the specified scene
-	int render(OtScene2 scene, OtEntity selected=OtEntityNull);
+	int render(std::shared_ptr<OtScene2> scene, OtEntity selected=OtEntityNull);
 
 private:
 	// render passes
-	// void renderShadowPass(OtScene2 scene);
-	void renderGeometryPass(OtScene2 scene);
-	void renderBackgroundPass(OtScene2 scene);
-	void renderLightingPass(OtScene2 scene);
-	void renderTransparentPass(OtScene2 scene);
+	// void renderShadowPass(std::shared_ptr<OtScene2> scene);
+	void renderGeometryPass(std::shared_ptr<OtScene2> scene);
+	void renderBackgroundPass(std::shared_ptr<OtScene2> scene);
+	void renderLightingPass(std::shared_ptr<OtScene2> scene);
+	void renderTransparentPass(std::shared_ptr<OtScene2> scene);
 	void renderGridPass();
-	void renderHighlightPass(OtScene2 scene, OtEntity entity);
-	void renderPostProcessingPass(OtScene2 scene);
+	void renderHighlightPass(std::shared_ptr<OtScene2> scene, OtEntity entity);
+	void renderPostProcessingPass(std::shared_ptr<OtScene2> scene);
 
 	// render entitities
 	void renderSkyBox(OtPass& pass, OtSkyBoxComponent& component);
 	void renderSkySphere(OtPass& pass, OtSkySphereComponent& component);
-	void renderGeometry(OtPass& pass, OtScene2 scene, OtEntity entity);
-	void renderTransparentGeometry(OtPass& pass, OtScene2 scene, OtEntity entity);
-	void renderHighlight(OtPass& pass, OtScene2 scene, OtEntity entity);
+	void renderGeometry(OtPass& pass, std::shared_ptr<OtScene2> scene, OtEntity entity);
+	void renderTransparentGeometry(OtPass& pass, std::shared_ptr<OtScene2> scene, OtEntity entity);
+	void renderHighlight(OtPass& pass, std::shared_ptr<OtScene2> scene, OtEntity entity);
 	void renderBloom(float bloomIntensity);
 
 	// rendering tools
-	void submitMaterialUniforms(OtScene2 scene, OtEntity entity);
-	void submitLightUniforms(OtScene2 scene);
+	void submitMaterialUniforms(std::shared_ptr<OtScene2> scene, OtEntity entity);
+	void submitLightUniforms(std::shared_ptr<OtScene2> scene);
 
 	// camera information
 	glm::vec3 cameraPosition;

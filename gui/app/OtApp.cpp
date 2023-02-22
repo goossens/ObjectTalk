@@ -394,7 +394,7 @@ bool OtAppClass::onGamepadButton(int gamepad, int button, int action) {
 //
 
 void OtAppClass::run() {
-	OtFrameworkClass::instance()->run(*this);
+	OtFrameworkClass::instance()->run(this);
 }
 
 

@@ -20,16 +20,13 @@
 
 
 //
-//	OtObjectTalkEditorClass
+//	OtObjectTalkEditor
 //
 
-class OtObjectTalkEditorClass;
-typedef std::shared_ptr<OtObjectTalkEditorClass> OtObjectTalkEditor;
-
-class OtObjectTalkEditorClass : public OtEditorClass {
+class OtObjectTalkEditor : public OtEditor {
 public:
 	// constructor
-	OtObjectTalkEditorClass();
+	OtObjectTalkEditor();
 
 	// get file extension
 	std::string getFileExtension() override { return ".ot"; }
@@ -49,7 +46,7 @@ public:
 	void clearError();
 
 	// create a new object
-	static OtObjectTalkEditor create(const std::filesystem::path& path);
+	static std::shared_ptr<OtObjectTalkEditor> create(const std::filesystem::path& path);
 
 private:
 	// render the parts

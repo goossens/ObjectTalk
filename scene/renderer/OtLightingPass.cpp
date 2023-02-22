@@ -16,7 +16,7 @@
 //	OtSceneRenderer::renderLightingPass
 //
 
-void OtSceneRenderer::renderLightingPass(OtScene2 scene) {
+void OtSceneRenderer::renderLightingPass(std::shared_ptr<OtScene2> scene) {
 	// setup pass
 	OtPass pass;
 	pass.reserveRenderingSlot();

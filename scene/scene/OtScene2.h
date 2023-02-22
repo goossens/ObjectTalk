@@ -17,8 +17,6 @@
 #include "glm/glm.hpp"
 #include "nlohmann/json_fwd.hpp"
 
-#include "OtObject.h"
-
 #include "OtEcs.h"
 
 #include "OtBackgroundComponent.h"
@@ -52,28 +50,24 @@
 //	OtScene2
 //
 
-class OtScene2Class;
-typedef std::shared_ptr<OtScene2Class> OtScene2;
-
-class OtScene2Class : public OtObjectClass, public OtEcs {
+class OtScene2 : public OtEcs {
 public:
+	// load and save scene
+	void load(const std::filesystem::path& path);
+	void save(const std::filesystem::path& path);
+
+	// (de)serialize entiry from/to string
+	std::string serializeEntity(OtEntity entity, int indent=-1, char character=' ', std::filesystem::path* basedir=nullptr);
+	OtEntity deserializeEntity(const std::string& data, std::filesystem::path* basedir=nullptr);
+
+	// get the composite worldspace transform for the specified entity
+	glm::mat4 getGlobalTransform(OtEntity entity);
+
+private:
 	// (de)serialize from/to string
 	std::string serialize(int indent=-1, char character=' ', std::filesystem::path* basedir=nullptr);
 	void deserialize(const std::string& data, std::filesystem::path* basedir=nullptr);
 
-	std::string serializeEntity(OtEntity entity, int indent=-1, char character=' ', std::filesystem::path* basedir=nullptr);
-	OtEntity deserializeEntity(const std::string& data, std::filesystem::path* basedir=nullptr);
-
-	// get the composite worldspace trnasform for the specified entity
-	glm::mat4 getGlobalTransform(OtEntity entity);
-
-	// get type definition
-	static OtType getMeta();
-
-	// create a new object
-	static OtScene2 create();
-
-private:
 	// (de)serialize from/to JSON
 	nlohmann::json serializeEntityToJson(OtEntity entity, std::filesystem::path* basedir);
 	OtEntity deserializeEntityFromJson(nlohmann::json& data, std::filesystem::path* basedir);

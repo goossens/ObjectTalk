@@ -28,7 +28,7 @@ template <typename T>
 class OtEditComponentTask : public OtEditorTask {
 public:
 	// constructor
-	OtEditComponentTask(OtScene2 s, OtEntity e, const std::string& o, const std::string& n) : scene(s), oldValue(o), newValue(n) {
+	OtEditComponentTask(std::shared_ptr<OtScene2> s, OtEntity e, const std::string& o, const std::string& n) : scene(s), oldValue(o), newValue(n) {
 		entityUuid = scene->getUuidFromEntity(e);
 	}
 
@@ -66,7 +66,7 @@ public:
 
 private:
 	// properties
-	OtScene2 scene;
+	std::shared_ptr<OtScene2> scene;
 	uint32_t entityUuid;
 	std::string oldValue;
 	std::string newValue;

@@ -57,10 +57,10 @@ const static TextEditor::Palette colorPalette = { {
 
 
 //
-//	OtObjectTalkEditorClass::OtObjectTalkEditorClass
+//	OtObjectTalkEditor::OtObjectTalkEditor
 //
 
-OtObjectTalkEditorClass::OtObjectTalkEditorClass() {
+OtObjectTalkEditor::OtObjectTalkEditor() {
 	editor.SetLanguageDefinition(OtObjectTalkLanguageGetDefinition());
 	editor.SetPalette(colorPalette);
 	editor.SetShowWhitespaces(true);
@@ -70,10 +70,10 @@ OtObjectTalkEditorClass::OtObjectTalkEditorClass() {
 
 
 //
-//	OtObjectTalkEditorClass::load
+//	OtObjectTalkEditor::load
 //
 
-void OtObjectTalkEditorClass::load() {
+void OtObjectTalkEditor::load() {
 	// load text from file
 	std::stringstream buffer;
 
@@ -97,10 +97,10 @@ void OtObjectTalkEditorClass::load() {
 
 
 //
-//	OtObjectTalkEditorClass::save
+//	OtObjectTalkEditor::save
 //
 
-void OtObjectTalkEditorClass::save() {
+void OtObjectTalkEditor::save() {
 	try {
 		// write text to file
 		std::ofstream stream(path.c_str());
@@ -122,10 +122,10 @@ void OtObjectTalkEditorClass::save() {
 
 
 //
-//	OtObjectTalkEditorClass::render
+//	OtObjectTalkEditor::render
 //
 
-void OtObjectTalkEditorClass::render() {
+void OtObjectTalkEditor::render() {
 	// create the window
 	ImGui::BeginChild(
 		"scene",
@@ -143,10 +143,10 @@ void OtObjectTalkEditorClass::render() {
 
 
 //
-//	OtObjectTalkEditorClass::renderMenu
+//	OtObjectTalkEditor::renderMenu
 //
 
-void OtObjectTalkEditorClass::renderMenu() {
+void OtObjectTalkEditor::renderMenu() {
 	// get keyboard state to handle keyboard shortcuts
 	ImGuiIO& io = ImGui::GetIO();
 	auto isOSX = io.ConfigMacOSXBehaviors;
@@ -226,10 +226,10 @@ void OtObjectTalkEditorClass::renderMenu() {
 
 
 //
-//	OtObjectTalkEditorClass::renderEditor
+//	OtObjectTalkEditor::renderEditor
 //
 
-void OtObjectTalkEditorClass::renderEditor() {
+void OtObjectTalkEditor::renderEditor() {
 	// create the window
 	ImGui::BeginChild("editor", ImVec2(0.0f, 0.0f), true);
 
@@ -248,18 +248,18 @@ void OtObjectTalkEditorClass::renderEditor() {
 
 
 //
-//	OtObjectTalkEditorClass::compile
+//	OtObjectTalkEditor::compile
 //
 
-void OtObjectTalkEditorClass::compile() {
+void OtObjectTalkEditor::compile() {
 }
 
 
 //
-//	OtObjectTalkEditorClass::run
+//	OtObjectTalkEditor::run
 //
 
-void OtObjectTalkEditorClass::run() {
+void OtObjectTalkEditor::run() {
 	// reset errors
 	clearError();
 
@@ -269,19 +269,19 @@ void OtObjectTalkEditorClass::run() {
 
 
 //
-//	OtObjectTalkEditorClass::isDirty
+//	OtObjectTalkEditor::isDirty
 //
 
-bool OtObjectTalkEditorClass::isDirty() {
+bool OtObjectTalkEditor::isDirty() {
 	return editor.GetUndoCount() != version;
 }
 
 
 //
-//	OtObjectTalkEditorClass::highlightError
+//	OtObjectTalkEditor::highlightError
 //
 
-void OtObjectTalkEditorClass::highlightError(size_t line, const std::string& error) {
+void OtObjectTalkEditor::highlightError(size_t line, const std::string& error) {
 	TextEditor::ErrorMarkers markers;
 	markers[(int) line] = error;
 	editor.SetErrorMarkers(markers);
@@ -290,21 +290,21 @@ void OtObjectTalkEditorClass::highlightError(size_t line, const std::string& err
 
 
 //
-//	OtObjectTalkEditorClass::clearError
+//	OtObjectTalkEditor::clearError
 //
 
-void OtObjectTalkEditorClass::clearError() {
+void OtObjectTalkEditor::clearError() {
 	TextEditor::ErrorMarkers markers;
 	editor.SetErrorMarkers(markers);
 }
 
 
 //
-//	OtObjectTalkEditorClass::create
+//	OtObjectTalkEditor::create
 //
 
-OtObjectTalkEditor OtObjectTalkEditorClass::create(const std::filesystem::path& path) {
-	OtObjectTalkEditor editor = std::make_shared<OtObjectTalkEditorClass>();
+std::shared_ptr<OtObjectTalkEditor> OtObjectTalkEditor::create(const std::filesystem::path& path) {
+	std::shared_ptr<OtObjectTalkEditor> editor = std::make_shared<OtObjectTalkEditor>();
 	editor->setFilePath(path);
 
 	if (editor->fileExists()) {

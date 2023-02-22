@@ -26,9 +26,9 @@
 //	OtFrameworkClass::run
 //
 
-void OtFrameworkClass::run(OtFrameworkApp& targetApp) {
+void OtFrameworkClass::run(OtFrameworkApp* targetApp) {
 	// remember the app
-	app = &targetApp;
+	app = targetApp;
 
 	// the framework runs in two threads:
 	// 1. the main thread handles the rendering and window events (as required by most operating systems)

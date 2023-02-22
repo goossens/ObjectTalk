@@ -13,6 +13,7 @@
 //
 
 #include <filesystem>
+#include <memory>
 
 #include "OtSingleton.h"
 
@@ -33,6 +34,9 @@ typedef std::shared_ptr<OtWorkspaceClass> OtWorkspace;
 
 class OtWorkspaceClass : public OtFrameworkApp, public OtSingleton<OtWorkspaceClass> {
 public:
+	// run the workspace
+	void run();
+
 	// create a new file
 	void newFile();
 	void newScript();
@@ -53,20 +57,19 @@ public:
 	void runFile();
 
 	// delete a specified editor
-	void deleteEditor(OtEditor editor);
+	void deleteEditor(std::shared_ptr<OtEditor> editor);
 
 	// find a named editor
-	OtEditor findEditor(const std::filesystem::path& filename);
+	std::shared_ptr<OtEditor> findEditor(const std::filesystem::path& filename);
 
 	// make a specified editor active
-	void activateEditor(OtEditor editor);
+	void activateEditor(std::shared_ptr<OtEditor> editor);
 
 	// create a new workspace object
 	static OtWorkspace create();
 
 private:
 	// framework callbacks
-	void onSetup() override;
 	void onRender() override;
 	void onTerminate() override;
 	bool onCanQuit() override;
@@ -74,10 +77,8 @@ private:
 	// create a name for an untitled file
 	std::string getUntitledName();
 
-	// get executable path
+	// get executable path and default path
 	std::filesystem::path getExecutablePath();
-
-	// get default directory
 	std::filesystem::path getDefaultDirectory();
 
 	// get current working directory
@@ -99,11 +100,11 @@ private:
 	OtTexture logo;
 
 	// list of open editors
-	std::vector<OtEditor> editors;
+	std::vector<std::shared_ptr<OtEditor>> editors;
 
 	// track editors
-	OtEditor activeEditor;
-	OtEditor activateEditorTab;
+	std::shared_ptr<OtEditor> activeEditor;
+	std::shared_ptr<OtEditor> activateEditorTab;
 
 	// tab for "save as" dialog
 	OtEditor saveAsEditor;

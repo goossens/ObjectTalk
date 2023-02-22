@@ -17,7 +17,7 @@
 //	OtSceneRenderer::submitMaterialUniforms
 //
 
-void OtSceneRenderer::submitMaterialUniforms(OtScene2 scene, OtEntity entity) {
+void OtSceneRenderer::submitMaterialUniforms(std::shared_ptr<OtScene2> scene, OtEntity entity) {
 	// get the material component
 	auto& material = scene->getComponent<OtMaterialComponent>(entity);
 	material.update();
@@ -60,7 +60,7 @@ void OtSceneRenderer::submitMaterialUniforms(OtScene2 scene, OtEntity entity) {
 //	OtSceneRenderer::submitLightUniforms
 //
 
-void OtSceneRenderer::submitLightUniforms(OtScene2 scene) {
+void OtSceneRenderer::submitLightUniforms(std::shared_ptr<OtScene2> scene) {
 	// get the directional light information
 	glm::vec3 direction = glm::vec3(0.0);
 	glm::vec3 color = glm::vec3(0.0);

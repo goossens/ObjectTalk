@@ -15,10 +15,10 @@
 
 
 //
-//	OtEditorClass::setFilePath
+//	OtEditor::setFilePath
 //
 
-void OtEditorClass::setFilePath(const std::filesystem::path& p) {
+void OtEditor::setFilePath(const std::filesystem::path& p) {
 	if (p.extension() == getFileExtension()) {
 		path = p;
 
@@ -30,9 +30,9 @@ void OtEditorClass::setFilePath(const std::filesystem::path& p) {
 
 
 //
-//	OtEditorClass::fileExists
+//	OtEditor::fileExists
 //
 
-bool OtEditorClass::fileExists() {
+bool OtEditor::fileExists() {
 	return std::filesystem::is_regular_file(path);
 }

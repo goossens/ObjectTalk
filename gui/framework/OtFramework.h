@@ -44,7 +44,7 @@ typedef std::shared_ptr<OtFrameworkClass> OtFramework;
 class OtFrameworkClass : public OtSingleton<OtFrameworkClass> {
 public:
 	// run the GUI framework
-	void run(OtFrameworkApp& app);
+	void run(OtFrameworkApp* app);
 
 	// stop the GUI framework
 	void stop();

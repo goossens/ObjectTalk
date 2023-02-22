@@ -33,7 +33,7 @@ public:
 	};
 
 	// constructor
-	OtCreateEntityTask(OtScene2 s, OtEntity p, Type t) : scene(s), type(t) {
+	OtCreateEntityTask(std::shared_ptr<OtScene2> s, OtEntity p, Type t) : scene(s), type(t) {
 		parentUuid = scene->getUuidFromEntity(p);
 	}
 
@@ -82,7 +82,7 @@ public:
 
 private:
 	// properties
-	OtScene2 scene;
+	std::shared_ptr<OtScene2> scene;
 	uint32_t parentUuid;
 	Type type;
 

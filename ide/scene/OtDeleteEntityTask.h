@@ -24,7 +24,7 @@
 class OtDeleteEntityTask : public OtEditorTask {
 public:
 	// constructor
-	OtDeleteEntityTask(OtScene2 s, OtEntity e) : scene(s) {
+	OtDeleteEntityTask(std::shared_ptr<OtScene2> s, OtEntity e) : scene(s) {
 		entityUuid = scene->getUuidFromEntity(e);
 	}
 
@@ -69,7 +69,7 @@ public:
 
 protected:
 	// properties
-	OtScene2 scene;
+	std::shared_ptr<OtScene2> scene;
 	uint32_t entityUuid;
 
 	uint32_t undoTargetUuid;

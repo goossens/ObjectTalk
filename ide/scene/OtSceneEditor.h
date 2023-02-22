@@ -13,6 +13,7 @@
 //
 
 #include <filesystem>
+#include <memory>
 
 #include "glm/glm.hpp"
 #include "ImGuizmo.h"
@@ -26,14 +27,14 @@
 
 
 //
-//	OtSceneEditorClass
+//	OtSceneEditor
 //
 
-class OtSceneEditorClass;
-typedef std::shared_ptr<OtSceneEditorClass> OtSceneEditor;
-
-class OtSceneEditorClass : public OtEditorClass {
+class OtSceneEditor : public OtEditor {
 public:
+	// constructor
+	OtSceneEditor();
+
 	// get file extension
 	std::string getFileExtension() override { return ".ots"; }
 
@@ -54,7 +55,7 @@ public:
 	void duplicateEntity();
 
 	// create a new object
-	static OtSceneEditor create(const std::filesystem::path& path);
+	static std::shared_ptr<OtSceneEditor> create(const std::filesystem::path& path);
 
 private:
 	// switch scene camera
@@ -100,9 +101,9 @@ private:
 	void run();
 
 	// the scene being edited
-	OtScene2 scene;
+	std::shared_ptr<OtScene2> scene;
+	std::shared_ptr<OtSceneRenderer> renderer;
 	OtEntity selectedEntity = OtEntityNull;
-	OtSceneRenderer renderer;
 
 	// to handle do/undo/redo
 	OtTaskManager taskManager;

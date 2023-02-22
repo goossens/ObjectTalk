@@ -13,7 +13,7 @@
 //
 
 #include <filesystem>
-#include <memory>
+#include <string>
 
 #include "OtException.h"
 
@@ -22,13 +22,10 @@
 //	OtEditorClass
 //
 
-class OtEditorClass;
-typedef std::shared_ptr<OtEditorClass> OtEditor;
-
-class OtEditorClass : public std::enable_shared_from_this<OtEditorClass> {
+class OtEditor {
 public:
 	// destructor
-	virtual ~OtEditorClass() {}
+	virtual ~OtEditor() {}
 
 	// load/save the document content
 	virtual void load() {}
@@ -52,10 +49,6 @@ public:
 
 	// handle exception during a "run"
 	virtual void error(OtException e) {}
-
-	// get casted shared pointer
-	template <typename CLASS>
-	std::shared_ptr<CLASS> cast() { return std::dynamic_pointer_cast<CLASS>(shared_from_this()); }
 
 protected:
 	// properties

@@ -14,7 +14,7 @@
 
 #include "OtConcurrentQueue.h"
 
-#include "OtFrameworkCustomer.h"
+#include "OtFrameworkApp.h"
 
 
 //
@@ -23,8 +23,6 @@
 
 struct OtFwEvent {
 	enum {
-		customerSetupEvent,
-		customerTerminateEvent,
 		mouseButtonEvent,
 		mouseMoveEvent,
 		mouseDragEvent,
@@ -37,11 +35,11 @@ struct OtFwEvent {
 
 	union {
 		struct {
-			OtFrameworkCustomer* customer;
+			OtFrameworkApp* customer;
 		} customerSetup;
 
 		struct {
-			OtFrameworkCustomer* customer;
+			OtFrameworkApp* customer;
 		} customerTerminate;
 
 		struct {
@@ -118,20 +116,6 @@ struct OtFwEvent {
 
 class OtFwEventQueue : public OtConcurrentQueue<OtFwEvent> {
 public:
-	void pushCustomerSetupEvent(OtFrameworkCustomer* customer) {
-		OtFwEvent event;
-		event.type = OtFwEvent::customerSetupEvent;
-		event.customerSetup.customer = customer;
-		push(event);
-	}
-
-	void pushCustomerTerminateEvent(OtFrameworkCustomer* customer) {
-		OtFwEvent event;
-		event.type = OtFwEvent::customerTerminateEvent;
-		event.customerTerminate.customer = customer;
-		push(event);
-	}
-
 	void pushMouseButtonEvent(int button, int action, int mods, float x, float y) {
 		OtFwEvent event;
 		event.type = OtFwEvent::mouseButtonEvent;

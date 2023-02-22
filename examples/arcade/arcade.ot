@@ -82,4 +82,4 @@ class Arcade : gui.App {
 }
 
 var app = Arcade();
-os.runGUI();
+app.run();

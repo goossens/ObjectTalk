@@ -16,7 +16,7 @@
 
 #include "OtSingleton.h"
 
-#include "OtFrameworkCustomer.h"
+#include "OtFrameworkApp.h"
 #include "OtTexture.h"
 
 #include "OtConsole.h"
@@ -31,11 +31,8 @@
 class OtWorkspaceClass;
 typedef std::shared_ptr<OtWorkspaceClass> OtWorkspace;
 
-class OtWorkspaceClass : public OtFrameworkCustomer, public OtSingleton<OtWorkspaceClass> {
+class OtWorkspaceClass : public OtFrameworkApp, public OtSingleton<OtWorkspaceClass> {
 public:
-	// run the IDE
-	void run();
-
 	// create a new file
 	void newFile();
 	void newScript();
@@ -68,14 +65,14 @@ public:
 	static OtWorkspace create();
 
 private:
+	// framework callbacks
+	void onSetup() override;
+	void onRender() override;
+	void onTerminate() override;
+	bool onCanQuit() override;
+
 	// create a name for an untitled file
 	std::string getUntitledName();
-
-	// render all windows
-	void onRender() override;
-
-	// see if we can quit app
-	bool onCanQuit() override;
 
 	// get executable path
 	std::filesystem::path getExecutablePath();

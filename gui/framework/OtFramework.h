@@ -27,7 +27,7 @@
 #include "OtObject.h"
 #include "OtSingleton.h"
 
-#include "OtFrameworkCustomer.h"
+#include "OtFrameworkApp.h"
 #include "OtFrameworkEvents.h"
 #include "OtSampler.h"
 #include "OtShader.h"
@@ -44,7 +44,7 @@ typedef std::shared_ptr<OtFrameworkClass> OtFramework;
 class OtFrameworkClass : public OtSingleton<OtFrameworkClass> {
 public:
 	// run the GUI framework
-	void run();
+	void run(OtFrameworkApp& app);
 
 	// stop the GUI framework
 	void stop();
@@ -53,8 +53,8 @@ public:
 	bool canQuit();
 
 	// manage customers
-	void addCustomer(OtFrameworkCustomer* customer);
-	void removeCustomer(OtFrameworkCustomer* customer);
+	void addCustomer(OtFrameworkApp* customer);
+	void removeCustomer(OtFrameworkApp* customer);
 
 	// set anti-aliasing
 	void setAntiAliasing(int level);
@@ -158,8 +158,8 @@ private:
 
 	std::array<Gamepad, 4> gamepads;
 
-	// our customers
-	std::vector<OtFrameworkCustomer*> customers;
+	// our app
+	OtFrameworkApp* app;
 
 	// callbacks
 	std::vector<std::function<void(void)>> atExitCallbacks;

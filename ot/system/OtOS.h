@@ -12,12 +12,9 @@
 //	Include files
 //
 
-#include <functional>
 #include <string>
 
-#include "OtException.h"
 #include "OtSingleton.h"
-
 #include "OtSystem.h"
 
 
@@ -77,37 +74,12 @@ public:
 	bool isDST();
 
 	// handle event loop for servers
-	void registerServer(
-		std::function<void(void)> run,
-		std::function<void(OtException e)> error,
-		std::function<void(void)> stop);
-
 	void runServer();
-	void errorServer(OtException e);
 	void stopServer();
-
-	// handle event loops for GUIs
-	void registerGUI(
-		std::function<void(void)> run,
-		std::function<void(OtException e)> error,
-		std::function<void(void)> stop);
-
-	void runGUI();
-	void errorGUI(OtException e);
-	void stopGUI();
 
 	// get type definition
 	static OtType getMeta();
 
 	// create a new object
 	static OtOS create();
-
-private:
-	std::function<void(void)> serverRunner;
-	std::function<void(OtException e)> serverError;
-	std::function<void(void)> serverStopper;
-
-	std::function<void(void)> guiRunner;
-	std::function<void(OtException e)> guiError;
-	std::function<void(void)> guiStopper;
 };

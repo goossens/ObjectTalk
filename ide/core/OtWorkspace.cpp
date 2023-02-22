@@ -25,23 +25,128 @@
 
 
 //
-//	OtWorkspaceClass::run
+//	aceClass::onSetup
 //
 
-void OtWorkspaceClass::run() {
-	OtFramework framework = OtFrameworkClass::instance();
+void OtWorkspaceClass::onSetup() {
+}
 
-	// clear all editor references on exit so we release resources at the right time
-	framework->atexit([this]() {
-		editors.clear();
-		activeEditor = nullptr;
-		activateEditorTab = nullptr;
-	});
 
-	// run the IDE workspace as an app
-	framework->addCustomer(this);
-	framework->run();
-	framework->removeCustomer(this);
+//
+//	OtWorkspaceClass::onRender
+//
+
+void OtWorkspaceClass::onRender()
+{
+	// show the "control bar" and the console if required
+	if (consoleFullScreen) {
+		renderSubProcess();
+
+	} else {
+		// show splash screen if we have no editors open
+		if (editors.size() == 0) {
+			renderSplashScreen();
+			activeEditor = nullptr;
+
+		} else {
+			// render all editors as tabs
+			renderEditors();
+		}
+
+		// render any dialog boxes
+		if (state == newFileState) {
+			renderNewFileType();
+
+		} else if (state == openFileState) {
+			renderFileOpen();
+
+		} else if (state == saveFileAsState) {
+			renderSaveAs();
+
+		} else if (state == confirmCloseState) {
+			renderConfirmClose();
+
+		} else if (state == confirmQuitState) {
+			renderConfirmQuit();
+
+		} else if (state == confirmErrorState) {
+			renderConfirmError();
+		}
+
+		// get keyboard state to handle keyboard shortcuts
+		ImGuiIO& io = ImGui::GetIO();
+		auto isOSX = io.ConfigMacOSXBehaviors;
+		auto alt = io.KeyAlt;
+		auto ctrl = io.KeyCtrl;
+		auto shift = io.KeyShift;
+		auto super = io.KeySuper;
+		auto isShortcut = (isOSX ? (super && !ctrl) : (ctrl && !super)) && !alt && !shift;
+
+		// handle shortcuts based on state
+		if (isShortcut) {
+			if (ImGui::IsKeyPressed(ImGuiKey_N) && (state == splashState || state == editState)) {
+				newFile();
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_O) && (state == splashState || state == editState)) {
+				openFile();
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_S) && (state == editState)) {
+				if (activeEditor->isDirty()) {
+					if (activeEditor->fileExists()) {
+						saveFile();
+
+					} else {
+						saveAsFile();
+					}
+				}
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_W) && (state == editState)) {
+				closeFile();
+			}
+		}
+	}
+}
+
+
+//
+//	OtWorkspaceClass::onTerminate
+//
+
+void OtWorkspaceClass::onTerminate() {
+	// clear all editor references in order to release resources
+	editors.clear();
+	activeEditor = nullptr;
+	activateEditorTab = nullptr;
+}
+
+
+//
+//	OtWorkspaceClass::onCanQuit
+//
+
+bool OtWorkspaceClass::onCanQuit() {
+	// are we currently running something?
+	if (subprocess.isRunning()) {
+		// then we can't quit
+		return false;
+
+	// are we showing a dialog box that we shouldn't quit?
+	} else if (state == saveFileAsState || state == confirmCloseState || state == confirmQuitState) {
+		// then we can't quit
+		return false;
+
+	// we can't quit if we still have a "dirty" editor
+	} else {
+		for (auto& editor : editors) {
+			if (editor->isDirty()) {
+				state = confirmQuitState;
+				return false;
+			}
+		}
+
+		// nothing stops us now from quiting
+		return true;
+	}
 }
 
 
@@ -282,81 +387,6 @@ OtEditor OtWorkspaceClass::findEditor(const std::filesystem::path& path) {
 
 void OtWorkspaceClass::activateEditor(OtEditor editor) {
 	activateEditorTab = editor;
-}
-
-
-//
-//	OtWorkspaceClass::onRender
-//
-
-void OtWorkspaceClass::onRender() {
-	// show the "control bar" and the console if required
-	if (consoleFullScreen) {
-		renderSubProcess();
-
-	} else {
-		// show splash screen if we have no editors open
-		if (editors.size() == 0) {
-			renderSplashScreen();
-			activeEditor = nullptr;
-
-		} else {
-			// render all editors as tabs
-			renderEditors();
-		}
-
-		// render any dialog boxes
-		if (state == newFileState) {
-			renderNewFileType();
-
-		} else if (state == openFileState) {
-			renderFileOpen();
-
-		} else if (state == saveFileAsState) {
-			renderSaveAs();
-
-		} else if (state == confirmCloseState) {
-			renderConfirmClose();
-
-		} else if (state == confirmQuitState) {
-			renderConfirmQuit();
-
-		} else if (state == confirmErrorState) {
-			renderConfirmError();
-		}
-
-		// get keyboard state to handle keyboard shortcuts
-		ImGuiIO& io = ImGui::GetIO();
-		auto isOSX = io.ConfigMacOSXBehaviors;
-		auto alt = io.KeyAlt;
-		auto ctrl = io.KeyCtrl;
-		auto shift = io.KeyShift;
-		auto super = io.KeySuper;
-		auto isShortcut = (isOSX ? (super && !ctrl) : (ctrl && !super)) && !alt && !shift;
-
-		// handle shortcuts based on state
-		if (isShortcut) {
-			if (ImGui::IsKeyPressed(ImGuiKey_N) && (state == splashState || state == editState)) {
-				newFile();
-
-			} else if (ImGui::IsKeyPressed(ImGuiKey_O) && (state == splashState || state == editState)) {
-				openFile();
-
-			} else if (ImGui::IsKeyPressed(ImGuiKey_S) && (state == editState)) {
-				if (activeEditor->isDirty()) {
-					if (activeEditor->fileExists()) {
-						saveFile();
-
-					} else {
-						saveAsFile();
-					}
-				}
-
-			} else if (ImGui::IsKeyPressed(ImGuiKey_W) && (state == editState)) {
-				closeFile();
-			}
-		}
-	}
 }
 
 
@@ -687,36 +717,6 @@ void OtWorkspaceClass::renderSubProcess() {
 
 	ImGui::End();
 	ImGui::PopStyleVar();
-}
-
-
-//
-//	OtWorkspaceClass::onCanQuit
-//
-
-bool OtWorkspaceClass::onCanQuit() {
-	// are we currently running something?
-	if (subprocess.isRunning()) {
-		// then we can't quit
-		return false;
-
-	// are we showing a dialog box that we shouldn't quit?
-	} else if (state == saveFileAsState || state == confirmCloseState || state == confirmQuitState) {
-		// then we can't quit
-		return false;
-
-	// we can't quit if we still have a "dirty" editor
-	} else {
-		for (auto& editor : editors) {
-			if (editor->isDirty()) {
-				state = confirmQuitState;
-				return false;
-			}
-		}
-
-		// nothing stops us now from quiting
-		return true;
-	}
 }
 
 

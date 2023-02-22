@@ -21,6 +21,7 @@
 #include "OtHttp.h"
 
 #if defined(INCLUDE_GUI)
+#include "OtFramework.h"
 #include "OtGui.h"
 #include "OtWorkspace.h"
 #endif
@@ -77,7 +78,8 @@ int main(int argc, char* argv[]) {
 		if (files.size() == 0) {
 			// no, do we start an IDE workspace?
 #if defined(INCLUDE_GUI)
-			OtWorkspaceClass::instance()->run();
+			auto workspace = OtWorkspaceClass::instance();
+			OtFrameworkClass::instance()->run(*workspace);
 
 #else
 			std::cerr << "No files specified" << std::endl << std::endl;
@@ -89,11 +91,13 @@ int main(int argc, char* argv[]) {
 		} else {
 #if defined(INCLUDE_GUI)
 			if (program["--ide"] == true) {
+				auto workspace = OtWorkspaceClass::instance();
+
 				for (auto& file : files) {
-					OtWorkspaceClass::instance()->openFile(file);
+					workspace->openFile(file);
 				}
 
-				OtWorkspaceClass::instance()->run();
+				OtFrameworkClass::instance()->run(*workspace);
 
 			} else {
 #endif

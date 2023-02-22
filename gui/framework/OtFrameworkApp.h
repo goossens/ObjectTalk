@@ -9,13 +9,13 @@
 
 
 //
-//	OtFrameworkCustomer class
+//	OtFrameworkApp class
 //
 
-class OtFrameworkCustomer {
+class OtFrameworkApp {
 public:
 	// destructor
-	virtual ~OtFrameworkCustomer() {}
+	virtual ~OtFrameworkApp() {}
 
 	// event handlers
 	virtual void onSetup() {}

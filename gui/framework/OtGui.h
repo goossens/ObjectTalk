@@ -16,13 +16,6 @@
 
 
 //
-//	Forward references
-//
-
-class OtAppClass;
-
-
-//
 //	OtGui
 //
 
@@ -34,15 +27,6 @@ public:
 	// register GUI module
 	static void registerModule();
 
-	// register app instance
-	static void registerApp(OtAppClass* app);
-	static void unregisterApp();
-	static OtAppClass* getRegisteredApp() { return app; }
-
 	// get type definition
 	static OtType getMeta();
-
-private:
-	// registered app;
-	static OtAppClass* app;
 };

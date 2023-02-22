@@ -17,7 +17,6 @@
 #include "OtException.h"
 #include "OtFunction.h"
 #include "OtModule.h"
-#include "OtOS.h"
 
 #include "OtFramework.h"
 #include "OtNode.h"
@@ -107,13 +106,6 @@
 
 #include "OtObj.h"
 #include "OtGui.h"
-
-
-//
-//	Globals
-//
-
-OtAppClass* OtGuiClass::app;
 
 
 //
@@ -229,69 +221,6 @@ void OtGuiClass::registerModule() {
 		framework->addEnumsGLFW(module);
 		framework->addEnumsIMGUI(module);
 	});
-
-	// connect to OS class so GUI apps can run
-	OtOSClass::instance()->registerGUI(
-		[]() {
-			// sanity check
-			if (!app) {
-				OtExcept("You can't run a GUI without an instance of the [App] class");
-			}
-
-			// connect app to framework and run it
-			auto framework = OtFrameworkClass::instance();
-			framework->addCustomer(app);
-			framework->run();
-		},
-
-		[](OtException e) {
-			// remove app from framework
-			// this is not required but mentioned here to keep code symetrical
-			// OtFrameworkClass::instance()->removeCustomer(app);
-
-			// output error message and terminate program
-			std::wcerr << "Error: " << e.what() << std::endl;
-			std::_Exit(EXIT_FAILURE);
-		},
-
-		[]() {
-			auto framework = OtFrameworkClass::instance();
-
-			// remove app from framework
-			// this is not required but mentioned here to keep code symetrical
-			// framework->removeCustomer(app);
-
-			// stop the framework which will exit the program
-			framework->stop();
-		});
-}
-
-
-//
-//	OtGuiClass::registerApp
-//
-
-void OtGuiClass::registerApp(OtAppClass* object) {
-	// sanity check
-	if (app) {
-		OtExcept("You can only have one [App] instance per running program");
-	}
-
-	app = object;
-}
-
-
-//
-//	OtGuiClass::unregisterApp
-//
-
-void OtGuiClass::unregisterApp() {
-	// sanity check
-	if (!app) {
-		OtExcept("Internal error: you can't unregister a non-existing [App]");
-	}
-
-	app = nullptr;
 }
 
 

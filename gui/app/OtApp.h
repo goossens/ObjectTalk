@@ -14,7 +14,7 @@
 
 #include "OtAnimation.h"
 #include "OtNode.h"
-#include "OtFrameworkCustomer.h"
+#include "OtFrameworkApp.h"
 #include "OtSimulation.h"
 #include "OtWidget.h"
 
@@ -26,12 +26,8 @@
 class OtAppClass;
 typedef std::shared_ptr<OtAppClass> OtApp;
 
-class OtAppClass : public OtNodeClass, public OtFrameworkCustomer {
+class OtAppClass : public OtNodeClass, public OtFrameworkApp {
 public:
-	// constructor/destructor
-	OtAppClass();
-	~OtAppClass();
-
 	// ensure specified node is allowed as a child
 	void validateChild(OtNode child) override;
 
@@ -63,6 +59,9 @@ public:
 	bool onChar(unsigned int codepoint) override;
 	bool onGamepadAxis(int gamepad, int axis, int value) override;
 	bool onGamepadButton(int gamepad, int buttom, int action) override;
+
+	// actually run app
+	void run();
 
 	// get type definition
 	static OtType getMeta();

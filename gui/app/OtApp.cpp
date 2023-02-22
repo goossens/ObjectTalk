@@ -16,26 +16,7 @@
 #include "OtAppMenubar.h"
 #include "OtFramework.h"
 #include "OtGui.h"
-#include "OtOS.h"
 #include "OtView.h"
-
-
-//
-//	OtAppClass::OtAppClass
-//
-
-OtAppClass::OtAppClass() {
-	OtGuiClass::registerApp(this);
-}
-
-
-//
-//	OtAppClass::~OtAppClass
-//
-
-OtAppClass::~OtAppClass() {
-	OtGuiClass::unregisterApp();
-}
 
 
 //
@@ -109,14 +90,9 @@ size_t OtAppClass::getMenubarHeight() {
 //
 
 void OtAppClass::onSetup() {
-	try {
-		// call subclass member function (if we have one)
-		if (has("setup")) {
-			OtVM::instance()->callMemberFunction(shared(), "setup");
-		}
-
-	} catch (const OtException& e) {
-		OtOSClass::instance()->errorGUI(e);
+	// call subclass member function (if we have one)
+	if (has("setup")) {
+		OtVM::instance()->callMemberFunction(shared(), "setup");
 	}
 }
 
@@ -125,29 +101,24 @@ void OtAppClass::onSetup() {
 //
 
 void OtAppClass::onUpdate() {
-	try {
-		// get loop duration
-		float loopDuration = OtFrameworkClass::instance()->getLoopDuration();
+	// get loop duration
+	float loopDuration = OtFrameworkClass::instance()->getLoopDuration();
 
-		// update all animations (and remove them from the list if they are done)
-		animations.erase(std::remove_if(animations.begin(), animations.end(), [loopDuration] (OtAnimation animation) {
-			return !animation->step(loopDuration);
-		}), animations.end());
+	// update all animations (and remove them from the list if they are done)
+	animations.erase(std::remove_if(animations.begin(), animations.end(), [loopDuration] (OtAnimation animation) {
+		return !animation->step(loopDuration);
+	}), animations.end());
 
-		// update all simulations
-		for (auto& simulation : simulations) {
-			if (simulation->isRunning()) {
-				simulation->step(loopDuration);
-			}
+	// update all simulations
+	for (auto& simulation : simulations) {
+		if (simulation->isRunning()) {
+			simulation->step(loopDuration);
 		}
+	}
 
-		// call subclass member function (if we have one)
-		if (has("update")) {
-			OtVM::instance()->callMemberFunction(shared(), "update");
-		}
-
-	} catch (const OtException& e) {
-		OtOSClass::instance()->errorGUI(e);
+	// call subclass member function (if we have one)
+	if (has("update")) {
+		OtVM::instance()->callMemberFunction(shared(), "update");
 	}
 }
 
@@ -157,16 +128,11 @@ void OtAppClass::onUpdate() {
 //
 
 void OtAppClass::onRender() {
-	try {
-		// render all our children
-		for (auto const& child : children) {
-			if (child->isEnabled()) {
-				child->cast<OtAppObjectClass>()->render();
-			}
+	// render all our children
+	for (auto const& child : children) {
+		if (child->isEnabled()) {
+			child->cast<OtAppObjectClass>()->render();
 		}
-
-	} catch (const OtException& e) {
-		OtOSClass::instance()->errorGUI(e);
 	}
 }
 
@@ -176,14 +142,9 @@ void OtAppClass::onRender() {
 //
 
 void OtAppClass::onTerminate() {
-	try {
-		// call subclass member function (if we have one)
-		if (has("terminate")) {
-			OtVM::instance()->callMemberFunction(shared(), "terminate");
-		}
-
-	} catch (const OtException& e) {
-		OtOSClass::instance()->errorGUI(e);
+	// call subclass member function (if we have one)
+	if (has("terminate")) {
+		OtVM::instance()->callMemberFunction(shared(), "terminate");
 	}
 
 	// remove all animations and simulations
@@ -205,29 +166,24 @@ void OtAppClass::onTerminate() {
 bool OtAppClass::onMouseButton(int button, int action, int mods, float xpos, float ypos) {
 	bool handled = false;
 
-	try {
-		// call subclass member function (if we have one)
-		if (has("onMouseButton")) {
-			OtVM::instance()->callMemberFunction(
-				shared(),
-				"onMouseButton",
-				OtObjectCreate(button),
-				OtObjectCreate(action),
-				OtObjectCreate(mods),
-				OtObjectCreate(xpos),
-				OtObjectCreate(ypos));
+	// call subclass member function (if we have one)
+	if (has("onMouseButton")) {
+		OtVM::instance()->callMemberFunction(
+			shared(),
+			"onMouseButton",
+			OtObjectCreate(button),
+			OtObjectCreate(action),
+			OtObjectCreate(mods),
+			OtObjectCreate(xpos),
+			OtObjectCreate(ypos));
 
-			handled = true;
+		handled = true;
 
-		} else {
-			// give each of our children a chance to handle the event
-			for (auto it = children.begin(); !handled && it != children.end(); it++) {
-				handled = (*it)->cast<OtAppObjectClass>()->onMouseButton(button, action, mods, xpos, ypos);
-			}
+	} else {
+		// give each of our children a chance to handle the event
+		for (auto it = children.begin(); !handled && it != children.end(); it++) {
+			handled = (*it)->cast<OtAppObjectClass>()->onMouseButton(button, action, mods, xpos, ypos);
 		}
-
-	} catch (const OtException& e) {
-		OtOSClass::instance()->errorGUI(e);
 	}
 
 	return handled;
@@ -241,26 +197,21 @@ bool OtAppClass::onMouseButton(int button, int action, int mods, float xpos, flo
 bool OtAppClass::onMouseMove(float xpos, float ypos) {
 	bool handled = false;
 
-	try {
-		// call subclass member function (if we have one)
-		if (has("onMouseMove")) {
-			OtVM::instance()->callMemberFunction(
-				shared(),
-				"onMouseMove",
-				OtObjectCreate(xpos),
-				OtObjectCreate(ypos));
+	// call subclass member function (if we have one)
+	if (has("onMouseMove")) {
+		OtVM::instance()->callMemberFunction(
+			shared(),
+			"onMouseMove",
+			OtObjectCreate(xpos),
+			OtObjectCreate(ypos));
 
-			handled = true;
+		handled = true;
 
-		} else {
-			// give each of our children a chance to handle the event
-			for (auto it = children.begin(); !handled && it != children.end(); it++) {
-				handled = (*it)->cast<OtAppObjectClass>()->onMouseMove(xpos, ypos);
-			}
+	} else {
+		// give each of our children a chance to handle the event
+		for (auto it = children.begin(); !handled && it != children.end(); it++) {
+			handled = (*it)->cast<OtAppObjectClass>()->onMouseMove(xpos, ypos);
 		}
-
-	} catch (const OtException& e) {
-		OtOSClass::instance()->errorGUI(e);
 	}
 
 	return handled;
@@ -274,28 +225,23 @@ bool OtAppClass::onMouseMove(float xpos, float ypos) {
 bool OtAppClass::onMouseDrag(int button, int mods, float xpos, float ypos) {
 	bool handled = false;
 
-	try {
-		// call subclass member function (if we have one)
-		if (has("onMouseDrag")) {
-			OtVM::instance()->callMemberFunction(
-				shared(),
-				"onMouseDrag",
-				OtObjectCreate(button),
-				OtObjectCreate(mods),
-				OtObjectCreate(xpos),
-				OtObjectCreate(ypos));
+	// call subclass member function (if we have one)
+	if (has("onMouseDrag")) {
+		OtVM::instance()->callMemberFunction(
+			shared(),
+			"onMouseDrag",
+			OtObjectCreate(button),
+			OtObjectCreate(mods),
+			OtObjectCreate(xpos),
+			OtObjectCreate(ypos));
 
-			handled = true;
+		handled = true;
 
-		} else {
-			// give each of our children a chance to handle the event
-			for (auto it = children.begin(); !handled && it != children.end(); it++) {
-				handled = (*it)->cast<OtAppObjectClass>()->onMouseDrag(button, mods, xpos, ypos);
-			}
+	} else {
+		// give each of our children a chance to handle the event
+		for (auto it = children.begin(); !handled && it != children.end(); it++) {
+			handled = (*it)->cast<OtAppObjectClass>()->onMouseDrag(button, mods, xpos, ypos);
 		}
-
-	} catch (const OtException& e) {
-		OtOSClass::instance()->errorGUI(e);
 	}
 
 	return handled;
@@ -309,26 +255,21 @@ bool OtAppClass::onMouseDrag(int button, int mods, float xpos, float ypos) {
 bool OtAppClass::onScrollWheel(float dx, float dy){
 	bool handled = false;
 
-	try {
-		// call subclass member function (if we have one)
-		if (has("onScrollWheel")) {
-			OtVM::instance()->callMemberFunction(
-				shared(),
-				"onScrollWheel",
-				OtObjectCreate(dx),
-				OtObjectCreate(dy));
+	// call subclass member function (if we have one)
+	if (has("onScrollWheel")) {
+		OtVM::instance()->callMemberFunction(
+			shared(),
+			"onScrollWheel",
+			OtObjectCreate(dx),
+			OtObjectCreate(dy));
 
-			handled = true;
+		handled = true;
 
-		} else {
-			// give each of our children a chance to handle the event
-			for (auto it = children.begin(); !handled && it != children.end(); it++) {
-				handled = (*it)->cast<OtAppObjectClass>()->onScrollWheel(dx, dy);
-			}
+	} else {
+		// give each of our children a chance to handle the event
+		for (auto it = children.begin(); !handled && it != children.end(); it++) {
+			handled = (*it)->cast<OtAppObjectClass>()->onScrollWheel(dx, dy);
 		}
-
-	} catch (const OtException& e) {
-		OtOSClass::instance()->errorGUI(e);
 	}
 
 	return handled;
@@ -342,26 +283,21 @@ bool OtAppClass::onScrollWheel(float dx, float dy){
 bool OtAppClass::onKey(int key, int mods) {
 	bool handled = false;
 
-	try {
-		// call subclass member function (if we have one)
-		if (has("onKey")) {
-			OtVM::instance()->callMemberFunction(
-				shared(),
-				"onKey",
-				OtObjectCreate(key),
-				OtObjectCreate(mods));
+	// call subclass member function (if we have one)
+	if (has("onKey")) {
+		OtVM::instance()->callMemberFunction(
+			shared(),
+			"onKey",
+			OtObjectCreate(key),
+			OtObjectCreate(mods));
 
-			handled = true;
+		handled = true;
 
-		} else {
-			// give each of our children a chance to handle the event
-			for (auto it = children.begin(); !handled && it != children.end(); it++) {
-				handled = (*it)->cast<OtAppObjectClass>()->onKey(key, mods);
-			}
+	} else {
+		// give each of our children a chance to handle the event
+		for (auto it = children.begin(); !handled && it != children.end(); it++) {
+			handled = (*it)->cast<OtAppObjectClass>()->onKey(key, mods);
 		}
-
-	} catch (const OtException& e) {
-		OtOSClass::instance()->errorGUI(e);
 	}
 
 	return handled;
@@ -375,25 +311,20 @@ bool OtAppClass::onKey(int key, int mods) {
 bool OtAppClass::onChar(unsigned int codepoint) {
 	bool handled = false;
 
-	try {
-		// call subclass member function (if we have one)
-		if (has("onChar")) {
-			OtVM::instance()->callMemberFunction(
-				shared(),
-				"onChar",
-				OtObjectCreate((int) codepoint));
+	// call subclass member function (if we have one)
+	if (has("onChar")) {
+		OtVM::instance()->callMemberFunction(
+			shared(),
+			"onChar",
+			OtObjectCreate((int) codepoint));
 
-			handled = true;
+		handled = true;
 
-		} else {
-			// give each of our children a chance to handle the event
-			for (auto it = children.begin(); !handled && it != children.end(); it++) {
-				handled = (*it)->cast<OtAppObjectClass>()->onChar(codepoint);
-			}
+	} else {
+		// give each of our children a chance to handle the event
+		for (auto it = children.begin(); !handled && it != children.end(); it++) {
+			handled = (*it)->cast<OtAppObjectClass>()->onChar(codepoint);
 		}
-
-	} catch (const OtException& e) {
-		OtOSClass::instance()->errorGUI(e);
 	}
 
 	return handled;
@@ -406,27 +337,23 @@ bool OtAppClass::onChar(unsigned int codepoint) {
 
 bool OtAppClass::onGamepadAxis(int gamepad, int axis, int value) {
 	bool handled = false;
-	try {
-		// call subclass member function (if we have one)
-		if (has("onGamepadAxis")) {
-			OtVM::instance()->callMemberFunction(
-				shared(),
-				"onGamepadAxis",
-				OtObjectCreate(gamepad),
-				OtObjectCreate(axis),
-				OtObjectCreate(value));
 
-			handled = true;
+	// call subclass member function (if we have one)
+	if (has("onGamepadAxis")) {
+		OtVM::instance()->callMemberFunction(
+			shared(),
+			"onGamepadAxis",
+			OtObjectCreate(gamepad),
+			OtObjectCreate(axis),
+			OtObjectCreate(value));
 
-		} else {
-			// give each of our children a chance to handle the event
-			for (auto it = children.begin(); !handled && it != children.end(); it++) {
-				handled = (*it)->cast<OtAppObjectClass>()->onGamepadAxis(gamepad, axis, value);
-			}
+		handled = true;
+
+	} else {
+		// give each of our children a chance to handle the event
+		for (auto it = children.begin(); !handled && it != children.end(); it++) {
+			handled = (*it)->cast<OtAppObjectClass>()->onGamepadAxis(gamepad, axis, value);
 		}
-
-	} catch (const OtException& e) {
-		OtOSClass::instance()->errorGUI(e);
 	}
 
 	return handled;
@@ -440,30 +367,34 @@ bool OtAppClass::onGamepadAxis(int gamepad, int axis, int value) {
 bool OtAppClass::onGamepadButton(int gamepad, int button, int action) {
 	bool handled = false;
 
-	try {
-		// call subclass member function (if we have one)
-		if (has("onGamepadButton")) {
-			OtVM::instance()->callMemberFunction(
-				shared(),
-				"onGamepadButton",
-				OtObjectCreate(gamepad),
-				OtObjectCreate(button),
-				OtObjectCreate(action));
+	// call subclass member function (if we have one)
+	if (has("onGamepadButton")) {
+		OtVM::instance()->callMemberFunction(
+			shared(),
+			"onGamepadButton",
+			OtObjectCreate(gamepad),
+			OtObjectCreate(button),
+			OtObjectCreate(action));
 
-			handled = true;
+		handled = true;
 
-		} else {
-			// give each of our children a chance to handle the event
-			for (auto it = children.begin(); !handled && it != children.end(); it++) {
-				handled = (*it)->cast<OtAppObjectClass>()->onGamepadButton(gamepad, button, action);
-			}
+	} else {
+		// give each of our children a chance to handle the event
+		for (auto it = children.begin(); !handled && it != children.end(); it++) {
+			handled = (*it)->cast<OtAppObjectClass>()->onGamepadButton(gamepad, button, action);
 		}
-
-	} catch (const OtException& e) {
-		OtOSClass::instance()->errorGUI(e);
 	}
 
 	return handled;
+}
+
+
+//
+//	OtAppClass::run
+//
+
+void OtAppClass::run() {
+	OtFrameworkClass::instance()->run(*this);
 }
 
 
@@ -482,6 +413,8 @@ OtType OtAppClass::getMeta() {
 
 		type->set("getWidth", OtFunctionClass::create(&OtAppClass::getWidth));
 		type->set("getHeight", OtFunctionClass::create(&OtAppClass::getHeight));
+
+		type->set("run", OtFunctionClass::create(&OtAppClass::run));
 	}
 
 	return type;

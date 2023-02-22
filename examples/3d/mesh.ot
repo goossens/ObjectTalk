@@ -195,4 +195,4 @@ class App : gui.App {
 
 // instantiate application and run it
 var app = App();
-os.runGUI();
+app.run();

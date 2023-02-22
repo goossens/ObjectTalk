@@ -16,7 +16,6 @@
 #include "OtException.h"
 #include "OtFunction.h"
 #include "OtLibuv.h"
-#include "OtOS.h"
 #include "OtVM.h"
 
 #include "OtFramework.h"
@@ -27,7 +26,10 @@
 //	OtFrameworkClass::run
 //
 
-void OtFrameworkClass::run() {
+void OtFrameworkClass::run(OtFrameworkApp& targetApp) {
+	// remember the app
+	app = &targetApp;
+
 	// the framework runs in two threads:
 	// 1. the main thread handles the rendering and window events (as required by most operating systems)
 	// 2. the second thread runs the application logic as well as the asynchronous libuv events
@@ -66,6 +68,9 @@ void OtFrameworkClass::runThread2() {
 		initBGFX();
 		initIMGUI();
 
+		// call setup callback
+		app->onSetup();
+
 		// run this thread until we are told to stop
 		while (running) {
 			// reset view ID
@@ -87,98 +92,65 @@ void OtFrameworkClass::runThread2() {
 				bool handled = false;
 
 				switch (event.type) {
-					case OtFwEvent::customerSetupEvent:
-						event.customerSetup.customer->onSetup();
-						break;
-
-					case OtFwEvent::customerTerminateEvent:
-						event.customerTerminate.customer->onTerminate();
-						break;
-
 					case OtFwEvent::mouseButtonEvent:
-						for (auto i = customers.begin(); !handled && i < customers.end(); i++) {
-							handled = (*i)->onMouseButton(
-								event.mouseButton.button,
-								event.mouseButton.action,
-								event.mouseButton.mods,
-								event.mouseButton.x,
-								event.mouseButton.y);
-						}
+						handled = app->onMouseButton(
+							event.mouseButton.button,
+							event.mouseButton.action,
+							event.mouseButton.mods,
+							event.mouseButton.x,
+							event.mouseButton.y);
 
 						break;
 
 					case OtFwEvent::mouseMoveEvent:
-						for (auto i = customers.begin(); !handled && i < customers.end(); i++) {
-							handled = (*i)->onMouseMove(event.mouseMove.x, event.mouseMove.y);
-						}
-
+						handled = app->onMouseMove(event.mouseMove.x, event.mouseMove.y);
 						break;
 
 					case OtFwEvent::mouseDragEvent:
-						for (auto i = customers.begin(); !handled && i < customers.end(); i++) {
-							handled = (*i)->onMouseDrag(
-								event.mouseDrag.button,
-								event.mouseDrag.mods,
-								event.mouseDrag.x,
-								event.mouseDrag.y);
-						}
+						handled = app->onMouseDrag(
+							event.mouseDrag.button,
+							event.mouseDrag.mods,
+							event.mouseDrag.x,
+							event.mouseDrag.y);
 
 						break;
 
 					case OtFwEvent::mouseWheelEvent:
-						for (auto i = customers.begin(); !handled && i < customers.end(); i++) {
-							handled = (*i)->onScrollWheel(event.mouseWheel.xOffset, event.mouseWheel.yOffset);
-						}
-
+						handled = app->onScrollWheel(event.mouseWheel.xOffset, event.mouseWheel.yOffset);
 						break;
 
 					case OtFwEvent::keyboardEvent:
 						if (event.keyboard.action != GLFW_RELEASE) {
-							for (auto i = customers.begin(); !handled && i < customers.end(); i++) {
-								handled = (*i)->onKey(event.keyboard.key, event.keyboard.mods);
-							}
+							handled = app->onKey(event.keyboard.key, event.keyboard.mods);
 						}
 
 						break;
 
 					case OtFwEvent::characterEvent:
-						for (auto i = customers.begin(); !handled && i < customers.end(); i++) {
-							handled = (*i)->onChar(event.character.codepoint);
-						}
-
+						handled = app->onChar(event.character.codepoint);
 						break;
 
 					case OtFwEvent::gamepadAxisEvent:
-						for (auto i = customers.begin(); !handled && i < customers.end(); i++) {
-							handled = (*i)->onGamepadAxis(
-								event.gamepadAxis.gamepad,
-								event.gamepadAxis.axis,
-								event.gamepadAxis.value);
-						}
+						handled = app->onGamepadAxis(
+							event.gamepadAxis.gamepad,
+							event.gamepadAxis.axis,
+							event.gamepadAxis.value);
 
 						break;
 
 					case OtFwEvent::gamepadButtonEvent:
-						for (auto i = customers.begin(); !handled && i < customers.end(); i++) {
-							handled = (*i)->onGamepadButton(
-								event.gamepadButton.gamepad,
-								event.gamepadButton.button,
-								event.gamepadButton.action);
-						}
+						handled = app->onGamepadButton(
+							event.gamepadButton.gamepad,
+							event.gamepadButton.button,
+							event.gamepadButton.action);
 
 						break;
 				}
 			}
 
-			// call update callbacks
-			for (auto& customer : customers) {
-				customer->onUpdate();
-			}
-
-			// call render callbacks
-			for (auto& customer : customers) {
-				customer->onRender();
-			}
+			// call update and render callbacks
+			app->onUpdate();
+			app->onRender();
 
 			// show profiler (if required)
 			if (profiler) {
@@ -193,10 +165,8 @@ void OtFrameworkClass::runThread2() {
 			uv_run(uv_default_loop(), UV_RUN_NOWAIT);
 		}
 
-		// call termination callbacks
-		for (auto& customer : customers) {
-			customer->onTerminate();
-		}
+		// call termination callback
+		app->onTerminate();
 
 		// call exit callbacks
 		for (auto& callback : atExitCallbacks) {
@@ -230,41 +200,7 @@ void OtFrameworkClass::stop() {
 //
 
 bool OtFrameworkClass::canQuit() {
-	for (auto& customer : customers) {
-		if (!customer->onCanQuit()) {
-			return false;
-		}
-	}
-
-	return true;
-}
-
-
-//
-//	OtFrameworkClass::addCustomer
-//
-
-void OtFrameworkClass::addCustomer(OtFrameworkCustomer* customer) {
-	// add to list of customers
-	customers.push_back(customer);
-
-	// ensure the setup callback comes from the right thread
-	eventQueue.pushCustomerSetupEvent(customer);
-}
-
-
-//
-//	OtFrameworkClass::removeCustomer
-//
-
-void OtFrameworkClass::removeCustomer(OtFrameworkCustomer* customer) {
-	// tell customer they are done
-	eventQueue.pushCustomerTerminateEvent(customer);
-
-	// remove from the list
-	customers.erase(std::remove_if(customers.begin(), customers.end(), [customer] (OtFrameworkCustomer* c) {
-		return c == customer;
-	}), customers.end());
+	return app->onCanQuit();
 }
 
 

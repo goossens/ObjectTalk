@@ -56,7 +56,7 @@ application. You simply subclass the **Application** class, populate the
 	}
 
 	var app = App();
-	os.runGUI();
+	app.run();
 
  This is a complete and valid App even though it doesn't do anything.
  You can launch the App and it will create a black screen or black
@@ -153,7 +153,7 @@ Our complete App now looks like this:
 	}
 
 	var app = App();
-	os.runGUI();
+	app.run();
 
 Let's run this App and be amazed how underwhelming the result is.
 It looks like we drew just a square. Yes, It's kind of hard to tell
@@ -225,7 +225,7 @@ make the scene more realistic. So let's change the App to:
 	}
 
 	var app = App();
-	os.runGUI();
+	app.run();
 
 It should now be pretty clearly 3D. Directional lights have a direction as
 the name suggests In our case we're setting the light's direction to

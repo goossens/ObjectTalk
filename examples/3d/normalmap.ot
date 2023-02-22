@@ -80,4 +80,4 @@ class App : gui.App {
 }
 
 var app = App();
-os.runGUI();
+app.run();

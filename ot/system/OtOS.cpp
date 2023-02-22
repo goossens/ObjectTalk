@@ -388,44 +388,12 @@ bool OtOSClass::isDST() {
 
 
 //
-//	OtOSClass::registerServer
-//
-
-void OtOSClass::registerServer(
-		std::function<void(void)> run,
-		std::function<void(OtException e)> error,
-		std::function<void(void)> stop) {
-	serverRunner = run;
-	serverError = error;
-	serverStopper = stop;
-}
-
-
-//
 //	OtOSClass::runServer
 //
 
 void OtOSClass::runServer() {
-	if (serverRunner) {
-		serverRunner();
-
-	} else {
-		OtExcept("This platform does not support servers");
-	}
-}
-
-
-//
-//	OtOSClass::errorServer
-//
-
-void OtOSClass::errorServer(OtException e) {
-	if (serverError) {
-		serverError(e);
-
-	} else {
-		OtExcept("This platform does not support servers");
-	}
+	OtLibUv::run();
+	OtLibUv::end();
 }
 
 
@@ -434,68 +402,7 @@ void OtOSClass::errorServer(OtException e) {
 //
 
 void OtOSClass::stopServer() {
-	if (serverStopper) {
-		serverStopper();
-
-	} else {
-		OtExcept("This platform does not support servers");
-	}
-}
-
-
-//
-//	OtOSClass::registerGUI
-//
-
-void OtOSClass::registerGUI(
-		std::function<void(void)> run,
-		std::function<void(OtException e)> error,
-		std::function<void(void)> stop) {
-	guiRunner = run;
-	guiError = error;
-	guiStopper = stop;
-}
-
-
-//
-//	OtOSClass::runGUI
-//
-
-void OtOSClass::runGUI() {
-	if (guiRunner) {
-		guiRunner();
-
-	} else {
-		OtExcept("This platform does not have a GUI module");
-	}
-}
-
-
-//
-//	OtOSClass::errorGUI() {
-//
-
-void OtOSClass::errorGUI(OtException e) {
-	if (guiError) {
-		guiError(e);
-
-	} else {
-		OtExcept("This platform does not have a GUI module");
-	}
-}
-
-
-//
-//	OtOSClass::stopGUI
-//
-
-void OtOSClass::stopGUI() {
-	if (guiStopper) {
-		guiStopper();
-
-	} else {
-		OtExcept("This platform does not have a GUI module");
-	}
+	OtLibUv::stop();
 }
 
 
@@ -548,9 +455,6 @@ OtType OtOSClass::getMeta() {
 
 		type->set("runServer", OtFunctionClass::create(&OtOSClass::runServer));
 		type->set("stopServer", OtFunctionClass::create(&OtOSClass::stopServer));
-
-		type->set("runGUI", OtFunctionClass::create(&OtOSClass::runGUI));
-		type->set("stopGUI", OtFunctionClass::create(&OtOSClass::stopGUI));
 	}
 
 	return type;

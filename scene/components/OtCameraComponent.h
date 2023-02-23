@@ -39,6 +39,7 @@ public:
 	static constexpr char const* name = "Camera";
 
 	// stored properties
+	bool mainCamera = false;
 	float fov = 60.0f;
 	float nearPlane = 0.1f;
 	float farPlane = 100.0f;

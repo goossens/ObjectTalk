@@ -30,7 +30,7 @@
 //
 
 OtByteCode OtCompiler::compileModule(OtSource src, OtModule module) {
-	// rememember source code
+	// remember source code
 	source = src;
 
 	// clear scope stack

@@ -10,6 +10,7 @@
 //
 
 #include <algorithm>
+#include <cmath>
 
 #include "glm/ext.hpp"
 
@@ -19,6 +20,16 @@
 #include "ImGuiFileDialog.h"
 
 #include "OtUi.h"
+
+
+//
+//	OtUiCenteredText
+//
+
+void OtUiCenteredText(const char* text) {
+	ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(text).x) * 0.5f);
+	ImGui::TextUnformatted(text);
+}
 
 
 //
@@ -89,11 +100,6 @@ bool OtUiInputText(const char* label, std::string& value) {
 
 static bool OtUiEditVecX(const char* label, float* v, int components, float speed, float minv, float maxv) {
 	ImGuiWindow* window = ImGui::GetCurrentWindow();
-
-	if (window->SkipItems) {
-		return false;
-	}
-
 	ImGuiContext& g = *GImGui;
 	bool changed = false;
 
@@ -266,4 +272,38 @@ void OtUiSplitterVertical(float* size, float minSize, float maxSize) {
 
 void OtUiSplitterHorizontal(float* size, float minSize, float maxSize) {
 	OtUiSplitter(false, size, minSize, maxSize);
+}
+
+
+//
+//	OtUiLoadingIndicator
+//
+
+void OtUiLoadingIndicator(char* label, float radius, const ImVec4& color, const ImVec4& backdrop, int circles, float speed) {
+	ImGuiWindow* window = ImGui::GetCurrentWindow();
+	ImGuiContext& g = *GImGui;
+	ImGuiID id = window->GetID(label);
+	ImVec2 pos = window->DC.CursorPos;
+
+	float circle = radius / 10.0f;
+	ImRect bb(pos, ImVec2(pos.x + radius * 2.0f, pos.y + radius * 2.0f));
+	ImGui::ItemSize(bb, g.Style.FramePadding.y);
+	ImGui::ItemAdd(bb, id);
+
+	float t = g.Time;
+	auto offset = 2.0f * IM_PI / circles;
+
+	for (int i = 0; i < circles; i++) {
+		auto x = radius * std::sin(offset * i);
+		auto y = radius * std::cos(offset * i);
+		auto growth = std::max(0.0f, std::sin(t * speed - i * offset));
+
+		ImVec4 color;
+		color.x = color.x * growth + backdrop.x * (1.0f - growth);
+		color.y = color.y * growth + backdrop.y * (1.0f - growth);
+		color.z = color.z * growth + backdrop.z * (1.0f - growth);
+		color.w = 1.0f;
+
+		window->DrawList->AddCircleFilled(ImVec2(pos.x + radius + x, pos.y + radius - y), circle + growth * circle, ImGui::GetColorU32(color));
+	}
 }

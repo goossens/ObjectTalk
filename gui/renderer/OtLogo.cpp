@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <cstdint>
+
 #include "OtLogo.h"
 
 
@@ -6798,3 +6800,18 @@ const uint8_t OtLogoData[74578] = {
 	0xc1, 0x8a, 0x76, 0xb0, 0xae, 0x3c, 0xc9, 0x42, 0x00, 0x00, 0x00,
 	0x00, 0x49, 0x45, 0x4e, 0x44, 0xae, 0x42, 0x60, 0x82
 };
+
+
+//
+//	OtLogo::getTextureIndex
+//
+
+int OtLogo::getTextureIndex() {
+	// create texture (if required)
+	if (!texture.isValid()) {
+		// load it from file that lives in memory (to keep ot as a single file)
+		texture.loadFromFileInMemory((void*) &OtLogoData, sizeof(OtLogoData));
+	}
+
+	return texture.getTextureIndex();
+}

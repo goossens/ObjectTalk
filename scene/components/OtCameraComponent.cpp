@@ -37,6 +37,7 @@ glm::mat4 OtCameraComponent::getProjectionMatrix(float aspectRatio) {
 
 bool OtCameraComponent::renderGUI() {
 	bool changed = false;
+	changed |= ImGui::Checkbox("Main Camera", &mainCamera);
 	changed |= ImGui::DragFloat("FoV (Deg)", &fov, 1.0f, 10.0f, 160.0f, "%.0f");
 	changed |= ImGui::DragFloat("Near Plane", &nearPlane, 1.0f, 0.0f, 0.0f, "%.1f");
 	changed |= ImGui::DragFloat("Far Plane", &farPlane, 1.0f, 0.0f, 0.0f, "%.1f");
@@ -51,6 +52,7 @@ bool OtCameraComponent::renderGUI() {
 nlohmann::json OtCameraComponent::serialize(std::filesystem::path* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
+	data["mainCamera"] = mainCamera;
 	data["fov"] = fov;
 	data["near"] = nearPlane;
 	data["far"] = farPlane;
@@ -63,6 +65,7 @@ nlohmann::json OtCameraComponent::serialize(std::filesystem::path* basedir) {
 //
 
 void OtCameraComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+	mainCamera = data.value("mainCamera", false);
 	fov = data.value("fov", 60.0f);
 	nearPlane = data.value("near", 0.1f);
 	farPlane = data.value("far", 100.0f);

@@ -147,25 +147,6 @@ void OtObjectTalkEditor::render() {
 //
 
 void OtObjectTalkEditor::renderMenu() {
-	// get keyboard state to handle keyboard shortcuts
-	ImGuiIO& io = ImGui::GetIO();
-	auto isOSX = io.ConfigMacOSXBehaviors;
-	auto alt = io.KeyAlt;
-	auto ctrl = io.KeyCtrl;
-	auto shift = io.KeyShift;
-	auto super = io.KeySuper;
-	auto isShortcut = (isOSX ? (super && !ctrl) : (ctrl && !super)) && !alt && !shift;
-
-	// handle keyboard shortcuts
-	if (isShortcut) {
-		if (ImGui::IsKeyPressed(ImGuiKey_B)) {
-			compile();
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_R)) {
-			run();
-		}
-	}
-
 #if __APPLE__
 #define SHORTCUT "Cmd-"
 #else
@@ -188,6 +169,9 @@ void OtObjectTalkEditor::renderMenu() {
 			}
 
 			ImGui::Separator();
+			if (ImGui::MenuItem("Run", SHORTCUT "R", nullptr, !isDirty() && fileExists())) { OtWorkspaceClass::instance()->runFile(); }
+
+			ImGui::Separator();
 			if (ImGui::MenuItem("Close", SHORTCUT "W")) { OtWorkspaceClass::instance()->closeFile(); }
 
 			ImGui::EndMenu();
@@ -208,15 +192,6 @@ void OtObjectTalkEditor::renderMenu() {
 
 			ImGui::Separator();
 			if (ImGui::MenuItem("Select All", SHORTCUT "A", nullptr, editor.GetText().size() != 0)) { editor.SelectAll(); }
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("Program")) {
-			if (ImGui::MenuItem("Build", SHORTCUT "B")) { compile(); }
-			if (ImGui::MenuItem("Run", SHORTCUT "R")) { run(); }
-			ImGui::Separator();
-			if (ImGui::MenuItem("Clear Error")) { clearError(); }
-
 			ImGui::EndMenu();
 		}
 
@@ -244,27 +219,6 @@ void OtObjectTalkEditor::renderEditor() {
 	}
 
 	ImGui::EndChild();
-}
-
-
-//
-//	OtObjectTalkEditor::compile
-//
-
-void OtObjectTalkEditor::compile() {
-}
-
-
-//
-//	OtObjectTalkEditor::run
-//
-
-void OtObjectTalkEditor::run() {
-	// reset errors
-	clearError();
-
-	// run the script
-	OtWorkspaceClass::instance()->runFile();
 }
 
 

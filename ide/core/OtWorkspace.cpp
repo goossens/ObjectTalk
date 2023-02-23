@@ -17,8 +17,8 @@
 #include "OtFormat.h"
 
 #include "OtFramework.h"
+#include "OtUi.h"
 
-#include "OtLogo.h"
 #include "OtObjectTalkEditor.h"
 #include "OtSceneEditor.h"
 #include "OtWorkspace.h"
@@ -74,17 +74,8 @@ void OtWorkspaceClass::onRender()
 			renderConfirmError();
 		}
 
-		// get keyboard state to handle keyboard shortcuts
-		ImGuiIO& io = ImGui::GetIO();
-		auto isOSX = io.ConfigMacOSXBehaviors;
-		auto alt = io.KeyAlt;
-		auto ctrl = io.KeyCtrl;
-		auto shift = io.KeyShift;
-		auto super = io.KeySuper;
-		auto isShortcut = (isOSX ? (super && !ctrl) : (ctrl && !super)) && !alt && !shift;
-
 		// handle shortcuts based on state
-		if (isShortcut) {
+		if (ImGui::IsKeyDown(ImGuiMod_Shortcut)) {
 			if (ImGui::IsKeyPressed(ImGuiKey_N) && (state == splashState || state == editState)) {
 				newFile();
 
@@ -101,6 +92,11 @@ void OtWorkspaceClass::onRender()
 					}
 				}
 
+			} else if (ImGui::IsKeyPressed(ImGuiKey_R) && (state == editState)) {
+				if (!activeEditor->isDirty() && activeEditor->fileExists()) {
+					runFile();
+				}
+
 			} else if (ImGui::IsKeyPressed(ImGuiKey_W) && (state == editState)) {
 				closeFile();
 			}
@@ -114,10 +110,11 @@ void OtWorkspaceClass::onRender()
 //
 
 void OtWorkspaceClass::onTerminate() {
-	// clear all editor references in order to release resources
+	// clear all resource references in order to release them at the right time
 	editors.clear();
 	activeEditor = nullptr;
 	activateEditorTab = nullptr;
+	logo = nullptr;
 }
 
 
@@ -395,21 +392,10 @@ void OtWorkspaceClass::activateEditor(std::shared_ptr<OtEditor> editor) {
 //	OtWorkspaceClass::renderSplashScreen
 //
 
-static void centerText(const char* text) {
-	ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(text).x) * 0.5f);
-	ImGui::Text("%s", text);
-}
-
 void OtWorkspaceClass::renderSplashScreen() {
 	// load logo (if required)
-	if (!logo.isValid()) {
-		// load it from file that lives in memory (to keep ot as a single file)
-		logo.loadFromFileInMemory((void*) &OtLogoData, sizeof(OtLogoData));
-
-		// ensure logo is cleared at exit to avoid a memory leak
-		OtFrameworkClass::instance()->atexit([this] {
-			logo.clear();
-		});
+	if (!logo) {
+		logo = std::make_shared<OtLogo>();
 	}
 
 	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -425,19 +411,19 @@ void OtWorkspaceClass::renderSplashScreen() {
 			ImGuiWindowFlags_NoBringToFrontOnFocus |
 			ImGuiWindowFlags_NoInputs);
 
-	ImGui::Image((void*)(intptr_t) logo.getTextureIndex(), ImVec2(OtLogoWidth, OtLogoHeight));
+	ImGui::Image((void*)(intptr_t) logo->getTextureIndex(), ImVec2(logo->getWidth(), logo->getHeight()));
 
-	centerText("Welcome to the ObjectTalk");
-	centerText("Integrated Development Environment (IDE)");
-	centerText("");
+	OtUiCenteredText("Welcome to the ObjectTalk");
+	OtUiCenteredText("Integrated Development Environment (IDE)");
+	OtUiCenteredText("");
 
 	if (ImGui::GetIO().ConfigMacOSXBehaviors) {
-		centerText("Use Cmd-N to create a new file");
-		centerText("Use Cmd-O to open an existing file");
+		OtUiCenteredText("Use Cmd-N to create a new file");
+		OtUiCenteredText("Use Cmd-O to open an existing file");
 
 	} else {
-		centerText("Use Ctrl-N to create a new file");
-		centerText("Use Ctrl-O to open an existing file");
+		OtUiCenteredText("Use Ctrl-N to create a new file");
+		OtUiCenteredText("Use Ctrl-O to open an existing file");
 	}
 
 	ImGui::End();
@@ -709,6 +695,10 @@ void OtWorkspaceClass::renderSubProcess() {
 
 	} else {
 		if (ImGui::Button("Close Console", ImVec2(150.0f, 0.0f))) {
+			consoleFullScreen = false;
+		}
+
+		if (ImGui::IsKeyDown(ImGuiMod_Shortcut) && ImGui::IsKeyPressed(ImGuiKey_W, false)) {
 			consoleFullScreen = false;
 		}
 	}

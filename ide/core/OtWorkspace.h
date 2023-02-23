@@ -18,7 +18,7 @@
 #include "OtSingleton.h"
 
 #include "OtFrameworkApp.h"
-#include "OtTexture.h"
+#include "OtLogo.h"
 
 #include "OtConsole.h"
 #include "OtEditor.h"
@@ -96,8 +96,8 @@ private:
 	void renderConfirmError();
 	void renderSubProcess();
 
-	// splash screen logo
-	OtTexture logo;
+	// the logo for the splash screen
+	std::shared_ptr<OtLogo> logo;
 
 	// list of open editors
 	std::vector<std::shared_ptr<OtEditor>> editors;

@@ -23,6 +23,7 @@
 #if defined(INCLUDE_GUI)
 #include "OtGui.h"
 #include "OtWorkspace.h"
+#include "OtSceneApp.h"
 #endif
 
 
@@ -104,10 +105,15 @@ int main(int argc, char* argv[]) {
 				for (auto& file : files) {
 					auto extension = std::filesystem::path(file).extension();
 
+					// execute by type (based by the file extension)
 					if (extension == ".ot" || extension == "") {
 						auto module = OtModuleClass::create();
 						module->load(file);
 						module->unsetAll();
+
+					} else if (extension == ".ots") {
+						OtSceneApp app;
+						app.run(std::filesystem::path(file));
 					}
 				}
 #if defined(INCLUDE_GUI)

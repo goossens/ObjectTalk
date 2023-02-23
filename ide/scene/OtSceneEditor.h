@@ -97,9 +97,6 @@ private:
 	// handle keyboard shortcuts
 	void handleShortcuts();
 
-	// file actions
-	void run();
-
 	// the scene being edited
 	std::shared_ptr<OtScene2> scene;
 	std::shared_ptr<OtSceneRenderer> renderer;

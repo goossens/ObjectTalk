@@ -177,6 +177,9 @@ void OtSceneEditor::renderMenu() {
 			}
 
 			ImGui::Separator();
+			if (ImGui::MenuItem("Run", SHORTCUT "R", nullptr, !isDirty() && fileExists())) { OtWorkspaceClass::instance()->runFile(); }
+
+			ImGui::Separator();
 			if (ImGui::MenuItem("Close", SHORTCUT "W")) { OtWorkspaceClass::instance()->closeFile(); }
 
 			ImGui::EndMenu();
@@ -259,11 +262,6 @@ void OtSceneEditor::renderMenu() {
 				ImGui::EndMenu();
 			}
 
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("Program")) {
-			if (ImGui::MenuItem("Run", SHORTCUT "R", nullptr, !isDirty() && fileExists())) { run(); }
 			ImGui::EndMenu();
 		}
 
@@ -381,9 +379,9 @@ void OtSceneEditor::renderViewPort() {
 
 	if (scene->isValidEntity(selectedCamera)) {
 		auto camera = scene->getComponent<OtCameraComponent>(selectedCamera);
-		cameraPosition = glm::vec3(camerViewMatrix[3]);
 		cameraProjectionMatrix = camera.getProjectionMatrix(size.x / size.y);
 		camerViewMatrix = glm::inverse(scene->getGlobalTransform(selectedCamera));
+		cameraPosition = glm::vec3(camerViewMatrix[3]);
 
 	} else {
 		editorCamera.update();
@@ -772,22 +770,13 @@ void OtSceneEditor::renderComponent(bool canRemove) {
 //
 
 void OtSceneEditor::handleShortcuts() {
-	// get keyboard state to handle keyboard shortcuts
-	ImGuiIO& io = ImGui::GetIO();
-	auto isOSX = io.ConfigMacOSXBehaviors;
-	auto alt = io.KeyAlt;
-	auto ctrl = io.KeyCtrl;
-	auto shift = io.KeyShift;
-	auto super = io.KeySuper;
-	auto isShortcut = isOSX ? super : ctrl;
-
 	// get status
 	bool selected = scene->isValidEntity(selectedEntity);
 	bool clipable = clipboard.size() > 0;
 
 	// handle keyboard shortcuts
-	if (isShortcut) {
-		if (shift && ImGui::IsKeyPressed(ImGuiKey_Z, false)) {
+	if (ImGui::IsKeyDown(ImGuiMod_Shortcut)) {
+		if (ImGui::IsKeyDown(ImGuiMod_Shift) && ImGui::IsKeyPressed(ImGuiKey_Z, false)) {
 			if (taskManager.canRedo()) {
 				taskManager.redo();
 			}
@@ -826,7 +815,7 @@ void OtSceneEditor::handleShortcuts() {
 		}
 
 	// handle camera switching shortcuts
-	} else if (alt) {
+	} else if (ImGui::IsKeyDown(ImGuiMod_Alt)) {
 		if (ImGui::IsKeyPressed(ImGuiKey_0, false)) {
 			setSceneCamera(0);
 
@@ -861,14 +850,6 @@ void OtSceneEditor::handleShortcuts() {
 			setSceneCamera(9);
 		}
 	}
-}
-
-
-//
-//	OtSceneEditor::run
-//
-
-void OtSceneEditor::run() {
 }
 
 

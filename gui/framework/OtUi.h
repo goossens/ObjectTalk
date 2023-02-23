@@ -16,11 +16,15 @@
 #include <string>
 
 #include "glm/glm.hpp"
+#include "imgui.h"
 
 
 //
 //	Functions
 //
+
+// render text centered in the current (child) window
+void OtUiCenteredText(const char* text);
 
 // create a header with specified width
 void OtUiHeader(const char* label, float width);
@@ -38,3 +42,6 @@ bool OtUiFileSelector(const char* label, std::filesystem::path& path);
 // create a splitter widget
 void OtUiSplitterVertical(float* size, float minSize, float maxSize);
 void OtUiSplitterHorizontal(float* size, float minSize, float maxSize);
+
+// create a spinner
+void OtUiLoadingIndicator(char* label, float radius, const ImVec4& color, const ImVec4& backdrop, int circles=16, float speed=20.0f);

@@ -13,13 +13,24 @@
 //
 
 #include <cstddef>
-#include <cstdint>
+
+#include "OtTexture.h"
 
 
 //
-//	Static variables
+//	OtLogo
 //
 
-constexpr size_t OtLogoWidth = 429;
-constexpr size_t OtLogoHeight = 350;
-extern const uint8_t OtLogoData[74578];
+class OtLogo {
+public:
+	// get logo information
+	int getTextureIndex();
+
+	// get logo size
+	size_t getWidth() { return 429; }
+	size_t getHeight() { return 350; }
+
+private:
+	// the logo as a texture
+	OtTexture texture;
+};

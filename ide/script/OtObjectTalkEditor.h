@@ -53,10 +53,6 @@ private:
 	void renderMenu();
 	void renderEditor();
 
-	// file actions
-	void compile();
-	void run();
-
 	// visual text editor
 	TextEditor editor;
 

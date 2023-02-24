@@ -29,18 +29,18 @@ void OtSubProcess::start(const std::filesystem::path& path, const std::vector<st
 	stderrCallback = onStderr;
 
 	// create the pipes to communicate with the subprocess
-	UV_CHECK_ERROR("uv_pipe_init", uv_pipe_init(uv_default_loop(), &stdout, 0));
-	UV_CHECK_ERROR("uv_pipe_init", uv_pipe_init(uv_default_loop(), &stderr, 0));
-	stdout.data = (void*) this;
-	stderr.data = (void*) this;
+	UV_CHECK_ERROR("uv_pipe_init", uv_pipe_init(uv_default_loop(), &stdoutPipe, 0));
+	UV_CHECK_ERROR("uv_pipe_init", uv_pipe_init(uv_default_loop(), &stderrPipe, 0));
+	stdoutPipe.data = (void*) this;
+	stderrPipe.data = (void*) this;
 
 	// setup stdio handles
 	uv_stdio_container_t stdio[3];
 	stdio[0].flags = UV_IGNORE;
 	stdio[1].flags = (uv_stdio_flags) (UV_CREATE_PIPE | UV_WRITABLE_PIPE);
-	stdio[1].data.stream = (uv_stream_t *) &stdout;
+	stdio[1].data.stream = (uv_stream_t *) &stdoutPipe;
 	stdio[2].flags = (uv_stdio_flags) (UV_CREATE_PIPE | UV_WRITABLE_PIPE);
-	stdio[2].data.stream = (uv_stream_t *) &stderr;
+	stdio[2].data.stream = (uv_stream_t *) &stderrPipe;
 
 	// convert arguments
 	char** args = new char* [arguments.size() + 2];
@@ -76,9 +76,9 @@ void OtSubProcess::start(const std::filesystem::path& path, const std::vector<st
 
 	running = true;
 
-	// start reading stdout and stderr
-	UV_CHECK_ERROR("uv_read_start", uv_read_start((uv_stream_t*) &stdout, onAllocateMemory, onReadStdout));
-	UV_CHECK_ERROR("uv_read_start", uv_read_start((uv_stream_t*) &stderr, onAllocateMemory, onReadStderr));
+	// start reading stdoutPipe and stderrPipe
+	UV_CHECK_ERROR("uv_read_start", uv_read_start((uv_stream_t*) &stdoutPipe, onAllocateMemory, onReadStdout));
+	UV_CHECK_ERROR("uv_read_start", uv_read_start((uv_stream_t*) &stderrPipe, onAllocateMemory, onReadStderr));
 
 	// cleanup
 	delete [] args;

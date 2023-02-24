@@ -42,8 +42,8 @@ public:
 
 private:
 	// pipes to communicate with subprocess
-	uv_pipe_t stdout;
-	uv_pipe_t stderr;
+	uv_pipe_t stdoutPipe;
+	uv_pipe_t stderrPipe;
 
 	// sub process control
 	uv_process_t subprocess;

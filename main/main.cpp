@@ -111,9 +111,12 @@ int main(int argc, char* argv[]) {
 						module->load(file);
 						module->unsetAll();
 
+#if defined(INCLUDE_GUI)
 					} else if (extension == ".ots") {
 						OtSceneApp app;
 						app.run(std::filesystem::path(file));
+#endif
+
 					}
 				}
 #if defined(INCLUDE_GUI)

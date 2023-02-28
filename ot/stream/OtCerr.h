@@ -28,7 +28,7 @@ typedef std::function<void(const std::string&)> OtCerrOutputFunction;
 
 class OtCerrClass : public OtStreamClass, public OtObjectSingleton<OtCerrClass> {
 public:
-	// output an object (will internally be converted to a String)
+	// output an object (will internally be converted to a String first)
 	OtObject operator << (OtObject object);
 
 	// write strings

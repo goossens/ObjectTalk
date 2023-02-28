@@ -113,6 +113,7 @@ std::string OtByteCodeClass::disassemble() {
 
 	buffer << "bytecode: " << bytecode.size() << std::endl;
 	buffer << "constants: " << constants.size() << std::endl;
+	buffer << "selectors: " << selectors.size() << std::endl;
 	buffer << "marks: " << marks.size() << std::endl;
 	buffer << "offsets: " << offsets.size() << std::endl;
 

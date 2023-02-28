@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <fstream>
+#include <sstream>
 #include <vector>
 
 #include "OtByteCodeFunction.h"
@@ -26,11 +28,38 @@
 #include "OtThrow.h"
 
 
+OtByteCode OtCompiler::compileFile(const std::filesystem::path& path, OtObject object) {
+	// sanity check
+	if (!std::filesystem::exists(path)) {
+		OtExcept("Can't open file [%s]", path.c_str());
+	}
+
+	// load source code and compile into bytecode
+	std::ifstream stream(path);
+	std::stringstream buffer;
+	buffer << stream.rdbuf();
+	stream.close();
+	OtSource source = OtSourceClass::create(path.string(), buffer.str());
+	return compileSource(source, object);
+}
+
+
 //
-//	OtCompiler::compileModule
+//	OtCompiler::compileText
 //
 
-OtByteCode OtCompiler::compileModule(OtSource src, OtModule module) {
+OtByteCode OtCompiler::compileText(const std::string& text, OtObject object) {
+	// convert to source object, compile and return bytecode
+	OtSource source = OtSourceClass::create("__internal__", text);
+	return compileSource(source, object);
+}
+
+
+//
+//	OtCompiler::compileSource
+//
+
+OtByteCode OtCompiler::compileSource(OtSource src, OtObject object) {
 	// remember source code
 	source = src;
 
@@ -51,10 +80,10 @@ OtByteCode OtCompiler::compileModule(OtSource src, OtModule module) {
 		declareVariable(bytecode, name);
 	}
 
-	// setup module scope
-	pushObjectScope(module);
+	// setup object scope
+	pushObjectScope(object);
 
-	for (auto name : module->getMemberNames()) {
+	for (auto name : object->getMemberNames()) {
 		declareVariable(bytecode, name);
 	}
 

@@ -93,7 +93,7 @@ void OtModuleClass::load(const std::filesystem::path& path) {
 	localPath.push_back(fullPath.parent_path());
 
 	try {
-		OtByteCode bytecode = compiler.compileModule(source, cast<OtModuleClass>());
+		OtByteCode bytecode = compiler.compileSource(source, shared());
 		OtVM::instance()->execute(bytecode);
 
 	} catch (const OtException& e) {

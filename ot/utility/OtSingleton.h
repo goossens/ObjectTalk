@@ -50,7 +50,6 @@ public:
 	static std::shared_ptr<T> instance() {
 		thread_local std::shared_ptr<T> instance;
 
-
 		if (!instance) {
 			instance = std::make_shared<T>();
 		}

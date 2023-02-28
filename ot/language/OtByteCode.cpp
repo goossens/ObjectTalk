@@ -14,6 +14,7 @@
 #include <sstream>
 
 #include "OtByteCode.h"
+#include "OtSelector.h"
 
 
 //
@@ -84,8 +85,12 @@ std::string OtByteCodeClass::disassemble() {
 				buffer << "JUMP_TRUE" << offsets[getNumber(pc)];
 				break;
 
+			case MEMBER:
+				buffer << "MEMBER" << OtSelector::name(selectors[getNumber(pc)]);
+				break;
+
 			case METHOD:
-				buffer << "METHOD" << getString(getNumber(pc)) << "(" << getNumber(pc) << ")";
+				buffer << "METHOD" << OtSelector::name(selectors[getNumber(pc)]) << "(" << getNumber(pc) << ")";
 				break;
 
 			case EXIT:
@@ -108,7 +113,6 @@ std::string OtByteCodeClass::disassemble() {
 
 	buffer << "bytecode: " << bytecode.size() << std::endl;
 	buffer << "constants: " << constants.size() << std::endl;
-	buffer << "strings: " << strings.size() << std::endl;
 	buffer << "marks: " << marks.size() << std::endl;
 	buffer << "offsets: " << offsets.size() << std::endl;
 

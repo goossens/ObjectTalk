@@ -14,6 +14,7 @@
 #include "OtException.h"
 #include "OtFormat.h"
 #include "OtFunction.h"
+#include "OtMemberReference.h"
 #include "OtString.h"
 #include "OtVM.h"
 
@@ -134,9 +135,17 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 					break;
 				}
 
+				case OtByteCodeClass::MEMBER:
+					// create a member reference
+					stack->push(OtMemberReferenceClass::create(
+						stack->pop(),
+						bytecode->getSelector(bytecode->getNumber(pc))));
+
+					break;
+
 				case OtByteCodeClass::METHOD: {
-					// get method name
-					auto method = bytecode->getString(bytecode->getNumber(pc));
+					// get method
+					auto method = bytecode->getSelector(bytecode->getNumber(pc));
 
 					// get number of calling parameters
 					auto count = bytecode->getNumber(pc);
@@ -150,7 +159,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 					// call method
 					auto result = parameters[0]->get(method)->operator () (count + 1, parameters);
 
-					// clean up stack and put result back on stack
+					// remove arguments from stack and put result back on it
 					stack->pop(count + 1);
 					stack->push(result);
 					break;

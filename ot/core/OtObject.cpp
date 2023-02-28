@@ -14,8 +14,24 @@
 #include "OtException.h"
 #include "OtClass.h"
 #include "OtFunction.h"
-#include "OtMemberReference.h"
 #include "OtObject.h"
+
+
+//
+//	OtObjectClass::~OtObjectClass
+//
+
+OtObjectClass::~OtObjectClass() {
+	if (members) {
+		delete members;
+		members = nullptr;
+	}
+
+	if (observers) {
+		delete observers;
+		observers = nullptr;
+	}
+}
 
 
 //
@@ -31,13 +47,13 @@ std::string OtObjectClass::describe() {
 //	OtObjectClass::has
 //
 
-bool OtObjectClass::has(const std::string &name) {
-	if (members && members->has(name)) {
+bool OtObjectClass::has(size_t selector) {
+	if (members && members->has(selector)) {
 		return true;
 	}
 
 	for (auto t = type; t; t = t->getParent()) {
-		if (t->has(name)) {
+		if (t->has(selector)) {
 			return true;
 		}
 	}
@@ -45,16 +61,17 @@ bool OtObjectClass::has(const std::string &name) {
 	return false;
 }
 
+
 //
 //	OtObjectClass::set
 //
 
-OtObject OtObjectClass::set(const std::string& name, OtObject value) {
+OtObject OtObjectClass::set(size_t selector, OtObject value) {
 	if (!members) {
-		members = OtMembersClass::create();
+		members = new OtMembers;
 	}
 
-	members->set(name, value);
+	members->set(selector, value);
 	return value;
 }
 
@@ -63,18 +80,19 @@ OtObject OtObjectClass::set(const std::string& name, OtObject value) {
 //	OtObjectClass::get
 //
 
-OtObject OtObjectClass::get(const std::string& name) {
-	if (members && members->has(name)) {
-		return members->get(name);
+OtObject OtObjectClass::get(size_t selector) {
+	if (members && members->has(selector)) {
+		return members->get(selector);
 	}
 
 	for (auto t = type; t; t = t->getParent()) {
-		if (t->has(name)) {
-			return t->get(name);
+		if (t->has(selector)) {
+			return t->get(selector);
 		}
 	}
 
-	OtExcept("Unknown member [%s] in instance of class [%s]", name.c_str(), type->getName().c_str());
+	auto text = OtSelector::name(selector);
+	OtExcept("Unknown member [%s] in instance of class [%s]", OtSelector::name(selector).c_str(), type->getName().c_str());
 	return nullptr;
 }
 
@@ -83,35 +101,26 @@ OtObject OtObjectClass::get(const std::string& name) {
 //	OtObjectClass::unset
 //
 
-void OtObjectClass::unset(const std::string& name) {
-	if (members && members->has(name)) {
-		members->unset(name);
+void OtObjectClass::unset(size_t selector) {
+	if (members && members->has(selector)) {
+		members->unset(selector);
 
 	} else {
-		OtExcept("Unknown member [%s] in instance of class [%s]", name.c_str(), type->getName().c_str());
+		OtExcept("Unknown member [%s] in instance of class [%s]", OtSelector::name(selector).c_str(), type->getName().c_str());
 	}
 }
 
 
 //
-//	OtObjectClass::member
+//	OtObjectClass::getMemberNames
 //
 
-OtObject OtObjectClass::member(const std::string& name) {
-	return OtMemberReferenceClass::create(shared(), name);
-}
-
-
-//
-//	OtObjectClass::getMembers
-//
-
-OtMembers OtObjectClass::getMembers() {
-	if (!members) {
-		members = OtMembersClass::create();
+std::vector<std::string> OtObjectClass::getMemberNames() {
+	if (members) {
+		return members->getMemberNames();
 	}
 
-	return members;
+	return std::vector<std::string>{};
  }
 
 
@@ -173,7 +182,7 @@ OtClass OtObjectClass::getClass() {
 
 size_t OtObjectClass::attach(std::function<void(void)> callback) {
 	if (!observers) {
-		observers = std::make_shared<std::vector<OtObserver>>();
+		observers = new std::vector<OtObserver>;
 	}
 
 	static size_t nextID = 1;
@@ -226,13 +235,11 @@ OtType OtObjectClass::getMeta() {
 		type->set("string", OtFunctionClass::create(&OtObjectClass::operator std::string));
 		type->set("json", OtFunctionClass::create(&OtObjectClass::json));
 
-		type->set("has", OtFunctionClass::create(&OtObjectClass::has));
-		type->set("set", OtFunctionClass::create(&OtObjectClass::set));
-		type->set("get", OtFunctionClass::create(&OtObjectClass::get));
-		type->set("unset", OtFunctionClass::create(&OtObjectClass::unset));
+		type->set("has", OtFunctionClass::create(&OtObjectClass::hasByName));
+		type->set("set", OtFunctionClass::create(&OtObjectClass::setByName));
+		type->set("get", OtFunctionClass::create(&OtObjectClass::getByName));
+		type->set("unset", OtFunctionClass::create(&OtObjectClass::unsetByName));
 		type->set("unsetAll", OtFunctionClass::create(&OtObjectClass::unsetAll));
-
-		type->set("__member__", OtFunctionClass::create(&OtObjectClass::member));
 
 		type->set("__eq__", OtFunctionClass::create(&OtObjectClass::equal));
 		type->set("__ne__", OtFunctionClass::create(&OtObjectClass::notEqual));

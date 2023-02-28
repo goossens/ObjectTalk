@@ -53,18 +53,19 @@ public:
 	OtType getParent() { return parent.lock(); }
 
 	// member access
-	bool has(const std::string& name) { return members->has(name) != 0; }
-	OtObject set(const std::string& name, OtObject value) { members->set(name, value); return value; }
-	OtObject get(const std::string& name) { return members->has(name) ? members->get(name) : nullptr; }
-	void unset(const std::string& name);
-	OtMembers getMembers() { return members; }
+	bool has(size_t selector) { return members.has(selector) != 0; }
+	OtObject set(size_t selector, OtObject value) { members.set(selector, value); return value; }
+	OtObject set(const char* name, OtObject value) { return set(OtSelector::create(name), value); }
+	OtObject get(size_t selector) { return members.has(selector) ? members.get(selector) : nullptr; }
+	void unset(size_t selector);
+	std::vector<std::string> getMemberNames() { return members.getMemberNames(); }
 
 	// create a new type
-	template <class CLASS>
+	template <class T>
 	static OtType create(const std::string& name, OtType parent, OtAllocator allocator=nullptr) {
 		if (!allocator) {
 			allocator = []() {
-				return (OtObject) std::make_shared<CLASS>();
+				return (OtObject) std::make_shared<T>();
 			};
 		}
 

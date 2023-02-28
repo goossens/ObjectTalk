@@ -15,6 +15,7 @@
 #include "OtObject.h"
 #include "OtByteCode.h"
 #include "OtGlobal.h"
+#include "OtSelector.h"
 #include "OtSingleton.h"
 #include "OtStack.h"
 
@@ -39,13 +40,18 @@ public:
 
 	// call a member function on an object with arguments
 	template<typename... ARGS>
-	OtObject callMemberFunction(OtObject target, const std::string& member, ARGS... args) {
+	OtObject callMemberFunction(OtObject target, size_t member, ARGS... args) {
 		const size_t count = sizeof...(ARGS) + 1;
 		stack->push(target);
 		(stack->push(args), ...);
 		auto result = target->get(member)->operator () (count, stack->sp(count));
 		stack->pop(count);
 		return result;
+	}
+
+	template<typename... ARGS>
+	OtObject callMemberFunction(OtObject target, const std::string& member, ARGS... args) {
+		return callMemberFunction(target, OtSelector::create(member), std::forward<ARGS>(args)...);
 	}
 
 	inline OtObject callMemberFunction(OtObject target, OtObject member, size_t count, OtObject* args) {
@@ -68,10 +74,15 @@ public:
 		return member->operator () (count + 1, sp);
 	}
 
-	inline OtObject redirectMemberFunction(OtObject target, const std::string& member, size_t count) {
+	inline OtObject redirectMemberFunction(OtObject target, size_t member, size_t count) {
 		auto sp = stack->sp(count + 1);
 		*sp = target;
 		return target->get(member)->operator () (count + 1, sp);
+	}
+
+	template<typename... ARGS>
+	OtObject redirectMemberFunction(OtObject target, const std::string& member, size_t count) {
+		return redirectMemberFunction(target, OtSelector::create(member), count);
 	}
 
 private:

@@ -44,7 +44,7 @@ OtObject OtClassClass::instantiate(size_t count, OtObject* parameters) {
 	object->setType(classType);
 
 	// run possible init function
-	if (object->has("__init__")) {
+	if (object->hasByName("__init__")) {
 		OtVM::instance()->redirectMemberFunction(object, "__init__", count);
 
 	} else if (count) {
@@ -62,12 +62,12 @@ OtObject OtClassClass::instantiate(size_t count, OtObject* parameters) {
 //	OtClassClass::has
 //
 
-bool OtClassClass::has(const std::string& name) {
-	if (OtInternalClass::has(name)) {
+bool OtClassClass::has(size_t selector) {
+	if (OtInternalClass::has(selector)) {
 		return true;
 
 	} else {
-		return classType->has(name);
+		return classType->has(selector);
 	}
 }
 
@@ -76,12 +76,12 @@ bool OtClassClass::has(const std::string& name) {
 //	OtClassClass::get
 //
 
-OtObject OtClassClass::get(const std::string& name) {
-	if (OtInternalClass::has(name)) {
-		return OtInternalClass::get(name);
+OtObject OtClassClass::get(size_t selector) {
+	if (OtInternalClass::has(selector)) {
+		return OtInternalClass::get(selector);
 
 	} else {
-		return classType->get(name);
+		return classType->get(selector);
 	}
 }
 

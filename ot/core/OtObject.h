@@ -41,7 +41,7 @@ typedef std::shared_ptr<OtObjectClass> OtObject;
 class OtObjectClass : public std::enable_shared_from_this<OtObjectClass> {
 public:
 	// destructor
-	virtual ~OtObjectClass() {}
+	virtual ~OtObjectClass();
 
 	// type access
 	void setType(OtType t) { type = t; }
@@ -77,15 +77,22 @@ public:
 	std::shared_ptr<CLASS> cast() { return std::dynamic_pointer_cast<CLASS>(shared_from_this()); }
 
 	// member acccess
-	virtual bool has(const std::string& name);
-	virtual OtObject set(const std::string& name, OtObject value);
-	virtual OtObject get(const std::string& name);
-	virtual void unset(const std::string& name);
+	virtual bool has(size_t selector);
+	virtual OtObject set(size_t selector, OtObject value);
+	virtual OtObject set(const char* name, OtObject value) { return set(OtSelector::create(name), value); }
+	virtual OtObject set(const std::string& name, OtObject value) { return set(OtSelector::create(name), value); }
+	virtual OtObject get(size_t selector);
+	virtual void unset(size_t selector);
 	virtual void unsetAll() { members = nullptr; }
 
-	// support member operator
-	OtObject member(const std::string& name);
-	OtMembers getMembers();
+	// member acccess by name
+	virtual bool hasByName(const std::string& name) { return has(OtSelector::create(name)); }
+	virtual OtObject setByName(const std::string& name, OtObject value) { return set(OtSelector::create(name), value); }
+	virtual OtObject getByName(const std::string& name) { return get(OtSelector::create(name)); }
+	virtual void unsetByName(const std::string& name)  { return unset(OtSelector::create(name)); }
+
+	bool hasMembers() { return members != nullptr; }
+	std::vector<std::string> getMemberNames();
 
 	// comparison
 	virtual bool operator == (OtObject operand);
@@ -116,7 +123,7 @@ protected:
 	OtType type;
 
 	// members
-	OtMembers members;
+	OtMembers* members = nullptr;
 
 	// observers
 	struct OtObserver {
@@ -125,7 +132,7 @@ protected:
 		std::function<void(void)> callback;
 	};
 
-	std::shared_ptr<std::vector<OtObserver>> observers;
+	std::vector<OtObserver>* observers = nullptr;
 };
 
 

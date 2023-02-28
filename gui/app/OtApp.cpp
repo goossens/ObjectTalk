@@ -91,7 +91,7 @@ size_t OtAppClass::getMenubarHeight() {
 
 void OtAppClass::onSetup() {
 	// call subclass member function (if we have one)
-	if (has("setup")) {
+	if (hasByName("setup")) {
 		OtVM::instance()->callMemberFunction(shared(), "setup");
 	}
 }
@@ -117,7 +117,7 @@ void OtAppClass::onUpdate() {
 	}
 
 	// call subclass member function (if we have one)
-	if (has("update")) {
+	if (hasByName("update")) {
 		OtVM::instance()->callMemberFunction(shared(), "update");
 	}
 }
@@ -143,7 +143,7 @@ void OtAppClass::onRender() {
 
 void OtAppClass::onTerminate() {
 	// call subclass member function (if we have one)
-	if (has("terminate")) {
+	if (hasByName("terminate")) {
 		OtVM::instance()->callMemberFunction(shared(), "terminate");
 	}
 
@@ -167,7 +167,7 @@ bool OtAppClass::onMouseButton(int button, int action, int mods, float xpos, flo
 	bool handled = false;
 
 	// call subclass member function (if we have one)
-	if (has("onMouseButton")) {
+	if (hasByName("onMouseButton")) {
 		OtVM::instance()->callMemberFunction(
 			shared(),
 			"onMouseButton",
@@ -198,7 +198,7 @@ bool OtAppClass::onMouseMove(float xpos, float ypos) {
 	bool handled = false;
 
 	// call subclass member function (if we have one)
-	if (has("onMouseMove")) {
+	if (hasByName("onMouseMove")) {
 		OtVM::instance()->callMemberFunction(
 			shared(),
 			"onMouseMove",
@@ -226,7 +226,7 @@ bool OtAppClass::onMouseDrag(int button, int mods, float xpos, float ypos) {
 	bool handled = false;
 
 	// call subclass member function (if we have one)
-	if (has("onMouseDrag")) {
+	if (hasByName("onMouseDrag")) {
 		OtVM::instance()->callMemberFunction(
 			shared(),
 			"onMouseDrag",
@@ -256,7 +256,7 @@ bool OtAppClass::onScrollWheel(float dx, float dy){
 	bool handled = false;
 
 	// call subclass member function (if we have one)
-	if (has("onScrollWheel")) {
+	if (hasByName("onScrollWheel")) {
 		OtVM::instance()->callMemberFunction(
 			shared(),
 			"onScrollWheel",
@@ -284,7 +284,7 @@ bool OtAppClass::onKey(int key, int mods) {
 	bool handled = false;
 
 	// call subclass member function (if we have one)
-	if (has("onKey")) {
+	if (hasByName("onKey")) {
 		OtVM::instance()->callMemberFunction(
 			shared(),
 			"onKey",
@@ -312,7 +312,7 @@ bool OtAppClass::onChar(unsigned int codepoint) {
 	bool handled = false;
 
 	// call subclass member function (if we have one)
-	if (has("onChar")) {
+	if (hasByName("onChar")) {
 		OtVM::instance()->callMemberFunction(
 			shared(),
 			"onChar",
@@ -339,7 +339,7 @@ bool OtAppClass::onGamepadAxis(int gamepad, int axis, int value) {
 	bool handled = false;
 
 	// call subclass member function (if we have one)
-	if (has("onGamepadAxis")) {
+	if (hasByName("onGamepadAxis")) {
 		OtVM::instance()->callMemberFunction(
 			shared(),
 			"onGamepadAxis",
@@ -368,7 +368,7 @@ bool OtAppClass::onGamepadButton(int gamepad, int button, int action) {
 	bool handled = false;
 
 	// call subclass member function (if we have one)
-	if (has("onGamepadButton")) {
+	if (hasByName("onGamepadButton")) {
 		OtVM::instance()->callMemberFunction(
 			shared(),
 			"onGamepadButton",

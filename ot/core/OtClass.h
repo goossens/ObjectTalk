@@ -41,11 +41,11 @@ public:
 	// see if class is kind of
 	bool isKindOf(const std::string& className) { return classType->isKindOf(className); }
 
-	// special member acccess (so we can manipulate metaclass members via class)	virtual OtObject get(const std::string& name);
-	bool has(const std::string& name) override;
-	OtObject get(const std::string& name) override;
-	OtObject set(const std::string& name, OtObject value) override { return classType->set(name, value); }
-	void unset(const std::string& name) override { return classType->unset(name); }
+	// special member acccess (so we can manipulate metaclass members via class)
+	bool has(size_t selector) override;
+	OtObject get(size_t selector) override;
+	OtObject set(size_t selector, OtObject value) override { return classType->set(selector, value); }
+	void unset(size_t selector) override { return classType->unset(selector); }
 
 	// get the classes type
 	OtType getClassType() { return classType; }

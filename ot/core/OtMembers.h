@@ -12,10 +12,12 @@
 //	Include files
 //
 
-#include <memory>
+#include <cstddef>
 #include <string>
 #include <unordered_map>
 #include <vector>
+
+#include "OtSelector.h"
 
 
 //
@@ -30,30 +32,28 @@ typedef std::shared_ptr<OtObjectClass> OtObject;
 //	OtMembers
 //
 
-class OtMembersClass;
-typedef std::shared_ptr<OtMembersClass> OtMembers;
-
-class OtMembersClass {
+class OtMembers {
 public:
 	// access the members
-	inline bool has(const std::string& name) { return members.count(name); }
-	inline OtObject get(const std::string& name) { return members[name]; }
-	inline void set(const std::string& name, OtObject member) { members[name] = member; }
-	inline void unset(const std::string& name) { members.erase(name); }
+	inline bool has(size_t selector) { return members.count(selector); }
+	inline OtObject get(size_t selector) { return members[selector]; }
+	inline void set(size_t selector, OtObject member) { members[selector] = member; }
+	inline void unset(size_t selector) { members.erase(selector); }
+
 	inline void unsetAll() { members.clear(); }
 
-	std::vector<std::string> names() {
+	std::vector<std::string> getMemberNames() {
+		auto selector = OtSelector::instance();
 		std::vector<std::string> result;
-		for (auto i : members) { result.push_back(i.first); }
-		return result;
-	}
 
-	// create a new members hash table
-	static OtMembers create() {
-		return std::make_shared<OtMembersClass>();
+		for (auto i : members) {
+			result.push_back(selector->get(i.first));
+		}
+
+		return result;
 	}
 
 private:
 	// the actual members
-	std::unordered_map<std::string, OtObject> members;
+	std::unordered_map<size_t, OtObject> members;
 };

@@ -189,10 +189,11 @@ OtObject OtGlobalClass::super(size_t count, OtObject* parameters) {
 	// get member from super class
 	OtType type = parameters[0]->getType()->getParent();
 	std::string memberName = parameters[1]->operator std::string();
+	size_t selector = OtSelector::create(memberName);
 	OtObject member;
 
 	while (type && !member) {
-		member = type->get(memberName);
+		member = type->get(selector);
 		type = type->getParent();
 	}
 
@@ -215,19 +216,15 @@ OtObject OtGlobalClass::super(size_t count, OtObject* parameters) {
 
 OtObject OtGlobalClass::members(OtObject object) {
 	OtArray array = OtArrayClass::create();
-	OtMembers members;
 
 	// special treatment for class objects
 	if (object->isKindOf("Class")) {
-		members = object->cast<OtClassClass>()->getClassType()->getMembers();
+		for (auto& name : object->cast<OtClassClass>()->getClassType()->getMemberNames()) {
+			array->append(OtStringClass::create(name));
+		}
 
-	} else {
-		members = object->getMembers();
-	}
-
-	// process all members (if required)
-	if (members) {
-		for (auto& name : members->names()) {
+	} else if (object->hasMembers()) {
+		for (auto& name : object->getMemberNames()) {
 			array->append(OtStringClass::create(name));
 		}
 	}

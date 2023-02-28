@@ -13,6 +13,7 @@
 //
 
 #include "OtReference.h"
+#include "OtSelector.h"
 
 
 //
@@ -26,10 +27,10 @@ class OtObjectReferenceClass : public OtReferenceClass {
 public:
 	// constructors
 	OtObjectReferenceClass() = default;
-	OtObjectReferenceClass(OtObject o, const std::string& m) : object(o), member(m) {}
+	OtObjectReferenceClass(OtObject o, size_t m) : object(o), member(m) {}
 
 	// debugging support
-	std::string describe() override { return object->getType()->getName() + " " + member; }
+	std::string describe() override { return object->getType()->getName() + " " + OtSelector::name(member); }
 
 	// (de)reference functions
 	OtObject deref() { return object->get(member); }
@@ -39,9 +40,9 @@ public:
 	static OtType getMeta();
 
 	// create a new object
-	static OtObjectReference create(OtObject o, const std::string& m);
+	static OtObjectReference create(OtObject o, size_t m);
 
 private:
 	OtObject object;
-	std::string member;
+	size_t member;
 };

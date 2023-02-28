@@ -31,10 +31,10 @@ OtType OtObjectReferenceClass::getMeta() {
 
 
 //
-//	OtObjectReferenceClass::getMeta
+//	OtObjectReferenceClass::create
 //
 
-OtObjectReference OtObjectReferenceClass::create(OtObject o, const std::string& m) {
+OtObjectReference OtObjectReferenceClass::create(OtObject o, size_t m) {
 	OtObjectReference reference = std::make_shared<OtObjectReferenceClass>(o, m);
 	reference->setType(getMeta());
 	return reference;

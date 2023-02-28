@@ -115,7 +115,7 @@ void OtViewClass::render() {
 //
 
 bool OtViewClass::onMouseButton(int button, int action, int mods, float xpos, float ypos) {
-	if (has("onMouseButton")) {
+	if (hasByName("onMouseButton")) {
 		// determine dimensions
 		OtFramework framework = OtFrameworkClass::instance();
 		float sw = framework->getWidth();
@@ -162,7 +162,7 @@ bool OtViewClass::onMouseMove(float xpos, float ypos) {
 
 	bool handled = false;
 
-	if (has("onMouseMove")) {
+	if (hasByName("onMouseMove")) {
 		// call member function
 		OtVM::instance()->callMemberFunction(shared(), "onMouseMove", OtObjectCreate(xpos), OtObjectCreate(ypos));
 		handled = true;
@@ -190,7 +190,7 @@ bool OtViewClass::onMouseDrag(int button, int mods, float xpos, float ypos) {
 	bool handled = false;
 
 	// only process if camera doesn't want it and we have a member function
-	if (!camera->onMouseDrag(button, mods, xpos - xold, ypos - yold) && has("onMouseDrag")) {
+	if (!camera->onMouseDrag(button, mods, xpos - xold, ypos - yold) && hasByName("onMouseDrag")) {
 		OtVM::instance()->callMemberFunction(shared(), "onMouseDrag", OtObjectCreate(button), OtObjectCreate(mods), OtObjectCreate(xpos - xold), OtObjectCreate(ypos - yold));
 		handled = true;
 	}
@@ -210,7 +210,7 @@ bool OtViewClass::onScrollWheel(float dx, float dy) {
 	if (camera->onScrollWheel(dx, dy)) {
 		return true;
 
-	} else if (has("onScrollWheel")) {
+	} else if (hasByName("onScrollWheel")) {
 		OtVM::instance()->callMemberFunction(shared(), "onScrollWheel", OtObjectCreate(dx), OtObjectCreate(dy));
 		return true;
 
@@ -229,7 +229,7 @@ bool OtViewClass::onKey(int key, int mods) {
 	if (camera->onKey(key, mods)) {
 		return true;
 
-	} else if (has("onKey")) {
+	} else if (hasByName("onKey")) {
 		OtVM::instance()->callMemberFunction(shared(), "onKey", OtObjectCreate(key), OtObjectCreate(mods));
 		return true;
 
@@ -244,7 +244,7 @@ bool OtViewClass::onKey(int key, int mods) {
 //
 
 bool OtViewClass::onChar(unsigned int codepoint) {
-	if (has("onChar")) {
+	if (hasByName("onChar")) {
 		OtVM::instance()->callMemberFunction(shared(), "onChar", OtObjectCreate((int) codepoint));
 		return true;
 

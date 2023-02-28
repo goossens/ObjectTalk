@@ -20,6 +20,7 @@
 #include "OtInteger.h"
 #include "OtObjectReference.h"
 #include "OtReal.h"
+#include "OtSelector.h"
 #include "OtStackReference.h"
 #include "OtString.h"
 #include "OtThrow.h"
@@ -46,14 +47,14 @@ OtByteCode OtCompiler::compileModule(OtSource src, OtModule module) {
 	OtGlobal global = OtVM::instance()->getGlobal();
 	pushObjectScope(global);
 
-	for (auto name : global->getMembers()->names()) {
+	for (auto name : global->getMemberNames()) {
 		declareVariable(bytecode, name);
 	}
 
 	// setup module scope
 	pushObjectScope(module);
 
-	for (auto name : module->getMembers()->names()) {
+	for (auto name : module->getMemberNames()) {
 		declareVariable(bytecode, name);
 	}
 
@@ -92,7 +93,7 @@ OtByteCode OtCompiler::compileExpression(OtSource src) {
 	OtGlobal global = OtVM::instance()->getGlobal();
 	pushObjectScope(global);
 
-	for (auto name : global->getMembers()->names()) {
+	for (auto name : global->getMemberNames()) {
 		declareVariable(bytecode, name);
 	}
 
@@ -232,7 +233,7 @@ void OtCompiler::resolveVariable(OtByteCode bytecode, const std::string& name) {
 			switch(scope->type) {
 				case OBJECT_SCOPE:
 					// variable is object member
-					bytecode->push(OtObjectReferenceClass::create(scope->object, name));
+					bytecode->push(OtObjectReferenceClass::create(scope->object, OtSelector::create(name)));
 					break;
 
 				case FUNCTION_SCOPE:
@@ -244,7 +245,7 @@ void OtCompiler::resolveVariable(OtByteCode bytecode, const std::string& name) {
 					} else {
 						// variable is in an enclosing function, we need to capture it
 						declareCapture(name, OtStackItem(functionLevel - 1, scope->locals[name]));
-						bytecode->push(OtCaptureReferenceClass::create(name));
+						bytecode->push(OtCaptureReferenceClass::create(OtSelector::create(name)));
 					}
 
 					break;
@@ -508,9 +509,8 @@ bool OtCompiler::postfix(OtByteCode bytecode) {
 				}
 
 				scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
-				bytecode->push(OtStringClass::create(scanner.getText()));
+				bytecode->member(scanner.getText());
 				scanner.advance();
-				bytecode->method("__member__", 1);
 				reference = true;
 
 				break;

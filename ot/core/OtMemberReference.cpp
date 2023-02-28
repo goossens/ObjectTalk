@@ -19,9 +19,10 @@
 //
 
 OtObject OtMemberReferenceClass::deref() {
+	// get the member
 	OtObject result = object->get(member);
 
-	// never create bound functions for Model or Class members
+	// never create bound functions for Module or Class members
 	if (object->isKindOf("Module")) { // || object->isKindOf("Class")) {
 		return result;
 
@@ -66,8 +67,8 @@ OtType OtMemberReferenceClass::getMeta() {
 //	OtMemberReferenceClass::create
 //
 
-OtMemberReference OtMemberReferenceClass::create(OtObject o, const std::string& m) {
-	OtMemberReference member = std::make_shared<OtMemberReferenceClass>(o, m);
-	member->setType(getMeta());
-	return member;
+OtMemberReference OtMemberReferenceClass::create(OtObject object, size_t member) {
+	OtMemberReference reference = std::make_shared<OtMemberReferenceClass>(object, member);
+	reference->setType(getMeta());
+	return reference;
 }

@@ -21,7 +21,6 @@ OtTypeClass::OtTypeClass(const std::string& n, OtType p, OtAllocator a) {
 	name = n;
 	parent = p;
 	allocator = a ? a : p ? p->allocator : nullptr;
-	members = OtMembersClass::create();
 }
 
 
@@ -66,11 +65,11 @@ bool OtTypeClass::isKindOf(const std::string& className) {
 //	OtTypeClass::unset
 //
 
-void OtTypeClass::unset(const std::string& name) {
-	if (has(name)) {
-		members->unset(name);
+void OtTypeClass::unset(size_t selector) {
+	if (has(selector)) {
+		members.unset(selector);
 
 	} else {
-		OtExcept("Unknown member [%s] in type [%s]", name.c_str(), getName().c_str());
+		OtExcept("Unknown member [%s] in type [%s]", OtSelector::name(selector).c_str(), getName().c_str());
 	}
 }

@@ -33,7 +33,7 @@ public:
 	std::string describe() override { return object->getType()->getName() + " " + "function"; }
 
 	// call bound function
-	OtObject operator () (size_t count, OtObject* parameters) override;
+	OtObject operator()(size_t count, OtObject* parameters) override;
 
 	// get type definition
 	static OtType getMeta();

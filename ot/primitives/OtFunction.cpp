@@ -17,7 +17,7 @@
 //	OtFunctionClass::operator()
 //
 
-OtObject OtFunctionClass::operator () (size_t count, OtObject* parameters) {
+OtObject OtFunctionClass::operator()(size_t count, OtObject* parameters) {
 	// sanity check
 	if (parameterCount != SIZE_MAX && count != parameterCount) {
 		if (parameterCount == 1) {

@@ -15,13 +15,7 @@ In this mode, the main (and only) thread compiles and executes the code until th
 In server mode, a script is started like described above in Simple Mode. The difference is that at
 some point a server script starts the event loop after which control passed to the engine.
 Only callbacks are made from that point forward similar to other asynchronous frameworks like Node.js.
-The startup script as well as the event loop are all executed from the main thread.
-
-Additional worker threads can be used to speed up tasks by spreading them over multiple CPU cores
-and to ensure we don't hold up event processing in the main thread. ObjectTalk's worker thread logic
-is pretty simply. You construct one or more objects representing tasks to be performed and pass them
-to one or more worker threads. When the tasks are completed, results, in the form of (another) object,
-are returned to the main thread.
+The startup script as well as the event loop are all executed from the main and only thread.
 
 **Graphics Mode**
 
@@ -42,8 +36,7 @@ It might be more intuitive to make this a secondary thread but most operating sy
 that these tasks are execute from the primary or startup thread.
 
 A second thread will therefore be used to run the application, do most of the CPU work and run
-the event loop. The ObjectTalk callback will also run in this thread. As usual, worker threads
-can also be used.
+the event loop. The ObjectTalk callback will also run in this thread.
 
 The graphical framework automatically and transparently connects the main (graphical) thread
 with the application or scripts thread.

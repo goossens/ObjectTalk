@@ -50,21 +50,10 @@ OtType OtMenuClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtMenuClass>("Menu", OtWidgetClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtMenuClass::init));
-		type->set("setTitle", OtFunctionClass::create(&OtMenuClass::setTitle));
-		type->set("getTitle", OtFunctionClass::create(&OtMenuClass::getTitle));
+		type->set("__init__", OtFunction::create(&OtMenuClass::init));
+		type->set("setTitle", OtFunction::create(&OtMenuClass::setTitle));
+		type->set("getTitle", OtFunction::create(&OtMenuClass::getTitle));
 	}
 
 	return type;
-}
-
-
-//
-//	OtMenuClass::create
-//
-
-OtMenu OtMenuClass::create() {
-	OtMenu menu = std::make_shared<OtMenuClass>();
-	menu->setType(getMeta());
-	return menu;
 }

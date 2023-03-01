@@ -49,7 +49,7 @@ OtObject OtViewClass::setScreenArea(int _x, int _y, int _w, int _h) {
 	y = _y;
 	w = _w;
 	h = _h;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -59,8 +59,8 @@ OtObject OtViewClass::setScreenArea(int _x, int _y, int _w, int _h) {
 
 OtObject OtViewClass::setScene(OtObject object) {
 	object->expectKindOf("Scene");
-	scene = object->cast<OtSceneClass>();
-	return shared();
+	scene = OtScene(object);
+	return OtObject(this);
 }
 
 
@@ -70,8 +70,8 @@ OtObject OtViewClass::setScene(OtObject object) {
 
 OtObject OtViewClass::setCamera(OtObject object) {
 	object->expectKindOf("Camera");
-	camera = object->cast<OtCameraClass>();
-	return shared();
+	camera = OtCamera(object);
+	return OtObject(this);
 }
 
 
@@ -133,7 +133,7 @@ bool OtViewClass::onMouseButton(int button, int action, int mods, float xpos, fl
 		// is click in view?
 		if (xpos >= 0 && xpos < vw && ypos >= 0 && ypos < vh) {
 			OtVM::instance()->callMemberFunction(
-				shared(), "onMouseButton",
+				OtView(this), "onMouseButton",
 				OtObjectCreate(button), OtObjectCreate(action), OtObjectCreate(mods),
 				OtObjectCreate(xpos), OtObjectCreate(ypos)
 			);
@@ -164,7 +164,7 @@ bool OtViewClass::onMouseMove(float xpos, float ypos) {
 
 	if (hasByName("onMouseMove")) {
 		// call member function
-		OtVM::instance()->callMemberFunction(shared(), "onMouseMove", OtObjectCreate(xpos), OtObjectCreate(ypos));
+		OtVM::instance()->callMemberFunction(OtView(this), "onMouseMove", OtObjectCreate(xpos), OtObjectCreate(ypos));
 		handled = true;
 	}
 
@@ -191,7 +191,7 @@ bool OtViewClass::onMouseDrag(int button, int mods, float xpos, float ypos) {
 
 	// only process if camera doesn't want it and we have a member function
 	if (!camera->onMouseDrag(button, mods, xpos - xold, ypos - yold) && hasByName("onMouseDrag")) {
-		OtVM::instance()->callMemberFunction(shared(), "onMouseDrag", OtObjectCreate(button), OtObjectCreate(mods), OtObjectCreate(xpos - xold), OtObjectCreate(ypos - yold));
+		OtVM::instance()->callMemberFunction(OtView(this), "onMouseDrag", OtObjectCreate(button), OtObjectCreate(mods), OtObjectCreate(xpos - xold), OtObjectCreate(ypos - yold));
 		handled = true;
 	}
 
@@ -211,7 +211,7 @@ bool OtViewClass::onScrollWheel(float dx, float dy) {
 		return true;
 
 	} else if (hasByName("onScrollWheel")) {
-		OtVM::instance()->callMemberFunction(shared(), "onScrollWheel", OtObjectCreate(dx), OtObjectCreate(dy));
+		OtVM::instance()->callMemberFunction(OtView(this), "onScrollWheel", OtObjectCreate(dx), OtObjectCreate(dy));
 		return true;
 
 	} else {
@@ -230,7 +230,7 @@ bool OtViewClass::onKey(int key, int mods) {
 		return true;
 
 	} else if (hasByName("onKey")) {
-		OtVM::instance()->callMemberFunction(shared(), "onKey", OtObjectCreate(key), OtObjectCreate(mods));
+		OtVM::instance()->callMemberFunction(OtView(this), "onKey", OtObjectCreate(key), OtObjectCreate(mods));
 		return true;
 
 	} else {
@@ -245,7 +245,7 @@ bool OtViewClass::onKey(int key, int mods) {
 
 bool OtViewClass::onChar(unsigned int codepoint) {
 	if (hasByName("onChar")) {
-		OtVM::instance()->callMemberFunction(shared(), "onChar", OtObjectCreate((int) codepoint));
+		OtVM::instance()->callMemberFunction(OtView(this), "onChar", OtObjectCreate((int) codepoint));
 		return true;
 
 	} else {
@@ -261,7 +261,7 @@ bool OtViewClass::onChar(unsigned int codepoint) {
 void OtViewClass::renderDebugGUI() {
 	// create resources (if required)
 	if (!debugCamera) {
-		debugCamera = OtCameraClass::create();
+		debugCamera = OtCamera::create();
 		debugCamera->setCircleTargetMode();
 		debugCamera->setDistance(50.0);
 		framebuffer.initialize(OtFrameBuffer::rgba8Texture, OtFrameBuffer::dFloatTexture);
@@ -295,26 +295,15 @@ OtType OtViewClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtViewClass>("View", OtAppObjectClass::getMeta());
 
-		type->set("__init__", OtFunctionClass::create(&OtViewClass::init));
+		type->set("__init__", OtFunction::create(&OtViewClass::init));
 
-		type->set("setScreenArea", OtFunctionClass::create(&OtViewClass::setScreenArea));
-		type->set("setScene", OtFunctionClass::create(&OtViewClass::setScene));
-		type->set("setCamera", OtFunctionClass::create(&OtViewClass::setCamera));
+		type->set("setScreenArea", OtFunction::create(&OtViewClass::setScreenArea));
+		type->set("setScene", OtFunction::create(&OtViewClass::setScene));
+		type->set("setCamera", OtFunction::create(&OtViewClass::setCamera));
 
-		type->set("getScene", OtFunctionClass::create(&OtViewClass::getScene));
-		type->set("getCamera", OtFunctionClass::create(&OtViewClass::getCamera));
+		type->set("getScene", OtFunction::create(&OtViewClass::getScene));
+		type->set("getCamera", OtFunction::create(&OtViewClass::getCamera));
 	}
 
 	return type;
-}
-
-
-//
-//	OtViewClass::create
-//
-
-OtView OtViewClass::create() {
-	OtView view = std::make_shared<OtViewClass>();
-	view->setType(getMeta());
-	return view;
 }

@@ -23,9 +23,9 @@ OtType OtSimulationClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtSimulationClass>("Simulation", OtGuiClass::getMeta());
-		type->set("start", OtFunctionClass::create(&OtSimulationClass::start));
-		type->set("stop", OtFunctionClass::create(&OtSimulationClass::stop));
-		type->set("isRunning", OtFunctionClass::create(&OtSimulationClass::isRunning));
+		type->set("start", OtFunction::create(&OtSimulationClass::start));
+		type->set("stop", OtFunction::create(&OtSimulationClass::stop));
+		type->set("isRunning", OtFunction::create(&OtSimulationClass::isRunning));
 	}
 
 	return type;

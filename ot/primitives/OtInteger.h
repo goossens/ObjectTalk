@@ -26,7 +26,7 @@
 //
 
 class OtIntegerClass;
-typedef std::shared_ptr<OtIntegerClass> OtInteger;
+using OtInteger = OtObjectPointer<OtIntegerClass>;
 
 class OtIntegerClass : public OtPrimitiveClass {
 public:
@@ -88,9 +88,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtInteger create(int64_t value);
 
 private:
 	int64_t value = 0;

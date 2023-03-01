@@ -76,7 +76,7 @@ void OtSphereGeometryClass::init(size_t count, OtObject* parameters) {
 OtObject OtSphereGeometryClass::setRadius(float r) {
 	radius = r;
 	refreshGeometry = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -87,7 +87,7 @@ OtObject OtSphereGeometryClass::setRadius(float r) {
 OtObject OtSphereGeometryClass::setWidthSegments(int segments) {
 	widthSegments = segments;
 	refreshGeometry = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -98,7 +98,7 @@ OtObject OtSphereGeometryClass::setWidthSegments(int segments) {
 OtObject OtSphereGeometryClass::setHeightSegments(int segments) {
 	heightSegments = segments;
 	refreshGeometry = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -109,7 +109,7 @@ OtObject OtSphereGeometryClass::setHeightSegments(int segments) {
 OtObject OtSphereGeometryClass::setPhiStart(float ps) {
 	phiStart = ps;
 	refreshGeometry = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -120,7 +120,7 @@ OtObject OtSphereGeometryClass::setPhiStart(float ps) {
 OtObject OtSphereGeometryClass::setPhiLength(float pl) {
 	phiLength = pl;
 	refreshGeometry = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -131,7 +131,7 @@ OtObject OtSphereGeometryClass::setPhiLength(float pl) {
 OtObject OtSphereGeometryClass::setThetaStart(float ts) {
 	thetaStart = ts;
 	refreshGeometry = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -142,7 +142,7 @@ OtObject OtSphereGeometryClass::setThetaStart(float ts) {
 OtObject OtSphereGeometryClass::setThetaLength(float tl) {
 	thetaLength = tl;
 	refreshGeometry = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -161,14 +161,14 @@ OtObject OtSphereGeometryClass::setHeightMap(OtObject object) {
 	}
 
 	// set new heightmap
-	heightmap = object->cast<OtHeightMapClass>();
+	heightmap = OtHeightMap(object);
 
 	heightmapID = heightmap->attach([this]() {
 		refreshGeometry = true;
 	});
 
 	refreshGeometry = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -179,7 +179,7 @@ OtObject OtSphereGeometryClass::setHeightMap(OtObject object) {
 OtObject OtSphereGeometryClass::setTextureAbsolute(bool flag) {
 	textureAbsolute = flag;
 	refreshGeometry = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -325,28 +325,17 @@ OtType OtSphereGeometryClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtSphereGeometryClass>("SphereGeometry", OtGeometryClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtSphereGeometryClass::init));
-		type->set("setRadius", OtFunctionClass::create(&OtSphereGeometryClass::setRadius));
-		type->set("setWidthSegments", OtFunctionClass::create(&OtSphereGeometryClass::setWidthSegments));
-		type->set("setHeightSegments", OtFunctionClass::create(&OtSphereGeometryClass::setHeightSegments));
-		type->set("setPhiStart", OtFunctionClass::create(&OtSphereGeometryClass::setPhiStart));
-		type->set("setPhiLength", OtFunctionClass::create(&OtSphereGeometryClass::setPhiLength));
-		type->set("setThetaStart", OtFunctionClass::create(&OtSphereGeometryClass::setThetaStart));
-		type->set("setThetaLength", OtFunctionClass::create(&OtSphereGeometryClass::setThetaLength));
-		type->set("setHeightMap", OtFunctionClass::create(&OtSphereGeometryClass::setHeightMap));
-		type->set("setTextureAbsolute", OtFunctionClass::create(&OtSphereGeometryClass::setTextureAbsolute));
+		type->set("__init__", OtFunction::create(&OtSphereGeometryClass::init));
+		type->set("setRadius", OtFunction::create(&OtSphereGeometryClass::setRadius));
+		type->set("setWidthSegments", OtFunction::create(&OtSphereGeometryClass::setWidthSegments));
+		type->set("setHeightSegments", OtFunction::create(&OtSphereGeometryClass::setHeightSegments));
+		type->set("setPhiStart", OtFunction::create(&OtSphereGeometryClass::setPhiStart));
+		type->set("setPhiLength", OtFunction::create(&OtSphereGeometryClass::setPhiLength));
+		type->set("setThetaStart", OtFunction::create(&OtSphereGeometryClass::setThetaStart));
+		type->set("setThetaLength", OtFunction::create(&OtSphereGeometryClass::setThetaLength));
+		type->set("setHeightMap", OtFunction::create(&OtSphereGeometryClass::setHeightMap));
+		type->set("setTextureAbsolute", OtFunction::create(&OtSphereGeometryClass::setTextureAbsolute));
 	}
 
 	return type;
-}
-
-
-//
-//	OtSphereGeometryClass::create
-//
-
-OtSphereGeometry OtSphereGeometryClass::create() {
-	OtSphereGeometry spheregeometry = std::make_shared<OtSphereGeometryClass>();
-	spheregeometry->setType(getMeta());
-	return spheregeometry;
 }

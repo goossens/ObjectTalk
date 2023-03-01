@@ -17,6 +17,17 @@
 
 
 //
+//	OtDictClass::OtDictClass
+//
+
+OtDictClass::OtDictClass(size_t count, OtObject* objects) {
+	for (size_t c = 0; c < count; c += 2) {
+		setEntry((std::string) *objects[c], objects[c + 1]);
+	}
+}
+
+
+//
 //	OtDictClass::operator std::string
 //
 
@@ -26,7 +37,7 @@ OtDictClass::operator std::string() {
 
 	o << "{";
 
-	for (auto const& entry : dict) {
+	for (auto& entry : dict) {
 		if (first) {
 			first = false;
 		} else {
@@ -64,9 +75,8 @@ void OtDictClass::init(size_t count, OtObject* parameters) {
 //
 
 bool OtDictClass::operator == (OtObject operand) {
-	OtDict op = operand->cast<OtDictClass>();
+	OtDict op = operand;
 
-	// ensure object is an dictionary
 	if (!op) {
 		return false;
 
@@ -120,7 +130,7 @@ OtObject OtDictClass::setEntry(const std::string& index, OtObject object) {
 //
 
 OtObject OtDictClass::index(const std::string& index) {
-	return OtDictReferenceClass::create(cast<OtDictClass>(), index);
+	return OtDictReference::create(OtDict(this), index);
 }
 
 
@@ -133,14 +143,13 @@ OtObject OtDictClass::add(OtObject value) {
 		OtExcept("The dictionary add operator expects another [dictionary] instance, not [%s]", value->getType()->getName().c_str());
 	}
 
-	OtDict result = create();
+	auto result = OtDict::create();
 
 	for (auto& it : dict) {
 		result->setEntry(it.first, it.second);
 	}
 
-
-	for (auto& it : value->cast<OtDictClass>()->dict) {
+	for (auto& it : OtDict(value)->dict) {
 		result->setEntry(it.first, it.second);
 	}
 
@@ -153,7 +162,7 @@ OtObject OtDictClass::add(OtObject value) {
 //
 
 OtObject OtDictClass::clone() {
-	OtDict result = create();
+	auto result = OtDict::create();
 
 	for (auto& it : dict) {
 		result->setEntry(it.first, it.second);
@@ -172,14 +181,14 @@ OtObject OtDictClass::merge(OtObject value) {
 		OtExcept("Dictionary merge expects another [dictionary] instance, not [%s]", value->getType()->getName().c_str());
 	}
 
-	OtDict result = create();
+	auto result = OtDict::create();
 
 	for (auto& it : dict) {
 		result->setEntry(it.first, it.second);
 	}
 
 
-	for (auto& it : value->cast<OtDictClass>()->dict) {
+	for (auto& it : OtDict(value)->dict) {
 		result->setEntry(it.first, it.second);
 	}
 
@@ -206,10 +215,10 @@ void OtDictClass::eraseEntry(const std::string& index) {
 
 OtObject OtDictClass::keys() {
 	// create array of all keys in dictionary
-	OtArray array = OtArrayClass::create();
+	auto array = OtArray::create();
 
 	for (auto const& entry : dict) {
-		array->append(OtStringClass::create(entry.first));
+		array->append(OtString::create(entry.first));
 	}
 
 	return array;
@@ -222,7 +231,7 @@ OtObject OtDictClass::keys() {
 
 OtObject OtDictClass::values() {
 	// create array of all values in dictionary
-	OtArray array = OtArrayClass::create();
+	auto array = OtArray::create();
 
 	for (auto const& entry : dict) {
 		array->append(entry.second);
@@ -242,45 +251,24 @@ OtType OtDictClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtDictClass>("Dict", OtCollectionClass::getMeta());
 
-		type->set("string", OtFunctionClass::create(&OtDictClass::operator std::string));
+		type->set("string", OtFunction::create(&OtDictClass::operator std::string));
 
-		type->set("__init__", OtFunctionClass::create(&OtDictClass::init));
-		type->set("__index__", OtFunctionClass::create(&OtDictClass::index));
-		type->set("__add__", OtFunctionClass::create(&OtDictClass::add));
-		type->set("__contains__", OtFunctionClass::create(&OtDictClass::contains));
+		type->set("__init__", OtFunction::create(&OtDictClass::init));
+		type->set("__index__", OtFunction::create(&OtDictClass::index));
+		type->set("__add__", OtFunction::create(&OtDictClass::add));
+		type->set("__contains__", OtFunction::create(&OtDictClass::contains));
 
-		type->set("size", OtFunctionClass::create(&OtDictClass::size));
-		type->set("contains", OtFunctionClass::create(&OtDictClass::contains));
+		type->set("size", OtFunction::create(&OtDictClass::size));
+		type->set("contains", OtFunction::create(&OtDictClass::contains));
 
-		type->set("clone", OtFunctionClass::create(&OtDictClass::clone));
-		type->set("merge", OtFunctionClass::create(&OtDictClass::merge));
-		type->set("clear", OtFunctionClass::create(&OtDictClass::clear));
-		type->set("erase", OtFunctionClass::create(&OtDictClass::eraseEntry));
+		type->set("clone", OtFunction::create(&OtDictClass::clone));
+		type->set("merge", OtFunction::create(&OtDictClass::merge));
+		type->set("clear", OtFunction::create(&OtDictClass::clear));
+		type->set("erase", OtFunction::create(&OtDictClass::eraseEntry));
 
-		type->set("keys", OtFunctionClass::create(&OtDictClass::keys));
-		type->set("values", OtFunctionClass::create(&OtDictClass::values));
+		type->set("keys", OtFunction::create(&OtDictClass::keys));
+		type->set("values", OtFunction::create(&OtDictClass::values));
 	}
 
 	return type;
-}
-
-
-//
-//	OtDictClass::create
-//
-
-OtDict OtDictClass::create() {
-	OtDict dict = std::make_shared<OtDictClass>();
-	dict->setType(getMeta());
-	return dict;
-}
-
-OtDict OtDictClass::create(size_t count, OtObject* objects) {
-	OtDict dict = create();
-
-	for (size_t c = 0; c < count; c += 2) {
-		dict->setEntry((std::string) *objects[c], objects[c + 1]);
-	}
-
-	return dict;
 }

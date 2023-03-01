@@ -24,10 +24,10 @@ OtType OtSceneObjectClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtSceneObjectClass>("SceneObject", OtNodeClass::getMeta());
 
-		type->set("castShadow", OtFunctionClass::create(&OtSceneObjectClass::castShadow));
-		type->set("castsShadow", OtFunctionClass::create(&OtSceneObjectClass::castsShadow));
-		type->set("receiveShadow", OtFunctionClass::create(&OtSceneObjectClass::receiveShadow));
-		type->set("receivesShadow", OtFunctionClass::create(&OtSceneObjectClass::receivesShadow));
+		type->set("castShadow", OtFunction::create(&OtSceneObjectClass::castShadow));
+		type->set("castsShadow", OtFunction::create(&OtSceneObjectClass::castsShadow));
+		type->set("receiveShadow", OtFunction::create(&OtSceneObjectClass::receiveShadow));
+		type->set("receivesShadow", OtFunction::create(&OtSceneObjectClass::receivesShadow));
 	}
 
 	return type;

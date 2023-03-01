@@ -153,7 +153,7 @@ private:
 OtObject OtHttpRouterClass::addHandler(const std::string& method, const std::string& path, OtObject callback) {
 	OtCallbackValidate(callback, 3);
 	handlers.push_back(std::make_shared<OtHttpMethodHandler>(method, path, callback));
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -163,7 +163,7 @@ OtObject OtHttpRouterClass::addHandler(const std::string& method, const std::str
 
 void OtHttpRouterClass::runHandler(const size_t index, OtHttpRequest req, OtHttpResponse res, OtObject next) {
 	if (index < handlers.size()) {
-		handlers[index]->run(req, res, OtHttpNextClass::create(cast<OtHttpRouterClass>(), index + 1, req, res, next));
+		handlers[index]->run(req, res, OtHttpNext::create(this, index + 1, req, res, next));
 
 	} else {
 		OtVM::instance()->callMemberFunction(next, "__call__");
@@ -178,7 +178,7 @@ void OtHttpRouterClass::runHandler(const size_t index, OtHttpRequest req, OtHttp
 OtObject OtHttpRouterClass::useHandler(OtObject callback) {
 	OtCallbackValidate(callback, 3);
 	handlers.push_back(std::make_shared<OtHttpMethodHandler>("", "*", callback));
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -233,7 +233,7 @@ OtObject OtHttpRouterClass::deleleteHandler(const std::string& path, OtObject ca
 
 OtObject OtHttpRouterClass::staticFiles(const std::string& serverPath, const std::string& filePath) {
 	handlers.push_back(std::make_shared<OtStaticHandler>(serverPath, filePath));
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -242,8 +242,8 @@ OtObject OtHttpRouterClass::staticFiles(const std::string& serverPath, const std
 //
 
 OtObject OtHttpRouterClass::call(OtObject req, OtObject res, OtObject next) {
-	runHandler(0, req->cast<OtHttpRequestClass>(), res->cast<OtHttpResponseClass>(), next);
-	return shared();
+	runHandler(0, OtHttpRequest(req), OtHttpResponse(res), next);
+	return OtObject(this);
 }
 
 
@@ -253,7 +253,7 @@ OtObject OtHttpRouterClass::call(OtObject req, OtObject res, OtObject next) {
 
 OtObject OtHttpRouterClass::timer(int64_t wait, int64_t repeat, OtObject callback) {
 	OtCallbackValidate(callback, 0);
-	return OtHttpTimerClass::create(wait, repeat, callback);
+	return OtHttpTimer::create(wait, repeat, callback);
 }
 
 
@@ -266,27 +266,16 @@ OtType OtHttpRouterClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtHttpRouterClass>("HttpRouter", OtHttpClass::getMeta());
-		type->set("use", OtFunctionClass::create(&OtHttpRouterClass::useHandler));
-		type->set("all", OtFunctionClass::create(&OtHttpRouterClass::allHandler));
-		type->set("get", OtFunctionClass::create(&OtHttpRouterClass::getHandler));
-		type->set("put", OtFunctionClass::create(&OtHttpRouterClass::putHandler));
-		type->set("post", OtFunctionClass::create(&OtHttpRouterClass::postHandler));
-		type->set("delete", OtFunctionClass::create(&OtHttpRouterClass::deleleteHandler));
-		type->set("static", OtFunctionClass::create(&OtHttpRouterClass::staticFiles));
-		type->set("timer", OtFunctionClass::create(&OtHttpRouterClass::timer));
-		type->set("__call__", OtFunctionClass::create(&OtHttpRouterClass::call));
+		type->set("use", OtFunction::create(&OtHttpRouterClass::useHandler));
+		type->set("all", OtFunction::create(&OtHttpRouterClass::allHandler));
+		type->set("get", OtFunction::create(&OtHttpRouterClass::getHandler));
+		type->set("put", OtFunction::create(&OtHttpRouterClass::putHandler));
+		type->set("post", OtFunction::create(&OtHttpRouterClass::postHandler));
+		type->set("delete", OtFunction::create(&OtHttpRouterClass::deleleteHandler));
+		type->set("static", OtFunction::create(&OtHttpRouterClass::staticFiles));
+		type->set("timer", OtFunction::create(&OtHttpRouterClass::timer));
+		type->set("__call__", OtFunction::create(&OtHttpRouterClass::call));
 	}
 
 	return type;
-}
-
-
-//
-//	OtHttpRouterClass::create
-//
-
-OtHttpRouter OtHttpRouterClass::create() {
-	OtHttpRouter router = std::make_shared<OtHttpRouterClass>();
-	router->setType(getMeta());
-	return router;
 }

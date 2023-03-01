@@ -24,7 +24,7 @@
 //
 
 class OtHttpResponseClass;
-typedef std::shared_ptr<OtHttpResponseClass> OtHttpResponse;
+using OtHttpResponse = OtObjectPointer<OtHttpResponseClass>;
 
 class OtHttpResponseClass : public OtHttpClass {
 public:
@@ -66,9 +66,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtHttpResponse create();
 
 private:
 	enum OtResponseState {

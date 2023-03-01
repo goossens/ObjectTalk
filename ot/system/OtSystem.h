@@ -20,7 +20,7 @@
 //
 
 class OtSystemClass;
-typedef std::shared_ptr<OtSystemClass> OtSystem;
+using OtSystem = OtObjectPointer<OtSystemClass>;
 
 class OtSystemClass : public OtObjectClass {
 public:

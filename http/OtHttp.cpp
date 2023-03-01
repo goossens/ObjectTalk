@@ -24,10 +24,10 @@
 
 void OtHttpClass::registerModule() {
 	OtModuleClass::registerInternal("http", [](OtModule module) {
-		module->set("Http", OtClassClass::create(OtHttpClass::getMeta()));
-		module->set("URL", OtClassClass::create(OtURLClass::getMeta()));
-		module->set("Router", OtClassClass::create(OtHttpRouterClass::getMeta()));
-		module->set("Server", OtClassClass::create(OtHttpServerClass::getMeta()));
+		module->set("Http", OtClass::create(OtHttpClass::getMeta()));
+		module->set("URL", OtClass::create(OtURLClass::getMeta()));
+		module->set("Router", OtClass::create(OtHttpRouterClass::getMeta()));
+		module->set("Server", OtClass::create(OtHttpServerClass::getMeta()));
 	});
 }
 

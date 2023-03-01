@@ -24,7 +24,7 @@
 //
 
 class OtTorusGeometryClass;
-typedef std::shared_ptr<OtTorusGeometryClass> OtTorusGeometry;
+using OtTorusGeometry = OtObjectPointer<OtTorusGeometryClass>;
 
 class OtTorusGeometryClass : public OtGeometryClass {
 public:

@@ -14,12 +14,12 @@
 
 #include <cstdint>
 #include <functional>
-#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
 
 #include "OtMembers.h"
+#include "OtObjectPointer.h"
 #include "OtType.h"
 
 
@@ -28,7 +28,7 @@
 //
 
 class OtClassClass;
-typedef std::shared_ptr<OtClassClass> OtClass;
+using OtClass = OtObjectPointer<OtClassClass>;
 
 
 //
@@ -36,9 +36,9 @@ typedef std::shared_ptr<OtClassClass> OtClass;
 //
 
 class OtObjectClass;
-typedef std::shared_ptr<OtObjectClass> OtObject;
+using OtObject = OtObjectPointer<OtObjectClass>;
 
-class OtObjectClass : public std::enable_shared_from_this<OtObjectClass> {
+class OtObjectClass {
 public:
 	// destructor
 	virtual ~OtObjectClass();
@@ -61,20 +61,13 @@ public:
 	virtual operator float() { return 0.0; }
 	virtual operator double() { return 0.0; }
 	virtual operator std::string() { return ""; }
-	virtual operator OtObject() { return shared_from_this(); }
+	virtual operator OtObject() { return OtObject(this); }
 
 	// get object's JSON representation
 	virtual std::string json() { return operator std::string(); }
 
 	// describe object for debugging purposes
 	virtual std::string describe();
-
-	// get shared pointer
-	OtObject shared() { return shared_from_this(); }
-
-	// get casted shared pointer
-	template <typename CLASS>
-	std::shared_ptr<CLASS> cast() { return std::dynamic_pointer_cast<CLASS>(shared_from_this()); }
 
 	// member acccess
 	virtual bool has(size_t selector);
@@ -105,7 +98,7 @@ public:
 	virtual OtObject operator () (size_t, OtObject*) { return nullptr; }
 
 	// get an object's class
-	OtClass getClass();
+	OtObject getClass();
 
 	// support observer pattern through callbacks
 	size_t attach(std::function<void(void)> callback);
@@ -115,12 +108,13 @@ public:
 	// get type definition
 	static OtType getMeta();
 
-	// create a new object
-	static OtObject create();
-
 protected:
 	// object type
 	OtType type;
+
+	// reference count
+	size_t referenceCount{0};
+	template <typename T> friend class OtObjectPointer;
 
 	// members
 	OtMembers* members = nullptr;

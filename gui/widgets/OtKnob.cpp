@@ -59,7 +59,7 @@ OtObject OtKnobClass::setTexture(const std::string& textureName) {
 	texture.loadFromFile(textureName);
 	width = texture.getWidth();
 	height = texture.getHeight();
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -69,7 +69,7 @@ OtObject OtKnobClass::setTexture(const std::string& textureName) {
 
 OtObject OtKnobClass::setMargin(int m) {
 	margin = m;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -79,7 +79,7 @@ OtObject OtKnobClass::setMargin(int m) {
 
 OtObject OtKnobClass::setLabel(const std::string& l) {
 	label = l;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -90,7 +90,7 @@ OtObject OtKnobClass::setLabel(const std::string& l) {
 OtObject OtKnobClass::setCallback(OtObject cb) {
 	OtCallbackValidate(cb, 1);
 	callback = cb;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -175,27 +175,16 @@ OtType OtKnobClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtKnobClass>("Knob", OtWidgetClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtKnobClass::init));
+		type->set("__init__", OtFunction::create(&OtKnobClass::init));
 
-		type->set("setTexture", OtFunctionClass::create(&OtKnobClass::setTexture));
-		type->set("setMargin", OtFunctionClass::create(&OtKnobClass::setMargin));
-		type->set("setLabel", OtFunctionClass::create(&OtKnobClass::setLabel));
-		type->set("setCallback", OtFunctionClass::create(&OtKnobClass::setCallback));
+		type->set("setTexture", OtFunction::create(&OtKnobClass::setTexture));
+		type->set("setMargin", OtFunction::create(&OtKnobClass::setMargin));
+		type->set("setLabel", OtFunction::create(&OtKnobClass::setLabel));
+		type->set("setCallback", OtFunction::create(&OtKnobClass::setCallback));
 
-		type->set("setValue", OtFunctionClass::create(&OtKnobClass::setValue));
-		type->set("getValue", OtFunctionClass::create(&OtKnobClass::getValue));
+		type->set("setValue", OtFunction::create(&OtKnobClass::setValue));
+		type->set("getValue", OtFunction::create(&OtKnobClass::getValue));
 	}
 
 	return type;
-}
-
-
-//
-//	OtKnobClass::create
-//
-
-OtKnob OtKnobClass::create() {
-	OtKnob knob = std::make_shared<OtKnobClass>();
-	knob->setType(getMeta());
-	return knob;
 }

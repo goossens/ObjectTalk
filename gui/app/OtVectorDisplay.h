@@ -33,7 +33,7 @@
 //
 
 class OtVectorDisplayClass;
-typedef std::shared_ptr<OtVectorDisplayClass> OtVectorDisplay;
+using OtVectorDisplay = OtObjectPointer<OtVectorDisplayClass>;
 
 class OtVectorDisplayClass : public OtAppObjectClass {
 public:
@@ -97,9 +97,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtVectorDisplay create();
 
 private:
 	// draw a series of connected line segments

@@ -57,7 +57,7 @@ OtWaterClass::OtWaterClass() {
 
 OtObject OtWaterClass::setSize(int s) {
 	size = s;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -71,7 +71,7 @@ OtObject OtWaterClass::setNormalMap(const std::string& normalsName) {
 	}
 
 	normals.loadFromFile(normalsName);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -81,7 +81,7 @@ OtObject OtWaterClass::setNormalMap(const std::string& normalsName) {
 
 OtObject OtWaterClass::setNormalScale(float s) {
 	scale = s;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -198,21 +198,10 @@ OtType OtWaterClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtWaterClass>("Water", OtObject3dClass::getMeta());
-		type->set("setSize", OtFunctionClass::create(&OtWaterClass::setSize));
-		type->set("setNormalMap", OtFunctionClass::create(&OtWaterClass::setNormalMap));
-		type->set("setNormalScale", OtFunctionClass::create(&OtWaterClass::setNormalScale));
+		type->set("setSize", OtFunction::create(&OtWaterClass::setSize));
+		type->set("setNormalMap", OtFunction::create(&OtWaterClass::setNormalMap));
+		type->set("setNormalScale", OtFunction::create(&OtWaterClass::setNormalScale));
 	}
 
 	return type;
-}
-
-
-//
-//	OtWaterClass::create
-//
-
-OtWater OtWaterClass::create() {
-	OtWater water = std::make_shared<OtWaterClass>();
-	water->setType(getMeta());
-	return water;
 }

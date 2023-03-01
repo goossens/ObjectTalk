@@ -54,19 +54,8 @@ OtType OtIntegerSliderClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtIntegerSliderClass>("IntegerSlider", OtWidgetClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtIntegerSliderClass::init));
+		type->set("__init__", OtFunction::create(&OtIntegerSliderClass::init));
 	}
 
 	return type;
-}
-
-
-//
-//	OtIntegerSliderClass::create
-//
-
-OtIntegerSlider OtIntegerSliderClass::create() {
-	OtIntegerSlider slider = std::make_shared<OtIntegerSliderClass>();
-	slider->setType(getMeta());
-	return slider;
 }

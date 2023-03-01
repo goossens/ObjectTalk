@@ -32,7 +32,6 @@
 #include "OtIO.h"
 #include "OtOS.h"
 #include "OtFS.h"
-#include "OtWorker.h"
 
 #include "OtStream.h"
 #include "OtCout.h"
@@ -52,52 +51,52 @@
 
 OtGlobalClass::OtGlobalClass() {
 	// add default constants
-	set("null", OtObjectClass::create());
-	set("true", OtBooleanClass::create(true));
-	set("false", OtBooleanClass::create(false));
-	set("pi", OtRealClass::create(std::numbers::pi));
-	set("e", OtRealClass::create(std::numbers::e));
+	set("null", OtObject::create());
+	set("true", OtBoolean::create(true));
+	set("false", OtBoolean::create(false));
+	set("pi", OtReal::create(std::numbers::pi));
+	set("e", OtReal::create(std::numbers::e));
 
 	// add default functions
-	set("assert", OtFunctionClass::create(&OtGlobalClass::doAssert));
-	set("range", OtFunctionClass::create(&OtGlobalClass::range));
-	set("import", OtFunctionClass::create(&OtGlobalClass::import));
-	set("print", OtFunctionClass::create(&OtGlobalClass::print));
-	set("super", OtFunctionClass::create(&OtGlobalClass::super));
-	set("members", OtFunctionClass::create(&OtGlobalClass::members));
+	set("assert", OtFunction::create(&OtGlobalClass::doAssert));
+	set("range", OtFunction::create(&OtGlobalClass::range));
+	set("import", OtFunction::create(&OtGlobalClass::import));
+	set("print", OtFunction::create(&OtGlobalClass::print));
+	set("super", OtFunction::create(&OtGlobalClass::super));
+	set("members", OtFunction::create(&OtGlobalClass::members));
 
 	// add default classes
-	set("Object", OtClassClass::create(OtObjectClass::getMeta()));
+	set("Object", OtClass::create(OtObjectClass::getMeta()));
 
-	set("Primitive", OtClassClass::create(OtPrimitiveClass::getMeta()));
-	set("Boolean", OtClassClass::create(OtBooleanClass::getMeta()));
-	set("Integer", OtClassClass::create(OtIntegerClass::getMeta()));
-	set("Real", OtClassClass::create(OtRealClass::getMeta()));
-	set("String", OtClassClass::create(OtStringClass::getMeta()));
-	set("Function", OtClassClass::create(OtFunctionClass::getMeta()));
+	set("Primitive", OtClass::create(OtPrimitiveClass::getMeta()));
+	set("Boolean", OtClass::create(OtBooleanClass::getMeta()));
+	set("Integer", OtClass::create(OtIntegerClass::getMeta()));
+	set("Real", OtClass::create(OtRealClass::getMeta()));
+	set("String", OtClass::create(OtStringClass::getMeta()));
+	set("Function", OtClass::create(OtFunctionClass::getMeta()));
 
-	set("Collection", OtClassClass::create(OtCollectionClass::getMeta()));
-	set("Array", OtClassClass::create(OtArrayClass::getMeta()));
-	set("Dict", OtClassClass::create(OtDictClass::getMeta()));
-	set("Set", OtClassClass::create(OtSetClass::getMeta()));
+	set("Collection", OtClass::create(OtCollectionClass::getMeta()));
+	set("Array", OtClass::create(OtArrayClass::getMeta()));
+	set("Dict", OtClass::create(OtDictClass::getMeta()));
+	set("Set", OtClass::create(OtSetClass::getMeta()));
 
-	set("System", OtClassClass::create(OtSystemClass::getMeta()));
-	set("Path", OtClassClass::create(OtPathClass::getMeta()));
-	set("IO", OtClassClass::create(OtIOClass::getMeta()));
-	set("OS", OtClassClass::create(OtOSClass::getMeta()));
-	set("FS", OtClassClass::create(OtFSClass::getMeta()));
-	set("Worker", OtClassClass::create(OtWorkerClass::getMeta()));
+	set("System", OtClass::create(OtSystemClass::getMeta()));
+	set("Path", OtClass::create(OtPathClass::getMeta()));
+	set("IO", OtClass::create(OtIOClass::getMeta()));
+	set("OS", OtClass::create(OtOSClass::getMeta()));
+	set("FS", OtClass::create(OtFSClass::getMeta()));
 
-	set("Stream", OtClassClass::create(OtStreamClass::getMeta()));
-	set("Cout", OtClassClass::create(OtCoutClass::getMeta()));
-	set("Cerr", OtClassClass::create(OtCerrClass::getMeta()));
+	set("Stream", OtClass::create(OtStreamClass::getMeta()));
+	set("Cout", OtClass::create(OtCoutClass::getMeta()));
+	set("Cerr", OtClass::create(OtCerrClass::getMeta()));
 
 	// add default class instances
-	set("io", OtIOClass::create());
-	set("os", OtOSClass::create());
-	set("fs", OtFSClass::create());
+	set("io", OtIO::create());
+	set("os", OtOS::create());
+	set("fs", OtFS::create());
 
-	set("cout", OtCoutClass::create());
+	set("cout", OtCout::create());
+	set("cerr", OtCerr::create());
 }
 
 
@@ -159,7 +158,7 @@ OtObject OtGlobalClass::range(size_t count, OtObject* parameters) {
 		OtExcept("Reverse ranges must have negative increments");
 	}
 
-	return OtRangeIteratorClass::create(from, to, increment);
+	return OtRangeIterator::create(from, to, increment);
 }
 
 
@@ -169,10 +168,10 @@ OtObject OtGlobalClass::range(size_t count, OtObject* parameters) {
 
 void OtGlobalClass::print(size_t count, OtObject* parameters) {
 	for (size_t i = 0; i < count; i++) {
-		OtCoutClass::instance()->write(parameters[i]->operator std::string());
+		std::cout << parameters[i]->operator std::string();
 	}
 
-	OtCoutClass::instance()->write("\n");
+	std::cout << std::endl;
 }
 
 
@@ -215,17 +214,17 @@ OtObject OtGlobalClass::super(size_t count, OtObject* parameters) {
 //
 
 OtObject OtGlobalClass::members(OtObject object) {
-	OtArray array = OtArrayClass::create();
+	OtArray array = OtArray::create();
 
 	// special treatment for class objects
 	if (object->isKindOf("Class")) {
-		for (auto& name : object->cast<OtClassClass>()->getClassType()->getMemberNames()) {
-			array->append(OtStringClass::create(name));
+		for (auto& name : OtClass(object)->getClassType()->getMemberNames()) {
+			array->append(OtString::create(name));
 		}
 
 	} else if (object->hasMembers()) {
 		for (auto& name : object->getMemberNames()) {
-			array->append(OtStringClass::create(name));
+			array->append(OtString::create(name));
 		}
 	}
 
@@ -246,15 +245,4 @@ OtType OtGlobalClass::getMeta() {
 	}
 
 	return type;
-}
-
-
-//
-//	OtGlobalClass::create
-//
-
-OtGlobal OtGlobalClass::create() {
-	OtGlobal module = std::make_shared<OtGlobalClass>();
-	module->setType(getMeta());
-	return module;
 }

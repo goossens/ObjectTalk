@@ -22,8 +22,8 @@
 
 OtHttpSessionClass::OtHttpSessionClass(uv_stream_t* stream, OtHttpRouter r) : router(r) {
 	// setup request/response objects
-	request = OtHttpRequestClass::create();
-	response = OtHttpResponseClass::create();
+	request = OtHttpRequest::create();
+	response = OtHttpResponse::create();
 
 	// setup parser settings
 	llhttp_settings_init(&settings);
@@ -167,7 +167,7 @@ void OtHttpSessionClass::onMessageComplete() {
 	}
 
 	// dispatch request
-	router->call(request, response, OtHttpNotFoundClass::create(response));
+	router->call(request, response, OtHttpNotFound::create(response));
 
 	// track last reuest time
 	lastRequest = uv_now(uv_default_loop());
@@ -215,15 +215,4 @@ OtType OtHttpSessionClass::getMeta() {
 	}
 
 	return type;
-}
-
-
-//
-//	OtHttpSessionClass::create
-//
-
-OtHttpSession OtHttpSessionClass::create(uv_stream_t* stream, OtHttpRouter router) {
-	OtHttpSession session = std::make_shared<OtHttpSessionClass>(stream, router);
-	session->setType(getMeta());
-	return session;
 }

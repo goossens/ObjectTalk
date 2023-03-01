@@ -87,7 +87,7 @@ OtObject OtFontClass::setFont(const std::string& file) {
 		OtExcept("Can't process font [%s]", file.c_str());
 	}
 
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -97,7 +97,7 @@ OtObject OtFontClass::setFont(const std::string& file) {
 
 OtObject OtFontClass::setSize(float s) {
 	size = s;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -194,24 +194,13 @@ OtType OtFontClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtFontClass>("Font", OtGuiClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtFontClass::init));
+		type->set("__init__", OtFunction::create(&OtFontClass::init));
 
-		type->set("setFont", OtFunctionClass::create(&OtFontClass::setFont));
-		type->set("setSize", OtFunctionClass::create(&OtFontClass::setSize));
+		type->set("setFont", OtFunction::create(&OtFontClass::setFont));
+		type->set("setSize", OtFunction::create(&OtFontClass::setSize));
 
-		type->set("getWidth", OtFunctionClass::create(&OtFontClass::getWidth));
+		type->set("getWidth", OtFunction::create(&OtFontClass::getWidth));
 	}
 
 	return type;
-}
-
-
-//
-//	OtFontClass::create
-//
-
-OtFont OtFontClass::create() {
-	OtFont font = std::make_shared<OtFontClass>();
-	font->setType(getMeta());
-	return font;
 }

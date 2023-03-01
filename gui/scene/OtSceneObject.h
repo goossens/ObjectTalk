@@ -22,14 +22,14 @@
 //
 
 class OtSceneObjectClass;
-typedef std::shared_ptr<OtSceneObjectClass> OtSceneObject;
+using OtSceneObject = OtObjectPointer<OtSceneObjectClass>;
 
 class OtSceneObjectClass : public OtNodeClass {
 public:
 	// access shadow flags
-	virtual OtObject castShadow(bool flag) { castShadowFlag = flag; return shared(); }
+	virtual OtObject castShadow(bool flag) { castShadowFlag = flag; return OtObject(this); }
 	bool castsShadow() { return castShadowFlag; }
-	virtual OtObject receiveShadow(bool flag) { receiveShadowFlag = flag; return shared(); }
+	virtual OtObject receiveShadow(bool flag) { receiveShadowFlag = flag; return OtObject(this); }
 	bool receivesShadow() { return receiveShadowFlag; }
 
 	// pre-render any content that is required for the rendering phase (e.g shadows and reflections)

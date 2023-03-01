@@ -71,7 +71,7 @@ void OtDirectionalLightClass::init(size_t count, OtObject* parameters) {
 
 OtObject OtDirectionalLightClass::setDirection(float x, float y, float z) {
 	direction = glm::vec3(x, y, z);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -81,7 +81,7 @@ OtObject OtDirectionalLightClass::setDirection(float x, float y, float z) {
 
 OtObject OtDirectionalLightClass::setColor(const std::string& name) {
 	color = OtColorParseToVec3(name);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -91,7 +91,7 @@ OtObject OtDirectionalLightClass::setColor(const std::string& name) {
 
 OtObject OtDirectionalLightClass::setColorRGB(float r, float g, float b) {
 	color = glm::vec3(r, g, b);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -154,26 +154,15 @@ OtType OtDirectionalLightClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtDirectionalLightClass>("DirectionalLight", OtLightClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtDirectionalLightClass::init));
+		type->set("__init__", OtFunction::create(&OtDirectionalLightClass::init));
 
-		type->set("setDirection", OtFunctionClass::create(&OtDirectionalLightClass::setDirection));
-		type->set("setColor", OtFunctionClass::create(&OtDirectionalLightClass::setColor));
-		type->set("setColorRGB", OtFunctionClass::create(&OtDirectionalLightClass::setColorRGB));
+		type->set("setDirection", OtFunction::create(&OtDirectionalLightClass::setDirection));
+		type->set("setColor", OtFunction::create(&OtDirectionalLightClass::setColor));
+		type->set("setColorRGB", OtFunction::create(&OtDirectionalLightClass::setColorRGB));
 
-		type->set("castShadow", OtFunctionClass::create(&OtDirectionalLightClass::castShadow));
-		type->set("castsShadow", OtFunctionClass::create(&OtDirectionalLightClass::castsShadow));
+		type->set("castShadow", OtFunction::create(&OtDirectionalLightClass::castShadow));
+		type->set("castsShadow", OtFunction::create(&OtDirectionalLightClass::castsShadow));
 	}
 
 	return type;
-}
-
-
-//
-//	OtDirectionalLightClass::create
-//
-
-OtDirectionalLight OtDirectionalLightClass::create() {
-	OtDirectionalLight ambient = std::make_shared<OtDirectionalLightClass>();
-	ambient->setType(getMeta());
-	return ambient;
 }

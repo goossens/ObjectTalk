@@ -24,7 +24,7 @@
 //
 
 class OtIcosahedronGeometryClass;
-typedef std::shared_ptr<OtIcosahedronGeometryClass> OtIcosahedronGeometry;
+using OtIcosahedronGeometry = OtObjectPointer<OtIcosahedronGeometryClass>;
 
 class OtIcosahedronGeometryClass : public OtPolyhedronGeometryClass {
 public:
@@ -46,9 +46,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtIcosahedronGeometry create();
 
 private:
 };

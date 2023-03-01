@@ -21,7 +21,7 @@
 //
 
 class OtLightClass;
-typedef std::shared_ptr<OtLightClass> OtLight;
+using OtLight = OtObjectPointer<OtLightClass>;
 
 class OtLightClass : public OtSceneObjectClass {
 public:

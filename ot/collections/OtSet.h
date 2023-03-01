@@ -22,12 +22,16 @@
 //
 
 class OtSetClass;
-typedef std::shared_ptr<OtSetClass> OtSet;
+using OtSet = OtObjectPointer<OtSetClass>;
 
 class OtSetClass : public OtCollectionClass {
 	friend class OtSetIteratorClass;
 
 public:
+	// constructors
+	OtSetClass() = default;
+	OtSetClass(OtObject* objects, size_t count);
+
 	// convert set to string
 	operator std::string() override;
 
@@ -75,10 +79,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new set
-	static OtSet create();
-	static OtSet create(size_t count, OtObject* objects);
 
 private:
 	std::set<OtObject> set;

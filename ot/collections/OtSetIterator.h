@@ -23,7 +23,7 @@
 //
 
 class OtSetIteratorClass;
-typedef std::shared_ptr<OtSetIteratorClass> OtSetIterator;
+using OtSetIterator = OtObjectPointer<OtSetIteratorClass>;
 
 class OtSetIteratorClass : public OtIteratorClass {
 public:
@@ -40,9 +40,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtSetIterator create(OtSet set);
 
 private:
 	OtSet set;

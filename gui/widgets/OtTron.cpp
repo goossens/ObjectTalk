@@ -335,14 +335,3 @@ OtType OtTronClass::getMeta() {
 
 	return type;
 }
-
-
-//
-//	OtTronClass::create
-//
-
-OtTron OtTronClass::create() {
-	OtTron tron = std::make_shared<OtTronClass>();
-	tron->setType(getMeta());
-	return tron;
-}

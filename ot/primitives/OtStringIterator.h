@@ -24,7 +24,7 @@
 //
 
 class OtStringIteratorClass;
-typedef std::shared_ptr<OtStringIteratorClass> OtStringIterator;
+using OtStringIterator = OtObjectPointer<OtStringIteratorClass>;
 
 class OtStringIteratorClass : public OtIteratorClass {
 public:
@@ -50,9 +50,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtStringIterator create(OtString string);
 
 private:
 	std::string::const_iterator pos;

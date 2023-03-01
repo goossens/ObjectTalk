@@ -28,7 +28,7 @@
 //
 
 class OtTexturedMaterialClass;
-typedef std::shared_ptr<OtTexturedMaterialClass> OtTexturedMaterial;
+using OtTexturedMaterial = OtObjectPointer<OtTexturedMaterialClass>;
 
 class OtTexturedMaterialClass : public OtMaterialClass {
 public:
@@ -55,9 +55,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtTexturedMaterial create();
 
 private:
 	// properties

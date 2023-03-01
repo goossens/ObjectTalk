@@ -47,7 +47,7 @@ OtObject OtPanelClass::setScreenArea(int _x, int _y, int _w, int _h) {
 	y = _y;
 	w = _w;
 	h = _h;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -70,8 +70,8 @@ void OtPanelClass::render() {
 	size_t offset = 0;
 
 	// take menubar into account if there is one
-	if (getParent()) {
-		offset = getParent()->cast<OtAppClass>()->getMenubarHeight();
+	if (hasParent()) {
+		offset = OtApp(getParent())->getMenubarHeight();
 	}
 
 	// frame height
@@ -114,20 +114,9 @@ OtType OtPanelClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtPanelClass>("Panel", OtAppObjectClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtPanelClass::init));
-		type->set("setScreenArea", OtFunctionClass::create(&OtPanelClass::setScreenArea));
+		type->set("__init__", OtFunction::create(&OtPanelClass::init));
+		type->set("setScreenArea", OtFunction::create(&OtPanelClass::setScreenArea));
 	}
 
 	return type;
-}
-
-
-//
-//	OtPanelClass::create
-//
-
-OtPanel OtPanelClass::create() {
-	OtPanel panel = std::make_shared<OtPanelClass>();
-	panel->setType(getMeta());
-	return panel;
 }

@@ -20,7 +20,7 @@
 //
 
 class OtHttpClass;
-typedef std::shared_ptr<OtHttpClass> OtHttp;
+using OtHttp = OtObjectPointer<OtHttpClass>;
 
 class OtHttpClass : public OtObjectClass {
 public:

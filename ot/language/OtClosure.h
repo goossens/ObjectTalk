@@ -24,7 +24,7 @@
 //
 
 class OtClosureClass;
-typedef std::shared_ptr<OtClosureClass> OtClosure;
+using OtClosure = OtObjectPointer<OtClosureClass>;
 
 class OtClosureClass : public OtInternalClass {
 public:
@@ -43,9 +43,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtClosure create(OtByteCodeFunction function, const std::unordered_map<std::string, OtStackItem>& captures);
 
 private:
 	OtByteCodeFunction function;

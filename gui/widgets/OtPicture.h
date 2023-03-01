@@ -21,7 +21,7 @@
 //
 
 class OtPictureClass;
-typedef std::shared_ptr<OtPictureClass> OtPicture;
+using OtPicture = OtObjectPointer<OtPictureClass>;
 
 class OtPictureClass : public OtWidgetClass {
 public:
@@ -39,9 +39,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtPicture create();
 
 private:
 	// properties

@@ -25,7 +25,7 @@
 //
 
 class OtSkyboxClass;
-typedef std::shared_ptr<OtSkyboxClass> OtSkybox;
+using OtSkybox = OtObjectPointer<OtSkyboxClass>;
 
 class OtSkyboxClass : public OtSceneObjectClass {
 public:
@@ -43,9 +43,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtSkybox create();
 
 protected:
 	// GPU assets

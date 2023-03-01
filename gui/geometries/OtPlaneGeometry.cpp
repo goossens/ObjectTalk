@@ -67,7 +67,7 @@ void OtPlaneGeometryClass::init(size_t count, OtObject* parameters) {
 OtObject OtPlaneGeometryClass::setWidth(float w) {
 	width = w;
 	refreshGeometry = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -78,7 +78,7 @@ OtObject OtPlaneGeometryClass::setWidth(float w) {
 OtObject OtPlaneGeometryClass::setHeight(float h) {
 	height = h;
 	refreshGeometry = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -89,7 +89,7 @@ OtObject OtPlaneGeometryClass::setHeight(float h) {
 OtObject OtPlaneGeometryClass::setWidthSegments(int ws) {
 	widthSegments = ws;
 	refreshGeometry = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -100,7 +100,7 @@ OtObject OtPlaneGeometryClass::setWidthSegments(int ws) {
 OtObject OtPlaneGeometryClass::setHeightSegments(int hs) {
 	heightSegments = hs;
 	refreshGeometry = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -124,14 +124,14 @@ OtObject OtPlaneGeometryClass::setHeightMap(OtObject object) {
 	}
 
 	// set new heightmap
-	heightmap = object->cast<OtHeightMapClass>();
+	heightmap = OtHeightMap(object);
 	refreshGeometry = true;
 
 	heightmapID = heightmap->attach([this]() {
 		refreshGeometry = true;
 	});
 
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -155,7 +155,7 @@ OtObject OtPlaneGeometryClass::setNoiseMap(OtObject object, int xo, int yo) {
 	}
 
 	// set new noisemap
-	noisemap = object->cast<OtNoiseMapClass>();
+	noisemap = OtNoiseMap(object);
 	refreshGeometry = true;
 
 	noisemapID = noisemap->attach([this]() {
@@ -165,7 +165,7 @@ OtObject OtPlaneGeometryClass::setNoiseMap(OtObject object, int xo, int yo) {
 	xoffset = xo;
 	yoffset = yo;
 
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -287,25 +287,14 @@ OtType OtPlaneGeometryClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtPlaneGeometryClass>("PlaneGeometry", OtGeometryClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtPlaneGeometryClass::init));
-		type->set("setWidth", OtFunctionClass::create(&OtPlaneGeometryClass::setWidth));
-		type->set("setHeight", OtFunctionClass::create(&OtPlaneGeometryClass::setHeight));
-		type->set("setWidthSegments", OtFunctionClass::create(&OtPlaneGeometryClass::setWidthSegments));
-		type->set("setHeightSegments", OtFunctionClass::create(&OtPlaneGeometryClass::setHeightSegments));
-		type->set("setHeightMap", OtFunctionClass::create(&OtPlaneGeometryClass::setHeightMap));
-		type->set("setNoiseMap", OtFunctionClass::create(&OtPlaneGeometryClass::setNoiseMap));
+		type->set("__init__", OtFunction::create(&OtPlaneGeometryClass::init));
+		type->set("setWidth", OtFunction::create(&OtPlaneGeometryClass::setWidth));
+		type->set("setHeight", OtFunction::create(&OtPlaneGeometryClass::setHeight));
+		type->set("setWidthSegments", OtFunction::create(&OtPlaneGeometryClass::setWidthSegments));
+		type->set("setHeightSegments", OtFunction::create(&OtPlaneGeometryClass::setHeightSegments));
+		type->set("setHeightMap", OtFunction::create(&OtPlaneGeometryClass::setHeightMap));
+		type->set("setNoiseMap", OtFunction::create(&OtPlaneGeometryClass::setNoiseMap));
 	}
 
 	return type;
-}
-
-
-//
-//	OtPlaneGeometryClass::create
-//
-
-OtPlaneGeometry OtPlaneGeometryClass::create() {
-	OtPlaneGeometry planegeometry = std::make_shared<OtPlaneGeometryClass>();
-	planegeometry->setType(getMeta());
-	return planegeometry;
 }

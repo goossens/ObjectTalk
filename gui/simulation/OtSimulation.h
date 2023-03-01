@@ -20,13 +20,13 @@
 //
 
 class OtSimulationClass;
-typedef std::shared_ptr<OtSimulationClass> OtSimulation;
+using OtSimulation = OtObjectPointer<OtSimulationClass>;
 
 class OtSimulationClass : public OtGuiClass {
 public:
 	// start stop simulation
-	OtObject start() { running = true; return shared(); }
-	OtObject stop() { running = false; return shared(); }
+	OtObject start() { running = true; return OtObject(this); }
+	OtObject stop() { running = false; return OtObject(this); }
 	bool isRunning() { return running; }
 
 	// perform simulation step

@@ -56,10 +56,10 @@ void OtClothClass::init(size_t count, OtObject* parameters) {
 
 OtObject OtClothClass::setPlane(OtObject object) {
 	object->expectKindOf("PlaneGeometry");
-	plane = object->cast<OtPlaneGeometryClass>();
+	plane = OtPlaneGeometry(object);
 	particles.clear();
 	constraints.clear();
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -69,7 +69,7 @@ OtObject OtClothClass::setPlane(OtObject object) {
 
 OtObject OtClothClass::setPins(int p) {
 	pins = p < 1 ? 1 : p;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -210,21 +210,10 @@ OtType OtClothClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtClothClass>("Cloth", OtSimulationClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtClothClass::init));
-		type->set("setPlane", OtFunctionClass::create(&OtClothClass::setPlane));
-		type->set("setPins", OtFunctionClass::create(&OtClothClass::setPins));
+		type->set("__init__", OtFunction::create(&OtClothClass::init));
+		type->set("setPlane", OtFunction::create(&OtClothClass::setPlane));
+		type->set("setPins", OtFunction::create(&OtClothClass::setPins));
 	}
 
 	return type;
-}
-
-
-//
-//	OtClothClass::create
-//
-
-OtCloth OtClothClass::create() {
-	OtCloth cloth = std::make_shared<OtClothClass>();
-	cloth->setType(getMeta());
-	return cloth;
 }

@@ -91,14 +91,14 @@ void OtRenderer::run(OtScene s, OtCamera c, float x, float y, float w, float h) 
 	// get all light properties
 	scene->iterate([this] (OtNode node) {
 		if (node->isKindOf("Light") && node->isEnabled()) {
-			node->cast<OtLightClass>()->addPropertiesToRenderer(*this);
+			OtLight(node)->addPropertiesToRenderer(*this);
 		}
 	});
 
 	// pre-render all scene components
 	scene->iterate([this] (OtNode node) {
 		if (node->isEnabled()) {
-			node->cast<OtSceneObjectClass>()->preRender(*this);
+			OtSceneObject(node)->preRender(*this);
 		}
 	});
 
@@ -110,7 +110,7 @@ void OtRenderer::run(OtScene s, OtCamera c, float x, float y, float w, float h) 
 	// render scene
 	scene->iterate([this] (OtNode node) {
 		if (node->isEnabled()) {
-			node->cast<OtSceneObjectClass>()->render(*this);
+			OtSceneObject(node)->render(*this);
 		}
 	});
 }
@@ -140,7 +140,7 @@ void OtRenderer::runShadowPass(OtScene s, OtCamera c, OtFrameBuffer& framebuffer
 	// render shadow
 	scene->iterate([this] (OtNode node) {
 		if (node->isEnabled()) {
-			node->cast<OtSceneObjectClass>()->render(*this);
+			OtSceneObject(node)->render(*this);
 		}
 	});
 
@@ -174,7 +174,7 @@ void OtRenderer::runReflectionPass(OtScene s, OtCamera c, OtFrameBuffer& framebu
 	// render reflection
 	scene->iterate([this] (OtNode node) {
 		if (node->isEnabled()) {
-		node->cast<OtSceneObjectClass>()->render(*this);
+		OtSceneObject(node)->render(*this);
 		}
 	});
 
@@ -208,7 +208,7 @@ void OtRenderer::runDebugPass(OtCamera debugCamera, OtScene s, OtCamera viewCame
 	// render scene
 	scene->iterate([this] (OtNode node) {
 		if (node->isEnabled()) {
-			node->cast<OtSceneObjectClass>()->render(*this);
+			OtSceneObject(node)->render(*this);
 		}
 	});
 
@@ -300,6 +300,24 @@ void OtRenderer::setInstanceData(void* data, size_t count, size_t size) {
 	bgfx::allocInstanceDataBuffer(&idb, (uint32_t) count, (uint16_t) size);
 	std::memcpy(idb.data, data, idb.size);
 	bgfx::setInstanceDataBuffer(&idb);
+}
+
+
+//
+//	OtRenderer::setScene
+//
+
+void OtRenderer::setScene(OtScene s) {
+	scene = s;
+}
+
+
+//
+//	OtRenderer::getScene
+//
+
+OtScene OtRenderer::getScene() {
+	return scene;
 }
 
 
@@ -589,7 +607,7 @@ void OtRenderer::debugRenderCamera(OtCamera camera, bool frustum) {
 		debugRenderFrustum(camera->getFrustum());
 	}
 
-	auto cone = OtCylinderGeometryClass::create();
+	auto cone = OtCylinderGeometry::create();
 	cone->setTopRadius(0.0);
 	cone->setBottomRadius(1.0);
 	cone->setHeight(1.0);

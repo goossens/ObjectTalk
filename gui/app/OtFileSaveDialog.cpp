@@ -52,7 +52,7 @@ void OtFileSaveDialogClass::init(size_t count, OtObject* parameters) {
 
 OtObject OtFileSaveDialogClass::setTitle(const std::string& t) {
 	title = t;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -62,7 +62,7 @@ OtObject OtFileSaveDialogClass::setTitle(const std::string& t) {
 
 OtObject OtFileSaveDialogClass::setTypeFilters(const std::string& f) {
 	filters = f;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -73,7 +73,7 @@ OtObject OtFileSaveDialogClass::setTypeFilters(const std::string& f) {
 OtObject OtFileSaveDialogClass::setCallback(OtObject cb) {
 	OtCallbackValidate(cb, 1);
 	callback = cb;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -83,7 +83,7 @@ OtObject OtFileSaveDialogClass::setCallback(OtObject cb) {
 
 OtObject OtFileSaveDialogClass::setCurrentDirectory(const std::string& p) {
 	path = p;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -115,7 +115,7 @@ void OtFileSaveDialogClass::render() {
 	if (ImGuiFileDialog::Instance()->Display("SaveFileDialog", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
 		// call callback if required
 		if (ImGuiFileDialog::Instance()->IsOk() && callback) {
-			OtVM::instance()->callMemberFunction(callback, "__call__", OtPathClass::create(ImGuiFileDialog::Instance()->GetFilePathName()));
+			OtVM::instance()->callMemberFunction(callback, "__call__", OtPath::create(ImGuiFileDialog::Instance()->GetFilePathName()));
 		}
 
 		// close dialog
@@ -133,26 +133,15 @@ OtType OtFileSaveDialogClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtFileSaveDialogClass>("FileSaveDialog", OtDialogClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtFileSaveDialogClass::init));
+		type->set("__init__", OtFunction::create(&OtFileSaveDialogClass::init));
 
-		type->set("open", OtFunctionClass::create(&OtFileSaveDialogClass::open));
+		type->set("open", OtFunction::create(&OtFileSaveDialogClass::open));
 
-		type->set("setTitle", OtFunctionClass::create(&OtFileSaveDialogClass::setTitle));
-		type->set("setTypeFilters", OtFunctionClass::create(&OtFileSaveDialogClass::setTypeFilters));
-		type->set("setCallback", OtFunctionClass::create(&OtFileSaveDialogClass::setCallback));
-		type->set("setCurrentDirectory", OtFunctionClass::create(&OtFileSaveDialogClass::setCurrentDirectory));
+		type->set("setTitle", OtFunction::create(&OtFileSaveDialogClass::setTitle));
+		type->set("setTypeFilters", OtFunction::create(&OtFileSaveDialogClass::setTypeFilters));
+		type->set("setCallback", OtFunction::create(&OtFileSaveDialogClass::setCallback));
+		type->set("setCurrentDirectory", OtFunction::create(&OtFileSaveDialogClass::setCurrentDirectory));
 	}
 
 	return type;
-}
-
-
-//
-//	OtFileSaveDialogClass::create
-//
-
-OtFileSaveDialog OtFileSaveDialogClass::create() {
-	OtFileSaveDialog dialog = std::make_shared<OtFileSaveDialogClass>();
-	dialog->setType(getMeta());
-	return dialog;
 }

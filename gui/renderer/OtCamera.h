@@ -25,7 +25,7 @@
 //
 
 class OtCameraClass;
-typedef std::shared_ptr<OtCameraClass> OtCamera;
+using OtCamera = OtObjectPointer<OtCameraClass>;
 
 class OtCameraClass : public OtGuiClass {
 public:
@@ -93,7 +93,6 @@ public:
 	static OtType getMeta();
 
 	// create a new object
-	static OtCamera create();
 	static OtCamera create(OtCamera camera);
 
 private:

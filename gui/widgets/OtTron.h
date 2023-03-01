@@ -24,7 +24,7 @@
 //
 
 class OtTronClass;
-typedef std::shared_ptr<OtTronClass> OtTron;
+using OtTron = OtObjectPointer<OtTronClass>;
 
 class OtTronClass : public OtWidgetClass {
 public:
@@ -36,9 +36,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtTron create();
 
 private:
 	// create a new set of arcs

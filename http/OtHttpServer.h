@@ -24,7 +24,7 @@
 //
 
 class OtHttpServerClass;
-typedef std::shared_ptr<OtHttpServerClass> OtHttpServer;
+using OtHttpServer = OtObjectPointer<OtHttpServerClass>;
 
 class OtHttpServerClass : public OtHttpClass {
 public:
@@ -46,9 +46,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtHttpServer create();
 
 private:
 	uv_tcp_t uv_server;

@@ -56,7 +56,7 @@ void OtWorldClass::clear() {
 
 OtObject OtWorldClass::setGravity(float x, float y) {
 	world->SetGravity(b2Vec2(x, y));
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -66,7 +66,7 @@ OtObject OtWorldClass::setGravity(float x, float y) {
 
 OtObject OtWorldClass::allowSleeping(bool sleeping) {
 	world->SetAllowSleeping(sleeping);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -76,7 +76,7 @@ OtObject OtWorldClass::allowSleeping(bool sleeping) {
 
 OtObject OtWorldClass::continuousPhysics(bool continuous) {
 	world->SetContinuousPhysics(continuous);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -87,7 +87,7 @@ OtObject OtWorldClass::continuousPhysics(bool continuous) {
 OtObject OtWorldClass::addBeginContactCallback(OtObject callback) {
 	OtCallbackValidate(callback, 2);
 	beginContactCallback = callback;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -98,7 +98,7 @@ OtObject OtWorldClass::addBeginContactCallback(OtObject callback) {
 OtObject OtWorldClass::addEndContactCallback(OtObject callback) {
 	OtCallbackValidate(callback, 2);
 	endContactCallback = callback;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -119,11 +119,11 @@ OtObject OtWorldClass::addStaticBody(size_t count, OtObject* parameters) {
 
 	if (count) {
 		parameters[0]->expectKindOf("Body");
-		body = parameters[0]->cast<OtBodyClass>();
+		body = OtBody(parameters[0]);
 		body->setBody(b);
 
 	} else {
-		body = OtBodyClass::create(b);
+		body = OtBody::create(b);
 	}
 
 	bodies.push_back(body);
@@ -148,11 +148,11 @@ OtObject OtWorldClass::addKinematicBody(size_t count, OtObject* parameters) {
 
 	if (count) {
 		parameters[0]->expectKindOf("Body");
-		body = parameters[0]->cast<OtBodyClass>();
+		body = OtBody(parameters[0]);
 		body->setBody(b);
 
 	} else {
-		body = OtBodyClass::create(b);
+		body = OtBody::create(b);
 	}
 
 	bodies.push_back(body);
@@ -177,11 +177,11 @@ OtObject OtWorldClass::addDynamicBody(size_t count, OtObject* parameters) {
 
 	if (count) {
 		parameters[0]->expectKindOf("Body");
-		body = parameters[0]->cast<OtBodyClass>();
+		body = OtBody(parameters[0]);
 		body->setBody(b);
 
 	} else {
-		body = OtBodyClass::create(b);
+		body = OtBody::create(b);
 	}
 
 	bodies.push_back(body);
@@ -221,8 +221,8 @@ void OtWorldClass::BeginContact(b2Contact* contact) {
 	if (beginContactCallback) {
 		callbacks.push_back(Callback(
 			beginContactCallback,
-			reinterpret_cast<OtBodyClass*>(contact->GetFixtureA()->GetBody()->GetUserData().pointer)->shared(),
-			reinterpret_cast<OtBodyClass*>(contact->GetFixtureB()->GetBody()->GetUserData().pointer)->shared()));
+			OtBody(reinterpret_cast<OtBodyClass*>(contact->GetFixtureA()->GetBody()->GetUserData().pointer)),
+			OtBody(reinterpret_cast<OtBodyClass*>(contact->GetFixtureB()->GetBody()->GetUserData().pointer))));
 	}
 }
 
@@ -235,8 +235,8 @@ void OtWorldClass::EndContact(b2Contact* contact) {
 	if (endContactCallback) {
 		callbacks.push_back(Callback(
 			endContactCallback,
-			reinterpret_cast<OtBodyClass*>(contact->GetFixtureA()->GetBody()->GetUserData().pointer)->shared(),
-			reinterpret_cast<OtBodyClass*>(contact->GetFixtureB()->GetBody()->GetUserData().pointer)->shared()));
+			OtBody(reinterpret_cast<OtBodyClass*>(contact->GetFixtureA()->GetBody()->GetUserData().pointer)),
+			OtBody(reinterpret_cast<OtBodyClass*>(contact->GetFixtureB()->GetBody()->GetUserData().pointer))));
 	}
 }
 
@@ -250,28 +250,17 @@ OtType OtWorldClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtWorldClass>("World", OtSimulationClass::getMeta());
-		type->set("setGravity", OtFunctionClass::create(&OtWorldClass::setGravity));
-		type->set("allowSleeping", OtFunctionClass::create(&OtWorldClass::allowSleeping));
-		type->set("continuousPhysics", OtFunctionClass::create(&OtWorldClass::continuousPhysics));
+		type->set("setGravity", OtFunction::create(&OtWorldClass::setGravity));
+		type->set("allowSleeping", OtFunction::create(&OtWorldClass::allowSleeping));
+		type->set("continuousPhysics", OtFunction::create(&OtWorldClass::continuousPhysics));
 
-		type->set("addStaticBody", OtFunctionClass::create(&OtWorldClass::addStaticBody));
-		type->set("addKinematicBody", OtFunctionClass::create(&OtWorldClass::addKinematicBody));
-		type->set("addDynamicBody", OtFunctionClass::create(&OtWorldClass::addDynamicBody));
+		type->set("addStaticBody", OtFunction::create(&OtWorldClass::addStaticBody));
+		type->set("addKinematicBody", OtFunction::create(&OtWorldClass::addKinematicBody));
+		type->set("addDynamicBody", OtFunction::create(&OtWorldClass::addDynamicBody));
 
-		type->set("addBeginContactCallback", OtFunctionClass::create(&OtWorldClass::addBeginContactCallback));
-		type->set("addEndContactCallback", OtFunctionClass::create(&OtWorldClass::addEndContactCallback));
+		type->set("addBeginContactCallback", OtFunction::create(&OtWorldClass::addBeginContactCallback));
+		type->set("addEndContactCallback", OtFunction::create(&OtWorldClass::addEndContactCallback));
 	}
 
 	return type;
-}
-
-
-//
-//	OtWorldClass::create
-//
-
-OtWorld OtWorldClass::create() {
-	OtWorld world = std::make_shared<OtWorldClass>();
-	world->setType(getMeta());
-	return world;
 }

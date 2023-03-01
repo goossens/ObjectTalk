@@ -21,7 +21,7 @@
 //
 
 class OtFogClass;
-typedef std::shared_ptr<OtFogClass> OtFog;
+using OtFog = OtObjectPointer<OtFogClass>;
 
 class OtFogClass : public OtLightClass {
 	friend class OtViewClass;
@@ -40,9 +40,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtFog create();
 
 private:
 	// fog properties

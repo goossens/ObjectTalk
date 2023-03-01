@@ -25,7 +25,7 @@
 
 OtObject OtFogClass::setColor(const std::string& c) {
 	color = OtColorParseToVec3(c);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -36,7 +36,7 @@ OtObject OtFogClass::setColor(const std::string& c) {
 OtObject OtFogClass::setDistances(float n, float f) {
 	near = std::clamp(n, minNear, maxNear);
 	far = std::clamp(f, minFar, maxFar);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -49,7 +49,7 @@ OtObject OtFogClass::setLimits(float mnn, float mxn, float mnf, float mxf) {
 	maxNear = mxn;
 	minFar = mnf;
 	maxFar = mxf;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -83,21 +83,10 @@ OtType OtFogClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtFogClass>("Fog", OtLightClass::getMeta());
-		type->set("setColor", OtFunctionClass::create(&OtFogClass::setColor));
-		type->set("setDistances", OtFunctionClass::create(&OtFogClass::setDistances));
-		type->set("setLimits", OtFunctionClass::create(&OtFogClass::setLimits));
+		type->set("setColor", OtFunction::create(&OtFogClass::setColor));
+		type->set("setDistances", OtFunction::create(&OtFogClass::setDistances));
+		type->set("setLimits", OtFunction::create(&OtFogClass::setLimits));
 	}
 
 	return type;
-}
-
-
-//
-//	OtFogClass::create
-//
-
-OtFog OtFogClass::create() {
-	OtFog fog = std::make_shared<OtFogClass>();
-	fog->setType(getMeta());
-	return fog;
 }

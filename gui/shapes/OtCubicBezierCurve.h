@@ -34,11 +34,6 @@ public:
 		return glm::vec2(cubicBezier(t, p1.x, p2.x, p3.x, p4.x), cubicBezier(t, p1.y, p2.y, p3.y, p4.y));
 	}
 
-	// create a new instance
-	static OtCubicBezierCurve create(const glm::vec2& v1, const glm::vec2& v2, const glm::vec2& v3, const glm::vec2& v4) {
-		return std::make_shared<OtCubicBezierCurveClass>(v1, v2, v3, v4);
-	}
-
 private:
 	glm::vec2 p1, p2, p3, p4;
 
@@ -46,8 +41,8 @@ private:
 		float k = 1 - t;
 
 		return (k * k * k * v1) +
-			(3 * k * k * t * v2) +
-			(3 * k * t * t * v3) +
+			(3.0f * k * k * t * v2) +
+			(3.0f * k * t * t * v3) +
 			(t * t * t * v4);
 	}
 };

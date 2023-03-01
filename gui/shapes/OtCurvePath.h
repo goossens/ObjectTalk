@@ -36,7 +36,7 @@ class OtCurvePathClass : public OtCurveClass {
 public:
 	// constructor
 	OtCurvePathClass() {
-		lengths.push_back(0.0);
+		lengths.push_back(0.0f);
 	}
 
 	// create a path out of segments
@@ -46,17 +46,17 @@ public:
 	}
 
 	void lineTo(const glm::vec2& point){
-		add(OtLineCurveClass::create(currentPoint, point));
+		add(std::make_shared<OtLineCurveClass>(currentPoint, point));
 		currentPoint = point;
 	}
 
 	void quadraticCurveTo(const glm::vec2& control, const glm::vec2& point) {
-		add(OtQuadraticBezierCurveClass::create(currentPoint, control, point));
+		add(std::make_shared<OtQuadraticBezierCurveClass>(currentPoint, control, point));
 		currentPoint = point;
 	}
 
 	void bezierCurveTo(const glm::vec2& control1, const glm::vec2& control2, const glm::vec2& point) {
-		add(OtCubicBezierCurveClass::create(currentPoint, control1, control2, point));
+		add(std::make_shared<OtCubicBezierCurveClass>(currentPoint, control1, control2, point));
 		currentPoint = point;
 	}
 
@@ -68,7 +68,7 @@ public:
 
 	// set path to well known geometries
 	void circle(float x, float y, float radius, bool clockwise=false) {
-		add(OtArcCurveClass::create(glm::vec2(x, y), radius, 0.0, std::numbers::pi2, clockwise));
+		add(std::make_shared<OtArcCurveClass>(glm::vec2(x, y), radius, 0.0f, (float) std::numbers::pi2, clockwise));
 	}
 
 	// get a point on the path at t [0, 1]
@@ -101,11 +101,6 @@ public:
 
 	bool hasSegments() {
 		return curves.size();
-	}
-
-	// create a new instance
-	static OtCurvePath create() {
-		return std::make_shared<OtCurvePathClass>();
 	}
 
 private:

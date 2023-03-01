@@ -99,7 +99,7 @@ OtObject OtVectorDisplayClass::setScreenArea(int _x, int _y, int _w, int _h) {
 	y = _y;
 	w = _w;
 	h = _h;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -411,7 +411,7 @@ void OtVectorDisplayClass::endDraw() {
 
 OtObject OtVectorDisplayClass::setBrightness(float b) {
 	brightness = b;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -423,7 +423,7 @@ OtObject OtVectorDisplayClass::setDecay(int s, float i, float d) {
 	decaySteps = s;
 	decayStart = i;
 	decayValue = d;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -433,7 +433,7 @@ OtObject OtVectorDisplayClass::setDecay(int s, float i, float d) {
 
 OtObject OtVectorDisplayClass::setTopLeftOrigin() {
 	origin = topLeftOrigin;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -443,7 +443,7 @@ OtObject OtVectorDisplayClass::setTopLeftOrigin() {
 
 OtObject OtVectorDisplayClass::setBottomLeftOrigin() {
 	origin = bottomLeftOrigin;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -453,7 +453,7 @@ OtObject OtVectorDisplayClass::setBottomLeftOrigin() {
 
 OtObject OtVectorDisplayClass::setCenterOrigin() {
 	origin = centerOrigin;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -463,7 +463,7 @@ OtObject OtVectorDisplayClass::setCenterOrigin() {
 
 OtObject OtVectorDisplayClass::setColor(const std::string& color) {
 	style.color = OtColorParseToUint32(color);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -474,7 +474,7 @@ OtObject OtVectorDisplayClass::setColor(const std::string& color) {
 OtObject OtVectorDisplayClass::setAlpha(float alpha) {
 	int a = alpha * 255;
 	style.color = (style.color & 0xffffff) | a << 24;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -484,7 +484,7 @@ OtObject OtVectorDisplayClass::setAlpha(float alpha) {
 
 OtObject OtVectorDisplayClass::setWidth(float width) {
 	style.width = width;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -496,7 +496,7 @@ OtObject OtVectorDisplayClass::setTransform(float offsetX, float offsetY, float 
 	style.drawOffsetX = offsetX;
 	style.drawOffsetY = offsetY;
 	style.drawScale   = scale;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -506,7 +506,7 @@ OtObject OtVectorDisplayClass::setTransform(float offsetX, float offsetY, float 
 
 OtObject OtVectorDisplayClass::setCenteredText() {
 	style.centeredText = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -1334,62 +1334,51 @@ OtType OtVectorDisplayClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtVectorDisplayClass>("VectorDisplay", OtAppObjectClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtVectorDisplayClass::init));
+		type->set("__init__", OtFunction::create(&OtVectorDisplayClass::init));
 
-		type->set("setScreenArea", OtFunctionClass::create(&OtVectorDisplayClass::setScreenArea));
-		type->set("setBrightness", OtFunctionClass::create(&OtVectorDisplayClass::setBrightness));
-		type->set("setDecay", OtFunctionClass::create(&OtVectorDisplayClass::setDecay));
-		type->set("setTopLeftOrigin", OtFunctionClass::create(&OtVectorDisplayClass::setTopLeftOrigin));
-		type->set("setBottomLeftOrigin", OtFunctionClass::create(&OtVectorDisplayClass::setBottomLeftOrigin));
-		type->set("setCenterOrigin", OtFunctionClass::create(&OtVectorDisplayClass::setCenterOrigin));
+		type->set("setScreenArea", OtFunction::create(&OtVectorDisplayClass::setScreenArea));
+		type->set("setBrightness", OtFunction::create(&OtVectorDisplayClass::setBrightness));
+		type->set("setDecay", OtFunction::create(&OtVectorDisplayClass::setDecay));
+		type->set("setTopLeftOrigin", OtFunction::create(&OtVectorDisplayClass::setTopLeftOrigin));
+		type->set("setBottomLeftOrigin", OtFunction::create(&OtVectorDisplayClass::setBottomLeftOrigin));
+		type->set("setCenterOrigin", OtFunction::create(&OtVectorDisplayClass::setCenterOrigin));
 
-		type->set("setColor", OtFunctionClass::create(&OtVectorDisplayClass::setColor));
-		type->set("setAlpha", OtFunctionClass::create(&OtVectorDisplayClass::setAlpha));
-		type->set("setWidth", OtFunctionClass::create(&OtVectorDisplayClass::setWidth));
-		type->set("setTransform", OtFunctionClass::create(&OtVectorDisplayClass::setTransform));
-		type->set("setCenteredText", OtFunctionClass::create(&OtVectorDisplayClass::setCenteredText));
+		type->set("setColor", OtFunction::create(&OtVectorDisplayClass::setColor));
+		type->set("setAlpha", OtFunction::create(&OtVectorDisplayClass::setAlpha));
+		type->set("setWidth", OtFunction::create(&OtVectorDisplayClass::setWidth));
+		type->set("setTransform", OtFunction::create(&OtVectorDisplayClass::setTransform));
+		type->set("setCenteredText", OtFunction::create(&OtVectorDisplayClass::setCenteredText));
 
-		type->set("pushStyle", OtFunctionClass::create(&OtVectorDisplayClass::pushStyle));
-		type->set("popStyle", OtFunctionClass::create(&OtVectorDisplayClass::popStyle));
+		type->set("pushStyle", OtFunction::create(&OtVectorDisplayClass::pushStyle));
+		type->set("popStyle", OtFunction::create(&OtVectorDisplayClass::popStyle));
 
-		type->set("getSevenSegmentWidth", OtFunctionClass::create(&OtVectorDisplayClass::getSevenSegmentWidth));
-		type->set("getTextWidth", OtFunctionClass::create(&OtVectorDisplayClass::getTextWidth));
+		type->set("getSevenSegmentWidth", OtFunction::create(&OtVectorDisplayClass::getSevenSegmentWidth));
+		type->set("getTextWidth", OtFunction::create(&OtVectorDisplayClass::getTextWidth));
 
-		type->set("addLine", OtFunctionClass::create(&OtVectorDisplayClass::addLine));
-		type->set("addRectangle", OtFunctionClass::create(&OtVectorDisplayClass::addRectangle));
-		type->set("addCenteredRectangle", OtFunctionClass::create(&OtVectorDisplayClass::addCenteredRectangle));
-		type->set("addCircle", OtFunctionClass::create(&OtVectorDisplayClass::addCircle));
-		type->set("addSevenSegment", OtFunctionClass::create(&OtVectorDisplayClass::addSevenSegment));
-		type->set("addText", OtFunctionClass::create(&OtVectorDisplayClass::addText));
+		type->set("addLine", OtFunction::create(&OtVectorDisplayClass::addLine));
+		type->set("addRectangle", OtFunction::create(&OtVectorDisplayClass::addRectangle));
+		type->set("addCenteredRectangle", OtFunction::create(&OtVectorDisplayClass::addCenteredRectangle));
+		type->set("addCircle", OtFunction::create(&OtVectorDisplayClass::addCircle));
+		type->set("addSevenSegment", OtFunction::create(&OtVectorDisplayClass::addSevenSegment));
+		type->set("addText", OtFunction::create(&OtVectorDisplayClass::addText));
 
-		type->set("updateLine", OtFunctionClass::create(&OtVectorDisplayClass::updateLine));
-		type->set("updateRectangle", OtFunctionClass::create(&OtVectorDisplayClass::updateRectangle));
-		type->set("updateCenteredRectangle", OtFunctionClass::create(&OtVectorDisplayClass::updateCenteredRectangle));
-		type->set("updateCircle", OtFunctionClass::create(&OtVectorDisplayClass::updateCircle));
-		type->set("updateSevenSegment", OtFunctionClass::create(&OtVectorDisplayClass::updateSevenSegment));
-		type->set("updateSevenSegmentString", OtFunctionClass::create(&OtVectorDisplayClass::updateSevenSegmentString));
-		type->set("updateText", OtFunctionClass::create(&OtVectorDisplayClass::updateText));
-		type->set("updateTextString", OtFunctionClass::create(&OtVectorDisplayClass::updateTextString));
+		type->set("updateLine", OtFunction::create(&OtVectorDisplayClass::updateLine));
+		type->set("updateRectangle", OtFunction::create(&OtVectorDisplayClass::updateRectangle));
+		type->set("updateCenteredRectangle", OtFunction::create(&OtVectorDisplayClass::updateCenteredRectangle));
+		type->set("updateCircle", OtFunction::create(&OtVectorDisplayClass::updateCircle));
+		type->set("updateSevenSegment", OtFunction::create(&OtVectorDisplayClass::updateSevenSegment));
+		type->set("updateSevenSegmentString", OtFunction::create(&OtVectorDisplayClass::updateSevenSegmentString));
+		type->set("updateText", OtFunction::create(&OtVectorDisplayClass::updateText));
+		type->set("updateTextString", OtFunction::create(&OtVectorDisplayClass::updateTextString));
 
-		type->set("updateColor", OtFunctionClass::create(&OtVectorDisplayClass::updateColor));
-		type->set("updateAlpha", OtFunctionClass::create(&OtVectorDisplayClass::updateAlpha));
-		type->set("updateWidth", OtFunctionClass::create(&OtVectorDisplayClass::updateWidth));
+		type->set("updateColor", OtFunction::create(&OtVectorDisplayClass::updateColor));
+		type->set("updateAlpha", OtFunction::create(&OtVectorDisplayClass::updateAlpha));
+		type->set("updateWidth", OtFunction::create(&OtVectorDisplayClass::updateWidth));
 
-		type->set("enableShape", OtFunctionClass::create(&OtVectorDisplayClass::enableShape));
-		type->set("disableShape", OtFunctionClass::create(&OtVectorDisplayClass::disableShape));
-		type->set("deleteShape", OtFunctionClass::create(&OtVectorDisplayClass::deleteShape));
+		type->set("enableShape", OtFunction::create(&OtVectorDisplayClass::enableShape));
+		type->set("disableShape", OtFunction::create(&OtVectorDisplayClass::disableShape));
+		type->set("deleteShape", OtFunction::create(&OtVectorDisplayClass::deleteShape));
 	}
 
 	return type;
-}
-
-
-//
-//	OtVectorDisplayClass::create
-//
-
-OtVectorDisplay OtVectorDisplayClass::create() {
-	OtVectorDisplay display = std::make_shared<OtVectorDisplayClass>();
-	display->setType(getMeta());
-	return display;
 }

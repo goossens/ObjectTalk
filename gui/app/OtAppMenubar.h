@@ -20,7 +20,7 @@
 //
 
 class OtAppMenubarClass;
-typedef std::shared_ptr<OtAppMenubarClass> OtAppMenubar;
+using OtAppMenubar = OtObjectPointer<OtAppMenubarClass>;
 
 class OtAppMenubarClass : public OtAppObjectClass {
 public:
@@ -35,9 +35,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtAppMenubar create();
 
 private:
 	size_t height;

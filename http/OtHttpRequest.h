@@ -26,7 +26,7 @@
 //
 
 class OtHttpRequestClass;
-typedef std::shared_ptr<OtHttpRequestClass> OtHttpRequest;
+using OtHttpRequest = OtObjectPointer<OtHttpRequestClass>;
 
 class OtHttpRequestClass : public OtHttpClass {
 public:
@@ -84,9 +84,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtHttpRequest create();
 
 private:
 	std::string method;

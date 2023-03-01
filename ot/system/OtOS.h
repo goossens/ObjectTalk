@@ -14,7 +14,6 @@
 
 #include <string>
 
-#include "OtSingleton.h"
 #include "OtSystem.h"
 
 
@@ -23,9 +22,9 @@
 //
 
 class OtOSClass;
-typedef std::shared_ptr<OtOSClass> OtOS;
+using OtOS = OtObjectPointer<OtOSClass>;
 
-class OtOSClass : public OtSystemClass, public OtObjectSingleton<OtOSClass> {
+class OtOSClass : public OtSystemClass {
 public:
 	// see if environment variable exists
 	bool hasenv(const std::string& name);
@@ -79,7 +78,4 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtOS create();
 };

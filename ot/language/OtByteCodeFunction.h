@@ -21,7 +21,7 @@
 //
 
 class OtByteCodeFunctionClass;
-typedef std::shared_ptr<OtByteCodeFunctionClass> OtByteCodeFunction;
+using OtByteCodeFunction = OtObjectPointer<OtByteCodeFunctionClass>;
 
 class OtByteCodeFunctionClass : public OtInternalClass {
 public:
@@ -37,9 +37,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtByteCodeFunction create(OtByteCode bytecode, size_t parameterCount);
 
 private:
 	OtByteCode bytecode;

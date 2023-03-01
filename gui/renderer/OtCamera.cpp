@@ -32,7 +32,7 @@ OtObject OtCameraClass::setPerspective(float fv, float n, float f) {
 	near = n;
 	far = f;
 	changed = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -46,7 +46,7 @@ OtObject OtCameraClass::setOrthographic(float w, float n, float f) {
 	near = n;
 	far = f;
 	changed = true;
-	return shared();
+	return OtObject(this);
 }
 
 OtObject OtCameraClass::setOrthographicCustom(float xmn, float xmx, float ymn, float ymx, float zmn, float zmx) {
@@ -58,7 +58,7 @@ OtObject OtCameraClass::setOrthographicCustom(float xmn, float xmx, float ymn, f
 	zmin = zmn;
 	zmax = zmx;
 	changed = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -69,7 +69,7 @@ OtObject OtCameraClass::setOrthographicCustom(float xmn, float xmx, float ymn, f
 OtObject OtCameraClass::setFovLimits(float fmn, float fmx) {
 	fovMin = fmn;
 	fovMax = fmx;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -80,7 +80,7 @@ OtObject OtCameraClass::setFovLimits(float fmn, float fmx) {
 OtObject OtCameraClass::setWidthLimits(float wmn, float wmx) {
 	widthMin = wmn;
 	widthMax = wmx;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -93,7 +93,7 @@ OtObject OtCameraClass::setNearFarLimits(float nmn, float nmx, float fmn, float 
 	nearMax = nmx;
 	farMin = fmn;
 	farMax = fmx;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -103,7 +103,7 @@ OtObject OtCameraClass::setNearFarLimits(float nmn, float nmx, float fmn, float 
 
 OtObject OtCameraClass::setScriptControlMode() {
 	mode = scriptControlMode;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -113,7 +113,7 @@ OtObject OtCameraClass::setScriptControlMode() {
 
 OtObject OtCameraClass::setCircleTargetMode() {
 	mode = circleTargetMode;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -123,7 +123,7 @@ OtObject OtCameraClass::setCircleTargetMode() {
 
 OtObject OtCameraClass::setFirstPersonMode() {
 	mode = firstPersonMode;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -134,7 +134,7 @@ OtObject OtCameraClass::setFirstPersonMode() {
 OtObject OtCameraClass::setPosition(float x, float y, float z) {
 	cameraPosition = glm::vec3(x, y, z);
 	changed = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -145,7 +145,7 @@ OtObject OtCameraClass::setPosition(float x, float y, float z) {
 OtObject OtCameraClass::setTarget(float x, float y, float z) {
 	cameraTarget = glm::vec3(x, y, z);
 	changed = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -156,7 +156,7 @@ OtObject OtCameraClass::setTarget(float x, float y, float z) {
 OtObject OtCameraClass::setUp(float x, float y, float z) {
 	cameraUp = glm::vec3(x, y, z);
 	changed = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -209,7 +209,7 @@ void OtCameraClass::setAspectRatio(float ar) {
 OtObject OtCameraClass::setDistance(float d) {
 	distance = std::clamp(d, distanceMin, distanceMax);
 	changed = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -221,7 +221,7 @@ OtObject OtCameraClass::setPitch(float p) {
 	pitch = p;
 	pitch = std::clamp(pitch, pitchMin, pitchMax);
 	changed = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -242,7 +242,7 @@ OtObject OtCameraClass::setYaw(float y) {
 
 	yaw = std::clamp(yaw, yawMin, yawMax);
 	changed = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -253,7 +253,7 @@ OtObject OtCameraClass::setYaw(float y) {
 OtObject OtCameraClass::setDistanceLimits(float min, float max) {
 	distanceMin = min;
 	distanceMax = max;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -264,7 +264,7 @@ OtObject OtCameraClass::setDistanceLimits(float min, float max) {
 OtObject OtCameraClass::setPitchLimits(float min, float max) {
 	pitchMin = min;
 	pitchMax = max;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -275,7 +275,7 @@ OtObject OtCameraClass::setPitchLimits(float min, float max) {
 OtObject OtCameraClass::setYawLimits(float min, float max) {
 	yawMin = min;
 	yawMax = max;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -286,7 +286,7 @@ OtObject OtCameraClass::setYawLimits(float min, float max) {
 OtObject OtCameraClass::setHeightLimits(float min, float max) {
 	heightMin = min;
 	heightMax = max;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -489,25 +489,25 @@ OtType OtCameraClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtCameraClass>("Camera", OtGuiClass::getMeta());
 
-		type->set("setOrthographic", OtFunctionClass::create(&OtCameraClass::setOrthographic));
-		type->set("setPerspective", OtFunctionClass::create(&OtCameraClass::setPerspective));
-		type->set("setNearFarLimits", OtFunctionClass::create(&OtCameraClass::setNearFarLimits));
+		type->set("setOrthographic", OtFunction::create(&OtCameraClass::setOrthographic));
+		type->set("setPerspective", OtFunction::create(&OtCameraClass::setPerspective));
+		type->set("setNearFarLimits", OtFunction::create(&OtCameraClass::setNearFarLimits));
 
-		type->set("setScriptControlMode", OtFunctionClass::create(&OtCameraClass::setScriptControlMode));
-		type->set("setCircleTargetMode", OtFunctionClass::create(&OtCameraClass::setCircleTargetMode));
-		type->set("setFirstPersonMode", OtFunctionClass::create(&OtCameraClass::setFirstPersonMode));
+		type->set("setScriptControlMode", OtFunction::create(&OtCameraClass::setScriptControlMode));
+		type->set("setCircleTargetMode", OtFunction::create(&OtCameraClass::setCircleTargetMode));
+		type->set("setFirstPersonMode", OtFunction::create(&OtCameraClass::setFirstPersonMode));
 
-		type->set("setPosition", OtFunctionClass::create(&OtCameraClass::setPosition));
-		type->set("setTarget", OtFunctionClass::create(&OtCameraClass::setTarget));
-		type->set("setUp", OtFunctionClass::create(&OtCameraClass::setUp));
+		type->set("setPosition", OtFunction::create(&OtCameraClass::setPosition));
+		type->set("setTarget", OtFunction::create(&OtCameraClass::setTarget));
+		type->set("setUp", OtFunction::create(&OtCameraClass::setUp));
 
-		type->set("setDistance", OtFunctionClass::create(&OtCameraClass::setDistance));
-		type->set("setPitch", OtFunctionClass::create(&OtCameraClass::setPitch));
-		type->set("setYaw", OtFunctionClass::create(&OtCameraClass::setYaw));
-		type->set("setDistanceLimits", OtFunctionClass::create(&OtCameraClass::setDistanceLimits));
-		type->set("setPitchLimits", OtFunctionClass::create(&OtCameraClass::setPitchLimits));
-		type->set("setYawLimits", OtFunctionClass::create(&OtCameraClass::setYawLimits));
-		type->set("setHeightLimits", OtFunctionClass::create(&OtCameraClass::setHeightLimits));
+		type->set("setDistance", OtFunction::create(&OtCameraClass::setDistance));
+		type->set("setPitch", OtFunction::create(&OtCameraClass::setPitch));
+		type->set("setYaw", OtFunction::create(&OtCameraClass::setYaw));
+		type->set("setDistanceLimits", OtFunction::create(&OtCameraClass::setDistanceLimits));
+		type->set("setPitchLimits", OtFunction::create(&OtCameraClass::setPitchLimits));
+		type->set("setYawLimits", OtFunction::create(&OtCameraClass::setYawLimits));
+		type->set("setHeightLimits", OtFunction::create(&OtCameraClass::setHeightLimits));
 	}
 
 	return type;
@@ -518,14 +518,8 @@ OtType OtCameraClass::getMeta() {
 //	OtCameraClass::create
 //
 
-OtCamera OtCameraClass::create() {
-	OtCamera camera = std::make_shared<OtCameraClass>();
-	camera->setType(getMeta());
-	return camera;
-}
-
 OtCamera OtCameraClass::create(OtCamera camera) {
-	OtCamera clone = create();
+	OtCamera clone = OtCamera::create();
 
 	clone->cameraPosition = camera->cameraPosition;
 	clone->cameraTarget = camera->cameraTarget;

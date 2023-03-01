@@ -55,19 +55,8 @@ OtType OtLabelClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtLabelClass>("Label", OtWidgetClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtLabelClass::init));
+		type->set("__init__", OtFunction::create(&OtLabelClass::init));
 	}
 
 	return type;
-}
-
-
-//
-//	OtLabelClass::create
-//
-
-OtLabel OtLabelClass::create() {
-	OtLabel label = std::make_shared<OtLabelClass>();
-	label->setType(getMeta());
-	return label;
 }

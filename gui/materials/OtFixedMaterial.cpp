@@ -52,7 +52,7 @@ void OtFixedMaterialClass::init(size_t count, OtObject* parameters) {
 OtObject OtFixedMaterialClass::setColor(const std::string& name) {
 	// parse CSS style color
 	color = OtColorParseToVec3(name);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -62,7 +62,7 @@ OtObject OtFixedMaterialClass::setColor(const std::string& name) {
 
 OtObject OtFixedMaterialClass::setColorRGB(float r, float g, float b) {
 	color = glm::vec3(r, g, b);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -72,7 +72,7 @@ OtObject OtFixedMaterialClass::setColorRGB(float r, float g, float b) {
 
 OtObject OtFixedMaterialClass::setOpacity(float o) {
 	opacity = o;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -113,22 +113,12 @@ OtType OtFixedMaterialClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtFixedMaterialClass>("FixedMaterial", OtMaterialClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtFixedMaterialClass::init));
+		type->set("__init__", OtFunction::create(&OtFixedMaterialClass::init));
 
-		type->set("setColor", OtFunctionClass::create(&OtFixedMaterialClass::setColor));
-		type->set("setColorRGB", OtFunctionClass::create(&OtFixedMaterialClass::setColorRGB));
-		type->set("setOpacity", OtFunctionClass::create(&OtFixedMaterialClass::setOpacity));
+		type->set("setColor", OtFunction::create(&OtFixedMaterialClass::setColor));
+		type->set("setColorRGB", OtFunction::create(&OtFixedMaterialClass::setColorRGB));
+		type->set("setOpacity", OtFunction::create(&OtFixedMaterialClass::setOpacity));
 	}
 
 	return type;
-}
-
-//
-//	OtFixedMaterialClass::create
-//
-
-OtFixedMaterial OtFixedMaterialClass::create() {
-	OtFixedMaterial material = std::make_shared<OtFixedMaterialClass>();
-	material->setType(getMeta());
-	return material;
 }

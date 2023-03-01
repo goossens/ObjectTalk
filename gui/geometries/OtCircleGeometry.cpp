@@ -57,7 +57,7 @@ void OtCircleGeometryClass::init(size_t count, OtObject* parameters) {
 OtObject OtCircleGeometryClass::setRadius(float r) {
 	radius = r;
 	refreshGeometry = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -68,7 +68,7 @@ OtObject OtCircleGeometryClass::setRadius(float r) {
 OtObject OtCircleGeometryClass::setSegments(int s) {
 	segments = s;
 	refreshGeometry = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -79,7 +79,7 @@ OtObject OtCircleGeometryClass::setSegments(int s) {
 OtObject OtCircleGeometryClass::setThetaStart(float ts) {
 	thetaStart = ts;
 	refreshGeometry = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -90,7 +90,7 @@ OtObject OtCircleGeometryClass::setThetaStart(float ts) {
 OtObject OtCircleGeometryClass::setThetaLength(float tl) {
 	thetaLength = tl;
 	refreshGeometry = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -198,23 +198,12 @@ OtType OtCircleGeometryClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtCircleGeometryClass>("CircleGeometry", OtGeometryClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtCircleGeometryClass::init));
-		type->set("setRadius", OtFunctionClass::create(&OtCircleGeometryClass::setRadius));
-		type->set("setSegments", OtFunctionClass::create(&OtCircleGeometryClass::setSegments));
-		type->set("setThetaStart", OtFunctionClass::create(&OtCircleGeometryClass::setThetaStart));
-		type->set("setThetaLength", OtFunctionClass::create(&OtCircleGeometryClass::setThetaLength));
+		type->set("__init__", OtFunction::create(&OtCircleGeometryClass::init));
+		type->set("setRadius", OtFunction::create(&OtCircleGeometryClass::setRadius));
+		type->set("setSegments", OtFunction::create(&OtCircleGeometryClass::setSegments));
+		type->set("setThetaStart", OtFunction::create(&OtCircleGeometryClass::setThetaStart));
+		type->set("setThetaLength", OtFunction::create(&OtCircleGeometryClass::setThetaLength));
 	}
 
 	return type;
-}
-
-
-//
-//	OtCircleGeometryClass::create
-//
-
-OtCircleGeometry OtCircleGeometryClass::create() {
-	OtCircleGeometry circlegeometry = std::make_shared<OtCircleGeometryClass>();
-	circlegeometry->setType(getMeta());
-	return circlegeometry;
 }

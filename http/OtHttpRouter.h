@@ -24,7 +24,7 @@
 //
 
 class OtHttpRouterClass;
-typedef std::shared_ptr<OtHttpRouterClass> OtHttpRouter;
+using OtHttpRouter = OtObjectPointer<OtHttpRouterClass>;
 
 class OtHttpRouterClass : public OtHttpClass {
 	friend class OtHttpNextClass;
@@ -49,9 +49,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtHttpRouter create();
 
 private:
 	class OtHandler {

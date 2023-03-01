@@ -92,7 +92,7 @@ void OtSpotLightClass::init(size_t count, OtObject* parameters) {
 
 OtObject OtSpotLightClass::setPosition(float x, float y, float z) {
 	position = glm::vec3(x, y, z);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -102,7 +102,7 @@ OtObject OtSpotLightClass::setPosition(float x, float y, float z) {
 
 OtObject OtSpotLightClass::setDirection(float x, float y, float z) {
 	direction = glm::vec3(x, y, z);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -112,7 +112,7 @@ OtObject OtSpotLightClass::setDirection(float x, float y, float z) {
 
 OtObject OtSpotLightClass::setColor(const std::string& name) {
 	color = OtColorParseToVec3(name);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -122,7 +122,7 @@ OtObject OtSpotLightClass::setColor(const std::string& name) {
 
 OtObject OtSpotLightClass::setColorRGB(float r, float g, float b) {
 	color = glm::vec3(r, g, b);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -132,7 +132,7 @@ OtObject OtSpotLightClass::setColorRGB(float r, float g, float b) {
 
 OtObject OtSpotLightClass::setAttenuation(float constant, float linear, float quadratic) {
 	attenuation = glm::vec3(constant, linear, quadratic);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -144,7 +144,7 @@ OtObject OtSpotLightClass::setCone(float i, float o) {
 	inner = i;
 	outer = o;
 	inner = std::min(inner, outer);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -182,26 +182,15 @@ OtType OtSpotLightClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtSpotLightClass>("SpotLight", OtLightClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtSpotLightClass::init));
+		type->set("__init__", OtFunction::create(&OtSpotLightClass::init));
 
-		type->set("setPosition", OtFunctionClass::create(&OtSpotLightClass::setPosition));
-		type->set("setDirection", OtFunctionClass::create(&OtSpotLightClass::setDirection));
-		type->set("setColor", OtFunctionClass::create(&OtSpotLightClass::setColor));
-		type->set("setColorRGB", OtFunctionClass::create(&OtSpotLightClass::setColorRGB));
-		type->set("setAttenuation", OtFunctionClass::create(&OtSpotLightClass::setAttenuation));
-		type->set("setCone", OtFunctionClass::create(&OtSpotLightClass::setCone));
+		type->set("setPosition", OtFunction::create(&OtSpotLightClass::setPosition));
+		type->set("setDirection", OtFunction::create(&OtSpotLightClass::setDirection));
+		type->set("setColor", OtFunction::create(&OtSpotLightClass::setColor));
+		type->set("setColorRGB", OtFunction::create(&OtSpotLightClass::setColorRGB));
+		type->set("setAttenuation", OtFunction::create(&OtSpotLightClass::setAttenuation));
+		type->set("setCone", OtFunction::create(&OtSpotLightClass::setCone));
 	}
 
 	return type;
-}
-
-
-//
-//	OtSpotLightClass::create
-//
-
-OtSpotLight OtSpotLightClass::create() {
-	OtSpotLight ambient = std::make_shared<OtSpotLightClass>();
-	ambient->setType(getMeta());
-	return ambient;
 }

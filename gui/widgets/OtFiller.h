@@ -20,7 +20,7 @@
 //
 
 class OtFillerClass;
-typedef std::shared_ptr<OtFillerClass> OtFiller;
+using OtFiller = OtObjectPointer<OtFillerClass>;
 
 class OtFillerClass : public OtWidgetClass {
 public:
@@ -35,9 +35,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtFiller create();
 
 private:
 	// properties

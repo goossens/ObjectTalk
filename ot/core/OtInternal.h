@@ -20,7 +20,7 @@
 //
 
 class OtInternalClass;
-typedef std::shared_ptr<OtInternalClass> OtInternal;
+using OtInternal = OtObjectPointer<OtInternalClass>;
 
 class OtInternalClass : public OtObjectClass {
 public:

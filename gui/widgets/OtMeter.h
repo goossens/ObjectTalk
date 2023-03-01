@@ -21,7 +21,7 @@
 //
 
 class OtMeterClass;
-typedef std::shared_ptr<OtMeterClass> OtMeter;
+using OtMeter = OtObjectPointer<OtMeterClass>;
 
 class OtMeterClass : public OtWidgetClass {
 public:
@@ -38,7 +38,7 @@ public:
 	OtObject setLabel(const std::string& label);
 
 	// access measurement (range 0-100)
-	OtObject setValue(float v) { value = v; return shared(); }
+	OtObject setValue(float v) { value = v; return OtObject(this); }
 	float getValue() { return value; }
 
 	// render content
@@ -46,9 +46,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtMeter create();
 
 private:
 	// properties

@@ -27,13 +27,13 @@
 #define OT_CONTROLLER(type)																\
 																						\
 class Ot##type##ControllerClass;														\
-typedef std::shared_ptr<Ot##type##ControllerClass> Ot##type##Controller;				\
+using Ot##type##Controller = OtObjectPointer<Ot##type##ControllerClass>;							\
 																						\
 class Ot##type##ControllerClass : public OtWidgetClass {								\
 public:																					\
 	void init(OtObject object)	{														\
 		object->expectKindOf(#type);													\
-		target = object->cast<Ot##type##Class>();										\
+		target = Ot##type(object);														\
 	}																					\
 																						\
 	void render() {																		\
@@ -48,7 +48,7 @@ public:																					\
 				OT_CONTROLLER_STRINGIFY(type##Controller),								\
 				OtWidgetClass::getMeta());												\
 																						\
-			type->set("__init__", OtFunctionClass::create(								\
+			type->set("__init__", OtFunction::create(								\
 				&Ot##type##ControllerClass::init));										\
 		}																				\
 																						\
@@ -56,7 +56,7 @@ public:																					\
 	}																					\
 																						\
 	static Ot##type##Controller create() {												\
-		Ot##type##Controller object = std::make_shared<Ot##type##ControllerClass>();	\
+		Ot##type##Controller object = Ot##type##Controller::create();		\
 		object->setType(getMeta());														\
 		return object;																	\
 	}																					\

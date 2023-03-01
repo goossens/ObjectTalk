@@ -23,7 +23,7 @@
 //
 
 class OtFontClass;
-typedef std::shared_ptr<OtFontClass> OtFont;
+using OtFont = OtObjectPointer<OtFontClass>;
 
 class OtFontClass : public OtGuiClass {
 public:
@@ -45,9 +45,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtFont create();
 
 private:
 	// properties

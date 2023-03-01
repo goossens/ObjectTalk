@@ -27,11 +27,11 @@ typedef std::shared_ptr<OtEllipticalCurveClass> OtEllipticalCurve;
 class OtEllipticalCurveClass : public OtCurveClass {
 public:
 	// constructor
-	OtEllipticalCurveClass(const glm::vec2& c, float xr, float yr, float sa=0.0, float ea=std::numbers::pi2, bool cw=false, float r=0.0) :
+	OtEllipticalCurveClass(const glm::vec2& c, float xr, float yr, float sa=0.0f, float ea=std::numbers::pi2, bool cw=false, float r=0.0f) :
 		center(c), xRadius(xr), yRadius(yr), startAngle(sa), endAngle(ea), clockwise(cw), rotation(r) {
 		delta = endAngle - startAngle;
 
-		while (delta < 0) {
+		while (delta < 0.0f) {
 			delta += std::numbers::pi2;
 		}
 
@@ -61,11 +61,6 @@ public:
 		}
 
 		return glm::vec2(x, y);
-	}
-
-	// create a new instance
-	static OtEllipticalCurve create(const glm::vec2& c, float xr, float yr, float sa, float ea, bool cw, float r) {
-		return std::make_shared<OtEllipticalCurveClass>(c, xr, yr, sa, ea, cw, r);
 	}
 
 private:

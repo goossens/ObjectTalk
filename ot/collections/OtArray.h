@@ -23,10 +23,14 @@
 //
 
 class OtArrayClass;
-typedef std::shared_ptr<OtArrayClass> OtArray;
+using OtArray = OtObjectPointer<OtArrayClass>;
 
 class OtArrayClass : public OtCollectionClass {
 public:
+	// constructors
+	OtArrayClass() = default;
+	OtArrayClass(size_t count, OtObject* objects);
+
 	// convert array to string
 	operator std::string() override;
 
@@ -101,10 +105,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new array
-	static OtArray create();
-	static OtArray create(size_t count, OtObject* objects);
 
 	// get access to raw object array
 	std::vector<OtObject>& raw() { return array; }

@@ -31,7 +31,8 @@ OtObject OtFSClass::gethome() {
 	auto status = uv_os_homedir(buffer, &length);
 	UV_CHECK_ERROR("uv_os_homedir", status);
 	std::string home(buffer, length);
-	return OtPathClass::create(std::filesystem::canonical(std::string(buffer, length)));
+	return OtPath::create(std::filesystem::canonical(
+		std::string(buffer, length)));
 }
 
 
@@ -40,7 +41,7 @@ OtObject OtFSClass::gethome() {
 //
 
 OtObject OtFSClass::gettmp() {
-	return OtPathClass::create(std::filesystem::canonical(
+	return OtPath::create(std::filesystem::canonical(
 		std::filesystem::temp_directory_path()));
 }
 
@@ -68,7 +69,7 @@ OtObject OtFSClass::tmpnam() {
 		}
 	}
 
-	return OtPathClass::create(path);
+	return OtPath::create(path);
 }
 
 
@@ -78,7 +79,7 @@ OtObject OtFSClass::tmpnam() {
 
 OtObject OtFSClass::getcwd() {
 	try {
-		return OtPathClass::create(std::filesystem::canonical(
+		return OtPath::create(std::filesystem::canonical(
 			std::filesystem::current_path()));
 
 	} catch (std::exception& e) {
@@ -110,10 +111,10 @@ void OtFSClass::chdir(const std::string& path) {
 OtObject OtFSClass::ls(const std::string& path) {
 	try {
 		// get content of directory
-		OtArray content = OtArrayClass::create();
+		OtArray content = OtArray::create();
 
 		for (auto& p : std::filesystem::directory_iterator(path)) {
-			content->append(OtPathClass::create(p.path()));
+			content->append(OtPath::create(p.path()));
 		}
 
 		return content;
@@ -298,7 +299,7 @@ OtObject OtFSClass::mktmpdir() {
 		}
 	}
 
-	return OtPathClass::create(path);
+	return OtPath::create(path);
 }
 
 
@@ -383,45 +384,30 @@ OtType OtFSClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtFSClass>(
-			"FS",
-			OtSystemClass::getMeta(),
-			[]() {
-				return (OtObject) OtFSClass::instance();
-			});
-
-		type->set("gethome", OtFunctionClass::create(&OtFSClass::gethome));
-		type->set("gettmp", OtFunctionClass::create(&OtFSClass::gettmp));
-		type->set("tmpnam", OtFunctionClass::create(&OtFSClass::tmpnam));
-		type->set("getcwd", OtFunctionClass::create(&OtFSClass::getcwd));
-		type->set("chdir", OtFunctionClass::create(&OtFSClass::chdir));
-		type->set("ls", OtFunctionClass::create(&OtFSClass::ls));
-		type->set("filesize", OtFunctionClass::create(&OtFSClass::filesize));
-		type->set("touch", OtFunctionClass::create(&OtFSClass::touch));
-		type->set("cp", OtFunctionClass::create(&OtFSClass::cp));
-		type->set("mv", OtFunctionClass::create(&OtFSClass::mv));
-		type->set("ln", OtFunctionClass::create(&OtFSClass::ln));
-		type->set("lns", OtFunctionClass::create(&OtFSClass::lns));
-		type->set("resize", OtFunctionClass::create(&OtFSClass::resize));
-		type->set("rm", OtFunctionClass::create(&OtFSClass::rm));
-		type->set("mkdir", OtFunctionClass::create(&OtFSClass::mkdir));
-		type->set("mkdirs", OtFunctionClass::create(&OtFSClass::mkdirs));
-		type->set("mktmpdir", OtFunctionClass::create(&OtFSClass::mktmpdir));
-		type->set("rmdir", OtFunctionClass::create(&OtFSClass::rmdir));
-		type->set("rmdirs", OtFunctionClass::create(&OtFSClass::rmdirs));
-		type->set("capacity", OtFunctionClass::create(&OtFSClass::capacity));
-		type->set("free", OtFunctionClass::create(&OtFSClass::free));
-		type->set("available", OtFunctionClass::create(&OtFSClass::available));
+		type = OtTypeClass::create<OtFSClass>("FS", OtSystemClass::getMeta());
+		type->set("gethome", OtFunction::create(&OtFSClass::gethome));
+		type->set("gettmp", OtFunction::create(&OtFSClass::gettmp));
+		type->set("tmpnam", OtFunction::create(&OtFSClass::tmpnam));
+		type->set("getcwd", OtFunction::create(&OtFSClass::getcwd));
+		type->set("chdir", OtFunction::create(&OtFSClass::chdir));
+		type->set("ls", OtFunction::create(&OtFSClass::ls));
+		type->set("filesize", OtFunction::create(&OtFSClass::filesize));
+		type->set("touch", OtFunction::create(&OtFSClass::touch));
+		type->set("cp", OtFunction::create(&OtFSClass::cp));
+		type->set("mv", OtFunction::create(&OtFSClass::mv));
+		type->set("ln", OtFunction::create(&OtFSClass::ln));
+		type->set("lns", OtFunction::create(&OtFSClass::lns));
+		type->set("resize", OtFunction::create(&OtFSClass::resize));
+		type->set("rm", OtFunction::create(&OtFSClass::rm));
+		type->set("mkdir", OtFunction::create(&OtFSClass::mkdir));
+		type->set("mkdirs", OtFunction::create(&OtFSClass::mkdirs));
+		type->set("mktmpdir", OtFunction::create(&OtFSClass::mktmpdir));
+		type->set("rmdir", OtFunction::create(&OtFSClass::rmdir));
+		type->set("rmdirs", OtFunction::create(&OtFSClass::rmdirs));
+		type->set("capacity", OtFunction::create(&OtFSClass::capacity));
+		type->set("free", OtFunction::create(&OtFSClass::free));
+		type->set("available", OtFunction::create(&OtFSClass::available));
 	}
 
 	return type;
-}
-
-
-//
-//	OtFSClass::create
-//
-
-OtFS OtFSClass::create() {
-	return OtFSClass::instance();
 }

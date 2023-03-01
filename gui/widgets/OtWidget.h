@@ -20,7 +20,7 @@
 //
 
 class OtWidgetClass;
-typedef std::shared_ptr<OtWidgetClass> OtWidget;
+using OtWidget = OtObjectPointer<OtWidgetClass>;
 
 class OtWidgetClass : public OtNodeClass {
 public:
@@ -35,7 +35,4 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtWidget create();
 };

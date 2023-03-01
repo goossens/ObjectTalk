@@ -43,20 +43,9 @@ OtType OtStackReferenceClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtStackReferenceClass>("StackReference", OtReferenceClass::getMeta());
-		type->set("__deref__", OtFunctionClass::create(&OtStackReferenceClass::deref));
-		type->set("__assign__", OtFunctionClass::create(&OtStackReferenceClass::assign));
+		type->set("__deref__", OtFunction::create(&OtStackReferenceClass::deref));
+		type->set("__assign__", OtFunction::create(&OtStackReferenceClass::assign));
 	}
 
 	return type;
-}
-
-
-//
-//	OtStackReferenceClass::create
-//
-
-OtStackReference OtStackReferenceClass::create(const std::string& name, size_t slot) {
-	OtStackReference reference = std::make_shared<OtStackReferenceClass>(name, slot);
-	reference->setType(getMeta());
-	return reference;
 }

@@ -4,24 +4,24 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-var set = Set(1, 2, 3 ,4);
-assert(set == Set(1,2,3,4));
+var set = Set(1, 2, 3, 4);
+assert(set == Set(1, 2, 3, 4));
 assert(set.size() == 4);
 
 set.insert(5);
-assert(set == Set(1,2,3,4,5));
+assert(set == Set(1, 2, 3, 4, 5));
 assert(set.size() == 5);
 
 set.erase(4);
-assert(set == Set(1,2,3,5));
+assert(set == Set(1, 2, 3, 5));
 assert(set.size() == 4);
 
 set += 8;
-assert(set == Set(1,2,3,5,8));
+assert(set == Set(1, 2, 3, 5, 8));
 assert(set.size() == 5);
 
 set -= 8;
-assert(set == Set(1,2,3,5));
+assert(set == Set(1, 2, 3, 5));
 assert(set.size() == 4);
 
 var total = 0;
@@ -41,7 +41,7 @@ assert(4 not in set);
 assert(5 in set);
 
 var set2 = set.clone();
-assert(set2 == Set(1,2,3,5));
+assert(set2 == Set(1, 2, 3, 5));
 assert(set2.size() == 4);
 assert(set == set2);
 

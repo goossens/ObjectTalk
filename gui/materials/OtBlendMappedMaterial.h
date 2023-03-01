@@ -31,7 +31,7 @@
 //
 
 class OtBlendMappedMaterialClass;
-typedef std::shared_ptr<OtBlendMappedMaterialClass> OtBlendMappedMaterial;
+using OtBlendMappedMaterial = OtObjectPointer<OtBlendMappedMaterialClass>;
 
 class OtBlendMappedMaterialClass : public OtMaterialClass {
 public:
@@ -59,9 +59,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtBlendMappedMaterial create();
 
 private:
 	// properties

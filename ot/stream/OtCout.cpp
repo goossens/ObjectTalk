@@ -21,7 +21,7 @@
 
 OtObject OtCoutClass::operator << (OtObject object) {
 	std::cout << object->operator std::string();
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -47,24 +47,9 @@ OtType OtCoutClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtCoutClass>(
-			"Cout",
-			OtStreamClass::getMeta(),
-			[]() {
-				return (OtObject) OtCoutClass::instance();
-			});
-
-		type->set("__lshift__", OtFunctionClass::create(&OtCoutClass::operator <<));
+		type = OtTypeClass::create<OtCoutClass>("Cout", OtStreamClass::getMeta());
+		type->set("__lshift__", OtFunction::create(&OtCoutClass::operator <<));
 	}
 
 	return type;
-}
-
-
-//
-//	OtCoutClass::create
-//
-
-OtCout OtCoutClass::create() {
-	return OtCoutClass::instance();
 }

@@ -26,7 +26,7 @@
 //
 
 class OtColoredMaterialClass;
-typedef std::shared_ptr<OtColoredMaterialClass> OtColoredMaterial;
+using OtColoredMaterial = OtObjectPointer<OtColoredMaterialClass>;
 
 class OtColoredMaterialClass : public OtMaterialClass {
 public:
@@ -54,9 +54,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtColoredMaterial create();
 
 	// get list of detault materials
 	static OtObject getDefaultMaterialNames();

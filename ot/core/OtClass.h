@@ -33,7 +33,7 @@ public:
 	void setParent(OtObject parent);
 	std::string getName() { return classType->getName(); }
 	bool hasParent() { return classType->getParent() != nullptr; }
-	OtObject getParent() { return OtClassClass::create(classType->getParent()); }
+	OtObject getParent() { return OtClass::create(classType->getParent()); }
 
 	// create a new class instance
 	OtObject instantiate(size_t count, OtObject* parameters);
@@ -52,10 +52,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtClass create(const std::string& name);
-	static OtClass create(OtType type);
 
 protected:
 	OtType classType;

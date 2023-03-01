@@ -22,20 +22,9 @@ OtType OtObjectReferenceClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtObjectReferenceClass>("ObjectReference", OtReferenceClass::getMeta());
-		type->set("__deref__", OtFunctionClass::create(&OtObjectReferenceClass::deref));
-		type->set("__assign__", OtFunctionClass::create(&OtObjectReferenceClass::assign));
+		type->set("__deref__", OtFunction::create(&OtObjectReferenceClass::deref));
+		type->set("__assign__", OtFunction::create(&OtObjectReferenceClass::assign));
 	}
 
 	return type;
-}
-
-
-//
-//	OtObjectReferenceClass::create
-//
-
-OtObjectReference OtObjectReferenceClass::create(OtObject o, size_t m) {
-	OtObjectReference reference = std::make_shared<OtObjectReferenceClass>(o, m);
-	reference->setType(getMeta());
-	return reference;
 }

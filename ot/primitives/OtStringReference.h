@@ -23,7 +23,7 @@
 //
 
 class OtStringReferenceClass;
-typedef std::shared_ptr<OtStringReferenceClass> OtStringReference;
+using OtStringReference = OtObjectPointer<OtStringReferenceClass>;
 
 class OtStringReferenceClass : public OtReferenceClass {
 public:
@@ -42,16 +42,13 @@ public:
 	}
 
 	OtObject assign(OtObject value) {
-		return OtStringClass::create(string->setEntry(
+		return OtString::create(string->setEntry(
 			index,
 			value->operator std::string()));
 	}
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtStringReference create(OtString string, size_t index);
 
 private:
 	OtString string;

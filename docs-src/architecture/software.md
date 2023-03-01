@@ -9,7 +9,7 @@ host operating system offers GUI libraries.
 
 ObjectTalk currently runs on MacOS, Linux and Windows. In general, the main development
 platform is macOS and typically the latest version is used (Maverick as of now).
-For Linux, Ubuntu 22.04 is used and on Billy boxes, Window 11. The Github continues
+For Linux, Ubuntu 22.04 is used and on Billy boxes, Window 11. The Github continuous
 integration tasks also use the latest versions of these operating systems. For those
 that use other Linux distributions, it is likely that ObjectTalk will compile out-of-the-box,
 but this is not verified.
@@ -18,7 +18,7 @@ The entire ObjectTalk ecosystem is written in C++17 which is the most recent ver
 is best supported on all platforms. Once C++20 finds better support, we will switch to it.
 
 To simplify the ObjectTalk code baseline, the C++ standard library is used to the maximum
-extend possible. Basic I/O function, filesystem access, containers and memory managent
+extend possible. Basic I/O function, filesystem access, containers and memory management
 are simply used as is. Compiler developers typically do a good job optimizing things on each platform.
 
 I know there are lot of people out there that believe they can do better than the standard library
@@ -26,6 +26,12 @@ I know there are lot of people out there that believe they can do better than th
 I’m old enough to have written operating systems in assembler and had to maintain C libraries
 for even the most simple memory management or data structures. These days, I gladly take free
 cross platform solutions and sacrifice a few CPU cycles (I have more of those than braincells).
+
+To prove that I'm a hypocrite, the one exception to the rule is shared pointers. The version
+included in the standard library is thread safe and therefore slow. Given that ObjectTalk always
+runs in a single thread, a replacement shared library is include that is nut thread safe but
+makes ObjectTalk twice as fast. Off course I argue that I would have used the standard library
+is it had only included a fast non-thread safe smart pointer.
 
 **ObjectTalk Language Engine**
 
@@ -71,13 +77,13 @@ host operating system provided the required GUI libraries. The foundation of thi
 is provided by a number of open source cross-platform libraries. [GLFW](https://www.glfw.org)
 is used as an system independent abstraction for windows and user/system interactions.
 [BGFX](https://github.com/bkaradzic/bgfx) is used as a system independent abstraction to render
-graphics to support Metal, OpenGL, Vulkan and DirectX APIs. [Dear ImGui](https://github.com/ocornut/imgui)
+graphics supporting Metal, OpenGL, Vulkan and DirectX APIs. [Dear ImGui](https://github.com/ocornut/imgui)
 is used as a neutral user interface library and all widgets are implemented with it.
 The framework glues all of this together and ObjectTalk users will never have to deal with this level of detail.
 
 In the original design for the graphics framework, the ObjectTalk language was used to construct all
 the components for a user interface. Unfortunately, this led to very verbose code and it would take
-pages of code to create all the things you would need for a user interface, board or 3D display.
+pages of code to create all the things you would need for a user interface, 2D board or 3D scene.
 In fact, the ratio between construction code and functionality was so bad that a new approach was implemented.
 
 Today, the framework uses an Entity Component System (ECS) as an architectural pattern to represent
@@ -85,8 +91,7 @@ user interfaces, 2D (game) boards and 3D scenes. The Integrated Development Envi
 which is explained later, provides editors to manipulates ECS objects. By doing this, the ObjectTalk
 language is no longer used to construct visual objects but it is used for runtime logic and interaction.
 For those old enough to remember the Model-View-Controller architectural pattern, the model is expressed
-in the ECS, the view is provided internally by the ObjectTalk ecosystem based on the model and
-the controller is written in ObjectTalk.
+in the ECS, the view is provided internally by the ObjectTalk ecosystem and the controller is written in ObjectTalk.
 
 **GUI Widgets**
 
@@ -101,7 +106,7 @@ ObjectTalk has a rich set of 2D components that can be used to create 2D billboa
 ObjectTalk has a rich set of 3D components that can be used to create pretty 3D environments or games.
 Modern graphics techniques like Physically Based rendering (PBR), deferred and forward rendering,
 High Dynamic Range (HDR) pipelines, Screen-Space Ambient Occlusion (SSAO), and post-processing filter
-like bloom, depth-of-field, lens flatre, gamma correction and brightness are all available.
+like bloom, depth-of-field, lens flare, gamma correction and brightness are all available.
 
 **Integrated Development Environment (IDE)**
 

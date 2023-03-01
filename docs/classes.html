@@ -127,7 +127,6 @@
                     <li><a class="page-scroll" href="#os">OS</a></li>
                     <li><a class="page-scroll" href="#fs">FS</a></li>
                     <li><a class="page-scroll" href="#io">IO</a></li>
-                    <li><a class="page-scroll" href="#worker">Worker</a></li>
                   </ul>
                 </li>
                 <li>
@@ -2683,89 +2682,6 @@ assert(set.subtract(set2) == Set(2, 5));
                     Touch a file by updating its last access time without
                     changing the contents.
                   </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div id="worker">
-            <h1 class="pb-2">Worker Class</h1>
-            <p>
-              The Worker class provides a mechanism to offload tasks to another
-              thread. When creating a worker, a function is provided that
-              performs the work. This function must be able to receive an object
-              (the task) and return the result.
-            </p>
-            <p>
-              To run a job a task is passed with a callback function. This
-              callback is called with the request (the task) and the response
-              (the result) when the worker is done.
-            </p>
-            <p>
-              The main thread must call the update function until the worker
-              reports all the work done.
-            </p>
-            <p>Here is a trivial example:</p>
-            <pre><code>var worker = Worker(function(input) {
-	return input.sqrt() * input.cos().abs();
-});
-
-var total = 0.0;
-
-for i in range(100) {
-	worker.run(1000.0.random(), function(request, response) {
-		total += response;
-	});
-}
-
-while (!worker.done()) {
-	worker.update();
-}
-
-print(total);
-</code></pre>
-            <p>
-              Obviously, workers are more valuable when run in parallel with
-              other workers or with intensive operations like 3D apps with high
-              frame rates.
-            </p>
-            <p><strong>Member Functions</strong></p>
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>Function</th>
-                  <th>Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>__init__(function)</td>
-                  <td>
-                    Initialize a Worker object by providing the function that
-                    will do the heavy lifting. The function must take 1
-                    parameter (the request) and return the result.
-                  </td>
-                </tr>
-                <tr>
-                  <td>run(request, callback)</td>
-                  <td>
-                    Add a new request to the worker's queue. Once the worker is
-                    done, the callback will be called with 2 parameters (the
-                    request and the response).
-                  </td>
-                </tr>
-                <tr>
-                  <td>requests()</td>
-                  <td>Return the number of open requests.</td>
-                </tr>
-                <tr>
-                  <td>update()</td>
-                  <td>
-                    This function must be called until all worker are done.
-                  </td>
-                </tr>
-                <tr>
-                  <td>done()</td>
-                  <td>Returns true when all work is done and processed.</td>
                 </tr>
               </tbody>
             </table>

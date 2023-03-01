@@ -116,14 +116,3 @@ OtType OtDodecahedronGeometryClass::getMeta() {
 
 	return type;
 }
-
-
-//
-//	OtDodecahedronGeometryClass::create
-//
-
-OtDodecahedronGeometry OtDodecahedronGeometryClass::create() {
-	OtDodecahedronGeometry geometry = std::make_shared<OtDodecahedronGeometryClass>();
-	geometry->setType(getMeta());
-	return geometry;
-}

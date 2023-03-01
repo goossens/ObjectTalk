@@ -27,7 +27,7 @@ OtObject OtGeometryClass::computeTangents() {
 		refreshBuffers = true;
 	}
 
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -217,18 +217,8 @@ OtType OtGeometryClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtGeometryClass>("Geometry", OtGuiClass::getMeta());
 
-		type->set("computeTangents", OtFunctionClass::create(&OtGeometryClass::computeTangents));
+		type->set("computeTangents", OtFunction::create(&OtGeometryClass::computeTangents));
 	}
 
 	return type;
-}
-
-//
-//	OtGeometryClass::create
-//
-
-OtGeometry OtGeometryClass::create() {
-	OtGeometry geometry = std::make_shared<OtGeometryClass>();
-	geometry->setType(getMeta());
-	return geometry;
 }

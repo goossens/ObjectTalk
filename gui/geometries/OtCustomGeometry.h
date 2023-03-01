@@ -22,7 +22,7 @@
 //
 
 class OtCustomGeometryClass;
-typedef std::shared_ptr<OtCustomGeometryClass> OtCustomGeometry;
+using OtCustomGeometry = OtObjectPointer<OtCustomGeometryClass>;
 
 class OtCustomGeometryClass : public OtGeometryClass {
 public:
@@ -51,7 +51,4 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtCustomGeometry create();
 };

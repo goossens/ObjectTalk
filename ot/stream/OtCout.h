@@ -14,7 +14,6 @@
 
 #include <string>
 
-#include "OtSingleton.h"
 #include "OtStream.h"
 
 
@@ -23,10 +22,9 @@
 //
 
 class OtCoutClass;
-typedef std::shared_ptr<OtCoutClass> OtCout;
-typedef std::function<void(const std::string&)> OtCoutOutputFunction;
+using OtCout = OtObjectPointer<OtCoutClass>;
 
-class OtCoutClass : public OtStreamClass, public OtObjectSingleton<OtCoutClass> {
+class OtCoutClass : public OtStreamClass {
 public:
 	// output an object (will internally be converted to a String first)
 	OtObject operator << (OtObject object);
@@ -37,7 +35,4 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtCout create();
 };

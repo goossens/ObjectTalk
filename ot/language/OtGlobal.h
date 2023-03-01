@@ -20,7 +20,7 @@
 //
 
 class OtGlobalClass;
-typedef std::shared_ptr<OtGlobalClass> OtGlobal;
+using OtGlobal = OtObjectPointer<OtGlobalClass>;
 
 class OtGlobalClass : public OtInternalClass {
 public:
@@ -29,9 +29,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtGlobal create();
 
 private:
 	// check assertion

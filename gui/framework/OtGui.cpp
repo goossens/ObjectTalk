@@ -114,107 +114,107 @@
 
 void OtGuiClass::registerModule() {
 	OtModuleClass::registerInternal("gui", [](OtModule module) {
-		module->set("GUI", OtClassClass::create(OtGuiClass::getMeta()));
+		module->set("GUI", OtClass::create(OtGuiClass::getMeta()));
 
-		module->set("App", OtClassClass::create(OtAppClass::getMeta()));
-		module->set("AppMenubar", OtClassClass::create(OtAppMenubarClass::getMeta()));
-		module->set("Window", OtClassClass::create(OtWindowClass::getMeta()));
-		module->set("Dialog", OtClassClass::create(OtDialogClass::getMeta()));
-		module->set("FileOpenDialog", OtClassClass::create(OtFileOpenDialogClass::getMeta()));
-		module->set("FileSaveDialog", OtClassClass::create(OtFileSaveDialogClass::getMeta()));
-		module->set("Panel", OtClassClass::create(OtPanelClass::getMeta()));
-		module->set("View", OtClassClass::create(OtViewClass::getMeta()));
-		module->set("VectorDisplay", OtClassClass::create(OtVectorDisplayClass::getMeta()));
+		module->set("App", OtClass::create(OtAppClass::getMeta()));
+		module->set("AppMenubar", OtClass::create(OtAppMenubarClass::getMeta()));
+		module->set("Window", OtClass::create(OtWindowClass::getMeta()));
+		module->set("Dialog", OtClass::create(OtDialogClass::getMeta()));
+		module->set("FileOpenDialog", OtClass::create(OtFileOpenDialogClass::getMeta()));
+		module->set("FileSaveDialog", OtClass::create(OtFileSaveDialogClass::getMeta()));
+		module->set("Panel", OtClass::create(OtPanelClass::getMeta()));
+		module->set("View", OtClass::create(OtViewClass::getMeta()));
+		module->set("VectorDisplay", OtClass::create(OtVectorDisplayClass::getMeta()));
 
-		module->set("Camera", OtClassClass::create(OtCameraClass::getMeta()));
-		module->set("Scene", OtClassClass::create(OtSceneClass::getMeta()));
+		module->set("Camera", OtClass::create(OtCameraClass::getMeta()));
+		module->set("Scene", OtClass::create(OtSceneClass::getMeta()));
 
-		module->set("SceneObject", OtClassClass::create(OtSceneObjectClass::getMeta()));
-		module->set("Skybox", OtClassClass::create(OtSkyboxClass::getMeta()));
-		module->set("Sky", OtClassClass::create(OtSkyClass::getMeta()));
-		module->set("Water", OtClassClass::create(OtWaterClass::getMeta()));
-		module->set("Terrain", OtClassClass::create(OtTerrainClass::getMeta()));
-		module->set("TerrainMap", OtClassClass::create(OtTerrainMapClass::getMeta()));
+		module->set("SceneObject", OtClass::create(OtSceneObjectClass::getMeta()));
+		module->set("Skybox", OtClass::create(OtSkyboxClass::getMeta()));
+		module->set("Sky", OtClass::create(OtSkyClass::getMeta()));
+		module->set("Water", OtClass::create(OtWaterClass::getMeta()));
+		module->set("Terrain", OtClass::create(OtTerrainClass::getMeta()));
+		module->set("TerrainMap", OtClass::create(OtTerrainMapClass::getMeta()));
 
-		module->set("AmbientLight", OtClassClass::create(OtAmbientLightClass::getMeta()));
-		module->set("DirectionalLight", OtClassClass::create(OtDirectionalLightClass::getMeta()));
-		module->set("Fog", OtClassClass::create(OtFogClass::getMeta()));
-		module->set("PointLight", OtClassClass::create(OtPointLightClass::getMeta()));
-		module->set("SpotLight", OtClassClass::create(OtSpotLightClass::getMeta()));
-		module->set("Sun", OtClassClass::create(OtSunClass::getMeta()));
+		module->set("AmbientLight", OtClass::create(OtAmbientLightClass::getMeta()));
+		module->set("DirectionalLight", OtClass::create(OtDirectionalLightClass::getMeta()));
+		module->set("Fog", OtClass::create(OtFogClass::getMeta()));
+		module->set("PointLight", OtClass::create(OtPointLightClass::getMeta()));
+		module->set("SpotLight", OtClass::create(OtSpotLightClass::getMeta()));
+		module->set("Sun", OtClass::create(OtSunClass::getMeta()));
 
-		module->set("BlendMappedMaterial", OtClassClass::create(OtBlendMappedMaterialClass::getMeta()));
-		module->set("ColoredMaterial", OtClassClass::create(OtColoredMaterialClass::getMeta()));
-		module->set("FixedMaterial", OtClassClass::create(OtFixedMaterialClass::getMeta()));
-		module->set("TexturedMaterial", OtClassClass::create(OtTexturedMaterialClass::getMeta()));
+		module->set("BlendMappedMaterial", OtClass::create(OtBlendMappedMaterialClass::getMeta()));
+		module->set("ColoredMaterial", OtClass::create(OtColoredMaterialClass::getMeta()));
+		module->set("FixedMaterial", OtClass::create(OtFixedMaterialClass::getMeta()));
+		module->set("TexturedMaterial", OtClass::create(OtTexturedMaterialClass::getMeta()));
 
-		module->set("Object3D", OtClassClass::create(OtObject3dClass::getMeta()));
-		module->set("Mesh", OtClassClass::create(OtMeshClass::getMeta()));
-		module->set("Group", OtClassClass::create(OtGroupClass::getMeta()));
+		module->set("Object3D", OtClass::create(OtObject3dClass::getMeta()));
+		module->set("Mesh", OtClass::create(OtMeshClass::getMeta()));
+		module->set("Group", OtClass::create(OtGroupClass::getMeta()));
 
-		module->set("Font", OtClassClass::create(OtFontClass::getMeta()));
-		module->set("HeightMap", OtClassClass::create(OtHeightMapClass::getMeta()));
-		module->set("NoiseMap", OtClassClass::create(OtNoiseMapClass::getMeta()));
-		module->set("Matrix", OtClassClass::create(OtMatrixClass::getMeta()));
+		module->set("Font", OtClass::create(OtFontClass::getMeta()));
+		module->set("HeightMap", OtClass::create(OtHeightMapClass::getMeta()));
+		module->set("NoiseMap", OtClass::create(OtNoiseMapClass::getMeta()));
+		module->set("Matrix", OtClass::create(OtMatrixClass::getMeta()));
 
-		module->set("getDefaultMaterialNames", OtFunctionClass::create(&OtColoredMaterialClass::getDefaultMaterialNames));
-		module->set("loadObj", OtFunctionClass::create(&OtObjLoad));
+		module->set("getDefaultMaterialNames", OtFunction::create(&OtColoredMaterialClass::getDefaultMaterialNames));
+		module->set("loadObj", OtFunction::create(&OtObjLoad));
 
-		module->set("Geometry", OtClassClass::create(OtGeometryClass::getMeta()));
-		module->set("BoxGeometry", OtClassClass::create(OtBoxGeometryClass::getMeta()));
-		module->set("CircleGeometry", OtClassClass::create(OtCircleGeometryClass::getMeta()));
-		module->set("CylinderGeometry", OtClassClass::create(OtCylinderGeometryClass::getMeta()));
-		module->set("DodecahedronGeometry", OtClassClass::create(OtDodecahedronGeometryClass::getMeta()));
-		module->set("ExtrudedGeometry", OtClassClass::create(OtExtrudedGeometryClass::getMeta()));
-		module->set("IcosahedronGeometry", OtClassClass::create(OtIcosahedronGeometryClass::getMeta()));
-		module->set("ModelGeometry", OtClassClass::create(OtModelGeometryClass::getMeta()));
-		module->set("OctahedronGeometry", OtClassClass::create(OtOctahedronGeometryClass::getMeta()));
-		module->set("PlaneGeometry", OtClassClass::create(OtPlaneGeometryClass::getMeta()));
-		module->set("SphereGeometry", OtClassClass::create(OtSphereGeometryClass::getMeta()));
-		module->set("SphericalCubeGeometry", OtClassClass::create(OtSphericalCubeGeometryClass::getMeta()));
-		module->set("TetrahedronGeometry", OtClassClass::create(OtTetrahedronGeometryClass::getMeta()));
-		module->set("TorusGeometry", OtClassClass::create(OtTorusGeometryClass::getMeta()));
+		module->set("Geometry", OtClass::create(OtGeometryClass::getMeta()));
+		module->set("BoxGeometry", OtClass::create(OtBoxGeometryClass::getMeta()));
+		module->set("CircleGeometry", OtClass::create(OtCircleGeometryClass::getMeta()));
+		module->set("CylinderGeometry", OtClass::create(OtCylinderGeometryClass::getMeta()));
+		module->set("DodecahedronGeometry", OtClass::create(OtDodecahedronGeometryClass::getMeta()));
+		module->set("ExtrudedGeometry", OtClass::create(OtExtrudedGeometryClass::getMeta()));
+		module->set("IcosahedronGeometry", OtClass::create(OtIcosahedronGeometryClass::getMeta()));
+		module->set("ModelGeometry", OtClass::create(OtModelGeometryClass::getMeta()));
+		module->set("OctahedronGeometry", OtClass::create(OtOctahedronGeometryClass::getMeta()));
+		module->set("PlaneGeometry", OtClass::create(OtPlaneGeometryClass::getMeta()));
+		module->set("SphereGeometry", OtClass::create(OtSphereGeometryClass::getMeta()));
+		module->set("SphericalCubeGeometry", OtClass::create(OtSphericalCubeGeometryClass::getMeta()));
+		module->set("TetrahedronGeometry", OtClass::create(OtTetrahedronGeometryClass::getMeta()));
+		module->set("TorusGeometry", OtClass::create(OtTorusGeometryClass::getMeta()));
 
-		module->set("Animation", OtClassClass::create(OtAnimationClass::getMeta()));
+		module->set("Animation", OtClass::create(OtAnimationClass::getMeta()));
 
-		module->set("Simulation", OtClassClass::create(OtSimulationClass::getMeta()));
-		module->set("Cloth", OtClassClass::create(OtClothClass::getMeta()));
-		module->set("World", OtClassClass::create(OtWorldClass::getMeta()));
-		module->set("Body", OtClassClass::create(OtBodyClass::getMeta()));
+		module->set("Simulation", OtClass::create(OtSimulationClass::getMeta()));
+		module->set("Cloth", OtClass::create(OtClothClass::getMeta()));
+		module->set("World", OtClass::create(OtWorldClass::getMeta()));
+		module->set("Body", OtClass::create(OtBodyClass::getMeta()));
 
-		module->set("Shape", OtClassClass::create(OtShapeClass::getMeta()));
+		module->set("Shape", OtClass::create(OtShapeClass::getMeta()));
 
-		module->set("Widget", OtClassClass::create(OtWidgetClass::getMeta()));
-		module->set("Checkbox", OtClassClass::create(OtCheckboxClass::getMeta()));
-		module->set("Combobox", OtClassClass::create(OtComboboxClass::getMeta()));
-		module->set("Filler", OtClassClass::create(OtFillerClass::getMeta()));
-		module->set("IntegerSlider", OtClassClass::create(OtIntegerSliderClass::getMeta()));
-		module->set("Knob", OtClassClass::create(OtKnobClass::getMeta()));
-		module->set("Label", OtClassClass::create(OtLabelClass::getMeta()));
-		module->set("Menubar", OtClassClass::create(OtMenubarClass::getMeta()));
-		module->set("Menu", OtClassClass::create(OtMenuClass::getMeta()));
-		module->set("MenuItem", OtClassClass::create(OtMenuItemClass::getMeta()));
-		module->set("Meter", OtClassClass::create(OtMeterClass::getMeta()));
-		module->set("Picture", OtClassClass::create(OtPictureClass::getMeta()));
-		module->set("RealSlider", OtClassClass::create(OtRealSliderClass::getMeta()));
-		module->set("TreeNode", OtClassClass::create(OtTreeNodeClass::getMeta()));
-		module->set("Tron", OtClassClass::create(OtTronClass::getMeta()));
+		module->set("Widget", OtClass::create(OtWidgetClass::getMeta()));
+		module->set("Checkbox", OtClass::create(OtCheckboxClass::getMeta()));
+		module->set("Combobox", OtClass::create(OtComboboxClass::getMeta()));
+		module->set("Filler", OtClass::create(OtFillerClass::getMeta()));
+		module->set("IntegerSlider", OtClass::create(OtIntegerSliderClass::getMeta()));
+		module->set("Knob", OtClass::create(OtKnobClass::getMeta()));
+		module->set("Label", OtClass::create(OtLabelClass::getMeta()));
+		module->set("Menubar", OtClass::create(OtMenubarClass::getMeta()));
+		module->set("Menu", OtClass::create(OtMenuClass::getMeta()));
+		module->set("MenuItem", OtClass::create(OtMenuItemClass::getMeta()));
+		module->set("Meter", OtClass::create(OtMeterClass::getMeta()));
+		module->set("Picture", OtClass::create(OtPictureClass::getMeta()));
+		module->set("RealSlider", OtClass::create(OtRealSliderClass::getMeta()));
+		module->set("TreeNode", OtClass::create(OtTreeNodeClass::getMeta()));
+		module->set("Tron", OtClass::create(OtTronClass::getMeta()));
 
-		module->set("AmbientLightController", OtClassClass::create(OtAmbientLightControllerClass::getMeta()));
-		module->set("BlendMappedMaterialController", OtClassClass::create(OtBlendMappedMaterialControllerClass::getMeta()));
-		module->set("CameraController", OtClassClass::create(OtCameraControllerClass::getMeta()));
-		module->set("DirectionalLightController", OtClassClass::create(OtDirectionalLightControllerClass::getMeta()));
-		module->set("FogController", OtClassClass::create(OtFogControllerClass::getMeta()));
-		module->set("NoiseMapController", OtClassClass::create(OtNoiseMapControllerClass::getMeta()));
-		module->set("HeightMapController", OtClassClass::create(OtHeightMapControllerClass::getMeta()));
-		module->set("PointLightController", OtClassClass::create(OtPointLightControllerClass::getMeta()));
-		module->set("SkyController", OtClassClass::create(OtSkyControllerClass::getMeta()));
-		module->set("SunController", OtClassClass::create(OtSunControllerClass::getMeta()));
-		module->set("SpotLightController", OtClassClass::create(OtSpotLightControllerClass::getMeta()));
-		module->set("TerrainController", OtClassClass::create(OtTerrainControllerClass::getMeta()));
-		module->set("TerrainMapController", OtClassClass::create(OtTerrainMapControllerClass::getMeta()));
-		module->set("VectorDisplayController", OtClassClass::create(OtVectorDisplayControllerClass::getMeta()));
-		module->set("WaterController", OtClassClass::create(OtWaterControllerClass::getMeta()));
+		module->set("AmbientLightController", OtClass::create(OtAmbientLightControllerClass::getMeta()));
+		module->set("BlendMappedMaterialController", OtClass::create(OtBlendMappedMaterialControllerClass::getMeta()));
+		module->set("CameraController", OtClass::create(OtCameraControllerClass::getMeta()));
+		module->set("DirectionalLightController", OtClass::create(OtDirectionalLightControllerClass::getMeta()));
+		module->set("FogController", OtClass::create(OtFogControllerClass::getMeta()));
+		module->set("NoiseMapController", OtClass::create(OtNoiseMapControllerClass::getMeta()));
+		module->set("HeightMapController", OtClass::create(OtHeightMapControllerClass::getMeta()));
+		module->set("PointLightController", OtClass::create(OtPointLightControllerClass::getMeta()));
+		module->set("SkyController", OtClass::create(OtSkyControllerClass::getMeta()));
+		module->set("SunController", OtClass::create(OtSunControllerClass::getMeta()));
+		module->set("SpotLightController", OtClass::create(OtSpotLightControllerClass::getMeta()));
+		module->set("TerrainController", OtClass::create(OtTerrainControllerClass::getMeta()));
+		module->set("TerrainMapController", OtClass::create(OtTerrainMapControllerClass::getMeta()));
+		module->set("VectorDisplayController", OtClass::create(OtVectorDisplayControllerClass::getMeta()));
+		module->set("WaterController", OtClass::create(OtWaterControllerClass::getMeta()));
 
 		// register all the framework ENUMs
 		OtFramework framework = OtFrameworkClass::instance();

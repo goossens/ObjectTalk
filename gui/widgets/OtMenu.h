@@ -20,7 +20,7 @@
 //
 
 class OtMenuClass;
-typedef std::shared_ptr<OtMenuClass> OtMenu;
+using OtMenu = OtObjectPointer<OtMenuClass>;
 
 class OtMenuClass : public OtWidgetClass {
 public:
@@ -28,7 +28,7 @@ public:
 	void init(const std::string& t) { title = t; }
 
 	// adjust menu properties
-	OtObject setTitle(const std::string& t) { title = t; return shared(); }
+	OtObject setTitle(const std::string& t) { title = t; return OtObject(this); }
 	std::string getTitle() { return title; }
 
 	// ensure specified node is allowed as a child
@@ -39,9 +39,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtMenu create();
 
 private:
 	// menu properties

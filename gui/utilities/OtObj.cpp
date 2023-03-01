@@ -57,7 +57,7 @@ OtObject OtObjLoad(const std::string& filename) {
 	// OT_DEBUG(OtFormat("# of texcoords = %d", (int) (attrs.texcoords.size()) / 2));
 
 	// process all materials
-	OtColoredMaterial defaultMaterial = OtColoredMaterialClass::create();
+	OtColoredMaterial defaultMaterial = OtColoredMaterial::create();
 	std::vector<OtMaterial> materialList;
 
 	std::filesystem::path path = filename;
@@ -71,8 +71,8 @@ OtObject OtObjLoad(const std::string& filename) {
 
 		} else {
 			// create a colored material object
-			OtColoredMaterial material = OtColoredMaterialClass::create();
-			
+			OtColoredMaterial material = OtColoredMaterial::create();
+
 			// set colors
 			material->setAmbientRGB(i->ambient[0], i->ambient[1], i->ambient[2]);
 			material->setDiffuseRGB(i->diffuse[0], i->diffuse[1], i->diffuse[2]);
@@ -86,14 +86,14 @@ OtObject OtObjLoad(const std::string& filename) {
 	}
 
 	// process all shapes in model
-	OtGroup group = OtGroupClass::create();
+	OtGroup group = OtGroup::create();
 
 	for (auto& shape : shapes) {
 		// create a new mesh
-		OtMesh mesh = OtMeshClass::create();
+		OtMesh mesh = OtMesh::create();
 
 		// create geometry
-		OtCustomGeometry geometry = OtCustomGeometryClass::create();
+		OtCustomGeometry geometry = OtCustomGeometry::create();
 
 		// see if we have texture coordinates
 		bool hasUV = attrs.texcoords.size() > 0;

@@ -23,7 +23,7 @@
 //
 
 class OtExtrudedGeometryClass;
-typedef std::shared_ptr<OtExtrudedGeometryClass> OtExtrudedGeometry;
+using OtExtrudedGeometry = OtObjectPointer<OtExtrudedGeometryClass>;
 
 class OtExtrudedGeometryClass : public OtGeometryClass {
 public:
@@ -50,9 +50,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtExtrudedGeometry create();
 
 private:
 	// generate geometry

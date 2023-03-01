@@ -129,11 +129,11 @@ std::vector<std::string> OtObjectClass::getMemberNames() {
 //
 
 bool OtObjectClass::operator == (OtObject operand) {
-	if (shared().get() == operand.get()) {
+	if (this == operand.raw()) {
 		return true;
 
 	} else {
-		return type == getMeta() && operand->getType() == getMeta();
+		return this->type == getMeta() && operand.raw()->type == getMeta();
 	}
 }
 
@@ -143,7 +143,7 @@ bool OtObjectClass::operator == (OtObject operand) {
 //
 
 bool OtObjectClass::operator < (OtObject operand) {
-	return shared().get() < operand.get();
+	return this < operand.raw();
 }
 
 
@@ -171,8 +171,8 @@ void OtObjectClass::expectKindOf(const std::string& className) {
 //	OtObjectClass::getClass
 //
 
-OtClass OtObjectClass::getClass() {
-	return OtClassClass::create(getType());
+OtObject OtObjectClass::getClass() {
+	return OtClass::create(getType());
 }
 
 
@@ -229,35 +229,24 @@ OtType OtObjectClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtObjectClass>("Object", nullptr);
 
-		type->set("boolean", OtFunctionClass::create(&OtObjectClass::operator bool));
-		type->set("integer", OtFunctionClass::create(&OtObjectClass::operator int64_t));
-		type->set("real", OtFunctionClass::create(&OtObjectClass::operator double));
-		type->set("string", OtFunctionClass::create(&OtObjectClass::operator std::string));
-		type->set("json", OtFunctionClass::create(&OtObjectClass::json));
+		type->set("boolean", OtFunction::create(&OtObjectClass::operator bool));
+		type->set("integer", OtFunction::create(&OtObjectClass::operator int64_t));
+		type->set("real", OtFunction::create(&OtObjectClass::operator double));
+		type->set("string", OtFunction::create(&OtObjectClass::operator std::string));
+		type->set("json", OtFunction::create(&OtObjectClass::json));
 
-		type->set("has", OtFunctionClass::create(&OtObjectClass::hasByName));
-		type->set("set", OtFunctionClass::create(&OtObjectClass::setByName));
-		type->set("get", OtFunctionClass::create(&OtObjectClass::getByName));
-		type->set("unset", OtFunctionClass::create(&OtObjectClass::unsetByName));
-		type->set("unsetAll", OtFunctionClass::create(&OtObjectClass::unsetAll));
+		type->set("has", OtFunction::create(&OtObjectClass::hasByName));
+		type->set("set", OtFunction::create(&OtObjectClass::setByName));
+		type->set("get", OtFunction::create(&OtObjectClass::getByName));
+		type->set("unset", OtFunction::create(&OtObjectClass::unsetByName));
+		type->set("unsetAll", OtFunction::create(&OtObjectClass::unsetAll));
 
-		type->set("__eq__", OtFunctionClass::create(&OtObjectClass::equal));
-		type->set("__ne__", OtFunctionClass::create(&OtObjectClass::notEqual));
+		type->set("__eq__", OtFunction::create(&OtObjectClass::equal));
+		type->set("__ne__", OtFunction::create(&OtObjectClass::notEqual));
 
-		type->set("getClass", OtFunctionClass::create(&OtObjectClass::getClass));
-		type->set("isKindOf", OtFunctionClass::create(&OtObjectClass::isKindOf));
+		type->set("getClass", OtFunction::create(&OtObjectClass::getClass));
+		type->set("isKindOf", OtFunction::create(&OtObjectClass::isKindOf));
 	}
 
 	return type;
-}
-
-
-//
-//	OtObjectClass::create
-//
-
-OtObject OtObjectClass::create() {
-	OtObject object = std::make_shared<OtObjectClass>();
-	object->setType(getMeta());
-	return object;
 }

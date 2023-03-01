@@ -24,10 +24,14 @@
 //
 
 class OtBodyClass;
-typedef std::shared_ptr<OtBodyClass> OtBody;
+using OtBody = OtObjectPointer<OtBodyClass>;
 
 class OtBodyClass : public OtGuiClass {
 public:
+	// constructors
+	OtBodyClass() = default;
+	OtBodyClass(b2Body* b) : body(b) {}
+
 	// clear all content
 	void clear();
 
@@ -59,10 +63,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtBody create();
-	static OtBody create(b2Body* body);
 
 private:
 	// tracking our Box2D object

@@ -25,7 +25,7 @@
 //
 
 class OtShapeClass;
-typedef std::shared_ptr<OtShapeClass> OtShape;
+using OtShape = OtObjectPointer<OtShapeClass>;
 
 class OtShapeClass : public OtGuiClass {
 public:
@@ -52,9 +52,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtShape create();
 
 private:
 	std::vector<OtCurvePath> paths;

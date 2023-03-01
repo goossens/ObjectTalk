@@ -34,19 +34,14 @@ public:
 		return glm::vec2(quatraticBezier(t, p1.x, p2.x, p3.x), quatraticBezier(t, p1.y, p2.y, p3.y));
 	}
 
-	// create a new instance
-	static OtQuadraticBezierCurve create(const glm::vec2& v1, const glm::vec2& v2, const glm::vec2& v3) {
-		return std::make_shared<OtQuadraticBezierCurveClass>(v1, v2, v3);
-	}
-
 private:
 	glm::vec2 p1, p2, p3;
 
 	static float quatraticBezier(float t, float v1, float v2, float v3) {
-		float k = 1 - t;
+		float k = 1.0f - t;
 
 		return (k * k * v1) +
-			(2 * k * t * v2) +
+			(2.0f * k * t * v2) +
 			(t * t * v3);
 	}
 };

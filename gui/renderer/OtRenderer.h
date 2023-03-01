@@ -17,6 +17,8 @@
 
 #include "glm/glm.hpp"
 
+#include "OtObjectPointer.h"
+
 #include "OtAABB.h"
 #include "OtCascadedShadowMap.h"
 #include "OtFrameBuffer.h"
@@ -35,10 +37,10 @@
 //
 
 class OtCameraClass;
-typedef std::shared_ptr<OtCameraClass> OtCamera;
+using OtCamera = OtObjectPointer<OtCameraClass>;
 
 class OtSceneClass;
-typedef std::shared_ptr<OtSceneClass> OtScene;
+using OtScene = OtObjectPointer<OtSceneClass>;
 
 
 //
@@ -81,8 +83,8 @@ public:
 	OtCamera getCamera() { return camera; }
 
 	// access scene
-	void setScene(OtScene s) { scene = s; }
-	OtScene getScene() { return scene; }
+	void setScene(OtScene scene);
+	OtScene getScene();
 
 	// add ambient color
 	void addAmbientLight(const glm::vec3& ambient);

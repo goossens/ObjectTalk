@@ -21,8 +21,7 @@
 //
 
 class OtNodeClass;
-typedef std::shared_ptr<OtNodeClass> OtNode;
-typedef std::weak_ptr<OtNodeClass> OtNodeWeak;
+using OtNode = OtObjectPointer<OtNodeClass>;
 
 class OtNodeClass : public OtGuiClass {
 public:
@@ -31,8 +30,8 @@ public:
 	OtObject remove(OtObject object);
 
 	// get our parent
-	OtNode getParent() { return parent.lock(); }
-	bool hasParent() { return !parent.expired(); }
+	OtNode getParent() { return OtNode(parent); }
+	bool hasParent() { return parent != nullptr; }
 
 	// ensure specified node is allowed as a child
 	virtual void validateChild(OtNode child);
@@ -51,20 +50,17 @@ public:
 	size_t size() { return children.size(); }
 
 	// update enabled flag
-	OtObject enable() { enabled = true; return shared(); }
-	OtObject disable() { enabled = false; return shared(); }
-	OtObject setEnabled(bool e) { enabled = e; return shared(); }
+	OtObject enable() { enabled = true; return OtObject(this); }
+	OtObject disable() { enabled = false; return OtObject(this); }
+	OtObject setEnabled(bool e) { enabled = e; return OtObject(this); }
 	bool isEnabled() { return enabled; }
 
 	// get type definition
 	static OtType getMeta();
 
-	// create a new object
-	static OtNode create();
-
 protected:
 	// parent node
-	OtNodeWeak parent;
+	OtNodeClass* parent = nullptr;
 
 	// our children
 	std::vector<OtNode> children;

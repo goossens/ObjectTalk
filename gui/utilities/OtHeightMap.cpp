@@ -87,7 +87,7 @@ OtObject OtHeightMapClass::loadMap(const std::string& filename) {
 
 	// notify observers
 	notify();
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -98,7 +98,7 @@ OtObject OtHeightMapClass::loadMap(const std::string& filename) {
 OtObject OtHeightMapClass::setScale(float s) {
 	scale = s;
 	notify();
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -109,7 +109,7 @@ OtObject OtHeightMapClass::setScale(float s) {
 OtObject OtHeightMapClass::setOffset(float o) {
 	offset = o;
 	notify();
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -193,23 +193,12 @@ OtType OtHeightMapClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtHeightMapClass>("HeightMap", OtGuiClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtHeightMapClass::init));
-		type->set("loadMap", OtFunctionClass::create(&OtHeightMapClass::loadMap));
-		type->set("setScale", OtFunctionClass::create(&OtHeightMapClass::setScale));
-		type->set("setOffset", OtFunctionClass::create(&OtHeightMapClass::setOffset));
-		type->set("getHeight", OtFunctionClass::create(&OtHeightMapClass::getHeight));
+		type->set("__init__", OtFunction::create(&OtHeightMapClass::init));
+		type->set("loadMap", OtFunction::create(&OtHeightMapClass::loadMap));
+		type->set("setScale", OtFunction::create(&OtHeightMapClass::setScale));
+		type->set("setOffset", OtFunction::create(&OtHeightMapClass::setOffset));
+		type->set("getHeight", OtFunction::create(&OtHeightMapClass::getHeight));
 	}
 
 	return type;
-}
-
-
-//
-//	OtHeightMapClass::create
-//
-
-OtHeightMap OtHeightMapClass::create() {
-	OtHeightMap heightmap = std::make_shared<OtHeightMapClass>();
-	heightmap->setType(getMeta());
-	return heightmap;
 }

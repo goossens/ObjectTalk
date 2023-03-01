@@ -20,7 +20,7 @@
 //
 
 class OtGuiClass;
-typedef std::shared_ptr<OtGuiClass> OtGui;
+using OtGui = OtObjectPointer<OtGuiClass>;
 
 class OtGuiClass : public OtObjectClass {
 public:

@@ -20,7 +20,7 @@
 //
 
 class OtAppObjectClass;
-typedef std::shared_ptr<OtAppObjectClass> OtAppObject;
+using OtAppObject = OtObjectPointer<OtAppObjectClass>;
 
 class OtAppObjectClass : public OtNodeClass {
 public:

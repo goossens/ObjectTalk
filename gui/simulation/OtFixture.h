@@ -22,10 +22,14 @@
 //
 
 class OtFixtureClass;
-typedef std::shared_ptr<OtFixtureClass> OtFixture;
+using OtFixture = OtObjectPointer<OtFixtureClass>;
 
 class OtFixtureClass : public OtGuiClass {
 public:
+	// constructors
+	OtFixtureClass() = default;
+	OtFixtureClass(b2Fixture* f) : fixture(f) {}
+
 	// get type definition
 	static OtType getMeta();
 
@@ -37,10 +41,6 @@ public:
 	float getDensity() { return fixture->GetDensity(); }
 	float getFriction() { return fixture->GetFriction(); }
 	float getRestitution() { return fixture->GetRestitution(); }
-
-	// create a new object
-	static OtFixture create();
-	static OtFixture create(b2Fixture* body);
 
 private:
 	// tracking our Box2D object

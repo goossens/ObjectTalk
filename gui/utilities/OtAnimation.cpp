@@ -21,7 +21,7 @@
 
 OtObject OtAnimationClass::from(double value) {
 	animator = tweeny::from(value);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -31,7 +31,7 @@ OtObject OtAnimationClass::from(double value) {
 
 OtObject OtAnimationClass::to(double value) {
 	animator.to(value);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -41,7 +41,7 @@ OtObject OtAnimationClass::to(double value) {
 
 OtObject OtAnimationClass::via(const std::string& easing) {
 	animator.via(easing);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -51,7 +51,7 @@ OtObject OtAnimationClass::via(const std::string& easing) {
 
 OtObject OtAnimationClass::during(int32_t milliseconds) {
 	animator.during(milliseconds);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -72,7 +72,7 @@ OtObject OtAnimationClass::repeat(size_t times) {
 		return false;
 	});
 
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -91,7 +91,7 @@ OtObject OtAnimationClass::continuous() {
 		return false;
 	});
 
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -101,7 +101,7 @@ OtObject OtAnimationClass::continuous() {
 
 OtObject OtAnimationClass::seek(float percentage) {
 	animator.seek(percentage);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -115,7 +115,7 @@ OtObject OtAnimationClass::onStep(OtObject callback) {
 		return false;
 	});
 
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -138,26 +138,15 @@ OtType OtAnimationClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtAnimationClass>("Animation", OtGuiClass::getMeta());
-		type->set("from", OtFunctionClass::create(&OtAnimationClass::from));
-		type->set("to", OtFunctionClass::create(&OtAnimationClass::to));
-		type->set("via", OtFunctionClass::create(&OtAnimationClass::via));
-		type->set("during", OtFunctionClass::create(&OtAnimationClass::during));
-		type->set("repeat", OtFunctionClass::create(&OtAnimationClass::repeat));
-		type->set("continuous", OtFunctionClass::create(&OtAnimationClass::continuous));
-		type->set("seek", OtFunctionClass::create(&OtAnimationClass::seek));
-		type->set("onStep", OtFunctionClass::create(&OtAnimationClass::onStep));
+		type->set("from", OtFunction::create(&OtAnimationClass::from));
+		type->set("to", OtFunction::create(&OtAnimationClass::to));
+		type->set("via", OtFunction::create(&OtAnimationClass::via));
+		type->set("during", OtFunction::create(&OtAnimationClass::during));
+		type->set("repeat", OtFunction::create(&OtAnimationClass::repeat));
+		type->set("continuous", OtFunction::create(&OtAnimationClass::continuous));
+		type->set("seek", OtFunction::create(&OtAnimationClass::seek));
+		type->set("onStep", OtFunction::create(&OtAnimationClass::onStep));
 	}
 
 	return type;
-}
-
-
-//
-//	OtAnimationClass::create
-//
-
-OtAnimation OtAnimationClass::create() {
-	OtAnimation animation = std::make_shared<OtAnimationClass>();
-	animation->setType(getMeta());
-	return animation;
 }

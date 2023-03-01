@@ -21,7 +21,7 @@
 //
 
 class OtKnobClass;
-typedef std::shared_ptr<OtKnobClass> OtKnob;
+using OtKnob = OtObjectPointer<OtKnobClass>;
 
 class OtKnobClass : public OtWidgetClass {
 public:
@@ -41,7 +41,7 @@ public:
 	OtObject setCallback(OtObject callback);
 
 	// access knob value (range 0-100)
-	OtObject setValue(float v) { value = v; return shared(); }
+	OtObject setValue(float v) { value = v; return OtObject(this); }
 	float getValue() { return value; }
 
 	// render content

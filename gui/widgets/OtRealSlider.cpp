@@ -53,19 +53,8 @@ OtType OtRealSliderClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtRealSliderClass>("RealSlider", OtWidgetClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtRealSliderClass::init));
+		type->set("__init__", OtFunction::create(&OtRealSliderClass::init));
 	}
 
 	return type;
-}
-
-
-//
-//	OtRealSliderClass::create
-//
-
-OtRealSlider OtRealSliderClass::create() {
-	OtRealSlider slider = std::make_shared<OtRealSliderClass>();
-	slider->setType(getMeta());
-	return slider;
 }

@@ -24,7 +24,7 @@
 //
 
 class OtCircleGeometryClass;
-typedef std::shared_ptr<OtCircleGeometryClass> OtCircleGeometry;
+using OtCircleGeometry = OtObjectPointer<OtCircleGeometryClass>;
 
 class OtCircleGeometryClass : public OtGeometryClass {
 public:
@@ -52,9 +52,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtCircleGeometry create();
 
 private:
 	// generate geometry

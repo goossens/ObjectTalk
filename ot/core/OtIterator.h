@@ -20,7 +20,7 @@
 //
 
 class OtIteratorClass;
-typedef std::shared_ptr<OtIteratorClass> OtIterator;
+using OtIterator = OtObjectPointer<OtIteratorClass>;
 
 class OtIteratorClass : public OtInternalClass {
 public:

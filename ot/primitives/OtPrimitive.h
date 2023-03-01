@@ -20,7 +20,7 @@
 //
 
 class OtPrimitiveClass;
-typedef std::shared_ptr<OtPrimitiveClass> OtPrimitive;
+using OtPrimitive = OtObjectPointer<OtPrimitiveClass>;
 
 class OtPrimitiveClass : public OtObjectClass {
 public:

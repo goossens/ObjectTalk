@@ -23,7 +23,7 @@
 //
 
 class OtStringClass;
-typedef std::shared_ptr<OtStringClass> OtString;
+using OtString = OtObjectPointer<OtStringClass>;
 
 class OtStringClass : public OtPrimitiveClass {
 	friend class OtStringIteratorClass;
@@ -98,9 +98,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtString create(const std::string& value);
 
 private:
 	std::string value = "";

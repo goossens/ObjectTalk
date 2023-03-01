@@ -55,7 +55,7 @@ void OtFileOpenDialogClass::init(size_t count, OtObject* parameters) {
 
 OtObject OtFileOpenDialogClass::setTitle(const std::string& t) {
 	title = t;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -65,7 +65,7 @@ OtObject OtFileOpenDialogClass::setTitle(const std::string& t) {
 
 OtObject OtFileOpenDialogClass::setTypeFilters(const std::string& f) {
 	filters = f;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -76,7 +76,7 @@ OtObject OtFileOpenDialogClass::setTypeFilters(const std::string& f) {
 OtObject OtFileOpenDialogClass::setCallback(OtObject cb) {
 	OtCallbackValidate(cb, 1);
 	callback = cb;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -86,7 +86,7 @@ OtObject OtFileOpenDialogClass::setCallback(OtObject cb) {
 
 OtObject OtFileOpenDialogClass::setCurrentDirectory(const std::string& p) {
 	path = p;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -117,7 +117,7 @@ void OtFileOpenDialogClass::render() {
 		// call callback if required
 		if (ImGuiFileDialog::Instance()->IsOk() && callback) {
 			std::map<std::string, std::string> selected = ImGuiFileDialog::Instance()->GetSelection();
-			OtVM::instance()->callMemberFunction(callback, "__call__", OtPathClass::create(selected.begin()->second));
+			OtVM::instance()->callMemberFunction(callback, "__call__", OtPath::create(selected.begin()->second));
 		}
 
 		// close dialog
@@ -135,26 +135,15 @@ OtType OtFileOpenDialogClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtFileOpenDialogClass>("FileOpenDialog", OtDialogClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtFileOpenDialogClass::init));
+		type->set("__init__", OtFunction::create(&OtFileOpenDialogClass::init));
 
-		type->set("open", OtFunctionClass::create(&OtFileOpenDialogClass::open));
+		type->set("open", OtFunction::create(&OtFileOpenDialogClass::open));
 
-		type->set("setTitle", OtFunctionClass::create(&OtFileOpenDialogClass::setTitle));
-		type->set("setTypeFilters", OtFunctionClass::create(&OtFileOpenDialogClass::setTypeFilters));
-		type->set("setCallback", OtFunctionClass::create(&OtFileOpenDialogClass::setCallback));
-		type->set("setCurrentDirectory", OtFunctionClass::create(&OtFileOpenDialogClass::setCurrentDirectory));
+		type->set("setTitle", OtFunction::create(&OtFileOpenDialogClass::setTitle));
+		type->set("setTypeFilters", OtFunction::create(&OtFileOpenDialogClass::setTypeFilters));
+		type->set("setCallback", OtFunction::create(&OtFileOpenDialogClass::setCallback));
+		type->set("setCurrentDirectory", OtFunction::create(&OtFileOpenDialogClass::setCurrentDirectory));
 	}
 
 	return type;
-}
-
-
-//
-//	OtFileOpenDialogClass::create
-//
-
-OtFileOpenDialog OtFileOpenDialogClass::create() {
-	OtFileOpenDialog dialog = std::make_shared<OtFileOpenDialogClass>();
-	dialog->setType(getMeta());
-	return dialog;
 }

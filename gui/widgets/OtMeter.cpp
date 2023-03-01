@@ -49,7 +49,7 @@ OtObject OtMeterClass::setTexture(const std::string& textureName) {
 	texture.loadFromFile(textureName);
 	width = texture.getWidth();
 	height = texture.getHeight();
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -59,7 +59,7 @@ OtObject OtMeterClass::setTexture(const std::string& textureName) {
 
 OtObject OtMeterClass::setMargin(int m) {
 	margin = m;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -69,7 +69,7 @@ OtObject OtMeterClass::setMargin(int m) {
 
 OtObject OtMeterClass::setLabel(const std::string& l) {
 	label = l;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -135,26 +135,15 @@ OtType OtMeterClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtMeterClass>("Meter", OtWidgetClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtMeterClass::init));
+		type->set("__init__", OtFunction::create(&OtMeterClass::init));
 
-		type->set("setTexture", OtFunctionClass::create(&OtMeterClass::setTexture));
-		type->set("setMargin", OtFunctionClass::create(&OtMeterClass::setMargin));
-		type->set("setLabel", OtFunctionClass::create(&OtMeterClass::setLabel));
+		type->set("setTexture", OtFunction::create(&OtMeterClass::setTexture));
+		type->set("setMargin", OtFunction::create(&OtMeterClass::setMargin));
+		type->set("setLabel", OtFunction::create(&OtMeterClass::setLabel));
 
-		type->set("setValue", OtFunctionClass::create(&OtMeterClass::setValue));
-		type->set("getValue", OtFunctionClass::create(&OtMeterClass::getValue));
+		type->set("setValue", OtFunction::create(&OtMeterClass::setValue));
+		type->set("getValue", OtFunction::create(&OtMeterClass::getValue));
 	}
 
 	return type;
-}
-
-
-//
-//	OtMeterClass::create
-//
-
-OtMeter OtMeterClass::create() {
-	OtMeter meter = std::make_shared<OtMeterClass>();
-	meter->setType(getMeta());
-	return meter;
 }

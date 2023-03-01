@@ -22,19 +22,9 @@ OtType OtArrayIteratorClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtArrayIteratorClass>("ArrayIterator", OtIteratorClass::getMeta());
-		type->set("__end__", OtFunctionClass::create(&OtArrayIteratorClass::end));
-		type->set("__next__", OtFunctionClass::create(&OtArrayIteratorClass::next));
+		type->set("__end__", OtFunction::create(&OtArrayIteratorClass::end));
+		type->set("__next__", OtFunction::create(&OtArrayIteratorClass::next));
 	}
 
 	return type;
-}
-
-//
-//	OtArrayIteratorClass::create
-//
-
-OtArrayIterator OtArrayIteratorClass::create(OtArray array) {
-	OtArrayIterator iterator = std::make_shared<OtArrayIteratorClass>(array);
-	iterator->setType(getMeta());
-	return iterator;
 }

@@ -53,11 +53,6 @@ public:
 		return glm::distance(p1, p2);
 	}
 
-	// create a new instance
-	static OtLineCurve create(const glm::vec2& v1, const glm::vec2& v2) {
-		return std::make_shared<OtLineCurveClass>(v1, v2);
-	}
-
 private:
 	glm::vec2 p1, p2;
 };

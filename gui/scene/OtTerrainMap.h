@@ -29,7 +29,7 @@
 //
 
 class OtTerrainMapClass;
-typedef std::shared_ptr<OtTerrainMapClass> OtTerrainMap;
+using OtTerrainMap = OtObjectPointer<OtTerrainMapClass>;
 
 class OtTerrainMapClass : public OtGuiClass {
 public:
@@ -74,9 +74,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtTerrainMap create();
 
 private:
 	// generate noisemap from perlin noise

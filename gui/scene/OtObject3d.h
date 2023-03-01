@@ -20,7 +20,7 @@
 //
 
 class OtObject3dClass;
-typedef std::shared_ptr<OtObject3dClass> OtObject3d;
+using OtObject3d = OtObjectPointer<OtObject3dClass>;
 
 class OtObject3dClass : public OtSceneObjectClass {
 public:
@@ -42,9 +42,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtObject3d create();
 
 protected:
 	// matrix multiplication order

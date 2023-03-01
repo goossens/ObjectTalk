@@ -47,7 +47,7 @@ int main(int argc, char* argv[]) {
 		.implicit_value(true);
 
 	program.add_argument("files")
-		.help("files to execute")
+		.help("files to process")
 		.remaining();
 
 	try {
@@ -121,12 +121,12 @@ int main(int argc, char* argv[]) {
 					// handle a script file
 					if (program["--disassemble"] == true) {
 						OtCompiler compiler;
-						auto object = OtObjectClass::create();
+						auto object = OtObject::create();
 						auto bytecode = compiler.compileFile(file, object);
 						std::cout << bytecode->disassemble() << std::endl;
 
 					} else {
-						auto module = OtModuleClass::create();
+						auto module = OtModule::create();
 						module->load(file);
 						module->unsetAll();
 					}

@@ -119,7 +119,7 @@ void OtSkyboxClass::init(size_t count, OtObject* parameters) {
 
 OtObject OtSkyboxClass::setCubemap(const std::string& posx, const std::string& negx, const std::string& posy, const std::string& negy, const std::string& posz, const std::string& negz) {
 	cubemap.load(posx, negx, posy, negy, posz, negz);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -159,20 +159,9 @@ OtType OtSkyboxClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtSkyboxClass>("Skybox", OtSceneObjectClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtSkyboxClass::init));
-		type->set("setCubemap", OtFunctionClass::create(&OtSkyboxClass::setCubemap));
+		type->set("__init__", OtFunction::create(&OtSkyboxClass::init));
+		type->set("setCubemap", OtFunction::create(&OtSkyboxClass::setCubemap));
 	}
 
 	return type;
-}
-
-
-//
-//	OtSkyboxClass::create
-//
-
-OtSkybox OtSkyboxClass::create() {
-	OtSkybox skybox = std::make_shared<OtSkyboxClass>();
-	skybox->setType(getMeta());
-	return skybox;
 }

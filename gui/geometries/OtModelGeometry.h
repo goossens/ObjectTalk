@@ -22,7 +22,7 @@
 //
 
 class OtModelGeometryClass;
-typedef std::shared_ptr<OtModelGeometryClass> OtModelGeometry;
+using OtModelGeometry = OtObjectPointer<OtModelGeometryClass>;
 
 class OtModelGeometryClass : public OtGeometryClass {
 public:
@@ -48,9 +48,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtModelGeometry create();
 
 private:
 	// generate geometry

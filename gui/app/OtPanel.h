@@ -20,7 +20,7 @@
 //
 
 class OtPanelClass;
-typedef std::shared_ptr<OtPanelClass> OtPanel;
+using OtPanel = OtObjectPointer<OtPanelClass>;
 
 class OtPanelClass : public OtAppObjectClass {
 public:
@@ -38,9 +38,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtPanel create();
 
 private:
 	int x = 0;

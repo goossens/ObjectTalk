@@ -30,7 +30,7 @@ OtClassClass::OtClassClass(const std::string& name) {
 
 void OtClassClass::setParent(OtObject object) {
 	object->expectKindOf("Class");
-	classType->setParent(object->cast<OtClassClass>()->classType);
+	classType->setParent(OtClass(object)->classType);
 }
 
 
@@ -95,30 +95,13 @@ OtType OtClassClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtClassClass>("Class", OtInternalClass::getMeta());
-		type->set("__call__", OtFunctionClass::create(&OtClassClass::instantiate));
-		type->set("getName", OtFunctionClass::create(&OtClassClass::getName));
-		type->set("setParent", OtFunctionClass::create(&OtClassClass::setParent));
-		type->set("hasParent", OtFunctionClass::create(&OtClassClass::hasParent));
-		type->set("getParent", OtFunctionClass::create(&OtClassClass::getParent));
-		type->set("isKindOf", OtFunctionClass::create(&OtClassClass::isKindOf));
+		type->set("__call__", OtFunction::create(&OtClassClass::instantiate));
+		type->set("getName", OtFunction::create(&OtClassClass::getName));
+		type->set("setParent", OtFunction::create(&OtClassClass::setParent));
+		type->set("hasParent", OtFunction::create(&OtClassClass::hasParent));
+		type->set("getParent", OtFunction::create(&OtClassClass::getParent));
+		type->set("isKindOf", OtFunction::create(&OtClassClass::isKindOf));
 	}
 
 	return type;
-}
-
-
-//
-//	OtClassClass::create
-//
-
-OtClass OtClassClass::create(OtType type) {
-	OtClass cls = std::make_shared<OtClassClass>(type);
-	cls->setType(getMeta());
-	return cls;
-}
-
-OtClass OtClassClass::create(const std::string& name) {
-	OtClass cls = std::make_shared<OtClassClass>(name);
-	cls->setType(getMeta());
-	return cls;
 }

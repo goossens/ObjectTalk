@@ -23,21 +23,21 @@
 //
 
 class OtMaterialClass;
-typedef std::shared_ptr<OtMaterialClass> OtMaterial;
+using OtMaterial = OtObjectPointer<OtMaterialClass>;
 
 class OtMaterialClass : public OtGuiClass {
 public:
 	// determines which side of faces will be rendered
-	OtObject setFrontSide() { frontside = true; backside = false; return shared(); }
-	OtObject setBackSide() { frontside = false; backside = true; return shared(); }
-	OtObject setDoubleSided() { frontside = true; backside = true; return shared(); }
+	OtObject setFrontSide() { frontside = true; backside = false; return OtObject(this); }
+	OtObject setBackSide() { frontside = false; backside = true; return OtObject(this); }
+	OtObject setDoubleSided() { frontside = true; backside = true; return OtObject(this); }
 	bool isFrontSided() { return frontside; }
 	bool isBackSided() { return backside; }
 	bool isDoubleSided() { return frontside && backside; }
 
 	// access transparency
-	OtObject setTransparent() { transparent = true; return shared(); }
-	OtObject setOpaque() { transparent = false; return shared(); }
+	OtObject setTransparent() { transparent = true; return OtObject(this); }
+	OtObject setOpaque() { transparent = false; return OtObject(this); }
 	bool isTransparent() { return transparent; }
 	bool isOpaque() { return !transparent; }
 

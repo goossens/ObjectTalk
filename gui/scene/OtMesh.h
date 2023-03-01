@@ -24,7 +24,7 @@
 //
 
 class OtMeshClass;
-typedef std::shared_ptr<OtMeshClass> OtMesh;
+using OtMesh = OtObjectPointer<OtMeshClass>;
 
 class OtMeshClass : public OtObject3dClass {
 public:
@@ -44,9 +44,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtMesh create();
 
 protected:
 	// properties

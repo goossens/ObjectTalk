@@ -20,7 +20,7 @@
 //
 
 class OtThrowClass;
-typedef std::shared_ptr<OtThrowClass> OtThrow;
+using OtThrow = OtObjectPointer<OtThrowClass>;
 
 class OtThrowClass : public OtInternalClass {
 public:
@@ -32,7 +32,4 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtThrow create();
 };

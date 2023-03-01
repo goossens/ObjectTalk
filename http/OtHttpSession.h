@@ -26,7 +26,7 @@
 //
 
 class OtHttpSessionClass;
-typedef std::shared_ptr<OtHttpSessionClass> OtHttpSession;
+using OtHttpSession = OtObjectPointer<OtHttpSessionClass>;
 
 class OtHttpSessionClass : public OtHttpClass {
 public:
@@ -46,9 +46,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtHttpSession create(uv_stream_t* stream, OtHttpRouter router);
 
 private:
 	bool active = false;

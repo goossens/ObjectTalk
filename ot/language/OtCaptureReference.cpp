@@ -20,7 +20,8 @@
 //
 
 OtObject OtCaptureReferenceClass::deref() {
-	return OtVM::instance()->getStack()->getClosure()->cast<OtClosureClass>()->get(member);
+	OtClosure closure = OtVM::instance()->getStack()->getClosure();
+	return closure->get(member);
 }
 
 
@@ -29,7 +30,8 @@ OtObject OtCaptureReferenceClass::deref() {
 //
 
 OtObject OtCaptureReferenceClass::assign(OtObject value) {
-	return OtVM::instance()->getStack()->getClosure()->cast<OtClosureClass>()->set(member, value);
+	OtClosure closure = OtVM::instance()->getStack()->getClosure();
+	return closure->set(member, value);
 }
 
 
@@ -42,20 +44,9 @@ OtType OtCaptureReferenceClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtCaptureReferenceClass>("CaptureReference", OtReferenceClass::getMeta());
-		type->set("__deref__", OtFunctionClass::create(&OtCaptureReferenceClass::deref));
-		type->set("__assign__", OtFunctionClass::create(&OtCaptureReferenceClass::assign));
+		type->set("__deref__", OtFunction::create(&OtCaptureReferenceClass::deref));
+		type->set("__assign__", OtFunction::create(&OtCaptureReferenceClass::assign));
 	}
 
 	return type;
-}
-
-
-//
-//	OtCaptureReferenceClass::create
-//
-
-OtCaptureReference OtCaptureReferenceClass::create(size_t member) {
-	OtCaptureReference reference = std::make_shared<OtCaptureReferenceClass>(member);
-	reference->setType(getMeta());
-	return reference;
 }

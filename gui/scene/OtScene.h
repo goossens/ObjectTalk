@@ -22,7 +22,7 @@
 //
 
 class OtSceneClass;
-typedef std::shared_ptr<OtSceneClass> OtScene;
+using OtScene = OtObjectPointer<OtSceneClass>;
 
 class OtSceneClass : public OtNodeClass {
 public:
@@ -37,7 +37,4 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtScene create();
 };

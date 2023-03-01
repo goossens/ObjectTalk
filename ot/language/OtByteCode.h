@@ -28,7 +28,7 @@
 //
 
 class OtByteCodeClass;
-typedef std::shared_ptr<OtByteCodeClass> OtByteCode;
+using OtByteCode = OtObjectPointer<OtByteCodeClass>;
 
 class OtByteCodeClass : public OtInternalClass {
 public:
@@ -117,9 +117,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create new code object
-	static OtByteCode create(OtSource source);
 
 private:
 	// emit parts to bytecode

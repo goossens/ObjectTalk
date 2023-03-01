@@ -49,7 +49,7 @@ OtObject OtTexturedMaterialClass::setTexture(const std::string& textureName) {
 	}
 
 	texture.loadFromFile(textureName);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -63,7 +63,7 @@ OtObject OtTexturedMaterialClass::setNormalMap(const std::string& normalmapName)
 	}
 
 	normalmap.loadFromFile(normalmapName);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -73,7 +73,7 @@ OtObject OtTexturedMaterialClass::setNormalMap(const std::string& normalmapName)
 
 OtObject OtTexturedMaterialClass::setScale(float s) {
 	scale = s;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -83,7 +83,7 @@ OtObject OtTexturedMaterialClass::setScale(float s) {
 
 OtObject OtTexturedMaterialClass::setTransparent(bool t) {
 	transparent = t;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -93,7 +93,7 @@ OtObject OtTexturedMaterialClass::setTransparent(bool t) {
 
 OtObject OtTexturedMaterialClass::setAmbient(const std::string& c) {
 	ambient = OtColorParseToVec3(c);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -103,7 +103,7 @@ OtObject OtTexturedMaterialClass::setAmbient(const std::string& c) {
 
 OtObject OtTexturedMaterialClass::setDiffuse(const std::string& c) {
 	diffuse = OtColorParseToVec3(c);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -113,7 +113,7 @@ OtObject OtTexturedMaterialClass::setDiffuse(const std::string& c) {
 
 OtObject OtTexturedMaterialClass::setSpecular(const std::string& c) {
 	specular = OtColorParseToVec3(c);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -123,7 +123,7 @@ OtObject OtTexturedMaterialClass::setSpecular(const std::string& c) {
 
 OtObject OtTexturedMaterialClass::setShininess(float s) {
 	shininess = s;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -188,28 +188,18 @@ OtType OtTexturedMaterialClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtTexturedMaterialClass>("TexturedMaterial", OtMaterialClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtTexturedMaterialClass::init));
+		type->set("__init__", OtFunction::create(&OtTexturedMaterialClass::init));
 
-		type->set("setTexture", OtFunctionClass::create(&OtTexturedMaterialClass::setTexture));
-		type->set("setNormalMap", OtFunctionClass::create(&OtTexturedMaterialClass::setNormalMap));
-		type->set("setScale", OtFunctionClass::create(&OtTexturedMaterialClass::setScale));
-		type->set("setTransparent", OtFunctionClass::create(&OtTexturedMaterialClass::setTransparent));
+		type->set("setTexture", OtFunction::create(&OtTexturedMaterialClass::setTexture));
+		type->set("setNormalMap", OtFunction::create(&OtTexturedMaterialClass::setNormalMap));
+		type->set("setScale", OtFunction::create(&OtTexturedMaterialClass::setScale));
+		type->set("setTransparent", OtFunction::create(&OtTexturedMaterialClass::setTransparent));
 
-		type->set("setAmbient", OtFunctionClass::create(&OtTexturedMaterialClass::setAmbient));
-		type->set("setDiffuse", OtFunctionClass::create(&OtTexturedMaterialClass::setDiffuse));
-		type->set("setSpecular", OtFunctionClass::create(&OtTexturedMaterialClass::setSpecular));
-		type->set("setShininess", OtFunctionClass::create(&OtTexturedMaterialClass::setShininess));
+		type->set("setAmbient", OtFunction::create(&OtTexturedMaterialClass::setAmbient));
+		type->set("setDiffuse", OtFunction::create(&OtTexturedMaterialClass::setDiffuse));
+		type->set("setSpecular", OtFunction::create(&OtTexturedMaterialClass::setSpecular));
+		type->set("setShininess", OtFunction::create(&OtTexturedMaterialClass::setShininess));
 	}
 
 	return type;
-}
-
-//
-//	OtTexturedMaterialClass::create
-//
-
-OtTexturedMaterial OtTexturedMaterialClass::create() {
-	OtTexturedMaterial material = std::make_shared<OtTexturedMaterialClass>();
-	material->setType(getMeta());
-	return material;
 }

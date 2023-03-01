@@ -46,7 +46,7 @@ void OtAmbientLightClass::init(size_t count, OtObject* parameters) {
 
 OtObject OtAmbientLightClass::setColor(const std::string& name) {
 	color = OtColorParseToVec3(name);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -56,7 +56,7 @@ OtObject OtAmbientLightClass::setColor(const std::string& name) {
 
 OtObject OtAmbientLightClass::setColorRGB(float r, float g, float b) {
 	color = glm::vec3(r, g, b);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -88,22 +88,11 @@ OtType OtAmbientLightClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtAmbientLightClass>("AmbientLight", OtLightClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtAmbientLightClass::init));
+		type->set("__init__", OtFunction::create(&OtAmbientLightClass::init));
 
-		type->set("setColor", OtFunctionClass::create(&OtAmbientLightClass::setColor));
-		type->set("setColorRGB", OtFunctionClass::create(&OtAmbientLightClass::setColorRGB));
+		type->set("setColor", OtFunction::create(&OtAmbientLightClass::setColor));
+		type->set("setColorRGB", OtFunction::create(&OtAmbientLightClass::setColorRGB));
 	}
 
 	return type;
-}
-
-
-//
-//	OtAmbientLightClass::create
-//
-
-OtAmbientLight OtAmbientLightClass::create() {
-	OtAmbientLight ambient = std::make_shared<OtAmbientLightClass>();
-	ambient->setType(getMeta());
-	return ambient;
 }

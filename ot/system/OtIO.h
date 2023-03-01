@@ -14,7 +14,6 @@
 
 #include <string>
 
-#include "OtSingleton.h"
 #include "OtSystem.h"
 
 
@@ -23,9 +22,9 @@
 //
 
 class OtIOClass;
-typedef std::shared_ptr<OtIOClass> OtIO;
+using OtIO = OtObjectPointer<OtIOClass>;
 
-class OtIOClass : public OtSystemClass, public OtObjectSingleton<OtIOClass> {
+class OtIOClass : public OtSystemClass {
 public:
 	// read a JSON file
 	OtObject readJSON(const std::string& name);
@@ -41,7 +40,4 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtIO create();
 };

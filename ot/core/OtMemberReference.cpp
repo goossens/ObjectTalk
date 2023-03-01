@@ -28,7 +28,7 @@ OtObject OtMemberReferenceClass::deref() {
 
 	// create bound function if required
 	} else if (result && (result->isKindOf("Function") || result->isKindOf("ByteCodeFunction"))) {
-		return OtBoundFunctionClass::create(object, result);
+		return OtBoundFunction::create(object, result);
 
 	// it's just a member variable
 	} else {
@@ -55,20 +55,9 @@ OtType OtMemberReferenceClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtMemberReferenceClass>("MemberReference", OtReferenceClass::getMeta());
-		type->set("__deref__", OtFunctionClass::create(&OtMemberReferenceClass::deref));
-		type->set("__assign__", OtFunctionClass::create(&OtMemberReferenceClass::assign));
+		type->set("__deref__", OtFunction::create(&OtMemberReferenceClass::deref));
+		type->set("__assign__", OtFunction::create(&OtMemberReferenceClass::assign));
 	}
 
 	return type;
-}
-
-
-//
-//	OtMemberReferenceClass::create
-//
-
-OtMemberReference OtMemberReferenceClass::create(OtObject object, size_t member) {
-	OtMemberReference reference = std::make_shared<OtMemberReferenceClass>(object, member);
-	reference->setType(getMeta());
-	return reference;
 }

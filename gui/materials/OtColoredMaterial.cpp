@@ -97,12 +97,12 @@ OtObject OtColoredMaterialClass::setColor(const std::string& name) {
 			diffuse = material.diffuse;
 			specular = material.specular;
 			shininess = material.shininess;
-			return shared();
+			return OtObject(this);
 		}
 	}
 	// parse CSS style color
 	color = OtColorParseToVec3(name);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -112,7 +112,7 @@ OtObject OtColoredMaterialClass::setColor(const std::string& name) {
 
 OtObject OtColoredMaterialClass::setColorRGB(float r, float g, float b) {
 	color = glm::vec3(r, g, b);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -122,7 +122,7 @@ OtObject OtColoredMaterialClass::setColorRGB(float r, float g, float b) {
 
 OtObject OtColoredMaterialClass::setOpacity(float o) {
 	opacity = o;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -132,7 +132,7 @@ OtObject OtColoredMaterialClass::setOpacity(float o) {
 
 OtObject OtColoredMaterialClass::setAmbient(const std::string& c) {
 	ambient = OtColorParseToVec3(c);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -142,7 +142,7 @@ OtObject OtColoredMaterialClass::setAmbient(const std::string& c) {
 
 OtObject OtColoredMaterialClass::setDiffuse(const std::string& c) {
 	diffuse = OtColorParseToVec3(c);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -152,7 +152,7 @@ OtObject OtColoredMaterialClass::setDiffuse(const std::string& c) {
 
 OtObject OtColoredMaterialClass::setSpecular(const std::string& c) {
 	specular = OtColorParseToVec3(c);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -162,7 +162,7 @@ OtObject OtColoredMaterialClass::setSpecular(const std::string& c) {
 
 OtObject OtColoredMaterialClass::setShininess(float s) {
 	shininess = s;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -210,16 +210,16 @@ OtType OtColoredMaterialClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtColoredMaterialClass>("ColoredMaterial", OtMaterialClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtColoredMaterialClass::init));
+		type->set("__init__", OtFunction::create(&OtColoredMaterialClass::init));
 
-		type->set("setColor", OtFunctionClass::create(&OtColoredMaterialClass::setColor));
-		type->set("setColorRGB", OtFunctionClass::create(&OtColoredMaterialClass::setColorRGB));
-		type->set("setOpacity", OtFunctionClass::create(&OtColoredMaterialClass::setOpacity));
+		type->set("setColor", OtFunction::create(&OtColoredMaterialClass::setColor));
+		type->set("setColorRGB", OtFunction::create(&OtColoredMaterialClass::setColorRGB));
+		type->set("setOpacity", OtFunction::create(&OtColoredMaterialClass::setOpacity));
 
-		type->set("setAmbient", OtFunctionClass::create(&OtColoredMaterialClass::setAmbient));
-		type->set("setDiffuse", OtFunctionClass::create(&OtColoredMaterialClass::setDiffuse));
-		type->set("setSpecular", OtFunctionClass::create(&OtColoredMaterialClass::setSpecular));
-		type->set("setShininess", OtFunctionClass::create(&OtColoredMaterialClass::setShininess));
+		type->set("setAmbient", OtFunction::create(&OtColoredMaterialClass::setAmbient));
+		type->set("setDiffuse", OtFunction::create(&OtColoredMaterialClass::setDiffuse));
+		type->set("setSpecular", OtFunction::create(&OtColoredMaterialClass::setSpecular));
+		type->set("setShininess", OtFunction::create(&OtColoredMaterialClass::setShininess));
 	}
 
 	return type;
@@ -227,25 +227,13 @@ OtType OtColoredMaterialClass::getMeta() {
 
 
 //
-//	OtColoredMaterialClass::create
-//
-
-OtColoredMaterial OtColoredMaterialClass::create() {
-	OtColoredMaterial material = std::make_shared<OtColoredMaterialClass>();
-	material->setType(getMeta());
-	return material;
-}
-
-
-//
 //	OtColoredMaterialClass::getDefaultMaterialNames
 //
-
 OtObject OtColoredMaterialClass::getDefaultMaterialNames() {
-	OtArray array = OtArrayClass::create();
+	OtArray array = OtArray::create();
 
-	for (const auto& material : materials) {
-		array->append(OtStringClass::create(material.name));
+	for (auto& material : materials) {
+		array->append(OtString::create(material.name));
 	}
 
 	return array;

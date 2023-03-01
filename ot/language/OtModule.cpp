@@ -77,8 +77,8 @@ void OtModuleClass::load(const std::filesystem::path& path) {
 	unsetAll();
 
 	// add metadata to module
-	set("__FILE__", OtStringClass::create(fullPath.string()));
-	set("__DIR__", OtStringClass::create(fullPath.parent_path().string()));
+	set("__FILE__", OtString::create(fullPath.string()));
+	set("__DIR__", OtString::create(fullPath.parent_path().string()));
 
 	// load source code
 	std::ifstream stream(fullPath.string().c_str());
@@ -93,7 +93,7 @@ void OtModuleClass::load(const std::filesystem::path& path) {
 	localPath.push_back(fullPath.parent_path());
 
 	try {
-		OtByteCode bytecode = compiler.compileSource(source, shared());
+		OtByteCode bytecode = compiler.compileSource(source, OtModule(this));
 		OtVM::instance()->execute(bytecode);
 
 	} catch (const OtException& e) {
@@ -206,17 +206,6 @@ OtType OtModuleClass::getMeta() {
 
 
 //
-//	OtModuleClass::create
-//
-
-OtModule OtModuleClass::create() {
-	OtModule module = std::make_shared<OtModuleClass>();
-	module->setType(getMeta());
-	return module;
-}
-
-
-//
 //	OtModuleClass::import
 //
 
@@ -229,8 +218,7 @@ OtModule OtModuleClass::import(const std::string& name) {
 
 		// instantiate the module if required
 		if (!entry.module) {
-			entry.module = std::make_shared<OtModuleClass>();
-			entry.module->setType(getMeta());
+			entry.module = OtModule::create();
 			entry.creator(entry.module);
 		}
 
@@ -239,7 +227,7 @@ OtModule OtModuleClass::import(const std::string& name) {
 
 	} else {
 		// create a new module and load it
-		OtModule module = create();
+		OtModule module = OtModule::create();
 		module->load(name);
 		return module;
 	}

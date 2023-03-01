@@ -26,7 +26,7 @@
 //
 
 class OtPolyhedronGeometryClass;
-typedef std::shared_ptr<OtPolyhedronGeometryClass> OtPolyhedronGeometry;
+using OtPolyhedronGeometry = OtObjectPointer<OtPolyhedronGeometryClass>;
 
 class OtPolyhedronGeometryClass : public OtGeometryClass {
 public:

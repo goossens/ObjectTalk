@@ -69,7 +69,7 @@ OtObject OtMenuItemClass::setShortcut(const std::string& s) {
 		OtExcept("MenuItem shortcut should be one character, not [%s]", s.c_str());
 	}
 
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -80,7 +80,7 @@ OtObject OtMenuItemClass::setShortcut(const std::string& s) {
 OtObject OtMenuItemClass::setCallback(OtObject cb)  {
 	OtCallbackValidate(cb, 0);
 	callback = cb;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -106,36 +106,25 @@ OtType OtMenuItemClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtMenuItemClass>("MenuItem", OtWidgetClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtMenuItemClass::init));
+		type->set("__init__", OtFunction::create(&OtMenuItemClass::init));
 
-		type->set("getTitle", OtFunctionClass::create(&OtMenuItemClass::getTitle));
-		type->set("setTitle", OtFunctionClass::create(&OtMenuItemClass::setTitle));
+		type->set("getTitle", OtFunction::create(&OtMenuItemClass::getTitle));
+		type->set("setTitle", OtFunction::create(&OtMenuItemClass::setTitle));
 
-		type->set("getShortcut", OtFunctionClass::create(&OtMenuItemClass::getShortcut));
-		type->set("setShortcut", OtFunctionClass::create(&OtMenuItemClass::setShortcut));
+		type->set("getShortcut", OtFunction::create(&OtMenuItemClass::getShortcut));
+		type->set("setShortcut", OtFunction::create(&OtMenuItemClass::setShortcut));
 
-		type->set("getCallback", OtFunctionClass::create(&OtMenuItemClass::getCallback));
-		type->set("setCallback", OtFunctionClass::create(&OtMenuItemClass::setCallback));
+		type->set("getCallback", OtFunction::create(&OtMenuItemClass::getCallback));
+		type->set("setCallback", OtFunction::create(&OtMenuItemClass::setCallback));
 
-		type->set("select", OtFunctionClass::create(&OtMenuItemClass::select));
-		type->set("unselect", OtFunctionClass::create(&OtMenuItemClass::unselect));
-		type->set("isSelected", OtFunctionClass::create(&OtMenuItemClass::isSelected));
+		type->set("select", OtFunction::create(&OtMenuItemClass::select));
+		type->set("unselect", OtFunction::create(&OtMenuItemClass::unselect));
+		type->set("isSelected", OtFunction::create(&OtMenuItemClass::isSelected));
 
-		type->set("enable", OtFunctionClass::create(&OtMenuItemClass::enable));
-		type->set("disable", OtFunctionClass::create(&OtMenuItemClass::disable));
-		type->set("isEnabled", OtFunctionClass::create(&OtMenuItemClass::isEnabled));
+		type->set("enable", OtFunction::create(&OtMenuItemClass::enable));
+		type->set("disable", OtFunction::create(&OtMenuItemClass::disable));
+		type->set("isEnabled", OtFunction::create(&OtMenuItemClass::isEnabled));
 	}
 
 	return type;
-}
-
-
-//
-//	OtMenuItemClass::create
-//
-
-OtMenuItem OtMenuItemClass::create() {
-	OtMenuItem menuitem = std::make_shared<OtMenuItemClass>();
-	menuitem->setType(getMeta());
-	return menuitem;
 }

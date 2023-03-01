@@ -23,7 +23,7 @@
 //
 
 class OtDictReferenceClass;
-typedef std::shared_ptr<OtDictReferenceClass> OtDictReference;
+using OtDictReference = OtObjectPointer<OtDictReferenceClass>;
 
 class OtDictReferenceClass : public OtReferenceClass {
 public:
@@ -40,9 +40,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtDictReference create(OtDict a, const std::string& i);
 
 private:
 	OtDict dict;

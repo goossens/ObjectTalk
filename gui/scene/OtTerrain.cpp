@@ -84,14 +84,14 @@ OtObject OtTerrainClass::setTerrainMap(OtObject object) {
 	}
 
 	// set new terrainmap
-	terrainmap = object->cast<OtTerrainMapClass>();
+	terrainmap = OtTerrainMap(object);
 	parametersHaveChanged();
 
 	terrainmapID = terrainmap->attach([this]() {
 		parametersHaveChanged();
 	});
 
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -101,7 +101,7 @@ OtObject OtTerrainClass::setTerrainMap(OtObject object) {
 
 OtObject OtTerrainClass::setViewingDistance(float distance) {
 	maxViewingDist = distance;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -116,7 +116,7 @@ OtObject OtTerrainClass::setRegionTransitions(float transion1, float overlap1, f
 	region1Overlap = overlap1;
 	region2Overlap = overlap2;
 	region3Overlap = overlap3;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -126,7 +126,7 @@ OtObject OtTerrainClass::setRegionTransitions(float transion1, float overlap1, f
 
 OtObject OtTerrainClass::setTextureScale(float scale) {
 	textureScale = scale;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -136,7 +136,7 @@ OtObject OtTerrainClass::setTextureScale(float scale) {
 
 OtObject OtTerrainClass::setRegion1Texture(const std::string& textureName) {
 	textureRegion1.loadFromFile((textureName));
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -146,7 +146,7 @@ OtObject OtTerrainClass::setRegion1Texture(const std::string& textureName) {
 
 OtObject OtTerrainClass::setRegion2Texture(const std::string& textureName) {
 	textureRegion2.loadFromFile((textureName));
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -156,7 +156,7 @@ OtObject OtTerrainClass::setRegion2Texture(const std::string& textureName) {
 
 OtObject OtTerrainClass::setRegion3Texture(const std::string& textureName) {
 	textureRegion3.loadFromFile((textureName));
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -166,7 +166,7 @@ OtObject OtTerrainClass::setRegion3Texture(const std::string& textureName) {
 
 OtObject OtTerrainClass::setRegion4Texture(const std::string& textureName) {
 	textureRegion4.loadFromFile((textureName));
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -439,36 +439,25 @@ OtType OtTerrainClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtTerrainClass>("Terrain", OtSceneObjectClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtTerrainClass::init));
+		type->set("__init__", OtFunction::create(&OtTerrainClass::init));
 
-		type->set("setTerrainMap", OtFunctionClass::create(&OtTerrainClass::setTerrainMap));
-		type->set("setViewingDistance", OtFunctionClass::create(&OtTerrainClass::setViewingDistance));
+		type->set("setTerrainMap", OtFunction::create(&OtTerrainClass::setTerrainMap));
+		type->set("setViewingDistance", OtFunction::create(&OtTerrainClass::setViewingDistance));
 
-		type->set("setRegionTransitions", OtFunctionClass::create(&OtTerrainClass::setRegionTransitions));
+		type->set("setRegionTransitions", OtFunction::create(&OtTerrainClass::setRegionTransitions));
 
-		type->set("setRegion1Color", OtFunctionClass::create(&OtTerrainClass::setRegion1Color));
-		type->set("setRegion2Color", OtFunctionClass::create(&OtTerrainClass::setRegion2Color));
-		type->set("setRegion3Color", OtFunctionClass::create(&OtTerrainClass::setRegion3Color));
-		type->set("setRegion4Color", OtFunctionClass::create(&OtTerrainClass::setRegion4Color));
+		type->set("setRegion1Color", OtFunction::create(&OtTerrainClass::setRegion1Color));
+		type->set("setRegion2Color", OtFunction::create(&OtTerrainClass::setRegion2Color));
+		type->set("setRegion3Color", OtFunction::create(&OtTerrainClass::setRegion3Color));
+		type->set("setRegion4Color", OtFunction::create(&OtTerrainClass::setRegion4Color));
 
-		type->set("setTextureScale", OtFunctionClass::create(&OtTerrainClass::setTextureScale));
+		type->set("setTextureScale", OtFunction::create(&OtTerrainClass::setTextureScale));
 
-		type->set("setRegion1Texture", OtFunctionClass::create(&OtTerrainClass::setRegion1Texture));
-		type->set("setRegion2Texture", OtFunctionClass::create(&OtTerrainClass::setRegion2Texture));
-		type->set("setRegion3Texture", OtFunctionClass::create(&OtTerrainClass::setRegion3Texture));
-		type->set("setRegion4Texture", OtFunctionClass::create(&OtTerrainClass::setRegion4Texture));
+		type->set("setRegion1Texture", OtFunction::create(&OtTerrainClass::setRegion1Texture));
+		type->set("setRegion2Texture", OtFunction::create(&OtTerrainClass::setRegion2Texture));
+		type->set("setRegion3Texture", OtFunction::create(&OtTerrainClass::setRegion3Texture));
+		type->set("setRegion4Texture", OtFunction::create(&OtTerrainClass::setRegion4Texture));
 	}
 
 	return type;
-}
-
-
-//
-//	OtTerrainClass::create
-//
-
-OtTerrain OtTerrainClass::create() {
-	OtTerrain terrain = std::make_shared<OtTerrainClass>();
-	terrain->setType(getMeta());
-	return terrain;
 }

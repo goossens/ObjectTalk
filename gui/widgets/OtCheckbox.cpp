@@ -52,19 +52,8 @@ OtType OtCheckboxClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtCheckboxClass>("Checkbox", OtWidgetClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtCheckboxClass::init));
+		type->set("__init__", OtFunction::create(&OtCheckboxClass::init));
 	}
 
 	return type;
-}
-
-
-//
-//	OtCheckboxClass::create
-//
-
-OtCheckbox OtCheckboxClass::create() {
-	OtCheckbox checkbox = std::make_shared<OtCheckboxClass>();
-	checkbox->setType(getMeta());
-	return checkbox;
 }

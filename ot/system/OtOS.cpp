@@ -202,17 +202,17 @@ OtObject OtOSClass::cores() {
 	auto status = uv_cpu_info(&info, &count);
 	UV_CHECK_ERROR("uv_cpu_info", status);
 
-	OtArray result = OtArrayClass::create();
+	OtArray result = OtArray::create();
 
 	for (auto c = 0; c < count; c++) {
-		OtDict core = OtDictClass::create();
-		core->setEntry("model", OtStringClass::create(info[c].model));
-		core->setEntry("speed", OtIntegerClass::create(info[c].speed));
-		core->setEntry("user", OtIntegerClass::create(info[c].cpu_times.user));
-		core->setEntry("nice", OtIntegerClass::create(info[c].cpu_times.nice));
-		core->setEntry("sys", OtIntegerClass::create(info[c].cpu_times.sys));
-		core->setEntry("idle", OtIntegerClass::create(info[c].cpu_times.idle));
-		core->setEntry("irq", OtIntegerClass::create(info[c].cpu_times.irq));
+		OtDict core = OtDict::create();
+		core->setEntry("model", OtString::create(info[c].model));
+		core->setEntry("speed", OtInteger::create(info[c].speed));
+		core->setEntry("user", OtInteger::create(info[c].cpu_times.user));
+		core->setEntry("nice", OtInteger::create(info[c].cpu_times.nice));
+		core->setEntry("sys", OtInteger::create(info[c].cpu_times.sys));
+		core->setEntry("idle", OtInteger::create(info[c].cpu_times.idle));
+		core->setEntry("irq", OtInteger::create(info[c].cpu_times.irq));
 		result->append(core);
 	}
 
@@ -231,25 +231,25 @@ OtObject OtOSClass::networks() {
 	auto status = uv_interface_addresses(&info, &count);
 	UV_CHECK_ERROR("uv_interface_addresses", status);
 
-	OtArray result = OtArrayClass::create();
+	OtArray result = OtArray::create();
 	char buffer[256];
 
 	for (auto c = 0; c < count; c++) {
-		OtDict network = OtDictClass::create();
-		network->setEntry("name", OtStringClass::create(info[c].name));
-		network->setEntry("internal", OtBooleanClass::create(info[c].is_internal));
+		OtDict network = OtDict::create();
+		network->setEntry("name", OtString::create(info[c].name));
+		network->setEntry("internal", OtBoolean::create(info[c].is_internal));
 
 		if (info[c].address.address4.sin_family == AF_INET) {
 			status = uv_ip4_name(&info[c].address.address4, buffer, 256);
 			UV_CHECK_ERROR("uv_ip4_name", status);
-			network->setEntry("address", OtStringClass::create(buffer));
-			network->setEntry("family", OtStringClass::create("IPV4"));
+			network->setEntry("address", OtString::create(buffer));
+			network->setEntry("family", OtString::create("IPV4"));
 
 		} else if (info[c].address.address4.sin_family == AF_INET6) {
 			status = uv_ip6_name(&info[c].address.address6, buffer, 256);
 			UV_CHECK_ERROR("address6", status);
-			network->setEntry("address", OtStringClass::create(buffer));
-			network->setEntry("family", OtStringClass::create("IPV6"));
+			network->setEntry("address", OtString::create(buffer));
+			network->setEntry("family", OtString::create("IPV6"));
 		}
 
 		result->append(network);
@@ -414,57 +414,43 @@ OtType OtOSClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtOSClass>(
-			"OS",
-			OtSystemClass::getMeta(),
-			[]() {
-				return (OtObject) OtOSClass::instance();
-			});
+		type = OtTypeClass::create<OtOSClass>("OS", OtSystemClass::getMeta());
 
-		type->set("hasenv", OtFunctionClass::create(&OtOSClass::hasenv));
-		type->set("getenv", OtFunctionClass::create(&OtOSClass::getenv));
-		type->set("setenv", OtFunctionClass::create(&OtOSClass::setenv));
-		type->set("unsetenv", OtFunctionClass::create(&OtOSClass::unsetenv));
+		type->set("hasenv", OtFunction::create(&OtOSClass::hasenv));
+		type->set("getenv", OtFunction::create(&OtOSClass::getenv));
+		type->set("setenv", OtFunction::create(&OtOSClass::setenv));
+		type->set("unsetenv", OtFunction::create(&OtOSClass::unsetenv));
 
-		type->set("sysname", OtFunctionClass::create(&OtOSClass::sysname));
-		type->set("release", OtFunctionClass::create(&OtOSClass::release));
-		type->set("version", OtFunctionClass::create(&OtOSClass::version));
-		type->set("machine", OtFunctionClass::create(&OtOSClass::machine));
-		type->set("uptime", OtFunctionClass::create(&OtOSClass::uptime));
-		type->set("hostname", OtFunctionClass::create(&OtOSClass::hostname));
-		type->set("uuid", OtFunctionClass::create(&OtOSClass::hostname));
+		type->set("sysname", OtFunction::create(&OtOSClass::sysname));
+		type->set("release", OtFunction::create(&OtOSClass::release));
+		type->set("version", OtFunction::create(&OtOSClass::version));
+		type->set("machine", OtFunction::create(&OtOSClass::machine));
+		type->set("uptime", OtFunction::create(&OtOSClass::uptime));
+		type->set("hostname", OtFunction::create(&OtOSClass::hostname));
+		type->set("uuid", OtFunction::create(&OtOSClass::hostname));
 
-		type->set("cores", OtFunctionClass::create(&OtOSClass::cores));
-		type->set("networks", OtFunctionClass::create(&OtOSClass::networks));
+		type->set("cores", OtFunction::create(&OtOSClass::cores));
+		type->set("networks", OtFunction::create(&OtOSClass::networks));
 
-		type->set("totalMemory", OtFunctionClass::create(&OtOSClass::totalMemory));
-		type->set("freeMemory", OtFunctionClass::create(&OtOSClass::freeMemory));
+		type->set("totalMemory", OtFunction::create(&OtOSClass::totalMemory));
+		type->set("freeMemory", OtFunction::create(&OtOSClass::freeMemory));
 
-		type->set("clock", OtFunctionClass::create(&OtOSClass::clock));
-		type->set("sleep", OtFunctionClass::create(&OtOSClass::sleep));
+		type->set("clock", OtFunction::create(&OtOSClass::clock));
+		type->set("sleep", OtFunction::create(&OtOSClass::sleep));
 
-		type->set("getYear", OtFunctionClass::create(&OtOSClass::getYear));
-		type->set("getMonth", OtFunctionClass::create(&OtOSClass::getMonth));
-		type->set("getDay", OtFunctionClass::create(&OtOSClass::getDay));
-		type->set("getHours", OtFunctionClass::create(&OtOSClass::getHours));
-		type->set("getMinutes", OtFunctionClass::create(&OtOSClass::getMinutes));
-		type->set("getSeconds", OtFunctionClass::create(&OtOSClass::getSeconds));
-		type->set("getDayOfWeek", OtFunctionClass::create(&OtOSClass::getDayOfWeek));
-		type->set("getDayOfYear", OtFunctionClass::create(&OtOSClass::getDayOfYear));
-		type->set("isDST", OtFunctionClass::create(&OtOSClass::isDST));
+		type->set("getYear", OtFunction::create(&OtOSClass::getYear));
+		type->set("getMonth", OtFunction::create(&OtOSClass::getMonth));
+		type->set("getDay", OtFunction::create(&OtOSClass::getDay));
+		type->set("getHours", OtFunction::create(&OtOSClass::getHours));
+		type->set("getMinutes", OtFunction::create(&OtOSClass::getMinutes));
+		type->set("getSeconds", OtFunction::create(&OtOSClass::getSeconds));
+		type->set("getDayOfWeek", OtFunction::create(&OtOSClass::getDayOfWeek));
+		type->set("getDayOfYear", OtFunction::create(&OtOSClass::getDayOfYear));
+		type->set("isDST", OtFunction::create(&OtOSClass::isDST));
 
-		type->set("runServer", OtFunctionClass::create(&OtOSClass::runServer));
-		type->set("stopServer", OtFunctionClass::create(&OtOSClass::stopServer));
+		type->set("runServer", OtFunction::create(&OtOSClass::runServer));
+		type->set("stopServer", OtFunction::create(&OtOSClass::stopServer));
 	}
 
 	return type;
-}
-
-
-//
-//	OtOSClass::create
-//
-
-OtOS OtOSClass::create() {
-	return OtOSClass::instance();
 }

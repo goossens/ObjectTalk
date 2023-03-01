@@ -33,19 +33,8 @@ OtType OtBoundFunctionClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtBoundFunctionClass>("BoundFunction", OtInternalClass::getMeta());
-		type->set("__call__", OtFunctionClass::create(&OtBoundFunctionClass::operator()));
+		type->set("__call__", OtFunction::create(&OtBoundFunctionClass::operator()));
 	}
 
 	return type;
-}
-
-
-//
-//	OtBoundFunctionClass::create
-//
-
-OtBoundFunction OtBoundFunctionClass::create(OtObject o, OtObject f) {
-	OtBoundFunction bound = std::make_shared<OtBoundFunctionClass>(o, f);
-	bound->setType(getMeta());
-	return bound;
 }

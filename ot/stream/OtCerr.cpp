@@ -21,7 +21,7 @@
 
 OtObject OtCerrClass::operator << (OtObject object) {
 	std::cerr << object->operator std::string();
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -47,24 +47,9 @@ OtType OtCerrClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtCerrClass>(
-			"Cerr",
-			OtStreamClass::getMeta(),
-			[]() {
-				return (OtObject) OtCerrClass::instance();
-			});
-
-		type->set("__lshift__", OtFunctionClass::create(&OtCerrClass::operator <<));
+		type = OtTypeClass::create<OtCerrClass>("Cerr", OtStreamClass::getMeta());
+		type->set("__lshift__", OtFunction::create(&OtCerrClass::operator <<));
 	}
 
 	return type;
-}
-
-
-//
-//	OtCerrClass::create
-//
-
-OtCerr OtCerrClass::create() {
-	return OtCerrClass::instance();
 }

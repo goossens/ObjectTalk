@@ -20,7 +20,7 @@
 //
 
 class OtCheckboxClass;
-typedef std::shared_ptr<OtCheckboxClass> OtCheckbox;
+using OtCheckbox = OtObjectPointer<OtCheckboxClass>;
 
 class OtCheckboxClass : public OtWidgetClass {
 public:
@@ -32,9 +32,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtCheckbox create();
 
 private:
 	// properties

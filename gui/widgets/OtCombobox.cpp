@@ -31,7 +31,7 @@ void OtComboboxClass::init(const std::string& t, OtObject vals, OtObject sel, Ot
 	vals->expectKindOf("Array");
 
 	// get list of values
-	for (auto& member : vals->cast<OtArrayClass>()->raw()) {
+	for (auto& member : OtArray(vals)->raw()) {
 		values.push_back(member->operator std::string());
 	}
 
@@ -81,19 +81,8 @@ OtType OtComboboxClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtComboboxClass>("Combobox", OtWidgetClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtComboboxClass::init));
+		type->set("__init__", OtFunction::create(&OtComboboxClass::init));
 	}
 
 	return type;
-}
-
-
-//
-//	OtComboboxClass::create
-//
-
-OtCombobox OtComboboxClass::create() {
-	OtCombobox combobox = std::make_shared<OtComboboxClass>();
-	combobox->setType(getMeta());
-	return combobox;
 }

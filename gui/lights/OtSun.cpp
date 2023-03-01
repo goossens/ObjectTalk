@@ -44,7 +44,7 @@ void OtSunClass::init(size_t count, OtObject* parameters) {
 
 OtObject OtSunClass::setElevation(float e) {
 	elevation = e;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -54,7 +54,7 @@ OtObject OtSunClass::setElevation(float e) {
 
 OtObject OtSunClass::setAzimuth(float a) {
 	azimuth = a;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -118,21 +118,10 @@ OtType OtSunClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtSunClass>("Sun", OtLightClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtSunClass::init));
-		type->set("setElevation", OtFunctionClass::create(&OtSunClass::setElevation));
-		type->set("setAzimuth", OtFunctionClass::create(&OtSunClass::setAzimuth));
+		type->set("__init__", OtFunction::create(&OtSunClass::init));
+		type->set("setElevation", OtFunction::create(&OtSunClass::setElevation));
+		type->set("setAzimuth", OtFunction::create(&OtSunClass::setAzimuth));
 	}
 
 	return type;
-}
-
-
-//
-//	OtSunClass::create
-//
-
-OtSun OtSunClass::create() {
-	OtSun sun = std::make_shared<OtSunClass>();
-	sun->setType(getMeta());
-	return sun;
 }

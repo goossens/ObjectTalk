@@ -23,7 +23,7 @@
 //
 
 class OtArrayIteratorClass;
-typedef std::shared_ptr<OtArrayIteratorClass> OtArrayIterator;
+using OtArrayIterator = OtObjectPointer<OtArrayIteratorClass>;
 
 class OtArrayIteratorClass : public OtIteratorClass {
 public:
@@ -37,9 +37,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtArrayIterator create(OtArray array);
 
 private:
 	OtArray array;

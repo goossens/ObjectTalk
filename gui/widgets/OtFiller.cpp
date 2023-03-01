@@ -40,7 +40,7 @@ void OtFillerClass::init(size_t count, OtObject* parameters) {
 
 OtObject OtFillerClass::setSize(float s) {
 	size = s;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -62,20 +62,9 @@ OtType OtFillerClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtFillerClass>("Filler", OtWidgetClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtFillerClass::init));
-		type->set("setSize", OtFunctionClass::create(&OtFillerClass::setSize));
+		type->set("__init__", OtFunction::create(&OtFillerClass::init));
+		type->set("setSize", OtFunction::create(&OtFillerClass::setSize));
 	}
 
 	return type;
-}
-
-
-//
-//	OtFillerClass::create
-//
-
-OtFiller OtFillerClass::create() {
-	OtFiller filler = std::make_shared<OtFillerClass>();
-	filler->setType(getMeta());
-	return filler;
 }

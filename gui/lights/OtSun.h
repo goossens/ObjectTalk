@@ -21,7 +21,7 @@
 //
 
 class OtSunClass;
-typedef std::shared_ptr<OtSunClass> OtSun;
+using OtSun = OtObjectPointer<OtSunClass>;
 
 class OtSunClass : public OtDirectionalLightClass {
 public:
@@ -44,9 +44,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtSun create();
 
 private:
 	// location of the sun

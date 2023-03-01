@@ -23,7 +23,7 @@
 //
 
 class OtClothClass;
-typedef std::shared_ptr<OtClothClass> OtCloth;
+using OtCloth = OtObjectPointer<OtClothClass>;
 
 class OtClothClass : public OtSimulationClass {
 public:
@@ -39,9 +39,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtCloth create();
 
 private:
 	// our plane

@@ -14,7 +14,6 @@
 
 #include <string>
 
-#include "OtSingleton.h"
 #include "OtStream.h"
 
 
@@ -23,10 +22,9 @@
 //
 
 class OtCerrClass;
-typedef std::shared_ptr<OtCerrClass> OtCerr;
-typedef std::function<void(const std::string&)> OtCerrOutputFunction;
+using OtCerr = OtObjectPointer<OtCerrClass>;
 
-class OtCerrClass : public OtStreamClass, public OtObjectSingleton<OtCerrClass> {
+class OtCerrClass : public OtStreamClass {
 public:
 	// output an object (will internally be converted to a String first)
 	OtObject operator << (OtObject object);
@@ -37,7 +35,4 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtCerr create();
 };

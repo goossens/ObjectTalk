@@ -20,7 +20,7 @@
 //
 
 class OtMenuItemClass;
-typedef std::shared_ptr<OtMenuItemClass> OtMenuItem;
+using OtMenuItem = OtObjectPointer<OtMenuItemClass>;
 
 class OtMenuItemClass : public OtWidgetClass {
 public:
@@ -28,7 +28,7 @@ public:
 	void init(size_t count, OtObject* parameters);
 
 	// adjust menu item properties
-	OtObject setTitle(const std::string& t) { title = t; return shared(); }
+	OtObject setTitle(const std::string& t) { title = t; return OtObject(this); }
 	std::string getTitle() { return title; }
 
 	OtObject setShortcut(const std::string& s);
@@ -50,9 +50,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtMenuItem create();
 
 private:
 	// menu item properties

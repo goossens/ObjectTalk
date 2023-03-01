@@ -20,7 +20,7 @@
 //
 
 class OtRealSliderClass;
-typedef std::shared_ptr<OtRealSliderClass> OtRealSlider;
+using OtRealSlider = OtObjectPointer<OtRealSliderClass>;
 
 class OtRealSliderClass : public OtWidgetClass {
 public:
@@ -32,9 +32,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtRealSlider create();
 
 private:
 	// properties

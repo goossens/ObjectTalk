@@ -23,7 +23,7 @@
 //
 
 class OtPathIteratorClass;
-typedef std::shared_ptr<OtPathIteratorClass> OtPathIterator;
+using OtPathIterator = OtObjectPointer<OtPathIteratorClass>;
 
 class OtPathIteratorClass : public OtIteratorClass {
 public:
@@ -31,13 +31,10 @@ public:
 	OtPathIteratorClass(OtPath p) { path = p; iterator = p->path.begin(); last = p->path.end(); }
 
 	bool end() { return iterator == last; }
-	OtObject next() { return OtPathClass::create(*(iterator++)); }
+	OtObject next() { return OtPath::create(*(iterator++)); }
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtPathIterator create(OtPath path);
 
 private:
 	OtPath path;

@@ -24,7 +24,7 @@
 //
 
 class OtSphericalCubeGeometryClass;
-typedef std::shared_ptr<OtSphericalCubeGeometryClass> OtSphericalCubeGeometry;
+using OtSphericalCubeGeometry = OtObjectPointer<OtSphericalCubeGeometryClass>;
 
 class OtSphericalCubeGeometryClass : public OtPolyhedronGeometryClass {
 public:

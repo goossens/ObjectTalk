@@ -58,7 +58,7 @@ OtObject OtBlendMappedMaterialClass::setTextures(const std::string& bm, const st
 	textureRed.loadFromFile(tr, true);
 	textureGreen.loadFromFile(tg, true);
 	textureBlue.loadFromFile(tb, true);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -68,7 +68,7 @@ OtObject OtBlendMappedMaterialClass::setTextures(const std::string& bm, const st
 
 OtObject OtBlendMappedMaterialClass::setScale(float s) {
 	scale = s;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -78,7 +78,7 @@ OtObject OtBlendMappedMaterialClass::setScale(float s) {
 
 OtObject OtBlendMappedMaterialClass::setAmbient(const std::string& c) {
 	ambient = OtColorParseToVec3(c);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -88,7 +88,7 @@ OtObject OtBlendMappedMaterialClass::setAmbient(const std::string& c) {
 
 OtObject OtBlendMappedMaterialClass::setDiffuse(const std::string& c) {
 	diffuse = OtColorParseToVec3(c);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -98,7 +98,7 @@ OtObject OtBlendMappedMaterialClass::setDiffuse(const std::string& c) {
 
 OtObject OtBlendMappedMaterialClass::setSpecular(const std::string& c) {
 	specular = OtColorParseToVec3(c);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -108,7 +108,7 @@ OtObject OtBlendMappedMaterialClass::setSpecular(const std::string& c) {
 
 OtObject OtBlendMappedMaterialClass::setShininess(float s) {
 	shininess = s;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -175,27 +175,16 @@ OtType OtBlendMappedMaterialClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtBlendMappedMaterialClass>("BlendMappedMaterial", OtMaterialClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtBlendMappedMaterialClass::init));
+		type->set("__init__", OtFunction::create(&OtBlendMappedMaterialClass::init));
 
-		type->set("setTextures", OtFunctionClass::create(&OtBlendMappedMaterialClass::setTextures));
-		type->set("setScale", OtFunctionClass::create(&OtBlendMappedMaterialClass::setScale));
+		type->set("setTextures", OtFunction::create(&OtBlendMappedMaterialClass::setTextures));
+		type->set("setScale", OtFunction::create(&OtBlendMappedMaterialClass::setScale));
 
-		type->set("setAmbient", OtFunctionClass::create(&OtBlendMappedMaterialClass::setAmbient));
-		type->set("setDiffuse", OtFunctionClass::create(&OtBlendMappedMaterialClass::setDiffuse));
-		type->set("setSpecular", OtFunctionClass::create(&OtBlendMappedMaterialClass::setSpecular));
-		type->set("setShininess", OtFunctionClass::create(&OtBlendMappedMaterialClass::setShininess));
+		type->set("setAmbient", OtFunction::create(&OtBlendMappedMaterialClass::setAmbient));
+		type->set("setDiffuse", OtFunction::create(&OtBlendMappedMaterialClass::setDiffuse));
+		type->set("setSpecular", OtFunction::create(&OtBlendMappedMaterialClass::setSpecular));
+		type->set("setShininess", OtFunction::create(&OtBlendMappedMaterialClass::setShininess));
 	}
 
 	return type;
-}
-
-
-//
-//	OtBlendMappedMaterialClass::create
-//
-
-OtBlendMappedMaterial OtBlendMappedMaterialClass::create() {
-	OtBlendMappedMaterial material = std::make_shared<OtBlendMappedMaterialClass>();
-	material->setType(getMeta());
-	return material;
 }

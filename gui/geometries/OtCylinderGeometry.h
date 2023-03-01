@@ -24,7 +24,7 @@
 //
 
 class OtCylinderGeometryClass;
-typedef std::shared_ptr<OtCylinderGeometryClass> OtCylinderGeometry;
+using OtCylinderGeometry = OtObjectPointer<OtCylinderGeometryClass>;
 
 class OtCylinderGeometryClass : public OtGeometryClass {
 public:
@@ -56,9 +56,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtCylinderGeometry create();
 
 private:
 	// generate geometry

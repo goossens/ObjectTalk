@@ -22,7 +22,7 @@
 //
 
 class OtAnimationClass;
-typedef std::shared_ptr<OtAnimationClass> OtAnimation;
+using OtAnimation = OtObjectPointer<OtAnimationClass>;
 
 class OtAnimationClass : public OtGuiClass {
 public:
@@ -44,9 +44,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtAnimation create();
 
 private:
 	// our animator

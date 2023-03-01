@@ -24,7 +24,7 @@
 //
 
 class OtURLClass;
-typedef std::shared_ptr<OtURLClass> OtURL;
+using OtURL = OtObjectPointer<OtURLClass>;
 
 class OtURLClass : public OtHttpClass
 {
@@ -58,7 +58,7 @@ public:
 	}
 
 	const OtObject getParam(const std::string& p) {
-		return OtStringClass::create(queryParams.find(p)->second);
+		return OtString::create(queryParams.find(p)->second);
 	}
 
 	const OtObject getParamWithDefault(const std::string& p, const OtObject d) {
@@ -74,9 +74,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtURL create(const std::string& value);
 
 private:
 	std::string url;

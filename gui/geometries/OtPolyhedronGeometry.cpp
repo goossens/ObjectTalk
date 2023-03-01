@@ -55,7 +55,7 @@ void OtPolyhedronGeometryClass::init(size_t count, OtObject* parameters) {
 OtObject OtPolyhedronGeometryClass::setRadius(float r) {
 	radius = r;
 	refreshGeometry = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -66,7 +66,7 @@ OtObject OtPolyhedronGeometryClass::setRadius(float r) {
 OtObject OtPolyhedronGeometryClass::setDetail(int d) {
 	detail = d;
 	refreshGeometry = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -249,9 +249,9 @@ OtType OtPolyhedronGeometryClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtPolyhedronGeometryClass>("PolyhedronGeometry", OtGeometryClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtPolyhedronGeometryClass::init));
-		type->set("setRadius", OtFunctionClass::create(&OtPolyhedronGeometryClass::setRadius));
-		type->set("setDetail", OtFunctionClass::create(&OtPolyhedronGeometryClass::setDetail));
+		type->set("__init__", OtFunction::create(&OtPolyhedronGeometryClass::init));
+		type->set("setRadius", OtFunction::create(&OtPolyhedronGeometryClass::setRadius));
+		type->set("setDetail", OtFunction::create(&OtPolyhedronGeometryClass::setDetail));
 	}
 
 	return type;

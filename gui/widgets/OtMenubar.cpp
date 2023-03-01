@@ -53,14 +53,3 @@ OtType OtMenubarClass::getMeta() {
 
 	return type;
 }
-
-
-//
-//	OtMenubarClass::create
-//
-
-OtMenubar OtMenubarClass::create() {
-	OtMenubar menubar = std::make_shared<OtMenubarClass>();
-	menubar->setType(getMeta());
-	return menubar;
-}

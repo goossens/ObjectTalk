@@ -31,11 +31,11 @@ void OtGroupClass::validateChild(OtNode child) {
 
 OtObject OtGroupClass::castShadow(bool flag) {
 	for (auto& child : children) {
-		child->cast<OtObject3dClass>()->castShadow(flag);
+		OtObject3d(child)->castShadow(flag);
 	}
 
 	OtObject3dClass::castShadow(flag);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -45,11 +45,11 @@ OtObject OtGroupClass::castShadow(bool flag) {
 
 OtObject OtGroupClass::receiveShadow(bool flag) {
 	for (auto& child : children) {
-		child->cast<OtObject3dClass>()->receiveShadow(flag);
+		OtObject3d(child)->receiveShadow(flag);
 	}
 
 	OtObject3dClass::receiveShadow(flag);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -60,7 +60,7 @@ OtObject OtGroupClass::receiveShadow(bool flag) {
 void OtGroupClass::render(OtRenderer& renderer) {
 	// render all children
 	for (auto& child : children) {
-		child->cast<OtObject3dClass>()->render(renderer);
+		OtObject3d(child)->render(renderer);
 	}
 }
 
@@ -79,13 +79,3 @@ OtType OtGroupClass::getMeta() {
 	return type;
 }
 
-
-//
-//	OtGroupClass::create
-//
-
-OtGroup OtGroupClass::create() {
-	OtGroup group = std::make_shared<OtGroupClass>();
-	group->setType(getMeta());
-	return group;
-}

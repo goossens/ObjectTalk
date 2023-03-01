@@ -23,10 +23,14 @@
 //
 
 class OtDictClass;
-typedef std::shared_ptr<OtDictClass> OtDict;
+using OtDict = OtObjectPointer<OtDictClass>;
 
 class OtDictClass : public OtCollectionClass {
 public:
+	// constructors
+	OtDictClass() = default;
+	OtDictClass(size_t count, OtObject* objects);
+
 	// convert dictionary to string
 	operator std::string() override;
 
@@ -75,10 +79,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtDict create();
-	static OtDict create(size_t count, OtObject* objects);
 
 private:
 	std::unordered_map<std::string, OtObject> dict;

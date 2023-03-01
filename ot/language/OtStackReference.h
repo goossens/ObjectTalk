@@ -23,7 +23,7 @@
 //
 
 class OtStackReferenceClass;
-typedef std::shared_ptr<OtStackReferenceClass> OtStackReference;
+using OtStackReference = OtObjectPointer<OtStackReferenceClass>;
 
 class OtStackReferenceClass : public OtReferenceClass {
 public:
@@ -40,9 +40,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtStackReference create(const std::string& name, size_t slot);
 
 private:
 	std::string name;

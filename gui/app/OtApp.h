@@ -24,7 +24,7 @@
 //
 
 class OtAppClass;
-typedef std::shared_ptr<OtAppClass> OtApp;
+using OtApp = OtObjectPointer<OtAppClass>;
 
 class OtAppClass : public OtNodeClass, public OtFrameworkApp {
 public:
@@ -65,9 +65,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtApp create();
 
 private:
 	// animations

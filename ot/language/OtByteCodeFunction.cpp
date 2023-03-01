@@ -45,19 +45,8 @@ OtType OtByteCodeFunctionClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtByteCodeFunctionClass>("ByteCodeFunction", OtInternalClass::getMeta());
-		type->set("__call__", OtFunctionClass::create(&OtByteCodeFunctionClass::operator()));
+		type->set("__call__", OtFunction::create(&OtByteCodeFunctionClass::operator()));
 	}
 
 	return type;
-}
-
-
-//
-//	OtByteCodeFunctionClass::create
-//
-
-OtByteCodeFunction OtByteCodeFunctionClass::create(OtByteCode bytecode, size_t parameterCount) {
-	OtByteCodeFunction func = std::make_shared<OtByteCodeFunctionClass>(bytecode, parameterCount);
-	func->setType(getMeta());
-	return func;
 }

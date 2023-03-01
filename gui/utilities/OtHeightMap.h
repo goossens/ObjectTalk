@@ -23,7 +23,7 @@
 //
 
 class OtHeightMapClass;
-typedef std::shared_ptr<OtHeightMapClass> OtHeightMap;
+using OtHeightMap = OtObjectPointer<OtHeightMapClass>;
 
 class OtHeightMapClass : public OtGuiClass {
 public:
@@ -56,9 +56,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtHeightMap create();
 
 private:
 	// get height (0.0 to 1.0) at specified location (in absolute coordinates)

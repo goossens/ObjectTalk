@@ -25,7 +25,7 @@
 //
 
 class OtSpotLightClass;
-typedef std::shared_ptr<OtSpotLightClass> OtSpotLight;
+using OtSpotLight = OtObjectPointer<OtSpotLightClass>;
 
 class OtSpotLightClass : public OtLightClass {
 public:
@@ -53,9 +53,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtSpotLight create();
 
 private:
 	// properties

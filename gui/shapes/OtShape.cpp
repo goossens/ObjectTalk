@@ -26,12 +26,12 @@ OtObject OtShapeClass::moveTo(float x, float y) {
 	}
 
 	if (!currentPath || currentPath->hasSegments()) {
-		currentPath = OtCurvePathClass::create();
+		currentPath = std::make_shared<OtCurvePathClass>();
 		paths.push_back(currentPath);
 	}
 
 	currentPath->moveTo(glm::vec2(x, y));
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -41,12 +41,12 @@ OtObject OtShapeClass::moveTo(float x, float y) {
 
 OtObject OtShapeClass::lineTo(float x, float y) {
 	if (!currentPath) {
-		currentPath = OtCurvePathClass::create();
+		currentPath = std::make_shared<OtCurvePathClass>();
 		paths.push_back(currentPath);
 	}
 
 	currentPath->lineTo(glm::vec2(x, y));
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -56,12 +56,12 @@ OtObject OtShapeClass::lineTo(float x, float y) {
 
 OtObject OtShapeClass::quadraticCurveTo(float cx, float cy, float x, float y) {
 	if (!currentPath) {
-		currentPath = OtCurvePathClass::create();
+		currentPath = std::make_shared<OtCurvePathClass>();
 		paths.push_back(currentPath);
 	}
 
 	currentPath->quadraticCurveTo(glm::vec2(cx, cy), glm::vec2(x, y));
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -71,12 +71,12 @@ OtObject OtShapeClass::quadraticCurveTo(float cx, float cy, float x, float y) {
 
 OtObject OtShapeClass::bezierCurveTo(float cx1, float cy1, float cx2, float cy2, float x, float y) {
 	if (!currentPath) {
-		currentPath = OtCurvePathClass::create();
+		currentPath = std::make_shared<OtCurvePathClass>();
 		paths.push_back(currentPath);
 	}
 
 	currentPath->bezierCurveTo(glm::vec2(cx1, cy1), glm::vec2(cx2, cy2), glm::vec2(x, y));
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -90,11 +90,11 @@ OtObject OtShapeClass::close() {
 			currentPath->close();
 		}
 
-		currentPath = OtCurvePathClass::create();
+		currentPath = std::make_shared<OtCurvePathClass>();
 		paths.push_back(currentPath);
 	}
 
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -105,7 +105,7 @@ OtObject OtShapeClass::close() {
 OtObject OtShapeClass::circle(float x, float y, float radius, bool clockwise) {
 	close();
 	currentPath->circle(x, y, radius, clockwise);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -115,8 +115,8 @@ OtObject OtShapeClass::circle(float x, float y, float radius, bool clockwise) {
 
 OtObject OtShapeClass::text(OtObject object, const std::string& text) {
 	object->expectKindOf("Font");
-	object->cast<OtFontClass>()->createShape(cast<OtShapeClass>(), text);
-	return shared();
+	OtFont(object)->createShape(OtShape(this), text);
+	return OtObject(this);
 }
 
 
@@ -129,26 +129,15 @@ OtType OtShapeClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtShapeClass>("Shape", OtGuiClass::getMeta());
-		type->set("moveTo", OtFunctionClass::create(&OtShapeClass::moveTo));
-		type->set("lineTo", OtFunctionClass::create(&OtShapeClass::lineTo));
-		type->set("quadraticCurveTo", OtFunctionClass::create(&OtShapeClass::quadraticCurveTo));
-		type->set("bezierCurveTo", OtFunctionClass::create(&OtShapeClass::bezierCurveTo));
-		type->set("close", OtFunctionClass::create(&OtShapeClass::close));
+		type->set("moveTo", OtFunction::create(&OtShapeClass::moveTo));
+		type->set("lineTo", OtFunction::create(&OtShapeClass::lineTo));
+		type->set("quadraticCurveTo", OtFunction::create(&OtShapeClass::quadraticCurveTo));
+		type->set("bezierCurveTo", OtFunction::create(&OtShapeClass::bezierCurveTo));
+		type->set("close", OtFunction::create(&OtShapeClass::close));
 
-		type->set("circle", OtFunctionClass::create(&OtShapeClass::circle));
-		type->set("text", OtFunctionClass::create(&OtShapeClass::text));
+		type->set("circle", OtFunction::create(&OtShapeClass::circle));
+		type->set("text", OtFunction::create(&OtShapeClass::text));
 	}
 
 	return type;
-}
-
-
-//
-//	OtShapeClass::create
-//
-
-OtShape OtShapeClass::create() {
-	OtShape path2 = std::make_shared<OtShapeClass>();
-	path2->setType(getMeta());
-	return path2;
 }

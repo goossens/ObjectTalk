@@ -21,6 +21,17 @@
 
 
 //
+//	OtArrayClass::OtArrayClass
+//
+
+OtArrayClass::OtArrayClass(size_t count, OtObject* objects) {
+	for (auto c = 0; c < count; c++) {
+		append(objects[c]);
+	}
+}
+
+
+//
 //	OtArrayClass::operator std::string
 //
 
@@ -30,7 +41,7 @@ OtArrayClass::operator std::string() {
 
 	o << "[";
 
-	for (auto const& entry : array) {
+	for (auto& entry : array) {
 		if (first) {
 			first = false;
 
@@ -62,7 +73,7 @@ void OtArrayClass::init(size_t count, OtObject* parameters) {
 //
 
 bool OtArrayClass::operator == (OtObject operand) {
-	OtArray op = operand->cast<OtArrayClass>();
+	OtArray op = OtArray(operand);
 
 	// ensure object is an array
 	if (!op) {
@@ -128,7 +139,7 @@ OtObject OtArrayClass::index(size_t index) {
 
 	}
 
-	return OtArrayReferenceClass::create(cast<OtArrayClass>(), index);
+	return OtArrayReference::create(OtArray(this), index);
 }
 
 
@@ -137,7 +148,7 @@ OtObject OtArrayClass::index(size_t index) {
 //
 
 OtObject OtArrayClass::iterate() {
-	return OtArrayIteratorClass::create(cast<OtArrayClass>());
+	return OtArrayIterator::create(OtArray(this));
 }
 
 
@@ -146,7 +157,7 @@ OtObject OtArrayClass::iterate() {
 //
 
 OtObject OtArrayClass::add(OtObject object) {
-	OtArray result = create();
+	OtArray result = OtArray::create();
 
 	for (auto& it : array) {
 		result->array.push_back(it);
@@ -195,7 +206,7 @@ int64_t OtArrayClass::find(OtObject object) {
 //
 
 OtObject OtArrayClass::clone() {
-	OtArray result = create();
+	OtArray result = OtArray::create();
 
 	for (auto& it : array) {
 		result->array.push_back(it);
@@ -214,13 +225,13 @@ OtObject OtArrayClass::merge(OtObject object) {
 		OtExcept("Array merge expects another [array] instance, not a [%s]", object->getType()->getName().c_str());
 	}
 
-	OtArray result = create();
+	OtArray result = OtArray::create();
 
 	for (auto& it : array) {
 		result->array.push_back(it);
 	}
 
-	for (auto& it : object->cast<OtArrayClass>()->array) {
+	for (auto& it : ((OtArray) object)->array) {
 		result->array.push_back(it);
 	}
 
@@ -375,7 +386,7 @@ std::string OtArrayClass::join(const std::string& separator) {
 	std::ostringstream o;
 	bool first = true;
 
-	for (auto const& entry : array) {
+	for (auto& entry : array) {
 		if (first) {
 			first = false;
 
@@ -400,60 +411,39 @@ OtType OtArrayClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtArrayClass>("Array", OtCollectionClass::getMeta());
 
-		type->set("string", OtFunctionClass::create(&OtArrayClass::operator std::string));
+		type->set("string", OtFunction::create(&OtArrayClass::operator std::string));
 
-		type->set("__init__", OtFunctionClass::create(&OtArrayClass::init));
+		type->set("__init__", OtFunction::create(&OtArrayClass::init));
 
-		type->set("__index__", OtFunctionClass::create(&OtArrayClass::index));
-		type->set("__iter__", OtFunctionClass::create(&OtArrayClass::iterate));
-		type->set("__add__", OtFunctionClass::create(&OtArrayClass::add));
-		type->set("__contains__", OtFunctionClass::create(&OtArrayClass::contains));
+		type->set("__index__", OtFunction::create(&OtArrayClass::index));
+		type->set("__iter__", OtFunction::create(&OtArrayClass::iterate));
+		type->set("__add__", OtFunction::create(&OtArrayClass::add));
+		type->set("__contains__", OtFunction::create(&OtArrayClass::contains));
 
-		type->set("size", OtFunctionClass::create(&OtArrayClass::size));
-		type->set("find", OtFunctionClass::create(&OtArrayClass::find));
-		type->set("contains", OtFunctionClass::create(&OtArrayClass::contains));
+		type->set("size", OtFunction::create(&OtArrayClass::size));
+		type->set("find", OtFunction::create(&OtArrayClass::find));
+		type->set("contains", OtFunction::create(&OtArrayClass::contains));
 
-		type->set("clone", OtFunctionClass::create(&OtArrayClass::clone));
-		type->set("merge", OtFunctionClass::create(&OtArrayClass::merge));
-		type->set("clear", OtFunctionClass::create(&OtArrayClass::clear));
+		type->set("clone", OtFunction::create(&OtArrayClass::clone));
+		type->set("merge", OtFunction::create(&OtArrayClass::merge));
+		type->set("clear", OtFunction::create(&OtArrayClass::clear));
 
-		type->set("append", OtFunctionClass::create(&OtArrayClass::append));
-		type->set("insert", OtFunctionClass::create(&OtArrayClass::insert));
+		type->set("append", OtFunction::create(&OtArrayClass::append));
+		type->set("insert", OtFunction::create(&OtArrayClass::insert));
 
-		type->set("erase", OtFunctionClass::create(&OtArrayClass::erase));
-		type->set("eraseMultiple", OtFunctionClass::create(&OtArrayClass::eraseMultiple));
+		type->set("erase", OtFunction::create(&OtArrayClass::erase));
+		type->set("eraseMultiple", OtFunction::create(&OtArrayClass::eraseMultiple));
 
-		type->set("sort", OtFunctionClass::create(&OtArrayClass::sort));
-		type->set("rsort", OtFunctionClass::create(&OtArrayClass::rsort));
-		type->set("csort", OtFunctionClass::create(&OtArrayClass::csort));
+		type->set("sort", OtFunction::create(&OtArrayClass::sort));
+		type->set("rsort", OtFunction::create(&OtArrayClass::rsort));
+		type->set("csort", OtFunction::create(&OtArrayClass::csort));
 
-		type->set("push", OtFunctionClass::create(&OtArrayClass::push));
-		type->set("pop", OtFunctionClass::create(&OtArrayClass::pop));
+		type->set("push", OtFunction::create(&OtArrayClass::push));
+		type->set("pop", OtFunction::create(&OtArrayClass::pop));
 
-		type->set("fill", OtFunctionClass::create(&OtArrayClass::fill));
-		type->set("join", OtFunctionClass::create(&OtArrayClass::join));
+		type->set("fill", OtFunction::create(&OtArrayClass::fill));
+		type->set("join", OtFunction::create(&OtArrayClass::join));
 	}
 
 	return type;
-}
-
-
-//
-//	OtArrayClass::create
-//
-
-OtArray OtArrayClass::create() {
-	OtArray array = std::make_shared<OtArrayClass>();
-	array->setType(getMeta());
-	return array;
-}
-
-OtArray OtArrayClass::create(size_t count, OtObject* objects) {
-	OtArray array = create();
-
-	for (auto c = 0; c < count; c++) {
-		array->append(objects[c]);
-	}
-
-	return array;
 }

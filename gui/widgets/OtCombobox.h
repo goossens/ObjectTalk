@@ -22,7 +22,7 @@
 //
 
 class OtComboboxClass;
-typedef std::shared_ptr<OtComboboxClass> OtCombobox;
+using OtCombobox = OtObjectPointer<OtComboboxClass>;
 
 class OtComboboxClass : public OtWidgetClass {
 public:
@@ -34,9 +34,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtCombobox create();
 
 private:
 	// properties

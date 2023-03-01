@@ -61,7 +61,7 @@ OtObject OtStringClass::index(size_t index) {
 		OtExcept("Invalid index [%ld] for string of size [%ld]", index, len());
 	}
 
-	return OtStringReferenceClass::create(cast<OtStringClass>(), index);
+	return OtStringReference::create(OtString(this), index);
 }
 
 
@@ -70,7 +70,7 @@ OtObject OtStringClass::index(size_t index) {
 //
 
 OtObject OtStringClass::iterate() {
-	return OtStringIteratorClass::create(cast<OtStringClass>());
+	return OtStringIterator::create(OtString(this));
 }
 
 
@@ -79,16 +79,16 @@ OtObject OtStringClass::iterate() {
 //
 
 OtObject OtStringClass::split(const std::string& delimiter) {
-	OtArray result = OtArrayClass::create();
+	OtArray result = OtArray::create();
 	size_t start = 0;
 	size_t end;
 
 	while ((end = value.find(delimiter, start)) != std::string::npos) {
-		result->append(OtStringClass::create(value.substr(start, end - start)));
+		result->append(OtString::create(value.substr(start, end - start)));
 		start = end + delimiter.size();
 	}
 
-	result->append(OtStringClass::create(value.substr(start)));
+	result->append(OtString::create(value.substr(start)));
 	return result;
 }
 
@@ -284,7 +284,7 @@ OtObject OtStringClass::format(size_t count, OtObject* objects) {
 	}
 
 	// return result
-	return OtStringClass::create(ss.str());
+	return OtString::create(ss.str());
 }
 
 
@@ -298,59 +298,48 @@ OtType OtStringClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtStringClass>("String", OtPrimitiveClass::getMeta());
 
-		type->set("boolean", OtFunctionClass::create(&OtStringClass::operator bool));
-		type->set("integer", OtFunctionClass::create(&OtStringClass::operator int64_t));
-		type->set("real", OtFunctionClass::create(&OtStringClass::operator double));
-		type->set("string", OtFunctionClass::create(&OtStringClass::operator std::string));
-		type->set("json", OtFunctionClass::create(&OtStringClass::json));
+		type->set("boolean", OtFunction::create(&OtStringClass::operator bool));
+		type->set("integer", OtFunction::create(&OtStringClass::operator int64_t));
+		type->set("real", OtFunction::create(&OtStringClass::operator double));
+		type->set("string", OtFunction::create(&OtStringClass::operator std::string));
+		type->set("json", OtFunction::create(&OtStringClass::json));
 
-		type->set("__eq__", OtFunctionClass::create(&OtStringClass::equal));
-		type->set("__ne__", OtFunctionClass::create(&OtStringClass::notEqual));
-		type->set("__gt__", OtFunctionClass::create(&OtStringClass::greaterThan));
-		type->set("__lt__", OtFunctionClass::create(&OtStringClass::lessThan));
-		type->set("__ge__", OtFunctionClass::create(&OtStringClass::greaterEqual));
-		type->set("__le__", OtFunctionClass::create(&OtStringClass::lessEqual));
+		type->set("__eq__", OtFunction::create(&OtStringClass::equal));
+		type->set("__ne__", OtFunction::create(&OtStringClass::notEqual));
+		type->set("__gt__", OtFunction::create(&OtStringClass::greaterThan));
+		type->set("__lt__", OtFunction::create(&OtStringClass::lessThan));
+		type->set("__ge__", OtFunction::create(&OtStringClass::greaterEqual));
+		type->set("__le__", OtFunction::create(&OtStringClass::lessEqual));
 
-		type->set("casecmp", OtFunctionClass::create(&OtStringClass::casecmp));
+		type->set("casecmp", OtFunction::create(&OtStringClass::casecmp));
 
-		type->set("__index__", OtFunctionClass::create(&OtStringClass::index));
-		type->set("__iter__", OtFunctionClass::create(&OtStringClass::iterate));
-		type->set("__add__", OtFunctionClass::create(&OtStringClass::add));
+		type->set("__index__", OtFunction::create(&OtStringClass::index));
+		type->set("__iter__", OtFunction::create(&OtStringClass::iterate));
+		type->set("__add__", OtFunction::create(&OtStringClass::add));
 
-		type->set("len", OtFunctionClass::create(&OtStringClass::len));
+		type->set("len", OtFunction::create(&OtStringClass::len));
 
-		type->set("left", OtFunctionClass::create(&OtStringClass::left));
-		type->set("right", OtFunctionClass::create(&OtStringClass::right));
-		type->set("mid", OtFunctionClass::create(&OtStringClass::mid));
+		type->set("left", OtFunction::create(&OtStringClass::left));
+		type->set("right", OtFunction::create(&OtStringClass::right));
+		type->set("mid", OtFunction::create(&OtStringClass::mid));
 
-		type->set("find", OtFunctionClass::create(&OtStringClass::find));
-		type->set("startsWith", OtFunctionClass::create(&OtStringClass::startsWith));
-		type->set("contains", OtFunctionClass::create(&OtStringClass::contains));
-		type->set("__contains__", OtFunctionClass::create(&OtStringClass::contains));
+		type->set("find", OtFunction::create(&OtStringClass::find));
+		type->set("startsWith", OtFunction::create(&OtStringClass::startsWith));
+		type->set("contains", OtFunction::create(&OtStringClass::contains));
+		type->set("__contains__", OtFunction::create(&OtStringClass::contains));
 
-		type->set("trim", OtFunctionClass::create(&OtStringClass::trim));
-		type->set("ltrim", OtFunctionClass::create(&OtStringClass::ltrim));
-		type->set("rtrim", OtFunctionClass::create(&OtStringClass::rtrim));
-		type->set("compress", OtFunctionClass::create(&OtStringClass::compress));
+		type->set("trim", OtFunction::create(&OtStringClass::trim));
+		type->set("ltrim", OtFunction::create(&OtStringClass::ltrim));
+		type->set("rtrim", OtFunction::create(&OtStringClass::rtrim));
+		type->set("compress", OtFunction::create(&OtStringClass::compress));
 
-		type->set("lower", OtFunctionClass::create(&OtStringClass::lower));
-		type->set("upper", OtFunctionClass::create(&OtStringClass::upper));
+		type->set("lower", OtFunction::create(&OtStringClass::lower));
+		type->set("upper", OtFunction::create(&OtStringClass::upper));
 
-		type->set("split", OtFunctionClass::create(&OtStringClass::split));
+		type->set("split", OtFunction::create(&OtStringClass::split));
 
-		type->set("format", OtFunctionClass::create(&OtStringClass::format));
+		type->set("format", OtFunction::create(&OtStringClass::format));
 	}
 
 	return type;
-}
-
-
-//
-//	OtStringClass::create
-//
-
-OtString OtStringClass::create(const std::string& value) {
-	auto string = std::make_shared<OtStringClass>(value);
-	string->setType(getMeta());
-	return string;
 }

@@ -90,14 +90,3 @@ OtType OtTetrahedronGeometryClass::getMeta() {
 
 	return type;
 }
-
-
-//
-//	OtTetrahedronGeometryClass::create
-//
-
-OtTetrahedronGeometry OtTetrahedronGeometryClass::create() {
-	OtTetrahedronGeometry geometry = std::make_shared<OtTetrahedronGeometryClass>();
-	geometry->setType(getMeta());
-	return geometry;
-}

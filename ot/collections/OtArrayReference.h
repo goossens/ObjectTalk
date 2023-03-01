@@ -23,7 +23,7 @@
 //
 
 class OtArrayReferenceClass;
-typedef std::shared_ptr<OtArrayReferenceClass> OtArrayReference;
+using OtArrayReference = OtObjectPointer<OtArrayReferenceClass>;
 
 class OtArrayReferenceClass : public OtReferenceClass {
 public:
@@ -40,9 +40,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new array reference
-	static OtArrayReference create(OtArray array, size_t index);
 
 private:
 	OtArray array;

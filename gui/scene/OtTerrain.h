@@ -34,7 +34,7 @@
 //
 
 class OtTerrainClass;
-typedef std::shared_ptr<OtTerrainClass> OtTerrain;
+using OtTerrain = OtObjectPointer<OtTerrainClass>;
 
 class OtTerrainClass : public OtSceneObjectClass {
 public:
@@ -57,10 +57,10 @@ public:
 		float transion2, float overlap2,
 		float transion3, float overlap3);
 
-	OtObject setRegion1Color(float r, float g, float b) { region1Color = glm::vec3(r, g, b); return shared(); }
-	OtObject setRegion2Color(float r, float g, float b) { region2Color = glm::vec3(r, g, b); return shared(); }
-	OtObject setRegion3Color(float r, float g, float b) { region3Color = glm::vec3(r, g, b); return shared(); }
-	OtObject setRegion4Color(float r, float g, float b) { region4Color = glm::vec3(r, g, b); return shared(); }
+	OtObject setRegion1Color(float r, float g, float b) { region1Color = glm::vec3(r, g, b); return OtObject(this); }
+	OtObject setRegion2Color(float r, float g, float b) { region2Color = glm::vec3(r, g, b); return OtObject(this); }
+	OtObject setRegion3Color(float r, float g, float b) { region3Color = glm::vec3(r, g, b); return OtObject(this); }
+	OtObject setRegion4Color(float r, float g, float b) { region4Color = glm::vec3(r, g, b); return OtObject(this); }
 
 	OtObject setTextureScale(float scale);
 
@@ -77,9 +77,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtTerrain create();
 
 protected:
 	// mark changes and trigger tile regeneration

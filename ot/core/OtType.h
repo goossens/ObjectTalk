@@ -13,6 +13,7 @@
 //
 
 #include "OtMembers.h"
+#include "OtObjectPointer.h"
 
 
 //
@@ -20,7 +21,7 @@
 //
 
 class OtObjectClass;
-typedef std::shared_ptr<OtObjectClass> OtObject;
+using OtObject = OtObjectPointer<OtObjectClass>;
 
 
 //
@@ -54,8 +55,8 @@ public:
 
 	// member access
 	bool has(size_t selector) { return members.has(selector) != 0; }
-	OtObject set(size_t selector, OtObject value) { members.set(selector, value); return value; }
-	OtObject set(const char* name, OtObject value) { return set(OtSelector::create(name), value); }
+	OtObject set(size_t selector, OtObject value);
+	OtObject set(const char* name, OtObject value);
 	OtObject get(size_t selector) { return members.has(selector) ? members.get(selector) : nullptr; }
 	void unset(size_t selector);
 	std::vector<std::string> getMemberNames() { return members.getMemberNames(); }
@@ -65,7 +66,7 @@ public:
 	static OtType create(const std::string& name, OtType parent, OtAllocator allocator=nullptr) {
 		if (!allocator) {
 			allocator = []() {
-				return (OtObject) std::make_shared<T>();
+				return (OtObject) OtObjectPointer<T>::create();
 			};
 		}
 

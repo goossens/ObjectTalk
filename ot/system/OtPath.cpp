@@ -38,7 +38,7 @@ void OtPathClass::init(size_t count, OtObject* parameters) {
 //
 
 OtObject OtPathClass::iterate() {
-	return OtPathIteratorClass::create(cast<OtPathClass>());
+	return OtPathIterator::create(OtPath(this));
 }
 
 
@@ -52,65 +52,43 @@ OtType OtPathClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtPathClass>("Path", OtSystemClass::getMeta());
 
-		type->set("__init__", OtFunctionClass::create(&OtPathClass::init));
-		type->set("__iter__", OtFunctionClass::create(&OtPathClass::iterate));
-		type->set("__add__", OtFunctionClass::create(&OtPathClass::join));
-		type->set("__div__", OtFunctionClass::create(&OtPathClass::join));
+		type->set("__init__", OtFunction::create(&OtPathClass::init));
+		type->set("__iter__", OtFunction::create(&OtPathClass::iterate));
+		type->set("__add__", OtFunction::create(&OtPathClass::join));
+		type->set("__div__", OtFunction::create(&OtPathClass::join));
 
-		type->set("__eq__", OtFunctionClass::create(&OtPathClass::equal));
-		type->set("__ne__", OtFunctionClass::create(&OtPathClass::notEqual));
+		type->set("__eq__", OtFunction::create(&OtPathClass::equal));
+		type->set("__ne__", OtFunction::create(&OtPathClass::notEqual));
 
-		type->set("clear", OtFunctionClass::create(&OtPathClass::clear));
-		type->set("removeFilename", OtFunctionClass::create(&OtPathClass::removeFilename));
-		type->set("replaceFilename", OtFunctionClass::create(&OtPathClass::replaceFilename));
-		type->set("replaceExtension", OtFunctionClass::create(&OtPathClass::replaceExtension));
+		type->set("clear", OtFunction::create(&OtPathClass::clear));
+		type->set("removeFilename", OtFunction::create(&OtPathClass::removeFilename));
+		type->set("replaceFilename", OtFunction::create(&OtPathClass::replaceFilename));
+		type->set("replaceExtension", OtFunction::create(&OtPathClass::replaceExtension));
 
-		type->set("exists", OtFunctionClass::create(&OtPathClass::exists));
-		type->set("isEmpty", OtFunctionClass::create(&OtPathClass::isEmpty));
-		type->set("isAbsolute", OtFunctionClass::create(&OtPathClass::isAbsolute));
-		type->set("isRelative", OtFunctionClass::create(&OtPathClass::isRelative));
+		type->set("exists", OtFunction::create(&OtPathClass::exists));
+		type->set("isEmpty", OtFunction::create(&OtPathClass::isEmpty));
+		type->set("isAbsolute", OtFunction::create(&OtPathClass::isAbsolute));
+		type->set("isRelative", OtFunction::create(&OtPathClass::isRelative));
 
-		type->set("hasRootPath", OtFunctionClass::create(&OtPathClass::hasRootPath));
-		type->set("hasRootName", OtFunctionClass::create(&OtPathClass::hasRootName));
-		type->set("hasRootDirectory", OtFunctionClass::create(&OtPathClass::hasRootDirectory));
-		type->set("hasRelativePath", OtFunctionClass::create(&OtPathClass::hasRelativePath));
-		type->set("hasParentPath", OtFunctionClass::create(&OtPathClass::hasParentPath));
-		type->set("hasFilename", OtFunctionClass::create(&OtPathClass::hasFilename));
-		type->set("hasStem", OtFunctionClass::create(&OtPathClass::hasStem));
-		type->set("hasExtension", OtFunctionClass::create(&OtPathClass::hasExtension));
+		type->set("hasRootPath", OtFunction::create(&OtPathClass::hasRootPath));
+		type->set("hasRootName", OtFunction::create(&OtPathClass::hasRootName));
+		type->set("hasRootDirectory", OtFunction::create(&OtPathClass::hasRootDirectory));
+		type->set("hasRelativePath", OtFunction::create(&OtPathClass::hasRelativePath));
+		type->set("hasParentPath", OtFunction::create(&OtPathClass::hasParentPath));
+		type->set("hasFilename", OtFunction::create(&OtPathClass::hasFilename));
+		type->set("hasStem", OtFunction::create(&OtPathClass::hasStem));
+		type->set("hasExtension", OtFunction::create(&OtPathClass::hasExtension));
 
-		type->set("rootName", OtFunctionClass::create(&OtPathClass::rootName));
-		type->set("rootDirectory", OtFunctionClass::create(&OtPathClass::rootDirectory));
-		type->set("rootPath", OtFunctionClass::create(&OtPathClass::rootPath));
-		type->set("directory", OtFunctionClass::create(&OtPathClass::directory));
-		type->set("filename", OtFunctionClass::create(&OtPathClass::filename));
-		type->set("stem", OtFunctionClass::create(&OtPathClass::stem));
-		type->set("extension", OtFunctionClass::create(&OtPathClass::extension));
+		type->set("rootName", OtFunction::create(&OtPathClass::rootName));
+		type->set("rootDirectory", OtFunction::create(&OtPathClass::rootDirectory));
+		type->set("rootPath", OtFunction::create(&OtPathClass::rootPath));
+		type->set("directory", OtFunction::create(&OtPathClass::directory));
+		type->set("filename", OtFunction::create(&OtPathClass::filename));
+		type->set("stem", OtFunction::create(&OtPathClass::stem));
+		type->set("extension", OtFunction::create(&OtPathClass::extension));
 
-		type->set("relative", OtFunctionClass::create(&OtPathClass::relative));
+		type->set("relative", OtFunction::create(&OtPathClass::relative));
 	}
 
 	return type;
-}
-
-//
-//	OtPathClass::create
-//
-
-OtPath OtPathClass::create(const char* value) {
-	OtPath path = std::make_shared<OtPathClass>(value);
-	path->setType(getMeta());
-	return path;
-}
-
-OtPath OtPathClass::create(const std::string& value) {
-	OtPath path = std::make_shared<OtPathClass>(value);
-	path->setType(getMeta());
-	return path;
-}
-
-OtPath OtPathClass::create(const std::filesystem::path& value) {
-	OtPath path = std::make_shared<OtPathClass>(value);
-	path->setType(getMeta());
-	return path;
 }

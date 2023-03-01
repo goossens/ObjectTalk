@@ -30,7 +30,7 @@
 //
 
 class OtSkyClass;
-typedef std::shared_ptr<OtSkyClass> OtSky;
+using OtSky = OtObjectPointer<OtSkyClass>;
 
 class OtSkyClass : public OtSceneObjectClass {
 public:
@@ -62,9 +62,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtSky create();
 
 protected:
 	// sky color (only used if no sun is specified)

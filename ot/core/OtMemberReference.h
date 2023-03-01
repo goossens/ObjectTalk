@@ -21,7 +21,7 @@
 //
 
 class OtMemberReferenceClass;
-typedef std::shared_ptr<OtMemberReferenceClass> OtMemberReference;
+using OtMemberReference = OtObjectPointer<OtMemberReferenceClass>;
 
 class OtMemberReferenceClass : public OtReferenceClass {
 public:
@@ -38,9 +38,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtMemberReference create(OtObject object, size_t member);
 
 private:
 	OtObject object;

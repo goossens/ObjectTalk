@@ -32,9 +32,9 @@ void OtSceneClass::validateChild(OtNode child) {
 //
 
 void OtSceneClass::preRender(OtRenderer& renderer) {
-	for (auto const& child : children) {
+	for (auto& child : children) {
 		if (child->isEnabled()) {
-			child->cast<OtSceneObjectClass>()->preRender(renderer);
+			OtSceneObject(child)->preRender(renderer);
 		}
 	}
 }
@@ -45,9 +45,9 @@ void OtSceneClass::preRender(OtRenderer& renderer) {
 //
 
 void OtSceneClass::render(OtRenderer& renderer) {
-	for (auto const& child : children) {
+	for (auto& child : children) {
 		if (child->isEnabled()) {
-			child->cast<OtSceneObjectClass>()->render(renderer);
+			OtSceneObject(child)->render(renderer);
 		}
 	}
 }
@@ -65,15 +65,4 @@ OtType OtSceneClass::getMeta() {
 	}
 
 	return type;
-}
-
-
-//
-//	OtSceneClass::create
-//
-
-OtScene OtSceneClass::create() {
-	OtScene scene = std::make_shared<OtSceneClass>();
-	scene->setType(getMeta());
-	return scene;
 }

@@ -23,28 +23,18 @@ OtType OtBooleanClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtBooleanClass>("Boolean", OtPrimitiveClass::getMeta());
 
-		type->set("boolean", OtFunctionClass::create(&OtBooleanClass::operator bool));
-		type->set("integer", OtFunctionClass::create(&OtBooleanClass::operator int64_t));
-		type->set("real", OtFunctionClass::create(&OtBooleanClass::operator double));
-		type->set("string", OtFunctionClass::create(&OtBooleanClass::operator std::string));
+		type->set("boolean", OtFunction::create(&OtBooleanClass::operator bool));
+		type->set("integer", OtFunction::create(&OtBooleanClass::operator int64_t));
+		type->set("real", OtFunction::create(&OtBooleanClass::operator double));
+		type->set("string", OtFunction::create(&OtBooleanClass::operator std::string));
 
-		type->set("__eq__", OtFunctionClass::create(&OtBooleanClass::equal));
-		type->set("__ne__", OtFunctionClass::create(&OtBooleanClass::notEqual));
+		type->set("__eq__", OtFunction::create(&OtBooleanClass::equal));
+		type->set("__ne__", OtFunction::create(&OtBooleanClass::notEqual));
 
-		type->set("__and__", OtFunctionClass::create(&OtBooleanClass::logicalAnd));
-		type->set("__or__", OtFunctionClass::create(&OtBooleanClass::logicalOr));
-		type->set("__not__", OtFunctionClass::create(&OtBooleanClass::logicalNot));
+		type->set("__and__", OtFunction::create(&OtBooleanClass::logicalAnd));
+		type->set("__or__", OtFunction::create(&OtBooleanClass::logicalOr));
+		type->set("__not__", OtFunction::create(&OtBooleanClass::logicalNot));
 	}
 
 	return type;
-}
-
-//
-//	OtBooleanClass::create
-//
-
-OtBoolean OtBooleanClass::create(bool value) {
-	OtBoolean boolean = std::make_shared<OtBooleanClass>(value);
-	boolean->setType(getMeta());
-	return boolean;
 }

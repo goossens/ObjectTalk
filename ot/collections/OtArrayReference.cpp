@@ -22,20 +22,9 @@ OtType OtArrayReferenceClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtArrayReferenceClass>("ArrayReference", OtReferenceClass::getMeta());
-		type->set("__deref__", OtFunctionClass::create(&OtArrayReferenceClass::deref));
-		type->set("__assign__", OtFunctionClass::create(&OtArrayReferenceClass::assign));
+		type->set("__deref__", OtFunction::create(&OtArrayReferenceClass::deref));
+		type->set("__assign__", OtFunction::create(&OtArrayReferenceClass::assign));
 	}
 
 	return type;
-}
-
-
-//
-//	OtArrayReferenceClass::create
-//
-
-OtArrayReference OtArrayReferenceClass::create(OtArray array, size_t index) {
-	OtArrayReference reference = std::make_shared<OtArrayReferenceClass>(array, index);
-	reference->setType(getMeta());
-	return reference;
 }

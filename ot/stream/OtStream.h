@@ -20,7 +20,7 @@
 //
 
 class OtStreamClass;
-typedef std::shared_ptr<OtStreamClass> OtStream;
+using OtStream = OtObjectPointer<OtStreamClass>;
 
 class OtStreamClass : public OtObjectClass {
 public:

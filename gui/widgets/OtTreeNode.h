@@ -20,7 +20,7 @@
 //
 
 class OtTreeNodeClass;
-typedef std::shared_ptr<OtTreeNodeClass> OtTreeNode;
+using OtTreeNode = OtObjectPointer<OtTreeNodeClass>;
 
 class OtTreeNodeClass : public OtWidgetClass {
 public:
@@ -28,10 +28,10 @@ public:
 	void init(size_t count, OtObject* parameters);
 
 	// adjust properties
-	OtObject setTitle(const std::string& t) { title = t; return shared(); }
+	OtObject setTitle(const std::string& t) { title = t; return OtObject(this); }
 	std::string getTitle() { return title; }
 
-	OtObject setOpen(bool o) { open = 0; return shared(); }
+	OtObject setOpen(bool o) { open = 0; return OtObject(this); }
 	bool getOpen() { return open; }
 
 	// ensure specified node is allowed as a child
@@ -42,9 +42,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtTreeNode create();
 
 private:
 	// properties

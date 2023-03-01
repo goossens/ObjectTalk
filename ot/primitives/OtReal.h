@@ -25,7 +25,7 @@
 //
 
 class OtRealClass;
-typedef std::shared_ptr<OtRealClass> OtReal;
+using OtReal = OtObjectPointer<OtRealClass>;
 
 class OtRealClass : public OtPrimitiveClass {
 public:
@@ -101,9 +101,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtReal create(double value);
 
 private:
 	double value = 0.0;

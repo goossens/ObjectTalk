@@ -24,7 +24,7 @@
 
 OtObject OtObject3dClass::rotateX(float angle) {
 	rotating = glm::rotate(glm::mat4(1.0), angle, glm::vec3(1.0, 0.0, 0.0));
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -34,7 +34,7 @@ OtObject OtObject3dClass::rotateX(float angle) {
 
 OtObject OtObject3dClass::rotateY(float angle) {
 	rotating = glm::rotate(glm::mat4(1.0), angle, glm::vec3(0.0, 1.0, 0.0));
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -44,7 +44,7 @@ OtObject OtObject3dClass::rotateY(float angle) {
 
 OtObject OtObject3dClass::rotateZ(float angle) {
 	rotating = glm::rotate(glm::mat4(1.0), angle, glm::vec3(0.0, 0.0, 1.0));
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -54,7 +54,7 @@ OtObject OtObject3dClass::rotateZ(float angle) {
 
 OtObject OtObject3dClass::rotateAroundVector(float angle, float x, float y, float z) {
 	rotating = glm::rotate(glm::mat4(1.0), angle, glm::vec3(x, y, z));
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -64,7 +64,7 @@ OtObject OtObject3dClass::rotateAroundVector(float angle, float x, float y, floa
 
 OtObject OtObject3dClass::yawPitchRoll(float yaw, float pitch, float roll) {
 	rotating = glm::yawPitchRoll(yaw, pitch, roll);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -74,7 +74,7 @@ OtObject OtObject3dClass::yawPitchRoll(float yaw, float pitch, float roll) {
 
 OtObject OtObject3dClass::scale(float x, float y, float z) {
 	scaling = glm::scale(glm::mat4(1.0), glm::vec3(x, y, z));
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -84,7 +84,7 @@ OtObject OtObject3dClass::scale(float x, float y, float z) {
 
 OtObject OtObject3dClass::translate(float x, float y, float z) {
 	translating = glm::translate(glm::mat4(1.0), glm::vec3(x, y, z));
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -117,7 +117,7 @@ OtObject OtObject3dClass::transformationOrder(const std::string& orderString) {
 		OtExcept("Invalid transformation order [%s] for [%s]", orderString.c_str(), getType()->getName().c_str());
 	}
 
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -165,9 +165,9 @@ glm::mat4 OtObject3dClass::getLocalTransform() {
 glm::mat4 OtObject3dClass::getGlobalTransform() {
 	if (hasParent()) {
 		OtObject parent = getParent();
-		
+
 		if (parent->isKindOf("Object3D")) {
-			return parent->cast<OtObject3dClass>()->getGlobalTransform() * getLocalTransform();
+			return OtObject3d(parent)->getGlobalTransform() * getLocalTransform();
 
 		} else {
 			return getLocalTransform();
@@ -188,26 +188,15 @@ OtType OtObject3dClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtObject3dClass>("Object3D", OtSceneObjectClass::getMeta());
-		type->set("rotateX", OtFunctionClass::create(&OtObject3dClass::rotateX));
-		type->set("rotateY", OtFunctionClass::create(&OtObject3dClass::rotateY));
-		type->set("rotateZ", OtFunctionClass::create(&OtObject3dClass::rotateZ));
-		type->set("rotateAroundVector", OtFunctionClass::create(&OtObject3dClass::rotateAroundVector));
-		type->set("yawPitchRoll", OtFunctionClass::create(&OtObject3dClass::yawPitchRoll));
-		type->set("scale", OtFunctionClass::create(&OtObject3dClass::scale));
-		type->set("translate", OtFunctionClass::create(&OtObject3dClass::translate));
-		type->set("transformationOrder", OtFunctionClass::create(&OtObject3dClass::transformationOrder));
+		type->set("rotateX", OtFunction::create(&OtObject3dClass::rotateX));
+		type->set("rotateY", OtFunction::create(&OtObject3dClass::rotateY));
+		type->set("rotateZ", OtFunction::create(&OtObject3dClass::rotateZ));
+		type->set("rotateAroundVector", OtFunction::create(&OtObject3dClass::rotateAroundVector));
+		type->set("yawPitchRoll", OtFunction::create(&OtObject3dClass::yawPitchRoll));
+		type->set("scale", OtFunction::create(&OtObject3dClass::scale));
+		type->set("translate", OtFunction::create(&OtObject3dClass::translate));
+		type->set("transformationOrder", OtFunction::create(&OtObject3dClass::transformationOrder));
 	}
 
 	return type;
-}
-
-
-//
-//	OtObject3dClass::create
-//
-
-OtObject3d OtObject3dClass::create() {
-	OtObject3d shape = std::make_shared<OtObject3dClass>();
-	shape->setType(getMeta());
-	return shape;
 }

@@ -37,13 +37,13 @@ public:
 
 OtVM::OtVM() {
 	// create stack
-	stack = OtStackClass::create();
+	stack = std::make_shared<OtStackClass>();
 
 	// create globals
-	global = OtGlobalClass::create();
+	global = OtGlobal::create();
 
 	// create null object
-	null = OtObjectClass::create();
+	null = OtObject::create();
 }
 
 
@@ -137,7 +137,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 
 				case OtByteCodeClass::MEMBER:
 					// create a member reference
-					stack->push(OtMemberReferenceClass::create(
+					stack->push(OtMemberReference::create(
 						stack->pop(),
 						bytecode->getSelector(bytecode->getNumber(pc))));
 
@@ -193,7 +193,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 				stack->restoreState(trycatch.stack);
 
 				// put exception on stack
-				stack->push(OtStringClass::create(e.what()));
+				stack->push(OtString::create(e.what()));
 
 			} else {
 				// no exception handler, restore the stack state

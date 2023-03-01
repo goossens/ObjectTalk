@@ -48,8 +48,8 @@ void OtMeshClass::init(size_t count, OtObject* parameters) {
 
 OtObject OtMeshClass::setGeometry(OtObject object) {
 	object->expectKindOf("Geometry");
-	geometry = object->cast<OtGeometryClass>();
-	return shared();
+	geometry = OtGeometry(object);
+	return OtObject(this);
 }
 
 
@@ -59,8 +59,8 @@ OtObject OtMeshClass::setGeometry(OtObject object) {
 
 OtObject OtMeshClass::setMaterial(OtObject object) {
 	object->expectKindOf("Material");
-	material = object->cast<OtMaterialClass>();
-	return shared();
+	material = OtMaterial(object);
+	return OtObject(this);
 }
 
 
@@ -70,7 +70,7 @@ OtObject OtMeshClass::setMaterial(OtObject object) {
 
 OtObject OtMeshClass::setWireframe(bool w) {
 	wireframe = w;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -80,8 +80,8 @@ OtObject OtMeshClass::setWireframe(bool w) {
 
 OtObject OtMeshClass::addInstance(OtObject object) {
 	object->expectKindOf("Matrix");
-	instances.push_back(object->cast<OtMatrixClass>()->getComposite());
-	return shared();
+	instances.push_back(OtMatrix(object)->getComposite());
+	return OtObject(this);
 }
 
 
@@ -142,24 +142,13 @@ OtType OtMeshClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtMeshClass>("Mesh", OtObject3dClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtMeshClass::init));
+		type->set("__init__", OtFunction::create(&OtMeshClass::init));
 
-		type->set("setGeometry", OtFunctionClass::create(&OtMeshClass::setGeometry));
-		type->set("setMaterial", OtFunctionClass::create(&OtMeshClass::setMaterial));
-		type->set("setWireframe", OtFunctionClass::create(&OtMeshClass::setWireframe));
-		type->set("addInstance", OtFunctionClass::create(&OtMeshClass::addInstance));
+		type->set("setGeometry", OtFunction::create(&OtMeshClass::setGeometry));
+		type->set("setMaterial", OtFunction::create(&OtMeshClass::setMaterial));
+		type->set("setWireframe", OtFunction::create(&OtMeshClass::setWireframe));
+		type->set("addInstance", OtFunction::create(&OtMeshClass::addInstance));
 	}
 
 	return type;
-}
-
-
-//
-//	OtMeshClass::create
-//
-
-OtMesh OtMeshClass::create() {
-	OtMesh mesh = std::make_shared<OtMeshClass>();
-	mesh->setType(getMeta());
-	return mesh;
 }

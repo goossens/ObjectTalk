@@ -81,7 +81,7 @@ public:
 	}
 
 	template<typename... ARGS>
-	OtObject redirectMemberFunction(OtObject target, const std::string& member, size_t count) {
+	inline OtObject redirectMemberFunction(OtObject target, const std::string& member, size_t count) {
 		return redirectMemberFunction(target, OtSelector::create(member), count);
 	}
 

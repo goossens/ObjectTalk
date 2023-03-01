@@ -20,7 +20,7 @@
 //
 
 class OtDialogClass;
-typedef std::shared_ptr<OtDialogClass> OtDialog;
+using OtDialog = OtObjectPointer<OtDialogClass>;
 
 class OtDialogClass : public OtAppObjectClass {
 public:

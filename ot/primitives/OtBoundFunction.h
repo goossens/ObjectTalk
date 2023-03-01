@@ -21,7 +21,7 @@
 //
 
 class OtBoundFunctionClass;
-typedef std::shared_ptr<OtBoundFunctionClass> OtBoundFunction;
+using OtBoundFunction = OtObjectPointer<OtBoundFunctionClass>;
 
 class OtBoundFunctionClass : public OtInternalClass {
 public:
@@ -37,9 +37,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtBoundFunction create(OtObject o, OtObject f);
 
 private:
 	OtObject object;

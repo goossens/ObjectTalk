@@ -20,7 +20,7 @@
 //
 
 class OtLabelClass;
-typedef std::shared_ptr<OtLabelClass> OtLabel;
+using OtLabel = OtObjectPointer<OtLabelClass>;
 
 class OtLabelClass : public OtWidgetClass {
 public:
@@ -32,9 +32,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtLabel create();
 
 private:
 	// properties

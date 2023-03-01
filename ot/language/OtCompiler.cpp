@@ -70,7 +70,7 @@ OtByteCode OtCompiler::compileSource(OtSource src, OtObject object) {
 	scanner.loadSource(src);
 
 	// setup bytecode
-	OtByteCode bytecode = OtByteCodeClass::create(src);
+	OtByteCode bytecode = OtByteCode::create(src);
 
 	// setup global scope
 	OtGlobal global = OtVM::instance()->getGlobal();
@@ -116,7 +116,7 @@ OtByteCode OtCompiler::compileExpression(OtSource src) {
 	scopeStack.clear();
 
 	// setup bytecode
-	OtByteCode bytecode = OtByteCodeClass::create(src);
+	OtByteCode bytecode = OtByteCode::create(src);
 
 	// setup global scope
 	OtGlobal global = OtVM::instance()->getGlobal();
@@ -262,19 +262,19 @@ void OtCompiler::resolveVariable(OtByteCode bytecode, const std::string& name) {
 			switch(scope->type) {
 				case OBJECT_SCOPE:
 					// variable is object member
-					bytecode->push(OtObjectReferenceClass::create(scope->object, OtSelector::create(name)));
+					bytecode->push(OtObjectReference::create(scope->object, OtSelector::create(name)));
 					break;
 
 				case FUNCTION_SCOPE:
 				case BLOCK_SCOPE:
 					if (functionLevel == 0) {
 						// variable lives on the stack in the current stack frame
-						bytecode->push(OtStackReferenceClass::create(name, scope->locals[name]));
+						bytecode->push(OtStackReference::create(name, scope->locals[name]));
 
 					} else {
 						// variable is in an enclosing function, we need to capture it
 						declareCapture(name, OtStackItem(functionLevel - 1, scope->locals[name]));
-						bytecode->push(OtCaptureReferenceClass::create(OtSelector::create(name)));
+						bytecode->push(OtCaptureReference::create(OtSelector::create(name)));
 					}
 
 					break;
@@ -338,7 +338,7 @@ void OtCompiler::function(OtByteCode bytecode) {
 	scanner.expect(OtScanner::RPAREN_TOKEN);
 
 	// each function has its own bytecode
-	OtByteCode functionCode = OtByteCodeClass::create(source);
+	OtByteCode functionCode = OtByteCode::create(source);
 
 	// get function level bytecode
 	block(functionCode);
@@ -347,14 +347,14 @@ void OtCompiler::function(OtByteCode bytecode) {
 	functionCode->push(OtVM::instance()->getNull());
 
 	// create a new bytecode function
-	auto function = OtByteCodeFunctionClass::create(functionCode, count);
+	auto function = OtByteCodeFunction::create(functionCode, count);
 
 	// see if this function captures variables and needs a closure?
 	auto scope = &(scopeStack.back());
 
 	if (scope->captures.size()) {
 		// function does capture variables so let's wrap it in a closure
-		bytecode->push(OtClosureClass::create(function, scope->captures));
+		bytecode->push(OtClosure::create(function, scope->captures));
 
 		// generate code to perform the actual capture
 		bytecode->method("__capture__", 0);
@@ -387,21 +387,21 @@ bool OtCompiler::primary(OtByteCode bytecode) {
 
 		case OtScanner::INTEGER_TOKEN:
 			// handle integer constants
-			bytecode->push(OtIntegerClass::create(scanner.getInteger()));
+			bytecode->push(OtInteger::create(scanner.getInteger()));
 			scanner.advance();
 			reference = false;
 			break;
 
 		case OtScanner::REAL_TOKEN:
 			// handle real constants
-			bytecode->push(OtRealClass::create(scanner.getReal()));
+			bytecode->push(OtReal::create(scanner.getReal()));
 			scanner.advance();
 			reference = false;
 			break;
 
 		case OtScanner::STRING_TOKEN:
 			// handle string constants
-			bytecode->push(OtStringClass::create(scanner.getString()));
+			bytecode->push(OtString::create(scanner.getString()));
 			scanner.advance();
 			reference = false;
 			break;
@@ -449,7 +449,7 @@ bool OtCompiler::primary(OtByteCode bytecode) {
 
 			while (scanner.getToken() != OtScanner::RBRACE_TOKEN && scanner.getToken() != OtScanner::EOS_TOKEN) {
 				scanner.expect(OtScanner::STRING_TOKEN, false);
-				bytecode->push(OtStringClass::create(scanner.getString()));
+				bytecode->push(OtString::create(scanner.getString()));
 				scanner.advance();
 				scanner.expect(OtScanner::COLON_TOKEN);
 
@@ -1291,7 +1291,7 @@ void OtCompiler::classDeclaration(OtByteCode bytecode) {
 	std::string name = scanner.getText();
 
 	// create new class
-	OtClass cls = OtClassClass::create(name);
+	OtClass cls = OtClass::create(name);
 
 	// add class to current scope
 	declareVariable(bytecode, name);
@@ -1515,7 +1515,7 @@ void OtCompiler::returnStatement(OtByteCode bytecode) {
 
 void OtCompiler::throwStatement(OtByteCode bytecode) {
 	scanner.expect(OtScanner::THROW_TOKEN);
-	bytecode->push(OtThrowClass::create());
+	bytecode->push(OtThrow::create());
 
 	if (expression(bytecode)) {
 		bytecode->method("__deref__", 0);

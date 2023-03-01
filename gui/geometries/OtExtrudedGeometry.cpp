@@ -55,9 +55,9 @@ void OtExtrudedGeometryClass::init(size_t count, OtObject* parameters) {
 
 OtObject OtExtrudedGeometryClass::setShape(OtObject object) {
 	object->expectKindOf("Shape");
-	shape = object->cast<OtShapeClass>();
+	shape = OtShape(object);
 	refreshGeometry = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -68,7 +68,7 @@ OtObject OtExtrudedGeometryClass::setShape(OtObject object) {
 OtObject OtExtrudedGeometryClass::setDepth(float d) {
 	depth = d;
 	refreshGeometry = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -79,7 +79,7 @@ OtObject OtExtrudedGeometryClass::setDepth(float d) {
 OtObject OtExtrudedGeometryClass::setSegments(int s) {
 	segments = s;
 	refreshGeometry = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -221,22 +221,11 @@ OtType OtExtrudedGeometryClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtExtrudedGeometryClass>("ExtrudedGeometry", OtGeometryClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtExtrudedGeometryClass::init));
-		type->set("setShape", OtFunctionClass::create(&OtExtrudedGeometryClass::setShape));
-		type->set("setDepth", OtFunctionClass::create(&OtExtrudedGeometryClass::setDepth));
-		type->set("setSegments", OtFunctionClass::create(&OtExtrudedGeometryClass::setSegments));
+		type->set("__init__", OtFunction::create(&OtExtrudedGeometryClass::init));
+		type->set("setShape", OtFunction::create(&OtExtrudedGeometryClass::setShape));
+		type->set("setDepth", OtFunction::create(&OtExtrudedGeometryClass::setDepth));
+		type->set("setSegments", OtFunction::create(&OtExtrudedGeometryClass::setSegments));
 	}
 
 	return type;
-}
-
-
-//
-//	OtExtrudedGeometryClass::create
-//
-
-OtExtrudedGeometry OtExtrudedGeometryClass::create() {
-	OtExtrudedGeometry geometry = std::make_shared<OtExtrudedGeometryClass>();
-	geometry->setType(getMeta());
-	return geometry;
 }

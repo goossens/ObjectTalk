@@ -21,7 +21,7 @@
 
 OtObject OtClosureClass::capture() {
 	// create a clone to capture variables
-	auto clone = OtClosureClass::create(function, captures);
+	auto clone = OtClosure::create(function, captures);
 
 	// setup all captured variables
 	for (auto const& capture : captures) {
@@ -40,7 +40,7 @@ OtObject OtClosureClass::capture() {
 OtObject OtClosureClass::operator()(size_t count, OtObject* parameters) {
 	// register closure on the stack
 	auto stack = OtVM::instance()->getStack();
-	stack->pushClosure(shared());
+	stack->pushClosure(OtClosure(this));
 
 	// execute the enclosed function
 	auto result = function->operator()(count, parameters);
@@ -62,20 +62,9 @@ OtType OtClosureClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtClosureClass>("Closure", OtInternalClass::getMeta());
-		type->set("__capture__", OtFunctionClass::create(&OtClosureClass::capture));
-		type->set("__call__", OtFunctionClass::create(&OtClosureClass::operator()));
+		type->set("__capture__", OtFunction::create(&OtClosureClass::capture));
+		type->set("__call__", OtFunction::create(&OtClosureClass::operator()));
 	}
 
 	return type;
-}
-
-
-//
-//	OtClosureClass::create
-//
-
-OtClosure OtClosureClass::create(OtByteCodeFunction function, const std::unordered_map<std::string, OtStackItem>& captures) {
-	OtClosure closure = std::make_shared<OtClosureClass>(function, captures);
-	closure->setType(getMeta());
-	return closure;
 }

@@ -91,7 +91,7 @@ void OtPointLightClass::init(size_t count, OtObject* parameters) {
 
 OtObject OtPointLightClass::setPosition(float x, float y, float z) {
 	position = glm::vec3(x, y, z);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -101,7 +101,7 @@ OtObject OtPointLightClass::setPosition(float x, float y, float z) {
 
 OtObject OtPointLightClass::setColor(const std::string& name) {
 	color = OtColorParseToVec3(name);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -111,7 +111,7 @@ OtObject OtPointLightClass::setColor(const std::string& name) {
 
 OtObject OtPointLightClass::setColorRGB(float r, float g, float b) {
 	color = glm::vec3(r, g, b);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -121,7 +121,7 @@ OtObject OtPointLightClass::setColorRGB(float r, float g, float b) {
 
 OtObject OtPointLightClass::setAttenuation(float constant, float linear, float quadratic) {
 	attenuation = glm::vec3(constant, linear, quadratic);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -155,24 +155,13 @@ OtType OtPointLightClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtPointLightClass>("PointLight", OtLightClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtPointLightClass::init));
+		type->set("__init__", OtFunction::create(&OtPointLightClass::init));
 
-		type->set("setPosition", OtFunctionClass::create(&OtPointLightClass::setPosition));
-		type->set("setColor", OtFunctionClass::create(&OtPointLightClass::setColor));
-		type->set("setColorRGB", OtFunctionClass::create(&OtPointLightClass::setColorRGB));
-		type->set("setAttenuation", OtFunctionClass::create(&OtPointLightClass::setAttenuation));
+		type->set("setPosition", OtFunction::create(&OtPointLightClass::setPosition));
+		type->set("setColor", OtFunction::create(&OtPointLightClass::setColor));
+		type->set("setColorRGB", OtFunction::create(&OtPointLightClass::setColorRGB));
+		type->set("setAttenuation", OtFunction::create(&OtPointLightClass::setAttenuation));
 	}
 
 	return type;
-}
-
-
-//
-//	OtPointLightClass::create
-//
-
-OtPointLight OtPointLightClass::create() {
-	OtPointLight ambient = std::make_shared<OtPointLightClass>();
-	ambient->setType(getMeta());
-	return ambient;
 }

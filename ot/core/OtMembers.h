@@ -17,6 +17,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "OtObjectPointer.h"
 #include "OtSelector.h"
 
 
@@ -25,7 +26,7 @@
 //
 
 class OtObjectClass;
-typedef std::shared_ptr<OtObjectClass> OtObject;
+using OtObject = OtObjectPointer<OtObjectClass>;
 
 
 //
@@ -35,23 +36,14 @@ typedef std::shared_ptr<OtObjectClass> OtObject;
 class OtMembers {
 public:
 	// access the members
-	inline bool has(size_t selector) { return members.count(selector); }
-	inline OtObject get(size_t selector) { return members[selector]; }
-	inline void set(size_t selector, OtObject member) { members[selector] = member; }
-	inline void unset(size_t selector) { members.erase(selector); }
+	bool has(size_t selector);
+	OtObject get(size_t selector);
+	void set(size_t selector, OtObject member);
+	void unset(size_t selector);
+	void unsetAll();
 
-	inline void unsetAll() { members.clear(); }
-
-	std::vector<std::string> getMemberNames() {
-		auto selector = OtSelector::instance();
-		std::vector<std::string> result;
-
-		for (auto i : members) {
-			result.push_back(selector->get(i.first));
-		}
-
-		return result;
-	}
+	// get all member names
+	std::vector<std::string> getMemberNames();
 
 private:
 	// the actual members

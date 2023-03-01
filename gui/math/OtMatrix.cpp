@@ -23,7 +23,7 @@
 
 OtObject OtMatrixClass::rotateX(float angle) {
 	rotating = glm::rotate(glm::mat4(1.0), angle, glm::vec3(1.0, 0.0, 0.0));
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -33,7 +33,7 @@ OtObject OtMatrixClass::rotateX(float angle) {
 
 OtObject OtMatrixClass::rotateY(float angle) {
 	rotating = glm::rotate(glm::mat4(1.0), angle, glm::vec3(0.0, 1.0, 0.0));
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -43,7 +43,7 @@ OtObject OtMatrixClass::rotateY(float angle) {
 
 OtObject OtMatrixClass::rotateZ(float angle) {
 	rotating = glm::rotate(glm::mat4(1.0), angle, glm::vec3(0.0, 0.0, 1.0));
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -53,7 +53,7 @@ OtObject OtMatrixClass::rotateZ(float angle) {
 
 OtObject OtMatrixClass::rotateAroundVector(float angle, float x, float y, float z) {
 	rotating = glm::rotate(glm::mat4(1.0), angle, glm::vec3(x, y, z));
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -63,7 +63,7 @@ OtObject OtMatrixClass::rotateAroundVector(float angle, float x, float y, float 
 
 OtObject OtMatrixClass::yawPitchRoll(float yaw, float pitch, float roll) {
 	rotating = glm::yawPitchRoll(yaw, pitch, roll);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -73,7 +73,7 @@ OtObject OtMatrixClass::yawPitchRoll(float yaw, float pitch, float roll) {
 
 OtObject OtMatrixClass::scale(float x, float y, float z) {
 	scaling = glm::scale(glm::mat4(1.0), glm::vec3(x, y, z));
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -83,7 +83,7 @@ OtObject OtMatrixClass::scale(float x, float y, float z) {
 
 OtObject OtMatrixClass::translate(float x, float y, float z) {
 	translating = glm::translate(glm::mat4(1.0), glm::vec3(x, y, z));
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -105,25 +105,14 @@ OtType OtMatrixClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtMatrixClass>("Matrix", OtGuiClass::getMeta());
-		type->set("rotateX", OtFunctionClass::create(&OtMatrixClass::rotateX));
-		type->set("rotateY", OtFunctionClass::create(&OtMatrixClass::rotateY));
-		type->set("rotateZ", OtFunctionClass::create(&OtMatrixClass::rotateZ));
-		type->set("rotateAroundVector", OtFunctionClass::create(&OtMatrixClass::rotateAroundVector));
-		type->set("yawPitchRoll", OtFunctionClass::create(&OtMatrixClass::yawPitchRoll));
-		type->set("scale", OtFunctionClass::create(&OtMatrixClass::scale));
-		type->set("translate", OtFunctionClass::create(&OtMatrixClass::translate));
+		type->set("rotateX", OtFunction::create(&OtMatrixClass::rotateX));
+		type->set("rotateY", OtFunction::create(&OtMatrixClass::rotateY));
+		type->set("rotateZ", OtFunction::create(&OtMatrixClass::rotateZ));
+		type->set("rotateAroundVector", OtFunction::create(&OtMatrixClass::rotateAroundVector));
+		type->set("yawPitchRoll", OtFunction::create(&OtMatrixClass::yawPitchRoll));
+		type->set("scale", OtFunction::create(&OtMatrixClass::scale));
+		type->set("translate", OtFunction::create(&OtMatrixClass::translate));
 	}
 
 	return type;
-}
-
-
-//
-//	OtMatrixClass::create
-//
-
-OtMatrix OtMatrixClass::create() {
-	OtMatrix matrix = std::make_shared<OtMatrixClass>();
-	matrix->setType(getMeta());
-	return matrix;
 }

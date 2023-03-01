@@ -90,7 +90,7 @@ void OtSceneRenderer::renderBackgroundPass(std::shared_ptr<OtScene2> scene) {
 void OtSceneRenderer::renderSkyBox(OtPass& pass, OtSkyBoxComponent& component) {
 	// setup the mesh
 	if (!unityBoxGeometry) {
-		unityBoxGeometry = OtBoxGeometryClass::create();
+		unityBoxGeometry = OtBoxGeometry::create();
 	}
 
 	unityBoxGeometry->submitTriangles();
@@ -116,7 +116,7 @@ void OtSceneRenderer::renderSkyBox(OtPass& pass, OtSkyBoxComponent& component) {
 void OtSceneRenderer::renderSkySphere(OtPass& pass, OtSkySphereComponent& component) {
 	// setup the mesh
 	if (!unitySphereGeometry) {
-		unitySphereGeometry = OtSphereGeometryClass::create();
+		unitySphereGeometry = OtSphereGeometry::create();
 	}
 
 	unitySphereGeometry->submitTriangles();

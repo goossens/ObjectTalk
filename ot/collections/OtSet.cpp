@@ -19,6 +19,17 @@
 
 
 //
+//	OtSetClass::OtSetClass
+//
+
+OtSetClass::OtSetClass(OtObject* objects, size_t count) {
+	for (auto c = 0; c < count; c++) {
+		add(objects[c]);
+	}
+}
+
+
+//
 //	OtSetClass::operator std::string
 //
 
@@ -28,7 +39,7 @@ OtSetClass::operator std::string() {
 
 	o << "[";
 
-	for (auto const& entry : set) {
+	for (auto entry : set) {
 		if (first) {
 			first = false;
 
@@ -60,7 +71,7 @@ void OtSetClass::init(size_t count, OtObject* parameters) {
 //
 
 bool OtSetClass::operator == (OtObject object) {
-	OtSet op = object->cast<OtSetClass>();
+	OtSet op = object;
 
 	// ensure object is a set
 	if (!op) {
@@ -87,7 +98,7 @@ bool OtSetClass::operator == (OtObject object) {
 //
 
 OtObject OtSetClass::iterate() {
-	return OtSetIteratorClass::create(cast<OtSetClass>());
+	return OtSetIterator::create(OtSet(this));
 }
 
 
@@ -96,7 +107,7 @@ OtObject OtSetClass::iterate() {
 //
 
 OtObject OtSetClass::add(OtObject object) {
-	OtSet result = create();
+	OtSet result = OtSet::create();
 
 	for (auto& entry : set) {
 		result->set.insert(entry);
@@ -115,9 +126,9 @@ OtObject OtSetClass::add(OtObject object) {
 //
 
 OtObject OtSetClass::subtract(OtObject object) {
-	OtSet result = create();
+	OtSet result = OtSet::create();
 
-	for (auto& entry : set) {
+	for (auto entry : set) {
 		if (!entry->equal(object)) {
 			result->set.insert(entry);
 		}
@@ -132,7 +143,7 @@ OtObject OtSetClass::subtract(OtObject object) {
 //
 
 bool OtSetClass::contains(OtObject object) {
-	for (auto const& entry : set) {
+	for (auto entry : set) {
 		if (entry->equal(object)) {
 			return true;
 		}
@@ -147,7 +158,7 @@ bool OtSetClass::contains(OtObject object) {
 //
 
 OtObject OtSetClass::clone() {
-	OtSet result = create();
+	OtSet result = OtSet::create();
 
 	for (auto& entry : set) {
 		result->set.insert(entry);
@@ -166,13 +177,13 @@ OtObject OtSetClass::merge(OtObject object) {
 		OtExcept("Set merge expects another [set] instance, not a [%s]", object->getType()->getName().c_str());
 	}
 
-	OtSet result = create();
+	OtSet result = OtSet::create();
 
 	for (auto& item : set) {
 		result->set.insert(item);
 	}
 
-	for (auto& item : object->cast<OtSetClass>()->set) {
+	for (auto& item : OtSet(object)->set) {
 		if (!result->contains(item)) {
 			result->set.insert(item);
 		}
@@ -202,7 +213,7 @@ void OtSetClass::erase(OtObject object) {
 
 	// use remove_if when we move the C++20
 	for (auto it = set.begin(); !found && it != set.end();) {
-		if ((*it)->equal(object)) {
+		if (((OtObject) *it)->equal(object)) {
 			it = set.erase(it);
 			found = true;
 
@@ -218,13 +229,13 @@ void OtSetClass::erase(OtObject object) {
 //
 
 OtObject OtSetClass::intersectWith(OtObject object) {
-	OtSet op = object->cast<OtSetClass>();
+	OtSet op = object;
 
 	if (!op) {
 		OtExcept("Set intersect method expects another [set] instance, not a [%s]", object->getType()->getName().c_str());
 	}
 
-	OtSet result = create();
+	OtSet result = OtSet::create();
 
 	for (auto& item : set) {
 		if (op->contains(item)) {
@@ -241,13 +252,13 @@ OtObject OtSetClass::intersectWith(OtObject object) {
 //
 
 OtObject OtSetClass::diffFrom(OtObject object) {
-	OtSet op = object->cast<OtSetClass>();
+	OtSet op = object;
 
 	if (!op) {
 		OtExcept("Set difference expects another [set] instance, not a [%s]", object->getType()->getName().c_str());
 	}
 
-	OtSet result = create();
+	OtSet result = OtSet::create();
 
 	for (auto& item : set) {
 		if (!op->contains(item)) {
@@ -274,13 +285,13 @@ OtObject OtSetClass::unionWith(OtObject object) {
 		OtExcept("Set union expects another [set] instance, not a [%s]", object->getType()->getName().c_str());
 	}
 
-	OtSet result = create();
+	OtSet result = OtSet::create();
 
 	for (auto& item : set) {
 		result->set.insert(item);
 	}
 
-	for (auto& item : object->cast<OtSetClass>()->set) {
+	for (auto& item : OtSet(object)->set) {
 		if (!result->contains(item)) {
 			result->set.insert(item);
 		}
@@ -295,13 +306,13 @@ OtObject OtSetClass::unionWith(OtObject object) {
 //
 
 OtObject OtSetClass::subtractFrom(OtObject object) {
-	OtSet op = object->cast<OtSetClass>();
+	OtSet op = object;
 
 	if (!op) {
 		OtExcept("Set subtract expects another [set] instance, not a [%s]", object->getType()->getName().c_str());
 	}
 
-	OtSet result = create();
+	OtSet result = OtSet::create();
 
 	for (auto& item : set) {
 		if (!op->contains(item)) {
@@ -323,55 +334,29 @@ OtType OtSetClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtSetClass>("Set", OtCollectionClass::getMeta());
 
-		type->set("string", OtFunctionClass::create(&OtSetClass::operator std::string));
+		type->set("string", OtFunction::create(&OtSetClass::operator std::string));
 
-		type->set("__init__", OtFunctionClass::create(&OtSetClass::init));
-		type->set("__iter__", OtFunctionClass::create(&OtSetClass::iterate));
-		type->set("__add__", OtFunctionClass::create(&OtSetClass::add));
-		type->set("__sub__", OtFunctionClass::create(&OtSetClass::subtract));
-		type->set("__contains__", OtFunctionClass::create(&OtSetClass::contains));
+		type->set("__init__", OtFunction::create(&OtSetClass::init));
+		type->set("__iter__", OtFunction::create(&OtSetClass::iterate));
+		type->set("__add__", OtFunction::create(&OtSetClass::add));
+		type->set("__sub__", OtFunction::create(&OtSetClass::subtract));
+		type->set("__contains__", OtFunction::create(&OtSetClass::contains));
 
-		type->set("size", OtFunctionClass::create(&OtSetClass::size));
-		type->set("contains", OtFunctionClass::create(&OtSetClass::contains));
+		type->set("size", OtFunction::create(&OtSetClass::size));
+		type->set("contains", OtFunction::create(&OtSetClass::contains));
 
-		type->set("clone", OtFunctionClass::create(&OtSetClass::clone));
-		type->set("merge", OtFunctionClass::create(&OtSetClass::merge));
-		type->set("clear", OtFunctionClass::create(&OtSetClass::clear));
+		type->set("clone", OtFunction::create(&OtSetClass::clone));
+		type->set("merge", OtFunction::create(&OtSetClass::merge));
+		type->set("clear", OtFunction::create(&OtSetClass::clear));
 
-		type->set("insert", OtFunctionClass::create(&OtSetClass::insert));
-		type->set("erase", OtFunctionClass::create(&OtSetClass::erase));
+		type->set("insert", OtFunction::create(&OtSetClass::insert));
+		type->set("erase", OtFunction::create(&OtSetClass::erase));
 
-		type->set("intersection", OtFunctionClass::create(&OtSetClass::intersectWith));
-		type->set("difference", OtFunctionClass::create(&OtSetClass::diffFrom));
-		type->set("union", OtFunctionClass::create(&OtSetClass::unionWith));
-		type->set("subtract", OtFunctionClass::create(&OtSetClass::subtractFrom));
+		type->set("intersection", OtFunction::create(&OtSetClass::intersectWith));
+		type->set("difference", OtFunction::create(&OtSetClass::diffFrom));
+		type->set("union", OtFunction::create(&OtSetClass::unionWith));
+		type->set("subtract", OtFunction::create(&OtSetClass::subtractFrom));
 	}
 
 	return type;
-}
-
-
-//
-//	OtSetClass::create
-//
-
-OtSet OtSetClass::create() {
-	OtSet set = std::make_shared<OtSetClass>();
-	set->setType(getMeta());
-	return set;
-}
-
-
-//
-//	OtSetClass::create
-//
-
-OtSet OtSetClass::create(size_t count, OtObject* objects) {
-	OtSet set = create();
-
-	for (auto c = 0; c < count; c++) {
-		set->add(objects[c]);
-	}
-
-	return set;
 }

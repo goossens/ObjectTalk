@@ -20,7 +20,7 @@
 //
 
 class OtCollectionClass;
-typedef std::shared_ptr<OtCollectionClass> OtCollection;
+using OtCollection = OtObjectPointer<OtCollectionClass>;
 
 class OtCollectionClass : public OtObjectClass {
 public:

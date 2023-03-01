@@ -21,7 +21,7 @@
 //
 
 class OtRangeIteratorClass;
-typedef std::shared_ptr<OtRangeIteratorClass> OtRangeIterator;
+using OtRangeIterator = OtObjectPointer<OtRangeIteratorClass>;
 
 class OtRangeIteratorClass : public OtIteratorClass {
 public:
@@ -30,7 +30,7 @@ public:
 	OtRangeIteratorClass(int64_t f, int64_t t, int64_t i) : from(f), to(t), increment(i), index(f) {}
 
 	// start iterator
-	OtObject iterate() { return shared(); }
+	OtObject iterate() { return OtRangeIterator(this); }
 
 	// iteration operations
 	bool end() {
@@ -44,9 +44,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtRangeIterator create(int64_t from, int64_t to, int64_t increment);
 
 private:
 	int64_t from;

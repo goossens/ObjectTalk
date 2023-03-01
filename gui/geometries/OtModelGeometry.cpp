@@ -49,7 +49,7 @@ void OtModelGeometryClass::init(size_t count, OtObject* parameters) {
 OtObject OtModelGeometryClass::setModel(const std::string& name) {
 	modelName = name;
 	refreshGeometry = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -60,7 +60,7 @@ OtObject OtModelGeometryClass::setModel(const std::string& name) {
 OtObject OtModelGeometryClass::setScale(float s) {
 	scale = s;
 	refreshGeometry = true;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -156,21 +156,10 @@ OtType OtModelGeometryClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtModelGeometryClass>("ModelGeometry", OtGeometryClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtModelGeometryClass::init));
-		type->set("setModel", OtFunctionClass::create(&OtModelGeometryClass::setModel));
-		type->set("setScale", OtFunctionClass::create(&OtModelGeometryClass::setScale));
+		type->set("__init__", OtFunction::create(&OtModelGeometryClass::init));
+		type->set("setModel", OtFunction::create(&OtModelGeometryClass::setModel));
+		type->set("setScale", OtFunction::create(&OtModelGeometryClass::setScale));
 	}
 
 	return type;
-}
-
-
-//
-//	OtModelGeometryClass::create
-//
-
-OtModelGeometry OtModelGeometryClass::create() {
-	OtModelGeometry modelgeometry = std::make_shared<OtModelGeometryClass>();
-	modelgeometry->setType(getMeta());
-	return modelgeometry;
 }

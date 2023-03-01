@@ -24,7 +24,7 @@
 //
 
 class OtWorldClass;
-typedef std::shared_ptr<OtWorldClass> OtWorld;
+using OtWorld = OtObjectPointer<OtWorldClass>;
 
 class OtWorldClass : public OtSimulationClass, public b2ContactListener {
 public:
@@ -58,9 +58,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtWorld create();
 
 private:
 	// tracking our Box2D object

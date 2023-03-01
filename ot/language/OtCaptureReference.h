@@ -21,7 +21,7 @@
 //
 
 class OtCaptureReferenceClass;
-typedef std::shared_ptr<OtCaptureReferenceClass> OtCaptureReference;
+using OtCaptureReference = OtObjectPointer<OtCaptureReferenceClass>;
 
 class OtCaptureReferenceClass : public OtReferenceClass {
 public:
@@ -38,9 +38,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtCaptureReference create(const size_t member);
 
 private:
 	size_t member;

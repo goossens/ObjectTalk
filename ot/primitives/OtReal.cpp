@@ -37,71 +37,60 @@ OtType OtRealClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtRealClass>("Real", OtPrimitiveClass::getMeta());
 
-		type->set("boolean", OtFunctionClass::create(&OtRealClass::operator bool));
-		type->set("integer", OtFunctionClass::create(&OtRealClass::operator int64_t));
-		type->set("real", OtFunctionClass::create(&OtRealClass::operator double));
-		type->set("string", OtFunctionClass::create(&OtRealClass::operator std::string));
+		type->set("boolean", OtFunction::create(&OtRealClass::operator bool));
+		type->set("integer", OtFunction::create(&OtRealClass::operator int64_t));
+		type->set("real", OtFunction::create(&OtRealClass::operator double));
+		type->set("string", OtFunction::create(&OtRealClass::operator std::string));
 
-		type->set("__eq__", OtFunctionClass::create(&OtRealClass::equal));
-		type->set("__ne__", OtFunctionClass::create(&OtRealClass::notEqual));
-		type->set("__gt__", OtFunctionClass::create(&OtRealClass::greaterThan));
-		type->set("__lt__", OtFunctionClass::create(&OtRealClass::lessThan));
-		type->set("__ge__", OtFunctionClass::create(&OtRealClass::greaterEqual));
-		type->set("__le__", OtFunctionClass::create(&OtRealClass::lessEqual));
+		type->set("__eq__", OtFunction::create(&OtRealClass::equal));
+		type->set("__ne__", OtFunction::create(&OtRealClass::notEqual));
+		type->set("__gt__", OtFunction::create(&OtRealClass::greaterThan));
+		type->set("__lt__", OtFunction::create(&OtRealClass::lessThan));
+		type->set("__ge__", OtFunction::create(&OtRealClass::greaterEqual));
+		type->set("__le__", OtFunction::create(&OtRealClass::lessEqual));
 
-		type->set("__add__", OtFunctionClass::create(&OtRealClass::add));
-		type->set("__sub__", OtFunctionClass::create(&OtRealClass::subtract));
-		type->set("__mul__", OtFunctionClass::create(&OtRealClass::multiply));
-		type->set("__div__", OtFunctionClass::create(&OtRealClass::divide));
-		type->set("__mod__", OtFunctionClass::create(&OtRealClass::modulo));
-		type->set("__pow__", OtFunctionClass::create(&OtRealClass::power));
+		type->set("__add__", OtFunction::create(&OtRealClass::add));
+		type->set("__sub__", OtFunction::create(&OtRealClass::subtract));
+		type->set("__mul__", OtFunction::create(&OtRealClass::multiply));
+		type->set("__div__", OtFunction::create(&OtRealClass::divide));
+		type->set("__mod__", OtFunction::create(&OtRealClass::modulo));
+		type->set("__pow__", OtFunction::create(&OtRealClass::power));
 
-		type->set("__neg__", OtFunctionClass::create(&OtRealClass::negate));
-		type->set("__plus__", OtFunctionClass::create(&OtRealClass::positive));
+		type->set("__neg__", OtFunction::create(&OtRealClass::negate));
+		type->set("__plus__", OtFunction::create(&OtRealClass::positive));
 
-		type->set("abs", OtFunctionClass::create(&OtRealClass::abs));
-		type->set("sign", OtFunctionClass::create(&OtRealClass::sign));
-		type->set("round", OtFunctionClass::create(&OtRealClass::round));
-		type->set("ceil", OtFunctionClass::create(&OtRealClass::ceil));
-		type->set("floor", OtFunctionClass::create(&OtRealClass::floor));
-		type->set("trunc", OtFunctionClass::create(&OtRealClass::trunc));
-		type->set("min", OtFunctionClass::create(&OtRealClass::min));
-		type->set("max", OtFunctionClass::create(&OtRealClass::max));
-		type->set("clamp", OtFunctionClass::create(&OtRealClass::clamp));
-		type->set("lerp", OtFunctionClass::create(&OtRealClass::lerp));
+		type->set("abs", OtFunction::create(&OtRealClass::abs));
+		type->set("sign", OtFunction::create(&OtRealClass::sign));
+		type->set("round", OtFunction::create(&OtRealClass::round));
+		type->set("ceil", OtFunction::create(&OtRealClass::ceil));
+		type->set("floor", OtFunction::create(&OtRealClass::floor));
+		type->set("trunc", OtFunction::create(&OtRealClass::trunc));
+		type->set("min", OtFunction::create(&OtRealClass::min));
+		type->set("max", OtFunction::create(&OtRealClass::max));
+		type->set("clamp", OtFunction::create(&OtRealClass::clamp));
+		type->set("lerp", OtFunction::create(&OtRealClass::lerp));
 
-		type->set("sin", OtFunctionClass::create(&OtRealClass::sin));
-		type->set("cos", OtFunctionClass::create(&OtRealClass::cos));
-		type->set("tan", OtFunctionClass::create(&OtRealClass::tan));
-		type->set("asin", OtFunctionClass::create(&OtRealClass::asin));
-		type->set("acos", OtFunctionClass::create(&OtRealClass::acos));
-		type->set("atan", OtFunctionClass::create(&OtRealClass::atan));
-		type->set("atan2", OtFunctionClass::create(&OtRealClass::atan2));
-		type->set("radians", OtFunctionClass::create(&OtRealClass::radians));
-		type->set("degrees", OtFunctionClass::create(&OtRealClass::degrees));
+		type->set("sin", OtFunction::create(&OtRealClass::sin));
+		type->set("cos", OtFunction::create(&OtRealClass::cos));
+		type->set("tan", OtFunction::create(&OtRealClass::tan));
+		type->set("asin", OtFunction::create(&OtRealClass::asin));
+		type->set("acos", OtFunction::create(&OtRealClass::acos));
+		type->set("atan", OtFunction::create(&OtRealClass::atan));
+		type->set("atan2", OtFunction::create(&OtRealClass::atan2));
+		type->set("radians", OtFunction::create(&OtRealClass::radians));
+		type->set("degrees", OtFunction::create(&OtRealClass::degrees));
 
-		type->set("sqrt", OtFunctionClass::create(&OtRealClass::sqrt));
-		type->set("pow", OtFunctionClass::create(&OtRealClass::pow));
+		type->set("sqrt", OtFunction::create(&OtRealClass::sqrt));
+		type->set("pow", OtFunction::create(&OtRealClass::pow));
 
-		type->set("log", OtFunctionClass::create(&OtRealClass::log));
-		type->set("exp", OtFunctionClass::create(&OtRealClass::exp));
-		type->set("log10", OtFunctionClass::create(&OtRealClass::log10));
+		type->set("log", OtFunction::create(&OtRealClass::log));
+		type->set("exp", OtFunction::create(&OtRealClass::exp));
+		type->set("log10", OtFunction::create(&OtRealClass::log10));
 
-		type->set("random", OtFunctionClass::create(&OtRealClass::random));
+		type->set("random", OtFunction::create(&OtRealClass::random));
 
-		type->set("toFixed", OtFunctionClass::create(&OtRealClass::toFixed));
+		type->set("toFixed", OtFunction::create(&OtRealClass::toFixed));
 	}
 
 	return type;
-}
-
-
-//
-//	OtRealClass::create
-//
-
-OtReal OtRealClass::create(double value) {
-	OtReal real = std::make_shared<OtRealClass>(value);
-	real->setType(getMeta());
-	return real;
 }

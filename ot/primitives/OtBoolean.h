@@ -20,7 +20,7 @@
 //
 
 class OtBooleanClass;
-typedef std::shared_ptr<OtBooleanClass> OtBoolean;
+using OtBoolean = OtObjectPointer<OtBooleanClass>;
 
 class OtBooleanClass : public OtPrimitiveClass {
 public:
@@ -53,9 +53,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtBoolean create(bool value);
 
 private:
 	bool value = false;

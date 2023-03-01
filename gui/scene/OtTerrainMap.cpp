@@ -43,7 +43,7 @@ OtObject OtTerrainMapClass::setSeed(int seed) {
 	currentSeed = seed;
 	perlin.seed(seed);
 	propertiesChanged();
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -54,7 +54,7 @@ OtObject OtTerrainMapClass::setSeed(int seed) {
 OtObject OtTerrainMapClass::setOctaves(int o) {
 	octaves = o;
 	propertiesChanged();
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -65,7 +65,7 @@ OtObject OtTerrainMapClass::setOctaves(int o) {
 OtObject OtTerrainMapClass::setPersistence(float p) {
 	persistence = p;
 	propertiesChanged();
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -77,7 +77,7 @@ OtObject OtTerrainMapClass::setEasing(int e) {
 	easing = e;
 	easingFunction = OtEasingGetFunction(easing);
 	propertiesChanged();
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -88,7 +88,7 @@ OtObject OtTerrainMapClass::setEasing(int e) {
 OtObject OtTerrainMapClass::setScaleXY(float xy) {
 	scaleXY = xy;
 	propertiesChanged();
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -99,7 +99,7 @@ OtObject OtTerrainMapClass::setScaleXY(float xy) {
 OtObject OtTerrainMapClass::setScaleZ(float z) {
 	scaleZ = z;
 	propertiesChanged();
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -110,7 +110,7 @@ OtObject OtTerrainMapClass::setScaleZ(float z) {
 OtObject OtTerrainMapClass::setOffsetZ(float z) {
 	offsetZ = z;
 	propertiesChanged();
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -244,29 +244,18 @@ OtType OtTerrainMapClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtTerrainMapClass>("TerrainMap", OtGuiClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtTerrainMapClass::init));
+		type->set("__init__", OtFunction::create(&OtTerrainMapClass::init));
 
-		type->set("setSeed", OtFunctionClass::create(&OtTerrainMapClass::setSeed));
-		type->set("setOctaves", OtFunctionClass::create(&OtTerrainMapClass::setOctaves));
-		type->set("setPersistence", OtFunctionClass::create(&OtTerrainMapClass::setPersistence));
-		type->set("setEasing", OtFunctionClass::create(&OtTerrainMapClass::setEasing));
-		type->set("setScaleXY", OtFunctionClass::create(&OtTerrainMapClass::setScaleXY));
-		type->set("setScaleZ", OtFunctionClass::create(&OtTerrainMapClass::setScaleZ));
-		type->set("setOffsetZ", OtFunctionClass::create(&OtTerrainMapClass::setOffsetZ));
+		type->set("setSeed", OtFunction::create(&OtTerrainMapClass::setSeed));
+		type->set("setOctaves", OtFunction::create(&OtTerrainMapClass::setOctaves));
+		type->set("setPersistence", OtFunction::create(&OtTerrainMapClass::setPersistence));
+		type->set("setEasing", OtFunction::create(&OtTerrainMapClass::setEasing));
+		type->set("setScaleXY", OtFunction::create(&OtTerrainMapClass::setScaleXY));
+		type->set("setScaleZ", OtFunction::create(&OtTerrainMapClass::setScaleZ));
+		type->set("setOffsetZ", OtFunction::create(&OtTerrainMapClass::setOffsetZ));
 
-		type->set("getHeight", OtFunctionClass::create(&OtTerrainMapClass::getHeight));
+		type->set("getHeight", OtFunction::create(&OtTerrainMapClass::getHeight));
 	}
 
 	return type;
-}
-
-
-//
-//	OtTerrainMapClass::create
-//
-
-OtTerrainMap OtTerrainMapClass::create() {
-	OtTerrainMap terrainmap = std::make_shared<OtTerrainMapClass>();
-	terrainmap->setType(getMeta());
-	return terrainmap;
 }

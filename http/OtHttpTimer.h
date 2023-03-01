@@ -23,7 +23,7 @@
 //
 
 class OtHttpTimerClass;
-typedef std::shared_ptr<OtHttpTimerClass> OtHttpTimer;
+using OtHttpTimer = OtObjectPointer<OtHttpTimerClass>;
 
 class OtHttpTimerClass : public OtInternalClass {
 public:
@@ -50,13 +50,6 @@ public:
 		}
 
 		return type;
-	}
-
-	// create a new object
-	static OtHttpTimer create(int64_t wait, int64_t repeat, OtObject callback) {
-		OtHttpTimer timer = std::make_shared<OtHttpTimerClass>(wait, repeat, callback);
-		timer->setType(getMeta());
-		return timer;
 	}
 
 private:

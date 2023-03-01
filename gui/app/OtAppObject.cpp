@@ -30,9 +30,9 @@ void OtAppObjectClass::validateChild(OtNode child) {
 
 void OtAppObjectClass::render() {
 	// render all children
-	for (auto const& child : children) {
+	for (auto& child : children) {
 		if (child->isEnabled()) {
-			child->cast<OtWidgetClass>()->render();
+			OtWidget(child)->render();
 		}
 	}
 }

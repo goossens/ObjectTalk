@@ -21,7 +21,7 @@
 //
 
 class OtAmbientLightClass;
-typedef std::shared_ptr<OtAmbientLightClass> OtAmbientLight;
+using OtAmbientLight = OtObjectPointer<OtAmbientLightClass>;
 
 class OtAmbientLightClass : public OtLightClass {
 	friend class OtViewClass;
@@ -44,9 +44,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtAmbientLight create();
 
 private:
 	// light properties

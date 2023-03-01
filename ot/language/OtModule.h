@@ -23,7 +23,7 @@
 //
 
 class OtModuleClass;
-typedef std::shared_ptr<OtModuleClass> OtModule;
+using OtModule = OtObjectPointer<OtModuleClass>;
 
 class OtModuleClass : public OtInternalClass {
 public:
@@ -35,9 +35,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtModule create();
 
 	// import a module (either load from disk or get from the memory cash)
 	static OtModule import(const std::string& path);

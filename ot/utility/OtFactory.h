@@ -37,7 +37,7 @@ public:
 		list.emplace_back<std::string_view>(T::name);
 
 		map.emplace(T::name, []() {
-			return static_cast<B>(T::create());
+			return OtObjectPointer<T>::create();
 		});
 	}
 

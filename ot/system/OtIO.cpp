@@ -92,7 +92,7 @@ OtObject OtIOClass::readText(const std::string& name) {
 		OtExcept("Can't read from file [%s], error: %s", name.c_str(), e.what());
 	}
 
-	return OtStringClass::create(buffer.str());
+	return OtString::create(buffer.str());
 }
 
 
@@ -125,27 +125,12 @@ OtType OtIOClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtIOClass>(
-			"IO",
-			OtSystemClass::getMeta(),
-			[]() {
-				return (OtObject) OtIOClass::instance();
-			});
-
-		type->set("readJSON", OtFunctionClass::create(&OtIOClass::readJSON));
-		type->set("writeJSON", OtFunctionClass::create(&OtIOClass::writeJSON));
-		type->set("readText", OtFunctionClass::create(&OtIOClass::readText));
-		type->set("writeText", OtFunctionClass::create(&OtIOClass::writeText));
+		type = OtTypeClass::create<OtIOClass>("IO", OtSystemClass::getMeta());
+		type->set("readJSON", OtFunction::create(&OtIOClass::readJSON));
+		type->set("writeJSON", OtFunction::create(&OtIOClass::writeJSON));
+		type->set("readText", OtFunction::create(&OtIOClass::readText));
+		type->set("writeText", OtFunction::create(&OtIOClass::writeText));
 	}
 
 	return type;
-}
-
-
-//
-//	OtIOClass::create
-//
-
-OtIO OtIOClass::create() {
-	return OtIOClass::instance();
 }

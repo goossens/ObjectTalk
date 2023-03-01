@@ -20,7 +20,7 @@
 //
 
 class OtGroupClass;
-typedef std::shared_ptr<OtGroupClass> OtGroup;
+using OtGroup = OtObjectPointer<OtGroupClass>;
 
 class OtGroupClass : public OtObject3dClass {
 public:
@@ -36,7 +36,4 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtGroup create();
 };

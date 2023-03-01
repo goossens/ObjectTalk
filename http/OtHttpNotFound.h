@@ -21,7 +21,7 @@
 //
 
 class OtHttpNotFoundClass;
-typedef std::shared_ptr<OtHttpNotFoundClass> OtHttpNotFound;
+using OtHttpNotFound = OtObjectPointer<OtHttpNotFoundClass>;
 
 class OtHttpNotFoundClass : public OtInternalClass {
 public:
@@ -41,17 +41,10 @@ public:
 
 		if (!type) {
 			type = OtTypeClass::create<OtHttpNotFoundClass>("HttpNotFound", OtInternalClass::getMeta());
-			type->set("__call__", OtFunctionClass::create(&OtHttpNotFoundClass::call));
+			type->set("__call__", OtFunction::create(&OtHttpNotFoundClass::call));
 		}
 
 		return type;
-	}
-
-	// create a new object
-	static OtHttpNotFound create(OtHttpResponse s) {
-		OtHttpNotFound notfound = std::make_shared<OtHttpNotFoundClass>(s);
-		notfound->setType(getMeta());
-		return notfound;
 	}
 
 private:

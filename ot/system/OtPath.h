@@ -22,7 +22,7 @@
 //
 
 class OtPathClass;
-typedef std::shared_ptr<OtPathClass> OtPath;
+using OtPath = OtObjectPointer<OtPathClass>;
 
 class OtPathClass : public OtSystemClass {
 	friend class OtPathIteratorClass;
@@ -50,7 +50,7 @@ public:
 	bool operator == (OtObject operand) { return path == operand->operator std::string(); }
 	bool operator < (OtObject operand) { return path < operand->operator std::string(); }
 
-	OtObject join(OtObject operand) { return OtPathClass::create(path / operand->operator std::string()); }
+	OtObject join(OtObject operand) { return OtPath::create(path / operand->operator std::string()); }
 	bool equal(OtObject operand) { return path == operand->operator std::string(); }
 	bool notEqual(OtObject operand) { return !equal(operand); }
 
@@ -70,27 +70,22 @@ public:
 	bool hasExtension() { return path.has_extension(); }
 
 	// get path elements
-	OtObject rootName() { return create(path.root_name()); }
-	OtObject rootDirectory() { return create(path.root_directory()); }
-	OtObject rootPath() { return create(path.root_path()); }
-	OtObject directory() { return create(path.parent_path()); }
-	OtObject filename() { return create(path.filename()); }
-	OtObject stem() { return create(path.stem()); }
-	OtObject extension() { return create(path.extension()); }
+	OtObject rootName() { return OtPath::create(path.root_name()); }
+	OtObject rootDirectory() { return OtPath::create(path.root_directory()); }
+	OtObject rootPath() { return OtPath::create(path.root_path()); }
+	OtObject directory() { return OtPath::create(path.parent_path()); }
+	OtObject filename() { return OtPath::create(path.filename()); }
+	OtObject stem() { return OtPath::create(path.stem()); }
+	OtObject extension() { return OtPath::create(path.extension()); }
 
 	// get relative path to other location
-	OtObject relative(OtObject name) { return create(path.lexically_relative(name->operator std::string())); }
+	OtObject relative(OtObject name) { return OtPath::create(path.lexically_relative(name->operator std::string())); }
 
 	// iterate through path elements
 	OtObject iterate();
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtPath create(const char* value);
-	static OtPath create(const std::string& value);
-	static OtPath create(const std::filesystem::path& value);
 
 private:
 	std::filesystem::path path;

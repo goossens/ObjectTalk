@@ -105,7 +105,7 @@ void OtSkyClass::init(size_t count, OtObject* parameters) {
 
 OtObject OtSkyClass::setColor(const std::string &colorName) {
 	color = OtColorParseToVec3(colorName);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -115,7 +115,7 @@ OtObject OtSkyClass::setColor(const std::string &colorName) {
 
 OtObject OtSkyClass::setColorRGB(float r, float g, float b) {
 	color = glm::vec3(r, g, b);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -125,8 +125,8 @@ OtObject OtSkyClass::setColorRGB(float r, float g, float b) {
 
 OtObject OtSkyClass::setSun(OtObject object) {
 	object->expectKindOf("Sun");
-	sun = object->cast<OtSunClass>();
-	return shared();
+	sun = OtSun(object);
+	return OtObject(this);
 }
 
 
@@ -137,7 +137,7 @@ OtObject OtSkyClass::setSun(OtObject object) {
 OtObject OtSkyClass::setClouds(float cir, float cum) {
 	cirrus = cir;
 	cumulus = cum;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -147,7 +147,7 @@ OtObject OtSkyClass::setClouds(float cir, float cum) {
 
 OtObject OtSkyClass::setRadius(float r) {
 	radius = r;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -222,26 +222,15 @@ OtType OtSkyClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtSkyClass>("Sky", OtSceneObjectClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtSkyClass::init));
+		type->set("__init__", OtFunction::create(&OtSkyClass::init));
 
-		type->set("setColor", OtFunctionClass::create(&OtSkyClass::setColor));
-		type->set("setColorRGB", OtFunctionClass::create(&OtSkyClass::setColorRGB));
+		type->set("setColor", OtFunction::create(&OtSkyClass::setColor));
+		type->set("setColorRGB", OtFunction::create(&OtSkyClass::setColorRGB));
 
-		type->set("setSun", OtFunctionClass::create(&OtSkyClass::setSun));
-		type->set("setClouds", OtFunctionClass::create(&OtSkyClass::setClouds));
-		type->set("setRadius", OtFunctionClass::create(&OtSkyClass::setRadius));
+		type->set("setSun", OtFunction::create(&OtSkyClass::setSun));
+		type->set("setClouds", OtFunction::create(&OtSkyClass::setClouds));
+		type->set("setRadius", OtFunction::create(&OtSkyClass::setRadius));
 	}
 
 	return type;
-}
-
-
-//
-//	OtSkyClass::create
-//
-
-OtSky OtSkyClass::create() {
-	OtSky sky = std::make_shared<OtSkyClass>();
-	sky->setType(getMeta());
-	return sky;
 }

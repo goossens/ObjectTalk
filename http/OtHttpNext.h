@@ -23,17 +23,17 @@
 //
 
 class OtHttpNextClass;
-typedef std::shared_ptr<OtHttpNextClass> OtHttpNext;
+using OtHttpNext = OtObjectPointer<OtHttpNextClass>;
 
 class OtHttpNextClass : public OtInternalClass {
 public:
 	OtHttpNextClass() = default;
-	OtHttpNextClass(OtHttpRouter r, size_t i, OtHttpRequest q, OtHttpResponse s, OtObject n)
+	OtHttpNextClass(OtHttpRouterClass* r, size_t i, OtHttpRequest q, OtHttpResponse s, OtObject n)
 		: router(r), index(i), req(q), res(s), next(n) {}
 
 	// execute next
 	void call() {
-		router.lock()->runHandler(index, req, res, next);
+		router->runHandler(index, req, res, next);
 	}
 
 	// get type definition
@@ -42,21 +42,14 @@ public:
 
 		if (!type) {
 			type = OtTypeClass::create<OtHttpNextClass>("HttpNext", OtInternalClass::getMeta());
-			type->set("__call__", OtFunctionClass::create(&OtHttpNextClass::call));
+			type->set("__call__", OtFunction::create(&OtHttpNextClass::call));
 		}
 
 		return type;
 	}
 
-	// create a new object
-	static OtHttpNext create(OtHttpRouter r, size_t i, OtHttpRequest q, OtHttpResponse s, OtObject n) {
-		OtHttpNext next = std::make_shared<OtHttpNextClass>(r, i, q, s, n);
-		next->setType(getMeta());
-		return next;
-	}
-
 private:
-	std::weak_ptr<OtHttpRouterClass> router;
+	OtHttpRouterClass* router;
 	size_t index;
 	OtHttpRequest req;
 	OtHttpResponse res;

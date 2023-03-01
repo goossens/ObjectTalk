@@ -43,7 +43,7 @@ OtObject OtNoiseMapClass::setSeed(int seed) {
 	currentSeed = seed;
 	perlin.seed(seed);
 	notify();
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -54,7 +54,7 @@ OtObject OtNoiseMapClass::setSeed(int seed) {
 OtObject OtNoiseMapClass::setOctaves(int o) {
 	octaves = o;
 	notify();
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -65,7 +65,7 @@ OtObject OtNoiseMapClass::setOctaves(int o) {
 OtObject OtNoiseMapClass::setPersistence(float p) {
 	persistence = p;
 	notify();
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -77,7 +77,7 @@ OtObject OtNoiseMapClass::setEasing(int e) {
 	easing = e;
 	easingFunction = OtEasingGetFunction(easing);
 	notify();
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -88,7 +88,7 @@ OtObject OtNoiseMapClass::setEasing(int e) {
 OtObject OtNoiseMapClass::setScaleXY(float xy) {
 	scaleXY = xy;
 	notify();
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -99,7 +99,7 @@ OtObject OtNoiseMapClass::setScaleXY(float xy) {
 OtObject OtNoiseMapClass::setScaleZ(float z) {
 	scaleZ = z;
 	notify();
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -110,7 +110,7 @@ OtObject OtNoiseMapClass::setScaleZ(float z) {
 OtObject OtNoiseMapClass::setOffsetZ(float z) {
 	offsetZ = z;
 	notify();
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -239,26 +239,15 @@ OtType OtNoiseMapClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtNoiseMapClass>("NoiseMap", OtGuiClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtNoiseMapClass::init));
-		type->set("setSeed", OtFunctionClass::create(&OtNoiseMapClass::setSeed));
-		type->set("setOctaves", OtFunctionClass::create(&OtNoiseMapClass::setOctaves));
-		type->set("setPersistence", OtFunctionClass::create(&OtNoiseMapClass::setPersistence));
-		type->set("setEasing", OtFunctionClass::create(&OtNoiseMapClass::setEasing));
-		type->set("setScaleXY", OtFunctionClass::create(&OtNoiseMapClass::setScaleXY));
-		type->set("setScaleZ", OtFunctionClass::create(&OtNoiseMapClass::setScaleZ));
-		type->set("setOffsetZ", OtFunctionClass::create(&OtNoiseMapClass::setOffsetZ));
+		type->set("__init__", OtFunction::create(&OtNoiseMapClass::init));
+		type->set("setSeed", OtFunction::create(&OtNoiseMapClass::setSeed));
+		type->set("setOctaves", OtFunction::create(&OtNoiseMapClass::setOctaves));
+		type->set("setPersistence", OtFunction::create(&OtNoiseMapClass::setPersistence));
+		type->set("setEasing", OtFunction::create(&OtNoiseMapClass::setEasing));
+		type->set("setScaleXY", OtFunction::create(&OtNoiseMapClass::setScaleXY));
+		type->set("setScaleZ", OtFunction::create(&OtNoiseMapClass::setScaleZ));
+		type->set("setOffsetZ", OtFunction::create(&OtNoiseMapClass::setOffsetZ));
 	}
 
 	return type;
-}
-
-
-//
-//	OtNoiseMapClass::create
-//
-
-OtNoiseMap OtNoiseMapClass::create() {
-	OtNoiseMap noisemap = std::make_shared<OtNoiseMapClass>();
-	noisemap->setType(getMeta());
-	return noisemap;
 }

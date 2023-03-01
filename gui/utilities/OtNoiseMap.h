@@ -25,7 +25,7 @@
 //
 
 class OtNoiseMapClass;
-typedef std::shared_ptr<OtNoiseMapClass> OtNoiseMap;
+using OtNoiseMap = OtObjectPointer<OtNoiseMapClass>;
 
 class OtNoiseMapClass : public OtGuiClass {
 public:
@@ -70,9 +70,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtNoiseMap create();
 
 private:
 	// generate noisemap from perlin noise

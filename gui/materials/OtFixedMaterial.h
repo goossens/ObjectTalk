@@ -26,7 +26,7 @@
 //
 
 class OtFixedMaterialClass;
-typedef std::shared_ptr<OtFixedMaterialClass> OtFixedMaterial;
+using OtFixedMaterial = OtObjectPointer<OtFixedMaterialClass>;
 
 class OtFixedMaterialClass : public OtMaterialClass {
 public:
@@ -45,9 +45,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtFixedMaterial create();
 
 private:
 	// properties

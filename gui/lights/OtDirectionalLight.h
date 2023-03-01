@@ -28,7 +28,7 @@
 //
 
 class OtDirectionalLightClass;
-typedef std::shared_ptr<OtDirectionalLightClass> OtDirectionalLight;
+using OtDirectionalLight = OtObjectPointer<OtDirectionalLightClass>;
 
 class OtDirectionalLightClass : public OtLightClass {
 public:
@@ -51,9 +51,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtDirectionalLight create();
 
 protected:
 	// properties

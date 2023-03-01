@@ -29,22 +29,22 @@ OtObject OtNodeClass::add(OtObject object) {
 	}
 
 	// cast the object to a node
-	OtNode child = object->cast<OtNodeClass>();
+	OtNode child = OtNode(object);
 
 	// ensure new child is a valid type
 	validateChild(child);
 
 	// remove from previous parent if required
 	if (child->hasParent()) {
-		child->parent.lock()->remove(object);
+		child->parent->remove(object);
 	}
 
 	// set new parent
-	child->parent = cast<OtNodeClass>();
+	child->parent = this;
 
 	// add new child
 	children.push_back(child);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -63,7 +63,7 @@ OtObject OtNodeClass::remove(OtObject object) {
 
 	for (auto it = children.begin(); !found && it != children.end();) {
 		if ((*it)->equal(object)) {
-			object->cast<OtNodeClass>()->parent.reset();
+			OtNode(object)->parent = nullptr;
 			it = children.erase(it);
 			found = true;
 
@@ -72,7 +72,7 @@ OtObject OtNodeClass::remove(OtObject object) {
 		}
 	}
 
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -112,28 +112,17 @@ OtType OtNodeClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtNodeClass>("Node", OtGuiClass::getMeta());
 
-		type->set("add", OtFunctionClass::create(&OtNodeClass::add));
-		type->set("remove", OtFunctionClass::create(&OtNodeClass::remove));
+		type->set("add", OtFunction::create(&OtNodeClass::add));
+		type->set("remove", OtFunction::create(&OtNodeClass::remove));
 
-		type->set("clear", OtFunctionClass::create(&OtNodeClass::clear));
-		type->set("size", OtFunctionClass::create(&OtNodeClass::size));
+		type->set("clear", OtFunction::create(&OtNodeClass::clear));
+		type->set("size", OtFunction::create(&OtNodeClass::size));
 
-		type->set("enable", OtFunctionClass::create(&OtNodeClass::enable));
-		type->set("disable", OtFunctionClass::create(&OtNodeClass::disable));
-		type->set("setEnabled", OtFunctionClass::create(&OtNodeClass::setEnabled));
-		type->set("isEnabled", OtFunctionClass::create(&OtNodeClass::isEnabled));
+		type->set("enable", OtFunction::create(&OtNodeClass::enable));
+		type->set("disable", OtFunction::create(&OtNodeClass::disable));
+		type->set("setEnabled", OtFunction::create(&OtNodeClass::setEnabled));
+		type->set("isEnabled", OtFunction::create(&OtNodeClass::isEnabled));
 	}
 
 	return type;
-}
-
-
-//
-//	OtNodeClass::create
-//
-
-OtNode OtNodeClass::create() {
-	OtNode node = std::make_shared<OtNodeClass>();
-	node->setType(getMeta());
-	return node;
 }

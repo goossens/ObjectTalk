@@ -14,6 +14,7 @@
 
 #include <array>
 #include <functional>
+#include <memory>
 #include <unordered_map>
 #include <vector>
 

@@ -139,38 +139,27 @@ OtType OtURLClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtURLClass>("URL", OtHttpClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtURLClass::init));
+		type->set("__init__", OtFunction::create(&OtURLClass::init));
 
-		type->set("url", OtFunctionClass::create(&OtURLClass::getURL));
-		type->set("scheme", OtFunctionClass::create(&OtURLClass::getScheme));
-		type->set("authority", OtFunctionClass::create(&OtURLClass::getAuthority));
-		type->set("user", OtFunctionClass::create(&OtURLClass::getUsername));
-		type->set("password", OtFunctionClass::create(&OtURLClass::getPassword));
-		type->set("host", OtFunctionClass::create(&OtURLClass::getHost));
-		type->set("port", OtFunctionClass::create(&OtURLClass::getPort));
-		type->set("path", OtFunctionClass::create(&OtURLClass::getPath));
-		type->set("directory", OtFunctionClass::create(&OtURLClass::getDirectory));
-		type->set("filename", OtFunctionClass::create(&OtURLClass::getFilename));
-		type->set("stem", OtFunctionClass::create(&OtURLClass::getStem));
-		type->set("extension", OtFunctionClass::create(&OtURLClass::getExtension));
-		type->set("query", OtFunctionClass::create(&OtURLClass::getQuery));
-		type->set("fragment", OtFunctionClass::create(&OtURLClass::getFragment));
+		type->set("url", OtFunction::create(&OtURLClass::getURL));
+		type->set("scheme", OtFunction::create(&OtURLClass::getScheme));
+		type->set("authority", OtFunction::create(&OtURLClass::getAuthority));
+		type->set("user", OtFunction::create(&OtURLClass::getUsername));
+		type->set("password", OtFunction::create(&OtURLClass::getPassword));
+		type->set("host", OtFunction::create(&OtURLClass::getHost));
+		type->set("port", OtFunction::create(&OtURLClass::getPort));
+		type->set("path", OtFunction::create(&OtURLClass::getPath));
+		type->set("directory", OtFunction::create(&OtURLClass::getDirectory));
+		type->set("filename", OtFunction::create(&OtURLClass::getFilename));
+		type->set("stem", OtFunction::create(&OtURLClass::getStem));
+		type->set("extension", OtFunction::create(&OtURLClass::getExtension));
+		type->set("query", OtFunction::create(&OtURLClass::getQuery));
+		type->set("fragment", OtFunction::create(&OtURLClass::getFragment));
 
-		type->set("hasParam", OtFunctionClass::create(&OtURLClass::hasParam));
-		type->set("getParam", OtFunctionClass::create(&OtURLClass::getParam));
-		type->set("getParamWithDefault", OtFunctionClass::create(&OtURLClass::getParamWithDefault));
+		type->set("hasParam", OtFunction::create(&OtURLClass::hasParam));
+		type->set("getParam", OtFunction::create(&OtURLClass::getParam));
+		type->set("getParamWithDefault", OtFunction::create(&OtURLClass::getParamWithDefault));
 	}
 
 	return type;
-}
-
-
-//
-//	OtURLClass::create
-//
-
-OtURL OtURLClass::create(const std::string& value) {
-	OtURL Path = std::make_shared<OtURLClass>(value);
-	Path->setType(getMeta());
-	return Path;
 }

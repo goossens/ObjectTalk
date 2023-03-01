@@ -96,14 +96,3 @@ OtType OtSphericalCubeGeometryClass::getMeta() {
 
 	return type;
 }
-
-
-//
-//	OtSphericalCubeGeometryClass::create
-//
-
-OtSphericalCubeGeometry OtSphericalCubeGeometryClass::create() {
-	OtSphericalCubeGeometry geometry = std::make_shared<OtSphericalCubeGeometryClass>();
-	geometry->setType(getMeta());
-	return geometry;
-}

@@ -97,14 +97,3 @@ OtType OtIcosahedronGeometryClass::getMeta() {
 
 	return type;
 }
-
-
-//
-//	OtIcosahedronGeometryClass::create
-//
-
-OtIcosahedronGeometry OtIcosahedronGeometryClass::create() {
-	OtIcosahedronGeometry geometry = std::make_shared<OtIcosahedronGeometryClass>();
-	geometry->setType(getMeta());
-	return geometry;
-}

@@ -20,7 +20,7 @@
 //
 
 class OtFileSaveDialogClass;
-typedef std::shared_ptr<OtFileSaveDialogClass> OtFileSaveDialog;
+using OtFileSaveDialog = OtObjectPointer<OtFileSaveDialogClass>;
 
 class OtFileSaveDialogClass : public OtDialogClass {
 public:
@@ -47,9 +47,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtFileSaveDialog create();
 
 private:
 	std::string title;

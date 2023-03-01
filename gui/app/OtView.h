@@ -24,7 +24,7 @@
 //
 
 class OtViewClass;
-typedef std::shared_ptr<OtViewClass> OtView;
+using OtView = OtObjectPointer<OtViewClass>;
 
 class OtViewClass : public OtAppObjectClass {
 public:
@@ -53,9 +53,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtView create();
 
 private:
 	// the scene we are looking at

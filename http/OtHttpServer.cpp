@@ -47,7 +47,7 @@ OtHttpServerClass::~OtHttpServerClass() {
 
 void OtHttpServerClass::init(OtObject object) {
 	object->expectKindOf("HttpRouter");
-	router = object->cast<OtHttpRouterClass>();
+	router = OtHttpRouter(object);
 };
 
 
@@ -57,7 +57,7 @@ void OtHttpServerClass::init(OtObject object) {
 
 void OtHttpServerClass::onConnect() {
 	// create new session
-	auto session = OtHttpSessionClass::create((uv_stream_t*) &uv_server, router);
+	auto session = OtHttpSession::create((uv_stream_t*) &uv_server, router);
 	sessions.push_back(session);
 }
 
@@ -85,7 +85,7 @@ OtObject OtHttpServerClass::listen(const std::string& ip, int port) {
 	});
 
 	UV_CHECK_ERROR("uv_listen", status);
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -95,7 +95,7 @@ OtObject OtHttpServerClass::listen(const std::string& ip, int port) {
 
 void OtHttpServerClass::cleanup() {
 	// remove dead sessions
-	sessions.erase(std::remove_if(sessions.begin(), sessions.end(), [] (const OtHttpSession& session) {
+	sessions.erase(std::remove_if(sessions.begin(), sessions.end(), [] (OtHttpSession& session) {
 		return !session->isAlive();
 	}), sessions.end());
 }
@@ -110,20 +110,9 @@ OtType OtHttpServerClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtHttpServerClass>("HttpServer", OtHttpClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtHttpServerClass::init));
-		type->set("listen", OtFunctionClass::create(&OtHttpServerClass::listen));
+		type->set("__init__", OtFunction::create(&OtHttpServerClass::init));
+		type->set("listen", OtFunction::create(&OtHttpServerClass::listen));
 	}
 
 	return type;
-}
-
-
-//
-//	OtHttpServerClass::create
-//
-
-OtHttpServer OtHttpServerClass::create() {
-	OtHttpServer server = std::make_shared<OtHttpServerClass>();
-	server->setType(getMeta());
-	return server;
 }

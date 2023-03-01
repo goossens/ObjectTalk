@@ -80,25 +80,14 @@ OtType OtTreeNodeClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtTreeNodeClass>("TreeNode", OtWidgetClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtTreeNodeClass::init));
+		type->set("__init__", OtFunction::create(&OtTreeNodeClass::init));
 
-		type->set("getTitle", OtFunctionClass::create(&OtTreeNodeClass::getTitle));
-		type->set("setTitle", OtFunctionClass::create(&OtTreeNodeClass::setTitle));
+		type->set("getTitle", OtFunction::create(&OtTreeNodeClass::getTitle));
+		type->set("setTitle", OtFunction::create(&OtTreeNodeClass::setTitle));
 
-		type->set("getOpen", OtFunctionClass::create(&OtTreeNodeClass::getOpen));
-		type->set("setOpen", OtFunctionClass::create(&OtTreeNodeClass::setOpen));
+		type->set("getOpen", OtFunction::create(&OtTreeNodeClass::getOpen));
+		type->set("setOpen", OtFunction::create(&OtTreeNodeClass::setOpen));
 	}
 
 	return type;
-}
-
-
-//
-//	OtTreeNodeClass::create
-//
-
-OtTreeNode OtTreeNodeClass::create() {
-	OtTreeNode treenode = std::make_shared<OtTreeNodeClass>();
-	treenode->setType(getMeta());
-	return treenode;
 }

@@ -58,14 +58,3 @@ OtType OtCustomGeometryClass::getMeta() {
 
 	return type;
 }
-
-
-//
-//	OtCustomGeometryClass::create
-//
-
-OtCustomGeometry OtCustomGeometryClass::create() {
-	OtCustomGeometry geometry = std::make_shared<OtCustomGeometryClass>();
-	geometry->setType(getMeta());
-	return geometry;
-}

@@ -27,12 +27,7 @@ typedef std::shared_ptr<OtArcCurveClass> OtArcCurve;
 class OtArcCurveClass : public OtEllipticalCurveClass {
 public:
 	// constructor
-	OtArcCurveClass(const glm::vec2& c, float r, float sa=0.0, float ea=std::numbers::pi2, bool clk=false) :
-		OtEllipticalCurveClass(c, r, r, sa, ea, clk, 0.0) {
-	}
-
-	// create a new instance
-	static OtArcCurve create(const glm::vec2& c, float r, float sa=0.0, float ea=std::numbers::pi2, bool clk=false) {
-		return std::make_shared<OtArcCurveClass>(c, r, sa, ea, clk);
+	OtArcCurveClass(const glm::vec2& c, float r, float sa=0.0f, float ea=std::numbers::pi2, bool clk=false) :
+		OtEllipticalCurveClass(c, r, r, sa, ea, clk, 0.0f) {
 	}
 };

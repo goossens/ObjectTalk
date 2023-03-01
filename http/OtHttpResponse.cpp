@@ -119,7 +119,7 @@ OtObject OtHttpResponseClass::setStatus(int s) {
 		default: explanation = ""; break;
 	}
 
-	return shared_from_this();
+	return OtObject(this);
 }
 
 
@@ -133,7 +133,7 @@ OtObject OtHttpResponseClass::setHeader(const std::string& name, const std::stri
 	}
 
 	headers.emplace(name, value);
-	return shared_from_this();
+	return OtObject(this);
 }
 
 
@@ -199,7 +199,7 @@ OtObject OtHttpResponseClass::write(const char* data, size_t size) {
 		free(req);
 	});
 
-	return shared_from_this();
+	return OtObject(this);
 }
 
 
@@ -224,7 +224,7 @@ OtObject OtHttpResponseClass::end() {
 	}
 
 	responseState = COMPLETE;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -243,7 +243,7 @@ OtObject OtHttpResponseClass::send(const std::string& text) {
 	write(text);
 	end();
 
-	return shared();
+	return OtObject(this);
 };
 
 
@@ -259,7 +259,7 @@ OtObject OtHttpResponseClass::json(OtObject object) {
 	write(text);
 	end();
 
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -304,7 +304,7 @@ OtObject OtHttpResponseClass::sendfile(const std::string& name) {
 		UV_CHECK_ERROR("uv_fs_read", status);
 	}
 
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -361,26 +361,15 @@ OtType OtHttpResponseClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtHttpResponseClass>("HttpResponse", OtHttpClass::getMeta());
-		type->set("setStatus", OtFunctionClass::create(&OtHttpResponseClass::setStatus));
-		type->set("setHeader", OtFunctionClass::create(&OtHttpResponseClass::setHeader));
-		type->set("hasHeader", OtFunctionClass::create(&OtHttpResponseClass::hasHeader));
-		type->set("end", OtFunctionClass::create(&OtHttpResponseClass::end));
-		type->set("send", OtFunctionClass::create(&OtHttpResponseClass::send));
-		type->set("sendfile", OtFunctionClass::create(&OtHttpResponseClass::sendfile));
-		type->set("download", OtFunctionClass::create(&OtHttpResponseClass::download));
-		type->set("json", OtFunctionClass::create(&OtHttpResponseClass::json));
+		type->set("setStatus", OtFunction::create(&OtHttpResponseClass::setStatus));
+		type->set("setHeader", OtFunction::create(&OtHttpResponseClass::setHeader));
+		type->set("hasHeader", OtFunction::create(&OtHttpResponseClass::hasHeader));
+		type->set("end", OtFunction::create(&OtHttpResponseClass::end));
+		type->set("send", OtFunction::create(&OtHttpResponseClass::send));
+		type->set("sendfile", OtFunction::create(&OtHttpResponseClass::sendfile));
+		type->set("download", OtFunction::create(&OtHttpResponseClass::download));
+		type->set("json", OtFunction::create(&OtHttpResponseClass::json));
 	}
 
 	return type;
-}
-
-
-//
-//	OtHttpResponseClass::create
-//
-
-OtHttpResponse OtHttpResponseClass::create() {
-	OtHttpResponse response = std::make_shared<OtHttpResponseClass>();
-	response->setType(getMeta());
-	return response;
 }

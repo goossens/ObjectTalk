@@ -19,7 +19,6 @@
 		* [OS](#os)
 		* [FS](#fs)
 		* [IO](#io)
-		* [Worker](#worker)
 	* [Internal](#internal)
 		* [Class](#class)
 		* [Global](#global)

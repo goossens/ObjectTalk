@@ -163,7 +163,7 @@
               ObjectTalk currently runs on MacOS, Linux and Windows. In general,
               the main development platform is macOS and typically the latest
               version is used (Maverick as of now). For Linux, Ubuntu 22.04 is
-              used and on Billy boxes, Window 11. The Github continues
+              used and on Billy boxes, Window 11. The Github continuous
               integration tasks also use the latest versions of these operating
               systems. For those that use other Linux distributions, it is
               likely that ObjectTalk will compile out-of-the-box, but this is
@@ -177,8 +177,8 @@
             <p>
               To simplify the ObjectTalk code baseline, the C++ standard library
               is used to the maximum extend possible. Basic I/O function,
-              filesystem access, containers and memory managent are simply used
-              as is. Compiler developers typically do a good job optimizing
+              filesystem access, containers and memory management are simply
+              used as is. Compiler developers typically do a good job optimizing
               things on each platform.
             </p>
             <p>
@@ -190,6 +190,15 @@
               management or data structures. These days, I gladly take free
               cross platform solutions and sacrifice a few CPU cycles (I have
               more of those than braincells).
+            </p>
+            <p>
+              To prove that I'm a hypocrite, the one exception to the rule is
+              shared pointers. The version included in the standard library is
+              thread safe and therefore slow. Given that ObjectTalk always runs
+              in a single thread, a replacement shared library is include that
+              is nut thread safe but makes ObjectTalk twice as fast. Off course
+              I argue that I would have used the standard library is it had only
+              included a fast non-thread safe smart pointer.
             </p>
             <p><strong>ObjectTalk Language Engine</strong></p>
             <p>
@@ -256,7 +265,7 @@
               is used as an system independent abstraction for windows and
               user/system interactions.
               <a href="https://github.com/bkaradzic/bgfx">BGFX</a> is used as a
-              system independent abstraction to render graphics to support
+              system independent abstraction to render graphics supporting
               Metal, OpenGL, Vulkan and DirectX APIs.
               <a href="https://github.com/ocornut/imgui">Dear ImGui</a> is used
               as a neutral user interface library and all widgets are
@@ -269,7 +278,7 @@
               language was used to construct all the components for a user
               interface. Unfortunately, this led to very verbose code and it
               would take pages of code to create all the things you would need
-              for a user interface, board or 3D display. In fact, the ratio
+              for a user interface, 2D board or 3D scene. In fact, the ratio
               between construction code and functionality was so bad that a new
               approach was implemented.
             </p>
@@ -283,8 +292,7 @@
               and interaction. For those old enough to remember the
               Model-View-Controller architectural pattern, the model is
               expressed in the ECS, the view is provided internally by the
-              ObjectTalk ecosystem based on the model and the controller is
-              written in ObjectTalk.
+              ObjectTalk ecosystem and the controller is written in ObjectTalk.
             </p>
             <p><strong>GUI Widgets</strong></p>
             <p>
@@ -303,7 +311,7 @@
               like Physically Based rendering (PBR), deferred and forward
               rendering, High Dynamic Range (HDR) pipelines, Screen-Space
               Ambient Occlusion (SSAO), and post-processing filter like bloom,
-              depth-of-field, lens flatre, gamma correction and brightness are
+              depth-of-field, lens flare, gamma correction and brightness are
               all available.
             </p>
             <p><strong>Integrated Development Environment (IDE)</strong></p>
@@ -339,16 +347,7 @@
               the event loop after which control passed to the engine. Only
               callbacks are made from that point forward similar to other
               asynchronous frameworks like Node.js. The startup script as well
-              as the event loop are all executed from the main thread.
-            </p>
-            <p>
-              Additional worker threads can be used to speed up tasks by
-              spreading them over multiple CPU cores and to ensure we don't hold
-              up event processing in the main thread. ObjectTalk's worker thread
-              logic is pretty simply. You construct one or more objects
-              representing tasks to be performed and pass them to one or more
-              worker threads. When the tasks are completed, results, in the form
-              of (another) object, are returned to the main thread.
+              as the event loop are all executed from the main and only thread.
             </p>
             <p><strong>Graphics Mode</strong></p>
             <p><img src="img/graphics-mode.png" alt="Graphics Mode" /></p>
@@ -378,8 +377,7 @@
             <p>
               A second thread will therefore be used to run the application, do
               most of the CPU work and run the event loop. The ObjectTalk
-              callback will also run in this thread. As usual, worker threads
-              can also be used.
+              callback will also run in this thread.
             </p>
             <p>
               The graphical framework automatically and transparently connects

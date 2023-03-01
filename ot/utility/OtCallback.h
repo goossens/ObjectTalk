@@ -25,21 +25,21 @@
 inline void OtCallbackValidate(OtObject callback, size_t pars) {
 	// sanity check
 	if (callback->isKindOf("Function")) {
-		auto parameters = callback->cast<OtFunctionClass>()->getParameterCount();
+		auto parameters = OtFunction(callback)->getParameterCount();
 
 		if (parameters != pars) {
 			OtExcept("Callback must accept %d parameters, not %d", pars, parameters);
 		}
 
 	} else if (callback->isKindOf("ByteCodeFunction")) {
-		auto parameters = callback->cast<OtByteCodeFunctionClass>()->getParameterCount();
+		auto parameters = OtByteCodeFunction(callback)->getParameterCount();
 
 		if (parameters != pars) {
 			OtExcept("Callback must accept %d parameters, not %d", pars, parameters);
 		}
 
 	} else if (callback->isKindOf("Closure")) {
-		auto parameters = callback->cast<OtClosureClass>()->getParameterCount();
+		auto parameters = OtClosure(callback)->getParameterCount();
 
 		if (parameters != pars) {
 			OtExcept("Callback must accept %d parameters, not %d", pars, parameters);

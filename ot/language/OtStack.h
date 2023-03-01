@@ -14,6 +14,7 @@
 
 #include <algorithm>
 #include <iomanip>
+#include <memory>
 #include <sstream>
 #include <vector>
 
@@ -72,10 +73,10 @@ typedef std::shared_ptr<OtStackClass> OtStack;
 class OtStackClass {
 public:
 	// stack access functions
-	void push(OtObject object) { stack.push_back(std::move(object)); }
+	void push(OtObject object) { stack.emplace_back(object); }
 	OtObject pop() { auto value = stack.back(); stack.pop_back(); return value; }
 	void pop(size_t count) { stack.resize(stack.size() - count); }
-	void dup() { stack.push_back(stack.back()); }
+	void dup() { stack.emplace_back(stack.back()); }
 	void swap() { std::swap(stack[stack.size() - 1], stack[stack.size() - 2]); }
 	void move(size_t count) { auto e = stack.rbegin(); std::rotate(e, e + 1, e + count + 1); }
 
@@ -85,13 +86,13 @@ public:
 	OtObject* sp(size_t offset) { return &(stack[stack.size() - offset]); }
 
 	// stack frame access functions
-	void openFrame(size_t offset=0) { frames.push_back(stack.size() - offset); }
+	void openFrame(size_t offset=0) { frames.emplace_back(stack.size() - offset); }
 	OtObject getFrameItem(OtStackItem item) { return stack[frames[frames.size() - item.frame - 1] + item.slot]; }
 	void setFrameItem(OtStackItem item, OtObject object) { stack[frames[frames.size() - item.frame - 1] + item.slot] = object; }
 	void closeFrame() { frames.pop_back(); }
 
 	// closure access functions
-	void pushClosure(OtObject closure) { closures.push_back(std::move(closure)); }
+	void pushClosure(OtObject closure) { closures.emplace_back(closure); }
 	OtObject getClosure() { return closures.back(); }
 	void popClosure() { closures.pop_back(); }
 
@@ -123,9 +124,6 @@ public:
 
 		return buffer.str();
 	}
-
-	// create a new stack
-	static OtStack create() { return std::make_shared<OtStackClass>(); }
 
 private:
 	std::vector<OtObject> stack;

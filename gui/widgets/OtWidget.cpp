@@ -31,9 +31,9 @@ void OtWidgetClass::validateChild(OtNode child) {
 
 void OtWidgetClass::update() {
 	// update all children
-	for (auto const& child : children) {
+	for (auto& child : children) {
 		if (child->isEnabled()) {
-			child->cast<OtWidgetClass>()->update();
+			OtWidget(child)->update();
 		}
 	}
 }
@@ -45,9 +45,9 @@ void OtWidgetClass::update() {
 
 void OtWidgetClass::render() {
 	// render all children
-	for (auto const& child : children) {
+	for (auto& child : children) {
 		if (child->isEnabled()) {
-			child->cast<OtWidgetClass>()->render();
+			OtWidget(child)->render();
 		}
 	}
 }
@@ -65,15 +65,4 @@ OtType OtWidgetClass::getMeta() {
 	}
 
 	return type;
-}
-
-
-//
-//	OtWidgetClass::create
-//
-
-OtWidget OtWidgetClass::create() {
-	OtWidget widget = std::make_shared<OtWidgetClass>();
-	widget->setType(getMeta());
-	return widget;
 }

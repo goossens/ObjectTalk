@@ -53,26 +53,15 @@ OtType OtWindowClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtWindowClass>("Window", OtAppObjectClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtWindowClass::init));
-		type->set("setTitle", OtFunctionClass::create(&OtWindowClass::setTitle));
-		type->set("getTitle", OtFunctionClass::create(&OtWindowClass::getTitle));
-		type->set("setSize", OtFunctionClass::create(&OtWindowClass::setSize));
-		type->set("getWidth", OtFunctionClass::create(&OtWindowClass::getWidth));
-		type->set("getHeight", OtFunctionClass::create(&OtWindowClass::getHeight));
-		type->set("setFlags", OtFunctionClass::create(&OtWindowClass::setFlags));
-		type->set("getFlags", OtFunctionClass::create(&OtWindowClass::getFlags));
+		type->set("__init__", OtFunction::create(&OtWindowClass::init));
+		type->set("setTitle", OtFunction::create(&OtWindowClass::setTitle));
+		type->set("getTitle", OtFunction::create(&OtWindowClass::getTitle));
+		type->set("setSize", OtFunction::create(&OtWindowClass::setSize));
+		type->set("getWidth", OtFunction::create(&OtWindowClass::getWidth));
+		type->set("getHeight", OtFunction::create(&OtWindowClass::getHeight));
+		type->set("setFlags", OtFunction::create(&OtWindowClass::setFlags));
+		type->set("getFlags", OtFunction::create(&OtWindowClass::getFlags));
 	}
 
 	return type;
-}
-
-
-//
-//	OtWindowClass::create
-//
-
-OtWindow OtWindowClass::create() {
-	OtWindow widget = std::make_shared<OtWindowClass>();
-	widget->setType(getMeta());
-	return widget;
 }

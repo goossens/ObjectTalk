@@ -405,16 +405,16 @@ const std::string OtHttpRequestClass::getHeader(const std::string& header) {
 //
 
 const OtObject OtHttpRequestClass::getHeaders() {
-	OtDict dict = OtDictClass::create();
+	OtDict dict = OtDict::create();
 
 	for (auto i = headers.begin(); i != headers.end(); i++) {
 		if (dict->contains(i->first)) {
 			std::string value = dict->getEntry(i->first)->operator std::string();
 			value += "; " + i->second;
-			dict->setEntry(i->first, OtStringClass::create(value));
+			dict->setEntry(i->first, OtString::create(value));
 
 		} else {
-			dict->setEntry(i->first, OtStringClass::create(i->second));
+			dict->setEntry(i->first, OtString::create(i->second));
 		}
 	}
 
@@ -551,37 +551,26 @@ OtType OtHttpRequestClass::getMeta() {
 	if (!type) {
 		type = OtTypeClass::create<OtHttpRequestClass>("HttpRequest", OtHttpClass::getMeta());
 
-		type->set("getMethod", OtFunctionClass::create(&OtHttpRequestClass::getMethod));
-		type->set("getURL", OtFunctionClass::create(&OtHttpRequestClass::getURL));
-		type->set("getPath", OtFunctionClass::create(&OtHttpRequestClass::getPath));
-		type->set("getVersion", OtFunctionClass::create(&OtHttpRequestClass::getVersion));
+		type->set("getMethod", OtFunction::create(&OtHttpRequestClass::getMethod));
+		type->set("getURL", OtFunction::create(&OtHttpRequestClass::getURL));
+		type->set("getPath", OtFunction::create(&OtHttpRequestClass::getPath));
+		type->set("getVersion", OtFunction::create(&OtHttpRequestClass::getVersion));
 
-		type->set("hasHeader", OtFunctionClass::create(&OtHttpRequestClass::hasHeader));
-		type->set("headerIs", OtFunctionClass::create(&OtHttpRequestClass::hasHeader));
-		type->set("getHeader", OtFunctionClass::create(&OtHttpRequestClass::getHeader));
-		type->set("getHeaders", OtFunctionClass::create(&OtHttpRequestClass::getHeaders));
+		type->set("hasHeader", OtFunction::create(&OtHttpRequestClass::hasHeader));
+		type->set("headerIs", OtFunction::create(&OtHttpRequestClass::hasHeader));
+		type->set("getHeader", OtFunction::create(&OtHttpRequestClass::getHeader));
+		type->set("getHeaders", OtFunction::create(&OtHttpRequestClass::getHeaders));
 
-		type->set("hasParam", OtFunctionClass::create(&OtHttpRequestClass::hasParam));
-		type->set("getParam", OtFunctionClass::create(&OtHttpRequestClass::getParam));
+		type->set("hasParam", OtFunction::create(&OtHttpRequestClass::hasParam));
+		type->set("getParam", OtFunction::create(&OtHttpRequestClass::getParam));
 
-		type->set("hasCookie", OtFunctionClass::create(&OtHttpRequestClass::hasCookie));
-		type->set("getCookie", OtFunctionClass::create(&OtHttpRequestClass::getCookie));
+		type->set("hasCookie", OtFunction::create(&OtHttpRequestClass::hasCookie));
+		type->set("getCookie", OtFunction::create(&OtHttpRequestClass::getCookie));
 
-		type->set("getBody", OtFunctionClass::create(&OtHttpRequestClass::getBody));
+		type->set("getBody", OtFunction::create(&OtHttpRequestClass::getBody));
 
-		type->set("debug", OtFunctionClass::create(&OtHttpRequestClass::debug));
+		type->set("debug", OtFunction::create(&OtHttpRequestClass::debug));
 	}
 
 	return type;
-}
-
-
-//
-//	OtHttpRequestClass::create()
-//
-
-OtHttpRequest OtHttpRequestClass::create() {
-	OtHttpRequest request = std::make_shared<OtHttpRequestClass>();
-	request->setType(getMeta());
-	return request;
 }

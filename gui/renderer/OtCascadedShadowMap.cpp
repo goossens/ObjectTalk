@@ -48,7 +48,7 @@ void OtCascadedShadowMap::update(int s, OtCamera camera, const glm::vec3 &lightD
 	// create resources if required
 	if (!initialized) {
 		for (auto i = 0; i < cascades; i++) {
-			cameras[i] = OtCameraClass::create();
+			cameras[i] = OtCamera::create();
 			framebuffers[i] = OtFrameBuffer(OtFrameBuffer::noTexture, OtFrameBuffer::dFloatTexture);
 		}
 

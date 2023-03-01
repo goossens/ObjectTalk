@@ -30,7 +30,7 @@ class OtCurveClass {
 public:
 	// get a point on the curve at t [0, 1]
 	virtual glm::vec2 getPoint(float t) {
-		return glm::vec2(0.0);
+		return glm::vec2(0.0f);
 	}
 
 	// get a point on the curve at distance n [0, 1]
@@ -58,7 +58,7 @@ public:
 
 	// get a unit vector tangent at t [0, 1]
 	virtual glm::vec2 getTangent(float t) {
-		float delta = 0.0001;
+		float delta = 0.0001f;
 
 		return glm::normalize(
 			getPoint(std::clamp(t - delta, 0.0f, 1.0f)) -
@@ -83,10 +83,10 @@ protected:
 	std::vector<float> lengths;
 
 	void getLengths(size_t division=200) {
-		glm::vec2 current = getPoint(0.0);
+		glm::vec2 current = getPoint(0.0f);
 		glm::vec2 last = current;
-		float sum = 0.0;
-		lengths.push_back(0.0);
+		float sum = 0.0f;
+		lengths.push_back(0.0f);
 
 		for (auto i = 1; i <= division; i++) {
 			current = getPoint((float) i / (float) division);

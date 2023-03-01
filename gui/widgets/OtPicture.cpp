@@ -47,7 +47,7 @@ OtObject OtPictureClass::setTexture(const std::string& textureName) {
 	texture.loadFromFile(textureName);
 	width = texture.getWidth();
 	height = texture.getHeight();
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -57,7 +57,7 @@ OtObject OtPictureClass::setTexture(const std::string& textureName) {
 
 OtObject OtPictureClass::setMargin(int m) {
 	margin = m;
-	return shared();
+	return OtObject(this);
 }
 
 
@@ -102,22 +102,11 @@ OtType OtPictureClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtPictureClass>("Picture", OtWidgetClass::getMeta());
-		type->set("__init__", OtFunctionClass::create(&OtPictureClass::init));
+		type->set("__init__", OtFunction::create(&OtPictureClass::init));
 
-		type->set("setTexture", OtFunctionClass::create(&OtPictureClass::setTexture));
-		type->set("setMargin", OtFunctionClass::create(&OtPictureClass::setMargin));
+		type->set("setTexture", OtFunction::create(&OtPictureClass::setTexture));
+		type->set("setMargin", OtFunction::create(&OtPictureClass::setMargin));
 	}
 
 	return type;
-}
-
-
-//
-//	OtPictureClass::create
-//
-
-OtPicture OtPictureClass::create() {
-	OtPicture picture = std::make_shared<OtPictureClass>();
-	picture->setType(getMeta());
-	return picture;
 }

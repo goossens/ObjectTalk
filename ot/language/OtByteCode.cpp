@@ -134,14 +134,3 @@ OtType OtByteCodeClass::getMeta() {
 
 	return type;
 }
-
-
-//
-//	OtByteCodeClass::create
-//
-
-OtByteCode OtByteCodeClass::create(OtSource source) {
-	OtByteCode bytecode = std::make_shared<OtByteCodeClass>(source);
-	bytecode->setType(getMeta());
-	return bytecode;
-}

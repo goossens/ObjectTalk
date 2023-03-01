@@ -28,7 +28,7 @@
 //
 
 class OtWaterClass;
-typedef std::shared_ptr<OtWaterClass> OtWater;
+using OtWater = OtObjectPointer<OtWaterClass>;
 
 class OtWaterClass : public OtObject3dClass {
 public:

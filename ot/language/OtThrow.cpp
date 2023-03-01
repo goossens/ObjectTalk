@@ -32,19 +32,8 @@ OtType OtThrowClass::getMeta() {
 
 	if (!type) {
 		type = OtTypeClass::create<OtThrowClass>("Throw", OtInternalClass::getMeta());
-		type->set("__call__", OtFunctionClass::create(&OtThrowClass::call));
+		type->set("__call__", OtFunction::create(&OtThrowClass::call));
 	}
 
 	return type;
-}
-
-
-//
-//	OtThrowClass::create
-//
-
-OtThrow OtThrowClass::create() {
-	OtThrow thrw = std::make_shared<OtThrowClass>();
-	thrw->setType(getMeta());
-	return thrw;
 }

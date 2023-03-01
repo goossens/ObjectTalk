@@ -22,7 +22,7 @@
 //
 
 class OtMatrixClass;
-typedef std::shared_ptr<OtMatrixClass> OtMatrix;
+using OtMatrix = OtObjectPointer<OtMatrixClass>;
 
 class OtMatrixClass : public OtGuiClass {
 public:
@@ -40,9 +40,6 @@ public:
 
 	// get type definition
 	static OtType getMeta();
-
-	// create a new object
-	static OtMatrix create();
 
 protected:
 	// object geometry

@@ -80,7 +80,7 @@ OtObject OtObjectClass::set(size_t selector, OtObject value) {
 //	OtObjectClass::get
 //
 
-OtObject OtObjectClass::get(size_t selector) {
+OtObject& OtObjectClass::get(size_t selector) {
 	if (members && members->has(selector)) {
 		return members->get(selector);
 	}
@@ -91,9 +91,11 @@ OtObject OtObjectClass::get(size_t selector) {
 		}
 	}
 
-	auto text = OtSelector::name(selector);
-	OtExcept("Unknown member [%s] in instance of class [%s]", OtSelector::name(selector).c_str(), type->getName().c_str());
-	return nullptr;
+	auto name = OtSelector::name(selector);
+	OtExcept("Unknown member [%.*s] in instance of class [%s]", name.size(), name.data(), type->getName().c_str());
+
+	// we never get here because of the exception but it keeps the compiler happy
+	return members->get(selector);
 }
 
 
@@ -106,7 +108,8 @@ void OtObjectClass::unset(size_t selector) {
 		members->unset(selector);
 
 	} else {
-		OtExcept("Unknown member [%s] in instance of class [%s]", OtSelector::name(selector).c_str(), type->getName().c_str());
+		auto name = OtSelector::name(selector);
+		OtExcept("Unknown member [%.*s] in instance of class [%s]", name.size(), name.data(), type->getName().c_str());
 	}
 }
 
@@ -115,12 +118,13 @@ void OtObjectClass::unset(size_t selector) {
 //	OtObjectClass::getMemberNames
 //
 
-std::vector<std::string> OtObjectClass::getMemberNames() {
+void OtObjectClass::getMemberNames(std::vector<std::string_view>& names) {
 	if (members) {
-		return members->getMemberNames();
-	}
+		members->getMemberNames(names);
 
-	return std::vector<std::string>{};
+	} else {
+		names.clear();
+	}
  }
 
 

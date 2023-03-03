@@ -57,9 +57,9 @@ public:
 	bool has(size_t selector) { return members.has(selector) != 0; }
 	OtObject set(size_t selector, OtObject value);
 	OtObject set(const char* name, OtObject value);
-	OtObject get(size_t selector) { return members.has(selector) ? members.get(selector) : nullptr; }
-	void unset(size_t selector);
-	std::vector<std::string> getMemberNames() { return members.getMemberNames(); }
+	OtObject& get(size_t selector) { return members.get(selector); }
+	void unset(size_t selector) { members.unset(selector); }
+	void getMemberNames(std::vector<std::string_view>& names) { members.getMemberNames(names); }
 
 	// create a new type
 	template <class T>

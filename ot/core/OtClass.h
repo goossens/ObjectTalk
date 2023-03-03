@@ -43,7 +43,7 @@ public:
 
 	// special member acccess (so we can manipulate metaclass members via class)
 	bool has(size_t selector) override;
-	OtObject get(size_t selector) override;
+	OtObject& get(size_t selector) override;
 	OtObject set(size_t selector, OtObject value) override { return classType->set(selector, value); }
 	void unset(size_t selector) override { return classType->unset(selector); }
 

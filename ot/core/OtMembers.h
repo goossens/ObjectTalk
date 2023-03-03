@@ -13,7 +13,7 @@
 //
 
 #include <cstddef>
-#include <string>
+#include <string_view>
 #include <unordered_map>
 #include <vector>
 
@@ -36,14 +36,14 @@ using OtObject = OtObjectPointer<OtObjectClass>;
 class OtMembers {
 public:
 	// access the members
-	bool has(size_t selector);
-	OtObject get(size_t selector);
+	bool has(size_t selector) {	return members.count(selector); }
+	OtObject& get(size_t selector) { return members[selector]; }
 	void set(size_t selector, OtObject member);
-	void unset(size_t selector);
-	void unsetAll();
+	void unset(size_t selector) { members.erase(selector); }
+	void unsetAll() { members.clear(); }
 
 	// get all member names
-	std::vector<std::string> getMemberNames();
+	void getMemberNames(std::vector<std::string_view>& names);
 
 private:
 	// the actual members

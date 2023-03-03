@@ -14,24 +14,6 @@
 
 
 //
-//	OtMembers::has
-//
-
-bool OtMembers::has(size_t selector) {
-	return members.count(selector);
-}
-
-
-//
-//	OtMembers::get
-//
-
-OtObject OtMembers::get(size_t selector) {
-	return members[selector];
-}
-
-
-//
 //	OtMembers::set
 //
 
@@ -41,34 +23,14 @@ void OtMembers::set(size_t selector, OtObject member) {
 
 
 //
-//	OtMembers::unset
-//
-
-void OtMembers::unset(size_t selector) {
-	members.erase(selector);
-}
-
-
-//
-//	OtMembers::unsetAll
-//
-
-void OtMembers::unsetAll() {
-	members.clear();
-}
-
-
-//
 //	OtMembers::getMemberNames
 //
 
-std::vector<std::string> OtMembers::getMemberNames() {
+void OtMembers::getMemberNames(std::vector<std::string_view>& names) {
+	names.clear();
 	auto selector = OtSelector::instance();
-	std::vector<std::string> result;
 
 	for (auto i : members) {
-		result.push_back(selector->get(i.first));
+		names.emplace_back(selector->get(i.first));
 	}
-
-	return result;
 }

@@ -13,6 +13,8 @@
 //
 
 #include <algorithm>
+#include <string>
+#include <string_view>
 
 #include "OtPrimitive.h"
 #include "OtText.h"
@@ -31,7 +33,9 @@ class OtStringClass : public OtPrimitiveClass {
 public:
 	// constructors
 	OtStringClass() = default;
+	OtStringClass(const char* string) : value(string) {}
 	OtStringClass(const std::string& string) : value(string) {}
+	OtStringClass(const std::string_view string) : value(string) {}
 
 	// convertors
 	operator bool() override { auto v = value; std::transform(v.begin(), v.end(), v.begin(), ::tolower); return v == "true"; }

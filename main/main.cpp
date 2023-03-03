@@ -18,6 +18,7 @@
 #include "OtCompiler.h"
 #include "OtLibuv.h"
 #include "OtModule.h"
+#include "OtOptimizer.h"
 
 #include "OtHttp.h"
 
@@ -108,7 +109,7 @@ int main(int argc, char* argv[]) {
 #endif
 				// we can only handle one file
 				if (files.size() != 1) {
-					std::wcerr << "Error:you can only run one file, you specified [%d]" << files.size() << std::endl;
+					std::wcerr << "Error: you can only run one file, you specified [%d]" << files.size() << std::endl;
 					std::_Exit(EXIT_FAILURE);
 				}
 
@@ -120,12 +121,25 @@ int main(int argc, char* argv[]) {
 				if (extension == ".ot" || extension == "") {
 					// handle a script file
 					if (program["--disassemble"] == true) {
+						// don't run; just compile, optimize and disassemble bytecode
 						OtCompiler compiler;
 						auto object = OtObject::create();
 						auto bytecode = compiler.compileFile(file, object);
+						std::cout << "Original:" << std::endl;
+						std::cout << "---------" << std::endl << std::endl;
+
 						std::cout << bytecode->disassemble() << std::endl;
 
+						OtOptimizer optimizer;
+						auto optimized = optimizer.optimize(bytecode);
+						std::cout << std::endl;
+						std::cout << "Optimized:" << std::endl;
+						std::cout << "----------" << std::endl << std::endl;
+						std::cout << optimized->disassemble() << std::endl;
+
 					} else {
+						// compile, optimize and run script as a module
+						// (to ensure relative import paths work)
 						auto module = OtModule::create();
 						module->load(file);
 						module->unsetAll();

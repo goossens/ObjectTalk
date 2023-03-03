@@ -73,17 +73,3 @@ OtObject OtTypeClass::set(size_t selector, OtObject value) {
 OtObject OtTypeClass::set(const char *name, OtObject value) {
 	return set(OtSelector::create(name), value);
 }
-
-
-//
-//	OtTypeClass::unset
-//
-
-void OtTypeClass::unset(size_t selector) {
-	if (has(selector)) {
-		members.unset(selector);
-
-	} else {
-		OtExcept("Unknown member [%s] in type [%s]", OtSelector::name(selector).c_str(), getName().c_str());
-	}
-}

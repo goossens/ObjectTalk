@@ -20,7 +20,7 @@
 #include "OtCompiler.h"
 #include "OtException.h"
 #include "OtInteger.h"
-#include "OtObjectReference.h"
+#include "OtMemberReference.h"
 #include "OtReal.h"
 #include "OtSelector.h"
 #include "OtStackReference.h"
@@ -73,18 +73,21 @@ OtByteCode OtCompiler::compileSource(OtSource src, OtObject object) {
 	OtByteCode bytecode = OtByteCode::create(src);
 
 	// setup global scope
+	std::vector<std::string_view> names;
 	OtGlobal global = OtVM::instance()->getGlobal();
+	global->getMemberNames(names);
 	pushObjectScope(global);
 
-	for (auto name : global->getMemberNames()) {
-		declareVariable(bytecode, name);
+	for (auto name : names) {
+		declareVariable(bytecode, std::string(name));
 	}
 
 	// setup object scope
 	pushObjectScope(object);
+	object->getMemberNames(names);
 
-	for (auto name : object->getMemberNames()) {
-		declareVariable(bytecode, name);
+	for (auto name : names) {
+		declareVariable(bytecode, std::string(name));
 	}
 
 	// process all statements
@@ -119,11 +122,13 @@ OtByteCode OtCompiler::compileExpression(OtSource src) {
 	OtByteCode bytecode = OtByteCode::create(src);
 
 	// setup global scope
+	std::vector<std::string_view> names;
 	OtGlobal global = OtVM::instance()->getGlobal();
+	global->getMemberNames(names);
 	pushObjectScope(global);
 
-	for (auto name : global->getMemberNames()) {
-		declareVariable(bytecode, name);
+	for (auto name : names) {
+		declareVariable(bytecode, std::string(name));
 	}
 
 	// process expression
@@ -262,7 +267,7 @@ void OtCompiler::resolveVariable(OtByteCode bytecode, const std::string& name) {
 			switch(scope->type) {
 				case OBJECT_SCOPE:
 					// variable is object member
-					bytecode->push(OtObjectReference::create(scope->object, OtSelector::create(name)));
+					bytecode->push(OtMemberReference::create(scope->object, OtSelector::create(name)));
 					break;
 
 				case FUNCTION_SCOPE:

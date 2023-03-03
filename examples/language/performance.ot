@@ -30,7 +30,7 @@ var start = os.clock();
 var loops = 100000;
 var c = 0;
 
-print("Loops: ", loops);
+print("Running ", loops, " loops");
 
 while (c++ < loops) {
 	sum += zoo.ant() + zoo.banana() + zoo.tuna() + zoo.hay() + zoo.grass() + zoo.mouse();

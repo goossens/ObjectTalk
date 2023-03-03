@@ -71,49 +71,49 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 	while (pc < end) {
 		try {
 			switch (bytecode->getOpcode(pc)) {
-				case OtByteCodeClass::DEBUG:
+				case OtByteCodeClass::debugOpcode:
 					OT_DEBUG(bytecode->disassemble());
 					OT_DEBUG(OtFormat("PC: %ld\n", pc));
 					OT_DEBUG(stack->debug());
 					break;
 
-				case OtByteCodeClass::MARK:
+				case OtByteCodeClass::markOpcode:
 					mark = bytecode->getNumber(pc);
 					break;
 
-				case OtByteCodeClass::PUSH:
+				case OtByteCodeClass::pushOpcode:
 					stack->push(bytecode->getConstant(bytecode->getNumber(pc)));
 					break;
 
-				case OtByteCodeClass::POP:
+				case OtByteCodeClass::popOpcode:
 					stack->pop();
 					break;
 
-				case OtByteCodeClass::POP_COUNT:
+				case OtByteCodeClass::popCountOpcode:
 					stack->pop(bytecode->getNumber(pc));
 					break;
 
-				case OtByteCodeClass::DUP:
+				case OtByteCodeClass::dupOpcode:
 					stack->dup();
 					break;
 
-				case OtByteCodeClass::SWAP:
+				case OtByteCodeClass::swapOpcode:
 					stack->swap();
 					break;
 
-				case OtByteCodeClass::MOVE:
+				case OtByteCodeClass::moveOpcode:
 					stack->move(bytecode->getNumber(pc));
 					break;
 
-				case OtByteCodeClass::RESERVE:
+				case OtByteCodeClass::reserveOpcode:
 					stack->reserve();
 					break;
 
-				case OtByteCodeClass::JUMP:
+				case OtByteCodeClass::jumpOpcode:
 					pc = bytecode->getOffset(bytecode->getNumber(pc));
 					break;
 
-				case OtByteCodeClass::JUMP_TRUE: {
+				case OtByteCodeClass::jumpTrueOpcode: {
 					auto jump = bytecode->getOffset(bytecode->getNumber(pc));
 					auto value = stack->pop();
 
@@ -124,7 +124,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 					break;
 				}
 
-				case OtByteCodeClass::JUMP_FALSE: {
+				case OtByteCodeClass::jumpFalseOpcode: {
 					auto jump = bytecode->getOffset(bytecode->getNumber(pc));
 					auto value = stack->pop();
 
@@ -135,17 +135,16 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 					break;
 				}
 
-				case OtByteCodeClass::MEMBER:
+				case OtByteCodeClass::memberOpcode: {
 					// create a member reference
-					stack->push(OtMemberReference::create(
-						stack->pop(),
-						bytecode->getSelector(bytecode->getNumber(pc))));
-
+					auto reference = OtMemberReference::create(stack->pop(), bytecode->getNumber(pc));
+					stack->push(reference);
 					break;
+				}
 
-				case OtByteCodeClass::METHOD: {
+				case OtByteCodeClass::methodOpcode: {
 					// get method
-					auto method = bytecode->getSelector(bytecode->getNumber(pc));
+					auto method = bytecode->getNumber(pc);
 
 					// get number of calling parameters
 					auto count = bytecode->getNumber(pc);
@@ -165,20 +164,36 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 					break;
 				}
 
-				case OtByteCodeClass::EXIT:
+				case OtByteCodeClass::exitOpcode:
 					// exit instructions
 					pc = end;
 					break;
 
-				case OtByteCodeClass::PUSH_TRY:
+				case OtByteCodeClass::pushTryOpcode:
 					// start a new try/catch cycle
 					tryCatch.push_back(OtTryCatch(bytecode->getOffset(bytecode->getNumber(pc)), stack->getState()));
 					break;
 
-				case OtByteCodeClass::POP_TRY:
+				case OtByteCodeClass::popTryOpcode:
 					// start a new try/catch cycle
 					tryCatch.pop_back();
 					break;
+
+				case OtByteCodeClass::pushObjectMemberOpcode: {
+					auto object = bytecode->getConstant(bytecode->getNumber(pc));
+					auto member = bytecode->getNumber(pc);
+					auto resolvedMember = OtMemberReferenceClass::resolveMember(object, member);
+					stack->push(resolvedMember);
+					break;
+				}
+
+				case OtByteCodeClass::pushMemberOpcode: {
+					auto object = stack->pop();
+					auto member = bytecode->getNumber(pc);
+					auto resolvedMember = OtMemberReferenceClass::resolveMember(object, member);
+					stack->push(resolvedMember);
+					break;
+				}
 			}
 
 		} catch (const OtException& e) {
@@ -193,7 +208,8 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 				stack->restoreState(trycatch.stack);
 
 				// put exception on stack
-				stack->push(OtString::create(e.what()));
+				auto message = OtString::create(e.what());
+				stack->push(message);
 
 			} else {
 				// no exception handler, restore the stack state

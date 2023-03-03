@@ -215,15 +215,20 @@ OtObject OtGlobalClass::super(size_t count, OtObject* parameters) {
 
 OtObject OtGlobalClass::members(OtObject object) {
 	OtArray array = OtArray::create();
+	std::vector<std::string_view> names;
 
 	// special treatment for class objects
 	if (object->isKindOf("Class")) {
-		for (auto& name : OtClass(object)->getClassType()->getMemberNames()) {
+		OtClass(object)->getClassType()->getMemberNames(names);
+
+		for (auto& name : names) {
 			array->append(OtString::create(name));
 		}
 
 	} else if (object->hasMembers()) {
-		for (auto& name : object->getMemberNames()) {
+		object->getMemberNames(names);
+
+		for (auto& name : names) {
 			array->append(OtString::create(name));
 		}
 	}

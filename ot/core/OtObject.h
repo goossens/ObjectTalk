@@ -74,7 +74,7 @@ public:
 	virtual OtObject set(size_t selector, OtObject value);
 	virtual OtObject set(const char* name, OtObject value) { return set(OtSelector::create(name), value); }
 	virtual OtObject set(const std::string& name, OtObject value) { return set(OtSelector::create(name), value); }
-	virtual OtObject get(size_t selector);
+	virtual OtObject& get(size_t selector);
 	virtual void unset(size_t selector);
 	virtual void unsetAll() { members = nullptr; }
 
@@ -85,7 +85,7 @@ public:
 	virtual void unsetByName(const std::string& name)  { return unset(OtSelector::create(name)); }
 
 	bool hasMembers() { return members != nullptr; }
-	std::vector<std::string> getMemberNames();
+	void getMemberNames(std::vector<std::string_view>& names);
 
 	// comparison
 	virtual bool operator == (OtObject operand);
@@ -136,7 +136,15 @@ protected:
 
 inline std::string OtObjectDescribe(OtObject object) {
 	if (object) {
-		return object->getType()->getName() + " " + object->describe();
+		auto type = object->getType()->getName();
+		auto description = object->describe();
+
+		if (type == description) {
+			return type;
+
+		} else {
+			return type + " " + description;
+		}
 
 	} else {
 		return "null";

@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <cassert>
 #include <cstddef>
 #include <cstdint>
 #include <type_traits>
@@ -54,6 +55,7 @@ public:
 	OtObjectPointer(const OtObjectPointer<Ts>& ref) {
 		static_assert(std::is_base_of<Ts, T>::value || std::is_base_of<T, Ts>::value, "Can't convert smart pointers");
 		ptr = dynamic_cast<T*>(ref.ptr);
+		assert(ptr || !ref.ptr);
 		incrementReference();
 	}
 
@@ -67,6 +69,7 @@ public:
 	OtObjectPointer(OtObjectPointer<Ts>&& ref) {
 		static_assert(std::is_base_of<Ts, T>::value || std::is_base_of<T, Ts>::value, "Can't convert smart pointers");
 		ptr = dynamic_cast<T*>(ref.ptr);
+		assert(ptr || !ref.ptr);
 		ref.ptr = nullptr;
 	}
 
@@ -94,6 +97,7 @@ public:
 		decrementReference();
 		static_assert(std::is_base_of<Ts, T>::value || std::is_base_of<T, Ts>::value, "Can't convert smart pointers");
 		ptr = dynamic_cast<T*>(ref.ptr);
+		assert(ptr || !ref.ptr);
 		incrementReference();
 		return *this;
 	}
@@ -111,8 +115,15 @@ public:
 		decrementReference();
 		static_assert(std::is_base_of<Ts, T>::value || std::is_base_of<T, Ts>::value, "Can't convert smart pointers");
 		ptr = dynamic_cast<T*>(ref.ptr);
+		assert(ptr || !ref.ptr);
 		ref.ptr = nullptr;
 		return *this;
+	}
+
+	// see if pointer is "kind of"
+	template<typename Ts>
+	bool isKindOf() {
+		return dynamic_cast<Ts*>(ptr);
 	}
 
 	// dereferencing operators

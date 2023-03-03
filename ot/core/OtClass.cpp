@@ -76,7 +76,7 @@ bool OtClassClass::has(size_t selector) {
 //	OtClassClass::get
 //
 
-OtObject OtClassClass::get(size_t selector) {
+OtObject& OtClassClass::get(size_t selector) {
 	if (OtInternalClass::has(selector)) {
 		return OtInternalClass::get(selector);
 

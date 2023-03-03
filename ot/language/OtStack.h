@@ -73,7 +73,11 @@ typedef std::shared_ptr<OtStackClass> OtStack;
 class OtStackClass {
 public:
 	// stack access functions
-	void push(OtObject object) { stack.emplace_back(object); }
+	void push(OtObject& object) { stack.emplace_back(object); }
+
+	template<typename T>
+	void push(T& object) { stack.emplace_back(object); }
+
 	OtObject pop() { auto value = stack.back(); stack.pop_back(); return value; }
 	void pop(size_t count) { stack.resize(stack.size() - count); }
 	void dup() { stack.emplace_back(stack.back()); }

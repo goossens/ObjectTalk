@@ -80,7 +80,7 @@ OtType OtComboboxClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtComboboxClass>("Combobox", OtWidgetClass::getMeta());
+		type = OtType::create<OtComboboxClass>("Combobox", OtWidgetClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtComboboxClass::init));
 	}
 

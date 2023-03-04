@@ -265,7 +265,7 @@ OtType OtHttpRouterClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtHttpRouterClass>("HttpRouter", OtHttpClass::getMeta());
+		type = OtType::create<OtHttpRouterClass>("HttpRouter", OtHttpClass::getMeta());
 		type->set("use", OtFunction::create(&OtHttpRouterClass::useHandler));
 		type->set("all", OtFunction::create(&OtHttpRouterClass::allHandler));
 		type->set("get", OtFunction::create(&OtHttpRouterClass::getHandler));

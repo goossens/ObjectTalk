@@ -32,7 +32,7 @@ public:
 	// access member information
 	void setParent(OtObject parent);
 	std::string getName() { return classType->getName(); }
-	bool hasParent() { return classType->getParent() != nullptr; }
+	bool hasParent() { return classType->getParent(); }
 	OtObject getParent() { return OtClass::create(classType->getParent()); }
 
 	// create a new class instance

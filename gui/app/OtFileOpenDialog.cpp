@@ -134,7 +134,7 @@ OtType OtFileOpenDialogClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtFileOpenDialogClass>("FileOpenDialog", OtDialogClass::getMeta());
+		type = OtType::create<OtFileOpenDialogClass>("FileOpenDialog", OtDialogClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtFileOpenDialogClass::init));
 
 		type->set("open", OtFunction::create(&OtFileOpenDialogClass::open));

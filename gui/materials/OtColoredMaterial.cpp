@@ -209,7 +209,7 @@ OtType OtColoredMaterialClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtColoredMaterialClass>("ColoredMaterial", OtMaterialClass::getMeta());
+		type = OtType::create<OtColoredMaterialClass>("ColoredMaterial", OtMaterialClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtColoredMaterialClass::init));
 
 		type->set("setColor", OtFunction::create(&OtColoredMaterialClass::setColor));

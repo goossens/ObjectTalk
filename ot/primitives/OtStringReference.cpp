@@ -21,7 +21,7 @@ OtType OtStringReferenceClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtStringReferenceClass>("StringReference", OtReferenceClass::getMeta());
+		type = OtType::create<OtStringReferenceClass>("StringReference", OtReferenceClass::getMeta());
 		type->set("__deref__", OtFunction::create(&OtStringReferenceClass::deref));
 		type->set("__assign__", OtFunction::create(&OtStringReferenceClass::assign));
 	}

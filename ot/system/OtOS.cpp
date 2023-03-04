@@ -414,7 +414,7 @@ OtType OtOSClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtOSClass>("OS", OtSystemClass::getMeta());
+		type = OtType::create<OtOSClass>("OS", OtSystemClass::getMeta());
 
 		type->set("hasenv", OtFunction::create(&OtOSClass::hasenv));
 		type->set("getenv", OtFunction::create(&OtOSClass::getenv));

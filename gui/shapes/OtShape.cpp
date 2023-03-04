@@ -128,7 +128,7 @@ OtType OtShapeClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtShapeClass>("Shape", OtGuiClass::getMeta());
+		type = OtType::create<OtShapeClass>("Shape", OtGuiClass::getMeta());
 		type->set("moveTo", OtFunction::create(&OtShapeClass::moveTo));
 		type->set("lineTo", OtFunction::create(&OtShapeClass::lineTo));
 		type->set("quadraticCurveTo", OtFunction::create(&OtShapeClass::quadraticCurveTo));

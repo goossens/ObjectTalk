@@ -231,7 +231,7 @@ OtType OtObjectClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtObjectClass>("Object", nullptr);
+		type = OtType::create<OtObjectClass>("Object", nullptr);
 
 		type->set("boolean", OtFunction::create(&OtObjectClass::operator bool));
 		type->set("integer", OtFunction::create(&OtObjectClass::operator int64_t));

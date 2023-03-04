@@ -134,7 +134,7 @@ OtType OtMeterClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtMeterClass>("Meter", OtWidgetClass::getMeta());
+		type = OtType::create<OtMeterClass>("Meter", OtWidgetClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtMeterClass::init));
 
 		type->set("setTexture", OtFunction::create(&OtMeterClass::setTexture));

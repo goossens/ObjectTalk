@@ -22,7 +22,7 @@ OtType OtDialogClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtDialogClass>("Dialog", OtAppObjectClass::getMeta());
+		type = OtType::create<OtDialogClass>("Dialog", OtAppObjectClass::getMeta());
 	}
 
 	return type;

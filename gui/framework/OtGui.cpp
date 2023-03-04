@@ -232,7 +232,7 @@ OtType OtGuiClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtGuiClass>("GUI", OtObjectClass::getMeta());
+		type = OtType::create<OtGuiClass>("GUI", OtObjectClass::getMeta());
 	}
 
 	return type;

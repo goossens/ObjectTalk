@@ -137,7 +137,7 @@ OtType OtAnimationClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtAnimationClass>("Animation", OtGuiClass::getMeta());
+		type = OtType::create<OtAnimationClass>("Animation", OtGuiClass::getMeta());
 		type->set("from", OtFunction::create(&OtAnimationClass::from));
 		type->set("to", OtFunction::create(&OtAnimationClass::to));
 		type->set("via", OtFunction::create(&OtAnimationClass::via));

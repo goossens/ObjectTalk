@@ -22,7 +22,7 @@ OtType OtMaterialClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtMaterialClass>("Material", OtGuiClass::getMeta());
+		type = OtType::create<OtMaterialClass>("Material", OtGuiClass::getMeta());
 
 		type->set("setFrontSide", OtFunction::create(&OtMaterialClass::setFrontSide));
 		type->set("setBackSide", OtFunction::create(&OtMaterialClass::setBackSide));

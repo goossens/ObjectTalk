@@ -47,7 +47,7 @@ OtType OtCerrClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtCerrClass>("Cerr", OtStreamClass::getMeta());
+		type = OtType::create<OtCerrClass>("Cerr", OtStreamClass::getMeta());
 		type->set("__lshift__", OtFunction::create(&OtCerrClass::operator <<));
 	}
 

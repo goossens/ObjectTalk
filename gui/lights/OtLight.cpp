@@ -20,7 +20,7 @@ OtType OtLightClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtLightClass>("Light", OtSceneObjectClass::getMeta());
+		type = OtType::create<OtLightClass>("Light", OtSceneObjectClass::getMeta());
 	}
 
 	return type;

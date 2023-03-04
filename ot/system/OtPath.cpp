@@ -50,7 +50,7 @@ OtType OtPathClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtPathClass>("Path", OtSystemClass::getMeta());
+		type = OtType::create<OtPathClass>("Path", OtSystemClass::getMeta());
 
 		type->set("__init__", OtFunction::create(&OtPathClass::init));
 		type->set("__iter__", OtFunction::create(&OtPathClass::iterate));

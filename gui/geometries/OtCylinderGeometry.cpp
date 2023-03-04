@@ -351,7 +351,7 @@ OtType OtCylinderGeometryClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtCylinderGeometryClass>("CylinderGeometry", OtGeometryClass::getMeta());
+		type = OtType::create<OtCylinderGeometryClass>("CylinderGeometry", OtGeometryClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtCylinderGeometryClass::init));
 		type->set("setTopRadius", OtFunction::create(&OtCylinderGeometryClass::setTopRadius));
 		type->set("setBottomRadius", OtFunction::create(&OtCylinderGeometryClass::setBottomRadius));

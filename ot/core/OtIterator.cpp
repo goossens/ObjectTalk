@@ -20,7 +20,7 @@ OtType OtIteratorClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtIteratorClass>("Iterator", OtInternalClass::getMeta());
+		type = OtType::create<OtIteratorClass>("Iterator", OtInternalClass::getMeta());
 	}
 
 	return type;

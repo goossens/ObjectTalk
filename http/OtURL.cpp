@@ -138,7 +138,7 @@ OtType OtURLClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtURLClass>("URL", OtHttpClass::getMeta());
+		type = OtType::create<OtURLClass>("URL", OtHttpClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtURLClass::init));
 
 		type->set("url", OtFunction::create(&OtURLClass::getURL));

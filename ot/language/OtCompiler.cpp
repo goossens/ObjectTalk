@@ -1247,7 +1247,9 @@ void OtCompiler::block(OtByteCode bytecode) {
 	auto locals = scopeStack.back().locals.size();
 
 	// locals are going out of scope so we remove them from the stack
-	bytecode->pop(locals);
+	if (locals) {
+		bytecode->pop(locals);
+	}
 
 	// remove the block scope
 	popScope();

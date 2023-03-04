@@ -409,7 +409,7 @@ OtType OtArrayClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtArrayClass>("Array", OtCollectionClass::getMeta());
+		type = OtType::create<OtArrayClass>("Array", OtCollectionClass::getMeta());
 
 		type->set("string", OtFunction::create(&OtArrayClass::operator std::string));
 

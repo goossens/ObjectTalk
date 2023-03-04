@@ -549,7 +549,7 @@ OtType OtHttpRequestClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtHttpRequestClass>("HttpRequest", OtHttpClass::getMeta());
+		type = OtType::create<OtHttpRequestClass>("HttpRequest", OtHttpClass::getMeta());
 
 		type->set("getMethod", OtFunction::create(&OtHttpRequestClass::getMethod));
 		type->set("getURL", OtFunction::create(&OtHttpRequestClass::getURL));

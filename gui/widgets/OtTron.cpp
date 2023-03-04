@@ -330,7 +330,7 @@ OtType OtTronClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtTronClass>("Tron", OtWidgetClass::getMeta());
+		type = OtType::create<OtTronClass>("Tron", OtWidgetClass::getMeta());
 	}
 
 	return type;

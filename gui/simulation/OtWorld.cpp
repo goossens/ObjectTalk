@@ -249,7 +249,7 @@ OtType OtWorldClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtWorldClass>("World", OtSimulationClass::getMeta());
+		type = OtType::create<OtWorldClass>("World", OtSimulationClass::getMeta());
 		type->set("setGravity", OtFunction::create(&OtWorldClass::setGravity));
 		type->set("allowSleeping", OtFunction::create(&OtWorldClass::allowSleeping));
 		type->set("continuousPhysics", OtFunction::create(&OtWorldClass::continuousPhysics));

@@ -109,7 +109,7 @@ OtType OtHttpServerClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtHttpServerClass>("HttpServer", OtHttpClass::getMeta());
+		type = OtType::create<OtHttpServerClass>("HttpServer", OtHttpClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtHttpServerClass::init));
 		type->set("listen", OtFunction::create(&OtHttpServerClass::listen));
 	}

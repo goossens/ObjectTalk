@@ -95,12 +95,14 @@ private:
 		}
 	};
 
-	// save selector name
+	// save named selector
 	std::string_view saveSelector(const std::string_view text) {
+		// create a new chunk buffer if required
 		if (!buffers.size() || buffers.back().hasSpace(text.size())) {
 			buffers.emplace_back();
 		}
 
+		// add chunk to buffer and return string view over new location
 		return buffers.back().addChunk(text);
 	}
 

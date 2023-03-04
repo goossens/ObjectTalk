@@ -61,7 +61,7 @@ public:
 		std::string token;
 
 		while (std::getline(ss, token, delimeter)) {
-			container.push_back(token);
+			container.emplace_back(token);
 		}
 	}
 
@@ -99,7 +99,6 @@ public:
 			function(b, e);
 		});
 	}
-
 
 	//	URL Conversion Functions
 	static std::string encodeURL(const std::string& text);

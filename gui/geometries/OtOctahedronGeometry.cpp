@@ -90,7 +90,7 @@ OtType OtOctahedronGeometryClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtOctahedronGeometryClass>("OctahedronGeometry", OtPolyhedronGeometryClass::getMeta());
+		type = OtType::create<OtOctahedronGeometryClass>("OctahedronGeometry", OtPolyhedronGeometryClass::getMeta());
 	}
 
 	return type;

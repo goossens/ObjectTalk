@@ -41,7 +41,7 @@ public:
 		static OtType type;
 
 		if (!type) {
-			type = OtTypeClass::create<OtHttpNextClass>("HttpNext", OtInternalClass::getMeta());
+			type = OtType::create<OtHttpNextClass>("HttpNext", OtInternalClass::getMeta());
 			type->set("__call__", OtFunction::create(&OtHttpNextClass::call));
 		}
 

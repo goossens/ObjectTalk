@@ -85,7 +85,7 @@ OtType OtTetrahedronGeometryClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtTetrahedronGeometryClass>("TetrahedronGeometry", OtPolyhedronGeometryClass::getMeta());
+		type = OtType::create<OtTetrahedronGeometryClass>("TetrahedronGeometry", OtPolyhedronGeometryClass::getMeta());
 	}
 
 	return type;

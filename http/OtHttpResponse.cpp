@@ -360,7 +360,7 @@ OtType OtHttpResponseClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtHttpResponseClass>("HttpResponse", OtHttpClass::getMeta());
+		type = OtType::create<OtHttpResponseClass>("HttpResponse", OtHttpClass::getMeta());
 		type->set("setStatus", OtFunction::create(&OtHttpResponseClass::setStatus));
 		type->set("setHeader", OtFunction::create(&OtHttpResponseClass::setHeader));
 		type->set("hasHeader", OtFunction::create(&OtHttpResponseClass::hasHeader));

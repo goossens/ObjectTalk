@@ -27,7 +27,7 @@
 #define OT_CONTROLLER(type)																\
 																						\
 class Ot##type##ControllerClass;														\
-using Ot##type##Controller = OtObjectPointer<Ot##type##ControllerClass>;							\
+using Ot##type##Controller = OtObjectPointer<Ot##type##ControllerClass>;				\
 																						\
 class Ot##type##ControllerClass : public OtWidgetClass {								\
 public:																					\
@@ -44,11 +44,11 @@ public:																					\
 		static OtType type;																\
 																						\
 		if (!type) {																	\
-			type = OtTypeClass::create<Ot##type##ControllerClass>(						\
+			type = OtType::create<Ot##type##ControllerClass>(							\
 				OT_CONTROLLER_STRINGIFY(type##Controller),								\
 				OtWidgetClass::getMeta());												\
 																						\
-			type->set("__init__", OtFunction::create(								\
+			type->set("__init__", OtFunction::create(									\
 				&Ot##type##ControllerClass::init));										\
 		}																				\
 																						\
@@ -56,7 +56,7 @@ public:																					\
 	}																					\
 																						\
 	static Ot##type##Controller create() {												\
-		Ot##type##Controller object = Ot##type##Controller::create();		\
+		Ot##type##Controller object = Ot##type##Controller::create();					\
 		object->setType(getMeta());														\
 		return object;																	\
 	}																					\

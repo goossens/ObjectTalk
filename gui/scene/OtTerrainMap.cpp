@@ -243,7 +243,7 @@ OtType OtTerrainMapClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtTerrainMapClass>("TerrainMap", OtGuiClass::getMeta());
+		type = OtType::create<OtTerrainMapClass>("TerrainMap", OtGuiClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtTerrainMapClass::init));
 
 		type->set("setSeed", OtFunction::create(&OtTerrainMapClass::setSeed));

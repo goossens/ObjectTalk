@@ -112,7 +112,7 @@ OtType OtFixedMaterialClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtFixedMaterialClass>("FixedMaterial", OtMaterialClass::getMeta());
+		type = OtType::create<OtFixedMaterialClass>("FixedMaterial", OtMaterialClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtFixedMaterialClass::init));
 
 		type->set("setColor", OtFunction::create(&OtFixedMaterialClass::setColor));

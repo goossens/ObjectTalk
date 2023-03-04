@@ -51,7 +51,7 @@ OtType OtCheckboxClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtCheckboxClass>("Checkbox", OtWidgetClass::getMeta());
+		type = OtType::create<OtCheckboxClass>("Checkbox", OtWidgetClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtCheckboxClass::init));
 	}
 

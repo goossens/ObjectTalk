@@ -174,7 +174,7 @@ OtType OtKnobClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtKnobClass>("Knob", OtWidgetClass::getMeta());
+		type = OtType::create<OtKnobClass>("Knob", OtWidgetClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtKnobClass::init));
 
 		type->set("setTexture", OtFunction::create(&OtKnobClass::setTexture));

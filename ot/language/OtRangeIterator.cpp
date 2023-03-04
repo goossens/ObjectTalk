@@ -21,7 +21,7 @@ OtType OtRangeIteratorClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtRangeIteratorClass>("RangeIterator", OtIteratorClass::getMeta());
+		type = OtType::create<OtRangeIteratorClass>("RangeIterator", OtIteratorClass::getMeta());
 		type->set("__iter__", OtFunction::create(&OtRangeIteratorClass::iterate));
 		type->set("__end__", OtFunction::create(&OtRangeIteratorClass::end));
 		type->set("__next__", OtFunction::create(&OtRangeIteratorClass::next));

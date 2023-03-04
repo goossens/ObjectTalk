@@ -221,7 +221,7 @@ OtType OtSkyClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtSkyClass>("Sky", OtSceneObjectClass::getMeta());
+		type = OtType::create<OtSkyClass>("Sky", OtSceneObjectClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtSkyClass::init));
 
 		type->set("setColor", OtFunction::create(&OtSkyClass::setColor));

@@ -20,7 +20,7 @@ OtType OtInternalClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtInternalClass>("Internal", OtObjectClass::getMeta());
+		type = OtType::create<OtInternalClass>("Internal", OtObjectClass::getMeta());
 	}
 
 	return type;

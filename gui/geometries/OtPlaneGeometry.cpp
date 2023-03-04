@@ -286,7 +286,7 @@ OtType OtPlaneGeometryClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtPlaneGeometryClass>("PlaneGeometry", OtGeometryClass::getMeta());
+		type = OtType::create<OtPlaneGeometryClass>("PlaneGeometry", OtGeometryClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtPlaneGeometryClass::init));
 		type->set("setWidth", OtFunction::create(&OtPlaneGeometryClass::setWidth));
 		type->set("setHeight", OtFunction::create(&OtPlaneGeometryClass::setHeight));

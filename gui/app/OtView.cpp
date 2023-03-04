@@ -293,7 +293,7 @@ OtType OtViewClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtViewClass>("View", OtAppObjectClass::getMeta());
+		type = OtType::create<OtViewClass>("View", OtAppObjectClass::getMeta());
 
 		type->set("__init__", OtFunction::create(&OtViewClass::init));
 

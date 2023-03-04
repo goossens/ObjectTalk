@@ -21,7 +21,7 @@ OtType OtPathIteratorClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtPathIteratorClass>("PathIterator", OtIteratorClass::getMeta());
+		type = OtType::create<OtPathIteratorClass>("PathIterator", OtIteratorClass::getMeta());
 		type->set("__end__", OtFunction::create(&OtPathIteratorClass::end));
 		type->set("__next__", OtFunction::create(&OtPathIteratorClass::next));
 	}

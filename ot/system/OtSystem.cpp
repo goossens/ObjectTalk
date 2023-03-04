@@ -20,7 +20,7 @@ OtType OtSystemClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtSystemClass>("System", OtObjectClass::getMeta());
+		type = OtType::create<OtSystemClass>("System", OtObjectClass::getMeta());
 	}
 
 	return type;

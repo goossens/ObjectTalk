@@ -82,7 +82,7 @@ OtType OtFogClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtFogClass>("Fog", OtLightClass::getMeta());
+		type = OtType::create<OtFogClass>("Fog", OtLightClass::getMeta());
 		type->set("setColor", OtFunction::create(&OtFogClass::setColor));
 		type->set("setDistances", OtFunction::create(&OtFogClass::setDistances));
 		type->set("setLimits", OtFunction::create(&OtFogClass::setLimits));

@@ -187,7 +187,7 @@ OtType OtObject3dClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtObject3dClass>("Object3D", OtSceneObjectClass::getMeta());
+		type = OtType::create<OtObject3dClass>("Object3D", OtSceneObjectClass::getMeta());
 		type->set("rotateX", OtFunction::create(&OtObject3dClass::rotateX));
 		type->set("rotateY", OtFunction::create(&OtObject3dClass::rotateY));
 		type->set("rotateZ", OtFunction::create(&OtObject3dClass::rotateZ));

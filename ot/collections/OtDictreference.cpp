@@ -21,7 +21,7 @@ OtType OtDictReferenceClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtDictReferenceClass>("DictReference", OtReferenceClass::getMeta());
+		type = OtType::create<OtDictReferenceClass>("DictReference", OtReferenceClass::getMeta());
 		type->set("__deref__", OtFunction::create(&OtDictReferenceClass::deref));
 		type->set("__assign__", OtFunction::create(&OtDictReferenceClass::assign));
 	}

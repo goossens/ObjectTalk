@@ -22,7 +22,7 @@ OtType OtSceneObjectClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtSceneObjectClass>("SceneObject", OtNodeClass::getMeta());
+		type = OtType::create<OtSceneObjectClass>("SceneObject", OtNodeClass::getMeta());
 
 		type->set("castShadow", OtFunction::create(&OtSceneObjectClass::castShadow));
 		type->set("castsShadow", OtFunction::create(&OtSceneObjectClass::castsShadow));

@@ -487,7 +487,7 @@ OtType OtCameraClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtCameraClass>("Camera", OtGuiClass::getMeta());
+		type = OtType::create<OtCameraClass>("Camera", OtGuiClass::getMeta());
 
 		type->set("setOrthographic", OtFunction::create(&OtCameraClass::setOrthographic));
 		type->set("setPerspective", OtFunction::create(&OtCameraClass::setPerspective));

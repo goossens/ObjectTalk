@@ -155,7 +155,7 @@ OtType OtModelGeometryClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtModelGeometryClass>("ModelGeometry", OtGeometryClass::getMeta());
+		type = OtType::create<OtModelGeometryClass>("ModelGeometry", OtGeometryClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtModelGeometryClass::init));
 		type->set("setModel", OtFunction::create(&OtModelGeometryClass::setModel));
 		type->set("setScale", OtFunction::create(&OtModelGeometryClass::setScale));

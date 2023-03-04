@@ -79,7 +79,7 @@ OtType OtTreeNodeClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtTreeNodeClass>("TreeNode", OtWidgetClass::getMeta());
+		type = OtType::create<OtTreeNodeClass>("TreeNode", OtWidgetClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtTreeNodeClass::init));
 
 		type->set("getTitle", OtFunction::create(&OtTreeNodeClass::getTitle));

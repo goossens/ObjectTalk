@@ -286,7 +286,7 @@ OtType OtTorusGeometryClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtTorusGeometryClass>("TorusGeometry", OtGeometryClass::getMeta());
+		type = OtType::create<OtTorusGeometryClass>("TorusGeometry", OtGeometryClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtTorusGeometryClass::init));
 		type->set("setRadius", OtFunction::create(&OtTorusGeometryClass::setRadius));
 		type->set("setTubeRadius", OtFunction::create(&OtTorusGeometryClass::setTubeRadius));

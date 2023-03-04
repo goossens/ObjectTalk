@@ -215,7 +215,7 @@ OtType OtGeometryClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtGeometryClass>("Geometry", OtGuiClass::getMeta());
+		type = OtType::create<OtGeometryClass>("Geometry", OtGuiClass::getMeta());
 
 		type->set("computeTangents", OtFunction::create(&OtGeometryClass::computeTangents));
 	}

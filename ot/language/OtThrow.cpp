@@ -31,7 +31,7 @@ OtType OtThrowClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtThrowClass>("Throw", OtInternalClass::getMeta());
+		type = OtType::create<OtThrowClass>("Throw", OtInternalClass::getMeta());
 		type->set("__call__", OtFunction::create(&OtThrowClass::call));
 	}
 

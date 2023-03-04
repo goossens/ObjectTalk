@@ -43,7 +43,7 @@ OtType OtCaptureReferenceClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtCaptureReferenceClass>("CaptureReference", OtReferenceClass::getMeta());
+		type = OtType::create<OtCaptureReferenceClass>("CaptureReference", OtReferenceClass::getMeta());
 		type->set("__deref__", OtFunction::create(&OtCaptureReferenceClass::deref));
 		type->set("__assign__", OtFunction::create(&OtCaptureReferenceClass::assign));
 	}

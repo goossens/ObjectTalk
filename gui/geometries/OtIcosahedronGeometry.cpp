@@ -92,7 +92,7 @@ OtType OtIcosahedronGeometryClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtIcosahedronGeometryClass>("IcosahedronGeometry", OtPolyhedronGeometryClass::getMeta());
+		type = OtType::create<OtIcosahedronGeometryClass>("IcosahedronGeometry", OtPolyhedronGeometryClass::getMeta());
 	}
 
 	return type;

@@ -113,7 +113,7 @@ OtType OtPanelClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtPanelClass>("Panel", OtAppObjectClass::getMeta());
+		type = OtType::create<OtPanelClass>("Panel", OtAppObjectClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtPanelClass::init));
 		type->set("setScreenArea", OtFunction::create(&OtPanelClass::setScreenArea));
 	}

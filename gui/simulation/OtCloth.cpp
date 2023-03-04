@@ -209,7 +209,7 @@ OtType OtClothClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtClothClass>("Cloth", OtSimulationClass::getMeta());
+		type = OtType::create<OtClothClass>("Cloth", OtSimulationClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtClothClass::init));
 		type->set("setPlane", OtFunction::create(&OtClothClass::setPlane));
 		type->set("setPins", OtFunction::create(&OtClothClass::setPins));

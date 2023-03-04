@@ -53,7 +53,7 @@ OtType OtCustomGeometryClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtCustomGeometryClass>("CustomGeometry", OtGeometryClass::getMeta());
+		type = OtType::create<OtCustomGeometryClass>("CustomGeometry", OtGeometryClass::getMeta());
 	}
 
 	return type;

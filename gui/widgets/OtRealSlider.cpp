@@ -52,7 +52,7 @@ OtType OtRealSliderClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtRealSliderClass>("RealSlider", OtWidgetClass::getMeta());
+		type = OtType::create<OtRealSliderClass>("RealSlider", OtWidgetClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtRealSliderClass::init));
 	}
 

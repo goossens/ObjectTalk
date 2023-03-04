@@ -243,7 +243,7 @@ OtType OtBoxGeometryClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtBoxGeometryClass>("BoxGeometry", OtGeometryClass::getMeta());
+		type = OtType::create<OtBoxGeometryClass>("BoxGeometry", OtGeometryClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtBoxGeometryClass::init));
 		type->set("setWidth", OtFunction::create(&OtBoxGeometryClass::setWidth));
 		type->set("setHeight", OtFunction::create(&OtBoxGeometryClass::setHeight));

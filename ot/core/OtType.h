@@ -17,28 +17,52 @@
 
 
 //
-//	Forward references
+//	OtType
+//
+
+class OtTypeClass;
+using OtTypeAllocator = OtObject(*)();
+
+class OtType {
+public:
+	// constructors
+	OtType() = default;
+	OtType(OtTypeClass* t) : type(t) {}
+
+	// pointer access
+	OtTypeClass* operator->() { return type; }
+	OtTypeClass& operator*() { return *type; }
+	OtTypeClass* raw() { return type; }
+
+	// see if type is valid
+	operator bool() { return type != nullptr; }
+
+	// see if types are equal
+	bool operator==(OtType other) const { return type == other.type; }
+
+	// create a new type
+	template <class T>
+	static OtType create(const std::string& name, OtType parent=nullptr, OtTypeAllocator allocator=nullptr);
+
+	static OtType create(const std::string& name);
+
+private:
+	OtTypeClass* type;
+	static std::list<OtTypeClass> types;
+};
+
+
+//
+//	OtTypeClass
 //
 
 class OtObjectClass;
 using OtObject = OtObjectPointer<OtObjectClass>;
 
-
-//
-//	OtType
-//
-
-class OtTypeClass;
-typedef std::shared_ptr<OtTypeClass> OtType;
-typedef std::weak_ptr<OtTypeClass> OtTypeWeak;
-
 class OtTypeClass {
-private:
-	typedef OtObject(*OtAllocator)();
-
 public:
 	// constructor
-	OtTypeClass(const std::string& n, OtType p=nullptr, OtAllocator a=nullptr);
+	OtTypeClass(const std::string& n, OtType p={}, OtTypeAllocator a=nullptr);
 
 	// allocate a new instance
 	OtObject allocate();
@@ -50,8 +74,8 @@ public:
 	bool isKindOf(const std::string& className);
 
 	// get information
-	std::string getName() { return name; }
-	OtType getParent() { return parent.lock(); }
+	std::string& getName() { return name; }
+	OtType getParent() { return parent; }
 
 	// member access
 	bool has(size_t selector) { return members.has(selector) != 0; }
@@ -61,26 +85,30 @@ public:
 	void unset(size_t selector) { members.unset(selector); }
 	void getMemberNames(std::vector<std::string_view>& names) { members.getMemberNames(names); }
 
-	// create a new type
-	template <class T>
-	static OtType create(const std::string& name, OtType parent, OtAllocator allocator=nullptr) {
-		if (!allocator) {
-			allocator = []() {
-				return (OtObject) OtObjectPointer<T>::create();
-			};
-		}
-
-		return std::make_shared<OtTypeClass>(name, parent, allocator);
-	}
-
-	static OtType create(const std::string& name) {
-		return std::make_shared<OtTypeClass>(name);
-	}
-
 private:
 	// attributes
 	std::string name;
-	OtTypeWeak parent;
+	OtType parent;
 	OtMembers members;
-	OtAllocator allocator;
+	OtTypeAllocator allocator;
 };
+
+
+//
+//	OtType::create
+//
+
+template <class T>
+OtType OtType::create(const std::string& name, OtType parent, OtTypeAllocator allocator) {
+	if (!allocator) {
+		allocator = []() {
+			return (OtObject) OtObjectPointer<T>::create();
+		};
+	}
+
+	return OtType(&types.emplace_back(name, parent, allocator));
+}
+
+inline OtType OtType::create(const std::string& name) {
+	return OtType(&types.emplace_back(name));
+}

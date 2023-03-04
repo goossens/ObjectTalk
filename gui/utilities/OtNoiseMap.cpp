@@ -238,7 +238,7 @@ OtType OtNoiseMapClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtNoiseMapClass>("NoiseMap", OtGuiClass::getMeta());
+		type = OtType::create<OtNoiseMapClass>("NoiseMap", OtGuiClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtNoiseMapClass::init));
 		type->set("setSeed", OtFunction::create(&OtNoiseMapClass::setSeed));
 		type->set("setOctaves", OtFunction::create(&OtNoiseMapClass::setOctaves));

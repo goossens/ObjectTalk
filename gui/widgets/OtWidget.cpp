@@ -61,7 +61,7 @@ OtType OtWidgetClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtWidgetClass>("Widget", OtNodeClass::getMeta());
+		type = OtType::create<OtWidgetClass>("Widget", OtNodeClass::getMeta());
 	}
 
 	return type;

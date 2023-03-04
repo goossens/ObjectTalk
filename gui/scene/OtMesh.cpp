@@ -141,7 +141,7 @@ OtType OtMeshClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtMeshClass>("Mesh", OtObject3dClass::getMeta());
+		type = OtType::create<OtMeshClass>("Mesh", OtObject3dClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtMeshClass::init));
 
 		type->set("setGeometry", OtFunction::create(&OtMeshClass::setGeometry));

@@ -46,7 +46,7 @@ OtType OtAppObjectClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtAppObjectClass>("AppObject", OtNodeClass::getMeta());
+		type = OtType::create<OtAppObjectClass>("AppObject", OtNodeClass::getMeta());
 	}
 
 	return type;

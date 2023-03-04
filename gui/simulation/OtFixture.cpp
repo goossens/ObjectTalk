@@ -55,7 +55,7 @@ OtType OtFixtureClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtFixtureClass>("Fixture", OtGuiClass::getMeta());
+		type = OtType::create<OtFixtureClass>("Fixture", OtGuiClass::getMeta());
 		type->set("setDensity", OtFunction::create(&OtFixtureClass::setDensity));
 		type->set("setFriction", OtFunction::create(&OtFixtureClass::setFriction));
 		type->set("setRestitution", OtFunction::create(&OtFixtureClass::setRestitution));

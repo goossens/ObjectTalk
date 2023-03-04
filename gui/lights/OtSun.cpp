@@ -117,7 +117,7 @@ OtType OtSunClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtSunClass>("Sun", OtLightClass::getMeta());
+		type = OtType::create<OtSunClass>("Sun", OtLightClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtSunClass::init));
 		type->set("setElevation", OtFunction::create(&OtSunClass::setElevation));
 		type->set("setAzimuth", OtFunction::create(&OtSunClass::setAzimuth));

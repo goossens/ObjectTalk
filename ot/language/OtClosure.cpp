@@ -61,7 +61,7 @@ OtType OtClosureClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtClosureClass>("Closure", OtInternalClass::getMeta());
+		type = OtType::create<OtClosureClass>("Closure", OtInternalClass::getMeta());
 		type->set("__capture__", OtFunction::create(&OtClosureClass::capture));
 		type->set("__call__", OtFunction::create(&OtClosureClass::operator()));
 	}

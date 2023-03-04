@@ -20,7 +20,7 @@ OtType OtMemberReferenceClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtMemberReferenceClass>("MemberReference", OtReferenceClass::getMeta());
+		type = OtType::create<OtMemberReferenceClass>("MemberReference", OtReferenceClass::getMeta());
 		type->set("__deref__", OtFunction::create(&OtMemberReferenceClass::deref));
 		type->set("__assign__", OtFunction::create(&OtMemberReferenceClass::assign));
 	}

@@ -61,7 +61,7 @@ OtType OtFillerClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtFillerClass>("Filler", OtWidgetClass::getMeta());
+		type = OtType::create<OtFillerClass>("Filler", OtWidgetClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtFillerClass::init));
 		type->set("setSize", OtFunction::create(&OtFillerClass::setSize));
 	}

@@ -246,7 +246,7 @@ OtType OtGlobalClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtGlobalClass>("Global", OtInternalClass::getMeta());
+		type = OtType::create<OtGlobalClass>("Global", OtInternalClass::getMeta());
 	}
 
 	return type;

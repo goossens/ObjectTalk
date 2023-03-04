@@ -193,7 +193,7 @@ OtType OtFontClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtFontClass>("Font", OtGuiClass::getMeta());
+		type = OtType::create<OtFontClass>("Font", OtGuiClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtFontClass::init));
 
 		type->set("setFont", OtFunction::create(&OtFontClass::setFont));

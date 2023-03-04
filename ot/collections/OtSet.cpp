@@ -332,7 +332,7 @@ OtType OtSetClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtSetClass>("Set", OtCollectionClass::getMeta());
+		type = OtType::create<OtSetClass>("Set", OtCollectionClass::getMeta());
 
 		type->set("string", OtFunction::create(&OtSetClass::operator std::string));
 

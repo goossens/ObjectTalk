@@ -111,7 +111,7 @@ OtType OtDodecahedronGeometryClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtDodecahedronGeometryClass>("DodecahedronGeometry", OtPolyhedronGeometryClass::getMeta());
+		type = OtType::create<OtDodecahedronGeometryClass>("DodecahedronGeometry", OtPolyhedronGeometryClass::getMeta());
 	}
 
 	return type;

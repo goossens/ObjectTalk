@@ -125,7 +125,7 @@ OtType OtIOClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtIOClass>("IO", OtSystemClass::getMeta());
+		type = OtType::create<OtIOClass>("IO", OtSystemClass::getMeta());
 		type->set("readJSON", OtFunction::create(&OtIOClass::readJSON));
 		type->set("writeJSON", OtFunction::create(&OtIOClass::writeJSON));
 		type->set("readText", OtFunction::create(&OtIOClass::readText));

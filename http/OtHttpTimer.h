@@ -46,7 +46,7 @@ public:
 		static OtType type;
 
 		if (!type) {
-			type = OtTypeClass::create<OtHttpTimerClass>("HttpTimer", OtInternalClass::getMeta());
+			type = OtType::create<OtHttpTimerClass>("HttpTimer", OtInternalClass::getMeta());
 		}
 
 		return type;

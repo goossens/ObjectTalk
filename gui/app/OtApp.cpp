@@ -406,7 +406,7 @@ OtType OtAppClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtAppClass>("App", OtNodeClass::getMeta());
+		type = OtType::create<OtAppClass>("App", OtNodeClass::getMeta());
 
 		type->set("addAnimation", OtFunction::create(&OtAppClass::addAnimation));
 		type->set("addSimulation", OtFunction::create(&OtAppClass::addSimulation));

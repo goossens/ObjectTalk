@@ -145,7 +145,7 @@ OtType OtBodyClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtBodyClass>("Body", OtGuiClass::getMeta());
+		type = OtType::create<OtBodyClass>("Body", OtGuiClass::getMeta());
 		type->set("setPosition", OtFunction::create(&OtBodyClass::setPosition));
 		type->set("setLinearVelocity", OtFunction::create(&OtBodyClass::setLinearVelocity));
 		type->set("setAngle", OtFunction::create(&OtBodyClass::setAngle));

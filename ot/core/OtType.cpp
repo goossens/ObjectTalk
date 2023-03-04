@@ -15,10 +15,17 @@
 
 
 //
+//	List of all declared types
+//
+
+std::list<OtTypeClass> OtType::types;
+
+
+//
 //	OtTypeClass::OtTypeClass
 //
 
-OtTypeClass::OtTypeClass(const std::string& n, OtType p, OtAllocator a) {
+OtTypeClass::OtTypeClass(const std::string& n, OtType p, OtTypeAllocator a) {
 	name = n;
 	parent = p;
 	allocator = a ? a : p ? p->allocator : nullptr;
@@ -52,7 +59,7 @@ void OtTypeClass::setParent(OtType p) {
 //
 
 bool OtTypeClass::isKindOf(const std::string& className) {
-	for (auto p = this; p; p = p->parent.lock().get()) {
+	for (auto p = this; p; p = p->parent.raw()) {
 		if (p->name == className) {
 			return true;
 		}

@@ -158,7 +158,7 @@ OtType OtSkyboxClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtSkyboxClass>("Skybox", OtSceneObjectClass::getMeta());
+		type = OtType::create<OtSkyboxClass>("Skybox", OtSceneObjectClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtSkyboxClass::init));
 		type->set("setCubemap", OtFunction::create(&OtSkyboxClass::setCubemap));
 	}

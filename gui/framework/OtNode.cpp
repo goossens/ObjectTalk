@@ -110,7 +110,7 @@ OtType OtNodeClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtNodeClass>("Node", OtGuiClass::getMeta());
+		type = OtType::create<OtNodeClass>("Node", OtGuiClass::getMeta());
 
 		type->set("add", OtFunction::create(&OtNodeClass::add));
 		type->set("remove", OtFunction::create(&OtNodeClass::remove));

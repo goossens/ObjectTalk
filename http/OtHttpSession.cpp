@@ -211,7 +211,7 @@ OtType OtHttpSessionClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtHttpResponseClass>("HttpSession", OtInternalClass::getMeta());
+		type = OtType::create<OtHttpResponseClass>("HttpSession", OtInternalClass::getMeta());
 	}
 
 	return type;

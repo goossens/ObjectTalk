@@ -87,7 +87,7 @@ OtType OtAmbientLightClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtAmbientLightClass>("AmbientLight", OtLightClass::getMeta());
+		type = OtType::create<OtAmbientLightClass>("AmbientLight", OtLightClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtAmbientLightClass::init));
 
 		type->set("setColor", OtFunction::create(&OtAmbientLightClass::setColor));

@@ -40,7 +40,7 @@ OtType OtFunctionClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtFunctionClass>("Function", OtPrimitiveClass::getMeta());
+		type = OtType::create<OtFunctionClass>("Function", OtPrimitiveClass::getMeta());
 		type->set("__call__", OtFunction::create(&OtFunctionClass::operator()));
 	}
 

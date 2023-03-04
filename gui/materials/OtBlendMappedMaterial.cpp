@@ -174,7 +174,7 @@ OtType OtBlendMappedMaterialClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtBlendMappedMaterialClass>("BlendMappedMaterial", OtMaterialClass::getMeta());
+		type = OtType::create<OtBlendMappedMaterialClass>("BlendMappedMaterial", OtMaterialClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtBlendMappedMaterialClass::init));
 
 		type->set("setTextures", OtFunction::create(&OtBlendMappedMaterialClass::setTextures));

@@ -181,7 +181,7 @@ OtType OtSpotLightClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtSpotLightClass>("SpotLight", OtLightClass::getMeta());
+		type = OtType::create<OtSpotLightClass>("SpotLight", OtLightClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtSpotLightClass::init));
 
 		type->set("setPosition", OtFunction::create(&OtSpotLightClass::setPosition));

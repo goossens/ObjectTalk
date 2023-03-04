@@ -220,7 +220,7 @@ OtType OtExtrudedGeometryClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtExtrudedGeometryClass>("ExtrudedGeometry", OtGeometryClass::getMeta());
+		type = OtType::create<OtExtrudedGeometryClass>("ExtrudedGeometry", OtGeometryClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtExtrudedGeometryClass::init));
 		type->set("setShape", OtFunction::create(&OtExtrudedGeometryClass::setShape));
 		type->set("setDepth", OtFunction::create(&OtExtrudedGeometryClass::setDepth));

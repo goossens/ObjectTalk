@@ -192,7 +192,7 @@ OtType OtHeightMapClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtHeightMapClass>("HeightMap", OtGuiClass::getMeta());
+		type = OtType::create<OtHeightMapClass>("HeightMap", OtGuiClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtHeightMapClass::init));
 		type->set("loadMap", OtFunction::create(&OtHeightMapClass::loadMap));
 		type->set("setScale", OtFunction::create(&OtHeightMapClass::setScale));

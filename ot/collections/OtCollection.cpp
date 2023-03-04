@@ -20,7 +20,7 @@ OtType OtCollectionClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtCollectionClass>("Collection", OtObjectClass::getMeta());
+		type = OtType::create<OtCollectionClass>("Collection", OtObjectClass::getMeta());
 	}
 
 	return type;

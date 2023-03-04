@@ -42,7 +42,7 @@ OtType OtStackReferenceClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtStackReferenceClass>("StackReference", OtReferenceClass::getMeta());
+		type = OtType::create<OtStackReferenceClass>("StackReference", OtReferenceClass::getMeta());
 		type->set("__deref__", OtFunction::create(&OtStackReferenceClass::deref));
 		type->set("__assign__", OtFunction::create(&OtStackReferenceClass::assign));
 	}

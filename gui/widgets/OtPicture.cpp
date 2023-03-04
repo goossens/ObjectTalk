@@ -101,7 +101,7 @@ OtType OtPictureClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtPictureClass>("Picture", OtWidgetClass::getMeta());
+		type = OtType::create<OtPictureClass>("Picture", OtWidgetClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtPictureClass::init));
 
 		type->set("setTexture", OtFunction::create(&OtPictureClass::setTexture));

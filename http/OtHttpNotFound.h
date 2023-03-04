@@ -40,7 +40,7 @@ public:
 		static OtType type;
 
 		if (!type) {
-			type = OtTypeClass::create<OtHttpNotFoundClass>("HttpNotFound", OtInternalClass::getMeta());
+			type = OtType::create<OtHttpNotFoundClass>("HttpNotFound", OtInternalClass::getMeta());
 			type->set("__call__", OtFunction::create(&OtHttpNotFoundClass::call));
 		}
 

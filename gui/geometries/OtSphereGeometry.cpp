@@ -324,7 +324,7 @@ OtType OtSphereGeometryClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtSphereGeometryClass>("SphereGeometry", OtGeometryClass::getMeta());
+		type = OtType::create<OtSphereGeometryClass>("SphereGeometry", OtGeometryClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtSphereGeometryClass::init));
 		type->set("setRadius", OtFunction::create(&OtSphereGeometryClass::setRadius));
 		type->set("setWidthSegments", OtFunction::create(&OtSphereGeometryClass::setWidthSegments));

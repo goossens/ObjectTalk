@@ -20,7 +20,7 @@
 //
 
 OtClassClass::OtClassClass(const std::string& name) {
-	classType = OtTypeClass::create(name);
+	classType = OtType::create(name);
 }
 
 
@@ -94,7 +94,7 @@ OtType OtClassClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtClassClass>("Class", OtInternalClass::getMeta());
+		type = OtType::create<OtClassClass>("Class", OtInternalClass::getMeta());
 		type->set("__call__", OtFunction::create(&OtClassClass::instantiate));
 		type->set("getName", OtFunction::create(&OtClassClass::getName));
 		type->set("setParent", OtFunction::create(&OtClassClass::setParent));

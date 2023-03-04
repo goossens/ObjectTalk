@@ -105,7 +105,7 @@ OtType OtMenuItemClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtMenuItemClass>("MenuItem", OtWidgetClass::getMeta());
+		type = OtType::create<OtMenuItemClass>("MenuItem", OtWidgetClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtMenuItemClass::init));
 
 		type->set("getTitle", OtFunction::create(&OtMenuItemClass::getTitle));

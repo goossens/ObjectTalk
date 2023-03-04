@@ -104,7 +104,7 @@ OtType OtMatrixClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtMatrixClass>("Matrix", OtGuiClass::getMeta());
+		type = OtType::create<OtMatrixClass>("Matrix", OtGuiClass::getMeta());
 		type->set("rotateX", OtFunction::create(&OtMatrixClass::rotateX));
 		type->set("rotateY", OtFunction::create(&OtMatrixClass::rotateY));
 		type->set("rotateZ", OtFunction::create(&OtMatrixClass::rotateZ));

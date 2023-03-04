@@ -384,7 +384,7 @@ OtType OtFSClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtFSClass>("FS", OtSystemClass::getMeta());
+		type = OtType::create<OtFSClass>("FS", OtSystemClass::getMeta());
 		type->set("gethome", OtFunction::create(&OtFSClass::gethome));
 		type->set("gettmp", OtFunction::create(&OtFSClass::gettmp));
 		type->set("tmpnam", OtFunction::create(&OtFSClass::tmpnam));

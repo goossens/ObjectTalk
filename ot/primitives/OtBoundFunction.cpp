@@ -32,7 +32,7 @@ OtType OtBoundFunctionClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtBoundFunctionClass>("BoundFunction", OtInternalClass::getMeta());
+		type = OtType::create<OtBoundFunctionClass>("BoundFunction", OtInternalClass::getMeta());
 		type->set("__call__", OtFunction::create(&OtBoundFunctionClass::operator()));
 	}
 

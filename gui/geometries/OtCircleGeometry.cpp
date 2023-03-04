@@ -197,7 +197,7 @@ OtType OtCircleGeometryClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtCircleGeometryClass>("CircleGeometry", OtGeometryClass::getMeta());
+		type = OtType::create<OtCircleGeometryClass>("CircleGeometry", OtGeometryClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtCircleGeometryClass::init));
 		type->set("setRadius", OtFunction::create(&OtCircleGeometryClass::setRadius));
 		type->set("setSegments", OtFunction::create(&OtCircleGeometryClass::setSegments));

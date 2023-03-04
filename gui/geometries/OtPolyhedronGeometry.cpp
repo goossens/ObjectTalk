@@ -248,7 +248,7 @@ OtType OtPolyhedronGeometryClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtPolyhedronGeometryClass>("PolyhedronGeometry", OtGeometryClass::getMeta());
+		type = OtType::create<OtPolyhedronGeometryClass>("PolyhedronGeometry", OtGeometryClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtPolyhedronGeometryClass::init));
 		type->set("setRadius", OtFunction::create(&OtPolyhedronGeometryClass::setRadius));
 		type->set("setDetail", OtFunction::create(&OtPolyhedronGeometryClass::setDetail));

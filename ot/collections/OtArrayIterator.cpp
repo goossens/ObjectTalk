@@ -21,7 +21,7 @@ OtType OtArrayIteratorClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtArrayIteratorClass>("ArrayIterator", OtIteratorClass::getMeta());
+		type = OtType::create<OtArrayIteratorClass>("ArrayIterator", OtIteratorClass::getMeta());
 		type->set("__end__", OtFunction::create(&OtArrayIteratorClass::end));
 		type->set("__next__", OtFunction::create(&OtArrayIteratorClass::next));
 	}

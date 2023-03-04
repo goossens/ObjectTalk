@@ -438,7 +438,7 @@ OtType OtTerrainClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtTerrainClass>("Terrain", OtSceneObjectClass::getMeta());
+		type = OtType::create<OtTerrainClass>("Terrain", OtSceneObjectClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtTerrainClass::init));
 
 		type->set("setTerrainMap", OtFunction::create(&OtTerrainClass::setTerrainMap));

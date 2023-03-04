@@ -249,7 +249,7 @@ OtType OtDictClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtDictClass>("Dict", OtCollectionClass::getMeta());
+		type = OtType::create<OtDictClass>("Dict", OtCollectionClass::getMeta());
 
 		type->set("string", OtFunction::create(&OtDictClass::operator std::string));
 

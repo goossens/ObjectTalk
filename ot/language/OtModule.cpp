@@ -201,7 +201,7 @@ OtType OtModuleClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtModuleClass>("Module", OtInternalClass::getMeta());
+		type = OtType::create<OtModuleClass>("Module", OtInternalClass::getMeta());
 	}
 
 	return type;

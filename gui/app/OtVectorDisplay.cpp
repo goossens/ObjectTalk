@@ -1333,7 +1333,7 @@ OtType OtVectorDisplayClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtVectorDisplayClass>("VectorDisplay", OtAppObjectClass::getMeta());
+		type = OtType::create<OtVectorDisplayClass>("VectorDisplay", OtAppObjectClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtVectorDisplayClass::init));
 
 		type->set("setScreenArea", OtFunction::create(&OtVectorDisplayClass::setScreenArea));

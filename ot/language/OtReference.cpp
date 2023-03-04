@@ -20,7 +20,7 @@ OtType OtReferenceClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtReferenceClass>("Reference", OtInternalClass::getMeta());
+		type = OtType::create<OtReferenceClass>("Reference", OtInternalClass::getMeta());
 	}
 
 	return type;

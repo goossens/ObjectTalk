@@ -21,7 +21,7 @@ OtType OtArrayReferenceClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtArrayReferenceClass>("ArrayReference", OtReferenceClass::getMeta());
+		type = OtType::create<OtArrayReferenceClass>("ArrayReference", OtReferenceClass::getMeta());
 		type->set("__deref__", OtFunction::create(&OtArrayReferenceClass::deref));
 		type->set("__assign__", OtFunction::create(&OtArrayReferenceClass::assign));
 	}

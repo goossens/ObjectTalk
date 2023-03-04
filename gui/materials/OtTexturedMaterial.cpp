@@ -187,7 +187,7 @@ OtType OtTexturedMaterialClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtTexturedMaterialClass>("TexturedMaterial", OtMaterialClass::getMeta());
+		type = OtType::create<OtTexturedMaterialClass>("TexturedMaterial", OtMaterialClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtTexturedMaterialClass::init));
 
 		type->set("setTexture", OtFunction::create(&OtTexturedMaterialClass::setTexture));

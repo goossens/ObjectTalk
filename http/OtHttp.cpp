@@ -40,7 +40,7 @@ OtType OtHttpClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtHttpClass>("Http", OtObjectClass::getMeta());
+		type = OtType::create<OtHttpClass>("Http", OtObjectClass::getMeta());
 	}
 
 	return type;

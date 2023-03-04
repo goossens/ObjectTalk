@@ -35,7 +35,7 @@ OtType OtRealClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtRealClass>("Real", OtPrimitiveClass::getMeta());
+		type = OtType::create<OtRealClass>("Real", OtPrimitiveClass::getMeta());
 
 		type->set("boolean", OtFunction::create(&OtRealClass::operator bool));
 		type->set("integer", OtFunction::create(&OtRealClass::operator int64_t));

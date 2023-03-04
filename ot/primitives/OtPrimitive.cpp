@@ -20,7 +20,7 @@ OtType OtPrimitiveClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtPrimitiveClass>("Primitive", OtObjectClass::getMeta());
+		type = OtType::create<OtPrimitiveClass>("Primitive", OtObjectClass::getMeta());
 	}
 
 	return type;

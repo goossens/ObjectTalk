@@ -61,7 +61,7 @@ OtType OtSceneClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtSceneClass>("Scene", OtNodeClass::getMeta());
+		type = OtType::create<OtSceneClass>("Scene", OtNodeClass::getMeta());
 	}
 
 	return type;

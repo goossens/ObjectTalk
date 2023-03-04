@@ -153,7 +153,7 @@ OtType OtDirectionalLightClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtDirectionalLightClass>("DirectionalLight", OtLightClass::getMeta());
+		type = OtType::create<OtDirectionalLightClass>("DirectionalLight", OtLightClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtDirectionalLightClass::init));
 
 		type->set("setDirection", OtFunction::create(&OtDirectionalLightClass::setDirection));

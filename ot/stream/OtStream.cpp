@@ -20,7 +20,7 @@ OtType OtStreamClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtStreamClass>("Stream", OtObjectClass::getMeta());
+		type = OtType::create<OtStreamClass>("Stream", OtObjectClass::getMeta());
 	}
 
 	return type;

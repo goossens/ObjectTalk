@@ -73,7 +73,7 @@ OtType OtGroupClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtGroupClass>("Group", OtObject3dClass::getMeta());
+		type = OtType::create<OtGroupClass>("Group", OtObject3dClass::getMeta());
 	}
 
 	return type;

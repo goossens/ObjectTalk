@@ -54,7 +54,7 @@ OtType OtLabelClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtLabelClass>("Label", OtWidgetClass::getMeta());
+		type = OtType::create<OtLabelClass>("Label", OtWidgetClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtLabelClass::init));
 	}
 

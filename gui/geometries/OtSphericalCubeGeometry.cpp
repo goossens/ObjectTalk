@@ -91,7 +91,7 @@ OtType OtSphericalCubeGeometryClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtSphericalCubeGeometryClass>("SphericalCubeGeometry", OtPolyhedronGeometryClass::getMeta());
+		type = OtType::create<OtSphericalCubeGeometryClass>("SphericalCubeGeometry", OtPolyhedronGeometryClass::getMeta());
 	}
 
 	return type;

@@ -296,7 +296,7 @@ OtType OtStringClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtStringClass>("String", OtPrimitiveClass::getMeta());
+		type = OtType::create<OtStringClass>("String", OtPrimitiveClass::getMeta());
 
 		type->set("boolean", OtFunction::create(&OtStringClass::operator bool));
 		type->set("integer", OtFunction::create(&OtStringClass::operator int64_t));

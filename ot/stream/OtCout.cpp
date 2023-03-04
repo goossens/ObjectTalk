@@ -47,7 +47,7 @@ OtType OtCoutClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtCoutClass>("Cout", OtStreamClass::getMeta());
+		type = OtType::create<OtCoutClass>("Cout", OtStreamClass::getMeta());
 		type->set("__lshift__", OtFunction::create(&OtCoutClass::operator <<));
 	}
 

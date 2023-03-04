@@ -197,7 +197,7 @@ OtType OtWaterClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtTypeClass::create<OtWaterClass>("Water", OtObject3dClass::getMeta());
+		type = OtType::create<OtWaterClass>("Water", OtObject3dClass::getMeta());
 		type->set("setSize", OtFunction::create(&OtWaterClass::setSize));
 		type->set("setNormalMap", OtFunction::create(&OtWaterClass::setNormalMap));
 		type->set("setNormalScale", OtFunction::create(&OtWaterClass::setNormalScale));

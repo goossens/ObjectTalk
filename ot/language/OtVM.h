@@ -31,8 +31,8 @@ public:
 	OtVM();
 
 	// get engine parameters
+	OtStack* getStack() { return &stack; }
 	OtGlobal getGlobal() { return global; }
-	OtStack getStack() { return stack; }
 	OtObject getNull() { return null; }
 
 	// execute bytecode in the virtual machine
@@ -42,10 +42,10 @@ public:
 	template<typename... ARGS>
 	OtObject callMemberFunction(OtObject target, size_t member, ARGS... args) {
 		const size_t count = sizeof...(ARGS) + 1;
-		stack->push(target);
-		(stack->push(args), ...);
-		auto result = target->get(member)->operator () (count, stack->sp(count));
-		stack->pop(count);
+		stack.push(target);
+		(stack.push(args), ...);
+		auto result = target->get(member)->operator () (count, stack.sp(count));
+		stack.pop(count);
 		return result;
 	}
 
@@ -55,27 +55,27 @@ public:
 	}
 
 	inline OtObject callMemberFunction(OtObject target, OtObject member, size_t count, OtObject* args) {
-		stack->push(target);
+		stack.push(target);
 
 		for (auto c = 0; c < count; c ++) {
-			(stack->push(args[c]));
+			(stack.push(args[c]));
 		}
 
 		count++;
-		auto result = member->operator () (count, stack->sp(count));
-		stack->pop(count);
+		auto result = member->operator () (count, stack.sp(count));
+		stack.pop(count);
 		return result;
 	}
 
 	// redirect member function to a new target
 	inline OtObject redirectMemberFunction(OtObject target, OtObject member, size_t count) {
-		auto sp = stack->sp(count + 1);
+		auto sp = stack.sp(count + 1);
 		*sp = target;
 		return member->operator () (count + 1, sp);
 	}
 
 	inline OtObject redirectMemberFunction(OtObject target, size_t member, size_t count) {
-		auto sp = stack->sp(count + 1);
+		auto sp = stack.sp(count + 1);
 		*sp = target;
 		return target->get(member)->operator () (count + 1, sp);
 	}

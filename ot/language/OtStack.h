@@ -67,42 +67,39 @@ public:
 //	OtStack
 //
 
-class OtStackClass;
-typedef std::shared_ptr<OtStackClass> OtStack;
-
-class OtStackClass {
+class OtStack {
 public:
 	// stack access functions
-	void push(OtObject& object) { stack.emplace_back(object); }
+	inline void push(OtObject& object) { stack.emplace_back(object); }
 
 	template<typename T>
-	void push(T& object) { stack.emplace_back(object); }
+	inline void push(T& object) { stack.emplace_back(object); }
 
-	OtObject pop() { auto value = stack.back(); stack.pop_back(); return value; }
-	void pop(size_t count) { stack.resize(stack.size() - count); }
-	void dup() { stack.emplace_back(stack.back()); }
-	void swap() { std::swap(stack[stack.size() - 1], stack[stack.size() - 2]); }
-	void move(size_t count) { auto e = stack.rbegin(); std::rotate(e, e + 1, e + count + 1); }
+	inline OtObject pop() { auto value = stack.back(); stack.pop_back(); return value; }
+	inline void pop(size_t count) { stack.resize(stack.size() - count); }
+	inline void dup() { stack.emplace_back(stack.back()); }
+	inline void swap() { std::swap(stack[stack.size() - 1], stack[stack.size() - 2]); }
+	inline void move(size_t count) { auto e = stack.rbegin(); std::rotate(e, e + 1, e + count + 1); }
 
-	size_t size() { return stack.size(); }
-	void resize(size_t size) { stack.resize(size); }
-	void reserve() { stack.resize(stack.size() + 1); }
-	OtObject* sp(size_t offset) { return &(stack[stack.size() - offset]); }
+	inline size_t size() { return stack.size(); }
+	inline void resize(size_t size) { stack.resize(size); }
+	inline void reserve() { stack.resize(stack.size() + 1); }
+	inline OtObject* sp(size_t offset) { return &(stack[stack.size() - offset]); }
 
 	// stack frame access functions
-	void openFrame(size_t offset=0) { frames.emplace_back(stack.size() - offset); }
-	OtObject getFrameItem(OtStackItem item) { return stack[frames[frames.size() - item.frame - 1] + item.slot]; }
-	void setFrameItem(OtStackItem item, OtObject object) { stack[frames[frames.size() - item.frame - 1] + item.slot] = object; }
-	void closeFrame() { frames.pop_back(); }
+	inline void openFrame(size_t offset=0) { frames.emplace_back(stack.size() - offset); }
+	inline OtObject getFrameItem(OtStackItem item) { return stack[frames[frames.size() - item.frame - 1] + item.slot]; }
+	inline void setFrameItem(OtStackItem item, OtObject object) { stack[frames[frames.size() - item.frame - 1] + item.slot] = object; }
+	inline void closeFrame() { frames.pop_back(); }
 
 	// closure access functions
-	void pushClosure(OtObject closure) { closures.emplace_back(closure); }
-	OtObject getClosure() { return closures.back(); }
-	void popClosure() { closures.pop_back(); }
+	inline void pushClosure(OtObject closure) { closures.emplace_back(closure); }
+	inline OtObject getClosure() { return closures.back(); }
+	inline void popClosure() { closures.pop_back(); }
 
 	// manipulate stack state
-	OtStackState getState() { return OtStackState(stack.size(), frames.size(), closures.size()); }
-	void restoreState(OtStackState state) { stack.resize(state.stack); frames.resize(state.frames); closures.resize(state.closures); }
+	inline OtStackState getState() { return OtStackState(stack.size(), frames.size(), closures.size()); }
+	inline void restoreState(OtStackState state) { stack.resize(state.stack); frames.resize(state.frames); closures.resize(state.closures); }
 
 	// debug stack
 	std::string debug() {

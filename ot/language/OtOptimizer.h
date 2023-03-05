@@ -33,6 +33,7 @@ public:
 
 private:
 	// optimize sequences of instructions
+	bool optimizePushPushSwapAssignSequence(size_t& instruction);
 	bool optimizePushMemberReferenceSequence(size_t& instruction);
 	bool optimizeCallMemberSequence(size_t& instruction);
 	bool optimizePushMemberSequence(size_t& instruction);

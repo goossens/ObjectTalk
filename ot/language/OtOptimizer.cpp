@@ -45,6 +45,7 @@ OtByteCode OtOptimizer::optimize(OtByteCode bytecode) {
 
 		// try all optimization sequences (in the right order)
 		bool optimized = false;
+		if (!optimized) { optimized = optimizePushPushSwapAssignSequence(instruction); }
 		if (!optimized) { optimized = optimizePushMemberReferenceSequence(instruction); }
 		if (!optimized) { optimized = optimizeCallMemberSequence(instruction); }
 		if (!optimized) { optimized = optimizePushMemberSequence(instruction); }
@@ -58,6 +59,29 @@ OtByteCode OtOptimizer::optimize(OtByteCode bytecode) {
 
 	// get start of each instruction
 	return newByteCode;
+}
+
+
+//
+//	OtOptimizer::optimizePushPushSwapAssignSequence
+//
+
+bool OtOptimizer::optimizePushPushSwapAssignSequence(size_t& instruction) {
+	OtObject object;
+	OtMemberReference reference;
+
+	if (oldByteCode->isPush(instructions[instruction], object) &&
+		oldByteCode->isPushMemberReference(instructions[instruction + 1], reference) &&
+		oldByteCode->isSwap(instructions[instruction + 2]) &&
+		oldByteCode->isMethodAssign(instructions[instruction + 3])) {
+
+		newByteCode->assignMember(reference->getObject(), reference->getMember(), object);
+		instruction += 4;
+		return true;
+
+	} else {
+		return false;
+	}
 }
 
 
@@ -85,7 +109,7 @@ bool OtOptimizer::optimizePushMemberReferenceSequence(size_t& instruction) {
 //	OtOptimizer::optimizeCallMemberSequence
 //
 
-bool OtOptimizer::optimizeCallMemberSequence(size_t &instruction) {
+bool OtOptimizer::optimizeCallMemberSequence(size_t& instruction) {
 	size_t member;
 	size_t count;
 
@@ -107,7 +131,7 @@ bool OtOptimizer::optimizeCallMemberSequence(size_t &instruction) {
 //	OtOptimizer::optimizePushMemberSequence
 //
 
-bool OtOptimizer::optimizePushMemberSequence(size_t &instruction) {
+bool OtOptimizer::optimizePushMemberSequence(size_t& instruction) {
 	size_t member;
 
 	if (oldByteCode->isMember(instructions[instruction], member) &&

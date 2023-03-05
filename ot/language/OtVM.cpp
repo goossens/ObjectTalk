@@ -36,9 +36,6 @@ public:
 //
 
 OtVM::OtVM() {
-	// create stack
-	stack = std::make_shared<OtStackClass>();
-
 	// create globals
 	global = OtGlobal::create();
 
@@ -56,16 +53,16 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 	std::vector<OtTryCatch> tryCatch;
 
 	// save the current stack state (so we can restore it in case of an uncaught exception)
-	OtStackState state = stack->getState();
+	OtStackState state = stack.getState();
 
 	// local variables
-	size_t sp = stack->size();
+	size_t sp = stack.size();
 	size_t pc = 0;
 	size_t end = bytecode->size();
 	size_t mark;
 
 	// open a new stack frame
-	stack->openFrame(callingParameters);
+	stack.openFrame(callingParameters);
 
 	// execute all instructions
 	while (pc < end) {
@@ -74,7 +71,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 				case OtByteCodeClass::debugOpcode:
 					OT_DEBUG(bytecode->disassemble());
 					OT_DEBUG(OtFormat("PC: %ld\n", pc));
-					OT_DEBUG(stack->debug());
+					OT_DEBUG(stack.debug());
 					break;
 
 				case OtByteCodeClass::markOpcode:
@@ -82,31 +79,31 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 					break;
 
 				case OtByteCodeClass::pushOpcode:
-					stack->push(bytecode->getConstant(bytecode->getNumber(pc)));
+					stack.push(bytecode->getConstant(bytecode->getNumber(pc)));
 					break;
 
 				case OtByteCodeClass::popOpcode:
-					stack->pop();
+					stack.pop();
 					break;
 
 				case OtByteCodeClass::popCountOpcode:
-					stack->pop(bytecode->getNumber(pc));
+					stack.pop(bytecode->getNumber(pc));
 					break;
 
 				case OtByteCodeClass::dupOpcode:
-					stack->dup();
+					stack.dup();
 					break;
 
 				case OtByteCodeClass::swapOpcode:
-					stack->swap();
+					stack.swap();
 					break;
 
 				case OtByteCodeClass::moveOpcode:
-					stack->move(bytecode->getNumber(pc));
+					stack.move(bytecode->getNumber(pc));
 					break;
 
 				case OtByteCodeClass::reserveOpcode:
-					stack->reserve();
+					stack.reserve();
 					break;
 
 				case OtByteCodeClass::jumpOpcode:
@@ -115,7 +112,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 
 				case OtByteCodeClass::jumpTrueOpcode: {
 					auto jump = bytecode->getOffset(bytecode->getNumber(pc));
-					auto value = stack->pop();
+					auto value = stack.pop();
 
 					if (value->operator bool()) {
 						pc = jump;
@@ -126,7 +123,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 
 				case OtByteCodeClass::jumpFalseOpcode: {
 					auto jump = bytecode->getOffset(bytecode->getNumber(pc));
-					auto value = stack->pop();
+					auto value = stack.pop();
 
 					if (!value->operator bool()) {
 						pc = jump;
@@ -137,8 +134,8 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 
 				case OtByteCodeClass::memberOpcode: {
 					// create a member reference
-					auto reference = OtMemberReference::create(stack->pop(), bytecode->getNumber(pc));
-					stack->push(reference);
+					auto reference = OtMemberReference::create(stack.pop(), bytecode->getNumber(pc));
+					stack.push(reference);
 					break;
 				}
 
@@ -150,7 +147,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 					auto count = bytecode->getNumber(pc);
 
 					// get a pointer to the calling parameters and target object
-					auto parameters = stack->sp(count + 1);
+					auto parameters = stack.sp(count + 1);
 
 					// sanity check
 					OT_ASSERT(parameters[0]);
@@ -159,8 +156,8 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 					auto result = parameters[0]->get(method)->operator () (count + 1, parameters);
 
 					// remove arguments from stack and put result back on it
-					stack->pop(count + 1);
-					stack->push(result);
+					stack.pop(count + 1);
+					stack.push(result);
 					break;
 				}
 
@@ -171,7 +168,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 
 				case OtByteCodeClass::pushTryOpcode:
 					// start a new try/catch cycle
-					tryCatch.push_back(OtTryCatch(bytecode->getOffset(bytecode->getNumber(pc)), stack->getState()));
+					tryCatch.push_back(OtTryCatch(bytecode->getOffset(bytecode->getNumber(pc)), stack.getState()));
 					break;
 
 				case OtByteCodeClass::popTryOpcode:
@@ -183,16 +180,24 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 					auto object = bytecode->getConstant(bytecode->getNumber(pc));
 					auto member = bytecode->getNumber(pc);
 					auto resolvedMember = OtMemberReferenceClass::resolveMember(object, member);
-					stack->push(resolvedMember);
+					stack.push(resolvedMember);
 					break;
 				}
 
 				case OtByteCodeClass::pushMemberOpcode: {
-					auto object = stack->pop();
+					auto object = stack.pop();
 					auto member = bytecode->getNumber(pc);
 					auto resolvedMember = OtMemberReferenceClass::resolveMember(object, member);
-					stack->push(resolvedMember);
+					stack.push(resolvedMember);
 					break;
+				}
+
+				case OtByteCodeClass::assignMemberOpcode: {
+					auto object = bytecode->getConstant(bytecode->getNumber(pc));
+					auto member = bytecode->getNumber(pc);
+					auto value = bytecode->getConstant(bytecode->getNumber(pc));
+					auto result = object->set(member, value);
+					stack.push(result);
 				}
 			}
 
@@ -205,15 +210,15 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 
 				// restore program counter and stack
 				pc = trycatch.pc;
-				stack->restoreState(trycatch.stack);
+				stack.restoreState(trycatch.stack);
 
 				// put exception on stack
 				auto message = OtString::create(e.what());
-				stack->push(message);
+				stack.push(message);
 
 			} else {
 				// no exception handler, restore the stack state
-				stack->restoreState(state);
+				stack.restoreState(state);
 
 				// get source code
 				OtSource source = bytecode->getSource();
@@ -270,14 +275,14 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 	}
 
 	// get code result
-	auto result = stack->pop();
+	auto result = stack.pop();
 
 	// close the stack frame
-	stack->closeFrame();
+	stack.closeFrame();
 
 	// sanity check
 	OT_ASSERT(tryCatch.size() == 0);
-	OT_ASSERT(stack->size() == sp);
+	OT_ASSERT(stack.size() == sp);
 
 	// return execution result
 	return result;

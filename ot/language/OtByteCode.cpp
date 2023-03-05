@@ -112,6 +112,10 @@ std::string OtByteCodeClass::disassemble() {
 			case pushMemberOpcode:
 				buffer << "pushMember" << OtSelector::name(getNumber(pc));
 				break;
+
+			case assignMemberOpcode:
+				buffer << "assignMember" << OtObjectDescribe(constants[getNumber(pc)]) << " " << OtSelector::name(getNumber(pc)) << " " << OtObjectDescribe(constants[getNumber(pc)]);
+				break;
 		}
 
 		buffer << std::endl;
@@ -217,6 +221,14 @@ void OtByteCodeClass::copyInstruction(OtByteCode other, size_t pc) {
 			pushMember(member);
 			break;
 		}
+
+		case assignMemberOpcode: {
+			auto object = other->getNumber(pc);
+			auto member = other->getNumber(pc);
+			auto value = other->getNumber(pc);
+			assignMember(other->constants[object], member, other->constants[value]);
+			break;
+		}
 	}
 }
 
@@ -300,11 +312,31 @@ size_t OtByteCodeClass::getInstructionSize(size_t offset) {
 		case pushMemberOpcode:
 			getNumber(pc);
 			break;
+
+		case assignMemberOpcode:
+			getNumber(pc);
+			getNumber(pc);
+			getNumber(pc);
+			break;
 	}
 
 	return pc - offset;
 }
 
+
+//
+//	OtByteCodeClass::isPush
+//
+
+bool OtByteCodeClass::isPush(size_t pc, OtObject &object) {
+	if (getOpcode(pc) == pushOpcode) {
+		object = constants[getNumber(pc)];
+		return true;
+
+	} else {
+		return false;
+	}
+}
 
 //
 //
@@ -330,6 +362,15 @@ bool OtByteCodeClass::isPushMemberReference(size_t pc, OtMemberReference& refere
 
 
 //
+//	OtByteCodeClass::isSwap
+//
+
+bool OtByteCodeClass::isSwap(size_t pc) {
+	return getOpcode(pc) == swapOpcode;
+}
+
+
+//
 //	OtByteCodeClass::isMember
 //
 
@@ -351,6 +392,20 @@ bool OtByteCodeClass::isMember(size_t pc, size_t &member) {
 bool OtByteCodeClass::isMethodDeref(size_t pc) {
 	if (getOpcode(pc) == methodOpcode) {
 		return  getNumber(pc) == OtSelector::create("__deref__");
+
+	} else {
+		return false;
+	}
+}
+
+
+//
+//	OtByteCodeClass::isMethodAssign
+//
+
+bool OtByteCodeClass::isMethodAssign(size_t pc) {
+	if (getOpcode(pc) == methodOpcode) {
+		return  getNumber(pc) == OtSelector::create("__assign__");
 
 	} else {
 		return false;

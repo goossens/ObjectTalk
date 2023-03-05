@@ -195,19 +195,19 @@
               To prove that I'm a hypocrite, the one exception to the rule is
               shared pointers. The version included in the standard library is
               thread safe and therefore slow. Given that ObjectTalk always runs
-              in a single thread, a replacement shared library is include that
-              is nut thread safe but makes ObjectTalk twice as fast. Off course
-              I argue that I would have used the standard library is it had only
-              included a fast non-thread safe smart pointer.
+              in a single thread, a replacement shared pointer class is included
+              that is not thread safe but makes ObjectTalk twice as fast. Off
+              course I argue that I would have used the standard library if it
+              only had included a fast non-thread safe smart pointer.
             </p>
             <p><strong>ObjectTalk Language Engine</strong></p>
             <p>
               The language engine uses some simple components to implement
               ObjectTalk. A lexical scanner turns source code into tokens, the
               compiler translates these tokens to bytecode for a
-              platform-independent imaginary CPU, an inline optimizer turns
-              simple code sequence into super instructions and the stack-based
-              virtual machine executes this bytecode.
+              platform-independent imaginary CPU, an optimizer turns simple code
+              sequence into super instructions and the stack-based virtual
+              machine executes this bytecode.
             </p>
             <p>
               <img

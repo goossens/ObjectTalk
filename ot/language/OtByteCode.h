@@ -203,7 +203,7 @@ private:
 			OtExcept("You have more than 127 local variables [%ld]. REALLY!", index);
 		}
 
-		bytecode.emplace_back(index);
+		bytecode.emplace_back((uint8_t) index);
 	}
 
 	OtSource source;

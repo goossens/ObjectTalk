@@ -29,16 +29,16 @@ cross platform solutions and sacrifice a few CPU cycles (I have more of those th
 
 To prove that I'm a hypocrite, the one exception to the rule is shared pointers. The version
 included in the standard library is thread safe and therefore slow. Given that ObjectTalk always
-runs in a single thread, a replacement shared library is include that is nut thread safe but
+runs in a single thread, a replacement shared pointer class is included that is not thread safe but
 makes ObjectTalk twice as fast. Off course I argue that I would have used the standard library
-is it had only included a fast non-thread safe smart pointer.
+if it only had included a fast non-thread safe smart pointer.
 
 **ObjectTalk Language Engine**
 
 The language engine uses some simple components to implement ObjectTalk. A lexical scanner turns
 source code into tokens, the compiler translates these tokens to bytecode for a platform-independent
-imaginary CPU, an inline optimizer turns simple code sequence into super instructions and
-the stack-based virtual machine executes this bytecode.
+imaginary CPU, an  optimizer turns simple code sequence into super instructions and the stack-based
+virtual machine executes this bytecode.
 
 ![Language Architecture](img/language-architecture.png)
 
@@ -48,7 +48,8 @@ Given that ObjectTalk’s virtual machine only understands a stack of opaque obj
 member functions and basic branching, even the most fundamental operations like additions,
 string manipulation and I/O must be implemented in ObjectTalk classes. The core classes subsystem
 provides fundamental classes for primitives (booleans, integers, reals, strings and functions),
-collections (arrays, dictionaries and sets) as well as a set of operating system, filesystem and stream classes.
+collections (arrays, dictionaries and sets) as well as a set of operating system, filesystem and
+stream classes.
 
 **Asynchronous I/O**
 
@@ -58,9 +59,9 @@ This approach however has proven not to be too scaleable and most web servers to
 or have complicated strategies to deal with performance and bottlenecks. The other approach is
 to use a single thread with an event loop that runs as fast as possible and simply responds to
 operating system events whenever they happen. ObjectTalk uses this last approach based on the
-[Libuv](http://docs.libuv.org/) library that offers asynchronous operations as a cross-platform solutions.
-Libuv was originally developed for [Node.js](https://nodejs.org/) and is still in use there.
-This means that it is well tested and maintained.
+[Libuv](http://docs.libuv.org/) library that offers asynchronous operations as a cross-platform
+solutions. Libuv was originally developed for [Node.js](https://nodejs.org/) and is still in use
+there. This means that it is well tested and maintained.
 
 **HTTP Server**
 

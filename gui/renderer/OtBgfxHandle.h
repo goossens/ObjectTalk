@@ -53,7 +53,7 @@ private:
 		Handle& operator=(const Handle&) = delete; // no copy assignment
 		Handle(Handle&&) = default;
 		Handle& operator=(Handle&&) = default;
-		~Handle() { bgfx::destroy(handle); }
+		~Handle() { clear(); }
 
 		// clear the handle
 		void clear() {

@@ -25,7 +25,10 @@ jobs:
       run: cd release && make test
 
     - name: Package
-      run: cd release/bin && tar cvfz ../../ubuntu.tgz ot
+      run: |
+        cd release/bin
+        ls -l ot
+        tar cvfz ../../ubuntu.tgz ot
 
     - name: Release
       uses: "svenstaro/upload-release-action@v2"

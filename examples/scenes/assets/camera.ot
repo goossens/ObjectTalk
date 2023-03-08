@@ -1,0 +1,9 @@
+var scene = import("scene");
+
+class camera : scene.Entity {
+	function create(this) {
+	}
+
+	function update(this) {
+	}
+};

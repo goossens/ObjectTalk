@@ -44,7 +44,7 @@
 //
 
 OtSceneEditor::OtSceneEditor() {
-	scene = std::make_shared<OtScene2>();
+	scene = std::make_shared<OtScene>();
 	renderer = std::make_shared<OtSceneRenderer>();
 }
 
@@ -115,7 +115,7 @@ void OtSceneEditor::render() {
 //	OtSceneEditor::setSceneCamera
 //
 
-static void makeCameraList(std::shared_ptr<OtScene2> scene, OtEntity entity, OtEntity* list, int& count) {
+static void makeCameraList(std::shared_ptr<OtScene> scene, OtEntity entity, OtEntity* list, int& count) {
 	if (count < 9) {
 		if (scene->hasComponent<OtCameraComponent>(entity) && scene->hasComponent<OtTransformComponent>(entity)) {
 			list[count++] = entity;

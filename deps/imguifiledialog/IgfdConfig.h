@@ -21,3 +21,6 @@
 #define OverWriteDialogTitleString "Confirm overwrite..."
 #define OverWriteDialogMessageString "The file already exists!\nWould you like to overwrite it?\n\n"
 #define OverWriteDialogConfirmButtonString "OK"
+
+#define okCancelButtonAlignement 1.0f
+#define invertOkAndCancelButtons true

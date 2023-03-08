@@ -12,6 +12,8 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
+#include "OtException.h"
+
 #include "OtGeometryComponent.h"
 #include "OtGeometryFactory.h"
 

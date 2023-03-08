@@ -18,7 +18,7 @@
 #include "glm/glm.hpp"
 #include "ImGuizmo.h"
 
-#include "OtScene2.h"
+#include "OtScene.h"
 #include "OtSceneEditorCamera.h"
 #include "OtSceneRenderer.h"
 
@@ -98,7 +98,7 @@ private:
 	void handleShortcuts();
 
 	// the scene being edited
-	std::shared_ptr<OtScene2> scene;
+	std::shared_ptr<OtScene> scene;
 	std::shared_ptr<OtSceneRenderer> renderer;
 	OtEntity selectedEntity = OtEntityNull;
 

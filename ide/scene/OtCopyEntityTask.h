@@ -14,7 +14,7 @@
 
 #include "OtEditorTask.h"
 #include "OtEntity.h"
-#include "OtScene2.h"
+#include "OtScene.h"
 
 
 //
@@ -24,7 +24,7 @@
 class OtCopyEntityTask : public OtEditorTask {
 public:
 	// constructor
-	OtCopyEntityTask(std::shared_ptr<OtScene2> s, OtEntity e, std::string& c) : scene(s), clipboard(c) {
+	OtCopyEntityTask(std::shared_ptr<OtScene> s, OtEntity e, std::string& c) : scene(s), clipboard(c) {
 		entityUuid = scene->getUuidFromEntity(e);
 	}
 
@@ -45,7 +45,7 @@ public:
 
 private:
 	// properties
-	std::shared_ptr<OtScene2> scene;
+	std::shared_ptr<OtScene> scene;
 	uint32_t entityUuid;
 
 	std::string& clipboard;

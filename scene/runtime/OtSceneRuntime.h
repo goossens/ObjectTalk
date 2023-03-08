@@ -16,7 +16,7 @@
 #include <memory>
 #include <thread>
 
-#include "OtScene2.h"
+#include "OtScene.h"
 #include "OtSceneRenderer.h"
 
 
@@ -26,6 +26,9 @@
 
 class OtSceneRuntime {
 public:
+	// destructor
+	~OtSceneRuntime();
+
 	// setup the scene runtime
 	void setup(std::filesystem::path path);
 
@@ -47,11 +50,12 @@ private:
 	bool loaded = false;
 
 	// the scene we are running
-	std::shared_ptr<OtScene2> scene;
+	std::shared_ptr<OtScene> scene;
 	std::filesystem::path scenePath;
 
 	// active camera
 	OtEntity activeCamera = OtEntityNull;
+	bool cameraSelected = false;
 
 	// our scene renderer
 	std::shared_ptr<OtSceneRenderer> renderer;

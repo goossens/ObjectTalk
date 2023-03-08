@@ -21,9 +21,10 @@
 #include "OtOptimizer.h"
 
 #include "OtHttp.h"
+#include "OtInput.h"
+#include "OtMath.h"
 
 #if defined(INCLUDE_GUI)
-#include "OtGui.h"
 #include "OtWorkspace.h"
 #include "OtSceneApp.h"
 #endif
@@ -73,12 +74,12 @@ int main(int argc, char* argv[]) {
 		// initialize libuv
 		OtLibUv::init(argc, argv);
 
-		// register HTTP module
+		// register modules
 		OtHttpClass::registerModule();
 
 #if defined(INCLUDE_GUI)
-		// register GUI module (if available on this platform)
-		OtGuiClass::registerModule();
+		OtInputRegister();
+		OtMathRegister();
 #endif
 
 		// where any files specified?

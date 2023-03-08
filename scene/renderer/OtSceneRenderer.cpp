@@ -16,7 +16,7 @@
 //	OtSceneRenderer::render
 //
 
-int OtSceneRenderer::render(std::shared_ptr<OtScene2> scene, OtEntity selected) {
+int OtSceneRenderer::render(std::shared_ptr<OtScene> scene, OtEntity selected) {
 	// render all passes
 	renderGeometryPass(scene);
 	renderBackgroundPass(scene);

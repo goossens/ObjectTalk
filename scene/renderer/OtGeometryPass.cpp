@@ -18,7 +18,7 @@
 //	OtSceneRenderer::renderGeometryPass
 //
 
-void OtSceneRenderer::renderGeometryPass(std::shared_ptr<OtScene2> scene) {
+void OtSceneRenderer::renderGeometryPass(std::shared_ptr<OtScene> scene) {
 	// update gbuffer
 	gbuffer.update(width, height);
 
@@ -43,7 +43,7 @@ void OtSceneRenderer::renderGeometryPass(std::shared_ptr<OtScene2> scene) {
 //	OtSceneRenderer::renderGeometry
 //
 
-void OtSceneRenderer::renderGeometry(OtPass& pass, std::shared_ptr<OtScene2> scene, OtEntity entity) {
+void OtSceneRenderer::renderGeometry(OtPass& pass, std::shared_ptr<OtScene> scene, OtEntity entity) {
 	// submit the material information
 	submitMaterialUniforms(scene, entity);
 

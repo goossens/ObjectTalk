@@ -17,6 +17,7 @@
 #include "OtFormat.h"
 
 #include "OtFramework.h"
+#include "OtMessageBus.h"
 #include "OtUi.h"
 
 #include "OtObjectTalkEditor.h"
@@ -29,7 +30,48 @@
 //
 
 void OtWorkspaceClass::run() {
+	// set the current directory to examples if we are in development mode
+	auto exec = getExecutablePath();
+	auto root = exec.parent_path().parent_path();
+	auto examples = root.parent_path() / "examples";
+
+	if (std::filesystem::is_directory(examples)) {
+		std::filesystem::current_path(examples);
+	}
+
+	// listen for message bus events
+	OtMessageBus::instance()->listen([this](const std::string& message) {
+		onMessage(message);
+	});
+
+	// run the IDE
 	OtFrameworkClass::instance()->run(this);
+}
+
+
+//
+//	OtWorkspaceClass::onMessage
+//
+
+void OtWorkspaceClass::onMessage(const std::string& message) {
+	// split the command
+	auto delimiter = message.find(" ");
+
+	if (delimiter != std::string::npos) {
+		auto command = message.substr(0, delimiter);
+		auto file = message.substr(delimiter + 1);
+
+		// process each command
+		if (command == "open") {
+			openFile(std::filesystem::path(file));
+		}
+
+	} else {
+		// process each command
+		if (message == "new") {
+			newFile();
+		}
+	}
 }
 
 
@@ -206,7 +248,7 @@ void OtWorkspaceClass::openFile() {
 		"workspace-open",
 		"Select File to Open...",
 		".*",
-		getCWD().string(),
+		std::filesystem::current_path().string(),
 		1,
 		nullptr,
 		ImGuiFileDialogFlags_Modal |
@@ -249,9 +291,6 @@ void OtWorkspaceClass::openFile(const std::filesystem::path& path) {
 		// editor already exists, just active it
 		activateEditor(editor);
 	}
-
-	// save the file's path as the current working directory
-	cwd = path.parent_path();
 }
 
 
@@ -269,20 +308,11 @@ void OtWorkspaceClass::saveFile() {
 //
 
 void OtWorkspaceClass::saveAsFile() {
-	std::filesystem::path path;
-
-	if (activeEditor->fileExists()) {
-		path = std::filesystem::path(activeEditor->getFileName()).parent_path();
-
-	} else {
-		path = getCWD();
-	}
-
 	ImGuiFileDialog::Instance()->OpenDialog(
 		"workspace-saveas",
 		"Save File as...",
 		activeEditor->getFileExtension().c_str(),
-		path.string(),
+		std::filesystem::current_path().string(),
 		activeEditor->getShortName(),
 		1,
 		nullptr,
@@ -537,12 +567,14 @@ void OtWorkspaceClass::renderFileOpen() {
 	if (ImGuiFileDialog::Instance()->Display("workspace-open", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
 		// open selected file if required
 		if (ImGuiFileDialog::Instance()->IsOk()) {
-			std::map<std::string, std::string> selected = ImGuiFileDialog::Instance()->GetSelection();
-			openFile(selected.begin()->second);
+			auto path = ImGuiFileDialog::Instance()->GetFilePathName();
+			openFile(path);
 
 			if (state != confirmErrorState) {
 				state = editState;
 			}
+
+			std::filesystem::current_path(std::filesystem::path(path).parent_path());
 
 		} else {
 			state = editors.size() ? editState : splashState;
@@ -566,9 +598,13 @@ void OtWorkspaceClass::renderSaveAs() {
 	if (ImGuiFileDialog::Instance()->Display("workspace-saveas", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
 		// open selected file if required
 		if (ImGuiFileDialog::Instance()->IsOk()) {
-			activeEditor->setFilePath(ImGuiFileDialog::Instance()->GetFilePathName());
+			auto path = ImGuiFileDialog::Instance()->GetFilePathName();
+			activeEditor->setFilePath(path);
+
 			activeEditor->save();
 			state = editState;
+
+			std::filesystem::current_path(std::filesystem::path(path).parent_path());
 
 		} else {
 			state = editors.size() ? editState : splashState;
@@ -736,8 +772,8 @@ std::filesystem::path OtWorkspaceClass::getDefaultDirectory() {
 	auto root = exec.parent_path().parent_path();
 	auto examples = root.parent_path() / "examples";
 
-	// start with examples folder if we are
 	if (std::filesystem::is_directory(examples)) {
+		// start with examples folder if we are
 		return examples;
 
 	} else {
@@ -749,20 +785,6 @@ std::filesystem::path OtWorkspaceClass::getDefaultDirectory() {
 		std::string home(buffer, length);
 		return std::filesystem::canonical(std::string(buffer, length));
 	}
-}
-
-
-//
-//	OtWorkspaceClass::getCWD
-//
-
-std::filesystem::path OtWorkspaceClass::getCWD() {
-	// return our working directory
-	if (cwd.empty()) {
-		cwd = getDefaultDirectory();
-	}
-
-	return cwd;
 }
 
 

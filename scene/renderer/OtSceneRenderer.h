@@ -25,7 +25,7 @@
 #include "OtUniformVec4.h"
 
 #include "OtEntity.h"
-#include "OtScene2.h"
+#include "OtScene.h"
 
 
 //
@@ -42,30 +42,30 @@ public:
 	void setGridScale(float gs) { gridScale = gs; }
 
 	// render the specified scene
-	int render(std::shared_ptr<OtScene2> scene, OtEntity selected=OtEntityNull);
+	int render(std::shared_ptr<OtScene> scene, OtEntity selected=OtEntityNull);
 
 private:
 	// render passes
-	// void renderShadowPass(std::shared_ptr<OtScene2> scene);
-	void renderGeometryPass(std::shared_ptr<OtScene2> scene);
-	void renderBackgroundPass(std::shared_ptr<OtScene2> scene);
-	void renderLightingPass(std::shared_ptr<OtScene2> scene);
-	void renderTransparentPass(std::shared_ptr<OtScene2> scene);
+	// void renderShadowPass(std::shared_ptr<OtScene> scene);
+	void renderGeometryPass(std::shared_ptr<OtScene> scene);
+	void renderBackgroundPass(std::shared_ptr<OtScene> scene);
+	void renderLightingPass(std::shared_ptr<OtScene> scene);
+	void renderTransparentPass(std::shared_ptr<OtScene> scene);
 	void renderGridPass();
-	void renderHighlightPass(std::shared_ptr<OtScene2> scene, OtEntity entity);
-	void renderPostProcessingPass(std::shared_ptr<OtScene2> scene);
+	void renderHighlightPass(std::shared_ptr<OtScene> scene, OtEntity entity);
+	void renderPostProcessingPass(std::shared_ptr<OtScene> scene);
 
 	// render entitities
 	void renderSkyBox(OtPass& pass, OtSkyBoxComponent& component);
 	void renderSkySphere(OtPass& pass, OtSkySphereComponent& component);
-	void renderGeometry(OtPass& pass, std::shared_ptr<OtScene2> scene, OtEntity entity);
-	void renderTransparentGeometry(OtPass& pass, std::shared_ptr<OtScene2> scene, OtEntity entity);
-	void renderHighlight(OtPass& pass, std::shared_ptr<OtScene2> scene, OtEntity entity);
+	void renderGeometry(OtPass& pass, std::shared_ptr<OtScene> scene, OtEntity entity);
+	void renderTransparentGeometry(OtPass& pass, std::shared_ptr<OtScene> scene, OtEntity entity);
+	void renderHighlight(OtPass& pass, std::shared_ptr<OtScene> scene, OtEntity entity);
 	void renderBloom(float bloomIntensity);
 
 	// rendering tools
-	void submitMaterialUniforms(std::shared_ptr<OtScene2> scene, OtEntity entity);
-	void submitLightUniforms(std::shared_ptr<OtScene2> scene);
+	void submitMaterialUniforms(std::shared_ptr<OtScene> scene, OtEntity entity);
+	void submitLightUniforms(std::shared_ptr<OtScene> scene);
 
 	// camera information
 	glm::vec3 cameraPosition;
@@ -127,7 +127,7 @@ private:
 
 	// shaders
 	OtShader geometryShader{"OtGeometryVS", "OtGeometryFS"};
-	OtShader skyBoxShader{"OtSkybox2VS", "OtSkybox2FS"};
+	OtShader skyBoxShader{"OtSkyboxVS", "OtSkyboxFS"};
 	OtShader skySphereShader{"OtSkySphereVS", "OtSkySphereFS"};
 	OtShader lightingShader{"OtLightingVS", "OtLightingFS"};
 	OtShader transparentShader{"OtTransparentVS", "OtTransparentFS"};

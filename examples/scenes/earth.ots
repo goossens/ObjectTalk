@@ -27,9 +27,9 @@
 			},
 			{
 				"component": "Camera",
-				"mainCamera": true,
 				"far": 1000.0,
 				"fov": 60.0,
+				"mainCamera": true,
 				"near": 0.10000000149011612
 			},
 			{
@@ -69,6 +69,7 @@
 				"component": "Camera",
 				"far": 1000.0,
 				"fov": 60.0,
+				"mainCamera": false,
 				"near": 0.10000000149011612
 			},
 			{
@@ -317,6 +318,10 @@
 						"normalTexture": "",
 						"roughness": 0.5,
 						"roughnessTexture": ""
+					},
+					{
+						"component": "Script",
+						"path": "assets/camera.ot"
 					}
 				]
 			}

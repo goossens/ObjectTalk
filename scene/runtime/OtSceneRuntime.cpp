@@ -17,6 +17,17 @@
 
 
 //
+//	OtSceneRuntime::~OtSceneRuntime
+//
+
+OtSceneRuntime::~OtSceneRuntime() {
+	if (loader.joinable()) {
+		loader.join();
+	}
+}
+
+
+//
 //	OtSceneRuntime::setup
 //
 
@@ -33,35 +44,11 @@ void OtSceneRuntime::setup(std::filesystem::path path) {
 
 void OtSceneRuntime::load() {
 	// create the scene and a renderer
-	scene = std::make_shared<OtScene2>();
+	scene = std::make_shared<OtScene>();
 	renderer = std::make_shared<OtSceneRenderer>();
 
 	// load the scene
 	scene->load(scenePath);
-
-	// select the camera
-	OtEntity firstCamera = OtEntityNull;
-	OtEntity mainCamera = OtEntityNull;
-
-	for (auto [entity, component] : scene->view<OtCameraComponent>().each()) {
-		if (!scene->isValidEntity(firstCamera)) {
-			firstCamera = entity;
-		}
-
-		if (!scene->isValidEntity(mainCamera) && component.mainCamera) {
-			mainCamera = entity;
-		}
-	}
-
-	if (scene->isValidEntity(mainCamera)) {
-		activeCamera = mainCamera;
-
-	} else if (scene->isValidEntity(firstCamera)) {
-		activeCamera = firstCamera;
-
-	} else {
-		OtExcept("No camera found in scene at [%s]", scenePath.c_str());
-	}
 
 	// we are now fully loaded
 	loaded = true;
@@ -73,6 +60,34 @@ void OtSceneRuntime::load() {
 //
 
 int OtSceneRuntime::render(int width, int height) {
+	// select default camera if this is the first time through
+	if (!cameraSelected) {
+		OtEntity firstCamera = OtEntityNull;
+		OtEntity mainCamera = OtEntityNull;
+
+		for (auto [entity, component] : scene->view<OtCameraComponent>().each()) {
+			if (!scene->isValidEntity(firstCamera)) {
+				firstCamera = entity;
+			}
+
+			if (!scene->isValidEntity(mainCamera) && component.mainCamera) {
+				mainCamera = entity;
+			}
+		}
+
+		if (scene->isValidEntity(mainCamera)) {
+			activeCamera = mainCamera;
+
+		} else if (scene->isValidEntity(firstCamera)) {
+			activeCamera = firstCamera;
+
+		} else {
+			OtExcept("No camera found in scene at [%s]", scenePath.c_str());
+		}
+
+		cameraSelected = true;
+	}
+
 	// get camera information
 	auto camera = scene->getComponent<OtCameraComponent>(activeCamera);
 	glm::mat4 cameraProjectionMatrix = camera.getProjectionMatrix((float) width / (float) height);

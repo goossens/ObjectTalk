@@ -16,7 +16,7 @@
 //	OtSceneRenderer::renderPostProcessingPass
 //
 
-void OtSceneRenderer::renderPostProcessingPass(std::shared_ptr<OtScene2> scene) {
+void OtSceneRenderer::renderPostProcessingPass(std::shared_ptr<OtScene> scene) {
 	// get post-processing information
 	float bloomIntensity = 0.0f;
 	float exposure = 1.0f;

@@ -21,12 +21,14 @@ add_library(scene STATIC ${SCENE_INCLUDES} ${SCENE_SOURCES})
 target_include_directories(scene PUBLIC ${SCENE_INCLUDE_DIRS})
 
 add_dependencies(scene
-	gui
+	gfx
+	input
 	assimp
 	tinyobjloader)
 
 target_link_libraries(scene PUBLIC
-	gui
+	gfx
+	input
 	assimp
 	tinyobjloader)
 

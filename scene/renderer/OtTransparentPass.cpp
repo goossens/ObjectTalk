@@ -18,7 +18,7 @@
 //	OtSceneRenderer::renderTransparentPass
 //
 
-void OtSceneRenderer::renderTransparentPass(std::shared_ptr<OtScene2> scene) {
+void OtSceneRenderer::renderTransparentPass(std::shared_ptr<OtScene> scene) {
 	// setup pass
 	OtPass pass;
 	pass.reserveRenderingSlot();
@@ -45,7 +45,7 @@ void OtSceneRenderer::renderTransparentPass(std::shared_ptr<OtScene2> scene) {
 //	OtSceneRenderer::renderTransparentGeometry
 //
 
-void OtSceneRenderer::renderTransparentGeometry(OtPass& pass, std::shared_ptr<OtScene2> scene, OtEntity entity) {
+void OtSceneRenderer::renderTransparentGeometry(OtPass& pass, std::shared_ptr<OtScene> scene, OtEntity entity) {
 	// submit the material and light uniforms
 	submitMaterialUniforms(scene, entity);
 	submitLightUniforms(scene);

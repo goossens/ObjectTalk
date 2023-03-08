@@ -36,7 +36,7 @@ void OtSceneApp::run(std::filesystem::path path) {
 //
 
 void OtSceneApp::onSetup() {
-	// pass the scene runtime
+	// pass to runtime
 	setup(scenePath);
 }
 

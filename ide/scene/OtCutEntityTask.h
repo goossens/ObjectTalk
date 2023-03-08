@@ -14,7 +14,7 @@
 
 #include "OtEntity.h"
 #include "OtDeleteEntityTask.h"
-#include "OtScene2.h"
+#include "OtScene.h"
 
 
 //
@@ -24,7 +24,7 @@
 class OtCutEntityTask : public OtDeleteEntityTask {
 public:
 	// constructor
-	OtCutEntityTask(std::shared_ptr<OtScene2> s, OtEntity e, std::string& c) : OtDeleteEntityTask(s, e), clipboard(c) {}
+	OtCutEntityTask(std::shared_ptr<OtScene> s, OtEntity e, std::string& c) : OtDeleteEntityTask(s, e), clipboard(c) {}
 
 	// get task name
 	std::string name() { return "cut entity"; }

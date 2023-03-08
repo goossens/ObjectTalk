@@ -14,6 +14,7 @@
 
 #include <filesystem>
 #include <memory>
+#include <string>
 
 #include "OtSingleton.h"
 
@@ -36,6 +37,9 @@ class OtWorkspaceClass : public OtFrameworkApp, public OtSingleton<OtWorkspaceCl
 public:
 	// run the workspace
 	void run();
+
+	// handle message bus commands
+	void onMessage(const std::string& message);
 
 	// create a new file
 	void newFile();
@@ -80,10 +84,6 @@ private:
 	// get executable path and default path
 	std::filesystem::path getExecutablePath();
 	std::filesystem::path getDefaultDirectory();
-
-	// get current working directory
-	std::filesystem::path getCWD();
-	std::filesystem::path cwd;
 
 	// render parts of workspace
 	void renderSplashScreen();

@@ -26,10 +26,10 @@
 
 
 //
-//	OtWorkspaceClass::run
+//	OtWorkspace::run
 //
 
-void OtWorkspaceClass::run() {
+void OtWorkspace::run() {
 	// set the current directory to examples if we are in development mode
 	auto exec = getExecutablePath();
 	auto root = exec.parent_path().parent_path();
@@ -50,10 +50,10 @@ void OtWorkspaceClass::run() {
 
 
 //
-//	OtWorkspaceClass::onMessage
+//	OtWorkspace::onMessage
 //
 
-void OtWorkspaceClass::onMessage(const std::string& message) {
+void OtWorkspace::onMessage(const std::string& message) {
 	// split the command
 	auto delimiter = message.find(" ");
 
@@ -70,16 +70,31 @@ void OtWorkspaceClass::onMessage(const std::string& message) {
 		// process each command
 		if (message == "new") {
 			newFile();
+
+		} else if (message == "open") {
+			openFile();
+
+		} else if (message == "save") {
+			saveFile();
+
+		} else if (message == "saveas") {
+			saveAsFile();
+
+		} else if (message == "run") {
+			runFile();
+
+		} else if (message == "close") {
+			closeFile();
 		}
 	}
 }
 
 
 //
-//	OtWorkspaceClass::onRender
+//	OtWorkspace::onRender
 //
 
-void OtWorkspaceClass::onRender()
+void OtWorkspace::onRender()
 {
 	// show the "control bar" and the console if required
 	if (consoleFullScreen) {
@@ -115,43 +130,15 @@ void OtWorkspaceClass::onRender()
 		} else if (state == confirmErrorState) {
 			renderConfirmError();
 		}
-
-		// handle shortcuts based on state
-		if (ImGui::IsKeyDown(ImGuiMod_Shortcut)) {
-			if (ImGui::IsKeyPressed(ImGuiKey_N) && (state == splashState || state == editState)) {
-				newFile();
-
-			} else if (ImGui::IsKeyPressed(ImGuiKey_O) && (state == splashState || state == editState)) {
-				openFile();
-
-			} else if (ImGui::IsKeyPressed(ImGuiKey_S) && (state == editState)) {
-				if (activeEditor->isDirty()) {
-					if (activeEditor->fileExists()) {
-						saveFile();
-
-					} else {
-						saveAsFile();
-					}
-				}
-
-			} else if (ImGui::IsKeyPressed(ImGuiKey_R) && (state == editState)) {
-				if (!activeEditor->isDirty() && activeEditor->fileExists()) {
-					runFile();
-				}
-
-			} else if (ImGui::IsKeyPressed(ImGuiKey_W) && (state == editState)) {
-				closeFile();
-			}
-		}
 	}
 }
 
 
 //
-//	OtWorkspaceClass::onTerminate
+//	OtWorkspace::onTerminate
 //
 
-void OtWorkspaceClass::onTerminate() {
+void OtWorkspace::onTerminate() {
 	// clear all resource references in order to release them at the right time
 	editors.clear();
 	activeEditor = nullptr;
@@ -161,10 +148,10 @@ void OtWorkspaceClass::onTerminate() {
 
 
 //
-//	OtWorkspaceClass::onCanQuit
+//	OtWorkspace::onCanQuit
 //
 
-bool OtWorkspaceClass::onCanQuit() {
+bool OtWorkspace::onCanQuit() {
 	// are we currently running something?
 	if (subprocess.isRunning()) {
 		// then we can't quit
@@ -191,19 +178,19 @@ bool OtWorkspaceClass::onCanQuit() {
 
 
 //
-//	OtWorkspaceClass::newFile
+//	OtWorkspace::newFile
 //
 
-void OtWorkspaceClass::newFile() {
+void OtWorkspace::newFile() {
 	state = newFileState;
 }
 
 
 //
-//	OtWorkspaceClass::getUntitledName
+//	OtWorkspace::getUntitledName
 //
 
-std::string OtWorkspaceClass::getUntitledName() {
+std::string OtWorkspace::getUntitledName() {
 	static int seqno = 1;
 	std::string name;
 
@@ -220,30 +207,30 @@ std::string OtWorkspaceClass::getUntitledName() {
 
 
 //
-//	OtWorkspaceClass::newScript
+//	OtWorkspace::newScript
 //
 
-void OtWorkspaceClass::newScript() {
+void OtWorkspace::newScript() {
 	editors.push_back(OtObjectTalkEditor::create(getUntitledName()));
 	state = editState;
 }
 
 
 //
-//	OtWorkspaceClass::newScene
+//	OtWorkspace::newScene
 //
 
-void OtWorkspaceClass::newScene() {
+void OtWorkspace::newScene() {
 	editors.push_back(OtSceneEditor::create(getUntitledName()));
 	state = editState;
 }
 
 
 //
-//	OtWorkspaceClass::openFile
+//	OtWorkspace::openFile
 //
 
-void OtWorkspaceClass::openFile() {
+void OtWorkspace::openFile() {
 	ImGuiFileDialog::Instance()->OpenDialog(
 		"workspace-open",
 		"Select File to Open...",
@@ -260,10 +247,10 @@ void OtWorkspaceClass::openFile() {
 
 
 //
-//	OtWorkspaceClass::openFile
+//	OtWorkspace::openFile
 //
 
-void OtWorkspaceClass::openFile(const std::filesystem::path& path) {
+void OtWorkspace::openFile(const std::filesystem::path& path) {
 	std::shared_ptr<OtEditor> editor;
 
 	// don't reopen if it is already open
@@ -295,19 +282,19 @@ void OtWorkspaceClass::openFile(const std::filesystem::path& path) {
 
 
 //
-//	OtWorkspaceClass::saveFile
+//	OtWorkspace::saveFile
 //
 
-void OtWorkspaceClass::saveFile() {
+void OtWorkspace::saveFile() {
 	activeEditor->save();
 }
 
 
 //
-//	OtWorkspaceClass::saveAsFile
+//	OtWorkspace::saveAsFile
 //
 
-void OtWorkspaceClass::saveAsFile() {
+void OtWorkspace::saveAsFile() {
 	ImGuiFileDialog::Instance()->OpenDialog(
 		"workspace-saveas",
 		"Save File as...",
@@ -325,10 +312,10 @@ void OtWorkspaceClass::saveAsFile() {
 
 
 //
-//	OtWorkspaceClass::closeFile
+//	OtWorkspace::closeFile
 //
 
-void OtWorkspaceClass::closeFile() {
+void OtWorkspace::closeFile() {
 	// see if editor is dirty
 	if (activeEditor->isDirty()) {
 		state = confirmCloseState;
@@ -340,10 +327,10 @@ void OtWorkspaceClass::closeFile() {
 
 
 //
-//	OtWorkspaceClass::runFile
+//	OtWorkspace::runFile
 //
 
-void OtWorkspaceClass::runFile() {
+void OtWorkspace::runFile() {
 	// clear the console
 	console.clear();
 
@@ -379,10 +366,10 @@ void OtWorkspaceClass::runFile() {
 
 
 //
-//	OtWorkspaceClass::deleteEditor
+//	OtWorkspace::deleteEditor
 //
 
-void OtWorkspaceClass::deleteEditor(std::shared_ptr<OtEditor> editor) {
+void OtWorkspace::deleteEditor(std::shared_ptr<OtEditor> editor) {
 	// remove specified editor from list
 	editors.erase(std::remove_if(editors.begin(), editors.end(), [this] (std::shared_ptr<OtEditor> candidate) {
 		return candidate == activeEditor;
@@ -395,10 +382,10 @@ void OtWorkspaceClass::deleteEditor(std::shared_ptr<OtEditor> editor) {
 
 
 //
-//	OtWorkspaceClass::findEditor
+//	OtWorkspace::findEditor
 //
 
-std::shared_ptr<OtEditor> OtWorkspaceClass::findEditor(const std::filesystem::path& path) {
+std::shared_ptr<OtEditor> OtWorkspace::findEditor(const std::filesystem::path& path) {
 	for (auto& editor : editors) {
 		if (editor->getFileName() == path.string() || editor->getShortName() == path.string()) {
 			return editor;
@@ -410,19 +397,19 @@ std::shared_ptr<OtEditor> OtWorkspaceClass::findEditor(const std::filesystem::pa
 
 
 //
-//	OtWorkspaceClass::activateEditor
+//	OtWorkspace::activateEditor
 //
 
-void OtWorkspaceClass::activateEditor(std::shared_ptr<OtEditor> editor) {
+void OtWorkspace::activateEditor(std::shared_ptr<OtEditor> editor) {
 	activateEditorTab = editor;
 }
 
 
 //
-//	OtWorkspaceClass::renderSplashScreen
+//	OtWorkspace::renderSplashScreen
 //
 
-void OtWorkspaceClass::renderSplashScreen() {
+void OtWorkspace::renderSplashScreen() {
 	// load logo (if required)
 	if (!logo) {
 		logo = std::make_shared<OtLogo>();
@@ -457,14 +444,24 @@ void OtWorkspaceClass::renderSplashScreen() {
 	}
 
 	ImGui::End();
+
+	// handle shortcuts
+	if (ImGui::IsKeyDown(ImGuiMod_Shortcut)) {
+		if (ImGui::IsKeyPressed(ImGuiKey_N)) {
+			newFile();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_O)) {
+			openFile();
+		}
+	}
 }
 
 
 //
-//	OtWorkspaceClass::renderEditors
+//	OtWorkspace::renderEditors
 //
 
-void OtWorkspaceClass::renderEditors() {
+void OtWorkspace::renderEditors() {
 	// create workspace window
 	ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
 	ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
@@ -517,10 +514,10 @@ void OtWorkspaceClass::renderEditors() {
 
 
 //
-//	OtWorkspaceClass::renderNewFileType
+//	OtWorkspace::renderNewFileType
 //
 
-void OtWorkspaceClass::renderNewFileType() {
+void OtWorkspace::renderNewFileType() {
 	ImGui::OpenPopup("New File...");
 	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
 	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5, 0.5));
@@ -556,10 +553,10 @@ void OtWorkspaceClass::renderNewFileType() {
 
 
 //
-//	OtWorkspaceClass::renderFileOpen
+//	OtWorkspace::renderFileOpen
 //
 
-void OtWorkspaceClass::renderFileOpen() {
+void OtWorkspace::renderFileOpen() {
 	// handle file open dialog
 	ImVec2 maxSize = ImGui::GetIO().DisplaySize;
 	ImVec2 minSize = ImVec2(maxSize.x * 0.5, maxSize.y * 0.5);
@@ -587,10 +584,10 @@ void OtWorkspaceClass::renderFileOpen() {
 
 
 //
-//	OtWorkspaceClass::renderSaveAs
+//	OtWorkspace::renderSaveAs
 //
 
-void OtWorkspaceClass::renderSaveAs() {
+void OtWorkspace::renderSaveAs() {
 	// handle saveas dialog
 	ImVec2 maxSize = ImGui::GetIO().DisplaySize;
 	ImVec2 minSize = ImVec2(maxSize.x * 0.5, maxSize.y * 0.5);
@@ -617,10 +614,10 @@ void OtWorkspaceClass::renderSaveAs() {
 
 
 //
-//	OtWorkspaceClass::renderConfirmClose
+//	OtWorkspace::renderConfirmClose
 //
 
-void OtWorkspaceClass::renderConfirmClose() {
+void OtWorkspace::renderConfirmClose() {
 	ImGui::OpenPopup("Delete?");
 	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
 	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5, 0.5));
@@ -648,10 +645,10 @@ void OtWorkspaceClass::renderConfirmClose() {
 
 
 //
-//	OtWorkspaceClass::renderConfirmQuit
+//	OtWorkspace::renderConfirmQuit
 //
 
-void OtWorkspaceClass::renderConfirmQuit() {
+void OtWorkspace::renderConfirmQuit() {
 	ImGui::OpenPopup("Quit Application?");
 	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
 	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5, 0.5));
@@ -680,10 +677,10 @@ void OtWorkspaceClass::renderConfirmQuit() {
 
 
 //
-//	OtWorkspaceClass::renderConfirmError
+//	OtWorkspace::renderConfirmError
 //
 
-void OtWorkspaceClass::renderConfirmError() {
+void OtWorkspace::renderConfirmError() {
 	ImGui::OpenPopup("Error");
 	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
 	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5, 0.5));
@@ -703,10 +700,10 @@ void OtWorkspaceClass::renderConfirmError() {
 
 
 //
-//	OtWorkspaceClass::renderSubProcess
+//	OtWorkspace::renderSubProcess
 //
 
-void OtWorkspaceClass::renderSubProcess() {
+void OtWorkspace::renderSubProcess() {
 	// create console window
 	ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
 	ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
@@ -748,10 +745,10 @@ void OtWorkspaceClass::renderSubProcess() {
 
 
 //
-//	OtWorkspaceClass::getExecutablePath
+//	OtWorkspace::getExecutablePath
 //
 
-std::filesystem::path OtWorkspaceClass::getExecutablePath() {
+std::filesystem::path OtWorkspace::getExecutablePath() {
 	// figure out where we live
 	char buffer[1024];
 	size_t length = 1024;
@@ -763,10 +760,10 @@ std::filesystem::path OtWorkspaceClass::getExecutablePath() {
 
 
 //
-//	OtWorkspaceClass::getDefaultDirectory
+//	OtWorkspace::getDefaultDirectory
 //
 
-std::filesystem::path OtWorkspaceClass::getDefaultDirectory() {
+std::filesystem::path OtWorkspace::getDefaultDirectory() {
 	// see if we are development mode
 	auto exec = getExecutablePath();
 	auto root = exec.parent_path().parent_path();
@@ -785,13 +782,4 @@ std::filesystem::path OtWorkspaceClass::getDefaultDirectory() {
 		std::string home(buffer, length);
 		return std::filesystem::canonical(std::string(buffer, length));
 	}
-}
-
-
-//
-//	OtWorkspaceClass::create
-//
-
-OtWorkspace OtWorkspaceClass::create() {
-	return OtWorkspaceClass::instance();
 }

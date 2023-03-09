@@ -163,27 +163,7 @@ void OtSceneEditor::renderMenu() {
 
 	// create menubar
 	if (ImGui::BeginMenuBar()) {
-		if (ImGui::BeginMenu("File")) {  // shortcuts handled by workspace
-			if (ImGui::MenuItem("New", SHORTCUT "N")) { OtWorkspaceClass::instance()->newFile(); }
-			if (ImGui::MenuItem("Open...", SHORTCUT "O")) { OtWorkspaceClass::instance()->openFile(); }
-			ImGui::Separator();
-
-			if (fileExists()) {
-				if (ImGui::MenuItem("Save", SHORTCUT "S", nullptr, isDirty())) { OtWorkspaceClass::instance()->saveFile(); }
-				if (ImGui::MenuItem("Save As...")) { OtWorkspaceClass::instance()->saveAsFile(); }
-
-			} else {
-				if (ImGui::MenuItem("Save As...", SHORTCUT "S", nullptr, isDirty())) { OtWorkspaceClass::instance()->saveAsFile(); }
-			}
-
-			ImGui::Separator();
-			if (ImGui::MenuItem("Run", SHORTCUT "R", nullptr, !isDirty() && fileExists())) { OtWorkspaceClass::instance()->runFile(); }
-
-			ImGui::Separator();
-			if (ImGui::MenuItem("Close", SHORTCUT "W")) { OtWorkspaceClass::instance()->closeFile(); }
-
-			ImGui::EndMenu();
-		}
+		renderFileMenu();
 
 		if (ImGui::BeginMenu("Edit")) {
 			if (ImGui::MenuItem("Undo", SHORTCUT "Z", nullptr, taskManager.canUndo())) { taskManager.undo(); }

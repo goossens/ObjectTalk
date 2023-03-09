@@ -51,6 +51,9 @@ public:
 	virtual void error(OtException e) {}
 
 protected:
+	// render a file menu
+	void renderFileMenu();
+
 	// properties
 	std::filesystem::path path;
 };

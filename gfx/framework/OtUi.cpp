@@ -248,7 +248,7 @@ bool OtUiFileSelector(
 	if (!path.empty() && edit) {
 		ImGui::SameLine(0.0f, spacing);
 
-		if (ImGui::Button("E", ImVec2(itemHeight, itemHeight))) {
+		if (ImGui::Button("e", ImVec2(itemHeight, itemHeight))) {
 			edit(path);
 		}
 	}

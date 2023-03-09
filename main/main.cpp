@@ -86,7 +86,8 @@ int main(int argc, char* argv[]) {
 		if (files.size() == 0) {
 			// no, do we start an IDE workspace?
 #if defined(INCLUDE_GUI)
-			OtWorkspaceClass::instance()->run();
+			OtWorkspace workspace;
+			workspace.run();
 
 #else
 			std::cerr << "No files specified" << std::endl << std::endl;
@@ -98,13 +99,13 @@ int main(int argc, char* argv[]) {
 		} else {
 #if defined(INCLUDE_GUI)
 			if (program["--ide"] == true) {
-				auto workspace = OtWorkspaceClass::instance();
+				OtWorkspace workspace;
 
 				for (auto& file : files) {
-					workspace->openFile(file);
+					workspace.openFile(file);
 				}
 
-				workspace->run();
+				workspace.run();
 
 			} else {
 #endif

@@ -16,8 +16,6 @@
 #include <memory>
 #include <string>
 
-#include "OtSingleton.h"
-
 #include "OtFrameworkApp.h"
 #include "OtLogo.h"
 
@@ -27,13 +25,10 @@
 
 
 //
-//	OtWorkspaceClass
+//	OtWorkspace
 //
 
-class OtWorkspaceClass;
-typedef std::shared_ptr<OtWorkspaceClass> OtWorkspace;
-
-class OtWorkspaceClass : public OtFrameworkApp, public OtSingleton<OtWorkspaceClass> {
+class OtWorkspace : public OtFrameworkApp {
 public:
 	// run the workspace
 	void run();
@@ -68,9 +63,6 @@ public:
 
 	// make a specified editor active
 	void activateEditor(std::shared_ptr<OtEditor> editor);
-
-	// create a new workspace object
-	static OtWorkspace create();
 
 private:
 	// framework callbacks

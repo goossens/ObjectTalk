@@ -151,15 +151,20 @@ void OtModuleClass::buildModulePath() {
 //
 
 std::filesystem::path OtModuleClass::checkPath(std::filesystem::path path) {
-	if (std::filesystem::exists(path)) {
+	// see if path points to a regular file
+	if (std::filesystem::exists(path) && std::filesystem::is_regular_file(path)) {
 		return std::filesystem::canonical(path);
 
 	// see if module exists without a path prepended and extension appended?
-	} else if (std::filesystem::exists(path.replace_extension(".ot"))) {
-		return std::filesystem::canonical(path.replace_extension(".ot"));
-
 	} else {
-		return std::filesystem::path();
+		auto pathWithExt = path.replace_extension(".ot");
+
+		if (std::filesystem::exists(pathWithExt) && std::filesystem::is_regular_file(pathWithExt)) {
+			return std::filesystem::canonical(pathWithExt);
+
+		} else {
+			return std::filesystem::path();
+		}
 	}
 }
 
@@ -184,7 +189,7 @@ std::filesystem::path OtModuleClass::getFullPath(std::filesystem::path path) {
 
 	// find module in local path (if still required)
 	if (fullName.empty() && localPath.size()) {
-		for (size_t i = localPath.size() - 1; i >= 0 && fullName.empty(); i++) {
+		for (int i = (int) localPath.size() - 1; i >= 0 && fullName.empty(); i--) {
 			fullName = checkPath(localPath[i] / path);
 		}
 	}

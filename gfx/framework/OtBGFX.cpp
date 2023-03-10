@@ -23,10 +23,10 @@
 
 
 //
-//	OtFrameworkClass::initBGFX
+//	OtFramework::initBGFX
 //
 
-void OtFrameworkClass::initBGFX() {
+void OtFramework::initBGFX() {
 	// initialize bgfx
 	bgfx::Init init;
 
@@ -78,10 +78,10 @@ void OtFrameworkClass::initBGFX() {
 
 
 //
-//	OtFrameworkClass::frameBGFX
+//	OtFramework::frameBGFX
 //
 
-void OtFrameworkClass::frameBGFX() {
+void OtFramework::frameBGFX() {
 	// get time since epoch
 	loopTime = bx::getHPCounter();
 
@@ -125,10 +125,10 @@ void OtFrameworkClass::frameBGFX() {
 
 
 //
-//	OtFrameworkClass::renderProfiler
+//	OtFramework::renderProfiler
 //
 
-void OtFrameworkClass::renderProfiler() {
+void OtFramework::renderProfiler() {
 	const bgfx::Stats* stats = bgfx::getStats();
 	const double toMsCpu = 1000.0 / stats->cpuTimerFreq;
 	const double toMsGpu = 1000.0 / stats->gpuTimerFreq;
@@ -156,29 +156,29 @@ void OtFrameworkClass::renderProfiler() {
 
 
 //
-//	OtFrameworkClass::getTime
+//	OtFramework::getTime
 //
 
-float OtFrameworkClass::getTime() {
+float OtFramework::getTime() {
 	return (double) (loopTime - startTime) / (double) bx::getHPFrequency();
 }
 
 
 //
-//	OtFrameworkClass::renderBGFX
+//	OtFramework::renderBGFX
 //
 
-void OtFrameworkClass::renderBGFX() {
+void OtFramework::renderBGFX() {
 	// render BGFX frame
 	bgfx::frame();
 }
 
 
 //
-//	OtFrameworkClass::endBGFX
+//	OtFramework::endBGFX
 //
 
-void OtFrameworkClass::endBGFX() {
+void OtFramework::endBGFX() {
 	// shutdown BGFX
 	bgfx::shutdown();
 }

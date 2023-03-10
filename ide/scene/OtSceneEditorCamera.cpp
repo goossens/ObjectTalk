@@ -14,7 +14,6 @@
 #include "glm/ext.hpp"
 #include "imgui.h"
 
-#include "OtFramework.h"
 #include "OtGpu.h"
 
 #include "OtSceneEditorCamera.h"
@@ -52,8 +51,8 @@ void OtSceneEditorCamera::update() {
 
 void OtSceneEditorCamera::handleKeyboardAndMouse() {
 	if (ImGui::IsMouseDown(0)) {
-		// determine timestep (in seconds)
-		float delta = OtFrameworkClass::instance()->getLoopDuration() / 1000.0f;
+		// determine timestep (in milliseconds)
+		float delta = ImGui::GetIO().DeltaTime / 1000.0f;
 
 		// handle mouse interactions
 		ImVec2 drag = ImGui::GetMouseDragDelta();

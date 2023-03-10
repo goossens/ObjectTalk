@@ -9,22 +9,13 @@
 //	Include files
 //
 
+#include <chrono>
+
 #include "glm/glm.hpp"
 
 #include "OtException.h"
 
 #include "OtSceneRuntime.h"
-
-
-//
-//	OtSceneRuntime::~OtSceneRuntime
-//
-
-OtSceneRuntime::~OtSceneRuntime() {
-	if (loader.joinable()) {
-		loader.join();
-	}
-}
 
 
 //
@@ -34,7 +25,7 @@ OtSceneRuntime::~OtSceneRuntime() {
 void OtSceneRuntime::setup(std::filesystem::path path) {
 	// start the loader thread
 	scenePath = path;
-	loader = std::thread(&OtSceneRuntime::load, this);
+	loader = std::async(std::launch::async, &OtSceneRuntime::load, this);
 }
 
 
@@ -42,16 +33,38 @@ void OtSceneRuntime::setup(std::filesystem::path path) {
 //	OtSceneRuntime::load
 //
 
-void OtSceneRuntime::load() {
+bool OtSceneRuntime::load() {
 	// create the scene and a renderer
 	scene = std::make_shared<OtScene>();
 	renderer = std::make_shared<OtSceneRenderer>();
 
-	// load the scene
+	// load the scene and initialize the systems
 	scene->load(scenePath);
+	initializeScriptingSystem();
+	initializeRenderingSystem();
 
 	// we are now fully loaded
-	loaded = true;
+	ready = true;
+	return true;
+}
+
+
+//
+//	OtSceneRuntime::isReady
+//
+
+bool OtSceneRuntime::isReady() {
+	if (ready) {
+		return true;
+
+	} else {
+		using namespace std::chrono_literals;
+
+		if (loader.wait_for(0ms) == std::future_status::ready) {
+			auto result = loader.get();
+			ready = true;
+		}
+	}
 }
 
 
@@ -60,32 +73,9 @@ void OtSceneRuntime::load() {
 //
 
 int OtSceneRuntime::render(int width, int height) {
-	// select default camera if this is the first time through
-	if (!cameraSelected) {
-		OtEntity firstCamera = OtEntityNull;
-		OtEntity mainCamera = OtEntityNull;
-
-		for (auto [entity, component] : scene->view<OtCameraComponent>().each()) {
-			if (!scene->isValidEntity(firstCamera)) {
-				firstCamera = entity;
-			}
-
-			if (!scene->isValidEntity(mainCamera) && component.mainCamera) {
-				mainCamera = entity;
-			}
-		}
-
-		if (scene->isValidEntity(mainCamera)) {
-			activeCamera = mainCamera;
-
-		} else if (scene->isValidEntity(firstCamera)) {
-			activeCamera = firstCamera;
-
-		} else {
-			OtExcept("No camera found in scene at [%s]", scenePath.c_str());
-		}
-
-		cameraSelected = true;
+	// update all the scripts
+	for (auto [entity, component] : scene->view<OtScriptComponent>().each()) {
+		component.update();
 	}
 
 	// get camera information
@@ -111,4 +101,54 @@ void OtSceneRuntime::terminate() {
 	// clear the scene and the renderer to release all resources
 	scene = nullptr;
 	renderer = nullptr;
+}
+
+
+//
+//	OtSceneRuntime::initializeScriptingSystem
+//
+
+void OtSceneRuntime::initializeScriptingSystem() {
+	// load and compile all the scripts
+	for (auto [entity, component] : scene->view<OtScriptComponent>().each()) {
+		component.load();
+	}
+
+	// now initialize all the scripts
+	for (auto [entity, component] : scene->view<OtScriptComponent>().each()) {
+		component.create();
+	}
+}
+
+
+//
+//	OtSceneRuntime::initializeRenderingSystem
+//
+
+void OtSceneRuntime::initializeRenderingSystem() {
+	// select default camera
+	OtEntity firstCamera = OtEntityNull;
+	OtEntity mainCamera = OtEntityNull;
+
+	for (auto [entity, component] : scene->view<OtCameraComponent>().each()) {
+		if (!scene->isValidEntity(firstCamera)) {
+			firstCamera = entity;
+		}
+
+		if (!scene->isValidEntity(mainCamera) && component.mainCamera) {
+			mainCamera = entity;
+		}
+	}
+
+	if (scene->isValidEntity(mainCamera)) {
+		activeCamera = mainCamera;
+
+	} else if (scene->isValidEntity(firstCamera)) {
+		activeCamera = firstCamera;
+
+	} else {
+		OtExcept("No camera found in scene at [%s]", scenePath.c_str());
+	}
+
+	cameraSelected = true;
 }

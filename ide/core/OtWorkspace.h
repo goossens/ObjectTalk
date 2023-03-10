@@ -66,6 +66,7 @@ public:
 
 private:
 	// framework callbacks
+	void onSetup() override;
 	void onRender() override;
 	void onTerminate() override;
 	bool onCanQuit() override;

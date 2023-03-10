@@ -13,7 +13,6 @@
 //
 
 #include <array>
-#include <functional>
 #include <memory>
 #include <unordered_map>
 #include <vector>
@@ -36,16 +35,13 @@
 
 
 //
-//	OtFrameworkClass
+//	OtFramework
 //
 
-class OtFrameworkClass;
-typedef std::shared_ptr<OtFrameworkClass> OtFramework;
-
-class OtFrameworkClass : public OtSingleton<OtFrameworkClass> {
+class OtFramework {
 public:
 	// run the GUI framework
-	void run(OtFrameworkApp* app);
+	void run(OtFrameworkApp* app, bool child=false);
 
 	// stop the GUI framework
 	void stop();
@@ -72,11 +68,6 @@ public:
 	// add enums to specified module
 	void addEnumsGLFW(OtObject module);
 	void addEnumsIMGUI(OtObject module);
-
-	// register function to be called at exit
-	void atexit(std::function<void(void)> callback) {
-		atExitCallbacks.push_back(callback);
-	}
 
 private:
 #if __APPLE__
@@ -157,7 +148,5 @@ private:
 
 	// our app
 	OtFrameworkApp* app;
-
-	// callbacks
-	std::vector<std::function<void(void)>> atExitCallbacks;
+	bool childMode;
 };

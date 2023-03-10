@@ -19,7 +19,6 @@ public:
 
 	// event handlers
 	virtual void onSetup() {}
-	virtual void onUpdate() {}
 	virtual void onRender() {}
 	virtual void onTerminate() {}
 	virtual bool onCanQuit() { return true; }

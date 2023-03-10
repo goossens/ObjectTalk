@@ -38,7 +38,7 @@ add_dependencies(gfx
 	glfw bgfx
 	imgui imguifd imguieditor
 	glm mipmap tess2 tinyobjloader
-	entt json
+	entt
 	box2d tweeny)
 
 target_link_libraries(gfx PUBLIC
@@ -48,7 +48,7 @@ target_link_libraries(gfx PUBLIC
 	glfw bgfx
 	imgui imguifd imguieditor
 	glm mipmap tess2 tinyobjloader
-	entt json
+	entt
 	box2d tweeny
 	${GFX_LIBS})
 

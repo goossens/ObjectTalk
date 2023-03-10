@@ -139,10 +139,10 @@ static ImGuiKey toImGuiKey(int key) {
 
 
 //
-//	OtFrameworkClass::initIMGUI
+//	OtFramework::initIMGUI
 //
 
-void OtFrameworkClass::initIMGUI() {
+void OtFramework::initIMGUI() {
 	// initialize ImGui library
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -162,12 +162,12 @@ void OtFrameworkClass::initIMGUI() {
 	io.ClipboardUserData = this;
 
 	io.SetClipboardTextFn = [](void* data, const char* text) {
-		OtFrameworkClass* framework = (OtFrameworkClass*) data;
+		OtFramework* framework = (OtFramework*) data;
 		glfwSetClipboardString(framework->window, text);
 	};
 
 	io.GetClipboardTextFn = [](void* data) {
-		OtFrameworkClass* framework = (OtFrameworkClass*) data;
+		OtFramework* framework = (OtFramework*) data;
 		return glfwGetClipboardString(framework->window);
 	};
 
@@ -205,14 +205,14 @@ void OtFrameworkClass::initIMGUI() {
 
 
 //
-//	OtFrameworkClass::frameIMGUI
+//	OtFramework::frameIMGUI
 //
 
-void OtFrameworkClass::frameIMGUI(std::vector<OtFwEvent>& events) {
+void OtFramework::frameIMGUI(std::vector<OtFwEvent>& events) {
 	// update ImGui state
 	ImGuiIO& io = ImGui::GetIO();
 	io.DisplaySize = ImVec2(width, height);
-	io.DeltaTime = loopDuration / 1000.0;
+	io.DeltaTime = loopDuration / 1000.0f;
 
 	// get information from events
 	for (auto& event : events) {
@@ -287,10 +287,10 @@ void OtFrameworkClass::frameIMGUI(std::vector<OtFwEvent>& events) {
 
 
 //
-//	OtFrameworkClass::renderIMGUI
+//	OtFramework::renderIMGUI
 //
 
-void OtFrameworkClass::renderIMGUI() {
+void OtFramework::renderIMGUI() {
 	// render GUI to command lists
 	ImGui::Render();
 	ImDrawData* drawData = ImGui::GetDrawData();
@@ -368,10 +368,10 @@ void OtFrameworkClass::renderIMGUI() {
 
 
 //
-//	OtFrameworkClass::endIMGUI
+//	OtFramework::endIMGUI
 //
 
-void OtFrameworkClass::endIMGUI() {
+void OtFramework::endIMGUI() {
 	// we have to manually clear our resources since it's too late to let the destructors
 	// do it since they run after we shutdown the libraries (causing 'memory leaks')
 	imguiFontTexture.clear();
@@ -383,10 +383,10 @@ void OtFrameworkClass::endIMGUI() {
 
 
 //
-//	OtFrameworkClass::addEnumsIMGUI
+//	OtFramework::addEnumsIMGUI
 //
 
-void OtFrameworkClass::addEnumsIMGUI(OtObject module) {
+void OtFramework::addEnumsIMGUI(OtObject module) {
 	module->set("windowNoTitleBar", OtInteger::create(ImGuiWindowFlags_NoTitleBar));
 	module->set("windowNoResize", OtInteger::create(ImGuiWindowFlags_NoResize));
 	module->set("windowNoMove", OtInteger::create(ImGuiWindowFlags_NoMove));

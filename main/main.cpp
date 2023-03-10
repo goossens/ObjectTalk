@@ -25,8 +25,9 @@
 #include "OtMath.h"
 
 #if defined(INCLUDE_GUI)
-#include "OtWorkspace.h"
+#include "OtFramework.h"
 #include "OtSceneApp.h"
+#include "OtWorkspace.h"
 #endif
 
 
@@ -45,6 +46,11 @@ int main(int argc, char* argv[]) {
 
 	program.add_argument("-i", "--ide")
 		.help("edit files instead of running them")
+		.default_value(false)
+		.implicit_value(true);
+
+	program.add_argument("-c", "--child")
+		.help("run program as an IDE child process")
 		.default_value(false)
 		.implicit_value(true);
 
@@ -86,8 +92,9 @@ int main(int argc, char* argv[]) {
 		if (files.size() == 0) {
 			// no, do we start an IDE workspace?
 #if defined(INCLUDE_GUI)
+			OtFramework framework;
 			OtWorkspace workspace;
-			workspace.run();
+			framework.run(&workspace);
 
 #else
 			std::cerr << "No files specified" << std::endl << std::endl;
@@ -99,19 +106,20 @@ int main(int argc, char* argv[]) {
 		} else {
 #if defined(INCLUDE_GUI)
 			if (program["--ide"] == true) {
+				OtFramework framework;
 				OtWorkspace workspace;
 
 				for (auto& file : files) {
 					workspace.openFile(file);
 				}
 
-				workspace.run();
+				framework.run(&workspace);
 
 			} else {
 #endif
 				// we can only handle one file
 				if (files.size() != 1) {
-					std::wcerr << "Error: you can only run one file, you specified [%d]" << files.size() << std::endl;
+					std::cerr << "Error: you can only run one file, you specified [%d]" << files.size() << std::endl;
 					std::_Exit(EXIT_FAILURE);
 				}
 
@@ -150,12 +158,13 @@ int main(int argc, char* argv[]) {
 #if defined(INCLUDE_GUI)
 				} else if (extension == ".ots") {
 					// handle a scene file
-					OtSceneApp app;
-					app.run(std::filesystem::path(file));
+					OtFramework framework;
+					OtSceneApp app{std::filesystem::path(file)};
+					framework.run(&app, program["--child"] == true);
 #endif
 
 				} else {
-					std::wcerr << "Error: can't execute file with extension [%s]" << extension.c_str() << std::endl;
+					std::cerr << "Error: can't execute file with extension [%s]" << extension.c_str() << std::endl;
 					std::_Exit(EXIT_FAILURE);
 				}
 #if defined(INCLUDE_GUI)
@@ -166,9 +175,16 @@ int main(int argc, char* argv[]) {
 		// cleanup
 		OtLibUv::end();
 
-	} catch (const OtException& e) {
+	} catch (OtException& e) {
 		// handle all failures
-		std::wcerr << "Error: " << e.what() << std::endl;
+		if (program["--child"] == true) {
+			// serialize exception and send it to the IDE that started us
+			// (wrapped in STX (start of text) and ETX (end of text) ASCII codes)
+			std::cerr << '\x02' << e.serialize() << '\x03';
+		}
+
+		// output human readable text
+		std::cerr << "Error: " << e.what() << std::endl;
 		std::_Exit(EXIT_FAILURE);
 	}
 

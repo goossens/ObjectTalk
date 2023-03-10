@@ -19,17 +19,19 @@
 #include "OtVM.h"
 
 #include "OtFramework.h"
+#include "OtFrameworkAtExit.h"
 #include "OtMessageBus.h"
 #include "OtPass.h"
 
 
 //
-//	OtFrameworkClass::run
+//	OtFramework::run
 //
 
-void OtFrameworkClass::run(OtFrameworkApp* targetApp) {
-	// remember the app
+void OtFramework::run(OtFrameworkApp* targetApp, bool child) {
+	// remember the app and the child mode
 	app = targetApp;
+	childMode = child;
 
 	// the framework runs in two threads:
 	// 1. the main thread handles the rendering and window events (as required by most operating systems)
@@ -60,22 +62,31 @@ void OtFrameworkClass::run(OtFrameworkApp* targetApp) {
 
 
 //
-//	OtFrameworkClass::runThread2
+//	OtFramework::runThread2
 //
 
-void OtFrameworkClass::runThread2() {
+void OtFramework::runThread2() {
 	try {
 		// initialize graphics libraries
 		initBGFX();
 		initIMGUI();
 
-		// call setup callback
+		// let app perform its own setup
 		app->onSetup();
+
+		// listen for stop events on the message bus
+		auto bus = OtMessageBus::instance();
+
+		bus->listen([this](const std::string& message) {
+			if (message == "stop") {
+				stop();
+			}
+		});
 
 		// run this thread until we are told to stop
 		while (running) {
 			// process all messages on the bus
-			OtMessageBus::instance()->process();
+			bus->process();
 
 			// reset view ID
 			OtPassReset();
@@ -152,8 +163,7 @@ void OtFrameworkClass::runThread2() {
 				}
 			}
 
-			// call update and render callbacks
-			app->onUpdate();
+			// let app render a frame
 			app->onRender();
 
 			// show profiler (if required)
@@ -170,52 +180,57 @@ void OtFrameworkClass::runThread2() {
 		}
 
 		// clear the message bus
-		OtMessageBus::instance()->clear();
+		bus->clear();
 
-		// call termination callback
+		// tell app we're done
 		app->onTerminate();
 
 		// call exit callbacks
-		for (auto& callback : atExitCallbacks) {
-			callback();
-		}
+		OtFrameworkAtExit::instance()->run();
 
 		// terminate libraries
 		endIMGUI();
 		endBGFX();
 
-	} catch (const OtException& e) {
+	} catch (OtException& e) {
 		// handle all failures
-		std::wcerr << "Error: " << e.what() << std::endl;
+		if (childMode) {
+			// serialize exception and send it to the IDE that started us
+			// (wrapped in STX (start of text) and ETX (end of text) ASCII codes)
+			std::cerr << '\x02' << e.serialize() << '\x03';
+		}
+
+		std::cerr << "Error: " << e.what() << std::endl;
 			std::_Exit(EXIT_FAILURE);
 	}
 }
 
 
 //
-//	OtFrameworkClass::stop
+//	OtFramework::stop
 //
 
-void OtFrameworkClass::stop() {
+void OtFramework::stop() {
 	// stopping the framework is realized by closing the app's window
 	stopGLFW();
 }
 
 
 //
-//	OtFrameworkClass::canQuit
+//	OtFramework::canQuit
 //
 
-bool OtFrameworkClass::canQuit() {
+bool OtFramework::canQuit() {
+	// ask app if we can quit
 	return app->onCanQuit();
 }
 
 
 //
-//	OtFrameworkClass::setAntiAliasing
+//	OtFramework::setAntiAliasing
 //
 
-void OtFrameworkClass::setAntiAliasing(int aa) {
+void OtFramework::setAntiAliasing(int aa) {
 	if (aa < 0 || aa > 4) {
 		OtExcept("Anti-aliasing setting must be between 0 and 4");
 	}

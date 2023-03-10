@@ -38,10 +38,10 @@
 
 
 //
-//	OtFrameworkClass::initGLFW
+//	OtFramework::initGLFW
 //
 
-void OtFrameworkClass::initGLFW() {
+void OtFramework::initGLFW() {
 	// initialize GLFW library
 	glfwSetErrorCallback([](int error, const char* description) {
 		OtExcept(description);
@@ -104,7 +104,7 @@ void OtFrameworkClass::initGLFW() {
 
 	// setup window close callback
 	glfwSetWindowCloseCallback(window, [](GLFWwindow* window) {
-		OtFrameworkClass* fw = (OtFrameworkClass*) glfwGetWindowUserPointer(window);
+		OtFramework* fw = (OtFramework*) glfwGetWindowUserPointer(window);
 
 		// call close callbacks
 		if (!fw->canQuit()) {
@@ -114,14 +114,14 @@ void OtFrameworkClass::initGLFW() {
 
 	// setup window resize callback
 	glfwSetWindowSizeCallback(window, [](GLFWwindow* window, int w, int h) {
-		OtFrameworkClass* fw = (OtFrameworkClass*) glfwGetWindowUserPointer(window);
+		OtFramework* fw = (OtFramework*) glfwGetWindowUserPointer(window);
 		fw->width = w;
 		fw->height = h;
 	});
 
 	// setup window focus callback
 	glfwSetWindowFocusCallback(window, [](GLFWwindow* window, int focused) {
-		OtFrameworkClass* fw = (OtFrameworkClass*) glfwGetWindowUserPointer(window);
+		OtFramework* fw = (OtFramework*) glfwGetWindowUserPointer(window);
 
 		if (focused) {
 			double xpos, ypos;
@@ -132,7 +132,7 @@ void OtFrameworkClass::initGLFW() {
 
 	// setup mouse button callback
 	glfwSetMouseButtonCallback(window, [](GLFWwindow* window, int button, int action, int mods) {
-		OtFrameworkClass* fw = (OtFrameworkClass*) glfwGetWindowUserPointer(window);
+		OtFramework* fw = (OtFramework*) glfwGetWindowUserPointer(window);
 
 		double xpos, ypos;
 		glfwGetCursorPos(window, &xpos, &ypos);
@@ -143,7 +143,7 @@ void OtFrameworkClass::initGLFW() {
 
 	// setup mouse move callback
 	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) {
-		OtFrameworkClass* fw = (OtFrameworkClass*) glfwGetWindowUserPointer(window);
+		OtFramework* fw = (OtFramework*) glfwGetWindowUserPointer(window);
 
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
 			fw->eventQueue.pushMouseDragEvent(GLFW_MOUSE_BUTTON_1, fw->modifiers, xpos, ypos);
@@ -155,13 +155,13 @@ void OtFrameworkClass::initGLFW() {
 
 	// setup scroll wheel callback
 	glfwSetScrollCallback(window, [](GLFWwindow* window, double xoffset, double yoffset) {
-		OtFrameworkClass* fw = (OtFrameworkClass*) glfwGetWindowUserPointer(window);
+		OtFramework* fw = (OtFramework*) glfwGetWindowUserPointer(window);
 		fw->eventQueue.pushMouseWheelEvent(xoffset, yoffset);
 	});
 
 	// set keyboard callback
 	glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
-		OtFrameworkClass* fw = (OtFrameworkClass*) glfwGetWindowUserPointer(window);
+		OtFramework* fw = (OtFramework*) glfwGetWindowUserPointer(window);
 
 		if (key == GLFW_KEY_F5 && action == GLFW_PRESS) {
 			fw->profiler = !fw->profiler;
@@ -184,7 +184,7 @@ void OtFrameworkClass::initGLFW() {
 
 	// set character callback
 	glfwSetCharCallback(window, [](GLFWwindow* window, unsigned int codepoint) {
-		OtFrameworkClass* fw = (OtFrameworkClass*) glfwGetWindowUserPointer(window);
+		OtFramework* fw = (OtFramework*) glfwGetWindowUserPointer(window);
 		fw->eventQueue.pushCharacterEvent(codepoint);
 	});
 
@@ -196,19 +196,19 @@ void OtFrameworkClass::initGLFW() {
 
 
 //
-//	OtFrameworkClass::runningGLFW
+//	OtFramework::runningGLFW
 //
 
-bool OtFrameworkClass::runningGLFW() {
+bool OtFramework::runningGLFW() {
 	return !glfwWindowShouldClose(window);
 }
 
 
 //
-//	OtFrameworkClass::eventsGLFW
+//	OtFramework::eventsGLFW
 //
 
-void OtFrameworkClass::eventsGLFW() {
+void OtFramework::eventsGLFW() {
 	// wait for window events
 	glfwWaitEventsTimeout(0.016);
 
@@ -239,19 +239,19 @@ void OtFrameworkClass::eventsGLFW() {
 
 
 //
-//	OtFrameworkClass::stopGLFW
+//	OtFramework::stopGLFW
 //
 
-void OtFrameworkClass::stopGLFW() {
+void OtFramework::stopGLFW() {
 	glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
 
 //
-//	OtFrameworkClass::endGLFW
+//	OtFramework::endGLFW
 //
 
-void OtFrameworkClass::endGLFW() {
+void OtFramework::endGLFW() {
 	// terminate GLFW
 	glfwDestroyWindow(window);
 	glfwTerminate();
@@ -259,10 +259,10 @@ void OtFrameworkClass::endGLFW() {
 
 
 //
-//	OtFrameworkClass::addEnumsGLFW
+//	OtFramework::addEnumsGLFW
 //
 
-void OtFrameworkClass::addEnumsGLFW(OtObject module) {
+void OtFramework::addEnumsGLFW(OtObject module) {
 	module->set("mouseLeft", OtInteger::create(GLFW_MOUSE_BUTTON_LEFT));
 	module->set("mouseRight", OtInteger::create(GLFW_MOUSE_BUTTON_RIGHT));
 	module->set("mouseMiddle", OtInteger::create(GLFW_MOUSE_BUTTON_MIDDLE));

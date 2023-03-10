@@ -15,6 +15,10 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
+#include "OtException.h"
+#include "OtClass.h"
+#include "OtVM.h"
+
 #include "OtGlm.h"
 #include "OtMessageBus.h"
 #include "OtUi.h"
@@ -63,10 +67,67 @@ bool OtScriptComponent::renderGUI() {
 
 		},
 		[](std::filesystem::path& path) {
-			std::cout << path << std::endl;
 			// open in editor
 			OtMessageBus::instance()->send("open " + path.string());
 		});
+}
+
+
+//
+//	OtScriptComponent::load
+//
+
+void OtScriptComponent::load() {
+	// load the script and compile it
+	module = OtModule::create();
+	module->load(path);
+
+	// see if the module has the right class definition
+	auto className = path.stem().string();
+
+	if (module->hasByName(className)) {
+		auto classObject = module->getByName(className);
+
+		// ensure it is a class object
+		if (classObject.isKindOf<OtClassClass>()) {
+			// ensure the class is derived from Entity
+
+			// create instance of class
+			instance = OtClass(classObject)->instantiate(0, nullptr);
+			createSelector = OtSelector::create("create");
+			updateSelector = OtSelector::create("create");
+			hasCreateMethod = instance->has(createSelector);
+			hasUpdateMethod = instance->has(updateSelector);
+
+		} else {
+			OtExcept("Object [%s] in script [%s] is not a class", className.c_str(), path.string().c_str());
+		}
+
+	} else {
+		OtExcept("Script [%s] does not contain class [%s]", path.string().c_str(), className.c_str());
+	}
+}
+
+
+//
+//	OtScriptComponent::create
+//
+
+void OtScriptComponent::create() {
+	if (hasCreateMethod) {
+		OtVM::instance()->callMemberFunction(instance, createSelector);
+	}
+}
+
+
+//
+//	OtScriptComponent::update
+//
+
+void OtScriptComponent::update() {
+	if (hasUpdateMethod) {
+		OtVM::instance()->callMemberFunction(instance, updateSelector);
+	}
 }
 
 

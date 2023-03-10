@@ -18,6 +18,7 @@
 #include "nlohmann/json_fwd.hpp"
 
 #include "OtModule.h"
+#include "OtSelector.h"
 
 
 //
@@ -28,6 +29,13 @@ class OtScriptComponent {
 public:
 	// GUI to change component properties
 	bool renderGUI();
+
+	// load and compile the script
+	void load();
+
+	// runtime methods
+	void create();
+	void update();
 
 	// (de)serialize component
 	nlohmann::json serialize(std::filesystem::path* basedir);
@@ -41,4 +49,9 @@ public:
 
 	// runtime properties
 	OtModule module;
+	OtObject instance;
+	size_t createSelector;
+	size_t updateSelector;
+	bool hasCreateMethod;
+	bool hasUpdateMethod;
 };

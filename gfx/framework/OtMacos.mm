@@ -18,10 +18,10 @@
 
 
 //
-//	OtFrameworkClass::fixMenuLabels
+//	OtFramework::fixMenuLabels
 //
 
-void OtFrameworkClass::fixMenuLabels() {
+void OtFramework::fixMenuLabels() {
 	// fix menu labels
 	NSString* appName = [NSString stringWithCString:"ObjectTalk" encoding:[NSString defaultCStringEncoding]];
 	NSMenu* menu = [[[NSApp mainMenu] itemAtIndex: 0] submenu];
@@ -32,10 +32,10 @@ void OtFrameworkClass::fixMenuLabels() {
 
 
 //
-//	OtFrameworkClass::createMetalLayer
+//	OtFramework::createMetalLayer
 //
 
-void OtFrameworkClass::createMetalLayer() {
+void OtFramework::createMetalLayer() {
 	// get content view
 	NSWindow* nsWindow = (NSWindow*) nativeDisplayHandle;
 	NSView *contentView = [nsWindow contentView];

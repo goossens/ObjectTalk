@@ -8,6 +8,7 @@ include(FetchContent)
 
 add_subdirectory(argparse)
 add_subdirectory(libuv)
+add_subdirectory(json)
 
 if(OT_GUI)
 	add_subdirectory(glfw)
@@ -25,5 +26,4 @@ if(OT_GUI)
 	add_subdirectory(box2d)
 	add_subdirectory(tweeny)
 	add_subdirectory(entt)
-	add_subdirectory(json)
 endif()

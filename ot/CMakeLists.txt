@@ -17,14 +17,14 @@ endforeach()
 list(REMOVE_DUPLICATES OT_INCLUDE_DIRS)
 
 add_library(ot STATIC ${OT_INCLUDES} ${OT_SOURCES})
-add_dependencies(ot uv_a)
+add_dependencies(ot uv_a json)
 
 if (UNIX)
 	set(OT_EXTRA_LIBS m)
 endif()
 
 target_include_directories(ot PUBLIC ${OT_INCLUDE_DIRS})
-target_link_libraries(ot PUBLIC uv_a ${OT_EXTRA_LIBS})
+target_link_libraries(ot PUBLIC uv_a json ${OT_EXTRA_LIBS})
 
 set_target_properties(ot PROPERTIES PREFIX "")
 set_target_properties(ot PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)

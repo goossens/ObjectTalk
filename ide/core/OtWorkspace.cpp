@@ -16,7 +16,6 @@
 
 #include "OtFormat.h"
 
-#include "OtFramework.h"
 #include "OtMessageBus.h"
 #include "OtUi.h"
 
@@ -26,10 +25,10 @@
 
 
 //
-//	OtWorkspace::run
+//	OtWorkspace::onSetup
 //
 
-void OtWorkspace::run() {
+void OtWorkspace::onSetup() {
 	// set the current directory to examples if we are in development mode
 	auto exec = getExecutablePath();
 	auto root = exec.parent_path().parent_path();
@@ -43,9 +42,6 @@ void OtWorkspace::run() {
 	OtMessageBus::instance()->listen([this](const std::string& message) {
 		onMessage(message);
 	});
-
-	// run the IDE
-	OtFrameworkClass::instance()->run(this);
 }
 
 
@@ -336,6 +332,7 @@ void OtWorkspace::runFile() {
 
 	// compose the argument array
 	std::vector<std::string> args;
+	args.push_back("--child");
 	currentRunnable = activeEditor->getFileName();
 	args.push_back(currentRunnable.string());
 
@@ -658,7 +655,7 @@ void OtWorkspace::renderConfirmQuit() {
 		ImGui::Separator();
 
 		if (ImGui::Button("OK", ImVec2(120, 0))) {
-			OtFrameworkClass::instance()->stop();
+			OtMessageBus::instance()->send("stop");
 			state = editState;
 			ImGui::CloseCurrentPopup();
 		}

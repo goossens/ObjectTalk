@@ -14,7 +14,7 @@
 #include "OtException.h"
 
 #include "OtImage.h"
-#include "OtFramework.h"
+#include "OtFrameworkAtExit.h"
 #include "OtTexture.h"
 
 
@@ -233,7 +233,7 @@ bgfx::TextureHandle OtTexture::getTextureHandle() {
 				BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
 				mem);
 
-			OtFrameworkClass::instance()->atexit([] () {
+			OtFrameworkAtExit::instance()->add([] () {
 				bgfx::destroy(dummy);
 			});
 		}

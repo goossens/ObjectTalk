@@ -6,4 +6,4 @@ class camera : scene.Entity {
 
 	function update(this) {
 	}
-};
+}

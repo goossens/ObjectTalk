@@ -11,24 +11,10 @@
 
 #include "imgui.h"
 
-#include "OtFramework.h"
 #include "OtGpu.h"
 #include "OtUi.h"
 
 #include "OtSceneApp.h"
-
-
-//
-//	OtSceneApp::run
-//
-
-void OtSceneApp::run(std::filesystem::path path) {
-	// remember the path
-	scenePath = path;
-
-	// run the framework;
-	OtFrameworkClass::instance()->run(this);
-}
 
 
 //
@@ -47,7 +33,7 @@ void OtSceneApp::onSetup() {
 
 void OtSceneApp::onRender() {
 	// are we loaded yet?
-	if (isLoaded()) {
+	if (isReady()) {
 		// yes, render viewport
 		renderViewPort();
 

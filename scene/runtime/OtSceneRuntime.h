@@ -13,8 +13,8 @@
 //
 
 #include <filesystem>
+#include <future>
 #include <memory>
-#include <thread>
 
 #include "OtScene.h"
 #include "OtSceneRenderer.h"
@@ -26,17 +26,14 @@
 
 class OtSceneRuntime {
 public:
-	// destructor
-	~OtSceneRuntime();
-
 	// setup the scene runtime
 	void setup(std::filesystem::path path);
 
 	// load the scene and its assets
-	void load();
+	bool load();
 
-	// are we loaded yet
-	bool isLoaded() { return loaded; }
+	// are we ready
+	bool isReady();
 
 	// render a frame for the scene (return the texture index)
 	int render(int width, int height);
@@ -45,13 +42,17 @@ public:
 	void terminate();
 
 private:
-	// startup loader thread
-	std::thread loader;
-	bool loaded = false;
+	// startup loader
+	std::future<bool> loader;
+	bool ready = false;
 
 	// the scene we are running
 	std::shared_ptr<OtScene> scene;
 	std::filesystem::path scenePath;
+
+	// system initialization function
+	void initializeScriptingSystem();
+	void initializeRenderingSystem();
 
 	// active camera
 	OtEntity activeCamera = OtEntityNull;

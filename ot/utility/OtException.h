@@ -57,6 +57,10 @@ public:
 	std::string getShortErrorMessage() const { return shortMessage; }
 	std::string getLongErrorMessage() const { return longMessage; }
 
+	// (de)serializer
+	std::string serialize();
+	void deserialize(const std::string& string);
+
 private:
 	// the module in which the error happened
 	std::string module;

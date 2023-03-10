@@ -73,45 +73,6 @@ void OtSceneEditor::save() {
 
 
 //
-//	OtSceneEditor::render
-//
-
-void OtSceneEditor::render() {
-	// create the window
-	ImGui::BeginChild("scene", ImVec2(), true, ImGuiWindowFlags_MenuBar);
-	determinePanelSizes();
-
-	// determine button size
-	buttonSize = ImGui::GetFrameHeight();
-
-	// render the editor parts
-	renderMenu();
-	renderPanels();
-	OtUiSplitterHorizontal(&panelWidth, minPanelWidth, maxPanelWidth);
-	renderViewPort();
-	ImGui::EndChild();
-
-	// handle keyboard
-	handleShortcuts();
-
-	// perform editing task (if required)
-	if (nextTask) {
-		taskManager.perform(nextTask);
-
-		// special handling for "new entity" task so we can automatically select the new kid on the block
-		auto task = std::dynamic_pointer_cast<OtCreateEntityTask>(nextTask);
-
-		if (task) {
-			selectedEntity = task->getEntity();
-		}
-
-		// clear task so we don't perform it again
-		nextTask = nullptr;
-	}
-}
-
-
-//
 //	OtSceneEditor::setSceneCamera
 //
 
@@ -182,6 +143,8 @@ void OtSceneEditor::renderMenu() {
 		}
 
 		if (ImGui::BeginMenu("View")) {
+			renderCommonViewMenuItems();
+
 			if (ImGui::BeginMenu("Camera")) {
 				if (ImGui::RadioButton("Editor Camera", selectedCamera == OtEntityNull)) {
 					selectedCamera = OtEntityNull;
@@ -246,6 +209,40 @@ void OtSceneEditor::renderMenu() {
 		}
 
 		ImGui::EndMenuBar();
+	}
+
+	// handle keyboard
+	handleShortcuts();
+}
+
+
+//
+//	OtSceneEditor::renderEditor
+//
+
+void OtSceneEditor::renderEditor() {
+	// determine button size
+	buttonSize = ImGui::GetFrameHeight();
+
+	// render the editor parts
+	determinePanelSizes();
+	renderPanels();
+	OtUiSplitterHorizontal(&panelWidth, minPanelWidth, maxPanelWidth);
+	renderViewPort();
+
+	// perform editing task (if required)
+	if (nextTask) {
+		taskManager.perform(nextTask);
+
+		// special handling for "new entity" task so we can automatically select the new kid on the block
+		auto task = std::dynamic_pointer_cast<OtCreateEntityTask>(nextTask);
+
+		if (task) {
+			selectedEntity = task->getEntity();
+		}
+
+		// clear task so we don't perform it again
+		nextTask = nullptr;
 	}
 }
 

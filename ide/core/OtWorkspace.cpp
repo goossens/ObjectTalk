@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include <algorithm>
 #include <filesystem>
 
 #include "imgui.h"
@@ -81,6 +82,9 @@ void OtWorkspace::onMessage(const std::string& message) {
 
 		} else if (message == "close") {
 			closeFile();
+
+		} else if (message == "toggleconsole") {
+			consoleAsPanel = !consoleAsPanel;
 		}
 	}
 }
@@ -327,8 +331,17 @@ void OtWorkspace::closeFile() {
 //
 
 void OtWorkspace::runFile() {
-	// clear the console
+	// clear the console, error buffer and all error highlighting
 	console.clear();
+	exceptionAsJson.clear();
+
+	for (auto editor : editors) {
+		auto scriptEditor = std::dynamic_pointer_cast<OtObjectTalkEditor>(editor);
+
+		if (scriptEditor) {
+			scriptEditor->clearError();
+		}
+	}
 
 	// compose the argument array
 	std::vector<std::string> args;
@@ -344,6 +357,13 @@ void OtWorkspace::runFile() {
 			if (status || signal != 0) {
 				console.writeError(OtFormat("\n[%s] terminated with status %d and signal %d", currentRunnable.c_str(), status, signal));
 
+				// highlight error (if required)
+				if (exceptionAsJson.size()) {
+					highlightError();
+					consoleFullScreen = false;
+					consoleAsPanel = true;
+				}
+
 			} else {
 				console.writeHelp(OtFormat("\n[%s] terminated normally", currentRunnable.c_str()));
 			}
@@ -354,11 +374,55 @@ void OtWorkspace::runFile() {
 		},
 
 		[this](const std::string& text) {
-			console.writeError(text);
+			// see if we have an exception report
+			// (signified by start of text (STX) ASCII code)
+			auto stx = text.find('\x02');
+
+			if (stx != std::string::npos) {
+				// send first part to console
+				console.writeError(text.substr(0, stx));
+
+				// see if we also have an ETX in the same chunk
+				auto etx = text.find('\x03');
+
+				if (etx != std::string::npos) {
+					// extract the exception expressed as JSON
+					exceptionAsJson = text.substr(stx + 1, etx - stx - 1);
+
+					// send the rest of the message to the console
+					console.writeError(text.substr(etx + 1));
+
+				} else {
+					// extract the partial exception and set a flag
+					exceptionAsJson = text.substr(stx + 1);
+					partialException = true;
+				}
+
+			} else if (partialException) {
+				// see if we have the rest of the exception now
+				auto etx = text.find('\x03');
+
+				if (etx != std::string::npos) {
+					// add to JSON
+					exceptionAsJson += text.substr(0, etx);
+					partialException = false;
+
+					// send the rest of the message to the console
+					console.writeError(text.substr(etx + 1));
+
+				} else {
+					// add chunk and keep waiting for the end flag
+					exceptionAsJson += text;
+				}
+
+			} else {
+				console.writeError(text);
+			}
 		});
 
 	// show the console
 	consoleFullScreen = true;
+	consoleAsPanel = false;
 }
 
 
@@ -471,6 +535,15 @@ void OtWorkspace::renderEditors() {
 		ImGuiWindowFlags_NoResize |
 		ImGuiWindowFlags_NoBringToFrontOnFocus);
 
+	if (consoleAsPanel) {
+		// split the screen between the editors and the console
+		determinePanelHeights();
+		auto spacing = ImGui::GetStyle().ItemSpacing;
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
+		ImGui::BeginChild("Editors", ImVec2(0.0f, editorsHeight), false);
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, spacing);
+	}
+
 	// start a tab bar
 	if (ImGui::BeginTabBar("Tabs", ImGuiTabBarFlags_AutoSelectNewTabs)) {
 		// make clone of editor list since renderers might change it
@@ -503,6 +576,15 @@ void OtWorkspace::renderEditors() {
 		}
 
 		ImGui::EndTabBar();
+	}
+
+	if (consoleAsPanel) {
+		// split the screen between the editors and the console
+		ImGui::PopStyleVar();
+		ImGui::EndChild();
+		ImGui::PopStyleVar();
+		OtUiSplitterVertical(&editorsHeight, editorsMinHeight, editorsMaxHeight);
+		console.render();
 	}
 
 	ImGui::End();
@@ -757,26 +839,55 @@ std::filesystem::path OtWorkspace::getExecutablePath() {
 
 
 //
-//	OtWorkspace::getDefaultDirectory
+//	OtWorkspace::highlightError
 //
 
-std::filesystem::path OtWorkspace::getDefaultDirectory() {
-	// see if we are development mode
-	auto exec = getExecutablePath();
-	auto root = exec.parent_path().parent_path();
-	auto examples = root.parent_path() / "examples";
+void OtWorkspace::highlightError() {
+	// deserialize the exception
+	OtException exception;
+	exception.deserialize(exceptionAsJson);
 
-	if (std::filesystem::is_directory(examples)) {
-		// start with examples folder if we are
-		return examples;
+	// see if the module is a valid ObjectTalk file
+	auto module = std::filesystem::path(exception.getModule());
+
+	if (std::filesystem::is_regular_file(module) && module.extension() == ".ot") {
+		// see of this file is already open in the IDE
+		auto editor = findEditor(module);
+
+		if (!editor) {
+			// open the editor
+			openFile(module);
+			editor = findEditor(module);
+		}
+
+		// activate the editor
+		activateEditor(editor);
+
+		// ask editor to highlight error
+		auto scriptEditor = std::dynamic_pointer_cast<OtObjectTalkEditor>(editor);
+		assert(scriptEditor);
+
+		scriptEditor->highlightError(exception.getLineNumber(), exception.getShortErrorMessage());
+	}
+}
+
+
+//
+//	OtWorkspace::determinePanelHeights
+//
+
+void OtWorkspace::determinePanelHeights() {
+	// get available space in window
+	auto available = ImGui::GetContentRegionAvail();
+
+	// determine editors height
+	editorsMinHeight = available.y * 0.05f;
+	editorsMaxHeight = available.y * 0.9f;
+
+	if (editorsHeight < 0.0) {
+		editorsHeight =  available.y * 0.75f;
 
 	} else {
-		// just start with user's home directory
-		char buffer[1024];
-		size_t length = 1024;
-		auto status = uv_os_homedir(buffer, &length);
-		UV_CHECK_ERROR("uv_os_homedir", status);
-		std::string home(buffer, length);
-		return std::filesystem::canonical(std::string(buffer, length));
+		editorsHeight = std::clamp(editorsHeight, editorsMinHeight, editorsMaxHeight);
 	}
 }

@@ -42,9 +42,6 @@ public:
 	void load() override;
 	void save() override;
 
-	// render the editor
-	void render() override;
-
 	// is the editor's content "dirty" (unsaved);
 	bool isDirty() override;
 
@@ -62,7 +59,8 @@ private:
 	void setSceneCamera(int cameraNumber);
 
 	// render the parts
-	void renderMenu();
+	void renderMenu() override;
+	void renderEditor() override;
 	void renderPanels();
 	void renderEntitiesPanel();
 	void renderComponentsPanel();

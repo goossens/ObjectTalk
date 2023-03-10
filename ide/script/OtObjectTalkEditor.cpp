@@ -25,7 +25,7 @@
 
 
 //
-//	colorPalette (** means changed from default dark palette)
+//	colorPalette (** means 'changed from default dark palette')
 //
 
 const static TextEditor::Palette colorPalette = { {
@@ -122,27 +122,6 @@ void OtObjectTalkEditor::save() {
 
 
 //
-//	OtObjectTalkEditor::render
-//
-
-void OtObjectTalkEditor::render() {
-	// create the window
-	ImGui::BeginChild(
-		"scene",
-		ImVec2(0.0, 0.0),
-		true,
-		ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_MenuBar);
-
-	// render the menu
-	renderMenu();
-
-	// render the editor
-	renderEditor();
-	ImGui::EndChild();
-}
-
-
-//
 //	OtObjectTalkEditor::renderMenu
 //
 
@@ -172,6 +151,12 @@ void OtObjectTalkEditor::renderMenu() {
 
 			ImGui::Separator();
 			if (ImGui::MenuItem("Select All", SHORTCUT "A", nullptr, editor.GetText().size() != 0)) { editor.SelectAll(); }
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("View")) {
+			renderCommonViewMenuItems();
+			if (ImGui::MenuItem("Clear errors")) { clearError(); }
 			ImGui::EndMenu();
 		}
 

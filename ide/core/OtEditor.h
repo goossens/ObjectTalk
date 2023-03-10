@@ -32,7 +32,9 @@ public:
 	virtual void save() {}
 
 	// render the editor
-	virtual void render() {}
+	void render();
+	virtual void renderMenu() {}
+	virtual void renderEditor() {}
 
 	// get the properties
 	virtual std::string getFileExtension() { return ""; }
@@ -53,6 +55,9 @@ public:
 protected:
 	// render a file menu
 	void renderFileMenu();
+
+	// render common items on view menu
+	void renderCommonViewMenuItems();
 
 	// properties
 	std::filesystem::path path;

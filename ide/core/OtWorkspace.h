@@ -74,9 +74,11 @@ private:
 	// create a name for an untitled file
 	std::string getUntitledName();
 
-	// get executable path and default path
+	// get executable path
 	std::filesystem::path getExecutablePath();
-	std::filesystem::path getDefaultDirectory();
+
+	// highlight error in editor after subprocess run
+	void highlightError();
 
 	// render parts of workspace
 	void renderSplashScreen();
@@ -120,9 +122,14 @@ private:
 	// stuff to run things and show the console
 	OtSubProcess subprocess;
 	std::filesystem::path currentRunnable;
+	std::string exceptionAsJson;
+	bool partialException = false;
 
 	OtConsole console;
 	bool consoleFullScreen = false;
-	bool consoleVisible = false;
+	bool consoleAsPanel = false;
 	float editorsHeight = -1.0f;
+	float editorsMinHeight;
+	float editorsMaxHeight;
+	void determinePanelHeights();
 };

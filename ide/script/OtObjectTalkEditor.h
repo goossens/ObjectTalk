@@ -35,9 +35,6 @@ public:
 	void load() override;
 	void save() override;
 
-	// render the editor
-	void render() override;
-
 	// is the editor's content "dirty" (unsaved);
 	bool isDirty() override;
 
@@ -50,8 +47,8 @@ public:
 
 private:
 	// render the parts
-	void renderMenu();
-	void renderEditor();
+	void renderMenu() override;
+	void renderEditor() override;
 
 	// visual text editor
 	TextEditor editor;

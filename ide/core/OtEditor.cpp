@@ -19,6 +19,19 @@
 
 
 //
+//	OtEditor::render
+//
+
+void OtEditor::render() {
+	// render the menu and the editor
+	ImGui::BeginChild("editor", ImVec2(), true, ImGuiWindowFlags_MenuBar);
+	renderMenu();
+	renderEditor();
+	ImGui::EndChild();
+}
+
+
+//
 //	OtEditor::setFilePath
 //
 
@@ -104,4 +117,14 @@ void OtEditor::renderFileMenu() {
 			OtMessageBus::instance()->send("close");
 		}
 	}
+}
+
+
+//
+//	OtEditor::renderCommonViewMenuItems
+//
+
+void OtEditor::renderCommonViewMenuItems() {
+	if (ImGui::MenuItem("Toggle Console")) { OtMessageBus::instance()->send("toggleconsole"); }
+	ImGui::Separator();
 }

@@ -94,7 +94,7 @@ OtObject& OtObjectClass::get(size_t selector) {
 	auto name = OtSelector::name(selector);
 	OtExcept("Unknown member [%.*s] in instance of class [%s]", name.size(), name.data(), type->getName().c_str());
 
-	// we never get here because of the exception but it keeps the compiler happy
+	// we will never get here because of the exception but a return statement keeps the compiler happy
 	return members->get(selector);
 }
 

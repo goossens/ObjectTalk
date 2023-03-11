@@ -23,7 +23,7 @@
 //	Constants
 //
 
-static constexpr float maxMovementPerSecond = 4.0f;
+static constexpr float maxMovementPerSecond = 3.0f;
 static constexpr float maxRotationPerSecond = 10.0f;
 static constexpr float maxZoomPerSecond = 10.0f;
 
@@ -51,8 +51,8 @@ void OtSceneEditorCamera::update() {
 
 void OtSceneEditorCamera::handleKeyboardAndMouse() {
 	if (ImGui::IsMouseDown(0)) {
-		// determine timestep (in milliseconds)
-		float delta = ImGui::GetIO().DeltaTime / 1000.0f;
+		// determine timestep
+		float delta = ImGui::GetIO().DeltaTime;
 
 		// handle mouse interactions
 		ImVec2 drag = ImGui::GetMouseDragDelta();

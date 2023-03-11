@@ -91,17 +91,17 @@ void OtMaterialComponent::deserialize(nlohmann::json data, std::filesystem::path
 	emissiveTexturePath = OtComponentGetAbsolutePath(data, "emissiveTexture", basedir);
 	aoTexturePath = OtComponentGetAbsolutePath(data, "aoTexture", basedir);
 
-	updateAlbedoTexture = true;
-	updateNormalTexture = true;
-	updateMetallicTexture = true;
-	updateRoughnessTexture = true;
-	updateEmissiveTexture = true;
-	updateAoTexture = true;
+	updateAlbedoTexture = !albedoTexturePath.empty();
+	updateNormalTexture = !normalTexturePath.empty();
+	updateMetallicTexture = !metallicTexturePath.empty();
+	updateRoughnessTexture = !roughnessTexturePath.empty();
+	updateEmissiveTexture = !emissiveTexturePath.empty();
+	updateAoTexture = !aoTexturePath.empty();
 }
 
 
 //
-//	OtMaterialComponent::update
+//	OtMaterialComponent::updateTexture
 //
 
 static inline void updateTexture(OtTexture& texture, const std::filesystem::path& path, bool& flag) {

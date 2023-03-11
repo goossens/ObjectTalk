@@ -52,23 +52,6 @@ public:
 	// set anti-aliasing
 	void setAntiAliasing(int level);
 
-	// get frame dimensions
-	int getWidth() { return width; }
-	int getHeight() { return height; }
-
-	// get system time in seconds since application start
-	float getTime();
-
-	// get loop duration in milliseconds
-	float getLoopDuration() { return loopDuration; }
-
-	// get the current frame rate
-	float getFrameRate() { return 1000.0 / loopDuration; }
-
-	// add enums to specified module
-	void addEnumsGLFW(OtObject module);
-	void addEnumsIMGUI(OtObject module);
-
 private:
 #if __APPLE__
 	// put the right app name in the menu
@@ -112,7 +95,6 @@ private:
 	int height;
 
 	// time tracking
-	int64_t startTime;
 	int64_t lastTime;
 	int64_t loopTime;
 	float loopDuration;
@@ -141,7 +123,7 @@ private:
 
 	// track gamepad status
 	struct Gamepad {
-		int buttons[8] = {0};
+		int buttons[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 	};
 
 	std::array<Gamepad, 4> gamepads;

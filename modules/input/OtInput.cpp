@@ -16,6 +16,7 @@
 #include "OtModule.h"
 
 #include "OtInput.h"
+#include "OtVec2.h"
 
 
 //
@@ -128,37 +129,37 @@ static void RegisterEnums(OtModule module) {
 	module->set("keyKeypadAdd", OtInteger::create(ImGuiKey_KeypadAdd));
 	module->set("keyKeypadEnter", OtInteger::create(ImGuiKey_KeypadEnter));
 	module->set("keyKeypadEqual", OtInteger::create(ImGuiKey_KeypadEqual));
-	module->set("buttonGamepadStart", OtInteger::create(ImGuiKey_GamepadStart));
-	module->set("buttonGamepadBack", OtInteger::create(ImGuiKey_GamepadBack));
-	module->set("buttonGamepadFaceLeft", OtInteger::create(ImGuiKey_GamepadFaceLeft));
-	module->set("buttonGamepadFaceRight", OtInteger::create(ImGuiKey_GamepadFaceRight));
-	module->set("buttonGamepadFaceUp", OtInteger::create(ImGuiKey_GamepadFaceUp));
-	module->set("buttonGamepadFaceDown", OtInteger::create(ImGuiKey_GamepadFaceDown));
-	module->set("buttonGamepadDpadLeft", OtInteger::create(ImGuiKey_GamepadDpadLeft));
-	module->set("buttonGamepadDpadRight", OtInteger::create(ImGuiKey_GamepadDpadRight));
-	module->set("buttonGamepadDpadUp", OtInteger::create(ImGuiKey_GamepadDpadUp));
-	module->set("buttonGamepadDpadDown", OtInteger::create(ImGuiKey_GamepadDpadDown));
-	module->set("buttonGamepadL1", OtInteger::create(ImGuiKey_GamepadL1));
-	module->set("buttonGamepadR1", OtInteger::create(ImGuiKey_GamepadR1));
-	module->set("buttonGamepadL2", OtInteger::create(ImGuiKey_GamepadL2));
-	module->set("buttonGamepadR2", OtInteger::create(ImGuiKey_GamepadR2));
-	module->set("buttonGamepadL3", OtInteger::create(ImGuiKey_GamepadL3));
-	module->set("buttonGamepadR3", OtInteger::create(ImGuiKey_GamepadR3));
-	module->set("buttonGamepadLStickLeft", OtInteger::create(ImGuiKey_GamepadLStickLeft));
-	module->set("buttonGamepadLStickRight", OtInteger::create(ImGuiKey_GamepadLStickRight));
-	module->set("buttonGamepadLStickUp", OtInteger::create(ImGuiKey_GamepadLStickUp));
-	module->set("buttonGamepadLStickDown", OtInteger::create(ImGuiKey_GamepadLStickDown));
-	module->set("buttonGamepadRStickLeft", OtInteger::create(ImGuiKey_GamepadRStickLeft));
-	module->set("buttonGamepadRStickRight", OtInteger::create(ImGuiKey_GamepadRStickRight));
-	module->set("buttonGamepadRStickUp", OtInteger::create(ImGuiKey_GamepadRStickUp));
-	module->set("buttonGamepadRStickDown", OtInteger::create(ImGuiKey_GamepadRStickDown));
-	module->set("buttonMouseLeft", OtInteger::create(ImGuiKey_MouseLeft));
-	module->set("buttonMouseRight", OtInteger::create(ImGuiKey_MouseRight));
-	module->set("buttonMouseMiddle", OtInteger::create(ImGuiKey_MouseMiddle));
-	module->set("buttonMouseX1", OtInteger::create(ImGuiKey_MouseX1));
-	module->set("buttonMouseX2", OtInteger::create(ImGuiKey_MouseX2));
-	module->set("buttonMouseWheelX", OtInteger::create(ImGuiKey_MouseWheelX));
-	module->set("buttonMouseWheelY", OtInteger::create(ImGuiKey_MouseWheelY));
+	module->set("gamepadStart", OtInteger::create(ImGuiKey_GamepadStart));
+	module->set("gamepadBack", OtInteger::create(ImGuiKey_GamepadBack));
+	module->set("gamepadFaceLeft", OtInteger::create(ImGuiKey_GamepadFaceLeft));
+	module->set("gamepadFaceRight", OtInteger::create(ImGuiKey_GamepadFaceRight));
+	module->set("gamepadFaceUp", OtInteger::create(ImGuiKey_GamepadFaceUp));
+	module->set("gamepadFaceDown", OtInteger::create(ImGuiKey_GamepadFaceDown));
+	module->set("gamepadDpadLeft", OtInteger::create(ImGuiKey_GamepadDpadLeft));
+	module->set("gamepadDpadRight", OtInteger::create(ImGuiKey_GamepadDpadRight));
+	module->set("gamepadDpadUp", OtInteger::create(ImGuiKey_GamepadDpadUp));
+	module->set("gamepadDpadDown", OtInteger::create(ImGuiKey_GamepadDpadDown));
+	module->set("gamepadL1", OtInteger::create(ImGuiKey_GamepadL1));
+	module->set("gamepadR1", OtInteger::create(ImGuiKey_GamepadR1));
+	module->set("gamepadL2", OtInteger::create(ImGuiKey_GamepadL2));
+	module->set("gamepadR2", OtInteger::create(ImGuiKey_GamepadR2));
+	module->set("gamepadL3", OtInteger::create(ImGuiKey_GamepadL3));
+	module->set("gamepadR3", OtInteger::create(ImGuiKey_GamepadR3));
+	module->set("gamepadLStickLeft", OtInteger::create(ImGuiKey_GamepadLStickLeft));
+	module->set("gamepadLStickRight", OtInteger::create(ImGuiKey_GamepadLStickRight));
+	module->set("gamepadLStickUp", OtInteger::create(ImGuiKey_GamepadLStickUp));
+	module->set("gamepadLStickDown", OtInteger::create(ImGuiKey_GamepadLStickDown));
+	module->set("gamepadRStickLeft", OtInteger::create(ImGuiKey_GamepadRStickLeft));
+	module->set("gamepadRStickRight", OtInteger::create(ImGuiKey_GamepadRStickRight));
+	module->set("gamepadRStickUp", OtInteger::create(ImGuiKey_GamepadRStickUp));
+	module->set("gamepadRStickDown", OtInteger::create(ImGuiKey_GamepadRStickDown));
+	module->set("mouseLeft", OtInteger::create(ImGuiKey_MouseLeft));
+	module->set("mouseRight", OtInteger::create(ImGuiKey_MouseRight));
+	module->set("mouseMiddle", OtInteger::create(ImGuiKey_MouseMiddle));
+	module->set("mouseX1", OtInteger::create(ImGuiKey_MouseX1));
+	module->set("mouseX2", OtInteger::create(ImGuiKey_MouseX2));
+	module->set("mouseWheelX", OtInteger::create(ImGuiKey_MouseWheelX));
+	module->set("mouseWheelY", OtInteger::create(ImGuiKey_MouseWheelY));
 	module->set("modCtrl", OtInteger::create(ImGuiMod_Ctrl));
 	module->set("modShift", OtInteger::create(ImGuiMod_Shift));
 	module->set("modAlt", OtInteger::create(ImGuiMod_Alt));
@@ -171,12 +172,18 @@ static void RegisterEnums(OtModule module) {
 //	Functions
 //
 
-static bool IsKeyDown(int key) {
+static bool IsButtonDown(int key) {
 	return ImGui::IsKeyDown((ImGuiKey) key);
 }
 
-static bool IsMouseDown(int button) {
-	return ImGui::IsMouseDown((ImGuiMouseButton) button);
+static bool IsButtonPressed(int key) {
+	return ImGui::IsKeyPressed((ImGuiKey) key);
+}
+
+static OtObject GetMouseDrag() {
+	ImVec2 drag = ImGui::GetMouseDragDelta();
+	ImGui::ResetMouseDragDelta();
+	return OtVec2::create(drag.x, drag.y);
 }
 
 
@@ -190,7 +197,8 @@ void OtInputRegister() {
 		RegisterEnums(module);
 
 		// register functions
-		module->set("isKeyDown", OtFunction::create(&IsKeyDown));
-		module->set("IsMouseDown", OtFunction::create(&IsMouseDown));
+		module->set("isButtonDown", OtFunction::create(&IsButtonDown));
+		module->set("isButtonPressed", OtFunction::create(&IsButtonPressed));
+		module->set("getMouseDrag", OtFunction::create(&GetMouseDrag));
 	});
 }

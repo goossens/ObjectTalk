@@ -89,9 +89,12 @@ std::string OtByteCodeClass::disassemble() {
 				buffer << "member" << OtSelector::name(getNumber(pc));
 				break;
 
-			case methodOpcode:
-				buffer << "method" << OtSelector::name(getNumber(pc)) << "(" << getNumber(pc) << ")";
+			case methodOpcode: {
+				auto method = getNumber(pc);
+				auto count =getNumber(pc);
+				buffer << "method" << OtSelector::name(method) << "(" << count << ")";
 				break;
+			}
 
 			case exitOpcode:
 				buffer << "exit";

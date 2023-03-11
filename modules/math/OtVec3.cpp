@@ -203,6 +203,7 @@ OtObject OtVec3Class::lerp(OtObject object, float delta) {
 	}
 }
 
+
 //
 //	OtVec3Class::getMeta
 //

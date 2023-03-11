@@ -7,6 +7,6 @@
 add_subdirectory(http)
 
 if(OT_GUI)
-	add_subdirectory(input)
 	add_subdirectory(math)
+	add_subdirectory(input)
 endif()

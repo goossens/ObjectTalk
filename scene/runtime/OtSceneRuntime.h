@@ -53,6 +53,7 @@ private:
 	// system initialization function
 	void initializeScriptingSystem();
 	void initializeRenderingSystem();
+	void initializeAssetSystem();
 
 	// active camera
 	OtEntity activeCamera = OtEntityNull;

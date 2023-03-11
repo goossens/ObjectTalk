@@ -27,7 +27,7 @@
 //	OtSelector
 //
 
-class OtSelector : public OtPerThreadSingleton<OtSelector> {
+class OtSelector : public OtSingleton<OtSelector> {
 public:
 	// get a new selector
 	size_t get(const char* text) {

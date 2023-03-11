@@ -305,7 +305,11 @@ void OtSceneEditor::renderComponentsPanel() {
 	// render selected entity info and let user change its properties
 	if (scene->isValidEntity(selectedEntity)) {
 		OtUiHeader("Selected Entity", ImGui::GetWindowContentRegionMax().x - ImGui::GetCursorPos().x);
+		ImGui::Indent();
+		ImGui::PushItemWidth(200.0f);
 		renderComponentEditor<OtCoreComponent>();
+		ImGui::PopItemWidth();
+		ImGui::Unindent();
 	}
 
 	// render the panel
@@ -609,7 +613,7 @@ void OtSceneEditor::renderEntity(OtEntity entity) {
 //
 
 void OtSceneEditor::renderChildEntities(OtEntity entity) {
-	// spacing between child is provided by invisible drop targets
+	// spacing between children is provided by invisible drop targets
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2());
 
 	// process all children

@@ -156,7 +156,7 @@ void OtObjectTalkEditor::renderMenu() {
 
 		if (ImGui::BeginMenu("View")) {
 			renderCommonViewMenuItems();
-			if (ImGui::MenuItem("Clear errors")) { clearError(); }
+			if (ImGui::MenuItem("Clear Errors")) { clearError(); }
 			ImGui::EndMenu();
 		}
 

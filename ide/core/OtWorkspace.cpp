@@ -359,6 +359,7 @@ void OtWorkspace::runFile() {
 
 				// highlight error (if required)
 				if (exceptionAsJson.size()) {
+					std::cout << exceptionAsJson << std::endl;
 					highlightError();
 					consoleFullScreen = false;
 					consoleAsPanel = true;
@@ -366,6 +367,11 @@ void OtWorkspace::runFile() {
 
 			} else {
 				console.writeHelp(OtFormat("\n[%s] terminated normally", currentRunnable.c_str()));
+
+				// hide console after running a scene (user can always bring it back)
+				if (currentRunnable.extension() == ".ots") {
+						consoleFullScreen = false;
+				}
 			}
 		},
 

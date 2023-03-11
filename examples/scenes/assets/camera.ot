@@ -1,9 +1,36 @@
 var scene = import("scene");
+var input = import("input");
+var math = import("math");
 
 class camera : scene.Entity {
 	function create(this) {
+		this.radius = 4.0;
+		this.pitch = 0.0;
+		this.yaw = 0.0;
 	}
 
 	function update(this) {
+		if (input.isButtonDown(input.mouseLeft)) {
+			var drag = input.getMouseDrag();
+
+			if (drag.getX() != 0.0 || drag.getY() != 0.0) {
+				this.pitch += drag.getY() * 0.15;
+				this.yaw -= drag.getX() * 0.3;
+
+				print(this.pitch, " ", this.yaw);
+				var pitchRad = this.pitch.radians();
+				var yawRad = this.yaw.radians();
+
+				var position = math.Vec3(
+					this.radius * pitchRad.cos() * yawRad.sin(),
+					this.radius * pitchRad.sin(),
+					this.radius * pitchRad.cos() * yawRad.cos()
+				);
+
+				var transform = this.getTransformComponent();
+				transform.setTranslation(position);
+				transform.setRotation(math.Vec3(-this.pitch, this.yaw, 0.0));
+			}
+		}
 	}
 }

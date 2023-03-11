@@ -21,8 +21,6 @@
 #include "OtOptimizer.h"
 
 #include "OtHttp.h"
-#include "OtInput.h"
-#include "OtMath.h"
 
 #if defined(INCLUDE_GUI)
 #include "OtFramework.h"
@@ -80,13 +78,8 @@ int main(int argc, char* argv[]) {
 		// initialize libuv
 		OtLibUv::init(argc, argv);
 
-		// register modules
+		// register HTTP module
 		OtHttpClass::registerModule();
-
-#if defined(INCLUDE_GUI)
-		OtInputRegister();
-		OtMathRegister();
-#endif
 
 		// where any files specified?
 		if (files.size() == 0) {

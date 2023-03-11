@@ -73,7 +73,7 @@ void OtFramework::initBGFX() {
 	}
 
 	// initialize time management
-	startTime = lastTime = bx::getHPCounter();
+	lastTime = bx::getHPCounter();
 }
 
 
@@ -87,10 +87,10 @@ void OtFramework::frameBGFX() {
 
 	// calculate loop speed
 	if (loopTime >= lastTime) {
-		loopDuration = (double) (loopTime - lastTime) / (double) bx::getHPFrequency() * 1000.0;
+		loopDuration = (float) ((double) (loopTime - lastTime) / (double) bx::getHPFrequency() * 1000.0);
 
 	} else {
-		loopDuration = 1.0 / 60.0 * 1000.0;
+		loopDuration = 1.0f / 60.0f * 1000.0f;
 	}
 
 	lastTime = loopTime;
@@ -136,7 +136,7 @@ void OtFramework::renderProfiler() {
 
 	ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
 	ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
-	ImGui::Text("Framerate:"); ImGui::SameLine(labelWith); ImGui::Text("%.1f", getFrameRate());
+	ImGui::Text("Framerate:"); ImGui::SameLine(labelWith); ImGui::Text("%.1f", 1000.0f / loopDuration);
 	ImGui::Text("CPU [ms per frame]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.1f", (double) (stats->cpuTimeEnd - stats->cpuTimeBegin) * toMsCpu);
 	ImGui::Text("GPU [ms per frame]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.1f", (double) (stats->gpuTimeEnd - stats->gpuTimeBegin) * toMsGpu);
 	ImGui::Text("Wait render [ms]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.1f", (double) stats->waitRender * toMsCpu);
@@ -152,15 +152,6 @@ void OtFramework::renderProfiler() {
 	ImGui::Text("Uniforms:"); ImGui::SameLine(labelWith); ImGui::Text("%d", stats->numUniforms);
 	ImGui::Text("Vertex buffers:"); ImGui::SameLine(labelWith); ImGui::Text("%d", stats->numVertexBuffers);
 	ImGui::End();
-}
-
-
-//
-//	OtFramework::getTime
-//
-
-float OtFramework::getTime() {
-	return (double) (loopTime - startTime) / (double) bx::getHPFrequency();
 }
 
 

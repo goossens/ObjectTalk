@@ -15,6 +15,11 @@
 
 #include "OtException.h"
 
+#include "OtInput.h"
+#include "OtMath.h"
+
+#include "OtEntityObject.h"
+#include "OtSceneModule.h"
 #include "OtSceneRuntime.h"
 
 
@@ -63,6 +68,10 @@ bool OtSceneRuntime::isReady() {
 		if (loader.wait_for(0ms) == std::future_status::ready) {
 			auto result = loader.get();
 			ready = true;
+			return true;
+
+		} else {
+			return false;
 		}
 	}
 }
@@ -109,9 +118,15 @@ void OtSceneRuntime::terminate() {
 //
 
 void OtSceneRuntime::initializeScriptingSystem() {
+	// register modules
+	OtInputRegister();
+	OtMathRegister();
+	OtSceneModuleRegister();
+
 	// load and compile all the scripts
 	for (auto [entity, component] : scene->view<OtScriptComponent>().each()) {
 		component.load();
+		OtEntityObject(component.instance)->linkToECS(scene.get(), entity);
 	}
 
 	// now initialize all the scripts
@@ -151,4 +166,16 @@ void OtSceneRuntime::initializeRenderingSystem() {
 	}
 
 	cameraSelected = true;
+}
+
+
+//
+//	OtSceneRuntime::initializeAssetSystem
+//
+
+void OtSceneRuntime::initializeAssetSystem() {
+	// load all material assets
+	for (auto [entity, component] : scene->view<OtMaterialComponent>().each()) {
+		component.update();
+	}
 }

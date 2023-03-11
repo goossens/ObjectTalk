@@ -380,32 +380,3 @@ void OtFramework::endIMGUI() {
 
 	ImGui::DestroyContext();
 }
-
-
-//
-//	OtFramework::addEnumsIMGUI
-//
-
-void OtFramework::addEnumsIMGUI(OtObject module) {
-	module->set("windowNoTitleBar", OtInteger::create(ImGuiWindowFlags_NoTitleBar));
-	module->set("windowNoResize", OtInteger::create(ImGuiWindowFlags_NoResize));
-	module->set("windowNoMove", OtInteger::create(ImGuiWindowFlags_NoMove));
-	module->set("windowNoScrollbar", OtInteger::create(ImGuiWindowFlags_NoScrollbar));
-	module->set("windowNoScrollWithMouse", OtInteger::create(ImGuiWindowFlags_NoScrollWithMouse));
-	module->set("windowNoCollapse", OtInteger::create(ImGuiWindowFlags_NoCollapse));
-	module->set("windowAlwaysAutoResize", OtInteger::create(ImGuiWindowFlags_AlwaysAutoResize));
-	module->set("windowNoSavedSettings", OtInteger::create(ImGuiWindowFlags_NoSavedSettings));
-	module->set("windowNoMouseInputs", OtInteger::create(ImGuiWindowFlags_NoMouseInputs));
-	module->set("windowMenuBar", OtInteger::create(ImGuiWindowFlags_MenuBar));
-	module->set("windowHorizontalScrollbar", OtInteger::create(ImGuiWindowFlags_HorizontalScrollbar));
-	module->set("windowNoFocusOnAppearing", OtInteger::create(ImGuiWindowFlags_NoFocusOnAppearing));
-	module->set("windowNoBringToFrontOnFocus", OtInteger::create(ImGuiWindowFlags_NoBringToFrontOnFocus));
-	module->set("windowAlwaysVerticalScrollbar", OtInteger::create(ImGuiWindowFlags_AlwaysVerticalScrollbar));
-	module->set("windowAlwaysHorizontalScrollbar", OtInteger::create(ImGuiWindowFlags_AlwaysHorizontalScrollbar));
-	module->set("windowAlwaysUseWindowPadding", OtInteger::create(ImGuiWindowFlags_AlwaysUseWindowPadding));
-	module->set("windowNoNavInputs", OtInteger::create(ImGuiWindowFlags_NoNavInputs));
-	module->set("windowNoNavFocus", OtInteger::create(ImGuiWindowFlags_NoNavFocus));
-	module->set("windowUnsavedDocument", OtInteger::create(ImGuiWindowFlags_UnsavedDocument));
-	module->set("windowNoNav", OtInteger::create(ImGuiWindowFlags_NoNav));
-	module->set("windowNoDecoration", OtInteger::create(ImGuiWindowFlags_NoDecoration));
-}

@@ -203,6 +203,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 
 		} catch (const OtException& e) {
 			// do we have an exception handler
+			OT_DEBUG(bytecode->disassemble());
 			if (tryCatch.size()) {
 				// yes, use it
 				OtTryCatch trycatch = tryCatch.back();

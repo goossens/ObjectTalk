@@ -24,6 +24,7 @@
 #include "OtUi.h"
 
 #include "OtComponentTools.h"
+#include "OtEntityObject.h"
 #include "OtScriptComponent.h"
 
 
@@ -90,14 +91,19 @@ void OtScriptComponent::load() {
 
 		// ensure it is a class object
 		if (classObject.isKindOf<OtClassClass>()) {
-			// ensure the class is derived from Entity
-
 			// create instance of class
 			instance = OtClass(classObject)->instantiate(0, nullptr);
-			createSelector = OtSelector::create("create");
-			updateSelector = OtSelector::create("create");
-			hasCreateMethod = instance->has(createSelector);
-			hasUpdateMethod = instance->has(updateSelector);
+
+			// ensure the class is derived from Entity
+			if (instance.isKindOf<OtEntityObjectClass>()) {
+				createSelector = OtSelector::create("create");
+				updateSelector = OtSelector::create("update");
+				hasCreateMethod = instance->has(createSelector);
+				hasUpdateMethod = instance->has(updateSelector);
+
+			} else {
+				OtExcept("Class [%s] in script [%s] is not dereive from [Entity]", className.c_str(), path.string().c_str());
+			}
 
 		} else {
 			OtExcept("Object [%s] in script [%s] is not a class", className.c_str(), path.string().c_str());

@@ -33,10 +33,11 @@ public:
 
 private:
 	// optimize sequences of instructions
-	bool optimizePushPushSwapAssignSequence(size_t& instruction, size_t available);
+	bool optimizePushStackReferenceSequence(size_t& instruction, size_t available);
 	bool optimizePushMemberReferenceSequence(size_t& instruction, size_t available);
-	bool optimizeCallMemberSequence(size_t& instruction, size_t available);
 	bool optimizePushMemberSequence(size_t& instruction, size_t available);
+	bool optimizePushStackSwapAssignSequence(size_t& instruction, size_t available);
+	bool optimizePushMemberSwapAssignSequence(size_t& instruction, size_t available);
 
 	// old and new bytecodes
 	OtByteCode oldByteCode;
@@ -44,7 +45,6 @@ private:
 
 	// start of each instruction
 	std::vector<size_t> instructions;
-	void getInstructionOffsets(OtByteCode bytecode);
 
 	// translation table to fix jumps
 	std::unordered_map<size_t, size_t> jumpMapping;

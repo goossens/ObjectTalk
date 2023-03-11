@@ -20,7 +20,6 @@
 #include "OtException.h"
 #include "OtLibuv.h"
 #include "OtModule.h"
-#include "OtOptimizer.h"
 #include "OtRegistry.h"
 #include "OtSingleton.h"
 #include "OtSource.h"
@@ -89,15 +88,13 @@ void OtModuleClass::load(const std::filesystem::path& path) {
 
 	// compile and run module code
 	OtCompiler compiler;
-	OtOptimizer optimizer;
 	OtSource source = OtSourceClass::create(fullPath.string(), buffer.str());
 
 	localPath.push_back(fullPath.parent_path());
 
 	try {
 		auto bytecode = compiler.compileSource(source, OtModule(this));
-		auto optimized = optimizer.optimize(bytecode);
-		OtVM::instance()->execute(optimized);
+		OtVM::instance()->execute(bytecode);
 
 	} catch (const OtException& e) {
 		localPath.pop_back();

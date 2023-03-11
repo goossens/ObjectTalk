@@ -28,7 +28,7 @@
 #include "OtThrow.h"
 
 
-OtByteCode OtCompiler::compileFile(const std::filesystem::path& path, OtObject object) {
+OtByteCode OtCompiler::compileFile(const std::filesystem::path& path, OtObject object, bool disassemble) {
 	// sanity check
 	if (!std::filesystem::exists(path)) {
 		OtExcept("Can't open file [%s]", path.c_str());
@@ -40,7 +40,7 @@ OtByteCode OtCompiler::compileFile(const std::filesystem::path& path, OtObject o
 	buffer << stream.rdbuf();
 	stream.close();
 	OtSource source = OtSourceClass::create(path.string(), buffer.str());
-	return compileSource(source, object);
+	return compileSource(source, object, disassemble);
 }
 
 
@@ -48,10 +48,10 @@ OtByteCode OtCompiler::compileFile(const std::filesystem::path& path, OtObject o
 //	OtCompiler::compileText
 //
 
-OtByteCode OtCompiler::compileText(const std::string& text, OtObject object) {
+OtByteCode OtCompiler::compileText(const std::string& text, OtObject object, bool disassemble) {
 	// convert to source object, compile and return bytecode
 	OtSource source = OtSourceClass::create("__internal__", text);
-	return compileSource(source, object);
+	return compileSource(source, object, disassemble);
 }
 
 
@@ -59,9 +59,10 @@ OtByteCode OtCompiler::compileText(const std::string& text, OtObject object) {
 //	OtCompiler::compileSource
 //
 
-OtByteCode OtCompiler::compileSource(OtSource src, OtObject object) {
-	// remember source code
+OtByteCode OtCompiler::compileSource(OtSource src, OtObject object, bool disassemble) {
+	// remember source code and flag
 	source = src;
+	disassembleBytecode = disassemble;
 
 	// clear scope stack
 	scopeStack.clear();
@@ -98,9 +99,19 @@ OtByteCode OtCompiler::compileSource(OtSource src, OtObject object) {
 	// clear scope stack
 	scopeStack.clear();
 
-	// return compiled code
+	// ensure we leave a default result on the stack
 	bytecode->push(OtVM::instance()->getNull());
-	return bytecode;
+
+	// optimize code
+	auto optimized = optimizer.optimize(bytecode);
+
+	// disassemble raw and optimized code
+	if (disassemble) {
+		outputDisassembledBytecode(bytecode, optimized);
+	}
+
+	// return compiled and optimized code
+	return optimized;
 }
 
 
@@ -108,7 +119,7 @@ OtByteCode OtCompiler::compileSource(OtSource src, OtObject object) {
 //	OtCompiler::compileExpression
 //
 
-OtByteCode OtCompiler::compileExpression(OtSource src) {
+OtByteCode OtCompiler::compileExpression(OtSource src, bool disassemble) {
 	// rememember source code
 	source = src;
 
@@ -141,8 +152,16 @@ OtByteCode OtCompiler::compileExpression(OtSource src) {
 	// clear scope stack
 	scopeStack.clear();
 
-	// return compiled code
-	return bytecode;
+	// optimize code
+	auto optimized = optimizer.optimize(bytecode);
+
+	// disassemble raw and optimized code
+	if (disassemble) {
+		outputDisassembledBytecode(bytecode, optimized);
+	}
+
+	// return compiled and optimized code
+	return optimized;
 }
 
 
@@ -351,8 +370,16 @@ void OtCompiler::function(OtByteCode bytecode) {
 	// default return value in case function does not have return statement
 	functionCode->push(OtVM::instance()->getNull());
 
+	// optimize code
+	auto optimized = optimizer.optimize(functionCode);
+
+	// disassemble raw and optimized code
+	if (disassembleBytecode) {
+		outputDisassembledBytecode(functionCode, optimized);
+	}
+
 	// create a new bytecode function
-	auto function = OtByteCodeFunction::create(functionCode, count);
+	auto function = OtByteCodeFunction::create(optimized, count);
 
 	// see if this function captures variables and needs a closure?
 	auto scope = &(scopeStack.back());
@@ -1656,4 +1683,21 @@ void OtCompiler::statement(OtByteCode bytecode) {
 
 	// mark end of statement
 	bytecode->mark(scanner.getLastTokenEnd());
+}
+
+
+//
+//	OtCompiler::outputDisassembledBytecode
+//
+
+void OtCompiler::outputDisassembledBytecode(OtByteCode original, OtByteCode optimized) {
+	std::cout << "Original:" << std::endl;
+	std::cout << "---------" << std::endl << std::endl;
+	std::cout << original->disassemble() << std::endl;
+	std::cout << std::endl;
+
+	std::cout << "Optimized:" << std::endl;
+	std::cout << "----------" << std::endl << std::endl;
+	std::cout << optimized->disassemble() << std::endl;
+	std::cout << std::endl;
 }

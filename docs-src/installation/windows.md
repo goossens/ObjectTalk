@@ -1,5 +1,5 @@
 ObjectTalk is supported on Windows 10, 11, Server 2019
-or Server 2022). There are 3 simple requirements
+or Server 2022. There are 3 simple requirements
 to get your machine ready for ObjectTalk development:
 
 * Install Visual Studio 17 2022 (make sure you pick the "Desktop development with C++" option): Visual Studio 16 2019 also works

@@ -16,6 +16,7 @@
 #include "OtByteCode.h"
 #include "OtMemberReference.h"
 #include "OtSelector.h"
+#include "OtStackReference.h"
 
 
 //
@@ -26,9 +27,6 @@ std::string OtByteCodeClass::disassemble() {
 	std::stringstream buffer;
 	size_t pc = 0;
 	size_t end = bytecode.size();
-
-	buffer << "Code:" << std::endl;
-	buffer << "-----" << std::endl << std::endl;
 
 	while (pc < end) {
 		buffer << std::right;
@@ -108,6 +106,10 @@ std::string OtByteCodeClass::disassemble() {
 				buffer << "popTry";
 				break;
 
+			case pushStackOpcode:
+				buffer << "pushStack" << getNumber(pc);
+				break;
+
 			case pushObjectMemberOpcode:
 				buffer << "pushObjectMember" << OtObjectDescribe(constants[getNumber(pc)]) << " " << OtSelector::name(getNumber(pc));
 				break;
@@ -116,8 +118,12 @@ std::string OtByteCodeClass::disassemble() {
 				buffer << "pushMember" << OtSelector::name(getNumber(pc));
 				break;
 
+			case assignStackOpcode:
+				buffer << "assignStack" << getNumber(pc);
+				break;
+
 			case assignMemberOpcode:
-				buffer << "assignMember" << OtObjectDescribe(constants[getNumber(pc)]) << " " << OtSelector::name(getNumber(pc)) << " " << OtObjectDescribe(constants[getNumber(pc)]);
+				buffer << "assignMember" << OtObjectDescribe(constants[getNumber(pc)]) << " " << OtSelector::name(getNumber(pc));
 				break;
 		}
 
@@ -212,6 +218,10 @@ void OtByteCodeClass::copyInstruction(OtByteCode other, size_t pc) {
 			popTry();
 			break;
 
+		case pushStackOpcode:
+			pushStack(other->getNumber(pc));
+			break;
+
 		case pushObjectMemberOpcode: {
 			auto object = other->getNumber(pc);
 			auto member = other->getNumber(pc);
@@ -225,11 +235,14 @@ void OtByteCodeClass::copyInstruction(OtByteCode other, size_t pc) {
 			break;
 		}
 
+		case assignStackOpcode:
+			assignStack(other->getNumber(pc));
+			break;
+
 		case assignMemberOpcode: {
 			auto object = other->getNumber(pc);
 			auto member = other->getNumber(pc);
-			auto value = other->getNumber(pc);
-			assignMember(other->constants[object], member, other->constants[value]);
+			assignMember(other->constants[object], member);
 			break;
 		}
 	}
@@ -307,6 +320,10 @@ size_t OtByteCodeClass::getInstructionSize(size_t offset) {
 		case popTryOpcode:
 			break;
 
+		case pushStackOpcode:
+			getNumber(pc);
+			break;
+
 		case pushObjectMemberOpcode:
 			getNumber(pc);
 			getNumber(pc);
@@ -316,8 +333,11 @@ size_t OtByteCodeClass::getInstructionSize(size_t offset) {
 			getNumber(pc);
 			break;
 
-		case assignMemberOpcode:
+		case assignStackOpcode:
 			getNumber(pc);
+			break;
+
+		case assignMemberOpcode:
 			getNumber(pc);
 			getNumber(pc);
 			break;
@@ -340,6 +360,29 @@ bool OtByteCodeClass::isPush(size_t pc, OtObject &object) {
 		return false;
 	}
 }
+
+
+//
+//	OtByteCodeClass::isPushStackReference
+//
+
+bool OtByteCodeClass::isPushStackReference(size_t pc, OtStackReference &reference) {
+	if (getOpcode(pc) == pushOpcode) {
+		OtObject object = constants[getNumber(pc)];
+
+		if (object.isKindOf<OtStackReferenceClass>()) {
+			reference = OtStackReference(object);
+			return true;
+
+		} else {
+			return false;
+		}
+
+	} else {
+		return false;
+	}
+}
+
 
 //
 //
@@ -409,22 +452,6 @@ bool OtByteCodeClass::isMethodDeref(size_t pc) {
 bool OtByteCodeClass::isMethodAssign(size_t pc) {
 	if (getOpcode(pc) == methodOpcode) {
 		return  getNumber(pc) == OtSelector::create("__assign__");
-
-	} else {
-		return false;
-	}
-}
-
-
-//
-//	OtByteCodeClass::isMethodCall
-//
-
-bool OtByteCodeClass::isMethodCall(size_t pc, size_t& count) {
-	if (getOpcode(pc) == methodOpcode) {
-		auto selector = getNumber(pc);
-		count = getNumber(pc);
-		return  selector == OtSelector::create("__call__");
 
 	} else {
 		return false;

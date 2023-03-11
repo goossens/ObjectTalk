@@ -18,7 +18,6 @@
 #include "OtCompiler.h"
 #include "OtLibuv.h"
 #include "OtModule.h"
-#include "OtOptimizer.h"
 
 #include "OtHttp.h"
 
@@ -127,18 +126,7 @@ int main(int argc, char* argv[]) {
 						// don't run; just compile, optimize and disassemble bytecode
 						OtCompiler compiler;
 						auto object = OtObject::create();
-						auto bytecode = compiler.compileFile(file, object);
-						std::cout << "Original:" << std::endl;
-						std::cout << "---------" << std::endl << std::endl;
-
-						std::cout << bytecode->disassemble() << std::endl;
-
-						OtOptimizer optimizer;
-						auto optimized = optimizer.optimize(bytecode);
-						std::cout << std::endl;
-						std::cout << "Optimized:" << std::endl;
-						std::cout << "----------" << std::endl << std::endl;
-						std::cout << optimized->disassemble() << std::endl;
+						auto bytecode = compiler.compileFile(file, object, true);
 
 					} else {
 						// compile, optimize and run script as a module

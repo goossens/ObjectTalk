@@ -18,6 +18,7 @@
 
 #include "OtByteCode.h"
 #include "OtModule.h"
+#include "OtOptimizer.h"
 #include "OtScanner.h"
 #include "OtSource.h"
 #include "OtStack.h"
@@ -31,12 +32,12 @@
 class OtCompiler {
 public:
 	// compile ObjectTalk script into bytecode
-	OtByteCode compileFile(const std::filesystem::path& path, OtObject object);
-	OtByteCode compileText(const std::string& text, OtObject object);
-	OtByteCode compileSource(OtSource source, OtObject object);
+	OtByteCode compileFile(const std::filesystem::path& path, OtObject object, bool disassemble=false);
+	OtByteCode compileText(const std::string& text, OtObject object, bool disassemble=false);
+	OtByteCode compileSource(OtSource source, OtObject object, bool disassemble=false);
 
 	// compile expression into bytecode
-	OtByteCode compileExpression(OtSource source);
+	OtByteCode compileExpression(OtSource source, bool disassemble=false);
 
 private:
 	// push a new scope onto the scope stack
@@ -156,6 +157,9 @@ private:
 	// scanner for compilation
 	OtScanner scanner;
 
+	// code optimizer
+	OtOptimizer optimizer;
+
 	// scope tracker
 	typedef enum {
 		UNDEFINED_SCOPE,
@@ -180,4 +184,8 @@ private:
 	};
 
 	std::vector<OtScope> scopeStack;
+
+	// debugging support
+	bool disassembleBytecode = false;
+	void outputDisassembledBytecode(OtByteCode original, OtByteCode optimized);
 };

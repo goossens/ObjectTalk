@@ -134,16 +134,16 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 
 				case OtByteCodeClass::memberOpcode: {
 					// create a member reference
-					auto reference = OtMemberReference::create(stack.pop(), bytecode->getNumber(pc));
+					auto object = stack.pop();
+					auto member = bytecode->getNumber(pc);
+					auto reference = OtMemberReference::create(object, member);
 					stack.push(reference);
 					break;
 				}
 
 				case OtByteCodeClass::methodOpcode: {
-					// get method
+					// get method and number of calling parameters
 					auto method = bytecode->getNumber(pc);
-
-					// get number of calling parameters
 					auto count = bytecode->getNumber(pc);
 
 					// get a pointer to the calling parameters and target object
@@ -176,6 +176,13 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 					tryCatch.pop_back();
 					break;
 
+				case OtByteCodeClass::pushStackOpcode: {
+					auto slot = bytecode->getNumber(pc);
+					auto object  = stack.getFrameItem(OtStackItem(0, slot));
+					stack.push(object);
+					break;
+				}
+
 				case OtByteCodeClass::pushObjectMemberOpcode: {
 					auto object = bytecode->getConstant(bytecode->getNumber(pc));
 					auto member = bytecode->getNumber(pc);
@@ -183,7 +190,6 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 					stack.push(resolvedMember);
 					break;
 				}
-
 				case OtByteCodeClass::pushMemberOpcode: {
 					auto object = stack.pop();
 					auto member = bytecode->getNumber(pc);
@@ -192,18 +198,24 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 					break;
 				}
 
+				case OtByteCodeClass::assignStackOpcode: {
+					auto slot = bytecode->getNumber(pc);
+					auto value = stack.back();
+					stack.setFrameItem(OtStackItem(0, slot), value);
+					break;
+				}
+
 				case OtByteCodeClass::assignMemberOpcode: {
 					auto object = bytecode->getConstant(bytecode->getNumber(pc));
 					auto member = bytecode->getNumber(pc);
-					auto value = bytecode->getConstant(bytecode->getNumber(pc));
-					auto result = object->set(member, value);
-					stack.push(result);
+					auto value = stack.back();
+					object->set(member, value);
+					break;
 				}
 			}
 
 		} catch (const OtException& e) {
 			// do we have an exception handler
-			OT_DEBUG(bytecode->disassemble());
 			if (tryCatch.size()) {
 				// yes, use it
 				OtTryCatch trycatch = tryCatch.back();

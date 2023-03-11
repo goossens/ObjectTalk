@@ -24,7 +24,7 @@
 
 
 //
-//	Forward references
+//	Forward declarations
 //
 
 class OtClassClass;

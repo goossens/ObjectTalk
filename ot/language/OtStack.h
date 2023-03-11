@@ -70,6 +70,7 @@ public:
 class OtStack {
 public:
 	// stack access functions
+	inline OtObject back() { return stack.back(); }
 	inline void push(OtObject& object) { stack.emplace_back(object); }
 
 	template<typename T>

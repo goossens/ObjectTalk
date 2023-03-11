@@ -22,7 +22,7 @@
 
 
 //
-//	Forward references
+//	Forward declarations
 //
 
 class OtObjectClass;

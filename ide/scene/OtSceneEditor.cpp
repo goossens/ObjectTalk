@@ -360,9 +360,9 @@ void OtSceneEditor::renderViewPort() {
 
 	if (scene->isValidEntity(selectedCamera)) {
 		auto camera = scene->getComponent<OtCameraComponent>(selectedCamera);
-		cameraProjectionMatrix = camera.getProjectionMatrix(size.x / size.y);
+		cameraPosition = scene->getComponent<OtTransformComponent>(selectedCamera).translation;
 		camerViewMatrix = glm::inverse(scene->getGlobalTransform(selectedCamera));
-		cameraPosition = glm::vec3(camerViewMatrix[3]);
+		cameraProjectionMatrix = camera.getProjectionMatrix(size.x / size.y);
 
 	} else {
 		editorCamera.update();

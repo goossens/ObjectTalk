@@ -89,9 +89,9 @@ int OtSceneRuntime::render(int width, int height) {
 
 	// get camera information
 	auto camera = scene->getComponent<OtCameraComponent>(activeCamera);
-	glm::mat4 cameraProjectionMatrix = camera.getProjectionMatrix((float) width / (float) height);
+	glm::vec3 cameraPosition = scene->getComponent<OtTransformComponent>(activeCamera).translation;
 	glm::mat4 camerViewMatrix = glm::inverse(scene->getGlobalTransform(activeCamera));
-	glm::vec3 cameraPosition = glm::vec3(camerViewMatrix[3]);
+	glm::mat4 cameraProjectionMatrix = camera.getProjectionMatrix((float) width / (float) height);
 
 	// render the scene and return the ID of the generated texture
 	renderer->setCameraPosition(cameraPosition);

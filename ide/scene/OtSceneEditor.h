@@ -96,8 +96,8 @@ private:
 	void handleShortcuts();
 
 	// the scene being edited
-	std::shared_ptr<OtScene> scene;
-	std::shared_ptr<OtSceneRenderer> renderer;
+	std::unique_ptr<OtScene> scene;
+	std::unique_ptr<OtSceneRenderer> renderer;
 	OtEntity selectedEntity = OtEntityNull;
 
 	// to handle do/undo/redo

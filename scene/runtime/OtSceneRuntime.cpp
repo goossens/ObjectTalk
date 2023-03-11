@@ -40,8 +40,8 @@ void OtSceneRuntime::setup(std::filesystem::path path) {
 
 bool OtSceneRuntime::load() {
 	// create the scene and a renderer
-	scene = std::make_shared<OtScene>();
-	renderer = std::make_shared<OtSceneRenderer>();
+	scene = std::make_unique<OtScene>();
+	renderer = std::make_unique<OtSceneRenderer>();
 
 	// load the scene and initialize the systems
 	scene->load(scenePath);
@@ -98,7 +98,7 @@ int OtSceneRuntime::render(int width, int height) {
 	renderer->setViewMatrix(camerViewMatrix);
 	renderer->setProjectionMatrix(cameraProjectionMatrix);
 	renderer->setSize(width, height);
-	return renderer->render(scene);
+	return renderer->render(scene.get());
 }
 
 

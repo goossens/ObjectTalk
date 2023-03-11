@@ -24,7 +24,7 @@
 class OtMoveEntityTask : public OtEditorTask {
 public:
 	// constructor
-	OtMoveEntityTask(std::shared_ptr<OtScene> s, OtEntity t, OtEntity e, bool b) : scene(s), before(b) {
+	OtMoveEntityTask(OtScene* s, OtEntity t, OtEntity e, bool b) : scene(s), before(b) {
 		targetUuid = scene->getUuidFromEntity(t);
 		entityUuid = scene->getUuidFromEntity(e);
 	}
@@ -73,7 +73,7 @@ public:
 
 private:
 	// properties
-	std::shared_ptr<OtScene> scene;
+	OtScene* scene;
 	uint32_t targetUuid;
 	uint32_t entityUuid;
 	bool before;

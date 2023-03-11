@@ -47,7 +47,7 @@ private:
 	bool ready = false;
 
 	// the scene we are running
-	std::shared_ptr<OtScene> scene;
+	std::unique_ptr<OtScene> scene;
 	std::filesystem::path scenePath;
 
 	// system initialization function
@@ -60,5 +60,5 @@ private:
 	bool cameraSelected = false;
 
 	// our scene renderer
-	std::shared_ptr<OtSceneRenderer> renderer;
+	std::unique_ptr<OtSceneRenderer> renderer;
 };

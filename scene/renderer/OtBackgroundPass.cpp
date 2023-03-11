@@ -19,7 +19,7 @@
 //	OtSceneRenderer::renderBackgroundPass
 //
 
-void OtSceneRenderer::renderBackgroundPass(std::shared_ptr<OtScene> scene) {
+void OtSceneRenderer::renderBackgroundPass(OtScene* scene) {
 	// update composite buffer
 	compositeBuffer.update(width, height);
 

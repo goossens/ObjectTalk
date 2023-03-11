@@ -25,7 +25,7 @@ template <typename T>
 class OtDeleteComponentTask : public OtEditorTask {
 public:
 	// constructor
-	OtDeleteComponentTask(std::shared_ptr<OtScene> s, OtEntity e) : scene(s) {
+	OtDeleteComponentTask(OtScene* s, OtEntity e) : scene(s) {
 		entityUuid = scene->getUuidFromEntity(e);
 	}
 
@@ -53,7 +53,7 @@ public:
 
 private:
 	// properties
-	std::shared_ptr<OtScene> scene;
+	OtScene* scene;
 	uint32_t entityUuid;
 	T data;
 };

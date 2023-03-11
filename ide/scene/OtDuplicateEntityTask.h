@@ -24,7 +24,7 @@
 class OtDuplicateEntityTask : public OtEditorTask {
 public:
 	// constructor
-	OtDuplicateEntityTask(std::shared_ptr<OtScene> s, OtEntity e) : scene(s) {
+	OtDuplicateEntityTask(OtScene* s, OtEntity e) : scene(s) {
 		targetUuid = scene->getUuidFromEntity(e);
 	}
 
@@ -51,7 +51,7 @@ public:
 
 private:
 	// properties
-	std::shared_ptr<OtScene> scene;
+	OtScene* scene;
 	uint32_t targetUuid;
 	uint32_t entityUuid;
 };

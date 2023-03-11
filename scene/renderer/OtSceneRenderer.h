@@ -42,30 +42,30 @@ public:
 	void setGridScale(float gs) { gridScale = gs; }
 
 	// render the specified scene
-	int render(std::shared_ptr<OtScene> scene, OtEntity selected=OtEntityNull);
+	int render(OtScene* scene, OtEntity selected=OtEntityNull);
 
 private:
 	// render passes
-	// void renderShadowPass(std::shared_ptr<OtScene> scene);
-	void renderGeometryPass(std::shared_ptr<OtScene> scene);
-	void renderBackgroundPass(std::shared_ptr<OtScene> scene);
-	void renderLightingPass(std::shared_ptr<OtScene> scene);
-	void renderTransparentPass(std::shared_ptr<OtScene> scene);
+	// void renderShadowPass(OtScene* scene);
+	void renderGeometryPass(OtScene* scene);
+	void renderBackgroundPass(OtScene* scene);
+	void renderLightingPass(OtScene* scene);
+	void renderTransparentPass(OtScene* scene);
 	void renderGridPass();
-	void renderHighlightPass(std::shared_ptr<OtScene> scene, OtEntity entity);
-	void renderPostProcessingPass(std::shared_ptr<OtScene> scene);
+	void renderHighlightPass(OtScene* scene, OtEntity entity);
+	void renderPostProcessingPass(OtScene* scene);
 
 	// render entitities
 	void renderSkyBox(OtPass& pass, OtSkyBoxComponent& component);
 	void renderSkySphere(OtPass& pass, OtSkySphereComponent& component);
-	void renderGeometry(OtPass& pass, std::shared_ptr<OtScene> scene, OtEntity entity);
-	void renderTransparentGeometry(OtPass& pass, std::shared_ptr<OtScene> scene, OtEntity entity);
-	void renderHighlight(OtPass& pass, std::shared_ptr<OtScene> scene, OtEntity entity);
+	void renderGeometry(OtPass& pass, OtScene* scene, OtEntity entity);
+	void renderTransparentGeometry(OtPass& pass, OtScene* scene, OtEntity entity);
+	void renderHighlight(OtPass& pass, OtScene* scene, OtEntity entity);
 	void renderBloom(float bloomIntensity);
 
 	// rendering tools
-	void submitMaterialUniforms(std::shared_ptr<OtScene> scene, OtEntity entity);
-	void submitLightUniforms(std::shared_ptr<OtScene> scene);
+	void submitMaterialUniforms(OtScene* scene, OtEntity entity);
+	void submitLightUniforms(OtScene* scene);
 
 	// camera information
 	glm::vec3 cameraPosition;

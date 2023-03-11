@@ -22,7 +22,7 @@
 class OtPasteEntityTask : public OtEditorTask {
 public:
 	// constructor
-	OtPasteEntityTask(std::shared_ptr<OtScene> s, OtEntity t, std::string& c) : scene(s), clipboard(c) {
+	OtPasteEntityTask(OtScene* s, OtEntity t, std::string& c) : scene(s), clipboard(c) {
 		targetUuid = scene->getUuidFromEntity(t);
 	}
 
@@ -48,7 +48,7 @@ public:
 
 private:
 	// properties
-	std::shared_ptr<OtScene> scene;
+	OtScene* scene;
 	uint32_t targetUuid;
 
 	std::string clipboard;

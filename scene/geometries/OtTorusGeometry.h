@@ -65,8 +65,8 @@ private:
 	// attributes
 	float radius = 1.0f;
 	float tubeRadius = 0.4f;
-	int radialSegments = 32;
-	int tubularSegments = 16;
+	int radialSegments = 64;
+	int tubularSegments = 32;
 	float radialStart = 0.0f;
 	float radialLength = 360.0f;
 	float tubularStart = 0.0f;

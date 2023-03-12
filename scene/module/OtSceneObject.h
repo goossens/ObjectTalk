@@ -30,6 +30,10 @@ public:
 	OtSceneObjectClass() = default;
 	OtSceneObjectClass(OtScene* s) : scene(s) {}
 
+	// find entities
+	bool hasEntity(const std::string& tag);
+	OtObject getEntity(const std::string& tag);
+
 	// get type definition
 	static OtType getMeta();
 

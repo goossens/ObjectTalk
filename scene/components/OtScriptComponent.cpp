@@ -41,7 +41,7 @@ class $ : scene.Entity {\n\
 \n\
 	function update(this) {\n\
 	}\n\
-};\n\
+}\n\
 ";
 
 

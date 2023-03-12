@@ -27,8 +27,19 @@ using OtEntityObject = OtObjectPointer<OtEntityObjectClass>;
 
 class OtEntityObjectClass : public OtObjectClass {
 public:
+	// constructors
+	OtEntityObjectClass() = default;
+	OtEntityObjectClass(OtScene* s, OtEntity e) : scene(s), entity(e) {}
+
 	// link object to ECS
 	void linkToECS(OtScene* scene, OtEntity entity);
+
+	// find entities
+	bool entityExists(const std::string& tag);
+	OtObject getEntity(const std::string& tag);
+
+	// create an animation object
+	OtObject createAnimation();
 
 	// access components
 	bool hasTransformComponent();

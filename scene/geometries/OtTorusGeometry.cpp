@@ -244,8 +244,8 @@ nlohmann::json OtTorusGeometryClass::serialize() {
 void OtTorusGeometryClass::deserialize(nlohmann::json data) {
 	radius = data.value("radius", 1.0f);
 	tubeRadius = data.value("tubeRadius", 0.4f);
-	radialSegments = data.value("radialSegments", 32);
-	tubularSegments = data.value("tubularSegments", 16);
+	radialSegments = data.value("radialSegments", 64);
+	tubularSegments = data.value("tubularSegments", 32);
 	radialStart = data.value("radialStart", 0.0f);
 	radialLength = data.value("radialLength", 360.0f);
 	tubularStart = data.value("tubularStart", 0.0f);

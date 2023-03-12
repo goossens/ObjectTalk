@@ -11,6 +11,7 @@
 
 #include "OtFunction.h"
 
+#include "OtEntityObject.h"
 #include "OtSceneObject.h"
 
 
@@ -23,6 +24,9 @@ OtType OtSceneObjectClass::getMeta() {
 
 	if (!type) {
 		type = OtType::create<OtSceneObjectClass>("Scene", OtObjectClass::getMeta());
+
+		type->set("hasEntity", OtFunction::create(&OtSceneObjectClass::hasEntity));
+		type->set("getEntity", OtFunction::create(&OtSceneObjectClass::getEntity));
 	}
 
 	return type;

@@ -37,9 +37,8 @@ add_dependencies(gfx
 	shaders
 	glfw bgfx
 	imgui imguifd imguieditor
-	glm mipmap tess2 tinyobjloader
-	entt
-	box2d tweeny)
+	glm mipmap tess2
+	entt box2d)
 
 target_link_libraries(gfx PUBLIC
 	ot
@@ -47,9 +46,8 @@ target_link_libraries(gfx PUBLIC
 	shaders
 	glfw bgfx
 	imgui imguifd imguieditor
-	glm mipmap tess2 tinyobjloader
-	entt
-	box2d tweeny
+	glm mipmap tess2
+	entt box2d
 	${GFX_LIBS})
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${GFX_INCLUDES} ${GFX_SOURCES})

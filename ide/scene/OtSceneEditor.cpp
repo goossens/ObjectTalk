@@ -350,7 +350,7 @@ void OtSceneEditor::renderViewPort() {
 		}
 
 	} else {
-			selectedCamera = OtEntityNull;
+		selectedCamera = OtEntityNull;
 	}
 
 	// get camera information

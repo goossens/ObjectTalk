@@ -1,0 +1,266 @@
+[
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Camera",
+				"uuid": 3204018985
+			},
+			{
+				"component": "Transform",
+				"rotation": [
+					-25.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				],
+				"translation": [
+					0.0,
+					1.5,
+					3.5
+				]
+			},
+			{
+				"component": "Camera",
+				"far": 100.0,
+				"fov": 60.0,
+				"mainCamera": false,
+				"near": 0.10000000149011612
+			},
+			{
+				"Exposure": 1.0,
+				"bloomIntensity": 0.6899999976158142,
+				"component": "Post Processing"
+			}
+		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Light",
+				"uuid": 536276296
+			},
+			{
+				"component": "Transform",
+				"rotation": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				],
+				"translation": [
+					5.0,
+					3.0,
+					5.0
+				]
+			},
+			{
+				"color": [
+					1.0,
+					1.0,
+					1.0
+				],
+				"component": "Directional Light"
+			}
+		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Animator",
+				"uuid": 2066162489
+			},
+			{
+				"component": "Script",
+				"path": "rotator.ot"
+			}
+		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Cube 1",
+				"uuid": 2430172498
+			},
+			{
+				"component": "Transform",
+				"rotation": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				],
+				"translation": [
+					-2.0,
+					0.0,
+					0.0
+				]
+			},
+			{
+				"component": "Geometry",
+				"cullback": true,
+				"geometry": {
+					"type": "Box",
+					"xsegments": 1,
+					"ysegments": 1,
+					"zsegments": 1
+				},
+				"transparent": false,
+				"wireframe": false
+			},
+			{
+				"albedo": [
+					0.8098957538604736,
+					0.8761062026023865,
+					0.1279269903898239
+				],
+				"albedoTexture": "",
+				"ao": 1.0,
+				"aoTexture": "",
+				"component": "Material",
+				"emissive": 0.03999999910593033,
+				"emissiveTexture": "",
+				"metallic": 0.5,
+				"metallicTexture": "",
+				"normalTexture": "",
+				"roughness": 0.5,
+				"roughnessTexture": ""
+			}
+		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Cube 2",
+				"uuid": 2633785743
+			},
+			{
+				"component": "Transform",
+				"rotation": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				],
+				"translation": [
+					0.0,
+					0.0,
+					0.0
+				]
+			},
+			{
+				"component": "Geometry",
+				"cullback": true,
+				"geometry": {
+					"type": "Box",
+					"xsegments": 1,
+					"ysegments": 1,
+					"zsegments": 1
+				},
+				"transparent": false,
+				"wireframe": false
+			},
+			{
+				"albedo": [
+					0.06889733672142029,
+					0.6447030305862427,
+					0.6769911646842957
+				],
+				"albedoTexture": "",
+				"ao": 1.0,
+				"aoTexture": "",
+				"component": "Material",
+				"emissive": 0.05999999865889549,
+				"emissiveTexture": "",
+				"metallic": 0.5,
+				"metallicTexture": "",
+				"normalTexture": "",
+				"roughness": 0.5,
+				"roughnessTexture": ""
+			}
+		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Cube 3",
+				"uuid": 3742618790
+			},
+			{
+				"component": "Transform",
+				"rotation": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				],
+				"translation": [
+					2.0,
+					0.0,
+					0.0
+				]
+			},
+			{
+				"component": "Geometry",
+				"cullback": true,
+				"geometry": {
+					"type": "Box",
+					"xsegments": 1,
+					"ysegments": 1,
+					"zsegments": 1
+				},
+				"transparent": false,
+				"wireframe": false
+			},
+			{
+				"albedo": [
+					0.9115044474601746,
+					0.14922858774662018,
+					0.14922858774662018
+				],
+				"albedoTexture": "",
+				"ao": 1.0,
+				"aoTexture": "",
+				"component": "Material",
+				"emissive": 0.07999999821186066,
+				"emissiveTexture": "",
+				"metallic": 0.5,
+				"metallicTexture": "",
+				"normalTexture": "",
+				"roughness": 0.5,
+				"roughnessTexture": ""
+			}
+		]
+	}
+]

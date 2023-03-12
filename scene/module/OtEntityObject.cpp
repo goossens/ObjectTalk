@@ -12,7 +12,10 @@
 #include "OtException.h"
 #include "OtFunction.h"
 
+#include "OtAnimation.h"
+#include "OtAnimator.h"
 #include "OtEntityObject.h"
+#include "OtSceneObject.h"
 #include "OtTransformComponentObject.h"
 
 
@@ -23,6 +26,46 @@
 void OtEntityObjectClass::linkToECS(OtScene *s, OtEntity e) {
 	scene = s;
 	entity = e;
+}
+
+
+//
+//	OtEntityObjectClass::entityExists
+//
+
+bool OtEntityObjectClass::entityExists(const std::string & tag) {
+	return scene->hasEntity(tag);
+}
+
+
+//
+//	OtEntityObjectClass::getEntity
+//
+
+OtObject OtEntityObjectClass::getEntity(const std::string &tag) {
+	// get the entity
+	auto entity = scene->getEntity(tag);
+
+	// see if this entity has a script component
+	if (scene->hasComponent<OtScriptComponent>(entity)) {
+		// we use the script instance
+		return scene->getComponent<OtScriptComponent>(entity).instance;
+
+	} else {
+		// create a new entity reference
+		return OtEntityObject::create(scene, entity);
+	}
+}
+
+
+//
+//	OtEntityObjectClass::createAnimation
+//
+
+OtObject OtEntityObjectClass::createAnimation() {
+	auto animation = OtAnimation::create();
+	OtAnimator::instance()->add(animation);
+	return animation;
 }
 
 
@@ -53,6 +96,11 @@ OtType OtEntityObjectClass::getMeta() {
 
 	if (!type) {
 		type = OtType::create<OtEntityObjectClass>("Entity", OtObjectClass::getMeta());
+
+		type->set("entityExists", OtFunction::create(&OtEntityObjectClass::entityExists));
+		type->set("getEntity", OtFunction::create(&OtEntityObjectClass::getEntity));
+
+		type->set("createAnimation", OtFunction::create(&OtEntityObjectClass::createAnimation));
 
 		type->set("hasTransformComponent", OtFunction::create(&OtEntityObjectClass::hasTransformComponent));
 

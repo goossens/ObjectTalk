@@ -18,6 +18,7 @@
 #include "OtInput.h"
 #include "OtMath.h"
 
+#include "OtAnimator.h"
 #include "OtEntityObject.h"
 #include "OtSceneModule.h"
 #include "OtSceneRuntime.h"
@@ -82,6 +83,9 @@ bool OtSceneRuntime::isReady() {
 //
 
 int OtSceneRuntime::render(int width, int height) {
+	// run all animations
+	OtAnimator::instance()->update();
+
 	// update all the scripts
 	for (auto [entity, component] : scene->view<OtScriptComponent>().each()) {
 		component.update();

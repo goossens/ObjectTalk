@@ -12,6 +12,7 @@
 #include "OtClass.h"
 #include "OtModule.h"
 
+#include "OtAnimation.h"
 #include "OtEntityObject.h"
 
 
@@ -21,6 +22,7 @@
 
 void OtSceneModuleRegister() {
 	OtModuleClass::registerInternal("scene", [](OtModule module) {
+		module->set("Animation", OtClass::create(OtAnimationClass::getMeta()));
 		module->set("Entity", OtClass::create(OtEntityObjectClass::getMeta()));
 	});
 }

@@ -1,0 +1,24 @@
+var scene = import("scene");
+var math = import("math");
+
+class rotator : scene.Entity {
+	function create(this) {
+		this.addRotator("Cube 1");
+		this.addRotator("Cube 2");
+		this.addRotator("Cube 3");
+	}
+
+	function addRotator(this, tag) {
+		var cube = this.getEntity(tag);
+		var transform = cube.getTransformComponent();
+
+		this.createAnimation()
+			.from(0.0)
+			.to(360.0)
+			.during (5.0 + 10.0.random())
+			.continuous()
+			.onStep(function(angle) {
+				transform.setRotation(math.Vec3(angle));
+			});
+	}
+}

@@ -40,10 +40,10 @@ void OtSphereGeometryClass::init(size_t count, OtObject* parameters) {
 				setPhiStart(parameters[3]->operator float());
 
 			case 3:
-				setHeightSegments(parameters[2]->operator int());
+				setThetaSegments(parameters[2]->operator int());
 
 			case 2:
-				setWidthSegments(parameters[1]->operator int());
+				setPhiSegments(parameters[1]->operator int());
 
 			case 1:
 				setRadius(parameters[0]->operator float());
@@ -70,22 +70,11 @@ OtObject OtSphereGeometryClass::setRadius(float r) {
 
 
 //
-//	OtSphereGeometryClass::setWidthSegments
+//	OtSphereGeometryClass::setthetaSegments
 //
 
-OtObject OtSphereGeometryClass::setWidthSegments(int segments) {
-	widthSegments = segments;
-	refreshGeometry = true;
-	return OtObject(this);
-}
-
-
-//
-//	OtSphereGeometryClass::setHeightSegments
-//
-
-OtObject OtSphereGeometryClass::setHeightSegments(int segments) {
-	heightSegments = segments;
+OtObject OtSphereGeometryClass::setPhiSegments(int segments) {
+	phiSegments = segments;
 	refreshGeometry = true;
 	return OtObject(this);
 }
@@ -125,6 +114,17 @@ OtObject OtSphereGeometryClass::setThetaStart(float ts) {
 
 
 //
+//	OtSphereGeometryClass::setThetaSegments
+//
+
+OtObject OtSphereGeometryClass::setThetaSegments(int segments) {
+	thetaSegments = segments;
+	refreshGeometry = true;
+	return OtObject(this);
+}
+
+
+//
 //	OtSphereGeometryClass::setThetaLength
 //
 
@@ -141,21 +141,21 @@ OtObject OtSphereGeometryClass::setThetaLength(float tl) {
 
 void OtSphereGeometryClass::fillGeometry() {
 	// get increments
-	float ringDelta = thetaLength / heightSegments;
-	float segDelta = phiLength / widthSegments;
+	float ringDelta = thetaLength / phiSegments;
+	float segDelta = phiLength / thetaSegments;
 
 	// address each ring
-	for (auto ring = 0; ring <= heightSegments; ring++) {
+	for (auto ring = 0; ring <= phiSegments; ring++) {
 		auto theta = thetaStart + ring * ringDelta;
 
 		// address each segment
-		for (auto seg = 0; seg <= widthSegments; seg++) {
+		for (auto seg = 0; seg <= thetaSegments; seg++) {
 			auto phi = phiStart + seg * segDelta;
-			glm::vec2 uv = glm::vec2((float) seg / (float) widthSegments, (float) ring / (float) heightSegments);
-			auto r0 = radius * std::sin(theta);
-			auto y0 = radius * std::cos(theta);
-			auto x0 = r0 * -std::sin(phi);
-			auto z0 = r0 * -std::cos(phi);
+			glm::vec2 uv = glm::vec2((float) seg / (float) thetaSegments, (float) ring / (float) phiSegments);
+			auto r0 = radius * std::sin(glm::radians(theta));
+			auto y0 = radius * std::cos(glm::radians(theta));
+			auto x0 = r0 * -std::sin(glm::radians(phi));
+			auto z0 = r0 * -std::cos(glm::radians(phi));
 
 			// add vertex
 			addVertex(OtVertex(
@@ -166,10 +166,10 @@ void OtSphereGeometryClass::fillGeometry() {
 	}
 
 	// add triangles and lines
-	for (auto ring = 0; ring < heightSegments; ring++) {
-		for (auto seg = 0; seg < widthSegments; seg++) {
-			auto a = ring * (widthSegments + 1) + seg;
-			auto b = a + (widthSegments + 1);
+	for (auto ring = 0; ring < phiSegments; ring++) {
+		for (auto seg = 0; seg < thetaSegments; seg++) {
+			auto a = ring * (thetaSegments + 1) + seg;
+			auto b = a + (thetaSegments + 1);
 			auto c = b + 1;
 			auto d = a + 1;
 
@@ -193,35 +193,12 @@ void OtSphereGeometryClass::fillGeometry() {
 
 bool OtSphereGeometryClass::renderGUI() {
 	bool changed = OtGeometryClass::renderGUI();
-	changed |= ImGui::SliderInt("Phi Segments", &widthSegments, 1, 50);
-	int startPhi = glm::degrees(phiStart);
-
-	if (ImGui::SliderInt("Phi Start", &startPhi, 0, 359)) {
-		phiStart = glm::radians((float) startPhi);
-		changed |= true;
-	}
-
-	int lengthPhi = glm::degrees(phiLength);
-
-	if (ImGui::SliderInt("Phi Length", &lengthPhi, 1, 360)) {
-		phiLength = glm::radians((float) lengthPhi);
-		changed |= true;
-	}
-
-	changed |= ImGui::SliderInt("Theta Segments", &heightSegments, 1, 50);
-	int startTheta = glm::degrees(thetaStart);
-
-	if (ImGui::SliderInt("Theta Start", &startTheta, 0, 359)) {
-		thetaStart = glm::radians((float) startTheta);
-		changed |= true;
-	}
-
-	int lengthTheta = glm::degrees(thetaLength);
-
-	if (ImGui::SliderInt("Theta Length", &lengthTheta, 1, 360)) {
-		thetaLength = glm::radians((float) lengthTheta);
-		changed |= true;
-	}
+	changed |= ImGui::SliderInt("Phi Segments", &phiSegments, 1, 200);
+	changed |= ImGui::SliderFloat("Phi Start", &phiStart, 0.0f, 360.0f);
+	changed |= ImGui::SliderFloat("Phi Length", &phiLength, 0.0f, 360.0f);
+	changed |= ImGui::SliderInt("Theta Segments", &thetaSegments, 1, 100);
+	changed |= ImGui::SliderFloat("Theta Start", &thetaStart, 0.0f, 180.0f);
+	changed |= ImGui::SliderFloat("Theta Length", &thetaLength, 0.0f, 180.0f);
 
 	if (changed) {
 		refreshGeometry = true;
@@ -238,10 +215,10 @@ bool OtSphereGeometryClass::renderGUI() {
 nlohmann::json OtSphereGeometryClass::serialize() {
 	auto data = nlohmann::json::object();
 	data["type"] = name;
-	data["phiSegments"] = widthSegments;
+	data["phiSegments"] = phiSegments;
 	data["phiStart"] = phiStart;
 	data["phiLength"] = phiLength;
-	data["thetaSegments"] = heightSegments;
+	data["thetaSegments"] = thetaSegments;
 	data["thetaStart"] = thetaStart;
 	data["thetaLength"] = thetaLength;
 	return data;
@@ -253,12 +230,12 @@ nlohmann::json OtSphereGeometryClass::serialize() {
 //
 
 void OtSphereGeometryClass::deserialize(nlohmann::json data) {
-	widthSegments = data.value("phiSegments", 32);
-	heightSegments = data.value("heightSegments", 16);
+	phiSegments = data.value("phiSegments", 32);
 	phiStart = data.value("phiStart", 0.0f);
-	phiLength = data.value("phiLength", std::numbers::pi * 2.0f);
+	phiLength = data.value("phiLength", 360.0f);
+	thetaSegments = data.value("thetaSegments", 64);
 	thetaStart = data.value("thetaStart", 0.0f);
-	thetaLength = data.value("thetaLength", std::numbers::pi);
+	thetaLength = data.value("thetaLength", 180.0f);
 	refreshGeometry = true;
 }
 
@@ -274,10 +251,10 @@ OtType OtSphereGeometryClass::getMeta() {
 		type = OtType::create<OtSphereGeometryClass>("SphereGeometry", OtGeometryClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtSphereGeometryClass::init));
 		type->set("setRadius", OtFunction::create(&OtSphereGeometryClass::setRadius));
-		type->set("setWidthSegments", OtFunction::create(&OtSphereGeometryClass::setWidthSegments));
-		type->set("setHeightSegments", OtFunction::create(&OtSphereGeometryClass::setHeightSegments));
+		type->set("setPhiSegments", OtFunction::create(&OtSphereGeometryClass::setPhiSegments));
 		type->set("setPhiStart", OtFunction::create(&OtSphereGeometryClass::setPhiStart));
 		type->set("setPhiLength", OtFunction::create(&OtSphereGeometryClass::setPhiLength));
+		type->set("setThetaSegments", OtFunction::create(&OtSphereGeometryClass::setThetaSegments));
 		type->set("setThetaStart", OtFunction::create(&OtSphereGeometryClass::setThetaStart));
 		type->set("setThetaLength", OtFunction::create(&OtSphereGeometryClass::setThetaLength));
 	}

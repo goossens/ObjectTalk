@@ -14,8 +14,6 @@
 
 #include "nlohmann/json_fwd.hpp"
 
-#include "OtNumbers.h"
-
 #include "OtGeometry.h"
 
 
@@ -70,7 +68,7 @@ private:
 	int radialSegments = 32;
 	int tubularSegments = 16;
 	float radialStart = 0.0f;
-	float radialLength = std::numbers::pi * 2.0f;
+	float radialLength = 360.0f;
 	float tubularStart = 0.0f;
-	float tubularLength = std::numbers::pi * 2.0f;
+	float tubularLength = 360.0f;
 };

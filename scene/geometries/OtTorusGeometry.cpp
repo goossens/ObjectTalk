@@ -157,8 +157,8 @@ void OtTorusGeometryClass::fillGeometry() {
 	// generate vertices
 	for (auto j = 0; j <= radialSegments; j++) {
 		for (auto i = 0; i <= tubularSegments; i++) {
-			auto u = radialStart + (float) j / radialSegments * radialLength;
-			auto v = tubularStart + (float) i / tubularSegments * tubularLength;
+			auto u = glm::radians(radialStart + (float) j / radialSegments * radialLength);
+			auto v = glm::radians(tubularStart + (float) i / tubularSegments * tubularLength);
 
 			auto x = (radius + tubeRadius * std::cos(v)) * std::cos(u);
 			auto y = (radius + tubeRadius * std::cos(v)) * std::sin(u);
@@ -205,34 +205,10 @@ bool OtTorusGeometryClass::renderGUI() {
 	changed |= ImGui::SliderFloat("Tube Radius", &tubeRadius, 0.0f, 1.0f);
 	changed |= ImGui::SliderInt("Radial Segments", &radialSegments, 1, 64);
 	changed |= ImGui::SliderInt("Tubular Segments", &tubularSegments, 1, 32);
-
-	int startRadial = glm::degrees(radialStart);
-
-	if (ImGui::SliderInt("Radial Start", &startRadial, 0, 359)) {
-		radialStart = glm::radians((float) startRadial);
-		changed |= true;
-	}
-
-	int lengthRadial = glm::degrees(radialLength);
-
-	if (ImGui::SliderInt("Radial Length", &lengthRadial, 1, 360)) {
-		radialLength = glm::radians((float) lengthRadial);
-		changed |= true;
-	}
-
-	int startTubular = glm::degrees(tubularStart);
-
-	if (ImGui::SliderInt("Tubular Start", &startTubular, 0, 359)) {
-		tubularStart = glm::radians((float) startTubular);
-		changed |= true;
-	}
-
-	int lengthTubular = glm::degrees(tubularLength);
-
-	if (ImGui::SliderInt("Tubular Length", &lengthTubular, 1, 360)) {
-		tubularLength = glm::radians((float) lengthTubular);
-		changed |= true;
-	}
+	changed |= ImGui::SliderFloat("Radial Start", &radialStart, 0.0f, 360.0f);
+	changed |= ImGui::SliderFloat("Radial Length", &radialLength, 0.0f, 360.0f);
+	changed |= ImGui::SliderFloat("Tubular Start", &tubularStart, 0.0f, 360.0f);
+	changed |= ImGui::SliderFloat("Tubular Length", &tubularLength, 0.0f, 360.0f);
 
 	if (changed) {
 		refreshGeometry = true;
@@ -271,9 +247,9 @@ void OtTorusGeometryClass::deserialize(nlohmann::json data) {
 	radialSegments = data.value("radialSegments", 32);
 	tubularSegments = data.value("tubularSegments", 16);
 	radialStart = data.value("radialStart", 0.0f);
-	radialLength = data.value("radialLength", std::numbers::pi * 2.0f);
+	radialLength = data.value("radialLength", 360.0f);
 	tubularStart = data.value("tubularStart", 0.0f);
-	tubularLength = data.value("tubularLength", std::numbers::pi * 2.0f);
+	tubularLength = data.value("tubularLength", 360.0f);
 	refreshGeometry = true;
 }
 

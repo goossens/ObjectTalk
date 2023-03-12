@@ -171,7 +171,7 @@ void OtCylinderGeometryClass::generateTorso() {
 		// generate each radial segment
 		for (auto x = 0; x <= radialSegments; x++) {
 			auto u = (float) x / radialSegments;
-			auto theta = u * thetaLength + thetaStart;
+			auto theta = glm::radians(u * thetaLength + thetaStart);
 
 			auto sinTheta = std::sin(theta);
 			auto cosTheta = std::cos(theta);
@@ -231,7 +231,7 @@ void OtCylinderGeometryClass::generateCap(bool top) {
 
 	for (auto x = 0; x <= radialSegments; x++) {
 		auto u = (float) x / radialSegments;
-		auto theta = u * thetaLength + thetaStart;
+		auto theta = glm::radians(u * thetaLength + thetaStart);
 		auto cosTheta = std::cos(theta);
 		auto sinTheta = std::sin(theta);
 
@@ -272,20 +272,8 @@ bool OtCylinderGeometryClass::renderGUI() {
 	changed |= ImGui::SliderInt("Radial Segments", &radialSegments, 1, 64);
 	changed |= ImGui::SliderInt("Height Segments", &heightSegments, 1, 32);
 	changed |= ImGui::Checkbox("Open Ended", &openEnded);
-
-	int startTheta = glm::degrees(thetaStart);
-
-	if (ImGui::SliderInt("Theta Start", &startTheta, 0, 359)) {
-		thetaStart = glm::radians((float) startTheta);
-		changed |= true;
-	}
-
-	int lengthTheta = glm::degrees(thetaLength);
-
-	if (ImGui::SliderInt("Theta Length", &lengthTheta, 1, 360)) {
-		thetaLength = glm::radians((float) lengthTheta);
-		changed |= true;
-	}
+	changed |= ImGui::SliderFloat("Theta Start", &thetaStart, 0.0f, 360.0f);
+	changed |= ImGui::SliderFloat("Theta Length", &thetaLength, 0.0f, 360.0f);
 
 	if (changed) {
 		refreshGeometry = true;
@@ -320,11 +308,11 @@ nlohmann::json OtCylinderGeometryClass::serialize() {
 void OtCylinderGeometryClass::deserialize(nlohmann::json data) {
 	topRadius = data.value("topRadius", 1.0f);
 	bottomRadius = data.value("bottomRadius", 1.0f);
-	radialSegments = data.value("radialSegments", 16);
+	radialSegments = data.value("radialSegments", 32);
 	heightSegments = data.value("heightSegments", 1);
 	openEnded = data.value("openEnded", false);
 	thetaStart = data.value("thetaStart", 0.0f);
-	thetaLength = data.value("thetaLength", std::numbers::pi * 2.0f);
+	thetaLength = data.value("thetaLength", 360.0f);
 	refreshGeometry = true;
 }
 

@@ -14,8 +14,6 @@
 
 #include "nlohmann/json_fwd.hpp"
 
-#include "OtNumbers.h"
-
 #include "OtGeometry.h"
 
 
@@ -67,9 +65,9 @@ private:
 	// geometry
 	float topRadius = 1.0f;
 	float bottomRadius = 1.0f;
-	int radialSegments = 16;
+	int radialSegments = 32;
 	int heightSegments = 1;
 	bool openEnded = false;
 	float thetaStart = 0.0f;
-	float thetaLength = std::numbers::pi * 2.0f;
+	float thetaLength = 360.0f;
 };

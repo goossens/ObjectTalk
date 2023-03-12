@@ -94,7 +94,7 @@ void OtCircleGeometryClass::fillGeometry() {
 	float delta = thetaLength / segments;
 
 	for (auto c = 0; c <= segments; c++) {
-		auto angle = thetaStart + c * delta;
+		auto angle = glm::radians(thetaStart + c * delta);
 		auto x = std::cos(angle);
 		auto y = std::sin(angle);
 
@@ -125,20 +125,8 @@ void OtCircleGeometryClass::fillGeometry() {
 bool OtCircleGeometryClass::renderGUI() {
 	bool changed = OtGeometryClass::renderGUI();
 	changed |= ImGui::SliderInt("Segments", &segments, 1, 50);
-
-	int start = glm::degrees(thetaStart);
-
-	if (ImGui::SliderInt("Theta Start", &start, 0, 359)) {
-		thetaStart = glm::radians((float) start);
-		changed |= true;
-	}
-
-	int length = glm::degrees(thetaLength);
-
-	if (ImGui::SliderInt("Theta Length", &length, 1, 360)) {
-		thetaLength = glm::radians((float) length);
-		changed |= true;
-	}
+	changed |= ImGui::SliderFloat("Theta Start", &thetaStart, 0.0f, 360.0f);
+	changed |= ImGui::SliderFloat("Theta Length", &thetaLength, 0.0f, 360.0f);
 
 	if (changed) {
 		refreshGeometry = true;
@@ -167,9 +155,9 @@ nlohmann::json OtCircleGeometryClass::serialize() {
 //
 
 void OtCircleGeometryClass::deserialize(nlohmann::json data) {
-	segments = data.value("segments", 16);
+	segments = data.value("segments", 32);
 	thetaStart = data.value("thetaStart", 0.0f);
-	thetaLength = data.value("thetaLength", std::numbers::pi * 2.0f);
+	thetaLength = data.value("thetaLength", 360.0f);
 	refreshGeometry = true;
 }
 

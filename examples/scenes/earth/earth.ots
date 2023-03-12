@@ -132,11 +132,11 @@
 						"component": "Geometry",
 						"cullback": false,
 						"geometry": {
-							"phiLength": 6.2831854820251465,
-							"phiSegments": 50,
+							"phiLength": 360.0,
+							"phiSegments": 16,
 							"phiStart": 0.0,
-							"thetaLength": 3.1415927410125732,
-							"thetaSegments": 16,
+							"thetaLength": 180.0,
+							"thetaSegments": 32,
 							"thetaStart": 0.0,
 							"type": "Sphere"
 						},
@@ -193,11 +193,11 @@
 						"component": "Geometry",
 						"cullback": true,
 						"geometry": {
-							"phiLength": 6.2831854820251465,
-							"phiSegments": 50,
+							"phiLength": 360.0,
+							"phiSegments": 32,
 							"phiStart": 0.0,
-							"thetaLength": 3.1415927410125732,
-							"thetaSegments": 16,
+							"thetaLength": 180.0,
+							"thetaSegments": 64,
 							"thetaStart": 0.0,
 							"type": "Sphere"
 						},
@@ -254,11 +254,11 @@
 						"component": "Geometry",
 						"cullback": true,
 						"geometry": {
-							"phiLength": 6.2831854820251465,
+							"phiLength": 360.0,
 							"phiSegments": 32,
 							"phiStart": 0.0,
-							"thetaLength": 3.1415927410125732,
-							"thetaSegments": 16,
+							"thetaLength": 180.0,
+							"thetaSegments": 64,
 							"thetaStart": 0.0,
 							"type": "Sphere"
 						},

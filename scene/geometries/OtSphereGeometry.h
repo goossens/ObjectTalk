@@ -14,8 +14,6 @@
 
 #include "nlohmann/json_fwd.hpp"
 
-#include "OtNumbers.h"
-
 #include "OtGeometry.h"
 
 
@@ -33,10 +31,10 @@ public:
 
 	// update attributes
 	OtObject setRadius(float radius);
-	OtObject setWidthSegments(int segments);
-	OtObject setHeightSegments(int segments);
+	OtObject setPhiSegments(int segments);
 	OtObject setPhiStart(float phiStart);
 	OtObject setPhiLength(float phiLength);
+	OtObject setThetaSegments(int segments);
 	OtObject setThetaStart(float thetaStart);
 	OtObject setThetaLength(float thetaLength);
 
@@ -62,10 +60,10 @@ private:
 
 	// attributes
 	float radius = 1.0f;
-	int widthSegments = 32;
-	int heightSegments = 16;
+	int phiSegments = 32;
 	float phiStart = 0.0f;
-	float phiLength = std::numbers::pi * 2.0f;
+	float phiLength = 360.0f;
+	int thetaSegments = 64;
 	float thetaStart = 0.0f;
-	float thetaLength = std::numbers::pi;
+	float thetaLength = 180.0f;
 };

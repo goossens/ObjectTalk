@@ -14,8 +14,6 @@
 
 #include "nlohmann/json_fwd.hpp"
 
-#include "OtNumbers.h"
-
 #include "OtGeometry.h"
 
 
@@ -57,7 +55,7 @@ private:
 	void fillGeometry() override;
 
 	// geometry
-	int segments = 16;
+	int segments = 32;
 	float thetaStart = 0.0f;
-	float thetaLength = std::numbers::pi * 2.0f;
+	float thetaLength = 360.0f;
 };

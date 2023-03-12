@@ -22,18 +22,20 @@
 template<typename T>
 class OtSingleton {
 public:
-	static std::shared_ptr<T> instance() {
-		static std::shared_ptr<T> instance;
+	static T* instance() {
+		static std::unique_ptr<T> instance;
 
 		if (!instance) {
-			instance = std::make_shared<T>();
+			instance = std::make_unique<T>();
 		}
 
-		return instance;
+		return instance.get();
 	}
 
 	OtSingleton(const OtSingleton&) = delete;
-	OtSingleton& operator= (const OtSingleton) = delete;
+	OtSingleton(OtSingleton&&) = delete;
+	OtSingleton& operator=(const OtSingleton&) = delete;
+	OtSingleton& operator=(OtSingleton&&) = delete;
 
 protected:
 	OtSingleton() = default;
@@ -47,45 +49,21 @@ protected:
 template<typename T>
 class OtPerThreadSingleton {
 public:
-	static std::shared_ptr<T> instance() {
-		thread_local std::shared_ptr<T> instance;
+	static T* instance() {
+		thread_local std::unique_ptr<T> instance;
 
 		if (!instance) {
-			instance = std::make_shared<T>();
+			instance = std::make_unique<T>();
 		}
 
-		return instance;
+		return instance.get();
 	}
 
 	OtPerThreadSingleton(const OtPerThreadSingleton&) = delete;
-	OtPerThreadSingleton& operator= (const OtPerThreadSingleton) = delete;
+	OtPerThreadSingleton(OtPerThreadSingleton&&) = delete;
+	OtPerThreadSingleton& operator=(const OtPerThreadSingleton&) = delete;
+	OtPerThreadSingleton& operator=(OtPerThreadSingleton&&) = delete;
 
 protected:
 	OtPerThreadSingleton() = default;
-};
-
-
-//
-//	OtObjectSingleton
-//
-
-template<typename T>
-class OtObjectSingleton {
-public:
-	static std::shared_ptr<T> instance() {
-		static std::shared_ptr<T> instance;
-
-		if (!instance) {
-			instance = std::make_shared<T>();
-			instance->setType(T::getMeta());
-		}
-
-		return instance;
-	}
-
-	OtObjectSingleton(const OtObjectSingleton&) = delete;
-	OtObjectSingleton& operator= (const OtObjectSingleton) = delete;
-
-protected:
-	OtObjectSingleton() = default;
 };

@@ -40,7 +40,7 @@ public:
 	void update();
 
 	// stored properties
-	glm::vec3 albedo{1.0f};
+	glm::vec4 albedo{1.0f};
 	float metallic = 0.5f;
 	float roughness = 0.5f;
 	float emissive = 0.0f;

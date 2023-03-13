@@ -37,7 +37,7 @@ static inline bool editPath(const char* label, std::filesystem::path& path, bool
 
 bool OtMaterialComponent::renderGUI() {
 	bool changed = false;
-	changed |= ImGui::ColorEdit3("Albedo Color", glm::value_ptr(albedo));
+	changed |= ImGui::ColorEdit4("Albedo Color", glm::value_ptr(albedo));
 	changed |= ImGui::SliderFloat("Metallic", &metallic, 0.0f, 1.0f, "%.2f");
 	changed |= ImGui::SliderFloat("Roughness", &roughness, 0.0f, 1.0f, "%.2f");
 	changed |= ImGui::SliderFloat("Emissive", &emissive, 0.0f, 4.0f, "%.2f");
@@ -79,7 +79,7 @@ nlohmann::json OtMaterialComponent::serialize(std::filesystem::path* basedir) {
 //
 
 void OtMaterialComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
-	albedo = data.value("albedo", glm::vec3(1.0f));
+	albedo = data.value("albedo", glm::vec4(1.0f));
 	metallic = data.value("metallic", 0.5f);
 	roughness = data.value("roughness", 0.5f);
 	emissive = data.value("emissive", 0.0f);

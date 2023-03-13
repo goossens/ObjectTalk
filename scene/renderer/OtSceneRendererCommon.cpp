@@ -24,7 +24,7 @@ void OtSceneRenderer::submitMaterialUniforms(OtScene* scene, OtEntity entity) {
 
 	// set the uniform values
 	glm::vec4* uniforms = materialUniforms.getValues();
-	uniforms[0] = glm::vec4(material.albedo, 0.0f);
+	uniforms[0] = material.albedo;
 
 	uniforms[1] = glm::vec4(
 		material.metallic,

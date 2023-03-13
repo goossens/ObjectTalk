@@ -387,12 +387,7 @@ void OtSceneEditor::renderViewPort() {
 		ImGui::Image((void*)(intptr_t) textureIndex, size);
 	}
 
-	// handle mouse and keyboard interactions
-	if (ImGui::IsItemHovered() && !scene->isValidEntity(selectedCamera)) {
-		editorCamera.handleKeyboardAndMouse();
-	}
-
-	// only show guizmo if its visibility is on and the selected entiy has a transform
+	// only show guizmo if it's visible on and the selected entity has a transform
 	if (guizmoVisible && scene->isValidEntity(selectedEntity) && scene->hasComponent<OtTransformComponent>(selectedEntity)) {
 		// configure the guizmo
 		ImGuizmo::SetOrthographic(false);
@@ -409,28 +404,38 @@ void OtSceneEditor::renderViewPort() {
 		auto transform = component.getTransform();
 
 		// show the guizmo
-		ImGuizmo::Manipulate(
+		if(ImGuizmo::Manipulate(
 			glm::value_ptr(camerViewMatrix),
 			glm::value_ptr(cameraProjectionMatrix),
 			guizmoOperation,
 			ImGuizmo::LOCAL,
 			glm::value_ptr(transform),
 			nullptr,
-			guizmoSnapping ? glm::value_ptr(snap) : nullptr);
+			guizmoSnapping ? glm::value_ptr(snap) : nullptr)) {
 
-		if (ImGuizmo::IsUsing()) {
+			// get the old state
 			auto oldValue = component.serialize(nullptr).dump();
 
+			// apply guizmo matrix
 			ImGuizmo::DecomposeMatrixToComponents(
 				glm::value_ptr(transform),
 				glm::value_ptr(component.translation),
 				glm::value_ptr(component.rotation),
 				glm::value_ptr(component.scale));
 
+			// create an edit task so this can be undone
 			auto newValue = component.serialize(nullptr).dump();
 			nextTask = std::make_shared<OtEditComponentTask<OtTransformComponent>>(scene.get(), selectedEntity, oldValue, newValue);
 		}
+
 	}
+
+	if (!ImGuizmo::IsUsing() && ImGui::IsItemHovered() && !scene->isValidEntity(selectedCamera)) {
+		// handle camera interactions
+		editorCamera.handleKeyboardAndMouse();
+	}
+
+
 
 	ImGui::EndChild();
 }
@@ -784,15 +789,6 @@ void OtSceneEditor::handleShortcuts() {
 
 		} else if (ImGui::IsKeyPressed(ImGuiKey_G, false)) {
 			guizmoVisible = !guizmoVisible;
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_T, false)) {
-			guizmoOperation = ImGuizmo::TRANSLATE;
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_R, false)) {
-			guizmoOperation = ImGuizmo::ROTATE;
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_S, false)) {
-			guizmoOperation = ImGuizmo::SCALE;
 		}
 
 	// handle camera switching shortcuts

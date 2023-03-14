@@ -24,46 +24,18 @@
 void OtPlaneGeometryClass::init(size_t count, OtObject* parameters) {
 	// set attributes
 	switch (count) {
-		case 4:
+		case 2:
 			heightSegments = parameters[3]->operator int();
 
-		case 3:
-			widthSegments = parameters[2]->operator int();
-
-		case 2:
-			height = parameters[1]->operator float();
-
 		case 1:
-			width = parameters[0]->operator float();
+			widthSegments = parameters[2]->operator int();
 
 		case 0:
 			break;
 
 		default:
-			OtExcept("Too many parameters [%ld] for [PlaneGeometry] constructor (max 4)", count);
+			OtExcept("Too many parameters [%ld] for [PlaneGeometry] constructor (max 2)", count);
 	}
-}
-
-
-//
-//	OtPlaneGeometryClass::setWidth
-//
-
-OtObject OtPlaneGeometryClass::setWidth(float w) {
-	width = w;
-	refreshGeometry = true;
-	return OtObject(this);
-}
-
-
-//
-//	OtPlaneGeometryClass::setHeight
-//
-
-OtObject OtPlaneGeometryClass::setHeight(float h) {
-	height = h;
-	refreshGeometry = true;
-	return OtObject(this);
 }
 
 
@@ -95,20 +67,17 @@ OtObject OtPlaneGeometryClass::setHeightSegments(int hs) {
 
 void OtPlaneGeometryClass::fillGeometry() {
 	// add vertices
-	auto widthHalf = width / 2.0;
-	auto heightHalf = height / 2.0;
-
 	auto gridX1 = widthSegments + 1;
 	auto gridY1 = heightSegments + 1;
 
-	auto segmentWidth = width / (float) widthSegments;
-	auto segmentHeight = height / (float) heightSegments;
+	auto segmentWidth = 1.0f / (float) widthSegments;
+	auto segmentHeight = 1.0f / (float) heightSegments;
 
 	for (auto iy = 0; iy < gridY1; iy++) {
-		auto y = heightHalf - iy * segmentHeight;
+		auto y = 0.5f - iy * segmentHeight;
 
 		for (auto ix = 0; ix < gridX1; ix++) {
-			auto x = ix * segmentWidth - widthHalf;
+			auto x = ix * segmentWidth - 0.5f;
 			auto u = (float) ix / (float) widthSegments;
 			auto v = (float) iy / (float) heightSegments;
 			float z = 0.0;
@@ -170,8 +139,6 @@ bool OtPlaneGeometryClass::renderGUI() {
 nlohmann::json OtPlaneGeometryClass::serialize() {
 	auto data = nlohmann::json::object();
 	data["type"] = name;
-	data["width"] = width;
-	data["height"] = height;
 	data["widthSegments"] = widthSegments;
 	data["heightSegments"] = heightSegments;
 	return data;
@@ -183,8 +150,6 @@ nlohmann::json OtPlaneGeometryClass::serialize() {
 //
 
 void OtPlaneGeometryClass::deserialize(nlohmann::json data) {
-	width = data.value("width", 1.0f);
-	height = data.value("height", 1.0f);
 	widthSegments = data.value("widthSegments", 1);
 	heightSegments = data.value("heightSegments", 1);
 	refreshGeometry = true;
@@ -201,8 +166,6 @@ OtType OtPlaneGeometryClass::getMeta() {
 	if (!type) {
 		type = OtType::create<OtPlaneGeometryClass>("PlaneGeometry", OtGeometryClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtPlaneGeometryClass::init));
-		type->set("setWidth", OtFunction::create(&OtPlaneGeometryClass::setWidth));
-		type->set("setHeight", OtFunction::create(&OtPlaneGeometryClass::setHeight));
 		type->set("setWidthSegments", OtFunction::create(&OtPlaneGeometryClass::setWidthSegments));
 		type->set("setHeightSegments", OtFunction::create(&OtPlaneGeometryClass::setHeightSegments));
 	}

@@ -152,15 +152,15 @@ void OtExtrudedGeometryClass::fillGeometry() {
 
 		// front-facing
 		addVertex(OtVertex(
-			glm::vec3(x, y, 0.0),
-			glm::vec3(0.0, 0.0, 1.0),
-			glm::vec2(0.0)));
+			glm::vec3(x, y, 0.0f),
+			glm::vec3(0.0f, 0.0f, 1.0f),
+			glm::vec2(0.0f)));
 
 		// back-facing
 		addVertex(OtVertex(
 			glm::vec3(x, y, -depth),
-			glm::vec3(0.0, 0.0, -1.0),
-			glm::vec2(0.0)));
+			glm::vec3(0.0f, 0.0f, -1.0f),
+			glm::vec2(0.0f)));
 	}
 
 	// determine winding order of triangles

@@ -85,19 +85,19 @@ protected:
 
 	// add vertices/triangles/lines to the geometry
 	void addVertex(const OtVertex& vertex) {
-		vertices.push_back(vertex);
+		vertices.emplace_back(vertex);
 		aabb.addPoint(vertex.position);
 	}
 
 	void addTriangle(uint32_t p1, uint32_t p2, uint32_t p3) {
-		triangles.push_back(p1);
-		triangles.push_back(p2);
-		triangles.push_back(p3);
+		triangles.emplace_back(p1);
+		triangles.emplace_back(p2);
+		triangles.emplace_back(p3);
 	}
 
 	void addLine(uint32_t p1, uint32_t p2) {
-		lines.push_back(p1);
-		lines.push_back(p2);
+		lines.emplace_back(p1);
+		lines.emplace_back(p2);
 	}
 
 	void addIndex(uint32_t p1, uint32_t p2, uint32_t p3) {

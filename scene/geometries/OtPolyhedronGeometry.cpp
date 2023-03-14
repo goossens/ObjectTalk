@@ -60,11 +60,11 @@ OtObject OtPolyhedronGeometryClass::setDetail(int d) {
 //
 
 static float correctUV(const glm::vec3& normal, float u, float azimuth) {
-	if ((azimuth < 0.0) && (u == 1.0)) {
-		return u - 1.0;
+	if ((azimuth < 0.0f) && (u == 1.0f)) {
+		return u - 1.0f;
 
-	} else if ((normal.x == 0.0) && (normal.z == 0.0)) {
-		return azimuth / 2.0 / std::numbers::pi + 0.5;
+	} else if ((normal.x == 0.0f) && (normal.z == 0.0f)) {
+		return azimuth / 2.0f / std::numbers::pi + 0.5f;
 
 	} else {
 		return u;
@@ -174,8 +174,8 @@ void OtPolyhedronGeometryClass::addFace(const glm::vec3& a, const glm::vec3& b, 
 glm::vec2 OtPolyhedronGeometryClass::generateUV(const glm::vec3& normal) {
 	// calculate the UV texture coordinates [0.0, 0.1]
 	auto uv = glm::vec2(
-		azimuth(normal) / 2.0 / std::numbers::pi + 0.5,
-		inclination(normal) / std::numbers::pi + 0.5);
+		azimuth(normal) / 2.0 / std::numbers::pi + 0.5f,
+		inclination(normal) / std::numbers::pi + 0.5f);
 
 	return uv;
 }

@@ -47,8 +47,5 @@ public:
 	// get type definition
 	static OtType getMeta();
 
-	// create a new object
-	static OtTetrahedronGeometry create();
-
 private:
 };

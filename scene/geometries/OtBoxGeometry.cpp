@@ -144,9 +144,9 @@ void OtBoxGeometryClass::buildPlane(int udir, int vdir, float w, float h, float 
 	auto segmentWidth = w / gridX;
 	auto segmentHeight = h / gridY;
 
-	auto widthHalf = w / 2.0;
-	auto heightHalf = h / 2.0;
-	auto depthHalf = d / 2.0;
+	auto widthHalf = w / 2.0f;
+	auto heightHalf = h / 2.0f;
+	auto depthHalf = d / 2.0f;
 
 	auto gridX1 = gridX + 1;
 	auto gridY1 = gridY + 1;

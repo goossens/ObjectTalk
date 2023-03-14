@@ -33,7 +33,7 @@ struct OtVertex {
 	// constructors
 	OtVertex() = default;
 
-	OtVertex(const glm::vec3& p, const glm::vec3& n=glm::vec3(0.0), const glm::vec2& u=glm::vec2(0.0), const glm::vec3 t=glm::vec3(0.0), const glm::vec3 b=glm::vec3(0.0)) :
+	OtVertex(const glm::vec3& p, const glm::vec3& n=glm::vec3(0.0f), const glm::vec2& u=glm::vec2(0.0f), const glm::vec3 t=glm::vec3(0.0f), const glm::vec3 b=glm::vec3(0.0f)) :
 		position(p), normal(n), uv(u), tangent(t), bitangent(b) {
 	}
 
@@ -66,7 +66,7 @@ struct OtVertexPosTexCol {
 
 	// constructors
 	OtVertexPosTexCol() = default;
-	OtVertexPosTexCol(const glm::vec3& p, const glm::vec2& u=glm::vec2(0.0), uint32_t c=0) : position(p), uv(u), color(c) {}
+	OtVertexPosTexCol(const glm::vec3& p, const glm::vec2& u=glm::vec2(0.0f), uint32_t c=0) : position(p), uv(u), color(c) {}
 
 	// get vertex description
 	static bgfx::VertexLayout getLayout() {
@@ -94,7 +94,7 @@ struct OtVertexPosTex {
 
 	// constructors
 	OtVertexPosTex() = default;
-	OtVertexPosTex(const glm::vec3& p, const glm::vec2& u=glm::vec2(0.0)) : position(p), uv(u) {}
+	OtVertexPosTex(const glm::vec3& p, const glm::vec2& u=glm::vec2(0.0f)) : position(p), uv(u) {}
 
 	// get vertex description
 	static bgfx::VertexLayout getLayout() {
@@ -121,7 +121,7 @@ struct OtVertexPosNorm {
 
 	// constructors
 	OtVertexPosNorm() = default;
-	OtVertexPosNorm(const glm::vec3& p, const glm::vec3& n=glm::vec3(0.0)) : position(p), normal(n) {}
+	OtVertexPosNorm(const glm::vec3& p, const glm::vec3& n=glm::vec3(0.0f)) : position(p), normal(n) {}
 
 	// get vertex description
 	static bgfx::VertexLayout getLayout() {

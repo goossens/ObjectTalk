@@ -55,9 +55,6 @@ public:
 	// get type definition
 	static OtType getMeta();
 
-	// create a new object
-	static OtTorusGeometry create();
-
 private:
 	// generate geometry
 	void fillGeometry() override;

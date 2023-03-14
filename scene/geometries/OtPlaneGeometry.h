@@ -30,14 +30,10 @@ public:
 	void init(size_t count, OtObject* parameters);
 
 	// update attributes
-	OtObject setWidth(float width);
-	OtObject setHeight(float height);
 	OtObject setWidthSegments(int widthSegments);
 	OtObject setHeightSegments(int heightSegments);
 
 	// get information
-	float getWidth() { return width; }
-	float getHeight() { return height; }
 	int getWidthSegments() { return widthSegments; }
 	int getHeightSegments() { return heightSegments; }
 
@@ -62,8 +58,6 @@ private:
 	void fillGeometry() override;
 
 	// properties
-	float width = 1.0f;
-	float height = 1.0f;
 	int widthSegments = 1;
 	int heightSegments = 1;
 };

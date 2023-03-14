@@ -86,9 +86,9 @@ OtObject OtCircleGeometryClass::setThetaLength(float tl) {
 void OtCircleGeometryClass::fillGeometry() {
 	// add center
 	addVertex(OtVertex(
-		glm::vec3(0, 0, 0),
-		glm::normalize(glm::vec3(0, 0, 1)),
-		glm::vec2(0.5, 0.5)));
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::normalize(glm::vec3(0.0f, 0.0f, 1.0f)),
+		glm::vec2(0.5f, 0.5f)));
 
 	// add points on circle
 	float delta = thetaLength / segments;
@@ -101,7 +101,7 @@ void OtCircleGeometryClass::fillGeometry() {
 		addVertex(OtVertex(
 			glm::vec3(x, y, 0),
 			glm::normalize(glm::vec3(0, 0, 1)),
-			glm::vec2((x + 1.0) / 2.0, 1.0 - ((y + 1.0) / 2.0))));
+			glm::vec2((x + 1.0f) / 2.0f, 1.0f - ((y + 1.0f) / 2.0f))));
 	}
 
 	// add triangles and lines

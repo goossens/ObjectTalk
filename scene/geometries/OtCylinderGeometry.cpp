@@ -266,7 +266,7 @@ void OtCylinderGeometryClass::generateCap(bool top) {
 //
 
 bool OtCylinderGeometryClass::renderGUI() {
-	bool changed = OtGeometryClass::renderGUI();
+	bool changed = false;
 	changed |= ImGui::SliderFloat("Top Radius", &topRadius, 0.0f, 1.0f);
 	changed |= ImGui::SliderFloat("Bottom Radius", &bottomRadius, 0.0f, 1.0f);
 	changed |= ImGui::SliderInt("Radial Segments", &radialSegments, 1, 64);
@@ -274,6 +274,7 @@ bool OtCylinderGeometryClass::renderGUI() {
 	changed |= ImGui::Checkbox("Open Ended", &openEnded);
 	changed |= ImGui::SliderFloat("Theta Start", &thetaStart, 0.0f, 360.0f);
 	changed |= ImGui::SliderFloat("Theta Length", &thetaLength, 0.0f, 360.0f);
+	changed |= OtGeometryClass::renderGUI();
 
 	if (changed) {
 		refreshGeometry = true;
@@ -290,6 +291,7 @@ bool OtCylinderGeometryClass::renderGUI() {
 nlohmann::json OtCylinderGeometryClass::serialize() {
 	auto data = nlohmann::json::object();
 	data["type"] = name;
+	data.update(OtGeometryClass::serialize());
 	data["topRadius"] = topRadius;
 	data["bottomRadius"] = bottomRadius;
 	data["radialSegments"] = radialSegments;
@@ -306,6 +308,7 @@ nlohmann::json OtCylinderGeometryClass::serialize() {
 //
 
 void OtCylinderGeometryClass::deserialize(nlohmann::json data) {
+	OtGeometryClass::deserialize(data);
 	topRadius = data.value("topRadius", 1.0f);
 	bottomRadius = data.value("bottomRadius", 1.0f);
 	radialSegments = data.value("radialSegments", 32);

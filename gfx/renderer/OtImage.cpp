@@ -31,8 +31,8 @@ static bx::FileReader reader;
 //	OtImage::OtImage
 //
 
-OtImage::OtImage(const std::string &file, bool powerof2, bool square) {
-	load(file, powerof2, square);
+OtImage::OtImage(const std::filesystem::path& path, bool powerof2, bool square) {
+	load(path, powerof2, square);
 }
 
 
@@ -61,13 +61,13 @@ void OtImage::clear() {
 //	OtImage::load
 //
 
-void OtImage::load(const std::string &file, bool powerof2, bool square) {
+void OtImage::load(const std::filesystem::path& path, bool powerof2, bool square) {
 	// clear old image (if required)
 	clear();
 
 	// get image data
-	if (!bx::open(&reader, file.c_str())) {
-		OtExcept("Can't open image [%s]", file.c_str());
+	if (!bx::open(&reader, bx::FilePath((const char*) path.c_str()))) {
+		OtExcept("Can't open image [%s]", path.c_str());
 	}
 
 	uint32_t size = (uint32_t) bx::getSize(&reader);
@@ -79,7 +79,7 @@ void OtImage::load(const std::string &file, bool powerof2, bool square) {
 	BX_FREE(&allocator, data);
 
 	if (!image) {
-		OtExcept("Can't process image in [%s]", file.c_str());
+		OtExcept("Can't process image in [%s]", path.c_str());
 	}
 
 	// validate sides are power of 2 (if required)
@@ -105,15 +105,15 @@ void OtImage::load(const std::string &file, bool powerof2, bool square) {
 //	OtImage::loadAsGrayscale
 //
 
-void OtImage::loadAsGrayscale(const std::string &file, bool powerof2, bool square) {
+void OtImage::loadAsGrayscale(const std::filesystem::path& path, bool powerof2, bool square) {
 	// load the image
-	load(file, powerof2, square);
+	load(path, powerof2, square);
 
 	// don't do anything if we are already in the right format
 	if (image->m_format != bimg::TextureFormat::R32F) {
 		// see if image is convertable
 		if (!bimg::imageConvert(bimg::TextureFormat::R32F, image->m_format)) {
-			OtExcept("Can't convert image in [%s] to grayscale", file.c_str());
+			OtExcept("Can't convert image in [%s] to grayscale", path.c_str());
 		}
 
 		// convert image
@@ -133,15 +133,15 @@ void OtImage::loadAsGrayscale(const std::string &file, bool powerof2, bool squar
 //	OtImage::loadAsRGBA
 //
 
-void OtImage::loadAsRGBA(const std::string &file, bool powerof2, bool square) {
+void OtImage::loadAsRGBA(const std::filesystem::path& path, bool powerof2, bool square) {
 	// load the image
-	load(file, powerof2, square);
+	load(path, powerof2, square);
 
 	// don't do anything if we are already in the right format
 	if (image->m_format != bimg::TextureFormat::RGBA8) {
 		// see if image is convertable
 		if (!bimg::imageConvert(bimg::TextureFormat::RGBA8, image->m_format)) {
-			OtExcept("Can't convert image in [%s] to grayscale", file.c_str());
+			OtExcept("Can't convert image in [%s] to grayscale", path.c_str());
 		}
 
 		// convert image
@@ -158,10 +158,10 @@ void OtImage::loadAsRGBA(const std::string &file, bool powerof2, bool square) {
 
 
 //
-//	OtImage::load
+//	OtImage::loadFromFileInMemory
 //
 
-void OtImage::load(void *data, uint32_t size) {
+void OtImage::loadFromFileInMemory(void* data, uint32_t size) {
 	// clear old image (if required)
 	clear();
 
@@ -179,7 +179,7 @@ void OtImage::load(void *data, uint32_t size) {
 //	OtImage::getContainer
 //
 
-bimg::ImageContainer *OtImage::getContainer() {
+bimg::ImageContainer* OtImage::getContainer() {
 	// ensure we have a valid image
 	if (isValid()) {
 		return image;

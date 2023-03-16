@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <filesystem>
 #include <string>
 
 #include "OtBgfxHandle.h"
@@ -25,7 +26,7 @@ class OtTexture {
 public:
 	// constructor
 	OtTexture() = default;
-	OtTexture(const std::string& filename, bool mipmap=false);
+	OtTexture(const std::filesystem::path& path, bool mipmap=false);
 
 	// clear the resources
 	void clear() { texture.clear(); }
@@ -33,11 +34,11 @@ public:
 	// see if texture is valid
 	bool isValid() { return texture.isValid(); }
 
+	// load from file
+	void loadFromFile(const std::filesystem::path& path, bool mipmap=false);
+
 	// load from memory (pixels must be RGBA in row order)
 	void loadFromMemory(int width, int height, uint8_t* pixels);
-
-	// load from file
-	void loadFromFile(const std::string& filename, bool mipmap=false);
 
 	// load from file in memory
 	void loadFromFileInMemory(void* data, uint32_t size);

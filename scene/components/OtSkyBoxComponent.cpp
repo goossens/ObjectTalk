@@ -102,7 +102,7 @@ bool OtSkyBoxComponent::isValid() {
 			std::filesystem::is_regular_file(back)) {
 
 			// load the files into the cubemap
-			cubemap.load(right.string(), left.string(), top.string(), bottom.string(), front.string(), back.string());
+			cubemap.load(right, left, top, bottom, front, back);
 
 		} else {
 			// invalidate cubemap just in case

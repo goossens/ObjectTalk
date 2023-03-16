@@ -173,7 +173,6 @@ bool OtUiFileSelector(
 		(!path.empty() && edit ? 1 : 0);
 
 	// calculate component sizes
-	ImVec2 pos = ImGui::GetCursorScreenPos();
 	float itemWidth = ImGui::CalcItemWidth();
 	float itemHeight = ImGui::GetFrameHeight();
 	float spacing = ImGui::GetStyle().ItemInnerSpacing.x;

@@ -22,6 +22,8 @@
 #include "OtVertex.h"
 #include "OtVertexBuffer.h"
 
+#include "OtDisplacer.h"
+
 
 //
 //	OtGeometryClass
@@ -35,23 +37,8 @@ public:
 	// ensure tangents are automatically generated
 	OtObject computeTangents();
 
-	// force updates
-	void forceGeometryRefresh() { refreshGeometry = true; }
-	void forceBufferRefresh() { refreshBuffers = true; }
-
-	// access vertices and indices
-	size_t getVertexCount() { validateGeometry(); return vertices.size(); }
-	size_t getTriangleIndexCount() { validateGeometry(); return triangles.size(); }
-	size_t getLineIndexCount() { validateGeometry(); return lines.size(); }
-	std::vector<OtVertex>& getVertexes() { validateGeometry(); return vertices; }
-	std::vector<uint32_t>& getTriangles() { validateGeometry(); return triangles; }
-	std::vector<uint32_t>& getLines() { validateGeometry();return lines; }
-	OtVertex& getVertex(size_t offset) { validateGeometry(); return vertices[offset]; }
-	uint32_t getTriangleIndex(size_t offset) { validateGeometry(); return triangles[offset]; }
-	uint32_t getLineIndex(size_t offset) { validateGeometry(); return lines[offset]; }
-
 	// access bounding box
-	OtAABB& getAABB() { validateGeometry(); return aabb; }
+	OtAABB& getAABB();
 
 	// submit to GPU
 	void submitTriangles();
@@ -148,6 +135,12 @@ protected:
 	std::vector<OtVertex> vertices;
 	std::vector<uint32_t> triangles;
 	std::vector<uint32_t> lines;
+
+	// displacement properties
+	OtDisplacer displacer;
+	void updateDisplacement();
+	void validateDisplacement();
+	bool refreshDisplacement = true;
 
 	// Axis-aligned Bounding Box (AABB)
 	OtAABB aabb;

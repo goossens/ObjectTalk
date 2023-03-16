@@ -22,26 +22,8 @@
 //	OtTexture::OtTexture
 //
 
-OtTexture::OtTexture(const std::string &filename, bool mipmap) {
-	loadFromFile(filename, mipmap);
-}
-
-
-//
-//	OtTexture::loadFromMemory
-//
-
-void OtTexture::loadFromMemory(int w, int h, uint8_t* pixels) {
-	// remember size
-	width = w;
-	height = h;
-
-	// create texture
-	texture = bgfx::createTexture2D(
-		w, h, false, 1,
-		bgfx::TextureFormat::RGBA8,
-		BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP | BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT,
-		bgfx::copy(pixels, w * h * 4));
+OtTexture::OtTexture(const std::filesystem::path& path, bool mipmap) {
+	loadFromFile(path, mipmap);
 }
 
 
@@ -168,9 +150,9 @@ static bgfx::TextureHandle generateMipmapTexture(bimg::ImageContainer* image) {
 //	OtTexture::loadFromFile
 //
 
-void OtTexture::loadFromFile(const std::string& filename, bool mipmap) {
+void OtTexture::loadFromFile(const std::filesystem::path& path, bool mipmap) {
 	// get the image
-	OtImage image(filename);
+	OtImage image(path);
 	bimg::ImageContainer* container = image.getContainer();
 
 	// remember size
@@ -191,13 +173,31 @@ void OtTexture::loadFromFile(const std::string& filename, bool mipmap) {
 
 
 //
+//	OtTexture::loadFromMemory
+//
+
+void OtTexture::loadFromMemory(int w, int h, uint8_t* pixels) {
+	// remember size
+	width = w;
+	height = h;
+
+	// create texture
+	texture = bgfx::createTexture2D(
+		w, h, false, 1,
+		bgfx::TextureFormat::RGBA8,
+		BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP | BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT,
+		bgfx::copy(pixels, w * h * 4));
+}
+
+
+//
 //	OtTexture::loadFromFileInMemory
 //
 
 void OtTexture::loadFromFileInMemory(void* data, uint32_t size) {
 	// get the image
 	OtImage image;
-	image.load(data, size);
+	image.loadFromFileInMemory(data, size);
 	bimg::ImageContainer* container = image.getContainer();
 
 	// remember size

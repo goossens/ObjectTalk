@@ -32,6 +32,22 @@ OtObject OtGeometryClass::computeTangents() {
 
 
 //
+//	OtGeometryClass::getAABB
+//
+
+OtAABB &OtGeometryClass::getAABB() {
+	validateGeometry();
+
+	if (displacer.isActive()) {
+		return displacer.getAABB();
+
+	} else {
+		return aabb;
+	}
+}
+
+
+//
 //	OtGeometryClass::updateGeometry
 //
 
@@ -47,6 +63,7 @@ void OtGeometryClass::updateGeometry() {
 
 	// set correct flags
 	refreshGeometry = false;
+	refreshDisplacement = true;
 	refreshBuffers = true;
 }
 
@@ -63,23 +80,51 @@ void OtGeometryClass::validateGeometry() {
 
 
 //
+//	OtGeometryClass::updateDisplacement
+//
+
+void OtGeometryClass::updateDisplacement() {
+	// perform the displacement
+	displacer.displace(vertices, triangles);
+
+	// set correct flags
+	refreshDisplacement = false;
+	refreshBuffers = true;
+}
+
+
+//
+//	OtGeometryClass::validateDisplacement
+//
+
+void OtGeometryClass::validateDisplacement() {
+	if (refreshDisplacement) {
+		updateDisplacement();
+	}
+}
+
+
+//
 //	OtGeometryClass::updateBuffers
 //
 
 void OtGeometryClass::updateBuffers() {
+	// determine vertex source
+	std::vector<OtVertex>& source = displacer.isActive() ? displacer.getVertices() : vertices;
+
 	// do we need to generate the tangents?
 	if (tangent) {
 		// clear tangents
-		for (auto& vertex : vertices) {
+		for (auto& vertex : source) {
 			vertex.tangent = glm::vec3(0.0);
 			vertex.bitangent = glm::vec3(0.0);
 		}
 
 		// generate new tangents
 		for (auto i = 0; i < triangles.size(); i += 3) {
-			OtVertex& v0 = vertices[triangles[i]];
-			OtVertex& v1 = vertices[triangles[i + 1]];
-			OtVertex& v2 = vertices[triangles[i + 2]];
+			OtVertex& v0 = source[triangles[i]];
+			OtVertex& v1 = source[triangles[i + 1]];
+			OtVertex& v2 = source[triangles[i + 2]];
 
 			glm::vec3 edge1 = v1.position - v0.position;
 			glm::vec3 edge2 = v2.position - v0.position;
@@ -111,14 +156,14 @@ void OtGeometryClass::updateBuffers() {
 		}
 
 		// normalize the tangents
-		for (auto& vertex : vertices) {
+		for (auto& vertex : source) {
 			vertex.tangent = glm::normalize(vertex.tangent);
 			vertex.bitangent = glm::normalize(vertex.bitangent);
 		}
 	}
 
 	// update the buffers
-	vertexBuffer.set(vertices.data(), vertices.size(), OtVertex::getLayout());
+	vertexBuffer.set(source.data(), source.size(), OtVertex::getLayout());
 	triangleIndexBuffer.set(triangles.data(), triangles.size());
 	lineIndexBuffer.set(lines.data(), lines.size());
 	refreshBuffers = false;
@@ -142,6 +187,7 @@ void OtGeometryClass::validateBuffers() {
 
 void OtGeometryClass::submitTriangles() {
 	validateGeometry();
+	validateDisplacement();
 	validateBuffers();
 
 	vertexBuffer.submit();
@@ -155,6 +201,7 @@ void OtGeometryClass::submitTriangles() {
 
 void OtGeometryClass::submitLines() {
 	validateGeometry();
+	validateDisplacement();
 	validateBuffers();
 
 	vertexBuffer.submit();
@@ -167,7 +214,13 @@ void OtGeometryClass::submitLines() {
 //
 
 bool OtGeometryClass::renderGUI() {
-	return false;
+	bool changed = displacer.renderGUI();
+
+	if (changed) {
+		refreshDisplacement = displacer.isActive();
+	}
+
+	return changed;
 }
 
 
@@ -177,6 +230,7 @@ bool OtGeometryClass::renderGUI() {
 
 nlohmann::json OtGeometryClass::serialize() {
 	auto data = nlohmann::json::object();
+	data["displacement"] = displacer.serialize();
 	return data;
 }
 
@@ -186,6 +240,11 @@ nlohmann::json OtGeometryClass::serialize() {
 //
 
 void OtGeometryClass::deserialize(nlohmann::json data) {
+	if (data.contains("displacement")) {
+		displacer.deserialize(data["displacement"]);
+	}
+
+	refreshDisplacement = displacer.isActive();
 }
 
 

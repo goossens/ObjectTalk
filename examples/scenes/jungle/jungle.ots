@@ -1,0 +1,213 @@
+[
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Camera",
+				"uuid": 1057740688
+			},
+			{
+				"component": "Transform",
+				"rotation": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				],
+				"translation": [
+					0.0,
+					0.0,
+					0.0
+				]
+			},
+			{
+				"component": "Camera",
+				"far": 100.0,
+				"fov": 60.0,
+				"mainCamera": false,
+				"near": 0.10000000149011612
+			},
+			{
+				"Exposure": 1.340000033378601,
+				"bloomIntensity": 0.7400000095367432,
+				"component": "Post Processing"
+			}
+		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Light",
+				"uuid": 2059431254
+			},
+			{
+				"component": "Transform",
+				"rotation": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				],
+				"translation": [
+					2.5,
+					1.2000000476837158,
+					2.700000047683716
+				]
+			},
+			{
+				"color": [
+					0.3185840845108032,
+					0.3133446276187897,
+					0.2001722902059555
+				],
+				"component": "Directional Light"
+			}
+		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Ground",
+				"uuid": 443086627
+			},
+			{
+				"component": "Transform",
+				"rotation": [
+					-90.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					10.0,
+					10.0,
+					1.0
+				],
+				"translation": [
+					0.0,
+					0.0,
+					0.0
+				]
+			},
+			{
+				"component": "Geometry",
+				"cullback": true,
+				"geometry": {
+					"displacement": {
+						"frequency": 0.699999988079071,
+						"lacunarity": 1.2999999523162842,
+						"map": "/Users/goossens/github/ObjectTalk/examples/scenes/jungle/assets/heightmap.png",
+						"octaves": 5,
+						"persistance": 0.5199999809265137,
+						"scale": 0.3799999952316284,
+						"seed": 1337,
+						"state": 1
+					},
+					"heightSegments": 199,
+					"type": "Plane",
+					"widthSegments": 199
+				},
+				"transparent": false,
+				"wireframe": false
+			},
+			{
+				"albedo": [
+					0.9026548862457275,
+					0.6746760606765747,
+					0.387422651052475,
+					1.0
+				],
+				"albedoTexture": "",
+				"ao": 1.0,
+				"aoTexture": "",
+				"component": "Material",
+				"emissive": 0.03999999910593033,
+				"emissiveTexture": "",
+				"metallic": 0.07000000029802322,
+				"metallicTexture": "",
+				"normalTexture": "",
+				"roughness": 0.7900000214576721,
+				"roughnessTexture": ""
+			}
+		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Rock",
+				"uuid": 332959655
+			},
+			{
+				"component": "Transform",
+				"rotation": [
+					0.0,
+					-0.0,
+					0.0
+				],
+				"scale": [
+					0.5,
+					0.5,
+					0.5
+				],
+				"translation": [
+					-1.2999999523162842,
+					1.5,
+					0.30000001192092896
+				]
+			},
+			{
+				"component": "Geometry",
+				"cullback": true,
+				"geometry": {
+					"detail": 13,
+					"displacement": {
+						"frequency": 5.800000190734863,
+						"lacunarity": 1.0700000524520874,
+						"map": "",
+						"octaves": 7,
+						"persistance": 1.0,
+						"scale": 0.33000001311302185,
+						"seed": 1337,
+						"state": 2
+					},
+					"type": "Octahedron"
+				},
+				"transparent": false,
+				"wireframe": false
+			},
+			{
+				"albedo": [
+					0.7168141603469849,
+					0.7168141603469849,
+					0.7168141603469849,
+					1.0
+				],
+				"albedoTexture": "",
+				"ao": 1.0,
+				"aoTexture": "",
+				"component": "Material",
+				"emissive": 0.0,
+				"emissiveTexture": "",
+				"metallic": 0.3400000035762787,
+				"metallicTexture": "",
+				"normalTexture": "",
+				"roughness": 0.5199999809265137,
+				"roughnessTexture": ""
+			}
+		]
+	}
+]

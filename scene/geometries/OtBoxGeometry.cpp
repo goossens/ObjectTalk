@@ -81,10 +81,11 @@ OtObject OtBoxGeometryClass::setDepthSegments(int ds) {
 //
 
 bool OtBoxGeometryClass::renderGUI() {
-	bool changed = OtGeometryClass::renderGUI();
+	bool changed = false;
 	changed |= ImGui::SliderInt("X Segments", &widthSegments, 1, 20);
 	changed |= ImGui::SliderInt("Y Segments", &heightSegments, 1, 20);
 	changed |= ImGui::SliderInt("Z Segments", &depthSegments, 1, 20);
+	changed |= OtGeometryClass::renderGUI();
 
 	if (changed) {
 		refreshGeometry = true;
@@ -101,6 +102,7 @@ bool OtBoxGeometryClass::renderGUI() {
 nlohmann::json OtBoxGeometryClass::serialize() {
 	auto data = nlohmann::json::object();
 	data["type"] = name;
+	data.update(OtGeometryClass::serialize());
 	data["xsegments"] = widthSegments;
 	data["ysegments"] = heightSegments;
 	data["zsegments"] = depthSegments;
@@ -113,6 +115,7 @@ nlohmann::json OtBoxGeometryClass::serialize() {
 //
 
 void OtBoxGeometryClass::deserialize(nlohmann::json data) {
+	OtGeometryClass::deserialize(data);
 	widthSegments = data.value("xsegments", 1);
 	heightSegments = data.value("ysegments", 1);
 	depthSegments = data.value("zsegments", 1);

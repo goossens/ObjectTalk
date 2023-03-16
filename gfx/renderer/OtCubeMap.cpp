@@ -16,27 +16,17 @@
 
 
 //
-//	OtCubeMap::OtCubeMap
-//
-
-OtCubeMap::OtCubeMap(const std::string &filename) {
-}
-
-
-//
-//	OtCubeMap::~OtCubeMap
-//
-
-OtCubeMap::~OtCubeMap() {
-	clear();
-}
-
-
-//
 //	OtCubeMap::load
 //
 
-void OtCubeMap::load(const std::string &posx, const std::string &negx, const std::string &posy, const std::string &negy, const std::string &posz, const std::string &negz) {
+void OtCubeMap::load(
+	const std::filesystem::path& posx,
+	const std::filesystem::path& negx,
+	const std::filesystem::path& posy,
+	const std::filesystem::path& negy,
+	const std::filesystem::path& posz,
+	const std::filesystem::path& negz) {
+
 	// load first side
 	OtImage image;
 	image.load(posx, true, true);

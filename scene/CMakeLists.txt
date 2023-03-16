@@ -24,6 +24,7 @@ add_dependencies(scene
 	gfx
 	input
 	tweeny
+	fastnoise
 	assimp
 	tinyobjloader)
 
@@ -31,6 +32,7 @@ target_link_libraries(scene PUBLIC
 	gfx
 	input
 	tweeny
+	fastnoise
 	assimp
 	tinyobjloader)
 

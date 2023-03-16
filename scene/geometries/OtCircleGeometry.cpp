@@ -123,10 +123,11 @@ void OtCircleGeometryClass::fillGeometry() {
 //
 
 bool OtCircleGeometryClass::renderGUI() {
-	bool changed = OtGeometryClass::renderGUI();
+	bool changed = false;
 	changed |= ImGui::SliderInt("Segments", &segments, 1, 50);
 	changed |= ImGui::SliderFloat("Theta Start", &thetaStart, 0.0f, 360.0f);
 	changed |= ImGui::SliderFloat("Theta Length", &thetaLength, 0.0f, 360.0f);
+	changed |= OtGeometryClass::renderGUI();
 
 	if (changed) {
 		refreshGeometry = true;
@@ -143,6 +144,7 @@ bool OtCircleGeometryClass::renderGUI() {
 nlohmann::json OtCircleGeometryClass::serialize() {
 	auto data = nlohmann::json::object();
 	data["type"] = name;
+	data.update(OtGeometryClass::serialize());
 	data["segments"] = segments;
 	data["thetaStart"] = thetaStart;
 	data["thetaLength"] = thetaLength;
@@ -155,6 +157,7 @@ nlohmann::json OtCircleGeometryClass::serialize() {
 //
 
 void OtCircleGeometryClass::deserialize(nlohmann::json data) {
+	OtGeometryClass::deserialize(data);
 	segments = data.value("segments", 32);
 	thetaStart = data.value("thetaStart", 0.0f);
 	thetaLength = data.value("thetaLength", 360.0f);

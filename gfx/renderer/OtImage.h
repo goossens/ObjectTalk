@@ -13,6 +13,8 @@
 //
 
 #include <string>
+#include <filesystem>
+
 #include "bimg/bimg.h"
 
 
@@ -24,7 +26,7 @@ class OtImage {
 public:
 	// constructors/destructor
 	OtImage() = default;
-	OtImage(const std::string& file, bool powerof2 = false, bool square = false);
+	OtImage(const std::filesystem::path& path, bool powerof2=false, bool square=false);
 	OtImage(const OtImage&) = delete; // no copy constructor
 	OtImage& operator=(const OtImage&) = delete; // no copy assignment
 	OtImage(OtImage&&) = default;
@@ -35,12 +37,12 @@ public:
 	void clear();
 
 	// load the image from disk
-	void load(const std::string& file, bool powerof2 = false, bool square = false);
-	void loadAsGrayscale(const std::string& file, bool powerof2 = false, bool square = false);
-	void loadAsRGBA(const std::string& file, bool powerof2 = false, bool square = false);
+	void load(const std::filesystem::path& path, bool powerof2=false, bool square=false);
+	void loadAsGrayscale(const std::filesystem::path& path, bool powerof2=false, bool square=false);
+	void loadAsRGBA(const std::filesystem::path& path, bool powerof2=false, bool square=false);
 
 	// load the image from a file in memory
-	void load(void* data, uint32_t size);
+	void loadFromFileInMemory(void* data, uint32_t size);
 
 	// see if image is valid
 	bool isValid() { return image != nullptr; }

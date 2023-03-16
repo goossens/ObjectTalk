@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <filesystem>
 #include <string>
 
 #include "OtBgfxHandle.h"
@@ -23,13 +24,14 @@
 
 class OtCubeMap {
 public:
-	// constructors/destructor
-	OtCubeMap() = default;
-	OtCubeMap(const std::string& filename);
-	~OtCubeMap();
-
 	// load cubemap from the size specified images
-	void load(const std::string& posx, const std::string& negx, const std::string& posy, const std::string& negy, const std::string& posz, const std::string& negz);
+	void load(
+		const std::filesystem::path& posx,
+		const std::filesystem::path& negx,
+		const std::filesystem::path& posy,
+		const std::filesystem::path& negy,
+		const std::filesystem::path& posz,
+		const std::filesystem::path& negz);
 
 	// clear the resources
 	void clear() { cubemap.clear(); }

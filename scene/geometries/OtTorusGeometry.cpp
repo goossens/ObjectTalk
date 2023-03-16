@@ -200,7 +200,7 @@ void OtTorusGeometryClass::fillGeometry() {
 //
 
 bool OtTorusGeometryClass::renderGUI() {
-	bool changed = OtGeometryClass::renderGUI();
+	bool changed = false;
 	changed |= ImGui::SliderFloat("Radius", &radius, 0.0f, 1.0f);
 	changed |= ImGui::SliderFloat("Tube Radius", &tubeRadius, 0.0f, 1.0f);
 	changed |= ImGui::SliderInt("Radial Segments", &radialSegments, 1, 64);
@@ -209,6 +209,7 @@ bool OtTorusGeometryClass::renderGUI() {
 	changed |= ImGui::SliderFloat("Radial Length", &radialLength, 0.0f, 360.0f);
 	changed |= ImGui::SliderFloat("Tubular Start", &tubularStart, 0.0f, 360.0f);
 	changed |= ImGui::SliderFloat("Tubular Length", &tubularLength, 0.0f, 360.0f);
+	changed |= OtGeometryClass::renderGUI();
 
 	if (changed) {
 		refreshGeometry = true;
@@ -224,6 +225,7 @@ bool OtTorusGeometryClass::renderGUI() {
 
 nlohmann::json OtTorusGeometryClass::serialize() {
 	auto data = nlohmann::json::object();
+	data.update(OtGeometryClass::serialize());
 	data["type"] = name;
 	data["radius"] = radius;
 	data["tubeRadius"] = tubeRadius;
@@ -242,6 +244,7 @@ nlohmann::json OtTorusGeometryClass::serialize() {
 //
 
 void OtTorusGeometryClass::deserialize(nlohmann::json data) {
+	OtGeometryClass::deserialize(data);
 	radius = data.value("radius", 1.0f);
 	tubeRadius = data.value("tubeRadius", 0.4f);
 	radialSegments = data.value("radialSegments", 64);

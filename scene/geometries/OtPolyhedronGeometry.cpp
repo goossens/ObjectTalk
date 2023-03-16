@@ -186,8 +186,9 @@ glm::vec2 OtPolyhedronGeometryClass::generateUV(const glm::vec3& normal) {
 //
 
 bool OtPolyhedronGeometryClass::renderGUI() {
-	bool changed = OtGeometryClass::renderGUI();
+	bool changed = false;
 	changed |= ImGui::SliderInt("Detail", &detail, 0, 20);
+	changed |= OtGeometryClass::renderGUI();
 
 	if (changed) {
 		refreshGeometry = true;
@@ -202,6 +203,7 @@ bool OtPolyhedronGeometryClass::renderGUI() {
 //
 
 void OtPolyhedronGeometryClass::serialize(nlohmann::json &data) {
+	data.update(OtGeometryClass::serialize());
 	data["detail"] = detail;
 }
 
@@ -218,6 +220,7 @@ nlohmann::json OtPolyhedronGeometryClass::serialize()
 //
 
 void OtPolyhedronGeometryClass::deserialize(nlohmann::json data) {
+	OtGeometryClass::deserialize(data);
 	detail = data.value("detail", 1);
 	refreshGeometry = true;
 }

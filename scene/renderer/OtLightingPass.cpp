@@ -19,7 +19,6 @@
 void OtSceneRenderer::renderLightingPass(OtScene* scene) {
 	// setup pass
 	OtPass pass;
-	pass.reserveRenderingSlot();
 	pass.setFrameBuffer(compositeBuffer);
 	pass.submitQuad(width, height);
 

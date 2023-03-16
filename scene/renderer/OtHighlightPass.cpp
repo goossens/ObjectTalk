@@ -22,7 +22,6 @@ void OtSceneRenderer::renderHighlightPass(OtScene* scene, OtEntity entity) {
 
 	// setup pass to render selected entities as opaque blobs
 	OtPass selectPass;
-	selectPass.reserveRenderingSlot();
 	selectPass.setClear(true, false);
 	selectPass.setRectangle(0, 0, width, height);
 	selectPass.setFrameBuffer(selectedBuffer);
@@ -33,7 +32,6 @@ void OtSceneRenderer::renderHighlightPass(OtScene* scene, OtEntity entity) {
 
 	// render the outline of the selected entity
 	OtPass outlinePass;
-	outlinePass.reserveRenderingSlot();
 	outlinePass.setClear(false, false);
 	outlinePass.setRectangle(0, 0, width, height);
 	outlinePass.setFrameBuffer(compositeBuffer);

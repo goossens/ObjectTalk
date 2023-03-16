@@ -24,7 +24,6 @@ void OtSceneRenderer::renderGeometryPass(OtScene* scene) {
 
 	// setup pass
 	OtPass pass;
-	pass.reserveRenderingSlot();
 	pass.setClear(true, true, 0);
 	pass.setRectangle(0, 0, width, height);
 	pass.setFrameBuffer(gbuffer);

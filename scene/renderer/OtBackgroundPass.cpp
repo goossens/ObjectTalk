@@ -52,7 +52,6 @@ void OtSceneRenderer::renderBackgroundPass(OtScene* scene) {
 
 	// setup pass
 	OtPass pass;
-	pass.reserveRenderingSlot();
 	pass.setClear(true, false, clearColor);
 	pass.setRectangle(0, 0, width, height);
 	pass.setFrameBuffer(compositeBuffer);

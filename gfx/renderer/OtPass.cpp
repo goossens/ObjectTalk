@@ -45,10 +45,10 @@ int OtPassCount() {
 
 
 //
-//	OtPass::reserveRenderingSlot
+//	OtPass::OtPass
 //
 
-void OtPass::reserveRenderingSlot() {
+OtPass::OtPass() {
 	view = nextViewID++;
 	bgfx::resetView(view);
 	bgfx::touch(view);

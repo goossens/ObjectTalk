@@ -23,7 +23,6 @@
 void OtSceneRenderer::renderGridPass() {
 	// setup pass
 	OtPass pass;
-	pass.reserveRenderingSlot();
 	pass.setClear(false, false);
 	pass.setRectangle(0, 0, width, height);
 	pass.setFrameBuffer(compositeBuffer);

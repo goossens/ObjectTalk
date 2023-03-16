@@ -27,8 +27,8 @@
 
 class OtPass {
 public:
-	// reserve a rendering slot for this pass
-	void reserveRenderingSlot();
+	// constructor
+	OtPass();
 
 	// manipulate pass
 	void setClear(bool color, bool depth, uint32_t rgba=0x000000ff, float depthValue=1.0f);

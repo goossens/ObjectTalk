@@ -36,7 +36,6 @@ void OtSceneRenderer::renderPostProcessingPass(OtScene* scene) {
 
 	// combine all post-processing effects
 	OtPass pass;
-	pass.reserveRenderingSlot();
 	pass.setFrameBuffer(postProcessBuffer);
 	pass.submitQuad(width, height);
 
@@ -80,7 +79,6 @@ void OtSceneRenderer::renderBloom(float bloomIntensity) {
 		int dh = sh >> 1;
 
 		OtPass pass;
-		pass.reserveRenderingSlot();
 		pass.setFrameBuffer(bloomBuffer[i]);
 		pass.submitQuad(dw, dh);
 
@@ -110,7 +108,6 @@ void OtSceneRenderer::renderBloom(float bloomIntensity) {
 		int sh = dh << 1;
 
 		OtPass pass;
-		pass.reserveRenderingSlot();
 		pass.setFrameBuffer(bloomBuffer[i - 1]);
 		pass.submitQuad(dw, dh);
 

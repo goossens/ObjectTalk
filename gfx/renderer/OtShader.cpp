@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include "glm/ext.hpp"
-
 #include "OtException.h"
 
 #include "OtShader.h"
@@ -31,21 +29,8 @@ OtShader::OtShader(const char* vertex, const char* fragment) {
 //
 
 void OtShader::initialize(const char* vertex, const char* fragment) {
-	bgfx::RendererType::Enum type = bgfx::getRendererType();
-
-	shader = bgfx::createProgram(
-		bgfx::createEmbeddedShader(embeddedShaders, type, vertex),
-		bgfx::createEmbeddedShader(embeddedShaders, type, fragment),
-		true);
-}
-
-
-//
-//	OtShader::setTransform
-//
-
-void OtShader::setTransform(const glm::mat4 &transform) {
-	bgfx::setTransform(glm::value_ptr(transform));
+	vertexShaderName = vertex;
+	fragmentShaderName = fragment;
 }
 
 
@@ -54,10 +39,19 @@ void OtShader::setTransform(const glm::mat4 &transform) {
 //
 
 void OtShader::submit(bgfx::ViewId view) {
-	if (isValid()) {
-		bgfx::submit(view, shader.getHandle());
+	if (!isValid()) {
+		if (vertexShaderName.size() && fragmentShaderName.size()) {
+			bgfx::RendererType::Enum type = bgfx::getRendererType();
 
-	} else {
-		OtExcept("Internal error: Shader not initialized before submission");
+			shader = bgfx::createProgram(
+				bgfx::createEmbeddedShader(embeddedShaders, type, vertexShaderName.c_str()),
+				bgfx::createEmbeddedShader(embeddedShaders, type, fragmentShaderName.c_str()),
+				true);
+
+		} else {
+			OtExcept("Internal error: Shader not initialized before submission");
+		}
 	}
+
+	bgfx::submit(view, shader.getHandle());
 }

@@ -15,6 +15,7 @@
 #include <cstdint>
 
 #include "glm/glm.hpp"
+#include "glm/ext.hpp"
 
 #include "OtBgfxHandle.h"
 
@@ -62,12 +63,14 @@ public:
 
 	// set parameters for the next run
 	void setState(uint64_t state) { bgfx::setState(state); }
-	void setTransform(const glm::mat4& transform);
+	void setTransform(const glm::mat4& transform) { bgfx::setTransform(glm::value_ptr(transform)); }
 
-	// run shader for specified view on GPU
+	// run shader in the specified view on the GPU
 	void submit(bgfx::ViewId view);
 
 private:
-	// uniform
+	// shader program
+	std::string vertexShaderName;
+	std::string fragmentShaderName;
 	OtBgfxHandle<bgfx::ProgramHandle> shader;
 };

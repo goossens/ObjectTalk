@@ -7,6 +7,11 @@
 
 pushd "%~dp0"
 
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f BlendMap/shader.vs -o generated/BlendMap/vs_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtBlendMapVS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f BlendMap/shader.vs -o generated/BlendMap/vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtBlendMapVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f BlendMap/shader.fs -o generated/BlendMap/fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtBlendMapFS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f BlendMap/shader.fs -o generated/BlendMap/fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtBlendMapFS_dx11
+
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f BloomDownSample/shader.vs -o generated/BloomDownSample/vs_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtBloomDownSampleVS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f BloomDownSample/shader.vs -o generated/BloomDownSample/vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtBloomDownSampleVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f BloomDownSample/shader.fs -o generated/BloomDownSample/fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtBloomDownSampleFS_dx9

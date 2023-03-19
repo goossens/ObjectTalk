@@ -26,7 +26,7 @@ OtGeometryComponent::OtGeometryComponent() {
 	createGeometry("Sphere");
 }
 
-OtGeometryComponent::OtGeometryComponent(const std::string &type) {
+OtGeometryComponent::OtGeometryComponent(const std::string& type) {
 	createGeometry(type);
 }
 

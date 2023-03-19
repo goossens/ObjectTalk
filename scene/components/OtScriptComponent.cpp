@@ -23,7 +23,7 @@
 #include "OtMessageBus.h"
 #include "OtUi.h"
 
-#include "OtComponentTools.h"
+#include "OtPathTools.h"
 #include "OtEntityObject.h"
 #include "OtScriptComponent.h"
 
@@ -144,7 +144,7 @@ void OtScriptComponent::update() {
 nlohmann::json OtScriptComponent::serialize(std::filesystem::path* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
-	data["path"] = OtComponentGetRelativePath(path, basedir);
+	data["path"] = OtPathGetRelative(path, basedir);
 	return data;
 }
 
@@ -154,5 +154,5 @@ nlohmann::json OtScriptComponent::serialize(std::filesystem::path* basedir) {
 //
 
 void OtScriptComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
-	path = OtComponentGetAbsolutePath(data, "path", basedir);
+	path = OtPathGetAbsolute(data, "path", basedir);
 }

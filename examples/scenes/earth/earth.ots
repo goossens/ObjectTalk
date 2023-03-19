@@ -144,23 +144,26 @@
 						"wireframe": true
 					},
 					{
-						"albedo": [
-							0.1568627506494522,
-							0.1568627506494522,
-							0.1568627506494522,
-							1.0
-						],
-						"albedoTexture": "",
-						"ao": 1.0,
-						"aoTexture": "",
 						"component": "Material",
-						"emissive": 0.0,
-						"emissiveTexture": "",
-						"metallic": 0.5,
-						"metallicTexture": "",
-						"normalTexture": "",
-						"roughness": 0.5,
-						"roughnessTexture": ""
+						"material": {
+							"albedo": [
+								0.1568627506494522,
+								0.1568627506494522,
+								0.1568627506494522,
+								1.0
+							],
+							"albedoTexture": "",
+							"ao": 1.0,
+							"aoTexture": "",
+							"emissive": 0.0,
+							"emissiveTexture": "",
+							"metallic": 0.5,
+							"metallicTexture": "",
+							"normalTexture": "",
+							"roughness": 0.5,
+							"roughnessTexture": "",
+							"type": "PBR"
+						}
 					}
 				]
 			},
@@ -206,23 +209,26 @@
 						"wireframe": false
 					},
 					{
-						"albedo": [
-							1.0,
-							1.0,
-							1.0,
-							1.0
-						],
-						"albedoTexture": "assets/earth.png",
-						"ao": 1.0,
-						"aoTexture": "",
 						"component": "Material",
-						"emissive": 0.0,
-						"emissiveTexture": "",
-						"metallic": 0.23000000417232513,
-						"metallicTexture": "",
-						"normalTexture": "",
-						"roughness": 0.4000000059604645,
-						"roughnessTexture": ""
+						"material": {
+							"albedo": [
+								1.0,
+								1.0,
+								1.0,
+								1.0
+							],
+							"albedoTexture": "assets/earth.png",
+							"ao": 1.0,
+							"aoTexture": "",
+							"emissive": 0.0,
+							"emissiveTexture": "",
+							"metallic": 0.23000000417232513,
+							"metallicTexture": "",
+							"normalTexture": "",
+							"roughness": 0.4000000059604645,
+							"roughnessTexture": "",
+							"type": "PBR"
+						}
 					}
 				]
 			},
@@ -268,23 +274,26 @@
 						"wireframe": false
 					},
 					{
-						"albedo": [
-							1.0,
-							1.0,
-							1.0,
-							1.0
-						],
-						"albedoTexture": "assets/clouds.png",
-						"ao": 1.0,
-						"aoTexture": "",
 						"component": "Material",
-						"emissive": 0.0,
-						"emissiveTexture": "",
-						"metallic": 0.5,
-						"metallicTexture": "",
-						"normalTexture": "",
-						"roughness": 0.5,
-						"roughnessTexture": ""
+						"material": {
+							"albedo": [
+								1.0,
+								1.0,
+								1.0,
+								1.0
+							],
+							"albedoTexture": "assets/clouds.png",
+							"ao": 1.0,
+							"aoTexture": "",
+							"emissive": 0.0,
+							"emissiveTexture": "",
+							"metallic": 0.5,
+							"metallicTexture": "",
+							"normalTexture": "",
+							"roughness": 0.5,
+							"roughnessTexture": "",
+							"type": "PBR"
+						}
 					}
 				]
 			}

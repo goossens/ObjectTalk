@@ -14,6 +14,7 @@
 
 #include "bgfx/embedded_shader.h"
 
+#include "generated/OtBlendMapShader.h"
 #include "generated/OtBloomDownSampleShader.h"
 #include "generated/OtBloomUpSampleShader.h"
 #include "generated/OtDebugShader.h"
@@ -35,6 +36,8 @@
 //
 
 static const bgfx::EmbeddedShader embeddedShaders[] = {
+	BGFX_EMBEDDED_SHADER(OtBlendMapVS),
+	BGFX_EMBEDDED_SHADER(OtBlendMapFS),
 	BGFX_EMBEDDED_SHADER(OtBloomDownSampleVS),
 	BGFX_EMBEDDED_SHADER(OtBloomDownSampleFS),
 	BGFX_EMBEDDED_SHADER(OtBloomUpSampleVS),

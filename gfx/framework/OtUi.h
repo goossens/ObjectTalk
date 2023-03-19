@@ -28,7 +28,7 @@
 void OtUiCenteredText(const char* text);
 
 // create a header with specified width
-void OtUiHeader(const char* label, float width);
+void OtUiHeader(const char* label, float width=0.0f);
 
 // create a readonly text filed
 void OtUiReadonlyText(const char* label, std::string& value);
@@ -49,6 +49,3 @@ bool OtUiFileSelector(
 // create a splitter widget
 void OtUiSplitterVertical(float* size, float minSize, float maxSize);
 void OtUiSplitterHorizontal(float* size, float minSize, float maxSize);
-
-// create a spinner
-void OtUiLoadingIndicator(char* label, float radius, const ImVec4& color, const ImVec4& backdrop, int circles=16, float speed=20.0f);

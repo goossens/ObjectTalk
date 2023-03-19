@@ -249,24 +249,6 @@ void OtGeometryClass::deserialize(nlohmann::json data) {
 
 
 //
-//	OtGeometryClass::serializeToString
-//
-
-std::string OtGeometryClass::serializeToString() {
-	 return serialize().dump();
-}
-
-
-//
-//	OtGeometryClass::deserializeFromString
-//
-
-void OtGeometryClass::deserializeFromString(const std::string& data) {
-	return deserialize(nlohmann::json::parse(data));
-}
-
-
-//
 //	OtGeometryClass::getMeta
 //
 

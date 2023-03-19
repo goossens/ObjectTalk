@@ -33,8 +33,8 @@
 				"near": 0.10000000149011612
 			},
 			{
-				"Exposure": 1.340000033378601,
-				"bloomIntensity": 0.7400000095367432,
+				"Exposure": 1.2400000095367432,
+				"bloomIntensity": 0.7699999809265137,
 				"component": "Post Processing"
 			}
 		]
@@ -60,16 +60,16 @@
 					1.0
 				],
 				"translation": [
-					2.5,
-					1.2000000476837158,
-					2.700000047683716
+					12.0,
+					13.699999809265137,
+					14.0
 				]
 			},
 			{
 				"color": [
-					0.3185840845108032,
-					0.3133446276187897,
-					0.2001722902059555
+					0.769911527633667,
+					0.7629775404930115,
+					0.6132038235664368
 				],
 				"component": "Directional Light"
 			}
@@ -106,14 +106,14 @@
 				"cullback": true,
 				"geometry": {
 					"displacement": {
-						"frequency": 0.699999988079071,
-						"lacunarity": 1.2999999523162842,
+						"frequency": 2.5,
+						"lacunarity": 1.3899999856948853,
 						"map": "/Users/goossens/github/ObjectTalk/examples/scenes/jungle/assets/heightmap.png",
 						"octaves": 5,
-						"persistance": 0.5199999809265137,
-						"scale": 0.3799999952316284,
+						"persistance": 0.4399999976158142,
+						"scale": 0.11999999731779099,
 						"seed": 1337,
-						"state": 1
+						"state": 2
 					},
 					"heightSegments": 199,
 					"type": "Plane",
@@ -123,23 +123,23 @@
 				"wireframe": false
 			},
 			{
-				"albedo": [
-					0.9026548862457275,
-					0.6746760606765747,
-					0.387422651052475,
-					1.0
-				],
-				"albedoTexture": "",
-				"ao": 1.0,
-				"aoTexture": "",
 				"component": "Material",
-				"emissive": 0.03999999910593033,
-				"emissiveTexture": "",
-				"metallic": 0.07000000029802322,
-				"metallicTexture": "",
-				"normalTexture": "",
-				"roughness": 0.7900000214576721,
-				"roughnessTexture": ""
+				"material": {
+					"blendMapPath": "assets/blendmap.png",
+					"bluePath": "assets/path.jpg",
+					"emissive": 0.0,
+					"greenPath": "assets/earth.jpg",
+					"metallic": 0.05000000074505806,
+					"nonePath": "assets/grass.jpg",
+					"normalsBluePath": "assets/path_n.png",
+					"normalsGreenPath": "assets/earth_n.png",
+					"normalsNonePath": "assets/grass_n.jpg",
+					"normalsRedPath": "assets/moss_n.png",
+					"redPath": "assets/moss.jpg",
+					"roughness": 0.7900000214576721,
+					"scale": 36.599998474121094,
+					"type": "BlendMap"
+				}
 			}
 		]
 	},
@@ -190,23 +190,26 @@
 				"wireframe": false
 			},
 			{
-				"albedo": [
-					0.7168141603469849,
-					0.7168141603469849,
-					0.7168141603469849,
-					1.0
-				],
-				"albedoTexture": "",
-				"ao": 1.0,
-				"aoTexture": "",
 				"component": "Material",
-				"emissive": 0.0,
-				"emissiveTexture": "",
-				"metallic": 0.3400000035762787,
-				"metallicTexture": "",
-				"normalTexture": "",
-				"roughness": 0.5199999809265137,
-				"roughnessTexture": ""
+				"material": {
+					"albedo": [
+						0.7168141603469849,
+						0.7168141603469849,
+						0.7168141603469849,
+						1.0
+					],
+					"albedoTexture": "",
+					"ao": 1.0,
+					"aoTexture": "",
+					"emissive": 0.0,
+					"emissiveTexture": "",
+					"metallic": 0.3400000035762787,
+					"metallicTexture": "",
+					"normalTexture": "",
+					"roughness": 0.5199999809265137,
+					"roughnessTexture": "",
+					"type": "PBR"
+				}
 			}
 		]
 	}

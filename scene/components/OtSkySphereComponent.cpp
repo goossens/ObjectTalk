@@ -15,7 +15,7 @@
 
 #include "OtUi.h"
 
-#include "OtComponentTools.h"
+#include "OtPathTools.h"
 #include "OtSkySphereComponent.h"
 
 
@@ -45,7 +45,7 @@ bool OtSkySphereComponent::renderGUI() {
 nlohmann::json OtSkySphereComponent::serialize(std::filesystem::path* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
-	data["image"] = OtComponentGetRelativePath(image, basedir);
+	data["image"] = OtPathGetRelative(image, basedir);
 	data["brightness"] = brightness;
 	data["gamma"] = gamma;
 	return data;
@@ -58,7 +58,7 @@ nlohmann::json OtSkySphereComponent::serialize(std::filesystem::path* basedir) {
 
 void OtSkySphereComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
 	auto oldImage = image;
-	image = OtComponentGetAbsolutePath(data, "image", basedir);
+	image = OtPathGetAbsolute(data, "image", basedir);
 	update = image != oldImage;
 
 	brightness = data.value("brightness", 1.0f);

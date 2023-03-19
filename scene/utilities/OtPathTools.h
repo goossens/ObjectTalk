@@ -16,12 +16,14 @@
 
 #include "nlohmann/json.hpp"
 
+#include "OtUi.h"
+
 
 //
-//	OtComponentGetRelativePath
+//	OtPathGetRelative
 //
 
-static inline std::filesystem::path OtComponentGetRelativePath(std::filesystem::path path, std::filesystem::path* basedir) {
+static inline std::filesystem::path OtPathGetRelative(std::filesystem::path path, std::filesystem::path* basedir) {
 	// make a path relative to the provided base directory
 	if (basedir) {
 		if (path.empty()) {
@@ -39,10 +41,10 @@ static inline std::filesystem::path OtComponentGetRelativePath(std::filesystem::
 
 
 //
-//	OtComponentGetAbsolutePath
+//	OtPathGetAbsolute
 //
 
-static inline std::filesystem::path OtComponentGetAbsolutePath(nlohmann::json data, const char* field, std::filesystem::path* basedir) {
+static inline std::filesystem::path OtPathGetAbsolute(nlohmann::json data, const char* field, std::filesystem::path* basedir) {
 	// make a path absolute based on a provided base directory
 	if (data.contains(field)) {
 		std::string value = data[field];
@@ -62,4 +64,20 @@ static inline std::filesystem::path OtComponentGetAbsolutePath(nlohmann::json da
 	} else {
 		return std::filesystem::path();
 	}
+}
+
+
+//
+//	OtPathEdit
+//
+
+static inline bool OtPathEdit(const char* label, std::filesystem::path& path, bool& flag) {
+	bool changed = false;
+
+	if (OtUiFileSelector(label, path)) {
+		changed = true;
+		flag = true;
+	}
+
+	return changed;
 }

@@ -180,6 +180,6 @@ void OtSceneRuntime::initializeRenderingSystem() {
 void OtSceneRuntime::initializeAssetSystem() {
 	// load all material assets
 	for (auto [entity, component] : scene->view<OtMaterialComponent>().each()) {
-		component.update();
+		component.material->update();
 	}
 }

@@ -17,6 +17,7 @@
 #include "glm/glm.hpp"
 #include "nlohmann/json_fwd.hpp"
 
+#include "OtMaterial.h"
 #include "OtTexture.h"
 
 
@@ -26,6 +27,10 @@
 
 class OtMaterialComponent {
 public:
+	// constructors
+	OtMaterialComponent();
+	OtMaterialComponent(const std::string& type);
+
 	// GUI to change geometry properties
 	bool renderGUI();
 
@@ -36,34 +41,10 @@ public:
 	// component name
 	static constexpr char const* name = "Material";
 
-	// update material (if required)
-	void update();
-
 	// stored properties
-	glm::vec4 albedo{1.0f};
-	float metallic = 0.5f;
-	float roughness = 0.5f;
-	float emissive = 0.0f;
-	float ao = 1.0f;
-	std::filesystem::path albedoTexturePath;
-	std::filesystem::path normalTexturePath;
-	std::filesystem::path metallicTexturePath;
-	std::filesystem::path roughnessTexturePath;
-	std::filesystem::path emissiveTexturePath;
-	std::filesystem::path aoTexturePath;
+	OtMaterial material;
 
-	// runtime properties
-	OtTexture albedoTexture;
-	OtTexture normalTexture;
-	OtTexture metallicTexture;
-	OtTexture roughnessTexture;
-	OtTexture emissiveTexture;
-	OtTexture aoTexture;
-
-	bool updateAlbedoTexture = false;
-	bool updateNormalTexture = false;
-	bool updateMetallicTexture = false;
-	bool updateRoughnessTexture = false;
-	bool updateEmissiveTexture = false;
-	bool updateAoTexture = false;
+private:
+	// create a new named material instance
+	void createMaterial(const std::string& type);
 };

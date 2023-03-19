@@ -43,6 +43,17 @@ void OtSceneRenderer::renderGeometryPass(OtScene* scene) {
 //
 
 void OtSceneRenderer::renderGeometry(OtPass& pass, OtScene* scene, OtEntity entity) {
+	// determine the shader
+	OtShader* shader;
+	auto& material = scene->getComponent<OtMaterialComponent>(entity).material;
+
+	if (material.isKindOf<OtPbrMaterialClass>()) {
+		shader = &geometryShader;
+
+	} else if (material.isKindOf<OtBlendMapMaterialClass>()) {
+		shader = &blendmapShader;
+	}
+
 	// submit the material information
 	submitMaterialUniforms(scene, entity);
 
@@ -58,7 +69,7 @@ void OtSceneRenderer::renderGeometry(OtPass& pass, OtScene* scene, OtEntity enti
 
 	// set the shader state
 	if (geometry.wireframe) {
-		geometryShader.setState(
+		shader->setState(
 			OtStateWriteRgb |
 			OtStateWriteA |
 			OtStateWriteZ |
@@ -66,7 +77,7 @@ void OtSceneRenderer::renderGeometry(OtPass& pass, OtScene* scene, OtEntity enti
 			OtStateLines);
 
 	} else if (geometry.cullback) {
-		geometryShader.setState(
+		shader->setState(
 			OtStateWriteRgb |
 			OtStateWriteA |
 			OtStateWriteZ |
@@ -74,7 +85,7 @@ void OtSceneRenderer::renderGeometry(OtPass& pass, OtScene* scene, OtEntity enti
 			OtStateCullCw);
 
 	} else {
-		geometryShader.setState(
+		shader->setState(
 			OtStateWriteRgb |
 			OtStateWriteA |
 			OtStateWriteZ |
@@ -82,8 +93,8 @@ void OtSceneRenderer::renderGeometry(OtPass& pass, OtScene* scene, OtEntity enti
 	}
 
 	// set the transform
-	geometryShader.setTransform(scene->getGlobalTransform(entity));
+	shader->setTransform(scene->getGlobalTransform(entity));
 
 	// run the shader
-	pass.runShader(geometryShader);
+	pass.runShader(*shader);
 }

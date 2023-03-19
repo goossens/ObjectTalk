@@ -128,23 +128,26 @@
 				"wireframe": false
 			},
 			{
-				"albedo": [
-					0.8098957538604736,
-					0.8761062026023865,
-					0.1279269903898239,
-					1.0
-				],
-				"albedoTexture": "",
-				"ao": 1.0,
-				"aoTexture": "",
 				"component": "Material",
-				"emissive": 0.03999999910593033,
-				"emissiveTexture": "",
-				"metallic": 0.5,
-				"metallicTexture": "",
-				"normalTexture": "",
-				"roughness": 0.5,
-				"roughnessTexture": ""
+				"material": {
+					"albedo": [
+						0.8098957538604736,
+						0.8761062026023865,
+						0.1279269903898239,
+						1.0
+					],
+					"albedoTexture": "",
+					"ao": 1.0,
+					"aoTexture": "",
+					"emissive": 0.03999999910593033,
+					"emissiveTexture": "",
+					"metallic": 0.5,
+					"metallicTexture": "",
+					"normalTexture": "",
+					"roughness": 0.5,
+					"roughnessTexture": "",
+					"type": "PBR"
+				}
 			}
 		]
 	},
@@ -193,17 +196,20 @@
 					0.6769911646842957,
 					1.0
 				],
-				"albedoTexture": "",
-				"ao": 1.0,
-				"aoTexture": "",
 				"component": "Material",
-				"emissive": 0.05999999865889549,
-				"emissiveTexture": "",
-				"metallic": 0.5,
-				"metallicTexture": "",
-				"normalTexture": "",
-				"roughness": 0.5,
-				"roughnessTexture": ""
+				"material": {
+					"albedoTexture": "",
+					"ao": 1.0,
+					"aoTexture": "",
+					"emissive": 0.05999999865889549,
+					"emissiveTexture": "",
+					"metallic": 0.5,
+					"metallicTexture": "",
+					"normalTexture": "",
+					"roughness": 0.5,
+					"roughnessTexture": "",
+					"type": "PBR"
+				}
 			}
 		]
 	},
@@ -246,23 +252,26 @@
 				"wireframe": false
 			},
 			{
-				"albedo": [
-					0.9115044474601746,
-					0.14922858774662018,
-					0.14922858774662018,
-					1.0
-				],
-				"albedoTexture": "",
-				"ao": 1.0,
-				"aoTexture": "",
 				"component": "Material",
-				"emissive": 0.07999999821186066,
-				"emissiveTexture": "",
-				"metallic": 0.5,
-				"metallicTexture": "",
-				"normalTexture": "",
-				"roughness": 0.5,
-				"roughnessTexture": ""
+				"material": {
+					"albedo": [
+						0.9115044474601746,
+						0.14922858774662018,
+						0.14922858774662018,
+						1.0
+					],
+					"albedoTexture": "",
+					"ao": 1.0,
+					"aoTexture": "",
+					"emissive": 0.07999999821186066,
+					"emissiveTexture": "",
+					"metallic": 0.5,
+					"metallicTexture": "",
+					"normalTexture": "",
+					"roughness": 0.5,
+					"roughnessTexture": "",
+					"type": "PBR"
+				}
 			}
 		]
 	}

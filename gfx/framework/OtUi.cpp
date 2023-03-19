@@ -37,6 +37,11 @@ void OtUiCenteredText(const char* text) {
 //
 
 void OtUiHeader(const char* label, float width) {
+	// get default width if required
+	if (width <= 0.0f) {
+		width = ImGui::GetWindowContentRegionMax().x - ImGui::GetCursorPos().x;
+	}
+
 	// get meta information
     ImGuiContext& g = *GImGui;
 	ImGuiWindow* window = ImGui::GetCurrentWindow();
@@ -162,7 +167,8 @@ bool OtUiEditVec4(const char* label, glm::vec4& vector, float speed, float minv,
 //
 
 bool OtUiFileSelector(
-	const char* label, std::filesystem::path& path,
+	const char* label,
+	std::filesystem::path& path,
 	std::function<void(std::filesystem::path& path)> create,
 	std::function<void(std::filesystem::path& path)> edit) {
 
@@ -252,9 +258,11 @@ bool OtUiFileSelector(
 		}
 	}
 
-	// render label
-	ImGui::SameLine(0.0f, spacing);
-	ImGui::TextUnformatted(label);
+	// render label (if required)
+	if (label[0] != '#' && label[1] != '#') {
+		ImGui::SameLine(0.0f, spacing);
+		ImGui::TextUnformatted(label);
+	}
 
 	// show file selector (if required)
 	ImVec2 maxSize = ImGui::GetIO().DisplaySize;
@@ -320,38 +328,4 @@ void OtUiSplitterVertical(float* size, float minSize, float maxSize) {
 
 void OtUiSplitterHorizontal(float* size, float minSize, float maxSize) {
 	OtUiSplitter(false, size, minSize, maxSize);
-}
-
-
-//
-//	OtUiLoadingIndicator
-//
-
-void OtUiLoadingIndicator(char* label, float radius, const ImVec4& color, const ImVec4& backdrop, int circles, float speed) {
-	ImGuiWindow* window = ImGui::GetCurrentWindow();
-	ImGuiContext& g = *GImGui;
-	ImGuiID id = window->GetID(label);
-	ImVec2 pos = window->DC.CursorPos;
-
-	float circle = radius / 10.0f;
-	ImRect bb(pos, ImVec2(pos.x + radius * 2.0f, pos.y + radius * 2.0f));
-	ImGui::ItemSize(bb, g.Style.FramePadding.y);
-	ImGui::ItemAdd(bb, id);
-
-	float t = g.Time;
-	auto offset = 2.0f * IM_PI / circles;
-
-	for (int i = 0; i < circles; i++) {
-		auto x = radius * std::sin(offset * i);
-		auto y = radius * std::cos(offset * i);
-		auto growth = std::max(0.0f, std::sin(t * speed - i * offset));
-
-		ImVec4 color;
-		color.x = color.x * growth + backdrop.x * (1.0f - growth);
-		color.y = color.y * growth + backdrop.y * (1.0f - growth);
-		color.z = color.z * growth + backdrop.z * (1.0f - growth);
-		color.w = 1.0f;
-
-		window->DrawList->AddCircleFilled(ImVec2(pos.x + radius + x, pos.y + radius - y), circle + growth * circle, ImGui::GetColorU32(color));
-	}
 }

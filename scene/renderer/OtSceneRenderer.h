@@ -25,6 +25,7 @@
 #include "OtUniformVec4.h"
 
 #include "OtEntity.h"
+#include "OtMaterials.h"
 #include "OtScene.h"
 
 
@@ -65,6 +66,8 @@ private:
 
 	// rendering tools
 	void submitMaterialUniforms(OtScene* scene, OtEntity entity);
+	void submitPbrUniforms(OtPbrMaterial material);
+	void submitBlendMapUniforms(OtBlendMapMaterial material);
 	void submitLightUniforms(OtScene* scene);
 
 	// camera information
@@ -95,6 +98,7 @@ private:
 
 	// uniforms
 	OtUniformVec4 materialUniforms{"u_material", 4};
+	OtUniformVec4 blendmapUniforms{"u_blendmap", 2};
 	OtUniformVec4 backgroundUniforms{"u_background", 1};
 	OtUniformVec4 lightingUniforms{"u_lighting", 3};
 	OtUniformVec4 gridUniforms{"u_grid", 1};
@@ -111,14 +115,24 @@ private:
 	OtSampler geometryEmissiveSampler{"s_geometryEmissiveSampler"};
 	OtSampler geometryAoSampler{"s_geometryAoTexture"};
 
-	OtSampler skyBoxSampler{"s_skyBoxTexture"};
-	OtSampler skySphereSampler{"s_skySphereTexture"};
+	OtSampler blendMapSampler{"s_blendMap"};
+	OtSampler albedoNoneSampler{"s_colorNone"};
+	OtSampler albedoRedSampler{"s_colorRed"};
+	OtSampler albedoGreenSampler{"s_colorGreen"};
+	OtSampler albedoBlueSampler{"s_colorBlue"};
+	OtSampler normalsNoneSampler{"s_normalNone"};
+	OtSampler normalsRedSampler{"s_normalRed"};
+	OtSampler normalsGreenSampler{"s_normalGreen"};
+	OtSampler normalsBlueSampler{"s_normalBlue"};
 
 	OtSampler lightingAlbedoSampler{"s_lightingAlbedoTexture"};
 	OtSampler lightingPositionSampler{"s_lightingPositionTexture"};
 	OtSampler lightingNormalSampler{"s_lightingNormalTexture"};
 	OtSampler lightingPbrSampler{"s_lightingPbrTexture"};
 	OtSampler lightingDepthSampler{"s_lightingDepthTexture"};
+
+	OtSampler skyBoxSampler{"s_skyBoxTexture"};
+	OtSampler skySphereSampler{"s_skySphereTexture"};
 
 	OtSampler selectedSampler{"s_selectedTexture"};
 
@@ -127,13 +141,14 @@ private:
 
 	// shaders
 	OtShader geometryShader{"OtGeometryVS", "OtGeometryFS"};
-	OtShader skyBoxShader{"OtSkyboxVS", "OtSkyboxFS"};
-	OtShader skySphereShader{"OtSkySphereVS", "OtSkySphereFS"};
+	OtShader blendmapShader{"OtBlendMapVS", "OtBlendMapFS"};
 	OtShader lightingShader{"OtLightingVS", "OtLightingFS"};
 	OtShader transparentShader{"OtTransparentVS", "OtTransparentFS"};
 	OtShader gridShader{"OtGridVS", "OtGridFS"};
 	OtShader selectShader{"OtSelectVS", "OtSelectFS"};
 	OtShader outlineShader{"OtOutlineVS", "OtOutlineFS"};
+	OtShader skyBoxShader{"OtSkyboxVS", "OtSkyboxFS"};
+	OtShader skySphereShader{"OtSkySphereVS", "OtSkySphereFS"};
 	OtShader bloomDownSampleShader{"OtBloomDownSampleVS", "OtBloomDownSampleFS"};
 	OtShader bloomUpSampleShader{"OtBloomUpSampleVS", "OtBloomUpSampleFS"};
 	OtShader postProcessShader{"OtPostProcessVS", "OtPostProcessFS"};

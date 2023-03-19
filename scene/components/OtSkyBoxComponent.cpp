@@ -14,7 +14,7 @@
 
 #include "OtUi.h"
 
-#include "OtComponentTools.h"
+#include "OtPathTools.h"
 #include "OtSkyBoxComponent.h"
 
 
@@ -50,12 +50,12 @@ bool OtSkyBoxComponent::renderGUI() {
 nlohmann::json OtSkyBoxComponent::serialize(std::filesystem::path* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
-	data["right"] = OtComponentGetRelativePath(right, basedir);
-	data["left"] = OtComponentGetRelativePath(left, basedir);
-	data["top"] = OtComponentGetRelativePath(top, basedir);
-	data["bottom"] = OtComponentGetRelativePath(bottom, basedir);
-	data["front"] = OtComponentGetRelativePath(front, basedir);
-	data["back"] = OtComponentGetRelativePath(back, basedir);
+	data["right"] = OtPathGetRelative(right, basedir);
+	data["left"] = OtPathGetRelative(left, basedir);
+	data["top"] = OtPathGetRelative(top, basedir);
+	data["bottom"] = OtPathGetRelative(bottom, basedir);
+	data["front"] = OtPathGetRelative(front, basedir);
+	data["back"] = OtPathGetRelative(back, basedir);
 	data["brightness"] = brightness;
 	data["gamma"] = gamma;
 	return data;
@@ -68,7 +68,7 @@ nlohmann::json OtSkyBoxComponent::serialize(std::filesystem::path* basedir) {
 
 static inline bool didPathChange(std::filesystem::path& value, nlohmann::json data, const char* name, std::filesystem::path* basedir) {
 	auto oldValue = value;
-	value = OtComponentGetAbsolutePath(data, name, basedir);
+	value = OtPathGetAbsolute(data, name, basedir);
 	return value != oldValue;
 }
 

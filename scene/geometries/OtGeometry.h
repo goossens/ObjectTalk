@@ -51,9 +51,6 @@ public:
 	virtual nlohmann::json serialize();
 	virtual void deserialize(nlohmann::json data);
 
-	std::string serializeToString();
-	void deserializeFromString(const std::string& data);
-
 	// get type name of geometry
 	virtual const char* getTypeName() { return name; }
 

@@ -34,7 +34,7 @@ void OtUiHeader(const char* label, float width=0.0f);
 void OtUiReadonlyText(const char* label, std::string& value);
 
 // create an input field based on a std::string
-bool OtUiInputText(const char* label, std::string& value);
+bool OtUiInputText(const char* label, std::string& value, ImGuiInputTextFlags flags=ImGuiInputTextFlags_None);
 
 // create a field to edit glm vectors
 bool OtUiEditVec3(const char* label, glm::vec3& vector, float speed, float minv, float maxv);

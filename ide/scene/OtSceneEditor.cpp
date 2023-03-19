@@ -302,16 +302,6 @@ void OtSceneEditor::renderEntitiesPanel() {
 //
 
 void OtSceneEditor::renderComponentsPanel() {
-	// render selected entity info and let user change its properties
-	if (scene->isValidEntity(selectedEntity)) {
-		OtUiHeader("Selected Entity", ImGui::GetWindowContentRegionMax().x - ImGui::GetCursorPos().x);
-		ImGui::Indent();
-		ImGui::PushItemWidth(200.0f);
-		renderComponentEditor<OtCoreComponent>();
-		ImGui::PopItemWidth();
-		ImGui::Unindent();
-	}
-
 	// render the panel
 	renderPanel(
 		"Components",
@@ -536,14 +526,24 @@ void OtSceneEditor::renderEntity(OtEntity entity) {
 	// create a tree node
 	ImGui::PushID(createID(entity, 1));
 	auto tag = scene->getEntityTag(entity);
-	bool open = ImGui::TreeNodeEx("node", flags, "%s", tag.c_str());
+	bool open = ImGui::TreeNodeEx("node", flags, "");
+	auto rectMin = ImGui::GetItemRectMin();
+	auto rectMax = ImGui::GetItemRectMax();
 
-	// is this entity selected
-	if (entity == selectedEntity) {
-		ImGui::GetWindowDrawList()->AddRect(
-			ImGui::GetItemRectMin(),
-			ImGui::GetItemRectMax(),
-			0x8000FF00);
+	// handle entity selections
+	if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen() && renamingEntity != entity) {
+		selectedEntity = ImGui::GetIO().KeyShift ? OtEntityNull : entity;
+		renamingEntity = OtEntityNull;
+	}
+
+	// handle double clicks (to start editing entity tag)
+	bool startEntityRenaming = false;
+
+	if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0)) {
+		if (renamingEntity != entity) {
+			renamingEntity = entity;
+			startEntityRenaming = true;
+		}
 	}
 
 	// entities are drag sources
@@ -554,7 +554,6 @@ void OtSceneEditor::renderEntity(OtEntity entity) {
 	}
 
 	// entities are drag targets
-	OtEntity dragSourceEntity = OtEntityNull;
 	ImGui::PushStyleColor(ImGuiCol_DragDropTarget, 0x8000b0b0);
 
 	if (ImGui::BeginDragDropTarget()) {
@@ -569,19 +568,42 @@ void OtSceneEditor::renderEntity(OtEntity entity) {
 
 	ImGui::PopStyleColor();
 
-	// select/deselect current entity
-	if ((ImGui::IsItemClicked() || ImGui::IsItemClicked(1)) && !ImGui::IsItemToggledOpen()) {
-		selectedEntity = ImGui::GetIO().KeyShift ? OtEntityNull : entity;
+	// are we renaming this entity?
+	if (entity == renamingEntity) {
+		ImGui::SameLine(rectMin.x - ImGui::GetStyle().FramePadding.y - 1);
+
+		ImGui::SetNextItemWidth(
+			rectMax.x - rectMin.x -
+			ImGui::GetTreeNodeToLabelSpacing() -
+			(buttonSize + ImGui::GetStyle().FramePadding.y) * 2.0f);
+
+		auto& component = scene->getComponent<OtCoreComponent>(entity);
+		auto oldValue = component.serialize(nullptr).dump();
+
+		if (startEntityRenaming) {
+			ImGui::SetKeyboardFocusHere();
+		}
+
+		if (OtUiInputText("##rename", component.tag)) {
+			auto newValue = component.serialize(nullptr).dump();
+			nextTask = std::make_shared<OtEditComponentTask<OtCoreComponent>>(scene.get(), entity, oldValue, newValue);
+		}
+
+		if (!startEntityRenaming && !ImGui::IsItemFocused()) {
+			renamingEntity = OtEntityNull;
+		}
+
+		startEntityRenaming = false;
+
+	} else {
+		ImGui::SameLine(rectMin.x);
+		ImGui::Text("%s", tag.c_str());
 	}
 
-	if (ImGui::BeginPopupContextWindow()) {
-		if (ImGui::MenuItem("Cut")) { cutEntity(); }
-		if (ImGui::MenuItem("Copy")) { copyEntity(); }
-		if (ImGui::MenuItem("Paste")) { pasteEntity(); }
-		if (ImGui::MenuItem("Duplicate")) { duplicateEntity(); }
-		ImGui::EndPopup();
+	// is this entity selected
+	if (entity == selectedEntity) {
+		ImGui::GetWindowDrawList()->AddRect(rectMin, rectMax, 0x8000FF00);
 	}
-
 
 	// add button to remove an entity
 	auto right = ImGui::GetWindowContentRegionMax().x;

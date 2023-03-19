@@ -99,6 +99,7 @@ private:
 	std::unique_ptr<OtScene> scene;
 	std::unique_ptr<OtSceneRenderer> renderer;
 	OtEntity selectedEntity = OtEntityNull;
+	OtEntity renamingEntity = OtEntityNull;
 
 	// to handle do/undo/redo
 	OtTaskManager taskManager;

@@ -91,8 +91,8 @@ void OtUiReadonlyText(const char* label, std::string& value) {
 //	OtUiInputText
 //
 
-bool OtUiInputText(const char* label, std::string& value) {
-	ImGuiInputTextFlags flags =
+bool OtUiInputText(const char* label, std::string& value, ImGuiInputTextFlags flags) {
+	flags |=
 		ImGuiInputTextFlags_NoUndoRedo |
 		ImGuiInputTextFlags_CallbackResize;
 

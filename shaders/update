@@ -45,12 +45,24 @@ function needsUpdate() {
 	then
 		true
 
-	elif [ ../include/bgfx.glsl -nt $3 -o ../include/light.glsl -nt $3 -o ../include/material.glsl -nt $3 ]
-	then
-		true
-
 	else
-		false
+		unset -v NEWEST_INCLUDE
+
+		for FILE in ${HOME}/include/*.glsl
+		do
+			if [ ${FILE} -nt "${NEWEST_INCLUDE}" ]
+			then
+				NEWEST_INCLUDE=${FILE}
+			fi
+		done
+
+		if [ ${NEWEST_INCLUDE} -nt $3 ]
+		then
+			true
+
+		else
+			false
+		fi
 	fi
 }
 

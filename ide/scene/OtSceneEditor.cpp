@@ -691,6 +691,10 @@ void OtSceneEditor::renderNewEntitiesMenu(OtEntity entity) {
 		nextTask = std::make_shared<OtCreateEntityTask>(scene.get(), entity, OtCreateEntityTask::directionalLight);
 	}
 
+	if (ImGui::MenuItem("Model Entity")) {
+		nextTask = std::make_shared<OtCreateEntityTask>(scene.get(), entity, OtCreateEntityTask::model);
+	}
+
 	if (ImGui::MenuItem("Geometry Entity")) {
 		nextTask = std::make_shared<OtCreateEntityTask>(scene.get(), entity, OtCreateEntityTask::geometry);
 	}

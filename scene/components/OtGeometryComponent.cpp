@@ -77,7 +77,7 @@ nlohmann::json OtGeometryComponent::serialize(std::filesystem::path* basedir) {
 	data["wireframe"] = wireframe;
 	data["transparent"] = transparent;
 	data["cullback"] = cullback;
-	data["geometry"] = geometry->serialize();
+	data["geometry"] = geometry->serialize(basedir);
 	return data;
 }
 
@@ -93,7 +93,7 @@ void OtGeometryComponent::deserialize(nlohmann::json data, std::filesystem::path
 
 	if (data.contains("geometry") && data["geometry"].contains("type")) {
 		createGeometry(data["geometry"]["type"]);
-		geometry->deserialize(data["geometry"]);
+		geometry->deserialize(data["geometry"], basedir);
 
 	} else {
 		createGeometry("Sphere");

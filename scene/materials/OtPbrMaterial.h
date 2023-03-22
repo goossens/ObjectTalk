@@ -47,12 +47,24 @@ public:
 	// material name
 	static constexpr char const* name = "PBR";
 
+	// set the textures
+	void setTexture(std::filesystem::path& target, const std::filesystem::path& path, bool& flag);
+	void setAlbedoTexture(const std::filesystem::path& path) { setTexture(albedoTexturePath, path, updateAlbedoTexture); }
+	void setNormalTexture(const std::filesystem::path& path) { setTexture(normalTexturePath, path, updateNormalTexture); }
+	void setMetallicTexture(const std::filesystem::path& path) { setTexture(metallicTexturePath, path, updateMetallicTexture); }
+	void setRoughnessTexture(const std::filesystem::path& path) { setTexture(roughnessTexturePath, path, updateRoughnessTexture); }
+	void setEmissiveTexture(const std::filesystem::path& path) { setTexture(emissiveTexturePath, path, updateEmissiveTexture); }
+	void setAoTexture(const std::filesystem::path& path) { setTexture(aoTexturePath, path, updateAoTexture); }
+
 	// get type definition
 	static OtType getMeta();
 
 private:
-	// the scene renderer need access to our properties
+	// the scene renderer needs access to our properties
 	friend class OtSceneRenderer;
+
+	// as does the model loader
+	friend class OtModelMaterial;
 
 	// stored properties
 	glm::vec4 albedo{1.0f};

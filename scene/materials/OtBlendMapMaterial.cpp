@@ -23,7 +23,7 @@
 static inline void updateTexture(OtTexture& texture, const std::filesystem::path& path, bool& flag) {
 	if (flag) {
 		if (std::filesystem::is_regular_file(path)) {
-			texture.loadFromFile(path.string());
+			texture.loadFromFile(path.string(), true);
 
 		} else {
 			texture.clear();

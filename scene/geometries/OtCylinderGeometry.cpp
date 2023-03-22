@@ -288,10 +288,9 @@ bool OtCylinderGeometryClass::renderGUI() {
 //	OtCylinderGeometryClass::serialize
 //
 
-nlohmann::json OtCylinderGeometryClass::serialize() {
-	auto data = nlohmann::json::object();
+nlohmann::json OtCylinderGeometryClass::serialize(std::filesystem::path* basedir) {
+	auto data = OtGeometryClass::serialize(basedir);
 	data["type"] = name;
-	data.update(OtGeometryClass::serialize());
 	data["topRadius"] = topRadius;
 	data["bottomRadius"] = bottomRadius;
 	data["radialSegments"] = radialSegments;
@@ -307,8 +306,8 @@ nlohmann::json OtCylinderGeometryClass::serialize() {
 //	OtCylinderGeometryClass::deserialize
 //
 
-void OtCylinderGeometryClass::deserialize(nlohmann::json data) {
-	OtGeometryClass::deserialize(data);
+void OtCylinderGeometryClass::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+	OtGeometryClass::deserialize(data, basedir);
 	topRadius = data.value("topRadius", 1.0f);
 	bottomRadius = data.value("bottomRadius", 1.0f);
 	radialSegments = data.value("radialSegments", 32);

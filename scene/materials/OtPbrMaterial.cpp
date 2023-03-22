@@ -23,10 +23,10 @@
 //	OtPbrMaterialClass::update
 //
 
-static inline void updateTexture(OtTexture& texture, const std::filesystem::path& path, bool& flag) {
+static inline void updateTexture(OtTexture& texture, const std::filesystem::path& path, bool& flag, bool mipmap=false) {
 	if (flag) {
 		if (std::filesystem::is_regular_file(path)) {
-			texture.loadFromFile(path.string());
+			texture.loadFromFile(path.string(), mipmap);
 
 		} else {
 			texture.clear();
@@ -37,7 +37,7 @@ static inline void updateTexture(OtTexture& texture, const std::filesystem::path
 }
 
 void OtPbrMaterialClass::update() {
-	updateTexture(albedoTexture, albedoTexturePath, updateAlbedoTexture);
+	updateTexture(albedoTexture, albedoTexturePath, updateAlbedoTexture, true);
 	updateTexture(normalTexture, normalTexturePath, updateNormalTexture);
 	updateTexture(metallicTexture, metallicTexturePath, updateMetallicTexture);
 	updateTexture(roughnessTexture, roughnessTexturePath, updateRoughnessTexture);
@@ -160,6 +160,18 @@ void OtPbrMaterialClass::deserialize(nlohmann::json data, std::filesystem::path*
 	updateRoughnessTexture = !roughnessTexturePath.empty();
 	updateEmissiveTexture = !emissiveTexturePath.empty();
 	updateAoTexture = !aoTexturePath.empty();
+}
+
+
+//
+//	OtPbrMaterialClass::setTexture
+//
+
+void OtPbrMaterialClass::setTexture(std::filesystem::path& target, const std::filesystem::path& path, bool& flag) {
+	if (target != path) {
+		target = path;
+		flag = true;
+	}
 }
 
 

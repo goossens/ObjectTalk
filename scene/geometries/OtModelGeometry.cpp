@@ -9,13 +9,18 @@
 //	Include files
 //
 
+#include "assimp/Importer.hpp"
+#include "assimp/scene.h"
+#include "assimp/postprocess.h"
 #include "imgui.h"
 #include "nlohmann/json.hpp"
-#include "tiny_obj_loader.h"
 
 #include "OtFunction.h"
 
+#include "OtUi.h"
+
 #include "OtModelGeometry.h"
+#include "OtPathTools.h"
 
 
 //
@@ -30,7 +35,7 @@ void OtModelGeometryClass::init(size_t count, OtObject* parameters) {
 				scale = parameters[1]->operator float();
 
 			case 1:
-				modelName = parameters[0]->operator std::string();
+				modelPath = std::filesystem::path(parameters[0]->operator std::string());
 				break;
 
 			default:
@@ -47,7 +52,7 @@ void OtModelGeometryClass::init(size_t count, OtObject* parameters) {
 //
 
 OtObject OtModelGeometryClass::setModel(const std::string& name) {
-	modelName = name;
+	modelPath = std::filesystem::path(name);
 	refreshGeometry = true;
 	return OtObject(this);
 }
@@ -68,53 +73,87 @@ OtObject OtModelGeometryClass::setScale(float s) {
 //	OtModelGeometryClass::fillGeometry
 //
 
+static inline glm::vec2 ToVec2(const aiVector3D& v) {
+	return glm::vec2(v.x, v.y);
+}
+
+static inline glm::vec3 ToVec3(const aiVector3D& v) {
+	return glm::vec3(v.x, v.y, v.z);
+}
+
 void OtModelGeometryClass::fillGeometry() {
-	// load the object model
-	tinyobj::ObjReader reader;
+	// do we have a valid file?
+	if (std::filesystem::is_regular_file(modelPath)) {
+		// create an asset importer
+		Assimp::Importer importer;
 
-	if (!reader.ParseFromFile(modelName)) {
-		if (!reader.Error().empty()) {
-			OtExcept("Error while loading model [%s]: %s",
-				modelName.c_str(),
-				reader.Error().c_str());
+		// determine the import flags
+		static constexpr uint32_t flags =
+			aiProcessPreset_TargetRealtime_Quality |
+			aiProcess_OptimizeMeshes |
+			aiProcess_PreTransformVertices |
+			aiProcess_FlipUVs;
+
+		// read the model file
+		const aiScene* scene = importer.ReadFile(modelPath.string(), flags);
+
+		// ensure model was loaded correctly
+		if (scene == nullptr) {
+			OtExcept("Unable to load model [%s], error: %s", modelPath.c_str(), importer.GetErrorString());
 		}
-	}
 
-	if (!reader.Warning().empty()) {
-		OT_DEBUG(reader.Warning());
-	}
+		// ensure scene is complete
+		if (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) {
+			OtExcept("Incomplete model [%s]", modelPath.c_str());
+		}
 
-	auto& attrib = reader.GetAttrib();
-	auto& shapes = reader.GetShapes();
-	auto& materials = reader.GetMaterials();
+		// load all the meshes
+		int offset = 0;
 
-	// process all model shapes (and created vertices and indices)
-	bool hasUV = attrib.texcoords.size() > 0;
+		for (auto i = 0; i < scene->mNumMeshes; i++) {
+			auto mesh = scene->mMeshes[i];
 
-	for (auto& shape : shapes) {
-		for (auto& index : shape.mesh.indices) {
-			addVertex(OtVertex(
-				glm::vec3(
-					scale * attrib.vertices[3 * index.vertex_index + 0],
-					scale * attrib.vertices[3 * index.vertex_index + 1],
-					scale * attrib.vertices[3 * index.vertex_index + 2]),
-				glm::normalize(glm::vec3(
-					attrib.normals[3 * index.normal_index + 0],
-					attrib.normals[3 * index.normal_index + 1],
-					attrib.normals[3 * index.normal_index + 2])),
-				glm::vec2(
-					hasUV ? attrib.texcoords[2 * index.texcoord_index + 0] : 0.0,
-					hasUV ? attrib.texcoords[2 * index.texcoord_index + 1] : 0.0)));
+			// see if we have 2-dimensional UV coordinates
+			bool hasUV = mesh->mNumUVComponents[0] >= 2 && mesh->mTextureCoords[0] != nullptr;
 
-			auto size = (uint32_t) vertices.size();
+			// process all vertices
+			for (auto i = 0; i < mesh->mNumVertices; i++) {
+				// get position
+				glm::vec3 pos = ToVec3(mesh->mVertices[i]);
 
-			if (size && ((size % 3) == 0)) {
-				addTriangle(size -3, size -2, size - 1);
-				addLine(size - 3, size - 2);
-				addLine(size - 2, size - 1);
-				addLine(size - 1, size - 3);
+				// add a new vertex
+				addVertex(OtVertex(
+					pos,
+					ToVec3(mesh->mNormals[i]),
+					hasUV ? ToVec2(mesh->mTextureCoords[0][i]) : glm::vec2(),
+					ToVec3(mesh->mTangents[i]),
+					ToVec3(mesh->mBitangents[i])));
 			}
+
+			// process all triangles and lines
+			for(auto i = 0; i < mesh->mNumFaces; i++) {
+				auto i0 = mesh->mFaces[i].mIndices[0] + offset;
+				auto i1 = mesh->mFaces[i].mIndices[1] + offset;
+				auto i2 = mesh->mFaces[i].mIndices[2] + offset;
+				addTriangle(i0, i1, i2);
+				addLine(i0, i1);
+				addLine(i1, i2);
+				addLine(i2, i0);
+			}
+
+			// update the index offset
+			offset += mesh->mNumVertices;
 		}
+
+	} else {
+		// generate a dummy triangle to keep everybody happy
+		addVertex(OtVertex(glm::vec3(-0.0001f, 0.0f, 0.0f)));
+		addVertex(OtVertex(glm::vec3(0.0001f, 0.0f, 0.0f)));
+		addVertex(OtVertex(glm::vec3(0.0f, 0.0f, -0.0001f)));
+		addTriangle(0, 1, 2);
+		addLine(0, 1);
+		addLine(1, 2);
+		addLine(2, 0);
 	}
 }
 
@@ -124,7 +163,10 @@ void OtModelGeometryClass::fillGeometry() {
 //
 
 bool OtModelGeometryClass::renderGUI() {
-	return false;
+	bool changed = false;
+	changed |= OtUiFileSelector("Model", modelPath);
+	changed |= ImGui::DragFloat("Scale", &scale, 0.1f);
+	return changed;
 }
 
 
@@ -132,9 +174,10 @@ bool OtModelGeometryClass::renderGUI() {
 //	OtModelGeometryClass::serialize
 //
 
-nlohmann::json OtModelGeometryClass::serialize() {
-	auto data = nlohmann::json::object();
+nlohmann::json OtModelGeometryClass::serialize(std::filesystem::path* basedir) {
+	auto data = OtGeometryClass::serialize(basedir);
 	data["type"] = name;
+	data["modelPath"] = OtPathGetRelative(modelPath, basedir);
 	return data;
 }
 
@@ -143,7 +186,9 @@ nlohmann::json OtModelGeometryClass::serialize() {
 //	OtModelGeometryClass::deserialize
 //
 
-void OtModelGeometryClass::deserialize(nlohmann::json data) {
+void OtModelGeometryClass::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+	modelPath = OtPathGetAbsolute(data, "modelPath", basedir);
+	refreshGeometry = true;
 }
 
 

@@ -60,6 +60,7 @@ private:
 	void renderSkyBox(OtPass& pass, OtSkyBoxComponent& component);
 	void renderSkySphere(OtPass& pass, OtSkySphereComponent& component);
 	void renderGeometry(OtPass& pass, OtScene* scene, OtEntity entity);
+	void renderModel(OtPass& pass, OtScene* scene, OtEntity entity);
 	void renderTransparentGeometry(OtPass& pass, OtScene* scene, OtEntity entity);
 	void renderHighlight(OtPass& pass, OtScene* scene, OtEntity entity);
 	void renderBloom(float bloomIntensity);

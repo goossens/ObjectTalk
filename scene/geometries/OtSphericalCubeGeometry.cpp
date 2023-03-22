@@ -66,32 +66,13 @@ OtSphericalCubeGeometryClass::OtSphericalCubeGeometryClass() {
 
 
 //
-//	OtSphericalCubeGeometryClass::renderGUI
-//
-
-bool OtSphericalCubeGeometryClass::renderGUI() {
-	return OtPolyhedronGeometryClass::renderGUI();
-}
-
-
-//
 //	OtSphericalCubeGeometryClass::serialize
 //
 
-nlohmann::json OtSphericalCubeGeometryClass::serialize() {
-	auto data = nlohmann::json::object();
+nlohmann::json OtSphericalCubeGeometryClass::serialize(std::filesystem::path* basedir) {
+	auto data = OtPolyhedronGeometryClass::serialize(basedir);
 	data["type"] = name;
-	OtPolyhedronGeometryClass::serialize(data);
 	return data;
-}
-
-
-//
-//	OtSphericalCubeGeometryClass::deserialize
-//
-
-void OtSphericalCubeGeometryClass::deserialize(nlohmann::json data) {
-	OtPolyhedronGeometryClass::deserialize(data);
 }
 
 

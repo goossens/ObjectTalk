@@ -35,6 +35,11 @@ void OtSceneRenderer::renderGeometryPass(OtScene* scene) {
 			renderGeometry(pass, scene, entity);
 		}
 	}
+
+	// render all models
+	for (auto entity : scene->view<OtModelComponent, OtTransformComponent>()) {
+		renderModel(pass, scene, entity);
+	}
 }
 
 
@@ -97,4 +102,39 @@ void OtSceneRenderer::renderGeometry(OtPass& pass, OtScene* scene, OtEntity enti
 
 	// run the shader
 	pass.runShader(*shader);
+}
+
+
+//
+//	OtSceneRenderer::renderModel
+//
+
+void OtSceneRenderer::renderModel(OtPass& pass, OtScene* scene, OtEntity entity) {
+	// get the model
+	auto& model = scene->getComponent<OtModelComponent>(entity).model;
+
+	// process all the meshes (if required)
+	if (model.isValid()) {
+		for (auto& mesh : model.meshes) {
+			// submit the material information
+			submitPbrUniforms(model.materials[mesh.material].material);
+
+			// submit the geometry
+			mesh.submitTriangles();
+
+			// set the transform
+			geometryShader.setTransform(scene->getGlobalTransform(entity));
+
+			// set the shader state
+			geometryShader.setState(
+				OtStateWriteRgb |
+				OtStateWriteA |
+				OtStateWriteZ |
+				OtStateDepthTestLess |
+				OtStateCullCw);
+
+			// run the shader
+			pass.runShader(geometryShader);
+		}
+	}
 }

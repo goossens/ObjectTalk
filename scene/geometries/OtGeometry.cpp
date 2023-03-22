@@ -228,7 +228,7 @@ bool OtGeometryClass::renderGUI() {
 //	OtGeometryClass::serialize
 //
 
-nlohmann::json OtGeometryClass::serialize() {
+nlohmann::json OtGeometryClass::serialize(std::filesystem::path* basedir) {
 	auto data = nlohmann::json::object();
 	data["displacement"] = displacer.serialize();
 	return data;
@@ -239,7 +239,7 @@ nlohmann::json OtGeometryClass::serialize() {
 //	Class::deserialize
 //
 
-void OtGeometryClass::deserialize(nlohmann::json data) {
+void OtGeometryClass::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
 	if (data.contains("displacement")) {
 		displacer.deserialize(data["displacement"]);
 	}

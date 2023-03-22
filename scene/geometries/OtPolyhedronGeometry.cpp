@@ -202,16 +202,10 @@ bool OtPolyhedronGeometryClass::renderGUI() {
 //	OtPolyhedronGeometryClass::serialize
 //
 
-void OtPolyhedronGeometryClass::serialize(nlohmann::json &data) {
-	data.update(OtGeometryClass::serialize());
-	data["detail"] = detail;
-}
-
-nlohmann::json OtPolyhedronGeometryClass::serialize()
-{
-	auto data = nlohmann::json::object();
+nlohmann::json OtPolyhedronGeometryClass::serialize(std::filesystem::path* basedir) {
+	auto data = OtGeometryClass::serialize(basedir);
 	data["type"] = name;
-	serialize(data);
+	data["detail"] = detail;
 	return data;
 }
 
@@ -219,8 +213,8 @@ nlohmann::json OtPolyhedronGeometryClass::serialize()
 //	OtPolyhedronGeometryClass::deserialize
 //
 
-void OtPolyhedronGeometryClass::deserialize(nlohmann::json data) {
-	OtGeometryClass::deserialize(data);
+void OtPolyhedronGeometryClass::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+	OtGeometryClass::deserialize(data, basedir);
 	detail = data.value("detail", 1);
 	refreshGeometry = true;
 }

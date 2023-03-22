@@ -137,10 +137,9 @@ bool OtPlaneGeometryClass::renderGUI() {
 //	OtPlaneGeometryClass::serialize
 //
 
-nlohmann::json OtPlaneGeometryClass::serialize() {
-	auto data = nlohmann::json::object();
+nlohmann::json OtPlaneGeometryClass::serialize(std::filesystem::path* basedir) {
+	auto data = OtGeometryClass::serialize(basedir);
 	data["type"] = name;
-	data.update(OtGeometryClass::serialize());
 	data["widthSegments"] = widthSegments;
 	data["heightSegments"] = heightSegments;
 	return data;
@@ -151,8 +150,8 @@ nlohmann::json OtPlaneGeometryClass::serialize() {
 //	OtPlaneGeometryClass::deserialize
 //
 
-void OtPlaneGeometryClass::deserialize(nlohmann::json data) {
-	OtGeometryClass::deserialize(data);
+void OtPlaneGeometryClass::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+	OtGeometryClass::deserialize(data, basedir);
 	widthSegments = data.value("widthSegments", 1);
 	heightSegments = data.value("heightSegments", 1);
 	refreshGeometry = true;

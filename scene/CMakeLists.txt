@@ -25,15 +25,13 @@ add_dependencies(scene
 	input
 	tweeny
 	fastnoise
-	assimp
-	tinyobjloader)
+	assimp)
 
 target_link_libraries(scene PUBLIC
 	gfx
 	input
 	tweeny
 	fastnoise
-	assimp
-	tinyobjloader)
+	assimp)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${SCENE_INCLUDES} ${SCENE_SOURCES})

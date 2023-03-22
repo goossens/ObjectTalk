@@ -54,32 +54,13 @@ OtTetrahedronGeometryClass::OtTetrahedronGeometryClass() {
 
 
 //
-//	OtTetrahedronGeometryClass::renderGUI
-//
-
-bool OtTetrahedronGeometryClass::renderGUI() {
-	return OtPolyhedronGeometryClass::renderGUI();
-}
-
-
-//
 //	OtTetrahedronGeometryClass::serialize
 //
 
-nlohmann::json OtTetrahedronGeometryClass::serialize() {
-	auto data = nlohmann::json::object();
+nlohmann::json OtTetrahedronGeometryClass::serialize(std::filesystem::path* basedir) {
+	auto data = OtPolyhedronGeometryClass::serialize(basedir);
 	data["type"] = name;
-	OtPolyhedronGeometryClass::serialize(data);
 	return data;
-}
-
-
-//
-//	OtTetrahedronGeometryClass::deserialize
-//
-
-void OtTetrahedronGeometryClass::deserialize(nlohmann::json data) {
-	OtPolyhedronGeometryClass::deserialize(data);
 }
 
 

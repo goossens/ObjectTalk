@@ -197,7 +197,7 @@ bool OtExtrudedGeometryClass::renderGUI() {
 //	OtExtrudedGeometryClass::serialize
 //
 
-nlohmann::json OtExtrudedGeometryClass::serialize() {
+nlohmann::json OtExtrudedGeometryClass::serialize(std::filesystem::path* basedir) {
 	auto data = nlohmann::json::object();
 	data["type"] = name;
 	return data;
@@ -208,7 +208,7 @@ nlohmann::json OtExtrudedGeometryClass::serialize() {
 //	OtExtrudedGeometryClass::deserialize
 //
 
-void OtExtrudedGeometryClass::deserialize(nlohmann::json data) {
+void OtExtrudedGeometryClass::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
 }
 
 

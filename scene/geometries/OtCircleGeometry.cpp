@@ -141,10 +141,9 @@ bool OtCircleGeometryClass::renderGUI() {
 //	OtCircleGeometryClass::serialize
 //
 
-nlohmann::json OtCircleGeometryClass::serialize() {
-	auto data = nlohmann::json::object();
+nlohmann::json OtCircleGeometryClass::serialize(std::filesystem::path* basedir) {
+	auto data = OtGeometryClass::serialize(basedir);
 	data["type"] = name;
-	data.update(OtGeometryClass::serialize());
 	data["segments"] = segments;
 	data["thetaStart"] = thetaStart;
 	data["thetaLength"] = thetaLength;
@@ -156,8 +155,8 @@ nlohmann::json OtCircleGeometryClass::serialize() {
 //	OtCircleGeometryClass::deserialize
 //
 
-void OtCircleGeometryClass::deserialize(nlohmann::json data) {
-	OtGeometryClass::deserialize(data);
+void OtCircleGeometryClass::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+	OtGeometryClass::deserialize(data, basedir);
 	segments = data.value("segments", 32);
 	thetaStart = data.value("thetaStart", 0.0f);
 	thetaLength = data.value("thetaLength", 360.0f);

@@ -77,7 +77,7 @@ bool OtSkySphereComponent::isValid() {
 
 		// wait until we have a valid file
 		if (std::filesystem::is_regular_file(image)) {
-			texture.loadFromFile(image);
+			texture.loadFromFile(image, true);
 
 		} else {
 			// invalidate texture just in case

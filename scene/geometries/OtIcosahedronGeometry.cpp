@@ -80,32 +80,13 @@ OtIcosahedronGeometryClass::OtIcosahedronGeometryClass() {
 
 
 //
-//	OtIcosahedronGeometryClass::renderGUI
-//
-
-bool OtIcosahedronGeometryClass::renderGUI() {
-	return OtPolyhedronGeometryClass::renderGUI();
-}
-
-
-//
 //	OtIcosahedronGeometryClass::serialize
 //
 
-nlohmann::json OtIcosahedronGeometryClass::serialize() {
-	auto data = nlohmann::json::object();
+nlohmann::json OtIcosahedronGeometryClass::serialize(std::filesystem::path* basedir) {
+	auto data = OtPolyhedronGeometryClass::serialize(basedir);
 	data["type"] = name;
-	OtPolyhedronGeometryClass::serialize(data);
 	return data;
-}
-
-
-//
-//	OtIcosahedronGeometryClass::deserialize
-//
-
-void OtIcosahedronGeometryClass::deserialize(nlohmann::json data) {
-	OtPolyhedronGeometryClass::deserialize(data);
 }
 
 

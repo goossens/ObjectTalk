@@ -111,7 +111,7 @@
 						"map": "/Users/goossens/github/ObjectTalk/examples/scenes/jungle/assets/heightmap.png",
 						"octaves": 5,
 						"persistance": 0.4399999976158142,
-						"scale": 0.11999999731779099,
+						"scale": 0.03999999910593033,
 						"seed": 1337,
 						"state": 2
 					},
@@ -173,14 +173,14 @@
 				"component": "Geometry",
 				"cullback": true,
 				"geometry": {
-					"detail": 13,
+					"detail": 15,
 					"displacement": {
-						"frequency": 5.800000190734863,
-						"lacunarity": 1.0700000524520874,
+						"frequency": 6.400000095367432,
+						"lacunarity": 1.1100000143051147,
 						"map": "",
-						"octaves": 7,
-						"persistance": 1.0,
-						"scale": 0.33000001311302185,
+						"octaves": 8,
+						"persistance": 0.7300000190734863,
+						"scale": 0.17000000178813934,
 						"seed": 1337,
 						"state": 2
 					},
@@ -207,6 +207,76 @@
 					"metallicTexture": "",
 					"normalTexture": "",
 					"roughness": 0.5199999809265137,
+					"roughnessTexture": "",
+					"type": "PBR"
+				}
+			}
+		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Palm Tree",
+				"uuid": 1478965393
+			},
+			{
+				"component": "Transform",
+				"rotation": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					0.10000000149011612,
+					0.10000000149011612,
+					0.10000000149011612
+				],
+				"translation": [
+					0.800000011920929,
+					0.10000000149011612,
+					1.399999976158142
+				]
+			},
+			{
+				"component": "Geometry",
+				"cullback": true,
+				"geometry": {
+					"displacement": {
+						"frequency": 0.009999999776482582,
+						"lacunarity": 1.0,
+						"map": "",
+						"octaves": 3,
+						"persistance": 0.5,
+						"scale": 0.5,
+						"seed": 1337,
+						"state": 0
+					},
+					"modelPath": "assets/palmtree.obj",
+					"type": "Model"
+				},
+				"transparent": false,
+				"wireframe": false
+			},
+			{
+				"component": "Material",
+				"material": {
+					"albedo": [
+						1.0,
+						1.0,
+						1.0,
+						1.0
+					],
+					"albedoTexture": "assets/palmtree.jpg",
+					"ao": 1.0,
+					"aoTexture": "",
+					"emissive": 0.4300000071525574,
+					"emissiveTexture": "",
+					"metallic": 0.5,
+					"metallicTexture": "",
+					"normalTexture": "",
+					"roughness": 0.5,
 					"roughnessTexture": "",
 					"type": "PBR"
 				}

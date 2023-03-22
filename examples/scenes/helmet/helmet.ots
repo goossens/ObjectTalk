@@ -1,0 +1,110 @@
+[
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Camera",
+				"uuid": 1813117803
+			},
+			{
+				"component": "Transform",
+				"rotation": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				],
+				"translation": [
+					0.0,
+					0.0,
+					0.0
+				]
+			},
+			{
+				"component": "Camera",
+				"far": 100.0,
+				"fov": 60.0,
+				"mainCamera": false,
+				"near": 0.10000000149011612
+			},
+			{
+				"Exposure": 0.9700000286102295,
+				"bloomIntensity": 0.8299999833106995,
+				"component": "Post Processing"
+			}
+		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Directional Light",
+				"uuid": 3334984001
+			},
+			{
+				"component": "Transform",
+				"rotation": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				],
+				"translation": [
+					5.0,
+					5.0,
+					5.0
+				]
+			},
+			{
+				"color": [
+					1.0,
+					1.0,
+					1.0
+				],
+				"component": "Directional Light"
+			}
+		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Helmet",
+				"uuid": 1501969473
+			},
+			{
+				"component": "Transform",
+				"rotation": [
+					-2.0,
+					-50.0,
+					-10.0
+				],
+				"scale": [
+					2.0,
+					2.0,
+					2.0
+				],
+				"translation": [
+					-0.4000000059604645,
+					0.5,
+					0.0
+				]
+			},
+			{
+				"component": "Model",
+				"modelPath": "assets/DamagedHelmet.gltf"
+			}
+		]
+	}
+]

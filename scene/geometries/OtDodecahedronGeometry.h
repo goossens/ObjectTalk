@@ -34,9 +34,8 @@ public:
 	// GUI to change geometry properties
 	bool renderGUI() override;
 
-	// (de)serialize geometry
-	nlohmann::json serialize() override;
-	void deserialize(nlohmann::json data) override;
+	// serialize geometry
+	nlohmann::json serialize(std::filesystem::path* basedir) override;
 
 	// get type name of geometry
 	const char* getTypeName() override { return name; }

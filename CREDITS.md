@@ -24,7 +24,6 @@ released under the [CC0 license](https://creativecommons.org/publicdomain/zero/1
 * [JSON for Modern C++](https://github.com/nlohmann/json) - JSON creation/parsing library released under the [MIT license](https://opensource.org/licenses/MIT).
 * [Box2D](https://box2d.org) - 2D physics engine released under the [MIT license](https://opensource.org/licenses/MIT).
 * [tweeny](https://github.com/mobius3/tweeny) - animation library released under the [MIT license](https://opensource.org/licenses/MIT).
-* [tinyobjloader](https://github.com/tinyobjloader/tinyobjloader) - to load 3D models in the .obj format released under the [MIT license](https://opensource.org/licenses/MIT).
 * [assimp](https://github.com/assimp/assimp) - to import 3D models released under a [custom license](https://github.com/assimp/assimp/blob/master/LICENSE) based on the [3-clause BSD-License license](https://opensource.org/licenses/BSD-3-Clause).
 
 ## Algorithms

@@ -22,6 +22,7 @@ void OtGbuffer::clear() {
 	albedoTexture.clear();
 	normalTexture.clear();
 	pbrTexture.clear();
+	emissiveTexture.clear();
 	depthTexture.clear();
 	gbuffer.clear();
 }
@@ -47,9 +48,10 @@ void OtGbuffer::update(int w, int h) {
 			BGFX_SAMPLER_V_CLAMP;
 
 		// create new textures
-		albedoTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA16F, flags);
+		albedoTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA8, flags);
 		normalTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA16F, flags);
 		pbrTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA16F, flags);
+		emissiveTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA8, flags);
 		depthTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::D32F, flags);
 
 		// create gbuffer
@@ -57,6 +59,7 @@ void OtGbuffer::update(int w, int h) {
 			albedoTexture.getHandle(),
 			normalTexture.getHandle(),
 			pbrTexture.getHandle(),
+			emissiveTexture.getHandle(),
 			depthTexture.getHandle()
 		};
 
@@ -93,6 +96,15 @@ void OtGbuffer::bindNormalTexture(OtSampler& sampler, int unit) {
 
 void OtGbuffer::bindPbrTexture(OtSampler& sampler, int unit) {
 	sampler.submit(unit, pbrTexture.getHandle());
+}
+
+
+//
+//	OtGbuffer::bindEmissiveTexture
+//
+
+void OtGbuffer::bindEmissiveTexture(OtSampler& sampler, int unit) {
+	sampler.submit(unit, emissiveTexture.getHandle());
 }
 
 

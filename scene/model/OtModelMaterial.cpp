@@ -57,23 +57,28 @@ void OtModelMaterial::load(const aiMaterial* mat, const std::filesystem::path& d
 	aiString string;
 	ai_real real;
 
-	// albedo
-	if (mat->Get(AI_MATKEY_BASE_COLOR, color) == AI_SUCCESS) {
+	// albedo color
+	if (mat->Get(AI_MATKEY_COLOR_DIFFUSE, color) == AI_SUCCESS) {
 		material->albedo = glm::vec4(color.r, color.g, color.b, color.a);
 	}
 
-	// metallic
+	// metallic factor
 	if (mat->Get(AI_MATKEY_METALLIC_FACTOR, real) == AI_SUCCESS) {
 		material->metallic = real;
 	}
 
-	// roughness
+	// roughness factor
 	if (mat->Get(AI_MATKEY_ROUGHNESS_FACTOR, real) == AI_SUCCESS) {
 		material->roughness = real;
 	}
 
+	// emissive factor
+	if (mat->Get(AI_MATKEY_COLOR_EMISSIVE, color) == AI_SUCCESS) {
+		material->emissive = glm::vec3(color.r, color.g, color.b);
+	}
+
 	// albedo texture
-	mat->GetTexture(AI_MATKEY_BASE_COLOR_TEXTURE, &string);
+	mat->GetTexture(aiTextureType_DIFFUSE, 0, &string);
 
 	if (string.length) {
 		auto file = std::filesystem::path(std::string(string.data, string.length));
@@ -93,15 +98,7 @@ void OtModelMaterial::load(const aiMaterial* mat, const std::filesystem::path& d
 
 	if (string.length) {
 		auto file = std::filesystem::path(std::string(string.data, string.length));
-		material->setMetallicTexture(std::filesystem::canonical(dir / file));
-	}
-
-	// roughness texture
-	mat->GetTexture(AI_MATKEY_ROUGHNESS_TEXTURE, &string);
-
-	if (string.length) {
-		auto file = std::filesystem::path(std::string(string.data, string.length));
-		material->setRoughnessTexture(std::filesystem::canonical(dir / file));
+		material->setMetallicRoughnessTexture(std::filesystem::canonical(dir / file));
 	}
 
 	// emissive texture

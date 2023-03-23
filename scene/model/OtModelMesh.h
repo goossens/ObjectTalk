@@ -41,7 +41,7 @@ private:
 
 	// our vertices and triangle indices
 	std::vector<OtVertex> vertices;
-	std::vector<u_int32_t> indices;
+	std::vector<uint32_t> indices;
 
 	// material reference (index in model)
 	unsigned int material;

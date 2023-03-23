@@ -39,8 +39,7 @@ static inline void updateTexture(OtTexture& texture, const std::filesystem::path
 void OtPbrMaterialClass::update() {
 	updateTexture(albedoTexture, albedoTexturePath, updateAlbedoTexture, true);
 	updateTexture(normalTexture, normalTexturePath, updateNormalTexture);
-	updateTexture(metallicTexture, metallicTexturePath, updateMetallicTexture);
-	updateTexture(roughnessTexture, roughnessTexturePath, updateRoughnessTexture);
+	updateTexture(metallicRoughnessTexture, metallicRoughnessTexturePath, updateMetallicRoughnessTexture);
 	updateTexture(emissiveTexture, emissiveTexturePath, updateEmissiveTexture);
 	updateTexture(aoTexture, aoTexturePath, updateAoTexture);
 }
@@ -80,16 +79,16 @@ bool OtPbrMaterialClass::renderGUI() {
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); changed |= ImGui::SliderFloat("##metallic", &metallic, 0.0f, 1.0f, "%.2f");
-			ImGui::TableNextColumn(); W(); changed |= OtPathEdit("##metallicTexture", metallicTexturePath, updateMetallicTexture);
+			ImGui::TableNextColumn(); W(); changed |= OtPathEdit("##metallicRoughnessTexture", metallicRoughnessTexturePath, updateMetallicRoughnessTexture);
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Metallic");
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); ImGui::SliderFloat("##roughness", &roughness, 0.0f, 1.0f, "%.2f");
-			ImGui::TableNextColumn(); W(); changed |= OtPathEdit("##roughnessTexture", roughnessTexturePath, updateRoughnessTexture);
+			ImGui::TableNextColumn();
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Roughness");
 
 			ImGui::TableNextRow();
-			ImGui::TableNextColumn(); W(); changed |= ImGui::SliderFloat("##emissive", &emissive, 0.0f, 4.0f, "%.2f");
+			ImGui::TableNextColumn(); W(); changed |= ImGui::ColorEdit3("##emissive", glm::value_ptr(emissive));
 			ImGui::TableNextColumn(); W(); changed |= OtPathEdit("##emissiveTexture", emissiveTexturePath, updateEmissiveTexture);
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Emissive");
 
@@ -128,8 +127,7 @@ nlohmann::json OtPbrMaterialClass::serialize(std::filesystem::path* basedir) {
 
 	data["albedoTexture"] = OtPathGetRelative(albedoTexturePath, basedir);
 	data["normalTexture"] = OtPathGetRelative(normalTexturePath, basedir);
-	data["metallicTexture"] = OtPathGetRelative(metallicTexturePath, basedir);
-	data["roughnessTexture"] = OtPathGetRelative(roughnessTexturePath, basedir);
+	data["metallicRoughnessTexture"] = OtPathGetRelative(metallicRoughnessTexturePath, basedir);
 	data["emissiveTexture"] = OtPathGetRelative(emissiveTexturePath, basedir);
 	data["aoTexture"] = OtPathGetRelative(aoTexturePath, basedir);
 	return data;
@@ -144,20 +142,18 @@ void OtPbrMaterialClass::deserialize(nlohmann::json data, std::filesystem::path*
 	albedo = data.value("albedo", glm::vec4(1.0f));
 	metallic = data.value("metallic", 0.5f);
 	roughness = data.value("roughness", 0.5f);
-	emissive = data.value("emissive", 0.0f);
+	emissive = data.value("emissive", glm::vec3(0.0f));
 	ao = data.value("ao", 1.0f);
 
 	albedoTexturePath = OtPathGetAbsolute(data, "albedoTexture", basedir);
 	normalTexturePath = OtPathGetAbsolute(data, "normalTexture", basedir);
-	metallicTexturePath = OtPathGetAbsolute(data, "metallicTexture", basedir);
-	roughnessTexturePath = OtPathGetAbsolute(data, "roughnessTexture", basedir);
+	metallicRoughnessTexturePath = OtPathGetAbsolute(data, "metallicRoughnessTexture", basedir);
 	emissiveTexturePath = OtPathGetAbsolute(data, "emissiveTexture", basedir);
 	aoTexturePath = OtPathGetAbsolute(data, "aoTexture", basedir);
 
 	updateAlbedoTexture = !albedoTexturePath.empty();
 	updateNormalTexture = !normalTexturePath.empty();
-	updateMetallicTexture = !metallicTexturePath.empty();
-	updateRoughnessTexture = !roughnessTexturePath.empty();
+	updateMetallicRoughnessTexture = !metallicRoughnessTexturePath.empty();
 	updateEmissiveTexture = !emissiveTexturePath.empty();
 	updateAoTexture = !aoTexturePath.empty();
 }

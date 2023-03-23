@@ -63,5 +63,5 @@ what applies where.
 
 ## Assets
 
-The 3D examples use a number of assetts (e.g. images and models) that were reused from other projects.
-A full list with links and licenses can be found in the [assets folder](examples/3d/assets/README.md).
+Some examples use a number of assetts (e.g. images and models) that were reused from other projects.
+A full list with links and licenses can be found in the appropriate asset folders.

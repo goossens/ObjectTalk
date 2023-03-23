@@ -10,17 +10,17 @@ $input v_position, v_normal, v_tangent, v_bitangent, v_texcoord0
 #include <pbr.glsl>
 
 // uniforms
-uniform vec4 u_material[4];
+uniform vec4 u_material[5];
 #define u_albedo u_material[0]
 
 #define u_metallic u_material[1].r
 #define u_roughness u_material[1].g
-#define u_emissive u_material[1].b
-#define u_ao u_material[1].a
+#define u_ao u_material[1].b
 
-#define u_hasAlbedoTexture bool(u_material[2].r)
-#define u_hasMetallicTexture bool(u_material[2].g)
-#define u_hasRoughnessTexture bool(u_material[2].b)
+#define u_emissive u_material[2].rgb
+
+#define u_hasAlbedoTexture bool(u_material[3].r)
+#define u_hasMetallicRoughnessTexture bool(u_material[3].g)
 
 #define u_hasEmissiveTexture bool(u_material[3].r)
 #define u_hasAoTexture bool(u_material[3].g)
@@ -33,35 +33,34 @@ uniform vec4 u_lighting[3];
 
 // texture samplers
 SAMPLER2D(s_geometryAlbedoTexture, 0);
-SAMPLER2D(s_geometryMetallicTexture, 1);
-SAMPLER2D(s_geometryRoughnessTexture, 2);
-SAMPLER2D(s_geometryEmissiveTexture, 3);
-SAMPLER2D(s_geometryAoTexture, 4);
-SAMPLER2D(s_geometryNormalTexture, 5);
+SAMPLER2D(s_geometryMetallicRoughnessTexture, 1);
+SAMPLER2D(s_geometryEmissiveTexture, 2);
+SAMPLER2D(s_geometryAoTexture, 3);
+SAMPLER2D(s_geometryNormalTexture, 4);
 
 // main function
 void main() {
 	// PBR data
 	PBR pbr;
 
-	// determine albedo and convert to gamma space
+	// determine albedo
 	if (u_hasAlbedoTexture) {
-		vec4 albedoSample = texture2D(s_geometryAlbedoTexture, v_texcoord0);
-		pbr.albedo = vec4(pow(albedoSample.rgb, vec3_splat(2.2)), albedoSample.a);
+		pbr.albedo = texture2D(s_geometryAlbedoTexture, v_texcoord0) * u_albedo;
 
 	} else {
-		pbr.albedo = vec4(pow(u_albedo.rgb, vec3_splat(2.2)), u_albedo.a);
+		pbr.albedo = u_albedo;
 	}
 
+	// discard pixel if too transparent
 	if (pbr.albedo.a < 0.3) {
 		discard;
 	}
 
 	// determine PBR parameters
-	pbr.metallic = u_hasMetallicTexture ? texture2D(s_geometryMetallicTexture, v_texcoord0).r : u_metallic;
-	pbr.roughness = u_hasRoughnessTexture ? texture2D(s_geometryRoughnessTexture, v_texcoord0).r : u_roughness;
-	pbr.emissive = u_hasEmissiveTexture ? texture2D(s_geometryEmissiveTexture, v_texcoord0).r : u_emissive;
-	pbr.ao = u_hasAoTexture ? texture2D(s_geometryAoTexture, v_texcoord0).r : u_ao;
+	pbr.metallic = u_hasMetallicRoughnessTexture ? texture2D(s_geometryMetallicRoughnessTexture, v_texcoord0).b * u_metallic : u_metallic;
+	pbr.roughness = u_hasMetallicRoughnessTexture ? texture2D(s_geometryMetallicRoughnessTexture, v_texcoord0).g * u_roughness : u_roughness;
+	pbr.emissive = u_hasEmissiveTexture ? texture2D(s_geometryEmissiveTexture, v_texcoord0).rgb * u_emissive : u_emissive;
+	pbr.ao = u_hasAoTexture ? texture2D(s_geometryAoTexture, v_texcoord0).r * u_ao : u_ao;
 
 	// determine normal
 	if (u_hasNormalTexture) {

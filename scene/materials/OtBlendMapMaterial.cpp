@@ -100,8 +100,8 @@ bool OtBlendMapMaterialClass::renderGUI() {
 			ImGui::TableNextColumn(); changed |= ImGui::SliderFloat("Roughness", &roughness, 0.0f, 1.0f, "%.2f");
 
 			ImGui::TableNextRow();
-			ImGui::TableNextColumn(); changed |= ImGui::SliderFloat("Emissive", &emissive, 0.0f, 4.0f, "%.2f");
 			ImGui::TableNextColumn(); changed |= ImGui::SliderFloat("Scale", &scale, 0.0f, 100.0f, "%.1f");
+			ImGui::TableNextColumn();
 			ImGui::EndTable();
 		}
 
@@ -139,7 +139,6 @@ nlohmann::json OtBlendMapMaterialClass::serialize(std::filesystem::path* basedir
 
 	data["metallic"] = metallic;
 	data["roughness"] = roughness;
-	data["emissive"] = emissive;
 	data["scale"] = scale;
 
 	return data;
@@ -166,7 +165,6 @@ void OtBlendMapMaterialClass::deserialize(nlohmann::json data, std::filesystem::
 
 	metallic = data.value("metallic", 0.5f);
 	roughness = data.value("roughness", 0.5f);
-	emissive = data.value("emissive", 0.0f);
 	scale = data.value("scale", 1.0f);
 
 	updateBlendMapTexture = !blendMapPath.empty();

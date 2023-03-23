@@ -23,7 +23,7 @@ struct PBR {
 	vec4 albedo;
 	float metallic;
 	float roughness;
-	float emissive;
+	vec3 emissive;
 	float ao;
 	vec3 N; // normal
 	vec3 V; // view direction
@@ -88,7 +88,7 @@ vec4 applyPBR(PBR pbr, vec3 lightColor) {
 	color += vec3_splat(0.03) * albedo * pbr.ao;
 
 	// add emissive light
-	color += pbr.emissive * albedo;
+	color += pbr.emissive;
 	return vec4(color, pbr.albedo.a);
 }
 

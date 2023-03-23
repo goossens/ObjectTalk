@@ -68,7 +68,6 @@ private:
 
 	float metallic = 0.5f;
 	float roughness = 0.5f;
-	float emissive = 0.0f;
 	float scale = 1.0f;
 
 	// runtime properties

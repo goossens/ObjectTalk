@@ -98,7 +98,7 @@ private:
 	OtSphereGeometry unitySphereGeometry;
 
 	// uniforms
-	OtUniformVec4 materialUniforms{"u_material", 4};
+	OtUniformVec4 materialUniforms{"u_material", 5};
 	OtUniformVec4 blendmapUniforms{"u_blendmap", 2};
 	OtUniformVec4 backgroundUniforms{"u_background", 1};
 	OtUniformVec4 lightingUniforms{"u_lighting", 3};
@@ -111,8 +111,7 @@ private:
 	// samplers
 	OtSampler geometryAlbedoSampler{"s_geometryAlbedoTexture"};
 	OtSampler geometryNormalSampler{"s_geometryNormalTexture"};
-	OtSampler geometryMetallicSampler{"s_geometryMetallicTexture"};
-	OtSampler geometryRoughnessSampler{"s_geometryRoughnessTexture"};
+	OtSampler geometryMetallicRoughnessSampler{"s_geometryMetallicRoughnessTexture"};
 	OtSampler geometryEmissiveSampler{"s_geometryEmissiveSampler"};
 	OtSampler geometryAoSampler{"s_geometryAoTexture"};
 
@@ -130,6 +129,7 @@ private:
 	OtSampler lightingPositionSampler{"s_lightingPositionTexture"};
 	OtSampler lightingNormalSampler{"s_lightingNormalTexture"};
 	OtSampler lightingPbrSampler{"s_lightingPbrTexture"};
+	OtSampler lightingEmissiveSampler{"s_lightingEmissiveTexture"};
 	OtSampler lightingDepthSampler{"s_lightingDepthTexture"};
 
 	OtSampler skyBoxSampler{"s_skyBoxTexture"};

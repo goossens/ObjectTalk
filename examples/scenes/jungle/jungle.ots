@@ -127,7 +127,6 @@
 				"material": {
 					"blendMapPath": "assets/blendmap.png",
 					"bluePath": "assets/path.jpg",
-					"emissive": 0.0,
 					"greenPath": "assets/earth.jpg",
 					"metallic": 0.05000000074505806,
 					"nonePath": "assets/grass.jpg",
@@ -201,13 +200,16 @@
 					"albedoTexture": "",
 					"ao": 1.0,
 					"aoTexture": "",
-					"emissive": 0.0,
+					"emissive": [
+						0.0,
+						0.0,
+						0.0
+					],
 					"emissiveTexture": "",
 					"metallic": 0.3400000035762787,
-					"metallicTexture": "",
+					"metallicRoughnessTexture": "",
 					"normalTexture": "",
 					"roughness": 0.5199999809265137,
-					"roughnessTexture": "",
 					"type": "PBR"
 				}
 			}
@@ -271,13 +273,16 @@
 					"albedoTexture": "assets/palmtree.jpg",
 					"ao": 1.0,
 					"aoTexture": "",
-					"emissive": 0.4300000071525574,
+					"emissive": [
+						0.0,
+						0.0,
+						0.0
+					],
 					"emissiveTexture": "",
-					"metallic": 0.5,
-					"metallicTexture": "",
+					"metallic": 0.0,
+					"metallicRoughnessTexture": "",
 					"normalTexture": "",
-					"roughness": 0.5,
-					"roughnessTexture": "",
+					"roughness": 1.0,
 					"type": "PBR"
 				}
 			}

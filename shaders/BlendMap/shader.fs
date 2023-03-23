@@ -13,8 +13,7 @@ uniform vec4 u_blendmap[2];
 
 #define u_metallic u_blendmap[0].r
 #define u_roughness u_blendmap[0].g
-#define u_emissive u_blendmap[0].b
-#define u_scale u_blendmap[0].a
+#define u_scale u_blendmap[0].b
 
 #define u_hasNoneNormals bool(u_blendmap[1].r)
 #define u_hasRedNormals bool(u_blendmap[1].g)
@@ -66,5 +65,6 @@ void main() {
 	// store information in gbuffer
 	gl_FragData[0] = vec4(albedo, 1.0);
 	gl_FragData[1] = vec4(normal, 0.0);
-	gl_FragData[2] = vec4(u_metallic, u_roughness, u_emissive, 1.0);
+	gl_FragData[2] = vec4(u_metallic, u_roughness, 1.0, 0.0);
+	gl_FragData[3] = vec4_splat(0.0);
 }

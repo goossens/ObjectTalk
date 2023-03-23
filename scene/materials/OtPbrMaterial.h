@@ -51,8 +51,7 @@ public:
 	void setTexture(std::filesystem::path& target, const std::filesystem::path& path, bool& flag);
 	void setAlbedoTexture(const std::filesystem::path& path) { setTexture(albedoTexturePath, path, updateAlbedoTexture); }
 	void setNormalTexture(const std::filesystem::path& path) { setTexture(normalTexturePath, path, updateNormalTexture); }
-	void setMetallicTexture(const std::filesystem::path& path) { setTexture(metallicTexturePath, path, updateMetallicTexture); }
-	void setRoughnessTexture(const std::filesystem::path& path) { setTexture(roughnessTexturePath, path, updateRoughnessTexture); }
+	void setMetallicRoughnessTexture(const std::filesystem::path& path) { setTexture(metallicRoughnessTexturePath, path, updateMetallicRoughnessTexture); }
 	void setEmissiveTexture(const std::filesystem::path& path) { setTexture(emissiveTexturePath, path, updateEmissiveTexture); }
 	void setAoTexture(const std::filesystem::path& path) { setTexture(aoTexturePath, path, updateAoTexture); }
 
@@ -70,28 +69,25 @@ private:
 	glm::vec4 albedo{1.0f};
 	float metallic = 0.5f;
 	float roughness = 0.5f;
-	float emissive = 0.0f;
+	glm::vec3 emissive{0.0f};
 	float ao = 1.0f;
 
 	std::filesystem::path albedoTexturePath;
 	std::filesystem::path normalTexturePath;
-	std::filesystem::path metallicTexturePath;
-	std::filesystem::path roughnessTexturePath;
+	std::filesystem::path metallicRoughnessTexturePath;
 	std::filesystem::path emissiveTexturePath;
 	std::filesystem::path aoTexturePath;
 
 	// runtime properties
 	OtTexture albedoTexture;
 	OtTexture normalTexture;
-	OtTexture metallicTexture;
-	OtTexture roughnessTexture;
+	OtTexture metallicRoughnessTexture;
 	OtTexture emissiveTexture;
 	OtTexture aoTexture;
 
 	bool updateAlbedoTexture = false;
 	bool updateNormalTexture = false;
-	bool updateMetallicTexture = false;
-	bool updateRoughnessTexture = false;
+	bool updateMetallicRoughnessTexture = false;
 	bool updateEmissiveTexture = false;
 	bool updateAoTexture = false;
 };

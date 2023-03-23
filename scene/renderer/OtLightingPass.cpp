@@ -32,7 +32,8 @@ void OtSceneRenderer::renderLightingPass(OtScene* scene) {
 	gbuffer.bindAlbedoTexture(lightingAlbedoSampler, 0);
 	gbuffer.bindNormalTexture(lightingNormalSampler, 1);
 	gbuffer.bindPbrTexture(lightingPbrSampler, 2);
-	gbuffer.bindDepthTexture(lightingDepthSampler, 3);
+	gbuffer.bindEmissiveTexture(lightingEmissiveSampler, 3);
+	gbuffer.bindDepthTexture(lightingDepthSampler, 4);
 
 	// run the shader
 	lightingShader.setState(OtStateWriteRgb | OtStateWriteA | OtStateDepthTestAlways);

@@ -9,29 +9,28 @@ $input v_position, v_normal, v_tangent, v_bitangent, v_texcoord0
 #include <bgfx.glsl>
 
 // uniforms
-uniform vec4 u_material[4];
+uniform vec4 u_material[5];
 #define u_albedo u_material[0].rgb
 
 #define u_metallic u_material[1].r
 #define u_roughness u_material[1].g
-#define u_emissive u_material[1].b
-#define u_ao u_material[1].a
+#define u_ao u_material[1].b
 
-#define u_hasAlbedoTexture bool(u_material[2].r)
-#define u_hasMetallicTexture bool(u_material[2].g)
-#define u_hasRoughnessTexture bool(u_material[2].b)
+#define u_emissive u_material[2].rgb
 
-#define u_hasEmissiveTexture bool(u_material[3].r)
-#define u_hasAoTexture bool(u_material[3].g)
-#define u_hasNormalTexture bool(u_material[3].b)
+#define u_hasAlbedoTexture bool(u_material[3].r)
+#define u_hasMetallicRoughnessTexture bool(u_material[3].g)
+
+#define u_hasEmissiveTexture bool(u_material[4].r)
+#define u_hasAoTexture bool(u_material[4].g)
+#define u_hasNormalTexture bool(u_material[4].b)
 
 // texture samplers
 SAMPLER2D(s_geometryAlbedoTexture, 0);
-SAMPLER2D(s_geometryMetallicTexture, 1);
-SAMPLER2D(s_geometryRoughnessTexture, 2);
-SAMPLER2D(s_geometryEmissiveTexture, 3);
-SAMPLER2D(s_geometryAoTexture, 4);
-SAMPLER2D(s_geometryNormalTexture, 5);
+SAMPLER2D(s_geometryMetallicRoughnessTexture, 1);
+SAMPLER2D(s_geometryEmissiveTexture, 2);
+SAMPLER2D(s_geometryAoTexture, 3);
+SAMPLER2D(s_geometryNormalTexture, 4);
 
 // main function
 void main() {
@@ -39,9 +38,7 @@ void main() {
 	vec3 albedo = u_albedo;
 
 	if (u_hasAlbedoTexture) {
-		// use texture and convert to gamma space
-		vec4 albedoSample = texture2D(s_geometryAlbedoTexture, v_texcoord0);
-		albedo = pow(albedoSample.rgb, vec3_splat(2.2));
+		albedo = texture2D(s_geometryAlbedoTexture, v_texcoord0).rgb * albedo;
 	}
 
 	// determine normal
@@ -56,13 +53,14 @@ void main() {
 	}
 
 	// determine PBR parameters
-	float metallic = u_hasMetallicTexture ? texture2D(s_geometryMetallicTexture, v_texcoord0).r : u_metallic;
-	float roughness = u_hasRoughnessTexture ? texture2D(s_geometryRoughnessTexture, v_texcoord0).r : u_roughness;
-	float emissive = u_hasEmissiveTexture ? texture2D(s_geometryEmissiveTexture, v_texcoord0).r : u_emissive;
-	float ao = u_hasAoTexture ? texture2D(s_geometryAoTexture, v_texcoord0).r : u_ao;
+	float metallic = u_hasMetallicRoughnessTexture ? texture2D(s_geometryMetallicRoughnessTexture, v_texcoord0).b * u_metallic: u_metallic;
+	float roughness = u_hasMetallicRoughnessTexture ? texture2D(s_geometryMetallicRoughnessTexture, v_texcoord0).g * u_roughness : u_roughness;
+	vec3 emissive = u_hasEmissiveTexture ? texture2D(s_geometryEmissiveTexture, v_texcoord0).rgb * u_emissive : u_emissive;
+	float ao = u_hasAoTexture ? texture2D(s_geometryAoTexture, v_texcoord0).r * u_ao : u_ao;
 
 	// store information in gbuffer
 	gl_FragData[0] = vec4(albedo, 1.0);
 	gl_FragData[1] = vec4(normal, 0.0);
-	gl_FragData[2] = vec4(metallic, roughness, emissive, ao);
+	gl_FragData[2] = vec4(metallic, roughness, ao, 0.0);
+	gl_FragData[3] = vec4(emissive, 1.0);
 }

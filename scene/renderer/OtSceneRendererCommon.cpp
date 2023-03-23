@@ -50,16 +50,20 @@ void OtSceneRenderer::submitPbrUniforms(OtPbrMaterial material) {
 	uniforms[1] = glm::vec4(
 		material->metallic,
 		material->roughness,
-		material->emissive,
-		material->ao);
+		material->ao,
+		0.0f);
 
 	uniforms[2] = glm::vec4(
-		material->albedoTexture.isValid(),
-		material->metallicTexture.isValid(),
-		material->roughnessTexture.isValid(),
+		material->emissive,
 		0.0f);
 
 	uniforms[3] = glm::vec4(
+		material->albedoTexture.isValid(),
+		material->metallicRoughnessTexture.isValid(),
+		0.0f,
+		0.0f);
+
+	uniforms[4] = glm::vec4(
 		material->emissiveTexture.isValid(),
 		material->aoTexture.isValid(),
 		material->normalTexture.isValid(),
@@ -70,11 +74,10 @@ void OtSceneRenderer::submitPbrUniforms(OtPbrMaterial material) {
 
 	// submit all material textures (or dummies if they are not set)
 	geometryAlbedoSampler.submit(0, material->albedoTexture);
-	geometryMetallicSampler.submit(1, material->metallicTexture);
-	geometryRoughnessSampler.submit(2, material->roughnessTexture);
-	geometryEmissiveSampler.submit(3, material->emissiveTexture);
-	geometryAoSampler.submit(4, material->aoTexture);
-	geometryNormalSampler.submit(5, material->normalTexture);
+	geometryMetallicRoughnessSampler.submit(1, material->metallicRoughnessTexture);
+	geometryEmissiveSampler.submit(2, material->emissiveTexture);
+	geometryAoSampler.submit(3, material->aoTexture);
+	geometryNormalSampler.submit(4, material->normalTexture);
 }
 
 
@@ -89,8 +92,8 @@ void OtSceneRenderer::submitBlendMapUniforms(OtBlendMapMaterial material) {
 	uniforms[0] = glm::vec4(
 		material->metallic,
 		material->roughness,
-		material->emissive,
-		material->scale);
+		material->scale,
+		0.0f);
 
 	uniforms[1] = glm::vec4(
 		material->normalsNoneTexture.isValid(),

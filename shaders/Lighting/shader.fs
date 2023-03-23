@@ -24,7 +24,8 @@ uniform vec4 u_lighting[3];
 SAMPLER2D(s_lightingAlbedoTexture, 0);
 SAMPLER2D(s_lightingNormalTexture, 1);
 SAMPLER2D(s_lightingPbrTexture, 2);
-SAMPLER2D(s_lightingDepthTexture, 3);
+SAMPLER2D(s_lightingEmissiveTexture, 3);
+SAMPLER2D(s_lightingDepthTexture, 4);
 
 // determine world coordinates from UV and depth
 vec3 uvToWorld(vec2 uv, float depth) {
@@ -58,8 +59,8 @@ void main() {
 	vec4 data = texture2D(s_lightingPbrTexture, v_texcoord0);
 	pbr.metallic = data.r;
 	pbr.roughness = data.g;
-	pbr.emissive = data.b;
-	pbr.ao = data.a;
+	pbr.ao = data.b;
+	pbr.emissive = texture2D(s_lightingEmissiveTexture, v_texcoord0).rgb;
 
 	// calculate vectors
 	pbr.N = normalize(texture2D(s_lightingNormalTexture, v_texcoord0).rgb);

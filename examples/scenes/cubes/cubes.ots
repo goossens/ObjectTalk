@@ -119,6 +119,16 @@
 				"component": "Geometry",
 				"cullback": true,
 				"geometry": {
+					"displacement": {
+						"frequency": 0.009999999776482582,
+						"lacunarity": 1.0,
+						"map": "",
+						"octaves": 3,
+						"persistance": 0.5,
+						"scale": 0.5,
+						"seed": 1337,
+						"state": 0
+					},
 					"type": "Box",
 					"xsegments": 1,
 					"ysegments": 1,
@@ -139,13 +149,16 @@
 					"albedoTexture": "",
 					"ao": 1.0,
 					"aoTexture": "",
-					"emissive": 0.03999999910593033,
+					"emissive": [
+						0.026548683643341064,
+						0.026548683643341064,
+						0.026548683643341064
+					],
 					"emissiveTexture": "",
 					"metallic": 0.5,
-					"metallicTexture": "",
+					"metallicRoughnessTexture": "",
 					"normalTexture": "",
 					"roughness": 0.5,
-					"roughnessTexture": "",
 					"type": "PBR"
 				}
 			}
@@ -181,6 +194,16 @@
 				"component": "Geometry",
 				"cullback": true,
 				"geometry": {
+					"displacement": {
+						"frequency": 0.009999999776482582,
+						"lacunarity": 1.0,
+						"map": "",
+						"octaves": 3,
+						"persistance": 0.5,
+						"scale": 0.5,
+						"seed": 1337,
+						"state": 0
+					},
 					"type": "Box",
 					"xsegments": 1,
 					"ysegments": 1,
@@ -190,24 +213,27 @@
 				"wireframe": false
 			},
 			{
-				"albedo": [
-					0.06889733672142029,
-					0.6447030305862427,
-					0.6769911646842957,
-					1.0
-				],
 				"component": "Material",
 				"material": {
+					"albedo": [
+						0.16884641349315643,
+						0.3577580749988556,
+						0.7787610292434692,
+						1.0
+					],
 					"albedoTexture": "",
 					"ao": 1.0,
 					"aoTexture": "",
-					"emissive": 0.05999999865889549,
+					"emissive": [
+						0.01732710376381874,
+						0.01868547685444355,
+						0.022123873233795166
+					],
 					"emissiveTexture": "",
 					"metallic": 0.5,
-					"metallicTexture": "",
+					"metallicRoughnessTexture": "",
 					"normalTexture": "",
 					"roughness": 0.5,
-					"roughnessTexture": "",
 					"type": "PBR"
 				}
 			}
@@ -243,6 +269,16 @@
 				"component": "Geometry",
 				"cullback": true,
 				"geometry": {
+					"displacement": {
+						"frequency": 0.009999999776482582,
+						"lacunarity": 1.0,
+						"map": "",
+						"octaves": 3,
+						"persistance": 0.5,
+						"scale": 0.5,
+						"seed": 1337,
+						"state": 0
+					},
 					"type": "Box",
 					"xsegments": 1,
 					"ysegments": 1,
@@ -263,13 +299,16 @@
 					"albedoTexture": "",
 					"ao": 1.0,
 					"aoTexture": "",
-					"emissive": 0.07999999821186066,
+					"emissive": [
+						0.0,
+						0.0,
+						0.0
+					],
 					"emissiveTexture": "",
 					"metallic": 0.5,
-					"metallicTexture": "",
+					"metallicRoughnessTexture": "",
 					"normalTexture": "",
 					"roughness": 0.5,
-					"roughnessTexture": "",
 					"type": "PBR"
 				}
 			}

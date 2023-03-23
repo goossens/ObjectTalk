@@ -37,8 +37,8 @@
 				"path": "assets/camera.ot"
 			},
 			{
-				"Exposure": 1.2000000476837158,
-				"bloomIntensity": 0.8999999761581421,
+				"Exposure": 1.399999976158142,
+				"bloomIntensity": 0.6000000238418579,
 				"component": "Post Processing"
 			}
 		]
@@ -132,6 +132,16 @@
 						"component": "Geometry",
 						"cullback": false,
 						"geometry": {
+							"displacement": {
+								"frequency": 0.009999999776482582,
+								"lacunarity": 1.0,
+								"map": "",
+								"octaves": 3,
+								"persistance": 0.5,
+								"scale": 0.5,
+								"seed": 1337,
+								"state": 0
+							},
 							"phiLength": 360.0,
 							"phiSegments": 16,
 							"phiStart": 0.0,
@@ -155,13 +165,16 @@
 							"albedoTexture": "",
 							"ao": 1.0,
 							"aoTexture": "",
-							"emissive": 0.0,
+							"emissive": [
+								0.0,
+								0.0,
+								0.0
+							],
 							"emissiveTexture": "",
 							"metallic": 0.5,
-							"metallicTexture": "",
+							"metallicRoughnessTexture": "",
 							"normalTexture": "",
 							"roughness": 0.5,
-							"roughnessTexture": "",
 							"type": "PBR"
 						}
 					}
@@ -197,6 +210,16 @@
 						"component": "Geometry",
 						"cullback": true,
 						"geometry": {
+							"displacement": {
+								"frequency": 0.009999999776482582,
+								"lacunarity": 1.0,
+								"map": "",
+								"octaves": 3,
+								"persistance": 0.5,
+								"scale": 0.5,
+								"seed": 1337,
+								"state": 0
+							},
 							"phiLength": 360.0,
 							"phiSegments": 32,
 							"phiStart": 0.0,
@@ -220,13 +243,16 @@
 							"albedoTexture": "assets/earth.png",
 							"ao": 1.0,
 							"aoTexture": "",
-							"emissive": 0.0,
+							"emissive": [
+								0.0,
+								0.0,
+								0.0
+							],
 							"emissiveTexture": "",
 							"metallic": 0.23000000417232513,
-							"metallicTexture": "",
+							"metallicRoughnessTexture": "",
 							"normalTexture": "",
 							"roughness": 0.4000000059604645,
-							"roughnessTexture": "",
 							"type": "PBR"
 						}
 					}
@@ -262,6 +288,16 @@
 						"component": "Geometry",
 						"cullback": true,
 						"geometry": {
+							"displacement": {
+								"frequency": 0.009999999776482582,
+								"lacunarity": 1.0,
+								"map": "",
+								"octaves": 3,
+								"persistance": 0.5,
+								"scale": 0.5,
+								"seed": 1337,
+								"state": 0
+							},
 							"phiLength": 360.0,
 							"phiSegments": 32,
 							"phiStart": 0.0,
@@ -285,13 +321,16 @@
 							"albedoTexture": "assets/clouds.png",
 							"ao": 1.0,
 							"aoTexture": "",
-							"emissive": 0.0,
+							"emissive": [
+								0.0,
+								0.0,
+								0.0
+							],
 							"emissiveTexture": "",
 							"metallic": 0.5,
-							"metallicTexture": "",
+							"metallicRoughnessTexture": "",
 							"normalTexture": "",
 							"roughness": 0.5,
-							"roughnessTexture": "",
 							"type": "PBR"
 						}
 					}

@@ -19,13 +19,13 @@ void main() {
 	// sample color
 	vec3 color = texture2D(s_postProcessTexture, v_texcoord0).rgb;
 
+	// apply exposure
+	color *= u_exposure;
+
 	// add bloom (if required)
 	if (u_bloomEnabled) {
 		color += texture2D(s_bloomTexture, v_texcoord0).rgb;
 	}
-
-	// apply exposure
-	color *= u_exposure;
 
 	// HDR tonemapping (ACES Knarkowicz)
 	color = saturate((color * (2.51 * color + 0.03)) / (color * (2.43 * color + 0.59) + 0.14));

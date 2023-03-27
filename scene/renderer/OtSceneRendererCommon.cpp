@@ -23,7 +23,6 @@
 void OtSceneRenderer::submitMaterialUniforms(OtScene* scene, OtEntity entity) {
 	// get the material component
 	auto& material = scene->getComponent<OtMaterialComponent>(entity).material;
-	material->update();
 
 	// submit based on type
 	if (material.isKindOf<OtPbrMaterialClass>()) {
@@ -33,7 +32,21 @@ void OtSceneRenderer::submitMaterialUniforms(OtScene* scene, OtEntity entity) {
 		submitBlendMapUniforms(OtBlendMapMaterial(material));
 
 	} else {
-		OtExcept("Internal error: unknown material type [%s]", material->getTypeName());
+		OtError("Internal error: unknown material type [%s]", material->getTypeName());
+	}
+}
+
+
+//
+//	submitSampler
+//
+
+static void submitSampler(OtSampler& sampler, int unit, OtAsset<OtTextureAsset>& texture) {
+	if (texture.isReady()) {
+		sampler.submit(unit, texture->getTexture());
+
+	} else {
+		sampler.submit(unit);
 	}
 }
 
@@ -58,26 +71,26 @@ void OtSceneRenderer::submitPbrUniforms(OtPbrMaterial material) {
 		0.0f);
 
 	uniforms[3] = glm::vec4(
-		material->albedoTexture.isValid(),
-		material->metallicRoughnessTexture.isValid(),
+		material->albedoTexture.isReady(),
+		material->metallicRoughnessTexture.isReady(),
 		0.0f,
 		0.0f);
 
 	uniforms[4] = glm::vec4(
-		material->emissiveTexture.isValid(),
-		material->aoTexture.isValid(),
-		material->normalTexture.isValid(),
+		material->emissiveTexture.isReady(),
+		material->aoTexture.isReady(),
+		material->normalTexture.isReady(),
 		0.0);
 
 	// submit the uniforms
 	materialUniforms.submit();
 
 	// submit all material textures (or dummies if they are not set)
-	geometryAlbedoSampler.submit(0, material->albedoTexture);
-	geometryMetallicRoughnessSampler.submit(1, material->metallicRoughnessTexture);
-	geometryEmissiveSampler.submit(2, material->emissiveTexture);
-	geometryAoSampler.submit(3, material->aoTexture);
-	geometryNormalSampler.submit(4, material->normalTexture);
+	submitSampler(geometryAlbedoSampler, 0, material->albedoTexture);
+	submitSampler(geometryMetallicRoughnessSampler, 1, material->metallicRoughnessTexture);
+	submitSampler(geometryEmissiveSampler, 2, material->emissiveTexture);
+	submitSampler(geometryAoSampler, 3, material->aoTexture);
+	submitSampler(geometryNormalSampler, 4, material->normalTexture);
 }
 
 
@@ -96,26 +109,26 @@ void OtSceneRenderer::submitBlendMapUniforms(OtBlendMapMaterial material) {
 		0.0f);
 
 	uniforms[1] = glm::vec4(
-		material->normalsNoneTexture.isValid(),
-		material->normalsRedTexture.isValid(),
-		material->normalsGreenTexture.isValid(),
-		material->normalsBlueTexture.isValid());
+		material->noneNormalsTexture.isReady(),
+		material->redNormalsTexture.isReady(),
+		material->greenNormalsTexture.isReady(),
+		material->blueNormalsTexture.isReady());
 
 	// submit the uniforms
 	blendmapUniforms.submit();
 
-	// submit all material textures (or dummies if they are not set)
-	blendMapSampler.submit(0, material->blendMapTexture);
+	// submit all material textures (or dummies if they are not set/ready)
+	submitSampler(blendMapSampler, 0, material->blendMapTexture);
 
-	albedoNoneSampler.submit(1, material->noneTexture);
-	albedoRedSampler.submit(2, material->redTexture);
-	albedoGreenSampler.submit(3, material->greenTexture);
-	albedoBlueSampler.submit(4, material->blueTexture);
+	submitSampler(albedoNoneSampler, 1, material->noneTexture);
+	submitSampler(albedoRedSampler, 2, material->redTexture);
+	submitSampler(albedoGreenSampler, 3, material->greenTexture);
+	submitSampler(albedoBlueSampler, 4, material->blueTexture);
 
-	normalsNoneSampler.submit(5, material->normalsNoneTexture);
-	normalsRedSampler.submit(6, material->normalsRedTexture);
-	normalsGreenSampler.submit(7, material->normalsGreenTexture);
-	normalsBlueSampler.submit(8, material->normalsBlueTexture);
+	submitSampler(normalsNoneSampler, 5, material->noneNormalsTexture);
+	submitSampler(normalsRedSampler, 6, material->redNormalsTexture);
+	submitSampler(normalsGreenSampler, 7, material->greenNormalsTexture);
+	submitSampler(normalsBlueSampler, 8, material->blueNormalsTexture);
 }
 
 

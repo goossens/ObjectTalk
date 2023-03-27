@@ -20,7 +20,7 @@
 void OtSubProcess::start(const std::filesystem::path& path, const std::vector<std::string>& arguments, std::function <void(int64_t status, int signal)> onExit, std::function <void(const std::string &text)> onStdout, std::function <void(const std::string &text)> onStderr) {
 	// sanity check
 	if (running) {
-		OtExcept("Can't start subprocess [%s] as one is already running", path.c_str());
+		OtError("Can't start subprocess [%s] as one is already running", path.c_str());
 	}
 
 	// remember callbacks
@@ -92,7 +92,7 @@ void OtSubProcess::start(const std::filesystem::path& path, const std::vector<st
 void OtSubProcess::kill(int signal) {
 	// sanity check
 	if (!running) {
-		OtExcept("Can't stop subprocess as it's not running");
+		OtError("Can't stop subprocess as it's not running");
 	}
 
 	// kill the process

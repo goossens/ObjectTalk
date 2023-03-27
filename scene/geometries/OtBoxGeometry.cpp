@@ -35,7 +35,7 @@ void OtBoxGeometryClass::init(size_t count, OtObject* parameters) {
 				widthSegments = parameters[3]->operator int();
 
 			default:
-				OtExcept("Too many parameters [%ld] for [BoxGeometry] constructor (max 3)", count);
+				OtError("Too many parameters [%ld] for [BoxGeometry] constructor (max 3)", count);
 		}
 
 		refreshGeometry = true;

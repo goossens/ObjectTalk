@@ -17,38 +17,6 @@
 
 
 //
-//	OtBlendMapMaterialClass::void OtBlendMapMaterialClass::update() {
-//
-
-static inline void updateTexture(OtTexture& texture, const std::filesystem::path& path, bool& flag) {
-	if (flag) {
-		if (std::filesystem::is_regular_file(path)) {
-			texture.loadFromFile(path.string(), true);
-
-		} else {
-			texture.clear();
-		}
-
-		flag = false;
-	}
-}
-
-void OtBlendMapMaterialClass::update() {
-	updateTexture(blendMapTexture, blendMapPath, updateBlendMapTexture);
-
-	updateTexture(noneTexture, nonePath, updateNoneTexture);
-	updateTexture(redTexture, redPath, updateRedTexture);
-	updateTexture(greenTexture, greenPath, updateGreenTexture);
-	updateTexture(blueTexture, bluePath, updateBlueTexture);
-
-	updateTexture(normalsNoneTexture, normalsNonePath, updateNormalsNoneTexture);
-	updateTexture(normalsRedTexture, normalsRedPath, updateNormalsRedTexture);
-	updateTexture(normalsGreenTexture, normalsGreenPath, updateNormalsGreenTexture);
-	updateTexture(normalsBlueTexture, normalsBluePath, updateNormalsBlueTexture);
-}
-
-
-//
 //	OtBlendMapMaterialClass::renderGUI
 //
 
@@ -71,28 +39,28 @@ bool OtBlendMapMaterialClass::renderGUI() {
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Normals");
 
 			ImGui::TableNextRow();
-			ImGui::TableNextColumn(); W(); changed |= OtPathEdit("##blendMapTexture", blendMapPath, updateBlendMapTexture);
+			ImGui::TableNextColumn(); W(); changed |= blendMapTexture.renderGUI("##blendMapTexture");
 			ImGui::TableNextColumn();
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("BlendMap");
 
 			ImGui::TableNextRow();
-			ImGui::TableNextColumn(); W(); changed |= OtPathEdit("##noneTexture", nonePath, updateNoneTexture);
-			ImGui::TableNextColumn(); W(); changed |= OtPathEdit("##noneNormals", normalsNonePath, updateNormalsNoneTexture);
+			ImGui::TableNextColumn(); W(); changed |= noneTexture.renderGUI("##noneTexture");
+			ImGui::TableNextColumn(); W(); changed |= noneNormalsTexture.renderGUI("##noneNormalsTexture");
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("None Color");
 
 			ImGui::TableNextRow();
-			ImGui::TableNextColumn(); W(); changed |= OtPathEdit("##redTexture", redPath, updateRedTexture);
-			ImGui::TableNextColumn(); W(); changed |= OtPathEdit("##redNormals", normalsRedPath, updateNormalsRedTexture);
+			ImGui::TableNextColumn(); W(); changed |= redTexture.renderGUI("##redTexture");
+			ImGui::TableNextColumn(); W(); changed |= redNormalsTexture.renderGUI("##redNormalsTexture");
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Red Color");
 
 			ImGui::TableNextRow();
-			ImGui::TableNextColumn(); W(); changed |= OtPathEdit("##greenTexture", greenPath, updateGreenTexture);
-			ImGui::TableNextColumn(); W(); changed |= OtPathEdit("##greenNormals", normalsGreenPath, updateNormalsGreenTexture);
+			ImGui::TableNextColumn(); W(); changed |= greenTexture.renderGUI("##greenTexture");
+			ImGui::TableNextColumn(); W(); changed |= greenNormalsTexture.renderGUI("##greenNormalsTexture");
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Green Color");
 
 			ImGui::TableNextRow();
-			ImGui::TableNextColumn(); W(); changed |= OtPathEdit("##blueTexture", bluePath, updateBlueTexture);
-			ImGui::TableNextColumn(); W(); changed |= OtPathEdit("##blueNormals", normalsBluePath, updateNormalsBlueTexture);
+			ImGui::TableNextColumn(); W(); changed |= blueTexture.renderGUI("##blueTexture");
+			ImGui::TableNextColumn(); W(); changed |= blueNormalsTexture.renderGUI("##blueNormalsTexture");
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Blue Color");
 
 			ImGui::TableNextRow();
@@ -108,10 +76,6 @@ bool OtBlendMapMaterialClass::renderGUI() {
 		ImGui::EndPopup();
 	}
 
-	if (changed) {
-		update();
-	}
-
 	return changed;
 }
 
@@ -125,17 +89,17 @@ nlohmann::json OtBlendMapMaterialClass::serialize(std::filesystem::path* basedir
 	data["type"] = name;
 	data.update(OtMaterialClass::serialize(basedir));
 
-	data["blendMapPath"] = OtPathGetRelative(blendMapPath, basedir);
+	data["blendMap"] = OtPathGetRelative(blendMapTexture.getPath(), basedir);
 
-	data["nonePath"] = OtPathGetRelative(nonePath, basedir);
-	data["redPath"] = OtPathGetRelative(redPath, basedir);
-	data["greenPath"] = OtPathGetRelative(greenPath, basedir);
-	data["bluePath"] = OtPathGetRelative(bluePath, basedir);
+	data["none"] = OtPathGetRelative(noneTexture.getPath(), basedir);
+	data["red"] = OtPathGetRelative(redTexture.getPath(), basedir);
+	data["green"] = OtPathGetRelative(greenTexture.getPath(), basedir);
+	data["blue"] = OtPathGetRelative(blueTexture.getPath(), basedir);
 
-	data["normalsNonePath"] = OtPathGetRelative(normalsNonePath, basedir);
-	data["normalsRedPath"] = OtPathGetRelative(normalsRedPath, basedir);
-	data["normalsGreenPath"] = OtPathGetRelative(normalsGreenPath, basedir);
-	data["normalsBluePath"] = OtPathGetRelative(normalsBluePath, basedir);
+	data["noneNormals"] = OtPathGetRelative(noneNormalsTexture.getPath(), basedir);
+	data["redNormals"] = OtPathGetRelative(redNormalsTexture.getPath(), basedir);
+	data["greenNormals"] = OtPathGetRelative(greenNormalsTexture.getPath(), basedir);
+	data["blueNormals"] = OtPathGetRelative(blueNormalsTexture.getPath(), basedir);
 
 	data["metallic"] = metallic;
 	data["roughness"] = roughness;
@@ -151,33 +115,21 @@ nlohmann::json OtBlendMapMaterialClass::serialize(std::filesystem::path* basedir
 
 void OtBlendMapMaterialClass::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
 	OtMaterialClass::deserialize(data, basedir);
-	blendMapPath = OtPathGetAbsolute(data, "blendMapPath", basedir);
+	blendMapTexture = OtPathGetAbsolute(data, "blendMap", basedir);
 
-	nonePath = OtPathGetAbsolute(data, "nonePath", basedir);
-	redPath = OtPathGetAbsolute(data, "redPath", basedir);
-	greenPath = OtPathGetAbsolute(data, "greenPath", basedir);
-	bluePath = OtPathGetAbsolute(data, "bluePath", basedir);
+	noneTexture = OtPathGetAbsolute(data, "none", basedir);
+	redTexture = OtPathGetAbsolute(data, "red", basedir);
+	greenTexture = OtPathGetAbsolute(data, "green", basedir);
+	blueTexture = OtPathGetAbsolute(data, "blue", basedir);
 
-	normalsNonePath = OtPathGetAbsolute(data, "normalsNonePath", basedir);
-	normalsRedPath = OtPathGetAbsolute(data, "normalsRedPath", basedir);
-	normalsGreenPath = OtPathGetAbsolute(data, "normalsGreenPath", basedir);
-	normalsBluePath = OtPathGetAbsolute(data, "normalsBluePath", basedir);
+	noneNormalsTexture = OtPathGetAbsolute(data, "noneNormals", basedir);
+	redNormalsTexture = OtPathGetAbsolute(data, "redNormals", basedir);
+	greenNormalsTexture = OtPathGetAbsolute(data, "greenNormals", basedir);
+	blueNormalsTexture = OtPathGetAbsolute(data, "blueNormals", basedir);
 
 	metallic = data.value("metallic", 0.5f);
 	roughness = data.value("roughness", 0.5f);
 	scale = data.value("scale", 1.0f);
-
-	updateBlendMapTexture = !blendMapPath.empty();
-
-	updateNoneTexture = !nonePath.empty();
-	updateRedTexture = !redPath.empty();
-	updateGreenTexture = !greenPath.empty();
-	updateBlueTexture = !bluePath.empty();
-
-	updateNormalsNoneTexture = !normalsNonePath.empty();
-	updateNormalsRedTexture = !normalsRedPath.empty();
-	updateNormalsGreenTexture = !normalsGreenPath.empty();
-	updateNormalsBlueTexture = !normalsBluePath.empty();
 }
 
 

@@ -127,6 +127,6 @@ void OtGbuffer::submit(bgfx::ViewId view) {
 		bgfx::setViewFrameBuffer(view, gbuffer.getHandle());
 
 	} else {
-		OtExcept("Internal error: Gbuffer not initialized before submission");
+		OtError("Internal error: Gbuffer not initialized before submission");
 	}
 }

@@ -27,7 +27,7 @@
 //	Error checking
 //
 
-#define UV_CHECK_ERROR(action, status) if (status < 0) OtExcept("Libuv error in %s: %s", action, uv_strerror((int) status))
+#define UV_CHECK_ERROR(action, status) if (status < 0) OtError("Libuv error in %s: %s", action, uv_strerror((int) status))
 
 
 //

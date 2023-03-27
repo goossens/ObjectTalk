@@ -50,7 +50,7 @@ void OtSphereGeometryClass::init(size_t count, OtObject* parameters) {
 				break;
 
 			default:
-				OtExcept("Too many parameters [%ld] for [SphereGeometry] constructor (max 7)", count);
+				OtError("Too many parameters [%ld] for [SphereGeometry] constructor (max 7)", count);
 		}
 
 		refreshGeometry = true;

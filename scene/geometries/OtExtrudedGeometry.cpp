@@ -41,7 +41,7 @@ void OtExtrudedGeometryClass::init(size_t count, OtObject* parameters) {
 				break;
 
 			default:
-				OtExcept("Too many parameters [%ld] for [ExtrudedGeometry] constructor (max 3)", count);
+				OtError("Too many parameters [%ld] for [ExtrudedGeometry] constructor (max 3)", count);
 		}
 
 		refreshGeometry = true;
@@ -90,13 +90,13 @@ OtObject OtExtrudedGeometryClass::setSegments(int s) {
 void OtExtrudedGeometryClass::fillGeometry() {
 	// sanity check
 	if (!shape) {
-		OtExcept("No [Shape] specified for [ExtrudedGeometry]");
+		OtError("No [Shape] specified for [ExtrudedGeometry]");
 	}
 
 	auto polygonCount = shape->getPolygonCount();
 
 	if (!polygonCount) {
-		OtExcept("[ExtrudedGeometry] can't extrude an empty [Shape]");
+		OtError("[ExtrudedGeometry] can't extrude an empty [Shape]");
 	}
 
 	// create a tesselator
@@ -136,7 +136,7 @@ void OtExtrudedGeometryClass::fillGeometry() {
 
 	// perform the tesselation
 	if (!tessTesselate(tess, TESS_WINDING_ODD, TESS_POLYGONS, 3, 2, nullptr)) {
-		OtExcept("[ExtrudedGeometry] can't tesselate geometry");
+		OtError("[ExtrudedGeometry] can't tesselate geometry");
 	}
 
 	int vertexCount = tessGetVertexCount(tess);

@@ -13,36 +13,14 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
+#include "OtReal.h"
+
 #include "OtGlm.h"
+#include "OtVec3.h"
+#include "OtVec4.h"
 
 #include "OtPbrMaterial.h"
 #include "OtPathTools.h"
-
-
-//
-//	OtPbrMaterialClass::update
-//
-
-static inline void updateTexture(OtTexture& texture, const std::filesystem::path& path, bool& flag, bool mipmap=false) {
-	if (flag) {
-		if (std::filesystem::is_regular_file(path)) {
-			texture.loadFromFile(path.string(), mipmap);
-
-		} else {
-			texture.clear();
-		}
-
-		flag = false;
-	}
-}
-
-void OtPbrMaterialClass::update() {
-	updateTexture(albedoTexture, albedoTexturePath, updateAlbedoTexture, true);
-	updateTexture(normalTexture, normalTexturePath, updateNormalTexture);
-	updateTexture(metallicRoughnessTexture, metallicRoughnessTexturePath, updateMetallicRoughnessTexture);
-	updateTexture(emissiveTexture, emissiveTexturePath, updateEmissiveTexture);
-	updateTexture(aoTexture, aoTexturePath, updateAoTexture);
-}
 
 
 //
@@ -69,17 +47,17 @@ bool OtPbrMaterialClass::renderGUI() {
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); changed |= ImGui::ColorEdit4("##albedoColor", glm::value_ptr(albedo));
-			ImGui::TableNextColumn(); W(); changed |= OtPathEdit("##albedoTexture", albedoTexturePath, updateAlbedoTexture);
+			ImGui::TableNextColumn(); W(); changed |= albedoTexture.renderGUI("##albedoTexture");
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Albedo");
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn();
-			ImGui::TableNextColumn(); W(); changed |= OtPathEdit("##normalTexture", normalTexturePath, updateNormalTexture);
+			ImGui::TableNextColumn(); W(); changed |= normalTexture.renderGUI("##normalTexture");
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Normals");
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); changed |= ImGui::SliderFloat("##metallic", &metallic, 0.0f, 1.0f, "%.2f");
-			ImGui::TableNextColumn(); W(); changed |= OtPathEdit("##metallicRoughnessTexture", metallicRoughnessTexturePath, updateMetallicRoughnessTexture);
+			ImGui::TableNextColumn(); W(); changed |= metallicRoughnessTexture.renderGUI("##metallicRoughnessTexture");
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Metallic");
 
 			ImGui::TableNextRow();
@@ -89,21 +67,17 @@ bool OtPbrMaterialClass::renderGUI() {
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); changed |= ImGui::ColorEdit3("##emissive", glm::value_ptr(emissive));
-			ImGui::TableNextColumn(); W(); changed |= OtPathEdit("##emissiveTexture", emissiveTexturePath, updateEmissiveTexture);
+			ImGui::TableNextColumn(); W(); changed |= emissiveTexture.renderGUI("##emissiveTexture");
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Emissive");
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); changed |= ImGui::SliderFloat("##ambientOcclusion", &ao, 0.0f, 1.0f, "%.2f");
-			ImGui::TableNextColumn(); W(); changed |= OtPathEdit("##aoTexture", aoTexturePath, updateAoTexture);
+			ImGui::TableNextColumn(); W(); changed |= aoTexture.renderGUI("##aoTexture");
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Ambient Occlusion");
 			ImGui::EndTable();
 		}
 
 		ImGui::EndPopup();
-	}
-
-	if (changed) {
-		update();
 	}
 
 	return changed;
@@ -125,11 +99,11 @@ nlohmann::json OtPbrMaterialClass::serialize(std::filesystem::path* basedir) {
 	data["emissive"] = emissive;
 	data["ao"] = ao;
 
-	data["albedoTexture"] = OtPathGetRelative(albedoTexturePath, basedir);
-	data["normalTexture"] = OtPathGetRelative(normalTexturePath, basedir);
-	data["metallicRoughnessTexture"] = OtPathGetRelative(metallicRoughnessTexturePath, basedir);
-	data["emissiveTexture"] = OtPathGetRelative(emissiveTexturePath, basedir);
-	data["aoTexture"] = OtPathGetRelative(aoTexturePath, basedir);
+	data["albedoTexture"] = OtPathGetRelative(albedoTexture.getPath(), basedir);
+	data["normalTexture"] = OtPathGetRelative(normalTexture.getPath(), basedir);
+	data["metallicRoughnessTexture"] = OtPathGetRelative(metallicRoughnessTexture.getPath(), basedir);
+	data["emissiveTexture"] = OtPathGetRelative(emissiveTexture.getPath(), basedir);
+	data["aoTexture"] = OtPathGetRelative(aoTexture.getPath(), basedir);
 	return data;
 }
 
@@ -145,28 +119,44 @@ void OtPbrMaterialClass::deserialize(nlohmann::json data, std::filesystem::path*
 	emissive = data.value("emissive", glm::vec3(0.0f));
 	ao = data.value("ao", 1.0f);
 
-	albedoTexturePath = OtPathGetAbsolute(data, "albedoTexture", basedir);
-	normalTexturePath = OtPathGetAbsolute(data, "normalTexture", basedir);
-	metallicRoughnessTexturePath = OtPathGetAbsolute(data, "metallicRoughnessTexture", basedir);
-	emissiveTexturePath = OtPathGetAbsolute(data, "emissiveTexture", basedir);
-	aoTexturePath = OtPathGetAbsolute(data, "aoTexture", basedir);
-
-	updateAlbedoTexture = !albedoTexturePath.empty();
-	updateNormalTexture = !normalTexturePath.empty();
-	updateMetallicRoughnessTexture = !metallicRoughnessTexturePath.empty();
-	updateEmissiveTexture = !emissiveTexturePath.empty();
-	updateAoTexture = !aoTexturePath.empty();
+	albedoTexture = OtPathGetAbsolute(data, "albedoTexture", basedir);
+	normalTexture = OtPathGetAbsolute(data, "normalTexture", basedir);
+	metallicRoughnessTexture = OtPathGetAbsolute(data, "metallicRoughnessTexture", basedir);
+	emissiveTexture = OtPathGetAbsolute(data, "emissiveTexture", basedir);
+	aoTexture = OtPathGetAbsolute(data, "aoTexture", basedir);
 }
 
 
 //
-//	OtPbrMaterialClass::setTexture
+//	OtPbrMaterialClass::setAlbedo
 //
 
-void OtPbrMaterialClass::setTexture(std::filesystem::path& target, const std::filesystem::path& path, bool& flag) {
-	if (target != path) {
-		target = path;
-		flag = true;
+void OtPbrMaterialClass::setAlbedo(OtObject object) {
+	if (object.isKindOf<OtVec4Class>()) {
+		albedo = (glm::vec4) OtVec4(object);
+
+	} else if (object.isKindOf<OtRealClass>()) {
+		albedo = glm::vec4(object->operator float());
+
+	} else {
+		OtError("Expected a [Vec4] or a [Real], not a [%s]", object->getType()->getName().c_str());
+	}
+}
+
+
+//
+//	OtPbrMaterialClass::setEmissive
+//
+
+void OtPbrMaterialClass::setEmissive(OtObject object) {
+	if (object.isKindOf<OtVec3Class>()) {
+		emissive = (glm::vec3) OtVec3(object);
+
+	} else if (object.isKindOf<OtRealClass>()) {
+		emissive = glm::vec3(object->operator float());
+
+	} else {
+		OtError("Expected a [Vec3] or a [Real], not a [%s]", object->getType()->getName().c_str());
 	}
 }
 

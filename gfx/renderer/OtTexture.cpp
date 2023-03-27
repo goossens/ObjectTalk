@@ -97,7 +97,7 @@ static bgfx::TextureHandle generateMipmapTexture(bimg::ImageContainer* image) {
 	auto bpp = bimg::getBitsPerPixel(image->m_format);
 
 	if (bpp != 24 && bpp != 32) {
-		OtExcept("Can't generate MipMap for image with %d bits per pixel", bpp);
+		OtError("Can't generate MipMap for image with %d bits per pixel", bpp);
 	}
 
 	// create a new empty texture

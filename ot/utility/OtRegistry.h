@@ -30,7 +30,7 @@ public:
 	// add a new member to the registry
 	void set(const std::string& name, T member) {
 		if (registry.count(name)) {
-			OtExcept("Member [%s] already in registry", name.c_str());
+			OtError("Member [%s] already in registry", name.c_str());
 		}
 
 		registry[name] = member;
@@ -39,7 +39,7 @@ public:
 	// get member from registry
 	T get(const std::string& name) {
 		if (!registry.count(name)) {
-			OtExcept("Member [%s] not in registry", name.c_str());
+			OtError("Member [%s] not in registry", name.c_str());
 		}
 
 		return registry[name];
@@ -48,7 +48,7 @@ public:
 	// get reference to registry member
 	T& at(const std::string& name) {
 		if (!registry.count(name)) {
-			OtExcept("Member [%s] not in registry", name.c_str());
+			OtError("Member [%s] not in registry", name.c_str());
 		}
 
 		return registry.at(name);

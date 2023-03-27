@@ -25,14 +25,7 @@
 //
 
 bool OtModelComponent::renderGUI() {
-	bool changed = false;
-	changed |= OtUiFileSelector("Model", modelPath);
-
-	if (changed) {
-		update();
-	}
-
-	return changed;
+	return model.renderGUI("Model");
 }
 
 
@@ -43,7 +36,7 @@ bool OtModelComponent::renderGUI() {
 nlohmann::json OtModelComponent::serialize(std::filesystem::path* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
-	data["modelPath"] = OtPathGetRelative(modelPath, basedir);
+	data["model"] = OtPathGetRelative(model.getPath(), basedir);
 	return data;
 }
 
@@ -53,21 +46,5 @@ nlohmann::json OtModelComponent::serialize(std::filesystem::path* basedir) {
 //
 
 void OtModelComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
-	modelPath = OtPathGetAbsolute(data, "modelPath", basedir);
-	update();
-}
-
-
-//
-//	OtModelComponent::update
-//
-
-void OtModelComponent::update() {
-	// update the model
-	if (std::filesystem::is_regular_file(modelPath)) {
-		model.load(modelPath);
-
-	} else {
-		model.clear();
-	}
+	model = OtPathGetAbsolute(data, "model", basedir);
 }

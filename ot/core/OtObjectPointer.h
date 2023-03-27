@@ -41,7 +41,7 @@ public:
 
 	// constructor for when we already have a pointer
 	OtObjectPointer(T* instance) : ptr(instance) {
-		static_assert(std::is_base_of<OtObjectClass, T>::value, "Instance is not derived from OtObjectClass!");
+		static_assert(std::is_base_of<OtObjectClass, T>::value, "Instance is not derived from OtObjectClass");
 		incrementReference();
 	}
 

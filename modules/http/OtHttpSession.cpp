@@ -128,7 +128,7 @@ bool OtHttpSessionClass::isAlive() {
 		return false;
 
 	} else if (!uv_is_active((uv_handle_t*) &uv_client)) {
-		OT_DEBUG("funny session case");
+		OtWarning("funny session case");
 		active = false;
 		return false;
 
@@ -183,7 +183,7 @@ void OtHttpSessionClass::onRead(const uv_buf_t* buffer, ssize_t nread) {
 		auto status = llhttp_execute(&parser, buffer->base, nread);
 
 		if (status) {
-			OT_DEBUG(OtFormat("llhttp error in llhttp_execute: %s", llhttp_errno_name(status)));
+			OtWarning(OtFormat("llhttp error in llhttp_execute: %s", llhttp_errno_name(status)));
 			close();
 		}
 
@@ -197,7 +197,7 @@ void OtHttpSessionClass::onRead(const uv_buf_t* buffer, ssize_t nread) {
 		free(buffer->base);
 
 	} else if (nread < 0) {
-		OT_DEBUG(OtFormat("libuv error in read: %s", uv_strerror((int) nread)));
+		OtWarning(OtFormat("libuv error in read: %s", uv_strerror((int) nread)));
 		close();
 	}
 }

@@ -29,7 +29,7 @@ void OtVec2Class::init(size_t count, OtObject* parameters) {
 		vec2 = glm::vec2(parameters[0]->operator float());
 
 	} else if (count != 0) {
-		OtExcept("[Vec2] constructor expects 0, 1 or 2 arguments (not %ld)", count);
+		OtError("[Vec2] constructor expects 0, 1 or 2 arguments (not %ld)", count);
 	}
 }
 
@@ -47,7 +47,7 @@ OtObject OtVec2Class::add(OtObject object) {
 		return OtVec2::create(vec2 + object->operator float());
 
 	} else {
-		OtExcept("Expected a [Vec2], [Real] or [Integer] as the operand, not a [%s]", object->getType()->getName().c_str());
+		OtError("Expected a [Vec2], [Real] or [Integer] as the operand, not a [%s]", object->getType()->getName().c_str());
 		return nullptr;
 	}
 }
@@ -66,7 +66,7 @@ OtObject OtVec2Class::subtract(OtObject object) {
 		return OtVec2::create(vec2 - object->operator float());
 
 	} else {
-		OtExcept("Expected a [Vec2], [Real] or [Integer] as the operand, not a [%s]", object->getType()->getName().c_str());
+		OtError("Expected a [Vec2], [Real] or [Integer] as the operand, not a [%s]", object->getType()->getName().c_str());
 		return nullptr;
 	}
 }
@@ -85,7 +85,7 @@ OtObject OtVec2Class::multiply(OtObject object) {
 		return OtVec2::create(vec2 * object->operator float());
 
 	} else {
-		OtExcept("Expected a [Vec2], [Real] or [Integer] as the operand, not a [%s]", object->getType()->getName().c_str());
+		OtError("Expected a [Vec2], [Real] or [Integer] as the operand, not a [%s]", object->getType()->getName().c_str());
 		return nullptr;
 	}
 }
@@ -104,7 +104,7 @@ OtObject OtVec2Class::divide(OtObject object) {
 		return OtVec2::create(vec2 / object->operator float());
 
 	} else {
-		OtExcept("Expected a [Vec2], [Real] or [Integer] as the operand, not a [%s]", object->getType()->getName().c_str());
+		OtError("Expected a [Vec2], [Real] or [Integer] as the operand, not a [%s]", object->getType()->getName().c_str());
 		return nullptr;
 	}
 }
@@ -138,7 +138,7 @@ float OtVec2Class::distance(OtObject object) {
 		return glm::distance(vec2, vector2->vec2);
 
 	} else {
-		OtExcept("Expected a [Vec2] as the operand, not a [%s]", object->getType()->getName().c_str());
+		OtError("Expected a [Vec2] as the operand, not a [%s]", object->getType()->getName().c_str());
 		return 0.0f;
 	}
 
@@ -163,7 +163,7 @@ OtObject OtVec2Class::lerp(OtObject object, float delta) {
 		}
 
 	} else {
-		OtExcept("Expected a [Vec2] as the operand, not a [%s]", object->getType()->getName().c_str());
+		OtError("Expected a [Vec2] as the operand, not a [%s]", object->getType()->getName().c_str());
 		return nullptr;
 	}
 }

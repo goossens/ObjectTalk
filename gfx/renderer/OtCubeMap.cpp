@@ -46,7 +46,7 @@ void OtCubeMap::load(
 	container = image.getContainer();
 
 	if (container->m_width != imageSize || container->m_format != imageFormat) {
-		OtExcept("Cubemap image (negx] does not have same size or format as others");
+		OtError("Cubemap image (negx] does not have same size or format as others");
 	}
 
 	mem = bgfx::copy(container->m_data, container->m_size);
@@ -56,7 +56,7 @@ void OtCubeMap::load(
 	container = image.getContainer();
 
 	if (container->m_width != imageSize || container->m_format != imageFormat) {
-		OtExcept("Cubemap image (posy] does not have same size or format as others");
+		OtError("Cubemap image (posy] does not have same size or format as others");
 	}
 
 	mem = bgfx::copy(container->m_data, container->m_size);
@@ -66,7 +66,7 @@ void OtCubeMap::load(
 	container = image.getContainer();
 
 	if (container->m_width != imageSize || container->m_format != imageFormat) {
-		OtExcept("Cubemap image (negy] does not have same size or format as others");
+		OtError("Cubemap image (negy] does not have same size or format as others");
 	}
 
 	mem = bgfx::copy(container->m_data, container->m_size);
@@ -76,7 +76,7 @@ void OtCubeMap::load(
 	container = image.getContainer();
 
 	if (container->m_width != imageSize || container->m_format != imageFormat) {
-		OtExcept("Cubemap image (posz] does not have same size or format as others");
+		OtError("Cubemap image (posz] does not have same size or format as others");
 	}
 
 	mem = bgfx::copy(container->m_data, container->m_size);
@@ -86,7 +86,7 @@ void OtCubeMap::load(
 	container = image.getContainer();
 
 	if (container->m_width != imageSize || container->m_format != imageFormat) {
-		OtExcept("Cubemap image (negz] does not have same size or format as others");
+		OtError("Cubemap image (negz] does not have same size or format as others");
 	}
 
 	mem = bgfx::copy(container->m_data, container->m_size);

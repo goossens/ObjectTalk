@@ -15,30 +15,29 @@
 
 #include "OtException.h"
 
-#include "OtModel.h"
+#include "OtAssetFactory.h"
+
+#include "OtModelAsset.h"
 
 
 //
-//	OtModel::clear
+//	Register model types
 //
 
-void OtModel::clear() {
+static OtAssetFactoryRegister<OtModelAsset> OtBlendModelRegistration{".blender"};
+static OtAssetFactoryRegister<OtModelAsset> OtFbxModelRegistration{".fbx"};
+static OtAssetFactoryRegister<OtModelAsset> OtGltfModelRegistration{".gltf"};
+static OtAssetFactoryRegister<OtModelAsset> OtObjModelRegistration{".obj"};
+
+
+//
+//	OtModelAsset::load
+//
+
+bool OtModelAsset::load(const std::filesystem::path& path) {
+	// clear the current data
 	meshes.clear();
 	materials.clear();
-	valid = false;
-}
-
-
-//
-//	OtModel::load
-//
-
-void OtModel::load(const std::filesystem::path& path) {
-	// clear the current data
-	clear();
-
-	// remember the path
-	modelPath = path;
 
 	// create an asset importer
 	Assimp::Importer importer;
@@ -51,16 +50,18 @@ void OtModel::load(const std::filesystem::path& path) {
 		aiProcess_FlipUVs;
 
 	// read the model file
-	const aiScene* scene = importer.ReadFile(modelPath.string(), flags);
+	const aiScene* scene = importer.ReadFile(path.string(), flags);
 
 	// ensure model was loaded correctly
 	if (scene == nullptr) {
-		OtExcept("Unable to load model [%s], error: %s", modelPath.c_str(), importer.GetErrorString());
+		OtWarning("Unable to load model [%s], error: %s", path.c_str(), importer.GetErrorString());
+		return false;
 	}
 
 	// ensure scene is complete
 	if (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) {
-		OtExcept("Incomplete model [%s]", modelPath.c_str());
+		OtWarning("Incomplete model [%s]", path.c_str());
+		return false;
 	}
 
 	// load all the meshes
@@ -78,6 +79,5 @@ void OtModel::load(const std::filesystem::path& path) {
 		materials[i].load(scene->mMaterials[i], dir);
 	}
 
-	// we're now ready to go
-	valid = true;
+	return true;
 }

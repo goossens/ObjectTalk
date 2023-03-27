@@ -166,20 +166,8 @@ void OtSceneRuntime::initializeRenderingSystem() {
 		activeCamera = firstCamera;
 
 	} else {
-		OtExcept("No camera found in scene at [%s]", scenePath.c_str());
+		OtError("No camera found in scene at [%s]", scenePath.c_str());
 	}
 
 	cameraSelected = true;
-}
-
-
-//
-//	OtSceneRuntime::initializeAssetSystem
-//
-
-void OtSceneRuntime::initializeAssetSystem() {
-	// load all material assets
-	for (auto [entity, component] : scene->view<OtMaterialComponent>().each()) {
-		component.material->update();
-	}
 }

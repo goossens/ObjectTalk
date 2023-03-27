@@ -23,7 +23,7 @@
 void OtTransientVertexBuffer::submit(void *data, size_t count, const bgfx::VertexLayout& layout, uint8_t stream) {
 	// sanity check
 	if ((bgfx::getAvailTransientVertexBuffer((uint32_t) count, layout) != count)) {
-		OtExcept("Internal error: insufficient transient vertex buffer space");
+		OtError("Internal error: insufficient transient vertex buffer space");
 	}
 
 	// allocate transient space and fill buffer

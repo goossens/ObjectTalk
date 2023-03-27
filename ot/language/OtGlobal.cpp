@@ -106,7 +106,7 @@ OtGlobalClass::OtGlobalClass() {
 
 void OtGlobalClass::doAssert(bool condition) {
 	if (!condition) {
-		OtExcept("Assertion error");
+		OtError("Assertion error");
 	}
 }
 
@@ -145,17 +145,17 @@ OtObject OtGlobalClass::range(size_t count, OtObject* parameters) {
 		increment = parameters[2]->operator int64_t();
 
 	}else {
-		OtExcept("Range functions required 1, 2 or 3 parameters, not %ld", count);
+		OtError("Range functions required 1, 2 or 3 parameters, not %ld", count);
 	}
 
 	if (increment == 0) {
-		OtExcept("You can't create a range with an increment of 0");
+		OtError("You can't create a range with an increment of 0");
 
 	} else if (to > from && increment < 0) {
-		OtExcept("Forward ranges must have positive increments");
+		OtError("Forward ranges must have positive increments");
 
 	} else if (from > to && increment > 0) {
-		OtExcept("Reverse ranges must have negative increments");
+		OtError("Reverse ranges must have negative increments");
 	}
 
 	return OtRangeIterator::create(from, to, increment);
@@ -182,7 +182,7 @@ void OtGlobalClass::print(size_t count, OtObject* parameters) {
 OtObject OtGlobalClass::super(size_t count, OtObject* parameters) {
 	// sanity check
 	if (count < 2) {
-		OtExcept("Super requires at least 2 parameters (%ld given)", count);
+		OtError("Super requires at least 2 parameters (%ld given)", count);
 	}
 
 	// get member from super class
@@ -198,7 +198,7 @@ OtObject OtGlobalClass::super(size_t count, OtObject* parameters) {
 
 	// sanity check
 	if (!member) {
-		OtExcept(
+		OtError(
 			"Can't find member function [%s] in super class of [%s]",
 			memberName.c_str(),
 			parameters[0]->getType()->getName().c_str());

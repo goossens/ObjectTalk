@@ -32,14 +32,14 @@ OtObject OtIOClass::readJSON(const std::string& name) {
 		std::ifstream stream(name.c_str());
 
 		if (stream.fail()) {
-			OtExcept("Can't read from file [%s]", name.c_str());
+			OtError("Can't read from file [%s]", name.c_str());
 		}
 
 		buffer << stream.rdbuf();
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtExcept("Can't read from file [%s], error: %s", name.c_str(), e.what());
+		OtError("Can't read from file [%s], error: %s", name.c_str(), e.what());
 	}
 
 	OtCompiler compiler;
@@ -59,14 +59,14 @@ void OtIOClass::writeJSON(const std::string& name, OtObject object) {
 		std::ofstream stream(name.c_str());
 
 		if (stream.fail()) {
-			OtExcept("Can't write to file [%s]", name.c_str());
+			OtError("Can't write to file [%s]", name.c_str());
 		}
 
 		stream << object->json();
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtExcept("Can't write to file [%s], error: %s", name.c_str(), e.what());
+		OtError("Can't write to file [%s], error: %s", name.c_str(), e.what());
 	}
 }
 
@@ -82,14 +82,14 @@ OtObject OtIOClass::readText(const std::string& name) {
 		std::ifstream stream(name.c_str());
 
 		if (stream.fail()) {
-			OtExcept("Can't read from file [%s]", name.c_str());
+			OtError("Can't read from file [%s]", name.c_str());
 		}
 
 		buffer << stream.rdbuf();
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtExcept("Can't read from file [%s], error: %s", name.c_str(), e.what());
+		OtError("Can't read from file [%s], error: %s", name.c_str(), e.what());
 	}
 
 	return OtString::create(buffer.str());
@@ -105,14 +105,14 @@ void OtIOClass::writeText(const std::string& name, OtObject object) {
 		std::ofstream stream(name.c_str());
 
 		if (stream.fail()) {
-			OtExcept("Can't write to file [%s]", name.c_str());
+			OtError("Can't write to file [%s]", name.c_str());
 		}
 
 		stream << object->operator std::string();
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtExcept("Can't write to file [%s], error: %s", name.c_str(), e.what());
+		OtError("Can't write to file [%s], error: %s", name.c_str(), e.what());
 	}
 }
 

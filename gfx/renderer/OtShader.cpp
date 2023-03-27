@@ -49,7 +49,7 @@ void OtShader::submit(bgfx::ViewId view) {
 				true);
 
 		} else {
-			OtExcept("Internal error: Shader not initialized before submission");
+			OtError("Internal error: Shader not initialized before submission");
 		}
 	}
 

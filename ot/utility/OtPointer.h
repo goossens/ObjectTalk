@@ -46,7 +46,7 @@ public:
 
 	// constructor for when we already have a pointer
 	OtPointer(T* instance) : ptr(instance) {
-		static_assert(std::is_base_of<OtSharable, T>::value, "Instance is not derived from OtSharable!");
+		static_assert(std::is_base_of<OtSharable, T>::value, "Instance is not derived from OtSharable");
 		incrementReference();
 	}
 

@@ -70,7 +70,7 @@ bool OtMaterialComponent::renderGUI() {
 	}
 
 	ImGui::SameLine(0.0f, spacing);
-	material->renderGUI();
+	changed |= material->renderGUI();
 
 	ImGui::SameLine(0.0f, spacing);
 	ImGui::TextUnformatted("Type");
@@ -116,6 +116,6 @@ void OtMaterialComponent::createMaterial(const std::string& type) {
 		material = factory->create(type);
 
 	} else {
-		OtExcept("Invalid material type [%s]", type.c_str());
+		OtError("Invalid material type [%s]", type.c_str());
 	}
 }

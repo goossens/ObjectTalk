@@ -28,9 +28,6 @@ using OtMaterial = OtObjectPointer<OtMaterialClass>;
 
 class OtMaterialClass : public OtObjectClass {
 public:
-	// update material
-	virtual void update() {}
-
 	// GUI to change geometry properties
 	virtual bool renderGUI() { return false; }
 

@@ -48,7 +48,7 @@ OtObject OtClassClass::instantiate(size_t count, OtObject* parameters) {
 		OtVM::instance()->redirectMemberFunction(object, "__init__", count);
 
 	} else if (count) {
-		OtExcept(
+		OtError(
 			"Class [%s] is missing [__init__] member function (called with %ld parameters)",
 			classType->getName().c_str(),
 			count);

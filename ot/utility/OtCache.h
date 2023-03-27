@@ -85,7 +85,7 @@ public:
 		auto pos = index.find(key);
 
 		if (pos == index.end()) {
-			OtExcept("Invalid key for cache");
+			OtError("Invalid key for cache");
 		}
 
 		items.splice(items.begin(), items, pos->second);

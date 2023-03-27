@@ -59,22 +59,22 @@ void OtModelMaterial::load(const aiMaterial* mat, const std::filesystem::path& d
 
 	// albedo color
 	if (mat->Get(AI_MATKEY_COLOR_DIFFUSE, color) == AI_SUCCESS) {
-		material->albedo = glm::vec4(color.r, color.g, color.b, color.a);
+		material->setAlbedoVector(glm::vec4(color.r, color.g, color.b, color.a));
 	}
 
 	// metallic factor
 	if (mat->Get(AI_MATKEY_METALLIC_FACTOR, real) == AI_SUCCESS) {
-		material->metallic = real;
+		material->setMetallic(real);
 	}
 
 	// roughness factor
 	if (mat->Get(AI_MATKEY_ROUGHNESS_FACTOR, real) == AI_SUCCESS) {
-		material->roughness = real;
+		material->setRoughness(real);
 	}
 
 	// emissive factor
 	if (mat->Get(AI_MATKEY_COLOR_EMISSIVE, color) == AI_SUCCESS) {
-		material->emissive = glm::vec3(color.r, color.g, color.b);
+		material->setEmissiveVector(glm::vec3(color.r, color.g, color.b));
 	}
 
 	// albedo texture
@@ -117,6 +117,5 @@ void OtModelMaterial::load(const aiMaterial* mat, const std::filesystem::path& d
 		material->setAoTexture(std::filesystem::canonical(dir / file));
 	}
 
-	material->update();
 	valid = true;
 }

@@ -38,7 +38,7 @@ void OtPolyhedronGeometryClass::init(size_t count, OtObject* parameters) {
 				setDetail(parameters[1]->operator int());
 
 			default:
-				OtExcept("Too many parameters [%ld] for [PolyhedronGeometry] constructor (max 1)", count);
+				OtError("Too many parameters [%ld] for [PolyhedronGeometry] constructor (max 1)", count);
 		}
 	}
 }

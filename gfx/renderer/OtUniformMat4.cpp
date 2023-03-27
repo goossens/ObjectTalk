@@ -76,7 +76,7 @@ void OtUniformMat4::clear() {
 void OtUniformMat4::submit() {
 	// sanity check
 	if (!size) {
-		OtExcept("Internal error: Uniform not initialized");
+		OtError("Internal error: Uniform not initialized");
 	}
 
 	// submit uniform to GPU

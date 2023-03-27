@@ -38,7 +38,7 @@ void OtCircleGeometryClass::init(size_t count, OtObject* parameters) {
 				segments = parameters[1]->operator int();
 
 			default:
-				OtExcept("Too many parameters [%ld] for [CircleGeometry] constructor (max 3)", count);
+				OtError("Too many parameters [%ld] for [CircleGeometry] constructor (max 3)", count);
 		}
 
 		refreshGeometry = true;

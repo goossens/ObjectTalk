@@ -44,7 +44,7 @@
 void OtFramework::initGLFW() {
 	// initialize GLFW library
 	glfwSetErrorCallback([](int error, const char* description) {
-		OtExcept(description);
+		OtError(description);
 	});
 
 	glfwInit();

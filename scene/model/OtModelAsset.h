@@ -15,35 +15,26 @@
 #include <filesystem>
 #include <vector>
 
+#include "OtAsset.h"
+#include "OtAssetBase.h"
+
 #include "OtModelMaterial.h"
 #include "OtModelMesh.h"
 
 //
-//	OtModel
+//	OtModelAsset
 //
 
-class OtModel {
+class OtModelAsset : public OtAssetBase {
 public:
-	// clear the model
-	void clear();
-
 	// load the model
-	void load(const std::filesystem::path& path);
-
-	// see if we have a valid model
-	bool isValid() { return valid; }
+	bool load(const std::filesystem::path& path);
 
 private:
 	// the renderer accesses our properties
 	friend class OtSceneRenderer;
 
-	// path to main model file
-	std::filesystem::path modelPath;
-
 	// our meshes and materials
 	std::vector<OtModelMesh> meshes;
 	std::vector<OtModelMaterial> materials;
-
-	// are we fully loaded and valid
-	bool valid = false;
 };

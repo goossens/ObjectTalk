@@ -70,7 +70,7 @@ void OtModuleClass::load(const std::filesystem::path& path) {
 
 	// ensure module exists
 	if (fullPath.empty()) {
-		OtExcept("Can't find module [%s]", path.string().c_str());
+		OtError("Can't find module [%s]", path.string().c_str());
 	}
 
 	// start with a clean slate

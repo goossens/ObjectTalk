@@ -34,26 +34,27 @@ public:
 
 	// perform action
 	virtual void perform() {
-		// get the target entity
+		// get the target entity and component
 		auto entity = scene->getEntityFromUuid(entityUuid);
+		auto& component = scene->getComponent<T>(entity);
 
 		// save and delete component
-		data = scene->getComponent<T>(entity);
+		oldValue = component.serialize(nullptr).dump();
 		scene->removeComponent<T>(entity);
 	}
 
 	// undo action
 	virtual void undo() {
-		// get the target entity
+		// restore old value
 		auto entity = scene->getEntityFromUuid(entityUuid);
-
-		// add appropriate component
-		scene->addComponent<T>(entity) = data;
+		auto& component = scene->addComponent<T>(entity);
+		auto data = nlohmann::json::parse(oldValue);
+		component.deserialize(data, nullptr);
 	}
 
 private:
 	// properties
 	OtScene* scene;
 	uint32_t entityUuid;
-	T data;
+	std::string oldValue;
 };

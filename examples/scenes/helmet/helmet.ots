@@ -103,7 +103,7 @@
 			},
 			{
 				"component": "Model",
-				"modelPath": "assets/DamagedHelmet.gltf"
+				"model": "assets/DamagedHelmet.gltf"
 			}
 		]
 	}

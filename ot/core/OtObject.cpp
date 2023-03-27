@@ -92,7 +92,7 @@ OtObject& OtObjectClass::get(size_t selector) {
 	}
 
 	auto name = OtSelector::name(selector);
-	OtExcept("Unknown member [%.*s] in instance of class [%s]", name.size(), name.data(), type->getName().c_str());
+	OtError("Unknown member [%.*s] in instance of class [%s]", name.size(), name.data(), type->getName().c_str());
 
 	// we will never get here because of the exception but a return statement keeps the compiler happy
 	return members->get(selector);
@@ -109,7 +109,7 @@ void OtObjectClass::unset(size_t selector) {
 
 	} else {
 		auto name = OtSelector::name(selector);
-		OtExcept("Unknown member [%.*s] in instance of class [%s]", name.size(), name.data(), type->getName().c_str());
+		OtError("Unknown member [%.*s] in instance of class [%s]", name.size(), name.data(), type->getName().c_str());
 	}
 }
 
@@ -163,7 +163,7 @@ static bool isvowel(char ch) {
 void OtObjectClass::expectKindOf(const std::string& className) {
 	// ensure object is of the right kind
 	if (!isKindOf(className)) {
-		OtExcept("Expected %s [%s] instance, not a [%s]",
+		OtError("Expected %s [%s] instance, not a [%s]",
 			isvowel(className[0]) ? "an" : "a",
 			className.c_str(),
 			getType()->getName().c_str());

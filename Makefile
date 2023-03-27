@@ -55,7 +55,7 @@ ubuntu:
 	cd docker/ubuntu && ./run
 
 clean:
-	rm -rf debug release xcode vs
+	rm -rf build debug release xcode vs
 
 distclean: clean
 	cd docker/alpine && ./clean

@@ -177,7 +177,7 @@ void OtHttpRequestClass::onBody(const char *data, size_t length) {
 		auto parsed = multipartparser_execute(&multipartParser, &multipartCallbacks, data, length);
 
 		if (parsed != length) {
-			OtExcept("Invalid multipart");
+			OtError("Invalid multipart");
 		}
 
 	} else {
@@ -291,7 +291,7 @@ void OtHttpRequestClass::onMultipartHeadersComplete() {
 		});
 
 	} else {
-		OtExcept("Content-Disposition missing in multipart");
+		OtError("Content-Disposition missing in multipart");
 	}
 }
 

@@ -18,6 +18,7 @@
 #include "ImGuizmo.h"
 #include "nlohmann/json.hpp"
 
+#include "OtAssetManager.h"
 #include "OtGpu.h"
 #include "OtUi.h"
 
@@ -417,7 +418,6 @@ void OtSceneEditor::renderViewPort() {
 			auto newValue = component.serialize(nullptr).dump();
 			nextTask = std::make_shared<OtEditComponentTask<OtTransformComponent>>(scene.get(), selectedEntity, oldValue, newValue);
 		}
-
 	}
 
 	if (!ImGuizmo::IsUsing() && ImGui::IsItemHovered() && !scene->isValidEntity(selectedCamera)) {
@@ -425,8 +425,8 @@ void OtSceneEditor::renderViewPort() {
 		editorCamera.handleKeyboardAndMouse();
 	}
 
-
-
+	// let asset manager show busy spinner (if required)
+	OtAssetManager::instance()->renderGUI();
 	ImGui::EndChild();
 }
 

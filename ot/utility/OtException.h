@@ -81,11 +81,11 @@ private:
 
 
 //
-//	OtExcept
+//	OtError
 //
 
 template <typename... ARGS>
-void OtExcept(const char* format, ARGS && ...args) {
+void OtError(const char* format, ARGS && ...args) {
 	if constexpr(sizeof...(ARGS) == 0) {
 		throw OtException(format);
 
@@ -97,8 +97,30 @@ void OtExcept(const char* format, ARGS && ...args) {
 	}
 }
 
-inline void OtExcept(const std::string message) {
+inline void OtError(const std::string message) {
 	throw OtException(message);
+}
+
+
+//
+//	OtWarning
+//
+
+template <typename... ARGS>
+void OtWarning(const char* format, ARGS && ...args) {
+	if constexpr(sizeof...(ARGS) == 0) {
+		std::cout << "Warning: " << format << std::endl;
+
+	} else {
+		auto size = std::snprintf(nullptr, 0, format, std::forward<ARGS>(args)...);
+		std::vector<char> buffer(size + 1);
+		std::snprintf(buffer.data(), size + 1, format, std::forward<ARGS>(args)...);
+		std::cout << "Warning: " << buffer.data() << std::endl;
+	}
+}
+
+inline void OtWarning(const std::string message) {
+	std::cout << "Warning: " << message << std::endl;
 }
 
 
@@ -106,6 +128,5 @@ inline void OtExcept(const std::string message) {
 //	Macros
 //
 
-#define OT_FATAL(format, ...) OtExcept("%s: line %d: " format, __FILE__, __LINE__, __VA_ARGS__)
-#define OT_ASSERT(assertion) if (!(assertion)) OT_FATAL("Assertion error: %s", #assertion)
-#define OT_DEBUG(value) std::cout << (value) << std::endl
+#define OtFatal(format, ...) OtError("%s: line %d: " format, __FILE__, __LINE__, __VA_ARGS__)
+#define OtAssert(assertion) if (!(assertion)) OtFatal("Assertion error: %s", #assertion)

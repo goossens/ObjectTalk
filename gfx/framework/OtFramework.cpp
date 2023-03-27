@@ -18,6 +18,7 @@
 #include "OtLibuv.h"
 #include "OtVM.h"
 
+#include "OtAssetManager.h"
 #include "OtFramework.h"
 #include "OtFrameworkAtExit.h"
 #include "OtMessageBus.h"
@@ -71,9 +72,6 @@ void OtFramework::runThread2() {
 		initBGFX();
 		initIMGUI();
 
-		// let app perform its own setup
-		app->onSetup();
-
 		// listen for stop events on the message bus
 		auto bus = OtMessageBus::instance();
 
@@ -82,6 +80,12 @@ void OtFramework::runThread2() {
 				stop();
 			}
 		});
+
+		// start the asset manager
+		OtAssetManager::instance()->start();
+
+		// let app perform its own setup
+		app->onSetup();
 
 		// run this thread until we are told to stop
 		while (running) {
@@ -179,11 +183,14 @@ void OtFramework::runThread2() {
 			uv_run(uv_default_loop(), UV_RUN_NOWAIT);
 		}
 
-		// clear the message bus
-		bus->clear();
-
 		// tell app we're done
 		app->onTerminate();
+
+		// stop the asset manager
+		OtAssetManager::instance()->stop();
+
+		// clear the message bus
+		bus->clear();
 
 		// call exit callbacks
 		OtFrameworkAtExit::instance()->run();
@@ -232,7 +239,7 @@ bool OtFramework::canQuit() {
 
 void OtFramework::setAntiAliasing(int aa) {
 	if (aa < 0 || aa > 4) {
-		OtExcept("Anti-aliasing setting must be between 0 and 4");
+		OtError("Anti-aliasing setting must be between 0 and 4");
 	}
 
 	antiAliasing = aa;

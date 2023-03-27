@@ -55,7 +55,7 @@ void OtFontClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-			OtExcept("[Font] constructor expects up to 2 arguments (not %ld)", count);
+			OtError("[Font] constructor expects up to 2 arguments (not %ld)", count);
 	}
 }
 
@@ -74,7 +74,7 @@ OtObject OtFontClass::setFont(const std::string& file) {
 	static bx::FileReader reader;
 
 	if (!bx::open(&reader, file.c_str())) {
-		OtExcept("Can't open font [%s]", file.c_str());
+		OtError("Can't open font [%s]", file.c_str());
 	}
 
 	uint32_t size = (uint32_t) bx::getSize(&reader);
@@ -84,7 +84,7 @@ OtObject OtFontClass::setFont(const std::string& file) {
 
 	// prepare font
 	if (!stbtt_InitFont(&font, data, 0)) {
-		OtExcept("Can't process font [%s]", file.c_str());
+		OtError("Can't process font [%s]", file.c_str());
 	}
 
 	return OtObject(this);

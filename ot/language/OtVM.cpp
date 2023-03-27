@@ -69,9 +69,9 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 		try {
 			switch (bytecode->getOpcode(pc)) {
 				case OtByteCodeClass::debugOpcode:
-					OT_DEBUG(bytecode->disassemble());
-					OT_DEBUG(OtFormat("PC: %ld\n", pc));
-					OT_DEBUG(stack.debug());
+					OtWarning(bytecode->disassemble());
+					OtWarning(OtFormat("PC: %ld\n", pc));
+					OtWarning(stack.debug());
 					break;
 
 				case OtByteCodeClass::markOpcode:
@@ -150,7 +150,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 					auto parameters = stack.sp(count + 1);
 
 					// sanity check
-					OT_ASSERT(parameters[0]);
+					OtAssert(parameters[0]);
 
 					// call method
 					auto result = parameters[0]->get(method)->operator () (count + 1, parameters);
@@ -294,8 +294,8 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 	stack.closeFrame();
 
 	// sanity check
-	OT_ASSERT(tryCatch.size() == 0);
-	OT_ASSERT(stack.size() == sp);
+	OtAssert(tryCatch.size() == 0);
+	OtAssert(stack.size() == sp);
 
 	// return execution result
 	return result;

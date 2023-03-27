@@ -102,7 +102,7 @@ bool OtArrayClass::operator == (OtObject operand) {
 OtObject OtArrayClass::getEntry(size_t index) {
 	// sanity check
 	if (index < 0 || index >= array.size()) {
-		OtExcept("invalid index [%ld] for array of size [%ld]", index, array.size());
+		OtError("invalid index [%ld] for array of size [%ld]", index, array.size());
 	}
 
 	// return entry
@@ -117,7 +117,7 @@ OtObject OtArrayClass::getEntry(size_t index) {
 OtObject OtArrayClass::setEntry(size_t index, OtObject object) {
 	// sanity check
 	if (index < 0 || index >= array.size()) {
-		OtExcept("invalid index [%ld] for array of size [%ld]", index, array.size());
+		OtError("invalid index [%ld] for array of size [%ld]", index, array.size());
 	}
 
 	// set entry
@@ -132,10 +132,10 @@ OtObject OtArrayClass::setEntry(size_t index, OtObject object) {
 
 OtObject OtArrayClass::index(size_t index) {
 	if (index < 0) {
-		OtExcept("Negative index [%ld] is not allowed in array", index);
+		OtError("Negative index [%ld] is not allowed in array", index);
 
 	} else if (index >= array.size()) {
-		OtExcept("Index [%ld] is greater than array length [%ld]", index, array.size());
+		OtError("Index [%ld] is greater than array length [%ld]", index, array.size());
 
 	}
 
@@ -222,7 +222,7 @@ OtObject OtArrayClass::clone() {
 
 OtObject OtArrayClass::merge(OtObject object) {
 	if (!object->isKindOf("Array")) {
-		OtExcept("Array merge expects another [array] instance, not a [%s]", object->getType()->getName().c_str());
+		OtError("Array merge expects another [array] instance, not a [%s]", object->getType()->getName().c_str());
 	}
 
 	OtArray result = OtArray::create();
@@ -254,10 +254,10 @@ void OtArrayClass::append(OtObject object) {
 
 void OtArrayClass::insert(size_t index, OtObject object) {
 	if (index < 0) {
-		OtExcept("Negative index [%ld] is not allowed in array", index);
+		OtError("Negative index [%ld] is not allowed in array", index);
 
 	} else if (index >= size()) {
-		OtExcept("Index [%ld] is greater than array length [%ld]", index, size());
+		OtError("Index [%ld] is greater than array length [%ld]", index, size());
 
 	}
 
@@ -271,10 +271,10 @@ void OtArrayClass::insert(size_t index, OtObject object) {
 
 void OtArrayClass::erase(size_t index) {
 	if (index < 0) {
-		OtExcept("Negative index [%ld] is not allowed in array", index);
+		OtError("Negative index [%ld] is not allowed in array", index);
 
 	} else if (index >= size()) {
-		OtExcept("Index [%ld] is greater than array length [%ld]", index, size());
+		OtError("Index [%ld] is greater than array length [%ld]", index, size());
 
 	}
 
@@ -288,23 +288,23 @@ void OtArrayClass::erase(size_t index) {
 
 void OtArrayClass::eraseMultiple(size_t index1, size_t index2) {
 	if (index1 < 0) {
-		OtExcept("Negative index [%ld] is not allowed in array", index1);
+		OtError("Negative index [%ld] is not allowed in array", index1);
 
 	} else if (index1 >= size()) {
-		OtExcept("Index [%ld] is greater than array length [%ld]", index1, size());
+		OtError("Index [%ld] is greater than array length [%ld]", index1, size());
 
 	}
 
 	if (index2 < 0) {
-		OtExcept("Negative index [%ld] is not allowed in array", index2);
+		OtError("Negative index [%ld] is not allowed in array", index2);
 
 	} else if (index2 >= size()) {
-		OtExcept("Index [%ld] is greater than array length [%ld]", index2, size());
+		OtError("Index [%ld] is greater than array length [%ld]", index2, size());
 
 	}
 
 	if (index1 > index2) {
-		OtExcept("Indexes [%ld and %ld2] are in the wrong order", index1, index2);
+		OtError("Indexes [%ld and %ld2] are in the wrong order", index1, index2);
 	}
 
 	array.erase(array.begin() + index1, array.begin() + index2);

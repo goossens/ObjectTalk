@@ -102,15 +102,15 @@ void OtScriptComponent::load() {
 				hasUpdateMethod = instance->has(updateSelector);
 
 			} else {
-				OtExcept("Class [%s] in script [%s] is not dereive from [Entity]", className.c_str(), path.string().c_str());
+				OtError("Class [%s] in script [%s] is not dereive from [Entity]", className.c_str(), path.string().c_str());
 			}
 
 		} else {
-			OtExcept("Object [%s] in script [%s] is not a class", className.c_str(), path.string().c_str());
+			OtError("Object [%s] in script [%s] is not a class", className.c_str(), path.string().c_str());
 		}
 
 	} else {
-		OtExcept("Script [%s] does not contain class [%s]", path.string().c_str(), className.c_str());
+		OtError("Script [%s] does not contain class [%s]", path.string().c_str(), className.c_str());
 	}
 }
 

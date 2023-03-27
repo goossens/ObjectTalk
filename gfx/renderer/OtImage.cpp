@@ -67,7 +67,7 @@ void OtImage::load(const std::filesystem::path& path, bool powerof2, bool square
 
 	// get image data
 	if (!bx::open(&reader, bx::FilePath((const char*) path.c_str()))) {
-		OtExcept("Can't open image [%s]", path.c_str());
+		OtError("Can't open image [%s]", path.c_str());
 	}
 
 	uint32_t size = (uint32_t) bx::getSize(&reader);
@@ -79,24 +79,24 @@ void OtImage::load(const std::filesystem::path& path, bool powerof2, bool square
 	BX_FREE(&allocator, data);
 
 	if (!image) {
-		OtExcept("Can't process image in [%s]", path.c_str());
+		OtError("Can't process image in [%s]", path.c_str());
 	}
 
 	// validate sides are power of 2 (if required)
 	if (powerof2 && !(bx::isPowerOf2(image->m_width))) {
 		clear();
-		OtExcept("Image width %d is not a power of 2", image->m_width);
+		OtError("Image width %d is not a power of 2", image->m_width);
 	}
 
 	if (powerof2 && !(bx::isPowerOf2(image->m_height))) {
 		clear();
-		OtExcept("Image height %d is not a power of 2", image->m_height);
+		OtError("Image height %d is not a power of 2", image->m_height);
 	}
 
 	// validate squareness (if required)
 	if (square && image->m_width != image->m_height) {
 		clear();
-		OtExcept("Image must be square not %d by %d", image->m_width, image->m_height);
+		OtError("Image must be square not %d by %d", image->m_width, image->m_height);
 	}
 }
 
@@ -113,7 +113,7 @@ void OtImage::loadAsGrayscale(const std::filesystem::path& path, bool powerof2, 
 	if (image->m_format != bimg::TextureFormat::R32F) {
 		// see if image is convertable
 		if (!bimg::imageConvert(bimg::TextureFormat::R32F, image->m_format)) {
-			OtExcept("Can't convert image in [%s] to grayscale", path.c_str());
+			OtError("Can't convert image in [%s] to grayscale", path.c_str());
 		}
 
 		// convert image
@@ -141,7 +141,7 @@ void OtImage::loadAsRGBA(const std::filesystem::path& path, bool powerof2, bool 
 	if (image->m_format != bimg::TextureFormat::RGBA8) {
 		// see if image is convertable
 		if (!bimg::imageConvert(bimg::TextureFormat::RGBA8, image->m_format)) {
-			OtExcept("Can't convert image in [%s] to grayscale", path.c_str());
+			OtError("Can't convert image in [%s] to grayscale", path.c_str());
 		}
 
 		// convert image
@@ -170,7 +170,7 @@ void OtImage::loadFromFileInMemory(void* data, uint32_t size) {
 
 	// check for errors
 	if (!image) {
-		OtExcept("Internal error: Can't process in-memory image");
+		OtError("Internal error: Can't process in-memory image");
 	}
 }
 

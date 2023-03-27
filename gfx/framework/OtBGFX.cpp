@@ -53,23 +53,23 @@ void OtFramework::initBGFX() {
 	const bgfx::Caps* caps = bgfx::getCaps();
 
 	if (!(caps->supported & BGFX_CAPS_RENDERER_MULTITHREADED)) {
-		OtExcept("Your system/graphics card does not support multithreading");
+		OtError("Your system/graphics card does not support multithreading");
 	}
 
 	if (!(caps->supported & BGFX_CAPS_INDEX32)) {
-		OtExcept("Your system/graphics card does not support 32 bit vertex indexing");
+		OtError("Your system/graphics card does not support 32 bit vertex indexing");
 	}
 
 	if (!(caps->supported & BGFX_CAPS_INSTANCING)) {
-		OtExcept("Your system/graphics card does not support instancing");
+		OtError("Your system/graphics card does not support instancing");
 	}
 
 	if (!(caps->supported & BGFX_CAPS_TEXTURE_COMPARE_LEQUAL)) {
-		OtExcept("Your system/graphics card does not support texture '<='");
+		OtError("Your system/graphics card does not support texture '<='");
 	}
 
 	if (!(caps->supported & BGFX_CAPS_TEXTURE_BLIT)) {
-		OtExcept("Your system/graphics card does not support blitting between textures");
+		OtError("Your system/graphics card does not support blitting between textures");
 	}
 
 	// initialize time management

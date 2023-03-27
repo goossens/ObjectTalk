@@ -42,6 +42,6 @@ void OtDynamicVertexBuffer::submit(uint8_t stream) {
 		bgfx::setVertexBuffer(stream, vertexBuffer.getHandle());
 
 	} else {
-		OtExcept("Internal error: DynamicVertexBuffer not initialized before submission");
+		OtError("Internal error: DynamicVertexBuffer not initialized before submission");
 	}
 }

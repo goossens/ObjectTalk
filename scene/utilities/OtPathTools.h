@@ -65,19 +65,3 @@ static inline std::filesystem::path OtPathGetAbsolute(nlohmann::json data, const
 		return std::filesystem::path();
 	}
 }
-
-
-//
-//	OtPathEdit
-//
-
-static inline bool OtPathEdit(const char* label, std::filesystem::path& path, bool& flag) {
-	bool changed = false;
-
-	if (OtUiFileSelector(label, path)) {
-		changed = true;
-		flag = true;
-	}
-
-	return changed;
-}

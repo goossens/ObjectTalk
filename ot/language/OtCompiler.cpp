@@ -31,7 +31,7 @@
 OtByteCode OtCompiler::compileFile(const std::filesystem::path& path, OtObject object, bool disassemble) {
 	// sanity check
 	if (!std::filesystem::exists(path)) {
-		OtExcept("Can't open file [%s]", path.c_str());
+		OtError("Can't open file [%s]", path.c_str());
 	}
 
 	// load source code and compile into bytecode
@@ -223,13 +223,13 @@ void OtCompiler::declareCapture(const std::string& name, OtStackItem item) {
 
 	// sanity check
 	if (scope == scopeStack.rend()) {
-		OtExcept("Internal error. No function scope on stack");
+		OtError("Internal error. No function scope on stack");
 	}
 
 	// see if this variable is already captured
 	if (scope->captures.count(name)) {
 		if (scope->captures[name] != item) {
-			OtExcept("Internal error. Captured variable has different stack offset");
+			OtError("Internal error. Captured variable has different stack offset");
 		}
 
 	} else {
@@ -304,7 +304,7 @@ void OtCompiler::resolveVariable(OtByteCode bytecode, const std::string& name) {
 					break;
 
 				default:
-					OtExcept("Invalid scope type");
+					OtError("Invalid scope type");
 			}
 
 			found = true;

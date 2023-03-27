@@ -16,7 +16,8 @@
 
 #include "nlohmann/json_fwd.hpp"
 
-#include "OtTexture.h"
+#include "OtAsset.h"
+#include "OtTextureAsset.h"
 
 #include "OtMaterial.h"
 
@@ -30,9 +31,6 @@ using OtBlendMapMaterial = OtObjectPointer<OtBlendMapMaterialClass>;
 
 class OtBlendMapMaterialClass : public OtMaterialClass {
 public:
-	// update material
-	void update() override;
-
 	// GUI to change geometry properties
 	bool renderGUI() override;
 
@@ -54,44 +52,21 @@ private:
 	friend class OtSceneRenderer;
 
 	// stored properties
-	std::filesystem::path blendMapPath;
+	OtAsset<OtTextureAsset> blendMapTexture;
 
-	std::filesystem::path nonePath;
-	std::filesystem::path redPath;
-	std::filesystem::path greenPath;
-	std::filesystem::path bluePath;
+	OtAsset<OtTextureAsset> noneTexture;
+	OtAsset<OtTextureAsset> redTexture;
+	OtAsset<OtTextureAsset> greenTexture;
+	OtAsset<OtTextureAsset> blueTexture;
 
-	std::filesystem::path normalsNonePath;
-	std::filesystem::path normalsRedPath;
-	std::filesystem::path normalsGreenPath;
-	std::filesystem::path normalsBluePath;
+	OtAsset<OtTextureAsset> noneNormalsTexture;
+	OtAsset<OtTextureAsset> redNormalsTexture;
+	OtAsset<OtTextureAsset> greenNormalsTexture;
+	OtAsset<OtTextureAsset> blueNormalsTexture;
 
 	float metallic = 0.5f;
 	float roughness = 0.5f;
 	float scale = 1.0f;
 
 	// runtime properties
-	OtTexture blendMapTexture;
-
-	OtTexture noneTexture;
-	OtTexture redTexture;
-	OtTexture greenTexture;
-	OtTexture blueTexture;
-
-	OtTexture normalsNoneTexture;
-	OtTexture normalsRedTexture;
-	OtTexture normalsGreenTexture;
-	OtTexture normalsBlueTexture;
-
-	bool updateBlendMapTexture = false;
-
-	bool updateNoneTexture = false;
-	bool updateRedTexture = false;
-	bool updateGreenTexture = false;
-	bool updateBlueTexture = false;
-
-	bool updateNormalsNoneTexture = false;
-	bool updateNormalsRedTexture = false;
-	bool updateNormalsGreenTexture = false;
-	bool updateNormalsBlueTexture = false;
 };

@@ -33,6 +33,6 @@ void OtIndexBuffer::submit() {
 		bgfx::setIndexBuffer(indexBuffer.getHandle());
 
 	} else {
-		OtExcept("Internal error: IndexBuffer not initialized before submission");
+		OtError("Internal error: IndexBuffer not initialized before submission");
 	}
 }

@@ -61,8 +61,8 @@ public:
 	int64_t add(int64_t operand) { return value + operand; }
 	int64_t subtract(int64_t operand) { return value - operand; }
 	int64_t multiply(int64_t operand) { return value * operand; }
-	int64_t divide(int64_t operand) { if (operand == 0) OtExcept("Divide by zero"); return value / operand; }
-	int64_t modulo(int64_t operand) { if (operand == 0) OtExcept("Divide by zero"); return value % operand; }
+	int64_t divide(int64_t operand) { if (operand == 0) OtError("Divide by zero"); return value / operand; }
+	int64_t modulo(int64_t operand) { if (operand == 0) OtError("Divide by zero"); return value % operand; }
 	int64_t power(int64_t operand) { return std::pow(value, operand); }
 
 	int64_t increment() { return value + 1; }

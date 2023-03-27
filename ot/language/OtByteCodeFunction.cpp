@@ -23,10 +23,10 @@ OtObject OtByteCodeFunctionClass::operator()(size_t count, OtObject* parameters)
 	// sanity check
 	if (parameterCount != count) {
 		if (parameterCount == 1) {
-			OtExcept("Function expects [%d] parameter, [%d] given", parameterCount, count);
+			OtError("Function expects [%d] parameter, [%d] given", parameterCount, count);
 
 		} else {
-			OtExcept("Function expects [%d] parameters, [%d] given", parameterCount, count);
+			OtError("Function expects [%d] parameters, [%d] given", parameterCount, count);
 		}
 	}
 

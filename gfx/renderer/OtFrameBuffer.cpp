@@ -113,7 +113,7 @@ void OtFrameBuffer::update(int w, int h) {
 			framebuffer = bgfx::createFrameBuffer(1, &textures[1]);
 
 		} else {
-			OtExcept("Internal error: You can't have a FrameBuffer without Textures");
+			OtError("Internal error: You can't have a FrameBuffer without Textures");
 		}
 
 		// remember dimensions
@@ -151,6 +151,6 @@ void OtFrameBuffer::submit(bgfx::ViewId view) {
 		bgfx::setViewFrameBuffer(view, framebuffer.getHandle());
 
 	} else {
-		OtExcept("Internal error: IndexBuffer not initialized before submission");
+		OtError("Internal error: IndexBuffer not initialized before submission");
 	}
 }

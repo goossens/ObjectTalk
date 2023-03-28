@@ -31,15 +31,12 @@ void OtModelGeometryClass::init(size_t count, OtObject* parameters) {
 	// set attributes
 	if (count) {
 		switch (count) {
-			case 2:
-				scale = parameters[1]->operator float();
-
 			case 1:
 				modelPath = std::filesystem::path(parameters[0]->operator std::string());
 				break;
 
 			default:
-				OtError("Too many parameters [%ld] for [ModelGeometry] constructor (max 2)", count);
+				OtError("Too many parameters [%ld] for [ModelGeometry] constructor (max 1)", count);
 		}
 
 		refreshGeometry = true;
@@ -53,17 +50,6 @@ void OtModelGeometryClass::init(size_t count, OtObject* parameters) {
 
 OtObject OtModelGeometryClass::setModel(const std::string& name) {
 	modelPath = std::filesystem::path(name);
-	refreshGeometry = true;
-	return OtObject(this);
-}
-
-
-//
-//	OtModelGeometryClass::setScale
-//
-
-OtObject OtModelGeometryClass::setScale(float s) {
-	scale = s;
 	refreshGeometry = true;
 	return OtObject(this);
 }
@@ -165,7 +151,6 @@ void OtModelGeometryClass::fillGeometry() {
 bool OtModelGeometryClass::renderGUI() {
 	bool changed = false;
 	changed |= OtUiFileSelector("Model", modelPath);
-	changed |= ImGui::DragFloat("Scale", &scale, 0.1f);
 	return changed;
 }
 
@@ -203,7 +188,6 @@ OtType OtModelGeometryClass::getMeta() {
 		type = OtType::create<OtModelGeometryClass>("ModelGeometry", OtGeometryClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtModelGeometryClass::init));
 		type->set("setModel", OtFunction::create(&OtModelGeometryClass::setModel));
-		type->set("setScale", OtFunction::create(&OtModelGeometryClass::setScale));
 	}
 
 	return type;

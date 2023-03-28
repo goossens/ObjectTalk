@@ -88,15 +88,10 @@
 				"uuid": 2003886846
 			},
 			{
-				"back": "assets/space/back.jpg",
-				"bottom": "assets/space/bottom.jpg",
 				"brightness": 0.5,
 				"component": "Sky Box",
-				"front": "assets/space/front.jpg",
-				"gamma": 2.200000047683716,
-				"left": "assets/space/left.jpg",
-				"right": "assets/space/right.jpg",
-				"top": "assets/space/top.jpg"
+				"cubemap": "assets/space.cubemap",
+				"gamma": 2.200000047683716
 			}
 		]
 	},

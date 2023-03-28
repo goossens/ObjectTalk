@@ -63,7 +63,7 @@ void OtSceneRenderer::renderBackgroundPass(OtScene* scene) {
 	// see if we have any sky boxes
 	for (auto [entity, component] : scene->view<OtSkyBoxComponent>().each()) {
 		if (!backgroundComponent) {
-			if (component.isValid()) {
+			if (component.cubemap.isReady()) {
 				renderSkyBox(pass, component);
 				backgroundComponent = true;
 			}
@@ -73,7 +73,7 @@ void OtSceneRenderer::renderBackgroundPass(OtScene* scene) {
 	// see if we have any sky spheres
 	for (auto [entity, component] : scene->view<OtSkySphereComponent>().each()) {
 		if (!backgroundComponent) {
-			if (component.isValid()) {
+			if (component.texture.isReady()) {
 				renderSkySphere(pass, component);
 				backgroundComponent = true;
 			}
@@ -100,7 +100,7 @@ void OtSceneRenderer::renderSkyBox(OtPass& pass, OtSkyBoxComponent& component) {
 	backgroundUniforms.submit();
 
 	// submit texture via sampler
-	skyBoxSampler.submit(0, component.cubemap);
+	skyBoxSampler.submit(0, component.cubemap->getCubeMap());
 
 	// run the shader
 	skyBoxShader.setState(OtStateWriteRgb | OtStateWriteA);
@@ -126,7 +126,7 @@ void OtSceneRenderer::renderSkySphere(OtPass& pass, OtSkySphereComponent& compon
 	backgroundUniforms.submit();
 
 	// submit texture via sampler
-	skySphereSampler.submit(0, component.texture);
+	skySphereSampler.submit(0, component.texture->getTexture());
 
 	// run the shader
 	skySphereShader.setState(OtStateWriteRgb | OtStateWriteA);

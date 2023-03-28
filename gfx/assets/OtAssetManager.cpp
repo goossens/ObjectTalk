@@ -61,11 +61,15 @@ void OtAssetManager::stop() {
 	// sanity check
 	OtAssert(running == true);
 
-	// set the flag and wake up runner
+	// wake up runner and wait until thread terminates
 	queue.push(nullptr);
 	thread.join();
 
-	// clear the assets
+	// clear all the assets
+	for (const auto& [path, asset] : assets) {
+		delete asset;
+	}
+
 	assets.clear();
 }
 

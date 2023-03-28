@@ -1,0 +1,41 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2023 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+
+//
+//	Include files
+//
+
+#include "OtException.h"
+
+#include "OtAssetFactory.h"
+#include "OtCubeMapAsset.h"
+
+
+//
+//	Register CubeMap types
+//
+
+static OtAssetFactoryRegister<OtCubeMapAsset> OtDdsCubeMapRegistration{".dds"};
+static OtAssetFactoryRegister<OtCubeMapAsset> OtKtxCubeMapRegistration{".ktx"};
+static OtAssetFactoryRegister<OtCubeMapAsset> OtJsonCubeMapRegistration{".cubemap"};
+
+
+//
+//	OtCubeMapAsset::load
+//
+
+bool OtCubeMapAsset::load(const std::filesystem::path &path) {
+	try {
+		// try to load the cubemap
+		cubemap.load(path);
+		return true;
+
+	} catch (const OtException& exception) {
+		OtWarning("Can't load CubeMap [%s]: %s", path.c_str(), exception.what());
+		return false;
+	}
+}

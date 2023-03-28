@@ -207,8 +207,8 @@ void OtFramework::runThread2() {
 			std::cerr << '\x02' << e.serialize() << '\x03';
 		}
 
-		std::cerr  << std::endl << "Error: " << e.what() << std::endl;
-			std::_Exit(EXIT_FAILURE);
+		std::cerr << std::endl << "Error: " << e.what() << std::endl;
+		std::_Exit(EXIT_FAILURE);
 	}
 }
 

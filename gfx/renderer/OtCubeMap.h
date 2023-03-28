@@ -24,14 +24,8 @@
 
 class OtCubeMap {
 public:
-	// load cubemap from the size specified images
-	void load(
-		const std::filesystem::path& posx,
-		const std::filesystem::path& negx,
-		const std::filesystem::path& posy,
-		const std::filesystem::path& negy,
-		const std::filesystem::path& posz,
-		const std::filesystem::path& negz);
+	// load cubemap from the specified file
+	void load(const std::filesystem::path& path);
 
 	// clear the resources
 	void clear() { cubemap.clear(); }
@@ -48,4 +42,8 @@ public:
 private:
 	// cubemap texture
 	OtBgfxHandle<bgfx::TextureHandle> cubemap;
+
+	// specific cubemap loaders
+	void loadJSON(const std::filesystem::path& path);
+	void loadCubemapImage(const std::filesystem::path& path);
 };

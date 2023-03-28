@@ -55,5 +55,4 @@ private:
 
 	// properties
 	std::filesystem::path modelPath;
-	float scale = 1.0;
 };

@@ -35,6 +35,9 @@ public:
 	// render a "spinner" if we are loading
 	void renderGUI();
 
+	// see if we are currently loading anything
+	bool isLoading() { return loading || queue.size(); }
+
 	// acquire an asset
 	template<typename T>
 	T* acquire(const std::filesystem::path& path) {

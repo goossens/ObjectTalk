@@ -258,7 +258,7 @@
 					"modelPath": "assets/palmtree.obj",
 					"type": "Model"
 				},
-				"transparent": false,
+				"transparent": true,
 				"wireframe": false
 			},
 			{
@@ -270,7 +270,7 @@
 						1.0,
 						1.0
 					],
-					"albedoTexture": "assets/palmtree.jpg",
+					"albedoTexture": "assets/palmtree.png",
 					"ao": 1.0,
 					"aoTexture": "",
 					"emissive": [

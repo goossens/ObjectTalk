@@ -16,7 +16,7 @@
 
 #include "nlohmann/json_fwd.hpp"
 
-#include "OtCubeMap.h"
+#include "OtCubeMapAsset.h"
 
 
 //
@@ -35,20 +35,8 @@ public:
 	// component name
 	static constexpr char const* name = "Sky Box";
 
-	// see if sky box is complete and valid
-	bool isValid();
-
 	// stored properties
-	std::filesystem::path right;
-	std::filesystem::path left;
-	std::filesystem::path top;
-	std::filesystem::path bottom;
-	std::filesystem::path front;
-	std::filesystem::path back;
+	OtAsset<OtCubeMapAsset> cubemap;
 	float brightness = 1.0f;
 	float gamma = 2.2f;
-
-	// runtime properties
-	bool update = false;
-	OtCubeMap cubemap;
 };

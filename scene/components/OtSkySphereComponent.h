@@ -16,7 +16,7 @@
 
 #include "nlohmann/json_fwd.hpp"
 
-#include "OtTexture.h"
+#include "OtTextureAsset.h"
 
 
 //
@@ -35,15 +35,8 @@ public:
 	// component name
 	static constexpr char const* name = "Sky Sphere";
 
-	// see if texture is valid
-	bool isValid();
-
 	// stored properties
-	std::filesystem::path image;
+	OtAsset<OtTextureAsset> texture;
 	float brightness = 1.0f;
 	float gamma = 2.2f;
-
-	// runtime properties
-	bool update = false;
-	OtTexture texture;
 };

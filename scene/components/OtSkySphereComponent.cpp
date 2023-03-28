@@ -26,12 +26,7 @@
 
 bool OtSkySphereComponent::renderGUI() {
 	bool changed = false;
-
-	if (OtUiFileSelector("Image", image)) {
-		changed = true;
-		update = true;
-	}
-
+	changed |= texture.renderGUI("Image");
 	changed |= ImGui::SliderFloat("Brightness", &brightness, 0.1f, 4.0f, "%.1f");
 	changed |= ImGui::SliderFloat("Gamma", &gamma, 0.5f, 3.0f, "%.1f");
 	return changed;
@@ -45,7 +40,7 @@ bool OtSkySphereComponent::renderGUI() {
 nlohmann::json OtSkySphereComponent::serialize(std::filesystem::path* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
-	data["image"] = OtPathGetRelative(image, basedir);
+	data["texture"] = OtPathGetRelative(texture.getPath(), basedir);
 	data["brightness"] = brightness;
 	data["gamma"] = gamma;
 	return data;
@@ -57,33 +52,7 @@ nlohmann::json OtSkySphereComponent::serialize(std::filesystem::path* basedir) {
 //
 
 void OtSkySphereComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
-	auto oldImage = image;
-	image = OtPathGetAbsolute(data, "image", basedir);
-	update = image != oldImage;
-
+	texture = OtPathGetAbsolute(data, "texture", basedir);
 	brightness = data.value("brightness", 1.0f);
 	gamma = data.value("gamma", 2.2f);
-}
-
-
-//
-//	OtSkySphereComponent::isValid
-//
-
-bool OtSkySphereComponent::isValid() {
-	// update the texture (if required)
-	if (update) {
-		update = false;
-
-		// wait until we have a valid file
-		if (std::filesystem::is_regular_file(image)) {
-			texture.loadFromFile(image, true);
-
-		} else {
-			// invalidate texture just in case
-			texture.clear();
-		}
-	}
-
-	return texture.isValid();
 }

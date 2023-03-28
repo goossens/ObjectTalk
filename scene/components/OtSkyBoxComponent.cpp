@@ -24,21 +24,9 @@
 
 bool OtSkyBoxComponent::renderGUI() {
 	bool changed = false;
-
-	changed |= OtUiFileSelector("Right", right);
-	changed |= OtUiFileSelector("Left", left);
-	changed |= OtUiFileSelector("Top", top);
-	changed |= OtUiFileSelector("Bottom", bottom);
-	changed |= OtUiFileSelector("Front", front);
-	changed |= OtUiFileSelector("Back", back);
-
-	if (changed) {
-		update = true;
-	}
-
+	changed |= cubemap.renderGUI("Cube Map");
 	changed |= ImGui::SliderFloat("Brightness", &brightness, 0.1f, 4.0f, "%.2f");
 	changed |= ImGui::SliderFloat("Gamma", &gamma, 0.1f, 4.0f, "%.2f");
-
 	return changed;
 }
 
@@ -50,12 +38,7 @@ bool OtSkyBoxComponent::renderGUI() {
 nlohmann::json OtSkyBoxComponent::serialize(std::filesystem::path* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
-	data["right"] = OtPathGetRelative(right, basedir);
-	data["left"] = OtPathGetRelative(left, basedir);
-	data["top"] = OtPathGetRelative(top, basedir);
-	data["bottom"] = OtPathGetRelative(bottom, basedir);
-	data["front"] = OtPathGetRelative(front, basedir);
-	data["back"] = OtPathGetRelative(back, basedir);
+	data["cubemap"] = OtPathGetRelative(cubemap.getPath(), basedir);
 	data["brightness"] = brightness;
 	data["gamma"] = gamma;
 	return data;
@@ -66,49 +49,8 @@ nlohmann::json OtSkyBoxComponent::serialize(std::filesystem::path* basedir) {
 //	OtSkyBoxComponent::deserialize
 //
 
-static inline bool didPathChange(std::filesystem::path& value, nlohmann::json data, const char* name, std::filesystem::path* basedir) {
-	auto oldValue = value;
-	value = OtPathGetAbsolute(data, name, basedir);
-	return value != oldValue;
-}
-
 void OtSkyBoxComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
-	update |= didPathChange(right, data, "right", basedir);
-	update |= didPathChange(left, data, "left", basedir);
-	update |= didPathChange(top, data, "top", basedir);
-	update |= didPathChange(bottom, data, "bottom", basedir);
-	update |= didPathChange(front, data, "front", basedir);
-	update |= didPathChange(back, data, "back", basedir);
+	cubemap = OtPathGetAbsolute(data, "cubemap", basedir);
 	brightness = data.value("brightness", 1.0f);
 	gamma = data.value("gamma", 2.2f);
-}
-
-
-//
-//	OtSkyBoxComponent::isValid
-//
-
-bool OtSkyBoxComponent::isValid() {
-	// update the cubemap (if required)
-	if (update) {
-		update = false;
-
-		// wait until all sides have valid files
-		if (std::filesystem::is_regular_file(right) &&
-			std::filesystem::is_regular_file(left) &&
-			std::filesystem::is_regular_file(top) &&
-			std::filesystem::is_regular_file(bottom) &&
-			std::filesystem::is_regular_file(front) &&
-			std::filesystem::is_regular_file(back)) {
-
-			// load the files into the cubemap
-			cubemap.load(right, left, top, bottom, front, back);
-
-		} else {
-			// invalidate cubemap just in case
-			cubemap.clear();
-		}
-	}
-
-	return cubemap.isValid();
 }

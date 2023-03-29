@@ -19,10 +19,10 @@
 //	Register texture types
 //
 
-static OtAssetFactoryRegister<OtTextureAsset> OtJpgTextureRegistration{".jpg"};
-static OtAssetFactoryRegister<OtTextureAsset> OtJpegTextureRegistration{".jpeg"};
-static OtAssetFactoryRegister<OtTextureAsset> OtHdrTextureRegistration{".hdr"};
-static OtAssetFactoryRegister<OtTextureAsset> OtPngTextureRegistration{".png"};
+static OtAssetFactoryRegister<OtTextureAsset> jpgRegistration{".jpg"};
+static OtAssetFactoryRegister<OtTextureAsset> jpegRegistration{".jpeg"};
+static OtAssetFactoryRegister<OtTextureAsset> hdrRegistration{".hdr"};
+static OtAssetFactoryRegister<OtTextureAsset> pngRegistration{".png"};
 
 
 //

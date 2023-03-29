@@ -10,7 +10,7 @@
 			{
 				"component": "Transform",
 				"rotation": [
-					0.0,
+					-30.0,
 					0.0,
 					0.0
 				],
@@ -21,15 +21,15 @@
 				],
 				"translation": [
 					0.0,
-					0.0,
-					0.0
+					3.0,
+					4.0
 				]
 			},
 			{
 				"component": "Camera",
 				"far": 100.0,
 				"fov": 60.0,
-				"mainCamera": false,
+				"mainCamera": true,
 				"near": 0.10000000149011612
 			},
 			{

@@ -17,7 +17,6 @@ class camera : scene.Entity {
 				this.pitch += drag.getY() * 0.15;
 				this.yaw -= drag.getX() * 0.3;
 
-				print(this.pitch, " ", this.yaw);
 				var pitchRad = this.pitch.radians();
 				var yawRad = this.yaw.radians();
 

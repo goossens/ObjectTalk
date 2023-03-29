@@ -13,10 +13,9 @@
 //
 
 #include <filesystem>
-#include <future>
 #include <memory>
 
-#include "OtScene.h"
+#include "OtSceneAsset.h"
 #include "OtSceneRenderer.h"
 
 
@@ -29,9 +28,6 @@ public:
 	// setup the scene runtime
 	void setup(std::filesystem::path path);
 
-	// load the scene and its assets
-	bool load();
-
 	// are we ready
 	bool isReady();
 
@@ -42,13 +38,8 @@ public:
 	void terminate();
 
 private:
-	// startup loader
-	std::future<bool> loader;
-	bool ready = false;
-
 	// the scene we are running
-	std::unique_ptr<OtScene> scene;
-	std::filesystem::path scenePath;
+	OtAsset<OtSceneAsset> sceneAsset;
 
 	// system initialization function
 	void initializeScriptingSystem();
@@ -56,8 +47,10 @@ private:
 
 	// active camera
 	OtEntity activeCamera = OtEntityNull;
-	bool cameraSelected = false;
 
 	// our scene renderer
 	std::unique_ptr<OtSceneRenderer> renderer;
+
+	// setup state
+	bool ready = false;
 };

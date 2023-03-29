@@ -24,10 +24,10 @@
 //	Register model types
 //
 
-static OtAssetFactoryRegister<OtModelAsset> OtBlendModelRegistration{".blender"};
-static OtAssetFactoryRegister<OtModelAsset> OtFbxModelRegistration{".fbx"};
-static OtAssetFactoryRegister<OtModelAsset> OtGltfModelRegistration{".gltf"};
-static OtAssetFactoryRegister<OtModelAsset> OtObjModelRegistration{".obj"};
+static OtAssetFactoryRegister<OtModelAsset> blenderRegistration{".blender"};
+static OtAssetFactoryRegister<OtModelAsset> fbxRegistration{".fbx"};
+static OtAssetFactoryRegister<OtModelAsset> gltfRegistration{".gltf"};
+static OtAssetFactoryRegister<OtModelAsset> objRegistration{".obj"};
 
 
 //

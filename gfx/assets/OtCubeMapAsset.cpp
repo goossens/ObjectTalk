@@ -19,9 +19,9 @@
 //	Register CubeMap types
 //
 
-static OtAssetFactoryRegister<OtCubeMapAsset> OtDdsCubeMapRegistration{".dds"};
-static OtAssetFactoryRegister<OtCubeMapAsset> OtKtxCubeMapRegistration{".ktx"};
-static OtAssetFactoryRegister<OtCubeMapAsset> OtJsonCubeMapRegistration{".cubemap"};
+static OtAssetFactoryRegister<OtCubeMapAsset> ddsRegistration{".dds"};
+static OtAssetFactoryRegister<OtCubeMapAsset> ktxRegistration{".ktx"};
+static OtAssetFactoryRegister<OtCubeMapAsset> cubemapRegistration{".cubemap"};
 
 
 //

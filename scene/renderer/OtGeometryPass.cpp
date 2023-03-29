@@ -115,9 +115,9 @@ void OtSceneRenderer::renderModel(OtPass& pass, OtScene* scene, OtEntity entity)
 
 	// process all the meshes (if required)
 	if (model.isReady()) {
-		for (auto& mesh : model->meshes) {
+		for (auto& mesh : model->getMeshes()) {
 			// submit the material information
-			submitPbrUniforms(model->materials[mesh.material].material);
+			submitPbrUniforms(model->getMaterials()[mesh.getMaterialIndex()].getPbrMaterial());
 
 			// submit the geometry
 			mesh.submitTriangles();

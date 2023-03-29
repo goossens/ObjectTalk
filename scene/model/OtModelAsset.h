@@ -30,10 +30,11 @@ public:
 	// load the model
 	bool load(const std::filesystem::path& path);
 
-private:
-	// the renderer accesses our properties
-	friend class OtSceneRenderer;
+	// access the meshes and materials
+	inline std::vector<OtModelMesh>& getMeshes() { return meshes; }
+	inline std::vector<OtModelMaterial>& getMaterials() { return materials; }
 
+private:
 	// our meshes and materials
 	std::vector<OtModelMesh> meshes;
 	std::vector<OtModelMaterial> materials;

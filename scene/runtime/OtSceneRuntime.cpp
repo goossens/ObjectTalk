@@ -9,12 +9,11 @@
 //	Include files
 //
 
-#include <chrono>
-
 #include "glm/glm.hpp"
 
 #include "OtException.h"
 
+#include "OtAssetManager.h"
 #include "OtInput.h"
 #include "OtMath.h"
 
@@ -29,29 +28,9 @@
 //
 
 void OtSceneRuntime::setup(std::filesystem::path path) {
-	// start the loader thread
-	scenePath = path;
-	loader = std::async(std::launch::async, &OtSceneRuntime::load, this);
-}
-
-
-//
-//	OtSceneRuntime::load
-//
-
-bool OtSceneRuntime::load() {
-	// create the scene and a renderer
-	scene = std::make_unique<OtScene>();
+	// start loading the scene and create a renderer
+	sceneAsset = path;
 	renderer = std::make_unique<OtSceneRenderer>();
-
-	// load the scene and initialize the systems
-	scene->load(scenePath);
-	initializeScriptingSystem();
-	initializeRenderingSystem();
-
-	// we are now fully loaded
-	ready = true;
-	return true;
 }
 
 
@@ -60,20 +39,20 @@ bool OtSceneRuntime::load() {
 //
 
 bool OtSceneRuntime::isReady() {
+	// ready state already reached?
 	if (ready) {
 		return true;
 
+	// are we still loading assets?
+	} else if (OtAssetManager::instance()->isLoading()) {
+		return false;
+
+	// just finished loading our assets so we can now complete the setup
 	} else {
-		using namespace std::chrono_literals;
-
-		if (loader.wait_for(0ms) == std::future_status::ready) {
-			auto result = loader.get();
-			ready = true;
-			return true;
-
-		} else {
-			return false;
-		}
+		initializeScriptingSystem();
+		initializeRenderingSystem();
+		ready = true;
+		return true;
 	}
 }
 
@@ -85,6 +64,9 @@ bool OtSceneRuntime::isReady() {
 int OtSceneRuntime::render(int width, int height) {
 	// run all animations
 	OtAnimator::instance()->update();
+
+	// get our scene
+	auto scene = sceneAsset->getScene();
 
 	// update all the scripts
 	for (auto [entity, component] : scene->view<OtScriptComponent>().each()) {
@@ -102,7 +84,7 @@ int OtSceneRuntime::render(int width, int height) {
 	renderer->setViewMatrix(camerViewMatrix);
 	renderer->setProjectionMatrix(cameraProjectionMatrix);
 	renderer->setSize(width, height);
-	return renderer->render(scene.get());
+	return renderer->render(scene);
 }
 
 
@@ -112,7 +94,7 @@ int OtSceneRuntime::render(int width, int height) {
 
 void OtSceneRuntime::terminate() {
 	// clear the scene and the renderer to release all resources
-	scene = nullptr;
+	sceneAsset.clear();
 	renderer = nullptr;
 }
 
@@ -127,10 +109,13 @@ void OtSceneRuntime::initializeScriptingSystem() {
 	OtMathRegister();
 	OtSceneModuleRegister();
 
+	// access the scene
+	auto scene = sceneAsset->getScene();
+
 	// load and compile all the scripts
 	for (auto [entity, component] : scene->view<OtScriptComponent>().each()) {
 		component.load();
-		OtEntityObject(component.instance)->linkToECS(scene.get(), entity);
+		OtEntityObject(component.instance)->linkToECS(scene, entity);
 	}
 
 	// now initialize all the scripts
@@ -149,6 +134,9 @@ void OtSceneRuntime::initializeRenderingSystem() {
 	OtEntity firstCamera = OtEntityNull;
 	OtEntity mainCamera = OtEntityNull;
 
+	// access the scene
+	auto scene = sceneAsset->getScene();
+
 	for (auto [entity, component] : scene->view<OtCameraComponent>().each()) {
 		if (!scene->isValidEntity(firstCamera)) {
 			firstCamera = entity;
@@ -166,8 +154,6 @@ void OtSceneRuntime::initializeRenderingSystem() {
 		activeCamera = firstCamera;
 
 	} else {
-		OtError("No camera found in scene at [%s]", scenePath.c_str());
+		OtError("No camera found in scene at [%s]", sceneAsset.getPath().c_str());
 	}
-
-	cameraSelected = true;
 }

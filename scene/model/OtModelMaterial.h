@@ -36,12 +36,12 @@ public:
 	void load(const aiMaterial* material, const std::filesystem::path& dir);
 
 	// see if material is valid
-	bool isValid() { return valid; }
+	inline bool isValid() { return valid; }
+
+	// access the material
+	inline OtPbrMaterial& getPbrMaterial() { return material; }
 
 private:
-	// the renderer accesses our properties
-	friend class OtSceneRenderer;
-
 	// the PBR material
 	OtPbrMaterial material;
 	bool valid = false;

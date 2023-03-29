@@ -67,7 +67,7 @@ void OtSceneRenderer::renderHighlight(OtPass& pass, OtScene* scene, OtEntity ent
 		auto& model = scene->getComponent<OtModelComponent>(entity).model;
 
 		if (model.isReady()) {
-			for (auto& mesh : model->meshes) {
+			for (auto& mesh : model->getMeshes()) {
 				mesh.submitTriangles();
 				selectShader.setTransform(scene->getGlobalTransform(entity));
 				selectShader.setState(OtStateWriteRgb);

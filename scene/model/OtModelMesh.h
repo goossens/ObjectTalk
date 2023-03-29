@@ -35,10 +35,10 @@ public:
 	// submit the triangles
 	void submitTriangles();
 
-private:
-	// the renderer accesses our properties
-	friend class OtSceneRenderer;
+	// get the material index number
+	inline int getMaterialIndex() { return material; }
 
+private:
 	// our vertices and triangle indices
 	std::vector<OtVertex> vertices;
 	std::vector<uint32_t> indices;

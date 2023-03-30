@@ -13,7 +13,8 @@
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 
-#include "OtException.h"
+#include "OtFormat.h"
+#include "OtLog.h"
 
 #include "OtAssetFactory.h"
 
@@ -54,13 +55,13 @@ bool OtModelAsset::load(const std::filesystem::path& path) {
 
 	// ensure model was loaded correctly
 	if (scene == nullptr) {
-		OtWarning("Unable to load model [%s], error: %s", path.c_str(), importer.GetErrorString());
+		OtLogWarning(OtFormat("Unable to load model [%s], error: %s", path.c_str(), importer.GetErrorString()));
 		return false;
 	}
 
 	// ensure scene is complete
 	if (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) {
-		OtWarning("Incomplete model [%s]", path.c_str());
+		OtLogWarning(OtFormat("Incomplete model [%s]", path.c_str()));
 		return false;
 	}
 

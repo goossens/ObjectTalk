@@ -9,7 +9,7 @@
 //	Include files
 //
 
-#include "OtException.h"
+#include "OtLog.h"
 
 #include "OtVertexBuffer.h"
 
@@ -34,6 +34,6 @@ void OtVertexBuffer::submit(uint8_t stream) {
 		bgfx::setVertexBuffer(stream, vertexBuffer.getHandle());
 
 	} else {
-		OtError("Internal error: VertexBuffer not initialized before submission");
+		OtLogFatal("Internal error: VertexBuffer not initialized before submission");
 	}
 }

@@ -9,7 +9,7 @@
 //	Include files
 //
 
-#include "OtException.h"
+#include "OtLog.h"
 
 #include "OtDynamicIndexBuffer.h"
 
@@ -37,6 +37,6 @@ void OtDynamicIndexBuffer::submit() {
 		bgfx::setIndexBuffer(indexBuffer.getHandle());
 
 	} else {
-		OtError("Internal error: DynamicIndexBuffer not initialized before submission");
+		OtLogFatal("Internal error: DynamicIndexBuffer not initialized before submission");
 	}
 }

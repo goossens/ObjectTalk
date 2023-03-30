@@ -17,6 +17,7 @@
 
 #include "OtCompiler.h"
 #include "OtLibuv.h"
+#include "OtLog.h"
 #include "OtModule.h"
 
 #include "OtHttp.h"
@@ -72,6 +73,9 @@ int main(int argc, char* argv[]) {
 
 	} catch (std::logic_error& e) {
 	}
+
+	// configure logging engine
+	OtLogger::instance()->setSubprocessMode(program["--child"] == true);
 
 	try {
 		// initialize libuv

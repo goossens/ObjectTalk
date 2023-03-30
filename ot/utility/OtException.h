@@ -66,13 +66,13 @@ private:
 	std::string module;
 
 	// line number causing the error (starting at 1)
-	size_t lineNumber;
+	size_t lineNumber = 0;
 
 	// start of token causing the error (in bytes from start of source)
-	size_t start;
+	size_t start = 0;
 
 	// end of token causing the error (in bytes from start of source)
-	size_t end;
+	size_t end = 0;
 
 	// the short and long error message
 	std::string shortMessage;
@@ -100,33 +100,3 @@ void OtError(const char* format, ARGS && ...args) {
 inline void OtError(const std::string message) {
 	throw OtException(message);
 }
-
-
-//
-//	OtWarning
-//
-
-template <typename... ARGS>
-void OtWarning(const char* format, ARGS && ...args) {
-	if constexpr(sizeof...(ARGS) == 0) {
-		std::cout << "Warning: " << format << std::endl;
-
-	} else {
-		auto size = std::snprintf(nullptr, 0, format, std::forward<ARGS>(args)...);
-		std::vector<char> buffer(size + 1);
-		std::snprintf(buffer.data(), size + 1, format, std::forward<ARGS>(args)...);
-		std::cout << "Warning: " << buffer.data() << std::endl;
-	}
-}
-
-inline void OtWarning(const std::string message) {
-	std::cout << "Warning: " << message << std::endl;
-}
-
-
-//
-//	Macros
-//
-
-#define OtFatal(format, ...) OtError("%s: line %d: " format, __FILE__, __LINE__, __VA_ARGS__)
-#define OtAssert(assertion) if (!(assertion)) OtFatal("Assertion error: %s", #assertion)

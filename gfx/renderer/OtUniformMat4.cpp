@@ -11,7 +11,7 @@
 
 #include "glm/ext.hpp"
 
-#include "OtException.h"
+#include "OtLog.h"
 
 #include "OtUniformMat4.h"
 
@@ -76,7 +76,7 @@ void OtUniformMat4::clear() {
 void OtUniformMat4::submit() {
 	// sanity check
 	if (!size) {
-		OtError("Internal error: Uniform not initialized");
+		OtLogFatal("Internal error: Uniform not initialized");
 	}
 
 	// submit uniform to GPU

@@ -9,7 +9,7 @@
 //	Include files
 //
 
-#include "OtException.h"
+#include "OtLog.h"
 
 #include "OtUniformVec4.h"
 
@@ -71,7 +71,7 @@ void OtUniformVec4::clear() {
 void OtUniformVec4::submit() {
 	// sanity check
 	if (!size) {
-		OtError("Internal error: Uniform not initialized");
+		OtLogFatal("Internal error: Uniform not initialized");
 	}
 
 	// submit uniform to GPU

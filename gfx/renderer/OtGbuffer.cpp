@@ -9,7 +9,7 @@
 //	Include files
 //
 
-#include "OtException.h"
+#include "OtLog.h"
 
 #include "OtGbuffer.h"
 
@@ -127,6 +127,6 @@ void OtGbuffer::submit(bgfx::ViewId view) {
 		bgfx::setViewFrameBuffer(view, gbuffer.getHandle());
 
 	} else {
-		OtError("Internal error: Gbuffer not initialized before submission");
+		OtLogFatal("Internal error: Gbuffer not initialized before submission");
 	}
 }

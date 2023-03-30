@@ -11,7 +11,7 @@
 
 #include <cstring>
 
-#include "OtException.h"
+#include "OtLog.h"
 
 #include "OtTransientVertexBuffer.h"
 
@@ -23,7 +23,7 @@
 void OtTransientVertexBuffer::submit(void *data, size_t count, const bgfx::VertexLayout& layout, uint8_t stream) {
 	// sanity check
 	if ((bgfx::getAvailTransientVertexBuffer((uint32_t) count, layout) != count)) {
-		OtError("Internal error: insufficient transient vertex buffer space");
+		OtLogFatal("Internal error: insufficient transient vertex buffer space");
 	}
 
 	// allocate transient space and fill buffer

@@ -14,6 +14,7 @@
 #include "OtHttpNotFound.h"
 #include "OtHttpSession.h"
 #include "OtLibuv.h"
+#include "OtLog.h"
 
 
 //
@@ -128,7 +129,7 @@ bool OtHttpSessionClass::isAlive() {
 		return false;
 
 	} else if (!uv_is_active((uv_handle_t*) &uv_client)) {
-		OtWarning("funny session case");
+		OtLogWarning("funny session case");
 		active = false;
 		return false;
 
@@ -183,7 +184,7 @@ void OtHttpSessionClass::onRead(const uv_buf_t* buffer, ssize_t nread) {
 		auto status = llhttp_execute(&parser, buffer->base, nread);
 
 		if (status) {
-			OtWarning(OtFormat("llhttp error in llhttp_execute: %s", llhttp_errno_name(status)));
+			OtLogWarning(OtFormat("llhttp error in llhttp_execute: %s", llhttp_errno_name(status)));
 			close();
 		}
 
@@ -197,7 +198,7 @@ void OtHttpSessionClass::onRead(const uv_buf_t* buffer, ssize_t nread) {
 		free(buffer->base);
 
 	} else if (nread < 0) {
-		OtWarning(OtFormat("libuv error in read: %s", uv_strerror((int) nread)));
+		OtLogWarning(OtFormat("libuv error in read: %s", uv_strerror((int) nread)));
 		close();
 	}
 }

@@ -11,7 +11,7 @@
 
 #include "glm/glm.hpp"
 
-#include "OtException.h"
+#include "OtLog.h"
 
 #include "OtModelMesh.h"
 
@@ -36,7 +36,7 @@ static inline glm::vec3 ToVec3(const aiVector3D& v) {
 void OtModelMesh::load(const aiMesh* mesh) {
 	// sanity check
 	if (mesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE) {
-		OtError("Internal error: mesh has incompatible primitive type");
+		OtLogFatal("Internal error: mesh has incompatible primitive type");
 	}
 
 	// clear and reserve vertex space

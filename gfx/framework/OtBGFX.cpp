@@ -10,6 +10,7 @@
 //
 
 #include <cstring>
+#include <string>
 
 #include "bx/timer.h"
 #include "imgui.h"
@@ -17,9 +18,47 @@
 
 #include "OtException.h"
 #include "OtFormat.h"
+#include "OtLog.h"
 
 #include "OtFramework.h"
 #include "OtPass.h"
+
+
+//
+//	BGFX Callback Interface
+//
+
+struct BgfxCallback : public bgfx::CallbackI {
+	virtual ~BgfxCallback() {}
+
+	virtual void fatal(const char* filePath, uint16_t line, bgfx::Fatal::Enum code, const char* str) override {
+		OtLogFatal(OtFormat("Fatal error: 0x%08x: %s", code, str));
+	}
+
+	virtual void traceVargs(const char* filePath, uint16_t line, const char* format, va_list argList) override {
+		char buffer[256];
+		auto size = std::vsnprintf(buffer, 256, format, argList);
+
+		if (buffer[size - 1] == '\n') {
+			buffer[size - 1] = 0;
+		}
+
+		OtLogger::instance()->log(filePath, line, OtLogger::debug, std::string(buffer));
+	}
+
+	virtual void profilerBegin(const char* name, uint32_t abgr, const char* filePath, uint16_t line) override {}
+	virtual void profilerBeginLiteral(const char* name, uint32_t abgr, const char* filePath, uint16_t line) override {}
+	virtual void profilerEnd() override {}
+	virtual uint32_t cacheReadSize(uint64_t id) override { return 0; }
+	virtual bool cacheRead(uint64_t id, void* data, uint32_t size) override { return false; }
+	virtual void cacheWrite(uint64_t id, const void* data, uint32_t size) override {}
+	virtual void screenShot(const char* filePath, uint32_t width, uint32_t height, uint32_t pitch, const void* data, uint32_t size, bool yflip) override {}
+	virtual void captureBegin(uint32_t width, uint32_t height, uint32_t pitch, bgfx::TextureFormat::Enum format, bool yflip) override {}
+	virtual void captureEnd() override {}
+	virtual void captureFrame(const void* data, uint32_t size) override {}
+};
+
+static BgfxCallback callbacks;
 
 
 //
@@ -45,7 +84,7 @@ void OtFramework::initBGFX() {
 	init.resolution.width  = width;
 	init.resolution.height = height;
 	init.resolution.reset  = BGFX_RESET_VSYNC;
-	init.debug = false;
+	init.callback = &callbacks;
 
 	bgfx::init(init);
 
@@ -53,23 +92,23 @@ void OtFramework::initBGFX() {
 	const bgfx::Caps* caps = bgfx::getCaps();
 
 	if (!(caps->supported & BGFX_CAPS_RENDERER_MULTITHREADED)) {
-		OtError("Your system/graphics card does not support multithreading");
+		OtLogFatal("Your system/graphics card does not support multithreading");
 	}
 
 	if (!(caps->supported & BGFX_CAPS_INDEX32)) {
-		OtError("Your system/graphics card does not support 32 bit vertex indexing");
+		OtLogFatal("Your system/graphics card does not support 32 bit vertex indexing");
 	}
 
 	if (!(caps->supported & BGFX_CAPS_INSTANCING)) {
-		OtError("Your system/graphics card does not support instancing");
+		OtLogFatal("Your system/graphics card does not support instancing");
 	}
 
 	if (!(caps->supported & BGFX_CAPS_TEXTURE_COMPARE_LEQUAL)) {
-		OtError("Your system/graphics card does not support texture '<='");
+		OtLogFatal("Your system/graphics card does not support texture '<='");
 	}
 
 	if (!(caps->supported & BGFX_CAPS_TEXTURE_BLIT)) {
-		OtError("Your system/graphics card does not support blitting between textures");
+		OtLogFatal("Your system/graphics card does not support blitting between textures");
 	}
 
 	// initialize time management

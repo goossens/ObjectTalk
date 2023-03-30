@@ -9,7 +9,7 @@
 //	Include files
 //
 
-#include "OtException.h"
+#include "OtLog.h"
 
 #include "OtSampler.h"
 
@@ -44,7 +44,7 @@ void OtSampler::submit(int unit, const char* name) {
 	}
 
 	if (!uniform.isValid()) {
-		OtError("internal error: sampler not initialized");
+		OtLogFatal("internal error: sampler not initialized");
 	}
 
 	OtTexture dummy;
@@ -58,7 +58,7 @@ void OtSampler::submit(int unit, OtTexture& texture, const char* name) {
 		}
 
 		if (!uniform.isValid()) {
-			OtError("internal error: sampler not initialized");
+			OtLogFatal("internal error: sampler not initialized");
 		}
 
 		bgfx::setTexture(unit, uniform.getHandle(), texture.getTextureHandle());
@@ -75,7 +75,7 @@ void OtSampler::submit(int unit, bgfx::TextureHandle texture, const char* name) 
 		}
 
 		if (!uniform.isValid()) {
-			OtError("internal error: sampler not initialized");
+			OtLogFatal("internal error: sampler not initialized");
 		}
 
 		bgfx::setTexture(unit, uniform.getHandle(), texture);
@@ -94,6 +94,6 @@ void OtSampler::submit(int unit, OtCubeMap& cubemap, const char* name) {
 		bgfx::setTexture(unit, uniform.getHandle(), cubemap.getTextureHandle());
 
 	} else {
-		OtError("internal error: sampler not initialized before submission");
+		OtLogFatal("internal error: sampler not initialized before submission");
 	}
 }

@@ -15,7 +15,9 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 
-#include "OtException.h"
+#include "OtAssert.h"
+#include "OtFormat.h"
+#include "OtLog.h"
 #include "OtNumbers.h"
 
 #include "OtAssetFactory.h"
@@ -141,7 +143,7 @@ OtAssetBase* OtAssetManager::lookup(const std::filesystem::path& path) {
 
 			} else {
 				// unknown asset type, create a dummy asset
-				OtWarning("Unknown asset type [%s]", fullPath.c_str());
+				OtLogWarning(OtFormat("Unknown asset type [%s]", fullPath.c_str()));
 				auto dummy = new OtAssetBase();
 				dummy->assetPath = fullPath;
 				dummy->assetState = OtAssetBase::invalidState;
@@ -156,7 +158,7 @@ OtAssetBase* OtAssetManager::lookup(const std::filesystem::path& path) {
 
 	} else if (assets.find(path) == assets.end()) {
 		// create a dummy asset
-		OtWarning("Asset [%s] not found", path.c_str());
+		OtLogWarning(OtFormat("Asset [%s] not found", path.c_str()));
 		auto dummy = new OtAssetBase();
 		dummy->assetPath = path;
 		dummy->assetState = OtAssetBase::missingState;

@@ -9,7 +9,7 @@
 //	Include files
 //
 
-#include "OtException.h"
+#include "OtLog.h"
 
 #include "OtFrameBuffer.h"
 
@@ -113,7 +113,7 @@ void OtFrameBuffer::update(int w, int h) {
 			framebuffer = bgfx::createFrameBuffer(1, &textures[1]);
 
 		} else {
-			OtError("Internal error: You can't have a FrameBuffer without Textures");
+			OtLogFatal("Internal error: You can't have a FrameBuffer without Textures");
 		}
 
 		// remember dimensions
@@ -151,6 +151,6 @@ void OtFrameBuffer::submit(bgfx::ViewId view) {
 		bgfx::setViewFrameBuffer(view, framebuffer.getHandle());
 
 	} else {
-		OtError("Internal error: IndexBuffer not initialized before submission");
+		OtLogFatal("Internal error: IndexBuffer not initialized before submission");
 	}
 }

@@ -9,7 +9,7 @@
 //	Include files
 //
 
-#include "OtException.h"
+#include "OtLog.h"
 
 #include "OtShader.h"
 #include "OtShaders.h"
@@ -49,7 +49,7 @@ void OtShader::submit(bgfx::ViewId view) {
 				true);
 
 		} else {
-			OtError("Internal error: Shader not initialized before submission");
+			OtLogFatal("Internal error: Shader not initialized before submission");
 		}
 	}
 

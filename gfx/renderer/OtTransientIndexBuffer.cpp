@@ -13,7 +13,7 @@
 
 #include "bgfx/bgfx.h"
 
-#include "OtException.h"
+#include "OtLog.h"
 
 #include "OtTransientIndexBuffer.h"
 
@@ -25,7 +25,7 @@
 void OtTransientIndexBuffer::submit(void *data, size_t count) {
 	// sanity check
 	if ((bgfx::getAvailTransientIndexBuffer((uint32_t) count) != count)) {
-		OtError("Internal error: insufficient transient index buffer space");
+		OtLogFatal("Internal error: insufficient transient index buffer space");
 	}
 
 	// allocate transient space, fill buffer and submit to GPU

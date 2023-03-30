@@ -9,7 +9,6 @@
 //	Include files
 //
 
-#include "OtException.h"
 #include "OtFunction.h"
 
 #include "OtAnimation.h"

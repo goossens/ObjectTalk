@@ -9,7 +9,7 @@
 //	Include files
 //
 
-#include "OtException.h"
+#include "OtLog.h"
 
 #include "OtIndexBuffer.h"
 
@@ -33,6 +33,6 @@ void OtIndexBuffer::submit() {
 		bgfx::setIndexBuffer(indexBuffer.getHandle());
 
 	} else {
-		OtError("Internal error: IndexBuffer not initialized before submission");
+		OtLogFatal("Internal error: IndexBuffer not initialized before submission");
 	}
 }

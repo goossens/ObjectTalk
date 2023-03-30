@@ -10,6 +10,7 @@
 //
 
 #include "OtException.h"
+#include "OtLog.h"
 
 #include "OtAssetFactory.h"
 #include "OtTextureAsset.h"
@@ -36,7 +37,7 @@ bool OtTextureAsset::load(const std::filesystem::path &path) {
 		return true;
 
 	} catch (const OtException& exception) {
-		OtWarning("Can't load texture [%s]: %s", path.c_str(), exception.what());
+		OtLogWarning(OtFormat("Can't load texture [%s]: %s", path.c_str(), exception.what()));
 		return false;
 	}
 }

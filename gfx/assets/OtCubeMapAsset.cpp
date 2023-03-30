@@ -10,6 +10,8 @@
 //
 
 #include "OtException.h"
+#include "OtFormat.h"
+#include "OtLog.h"
 
 #include "OtAssetFactory.h"
 #include "OtCubeMapAsset.h"
@@ -35,7 +37,7 @@ bool OtCubeMapAsset::load(const std::filesystem::path &path) {
 		return true;
 
 	} catch (const OtException& exception) {
-		OtWarning("Can't load CubeMap [%s]: %s", path.c_str(), exception.what());
+		OtLogWarning(OtFormat("Can't load CubeMap [%s]: %s", path.c_str(), exception.what()));
 		return false;
 	}
 }

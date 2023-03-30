@@ -9,7 +9,7 @@
 //	Include files
 //
 
-#include "OtException.h"
+#include "OtLog.h"
 
 #include "OtDynamicVertexBuffer.h"
 
@@ -42,6 +42,6 @@ void OtDynamicVertexBuffer::submit(uint8_t stream) {
 		bgfx::setVertexBuffer(stream, vertexBuffer.getHandle());
 
 	} else {
-		OtError("Internal error: DynamicVertexBuffer not initialized before submission");
+		OtLogFatal("Internal error: DynamicVertexBuffer not initialized before submission");
 	}
 }

@@ -29,10 +29,10 @@
 
 #include "GLFW/glfw3native.h"
 
-#include "OtException.h"
 #include "OtFormat.h"
 #include "OtFunction.h"
 #include "OtInteger.h"
+#include "OtLog.h"
 
 #include "OtFramework.h"
 
@@ -44,7 +44,7 @@
 void OtFramework::initGLFW() {
 	// initialize GLFW library
 	glfwSetErrorCallback([](int error, const char* description) {
-		OtError(description);
+		OtLogFatal(description);
 	});
 
 	glfwInit();

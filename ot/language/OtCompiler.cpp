@@ -304,7 +304,7 @@ void OtCompiler::resolveVariable(OtByteCode bytecode, const std::string& name) {
 					break;
 
 				default:
-					OtError("Invalid scope type");
+					OtError("Internal Error: Invalid scope type");
 			}
 
 			found = true;

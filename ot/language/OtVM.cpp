@@ -11,9 +11,11 @@
 
 #include <string>
 
+#include "OtAssert.h"
 #include "OtException.h"
 #include "OtFormat.h"
 #include "OtFunction.h"
+#include "OtLog.h"
 #include "OtMemberReference.h"
 #include "OtString.h"
 #include "OtVM.h"
@@ -69,9 +71,9 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 		try {
 			switch (bytecode->getOpcode(pc)) {
 				case OtByteCodeClass::debugOpcode:
-					OtWarning(bytecode->disassemble());
-					OtWarning(OtFormat("PC: %ld\n", pc));
-					OtWarning(stack.debug());
+					OtLogInfo(bytecode->disassemble());
+					OtLogInfo(OtFormat("PC: %ld\n", pc));
+					OtLogInfo(stack.debug());
 					break;
 
 				case OtByteCodeClass::markOpcode:

@@ -16,6 +16,7 @@
 #include "OtException.h"
 #include "OtFunction.h"
 #include "OtLibuv.h"
+#include "OtLog.h"
 #include "OtVM.h"
 
 #include "OtAssetManager.h"
@@ -239,7 +240,7 @@ bool OtFramework::canQuit() {
 
 void OtFramework::setAntiAliasing(int aa) {
 	if (aa < 0 || aa > 4) {
-		OtError("Anti-aliasing setting must be between 0 and 4");
+		OtLogFatal("Anti-aliasing setting must be between 0 and 4");
 	}
 
 	antiAliasing = aa;

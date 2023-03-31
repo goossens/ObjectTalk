@@ -173,12 +173,16 @@ static inline void deserializeComponentsFromJson(nlohmann::json& json, OtScene* 
 OtEntity OtScene::deserializeEntityFromJson(nlohmann::json &data, std::filesystem::path* basedir) {
 	// create a new entity
 	auto entity = createEntity();
+	auto tmpUuid = getEntityUuid(entity);
 
 	// deserialize all its components
 	for (auto component : data["components"]) {
 		deserializeComponentFromJson<OtCoreComponent>(component, this, entity, basedir);
 		deserializeComponentsFromJson<OtSceneComponents>(component, this, entity, basedir);
 	}
+
+	// remap the entity's UUID (deserialized UUID is different from created UUID)
+	remapEntityUuid(entity, tmpUuid, getEntityUuid(entity));
 
 	// deserialize all its children
 	for (auto child : data["children"]) {

@@ -153,8 +153,15 @@ public:
 	uint32_t getUuidFromEntity(OtEntity entity) { return mapEntityToUuid[entity]; }
 	OtEntity getEntityFromUuid(uint32_t uuid) { return mapUuidToEntity[uuid]; }
 
+	// set/get an entity's UUID
+	uint32_t getEntityUuid(OtEntity entity);
+	void setEntityUuid(OtEntity entity, uint32_t uuid);
+
+	// remap an entity's UUID
+	void remapEntityUuid(OtEntity entity, uint32_t oldUuid, uint32_t newUuid);
+
 	// assign new UUIDs to an entity and all its children
-	void assignNewEntityUUids(OtEntity entity);
+	void assignNewEntityUuids(OtEntity entity);
 
 	// set/get an entity's tag
 	std::string getEntityTag(OtEntity entity);

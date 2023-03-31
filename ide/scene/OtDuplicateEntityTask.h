@@ -36,7 +36,7 @@ public:
 		// duplicate the target entity
 		auto target = scene->getEntityFromUuid(targetUuid);
 		auto entity = scene->deserializeEntity(scene->serializeEntity(target));
-		scene->assignNewEntityUUids(entity);
+		scene->assignNewEntityUuids(entity);
 		entityUuid = scene->getUuidFromEntity(entity);
 
 		// add duplicate after target

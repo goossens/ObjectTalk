@@ -89,7 +89,14 @@ void OtFrameBuffer::update(int w, int h) {
 		clear();
 
 		// create new textures
-		uint64_t flags = computeTextureRtMsaaFlag(antiAliasing) | BGFX_SAMPLER_COMPARE_LEQUAL | BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP;
+		uint64_t flags =
+			computeTextureRtMsaaFlag(antiAliasing) |
+			BGFX_SAMPLER_MIN_POINT |
+			BGFX_SAMPLER_MAG_POINT |
+			BGFX_SAMPLER_MIP_POINT |
+			BGFX_SAMPLER_U_CLAMP |
+			BGFX_SAMPLER_V_CLAMP;
+
 		uint64_t blit = blitTarget ? BGFX_TEXTURE_BLIT_DST : 0;
 
 		if (colorTextureType != noTexture) {

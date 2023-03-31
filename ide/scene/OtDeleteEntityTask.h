@@ -57,6 +57,8 @@ public:
 	virtual void undo() {
 		// recreate the entity
 		auto entity = scene->deserializeEntity(json);
+
+		// add it back to its parent
 		auto target = scene->getEntityFromUuid(undoTargetUuid);
 
 		if (undoBefore) {

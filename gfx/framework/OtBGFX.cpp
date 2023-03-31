@@ -81,9 +81,9 @@ void OtFramework::initBGFX() {
 
 	init.platformData.nwh = nativeDisplayHandle;
 	init.platformData.ndt = nativeDisplayType;
-	init.resolution.width  = width;
+	init.resolution.width = width;
 	init.resolution.height = height;
-	init.resolution.reset  = BGFX_RESET_VSYNC;
+	init.resolution.reset = BGFX_RESET_VSYNC;
 	init.callback = &callbacks;
 
 	bgfx::init(init);

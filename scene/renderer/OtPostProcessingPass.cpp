@@ -104,8 +104,8 @@ void OtSceneRenderer::renderBloom(float bloomIntensity) {
 		// setup pass
 		int dw = width >> i;
 		int dh = height >> i;
-		int sw = dw << 1;
-		int sh = dh << 1;
+		int sw = dw >> 1;
+		int sh = dh >> 1;
 
 		OtPass pass;
 		pass.setFrameBuffer(bloomBuffer[i - 1]);

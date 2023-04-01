@@ -49,7 +49,7 @@ std::string GetTimestamp() {
 
 	// add milliseconds
 	int ms = std::chrono::time_point_cast<std::chrono::milliseconds>(now).time_since_epoch().count() % 1000;
-	snprintf(buffer + strlen(buffer), 5, ".%03d", ms);
+	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ".%03d", ms);
 
 	// return result
 	return std::string(buffer);

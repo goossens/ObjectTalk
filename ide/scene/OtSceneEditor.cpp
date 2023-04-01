@@ -526,7 +526,7 @@ void OtSceneEditor::renderEntity(OtEntity entity) {
 	// create a tree node
 	ImGui::PushID(createID(entity, 1));
 	auto tag = scene->getEntityTag(entity);
-	bool open = ImGui::TreeNodeEx("node", flags, "");
+	bool open = ImGui::TreeNodeEx("##node", flags);
 	auto rectMin = ImGui::GetItemRectMin();
 	auto rectMax = ImGui::GetItemRectMax();
 

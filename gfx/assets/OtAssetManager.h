@@ -58,5 +58,11 @@ private:
 	OtConcurrentQueue<OtAssetBase*> queue;
 
 	// the registry of loaded assets
-	std::unordered_map<std::string, OtAssetBase*> assets;
+	struct PathHash {
+		std::size_t operator()(const std::filesystem::path& p) const noexcept {
+			return std::filesystem::hash_value(p);
+		}
+	};
+
+	std::unordered_map<std::filesystem::path, OtAssetBase*, PathHash> assets;
 };

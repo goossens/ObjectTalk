@@ -208,14 +208,15 @@ void OtFramework::initIMGUI() {
 //	OtFramework::frameIMGUI
 //
 
-void OtFramework::frameIMGUI(std::vector<OtFwEvent>& events) {
+void OtFramework::frameIMGUI() {
 	// update ImGui state
 	ImGuiIO& io = ImGui::GetIO();
 	io.DisplaySize = ImVec2(width, height);
 	io.DeltaTime = loopDuration / 1000.0f;
 
-	// get information from events
-	for (auto& event : events) {
+	while (!eventQueue.empty()) {
+		auto event = eventQueue.pop();
+
 		switch (event.type) {
 			case OtFwEvent::mouseButtonEvent:
 				io.AddKeyEvent(ImGuiMod_Ctrl, (event.mouseButton.mods & GLFW_MOD_CONTROL) != 0);
@@ -266,19 +267,6 @@ void OtFramework::frameIMGUI(std::vector<OtFwEvent>& events) {
 
 	// start a new frame
 	ImGui::NewFrame();
-
-	// filter out events if ImGui wants them
-	if (io.WantCaptureMouse) {
-		events.erase(std::remove_if(events.begin(), events.end(), [] (OtFwEvent& event) {
-			return event.isMouseEvent();
-		}), events.end());
-	}
-
-	if (io.WantCaptureKeyboard) {
-		events.erase(std::remove_if(events.begin(), events.end(), [] (OtFwEvent& event) {
-			return event.isKeyboardEvent();
-		}), events.end());
-	}
 
 	if (demo) {
 		ImGui::ShowDemoWindow();

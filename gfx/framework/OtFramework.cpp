@@ -17,6 +17,7 @@
 #include "OtFunction.h"
 #include "OtLibuv.h"
 #include "OtLog.h"
+#include "OtMeasure.h"
 #include "OtVM.h"
 
 #include "OtAssetManager.h"
@@ -90,86 +91,24 @@ void OtFramework::runThread2() {
 
 		// run this thread until we are told to stop
 		while (running) {
-			// process all messages on the bus
-			bus->process();
-
-			// collect events
-			std::vector<OtFwEvent> events;
-
-			while (!eventQueue.empty()) {
-				events.emplace_back(eventQueue.pop());
-			}
-
 			// start new frame
 			frameBGFX();
-			frameIMGUI(events);
+			frameIMGUI();
 
-			// submit events (if still required; ImGui might take some)
-			for (auto& event : events) {
-				bool handled = false;
+			// time measurement
+			OtMeasureStopWatch stopwatch;
 
-				switch (event.type) {
-					case OtFwEvent::mouseButtonEvent:
-						handled = app->onMouseButton(
-							event.mouseButton.button,
-							event.mouseButton.action,
-							event.mouseButton.mods,
-							event.mouseButton.x,
-							event.mouseButton.y);
-
-						break;
-
-					case OtFwEvent::mouseMoveEvent:
-						handled = app->onMouseMove(event.mouseMove.x, event.mouseMove.y);
-						break;
-
-					case OtFwEvent::mouseDragEvent:
-						handled = app->onMouseDrag(
-							event.mouseDrag.button,
-							event.mouseDrag.mods,
-							event.mouseDrag.x,
-							event.mouseDrag.y);
-
-						break;
-
-					case OtFwEvent::mouseWheelEvent:
-						handled = app->onScrollWheel(event.mouseWheel.xOffset, event.mouseWheel.yOffset);
-						break;
-
-					case OtFwEvent::keyboardEvent:
-						if (event.keyboard.action != GLFW_RELEASE) {
-							handled = app->onKey(event.keyboard.key, event.keyboard.mods);
-						}
-
-						break;
-
-					case OtFwEvent::characterEvent:
-						handled = app->onChar(event.character.codepoint);
-						break;
-
-					case OtFwEvent::gamepadAxisEvent:
-						handled = app->onGamepadAxis(
-							event.gamepadAxis.gamepad,
-							event.gamepadAxis.axis,
-							event.gamepadAxis.value);
-
-						break;
-
-					case OtFwEvent::gamepadButtonEvent:
-						handled = app->onGamepadButton(
-							event.gamepadButton.gamepad,
-							event.gamepadButton.button,
-							event.gamepadButton.action);
-
-						break;
-				}
-			}
+			// process all messages on the bus
+			bus->process();
 
 			// reset view ID
 			OtPassReset();
 
 			// let app render a frame
 			app->onRender();
+
+			// calculate CPU time
+			cpuTime = stopwatch.getTime();
 
 			// show profiler (if required)
 			if (profiler) {

@@ -168,18 +168,18 @@ void OtFramework::frameBGFX() {
 //
 
 void OtFramework::renderProfiler() {
-	const bgfx::Stats* stats = bgfx::getStats();
-	const double toMsCpu = 1000.0 / stats->cpuTimerFreq;
-	const double toMsGpu = 1000.0 / stats->gpuTimerFreq;
+	auto stats = bgfx::getStats();
+	float toMsCpu = 1000.0f / stats->cpuTimerFreq;
+	float toMsGpu = 1000.0f / stats->gpuTimerFreq;
 	auto labelWith = ImGui::CalcTextSize("                     ").x;
 
 	ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
 	ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Framerate:"); ImGui::SameLine(labelWith); ImGui::Text("%.1f", 1000.0f / loopDuration);
-	ImGui::Text("CPU [ms per frame]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.1f", (double) (stats->cpuTimeEnd - stats->cpuTimeBegin) * toMsCpu);
-	ImGui::Text("GPU [ms per frame]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.1f", (double) (stats->gpuTimeEnd - stats->gpuTimeBegin) * toMsGpu);
-	ImGui::Text("Wait render [ms]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.1f", (double) stats->waitRender * toMsCpu);
-	ImGui::Text("Wait submit [ms]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.1f", (double) stats->waitSubmit * toMsCpu);
+	ImGui::Text("CPU [ms per frame]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.2f", cpuTime);
+	ImGui::Text("GPU [ms per frame]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.2f", (float) (stats->gpuTimeEnd - stats->gpuTimeBegin) * toMsGpu);
+	ImGui::Text("Wait render [ms]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.1f", (float) stats->waitRender * toMsCpu);
+	ImGui::Text("Wait submit [ms]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.1f", (float) stats->waitSubmit * toMsCpu);
 	ImGui::Text("Backbuffer width:"); ImGui::SameLine(labelWith); ImGui::Text("%d", stats->width);
 	ImGui::Text("Backbuffer height:"); ImGui::SameLine(labelWith); ImGui::Text("%d", stats->height);
 	ImGui::Text("Anti-aliasing:"); ImGui::SameLine(labelWith); ImGui::Text("%d", antiAliasing);

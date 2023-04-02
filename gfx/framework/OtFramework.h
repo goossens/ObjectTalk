@@ -13,19 +13,12 @@
 //
 
 #include <array>
-#include <memory>
-#include <unordered_map>
-#include <vector>
 
 #define GLFW_INCLUDE_NONE
 #include "GLFW/glfw3.h"
 #include "bgfx/bgfx.h"
 #include "bimg/bimg.h"
 #include "bgfx/embedded_shader.h"
-
-#include "OtException.h"
-#include "OtObject.h"
-#include "OtSingleton.h"
 
 #include "OtFrameworkApp.h"
 #include "OtFrameworkEvents.h"
@@ -83,7 +76,7 @@ private:
 	void endBGFX();
 
 	void initIMGUI();
-	void frameIMGUI(std::vector<OtFwEvent>& events);
+	void frameIMGUI();
 	void renderIMGUI();
 	void endIMGUI();
 
@@ -98,6 +91,7 @@ private:
 	int64_t lastTime;
 	int64_t loopTime;
 	float loopDuration;
+	float cpuTime;
 
 	// to render IMGUI
 	bgfx::VertexLayout imguiVertexLayout;

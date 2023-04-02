@@ -21,9 +21,32 @@
 //
 
 template<typename F, typename... Args>
-double OtMeasureFunction(F func, Args&&... args) {
-	const auto& start = std::chrono::high_resolution_clock::now();
+float OtMeasureFunction(F func, Args&&... args) {
+	auto start = std::chrono::high_resolution_clock::now();
 	std::forward<decltype(func)>(func)(std::forward<decltype(args)>(args)...);
-	const auto& stop = std::chrono::high_resolution_clock::now();
+	auto stop = std::chrono::high_resolution_clock::now();
 	return std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
 }
+
+
+//
+//	OtMeasureStopWatch
+//
+
+class OtMeasureStopWatch {
+public:
+	// constructor
+	OtMeasureStopWatch() {
+		start = std::chrono::high_resolution_clock::now();
+	}
+
+	float getTime() {
+		auto now = std::chrono::high_resolution_clock::now();
+		auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(now - start).count();
+		return (float) microseconds / 1000.0f;
+	}
+
+private:
+	// start of measurement
+	std::chrono::time_point<std::chrono::high_resolution_clock> start;
+};

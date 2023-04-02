@@ -11,9 +11,6 @@
 
 #include "OtSceneRenderer.h"
 
-#include "OtFormat.h"
-#include "OtLog.h"
-
 //
 //	OtSceneRenderer::renderPreProcessingPass
 //
@@ -84,6 +81,4 @@ void OtSceneRenderer::renderPreProcessingPass(OtScene* scene) {
 			hasSkyObjects = true;
 		}
 	};
-
-	OtLogDebug(OtFormat("%d %d %d %d", opaqueGeometries.size(), opaqueModels.size(), transparentGeometries.size(), transparentModels.size()));
 }

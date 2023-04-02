@@ -25,14 +25,9 @@ public:
 	OtPlane() = default;
 	OtPlane(float a, float b, float c, float d) : normal(glm::vec3(a, b, c)), distance(d) {}
 	OtPlane(const glm::vec3& n, float d) : normal(n), distance(d) {}
-
-	OtPlane(const glm::vec4& v) {
-		normal = glm::vec3(v);
-		distance = v.w;
-	}
+	OtPlane(const glm::vec4& v) : normal(v.x, v.y, v.z), distance(v.w) {}
 
 	OtPlane(const glm::vec3& n, const glm::vec3& p) : normal(n) {
-		normal = n;
 		distance = -glm::dot(p, n);
 	}
 
@@ -47,6 +42,7 @@ public:
 
 	glm::vec3 getNormal() { return normal; }
 	float getDistance() { return distance; }
+	glm::vec4 getVec4() { return glm::vec4(normal, distance); }
 
 	// normalize this plane
 	void normalize();

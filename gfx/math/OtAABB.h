@@ -30,6 +30,9 @@ public:
 	// add a point to the bounding box
 	void addPoint(const glm::vec3& point);
 
+	// add another AABB
+	void addAABB(const OtAABB& aabb);
+
 	// get min/max values
 	const glm::vec3& getMin() const { return minp; }
 	const glm::vec3& getMax() const { return maxp; }

@@ -74,6 +74,7 @@ private:
 	float roughness = 0.5f;
 	glm::vec3 emissive{0.0f};
 	float ao = 1.0f;
+	float scale = 1.0f;
 
 	OtAsset<OtTextureAsset> albedoTexture;
 	OtAsset<OtTextureAsset> normalTexture;

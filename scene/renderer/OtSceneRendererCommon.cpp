@@ -64,7 +64,7 @@ void OtSceneRenderer::submitPbrUniforms(OtPbrMaterial material) {
 		material->metallic,
 		material->roughness,
 		material->ao,
-		0.0f);
+		material->scale);
 
 	uniforms[2] = glm::vec4(
 		material->emissive,

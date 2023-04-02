@@ -26,17 +26,10 @@ void OtSceneRenderer::renderTransparentPass(OtScene* scene) {
 	pass.setFrameBuffer(compositeBuffer);
 	pass.setTransform(viewMatrix, projectionMatrix);
 
-	// render all transparent geometries (in scene hierarchical order)
-	scene->eachEntityDepthFirst([&](OtEntity entity) {
-		if (scene->hasComponent<OtGeometryComponent>(entity) &&
-			scene->hasComponent<OtTransformComponent>(entity) &&
-			scene->hasComponent<OtMaterialComponent>(entity)) {
-
-			if (scene->getComponent<OtGeometryComponent>(entity).transparent) {
-				renderTransparentGeometry(pass, scene, entity);
-			}
-		}
-	});
+	// render all transparent geometries
+	for (auto entity : transparentGeometries) {
+		renderTransparentGeometry(pass, scene, entity);
+	}
 }
 
 

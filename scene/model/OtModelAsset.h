@@ -34,8 +34,14 @@ public:
 	inline std::vector<OtModelMesh>& getMeshes() { return meshes; }
 	inline std::vector<OtModelMaterial>& getMaterials() { return materials; }
 
+	// access bounding box
+	OtAABB& getAABB() { return aabb; }
+
 private:
 	// our meshes and materials
 	std::vector<OtModelMesh> meshes;
 	std::vector<OtModelMaterial> materials;
+
+	// model bounding box
+	OtAABB aabb;
 };

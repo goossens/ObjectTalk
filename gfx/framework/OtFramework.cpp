@@ -93,9 +93,6 @@ void OtFramework::runThread2() {
 			// process all messages on the bus
 			bus->process();
 
-			// reset view ID
-			OtPassReset();
-
 			// collect events
 			std::vector<OtFwEvent> events;
 
@@ -167,6 +164,9 @@ void OtFramework::runThread2() {
 						break;
 				}
 			}
+
+			// reset view ID
+			OtPassReset();
 
 			// let app render a frame
 			app->onRender();

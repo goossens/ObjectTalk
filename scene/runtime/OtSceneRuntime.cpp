@@ -40,7 +40,7 @@ void OtSceneRuntime::setup(std::filesystem::path path) {
 //
 
 bool OtSceneRuntime::isReady() {
-	// ready state already reached?
+	// are we past initialization?
 	if (ready) {
 		return true;
 

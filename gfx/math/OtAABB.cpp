@@ -53,6 +53,16 @@ void OtAABB::addPoint(const glm::vec3& point) {
 
 
 //
+//	OtAABB::addAABB
+//
+
+void OtAABB::addAABB(const OtAABB& aabb) {
+	addPoint(aabb.minp);
+	addPoint(aabb.maxp);
+}
+
+
+//
 //	OtAABB::transform
 //
 

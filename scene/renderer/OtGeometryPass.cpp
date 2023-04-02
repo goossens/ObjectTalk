@@ -29,15 +29,13 @@ void OtSceneRenderer::renderGeometryPass(OtScene* scene) {
 	pass.setFrameBuffer(gbuffer);
 	pass.setTransform(viewMatrix, projectionMatrix);
 
-	// render all non-transparent geometries (that have transform and material components)
-	for (auto entity : scene->view<OtGeometryComponent, OtTransformComponent, OtMaterialComponent>()) {
-		if (!scene->getComponent<OtGeometryComponent>(entity).transparent) {
-			renderGeometry(pass, scene, entity);
-		}
+	// render all non-transparent geometries
+	for (auto entity : opaqueGeometries) {
+		renderGeometry(pass, scene, entity);
 	}
 
-	// render all models
-	for (auto entity : scene->view<OtModelComponent, OtTransformComponent>()) {
+	// render all non-transparent models
+	for (auto entity : opaqueModels) {
 		renderModel(pass, scene, entity);
 	}
 }

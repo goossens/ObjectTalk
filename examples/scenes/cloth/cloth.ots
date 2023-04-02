@@ -1,0 +1,171 @@
+[
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Camera",
+				"uuid": 427997266
+			},
+			{
+				"component": "Transform",
+				"rotation": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				],
+				"translation": [
+					0.0,
+					0.0,
+					0.0
+				]
+			},
+			{
+				"component": "Camera",
+				"far": 100.0,
+				"fov": 60.0,
+				"mainCamera": false,
+				"near": 0.10000000149011612
+			},
+			{
+				"Exposure": 2.069999933242798,
+				"bloomIntensity": 0.6899999976158142,
+				"component": "Post Processing"
+			}
+		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Light",
+				"uuid": 4012823526
+			},
+			{
+				"component": "Transform",
+				"rotation": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				],
+				"translation": [
+					5.0,
+					5.0,
+					5.0
+				]
+			},
+			{
+				"color": [
+					1.0,
+					1.0,
+					1.0
+				],
+				"component": "Directional Light"
+			}
+		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Background",
+				"uuid": 3215942513
+			},
+			{
+				"color": [
+					0.053837165236473083,
+					0.05356723815202713,
+					0.08407080173492432
+				],
+				"component": "Background"
+			}
+		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Grass",
+				"uuid": 715622780
+			},
+			{
+				"component": "Transform",
+				"rotation": [
+					-90.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					15.0,
+					8.0,
+					0.0
+				],
+				"translation": [
+					0.0,
+					0.0,
+					0.0
+				]
+			},
+			{
+				"component": "Geometry",
+				"cullback": true,
+				"geometry": {
+					"displacement": {
+						"frequency": 0.009999999776482582,
+						"lacunarity": 1.0,
+						"map": "",
+						"octaves": 3,
+						"persistance": 0.5,
+						"scale": 0.5,
+						"seed": 1337,
+						"state": 0
+					},
+					"heightSegments": 26,
+					"type": "Plane",
+					"widthSegments": 25
+				},
+				"transparent": false,
+				"wireframe": false
+			},
+			{
+				"component": "Material",
+				"material": {
+					"albedo": [
+						1.0,
+						1.0,
+						1.0,
+						1.0
+					],
+					"albedoTexture": "assets/grass-albedo.png",
+					"ao": 1.0,
+					"aoTexture": "assets/grass-ao.png",
+					"emissive": [
+						0.0,
+						0.0,
+						0.0
+					],
+					"emissiveTexture": "",
+					"metallic": 0.0,
+					"metallicRoughnessTexture": "",
+					"normalTexture": "assets/grass-normal.png",
+					"roughness": 1.0,
+					"scale": 6.5,
+					"type": "PBR"
+				}
+			}
+		]
+	}
+]

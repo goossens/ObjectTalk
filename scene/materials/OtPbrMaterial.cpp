@@ -74,6 +74,11 @@ bool OtPbrMaterialClass::renderGUI() {
 			ImGui::TableNextColumn(); W(); changed |= ImGui::SliderFloat("##ambientOcclusion", &ao, 0.0f, 1.0f, "%.2f");
 			ImGui::TableNextColumn(); W(); changed |= aoTexture.renderGUI("##aoTexture");
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Ambient Occlusion");
+
+			ImGui::TableNextRow();
+			ImGui::TableNextColumn(); W(); changed |= ImGui::SliderFloat("##scale", &scale, 0.0f, 100.0f, "%.1f");
+			ImGui::TableNextColumn();
+			ImGui::TableNextColumn(); ImGui::TextUnformatted("Scale");
 			ImGui::EndTable();
 		}
 
@@ -98,6 +103,7 @@ nlohmann::json OtPbrMaterialClass::serialize(std::filesystem::path* basedir) {
 	data["roughness"] = roughness;
 	data["emissive"] = emissive;
 	data["ao"] = ao;
+	data["scale"] = scale;
 
 	data["albedoTexture"] = OtPathGetRelative(albedoTexture.getPath(), basedir);
 	data["normalTexture"] = OtPathGetRelative(normalTexture.getPath(), basedir);
@@ -118,6 +124,7 @@ void OtPbrMaterialClass::deserialize(nlohmann::json data, std::filesystem::path*
 	roughness = data.value("roughness", 0.5f);
 	emissive = data.value("emissive", glm::vec3(0.0f));
 	ao = data.value("ao", 1.0f);
+	scale = data.value("scale", 1.0f);
 
 	albedoTexture = OtPathGetAbsolute(data, "albedoTexture", basedir);
 	normalTexture = OtPathGetAbsolute(data, "normalTexture", basedir);

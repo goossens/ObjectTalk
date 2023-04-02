@@ -15,6 +15,7 @@ uniform vec4 u_material[5];
 #define u_metallic u_material[1].r
 #define u_roughness u_material[1].g
 #define u_ao u_material[1].b
+#define u_scale u_material[1].a
 
 #define u_emissive u_material[2].rgb
 
@@ -34,11 +35,14 @@ SAMPLER2D(s_geometryNormalTexture, 4);
 
 // main function
 void main() {
+	// determine UV coordinates
+	vec2 uv = v_texcoord0 * u_scale;
+
 	// determine albedo
 	vec3 albedo = u_albedo;
 
 	if (u_hasAlbedoTexture) {
-		albedo = texture2D(s_geometryAlbedoTexture, v_texcoord0).rgb * albedo;
+		albedo = texture2D(s_geometryAlbedoTexture, uv).rgb * albedo;
 	}
 
 	// determine normal
@@ -49,14 +53,14 @@ void main() {
 		vec3 tangent = normalize(v_tangent);
 		vec3 bitangent = normalize(v_bitangent);
 		mat3 TBN = mtxFromCols(tangent, bitangent, normal);
-		normal = normalize(mul(TBN, texture2D(s_geometryNormalTexture, v_texcoord0).rgb * 2.0 - 1.0));
+		normal = normalize(mul(TBN, texture2D(s_geometryNormalTexture, uv).rgb * 2.0 - 1.0));
 	}
 
 	// determine PBR parameters
-	float metallic = u_hasMetallicRoughnessTexture ? texture2D(s_geometryMetallicRoughnessTexture, v_texcoord0).b * u_metallic: u_metallic;
-	float roughness = u_hasMetallicRoughnessTexture ? texture2D(s_geometryMetallicRoughnessTexture, v_texcoord0).g * u_roughness : u_roughness;
-	vec3 emissive = u_hasEmissiveTexture ? texture2D(s_geometryEmissiveTexture, v_texcoord0).rgb * u_emissive : u_emissive;
-	float ao = u_hasAoTexture ? texture2D(s_geometryAoTexture, v_texcoord0).r * u_ao : u_ao;
+	float metallic = u_hasMetallicRoughnessTexture ? texture2D(s_geometryMetallicRoughnessTexture, uv).b * u_metallic: u_metallic;
+	float roughness = u_hasMetallicRoughnessTexture ? texture2D(s_geometryMetallicRoughnessTexture, uv).g * u_roughness : u_roughness;
+	vec3 emissive = u_hasEmissiveTexture ? texture2D(s_geometryEmissiveTexture, uv).rgb * u_emissive : u_emissive;
+	float ao = u_hasAoTexture ? texture2D(s_geometryAoTexture, uv).r * u_ao : u_ao;
 
 	// store information in gbuffer
 	gl_FragData[0] = vec4(albedo, 1.0);

@@ -18,10 +18,25 @@
 
 int OtSceneRenderer::render(OtScene* scene, OtEntity selected) {
 	// render all passes
-	renderGeometryPass(scene);
+	renderPreProcessingPass(scene);
+
+	if (hasOpaqueObjects) {
+		renderGeometryPass(scene);
+	}
+
 	renderBackgroundPass(scene);
-	renderLightingPass(scene);
-	renderTransparentPass(scene);
+
+	if (hasSkyObjects) {
+		renderSkyPass(scene);
+	}
+
+	if (hasOpaqueObjects) {
+		renderLightingPass(scene);
+	}
+
+	if (hasTransparentObjects) {
+		renderTransparentPass(scene);
+	}
 
 	if (gridScale > 0.0) {
 		renderGridPass();

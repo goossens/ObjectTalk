@@ -113,15 +113,33 @@ bool OtFrustum::isVisibleAABB(const OtAABB& aabb) {
 	glm::vec3 minp = aabb.getMin();
 	glm::vec3 maxp = aabb.getMax();
 
+/*
 	for (auto i = 0; i < planeCount; i++) {
 		glm::vec3 normal = planes[i].getNormal();
 		glm::vec3 v;
 
-		v.x = normal.x < 0 ? minp.x : maxp.x;
-		v.y = normal.y < 0 ? minp.y : maxp.y;
-		v.z = normal.z < 0 ? minp.z : maxp.z;
+		v.x = normal.x < 0.0f ? minp.x : maxp.x;
+		v.y = normal.y < 0.0f ? minp.y : maxp.y;
+		v.z = normal.z < 0.0f ? minp.z : maxp.z;
 
 		if (glm::dot(normal, v) + planes[i].getDistance() < 0) {
+			return false;
+		}
+	}
+*/
+
+	for (auto i = 0; i < planeCount; i++) {
+		const glm::vec4 g = planes[i].getVec4();
+
+		if ((glm::dot(g, glm::vec4(minp.x, minp.y, minp.z, 1.0f)) < 0.0) &&
+			(glm::dot(g, glm::vec4(maxp.x, minp.y, minp.z, 1.0f)) < 0.0) &&
+			(glm::dot(g, glm::vec4(minp.x, maxp.y, minp.z, 1.0f)) < 0.0) &&
+			(glm::dot(g, glm::vec4(maxp.x, maxp.y, minp.z, 1.0f)) < 0.0) &&
+			(glm::dot(g, glm::vec4(minp.x, minp.y, maxp.z, 1.0f)) < 0.0) &&
+			(glm::dot(g, glm::vec4(maxp.x, minp.y, maxp.z, 1.0f)) < 0.0) &&
+			(glm::dot(g, glm::vec4(minp.x, maxp.y, maxp.z, 1.0f)) < 0.0) &&
+			(glm::dot(g, glm::vec4(maxp.x, maxp.y, maxp.z, 1.0f)) < 0.0)) {
+			// Not visible - all returned negative
 			return false;
 		}
 	}

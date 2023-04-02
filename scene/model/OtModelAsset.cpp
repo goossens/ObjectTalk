@@ -39,6 +39,7 @@ bool OtModelAsset::load(const std::filesystem::path& path) {
 	// clear the current data
 	meshes.clear();
 	materials.clear();
+	aabb.clear();
 
 	// create an asset importer
 	Assimp::Importer importer;
@@ -70,6 +71,7 @@ bool OtModelAsset::load(const std::filesystem::path& path) {
 
 	for (auto i = 0; i < scene->mNumMeshes; i++) {
 		meshes[i].load(scene->mMeshes[i]);
+		aabb.addAABB(meshes[i].getAABB());
 	}
 
 	// load all the materials

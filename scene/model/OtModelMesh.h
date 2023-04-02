@@ -38,6 +38,9 @@ public:
 	// get the material index number
 	inline int getMaterialIndex() { return material; }
 
+	// get the bounding box
+	OtAABB& getAABB() { return aabb; }
+
 private:
 	// our vertices and triangle indices
 	std::vector<OtVertex> vertices;

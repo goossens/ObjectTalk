@@ -12,10 +12,13 @@
 //	Include files
 //
 
+#include <vector>
+
 #include "glm/glm.hpp"
 
 #include "OtBoxGeometry.h"
 #include "OtFrameBuffer.h"
+#include "OtFrustum.h"
 #include "OtGbuffer.h"
 #include "OtPass.h"
 #include "OtSampler.h"
@@ -37,8 +40,8 @@ class OtSceneRenderer {
 public:
 	// set the properties
 	void setCameraPosition(const glm::vec3 pos) { cameraPosition = pos; }
-	void setViewMatrix(const glm::mat4& view) { viewMatrix = view; viewProjectionMatrix = projectionMatrix * view; }
-	void setProjectionMatrix(const glm::mat4& proj) { projectionMatrix = proj; viewProjectionMatrix = proj * viewMatrix; }
+	void setViewMatrix(const glm::mat4& view) { viewMatrix = view; viewProjectionMatrix = projectionMatrix * viewMatrix; }
+	void setProjectionMatrix(const glm::mat4& proj) { projectionMatrix = proj; viewProjectionMatrix = projectionMatrix * viewMatrix; }
 	void setSize(int w, int h) { width = w; height = h; }
 	void setGridScale(float gs) { gridScale = gs; }
 
@@ -47,9 +50,11 @@ public:
 
 private:
 	// render passes
+	void renderPreProcessingPass(OtScene* scene);
 	// void renderShadowPass(OtScene* scene);
 	void renderGeometryPass(OtScene* scene);
 	void renderBackgroundPass(OtScene* scene);
+	void renderSkyPass(OtScene* scene);
 	void renderLightingPass(OtScene* scene);
 	void renderTransparentPass(OtScene* scene);
 	void renderGridPass();
@@ -76,6 +81,7 @@ private:
 	glm::mat4 viewMatrix;
 	glm::mat4 projectionMatrix;
 	glm::mat4 viewProjectionMatrix;
+	OtFrustum frustum;
 
 	// image dimensions
 	int width;
@@ -96,6 +102,15 @@ private:
 	// standard geometries
 	OtBoxGeometry unityBoxGeometry;
 	OtSphereGeometry unitySphereGeometry;
+
+	// visible entities
+	std::vector<OtEntity> opaqueGeometries;
+	std::vector<OtEntity> opaqueModels;
+	std::vector<OtEntity> transparentGeometries;
+	std::vector<OtEntity> transparentModels;
+	bool hasOpaqueObjects = false;
+	bool hasTransparentObjects = false;
+	bool hasSkyObjects = false;
 
 	// uniforms
 	OtUniformVec4 materialUniforms{"u_material", 5};

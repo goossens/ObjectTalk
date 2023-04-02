@@ -16,7 +16,7 @@
 //	OtSceneRenderer::renderHighlightPass
 //
 
-void OtSceneRenderer::renderHighlightPass(OtScene* scene, OtEntity entity) {
+void OtSceneRenderer::renderHighlightPass(OtScene* scene, OtEntity selected) {
 	// update framebuffer size
 	selectedBuffer.update(width, height);
 
@@ -28,7 +28,7 @@ void OtSceneRenderer::renderHighlightPass(OtScene* scene, OtEntity entity) {
 	selectPass.setTransform(viewMatrix, projectionMatrix);
 
 	// render selected entity (and its children)
-	renderHighlight(selectPass, scene, entity);
+	renderHighlight(selectPass, scene, selected);
 
 	// render the outline of the selected entity
 	OtPass outlinePass;
@@ -50,26 +50,26 @@ void OtSceneRenderer::renderHighlightPass(OtScene* scene, OtEntity entity) {
 //	OtSceneRenderer::renderHighlight
 //
 
-void OtSceneRenderer::renderHighlight(OtPass& pass, OtScene* scene, OtEntity entity) {
+void OtSceneRenderer::renderHighlight(OtPass& pass, OtScene* scene, OtEntity selected) {
 	// only render if all components are available
-	if (scene->hasComponent<OtGeometryComponent>(entity) &&
-		scene->hasComponent<OtTransformComponent>(entity) &&
-		scene->hasComponent<OtMaterialComponent>(entity)) {
+	if (scene->hasComponent<OtGeometryComponent>(selected) &&
+		scene->hasComponent<OtTransformComponent>(selected) &&
+		scene->hasComponent<OtMaterialComponent>(selected)) {
 
 		// render geometry
-		scene->getComponent<OtGeometryComponent>(entity).geometry->submitTriangles();
-		selectShader.setTransform(scene->getGlobalTransform(entity));
+		scene->getComponent<OtGeometryComponent>(selected).geometry->submitTriangles();
+		selectShader.setTransform(scene->getGlobalTransform(selected));
 		selectShader.setState(OtStateWriteRgb);
 		pass.runShader(selectShader);
 
-	} else if (scene->hasComponent<OtModelComponent>(entity) && scene->hasComponent<OtTransformComponent>(entity)) {
+	} else if (scene->hasComponent<OtModelComponent>(selected) && scene->hasComponent<OtTransformComponent>(selected)) {
 		// render model
-		auto& model = scene->getComponent<OtModelComponent>(entity).model;
+		auto& model = scene->getComponent<OtModelComponent>(selected).model;
 
 		if (model.isReady()) {
 			for (auto& mesh : model->getMeshes()) {
 				mesh.submitTriangles();
-				selectShader.setTransform(scene->getGlobalTransform(entity));
+				selectShader.setTransform(scene->getGlobalTransform(selected));
 				selectShader.setState(OtStateWriteRgb);
 				pass.runShader(selectShader);
 			}
@@ -77,7 +77,7 @@ void OtSceneRenderer::renderHighlight(OtPass& pass, OtScene* scene, OtEntity ent
 	}
 
 	// also render all the children
-	OtEntity child = scene->getFirstChild(entity);
+	OtEntity child = scene->getFirstChild(selected);
 
 	while (scene->isValidEntity(child)) {
 		renderHighlight(pass, scene, child);

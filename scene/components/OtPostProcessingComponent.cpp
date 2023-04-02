@@ -24,7 +24,7 @@
 
 bool OtPostProcessingComponent::renderGUI() {
 	bool changed;
-	changed |= ImGui::SliderFloat("Bloom Intensity", &bloomIntensity, 0.1f, 3.0f, "%.2f");
+	changed |= ImGui::SliderFloat("Bloom Intensity", &bloomIntensity, 0.0f, 3.0f, "%.2f");
 	changed |= ImGui::SliderFloat("Exposure", &exposure, 0.1f, 3.0f, "%.2f");
 	return changed;
 }

@@ -50,7 +50,7 @@ public:
 
 private:
 	// render passes
-	void renderPreProcessingPass(OtScene* scene);
+	void renderPreProcessingPass(OtScene* scene, OtEntity selected);
 	// void renderShadowPass(OtScene* scene);
 	void renderGeometryPass(OtScene* scene);
 	void renderBackgroundPass(OtScene* scene);
@@ -58,7 +58,7 @@ private:
 	void renderLightingPass(OtScene* scene);
 	void renderTransparentPass(OtScene* scene);
 	void renderGridPass();
-	void renderHighlightPass(OtScene* scene, OtEntity entity);
+	void renderHighlightPass(OtScene* scene, OtEntity selected);
 	void renderPostProcessingPass(OtScene* scene);
 
 	// render entitities
@@ -111,6 +111,7 @@ private:
 	bool hasOpaqueObjects = false;
 	bool hasTransparentObjects = false;
 	bool hasSkyObjects = false;
+	bool renderEntityHighlight = false;
 
 	// uniforms
 	OtUniformVec4 materialUniforms{"u_material", 5};

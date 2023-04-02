@@ -15,9 +15,12 @@
 //	OtSceneRenderer::renderPreProcessingPass
 //
 
-void OtSceneRenderer::renderPreProcessingPass(OtScene* scene) {
+void OtSceneRenderer::renderPreProcessingPass(OtScene* scene, OtEntity selected) {
 	// determine the camera's frustum in worldspace
 	frustum = OtFrustum(viewProjectionMatrix);
+
+	// reset highlighting flag
+	renderEntityHighlight = false;
 
 	// build lists of visible geometries and models (both opaque and transparent)
 	opaqueGeometries.clear();
@@ -38,6 +41,7 @@ void OtSceneRenderer::renderPreProcessingPass(OtScene* scene) {
 
 			// is this one visible
 			if (frustum.isVisibleAABB(aabb)) {
+				// add it to the appropriate list
 				if (geometry.transparent) {
 					transparentGeometries.push_back(entity);
 
@@ -45,6 +49,10 @@ void OtSceneRenderer::renderPreProcessingPass(OtScene* scene) {
 					opaqueGeometries.push_back(entity);
 				}
 
+				// activate highlighting if this entity is selected
+				if (entity == selected) {
+					renderEntityHighlight = true;
+				}
 			}
 		}
 	});
@@ -58,7 +66,13 @@ void OtSceneRenderer::renderPreProcessingPass(OtScene* scene) {
 			auto& model = scene->getComponent<OtModelComponent>(entity);
 
 			if (frustum.isVisibleAABB(model.model->getAABB())) {
+				// add to list
 				opaqueModels.push_back(entity);
+
+				// activate highlighting if this entity is selected
+				if (entity == selected) {
+					renderEntityHighlight = true;
+				}
 			}
 		}
 	});

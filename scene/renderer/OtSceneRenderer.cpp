@@ -18,7 +18,7 @@
 
 int OtSceneRenderer::render(OtScene* scene, OtEntity selected) {
 	// render all passes
-	renderPreProcessingPass(scene);
+	renderPreProcessingPass(scene, selected);
 
 	if (hasOpaqueObjects) {
 		renderGeometryPass(scene);
@@ -42,7 +42,7 @@ int OtSceneRenderer::render(OtScene* scene, OtEntity selected) {
 		renderGridPass();
 	}
 
-	if (scene->isValidEntity(selected)) {
+	if (renderEntityHighlight) {
 		renderHighlightPass(scene, selected);
 	}
 

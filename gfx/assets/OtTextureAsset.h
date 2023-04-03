@@ -24,7 +24,7 @@
 class OtTextureAsset : public OtAssetBase {
 public:
 	// load the asset
-	bool load(const std::filesystem::path& path);
+	bool load(const std::filesystem::path& path) override;
 
 	// get the texture handle
 	OtTexture& getTexture() { return texture; }

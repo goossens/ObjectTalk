@@ -151,7 +151,7 @@
 					],
 					"albedoTexture": "assets/grass-albedo.png",
 					"ao": 1.0,
-					"aoTexture": "assets/grass-ao.png",
+					"aoTexture": "",
 					"emissive": [
 						0.0,
 						0.0,

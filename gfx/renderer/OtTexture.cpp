@@ -54,8 +54,7 @@ static bgfx::TextureHandle createMipmapTexture(bimg::ImageContainer* image) {
 		uint16_t(image->m_height),
 		true,
 		image->m_numLayers,
-		bgfx::TextureFormat::Enum(image->m_format),
-		BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE);
+		bgfx::TextureFormat::Enum(image->m_format));
 
 	const bimg::ImageBlockInfo& blockInfo = getBlockInfo(image->m_format);
 	const uint32_t blockWidth  = blockInfo.blockWidth;
@@ -106,8 +105,7 @@ static bgfx::TextureHandle generateMipmapTexture(bimg::ImageContainer* image) {
 		uint16_t(image->m_height),
 		true,
 		image->m_numLayers,
-		bgfx::TextureFormat::Enum(image->m_format),
-		BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE);
+		bgfx::TextureFormat::Enum(image->m_format));
 
 	// add first level
 	bgfx::updateTexture2D(
@@ -185,7 +183,7 @@ void OtTexture::loadFromMemory(int w, int h, uint8_t* pixels) {
 	texture = bgfx::createTexture2D(
 		w, h, false, 1,
 		bgfx::TextureFormat::RGBA8,
-		BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP | BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT,
+		BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
 		bgfx::copy(pixels, w * h * 4));
 }
 

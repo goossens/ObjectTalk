@@ -4,7 +4,7 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-$input v_position, v_normal, v_tangent, v_bitangent, v_texcoord0
+$input v_normal, v_tangent, v_bitangent, v_texcoord0
 
 #include <bgfx.glsl>
 
@@ -57,7 +57,7 @@ void main() {
 	}
 
 	// determine PBR parameters
-	float metallic = u_hasMetallicRoughnessTexture ? texture2D(s_geometryMetallicRoughnessTexture, uv).b * u_metallic: u_metallic;
+	float metallic = u_hasMetallicRoughnessTexture ? texture2D(s_geometryMetallicRoughnessTexture, uv).b * u_metallic : u_metallic;
 	float roughness = u_hasMetallicRoughnessTexture ? texture2D(s_geometryMetallicRoughnessTexture, uv).g * u_roughness : u_roughness;
 	vec3 emissive = u_hasEmissiveTexture ? texture2D(s_geometryEmissiveTexture, uv).rgb * u_emissive : u_emissive;
 	float ao = u_hasAoTexture ? texture2D(s_geometryAoTexture, uv).r * u_ao : u_ao;

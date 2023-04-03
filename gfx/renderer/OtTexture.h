@@ -26,7 +26,7 @@ class OtTexture {
 public:
 	// constructor
 	OtTexture() = default;
-	OtTexture(const std::filesystem::path& path, bool mipmap=false);
+	OtTexture(const std::filesystem::path& path, bool mipmap=true);
 
 	// clear the resources
 	void clear() { texture.clear(); }
@@ -35,7 +35,7 @@ public:
 	bool isValid() { return texture.isValid(); }
 
 	// load from file
-	void loadFromFile(const std::filesystem::path& path, bool mipmap=false);
+	void loadFromFile(const std::filesystem::path& path, bool mipmap=true);
 
 	// load from memory (pixels must be RGBA in row order)
 	void loadFromMemory(int width, int height, uint8_t* pixels);

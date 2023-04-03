@@ -24,7 +24,7 @@
 class OtCubeMapAsset : public OtAssetBase {
 public:
 	// load the asset
-	bool load(const std::filesystem::path& path);
+	bool load(const std::filesystem::path& path) override;
 
 	// get the CubeMap handle
 	OtCubeMap& getCubeMap() { return cubemap; }

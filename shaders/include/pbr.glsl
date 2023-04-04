@@ -29,6 +29,8 @@ struct PBR {
 	vec3 V; // view direction
 	vec3 L; // light direction
 	vec3 H; // halfway vector
+	vec3 directionalLightColor;
+	float directionalLightAmbience;
 };
 
 // Normal Distribution Function (NDF)
@@ -62,7 +64,7 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0) {
 }
 
 //	PBR calculation
-vec4 applyPBR(PBR pbr, vec3 lightColor) {
+vec4 applyPBR(PBR pbr) {
 	vec3 albedo = pbr.albedo.rgb;
 
 	// calculate reflectance
@@ -80,15 +82,17 @@ vec4 applyPBR(PBR pbr, vec3 lightColor) {
 	vec3 kS = F;
 	vec3 kD = (vec3_splat(1.0) - kS) * (1.0 - pbr.metallic);
 
-	// determine direct light radiance
+	// determine directional light
 	float NdotL = max(dot(pbr.N, pbr.L), 0.0);
-	vec3 color = (kD * albedo / PI + specular) * lightColor * NdotL;
+	vec3 color = (kD * albedo / PI + specular) * pbr.directionalLightColor * NdotL;
 
-	// add ambient color
-	color += vec3_splat(0.03) * albedo * pbr.ao;
+	// add ambient light
+	color += pbr.directionalLightAmbience * albedo * pbr.ao;
 
 	// add emissive light
 	color += pbr.emissive;
+
+	// return result
 	return vec4(color, pbr.albedo.a);
 }
 

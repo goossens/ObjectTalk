@@ -140,16 +140,18 @@ void OtSceneRenderer::submitLightUniforms(OtScene* scene) {
 	// get the directional light information
 	glm::vec3 direction = glm::vec3(0.0);
 	glm::vec3 color = glm::vec3(0.0);
+	float ambient = 0.0f;
 
 	for (auto&& [entity, light, transform] : scene->view<OtDirectionalLightComponent, OtTransformComponent>().each()) {
 		direction = transform.getTransform()[3];
 		color = light.color;
+		ambient = light.ambient;
 	}
 
 	// build and submit the light uniforms
 	glm::vec4* uniforms = lightingUniforms.getValues();
 	uniforms[0] = glm::vec4(cameraPosition, 0.0f);
 	uniforms[1] = glm::vec4(direction, 0.0f);
-	uniforms[2] = glm::vec4(color, 0.0f);
+	uniforms[2] = glm::vec4(color, ambient);
 	lightingUniforms.submit();
 }

@@ -23,7 +23,10 @@
 //
 
 bool OtDirectionalLightComponent::renderGUI() {
-	return ImGui::ColorEdit3("Color", glm::value_ptr(color));
+	bool changed = false;
+	changed |= ImGui::ColorEdit3("Color", glm::value_ptr(color));
+	changed |= ImGui::SliderFloat("Ambient", &ambient, 0.0f, 0.3f);
+	return changed;
 }
 
 
@@ -35,6 +38,7 @@ nlohmann::json OtDirectionalLightComponent::serialize(std::filesystem::path* bas
 	auto data = nlohmann::json::object();
 	data["component"] = name;
 	data["color"] = color;
+	data["ambient"] = ambient;
 	return data;
 }
 
@@ -45,4 +49,5 @@ nlohmann::json OtDirectionalLightComponent::serialize(std::filesystem::path* bas
 
 void OtDirectionalLightComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
 	color = data.value("color", glm::vec3(1.0f));
+	ambient = data.value("ambient", 0.05f);
 }

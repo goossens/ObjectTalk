@@ -19,6 +19,7 @@ uniform vec4 u_lighting[3];
 #define u_cameraPosition u_lighting[0].xyz
 #define u_directionalLightDirection u_lighting[1].xyz
 #define u_directionalLightColor u_lighting[2].xyz
+#define u_directionalLightAmbience u_lighting[2].a
 
 // texture samplers
 SAMPLER2D(s_lightingAlbedoTexture, 0);
@@ -61,6 +62,8 @@ void main() {
 	pbr.roughness = data.g;
 	pbr.ao = data.b;
 	pbr.emissive = texture2D(s_lightingEmissiveTexture, v_texcoord0).rgb;
+	pbr.directionalLightColor = u_directionalLightColor;
+	pbr.directionalLightAmbience = u_directionalLightAmbience;
 
 	// calculate vectors
 	pbr.N = normalize(texture2D(s_lightingNormalTexture, v_texcoord0).rgb);
@@ -69,5 +72,5 @@ void main() {
 	pbr.H = normalize(pbr.V + pbr.L);
 
 	// apply PBR (tonemapping and Gamma correction are done during post-processing)
-	gl_FragColor = applyPBR(pbr, u_directionalLightColor);
+	gl_FragColor = applyPBR(pbr);
 }

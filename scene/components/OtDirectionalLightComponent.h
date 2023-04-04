@@ -34,4 +34,5 @@ public:
 
 	// stored properties
 	glm::vec3 color{1.0f};
+	float ambient = 0.05f;
 };

@@ -66,6 +66,7 @@
 				]
 			},
 			{
+				"ambient": 0.04899999871850014,
 				"color": [
 					1.0,
 					1.0,
@@ -159,6 +160,7 @@
 					"metallicRoughnessTexture": "",
 					"normalTexture": "",
 					"roughness": 0.5,
+					"scale": 1.0,
 					"type": "PBR"
 				}
 			}
@@ -234,6 +236,7 @@
 					"metallicRoughnessTexture": "",
 					"normalTexture": "",
 					"roughness": 0.5,
+					"scale": 1.0,
 					"type": "PBR"
 				}
 			}
@@ -309,6 +312,7 @@
 					"metallicRoughnessTexture": "",
 					"normalTexture": "",
 					"roughness": 0.5,
+					"scale": 1.0,
 					"type": "PBR"
 				}
 			}

@@ -110,12 +110,15 @@ void OtModelMaterial::load(const aiMaterial* mat, const std::filesystem::path& d
 	}
 
 	// ambient occlusion texture
+	/*
+	 
 	mat->GetTexture(aiTextureType_LIGHTMAP, 0, &string);
 
 	if (string.length) {
 		auto file = std::filesystem::path(std::string(string.data, string.length));
 		material->setAoTexture(std::filesystem::canonical(dir / file));
 	}
+	 */
 
 	valid = true;
 }

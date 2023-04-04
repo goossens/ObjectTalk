@@ -37,7 +37,7 @@
 				"path": "assets/camera.ot"
 			},
 			{
-				"Exposure": 1.399999976158142,
+				"Exposure": 1.0099999904632568,
 				"bloomIntensity": 0.6000000238418579,
 				"component": "Post Processing"
 			}
@@ -70,6 +70,7 @@
 				]
 			},
 			{
+				"ambient": 0.10700000077486038,
 				"color": [
 					1.0,
 					1.0,
@@ -170,6 +171,7 @@
 							"metallicRoughnessTexture": "",
 							"normalTexture": "",
 							"roughness": 0.5,
+							"scale": 1.0,
 							"type": "PBR"
 						}
 					}
@@ -248,6 +250,7 @@
 							"metallicRoughnessTexture": "",
 							"normalTexture": "",
 							"roughness": 0.4000000059604645,
+							"scale": 1.0,
 							"type": "PBR"
 						}
 					}
@@ -326,6 +329,7 @@
 							"metallicRoughnessTexture": "",
 							"normalTexture": "",
 							"roughness": 0.5,
+							"scale": 1.0,
 							"type": "PBR"
 						}
 					}

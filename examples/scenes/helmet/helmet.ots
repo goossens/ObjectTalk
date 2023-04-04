@@ -33,7 +33,7 @@
 				"near": 0.10000000149011612
 			},
 			{
-				"Exposure": 1.2200000286102295,
+				"Exposure": 1.0,
 				"bloomIntensity": 0.5299999713897705,
 				"component": "Post Processing"
 			}
@@ -66,6 +66,7 @@
 				]
 			},
 			{
+				"ambient": 0.05000000074505806,
 				"color": [
 					1.0,
 					1.0,

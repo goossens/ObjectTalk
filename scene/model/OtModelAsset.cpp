@@ -49,6 +49,7 @@ bool OtModelAsset::load(const std::filesystem::path& path) {
 		aiProcessPreset_TargetRealtime_Quality |
 		aiProcess_OptimizeMeshes |
 		aiProcess_PreTransformVertices |
+		aiProcess_GenBoundingBoxes |
 		aiProcess_FlipUVs;
 
 	// read the model file

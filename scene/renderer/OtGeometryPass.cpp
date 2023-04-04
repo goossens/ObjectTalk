@@ -110,29 +110,36 @@ void OtSceneRenderer::renderGeometry(OtPass& pass, OtScene* scene, OtEntity enti
 void OtSceneRenderer::renderModel(OtPass& pass, OtScene* scene, OtEntity entity) {
 	// get the model
 	auto& model = scene->getComponent<OtModelComponent>(entity).model;
+	auto transform = scene->getComponent<OtTransformComponent>(entity).getTransform();
 
 	// process all the meshes (if required)
 	if (model.isReady()) {
 		for (auto& mesh : model->getMeshes()) {
-			// submit the material information
-			submitPbrUniforms(model->getMaterials()[mesh.getMaterialIndex()].getPbrMaterial());
+			// see if mesh is visible?
+			auto aabb = mesh.getAABB();
+			aabb.transform(transform);
 
-			// submit the geometry
-			mesh.submitTriangles();
+			if (frustum.isVisibleAABB(aabb)) {
+				// submit the material information
+				submitPbrUniforms(model->getMaterials()[mesh.getMaterialIndex()].getPbrMaterial());
 
-			// set the transform
-			geometryShader.setTransform(scene->getGlobalTransform(entity));
+				// submit the geometry
+				mesh.submitTriangles();
 
-			// set the shader state
-			geometryShader.setState(
-				OtStateWriteRgb |
-				OtStateWriteA |
-				OtStateWriteZ |
-				OtStateDepthTestLess |
-				OtStateCullCw);
+				// set the transform
+				geometryShader.setTransform(scene->getGlobalTransform(entity));
 
-			// run the shader
-			pass.runShader(geometryShader);
+				// set the shader state
+				geometryShader.setState(
+					OtStateWriteRgb |
+					OtStateWriteA |
+					OtStateWriteZ |
+					OtStateDepthTestLess |
+					OtStateCullCw);
+
+				// run the shader
+				pass.runShader(geometryShader);
+			}
 		}
 	}
 }

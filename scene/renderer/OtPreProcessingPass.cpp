@@ -37,7 +37,8 @@ void OtSceneRenderer::renderPreProcessingPass(OtScene* scene, OtEntity selected)
 			// get the geometry's AABB in worldspace
 			auto& geometry = scene->getComponent<OtGeometryComponent>(entity);
 			auto& transform = scene->getComponent<OtTransformComponent>(entity);
-			auto aabb = geometry.geometry->getAABB().transform(transform.getTransform());
+			auto aabb = geometry.geometry->getAABB();
+			aabb.transform(transform.getTransform());
 
 			// is this one visible
 			if (frustum.isVisibleAABB(aabb)) {
@@ -62,16 +63,24 @@ void OtSceneRenderer::renderPreProcessingPass(OtScene* scene, OtEntity selected)
 		if (scene->hasComponent<OtModelComponent>(entity) &&
 			scene->hasComponent<OtTransformComponent>(entity)) {
 
-			// is this one visible
-			auto& model = scene->getComponent<OtModelComponent>(entity);
-
-			if (frustum.isVisibleAABB(model.model->getAABB())) {
-				// add to list
-				opaqueModels.push_back(entity);
-
-				// activate highlighting if this entity is selected
-				if (entity == selected) {
-					renderEntityHighlight = true;
+			// see if model is ready
+			auto& model = scene->getComponent<OtModelComponent>(entity).model;
+			
+			if (model.isReady()) {
+				// get the geometry's AABB in worldspace
+				auto& transform = scene->getComponent<OtTransformComponent>(entity);
+				auto aabb = model->getAABB();
+				aabb.transform(transform.getTransform());
+				
+				// is this one visible
+				if (frustum.isVisibleAABB(aabb)) {
+					// add to list
+					opaqueModels.push_back(entity);
+					
+					// activate highlighting if this entity is selected
+					if (entity == selected) {
+						renderEntityHighlight = true;
+					}
 				}
 			}
 		}

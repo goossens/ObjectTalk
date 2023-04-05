@@ -11,8 +11,6 @@
 
 #include "glm/glm.hpp"
 
-#include "OtException.h"
-
 #include "OtModelMaterial.h"
 
 
@@ -58,7 +56,10 @@ void OtModelMaterial::load(const aiMaterial* mat, const std::filesystem::path& d
 	ai_real real;
 
 	// albedo color
-	if (mat->Get(AI_MATKEY_COLOR_DIFFUSE, color) == AI_SUCCESS) {
+	if (mat->Get(AI_MATKEY_BASE_COLOR, color) == AI_SUCCESS) {
+		material->setAlbedoVector(glm::vec4(color.r, color.g, color.b, color.a));
+
+	} else if (mat->Get(AI_MATKEY_COLOR_DIFFUSE, color) == AI_SUCCESS) {
 		material->setAlbedoVector(glm::vec4(color.r, color.g, color.b, color.a));
 	}
 
@@ -78,47 +79,38 @@ void OtModelMaterial::load(const aiMaterial* mat, const std::filesystem::path& d
 	}
 
 	// albedo texture
-	mat->GetTexture(aiTextureType_DIFFUSE, 0, &string);
+	if (mat->GetTexture(aiTextureType_BASE_COLOR, 0, &string) == AI_SUCCESS) {
+		auto file = std::filesystem::path(std::string(string.data, string.length));
+		material->setAlbedoTexture(std::filesystem::canonical(dir / file));
 
-	if (string.length) {
+	} else if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &string) == AI_SUCCESS) {
 		auto file = std::filesystem::path(std::string(string.data, string.length));
 		material->setAlbedoTexture(std::filesystem::canonical(dir / file));
 	}
 
 	// normal texture
-	mat->GetTexture(aiTextureType_NORMALS, 0, &string);
-
-	if (string.length) {
+	if (mat->GetTexture(aiTextureType_NORMALS, 0, &string) == AI_SUCCESS) {
 		auto file = std::filesystem::path(std::string(string.data, string.length));
 		material->setNormalTexture(std::filesystem::canonical(dir / file));
 	}
 
 	// metallic texture
-	mat->GetTexture(AI_MATKEY_METALLIC_TEXTURE, &string);
-
-	if (string.length) {
+	if (mat->GetTexture(aiTextureType_METALNESS, 0, &string) == AI_SUCCESS) {
 		auto file = std::filesystem::path(std::string(string.data, string.length));
 		material->setMetallicRoughnessTexture(std::filesystem::canonical(dir / file));
 	}
 
 	// emissive texture
-	mat->GetTexture(aiTextureType_EMISSIVE, 0, &string);
-
-	if (string.length) {
+	if (mat->GetTexture(aiTextureType_EMISSIVE, 0, &string) == AI_SUCCESS) {
 		auto file = std::filesystem::path(std::string(string.data, string.length));
 		material->setEmissiveTexture(std::filesystem::canonical(dir / file));
 	}
 
 	// ambient occlusion texture
-	/*
-	 
-	mat->GetTexture(aiTextureType_LIGHTMAP, 0, &string);
-
-	if (string.length) {
+	if (mat->GetTexture(aiTextureType_AMBIENT_OCCLUSION, 0, &string) == AI_SUCCESS) {
 		auto file = std::filesystem::path(std::string(string.data, string.length));
 		material->setAoTexture(std::filesystem::canonical(dir / file));
 	}
-	 */
 
 	valid = true;
 }

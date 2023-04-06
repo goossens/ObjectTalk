@@ -168,10 +168,11 @@ void OtFramework::frameBGFX() {
 //
 
 void OtFramework::renderProfiler() {
+	auto caps = bgfx::getCaps();
 	auto stats = bgfx::getStats();
 	float toMsCpu = 1000.0f / stats->cpuTimerFreq;
 	float toMsGpu = 1000.0f / stats->gpuTimerFreq;
-	auto labelWith = ImGui::CalcTextSize("                     ").x;
+	auto labelWith = ImGui::CalcTextSize("                         ").x;
 
 	ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
 	ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
@@ -183,13 +184,18 @@ void OtFramework::renderProfiler() {
 	ImGui::Text("Backbuffer width:"); ImGui::SameLine(labelWith); ImGui::Text("%d", stats->width);
 	ImGui::Text("Backbuffer height:"); ImGui::SameLine(labelWith); ImGui::Text("%d", stats->height);
 	ImGui::Text("Anti-aliasing:"); ImGui::SameLine(labelWith); ImGui::Text("%d", antiAliasing);
-	ImGui::Text("Views:"); ImGui::SameLine(labelWith); ImGui::Text("%d", OtPassCount() + 2);
-	ImGui::Text("Draw calls:"); ImGui::SameLine(labelWith); ImGui::Text("%d", stats->numDraw);
-	ImGui::Text("Programs:"); ImGui::SameLine(labelWith); ImGui::Text("%d", stats->numPrograms);
-	ImGui::Text("Shaders:"); ImGui::SameLine(labelWith); ImGui::Text("%d", stats->numShaders);
-	ImGui::Text("Textures:"); ImGui::SameLine(labelWith); ImGui::Text("%d", stats->numTextures);
-	ImGui::Text("Uniforms:"); ImGui::SameLine(labelWith); ImGui::Text("%d", stats->numUniforms);
-	ImGui::Text("Vertex buffers:"); ImGui::SameLine(labelWith); ImGui::Text("%d", stats->numVertexBuffers);
+	ImGui::Text("Views:"); ImGui::SameLine(labelWith); ImGui::Text("%d of %d", OtPassCount() + 2, caps->limits.maxViews);
+	ImGui::Text("Blits:"); ImGui::SameLine(labelWith); ImGui::Text("%d of %d", stats->numBlit, caps->limits.maxBlits);
+	ImGui::Text("Draw calls:"); ImGui::SameLine(labelWith); ImGui::Text("%d of %d", stats->numDraw, caps->limits.maxDrawCalls);
+	ImGui::Text("Compute calls:"); ImGui::SameLine(labelWith); ImGui::Text("%d of %d", stats->numCompute, caps->limits.maxComputeBindings);
+	ImGui::Text("Programs:"); ImGui::SameLine(labelWith); ImGui::Text("%d of %d", stats->numPrograms, caps->limits.maxPrograms);
+	ImGui::Text("Shaders:"); ImGui::SameLine(labelWith); ImGui::Text("%d of %d", stats->numShaders, caps->limits.maxShaders);
+	ImGui::Text("Textures:"); ImGui::SameLine(labelWith); ImGui::Text("%d of %d", stats->numTextures, caps->limits.maxTextures);
+	ImGui::Text("Uniforms:"); ImGui::SameLine(labelWith); ImGui::Text("%d of %d", stats->numUniforms, caps->limits.maxUniforms);
+	ImGui::Text("Vertex buffers:"); ImGui::SameLine(labelWith); ImGui::Text("%d of %d", stats->numVertexBuffers, caps->limits.maxVertexBuffers);
+	ImGui::Text("Index buffers:"); ImGui::SameLine(labelWith); ImGui::Text("%d of %d", stats->numIndexBuffers, caps->limits.maxIndexBuffers);
+	ImGui::Text("Dynamic Vertex buffers:"); ImGui::SameLine(labelWith); ImGui::Text("%d of %d", stats->numDynamicVertexBuffers, caps->limits.maxDynamicVertexBuffers);
+	ImGui::Text("Dynamic Index buffers:"); ImGui::SameLine(labelWith); ImGui::Text("%d of %d", stats->numDynamicIndexBuffers, caps->limits.maxDynamicIndexBuffers);
 	ImGui::End();
 }
 

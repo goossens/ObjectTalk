@@ -73,6 +73,7 @@ private:
 	// rendering tools
 	void submitMaterialUniforms(OtScene* scene, OtEntity entity);
 	void submitPbrUniforms(OtPbrMaterial material);
+	void submitTerrainUniforms(OtTerrainMaterial material);
 	void submitBlendMapUniforms(OtBlendMapMaterial material);
 	void submitLightUniforms(OtScene* scene);
 
@@ -115,6 +116,7 @@ private:
 
 	// uniforms
 	OtUniformVec4 materialUniforms{"u_material", 5};
+	OtUniformVec4 terrainUniforms{"u_terrain", 6};
 	OtUniformVec4 blendmapUniforms{"u_blendmap", 2};
 	OtUniformVec4 backgroundUniforms{"u_background", 1};
 	OtUniformVec4 lightingUniforms{"u_lighting", 3};
@@ -125,6 +127,16 @@ private:
 	OtUniformMat4 inverseTransform{"u_inverseTransform", 1};
 
 	// samplers
+	OtSampler textureSampler0{"s_textureSampler0"};
+	OtSampler textureSampler1{"s_textureSampler1"};
+	OtSampler textureSampler2{"s_textureSampler2"};
+	OtSampler textureSampler3{"s_textureSampler3"};
+	OtSampler textureSampler4{"s_textureSampler4"};
+	OtSampler textureSampler5{"s_textureSampler5"};
+	OtSampler textureSampler6{"s_textureSampler6"};
+	OtSampler textureSampler7{"s_textureSampler7"};
+	OtSampler textureSampler8{"s_textureSampler8"};
+
 	OtSampler geometryAlbedoSampler{"s_geometryAlbedoTexture"};
 	OtSampler geometryNormalSampler{"s_geometryNormalTexture"};
 	OtSampler geometryMetallicRoughnessSampler{"s_geometryMetallicRoughnessTexture"};
@@ -158,6 +170,7 @@ private:
 
 	// shaders
 	OtShader geometryShader{"OtGeometryVS", "OtGeometryFS"};
+	OtShader terrainShader{"OtTerrainVS", "OtTerrainFS"};
 	OtShader blendmapShader{"OtBlendMapVS", "OtBlendMapFS"};
 	OtShader lightingShader{"OtLightingVS", "OtLightingFS"};
 	OtShader transparentShader{"OtTransparentVS", "OtTransparentFS"};

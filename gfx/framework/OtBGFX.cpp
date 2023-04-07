@@ -14,7 +14,6 @@
 
 #include "bx/timer.h"
 #include "imgui.h"
-#include "mipmap.h"
 
 #include "OtException.h"
 #include "OtFormat.h"

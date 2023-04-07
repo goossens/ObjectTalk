@@ -28,11 +28,14 @@ void OtSceneRenderer::submitMaterialUniforms(OtScene* scene, OtEntity entity) {
 	if (material.isKindOf<OtPbrMaterialClass>()) {
 		submitPbrUniforms(OtPbrMaterial(material));
 
+	} else if (material.isKindOf<OtTerrainMaterialClass>()) {
+		submitTerrainUniforms(OtTerrainMaterial(material));
+
 	} else if (material.isKindOf<OtBlendMapMaterialClass>()) {
 		submitBlendMapUniforms(OtBlendMapMaterial(material));
 
 	} else {
-		OtError("Internal error: unknown material type [%s]", material->getTypeName());
+		OtError("Internal error: invalid material type [%s]", material->getTypeName());
 	}
 }
 
@@ -95,18 +98,49 @@ void OtSceneRenderer::submitPbrUniforms(OtPbrMaterial material) {
 
 
 //
+//	OtSceneRenderer::submitTerrainUniforms
+//
+
+void OtSceneRenderer::submitTerrainUniforms(OtTerrainMaterial material) {
+	// set the uniform values
+	glm::vec4* uniforms = terrainUniforms.getValues();
+
+	uniforms[0] = glm::vec4(
+		material->region1Transition,
+		material->region2Transition,
+		material->region3Transition,
+		material->scale);
+
+	uniforms[1] = glm::vec4(
+		material->region1Overlap,
+		material->region2Overlap,
+		material->region3Overlap,
+		0.0f);
+
+	uniforms[2] = glm::vec4(material->region1Color, material->region1Texture.isReady());
+	uniforms[3] = glm::vec4(material->region2Color, material->region2Texture.isReady());
+	uniforms[4] = glm::vec4(material->region3Color, material->region3Texture.isReady());
+	uniforms[5] = glm::vec4(material->region4Color, material->region4Texture.isReady());
+
+	// submit the uniforms
+	terrainUniforms.submit();
+
+	// submit all material textures (or dummies if they are not set)
+	submitSampler(textureSampler0, 0, material->region1Texture);
+	submitSampler(textureSampler1, 1, material->region2Texture);
+	submitSampler(textureSampler2, 2, material->region3Texture);
+	submitSampler(textureSampler3, 3, material->region4Texture);
+}
+
+
+//
 //	OtSceneRenderer::submitBlendMapUniforms
 //
 
 void OtSceneRenderer::submitBlendMapUniforms(OtBlendMapMaterial material) {
 	// set the uniform values
 	glm::vec4* uniforms = blendmapUniforms.getValues();
-
-	uniforms[0] = glm::vec4(
-		material->metallic,
-		material->roughness,
-		material->scale,
-		0.0f);
+	uniforms[0] = glm::vec4(material->scale, 0.0f, 0.0f, 0.0f);
 
 	uniforms[1] = glm::vec4(
 		material->noneNormalsTexture.isReady(),

@@ -32,14 +32,14 @@ using OtPbrMaterial = OtObjectPointer<OtPbrMaterialClass>;
 
 class OtPbrMaterialClass : public OtMaterialClass {
 public:
-	// GUI to change geometry properties
+	// GUI to change material properties
 	bool renderGUI() override;
 
-	// (de)serialize geometry
+	// (de)serialize material
 	nlohmann::json serialize(std::filesystem::path* basedir) override;
 	void deserialize(nlohmann::json data, std::filesystem::path* basedir) override;
 
-	// get type name of geometry
+	// get type name of material
 	const char* getTypeName() override { return name; }
 
 	// material name

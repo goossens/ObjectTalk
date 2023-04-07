@@ -28,14 +28,14 @@ using OtMaterial = OtObjectPointer<OtMaterialClass>;
 
 class OtMaterialClass : public OtObjectClass {
 public:
-	// GUI to change geometry properties
+	// GUI to change material properties
 	virtual bool renderGUI() { return false; }
 
-	// (de)serialize geometry
+	// (de)serialize material
 	virtual nlohmann::json serialize(std::filesystem::path* basedir);
 	virtual void deserialize(nlohmann::json data, std::filesystem::path* basedir);
 
-	// get type name of geometry
+	// get type name of material
 	virtual const char* getTypeName() { return name; }
 
 	// material name

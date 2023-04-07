@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include "mipmap.h"
-
 #include "OtException.h"
 
 #include "OtImage.h"
@@ -22,8 +20,8 @@
 //	OtTexture::OtTexture
 //
 
-OtTexture::OtTexture(const std::filesystem::path& path, bool mipmap) {
-	loadFromFile(path, mipmap);
+OtTexture::OtTexture(const std::filesystem::path& path) {
+	loadFromFile(path);
 }
 
 
@@ -88,67 +86,10 @@ static bgfx::TextureHandle createMipmapTexture(bimg::ImageContainer* image) {
 
 
 //
-//	generateMipmapTexture
-//
-
-static bgfx::TextureHandle generateMipmapTexture(bimg::ImageContainer* image) {
-	// sanity check
-	auto bpp = bimg::getBitsPerPixel(image->m_format);
-
-	if (bpp != 24 && bpp != 32) {
-		OtError("Can't generate MipMap for image with %d bits per pixel", bpp);
-	}
-
-	// create a new empty texture
-	bgfx::TextureHandle texture = bgfx::createTexture2D(
-		uint16_t(image->m_width),
-		uint16_t(image->m_height),
-		true,
-		image->m_numLayers,
-		bgfx::TextureFormat::Enum(image->m_format));
-
-	// add first level
-	bgfx::updateTexture2D(
-		texture,
-		0, 0, 0, 0,
-		uint16_t(image->m_width), uint16_t(image->m_height),
-		bgfx::copy(image->m_data, image->m_size));
-
-	// create mipmaps
-	AdmBitmap bitmap;
-	bitmap.width = image->m_width;
-	bitmap.height = image->m_height;
-	bitmap.bytes_per_pixel = bpp / 8;
-	bitmap.pixels = image->m_data;
-
-	int levels;
-	AdmBitmap* mipmaps = adm_generate_mipmaps_no_base(&levels, &bitmap);
-
-	for (auto level = 0; level < levels; level++) {
-		auto width = mipmaps[level].width;
-		auto height = mipmaps[level].height;
-		auto bpp = mipmaps[level].bytes_per_pixel;
-		auto pixels = mipmaps[level].pixels;
-
-		bgfx::updateTexture2D(
-			texture,
-			0, level + 1,
-			0, 0,
-			uint16_t(width), uint16_t(height),
-			bgfx::copy(pixels, width * height * bpp));
-	}
-
-	// cleanup amd return result
-	adm_free_mipmaps(mipmaps, levels);
-	return texture;
-}
-
-
-//
 //	OtTexture::loadFromFile
 //
 
-void OtTexture::loadFromFile(const std::filesystem::path& path, bool mipmap) {
+void OtTexture::loadFromFile(const std::filesystem::path& path) {
 	// get the image
 	OtImage image(path);
 	bimg::ImageContainer* container = image.getContainer();
@@ -160,9 +101,6 @@ void OtTexture::loadFromFile(const std::filesystem::path& path, bool mipmap) {
 	// create texture
 	if (container->m_numMips > 1) {
 		texture = createMipmapTexture(container);
-
-	} else if (mipmap) {
-		texture = generateMipmapTexture(container);
 
 	} else {
 		texture = createRegularTexture(container);

@@ -53,6 +53,9 @@ void OtSceneRenderer::renderGeometry(OtPass& pass, OtScene* scene, OtEntity enti
 	if (material.isKindOf<OtPbrMaterialClass>()) {
 		shader = &geometryShader;
 
+	} else if (material.isKindOf<OtTerrainMaterialClass>()) {
+		shader = &terrainShader;
+
 	} else if (material.isKindOf<OtBlendMapMaterialClass>()) {
 		shader = &blendmapShader;
 	}

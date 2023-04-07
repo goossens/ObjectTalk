@@ -37,7 +37,7 @@ add_dependencies(gfx
 	shaders
 	glfw bgfx
 	imgui imguifd imguieditor
-	glm mipmap tess2
+	glm tess2
 	entt box2d)
 
 target_link_libraries(gfx PUBLIC
@@ -46,7 +46,7 @@ target_link_libraries(gfx PUBLIC
 	shaders
 	glfw bgfx
 	imgui imguifd imguieditor
-	glm mipmap tess2
+	glm tess2
 	entt box2d
 	${GFX_LIBS})
 

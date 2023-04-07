@@ -64,12 +64,11 @@ bool OtBlendMapMaterialClass::renderGUI() {
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Blue Color");
 
 			ImGui::TableNextRow();
-			ImGui::TableNextColumn(); changed |= ImGui::SliderFloat("Metallic", &metallic, 0.0f, 1.0f, "%.2f");
-			ImGui::TableNextColumn(); changed |= ImGui::SliderFloat("Roughness", &roughness, 0.0f, 1.0f, "%.2f");
-
-			ImGui::TableNextRow();
-			ImGui::TableNextColumn(); changed |= ImGui::SliderFloat("Scale", &scale, 0.0f, 100.0f, "%.1f");
 			ImGui::TableNextColumn();
+			ImGui::TableNextColumn(); W(); changed |= ImGui::SliderFloat("##scale", &scale, 0.0f, 100.0f, "%.1f");
+			ImGui::TableNextColumn();
+			ImGui::TableNextColumn();
+			ImGui::TableNextColumn(); ImGui::TextUnformatted("Scale");
 			ImGui::EndTable();
 		}
 
@@ -101,8 +100,6 @@ nlohmann::json OtBlendMapMaterialClass::serialize(std::filesystem::path* basedir
 	data["greenNormals"] = OtPathGetRelative(greenNormalsTexture.getPath(), basedir);
 	data["blueNormals"] = OtPathGetRelative(blueNormalsTexture.getPath(), basedir);
 
-	data["metallic"] = metallic;
-	data["roughness"] = roughness;
 	data["scale"] = scale;
 
 	return data;
@@ -127,8 +124,6 @@ void OtBlendMapMaterialClass::deserialize(nlohmann::json data, std::filesystem::
 	greenNormalsTexture = OtPathGetAbsolute(data, "greenNormals", basedir);
 	blueNormalsTexture = OtPathGetAbsolute(data, "blueNormals", basedir);
 
-	metallic = data.value("metallic", 0.5f);
-	roughness = data.value("roughness", 0.5f);
 	scale = data.value("scale", 1.0f);
 }
 

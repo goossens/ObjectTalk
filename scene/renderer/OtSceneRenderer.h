@@ -62,6 +62,7 @@ private:
 	void renderPostProcessingPass(OtScene* scene);
 
 	// render entitities
+	void renderSky(OtPass& pass, OtSkyComponent& component);
 	void renderSkyBox(OtPass& pass, OtSkyBoxComponent& component);
 	void renderSkySphere(OtPass& pass, OtSkySphereComponent& component);
 	void renderGeometry(OtPass& pass, OtScene* scene, OtEntity entity);
@@ -118,8 +119,8 @@ private:
 	OtUniformVec4 materialUniforms{"u_material", 5};
 	OtUniformVec4 terrainUniforms{"u_terrain", 6};
 	OtUniformVec4 blendmapUniforms{"u_blendmap", 2};
-	OtUniformVec4 backgroundUniforms{"u_background", 1};
 	OtUniformVec4 lightingUniforms{"u_lighting", 3};
+	OtUniformVec4 skyUniforms{"u_sky", 3};
 	OtUniformVec4 gridUniforms{"u_grid", 1};
 	OtUniformVec4 outlineUniforms{"u_outline", 1};
 	OtUniformVec4 bloomUniforms{"u_bloom", 1};
@@ -160,9 +161,6 @@ private:
 	OtSampler lightingEmissiveSampler{"s_lightingEmissiveTexture"};
 	OtSampler lightingDepthSampler{"s_lightingDepthTexture"};
 
-	OtSampler skyBoxSampler{"s_skyBoxTexture"};
-	OtSampler skySphereSampler{"s_skySphereTexture"};
-
 	OtSampler selectedSampler{"s_selectedTexture"};
 
 	OtSampler postProcessSampler{"s_postProcessTexture"};
@@ -177,6 +175,7 @@ private:
 	OtShader gridShader{"OtGridVS", "OtGridFS"};
 	OtShader selectShader{"OtSelectVS", "OtSelectFS"};
 	OtShader outlineShader{"OtOutlineVS", "OtOutlineFS"};
+	OtShader skyShader{"OtSkyVS", "OtSkyFS"};
 	OtShader skyBoxShader{"OtSkyboxVS", "OtSkyboxFS"};
 	OtShader skySphereShader{"OtSkySphereVS", "OtSkySphereFS"};
 	OtShader bloomDownSampleShader{"OtBloomDownSampleVS", "OtBloomDownSampleFS"};

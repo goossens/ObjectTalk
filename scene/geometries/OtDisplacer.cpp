@@ -23,7 +23,7 @@
 //	OtDisplacer::displace
 //
 
-void OtDisplacer::displace(std::vector<OtVertex> &vertices, std::vector<uint32_t> &triangles) {
+void OtDisplacer::displace(std::vector<OtVertex>& vertices, std::vector<uint32_t>& triangles) {
 	// reset vertices and AABB
 	displaced.clear();
 	displaced.reserve(vertices.size());
@@ -126,11 +126,25 @@ void OtDisplacer::deserialize(nlohmann::json data) {
 
 
 //
+//	OtDisplacer::updateHeightmap
+//
+
+void OtDisplacer::updateHeightmap() {
+	if (map.empty()) {
+		heightmap.clear();
+
+	} else {
+		heightmap.load(map);
+	}
+}
+
+
+//
 //	OtDisplacer::displaceByMap
 //
 
-void OtDisplacer::displaceByMap(std::vector<OtVertex> &vertices, std::vector<uint32_t> &triangles) {
-	// apply hieghtmap to all vertices
+void OtDisplacer::displaceByMap(std::vector<OtVertex>& vertices, std::vector<uint32_t>& triangles) {
+	// apply heightmap to all vertices
 	for (auto& vertex : vertices) {
 		OtVertex& newVertex = displaced.emplace_back(vertex);
 		auto offset = heightmap.getHeight(newVertex.uv.x, newVertex.uv.y) * scale;
@@ -140,7 +154,7 @@ void OtDisplacer::displaceByMap(std::vector<OtVertex> &vertices, std::vector<uin
 	}
 
 	// (re)calculate all normals
-	reclaculateNormals(triangles);
+	recalculateNormals(triangles);
 }
 
 
@@ -148,7 +162,7 @@ void OtDisplacer::displaceByMap(std::vector<OtVertex> &vertices, std::vector<uin
 //	OtDisplacer::displaceByNoise
 //
 
-void OtDisplacer::displaceByNoise(std::vector<OtVertex> &vertices, std::vector<uint32_t> &triangles) {
+void OtDisplacer::displaceByNoise(std::vector<OtVertex>& vertices, std::vector<uint32_t>& triangles) {
 	// apply noise to all vertices
 	FastNoiseLite noise;
 	noise.SetFractalType(FastNoiseLite::FractalType::FractalType_FBm);
@@ -168,21 +182,21 @@ void OtDisplacer::displaceByNoise(std::vector<OtVertex> &vertices, std::vector<u
 	}
 
 	// (re)calculate all normals
-	reclaculateNormals(triangles);
+	recalculateNormals(triangles);
 }
 
 
 //
-//	OtDisplacer::reclaculateNormals
+//	OtDisplacer::recalculateNormals
 //
 
-void OtDisplacer::reclaculateNormals(std::vector<uint32_t>& triangles) {
+void OtDisplacer::recalculateNormals(std::vector<uint32_t>& triangles) {
 	for (auto c = 0; c < triangles.size(); c += 3) {
 		OtVertex& v0 = displaced[triangles[c]];
 		OtVertex& v1 = displaced[triangles[c + 1]];
 		OtVertex& v2 = displaced[triangles[c + 2]];
 
-		auto normal = glm::normalize(glm::cross(v1.position - v0.position, v2.position - v0.position));
+		auto normal = glm::normalize(glm::cross(v2.position - v1.position, v0.position - v1.position));
 		v0.normal += normal;
 		v1.normal += normal;
 		v2.normal += normal;
@@ -190,19 +204,5 @@ void OtDisplacer::reclaculateNormals(std::vector<uint32_t>& triangles) {
 
 	for (auto& vertex : displaced) {
 		vertex.normal = glm::normalize(vertex.normal);
-	}
-}
-
-
-//
-//	OtDisplacer::updateHeightmap
-//
-
-void OtDisplacer::updateHeightmap() {
-	if (map.empty()) {
-		heightmap.clear();
-
-	} else {
-		heightmap.load(map);
 	}
 }

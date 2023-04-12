@@ -48,9 +48,10 @@ public:
 
 private:
 	// displacement functions
+	void updateHeightmap();
 	void displaceByMap(std::vector<OtVertex>& vertices, std::vector<uint32_t>& triangles);
 	void displaceByNoise(std::vector<OtVertex>& vertices, std::vector<uint32_t>& triangles);
-	void reclaculateNormals(std::vector<uint32_t>& triangles);
+	void recalculateNormals(std::vector<uint32_t>& triangles);
 
 	// state
 	enum {
@@ -64,7 +65,6 @@ private:
 	// displacement map properies
 	std::filesystem::path map;
 	OtHeightMap heightmap;
-	void updateHeightmap();
 
 	// noise displacement properties
 	int seed = 1337;

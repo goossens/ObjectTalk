@@ -65,18 +65,18 @@ void OtSceneRenderer::renderPreProcessingPass(OtScene* scene, OtEntity selected)
 
 			// see if model is ready
 			auto& model = scene->getComponent<OtModelComponent>(entity).model;
-			
+
 			if (model.isReady()) {
 				// get the geometry's AABB in worldspace
 				auto& transform = scene->getComponent<OtTransformComponent>(entity);
 				auto aabb = model->getAABB();
 				aabb.transform(transform.getTransform());
-				
+
 				// is this one visible
 				if (frustum.isVisibleAABB(aabb)) {
 					// add to list
 					opaqueModels.push_back(entity);
-					
+
 					// activate highlighting if this entity is selected
 					if (entity == selected) {
 						renderEntityHighlight = true;
@@ -92,6 +92,10 @@ void OtSceneRenderer::renderPreProcessingPass(OtScene* scene, OtEntity selected)
 
 	// see if we have any sky objects
 	hasSkyObjects = false;
+
+	for (auto [entity, component] : scene->view<OtSkyComponent>().each()) {
+		hasSkyObjects = true;
+	};
 
 	for (auto [entity, component] : scene->view<OtSkyBoxComponent>().each()) {
 		if (component.cubemap.isReady()) {

@@ -9,6 +9,7 @@ $input v_position
 #include <bgfx.glsl>
 
 uniform vec4 u_sky[3];
+
 #define u_time u_sky[0].x
 #define u_cirrus u_sky[0].y
 #define u_cumulus u_sky[0].z

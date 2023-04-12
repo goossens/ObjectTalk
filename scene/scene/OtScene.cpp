@@ -181,7 +181,7 @@ OtEntity OtScene::deserializeEntityFromJson(nlohmann::json &data, std::filesyste
 		deserializeComponentsFromJson<OtSceneComponents>(component, this, entity, basedir);
 	}
 
-	// remap the entity's UUID (deserialized UUID is different from created UUID)
+	// remap the entity's UUID ("stored" UUID is different from "created" UUID)
 	remapEntityUuid(entity, tmpUuid, getEntityUuid(entity));
 
 	// deserialize all its children

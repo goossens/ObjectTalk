@@ -10,6 +10,8 @@
 //	Include files
 //
 
+#include <algorithm>
+
 #include "OtException.h"
 
 #include "OtMaterials.h"
@@ -172,14 +174,20 @@ void OtSceneRenderer::submitBlendMapUniforms(OtBlendMapMaterial material) {
 
 void OtSceneRenderer::submitLightUniforms(OtScene* scene) {
 	// get the directional light information
-	glm::vec3 direction = glm::vec3(0.0);
-	glm::vec3 color = glm::vec3(0.0);
+	glm::vec3 direction = glm::vec3(0.0f);
+	glm::vec3 color = glm::vec3(0.0f);
 	float ambient = 0.0f;
 
 	for (auto&& [entity, light, transform] : scene->view<OtDirectionalLightComponent, OtTransformComponent>().each()) {
 		direction = transform.getTransform()[3];
 		color = light.color;
 		ambient = light.ambient;
+	}
+
+	for (auto&& [entity, sky] : scene->view<OtSkyComponent>().each()) {
+		direction = sky.getDirectionToSun();
+		color = glm::vec3(0.2f + std::clamp(sky.elevation / 10.0f, 0.0f, 0.8f));
+		ambient = std::clamp((sky.elevation + 6.0f) / 200.0f, 0.0f, 0.2f);
 	}
 
 	// build and submit the light uniforms

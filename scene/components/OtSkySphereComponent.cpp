@@ -23,7 +23,6 @@
 //	OtSkySphereComponent::renderGUI
 //
 
-
 bool OtSkySphereComponent::renderGUI() {
 	bool changed = false;
 	changed |= texture.renderGUI("Image");

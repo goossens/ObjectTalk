@@ -122,9 +122,6 @@ protected:
 
 		addLine(offset, offset + 1);
 		addLine(offset + 1, offset + 2);
-		addLine(offset + 2, offset);
-
-		addLine(offset, offset + 2);
 		addLine(offset + 2, offset + 3);
 		addLine(offset + 3, offset);
 	}

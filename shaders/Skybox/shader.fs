@@ -9,14 +9,14 @@ $input v_texcoord0
 #include <bgfx.glsl>
 
 // uniforms
-uniform vec4 u_background[3];
-#define u_brightness u_background[0].x
-#define u_gamma u_background[0].y
+uniform vec4 u_sky[3];
+#define u_brightness u_sky[0].x
+#define u_gamma u_sky[0].y
 
-SAMPLERCUBE(s_skyBoxTexture, 0);
+SAMPLERCUBE(s_textureSampler0, 0);
 
 void main() {
-	vec3 color = textureCube(s_skyBoxTexture, v_texcoord0).rgb;
+	vec3 color = textureCube(s_textureSampler0, v_texcoord0).rgb;
 	color = pow(color, vec3_splat(u_gamma));
 	color = u_brightness * color;
 	gl_FragColor = vec4(color, 1.0f);

@@ -80,11 +80,10 @@ void OtPlaneGeometryClass::fillGeometry() {
 			auto x = ix * segmentWidth - 0.5f;
 			auto u = (float) ix / (float) widthSegments;
 			auto v = (float) iy / (float) heightSegments;
-			float z = 0.0;
 
 			addVertex(OtVertex(
-				glm::vec3(x, y, z),
-				glm::vec3(0.0, 0.0, 1.0),
+				glm::vec3(x, y, 0.0f),
+				glm::vec3(0.0f, 0.0f, 1.0f),
 				glm::vec2(u, v)));
 		}
 	}

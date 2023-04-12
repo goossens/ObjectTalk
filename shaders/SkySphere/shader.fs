@@ -9,9 +9,9 @@ $input v_texcoord0
 #include <bgfx.glsl>
 
 // uniforms
-uniform vec4 u_background[3];
-#define u_brightness u_background[0].x
-#define u_gamma u_background[0].y
+uniform vec4 u_sky[3];
+#define u_brightness u_sky[0].x
+#define u_gamma u_sky[0].y
 
 SAMPLER2D(s_skySphereTexture, 0);
 

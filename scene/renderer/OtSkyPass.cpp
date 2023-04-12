@@ -9,8 +9,11 @@
 //	Include files
 //
 
+#include <cmath>
+
 #include <glm/gtx/quaternion.hpp>
 #include "glm/gtx/matrix_decompose.hpp"
+#include "imgui.h"
 
 #include "OtSceneRenderer.h"
 
@@ -38,6 +41,11 @@ void OtSceneRenderer::renderSkyPass(OtScene* scene) {
 	pass.setFrameBuffer(compositeBuffer);
 	pass.setTransform(newViewMatrix, projectionMatrix);
 
+	// see if we have any sky components
+	for (auto [entity, component] : scene->view<OtSkyComponent>().each()) {
+		renderSky(pass, component);
+	};
+
 	// see if we have any sky boxes
 	for (auto [entity, component] : scene->view<OtSkyBoxComponent>().each()) {
 		if (component.cubemap.isReady()) {
@@ -55,6 +63,44 @@ void OtSceneRenderer::renderSkyPass(OtScene* scene) {
 
 
 //
+//	OtSceneRenderer::renderSky
+//
+
+void OtSceneRenderer::renderSky(OtPass& pass, OtSkyComponent& component) {
+	// setup the mesh
+	if (!unitySphereGeometry) {
+		unitySphereGeometry = OtSphereGeometry::create();
+	}
+
+	unitySphereGeometry->submitTriangles();
+
+	// set the uniform values
+	static float time = 0.0f;
+	time += ImGui::GetIO().DeltaTime;
+
+	skyUniforms.set(0, glm::vec4(
+		time * component.speed / 10.0f,
+		component.cirrus,
+		component.cumulus,
+		0.0f));
+
+	skyUniforms.set(1, glm::vec4(
+		component.rayleighCoefficient / 1000.0f,
+		component.mieCoefficient / 1000.0f,
+		component.mieScattering,
+		0.0f));
+
+	skyUniforms.set(2, glm::vec4(component.getDirectionToSun(), 0.0f));
+	skyUniforms.submit();
+
+	// run the shader
+	skyShader.setState(OtStateWriteRgb | OtStateWriteA);
+	pass.runShader(skyShader);
+
+}
+
+
+//
 //	OtSceneRenderer::renderSkyBox
 //
 
@@ -67,12 +113,12 @@ void OtSceneRenderer::renderSkyBox(OtPass& pass, OtSkyBoxComponent& component) {
 	unityBoxGeometry->submitTriangles();
 
 	// set the uniform values
-	glm::vec4* uniforms = backgroundUniforms.getValues();
+	glm::vec4* uniforms = skyUniforms.getValues();
 	uniforms[0] = glm::vec4(component.brightness, component.gamma, 0.0f, 0.0f);
-	backgroundUniforms.submit();
+	skyUniforms.submit();
 
 	// submit texture via sampler
-	skyBoxSampler.submit(0, component.cubemap->getCubeMap());
+	textureSampler0.submit(0, component.cubemap->getCubeMap());
 
 	// run the shader
 	skyBoxShader.setState(OtStateWriteRgb | OtStateWriteA);
@@ -93,12 +139,12 @@ void OtSceneRenderer::renderSkySphere(OtPass& pass, OtSkySphereComponent& compon
 	unitySphereGeometry->submitTriangles();
 
 	// set the uniform values
-	glm::vec4* uniforms = backgroundUniforms.getValues();
+	glm::vec4* uniforms = skyUniforms.getValues();
 	uniforms[0] = glm::vec4(component.brightness, component.gamma, 0.0f, 0.0f);
-	backgroundUniforms.submit();
+	skyUniforms.submit();
 
 	// submit texture via sampler
-	skySphereSampler.submit(0, component.texture->getTexture());
+	textureSampler0.submit(0, component.texture->getTexture());
 
 	// run the shader
 	skySphereShader.setState(OtStateWriteRgb | OtStateWriteA);

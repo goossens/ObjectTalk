@@ -13,7 +13,7 @@
 #include "OtFunction.h"
 #include "OtModule.h"
 
-#include "OtMath.h"
+#include "OtMathModule.h"
 #include "OtMatrix.h"
 #include "OtVec2.h"
 #include "OtVec3.h"
@@ -21,10 +21,10 @@
 
 
 //
-//	OtMathRegister
+//	OtMathModuleRegister
 //
 
-void OtMathRegister() {
+void OtMathModuleRegister() {
 	OtModuleClass::registerInternal("math", [](OtModule module) {
 		module->set("Matrix", OtClass::create(OtMatrixClass::getMeta()));
 		module->set("Vec2", OtClass::create(OtVec2Class::getMeta()));

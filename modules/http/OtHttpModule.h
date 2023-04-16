@@ -16,7 +16,7 @@
 
 
 //
-//	OtInputRegister
+//	OtHttpModuleRegister
 //
 
-void OtInputRegister();
+void OtHttpModuleRegister();

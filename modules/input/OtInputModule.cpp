@@ -15,7 +15,7 @@
 #include "OtInteger.h"
 #include "OtModule.h"
 
-#include "OtInput.h"
+#include "OtInputModule.h"
 #include "OtVec2.h"
 
 
@@ -188,10 +188,10 @@ static OtObject GetMouseDrag() {
 
 
 //
-//	OtInputRegister
+//	OtInputModuleRegister
 //
 
-void OtInputRegister() {
+void OtInputModuleRegister() {
 	OtModuleClass::registerInternal("input", [](OtModule module) {
 		// register enums
 		RegisterEnums(module);

@@ -24,9 +24,6 @@ using OtHttp = OtObjectPointer<OtHttpClass>;
 
 class OtHttpClass : public OtObjectClass {
 public:
-	// register GUI module
-	static void registerModule();
-
 	// get type definition
 	static OtType getMeta();
 };

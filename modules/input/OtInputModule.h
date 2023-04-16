@@ -16,7 +16,7 @@
 
 
 //
-//	OtMathRegister
+//	OtInputModuleRegister
 //
 
-void OtMathRegister();
+void OtInputModuleRegister();

@@ -5,26 +5,18 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 
+#pragma once
+
+
 //
 //	Include files
 //
 
-#include "OtClass.h"
-#include "OtModule.h"
-
-#include "OtHttp.h"
+#include "OtObject.h"
 
 
 //
-//	OtHttpClass::getMeta
+//	OtMathModuleRegister
 //
 
-OtType OtHttpClass::getMeta() {
-	static OtType type;
-
-	if (!type) {
-		type = OtType::create<OtHttpClass>("Http", OtObjectClass::getMeta());
-	}
-
-	return type;
-}
+void OtMathModuleRegister();

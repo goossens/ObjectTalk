@@ -15,6 +15,8 @@
 #include <string>
 #include <filesystem>
 
+#include "glm/glm.hpp"
+
 #include "bimg/bimg.h"
 
 
@@ -49,10 +51,15 @@ public:
 
 	// get information about image
 	bimg::ImageContainer* getContainer();
-	int getWidth() { return (int) image->m_width; }
-	int getHeight() { return (int) image->m_height; }
+	size_t getWidth() { return (size_t) image->m_width; }
+	size_t getHeight() { return (size_t) image->m_height; }
 	void* getPixels() { return image->m_data; }
-	int getBitsPerPixel() { return (int) bimg::getBitsPerPixel(image->m_format); }
+	size_t getBitsPerPixel() { return (size_t) bimg::getBitsPerPixel(image->m_format); }
+
+	// get pixel values
+	glm::vec4 getPixelRgba(size_t x, size_t y);
+	float getPixelGray(size_t x, size_t y);
+	float sampleValue(float x, float y);
 
 private:
 	// the actual image

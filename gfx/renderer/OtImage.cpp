@@ -9,11 +9,14 @@
 //	Include files
 //
 
+#include <algorithm>
+
 #include "bx/allocator.h"
 #include "bx/file.h"
 #include "bimg/decode.h"
 
 #include "OtException.h"
+#include "OtNumbers.h"
 
 #include "OtImage.h"
 #include "OtFrameworkAtExit.h"
@@ -200,4 +203,65 @@ bimg::ImageContainer* OtImage::getContainer() {
 		// just return a dummy image to keep everybody happy
 		return dummy;
 	}
+}
+
+
+//
+//	OtImage::getPixelRgba
+//
+
+glm::vec4 OtImage::getPixelRgba(size_t x, size_t y) {
+	x = std::clamp(x, (size_t) 0, (size_t) (image->m_width - 1));
+	y = std::clamp(y, (size_t) 0, (size_t) (image->m_height - 1));
+
+	if (image->m_format == bimg::TextureFormat::R8) {
+		auto value = ((float*) image->m_data)[y * image->m_width + x];
+		return glm::vec4(value, value, value,1.0f);
+
+	} else {
+		auto value = &((uint8_t*) image->m_data)[y * image->m_width + x];
+		return glm::vec4((float) value[0] / 255.0f, (float) value[1] / 255.0f, (float) value[2] / 255.0f, (float) value[3] / 255.0f);
+	}
+}
+
+
+//
+//	OtImage::getPixelGray
+//
+
+float OtImage::getPixelGray(size_t x, size_t y) {
+	x = std::clamp(x, (size_t) 0, (size_t) image->m_width - 1);
+	y = std::clamp(y, (size_t) 0, (size_t) image->m_height - 1);
+
+	if (image->m_format == bimg::TextureFormat::R8) {
+		return ((float*) image->m_data)[y * image->m_width + x];
+
+	} else {
+		auto value = &((uint8_t*) image->m_data)[y * image->m_width + x];
+		return (float) value[0] / 255.0f * 0.3f + (float) value[1] / 255.0f * 0.59f + (float) value[2] / 255.0f * 0.11f;
+	}
+}
+
+
+//
+//	OtImage::sampleValue
+//
+
+float OtImage::sampleValue(float x, float y) {
+	x *= image->m_width - 1;
+	y *= image->m_height - 1;
+
+	int x1 = std::floor(x);
+	int y1 = std::floor(y);
+	int x2 = x1 + 1;
+	int y2 = y1 + 1;
+
+	auto h11 = getPixelGray(x1, y1);
+	auto h21 = getPixelGray(x2, y1);
+	auto h12 = getPixelGray(x1, y2);
+	auto h22 = getPixelGray(x2, y2);
+
+	auto hx1 = std::lerp(h11, h21, x - x1);
+	auto hx2 = std::lerp(h12, h22, x - x1);
+	return std::lerp(hx1, hx2, y - y1);
 }

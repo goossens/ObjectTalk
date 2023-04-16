@@ -1,5 +1,5 @@
 #	ObjectTalk Scripting Language
-#	Copyright (c) 2020-2023 Johan A. Goossens. All rights reserved.
+#	Copyright (c) 1993-2023 Johan A. Goossens. All rights reserved.
 #
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
@@ -33,7 +33,6 @@ target_include_directories(gfx PUBLIC ${GFX_INCLUDE_DIRS})
 
 add_dependencies(gfx
 	ot
-	math
 	shaders
 	glfw bgfx
 	imgui imguifd imguieditor
@@ -42,7 +41,6 @@ add_dependencies(gfx
 
 target_link_libraries(gfx PUBLIC
 	ot
-	math
 	shaders
 	glfw bgfx
 	imgui imguifd imguieditor

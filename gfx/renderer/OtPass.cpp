@@ -59,15 +59,18 @@ OtPass::OtPass() {
 //	OtPass::setClear
 //
 
-void OtPass::setClear(bool color, bool depth, uint32_t rgba, float depthValue) {
+void OtPass::setClear(bool color, bool depth, const glm::vec4& rgba, float depthValue) {
 	if (!view) {
 		OtLogFatal("Internal error: rendering slot for pass not reserved");
 	}
 
+	glm::u8vec4 result = glm::u8vec4(glm::round(rgba * 255.0f));
+	uint32_t clearColor = (result[0] << 24) | (result[1] << 16) | (result[2] << 8) | result[3];
+
 	bgfx::setViewClear(
 		view,
 		(color ? BGFX_CLEAR_COLOR : BGFX_CLEAR_NONE) | (depth ? BGFX_CLEAR_DEPTH : BGFX_CLEAR_NONE),
-		rgba,
+		clearColor,
 		depthValue);
 }
 

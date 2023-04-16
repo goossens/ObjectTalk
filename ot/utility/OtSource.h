@@ -37,7 +37,7 @@ public:
 	// get part of source code
 	std::string substr(size_t position, size_t size) { return source.substr(position, size); }
 
-	// get start.end of line
+	// get start/end of line
 	size_t getStartOfLine(size_t location);
 	size_t getEndOfLine(size_t location);
 

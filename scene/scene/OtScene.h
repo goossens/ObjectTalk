@@ -23,6 +23,7 @@
 #include "OtCameraComponent.h"
 #include "OtDirectionalLightComponent.h"
 #include "OtGeometryComponent.h"
+#include "OtInstancingComponent.h"
 #include "OtMaterialComponent.h"
 #include "OtModelComponent.h"
 #include "OtScriptComponent.h"
@@ -38,9 +39,10 @@
 //
 
 #define OtSceneComponents \
-	OtTransformComponent, \
 	OtGeometryComponent, \
 	OtModelComponent, \
+	OtTransformComponent, \
+	OtInstancingComponent, \
 	OtMaterialComponent, \
 	OtCameraComponent, \
 	OtDirectionalLightComponent, \

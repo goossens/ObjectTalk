@@ -20,21 +20,21 @@ int OtSceneRenderer::render(OtScene* scene, OtEntity selected) {
 	// render all passes
 	renderPreProcessingPass(scene, selected);
 
-	if (hasOpaqueObjects) {
+	if (hasOpaqueEntities) {
 		renderGeometryPass(scene);
 	}
 
 	renderBackgroundPass(scene);
 
-	if (hasSkyObjects) {
+	if (hasSkyEntities) {
 		renderSkyPass(scene);
 	}
 
-	if (hasOpaqueObjects) {
+	if (hasOpaqueEntities) {
 		renderLightingPass(scene);
 	}
 
-	if (hasTransparentObjects) {
+	if (hasTransparentEntities) {
 		renderTransparentPass(scene);
 	}
 

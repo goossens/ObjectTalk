@@ -17,6 +17,7 @@
 #include "OtUi.h"
 
 #include "OtDisplacer.h"
+#include "OtPathTools.h"
 
 
 //
@@ -90,10 +91,10 @@ bool OtDisplacer::renderGUI() {
 //	OtDisplacer::serialize
 //
 
-nlohmann::json OtDisplacer::serialize() {
+nlohmann::json OtDisplacer::serialize(std::filesystem::path* basedir) {
 	auto data = nlohmann::json::object();
 	data["state"] = state;
-	data["map"] = map;
+	data["map"] = OtPathGetRelative(map, basedir);
 	data["seed"] = seed;
 	data["octaves"] = octaves;
 	data["frequency"] = frequency;
@@ -108,10 +109,10 @@ nlohmann::json OtDisplacer::serialize() {
 //	OtDisplacer::deserialize
 //
 
-void OtDisplacer::deserialize(nlohmann::json data) {
+void OtDisplacer::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
 	auto oldmap = map;
 	state = data.value("state", Off);
-	map = data.value("map", "");
+	map = OtPathGetAbsolute(data, "map", basedir);
 	seed = data.value("seed", 1337);
 	octaves = data.value("octaves", 3);
 	frequency = data.value("frequency", 2.0f);

@@ -27,17 +27,14 @@ void OtSceneRenderer::renderBackgroundPass(OtScene* scene) {
 		backgroundColor = component.color;
 	}
 
-	glm::u8vec3 result = glm::u8vec3(glm::round(backgroundColor * 255.0f));
-	uint32_t clearColor = (result[0] << 24) | (result[1] << 16) | (result[2] << 8) | 255;
-
 	// setup pass
 	OtPass pass;
-	pass.setClear(true, !hasOpaqueObjects, clearColor);
+	pass.setClear(true, !hasOpaqueEntities, glm::vec4(backgroundColor, 1.0f));
 	pass.setRectangle(0, 0, width, height);
 	pass.setFrameBuffer(compositeBuffer);
 
-	// copy depth buffer from geometry gbuffer to the composite framebuffer (if we already rendered opaque objects)
-	if (hasOpaqueObjects) {
+	// copy depth buffer from gbuffer to the composite framebuffer (if we already rendered opaque objects)
+	if (hasOpaqueEntities) {
 		pass.blit(compositeBuffer.getDepthTexture(), 0, 0, gbuffer.getDepthTexture());
 	}
 }

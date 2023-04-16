@@ -1,0 +1,48 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2023 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+
+#pragma once
+
+
+//
+//	Include files
+//
+
+#include <vector>
+
+#include "nlohmann/json_fwd.hpp"
+
+#include "OtTransformComponent.h"
+
+
+//
+//	OtInstancingComponent
+//
+
+class OtInstancingComponent {
+public:
+	// GUI to change component properties
+	bool renderGUI();
+
+	// (de)serialize component
+	nlohmann::json serialize(std::filesystem::path* basedir);
+	void deserialize(nlohmann::json data, std::filesystem::path* basedir);
+
+	// component name
+	static constexpr char const* name = "Instancing";
+
+	// manipulate instances
+	void clearInstances() { transforms.clear(); }
+	void appendInstance(const glm::vec3& translation, const glm::vec3& rotation, const glm::vec3& scale);
+	OtTransformComponent& getInstance(size_t index) { return transforms[index]; }
+	void setInstance(size_t index, const glm::vec3& translation, const glm::vec3& rotation, const glm::vec3& scale);
+	void eraseInstance(size_t index) { transforms.erase(transforms.begin() + index); }
+	size_t instanceCount() { return transforms.size(); }
+
+	// stored properties
+	std::vector<OtTransformComponent> transforms;
+};

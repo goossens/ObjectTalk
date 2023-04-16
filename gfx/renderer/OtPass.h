@@ -31,7 +31,7 @@ public:
 	OtPass();
 
 	// manipulate pass
-	void setClear(bool color, bool depth, uint32_t rgba=0x000000ff, float depthValue=1.0f);
+	void setClear(bool color, bool depth, const glm::vec4& rgba=glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), float depthValue=1.0f);
 	void setRectangle(int x, int y, int w, int h);
 	void setFrameBuffer(OtFrameBuffer& framebuffer);
 	void setFrameBuffer(OtGbuffer& gbuffer);

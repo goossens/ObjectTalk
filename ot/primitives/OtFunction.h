@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include <filesystem>
+
 #include "OtBoolean.h"
 #include "OtPrimitive.h"
 #include "OtInteger.h"
@@ -32,6 +34,7 @@ inline OtObject OtObjectCreate(size_t value) { return OtInteger::create(value); 
 inline OtObject OtObjectCreate(float value) { return OtReal::create(value); }
 inline OtObject OtObjectCreate(double value) { return OtReal::create(value); }
 inline OtObject OtObjectCreate(const std::string& value) { return OtString::create(value); }
+inline OtObject OtObjectCreate(const std::filesystem::path& value) { return OtString::create(value.string()); }
 
 
 //

@@ -68,12 +68,12 @@ void OtLogger::log(const char* filename, int lineno, int type, const std::string
 
 	// send to STDERR (if required)
 	if (logToStderr) {
-		std::cerr << timestamp << " [" << messageType << "] " << shortname.c_str() << " (" << lineno << "): " << message << std::endl;
+		std::cerr << timestamp << " [" << messageType << "] " << shortname.string() << " (" << lineno << "): " << message << std::endl;
 	}
 
 	// send to log file (if required)
 	if (ofs.is_open()) {
-		ofs << timestamp << " [" << messageType << "] " << shortname.c_str() << "(" << lineno << "): " << message << std::endl;
+		ofs << timestamp << " [" << messageType << "] " << shortname.string() << "(" << lineno << "): " << message << std::endl;
 	}
 
 	// throw exception or terminate program (if required)

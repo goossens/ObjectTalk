@@ -70,18 +70,18 @@ OtAABB OtAABB::transform(const glm::mat4& matrix) {
 	glm::vec3 points[8] = {
 		{ minp.x, minp.y, minp.z },
 		{ minp.x, minp.y, maxp.z },
-		{ minp.x, maxp.y, maxp.z },
 		{ minp.x, maxp.y, minp.z },
+		{ minp.x, maxp.y, maxp.z },
 
 		{ maxp.x, minp.y, minp.z },
 		{ maxp.x, minp.y, maxp.z },
-		{ maxp.x, maxp.y, maxp.z },
-		{ maxp.x, maxp.y, minp.z }
+		{ maxp.x, maxp.y, minp.z },
+		{ maxp.x, maxp.y, maxp.z }
 	};
 
 	OtAABB aabb;
 
-	for (auto i = 0; i < 6; i++) {
+	for (auto i = 0; i < 8; i++) {
 		aabb.addPoint(matrix * glm::vec4(points[i], 1.0));
 	}
 

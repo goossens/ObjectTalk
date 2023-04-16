@@ -20,7 +20,7 @@
 #include "OtLog.h"
 #include "OtModule.h"
 
-#include "OtHttp.h"
+#include "OtHttpModule.h"
 
 #if defined(INCLUDE_GUI)
 #include "OtFramework.h"
@@ -82,7 +82,7 @@ int main(int argc, char* argv[]) {
 		OtLibUv::init(argc, argv);
 
 		// register HTTP module
-		OtHttpClass::registerModule();
+		OtHttpModuleRegister();
 
 		// where any files specified?
 		if (files.size() == 0) {

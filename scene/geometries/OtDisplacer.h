@@ -43,8 +43,8 @@ public:
 	bool renderGUI();
 
 	// (de)serialize properties
-	nlohmann::json serialize();
-	void deserialize(nlohmann::json data);
+	nlohmann::json serialize(std::filesystem::path* basedir);
+	void deserialize(nlohmann::json data, std::filesystem::path* basedir);
 
 private:
 	// displacement functions

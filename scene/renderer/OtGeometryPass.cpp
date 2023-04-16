@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include "glm/glm.hpp"
 #include "imgui.h"
 
 #include "OtSceneRenderer.h"
@@ -24,7 +25,7 @@ void OtSceneRenderer::renderGeometryPass(OtScene* scene) {
 
 	// setup pass
 	OtPass pass;
-	pass.setClear(true, true, 0);
+	pass.setClear(true, true, glm::vec4(0.0f));
 	pass.setRectangle(0, 0, width, height);
 	pass.setFrameBuffer(gbuffer);
 	pass.setTransform(viewMatrix, projectionMatrix);
@@ -55,7 +56,7 @@ void OtSceneRenderer::renderGeometry(OtPass& pass, OtScene* scene, OtEntity enti
 
 	} else if (material.isKindOf<OtTerrainMaterialClass>()) {
 		shader = &terrainShader;
- 
+
 	} else if (material.isKindOf<OtBlendMapMaterialClass>()) {
 		shader = &blendmapShader;
 	}

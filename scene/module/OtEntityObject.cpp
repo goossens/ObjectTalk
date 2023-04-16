@@ -14,6 +14,7 @@
 #include "OtAnimation.h"
 #include "OtAnimator.h"
 #include "OtEntityObject.h"
+#include "OtInstancingComponentObject.h"
 #include "OtSceneObject.h"
 #include "OtTransformComponentObject.h"
 
@@ -22,7 +23,7 @@
 //	OtEntityObjectClass::linkToECS
 //
 
-void OtEntityObjectClass::linkToECS(OtScene *s, OtEntity e) {
+void OtEntityObjectClass::linkToECS(OtScene* s, OtEntity e) {
 	scene = s;
 	entity = e;
 }
@@ -32,7 +33,7 @@ void OtEntityObjectClass::linkToECS(OtScene *s, OtEntity e) {
 //	OtEntityObjectClass::entityExists
 //
 
-bool OtEntityObjectClass::entityExists(const std::string & tag) {
+bool OtEntityObjectClass::entityExists(const std::string& tag) {
 	return scene->hasEntity(tag);
 }
 
@@ -41,7 +42,7 @@ bool OtEntityObjectClass::entityExists(const std::string & tag) {
 //	OtEntityObjectClass::getEntity
 //
 
-OtObject OtEntityObjectClass::getEntity(const std::string &tag) {
+OtObject OtEntityObjectClass::getEntity(const std::string& tag) {
 	// get the entity
 	auto entity = scene->getEntity(tag);
 
@@ -87,6 +88,24 @@ OtObject OtEntityObjectClass::getTransformComponent() {
 
 
 //
+//	OtEntityObjectClass::hasInstancingComponent
+//
+
+bool OtEntityObjectClass::hasInstancingComponent() {
+	return scene->hasComponent<OtInstancingComponent>(entity);
+}
+
+
+//
+//	OtEntityObjectClass::getInstancingComponent
+//
+
+OtObject OtEntityObjectClass::getInstancingComponent() {
+	return OtInstancingComponentObject::create(&scene->getComponent<OtInstancingComponent>(entity));
+}
+
+
+//
 //	OtEntityObjectClass::getMeta
 //
 
@@ -102,8 +121,10 @@ OtType OtEntityObjectClass::getMeta() {
 		type->set("createAnimation", OtFunction::create(&OtEntityObjectClass::createAnimation));
 
 		type->set("hasTransformComponent", OtFunction::create(&OtEntityObjectClass::hasTransformComponent));
-
 		type->set("getTransformComponent", OtFunction::create(&OtEntityObjectClass::getTransformComponent));
+
+		type->set("hasInstancingComponent", OtFunction::create(&OtEntityObjectClass::hasInstancingComponent));
+		type->set("getInstancingComponent", OtFunction::create(&OtEntityObjectClass::getInstancingComponent));
 	}
 
 	return type;

@@ -115,8 +115,8 @@ void OtGlobalClass::doAssert(bool condition) {
 //	OtGlobalClass::import
 //
 
-OtObject OtGlobalClass::import(const std::string name) {
-	return OtModuleClass::import(name);
+OtObject OtGlobalClass::import(const std::filesystem::path& path) {
+	return OtModuleClass::import(path.string());
 }
 
 

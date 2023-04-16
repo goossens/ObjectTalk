@@ -61,6 +61,12 @@ private:
 	void renderHighlightPass(OtScene* scene, OtEntity selected);
 	void renderPostProcessingPass(OtScene* scene);
 
+	// preprocess entities
+	void preprocessSingleInstanceGeometry(OtScene* scene, OtEntity entity, bool selected);
+	void preprocessMultipleInstanceGeometry(OtScene* scene, OtEntity entity, bool selected);
+	void preprocessSingleInstanceModel(OtScene* scene, OtEntity entity, bool selected);
+	void preprocessMultipleInstanceModel(OtScene* scene, OtEntity entity, bool selected);
+
 	// render entitities
 	void renderSky(OtPass& pass, OtSkyComponent& component);
 	void renderSkyBox(OtPass& pass, OtSkyBoxComponent& component);
@@ -110,9 +116,9 @@ private:
 	std::vector<OtEntity> opaqueModels;
 	std::vector<OtEntity> transparentGeometries;
 	std::vector<OtEntity> transparentModels;
-	bool hasOpaqueObjects = false;
-	bool hasTransparentObjects = false;
-	bool hasSkyObjects = false;
+	bool hasOpaqueEntities = false;
+	bool hasTransparentEntities = false;
+	bool hasSkyEntities = false;
 	bool renderEntityHighlight = false;
 
 	// uniforms

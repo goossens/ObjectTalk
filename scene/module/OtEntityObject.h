@@ -43,8 +43,10 @@ public:
 
 	// access components
 	bool hasTransformComponent();
-
 	OtObject getTransformComponent();
+
+	bool hasInstancingComponent();
+	OtObject getInstancingComponent();
 
 	// get type definition
 	static OtType getMeta();

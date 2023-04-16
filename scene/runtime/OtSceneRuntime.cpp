@@ -15,8 +15,9 @@
 #include "OtLog.h"
 
 #include "OtAssetManager.h"
-#include "OtInput.h"
-#include "OtMath.h"
+#include "OtGraphicsModule.h"
+#include "OtInputModule.h"
+#include "OtMathModule.h"
 
 #include "OtAnimator.h"
 #include "OtEntityObject.h"
@@ -106,8 +107,9 @@ void OtSceneRuntime::terminate() {
 
 void OtSceneRuntime::initializeScriptingSystem() {
 	// register modules
-	OtInputRegister();
-	OtMathRegister();
+	OtInputModuleRegister();
+	OtMathModuleRegister();
+	OtGraphicsModuleRegister();
 	OtSceneModuleRegister();
 
 	// access the scene

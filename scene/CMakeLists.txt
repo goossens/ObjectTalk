@@ -1,5 +1,5 @@
 #	ObjectTalk Scripting Language
-#	Copyright (c) 2020-2023 Johan A. Goossens. All rights reserved.
+#	Copyright (c) 1993-2023 Johan A. Goossens. All rights reserved.
 #
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
@@ -22,7 +22,9 @@ target_include_directories(scene PUBLIC ${SCENE_INCLUDE_DIRS})
 
 add_dependencies(scene
 	gfx
+	graphics
 	input
+	math
 	tweeny
 	fastnoise
 	assimp)
@@ -30,6 +32,8 @@ add_dependencies(scene
 target_link_libraries(scene PUBLIC
 	gfx
 	input
+	math
+	graphics
 	tweeny
 	fastnoise
 	assimp)

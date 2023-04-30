@@ -22,3 +22,10 @@
 #include "Transparent/fs_spv.h"
 #include "Transparent/fs_dx9.h"
 #include "Transparent/fs_dx11.h"
+
+#include "Transparent/vsi_mtl.h"
+#include "Transparent/vsi_glsl.h"
+#include "Transparent/vsi_essl.h"
+#include "Transparent/vsi_spv.h"
+#include "Transparent/vsi_dx9.h"
+#include "Transparent/vsi_dx11.h"

@@ -26,9 +26,17 @@ void OtSceneRenderer::renderTransparentPass(OtScene* scene) {
 	pass.setFrameBuffer(compositeBuffer);
 	pass.setTransform(viewMatrix, projectionMatrix);
 
-	// render all transparent geometries
-	for (auto entity : transparentGeometries) {
-		renderTransparentGeometry(pass, scene, entity);
+	// render all transparent entities
+	for (auto entity : visibleEntities) {
+		if (entity.transparent) {
+			if (entity.instanced) {
+
+			} else {
+				if (!entity.model) {
+					renderTransparentGeometry(pass, scene, entity.entity);
+				}
+			}
+		}
 	}
 }
 

@@ -30,14 +30,14 @@ void OtSceneRenderer::renderGeometryPass(OtScene* scene) {
 	pass.setFrameBuffer(gbuffer);
 	pass.setTransform(viewMatrix, projectionMatrix);
 
-	// render all non-transparent geometries
-	for (auto entity : opaqueGeometries) {
-		renderGeometry(pass, scene, entity);
-	}
+	// render all non-transparent entities
+	for (auto entity : visibleEntities) {
+		if (entity.model) {
+			renderModel(pass, scene, entity.entity);
 
-	// render all non-transparent models
-	for (auto entity : opaqueModels) {
-		renderModel(pass, scene, entity);
+		} else {
+			renderGeometry(pass, scene, entity.entity);
+		}
 	}
 }
 
@@ -56,9 +56,6 @@ void OtSceneRenderer::renderGeometry(OtPass& pass, OtScene* scene, OtEntity enti
 
 	} else if (material.isKindOf<OtTerrainMaterialClass>()) {
 		shader = &terrainShader;
-
-	} else if (material.isKindOf<OtBlendMapMaterialClass>()) {
-		shader = &blendmapShader;
 	}
 
 	// submit the material information

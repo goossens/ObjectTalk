@@ -33,9 +33,6 @@ void OtSceneRenderer::submitMaterialUniforms(OtScene* scene, OtEntity entity) {
 	} else if (material.isKindOf<OtTerrainMaterialClass>()) {
 		submitTerrainUniforms(OtTerrainMaterial(material));
 
-	} else if (material.isKindOf<OtBlendMapMaterialClass>()) {
-		submitBlendMapUniforms(OtBlendMapMaterial(material));
-
 	} else {
 		OtError("Internal error: invalid material type [%s]", material->getTypeName());
 	}
@@ -132,39 +129,6 @@ void OtSceneRenderer::submitTerrainUniforms(OtTerrainMaterial material) {
 	submitSampler(textureSampler1, 1, material->region2Texture);
 	submitSampler(textureSampler2, 2, material->region3Texture);
 	submitSampler(textureSampler3, 3, material->region4Texture);
-}
-
-
-//
-//	OtSceneRenderer::submitBlendMapUniforms
-//
-
-void OtSceneRenderer::submitBlendMapUniforms(OtBlendMapMaterial material) {
-	// set the uniform values
-	glm::vec4* uniforms = blendmapUniforms.getValues();
-	uniforms[0] = glm::vec4(material->scale, 0.0f, 0.0f, 0.0f);
-
-	uniforms[1] = glm::vec4(
-		material->noneNormalsTexture.isReady(),
-		material->redNormalsTexture.isReady(),
-		material->greenNormalsTexture.isReady(),
-		material->blueNormalsTexture.isReady());
-
-	// submit the uniforms
-	blendmapUniforms.submit();
-
-	// submit all material textures (or dummies if they are not set/ready)
-	submitSampler(blendMapSampler, 0, material->blendMapTexture);
-
-	submitSampler(albedoNoneSampler, 1, material->noneTexture);
-	submitSampler(albedoRedSampler, 2, material->redTexture);
-	submitSampler(albedoGreenSampler, 3, material->greenTexture);
-	submitSampler(albedoBlueSampler, 4, material->blueTexture);
-
-	submitSampler(normalsNoneSampler, 5, material->noneNormalsTexture);
-	submitSampler(normalsRedSampler, 6, material->redNormalsTexture);
-	submitSampler(normalsGreenSampler, 7, material->greenNormalsTexture);
-	submitSampler(normalsBlueSampler, 8, material->blueNormalsTexture);
 }
 
 

@@ -22,3 +22,10 @@
 #include "Geometry/fs_spv.h"
 #include "Geometry/fs_dx9.h"
 #include "Geometry/fs_dx11.h"
+
+#include "Geometry/vsi_mtl.h"
+#include "Geometry/vsi_glsl.h"
+#include "Geometry/vsi_essl.h"
+#include "Geometry/vsi_spv.h"
+#include "Geometry/vsi_dx9.h"
+#include "Geometry/vsi_dx11.h"

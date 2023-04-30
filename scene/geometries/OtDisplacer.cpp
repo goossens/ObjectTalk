@@ -197,7 +197,7 @@ void OtDisplacer::recalculateNormals(std::vector<uint32_t>& triangles) {
 		OtVertex& v1 = displaced[triangles[c + 1]];
 		OtVertex& v2 = displaced[triangles[c + 2]];
 
-		auto normal = glm::normalize(glm::cross(v2.position - v1.position, v0.position - v1.position));
+		auto normal = glm::cross(v2.position - v1.position, v0.position - v1.position);
 		v0.normal += normal;
 		v1.normal += normal;
 		v2.normal += normal;

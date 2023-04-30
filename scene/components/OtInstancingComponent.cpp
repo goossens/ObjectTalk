@@ -77,3 +77,20 @@ void OtInstancingComponent::setInstance(size_t index, const glm::vec3 &translati
 	transform.rotation = rotation;
 	transform.scale = scale;
 }
+
+
+//
+//	OtInstancingComponent::determineVisibleInstances
+//
+
+void OtInstancingComponent::determineVisibleInstances(OtFrustum& frustum, OtAABB& aabb) {
+	visibleTransforms.clear();
+
+	for (auto& transform : transforms) {
+		auto matrix = transform.getTransform();
+
+		if (frustum.isVisibleAABB(aabb.transform(matrix))) {
+			visibleTransforms.emplace_back(matrix);
+		}
+	}
+}

@@ -22,24 +22,23 @@ void OtSceneRenderer::renderPreProcessingPass(OtScene* scene, OtEntity selected)
 	// reset highlighting flag
 	renderEntityHighlight = false;
 
-	// build lists of visible geometries and models (both opaque and transparent)
-	opaqueGeometries.clear();
-	opaqueModels.clear();
-	transparentGeometries.clear();
-	transparentModels.clear();
+	// build lists of visible entities
+	visibleEntities.clear();
 
 	scene->eachEntityDepthFirst([&](OtEntity entity) {
 		if (scene->hasComponent<OtGeometryComponent>(entity) && scene->hasComponent<OtTransformComponent>(entity) && scene->hasComponent<OtMaterialComponent>(entity)) {
 			preprocessSingleInstanceGeometry(scene, entity, entity == selected);
 
+		} else if (scene->hasComponent<OtGeometryComponent>(entity) && scene->hasComponent<OtInstancingComponent>(entity) && scene->hasComponent<OtMaterialComponent>(entity)) {
+			preprocessMultipleInstanceGeometry(scene, entity, entity == selected);
+
 		} else if (scene->hasComponent<OtModelComponent>(entity) && scene->hasComponent<OtTransformComponent>(entity)) {
 			preprocessSingleInstanceModel(scene, entity, entity == selected);
+
+		} else if (scene->hasComponent<OtModelComponent>(entity) && scene->hasComponent<OtInstancingComponent>(entity)) {
+			preprocessMultipleInstanceModel(scene, entity, entity == selected);
 		}
 	});
-
-	// set flags
-	hasOpaqueEntities = opaqueGeometries.size() || opaqueModels.size();
-	hasTransparentEntities = transparentGeometries.size() || transparentModels.size();
 
 	// see if we have any sky objects
 	hasSkyEntities = false;
@@ -72,14 +71,16 @@ void OtSceneRenderer::preprocessSingleInstanceGeometry(OtScene* scene, OtEntity 
 	auto& transform = scene->getComponent<OtTransformComponent>(entity);
 	auto aabb = geometry.geometry->getAABB().transform(transform.getTransform());
 
-	// is this one visible
+	// is this entity visible
 	if (frustum.isVisibleAABB(aabb)) {
-		// add it to the appropriate list
+		auto& visibleEntity = visibleEntities.emplace_back(entity);
+
 		if (geometry.transparent) {
-			transparentGeometries.push_back(entity);
+			visibleEntity.transparent = true;
+			hasTransparentEntities = true;
 
 		} else {
-			opaqueGeometries.push_back(entity);
+			hasOpaqueEntities = true;
 		}
 
 		// activate highlighting if this entity is selected
@@ -95,7 +96,30 @@ void OtSceneRenderer::preprocessSingleInstanceGeometry(OtScene* scene, OtEntity 
 //
 
 void OtSceneRenderer::preprocessMultipleInstanceGeometry(OtScene* scene, OtEntity entity, bool selected) {
+	// build list of visible instances
+	auto& geometry = scene->getComponent<OtGeometryComponent>(entity);
+	auto& instances = scene->getComponent<OtInstancingComponent>(entity);
+	instances.determineVisibleInstances(frustum, geometry.geometry->getAABB());
 
+	// are any instances visible
+	if (instances.visibleTransforms.size()) {
+		// if so, mark this entity for rendering
+		auto& visibleEntity = visibleEntities.emplace_back(entity);
+		visibleEntity.instanced = true;
+
+		if (geometry.transparent) {
+			visibleEntity.transparent = true;
+			hasTransparentEntities = true;
+
+		} else {
+			hasOpaqueEntities = true;
+		}
+
+		// activate highlighting if this entity is selected
+		if (selected) {
+			renderEntityHighlight = true;
+		}
+	}
 }
 
 
@@ -114,8 +138,9 @@ void OtSceneRenderer::preprocessSingleInstanceModel(OtScene* scene, OtEntity ent
 
 		// is this one visible
 		if (frustum.isVisibleAABB(aabb)) {
-			// add to list
-			opaqueModels.push_back(entity);
+			auto& visibleEntity = visibleEntities.emplace_back(entity);
+			visibleEntity.model = true;
+			hasOpaqueEntities = true;
 
 			// activate highlighting if this entity is selected
 			if (selected) {
@@ -131,5 +156,22 @@ void OtSceneRenderer::preprocessSingleInstanceModel(OtScene* scene, OtEntity ent
 //
 
 void OtSceneRenderer::preprocessMultipleInstanceModel(OtScene* scene, OtEntity entity, bool selected) {
+	// build list of visible instances
+	auto& model = scene->getComponent<OtModelComponent>(entity).model;
+	auto& instances = scene->getComponent<OtInstancingComponent>(entity);
+	instances.determineVisibleInstances(frustum, model->getAABB());
 
+	// are any instances visible
+	if (instances.visibleTransforms.size()) {
+		// if so, mark this entity for rendering
+		auto& visibleEntity = visibleEntities.emplace_back(entity);
+		visibleEntity.model = true;
+		visibleEntity.instanced = true;
+		hasOpaqueEntities = true;
+
+		// activate highlighting if this entity is selected
+		if (selected) {
+			renderEntityHighlight = true;
+		}
+	}
 }

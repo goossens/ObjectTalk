@@ -25,5 +25,4 @@
 class OtMaterialFactory : public OtSingleton<OtMaterialFactory>, public OtFactory<
 	OtMaterial,
 	OtPbrMaterialClass,
-	OtTerrainMaterialClass,
-	OtBlendMapMaterialClass> {};
+	OtTerrainMaterialClass> {};

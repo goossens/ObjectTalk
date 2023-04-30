@@ -7,11 +7,6 @@
 
 pushd "%~dp0"
 
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f BlendMap\shader.vs -o generated\BlendMap\vs_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtBlendMapVS_dx9
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f BlendMap\shader.vs -o generated\BlendMap\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtBlendMapVS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f BlendMap\shader.fs -o generated\BlendMap\fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtBlendMapFS_dx9
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f BlendMap\shader.fs -o generated\BlendMap\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtBlendMapFS_dx11
-
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f BloomDownSample\shader.vs -o generated\BloomDownSample\vs_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtBloomDownSampleVS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f BloomDownSample\shader.vs -o generated\BloomDownSample\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtBloomDownSampleVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f BloomDownSample\shader.fs -o generated\BloomDownSample\fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtBloomDownSampleFS_dx9
@@ -31,6 +26,8 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Geometry\shader.vs -o generated\Geometry\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtGeometryVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Geometry\shader.fs -o generated\Geometry\fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtGeometryFS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Geometry\shader.fs -o generated\Geometry\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtGeometryFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Geometry\instancing.vs -o generated\Geometry\vsi_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtGeometryVSI_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Geometry\instancing.vs -o generated\Geometry\vsi_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtGeometryVSI_dx11
 
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Grid\shader.vs -o generated\Grid\vs_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtGridVS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Grid\shader.vs -o generated\Grid\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtGridVS_dx11
@@ -86,5 +83,7 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Transparent\shader.vs -o generated\Transparent\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtTransparentVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Transparent\shader.fs -o generated\Transparent\fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtTransparentFS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Transparent\shader.fs -o generated\Transparent\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtTransparentFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Transparent\instancing.vs -o generated\Transparent\vsi_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtTransparentVSI_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Transparent\instancing.vs -o generated\Transparent\vsi_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtTransparentVSI_dx11
 
 popd

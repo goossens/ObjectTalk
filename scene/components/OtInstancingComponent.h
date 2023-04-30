@@ -14,7 +14,11 @@
 
 #include <vector>
 
+#include "glm/glm.hpp"
 #include "nlohmann/json_fwd.hpp"
+
+#include "OtAABB.h"
+#include "OtFrustum.h"
 
 #include "OtTransformComponent.h"
 
@@ -43,6 +47,12 @@ public:
 	void eraseInstance(size_t index) { transforms.erase(transforms.begin() + index); }
 	size_t instanceCount() { return transforms.size(); }
 
+	// determine visible instances
+	void determineVisibleInstances(OtFrustum& frustum, OtAABB& aabb);
+
 	// stored properties
 	std::vector<OtTransformComponent> transforms;
+
+	// runtime properties
+	std::vector<glm::mat4> visibleTransforms;
 };

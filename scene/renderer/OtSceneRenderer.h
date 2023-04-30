@@ -81,7 +81,6 @@ private:
 	void submitMaterialUniforms(OtScene* scene, OtEntity entity);
 	void submitPbrUniforms(OtPbrMaterial material);
 	void submitTerrainUniforms(OtTerrainMaterial material);
-	void submitBlendMapUniforms(OtBlendMapMaterial material);
 	void submitLightUniforms(OtScene* scene);
 
 	// camera information
@@ -112,10 +111,15 @@ private:
 	OtSphereGeometry unitySphereGeometry;
 
 	// visible entities
-	std::vector<OtEntity> opaqueGeometries;
-	std::vector<OtEntity> opaqueModels;
-	std::vector<OtEntity> transparentGeometries;
-	std::vector<OtEntity> transparentModels;
+	struct VisibleEntity {
+		VisibleEntity(OtEntity e) : entity(e) {}
+		OtEntity entity;
+		bool model = false;
+		bool transparent = false;
+		bool instanced = false;
+	};
+
+	std::vector<VisibleEntity> visibleEntities;
 	bool hasOpaqueEntities = false;
 	bool hasTransparentEntities = false;
 	bool hasSkyEntities = false;
@@ -124,7 +128,6 @@ private:
 	// uniforms
 	OtUniformVec4 materialUniforms{"u_material", 5};
 	OtUniformVec4 terrainUniforms{"u_terrain", 6};
-	OtUniformVec4 blendmapUniforms{"u_blendmap", 2};
 	OtUniformVec4 lightingUniforms{"u_lighting", 3};
 	OtUniformVec4 skyUniforms{"u_sky", 3};
 	OtUniformVec4 gridUniforms{"u_grid", 1};
@@ -150,7 +153,6 @@ private:
 	OtSampler geometryEmissiveSampler{"s_geometryEmissiveSampler"};
 	OtSampler geometryAoSampler{"s_geometryAoTexture"};
 
-	OtSampler blendMapSampler{"s_blendMap"};
 	OtSampler albedoNoneSampler{"s_colorNone"};
 	OtSampler albedoRedSampler{"s_colorRed"};
 	OtSampler albedoGreenSampler{"s_colorGreen"};
@@ -174,10 +176,11 @@ private:
 
 	// shaders
 	OtShader geometryShader{"OtGeometryVS", "OtGeometryFS"};
+	OtShader geometryInstancingShader{"OtGeometryVSI", "OtGeometryFS"};
 	OtShader terrainShader{"OtTerrainVS", "OtTerrainFS"};
-	OtShader blendmapShader{"OtBlendMapVS", "OtBlendMapFS"};
 	OtShader lightingShader{"OtLightingVS", "OtLightingFS"};
 	OtShader transparentShader{"OtTransparentVS", "OtTransparentFS"};
+	OtShader transparentInstancingShader{"OtTransparentVSI", "OtTransparentFS"};
 	OtShader gridShader{"OtGridVS", "OtGridFS"};
 	OtShader selectShader{"OtSelectVS", "OtSelectFS"};
 	OtShader outlineShader{"OtOutlineVS", "OtOutlineFS"};

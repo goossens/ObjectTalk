@@ -14,7 +14,6 @@
 
 #include "bgfx/embedded_shader.h"
 
-#include "generated/OtBlendMapShader.h"
 #include "generated/OtBloomDownSampleShader.h"
 #include "generated/OtBloomUpSampleShader.h"
 #include "generated/OtDebugShader.h"
@@ -37,8 +36,6 @@
 //
 
 static const bgfx::EmbeddedShader embeddedShaders[] = {
-	BGFX_EMBEDDED_SHADER(OtBlendMapVS),
-	BGFX_EMBEDDED_SHADER(OtBlendMapFS),
 	BGFX_EMBEDDED_SHADER(OtBloomDownSampleVS),
 	BGFX_EMBEDDED_SHADER(OtBloomDownSampleFS),
 	BGFX_EMBEDDED_SHADER(OtBloomUpSampleVS),
@@ -47,6 +44,7 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtDebugFS),
 	BGFX_EMBEDDED_SHADER(OtGeometryVS),
 	BGFX_EMBEDDED_SHADER(OtGeometryFS),
+	BGFX_EMBEDDED_SHADER(OtGeometryVSI),
 	BGFX_EMBEDDED_SHADER(OtGridVS),
 	BGFX_EMBEDDED_SHADER(OtGridFS),
 	BGFX_EMBEDDED_SHADER(OtImGuiVS),
@@ -69,5 +67,6 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtTerrainFS),
 	BGFX_EMBEDDED_SHADER(OtTransparentVS),
 	BGFX_EMBEDDED_SHADER(OtTransparentFS),
+	BGFX_EMBEDDED_SHADER(OtTransparentVSI),
 	BGFX_EMBEDDED_SHADER_END()
 };

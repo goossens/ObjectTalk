@@ -14,6 +14,5 @@
 
 #include "OtMaterial.h"
 
-#include "OtBlendMapMaterial.h"
 #include "OtPbrMaterial.h"
 #include "OtTerrainMaterial.h"

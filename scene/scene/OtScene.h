@@ -31,6 +31,7 @@
 #include "OtPostProcessingComponent.h"
 #include "OtSkyComponent.h"
 #include "OtSkySphereComponent.h"
+#include "OtTerrainComponent.h"
 #include "OtTransformComponent.h"
 
 
@@ -48,6 +49,7 @@
 	OtDirectionalLightComponent, \
 	OtScriptComponent, \
 	OtBackgroundComponent, \
+	OtTerrainComponent, \
 	OtSkyComponent, \
 	OtSkyBoxComponent, \
 	OtSkySphereComponent, \

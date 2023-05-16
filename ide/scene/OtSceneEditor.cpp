@@ -698,6 +698,10 @@ void OtSceneEditor::renderNewEntitiesMenu(OtEntity entity) {
 	if (ImGui::MenuItem("Geometry Entity")) {
 		nextTask = std::make_shared<OtCreateEntityTask>(scene.get(), entity, OtCreateEntityTask::geometry);
 	}
+
+	if (ImGui::MenuItem("Terrain Entity")) {
+		nextTask = std::make_shared<OtCreateEntityTask>(scene.get(), entity, OtCreateEntityTask::terrain);
+	}
 }
 
 

@@ -30,7 +30,8 @@ public:
 		directionalLight,
 		pointLight,
 		model,
-		geometry
+		geometry,
+		terrain
 	};
 
 	// constructor
@@ -76,6 +77,10 @@ public:
 				scene->addComponent<OtGeometryComponent>(entity);
 				scene->addComponent<OtTransformComponent>(entity);
 				scene->addComponent<OtMaterialComponent>(entity);
+				break;
+
+			case terrain:
+				scene->addComponent<OtTerrainComponent>(entity);
 				break;
 		}
 	}

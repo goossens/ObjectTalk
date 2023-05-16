@@ -48,7 +48,7 @@ public:
 	static OtType getMeta();
 
 private:
-	// the scene renderer need access to our properties
+	// the scene renderer needs access to our properties
 	friend class OtSceneRenderer;
 
 	// stored properties

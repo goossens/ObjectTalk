@@ -74,12 +74,12 @@ void OtImage::load(const std::filesystem::path& path, bool powerof2, bool square
 	}
 
 	uint32_t size = (uint32_t) bx::getSize(&reader);
-	void* data = BX_ALLOC(&allocator, size);
+	void* data = bx::alloc(&allocator, size);
 	bx::read(&reader, data, size, bx::ErrorAssert{});
 	bx::close(&reader);
 
 	image = bimg::imageParse(&allocator, data, size);
-	BX_FREE(&allocator, data);
+	bx::free(&allocator, data);
 
 	if (!image) {
 		OtError("Can't process image in [%s]", path.c_str());

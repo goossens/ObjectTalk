@@ -23,6 +23,10 @@ class OtAABB {
 public:
 	// constructor
 	OtAABB();
+	OtAABB(const glm::vec3& mina, const glm::vec3& maxa) : minp(mina), maxp(maxa) {}
+
+	OtAABB(float minx, float miny, float minz, float maxx, float maxy, float maxz)
+		: minp(glm::vec3(minx, miny, minz)), maxp(glm::vec3(maxx, maxy, maxz)) {}
 
 	// clear the bounding box
 	void clear();

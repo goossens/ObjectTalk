@@ -18,7 +18,7 @@
 //	OtSampler::OtSampler
 //
 
-OtSampler::OtSampler(const char *name) {
+OtSampler::OtSampler(const char* name) {
 	initialize(name);
 }
 

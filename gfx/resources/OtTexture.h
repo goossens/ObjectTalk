@@ -39,6 +39,7 @@ public:
 
 	// load from memory (pixels must be RGBA in row order)
 	void loadFromMemory(int width, int height, uint8_t* pixels);
+	void loadFromMemory(int width, int height, float* pixels);
 
 	// load from file in memory
 	void loadFromFileInMemory(void* data, uint32_t size);

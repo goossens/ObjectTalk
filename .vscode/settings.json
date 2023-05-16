@@ -82,7 +82,15 @@
 		"forward_list": "cpp",
 		"valarray": "cpp",
 		"ranges": "cpp",
-		"*.ots": "json"
+		"*.ots": "json",
+		"span": "cpp",
+		"__verbose_abort": "cpp",
+		"bit": "cpp",
+		"iterator": "cpp",
+		"memory_resource": "cpp",
+		"utility": "cpp",
+		"cinttypes": "cpp",
+		"*.hpp11": "cpp"
 	},
 	"files.exclude": {
 		"debug/**": true,

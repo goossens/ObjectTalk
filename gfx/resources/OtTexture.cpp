@@ -125,6 +125,19 @@ void OtTexture::loadFromMemory(int w, int h, uint8_t* pixels) {
 		bgfx::copy(pixels, w * h * 4));
 }
 
+void OtTexture::loadFromMemory(int w, int h, float* pixels) {
+	// remember size
+	width = w;
+	height = h;
+
+	// create texture
+	texture = bgfx::createTexture2D(
+		w, h, false, 1,
+		bgfx::TextureFormat::RGBA32F,
+		BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
+		bgfx::copy(pixels, w * h * 4 * sizeof(float)));
+}
+
 
 //
 //	OtTexture::loadFromFileInMemory
@@ -169,6 +182,7 @@ bgfx::TextureHandle OtTexture::getTextureHandle() {
 				BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
 				mem);
 
+			// dummy texture will be destroyed when program exits
 			OtFrameworkAtExit::instance()->add([] () {
 				bgfx::destroy(dummy);
 			});

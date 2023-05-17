@@ -1,0 +1,227 @@
+[
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Camera",
+				"uuid": 1057740688
+			},
+			{
+				"component": "Transform",
+				"rotation": [
+					8.0,
+					-39.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				],
+				"translation": [
+					-0.699999988079071,
+					0.30000001192092896,
+					3.799999952316284
+				]
+			},
+			{
+				"component": "Camera",
+				"far": 100.0,
+				"fov": 51.0,
+				"mainCamera": false,
+				"near": 0.10000000149011612
+			},
+			{
+				"Exposure": 0.8299999833106995,
+				"bloomIntensity": 0.6100000143051147,
+				"component": "Post Processing"
+			}
+		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Sky",
+				"uuid": 312324165
+			},
+			{
+				"azimuth": 138.91400146484375,
+				"cirrus": 0.5199999809265137,
+				"component": "Sky",
+				"cumulus": 0.5720000267028809,
+				"elevation": 6.8480000495910645,
+				"mieCoefficient": 5.451000213623047,
+				"mieScattering": 0.9900000095367432,
+				"rayleighCoefficient": 2.753000020980835,
+				"speed": 3.3970000743865967
+			}
+		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Ground",
+				"uuid": 443086627
+			},
+			{
+				"component": "Geometry",
+				"cullback": true,
+				"geometry": {
+					"displacement": {
+						"frequency": 2.5,
+						"lacunarity": 1.3899999856948853,
+						"map": "assets/heightmap.png",
+						"octaves": 5,
+						"persistance": 0.4399999976158142,
+						"scale": 0.20000000298023224,
+						"seed": 1337,
+						"state": 1
+					},
+					"heightSegments": 201,
+					"type": "Plane",
+					"widthSegments": 201
+				},
+				"transparent": false,
+				"wireframe": false
+			},
+			{
+				"component": "Transform",
+				"rotation": [
+					-90.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					20.0,
+					20.0,
+					2.0
+				],
+				"translation": [
+					0.0,
+					0.0,
+					0.0
+				]
+			},
+			{
+				"component": "Material",
+				"material": {
+					"region1Color": [
+						0.9649999737739563,
+						0.8939999938011169,
+						0.6779999732971191
+					],
+					"region1Overlap": 0.03999999910593033,
+					"region1Texture": "assets/mulch.jpg",
+					"region1Transition": 0.03999999910593033,
+					"region2Color": [
+						0.49399998784065247,
+						0.7839999794960022,
+						0.3140000104904175
+					],
+					"region2Overlap": 0.009999999776482582,
+					"region2Texture": "assets/moss.jpg",
+					"region2Transition": 0.9900000095367432,
+					"region3Color": [
+						0.5839999914169312,
+						0.5529999732971191,
+						0.5220000147819519
+					],
+					"region3Overlap": 0.0,
+					"region3Texture": "",
+					"region3Transition": 1.0,
+					"region4Color": [
+						0.8999999761581421,
+						0.8999999761581421,
+						0.8999999761581421
+					],
+					"region4Texture": "",
+					"scale": 1.2999999523162842,
+					"type": "Terrain"
+				}
+			}
+		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Palm Tree",
+				"uuid": 1478965393
+			},
+			{
+				"component": "Geometry",
+				"cullback": true,
+				"geometry": {
+					"displacement": {
+						"frequency": 0.009999999776482582,
+						"lacunarity": 1.0,
+						"map": "",
+						"octaves": 3,
+						"persistance": 0.5,
+						"scale": 0.5,
+						"seed": 1337,
+						"state": 0
+					},
+					"modelPath": "assets/palmtree.obj",
+					"type": "Model"
+				},
+				"transparent": true,
+				"wireframe": false
+			},
+			{
+				"component": "Transform",
+				"rotation": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					0.10000000149011612,
+					0.10000000149011612,
+					0.10000000149011612
+				],
+				"translation": [
+					0.800000011920929,
+					0.10000000149011612,
+					1.399999976158142
+				]
+			},
+			{
+				"component": "Material",
+				"material": {
+					"albedo": [
+						1.0,
+						1.0,
+						1.0,
+						1.0
+					],
+					"albedoTexture": "assets/palmtree.png",
+					"ao": 1.0,
+					"aoTexture": "",
+					"emissive": [
+						0.0,
+						0.0,
+						0.0
+					],
+					"emissiveTexture": "",
+					"metallic": 0.0,
+					"metallicRoughnessTexture": "",
+					"normalTexture": "",
+					"roughness": 1.0,
+					"scale": 1.0,
+					"type": "PBR"
+				}
+			},
+			{
+				"component": "Script",
+				"path": "assets/palmtrees.ot"
+			}
+		]
+	}
+]

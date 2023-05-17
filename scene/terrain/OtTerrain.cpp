@@ -33,31 +33,31 @@ OtTerrain::OtTerrain() {
 
 	// A B C D
 	tiles.emplace_back(-half, -half, -quarter, -quarter);
-	tiles.emplace_back(-quarter, -half, 0.0f, -quarter);
-	tiles.emplace_back(0.0f, -half, quarter, -quarter);
+	tiles.emplace_back(-quarter, -half, 0, -quarter);
+	tiles.emplace_back(0, -half, quarter, -quarter);
 	tiles.emplace_back(quarter, -half, half, -quarter);
 
 	// D G
-	tiles.emplace_back(-half, -quarter, -quarter, 0.0f);
-	tiles.emplace_back(quarter, -quarter, half, 0.0f);
+	tiles.emplace_back(-half, -quarter, -quarter, 0);
+	tiles.emplace_back(quarter, -quarter, half, 0);
 
 	// H K
-	tiles.emplace_back(-half, 0.0f, -quarter, quarter);
-	tiles.emplace_back(quarter, 0.0f, half, quarter);
+	tiles.emplace_back(-half, 0, -quarter, quarter);
+	tiles.emplace_back(quarter, 0, half, quarter);
 
 	// L M N O
 	tiles.emplace_back(-half, quarter, -quarter, half);
-	tiles.emplace_back(-quarter, quarter, 0.0f, half);
-	tiles.emplace_back(0.0f, quarter, quarter, half);
+	tiles.emplace_back(-quarter, quarter, 0, half);
+	tiles.emplace_back(0, quarter, quarter, half);
 	tiles.emplace_back(quarter, quarter, half, half);
 
 	// E F
-	tiles.emplace_back(-quarter, -quarter, 0.0f, 0.0f);
-	tiles.emplace_back(0.0f, -quarter, quarter, 0.0f);
+	tiles.emplace_back(-quarter, -quarter, 0, 0);
+	tiles.emplace_back(0, -quarter, quarter, 0);
 
 	// I J
-	tiles.emplace_back(-quarter, 0.0f, 0.0f, quarter);
-	tiles.emplace_back(0.0f, 0.0f, quarter, quarter);
+	tiles.emplace_back(-quarter, 0, 0, quarter);
+	tiles.emplace_back(0, 0, quarter, quarter);
 
 	// create meshes for all levels
 	for (auto level = 0; level < OtTerrainMeshLevels; level++) {

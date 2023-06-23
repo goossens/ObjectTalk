@@ -156,7 +156,7 @@
 			},
 			{
 				"component": "Geometry",
-				"cullback": true,
+				"cullback": false,
 				"geometry": {
 					"displacement": {
 						"frequency": 0.009999999776482582,

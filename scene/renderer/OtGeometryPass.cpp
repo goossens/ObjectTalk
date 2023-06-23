@@ -32,11 +32,13 @@ void OtSceneRenderer::renderGeometryPass(OtScene* scene) {
 
 	// render all non-transparent entities
 	for (auto entity : visibleEntities) {
-		if (entity.model) {
-			renderModel(pass, scene, entity.entity);
+		if (!entity.transparent) {
+			if (entity.model) {
+				renderModel(pass, scene, entity.entity);
 
-		} else {
-			renderGeometry(pass, scene, entity.entity);
+			} else {
+				renderGeometry(pass, scene, entity.entity);
+			}
 		}
 	}
 }

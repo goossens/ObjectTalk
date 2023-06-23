@@ -62,7 +62,7 @@ void OtSceneRenderer::renderTransparentGeometry(OtPass& pass, OtScene* scene, Ot
 
 	// set the shader state
 	if (geometry.wireframe) {
-		geometryShader.setState(
+		transparentShader.setState(
 			OtStateWriteRgb |
 			OtStateWriteA |
 			OtStateWriteZ |
@@ -71,7 +71,7 @@ void OtSceneRenderer::renderTransparentGeometry(OtPass& pass, OtScene* scene, Ot
 			OtStateBlendAlpha);
 
 	} else if (geometry.cullback) {
-		geometryShader.setState(
+		transparentShader.setState(
 			OtStateWriteRgb |
 			OtStateWriteA |
 			OtStateWriteZ |
@@ -80,7 +80,7 @@ void OtSceneRenderer::renderTransparentGeometry(OtPass& pass, OtScene* scene, Ot
 			OtStateBlendAlpha);
 
 	} else {
-		geometryShader.setState(
+		transparentShader.setState(
 			OtStateWriteRgb |
 			OtStateWriteA |
 			OtStateWriteZ |

@@ -29,8 +29,8 @@ void OtHeightMap::load(const std::filesystem::path& path) {
 	image.loadAsGrayscale(path);
 
 	// allocate heightmap
-	width = image.getWidth();
-	height = image.getHeight();
+	width = (int) image.getWidth();
+	height = (int) image.getHeight();
 	heightmap = std::make_unique<float[]>(width * height);
 	std::memcpy(heightmap.get(), image.getPixels(), width * height * sizeof(float));
 }

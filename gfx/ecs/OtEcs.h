@@ -72,14 +72,14 @@ public:
 	OtEntity getPreviousSibling(OtEntity entity) { return getComponent<OtCoreComponent>(entity).previousSibling; }
 	OtEntity getNextSibling(OtEntity entity) { return getComponent<OtCoreComponent>(entity).nextSibling; }
 
-	// iterate through all entities (order is not garuenteed)
+	// iterate through all entities (order is not guaranteed)
 	void each(std::function<void(OtEntity)> callback) {
-		registry.each([this, callback](OtEntity entity) {
+		for (auto [entity] : registry.storage<OtEntity>().each()) {
 			// don't expose the hidden root entity
 			if (entity != root) {
 				callback(entity);
 			}
-		});
+		};
 	}
 
 	// iterate through an entity's children (just one level)

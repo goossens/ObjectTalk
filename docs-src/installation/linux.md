@@ -20,7 +20,7 @@ this frequently on a MacOS platform.
 To build the full version of ObjectTalk on Ubuntu 22.04
 Desktop with GUI and IDE, run the following commands:
 
-* Install additional software using **sudo apt-get install build-essential cmake git xorg-dev**
+* Install additional software using **sudo apt-get install build-essential cmake git xorg-dev libegl-dev**
 * **cd [to your favorite build directory]**
 * If your favorite directory is on a mounted drive, you might have to do a **git config --global --replace-all safe.directory '*'**
 * **git clone https://github.com/goossens/ObjectTalk.git**

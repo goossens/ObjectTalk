@@ -13,7 +13,7 @@ jobs:
     - name: Setup libraries
       run: |
         sudo apt update
-        sudo apt-get install xorg-dev
+        sudo apt-get install xorg-dev libegl-dev
 
     - name: Configure
       run: cmake -Brelease -DCMAKE_BUILD_TYPE=Release

@@ -5,7 +5,7 @@
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
 FetchContent_Declare(imguifd GIT_REPOSITORY "https://github.com/aiekick/ImGuiFileDialog" GIT_TAG "v0.6.5")
-FetchContent_MakeAvailable(imguifd)
+FetchContent_Populate(imguifd)
 
 set(IMGUIFD_SOURCES
 	${imguifd_SOURCE_DIR}/ImGuiFileDialog.h
@@ -14,6 +14,7 @@ set(IMGUIFD_SOURCES
 
 add_library(imguifd STATIC ${IMGUIFD_SOURCES})
 add_dependencies(imguifd imgui)
+
 target_compile_definitions(imguifd PUBLIC CUSTOM_IMGUIFILEDIALOG_CONFIG="IgfdConfig.h")
 target_include_directories(imguifd PUBLIC ${imguifd_SOURCE_DIR} ${CMAKE_CURRENT_LIST_DIR})
 target_link_libraries(imguifd imgui)

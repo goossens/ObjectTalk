@@ -5,11 +5,7 @@
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
 FetchContent_Declare(fastnoise GIT_REPOSITORY "https://github.com/Auburn/FastNoiseLite")
-FetchContent_GetProperties(fastnoise)
-
-if(NOT fastnoise_POPULATED)
-	FetchContent_Populate(fastnoise)
-endif()
+FetchContent_MakeAvailable(fastnoise)
 
 add_library(fastnoise INTERFACE)
 target_include_directories(fastnoise INTERFACE ${fastnoise_SOURCE_DIR}/Cpp)

@@ -31,13 +31,11 @@ public:
 		info,
 		warning,
 		error,
-		exception,
 		fatal
 	};
 
 	// log a message
 	void log(const char* filename, int lineno, int type, const std::string& message);
-
 
 	// set options
 	void setSubprocessMode(bool flag) { subprocessMode = flag; }

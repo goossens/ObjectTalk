@@ -85,12 +85,12 @@ void OtModelGeometryClass::fillGeometry() {
 
 		// ensure model was loaded correctly
 		if (scene == nullptr) {
-			OtError("Unable to load model [%s], error: %s", modelPath.c_str(), importer.GetErrorString());
+			OtError("Unable to load model [%s], error: %s", modelPath.string().c_str(), importer.GetErrorString());
 		}
 
 		// ensure scene is complete
 		if (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) {
-			OtError("Incomplete model [%s]", modelPath.c_str());
+			OtError("Incomplete model [%s]", modelPath.string().c_str());
 		}
 
 		// load all the meshes

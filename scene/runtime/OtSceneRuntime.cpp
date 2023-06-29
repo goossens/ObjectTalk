@@ -157,6 +157,6 @@ void OtSceneRuntime::initializeRenderingSystem() {
 		activeCamera = firstCamera;
 
 	} else {
-		OtLogFatal(OtFormat("No camera found in scene at [%s]", sceneAsset.getPath().c_str()));
+		OtLogFatal(OtFormat("No camera found in scene at [%s]", sceneAsset.getPath().string().c_str()));
 	}
 }

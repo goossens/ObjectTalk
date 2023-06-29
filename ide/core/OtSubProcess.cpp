@@ -20,7 +20,7 @@
 void OtSubProcess::start(const std::filesystem::path& path, const std::vector<std::string>& arguments, std::function <void(int64_t status, int signal)> onExit, std::function <void(const std::string &text)> onStdout, std::function <void(const std::string &text)> onStderr) {
 	// sanity check
 	if (running) {
-		OtError("Can't start subprocess [%s] as one is already running", path.c_str());
+		OtError("Can't start subprocess [%s] as one is already running", path.string().c_str());
 	}
 
 	// remember callbacks
@@ -44,7 +44,8 @@ void OtSubProcess::start(const std::filesystem::path& path, const std::vector<st
 
 	// convert arguments
 	char** args = new char* [arguments.size() + 2];
-	args[0] = (char*) path.c_str();
+	auto executable = path.string();
+	args[0] = (char*) executable.c_str();
 	size_t i = 1;
 
 	for (auto& argument : arguments) {
@@ -71,7 +72,7 @@ void OtSubProcess::start(const std::filesystem::path& path, const std::vector<st
 
 	if (status) {
 		delete [] args;
-		UV_CHECK_ERROR("uv_spawn", status);
+		UV_CHECK_ERROR2("uv_spawn", status, path.string().c_str());
 	}
 
 	running = true;

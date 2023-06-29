@@ -271,7 +271,7 @@ void OtWorkspace::openFile(const std::filesystem::path& path) {
 
 		} else {
 			state = confirmErrorState;
-			errorMessage = OtFormat("Can't open file with extension: %s", extension.c_str());
+			errorMessage = OtFormat("Can't open file with extension: %s", extension.string().c_str());
 		}
 
 	} else {
@@ -355,7 +355,7 @@ void OtWorkspace::runFile() {
 		args,
 		[this](int64_t status, int signal) {
 			if (status || signal != 0) {
-				console.writeError(OtFormat("\n[%s] terminated with status %d and signal %d", currentRunnable.c_str(), status, signal));
+				console.writeError(OtFormat("\n[%s] terminated with status %d and signal %d", currentRunnable.string().c_str(), status, signal));
 
 				// highlight error (if required)
 				if (exceptionAsJson.size()) {
@@ -366,7 +366,7 @@ void OtWorkspace::runFile() {
 				}
 
 			} else {
-				console.writeHelp(OtFormat("\n[%s] terminated normally", currentRunnable.c_str()));
+				console.writeHelp(OtFormat("\n[%s] terminated normally", currentRunnable.string().c_str()));
 
 				// hide console after running a scene (user can always bring it back)
 				if (currentRunnable.extension() == ".ots") {
@@ -802,7 +802,7 @@ void OtWorkspace::renderSubProcess() {
 		ImGuiWindowFlags_NoBringToFrontOnFocus);
 
 	// render the subprocess control bar
-	std::string title = OtFormat("Runnning [%s]...", currentRunnable.c_str());
+	std::string title = OtFormat("Runnning [%s]...", currentRunnable.string().c_str());
 	ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "%s", title.c_str());
 	ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - 150.0f);
 

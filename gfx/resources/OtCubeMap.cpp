@@ -68,17 +68,17 @@ void OtCubeMap::loadJSON(const std::filesystem::path& path) {
 	std::stringstream buffer;
 
 	try {
-		std::ifstream stream(path.c_str());
+		std::ifstream stream(path.string().c_str());
 
 		if (stream.fail()) {
-			OtError("Can't read from file [%s]", path.c_str());
+			OtError("Can't read from file [%s]", path.string().c_str());
 		}
 
 		buffer << stream.rdbuf();
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtError("Can't read from file [%s], error: %s", path.c_str(), e.what());
+		OtError("Can't read from file [%s], error: %s", path.string().c_str(), e.what());
 	}
 
 	// parse json
@@ -93,7 +93,7 @@ void OtCubeMap::loadJSON(const std::filesystem::path& path) {
 	auto posz = getPath(data, "posz", basedir);
 
 	if (negx.empty() || negy.empty() || negz.empty() || posx.empty() || posy.empty() || posz.empty()) {
-		OtError("Incomplete CubeMap specification in [%s]", path.c_str());
+		OtError("Incomplete CubeMap specification in [%s]", path.string().c_str());
 	}
 
 	// load first side
@@ -175,7 +175,7 @@ void OtCubeMap::loadCubemapImage(const std::filesystem::path& path) {
 
 	// sanity check
 	if (!container->m_cubeMap) {
-		OtError("Image [%s] is not a Cube Map", path.c_str());
+		OtError("Image [%s] is not a Cube Map", path.string().c_str());
 	}
 
 	// create a new cubemap

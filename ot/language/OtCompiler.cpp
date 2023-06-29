@@ -31,7 +31,7 @@
 OtByteCode OtCompiler::compileFile(const std::filesystem::path& path, OtObject object, bool disassemble) {
 	// sanity check
 	if (!std::filesystem::exists(path)) {
-		OtError("Can't open file [%s]", path.c_str());
+		OtError("Can't open file [%s]", path.string().c_str());
 	}
 
 	// load source code and compile into bytecode

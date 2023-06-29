@@ -149,7 +149,7 @@ int main(int argc, char* argv[]) {
 #endif
 
 				} else {
-					std::cerr << "Error: can't execute file with extension [%s]" << extension.c_str() << std::endl;
+					std::cerr << "Error: can't execute file with extension [%s]" << extension.string().c_str() << std::endl;
 					std::_Exit(EXIT_FAILURE);
 				}
 #if defined(INCLUDE_GUI)

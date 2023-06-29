@@ -28,17 +28,17 @@ void OtScene::load(const std::filesystem::path& path) {
 	std::stringstream buffer;
 
 	try {
-		std::ifstream stream(path.c_str());
+		std::ifstream stream(path.string().c_str());
 
 		if (stream.fail()) {
-			OtError("Can't read from file [%s]", path.c_str());
+			OtError("Can't read from file [%s]", path.string().c_str());
 		}
 
 		buffer << stream.rdbuf();
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtError("Can't read from file [%s], error: %s", path.c_str(), e.what());
+		OtError("Can't read from file [%s], error: %s", path.string().c_str(), e.what());
 	}
 
 	// recreate the scene
@@ -54,10 +54,10 @@ void OtScene::load(const std::filesystem::path& path) {
 void OtScene::save(const std::filesystem::path& path) {
 	try {
 		// write scene to file
-		std::ofstream stream(path.c_str());
+		std::ofstream stream(path.string().c_str());
 
 		if (stream.fail()) {
-			OtError("Can't open file [%s] for writing", path.c_str());
+			OtError("Can't open file [%s] for writing", path.string().c_str());
 		}
 
 		auto basedir = path.parent_path();
@@ -65,7 +65,7 @@ void OtScene::save(const std::filesystem::path& path) {
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtError("Can't write to file [%s], error: %s", path.c_str(), e.what());
+		OtError("Can't write to file [%s], error: %s", path.string().c_str(), e.what());
 	}
 }
 

@@ -143,7 +143,7 @@ OtAssetBase* OtAssetManager::lookup(const std::filesystem::path& path) {
 
 			} else {
 				// unknown asset type, create a dummy asset
-				OtLogWarning(OtFormat("Unknown asset type [%s]", fullPath.c_str()));
+				OtLogWarning(OtFormat("Unknown asset type [%s]", fullPath.string().c_str()));
 				auto dummy = new OtAssetBase();
 				dummy->assetPath = fullPath;
 				dummy->assetState = OtAssetBase::invalidState;
@@ -158,7 +158,7 @@ OtAssetBase* OtAssetManager::lookup(const std::filesystem::path& path) {
 
 	} else if (assets.find(path) == assets.end()) {
 		// create a dummy asset
-		OtLogWarning(OtFormat("Asset [%s] not found", path.c_str()));
+		OtLogWarning(OtFormat("Asset [%s] not found", path.string().c_str()));
 		auto dummy = new OtAssetBase();
 		dummy->assetPath = path;
 		dummy->assetState = OtAssetBase::missingState;

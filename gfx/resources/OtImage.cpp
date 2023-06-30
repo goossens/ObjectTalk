@@ -10,9 +10,10 @@
 //
 
 #include <algorithm>
+#include <filesystem>
+#include <fstream>
 
 #include "bx/allocator.h"
-#include "bx/file.h"
 #include "bimg/decode.h"
 
 #include "OtException.h"
@@ -27,7 +28,6 @@
 //
 
 static bx::DefaultAllocator allocator;
-static bx::FileReader reader;
 
 
 //
@@ -69,20 +69,28 @@ void OtImage::load(const std::filesystem::path& path, bool powerof2, bool square
 	clear();
 
 	// get image data
-	if (!bx::open(&reader, bx::FilePath(path.string().c_str()))) {
-		OtError("Can't open image [%s]", path.c_str());
+	auto pathstring = path.string();
+	auto filename = pathstring.c_str();
+
+	if (!std::filesystem::exists(filename) || !std::filesystem::is_regular_file(filename)) {
+		OtError("Can't open image in [%s]", filename);
 	}
 
-	uint32_t size = (uint32_t) bx::getSize(&reader);
-	void* data = bx::alloc(&allocator, size);
-	bx::read(&reader, data, size, bx::ErrorAssert{});
-	bx::close(&reader);
+	auto filesize = std::filesystem::file_size(filename);
+	auto buffer = new char[filesize];
+	std::ifstream file(filename, std::ios::binary);
+	file.read(buffer, filesize);
 
-	image = bimg::imageParse(&allocator, data, size);
-	bx::free(&allocator, data);
+	if (!file) {
+		delete [] buffer;
+		OtError("Can't open image in [%s]", filename);
+	}
+
+	image = bimg::imageParse(&allocator, buffer, filesize);
+	delete [] buffer;
 
 	if (!image) {
-		OtError("Can't process image in [%s]", path.string().c_str());
+		OtError("Can't process image in [%s]", filename);
 	}
 
 	// validate sides are power of 2 (if required)

@@ -9,7 +9,8 @@
 //	Include files
 //
 
-#include "bx/file.h"
+#include <filesystem>
+#include <fstream>
 
 #include "OtCodePoint.h"
 #include "OtException.h"
@@ -32,7 +33,7 @@
 //
 
 OtFontClass::~OtFontClass() {
-	// detach from noisemap if required
+	// cleanup
 	if (data) {
 		delete [] data;
 	}
@@ -70,21 +71,27 @@ OtObject OtFontClass::setFont(const std::string& file) {
 		delete [] data;
 		data = nullptr;
 	}
-	// load font file into memory
-	static bx::FileReader reader;
 
-	if (!bx::open(&reader, file.c_str())) {
-		OtError("Can't open font [%s]", file.c_str());
+	// load font file into memory
+	auto filename = file.c_str();
+
+	if (!std::filesystem::exists(filename) || !std::filesystem::is_regular_file(filename)) {
+		OtError("Can't open font in [%s]", filename);
 	}
 
-	uint32_t size = (uint32_t) bx::getSize(&reader);
-	data = new uint8_t[size];
-	bx::read(&reader, data, size, bx::ErrorAssert{});
-	bx::close(&reader);
+	auto filesize = std::filesystem::file_size(filename);
+	data = new uint8_t[filesize];
+	std::ifstream stream(filename, std::ios::binary);
+	stream.read((char*) data, filesize);
+
+	if (!stream) {
+		delete [] data;
+		OtError("Can't open font in [%s]", filename);
+	}
 
 	// prepare font
 	if (!stbtt_InitFont(&font, data, 0)) {
-		OtError("Can't process font [%s]", file.c_str());
+		OtError("Can't process font [%s]", filename);
 	}
 
 	return OtObject(this);

@@ -37,19 +37,21 @@ void OtAssetManager::start() {
 		running = true;
 
 		while (running) {
+			queue.wait();
+			loading = true;
 			auto asset = queue.pop();
 
 			// load next asset
 			if (asset) {
-				loading = true;
 				asset->assetState = OtAssetBase::loadingState;
 				asset->assetState = asset->load(asset->assetPath) ? OtAssetBase::readyState : OtAssetBase::invalidState;
-				loading = false;
 
 			} else {
 				// a null asset means we shut down the loader
 				running = false;
 			}
+
+			loading = false;
 		}
 	});
 }

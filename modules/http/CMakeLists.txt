@@ -16,7 +16,7 @@ endforeach()
 
 list(REMOVE_DUPLICATES HTTP_INCLUDE_DIRS)
 
-add_library(http STATIC ${HTTP_INCLUDES} ${HTTP_SOURCES})
+add_library(http OBJECT ${HTTP_INCLUDES} ${HTTP_SOURCES})
 add_dependencies(http ot llhttp multipart)
 target_include_directories(http PUBLIC ${HTTP_INCLUDE_DIRS})
 target_link_libraries(http PUBLIC ot PRIVATE llhttp multipart)

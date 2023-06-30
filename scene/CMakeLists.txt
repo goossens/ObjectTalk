@@ -17,10 +17,11 @@ endforeach()
 list(REMOVE_DUPLICATES SCENE_INCLUDE_DIRS)
 set(SCENE_INCLUDE_DIRS ${SCENE_INCLUDE_DIRS} PARENT_SCOPE)
 
-add_library(scene STATIC ${SCENE_INCLUDES} ${SCENE_SOURCES})
+add_library(scene OBJECT ${SCENE_INCLUDES} ${SCENE_SOURCES})
 target_include_directories(scene PUBLIC ${SCENE_INCLUDE_DIRS})
 
 add_dependencies(scene
+	json
 	gfx
 	graphics
 	input
@@ -30,6 +31,7 @@ add_dependencies(scene
 	assimp)
 
 target_link_libraries(scene PUBLIC
+	json
 	gfx
 	input
 	math

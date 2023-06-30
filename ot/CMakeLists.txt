@@ -16,7 +16,7 @@ endforeach()
 
 list(REMOVE_DUPLICATES OT_INCLUDE_DIRS)
 
-add_library(ot STATIC ${OT_INCLUDES} ${OT_SOURCES})
+add_library(ot OBJECT ${OT_INCLUDES} ${OT_SOURCES})
 add_dependencies(ot uv_a json)
 
 if (UNIX)

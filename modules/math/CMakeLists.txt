@@ -16,7 +16,7 @@ endforeach()
 
 list(REMOVE_DUPLICATES MATH_INCLUDE_DIRS)
 
-add_library(math STATIC ${MATH_INCLUDES} ${MATH_SOURCES})
+add_library(math OBJECT ${MATH_INCLUDES} ${MATH_SOURCES})
 add_dependencies(math ot glm)
 target_include_directories(math PUBLIC ${MATH_INCLUDE_DIRS})
 target_link_libraries(math PUBLIC ot glm)

@@ -28,7 +28,7 @@ endforeach()
 list(REMOVE_DUPLICATES GFX_INCLUDE_DIRS)
 set(GFX_INCLUDE_DIRS ${GFX_INCLUDE_DIRS} PARENT_SCOPE)
 
-add_library(gfx STATIC ${GFX_INCLUDES} ${GFX_SOURCES})
+add_library(gfx OBJECT ${GFX_INCLUDES} ${GFX_SOURCES})
 target_include_directories(gfx PUBLIC ${GFX_INCLUDE_DIRS})
 
 add_dependencies(gfx

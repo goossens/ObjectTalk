@@ -16,7 +16,7 @@ endforeach()
 
 list(REMOVE_DUPLICATES INPUT_INCLUDE_DIRS)
 
-add_library(input STATIC ${INPUT_INCLUDES} ${INPUT_SOURCES})
+add_library(input OBJECT ${INPUT_INCLUDES} ${INPUT_SOURCES})
 add_dependencies(input ot imgui math)
 target_include_directories(input PUBLIC ${INPUT_INCLUDE_DIRS})
 target_link_libraries(input PUBLIC ot imgui math)

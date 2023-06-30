@@ -16,7 +16,7 @@ endforeach()
 
 list(REMOVE_DUPLICATES GRAPICS_INCLUDE_DIRS)
 
-add_library(graphics STATIC ${GRAPICS_INCLUDES} ${GRAPICS_SOURCES})
+add_library(graphics OBJECT ${GRAPICS_INCLUDES} ${GRAPICS_SOURCES})
 add_dependencies(graphics math gfx ot glm)
 target_include_directories(graphics PUBLIC ${GRAPICS_INCLUDE_DIRS})
 target_link_libraries(graphics PUBLIC math gfx ot glm)

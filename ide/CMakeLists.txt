@@ -16,7 +16,7 @@ endforeach()
 
 list(REMOVE_DUPLICATES IDE_INCLUDE_DIRS)
 
-add_library(ide STATIC ${IDE_INCLUDES} ${IDE_SOURCES})
+add_library(ide OBJECT ${IDE_INCLUDES} ${IDE_SOURCES})
 add_dependencies(ide ot gfx scene imguizmo)
 target_include_directories(ide PUBLIC ${IDE_INCLUDE_DIRS})
 target_link_libraries(ide PUBLIC ot gfx scene imguizmo)

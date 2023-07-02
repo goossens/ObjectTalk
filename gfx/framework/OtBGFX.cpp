@@ -75,7 +75,7 @@ void OtFramework::initBGFX() {
 	init.type = bgfx::RendererType::Direct3D12;
 
 #else
-	init.type = bgfx::RendererType::OpenGL;
+	init.type = bgfx::RendererType::Vulkan;
 #endif
 
 	init.platformData.nwh = nativeDisplayHandle;

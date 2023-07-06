@@ -59,8 +59,16 @@ private:
 //
 
 #define OtLog(type, message) (OtLogger::instance()->log(__FILE__, __LINE__, type, message))
+
+#if OT_DEBUG
 #define OtLogDebug(message) OtLog(OtLogger::debug, message)
 #define OtLogInfo(message) OtLog(OtLogger::info, message)
 #define OtLogWarning(message) OtLog(OtLogger::warning, message)
+#else
+#define OtLogDebug(message)
+#define OtLogInfo(message)
+#define OtLogWarning(message)
+#endif
+
 #define OtLogError(message) OtLog(OtLogger::error, message)
 #define OtLogFatal(message) OtLog(OtLogger::fatal, message)

@@ -9,13 +9,12 @@
 //	Include files
 //
 
-#include <cstdlib>
 #include <filesystem>
-#include <iostream>
 
 #include <argparse/argparse.hpp>
 
 #include "OtCompiler.h"
+#include "OtFormat.h"
 #include "OtLibuv.h"
 #include "OtLog.h"
 #include "OtModule.h"
@@ -34,6 +33,11 @@
 //
 
 int main(int argc, char* argv[]) {
+	// log calling parameters
+	for (auto i = 0; i < argc; i++) {
+		OtLogDebug(OtFormat("argv[%d]: %s", i, argv[i]));
+	}
+
 	// parse all command line parameters
 	argparse::ArgumentParser program(argv[0], "0.2");
 
@@ -60,9 +64,7 @@ int main(int argc, char* argv[]) {
 		program.parse_args(argc, argv);
 
 	} catch (const std::runtime_error& err) {
-		std::cerr << err.what() << std::endl;
-		std::cerr << program;
-		std::_Exit(EXIT_FAILURE);
+		OtLogFatal(err.what());
 	}
 
 	// get all the target filenames
@@ -93,9 +95,7 @@ int main(int argc, char* argv[]) {
 			framework.run(&workspace);
 
 #else
-			std::cerr << "No files specified" << std::endl << std::endl;
-			std::cerr << program;
-			std::_Exit(EXIT_FAILURE);
+	OtLogFatal("No files specified");
 #endif
 
 
@@ -115,8 +115,7 @@ int main(int argc, char* argv[]) {
 #endif
 				// we can only handle one file
 				if (files.size() != 1) {
-					std::cerr << "Error: you can only run one file, you specified [%d]" << files.size() << std::endl;
-					std::_Exit(EXIT_FAILURE);
+					OtLogFatal(OtFormat("Error: you can only run one file, you specified [%d]", files.size()));
 				}
 
 				// run the file
@@ -149,8 +148,7 @@ int main(int argc, char* argv[]) {
 #endif
 
 				} else {
-					std::cerr << "Error: can't execute file with extension [%s]" << extension.string().c_str() << std::endl;
-					std::_Exit(EXIT_FAILURE);
+					OtLogFatal(OtFormat("Error: can't execute file with extension [%s]", extension.string().c_str()));
 				}
 #if defined(INCLUDE_GUI)
 			}
@@ -169,8 +167,7 @@ int main(int argc, char* argv[]) {
 		}
 
 		// output human readable text
-		std::cerr << "Error: " << e.what() << std::endl;
-		std::_Exit(EXIT_FAILURE);
+		OtLogFatal(OtFormat("Error: ", e.what()));
 	}
 
 	return 0;

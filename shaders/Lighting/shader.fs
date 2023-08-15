@@ -9,7 +9,7 @@
 
 $input v_texcoord0
 
-#include <bgfx.glsl>
+#include <bgfx_shader.glsl>
 #include <pbr.glsl>
 
 // uniforms

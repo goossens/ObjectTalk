@@ -6,7 +6,7 @@
 
 $input v_color0
 
-#include <bgfx.glsl>
+#include <bgfx_shader.glsl>
 
 void main() {
 	gl_FragColor = v_color0;

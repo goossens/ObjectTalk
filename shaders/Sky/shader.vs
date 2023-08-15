@@ -7,7 +7,7 @@
 $input a_position
 $output v_position
 
-#include <bgfx.glsl>
+#include <bgfx_shader.glsl>
 
 void main() {
 	v_position = a_position;

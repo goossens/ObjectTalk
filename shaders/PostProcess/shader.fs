@@ -6,7 +6,7 @@
 
 $input v_texcoord0
 
-#include <bgfx.glsl>
+#include <bgfx_shader.glsl>
 
 uniform vec4 u_postProcess;
 #define u_bloomEnabled bool(u_postProcess.x)

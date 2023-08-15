@@ -58,4 +58,5 @@ then
 fi
 
 cd ..
-cp bgfx/src/bgfx_shader.sh ${OT_HOME}/shaders/include/bgfx.glsl
+cp bgfx/src/bgfx_shader.sh ${OT_HOME}/shaders/include/bgfx_shader.glsl
+cp bgfx/src/bgfx_compute.sh ${OT_HOME}/shaders/include/bgfx_compute.glsl

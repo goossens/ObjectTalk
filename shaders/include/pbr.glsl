@@ -12,7 +12,7 @@
 #define OT_PBR_GLSL
 
 
-#include <bgfx.glsl>
+#include <bgfx_shader.glsl>
 
 
 // constants
@@ -34,7 +34,7 @@ struct PBR {
 };
 
 // Normal Distribution Function (NDF)
-float DistributionGGX(vec3 N, vec3 H, float roughness) {
+float distributionGGX(vec3 N, vec3 H, float roughness) {
 	float a = roughness * roughness;
 	float a2 = a * a;
 	float NdotH = max(dot(N, H), 0.0);
@@ -44,17 +44,17 @@ float DistributionGGX(vec3 N, vec3 H, float roughness) {
 }
 
 // geometry function
-float GeometrySchlickGGX(float NdotV, float roughness) {
+float geometrySchlickGGX(float NdotV, float roughness) {
 	float r = (roughness + 1.0);
 	float k = (r*r) / 8.0;
 	return NdotV / (NdotV * (1.0 - k) + k);
 }
 
-float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness) {
+float geometrySmith(vec3 N, vec3 V, vec3 L, float roughness) {
 	float NdotV = max(dot(N, V), 0.0);
 	float NdotL = max(dot(N, L), 0.0);
-	float ggx2 = GeometrySchlickGGX(NdotV, roughness);
-	float ggx1 = GeometrySchlickGGX(NdotL, roughness);
+	float ggx2 = geometrySchlickGGX(NdotV, roughness);
+	float ggx1 = geometrySchlickGGX(NdotL, roughness);
 	return ggx1 * ggx2;
 }
 
@@ -71,8 +71,8 @@ vec4 applyPBR(PBR pbr) {
 	vec3 F0 = mix(vec3_splat(0.04), albedo, pbr.metallic);
 
 	// Cook-Torrance Bidirectional Reflective Distribution Function (BRDF)
-	float NDF = DistributionGGX(pbr.N, pbr.H, pbr.roughness);
-	float G = GeometrySmith(pbr.N, pbr.V, pbr.L, pbr.roughness);
+	float NDF = distributionGGX(pbr.N, pbr.H, pbr.roughness);
+	float G = geometrySmith(pbr.N, pbr.V, pbr.L, pbr.roughness);
 	vec3 F = fresnelSchlick(max(dot(pbr.H, pbr.V), 0.0), F0);
 
 	vec3 specular =

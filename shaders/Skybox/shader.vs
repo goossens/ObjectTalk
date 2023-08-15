@@ -7,7 +7,7 @@
 $input a_position
 $output v_texcoord0
 
-#include <bgfx.glsl>
+#include <bgfx_shader.glsl>
 
 void main() {
 	v_texcoord0 = a_position;

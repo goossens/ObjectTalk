@@ -7,7 +7,7 @@
 $input a_position, a_normal
 $output v_position, v_normal
 
-#include <bgfx.glsl>
+#include <bgfx_shader.glsl>
 
 void main() {
 	v_position = mul(u_model[0], vec4(a_position, 1.0)).xyz;

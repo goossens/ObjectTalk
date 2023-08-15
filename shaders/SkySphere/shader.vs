@@ -7,7 +7,7 @@
 $input a_position, a_texcoord0
 $output v_texcoord0
 
-#include <bgfx.glsl>
+#include <bgfx_shader.glsl>
 
 void main() {
 	v_texcoord0 = vec2(1.0 - a_texcoord0.x, a_texcoord0.y);

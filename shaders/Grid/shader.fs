@@ -9,7 +9,7 @@
 
 $input v_near, v_far
 
-#include <bgfx.glsl>
+#include <bgfx_shader.glsl>
 
 uniform vec4 u_grid[1];
 #define u_scale u_grid[0].x

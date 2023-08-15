@@ -6,7 +6,7 @@
 
 $input v_texcoord0
 
-#include <bgfx.glsl>
+#include <bgfx_shader.glsl>
 
 uniform vec4 u_bloom;
 #define u_pixelWidth u_bloom.x

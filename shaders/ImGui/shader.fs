@@ -6,7 +6,7 @@
 
 $input v_color0, v_texcoord0
 
-#include <bgfx.glsl>
+#include <bgfx_shader.glsl>
 
 SAMPLER2D(s_tex, 0);
 

@@ -6,7 +6,7 @@
 
 $input v_position, v_normal
 
-#include <bgfx.glsl>
+#include <bgfx_shader.glsl>
 
 // uniforms
 uniform vec4 u_terrain[6];

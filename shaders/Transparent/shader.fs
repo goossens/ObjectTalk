@@ -6,7 +6,7 @@
 
 $input v_position, v_normal, v_tangent, v_bitangent, v_texcoord0
 
-#include <bgfx.glsl>
+#include <bgfx_shader.glsl>
 #include <pbr.glsl>
 
 // uniforms

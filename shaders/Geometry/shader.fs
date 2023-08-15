@@ -6,7 +6,7 @@
 
 $input v_normal, v_tangent, v_bitangent, v_texcoord0
 
-#include <bgfx.glsl>
+#include <bgfx_shader.glsl>
 
 // uniforms
 uniform vec4 u_material[5];

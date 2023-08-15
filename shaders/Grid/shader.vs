@@ -7,7 +7,7 @@
 $input a_position
 $output v_near, v_far
 
-#include <bgfx.glsl>
+#include <bgfx_shader.glsl>
 
 vec3 unproject(float x, float y, float z) {
 	vec4 unprojectedPoint = mul(u_invViewProj, vec4(x, y, z, 1.0));

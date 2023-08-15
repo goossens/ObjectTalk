@@ -7,7 +7,7 @@
 $input a_position, a_normal, a_tangent, a_bitangent, a_texcoord0, i_data0, i_data1, i_data2, i_data3
 $output v_normal, v_tangent, v_bitangent, v_texcoord0
 
-#include <bgfx.glsl>
+#include <bgfx_shader.glsl>
 
 void main() {
 	mat4 model = mul(u_model[0], mtxFromCols(i_data0, i_data1, i_data2, i_data3));

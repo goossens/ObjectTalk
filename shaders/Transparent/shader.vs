@@ -7,7 +7,7 @@
 $input a_position, a_normal, a_tangent, a_bitangent, a_texcoord0
 $output v_position, v_normal, v_tangent, v_bitangent, v_texcoord0
 
-#include <bgfx.glsl>
+#include <bgfx_shader.glsl>
 
 void main() {
 	v_texcoord0 = a_texcoord0;

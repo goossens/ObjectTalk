@@ -223,5 +223,21 @@
 				"path": "assets/palmtrees.ot"
 			}
 		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Terrain",
+				"uuid": 1003125373
+			},
+			{
+				"component": "Terrain",
+				"hScale": 1.0,
+				"vScale": 1.0,
+				"wireframe": false
+			}
+		]
 	}
 ]

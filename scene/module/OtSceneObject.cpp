@@ -16,10 +16,40 @@
 
 
 //
+//	OtSceneObjectClass::hasEntity
+//
+
+bool OtSceneObjectClass::hasEntity(const std::string& tag) {
+	return scene->hasEntity(tag);
+}
+
+
+//
+//	OtSceneObjectClass::getEntity
+//
+
+OtObject OtSceneObjectClass::getEntity(const std::string& tag) {
+	// get the entity
+	auto entity = scene->getEntity(tag);
+
+	// see if this entity has a script component
+	if (scene->hasComponent<OtScriptComponent>(entity)) {
+		// we use the script instance
+		return scene->getComponent<OtScriptComponent>(entity).instance;
+
+	} else {
+		// create a new entity reference
+		return OtEntityObject::create(scene, entity);
+	}
+}
+
+
+//
 //	OtSceneObjectClass::getMeta
 //
 
-OtType OtSceneObjectClass::getMeta() {
+OtType OtSceneObjectClass::getMeta()
+{
 	static OtType type = nullptr;
 
 	if (!type) {

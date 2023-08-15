@@ -30,7 +30,7 @@ static OtAssetFactoryRegister<OtTextureAsset> pngRegistration{".png"};
 //	OtTextureAsset::load
 //
 
-bool OtTextureAsset::load(const std::filesystem::path &path) {
+bool OtTextureAsset::load(const std::filesystem::path& path) {
 	try {
 		// try to load the texture
 		texture.loadFromFile(path);

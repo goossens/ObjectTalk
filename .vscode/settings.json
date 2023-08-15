@@ -90,7 +90,12 @@
 		"memory_resource": "cpp",
 		"utility": "cpp",
 		"cinttypes": "cpp",
-		"*.hpp11": "cpp"
+		"*.hpp11": "cpp",
+		"codecvt": "cpp",
+		"semaphore": "cpp",
+		"stop_token": "cpp",
+		"format": "cpp",
+		"*.ipp": "cpp"
 	},
 	"files.exclude": {
 		"debug/**": true,

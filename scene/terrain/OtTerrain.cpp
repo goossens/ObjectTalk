@@ -78,7 +78,11 @@ bool OtTerrain::renderGUI() {
 	bool changed = false;
 	changed |= ImGui::DragFloat("Horizontal Scale", &hScale, 0.5f, 5.0f);
 	changed |= ImGui::DragFloat("Vertical Scale", &vScale, 1.0f, 100.0f);
+
+#if OT_DEBUG
 	changed |= ImGui::Checkbox("Wireframe", &wireframe);
+#endif
+
 	return false;
 }
 

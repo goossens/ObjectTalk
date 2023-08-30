@@ -6,8 +6,4 @@
 
 FetchContent_Declare(tweeny GIT_REPOSITORY "https://github.com/mobius3/tweeny")
 FetchContent_MakeAvailable(tweeny)
-
-file(GLOB TWEENY_SOURCES ${tweeny_SOURCE_DIR}/include/*.h ${tweeny_SOURCE_DIR}/include/*.tcc)
-add_custom_target(tweeny_src SOURCES ${TWEENY_SOURCES})
-source_group(TREE "${tweeny_SOURCE_DIR}/include" FILES ${TWEENY_SOURCES})
-set_target_properties(tweeny_src PROPERTIES FOLDER deps)
+set_target_properties(tweeny-dummy PROPERTIES FOLDER deps)

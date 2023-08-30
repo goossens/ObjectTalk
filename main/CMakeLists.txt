@@ -26,6 +26,6 @@ set_target_properties(main PROPERTIES XCODE_SCHEME_WORKING_DIRECTORY "${PROJECT_
 
 set_target_properties(main PROPERTIES VS_DEBUGGER_COMMAND "${CMAKE_BINARY_DIR}/bin/ot")
 
-install(TARGETS main DESTINATION bin)
+add_custom_command(TARGET main POST_BUILD COMMAND $<$<CONFIG:release>:${CMAKE_STRIP}> ARGS ${CMAKE_BINARY_DIR}/bin/ot)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES main.cpp)

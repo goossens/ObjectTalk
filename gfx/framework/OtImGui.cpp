@@ -183,6 +183,13 @@ void OtFramework::initIMGUI() {
 		15.0,
 		&config);
 
+
+	io.Fonts->AddFontFromMemoryTTF(
+		(void*) &OtBitstreamVeraMono,
+		sizeof(OtBitstreamVeraMono),
+		17.0,
+		&config);
+
 	// setup font atlas in texture
 	unsigned char* pixels;
 	int fw, fh;

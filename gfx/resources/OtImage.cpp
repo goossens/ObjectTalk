@@ -86,7 +86,7 @@ void OtImage::load(const std::filesystem::path& path, bool powerof2, bool square
 		OtError("Can't open image in [%s]", filename);
 	}
 
-	image = bimg::imageParse(&allocator, buffer, filesize);
+	image = bimg::imageParse(&allocator, buffer, (uint32_t) filesize);
 	delete [] buffer;
 
 	if (!image) {

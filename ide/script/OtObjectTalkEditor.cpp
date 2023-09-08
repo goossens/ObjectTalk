@@ -25,34 +25,33 @@
 
 
 //
-//	colorPalette (** means 'changed from default dark palette')
+//	Color palette
 //
 
 const static TextEditor::Palette colorPalette = { {
-	0xff7f7f7f,	// Default
-	0xffc086c5,	// Keyword **
-	0xffa8ceb5,	// Number **
-	0xff7891ce,	// String **
-	0xff7891ce, // Char literal **
+	0x7f7f7fff,	// Default
+	0xc586c0ff,	// Keyword
+	0xb5cea8ff,	// Number
+	0xce9178ff,	// String
+	0xce9178ff, // Char literal
 	0xffffffff, // Punctuation
-	0xff408080,	// Preprocessor
-	0xfffedc9c, // Identifier **
-	0xffffc14f, // Known identifier **
-	0xffc040a0, // Preproc identifier
-	0xff55996a, // Comment (single line) **
-	0xff55996a, // Comment (multi line) **
-	0xff101010, // Background
-	0xffe0e0e0, // Cursor
-	0x80a06020, // Selection
+	0x808040ff,	// Preprocessor
+	0x9cdcfeff, // Identifier
+	0x4fc1ffff, // Known identifier
+	0xa040c0ff, // Preproc identifier
+	0x6a9955ff, // Comment (single line)
+	0x6a9955ff, // Comment (multi line)
+	0x101010ff, // Background
+	0xe0e0e0ff, // Cursor
+	0x2060a0ff, // Selection
 	0x800020ff, // ErrorMarker
-	0xffaf00af, // BracketHighlighting
-	0x40f08000, // Breakpoint
-	0xff707000, // Line number
-	0x40000000, // Current line fill
-	0x40808080, // Current line fill (inactive)
-	0x40a0a0a0, // Current line edge
-	0xff505050, // White Space
-	0xff404040, // White Space Tab
+	0x404040ff, // ControlCharacter
+//	0xaf00afff, // BracketHighlighting
+	0x0080f040, // Breakpoint
+	0x007070ff, // Line number
+	0x00000040, // Current line fill
+	0x80808040, // Current line fill (inactive)
+	0xa0a0a040  // Current line edge
 } };
 
 
@@ -64,8 +63,10 @@ OtObjectTalkEditor::OtObjectTalkEditor() {
 	editor.SetLanguageDefinition(OtObjectTalkLanguageGetDefinition());
 	editor.SetPalette(colorPalette);
 	editor.SetShowWhitespaces(true);
+	editor.SetLineSpacing(1.25f);
 	editor.SetShowShortTabGlyphs(true);
-	editor.SetImGuiChildIgnored(true);
+	editor.SetCompletePairedGlyphs(true);
+	// editor.SetHighlightPairedGlyphs(true);
 }
 
 
@@ -92,7 +93,7 @@ void OtObjectTalkEditor::load() {
 	}
 
 	editor.SetText(buffer.str());
-	version = editor.GetUndoCount();
+	version = editor.GetUndoIndex();
 }
 
 
@@ -117,7 +118,7 @@ void OtObjectTalkEditor::save() {
 	}
 
 	// reset current version number (marking the content as clean)
-	version = editor.GetUndoCount();
+	version = editor.GetUndoIndex();
 }
 
 
@@ -145,8 +146,8 @@ void OtObjectTalkEditor::renderMenu() {
 #endif
 
 			ImGui::Separator();
-			if (ImGui::MenuItem("Cut", SHORTCUT "X", nullptr, editor.HasSelection())) { editor.Cut(); }
-			if (ImGui::MenuItem("Copy", SHORTCUT "C", nullptr, editor.HasSelection())) { editor.Copy(); }
+			if (ImGui::MenuItem("Cut", SHORTCUT "X", nullptr, editor.AnyCursorHasSelection())) { editor.Cut(); }
+			if (ImGui::MenuItem("Copy", SHORTCUT "C", nullptr, editor.AnyCursorHasSelection())) { editor.Copy(); }
 			if (ImGui::MenuItem("Paste", SHORTCUT "V", nullptr, ImGui::GetClipboardText() != nullptr)) { editor.Paste(); }
 
 			ImGui::Separator();
@@ -170,11 +171,11 @@ void OtObjectTalkEditor::renderMenu() {
 //
 
 void OtObjectTalkEditor::renderEditor() {
-	// create the window
-	ImGui::BeginChild("editor", ImVec2(0.0f, 0.0f), true);
-
 	// create the editor
+	ImGuiIO& io = ImGui::GetIO();
+	ImGui::PushFont(io.Fonts->Fonts[uiEditorFont]);
 	editor.Render("TextEditor");
+	ImGui::PopFont();
 
 	// scroll to line if required
 	// (this has to be done here as the editor doesn't handle this well on open)
@@ -182,8 +183,6 @@ void OtObjectTalkEditor::renderEditor() {
 		editor.SetCursorPosition(TextEditor::Coordinates(scrollToLine - 1, 0));
 		scrollToLine = 0;
 	}
-
-	ImGui::EndChild();
 }
 
 
@@ -192,7 +191,7 @@ void OtObjectTalkEditor::renderEditor() {
 //
 
 bool OtObjectTalkEditor::isDirty() {
-	return editor.GetUndoCount() != version;
+	return editor.GetUndoIndex() != version;
 }
 
 
@@ -201,9 +200,9 @@ bool OtObjectTalkEditor::isDirty() {
 //
 
 void OtObjectTalkEditor::highlightError(size_t line, const std::string& error) {
-	TextEditor::ErrorMarkers markers;
-	markers[(int) line] = error;
-	editor.SetErrorMarkers(markers);
+//	TextEditor::ErrorMarkers markers;
+//	markers[(int) line] = error;
+//	editor.SetErrorMarkers(markers);
 	scrollToLine = (int) line;
 }
 
@@ -213,8 +212,8 @@ void OtObjectTalkEditor::highlightError(size_t line, const std::string& error) {
 //
 
 void OtObjectTalkEditor::clearError() {
-	TextEditor::ErrorMarkers markers;
-	editor.SetErrorMarkers(markers);
+//	TextEditor::ErrorMarkers markers;
+//	editor.SetErrorMarkers(markers);
 }
 
 

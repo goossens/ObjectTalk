@@ -250,10 +250,7 @@ const TextEditor::LanguageDefinition& OtObjectTalkLanguageGetDefinition() {
 		langDef.mCommentStart = "/*";
 		langDef.mCommentEnd = "*/";
 		langDef.mSingleLineComment = "//";
-
 		langDef.mCaseSensitive = true;
-		langDef.mAutoIndentation = true;
-
 		langDef.mName = "ObjectTalk";
 		initialized = true;
 	}

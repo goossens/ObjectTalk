@@ -19,6 +19,7 @@
 #include "bgfx/bgfx.h"
 #include "bimg/bimg.h"
 #include "bgfx/embedded_shader.h"
+#include "imgui.h"
 
 #include "OtFrameworkApp.h"
 #include "OtFrameworkEvents.h"

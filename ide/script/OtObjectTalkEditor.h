@@ -31,7 +31,7 @@ public:
 	// get file extension
 	std::string getFileExtension() override { return ".ot"; }
 
-	// load save content
+	// load/save content
 	void load() override;
 	void save() override;
 

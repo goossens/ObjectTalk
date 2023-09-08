@@ -21,6 +21,16 @@
 
 
 //
+//	Constants
+//
+
+enum {
+	uiDefaultFont = 0,
+	uiEditorFont
+};
+
+
+//
 //	Functions
 //
 

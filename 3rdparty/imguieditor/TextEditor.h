@@ -46,6 +46,7 @@ public:
 		CurrentLineFill,
 		CurrentLineFillInactive,
 		CurrentLineEdge,
+		BracketHighlighting,
 		Max
 	};
 
@@ -314,6 +315,9 @@ public:
 	inline void SetCompletePairedGlyphs(bool aValue) { mCompletePairedGlyphs = aValue; }
 	inline bool IsCompletingPairedGlyphs() const { return mCompletePairedGlyphs; }
 
+	inline void SetHighlightPairedGlyphs(bool aValue) { mHighlightPairedGlyphs = aValue; }
+	inline bool IsHighlightPairedGlyphs() const { return mHighlightPairedGlyphs; }
+
 	inline ImVec4 U32ColorToVec4(ImU32 in) {
 		float s = 1.0f / 255.0f;
 		return ImVec4(
@@ -477,6 +481,7 @@ private:
 	bool mShowShortTabGlyphs;
 	float mLongestLineLength;
 	bool mCompletePairedGlyphs;
+	bool mHighlightPairedGlyphs;
 
 	Palette mPaletteBase;
 	Palette mPalette;

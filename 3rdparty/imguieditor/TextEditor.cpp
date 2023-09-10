@@ -46,6 +46,7 @@ TextEditor::TextEditor()
 	, mStartTime(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count())
 	, mLastClick(-1.0f)
 	, mCompletePairedGlyphs(false)
+	, mHighlightPairedGlyphs(false)
 {
 	SetPalette(GetDarkPalette());
 	mLines.push_back(Line());
@@ -2316,6 +2317,7 @@ const TextEditor::Palette& TextEditor::GetDarkPalette()
 			0x00000040, // Current line fill
 			0x80808040, // Current line fill (inactive)
 			0xa0a0a040, // Current line edge
+			0xaf00afff, // BracketHighlighting
 		} };
 	return p;
 }
@@ -2345,6 +2347,7 @@ const TextEditor::Palette& TextEditor::GetMarianaPalette()
 			0x4e5a6580, // Current line fill
 			0x4e5a6530, // Current line fill (inactive)
 			0x4e5a65b0, // Current line edge
+			0xaf00afff, // BracketHighlighting
 		} };
 	return p;
 }
@@ -2374,6 +2377,7 @@ const TextEditor::Palette& TextEditor::GetLightPalette()
 			0x00000040, // Current line fill
 			0x80808040, // Current line fill (inactive)
 			0x00000040, // Current line edge
+			0xaf00afff, // BracketHighlighting
 		} };
 	return p;
 }
@@ -2402,6 +2406,7 @@ const TextEditor::Palette& TextEditor::GetRetroBluePalette()
 			0x00000040, // Current line fill
 			0x80808040, // Current line fill (inactive)
 			0x00000040, // Current line edge
+			0xaf00afff, // BracketHighlighting
 		} };
 	return p;
 }

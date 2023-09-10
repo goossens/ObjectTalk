@@ -46,12 +46,12 @@ const static TextEditor::Palette colorPalette = { {
 	0x2060a0ff, // Selection
 	0x800020ff, // ErrorMarker
 	0x404040ff, // ControlCharacter
-//	0xaf00afff, // BracketHighlighting
 	0x0080f040, // Breakpoint
 	0x007070ff, // Line number
 	0x00000040, // Current line fill
 	0x80808040, // Current line fill (inactive)
-	0xa0a0a040  // Current line edge
+	0xa0a0a040, // Current line edge
+	0xaf00afff  // BracketHighlighting
 } };
 
 
@@ -66,7 +66,7 @@ OtObjectTalkEditor::OtObjectTalkEditor() {
 	editor.SetLineSpacing(1.25f);
 	editor.SetShowShortTabGlyphs(true);
 	editor.SetCompletePairedGlyphs(true);
-	// editor.SetHighlightPairedGlyphs(true);
+	editor.SetHighlightPairedGlyphs(true);
 }
 
 

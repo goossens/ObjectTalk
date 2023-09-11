@@ -50,8 +50,7 @@ const static TextEditor::Palette colorPalette = { {
 	0x007070ff, // Line number
 	0x00000040, // Current line fill
 	0x80808040, // Current line fill (inactive)
-	0xa0a0a040, // Current line edge
-	0xaf00afff  // BracketHighlighting
+	0xa0a0a040  // Current line edge
 } };
 
 
@@ -65,8 +64,8 @@ OtObjectTalkEditor::OtObjectTalkEditor() {
 	editor.SetShowWhitespaces(true);
 	editor.SetLineSpacing(1.25f);
 	editor.SetShowShortTabGlyphs(true);
+	editor.SetShowMatchingBrackets(true);
 	editor.SetCompletePairedGlyphs(true);
-	editor.SetHighlightPairedGlyphs(true);
 }
 
 
@@ -157,6 +156,14 @@ void OtObjectTalkEditor::renderMenu() {
 
 		if (ImGui::BeginMenu("View")) {
 			renderCommonViewMenuItems();
+
+			bool flag;
+			flag = editor.IsShowingWhitespaces(); if (ImGui::MenuItem("Show Whitespaces", nullptr, &flag)) { editor.SetShowWhitespaces(flag); };
+			flag = editor.IsShowingShortTabGlyphs(); if (ImGui::MenuItem("Show Short Tabs", nullptr, &flag)) { editor.SetShowShortTabGlyphs(flag); };
+			flag = editor.IsShowingMatchingBrackets(); if (ImGui::MenuItem("Show Matching Brackets", nullptr, &flag)) { editor.SetShowMatchingBrackets(flag); };
+			flag = editor.IsCompletingPairedGlyphs(); if (ImGui::MenuItem("Complete Matchng Glyphs", nullptr, &flag)) { editor.SetCompletePairedGlyphs(flag); };
+
+			ImGui::Separator();
 			if (ImGui::MenuItem("Clear Errors")) { clearError(); }
 			ImGui::EndMenu();
 		}

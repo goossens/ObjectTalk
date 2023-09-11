@@ -95,7 +95,14 @@
 		"semaphore": "cpp",
 		"stop_token": "cpp",
 		"format": "cpp",
-		"*.ipp": "cpp"
+		"*.ipp": "cpp",
+		"climits": "cpp",
+		"complex": "cpp",
+		"*.inc": "cpp",
+		"rope": "cpp",
+		"hash_map": "cpp",
+		"hash_set": "cpp",
+		"future": "cpp"
 	},
 	"files.exclude": {
 		"debug/**": true,

@@ -21,6 +21,8 @@
 
 class IMGUI_API TextEditor
 {
+	static const std::unordered_map<char, char> OPEN_TO_CLOSE_CHAR;
+	static const std::unordered_map<char, char> CLOSE_TO_OPEN_CHAR;
 public:
 	enum class PaletteIndex
 	{
@@ -46,7 +48,6 @@ public:
 		CurrentLineFill,
 		CurrentLineFillInactive,
 		CurrentLineEdge,
-		BracketHighlighting,
 		Max
 	};
 
@@ -132,6 +133,16 @@ public:
 
 	struct EditorState
 	{
+		int mFirstVisibleLine = 0;
+		int mLastVisibleLine = 0;
+		int mVisibleLineCount = 0;
+		int mFirstVisibleColumn = 0;
+		int mLastVisibleColumn = 0;
+		int mVisibleColumnCount = 0;
+		float mContentWidth = 0.0f;
+		float mContentHeight = 0.0f;
+		float mScrollX = 0.0f;
+		float mScrollY = 0.0f;
 		bool mPanning = false;
 		bool mDraggingSelection = false;
 		ImVec2 mLastMousePos;
@@ -309,14 +320,14 @@ public:
 	inline void SetShowWhitespaces(bool aValue) { mShowWhitespaces = aValue; }
 	inline bool IsShowingWhitespaces() const { return mShowWhitespaces; }
 
+	inline void SetShowMatchingBrackets(bool aValue) { mShowMatchingBrackets = aValue; }
+	inline bool IsShowingMatchingBrackets() const { return mShowMatchingBrackets; }
+
 	inline void SetShowShortTabGlyphs(bool aValue) { mShowShortTabGlyphs = aValue; }
 	inline bool IsShowingShortTabGlyphs() const { return mShowShortTabGlyphs; }
 
 	inline void SetCompletePairedGlyphs(bool aValue) { mCompletePairedGlyphs = aValue; }
 	inline bool IsCompletingPairedGlyphs() const { return mCompletePairedGlyphs; }
-
-	inline void SetHighlightPairedGlyphs(bool aValue) { mHighlightPairedGlyphs = aValue; }
-	inline bool IsHighlightPairedGlyphs() const { return mHighlightPairedGlyphs; }
 
 	inline ImVec4 U32ColorToVec4(ImU32 in) {
 		float s = 1.0f / 255.0f;
@@ -365,8 +376,9 @@ public:
 
 	void ClearExtraCursors();
 	void ClearSelections();
-	void SelectNextOccurrenceOf(const char* aText, int aTextSize, int aCursor = -1);
-	void AddCursorForNextOccurrence();
+	void SelectNextOccurrenceOf(const char* aText, int aTextSize, int aCursor = -1, bool aCaseSensitive = true);
+	void AddCursorForNextOccurrence(bool aCaseSensitive = true);
+	void SelectAllOccurrencesOf(const char* aText, int aTextSize, bool aCaseSensitive = true);
 
 	static const Palette& GetMarianaPalette();
 	static const Palette& GetDarkPalette();
@@ -415,7 +427,6 @@ private:
 	void ColorizeInternal();
 	float TextDistanceToLineStart(const Coordinates& aFrom) const;
 	void EnsureCursorVisible(int aCursor = -1);
-	int GetPageSize() const;
 	std::string GetText(const Coordinates& aStart, const Coordinates& aEnd) const;
 	Coordinates GetActualCursorCoordinates(int aCursor = -1) const;
 	Coordinates SanitizeCoordinates(const Coordinates& aValue) const;
@@ -458,7 +469,8 @@ private:
 	void UpdatePalette();
 	void Render(bool aParentIsFocused = false);
 
-	bool FindNextOccurrence(const char* aText, int aTextSize, const Coordinates& aFrom, Coordinates& outStart, Coordinates& outEnd);
+	bool FindNextOccurrence(const char* aText, int aTextSize, const Coordinates& aFrom, Coordinates& outStart, Coordinates& outEnd, bool aCaseSensitive = true);
+	bool FindMatchingBracket(int aLine, int aCharIndex, Coordinates& out);
 
 	float mLineSpacing;
 	Lines mLines;
@@ -470,18 +482,17 @@ private:
 	bool mOverwrite;
 	bool mReadOnly;
 	bool mAutoIndent;
-	bool mWithinRender;
-	bool mScrollToCursor;
+	int mEnsureCursorVisible;
 	bool mScrollToTop;
 	bool mColorizerEnabled;
 	float mTextStart;                   // position (in pixels) where a code line starts relative to the left of the TextEditor.
 	int  mLeftMargin;
 	int mColorRangeMin, mColorRangeMax;
 	bool mShowWhitespaces;
+	bool mShowMatchingBrackets;
 	bool mShowShortTabGlyphs;
-	float mLongestLineLength;
 	bool mCompletePairedGlyphs;
-	bool mHighlightPairedGlyphs;
+	float mLongestLineLength;
 
 	Palette mPaletteBase;
 	Palette mPalette;

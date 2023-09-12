@@ -20,6 +20,8 @@ const std::unordered_map<char, char> TextEditor::CLOSE_TO_OPEN_CHAR = {
 	{']' , '['}
 };
 
+TextEditor::Palette TextEditor::mDefaultPalette = TextEditor::GetDarkPalette();
+
 // TODO
 // - multiline comments vs single-line: latter is blocking start of a ML
 
@@ -58,7 +60,7 @@ TextEditor::TextEditor()
 	, mStartTime(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count())
 	, mLastClick(-1.0f)
 {
-	SetPalette(GetDarkPalette());
+	SetPalette(mDefaultPalette);
 	mLines.push_back(Line());
 }
 
@@ -82,9 +84,15 @@ const char* TextEditor::GetLanguageDefinitionName() const
 	return mLanguageDefinition != nullptr ? mLanguageDefinition->mName.c_str() : "unknown";
 }
 
+void TextEditor::SetDefaultPalette(const Palette& aValue)
+{
+	mDefaultPalette = aValue;
+}
+
 void TextEditor::SetPalette(const Palette& aValue)
 {
 	mPaletteBase = aValue;
+	UpdatePalette();
 }
 
 std::string TextEditor::GetText(const Coordinates& aStart, const Coordinates& aEnd) const
@@ -1056,10 +1064,12 @@ void TextEditor::HandleMouseInputs()
 void TextEditor::UpdatePalette()
 {
 	/* Update palette with the current alpha from style */
+	mPaletteAlpha = ImGui::GetStyle().Alpha;
+
 	for (int i = 0; i < (int)PaletteIndex::Max; ++i)
 	{
 		auto color = U32ColorToVec4(mPaletteBase[i]);
-		color.w *= ImGui::GetStyle().Alpha;
+		color.w *= mPaletteAlpha;
 		mPalette[i] = ImGui::ColorConvertFloat4ToU32(color);
 	}
 }
@@ -1483,7 +1493,8 @@ bool TextEditor::Render(const char* aTitle, bool aParentIsFocused, const ImVec2&
 		OnCursorPositionChanged();
 	mState.mCursorPositionChanged = false;
 
-	UpdatePalette();
+	if (mPaletteAlpha != ImGui::GetStyle().Alpha)
+		UpdatePalette();
 
 	ImGui::PushStyleColor(ImGuiCol_ChildBg, ImGui::ColorConvertU32ToFloat4(mPalette[(int)PaletteIndex::Background]));
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));

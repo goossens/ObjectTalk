@@ -253,6 +253,9 @@ public:
 	void SetLanguageDefinition(const LanguageDefinition& aLanguageDef);
 	const char* GetLanguageDefinitionName() const;
 
+	const Palette& GetDefaultPalette() const { return mDefaultPalette; }
+	void SetDefaultPalette(const Palette& aValue);
+
 	const Palette& GetPalette() const { return mPaletteBase; }
 	void SetPalette(const Palette& aValue);
 
@@ -385,8 +388,6 @@ public:
 	static const Palette& GetLightPalette();
 	static const Palette& GetRetroBluePalette();
 
-	static bool IsGlyphWordChar(const Glyph& aGlyph);
-
 	void ImGuiDebugPanel(const std::string& panelName = "Debug");
 	void UnitTests();
 private:
@@ -494,8 +495,10 @@ private:
 	bool mCompletePairedGlyphs;
 	float mLongestLineLength;
 
+	static Palette mDefaultPalette;
 	Palette mPaletteBase;
 	Palette mPalette;
+	float mPaletteAlpha;
 	const LanguageDefinition* mLanguageDefinition = nullptr;
 	RegexList mRegexList;
 
@@ -505,4 +508,6 @@ private:
 	uint64_t mStartTime;
 
 	float mLastClick;
+
+	static bool IsGlyphWordChar(const Glyph& aGlyph);
 };

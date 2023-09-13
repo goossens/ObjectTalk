@@ -59,6 +59,7 @@ TextEditor::TextEditor()
 	, mCompletePairedGlyphs(false)
 	, mStartTime(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count())
 	, mLastClick(-1.0f)
+	, mCursorAnimationTimer(0.0f)
 {
 	SetPalette(mDefaultPalette);
 	mLines.push_back(Line());
@@ -1109,6 +1110,9 @@ void TextEditor::Render(bool aParentIsFocused)
 	mState.mFirstVisibleColumn = (int)(std::max(mState.mScrollX - mTextStart, 0.0f) / mCharAdvance.x);
 	mState.mLastVisibleColumn = (int)((mState.mContentWidth + mState.mScrollX - mTextStart) / mCharAdvance.x);
 
+	auto io = ImGui::GetIO();
+	mCursorAnimationTimer = std::fmod(mCursorAnimationTimer + io.DeltaTime, 1.0f);
+
 	if (!mLines.empty())
 	{
 		float spaceSize = ImGui::GetFont()->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, " ", nullptr, nullptr).x;
@@ -1184,7 +1188,9 @@ void TextEditor::Render(bool aParentIsFocused)
 						}
 						ImVec2 cstart(textScreenPos.x + cx, lineStartScreenPos.y);
 						ImVec2 cend(textScreenPos.x + cx + width, lineStartScreenPos.y + mCharAdvance.y);
-						drawList->AddRectFilled(cstart, cend, mPalette[(int)PaletteIndex::Cursor]);
+
+						if (!io.ConfigInputTextCursorBlink || mCursorAnimationTimer < 0.5f)
+							drawList->AddRectFilled(cstart, cend, mPalette[(int)PaletteIndex::Cursor]);
 
 						if (mShowMatchingBrackets && cindex < (int)line.size())
 						{

@@ -508,6 +508,7 @@ private:
 	uint64_t mStartTime;
 
 	float mLastClick;
+	float mCursorAnimationTimer;
 
 	static bool IsGlyphWordChar(const Glyph& aGlyph);
 };

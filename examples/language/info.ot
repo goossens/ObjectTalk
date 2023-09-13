@@ -14,7 +14,7 @@ function size2string(bytes) {
 
 	while bytes > 1024.0 {
 		bytes /= 1024.0;
-		++i;
+		i++;
 	}
 
 	return bytes.toFixed(2) + units[i];

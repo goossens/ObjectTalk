@@ -573,7 +573,7 @@ void OtWorkspace::renderEditors() {
 			ImGui::PushID(this);
 
 			if (ImGui::BeginTabItem(editor->getShortName().c_str(), nullptr, flags)) {
-				editor->render();
+				editor->render(state == editState);
 				activeEditor = editor;
 				ImGui::EndTabItem();
 			}

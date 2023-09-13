@@ -60,7 +60,7 @@ private:
 
 	// render the parts
 	void renderMenu() override;
-	void renderEditor() override;
+	void renderEditor(bool active) override;
 	void renderPanels();
 	void renderEntitiesPanel();
 	void renderComponentsPanel();

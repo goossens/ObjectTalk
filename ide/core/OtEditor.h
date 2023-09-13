@@ -32,9 +32,9 @@ public:
 	virtual void save() {}
 
 	// render the editor
-	void render();
+	void render(bool active);
 	virtual void renderMenu() {}
-	virtual void renderEditor() {}
+	virtual void renderEditor(bool active) {}
 
 	// get the properties
 	virtual std::string getFileExtension() { return ""; }

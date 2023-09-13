@@ -22,11 +22,11 @@
 //	OtEditor::render
 //
 
-void OtEditor::render() {
+void OtEditor::render(bool active) {
 	// render the menu and the editor
 	ImGui::BeginChild("editor", ImVec2(), true, ImGuiWindowFlags_MenuBar);
 	renderMenu();
-	renderEditor();
+	renderEditor(active);
 	ImGui::EndChild();
 }
 

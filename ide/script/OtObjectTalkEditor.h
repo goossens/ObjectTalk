@@ -48,7 +48,7 @@ public:
 private:
 	// render the parts
 	void renderMenu() override;
-	void renderEditor() override;
+	void renderEditor(bool active) override;
 
 	// visual text editor
 	TextEditor editor;

@@ -177,11 +177,11 @@ void OtObjectTalkEditor::renderMenu() {
 //	OtObjectTalkEditor::renderEditor
 //
 
-void OtObjectTalkEditor::renderEditor() {
-	// create the editor
+void OtObjectTalkEditor::renderEditor(bool active) {
+	// render the text editor
 	ImGuiIO& io = ImGui::GetIO();
 	ImGui::PushFont(io.Fonts->Fonts[uiEditorFont]);
-	editor.Render("TextEditor");
+	editor.Render("TextEditor", active);
 	ImGui::PopFont();
 
 	// scroll to line if required

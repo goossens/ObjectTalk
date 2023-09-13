@@ -221,7 +221,7 @@ void OtSceneEditor::renderMenu() {
 //	OtSceneEditor::renderEditor
 //
 
-void OtSceneEditor::renderEditor() {
+void OtSceneEditor::renderEditor(bool active) {
 	// determine button size
 	buttonSize = ImGui::GetFrameHeight();
 

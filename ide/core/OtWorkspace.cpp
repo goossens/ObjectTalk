@@ -713,6 +713,7 @@ void OtWorkspace::renderConfirmClose() {
 
 		if (ImGui::Button("OK", ImVec2(120, 0))) {
 			deleteEditor(activeEditor);
+			state = editors.size() ? editState : splashState;
 			ImGui::CloseCurrentPopup();
 		}
 

@@ -38,7 +38,7 @@ const static TextEditor::Palette colorPalette = { {
 	0x808040ff,	// Preprocessor
 	0x9cdcfeff, // Identifier
 	0x4fc1ffff, // Known identifier
-	0xa040c0ff, // Preproc identifier
+	0x63c6abff, // Preproc identifier
 	0x6a9955ff, // Comment (single line)
 	0x6a9955ff, // Comment (multi line)
 	0x101010ff, // Background

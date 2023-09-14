@@ -192,31 +192,42 @@ const TextEditor::LanguageDefinition& OtObjectTalkLanguageGetDefinition() {
 	static TextEditor::LanguageDefinition langDef;
 
 	if (!initialized) {
-		static const char* const otKeywords[] = {
-			"catch", "class", "do", "elif", "else", "for", "function", "if", "in", "not", "return", "throw", "try", "var", "while"
+		static const char* const otDeclarations[] = {
+			"function", "var"
 		};
 
-		for (auto& k : otKeywords)
+		for (auto& d : otDeclarations) {
+			TextEditor::Identifier id;
+			id.mDeclaration = "Built-in declaration";
+			langDef.mPreprocIdentifiers.insert(std::make_pair(std::string(d), id));
+		}
+
+		static const char* const otKeywords[] = {
+			"catch", "class", "do", "elif", "else", "for", "if", "in", "not", "return", "throw", "try", "while"
+		};
+
+		for (auto& k : otKeywords) {
 			langDef.mKeywords.insert(k);
+		}
 
 		static const char* const otFunctions[] = {
 			"assert", "import", "members", "print", "range", "super"
 		};
 
-		for (auto& k : otFunctions) {
+		for (auto& f : otFunctions) {
 			TextEditor::Identifier id;
 			id.mDeclaration = "Built-in function";
-			langDef.mIdentifiers.insert(std::make_pair(std::string(k), id));
+			langDef.mIdentifiers.insert(std::make_pair(std::string(f), id));
 		}
 
 		static const char* const otConstants[] = {
 			"e", "false", "null", "pi", "print", "true"
 		};
 
-		for (auto& k : otConstants) {
+		for (auto& c : otConstants) {
 			TextEditor::Identifier id;
 			id.mDeclaration = "Built-in constant";
-			langDef.mIdentifiers.insert(std::make_pair(std::string(k), id));
+			langDef.mIdentifiers.insert(std::make_pair(std::string(c), id));
 		}
 
 		langDef.mTokenize = [](const char* in_begin, const char* in_end, const char*& out_begin, const char*& out_end, TextEditor::PaletteIndex& paletteIndex) -> bool {

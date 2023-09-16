@@ -61,8 +61,8 @@ const static TextEditor::Palette colorPalette = { {
 OtObjectTalkEditor::OtObjectTalkEditor() {
 	editor.SetLanguageDefinition(OtObjectTalkLanguageGetDefinition());
 	editor.SetPalette(colorPalette);
-	editor.SetShowWhitespaces(true);
 	editor.SetLineSpacing(1.25f);
+	editor.SetShowWhitespacesEnabled(true);
 	editor.SetShowShortTabGlyphs(true);
 	editor.SetShowMatchingBrackets(true);
 	editor.SetCompletePairedGlyphs(true);
@@ -158,7 +158,7 @@ void OtObjectTalkEditor::renderMenu() {
 			renderCommonViewMenuItems();
 
 			bool flag;
-			flag = editor.IsShowingWhitespaces(); if (ImGui::MenuItem("Show Whitespaces", nullptr, &flag)) { editor.SetShowWhitespaces(flag); };
+			flag = editor.IsShowWhitespacesEnabled(); if (ImGui::MenuItem("Show Whitespaces", nullptr, &flag)) { editor.SetShowWhitespacesEnabled(flag); };
 			flag = editor.IsShowingShortTabGlyphs(); if (ImGui::MenuItem("Show Short Tabs", nullptr, &flag)) { editor.SetShowShortTabGlyphs(flag); };
 			flag = editor.IsShowingMatchingBrackets(); if (ImGui::MenuItem("Show Matching Brackets", nullptr, &flag)) { editor.SetShowMatchingBrackets(flag); };
 			flag = editor.IsCompletingPairedGlyphs(); if (ImGui::MenuItem("Complete Matchng Glyphs", nullptr, &flag)) { editor.SetCompletePairedGlyphs(flag); };
@@ -187,7 +187,7 @@ void OtObjectTalkEditor::renderEditor(bool active) {
 	// scroll to line if required
 	// (this has to be done here as the editor doesn't handle this well on open)
 	if (scrollToLine) {
-		editor.SetCursorPosition(TextEditor::Coordinates(scrollToLine - 1, 0));
+		editor.SetCursorPosition(scrollToLine - 1, 0);
 		scrollToLine = 0;
 	}
 }

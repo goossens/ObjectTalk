@@ -16,6 +16,8 @@ set(IMGUIFD_SOURCES
 add_library(imguifd STATIC ${IMGUIFD_SOURCES})
 add_dependencies(imguifd imgui)
 
+target_compile_definitions(imguifd PRIVATE ImGuiButtonFlags_AllowItemOverlap=ImGuiButtonFlags_AllowOverlap)
+
 target_compile_definitions(imguifd PUBLIC CUSTOM_IMGUIFILEDIALOG_CONFIG="IgfdConfig.h")
 target_include_directories(imguifd PUBLIC ${imguifd_SOURCE_DIR} ${CMAKE_CURRENT_LIST_DIR})
 target_link_libraries(imguifd imgui)

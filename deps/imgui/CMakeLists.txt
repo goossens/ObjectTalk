@@ -4,7 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Declare(imgui GIT_REPOSITORY "https://github.com/ocornut/imgui" GIT_TAG "v1.89.6")
+FetchContent_Declare(imgui GIT_REPOSITORY "https://github.com/ocornut/imgui" GIT_TAG "v1.89.9")
 FetchContent_MakeAvailable(imgui)
 
 set(IMGUI_SOURCES

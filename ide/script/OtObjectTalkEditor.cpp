@@ -63,7 +63,7 @@ OtObjectTalkEditor::OtObjectTalkEditor() {
 	editor.SetPalette(colorPalette);
 	editor.SetLineSpacing(1.25f);
 	editor.SetShowWhitespacesEnabled(true);
-	editor.SetShowShortTabGlyphs(true);
+	editor.SetShortTabsEnabled(true);
 	editor.SetShowMatchingBrackets(true);
 	editor.SetCompletePairedGlyphs(true);
 }
@@ -159,7 +159,8 @@ void OtObjectTalkEditor::renderMenu() {
 
 			bool flag;
 			flag = editor.IsShowWhitespacesEnabled(); if (ImGui::MenuItem("Show Whitespaces", nullptr, &flag)) { editor.SetShowWhitespacesEnabled(flag); };
-			flag = editor.IsShowingShortTabGlyphs(); if (ImGui::MenuItem("Show Short Tabs", nullptr, &flag)) { editor.SetShowShortTabGlyphs(flag); };
+			flag = editor.IsShowLineNumbersEnabled(); if (ImGui::MenuItem("Show Line Numbers", nullptr, &flag)) { editor.SetShowLineNumbersEnabled(flag); };
+			flag = editor.IsShortTabsEnabled(); if (ImGui::MenuItem("Show Short Tabs", nullptr, &flag)) { editor.SetShortTabsEnabled(flag); };
 			flag = editor.IsShowingMatchingBrackets(); if (ImGui::MenuItem("Show Matching Brackets", nullptr, &flag)) { editor.SetShowMatchingBrackets(flag); };
 			flag = editor.IsCompletingPairedGlyphs(); if (ImGui::MenuItem("Complete Matchng Glyphs", nullptr, &flag)) { editor.SetCompletePairedGlyphs(flag); };
 

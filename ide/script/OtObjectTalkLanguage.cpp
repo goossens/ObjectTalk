@@ -197,9 +197,7 @@ const TextEditor::LanguageDefinition& OtObjectTalkLanguageGetDefinition() {
 		};
 
 		for (auto& d : otDeclarations) {
-			TextEditor::Identifier id;
-			id.mDeclaration = "Built-in declaration";
-			langDef.mPreprocIdentifiers.insert(std::make_pair(std::string(d), id));
+			langDef.mIdentifiers.insert(d);
 		}
 
 		static const char* const otKeywords[] = {
@@ -215,9 +213,7 @@ const TextEditor::LanguageDefinition& OtObjectTalkLanguageGetDefinition() {
 		};
 
 		for (auto& f : otFunctions) {
-			TextEditor::Identifier id;
-			id.mDeclaration = "Built-in function";
-			langDef.mIdentifiers.insert(std::make_pair(std::string(f), id));
+			langDef.mIdentifiers.insert(f);
 		}
 
 		static const char* const otConstants[] = {
@@ -225,9 +221,7 @@ const TextEditor::LanguageDefinition& OtObjectTalkLanguageGetDefinition() {
 		};
 
 		for (auto& c : otConstants) {
-			TextEditor::Identifier id;
-			id.mDeclaration = "Built-in constant";
-			langDef.mIdentifiers.insert(std::make_pair(std::string(c), id));
+			langDef.mIdentifiers.insert(c);
 		}
 
 		langDef.mTokenize = [](const char* in_begin, const char* in_end, const char*& out_begin, const char*& out_end, TextEditor::PaletteIndex& paletteIndex) -> bool {

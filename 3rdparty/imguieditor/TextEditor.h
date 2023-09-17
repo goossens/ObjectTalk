@@ -8,7 +8,6 @@
 #include <memory>
 #include <unordered_set>
 #include <unordered_map>
-#include <map>
 
 #ifdef IMGUI_EDITOR_NO_BOOST
 	#include <regex>
@@ -26,6 +25,23 @@ public:
 
 	TextEditor();
 	~TextEditor();
+
+	inline void SetReadOnlyEnabled(bool aValue) { mReadOnly = aValue; }
+	inline bool IsReadOnlyEnabled() const { return mReadOnly; }
+	inline void SetAutoIndentEnabled(bool aValue) { mAutoIndent = aValue; }
+	inline bool IsAutoIndentEnabled() const { return mAutoIndent; }
+	inline void SetShowWhitespacesEnabled(bool aValue) { mShowWhitespaces = aValue; }
+	inline bool IsShowWhitespacesEnabled() const { return mShowWhitespaces; }
+	inline void SetShowLineNumbersEnabled(bool aValue) { mShowLineNumbers = aValue; }
+	inline bool IsShowLineNumbersEnabled() const { return mShowLineNumbers; }
+	inline void SetShortTabsEnabled(bool aValue) { mShortTabs = aValue; }
+	inline bool IsShortTabsEnabled() const { return mShortTabs; }
+	inline void SetShowMatchingBrackets(bool aValue) { mShowMatchingBrackets = aValue; }
+	inline bool IsShowingMatchingBrackets() const { return mShowMatchingBrackets; }
+	inline void SetCompletePairedGlyphs(bool aValue) { mCompletePairedGlyphs = aValue; }
+	inline bool IsCompletingPairedGlyphs() const { return mCompletePairedGlyphs; }
+	inline int GetLineCount() const { return mLines.size(); }
+	inline bool IsOverwriteEnabled() const { return mOverwrite; }
 
 	enum class PaletteIndex
 	{
@@ -55,6 +71,116 @@ public:
 	};
 
 	typedef std::array<ImU32, (unsigned)PaletteIndex::Max> Palette;
+
+	void SetPalette(const Palette& aValue);
+	inline const Palette& GetPalette() const { return mPaletteBase; }
+
+	struct LanguageDefinition
+	{
+		typedef std::pair<std::string, PaletteIndex> TokenRegexString;
+		typedef bool(*TokenizeCallback)(const char* in_begin, const char* in_end, const char*& out_begin, const char*& out_end, PaletteIndex& paletteIndex);
+
+		std::string mName;
+		std::unordered_set<std::string> mKeywords;
+		std::unordered_set<std::string> mIdentifiers;
+		std::unordered_set<std::string> mPreprocIdentifiers;
+		std::string mCommentStart, mCommentEnd, mSingleLineComment;
+		char mPreprocChar = '#';
+		TokenizeCallback mTokenize = nullptr;
+		std::vector<TokenRegexString> mTokenRegexStrings;
+		bool mCaseSensitive = true;
+
+		static const LanguageDefinition& Cpp();
+		static const LanguageDefinition& Hlsl();
+		static const LanguageDefinition& Glsl();
+		static const LanguageDefinition& Python();
+		static const LanguageDefinition& C();
+		static const LanguageDefinition& Sql();
+		static const LanguageDefinition& AngelScript();
+		static const LanguageDefinition& Lua();
+		static const LanguageDefinition& Cs();
+		static const LanguageDefinition& Json();
+	};
+
+	void SetLanguageDefinition(const LanguageDefinition& aLanguageDef);
+	inline const LanguageDefinition& GetLanguageDefinition() const { return *mLanguageDefinition; };
+	const char* GetLanguageDefinitionName() const;
+	void SetTabSize(int aValue);
+	inline int GetTabSize() const { return mTabSize; }
+	void SetLineSpacing(float aValue);
+	inline float GetLineSpacing() const { return mLineSpacing;  }
+
+	inline static void SetDefaultPalette(const Palette& aValue) { defaultPalette = aValue; }
+	inline static Palette& GetDefaultPalette() { return defaultPalette; }
+
+	void SelectAll();
+	void SelectLine(int aLine);
+	void SelectRegion(int aStartLine, int aStartChar, int aEndLine, int aEndChar);
+	void SelectNextOccurrenceOf(const char* aText, int aTextSize, bool aCaseSensitive = true);
+	void SelectAllOccurrencesOf(const char* aText, int aTextSize, bool aCaseSensitive = true);
+	bool AnyCursorHasSelection() const;
+	bool AllCursorsHaveSelection() const;
+	void ClearExtraCursors();
+	void ClearSelections();
+	void SetCursorPosition(int aLine, int aCharIndex);
+	inline void GetCursorPosition(int& outLine, int& outColumn) const
+	{
+		auto coords = GetActualCursorCoordinates();
+		outLine = coords.mLine;
+		outColumn = coords.mColumn;
+	}
+
+	void Copy();
+	void Cut();
+	void Paste();
+	void Undo(int aSteps = 1);
+	void Redo(int aSteps = 1);
+	inline bool CanUndo() const { return !mReadOnly && mUndoIndex > 0; };
+	inline bool CanRedo() const { return !mReadOnly && mUndoIndex < (int)mUndoBuffer.size(); };
+	inline int GetUndoIndex() const { return mUndoIndex; };
+
+	void SetText(const std::string& aText);
+	std::string GetText() const;
+
+	void SetTextLines(const std::vector<std::string>& aLines);
+	std::vector<std::string> GetTextLines() const;
+
+	bool Render(const char* aTitle, bool aParentIsFocused = false, const ImVec2& aSize = ImVec2(), bool aBorder = false);
+
+	void ImGuiDebugPanel(const std::string& panelName = "Debug");
+	void UnitTests();
+
+	static const Palette& GetMarianaPalette();
+	static const Palette& GetDarkPalette();
+	static const Palette& GetLightPalette();
+	static const Palette& GetRetroBluePalette();
+
+private:
+	// ------------- Generic utils ------------- //
+
+	inline ImVec4 U32ColorToVec4(ImU32 in) const
+	{
+		float s = 1.0f / 255.0f;
+		return ImVec4(
+			((in >> IM_COL32_A_SHIFT) & 0xFF) * s,
+			((in >> IM_COL32_B_SHIFT) & 0xFF) * s,
+			((in >> IM_COL32_G_SHIFT) & 0xFF) * s,
+			((in >> IM_COL32_R_SHIFT) & 0xFF) * s);
+	}
+	inline bool IsUTFSequence(char c) const
+	{
+		return (c & 0xC0) == 0x80;
+	}
+	inline int TabSizeAtColumn(int aColumn) const
+	{
+		return mTabSize - (aColumn % mTabSize);
+	}
+	template<typename T>
+	inline T Max(T a, T b) { return a > b ? a : b; }
+	template<typename T>
+	inline T Min(T a, T b) { return a < b ? a : b; }
+
+	// ------------- Internal ------------- //
 
 	// Represents a character coordinate from the user's point of view,
 	// i. e. consider an uniform grid (assuming fixed-width font) on the
@@ -126,137 +252,6 @@ public:
 			return Coordinates(mLine + o.mLine, mColumn + o.mColumn);
 		}
 	};
-
-	struct Identifier
-	{
-		Coordinates mLocation;
-		std::string mDeclaration;
-	};
-
-	struct LanguageDefinition
-	{
-		typedef std::unordered_map<std::string, Identifier> Identifiers;
-		typedef std::unordered_set<std::string> Keywords;
-		typedef std::pair<std::string, PaletteIndex> TokenRegexString;
-		typedef std::vector<TokenRegexString> TokenRegexStrings;
-		typedef bool(*TokenizeCallback)(const char* in_begin, const char* in_end, const char*& out_begin, const char*& out_end, PaletteIndex& paletteIndex);
-
-		std::string mName;
-		Keywords mKeywords;
-		Identifiers mIdentifiers;
-		Identifiers mPreprocIdentifiers;
-		std::string mCommentStart, mCommentEnd, mSingleLineComment;
-		char mPreprocChar;
-
-		TokenizeCallback mTokenize;
-
-		TokenRegexStrings mTokenRegexStrings;
-
-		bool mCaseSensitive;
-
-		LanguageDefinition()
-			: mPreprocChar('#'), mTokenize(nullptr), mCaseSensitive(true)
-		{
-		}
-
-		static const LanguageDefinition& Cpp();
-		static const LanguageDefinition& Hlsl();
-		static const LanguageDefinition& Glsl();
-		static const LanguageDefinition& Python();
-		static const LanguageDefinition& C();
-		static const LanguageDefinition& Sql();
-		static const LanguageDefinition& AngelScript();
-		static const LanguageDefinition& Lua();
-		static const LanguageDefinition& Cs();
-		static const LanguageDefinition& Json();
-	};
-
-	inline void SetReadOnlyEnabled(bool aValue);
-	inline bool IsReadOnlyEnabled() const { return mReadOnly; }
-	inline void SetAutoIndentEnabled(bool aValue);
-	inline bool IsAutoIndentEnabled() const { return mAutoIndent; }
-	inline void SetShowWhitespacesEnabled(bool aValue) { mShowWhitespaces = aValue; }
-	inline bool IsShowWhitespacesEnabled() const { return mShowWhitespaces; }
-	inline void SetShowMatchingBrackets(bool aValue) { mShowMatchingBrackets = aValue; }
-	inline bool IsShowingMatchingBrackets() const { return mShowMatchingBrackets; }
-	inline void SetShowShortTabGlyphs(bool aValue) { mShowShortTabGlyphs = aValue; }
-	inline bool IsShowingShortTabGlyphs() const { return mShowShortTabGlyphs; }
-	inline void SetCompletePairedGlyphs(bool aValue) { mCompletePairedGlyphs = aValue; }
-	inline bool IsCompletingPairedGlyphs() const { return mCompletePairedGlyphs; }
-
-	inline int GetLineCount() const { return mLines.size(); }
-	inline bool IsOverwriteEnabled() const { return mOverwrite; }
-	void SetPalette(const Palette& aValue);
-	const Palette& GetPalette() const { return mPaletteBase; }
-	void SetLanguageDefinition(const LanguageDefinition& aLanguageDef);
-	const LanguageDefinition& GetLanguageDefinition() const { return *mLanguageDefinition; };
-	const char* GetLanguageDefinitionName() const;
-	void SetTabSize(int aValue);
-	inline int GetTabSize() const { return mTabSize; }
-	void SetLineSpacing(float aValue);
-	inline float GetLineSpacing() const { return mLineSpacing;  }
-
-	void SetDefaultPalette(const Palette& aValue);
-	const Palette& GetDefaultPalette() const { return mDefaultPalette; }
-
-	void SelectAll();
-	void SelectLine(int aLine);
-	void SelectRegion(int aStartLine, int aStartChar, int aEndLine, int aEndChar);
-	void SelectNextOccurrenceOf(const char* aText, int aTextSize, bool aCaseSensitive = true);
-	void SelectAllOccurrencesOf(const char* aText, int aTextSize, bool aCaseSensitive = true);
-	bool AnyCursorHasSelection() const;
-	bool AllCursorsHaveSelection() const;
-	void ClearExtraCursors();
-	void ClearSelections();
-	void SetCursorPosition(int aLine, int aCharIndex);
-	inline void GetCursorPosition(int& outLine, int& outColumn) const
-	{
-		auto coords = GetActualCursorCoordinates();
-		outLine = coords.mLine;
-		outColumn = coords.mColumn;
-	}
-
-	void Copy();
-	void Cut();
-	void Paste();
-	void Undo(int aSteps = 1);
-	void Redo(int aSteps = 1);
-	inline bool CanUndo() const { return !mReadOnly && mUndoIndex > 0; };
-	inline bool CanRedo() const { return !mReadOnly && mUndoIndex < (int)mUndoBuffer.size(); };
-	inline int GetUndoIndex() const { return mUndoIndex; };
-
-	void SetText(const std::string& aText);
-	std::string GetText() const;
-
-	void SetTextLines(const std::vector<std::string>& aLines);
-	std::vector<std::string> GetTextLines() const;
-
-	bool Render(const char* aTitle, bool aParentIsFocused = false, const ImVec2& aSize = ImVec2(), bool aBorder = false);
-
-	static const Palette& GetMarianaPalette();
-	static const Palette& GetDarkPalette();
-	static const Palette& GetLightPalette();
-	static const Palette& GetRetroBluePalette();
-
-private:
-	// ------------- Generic utils ------------- //
-
-	inline ImVec4 U32ColorToVec4(ImU32 in)
-	{
-		float s = 1.0f / 255.0f;
-		return ImVec4(
-			((in >> IM_COL32_A_SHIFT) & 0xFF) * s,
-			((in >> IM_COL32_B_SHIFT) & 0xFF) * s,
-			((in >> IM_COL32_G_SHIFT) & 0xFF) * s,
-			((in >> IM_COL32_R_SHIFT) & 0xFF) * s);
-	}
-
-	inline bool IsUTFSequence(char c) const
-	{
-		return (c & 0xC0) == 0x80;
-	}
-
-	// ------------- Internal ------------- //
 
 	struct Cursor
 	{
@@ -334,6 +329,7 @@ private:
 
 	enum class MoveDirection { Right = 0, Left = 1, Up = 2, Down = 3 };
 	bool Move(int& aLine, int& aCharIndex, bool aLeft = false, bool aLockLine = false) const;
+	void MoveCharIndexAndColumn(int aLine, int& aCharIndex, int& aColumn) const;
 	void MoveCoords(Coordinates& aCoords, MoveDirection aDirection, bool aWordMode = false, int aLineCount = 1) const;
 
 	void MoveUp(int aAmount = 1, bool aSelect = false);
@@ -361,7 +357,7 @@ private:
 	void ToggleLineComment();
 	void RemoveCurrentLines();
 
-	float TextDistanceToLineStart(const Coordinates& aFrom) const;
+	float TextDistanceToLineStart(const Coordinates& aFrom, bool aSanitizeCoords = true) const;
 	void EnsureCursorVisible(int aCursor = -1);
 
 	Coordinates SanitizeCoordinates(const Coordinates& aValue) const;
@@ -372,7 +368,8 @@ private:
 	int GetCharacterIndexL(const Coordinates& aCoordinates) const;
 	int GetCharacterIndexR(const Coordinates& aCoordinates) const;
 	int GetCharacterColumn(int aLine, int aIndex) const;
-	int GetLineMaxColumn(int aLine) const;
+	int GetFirstVisibleCharacterIndex(int aLine) const;
+	int GetLineMaxColumn(int aLine, int aLimit = -1) const;
 
 	Line& InsertLine(int aIndex);
 	void RemoveLine(int aIndex, const std::unordered_set<int>* aHandledCursors = nullptr);
@@ -411,8 +408,9 @@ private:
 	bool mReadOnly = false;
 	bool mAutoIndent = true;
 	bool mShowWhitespaces = true;
+	bool mShowLineNumbers = true;
+	bool mShortTabs = false;
 	bool mShowMatchingBrackets = true;
-	bool mShowShortTabGlyphs = false;
 	bool mCompletePairedGlyphs = false;
 
 	int mEnsureCursorVisible = -1;
@@ -421,7 +419,7 @@ private:
 	float mTextStart = 20.0f; // position (in pixels) where a code line starts relative to the left of the TextEditor.
 	int mLeftMargin = 10;
 	ImVec2 mCharAdvance;
-	float mLongestLineLength = 20.0f;
+	float mCurrentSpaceWidth = 20.0f;
 	float mLastClick = -1.0f;
 	int mFirstVisibleLine = 0;
 	int mLastVisibleLine = 0;
@@ -437,22 +435,21 @@ private:
 	bool mDraggingSelection = false;
 	ImVec2 mLastMousePos;
 	bool mCursorPositionChanged = false;
+	bool mCursorOnBracket = false;
+	Coordinates mMatchingBracketCoords;
+	float mCursorAnimationTimer = 0.0f;
 
 	int mColorRangeMin = 0;
 	int mColorRangeMax = 0;
 	bool mCheckComments = true;
-
 	Palette mPaletteBase;
 	Palette mPalette;
 	float mPaletteAlpha;
-	static Palette mDefaultPalette;
-
 	const LanguageDefinition* mLanguageDefinition = nullptr;
 	RegexList mRegexList;
 	std::string mLineBuffer;
 
-	float mCursorAnimationTimer = 0.0f;
-
 	static const std::unordered_map<char, char> OPEN_TO_CLOSE_CHAR;
 	static const std::unordered_map<char, char> CLOSE_TO_OPEN_CHAR;
+	static Palette defaultPalette;
 };

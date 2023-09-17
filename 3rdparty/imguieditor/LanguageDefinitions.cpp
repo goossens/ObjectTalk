@@ -410,11 +410,7 @@ const TextEditor::LanguageDefinition& TextEditor::LanguageDefinition::Cpp()
 			"std", "string", "vector", "map", "unordered_map", "set", "unordered_set", "min", "max"
 		};
 		for (auto& k : identifiers)
-		{
-			Identifier id;
-			id.mDeclaration = "Built-in function";
-			langDef.mIdentifiers.insert(std::make_pair(std::string(k), id));
-		}
+			langDef.mIdentifiers.insert(k);
 
 		langDef.mTokenize = [](const char* in_begin, const char* in_end, const char*& out_begin, const char*& out_end, PaletteIndex& paletteIndex) -> bool
 		{
@@ -498,11 +494,7 @@ const TextEditor::LanguageDefinition& TextEditor::LanguageDefinition::Hlsl()
 			"tex3D", "tex3D", "tex3Dbias", "tex3Dgrad", "tex3Dlod", "tex3Dproj", "texCUBE", "texCUBE", "texCUBEbias", "texCUBEgrad", "texCUBElod", "texCUBEproj", "transpose", "trunc"
 		};
 		for (auto& k : identifiers)
-		{
-			Identifier id;
-			id.mDeclaration = "Built-in function";
-			langDef.mIdentifiers.insert(std::make_pair(std::string(k), id));
-		}
+			langDef.mIdentifiers.insert(k);
 
 		langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"##([ \t]*#[ \t]*[a-zA-Z_]+)##", PaletteIndex::Preprocessor));
 		langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"##(L?\"(\\.|[^\"])*\")##", PaletteIndex::String));
@@ -546,11 +538,7 @@ const TextEditor::LanguageDefinition& TextEditor::LanguageDefinition::Glsl()
 			"ispunct", "isspace", "isupper", "kbhit", "log10", "log2", "log", "memcmp", "modf", "pow", "putchar", "putenv", "puts", "rand", "remove", "rename", "sinh", "sqrt", "srand", "strcat", "strcmp", "strerror", "time", "tolower", "toupper"
 		};
 		for (auto& k : identifiers)
-		{
-			Identifier id;
-			id.mDeclaration = "Built-in function";
-			langDef.mIdentifiers.insert(std::make_pair(std::string(k), id));
-		}
+			langDef.mIdentifiers.insert(k);
 
 		langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"##([ \t]*#[ \t]*[a-zA-Z_]+)##", PaletteIndex::Preprocessor));
 		langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"##(L?\"(\\.|[^\"])*\")##", PaletteIndex::String));
@@ -591,11 +579,7 @@ const TextEditor::LanguageDefinition& TextEditor::LanguageDefinition::Python()
 			"abs", "aiter", "all", "any", "anext", "ascii", "bin", "bool", "breakpoint", "bytearray", "bytes", "callable", "chr", "classmethod", "compile", "complex", "delattr", "dict", "dir", "divmod", "enumerate", "eval", "exec", "filter", "float", "format", "frozenset", "getattr", "globals", "hasattr", "hash", "help", "hex", "id", "input", "int", "isinstance", "issubclass", "iter", "len", "list", "locals", "map", "max", "memoryview", "min", "next", "object", "oct", "open", "ord", "pow", "print", "property", "range", "repr", "reversed", "round", "set", "setattr", "slice", "sorted", "staticmethod", "str", "sum", "super", "tuple", "type", "vars", "zip", "__import__"
 		};
 		for (auto& k : identifiers)
-		{
-			Identifier id;
-			id.mDeclaration = "Built-in function";
-			langDef.mIdentifiers.insert(std::make_pair(std::string(k), id));
-		}
+			langDef.mIdentifiers.insert(k);
 
 		langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"##((b|u|f|r)?\"(\\.|[^\"])*\")##", PaletteIndex::String));
 		langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"##((b|u|f|r)?'(\\.|[^'])*')##", PaletteIndex::String));
@@ -638,11 +622,7 @@ const TextEditor::LanguageDefinition& TextEditor::LanguageDefinition::C()
 			"ispunct", "isspace", "isupper", "kbhit", "log10", "log2", "log", "memcmp", "modf", "pow", "putchar", "putenv", "puts", "rand", "remove", "rename", "sinh", "sqrt", "srand", "strcat", "strcmp", "strerror", "time", "tolower", "toupper"
 		};
 		for (auto& k : identifiers)
-		{
-			Identifier id;
-			id.mDeclaration = "Built-in function";
-			langDef.mIdentifiers.insert(std::make_pair(std::string(k), id));
-		}
+			langDef.mIdentifiers.insert(k);
 
 		langDef.mTokenize = [](const char* in_begin, const char* in_end, const char*& out_begin, const char*& out_end, PaletteIndex& paletteIndex) -> bool
 		{
@@ -719,11 +699,7 @@ const TextEditor::LanguageDefinition& TextEditor::LanguageDefinition::Sql()
 			"USER", "USERENV", "VAR_POP", "VAR_SAMP", "VARIANCE", "VSIZE"
 		};
 		for (auto& k : identifiers)
-		{
-			Identifier id;
-			id.mDeclaration = "Built-in function";
-			langDef.mIdentifiers.insert(std::make_pair(std::string(k), id));
-		}
+			langDef.mIdentifiers.insert(k);
 
 		langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"##(L?\"(\\.|[^\"])*\")##", PaletteIndex::String));
 		langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"##(\'[^\']*\')##", PaletteIndex::String));
@@ -768,11 +744,7 @@ const TextEditor::LanguageDefinition& TextEditor::LanguageDefinition::AngelScrip
 			"complex", "opEquals", "opAddAssign", "opSubAssign", "opMulAssign", "opDivAssign", "opAdd", "opSub", "opMul", "opDiv"
 		};
 		for (auto& k : identifiers)
-		{
-			Identifier id;
-			id.mDeclaration = "Built-in function";
-			langDef.mIdentifiers.insert(std::make_pair(std::string(k), id));
-		}
+			langDef.mIdentifiers.insert(k);
 
 		langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"##(L?\"(\\.|[^\"])*\")##", PaletteIndex::String));
 		langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"##(\'\\?[^\']\')##", PaletteIndex::String));
@@ -822,11 +794,7 @@ const TextEditor::LanguageDefinition& TextEditor::LanguageDefinition::Lua()
 			"coroutine", "table", "io", "os", "string", "utf8", "bit32", "math", "debug", "package"
 		};
 		for (auto& k : identifiers)
-		{
-			Identifier id;
-			id.mDeclaration = "Built-in function";
-			langDef.mIdentifiers.insert(std::make_pair(std::string(k), id));
-		}
+			langDef.mIdentifiers.insert(k);
 
 		langDef.mTokenize = [](const char* in_begin, const char* in_end, const char*& out_begin, const char*& out_end, PaletteIndex& paletteIndex) -> bool
 		{
@@ -882,11 +850,8 @@ const TextEditor::LanguageDefinition& TextEditor::LanguageDefinition::Cs()
 			"add", "alias", "ascending", "async", "await", "descending", "dynamic", "from", "get", "global", "group", "into", "join", "let", "orderby", "partial", "remove", "select", "set", "value", "var", "when", "where", "yield"
 		};
 		for (auto& k : identifiers)
-		{
-			Identifier id;
-			id.mDeclaration = "Built-in function";
-			langDef.mIdentifiers.insert(std::make_pair(std::string(k), id));
-		}
+			langDef.mIdentifiers.insert(k);
+
 		langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"##(($|@)?\"(\\.|[^\"])*\")##", PaletteIndex::String));
 		langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"##([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)([eE][+-]?[0-9]+)?[fF]?)##", PaletteIndex::Number));
 		langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"##([+-]?[0-9]+[Uu]?[lL]?[lL]?)##", PaletteIndex::Number));

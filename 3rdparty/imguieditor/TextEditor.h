@@ -8,6 +8,7 @@
 #include <memory>
 #include <unordered_set>
 #include <unordered_map>
+#include <map>
 
 #ifdef IMGUI_EDITOR_NO_BOOST
 	#include <regex>
@@ -64,9 +65,7 @@ public:
 		ControlCharacter,
 		Breakpoint,
 		LineNumber,
-		CurrentLineFill,
-		CurrentLineFillInactive,
-		CurrentLineEdge,
+		CurrentLineNumber,
 		Max
 	};
 
@@ -144,6 +143,8 @@ public:
 
 	void SetTextLines(const std::vector<std::string>& aLines);
 	std::vector<std::string> GetTextLines() const;
+
+	void SetErrorMarkers(const std::map<int, std::string>& aMarkers) { mErrorMarkers = aMarkers; }
 
 	bool Render(const char* aTitle, bool aParentIsFocused = false, const ImVec2& aSize = ImVec2(), bool aBorder = false);
 
@@ -438,6 +439,7 @@ private:
 	bool mCursorOnBracket = false;
 	Coordinates mMatchingBracketCoords;
 	float mCursorAnimationTimer = 0.0f;
+	std::map<int, std::string> mErrorMarkers;
 
 	int mColorRangeMin = 0;
 	int mColorRangeMax = 0;

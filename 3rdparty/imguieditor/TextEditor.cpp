@@ -1786,6 +1786,12 @@ TextEditor::Line& TextEditor::InsertLine(int aIndex)
 			SetCursorPosition({ mState.mCursors[c].mInteractiveEnd.mLine + 1, mState.mCursors[c].mInteractiveEnd.mColumn }, c);
 	}
 
+	// handle error markers
+	std::map<int, std::string> etmp;
+	for (auto& i : mErrorMarkers)
+		etmp.insert({i.first >= aIndex ? i.first + 1 : i.first, i.second});
+	mErrorMarkers = std::move(etmp);
+
 	return result;
 }
 
@@ -1806,6 +1812,13 @@ void TextEditor::RemoveLine(int aIndex, const std::unordered_set<int>* aHandledC
 				SetCursorPosition({ mState.mCursors[c].mInteractiveEnd.mLine - 1, mState.mCursors[c].mInteractiveEnd.mColumn }, c);
 		}
 	}
+
+	// handle error markers
+	std::map<int, std::string> etmp;
+	for (auto& i : mErrorMarkers)
+		if (i.first != aIndex)
+			etmp.insert({i.first < aIndex ? i.first : i.first - 1, i.second});
+	mErrorMarkers = std::move(etmp);
 }
 
 void TextEditor::RemoveLines(int aStart, int aEnd)
@@ -1827,6 +1840,13 @@ void TextEditor::RemoveLines(int aStart, int aEnd)
 			SetCursorPosition({ targetLine , mState.mCursors[c].mInteractiveEnd.mColumn }, c);
 		}
 	}
+
+	// handle error markers
+	std::map<int, std::string> etmp;
+	for (auto& i : mErrorMarkers)
+		if (i.first < aStart || i.first >= aEnd)
+			etmp.insert({i.first < aStart ? i.first : i.first - (aEnd - aStart), i.second});
+	mErrorMarkers = std::move(etmp);
 }
 
 void TextEditor::DeleteRange(const Coordinates& aStart, const Coordinates& aEnd)
@@ -2186,11 +2206,10 @@ void TextEditor::Render(bool aParentIsFocused)
 
 	// Deduce mTextStart by evaluating mLines size (global lineMax) plus two spaces as text width
 	mTextStart = mLeftMargin;
-	static char lineNumberBuffer[16];
 	if (mShowLineNumbers)
 	{
-		snprintf(lineNumberBuffer, 16, " %d ", (int)mLines.size());
-		mTextStart += ImGui::GetFont()->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, lineNumberBuffer, nullptr, nullptr).x;
+		int maxDigits = (int)(std::log10(mLines.size()) + 1);
+		mTextStart += (maxDigits + 2) * mCharAdvance.x;
 	}
 
 	ImVec2 cursorScreenPos = ImGui::GetCursorScreenPos();
@@ -2199,13 +2218,13 @@ void TextEditor::Render(bool aParentIsFocused)
 	mContentHeight = ImGui::GetWindowHeight();
 	mContentWidth = ImGui::GetWindowWidth();
 
-	mVisibleLineCount = (int)ceil(mContentHeight / mCharAdvance.y);
-	mFirstVisibleLine = (int)(mScrollY / mCharAdvance.y);
-	mLastVisibleLine = (int)((mContentHeight + mScrollY) / mCharAdvance.y);
+	mVisibleLineCount = Max((int)ceil(mContentHeight / mCharAdvance.y), 0);
+	mFirstVisibleLine = Max((int)(mScrollY / mCharAdvance.y), 0);
+	mLastVisibleLine = Max((int)((mContentHeight + mScrollY) / mCharAdvance.y), 0);
 
-	mVisibleColumnCount = (int)ceil((mContentWidth - std::max(mTextStart - mScrollX, 0.0f)) / mCharAdvance.x);
-	mFirstVisibleColumn = (int)(std::max(mScrollX - mTextStart, 0.0f) / mCharAdvance.x);
-	mLastVisibleColumn = (int)((mContentWidth + mScrollX - mTextStart) / mCharAdvance.x);
+	mVisibleColumnCount = Max((int)ceil((mContentWidth - std::max(mTextStart - mScrollX, 0.0f)) / mCharAdvance.x), 0);
+	mFirstVisibleColumn = Max((int)(std::max(mScrollX - mTextStart, 0.0f) / mCharAdvance.x), 0);
+	mLastVisibleColumn = Max((int)((mContentWidth + mScrollX - mTextStart) / mCharAdvance.x), 0);
 
 	auto io = ImGui::GetIO();
 	mCursorAnimationTimer = std::fmod(mCursorAnimationTimer + io.DeltaTime, 1.0f);
@@ -2252,9 +2271,34 @@ void TextEditor::Render(bool aParentIsFocused)
 			// Draw line number (right aligned)
 			if (mShowLineNumbers)
 			{
-				snprintf(lineNumberBuffer, 16, "%d  ", lineNo + 1);
-				float lineNoWidth = ImGui::GetFont()->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, lineNumberBuffer, nullptr, nullptr).x;
-				drawList->AddText(ImVec2(lineStartScreenPos.x + mTextStart - lineNoWidth, lineStartScreenPos.y), mPalette[(int)PaletteIndex::LineNumber], lineNumberBuffer);
+				int digits = (int)(std::log10(lineNo + 1) + 1.0f);
+				float lineNoWidth = (digits + 2) * mCharAdvance.x;
+
+				// Draw error marker (if required)
+				auto errorIt = mErrorMarkers.find(lineNo + 1);
+				if (errorIt != mErrorMarkers.end())
+				{
+					auto start = ImVec2(lineStartScreenPos.x + mTextStart - lineNoWidth, lineStartScreenPos.y);
+					auto end = ImVec2(start.x + digits * mCharAdvance.x, lineStartScreenPos.y + mCharAdvance.y);
+					drawList->AddRectFilled(start, end, mPalette[(int)PaletteIndex::ErrorMarker]);
+
+					// Draw tooltip (if mouse is hovering over line number)
+					if (ImGui::IsMouseHoveringRect(start, end))
+					{
+						ImGui::BeginTooltip();
+						ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.2f, 0.2f, 1.0f));
+						ImGui::Text("Error at line %d:", errorIt->first);
+						ImGui::PopStyleColor();
+						ImGui::Separator();
+						ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.2f, 1.0f));
+						ImGui::Text("%s", errorIt->second.c_str());
+						ImGui::PopStyleColor();
+						ImGui::EndTooltip();
+					}
+				}
+
+				PaletteIndex foreground = mState.mCursors[0].mInteractiveEnd.mLine == lineNo ? PaletteIndex::CurrentLineNumber : PaletteIndex::LineNumber;
+				drawList->AddText(ImVec2(lineStartScreenPos.x + mTextStart - lineNoWidth, lineStartScreenPos.y), mPalette[(int)foreground], std::to_string(lineNo + 1).c_str());
 			}
 
 			std::vector<Coordinates> cursorCoordsInThisLine;
@@ -2816,9 +2860,7 @@ const TextEditor::Palette& TextEditor::GetDarkPalette()
 			0xffffff15, // ControlCharacter
 			0x0080f040, // Breakpoint
 			0x7a8394ff, // Line number
-			0x00000040, // Current line fill
-			0x80808040, // Current line fill (inactive)
-			0xa0a0a040, // Current line edge
+			0xffffffff, // Current line number
 		} };
 	return p;
 }
@@ -2845,9 +2887,7 @@ const TextEditor::Palette& TextEditor::GetMarianaPalette()
 			0xffffff30, // ControlCharacter
 			0x0080f040, // Breakpoint
 			0xffffffb0, // Line number
-			0x4e5a6580, // Current line fill
-			0x4e5a6530, // Current line fill (inactive)
-			0x4e5a65b0, // Current line edge
+			0xffffffff, // Current line number
 		} };
 	return p;
 }
@@ -2874,9 +2914,7 @@ const TextEditor::Palette& TextEditor::GetLightPalette()
 			0x90909090, // ControlCharacter
 			0x0080f080, // Breakpoint
 			0x005050ff, // Line number
-			0x00000040, // Current line fill
-			0x80808040, // Current line fill (inactive)
-			0x00000040, // Current line edge
+			0x000000ff, // Current line number
 		} };
 	return p;
 }
@@ -2902,9 +2940,7 @@ const TextEditor::Palette& TextEditor::GetRetroBluePalette()
 			0xff0000a0, // ErrorMarker
 			0x0080ff80, // Breakpoint
 			0x008080ff, // Line number
-			0x00000040, // Current line fill
-			0x80808040, // Current line fill (inactive)
-			0x00000040, // Current line edge
+			0xffffffff, // Current line number
 		} };
 	return p;
 }

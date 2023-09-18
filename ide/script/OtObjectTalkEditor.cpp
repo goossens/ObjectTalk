@@ -29,7 +29,7 @@
 //
 
 const static TextEditor::Palette colorPalette = { {
-	0x7f7f7fff,	// Default
+	0xd4d4d4ff,	// Default
 	0xc586c0ff,	// Keyword
 	0xb5cea8ff,	// Number
 	0xce9178ff,	// String
@@ -41,16 +41,14 @@ const static TextEditor::Palette colorPalette = { {
 	0x63c6abff, // Preproc identifier
 	0x6a9955ff, // Comment (single line)
 	0x6a9955ff, // Comment (multi line)
-	0x101010ff, // Background
+	0x1e1e1eff, // Background
 	0xe0e0e0ff, // Cursor
 	0x2060a0ff, // Selection
 	0x800020ff, // ErrorMarker
 	0x404040ff, // ControlCharacter
 	0x0080f040, // Breakpoint
-	0x007070ff, // Line number
-	0x00000040, // Current line fill
-	0x80808040, // Current line fill (inactive)
-	0xa0a0a040  // Current line edge
+	0x6e7681ff, // Line number
+	0xccccccff, // Current line number
 } };
 
 
@@ -208,9 +206,9 @@ bool OtObjectTalkEditor::isDirty() {
 //
 
 void OtObjectTalkEditor::highlightError(size_t line, const std::string& error) {
-//	TextEditor::ErrorMarkers markers;
-//	markers[(int) line] = error;
-//	editor.SetErrorMarkers(markers);
+	std::map<int, std::string> markers;
+	markers[(int) line] = error;
+	editor.SetErrorMarkers(markers);
 	scrollToLine = (int) line;
 }
 
@@ -220,8 +218,8 @@ void OtObjectTalkEditor::highlightError(size_t line, const std::string& error) {
 //
 
 void OtObjectTalkEditor::clearError() {
-//	TextEditor::ErrorMarkers markers;
-//	editor.SetErrorMarkers(markers);
+	std::map<int, std::string> markers;
+	editor.SetErrorMarkers(markers);
 }
 
 

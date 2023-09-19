@@ -10,5 +10,11 @@ set(LIBUV_BUILD_BENCH OFF CACHE BOOL "" FORCE)
 
 # FetchContent_Declare(libuv GIT_REPOSITORY "https://github.com/libuv/libuv" GIT_TAG "v1.46.0")
 FetchContent_Declare(libuv GIT_REPOSITORY "https://github.com/libuv/libuv" GIT_TAG "v1.x")
-FetchContent_MakeAvailable(libuv)
+FetchContent_GetProperties(libuv)
+
+if(NOT libuv_POPULATED)
+	FetchContent_Populate(libuv)
+	add_subdirectory(${libuv_SOURCE_DIR} ${libuv_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
+
 set_target_properties(uv_a PROPERTIES FOLDER deps/libuv)

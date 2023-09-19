@@ -15,16 +15,15 @@ jobs:
         tar cvfz examples.tgz examples
         zip -r examples.zip examples
 
-    - name: delete Release and Tag
+    - name: Delete Release and Tag
       uses: dev-drprasad/delete-tag-and-release@v1.0
       with:
         delete_release: true
         tag_name: "development"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Create Development Tag
-      uses: "richardsimko/update-tag@v1"
+      uses: "richardsimko/update-tag@v1.0.7"
       with:
         tag_name: "development"
       env:

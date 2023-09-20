@@ -392,7 +392,7 @@ bool TextEditor::Render(const char* aTitle, bool aParentIsFocused, const ImVec2&
 
 // https://en.wikipedia.org/wiki/UTF-8
 // We assume that the char is a standalone character (<128) or a leading byte of an UTF-8 code sequence (non-10xxxxxx code)
-static int UTF8CharLength(uint8_t c)
+static int UTF8CharLength(char c)
 {
 	if ((c & 0xFE) == 0xFC)
 		return 6;

@@ -275,13 +275,13 @@ private:
 
 	struct Glyph
 	{
-		uint8_t mChar;
+		char mChar;
 		PaletteIndex mColorIndex = PaletteIndex::Default;
 		bool mComment : 1;
 		bool mMultiLineComment : 1;
 		bool mPreprocessor : 1;
 
-		Glyph(uint8_t aChar, PaletteIndex aColorIndex) : mChar(aChar), mColorIndex(aColorIndex),
+		Glyph(char aChar, PaletteIndex aColorIndex) : mChar(aChar), mColorIndex(aColorIndex),
 			mComment(false), mMultiLineComment(false), mPreprocessor(false) {}
 	};
 

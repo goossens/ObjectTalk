@@ -17,12 +17,18 @@ set(IMGUI_SOURCES
 	${imgui_SOURCE_DIR}/imgui_internal.h
 	${imgui_SOURCE_DIR}/imstb_rectpack.h
 	${imgui_SOURCE_DIR}/imstb_textedit.h
-	${imgui_SOURCE_DIR}/imstb_truetype.h)
+	${imgui_SOURCE_DIR}/imstb_truetype.h
+	${imgui_SOURCE_DIR}/misc/freetype/imgui_freetype.cpp
+	${imgui_SOURCE_DIR}/misc/freetype/imgui_freetype.h)
 
 add_library(imgui STATIC ${IMGUI_SOURCES})
-# target_compile_definitions(imgui PUBLIC "IMGUI_DISABLE_OBSOLETE_FUNCTIONS")
+target_compile_definitions(imgui PUBLIC "IMGUI_ENABLE_FREETYPE")
+target_compile_definitions(imgui PUBLIC "IMGUI_DISABLE_OBSOLETE_FUNCTIONS")
 target_compile_definitions(imgui PUBLIC "IMGUI_DISABLE_OBSOLETE_KEYIO")
 target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR})
+
+add_dependencies(imgui freetype)
+target_link_libraries(imgui PUBLIC freetype)
 
 if (APPLE)
 	set_property(TARGET imgui APPEND_STRING PROPERTY COMPILE_FLAGS "-fobjc-arc")

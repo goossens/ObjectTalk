@@ -513,7 +513,7 @@ void OtSceneEditor::renderEntity(OtEntity entity) {
 	ImGuiTreeNodeFlags_OpenOnArrow |
 	ImGuiTreeNodeFlags_FramePadding |
 	ImGuiTreeNodeFlags_SpanAvailWidth |
-	ImGuiTreeNodeFlags_AllowItemOverlap;
+	ImGuiTreeNodeFlags_AllowOverlap;
 
 	if (entity == selectedEntity) {
 		flags |= ImGuiTreeNodeFlags_Selected;
@@ -750,7 +750,7 @@ void OtSceneEditor::renderComponent(bool canRemove) {
 			ImGuiTreeNodeFlags_OpenOnArrow |
 			ImGuiTreeNodeFlags_FramePadding |
 			ImGuiTreeNodeFlags_SpanAvailWidth |
-			ImGuiTreeNodeFlags_AllowItemOverlap;
+			ImGuiTreeNodeFlags_AllowOverlap;
 
 		bool open = ImGui::TreeNodeEx("##header", flags, T::name);
 		bool removeComponent = false;

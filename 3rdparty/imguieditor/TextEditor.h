@@ -420,6 +420,7 @@ private:
 	float mTextStart = 20.0f; // position (in pixels) where a code line starts relative to the left of the TextEditor.
 	int mLeftMargin = 10;
 	ImVec2 mCharAdvance;
+	float mCurrentSpaceHeight = 20.0f;
 	float mCurrentSpaceWidth = 20.0f;
 	float mLastClick = -1.0f;
 	int mFirstVisibleLine = 0;
@@ -450,6 +451,9 @@ private:
 	const LanguageDefinition* mLanguageDefinition = nullptr;
 	RegexList mRegexList;
 	std::string mLineBuffer;
+
+	bool IsHorizontalScrollbarVisible() { return mCurrentSpaceWidth > mContentWidth; }
+	bool IsVerticalScrollbarVisible() { return mCurrentSpaceHeight > mContentHeight; }
 
 	static const std::unordered_map<char, char> OPEN_TO_CLOSE_CHAR;
 	static const std::unordered_map<char, char> CLOSE_TO_OPEN_CHAR;

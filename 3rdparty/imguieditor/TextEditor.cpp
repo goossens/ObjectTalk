@@ -5,6 +5,7 @@
 
 #include "TextEditor.h"
 
+#define IMGUI_SCROLLBAR_WIDTH 14.0f
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h" // for imGui::GetCurrentWindow()
 
@@ -2019,9 +2020,9 @@ void TextEditor::HandleKeyboardInputs(bool aParentIsFocused)
 			Backspace(ctrl);
 		else if (!mReadOnly && !alt && ctrl && shift && !super && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_K)))
 			RemoveCurrentLines();
-		else if (!mReadOnly && !alt && ctrl && !shift && !super && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_LeftBracket)))
+		else if (!mReadOnly && isShortcut && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_LeftBracket)))
 			ChangeCurrentLinesIndentation(false);
-		else if (!mReadOnly && !alt && ctrl && !shift && !super && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_RightBracket)))
+		else if (!mReadOnly && isShortcut && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_RightBracket)))
 			ChangeCurrentLinesIndentation(true);
 		else if (!alt && ctrl && shift && !super && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_UpArrow)))
 			MoveUpCurrentLines();
@@ -2215,20 +2216,21 @@ void TextEditor::Render(bool aParentIsFocused)
 	ImVec2 cursorScreenPos = ImGui::GetCursorScreenPos();
 	mScrollX = ImGui::GetScrollX();
 	mScrollY = ImGui::GetScrollY();
-	mContentHeight = ImGui::GetWindowHeight();
-	mContentWidth = ImGui::GetWindowWidth();
+	mContentHeight = ImGui::GetWindowHeight() - (IsHorizontalScrollbarVisible() ? IMGUI_SCROLLBAR_WIDTH : 0.0f);
+	mContentWidth = ImGui::GetWindowWidth() - (IsVerticalScrollbarVisible() ? IMGUI_SCROLLBAR_WIDTH : 0.0f);
 
 	mVisibleLineCount = Max((int)ceil(mContentHeight / mCharAdvance.y), 0);
 	mFirstVisibleLine = Max((int)(mScrollY / mCharAdvance.y), 0);
 	mLastVisibleLine = Max((int)((mContentHeight + mScrollY) / mCharAdvance.y), 0);
 
-	mVisibleColumnCount = Max((int)ceil((mContentWidth - std::max(mTextStart - mScrollX, 0.0f)) / mCharAdvance.x), 0);
-	mFirstVisibleColumn = Max((int)(std::max(mScrollX - mTextStart, 0.0f) / mCharAdvance.x), 0);
+	mVisibleColumnCount = Max((int)ceil((mContentWidth - Max(mTextStart - mScrollX, 0.0f)) / mCharAdvance.x), 0);
+	mFirstVisibleColumn = Max((int)(Max(mScrollX - mTextStart, 0.0f) / mCharAdvance.x), 0);
 	mLastVisibleColumn = Max((int)((mContentWidth + mScrollX - mTextStart) / mCharAdvance.x), 0);
 
 	auto io = ImGui::GetIO();
 	mCursorAnimationTimer = std::fmod(mCursorAnimationTimer + io.DeltaTime, 1.0f);
 
+	int maxColumnLimited = 0;
 	if (!mLines.empty())
 	{
 		float spaceSize = ImGui::GetFont()->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, " ", nullptr, nullptr).x;
@@ -2239,8 +2241,7 @@ void TextEditor::Render(bool aParentIsFocused)
 			ImVec2 textScreenPos = ImVec2(lineStartScreenPos.x + mTextStart, lineStartScreenPos.y);
 
 			auto& line = mLines[lineNo];
-			int maxColumnLimited = GetLineMaxColumn(lineNo, mLastVisibleColumn);
-			mCurrentSpaceWidth = std::max(mTextStart + TextDistanceToLineStart(Coordinates(lineNo, maxColumnLimited + mVisibleColumnCount), false), mCurrentSpaceWidth);
+			maxColumnLimited = Max(GetLineMaxColumn(lineNo, mLastVisibleColumn), maxColumnLimited);
 
 			Coordinates lineStartCoord(lineNo, 0);
 			Coordinates lineEndCoord(lineNo, maxColumnLimited);
@@ -2417,9 +2418,11 @@ void TextEditor::Render(bool aParentIsFocused)
 			}
 		}
 	}
+	mCurrentSpaceHeight = (mLines.size() + Min(mVisibleLineCount - 1, (int)mLines.size())) * mCharAdvance.y;
+	mCurrentSpaceWidth = Max((maxColumnLimited + Min(mVisibleColumnCount - 1, maxColumnLimited)) * mCharAdvance.x, mCurrentSpaceWidth);
 
 	ImGui::SetCursorPos(ImVec2(0, 0));
-	ImGui::Dummy(ImVec2(mCurrentSpaceWidth, (mLines.size() + mVisibleLineCount - 1) * mCharAdvance.y));
+	ImGui::Dummy(ImVec2(mCurrentSpaceWidth, mCurrentSpaceHeight));
 
 	if (mEnsureCursorVisible > -1)
 	{

@@ -106,7 +106,9 @@
 		"cfenv": "cpp",
 		"csignal": "cpp",
 		"numbers": "cpp",
-		"source_location": "cpp"
+		"source_location": "cpp",
+		"shared_mutex": "cpp",
+		"typeindex": "cpp"
 	},
 	"files.exclude": {
 		"debug/**": true,

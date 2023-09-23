@@ -7,7 +7,7 @@
 #ifndef OT_SHADERTOY_GLSL
 #define OT_SHADERTOY_GLSL
 
-uniform vec4 u_ShaderToy[6];
+uniform vec4 u_ShaderToy[9];
 
 #define iResolution u_ShaderToy[0].rgb			// viewport resolution (in pixels)
 #define iTime u_ShaderToy[0].a					// shader playback time (in seconds)

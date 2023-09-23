@@ -7,6 +7,16 @@
 
 pushd "%~dp0"
 
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Blit\shader.vs -o generated\Blit\vs_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtBlitVS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Blit\shader.vs -o generated\Blit\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtBlitVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Blit\shader.fs -o generated\Blit\fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtBlitFS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Blit\shader.fs -o generated\Blit\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtBlitFS_dx11
+
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Bloom\shader.vs -o generated\Bloom\vs_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtBloomVS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Bloom\shader.vs -o generated\Bloom\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtBloomVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Bloom\shader.fs -o generated\Bloom\fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtBloomFS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Bloom\shader.fs -o generated\Bloom\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtBloomFS_dx11
+
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f BloomDownSample\shader.vs -o generated\BloomDownSample\vs_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtBloomDownSampleVS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f BloomDownSample\shader.vs -o generated\BloomDownSample\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtBloomDownSampleVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f BloomDownSample\shader.fs -o generated\BloomDownSample\fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtBloomDownSampleFS_dx9
@@ -16,6 +26,11 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f BloomUpSample\shader.vs -o generated\BloomUpSample\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtBloomUpSampleVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f BloomUpSample\shader.fs -o generated\BloomUpSample\fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtBloomUpSampleFS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f BloomUpSample\shader.fs -o generated\BloomUpSample\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtBloomUpSampleFS_dx11
+
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Blur\shader.vs -o generated\Blur\vs_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtBlurVS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Blur\shader.vs -o generated\Blur\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtBlurVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Blur\shader.fs -o generated\Blur\fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtBlurFS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Blur\shader.fs -o generated\Blur\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtBlurFS_dx11
 
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Debug\shader.vs -o generated\Debug\vs_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtDebugVS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Debug\shader.vs -o generated\Debug\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtDebugVS_dx11

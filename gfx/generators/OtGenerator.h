@@ -15,34 +15,30 @@
 #include "bgfx/bgfx.h"
 
 #include "OtFrameBuffer.h"
-#include "OtTexture.h"
 #include "OtSampler.h"
 #include "OtPass.h"
 
 
 //
-//	OtFilter
+//	OtGenerator
 //
 
-class OtFilter {
+class OtGenerator {
 public:
 	// destructor
-	virtual ~OtFilter() {}
+	virtual ~OtGenerator() {}
 
 	// set rendering state
 	void setState(int s) { state = s; }
 
-	// execute filter
+	// execute generator
 	virtual void execute(OtPass& pass, int w, int h) {}
 
-	// render filter
-	void render(int w, int h, OtFrameBuffer& origin, OtFrameBuffer& destination);
-	void render(int w, int h, OtFrameBuffer& origin);
+	// render generator
+	void render(int w, int h, OtFrameBuffer& destination);
+	void render(int w, int h);
 
 private:
-	// the texture sampler
-	OtSampler textureSampler = OtSampler("s_texture");
-
 	// rendering state
 	uint64_t state = BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A;
 };

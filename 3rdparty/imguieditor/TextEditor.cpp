@@ -1580,56 +1580,22 @@ TextEditor::Coordinates TextEditor::ScreenPosToCoordinates(const ImVec2& aPositi
 	if (isOverLineNumber != nullptr)
 		*isOverLineNumber = local.x < mTextStart;
 
-	float spaceSize = ImGui::GetFont()->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, " ").x;
-
-	int lineNo = std::max(0, (int)floor(local.y / mCharAdvance.y));
-
-	int columnCoord = 0;
-
-	if (lineNo >= 0 && lineNo < (int)mLines.size())
+	Coordinates out = {
+		Max(0, (int)floor(local.y / mCharAdvance.y)),
+		Max(0, (int)floor((local.x - mTextStart) / mCharAdvance.x))
+	};
+	int charIndex = GetCharacterIndexL(out);
+	if (charIndex > -1 && charIndex < mLines[out.mLine].size() && mLines[out.mLine][charIndex].mChar == '\t')
 	{
-		auto& line = mLines.at(lineNo);
-
-		int columnIndex = 0;
-		std::string cumulatedString = "";
-		float columnWidth = 0.0f;
-		float columnX = 0.0f;
-		int delta = 0;
-
-		// First we find the hovered column coord.
-		for (size_t columnIndex = 0; columnIndex < line.size(); ++columnIndex)
-		{
-			float columnWidth = 0.0f;
-			int delta = 0;
-
-			if (line[columnIndex].mChar == '\t')
-			{
-				float oldX = columnX;
-				columnX = (1.0f + std::floor((1.0f + columnX) / (float(mTabSize) * spaceSize))) * (float(mTabSize) * spaceSize);
-				columnWidth = columnX - oldX;
-				delta = TabSizeAtColumn(columnCoord);
-			}
-			else
-			{
-				char buf[7];
-				auto d = UTF8CharLength(line[columnIndex].mChar);
-				int i = 0;
-				while (i < 6 && d-- > 0)
-					buf[i++] = line[columnIndex].mChar;
-				buf[i] = '\0';
-				columnWidth = ImGui::GetFont()->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, buf).x;
-				columnX += columnWidth;
-				delta = 1;
-			}
-
-			if (mTextStart + columnX - (aInsertionMode ? 0.5f : 0.0f) * columnWidth < local.x)
-				columnCoord += delta;
-			else
-				break;
-		}
+		int columnToLeft = GetCharacterColumn(out.mLine, charIndex);
+		int columnToRight = GetCharacterColumn(out.mLine, GetCharacterIndexR(out));
+		if (out.mColumn - columnToLeft < columnToRight - out.mColumn)
+			out.mColumn = columnToLeft;
+		else
+			out.mColumn = columnToRight;
 	}
 
-	return SanitizeCoordinates(Coordinates(lineNo, columnCoord));
+	return SanitizeCoordinates(out);
 }
 
 TextEditor::Coordinates TextEditor::FindWordStart(const Coordinates& aFrom) const

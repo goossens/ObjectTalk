@@ -159,7 +159,7 @@ public:
 private:
 	// ------------- Generic utils ------------- //
 
-	inline ImVec4 U32ColorToVec4(ImU32 in) const
+	static inline ImVec4 U32ColorToVec4(ImU32 in)
 	{
 		float s = 1.0f / 255.0f;
 		return ImVec4(
@@ -168,18 +168,14 @@ private:
 			((in >> IM_COL32_G_SHIFT) & 0xFF) * s,
 			((in >> IM_COL32_R_SHIFT) & 0xFF) * s);
 	}
-	inline bool IsUTFSequence(char c) const
+	static inline bool IsUTFSequence(char c)
 	{
 		return (c & 0xC0) == 0x80;
 	}
-	inline int TabSizeAtColumn(int aColumn) const
-	{
-		return mTabSize - (aColumn % mTabSize);
-	}
 	template<typename T>
-	inline T Max(T a, T b) { return a > b ? a : b; }
+	static inline T Max(T a, T b) { return a > b ? a : b; }
 	template<typename T>
-	inline T Min(T a, T b) { return a < b ? a : b; }
+	static inline T Min(T a, T b) { return a < b ? a : b; }
 
 	// ------------- Internal ------------- //
 
@@ -452,8 +448,9 @@ private:
 	RegexList mRegexList;
 	std::string mLineBuffer;
 
-	bool IsHorizontalScrollbarVisible() { return mCurrentSpaceWidth > mContentWidth; }
-	bool IsVerticalScrollbarVisible() { return mCurrentSpaceHeight > mContentHeight; }
+	inline bool IsHorizontalScrollbarVisible() const { return mCurrentSpaceWidth > mContentWidth; }
+	inline bool IsVerticalScrollbarVisible() const { return mCurrentSpaceHeight > mContentHeight; }
+	inline int TabSizeAtColumn(int aColumn) const { return mTabSize - (aColumn % mTabSize); }
 
 	static const std::unordered_map<char, char> OPEN_TO_CLOSE_CHAR;
 	static const std::unordered_map<char, char> CLOSE_TO_OPEN_CHAR;

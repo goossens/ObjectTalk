@@ -162,12 +162,11 @@
             <p>
               ObjectTalk currently runs on MacOS, Linux and Windows. In general,
               the main development platform is macOS and typically the latest
-              version is used (Maverick as of now). For Linux, Ubuntu 22.04 is
-              used and on Billy boxes, Window 11. The Github continuous
-              integration tasks also use the latest versions of these operating
-              systems. For those that use other Linux distributions, it is
-              likely that ObjectTalk will compile out-of-the-box, but this is
-              not verified.
+              version is used. For Linux, Ubuntu 22.04 is used and on Billy
+              boxes, Window 11. The Github continuous integration tasks also use
+              the latest versions of these operating systems. For those that use
+              other Linux distributions, it is likely that ObjectTalk will
+              compile out-of-the-box, but this is not verified.
             </p>
             <p>
               The entire ObjectTalk ecosystem is written in C++17 which is the
@@ -206,7 +205,7 @@
               ObjectTalk. A lexical scanner turns source code into tokens, the
               compiler translates these tokens to bytecode for a
               platform-independent imaginary CPU, an optimizer turns simple code
-              sequence into super instructions and the stack-based virtual
+              sequences into super instructions and the stack-based virtual
               machine executes this bytecode.
             </p>
             <p>
@@ -246,7 +245,7 @@
             <p><strong>HTTP Server</strong></p>
             <p>
               ObjectTalk provides a number of classes that make it easy to
-              implement a webserver on top of the Async I/O library. For those
+              implement a web server on top of the Async I/O library. For those
               familiar with <a href="https://nodejs.org/">Node.js</a> and the
               <a href="https://expressjs.com">Express package</a>, you will
               recognize the similarities. If you need an operational
@@ -285,12 +284,12 @@
             <p>
               Today, the framework uses an Entity Component System (ECS) as an
               architectural pattern to represent user interfaces, 2D (game)
-              boards and 3D scenes. The Integrated Development Environment
-              (IDE), which is explained later, provides editors to manipulates
-              ECS objects. By doing this, the ObjectTalk language is no longer
-              used to construct visual objects but it is used for runtime logic
-              and interaction. For those old enough to remember the
-              Model-View-Controller architectural pattern, the model is
+              boards and 3D (game) scenes. The Integrated Development
+              Environment (IDE), which is explained later, provides editors to
+              manipulates ECS objects. By doing this, the ObjectTalk language is
+              no longer used to construct visual objects but it is used for
+              runtime logic and interaction. For those old enough to remember
+              the Model-View-Controller architectural pattern, the model is
               expressed in the ECS, the view is provided internally by the
               ObjectTalk ecosystem and the controller is written in ObjectTalk.
             </p>
@@ -362,7 +361,7 @@
             <p>
               The required JSON file can be constructed by hand but this is not
               recommended. The provided IDE has dedicated editors for all the
-              graphical ECS JSON files.
+              graphical Entity Component System (ECS) JSON files.
             </p>
             <p>
               In graphical mode a number of threads are used to run the
@@ -377,7 +376,7 @@
             <p>
               A second thread will therefore be used to run the application, do
               most of the CPU work and run the event loop. The ObjectTalk
-              callback will also run in this thread.
+              callbacks will also run in this thread.
             </p>
             <p>
               The graphical framework automatically and transparently connects
@@ -389,11 +388,10 @@
             <p>
               In the Integrate Development Environment (IDE) mode is the IDE
               will act as the main application just like any other program in
-              graphics mode. When the IDE test runs a script or graphics
-              application, a subprocess is spawned in the applicable mode.
-              Bi-directional Inter Process Communication (IPC) is setup to allow
-              the IDE to communicate with the ObjectTalk script, GUI, board or
-              scene being tested.
+              graphics mode. When the IDE runs a script or graphics application,
+              a subprocess is spawned in the applicable mode. Bi-directional
+              Inter Process Communication (IPC) is setup to allow the IDE to
+              communicate with the ObjectTalk script, GUI, board or scene.
             </p>
           </div>
         </div>

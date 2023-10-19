@@ -172,6 +172,12 @@ private:
 	{
 		return (c & 0xC0) == 0x80;
 	}
+	static inline float Distance(const ImVec2& a, const ImVec2& b)
+	{
+		float x = a.x - b.x;
+		float y = a.y - b.y;
+		return sqrt(x * x + y * y);
+	}
 	template<typename T>
 	static inline T Max(T a, T b) { return a > b ? a : b; }
 	template<typename T>
@@ -418,7 +424,8 @@ private:
 	ImVec2 mCharAdvance;
 	float mCurrentSpaceHeight = 20.0f;
 	float mCurrentSpaceWidth = 20.0f;
-	float mLastClick = -1.0f;
+	float mLastClickTime = -1.0f;
+	ImVec2 mLastClickPos;
 	int mFirstVisibleLine = 0;
 	int mLastVisibleLine = 0;
 	int mVisibleLineCount = 0;

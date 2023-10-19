@@ -6,6 +6,7 @@
 #include "TextEditor.h"
 
 #define IMGUI_SCROLLBAR_WIDTH 14.0f
+#define POS_TO_COORDS_COLUMN_OFFSET 0.33f
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h" // for imGui::GetCurrentWindow()
 
@@ -1594,7 +1595,8 @@ TextEditor::Coordinates TextEditor::ScreenPosToCoordinates(const ImVec2& aPositi
 		else
 			out.mColumn = columnToRight;
 	}
-
+	else
+		out.mColumn = Max(0, (int)floor((local.x - mTextStart + POS_TO_COORDS_COLUMN_OFFSET * mCharAdvance.x) / mCharAdvance.x));
 	return SanitizeCoordinates(out);
 }
 
@@ -1607,8 +1609,10 @@ TextEditor::Coordinates TextEditor::FindWordStart(const Coordinates& aFrom) cons
 	auto& line = mLines[lineIndex];
 	int charIndex = GetCharacterIndexL(aFrom);
 
-	if (charIndex >= (int)line.size())
+	if (charIndex > (int)line.size() || line.size() == 0)
 		return aFrom;
+	if (charIndex == (int)line.size())
+		charIndex--;
 
 	bool initialIsWordChar = CharIsWordChar(line[charIndex].mChar);
 	bool initialIsSpace = isspace(line[charIndex].mChar);
@@ -2071,7 +2075,10 @@ void TextEditor::HandleMouseInputs()
 		{
 			auto doubleClick = ImGui::IsMouseDoubleClicked(0);
 			auto t = ImGui::GetTime();
-			auto tripleClick = click && !doubleClick && (mLastClick != -1.0f && (t - mLastClick) < io.MouseDoubleClickTime);
+			auto tripleClick = click && !doubleClick &&
+				(mLastClickTime != -1.0f && (t - mLastClickTime) < io.MouseDoubleClickTime &&
+					Distance(io.MousePos, mLastClickPos) < 0.01f);
+
 			if (click)
 				mDraggingSelection = true;
 
@@ -2102,7 +2109,7 @@ void TextEditor::HandleMouseInputs()
 					Coordinates{ cursorCoords.mLine, GetLineMaxColumn(cursorCoords.mLine) };
 				SetSelection({ cursorCoords.mLine, 0 }, targetCursorPos, mState.mCurrentCursor);
 
-				mLastClick = -1.0f;
+				mLastClickTime = -1.0f;
 			}
 
 			/*
@@ -2119,7 +2126,8 @@ void TextEditor::HandleMouseInputs()
 				Coordinates cursorCoords = ScreenPosToCoordinates(ImGui::GetMousePos());
 				SetSelection(FindWordStart(cursorCoords), FindWordEnd(cursorCoords), mState.mCurrentCursor);
 
-				mLastClick = (float)ImGui::GetTime();
+				mLastClickTime = (float)ImGui::GetTime();
+				mLastClickPos = io.MousePos;
 			}
 
 			/*
@@ -2144,7 +2152,8 @@ void TextEditor::HandleMouseInputs()
 				else
 					SetCursorPosition(cursorCoords, mState.GetLastAddedCursorIndex());
 
-				mLastClick = (float)ImGui::GetTime();
+				mLastClickTime = (float)ImGui::GetTime();
+				mLastClickPos = io.MousePos;
 			}
 			else if (ImGui::IsMouseReleased(0))
 			{

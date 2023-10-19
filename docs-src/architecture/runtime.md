@@ -27,7 +27,7 @@ The JSON file will refer to external assets such as images, sprites or models an
 ObjectTalk scripts that act as controllers in the created graphical world.
 
 The required JSON file can be constructed by hand but this is not recommended. The provided IDE
-has dedicated editors for all the graphical ECS JSON files.
+has dedicated editors for all the graphical Entity Component System (ECS) JSON files.
 
 In graphical mode a number of threads are used to run the application which might be slightly
 different based on host operating system. The main thread will be used as the windowing and
@@ -36,7 +36,7 @@ It might be more intuitive to make this a secondary thread but most operating sy
 that these tasks are execute from the primary or startup thread.
 
 A second thread will therefore be used to run the application, do most of the CPU work and run
-the event loop. The ObjectTalk callback will also run in this thread.
+the event loop. The ObjectTalk callbacks will also run in this thread.
 
 The graphical framework automatically and transparently connects the main (graphical) thread
 with the application or scripts thread.
@@ -46,6 +46,6 @@ with the application or scripts thread.
 ![IDE Mode](img/ide-mode.png)
 
 In the Integrate Development Environment (IDE) mode is the IDE will act as the main application
-just like any other program in graphics mode. When the IDE test runs a script or graphics application,
+just like any other program in graphics mode. When the IDE runs a script or graphics application,
 a subprocess is spawned in the applicable mode. Bi-directional Inter Process Communication (IPC) is
-setup to allow the IDE to communicate with the ObjectTalk script, GUI, board or scene being tested.
+setup to allow the IDE to communicate with the ObjectTalk script, GUI, board or scene.

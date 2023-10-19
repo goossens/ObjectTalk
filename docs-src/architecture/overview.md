@@ -2,7 +2,8 @@ The ObjectTalk ecosystem is contained in a single executable file that embeds al
 their resources/assets together in one unit. The original design called for a simple executable
 that would load shared modules and assets on demand. It was decided not to continue with this
 approach as dealing with that DLL hell on Windows, keeping versions synchronized and the need
-to put things all over the filesystem would lead to fragmentation and possibly missing/incompatible pieces.
+to put things all over the filesystem would lead to fragmentation and possibly missing/incompatible
+pieces.
 
 Today, the ObjectTalk ecosystem compiles into a single file that contains all the libraries,
 resources and assets. The file “ot”, which contains everything, can be moved around with easy and

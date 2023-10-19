@@ -8,7 +8,7 @@ host operating system offers GUI libraries.
 **Operating System Foundation**
 
 ObjectTalk currently runs on MacOS, Linux and Windows. In general, the main development
-platform is macOS and typically the latest version is used (Maverick as of now).
+platform is macOS and typically the latest version is used.
 For Linux, Ubuntu 22.04 is used and on Billy boxes, Window 11. The Github continuous
 integration tasks also use the latest versions of these operating systems. For those
 that use other Linux distributions, it is likely that ObjectTalk will compile out-of-the-box,
@@ -37,7 +37,7 @@ if it only had included a fast non-thread safe smart pointer.
 
 The language engine uses some simple components to implement ObjectTalk. A lexical scanner turns
 source code into tokens, the compiler translates these tokens to bytecode for a platform-independent
-imaginary CPU, an  optimizer turns simple code sequence into super instructions and the stack-based
+imaginary CPU, an optimizer turns simple code sequences into super instructions and the stack-based
 virtual machine executes this bytecode.
 
 ![Language Architecture](img/language-architecture.png)
@@ -65,7 +65,7 @@ there. This means that it is well tested and maintained.
 
 **HTTP Server**
 
-ObjectTalk provides a number of classes that make it easy to implement a webserver on top of
+ObjectTalk provides a number of classes that make it easy to implement a web server on top of
 the Async I/O library. For those familiar with [Node.js](https://nodejs.org/) and the
 [Express package](https://expressjs.com), you will recognize the similarities. If you need an
 operational asynchronous web server, use [Node.js](https://nodejs.org/). If you want to use a
@@ -88,7 +88,7 @@ pages of code to create all the things you would need for a user interface, 2D b
 In fact, the ratio between construction code and functionality was so bad that a new approach was implemented.
 
 Today, the framework uses an Entity Component System (ECS) as an architectural pattern to represent
-user interfaces, 2D (game) boards and 3D scenes. The Integrated Development Environment (IDE),
+user interfaces, 2D (game) boards and 3D (game) scenes. The Integrated Development Environment (IDE),
 which is explained later, provides editors to manipulates ECS objects. By doing this, the ObjectTalk
 language is no longer used to construct visual objects but it is used for runtime logic and interaction.
 For those old enough to remember the Model-View-Controller architectural pattern, the model is expressed

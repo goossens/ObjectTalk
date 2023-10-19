@@ -157,7 +157,8 @@ in bytes but rather in codewords that represent a character whether it is
 1,2, 3 or 4 bytes long.
 
 String literals are encoded using the same logic as JSON making it
-easy to exchange information with other languages or systems. A string literal is a sequence of characters surrounded by double quotation marks (").
+easy to exchange information with other languages or systems. A string
+literal is a sequence of characters surrounded by double quotation marks (").
 
 	var someString = "Some string literal value";
 	var message = "\tMost Europeans like the \u00C4.\n";

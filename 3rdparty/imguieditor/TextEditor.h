@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cassert>
+#include <cmath>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -176,7 +177,7 @@ private:
 	{
 		float x = a.x - b.x;
 		float y = a.y - b.y;
-		return sqrt(x * x + y * y);
+		return std::sqrt(x * x + y * y);
 	}
 	template<typename T>
 	static inline T Max(T a, T b) { return a > b ? a : b; }

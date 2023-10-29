@@ -13,7 +13,7 @@
 //
 
 #include "OtFilter.h"
-#include "OtShader.h"
+#include "OtShaderProgram.h"
 #include "OtUniformVec4.h"
 
 
@@ -29,5 +29,5 @@ public:
 private:
 	// GPU assets
 	OtUniformVec4 uniform = OtUniformVec4("u_bloom", 1);
-	OtShader shader = OtShader("OtBloomVS", "OtBloomFS");
+	OtShaderProgram program = OtShaderProgram("OtBloomVS", "OtBloomFS");
 };

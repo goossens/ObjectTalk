@@ -205,9 +205,9 @@ void OtFramework::initIMGUI() {
 		.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
 		.end();
 
-	// initialize sampler and shader
+	// initialize sampler and program
 	imguiFontSampler.initialize("g_AttribLocationTex");
-	imguiShader.initialize("OtImGuiVS", "OtImGuiFS");
+	imguiShaderProgram.initialize("OtImGuiVS", "OtImGuiFS");
 }
 
 
@@ -354,7 +354,7 @@ void OtFramework::renderIMGUI() {
 				imguiFontSampler.submit(0, texture);
 				bgfx::setVertexBuffer(0, &tvb);
 				bgfx::setIndexBuffer(&tib, cmd->IdxOffset, cmd->ElemCount);
-				imguiShader.submit(255);
+				imguiShaderProgram.submit(255);
 			}
 		}
 	}
@@ -370,7 +370,7 @@ void OtFramework::endIMGUI() {
 	// do it since they run after we shutdown the libraries (causing 'memory leaks')
 	imguiFontTexture.clear();
 	imguiFontSampler.clear();
-	imguiShader.clear();
+	imguiShaderProgram.clear();
 
 	ImGui::DestroyContext();
 }

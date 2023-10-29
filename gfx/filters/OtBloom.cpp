@@ -21,5 +21,5 @@
 void OtBloom::execute(OtPass& pass, int w, int h) {
 	uniform.set(0, glm::vec4(0.2 / (float) w, 0.2 / (float) h, 2.0, 1.0));
 	uniform.submit();
-	pass.runShader(shader);
+	pass.runShaderProgram(program);
 }

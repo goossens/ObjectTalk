@@ -126,8 +126,8 @@ void OtPass::setTransform(const glm::mat4 &viewTransform, const glm::mat4 &proje
 }
 
 
-//submitQuad
-//	OtPass::setQuad
+//
+//	OtPass::submitQuad
 //
 
 void OtPass::submitQuad(int w, int h) {
@@ -136,12 +136,12 @@ void OtPass::submitQuad(int w, int h) {
 	}
 
 	// submit a "single triangle" covering the rectangular quad
-	if (bgfx::getAvailTransientVertexBuffer(3, OtVertexPosTex::getLayout()) == 3) {
+	if (bgfx::getAvailTransientVertexBuffer(3, OtVertexPosUv::getLayout()) == 3) {
 		bool originBottomLeft = OtGpuHasOriginBottomLeft();
 
 		bgfx::TransientVertexBuffer vb;
-		bgfx::allocTransientVertexBuffer(&vb, 3, OtVertexPosTex::getLayout());
-		OtVertexPosTex* vertex = (OtVertexPosTex*) vb.data;
+		bgfx::allocTransientVertexBuffer(&vb, 3, OtVertexPosUv::getLayout());
+		OtVertexPosUv* vertex = (OtVertexPosUv*) vb.data;
 
 		vertex[0].position = glm::vec3(-w, 0.0, 0.0);
 		vertex[0].uv = originBottomLeft ? glm::vec2(-1.0, 1.0) : glm::vec2(-1.0, 0.0);
@@ -166,15 +166,15 @@ void OtPass::submitQuad(int w, int h) {
 
 
 //
-//	OtPass::runShader
+//	OtPass::runShaderProgram
 //
 
-void OtPass::runShader(OtShader &shader) {
+void OtPass::runShaderProgram(OtShaderProgram& program) {
 	if (!view) {
 		OtLogFatal("Internal error: rendering slot for pass not reserved");
 	}
 
-	shader.submit(view);
+	program.submit(view);
 }
 
 

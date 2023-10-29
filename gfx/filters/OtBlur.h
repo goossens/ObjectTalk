@@ -13,7 +13,7 @@
 //
 
 #include "OtFilter.h"
-#include "OtShader.h"
+#include "OtShaderProgram.h"
 #include "OtUniformVec4.h"
 
 
@@ -41,5 +41,5 @@ private:
 
 	// GPU assets
 	OtUniformVec4 uniform = OtUniformVec4("u_blur", 1);
-	OtShader shader = OtShader("OtBlurVS", "OtBlurFS");
+	OtShaderProgram program = OtShaderProgram("OtBlurVS", "OtBlurFS");
 };

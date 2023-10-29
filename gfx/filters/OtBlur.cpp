@@ -26,5 +26,5 @@ void OtBlur::execute(OtPass& pass, int w, int h) {
 		alpha == -1.0 ? 1.0 : alpha));
 
 	uniform.submit();
-	pass.runShader(shader);
+	pass.runShaderProgram(program);
 }

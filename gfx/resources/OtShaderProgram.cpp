@@ -11,47 +11,47 @@
 
 #include "OtLog.h"
 
-#include "OtShader.h"
+#include "OtShaderProgram.h"
 #include "OtShaders.h"
 
 
 //
-//	OtShader::OtShader
+//	OtShaderProgram::OtShaderProgram
 //
 
-OtShader::OtShader(const char* vertex, const char* fragment) {
+OtShaderProgram::OtShaderProgram(const char* vertex, const char* fragment) {
 	initialize(vertex, fragment);
 }
 
 
 //
-//	OtShader::initialize
+//	OtShaderProgram::initialize
 //
 
-void OtShader::initialize(const char* vertex, const char* fragment) {
+void OtShaderProgram::initialize(const char* vertex, const char* fragment) {
 	vertexShaderName = vertex;
 	fragmentShaderName = fragment;
 }
 
 
 //
-//	OtShader::submit
+//	OtShaderProgram::submit
 //
 
-void OtShader::submit(bgfx::ViewId view) {
+void OtShaderProgram::submit(bgfx::ViewId view) {
 	if (!isValid()) {
 		if (vertexShaderName.size() && fragmentShaderName.size()) {
 			bgfx::RendererType::Enum type = bgfx::getRendererType();
 
-			shader = bgfx::createProgram(
+			program = bgfx::createProgram(
 				bgfx::createEmbeddedShader(embeddedShaders, type, vertexShaderName.c_str()),
 				bgfx::createEmbeddedShader(embeddedShaders, type, fragmentShaderName.c_str()),
 				true);
 
 		} else {
-			OtLogFatal("Internal error: Shader not initialized before submission");
+			OtLogFatal("Internal error: Shader program not initialized before submission");
 		}
 	}
 
-	bgfx::submit(view, shader.getHandle());
+	bgfx::submit(view, program.getHandle());
 }

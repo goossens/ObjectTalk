@@ -60,9 +60,9 @@ void OtSceneRenderer::renderTransparentGeometry(OtPass& pass, OtScene* scene, Ot
 		geometry.geometry->submitTriangles();
 	}
 
-	// set the shader state
+	// set the program state
 	if (geometry.wireframe) {
-		transparentShader.setState(
+		transparentProgram.setState(
 			OtStateWriteRgb |
 			OtStateWriteA |
 			OtStateWriteZ |
@@ -71,7 +71,7 @@ void OtSceneRenderer::renderTransparentGeometry(OtPass& pass, OtScene* scene, Ot
 			OtStateBlendAlpha);
 
 	} else if (geometry.cullback) {
-		transparentShader.setState(
+		transparentProgram.setState(
 			OtStateWriteRgb |
 			OtStateWriteA |
 			OtStateWriteZ |
@@ -80,7 +80,7 @@ void OtSceneRenderer::renderTransparentGeometry(OtPass& pass, OtScene* scene, Ot
 			OtStateBlendAlpha);
 
 	} else {
-		transparentShader.setState(
+		transparentProgram.setState(
 			OtStateWriteRgb |
 			OtStateWriteA |
 			OtStateWriteZ |
@@ -89,8 +89,8 @@ void OtSceneRenderer::renderTransparentGeometry(OtPass& pass, OtScene* scene, Ot
 	}
 
 	// set the transform
-	transparentShader.setTransform(scene->getGlobalTransform(entity));
+	transparentProgram.setTransform(scene->getGlobalTransform(entity));
 
-	// run the shader
-	pass.runShader(transparentShader);
+	// run the program
+	pass.runShaderProgram(transparentProgram);
 }

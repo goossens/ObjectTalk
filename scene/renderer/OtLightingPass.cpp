@@ -35,7 +35,7 @@ void OtSceneRenderer::renderLightingPass(OtScene* scene) {
 	gbuffer.bindEmissiveTexture(lightingEmissiveSampler, 3);
 	gbuffer.bindDepthTexture(lightingDepthSampler, 4);
 
-	// run the shader
-	lightingShader.setState(OtStateWriteRgb | OtStateWriteA | OtStateDepthTestAlways);
-	pass.runShader(lightingShader);
+	// run the program
+	lightingProgram.setState(OtStateWriteRgb | OtStateWriteA | OtStateDepthTestAlways);
+	pass.runShaderProgram(lightingProgram);
 }

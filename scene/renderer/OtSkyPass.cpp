@@ -93,9 +93,9 @@ void OtSceneRenderer::renderSky(OtPass& pass, OtSkyComponent& component) {
 	skyUniforms.set(2, glm::vec4(component.getDirectionToSun(), 0.0f));
 	skyUniforms.submit();
 
-	// run the shader
-	skyShader.setState(OtStateWriteRgb | OtStateWriteA);
-	pass.runShader(skyShader);
+	// run the program
+	skyProgram.setState(OtStateWriteRgb | OtStateWriteA);
+	pass.runShaderProgram(skyProgram);
 
 }
 
@@ -120,9 +120,9 @@ void OtSceneRenderer::renderSkyBox(OtPass& pass, OtSkyBoxComponent& component) {
 	// submit texture via sampler
 	textureSampler0.submit(0, component.cubemap->getCubeMap());
 
-	// run the shader
-	skyBoxShader.setState(OtStateWriteRgb | OtStateWriteA);
-	pass.runShader(skyBoxShader);
+	// run the program
+	skyBoxProgram.setState(OtStateWriteRgb | OtStateWriteA);
+	pass.runShaderProgram(skyBoxProgram);
 }
 
 
@@ -146,7 +146,7 @@ void OtSceneRenderer::renderSkySphere(OtPass& pass, OtSkySphereComponent& compon
 	// submit texture via sampler
 	textureSampler0.submit(0, component.texture->getTexture());
 
-	// run the shader
-	skySphereShader.setState(OtStateWriteRgb | OtStateWriteA);
-	pass.runShader(skySphereShader);
+	// run the program
+	skySphereProgram.setState(OtStateWriteRgb | OtStateWriteA);
+	pass.runShaderProgram(skySphereProgram);
 }

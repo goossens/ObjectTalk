@@ -21,5 +21,5 @@
 void OtBlit::execute(OtPass& pass, int w, int h) {
 	uniform.set(0, glm::vec4(intensity == -1.0 ? 1.0 : intensity, alpha == -1.0 ? 1.0 : alpha, 0.0, 0.0));
 	uniform.submit();
-	pass.runShader(shader);
+	pass.runShaderProgram(program);
 }

@@ -18,7 +18,7 @@
 
 #include "OtFrameBuffer.h"
 #include "OtGbuffer.h"
-#include "OtShader.h"
+#include "OtShaderProgram.h"
 
 
 //
@@ -37,7 +37,7 @@ public:
 	void setFrameBuffer(OtGbuffer& gbuffer);
 	void setTransform(const glm::mat4& view, const glm::mat4& projection);
 	void submitQuad(int w, int h);
-	void runShader(OtShader& shader);
+	void runShaderProgram(OtShaderProgram& program);
 
 	void blit(
 		bgfx::TextureHandle dest,

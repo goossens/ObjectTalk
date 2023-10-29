@@ -41,8 +41,8 @@ void OtSceneRenderer::renderHighlightPass(OtScene* scene, OtEntity selected) {
 	outlineUniforms.submit();
 
 	selectedBuffer.bindColorTexture(selectedSampler, 0);
-	outlineShader.setState(OtStateWriteRgb | OtStateWriteA | OtStateBlendAlpha);
-	outlinePass.runShader(outlineShader);
+	outlineProgram.setState(OtStateWriteRgb | OtStateWriteA | OtStateBlendAlpha);
+	outlinePass.runShaderProgram(outlineProgram);
 }
 
 
@@ -58,9 +58,9 @@ void OtSceneRenderer::renderHighlight(OtPass& pass, OtScene* scene, OtEntity sel
 
 		// render geometry
 		scene->getComponent<OtGeometryComponent>(selected).geometry->submitTriangles();
-		selectShader.setTransform(scene->getGlobalTransform(selected));
-		selectShader.setState(OtStateWriteRgb);
-		pass.runShader(selectShader);
+		selectProgram.setTransform(scene->getGlobalTransform(selected));
+		selectProgram.setState(OtStateWriteRgb);
+		pass.runShaderProgram(selectProgram);
 
 	} else if (scene->hasComponent<OtModelComponent>(selected) && scene->hasComponent<OtTransformComponent>(selected)) {
 		// render model
@@ -69,9 +69,9 @@ void OtSceneRenderer::renderHighlight(OtPass& pass, OtScene* scene, OtEntity sel
 		if (model.isReady()) {
 			for (auto& mesh : model->getMeshes()) {
 				mesh.submitTriangles();
-				selectShader.setTransform(scene->getGlobalTransform(selected));
-				selectShader.setState(OtStateWriteRgb);
-				pass.runShader(selectShader);
+				selectProgram.setTransform(scene->getGlobalTransform(selected));
+				selectProgram.setState(OtStateWriteRgb);
+				pass.runShaderProgram(selectProgram);
 			}
 		}
 	}

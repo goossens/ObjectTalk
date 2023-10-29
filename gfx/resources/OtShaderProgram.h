@@ -43,34 +43,36 @@ static constexpr uint64_t OtStateMsaa = BGFX_STATE_MSAA;
 
 
 //
-//	OtShader
+//	OtShaderProgram
 //
 
-class OtShader {
+class OtShaderProgram {
 public:
 	// constructors/destructor
-	OtShader() = default;
-	OtShader(const char* vertex, const char* fragment);
+	OtShaderProgram() = default;
+	OtShaderProgram(const char* vertex, const char* fragment);
 
-	// initialize uniform
+	// initialize program
 	void initialize(const char* vertex, const char* fragment);
 
 	// clear the resources
-	void clear() { shader.clear(); }
+	void clear() { program.clear(); }
 
-	// see if shader is valid
-	bool isValid() { return shader.isValid(); }
+	// see if program is valid
+	bool isValid() { return program.isValid(); }
 
 	// set parameters for the next run
 	void setState(uint64_t state) { bgfx::setState(state); }
 	void setTransform(const glm::mat4& transform) { bgfx::setTransform(glm::value_ptr(transform)); }
 
-	// run shader in the specified view on the GPU
+	// run program program in the specified view on the GPU
 	void submit(bgfx::ViewId view);
 
 private:
-	// shader program
+	// shader names
 	std::string vertexShaderName;
 	std::string fragmentShaderName;
-	OtBgfxHandle<bgfx::ProgramHandle> shader;
+
+	// GPU program
+	OtBgfxHandle<bgfx::ProgramHandle> program;
 };

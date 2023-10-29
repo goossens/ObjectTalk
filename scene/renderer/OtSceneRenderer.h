@@ -22,7 +22,7 @@
 #include "OtGbuffer.h"
 #include "OtPass.h"
 #include "OtSampler.h"
-#include "OtShader.h"
+#include "OtShaderProgram.h"
 #include "OtSphereGeometry.h"
 #include "OtUniformMat4.h"
 #include "OtUniformVec4.h"
@@ -175,19 +175,19 @@ private:
 	OtSampler bloomSampler{"s_bloomTexture"};
 
 	// shaders
-	OtShader geometryShader{"OtGeometryVS", "OtGeometryFS"};
-	OtShader geometryInstancingShader{"OtGeometryVSI", "OtGeometryFS"};
-	OtShader terrainShader{"OtTerrainVS", "OtTerrainFS"};
-	OtShader lightingShader{"OtLightingVS", "OtLightingFS"};
-	OtShader transparentShader{"OtTransparentVS", "OtTransparentFS"};
-	OtShader transparentInstancingShader{"OtTransparentVSI", "OtTransparentFS"};
-	OtShader gridShader{"OtGridVS", "OtGridFS"};
-	OtShader selectShader{"OtSelectVS", "OtSelectFS"};
-	OtShader outlineShader{"OtOutlineVS", "OtOutlineFS"};
-	OtShader skyShader{"OtSkyVS", "OtSkyFS"};
-	OtShader skyBoxShader{"OtSkyboxVS", "OtSkyboxFS"};
-	OtShader skySphereShader{"OtSkySphereVS", "OtSkySphereFS"};
-	OtShader bloomDownSampleShader{"OtBloomDownSampleVS", "OtBloomDownSampleFS"};
-	OtShader bloomUpSampleShader{"OtBloomUpSampleVS", "OtBloomUpSampleFS"};
-	OtShader postProcessShader{"OtPostProcessVS", "OtPostProcessFS"};
+	OtShaderProgram geometryProgram{"OtGeometryVS", "OtGeometryFS"};
+	OtShaderProgram geometryInstancingProgram{"OtGeometryVSI", "OtGeometryFS"};
+	OtShaderProgram terrainProgram{"OtTerrainVS", "OtTerrainFS"};
+	OtShaderProgram lightingProgram{"OtLightingVS", "OtLightingFS"};
+	OtShaderProgram transparentProgram{"OtTransparentVS", "OtTransparentFS"};
+	OtShaderProgram transparentInstancingProgram{"OtTransparentVSI", "OtTransparentFS"};
+	OtShaderProgram gridProgram{"OtGridVS", "OtGridFS"};
+	OtShaderProgram selectProgram{"OtSelectVS", "OtSelectFS"};
+	OtShaderProgram outlineProgram{"OtOutlineVS", "OtOutlineFS"};
+	OtShaderProgram skyProgram{"OtSkyVS", "OtSkyFS"};
+	OtShaderProgram skyBoxProgram{"OtSkyboxVS", "OtSkyboxFS"};
+	OtShaderProgram skySphereProgram{"OtSkySphereVS", "OtSkySphereFS"};
+	OtShaderProgram bloomDownSampleProgram{"OtBloomDownSampleVS", "OtBloomDownSampleFS"};
+	OtShaderProgram bloomUpSampleProgram{"OtBloomUpSampleVS", "OtBloomUpSampleFS"};
+	OtShaderProgram postProcessProgram{"OtPostProcessVS", "OtPostProcessFS"};
 };

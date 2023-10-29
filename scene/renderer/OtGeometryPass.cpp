@@ -49,15 +49,15 @@ void OtSceneRenderer::renderGeometryPass(OtScene* scene) {
 //
 
 void OtSceneRenderer::renderGeometry(OtPass& pass, OtScene* scene, OtEntity entity) {
-	// determine the shader
-	OtShader* shader;
+	// determine the program
+	OtShaderProgram* program;
 	auto& material = scene->getComponent<OtMaterialComponent>(entity).material;
 
 	if (material.isKindOf<OtPbrMaterialClass>()) {
-		shader = &geometryShader;
+		program = &geometryProgram;
 
 	} else if (material.isKindOf<OtTerrainMaterialClass>()) {
-		shader = &terrainShader;
+		program = &terrainProgram;
 	}
 
 	// submit the material information
@@ -73,9 +73,9 @@ void OtSceneRenderer::renderGeometry(OtPass& pass, OtScene* scene, OtEntity enti
 		geometry.geometry->submitTriangles();
 	}
 
-	// set the shader state
+	// set the program state
 	if (geometry.wireframe) {
-		shader->setState(
+		program->setState(
 			OtStateWriteRgb |
 			OtStateWriteA |
 			OtStateWriteZ |
@@ -83,7 +83,7 @@ void OtSceneRenderer::renderGeometry(OtPass& pass, OtScene* scene, OtEntity enti
 			OtStateLines);
 
 	} else if (geometry.cullback) {
-		shader->setState(
+		program->setState(
 			OtStateWriteRgb |
 			OtStateWriteA |
 			OtStateWriteZ |
@@ -91,7 +91,7 @@ void OtSceneRenderer::renderGeometry(OtPass& pass, OtScene* scene, OtEntity enti
 			OtStateCullCw);
 
 	} else {
-		shader->setState(
+		program->setState(
 			OtStateWriteRgb |
 			OtStateWriteA |
 			OtStateWriteZ |
@@ -100,10 +100,10 @@ void OtSceneRenderer::renderGeometry(OtPass& pass, OtScene* scene, OtEntity enti
 	}
 
 	// set the transform
-	shader->setTransform(scene->getGlobalTransform(entity));
+	program->setTransform(scene->getGlobalTransform(entity));
 
-	// run the shader
-	pass.runShader(*shader);
+	// run the program
+	pass.runShaderProgram(*program);
 }
 
 
@@ -131,18 +131,18 @@ void OtSceneRenderer::renderModel(OtPass& pass, OtScene* scene, OtEntity entity)
 				mesh.submitTriangles();
 
 				// set the transform
-				geometryShader.setTransform(scene->getGlobalTransform(entity));
+				geometryProgram.setTransform(scene->getGlobalTransform(entity));
 
-				// set the shader state
-				geometryShader.setState(
+				// set the program state
+				geometryProgram.setState(
 					OtStateWriteRgb |
 					OtStateWriteA |
 					OtStateWriteZ |
 					OtStateDepthTestLess |
 					OtStateCullCw);
 
-				// run the shader
-				pass.runShader(geometryShader);
+				// run the program
+				pass.runShaderProgram(geometryProgram);
 			}
 		}
 	}

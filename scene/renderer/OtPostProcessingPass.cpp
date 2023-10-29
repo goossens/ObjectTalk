@@ -47,9 +47,9 @@ void OtSceneRenderer::renderPostProcessingPass(OtScene* scene) {
 	compositeBuffer.bindColorTexture(postProcessSampler, 0);
 	bloomBuffer[0].bindColorTexture(bloomSampler, 1);
 
-	// run the shader
-	postProcessShader.setState(OtStateWriteRgb | OtStateWriteA | OtStateDepthTestAlways);
-	pass.runShader(postProcessShader);
+	// run the program
+	postProcessProgram.setState(OtStateWriteRgb | OtStateWriteA | OtStateDepthTestAlways);
+	pass.runShaderProgram(postProcessProgram);
 }
 
 
@@ -94,9 +94,9 @@ void OtSceneRenderer::renderBloom(float bloomIntensity) {
 			bloomBuffer[i - 1].bindColorTexture(bloomSampler, 0);
 		}
 
-		// run the shader
-		bloomDownSampleShader.setState(OtStateWriteRgb | OtStateWriteA | OtStateDepthTestAlways);
-		pass.runShader(bloomDownSampleShader);
+		// run the program
+		bloomDownSampleProgram.setState(OtStateWriteRgb | OtStateWriteA | OtStateDepthTestAlways);
+		pass.runShaderProgram(bloomDownSampleProgram);
 	}
 
 	// upsample
@@ -118,8 +118,8 @@ void OtSceneRenderer::renderBloom(float bloomIntensity) {
 		// set source texture
 		bloomBuffer[i].bindColorTexture(bloomSampler, 0);
 
-		// run the shader
-		bloomUpSampleShader.setState(OtStateWriteRgb | OtStateWriteA | OtStateDepthTestAlways);
-		pass.runShader(bloomUpSampleShader);
+		// run the program
+		bloomUpSampleProgram.setState(OtStateWriteRgb | OtStateWriteA | OtStateDepthTestAlways);
+		pass.runShaderProgram(bloomUpSampleProgram);
 	}
 }

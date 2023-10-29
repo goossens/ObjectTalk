@@ -24,7 +24,7 @@
 #include "OtFrameworkApp.h"
 #include "OtFrameworkEvents.h"
 #include "OtSampler.h"
-#include "OtShader.h"
+#include "OtShaderProgram.h"
 #include "OtTexture.h"
 
 
@@ -98,7 +98,7 @@ private:
 	bgfx::VertexLayout imguiVertexLayout;
 	OtTexture imguiFontTexture;
 	OtSampler imguiFontSampler;
-	OtShader imguiShader;
+	OtShaderProgram imguiShaderProgram;
 
 	// anti-aliasing setting
 	int antiAliasing = 0;

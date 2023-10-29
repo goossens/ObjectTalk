@@ -46,8 +46,8 @@ void OtSceneRenderer::renderGridPass() {
 	gridUniforms.set(0, glm::vec4(gridScale, 0.0f, 0.0f, 0.0f));
 	gridUniforms.submit();
 
-	// run the shader
-	gridShader.setState(
+	// run the program
+	gridProgram.setState(
 		OtStateWriteRgb |
 		OtStateWriteA |
 		OtStateWriteZ |
@@ -55,5 +55,5 @@ void OtSceneRenderer::renderGridPass() {
 		OtStateBlendAlpha |
 		OtStateMsaa);
 
-	pass.runShader(gridShader);
+	pass.runShaderProgram(gridProgram);
 }

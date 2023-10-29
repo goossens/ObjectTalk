@@ -54,10 +54,10 @@ void OtSceneRenderer::renderGeometry(OtPass& pass, OtScene* scene, OtEntity enti
 	auto& material = scene->getComponent<OtMaterialComponent>(entity).material;
 
 	if (material.isKindOf<OtPbrMaterialClass>()) {
-		program = &geometryProgram;
+		program = &geometryPbrProgram;
 
 	} else if (material.isKindOf<OtTerrainMaterialClass>()) {
-		program = &terrainProgram;
+		program = &geometryTerrainProgram;
 	}
 
 	// submit the material information
@@ -131,10 +131,10 @@ void OtSceneRenderer::renderModel(OtPass& pass, OtScene* scene, OtEntity entity)
 				mesh.submitTriangles();
 
 				// set the transform
-				geometryProgram.setTransform(scene->getGlobalTransform(entity));
+				geometryPbrProgram.setTransform(scene->getGlobalTransform(entity));
 
 				// set the program state
-				geometryProgram.setState(
+				geometryPbrProgram.setState(
 					OtStateWriteRgb |
 					OtStateWriteA |
 					OtStateWriteZ |
@@ -142,7 +142,7 @@ void OtSceneRenderer::renderModel(OtPass& pass, OtScene* scene, OtEntity entity)
 					OtStateCullCw);
 
 				// run the program
-				pass.runShaderProgram(geometryProgram);
+				pass.runShaderProgram(geometryPbrProgram);
 			}
 		}
 	}

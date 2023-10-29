@@ -175,9 +175,9 @@ private:
 	OtSampler bloomSampler{"s_bloomTexture"};
 
 	// shaders
-	OtShaderProgram geometryProgram{"OtGeometryVS", "OtGeometryFS"};
+	OtShaderProgram geometryPbrProgram{"OtGeometryVS", "OtGeometryFS"};
+	OtShaderProgram geometryTerrainProgram{"OtTerrainVS", "OtTerrainFS"};
 	OtShaderProgram geometryInstancingProgram{"OtGeometryVSI", "OtGeometryFS"};
-	OtShaderProgram terrainProgram{"OtTerrainVS", "OtTerrainFS"};
 	OtShaderProgram lightingProgram{"OtLightingVS", "OtLightingFS"};
 	OtShaderProgram transparentProgram{"OtTransparentVS", "OtTransparentFS"};
 	OtShaderProgram transparentInstancingProgram{"OtTransparentVSI", "OtTransparentFS"};

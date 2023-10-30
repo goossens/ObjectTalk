@@ -37,12 +37,17 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Debug\shader.fs -o generated\Debug\fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtDebugFS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Debug\shader.fs -o generated\Debug\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtDebugFS_dx11
 
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Geometry\shader.vs -o generated\Geometry\vs_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtGeometryVS_dx9
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Geometry\shader.vs -o generated\Geometry\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtGeometryVS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Geometry\shader.fs -o generated\Geometry\fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtGeometryFS_dx9
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Geometry\shader.fs -o generated\Geometry\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtGeometryFS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Geometry\instancing.vs -o generated\Geometry\vsi_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtGeometryVSI_dx9
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Geometry\instancing.vs -o generated\Geometry\vsi_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtGeometryVSI_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f GeometryPbr\shader.vs -o generated\GeometryPbr\vs_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtGeometryPbrVS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f GeometryPbr\shader.vs -o generated\GeometryPbr\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtGeometryPbrVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f GeometryPbr\shader.fs -o generated\GeometryPbr\fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtGeometryPbrFS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f GeometryPbr\shader.fs -o generated\GeometryPbr\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtGeometryPbrFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f GeometryPbr\instancing.vs -o generated\GeometryPbr\vsi_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtGeometryPbrVSI_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f GeometryPbr\instancing.vs -o generated\GeometryPbr\vsi_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtGeometryPbrVSI_dx11
+
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f GeometryTerrain\shader.vs -o generated\GeometryTerrain\vs_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtGeometryTerrainVS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f GeometryTerrain\shader.vs -o generated\GeometryTerrain\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtGeometryTerrainVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f GeometryTerrain\shader.fs -o generated\GeometryTerrain\fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtGeometryTerrainFS_dx9
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f GeometryTerrain\shader.fs -o generated\GeometryTerrain\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtGeometryTerrainFS_dx11
 
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Grid\shader.vs -o generated\Grid\vs_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtGridVS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Grid\shader.vs -o generated\Grid\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtGridVS_dx11
@@ -88,11 +93,6 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Skybox\shader.vs -o generated\Skybox\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtSkyboxVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Skybox\shader.fs -o generated\Skybox\fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtSkyboxFS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Skybox\shader.fs -o generated\Skybox\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtSkyboxFS_dx11
-
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Terrain\shader.vs -o generated\Terrain\vs_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtTerrainVS_dx9
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Terrain\shader.vs -o generated\Terrain\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtTerrainVS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Terrain\shader.fs -o generated\Terrain\fs_dx9.h -i include --type fragment --platform windows -p s_3_0 -O 3 --bin2c OtTerrainFS_dx9
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Terrain\shader.fs -o generated\Terrain\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtTerrainFS_dx11
 
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Transparent\shader.vs -o generated\Transparent\vs_dx9.h -i include --type vertex --platform windows -p s_3_0 -O 3 --bin2c OtTransparentVS_dx9
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Transparent\shader.vs -o generated\Transparent\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtTransparentVS_dx11

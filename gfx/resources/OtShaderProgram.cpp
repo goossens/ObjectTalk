@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include "OtFormat.h"
 #include "OtLog.h"
 
 #include "OtShaderProgram.h"
@@ -43,10 +44,21 @@ void OtShaderProgram::submit(bgfx::ViewId view) {
 		if (vertexShaderName.size() && fragmentShaderName.size()) {
 			bgfx::RendererType::Enum type = bgfx::getRendererType();
 
-			program = bgfx::createProgram(
-				bgfx::createEmbeddedShader(embeddedShaders, type, vertexShaderName.c_str()),
-				bgfx::createEmbeddedShader(embeddedShaders, type, fragmentShaderName.c_str()),
-				true);
+			auto vertexShader = bgfx::createEmbeddedShader(embeddedShaders, type, vertexShaderName.c_str());
+			auto fragmentShader = bgfx::createEmbeddedShader(embeddedShaders, type, fragmentShaderName.c_str());
+			program = bgfx::createProgram(vertexShader, fragmentShader, true);
+
+			if (!bgfx::isValid(vertexShader)) {
+				OtLogFatal(OtFormat("Internal error: Unknown vertex shader [%s]", vertexShaderName.c_str()));
+			}
+
+			if (!bgfx::isValid(fragmentShader)) {
+				OtLogFatal(OtFormat("Internal error: Unknown vertex shader [%s]", fragmentShaderName.c_str()));
+			}
+
+			if (!isValid()) {
+				OtLogFatal("Internal error: Can't create shader program");
+			}
 
 		} else {
 			OtLogFatal("Internal error: Shader program not initialized before submission");

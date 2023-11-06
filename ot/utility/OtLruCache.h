@@ -19,11 +19,11 @@
 
 
 //
-//	OtCache class (using Least Recently Used (LRU) algorithm)
+//	OtLruCache class
 //
 
 template<typename K, typename V, size_t S = 1024>
-class OtCache {
+class OtLruCache {
 public:
 	// change the cache size
 	void setSize(size_t s) {

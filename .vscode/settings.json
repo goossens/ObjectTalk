@@ -108,7 +108,8 @@
 		"numbers": "cpp",
 		"source_location": "cpp",
 		"shared_mutex": "cpp",
-		"typeindex": "cpp"
+		"typeindex": "cpp",
+		"strstream": "cpp"
 	},
 	"files.exclude": {
 		"debug/**": true,

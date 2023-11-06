@@ -9,19 +9,19 @@ $input v_position, v_normal
 #include <bgfx_shader.glsl>
 
 // uniforms
-uniform vec4 u_terrain[6];
+uniform vec4 u_terrainMaterial[6];
 
-#define u_regionTransition1 u_terrain[0].x
-#define u_regionTransition2 u_terrain[0].y
-#define u_regionTransition3 u_terrain[0].z
-#define u_scale u_terrain[0].w
+#define u_regionTransition1 u_terrainMaterial[0].x
+#define u_regionTransition2 u_terrainMaterial[0].y
+#define u_regionTransition3 u_terrainMaterial[0].z
+#define u_scale u_terrainMaterial[0].w
 
-#define u_regionOverlap1 u_terrain[1].x
-#define u_regionOverlap2 u_terrain[1].y
-#define u_regionOverlap3 u_terrain[1].z
+#define u_regionOverlap1 u_terrainMaterial[1].x
+#define u_regionOverlap2 u_terrainMaterial[1].y
+#define u_regionOverlap3 u_terrainMaterial[1].z
 
-#define u_regionColor(i) u_terrain[i + 1].rgb
-#define u_regionTextured(i) bool(u_terrain[i + 1].a)
+#define u_regionColor(i) u_terrainMaterial[i + 1].rgb
+#define u_regionTextured(i) bool(u_terrainMaterial[i + 1].a)
 
 // texture samplers
 SAMPLER2D(s_textureSampler0, 0);

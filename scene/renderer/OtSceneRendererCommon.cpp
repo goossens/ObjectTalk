@@ -22,10 +22,7 @@
 //	OtSceneRenderer::submitMaterialUniforms
 //
 
-void OtSceneRenderer::submitMaterialUniforms(OtScene* scene, OtEntity entity) {
-	// get the material component
-	auto& material = scene->getComponent<OtMaterialComponent>(entity).material;
-
+void OtSceneRenderer::submitMaterialUniforms(OtMaterial material) {
 	// submit based on type
 	if (material.isKindOf<OtPbrMaterialClass>()) {
 		submitPbrUniforms(OtPbrMaterial(material));
@@ -59,7 +56,7 @@ static void submitSampler(OtSampler& sampler, int unit, OtAsset<OtTextureAsset>&
 
 void OtSceneRenderer::submitPbrUniforms(OtPbrMaterial material) {
 	// set the uniform values
-	glm::vec4* uniforms = materialUniforms.getValues();
+	glm::vec4* uniforms = pbrMaterialUniforms.getValues();
 	uniforms[0] = material->albedo;
 
 	uniforms[1] = glm::vec4(
@@ -85,7 +82,7 @@ void OtSceneRenderer::submitPbrUniforms(OtPbrMaterial material) {
 		0.0);
 
 	// submit the uniforms
-	materialUniforms.submit();
+	pbrMaterialUniforms.submit();
 
 	// submit all material textures (or dummies if they are not set)
 	submitSampler(geometryAlbedoSampler, 0, material->albedoTexture);
@@ -102,7 +99,7 @@ void OtSceneRenderer::submitPbrUniforms(OtPbrMaterial material) {
 
 void OtSceneRenderer::submitTerrainUniforms(OtTerrainMaterial material) {
 	// set the uniform values
-	glm::vec4* uniforms = terrainUniforms.getValues();
+	glm::vec4* uniforms = terrainMaterialUniforms.getValues();
 
 	uniforms[0] = glm::vec4(
 		material->region1Transition,
@@ -122,7 +119,7 @@ void OtSceneRenderer::submitTerrainUniforms(OtTerrainMaterial material) {
 	uniforms[5] = glm::vec4(material->region4Color, material->region4Texture.isReady());
 
 	// submit the uniforms
-	terrainUniforms.submit();
+	terrainMaterialUniforms.submit();
 
 	// submit all material textures (or dummies if they are not set)
 	submitSampler(textureSampler0, 0, material->region1Texture);

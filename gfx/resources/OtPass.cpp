@@ -60,10 +60,6 @@ OtPass::OtPass() {
 //
 
 void OtPass::setClear(bool color, bool depth, const glm::vec4& rgba, float depthValue) {
-	if (!view) {
-		OtLogFatal("Internal error: rendering slot for pass not reserved");
-	}
-
 	glm::u8vec4 result = glm::u8vec4(glm::round(rgba * 255.0f));
 	uint32_t clearColor = (result[0] << 24) | (result[1] << 16) | (result[2] << 8) | result[3];
 
@@ -80,22 +76,15 @@ void OtPass::setClear(bool color, bool depth, const glm::vec4& rgba, float depth
 //
 
 void OtPass::setRectangle(int x, int y, int w, int h) {
-	if (!view) {
-		OtLogFatal("Internal error: rendering slot for pass not reserved");
-	}
-
 	bgfx::setViewRect(view, (uint16_t) x, (uint16_t) y, (uint16_t) w, (uint16_t) h);
 }
+
 
 //
 //	OtPass::setFrameBuffer
 //
 
 void OtPass::setFrameBuffer(OtFrameBuffer& framebuffer) {
-	if (!view) {
-		OtLogFatal("Internal error: rendering slot for pass not reserved");
-	}
-
 	framebuffer.submit(view);
 }
 
@@ -105,10 +94,6 @@ void OtPass::setFrameBuffer(OtFrameBuffer& framebuffer) {
 //
 
 void OtPass::setFrameBuffer(OtGbuffer &gbuffer) {
-	if (!view) {
-		OtLogFatal("Internal error: rendering slot for pass not reserved");
-	}
-
 	gbuffer.submit(view);
 }
 
@@ -118,10 +103,6 @@ void OtPass::setFrameBuffer(OtGbuffer &gbuffer) {
 //
 
 void OtPass::setTransform(const glm::mat4 &viewTransform, const glm::mat4 &projection) {
-	if (!view) {
-		OtLogFatal("Internal error: rendering slot for pass not reserved");
-	}
-
 	bgfx::setViewTransform(view, glm::value_ptr(viewTransform), glm::value_ptr(projection));
 }
 
@@ -131,10 +112,6 @@ void OtPass::setTransform(const glm::mat4 &viewTransform, const glm::mat4 &proje
 //
 
 void OtPass::submitQuad(int w, int h) {
-	if (!view) {
-		OtLogFatal("Internal error: rendering slot for pass not reserved");
-	}
-
 	// submit a "single triangle" covering the rectangular quad
 	if (bgfx::getAvailTransientVertexBuffer(3, OtVertexPosUv::getLayout()) == 3) {
 		bool originBottomLeft = OtGpuHasOriginBottomLeft();
@@ -170,10 +147,6 @@ void OtPass::submitQuad(int w, int h) {
 //
 
 void OtPass::runShaderProgram(OtShaderProgram& program) {
-	if (!view) {
-		OtLogFatal("Internal error: rendering slot for pass not reserved");
-	}
-
 	program.submit(view);
 }
 
@@ -183,9 +156,5 @@ void OtPass::runShaderProgram(OtShaderProgram& program) {
 //
 
 void OtPass::blit(bgfx::TextureHandle dest, uint16_t dx, uint16_t dy, bgfx::TextureHandle src, uint16_t sx, uint16_t sy, uint16_t sw, uint16_t sh) {
-	if (!view) {
-		OtLogFatal("Internal error: rendering slot for pass not reserved");
-	}
-
 	bgfx::blit(view, dest, dx, dy, src, sx, sy, sw, sh);
 }

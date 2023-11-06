@@ -20,12 +20,9 @@
 //
 
 void OtSceneRenderer::renderGeometryPass(OtScene* scene) {
-	// update gbuffer
-	gbuffer.update(width, height);
-
 	// setup pass
 	OtPass pass;
-	pass.setClear(true, true, glm::vec4(0.0f));
+	pass.setClear(false, false);
 	pass.setRectangle(0, 0, width, height);
 	pass.setFrameBuffer(gbuffer);
 	pass.setTransform(viewMatrix, projectionMatrix);
@@ -61,7 +58,7 @@ void OtSceneRenderer::renderGeometry(OtPass& pass, OtScene* scene, OtEntity enti
 	}
 
 	// submit the material information
-	submitMaterialUniforms(scene, entity);
+	submitMaterialUniforms(material);
 
 	// submit the geometry
 	auto& geometry = scene->getComponent<OtGeometryComponent>(entity);

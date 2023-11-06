@@ -47,7 +47,7 @@ void OtSceneRenderer::renderTransparentPass(OtScene* scene) {
 
 void OtSceneRenderer::renderTransparentGeometry(OtPass& pass, OtScene* scene, OtEntity entity) {
 	// submit the material and light uniforms
-	submitMaterialUniforms(scene, entity);
+	submitMaterialUniforms(scene->getComponent<OtMaterialComponent>(entity).material);
 	submitLightUniforms(scene);
 
 	// submit the geometry

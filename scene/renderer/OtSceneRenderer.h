@@ -12,20 +12,25 @@
 //	Include files
 //
 
+#include <unordered_map>
 #include <vector>
 
 #include "glm/glm.hpp"
+
+#include "OtTtlCache.h"
 
 #include "OtBoxGeometry.h"
 #include "OtFrameBuffer.h"
 #include "OtFrustum.h"
 #include "OtGbuffer.h"
+#include "OtIndexBuffer.h"
 #include "OtPass.h"
 #include "OtSampler.h"
 #include "OtShaderProgram.h"
 #include "OtSphereGeometry.h"
 #include "OtUniformMat4.h"
 #include "OtUniformVec4.h"
+#include "OtVertexBuffer.h"
 
 #include "OtEntity.h"
 #include "OtMaterials.h"
@@ -49,10 +54,29 @@ public:
 	int render(OtScene* scene, OtEntity selected=OtEntityNull);
 
 private:
+	// private data types
+	struct VisibleEntity {
+		VisibleEntity(OtEntity e) : entity(e) {}
+		OtEntity entity;
+		bool model = false;
+		bool transparent = false;
+		bool instanced = false;
+	};
+
+	struct TerrainTile {
+		TerrainTile(OtTerrainComponent* t, OtMaterial m, int _x, int _z, int l) : terrain(t), material(m), x(_x), z(_z), lod(l), northLod(1), eastLod(1), southLod(1), westLod(1) {}
+		OtTerrainComponent* terrain;
+		OtMaterial material;
+		int x, z;
+		int lod;
+		int northLod, eastLod, southLod, westLod;
+	};
+
 	// render passes
 	void renderPreProcessingPass(OtScene* scene, OtEntity selected);
 	// void renderShadowPass(OtScene* scene);
 	void renderGeometryPass(OtScene* scene);
+	void renderTerrainPass(OtScene* scene);
 	void renderBackgroundPass(OtScene* scene);
 	void renderSkyPass(OtScene* scene);
 	void renderLightingPass(OtScene* scene);
@@ -66,22 +90,25 @@ private:
 	void preprocessMultipleInstanceGeometry(OtScene* scene, OtEntity entity, bool selected);
 	void preprocessSingleInstanceModel(OtScene* scene, OtEntity entity, bool selected);
 	void preprocessMultipleInstanceModel(OtScene* scene, OtEntity entity, bool selected);
+	void preprocessTerrainTiles(OtScene* scene, OtEntity entity);
 
-	// render entitities
+	// render entities
 	void renderSky(OtPass& pass, OtSkyComponent& component);
 	void renderSkyBox(OtPass& pass, OtSkyBoxComponent& component);
 	void renderSkySphere(OtPass& pass, OtSkySphereComponent& component);
 	void renderGeometry(OtPass& pass, OtScene* scene, OtEntity entity);
 	void renderModel(OtPass& pass, OtScene* scene, OtEntity entity);
+	void renderTerrainTile(OtPass& pass, TerrainTile& tile);
 	void renderTransparentGeometry(OtPass& pass, OtScene* scene, OtEntity entity);
 	void renderHighlight(OtPass& pass, OtScene* scene, OtEntity entity);
 	void renderBloom(float bloomIntensity);
 
 	// rendering tools
-	void submitMaterialUniforms(OtScene* scene, OtEntity entity);
+	void submitMaterialUniforms(OtMaterial material);
 	void submitPbrUniforms(OtPbrMaterial material);
 	void submitTerrainUniforms(OtTerrainMaterial material);
 	void submitLightUniforms(OtScene* scene);
+	void submitTerrainGeometry(TerrainTile& tile);
 
 	// camera information
 	glm::vec3 cameraPosition;
@@ -111,23 +138,21 @@ private:
 	OtSphereGeometry unitySphereGeometry;
 
 	// visible entities
-	struct VisibleEntity {
-		VisibleEntity(OtEntity e) : entity(e) {}
-		OtEntity entity;
-		bool model = false;
-		bool transparent = false;
-		bool instanced = false;
-	};
-
 	std::vector<VisibleEntity> visibleEntities;
 	bool hasOpaqueEntities = false;
 	bool hasTransparentEntities = false;
 	bool hasSkyEntities = false;
+	bool hasTerrainEntities = false;
 	bool renderEntityHighlight = false;
 
+	// procedural terrain data
+	OtTtlCache<size_t, OtVertexBuffer> terrainVertices;
+	OtTtlCache<size_t, OtIndexBuffer> terrainIndices;
+	std::vector<TerrainTile> terrainTiles;
+
 	// uniforms
-	OtUniformVec4 materialUniforms{"u_material", 5};
-	OtUniformVec4 terrainUniforms{"u_terrain", 6};
+	OtUniformVec4 pbrMaterialUniforms{"u_pbrMaterial", 5};
+	OtUniformVec4 terrainMaterialUniforms{"u_terrainMaterial", 6};
 	OtUniformVec4 lightingUniforms{"u_lighting", 3};
 	OtUniformVec4 skyUniforms{"u_sky", 3};
 	OtUniformVec4 gridUniforms{"u_grid", 1};
@@ -141,26 +166,12 @@ private:
 	OtSampler textureSampler1{"s_textureSampler1"};
 	OtSampler textureSampler2{"s_textureSampler2"};
 	OtSampler textureSampler3{"s_textureSampler3"};
-	OtSampler textureSampler4{"s_textureSampler4"};
-	OtSampler textureSampler5{"s_textureSampler5"};
-	OtSampler textureSampler6{"s_textureSampler6"};
-	OtSampler textureSampler7{"s_textureSampler7"};
-	OtSampler textureSampler8{"s_textureSampler8"};
 
 	OtSampler geometryAlbedoSampler{"s_geometryAlbedoTexture"};
 	OtSampler geometryNormalSampler{"s_geometryNormalTexture"};
 	OtSampler geometryMetallicRoughnessSampler{"s_geometryMetallicRoughnessTexture"};
 	OtSampler geometryEmissiveSampler{"s_geometryEmissiveSampler"};
 	OtSampler geometryAoSampler{"s_geometryAoTexture"};
-
-	OtSampler albedoNoneSampler{"s_colorNone"};
-	OtSampler albedoRedSampler{"s_colorRed"};
-	OtSampler albedoGreenSampler{"s_colorGreen"};
-	OtSampler albedoBlueSampler{"s_colorBlue"};
-	OtSampler normalsNoneSampler{"s_normalNone"};
-	OtSampler normalsRedSampler{"s_normalRed"};
-	OtSampler normalsGreenSampler{"s_normalGreen"};
-	OtSampler normalsBlueSampler{"s_normalBlue"};
 
 	OtSampler lightingAlbedoSampler{"s_lightingAlbedoTexture"};
 	OtSampler lightingPositionSampler{"s_lightingPositionTexture"};
@@ -174,7 +185,7 @@ private:
 	OtSampler postProcessSampler{"s_postProcessTexture"};
 	OtSampler bloomSampler{"s_bloomTexture"};
 
-	// shaders
+	// shader programs
 	OtShaderProgram geometryPbrProgram{"OtGeometryPbrVS", "OtGeometryPbrFS"};
 	OtShaderProgram geometryTerrainProgram{"OtGeometryTerrainVS", "OtGeometryTerrainFS"};
 	OtShaderProgram geometryInstancingProgram{"OtGeometryVSI", "OtGeometryFS"};

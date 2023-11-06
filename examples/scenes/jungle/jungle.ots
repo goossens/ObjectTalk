@@ -235,8 +235,9 @@
 			{
 				"component": "Terrain",
 				"hScale": 1.0,
+				"vOffset": 0.5,
 				"vScale": 1.0,
-				"wireframe": false
+				"wireframe": true
 			}
 		]
 	}

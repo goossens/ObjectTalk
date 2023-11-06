@@ -17,13 +17,30 @@
 //
 
 int OtSceneRenderer::render(OtScene* scene, OtEntity selected) {
-	// render all passes
+	// prepare all render passes
 	renderPreProcessingPass(scene, selected);
 
-	if (hasOpaqueEntities) {
-		renderGeometryPass(scene);
+	// see if we are doing some deferred rendering into a gbuffer?
+	if (hasOpaqueEntities || hasTerrainEntities) {
+		// update and clear gbuffer
+		gbuffer.update(width, height);
+
+		OtPass pass;
+		pass.setClear(true, true, glm::vec4(0.0f));
+		pass.setRectangle(0, 0, width, height);
+		pass.setFrameBuffer(gbuffer);
+
+		// render deferred entities
+		if (hasOpaqueEntities) {
+			renderGeometryPass(scene);
+		}
+
+		if (hasTerrainEntities) {
+			renderTerrainPass(scene);
+		}
 	}
 
+	// start rendering to composite buffer
 	renderBackgroundPass(scene);
 
 	if (hasSkyEntities) {
@@ -38,6 +55,7 @@ int OtSceneRenderer::render(OtScene* scene, OtEntity selected) {
 		renderTransparentPass(scene);
 	}
 
+	// handle editor passes
 	if (gridScale > 0.0) {
 		renderGridPass();
 	}
@@ -46,6 +64,7 @@ int OtSceneRenderer::render(OtScene* scene, OtEntity selected) {
 		renderHighlightPass(scene, selected);
 	}
 
+	// post process buffer
 	renderPostProcessingPass(scene);
 	return postProcessBuffer.getColorTextureIndex();
 }

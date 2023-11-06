@@ -13,12 +13,10 @@
 #include "Lighting/vs_glsl.h"
 #include "Lighting/vs_essl.h"
 #include "Lighting/vs_spv.h"
-#include "Lighting/vs_dx9.h"
 #include "Lighting/vs_dx11.h"
 
 #include "Lighting/fs_mtl.h"
 #include "Lighting/fs_glsl.h"
 #include "Lighting/fs_essl.h"
 #include "Lighting/fs_spv.h"
-#include "Lighting/fs_dx9.h"
 #include "Lighting/fs_dx11.h"

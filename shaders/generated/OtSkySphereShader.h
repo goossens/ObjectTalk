@@ -13,12 +13,10 @@
 #include "SkySphere/vs_glsl.h"
 #include "SkySphere/vs_essl.h"
 #include "SkySphere/vs_spv.h"
-#include "SkySphere/vs_dx9.h"
 #include "SkySphere/vs_dx11.h"
 
 #include "SkySphere/fs_mtl.h"
 #include "SkySphere/fs_glsl.h"
 #include "SkySphere/fs_essl.h"
 #include "SkySphere/fs_spv.h"
-#include "SkySphere/fs_dx9.h"
 #include "SkySphere/fs_dx11.h"

@@ -13,12 +13,10 @@
 #include "Blur/vs_glsl.h"
 #include "Blur/vs_essl.h"
 #include "Blur/vs_spv.h"
-#include "Blur/vs_dx9.h"
 #include "Blur/vs_dx11.h"
 
 #include "Blur/fs_mtl.h"
 #include "Blur/fs_glsl.h"
 #include "Blur/fs_essl.h"
 #include "Blur/fs_spv.h"
-#include "Blur/fs_dx9.h"
 #include "Blur/fs_dx11.h"

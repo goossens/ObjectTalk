@@ -13,12 +13,10 @@
 #include "BloomDownSample/vs_glsl.h"
 #include "BloomDownSample/vs_essl.h"
 #include "BloomDownSample/vs_spv.h"
-#include "BloomDownSample/vs_dx9.h"
 #include "BloomDownSample/vs_dx11.h"
 
 #include "BloomDownSample/fs_mtl.h"
 #include "BloomDownSample/fs_glsl.h"
 #include "BloomDownSample/fs_essl.h"
 #include "BloomDownSample/fs_spv.h"
-#include "BloomDownSample/fs_dx9.h"
 #include "BloomDownSample/fs_dx11.h"

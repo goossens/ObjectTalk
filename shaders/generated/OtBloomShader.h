@@ -13,12 +13,10 @@
 #include "Bloom/vs_glsl.h"
 #include "Bloom/vs_essl.h"
 #include "Bloom/vs_spv.h"
-#include "Bloom/vs_dx9.h"
 #include "Bloom/vs_dx11.h"
 
 #include "Bloom/fs_mtl.h"
 #include "Bloom/fs_glsl.h"
 #include "Bloom/fs_essl.h"
 #include "Bloom/fs_spv.h"
-#include "Bloom/fs_dx9.h"
 #include "Bloom/fs_dx11.h"

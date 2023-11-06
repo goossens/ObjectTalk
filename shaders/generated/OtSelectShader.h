@@ -13,12 +13,10 @@
 #include "Select/vs_glsl.h"
 #include "Select/vs_essl.h"
 #include "Select/vs_spv.h"
-#include "Select/vs_dx9.h"
 #include "Select/vs_dx11.h"
 
 #include "Select/fs_mtl.h"
 #include "Select/fs_glsl.h"
 #include "Select/fs_essl.h"
 #include "Select/fs_spv.h"
-#include "Select/fs_dx9.h"
 #include "Select/fs_dx11.h"

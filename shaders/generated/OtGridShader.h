@@ -13,12 +13,10 @@
 #include "Grid/vs_glsl.h"
 #include "Grid/vs_essl.h"
 #include "Grid/vs_spv.h"
-#include "Grid/vs_dx9.h"
 #include "Grid/vs_dx11.h"
 
 #include "Grid/fs_mtl.h"
 #include "Grid/fs_glsl.h"
 #include "Grid/fs_essl.h"
 #include "Grid/fs_spv.h"
-#include "Grid/fs_dx9.h"
 #include "Grid/fs_dx11.h"

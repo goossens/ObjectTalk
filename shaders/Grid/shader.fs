@@ -43,15 +43,6 @@ void main() {
 	float minimumZ = min(derivative.y, 1.0);
 	float minimumX = min(derivative.x, 1.0);
 	vec4 color = vec4(0.6, 0.6, 0.6, 1.0 - min(lineW, 1.0));
-
-	if (worldSpacePos.x > -0.1 * minimumX && worldSpacePos.x < 0.1 * minimumZ) {
-		color.z = 1.0;
-	}
-
-	if (worldSpacePos.z > -0.1 * minimumX && worldSpacePos.z < 0.1 * minimumZ) {
-		color.x = 1.0;
-	}
-
 	color.a *= min((1.0 - fading) * 1.2, 1.0);
 
 	gl_FragColor = color;

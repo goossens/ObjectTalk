@@ -187,28 +187,3 @@ struct OtVertexPos {
 		return layout;
 	}
 };
-
-
-//
-//	OtVertexUv
-//
-
-struct OtVertexUv {
-	// vertex elements
-	glm::vec2 uv;
-
-	// constructors
-	OtVertexUv() = default;
-	OtVertexUv(const glm::vec2& u) : uv(u) {}
-
-	// get vertex description
-	static bgfx::VertexLayout getLayout() {
-		bgfx::VertexLayout layout;
-
-		layout.begin()
-			.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
-			.end();
-
-		return layout;
-	}
-};

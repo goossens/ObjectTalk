@@ -82,7 +82,7 @@ OtAABB OtAABB::transform(const glm::mat4& matrix) {
 	OtAABB aabb;
 
 	for (auto i = 0; i < 8; i++) {
-		aabb.addPoint(matrix * glm::vec4(points[i], 1.0));
+		aabb.addPoint(OtGlmMul(matrix, points[i]));
 	}
 
 	return aabb;

@@ -32,95 +32,65 @@ void OtSceneRenderer::renderTerrainPass(OtScene* scene) {
 	pass.setFrameBuffer(gbuffer);
 	pass.setTransform(viewMatrix, projectionMatrix);
 
-	// render each terrain tile
-	for (auto& tile : terrainTiles) {
-		renderTerrainTile(pass, tile);
+	// render each terrain mesh
+	for (auto&& [entity, terrain, material] : scene->view<OtTerrainComponent, OtMaterialComponent>().each()) {
+		renderTerrain(pass, terrain, material);
 	}
 }
 
 
 //
-//	OtSceneRenderer::renderTerrainTile
+//	OtSceneRenderer::renderTerrain
 //
 
-void OtSceneRenderer::renderTerrainTile(OtPass& pass, TerrainTile& tile) {
+void OtSceneRenderer::renderTerrain(OtPass& pass, OtTerrainComponent& terrain, OtMaterialComponent& material) {
 	// determine the program
 	OtShaderProgram* program;
 
-	if (tile.material.isKindOf<OtPbrMaterialClass>()) {
-		program = &geometryPbrProgram;
+	if (material.material.isKindOf<OtPbrMaterialClass>()) {
+		program = &terrainPbrProgram;
 
-	} else if (tile.material.isKindOf<OtTerrainMaterialClass>()) {
-		program = &geometryTerrainProgram;
+	} else if (material.material.isKindOf<OtTerrainMaterialClass>()) {
+		program = &terrainTerrainProgram;
 	}
 
 	// submit the material information
-	submitMaterialUniforms(tile.material);
+	submitMaterialUniforms(material.material);
 
-}
+	// process all the terrain meshes
+	for (auto& mesh : terrain.terrain.getMeshes(frustum, cameraPosition)) {
+		// submit the geometry
+		mesh.tile.vertices.submit();
 
+		if (terrain.terrain.isWireframe()) {
+			mesh.tile.lines.submit();
 
-//
-//	OtSceneRenderer::submitTerrainGeometry
-//
-
-void OtSceneRenderer::submitTerrainGeometry(TerrainTile& tile) {
-	// vertext and index buffers
-	OtVertexBuffer* vertices;
-	OtIndexBuffer* indices;
-	auto size = (tile.terrain->tileSize / (1 << (tile.lod - 1))) + 1;
-
-	// see if these vertices already exist
-	auto hash = OtHash(tile.terrain->tileSize, tile.lod);
-
-	if (terrainVertices.has(hash)) {
-		vertices = &terrainVertices.get(hash);
-
-	} else {
-		// we have to create new vertices
-		vertices = &terrainVertices.emplace(hash);
-		glm::vec2* points = new glm::vec2[size * size];
-		glm::vec2* p = points;
-		float step = 1.0f / size;
-
-		for (auto z = 0; z < size; z++) {
-			for (auto x = 0; x < size; x++) {
-				*p++ = glm::vec2(x * step, z * step);
-			}
+		} else {
+			mesh.tile.triangles.submit();
 		}
 
-		vertices->set(points, size * size, OtVertexUv::getLayout());
+		// set the program state
+		if (terrain.terrain.isWireframe()) {
+			program->setState(
+				OtStateWriteRgb |
+				OtStateWriteA |
+				OtStateWriteZ |
+				OtStateDepthTestLess |
+				OtStateLines);
 
-		// cleanup
-		delete [] points;
-	}
+		} else {
+			program->setState(
+				OtStateWriteRgb |
+				OtStateWriteA |
+				OtStateWriteZ |
+				OtStateDepthTestLess |
+				OtStateCullCw);
+		}
 
-	// see if the indices already exist
-	hash = OtHash(tile.terrain->tileSize, tile.lod, tile.northLod, tile.eastLod, tile.southLod, tile.westLod);
+		// set the transform
+		program->setTransform(mesh.transform);
 
-	if (terrainIndices.has(hash)) {
-		indices = &terrainIndices.get(hash);
-
-	} else {
-		// we have to create new indices
-		indices = &terrainIndices.emplace(hash);
-
-		// determine spacing
-		int maxSpacing = tile.terrain->tileSize >> 1;
-		int northSpacing = std::clamp(1 << (tile.northLod - tile.lod), 1, maxSpacing);
-		int eastSpacing = std::clamp(1 << (tile.eastLod - tile.lod), 1, maxSpacing);
-		int southSpacing = std::clamp(1 << (tile.southLod - tile.lod), 1, maxSpacing);
-		int westSpacing = std::clamp(1 << (tile.westLod - tile.lod), 1, maxSpacing);
-
-		// limits
-		int top = 0;
-		int right = size + 1;
-		int bottom = size + 1;
-		int left = 0;
-
-		// triangle indices
-		std::vector<uint32_t> triangles;
-
-
+		// run the program
+		pass.runShaderProgram(*program);
 	}
 }

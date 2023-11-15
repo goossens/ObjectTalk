@@ -1,0 +1,200 @@
+[
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Camera",
+				"uuid": 1057740688
+			},
+			{
+				"component": "Transform",
+				"rotation": [
+					0.0,
+					1.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				],
+				"translation": [
+					0.0,
+					3.0,
+					5.0
+				]
+			},
+			{
+				"component": "Camera",
+				"far": 1000.0,
+				"fov": 71.0,
+				"mainCamera": false,
+				"near": 0.10000000149011612
+			},
+			{
+				"Exposure": 0.8299999833106995,
+				"bloomIntensity": 0.6100000143051147,
+				"component": "Post Processing"
+			}
+		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Light",
+				"uuid": 4262780315
+			},
+			{
+				"component": "Transform",
+				"rotation": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				],
+				"translation": [
+					0.0,
+					5.0,
+					10.0
+				]
+			},
+			{
+				"ambient": 0.05000000074505806,
+				"color": [
+					1.0,
+					1.0,
+					1.0
+				],
+				"component": "Directional Light"
+			}
+		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Terrain",
+				"uuid": 1003125373
+			},
+			{
+				"component": "Material",
+				"material": {
+					"albedo": [
+						1.0,
+						1.0,
+						1.0,
+						1.0
+					],
+					"albedoTexture": "",
+					"ao": 1.0,
+					"aoTexture": "",
+					"emissive": [
+						0.0,
+						0.0,
+						0.0
+					],
+					"emissiveTexture": "",
+					"metallic": 0.5,
+					"metallicRoughnessTexture": "",
+					"normalTexture": "",
+					"roughness": 0.5,
+					"scale": 1.0,
+					"type": "PBR"
+				}
+			},
+			{
+				"component": "Terrain",
+				"hScale": 0.029999999329447746,
+				"lods": 7,
+				"tileSize": 32,
+				"vOffset": 0.5,
+				"vScale": 1.0,
+				"wireframe": true
+			}
+		]
+	},
+	{
+		"children": [],
+		"components": [
+			{
+				"component": "Core",
+				"tag": "Box",
+				"uuid": 2866526924
+			},
+			{
+				"component": "Geometry",
+				"cullback": false,
+				"geometry": {
+					"displacement": {
+						"frequency": 0.009999999776482582,
+						"lacunarity": 1.0,
+						"map": "",
+						"octaves": 3,
+						"persistance": 0.5,
+						"scale": 0.5,
+						"seed": 1337,
+						"state": 0
+					},
+					"type": "Box",
+					"xsegments": 1,
+					"ysegments": 1,
+					"zsegments": 1
+				},
+				"transparent": false,
+				"wireframe": true
+			},
+			{
+				"component": "Transform",
+				"rotation": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"scale": [
+					1.0,
+					1.0,
+					1.0
+				],
+				"translation": [
+					0.0,
+					0.0,
+					0.0
+				]
+			},
+			{
+				"component": "Material",
+				"material": {
+					"albedo": [
+						1.0,
+						1.0,
+						1.0,
+						1.0
+					],
+					"albedoTexture": "",
+					"ao": 1.0,
+					"aoTexture": "",
+					"emissive": [
+						0.0,
+						0.0,
+						0.0
+					],
+					"emissiveTexture": "",
+					"metallic": 0.5,
+					"metallicRoughnessTexture": "",
+					"normalTexture": "",
+					"roughness": 0.5,
+					"scale": 1.0,
+					"type": "PBR"
+				}
+			}
+		]
+	}
+]

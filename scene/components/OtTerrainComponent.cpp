@@ -31,15 +31,7 @@ OtTerrainComponent::OtTerrainComponent() {
 //
 
 bool OtTerrainComponent::renderGUI() {
-	bool changed = false;
-	changed |= ImGui::DragFloat("Horizontal Scale", &hScale, 0.5f, 5.0f);
-	changed |= ImGui::DragFloat("Vertical Scale", &vScale, 1.0f, 100.0f);
-
-#if OT_DEBUG
-	changed |= ImGui::Checkbox("Wireframe", &wireframe);
-#endif
-
-	return changed;
+	return terrain.renderGUI();
 }
 
 
@@ -50,10 +42,7 @@ bool OtTerrainComponent::renderGUI() {
 nlohmann::json OtTerrainComponent::serialize(std::filesystem::path* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
-	data["hScale"] = hScale;
-	data["vScale"] = vScale;
-	data["vOffset"] = vOffset;
-	data["wireframe"] = wireframe;
+	data.update(terrain.serialize(basedir));
 	return data;
 }
 
@@ -63,8 +52,5 @@ nlohmann::json OtTerrainComponent::serialize(std::filesystem::path* basedir) {
 //
 
 void OtTerrainComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
-	hScale = data.value("hScale", 1.0f);
-	vScale = data.value("vScale", 1.0f);
-	vOffset = data.value("vOffset", 0.5f);
-	wireframe = data.value("wireframe", false);
+	terrain.deserialize(data, basedir);
 }

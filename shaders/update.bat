@@ -35,6 +35,9 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Grid\shader.vs -o generated\Grid\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtGridVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Grid\shader.fs -o generated\Grid\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtGridFS_dx11
 
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Heightmap\shader.vs -o generated\Heightmap\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtHeightmapVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Heightmap\shader.fs -o generated\Heightmap\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtHeightmapFS_dx11
+
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f ImGui\shader.vs -o generated\ImGui\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtImGuiVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f ImGui\shader.fs -o generated\ImGui\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtImGuiFS_dx11
 
@@ -58,6 +61,9 @@ pushd "%~dp0"
 
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Skybox\shader.vs -o generated\Skybox\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtSkyboxVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Skybox\shader.fs -o generated\Skybox\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtSkyboxFS_dx11
+
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Terrain\shader.vs -o generated\Terrain\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtTerrainVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Terrain\shader.fs -o generated\Terrain\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtTerrainFS_dx11
 
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Transparent\shader.vs -o generated\Transparent\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtTransparentVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Transparent\shader.fs -o generated\Transparent\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtTransparentFS_dx11

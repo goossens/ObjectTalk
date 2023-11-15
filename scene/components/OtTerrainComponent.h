@@ -17,6 +17,8 @@
 
 #include "OtFrustum.h"
 
+#include "OtTerrain.h"
+
 
 //
 //	OtTerrainComponent
@@ -37,11 +39,6 @@ public:
 	// component name
 	static constexpr char const* name = "Terrain";
 
-	// stored properties
-	int tileSize = 256;
-	float maxViewingDist = 2000.0f;
-	float hScale = 1.0f;
-	float vScale = 1.0f;
-	float vOffset = 0.5f;
-	bool wireframe = false;
+	// the actual terrain
+	OtTerrain terrain;
 };

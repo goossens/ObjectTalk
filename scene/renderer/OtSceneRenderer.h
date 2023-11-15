@@ -17,8 +17,6 @@
 
 #include "glm/glm.hpp"
 
-#include "OtTtlCache.h"
-
 #include "OtBoxGeometry.h"
 #include "OtFrameBuffer.h"
 #include "OtFrustum.h"
@@ -30,7 +28,6 @@
 #include "OtSphereGeometry.h"
 #include "OtUniformMat4.h"
 #include "OtUniformVec4.h"
-#include "OtVertexBuffer.h"
 
 #include "OtEntity.h"
 #include "OtMaterials.h"
@@ -63,15 +60,6 @@ private:
 		bool instanced = false;
 	};
 
-	struct TerrainTile {
-		TerrainTile(OtTerrainComponent* t, OtMaterial m, int _x, int _z, int l) : terrain(t), material(m), x(_x), z(_z), lod(l), northLod(1), eastLod(1), southLod(1), westLod(1) {}
-		OtTerrainComponent* terrain;
-		OtMaterial material;
-		int x, z;
-		int lod;
-		int northLod, eastLod, southLod, westLod;
-	};
-
 	// render passes
 	void renderPreProcessingPass(OtScene* scene, OtEntity selected);
 	// void renderShadowPass(OtScene* scene);
@@ -90,7 +78,6 @@ private:
 	void preprocessMultipleInstanceGeometry(OtScene* scene, OtEntity entity, bool selected);
 	void preprocessSingleInstanceModel(OtScene* scene, OtEntity entity, bool selected);
 	void preprocessMultipleInstanceModel(OtScene* scene, OtEntity entity, bool selected);
-	void preprocessTerrainTiles(OtScene* scene, OtEntity entity);
 
 	// render entities
 	void renderSky(OtPass& pass, OtSkyComponent& component);
@@ -98,7 +85,7 @@ private:
 	void renderSkySphere(OtPass& pass, OtSkySphereComponent& component);
 	void renderGeometry(OtPass& pass, OtScene* scene, OtEntity entity);
 	void renderModel(OtPass& pass, OtScene* scene, OtEntity entity);
-	void renderTerrainTile(OtPass& pass, TerrainTile& tile);
+	void renderTerrain(OtPass& pass, OtTerrainComponent& component, OtMaterialComponent& material);
 	void renderTransparentGeometry(OtPass& pass, OtScene* scene, OtEntity entity);
 	void renderHighlight(OtPass& pass, OtScene* scene, OtEntity entity);
 	void renderBloom(float bloomIntensity);
@@ -108,7 +95,6 @@ private:
 	void submitPbrUniforms(OtPbrMaterial material);
 	void submitTerrainUniforms(OtTerrainMaterial material);
 	void submitLightUniforms(OtScene* scene);
-	void submitTerrainGeometry(TerrainTile& tile);
 
 	// camera information
 	glm::vec3 cameraPosition;
@@ -144,11 +130,6 @@ private:
 	bool hasSkyEntities = false;
 	bool hasTerrainEntities = false;
 	bool renderEntityHighlight = false;
-
-	// procedural terrain data
-	OtTtlCache<size_t, OtVertexBuffer> terrainVertices;
-	OtTtlCache<size_t, OtIndexBuffer> terrainIndices;
-	std::vector<TerrainTile> terrainTiles;
 
 	// uniforms
 	OtUniformVec4 pbrMaterialUniforms{"u_pbrMaterial", 5};
@@ -189,6 +170,8 @@ private:
 	OtShaderProgram geometryPbrProgram{"OtGeometryPbrVS", "OtGeometryPbrFS"};
 	OtShaderProgram geometryTerrainProgram{"OtGeometryTerrainVS", "OtGeometryTerrainFS"};
 	OtShaderProgram geometryInstancingProgram{"OtGeometryVSI", "OtGeometryFS"};
+	OtShaderProgram terrainPbrProgram{"OtTerrainVS", "OtTerrainFS"};
+	OtShaderProgram terrainTerrainProgram{"OtTerrainVS", "OtTerrainFS"};
 	OtShaderProgram lightingProgram{"OtLightingVS", "OtLightingFS"};
 	OtShaderProgram transparentProgram{"OtTransparentVS", "OtTransparentFS"};
 	OtShaderProgram transparentInstancingProgram{"OtTransparentVSI", "OtTransparentFS"};

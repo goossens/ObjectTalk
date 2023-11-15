@@ -233,8 +233,46 @@
 				"uuid": 1003125373
 			},
 			{
+				"component": "Material",
+				"material": {
+					"region1Color": [
+						0.9649999737739563,
+						0.8939999938011169,
+						0.6779999732971191
+					],
+					"region1Overlap": 0.05000000074505806,
+					"region1Texture": "",
+					"region1Transition": 0.25,
+					"region2Color": [
+						0.49399998784065247,
+						0.7839999794960022,
+						0.3140000104904175
+					],
+					"region2Overlap": 0.05000000074505806,
+					"region2Texture": "",
+					"region2Transition": 0.5,
+					"region3Color": [
+						0.5839999914169312,
+						0.5529999732971191,
+						0.5220000147819519
+					],
+					"region3Overlap": 0.05000000074505806,
+					"region3Texture": "",
+					"region3Transition": 0.75,
+					"region4Color": [
+						0.8999999761581421,
+						0.8999999761581421,
+						0.8999999761581421
+					],
+					"region4Texture": "",
+					"scale": 1.0,
+					"type": "Terrain"
+				}
+			},
+			{
 				"component": "Terrain",
 				"hScale": 1.0,
+				"lods": 4,
 				"vOffset": 0.5,
 				"vScale": 1.0,
 				"wireframe": true

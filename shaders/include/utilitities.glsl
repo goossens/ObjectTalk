@@ -34,4 +34,5 @@ vec3 uvFromWorld(vec3 pos) {
 	vec3 p = NdcFromWorld(pos);
 }
 
+
 #endif

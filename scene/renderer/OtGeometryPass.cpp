@@ -92,8 +92,7 @@ void OtSceneRenderer::renderGeometry(OtPass& pass, OtScene* scene, OtEntity enti
 			OtStateWriteRgb |
 			OtStateWriteA |
 			OtStateWriteZ |
-			OtStateDepthTestLess |
-			OtStateCullCw);
+			OtStateDepthTestLess);
 	}
 
 	// set the transform

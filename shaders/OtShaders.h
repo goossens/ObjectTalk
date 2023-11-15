@@ -23,6 +23,7 @@
 #include "generated/OtGeometryPbrShader.h"
 #include "generated/OtGeometryTerrainShader.h"
 #include "generated/OtGridShader.h"
+#include "generated/OtHeightmapShader.h"
 #include "generated/OtImGuiShader.h"
 #include "generated/OtLightingShader.h"
 #include "generated/OtOutlineShader.h"
@@ -31,6 +32,7 @@
 #include "generated/OtSkyShader.h"
 #include "generated/OtSkySphereShader.h"
 #include "generated/OtSkyboxShader.h"
+#include "generated/OtTerrainShader.h"
 #include "generated/OtTransparentShader.h"
 
 
@@ -58,6 +60,8 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtGeometryTerrainFS),
 	BGFX_EMBEDDED_SHADER(OtGridVS),
 	BGFX_EMBEDDED_SHADER(OtGridFS),
+	BGFX_EMBEDDED_SHADER(OtHeightmapVS),
+	BGFX_EMBEDDED_SHADER(OtHeightmapFS),
 	BGFX_EMBEDDED_SHADER(OtImGuiVS),
 	BGFX_EMBEDDED_SHADER(OtImGuiFS),
 	BGFX_EMBEDDED_SHADER(OtLightingVS),
@@ -74,6 +78,8 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtSkySphereFS),
 	BGFX_EMBEDDED_SHADER(OtSkyboxVS),
 	BGFX_EMBEDDED_SHADER(OtSkyboxFS),
+	BGFX_EMBEDDED_SHADER(OtTerrainVS),
+	BGFX_EMBEDDED_SHADER(OtTerrainFS),
 	BGFX_EMBEDDED_SHADER(OtTransparentVS),
 	BGFX_EMBEDDED_SHADER(OtTransparentFS),
 	BGFX_EMBEDDED_SHADER(OtTransparentVSI),

@@ -9,11 +9,6 @@
 //	Include files
 //
 
-#include <algorithm>
-#include <cmath>
-
-#include "OtHash.h"
-
 #include "OtSceneRenderer.h"
 
 
@@ -30,9 +25,8 @@ void OtSceneRenderer::renderPreProcessingPass(OtScene* scene, OtEntity selected)
 	hasTerrainEntities = false;
 	hasSkyEntities = false;
 
-	// reset lists of visible entities
+	// reset list of visible entities
 	visibleEntities.clear();
-	terrainTiles.clear();
 
 	// build lists of visible entities
 	scene->eachEntityDepthFirst([&](OtEntity entity) {
@@ -49,7 +43,7 @@ void OtSceneRenderer::renderPreProcessingPass(OtScene* scene, OtEntity selected)
 			preprocessMultipleInstanceModel(scene, entity, entity == selected);
 
 		} else if (scene->hasComponent<OtTerrainComponent>(entity) && scene->hasComponent<OtMaterialComponent>(entity)) {
-			preprocessTerrainTiles(scene, entity);
+			hasTerrainEntities = true;
 		}
 	});
 
@@ -184,73 +178,5 @@ void OtSceneRenderer::preprocessMultipleInstanceModel(OtScene* scene, OtEntity e
 		if (selected) {
 			renderEntityHighlight = true;
 		}
-	}
-}
-
-
-//
-//	OtSceneRenderer::preprocessTerrainTiles
-//
-
-void OtSceneRenderer::preprocessTerrainTiles(OtScene* scene, OtEntity entity) {
-	// set flag
-	hasTerrainEntities = true;
-
-	// get components
-	auto& terrain = scene->getComponent<OtTerrainComponent>(entity);
-	auto material = scene->getComponent<OtMaterialComponent>(entity).material;
-
-	// determine number of tiles visible from center
-	auto visibleFromCenter = (int) std::ceil(terrain.maxViewingDist / terrain.tileSize);
-
-	// determine center tile
-	auto centerX = (int) std::floor(cameraPosition.x / terrain.maxViewingDist);
-	auto centerZ = (int) std::floor(cameraPosition.z / terrain.maxViewingDist);
-
-	// get vertical limits
-	auto minHeight = terrain.vOffset * terrain.vScale;
-	auto maxHeight = (1.0f + terrain.vOffset) * terrain.vScale;
-
-	// index of all tiles and their LOD
-	std::unordered_map<size_t, int> index;
-
-	// process all possible visible tiles
-	for (auto zOffset = -visibleFromCenter; zOffset <= visibleFromCenter; zOffset++) {
-		for (auto xOffset = -visibleFromCenter; xOffset <= visibleFromCenter; xOffset++) {
-			// get tile coordinates
-			auto x = centerX + xOffset;
-			auto z = centerZ + zOffset;
-
-			// ensure tile is visible in camera frustum
-			OtAABB aabb;
-			float sx = x * terrain.tileSize;
-			float sz = z * terrain.tileSize;
-			aabb.addPoint(glm::vec3(sx, minHeight, sz));
-			aabb.addPoint(glm::vec3(sx + terrain.tileSize, maxHeight, sz + terrain.tileSize));
-
-			if (frustum.isVisibleAABB(aabb)) {
-				// determine LOD
-				int distanceInTiles = std::ceil(glm::distance(glm::vec2(centerX, centerZ), glm::vec2(centerX, centerZ)));
-				int lod = std::clamp(distanceInTiles, 1, 7);
-				terrainTiles.emplace_back(&terrain, material, x, z, lod);
-				index[OtHash(x, z)] = lod;
-			}
-		}
-	}
-
-	// set LOD for tile neighbors
-	auto updateNeighbor = [&](int& lod, int x, int z) {
-		auto hash = OtHash(x, z);
-
-		if (index.count(hash)) {
-			lod = index[hash];
-		}
-	};
-
-	for (auto& tile : terrainTiles) {
-		updateNeighbor(tile.northLod, tile.x, tile.z - 1);
-		updateNeighbor(tile.eastLod, tile.x + 1, tile.z);
-		updateNeighbor(tile.southLod, tile.x, tile.z + 1);
-		updateNeighbor(tile.westLod, tile.x - 1, tile.z);
 	}
 }

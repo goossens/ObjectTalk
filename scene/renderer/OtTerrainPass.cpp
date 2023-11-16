@@ -21,10 +21,10 @@
 
 
 //
-//	OtSceneRenderer::renderTerrainPass
+//	OtSceneRenderer::renderDeferredTerrainPass
 //
 
-void OtSceneRenderer::renderTerrainPass(OtScene* scene) {
+void OtSceneRenderer::renderDeferredTerrainPass(OtScene* scene) {
 	// setup pass
 	OtPass pass;
 	pass.setClear(false, false);
@@ -34,24 +34,24 @@ void OtSceneRenderer::renderTerrainPass(OtScene* scene) {
 
 	// render each terrain mesh
 	for (auto&& [entity, terrain, material] : scene->view<OtTerrainComponent, OtMaterialComponent>().each()) {
-		renderTerrain(pass, terrain, material);
+		renderDeferredTerrain(pass, terrain, material);
 	}
 }
 
 
 //
-//	OtSceneRenderer::renderTerrain
+//	OtSceneRenderer::renderDeferredTerrain
 //
 
-void OtSceneRenderer::renderTerrain(OtPass& pass, OtTerrainComponent& terrain, OtMaterialComponent& material) {
+void OtSceneRenderer::renderDeferredTerrain(OtPass& pass, OtTerrainComponent& terrain, OtMaterialComponent& material) {
 	// determine the program
 	OtShaderProgram* program;
 
 	if (material.material.isKindOf<OtPbrMaterialClass>()) {
-		program = &terrainPbrProgram;
+		program = &deferredTerrainPbrProgram;
 
 	} else if (material.material.isKindOf<OtTerrainMaterialClass>()) {
-		program = &terrainTerrainProgram;
+		program = &deferredTerrainTerrainProgram;
 	}
 
 	// submit the material information

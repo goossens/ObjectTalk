@@ -6,8 +6,9 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
+shopt -s nullglob
+
 SHADERC=~/bin/shaderc
-HOME="$(cd -P "$(dirname "${BASH_SOURCE[0]}")"; pwd)"
 FORCE=0
 
 SHADER_INCLUDES=""
@@ -33,48 +34,30 @@ done
 #
 
 function needsUpdate() {
+	SOURCE_FILE=$1
+	GROUP_NAME=$(dirname ${SOURCE_FILE})
+	SOURCE_NAME=$(basename ${SOURCE_FILE})
+	SHADER_NAME=${SOURCE_NAME%.*}
+	COMPILED_FILE=generated/${GROUP_NAME}/${SHADER_NAME}_mtl.h
+
 	if [ ${FORCE} -eq 1 ]
 	then
 		true
 
-	elif [ ! -f ${HOME}/generated/Ot$1Shader.h ]
+	elif [ ! -f ${COMPILED_FILE} ]
 	then
 		true
 
-	elif [ $2 -nt $3 ]
+	elif [ ${SOURCE_FILE} -nt ${COMPILED_FILE} ]
+	then
+		true
+
+	elif [ ${NEWEST_INCLUDE} -nt ${COMPILED_FILE} ]
 	then
 		true
 
 	else
-		unset -v NEWEST_INCLUDE
-
-		for FILE in ${HOME}/include/*.glsl
-		do
-			if [ ${FILE} -nt "${NEWEST_INCLUDE}" ]
-			then
-				NEWEST_INCLUDE=${FILE}
-			fi
-		done
-
-		if [ ${NEWEST_INCLUDE} -nt $3 ]
-		then
-			true
-
-		else
-			false
-		fi
-	fi
-}
-
-
-#
-#	fakePart
-#
-
-function fakePart() {
-	if [ -f $1_mtl.h -a ! -f $1_$2.h ]
-	then
-		sed "s/_mtl/_$2/" <$1_mtl.h >$1_$2.h
+		false
 	fi
 }
 
@@ -83,105 +66,41 @@ function fakePart() {
 #	processShader
 #
 
-function processShader() {
-	case $1 in
-		vertex) EXT=vs;;
-		fragment) EXT=fs;;
-	esac
+function compileShader() {
+	# get calling parameters
+	FILE=$1
+	TYPE=$2
+	PLATFORM=$3
+	PROFILE=$4
+	ID=$5
 
-	if [ $2 == "instancing" ]
+	# extract names
+	GROUP=$(dirname ${FILE})
+	SOURCE=$(basename ${FILE})
+	SHADER=${SOURCE%.*}
+
+	# ensure directory exists
+	mkdir -p generated/${GROUP}
+
+	# is this a shader for windows?
+	if [ ${PLATFORM} == "windows" ]
 	then
-		PREFIX=${EXT}i
+		# yes, sadly it is, so just add a command to the batch script
+		SHADER_BAT+="%HOMEDRIVE%%HOMEPATH%\\\\bin\\\\shaderc -f ${GROUP}\\\\${SOURCE} -o generated\\\\${GROUP}\\\\${SHADER}_${ID}.h -i include --type ${TYPE} --platform ${PLATFORM} --profile ${PROFILE} -O 3 --bin2c ${SHADER}_${ID}\n"
+
+		# ensure a dummy file exists so we can continue to develop on MacOS and Linux
+		if [ -f generated/${GROUP}/${SHADER}_mtl.h -a ! -f generated/${GROUP}/${SHADER}_dx11.h ]
+		then
+			sed "s/_mtl/_$2/" <generated/${GROUP}/${SHADER}_mtl.h >generated/${GROUP}/${SHADER}_dx11.h
+		fi
 
 	else
-		PREFIX=${EXT}
+		# no hallelujah, it's not for windows so just compile the shader (if required)
+		${SHADERC} -f ${FILE} -o generated/${GROUP}/${SHADER}_${ID}.h -i include --type ${TYPE} --platform ${PLATFORM} --profile ${PROFILE} --bin2c ${SHADER}_${ID}
 	fi
 
-	UPREFIX=$(echo "${PREFIX}" |  tr '[:lower:]' '[:upper:]')
-
-	if needsUpdate $3 $2.${EXT} ${HOME}/generated/$3/${PREFIX}_mtl.h
-	then
-		echo "--------------------------------------- Compiling $1 $2 $3"
-		${SHADERC} -f $2.${EXT} -o ${HOME}/generated/$3/${PREFIX}_mtl.h -i ${HOME}/include --type $1 --platform osx -p metal -O 3 --bin2c Ot$3${UPREFIX}_mtl
-		${SHADERC} -f $2.${EXT} -o ${HOME}/generated/$3/${PREFIX}_glsl.h -i ${HOME}/include --type $1 --platform linux -p 120 --bin2c Ot$3${UPREFIX}_glsl
-		${SHADERC} -f $2.${EXT} -o ${HOME}/generated/$3/${PREFIX}_essl.h -i ${HOME}/include --type $1 --platform linux -p 100_es --bin2c Ot$3${UPREFIX}_essl
-		${SHADERC} -f $2.${EXT} -o ${HOME}/generated/$3/${PREFIX}_spv.h -i ${HOME}/include --type $1 --platform linux -p spirv --bin2c Ot$3${UPREFIX}_spv
-		fakePart ${HOME}/generated/$3/${PREFIX} dx11
-	fi
-
-	SHADER_BAT+="%HOMEDRIVE%%HOMEPATH%\\\\bin\\\\shaderc -f $3\\\\$2.${EXT} -o generated\\\\$3\\\\${PREFIX}_dx11.h -i include --type $1 --platform windows -p s_5_0 -O 3 --bin2c Ot$3${UPREFIX}_dx11\n"
-}
-
-
-#
-#	processDirectory
-#
-
-function processDirectory() {
-	SHADER_INCLUDES+="#include \"generated/Ot$1Shader.h\"\n"
-
-	mkdir -p ${HOME}/generated/$1
-	cd ${HOME}/$1
-
-	if [ -f shader.vs ]
-	then
-		processShader vertex shader $1
-		SHADER_DEFINES+="\tBGFX_EMBEDDED_SHADER(Ot$1VS),\n"
-	fi
-
-	if [ -f shader.fs ]
-	then
-		processShader fragment shader $1
-		SHADER_DEFINES+="\tBGFX_EMBEDDED_SHADER(Ot$1FS),\n"
-	fi
-
-	if [ -f instancing.vs ]
-	then
-		processShader vertex instancing $1
-		SHADER_DEFINES+="\tBGFX_EMBEDDED_SHADER(Ot$1VSI),\n"
-	fi
-
-	SHADER_BAT+="\n"
-
-	cat >${HOME}/generated/Ot$1Shader.h <<END
-//	ObjectTalk Scripting Language
-//	Copyright (c) 1993-2023 Johan A. Goossens. All rights reserved.
-//
-//	This work is licensed under the terms of the MIT license.
-//	For a copy, see <https://opensource.org/licenses/MIT>.
-
-
-//
-//	Include files
-//
-
-#include "$1/vs_mtl.h"
-#include "$1/vs_glsl.h"
-#include "$1/vs_essl.h"
-#include "$1/vs_spv.h"
-#include "$1/vs_dx11.h"
-
-#include "$1/fs_mtl.h"
-#include "$1/fs_glsl.h"
-#include "$1/fs_essl.h"
-#include "$1/fs_spv.h"
-#include "$1/fs_dx11.h"
-END
-
-	if [ -f instancing.vs ]
-	then
-		cat >>${HOME}/generated/Ot$1Shader.h <<END
-
-#include "$1/vsi_mtl.h"
-#include "$1/vsi_glsl.h"
-#include "$1/vsi_essl.h"
-#include "$1/vsi_spv.h"
-#include "$1/vsi_dx11.h"
-END
-
-	fi
-
-	cd ${HOME}
+	# add compiled shader to lisy of include files
+	SHADER_INCLUDES+="#include \"generated/${GROUP}/${SHADER}_${ID}.h\"\n"
 }
 
 
@@ -189,15 +108,75 @@ END
 #	Main
 #
 
-cd ${HOME}
+# goto shaders directory and ensure output path exists
+cd -P "$(dirname "${BASH_SOURCE[0]}")"
 mkdir -p generated
 
-for P in */varying.def.sc
+# determine newest include file
+	for FILE in include/*.glsl
+	do
+		if [ ${FILE} -nt "${NEWEST_INCLUDE}" ]
+		then
+			NEWEST_INCLUDE=${FILE}
+		fi
+	done
+
+# process all shader groups
+for DEF_PATH in */varying.def.sc
 do
-	processDirectory $(dirname ${P})
+	GROUP_NAME=$(dirname ${DEF_PATH})
+
+	# process all vertex shaders
+	for SHADER_PATH in ${GROUP_NAME}/*VS.glsl
+	do
+		if needsUpdate ${SHADER_PATH}
+		then
+			echo "--------------------------------------- Compiling ${SHADER_PATH%.*}"
+			compileShader ${SHADER_PATH} vertex osx metal mtl
+			compileShader ${SHADER_PATH} vertex linux 120 glsl
+			compileShader ${SHADER_PATH} vertex linux spirv spv
+			compileShader ${SHADER_PATH} vertex android 100_es essl
+			compileShader ${SHADER_PATH} vertex windows s_5_0 dx11
+			SHADER_SOURCE=$(basename ${SHADER_PATH})
+			SHADER_DEFINES+="\tBGFX_EMBEDDED_SHADER(${SHADER_SOURCE%.*}),\n"
+		fi
+	done
+
+	# process all fragment shaders
+	for SHADER_PATH in ${GROUP_NAME}/*FS.glsl
+	do
+		if needsUpdate ${SHADER_PATH}
+		then
+			echo "--------------------------------------- Compiling ${SHADER_PATH%.*}"
+			compileShader ${SHADER_PATH} fragment osx metal mtl
+			compileShader ${SHADER_PATH} fragment linux 120 glsl
+			compileShader ${SHADER_PATH} fragment linux spirv spv
+			compileShader ${SHADER_PATH} fragment android 100_es essl
+			compileShader ${SHADER_PATH} fragment windows s_5_0 dx11
+			SHADER_SOURCE=$(basename ${SHADER_PATH})
+			SHADER_DEFINES+="\tBGFX_EMBEDDED_SHADER(${SHADER_SOURCE%.*}),\n"
+		fi
+	done
+
+	# process all compute shaders
+	for SHADER_PATH in ${GROUP_NAME}/*CS.glsl
+	do
+		if needsUpdate ${SHADER_PATH}
+		then
+			echo "--------------------------------------- Compiling ${SHADER_PATH%.*}"
+			compileShader ${SHADER_PATH} compute osx metal mtl
+			compileShader ${SHADER_PATH} compute linux 430 glsl
+			compileShader ${SHADER_PATH} compute linux spirv spv
+			compileShader ${SHADER_PATH} compute android 300_es essl
+			compileShader ${SHADER_PATH} compute windows s_5_0 dx11
+			SHADER_SOURCE=$(basename ${SHADER_PATH})
+			SHADER_DEFINES+="\tBGFX_EMBEDDED_SHADER(${SHADER_SOURCE%.*}),\n"
+		fi
+	done
 done
 
-cat >${HOME}//OtShaders.h <<END
+# create master shader include file
+cat >OtShaders.h <<END
 //	ObjectTalk Scripting Language
 //	Copyright (c) 1993-2023 Johan A. Goossens. All rights reserved.
 //
@@ -227,7 +206,8 @@ $(echo -e ${SHADER_DEFINES})
 };
 END
 
-cat >${HOME}/update.bat <<END
+# create shader update script for windows
+cat >update.bat <<END
 ::	ObjectTalk Scripting Language
 ::	Copyright (c) 1993-2023 Johan A. Goossens. All rights reserved.
 ::

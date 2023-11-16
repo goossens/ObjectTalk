@@ -85,11 +85,11 @@ void OtSceneRenderer::submitPbrUniforms(OtPbrMaterial material) {
 	pbrMaterialUniforms.submit();
 
 	// submit all material textures (or dummies if they are not set)
-	submitSampler(geometryAlbedoSampler, 0, material->albedoTexture);
-	submitSampler(geometryMetallicRoughnessSampler, 1, material->metallicRoughnessTexture);
-	submitSampler(geometryEmissiveSampler, 2, material->emissiveTexture);
-	submitSampler(geometryAoSampler, 3, material->aoTexture);
-	submitSampler(geometryNormalSampler, 4, material->normalTexture);
+	submitSampler(deferredGeometryAlbedoSampler, 0, material->albedoTexture);
+	submitSampler(deferredGeometryMetallicRoughnessSampler, 1, material->metallicRoughnessTexture);
+	submitSampler(deferredGeometryEmissiveSampler, 2, material->emissiveTexture);
+	submitSampler(deferredGeometryAoSampler, 3, material->aoTexture);
+	submitSampler(deferredGeometryNormalSampler, 4, material->normalTexture);
 }
 
 

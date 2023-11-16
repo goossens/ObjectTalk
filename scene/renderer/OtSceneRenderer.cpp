@@ -32,11 +32,11 @@ int OtSceneRenderer::render(OtScene* scene, OtEntity selected) {
 
 		// render deferred entities
 		if (hasOpaqueEntities) {
-			renderGeometryPass(scene);
+			renderDeferredGeometryPass(scene);
 		}
 
 		if (hasTerrainEntities) {
-			renderTerrainPass(scene);
+			renderDeferredTerrainPass(scene);
 		}
 	}
 
@@ -48,11 +48,11 @@ int OtSceneRenderer::render(OtScene* scene, OtEntity selected) {
 	}
 
 	if (hasOpaqueEntities) {
-		renderLightingPass(scene);
+		renderDeferredLightingPass(scene);
 	}
 
 	if (hasTransparentEntities) {
-		renderTransparentPass(scene);
+		renderForwardGeometryPass(scene);
 	}
 
 	// handle editor passes

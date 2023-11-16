@@ -63,12 +63,12 @@ private:
 	// render passes
 	void renderPreProcessingPass(OtScene* scene, OtEntity selected);
 	// void renderShadowPass(OtScene* scene);
-	void renderGeometryPass(OtScene* scene);
-	void renderTerrainPass(OtScene* scene);
+	void renderDeferredGeometryPass(OtScene* scene);
+	void renderDeferredTerrainPass(OtScene* scene);
 	void renderBackgroundPass(OtScene* scene);
 	void renderSkyPass(OtScene* scene);
-	void renderLightingPass(OtScene* scene);
-	void renderTransparentPass(OtScene* scene);
+	void renderDeferredLightingPass(OtScene* scene);
+	void renderForwardGeometryPass(OtScene* scene);
 	void renderGridPass();
 	void renderHighlightPass(OtScene* scene, OtEntity selected);
 	void renderPostProcessingPass(OtScene* scene);
@@ -83,10 +83,10 @@ private:
 	void renderSky(OtPass& pass, OtSkyComponent& component);
 	void renderSkyBox(OtPass& pass, OtSkyBoxComponent& component);
 	void renderSkySphere(OtPass& pass, OtSkySphereComponent& component);
-	void renderGeometry(OtPass& pass, OtScene* scene, OtEntity entity);
-	void renderModel(OtPass& pass, OtScene* scene, OtEntity entity);
-	void renderTerrain(OtPass& pass, OtTerrainComponent& component, OtMaterialComponent& material);
-	void renderTransparentGeometry(OtPass& pass, OtScene* scene, OtEntity entity);
+	void renderDeferredGeometry(OtPass& pass, OtScene* scene, OtEntity entity);
+	void renderDeferredModel(OtPass& pass, OtScene* scene, OtEntity entity);
+	void renderDeferredTerrain(OtPass& pass, OtTerrainComponent& component, OtMaterialComponent& material);
+	void renderForwardGeometry(OtPass& pass, OtScene* scene, OtEntity entity);
 	void renderHighlight(OtPass& pass, OtScene* scene, OtEntity entity);
 	void renderBloom(float bloomIntensity);
 
@@ -148,18 +148,18 @@ private:
 	OtSampler textureSampler2{"s_textureSampler2"};
 	OtSampler textureSampler3{"s_textureSampler3"};
 
-	OtSampler geometryAlbedoSampler{"s_geometryAlbedoTexture"};
-	OtSampler geometryNormalSampler{"s_geometryNormalTexture"};
-	OtSampler geometryMetallicRoughnessSampler{"s_geometryMetallicRoughnessTexture"};
-	OtSampler geometryEmissiveSampler{"s_geometryEmissiveSampler"};
-	OtSampler geometryAoSampler{"s_geometryAoTexture"};
+	OtSampler deferredGeometryAlbedoSampler{"s_deferredGeometryAlbedoTexture"};
+	OtSampler deferredGeometryNormalSampler{"s_deferredGeometryNormalTexture"};
+	OtSampler deferredGeometryMetallicRoughnessSampler{"s_deferredGeometryMetallicRoughnessTexture"};
+	OtSampler deferredGeometryEmissiveSampler{"s_deferredGeometryEmissiveSampler"};
+	OtSampler deferredGeometryAoSampler{"s_deferredGeometryAoTexture"};
 
-	OtSampler lightingAlbedoSampler{"s_lightingAlbedoTexture"};
-	OtSampler lightingPositionSampler{"s_lightingPositionTexture"};
-	OtSampler lightingNormalSampler{"s_lightingNormalTexture"};
-	OtSampler lightingPbrSampler{"s_lightingPbrTexture"};
-	OtSampler lightingEmissiveSampler{"s_lightingEmissiveTexture"};
-	OtSampler lightingDepthSampler{"s_lightingDepthTexture"};
+	OtSampler deferredLightingAlbedoSampler{"s_deferredLightingAlbedoTexture"};
+	OtSampler deferredLightingPositionSampler{"s_deferredLightingPositionTexture"};
+	OtSampler deferredLightingNormalSampler{"s_deferredLightingNormalTexture"};
+	OtSampler deferredLightingPbrSampler{"s_deferredLightingPbrTexture"};
+	OtSampler deferredLightingEmissiveSampler{"s_deferredLightingEmissiveTexture"};
+	OtSampler deferredLightingDepthSampler{"s_deferredLightingDepthTexture"};
 
 	OtSampler selectedSampler{"s_selectedTexture"};
 
@@ -167,21 +167,21 @@ private:
 	OtSampler bloomSampler{"s_bloomTexture"};
 
 	// shader programs
-	OtShaderProgram geometryPbrProgram{"OtGeometryPbrVS", "OtGeometryPbrFS"};
-	OtShaderProgram geometryTerrainProgram{"OtGeometryTerrainVS", "OtGeometryTerrainFS"};
-	OtShaderProgram geometryInstancingProgram{"OtGeometryVSI", "OtGeometryFS"};
-	OtShaderProgram terrainPbrProgram{"OtTerrainVS", "OtTerrainFS"};
-	OtShaderProgram terrainTerrainProgram{"OtTerrainVS", "OtTerrainFS"};
-	OtShaderProgram lightingProgram{"OtLightingVS", "OtLightingFS"};
-	OtShaderProgram transparentProgram{"OtTransparentVS", "OtTransparentFS"};
-	OtShaderProgram transparentInstancingProgram{"OtTransparentVSI", "OtTransparentFS"};
+	OtShaderProgram deferredPbrProgram{"OtDeferredVS", "OtDeferredPbrFS"};
+	OtShaderProgram deferredTerrainProgram{"OtDeferredVS", "OtDeferredTerrainFS"};
+	OtShaderProgram deferredInstancingProgram{"OtDeferredInstancingVS", "OtDeferredPbrFS"};
+	OtShaderProgram deferredTerrainPbrProgram{"OtTerrainVS", "OtTerrainFS"};
+	OtShaderProgram deferredTerrainTerrainProgram{"OtTerrainVS", "OtTerrainFS"};
+	OtShaderProgram deferredLightingProgram{"OtDeferredLightingVS", "OtDeferredLightingFS"};
+	OtShaderProgram forwardPbrProgram{"OtForwardVS", "OtForwardPbrFS"};
+	OtShaderProgram forwardInstancingProgram{"OtForwardInstancingVS", "OtForwardPbrFS"};
 	OtShaderProgram gridProgram{"OtGridVS", "OtGridFS"};
 	OtShaderProgram selectProgram{"OtSelectVS", "OtSelectFS"};
 	OtShaderProgram outlineProgram{"OtOutlineVS", "OtOutlineFS"};
 	OtShaderProgram skyProgram{"OtSkyVS", "OtSkyFS"};
-	OtShaderProgram skyBoxProgram{"OtSkyboxVS", "OtSkyboxFS"};
-	OtShaderProgram skySphereProgram{"OtSkySphereVS", "OtSkySphereFS"};
-	OtShaderProgram bloomDownSampleProgram{"OtBloomDownSampleVS", "OtBloomDownSampleFS"};
-	OtShaderProgram bloomUpSampleProgram{"OtBloomUpSampleVS", "OtBloomUpSampleFS"};
-	OtShaderProgram postProcessProgram{"OtPostProcessVS", "OtPostProcessFS"};
+	OtShaderProgram skyBoxProgram{"OtSkyVS", "OtSkyBoxFS"};
+	OtShaderProgram skySphereProgram{"OtSkyVS", "OtSkySphereFS"};
+	OtShaderProgram bloomDownSampleProgram{"OtFilterVS", "OtBloomDownSampleFS"};
+	OtShaderProgram bloomUpSampleProgram{"OtFilterVS", "OtBloomUpSampleFS"};
+	OtShaderProgram postProcessProgram{"OtFilterVS", "OtPostProcessFS"};
 };

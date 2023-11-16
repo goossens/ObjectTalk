@@ -5,7 +5,7 @@
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
 file(GLOB SHADERS_INCLUDES *.h)
-file(GLOB SHADERS_SOURCES update */*.vs */*.fs */*.sc)
+file(GLOB SHADERS_SOURCES update */*.glsl */*.sc)
 
 add_library(shaders INTERFACE)
 target_include_directories(shaders INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})

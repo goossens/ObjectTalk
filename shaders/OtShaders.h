@@ -14,26 +14,166 @@
 
 #include "bgfx/embedded_shader.h"
 
-#include "generated/OtBlitShader.h"
-#include "generated/OtBloomShader.h"
-#include "generated/OtBloomDownSampleShader.h"
-#include "generated/OtBloomUpSampleShader.h"
-#include "generated/OtBlurShader.h"
-#include "generated/OtDebugShader.h"
-#include "generated/OtGeometryPbrShader.h"
-#include "generated/OtGeometryTerrainShader.h"
-#include "generated/OtGridShader.h"
-#include "generated/OtHeightmapShader.h"
-#include "generated/OtImGuiShader.h"
-#include "generated/OtLightingShader.h"
-#include "generated/OtOutlineShader.h"
-#include "generated/OtPostProcessShader.h"
-#include "generated/OtSelectShader.h"
-#include "generated/OtSkyShader.h"
-#include "generated/OtSkySphereShader.h"
-#include "generated/OtSkyboxShader.h"
-#include "generated/OtTerrainShader.h"
-#include "generated/OtTransparentShader.h"
+#include "generated/deferred/OtDeferredInstancingVS_mtl.h"
+#include "generated/deferred/OtDeferredInstancingVS_glsl.h"
+#include "generated/deferred/OtDeferredInstancingVS_spv.h"
+#include "generated/deferred/OtDeferredInstancingVS_essl.h"
+#include "generated/deferred/OtDeferredInstancingVS_dx11.h"
+#include "generated/deferred/OtDeferredLightingVS_mtl.h"
+#include "generated/deferred/OtDeferredLightingVS_glsl.h"
+#include "generated/deferred/OtDeferredLightingVS_spv.h"
+#include "generated/deferred/OtDeferredLightingVS_essl.h"
+#include "generated/deferred/OtDeferredLightingVS_dx11.h"
+#include "generated/deferred/OtDeferredVS_mtl.h"
+#include "generated/deferred/OtDeferredVS_glsl.h"
+#include "generated/deferred/OtDeferredVS_spv.h"
+#include "generated/deferred/OtDeferredVS_essl.h"
+#include "generated/deferred/OtDeferredVS_dx11.h"
+#include "generated/deferred/OtDeferredLightingFS_mtl.h"
+#include "generated/deferred/OtDeferredLightingFS_glsl.h"
+#include "generated/deferred/OtDeferredLightingFS_spv.h"
+#include "generated/deferred/OtDeferredLightingFS_essl.h"
+#include "generated/deferred/OtDeferredLightingFS_dx11.h"
+#include "generated/deferred/OtDeferredPbrFS_mtl.h"
+#include "generated/deferred/OtDeferredPbrFS_glsl.h"
+#include "generated/deferred/OtDeferredPbrFS_spv.h"
+#include "generated/deferred/OtDeferredPbrFS_essl.h"
+#include "generated/deferred/OtDeferredPbrFS_dx11.h"
+#include "generated/deferred/OtDeferredTerrainFS_mtl.h"
+#include "generated/deferred/OtDeferredTerrainFS_glsl.h"
+#include "generated/deferred/OtDeferredTerrainFS_spv.h"
+#include "generated/deferred/OtDeferredTerrainFS_essl.h"
+#include "generated/deferred/OtDeferredTerrainFS_dx11.h"
+#include "generated/filter/OtFilterVS_mtl.h"
+#include "generated/filter/OtFilterVS_glsl.h"
+#include "generated/filter/OtFilterVS_spv.h"
+#include "generated/filter/OtFilterVS_essl.h"
+#include "generated/filter/OtFilterVS_dx11.h"
+#include "generated/filter/OtBlitFS_mtl.h"
+#include "generated/filter/OtBlitFS_glsl.h"
+#include "generated/filter/OtBlitFS_spv.h"
+#include "generated/filter/OtBlitFS_essl.h"
+#include "generated/filter/OtBlitFS_dx11.h"
+#include "generated/filter/OtBloomDownSampleFS_mtl.h"
+#include "generated/filter/OtBloomDownSampleFS_glsl.h"
+#include "generated/filter/OtBloomDownSampleFS_spv.h"
+#include "generated/filter/OtBloomDownSampleFS_essl.h"
+#include "generated/filter/OtBloomDownSampleFS_dx11.h"
+#include "generated/filter/OtBloomFS_mtl.h"
+#include "generated/filter/OtBloomFS_glsl.h"
+#include "generated/filter/OtBloomFS_spv.h"
+#include "generated/filter/OtBloomFS_essl.h"
+#include "generated/filter/OtBloomFS_dx11.h"
+#include "generated/filter/OtBloomUpSampleFS_mtl.h"
+#include "generated/filter/OtBloomUpSampleFS_glsl.h"
+#include "generated/filter/OtBloomUpSampleFS_spv.h"
+#include "generated/filter/OtBloomUpSampleFS_essl.h"
+#include "generated/filter/OtBloomUpSampleFS_dx11.h"
+#include "generated/filter/OtBlurFS_mtl.h"
+#include "generated/filter/OtBlurFS_glsl.h"
+#include "generated/filter/OtBlurFS_spv.h"
+#include "generated/filter/OtBlurFS_essl.h"
+#include "generated/filter/OtBlurFS_dx11.h"
+#include "generated/filter/OtPostProcessFS_mtl.h"
+#include "generated/filter/OtPostProcessFS_glsl.h"
+#include "generated/filter/OtPostProcessFS_spv.h"
+#include "generated/filter/OtPostProcessFS_essl.h"
+#include "generated/filter/OtPostProcessFS_dx11.h"
+#include "generated/forward/OtForwardInstancingVS_mtl.h"
+#include "generated/forward/OtForwardInstancingVS_glsl.h"
+#include "generated/forward/OtForwardInstancingVS_spv.h"
+#include "generated/forward/OtForwardInstancingVS_essl.h"
+#include "generated/forward/OtForwardInstancingVS_dx11.h"
+#include "generated/forward/OtForwardVS_mtl.h"
+#include "generated/forward/OtForwardVS_glsl.h"
+#include "generated/forward/OtForwardVS_spv.h"
+#include "generated/forward/OtForwardVS_essl.h"
+#include "generated/forward/OtForwardVS_dx11.h"
+#include "generated/forward/OtForwardPbrFS_mtl.h"
+#include "generated/forward/OtForwardPbrFS_glsl.h"
+#include "generated/forward/OtForwardPbrFS_spv.h"
+#include "generated/forward/OtForwardPbrFS_essl.h"
+#include "generated/forward/OtForwardPbrFS_dx11.h"
+#include "generated/grid/OtGridVS_mtl.h"
+#include "generated/grid/OtGridVS_glsl.h"
+#include "generated/grid/OtGridVS_spv.h"
+#include "generated/grid/OtGridVS_essl.h"
+#include "generated/grid/OtGridVS_dx11.h"
+#include "generated/grid/OtGridFS_mtl.h"
+#include "generated/grid/OtGridFS_glsl.h"
+#include "generated/grid/OtGridFS_spv.h"
+#include "generated/grid/OtGridFS_essl.h"
+#include "generated/grid/OtGridFS_dx11.h"
+#include "generated/heightmap/OtHeightmapVS_mtl.h"
+#include "generated/heightmap/OtHeightmapVS_glsl.h"
+#include "generated/heightmap/OtHeightmapVS_spv.h"
+#include "generated/heightmap/OtHeightmapVS_essl.h"
+#include "generated/heightmap/OtHeightmapVS_dx11.h"
+#include "generated/heightmap/OtHeightmapFS_mtl.h"
+#include "generated/heightmap/OtHeightmapFS_glsl.h"
+#include "generated/heightmap/OtHeightmapFS_spv.h"
+#include "generated/heightmap/OtHeightmapFS_essl.h"
+#include "generated/heightmap/OtHeightmapFS_dx11.h"
+#include "generated/highlight/OtOutlineVS_mtl.h"
+#include "generated/highlight/OtOutlineVS_glsl.h"
+#include "generated/highlight/OtOutlineVS_spv.h"
+#include "generated/highlight/OtOutlineVS_essl.h"
+#include "generated/highlight/OtOutlineVS_dx11.h"
+#include "generated/highlight/OtSelectVS_mtl.h"
+#include "generated/highlight/OtSelectVS_glsl.h"
+#include "generated/highlight/OtSelectVS_spv.h"
+#include "generated/highlight/OtSelectVS_essl.h"
+#include "generated/highlight/OtSelectVS_dx11.h"
+#include "generated/highlight/OtOutlineFS_mtl.h"
+#include "generated/highlight/OtOutlineFS_glsl.h"
+#include "generated/highlight/OtOutlineFS_spv.h"
+#include "generated/highlight/OtOutlineFS_essl.h"
+#include "generated/highlight/OtOutlineFS_dx11.h"
+#include "generated/highlight/OtSelectFS_mtl.h"
+#include "generated/highlight/OtSelectFS_glsl.h"
+#include "generated/highlight/OtSelectFS_spv.h"
+#include "generated/highlight/OtSelectFS_essl.h"
+#include "generated/highlight/OtSelectFS_dx11.h"
+#include "generated/imgui/OtImGuiVS_mtl.h"
+#include "generated/imgui/OtImGuiVS_glsl.h"
+#include "generated/imgui/OtImGuiVS_spv.h"
+#include "generated/imgui/OtImGuiVS_essl.h"
+#include "generated/imgui/OtImGuiVS_dx11.h"
+#include "generated/imgui/OtImGuiFS_mtl.h"
+#include "generated/imgui/OtImGuiFS_glsl.h"
+#include "generated/imgui/OtImGuiFS_spv.h"
+#include "generated/imgui/OtImGuiFS_essl.h"
+#include "generated/imgui/OtImGuiFS_dx11.h"
+#include "generated/sky/OtSkyVS_mtl.h"
+#include "generated/sky/OtSkyVS_glsl.h"
+#include "generated/sky/OtSkyVS_spv.h"
+#include "generated/sky/OtSkyVS_essl.h"
+#include "generated/sky/OtSkyVS_dx11.h"
+#include "generated/sky/OtSkyBoxFS_mtl.h"
+#include "generated/sky/OtSkyBoxFS_glsl.h"
+#include "generated/sky/OtSkyBoxFS_spv.h"
+#include "generated/sky/OtSkyBoxFS_essl.h"
+#include "generated/sky/OtSkyBoxFS_dx11.h"
+#include "generated/sky/OtSkyFS_mtl.h"
+#include "generated/sky/OtSkyFS_glsl.h"
+#include "generated/sky/OtSkyFS_spv.h"
+#include "generated/sky/OtSkyFS_essl.h"
+#include "generated/sky/OtSkyFS_dx11.h"
+#include "generated/sky/OtSkySphereFS_mtl.h"
+#include "generated/sky/OtSkySphereFS_glsl.h"
+#include "generated/sky/OtSkySphereFS_spv.h"
+#include "generated/sky/OtSkySphereFS_essl.h"
+#include "generated/sky/OtSkySphereFS_dx11.h"
+#include "generated/terrain/OtTerrainVS_mtl.h"
+#include "generated/terrain/OtTerrainVS_glsl.h"
+#include "generated/terrain/OtTerrainVS_spv.h"
+#include "generated/terrain/OtTerrainVS_essl.h"
+#include "generated/terrain/OtTerrainVS_dx11.h"
+#include "generated/terrain/OtTerrainFS_mtl.h"
+#include "generated/terrain/OtTerrainFS_glsl.h"
+#include "generated/terrain/OtTerrainFS_spv.h"
+#include "generated/terrain/OtTerrainFS_essl.h"
+#include "generated/terrain/OtTerrainFS_dx11.h"
 
 
 //
@@ -41,47 +181,37 @@
 //
 
 static const bgfx::EmbeddedShader embeddedShaders[] = {
-	BGFX_EMBEDDED_SHADER(OtBlitVS),
+	BGFX_EMBEDDED_SHADER(OtDeferredInstancingVS),
+	BGFX_EMBEDDED_SHADER(OtDeferredLightingVS),
+	BGFX_EMBEDDED_SHADER(OtDeferredVS),
+	BGFX_EMBEDDED_SHADER(OtDeferredLightingFS),
+	BGFX_EMBEDDED_SHADER(OtDeferredPbrFS),
+	BGFX_EMBEDDED_SHADER(OtDeferredTerrainFS),
+	BGFX_EMBEDDED_SHADER(OtFilterVS),
 	BGFX_EMBEDDED_SHADER(OtBlitFS),
-	BGFX_EMBEDDED_SHADER(OtBloomVS),
-	BGFX_EMBEDDED_SHADER(OtBloomFS),
-	BGFX_EMBEDDED_SHADER(OtBloomDownSampleVS),
 	BGFX_EMBEDDED_SHADER(OtBloomDownSampleFS),
-	BGFX_EMBEDDED_SHADER(OtBloomUpSampleVS),
+	BGFX_EMBEDDED_SHADER(OtBloomFS),
 	BGFX_EMBEDDED_SHADER(OtBloomUpSampleFS),
-	BGFX_EMBEDDED_SHADER(OtBlurVS),
 	BGFX_EMBEDDED_SHADER(OtBlurFS),
-	BGFX_EMBEDDED_SHADER(OtDebugVS),
-	BGFX_EMBEDDED_SHADER(OtDebugFS),
-	BGFX_EMBEDDED_SHADER(OtGeometryPbrVS),
-	BGFX_EMBEDDED_SHADER(OtGeometryPbrFS),
-	BGFX_EMBEDDED_SHADER(OtGeometryPbrVSI),
-	BGFX_EMBEDDED_SHADER(OtGeometryTerrainVS),
-	BGFX_EMBEDDED_SHADER(OtGeometryTerrainFS),
+	BGFX_EMBEDDED_SHADER(OtPostProcessFS),
+	BGFX_EMBEDDED_SHADER(OtForwardInstancingVS),
+	BGFX_EMBEDDED_SHADER(OtForwardVS),
+	BGFX_EMBEDDED_SHADER(OtForwardPbrFS),
 	BGFX_EMBEDDED_SHADER(OtGridVS),
 	BGFX_EMBEDDED_SHADER(OtGridFS),
 	BGFX_EMBEDDED_SHADER(OtHeightmapVS),
 	BGFX_EMBEDDED_SHADER(OtHeightmapFS),
+	BGFX_EMBEDDED_SHADER(OtOutlineVS),
+	BGFX_EMBEDDED_SHADER(OtSelectVS),
+	BGFX_EMBEDDED_SHADER(OtOutlineFS),
+	BGFX_EMBEDDED_SHADER(OtSelectFS),
 	BGFX_EMBEDDED_SHADER(OtImGuiVS),
 	BGFX_EMBEDDED_SHADER(OtImGuiFS),
-	BGFX_EMBEDDED_SHADER(OtLightingVS),
-	BGFX_EMBEDDED_SHADER(OtLightingFS),
-	BGFX_EMBEDDED_SHADER(OtOutlineVS),
-	BGFX_EMBEDDED_SHADER(OtOutlineFS),
-	BGFX_EMBEDDED_SHADER(OtPostProcessVS),
-	BGFX_EMBEDDED_SHADER(OtPostProcessFS),
-	BGFX_EMBEDDED_SHADER(OtSelectVS),
-	BGFX_EMBEDDED_SHADER(OtSelectFS),
 	BGFX_EMBEDDED_SHADER(OtSkyVS),
+	BGFX_EMBEDDED_SHADER(OtSkyBoxFS),
 	BGFX_EMBEDDED_SHADER(OtSkyFS),
-	BGFX_EMBEDDED_SHADER(OtSkySphereVS),
 	BGFX_EMBEDDED_SHADER(OtSkySphereFS),
-	BGFX_EMBEDDED_SHADER(OtSkyboxVS),
-	BGFX_EMBEDDED_SHADER(OtSkyboxFS),
 	BGFX_EMBEDDED_SHADER(OtTerrainVS),
 	BGFX_EMBEDDED_SHADER(OtTerrainFS),
-	BGFX_EMBEDDED_SHADER(OtTransparentVS),
-	BGFX_EMBEDDED_SHADER(OtTransparentFS),
-	BGFX_EMBEDDED_SHADER(OtTransparentVSI),
 	BGFX_EMBEDDED_SHADER_END()
 };

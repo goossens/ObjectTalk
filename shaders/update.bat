@@ -7,66 +7,37 @@
 
 pushd "%~dp0"
 
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Blit\shader.vs -o generated\Blit\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtBlitVS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Blit\shader.fs -o generated\Blit\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtBlitFS_dx11
-
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Bloom\shader.vs -o generated\Bloom\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtBloomVS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Bloom\shader.fs -o generated\Bloom\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtBloomFS_dx11
-
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f BloomDownSample\shader.vs -o generated\BloomDownSample\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtBloomDownSampleVS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f BloomDownSample\shader.fs -o generated\BloomDownSample\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtBloomDownSampleFS_dx11
-
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f BloomUpSample\shader.vs -o generated\BloomUpSample\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtBloomUpSampleVS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f BloomUpSample\shader.fs -o generated\BloomUpSample\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtBloomUpSampleFS_dx11
-
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Blur\shader.vs -o generated\Blur\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtBlurVS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Blur\shader.fs -o generated\Blur\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtBlurFS_dx11
-
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Debug\shader.vs -o generated\Debug\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtDebugVS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Debug\shader.fs -o generated\Debug\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtDebugFS_dx11
-
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f GeometryPbr\shader.vs -o generated\GeometryPbr\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtGeometryPbrVS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f GeometryPbr\shader.fs -o generated\GeometryPbr\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtGeometryPbrFS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f GeometryPbr\instancing.vs -o generated\GeometryPbr\vsi_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtGeometryPbrVSI_dx11
-
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f GeometryTerrain\shader.vs -o generated\GeometryTerrain\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtGeometryTerrainVS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f GeometryTerrain\shader.fs -o generated\GeometryTerrain\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtGeometryTerrainFS_dx11
-
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Grid\shader.vs -o generated\Grid\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtGridVS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Grid\shader.fs -o generated\Grid\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtGridFS_dx11
-
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Heightmap\shader.vs -o generated\Heightmap\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtHeightmapVS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Heightmap\shader.fs -o generated\Heightmap\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtHeightmapFS_dx11
-
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f ImGui\shader.vs -o generated\ImGui\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtImGuiVS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f ImGui\shader.fs -o generated\ImGui\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtImGuiFS_dx11
-
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Lighting\shader.vs -o generated\Lighting\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtLightingVS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Lighting\shader.fs -o generated\Lighting\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtLightingFS_dx11
-
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Outline\shader.vs -o generated\Outline\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtOutlineVS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Outline\shader.fs -o generated\Outline\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtOutlineFS_dx11
-
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f PostProcess\shader.vs -o generated\PostProcess\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtPostProcessVS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f PostProcess\shader.fs -o generated\PostProcess\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtPostProcessFS_dx11
-
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Select\shader.vs -o generated\Select\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtSelectVS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Select\shader.fs -o generated\Select\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtSelectFS_dx11
-
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Sky\shader.vs -o generated\Sky\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtSkyVS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Sky\shader.fs -o generated\Sky\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtSkyFS_dx11
-
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f SkySphere\shader.vs -o generated\SkySphere\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtSkySphereVS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f SkySphere\shader.fs -o generated\SkySphere\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtSkySphereFS_dx11
-
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Skybox\shader.vs -o generated\Skybox\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtSkyboxVS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Skybox\shader.fs -o generated\Skybox\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtSkyboxFS_dx11
-
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Terrain\shader.vs -o generated\Terrain\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtTerrainVS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Terrain\shader.fs -o generated\Terrain\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtTerrainFS_dx11
-
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Transparent\shader.vs -o generated\Transparent\vs_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtTransparentVS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Transparent\shader.fs -o generated\Transparent\fs_dx11.h -i include --type fragment --platform windows -p s_5_0 -O 3 --bin2c OtTransparentFS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f Transparent\instancing.vs -o generated\Transparent\vsi_dx11.h -i include --type vertex --platform windows -p s_5_0 -O 3 --bin2c OtTransparentVSI_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f deferred\OtDeferredInstancingVS.glsl -o generated\deferred\OtDeferredInstancingVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtDeferredInstancingVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f deferred\OtDeferredLightingVS.glsl -o generated\deferred\OtDeferredLightingVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtDeferredLightingVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f deferred\OtDeferredVS.glsl -o generated\deferred\OtDeferredVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtDeferredVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f deferred\OtDeferredLightingFS.glsl -o generated\deferred\OtDeferredLightingFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtDeferredLightingFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f deferred\OtDeferredPbrFS.glsl -o generated\deferred\OtDeferredPbrFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtDeferredPbrFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f deferred\OtDeferredTerrainFS.glsl -o generated\deferred\OtDeferredTerrainFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtDeferredTerrainFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtFilterVS.glsl -o generated\filter\OtFilterVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtFilterVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtBlitFS.glsl -o generated\filter\OtBlitFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtBlitFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtBloomDownSampleFS.glsl -o generated\filter\OtBloomDownSampleFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtBloomDownSampleFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtBloomFS.glsl -o generated\filter\OtBloomFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtBloomFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtBloomUpSampleFS.glsl -o generated\filter\OtBloomUpSampleFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtBloomUpSampleFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtBlurFS.glsl -o generated\filter\OtBlurFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtBlurFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtPostProcessFS.glsl -o generated\filter\OtPostProcessFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtPostProcessFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f forward\OtForwardInstancingVS.glsl -o generated\forward\OtForwardInstancingVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtForwardInstancingVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f forward\OtForwardVS.glsl -o generated\forward\OtForwardVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtForwardVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f forward\OtForwardPbrFS.glsl -o generated\forward\OtForwardPbrFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtForwardPbrFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f grid\OtGridVS.glsl -o generated\grid\OtGridVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtGridVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f grid\OtGridFS.glsl -o generated\grid\OtGridFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtGridFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f heightmap\OtHeightmapVS.glsl -o generated\heightmap\OtHeightmapVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtHeightmapVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f heightmap\OtHeightmapFS.glsl -o generated\heightmap\OtHeightmapFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtHeightmapFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f highlight\OtOutlineVS.glsl -o generated\highlight\OtOutlineVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtOutlineVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f highlight\OtSelectVS.glsl -o generated\highlight\OtSelectVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtSelectVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f highlight\OtOutlineFS.glsl -o generated\highlight\OtOutlineFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtOutlineFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f highlight\OtSelectFS.glsl -o generated\highlight\OtSelectFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtSelectFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f imgui\OtImGuiVS.glsl -o generated\imgui\OtImGuiVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtImGuiVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f imgui\OtImGuiFS.glsl -o generated\imgui\OtImGuiFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtImGuiFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f sky\OtSkyVS.glsl -o generated\sky\OtSkyVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtSkyVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f sky\OtSkyBoxFS.glsl -o generated\sky\OtSkyBoxFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtSkyBoxFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f sky\OtSkyFS.glsl -o generated\sky\OtSkyFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtSkyFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f sky\OtSkySphereFS.glsl -o generated\sky\OtSkySphereFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtSkySphereFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f terrain\OtTerrainVS.glsl -o generated\terrain\OtTerrainVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtTerrainVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f terrain\OtTerrainFS.glsl -o generated\terrain\OtTerrainFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtTerrainFS_dx11
 
 popd

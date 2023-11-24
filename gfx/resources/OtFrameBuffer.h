@@ -24,16 +24,16 @@
 class OtFrameBuffer {
 public:
 	// texture types
-	enum {
-		noTexture = 0,
-		r8Texture = bgfx::TextureFormat::R8,
-		rgba8Texture = bgfx::TextureFormat::RGBA8,
-		rgba16Texture = bgfx::TextureFormat::RGBA16,
-		rgbaFloat16Texture = bgfx::TextureFormat::RGBA16F,
-		rgbaFloat32Texture = bgfx::TextureFormat::RGBA32F,
-		d16Texture = bgfx::TextureFormat::D16,
-		dFloatTexture = bgfx::TextureFormat::D32F
-	};
+	static constexpr int noTexture = 0;
+	static constexpr int r8Texture = bgfx::TextureFormat::R8;
+	static constexpr int r16Texture = bgfx::TextureFormat::R16;
+	static constexpr int rFloat32Texture = bgfx::TextureFormat::R32F;
+	static constexpr int rgba8Texture = bgfx::TextureFormat::RGBA8;
+	static constexpr int rgba16Texture = bgfx::TextureFormat::RGBA16;
+	static constexpr int rgbaFloat16Texture = bgfx::TextureFormat::RGBA16F;
+	static constexpr int rgbaFloat32Texture = bgfx::TextureFormat::RGBA32F;
+	static constexpr int d16Texture = bgfx::TextureFormat::D16;
+	static constexpr int dFloatTexture = bgfx::TextureFormat::D32F;
 
 	// constructors
 	OtFrameBuffer() = default;
@@ -75,7 +75,7 @@ private:
 	int colorTextureType = noTexture;
 	int depthTextureType = noTexture;
 	int antiAliasing = 1;
-	bool blitTarget=false;
+	bool blitTarget = false;
 
 	// dimensions of framebuffer;
 	int width = -1;

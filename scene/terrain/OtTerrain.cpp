@@ -14,9 +14,11 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
+#include "OtUi.h"
+#include "OtVertex.h"
+
 #include "OtTerrain.h"
 
-#include "OtVertex.h"
 
 //
 //	Geo clipmap structure
@@ -53,34 +55,18 @@
 //
 
 bool OtTerrain::renderGUI() {
-	static char* sizes[] = { "4", "8", "16", "32", "64" };
-	auto selectedSize = std::to_string(tileSize);
 	bool changed = false;
+	changed |= OtUiSelectorPowerOfTwo("Tile Size", tileSize, 4, 64);
+	changed |= ImGui::DragInt("Levels of Detail", &lods, 1, 1, 10);
 
-	if (ImGui::BeginCombo("Tile size", selectedSize.c_str())) {
-		for (auto& size : sizes) {
-			bool isSelectedOne = selectedSize == size;
-
-			if (ImGui::Selectable(size, isSelectedOne)) {
-				if (selectedSize != size) {
-					tileSize = std::atoi(size);
-					clear();
-					changed = true;
-				}
-			}
-
-			if (isSelectedOne) {
-				ImGui::SetItemDefaultFocus();
-			}
-		}
-
-		ImGui::EndCombo();
+	if (changed) {
+		clear();
 	}
 
-	changed |= ImGui::DragInt("Levels of Detail", &lods, 1, 10);
 	changed |= ImGui::DragFloat("Horizontal Scale", &hScale, 0.01f, 0.01f, 10.0f);
 	changed |= ImGui::DragFloat("Vertical Scale", &vScale, 1.0f, 1.0f, 1000.0f);
-	changed |= ImGui::DragFloat("Vertical Offset", &vOffset, 1.0f, 0.0f, 1000.0f);
+	changed |= ImGui::DragFloat("Vertical Offset", &vOffset, 1.0f, -1000.0f, 1000.0f);
+	changed |= heightmap.renderGUI();
 	changed |= ImGui::Checkbox("Wireframe", &wireframe);
 	return changed;
 }
@@ -97,6 +83,7 @@ nlohmann::json OtTerrain::serialize(std::filesystem::path* basedir) {
 	data["hScale"] = hScale;
 	data["vScale"] = vScale;
 	data["vOffset"] = vOffset;
+	data["heightmap"] = heightmap.serialize(basedir);
 	data["wireframe"] = wireframe;
 	return data;
 }
@@ -112,7 +99,13 @@ void OtTerrain::deserialize(nlohmann::json data, std::filesystem::path* basedir)
 	hScale = data.value("hScale", 1.0f);
 	vScale = data.value("vScale", 1.0f);
 	vOffset = data.value("vOffset", 0.5f);
+
+	if (data.contains("heightmap")) {
+		heightmap.deserialize(data["heightmap"], basedir);
+	}
+
 	wireframe = data.value("wireframe", false);
+	clear();
 }
 
 
@@ -151,6 +144,7 @@ std::vector<OtTerrainMesh> &OtTerrain::getMeshes(OtFrustum& frustum, const glm::
 		}
 	};
 
+	// process the four center tiles
 	for (auto& tile: centerTiles) {
 		processTile(tile, frustum, 0);
 	}
@@ -162,7 +156,7 @@ std::vector<OtTerrainMesh> &OtTerrain::getMeshes(OtFrustum& frustum, const glm::
 		}
 	}
 
-	// return the list of visible meshes
+	// return the list of visible tiles' meshes
 	return meshes;
 }
 

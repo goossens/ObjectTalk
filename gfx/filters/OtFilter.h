@@ -32,14 +32,14 @@ public:
 	// set rendering state
 	void setState(int s) { state = s; }
 
-	// execute filter
-	virtual void execute(OtPass& pass, int w, int h) {}
-
 	// render filter
 	void render(int w, int h, OtFrameBuffer& origin, OtFrameBuffer& destination);
 	void render(int w, int h, OtFrameBuffer& origin);
 
 private:
+	// execute filter
+	virtual void execute(OtPass& pass, int w, int h) {}
+
 	// the texture sampler
 	OtSampler textureSampler = OtSampler("s_texture");
 

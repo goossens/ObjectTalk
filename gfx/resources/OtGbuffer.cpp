@@ -38,21 +38,12 @@ void OtGbuffer::update(int w, int h) {
 		// clear old resources
 		clear();
 
-		// get texture flags
-		uint64_t flags =
-			BGFX_TEXTURE_RT |
-			BGFX_SAMPLER_MIN_POINT |
-			BGFX_SAMPLER_MAG_POINT |
-			BGFX_SAMPLER_MIP_POINT |
-			BGFX_SAMPLER_U_CLAMP |
-			BGFX_SAMPLER_V_CLAMP;
-
 		// create new textures
-		albedoTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA8, flags);
-		normalTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA16F, flags);
-		pbrTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA16F, flags);
-		emissiveTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA8, flags);
-		depthTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::D32F, flags);
+		albedoTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_RT);
+		normalTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA16F, BGFX_TEXTURE_RT);
+		pbrTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA16F, BGFX_TEXTURE_RT);
+		emissiveTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_RT);
+		depthTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::D32F, BGFX_TEXTURE_RT);
 
 		// create gbuffer
 		bgfx::TextureHandle textures[] = {

@@ -22,11 +22,10 @@
 //
 
 class OtBloom : public OtFilter {
-public:
+private:
 	// execute filter
 	void execute(OtPass& pass, int w, int h) override;
 
-private:
 	// GPU assets
 	OtUniformVec4 uniform = OtUniformVec4("u_bloom", 1);
 	OtShaderProgram program = OtShaderProgram("OtBloomVS", "OtBloomFS");

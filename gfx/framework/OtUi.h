@@ -59,3 +59,6 @@ bool OtUiFileSelector(
 // create a splitter widget
 void OtUiSplitterVertical(float* size, float minSize, float maxSize);
 void OtUiSplitterHorizontal(float* size, float minSize, float maxSize);
+
+// selectors
+bool OtUiSelectorPowerOfTwo(const char* label, int& value, int startValue, int endValue);

@@ -27,10 +27,10 @@ public:
 	void setIntensity(float i) { intensity = i; }
 	void setAlpha(float a) { alpha = a; }
 
+private:
 	// execute filter
 	void execute(OtPass& pass, int w, int h) override;
 
-private:
 	// blur properties
 	float intensity = -1.0;
 	float alpha = -1.0;

@@ -35,24 +35,21 @@ done
 
 function needsUpdate() {
 	SOURCE_FILE=$1
-	GROUP_NAME=$(dirname ${SOURCE_FILE})
-	SOURCE_NAME=$(basename ${SOURCE_FILE})
-	SHADER_NAME=${SOURCE_NAME%.*}
-	COMPILED_FILE=generated/${GROUP_NAME}/${SHADER_NAME}_mtl.h
+	TARGET_FILE=$2
 
 	if [ ${FORCE} -eq 1 ]
 	then
 		true
 
-	elif [ ! -f ${COMPILED_FILE} ]
+	elif [ ! -f ${TARGET_FILE} ]
 	then
 		true
 
-	elif [ ${SOURCE_FILE} -nt ${COMPILED_FILE} ]
+	elif [ ${SOURCE_FILE} -nt ${TARGET_FILE} ]
 	then
 		true
 
-	elif [ ${NEWEST_INCLUDE} -nt ${COMPILED_FILE} ]
+	elif [ ${NEWEST_INCLUDE} -nt ${TARGET_FILE} ]
 	then
 		true
 
@@ -63,21 +60,22 @@ function needsUpdate() {
 
 
 #
-#	processShader
+#	compileShader
 #
 
 function compileShader() {
 	# get calling parameters
-	FILE=$1
+	SOURCE=$1
 	TYPE=$2
 	PLATFORM=$3
 	PROFILE=$4
 	ID=$5
 
 	# extract names
-	GROUP=$(dirname ${FILE})
-	SOURCE=$(basename ${FILE})
-	SHADER=${SOURCE%.*}
+	GROUP=$(dirname ${SOURCE})
+	BASENAME=$(basename ${SOURCE})
+	SHADER=${BASENAME%.*}
+	TARGET=generated/${GROUP}/${SHADER}_${ID}.h
 
 	# ensure directory exists
 	mkdir -p generated/${GROUP}
@@ -85,22 +83,28 @@ function compileShader() {
 	# is this a shader for windows?
 	if [ ${PLATFORM} == "windows" ]
 	then
-		# yes, sadly it is, so just add a command to the batch script
-		SHADER_BAT+="%HOMEDRIVE%%HOMEPATH%\\\\bin\\\\shaderc -f ${GROUP}\\\\${SOURCE} -o generated\\\\${GROUP}\\\\${SHADER}_${ID}.h -i include --type ${TYPE} --platform ${PLATFORM} --profile ${PROFILE} -O 3 --bin2c ${SHADER}_${ID}\n"
-
-		# ensure a dummy file exists so we can continue to develop on MacOS and Linux
-		if [ -f generated/${GROUP}/${SHADER}_mtl.h -a ! -f generated/${GROUP}/${SHADER}_dx11.h ]
+		# yes, sadly it is, ensure a dummy shader exists so we can continue to develop on MacOS and Linux
+		if [ -f generated/${GROUP}/${SHADER}_mtl.h -a ! -f ${TARGET} ]
 		then
-			sed "s/_mtl/_$2/" <generated/${GROUP}/${SHADER}_mtl.h >generated/${GROUP}/${SHADER}_dx11.h
+			echo "------------- Generating ${GROUP}/${SHADER}_${ID}.h"
+			sed "s/_mtl/_$2/" <generated/${GROUP}/${SHADER}_mtl.h >${TARGET}
 		fi
 
+		# add shader to batch script
+		SHADER_BAT+="%HOMEDRIVE%%HOMEPATH%\\\\bin\\\\shaderc -f ${GROUP}\\\\${SOURCE} -o generated\\\\${GROUP}\\\\${SHADER}_${ID}.h -i include --type ${TYPE} --platform ${PLATFORM} --profile ${PROFILE} -O 3 --bin2c ${SHADER}_${ID}\n"
+
 	else
-		# no hallelujah, it's not for windows so just compile the shader (if required)
-		${SHADERC} -f ${FILE} -o generated/${GROUP}/${SHADER}_${ID}.h -i include --type ${TYPE} --platform ${PLATFORM} --profile ${PROFILE} --bin2c ${SHADER}_${ID}
+		# no, hallelujah, it's not for windows so just compile the shader (if required)
+		if needsUpdate ${SOURCE} ${TARGET}
+		then
+			echo "------------- Generating ${GROUP}/${SHADER}_${ID}.h"
+			${SHADERC} -f ${SOURCE} -o ${TARGET} -i include --type ${TYPE} --platform ${PLATFORM} --profile ${PROFILE} --bin2c ${SHADER}_${ID}
+		fi
 	fi
 
-	# add compiled shader to lisy of include files
-	SHADER_INCLUDES+="#include \"generated/${GROUP}/${SHADER}_${ID}.h\"\n"
+	# add  shader to list of include files and defines
+	SHADER_INCLUDES+="#include \"${TARGET}\"\n"
+	SHADER_DEFINES+="\tBGFX_EMBEDDED_SHADER(${SHADER}),\n"
 }
 
 
@@ -113,11 +117,11 @@ cd -P "$(dirname "${BASH_SOURCE[0]}")"
 mkdir -p generated
 
 # determine newest include file
-	for FILE in include/*.glsl
+	for INCLUDE in include/*.glsl
 	do
-		if [ ${FILE} -nt "${NEWEST_INCLUDE}" ]
+		if [ ${INCLUDE} -nt "${NEWEST_INCLUDE}" ]
 		then
-			NEWEST_INCLUDE=${FILE}
+			NEWEST_INCLUDE=${INCLUDE}
 		fi
 	done
 
@@ -129,49 +133,31 @@ do
 	# process all vertex shaders
 	for SHADER_PATH in ${GROUP_NAME}/*VS.glsl
 	do
-		if needsUpdate ${SHADER_PATH}
-		then
-			echo "--------------------------------------- Compiling ${SHADER_PATH%.*}"
-			compileShader ${SHADER_PATH} vertex osx metal mtl
-			compileShader ${SHADER_PATH} vertex linux 120 glsl
-			compileShader ${SHADER_PATH} vertex linux spirv spv
-			compileShader ${SHADER_PATH} vertex android 100_es essl
-			compileShader ${SHADER_PATH} vertex windows s_5_0 dx11
-			SHADER_SOURCE=$(basename ${SHADER_PATH})
-			SHADER_DEFINES+="\tBGFX_EMBEDDED_SHADER(${SHADER_SOURCE%.*}),\n"
-		fi
+		compileShader ${SHADER_PATH} vertex osx metal mtl
+		compileShader ${SHADER_PATH} vertex linux 120 glsl
+		compileShader ${SHADER_PATH} vertex linux spirv spv
+		compileShader ${SHADER_PATH} vertex android 100_es essl
+		compileShader ${SHADER_PATH} vertex windows s_5_0 dx11
 	done
 
 	# process all fragment shaders
 	for SHADER_PATH in ${GROUP_NAME}/*FS.glsl
 	do
-		if needsUpdate ${SHADER_PATH}
-		then
-			echo "--------------------------------------- Compiling ${SHADER_PATH%.*}"
-			compileShader ${SHADER_PATH} fragment osx metal mtl
-			compileShader ${SHADER_PATH} fragment linux 120 glsl
-			compileShader ${SHADER_PATH} fragment linux spirv spv
-			compileShader ${SHADER_PATH} fragment android 100_es essl
-			compileShader ${SHADER_PATH} fragment windows s_5_0 dx11
-			SHADER_SOURCE=$(basename ${SHADER_PATH})
-			SHADER_DEFINES+="\tBGFX_EMBEDDED_SHADER(${SHADER_SOURCE%.*}),\n"
-		fi
+		compileShader ${SHADER_PATH} fragment osx metal mtl
+		compileShader ${SHADER_PATH} fragment linux 120 glsl
+		compileShader ${SHADER_PATH} fragment linux spirv spv
+		compileShader ${SHADER_PATH} fragment android 100_es essl
+		compileShader ${SHADER_PATH} fragment windows s_5_0 dx11
 	done
 
 	# process all compute shaders
 	for SHADER_PATH in ${GROUP_NAME}/*CS.glsl
 	do
-		if needsUpdate ${SHADER_PATH}
-		then
-			echo "--------------------------------------- Compiling ${SHADER_PATH%.*}"
-			compileShader ${SHADER_PATH} compute osx metal mtl
-			compileShader ${SHADER_PATH} compute linux 430 glsl
-			compileShader ${SHADER_PATH} compute linux spirv spv
-			compileShader ${SHADER_PATH} compute android 300_es essl
-			compileShader ${SHADER_PATH} compute windows s_5_0 dx11
-			SHADER_SOURCE=$(basename ${SHADER_PATH})
-			SHADER_DEFINES+="\tBGFX_EMBEDDED_SHADER(${SHADER_SOURCE%.*}),\n"
-		fi
+		compileShader ${SHADER_PATH} compute osx metal mtl
+		compileShader ${SHADER_PATH} compute linux 430 glsl
+		compileShader ${SHADER_PATH} compute linux spirv spv
+		compileShader ${SHADER_PATH} compute android 300_es essl
+		compileShader ${SHADER_PATH} compute windows s_5_0 dx11
 	done
 done
 

@@ -110,6 +110,10 @@ void OtFramework::initBGFX() {
 		OtLogFatal("Your system/graphics card does not support blitting between textures");
 	}
 
+	if (!(caps->supported & BGFX_CAPS_TEXTURE_READ_BACK)) {
+		OtLogFatal("Your system/graphics card does not support texture readback");
+	}
+
 	// initialize time management
 	lastTime = bx::getHPCounter();
 }

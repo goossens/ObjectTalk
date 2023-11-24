@@ -24,10 +24,10 @@ uniform vec4 u_terrainMaterial[6];
 #define u_regionTextured(i) bool(u_terrainMaterial[i + 1].a)
 
 // texture samplers
-SAMPLER2D(s_textureSampler0, 0);
-SAMPLER2D(s_textureSampler1, 1);
-SAMPLER2D(s_textureSampler2, 2);
-SAMPLER2D(s_textureSampler3, 3);
+SAMPLER2D(s_region1Sampler, 0);
+SAMPLER2D(s_region2Sampler, 1);
+SAMPLER2D(s_region3Sampler, 2);
+SAMPLER2D(s_region4Sampler, 3);
 
 // determine terrain color by region
 vec3 getRegionColor(int region, sampler2D s, vec2 uv) {
@@ -44,40 +44,40 @@ void main() {
 
 	// region 1
 	if (height < u_regionTransition1) {
-		albedo = getRegionColor(1, s_textureSampler0, uv);
+		albedo = getRegionColor(1, s_region1Sampler, uv);
 
 	// region 1 to region 2 transition
 	} else if (height < u_regionTransition1 + u_regionOverlap1) {
 		albedo = mix(
-			getRegionColor(1, s_textureSampler0, uv),
-			getRegionColor(2, s_textureSampler1, uv),
+			getRegionColor(1, s_region1Sampler, uv),
+			getRegionColor(2, s_region2Sampler, uv),
 			(height - u_regionTransition1) / u_regionOverlap1);
 
 	// region 2
 	} else if (height < u_regionTransition2) {
-		albedo = getRegionColor(2, s_textureSampler1, uv);
+		albedo = getRegionColor(2, s_region2Sampler, uv);
 
 	// region 2 to region 3 transition
 	} else if (height < u_regionTransition2 + u_regionOverlap2) {
 		albedo = mix(
-			getRegionColor(2, s_textureSampler1, uv),
-			getRegionColor(3, s_textureSampler2, uv),
+			getRegionColor(2, s_region2Sampler, uv),
+			getRegionColor(3, s_region3Sampler, uv),
 			(height - u_regionTransition2) / u_regionOverlap2);
 
 	// region 3
 	} else if (height < u_regionTransition3) {
-		albedo = getRegionColor(3, s_textureSampler2, uv);
+		albedo = getRegionColor(3, s_region3Sampler, uv);
 
 	// region 3 to region 4 transition
 	} else if (height < u_regionTransition3 + u_regionOverlap3) {
 		albedo = mix(
-			getRegionColor(3, s_textureSampler2, uv),
-			getRegionColor(4, s_textureSampler3, uv),
+			getRegionColor(3, s_region3Sampler, uv),
+			getRegionColor(4, s_region4Sampler, uv),
 			(height - u_regionTransition3) / u_regionOverlap3);
 
 	// region 4
 	} else {
-		albedo = getRegionColor(4, s_textureSampler3, uv);
+		albedo = getRegionColor(4, s_region4Sampler, uv);
 	}
 
 	// store information in gbuffer

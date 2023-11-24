@@ -11,6 +11,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <string>
 
 #include "glm/ext.hpp"
 
@@ -328,4 +329,32 @@ void OtUiSplitterVertical(float* size, float minSize, float maxSize) {
 
 void OtUiSplitterHorizontal(float* size, float minSize, float maxSize) {
 	OtUiSplitter(false, size, minSize, maxSize);
+}
+
+
+//
+//	OtUiSelectorPowerOfTwo
+//
+
+bool OtUiSelectorPowerOfTwo(const char* label, int& value, int startValue, int endValue) {
+	bool changed = false;
+
+	if (ImGui::BeginCombo(label, std::to_string(value).c_str())) {
+		for (auto size = startValue; size <= endValue; size <<= 1) {
+			if (ImGui::Selectable(std::to_string(size).c_str(), size == value)) {
+				if (value != size) {
+					value = size;
+					changed = true;
+				}
+			}
+
+			if (size == value) {
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+
+		ImGui::EndCombo();
+	}
+
+	return changed;
 }

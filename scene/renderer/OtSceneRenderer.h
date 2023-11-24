@@ -132,6 +132,7 @@ private:
 	bool renderEntityHighlight = false;
 
 	// uniforms
+	OtUniformVec4 terrainUniforms{"u_terrain", 1};
 	OtUniformVec4 pbrMaterialUniforms{"u_pbrMaterial", 5};
 	OtUniformVec4 terrainMaterialUniforms{"u_terrainMaterial", 6};
 	OtUniformVec4 lightingUniforms{"u_lighting", 3};
@@ -143,28 +144,31 @@ private:
 	OtUniformMat4 inverseTransform{"u_inverseTransform", 1};
 
 	// samplers
-	OtSampler textureSampler0{"s_textureSampler0"};
-	OtSampler textureSampler1{"s_textureSampler1"};
-	OtSampler textureSampler2{"s_textureSampler2"};
-	OtSampler textureSampler3{"s_textureSampler3"};
-
 	OtSampler deferredGeometryAlbedoSampler{"s_deferredGeometryAlbedoTexture"};
 	OtSampler deferredGeometryNormalSampler{"s_deferredGeometryNormalTexture"};
 	OtSampler deferredGeometryMetallicRoughnessSampler{"s_deferredGeometryMetallicRoughnessTexture"};
 	OtSampler deferredGeometryEmissiveSampler{"s_deferredGeometryEmissiveSampler"};
 	OtSampler deferredGeometryAoSampler{"s_deferredGeometryAoTexture"};
 
-	OtSampler deferredLightingAlbedoSampler{"s_deferredLightingAlbedoTexture"};
-	OtSampler deferredLightingPositionSampler{"s_deferredLightingPositionTexture"};
-	OtSampler deferredLightingNormalSampler{"s_deferredLightingNormalTexture"};
-	OtSampler deferredLightingPbrSampler{"s_deferredLightingPbrTexture"};
-	OtSampler deferredLightingEmissiveSampler{"s_deferredLightingEmissiveTexture"};
-	OtSampler deferredLightingDepthSampler{"s_deferredLightingDepthTexture"};
+	OtSampler deferredLightingAlbedoSampler{"s_deferredLightingAlbedoTexture", OtSampler::pointSampling | OtSampler::clampSampling};
+	OtSampler deferredLightingPositionSampler{"s_deferredLightingPositionTexture", OtSampler::pointSampling | OtSampler::clampSampling};
+	OtSampler deferredLightingNormalSampler{"s_deferredLightingNormalTexture", OtSampler::pointSampling | OtSampler::clampSampling};
+	OtSampler deferredLightingPbrSampler{"s_deferredLightingPbrTexture", OtSampler::pointSampling | OtSampler::clampSampling};
+	OtSampler deferredLightingEmissiveSampler{"s_deferredLightingEmissiveTexture", OtSampler::pointSampling | OtSampler::clampSampling};
+	OtSampler deferredLightingDepthSampler{"s_deferredLightingDepthTexture", OtSampler::pointSampling | OtSampler::clampSampling};
 
-	OtSampler selectedSampler{"s_selectedTexture"};
+	OtSampler region1Sampler{"s_region1Sampler"};
+	OtSampler region2Sampler{"s_region2Sampler"};
+	OtSampler region3Sampler{"s_region3Sampler"};
+	OtSampler region4Sampler{"s_region4Sampler"};
 
-	OtSampler postProcessSampler{"s_postProcessTexture"};
-	OtSampler bloomSampler{"s_bloomTexture"};
+	OtSampler heightmapSampler{"s_HeightmapTexture"};
+	OtSampler skySampler{"s_skySampler"};
+
+	OtSampler selectedSampler{"s_selectedTexture", OtSampler::pointSampling | OtSampler::clampSampling};
+
+	OtSampler postProcessSampler{"s_postProcessTexture", OtSampler::pointSampling | OtSampler::clampSampling};
+	OtSampler bloomSampler{"s_bloomTexture", OtSampler::pointSampling | OtSampler::clampSampling};
 
 	// shader programs
 	OtShaderProgram deferredPbrProgram{"OtDeferredVS", "OtDeferredPbrFS"};

@@ -118,7 +118,7 @@ void OtSceneRenderer::renderSkyBox(OtPass& pass, OtSkyBoxComponent& component) {
 	skyUniforms.submit();
 
 	// submit texture via sampler
-	textureSampler0.submit(0, component.cubemap->getCubeMap());
+	skySampler.submit(0, component.cubemap->getCubeMap());
 
 	// run the program
 	skyBoxProgram.setState(OtStateWriteRgb | OtStateWriteA);
@@ -144,7 +144,7 @@ void OtSceneRenderer::renderSkySphere(OtPass& pass, OtSkySphereComponent& compon
 	skyUniforms.submit();
 
 	// submit texture via sampler
-	textureSampler0.submit(0, component.texture->getTexture());
+	skySampler.submit(0, component.texture->getTexture());
 
 	// run the program
 	skySphereProgram.setState(OtStateWriteRgb | OtStateWriteA);

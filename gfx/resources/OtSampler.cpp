@@ -18,7 +18,7 @@
 //	OtSampler::OtSampler
 //
 
-OtSampler::OtSampler(const char* name) {
+OtSampler::OtSampler(const char* name, uint32_t f) : flags(f) {
 	initialize(name);
 }
 
@@ -48,7 +48,7 @@ void OtSampler::submit(int unit, const char* name) {
 	}
 
 	OtTexture dummy;
-	bgfx::setTexture(unit, uniform.getHandle(), dummy.getTextureHandle());
+	bgfx::setTexture(unit, uniform.getHandle(), dummy.getTextureHandle(), flags);
 }
 
 void OtSampler::submit(int unit, OtTexture& texture, const char* name) {
@@ -61,7 +61,7 @@ void OtSampler::submit(int unit, OtTexture& texture, const char* name) {
 			OtLogFatal("internal error: sampler not initialized");
 		}
 
-		bgfx::setTexture(unit, uniform.getHandle(), texture.getTextureHandle());
+		bgfx::setTexture(unit, uniform.getHandle(), texture.getTextureHandle(), flags);
 
 	} else {
 		submit(unit, name);
@@ -78,7 +78,7 @@ void OtSampler::submit(int unit, bgfx::TextureHandle texture, const char* name) 
 			OtLogFatal("internal error: sampler not initialized");
 		}
 
-		bgfx::setTexture(unit, uniform.getHandle(), texture);
+		bgfx::setTexture(unit, uniform.getHandle(), texture, flags);
 
 	} else {
 		submit(unit, name);
@@ -91,7 +91,7 @@ void OtSampler::submit(int unit, OtCubeMap& cubemap, const char* name) {
 	}
 
 	if (isValid()) {
-		bgfx::setTexture(unit, uniform.getHandle(), cubemap.getTextureHandle());
+		bgfx::setTexture(unit, uniform.getHandle(), cubemap.getTextureHandle(), flags);
 
 	} else {
 		OtLogFatal("internal error: sampler not initialized before submission");

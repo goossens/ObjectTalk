@@ -20,7 +20,11 @@
 //	OtGenerator::render
 //
 
-void OtGenerator::render(int w, int h, OtFrameBuffer& destination) {
+void OtGenerator::render(OtFrameBuffer &destination) {
+	// get dimensions
+	int w = destination.getWidth();
+	int h = destination.getHeight();
+
 	// setup generator pass
 	OtPass pass;
 	pass.setFrameBuffer(destination);

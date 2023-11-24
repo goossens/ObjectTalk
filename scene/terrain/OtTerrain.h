@@ -22,6 +22,7 @@
 #include "OtIndexBuffer.h"
 #include "OtVertexBuffer.h"
 
+#include "OtTerrainHeight.h"
 #include "OtTerrainMesh.h"
 #include "OtTerrainTile.h"
 
@@ -41,6 +42,12 @@ public:
 
 	// access the meshes
 	std::vector<OtTerrainMesh>& getMeshes(OtFrustum& frustum, const glm::vec3& camera);
+
+	// get the heightmap size
+	int getHeightmapSize() { return heightmap.getSize(); }
+
+	// bind heightmap to specified sampler
+	void bindHeightmap(OtSampler& sampler, int unit) { heightmap.bindHeightmap(sampler, unit); }
 
 	// are we rendering a wireframe
 	inline bool isWireframe() { return wireframe; }
@@ -65,8 +72,9 @@ private:
 
 	std::vector<OtTerrainTile> centerTiles;
 	std::vector<OtTerrainTile> ringTiles;
-
 	std::vector<OtTerrainMesh> meshes;
+
+	OtTerrainHeight heightmap;
 
 	// current geoclipmap center
 	float centerX;

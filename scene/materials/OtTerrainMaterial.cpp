@@ -31,11 +31,11 @@ bool OtTerrainMaterialClass::renderGUI() {
 
 	// render button
 	if (ImGui::Button("e", ImVec2(size, size))) {
-		ImGui::OpenPopup("TerrainPopup");
+		ImGui::OpenPopup("TerrainMaterialPopup");
 	}
 
 	// open popup (if required)
-	if (ImGui::BeginPopup("TerrainPopup")) {
+	if (ImGui::BeginPopup("TerrainMaterialPopup")) {
 		if (ImGui::BeginTable("layout", 5)) {
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Color");

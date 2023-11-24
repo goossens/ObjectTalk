@@ -31,14 +31,14 @@ public:
 	// set rendering state
 	void setState(int s) { state = s; }
 
-	// execute generator
-	virtual void execute(OtPass& pass, int w, int h) {}
-
-	// render generator
-	void render(int w, int h, OtFrameBuffer& destination);
+	// run generator
+	void render(OtFrameBuffer& destination);
 	void render(int w, int h);
 
 private:
+	// execute generator
+	virtual void execute(OtPass& pass, int w, int h) {}
+
 	// rendering state
 	uint64_t state = BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A;
 };

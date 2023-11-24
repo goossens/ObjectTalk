@@ -87,6 +87,14 @@ void OtSceneRenderer::renderDeferredTerrain(OtPass& pass, OtTerrainComponent& te
 				OtStateCullCw);
 		}
 
+		// set the uniform values
+		glm::vec4* uniforms = terrainUniforms.getValues();
+		uniforms[0] = glm::vec4(terrain.terrain.getHeightmapSize(), 0.0f, 0.0f, 0.0f);
+		terrainUniforms.submit();
+
+		// bind the heightmap texture
+		terrain.terrain.bindHeightmap(heightmapSampler, 0);
+
 		// set the transform
 		program->setTransform(mesh.transform);
 

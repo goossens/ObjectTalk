@@ -10,8 +10,8 @@
 			{
 				"component": "Transform",
 				"rotation": [
+					-29.0,
 					0.0,
-					1.0,
 					0.0
 				],
 				"scale": [
@@ -21,8 +21,8 @@
 				],
 				"translation": [
 					0.0,
-					3.0,
-					5.0
+					23.299999237060547,
+					15.600000381469727
 				]
 			},
 			{
@@ -112,11 +112,21 @@
 			},
 			{
 				"component": "Terrain",
-				"hScale": 0.029999999329447746,
-				"lods": 7,
+				"hScale": 0.009999999776482582,
+				"heightmap": {
+					"noise": {
+						"amplitude": 0.4000000059604645,
+						"frequency": 10,
+						"lacunarity": 2,
+						"octaves": 7,
+						"persistence": 0.5
+					},
+					"size": 512
+				},
+				"lods": 10,
 				"tileSize": 32,
-				"vOffset": 0.5,
-				"vScale": 1.0,
+				"vOffset": -50.0,
+				"vScale": 100.0,
 				"wireframe": true
 			}
 		]

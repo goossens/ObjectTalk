@@ -26,12 +26,26 @@
 
 class OtSampler {
 public:
+	// flags
+	static constexpr uint32_t defaultSampling = UINT32_MAX;
+	static constexpr uint32_t linearSampling = BGFX_SAMPLER_NONE;
+	static constexpr uint32_t pointSampling = BGFX_SAMPLER_POINT;
+	static constexpr uint32_t anisotropicSampling = BGFX_SAMPLER_MIN_ANISOTROPIC | BGFX_SAMPLER_MAG_ANISOTROPIC;
+	static constexpr uint32_t repeatSampling = BGFX_SAMPLER_NONE;
+	static constexpr uint32_t clampSampling = BGFX_SAMPLER_UVW_CLAMP;
+	static constexpr uint32_t mirrorSampling = BGFX_SAMPLER_UVW_MIRROR;
+
 	// constructor/destructor
 	OtSampler() = default;
-	OtSampler(const char* name);
+	OtSampler(const char* name, uint32_t flags=defaultSampling);
 
 	// initialize sampler
 	void initialize(const char* name);
+
+	// (re)set/get the flags
+	void resetFlags() { flags = defaultSampling; }
+	void setFlags(uint32_t f) { flags = f; }
+	uint32_t getFlags() { return flags; }
 
 	// clear the resources
 	void clear() { uniformName.clear(); uniform.clear(); }
@@ -46,6 +60,9 @@ public:
 	void submit(int unit, OtCubeMap& cubemap, const char* name=nullptr);
 
 private:
+	// properties
+	uint32_t flags = defaultSampling;
+
 	// uniform
 	std::string uniformName;
 	OtBgfxHandle<bgfx::UniformHandle> uniform;

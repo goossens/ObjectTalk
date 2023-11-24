@@ -84,7 +84,7 @@ void OtSceneRenderer::submitPbrUniforms(OtPbrMaterial material) {
 	// submit the uniforms
 	pbrMaterialUniforms.submit();
 
-	// submit all material textures (or dummies if they are not set)
+	// submit all material textures (or dummies if they are not set (yet))
 	submitSampler(deferredGeometryAlbedoSampler, 0, material->albedoTexture);
 	submitSampler(deferredGeometryMetallicRoughnessSampler, 1, material->metallicRoughnessTexture);
 	submitSampler(deferredGeometryEmissiveSampler, 2, material->emissiveTexture);
@@ -122,10 +122,10 @@ void OtSceneRenderer::submitTerrainUniforms(OtTerrainMaterial material) {
 	terrainMaterialUniforms.submit();
 
 	// submit all material textures (or dummies if they are not set)
-	submitSampler(textureSampler0, 0, material->region1Texture);
-	submitSampler(textureSampler1, 1, material->region2Texture);
-	submitSampler(textureSampler2, 2, material->region3Texture);
-	submitSampler(textureSampler3, 3, material->region4Texture);
+	submitSampler(region1Sampler, 0, material->region1Texture);
+	submitSampler(region2Sampler, 1, material->region2Texture);
+	submitSampler(region3Sampler, 2, material->region3Texture);
+	submitSampler(region4Sampler, 3, material->region4Texture);
 }
 
 

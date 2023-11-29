@@ -4,8 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-#FetchContent_Declare(json GIT_REPOSITORY "https://github.com/nlohmann/json" GIT_TAG "v3.11.2")
-FetchContent_Declare(json GIT_REPOSITORY "https://github.com/Nauroze/json" GIT_TAG "update-cmake-version")
+FetchContent_Declare(json GIT_REPOSITORY "https://github.com/nlohmann/json" GIT_TAG "v3.11.3")
 
 FetchContent_MakeAvailable(json)
 

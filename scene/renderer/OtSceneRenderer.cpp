@@ -29,6 +29,7 @@ int OtSceneRenderer::render(OtScene* scene, OtEntity selected) {
 		pass.setClear(true, true, glm::vec4(0.0f));
 		pass.setRectangle(0, 0, width, height);
 		pass.setFrameBuffer(gbuffer);
+		pass.touch();
 
 		// render deferred entities
 		if (hasOpaqueEntities) {
@@ -47,7 +48,7 @@ int OtSceneRenderer::render(OtScene* scene, OtEntity selected) {
 		renderSkyPass(scene);
 	}
 
-	if (hasOpaqueEntities) {
+	if (hasOpaqueEntities || hasTerrainEntities) {
 		renderDeferredLightingPass(scene);
 	}
 
@@ -56,7 +57,7 @@ int OtSceneRenderer::render(OtScene* scene, OtEntity selected) {
 	}
 
 	// handle editor passes
-	if (gridScale > 0.0) {
+	if (gridScale > 0.0f) {
 		renderGridPass();
 	}
 

@@ -20,7 +20,7 @@
 //	OtUniformMat4::OtUniformMat4
 //
 
-OtUniformMat4::OtUniformMat4(const char *name, size_t size) {
+OtUniformMat4::OtUniformMat4(const char* name, size_t size) {
 	initialize(name, size);
 }
 
@@ -38,17 +38,15 @@ OtUniformMat4::~OtUniformMat4() {
 //	OtUniformMat4::initialize
 //
 
-void OtUniformMat4::initialize(const char *name, size_t s) {
-	// clear uniform
-	clear();
+void OtUniformMat4::initialize(const char* n, size_t s) {
+	// clear first if (required)
+	if (values || isValid()) {
+		clear();
+	}
 
-	// remember size
+	// store properties and allocate memory
+	name = n;
 	size = s;
-
-	// register uniform
-	uniform = bgfx::createUniform(name, bgfx::UniformType::Mat4, size);
-
-	// allocate space for uniform values
 	values = new glm::mat4[size];
 }
 
@@ -58,14 +56,20 @@ void OtUniformMat4::initialize(const char *name, size_t s) {
 //
 
 void OtUniformMat4::clear() {
-		// release values
+	// release values (if required)
 	if (values) {
 		delete [] values;
 		values = nullptr;
 	}
 
-	// release uniform
-	uniform.clear();
+	// release uniform (if required)
+	if (isValid()) {
+		uniform.clear();
+	}
+
+	// reset properties
+	name.clear();
+	size = 0;
 }
 
 
@@ -74,11 +78,18 @@ void OtUniformMat4::clear() {
 //
 
 void OtUniformMat4::submit() {
-	// sanity check
-	if (!size) {
-		OtLogFatal("Internal error: Uniform not initialized");
+	// generate resource (if required)
+	if (!isValid()) {
+		// sanity check
+		if (name.size() && size) {
+			// register uniform
+			uniform = bgfx::createUniform(name.c_str(), bgfx::UniformType::Mat4, size);
+
+		} else {
+			OtLogFatal("Internal error: Uniform not initialized before submission");
+		}
 	}
 
-	// submit uniform to GPU
+	// submit uniform value(s) to GPU
 	bgfx::setUniform(uniform.getHandle(), values, size);
 }

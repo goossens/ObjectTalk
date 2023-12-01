@@ -32,12 +32,11 @@ void OtSceneRenderer::renderHighlightPass(OtScene* scene, OtEntity selected) {
 
 	// render the outline of the selected entity
 	OtPass outlinePass;
-	outlinePass.setClear(false, false);
 	outlinePass.setRectangle(0, 0, width, height);
 	outlinePass.setFrameBuffer(compositeBuffer);
 	outlinePass.submitQuad(width, height);
 
-	outlineUniforms.set(0, glm::vec4(1.0 / width, 1.0 / height, 0.0f, 0.0f));
+	outlineUniforms.setValue(0, glm::vec4(1.0 / width, 1.0 / height, 0.0f, 0.0f));
 	outlineUniforms.submit();
 
 	selectedBuffer.bindColorTexture(selectedSampler, 0);

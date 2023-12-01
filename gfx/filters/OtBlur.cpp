@@ -19,9 +19,9 @@
 //
 
 void OtBlur::execute(OtPass& pass, int w, int h) {
-	uniform.set(0, glm::vec4(
-		horizontalScale == -1.0 ? (0.2 / (float) w) : horizontalScale,
-		verticalScale == -1.0 ? (0.2 / (float) h) : verticalScale,
+	uniform.setValue(0, glm::vec4(
+		horizontalScale == -1.0 ? (0.2 / float(w)) : horizontalScale,
+		verticalScale == -1.0 ? (0.2 / float(h)) : verticalScale,
 		intensity == -1.0 ? 2.0 : intensity,
 		alpha == -1.0 ? 1.0 : alpha));
 

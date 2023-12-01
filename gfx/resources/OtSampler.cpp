@@ -15,22 +15,29 @@
 
 
 //
-//	OtSampler::OtSampler
+//	OtSampler::initialize
 //
 
-OtSampler::OtSampler(const char* name, uint32_t f) : flags(f) {
-	initialize(name);
+void OtSampler::initialize(const char* n, uint32_t f) {
+	if (n != name || flags != f) {
+		if (isValid()) {
+			uniform.clear();
+		}
+
+		name = n;
+		flags = f;
+	}
 }
 
 
 //
-//	OtSampler::initialize
+// OtSampler::clear
 //
 
-void OtSampler::initialize(const char* name) {
-	// create the uniform
-	uniformName = name;
-	uniform = bgfx::createUniform(name, bgfx::UniformType::Sampler);
+void OtSampler::clear() {
+	flags = defaultSampling;
+	name.clear();
+	uniform.clear();
 }
 
 
@@ -38,46 +45,58 @@ void OtSampler::initialize(const char* name) {
 //	OtSampler::submit
 //
 
-void OtSampler::submit(int unit, const char* name) {
-	if (name && name != uniformName) {
-		initialize(name);
+void OtSampler::submit(int unit, const char* n) {
+	// initialize sampler if new name is provided
+	if (n) {
+		initialize(n);
 	}
 
-	if (!uniform.isValid()) {
-		OtLogFatal("internal error: sampler not initialized");
+	// generate resource (if required)
+	if (!isValid()) {
+		createUniform();
 	}
 
+	// submit dummy texture
 	OtTexture dummy;
 	bgfx::setTexture(unit, uniform.getHandle(), dummy.getTextureHandle(), flags);
 }
 
 void OtSampler::submit(int unit, OtTexture& texture, const char* name) {
+	// see if texture is valid/ready
 	if (texture.isValid()) {
-		if (name && name != uniformName) {
+		// initialize sampler if new name is provided
+		if (name) {
 			initialize(name);
 		}
 
-		if (!uniform.isValid()) {
-			OtLogFatal("internal error: sampler not initialized");
+		// generate resource (if required)
+		if (!isValid()) {
+			createUniform();
 		}
 
+		// submit texture
 		bgfx::setTexture(unit, uniform.getHandle(), texture.getTextureHandle(), flags);
 
 	} else {
+		// submit dummy texture
 		submit(unit, name);
 	}
 }
 
 void OtSampler::submit(int unit, bgfx::TextureHandle texture, const char* name) {
+	// see if texture is valid/ready
 	if (bgfx::isValid(texture)) {
-		if (name && name != uniformName) {
+		// initialize sampler if new name is provided
+		if (name) {
 			initialize(name);
 		}
 
-		if (!uniform.isValid()) {
-			OtLogFatal("internal error: sampler not initialized");
+		// generate resource (if required)
+		if (!isValid()) {
+			createUniform();
 		}
 
+		// submit texture
 		bgfx::setTexture(unit, uniform.getHandle(), texture, flags);
 
 	} else {
@@ -86,14 +105,29 @@ void OtSampler::submit(int unit, bgfx::TextureHandle texture, const char* name) 
 }
 
 void OtSampler::submit(int unit, OtCubeMap& cubemap, const char* name) {
-	if (name && name != uniformName) {
+	// initialize sampler if new name is provided
+	if (name) {
 		initialize(name);
 	}
 
-	if (isValid()) {
-		bgfx::setTexture(unit, uniform.getHandle(), cubemap.getTextureHandle(), flags);
+	// generate resource (if required)
+	if (!isValid()) {
+		createUniform();
+	}
 
-	} else {
+	// submit texture
+	bgfx::setTexture(unit, uniform.getHandle(), cubemap.getTextureHandle(), flags);
+}
+
+
+//
+//	OtSampler::createUniform
+//
+
+void OtSampler::createUniform() {
+	if (!name.size()) {
 		OtLogFatal("internal error: sampler not initialized before submission");
 	}
+
+	uniform = bgfx::createUniform(name.c_str(), bgfx::UniformType::Sampler);
 }

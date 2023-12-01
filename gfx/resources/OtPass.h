@@ -38,6 +38,7 @@ public:
 	void setTransform(const glm::mat4& view, const glm::mat4& projection);
 	void submitQuad(int w, int h);
 	void runShaderProgram(OtShaderProgram& program);
+	void touch();
 
 	void blit(
 		bgfx::TextureHandle dest,

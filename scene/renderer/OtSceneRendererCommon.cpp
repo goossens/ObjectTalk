@@ -27,9 +27,6 @@ void OtSceneRenderer::submitMaterialUniforms(OtMaterial material) {
 	if (material.isKindOf<OtPbrMaterialClass>()) {
 		submitPbrUniforms(OtPbrMaterial(material));
 
-	} else if (material.isKindOf<OtTerrainMaterialClass>()) {
-		submitTerrainUniforms(OtTerrainMaterial(material));
-
 	} else {
 		OtError("Internal error: invalid material type [%s]", material->getTypeName());
 	}
@@ -37,10 +34,10 @@ void OtSceneRenderer::submitMaterialUniforms(OtMaterial material) {
 
 
 //
-//	submitSampler
+//	OtSceneRenderer::submitSampler
 //
 
-static void submitSampler(OtSampler& sampler, int unit, OtAsset<OtTextureAsset>& texture) {
+void OtSceneRenderer::submitSampler(OtSampler& sampler, int unit, OtAsset<OtTextureAsset>& texture) {
 	if (texture.isReady()) {
 		sampler.submit(unit, texture->getTexture());
 
@@ -90,42 +87,6 @@ void OtSceneRenderer::submitPbrUniforms(OtPbrMaterial material) {
 	submitSampler(deferredGeometryEmissiveSampler, 2, material->emissiveTexture);
 	submitSampler(deferredGeometryAoSampler, 3, material->aoTexture);
 	submitSampler(deferredGeometryNormalSampler, 4, material->normalTexture);
-}
-
-
-//
-//	OtSceneRenderer::submitTerrainUniforms
-//
-
-void OtSceneRenderer::submitTerrainUniforms(OtTerrainMaterial material) {
-	// set the uniform values
-	glm::vec4* uniforms = terrainMaterialUniforms.getValues();
-
-	uniforms[0] = glm::vec4(
-		material->region1Transition,
-		material->region2Transition,
-		material->region3Transition,
-		material->scale);
-
-	uniforms[1] = glm::vec4(
-		material->region1Overlap,
-		material->region2Overlap,
-		material->region3Overlap,
-		0.0f);
-
-	uniforms[2] = glm::vec4(material->region1Color, material->region1Texture.isReady());
-	uniforms[3] = glm::vec4(material->region2Color, material->region2Texture.isReady());
-	uniforms[4] = glm::vec4(material->region3Color, material->region3Texture.isReady());
-	uniforms[5] = glm::vec4(material->region4Color, material->region4Texture.isReady());
-
-	// submit the uniforms
-	terrainMaterialUniforms.submit();
-
-	// submit all material textures (or dummies if they are not set)
-	submitSampler(region1Sampler, 0, material->region1Texture);
-	submitSampler(region2Sampler, 1, material->region2Texture);
-	submitSampler(region3Sampler, 2, material->region3Texture);
-	submitSampler(region4Sampler, 3, material->region4Texture);
 }
 
 

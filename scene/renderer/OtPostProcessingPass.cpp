@@ -40,7 +40,7 @@ void OtSceneRenderer::renderPostProcessingPass(OtScene* scene) {
 	pass.submitQuad(width, height);
 
 	// set uniform
-	postProcessUniforms.set(0, glm::vec4(bloomIntensity > 0.0f, exposure, 0.0f, 0.0f));
+	postProcessUniforms.setValue(0, glm::vec4(bloomIntensity > 0.0f, exposure, 0.0f, 0.0f));
 	postProcessUniforms.submit();
 
 	// set source textures
@@ -83,7 +83,7 @@ void OtSceneRenderer::renderBloom(float bloomIntensity) {
 		pass.submitQuad(dw, dh);
 
 		// set uniform
-		bloomUniforms.set(0, glm::vec4(1.0 / sw, 1.0 / sh, 0.0f, 0.0f));
+		bloomUniforms.setValue(0, glm::vec4(1.0 / sw, 1.0 / sh, 0.0f, 0.0f));
 		bloomUniforms.submit();
 
 		// set source texture
@@ -112,7 +112,7 @@ void OtSceneRenderer::renderBloom(float bloomIntensity) {
 		pass.submitQuad(dw, dh);
 
 		// set uniform
-		bloomUniforms.set(0, glm::vec4(1.0 / sw, 1.0 / sh, bloomIntensity, 0.0f));
+		bloomUniforms.setValue(0, glm::vec4(1.0 / sw, 1.0 / sh, bloomIntensity, 0.0f));
 		bloomUniforms.submit();
 
 		// set source texture

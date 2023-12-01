@@ -26,28 +26,28 @@ public:
 	void clear();
 
 	// see if gbuffer is valid
-	bool isValid() { return gbuffer.isValid(); }
+	inline bool isValid() { return gbuffer.isValid(); }
 
 	// update gbuffer
 	void update(int width, int height);
 
 	// get framebgbufferuffer dimensions
-	int getWidth() { return width; }
-	int getHeight() { return height; }
+	inline int getWidth() { return width; }
+	inline int getHeight() { return height; }
 
 	// get textures
-	bgfx::TextureHandle getAlbedoTexture() { return albedoTexture.getHandle(); }
-	bgfx::TextureHandle getNormalTexture() { return normalTexture.getHandle(); }
-	bgfx::TextureHandle getPbrTexture() { return pbrTexture.getHandle(); }
-	bgfx::TextureHandle getEmissiveTexture() { return emissiveTexture.getHandle(); }
-	bgfx::TextureHandle getDepthTexture() { return depthTexture.getHandle(); }
+	inline bgfx::TextureHandle getAlbedoTexture() { return albedoTexture.getHandle(); }
+	inline bgfx::TextureHandle getNormalTexture() { return normalTexture.getHandle(); }
+	inline bgfx::TextureHandle getPbrTexture() { return pbrTexture.getHandle(); }
+	inline bgfx::TextureHandle getEmissiveTexture() { return emissiveTexture.getHandle(); }
+	inline bgfx::TextureHandle getDepthTexture() { return depthTexture.getHandle(); }
 
 	// get texture indices
-	int getAlbedoTextureIndex() { return albedoTexture.getIndex(); }
-	int getNormalTextureIndex() { return normalTexture.getIndex(); }
-	int getPbrTextureIndex() { return pbrTexture.getIndex(); }
-	int getEmissiveTextureIndex() { return emissiveTexture.getIndex(); }
-	int getDepthTextureIndex() { return depthTexture.getIndex(); }
+	inline int getAlbedoTextureIndex() { return albedoTexture.getIndex(); }
+	inline int getNormalTextureIndex() { return normalTexture.getIndex(); }
+	inline int getPbrTextureIndex() { return pbrTexture.getIndex(); }
+	inline int getEmissiveTextureIndex() { return emissiveTexture.getIndex(); }
+	inline int getDepthTextureIndex() { return depthTexture.getIndex(); }
 
 	// bind textures
 	void bindAlbedoTexture(OtSampler& sampler, int unit);

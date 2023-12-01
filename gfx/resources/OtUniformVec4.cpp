@@ -18,7 +18,7 @@
 //	OtUniformVec4::OtUniformVec4
 //
 
-OtUniformVec4::OtUniformVec4(const char *name, size_t size) {
+OtUniformVec4::OtUniformVec4(const char* name, size_t size) {
 	initialize(name, size);
 }
 
@@ -36,14 +36,13 @@ OtUniformVec4::~OtUniformVec4() {
 //	OtUniformVec4::initialize
 //
 
-void OtUniformVec4::initialize(const char *name, size_t s) {
-	// remember size
+void OtUniformVec4::initialize(const char* n, size_t s) {
+	// clear first
+	clear();
+
+	// store properties and allocate memory
+	name = n;
 	size = s;
-
-	// register uniform
-	uniform = bgfx::createUniform(name, bgfx::UniformType::Vec4, size);
-
-	// allocate space for uniform values
 	values = new glm::vec4[size];
 }
 
@@ -53,14 +52,20 @@ void OtUniformVec4::initialize(const char *name, size_t s) {
 //
 
 void OtUniformVec4::clear() {
-		// release values
+	// release values (if required)
 	if (values) {
 		delete [] values;
 		values = nullptr;
 	}
 
-	// release uniform
-	uniform.clear();
+	// release uniform (if required)
+	if (isValid()) {
+		uniform.clear();
+	}
+
+	// reset properties
+	name.clear();
+	size = 0;
 }
 
 
@@ -69,11 +74,18 @@ void OtUniformVec4::clear() {
 //
 
 void OtUniformVec4::submit() {
-	// sanity check
-	if (!size) {
-		OtLogFatal("Internal error: Uniform not initialized");
+	// generate resource (if required)
+	if (!isValid()) {
+		// sanity check
+		if (name.size() && size) {
+			// register uniform
+			uniform = bgfx::createUniform(name.c_str(), bgfx::UniformType::Vec4, size);
+
+		} else {
+			OtLogFatal("Internal error: Uniform not initialized before submission");
+		}
 	}
 
-	// submit uniform to GPU
+	// submit uniform value(s) to GPU
 	bgfx::setUniform(uniform.getHandle(), values, size);
 }

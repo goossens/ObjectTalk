@@ -17,15 +17,15 @@
 #include "nlohmann/json_fwd.hpp"
 
 #include "OtFrameBuffer.h"
-#include "OtSampler.h"
+#include "OtNormalMapper.h"
 #include "OtTileableFbm.h"
 
 
 //
-//	OtTerrainHeight
+//	OtTerrainHeights
 //
 
-class OtTerrainHeight {
+class OtTerrainHeights {
 public:
 	// GUI to change properties
 	bool renderGUI();
@@ -34,21 +34,22 @@ public:
 	nlohmann::json serialize(std::filesystem::path* basedir);
 	void deserialize(nlohmann::json data, std::filesystem::path* basedir);
 
-	// bind heightmap to specified sampler
-	void bindHeightmap(OtSampler& sampler, int unit);
-
-	// get heightmap size
-	int getSize() { return heightmapSize; }
-
-private:
 	// properties
 	int heightmapSize = 256;
-	OtTileableFbm noise;
+	float normalStrength = 10.0f;
+	int frequency = 10;
+	int lacunarity = 2;
+	float amplitude = 0.5f;
+	float persistence = 0.5f;
+	int octaves = 5;
+
+	// rendering tools
 	bool dirty = true;
 
-	// the heightmap on the GPU
+	// the maps on the GPU
 	OtFrameBuffer heightmap{OtFrameBuffer::rFloat32Texture};
+	OtFrameBuffer normalmap{OtFrameBuffer::rgbaFloat32Texture};
 
 	// update the heightmap
-	void update();
+	void update(OtTileableFbm& noise, OtNormalMapper& normals);
 };

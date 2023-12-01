@@ -1,347 +1,367 @@
-[
-	{
-		"children": [],
-		"components": [
-			{
-				"component": "Core",
-				"tag": "Main Camera",
-				"uuid": 182459982
-			},
-			{
-				"component": "Transform",
-				"rotation": [
-					0.0,
-					0.0,
-					0.0
-				],
-				"scale": [
-					1.0,
-					1.0,
-					1.0
-				],
-				"translation": [
-					0.0,
-					0.0,
-					4.0
-				]
-			},
-			{
-				"component": "Camera",
-				"far": 1000.0,
-				"fov": 60.0,
-				"mainCamera": true,
-				"near": 0.10000000149011612
-			},
-			{
-				"component": "Script",
-				"path": "assets/camera.ot"
-			},
-			{
-				"Exposure": 1.0099999904632568,
-				"bloomIntensity": 0.6000000238418579,
-				"component": "Post Processing"
-			}
-		]
-	},
-	{
-		"children": [],
-		"components": [
-			{
-				"component": "Core",
-				"tag": "Directional Light",
-				"uuid": 4124851624
-			},
-			{
-				"component": "Transform",
-				"rotation": [
-					0.0,
-					-0.0,
-					0.0
-				],
-				"scale": [
-					0.9900000095367432,
-					0.9900000095367432,
-					0.9900000095367432
-				],
-				"translation": [
-					3.0,
-					3.0,
-					3.0
-				]
-			},
-			{
-				"ambient": 0.10700000077486038,
-				"color": [
-					1.0,
-					1.0,
-					1.0
-				],
-				"component": "Directional Light"
-			}
-		]
-	},
-	{
-		"children": [],
-		"components": [
-			{
-				"component": "Core",
-				"tag": "Outer Space",
-				"uuid": 2003886846
-			},
-			{
-				"brightness": 0.5,
-				"component": "Sky Box",
-				"cubemap": "assets/space.cubemap",
-				"gamma": 2.200000047683716
-			}
-		]
-	},
-	{
-		"children": [
-			{
-				"children": [],
-				"components": [
-					{
-						"component": "Core",
-						"tag": "Grid",
-						"uuid": 3890719025
-					},
-					{
-						"component": "Transform",
-						"rotation": [
-							0.0,
-							0.0,
-							0.0
-						],
-						"scale": [
-							0.9900000095367432,
-							0.9900000095367432,
-							0.9900000095367432
-						],
-						"translation": [
-							0.0,
-							0.0,
-							0.0
-						]
-					},
-					{
-						"component": "Geometry",
-						"cullback": false,
-						"geometry": {
-							"displacement": {
-								"frequency": 0.009999999776482582,
-								"lacunarity": 1.0,
-								"map": "",
-								"octaves": 3,
-								"persistance": 0.5,
-								"scale": 0.5,
-								"seed": 1337,
-								"state": 0
-							},
-							"phiLength": 360.0,
-							"phiSegments": 16,
-							"phiStart": 0.0,
-							"thetaLength": 180.0,
-							"thetaSegments": 32,
-							"thetaStart": 0.0,
-							"type": "Sphere"
+{
+	"entities": [
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Main Camera",
+					"uuid": 182459982
+				},
+				{
+					"component": "Transform",
+					"rotation": [
+						0.0,
+						0.0,
+						0.0
+					],
+					"scale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"translation": [
+						0.0,
+						0.0,
+						4.0
+					]
+				},
+				{
+					"component": "Camera",
+					"far": 1000.0,
+					"fov": 60.0,
+					"mainCamera": true,
+					"near": 0.10000000149011612
+				},
+				{
+					"component": "Script",
+					"path": "assets/camera.ot"
+				},
+				{
+					"Exposure": 1.0099999904632568,
+					"bloomIntensity": 0.6000000238418579,
+					"component": "Post Processing"
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Directional Light",
+					"uuid": 4124851624
+				},
+				{
+					"component": "Transform",
+					"rotation": [
+						0.0,
+						-0.0,
+						0.0
+					],
+					"scale": [
+						0.9900000095367432,
+						0.9900000095367432,
+						0.9900000095367432
+					],
+					"translation": [
+						3.0,
+						3.0,
+						3.0
+					]
+				},
+				{
+					"ambient": 0.10700000077486038,
+					"color": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"component": "Directional Light"
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Outer Space",
+					"uuid": 2003886846
+				},
+				{
+					"brightness": 0.5,
+					"component": "Sky Box",
+					"cubemap": "assets/space.cubemap",
+					"gamma": 2.200000047683716
+				}
+			]
+		},
+		{
+			"children": [
+				{
+					"children": [],
+					"components": [
+						{
+							"component": "Core",
+							"tag": "Grid",
+							"uuid": 3890719025
 						},
-						"transparent": false,
-						"wireframe": true
-					},
-					{
-						"component": "Material",
-						"material": {
-							"albedo": [
-								0.1568627506494522,
-								0.1568627506494522,
-								0.1568627506494522,
-								1.0
-							],
-							"albedoTexture": "",
-							"ao": 1.0,
-							"aoTexture": "",
-							"emissive": [
+						{
+							"component": "Geometry",
+							"cullback": false,
+							"geometry": {
+								"displacement": {
+									"frequency": 0.009999999776482582,
+									"lacunarity": 1.0,
+									"map": "",
+									"octaves": 3,
+									"persistance": 0.5,
+									"scale": 0.5,
+									"seed": 1337,
+									"state": 0
+								},
+								"phiLength": 360.0,
+								"phiSegments": 16,
+								"phiStart": 0.0,
+								"thetaLength": 180.0,
+								"thetaSegments": 32,
+								"thetaStart": 0.0,
+								"type": "Sphere"
+							},
+							"transparent": false,
+							"wireframe": true
+						},
+						{
+							"component": "Transform",
+							"rotation": [
 								0.0,
 								0.0,
 								0.0
 							],
-							"emissiveTexture": "",
-							"metallic": 0.5,
-							"metallicRoughnessTexture": "",
-							"normalTexture": "",
-							"roughness": 0.5,
-							"scale": 1.0,
-							"type": "PBR"
-						}
-					}
-				]
-			},
-			{
-				"children": [],
-				"components": [
-					{
-						"component": "Core",
-						"tag": "Ground",
-						"uuid": 1076804477
-					},
-					{
-						"component": "Transform",
-						"rotation": [
-							0.0,
-							0.0,
-							0.0
-						],
-						"scale": [
-							1.0,
-							1.0,
-							1.0
-						],
-						"translation": [
-							0.0,
-							0.0,
-							0.0
-						]
-					},
-					{
-						"component": "Geometry",
-						"cullback": true,
-						"geometry": {
-							"displacement": {
-								"frequency": 0.009999999776482582,
-								"lacunarity": 1.0,
-								"map": "",
-								"octaves": 3,
-								"persistance": 0.5,
-								"scale": 0.5,
-								"seed": 1337,
-								"state": 0
-							},
-							"phiLength": 360.0,
-							"phiSegments": 32,
-							"phiStart": 0.0,
-							"thetaLength": 180.0,
-							"thetaSegments": 64,
-							"thetaStart": 0.0,
-							"type": "Sphere"
-						},
-						"transparent": true,
-						"wireframe": false
-					},
-					{
-						"component": "Material",
-						"material": {
-							"albedo": [
-								1.0,
-								1.0,
-								1.0,
-								1.0
+							"scale": [
+								0.9900000095367432,
+								0.9900000095367432,
+								0.9900000095367432
 							],
-							"albedoTexture": "assets/earth.png",
-							"ao": 1.0,
-							"aoTexture": "",
-							"emissive": [
+							"translation": [
+								0.0,
+								0.0,
+								0.0
+							]
+						},
+						{
+							"component": "Material",
+							"material": {
+								"albedo": [
+									0.1568627506494522,
+									0.1568627506494522,
+									0.1568627506494522,
+									1.0
+								],
+								"albedoTexture": "",
+								"ao": 1.0,
+								"aoTexture": "",
+								"emissive": [
+									0.0,
+									0.0,
+									0.0
+								],
+								"emissiveTexture": "",
+								"metallic": 0.5,
+								"metallicRoughnessTexture": "",
+								"normalTexture": "",
+								"roughness": 0.5,
+								"scale": 1.0,
+								"type": "PBR"
+							}
+						}
+					]
+				},
+				{
+					"children": [],
+					"components": [
+						{
+							"component": "Core",
+							"tag": "Ground",
+							"uuid": 1076804477
+						},
+						{
+							"component": "Geometry",
+							"cullback": true,
+							"geometry": {
+								"displacement": {
+									"frequency": 0.009999999776482582,
+									"lacunarity": 1.0,
+									"map": "",
+									"octaves": 3,
+									"persistance": 0.5,
+									"scale": 0.5,
+									"seed": 1337,
+									"state": 0
+								},
+								"phiLength": 360.0,
+								"phiSegments": 32,
+								"phiStart": 0.0,
+								"thetaLength": 180.0,
+								"thetaSegments": 64,
+								"thetaStart": 0.0,
+								"type": "Sphere"
+							},
+							"transparent": true,
+							"wireframe": false
+						},
+						{
+							"component": "Transform",
+							"rotation": [
 								0.0,
 								0.0,
 								0.0
 							],
-							"emissiveTexture": "",
-							"metallic": 0.23000000417232513,
-							"metallicRoughnessTexture": "",
-							"normalTexture": "",
-							"roughness": 0.4000000059604645,
-							"scale": 1.0,
-							"type": "PBR"
-						}
-					}
-				]
-			},
-			{
-				"children": [],
-				"components": [
-					{
-						"component": "Core",
-						"tag": "Clouds",
-						"uuid": 830609709
-					},
-					{
-						"component": "Transform",
-						"rotation": [
-							0.0,
-							0.0,
-							0.0
-						],
-						"scale": [
-							1.0099999904632568,
-							1.0099999904632568,
-							1.0099999904632568
-						],
-						"translation": [
-							0.0,
-							0.0,
-							0.0
-						]
-					},
-					{
-						"component": "Geometry",
-						"cullback": true,
-						"geometry": {
-							"displacement": {
-								"frequency": 0.009999999776482582,
-								"lacunarity": 1.0,
-								"map": "",
-								"octaves": 3,
-								"persistance": 0.5,
-								"scale": 0.5,
-								"seed": 1337,
-								"state": 0
-							},
-							"phiLength": 360.0,
-							"phiSegments": 32,
-							"phiStart": 0.0,
-							"thetaLength": 180.0,
-							"thetaSegments": 64,
-							"thetaStart": 0.0,
-							"type": "Sphere"
-						},
-						"transparent": true,
-						"wireframe": false
-					},
-					{
-						"component": "Material",
-						"material": {
-							"albedo": [
-								1.0,
+							"scale": [
 								1.0,
 								1.0,
 								1.0
 							],
-							"albedoTexture": "assets/clouds.png",
-							"ao": 1.0,
-							"aoTexture": "",
-							"emissive": [
+							"translation": [
+								0.0,
+								0.0,
+								0.0
+							]
+						},
+						{
+							"component": "Material",
+							"material": {
+								"albedo": [
+									1.0,
+									1.0,
+									1.0,
+									1.0
+								],
+								"albedoTexture": "assets/earth.png",
+								"ao": 1.0,
+								"aoTexture": "",
+								"emissive": [
+									0.0,
+									0.0,
+									0.0
+								],
+								"emissiveTexture": "",
+								"metallic": 0.23000000417232513,
+								"metallicRoughnessTexture": "",
+								"normalTexture": "",
+								"roughness": 0.4000000059604645,
+								"scale": 1.0,
+								"type": "PBR"
+							}
+						}
+					]
+				},
+				{
+					"children": [],
+					"components": [
+						{
+							"component": "Core",
+							"tag": "Clouds",
+							"uuid": 830609709
+						},
+						{
+							"component": "Geometry",
+							"cullback": true,
+							"geometry": {
+								"displacement": {
+									"frequency": 0.009999999776482582,
+									"lacunarity": 1.0,
+									"map": "",
+									"octaves": 3,
+									"persistance": 0.5,
+									"scale": 0.5,
+									"seed": 1337,
+									"state": 0
+								},
+								"phiLength": 360.0,
+								"phiSegments": 32,
+								"phiStart": 0.0,
+								"thetaLength": 180.0,
+								"thetaSegments": 64,
+								"thetaStart": 0.0,
+								"type": "Sphere"
+							},
+							"transparent": true,
+							"wireframe": false
+						},
+						{
+							"component": "Transform",
+							"rotation": [
 								0.0,
 								0.0,
 								0.0
 							],
-							"emissiveTexture": "",
-							"metallic": 0.5,
-							"metallicRoughnessTexture": "",
-							"normalTexture": "",
-							"roughness": 0.5,
-							"scale": 1.0,
-							"type": "PBR"
+							"scale": [
+								1.0099999904632568,
+								1.0099999904632568,
+								1.0099999904632568
+							],
+							"translation": [
+								0.0,
+								0.0,
+								0.0
+							]
+						},
+						{
+							"component": "Material",
+							"material": {
+								"albedo": [
+									1.0,
+									1.0,
+									1.0,
+									1.0
+								],
+								"albedoTexture": "assets/clouds.png",
+								"ao": 1.0,
+								"aoTexture": "",
+								"emissive": [
+									0.0,
+									0.0,
+									0.0
+								],
+								"emissiveTexture": "",
+								"metallic": 0.5,
+								"metallicRoughnessTexture": "",
+								"normalTexture": "",
+								"roughness": 0.5,
+								"scale": 1.0,
+								"type": "PBR"
+							}
 						}
-					}
-				]
-			}
-		],
-		"components": [
-			{
-				"component": "Core",
-				"tag": "Earth",
-				"uuid": 3968805914
-			}
-		]
+					]
+				}
+			],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Earth",
+					"uuid": 3968805914
+				}
+			]
+		}
+	],
+	"metadata": {
+		"cameraPreset": 1,
+		"gizmo": {
+			"enabled": false,
+			"mode": 7,
+			"snapInterval": [
+				0.10000000149011612,
+				0.10000000149011612,
+				0.10000000149011612
+			],
+			"snapping": false
+		},
+		"grid": {
+			"enabled": false,
+			"scale": 1.0
+		},
+		"type": "scene"
 	}
-]
+}

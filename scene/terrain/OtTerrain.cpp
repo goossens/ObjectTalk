@@ -51,10 +51,10 @@
 
 
 //
-//	OtTerrain::renderGUI
+//	OtTerrainClass::renderGUI
 //
 
-bool OtTerrain::renderGUI() {
+bool OtTerrainClass::renderGUI() {
 	bool changed = false;
 	changed |= OtUiSelectorPowerOfTwo("Tile Size", tileSize, 4, 64);
 	changed |= ImGui::DragInt("Levels of Detail", &lods, 1, 1, 10);
@@ -66,42 +66,48 @@ bool OtTerrain::renderGUI() {
 	changed |= ImGui::DragFloat("Horizontal Scale", &hScale, 0.01f, 0.01f, 10.0f);
 	changed |= ImGui::DragFloat("Vertical Scale", &vScale, 1.0f, 1.0f, 1000.0f);
 	changed |= ImGui::DragFloat("Vertical Offset", &vOffset, 1.0f, -1000.0f, 1000.0f);
-	changed |= heightmap.renderGUI();
+	changed |= heights.renderGUI();
+	changed |= material.renderGUI();
 	changed |= ImGui::Checkbox("Wireframe", &wireframe);
 	return changed;
 }
 
 
 //
-//	OtTerrain::serialize
+//	OtTerrainClass::serialize
 //
 
-nlohmann::json OtTerrain::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtTerrainClass::serialize(std::filesystem::path* basedir) {
 	auto data = nlohmann::json::object();
 	data["tileSize"] = tileSize;
 	data["lods"] = lods;
 	data["hScale"] = hScale;
 	data["vScale"] = vScale;
 	data["vOffset"] = vOffset;
-	data["heightmap"] = heightmap.serialize(basedir);
+	data["heightmap"] = heights.serialize(basedir);
+	data["material"] = material.serialize(basedir);
 	data["wireframe"] = wireframe;
 	return data;
 }
 
 
 //
-//	OtTerrain::deserialize
+//	OtTerrainClass::deserialize
 //
 
-void OtTerrain::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+void OtTerrainClass::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
 	tileSize = data.value("tileSize", 32);
 	lods = data.value("lods", 4);
 	hScale = data.value("hScale", 1.0f);
 	vScale = data.value("vScale", 1.0f);
 	vOffset = data.value("vOffset", 0.5f);
 
-	if (data.contains("heightmap")) {
-		heightmap.deserialize(data["heightmap"], basedir);
+	if (data.contains("heights")) {
+		heights.deserialize(data["heights"], basedir);
+	}
+
+	if (data.contains("material")) {
+		material.deserialize(data["material"], basedir);
 	}
 
 	wireframe = data.value("wireframe", false);
@@ -110,10 +116,10 @@ void OtTerrain::deserialize(nlohmann::json data, std::filesystem::path* basedir)
 
 
 //
-//	OtTerrain::getMeshes
+//	OtTerrainClass::getMeshes
 //
 
-std::vector<OtTerrainMesh> &OtTerrain::getMeshes(OtFrustum& frustum, const glm::vec3& camera) {
+std::vector<OtTerrainMesh> &OtTerrainClass::getMeshes(OtFrustum& frustum, const glm::vec3& camera) {
 	// initialize if required
 	if (!vertices.isValid()) {
 		// create vertices
@@ -149,10 +155,10 @@ std::vector<OtTerrainMesh> &OtTerrain::getMeshes(OtFrustum& frustum, const glm::
 		processTile(tile, frustum, 0);
 	}
 
-	// process LODs 1..N
-	for (auto i = 1; i < lods; i++) {
+	// process the rings for LODs 0..N
+	for (auto i = 0; i < lods; i++) {
 		for (auto& tile: ringTiles) {
-			processTile(tile, frustum, i - 1);
+			processTile(tile, frustum, i);
 		}
 	}
 
@@ -162,10 +168,10 @@ std::vector<OtTerrainMesh> &OtTerrain::getMeshes(OtFrustum& frustum, const glm::
 
 
 //
-//	OtTerrain::createVertices
+//	OtTerrainClass::createVertices
 //
 
-void OtTerrain::createVertices()
+void OtTerrainClass::createVertices()
 {
 	// create temporary buffer
 	std::vector<glm::vec3> buffer;
@@ -185,7 +191,7 @@ void OtTerrain::createVertices()
 
 
 //
-//	OtTerrain::createIndices
+//	OtTerrainClass::createIndices
 //
 
 #define TRIANGLE(p1, p2, p3)														\
@@ -194,7 +200,7 @@ void OtTerrain::createVertices()
 	lines.push_back(p2); lines.push_back(p3);										\
 	lines.push_back(p3); lines.push_back(p1)
 
-void OtTerrain::createIndices(OtIndexBuffer& triangleBuffer, OtIndexBuffer& lineBuffer, int degenerate) {
+void OtTerrainClass::createIndices(OtIndexBuffer& triangleBuffer, OtIndexBuffer& lineBuffer, int degenerate) {
 	// create indices
 	std::vector<uint32_t> triangles;
 	std::vector<uint32_t> lines;
@@ -280,10 +286,10 @@ void OtTerrain::createIndices(OtIndexBuffer& triangleBuffer, OtIndexBuffer& line
 
 
 //
-//	OtTerrain::createTiles
+//	OtTerrainClass::createTiles
 //
 
-void OtTerrain::createTiles() {
+void OtTerrainClass::createTiles() {
 	// create the 4 center tiles for LOD 0
 	centerTiles.emplace_back(vertices, fullTriangles, fullLines, 0.0f, 0.0f, 0.0f);
 	centerTiles.emplace_back(vertices, fullTriangles, fullLines, 0.0f, 0.0f, 90.0f);
@@ -316,10 +322,10 @@ void OtTerrain::createTiles() {
 
 
 //
-//	OtTerrain::clear
+//	OtTerrainClass::clear
 //
 
-void OtTerrain::clear() {
+void OtTerrainClass::clear() {
 	vertices.clear();
 	fullTriangles.clear();
 	sideTriangles.clear();
@@ -332,3 +338,17 @@ void OtTerrain::clear() {
 	meshes.clear();
 }
 
+
+//
+//	OtTerrainClass::getMeta
+//
+
+OtType OtTerrainClass::getMeta() {
+	static OtType type;
+
+	if (!type) {
+		type = OtType::create<OtTerrainClass>("Terrain", OtObjectClass::getMeta());
+	}
+
+	return type;
+}

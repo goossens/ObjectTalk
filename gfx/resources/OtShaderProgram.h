@@ -56,14 +56,14 @@ public:
 	void initialize(const char* vertex, const char* fragment);
 
 	// clear the resources
-	void clear() { program.clear(); }
+	inline void clear() { program.clear(); }
 
 	// see if program is valid
-	bool isValid() { return program.isValid(); }
+	inline bool isValid() { return program.isValid(); }
 
 	// set parameters for the next run
-	void setState(uint64_t state) { bgfx::setState(state); }
-	void setTransform(const glm::mat4& transform) { bgfx::setTransform(glm::value_ptr(transform)); }
+	inline void setState(uint64_t state) { bgfx::setState(state); }
+	inline void setTransform(const glm::mat4& transform) { bgfx::setTransform(glm::value_ptr(transform)); }
 
 	// run program program in the specified view on the GPU
 	void submit(bgfx::ViewId view);

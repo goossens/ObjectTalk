@@ -20,16 +20,16 @@
 //	OtFilter::render
 //
 
-void OtFilter::render(int w, int h, OtFrameBuffer& origin, OtFrameBuffer& destination) {
+void OtFilter::render(OtFrameBuffer& origin, OtFrameBuffer& destination) {
 	// setup a filtering pass
 	OtPass pass;
 	pass.setFrameBuffer(destination);
-	pass.submitQuad(w, h);
+	pass.submitQuad(origin.getWidth(), origin.getHeight());
 
 	// execute filter
 	origin.bindColorTexture(textureSampler, 0);
 	bgfx::setState(state);
-	execute(pass, w, h);
+	execute(pass, origin.getWidth(), origin.getHeight());
 }
 
 
@@ -37,13 +37,13 @@ void OtFilter::render(int w, int h, OtFrameBuffer& origin, OtFrameBuffer& destin
 //	OtFilter::render
 //
 
-void OtFilter::render(int w, int h, OtFrameBuffer& origin) {
+void OtFilter::render(OtFrameBuffer& origin) {
 	// setup a filtering pass
 	OtPass pass;
-	pass.submitQuad(w, h);
+	pass.submitQuad(origin.getWidth(), origin.getHeight());
 
 	// execute filter
 	origin.bindColorTexture(textureSampler, 0);
 	bgfx::setState(state);
-	execute(pass, w, h);
+	execute(pass, origin.getWidth(), origin.getHeight());
 }

@@ -39,11 +39,13 @@ public:
 	void clear();
 
 	// see if unifirm is valid
-	bool isValid() { return uniform.isValid(); }
+	inline bool isValid() { return uniform.isValid(); }
 
 	// get access to values
-	glm::mat4* getValues() { return values; }
-	size_t getValueCount() { return size; }
+	inline void setValue(size_t index, const glm::mat4& value) { values[index] = value; }
+	inline glm::mat4 getValue(size_t index) { return values[index]; }
+	inline glm::mat4* getValues() { return values; }
+	inline size_t getValueCount() { return size; }
 
 	// set uniform value(s)
 	inline void set(size_t index, const glm::mat4& value) { values[index] = value; }
@@ -52,7 +54,8 @@ public:
 	void submit();
 
 private:
-	// number of uniform values
+	// properties
+	std::string name;
 	size_t size = 0;
 
 	// handle for uniform

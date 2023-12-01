@@ -1,210 +1,144 @@
-[
-	{
-		"children": [],
-		"components": [
-			{
-				"component": "Core",
-				"tag": "Camera",
-				"uuid": 1057740688
-			},
-			{
-				"component": "Transform",
-				"rotation": [
-					-29.0,
-					0.0,
-					0.0
-				],
-				"scale": [
-					1.0,
-					1.0,
-					1.0
-				],
-				"translation": [
-					0.0,
-					23.299999237060547,
-					15.600000381469727
-				]
-			},
-			{
-				"component": "Camera",
-				"far": 1000.0,
-				"fov": 71.0,
-				"mainCamera": false,
-				"near": 0.10000000149011612
-			},
-			{
-				"Exposure": 0.8299999833106995,
-				"bloomIntensity": 0.6100000143051147,
-				"component": "Post Processing"
-			}
-		]
-	},
-	{
-		"children": [],
-		"components": [
-			{
-				"component": "Core",
-				"tag": "Light",
-				"uuid": 4262780315
-			},
-			{
-				"component": "Transform",
-				"rotation": [
-					0.0,
-					0.0,
-					0.0
-				],
-				"scale": [
-					1.0,
-					1.0,
-					1.0
-				],
-				"translation": [
-					0.0,
-					5.0,
-					10.0
-				]
-			},
-			{
-				"ambient": 0.05000000074505806,
-				"color": [
-					1.0,
-					1.0,
-					1.0
-				],
-				"component": "Directional Light"
-			}
-		]
-	},
-	{
-		"children": [],
-		"components": [
-			{
-				"component": "Core",
-				"tag": "Terrain",
-				"uuid": 1003125373
-			},
-			{
-				"component": "Material",
-				"material": {
-					"albedo": [
-						1.0,
+{
+	"entities": [
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Camera",
+					"uuid": 1057740688
+				},
+				{
+					"component": "Transform",
+					"rotation": [
+						-8.0,
+						0.0,
+						0.0
+					],
+					"scale": [
 						1.0,
 						1.0,
 						1.0
 					],
-					"albedoTexture": "",
-					"ao": 1.0,
-					"aoTexture": "",
-					"emissive": [
+					"translation": [
 						0.0,
-						0.0,
-						0.0
-					],
-					"emissiveTexture": "",
-					"metallic": 0.5,
-					"metallicRoughnessTexture": "",
-					"normalTexture": "",
-					"roughness": 0.5,
-					"scale": 1.0,
-					"type": "PBR"
+						50.0,
+						15.0
+					]
+				},
+				{
+					"component": "Camera",
+					"far": 1000.0,
+					"fov": 71.0,
+					"mainCamera": true,
+					"near": 1.0
+				},
+				{
+					"Exposure": 0.49000000953674316,
+					"bloomIntensity": 0.7099999785423279,
+					"component": "Post Processing"
 				}
-			},
-			{
-				"component": "Terrain",
-				"hScale": 0.009999999776482582,
-				"heightmap": {
-					"noise": {
-						"amplitude": 0.4000000059604645,
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Sky",
+					"uuid": 864477290
+				},
+				{
+					"azimuth": 164.34800720214844,
+					"cirrus": 0.45399999618530273,
+					"component": "Sky",
+					"cumulus": 0.800000011920929,
+					"elevation": 29.565000534057617,
+					"mieCoefficient": 5.734000205993652,
+					"mieScattering": 0.9900000095367432,
+					"rayleighCoefficient": 2.8420000076293945,
+					"speed": 2.5439999103546143
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Terrain",
+					"uuid": 1003125373
+				},
+				{
+					"component": "Terrain",
+					"hScale": 0.05999999865889549,
+					"heightmap": {
+						"amplitude": 0.5,
 						"frequency": 10,
 						"lacunarity": 2,
-						"octaves": 7,
-						"persistence": 0.5
+						"normalStrength": 10.0,
+						"octaves": 5,
+						"persistence": 0.5,
+						"size": 256
 					},
-					"size": 512
-				},
-				"lods": 10,
-				"tileSize": 32,
-				"vOffset": -50.0,
-				"vScale": 100.0,
-				"wireframe": true
-			}
-		]
-	},
-	{
-		"children": [],
-		"components": [
-			{
-				"component": "Core",
-				"tag": "Box",
-				"uuid": 2866526924
-			},
-			{
-				"component": "Geometry",
-				"cullback": false,
-				"geometry": {
-					"displacement": {
-						"frequency": 0.009999999776482582,
-						"lacunarity": 1.0,
-						"map": "",
-						"octaves": 3,
-						"persistance": 0.5,
-						"scale": 0.5,
-						"seed": 1337,
-						"state": 0
+					"lods": 8,
+					"material": {
+						"region1Color": [
+							0.9649999737739563,
+							0.8939999938011169,
+							0.6779999732971191
+						],
+						"region1Overlap": 1.0,
+						"region1Texture": "assets/sand.jpg",
+						"region1Transition": 4.800000190734863,
+						"region2Color": [
+							0.49399998784065247,
+							0.7839999794960022,
+							0.3140000104904175
+						],
+						"region2Overlap": 2.0,
+						"region2Texture": "assets/terrain.jpg",
+						"region2Transition": 12.0,
+						"region3Color": [
+							0.5839999914169312,
+							0.5529999732971191,
+							0.5220000147819519
+						],
+						"region3Overlap": 2.0,
+						"region3Texture": "assets/rock.jpg",
+						"region3Transition": 22.899999618530273,
+						"region4Color": [
+							0.8999999761581421,
+							0.8999999761581421,
+							0.8999999761581421
+						],
+						"region4Texture": "assets/snow.jpg",
+						"scale": 47.900001525878906
 					},
-					"type": "Box",
-					"xsegments": 1,
-					"ysegments": 1,
-					"zsegments": 1
-				},
-				"transparent": false,
-				"wireframe": true
-			},
-			{
-				"component": "Transform",
-				"rotation": [
-					0.0,
-					0.0,
-					0.0
-				],
-				"scale": [
-					1.0,
-					1.0,
-					1.0
-				],
-				"translation": [
-					0.0,
-					0.0,
-					0.0
-				]
-			},
-			{
-				"component": "Material",
-				"material": {
-					"albedo": [
-						1.0,
-						1.0,
-						1.0,
-						1.0
-					],
-					"albedoTexture": "",
-					"ao": 1.0,
-					"aoTexture": "",
-					"emissive": [
-						0.0,
-						0.0,
-						0.0
-					],
-					"emissiveTexture": "",
-					"metallic": 0.5,
-					"metallicRoughnessTexture": "",
-					"normalTexture": "",
-					"roughness": 0.5,
-					"scale": 1.0,
-					"type": "PBR"
+					"tileSize": 32,
+					"vOffset": -20.0,
+					"vScale": 59.0,
+					"wireframe": false
 				}
-			}
-		]
+			]
+		}
+	],
+	"metadata": {
+		"cameraPreset": 3,
+		"gizmo": {
+			"enabled": false,
+			"mode": 7,
+			"snapInterval": [
+				0.10000000149011612,
+				0.10000000149011612,
+				0.10000000149011612
+			],
+			"snapping": false
+		},
+		"grid": {
+			"enabled": false,
+			"scale": 1.0
+		},
+		"type": "scene"
 	}
-]
+}

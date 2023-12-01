@@ -24,8 +24,8 @@
 class OtBlit : public OtFilter {
 public:
 	// set properties
-	void setIntensity(float i) { intensity = i; }
-	void setAlpha(float a) { alpha = a; }
+	inline void setIntensity(float i) { intensity = i; }
+	inline void setAlpha(float a) { alpha = a; }
 
 private:
 	// execute filter

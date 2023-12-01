@@ -25,8 +25,8 @@ void OtSceneRenderer::renderDeferredLightingPass(OtScene* scene) {
 	// submit the uniforms
 	submitLightUniforms(scene);
 
-	inverseTransform.set(0, glm::inverse(viewProjectionMatrix));
-	inverseTransform.submit();
+	inverseTransformUniforms.set(0, glm::inverse(viewProjectionMatrix));
+	inverseTransformUniforms.submit();
 
 	// bind all textures
 	gbuffer.bindAlbedoTexture(deferredLightingAlbedoSampler, 0);

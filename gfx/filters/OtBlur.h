@@ -24,10 +24,10 @@
 class OtBlur : public OtFilter {
 public:
 	// set properties
-	void setHorizontalScale(float scale) { horizontalScale = scale; }
-	void setVerticalScale(float scale) { verticalScale = scale; }
-	void setIntensity(float i) { intensity = i; }
-	void setAlpha(float a) { alpha = a; }
+	inline void setHorizontalScale(float scale) { horizontalScale = scale; }
+	inline void setVerticalScale(float scale) { verticalScale = scale; }
+	inline void setIntensity(float i) { intensity = i; }
+	inline void setAlpha(float a) { alpha = a; }
 
 private:
 	// execute filter

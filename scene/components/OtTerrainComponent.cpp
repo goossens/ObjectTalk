@@ -23,6 +23,7 @@
 //
 
 OtTerrainComponent::OtTerrainComponent() {
+	terrain = OtObjectPointer<OtTerrainClass>::create();
 }
 
 
@@ -31,7 +32,7 @@ OtTerrainComponent::OtTerrainComponent() {
 //
 
 bool OtTerrainComponent::renderGUI() {
-	return terrain.renderGUI();
+	return terrain->renderGUI();
 }
 
 
@@ -42,7 +43,7 @@ bool OtTerrainComponent::renderGUI() {
 nlohmann::json OtTerrainComponent::serialize(std::filesystem::path* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
-	data.update(terrain.serialize(basedir));
+	data.update(terrain->serialize(basedir));
 	return data;
 }
 
@@ -52,5 +53,5 @@ nlohmann::json OtTerrainComponent::serialize(std::filesystem::path* basedir) {
 //
 
 void OtTerrainComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
-	terrain.deserialize(data, basedir);
+	terrain->deserialize(data, basedir);
 }

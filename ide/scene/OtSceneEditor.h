@@ -123,13 +123,12 @@ private:
 	OtSceneEditorCamera editorCamera;
 
 	// grid controls
-	bool gridVisible = false;
+	bool gridEnabled = false;
 	float gridScale = 1.0f;
 
 	// guizmo controls
-	bool guizmoVisible = false;
+	bool guizmoEnabled = false;
 	ImGuizmo::OPERATION guizmoOperation = ImGuizmo::TRANSLATE;
-
 	bool guizmoSnapping = false;
-	glm::vec3 snap = glm::vec3(0.1f);
+	glm::vec3 guizmoSnapInterval = glm::vec3(0.1f);
 };

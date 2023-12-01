@@ -36,7 +36,6 @@ void OtSceneRenderer::renderSkyPass(OtScene* scene) {
 
 	// setup pass
 	OtPass pass;
-	pass.setClear(false, false);
 	pass.setRectangle(0, 0, width, height);
 	pass.setFrameBuffer(compositeBuffer);
 	pass.setTransform(newViewMatrix, projectionMatrix);
@@ -78,19 +77,19 @@ void OtSceneRenderer::renderSky(OtPass& pass, OtSkyComponent& component) {
 	static float time = 0.0f;
 	time += ImGui::GetIO().DeltaTime;
 
-	skyUniforms.set(0, glm::vec4(
+	skyUniforms.setValue(0, glm::vec4(
 		time * component.speed / 10.0f,
 		component.cirrus,
 		component.cumulus,
 		0.0f));
 
-	skyUniforms.set(1, glm::vec4(
+	skyUniforms.setValue(1, glm::vec4(
 		component.rayleighCoefficient / 1000.0f,
 		component.mieCoefficient / 1000.0f,
 		component.mieScattering,
 		0.0f));
 
-	skyUniforms.set(2, glm::vec4(component.getDirectionToSun(), 0.0f));
+	skyUniforms.setValue(2, glm::vec4(component.getDirectionToSun(), 0.0f));
 	skyUniforms.submit();
 
 	// run the program
@@ -113,8 +112,7 @@ void OtSceneRenderer::renderSkyBox(OtPass& pass, OtSkyBoxComponent& component) {
 	unityBoxGeometry->submitTriangles();
 
 	// set the uniform values
-	glm::vec4* uniforms = skyUniforms.getValues();
-	uniforms[0] = glm::vec4(component.brightness, component.gamma, 0.0f, 0.0f);
+	skyUniforms.setValue(0, glm::vec4(component.brightness, component.gamma, 0.0f, 0.0f));
 	skyUniforms.submit();
 
 	// submit texture via sampler
@@ -139,8 +137,7 @@ void OtSceneRenderer::renderSkySphere(OtPass& pass, OtSkySphereComponent& compon
 	unitySphereGeometry->submitTriangles();
 
 	// set the uniform values
-	glm::vec4* uniforms = skyUniforms.getValues();
-	uniforms[0] = glm::vec4(component.brightness, component.gamma, 0.0f, 0.0f);
+	skyUniforms.setValue(0, glm::vec4(component.brightness, component.gamma, 0.0f, 0.0f));
 	skyUniforms.submit();
 
 	// submit texture via sampler

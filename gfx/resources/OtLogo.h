@@ -27,8 +27,8 @@ public:
 	int getTextureIndex();
 
 	// get logo size
-	size_t getWidth() { return 429; }
-	size_t getHeight() { return 350; }
+	inline size_t getWidth() { return 429; }
+	inline size_t getHeight() { return 350; }
 
 private:
 	// the logo as a texture

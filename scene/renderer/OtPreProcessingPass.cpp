@@ -21,9 +21,11 @@ void OtSceneRenderer::renderPreProcessingPass(OtScene* scene, OtEntity selected)
 	frustum = OtFrustum(viewProjectionMatrix);
 
 	// reset flags
-	renderEntityHighlight = false;
-	hasTerrainEntities = false;
+	hasOpaqueEntities = false;
+	hasTransparentEntities = false;
 	hasSkyEntities = false;
+	hasTerrainEntities = false;
+	renderEntityHighlight = false;
 
 	// reset list of visible entities
 	visibleEntities.clear();
@@ -41,11 +43,14 @@ void OtSceneRenderer::renderPreProcessingPass(OtScene* scene, OtEntity selected)
 
 		} else if (scene->hasComponent<OtModelComponent>(entity) && scene->hasComponent<OtInstancingComponent>(entity)) {
 			preprocessMultipleInstanceModel(scene, entity, entity == selected);
-
-		} else if (scene->hasComponent<OtTerrainComponent>(entity) && scene->hasComponent<OtMaterialComponent>(entity)) {
-			hasTerrainEntities = true;
 		}
 	});
+
+	// see if we have terrain objects
+	for (auto [entity, component] : scene->view<OtTerrainComponent>().each()) {
+		preprocessTerrain(scene, entity);
+		hasTerrainEntities = true;
+	};
 
 	// see if we have any sky objects
 	for (auto [entity, component] : scene->view<OtSkyComponent>().each()) {
@@ -178,5 +183,19 @@ void OtSceneRenderer::preprocessMultipleInstanceModel(OtScene* scene, OtEntity e
 		if (selected) {
 			renderEntityHighlight = true;
 		}
+	}
+}
+
+
+//
+//	OtSceneRenderer::preprocessTerrain
+//
+
+void OtSceneRenderer::preprocessTerrain(OtScene* scene, OtEntity entity) {
+	auto terrain = scene->getComponent<OtTerrainComponent>(entity).terrain;
+
+	// refresh heightmap and normalmap if the properties have changed
+	if (terrain->heights.dirty) {
+		terrain->heights.update(tileableFbm, normalMapper);
 	}
 }

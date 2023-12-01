@@ -12,11 +12,6 @@
 //	Include files
 //
 
-#include <filesystem>
-
-#include "bgfx/bgfx.h"
-#include "nlohmann/json_fwd.hpp"
-
 #include "OtGenerator.h"
 #include "OtShaderProgram.h"
 #include "OtUniformVec4.h"
@@ -28,12 +23,12 @@
 
 class OtTileableFbm : public OtGenerator {
 public:
-	// GUI to change properties
-	bool renderGUI();
-
-	// (de)serialize material
-	nlohmann::json serialize(std::filesystem::path* basedir);
-	void deserialize(nlohmann::json data, std::filesystem::path* basedir);
+	// set the properties
+	inline void setFrequency(int f) { frequency = f; }
+	inline void setLacunarity(int l) { lacunarity = l; }
+	inline void setAmplitude(float a) { amplitude = a; }
+	inline void setPersistence(float p) { persistence = p; }
+	inline void setOctaves(int o) { octaves = o; }
 
 private:
 	// execute generator

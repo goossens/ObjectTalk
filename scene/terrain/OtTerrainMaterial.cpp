@@ -20,19 +20,21 @@
 
 
 //
-//	OtTerrainMaterialClass::renderGUI
+//	OtTerrainMaterial::renderGUI
 //
 
 #define W() ImGui::SetNextItemWidth(200.0f)
 
-bool OtTerrainMaterialClass::renderGUI() {
+bool OtTerrainMaterial::renderGUI() {
 	bool changed = false;
-	float size = ImGui::GetFrameHeight();
 
-	// render button
-	if (ImGui::Button("e", ImVec2(size, size))) {
+	// render button + label
+	if (ImGui::Button("Edit##Material", ImVec2(ImGui::CalcItemWidth(), 0.0f))) {
 		ImGui::OpenPopup("TerrainMaterialPopup");
 	}
+
+	ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+	ImGui::TextUnformatted("Material");
 
 	// open popup (if required)
 	if (ImGui::BeginPopup("TerrainMaterialPopup")) {
@@ -46,22 +48,22 @@ bool OtTerrainMaterialClass::renderGUI() {
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); changed |= ImGui::ColorEdit3("##region1Color", glm::value_ptr(region1Color));
 			ImGui::TableNextColumn(); W(); changed |= region1Texture.renderGUI("##region1Texture");
-			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region1Transition", &region1Transition, 0.01f, 0.0f, 1.0f);
-			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region1Overlap", &region1Overlap, 0.01f, 0.0f, 1.0f);
+			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region1Transition", &region1Transition, 0.1f, 0.0f, 1000.0f);
+			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region1Overlap", &region1Overlap, 0.1f, 0.0f, 1000.0f);
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Region 1");
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); changed |= ImGui::ColorEdit3("##region2Color", glm::value_ptr(region2Color));
 			ImGui::TableNextColumn(); W(); changed |= region2Texture.renderGUI("##region2Texture");
-			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region2Transition", &region2Transition, 0.01f, 0.0f, 1.0f);
-			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region2Overlap", &region2Overlap, 0.01f, 0.0f, 1.0f);
+			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region2Transition", &region2Transition, 0.1f, 0.0f, 1000.0f);
+			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region2Overlap", &region2Overlap, 0.1f, 0.0f, 1000.0f);
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Region 2");
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); changed |= ImGui::ColorEdit3("##region3Color", glm::value_ptr(region3Color));
 			ImGui::TableNextColumn(); W(); changed |= region3Texture.renderGUI("##region3Texture");
-			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region3Transition", &region3Transition, 0.01f, 0.0f, 1.0f);
-			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##regio3Overlap", &region3Overlap, 0.01f, 0.0f, 1.0f);
+			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region3Transition", &region3Transition, 0.1f, 0.0f, 1000.0f);
+			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##regio3Overlap", &region3Overlap, 0.1f, 0.0f, 1000.0f);
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Region 3");
 
 			ImGui::TableNextRow();
@@ -88,14 +90,11 @@ bool OtTerrainMaterialClass::renderGUI() {
 
 
 //
-//	OtTerrainMaterialClass::serialize
+//	OtTerrainMaterial::serialize
 //
 
-nlohmann::json OtTerrainMaterialClass::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtTerrainMaterial::serialize(std::filesystem::path* basedir) {
 	auto data = nlohmann::json::object();
-	data["type"] = name;
-	data.update(OtMaterialClass::serialize(basedir));
-
 	data["region1Color"] = region1Color;
 	data["region2Color"] = region2Color;
 	data["region3Color"] = region3Color;
@@ -121,12 +120,10 @@ nlohmann::json OtTerrainMaterialClass::serialize(std::filesystem::path* basedir)
 
 
 //
-//	OtTerrainMaterialClass::deserialize
+//	OtTerrainMaterial::deserialize
 //
 
-void OtTerrainMaterialClass::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
-	OtMaterialClass::deserialize(data, basedir);
-
+void OtTerrainMaterial::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
 	region1Color = data.value("region1Color", glm::vec3(0.965f, 0.894f, 0.678f));
 	region2Color = data.value("region2Color", glm::vec3(0.494f, 0.784f, 0.314f));
 	region3Color = data.value("region3Color", glm::vec3(0.584f, 0.553f, 0.522f));
@@ -146,19 +143,4 @@ void OtTerrainMaterialClass::deserialize(nlohmann::json data, std::filesystem::p
 	region3Overlap = data.value("region3Overlap", 0.01f);
 
 	scale = data.value("scale", 1.0f);
-}
-
-
-//
-//	OtTerrainMaterialClass::getMeta
-//
-
-OtType OtTerrainMaterialClass::getMeta() {
-	static OtType type;
-
-	if (!type) {
-		type = OtType::create<OtTerrainMaterialClass>("TerrainMaterial", OtMaterialClass::getMeta());
-	}
-
-	return type;
 }

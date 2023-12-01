@@ -37,21 +37,21 @@ public:
 
 	// constructor/destructor
 	OtSampler() = default;
-	OtSampler(const char* name, uint32_t flags=defaultSampling);
+	OtSampler(const char* n, uint32_t f=defaultSampling) : name(n), flags(f) {}
 
 	// initialize sampler
-	void initialize(const char* name);
-
-	// (re)set/get the flags
-	void resetFlags() { flags = defaultSampling; }
-	void setFlags(uint32_t f) { flags = f; }
-	uint32_t getFlags() { return flags; }
+	void initialize(const char* name, uint32_t flags=defaultSampling);
 
 	// clear the resources
-	void clear() { uniformName.clear(); uniform.clear(); }
+	void clear();
+
+	// (re)set/get the flags
+	inline void resetFlags() { flags = defaultSampling; }
+	inline void setFlags(uint32_t f) { flags = f; }
+	inline uint32_t getFlags() { return flags; }
 
 	// see if sampler is valid
-	bool isValid() { return uniform.isValid(); }
+	inline bool isValid() { return uniform.isValid(); }
 
 	// bind texture to sampler and submit to GPU
 	void submit(int unit, const char* name=nullptr); // bind dummy texture
@@ -60,10 +60,13 @@ public:
 	void submit(int unit, OtCubeMap& cubemap, const char* name=nullptr);
 
 private:
+	// private method to create the uniform
+	void createUniform();
+
 	// properties
+	std::string name;
 	uint32_t flags = defaultSampling;
 
 	// uniform
-	std::string uniformName;
 	OtBgfxHandle<bgfx::UniformHandle> uniform;
 };

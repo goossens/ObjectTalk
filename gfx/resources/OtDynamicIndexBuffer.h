@@ -22,13 +22,13 @@
 class OtDynamicIndexBuffer {
 public:
 	// clear the resources
-	void clear() { indexBuffer.clear(); }
+	inline void clear() { indexBuffer.clear(); }
 
 	// set vertices
 	void set(void* data, size_t count);
 
 	// see if buffer is valid
-	bool isValid() { return indexBuffer.isValid(); }
+	inline bool isValid() { return indexBuffer.isValid(); }
 
 	// submit to GPU
 	void submit();

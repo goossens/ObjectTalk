@@ -22,13 +22,13 @@
 class OtDynamicVertexBuffer {
 public:
 	// clear the resources
-	void clear() { vertexBuffer.clear(); }
+	inline void clear() { vertexBuffer.clear(); }
 
 	// set vertices
 	void set(void* data, size_t count, const bgfx::VertexLayout& layout);
 
 	// see if buffer is valid
-	bool isValid() { return vertexBuffer.isValid(); }
+	inline bool isValid() { return vertexBuffer.isValid(); }
 
 	// submit to GPU
 	void submit(uint8_t stream=0);

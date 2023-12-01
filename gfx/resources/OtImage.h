@@ -47,14 +47,14 @@ public:
 	void loadFromFileInMemory(void* data, uint32_t size);
 
 	// see if image is valid
-	bool isValid() { return image != nullptr; }
+	inline bool isValid() { return image != nullptr; }
 
 	// get information about image
 	bimg::ImageContainer* getContainer();
-	size_t getWidth() { return (size_t) image->m_width; }
-	size_t getHeight() { return (size_t) image->m_height; }
-	void* getPixels() { return image->m_data; }
-	size_t getBitsPerPixel() { return (size_t) bimg::getBitsPerPixel(image->m_format); }
+	inline size_t getWidth() { return (size_t) image->m_width; }
+	inline size_t getHeight() { return (size_t) image->m_height; }
+	inline void* getPixels() { return image->m_data; }
+	inline size_t getBitsPerPixel() { return (size_t) bimg::getBitsPerPixel(image->m_format); }
 
 	// get pixel values
 	glm::vec4 getPixelRgba(size_t x, size_t y);

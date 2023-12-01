@@ -21,7 +21,6 @@
 void OtSceneRenderer::renderForwardGeometryPass(OtScene* scene) {
 	// setup pass
 	OtPass pass;
-	pass.setClear(false, false);
 	pass.setRectangle(0, 0, width, height);
 	pass.setFrameBuffer(compositeBuffer);
 	pass.setTransform(viewMatrix, projectionMatrix);

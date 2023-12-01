@@ -8,7 +8,7 @@ $input v_texcoord0
 
 #include <bgfx_shader.glsl>
 
-SAMPLER2D(s_texture,  0);
+SAMPLER2D(s_texture, 0);
 
 uniform vec4 u_blit;
 #define u_mult u_blit.x

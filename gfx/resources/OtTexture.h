@@ -29,10 +29,10 @@ public:
 	OtTexture(const std::filesystem::path& path);
 
 	// clear the resources
-	void clear() { texture.clear(); }
+	inline void clear() { texture.clear(); }
 
 	// see if texture is valid
-	bool isValid() { return texture.isValid(); }
+	inline bool isValid() { return texture.isValid(); }
 
 	// load from file
 	void loadFromFile(const std::filesystem::path& path);
@@ -48,11 +48,11 @@ public:
 	bgfx::TextureHandle getTextureHandle();
 
 	// return texture index
-	int getTextureIndex() { return texture.getIndex(); }
+	inline int getTextureIndex() { return texture.getIndex(); }
 
 	// get texture size
-	size_t getWidth() { return width; }
-	size_t getHeight() { return height; }
+	inline size_t getWidth() { return width; }
+	inline size_t getHeight() { return height; }
 
 private:
 	// texture

@@ -24,7 +24,7 @@
 class OtUniformVec4 {
 public:
 	// constructors/destructor
-	OtUniformVec4() = default;
+	OtUniformVec4() = delete;
 	OtUniformVec4(const char* name, size_t size=1);
 	OtUniformVec4(const OtUniformVec4&) = delete; // no copy constructor
 	OtUniformVec4& operator=(const OtUniformVec4&) = delete; // no copy assignment
@@ -42,17 +42,17 @@ public:
 	bool isValid() { return uniform.isValid(); }
 
 	// get access to values
-	glm::vec4* getValues() { return values; }
-	size_t getValueCount() { return size; }
-
-	// set uniform value(s)
-	inline void set(size_t index, const glm::vec4& value) { values[index] = value; }
+	inline void setValue(size_t index, const glm::vec4& value) { values[index] = value; }
+	inline glm::vec4 getValue(size_t index) { return values[index]; }
+	inline glm::vec4* getValues() { return values; }
+	inline size_t getValueCount() { return size; }
 
 	// submit uniform to GPU
 	void submit();
 
 private:
-	// number of uniform values
+	// properties
+	std::string name;
 	size_t size = 0;
 
 	// handle for uniform

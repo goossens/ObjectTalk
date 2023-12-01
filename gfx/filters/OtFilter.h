@@ -30,18 +30,18 @@ public:
 	virtual ~OtFilter() {}
 
 	// set rendering state
-	void setState(int s) { state = s; }
+	inline void setState(int s) { state = s; }
 
 	// render filter
-	void render(int w, int h, OtFrameBuffer& origin, OtFrameBuffer& destination);
-	void render(int w, int h, OtFrameBuffer& origin);
+	void render(OtFrameBuffer& origin, OtFrameBuffer& destination);
+	void render(OtFrameBuffer& origin);
 
 private:
 	// execute filter
 	virtual void execute(OtPass& pass, int w, int h) {}
 
 	// the texture sampler
-	OtSampler textureSampler = OtSampler("s_texture");
+	OtSampler textureSampler{"s_texture", OtSampler::pointSampling | OtSampler::clampSampling};
 
 	// rendering state
 	uint64_t state = BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A;

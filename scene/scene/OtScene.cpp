@@ -23,7 +23,7 @@
 //	OtScene::load
 //
 
-void OtScene::load(const std::filesystem::path& path) {
+void OtScene::load(const std::filesystem::path& path, nlohmann::json* metadata) {
 	// load scene from file
 	std::stringstream buffer;
 
@@ -41,9 +41,20 @@ void OtScene::load(const std::filesystem::path& path) {
 		OtError("Can't read from file [%s], error: %s", path.string().c_str(), e.what());
 	}
 
-	// recreate the scene
+	// parse json
+	auto tree = nlohmann::json::parse(buffer.str());
+
+	// extract metadata
+	if (metadata) {
+		*metadata = tree["metadata"];
+	}
+
+	// extract entities
 	auto basedir = path.parent_path();
-	deserialize(buffer.str(), &basedir);
+
+	for (auto& entity : tree["entities"]) {
+		addEntityToParent(getRootEntity(), deserializeEntityFromJson(entity, &basedir));
+	}
 }
 
 
@@ -51,7 +62,21 @@ void OtScene::load(const std::filesystem::path& path) {
 //	OtScene::save
 //
 
-void OtScene::save(const std::filesystem::path& path) {
+void OtScene::save(const std::filesystem::path& path, nlohmann::json* metadata) {
+	// create json data structure and add metadata
+	auto data = nlohmann::json::object();
+	data["metadata"] = metadata ? *metadata : nlohmann::json::object();
+
+	// write entities and components
+	auto entities = nlohmann::json::array();
+	auto basedir = path.parent_path();
+
+	eachChild(getRootEntity(), [&](OtEntity entity) {
+		entities.push_back(serializeEntityToJson(entity, &basedir));
+	});
+
+	data["entities"] = entities;
+
 	try {
 		// write scene to file
 		std::ofstream stream(path.string().c_str());
@@ -60,41 +85,11 @@ void OtScene::save(const std::filesystem::path& path) {
 			OtError("Can't open file [%s] for writing", path.string().c_str());
 		}
 
-		auto basedir = path.parent_path();
-		stream << serialize(1, '\t', &basedir);
+		stream << data.dump(1, '\t');
 		stream.close();
 
 	} catch (std::exception& e) {
 		OtError("Can't write to file [%s], error: %s", path.string().c_str(), e.what());
-	}
-}
-
-
-//
-//	OtScene::serialize
-//
-
-std::string OtScene::serialize(int indent, char character, std::filesystem::path* basedir) {
-	// write entities and components
-	auto data = nlohmann::json::array();
-
-	eachChild(getRootEntity(), [&](OtEntity entity) {
-		data.push_back(serializeEntityToJson(entity, basedir));
-	});
-
-	return data.dump(indent, character);
-}
-
-
-//
-//	OtScene::deserialize
-//
-
-void OtScene::deserialize(const std::string& data, std::filesystem::path* basedir) {
-	auto tree = nlohmann::json::parse(data);
-
-	for (auto& entity : tree) {
-		addEntityToParent(getRootEntity(), deserializeEntityFromJson(entity, basedir));
 	}
 }
 

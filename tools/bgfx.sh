@@ -42,7 +42,6 @@ else
 fi
 
 cd bgfx
-pwd
 make tools
 
 if [ -f tools/bin/darwin/shaderc ]

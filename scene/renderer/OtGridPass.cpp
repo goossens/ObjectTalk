@@ -23,7 +23,6 @@
 void OtSceneRenderer::renderGridPass() {
 	// setup pass
 	OtPass pass;
-	pass.setClear(false, false);
 	pass.setRectangle(0, 0, width, height);
 	pass.setFrameBuffer(compositeBuffer);
 	pass.setTransform(viewMatrix, projectionMatrix);
@@ -43,7 +42,7 @@ void OtSceneRenderer::renderGridPass() {
 	indexBuffer.submit(indices, 6);
 
 	// set uniforms
-	gridUniforms.set(0, glm::vec4(gridScale, 0.0f, 0.0f, 0.0f));
+	gridUniforms.setValue(0, glm::vec4(gridScale, 0.0f, 0.0f, 0.0f));
 	gridUniforms.submit();
 
 	// run the program

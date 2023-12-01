@@ -56,7 +56,25 @@ OtSceneEditor::OtSceneEditor() {
 
 void OtSceneEditor::load() {
 	// load scene from file
-	scene->load(path);
+	nlohmann::json metadata;
+	scene->load(path, &metadata);
+
+	// process metadata
+	editorCamera.setPreset(metadata.value("cameraPreset", OtSceneEditorCamera::smallScenePreset));
+
+	if (metadata.contains("grid")) {
+		auto grid = metadata["grid"];
+		gridEnabled = grid.value("enabled", false);
+		gridScale = grid.value("scale", 1.0f);
+	}
+
+	if (metadata.contains("gizmo")) {
+		auto gizmo = metadata["gizmo"];
+		guizmoEnabled = gizmo.value("enabled", false);
+		guizmoOperation = gizmo.value("mode", ImGuizmo::TRANSLATE);
+		guizmoSnapping = gizmo.value("snapping", false);
+		guizmoSnapInterval = gizmo.value("snapInterval", glm::vec3(0.1f));
+	}
 }
 
 
@@ -65,8 +83,25 @@ void OtSceneEditor::load() {
 //
 
 void OtSceneEditor::save() {
+	// build metadata
+	auto metadata = nlohmann::json::object();
+	metadata["type"] = "scene";
+	metadata["cameraPreset"] = editorCamera.getPreset();
+
+	auto grid = nlohmann::json::object();
+	grid["enabled"] = gridEnabled;
+	grid["scale"] = gridScale;
+	metadata["grid"] = grid;
+
+	auto gizmo = nlohmann::json::object();
+	gizmo["enabled"] = guizmoEnabled;
+	gizmo["mode"] = guizmoOperation;
+	gizmo["snapping"] = guizmoSnapping;
+	gizmo["snapInterval"] = guizmoSnapInterval;
+	metadata["gizmo"] = gizmo;
+
 	// write scene to file
-	scene->save(path);
+	scene->save(path, &metadata);
 
 	// reset current version number (marking the content as clean)
 	version = taskManager.getUndoCount();
@@ -146,6 +181,28 @@ void OtSceneEditor::renderMenu() {
 		if (ImGui::BeginMenu("View")) {
 			renderCommonViewMenuItems();
 
+			// render camera scale selector
+			if (ImGui::BeginMenu("Scene Scale")) {
+				if (ImGui::RadioButton("Small", editorCamera.getPreset() == OtSceneEditorCamera::smallScenePreset)) {
+					editorCamera.setPreset(OtSceneEditorCamera::smallScenePreset);
+				}
+
+				ImGui::SameLine();
+
+				if (ImGui::RadioButton("Medium", editorCamera.getPreset() == OtSceneEditorCamera::mediumScenePreset)) {
+					editorCamera.setPreset(OtSceneEditorCamera::mediumScenePreset);
+				}
+
+				ImGui::SameLine();
+
+				if (ImGui::RadioButton("Large", editorCamera.getPreset() == OtSceneEditorCamera::largeScenePreset)) {
+					editorCamera.setPreset(OtSceneEditorCamera::largeScenePreset);
+				}
+
+				ImGui::EndMenu();
+			}
+
+			// render camera selector
 			if (ImGui::BeginMenu("Camera")) {
 				if (ImGui::RadioButton("Editor Camera", selectedCamera == OtEntityNull)) {
 					selectedCamera = OtEntityNull;
@@ -166,43 +223,40 @@ void OtSceneEditor::renderMenu() {
 			}
 
 			ImGui::Separator();
-			ImGui::MenuItem("Grid", SHORTCUT "D", &gridVisible);
+			ImGui::MenuItem("Grid", SHORTCUT "D", &gridEnabled);
 
-			if (ImGui::BeginMenu("Grid Scale", gridVisible)) {
+			if (ImGui::BeginMenu("Grid Scale", gridEnabled)) {
 				ImGui::DragFloat("##scale", &gridScale, 0.1, 0.1f, 100.0f, "%.1f");
 				ImGui::EndMenu();
 			}
 
 			ImGui::Separator();
-			ImGui::MenuItem("Gizmo", SHORTCUT "G", &guizmoVisible);
+			ImGui::MenuItem("Gizmo", SHORTCUT "G", &guizmoEnabled);
 
-			if (ImGui::BeginMenu("Gizmo Mode", guizmoVisible)) {
+			if (ImGui::BeginMenu("Gizmo Mode", guizmoEnabled)) {
 				if (ImGui::RadioButton("Translate", guizmoOperation == ImGuizmo::TRANSLATE)) {
 					guizmoOperation = ImGuizmo::TRANSLATE;
-					guizmoVisible = true;
 				}
 
 				ImGui::SameLine();
 
 				if (ImGui::RadioButton("Rotate", guizmoOperation == ImGuizmo::ROTATE)) {
 					guizmoOperation = ImGuizmo::ROTATE;
-					guizmoVisible = true;
 				}
 
 				ImGui::SameLine();
 
 				if (ImGui::RadioButton("Scale", guizmoOperation == ImGuizmo::SCALE)) {
 					guizmoOperation = ImGuizmo::SCALE;
-					guizmoVisible = true;
 				}
 
 				ImGui::EndMenu();
 			}
 
 			// render snap control
-			if (ImGui::BeginMenu("Gizmo Snap", guizmoVisible)) {
+			if (ImGui::BeginMenu("Gizmo Snap", guizmoEnabled)) {
 				ImGui::Checkbox("Snaping", &guizmoSnapping);
-				OtUiEditVec3("##snap", snap, 0.0f, 0.0f, 0.1f);
+				OtUiEditVec3("##Interval", guizmoSnapInterval, 0.0f, 0.0f, 0.1f);
 				ImGui::EndMenu();
 			}
 
@@ -367,7 +421,7 @@ void OtSceneEditor::renderViewPort() {
 	renderer->setViewMatrix(camerViewMatrix);
 	renderer->setProjectionMatrix(cameraProjectionMatrix);
 	renderer->setSize(size.x, size.y);
-	renderer->setGridScale(gridVisible ? gridScale : 0.0f);
+	renderer->setGridScale(gridEnabled ? gridScale : 0.0f);
 	auto textureIndex = renderer->render(scene.get(), selectedEntity);
 
 	// show it on the screen
@@ -379,7 +433,7 @@ void OtSceneEditor::renderViewPort() {
 	}
 
 	// only show guizmo if it's visible on and the selected entity has a transform
-	if (guizmoVisible && scene->isValidEntity(selectedEntity) && scene->hasComponent<OtTransformComponent>(selectedEntity)) {
+	if (guizmoEnabled && scene->isValidEntity(selectedEntity) && scene->hasComponent<OtTransformComponent>(selectedEntity)) {
 		// configure the guizmo
 		ImGuizmo::SetOrthographic(false);
 		ImGuizmo::SetDrawlist(ImGui::GetWindowDrawList());
@@ -402,7 +456,7 @@ void OtSceneEditor::renderViewPort() {
 			ImGuizmo::LOCAL,
 			glm::value_ptr(transform),
 			nullptr,
-			guizmoSnapping ? glm::value_ptr(snap) : nullptr)) {
+			guizmoSnapping ? glm::value_ptr(guizmoSnapInterval) : nullptr)) {
 
 			// get the old state
 			auto oldValue = component.serialize(nullptr).dump();
@@ -818,7 +872,7 @@ void OtSceneEditor::handleShortcuts() {
 			duplicateEntity();
 
 		} else if (ImGui::IsKeyPressed(ImGuiKey_G, false)) {
-			guizmoVisible = !guizmoVisible;
+			guizmoEnabled = !guizmoEnabled;
 		}
 
 	// handle camera switching shortcuts

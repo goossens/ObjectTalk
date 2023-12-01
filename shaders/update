@@ -91,7 +91,7 @@ function compileShader() {
 		fi
 
 		# add shader to batch script
-		SHADER_BAT+="%HOMEDRIVE%%HOMEPATH%\\\\bin\\\\shaderc -f ${GROUP}\\\\${SOURCE} -o generated\\\\${GROUP}\\\\${SHADER}_${ID}.h -i include --type ${TYPE} --platform ${PLATFORM} --profile ${PROFILE} -O 3 --bin2c ${SHADER}_${ID}\n"
+		SHADER_BAT+="%HOMEDRIVE%%HOMEPATH%\\\\bin\\\\shaderc -f ${GROUP}\\\\${BASENAME} -o generated\\\\${GROUP}\\\\${SHADER}_${ID}.h -i include --type ${TYPE} --platform ${PLATFORM} --profile ${PROFILE} -O 3 --bin2c ${SHADER}_${ID}\n"
 
 	else
 		# no, hallelujah, it's not for windows so just compile the shader (if required)

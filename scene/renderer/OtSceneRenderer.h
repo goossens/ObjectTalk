@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include <unordered_map>
 #include <vector>
 
 #include "glm/glm.hpp"
@@ -22,10 +21,12 @@
 #include "OtFrustum.h"
 #include "OtGbuffer.h"
 #include "OtIndexBuffer.h"
+#include "OtNormalMapper.h"
 #include "OtPass.h"
 #include "OtSampler.h"
 #include "OtShaderProgram.h"
 #include "OtSphereGeometry.h"
+#include "OtTileableFbm.h"
 #include "OtUniformMat4.h"
 #include "OtUniformVec4.h"
 
@@ -78,6 +79,7 @@ private:
 	void preprocessMultipleInstanceGeometry(OtScene* scene, OtEntity entity, bool selected);
 	void preprocessSingleInstanceModel(OtScene* scene, OtEntity entity, bool selected);
 	void preprocessMultipleInstanceModel(OtScene* scene, OtEntity entity, bool selected);
+	void preprocessTerrain(OtScene* scene, OtEntity entity);
 
 	// render entities
 	void renderSky(OtPass& pass, OtSkyComponent& component);
@@ -85,16 +87,17 @@ private:
 	void renderSkySphere(OtPass& pass, OtSkySphereComponent& component);
 	void renderDeferredGeometry(OtPass& pass, OtScene* scene, OtEntity entity);
 	void renderDeferredModel(OtPass& pass, OtScene* scene, OtEntity entity);
-	void renderDeferredTerrain(OtPass& pass, OtTerrainComponent& component, OtMaterialComponent& material);
+	void renderDeferredTerrain(OtPass& pass, OtTerrainComponent& component);
 	void renderForwardGeometry(OtPass& pass, OtScene* scene, OtEntity entity);
 	void renderHighlight(OtPass& pass, OtScene* scene, OtEntity entity);
 	void renderBloom(float bloomIntensity);
 
 	// rendering tools
+	void submitSampler(OtSampler& sampler, int unit, OtAsset<OtTextureAsset>& texture);
 	void submitMaterialUniforms(OtMaterial material);
 	void submitPbrUniforms(OtPbrMaterial material);
-	void submitTerrainUniforms(OtTerrainMaterial material);
 	void submitLightUniforms(OtScene* scene);
+	void submitTerrainUniforms(OtTerrain terrain);
 
 	// camera information
 	glm::vec3 cameraPosition;
@@ -131,17 +134,20 @@ private:
 	bool hasTerrainEntities = false;
 	bool renderEntityHighlight = false;
 
+	// generators/filters
+	OtTileableFbm tileableFbm;
+	OtNormalMapper normalMapper;
+
 	// uniforms
-	OtUniformVec4 terrainUniforms{"u_terrain", 1};
+	OtUniformVec4 terrainUniforms{"u_terrain", 7};
 	OtUniformVec4 pbrMaterialUniforms{"u_pbrMaterial", 5};
-	OtUniformVec4 terrainMaterialUniforms{"u_terrainMaterial", 6};
 	OtUniformVec4 lightingUniforms{"u_lighting", 3};
 	OtUniformVec4 skyUniforms{"u_sky", 3};
 	OtUniformVec4 gridUniforms{"u_grid", 1};
 	OtUniformVec4 outlineUniforms{"u_outline", 1};
 	OtUniformVec4 bloomUniforms{"u_bloom", 1};
 	OtUniformVec4 postProcessUniforms{"u_postProcess", 1};
-	OtUniformMat4 inverseTransform{"u_inverseTransform", 1};
+	OtUniformMat4 inverseTransformUniforms{"u_inverseTransform", 1};
 
 	// samplers
 	OtSampler deferredGeometryAlbedoSampler{"s_deferredGeometryAlbedoTexture"};
@@ -162,7 +168,7 @@ private:
 	OtSampler region3Sampler{"s_region3Sampler"};
 	OtSampler region4Sampler{"s_region4Sampler"};
 
-	OtSampler heightmapSampler{"s_HeightmapTexture"};
+	OtSampler normalmapSampler{"s_normalmapSampler"};
 	OtSampler skySampler{"s_skySampler"};
 
 	OtSampler selectedSampler{"s_selectedTexture", OtSampler::pointSampling | OtSampler::clampSampling};
@@ -172,10 +178,8 @@ private:
 
 	// shader programs
 	OtShaderProgram deferredPbrProgram{"OtDeferredVS", "OtDeferredPbrFS"};
-	OtShaderProgram deferredTerrainProgram{"OtDeferredVS", "OtDeferredTerrainFS"};
 	OtShaderProgram deferredInstancingProgram{"OtDeferredInstancingVS", "OtDeferredPbrFS"};
-	OtShaderProgram deferredTerrainPbrProgram{"OtTerrainVS", "OtTerrainFS"};
-	OtShaderProgram deferredTerrainTerrainProgram{"OtTerrainVS", "OtTerrainFS"};
+	OtShaderProgram deferredTerrainProgram{"OtTerrainVS", "OtTerrainFS"};
 	OtShaderProgram deferredLightingProgram{"OtDeferredLightingVS", "OtDeferredLightingFS"};
 	OtShaderProgram forwardPbrProgram{"OtForwardVS", "OtForwardPbrFS"};
 	OtShaderProgram forwardInstancingProgram{"OtForwardInstancingVS", "OtForwardPbrFS"};

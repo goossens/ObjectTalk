@@ -28,16 +28,16 @@ public:
 	void load(const std::filesystem::path& path);
 
 	// clear the resources
-	void clear() { cubemap.clear(); }
+	inline void clear() { cubemap.clear(); }
 
 	// see if cubemap is valid
-	bool isValid() { return cubemap.isValid(); }
+	inline bool isValid() { return cubemap.isValid(); }
 
 	// return cubemap handle
-	bgfx::TextureHandle getTextureHandle() { return cubemap.getHandle(); }
+	inline bgfx::TextureHandle getTextureHandle() { return cubemap.getHandle(); }
 
 	// return cubemap index
-	int getTextureIndex() { return cubemap.getIndex(); }
+	inline int getTextureIndex() { return cubemap.getIndex(); }
 
 private:
 	// cubemap texture

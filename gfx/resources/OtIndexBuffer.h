@@ -22,13 +22,13 @@
 class OtIndexBuffer {
 public:
 	// clear the resources
-	void clear() { indexBuffer.clear(); }
+	inline void clear() { indexBuffer.clear(); }
 
 	// set indices
 	void set(uint32_t* data, size_t count);
 
 	// see if buffer is valid
-	bool isValid() { return indexBuffer.isValid(); }
+	inline bool isValid() { return indexBuffer.isValid(); }
 
 	// submit to GPU
 	void submit();

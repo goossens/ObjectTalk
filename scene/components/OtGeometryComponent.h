@@ -46,6 +46,6 @@ public:
 	bool cullback = true;
 
 private:
-	// create a new named geometry instance
+	// create a named geometry instance
 	void createGeometry(const std::string& type);
 };

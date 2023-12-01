@@ -67,6 +67,7 @@ void OtSceneApp::renderSplashScreen() {
 		logo = std::make_shared<OtLogo>();
 	}
 
+	// render splash screen
 	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
 	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5, 0.5));
 

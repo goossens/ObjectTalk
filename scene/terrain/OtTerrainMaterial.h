@@ -19,37 +19,19 @@
 #include "OtAsset.h"
 #include "OtTextureAsset.h"
 
-#include "OtMaterial.h"
-
 
 //
-//	OtMaterial
+//	OtTerrainMaterial
 //
 
-class OtTerrainMaterialClass;
-using OtTerrainMaterial = OtObjectPointer<OtTerrainMaterialClass>;
-
-class OtTerrainMaterialClass : public OtMaterialClass {
+class OtTerrainMaterial {
 public:
 	// GUI to change material properties
-	bool renderGUI() override;
+	bool renderGUI();
 
 	// (de)serialize material
-	nlohmann::json serialize(std::filesystem::path* basedir) override;
-	void deserialize(nlohmann::json data, std::filesystem::path* basedir) override;
-
-	// get type name of material
-	const char* getTypeName() override { return name; }
-
-	// material name
-	static constexpr char const* name = "Terrain";
-
-	// get type definition
-	static OtType getMeta();
-
-private:
-	// the scene renderer needs access to our properties
-	friend class OtSceneRenderer;
+	nlohmann::json serialize(std::filesystem::path* basedir);
+	void deserialize(nlohmann::json data, std::filesystem::path* basedir);
 
 	// stored properties
 	glm::vec3 region1Color = glm::vec3(0.965f, 0.894f, 0.678f);

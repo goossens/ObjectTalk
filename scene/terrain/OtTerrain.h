@@ -18,11 +18,14 @@
 #include "glm/glm.hpp"
 #include "nlohmann/json_fwd.hpp"
 
+#include "OtObject.h"
+
 #include "OtFrustum.h"
 #include "OtIndexBuffer.h"
 #include "OtVertexBuffer.h"
 
-#include "OtTerrainHeight.h"
+#include "OtTerrainHeights.h"
+#include "OtTerrainMaterial.h"
 #include "OtTerrainMesh.h"
 #include "OtTerrainTile.h"
 
@@ -31,7 +34,10 @@
 //	OtTerrain
 //
 
-class OtTerrain {
+class OtTerrainClass;
+using OtTerrain = OtObjectPointer<OtTerrainClass>;
+
+class OtTerrainClass : public OtObjectClass {
 public:
 	// GUI to change properties
 	bool renderGUI();
@@ -43,16 +49,16 @@ public:
 	// access the meshes
 	std::vector<OtTerrainMesh>& getMeshes(OtFrustum& frustum, const glm::vec3& camera);
 
-	// get the heightmap size
-	int getHeightmapSize() { return heightmap.getSize(); }
-
-	// bind heightmap to specified sampler
-	void bindHeightmap(OtSampler& sampler, int unit) { heightmap.bindHeightmap(sampler, unit); }
-
 	// are we rendering a wireframe
 	inline bool isWireframe() { return wireframe; }
 
+	// get type definition
+	static OtType getMeta();
+
 private:
+	// the scene renderer needs access to our properties
+	friend class OtSceneRenderer;
+
 	// terrain properties
 	int tileSize = 32;
 	int lods = 4;
@@ -74,7 +80,9 @@ private:
 	std::vector<OtTerrainTile> ringTiles;
 	std::vector<OtTerrainMesh> meshes;
 
-	OtTerrainHeight heightmap;
+	// terrain heights and material
+	OtTerrainHeights heights;
+	OtTerrainMaterial material;
 
 	// current geoclipmap center
 	float centerX;

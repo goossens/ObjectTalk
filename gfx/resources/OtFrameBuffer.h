@@ -46,22 +46,22 @@ public:
 	void clear();
 
 	// see if framebuffer is valid
-	bool isValid() { return framebuffer.isValid(); }
+	inline bool isValid() { return framebuffer.isValid(); }
 
 	// update frame buffer
 	void update(int width, int height);
 
 	// get framebuffer dimensions
-	int getWidth() { return width; }
-	int getHeight() { return height; }
+	inline int getWidth() { return width; }
+	inline int getHeight() { return height; }
 
 	// get textures
-	bgfx::TextureHandle getColorTexture() { return colorTexture.getHandle(); }
-	bgfx::TextureHandle getDepthTexture() { return depthTexture.getHandle(); }
+	inline bgfx::TextureHandle getColorTexture() { return colorTexture.getHandle(); }
+	inline bgfx::TextureHandle getDepthTexture() { return depthTexture.getHandle(); }
 
 	// get texture indices
-	int getColorTextureIndex() { return colorTexture.getIndex(); }
-	int getDepthTextureIndex() { return depthTexture.getIndex(); }
+	inline int getColorTextureIndex() { return colorTexture.getIndex(); }
+	inline int getDepthTextureIndex() { return depthTexture.getIndex(); }
 
 	// bind textures
 	void bindColorTexture(OtSampler& sampler, int unit);

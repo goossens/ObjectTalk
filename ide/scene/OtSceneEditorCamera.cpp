@@ -108,6 +108,41 @@ void OtSceneEditorCamera::handleKeyboardAndMouse() {
 
 
 //
+//	OtSceneEditorCamera::setPreset
+//
+
+void OtSceneEditorCamera::setPreset(int p) {
+	// remember new preset and set camera properties
+	preset = p;
+
+	if (preset == smallScenePreset) {
+		position = glm::vec3(0.0f, 2.0f, 5.0f);
+		pitch = -20.0f;
+		yaw = 0.0f;
+		fov = 60.0f;
+		nearPlane = 0.1f;
+		farPlane = 50.0f;
+
+	} else if (preset == mediumScenePreset) {
+		position = glm::vec3(0.0f, 10.0f, 50.0f);
+		pitch = -20.0f;
+		yaw = 0.0f;
+		fov = 60.0f;
+		nearPlane = 1.0f;
+		farPlane = 500.0f;
+
+	} else if (preset == largeScenePreset) {
+		position = glm::vec3(0.0f, 50.0f, 500.0f);
+		pitch = -20.0f;
+		yaw = 0.0f;
+		fov = 60.0f;
+		nearPlane = 10.0f;
+		farPlane = 5000.0f;
+	}
+}
+
+
+//
 //	Camera::getViewMatrix
 //
 

@@ -22,7 +22,6 @@
 void OtSceneRenderer::renderDeferredGeometryPass(OtScene* scene) {
 	// setup pass
 	OtPass pass;
-	pass.setClear(false, false);
 	pass.setRectangle(0, 0, width, height);
 	pass.setFrameBuffer(gbuffer);
 	pass.setTransform(viewMatrix, projectionMatrix);
@@ -52,9 +51,6 @@ void OtSceneRenderer::renderDeferredGeometry(OtPass& pass, OtScene* scene, OtEnt
 
 	if (material.isKindOf<OtPbrMaterialClass>()) {
 		program = &deferredPbrProgram;
-
-	} else if (material.isKindOf<OtTerrainMaterialClass>()) {
-		program = &deferredTerrainProgram;
 	}
 
 	// submit the material information

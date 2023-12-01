@@ -13,6 +13,7 @@
 //
 
 #include <filesystem>
+#include <string>
 
 #include "glm/glm.hpp"
 #include "nlohmann/json_fwd.hpp"
@@ -63,8 +64,8 @@
 class OtScene : public OtEcs {
 public:
 	// load and save scene
-	void load(const std::filesystem::path& path);
-	void save(const std::filesystem::path& path);
+	void load(const std::filesystem::path& path, nlohmann::json* metadata=nullptr);
+	void save(const std::filesystem::path& path, nlohmann::json* metadata=nullptr);
 
 	// (de)serialize entiry from/to string
 	std::string serializeEntity(OtEntity entity, int indent=-1, char character=' ', std::filesystem::path* basedir=nullptr);
@@ -74,10 +75,6 @@ public:
 	glm::mat4 getGlobalTransform(OtEntity entity);
 
 private:
-	// (de)serialize from/to string
-	std::string serialize(int indent=-1, char character=' ', std::filesystem::path* basedir=nullptr);
-	void deserialize(const std::string& data, std::filesystem::path* basedir=nullptr);
-
 	// (de)serialize from/to JSON
 	nlohmann::json serializeEntityToJson(OtEntity entity, std::filesystem::path* basedir);
 	OtEntity deserializeEntityFromJson(nlohmann::json& data, std::filesystem::path* basedir);

@@ -51,7 +51,6 @@ int OtPassCount() {
 OtPass::OtPass() {
 	view = nextViewID++;
 	bgfx::resetView(view);
-	bgfx::touch(view);
 }
 
 
@@ -148,6 +147,15 @@ void OtPass::submitQuad(int w, int h) {
 
 void OtPass::runShaderProgram(OtShaderProgram& program) {
 	program.submit(view);
+}
+
+
+//
+//	OtPass::touch
+//
+
+void OtPass::touch() {
+	bgfx::touch(view);
 }
 
 

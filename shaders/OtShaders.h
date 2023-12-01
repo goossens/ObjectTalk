@@ -39,11 +39,6 @@
 #include "generated/deferred/OtDeferredPbrFS_spv.h"
 #include "generated/deferred/OtDeferredPbrFS_essl.h"
 #include "generated/deferred/OtDeferredPbrFS_dx11.h"
-#include "generated/deferred/OtDeferredTerrainFS_mtl.h"
-#include "generated/deferred/OtDeferredTerrainFS_glsl.h"
-#include "generated/deferred/OtDeferredTerrainFS_spv.h"
-#include "generated/deferred/OtDeferredTerrainFS_essl.h"
-#include "generated/deferred/OtDeferredTerrainFS_dx11.h"
 #include "generated/filter/OtFilterVS_mtl.h"
 #include "generated/filter/OtFilterVS_glsl.h"
 #include "generated/filter/OtFilterVS_spv.h"
@@ -74,6 +69,11 @@
 #include "generated/filter/OtBlurFS_spv.h"
 #include "generated/filter/OtBlurFS_essl.h"
 #include "generated/filter/OtBlurFS_dx11.h"
+#include "generated/filter/OtNormalMapperFS_mtl.h"
+#include "generated/filter/OtNormalMapperFS_glsl.h"
+#include "generated/filter/OtNormalMapperFS_spv.h"
+#include "generated/filter/OtNormalMapperFS_essl.h"
+#include "generated/filter/OtNormalMapperFS_dx11.h"
 #include "generated/filter/OtPostProcessFS_mtl.h"
 #include "generated/filter/OtPostProcessFS_glsl.h"
 #include "generated/filter/OtPostProcessFS_spv.h"
@@ -206,11 +206,6 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtDeferredPbrFS),
 	BGFX_EMBEDDED_SHADER(OtDeferredPbrFS),
 	BGFX_EMBEDDED_SHADER(OtDeferredPbrFS),
-	BGFX_EMBEDDED_SHADER(OtDeferredTerrainFS),
-	BGFX_EMBEDDED_SHADER(OtDeferredTerrainFS),
-	BGFX_EMBEDDED_SHADER(OtDeferredTerrainFS),
-	BGFX_EMBEDDED_SHADER(OtDeferredTerrainFS),
-	BGFX_EMBEDDED_SHADER(OtDeferredTerrainFS),
 	BGFX_EMBEDDED_SHADER(OtFilterVS),
 	BGFX_EMBEDDED_SHADER(OtFilterVS),
 	BGFX_EMBEDDED_SHADER(OtFilterVS),
@@ -241,6 +236,11 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtBlurFS),
 	BGFX_EMBEDDED_SHADER(OtBlurFS),
 	BGFX_EMBEDDED_SHADER(OtBlurFS),
+	BGFX_EMBEDDED_SHADER(OtNormalMapperFS),
+	BGFX_EMBEDDED_SHADER(OtNormalMapperFS),
+	BGFX_EMBEDDED_SHADER(OtNormalMapperFS),
+	BGFX_EMBEDDED_SHADER(OtNormalMapperFS),
+	BGFX_EMBEDDED_SHADER(OtNormalMapperFS),
 	BGFX_EMBEDDED_SHADER(OtPostProcessFS),
 	BGFX_EMBEDDED_SHADER(OtPostProcessFS),
 	BGFX_EMBEDDED_SHADER(OtPostProcessFS),

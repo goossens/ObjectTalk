@@ -32,6 +32,7 @@ void OtSceneRenderer::renderBackgroundPass(OtScene* scene) {
 	pass.setClear(true, !hasOpaqueEntities, glm::vec4(backgroundColor, 1.0f));
 	pass.setRectangle(0, 0, width, height);
 	pass.setFrameBuffer(compositeBuffer);
+	pass.touch();
 
 	// copy depth buffer from gbuffer to the composite framebuffer (if we already rendered opaque objects)
 	if (hasOpaqueEntities) {

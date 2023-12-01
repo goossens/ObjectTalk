@@ -21,11 +21,22 @@
 
 class OtSceneEditorCamera {
 public:
+	// camera presets
+	enum {
+		smallScenePreset = 1,
+		mediumScenePreset,
+		largeScenePreset
+	};
+
 	// update the camera (called each frame)
 	void update();
 
 	// process posible camera inputs
 	void handleKeyboardAndMouse();
+
+	// access presets
+	void setPreset(int preset);
+	int getPreset() { return preset; }
 
 	// property setters
 	void setPosition(const glm::vec3& p) { position = p; };
@@ -48,6 +59,9 @@ public:
 	glm::mat4 getProjectionMatrix(float aspectRatio);
 
 private:
+	// presets
+	int preset = smallScenePreset;
+
 	// camera properties
 	glm::vec3 position{0.0f, 2.0f, 5.0f};
 	float pitch = -20.0f;

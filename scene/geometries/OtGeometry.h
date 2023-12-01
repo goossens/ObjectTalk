@@ -69,23 +69,23 @@ protected:
 	bool refreshGeometry = true;
 
 	// add vertices/triangles/lines to the geometry
-	void addVertex(const OtVertex& vertex) {
+	inline void addVertex(const OtVertex& vertex) {
 		vertices.emplace_back(vertex);
 		aabb.addPoint(vertex.position);
 	}
 
-	void addTriangle(uint32_t p1, uint32_t p2, uint32_t p3) {
+	inline void addTriangle(uint32_t p1, uint32_t p2, uint32_t p3) {
 		triangles.emplace_back(p1);
 		triangles.emplace_back(p2);
 		triangles.emplace_back(p3);
 	}
 
-	void addLine(uint32_t p1, uint32_t p2) {
+	inline void addLine(uint32_t p1, uint32_t p2) {
 		lines.emplace_back(p1);
 		lines.emplace_back(p2);
 	}
 
-	void addIndex(uint32_t p1, uint32_t p2, uint32_t p3) {
+	inline void addIndex(uint32_t p1, uint32_t p2, uint32_t p3) {
 		addTriangle(p1, p2, p3);
 		addLine(p1, p2);
 		addLine(p2, p3);

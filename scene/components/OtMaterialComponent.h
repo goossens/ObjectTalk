@@ -45,6 +45,6 @@ public:
 	OtMaterial material;
 
 private:
-	// create a new named material instance
+	// create a named material instance
 	void createMaterial(const std::string& type);
 };

@@ -71,11 +71,11 @@
 				},
 				{
 					"component": "Terrain",
-					"hScale": 0.05999999865889549,
+					"hScale": 1.0,
 					"heightmap": {
 						"amplitude": 0.5,
 						"frequency": 10,
-						"lacunarity": 2,
+						"lacunarity": 3,
 						"normalStrength": 10.0,
 						"octaves": 5,
 						"persistence": 0.5,
@@ -116,8 +116,8 @@
 						"scale": 47.900001525878906
 					},
 					"tileSize": 32,
-					"vOffset": -20.0,
-					"vScale": 59.0,
+					"vOffset": -10.0,
+					"vScale": 50.0,
 					"wireframe": false
 				}
 			]

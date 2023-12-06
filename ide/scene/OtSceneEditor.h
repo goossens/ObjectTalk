@@ -104,7 +104,6 @@ private:
 	// to handle do/undo/redo
 	OtTaskManager taskManager;
 	std::shared_ptr<OtEditorTask> nextTask = nullptr;
-	size_t version = 0;
 
 	// to handle cut/copy/paste
 	std::string clipboard;

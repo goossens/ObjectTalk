@@ -149,7 +149,7 @@
 				},
 				{
 					"component": "Terrain",
-					"hScale": 0.009999999776482582,
+					"hScale": 1.0,
 					"heightmap": {
 						"amplitude": 0.5,
 						"frequency": 10,
@@ -166,32 +166,32 @@
 							0.8939999938011169,
 							0.6779999732971191
 						],
-						"region1Overlap": 1.0,
+						"region1Overlap": 0.1599999964237213,
 						"region1Texture": "",
-						"region1Transition": 2.5,
+						"region1Transition": 0.20000000298023224,
 						"region2Color": [
 							0.49399998784065247,
 							0.7839999794960022,
 							0.3140000104904175
 						],
-						"region2Overlap": 1.0,
+						"region2Overlap": 0.15000000596046448,
 						"region2Texture": "assets/mulch.jpg",
-						"region2Transition": 5.0,
+						"region2Transition": 0.4000000059604645,
 						"region3Color": [
 							0.5839999914169312,
 							0.5529999732971191,
 							0.5220000147819519
 						],
-						"region3Overlap": 1.0,
+						"region3Overlap": 0.1599999964237213,
 						"region3Texture": "assets/moss.jpg",
-						"region3Transition": 7.5,
+						"region3Transition": 0.699999988079071,
 						"region4Color": [
 							0.8999999761581421,
 							0.8999999761581421,
 							0.8999999761581421
 						],
 						"region4Texture": "",
-						"scale": 9.699999809265137
+						"scale": 10.399999618530273
 					},
 					"tileSize": 32,
 					"vOffset": 0.0,

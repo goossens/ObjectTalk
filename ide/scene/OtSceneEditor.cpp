@@ -102,9 +102,7 @@ void OtSceneEditor::save() {
 
 	// write scene to file
 	scene->save(path, &metadata);
-
-	// reset current version number (marking the content as clean)
-	version = taskManager.getUndoCount();
+	taskManager.baseline();
 }
 
 
@@ -919,7 +917,7 @@ void OtSceneEditor::handleShortcuts() {
 //
 
 bool OtSceneEditor::isDirty() {
-	return version != taskManager.getUndoCount();
+	return taskManager.isDirty();
 }
 
 

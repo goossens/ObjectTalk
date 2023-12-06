@@ -28,7 +28,7 @@ public:
 	void perform(std::shared_ptr<OtEditorTask> task) {
 		task->perform();
 
-		if (undoStack.size() && undoStack.back()->isMergeable(task)) {
+		if (isDirty() && undoStack.back()->isMergeable(task)) {
 			undoStack.back()->merge(task);
 
 		} else {
@@ -61,8 +61,16 @@ public:
 	size_t getUndoCount() { return undoStack.size(); }
 	size_t getRedoCount() { return redoStack.size(); }
 
+	// mark a new baseline
+	void baseline() { baselineMarker = undoStack.size(); }
+	// see if document is "dirty" (i.e. it's off the saved baseline)
+	bool isDirty() { return undoStack.size() != baselineMarker; }
+
 private:
 	// to keep track of tasks
 	std::vector<std::shared_ptr<OtEditorTask>> undoStack;
 	std::vector<std::shared_ptr<OtEditorTask>> redoStack;
+
+	// currently basedlined version (to support "dirty" tracking)
+	int baselineMarker = 0;
 };

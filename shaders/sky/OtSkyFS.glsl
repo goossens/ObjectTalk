@@ -34,9 +34,9 @@ float noise(vec3 x) {
 			       mix(hash(n + 270.0), hash(n + 271.0), f.x), f.y), f.z);
 }
 
-const mat3 m = mat3(0.0, 1.60, 1.20, -1.6, 0.72, -0.96, -1.2, -0.96, 1.28);
-
 float fbm(vec3 p) {
+	CONST(mat3) m = mat3(0.0, 1.60, 1.20, -1.6, 0.72, -0.96, -1.2, -0.96, 1.28);
+
 	float f = 0.0;
 	f += noise(p) / 2.0; p = mul(m, p * 1.1);
 	f += noise(p) / 4.0; p = mul(m, p * 1.2);
@@ -56,9 +56,9 @@ void main() {
 	}
 
 	// atmospheric scattering
-	const vec3 nitrogen = vec3(0.650, 0.570, 0.475);
-	const vec3 nitrogen1 = vec3(0.179, 0.106, 0.051); // pow(nitrogen, 4.0)
-	const vec3 nitrogen2 = vec3(0.696, 0.624, 0.535); // pow(nitrogen, 0.84)
+	CONST(vec3) nitrogen = vec3(0.650, 0.570, 0.475);
+	CONST(vec3) nitrogen1 = vec3(0.179, 0.106, 0.051); // pow(nitrogen, 4.0)
+	CONST(vec3) nitrogen2 = vec3(0.696, 0.624, 0.535); // pow(nitrogen, 0.84)
 
 	vec3 Kr = u_br / nitrogen1;
 	vec3 Km = u_bm / nitrogen2;

@@ -204,10 +204,6 @@ void OtFramework::initIMGUI() {
 		.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
 		.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
 		.end();
-
-	// initialize sampler and program
-	imguiFontSampler.initialize("g_AttribLocationTex");
-	imguiShaderProgram.initialize("OtImGuiVS", "OtImGuiFS");
 }
 
 

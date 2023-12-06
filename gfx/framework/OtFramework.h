@@ -97,8 +97,8 @@ private:
 	// to render IMGUI
 	bgfx::VertexLayout imguiVertexLayout;
 	OtTexture imguiFontTexture;
-	OtSampler imguiFontSampler;
-	OtShaderProgram imguiShaderProgram;
+	OtSampler imguiFontSampler{"s_imguiFontAtlas"};
+	OtShaderProgram imguiShaderProgram{"OtImGuiVS", "OtImGuiFS"};
 
 	// anti-aliasing setting
 	int antiAliasing = 0;

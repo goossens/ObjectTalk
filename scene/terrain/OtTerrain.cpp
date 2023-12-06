@@ -69,6 +69,13 @@ bool OtTerrainClass::renderGUI() {
 	changed |= heights.renderGUI();
 	changed |= material.renderGUI();
 	changed |= ImGui::Checkbox("Wireframe", &wireframe);
+
+#ifdef OT_DEBUG
+	static char buffer[16];
+	snprintf(buffer, 16, "%d", (int) meshes.size());
+	ImGui::InputText("Visible Meshes", buffer, 16, ImGuiInputTextFlags_ReadOnly);
+#endif
+
 	return changed;
 }
 
@@ -138,8 +145,9 @@ std::vector<OtTerrainMesh> &OtTerrainClass::getMeshes(OtFrustum& frustum, const 
 	meshes.clear();
 
 	// determine center of terrain's geoclipmap
-	centerX = std::floor(camera.x);
-	centerZ = std::floor(camera.z);
+	float factor = 16.0f * hScale;
+	centerX = std::floor(camera.x / factor) * factor;
+	centerZ = std::floor(camera.z / factor) * factor;
 
 	// lambda function to process a single tile
 	auto processTile = [&] (OtTerrainTile& tile, OtFrustum& frustum, int lod) {

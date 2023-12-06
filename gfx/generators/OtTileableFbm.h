@@ -43,5 +43,5 @@ private:
 
 	// shader resources
 	OtShaderProgram program{"OtGeneratorVS", "OtTileableFbmFS"};
-	OtUniformVec4 uniform{"u_fbm", 2};
+	OtUniformVec4 uniform{"u_tileableFbm", 2};
 };

@@ -35,13 +35,13 @@ void OtSceneRenderer::renderDeferredTerrainPass(OtScene* scene) {
 //
 
 void OtSceneRenderer::renderDeferredTerrain(OtPass& pass, OtTerrainComponent& terrain) {
-	// submit the terrain uniforms
-	submitTerrainUniforms(terrain.terrain);
-
 	// process all the terrain meshes
 	for (auto& mesh : terrain.terrain->getMeshes(frustum, cameraPosition)) {
 		// submit the geometry
 		mesh.tile.vertices.submit();
+
+		// submit the terrain uniforms
+		submitTerrainUniforms(terrain.terrain);
 
 		if (terrain.terrain->isWireframe()) {
 			mesh.tile.lines.submit();
@@ -88,7 +88,12 @@ void OtSceneRenderer::submitTerrainUniforms(OtTerrain terrain) {
 
 	// set the uniform values
 	glm::vec4* uniforms = terrainUniforms.getValues();
-	uniforms[0] = glm::vec4(float(heights.heightmapSize), 1.0 / float(heights.heightmapSize), 0.0f, 0.0f);
+
+	uniforms[0] = glm::vec4(
+		terrain->hScale,
+		terrain->vScale,
+		terrain->vOffset,
+		float(heights.heightmapSize));
 
 	uniforms[1] = glm::vec4(
 		material.region1Transition,
@@ -110,12 +115,12 @@ void OtSceneRenderer::submitTerrainUniforms(OtTerrain terrain) {
 	// submit the uniforms
 	terrainUniforms.submit();
 
-	// submit all material textures (or dummies if they are not set)
-	submitSampler(region1Sampler, 0, material.region1Texture);
-	submitSampler(region2Sampler, 1, material.region2Texture);
-	submitSampler(region3Sampler, 2, material.region3Texture);
-	submitSampler(region4Sampler, 3, material.region4Texture);
-
 	// bind the normalmap texture (which includes the heightmap in the alpha/w component)
-	heights.normalmap.bindColorTexture(normalmapSampler, 4);
+	heights.normalmap.bindColorTexture(normalmapSampler, 0);
+
+	// submit all material textures (or dummies if they are not set)
+	submitSampler(region1Sampler, 1, material.region1Texture);
+	submitSampler(region2Sampler, 2, material.region2Texture);
+	submitSampler(region3Sampler, 3, material.region3Texture);
+	submitSampler(region4Sampler, 4, material.region4Texture);
 }

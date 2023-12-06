@@ -48,22 +48,22 @@ bool OtTerrainMaterial::renderGUI() {
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); changed |= ImGui::ColorEdit3("##region1Color", glm::value_ptr(region1Color));
 			ImGui::TableNextColumn(); W(); changed |= region1Texture.renderGUI("##region1Texture");
-			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region1Transition", &region1Transition, 0.1f, 0.0f, 1000.0f);
-			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region1Overlap", &region1Overlap, 0.1f, 0.0f, 1000.0f);
+			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region1Transition", &region1Transition, 0.01f, 0.0f, 1.0f);
+			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region1Overlap", &region1Overlap, 0.01f, 0.0f, 1.0f);
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Region 1");
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); changed |= ImGui::ColorEdit3("##region2Color", glm::value_ptr(region2Color));
 			ImGui::TableNextColumn(); W(); changed |= region2Texture.renderGUI("##region2Texture");
-			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region2Transition", &region2Transition, 0.1f, 0.0f, 1000.0f);
-			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region2Overlap", &region2Overlap, 0.1f, 0.0f, 1000.0f);
+			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region2Transition", &region2Transition, 0.01f, 0.0f, 1.0f);
+			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region2Overlap", &region2Overlap, 0.01f, 0.0f, 1.0f);
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Region 2");
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); changed |= ImGui::ColorEdit3("##region3Color", glm::value_ptr(region3Color));
 			ImGui::TableNextColumn(); W(); changed |= region3Texture.renderGUI("##region3Texture");
-			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region3Transition", &region3Transition, 0.1f, 0.0f, 1000.0f);
-			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##regio3Overlap", &region3Overlap, 0.1f, 0.0f, 1000.0f);
+			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region3Transition", &region3Transition, 0.01f, 0.0f, 1.0f);
+			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##regio3Overlap", &region3Overlap, 0.01f, 0.0f, 1.0f);
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Region 3");
 
 			ImGui::TableNextRow();

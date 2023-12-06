@@ -16,7 +16,7 @@
 
 
 // constants
-const float PI = 3.14159265359;
+#define PI 3.14159265359
 
 // PBR data
 struct PBR {

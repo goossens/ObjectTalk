@@ -53,7 +53,7 @@
 					"cirrus": 0.45399999618530273,
 					"component": "Sky",
 					"cumulus": 0.800000011920929,
-					"elevation": 29.565000534057617,
+					"elevation": 40.32600021362305,
 					"mieCoefficient": 5.734000205993652,
 					"mieScattering": 0.9900000095367432,
 					"rayleighCoefficient": 2.8420000076293945,
@@ -75,38 +75,38 @@
 					"heightmap": {
 						"amplitude": 0.5,
 						"frequency": 10,
-						"lacunarity": 3,
+						"lacunarity": 2,
 						"normalStrength": 10.0,
 						"octaves": 5,
 						"persistence": 0.5,
 						"size": 256
 					},
-					"lods": 8,
+					"lods": 3,
 					"material": {
 						"region1Color": [
 							0.9649999737739563,
 							0.8939999938011169,
 							0.6779999732971191
 						],
-						"region1Overlap": 1.0,
+						"region1Overlap": 0.05000000074505806,
 						"region1Texture": "assets/sand.jpg",
-						"region1Transition": 4.800000190734863,
+						"region1Transition": 0.30000001192092896,
 						"region2Color": [
 							0.49399998784065247,
 							0.7839999794960022,
 							0.3140000104904175
 						],
-						"region2Overlap": 2.0,
+						"region2Overlap": 0.05000000074505806,
 						"region2Texture": "assets/terrain.jpg",
-						"region2Transition": 12.0,
+						"region2Transition": 0.4399999976158142,
 						"region3Color": [
 							0.5839999914169312,
 							0.5529999732971191,
 							0.5220000147819519
 						],
-						"region3Overlap": 2.0,
+						"region3Overlap": 0.05000000074505806,
 						"region3Texture": "assets/rock.jpg",
-						"region3Transition": 22.899999618530273,
+						"region3Transition": 0.6600000262260437,
 						"region4Color": [
 							0.8999999761581421,
 							0.8999999761581421,
@@ -115,7 +115,7 @@
 						"region4Texture": "assets/snow.jpg",
 						"scale": 47.900001525878906
 					},
-					"tileSize": 32,
+					"tileSize": 64,
 					"vOffset": -10.0,
 					"vScale": 50.0,
 					"wireframe": false

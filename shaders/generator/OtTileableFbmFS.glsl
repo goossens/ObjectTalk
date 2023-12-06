@@ -11,12 +11,12 @@ $input v_texcoord0
 #include <bgfx_shader.glsl>
 
 // uniforms
-uniform vec4 u_fbm[2];
-#define u_frequency u_fbm[0].x
-#define u_lacunarity u_fbm[0].y
-#define u_amplitude u_fbm[0].z
-#define u_persistence u_fbm[0].w
-#define u_octaves int(u_fbm[1].x)
+uniform vec4 u_tileableFbm[2];
+#define u_frequency u_tileableFbm[0].x
+#define u_lacunarity u_tileableFbm[0].y
+#define u_amplitude u_tileableFbm[0].z
+#define u_persistence u_tileableFbm[0].w
+#define u_octaves int(u_tileableFbm[1].x)
 
 // functions
 float hash(vec2 p, float scale) {

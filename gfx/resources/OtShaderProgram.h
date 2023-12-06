@@ -64,8 +64,9 @@ public:
 	// set parameters for the next run
 	inline void setState(uint64_t state) { bgfx::setState(state); }
 	inline void setTransform(const glm::mat4& transform) { bgfx::setTransform(glm::value_ptr(transform)); }
+	inline void setTransforms(const glm::mat4* transforms, uint16_t count) { bgfx::setTransform(transforms, count); }
 
-	// run program program in the specified view on the GPU
+	// run program in the specified view on the GPU
 	void submit(bgfx::ViewId view);
 
 private:

@@ -136,7 +136,7 @@ void OtSceneEditorCamera::setPreset(int p) {
 		pitch = -20.0f;
 		yaw = 0.0f;
 		fov = 60.0f;
-		nearPlane = 10.0f;
+		nearPlane = 1.0f;
 		farPlane = 5000.0f;
 	}
 }

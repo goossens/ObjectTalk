@@ -18,46 +18,46 @@ vec3 getRegionColor(int region, sampler2D s, vec2 uv) {
 
 // main function
 void main() {
-	vec2 uv = v_position.xz / u_scale;
-	float height = v_position.y;
-	vec3 albedo;
+	// get parameters
+	vec2 uv = v_position.xz / u_textureScale;
+	float height = (v_position.y - u_vOffset) / u_vScale;
+	float slope = 1.0 - v_normal.y;
+
+	// sample textures
+	vec3 region1Albedo = getRegionColor(1, s_region1Sampler, uv);
+	vec3 region2Albedo = getRegionColor(2, s_region2Sampler, uv);
+	vec3 region3Albedo = getRegionColor(3, s_region3Sampler, uv);
+	vec3 region4Albedo = getRegionColor(4, s_region4Sampler, uv);
 
 	// region 1
+	vec3 albedo;
+
 	if (height < u_regionTransition1) {
-		albedo = getRegionColor(1, s_region1Sampler, uv);
+		albedo = region1Albedo;
 
 	// region 1 to region 2 transition
 	} else if (height < u_regionTransition1 + u_regionOverlap1) {
-		albedo = mix(
-			getRegionColor(1, s_region1Sampler, uv),
-			getRegionColor(2, s_region2Sampler, uv),
-			(height - u_regionTransition1) / u_regionOverlap1);
+		albedo = mix(region1Albedo, region2Albedo, (height - u_regionTransition1) / u_regionOverlap1);
 
 	// region 2
 	} else if (height < u_regionTransition2) {
-		albedo = getRegionColor(2, s_region2Sampler, uv);
+		albedo = region2Albedo;
 
 	// region 2 to region 3 transition
 	} else if (height < u_regionTransition2 + u_regionOverlap2) {
-		albedo = mix(
-			getRegionColor(2, s_region2Sampler, uv),
-			getRegionColor(3, s_region3Sampler, uv),
-			(height - u_regionTransition2) / u_regionOverlap2);
+		albedo = mix(region2Albedo, region3Albedo, (height - u_regionTransition2) / u_regionOverlap2);
 
 	// region 3
 	} else if (height < u_regionTransition3) {
-		albedo = getRegionColor(3, s_region3Sampler, uv);
+		albedo = region3Albedo;
 
 	// region 3 to region 4 transition
 	} else if (height < u_regionTransition3 + u_regionOverlap3) {
-		albedo = mix(
-			getRegionColor(3, s_region3Sampler, uv),
-			getRegionColor(4, s_region4Sampler, uv),
-			(height - u_regionTransition3) / u_regionOverlap3);
+		albedo = mix(region3Albedo, region4Albedo, (height - u_regionTransition3) / u_regionOverlap3);
 
 	// region 4
 	} else {
-		albedo = getRegionColor(4, s_region4Sampler, uv);
+		albedo = region4Albedo;
 	}
 
 	// store information in gbuffer

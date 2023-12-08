@@ -44,6 +44,11 @@ public:
 	OtAsset<OtTextureAsset> region3Texture;
 	OtAsset<OtTextureAsset> region4Texture;
 
+	float region1TextureScale = 1.0f;
+	float region2TextureScale = 1.0f;
+	float region3TextureScale = 1.0f;
+	float region4TextureScale = 1.0f;
+
 	float region1Transition = 0.25f;
 	float region2Transition = 0.5f;
 	float region3Transition = 0.75f;
@@ -51,6 +56,4 @@ public:
 	float region1Overlap = 0.05f;
 	float region2Overlap = 0.05f;
 	float region3Overlap = 0.05f;
-
-	float scale = 1.0f;
 };

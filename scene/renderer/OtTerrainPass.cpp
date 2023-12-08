@@ -96,21 +96,33 @@ void OtSceneRenderer::submitTerrainUniforms(OtTerrain terrain) {
 		float(heights.heightmapSize));
 
 	uniforms[1] = glm::vec4(
+		material.region1Texture.isReady() ? material.region1Texture->getTexture().getWidth() : 1,
+		material.region2Texture.isReady() ? material.region2Texture->getTexture().getWidth() : 1,
+		material.region3Texture.isReady() ? material.region3Texture->getTexture().getWidth() : 1,
+		material.region4Texture.isReady() ? material.region4Texture->getTexture().getWidth() : 1);
+
+	uniforms[2] = glm::vec4(
+		material.region1TextureScale,
+		material.region2TextureScale,
+		material.region3TextureScale,
+		material.region4TextureScale);
+
+	uniforms[3] = glm::vec4(
 		material.region1Transition,
 		material.region2Transition,
 		material.region3Transition,
-		material.scale);
+		0.0f);
 
-	uniforms[2] = glm::vec4(
+	uniforms[4] = glm::vec4(
 		material.region1Overlap,
 		material.region2Overlap,
 		material.region3Overlap,
 		0.0f);
 
-	uniforms[3] = glm::vec4(material.region1Color, material.region1Texture.isReady());
-	uniforms[4] = glm::vec4(material.region2Color, material.region2Texture.isReady());
-	uniforms[5] = glm::vec4(material.region3Color, material.region3Texture.isReady());
-	uniforms[6] = glm::vec4(material.region4Color, material.region4Texture.isReady());
+	uniforms[5] = glm::vec4(material.region1Color, material.region1Texture.isReady());
+	uniforms[6] = glm::vec4(material.region2Color, material.region2Texture.isReady());
+	uniforms[7] = glm::vec4(material.region3Color, material.region3Texture.isReady());
+	uniforms[8] = glm::vec4(material.region4Color, material.region4Texture.isReady());
 
 	// submit the uniforms
 	terrainUniforms.submit();

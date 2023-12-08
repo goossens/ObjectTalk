@@ -168,6 +168,7 @@
 						],
 						"region1Overlap": 0.1599999964237213,
 						"region1Texture": "",
+						"region1TextureScale": 10.199999809265137,
 						"region1Transition": 0.20000000298023224,
 						"region2Color": [
 							0.49399998784065247,
@@ -176,6 +177,7 @@
 						],
 						"region2Overlap": 0.15000000596046448,
 						"region2Texture": "assets/mulch.jpg",
+						"region2TextureScale": 69.5999984741211,
 						"region2Transition": 0.4000000059604645,
 						"region3Color": [
 							0.5839999914169312,
@@ -184,6 +186,7 @@
 						],
 						"region3Overlap": 0.1599999964237213,
 						"region3Texture": "assets/moss.jpg",
+						"region3TextureScale": 100.0,
 						"region3Transition": 0.699999988079071,
 						"region4Color": [
 							0.8999999761581421,
@@ -191,11 +194,11 @@
 							0.8999999761581421
 						],
 						"region4Texture": "",
-						"scale": 10.399999618530273
+						"region4TextureScale": 1.0
 					},
-					"tileSize": 32,
-					"vOffset": 0.0,
-					"vScale": 10.0,
+					"tileSize": 64,
+					"vOffset": -1.0,
+					"vScale": 9.0,
 					"wireframe": false
 				}
 			]

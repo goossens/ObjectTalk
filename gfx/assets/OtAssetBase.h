@@ -28,12 +28,12 @@ public:
 	virtual bool load(const std::filesystem::path& path) { return false; }
 
 	// get state
-	bool isNull() { return assetState == nullState; }
-	bool isScheduled() { return assetState == scheduledState; }
-	bool isLoading() { return assetState == loadingState; }
-	bool isMissing() { return assetState == missingState; }
-	bool isInvalid() { return assetState == invalidState; }
-	bool isReady() { return assetState == readyState; }
+	inline bool isNull() { return assetState == nullState; }
+	inline bool isScheduled() { return assetState == scheduledState; }
+	inline bool isLoading() { return assetState == loadingState; }
+	inline bool isMissing() { return assetState == missingState; }
+	inline bool isInvalid() { return assetState == invalidState; }
+	inline bool isReady() { return assetState == readyState; }
 
 private:
 	// give the asset manager full access

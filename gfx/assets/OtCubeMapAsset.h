@@ -27,7 +27,7 @@ public:
 	bool load(const std::filesystem::path& path) override;
 
 	// get the CubeMap handle
-	OtCubeMap& getCubeMap() { return cubemap; }
+	inline OtCubeMap& getCubeMap() { return cubemap; }
 
 private:
 	// the actual cubemap

@@ -139,7 +139,7 @@ private:
 	OtNormalMapper normalMapper;
 
 	// uniforms
-	OtUniformVec4 terrainUniforms{"u_terrain", 7};
+	OtUniformVec4 terrainUniforms{"u_terrain", 9};
 	OtUniformVec4 pbrMaterialUniforms{"u_pbrMaterial", 5};
 	OtUniformVec4 lightingUniforms{"u_lighting", 3};
 	OtUniformVec4 skyUniforms{"u_sky", 3};

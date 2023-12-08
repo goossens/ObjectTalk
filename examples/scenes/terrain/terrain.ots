@@ -34,7 +34,7 @@
 					"near": 1.0
 				},
 				{
-					"Exposure": 0.49000000953674316,
+					"Exposure": 0.6800000071525574,
 					"bloomIntensity": 0.7099999785423279,
 					"component": "Post Processing"
 				}
@@ -49,11 +49,11 @@
 					"uuid": 864477290
 				},
 				{
-					"azimuth": 164.34800720214844,
+					"azimuth": 238.6959991455078,
 					"cirrus": 0.45399999618530273,
 					"component": "Sky",
 					"cumulus": 0.800000011920929,
-					"elevation": 40.32600021362305,
+					"elevation": 19.565000534057617,
 					"mieCoefficient": 5.734000205993652,
 					"mieScattering": 0.9900000095367432,
 					"rayleighCoefficient": 2.8420000076293945,
@@ -71,7 +71,7 @@
 				},
 				{
 					"component": "Terrain",
-					"hScale": 1.0,
+					"hScale": 0.9900000095367432,
 					"heightmap": {
 						"amplitude": 0.5,
 						"frequency": 10,
@@ -90,6 +90,7 @@
 						],
 						"region1Overlap": 0.05000000074505806,
 						"region1Texture": "assets/sand.jpg",
+						"region1TextureScale": 30.600000381469727,
 						"region1Transition": 0.30000001192092896,
 						"region2Color": [
 							0.49399998784065247,
@@ -98,7 +99,8 @@
 						],
 						"region2Overlap": 0.05000000074505806,
 						"region2Texture": "assets/terrain.jpg",
-						"region2Transition": 0.4399999976158142,
+						"region2TextureScale": 7.900000095367432,
+						"region2Transition": 0.49000000953674316,
 						"region3Color": [
 							0.5839999914169312,
 							0.5529999732971191,
@@ -106,18 +108,19 @@
 						],
 						"region3Overlap": 0.05000000074505806,
 						"region3Texture": "assets/rock.jpg",
-						"region3Transition": 0.6600000262260437,
+						"region3TextureScale": 15.300000190734863,
+						"region3Transition": 0.5799999833106995,
 						"region4Color": [
 							0.8999999761581421,
 							0.8999999761581421,
 							0.8999999761581421
 						],
 						"region4Texture": "assets/snow.jpg",
-						"scale": 47.900001525878906
+						"region4TextureScale": 28.100000381469727
 					},
 					"tileSize": 64,
 					"vOffset": -10.0,
-					"vScale": 50.0,
+					"vScale": 37.0,
 					"wireframe": false
 				}
 			]

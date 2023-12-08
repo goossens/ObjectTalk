@@ -15,24 +15,34 @@
 #include <bgfx_shader.glsl>
 
 // uniforms
-uniform vec4 u_terrain[7];
+uniform vec4 u_terrain[9];
 
 #define u_hScale u_terrain[0].x
 #define u_vScale u_terrain[0].y
 #define u_vOffset u_terrain[0].z
 #define u_heightMapSize u_terrain[0].w
 
-#define u_regionTransition1 u_terrain[1].x
-#define u_regionTransition2 u_terrain[1].y
-#define u_regionTransition3 u_terrain[1].z
-#define u_textureScale u_terrain[1].w
+#define u_region1TextureSize u_terrain[1].x
+#define u_region2TextureSize u_terrain[1].y
+#define u_region3TextureSize u_terrain[1].z
+#define u_region4TextureSize u_terrain[1].w
 
-#define u_regionOverlap1 u_terrain[2].x
-#define u_regionOverlap2 u_terrain[2].y
-#define u_regionOverlap3 u_terrain[2].z
+#define u_region1TextureScale u_terrain[2].x
+#define u_region2TextureScale u_terrain[2].y
+#define u_region3TextureScale u_terrain[2].z
+#define u_region4TextureScale u_terrain[2].w
 
-#define u_regionColor(i) u_terrain[i + 2].rgb
-#define u_regionTextured(i) bool(u_terrain[i + 2].a)
+#define u_region1Transition u_terrain[3].x
+#define u_region2Transition u_terrain[3].y
+#define u_region3Transition u_terrain[3].z
+#define u_textureNoise u_terrain[3].w
+
+#define u_region1Overlap u_terrain[4].x
+#define u_region2Overlap u_terrain[4].y
+#define u_region3Overlap u_terrain[4].z
+
+#define u_regionColor(i) u_terrain[i + 4].rgb
+#define u_regionTextured(i) bool(u_terrain[i + 4].a)
 
 // texture samplers
 SAMPLER2D(s_normalmapSampler, 0);

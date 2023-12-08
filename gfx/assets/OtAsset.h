@@ -34,13 +34,13 @@ public:
 	}
 
 	// clear the asset refence
-	void clear() {
+	inline void clear() {
 		path.clear();
 		ptr = nullptr;
 	}
 
 	// access the path
-	std::filesystem::path& getPath() { return path; }
+	inline std::filesystem::path& getPath() { return path; }
 
 	// assignment
 	OtAsset& operator=(const std::filesystem::path& p) {
@@ -50,20 +50,20 @@ public:
 	}
 
 	// access to actual asset
-	T* operator->() { return ptr; }
-	const T* operator->() const { return ptr; }
-	T& operator*() { return *ptr; }
-	const T& operator*() const { return *ptr; }
+	inline T* operator->() { return ptr; }
+	inline const T* operator->() const { return ptr; }
+	inline T& operator*() { return *ptr; }
+	inline const T& operator*() const { return *ptr; }
 
 	// check asset state
-	bool isNull() { return !ptr || ptr->isNull(); }
-	bool isScheduled() { return ptr && ptr->isScheduled(); }
-	bool isLoading() { return ptr && ptr->isLoading(); }
-	bool isMissing() { return ptr && ptr->isMissing(); }
-	bool isReady() { return ptr && ptr->isReady(); }
+	inline bool isNull() { return !ptr || ptr->isNull(); }
+	inline bool isScheduled() { return ptr && ptr->isScheduled(); }
+	inline bool isLoading() { return ptr && ptr->isLoading(); }
+	inline bool isMissing() { return ptr && ptr->isMissing(); }
+	inline bool isReady() { return ptr && ptr->isReady(); }
 
 	// render GUI to show/select an asset
-	bool renderGUI(const char* label) {
+	inline bool renderGUI(const char* label) {
 		if (OtUiFileSelector(label, path)) {
 			acquire();
 			return true;
@@ -81,7 +81,7 @@ private:
 	T* ptr = nullptr;
 
 	// acquire the asset from the asset manager
-	void acquire() {
+	inline void acquire() {
 		// when an empty path is requested, reset the asset
 		if (path.empty()) {
 			ptr = nullptr;

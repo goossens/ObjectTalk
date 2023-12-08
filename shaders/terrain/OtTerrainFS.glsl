@@ -19,41 +19,49 @@ vec3 getRegionColor(int region, sampler2D s, vec2 uv) {
 // main function
 void main() {
 	// get parameters
-	vec2 uv = v_position.xz / u_textureScale;
+	vec2 uv1 = fract(v_position.xz / u_region1TextureSize * u_region1TextureScale);
+	vec2 uv2 = fract(v_position.xz / u_region2TextureSize * u_region2TextureScale);
+	vec2 uv3 = fract(v_position.xz / u_region3TextureSize * u_region3TextureScale);
+	vec2 uv4 = fract(v_position.xz / u_region4TextureSize * u_region4TextureScale);
 	float height = (v_position.y - u_vOffset) / u_vScale;
-	float slope = 1.0 - v_normal.y;
 
 	// sample textures
-	vec3 region1Albedo = getRegionColor(1, s_region1Sampler, uv);
-	vec3 region2Albedo = getRegionColor(2, s_region2Sampler, uv);
-	vec3 region3Albedo = getRegionColor(3, s_region3Sampler, uv);
-	vec3 region4Albedo = getRegionColor(4, s_region4Sampler, uv);
+	vec3 region1Albedo = getRegionColor(1, s_region1Sampler, uv1);
+	vec3 region2Albedo = getRegionColor(2, s_region2Sampler, uv2);
+	vec3 region3Albedo = getRegionColor(3, s_region3Sampler, uv3);
+	vec3 region4Albedo = getRegionColor(4, s_region4Sampler, uv4);
+
+	// adjust texture by slope
+	float slope = abs(dot(v_normal, vec3(0.0, 1.0, 0.0)));
+	float coef = 1.0 - smoothstep(0.5, 0.6, slope);
+	region2Albedo = mix(region2Albedo, region3Albedo, coef);
+	region4Albedo = mix(region4Albedo, region3Albedo, coef);
 
 	// region 1
 	vec3 albedo;
 
-	if (height < u_regionTransition1) {
+	if (height < u_region1Transition) {
 		albedo = region1Albedo;
 
 	// region 1 to region 2 transition
-	} else if (height < u_regionTransition1 + u_regionOverlap1) {
-		albedo = mix(region1Albedo, region2Albedo, (height - u_regionTransition1) / u_regionOverlap1);
+	} else if (height < u_region1Transition + u_region1Overlap) {
+		albedo = mix(region1Albedo, region2Albedo, (height - u_region1Transition) / u_region1Overlap);
 
 	// region 2
-	} else if (height < u_regionTransition2) {
+	} else if (height < u_region2Transition) {
 		albedo = region2Albedo;
 
 	// region 2 to region 3 transition
-	} else if (height < u_regionTransition2 + u_regionOverlap2) {
-		albedo = mix(region2Albedo, region3Albedo, (height - u_regionTransition2) / u_regionOverlap2);
+	} else if (height < u_region2Transition + u_region2Overlap) {
+		albedo = mix(region2Albedo, region3Albedo, (height - u_region2Transition) / u_region2Overlap);
 
 	// region 3
-	} else if (height < u_regionTransition3) {
+	} else if (height < u_region3Transition) {
 		albedo = region3Albedo;
 
 	// region 3 to region 4 transition
-	} else if (height < u_regionTransition3 + u_regionOverlap3) {
-		albedo = mix(region3Albedo, region4Albedo, (height - u_regionTransition3) / u_regionOverlap3);
+	} else if (height < u_region3Transition + u_region3Overlap) {
+		albedo = mix(region3Albedo, region4Albedo, (height - u_region3Transition) / u_region3Overlap);
 
 	// region 4
 	} else {

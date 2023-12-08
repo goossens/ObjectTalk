@@ -27,7 +27,7 @@ public:
 	bool load(const std::filesystem::path& path) override;
 
 	// get the texture handle
-	OtTexture& getTexture() { return texture; }
+	inline OtTexture& getTexture() { return texture; }
 
 private:
 	// the actual texture

@@ -38,16 +38,18 @@ bool OtTerrainMaterial::renderGUI() {
 
 	// open popup (if required)
 	if (ImGui::BeginPopup("TerrainMaterialPopup")) {
-		if (ImGui::BeginTable("layout", 5)) {
+		if (ImGui::BeginTable("layout", 6)) {
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Color");
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Texture");
+			ImGui::TableNextColumn(); ImGui::TextUnformatted("Texture Scale");
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Transition");
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Overlap");
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); changed |= ImGui::ColorEdit3("##region1Color", glm::value_ptr(region1Color));
 			ImGui::TableNextColumn(); W(); changed |= region1Texture.renderGUI("##region1Texture");
+			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region1TextureScale", &region1TextureScale, 0.1f, 1.0f, 100.0f);
 			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region1Transition", &region1Transition, 0.01f, 0.0f, 1.0f);
 			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region1Overlap", &region1Overlap, 0.01f, 0.0f, 1.0f);
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Region 1");
@@ -55,6 +57,7 @@ bool OtTerrainMaterial::renderGUI() {
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); changed |= ImGui::ColorEdit3("##region2Color", glm::value_ptr(region2Color));
 			ImGui::TableNextColumn(); W(); changed |= region2Texture.renderGUI("##region2Texture");
+			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region2TextureScale", &region2TextureScale, 0.1f, 1.0f, 100.0f);
 			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region2Transition", &region2Transition, 0.01f, 0.0f, 1.0f);
 			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region2Overlap", &region2Overlap, 0.01f, 0.0f, 1.0f);
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Region 2");
@@ -62,6 +65,7 @@ bool OtTerrainMaterial::renderGUI() {
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); changed |= ImGui::ColorEdit3("##region3Color", glm::value_ptr(region3Color));
 			ImGui::TableNextColumn(); W(); changed |= region3Texture.renderGUI("##region3Texture");
+			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region3TextureScale", &region3TextureScale, 0.1f, 1.0f, 100.0f);
 			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region3Transition", &region3Transition, 0.01f, 0.0f, 1.0f);
 			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##regio3Overlap", &region3Overlap, 0.01f, 0.0f, 1.0f);
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Region 3");
@@ -69,16 +73,10 @@ bool OtTerrainMaterial::renderGUI() {
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); changed |= ImGui::ColorEdit3("##region4Color", glm::value_ptr(region4Color));
 			ImGui::TableNextColumn(); W(); changed |= region4Texture.renderGUI("##region4Texture");
+			ImGui::TableNextColumn(); W(); changed |= ImGui::DragFloat("##region4TextureScale", &region4TextureScale, 0.1f, 1.0f, 100.0f);
 			ImGui::TableNextColumn();
 			ImGui::TableNextColumn();
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Region 4");
-
-			ImGui::TableNextRow();
-			ImGui::TableNextColumn();
-			ImGui::TableNextColumn(); W(); changed |= ImGui::SliderFloat("##scale", &scale, 0.0f, 100.0f, "%.1f");
-			ImGui::TableNextColumn();
-			ImGui::TableNextColumn();
-			ImGui::TableNextColumn(); ImGui::TextUnformatted("Scale");
 			ImGui::EndTable();
 		}
 
@@ -105,6 +103,11 @@ nlohmann::json OtTerrainMaterial::serialize(std::filesystem::path* basedir) {
 	data["region3Texture"] = OtPathGetRelative(region3Texture.getPath(), basedir);
 	data["region4Texture"] = OtPathGetRelative(region4Texture.getPath(), basedir);
 
+	data["region1TextureScale"] = region1TextureScale;
+	data["region2TextureScale"] = region2TextureScale;
+	data["region3TextureScale"] = region3TextureScale;
+	data["region4TextureScale"] = region4TextureScale;
+
 	data["region1Transition"] = region1Transition;
 	data["region2Transition"] = region2Transition;
 	data["region3Transition"] = region3Transition;
@@ -112,8 +115,6 @@ nlohmann::json OtTerrainMaterial::serialize(std::filesystem::path* basedir) {
 	data["region1Overlap"] = region1Overlap;
 	data["region2Overlap"] = region2Overlap;
 	data["region3Overlap"] = region3Overlap;
-
-	data["scale"] = scale;
 
 	return data;
 }
@@ -134,6 +135,11 @@ void OtTerrainMaterial::deserialize(nlohmann::json data, std::filesystem::path* 
 	region3Texture = OtPathGetAbsolute(data, "region3Texture", basedir);
 	region4Texture = OtPathGetAbsolute(data, "region4Texture", basedir);
 
+	region1TextureScale = data.value("region1TextureScale", 1.0f);
+	region2TextureScale = data.value("region2TextureScale", 1.0f);
+	region3TextureScale = data.value("region3TextureScale", 1.0f);
+	region4TextureScale = data.value("region4TextureScale", 1.0f);
+
 	region1Transition = data.value("region1Transition", 0.75f);
 	region2Transition = data.value("region2Transition", 0.25f);
 	region3Transition = data.value("region3Transition", 0.5f);
@@ -141,6 +147,4 @@ void OtTerrainMaterial::deserialize(nlohmann::json data, std::filesystem::path* 
 	region1Overlap = data.value("region1Overlap", 0.01f);
 	region2Overlap = data.value("region2Overlap", 0.01f);
 	region3Overlap = data.value("region3Overlap", 0.01f);
-
-	scale = data.value("scale", 1.0f);
 }

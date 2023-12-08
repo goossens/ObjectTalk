@@ -36,7 +36,7 @@ public:
 	void renderGUI();
 
 	// see if we are currently loading anything
-	bool isLoading() { return loading || queue.size(); }
+	inline bool isLoading() { return loading || queue.size(); }
 
 	// acquire an asset
 	template<typename T>

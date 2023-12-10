@@ -52,20 +52,11 @@ public:
 	int render(OtScene* scene, OtEntity selected=OtEntityNull);
 
 private:
-	// private data types
-	struct VisibleEntity {
-		VisibleEntity(OtEntity e) : entity(e) {}
-		OtEntity entity;
-		bool model = false;
-		bool transparent = false;
-		bool instanced = false;
-	};
-
 	// render passes
-	void renderPreProcessingPass(OtScene* scene, OtEntity selected);
+	void renderReflectionPass(OtScene* scene);
+	void renderPreProcessingPass(OtScene* scene);
 	// void renderShadowPass(OtScene* scene);
 	void renderDeferredGeometryPass(OtScene* scene);
-	void renderDeferredTerrainPass(OtScene* scene);
 	void renderBackgroundPass(OtScene* scene);
 	void renderSkyPass(OtScene* scene);
 	void renderDeferredLightingPass(OtScene* scene);
@@ -74,21 +65,15 @@ private:
 	void renderHighlightPass(OtScene* scene, OtEntity selected);
 	void renderPostProcessingPass(OtScene* scene);
 
-	// preprocess entities
-	void preprocessSingleInstanceGeometry(OtScene* scene, OtEntity entity, bool selected);
-	void preprocessMultipleInstanceGeometry(OtScene* scene, OtEntity entity, bool selected);
-	void preprocessSingleInstanceModel(OtScene* scene, OtEntity entity, bool selected);
-	void preprocessMultipleInstanceModel(OtScene* scene, OtEntity entity, bool selected);
-	void preprocessTerrain(OtScene* scene, OtEntity entity);
-
 	// render entities
+	void renderDeferredGeometry(OtPass& pass, OtScene* scene, OtEntity entity, OtGeometryComponent& geometry, OtMaterialComponent& material);
+	void renderDeferredModel(OtPass& pass, OtScene* scene, OtEntity entity, OtModelComponent& model);
+	void renderDeferredTerrain(OtPass& pass, OtTerrainComponent& terrain);
+	void renderDeferredWater(OtPass& pass, OtWaterComponent& water);
 	void renderSky(OtPass& pass, OtSkyComponent& component);
 	void renderSkyBox(OtPass& pass, OtSkyBoxComponent& component);
 	void renderSkySphere(OtPass& pass, OtSkySphereComponent& component);
-	void renderDeferredGeometry(OtPass& pass, OtScene* scene, OtEntity entity);
-	void renderDeferredModel(OtPass& pass, OtScene* scene, OtEntity entity);
-	void renderDeferredTerrain(OtPass& pass, OtTerrainComponent& component);
-	void renderForwardGeometry(OtPass& pass, OtScene* scene, OtEntity entity);
+	void renderForwardGeometry(OtPass& pass, OtScene* scene, OtEntity entity, OtGeometryComponent& geometry, OtMaterialComponent& material);
 	void renderHighlight(OtPass& pass, OtScene* scene, OtEntity entity);
 	void renderBloom(float bloomIntensity);
 
@@ -99,6 +84,10 @@ private:
 	void submitLightUniforms(OtScene* scene);
 	void submitTerrainUniforms(OtTerrain terrain);
 
+	// viewport dimensions
+	int width;
+	int height;
+
 	// camera information
 	glm::vec3 cameraPosition;
 	glm::mat4 viewMatrix;
@@ -106,15 +95,12 @@ private:
 	glm::mat4 viewProjectionMatrix;
 	OtFrustum frustum;
 
-	// image dimensions
-	int width;
-	int height;
-
 	// grid scale (0.0 means no grid)
 	float gridScale = 0.0f;
 
 	// framebuffers
 	OtGbuffer gbuffer;
+	OtFrameBuffer reflectionBuffer{OtFrameBuffer::rgba8Texture, OtFrameBuffer::dFloatTexture};
 	OtFrameBuffer compositeBuffer{OtFrameBuffer::rgbaFloat16Texture, OtFrameBuffer::dFloatTexture, 1, true};
 	OtFrameBuffer postProcessBuffer{OtFrameBuffer::rgba8Texture, OtFrameBuffer::noTexture};
 	OtFrameBuffer selectedBuffer{OtFrameBuffer::r8Texture, OtFrameBuffer::noTexture};
@@ -126,13 +112,14 @@ private:
 	OtBoxGeometry unityBoxGeometry;
 	OtSphereGeometry unitySphereGeometry;
 
-	// visible entities
-	std::vector<VisibleEntity> visibleEntities;
+	// rendering flag
 	bool hasOpaqueEntities = false;
+	bool hasOpaqueGeometries = false;
+	bool hasOpaqueModels = false;
+	bool hasTerrainEntities = false;
+	bool hasWaterEntities = false;
 	bool hasTransparentEntities = false;
 	bool hasSkyEntities = false;
-	bool hasTerrainEntities = false;
-	bool renderEntityHighlight = false;
 
 	// generators/filters
 	OtTileableFbm tileableFbm;

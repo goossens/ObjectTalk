@@ -731,28 +731,23 @@ void OtSceneEditor::renderChildEntities(OtEntity entity) {
 //
 
 void OtSceneEditor::renderNewEntitiesMenu(OtEntity entity) {
-	if (ImGui::MenuItem("Empty Entity")) {
-		nextTask = std::make_shared<OtCreateEntityTask>(scene.get(), entity, OtCreateEntityTask::empty);
-	}
+	static struct {
+		const char* name;
+		OtCreateEntityTask::Type type;
+	} predefinedEntities[] = {
+		{ "Empty Entity", OtCreateEntityTask::empty},
+		{ "Camera Entity", OtCreateEntityTask::camera},
+		{ "Directional Light Entity", OtCreateEntityTask::directionalLight},
+		{ "Model Entity", OtCreateEntityTask::model},
+		{ "Geometry Entity", OtCreateEntityTask::geometry},
+		{ "Terrain Entity", OtCreateEntityTask::terrain},
+		{ "Water Entity", OtCreateEntityTask::water},
+	};
 
-	if (ImGui::MenuItem("Camera Entity")) {
-		nextTask = std::make_shared<OtCreateEntityTask>(scene.get(), entity, OtCreateEntityTask::camera);
-	}
-
-	if (ImGui::MenuItem("Directional Light")) {
-		nextTask = std::make_shared<OtCreateEntityTask>(scene.get(), entity, OtCreateEntityTask::directionalLight);
-	}
-
-	if (ImGui::MenuItem("Model Entity")) {
-		nextTask = std::make_shared<OtCreateEntityTask>(scene.get(), entity, OtCreateEntityTask::model);
-	}
-
-	if (ImGui::MenuItem("Geometry Entity")) {
-		nextTask = std::make_shared<OtCreateEntityTask>(scene.get(), entity, OtCreateEntityTask::geometry);
-	}
-
-	if (ImGui::MenuItem("Terrain Entity")) {
-		nextTask = std::make_shared<OtCreateEntityTask>(scene.get(), entity, OtCreateEntityTask::terrain);
+	for (auto& predefined : predefinedEntities) {
+		if (ImGui::MenuItem(predefined.name)) {
+			nextTask = std::make_shared<OtCreateEntityTask>(scene.get(), entity, predefined.type);
+		}
 	}
 }
 

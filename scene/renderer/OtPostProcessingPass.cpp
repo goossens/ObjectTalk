@@ -27,7 +27,7 @@ void OtSceneRenderer::renderPostProcessingPass(OtScene* scene) {
 	}
 
 	// render bloom (if required)
-	if (bloomIntensity > 0.0) {
+	if (bloomIntensity > 0.0f) {
 		renderBloom(bloomIntensity);
 	}
 

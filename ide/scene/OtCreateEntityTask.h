@@ -31,7 +31,8 @@ public:
 		pointLight,
 		model,
 		geometry,
-		terrain
+		terrain,
+		water
 	};
 
 	// constructor
@@ -81,6 +82,10 @@ public:
 
 			case terrain:
 				scene->addComponent<OtTerrainComponent>(entity);
+				break;
+
+			case water:
+				scene->addComponent<OtWaterComponent>(entity);
 				break;
 		}
 	}

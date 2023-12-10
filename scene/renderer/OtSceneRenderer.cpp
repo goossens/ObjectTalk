@@ -18,10 +18,18 @@
 
 int OtSceneRenderer::render(OtScene* scene, OtEntity selected) {
 	// prepare all render passes
-	renderPreProcessingPass(scene, selected);
+	renderPreProcessingPass(scene);
 
-	// see if we are doing some deferred rendering into a gbuffer?
-	if (hasOpaqueEntities || hasTerrainEntities) {
+	// generate reflection (if required)
+	if (hasWaterEntities) {
+		renderReflectionPass(scene);
+	}
+
+	// determine the camera's frustum in worldspace
+	frustum = OtFrustum(viewProjectionMatrix);
+
+	// see if we need to do some deferred rendering into a gbuffer?
+	if (hasOpaqueEntities) {
 		// update and clear gbuffer
 		gbuffer.update(width, height);
 
@@ -32,13 +40,7 @@ int OtSceneRenderer::render(OtScene* scene, OtEntity selected) {
 		pass.touch();
 
 		// render deferred entities
-		if (hasOpaqueEntities) {
-			renderDeferredGeometryPass(scene);
-		}
-
-		if (hasTerrainEntities) {
-			renderDeferredTerrainPass(scene);
-		}
+		renderDeferredGeometryPass(scene);
 	}
 
 	// start rendering to composite buffer
@@ -48,7 +50,7 @@ int OtSceneRenderer::render(OtScene* scene, OtEntity selected) {
 		renderSkyPass(scene);
 	}
 
-	if (hasOpaqueEntities || hasTerrainEntities) {
+	if (hasOpaqueEntities) {
 		renderDeferredLightingPass(scene);
 	}
 
@@ -61,7 +63,7 @@ int OtSceneRenderer::render(OtScene* scene, OtEntity selected) {
 		renderGridPass();
 	}
 
-	if (renderEntityHighlight) {
+	if (selected != OtEntityNull) {
 		renderHighlightPass(scene, selected);
 	}
 

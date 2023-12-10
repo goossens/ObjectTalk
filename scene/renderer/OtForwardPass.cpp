@@ -25,18 +25,12 @@ void OtSceneRenderer::renderForwardGeometryPass(OtScene* scene) {
 	pass.setFrameBuffer(compositeBuffer);
 	pass.setTransform(viewMatrix, projectionMatrix);
 
-	// render all transparent entities
-	for (auto entity : visibleEntities) {
-		if (entity.transparent) {
-			if (entity.instanced) {
-
-			} else {
-				if (!entity.model) {
-					renderForwardGeometry(pass, scene, entity.entity);
-				}
-			}
+	// render all transparent geometries
+	scene->view<OtGeometryComponent, OtMaterialComponent>().each([&](auto entity, auto& geometry, auto& material) {
+		if (geometry.transparent) {
+			renderForwardGeometry(pass, scene, entity, geometry, material);
 		}
-	}
+	});
 }
 
 
@@ -44,14 +38,12 @@ void OtSceneRenderer::renderForwardGeometryPass(OtScene* scene) {
 //	OtSceneRenderer::renderForwardGeometry
 //
 
-void OtSceneRenderer::renderForwardGeometry(OtPass& pass, OtScene* scene, OtEntity entity) {
+void OtSceneRenderer::renderForwardGeometry(OtPass& pass, OtScene* scene, OtEntity entity, OtGeometryComponent& geometry, OtMaterialComponent& material) {
 	// submit the material and light uniforms
-	submitMaterialUniforms(scene->getComponent<OtMaterialComponent>(entity).material);
+	submitMaterialUniforms(material.material);
 	submitLightUniforms(scene);
 
 	// submit the geometry
-	auto& geometry = scene->getComponent<OtGeometryComponent>(entity);
-
 	if (geometry.wireframe) {
 		geometry.geometry->submitLines();
 

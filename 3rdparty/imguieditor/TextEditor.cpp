@@ -132,6 +132,22 @@ void TextEditor::SetCursorPosition(int aLine, int aCharIndex)
 	SetCursorPosition({ aLine, GetCharacterColumn(aLine, aCharIndex) }, -1, true);
 }
 
+int TextEditor::GetFirstVisibleLine()
+{
+	return mFirstVisibleLine;
+}
+
+int TextEditor::GetLastVisibleLine()
+{
+	return mLastVisibleLine;
+}
+
+void TextEditor::SetViewAtLine(int aLine, SetViewAtLineMode aMode)
+{
+	mSetViewAtLine = aLine;
+	mSetViewAtLineMode = aMode;
+}
+
 void TextEditor::Copy()
 {
 	if (AnyCursorHasSelection())
@@ -2438,10 +2454,29 @@ void TextEditor::Render(bool aParentIsFocused)
 		}
 		mEnsureCursorVisible = -1;
 	}
-	else if (mScrollToTop)
+	if (mScrollToTop)
 	{
 		ImGui::SetScrollY(0.0f);
 		mScrollToTop = false;
+	}
+	if (mSetViewAtLine > -1)
+	{
+		float targetScroll;
+		switch (mSetViewAtLineMode)
+		{
+		default:
+		case SetViewAtLineMode::FirstVisibleLine:
+			targetScroll = std::max(0.0f, (float)mSetViewAtLine * mCharAdvance.y);
+			break;
+		case SetViewAtLineMode::LastVisibleLine:
+			targetScroll = std::max(0.0f, (float)(mSetViewAtLine - (mLastVisibleLine - mFirstVisibleLine)) * mCharAdvance.y);
+			break;
+		case SetViewAtLineMode::Centered:
+			targetScroll = std::max(0.0f, ((float)mSetViewAtLine - (float)(mLastVisibleLine - mFirstVisibleLine) * 0.5f) * mCharAdvance.y);
+			break;
+		}
+		ImGui::SetScrollY(targetScroll);
+		mSetViewAtLine = -1;
 	}
 }
 

@@ -28,6 +28,11 @@ public:
 	TextEditor();
 	~TextEditor();
 
+	enum class SetViewAtLineMode
+	{
+		FirstVisibleLine, Centered, LastVisibleLine
+	};
+
 	inline void SetReadOnlyEnabled(bool aValue) { mReadOnly = aValue; }
 	inline bool IsReadOnlyEnabled() const { return mReadOnly; }
 	inline void SetAutoIndentEnabled(bool aValue) { mAutoIndent = aValue; }
@@ -129,6 +134,9 @@ public:
 		outLine = coords.mLine;
 		outColumn = coords.mColumn;
 	}
+	int GetFirstVisibleLine();
+	int GetLastVisibleLine();
+	void SetViewAtLine(int aLine, SetViewAtLineMode aMode);
 
 	void Copy();
 	void Cut();
@@ -418,6 +426,8 @@ private:
 	bool mShowMatchingBrackets = true;
 	bool mCompletePairedGlyphs = false;
 
+	int mSetViewAtLine = -1;
+	SetViewAtLineMode mSetViewAtLineMode;
 	int mEnsureCursorVisible = -1;
 	bool mEnsureCursorVisibleStartToo = false;
 	bool mScrollToTop = false;

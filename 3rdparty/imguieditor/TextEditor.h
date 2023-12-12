@@ -42,7 +42,7 @@ public:
 	inline bool IsShowingMatchingBrackets() const { return mShowMatchingBrackets; }
 	inline void SetCompletePairedGlyphs(bool aValue) { mCompletePairedGlyphs = aValue; }
 	inline bool IsCompletingPairedGlyphs() const { return mCompletePairedGlyphs; }
-	inline int GetLineCount() const { return mLines.size(); }
+	inline int GetLineCount() const {  return int(mLines.size()); }
 	inline bool IsOverwriteEnabled() const { return mOverwrite; }
 
 	enum class PaletteIndex

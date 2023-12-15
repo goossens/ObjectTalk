@@ -174,6 +174,16 @@
 #include "generated/terrain/OtTerrainFS_spv.h"
 #include "generated/terrain/OtTerrainFS_essl.h"
 #include "generated/terrain/OtTerrainFS_dx11.h"
+#include "generated/water/OtWaterVS_mtl.h"
+#include "generated/water/OtWaterVS_glsl.h"
+#include "generated/water/OtWaterVS_spv.h"
+#include "generated/water/OtWaterVS_essl.h"
+#include "generated/water/OtWaterVS_dx11.h"
+#include "generated/water/OtWaterFS_mtl.h"
+#include "generated/water/OtWaterFS_glsl.h"
+#include "generated/water/OtWaterFS_spv.h"
+#include "generated/water/OtWaterFS_essl.h"
+#include "generated/water/OtWaterFS_dx11.h"
 
 
 //
@@ -341,5 +351,15 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtTerrainFS),
 	BGFX_EMBEDDED_SHADER(OtTerrainFS),
 	BGFX_EMBEDDED_SHADER(OtTerrainFS),
+	BGFX_EMBEDDED_SHADER(OtWaterVS),
+	BGFX_EMBEDDED_SHADER(OtWaterVS),
+	BGFX_EMBEDDED_SHADER(OtWaterVS),
+	BGFX_EMBEDDED_SHADER(OtWaterVS),
+	BGFX_EMBEDDED_SHADER(OtWaterVS),
+	BGFX_EMBEDDED_SHADER(OtWaterFS),
+	BGFX_EMBEDDED_SHADER(OtWaterFS),
+	BGFX_EMBEDDED_SHADER(OtWaterFS),
+	BGFX_EMBEDDED_SHADER(OtWaterFS),
+	BGFX_EMBEDDED_SHADER(OtWaterFS),
 	BGFX_EMBEDDED_SHADER_END()
 };

@@ -402,9 +402,11 @@ void OtSceneEditor::renderViewPort() {
 	glm::mat4 cameraProjectionMatrix;
 
 	if (scene->isValidEntity(selectedCamera)) {
-		auto camera = scene->getComponent<OtCameraComponent>(selectedCamera);
-		cameraPosition = scene->getComponent<OtTransformComponent>(selectedCamera).translation;
-		camerViewMatrix = glm::inverse(scene->getGlobalTransform(selectedCamera));
+		glm::mat4 transform = scene->getGlobalTransform(selectedCamera);
+		cameraPosition = glm::vec3(transform[3]);
+		camerViewMatrix = glm::inverse(transform);
+
+		auto& camera = scene->getComponent<OtCameraComponent>(selectedCamera);
 		cameraProjectionMatrix = camera.getProjectionMatrix(size.x / size.y);
 
 	} else {
@@ -430,7 +432,7 @@ void OtSceneEditor::renderViewPort() {
 		ImGui::Image((void*)(intptr_t) textureIndex, size);
 	}
 
-	// only show guizmo if it's visible on and the selected entity has a transform
+	// only show guizmo if it's enabled and the selected entity has a transform
 	if (guizmoEnabled && scene->isValidEntity(selectedEntity) && scene->hasComponent<OtTransformComponent>(selectedEntity)) {
 		// configure the guizmo
 		ImGuizmo::SetOrthographic(false);
@@ -736,12 +738,15 @@ void OtSceneEditor::renderNewEntitiesMenu(OtEntity entity) {
 		OtCreateEntityTask::Type type;
 	} predefinedEntities[] = {
 		{ "Empty Entity", OtCreateEntityTask::empty},
-		{ "Camera Entity", OtCreateEntityTask::camera},
-		{ "Directional Light Entity", OtCreateEntityTask::directionalLight},
-		{ "Model Entity", OtCreateEntityTask::model},
-		{ "Geometry Entity", OtCreateEntityTask::geometry},
-		{ "Terrain Entity", OtCreateEntityTask::terrain},
-		{ "Water Entity", OtCreateEntityTask::water},
+		{ "Camera", OtCreateEntityTask::camera},
+		{ "Directional Light", OtCreateEntityTask::directionalLight},
+		{ "Model", OtCreateEntityTask::model},
+		{ "Geometry", OtCreateEntityTask::geometry},
+		{ "Procedural Sky", OtCreateEntityTask::sky},
+		{ "Sky box", OtCreateEntityTask::skybox},
+		{ "Sky sphere", OtCreateEntityTask::skysphere},
+		{ "Infinite Terrain", OtCreateEntityTask::terrain},
+		{ "Procedural Water", OtCreateEntityTask::water},
 	};
 
 	for (auto& predefined : predefinedEntities) {

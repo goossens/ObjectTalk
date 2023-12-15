@@ -7,6 +7,7 @@
 $input v_position, v_normal, v_tangent, v_bitangent, v_texcoord0
 
 #include <bgfx_shader.glsl>
+#include <clip.glsl>
 #include <pbr.glsl>
 
 // uniforms
@@ -42,6 +43,9 @@ SAMPLER2D(s_deferredGeometryNormalTexture, 4);
 
 // main function
 void main() {
+	// apply clip plane
+	clipPlane(v_position);
+
 	// determine UV coordinates
 	vec2 uv = v_texcoord0 * u_scale;
 
@@ -82,7 +86,6 @@ void main() {
 	// calculate vectors
 	pbr.V = normalize(u_cameraPosition - v_position);
 	pbr.L = normalize(u_directionalLightDirection);
-	pbr.H = normalize(pbr.V + pbr.L);
 
 	// set light information
 	pbr.directionalLightColor = u_directionalLightColor;

@@ -27,10 +27,7 @@ In case the GUI modules are included, we also use:
 
 ## Algorithms
 
-* [Threejs](https://threejs.org) - This Javascript library was used for inspiration for a number of 3D ObjectTalk classes.
 * The sky shader is based on a [GitHub project](https://github.com/shff/opengl_sky) released under the [MIT License](https://opensource.org/licenses/MIT).
-* The water shader is based on a presentation by Jonas Wagner available on [his website](https://29a.ch/slides/2012/webglwater/).
-Source code is on [Github](https://github.com/jwagner/terrain). A license is not provided.
 
 ## Data
 
@@ -51,7 +48,7 @@ A another special thanks goes to the team that wrote the [Swift](https://swift.o
 
 ## Tutorials
 
-The following tutorials were used in the development of some of the 3D GUI:
+The following tutorials were used in the development of ObjectTalk:
 
 * [Crafting Interpreters](https://www.craftinginterpreters.com) by [Robert Nystrom](http://journal.stuffwithstuff.com) release under the [MIT License](https://opensource.org/licenses/MIT) and the [CC BY-NC-ND 4.0 license](https://creativecommons.org/licenses/by-nc-nd/4.0/).
 Please see his [github repository](https://github.com/munificent/craftinginterpreters/blob/master/LICENSE) for an explanation on

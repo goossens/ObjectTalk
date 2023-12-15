@@ -1,0 +1,120 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2023 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+
+#pragma once
+
+
+//
+//	Include files
+//
+
+#include "glm/glm.hpp"
+
+#include "OtFrameBuffer.h"
+#include "OtFrustum.h"
+#include "OtGbuffer.h"
+
+#include "OtScene.h"
+
+
+//
+//	OtSceneRendererContext
+//
+
+class OtSceneRendererContext {
+public:
+	// constructor
+	OtSceneRendererContext(int w, int h, const glm::vec3& cp, const glm::mat4& vm, const glm::mat4& pm, OtGbuffer& db, OtFrameBuffer& cb, OtFrameBuffer& ppb, OtScene* s, const glm::vec4& clp=glm::vec4(0.0f), bool water=true) :
+		width(w),
+		height(h),
+		cameraPosition(cp),
+		viewMatrix(vm),
+		projectionMatrix(pm),
+		deferedBuffer(db),
+		compositeBuffer(cb),
+		postProcessBuffer(ppb),
+		scene(s),
+		clippingPlane(clp) {
+
+		// determine view projection matrix
+		viewProjectionMatrix = projectionMatrix * viewMatrix;
+
+		// determine the camera's frustum in worldspace
+		frustum = OtFrustum(viewProjectionMatrix);
+
+		// reset flags
+		hasOpaqueEntities = false;
+		hasOpaqueGeometries = false;
+		hasOpaqueModels = false;
+		hasTerrainEntities = false;
+		hasSkyEntities = false;
+		hasTransparentEntities = false;
+		hasWaterEntities = false;
+
+		// check entities and set flags
+		scene->eachEntityDepthFirst([&](OtEntity entity) {
+			if (scene->hasComponent<OtGeometryComponent>(entity) && scene->hasComponent<OtMaterialComponent>(entity)) {
+				bool transparent = scene->getComponent<OtGeometryComponent>(entity).transparent;
+				hasOpaqueEntities |= !transparent;
+				hasOpaqueGeometries |= !transparent;
+				hasTransparentEntities |= transparent;
+			}
+
+			if (scene->hasComponent<OtModelComponent>(entity)) {
+				hasOpaqueEntities = true;
+				hasOpaqueModels = true;
+			}
+
+			if (scene->hasComponent<OtTerrainComponent>(entity)) {
+				hasOpaqueEntities = true;
+				hasTerrainEntities = true;
+			}
+
+			if (scene->hasComponent<OtSkyComponent>(entity) ||
+				scene->hasComponent<OtSkyBoxComponent>(entity) ||
+				scene->hasComponent<OtSkySphereComponent>(entity)) {
+				hasSkyEntities = true;
+			}
+
+			if (water && scene->hasComponent<OtWaterComponent>(entity)) {
+				hasTransparentEntities = true;
+				hasWaterEntities = true;
+			}
+		});
+	}
+
+	// viewport dimensions
+	int width;
+	int height;
+
+	// camera information
+	glm::vec3 cameraPosition;
+	glm::mat4 viewMatrix;
+	glm::mat4 projectionMatrix;
+	glm::mat4 viewProjectionMatrix;
+	OtFrustum frustum;
+
+	// rendering buffers
+	OtGbuffer& deferedBuffer;
+	OtFrameBuffer& compositeBuffer;
+	OtFrameBuffer& postProcessBuffer;
+
+	// scene to render
+	OtScene* scene;
+
+	// clipping plane
+	glm::vec4 clippingPlane;
+
+	// rendering flags
+	bool hasOpaqueEntities;
+	bool hasOpaqueGeometries;
+	bool hasOpaqueModels;
+	bool hasTerrainEntities;
+	bool hasSkyEntities;
+	bool hasTransparentEntities;
+	bool hasWaterEntities;
+};

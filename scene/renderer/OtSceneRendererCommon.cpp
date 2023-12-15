@@ -11,11 +11,48 @@
 //
 
 #include <algorithm>
+#include <chrono>
 
 #include "OtException.h"
 
 #include "OtMaterials.h"
 #include "OtSceneRenderer.h"
+
+
+//
+//	OtSceneRenderer::getRunningTime
+//
+
+float OtSceneRenderer::getRunningTime() {
+	static uint64_t start = 0;
+
+	using namespace std::chrono;
+	uint64_t time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+
+	if (start == 0) {
+		start = time;
+	}
+
+	return float(double(time - start) / 1000.0);
+}
+
+
+//
+//	OtSceneRenderer::getTextureAssetWidth
+//
+
+size_t OtSceneRenderer::getTextureAssetWidth(OtAsset<OtTextureAsset>& texture) {
+	return 	texture.isReady() ? texture->getTexture().getWidth() : 1;
+}
+
+
+//
+//	OtSceneRenderer::getTextureAssetHeight
+//
+
+size_t OtSceneRenderer::getTextureAssetHeight(OtAsset<OtTextureAsset>& texture) {
+	return 	texture.isReady() ? texture->getTexture().getHeight() : 1;
+}
 
 
 //
@@ -34,10 +71,10 @@ void OtSceneRenderer::submitMaterialUniforms(OtMaterial material) {
 
 
 //
-//	OtSceneRenderer::submitSampler
+//	OtSceneRenderer::submitTextureSampler
 //
 
-void OtSceneRenderer::submitSampler(OtSampler& sampler, int unit, OtAsset<OtTextureAsset>& texture) {
+void OtSceneRenderer::submitTextureSampler(OtSampler& sampler, int unit, OtAsset<OtTextureAsset>& texture) {
 	if (texture.isReady()) {
 		sampler.submit(unit, texture->getTexture());
 
@@ -82,11 +119,11 @@ void OtSceneRenderer::submitPbrUniforms(OtPbrMaterial material) {
 	pbrMaterialUniforms.submit();
 
 	// submit all material textures (or dummies if they are not set (yet))
-	submitSampler(deferredGeometryAlbedoSampler, 0, material->albedoTexture);
-	submitSampler(deferredGeometryMetallicRoughnessSampler, 1, material->metallicRoughnessTexture);
-	submitSampler(deferredGeometryEmissiveSampler, 2, material->emissiveTexture);
-	submitSampler(deferredGeometryAoSampler, 3, material->aoTexture);
-	submitSampler(deferredGeometryNormalSampler, 4, material->normalTexture);
+	submitTextureSampler(deferredGeometryAlbedoSampler, 0, material->albedoTexture);
+	submitTextureSampler(deferredGeometryMetallicRoughnessSampler, 1, material->metallicRoughnessTexture);
+	submitTextureSampler(deferredGeometryEmissiveSampler, 2, material->emissiveTexture);
+	submitTextureSampler(deferredGeometryAoSampler, 3, material->aoTexture);
+	submitTextureSampler(deferredGeometryNormalSampler, 4, material->normalTexture);
 }
 
 
@@ -109,10 +146,10 @@ void OtSceneRenderer::submitTerrainUniforms(OtTerrain terrain) {
 		float(heights.heightmapSize));
 
 	uniforms[1] = glm::vec4(
-		material.region1Texture.isReady() ? material.region1Texture->getTexture().getWidth() : 1,
-		material.region2Texture.isReady() ? material.region2Texture->getTexture().getWidth() : 1,
-		material.region3Texture.isReady() ? material.region3Texture->getTexture().getWidth() : 1,
-		material.region4Texture.isReady() ? material.region4Texture->getTexture().getWidth() : 1);
+		getTextureAssetWidth(material.region1Texture),
+		getTextureAssetWidth(material.region2Texture),
+		getTextureAssetWidth(material.region3Texture),
+		getTextureAssetWidth(material.region4Texture));
 
 	uniforms[2] = glm::vec4(
 		material.region1TextureScale,
@@ -144,10 +181,10 @@ void OtSceneRenderer::submitTerrainUniforms(OtTerrain terrain) {
 	heights.normalmap.bindColorTexture(normalmapSampler, 0);
 
 	// submit all material textures (or dummies if they are not set)
-	submitSampler(region1Sampler, 1, material.region1Texture);
-	submitSampler(region2Sampler, 2, material.region2Texture);
-	submitSampler(region3Sampler, 3, material.region3Texture);
-	submitSampler(region4Sampler, 4, material.region4Texture);
+	submitTextureSampler(region1Sampler, 1, material.region1Texture);
+	submitTextureSampler(region2Sampler, 2, material.region2Texture);
+	submitTextureSampler(region3Sampler, 3, material.region3Texture);
+	submitTextureSampler(region4Sampler, 4, material.region4Texture);
 }
 
 
@@ -155,7 +192,7 @@ void OtSceneRenderer::submitTerrainUniforms(OtTerrain terrain) {
 //	OtSceneRenderer::submitLightUniforms
 //
 
-void OtSceneRenderer::submitLightUniforms(OtScene* scene) {
+void OtSceneRenderer::submitLightUniforms(OtScene* scene, glm::vec3 cameraPosition) {
 	// get the directional light information
 	glm::vec3 direction = glm::vec3(0.0f);
 	glm::vec3 color = glm::vec3(0.0f);
@@ -179,4 +216,14 @@ void OtSceneRenderer::submitLightUniforms(OtScene* scene) {
 	uniforms[1] = glm::vec4(direction, 0.0f);
 	uniforms[2] = glm::vec4(color, ambient);
 	lightingUniforms.submit();
+}
+
+
+//
+//	OtSceneRenderer::submitClippingUniforms
+//
+
+void OtSceneRenderer::submitClippingUniforms(const glm::vec4& clippingPlane) {
+	clipUniforms.setValue(0, clippingPlane);
+	clipUniforms.submit();
 }

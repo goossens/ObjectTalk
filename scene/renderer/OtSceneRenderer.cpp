@@ -17,57 +17,49 @@
 //
 
 int OtSceneRenderer::render(OtScene* scene, OtEntity selected) {
-	// prepare all render passes
-	renderPreProcessingPass(scene);
+	// create rendering context
+	OtSceneRendererContext context{
+		width, height,
+		cameraPosition, viewMatrix, projectionMatrix,
+		deferredRenderingBuffer, deferredCompositeBuffer, postProcessBuffer,
+		scene};
 
 	// generate reflection (if required)
-	if (hasWaterEntities) {
-		renderReflectionPass(scene);
+	if (context.hasWaterEntities) {
+		renderReflectionPass(context);
 	}
 
-	// determine the camera's frustum in worldspace
-	frustum = OtFrustum(viewProjectionMatrix);
-
 	// see if we need to do some deferred rendering into a gbuffer?
-	if (hasOpaqueEntities) {
-		// update and clear gbuffer
-		gbuffer.update(width, height);
-
-		OtPass pass;
-		pass.setClear(true, true, glm::vec4(0.0f));
-		pass.setRectangle(0, 0, width, height);
-		pass.setFrameBuffer(gbuffer);
-		pass.touch();
-
+	if (context.hasOpaqueEntities) {
 		// render deferred entities
-		renderDeferredGeometryPass(scene);
+		renderDeferredGeometryPass(context);
 	}
 
 	// start rendering to composite buffer
-	renderBackgroundPass(scene);
+	renderBackgroundPass(context);
 
-	if (hasSkyEntities) {
-		renderSkyPass(scene);
+	if (context.hasSkyEntities) {
+		renderSkyPass(context);
 	}
 
-	if (hasOpaqueEntities) {
-		renderDeferredLightingPass(scene);
+	if (context.hasOpaqueEntities) {
+		renderDeferredLightingPass(context);
 	}
 
-	if (hasTransparentEntities) {
-		renderForwardGeometryPass(scene);
+	if (context.hasTransparentEntities) {
+		renderForwardGeometryPass(context);
 	}
 
 	// handle editor passes
 	if (gridScale > 0.0f) {
-		renderGridPass();
+		renderGridPass(context);
 	}
 
 	if (selected != OtEntityNull) {
-		renderHighlightPass(scene, selected);
+		renderHighlightPass(context, selected);
 	}
 
 	// post process buffer
-	renderPostProcessingPass(scene);
+	renderPostProcessingPass(context);
 	return postProcessBuffer.getColorTextureIndex();
 }

@@ -71,14 +71,16 @@ int OtSceneRuntime::render(int width, int height) {
 	auto scene = sceneAsset->getScene();
 
 	// update all the scripts
-	for (auto [entity, component] : scene->view<OtScriptComponent>().each()) {
+	for (auto&& [entity, component] : scene->view<OtScriptComponent>().each()) {
 		component.update();
 	}
 
 	// get camera information
-	auto camera = scene->getComponent<OtCameraComponent>(activeCamera);
-	glm::vec3 cameraPosition = scene->getComponent<OtTransformComponent>(activeCamera).translation;
-	glm::mat4 camerViewMatrix = glm::inverse(scene->getGlobalTransform(activeCamera));
+	glm::mat4 transform = scene->getGlobalTransform(activeCamera);
+	glm::vec3 cameraPosition = glm::vec3(transform[3]);
+	glm::mat4 camerViewMatrix = glm::inverse(transform);
+
+	auto& camera = scene->getComponent<OtCameraComponent>(activeCamera);
 	glm::mat4 cameraProjectionMatrix = camera.getProjectionMatrix((float) width / (float) height);
 
 	// render the scene and return the ID of the generated texture
@@ -116,13 +118,13 @@ void OtSceneRuntime::initializeScriptingSystem() {
 	auto scene = sceneAsset->getScene();
 
 	// load and compile all the scripts
-	for (auto [entity, component] : scene->view<OtScriptComponent>().each()) {
+	for (auto&& [entity, component] : scene->view<OtScriptComponent>().each()) {
 		component.load();
 		OtEntityObject(component.instance)->linkToECS(scene, entity);
 	}
 
 	// now initialize all the scripts
-	for (auto [entity, component] : scene->view<OtScriptComponent>().each()) {
+	for (auto&& [entity, component] : scene->view<OtScriptComponent>().each()) {
 		component.create();
 	}
 }
@@ -140,7 +142,7 @@ void OtSceneRuntime::initializeRenderingSystem() {
 	// access the scene
 	auto scene = sceneAsset->getScene();
 
-	for (auto [entity, component] : scene->view<OtCameraComponent>().each()) {
+	for (auto&& [entity, component] : scene->view<OtCameraComponent>().each()) {
 		if (!scene->isValidEntity(firstCamera)) {
 			firstCamera = entity;
 		}

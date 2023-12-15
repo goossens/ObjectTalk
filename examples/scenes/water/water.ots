@@ -1,0 +1,190 @@
+{
+	"entities": [
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Camera",
+					"uuid": 1057740688
+				},
+				{
+					"component": "Transform",
+					"rotation": [
+						-5.0,
+						0.0,
+						0.0
+					],
+					"scale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"translation": [
+						0.0,
+						50.0,
+						500.0
+					]
+				},
+				{
+					"component": "Camera",
+					"far": 528.0,
+					"fov": 71.0,
+					"mainCamera": true,
+					"near": 1.0
+				},
+				{
+					"Exposure": 0.6800000071525574,
+					"bloomIntensity": 0.5400000214576721,
+					"component": "Post Processing"
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Sky",
+					"uuid": 864477290
+				},
+				{
+					"azimuth": 0.0,
+					"cirrus": 0.45399999618530273,
+					"component": "Sky",
+					"cumulus": 0.800000011920929,
+					"elevation": 23.479000091552734,
+					"mieCoefficient": 5.734000205993652,
+					"mieScattering": 0.9900000095367432,
+					"rayleighCoefficient": 2.8420000076293945,
+					"speed": 2.5439999103546143
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Water",
+					"uuid": 2516776593
+				},
+				{
+					"ao": 0.27000001072883606,
+					"color": [
+						0.5,
+						0.6000000238418579,
+						0.800000011920929
+					],
+					"component": "Water",
+					"distance": 600.0,
+					"level": 0.0,
+					"metallic": 0.30000001192092896,
+					"normals": "assets/water.jpg",
+					"reflectivity": 1.0,
+					"roughness": 0.20000000298023224,
+					"scale": 7.119999885559082,
+					"speed": 2.0,
+					"useRefractance": false
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Ball",
+					"uuid": 2553736312
+				},
+				{
+					"component": "Geometry",
+					"cullback": true,
+					"geometry": {
+						"displacement": {
+							"frequency": 0.009999999776482582,
+							"lacunarity": 1.0,
+							"map": "",
+							"octaves": 3,
+							"persistance": 0.5,
+							"scale": 0.5,
+							"seed": 1337,
+							"state": 0
+						},
+						"phiLength": 360.0,
+						"phiSegments": 32,
+						"phiStart": 0.0,
+						"thetaLength": 180.0,
+						"thetaSegments": 64,
+						"thetaStart": 0.0,
+						"type": "Sphere"
+					},
+					"transparent": false,
+					"wireframe": false
+				},
+				{
+					"component": "Transform",
+					"rotation": [
+						47.0,
+						21.0,
+						0.0
+					],
+					"scale": [
+						60.0,
+						60.0,
+						60.0
+					],
+					"translation": [
+						-50.0,
+						0.0,
+						200.0
+					]
+				},
+				{
+					"component": "Material",
+					"material": {
+						"albedo": [
+							1.0,
+							1.0,
+							1.0,
+							1.0
+						],
+						"albedoTexture": "assets/ball.png",
+						"ao": 1.0,
+						"aoTexture": "",
+						"emissive": [
+							0.0,
+							0.0,
+							0.0
+						],
+						"emissiveTexture": "",
+						"metallic": 0.44999998807907104,
+						"metallicRoughnessTexture": "",
+						"normalTexture": "",
+						"roughness": 0.4000000059604645,
+						"scale": 1.0,
+						"type": "PBR"
+					}
+				}
+			]
+		}
+	],
+	"metadata": {
+		"cameraPreset": 3,
+		"gizmo": {
+			"enabled": false,
+			"mode": 7,
+			"snapInterval": [
+				0.10000000149011612,
+				0.10000000149011612,
+				0.10000000149011612
+			],
+			"snapping": false
+		},
+		"grid": {
+			"enabled": false,
+			"scale": 1.0
+		},
+		"type": "scene"
+	}
+}

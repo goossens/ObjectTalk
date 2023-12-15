@@ -18,26 +18,32 @@
 //	OtSceneRenderer::renderReflectionPass
 //
 
-void OtSceneRenderer::renderReflectionPass(OtScene* scene) {
-	/*
+void OtSceneRenderer::renderReflectionPass(OtSceneRendererContext& ctx) {
+	// for now, we only support one water entity (last one in scene wins)
+	OtEntity waterEntity;
+
+	for (auto&& [entity, component] : ctx.scene->view<OtWaterComponent>().each()) {
+		waterEntity = entity;
+	}
+
 	// get the water component
-	auto water = scene->getComponent<OtWaterComponent>(waterEntity);
+	auto& water = ctx.scene->getComponent<OtWaterComponent>(waterEntity);
 
-	// save rendering settings
-	size_t savedWidth = width;
-	size_t savedHeight = height;
+	// setup the renderer for the refraction
+	OtSceneRendererContext refractionContext{
+		ctx.width / 4, ctx.height / 4,
+		ctx.cameraPosition, ctx.viewMatrix, ctx.projectionMatrix,
+		reflectionRenderingBuffer, reflectionCompositeBuffer, refractionBuffer,
+		ctx.scene,
+		glm::vec4(0.0f, -1.0f, 0.0f, water.level + 0.1), false};
 
-	glm::vec3 savedCameraPosition = cameraPosition;
-	glm::mat4 savedViewMatrix = viewMatrix;
-	glm::mat4 savedProjectionMatrix = projectionMatrix;
-	glm::mat4 savedViewProjectionMatrix = viewProjectionMatrix;
+	// render the scene
+	renderReflectionRefractionScene(refractionContext);
 
 	// setup the renderer for the reflection
-	width /= 2;
-	height /= 2;
-
 	// determine position of reflection camera
-	cameraPosition.y = water.height - (cameraPosition.y - water.height);
+	glm::vec3 reflectionCameraPos = ctx.cameraPosition;
+	reflectionCameraPos.y = water.level - (reflectionCameraPos.y - water.level);
 
 	// determine new view matrix
 	// see http://khayyam.kaplinski.com/2011/09/reflective-water-with-glsl-part-i.html
@@ -56,20 +62,54 @@ void OtSceneRenderer::renderReflectionPass(OtScene* scene) {
 		0.0f,  0.0f, 0.0f, 1.0f
 	};
 
-	reflection[13] = 2.0f * water.height;
+	reflection[13] = 2.0f * water.level;
 
-	glm::mat4 mSceneCamera = glm::inverse(viewMatrix);
-	glm::mat4 mReflectionCamera = glm::make_mat4(reflection) * mSceneCamera * glm::make_mat4(flip);
-	viewMatrix = glm::inverse(mReflectionCamera);
+	glm::mat4 sceneCameraMatrix = glm::inverse(ctx.viewMatrix);
+	glm::mat4 reflectionCameraMatrix = glm::make_mat4(reflection) * sceneCameraMatrix * glm::make_mat4(flip);
+	glm::mat4 reflectionViewMatrix = glm::inverse(reflectionCameraMatrix);
 
-	// restore rendering settings
-	width = savedWidth;
-	height = savedHeight;
-	cameraPosition = savedCameraPosition;
-	viewMatrix = savedViewMatrix;
-	projectionMatrix = savedProjectionMatrix;
-	viewProjectionMatrix = savedViewProjectionMatrix;
-	*/
+	OtSceneRendererContext reflectionContext{
+		ctx.width / 4, ctx.height / 4,
+		reflectionCameraPos, reflectionViewMatrix, ctx.projectionMatrix,
+		reflectionRenderingBuffer, reflectionCompositeBuffer, reflectionBuffer,
+		ctx.scene,
+		glm::vec4(0.0f, 1.0f, 0.0f, -(water.level - 0.1f)), false};
 
+	// render the scene
+	renderReflectionRefractionScene(reflectionContext);
+
+#if OT_DEBUG
+	water.reflectionTextureIndex = reflectionBuffer.getColorTextureIndex();
+	water.refractionTextureIndex = refractionBuffer.getColorTextureIndex();
+#endif
 }
 
+
+//
+//	OtSceneRenderer::renderReflectionRefractionScene
+//
+
+void OtSceneRenderer::renderReflectionRefractionScene(OtSceneRendererContext& ctx) {
+	// see if we need to do some deferred rendering into a gbuffer?
+	if (ctx.hasOpaqueEntities) {
+		renderDeferredGeometryPass(ctx);
+	}
+
+	// start rendering to reflection buffer
+	renderBackgroundPass(ctx);
+
+	if (ctx.hasSkyEntities) {
+		renderSkyPass(ctx);
+	}
+
+	if (ctx.hasOpaqueEntities) {
+		renderDeferredLightingPass(ctx);
+	}
+
+	if (ctx.hasTransparentEntities) {
+		renderForwardGeometryPass(ctx);
+	}
+
+	// post process buffer
+	renderPostProcessingPass(ctx, false);
+}

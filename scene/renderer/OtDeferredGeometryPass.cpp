@@ -9,8 +9,9 @@
 //	Include files
 //
 
+#include <cmath>
+
 #include "glm/glm.hpp"
-#include "imgui.h"
 
 #include "OtSceneRenderer.h"
 
@@ -19,40 +20,38 @@
 //	OtSceneRenderer::renderDeferredGeometryPass
 //
 
-void OtSceneRenderer::renderDeferredGeometryPass(OtScene* scene) {
+void OtSceneRenderer::renderDeferredGeometryPass(OtSceneRendererContext& ctx) {
+	// update gbuffer
+	ctx.deferedBuffer.update(ctx.width, ctx.height);
+
 	// setup pass
 	OtPass pass;
-	pass.setRectangle(0, 0, width, height);
-	pass.setFrameBuffer(gbuffer);
-	pass.setTransform(viewMatrix, projectionMatrix);
+	pass.setRectangle(0, 0, ctx.width, ctx.height);
+	pass.setFrameBuffer(ctx.deferedBuffer);
+	pass.setClear(true, true, glm::vec4(0.0f));
+	pass.setTransform(ctx.viewMatrix, ctx.projectionMatrix);
+	pass.touch();
 
 	// render all opaque geometries
-	if (hasOpaqueGeometries) {
-		scene->view<OtGeometryComponent, OtMaterialComponent>().each([&](auto entity, auto& geometry, auto& material) {
+	if (ctx.hasOpaqueGeometries) {
+		ctx.scene->view<OtGeometryComponent, OtMaterialComponent>().each([&](auto entity, auto& geometry, auto& material) {
 			if (!geometry.transparent) {
-				renderDeferredGeometry(pass, scene, entity, geometry, material);
+				renderDeferredGeometry(ctx, pass, entity, geometry, material);
 			}
 		});
 	}
 
 	// render all opaque models
-	if (hasOpaqueModels) {
-		scene->view<OtModelComponent>().each([&](auto entity, auto& model) {
-			renderDeferredModel(pass, scene, entity, model);
+	if (ctx.hasOpaqueModels) {
+		ctx.scene->view<OtModelComponent>().each([&](auto entity, auto& model) {
+			renderDeferredModel(ctx, pass, entity, model);
 		});
 	}
 
 	// render all terrain entities
-	if (hasTerrainEntities) {
-		scene->view<OtTerrainComponent>().each([&](auto entity, auto& terrain) {
-			renderDeferredTerrain(pass, terrain);
-		});
-	}
-
-	// render all water entities
-	if (hasWaterEntities) {
-		scene->view<OtWaterComponent>().each([&](auto entity, auto& water) {
-			renderDeferredWater(pass, water);
+	if (ctx.hasTerrainEntities) {
+		ctx.scene->view<OtTerrainComponent>().each([&](auto entity, auto& terrain) {
+			renderDeferredTerrain(ctx, pass, terrain);
 		});
 	}
 }
@@ -62,13 +61,13 @@ void OtSceneRenderer::renderDeferredGeometryPass(OtScene* scene) {
 //	OtSceneRenderer::renderDeferredGeometry
 //
 
-void OtSceneRenderer::renderDeferredGeometry(OtPass& pass, OtScene* scene, OtEntity entity, OtGeometryComponent& geometry, OtMaterialComponent& material) {
+void OtSceneRenderer::renderDeferredGeometry(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtGeometryComponent& geometry, OtMaterialComponent& material) {
 	// see if geometry is visible
-	auto transform = scene->getGlobalTransform(entity);
+	auto transform = ctx.scene->getGlobalTransform(entity);
 	auto aabb = geometry.geometry->getAABB().transform(transform);
 
 	// is this entity visible
-	if (frustum.isVisibleAABB(aabb)) {
+	if (ctx.frustum.isVisibleAABB(aabb)) {
 		// determine the program
 		OtShaderProgram* program;
 
@@ -76,8 +75,9 @@ void OtSceneRenderer::renderDeferredGeometry(OtPass& pass, OtScene* scene, OtEnt
 			program = &deferredPbrProgram;
 		}
 
-		// submit the material information
+		// submit the material and clipping uniforms
 		submitMaterialUniforms(material.material);
+		submitClippingUniforms(ctx.clippingPlane);
 
 		// submit the geometry
 		if (geometry.wireframe) {
@@ -125,21 +125,22 @@ void OtSceneRenderer::renderDeferredGeometry(OtPass& pass, OtScene* scene, OtEnt
 //	OtSceneRenderer::renderDeferredModel
 //
 
-void OtSceneRenderer::renderDeferredModel(OtPass& pass, OtScene* scene, OtEntity entity, OtModelComponent& component) {
+void OtSceneRenderer::renderDeferredModel(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtModelComponent& component) {
 	// process all the meshes (if required)
 	auto model = component.model;
 
 	if (model->isReady()) {
-		auto transform = scene->getGlobalTransform(entity);
+		auto transform = ctx.scene->getGlobalTransform(entity);
 
 		for (auto& mesh : model->getMeshes()) {
 			// see if mesh is visible?
 			auto aabb = mesh.getAABB();
 			aabb.transform(transform);
 
-			if (frustum.isVisibleAABB(aabb)) {
-				// submit the material information
+			if (ctx.frustum.isVisibleAABB(aabb)) {
+				// submit the material and clipping information
 				submitPbrUniforms(model->getMaterials()[mesh.getMaterialIndex()].getPbrMaterial());
+				submitClippingUniforms(ctx.clippingPlane);
 
 				// submit the geometry
 				mesh.submitTriangles();
@@ -167,7 +168,7 @@ void OtSceneRenderer::renderDeferredModel(OtPass& pass, OtScene* scene, OtEntity
 //	OtSceneRenderer::renderDeferredTerrain
 //
 
-void OtSceneRenderer::renderDeferredTerrain(OtPass& pass, OtTerrainComponent& component) {
+void OtSceneRenderer::renderDeferredTerrain(OtSceneRendererContext& ctx, OtPass& pass, OtTerrainComponent& component) {
 	// refresh heightmap and normalmap if the properties have changed
 	auto terrain = component.terrain;
 
@@ -175,12 +176,13 @@ void OtSceneRenderer::renderDeferredTerrain(OtPass& pass, OtTerrainComponent& co
 		terrain->heights.update(tileableFbm, normalMapper);
 	}
 	// process all the terrain meshes
-	for (auto& mesh : terrain->getMeshes(frustum, cameraPosition)) {
+	for (auto& mesh : terrain->getMeshes(ctx.frustum, ctx.cameraPosition)) {
 		// submit the geometry
 		mesh.tile.vertices.submit();
 
-		// submit the terrain uniforms
+		// submit the terrain and uniforms
 		submitTerrainUniforms(terrain);
+		submitClippingUniforms(ctx.clippingPlane);
 
 		if (terrain->isWireframe()) {
 			mesh.tile.lines.submit();
@@ -213,13 +215,4 @@ void OtSceneRenderer::renderDeferredTerrain(OtPass& pass, OtTerrainComponent& co
 		// run the program
 		pass.runShaderProgram(deferredTerrainProgram);
 	}
-}
-
-
-//
-//	OtSceneRenderer::renderDeferredWater
-//
-
-void OtSceneRenderer::renderDeferredWater(OtPass& pass, OtWaterComponent& water) {
-
 }

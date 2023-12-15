@@ -29,16 +29,16 @@ public:
 	OtBgfxHandle(T handle) { handleRef = std::make_shared<Handle<T>>(handle); }
 
 	// see if handle is valid
-	bool isValid() { return handleRef != nullptr; }
+	inline bool isValid() { return handleRef != nullptr; }
 
 	// clear the handle reference
-	void clear() { handleRef = nullptr; }
+	inline void clear() { handleRef = nullptr; }
 
 	// get the handle
-	T getHandle() { return handleRef == nullptr ? T(BGFX_INVALID_HANDLE) : handleRef->get(); }
+	inline T getHandle() { return handleRef == nullptr ? T(BGFX_INVALID_HANDLE) : handleRef->get(); }
 
 	// get the handle index
-	uint16_t getIndex() {
+	inline uint16_t getIndex() {
 		return handleRef ? handleRef->getIndex() : bgfx::kInvalidHandle;
 	}
 

@@ -39,7 +39,7 @@ public:
 	glm::vec3 getLightDirection();
 
 	// location of the sun
-	float elevation = 10.0f;	// in degrees from XZ plane (positive is up)
+	float elevation = 25.0f;	// in degrees from XZ plane (positive is up)
 	float azimuth = 180.0f;		// in clockwise degrees from negative Z axis
 								// 0 = "north", 90 = "east", 180 = "south", 270 = "west"
 

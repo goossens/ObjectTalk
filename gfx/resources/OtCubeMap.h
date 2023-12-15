@@ -37,7 +37,9 @@ public:
 	inline bgfx::TextureHandle getTextureHandle() { return cubemap.getHandle(); }
 
 	// return cubemap index
-	inline int getTextureIndex() { return cubemap.getIndex(); }
+	inline uint16_t getTextureIndex() {
+		return isValid() ? cubemap.getIndex() : bgfx::kInvalidHandle;
+	}
 
 private:
 	// cubemap texture

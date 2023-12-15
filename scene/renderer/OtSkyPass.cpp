@@ -22,40 +22,40 @@
 //	OtSceneRenderer::renderSkyPass
 //
 
-void OtSceneRenderer::renderSkyPass(OtScene* scene) {
+void OtSceneRenderer::renderSkyPass(OtSceneRendererContext& ctx) {
 	// get the camera's view matrix and decompose it
 	glm::vec3 scale;
 	glm::quat rotate;
 	glm::vec3 translate;
 	glm::vec3 skew;
 	glm::vec4 perspective;
-	glm::decompose(viewMatrix, scale, rotate, translate, skew, perspective);
+	glm::decompose(ctx.viewMatrix, scale, rotate, translate, skew, perspective);
 
 	// create a new matrix that only honors the rotation
 	glm::mat4 newViewMatrix = glm::toMat4(rotate);
 
 	// setup pass
 	OtPass pass;
-	pass.setRectangle(0, 0, width, height);
-	pass.setFrameBuffer(compositeBuffer);
-	pass.setTransform(newViewMatrix, projectionMatrix);
+	pass.setRectangle(0, 0, ctx.width, ctx.height);
+	pass.setFrameBuffer(ctx.compositeBuffer);
+	pass.setTransform(newViewMatrix, ctx.projectionMatrix);
 
 	// see if we have any sky components
-	for (auto [entity, component] : scene->view<OtSkyComponent>().each()) {
-		renderSky(pass, component);
+	for (auto&& [entity, component] : ctx.scene->view<OtSkyComponent>().each()) {
+		renderSky(ctx, pass, component);
 	};
 
 	// see if we have any sky boxes
-	for (auto [entity, component] : scene->view<OtSkyBoxComponent>().each()) {
+	for (auto&& [entity, component] : ctx.scene->view<OtSkyBoxComponent>().each()) {
 		if (component.cubemap.isReady()) {
-			renderSkyBox(pass, component);
+			renderSkyBox(ctx, pass, component);
 		}
 	};
 
 	// see if we have any sky spheres
-	for (auto [entity, component] : scene->view<OtSkySphereComponent>().each()) {
+	for (auto&& [entity, component] : ctx.scene->view<OtSkySphereComponent>().each()) {
 		if (component.texture.isReady()) {
-			renderSkySphere(pass, component);
+			renderSkySphere(ctx, pass, component);
 		}
 	};
 }
@@ -65,7 +65,7 @@ void OtSceneRenderer::renderSkyPass(OtScene* scene) {
 //	OtSceneRenderer::renderSky
 //
 
-void OtSceneRenderer::renderSky(OtPass& pass, OtSkyComponent& component) {
+void OtSceneRenderer::renderSky(OtSceneRendererContext& ctx, OtPass& pass, OtSkyComponent& component) {
 	// setup the mesh
 	if (!unitySphereGeometry) {
 		unitySphereGeometry = OtSphereGeometry::create();
@@ -93,7 +93,12 @@ void OtSceneRenderer::renderSky(OtPass& pass, OtSkyComponent& component) {
 	skyUniforms.submit();
 
 	// run the program
-	skyProgram.setState(OtStateWriteRgb | OtStateWriteA);
+	skyProgram.setState(
+		OtStateWriteRgb |
+		OtStateWriteA |
+		OtStateWriteZ |
+		OtStateDepthTestLessEqual);
+
 	pass.runShaderProgram(skyProgram);
 
 }
@@ -103,7 +108,7 @@ void OtSceneRenderer::renderSky(OtPass& pass, OtSkyComponent& component) {
 //	OtSceneRenderer::renderSkyBox
 //
 
-void OtSceneRenderer::renderSkyBox(OtPass& pass, OtSkyBoxComponent& component) {
+void OtSceneRenderer::renderSkyBox(OtSceneRendererContext& ctx, OtPass& pass, OtSkyBoxComponent& component) {
 	// setup the mesh
 	if (!unityBoxGeometry) {
 		unityBoxGeometry = OtBoxGeometry::create();
@@ -119,7 +124,12 @@ void OtSceneRenderer::renderSkyBox(OtPass& pass, OtSkyBoxComponent& component) {
 	skySampler.submit(0, component.cubemap->getCubeMap());
 
 	// run the program
-	skyBoxProgram.setState(OtStateWriteRgb | OtStateWriteA);
+	skyBoxProgram.setState(
+		OtStateWriteRgb |
+		OtStateWriteA |
+		OtStateWriteZ |
+		OtStateDepthTestLessEqual);
+
 	pass.runShaderProgram(skyBoxProgram);
 }
 
@@ -128,7 +138,7 @@ void OtSceneRenderer::renderSkyBox(OtPass& pass, OtSkyBoxComponent& component) {
 //	OtSceneRenderer::renderSkySphere
 //
 
-void OtSceneRenderer::renderSkySphere(OtPass& pass, OtSkySphereComponent& component) {
+void OtSceneRenderer::renderSkySphere(OtSceneRendererContext& ctx, OtPass& pass, OtSkySphereComponent& component) {
 	// setup the mesh
 	if (!unitySphereGeometry) {
 		unitySphereGeometry = OtSphereGeometry::create();
@@ -144,6 +154,11 @@ void OtSceneRenderer::renderSkySphere(OtPass& pass, OtSkySphereComponent& compon
 	skySampler.submit(0, component.texture->getTexture());
 
 	// run the program
-	skySphereProgram.setState(OtStateWriteRgb | OtStateWriteA);
+	skySphereProgram.setState(
+		OtStateWriteRgb |
+		OtStateWriteA |
+		OtStateWriteZ |
+		OtStateDepthTestLessEqual);
+
 	pass.runShaderProgram(skySphereProgram);
 }

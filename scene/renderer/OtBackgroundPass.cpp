@@ -16,26 +16,29 @@
 //	OtSceneRenderer::renderBackgroundPass
 //
 
-void OtSceneRenderer::renderBackgroundPass(OtScene* scene) {
+void OtSceneRenderer::renderBackgroundPass(OtSceneRendererContext& ctx) {
 	// update composite buffer
-	compositeBuffer.update(width, height);
+	ctx.compositeBuffer.update(ctx.width, ctx.height);
 
 	// determine background color
 	glm::vec3 backgroundColor{0.0f};
 
-	for (auto [entity, component] : scene->view<OtBackgroundComponent>().each()) {
+	for (auto&& [entity, component] : ctx.scene->view<OtBackgroundComponent>().each()) {
 		backgroundColor = component.color;
 	}
 
 	// setup pass
 	OtPass pass;
-	pass.setClear(true, !hasOpaqueEntities, glm::vec4(backgroundColor, 1.0f));
-	pass.setRectangle(0, 0, width, height);
-	pass.setFrameBuffer(compositeBuffer);
+	pass.setRectangle(0, 0, ctx.width, ctx.height);
+	pass.setFrameBuffer(ctx.compositeBuffer);
+	pass.setClear(true, true, glm::vec4(backgroundColor, 1.0f));
+	// pass.setClear(true, !ctx.hasOpaqueEntities, glm::vec4(backgroundColor, 1.0f));
 	pass.touch();
 
 	// copy depth buffer from gbuffer to the composite framebuffer (if we already rendered opaque objects)
-	if (hasOpaqueEntities) {
-		pass.blit(compositeBuffer.getDepthTexture(), 0, 0, gbuffer.getDepthTexture());
+	/*
+	if (ctx.hasOpaqueEntities) {
+		pass.blit(ctx.compositeBuffer.getDepthTexture(), 0, 0, ctx.deferedBuffer.getDepthTexture());
 	}
+	*/
 }

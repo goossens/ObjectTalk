@@ -39,5 +39,7 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f sky\OtSkySphereFS.glsl -o generated\sky\OtSkySphereFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtSkySphereFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f terrain\OtTerrainVS.glsl -o generated\terrain\OtTerrainVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtTerrainVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f terrain\OtTerrainFS.glsl -o generated\terrain\OtTerrainFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtTerrainFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f water\OtWaterVS.glsl -o generated\water\OtWaterVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtWaterVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f water\OtWaterFS.glsl -o generated\water\OtWaterFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtWaterFS_dx11
 
 popd

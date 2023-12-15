@@ -13,7 +13,6 @@
 //
 
 #include <filesystem>
-#include <string>
 
 #include "OtBgfxHandle.h"
 
@@ -24,6 +23,8 @@
 
 class OtTexture {
 public:
+	static constexpr int invalidIndex = bgfx::kInvalidHandle;
+
 	// constructor
 	OtTexture() = default;
 	OtTexture(const std::filesystem::path& path);
@@ -48,7 +49,9 @@ public:
 	bgfx::TextureHandle getTextureHandle();
 
 	// return texture index
-	inline int getTextureIndex() { return texture.getIndex(); }
+	inline uint16_t getTextureIndex() {
+		return isValid() ? texture.getIndex() : bgfx::kInvalidHandle;
+	}
 
 	// get texture size
 	inline size_t getWidth() { return width; }

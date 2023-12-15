@@ -31,6 +31,9 @@ public:
 		pointLight,
 		model,
 		geometry,
+		sky,
+		skybox,
+		skysphere,
 		terrain,
 		water
 	};
@@ -78,6 +81,18 @@ public:
 				scene->addComponent<OtGeometryComponent>(entity);
 				scene->addComponent<OtTransformComponent>(entity);
 				scene->addComponent<OtMaterialComponent>(entity);
+				break;
+
+			case sky:
+				scene->addComponent<OtSkyComponent>(entity);
+				break;
+
+			case skybox:
+				scene->addComponent<OtSkyBoxComponent>(entity);
+				break;
+
+			case skysphere:
+				scene->addComponent<OtSkySphereComponent>(entity);
 				break;
 
 			case terrain:

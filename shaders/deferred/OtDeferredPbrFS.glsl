@@ -7,6 +7,7 @@
 $input v_position, v_normal, v_tangent, v_bitangent, v_texcoord0
 
 #include <bgfx_shader.glsl>
+#include <clip.glsl>
 
 // uniforms
 uniform vec4 u_pbrMaterial[5];
@@ -35,6 +36,9 @@ SAMPLER2D(s_deferredGeometryNormalTexture, 4);
 
 // main function
 void main() {
+	// apply clip plane
+	clipPlane(v_position);
+
 	// determine UV coordinates
 	vec2 uv = v_texcoord0 * u_scale;
 

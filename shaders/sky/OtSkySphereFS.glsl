@@ -20,4 +20,5 @@ void main() {
 	color = pow(color, vec3_splat(u_gamma));
 	color = u_brightness * color;
 	gl_FragColor = vec4(color, 1.0f);
+	gl_FragDepth = 1.0;
 }

@@ -12,13 +12,10 @@
 //	Include files
 //
 
-#include <vector>
-
 #include "glm/glm.hpp"
 
 #include "OtBoxGeometry.h"
 #include "OtFrameBuffer.h"
-#include "OtFrustum.h"
 #include "OtGbuffer.h"
 #include "OtIndexBuffer.h"
 #include "OtNormalMapper.h"
@@ -31,8 +28,8 @@
 #include "OtUniformVec4.h"
 
 #include "OtEntity.h"
-#include "OtMaterials.h"
 #include "OtScene.h"
+#include "OtSceneRendererContext.h"
 
 
 //
@@ -43,8 +40,8 @@ class OtSceneRenderer {
 public:
 	// set the properties
 	void setCameraPosition(const glm::vec3 pos) { cameraPosition = pos; }
-	void setViewMatrix(const glm::mat4& view) { viewMatrix = view; viewProjectionMatrix = projectionMatrix * viewMatrix; }
-	void setProjectionMatrix(const glm::mat4& proj) { projectionMatrix = proj; viewProjectionMatrix = projectionMatrix * viewMatrix; }
+	void setViewMatrix(const glm::mat4& view) { viewMatrix = view; }
+	void setProjectionMatrix(const glm::mat4& proj) { projectionMatrix = proj; }
 	void setSize(int w, int h) { width = w; height = h; }
 	void setGridScale(float gs) { gridScale = gs; }
 
@@ -53,36 +50,42 @@ public:
 
 private:
 	// render passes
-	void renderReflectionPass(OtScene* scene);
-	void renderPreProcessingPass(OtScene* scene);
-	// void renderShadowPass(OtScene* scene);
-	void renderDeferredGeometryPass(OtScene* scene);
-	void renderBackgroundPass(OtScene* scene);
-	void renderSkyPass(OtScene* scene);
-	void renderDeferredLightingPass(OtScene* scene);
-	void renderForwardGeometryPass(OtScene* scene);
-	void renderGridPass();
-	void renderHighlightPass(OtScene* scene, OtEntity selected);
-	void renderPostProcessingPass(OtScene* scene);
+	void renderReflectionPass(OtSceneRendererContext& ctx);
+	// void renderShadowPass(OtSceneRendererContext& ctx);
+	void renderDeferredGeometryPass(OtSceneRendererContext& ctx);
+	void renderBackgroundPass(OtSceneRendererContext& ctx);
+	void renderSkyPass(OtSceneRendererContext& ctx);
+	void renderDeferredLightingPass(OtSceneRendererContext& ctx);
+	void renderForwardGeometryPass(OtSceneRendererContext& ctx);
+	void renderGridPass(OtSceneRendererContext& ctx);
+	void renderHighlightPass(OtSceneRendererContext& ctx, OtEntity selected);
+	void renderPostProcessingPass(OtSceneRendererContext& ctx, bool renderPostProcessingEffects=true);
 
 	// render entities
-	void renderDeferredGeometry(OtPass& pass, OtScene* scene, OtEntity entity, OtGeometryComponent& geometry, OtMaterialComponent& material);
-	void renderDeferredModel(OtPass& pass, OtScene* scene, OtEntity entity, OtModelComponent& model);
-	void renderDeferredTerrain(OtPass& pass, OtTerrainComponent& terrain);
-	void renderDeferredWater(OtPass& pass, OtWaterComponent& water);
-	void renderSky(OtPass& pass, OtSkyComponent& component);
-	void renderSkyBox(OtPass& pass, OtSkyBoxComponent& component);
-	void renderSkySphere(OtPass& pass, OtSkySphereComponent& component);
-	void renderForwardGeometry(OtPass& pass, OtScene* scene, OtEntity entity, OtGeometryComponent& geometry, OtMaterialComponent& material);
-	void renderHighlight(OtPass& pass, OtScene* scene, OtEntity entity);
-	void renderBloom(float bloomIntensity);
+	void renderReflectionRefractionScene(OtSceneRendererContext& ctx);
+	void renderDeferredGeometry(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtGeometryComponent& geometry, OtMaterialComponent& material);
+	void renderDeferredModel(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtModelComponent& model);
+	void renderDeferredTerrain(OtSceneRendererContext& ctx, OtPass& pass, OtTerrainComponent& terrain);
+	void renderSky(OtSceneRendererContext& ctx, OtPass& pass, OtSkyComponent& component);
+	void renderSkyBox(OtSceneRendererContext& ctx, OtPass& pass, OtSkyBoxComponent& component);
+	void renderSkySphere(OtSceneRendererContext& ctx, OtPass& pass, OtSkySphereComponent& component);
+	void renderForwardGeometry(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtGeometryComponent& geometry, OtMaterialComponent& material);
+	void renderForwardWater(OtSceneRendererContext& ctx, OtPass& pass, OtWaterComponent& water);
+	void renderHighlight(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity);
+	void renderBloom(OtSceneRendererContext& ctx, float bloomIntensity);
 
 	// rendering tools
-	void submitSampler(OtSampler& sampler, int unit, OtAsset<OtTextureAsset>& texture);
+	void submitTextureSampler(OtSampler& sampler, int unit, OtAsset<OtTextureAsset>& texture);
 	void submitMaterialUniforms(OtMaterial material);
 	void submitPbrUniforms(OtPbrMaterial material);
-	void submitLightUniforms(OtScene* scene);
+	void submitLightUniforms(OtScene* scene, glm::vec3 cameraPosition);
 	void submitTerrainUniforms(OtTerrain terrain);
+	void submitClippingUniforms(const glm::vec4& clippingPlane);
+
+	// helpers
+	float getRunningTime();
+	size_t getTextureAssetWidth(OtAsset<OtTextureAsset>& texture);
+	size_t getTextureAssetHeight(OtAsset<OtTextureAsset>& texture);
 
 	// viewport dimensions
 	int width;
@@ -92,18 +95,20 @@ private:
 	glm::vec3 cameraPosition;
 	glm::mat4 viewMatrix;
 	glm::mat4 projectionMatrix;
-	glm::mat4 viewProjectionMatrix;
-	OtFrustum frustum;
 
 	// grid scale (0.0 means no grid)
 	float gridScale = 0.0f;
 
 	// framebuffers
-	OtGbuffer gbuffer;
-	OtFrameBuffer reflectionBuffer{OtFrameBuffer::rgba8Texture, OtFrameBuffer::dFloatTexture};
-	OtFrameBuffer compositeBuffer{OtFrameBuffer::rgbaFloat16Texture, OtFrameBuffer::dFloatTexture, 1, true};
+	OtGbuffer deferredRenderingBuffer;
+	OtFrameBuffer deferredCompositeBuffer{OtFrameBuffer::rgbaFloat16Texture, OtFrameBuffer::dFloatTexture};
 	OtFrameBuffer postProcessBuffer{OtFrameBuffer::rgba8Texture, OtFrameBuffer::noTexture};
 	OtFrameBuffer selectedBuffer{OtFrameBuffer::r8Texture, OtFrameBuffer::noTexture};
+
+	OtGbuffer reflectionRenderingBuffer;
+	OtFrameBuffer reflectionCompositeBuffer{OtFrameBuffer::rgbaFloat16Texture, OtFrameBuffer::dFloatTexture};
+	OtFrameBuffer reflectionBuffer{OtFrameBuffer::rgba8Texture, OtFrameBuffer::noTexture};
+	OtFrameBuffer refractionBuffer{OtFrameBuffer::rgba8Texture, OtFrameBuffer::noTexture};
 
 	static constexpr int bloomDepth = 5;
 	OtFrameBuffer bloomBuffer[bloomDepth];
@@ -112,22 +117,15 @@ private:
 	OtBoxGeometry unityBoxGeometry;
 	OtSphereGeometry unitySphereGeometry;
 
-	// rendering flag
-	bool hasOpaqueEntities = false;
-	bool hasOpaqueGeometries = false;
-	bool hasOpaqueModels = false;
-	bool hasTerrainEntities = false;
-	bool hasWaterEntities = false;
-	bool hasTransparentEntities = false;
-	bool hasSkyEntities = false;
-
 	// generators/filters
 	OtTileableFbm tileableFbm;
 	OtNormalMapper normalMapper;
 
 	// uniforms
-	OtUniformVec4 terrainUniforms{"u_terrain", 9};
 	OtUniformVec4 pbrMaterialUniforms{"u_pbrMaterial", 5};
+	OtUniformVec4 clipUniforms{"u_clip", 1};
+	OtUniformVec4 terrainUniforms{"u_terrain", 9};
+	OtUniformVec4 waterUniforms{"u_water", 4};
 	OtUniformVec4 lightingUniforms{"u_lighting", 3};
 	OtUniformVec4 skyUniforms{"u_sky", 3};
 	OtUniformVec4 gridUniforms{"u_grid", 1};
@@ -156,6 +154,10 @@ private:
 	OtSampler region4Sampler{"s_region4Sampler"};
 
 	OtSampler normalmapSampler{"s_normalmapSampler"};
+	OtSampler reflectionSampler{"s_reflectionSampler"};
+	OtSampler refractionSampler{"s_refractionSampler"};
+	OtSampler refractionDepthSampler{"s_refractionDepthSampler"};
+
 	OtSampler skySampler{"s_skySampler"};
 
 	OtSampler selectedSampler{"s_selectedTexture", OtSampler::pointSampling | OtSampler::clampSampling};
@@ -170,6 +172,7 @@ private:
 	OtShaderProgram deferredLightingProgram{"OtDeferredLightingVS", "OtDeferredLightingFS"};
 	OtShaderProgram forwardPbrProgram{"OtForwardVS", "OtForwardPbrFS"};
 	OtShaderProgram forwardInstancingProgram{"OtForwardInstancingVS", "OtForwardPbrFS"};
+	OtShaderProgram forwardWaterProgram{"OtWaterVS", "OtWaterFS"};
 	OtShaderProgram gridProgram{"OtGridVS", "OtGridFS"};
 	OtShaderProgram selectProgram{"OtSelectVS", "OtSelectFS"};
 	OtShaderProgram outlineProgram{"OtOutlineVS", "OtOutlineFS"};

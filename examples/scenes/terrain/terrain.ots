@@ -11,7 +11,7 @@
 				{
 					"component": "Transform",
 					"rotation": [
-						-8.0,
+						-5.0,
 						0.0,
 						0.0
 					],
@@ -22,20 +22,20 @@
 					],
 					"translation": [
 						0.0,
-						50.0,
+						47.900001525878906,
 						15.0
 					]
 				},
 				{
 					"component": "Camera",
-					"far": 1000.0,
+					"far": 528.0,
 					"fov": 71.0,
 					"mainCamera": true,
 					"near": 1.0
 				},
 				{
-					"Exposure": 0.6800000071525574,
-					"bloomIntensity": 0.7099999785423279,
+					"Exposure": 0.47999998927116394,
+					"bloomIntensity": 0.49000000953674316,
 					"component": "Post Processing"
 				}
 			]
@@ -49,11 +49,11 @@
 					"uuid": 864477290
 				},
 				{
-					"azimuth": 238.6959991455078,
+					"azimuth": 5.869999885559082,
 					"cirrus": 0.45399999618530273,
 					"component": "Sky",
 					"cumulus": 0.800000011920929,
-					"elevation": 19.565000534057617,
+					"elevation": 28.368999481201172,
 					"mieCoefficient": 5.734000205993652,
 					"mieScattering": 0.9900000095367432,
 					"rayleighCoefficient": 2.8420000076293945,
@@ -71,7 +71,7 @@
 				},
 				{
 					"component": "Terrain",
-					"hScale": 0.9900000095367432,
+					"hScale": 1.0,
 					"heightmap": {
 						"amplitude": 0.5,
 						"frequency": 10,
@@ -119,9 +119,37 @@
 						"region4TextureScale": 28.100000381469727
 					},
 					"tileSize": 64,
-					"vOffset": -10.0,
-					"vScale": 37.0,
+					"vOffset": -16.0,
+					"vScale": 40.0,
 					"wireframe": false
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Water",
+					"uuid": 2516776593
+				},
+				{
+					"ao": 0.3499999940395355,
+					"color": [
+						0.11911659687757492,
+						0.3094998002052307,
+						0.6902654767036438
+					],
+					"component": "Water",
+					"distance": 500.0,
+					"level": 0.0,
+					"metallic": 0.28999999165534973,
+					"normals": "assets/water.jpg",
+					"reflectivity": 0.5,
+					"roughness": 0.25999999046325684,
+					"scale": 5.0,
+					"speed": 0.75,
+					"useRefractance": true
 				}
 			]
 		}

@@ -48,8 +48,9 @@ bool OtTerrainHeights::renderGUI() {
 			changed |= ImGui::DragInt("Octaves", &octaves, 1, 1, 10);
 
 			ImGui::TableNextColumn();
-			if (heightmap.isValid()) {
-				ImGui::Image((void*)(intptr_t) heightmap.getColorTextureIndex(), ImVec2(512, 512));
+
+			if (normalmap.isValid()) {
+				ImGui::Image((void*)(intptr_t) normalmap.getColorTextureIndex(), ImVec2(512, 512));
 			}
 
 			ImGui::EndTable();

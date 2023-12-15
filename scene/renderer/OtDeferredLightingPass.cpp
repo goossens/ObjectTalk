@@ -16,26 +16,31 @@
 //	OtSceneRenderer::renderDeferredLightingPass
 //
 
-void OtSceneRenderer::renderDeferredLightingPass(OtScene* scene) {
+void OtSceneRenderer::renderDeferredLightingPass(OtSceneRendererContext& ctx) {
 	// setup pass
 	OtPass pass;
-	pass.setFrameBuffer(compositeBuffer);
-	pass.submitQuad(width, height);
+	pass.setFrameBuffer(ctx.compositeBuffer);
+	pass.submitQuad(ctx.width, ctx.height);
 
 	// submit the uniforms
-	submitLightUniforms(scene);
+	submitLightUniforms(ctx.scene, ctx.cameraPosition);
 
-	inverseTransformUniforms.set(0, glm::inverse(viewProjectionMatrix));
+	inverseTransformUniforms.set(0, glm::inverse(ctx.viewProjectionMatrix));
 	inverseTransformUniforms.submit();
 
 	// bind all textures
-	gbuffer.bindAlbedoTexture(deferredLightingAlbedoSampler, 0);
-	gbuffer.bindNormalTexture(deferredLightingNormalSampler, 1);
-	gbuffer.bindPbrTexture(deferredLightingPbrSampler, 2);
-	gbuffer.bindEmissiveTexture(deferredLightingEmissiveSampler, 3);
-	gbuffer.bindDepthTexture(deferredLightingDepthSampler, 4);
+	ctx.deferedBuffer.bindAlbedoTexture(deferredLightingAlbedoSampler, 0);
+	ctx.deferedBuffer.bindNormalTexture(deferredLightingNormalSampler, 1);
+	ctx.deferedBuffer.bindPbrTexture(deferredLightingPbrSampler, 2);
+	ctx.deferedBuffer.bindEmissiveTexture(deferredLightingEmissiveSampler, 3);
+	ctx.deferedBuffer.bindDepthTexture(deferredLightingDepthSampler, 4);
 
 	// run the program
-	deferredLightingProgram.setState(OtStateWriteRgb | OtStateWriteA | OtStateDepthTestAlways);
+	deferredLightingProgram.setState(
+		OtStateWriteRgb |
+		OtStateWriteA |
+		OtStateWriteZ |
+		OtStateDepthTestLess);
+
 	pass.runShaderProgram(deferredLightingProgram);
 }

@@ -11,6 +11,10 @@
 
 #include "imgui.h"
 
+#include "OtTransientIndexBuffer.h"
+#include "OtTransientVertexBuffer.h"
+#include "OtVertex.h"
+
 #include "OtSceneRenderer.h"
 
 
@@ -18,17 +22,24 @@
 //	OtSceneRenderer::renderForwardGeometryPass
 //
 
-void OtSceneRenderer::renderForwardGeometryPass(OtScene* scene) {
+void OtSceneRenderer::renderForwardGeometryPass(OtSceneRendererContext& ctx) {
 	// setup pass
 	OtPass pass;
-	pass.setRectangle(0, 0, width, height);
-	pass.setFrameBuffer(compositeBuffer);
-	pass.setTransform(viewMatrix, projectionMatrix);
+	pass.setRectangle(0, 0, ctx.width, ctx.height);
+	pass.setFrameBuffer(ctx.compositeBuffer);
+	pass.setTransform(ctx.viewMatrix, ctx.projectionMatrix);
+
+	// render all water entities
+	if (ctx.hasWaterEntities) {
+		ctx.scene->view<OtWaterComponent>().each([&](auto entity, auto& water) {
+			renderForwardWater(ctx, pass, water);
+		});
+	}
 
 	// render all transparent geometries
-	scene->view<OtGeometryComponent, OtMaterialComponent>().each([&](auto entity, auto& geometry, auto& material) {
+	ctx.scene->view<OtGeometryComponent, OtMaterialComponent>().each([&](auto entity, auto& geometry, auto& material) {
 		if (geometry.transparent) {
-			renderForwardGeometry(pass, scene, entity, geometry, material);
+			renderForwardGeometry(ctx, pass, entity, geometry, material);
 		}
 	});
 }
@@ -38,10 +49,11 @@ void OtSceneRenderer::renderForwardGeometryPass(OtScene* scene) {
 //	OtSceneRenderer::renderForwardGeometry
 //
 
-void OtSceneRenderer::renderForwardGeometry(OtPass& pass, OtScene* scene, OtEntity entity, OtGeometryComponent& geometry, OtMaterialComponent& material) {
-	// submit the material and light uniforms
+void OtSceneRenderer::renderForwardGeometry(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtGeometryComponent& geometry, OtMaterialComponent& material) {
+	// submit the material, clipping and light uniforms
 	submitMaterialUniforms(material.material);
-	submitLightUniforms(scene);
+	submitClippingUniforms(ctx.clippingPlane);
+	submitLightUniforms(ctx.scene, ctx.cameraPosition);
 
 	// submit the geometry
 	if (geometry.wireframe) {
@@ -80,8 +92,61 @@ void OtSceneRenderer::renderForwardGeometry(OtPass& pass, OtScene* scene, OtEnti
 	}
 
 	// set the transform
-	forwardPbrProgram.setTransform(scene->getGlobalTransform(entity));
+	forwardPbrProgram.setTransform(ctx.scene->getGlobalTransform(entity));
 
 	// run the program
 	pass.runShaderProgram(forwardPbrProgram);
+}
+
+
+//
+//	OtSceneRenderer::renderForwardWater
+//
+
+void OtSceneRenderer::renderForwardWater(OtSceneRendererContext& ctx, OtPass& pass, OtWaterComponent& water) {
+	// send out geometry
+	static glm::vec3 vertices[] = {
+		glm::vec3{-1.0, -1.0, 0.0},
+		glm::vec3{1.0, -1.0, 0.0},
+		glm::vec3{1.0, 1.0, 0.0},
+		glm::vec3{-1.0, 1.0, 0.0}
+	};
+
+	OtTransientVertexBuffer vertexBuffer;
+	vertexBuffer.submit(vertices, 4, OtVertexPos::getLayout());
+
+	static uint32_t indices[] = {0, 1, 2, 2, 3, 0};
+	OtTransientIndexBuffer indexBuffer;
+	indexBuffer.submit(indices, 6);
+
+	// determine time
+	float time = getRunningTime() * 0.1f * water.speed;
+
+	// get maximum distance in clip space
+	glm::vec4 farPoint = ctx.projectionMatrix * glm::vec4(0.0, water.level, -water.distance, 1.0);
+	float distance = farPoint.z / farPoint.w;
+
+	// submit water and light uniforms
+	waterUniforms.setValue(0, glm::vec4(water.level, distance, ctx.width, ctx.height));
+	waterUniforms.setValue(1, glm::vec4(water.scale, getTextureAssetWidth(water.normals), time, 0.0f));
+	waterUniforms.setValue(2, glm::vec4(water.metallic, water.roughness, water.ao, water.reflectivity));
+	waterUniforms.setValue(3, glm::vec4(water.color, float(water.useRefractance)));
+	waterUniforms.submit();
+
+	submitLightUniforms(ctx.scene, ctx.cameraPosition);
+
+	// bind the textures
+	submitTextureSampler(normalmapSampler, 0, water.normals);
+	reflectionBuffer.bindColorTexture(reflectionSampler, 1);
+	refractionBuffer.bindColorTexture(refractionSampler, 2);
+	refractionBuffer.bindDepthTexture(refractionDepthSampler, 3);
+
+	// run the program
+	forwardWaterProgram.setState(
+		OtStateWriteRgb |
+		OtStateWriteA |
+		OtStateWriteZ |
+		OtStateDepthTestLessEqual);
+
+	pass.runShaderProgram(forwardWaterProgram);
 }

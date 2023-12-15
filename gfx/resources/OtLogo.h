@@ -24,7 +24,7 @@
 class OtLogo {
 public:
 	// get logo information
-	int getTextureIndex();
+	uint16_t getTextureIndex();
 
 	// get logo size
 	inline size_t getWidth() { return 429; }

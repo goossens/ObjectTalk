@@ -51,8 +51,11 @@ void main() {
 		discard;
 	}
 
+	// determine depth
+	float depth = texture2D(s_deferredLightingDepthTexture, v_texcoord0).x;
+
 	// determine world coordinates
-	vec3 pos = uvToWorld(v_texcoord0, texture2D(s_deferredLightingDepthTexture, v_texcoord0).x);
+	vec3 pos = uvToWorld(v_texcoord0, depth);
 
 	// collect PBR data
 	PBR pbr;
@@ -69,8 +72,8 @@ void main() {
 	pbr.N = normalize(texture2D(s_deferredLightingNormalTexture, v_texcoord0).rgb);
 	pbr.V = normalize(u_cameraPosition - pos);
 	pbr.L = normalize(u_directionalLightDirection);
-	pbr.H = normalize(pbr.V + pbr.L);
 
 	// apply PBR (tonemapping and Gamma correction are done during post-processing)
 	gl_FragColor = applyPBR(pbr);
+	gl_FragDepth = depth;
 }

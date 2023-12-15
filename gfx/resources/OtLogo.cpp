@@ -6806,7 +6806,7 @@ const uint8_t OtLogoData[74578] = {
 //	OtLogo::getTextureIndex
 //
 
-int OtLogo::getTextureIndex() {
+uint16_t OtLogo::getTextureIndex() {
 	// create texture (if required)
 	if (!texture.isValid()) {
 		// load it from file that lives in memory (to keep ot as a single file)

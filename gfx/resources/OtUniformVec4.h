@@ -43,6 +43,7 @@ public:
 
 	// get access to values
 	inline void setValue(size_t index, const glm::vec4& value) { values[index] = value; }
+	inline void setValue(size_t index, float v1, float v2, float v3, float v4) { values[index] = glm::vec4(v1, v2, v3, v4); }
 	inline glm::vec4 getValue(size_t index) { return values[index]; }
 	inline glm::vec4* getValues() { return values; }
 	inline size_t getValueCount() { return size; }

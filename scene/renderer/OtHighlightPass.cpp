@@ -37,29 +37,29 @@ static bool isHighlightable(OtScene* scene, OtEntity entity) {
 //	OtSceneRenderer::renderHighlightPass
 //
 
-void OtSceneRenderer::renderHighlightPass(OtScene* scene, OtEntity entity) {
+void OtSceneRenderer::renderHighlightPass(OtSceneRendererContext& ctx, OtEntity entity) {
 	// see if we have a "highlightable" entity
-	if (isHighlightable(scene, entity)) {
+	if (isHighlightable(ctx.scene, entity)) {
 		// update framebuffer size
-		selectedBuffer.update(width, height);
+		selectedBuffer.update(ctx.width, ctx.height);
 
 		// setup pass to render entities as opaque blobs
 		OtPass selectPass;
-		selectPass.setClear(true, false);
-		selectPass.setRectangle(0, 0, width, height);
+		selectPass.setRectangle(0, 0, ctx.width, ctx.height);
 		selectPass.setFrameBuffer(selectedBuffer);
-		selectPass.setTransform(viewMatrix, projectionMatrix);
+		selectPass.setClear(true, false);
+		selectPass.setTransform(ctx.viewMatrix, ctx.projectionMatrix);
 
 		// highlight entity (and its children)
-		renderHighlight(selectPass, scene, entity);
+		renderHighlight(ctx, selectPass, entity);
 
 		// render the outline of the entity
 		OtPass outlinePass;
-		outlinePass.setRectangle(0, 0, width, height);
-		outlinePass.setFrameBuffer(compositeBuffer);
-		outlinePass.submitQuad(width, height);
+		outlinePass.setRectangle(0, 0, ctx.width, ctx.height);
+		outlinePass.setFrameBuffer(ctx.compositeBuffer);
+		outlinePass.submitQuad(ctx.width, ctx.height);
 
-		outlineUniforms.setValue(0, glm::vec4(1.0 / width, 1.0 / height, 0.0f, 0.0f));
+		outlineUniforms.setValue(0, glm::vec4(1.0 / ctx.width, 1.0 / ctx.height, 0.0f, 0.0f));
 		outlineUniforms.submit();
 
 		selectedBuffer.bindColorTexture(selectedSampler, 0);
@@ -73,23 +73,23 @@ void OtSceneRenderer::renderHighlightPass(OtScene* scene, OtEntity entity) {
 //	OtSceneRenderer::renderHighlight
 //
 
-void OtSceneRenderer::renderHighlight(OtPass& pass, OtScene* scene, OtEntity entity) {
+void OtSceneRenderer::renderHighlight(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity) {
 	// only render if all components are available
-	if (scene->hasComponent<OtGeometryComponent>(entity) && scene->hasComponent<OtMaterialComponent>(entity)) {
+	if (ctx.scene->hasComponent<OtGeometryComponent>(entity) && ctx.scene->hasComponent<OtMaterialComponent>(entity)) {
 		// render geometry
-		scene->getComponent<OtGeometryComponent>(entity).geometry->submitTriangles();
-		selectProgram.setTransform(scene->getGlobalTransform(entity));
+		ctx.scene->getComponent<OtGeometryComponent>(entity).geometry->submitTriangles();
+		selectProgram.setTransform(ctx.scene->getGlobalTransform(entity));
 		selectProgram.setState(OtStateWriteRgb);
 		pass.runShaderProgram(selectProgram);
 
-	} else if (scene->hasComponent<OtModelComponent>(entity)) {
+	} else if (ctx.scene->hasComponent<OtModelComponent>(entity)) {
 		// render model
-		auto& model = scene->getComponent<OtModelComponent>(entity).model;
+		auto& model = ctx.scene->getComponent<OtModelComponent>(entity).model;
 
 		if (model.isReady()) {
 			for (auto& mesh : model->getMeshes()) {
 				mesh.submitTriangles();
-				selectProgram.setTransform(scene->getGlobalTransform(entity));
+				selectProgram.setTransform(ctx.scene->getGlobalTransform(entity));
 				selectProgram.setState(OtStateWriteRgb);
 				pass.runShaderProgram(selectProgram);
 			}
@@ -97,10 +97,10 @@ void OtSceneRenderer::renderHighlight(OtPass& pass, OtScene* scene, OtEntity ent
 	}
 
 	// also render all the children
-	OtEntity child = scene->getFirstChild(entity);
+	OtEntity child = ctx.scene->getFirstChild(entity);
 
-	while (scene->isValidEntity(child)) {
-		renderHighlight(pass, scene, child);
-		child = scene->getNextSibling(child);
+	while (ctx.scene->isValidEntity(child)) {
+		renderHighlight(ctx, pass, child);
+		child = ctx.scene->getNextSibling(child);
 	}
 }

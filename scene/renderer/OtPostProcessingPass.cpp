@@ -16,35 +16,37 @@
 //	OtSceneRenderer::renderPostProcessingPass
 //
 
-void OtSceneRenderer::renderPostProcessingPass(OtScene* scene) {
+void OtSceneRenderer::renderPostProcessingPass(OtSceneRendererContext& ctx, bool renderPostProcessingEffects) {
 	// get post-processing information
 	float bloomIntensity = 0.0f;
 	float exposure = 1.0f;
 
-	for (auto [entity, component] : scene->view<OtPostProcessingComponent>().each()) {
-		bloomIntensity = component.bloomIntensity;
-		exposure = component.exposure;
-	}
+	if (renderPostProcessingEffects) {
+		for (auto&& [entity, component] : ctx.scene->view<OtPostProcessingComponent>().each()) {
+			bloomIntensity = component.bloomIntensity;
+			exposure = component.exposure;
+		}
 
-	// render bloom (if required)
-	if (bloomIntensity > 0.0f) {
-		renderBloom(bloomIntensity);
+		// render bloom (if required)
+		if (bloomIntensity > 0.0f) {
+			renderBloom(ctx, bloomIntensity);
+		}
 	}
 
 	// ensure the post-processing buffer is up to date
-	postProcessBuffer.update(width, height);
+	ctx.postProcessBuffer.update(ctx.width, ctx.height);
 
 	// combine all post-processing effects
 	OtPass pass;
-	pass.setFrameBuffer(postProcessBuffer);
-	pass.submitQuad(width, height);
+	pass.setFrameBuffer(ctx.postProcessBuffer);
+	pass.submitQuad(ctx.width, ctx.height);
 
 	// set uniform
 	postProcessUniforms.setValue(0, glm::vec4(bloomIntensity > 0.0f, exposure, 0.0f, 0.0f));
 	postProcessUniforms.submit();
 
 	// set source textures
-	compositeBuffer.bindColorTexture(postProcessSampler, 0);
+	ctx.compositeBuffer.bindColorTexture(postProcessSampler, 0);
 	bloomBuffer[0].bindColorTexture(bloomSampler, 1);
 
 	// run the program
@@ -57,7 +59,7 @@ void OtSceneRenderer::renderPostProcessingPass(OtScene* scene) {
 //	OtSceneRenderer::renderBloom
 //
 
-void OtSceneRenderer::renderBloom(float bloomIntensity) {
+void OtSceneRenderer::renderBloom(OtSceneRendererContext& ctx, float bloomIntensity) {
 	// initialize bloom buffers (if required)
 	if (!bloomBuffer[0].isValid()) {
 		for (auto i = 0; i < bloomDepth; i++) {
@@ -67,14 +69,14 @@ void OtSceneRenderer::renderBloom(float bloomIntensity) {
 
 	// update bloom buffers
 	for (auto i = 0; i < bloomDepth; i++) {
-		bloomBuffer[i].update(width >> (i + 1), height >> (i + 1));
+		bloomBuffer[i].update(ctx.width >> (i + 1), ctx.height >> (i + 1));
 	}
 
 	// downsample
 	for (auto i = 0; i < bloomDepth; i++) {
 		// setup pass
-		int sw = width >> i;
-		int sh = height >> i;
+		int sw = ctx.width >> i;
+		int sh = ctx.height >> i;
 		int dw = sw >> 1;
 		int dh = sh >> 1;
 
@@ -88,7 +90,7 @@ void OtSceneRenderer::renderBloom(float bloomIntensity) {
 
 		// set source texture
 		if (i == 0) {
-			compositeBuffer.bindColorTexture(bloomSampler, 0);
+			ctx.compositeBuffer.bindColorTexture(bloomSampler, 0);
 
 		} else {
 			bloomBuffer[i - 1].bindColorTexture(bloomSampler, 0);
@@ -102,8 +104,8 @@ void OtSceneRenderer::renderBloom(float bloomIntensity) {
 	// upsample
 	for (auto i = bloomDepth - 1; i > 0; i--) {
 		// setup pass
-		int dw = width >> i;
-		int dh = height >> i;
+		int dw = ctx.width >> i;
+		int dh = ctx.height >> i;
 		int sw = dw >> 1;
 		int sh = dh >> 1;
 

@@ -15,6 +15,8 @@
 #include "glm/glm.hpp"
 #include "nlohmann/json_fwd.hpp"
 
+#include "OtTextureAsset.h"
+
 
 //
 //	OtWaterComponent
@@ -33,10 +35,20 @@ public:
 	static constexpr char const* name = "Water";
 
 	// stored properties
-	float height = 0.0f;
+	float level = 0.0f;
+	float distance = 100.0f;
+	bool useRefractance = true;
 	glm::vec3 color{0.5f, 0.6f, 0.8f};
-	float shininess = 0.5f;
+	OtAsset<OtTextureAsset> normals;
+	float scale = 10.0f;
+	float speed = 1.0f;
+	float metallic = 0.3f;
+	float roughness = 0.2f;
+	float ao = 0.25f;
+	float reflectivity = 1.0f;
 
-	// runtime properties
-	float time = 0.0f;
+#if OT_DEBUG
+	uint16_t reflectionTextureIndex = OtTexture::invalidIndex;
+	uint16_t refractionTextureIndex = OtTexture::invalidIndex;
+#endif
 };

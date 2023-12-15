@@ -62,7 +62,7 @@ public:
 	size_t getRedoCount() { return redoStack.size(); }
 
 	// mark a new baseline
-	void baseline() { baselineMarker = undoStack.size(); }
+	void baseline() { baselineMarker = int(undoStack.size()); }
 	// see if document is "dirty" (i.e. it's off the saved baseline)
 	bool isDirty() { return undoStack.size() != baselineMarker; }
 

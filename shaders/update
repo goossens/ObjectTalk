@@ -87,7 +87,7 @@ function compileShader() {
 		if [ -f generated/${GROUP}/${SHADER}_mtl.h -a ! -f ${TARGET} ]
 		then
 			echo "------------- Generating ${GROUP}/${SHADER}_${ID}.h"
-			sed "s/_mtl/_$2/" <generated/${GROUP}/${SHADER}_mtl.h >${TARGET}
+			sed "s/_mtl/_${ID}/" <generated/${GROUP}/${SHADER}_mtl.h >${TARGET}
 		fi
 
 		# add shader to batch script

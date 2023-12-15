@@ -7,7 +7,6 @@
 //	Inspired by Joey de Vries' Learn OpenGL:
 //	https://learnopengl.com/PBR/Lighting
 
-
 #ifndef OT_PBR_GLSL
 #define OT_PBR_GLSL
 
@@ -28,7 +27,6 @@ struct PBR {
 	vec3 N; // normal
 	vec3 V; // view direction
 	vec3 L; // light direction
-	vec3 H; // halfway vector
 	vec3 directionalLightColor;
 	float directionalLightAmbience;
 };
@@ -46,7 +44,7 @@ float distributionGGX(vec3 N, vec3 H, float roughness) {
 // geometry function
 float geometrySchlickGGX(float NdotV, float roughness) {
 	float r = (roughness + 1.0);
-	float k = (r*r) / 8.0;
+	float k = (r * r) / 8.0;
 	return NdotV / (NdotV * (1.0 - k) + k);
 }
 
@@ -70,17 +68,20 @@ vec4 applyPBR(PBR pbr) {
 	// calculate reflectance
 	vec3 F0 = mix(vec3_splat(0.04), albedo, pbr.metallic);
 
+	// calculate halfway vector betwwen view direction and light direction
+	vec3 H = normalize(pbr.V + pbr.L);
+
 	// Cook-Torrance Bidirectional Reflective Distribution Function (BRDF)
-	float NDF = distributionGGX(pbr.N, pbr.H, pbr.roughness);
+	float NDF = distributionGGX(pbr.N, H, pbr.roughness);
 	float G = geometrySmith(pbr.N, pbr.V, pbr.L, pbr.roughness);
-	vec3 F = fresnelSchlick(max(dot(pbr.H, pbr.V), 0.0), F0);
+	vec3 F = fresnelSchlick(max(dot(H, pbr.V), 0.0), F0);
+
+	vec3 kS = F;
+	vec3 kD = (vec3_splat(1.0) - kS) * (1.0 - pbr.metallic);
 
 	vec3 specular =
 		(NDF * G * F) /
 		(4.0 * max(dot(pbr.N, pbr.V), 0.0) * max(dot(pbr.N, pbr.L), 0.0) + 0.0001);
-
-	vec3 kS = F;
-	vec3 kD = (vec3_splat(1.0) - kS) * (1.0 - pbr.metallic);
 
 	// determine directional light
 	float NdotL = max(dot(pbr.N, pbr.L), 0.0);

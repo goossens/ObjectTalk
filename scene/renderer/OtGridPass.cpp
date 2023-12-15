@@ -20,12 +20,12 @@
 //	OtSceneRenderer::renderGridPass
 //
 
-void OtSceneRenderer::renderGridPass() {
+void OtSceneRenderer::renderGridPass(OtSceneRendererContext& ctx) {
 	// setup pass
 	OtPass pass;
-	pass.setRectangle(0, 0, width, height);
-	pass.setFrameBuffer(compositeBuffer);
-	pass.setTransform(viewMatrix, projectionMatrix);
+	pass.setRectangle(0, 0, ctx.width, ctx.height);
+	pass.setFrameBuffer(ctx.compositeBuffer);
+	pass.setTransform(ctx.viewMatrix, ctx.projectionMatrix);
 
 	// send out geometry
 	static glm::vec3 vertices[] = {

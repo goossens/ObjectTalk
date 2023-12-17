@@ -38,7 +38,7 @@ public:
 
 private:
 	// execute filter
-	virtual void execute(OtPass& pass, int w, int h) {}
+	virtual void execute(OtPass& pass) {}
 
 	// the texture sampler
 	OtSampler textureSampler{"s_texture", OtSampler::pointSampling | OtSampler::clampSampling};

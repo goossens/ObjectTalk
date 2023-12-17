@@ -16,7 +16,7 @@
 //	OtTileableFbm::execute
 //
 
-void OtTileableFbm::execute(OtPass& pass, int w, int h) {
+void OtTileableFbm::execute(OtPass& pass) {
 	uniform.setValue(0, frequency, lacunarity, amplitude, persistence);
 	uniform.setValue(1, octaves, 0.0f, 0.0f, 0.0f);
 	uniform.submit();

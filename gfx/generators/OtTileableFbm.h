@@ -32,7 +32,7 @@ public:
 
 private:
 	// execute generator
-	void execute(OtPass& pass, int w, int h) override;
+	void execute(OtPass& pass) override;
 
 	// properties
 	int frequency = 10;

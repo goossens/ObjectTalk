@@ -15,7 +15,7 @@ void main() {
 
 	for (int y = -3; y < 3; y++) {
 		for (int x = -3; x < 3; x++) {
-			sum += texture2D(s_texture, v_texcoord0 + vec2(x, y) * 0.004) * 0.25;
+			sum += texture2D(s_texture, v_texcoord0 + vec2(x, y) * u_viewTexel.xy) * 0.25;
 		}
 	}
 

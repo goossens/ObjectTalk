@@ -21,18 +21,14 @@
 //
 
 void OtGenerator::render(OtFrameBuffer &destination) {
-	// get dimensions
-	int w = destination.getWidth();
-	int h = destination.getHeight();
-
 	// setup generator pass
 	OtPass pass;
 	pass.setFrameBuffer(destination);
-	pass.submitQuad(w, h);
+	pass.submitQuad(destination.getWidth(), destination.getHeight());
 
 	// execute generator
 	bgfx::setState(state);
-	execute(pass, w, h);
+	execute(pass);
 }
 
 
@@ -47,5 +43,5 @@ void OtGenerator::render(int w, int h) {
 
 	// execute generator
 	bgfx::setState(state);
-	execute(pass, w, h);
+	execute(pass);
 }

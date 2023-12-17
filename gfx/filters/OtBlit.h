@@ -29,7 +29,7 @@ public:
 
 private:
 	// execute filter
-	void execute(OtPass& pass, int w, int h) override;
+	void execute(OtPass& pass) override;
 
 	// blur properties
 	float intensity = -1.0;
@@ -37,5 +37,5 @@ private:
 
 	// GPU assets
 	OtUniformVec4 uniform = OtUniformVec4("u_blit", 1);
-	OtShaderProgram program = OtShaderProgram("OtBlitVS", "OtBlitFS");
+	OtShaderProgram program = OtShaderProgram("OtFilterVS", "OtBlitFS");
 };

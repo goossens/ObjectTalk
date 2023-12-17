@@ -31,7 +31,7 @@ public:
 
 private:
 	// execute filter
-	void execute(OtPass& pass, int w, int h) override;
+	void execute(OtPass& pass) override;
 
 	// blur properties
 	float horizontalScale = -1.0;
@@ -41,5 +41,5 @@ private:
 
 	// GPU assets
 	OtUniformVec4 uniform = OtUniformVec4("u_blur", 1);
-	OtShaderProgram program = OtShaderProgram("OtBlurVS", "OtBlurFS");
+	OtShaderProgram program = OtShaderProgram("OtFilterVS", "OtBlurFS");
 };

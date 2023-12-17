@@ -37,7 +37,7 @@ public:
 
 private:
 	// execute generator
-	virtual void execute(OtPass& pass, int w, int h) {}
+	virtual void execute(OtPass& pass) {}
 
 	// rendering state
 	uint64_t state = BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A;

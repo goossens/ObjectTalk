@@ -18,13 +18,13 @@
 //	OtBlur::execute
 //
 
-void OtBlur::execute(OtPass& pass, int w, int h) {
+void OtBlur::execute(OtPass& pass) {
 	uniform.setValue(
 		0,
-		horizontalScale == -1.0f ? (0.2f / float(w)) : horizontalScale,
-		verticalScale == -1.0f ? (0.2f / float(h)) : verticalScale,
 		intensity == -1.0f ? 2.0f : intensity,
-		alpha == -1.0f ? 1.0f : alpha);
+		alpha == -1.0f ? 1.0f : alpha,
+		0.0f,
+		0.0f);
 
 	uniform.submit();
 	pass.runShaderProgram(program);

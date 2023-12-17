@@ -14,7 +14,6 @@
 
 #include "OtFilter.h"
 #include "OtShaderProgram.h"
-#include "OtUniformVec4.h"
 
 
 //
@@ -24,9 +23,8 @@
 class OtBloom : public OtFilter {
 private:
 	// execute filter
-	void execute(OtPass& pass, int w, int h) override;
+	void execute(OtPass& pass) override;
 
 	// GPU assets
-	OtUniformVec4 uniform = OtUniformVec4("u_bloom", 1);
-	OtShaderProgram program = OtShaderProgram("OtBloomVS", "OtBloomFS");
+	OtShaderProgram program = OtShaderProgram("OtFilterVS", "OtBloomFS");
 };

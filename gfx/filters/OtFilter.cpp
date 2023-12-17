@@ -29,7 +29,7 @@ void OtFilter::render(OtFrameBuffer& origin, OtFrameBuffer& destination) {
 	// execute filter
 	origin.bindColorTexture(textureSampler, 0);
 	bgfx::setState(state);
-	execute(pass, origin.getWidth(), origin.getHeight());
+	execute(pass);
 }
 
 
@@ -45,5 +45,5 @@ void OtFilter::render(OtFrameBuffer& origin) {
 	// execute filter
 	origin.bindColorTexture(textureSampler, 0);
 	bgfx::setState(state);
-	execute(pass, origin.getWidth(), origin.getHeight());
+	execute(pass);
 }

@@ -31,7 +31,7 @@ public:
 
 private:
 	// execute filter
-	void execute(OtPass& pass, int w, int h) override;
+	void execute(OtPass& pass) override;
 
 	// shader resources
 	OtShaderProgram program{"OtFilterVS", "OtNormalMapperFS"};

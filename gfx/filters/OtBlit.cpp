@@ -18,7 +18,7 @@
 //	OtBlit::execute
 //
 
-void OtBlit::execute(OtPass& pass, int w, int h) {
+void OtBlit::execute(OtPass& pass) {
 	uniform.setValue(0, intensity == -1.0f ? 1.0f : intensity, alpha == -1.0f ? 1.0f : alpha, 0.0f, 0.0f);
 	uniform.submit();
 	pass.runShaderProgram(program);

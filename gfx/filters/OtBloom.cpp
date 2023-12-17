@@ -18,8 +18,6 @@
 //	OtBloom::execute
 //
 
-void OtBloom::execute(OtPass& pass, int w, int h) {
-	uniform.setValue(0, 0.2f / float(w), 0.2f / float(h), 2.0f, 1.0f);
-	uniform.submit();
+void OtBloom::execute(OtPass& pass) {
 	pass.runShaderProgram(program);
 }

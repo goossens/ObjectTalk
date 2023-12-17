@@ -25,9 +25,6 @@
 
 class OtCameraComponent {
 public:
-	// get the matrix
-	glm::mat4 getProjectionMatrix(float aspectRatio);
-
 	// GUI to change component properties
 	bool renderGUI();
 

@@ -17,16 +17,15 @@
 #include "OtBoxGeometry.h"
 #include "OtFrameBuffer.h"
 #include "OtGbuffer.h"
-#include "OtIndexBuffer.h"
 #include "OtNormalMapper.h"
 #include "OtPass.h"
 #include "OtSampler.h"
 #include "OtShaderProgram.h"
 #include "OtSphereGeometry.h"
 #include "OtTileableFbm.h"
-#include "OtUniformMat4.h"
 #include "OtUniformVec4.h"
 
+#include "OtCamera.h"
 #include "OtEntity.h"
 #include "OtScene.h"
 #include "OtSceneRendererContext.h"
@@ -38,15 +37,11 @@
 
 class OtSceneRenderer {
 public:
-	// set the properties
-	void setCameraPosition(const glm::vec3 pos) { cameraPosition = pos; }
-	void setViewMatrix(const glm::mat4& view) { viewMatrix = view; }
-	void setProjectionMatrix(const glm::mat4& proj) { projectionMatrix = proj; }
-	void setSize(int w, int h) { width = w; height = h; }
+	// set properties
 	void setGridScale(float gs) { gridScale = gs; }
 
-	// render the specified scene
-	int render(OtScene* scene, OtEntity selected=OtEntityNull);
+	// render specified scene
+	int render(OtCamera& camera, OtScene* scene, OtEntity selected=OtEntityNull);
 
 private:
 	// render passes
@@ -69,8 +64,8 @@ private:
 	void renderSky(OtSceneRendererContext& ctx, OtPass& pass, OtSkyComponent& component);
 	void renderSkyBox(OtSceneRendererContext& ctx, OtPass& pass, OtSkyBoxComponent& component);
 	void renderSkySphere(OtSceneRendererContext& ctx, OtPass& pass, OtSkySphereComponent& component);
-	void renderForwardGeometry(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtGeometryComponent& geometry, OtMaterialComponent& material);
 	void renderForwardWater(OtSceneRendererContext& ctx, OtPass& pass, OtWaterComponent& water);
+	void renderForwardGeometry(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtGeometryComponent& geometry, OtMaterialComponent& material);
 	void renderHighlight(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity);
 	void renderBloom(OtSceneRendererContext& ctx, float bloomIntensity);
 
@@ -87,15 +82,6 @@ private:
 	size_t getTextureAssetWidth(OtAsset<OtTextureAsset>& texture);
 	size_t getTextureAssetHeight(OtAsset<OtTextureAsset>& texture);
 
-	// viewport dimensions
-	int width;
-	int height;
-
-	// camera information
-	glm::vec3 cameraPosition;
-	glm::mat4 viewMatrix;
-	glm::mat4 projectionMatrix;
-
 	// grid scale (0.0 means no grid)
 	float gridScale = 0.0f;
 
@@ -106,7 +92,8 @@ private:
 	OtFrameBuffer selectedBuffer{OtFrameBuffer::r8Texture, OtFrameBuffer::noTexture};
 
 	OtGbuffer reflectionRenderingBuffer;
-	OtFrameBuffer reflectionCompositeBuffer{OtFrameBuffer::rgbaFloat16Texture, OtFrameBuffer::dFloatTexture};
+	OtFrameBuffer reflectionCompositeBuffer{OtFrameBuffer::rgba16Texture, OtFrameBuffer::dFloatTexture};
+	OtFrameBuffer refractionCompositeBuffer{OtFrameBuffer::rgba16Texture, OtFrameBuffer::dFloatTexture};
 	OtFrameBuffer reflectionBuffer{OtFrameBuffer::rgba8Texture, OtFrameBuffer::noTexture};
 	OtFrameBuffer refractionBuffer{OtFrameBuffer::rgba8Texture, OtFrameBuffer::noTexture};
 
@@ -132,7 +119,6 @@ private:
 	OtUniformVec4 outlineUniforms{"u_outline", 1};
 	OtUniformVec4 bloomUniforms{"u_bloom", 1};
 	OtUniformVec4 postProcessUniforms{"u_postProcess", 1};
-	OtUniformMat4 inverseTransformUniforms{"u_inverseTransform", 1};
 
 	// samplers
 	OtSampler deferredGeometryAlbedoSampler{"s_deferredGeometryAlbedoTexture"};

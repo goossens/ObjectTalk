@@ -56,7 +56,6 @@ public:
 
 	// get derived information
 	glm::mat4 getViewMatrix();
-	glm::mat4 getProjectionMatrix(float aspectRatio);
 
 private:
 	// presets

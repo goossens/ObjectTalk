@@ -29,20 +29,24 @@ void OtSceneRenderer::renderReflectionPass(OtSceneRendererContext& ctx) {
 	// get the water component
 	auto& water = ctx.scene->getComponent<OtWaterComponent>(waterEntity);
 
+	// setup the refraction camera
+	OtCamera refractionCamera{
+		ctx.camera.width / 4, ctx.camera.height / 4,
+		ctx.camera.nearPlane, ctx.camera.farPlane, ctx.camera.fov,
+		ctx.camera.cameraPosition, ctx.camera.viewMatrix};
+
 	// setup the renderer for the refraction
 	OtSceneRendererContext refractionContext{
-		ctx.width / 4, ctx.height / 4,
-		ctx.cameraPosition, ctx.viewMatrix, ctx.projectionMatrix,
-		reflectionRenderingBuffer, reflectionCompositeBuffer, refractionBuffer,
+		refractionCamera,
+		reflectionRenderingBuffer, refractionCompositeBuffer, refractionBuffer,
 		ctx.scene,
-		glm::vec4(0.0f, -1.0f, 0.0f, water.level + 0.1), false};
+		glm::vec4(0.0f, -1.0f, 0.0f, water.level + 1.0f), false};
 
 	// render the scene
 	renderReflectionRefractionScene(refractionContext);
 
-	// setup the renderer for the reflection
-	// determine position of reflection camera
-	glm::vec3 reflectionCameraPos = ctx.cameraPosition;
+	// setup the reflection camera
+	glm::vec3 reflectionCameraPos = ctx.camera.cameraPosition;
 	reflectionCameraPos.y = water.level - (reflectionCameraPos.y - water.level);
 
 	// determine new view matrix
@@ -64,16 +68,20 @@ void OtSceneRenderer::renderReflectionPass(OtSceneRendererContext& ctx) {
 
 	reflection[13] = 2.0f * water.level;
 
-	glm::mat4 sceneCameraMatrix = glm::inverse(ctx.viewMatrix);
+	glm::mat4 sceneCameraMatrix = glm::inverse(ctx.camera.viewMatrix);
 	glm::mat4 reflectionCameraMatrix = glm::make_mat4(reflection) * sceneCameraMatrix * glm::make_mat4(flip);
 	glm::mat4 reflectionViewMatrix = glm::inverse(reflectionCameraMatrix);
 
+	OtCamera reflectionCamera{
+		ctx.camera.width / 4, ctx.camera.height / 4,
+		ctx.camera.nearPlane, ctx.camera.farPlane, ctx.camera.fov,
+		reflectionCameraPos, reflectionViewMatrix};
+
 	OtSceneRendererContext reflectionContext{
-		ctx.width / 4, ctx.height / 4,
-		reflectionCameraPos, reflectionViewMatrix, ctx.projectionMatrix,
+		reflectionCamera,
 		reflectionRenderingBuffer, reflectionCompositeBuffer, reflectionBuffer,
 		ctx.scene,
-		glm::vec4(0.0f, 1.0f, 0.0f, -(water.level - 0.1f)), false};
+		glm::vec4(0.0f, 1.0f, 0.0f, -(water.level - 1.0f)), false};
 
 	// render the scene
 	renderReflectionRefractionScene(reflectionContext);

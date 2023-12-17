@@ -15,9 +15,9 @@
 #include "glm/glm.hpp"
 
 #include "OtFrameBuffer.h"
-#include "OtFrustum.h"
 #include "OtGbuffer.h"
 
+#include "OtCamera.h"
 #include "OtScene.h"
 
 
@@ -28,23 +28,13 @@
 class OtSceneRendererContext {
 public:
 	// constructor
-	OtSceneRendererContext(int w, int h, const glm::vec3& cp, const glm::mat4& vm, const glm::mat4& pm, OtGbuffer& db, OtFrameBuffer& cb, OtFrameBuffer& ppb, OtScene* s, const glm::vec4& clp=glm::vec4(0.0f), bool water=true) :
-		width(w),
-		height(h),
-		cameraPosition(cp),
-		viewMatrix(vm),
-		projectionMatrix(pm),
+	OtSceneRendererContext(OtCamera& c, OtGbuffer& db, OtFrameBuffer& cb, OtFrameBuffer& ppb, OtScene* s, const glm::vec4& clp=glm::vec4(0.0f), bool water=true) :
+		camera(c),
 		deferedBuffer(db),
 		compositeBuffer(cb),
 		postProcessBuffer(ppb),
 		scene(s),
 		clippingPlane(clp) {
-
-		// determine view projection matrix
-		viewProjectionMatrix = projectionMatrix * viewMatrix;
-
-		// determine the camera's frustum in worldspace
-		frustum = OtFrustum(viewProjectionMatrix);
 
 		// reset flags
 		hasOpaqueEntities = false;
@@ -87,16 +77,8 @@ public:
 		});
 	}
 
-	// viewport dimensions
-	int width;
-	int height;
-
 	// camera information
-	glm::vec3 cameraPosition;
-	glm::mat4 viewMatrix;
-	glm::mat4 projectionMatrix;
-	glm::mat4 viewProjectionMatrix;
-	OtFrustum frustum;
+	OtCamera& camera;
 
 	// rendering buffers
 	OtGbuffer& deferedBuffer;

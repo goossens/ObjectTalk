@@ -19,7 +19,7 @@
 //
 
 void OtBloom::execute(OtPass& pass, int w, int h) {
-	uniform.setValue(0, glm::vec4(0.2 / float(w), 0.2 / float(h), 2.0, 1.0));
+	uniform.setValue(0, 0.2f / float(w), 0.2f / float(h), 2.0f, 1.0f);
 	uniform.submit();
 	pass.runShaderProgram(program);
 }

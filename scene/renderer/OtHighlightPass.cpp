@@ -41,25 +41,25 @@ void OtSceneRenderer::renderHighlightPass(OtSceneRendererContext& ctx, OtEntity 
 	// see if we have a "highlightable" entity
 	if (isHighlightable(ctx.scene, entity)) {
 		// update framebuffer size
-		selectedBuffer.update(ctx.width, ctx.height);
+		selectedBuffer.update(ctx.camera.width, ctx.camera.height);
 
 		// setup pass to render entities as opaque blobs
 		OtPass selectPass;
-		selectPass.setRectangle(0, 0, ctx.width, ctx.height);
+		selectPass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
 		selectPass.setFrameBuffer(selectedBuffer);
 		selectPass.setClear(true, false);
-		selectPass.setTransform(ctx.viewMatrix, ctx.projectionMatrix);
+		selectPass.setTransform(ctx.camera.viewMatrix, ctx.camera.projectionMatrix);
 
 		// highlight entity (and its children)
 		renderHighlight(ctx, selectPass, entity);
 
 		// render the outline of the entity
 		OtPass outlinePass;
-		outlinePass.setRectangle(0, 0, ctx.width, ctx.height);
+		outlinePass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
 		outlinePass.setFrameBuffer(ctx.compositeBuffer);
-		outlinePass.submitQuad(ctx.width, ctx.height);
+		outlinePass.submitQuad(ctx.camera.width, ctx.camera.height);
 
-		outlineUniforms.setValue(0, glm::vec4(1.0 / ctx.width, 1.0 / ctx.height, 0.0f, 0.0f));
+		outlineUniforms.setValue(0, 1.0f / ctx.camera.width, 1.0f / ctx.camera.height, 0.0f, 0.0f);
 		outlineUniforms.submit();
 
 		selectedBuffer.bindColorTexture(selectedSampler, 0);

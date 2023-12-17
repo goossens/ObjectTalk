@@ -8,12 +8,12 @@ $input v_near, v_far
 
 #include <bgfx_shader.glsl>
 #include <pbr.glsl>
+#include <utilities.glsl>
 
 uniform vec4 u_water[4];
 
 #define u_level u_water[0].x
 #define u_distance u_water[0].y
-#define u_resolution u_water[0].zw
 
 #define u_scale u_water[1].x
 #define u_size u_water[1].y
@@ -48,17 +48,17 @@ void main() {
 	}
 
 	// get the world and clip space positions
-	vec3 worldSpacePos = v_near + t * (v_far - v_near);
-	vec4 pos = mul(u_viewProj, vec4(worldSpacePos, 1.0));
-	vec3 clipSpacePos = pos.xyz / pos.w;
+	vec3 waterWorldPos = v_near + t * (v_far - v_near);
+	vec4 pos = mul(u_viewProj, vec4(waterWorldPos, 1.0));
+	vec3 waterClipPos = pos.xyz / pos.w;
 
 	// clip to distance
-	if (clipSpacePos.z > u_distance) {
+	if (waterClipPos.z > u_distance) {
 		discard;
 	}
 
 	// get normal
-	vec2 uv = worldSpacePos.xz / u_size * u_scale;
+	vec2 uv = waterWorldPos.xz / u_size * u_scale;
 	vec2 uv1 = uv + vec2(u_time / 17.0, u_time / 29.0);
 	vec2 uv2 = uv - vec2(u_time / -19.0, u_time / 31.0);
 	vec2 uv3 = uv + vec2(u_time / 101.0, u_time / 97.0);
@@ -73,21 +73,27 @@ void main() {
 	vec3 normal = normalize((noise.xzy * 0.5 - 1.0) * vec3(1.5, 1.0, 1.5));
 
 	// determine reflection and refraction colors
-	uv1 = gl_FragCoord.xy / u_resolution;
-	uv2 = vec2(uv1.x, 1.0 - uv1.y);
-	vec3 reflectionColor = texture2D(s_reflectionSampler, uv2).rgb;
-	vec3 refractionColor = u_refractanceFlag ? texture2D(s_refractionSampler, uv1).rgb : u_color;
+	vec2 refractionUv = gl_FragCoord.xy / u_viewRect.zw;
+	vec2 reflectionUv = vec2(refractionUv.x, 1.0 - refractionUv.y);
+	vec3 reflectionColor = texture2D(s_reflectionSampler, reflectionUv).rgb;
+	vec3 refractionColor = u_refractanceFlag ? texture2D(s_refractionSampler, refractionUv).rgb : u_color;
 
-	// determine view direction
-	vec3 viewDirection = normalize(u_cameraPosition - worldSpacePos);
+	// determine view direction and water depth
+	vec3 viewDirection = normalize(u_cameraPosition - waterWorldPos);
 
-	// determine water color
+	// determine water depth
+	float refractionDepth = texture2D(s_refractionDepthSampler, refractionUv).r;
+	vec3 refractionWorldPos = uvToWorldSpace(gl_FragCoord.xy / u_viewRect.zw, refractionDepth);
+	float waterDepth = length(refractionWorldPos - waterWorldPos);
+
+	// determine water color and transparency
 	float refractiveFactor = pow(dot(viewDirection, vec3(0.0, 1.0, 0.0)), u_reflectivity);
 	vec3 color = mix(reflectionColor, refractionColor, refractiveFactor);
+	float alpha = clamp((waterDepth / 1.0), 0.0, 1.0);
 
 	// PBR data
 	PBR pbr;
-	pbr.albedo = vec4(color, 1.0);
+	pbr.albedo = vec4(color, alpha);
 	pbr.metallic = u_metallic;
 	pbr.roughness = u_roughness;
 	pbr.emissive = vec3_splat(0.0);
@@ -100,5 +106,5 @@ void main() {
 
 	// apply PBR (tonemapping and Gamma correction are done during post-processing)
 	gl_FragColor = applyPBR(pbr);
-	gl_FragDepth = clipSpacePos.z;
+	gl_FragDepth = waterClipPos.z;
 }

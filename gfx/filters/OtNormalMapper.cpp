@@ -18,7 +18,7 @@
 
 void OtNormalMapper::execute(OtPass& pass, int w, int h) {
 	// convert heightmap to normalmap
-	uniform.setValue(0, glm::vec4(1.0 / float(w), 1.0 / float(h), normalStrength, float(includeHeightFlag)));
+	uniform.setValue(0, 1.0 / float(w), 1.0 / float(h), normalStrength, float(includeHeightFlag));
 	uniform.submit();
 	pass.runShaderProgram(program);
 }

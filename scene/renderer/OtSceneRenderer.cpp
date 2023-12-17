@@ -16,11 +16,10 @@
 //	OtSceneRenderer::render
 //
 
-int OtSceneRenderer::render(OtScene* scene, OtEntity selected) {
+int OtSceneRenderer::render(OtCamera& camera, OtScene* scene, OtEntity selected) {
 	// create rendering context
 	OtSceneRendererContext context{
-		width, height,
-		cameraPosition, viewMatrix, projectionMatrix,
+		camera,
 		deferredRenderingBuffer, deferredCompositeBuffer, postProcessBuffer,
 		scene};
 

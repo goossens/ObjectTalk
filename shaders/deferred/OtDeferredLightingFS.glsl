@@ -11,10 +11,9 @@ $input v_texcoord0
 
 #include <bgfx_shader.glsl>
 #include <pbr.glsl>
+#include <utilities.glsl>
 
 // uniforms
-uniform mat4 u_inverseTransform;
-
 uniform vec4 u_lighting[3];
 #define u_cameraPosition u_lighting[0].xyz
 #define u_directionalLightDirection u_lighting[1].xyz
@@ -27,20 +26,6 @@ SAMPLER2D(s_deferredLightingNormalTexture, 1);
 SAMPLER2D(s_deferredLightingPbrTexture, 2);
 SAMPLER2D(s_deferredLightingEmissiveTexture, 3);
 SAMPLER2D(s_deferredLightingDepthTexture, 4);
-
-// determine world coordinates from UV and depth
-vec3 uvToWorld(vec2 uv, float depth) {
-
-#if BGFX_SHADER_LANGUAGE_GLSL
-	vec3 ndc = vec3(uv * 2.0 - 1.0, depth * 2.0 - 1.0);
-#else
-	vec3 ndc = vec3(uv * 2.0 - 1.0, depth);
-	ndc.y = -ndc.y;
-#endif
-
-	vec4 world = mul(u_inverseTransform, vec4(ndc, 1.0));
-	return world.xyz / world.w;
-}
 
 // main function
 void main() {
@@ -55,7 +40,7 @@ void main() {
 	float depth = texture2D(s_deferredLightingDepthTexture, v_texcoord0).x;
 
 	// determine world coordinates
-	vec3 pos = uvToWorld(v_texcoord0, depth);
+	vec3 pos = uvToWorldSpace(v_texcoord0, depth);
 
 	// collect PBR data
 	PBR pbr;

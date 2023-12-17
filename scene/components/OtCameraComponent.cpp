@@ -12,23 +12,10 @@
 #include <algorithm>
 #include <cmath>
 
-#include "glm/ext.hpp"
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
-#include "OtGpu.h"
-
 #include "OtCameraComponent.h"
-
-//
-//	OtCameraComponent::getProjectionMatrix
-//
-
-glm::mat4 OtCameraComponent::getProjectionMatrix(float aspectRatio) {
-	return OtGpuHasHomogeneousDepth()
-		? glm::perspectiveRH_NO(glm::radians(fov), aspectRatio, nearPlane, farPlane)
-		: glm::perspectiveRH_ZO(glm::radians(fov), aspectRatio, nearPlane, farPlane);
-}
 
 
 //

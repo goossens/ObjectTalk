@@ -34,15 +34,15 @@ void OtSceneRenderer::renderPostProcessingPass(OtSceneRendererContext& ctx, bool
 	}
 
 	// ensure the post-processing buffer is up to date
-	ctx.postProcessBuffer.update(ctx.width, ctx.height);
+	ctx.postProcessBuffer.update(ctx.camera.width, ctx.camera.height);
 
 	// combine all post-processing effects
 	OtPass pass;
 	pass.setFrameBuffer(ctx.postProcessBuffer);
-	pass.submitQuad(ctx.width, ctx.height);
+	pass.submitQuad(ctx.camera.width, ctx.camera.height);
 
 	// set uniform
-	postProcessUniforms.setValue(0, glm::vec4(bloomIntensity > 0.0f, exposure, 0.0f, 0.0f));
+	postProcessUniforms.setValue(0, bloomIntensity > 0.0f, exposure, 0.0f, 0.0f);
 	postProcessUniforms.submit();
 
 	// set source textures
@@ -69,14 +69,14 @@ void OtSceneRenderer::renderBloom(OtSceneRendererContext& ctx, float bloomIntens
 
 	// update bloom buffers
 	for (auto i = 0; i < bloomDepth; i++) {
-		bloomBuffer[i].update(ctx.width >> (i + 1), ctx.height >> (i + 1));
+		bloomBuffer[i].update(ctx.camera.width >> (i + 1), ctx.camera.height >> (i + 1));
 	}
 
 	// downsample
 	for (auto i = 0; i < bloomDepth; i++) {
 		// setup pass
-		int sw = ctx.width >> i;
-		int sh = ctx.height >> i;
+		int sw = ctx.camera.width >> i;
+		int sh = ctx.camera.height >> i;
 		int dw = sw >> 1;
 		int dh = sh >> 1;
 
@@ -85,7 +85,7 @@ void OtSceneRenderer::renderBloom(OtSceneRendererContext& ctx, float bloomIntens
 		pass.submitQuad(dw, dh);
 
 		// set uniform
-		bloomUniforms.setValue(0, glm::vec4(1.0 / sw, 1.0 / sh, 0.0f, 0.0f));
+		bloomUniforms.setValue(0, 1.0f / float(sw), 1.0f / float(sh), 0.0f, 0.0f);
 		bloomUniforms.submit();
 
 		// set source texture
@@ -104,8 +104,8 @@ void OtSceneRenderer::renderBloom(OtSceneRendererContext& ctx, float bloomIntens
 	// upsample
 	for (auto i = bloomDepth - 1; i > 0; i--) {
 		// setup pass
-		int dw = ctx.width >> i;
-		int dh = ctx.height >> i;
+		int dw = ctx.camera.width >> i;
+		int dh = ctx.camera.height >> i;
 		int sw = dw >> 1;
 		int sh = dh >> 1;
 
@@ -114,7 +114,7 @@ void OtSceneRenderer::renderBloom(OtSceneRendererContext& ctx, float bloomIntens
 		pass.submitQuad(dw, dh);
 
 		// set uniform
-		bloomUniforms.setValue(0, glm::vec4(1.0 / sw, 1.0 / sh, bloomIntensity, 0.0f));
+		bloomUniforms.setValue(0, 1.0f / float(sw), 1.0f / float(sh), bloomIntensity, 0.0f);
 		bloomUniforms.submit();
 
 		// set source texture

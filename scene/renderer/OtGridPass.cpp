@@ -23,9 +23,9 @@
 void OtSceneRenderer::renderGridPass(OtSceneRendererContext& ctx) {
 	// setup pass
 	OtPass pass;
-	pass.setRectangle(0, 0, ctx.width, ctx.height);
+	pass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
 	pass.setFrameBuffer(ctx.compositeBuffer);
-	pass.setTransform(ctx.viewMatrix, ctx.projectionMatrix);
+	pass.setTransform(ctx.camera.viewMatrix, ctx.camera.projectionMatrix);
 
 	// send out geometry
 	static glm::vec3 vertices[] = {
@@ -42,7 +42,7 @@ void OtSceneRenderer::renderGridPass(OtSceneRendererContext& ctx) {
 	indexBuffer.submit(indices, 6);
 
 	// set uniforms
-	gridUniforms.setValue(0, glm::vec4(gridScale, 0.0f, 0.0f, 0.0f));
+	gridUniforms.setValue(0, gridScale, 0.0f, 0.0f, 0.0f);
 	gridUniforms.submit();
 
 	// run the program

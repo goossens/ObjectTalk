@@ -20,13 +20,10 @@ void OtSceneRenderer::renderDeferredLightingPass(OtSceneRendererContext& ctx) {
 	// setup pass
 	OtPass pass;
 	pass.setFrameBuffer(ctx.compositeBuffer);
-	pass.submitQuad(ctx.width, ctx.height);
+	pass.submitQuad(ctx.camera.width, ctx.camera.height);
 
 	// submit the uniforms
-	submitLightUniforms(ctx.scene, ctx.cameraPosition);
-
-	inverseTransformUniforms.set(0, glm::inverse(ctx.viewProjectionMatrix));
-	inverseTransformUniforms.submit();
+	submitLightUniforms(ctx.scene, ctx.camera.cameraPosition);
 
 	// bind all textures
 	ctx.deferedBuffer.bindAlbedoTexture(deferredLightingAlbedoSampler, 0);

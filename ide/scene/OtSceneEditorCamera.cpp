@@ -143,20 +143,9 @@ void OtSceneEditorCamera::setPreset(int p) {
 
 
 //
-//	Camera::getViewMatrix
+//	OtSceneEditorCamera::getViewMatrix
 //
 
 glm::mat4 OtSceneEditorCamera::getViewMatrix() {
 	return glm::lookAt(position, position + forward, up);
-}
-
-
-//
-//	OtSceneEditorCamera::getProjectionMatrix
-//
-
-glm::mat4 OtSceneEditorCamera::getProjectionMatrix(float aspectRatio) {
-	return OtGpuHasHomogeneousDepth()
-		? glm::perspectiveRH_NO(glm::radians(fov), aspectRatio, nearPlane, farPlane)
-		: glm::perspectiveRH_ZO(glm::radians(fov), aspectRatio, nearPlane, farPlane);
 }

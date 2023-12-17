@@ -17,8 +17,8 @@
 //
 
 void OtTileableFbm::execute(OtPass& pass, int w, int h) {
-	uniform.setValue(0, glm::vec4(frequency, lacunarity, amplitude, persistence));
-	uniform.setValue(1, glm::vec4(octaves, 0.0f, 0.0f, 0.0f));
+	uniform.setValue(0, frequency, lacunarity, amplitude, persistence);
+	uniform.setValue(1, octaves, 0.0f, 0.0f, 0.0f);
 	uniform.submit();
 	pass.runShaderProgram(program);
 }

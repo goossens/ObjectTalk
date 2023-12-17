@@ -12,14 +12,12 @@
 #include <cstring>
 #include <functional>
 
-#include "glm/ext.hpp"
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "ImGuizmo.h"
 #include "nlohmann/json.hpp"
 
 #include "OtAssetManager.h"
-#include "OtGpu.h"
 #include "OtUi.h"
 
 #include "OtSceneEditor.h"
@@ -398,31 +396,34 @@ void OtSceneEditor::renderViewPort() {
 
 	// get camera information
 	glm::vec3 cameraPosition;
-	glm::mat4 camerViewMatrix;
-	glm::mat4 cameraProjectionMatrix;
+	glm::mat4 cameraViewMatrix;
+	float nearPlane;
+	float farPlane;
+	float fov;
 
 	if (scene->isValidEntity(selectedCamera)) {
 		glm::mat4 transform = scene->getGlobalTransform(selectedCamera);
 		cameraPosition = glm::vec3(transform[3]);
-		camerViewMatrix = glm::inverse(transform);
+		cameraViewMatrix = glm::inverse(transform);
 
 		auto& camera = scene->getComponent<OtCameraComponent>(selectedCamera);
-		cameraProjectionMatrix = camera.getProjectionMatrix(size.x / size.y);
+		nearPlane = camera.nearPlane;
+		farPlane = camera.farPlane;
+		fov = camera.fov;
 
 	} else {
 		editorCamera.update();
 		cameraPosition = editorCamera.getPosition();
-		camerViewMatrix = editorCamera.getViewMatrix();
-		cameraProjectionMatrix = editorCamera.getProjectionMatrix(size.x / size.y);
+		cameraViewMatrix = editorCamera.getViewMatrix();
+		nearPlane = editorCamera.getNearPlane();
+		farPlane = editorCamera.getFarPlane();
+		fov = editorCamera.getFov();
 	}
 
 	// render the scene
-	renderer->setCameraPosition(cameraPosition);
-	renderer->setViewMatrix(camerViewMatrix);
-	renderer->setProjectionMatrix(cameraProjectionMatrix);
-	renderer->setSize(size.x, size.y);
+	OtCamera camera{int(size.x), int(size.y), nearPlane, farPlane, fov, cameraPosition, cameraViewMatrix};
 	renderer->setGridScale(gridEnabled ? gridScale : 0.0f);
-	auto textureIndex = renderer->render(scene.get(), selectedEntity);
+	auto textureIndex = renderer->render(camera, scene.get(), selectedEntity);
 
 	// show it on the screen
 	if (OtGpuHasOriginBottomLeft()) {
@@ -450,8 +451,8 @@ void OtSceneEditor::renderViewPort() {
 
 		// show the guizmo
 		if(ImGuizmo::Manipulate(
-			glm::value_ptr(camerViewMatrix),
-			glm::value_ptr(cameraProjectionMatrix),
+			glm::value_ptr(camera.viewMatrix),
+			glm::value_ptr(camera.projectionMatrix),
 			guizmoOperation,
 			ImGuizmo::LOCAL,
 			glm::value_ptr(transform),

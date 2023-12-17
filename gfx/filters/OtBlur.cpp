@@ -19,11 +19,12 @@
 //
 
 void OtBlur::execute(OtPass& pass, int w, int h) {
-	uniform.setValue(0, glm::vec4(
-		horizontalScale == -1.0 ? (0.2 / float(w)) : horizontalScale,
-		verticalScale == -1.0 ? (0.2 / float(h)) : verticalScale,
-		intensity == -1.0 ? 2.0 : intensity,
-		alpha == -1.0 ? 1.0 : alpha));
+	uniform.setValue(
+		0,
+		horizontalScale == -1.0f ? (0.2f / float(w)) : horizontalScale,
+		verticalScale == -1.0f ? (0.2f / float(h)) : verticalScale,
+		intensity == -1.0f ? 2.0f : intensity,
+		alpha == -1.0f ? 1.0f : alpha);
 
 	uniform.submit();
 	pass.runShaderProgram(program);

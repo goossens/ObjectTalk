@@ -90,7 +90,7 @@
 						],
 						"region1Overlap": 0.05000000074505806,
 						"region1Texture": "assets/sand.jpg",
-						"region1TextureScale": 30.600000381469727,
+						"region1TextureScale": 40.0,
 						"region1Transition": 0.30000001192092896,
 						"region2Color": [
 							0.49399998784065247,
@@ -99,7 +99,7 @@
 						],
 						"region2Overlap": 0.05000000074505806,
 						"region2Texture": "assets/terrain.jpg",
-						"region2TextureScale": 7.900000095367432,
+						"region2TextureScale": 25.0,
 						"region2Transition": 0.49000000953674316,
 						"region3Color": [
 							0.5839999914169312,
@@ -108,7 +108,7 @@
 						],
 						"region3Overlap": 0.05000000074505806,
 						"region3Texture": "assets/rock.jpg",
-						"region3TextureScale": 15.300000190734863,
+						"region3TextureScale": 70.0,
 						"region3Transition": 0.5799999833106995,
 						"region4Color": [
 							0.8999999761581421,
@@ -119,8 +119,8 @@
 						"region4TextureScale": 28.100000381469727
 					},
 					"tileSize": 64,
-					"vOffset": -16.0,
-					"vScale": 40.0,
+					"vOffset": -12.0,
+					"vScale": 37.0,
 					"wireframe": false
 				}
 			]
@@ -145,9 +145,9 @@
 					"level": 0.0,
 					"metallic": 0.28999999165534973,
 					"normals": "assets/water.jpg",
-					"reflectivity": 0.5,
+					"reflectivity": 1.0,
 					"roughness": 0.25999999046325684,
-					"scale": 5.0,
+					"scale": 15.0,
 					"speed": 0.75,
 					"useRefractance": true
 				}

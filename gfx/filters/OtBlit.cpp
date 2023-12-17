@@ -19,7 +19,7 @@
 //
 
 void OtBlit::execute(OtPass& pass, int w, int h) {
-	uniform.setValue(0, glm::vec4(intensity == -1.0 ? 1.0 : intensity, alpha == -1.0 ? 1.0 : alpha, 0.0, 0.0));
+	uniform.setValue(0, intensity == -1.0f ? 1.0f : intensity, alpha == -1.0f ? 1.0f : alpha, 0.0f, 0.0f);
 	uniform.submit();
 	pass.runShaderProgram(program);
 }

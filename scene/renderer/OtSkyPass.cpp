@@ -29,16 +29,16 @@ void OtSceneRenderer::renderSkyPass(OtSceneRendererContext& ctx) {
 	glm::vec3 translate;
 	glm::vec3 skew;
 	glm::vec4 perspective;
-	glm::decompose(ctx.viewMatrix, scale, rotate, translate, skew, perspective);
+	glm::decompose(ctx.camera.viewMatrix, scale, rotate, translate, skew, perspective);
 
 	// create a new matrix that only honors the rotation
 	glm::mat4 newViewMatrix = glm::toMat4(rotate);
 
 	// setup pass
 	OtPass pass;
-	pass.setRectangle(0, 0, ctx.width, ctx.height);
+	pass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
 	pass.setFrameBuffer(ctx.compositeBuffer);
-	pass.setTransform(newViewMatrix, ctx.projectionMatrix);
+	pass.setTransform(newViewMatrix, ctx.camera.projectionMatrix);
 
 	// see if we have any sky components
 	for (auto&& [entity, component] : ctx.scene->view<OtSkyComponent>().each()) {
@@ -77,19 +77,21 @@ void OtSceneRenderer::renderSky(OtSceneRendererContext& ctx, OtPass& pass, OtSky
 	static float time = 0.0f;
 	time += ImGui::GetIO().DeltaTime;
 
-	skyUniforms.setValue(0, glm::vec4(
+	skyUniforms.setValue(
+		0,
 		time * component.speed / 10.0f,
 		component.cirrus,
 		component.cumulus,
-		0.0f));
+		0.0f);
 
-	skyUniforms.setValue(1, glm::vec4(
+	skyUniforms.setValue(
+		1,
 		component.rayleighCoefficient / 1000.0f,
 		component.mieCoefficient / 1000.0f,
 		component.mieScattering,
-		0.0f));
+		0.0f);
 
-	skyUniforms.setValue(2, glm::vec4(component.getDirectionToSun(), 0.0f));
+	skyUniforms.setValue(2, component.getDirectionToSun(), 0.0f);
 	skyUniforms.submit();
 
 	// run the program
@@ -117,7 +119,7 @@ void OtSceneRenderer::renderSkyBox(OtSceneRendererContext& ctx, OtPass& pass, Ot
 	unityBoxGeometry->submitTriangles();
 
 	// set the uniform values
-	skyUniforms.setValue(0, glm::vec4(component.brightness, component.gamma, 0.0f, 0.0f));
+	skyUniforms.setValue(0, component.brightness, component.gamma, 0.0f, 0.0f);
 	skyUniforms.submit();
 
 	// submit texture via sampler
@@ -147,7 +149,7 @@ void OtSceneRenderer::renderSkySphere(OtSceneRendererContext& ctx, OtPass& pass,
 	unitySphereGeometry->submitTriangles();
 
 	// set the uniform values
-	skyUniforms.setValue(0, glm::vec4(component.brightness, component.gamma, 0.0f, 0.0f));
+	skyUniforms.setValue(0, component.brightness, component.gamma, 0.0f, 0.0f);
 	skyUniforms.submit();
 
 	// submit texture via sampler

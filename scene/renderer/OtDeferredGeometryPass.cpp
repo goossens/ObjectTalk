@@ -22,14 +22,14 @@
 
 void OtSceneRenderer::renderDeferredGeometryPass(OtSceneRendererContext& ctx) {
 	// update gbuffer
-	ctx.deferedBuffer.update(ctx.width, ctx.height);
+	ctx.deferedBuffer.update(ctx.camera.width, ctx.camera.height);
 
 	// setup pass
 	OtPass pass;
-	pass.setRectangle(0, 0, ctx.width, ctx.height);
+	pass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
 	pass.setFrameBuffer(ctx.deferedBuffer);
 	pass.setClear(true, true, glm::vec4(0.0f));
-	pass.setTransform(ctx.viewMatrix, ctx.projectionMatrix);
+	pass.setTransform(ctx.camera.viewMatrix, ctx.camera.projectionMatrix);
 	pass.touch();
 
 	// render all opaque geometries
@@ -67,7 +67,7 @@ void OtSceneRenderer::renderDeferredGeometry(OtSceneRendererContext& ctx, OtPass
 	auto aabb = geometry.geometry->getAABB().transform(transform);
 
 	// is this entity visible
-	if (ctx.frustum.isVisibleAABB(aabb)) {
+	if (ctx.camera.frustum.isVisibleAABB(aabb)) {
 		// determine the program
 		OtShaderProgram* program;
 
@@ -137,7 +137,7 @@ void OtSceneRenderer::renderDeferredModel(OtSceneRendererContext& ctx, OtPass& p
 			auto aabb = mesh.getAABB();
 			aabb.transform(transform);
 
-			if (ctx.frustum.isVisibleAABB(aabb)) {
+			if (ctx.camera.frustum.isVisibleAABB(aabb)) {
 				// submit the material and clipping information
 				submitPbrUniforms(model->getMaterials()[mesh.getMaterialIndex()].getPbrMaterial());
 				submitClippingUniforms(ctx.clippingPlane);
@@ -176,7 +176,7 @@ void OtSceneRenderer::renderDeferredTerrain(OtSceneRendererContext& ctx, OtPass&
 		terrain->heights.update(tileableFbm, normalMapper);
 	}
 	// process all the terrain meshes
-	for (auto& mesh : terrain->getMeshes(ctx.frustum, ctx.cameraPosition)) {
+	for (auto& mesh : terrain->getMeshes(ctx.camera.frustum, ctx.camera.cameraPosition)) {
 		// submit the geometry
 		mesh.tile.vertices.submit();
 

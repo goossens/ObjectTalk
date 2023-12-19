@@ -23,9 +23,11 @@ class OtSceneEditorCamera {
 public:
 	// camera presets
 	enum {
-		smallScenePreset = 1,
+		tinyScenePreset = 1,
+		smallScenePreset,
 		mediumScenePreset,
-		largeScenePreset
+		largeScenePreset,
+		hugeScenePreset
 	};
 
 	// update the camera (called each frame)

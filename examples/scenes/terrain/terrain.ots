@@ -155,7 +155,7 @@
 		}
 	],
 	"metadata": {
-		"cameraPreset": 3,
+		"cameraPreset": 5,
 		"gizmo": {
 			"enabled": false,
 			"mode": 7,

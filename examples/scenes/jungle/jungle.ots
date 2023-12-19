@@ -11,8 +11,8 @@
 				{
 					"component": "Transform",
 					"rotation": [
-						-5.0,
-						13.0,
+						-8.0,
+						6.0,
 						0.0
 					],
 					"scale": [
@@ -21,21 +21,21 @@
 						1.0
 					],
 					"translation": [
-						-0.699999988079071,
-						15.100000381469727,
-						58.20000076293945
+						0.0,
+						10.0,
+						60.0
 					]
 				},
 				{
 					"component": "Camera",
-					"far": 100.0,
+					"far": 254.0,
 					"fov": 51.0,
 					"mainCamera": true,
 					"near": 0.10000000149011612
 				},
 				{
-					"Exposure": 0.8299999833106995,
-					"bloomIntensity": 0.6100000143051147,
+					"Exposure": 0.6299999952316284,
+					"bloomIntensity": 0.49000000953674316,
 					"component": "Post Processing"
 				}
 			]
@@ -49,11 +49,11 @@
 					"uuid": 312324165
 				},
 				{
-					"azimuth": 244.5659942626953,
+					"azimuth": 297.3919982910156,
 					"cirrus": 0.5199999809265137,
 					"component": "Sky",
 					"cumulus": 0.5720000267028809,
-					"elevation": 6.8480000495910645,
+					"elevation": 32.28200149536133,
 					"mieCoefficient": 5.451000213623047,
 					"mieScattering": 0.9900000095367432,
 					"rayleighCoefficient": 2.753000020980835,
@@ -102,7 +102,7 @@
 						1.0
 					],
 					"translation": [
-						0.800000011920929,
+						15.600000381469727,
 						0.10000000149011612,
 						1.399999976158142
 					]
@@ -159,7 +159,7 @@
 						"persistence": 0.5,
 						"size": 256
 					},
-					"lods": 10,
+					"lods": 5,
 					"material": {
 						"region1Color": [
 							0.9649999737739563,
@@ -168,7 +168,7 @@
 						],
 						"region1Overlap": 0.1599999964237213,
 						"region1Texture": "",
-						"region1TextureScale": 10.199999809265137,
+						"region1TextureScale": 29.700000762939453,
 						"region1Transition": 0.20000000298023224,
 						"region2Color": [
 							0.49399998784065247,
@@ -177,7 +177,7 @@
 						],
 						"region2Overlap": 0.15000000596046448,
 						"region2Texture": "assets/mulch.jpg",
-						"region2TextureScale": 69.5999984741211,
+						"region2TextureScale": 500.0,
 						"region2Transition": 0.4000000059604645,
 						"region3Color": [
 							0.5839999914169312,
@@ -186,7 +186,7 @@
 						],
 						"region3Overlap": 0.1599999964237213,
 						"region3Texture": "assets/moss.jpg",
-						"region3TextureScale": 100.0,
+						"region3TextureScale": 135.89999389648438,
 						"region3Transition": 0.699999988079071,
 						"region4Color": [
 							0.8999999761581421,
@@ -196,16 +196,16 @@
 						"region4Texture": "",
 						"region4TextureScale": 1.0
 					},
-					"tileSize": 64,
+					"tileSize": 32,
 					"vOffset": -1.0,
-					"vScale": 9.0,
+					"vScale": 4.0,
 					"wireframe": false
 				}
 			]
 		}
 	],
 	"metadata": {
-		"cameraPreset": 2,
+		"cameraPreset": 3,
 		"gizmo": {
 			"enabled": false,
 			"mode": 7,

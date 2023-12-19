@@ -179,20 +179,24 @@ void OtSceneEditor::renderMenu() {
 
 			// render camera scale selector
 			if (ImGui::BeginMenu("Scene Scale")) {
+				if (ImGui::RadioButton("Tiny", editorCamera.getPreset() == OtSceneEditorCamera::tinyScenePreset)) {
+					editorCamera.setPreset(OtSceneEditorCamera::tinyScenePreset);
+				}
+
 				if (ImGui::RadioButton("Small", editorCamera.getPreset() == OtSceneEditorCamera::smallScenePreset)) {
 					editorCamera.setPreset(OtSceneEditorCamera::smallScenePreset);
 				}
-
-				ImGui::SameLine();
 
 				if (ImGui::RadioButton("Medium", editorCamera.getPreset() == OtSceneEditorCamera::mediumScenePreset)) {
 					editorCamera.setPreset(OtSceneEditorCamera::mediumScenePreset);
 				}
 
-				ImGui::SameLine();
-
 				if (ImGui::RadioButton("Large", editorCamera.getPreset() == OtSceneEditorCamera::largeScenePreset)) {
 					editorCamera.setPreset(OtSceneEditorCamera::largeScenePreset);
+				}
+
+				if (ImGui::RadioButton("Huge", editorCamera.getPreset() == OtSceneEditorCamera::hugeScenePreset)) {
+					editorCamera.setPreset(OtSceneEditorCamera::hugeScenePreset);
 				}
 
 				ImGui::EndMenu();
@@ -234,19 +238,13 @@ void OtSceneEditor::renderMenu() {
 					guizmoOperation = ImGuizmo::TRANSLATE;
 				}
 
-				ImGui::SameLine();
-
 				if (ImGui::RadioButton("Rotate", guizmoOperation == ImGuizmo::ROTATE)) {
 					guizmoOperation = ImGuizmo::ROTATE;
 				}
 
-				ImGui::SameLine();
-
 				if (ImGui::RadioButton("Scale", guizmoOperation == ImGuizmo::SCALE)) {
 					guizmoOperation = ImGuizmo::SCALE;
 				}
-
-				ImGui::EndMenu();
 			}
 
 			// render snap control

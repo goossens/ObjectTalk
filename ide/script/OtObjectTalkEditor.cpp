@@ -124,31 +124,25 @@ void OtObjectTalkEditor::save() {
 //
 
 void OtObjectTalkEditor::renderMenu() {
-#if __APPLE__
-#define SHORTCUT "Cmd-"
-#else
-#define SHORTCUT "Ctrl-"
-#endif
-
 	// create menubar
 	if (ImGui::BeginMenuBar()) {
 		renderFileMenu();
 
 		if (ImGui::BeginMenu("Edit")) {
-			if (ImGui::MenuItem("Undo", SHORTCUT "Z", nullptr, editor.CanUndo())) { editor.Undo(); }
+			if (ImGui::MenuItem("Undo", OT_UI_SHORTCUT "Z", nullptr, editor.CanUndo())) { editor.Undo(); }
 #if __APPLE__
-			if (ImGui::MenuItem("Redo", "^" SHORTCUT "Z", nullptr, editor.CanRedo())) { editor.Redo(); }
+			if (ImGui::MenuItem("Redo", "^" OT_UI_SHORTCUT "Z", nullptr, editor.CanRedo())) { editor.Redo(); }
 #else
-			if (ImGui::MenuItem("Redo", SHORTCUT "Y", nullptr, editor.CanRedo())) { editor.Redo(); }
+			if (ImGui::MenuItem("Redo", OT_UI_SHORTCUT "Y", nullptr, editor.CanRedo())) { editor.Redo(); }
 #endif
 
 			ImGui::Separator();
-			if (ImGui::MenuItem("Cut", SHORTCUT "X", nullptr, editor.AnyCursorHasSelection())) { editor.Cut(); }
-			if (ImGui::MenuItem("Copy", SHORTCUT "C", nullptr, editor.AnyCursorHasSelection())) { editor.Copy(); }
-			if (ImGui::MenuItem("Paste", SHORTCUT "V", nullptr, ImGui::GetClipboardText() != nullptr)) { editor.Paste(); }
+			if (ImGui::MenuItem("Cut", OT_UI_SHORTCUT "X", nullptr, editor.AnyCursorHasSelection())) { editor.Cut(); }
+			if (ImGui::MenuItem("Copy", OT_UI_SHORTCUT "C", nullptr, editor.AnyCursorHasSelection())) { editor.Copy(); }
+			if (ImGui::MenuItem("Paste", OT_UI_SHORTCUT "V", nullptr, ImGui::GetClipboardText() != nullptr)) { editor.Paste(); }
 
 			ImGui::Separator();
-			if (ImGui::MenuItem("Select All", SHORTCUT "A", nullptr, editor.GetText().size() != 0)) { editor.SelectAll(); }
+			if (ImGui::MenuItem("Select All", OT_UI_SHORTCUT "A", nullptr, editor.GetText().size() != 0)) { editor.SelectAll(); }
 			ImGui::EndMenu();
 		}
 

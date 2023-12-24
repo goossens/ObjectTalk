@@ -148,29 +148,23 @@ void OtSceneEditor::renderMenu() {
 	bool selected = scene->isValidEntity(selectedEntity);
 	bool clipable = clipboard.size() > 0;
 
-#if __APPLE__
-#define SHORTCUT "Cmd-"
-#else
-#define SHORTCUT "Ctrl-"
-#endif
-
 	// create menubar
 	if (ImGui::BeginMenuBar()) {
 		renderFileMenu();
 
 		if (ImGui::BeginMenu("Edit")) {
-			if (ImGui::MenuItem("Undo", SHORTCUT "Z", nullptr, taskManager.canUndo())) { taskManager.undo(); }
+			if (ImGui::MenuItem("Undo", OT_UI_SHORTCUT "Z", nullptr, taskManager.canUndo())) { taskManager.undo(); }
 #if __APPLE__
-			if (ImGui::MenuItem("Redo", "^" SHORTCUT "Z", nullptr, taskManager.canRedo())) { taskManager.redo(); }
+			if (ImGui::MenuItem("Redo", "^" OT_UI_SHORTCUT "Z", nullptr, taskManager.canRedo())) { taskManager.redo(); }
 #else
-			if (ImGui::MenuItem("Redo", SHORTCUT "Y", nullptr, taskManager.canRedo())) { taskManager.redo(); }
+			if (ImGui::MenuItem("Redo", OT_UI_SHORTCUT "Y", nullptr, taskManager.canRedo())) { taskManager.redo(); }
 #endif
 
 			ImGui::Separator();
-			if (ImGui::MenuItem("Cut", SHORTCUT "X", nullptr, selected)) { cutEntity(); }
-			if (ImGui::MenuItem("Copy", SHORTCUT "C", nullptr, selected)) { copyEntity(); }
-			if (ImGui::MenuItem("Paste", SHORTCUT "V", nullptr, selected && clipable)) { pasteEntity(); }
-			if (ImGui::MenuItem("Duplicate", SHORTCUT "D", nullptr, selected)) { duplicateEntity(); }
+			if (ImGui::MenuItem("Cut", OT_UI_SHORTCUT "X", nullptr, selected)) { cutEntity(); }
+			if (ImGui::MenuItem("Copy", OT_UI_SHORTCUT "C", nullptr, selected)) { copyEntity(); }
+			if (ImGui::MenuItem("Paste", OT_UI_SHORTCUT "V", nullptr, selected && clipable)) { pasteEntity(); }
+			if (ImGui::MenuItem("Duplicate", OT_UI_SHORTCUT "D", nullptr, selected)) { duplicateEntity(); }
 			ImGui::EndMenu();
 		}
 
@@ -223,7 +217,7 @@ void OtSceneEditor::renderMenu() {
 			}
 
 			ImGui::Separator();
-			ImGui::MenuItem("Grid", SHORTCUT "D", &gridEnabled);
+			ImGui::MenuItem("Grid", OT_UI_SHORTCUT "D", &gridEnabled);
 
 			if (ImGui::BeginMenu("Grid Scale", gridEnabled)) {
 				ImGui::DragFloat("##scale", &gridScale, 0.1, 0.1f, 100.0f, "%.1f");
@@ -231,7 +225,7 @@ void OtSceneEditor::renderMenu() {
 			}
 
 			ImGui::Separator();
-			ImGui::MenuItem("Gizmo", SHORTCUT "G", &guizmoEnabled);
+			ImGui::MenuItem("Gizmo", OT_UI_SHORTCUT "G", &guizmoEnabled);
 
 			if (ImGui::BeginMenu("Gizmo Mode", guizmoEnabled)) {
 				if (ImGui::RadioButton("Translate", guizmoOperation == ImGuizmo::TRANSLATE)) {
@@ -789,7 +783,7 @@ void OtSceneEditor::renderComponentEditor() {
 //
 
 template <typename T>
-void OtSceneEditor::renderComponent(bool canRemove) {
+void OtSceneEditor::renderComponent() {
 	// only render if entity has this component
 	if (scene->hasComponent<T>(selectedEntity)) {
 		// add a new ID to the stack to avoid collisions
@@ -807,10 +801,8 @@ void OtSceneEditor::renderComponent(bool canRemove) {
 		bool removeComponent = false;
 
 		// add button to remove the component
-		if (canRemove) {
-			ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - buttonSize);
-			removeComponent = ImGui::Button("x##remove", ImVec2(buttonSize, buttonSize));
-		}
+		ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - buttonSize);
+		removeComponent = ImGui::Button("x##remove", ImVec2(buttonSize, buttonSize));
 
 		// render the component editor (if required)
 		if (open) {

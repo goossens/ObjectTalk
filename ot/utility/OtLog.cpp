@@ -90,7 +90,7 @@ void OtLogger::log(const char* filename, int lineno, int type, const std::string
 //	OtLogger::fileLogging
 //
 
-void OtLogger::fileLogging(const std::filesystem::path &path)
+void OtLogger::fileLogging(const std::filesystem::path& path)
 {
 	if (ofs.is_open()) {
 		ofs.close();

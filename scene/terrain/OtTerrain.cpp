@@ -126,7 +126,7 @@ void OtTerrainClass::deserialize(nlohmann::json data, std::filesystem::path* bas
 //	OtTerrainClass::getMeshes
 //
 
-std::vector<OtTerrainMesh> &OtTerrainClass::getMeshes(OtFrustum& frustum, const glm::vec3& camera) {
+std::vector<OtTerrainMesh>& OtTerrainClass::getMeshes(OtFrustum& frustum, const glm::vec3& camera) {
 	// initialize if required
 	if (!vertices.isValid()) {
 		// create vertices

@@ -20,7 +20,7 @@
 //	OtGenerator::render
 //
 
-void OtGenerator::render(OtFrameBuffer &destination) {
+void OtGenerator::render(OtFrameBuffer& destination) {
 	// setup generator pass
 	OtPass pass;
 	pass.setFrameBuffer(destination);

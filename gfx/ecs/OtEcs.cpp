@@ -54,7 +54,7 @@ OtEntity OtEcs::createEntity(uint32_t uuid, const std::string& tag) {
 //	OtEcs::getEntity
 //
 
-OtEntity OtEcs::getEntity(const std::string &tag) {
+OtEntity OtEcs::getEntity(const std::string& tag) {
 	for (auto entity : registry.view<OtCoreComponent>()) {
 		if (getComponent<OtCoreComponent>(entity).tag == tag) {
 			return entity;
@@ -194,7 +194,7 @@ std::string OtEcs::getEntityTag(OtEntity entity) {
 //	OtEcs::setEntityTag
 //
 
-void OtEcs::setEntityTag(OtEntity entity, const std::string &tag) {
+void OtEcs::setEntityTag(OtEntity entity, const std::string& tag) {
 	auto& component = getComponent<OtCoreComponent>(entity);
 	component.tag = tag;
 }

@@ -156,7 +156,7 @@ void OtHttpResponseClass::sendHeaders() {
 	// put status and headers in stream
 	stream << "HTTP/1.1 " << responseStatus << " " << explanation << "\r\n";
 
-	for (auto &header : headers) {
+	for (auto& header : headers) {
 		stream << header.first << ": " << header.second << "\r\n";
 	}
 

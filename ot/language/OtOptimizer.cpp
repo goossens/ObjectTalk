@@ -85,7 +85,7 @@ OtByteCode OtOptimizer::optimize(OtByteCode bytecode) {
 //	OtOptimizer::optimizePushStackReferenceSequence
 //
 
-bool OtOptimizer::optimizePushStackReferenceSequence(size_t &instruction, size_t available) {
+bool OtOptimizer::optimizePushStackReferenceSequence(size_t& instruction, size_t available) {
 	OtStackReference reference;
 
 	if (available >= 2 &&
@@ -147,7 +147,7 @@ bool OtOptimizer::optimizePushMemberSequence(size_t& instruction, size_t availab
 //	OtOptimizer::optimizePushStackSwapAssignSequence
 //
 
-bool OtOptimizer::optimizePushStackSwapAssignSequence(size_t &instruction, size_t available) {
+bool OtOptimizer::optimizePushStackSwapAssignSequence(size_t& instruction, size_t available) {
 	OtObject object;
 	OtStackReference reference;
 

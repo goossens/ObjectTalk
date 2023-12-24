@@ -35,7 +35,7 @@ OtObject OtGeometryClass::computeTangents() {
 //	OtGeometryClass::getAABB
 //
 
-OtAABB &OtGeometryClass::getAABB() {
+OtAABB& OtGeometryClass::getAABB() {
 	validateGeometry();
 
 	if (displacer.isActive()) {

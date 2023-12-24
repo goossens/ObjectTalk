@@ -107,7 +107,7 @@ std::string OtScene::serializeEntity(OtEntity entity, int indent, char character
 //	OtScene::deserializeEntity
 //
 
-OtEntity OtScene::deserializeEntity(const std::string &json, std::filesystem::path* basedir) {
+OtEntity OtScene::deserializeEntity(const std::string& json, std::filesystem::path* basedir) {
 	auto data = nlohmann::json::parse(json);
 	return deserializeEntityFromJson(data, basedir);
 }
@@ -165,7 +165,7 @@ static inline void deserializeComponentsFromJson(nlohmann::json& json, OtScene* 
 	(deserializeComponentFromJson<T>(json, scene, entity, basedir), ...);
 }
 
-OtEntity OtScene::deserializeEntityFromJson(nlohmann::json &data, std::filesystem::path* basedir) {
+OtEntity OtScene::deserializeEntityFromJson(nlohmann::json& data, std::filesystem::path* basedir) {
 	// create a new entity
 	auto entity = createEntity();
 	auto tmpUuid = getEntityUuid(entity);

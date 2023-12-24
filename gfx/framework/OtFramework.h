@@ -105,6 +105,7 @@ private:
 
 	// show/hide profiler/demo
 	bool profiler = false;
+	bool metrix = false;
 	bool demo = false;
 
 	// are we running?
@@ -115,6 +116,11 @@ private:
 
 	// track keyboard modifier state
 	int modifiers = 0;
+
+#if __APPLE__
+	// for right click simulation (using ctrl-click)
+	bool inRightClick = false;
+#endif
 
 	// track gamepad status
 	struct Gamepad {

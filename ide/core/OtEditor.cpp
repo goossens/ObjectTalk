@@ -14,6 +14,7 @@
 #include "imgui.h"
 
 #include "OtMessageBus.h"
+#include "OtUi.h"
 
 #include "OtEditor.h"
 
@@ -24,7 +25,7 @@
 
 void OtEditor::render(bool active) {
 	// render the menu and the editor
-	ImGui::BeginChild("editor", ImVec2(), true, ImGuiWindowFlags_MenuBar);
+	ImGui::BeginChild("editor", ImVec2(), ImGuiChildFlags_Border, ImGuiWindowFlags_MenuBar);
 	renderMenu();
 	renderEditor(active);
 	ImGui::EndChild();
@@ -60,30 +61,24 @@ bool OtEditor::fileExists() {
 //
 
 void OtEditor::renderFileMenu() {
-#if __APPLE__
-#define SHORTCUT "Cmd-"
-#else
-#define SHORTCUT "Ctrl-"
-#endif
-
 	if (ImGui::BeginMenu("File")) {
-		if (ImGui::MenuItem("New", SHORTCUT "N")) { OtMessageBus::instance()->send("new"); }
-		if (ImGui::MenuItem("Open...", SHORTCUT "O")) { OtMessageBus::instance()->send("open"); }
+		if (ImGui::MenuItem("New", OT_UI_SHORTCUT "N")) { OtMessageBus::instance()->send("new"); }
+		if (ImGui::MenuItem("Open...", OT_UI_SHORTCUT "O")) { OtMessageBus::instance()->send("open"); }
 		ImGui::Separator();
 
 		if (fileExists()) {
-			if (ImGui::MenuItem("Save", SHORTCUT "S", nullptr, isDirty())) { OtMessageBus::instance()->send("save"); }
+			if (ImGui::MenuItem("Save", OT_UI_SHORTCUT "S", nullptr, isDirty())) { OtMessageBus::instance()->send("save"); }
 			if (ImGui::MenuItem("Save As...")) { OtMessageBus::instance()->send("saveas"); }
 
 		} else {
-			if (ImGui::MenuItem("Save As...", SHORTCUT "S", nullptr, isDirty())) { OtMessageBus::instance()->send("saveas"); }
+			if (ImGui::MenuItem("Save As...", OT_UI_SHORTCUT "S", nullptr, isDirty())) { OtMessageBus::instance()->send("saveas"); }
 		}
 
 		ImGui::Separator();
-		if (ImGui::MenuItem("Run", SHORTCUT "R", nullptr, !isDirty() && fileExists())) { OtMessageBus::instance()->send("run"); }
+		if (ImGui::MenuItem("Run", OT_UI_SHORTCUT "R", nullptr, !isDirty() && fileExists())) { OtMessageBus::instance()->send("run"); }
 
 		ImGui::Separator();
-		if (ImGui::MenuItem("Close", SHORTCUT "W")) { OtMessageBus::instance()->send("close"); }
+		if (ImGui::MenuItem("Close", OT_UI_SHORTCUT "W")) { OtMessageBus::instance()->send("close"); }
 
 		ImGui::EndMenu();
 	}

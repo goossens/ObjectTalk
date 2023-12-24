@@ -18,11 +18,11 @@
 //	glm::to_json
 //
 
-void glm::to_json(nlohmann::json &j, const glm::vec3 &v)  {
+void glm::to_json(nlohmann::json& j, const glm::vec3& v)  {
 	j = nlohmann::json{ v.x, v.y, v.z };
 }
 
-void glm::to_json(nlohmann::json &j, const glm::vec4 &v)  {
+void glm::to_json(nlohmann::json& j, const glm::vec4& v)  {
 	j = nlohmann::json{ v.x, v.y, v.z, v.w };
 }
 
@@ -31,13 +31,13 @@ void glm::to_json(nlohmann::json &j, const glm::vec4 &v)  {
 //	glm::from_json
 //
 
-void glm::from_json(const nlohmann::json &j, glm::vec3 &v) {
+void glm::from_json(const nlohmann::json& j, glm::vec3& v) {
 	v.x = j[0];
 	v.y = j[1];
 	v.z = j[2];
 }
 
-void glm::from_json(const nlohmann::json &j, glm::vec4 &v) {
+void glm::from_json(const nlohmann::json& j, glm::vec4& v) {
 	v.x = j[0];
 	v.y = j[1];
 	v.z = j[2];

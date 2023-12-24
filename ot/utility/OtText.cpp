@@ -398,32 +398,13 @@ std::string OtText::fromJSON(const std::string text) {
 
 			if (c < text.cend()) {
 				switch (*c) {
-					case'b':
-						c++;
-						o << '\b';
-						break;
+					case 'b': c++; o << '\b'; break;
+					case 'f': c++; o << '\f'; break;
+					case 'n': c++; o << '\n'; break;
+					case 'r': c++; o << '\r'; break;
+					case 't': c++; o << '\t'; break;
 
-					case'f':
-						c++;
-						o << '\f';
-						break;
-
-					case'n':
-						c++;
-						o << '\n';
-						break;
-
-					case'r':
-						c++;
-						o << '\r';
-						break;
-
-					case't':
-						c++;
-						o << '\t';
-						break;
-
-					case'u':
+					case 'u':
 						c++;
 
 						if (c + 4 <= text.cend()) {

@@ -351,7 +351,7 @@ size_t OtByteCodeClass::getInstructionSize(size_t offset) {
 //	OtByteCodeClass::isPush
 //
 
-bool OtByteCodeClass::isPush(size_t pc, OtObject &object) {
+bool OtByteCodeClass::isPush(size_t pc, OtObject& object) {
 	if (getOpcode(pc) == pushOpcode) {
 		object = constants[getNumber(pc)];
 		return true;
@@ -366,7 +366,7 @@ bool OtByteCodeClass::isPush(size_t pc, OtObject &object) {
 //	OtByteCodeClass::isPushStackReference
 //
 
-bool OtByteCodeClass::isPushStackReference(size_t pc, OtStackReference &reference) {
+bool OtByteCodeClass::isPushStackReference(size_t pc, OtStackReference& reference) {
 	if (getOpcode(pc) == pushOpcode) {
 		OtObject object = constants[getNumber(pc)];
 
@@ -420,7 +420,7 @@ bool OtByteCodeClass::isSwap(size_t pc) {
 //	OtByteCodeClass::isMember
 //
 
-bool OtByteCodeClass::isMember(size_t pc, size_t &member) {
+bool OtByteCodeClass::isMember(size_t pc, size_t& member) {
 	if (getOpcode(pc) == memberOpcode) {
 		member = getNumber(pc);
 		return true;
@@ -463,7 +463,7 @@ bool OtByteCodeClass::isMethodAssign(size_t pc) {
 //	OtByteCodeClass::isAnyJump
 //
 
-bool OtByteCodeClass::isAnyJump(size_t pc, size_t &offset) {
+bool OtByteCodeClass::isAnyJump(size_t pc, size_t& offset) {
 	auto opcode = getOpcode(pc);
 
 	if (opcode == jumpOpcode || opcode == jumpTrueOpcode || opcode == jumpFalseOpcode) {

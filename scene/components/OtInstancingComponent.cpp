@@ -59,7 +59,7 @@ void OtInstancingComponent::deserialize(nlohmann::json data, std::filesystem::pa
 //	OtInstancingComponent::appendInstance
 //
 
-void OtInstancingComponent::appendInstance(const glm::vec3 &translation, const glm::vec3 &rotation, const glm::vec3 &scale) {
+void OtInstancingComponent::appendInstance(const glm::vec3& translation, const glm::vec3& rotation, const glm::vec3& scale) {
 	auto& transform = transforms.emplace_back();
 	transform.translation = translation;
 	transform.rotation = rotation;
@@ -71,7 +71,7 @@ void OtInstancingComponent::appendInstance(const glm::vec3 &translation, const g
 //	OtInstancingComponent::setInstance
 //
 
-void OtInstancingComponent::setInstance(size_t index, const glm::vec3 &translation, const glm::vec3 &rotation, const glm::vec3 &scale) {
+void OtInstancingComponent::setInstance(size_t index, const glm::vec3& translation, const glm::vec3& rotation, const glm::vec3& scale) {
 	auto& transform = transforms[index];
 	transform.translation = translation;
 	transform.rotation = rotation;

@@ -17,8 +17,8 @@ endforeach()
 list(REMOVE_DUPLICATES IDE_INCLUDE_DIRS)
 
 add_library(ide OBJECT ${IDE_INCLUDES} ${IDE_SOURCES})
-add_dependencies(ide ot gfx scene imguizmo)
+add_dependencies(ide ot gfx graph scene imguieditor imguinodeeditor imguizmo)
 target_include_directories(ide PUBLIC ${IDE_INCLUDE_DIRS})
-target_link_libraries(ide PUBLIC ot gfx scene imguizmo)
+target_link_libraries(ide PUBLIC ot gfx graph scene imguieditor imguinodeeditor imguizmo)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${IDE_INCLUDES} ${IDE_SOURCES})

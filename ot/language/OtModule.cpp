@@ -52,7 +52,7 @@ static std::vector<std::filesystem::path> localPath;
 //	OtModuleClass::registerInternal
 //
 
-void OtModuleClass::registerInternal(const std::string &name, std::function<void(OtModule)> creator)
+void OtModuleClass::registerInternal(const std::string& name, std::function<void(OtModule)> creator)
 {
 	OtModuleRegistryEntry entry;
 	entry.creator = creator;

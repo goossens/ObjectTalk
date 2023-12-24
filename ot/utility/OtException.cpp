@@ -34,7 +34,7 @@ std::string OtException::serialize() {
 //	OtException::deserialize
 //
 
-void OtException::deserialize(const std::string &string) {
+void OtException::deserialize(const std::string& string) {
 	auto data = nlohmann::json::parse(string);
 	module = data.value("module", "unknown");
 	lineNumber = data.value("lineNumber", 0);

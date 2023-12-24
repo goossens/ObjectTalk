@@ -68,7 +68,7 @@ OtFrustum::OtFrustum(const glm::mat4& matrix) {
 	points[farBottomRight] = project(inverse, glm::vec4(1.0, -1.0, 1.0, 1.0));
 }
 
-OtFrustum::OtFrustum(glm::vec3 &nbl, glm::vec3 &ntl, glm::vec3 &ntr, glm::vec3 &nbr, glm::vec3 &fbl, glm::vec3 &ftl, glm::vec3 &ftr, glm::vec3 &fbr) {
+OtFrustum::OtFrustum(glm::vec3& nbl, glm::vec3& ntl, glm::vec3& ntr, glm::vec3& nbr, glm::vec3& fbl, glm::vec3& ftl, glm::vec3& ftr, glm::vec3& fbr) {
 	// set corners
 	points[nearBottomLeft] = nbl;
 	points[nearTopLeft] = ntl;

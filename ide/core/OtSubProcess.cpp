@@ -17,7 +17,7 @@
 //	OtSubProcess::start
 //
 
-void OtSubProcess::start(const std::filesystem::path& path, const std::vector<std::string>& arguments, std::function <void(int64_t status, int signal)> onExit, std::function <void(const std::string &text)> onStdout, std::function <void(const std::string &text)> onStderr) {
+void OtSubProcess::start(const std::filesystem::path& path, const std::vector<std::string>& arguments, std::function <void(int64_t status, int signal)> onExit, std::function <void(const std::string& text)> onStdout, std::function <void(const std::string& text)> onStderr) {
 	// sanity check
 	if (running) {
 		OtError("Can't start subprocess [%s] as one is already running", path.string().c_str());

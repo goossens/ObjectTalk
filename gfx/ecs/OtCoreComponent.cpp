@@ -14,7 +14,6 @@
 #include "nlohmann/json.hpp"
 
 #include "OtCoreComponent.h"
-#include "OtUi.h"
 
 
 //
@@ -47,15 +46,6 @@ void OtCoreComponent::assignNewUuid() {
 	static std::mt19937_64 engine(device());
 	static std::uniform_int_distribution<uint32_t> distribution;
 	uuid = distribution(engine);
-}
-
-
-//
-//	OtCoreComponent::renderGUI
-//
-
-bool OtCoreComponent::renderGUI() {
-	return OtUiInputText("Name", tag);
 }
 
 

@@ -29,6 +29,12 @@ enum {
 	uiEditorFont
 };
 
+#if __APPLE__
+#define OT_UI_SHORTCUT "Cmd-"
+#else
+#define OT_UI_SHORTCUT "Ctrl-"
+#endif
+
 
 //
 //	Functions
@@ -52,7 +58,8 @@ bool OtUiEditVec4(const char* label, glm::vec4& vector, float speed, float minv,
 
 // create a file path field with file selector popup
 bool OtUiFileSelector(
-	const char* label, std::filesystem::path& path,
+	const char* label,
+	std::filesystem::path& path,
 	std::function<void(std::filesystem::path& path)> create=nullptr,
 	std::function<void(std::filesystem::path& path)> edit=nullptr);
 

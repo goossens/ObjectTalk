@@ -92,7 +92,7 @@ void OtPass::setFrameBuffer(OtFrameBuffer& framebuffer) {
 //	OtPass::setFrameBuffer
 //
 
-void OtPass::setFrameBuffer(OtGbuffer &gbuffer) {
+void OtPass::setFrameBuffer(OtGbuffer& gbuffer) {
 	gbuffer.submit(view);
 }
 
@@ -101,7 +101,7 @@ void OtPass::setFrameBuffer(OtGbuffer &gbuffer) {
 //	OtPass::setTransform
 //
 
-void OtPass::setTransform(const glm::mat4 &viewTransform, const glm::mat4 &projection) {
+void OtPass::setTransform(const glm::mat4& viewTransform, const glm::mat4& projection) {
 	bgfx::setViewTransform(view, glm::value_ptr(viewTransform), glm::value_ptr(projection));
 }
 

@@ -31,21 +31,7 @@ set(GFX_INCLUDE_DIRS ${GFX_INCLUDE_DIRS} PARENT_SCOPE)
 add_library(gfx OBJECT ${GFX_INCLUDES} ${GFX_SOURCES})
 target_include_directories(gfx PUBLIC ${GFX_INCLUDE_DIRS})
 
-add_dependencies(gfx
-	ot
-	shaders
-	glfw bgfx
-	imgui imguifd imguieditor
-	glm tess2
-	entt box2d)
-
-target_link_libraries(gfx PUBLIC
-	ot
-	shaders
-	glfw bgfx
-	imgui imguifd imguieditor
-	glm tess2
-	entt box2d
-	${GFX_LIBS})
+add_dependencies(gfx ot shaders glfw bgfx imgui imguifd glm tess2 entt)
+target_link_libraries(gfx PUBLIC ot shaders glfw bgfx imgui imguifd glm tess2 entt ${GFX_LIBS})
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${GFX_INCLUDES} ${GFX_SOURCES})

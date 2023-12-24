@@ -34,9 +34,6 @@ public:
 	// assign a new UUI to the component
 	void assignNewUuid();
 
-	// GUI to change component properties
-	bool renderGUI();
-
 	// (de)serialize component
 	nlohmann::json serialize(std::filesystem::path* basedir);
 	void deserialize(nlohmann::json data, std::filesystem::path* basedir);

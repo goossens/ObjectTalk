@@ -228,8 +228,9 @@ void OtFramework::frameIMGUI() {
 				io.AddKeyEvent(ImGuiMod_Super, (event.mouseButton.mods & GLFW_MOD_SUPER) != 0);
 
 #if __APPLE__
-				if (event.mouseButton.mods & GLFW_MOD_CONTROL && event.mouseButton.button == 0) {
-					io.AddMouseButtonEvent(1, event.mouseButton.action == GLFW_PRESS);
+				if (inRightClick || ((event.mouseButton.mods & GLFW_MOD_CONTROL) && event.mouseButton.button == 0)) {
+					inRightClick = event.mouseButton.action == GLFW_PRESS;
+					io.AddMouseButtonEvent(1, inRightClick);
 
 				} else {
 					io.AddMouseButtonEvent(event.mouseButton.button, event.mouseButton.action == GLFW_PRESS);
@@ -270,6 +271,10 @@ void OtFramework::frameIMGUI() {
 
 	// start a new frame
 	ImGui::NewFrame();
+
+	if (metrix) {
+		ImGui::ShowMetricsWindow();
+	}
 
 	if (demo) {
 		ImGui::ShowDemoWindow();

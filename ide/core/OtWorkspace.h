@@ -40,6 +40,7 @@ public:
 	void newFile();
 	void newScript();
 	void newScene();
+	void newGraph();
 
 	// open a file
 	void openFile();

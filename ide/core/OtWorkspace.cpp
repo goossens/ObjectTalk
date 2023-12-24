@@ -20,6 +20,7 @@
 #include "OtMessageBus.h"
 #include "OtUi.h"
 
+#include "OtGraphEditor.h"
 #include "OtObjectTalkEditor.h"
 #include "OtSceneEditor.h"
 #include "OtWorkspace.h"
@@ -227,6 +228,16 @@ void OtWorkspace::newScene() {
 
 
 //
+//	OtWorkspace::newGraph
+//
+
+void OtWorkspace::newGraph() {
+	editors.push_back(OtGraphEditor::create(getUntitledName()));
+	state = editState;
+}
+
+
+//
 //	OtWorkspace::openFile
 //
 
@@ -266,6 +277,12 @@ void OtWorkspace::openFile(const std::filesystem::path& path) {
 
 		} else if (extension == ".ots") {
 			editor = OtSceneEditor::create(path);
+			editors.push_back(editor);
+			state = editState;
+
+
+		} else if (extension == ".otg") {
+			editor = OtGraphEditor::create(path);
 			editors.push_back(editor);
 			state = editState;
 
@@ -570,15 +587,11 @@ void OtWorkspace::renderEditors() {
 			}
 
 			// create tab and editor
-			ImGui::PushID(this);
-
 			if (ImGui::BeginTabItem(editor->getShortName().c_str(), nullptr, flags)) {
 				editor->render(state == editState);
 				activeEditor = editor;
 				ImGui::EndTabItem();
 			}
-
-			ImGui::PopID();
 		}
 
 		ImGui::EndTabBar();
@@ -622,6 +635,13 @@ void OtWorkspace::renderNewFileType() {
 
 		if (ImGui::Button("Scene", ImVec2(120, 0))) {
 			newScene();
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Graph", ImVec2(120, 0))) {
+			newGraph();
 			ImGui::CloseCurrentPopup();
 		}
 

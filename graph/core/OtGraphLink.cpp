@@ -15,21 +15,13 @@
 
 
 //
-//	OtGraphLink::serialize
+//	OtGraphLinkClass::serialize
 //
 
-nlohmann::json OtGraphLink::serialize() {
+nlohmann::json OtGraphLinkClass::serialize() {
 	auto data = nlohmann::json::object();
 	data["id"] = id;
 	data["from"] = from->id;
 	data["to"] = to->id;
 	return data;
-}
-
-
-//
-//	OtGraphLink::deserialize
-//
-
-void OtGraphLink::deserialize(nlohmann::json data) {
 }

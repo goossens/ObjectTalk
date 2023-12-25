@@ -17,7 +17,7 @@
 //	OtGraphGenerateID
 //
 
-int OtGraphGenerateID() {
+uint32_t OtGraphGenerateID() {
 	// get a new random ID
 	static std::random_device device;
 	static std::mt19937_64 engine(device());

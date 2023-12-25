@@ -48,7 +48,7 @@ public:
 	// redo a task
 	void redo() {
 		auto task = redoStack.back();
-		task->perform();
+		task->redo();
 		redoStack.pop_back();
 		undoStack.push_back(task);
 	}

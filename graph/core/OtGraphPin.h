@@ -80,7 +80,7 @@ public:
 
 	// properties
 	int type;
-	int id;
+	uint32_t id;
 	const char* name;
 	int direction;
 
@@ -107,7 +107,7 @@ public:
 	// specify the source pin
 	void setSource(OtGraphPin srcPin) override {
 		sourcePin = srcPin;
-		source = std::dynamic_pointer_cast<OtGraphPinImpl<T>>(srcPin)->value;
+		source = srcPin ? std::dynamic_pointer_cast<OtGraphPinImpl<T>>(srcPin)->value : nullptr;
 	}
 
 	void unsetSource() override {

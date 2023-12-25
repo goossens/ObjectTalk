@@ -21,6 +21,9 @@
 #include "OtGraphEditor.h"
 #include "OtMathNodes.h"
 
+#include "OtCreateLinkTask.h"
+#include "OtCreateNodeTask.h"
+
 
 //
 //	Shortcuts
@@ -39,6 +42,8 @@ static constexpr float pinRadius = 6.0f;
 static constexpr float pinSize = pinRadius * 2.0f;
 static constexpr float pinOffsetV = 2.0f;
 
+
+static constexpr ImU32 creatingLinkColor = 0xff7edef8;
 static constexpr ImU32 validLinkColor = 0xff80ff80;
 static constexpr ImU32 invalidLinkColor = 0xff8080ff;
 
@@ -59,10 +64,15 @@ OtGraphEditor::OtGraphEditor() {
 	// create our default context
 	ed::Config config;
 	config.SettingsFile = nullptr;
+	config.NavigateButtonIndex = 2;
 	config.CustomZoomLevels.push_back(0.2f);
+	config.CustomZoomLevels.push_back(0.3f);
 	config.CustomZoomLevels.push_back(0.4f);
+	config.CustomZoomLevels.push_back(0.5f);
 	config.CustomZoomLevels.push_back(0.6f);
+	config.CustomZoomLevels.push_back(0.7f);
 	config.CustomZoomLevels.push_back(0.8f);
+	config.CustomZoomLevels.push_back(0.9f);
 	config.CustomZoomLevels.push_back(1.0f);
 	editorContext = ed::CreateEditor(&config);
 
@@ -78,7 +88,7 @@ OtGraphEditor::OtGraphEditor() {
 	OtMathNodesRegister(*graph);
 
 	graph->createNode("Add", 100.0f, 100.0f);
-	graph->createNode("Subtract", 300.0f, 100.0f);
+	graph->createNode("Subtract", 400.0f, 100.0f);
 	graph->createNode("Sin", 100.0f, 300.0f);
 }
 
@@ -91,7 +101,6 @@ void OtGraphEditor::load() {
 	// load graph from file
 	nlohmann::json metadata;
 	graph->load(path, &metadata);
-	firstFrame = true;
 }
 
 
@@ -197,6 +206,30 @@ void OtGraphEditor::renderMenu() {
 
 		ImGui::EndMenuBar();
 	}
+
+	// handle keyboard shortcuts
+	if (ImGui::IsKeyDown(ImGuiMod_Shortcut)) {
+		if (ImGui::IsKeyDown(ImGuiMod_Shift) && ImGui::IsKeyPressed(ImGuiKey_Z, false)) {
+			if (taskManager.canRedo()) {
+				taskManager.redo();
+			}
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_Z, false) && taskManager.canUndo()) {
+			taskManager.undo();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_X, false) && selected) {
+			cutNodes();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_C, false) && selected) {
+			copyNodes();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_V, false) && selected && clipable) {
+			pasteNodes();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_D, false) && selected) {
+			duplicateNodes();
+		}
+	}
 }
 
 
@@ -205,7 +238,7 @@ void OtGraphEditor::renderMenu() {
 //
 
 static OtGraphPin getPinID(OtGraph& graph, ed::PinId pinId) {
-	return graph.getPin((int) pinId.Get());
+	return graph.getPin((uint32_t) pinId.Get());
 }
 
 
@@ -225,7 +258,7 @@ void OtGraphEditor::renderEditor(bool active) {
 
 	// render all links
 	graph->eachLink([&] (OtGraphLink& link) {
-		ed::Link(link.id, link.from->id, link.to->id);
+		ed::Link(link->id, link->from->id, link->to->id);
 	});
 
 	// handle all interactions
@@ -234,7 +267,12 @@ void OtGraphEditor::renderEditor(bool active) {
 	// close node editor
 	ed::End();
 	ed::SetCurrentEditor(nullptr);
-	firstFrame = false;
+
+	// perform editing task (if required)
+	if (nextTask) {
+		taskManager.perform(nextTask);
+		nextTask = nullptr;
+	}
 }
 
 
@@ -249,8 +287,9 @@ void OtGraphEditor::renderNode(OtGraphNode& node) {
 	auto innerSize = outerSize - ImVec2(nodePadding.x * 2.0f, nodePadding.y * 2.0f);
 
 	// set position (if required)
-	if (firstFrame) {
+	if (node->needsPlacement) {
 		ed::SetNodePosition(node->id, ImVec2(node->x, node->y));
+		node->needsPlacement = false;
 	}
 
 	// show a title
@@ -309,8 +348,8 @@ void OtGraphEditor::renderPin(OtGraphPin& pin, float x) {
 //
 
 void OtGraphEditor::handleInteractions() {
-	// check for interactions
-	if (ed::BeginCreate()) {
+	// see if we are creating a new link
+	if (ed::BeginCreate(ImGui::ColorConvertU32ToFloat4(creatingLinkColor))) {
 		ed::PinId startPinId, endPinId;
 
 		if (ed::QueryNewLink(&startPinId, &endPinId)) {
@@ -326,13 +365,45 @@ void OtGraphEditor::handleInteractions() {
 				ed::RejectNewItem(ImGui::ColorConvertU32ToFloat4(invalidLinkColor));
 
 			} else if (ed::AcceptNewItem(ImGui::ColorConvertU32ToFloat4(validLinkColor))) {
-				int linkID = graph->createLink(startPin, endPin);
-
-//				m_Links.push_back({ ed::LinkId(m_NextLinkId++), inputPinId, outputPinId });
-//				ed::Link(m_Links.back().Id, m_Links.back().InputId, m_Links.back().OutputId);
+				nextTask = std::make_shared<OtCreateLinkTask>(graph.get(), startPin->id, endPin->id);
 			}
 		}
 	}
 
 	ed::EndCreate();
+
+	// handle context menus
+	ed::Suspend();
+
+	if (ed::ShowBackgroundContextMenu()) {
+		ImGui::OpenPopup("Background Context");
+	}
+
+	if (ImGui::BeginPopup("Background Context")) {
+		auto nodePosition = ed::ScreenToCanvas(ImGui::GetMousePosOnOpeningCurrentPopup());
+		ImGui::TextUnformatted("Create Node");
+		ImGui::Separator();
+
+		auto factory = graph->getNodeFactory();
+
+		factory.eachCategory([&] (OtGraphNodeCategory& category) {
+			if (ImGui::BeginMenu(category.name.c_str())) {
+				category.eachType([&] (OtGraphNodeType& type) {
+					if (ImGui::MenuItem(type.name.c_str())) {
+						nextTask = std::make_shared<OtCreateNodeTask>(
+							graph.get(),
+							type.name,
+							nodePosition.x,
+							nodePosition.y);
+					}
+				});
+
+				ImGui::EndMenu();
+			}
+		});
+
+		ImGui::EndPopup();
+	}
+
+	ed::Resume();
 }

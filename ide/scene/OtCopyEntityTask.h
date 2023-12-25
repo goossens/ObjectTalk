@@ -31,7 +31,7 @@ public:
 	// get task name
 	std::string name() { return "copy entity"; }
 
-	// perform action
+	// do action
 	virtual void perform() {
 		// serialize entity to clipboard
 		oldClipboard = clipboard;

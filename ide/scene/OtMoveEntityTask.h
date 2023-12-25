@@ -32,7 +32,7 @@ public:
 	// get task name
 	std::string name() { return "move entity"; }
 
-	// perform action
+	// do action
 	virtual void perform() {
 		// get information for undo
 		auto target = scene->getEntityFromUuid(targetUuid);

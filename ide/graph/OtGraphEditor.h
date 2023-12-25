@@ -58,6 +58,8 @@ private:
 	void renderEditor(bool active) override;
 	void renderNode(OtGraphNode& node);
 	void renderPin(OtGraphPin& pin, float x);
+
+	// handle graph interactions
 	void handleInteractions();
 
 	// the graph being edited and the editor's UI
@@ -72,10 +74,9 @@ private:
 	std::string clipboard;
 
 	// currently selected nodes
-	std::vector<int> selectedNodes;
+	std::vector<uint32_t> selectedNodes;
 
 	// work variables
-	bool firstFrame = true;
 	ImVec4 nodePadding;
 	float nodeBorderWidth;
 };

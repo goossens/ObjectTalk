@@ -35,7 +35,7 @@ public:
 	// get task name
 	std::string name() { return "change component"; }
 
-	// perform action
+	// do action
 	virtual void perform() {
 		// save old value and store new value
 		auto entity = scene->getEntityFromUuid(entityUuid);

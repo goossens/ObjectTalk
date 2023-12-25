@@ -29,7 +29,7 @@ public:
 	// get task name
 	std::string name() { return "cut entity"; }
 
-	// perform action
+	// do action
 	virtual void perform() {
 		// perform the delete
 		OtDeleteEntityTask::perform();

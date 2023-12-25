@@ -31,7 +31,7 @@ public:
 	// get task name
 	std::string name() { return "delete entity"; }
 
-	// perform action
+	// do action
 	virtual void perform() {
 		// get information for undo
 		auto entity = scene->getEntityFromUuid(entityUuid);

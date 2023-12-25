@@ -31,6 +31,7 @@ public:
 	// perform/undo action
 	virtual void perform() {}
 	virtual void undo() {}
+	virtual void redo() { perform(); }
 
 	// support task merging
 	virtual bool isMergeable(std::shared_ptr<OtEditorTask> task) { return false; }

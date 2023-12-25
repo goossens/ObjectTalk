@@ -22,18 +22,21 @@
 //	OtGraphLink
 //
 
-struct OtGraphLink {
+class OtGraphLinkClass;
+using OtGraphLink = std::shared_ptr<OtGraphLinkClass>;
+
+class OtGraphLinkClass {
+public:
 	// constructor
-	OtGraphLink(OtGraphPin f, OtGraphPin t, int i=0) : from(f), to(t) {
+	OtGraphLinkClass(OtGraphPin f, OtGraphPin t, uint32_t i=0) : from(f), to(t) {
 		id = i ? i : OtGraphGenerateID();
 	}
 
-	// (de)serialize
+	// serialize
 	nlohmann::json serialize();
-	void deserialize(nlohmann::json data);
 
 	// properties
-	int id;
+	uint32_t id;
 	OtGraphPin from;
 	OtGraphPin to;
 };

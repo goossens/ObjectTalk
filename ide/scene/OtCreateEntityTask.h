@@ -46,7 +46,7 @@ public:
 	// get task name
 	std::string name() { return "create entity"; }
 
-	// perform action
+	// do action
 	virtual void perform() {
 		// create an empty entity (preserving UUID on redo)
 		entity = scene->createEntity(entityUuid);

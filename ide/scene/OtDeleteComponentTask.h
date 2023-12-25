@@ -32,7 +32,7 @@ public:
 	// get task name
 	std::string name() { return "delete component"; }
 
-	// perform action
+	// do action
 	virtual void perform() {
 		// get the target entity and component
 		auto entity = scene->getEntityFromUuid(entityUuid);

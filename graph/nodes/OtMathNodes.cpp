@@ -99,7 +99,7 @@ OT_GRAPH_NODE_2_BY_1(Max, std::max(a, b));
 //
 
 #define REGISTER(NAME) \
-	graph.registerNodeType<OtGraphNode ## NAME>(#NAME)
+	graph.registerNodeType<OtGraphNode ## NAME>("Math", #NAME)
 
 void OtMathNodesRegister(OtGraph& graph) {
 	REGISTER(Add);

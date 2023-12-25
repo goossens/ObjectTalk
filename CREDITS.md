@@ -31,6 +31,11 @@ In case the GUI modules are included, we also use:
 
 ## Data
 
+The [BitStream Vera Mono Font](https://en.wikipedia.org/wiki/Bitstream_Vera) is extracted from
+[here] (https://download.gnome.org/sources/ttf-bitstream-vera/1.10/) and it was released onder a
+[generous license](https://raw.githubusercontent.com/goossens/ObjectTalk/master/gfx/framework/OtBitstreamVeraMono.lic)
+similar to the [SIL Open Font License](https://openfontlicense.org/documents/OFL.txt).
+
 The Simple Font is extracted from the [Hershey Fonts](https://github.com/kamalmostafa/hershey-fonts)
 released under the [GNU General Public License, version 2](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html).
 

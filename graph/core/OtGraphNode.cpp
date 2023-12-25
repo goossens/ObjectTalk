@@ -27,8 +27,8 @@ nlohmann::json OtGraphNodeClass::serialize() {
 	data["x"] = x;
 	data["y"] = y;
 
-	auto inputs = data["inputs"] = nlohmann::json::array();
-	auto outputs = data["outputs"] = nlohmann::json::array();
+	auto inputs = nlohmann::json::array();
+	auto outputs = nlohmann::json::array();
 
 	eachInput([&] (OtGraphPin& pin) {
 		inputs.push_back(pin->serialize());
@@ -38,6 +38,8 @@ nlohmann::json OtGraphNodeClass::serialize() {
 		outputs.push_back(pin->serialize());
 	});
 
+	data["inputs"] = inputs;
+	data["outputs"] = outputs;
 	return data;
 }
 

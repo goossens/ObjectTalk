@@ -29,7 +29,7 @@ public:
 	// get task name
 	std::string name() { return "paste entity"; }
 
-	// perform action
+	// do action
 	virtual void perform() {
 		// create an entity from the clipboard content (without preserving UUIDs, i.e. new copies)
 		auto entity = scene->deserializeEntity(clipboard);

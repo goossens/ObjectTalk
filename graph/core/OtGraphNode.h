@@ -80,10 +80,11 @@ public:
 	virtual void onEnd() {};
 
 	// public properties
-	int id;
+	uint32_t id;
 	const char* name;
 	float x;
 	float y;
+	bool needsPlacement;
 
 private:
 	// private properties

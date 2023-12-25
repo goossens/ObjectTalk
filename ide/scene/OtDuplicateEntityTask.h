@@ -31,7 +31,7 @@ public:
 	// get task name
 	std::string name() { return ""; }
 
-	// perform action
+	// do action
 	virtual void perform() {
 		// duplicate the target entity
 		auto target = scene->getEntityFromUuid(targetUuid);

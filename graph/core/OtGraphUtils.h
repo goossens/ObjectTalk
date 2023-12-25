@@ -13,4 +13,4 @@
 //
 
 // generate a new identifier
-int OtGraphGenerateID();
+uint32_t OtGraphGenerateID();

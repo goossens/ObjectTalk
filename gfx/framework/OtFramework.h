@@ -118,8 +118,9 @@ private:
 	int modifiers = 0;
 
 #if __APPLE__
-	// for right click simulation (using ctrl-click)
+	// for right/middle click simulation (using ctrl-click)
 	bool inRightClick = false;
+	bool inMiddleClick = false;
 #endif
 
 	// track gamepad status

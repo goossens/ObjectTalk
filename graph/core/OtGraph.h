@@ -22,9 +22,9 @@
 #include "nlohmann/json_fwd.hpp"
 
 #include "OtGraphNode.h"
+#include "OtGraphNodeFactory.h"
 #include "OtGraphLink.h"
 #include "OtGraphPin.h"
-
 
 
 //
@@ -35,13 +35,19 @@ class OtGraph {
 public:
 	// register a node type
 	template <typename T>
-	void registerNodeType(const char* name) {
-		nodeTypes[name] = []() {
-			auto node = std::make_shared<T>();
-			node->configure();
-			return node;
-		};
+	void registerNodeType(const char* category, const char* name) {
+		factory.registerType(
+			category,
+			name,
+			[]() {
+				auto node = std::make_shared<T>();
+				node->configure();
+				return node;
+			});
 	}
+
+	// get node factory
+	OtGraphNodeFactory& getNodeFactory() { return factory; }
 
 	// clear the entire graph
 	void clear();
@@ -52,24 +58,27 @@ public:
 
 	// manipulate nodes
 	OtGraphNode createNode(const std::string& name, float x, float y);
-	void deleteNode(int id) { deleteNode(nodeIndex[id]); }
+	void deleteNode(uint32_t id) { deleteNode(nodeIndex[id]); }
 	void deleteNode(OtGraphNode node);
+	void deleteNodes(const std::vector<uint32_t>& nodes);
 
 	// manipulate links
-	bool isLinkValid(int from, int to) { return isLinkValid(pinIndex[from], pinIndex[to]); }
+	bool isLinkValid(uint32_t from, uint32_t to) { return isLinkValid(pinIndex[from], pinIndex[to]); }
 	bool isLinkValid(OtGraphPin from, OtGraphPin to);
 
-	int createLink(int from, int to, int id=0) { return createLink(pinIndex[from], pinIndex[to]); }
-	int createLink(OtGraphPin from, OtGraphPin to, int id=0);
+	OtGraphLink createLink(uint32_t from, uint32_t to, uint32_t id=0) { return createLink(pinIndex[from], pinIndex[to], id); }
+	OtGraphLink createLink(OtGraphPin from, OtGraphPin to, uint32_t id=0);
 
-	void deleteLink(int from, int to) { deleteLink(pinIndex[from], pinIndex[to]); }
+	void deleteLink(uint32_t id) { deleteLink(linkIndex[id]); }
+	void deleteLink(OtGraphLink link);
+	void deleteLink(uint32_t from, uint32_t to) { deleteLink(pinIndex[from], pinIndex[to]); }
 	void deleteLink(OtGraphPin from, OtGraphPin to);
-	void deleteLink(int any) { deleteLink(pinIndex[any]); }
-	void deleteLink(OtGraphPin any);
+	void deleteLinks(uint32_t any) { deleteLinks(pinIndex[any]); }
+	void deleteLinks(OtGraphPin pin);
 
 	// access nodes and pins
-	OtGraphNode& getNode(int id) { return nodeIndex[id]; }
-	OtGraphPin& getPin(int id) { return pinIndex[id]; }
+	OtGraphNode& getNode(uint32_t id) { return nodeIndex[id]; }
+	OtGraphPin& getPin(uint32_t id) { return pinIndex[id]; }
 
 	// iterate through nodes and links
 	void eachNode(std::function<void(OtGraphNode&)> callback) {
@@ -85,8 +94,8 @@ public:
 	}
 
 	// archive/restore nodes to/from a string (support for do/undo/redo operations)
-	std::string archiveNodes(const std::vector<int>& nodes);
-	void deleteNodes(const std::vector<int>& nodes);
+	std::string archiveNode(uint32_t node);
+	std::string archiveNodes(const std::vector<uint32_t>& nodes);
 	void restoreNodes(const std::string& json);
 	void duplicateNodes(const std::string& json);
 
@@ -95,20 +104,21 @@ public:
 
 private:
 	// properties
-	std::unordered_map<std::string, std::function<OtGraphNode()>> nodeTypes;
+	OtGraphNodeFactory factory;
 
 	std::vector<OtGraphNode> nodes;
 	std::vector<OtGraphLink> links;
 
-	std::unordered_map<int, OtGraphNode> nodeIndex;
-	std::unordered_map<int, OtGraphPin> pinIndex;
+	std::unordered_map<uint32_t, OtGraphNode> nodeIndex;
+	std::unordered_map<uint32_t, OtGraphPin> pinIndex;
+	std::unordered_map<uint32_t, OtGraphLink> linkIndex;
 
 	// (un)index a node and its pins
 	void indexNode(OtGraphNode node);
 	void unindexNode(OtGraphNode node);
 
 	// restore a node from its JSON data
-	int restoreNode(nlohmann::json data, bool restoreID=true);
+	uint32_t restoreNode(nlohmann::json data, bool restoreID=true);
 
 	// topographically sort the nodes
 	void sortNodes();

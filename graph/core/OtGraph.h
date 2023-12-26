@@ -35,7 +35,7 @@ class OtGraph {
 public:
 	// register a node type
 	template <typename T>
-	void registerNodeType(const char* category, const char* name) {
+	inline void registerNodeType(const char* category, const char* name) {
 		factory.registerType(
 			category,
 			name,
@@ -47,7 +47,7 @@ public:
 	}
 
 	// get node factory
-	OtGraphNodeFactory& getNodeFactory() { return factory; }
+	inline OtGraphNodeFactory& getNodeFactory() { return factory; }
 
 	// clear the entire graph
 	void clear();
@@ -58,36 +58,36 @@ public:
 
 	// manipulate nodes
 	OtGraphNode createNode(const std::string& name, float x, float y);
-	void deleteNode(uint32_t id) { deleteNode(nodeIndex[id]); }
+	inline void deleteNode(uint32_t id) { deleteNode(nodeIndex[id]); }
 	void deleteNode(OtGraphNode node);
 	void deleteNodes(const std::vector<uint32_t>& nodes);
 
 	// manipulate links
-	bool isLinkValid(uint32_t from, uint32_t to) { return isLinkValid(pinIndex[from], pinIndex[to]); }
+	inline bool isLinkValid(uint32_t from, uint32_t to) { return isLinkValid(pinIndex[from], pinIndex[to]); }
 	bool isLinkValid(OtGraphPin from, OtGraphPin to);
 
-	OtGraphLink createLink(uint32_t from, uint32_t to, uint32_t id=0) { return createLink(pinIndex[from], pinIndex[to], id); }
+	inline OtGraphLink createLink(uint32_t from, uint32_t to, uint32_t id=0) { return createLink(pinIndex[from], pinIndex[to], id); }
 	OtGraphLink createLink(OtGraphPin from, OtGraphPin to, uint32_t id=0);
 
-	void deleteLink(uint32_t id) { deleteLink(linkIndex[id]); }
+	inline void deleteLink(uint32_t id) { deleteLink(linkIndex[id]); }
 	void deleteLink(OtGraphLink link);
-	void deleteLink(uint32_t from, uint32_t to) { deleteLink(pinIndex[from], pinIndex[to]); }
+	inline void deleteLink(uint32_t from, uint32_t to) { deleteLink(pinIndex[from], pinIndex[to]); }
 	void deleteLink(OtGraphPin from, OtGraphPin to);
-	void deleteLinks(uint32_t any) { deleteLinks(pinIndex[any]); }
+	inline void deleteLinks(uint32_t any) { deleteLinks(pinIndex[any]); }
 	void deleteLinks(OtGraphPin pin);
 
 	// access nodes and pins
-	OtGraphNode& getNode(uint32_t id) { return nodeIndex[id]; }
-	OtGraphPin& getPin(uint32_t id) { return pinIndex[id]; }
+	inline OtGraphNode& getNode(uint32_t id) { return nodeIndex[id]; }
+	inline OtGraphPin& getPin(uint32_t id) { return pinIndex[id]; }
 
 	// iterate through nodes and links
-	void eachNode(std::function<void(OtGraphNode&)> callback) {
+	inline void eachNode(std::function<void(OtGraphNode&)> callback) {
 		for (auto& node : nodes) {
 			callback(node);
 		}
 	}
 
-	void eachLink(std::function<void(OtGraphLink&)> callback) {
+	inline void eachLink(std::function<void(OtGraphLink&)> callback) {
 		for (auto& link : links) {
 			callback(link);
 		}

@@ -22,10 +22,10 @@
 class OtGraphNode1by1 : public OtGraphNodeClass {
 public:
 	// constructor
-	OtGraphNode1by1(const char* name) : OtGraphNodeClass(name) {}
+	inline OtGraphNode1by1(const char* name) : OtGraphNodeClass(name) {}
 
 	// configure node
-	void configure() override {
+	inline void configure() override {
 		addInputPin("A", a);
 		addOutputPin("Result", result);
 	}
@@ -36,11 +36,11 @@ protected:
 };
 
 
-#define OT_GRAPH_NODE_1_BY_1(NAME, FUNCTION) 							\
-class OtGraphNode ## NAME : public OtGraphNode1by1 {					\
-public:																	\
-	OtGraphNode ## NAME() : OtGraphNode1by1(#NAME) {}					\
-	bool onExecute() override { result = FUNCTION; return false; }		\
+#define OT_GRAPH_NODE_1_BY_1(NAME, FUNCTION) 								\
+class OtGraphNode ## NAME : public OtGraphNode1by1 {						\
+public:																		\
+	inline OtGraphNode ## NAME() : OtGraphNode1by1(#NAME) {}				\
+	inline bool onExecute() override { result = FUNCTION; return false; }	\
 }
 
 OT_GRAPH_NODE_1_BY_1(Neg, -a);
@@ -58,10 +58,10 @@ OT_GRAPH_NODE_1_BY_1(Tan, std::tan(a));
 class OtGraphNode2by1 : public OtGraphNodeClass {
 public:
 	// constructor
-	OtGraphNode2by1(const char* name) : OtGraphNodeClass(name) {}
+	inline OtGraphNode2by1(const char* name) : OtGraphNodeClass(name) {}
 
 	// configure node
-	void configure() override {
+	inline void configure() override {
 		addInputPin("A", a);
 		addInputPin("B", b);
 		addOutputPin("Result", result);
@@ -74,11 +74,11 @@ protected:
 };
 
 
-#define OT_GRAPH_NODE_2_BY_1(NAME, FUNCTION) 							\
-class OtGraphNode ## NAME : public OtGraphNode2by1 {					\
-public:																	\
-	OtGraphNode ## NAME() : OtGraphNode2by1(#NAME) {}					\
-	bool onExecute() override { result = FUNCTION; return false; }		\
+#define OT_GRAPH_NODE_2_BY_1(NAME, FUNCTION) 								\
+class OtGraphNode ## NAME : public OtGraphNode2by1 {						\
+public:																		\
+	inline OtGraphNode ## NAME() : OtGraphNode2by1(#NAME) {}				\
+	inline bool onExecute() override { result = FUNCTION; return false; }	\
 }
 
 OT_GRAPH_NODE_2_BY_1(Add, a + b);

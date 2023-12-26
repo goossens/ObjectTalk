@@ -40,7 +40,7 @@ public:
 
 	// acquire an asset
 	template<typename T>
-	T* acquire(const std::filesystem::path& path) {
+	inline T* acquire(const std::filesystem::path& path) {
 		static_assert(std::is_base_of<OtAssetBase, T>::value, "Class is not derived from OtAssetBase");
 		return dynamic_cast<T*>(lookup(path));
 	}
@@ -59,7 +59,7 @@ private:
 
 	// the registry of loaded assets
 	struct PathHash {
-		std::size_t operator()(const std::filesystem::path& p) const noexcept {
+		inline std::size_t operator()(const std::filesystem::path& p) const noexcept {
 			return std::filesystem::hash_value(p);
 		}
 	};

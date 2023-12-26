@@ -28,10 +28,10 @@ public:
 	void load(const std::filesystem::path& path);
 
 	// clear heightmap
-	void clear() { heightmap = nullptr; }
+	inline void clear() { heightmap = nullptr; }
 
 	// see if heightmap is valid
-	bool isValid() { return heightmap != nullptr; }
+	inline bool isValid() { return heightmap != nullptr; }
 
 	// get height (0.0 to 1.0) at specified location (in relative coordinates, 0.0 to 1.0)
 	float getHeight(float x, float y);

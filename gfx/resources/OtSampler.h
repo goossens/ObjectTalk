@@ -37,7 +37,7 @@ public:
 
 	// constructor/destructor
 	OtSampler() = default;
-	OtSampler(const char* n, uint32_t f=defaultSampling) : name(n), flags(f) {}
+	inline OtSampler(const char* n, uint32_t f=defaultSampling) : name(n), flags(f) {}
 
 	// initialize sampler
 	void initialize(const char* name, uint32_t flags=defaultSampling);

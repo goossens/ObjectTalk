@@ -26,10 +26,10 @@
 class OtGenerator {
 public:
 	// destructor
-	virtual ~OtGenerator() {}
+	virtual inline ~OtGenerator() {}
 
 	// set rendering state
-	void setState(int s) { state = s; }
+	inline void setState(int s) { state = s; }
 
 	// run generator
 	void render(OtFrameBuffer& destination);
@@ -37,7 +37,7 @@ public:
 
 private:
 	// execute generator
-	virtual void execute(OtPass& pass) {}
+	virtual void execute(OtPass& pass) = 0;
 
 	// rendering state
 	uint64_t state = BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A;

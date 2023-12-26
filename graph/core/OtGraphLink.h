@@ -28,7 +28,7 @@ using OtGraphLink = std::shared_ptr<OtGraphLinkClass>;
 class OtGraphLinkClass {
 public:
 	// constructor
-	OtGraphLinkClass(OtGraphPin f, OtGraphPin t, uint32_t i=0) : from(f), to(t) {
+	inline OtGraphLinkClass(OtGraphPin f, OtGraphPin t, uint32_t i=0) : from(f), to(t) {
 		id = i ? i : OtGraphGenerateID();
 	}
 

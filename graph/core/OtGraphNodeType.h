@@ -25,10 +25,10 @@
 class OtGraphNodeType {
 public:
 	// constructor
-	OtGraphNodeType(const char* n, std::function<OtGraphNode()> c) : name(n), constructor(c) {}
+	inline OtGraphNodeType(const char* n, std::function<OtGraphNode()> c) : name(n), constructor(c) {}
 
 	// compare types
-	bool operator < (const OtGraphNodeType& type) const {
+	inline bool operator < (const OtGraphNodeType& type) const {
 		return name < type.name;
 	}
 

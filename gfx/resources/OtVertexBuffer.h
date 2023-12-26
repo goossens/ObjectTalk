@@ -22,7 +22,7 @@
 class OtVertexBuffer {
 public:
 	// clear the resources
-	void clear() { vertexBuffer.clear(); }
+	inline void clear() { vertexBuffer.clear(); }
 
 	// set vertices
 	void set(void* data, size_t count, const bgfx::VertexLayout& layout);

@@ -53,16 +53,16 @@ public:
 	};
 
 	// constructor
-	OtGraphPinClass(const char* n, int d) : name(n), direction(d) {
+	inline OtGraphPinClass(const char* n, int d) : name(n), direction(d) {
 		id = OtGraphGenerateID();
 	}
 
 	// destructor
-	virtual ~OtGraphPinClass() {};
+	virtual inline ~OtGraphPinClass() {};
 
 	// check direction
-	bool isInput() { return direction == inputPin; }
-	bool isOutput() { return direction == outputPin; }
+	inline bool isInput() { return direction == inputPin; }
+	inline bool isOutput() { return direction == outputPin; }
 
 	// specify a source pin
 	virtual void setSource(OtGraphPin sourcePin) = 0;
@@ -73,7 +73,7 @@ public:
 	void deserialize(nlohmann::json data);
 
 	// get the pin type as a string
-	std::string getTypeName() { return OtGraphPinTypeNames[type]; }
+	inline std::string getTypeName() { return OtGraphPinTypeNames[type]; }
 
 	// see if pin content changed
 	virtual bool onCheck() = 0;
@@ -98,25 +98,25 @@ template <typename T>
 class OtGraphPinImpl : public OtGraphPinClass {
 public:
 	// constructor
-	OtGraphPinImpl(const char* n, int d, T* v) : OtGraphPinClass(n, d) {
+	inline OtGraphPinImpl(const char* n, int d, T* v) : OtGraphPinClass(n, d) {
 		static_assert(OtTypeListIndexOf<T, OtGraphPinTypes>() != -1, "Data type not allowed for graph node pin");
 		type = OtTypeListIndexOf<T, OtGraphPinTypes>();
 		value = v;
 	}
 
 	// specify the source pin
-	void setSource(OtGraphPin srcPin) override {
+	inline void setSource(OtGraphPin srcPin) override {
 		sourcePin = srcPin;
 		source = srcPin ? std::dynamic_pointer_cast<OtGraphPinImpl<T>>(srcPin)->value : nullptr;
 	}
 
-	void unsetSource() override {
+	inline void unsetSource() override {
 		sourcePin = nullptr;
 		source = nullptr;
 	}
 
 	// update pin value from source (if avalable)
-	bool onCheck() override {
+	inline bool onCheck() override {
 		bool changed;
 
 		if (source) {
@@ -132,7 +132,7 @@ public:
 	}
 
 	// set new value
-	void setValue(T v) {
+	inline void setValue(T v) {
 		*value = v;
 		updated = true;
 	}

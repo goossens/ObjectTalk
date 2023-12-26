@@ -26,7 +26,7 @@ class OtBgfxHandle {
 public:
 	// constructors
 	OtBgfxHandle() = default;
-	OtBgfxHandle(T handle) { handleRef = std::make_shared<Handle<T>>(handle); }
+	inline OtBgfxHandle(T handle) { handleRef = std::make_shared<Handle<T>>(handle); }
 
 	// see if handle is valid
 	inline bool isValid() { return handleRef != nullptr; }
@@ -48,15 +48,15 @@ private:
 	public:
 		// constructors/destructor (rule of 7)
 		Handle() = default;
-		Handle(Ts h) { handle = h; }
+		inline Handle(Ts h) { handle = h; }
 		Handle(const Handle&) = delete; // no copy constructor
 		Handle& operator=(const Handle&) = delete; // no copy assignment
 		Handle(Handle&&) = default;
 		Handle& operator=(Handle&&) = default;
-		~Handle() { clear(); }
+		inline ~Handle() { clear(); }
 
 		// clear the handle
-		void clear() {
+		inline void clear() {
 			if (bgfx::isValid(handle)) {
 				bgfx::destroy(handle);
 			}
@@ -65,16 +65,16 @@ private:
 		}
 
 		// get/set
-		Ts get() { return handle; }
+		inline Ts get() { return handle; }
 
-		Handle& operator=(Ts h) {
+		inline Handle& operator=(Ts h) {
 			clear();
 			handle = h;
 			return this;
 		}
 
 		// get the handle index
-		uint16_t getIndex() { return handle.idx; }
+		inline uint16_t getIndex() { return handle.idx; }
 
 	private:
 		// the actual handle

@@ -25,9 +25,8 @@ typedef std::shared_ptr<OtCubicBezierCurveClass> OtCubicBezierCurve;
 class OtCubicBezierCurveClass : public OtCurveClass {
 public:
 	// constructor
-	OtCubicBezierCurveClass(const glm::vec2& v1, const glm::vec2& v2, const glm::vec2& v3, const glm::vec2& v4) :
-		p1(v1), p2(v2), p3(v3), p4(v4) {
-	}
+	inline OtCubicBezierCurveClass(const glm::vec2& v1, const glm::vec2& v2, const glm::vec2& v3, const glm::vec2& v4) :
+		p1(v1), p2(v2), p3(v3), p4(v4) {}
 
 	// get a point on the curve at t [0, 1]
 	glm::vec2 getPoint(float t) override {
@@ -37,7 +36,7 @@ public:
 private:
 	glm::vec2 p1, p2, p3, p4;
 
-	static float cubicBezier(float t, float v1, float v2, float v3, float v4) {
+	static inline float cubicBezier(float t, float v1, float v2, float v3, float v4) {
 		float k = 1 - t;
 
 		return (k * k * k * v1) +

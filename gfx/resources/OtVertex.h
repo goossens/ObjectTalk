@@ -33,12 +33,12 @@ struct OtVertex {
 	// constructors
 	OtVertex() = default;
 
-	OtVertex(const glm::vec3& p, const glm::vec3& n=glm::vec3(0.0f), const glm::vec2& u=glm::vec2(0.0f), const glm::vec3 t=glm::vec3(0.0f), const glm::vec3 b=glm::vec3(0.0f)) :
+	inline OtVertex(const glm::vec3& p, const glm::vec3& n=glm::vec3(0.0f), const glm::vec2& u=glm::vec2(0.0f), const glm::vec3 t=glm::vec3(0.0f), const glm::vec3 b=glm::vec3(0.0f)) :
 		position(p), normal(n), uv(u), tangent(t), bitangent(b) {
 	}
 
 	// get vertex description
-	static bgfx::VertexLayout getLayout() {
+	static inline bgfx::VertexLayout getLayout() {
 		bgfx::VertexLayout layout;
 
 		layout.begin()
@@ -66,10 +66,10 @@ struct OtVertexPosUvCol {
 
 	// constructors
 	OtVertexPosUvCol() = default;
-	OtVertexPosUvCol(const glm::vec3& p, const glm::vec2& u=glm::vec2(0.0f), uint32_t c=0) : position(p), uv(u), color(c) {}
+	inline OtVertexPosUvCol(const glm::vec3& p, const glm::vec2& u=glm::vec2(0.0f), uint32_t c=0) : position(p), uv(u), color(c) {}
 
 	// get vertex description
-	static bgfx::VertexLayout getLayout() {
+	static inline bgfx::VertexLayout getLayout() {
 		bgfx::VertexLayout layout;
 
 		layout.begin()
@@ -94,10 +94,10 @@ struct OtVertexPosUv {
 
 	// constructors
 	OtVertexPosUv() = default;
-	OtVertexPosUv(const glm::vec3& p, const glm::vec2& u=glm::vec2(0.0f)) : position(p), uv(u) {}
+	inline OtVertexPosUv(const glm::vec3& p, const glm::vec2& u=glm::vec2(0.0f)) : position(p), uv(u) {}
 
 	// get vertex description
-	static bgfx::VertexLayout getLayout() {
+	static inline bgfx::VertexLayout getLayout() {
 		bgfx::VertexLayout layout;
 
 		layout.begin()
@@ -121,10 +121,10 @@ struct OtVertexPosNorm {
 
 	// constructors
 	OtVertexPosNorm() = default;
-	OtVertexPosNorm(const glm::vec3& p, const glm::vec3& n=glm::vec3(0.0f)) : position(p), normal(n) {}
+	inline OtVertexPosNorm(const glm::vec3& p, const glm::vec3& n=glm::vec3(0.0f)) : position(p), normal(n) {}
 
 	// get vertex description
-	static bgfx::VertexLayout getLayout() {
+	static inline bgfx::VertexLayout getLayout() {
 		bgfx::VertexLayout layout;
 
 		layout.begin()
@@ -148,10 +148,10 @@ struct OtVertexPosCol {
 
 	// constructors
 	OtVertexPosCol() = default;
-	OtVertexPosCol(const glm::vec3& p, uint32_t c=0) : position(p), color(c) {}
+	inline OtVertexPosCol(const glm::vec3& p, uint32_t c=0) : position(p), color(c) {}
 
 	// get vertex description
-	static bgfx::VertexLayout getLayout() {
+	static inline bgfx::VertexLayout getLayout() {
 		bgfx::VertexLayout layout;
 
 		layout.begin()
@@ -174,10 +174,10 @@ struct OtVertexPos {
 
 	// constructors
 	OtVertexPos() = default;
-	OtVertexPos(const glm::vec3& p) : position(p) {}
+	inline OtVertexPos(const glm::vec3& p) : position(p) {}
 
 	// get vertex description
-	static bgfx::VertexLayout getLayout() {
+	static inline bgfx::VertexLayout getLayout() {
 		bgfx::VertexLayout layout;
 
 		layout.begin()

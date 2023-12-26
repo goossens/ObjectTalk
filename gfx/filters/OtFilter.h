@@ -27,7 +27,7 @@
 class OtFilter {
 public:
 	// destructor
-	virtual ~OtFilter() {}
+	virtual inline ~OtFilter() {}
 
 	// set rendering state
 	inline void setState(int s) { state = s; }
@@ -38,7 +38,7 @@ public:
 
 private:
 	// execute filter
-	virtual void execute(OtPass& pass) {}
+	virtual void execute(OtPass& pass) = 0;
 
 	// the texture sampler
 	OtSampler textureSampler{"s_texture", OtSampler::pointSampling | OtSampler::clampSampling};

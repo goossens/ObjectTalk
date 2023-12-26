@@ -28,7 +28,7 @@ public:
 	// constructor
 	OtAsset() = default;
 
-	OtAsset(const std::filesystem::path& p) {
+	inline OtAsset(const std::filesystem::path& p) {
 		path = p;
 		acquire();
 	}
@@ -43,7 +43,7 @@ public:
 	inline std::filesystem::path& getPath() { return path; }
 
 	// assignment
-	OtAsset& operator=(const std::filesystem::path& p) {
+	inline OtAsset& operator=(const std::filesystem::path& p) {
 		path = p;
 		acquire();
 		return *this;

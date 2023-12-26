@@ -30,12 +30,12 @@ class OtAssetFactory : public OtSingleton<OtAssetFactory> {
 
 public:
 	// register a new asset type
-	void registerType(const char* extention, AssetCreator creator) {
+	inline void registerType(const char* extention, AssetCreator creator) {
 		registry[extention] = creator;
 	}
 
 	// create a new instance
-	OtAssetBase* instantiate(const std::filesystem::path& path) {
+	inline OtAssetBase* instantiate(const std::filesystem::path& path) {
 		auto ext = path.extension().string();
 		return registry.find(ext) == registry.end() ? nullptr : registry[ext]();
 	}
@@ -54,7 +54,7 @@ template <typename T>
 class OtAssetFactoryRegister {
 public:
 	// constructor
-	OtAssetFactoryRegister(const char* ext) {
+	inline OtAssetFactoryRegister(const char* ext) {
 		OtAssetFactory::instance()->registerType(ext, []() {
 			return static_cast<OtAssetBase*>(new T());
 		});

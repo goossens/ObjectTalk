@@ -25,12 +25,12 @@
 class OtFrameworkAtExit : public OtSingleton<OtFrameworkAtExit> {
 public:
 	// register function to be called at exit
-	void add(std::function<void(void)> callback) {
+	inline void add(std::function<void(void)> callback) {
 		callbacks.push_back(callback);
 	}
 
 	// run all exit functions
-	void run() {
+	inline void run() {
 		for (auto& callback : callbacks) {
 			callback();
 		}

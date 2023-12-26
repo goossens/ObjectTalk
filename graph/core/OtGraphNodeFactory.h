@@ -29,7 +29,7 @@
 class OtGraphNodeFactory {
 public:
 	// register a new type (name has to be globally unique in this factory, not just in category)
-	void registerType(const char* category, const char* name, std::function<OtGraphNode()> constructor) {
+	inline void registerType(const char* category, const char* name, std::function<OtGraphNode()> constructor) {
 		// find the category
 		auto i = std::find_if(categories.begin(), categories.end(), [category] (OtGraphNodeCategory& candidate) {
 			return candidate.name == category;
@@ -50,14 +50,14 @@ public:
 	}
 
 	// iterate through categories
-	void eachCategory(std::function<void(OtGraphNodeCategory&)> callback) {
+	inline void eachCategory(std::function<void(OtGraphNodeCategory&)> callback) {
 		for (auto& category : categories) {
 			callback(category);
 		}
 	}
 
 	// create new node
-	OtGraphNode createNode(const std::string& name) {
+	inline OtGraphNode createNode(const std::string& name) {
 		return constructors[name]();
 	}
 

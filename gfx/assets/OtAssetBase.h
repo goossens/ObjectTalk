@@ -22,10 +22,10 @@
 class OtAssetBase {
 public:
 	// destructor
-	virtual ~OtAssetBase() {}
+	virtual inline ~OtAssetBase() {}
 
 	// function to load the asset (to be implemented by derived classes)
-	virtual bool load(const std::filesystem::path& path) { return false; }
+	virtual inline bool load(const std::filesystem::path& path) { return false; }
 
 	// get state
 	inline bool isNull() { return assetState == nullState; }

@@ -28,21 +28,21 @@
 class OtGraphNodeCategory {
 public:
 	// constructor
-	OtGraphNodeCategory(const char* n) : name(n) {}
+	inline OtGraphNodeCategory(const char* n) : name(n) {}
 
 	// add a new type
-	void addType(const char* name, std::function<OtGraphNode()> constructor) {
+	inline void addType(const char* name, std::function<OtGraphNode()> constructor) {
 		types.emplace_back(name, constructor);
 		std::sort(types.begin(), types.end());
 	}
 
 	// compare categories
-	bool operator < (const OtGraphNodeCategory& category) const {
+	inline bool operator < (const OtGraphNodeCategory& category) const {
 		return name < category.name;
 	}
 
 	// iterate through types
-	void eachType(std::function<void(OtGraphNodeType&)> callback) {
+	inline void eachType(std::function<void(OtGraphNodeType&)> callback) {
 		for (auto& type : types) {
 			callback(type);
 		}

@@ -27,7 +27,7 @@ typedef std::shared_ptr<OtEllipticalCurveClass> OtEllipticalCurve;
 class OtEllipticalCurveClass : public OtCurveClass {
 public:
 	// constructor
-	OtEllipticalCurveClass(const glm::vec2& c, float xr, float yr, float sa=0.0f, float ea=std::numbers::pi2, bool cw=false, float r=0.0f) :
+	inline OtEllipticalCurveClass(const glm::vec2& c, float xr, float yr, float sa=0.0f, float ea=std::numbers::pi2, bool cw=false, float r=0.0f) :
 		center(c), xRadius(xr), yRadius(yr), startAngle(sa), endAngle(ea), clockwise(cw), rotation(r) {
 		delta = endAngle - startAngle;
 
@@ -45,7 +45,7 @@ public:
 	}
 
 	// get a point on the curve at t [0, 1]
-	glm::vec2 getPoint(float t) override {
+	inline glm::vec2 getPoint(float t) override {
 		float angle = startAngle + t * delta;
 		float x = center.x + xRadius * std::cos(angle);
 		float y = center.y + yRadius * std::sin(angle);

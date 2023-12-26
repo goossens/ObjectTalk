@@ -39,7 +39,7 @@ public:
 	void clear();
 
 	// see if sampler is valid
-	bool isValid() { return uniform.isValid(); }
+	inline bool isValid() { return uniform.isValid(); }
 
 	// get access to values
 	inline void setValue(size_t index, const glm::vec4& value) { values[index] = value; }

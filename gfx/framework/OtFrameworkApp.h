@@ -15,20 +15,20 @@
 class OtFrameworkApp {
 public:
 	// destructor
-	virtual ~OtFrameworkApp() {}
+	virtual inline ~OtFrameworkApp() {}
 
 	// event handlers
-	virtual void onSetup() {}
-	virtual void onRender() {}
-	virtual void onTerminate() {}
-	virtual bool onCanQuit() { return true; }
+	virtual inline void onSetup() {}
+	virtual inline void onRender() {}
+	virtual inline void onTerminate() {}
+	virtual inline bool onCanQuit() { return true; }
 
-	virtual bool onMouseButton(int button, int action, int mods, float xpos, float ypos) { return false; }
-	virtual bool onMouseMove(float xpos, float ypos) { return false; }
-	virtual bool onMouseDrag(int button, int mods, float xpos, float ypos) { return false; }
-	virtual bool onScrollWheel(float dx, float dy) { return false; }
-	virtual bool onKey(int key, int mods) { return false; }
-	virtual bool onChar(unsigned int codepoint) { return false; }
-	virtual bool onGamepadAxis(int gamepad, int axis, int value) { return false; }
-	virtual bool onGamepadButton(int gamepad, int buttom, int action) { return false; }
+	virtual inline bool onMouseButton(int button, int action, int mods, float xpos, float ypos) { return false; }
+	virtual inline bool onMouseMove(float xpos, float ypos) { return false; }
+	virtual inline bool onMouseDrag(int button, int mods, float xpos, float ypos) { return false; }
+	virtual inline bool onScrollWheel(float dx, float dy) { return false; }
+	virtual inline bool onKey(int key, int mods) { return false; }
+	virtual inline bool onChar(unsigned int codepoint) { return false; }
+	virtual inline bool onGamepadAxis(int gamepad, int axis, int value) { return false; }
+	virtual inline bool onGamepadButton(int gamepad, int buttom, int action) { return false; }
 };

@@ -23,9 +23,9 @@ class OtAABB {
 public:
 	// constructor
 	OtAABB();
-	OtAABB(const glm::vec3& mina, const glm::vec3& maxa) : minp(mina), maxp(maxa) {}
+	inline OtAABB(const glm::vec3& mina, const glm::vec3& maxa) : minp(mina), maxp(maxa) {}
 
-	OtAABB(float minx, float miny, float minz, float maxx, float maxy, float maxz)
+	inline OtAABB(float minx, float miny, float minz, float maxx, float maxy, float maxz)
 		: minp(glm::vec3(minx, miny, minz)), maxp(glm::vec3(maxx, maxy, maxz)) {}
 
 	// clear the bounding box
@@ -38,11 +38,11 @@ public:
 	void addAABB(const OtAABB& aabb);
 
 	// get min/max values
-	const glm::vec3& getMin() const { return minp; }
-	const glm::vec3& getMax() const { return maxp; }
+	inline const glm::vec3& getMin() const { return minp; }
+	inline const glm::vec3& getMax() const { return maxp; }
 
-	glm::vec3& getMin() { return minp; }
-	glm::vec3& getMax() { return maxp; }
+	inline glm::vec3& getMin() { return minp; }
+	inline glm::vec3& getMax() { return maxp; }
 
 	// transform bounding box
 	OtAABB transform(const glm::mat4& matrix);

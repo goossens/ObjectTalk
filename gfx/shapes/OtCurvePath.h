@@ -35,84 +35,84 @@ typedef std::shared_ptr<OtCurvePathClass> OtCurvePath;
 class OtCurvePathClass : public OtCurveClass {
 public:
 	// constructor
-	OtCurvePathClass() {
+	inline OtCurvePathClass() {
 		lengths.push_back(0.0f);
 	}
 
 	// create a path out of segments
-	void moveTo(const glm::vec2& point) {
+	inline void moveTo(const glm::vec2& point) {
 		startPoint = point;
 		currentPoint = point;
 	}
 
-	void lineTo(const glm::vec2& point){
+	inline void lineTo(const glm::vec2& point){
 		add(std::make_shared<OtLineCurveClass>(currentPoint, point));
 		currentPoint = point;
 	}
 
-	void quadraticCurveTo(const glm::vec2& control, const glm::vec2& point) {
+	inline void quadraticCurveTo(const glm::vec2& control, const glm::vec2& point) {
 		add(std::make_shared<OtQuadraticBezierCurveClass>(currentPoint, control, point));
 		currentPoint = point;
 	}
 
-	void bezierCurveTo(const glm::vec2& control1, const glm::vec2& control2, const glm::vec2& point) {
+	inline void bezierCurveTo(const glm::vec2& control1, const glm::vec2& control2, const glm::vec2& point) {
 		add(std::make_shared<OtCubicBezierCurveClass>(currentPoint, control1, control2, point));
 		currentPoint = point;
 	}
 
-	void close() {
+	inline void close() {
 		if (startPoint != currentPoint) {
 			moveTo(startPoint);
 		}
 	}
 
 	// set path to well known geometries
-	void circle(float x, float y, float radius, bool clockwise=false) {
+	inline void circle(float x, float y, float radius, bool clockwise=false) {
 		add(std::make_shared<OtArcCurveClass>(glm::vec2(x, y), radius, 0.0f, (float) std::numbers::pi2, clockwise));
 	}
 
 	// get a point on the path at t [0, 1]
-	glm::vec2 getPoint(float t) override {
+	inline glm::vec2 getPoint(float t) override {
 		return getPointAt(t);
 	}
 
 	// get a point on the path at distance n [0, 1]
-	glm::vec2 getPointAt(float u) override {
+	inline glm::vec2 getPointAt(float u) override {
 		float fraction;
 		OtCurve curve = findSegment(u, &fraction);
 		return curve->getPointAt(fraction);
 	}
 
 	// get a unit vector tangent
-	glm::vec2 getTangent(float t) override {
+	inline glm::vec2 getTangent(float t) override {
 		return getTangentAt(t);
 	}
 
-	glm::vec2 getTangentAt(float u) override {
+	inline glm::vec2 getTangentAt(float u) override {
 		float fraction;
 		OtCurve curve = findSegment(u, &fraction);
 		return curve->getTangentAt(fraction);
 	}
 
 	// get the length of the curve
-	float getLength() override {
+	inline float getLength() override {
 		return currentLength;
 	}
 
-	bool hasSegments() {
+	inline bool hasSegments() {
 		return curves.size();
 	}
 
 private:
 	// add a curve segment
-	void add(OtCurve curve) {
+	inline void add(OtCurve curve) {
 		curves.push_back(curve);
 		currentLength += curve->getLength();
 		lengths.push_back(currentLength);
 	}
 
 	// find the segment at u [0, 1]
-	OtCurve findSegment(float u, float* fraction) {
+	inline OtCurve findSegment(float u, float* fraction) {
 		float target = currentLength * u;
 		size_t low = 0;
 		size_t high = lengths.size() - 1;

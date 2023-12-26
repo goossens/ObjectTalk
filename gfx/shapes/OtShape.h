@@ -42,12 +42,12 @@ public:
 	OtObject text(OtObject font, const std::string& text);
 
 	// get number of polygons in shape
-	size_t getPolygonCount() {
+	inline size_t getPolygonCount() {
 		return paths.size();
 	}
 
 	// get Nth polygon
-	void getPolygon(std::vector<glm::vec2>& polygon, size_t n, size_t division) {
+	inline void getPolygon(std::vector<glm::vec2>& polygon, size_t n, size_t division) {
 		return paths[n]->getSpacedPoints(polygon, division);
 	}
 

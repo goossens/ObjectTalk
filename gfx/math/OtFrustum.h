@@ -76,10 +76,10 @@ public:
 	glm::vec3 getCenter();
 
 	// get specified corner
-	glm::vec3 getCorner(int point) const { return points[point]; }
+	inline glm::vec3 getCorner(int point) const { return points[point]; }
 
 	// get specified plane
-	OtPlane getPlane(int plane) const { return planes[plane]; }
+	inline OtPlane getPlane(int plane) const { return planes[plane]; }
 
 	// get AABB (Axis-Alligned bounding box)
 	OtAABB getAABB();

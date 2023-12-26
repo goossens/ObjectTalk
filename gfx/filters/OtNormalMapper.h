@@ -27,7 +27,7 @@ public:
 	inline void includeHeight(bool flag) { includeHeightFlag = flag; }
 
 	// set strength of normals
-	void setStrength(float strength) { normalStrength = strength; }
+	inline void setStrength(float strength) { normalStrength = strength; }
 
 private:
 	// execute filter

@@ -27,17 +27,17 @@
 class OtMessageBus : public OtSingleton<OtMessageBus> {
 public:
 	// lister for messages on the bus
-	void listen(std::function<void (const std::string&)> listener) {
+	inline void listen(std::function<void (const std::string&)> listener) {
 		listeners.push_back(listener);
 	}
 
 	// send a message to all the listeners
-	void send(const std::string& message) {
+	inline void send(const std::string& message) {
 		messages.push(message);
 	}
 
 	// process all the messages (by sending them to all the listeners)
-	void process() {
+	inline void process() {
 		while (!messages.empty()) {
 			for (auto& listener : listeners) {
 				listener(messages.front());
@@ -48,7 +48,7 @@ public:
 	}
 
 	// clear the bus
-	void clear() {
+	inline void clear() {
 		listeners.clear();
 		messages = {};
 	}

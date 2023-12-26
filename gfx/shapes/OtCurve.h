@@ -29,17 +29,17 @@ typedef std::shared_ptr<OtCurveClass> OtCurve;
 class OtCurveClass {
 public:
 	// get a point on the curve at t [0, 1]
-	virtual glm::vec2 getPoint(float t) {
+	virtual inline glm::vec2 getPoint(float t) {
 		return glm::vec2(0.0f);
 	}
 
 	// get a point on the curve at distance n [0, 1]
-	virtual glm::vec2 getPointAt(float u) {
+	virtual inline glm::vec2 getPointAt(float u) {
 		return getPoint(u2t(u));
 	}
 
 	// get sequence of points on curve
-	void getPoints(std::vector<glm::vec2>& result, size_t division = 5) {
+	inline void getPoints(std::vector<glm::vec2>& result, size_t division = 5) {
 		result.clear();
 
 		for (auto i = 0; i <= division; i++) {
@@ -48,7 +48,7 @@ public:
 	}
 
 	// get sequence of equally spaced points on curve
-	void getSpacedPoints(std::vector<glm::vec2>& result, size_t division = 5) {
+	inline void getSpacedPoints(std::vector<glm::vec2>& result, size_t division = 5) {
 		result.clear();
 
 		for (auto i = 0; i <= division; i++) {
@@ -57,7 +57,7 @@ public:
 	}
 
 	// get a unit vector tangent at t [0, 1]
-	virtual glm::vec2 getTangent(float t) {
+	virtual inline glm::vec2 getTangent(float t) {
 		float delta = 0.0001f;
 
 		return glm::normalize(
@@ -65,12 +65,12 @@ public:
 			getPoint(std::clamp(t - delta, 0.0f, 1.0f)));
 	}
 
-	virtual glm::vec2 getTangentAt(float u) {
+	virtual inline glm::vec2 getTangentAt(float u) {
 		return getTangent(u2t(u));
 	}
 
 	// get the length of the curve
-	virtual float getLength() {
+	virtual inline float getLength() {
 		if (!lengths.size()) {
 			getLengths();
 		}
@@ -82,7 +82,7 @@ protected:
 	// calculate list of cumulative segment lengths
 	std::vector<float> lengths;
 
-	void getLengths(size_t division=200) {
+	inline void getLengths(size_t division=200) {
 		glm::vec2 current = getPoint(0.0f);
 		glm::vec2 last = current;
 		float sum = 0.0f;
@@ -97,7 +97,7 @@ protected:
 	}
 
 	// convert distance u to equation parameter t
-	float u2t(float u) {
+	inline float u2t(float u) {
 		if (!lengths.size()) {
 			getLengths();
 		}

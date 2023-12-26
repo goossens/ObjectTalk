@@ -33,7 +33,7 @@ public:
 	std::string name() { return "delete component"; }
 
 	// do action
-	virtual void perform() {
+	void perform() override {
 		// get the target entity and component
 		auto entity = scene->getEntityFromUuid(entityUuid);
 		auto& component = scene->getComponent<T>(entity);
@@ -44,7 +44,7 @@ public:
 	}
 
 	// undo action
-	virtual void undo() {
+	void undo() override {
 		// restore old value
 		auto entity = scene->getEntityFromUuid(entityUuid);
 		auto& component = scene->addComponent<T>(entity);

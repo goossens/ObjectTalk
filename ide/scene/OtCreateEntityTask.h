@@ -47,12 +47,40 @@ public:
 	std::string name() { return "create entity"; }
 
 	// do action
-	virtual void perform() {
-		// create an empty entity (preserving UUID on redo)
-		entity = scene->createEntity(entityUuid);
+	void perform() override {
+		// create an empty entity
+		entity = scene->createEntity();
 		entityUuid = scene->getUuidFromEntity(entity);
 		scene->addEntityToParent(scene->getEntityFromUuid(parentUuid), entity);
+		addComponents();
+	}
 
+	// undo action
+	void undo() override {
+		scene->removeEntity(entity);
+	}
+
+	// redo action
+	void redo() override {
+		// restore entity with previous UUID
+		entity = scene->createEntity(entityUuid);
+		scene->addEntityToParent(scene->getEntityFromUuid(parentUuid), entity);
+		addComponents();
+	}
+
+	// get the created entity
+	OtEntity getEntity() { return entity; }
+
+private:
+	// properties
+	OtScene* scene;
+	uint32_t parentUuid;
+	Type type;
+
+	OtEntity entity;
+	uint32_t entityUuid;
+
+	void addComponents() {
 		// add components based on type
 		switch (type) {
 			case empty:
@@ -104,21 +132,4 @@ public:
 				break;
 		}
 	}
-
-	// undo action
-	virtual void undo() {
-		scene->removeEntity(entity);
-	}
-
-	// get the created entity
-	OtEntity getEntity() { return entity; }
-
-private:
-	// properties
-	OtScene* scene;
-	uint32_t parentUuid;
-	Type type;
-
-	OtEntity entity;
-	uint32_t entityUuid = 0;
 };

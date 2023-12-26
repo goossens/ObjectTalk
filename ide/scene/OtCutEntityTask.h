@@ -30,7 +30,7 @@ public:
 	std::string name() { return "cut entity"; }
 
 	// do action
-	virtual void perform() {
+	void perform() override {
 		// perform the delete
 		OtDeleteEntityTask::perform();
 
@@ -40,7 +40,7 @@ public:
 	}
 
 	// undo action
-	virtual void undo() {
+	void undo() override {
 		// undo the delete
 		OtDeleteEntityTask::undo();
 

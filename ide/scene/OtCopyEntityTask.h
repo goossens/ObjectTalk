@@ -32,14 +32,14 @@ public:
 	std::string name() { return "copy entity"; }
 
 	// do action
-	virtual void perform() {
+	void perform() override {
 		// serialize entity to clipboard
 		oldClipboard = clipboard;
 		clipboard = scene->serializeEntity(scene->getEntityFromUuid(entityUuid));
 	}
 
 	// undo action
-	virtual void undo() {
+	void undo() override {
 		clipboard = oldClipboard;
 	}
 

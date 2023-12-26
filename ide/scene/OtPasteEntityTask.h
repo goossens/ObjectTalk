@@ -30,20 +30,27 @@ public:
 	std::string name() { return "paste entity"; }
 
 	// do action
-	virtual void perform() {
-		// create an entity from the clipboard content (without preserving UUIDs, i.e. new copies)
+	void perform() override {
+		// create a new entity from the clipboard content
 		auto entity = scene->deserializeEntity(clipboard);
 		scene->assignNewEntityUuids(entity);
-		entityUuid = scene->getUuidFromEntity(entity);
+		json = scene->serializeEntity(entity);
 
-		// add it to the target
+		entityUuid = scene->getUuidFromEntity(entity);
 		scene->moveEntityTo(scene->getEntityFromUuid(targetUuid), entity);
 	}
 
 	// undo action
-	virtual void undo() {
+	void undo() override {
 		// remove pasted entity
 		scene->removeEntity(scene->getEntityFromUuid(entityUuid));
+	}
+
+	// redo action
+	void redo() override {
+		// recreate entity (tree) as was created during "perform"
+		auto entity = scene->deserializeEntity(json);
+		scene->moveEntityTo(scene->getEntityFromUuid(targetUuid), entity);
 	}
 
 private:
@@ -53,5 +60,6 @@ private:
 
 	std::string clipboard;
 	uint32_t entityUuid;
-};
 
+	std::string json;
+};

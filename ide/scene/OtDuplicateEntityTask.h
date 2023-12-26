@@ -32,7 +32,7 @@ public:
 	std::string name() { return ""; }
 
 	// do action
-	virtual void perform() {
+	void perform() override {
 		// duplicate the target entity
 		auto target = scene->getEntityFromUuid(targetUuid);
 		auto entity = scene->deserializeEntity(scene->serializeEntity(target));
@@ -44,7 +44,7 @@ public:
 	}
 
 	// undo action
-	virtual void undo() {
+	void undo() override {
 		// remove duplicated entity
 		scene->removeEntity(scene->getEntityFromUuid(entityUuid));
 	}

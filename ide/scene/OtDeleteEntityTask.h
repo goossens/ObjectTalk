@@ -32,7 +32,7 @@ public:
 	std::string name() { return "delete entity"; }
 
 	// do action
-	virtual void perform() {
+	void perform() override {
 		// get information for undo
 		auto entity = scene->getEntityFromUuid(entityUuid);
 		auto nextSibling = scene->getNextSibling(entity);
@@ -54,7 +54,7 @@ public:
 	}
 
 	// undo action
-	virtual void undo() {
+	void undo() override {
 		// recreate the entity
 		auto entity = scene->deserializeEntity(json);
 

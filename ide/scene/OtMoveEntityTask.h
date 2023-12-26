@@ -33,7 +33,7 @@ public:
 	std::string name() { return "move entity"; }
 
 	// do action
-	virtual void perform() {
+	void perform() override {
 		// get information for undo
 		auto target = scene->getEntityFromUuid(targetUuid);
 		auto entity = scene->getEntityFromUuid(entityUuid);
@@ -58,7 +58,7 @@ public:
 	}
 
 	// undo action
-	virtual void undo() {
+	void undo() override {
 		// undo move
 		auto target = scene->getEntityFromUuid(undoTargetUuid);
 		auto entity = scene->getEntityFromUuid(entityUuid);

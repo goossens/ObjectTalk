@@ -36,7 +36,7 @@ public:
 	std::string name() { return "change component"; }
 
 	// do action
-	virtual void perform() {
+	void perform() override {
 		// save old value and store new value
 		auto entity = scene->getEntityFromUuid(entityUuid);
 		auto& component = scene->getComponent<T>(entity);
@@ -45,7 +45,7 @@ public:
 	}
 
 	// undo action
-	virtual void undo() {
+	void undo() override  {
 		// restore old value
 		auto entity = scene->getEntityFromUuid(entityUuid);
 		auto& component = scene->getComponent<T>(entity);
@@ -54,12 +54,12 @@ public:
 	}
 
 	// support task merging
-	virtual bool isMergeable(std::shared_ptr<OtEditorTask> t) {
+	bool isMergeable(std::shared_ptr<OtEditorTask> t) override {
 		auto task = std::dynamic_pointer_cast<OtEditComponentTask>(t);
 		return task && task->type == type;
 	}
 
-	virtual void merge(std::shared_ptr<OtEditorTask> t) {
+	void merge(std::shared_ptr<OtEditorTask> t) override {
 		auto task = std::dynamic_pointer_cast<OtEditComponentTask>(t);
 		newValue = task->newValue;
 	}

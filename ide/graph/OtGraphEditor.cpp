@@ -23,6 +23,7 @@
 
 #include "OtCreateLinkTask.h"
 #include "OtCreateNodeTask.h"
+#include "OtDragNodesTask.h"
 
 
 //
@@ -64,7 +65,7 @@ OtGraphEditor::OtGraphEditor() {
 	// create our default context
 	ed::Config config;
 	config.SettingsFile = nullptr;
-	config.NavigateButtonIndex = 2;
+	config.NavigateButtonIndex = ImGuiMouseButton_Middle;
 	config.CustomZoomLevels.push_back(0.2f);
 	config.CustomZoomLevels.push_back(0.3f);
 	config.CustomZoomLevels.push_back(0.4f);
@@ -181,7 +182,7 @@ std::shared_ptr<OtGraphEditor> OtGraphEditor::create(const std::filesystem::path
 
 void OtGraphEditor::renderMenu() {
 	// get status
-	bool selected = selectedNodes.size() != 0;
+	bool selected = areNodesSelected();
 	bool clipable = clipboard.size() > 0;
 
 	// create menubar
@@ -234,21 +235,11 @@ void OtGraphEditor::renderMenu() {
 
 
 //
-//	getPinID
-//
-
-static OtGraphPin getPinID(OtGraph& graph, ed::PinId pinId) {
-	return graph.getPin((uint32_t) pinId.Get());
-}
-
-
-//
 //	OtGraphEditor::renderEditor
 //
 
 void OtGraphEditor::renderEditor(bool active) {
 	// setup node editor
-	ed::SetCurrentEditor(editorContext);
 	ed::Begin("GraphEditor");
 
 	// render all nodes
@@ -264,15 +255,14 @@ void OtGraphEditor::renderEditor(bool active) {
 	// handle all interactions
 	handleInteractions();
 
-	// close node editor
-	ed::End();
-	ed::SetCurrentEditor(nullptr);
-
 	// perform editing task (if required)
 	if (nextTask) {
 		taskManager.perform(nextTask);
 		nextTask = nullptr;
 	}
+
+	// close node editor
+	ed::End();
 }
 
 
@@ -344,6 +334,15 @@ void OtGraphEditor::renderPin(OtGraphPin& pin, float x) {
 
 
 //
+//	getPin
+//
+
+static OtGraphPin getPin(OtGraph& graph, ed::PinId pinId) {
+	return graph.getPin((uint32_t) pinId.Get());
+}
+
+
+//
 //	OtGraphEditor::handleInteractions
 //
 
@@ -354,8 +353,8 @@ void OtGraphEditor::handleInteractions() {
 
 		if (ed::QueryNewLink(&startPinId, &endPinId)) {
 			// validate link
-			auto startPin = getPinID(*graph, startPinId);
-			auto endPin = getPinID(*graph, endPinId);
+			auto startPin = getPin(*graph, startPinId);
+			auto endPin = getPin(*graph, endPinId);
 
 			if (startPin->isInput()) {
 				std::swap(startPin, endPin);
@@ -371,6 +370,23 @@ void OtGraphEditor::handleInteractions() {
 	}
 
 	ed::EndCreate();
+
+	// handle node dragging
+	if (ImGui::IsMouseDragging(ImGuiMouseButton_Left, 1)) {
+		if (!draggedNodeId) {
+			auto nodeId = ed::GetHoveredNode();
+
+			if (nodeId) {
+				draggedNodeId = (uint32_t) nodeId.Get();
+			}
+		}
+
+	} else if (draggedNodeId) {
+		// stopped dragging node(s), generate next task
+		auto selected = getSelectedNodes(draggedNodeId);
+		nextTask = std::make_shared<OtDragNodesTask>(graph.get(), selected);
+		draggedNodeId = 0;
+	}
 
 	// handle context menus
 	ed::Suspend();
@@ -406,4 +422,37 @@ void OtGraphEditor::handleInteractions() {
 	}
 
 	ed::Resume();
+}
+
+
+//
+//	OtGraphEditor::areNodesSelected
+//
+
+bool OtGraphEditor::areNodesSelected() {
+	std::vector<ed::NodeId> nodes;
+	nodes.resize(ed::GetSelectedObjectCount());
+	return ed::GetSelectedNodes(nodes.data(), nodes.size()) != 0;
+}
+
+
+//
+//	OtGraphEditor::getSelectedNodes
+//
+
+std::vector<uint32_t> OtGraphEditor::getSelectedNodes(uint32_t id) {
+	std::vector<ed::NodeId> nodes;
+	nodes.resize(ed::GetSelectedObjectCount());
+	size_t selected = ed::GetSelectedNodes(nodes.data(), nodes.size());
+	std::vector<uint32_t> result;
+
+	for (auto i = 0; i < selected; i++) {
+		result.push_back((uint32_t) nodes[i].Get());
+	}
+
+	if (id && (!selected || std::find(result.begin(), result.end(), id) == result.end())) {
+		result.push_back(id);
+	}
+
+	return result;
 }

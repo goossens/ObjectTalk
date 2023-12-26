@@ -40,6 +40,12 @@ public:
 	void load() override;
 	void save() override;
 
+	// render the editor
+	inline void startRender() override { ax::NodeEditor::SetCurrentEditor(editorContext); }
+	void renderMenu() override;
+	void renderEditor(bool active) override;
+	inline void endRender() override { ax::NodeEditor::SetCurrentEditor(nullptr); }
+
 	// is the editor's content "dirty" (unsaved);
 	bool isDirty() override;
 
@@ -54,13 +60,15 @@ public:
 
 private:
 	// render the parts
-	void renderMenu() override;
-	void renderEditor(bool active) override;
 	void renderNode(OtGraphNode& node);
 	void renderPin(OtGraphPin& pin, float x);
 
 	// handle graph interactions
 	void handleInteractions();
+
+	// see if nodes are selected
+	bool areNodesSelected();
+	std::vector<uint32_t> getSelectedNodes(uint32_t id=0);
 
 	// the graph being edited and the editor's UI
 	std::unique_ptr<OtGraph> graph;
@@ -73,10 +81,8 @@ private:
 	// to handle cut/copy/paste
 	std::string clipboard;
 
-	// currently selected nodes
-	std::vector<uint32_t> selectedNodes;
-
 	// work variables
 	ImVec4 nodePadding;
 	float nodeBorderWidth;
+	uint32_t draggedNodeId = 0;
 };

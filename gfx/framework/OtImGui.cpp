@@ -228,13 +228,13 @@ void OtFramework::frameIMGUI() {
 				io.AddKeyEvent(ImGuiMod_Super, (event.mouseButton.mods & GLFW_MOD_SUPER) != 0);
 
 #if __APPLE__
-				if (inRightClick || ((event.mouseButton.mods & GLFW_MOD_CONTROL) && event.mouseButton.button == 0)) {
+				if (inRightClick || ((event.mouseButton.mods & GLFW_MOD_CONTROL) && event.mouseButton.button == ImGuiMouseButton_Left)) {
 					inRightClick = event.mouseButton.action == GLFW_PRESS;
-					io.AddMouseButtonEvent(1, inRightClick);
+					io.AddMouseButtonEvent(ImGuiMouseButton_Right, inRightClick);
 
-				} else if (inMiddleClick || ((event.mouseButton.mods & GLFW_MOD_SUPER) && event.mouseButton.button == 0)) {
+				} else if (inMiddleClick || ((event.mouseButton.mods & GLFW_MOD_SUPER) && event.mouseButton.button == ImGuiMouseButton_Left)) {
 					inMiddleClick = event.mouseButton.action == GLFW_PRESS;
-					io.AddMouseButtonEvent(2, inMiddleClick);
+					io.AddMouseButtonEvent(ImGuiMouseButton_Middle, inMiddleClick);
 
 				} else {
 					io.AddMouseButtonEvent(event.mouseButton.button, event.mouseButton.action == GLFW_PRESS);

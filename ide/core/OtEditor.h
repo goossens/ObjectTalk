@@ -25,32 +25,34 @@
 class OtEditor {
 public:
 	// destructor
-	virtual ~OtEditor() {}
+	virtual inline ~OtEditor() {}
 
 	// load/save the document content
-	virtual void load() {}
-	virtual void save() {}
+	virtual inline void load() {}
+	virtual inline void save() {}
 
 	// render the editor
 	void render(bool active);
-	virtual void renderMenu() {}
-	virtual void renderEditor(bool active) {}
+	virtual inline void startRender() {}
+	virtual inline void renderMenu() {}
+	virtual inline void renderEditor(bool active) {}
+	virtual inline void endRender() {}
 
 	// get the properties
-	virtual std::string getFileExtension() { return ""; }
-	std::filesystem::path getFilePath() { return path; }
-	std::string getFileName() { return path.string(); }
-	std::string getShortName() { return path.filename().string(); }
+	virtual inline std::string getFileExtension() { return ""; }
+	inline std::filesystem::path getFilePath() { return path; }
+	inline std::string getFileName() { return path.string(); }
+	inline std::string getShortName() { return path.filename().string(); }
 
 	// get the properties
 	void setFilePath(const std::filesystem::path& path);
 
 	// get editor status
-	virtual bool isDirty() { return false; }
+	virtual inline bool isDirty() { return false; }
 	bool fileExists();
 
 	// handle exception during a "run"
-	virtual void error(OtException e) {}
+	virtual inline void error(OtException e) {}
 
 protected:
 	// render a file menu

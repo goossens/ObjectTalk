@@ -26,8 +26,10 @@
 void OtEditor::render(bool active) {
 	// render the menu and the editor
 	ImGui::BeginChild("editor", ImVec2(), ImGuiChildFlags_Border, ImGuiWindowFlags_MenuBar);
+	startRender();
 	renderMenu();
 	renderEditor(active);
+	endRender();
 	ImGui::EndChild();
 }
 

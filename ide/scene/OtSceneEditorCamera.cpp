@@ -50,7 +50,7 @@ void OtSceneEditorCamera::update() {
 //
 
 void OtSceneEditorCamera::handleKeyboardAndMouse() {
-	if (ImGui::IsMouseDown(0)) {
+	if (ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
 		// determine timestep
 		float delta = ImGui::GetIO().DeltaTime;
 

@@ -21,6 +21,7 @@
 #include "OtGraph.h"
 
 #include "OtEditor.h"
+#include "OtGraphEditorTask.h"
 #include "OtTaskManager.h"
 
 
@@ -50,10 +51,11 @@ public:
 	bool isDirty() override;
 
 	// clipboard operations
-	void cutNodes();
-	void copyNodes();
-	void pasteNodes();
-	void duplicateNodes();
+	void cutSelectedNodes();
+	void copySelectedNodes();
+	void pasteSelectedNodes();
+	void deleteSelectedNodes();
+	void duplicateSelectedNodes();
 
 	// create a new object
 	static std::shared_ptr<OtGraphEditor> create(const std::filesystem::path& path);
@@ -76,7 +78,8 @@ private:
 
 	// to handle do/undo/redo
 	OtTaskManager taskManager;
-	std::shared_ptr<OtEditorTask> nextTask = nullptr;
+	std::shared_ptr<OtGraphEditorTask> nextTask = nullptr;
+	std::vector<uint32_t> nextSelection;
 
 	// to handle cut/copy/paste
 	std::string clipboard;

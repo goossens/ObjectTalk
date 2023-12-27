@@ -97,7 +97,7 @@ public:
 	std::string archiveNode(uint32_t node);
 	std::string archiveNodes(const std::vector<uint32_t>& nodes);
 	void restoreNodes(const std::string& json);
-	void duplicateNodes(const std::string& json);
+	std::vector<uint32_t> duplicateNodes(const std::string& json);
 
 	// (re)evaluate entire graph
 	void evaluate();
@@ -118,7 +118,7 @@ private:
 	void unindexNode(OtGraphNode node);
 
 	// restore a node from its JSON data
-	uint32_t restoreNode(nlohmann::json data, bool restoreID=true);
+	OtGraphNode restoreNode(nlohmann::json data, bool restoreIDs=true);
 
 	// topographically sort the nodes
 	void sortNodes();

@@ -17,15 +17,15 @@
 #include "imgui.h"
 #include "imgui_node_editor.h"
 
-#include "OtEditorTask.h"
 #include "OtGraph.h"
+#include "OtGraphEditorTask.h"
 
 
 //
 //	OtDragNodesTask
 //
 
-class OtDragNodesTask : public OtEditorTask {
+class OtDragNodesTask : public OtGraphEditorTask {
 public:
 	// constructor
 	inline OtDragNodesTask(OtGraph* g, const std::vector<uint32_t>& n) : graph(g), nodes(n) {}

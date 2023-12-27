@@ -46,8 +46,11 @@ nlohmann::json OtGraphPinClass::serialize() {
 //	OtGraphPinClass::deserialize
 //
 
-void OtGraphPinClass::deserialize(nlohmann::json data) {
-	id = data["id"];
+void OtGraphPinClass::deserialize(nlohmann::json data, bool restoreIDs) {
+	// restore ID (if required)
+	if (restoreIDs) {
+		id = data["id"];
+	}
 
 	if (type == OtTypeListIndexOf<bool, OtGraphPinTypes>()) {
 		*dynamic_cast<OtGraphPinImpl<bool>*>(this)->value = data["value"];

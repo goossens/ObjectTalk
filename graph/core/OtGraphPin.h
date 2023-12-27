@@ -70,7 +70,7 @@ public:
 
 	// (de)serialize
 	nlohmann::json serialize();
-	void deserialize(nlohmann::json data);
+	void deserialize(nlohmann::json data, bool restoreIDs=true);
 
 	// get the pin type as a string
 	inline std::string getTypeName() { return OtGraphPinTypeNames[type]; }

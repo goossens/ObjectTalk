@@ -262,8 +262,7 @@ void OtGraph::deleteLinks(OtGraphPin any) {
 //
 
 std::string OtGraph::archiveNode(uint32_t node) {
-	std::vector<uint32_t> selection;
-	selection.push_back(node);
+	std::vector<uint32_t> selection = {node};
 	return archiveNodes(selection);
 }
 
@@ -322,13 +321,20 @@ void OtGraph::restoreNodes(const std::string& json) {
 //	OtGraph::duplicateNodes
 //
 
-void OtGraph::duplicateNodes(const std::string& json) {
+std::vector<uint32_t> OtGraph::duplicateNodes(const std::string& json) {
 	auto data = nlohmann::json::parse(json);
+	std::vector<uint32_t> nodes;
 
 	// restore each node
 	for (auto& node : data["nodes"]) {
-		restoreNode(node, false);
+		auto newNode = restoreNode(node, false);
+		newNode->x += 50.0f;
+		newNode->y += 50.0f;
+		nodes.push_back(newNode->id);
 	}
+
+	// create list of node IDs
+	return nodes;
 }
 
 
@@ -341,10 +347,18 @@ void OtGraph::indexNode(OtGraphNode node) {
 	nodeIndex[node->id] = node;
 
 	node->eachInput([this](OtGraphPin& pin) {
+		if (!pin) {
+			int i = 0;
+		}
+
 		pinIndex[pin->id] = pin;
 	});
 
 	node->eachOutput([this](OtGraphPin& pin) {
+		if (!pin) {
+			int i = 0;
+		}
+
 		pinIndex[pin->id] = pin;
 	});
 }
@@ -371,18 +385,18 @@ void OtGraph::unindexNode(OtGraphNode node) {
 //	OtGraph::restoreNode
 //
 
-uint32_t OtGraph::restoreNode(nlohmann::json data, bool restoreID) {
+OtGraphNode OtGraph::restoreNode(nlohmann::json data, bool restoreIDs) {
 	// create a new node
 	auto node = factory.createNode(data["name"]);
-	node->deserialize(data, restoreID);
+	node->deserialize(data, restoreIDs);
 	node->needsPlacement = true;
 	nodes.emplace_back(node);
 
 	// index node and pins
 	indexNode(node);
 
-	// return ID
-	return node->id;
+	// return new node
+	return node;
 }
 
 

@@ -57,7 +57,7 @@ public:
 
 	// (de)serialize
 	nlohmann::json serialize();
-	void deserialize(nlohmann::json data, bool restoreID=true);
+	void deserialize(nlohmann::json data, bool restoreIDs=true);
 
 	// iterate through all input pins
 	inline void eachInput(std::function<void(OtGraphPin&)> callback) {

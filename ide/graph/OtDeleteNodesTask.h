@@ -13,45 +13,46 @@
 //
 
 #include <string>
+#include <vector>
 
 #include "OtGraph.h"
 #include "OtGraphEditorTask.h"
 
 
 //
-//	OtCreateNodeTask
+//	OtDeleteNodesTask
 //
 
-class OtCreateNodeTask : public OtGraphEditorTask {
+class OtDeleteNodesTask : public OtGraphEditorTask {
 public:
 	// constructor
-	inline OtCreateNodeTask(OtGraph* g, const std::string& tn, float _x, float _y) : graph(g), typeName(tn), x(_x), y(_y) {}
+	inline OtDeleteNodesTask(OtGraph* g, const std::vector<uint32_t>& n) : graph(g), nodes(n) {}
 
 	// get task name
-	std::string name() { return "create node"; }
+	std::string name() { return "delete nodes"; }
 
 	// do action
 	void perform() override {
-		id = graph->createNode(typeName, x, y)->id;
-		archive = graph->archiveNode(id);
+		json = graph->archiveNodes(nodes);
+		graph->deleteNodes(nodes);
+		clearEditorSelection();
 	}
 
 	// undo action
 	void undo() override {
-		graph->deleteNode(id);
+		graph->restoreNodes(json);
+		selectNodesInEditor(nodes);
 	}
 
 	// redo action
 	void redo() override {
-		graph->restoreNodes(archive);
+		graph->deleteNodes(nodes);
+		clearEditorSelection();
 	}
 
-private:
+protected:
 	// properties
 	OtGraph* graph;
-	std::string typeName;
-	float x;
-	float y;
-	int id = 0;
-	std::string archive;
+	std::vector<uint32_t> nodes;
+	std::string json;
 };

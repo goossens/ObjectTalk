@@ -48,9 +48,9 @@ nlohmann::json OtGraphNodeClass::serialize() {
 //	OtGraphNodeClass::deserialize
 //
 
-void OtGraphNodeClass::deserialize(nlohmann::json data, bool restoreID) {
+void OtGraphNodeClass::deserialize(nlohmann::json data, bool restoreIDs) {
 	// restore ID (if required)
-	if (restoreID) {
+	if (restoreIDs) {
 		id = data["id"];
 	}
 
@@ -62,16 +62,16 @@ void OtGraphNodeClass::deserialize(nlohmann::json data, bool restoreID) {
 	eachInput([&] (OtGraphPin& pin) {
 		for (auto& input : data["inputs"]) {
 			if (input["name"] == pin->name && input["type"] == pin->getTypeName()) {
-				pin->deserialize(input);
+				pin->deserialize(input, restoreIDs);
 			}
 		}
 	});
 
 	// restore output pins
 	eachOutput([&] (OtGraphPin& pin) {
-		for (auto& output : data["output"]) {
+		for (auto& output : data["outputs"]) {
 			if (output["name"] == pin->name && output["type"] == pin->getTypeName()) {
-				pin->deserialize(output);
+				pin->deserialize(output, restoreIDs);
 			}
 		}
 	});

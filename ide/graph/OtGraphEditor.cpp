@@ -21,9 +21,14 @@
 #include "OtGraphEditor.h"
 #include "OtMathNodes.h"
 
+#include "OtCopyNodesTask.h"
 #include "OtCreateLinkTask.h"
 #include "OtCreateNodeTask.h"
+#include "OtCutNodesTask.h"
+#include "OtDeleteNodesTask.h"
+#include "OtDuplicateNodesTask.h"
 #include "OtDragNodesTask.h"
+#include "OtPasteNodesTask.h"
 
 
 //
@@ -129,34 +134,47 @@ bool OtGraphEditor::isDirty() {
 
 
 //
-//	OtGraphEditor::cutNodes
+//	OtGraphEditor::cutSelectedNodes
 //
 
-void OtGraphEditor::cutNodes() {
+void OtGraphEditor::cutSelectedNodes() {
+	nextTask = std::make_shared<OtCutNodesTask>(graph.get(), getSelectedNodes(), clipboard);
 }
 
 
 //
-//	OtGraphEditor::copyNodes
+//	OtGraphEditor::copySelectedNodes
 //
 
-void OtGraphEditor::copyNodes() {
+void OtGraphEditor::copySelectedNodes() {
+	nextTask = std::make_shared<OtCopyNodesTask>(graph.get(), getSelectedNodes(), clipboard);
 }
 
 
 //
-//	OtGraphEditor::pasteNodes
+//	OtGraphEditor::pasteSelectedNodes
 //
 
-void OtGraphEditor::pasteNodes() {
+void OtGraphEditor::pasteSelectedNodes() {
+	nextTask = std::make_shared<OtPasteNodesTask>(graph.get(), clipboard);
 }
 
 
 //
-//	OtGraphEditor::duplicateNodes
+//	OtGraphEditor::deleteSelectedNodes
 //
 
-void OtGraphEditor::duplicateNodes() {
+void OtGraphEditor::deleteSelectedNodes() {
+	nextTask = std::make_shared<OtDeleteNodesTask>(graph.get(), getSelectedNodes());
+}
+
+
+//
+//	OtGraphEditor::duplicateSelectedNodes
+//
+
+void OtGraphEditor::duplicateSelectedNodes() {
+	nextTask = std::make_shared<OtDuplicateNodesTask>(graph.get(), getSelectedNodes());
 }
 
 
@@ -198,10 +216,11 @@ void OtGraphEditor::renderMenu() {
 #endif
 
 			ImGui::Separator();
-			if (ImGui::MenuItem("Cut", OT_UI_SHORTCUT "X", nullptr, selected)) { cutNodes(); }
-			if (ImGui::MenuItem("Copy", OT_UI_SHORTCUT "C", nullptr, selected)) { copyNodes(); }
-			if (ImGui::MenuItem("Paste", OT_UI_SHORTCUT "V", nullptr, selected && clipable)) { pasteNodes(); }
-			if (ImGui::MenuItem("Duplicate", OT_UI_SHORTCUT "D", nullptr, selected)) { duplicateNodes(); }
+			if (ImGui::MenuItem("Cut", OT_UI_SHORTCUT "X", nullptr, selected)) { cutSelectedNodes(); }
+			if (ImGui::MenuItem("Copy", OT_UI_SHORTCUT "C", nullptr, selected)) { copySelectedNodes(); }
+			if (ImGui::MenuItem("Paste", OT_UI_SHORTCUT "V", nullptr, selected && clipable)) { pasteSelectedNodes(); }
+			if (ImGui::MenuItem("Delete", "Del", nullptr, selected)) { deleteSelectedNodes(); }
+			if (ImGui::MenuItem("Duplicate", OT_UI_SHORTCUT "D", nullptr, selected)) { duplicateSelectedNodes(); }
 			ImGui::EndMenu();
 		}
 
@@ -219,17 +238,20 @@ void OtGraphEditor::renderMenu() {
 			taskManager.undo();
 
 		} else if (ImGui::IsKeyPressed(ImGuiKey_X, false) && selected) {
-			cutNodes();
+			cutSelectedNodes();
 
 		} else if (ImGui::IsKeyPressed(ImGuiKey_C, false) && selected) {
-			copyNodes();
+			copySelectedNodes();
 
 		} else if (ImGui::IsKeyPressed(ImGuiKey_V, false) && selected && clipable) {
-			pasteNodes();
+			pasteSelectedNodes();
 
 		} else if (ImGui::IsKeyPressed(ImGuiKey_D, false) && selected) {
-			duplicateNodes();
+			duplicateSelectedNodes();
 		}
+
+	} else if (ImGui::IsKeyPressed(ImGuiKey_Backspace, false) || ImGui::IsKeyPressed(ImGuiKey_Delete, false)) {
+		deleteSelectedNodes();
 	}
 }
 
@@ -252,12 +274,32 @@ void OtGraphEditor::renderEditor(bool active) {
 		ed::Link(link->id, link->from->id, link->to->id);
 	});
 
+	// perform delayed selection
+	if (nextSelection.size()) {
+		ax::NodeEditor::ClearSelection();
+
+		for (auto node : nextSelection) {
+			ax::NodeEditor::SelectNode(node, true);
+		}
+
+		nextSelection.clear();
+	}
+
 	// handle all interactions
 	handleInteractions();
 
 	// perform editing task (if required)
 	if (nextTask) {
 		taskManager.perform(nextTask);
+
+		// do we have a new selection?
+		// this has to be handled on a delay
+		// because the target nodes might not yet exist in editor
+		// very hackish
+		if (nextTask->hasNewSelection()) {
+			nextSelection = nextTask->getNewSelection();
+		}
+
 		nextTask = nullptr;
 	}
 
@@ -442,7 +484,7 @@ bool OtGraphEditor::areNodesSelected() {
 
 std::vector<uint32_t> OtGraphEditor::getSelectedNodes(uint32_t id) {
 	std::vector<ed::NodeId> nodes;
-	nodes.resize(ed::GetSelectedObjectCount());
+	nodes.resize(ed::GetSelectedNodes(nullptr, 0));
 	size_t selected = ed::GetSelectedNodes(nodes.data(), nodes.size());
 	std::vector<uint32_t> result;
 

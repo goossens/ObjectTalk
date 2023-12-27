@@ -69,6 +69,12 @@ public:
 		}
 	}
 
+	// redo action
+	void redo() override {
+		auto entity = scene->getEntityFromUuid(entityUuid);
+		scene->removeEntity(entity);
+	}
+
 protected:
 	// properties
 	OtScene* scene;

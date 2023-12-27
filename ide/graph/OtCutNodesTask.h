@@ -13,30 +13,31 @@
 //
 
 #include <string>
+#include <vector>
 
-#include "OtEntity.h"
-#include "OtDeleteEntityTask.h"
-#include "OtScene.h"
+#include "OtDeleteNodesTask.h"
+#include "OtGraph.h"
+
 
 
 //
-//	OtCutEntityTask
+//	OtCutNodesTask
 //
 
-class OtCutEntityTask : public OtDeleteEntityTask {
+class OtCutNodesTask : public OtDeleteNodesTask {
 public:
 	// constructor
-	OtCutEntityTask(OtScene* s, OtEntity e, std::string& c) : OtDeleteEntityTask(s, e), clipboard(c) {}
+	OtCutNodesTask(OtGraph* g, const std::vector<uint32_t>& n, std::string& c) : OtDeleteNodesTask(g, n), clipboard(c) {}
 
 	// get task name
-	std::string name() { return "cut entity"; }
+	std::string name() { return "cut nodes"; }
 
 	// do action
 	void perform() override {
 		// perform the delete
-		OtDeleteEntityTask::perform();
+		OtDeleteNodesTask::perform();
 
-		// save entity to clipboard and save old content
+		// save nodes to clipboard and save old content
 		oldClipboard = clipboard;
 		clipboard = json;
 	}
@@ -44,10 +45,19 @@ public:
 	// undo action
 	void undo() override {
 		// undo the delete
-		OtDeleteEntityTask::undo();
+		OtDeleteNodesTask::undo();
 
 		// restore clipboard
 		clipboard = oldClipboard;
+	}
+
+	// redo action
+	void redo() override {
+		// undo the delete
+		OtDeleteNodesTask::redo();
+
+		// restore clipboard
+		clipboard = json;
 	}
 
 private:

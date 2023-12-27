@@ -12,15 +12,15 @@
 //	Include files
 //
 
-#include "OtEditorTask.h"
 #include "OtGraph.h"
+#include "OtGraphEditorTask.h"
 
 
 //
 //	OtCreateLinkTask
 //
 
-class OtCreateLinkTask : public OtEditorTask {
+class OtCreateLinkTask : public OtGraphEditorTask {
 public:
 	// constructor
 	inline OtCreateLinkTask(OtGraph* g, uint32_t f, uint32_t t) : graph(g), from(f), to(t) {}

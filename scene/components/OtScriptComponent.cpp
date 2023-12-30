@@ -29,7 +29,7 @@
 
 
 //
-//	new script template
+//	New script template
 //
 
 static const char* scriptTemplate = "\
@@ -68,7 +68,7 @@ bool OtScriptComponent::renderGUI() {
 
 		},
 		[](std::filesystem::path& path) {
-			// open in editor
+			// open it in the editor
 			OtMessageBus::instance()->send("open " + path.string());
 		});
 }

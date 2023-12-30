@@ -1,0 +1,84 @@
+{
+	"links": [],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 4057903326,
+			"inputs": [
+				{
+					"id": 2063201347,
+					"name": "A",
+					"type": "float",
+					"value": 0.0
+				},
+				{
+					"id": 2582650271,
+					"name": "B",
+					"type": "float",
+					"value": 0.0
+				}
+			],
+			"name": "Add",
+			"outputs": [
+				{
+					"id": 1801673686,
+					"name": "Result",
+					"type": "float",
+					"value": 0.0
+				}
+			],
+			"x": 91.0,
+			"y": 83.0
+		},
+		{
+			"id": 1587452710,
+			"inputs": [
+				{
+					"id": 3851855907,
+					"name": "A",
+					"type": "float",
+					"value": 0.0
+				},
+				{
+					"id": 1344259037,
+					"name": "B",
+					"type": "float",
+					"value": 0.0
+				}
+			],
+			"name": "Subtract",
+			"outputs": [
+				{
+					"id": 2988659737,
+					"name": "Result",
+					"type": "float",
+					"value": 0.0
+				}
+			],
+			"x": 400.0,
+			"y": 100.0
+		},
+		{
+			"id": 3984425243,
+			"inputs": [
+				{
+					"id": 804161394,
+					"name": "A",
+					"type": "float",
+					"value": 0.0
+				}
+			],
+			"name": "Sin",
+			"outputs": [
+				{
+					"id": 2266570670,
+					"name": "Result",
+					"type": "float",
+					"value": 0.0
+				}
+			],
+			"x": 100.0,
+			"y": 300.0
+		}
+	]
+}

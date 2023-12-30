@@ -1,0 +1,12 @@
+Simple shell commands to check code
+===================================
+
+
+Missing inline statements
+-------------------------
+grep ') {' ot/*/*.h | grep -v "inline"
+
+
+Wrong pointer/reference alignment
+---------------------------------
+grep '[^,=?] [&*][a-z]' graph/*/*.cpp

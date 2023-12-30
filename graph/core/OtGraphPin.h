@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <functional>
 #include <memory>
 #include <string>
 
@@ -44,6 +45,7 @@ static constexpr const char* OtGraphPinTypeNames[] = { "bool", "float" };
 
 class OtGraphPinClass;
 using OtGraphPin = std::shared_ptr<OtGraphPinClass>;
+typedef std::function<void()> OtGraphPinRenderer;
 
 class OtGraphPinClass {
 public:
@@ -60,13 +62,22 @@ public:
 	// destructor
 	virtual inline ~OtGraphPinClass() {};
 
+	// handle custom renderer
+	inline void addRenderer(OtGraphPinRenderer renderer, float width) {
+		render = renderer;
+		renderingWidth = width;
+		hasRenderer = true;
+	}
+
 	// check direction
 	inline bool isInput() { return direction == inputPin; }
 	inline bool isOutput() { return direction == outputPin; }
 
-	// specify a source pin
-	virtual void setSource(OtGraphPin sourcePin) = 0;
-	virtual void unsetSource() = 0;
+	// handle connections
+	virtual void connect(OtGraphPin sourcePin) = 0;
+	virtual void disconnect() = 0;
+	inline OtGraphPin getSource() { return sourcePin; }
+	inline bool isConnected() { return sourcePin != nullptr; }
 
 	// (de)serialize
 	nlohmann::json serialize();
@@ -83,6 +94,9 @@ public:
 	uint32_t id;
 	const char* name;
 	int direction;
+	OtGraphPinRenderer render = [](){};
+	float renderingWidth{0.0f};
+	bool hasRenderer{false};
 
 	OtGraphNode node; // set by addInputPin or addOutputPin in OtGraphNodeClass
 	OtGraphPin sourcePin;
@@ -104,16 +118,18 @@ public:
 		value = v;
 	}
 
-	// specify the source pin
-	inline void setSource(OtGraphPin srcPin) override {
+	// handle connections
+	inline void connect(OtGraphPin srcPin) override {
 		sourcePin = srcPin;
 		source = srcPin ? std::dynamic_pointer_cast<OtGraphPinImpl<T>>(srcPin)->value : nullptr;
 	}
 
-	inline void unsetSource() override {
+	inline void disconnect() override {
 		sourcePin = nullptr;
 		source = nullptr;
 	}
+
+	inline bool isConnected() { return sourcePin != nullptr; }
 
 	// update pin value from source (if avalable)
 	inline bool onCheck() override {

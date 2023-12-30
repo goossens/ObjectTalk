@@ -89,8 +89,8 @@ void OtGraph::save(const std::filesystem::path& path, nlohmann::json* metadata) 
 	// create cjosn outline
 	auto data = nlohmann::json::object();
 	data["metadata"] = metadata ? *metadata : nlohmann::json::object();
-	auto nodes = data["nodes"] = nlohmann::json::array();
-	auto links = data["links"] = nlohmann::json::array();
+	auto nodes = nlohmann::json::array();
+	auto links = nlohmann::json::array();
 
 	// save all nodes
 	eachNode([&](OtGraphNode& node) {
@@ -101,6 +101,9 @@ void OtGraph::save(const std::filesystem::path& path, nlohmann::json* metadata) 
 	eachLink([&](OtGraphLink& link) {
 		links.push_back(link->serialize());
 	});
+
+	data["nodes"] = nodes;
+	data["links"] = links;
 
 	// write graph to file
 	try {
@@ -182,10 +185,13 @@ void OtGraph::deleteNodes(const std::vector<uint32_t>& nodes) {
 //
 
 bool OtGraph::isLinkValid(OtGraphPin from, OtGraphPin to) {
-	if (from == to) {
+	if (from->isInput() || to->isOutput()) {
 		return false;
 
-	} else if (from->isInput() || to->isOutput()) {
+	} else if (to->isConnected()) {
+		return false;
+
+	} else if (from->type != to->type) {
 		return false;
 	}
 
@@ -202,12 +208,27 @@ OtGraphLink OtGraph::createLink(OtGraphPin from, OtGraphPin to, uint32_t id) {
 	auto link = std::make_shared<OtGraphLinkClass>(from, to, id);
 	links.emplace_back(link);
 	linkIndex[link->id] = link;
-	to->setSource(from);
+	link->connect();
 
 	// re-sort node list
 	sortNodes();
 	return link;
 }
+
+
+//
+//	OtGraph::findLink
+//
+
+OtGraphLink OtGraph::findLink(OtGraphPin from, OtGraphPin to) {
+	// find the link
+	auto i = std::find_if(links.begin(), links.end(), [&] (OtGraphLink& candidate) {
+		return candidate->from == from && candidate->to == to;
+	});
+
+	return *i;
+}
+
 
 //
 //	OtGraph::deleteLink
@@ -215,7 +236,7 @@ OtGraphLink OtGraph::createLink(OtGraphPin from, OtGraphPin to, uint32_t id) {
 
 void OtGraph::deleteLink(OtGraphLink link) {
 	// remove specified link
-	link->to->setSource(nullptr);
+	link->disconnect();
 	linkIndex.erase(link->id);
 
 	links.erase(std::remove_if(links.begin(), links.end(), [link] (OtGraphLink& candidate) {
@@ -226,8 +247,7 @@ void OtGraph::deleteLink(OtGraphLink link) {
 	sortNodes();
 }
 
-void OtGraph::deleteLink(OtGraphPin from, OtGraphPin to)
-{
+void OtGraph::deleteLink(OtGraphPin from, OtGraphPin to) {
 	// find the link
 	auto i = std::find_if(links.begin(), links.end(), [&] (OtGraphLink& candidate) {
 		return candidate->from == from && candidate->to == to;
@@ -235,6 +255,7 @@ void OtGraph::deleteLink(OtGraphPin from, OtGraphPin to)
 
 	deleteLink(*i);
 }
+
 
 //
 //	OtGraph::deleteLinks
@@ -254,6 +275,89 @@ void OtGraph::deleteLinks(OtGraphPin any) {
 	for (auto& link : associatedLinks) {
 		deleteLink(link);
 	}
+}
+
+
+//
+//	OtGraph::redirectLink
+//
+
+void OtGraph::redirectLink(OtGraphLink link, uint32_t newTo) {
+	link->disconnect();
+	link->redirectTo(pinIndex[newTo]);
+	link->connect();
+}
+
+
+//
+//	OtGraph::selectAll
+///
+
+void OtGraph::selectAll() {
+	eachNode([](OtGraphNode& node) {
+		node->selected = true;
+	});
+}
+
+
+//
+//	OtGraph::deselectAll
+//
+
+void OtGraph::deselectAll() {
+	eachNode([] (OtGraphNode& node) {
+		node->selected = false;
+	});
+}
+
+
+//
+//	OtGraph::select
+//
+
+void OtGraph::select(uint32_t id, bool deselect) {
+	if (deselect) {
+		deselectAll();
+	}
+
+	nodeIndex[id]->selected = true;
+}
+
+void OtGraph::select(const std::vector<uint32_t>& nodes, bool deselect) {
+	if (deselect) {
+		deselectAll();
+	}
+
+	for (auto id : nodes) {
+		nodeIndex[id]->selected = true;
+	}
+}
+
+void OtGraph::select(int x1, int y1, int x2, int y2) {
+	deselectAll();
+
+	eachNode([&] (OtGraphNode& node) {
+		node->selected =
+			x1 < (node->x + node->w) && x2 > node->x &&
+			y1 < (node->y + node->h) && y2 > node->y;
+	});
+}
+
+
+//
+//	OtGraph::getSelected
+//
+
+std::vector<uint32_t> OtGraph::getSelected() {
+	std::vector<uint32_t> result;
+
+	for (auto node : nodes) {
+		if (node->selected) {
+			result.push_back(node->id);
+		}
+	}
+
+	return result;
 }
 
 

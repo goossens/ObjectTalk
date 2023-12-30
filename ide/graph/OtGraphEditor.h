@@ -16,12 +16,12 @@
 #include <vector>
 
 #include "imgui.h"
-#include "imgui_node_editor.h"
 
 #include "OtGraph.h"
 
 #include "OtEditor.h"
-#include "OtGraphEditorTask.h"
+#include "OtEditorTask.h"
+#include "OtGraphWidget.h"
 #include "OtTaskManager.h"
 
 
@@ -35,17 +35,15 @@ public:
 	OtGraphEditor();
 
 	// get file extension
-	std::string getFileExtension() override { return ".otg"; }
+	inline std::string getFileExtension() override { return ".otg"; }
 
 	// load/save content
 	void load() override;
 	void save() override;
 
 	// render the editor
-	inline void startRender() override { ax::NodeEditor::SetCurrentEditor(editorContext); }
 	void renderMenu() override;
 	void renderEditor(bool active) override;
-	inline void endRender() override { ax::NodeEditor::SetCurrentEditor(nullptr); }
 
 	// is the editor's content "dirty" (unsaved);
 	bool isDirty() override;
@@ -61,31 +59,14 @@ public:
 	static std::shared_ptr<OtGraphEditor> create(const std::filesystem::path& path);
 
 private:
-	// render the parts
-	void renderNode(OtGraphNode& node);
-	void renderPin(OtGraphPin& pin, float x);
-
-	// handle graph interactions
-	void handleInteractions();
-
-	// see if nodes are selected
-	bool areNodesSelected();
-	std::vector<uint32_t> getSelectedNodes(uint32_t id=0);
-
 	// the graph being edited and the editor's UI
 	std::unique_ptr<OtGraph> graph;
-	ax::NodeEditor::EditorContext* editorContext = nullptr;
+	std::unique_ptr<OtGraphWidget> widget;
 
 	// to handle do/undo/redo
 	OtTaskManager taskManager;
-	std::shared_ptr<OtGraphEditorTask> nextTask = nullptr;
-	std::vector<uint32_t> nextSelection;
+	std::shared_ptr<OtEditorTask> nextTask = nullptr;
 
 	// to handle cut/copy/paste
 	std::string clipboard;
-
-	// work variables
-	ImVec4 nodePadding;
-	float nodeBorderWidth;
-	uint32_t draggedNodeId = 0;
 };

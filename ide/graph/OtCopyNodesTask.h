@@ -12,30 +12,30 @@
 //	Include files
 //
 
-#include <string>
 #include <vector>
 
+#include "OtEditorTask.h"
 #include "OtGraph.h"
-#include "OtGraphEditorTask.h"
 
 
 //
 //	OtCopyNodesTask
 //
 
-class OtCopyNodesTask : public OtGraphEditorTask {
+class OtCopyNodesTask : public OtEditorTask {
 public:
 	// constructor
-	inline OtCopyNodesTask(OtGraph* g, const std::vector<uint32_t>& n, std::string& c) : graph(g), nodes(n), clipboard(c) {}
+	inline OtCopyNodesTask(OtGraph* g, std::string& c) : graph(g), clipboard(c) {}
 
 	// get task name
 	std::string name() { return "copy nodes"; }
 
 	// do action
 	void perform() override {
-		// serialize entity to clipboard
+		// serialize nodes to clipboard
 		oldClipboard = clipboard;
-		clipboard = graph->archiveNodes(nodes);
+		json = graph->archiveNodes(graph->getSelected());
+		clipboard = json;
 	}
 
 	// undo action
@@ -46,12 +46,13 @@ public:
 
 	// redo action
 	void redo() override {
+		clipboard = json;
 	}
 
 protected:
 	// properties
 	OtGraph* graph;
-	std::vector<uint32_t> nodes;
 	std::string& clipboard;
 	std::string oldClipboard;
+	std::string json;
 };

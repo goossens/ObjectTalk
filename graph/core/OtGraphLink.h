@@ -32,6 +32,20 @@ public:
 		id = i ? i : OtGraphGenerateID();
 	}
 
+	// redirect to a new pin
+	inline void redirectTo(OtGraphPin newTo) {
+		to = newTo;
+	}
+
+	// (dis)connect the pins
+	inline void connect() {
+		to->connect(from);
+	}
+
+	inline void disconnect() {
+		to->disconnect();
+	}
+
 	// serialize
 	nlohmann::json serialize();
 

@@ -27,7 +27,7 @@
 class OtCutNodesTask : public OtDeleteNodesTask {
 public:
 	// constructor
-	OtCutNodesTask(OtGraph* g, const std::vector<uint32_t>& n, std::string& c) : OtDeleteNodesTask(g, n), clipboard(c) {}
+	OtCutNodesTask(OtGraph* g, std::string& c) : OtDeleteNodesTask(g), clipboard(c) {}
 
 	// get task name
 	std::string name() { return "cut nodes"; }

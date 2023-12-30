@@ -36,7 +36,7 @@ public:
 	OtSceneEditor();
 
 	// get file extension
-	std::string getFileExtension() override { return ".ots"; }
+	inline std::string getFileExtension() override { return ".ots"; }
 
 	// load/save content
 	void load() override;

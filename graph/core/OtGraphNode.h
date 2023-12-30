@@ -42,22 +42,39 @@ public:
 
 	// add pins
 	template <typename T>
-	inline void addInputPin(const char* name, T& value) {
+	inline OtGraphPin addInputPin(const char* name, T& value) {
 		OtGraphPin pin = std::make_shared<OtGraphPinImpl<T>>(name, OtGraphPinClass::inputPin, &value);
 		pin->node = shared_from_this();
 		inputPins.emplace_back(pin);
+		return pin;
 	}
 
 	template <typename T>
-	inline void addOutputPin(const char* name, T& value) {
+	inline OtGraphPin addOutputPin(const char* name, T& value) {
 		OtGraphPin pin = std::make_shared<OtGraphPinImpl<T>>(name, OtGraphPinClass::outputPin, &value);
 		pin->node = shared_from_this();
 		outputPins.emplace_back(pin);
+		return pin;
 	}
 
 	// (de)serialize
 	nlohmann::json serialize();
 	void deserialize(nlohmann::json data, bool restoreIDs=true);
+
+	// get pin counts
+	inline size_t getInputPinCount() { return inputPins.size(); }
+	inline size_t getOutputPinCount() { return outputPins.size(); }
+
+	// iterate through all pins
+	inline void eachPin(std::function<void(OtGraphPin&)> callback) {
+		for (auto& pin : inputPins) {
+			callback(pin);
+		}
+
+		for (auto& pin : outputPins) {
+			callback(pin);
+		}
+	}
 
 	// iterate through all input pins
 	inline void eachInput(std::function<void(OtGraphPin&)> callback) {
@@ -82,9 +99,12 @@ public:
 	// public properties
 	uint32_t id;
 	const char* name;
-	float x;
-	float y;
-	bool needsPlacement;
+	float x = 0.0f;
+	float y = 0.0f;
+	float w = 0.0f;
+	float h = 0.0f;
+	bool selected = false;
+	bool needsPlacement = false;
 
 private:
 	// private properties

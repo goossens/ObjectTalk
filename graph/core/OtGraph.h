@@ -61,6 +61,7 @@ public:
 	inline void deleteNode(uint32_t id) { deleteNode(nodeIndex[id]); }
 	void deleteNode(OtGraphNode node);
 	void deleteNodes(const std::vector<uint32_t>& nodes);
+	inline size_t getNodeCount() {return nodes.size(); }
 
 	// manipulate links
 	inline bool isLinkValid(uint32_t from, uint32_t to) { return isLinkValid(pinIndex[from], pinIndex[to]); }
@@ -69,6 +70,9 @@ public:
 	inline OtGraphLink createLink(uint32_t from, uint32_t to, uint32_t id=0) { return createLink(pinIndex[from], pinIndex[to], id); }
 	OtGraphLink createLink(OtGraphPin from, OtGraphPin to, uint32_t id=0);
 
+	inline OtGraphLink findLink(uint32_t from, uint32_t to) { return findLink(pinIndex[from], pinIndex[to]); }
+	OtGraphLink findLink(OtGraphPin from, OtGraphPin to);
+
 	inline void deleteLink(uint32_t id) { deleteLink(linkIndex[id]); }
 	void deleteLink(OtGraphLink link);
 	inline void deleteLink(uint32_t from, uint32_t to) { deleteLink(pinIndex[from], pinIndex[to]); }
@@ -76,9 +80,24 @@ public:
 	inline void deleteLinks(uint32_t any) { deleteLinks(pinIndex[any]); }
 	void deleteLinks(OtGraphPin pin);
 
+	inline void redirectLink(uint32_t id, uint32_t newTo) { redirectLink(linkIndex[id], newTo); }
+	void redirectLink(OtGraphLink link, uint32_t newTo);
+
 	// access nodes and pins
 	inline OtGraphNode& getNode(uint32_t id) { return nodeIndex[id]; }
 	inline OtGraphPin& getPin(uint32_t id) { return pinIndex[id]; }
+
+	// handle selections
+	void selectAll();
+	void deselectAll();
+	void select(uint32_t id, bool deselect=true);
+	void select(const std::vector<uint32_t>& nodes, bool deselect=true);
+	void select(int x1, int y1, int x2, int y2);
+	inline bool isNodeSelected(uint32_t id) { return nodeIndex[id]->selected; }
+
+	std::vector<uint32_t> getSelected();
+	inline size_t getSelectedCount() { return getSelected().size(); }
+	inline bool hasSelected() { return getSelected().size() != 0; }
 
 	// iterate through nodes and links
 	inline void eachNode(std::function<void(OtGraphNode&)> callback) {

@@ -15,39 +15,40 @@
 #include <string>
 #include <vector>
 
+#include "OtEditorTask.h"
 #include "OtGraph.h"
-#include "OtGraphEditorTask.h"
 
 
 //
 //	OtDuplicateNodesTask
 //
 
-class OtDuplicateNodesTask : public OtGraphEditorTask {
+class OtDuplicateNodesTask : public OtEditorTask {
 public:
 	// constructor
-	inline OtDuplicateNodesTask(OtGraph* g, const std::vector<uint32_t>& n) : graph(g), nodes(n) {}
+	inline OtDuplicateNodesTask(OtGraph* g) : graph(g) {}
 
 	// get task name
 	std::string name() { return "duplicate nodes"; }
 
 	// do action
 	void perform() override {
+		nodes = graph->getSelected();
 		duplicates = graph->duplicateNodes(graph->archiveNodes(nodes));
 		json = graph->archiveNodes(duplicates);
-		selectNodesInEditor(duplicates);
+		graph->select(duplicates);
 	}
 
 	// undo action
 	void undo() override {
 		graph->deleteNodes(duplicates);
-		selectNodesInEditor(nodes);
+		graph->select(nodes);
 	}
 
 	// redo action
 	void redo() override {
 		graph->restoreNodes(json);
-		selectNodesInEditor(duplicates);
+		graph->select(duplicates);
 	}
 
 protected:

@@ -13,18 +13,21 @@
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
-#include "imgui_node_editor.h"
 #include "nlohmann/json.hpp"
 
 #include "OtUi.h"
 
 #include "OtGraphEditor.h"
+#include "OtInputNodes.h"
 #include "OtMathNodes.h"
+#include "OtOutputNodes.h"
 
 #include "OtCopyNodesTask.h"
+#include "OtChangeLinkTask.h"
 #include "OtCreateLinkTask.h"
 #include "OtCreateNodeTask.h"
 #include "OtCutNodesTask.h"
+#include "OtDeleteLinkTask.h"
 #include "OtDeleteNodesTask.h"
 #include "OtDuplicateNodesTask.h"
 #include "OtDragNodesTask.h"
@@ -32,70 +35,20 @@
 
 
 //
-//	Shortcuts
-//
-
-namespace ed = ax::NodeEditor;
-
-
-//
-//	Constants
-//
-
-static constexpr float nodeWidth = 150.0f;
-static constexpr float nodeRounding = 5.0f;
-static constexpr float pinRadius = 6.0f;
-static constexpr float pinSize = pinRadius * 2.0f;
-static constexpr float pinOffsetV = 2.0f;
-
-
-static constexpr ImU32 creatingLinkColor = 0xff7edef8;
-static constexpr ImU32 validLinkColor = 0xff80ff80;
-static constexpr ImU32 invalidLinkColor = 0xff8080ff;
-
-static constexpr ImU32 pinColors[] = {
-	0xffd7a7ce, // bool
-	0xffb3b3b3, // float
-	0xff629f60, // vec2
-	0xffff7575, // vec3
-	0xff29c7c7  // color
-};
-
-
-//
 //	OtGraphEditor::OtGraphEditor
 //
 
 OtGraphEditor::OtGraphEditor() {
-	// create our default context
-	ed::Config config;
-	config.SettingsFile = nullptr;
-	config.NavigateButtonIndex = ImGuiMouseButton_Middle;
-	config.CustomZoomLevels.push_back(0.2f);
-	config.CustomZoomLevels.push_back(0.3f);
-	config.CustomZoomLevels.push_back(0.4f);
-	config.CustomZoomLevels.push_back(0.5f);
-	config.CustomZoomLevels.push_back(0.6f);
-	config.CustomZoomLevels.push_back(0.7f);
-	config.CustomZoomLevels.push_back(0.8f);
-	config.CustomZoomLevels.push_back(0.9f);
-	config.CustomZoomLevels.push_back(1.0f);
-	editorContext = ed::CreateEditor(&config);
-
-	ed::SetCurrentEditor(editorContext);
-	ed::EnableShortcuts(false);
-	auto& style = ed::GetStyle();
-	style.NodeRounding = nodeRounding;
-	nodePadding = style.NodePadding;
-	nodeBorderWidth = style.NodeBorderWidth;
-	ed::SetCurrentEditor(nullptr);
-
 	graph = std::make_unique<OtGraph>();
 	OtMathNodesRegister(*graph);
+	OtInputNodesRegister(*graph);
+	OtOutputNodesRegister(*graph);
 
 	graph->createNode("Add", 100.0f, 100.0f);
 	graph->createNode("Subtract", 400.0f, 100.0f);
 	graph->createNode("Sin", 100.0f, 300.0f);
+
+	widget = std::make_unique<OtGraphWidget>();
 }
 
 
@@ -138,7 +91,7 @@ bool OtGraphEditor::isDirty() {
 //
 
 void OtGraphEditor::cutSelectedNodes() {
-	nextTask = std::make_shared<OtCutNodesTask>(graph.get(), getSelectedNodes(), clipboard);
+	nextTask = std::make_shared<OtCutNodesTask>(graph.get(), clipboard);
 }
 
 
@@ -147,7 +100,7 @@ void OtGraphEditor::cutSelectedNodes() {
 //
 
 void OtGraphEditor::copySelectedNodes() {
-	nextTask = std::make_shared<OtCopyNodesTask>(graph.get(), getSelectedNodes(), clipboard);
+	nextTask = std::make_shared<OtCopyNodesTask>(graph.get(), clipboard);
 }
 
 
@@ -165,7 +118,7 @@ void OtGraphEditor::pasteSelectedNodes() {
 //
 
 void OtGraphEditor::deleteSelectedNodes() {
-	nextTask = std::make_shared<OtDeleteNodesTask>(graph.get(), getSelectedNodes());
+	nextTask = std::make_shared<OtDeleteNodesTask>(graph.get());
 }
 
 
@@ -174,7 +127,7 @@ void OtGraphEditor::deleteSelectedNodes() {
 //
 
 void OtGraphEditor::duplicateSelectedNodes() {
-	nextTask = std::make_shared<OtDuplicateNodesTask>(graph.get(), getSelectedNodes());
+	nextTask = std::make_shared<OtDuplicateNodesTask>(graph.get());
 }
 
 
@@ -200,7 +153,7 @@ std::shared_ptr<OtGraphEditor> OtGraphEditor::create(const std::filesystem::path
 
 void OtGraphEditor::renderMenu() {
 	// get status
-	bool selected = areNodesSelected();
+	bool selected = graph->hasSelected();
 	bool clipable = clipboard.size() > 0;
 
 	// create menubar
@@ -249,9 +202,6 @@ void OtGraphEditor::renderMenu() {
 		} else if (ImGui::IsKeyPressed(ImGuiKey_D, false) && selected) {
 			duplicateSelectedNodes();
 		}
-
-	} else if (ImGui::IsKeyPressed(ImGuiKey_Backspace, false) || ImGui::IsKeyPressed(ImGuiKey_Delete, false)) {
-		deleteSelectedNodes();
 	}
 }
 
@@ -261,184 +211,43 @@ void OtGraphEditor::renderMenu() {
 //
 
 void OtGraphEditor::renderEditor(bool active) {
-	// setup node editor
-	ed::Begin("GraphEditor");
+	// render the graph
+	widget->render(graph.get());
 
-	// render all nodes
-	graph->eachNode([&] (OtGraphNode& node) {
-		renderNode(node);
-	});
+	// handle link creations
+	uint32_t from;
+	uint32_t to;
 
-	// render all links
-	graph->eachLink([&] (OtGraphLink& link) {
-		ed::Link(link->id, link->from->id, link->to->id);
-	});
-
-	// perform delayed selection
-	if (nextSelection.size()) {
-		ax::NodeEditor::ClearSelection();
-
-		for (auto node : nextSelection) {
-			ax::NodeEditor::SelectNode(node, true);
-		}
-
-		nextSelection.clear();
+	if (widget->isCreatingLink(from, to)) {
+		nextTask = std::make_shared<OtCreateLinkTask>(graph.get(), from, to);
 	}
 
-	// handle all interactions
-	handleInteractions();
-
-	// perform editing task (if required)
-	if (nextTask) {
-		taskManager.perform(nextTask);
-
-		// do we have a new selection?
-		// this has to be handled on a delay
-		// because the target nodes might not yet exist in editor
-		// very hackish
-		if (nextTask->hasNewSelection()) {
-			nextSelection = nextTask->getNewSelection();
-		}
-
-		nextTask = nullptr;
+	// handle link deletion
+	if (widget->isDroppingLink(from, to)) {
+		nextTask = std::make_shared<OtDeleteLinkTask>(graph.get(), from, to);
 	}
 
-	// close node editor
-	ed::End();
-}
+	// handle link redirection
+	uint32_t newTo;
 
-
-//
-//	OtGraphEditor::renderNode
-//
-
-void OtGraphEditor::renderNode(OtGraphNode& node) {
-	// start node rendering
-	ed::BeginNode(node->id);
-	auto outerSize = ed::GetNodeSize(node->id);
-	auto innerSize = outerSize - ImVec2(nodePadding.x * 2.0f, nodePadding.y * 2.0f);
-
-	// set position (if required)
-	if (node->needsPlacement) {
-		ed::SetNodePosition(node->id, ImVec2(node->x, node->y));
-		node->needsPlacement = false;
+	if (widget->isChangingLink(from, to, newTo)) {
+		nextTask = std::make_shared<OtChangeLinkTask>(graph.get(), from, to, newTo);
 	}
-
-	// show a title
-	auto drawList = ImGui::GetWindowDrawList();
-	auto topLeft = ImGui::GetCursorScreenPos() - ImVec2(nodePadding.x, nodePadding.y);
-	auto bottomRight = topLeft + ImVec2(outerSize.x, ImGui::GetFrameHeight() + nodePadding.y);
-
-	drawList->AddRectFilled(
-		topLeft + ImVec2(nodeBorderWidth, nodeBorderWidth),
-		bottomRight - ImVec2(nodeBorderWidth, 0.0f),
-		ImGui::GetColorU32(ImGuiCol_Tab),
-		nodeRounding);
-
-	ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (innerSize.x - ImGui::CalcTextSize(node->name).x) / 2.0f);
-	ImGui::TextUnformatted(node->name);
-	ImGui::Dummy(ImVec2(nodeWidth, nodePadding.y));
-
-	// render all output pins
-	node->eachOutput([&] (OtGraphPin& pin) {
-		renderPin(pin, bottomRight.x);
-	});
-
-	// render all input pins
-	node->eachInput([&] (OtGraphPin& pin) {
-		renderPin(pin, topLeft.x);
-	});
-
-	ed::EndNode();
-}
-
-
-//
-//	OtGraphEditor::renderPin
-//
-
-void OtGraphEditor::renderPin(OtGraphPin& pin, float x) {
-	ed::BeginPin(pin->id, pin->isInput() ? ed::PinKind::Input : ed::PinKind::Output);
-
-	auto drawList = ImGui::GetWindowDrawList();
-	auto color = pinColors[pin->type];
-	auto center = ImVec2(x, ImGui::GetCursorScreenPos().y + pinRadius + pinOffsetV);
-	drawList->AddCircleFilled(center, pinRadius, color, 12);
-	ed::PinRect(center - ImVec2(pinRadius, pinRadius), center + ImVec2(pinRadius, pinRadius));
-
-	if (pin->isOutput()) {
-		ImGui::Indent(nodeWidth - ImGui::CalcTextSize(pin->name).x);
-	}
-
-	ImGui::TextUnformatted(pin->name);
-	ed::EndPin();
-}
-
-
-//
-//	getPin
-//
-
-static OtGraphPin getPin(OtGraph& graph, ed::PinId pinId) {
-	return graph.getPin((uint32_t) pinId.Get());
-}
-
-
-//
-//	OtGraphEditor::handleInteractions
-//
-
-void OtGraphEditor::handleInteractions() {
-	// see if we are creating a new link
-	if (ed::BeginCreate(ImGui::ColorConvertU32ToFloat4(creatingLinkColor))) {
-		ed::PinId startPinId, endPinId;
-
-		if (ed::QueryNewLink(&startPinId, &endPinId)) {
-			// validate link
-			auto startPin = getPin(*graph, startPinId);
-			auto endPin = getPin(*graph, endPinId);
-
-			if (startPin->isInput()) {
-				std::swap(startPin, endPin);
-			}
-
-			if (!graph->isLinkValid(startPin, endPin)) {
-				ed::RejectNewItem(ImGui::ColorConvertU32ToFloat4(invalidLinkColor));
-
-			} else if (ed::AcceptNewItem(ImGui::ColorConvertU32ToFloat4(validLinkColor))) {
-				nextTask = std::make_shared<OtCreateLinkTask>(graph.get(), startPin->id, endPin->id);
-			}
-		}
-	}
-
-	ed::EndCreate();
 
 	// handle node dragging
-	if (ImGui::IsMouseDragging(ImGuiMouseButton_Left, 1)) {
-		if (!draggedNodeId) {
-			auto nodeId = ed::GetHoveredNode();
+	ImVec2 offset;
 
-			if (nodeId) {
-				draggedNodeId = (uint32_t) nodeId.Get();
-			}
-		}
-
-	} else if (draggedNodeId) {
-		// stopped dragging node(s), generate next task
-		auto selected = getSelectedNodes(draggedNodeId);
-		nextTask = std::make_shared<OtDragNodesTask>(graph.get(), selected);
-		draggedNodeId = 0;
+	if (widget->isDraggingComplete(offset)) {
+		nextTask = std::make_shared<OtDragNodesTask>(graph.get(), offset);
 	}
 
-	// handle context menus
-	ed::Suspend();
-
-	if (ed::ShowBackgroundContextMenu()) {
+	// handle context menu
+	if (widget->showContextMenu()) {
 		ImGui::OpenPopup("Background Context");
 	}
 
 	if (ImGui::BeginPopup("Background Context")) {
-		auto nodePosition = ed::ScreenToCanvas(ImGui::GetMousePosOnOpeningCurrentPopup());
+		auto nodePosition = widget->screenToWidget(ImGui::GetMousePosOnOpeningCurrentPopup());
 		ImGui::TextUnformatted("Create Node");
 		ImGui::Separator();
 
@@ -463,38 +272,9 @@ void OtGraphEditor::handleInteractions() {
 		ImGui::EndPopup();
 	}
 
-	ed::Resume();
-}
-
-
-//
-//	OtGraphEditor::areNodesSelected
-//
-
-bool OtGraphEditor::areNodesSelected() {
-	std::vector<ed::NodeId> nodes;
-	nodes.resize(ed::GetSelectedObjectCount());
-	return ed::GetSelectedNodes(nodes.data(), nodes.size()) != 0;
-}
-
-
-//
-//	OtGraphEditor::getSelectedNodes
-//
-
-std::vector<uint32_t> OtGraphEditor::getSelectedNodes(uint32_t id) {
-	std::vector<ed::NodeId> nodes;
-	nodes.resize(ed::GetSelectedNodes(nullptr, 0));
-	size_t selected = ed::GetSelectedNodes(nodes.data(), nodes.size());
-	std::vector<uint32_t> result;
-
-	for (auto i = 0; i < selected; i++) {
-		result.push_back((uint32_t) nodes[i].Get());
+	// perform editing task (if required)
+	if (nextTask) {
+		taskManager.perform(nextTask);
+		nextTask = nullptr;
 	}
-
-	if (id && (!selected || std::find(result.begin(), result.end(), id) == result.end())) {
-		result.push_back(id);
-	}
-
-	return result;
 }

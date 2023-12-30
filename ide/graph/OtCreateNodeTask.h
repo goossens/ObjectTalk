@@ -14,15 +14,15 @@
 
 #include <string>
 
+#include "OtEditorTask.h"
 #include "OtGraph.h"
-#include "OtGraphEditorTask.h"
 
 
 //
 //	OtCreateNodeTask
 //
 
-class OtCreateNodeTask : public OtGraphEditorTask {
+class OtCreateNodeTask : public OtEditorTask {
 public:
 	// constructor
 	inline OtCreateNodeTask(OtGraph* g, const std::string& tn, float _x, float _y) : graph(g), typeName(tn), x(_x), y(_y) {}

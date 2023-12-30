@@ -20,7 +20,7 @@ set(GRAPH_INCLUDE_DIRS ${GRAPH_INCLUDE_DIRS} PARENT_SCOPE)
 add_library(graph OBJECT ${GRAPH_INCLUDES} ${GRAPH_SOURCES})
 target_include_directories(graph PUBLIC ${GRAPH_INCLUDE_DIRS})
 
-add_dependencies(graph ot json)
-target_link_libraries(graph PUBLIC ot json)
+add_dependencies(graph ot json gfx)
+target_link_libraries(graph PUBLIC ot json gfx)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${GRAPH_INCLUDES} ${GRAPH_SOURCES})

@@ -15,15 +15,15 @@
 #include <string>
 #include <vector>
 
+#include "OtEditorTask.h"
 #include "OtGraph.h"
-#include "OtGraphEditorTask.h"
 
 
 //
 //	OtPasteNodesTask
 //
 
-class OtPasteNodesTask : public OtGraphEditorTask {
+class OtPasteNodesTask : public OtEditorTask {
 public:
 	// constructor
 	inline OtPasteNodesTask(OtGraph* g, std::string& c) : graph(g), clipboard(c) {}
@@ -34,30 +34,27 @@ public:
 	// do action
 	void perform() override {
 		// save previous selection
-		previousSelection = getSelectedNodesInEditor();
+		previousSelection = graph->getSelected();
 
 		// create new nodes
 		nodes = graph->duplicateNodes(clipboard);
 		json = graph->archiveNodes(nodes);
-
-		// select pasted nodes
-		selectNodesInEditor(nodes);
+		graph->select(nodes);
 	}
 
 	// undo action
 	void undo() override {
 		// remove created nodes
 		graph->deleteNodes(nodes);
-		deleteNodesInEditor(nodes);
 
 		// restore previous sections
-		selectNodesInEditor(previousSelection);
+		graph->select(previousSelection);
 	}
 
 	// redo action
 	void redo() override {
 		graph->restoreNodes(json);
-		selectNodesInEditor(nodes);
+		graph->select(nodes);
 	}
 
 protected:

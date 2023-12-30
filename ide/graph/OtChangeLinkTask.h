@@ -12,48 +12,43 @@
 //	Include files
 //
 
-#include <string>
-#include <vector>
-
 #include "OtEditorTask.h"
 #include "OtGraph.h"
 
 
 //
-//	OtDeleteNodesTask
+//	OtChangeLinkTask
 //
 
-class OtDeleteNodesTask : public OtEditorTask {
+class OtChangeLinkTask : public OtEditorTask {
 public:
 	// constructor
-	inline OtDeleteNodesTask(OtGraph* g) : graph(g) {}
+	inline OtChangeLinkTask(OtGraph* g, uint32_t f, uint32_t t, uint32_t n) : graph(g), from(f), oldTo(t), newTo(n) {}
 
 	// get task name
-	std::string name() { return "delete nodes"; }
+	std::string name() { return "change link"; }
 
 	// do action
 	void perform() override {
-		nodes = graph->getSelected();
-		json = graph->archiveNodes(nodes);
-		graph->deleteNodes(nodes);
-		graph->deselectAll();
+		link = graph->findLink(from, oldTo)->id;
+		graph->redirectLink(link, newTo);
 	}
 
 	// undo action
 	void undo() override {
-		graph->restoreNodes(json);
-		graph->select(nodes);
+		graph->redirectLink(link, oldTo);
 	}
 
 	// redo action
 	void redo() override {
-		graph->deleteNodes(nodes);
-		graph->deselectAll();
+		graph->redirectLink(link, newTo);
 	}
 
-protected:
+private:
 	// properties
 	OtGraph* graph;
-	std::vector<uint32_t> nodes;
-	std::string json;
+	uint32_t from;
+	uint32_t oldTo;
+	uint32_t newTo;
+	uint32_t link;
 };

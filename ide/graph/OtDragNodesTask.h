@@ -12,36 +12,31 @@
 //	Include files
 //
 
-#include <vector>
-
 #include "imgui.h"
-#include "imgui_node_editor.h"
 
+#include "OtEditorTask.h"
 #include "OtGraph.h"
-#include "OtGraphEditorTask.h"
 
 
 //
 //	OtDragNodesTask
 //
 
-class OtDragNodesTask : public OtGraphEditorTask {
+class OtDragNodesTask : public OtEditorTask {
 public:
 	// constructor
-	inline OtDragNodesTask(OtGraph* g, const std::vector<uint32_t>& n) : graph(g), nodes(n) {}
+	inline OtDragNodesTask(OtGraph* g, const ImVec2& o) : graph(g), offset(o) {}
 
 	// get task name
 	std::string name() { return "drag nodes"; }
 
 	// do action
 	void perform() override {
-		// the drag already happened in the editor
-		// so we just need to get the old and new locations
-		// and update the location in the graph
-		for (auto id : nodes) {
+		for (auto id : graph->getSelected()) {
 			auto node = graph->getNode(id);
-			auto newPos = ax::NodeEditor::GetNodePosition(id);
-			locations.emplace_back(id, ImVec2(node->x, node->y), newPos);
+			auto oldPos = ImVec2(node->x, node->y);
+			auto newPos = oldPos + offset;
+			locations.emplace_back(id, oldPos, newPos);
 			node->x = newPos.x;
 			node->y = newPos.y;
 		}
@@ -53,7 +48,6 @@ public:
 			auto node = graph->getNode(location.id);
 			node->x = location.oldPos.x;
 			node->y = location.oldPos.y;
-			ax::NodeEditor::SetNodePosition(location.id, location.oldPos);
 		}
 	}
 
@@ -63,14 +57,13 @@ public:
 			auto node = graph->getNode(location.id);
 			node->x = location.newPos.x;
 			node->y = location.newPos.y;
-			ax::NodeEditor::SetNodePosition(location.id, location.newPos);
 		}
 	}
 
 private:
 	// properties
 	OtGraph* graph;
-	std::vector<uint32_t> nodes;
+	ImVec2 offset;
 
 	struct location {
 		location(uint32_t i, ImVec2 o, ImVec2 n) : id(i), oldPos(o), newPos(n) {}

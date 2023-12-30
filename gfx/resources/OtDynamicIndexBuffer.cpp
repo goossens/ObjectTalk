@@ -18,7 +18,7 @@
 //	OtDynamicIndexBuffer::set
 //
 
-void OtDynamicIndexBuffer::set(void *data, size_t count) {
+void OtDynamicIndexBuffer::set(void* data, size_t count) {
 	if (isValid()) {
 		bgfx::update(indexBuffer.getHandle(), 0, bgfx::copy(data, (uint32_t) (count * sizeof(uint32_t))));
 

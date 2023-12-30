@@ -30,12 +30,12 @@ OtHttpRequestClass::OtHttpRequestClass() {
 		return 0;
 	};
 
-	multipartCallbacks.on_header_field = [](multipartparser* parser, const char *at, size_t length) -> int {
+	multipartCallbacks.on_header_field = [](multipartparser* parser, const char* at, size_t length) -> int {
 		((OtHttpRequestClass*)(parser->data))->onMultipartHeaderField(at, length);
 		return 0;
 	};
 
-	multipartCallbacks.on_header_value = [](multipartparser* parser, const char *at, size_t length) -> int {
+	multipartCallbacks.on_header_value = [](multipartparser* parser, const char* at, size_t length) -> int {
 		((OtHttpRequestClass*)(parser->data))->onMultipartHeaderValue(at, length);
 		return 0;
 	};
@@ -45,7 +45,7 @@ OtHttpRequestClass::OtHttpRequestClass() {
 		return 0;
 	};
 
-	multipartCallbacks.on_data = [](multipartparser* parser, const char *at, size_t length) -> int {
+	multipartCallbacks.on_data = [](multipartparser* parser, const char* at, size_t length) -> int {
 		((OtHttpRequestClass*)(parser->data))->onMultipartData(at, length);
 		return 0;
 	};
@@ -85,7 +85,7 @@ void OtHttpRequestClass::clear() {
 //	OtHttpRequestClass::onURL
 //
 
-void OtHttpRequestClass::onURL(const char *data, size_t length) {
+void OtHttpRequestClass::onURL(const char* data, size_t length) {
 	url.append(data, length);
 }
 
@@ -94,7 +94,7 @@ void OtHttpRequestClass::onURL(const char *data, size_t length) {
 //	OtHttpRequestClass::onHeaderField
 //
 
-void OtHttpRequestClass::onHeaderField(const char *data, size_t length) {
+void OtHttpRequestClass::onHeaderField(const char* data, size_t length) {
 	// push header if complete
 	if (headerState == WAITING_FOR_VALUE) {
 		setHeader(headerName, headerValue);
@@ -112,7 +112,7 @@ void OtHttpRequestClass::onHeaderField(const char *data, size_t length) {
 //	OtHttpRequestClass::onHeaderValue
 //
 
-void OtHttpRequestClass::onHeaderValue(const char *data, size_t length) {
+void OtHttpRequestClass::onHeaderValue(const char* data, size_t length) {
 	// collect header value
 	headerValue.append(data, length);
 	headerState = WAITING_FOR_VALUE;
@@ -171,7 +171,7 @@ void OtHttpRequestClass::onHeadersComplete(const std::string m, const std::strin
 //	OtHttpRequestClass::onBody
 //
 
-void OtHttpRequestClass::onBody(const char *data, size_t length) {
+void OtHttpRequestClass::onBody(const char* data, size_t length) {
 	// handle multipart if required
 	if (multipartBoundary.size()) {
 		auto parsed = multipartparser_execute(&multipartParser, &multipartCallbacks, data, length);
@@ -208,7 +208,7 @@ void OtHttpRequestClass::onMultipartBegin() {
 //	OtHttpRequestClass::onMultipartHeaderField
 //
 
-void OtHttpRequestClass::onMultipartHeaderField(const char *data, size_t length) {
+void OtHttpRequestClass::onMultipartHeaderField(const char* data, size_t length) {
 	// push multipart header if complete
 	if (headerState == WAITING_FOR_VALUE) {
 		multipartHeaders.emplace(headerName, headerValue);
@@ -226,7 +226,7 @@ void OtHttpRequestClass::onMultipartHeaderField(const char *data, size_t length)
 //	OtHttpRequestClass::onMultipartHeaderValue
 //
 
-void OtHttpRequestClass::onMultipartHeaderValue(const char *data, size_t length) {
+void OtHttpRequestClass::onMultipartHeaderValue(const char* data, size_t length) {
 	// collect multipart header value
 	headerValue.append(data, length);
 	headerState = WAITING_FOR_VALUE;
@@ -247,14 +247,14 @@ void OtHttpRequestClass::onMultipartHeadersComplete() {
 	if (multipartHeaders.has("Content-Disposition")) {
 		auto d = multipartHeaders.get("Content-Disposition");
 
-		OtText::splitTrimIterator(d.data(), d.data() + d.size(), ';', [&](const char *b, const char *e) {
+		OtText::splitTrimIterator(d.data(), d.data() + d.size(), ';', [&](const char* b, const char* e) {
 			auto part = std::string(b, e - b);
 
 			if (part.find("=") != std::string::npos) {
 				std::string key;
 				std::string val;
 
-				OtText::splitTrimIterator(b, e, '=', [&](const char *b2, const char *e2) {
+				OtText::splitTrimIterator(b, e, '=', [&](const char* b2, const char* e2) {
 					if (key.empty()) {
 						key.assign(b2, e2);
 
@@ -300,7 +300,7 @@ void OtHttpRequestClass::onMultipartHeadersComplete() {
 //	OtHttpRequestClass::onMultipartData
 //
 
-void OtHttpRequestClass::onMultipartData(const char *data, size_t length) {
+void OtHttpRequestClass::onMultipartData(const char* data, size_t length) {
 	// handle file uploads
 	if (multipartFileName.size()) {
 		uv_fs_t req;
@@ -354,11 +354,11 @@ void OtHttpRequestClass::setHeader(const std::string& name, const std::string& v
 	headers.emplace(name, value);
 
 	if (OtText::caseEqual(name, "cookie")) {
-		OtText::splitIterator(value.data(), value.data() + value.size(), ';', [&](const char *b, const char *e) {
+		OtText::splitIterator(value.data(), value.data() + value.size(), ';', [&](const char* b, const char* e) {
 			std::string key;
 			std::string val;
 
-			OtText::splitIterator(b, e, '=', [&](const char *b2, const char *e2) {
+			OtText::splitIterator(b, e, '=', [&](const char* b2, const char* e2) {
 				if (key.empty()) {
 					key.assign(b2, e2);
 
@@ -427,11 +427,11 @@ const OtObject OtHttpRequestClass::getHeaders() {
 //
 
 void OtHttpRequestClass::parseParams(const std::string& text) {
-	OtText::splitIterator(text.data(), text.data() + text.size(), '&', [&](const char *b, const char *e) {
+	OtText::splitIterator(text.data(), text.data() + text.size(), '&', [&](const char* b, const char* e) {
 		std::string key;
 		std::string value;
 
-		OtText::splitIterator(b, e, '=', [&](const char *b2, const char *e2) {
+		OtText::splitIterator(b, e, '=', [&](const char* b2, const char* e2) {
 			if (key.empty()) {
 				key.assign(b2, e2);
 

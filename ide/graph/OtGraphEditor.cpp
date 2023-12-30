@@ -211,6 +211,9 @@ void OtGraphEditor::renderMenu() {
 //
 
 void OtGraphEditor::renderEditor(bool active) {
+	// evaluate the graph
+	graph->evaluate();
+
 	// render the graph
 	widget->render(graph.get());
 

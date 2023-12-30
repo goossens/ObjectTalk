@@ -249,7 +249,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 				// format nicely
 				std::string statement;
 
-				OtText::splitIterator(lines.data(), lines.data() + lines.size(), '\n', [&](const char *b, const char *e) {
+				OtText::splitIterator(lines.data(), lines.data() + lines.size(), '\n', [&](const char* b, const char* e) {
 					std::string text(b, e - b);
 
 					if (statement.size()) {

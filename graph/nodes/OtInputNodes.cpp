@@ -28,7 +28,7 @@ public:
 	inline void configure() override {
 		auto pin = addOutputPin("Number", number);
 
-		pin->addRenderer([&] () {
+		pin->addRenderer([this, pin] () {
 			ImGui::SetNextItemWidth(fieldWidth);
 
 			if (ImGui::InputFloat("##number", &number)) {

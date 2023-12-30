@@ -1,84 +1,168 @@
 {
-	"links": [],
+	"links": [
+		{
+			"from": 3348868259,
+			"id": 2515860584,
+			"to": 4188757952
+		},
+		{
+			"from": 362673415,
+			"id": 2524307594,
+			"to": 3420868335
+		},
+		{
+			"from": 753009503,
+			"id": 903463477,
+			"to": 3883694873
+		},
+		{
+			"from": 753009503,
+			"id": 593269723,
+			"to": 3783536367
+		},
+		{
+			"from": 1182013951,
+			"id": 3965693708,
+			"to": 1832054022
+		},
+		{
+			"from": 3612936401,
+			"id": 2747130417,
+			"to": 963047489
+		}
+	],
 	"metadata": {},
 	"nodes": [
 		{
-			"id": 4057903326,
+			"id": 37376410,
+			"inputs": [],
+			"name": "Input Float",
+			"outputs": [
+				{
+					"id": 3348868259,
+					"name": "Number",
+					"type": "float",
+					"value": 10.0
+				}
+			],
+			"x": 56.0,
+			"y": 151.0
+		},
+		{
+			"id": 2507790077,
+			"inputs": [],
+			"name": "Input Float",
+			"outputs": [
+				{
+					"id": 362673415,
+					"name": "Number",
+					"type": "float",
+					"value": 12.0
+				}
+			],
+			"x": 50.0,
+			"y": 267.0
+		},
+		{
+			"id": 707316306,
 			"inputs": [
 				{
-					"id": 2063201347,
+					"id": 4188757952,
 					"name": "A",
 					"type": "float",
-					"value": 0.0
+					"value": 10.0
 				},
 				{
-					"id": 2582650271,
+					"id": 3420868335,
 					"name": "B",
 					"type": "float",
-					"value": 0.0
+					"value": 12.0
 				}
 			],
 			"name": "Add",
 			"outputs": [
 				{
-					"id": 1801673686,
+					"id": 753009503,
 					"name": "Result",
 					"type": "float",
-					"value": 0.0
+					"value": 22.0
 				}
 			],
-			"x": 91.0,
-			"y": 83.0
+			"x": 264.0,
+			"y": 157.0
 		},
 		{
-			"id": 1587452710,
+			"id": 87380946,
+			"inputs": [],
+			"name": "Input Float",
+			"outputs": [
+				{
+					"id": 3612936401,
+					"name": "Number",
+					"type": "float",
+					"value": 4.0
+				}
+			],
+			"x": 233.0,
+			"y": 305.0
+		},
+		{
+			"id": 1683907385,
 			"inputs": [
 				{
-					"id": 3851855907,
+					"id": 3883694873,
 					"name": "A",
 					"type": "float",
-					"value": 0.0
+					"value": 22.0
 				},
 				{
-					"id": 1344259037,
+					"id": 963047489,
 					"name": "B",
 					"type": "float",
-					"value": 0.0
+					"value": 4.0
 				}
 			],
 			"name": "Subtract",
 			"outputs": [
 				{
-					"id": 2988659737,
+					"id": 1182013951,
 					"name": "Result",
 					"type": "float",
-					"value": 0.0
+					"value": 18.0
 				}
 			],
-			"x": 400.0,
-			"y": 100.0
+			"x": 444.0,
+			"y": 198.0
 		},
 		{
-			"id": 3984425243,
+			"id": 1919832317,
 			"inputs": [
 				{
-					"id": 804161394,
-					"name": "A",
+					"id": 3783536367,
+					"name": "Number",
 					"type": "float",
-					"value": 0.0
+					"value": 22.0
 				}
 			],
-			"name": "Sin",
-			"outputs": [
+			"name": "Output Float",
+			"outputs": [],
+			"x": 592.0,
+			"y": 40.0
+		},
+		{
+			"id": 1110028080,
+			"inputs": [
 				{
-					"id": 2266570670,
-					"name": "Result",
+					"id": 1832054022,
+					"name": "Number",
 					"type": "float",
-					"value": 0.0
+					"value": 18.0
 				}
 			],
-			"x": 100.0,
-			"y": 300.0
+			"name": "Output Float",
+			"outputs": [],
+			"x": 592.0,
+			"y": 113.0
 		}
 	]
 }

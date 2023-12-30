@@ -66,6 +66,8 @@ static inline void inset(float x) {
 //	OtGraphWidget::render
 //
 
+static int seqno;
+
 void OtGraphWidget::render(OtGraph* g) {
 	// reset state
 	graph = g;
@@ -197,7 +199,7 @@ bool OtGraphWidget::isChangingLink(uint32_t& from, uint32_t& oldTo, uint32_t& ne
 //	OtGraphWidget::isDraggingComplete
 //
 
-bool OtGraphWidget::isDraggingComplete(ImVec2 &offset)
+bool OtGraphWidget::isDraggingComplete(ImVec2& offset)
 {
 	if (draggingDone) {
 		offset = draggedOffset;

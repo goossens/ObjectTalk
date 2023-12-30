@@ -63,15 +63,15 @@ public:
 	void deleteNodes(const std::vector<uint32_t>& nodes);
 	inline size_t getNodeCount() {return nodes.size(); }
 
-	// manipulate links
+	// check links
+	inline bool causesCycle(uint32_t from, uint32_t to) { return causesCycle(pinIndex[from], pinIndex[to]); }
+	bool causesCycle(OtGraphPin from, OtGraphPin to);
 	inline bool isLinkValid(uint32_t from, uint32_t to) { return isLinkValid(pinIndex[from], pinIndex[to]); }
 	bool isLinkValid(OtGraphPin from, OtGraphPin to);
 
+	// manipulate links
 	inline OtGraphLink createLink(uint32_t from, uint32_t to, uint32_t id=0) { return createLink(pinIndex[from], pinIndex[to], id); }
 	OtGraphLink createLink(OtGraphPin from, OtGraphPin to, uint32_t id=0);
-
-	inline OtGraphLink findLink(uint32_t from, uint32_t to) { return findLink(pinIndex[from], pinIndex[to]); }
-	OtGraphLink findLink(OtGraphPin from, OtGraphPin to);
 
 	inline void deleteLink(uint32_t id) { deleteLink(linkIndex[id]); }
 	void deleteLink(OtGraphLink link);
@@ -82,6 +82,10 @@ public:
 
 	inline void redirectLink(uint32_t id, uint32_t newTo) { redirectLink(linkIndex[id], newTo); }
 	void redirectLink(OtGraphLink link, uint32_t newTo);
+
+	// search for links
+	inline OtGraphLink findLink(uint32_t from, uint32_t to) { return findLink(pinIndex[from], pinIndex[to]); }
+	OtGraphLink findLink(OtGraphPin from, OtGraphPin to);
 
 	// access nodes and pins
 	inline OtGraphNode& getNode(uint32_t id) { return nodeIndex[id]; }
@@ -120,13 +124,13 @@ public:
 
 	// (re)evaluate entire graph
 	void evaluate();
-
 private:
 	// properties
 	OtGraphNodeFactory factory;
 
 	std::vector<OtGraphNode> nodes;
 	std::vector<OtGraphLink> links;
+	bool needsSorting;
 
 	std::unordered_map<uint32_t, OtGraphNode> nodeIndex;
 	std::unordered_map<uint32_t, OtGraphPin> pinIndex;
@@ -138,7 +142,4 @@ private:
 
 	// restore a node from its JSON data
 	OtGraphNode restoreNode(nlohmann::json data, bool restoreIDs=true);
-
-	// topographically sort the nodes
-	void sortNodes();
 };

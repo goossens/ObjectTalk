@@ -82,11 +82,10 @@ void OtGraphNodeClass::deserialize(nlohmann::json data, bool restoreIDs) {
 //	OtGraphNodeClass::onCheck
 //
 
-bool OtGraphNodeClass::onCheck()
-{
+bool OtGraphNodeClass::onCheck() {
 	bool changed = false;
 
-	eachInput([&changed](OtGraphPin& pin) {
+	eachInput([&](OtGraphPin& pin) {
 		changed |= pin->onCheck();
 	});
 

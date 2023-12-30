@@ -105,6 +105,8 @@ public:
 	float h = 0.0f;
 	bool selected = false;
 	bool needsPlacement = false;
+	bool permanentMark = false;
+	bool temporaryMark = false;
 
 private:
 	// private properties

@@ -18,7 +18,7 @@
 //	OtDynamicVertexBuffer::set
 //
 
-void OtDynamicVertexBuffer::set(void *data, size_t count, const bgfx::VertexLayout& l) {
+void OtDynamicVertexBuffer::set(void* data, size_t count, const bgfx::VertexLayout& l) {
  	if (layout.m_hash != l.m_hash) {
 		clear();
 	}

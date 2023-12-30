@@ -147,12 +147,6 @@ public:
 		return changed;
 	}
 
-	// set new value
-	inline void setValue(T v) {
-		*value = v;
-		updated = true;
-	}
-
 	// properties
 	T* value;
 	T* source = nullptr;

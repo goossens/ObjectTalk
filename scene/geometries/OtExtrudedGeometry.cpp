@@ -100,7 +100,7 @@ void OtExtrudedGeometryClass::fillGeometry() {
 	}
 
 	// create a tesselator
-	TESStesselator *tess = tessNewTess(NULL);
+	TESStesselator* tess = tessNewTess(NULL);
     tessSetOption(tess, TESS_CONSTRAINED_DELAUNAY_TRIANGULATION, 1);
 
 	// process all polygons

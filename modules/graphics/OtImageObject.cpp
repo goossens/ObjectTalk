@@ -20,7 +20,7 @@
 //	OtImageObjectClass::init
 //
 
-void OtImageObjectClass::init(size_t count, OtObject *parameters) {
+void OtImageObjectClass::init(size_t count, OtObject* parameters) {
 	if (count == 2) {
 		load(std::filesystem::path(
 			parameters[0]->operator std::string()),

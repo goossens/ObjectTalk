@@ -36,19 +36,19 @@ OtHttpSessionClass::OtHttpSessionClass(uv_stream_t* stream, OtHttpRouter r) : ro
 	};
 
 	// callback for request URL
-	settings.on_url = [](llhttp_t* parser, const char *at, size_t length) -> int {
+	settings.on_url = [](llhttp_t* parser, const char* at, size_t length) -> int {
 		((OtHttpSessionClass*)(parser->data))->request->onURL(at, length);
 		return HPE_OK;
 	};
 
 	// callback for header name
-	settings.on_header_field = [](llhttp_t* parser, const char *at, size_t length) -> int {
+	settings.on_header_field = [](llhttp_t* parser, const char* at, size_t length) -> int {
 		((OtHttpSessionClass*)(parser->data))->request->onHeaderField(at, length);
 		return HPE_OK;
 	};
 
 	// callback for header value
-	settings.on_header_value = [](llhttp_t* parser, const char *at, size_t length) -> int {
+	settings.on_header_value = [](llhttp_t* parser, const char* at, size_t length) -> int {
 		((OtHttpSessionClass*)(parser->data))->request->onHeaderValue(at, length);
 		return HPE_OK;
 	};
@@ -63,7 +63,7 @@ OtHttpSessionClass::OtHttpSessionClass(uv_stream_t* stream, OtHttpRouter r) : ro
 	};
 
 	// callback for body content
-	settings.on_body = [](llhttp_t* parser, const char *at, size_t length) -> int {
+	settings.on_body = [](llhttp_t* parser, const char* at, size_t length) -> int {
 		((OtHttpSessionClass*)(parser->data))->request->onBody(at, length);
 		return HPE_OK;
 	};

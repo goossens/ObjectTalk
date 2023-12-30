@@ -77,6 +77,6 @@ OtObject OtTypeClass::set(size_t selector, OtObject value) {
 	members.set(selector, value); return value;
 }
 
-OtObject OtTypeClass::set(const char *name, OtObject value) {
+OtObject OtTypeClass::set(const char* name, OtObject value) {
 	return set(OtSelector::create(name), value);
 }

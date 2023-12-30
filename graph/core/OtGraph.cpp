@@ -78,6 +78,9 @@ void OtGraph::load(const std::filesystem::path& path, nlohmann::json* metadata) 
 	for (auto& link : data["links"]) {
 		createLink(link["from"], link["to"], link["id"]);
 	}
+
+	// set the flag
+	needsSorting = true;
 }
 
 
@@ -86,14 +89,14 @@ void OtGraph::load(const std::filesystem::path& path, nlohmann::json* metadata) 
 //
 
 void OtGraph::save(const std::filesystem::path& path, nlohmann::json* metadata) {
-	// create cjosn outline
+	// create json outline
 	auto data = nlohmann::json::object();
 	data["metadata"] = metadata ? *metadata : nlohmann::json::object();
 	auto nodes = nlohmann::json::array();
 	auto links = nlohmann::json::array();
 
 	// save all nodes
-	eachNode([&](OtGraphNode& node) {
+	eachNode([&] (OtGraphNode& node) {
 		nodes.push_back(node->serialize());
 	});
 
@@ -130,6 +133,8 @@ OtGraphNode OtGraph::createNode(const std::string& name, float x, float y) {
 	// create a new node
 	auto node = factory.createNode(name);
 	nodes.emplace_back(node);
+	needsSorting = true;
+
 	node->x = x;
 	node->y = y;
 	node->needsPlacement = true;
@@ -166,6 +171,7 @@ void OtGraph::deleteNode(OtGraphNode node) {
 	// remove specified node
 	nodeIndex.erase(node->id);
 	nodes.erase(i);
+	needsSorting = true;
 }
 
 
@@ -181,6 +187,70 @@ void OtGraph::deleteNodes(const std::vector<uint32_t>& nodes) {
 
 
 //
+//	hasCycle
+//
+
+static bool hasCycle(OtGraphNode node, OtGraphNode newTarget=nullptr) {
+	// function result
+	bool cycle = false;
+
+	// only process each node once
+	if (!node->permanentMark) {
+		// check for cycles
+		if (node->temporaryMark) {
+			cycle = true;
+
+		} else {
+			// temporarily mark the node so we can detect cycles
+			node->temporaryMark = true;
+
+			// visit all nodes it depends on
+			node->eachInput([&] (OtGraphPin& pin) {
+				if (!cycle && pin->sourcePin != nullptr) {
+					cycle = hasCycle(pin->sourcePin->node);
+				}
+			});
+
+			// also check the possible new connection (if required)
+			if (!cycle && newTarget != nullptr) {
+				cycle = hasCycle(newTarget);
+			}
+
+			// set proper flags
+			node->temporaryMark = false;
+			node->permanentMark = true;
+		}
+	}
+
+	return cycle;
+}
+
+
+//
+//	OtGraph::causesCycle
+//
+
+bool OtGraph::causesCycle(OtGraphPin from, OtGraphPin to) {
+	// based on https://en.wikipedia.org/wiki/Topological_sorting
+
+	// clear all flags
+	for (auto& node : nodes) {
+		node->permanentMark = false;
+		node->temporaryMark = false;
+	}
+
+	// visit the nodes in the proposed link (depth first)
+	if (hasCycle(to->node, from->node)) {
+		// we have a cycle
+		return true;
+	}
+
+	// no cycle detected
+	return false;
+}
+
+
+//
 //	OtGraph::isLinkValid
 //
 
@@ -192,6 +262,9 @@ bool OtGraph::isLinkValid(OtGraphPin from, OtGraphPin to) {
 		return false;
 
 	} else if (from->type != to->type) {
+		return false;
+
+	} else if (causesCycle(from, to)) {
 		return false;
 	}
 
@@ -211,7 +284,7 @@ OtGraphLink OtGraph::createLink(OtGraphPin from, OtGraphPin to, uint32_t id) {
 	link->connect();
 
 	// re-sort node list
-	sortNodes();
+	needsSorting = true;
 	return link;
 }
 
@@ -244,7 +317,7 @@ void OtGraph::deleteLink(OtGraphLink link) {
 	}), links.end());
 
 	// re-sort node list
-	sortNodes();
+	needsSorting = true;
 }
 
 void OtGraph::deleteLink(OtGraphPin from, OtGraphPin to) {
@@ -286,6 +359,7 @@ void OtGraph::redirectLink(OtGraphLink link, uint32_t newTo) {
 	link->disconnect();
 	link->redirectTo(pinIndex[newTo]);
 	link->connect();
+	needsSorting = true;
 }
 
 
@@ -294,9 +368,9 @@ void OtGraph::redirectLink(OtGraphLink link, uint32_t newTo) {
 ///
 
 void OtGraph::selectAll() {
-	eachNode([](OtGraphNode& node) {
+	for (auto& node : nodes) {
 		node->selected = true;
-	});
+	};
 }
 
 
@@ -305,9 +379,9 @@ void OtGraph::selectAll() {
 //
 
 void OtGraph::deselectAll() {
-	eachNode([] (OtGraphNode& node) {
+	for (auto& node : nodes) {
 		node->selected = false;
-	});
+	};
 }
 
 
@@ -336,11 +410,11 @@ void OtGraph::select(const std::vector<uint32_t>& nodes, bool deselect) {
 void OtGraph::select(int x1, int y1, int x2, int y2) {
 	deselectAll();
 
-	eachNode([&] (OtGraphNode& node) {
+	for (auto& node : nodes) {
 		node->selected =
 			x1 < (node->x + node->w) && x2 > node->x &&
 			y1 < (node->y + node->h) && y2 > node->y;
-	});
+	};
 }
 
 
@@ -351,7 +425,7 @@ void OtGraph::select(int x1, int y1, int x2, int y2) {
 std::vector<uint32_t> OtGraph::getSelected() {
 	std::vector<uint32_t> result;
 
-	for (auto node : nodes) {
+	for (auto& node : nodes) {
 		if (node->selected) {
 			result.push_back(node->id);
 		}
@@ -401,6 +475,25 @@ std::string OtGraph::archiveNodes(const std::vector<uint32_t>& selection) {
 	return data.dump();
 }
 
+
+//
+//	OtGraph::restoreNode
+//
+
+OtGraphNode OtGraph::restoreNode(nlohmann::json data, bool restoreIDs) {
+	// create a new node
+	auto node = factory.createNode(data["name"]);
+	node->deserialize(data, restoreIDs);
+	node->needsPlacement = true;
+	nodes.emplace_back(node);
+	needsSorting = true;
+
+	// index node and pins
+	indexNode(node);
+
+	// return new node
+	return node;
+}
 
 //
 //	OtGraph::restoreNodes
@@ -486,28 +579,108 @@ void OtGraph::unindexNode(OtGraphNode node) {
 
 
 //
-//	OtGraph::restoreNode
+//	visitNode
 //
 
-OtGraphNode OtGraph::restoreNode(nlohmann::json data, bool restoreIDs) {
-	// create a new node
-	auto node = factory.createNode(data["name"]);
-	node->deserialize(data, restoreIDs);
-	node->needsPlacement = true;
-	nodes.emplace_back(node);
+static bool visitNode(OtGraphNode& node, std::vector<OtGraphNode>& nodes) {
+	// function result
+	bool cycle = false;
 
-	// index node and pins
-	indexNode(node);
+	// only process each node once
+	if (!node->permanentMark) {
+		// check for cycles
+		if (node->temporaryMark) {
+			cycle = true;
 
-	// return new node
-	return node;
+		} else {
+			// temporarily mark the node so we can detect cycles
+			node->temporaryMark = true;
+
+			// visit all nodes it depends on
+			node->eachInput([&] (OtGraphPin& pin) {
+				if (!cycle && pin->sourcePin != nullptr) {
+					cycle = visitNode(pin->sourcePin->node, nodes);
+				}
+			});
+
+			// set proper flags and add node to list (if required)
+			if (!cycle) {
+				node->temporaryMark = false;
+				node->permanentMark = true;
+				nodes.push_back(node);
+			}
+		}
+	}
+
+	return cycle;
 }
 
 
 //
-//	OtGraph::sortNodes
+//	sortNodesTopologically
 //
 
-void OtGraph::sortNodes() {
-	// TODO
+static bool sortNodesTopologically(std::vector<OtGraphNode>& nodes) {
+	// based on https://en.wikipedia.org/wiki/Topological_sorting
+
+	// clear all flags
+	for (auto& node : nodes) {
+		node->permanentMark = false;
+		node->temporaryMark = false;
+	}
+
+	// place to store sorted nodes
+	std::vector<OtGraphNode> sortedNodes;
+
+	// process all nodes
+	for (auto& node : nodes) {
+		if (visitNode(node, sortedNodes)) {
+			return false;
+		}
+	}
+
+	nodes.swap(sortedNodes);
+	return true;
+}
+
+
+//
+//	OtGraph::evaluate
+//
+
+void OtGraph::evaluate() {
+	// see if resorting is required
+	if (needsSorting) {
+		sortNodesTopologically(nodes);
+		needsSorting = false;
+	}
+
+	// see if we have any changes
+	bool changed = false;
+
+	for (auto& node : nodes) {
+		changed |= node->onCheck();
+	};
+
+	// (re)run graph if required
+	if (changed) {
+		// start the run
+		for (auto& node : nodes) {
+			node->onStart();
+		};
+
+		// run until all changes are processed
+		while (changed) {
+			changed = false;
+
+			for (auto& node : nodes) {
+				changed |= node->onExecute();
+			};
+		}
+
+		// end the run
+		for (auto& node : nodes) {
+			node->onEnd();
+		};
+	}
 }

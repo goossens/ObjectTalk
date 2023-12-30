@@ -37,19 +37,19 @@ public:
 	void clear();
 
 	// event handlers to deal with llhttp callbacks
-	void onURL(const char *data, size_t length);
-	void onHeaderField(const char *data, size_t length);
-	void onHeaderValue(const char *data, size_t length);
+	void onURL(const char* data, size_t length);
+	void onHeaderField(const char* data, size_t length);
+	void onHeaderValue(const char* data, size_t length);
 	void onHeadersComplete(const std::string m, const std::string v);
-	void onBody(const char *data, size_t length);
+	void onBody(const char* data, size_t length);
 	void onMessageComplete();
 
 	// event handlers to deal with multipart callbacks
 	void onMultipartBegin();
-	void onMultipartHeaderField(const char *data, size_t length);
-	void onMultipartHeaderValue(const char *data, size_t length);
+	void onMultipartHeaderField(const char* data, size_t length);
+	void onMultipartHeaderValue(const char* data, size_t length);
 	void onMultipartHeadersComplete();
-	void onMultipartData(const char *data, size_t length);
+	void onMultipartData(const char* data, size_t length);
 	void onMultipartEnd();
 
 	// get request parts

@@ -1,5 +1,5 @@
 #	ObjectTalk GRAPICS Module
-#	Copyright (c) 1993-2023 Johan A. Goossens. All rights reserved.
+#	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
 #
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <graphicss://opensource.org/licenses/MIT>.

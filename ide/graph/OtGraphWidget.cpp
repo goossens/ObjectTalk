@@ -250,11 +250,11 @@ ImVec2 OtGraphWidget::screenToWidget(const ImVec2& in) {
 //
 
 void OtGraphWidget::renderGrid(ImDrawList* drawlist) {
-	for (float x = std::fmodf(scrollingOffset.x, gridSpacing); x < size.x; x += gridSpacing) {
+	for (float x = std::fmod(scrollingOffset.x, gridSpacing); x < size.x; x += gridSpacing) {
 		drawlist->AddLine(ImVec2(x, 0.0f) + position, ImVec2(x, size.y) + position, gridColor);
 	}
 
-	for (float y = std::fmodf(scrollingOffset.y, gridSpacing); y < size.y; y += gridSpacing) {
+	for (float y = std::fmod(scrollingOffset.y, gridSpacing); y < size.y; y += gridSpacing) {
 		drawlist->AddLine(ImVec2(0.0f, y) + position, ImVec2(size.x, y) + position, gridColor);
 	}
 

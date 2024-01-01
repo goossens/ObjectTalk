@@ -4,7 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Declare(argparse GIT_REPOSITORY "https://github.com/p-ranav/argparse" GIT_TAG "v2.9")
+FetchContent_Declare(argparse GIT_REPOSITORY "https://github.com/p-ranav/argparse" GIT_TAG "v3.0")
 FetchContent_Populate(argparse)
 
 add_library(argparse INTERFACE)

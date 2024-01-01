@@ -30,6 +30,7 @@ public:
 	void render(OtGraph* graph);
 
 	// check for interactions
+	bool isNodeEdited(uint32_t& node);
 	bool isCreatingLink(uint32_t& from, uint32_t& to);
 	bool isDroppingLink(uint32_t& from, uint32_t& to);
 	bool isChangingLink(uint32_t& from, uint32_t& oldTo, uint32_t& newTo);
@@ -44,6 +45,7 @@ private:
 	void renderGrid(ImDrawList* drawlist);
 	void renderRubberBand(ImDrawList* drawlist);
 	void renderNode(ImDrawList* drawlist, OtGraphNode& node);
+	void renderLink(ImDrawList* drawlist, const ImVec2& start, const ImVec2& end, ImU32 color);
 	void renderPin(ImDrawList* drawlist, OtGraphPin& pin, float x);
 
 	// utility functions
@@ -75,12 +77,14 @@ private:
 
 	int interactionState = noInteraction;
 
+	bool nodeEdited = false;
 	bool draggingDone = false;
 	bool connectingDone = false;
 	bool disconnectingDone = false;
 	bool reconnectingDone = false;
 	bool contextMenuDone = false;
 
+	uint32_t editedNode;
 	uint32_t hoveredNode;
 	uint32_t hoveredPin;
 

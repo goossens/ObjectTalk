@@ -33,7 +33,7 @@ public:
 	}
 
 	// get task name
-	std::string name() { return "change component"; }
+	std::string name() { return "edit component"; }
 
 	// do action
 	void perform() override {

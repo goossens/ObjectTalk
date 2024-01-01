@@ -11,6 +11,10 @@
 
 #include "imgui.h"
 
+#include "OtPathTools.h"
+#include "OtTextureAsset.h"
+#include "OtUi.h"
+
 #include "OtGraphNode.h"
 #include "OtInputNodes.h"
 
@@ -19,6 +23,7 @@
 //	OtGraphNodeFloatInput
 //
 
+#include <iostream>
 class OtGraphNodeFloatInput : public OtGraphNodeClass {
 public:
 	// constructor
@@ -26,22 +31,97 @@ public:
 
 	// configure node
 	inline void configure() override {
-		auto pin = addOutputPin("Number", number);
+		addOutputPin("Value", value)->addRenderer([this] () {
+			static constexpr int flags =
+				ImGuiInputTextFlags_NoUndoRedo |
+				ImGuiInputTextFlags_EnterReturnsTrue;
 
-		pin->addRenderer([this, pin] () {
+			oldState = serialize().dump();
 			ImGui::SetNextItemWidth(fieldWidth);
 
-			if (ImGui::InputFloat("##number", &number)) {
-				pin->updated = true;
+			if (ImGui::InputFloat("##value", &value, 0.0f, 0.0f, "%.3f", flags)) {
+				newState = serialize().dump();
+				needsRunning = true;
+				needsSaving = true;
+			}
+
+			if (ImGui::IsItemDeactivated()) {
+				int a = 0;
 			}
 		}, fieldWidth);
 	}
 
-	static constexpr const char* name = "Input Float";
+	// (de)serialize input
+	void customSerialize(nlohmann::json* data, std::filesystem::path* basedir) override {
+		(*data)["value"] = value;
+	}
+
+	void customDeserialize(nlohmann::json* data, std::filesystem::path* basedir) override {
+		value = data->value("value", 0.0f);
+	}
+
+	static constexpr const char* name = "Float Input";
+	static constexpr float fieldWidth = 120.0f;
 
 protected:
-	static constexpr float fieldWidth = 100.0f;
-	float number = 0.0f;
+	float value = 0.0f;
+};
+
+
+//
+//	OtGraphNodeImageInput
+//
+
+class OtGraphNodeImageInput : public OtGraphNodeClass {
+public:
+	// constructor
+	inline OtGraphNodeImageInput() : OtGraphNodeClass(name) {}
+
+	// configure node
+	inline void configure() override {
+		addOutputPin("Value", index)->addRenderer([this] () {
+			ImGui::SetNextItemWidth(fieldWidth);
+			oldState = serialize().dump();
+
+			if (texture.renderGUI("##texture")) {
+				if (!texture.isNull()) {
+					loading = true;
+
+				} else {
+					needsRunning = true;
+				}
+
+				newState = serialize().dump();
+				needsSaving = true;
+			}
+		}, fieldWidth);
+	}
+
+	// check for completion of texture load
+	inline void onUpdate() override {
+		if (loading && texture->isReady()) {
+			index = texture->getTexture().getTextureHandle().idx;
+			needsRunning = true;
+			loading = false;
+		}
+	}
+
+	// (de)serialize input
+	void customSerialize(nlohmann::json* data, std::filesystem::path* basedir) override {
+		(*data)["value"] = OtPathGetRelative(texture.getPath(), basedir);
+	}
+
+	void customDeserialize(nlohmann::json* data, std::filesystem::path* basedir) override {
+		texture = OtPathGetAbsolute(*data, "value", basedir);
+	}
+
+	static constexpr const char* name = "Image Input";
+	static constexpr float fieldWidth = 180.0f;
+
+protected:
+	OtAsset<OtTextureAsset> texture;
+	uint16_t index;
+	bool loading = false;
 };
 
 
@@ -54,4 +134,5 @@ protected:
 
 void OtInputNodesRegister(OtGraph& graph) {
 	REGISTER(OtGraphNodeFloatInput);
+	REGISTER(OtGraphNodeImageInput);
 }

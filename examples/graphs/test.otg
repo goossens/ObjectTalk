@@ -36,13 +36,13 @@
 		{
 			"id": 37376410,
 			"inputs": [],
-			"name": "Input Float",
+			"name": "Float Input",
+			"value": 2.0,
 			"outputs": [
 				{
 					"id": 3348868259,
-					"name": "Number",
-					"type": "float",
-					"value": 10.0
+					"name": "Value",
+					"type": "float"
 				}
 			],
 			"x": 56.0,
@@ -51,13 +51,13 @@
 		{
 			"id": 2507790077,
 			"inputs": [],
-			"name": "Input Float",
+			"name": "Float Input",
+			"value": 1.0,
 			"outputs": [
 				{
 					"id": 362673415,
-					"name": "Number",
-					"type": "float",
-					"value": 12.0
+					"name": "Value",
+					"type": "float"
 				}
 			],
 			"x": 50.0,
@@ -69,14 +69,12 @@
 				{
 					"id": 4188757952,
 					"name": "A",
-					"type": "float",
-					"value": 10.0
+					"type": "float"
 				},
 				{
 					"id": 3420868335,
 					"name": "B",
-					"type": "float",
-					"value": 12.0
+					"type": "float"
 				}
 			],
 			"name": "Add",
@@ -84,8 +82,7 @@
 				{
 					"id": 753009503,
 					"name": "Result",
-					"type": "float",
-					"value": 22.0
+					"type": "float"
 				}
 			],
 			"x": 264.0,
@@ -94,13 +91,13 @@
 		{
 			"id": 87380946,
 			"inputs": [],
-			"name": "Input Float",
+			"name": "Float Input",
+			"value": 5.0,
 			"outputs": [
 				{
 					"id": 3612936401,
-					"name": "Number",
-					"type": "float",
-					"value": 4.0
+					"name": "Value",
+					"type": "float"
 				}
 			],
 			"x": 233.0,
@@ -112,14 +109,12 @@
 				{
 					"id": 3883694873,
 					"name": "A",
-					"type": "float",
-					"value": 22.0
+					"type": "float"
 				},
 				{
 					"id": 963047489,
 					"name": "B",
-					"type": "float",
-					"value": 4.0
+					"type": "float"
 				}
 			],
 			"name": "Subtract",
@@ -127,8 +122,7 @@
 				{
 					"id": 1182013951,
 					"name": "Result",
-					"type": "float",
-					"value": 18.0
+					"type": "float"
 				}
 			],
 			"x": 444.0,
@@ -139,12 +133,11 @@
 			"inputs": [
 				{
 					"id": 3783536367,
-					"name": "Number",
-					"type": "float",
-					"value": 22.0
+					"name": "Value",
+					"type": "float"
 				}
 			],
-			"name": "Output Float",
+			"name": "Float Output",
 			"outputs": [],
 			"x": 592.0,
 			"y": 40.0
@@ -154,15 +147,29 @@
 			"inputs": [
 				{
 					"id": 1832054022,
-					"name": "Number",
-					"type": "float",
-					"value": 18.0
+					"name": "Value",
+					"type": "float"
 				}
 			],
-			"name": "Output Float",
+			"name": "Float Output",
 			"outputs": [],
 			"x": 592.0,
 			"y": 113.0
+		},
+		{
+			"id": 1137274146,
+			"inputs": [],
+			"name": "Image Input",
+			"outputs": [
+				{
+					"id": 3051670333,
+					"name": "Value",
+					"type": "image"
+				}
+			],
+			"value": "../scenes/earth/assets/earth.png",
+			"x": 419.0,
+			"y": 451.0
 		}
 	]
 }

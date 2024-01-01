@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include <filesystem>
+
 #include "nlohmann/json_fwd.hpp"
 
 #include "OtGraphPin.h"
@@ -47,7 +49,7 @@ public:
 	}
 
 	// serialize
-	nlohmann::json serialize();
+	nlohmann::json serialize(std::filesystem::path* basedir=nullptr);
 
 	// properties
 	uint32_t id;

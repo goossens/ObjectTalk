@@ -15,6 +15,8 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 
+#include "OtNumbers.h"
+
 #include "OtGraphWidget.h"
 
 
@@ -32,14 +34,17 @@ static constexpr ImU32 nodeHeaderColor = IM_COL32(46, 89, 148, 220);
 static constexpr ImU32 normalLinkColor = IM_COL32(255, 255, 255, 255);
 static constexpr ImU32 creatingLinkColor = IM_COL32(248, 222, 126, 255);
 static constexpr ImU32 validLinkColor = IM_COL32(128, 255, 128, 255);
-static constexpr ImU32 invalidLinkColor = IM_COL32(255, 128, 128, 255);
+static constexpr ImU32 invalidLinkColor = IM_COL32(255, 32, 32, 255);
 
 static constexpr ImU32 pinColors[] = {
 	IM_COL32(206, 167, 215, 255),	// bool
+	IM_COL32(96, 159, 98, 255),		// int
 	IM_COL32(180, 180, 180, 255),	// float
-	IM_COL32(96, 159, 98, 255),		// vec2
+	IM_COL32(117, 0, 117, 255),		// vec2
 	IM_COL32(117, 117, 255, 255),	// vec3
-	IM_COL32(41, 199, 199, 255)		// color
+	IM_COL32(180, 117, 255, 255),	// vec4
+	IM_COL32(143, 61, 124, 255),	// img
+	IM_COL32(199, 199, 41, 255)		// color
 };
 
 static constexpr float gridSpacing = 64.0f;
@@ -66,8 +71,6 @@ static inline void inset(float x) {
 //	OtGraphWidget::render
 //
 
-static int seqno;
-
 void OtGraphWidget::render(OtGraph* g) {
 	// reset state
 	graph = g;
@@ -93,6 +96,12 @@ void OtGraphWidget::render(OtGraph* g) {
 
 	graph->eachNode([&] (OtGraphNode& node) {
 		renderNode(drawlist, node);
+
+		if (node->needsSaving) {
+			node->needsSaving = false;
+			editedNode = node->id;
+			nodeEdited = true;
+		}
 	});
 
 	// render each link
@@ -100,16 +109,11 @@ void OtGraphWidget::render(OtGraph* g) {
 
 	graph->eachLink([&] (OtGraphLink& link) {
 		if (link->id != ignoreLink) {
-			auto fromPos = pinLocations[link->from->id];
-			auto toPos = pinLocations[link->to->id];
-
-			drawlist->AddBezierCubic(
-				fromPos,
-				fromPos + ImVec2(+50, 0),
-				toPos + ImVec2(-50, 0),
-				toPos,
-				normalLinkColor,
-				linkThinkness);
+			renderLink(
+				drawlist,
+				pinLocations[link->from->id],
+				pinLocations[link->to->id],
+				pinColors[link->from->type]);
 		}
 	});
 
@@ -128,18 +132,24 @@ void OtGraphWidget::render(OtGraph* g) {
 
 	// are we in the process of connecting nodes?
 	if (interactionState == connecting || interactionState == reconnecting) {
-		drawlist->AddBezierCubic(
-			fromPinPos,
-			fromPinPos + ImVec2(+50, 0),
-			toPinPos + ImVec2(-50, 0),
-			toPinPos,
-			linkColor,
-			linkThinkness);
+		renderLink(drawlist, fromPinPos, toPinPos, linkColor);
 	}
 
 	// we should be done rendering now
 	drawlist->ChannelsMerge();
 	ImGui::EndChild();
+}
+
+
+bool OtGraphWidget::isNodeEdited(uint32_t& node) {
+	if (nodeEdited) {
+		node = editedNode;
+		nodeEdited = false;
+		return true;
+
+	} else {
+		return false;
+	}
 }
 
 
@@ -353,6 +363,7 @@ void OtGraphWidget::renderPin(ImDrawList* drawlist, OtGraphPin& pin, float x) {
 		inset(pin->node->w - horizontalPadding * 2.0f - w);
 	}
 
+	// see if we have a custom renderer
 	if (pin->hasRenderer) {
 		pin->render();
 
@@ -360,6 +371,19 @@ void OtGraphWidget::renderPin(ImDrawList* drawlist, OtGraphPin& pin, float x) {
 		ImGui::AlignTextToFramePadding();
 		ImGui::TextUnformatted(pin->name);
 	}
+}
+
+
+//
+//	OtGraphWidget::renderLink
+//
+
+void OtGraphWidget::renderLink(ImDrawList* drawlist, const ImVec2& start, const ImVec2& end, ImU32 color) {
+	auto distanceX = end.x - start.x;
+	auto distanceY = end.y - start.y;
+	auto length = std::sqrt(distanceX * distanceX + distanceY * distanceY);
+	auto offset = ImVec2(0.25f * length, 0.0f);
+	drawlist->AddBezierCubic(start, start + offset, end - offset, end, color, linkThinkness);
 }
 
 

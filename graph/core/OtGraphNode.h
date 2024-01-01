@@ -12,7 +12,9 @@
 //	Include files
 //
 
+#include <filesystem>
 #include <memory>
+#include <string>
 
 #include "nlohmann/json_fwd.hpp"
 
@@ -58,8 +60,9 @@ public:
 	}
 
 	// (de)serialize
-	nlohmann::json serialize();
-	void deserialize(nlohmann::json data, bool restoreIDs=true);
+	nlohmann::json serialize(std::filesystem::path* basedir=nullptr);
+	void deserialize(nlohmann::json data, bool restoreIDs=true, std::filesystem::path* basedir=nullptr);
+	void deserializeFromString(const std::string& json, bool restoreIDs=true, std::filesystem::path* basedir=nullptr);
 
 	// get pin counts
 	inline size_t getInputPinCount() { return inputPins.size(); }
@@ -91,9 +94,9 @@ public:
 	}
 
 	// interfaces
-	virtual bool onCheck();
+	virtual inline void onUpdate() {};
 	virtual inline void onStart() {};
-	virtual inline bool onExecute() { return false; };
+	virtual inline void onExecute() {};
 	virtual inline void onEnd() {};
 
 	// public properties
@@ -105,11 +108,19 @@ public:
 	float h = 0.0f;
 	bool selected = false;
 	bool needsPlacement = false;
+	bool needsRunning = false;
+	bool needsSaving = false;
 	bool permanentMark = false;
 	bool temporaryMark = false;
 
-private:
+	std::string oldState;
+	std::string newState;
+
+protected:
 	// private properties
 	std::vector<OtGraphPin> inputPins;
 	std::vector<OtGraphPin> outputPins;
+
+	virtual void customSerialize(nlohmann::json* data, std::filesystem::path* basedir) {}
+	virtual void customDeserialize(nlohmann::json* data, std::filesystem::path* basedir) {}
 };

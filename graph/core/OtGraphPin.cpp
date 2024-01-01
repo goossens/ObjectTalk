@@ -25,19 +25,11 @@ static constexpr const char* pinTypeNames[] = { "bool", "float" };
 //	OtGraphPinClass::serialize
 //
 
-nlohmann::json OtGraphPinClass::serialize() {
+nlohmann::json OtGraphPinClass::serialize(std::filesystem::path* basedir) {
 	auto data = nlohmann::json::object();
 	data["type"] = getTypeName();
 	data["id"] = id;
 	data["name"] = name;
-
-	if (type == OtTypeListIndexOf<bool, OtGraphPinTypes>()) {
-		data["value"] = *dynamic_cast<OtGraphPinImpl<bool>*>(this)->value;
-
-	} else if (type == OtTypeListIndexOf<float, OtGraphPinTypes>()) {
-		data["value"] = *dynamic_cast<OtGraphPinImpl<float>*>(this)->value;
-	}
-
 	return data;
 }
 
@@ -46,16 +38,9 @@ nlohmann::json OtGraphPinClass::serialize() {
 //	OtGraphPinClass::deserialize
 //
 
-void OtGraphPinClass::deserialize(nlohmann::json data, bool restoreIDs) {
+void OtGraphPinClass::deserialize(nlohmann::json data, bool restoreIDs, std::filesystem::path* basedir) {
 	// restore ID (if required)
 	if (restoreIDs) {
 		id = data["id"];
-	}
-
-	if (type == OtTypeListIndexOf<bool, OtGraphPinTypes>()) {
-		*dynamic_cast<OtGraphPinImpl<bool>*>(this)->value = data["value"];
-
-	} else if (type == OtTypeListIndexOf<float, OtGraphPinTypes>()) {
-		*dynamic_cast<OtGraphPinImpl<float>*>(this)->value = data["value"];
 	}
 }

@@ -34,13 +34,9 @@ public:
 	// clear the handle reference
 	inline void clear() { handleRef = nullptr; }
 
-	// get the handle
+	// get the handle (index)
 	inline T getHandle() { return handleRef == nullptr ? T(BGFX_INVALID_HANDLE) : handleRef->get(); }
-
-	// get the handle index
-	inline uint16_t getIndex() {
-		return handleRef ? handleRef->getIndex() : bgfx::kInvalidHandle;
-	}
+	inline uint16_t getIndex() { return handleRef ? handleRef->getIndex() : bgfx::kInvalidHandle; }
 
 private:
 	template <typename Ts>

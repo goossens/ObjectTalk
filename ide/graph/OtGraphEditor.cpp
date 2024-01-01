@@ -13,6 +13,7 @@
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
+#include "imgui_internal.h"
 #include "nlohmann/json.hpp"
 
 #include "OtUi.h"
@@ -31,6 +32,7 @@
 #include "OtDeleteNodesTask.h"
 #include "OtDuplicateNodesTask.h"
 #include "OtDragNodesTask.h"
+#include "OtEditNodeTask.h"
 #include "OtPasteNodesTask.h"
 
 
@@ -188,6 +190,11 @@ void OtGraphEditor::renderMenu() {
 			}
 
 		} else if (ImGui::IsKeyPressed(ImGuiKey_Z, false) && taskManager.canUndo()) {
+			// this is a hack as ImGui's InputText keeps a private copy of its content
+			// ClearActiveID() takes the possible focus away and allows undo to work
+			// see ImGuiInputTextFlags_NoUndoRedo documentation in imgui.h
+			// so much for immediate mode :-)
+			ImGui::ClearActiveID();
 			taskManager.undo();
 
 		} else if (ImGui::IsKeyPressed(ImGuiKey_X, false) && selected) {
@@ -218,8 +225,13 @@ void OtGraphEditor::renderEditor(bool active) {
 	widget->render(graph.get());
 
 	// handle link creations
+	uint32_t node;
 	uint32_t from;
 	uint32_t to;
+
+	if (widget->isNodeEdited(node)) {
+		nextTask = std::make_shared<OtEditNodeTask>(graph.get(), node);
+	}
 
 	if (widget->isCreatingLink(from, to)) {
 		nextTask = std::make_shared<OtCreateLinkTask>(graph.get(), from, to);

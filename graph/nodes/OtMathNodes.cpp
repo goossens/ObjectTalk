@@ -40,7 +40,7 @@ protected:
 class OtGraphNode ## NAME : public OtGraphNode1by1 {						\
 public:																		\
 	inline OtGraphNode ## NAME() : OtGraphNode1by1(#NAME) {}				\
-	inline bool onExecute() override { result = FUNCTION; return false; }	\
+	inline void onExecute() override { result = FUNCTION; }					\
 }
 
 OT_GRAPH_NODE_1_BY_1(Neg, -a);
@@ -78,7 +78,7 @@ protected:
 class OtGraphNode ## NAME : public OtGraphNode2by1 {						\
 public:																		\
 	inline OtGraphNode ## NAME() : OtGraphNode2by1(#NAME) {}				\
-	inline bool onExecute() override { result = FUNCTION; return false; }	\
+	inline void onExecute() override { result = FUNCTION; }					\
 }
 
 OT_GRAPH_NODE_2_BY_1(Add, a + b);

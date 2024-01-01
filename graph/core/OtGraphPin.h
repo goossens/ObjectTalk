@@ -12,14 +12,14 @@
 //	Include files
 //
 
+#include <filesystem>
 #include <functional>
 #include <memory>
 #include <string>
 
 #include "nlohmann/json_fwd.hpp"
 
-#include "OtTypeList.h"
-
+#include "OtGraphDataTypes.h"
 #include "OtGraphUtils.h"
 
 
@@ -29,14 +29,6 @@
 
 class OtGraphNodeClass;
 using OtGraphNode = std::shared_ptr<OtGraphNodeClass>;
-
-
-//
-//	Pin types
-//
-
-using OtGraphPinTypes = OtTypeList<bool, float>;
-static constexpr const char* OtGraphPinTypeNames[] = { "bool", "float" };
 
 
 //
@@ -79,15 +71,15 @@ public:
 	inline OtGraphPin getSource() { return sourcePin; }
 	inline bool isConnected() { return sourcePin != nullptr; }
 
+	// evaluate the pin
+	virtual void evaluate() = 0;
+
 	// (de)serialize
-	nlohmann::json serialize();
-	void deserialize(nlohmann::json data, bool restoreIDs=true);
+	nlohmann::json serialize(std::filesystem::path* basedir=nullptr);
+	void deserialize(nlohmann::json data, bool restoreIDs=true, std::filesystem::path* basedir=nullptr);
 
 	// get the pin type as a string
-	inline std::string getTypeName() { return OtGraphPinTypeNames[type]; }
-
-	// see if pin content changed
-	virtual bool onCheck() = 0;
+	inline std::string getTypeName() { return OtGraphDataTypeNames[type]; }
 
 	// properties
 	int type;
@@ -100,7 +92,6 @@ public:
 
 	OtGraphNode node; // set by addInputPin or addOutputPin in OtGraphNodeClass
 	OtGraphPin sourcePin;
-	bool updated;
 };
 
 
@@ -113,8 +104,8 @@ class OtGraphPinImpl : public OtGraphPinClass {
 public:
 	// constructor
 	inline OtGraphPinImpl(const char* n, int d, T* v) : OtGraphPinClass(n, d) {
-		static_assert(OtTypeListIndexOf<T, OtGraphPinTypes>() != -1, "Data type not allowed for graph node pin");
-		type = OtTypeListIndexOf<T, OtGraphPinTypes>();
+		static_assert(OtTypeListIndexOf<T, OtGraphDataTypes>() != -1, "Data type not allowed for graph node pin");
+		type = OtTypeListIndexOf<T, OtGraphDataTypes>();
 		value = v;
 	}
 
@@ -131,20 +122,11 @@ public:
 
 	inline bool isConnected() { return sourcePin != nullptr; }
 
-	// update pin value from source (if avalable)
-	inline bool onCheck() override {
-		bool changed;
-
+	// evaluate the pin
+	void evaluate() override {
 		if (source) {
-			changed = *value != *source;
 			*value = *source;
-
-		} else {
-			changed = updated;
-			updated = false;
 		}
-
-		return changed;
 	}
 
 	// properties

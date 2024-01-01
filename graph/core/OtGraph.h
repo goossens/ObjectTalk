@@ -124,13 +124,15 @@ public:
 
 	// (re)evaluate entire graph
 	void evaluate();
+
 private:
 	// properties
 	OtGraphNodeFactory factory;
 
 	std::vector<OtGraphNode> nodes;
 	std::vector<OtGraphLink> links;
-	bool needsSorting;
+	bool needsSorting = false;
+	bool needsRunning = false;
 
 	std::unordered_map<uint32_t, OtGraphNode> nodeIndex;
 	std::unordered_map<uint32_t, OtGraphPin> pinIndex;
@@ -141,5 +143,5 @@ private:
 	void unindexNode(OtGraphNode node);
 
 	// restore a node from its JSON data
-	OtGraphNode restoreNode(nlohmann::json data, bool restoreIDs=true);
+	OtGraphNode restoreNode(nlohmann::json data, bool restoreIDs=true, std::filesystem::path* basedir=nullptr);
 };

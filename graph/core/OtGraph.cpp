@@ -70,8 +70,10 @@ void OtGraph::load(const std::filesystem::path& path, nlohmann::json* metadata) 
 	}
 
 	// restore each node
+	auto basedir = path.parent_path();
+
 	for (auto& node : data["nodes"]) {
-		restoreNode(node);
+		restoreNode(node, true, &basedir);
 	}
 
 	// restore links
@@ -96,13 +98,15 @@ void OtGraph::save(const std::filesystem::path& path, nlohmann::json* metadata) 
 	auto links = nlohmann::json::array();
 
 	// save all nodes
+	auto basedir = path.parent_path();
+
 	eachNode([&] (OtGraphNode& node) {
-		nodes.push_back(node->serialize());
+		nodes.push_back(node->serialize(&basedir));
 	});
 
 	// save all links
 	eachLink([&](OtGraphLink& link) {
-		links.push_back(link->serialize());
+		links.push_back(link->serialize(&basedir));
 	});
 
 	data["nodes"] = nodes;
@@ -138,6 +142,7 @@ OtGraphNode OtGraph::createNode(const std::string& name, float x, float y) {
 	node->x = x;
 	node->y = y;
 	node->needsPlacement = true;
+	node->needsRunning = true;
 
 	// index node and pins
 	indexNode(node);
@@ -480,10 +485,10 @@ std::string OtGraph::archiveNodes(const std::vector<uint32_t>& selection) {
 //	OtGraph::restoreNode
 //
 
-OtGraphNode OtGraph::restoreNode(nlohmann::json data, bool restoreIDs) {
+OtGraphNode OtGraph::restoreNode(nlohmann::json data, bool restoreIDs, std::filesystem::path* basedir) {
 	// create a new node
 	auto node = factory.createNode(data["name"]);
-	node->deserialize(data, restoreIDs);
+	node->deserialize(data, restoreIDs, basedir);
 	node->needsPlacement = true;
 	nodes.emplace_back(node);
 	needsSorting = true;
@@ -653,28 +658,38 @@ void OtGraph::evaluate() {
 	if (needsSorting) {
 		sortNodesTopologically(nodes);
 		needsSorting = false;
+		needsRunning = true;
 	}
 
-	// see if we have any changes
-	bool changed = false;
-
+	// update all the nodes
 	for (auto& node : nodes) {
-		changed |= node->onCheck();
-	};
+		node->onUpdate();
+		needsRunning |= node->needsRunning;
+	}
 
 	// (re)run graph if required
-	if (changed) {
+	if (needsRunning) {
+		// see how any other nodes need running
+		// evaluateNodes(nodes);
+
 		// start the run
 		for (auto& node : nodes) {
 			node->onStart();
 		};
 
 		// run until all changes are processed
-		while (changed) {
-			changed = false;
+		while (needsRunning) {
+			needsRunning = false;
 
 			for (auto& node : nodes) {
-				changed |= node->onExecute();
+				node->needsRunning = false;
+
+				node->eachInput([] (OtGraphPin& pin) {
+					pin->evaluate();
+				});
+
+				node->onExecute();
+				needsRunning |= node->needsRunning;
 			};
 		}
 

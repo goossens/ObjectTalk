@@ -26,19 +26,19 @@ public:
 
 	// configure node
 	inline void configure() override {
-		auto pin = addInputPin("Number", number);
+		auto pin = addInputPin("Value", value);
 
 		pin->addRenderer([&] () {
 			ImGui::SetNextItemWidth(fieldWidth);
-			ImGui::InputFloat("##number", &number, 0.0f, 0.0f, "%.3f", ImGuiInputTextFlags_ReadOnly);
+			ImGui::InputFloat("##value", &value, 0.0f, 0.0f, "%.3f", ImGuiInputTextFlags_ReadOnly);
 		}, fieldWidth);
 	}
 
-	static constexpr const char* name = "Output Float";
+	static constexpr const char* name = "Float Output";
+	static constexpr float fieldWidth = 120.0f;
 
 protected:
-	static constexpr float fieldWidth = 100.0f;
-	float number = 0.0f;
+	float value = 0.0f;
 };
 
 

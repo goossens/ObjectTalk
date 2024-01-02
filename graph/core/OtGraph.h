@@ -33,6 +33,9 @@
 
 class OtGraph {
 public:
+	// destructor
+	~OtGraph();
+
 	// register a node type
 	template <typename T>
 	inline void registerNodeType(const char* category, const char* name) {
@@ -131,16 +134,22 @@ private:
 
 	std::vector<OtGraphNode> nodes;
 	std::vector<OtGraphLink> links;
-	bool needsSorting = false;
-	bool needsRunning = false;
 
 	std::unordered_map<uint32_t, OtGraphNode> nodeIndex;
 	std::unordered_map<uint32_t, OtGraphPin> pinIndex;
 	std::unordered_map<uint32_t, OtGraphLink> linkIndex;
 
+	bool needsSorting = false;
+	bool needsRunning = false;
+
 	// (un)index a node and its pins
 	void indexNode(OtGraphNode node);
 	void unindexNode(OtGraphNode node);
+
+	// helper functions for depth-first searches and topological sorting
+	bool hasCycle(OtGraphNodeClass* node, OtGraphNodeClass* newTarget=0);
+	bool visitNode(OtGraphNode& node, std::vector<OtGraphNode>& nodes);
+	bool sortNodesTopologically(std::vector<OtGraphNode>& nodes);
 
 	// restore a node from its JSON data
 	OtGraphNode restoreNode(nlohmann::json data, bool restoreIDs=true, std::filesystem::path* basedir=nullptr);

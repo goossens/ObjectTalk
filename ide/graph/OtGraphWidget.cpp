@@ -320,12 +320,12 @@ void OtGraphWidget::renderNode(ImDrawList* drawlist, OtGraphNode& node) {
 
 	// render all output pins
 	node->eachOutput([&] (OtGraphPin& pin) {
-		renderPin(drawlist, pin, bottomRight.x);
+		renderPin(drawlist, pin, bottomRight.x, node->w);
 	});
 
 	// render all input pins
 	node->eachInput([&] (OtGraphPin& pin) {
-		renderPin(drawlist, pin, topLeft.x);
+		renderPin(drawlist, pin, topLeft.x, node->w);
 	});
 
 	ImGui::EndGroup();
@@ -337,7 +337,7 @@ void OtGraphWidget::renderNode(ImDrawList* drawlist, OtGraphNode& node) {
 //	OtGraphWidget::renderPin
 //
 
-void OtGraphWidget::renderPin(ImDrawList* drawlist, OtGraphPin& pin, float x) {
+void OtGraphWidget::renderPin(ImDrawList* drawlist, OtGraphPin& pin, float x, float w) {
 	// render the pin
 	auto color = pinColors[pin->type];
 	auto pos = ImVec2(x, ImGui::GetCursorScreenPos().y + pinOffset);
@@ -359,8 +359,8 @@ void OtGraphWidget::renderPin(ImDrawList* drawlist, OtGraphPin& pin, float x) {
 
 	// render label
 	if (pin->isOutput()) {
-		auto w = pin->hasRenderer ? pin->renderingWidth : ImGui::CalcTextSize(pin->name).x;
-		inset(pin->node->w - horizontalPadding * 2.0f - w);
+		auto width = pin->hasRenderer ? pin->renderingWidth : ImGui::CalcTextSize(pin->name).x;
+		inset(w - horizontalPadding * 2.0f - width);
 	}
 
 	// see if we have a custom renderer

@@ -16,6 +16,8 @@
 
 #include "OtTypeList.h"
 
+#include "OtTexture.h"
+
 
 //
 //	Data types
@@ -28,7 +30,7 @@ using OtGraphDataTypes = OtTypeList<
 	glm::vec2,
 	glm::vec3,
 	glm::vec4,
-	uint16_t>;
+	OtTexture>;
 
 static constexpr const char* OtGraphDataTypeNames[] = {
 	"bool",

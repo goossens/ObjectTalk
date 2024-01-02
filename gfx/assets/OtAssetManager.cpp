@@ -47,7 +47,7 @@ void OtAssetManager::start() {
 				asset->assetState = asset->load(asset->assetPath) ? OtAssetBase::readyState : OtAssetBase::invalidState;
 
 			} else {
-				// a null asset means we shut down the loader
+				// a null asset means we shutdown the loader
 				running = false;
 			}
 
@@ -135,7 +135,7 @@ OtAssetBase* OtAssetManager::lookup(const std::filesystem::path& path) {
 			// nope, let's instantiate it now and schedule it for loading
 			auto instance = OtAssetFactory::instance()->instantiate(fullPath);
 
-			// ensure the factory could create an asset for the path
+			// ensure the factory can create an asset for this path
 			if (instance) {
 				instance->assetPath = fullPath;
 				instance->assetState = OtAssetBase::scheduledState;

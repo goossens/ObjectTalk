@@ -27,6 +27,7 @@ public:
 
 	// constructor
 	OtTexture() = default;
+	OtTexture(OtBgfxHandle<bgfx::TextureHandle> t, size_t w, size_t h) : texture(t), width(w), height(h) {}
 	OtTexture(const std::filesystem::path& path);
 
 	// clear the resources

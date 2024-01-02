@@ -13,7 +13,6 @@
 //
 
 #include <filesystem>
-#include <memory>
 #include <string>
 
 #include "nlohmann/json_fwd.hpp"
@@ -29,7 +28,7 @@
 class OtGraphNodeClass;
 using OtGraphNode = std::shared_ptr<OtGraphNodeClass>;
 
-class OtGraphNodeClass : public std::enable_shared_from_this<OtGraphNodeClass> {
+class OtGraphNodeClass {
 public:
 	// constructor
 	inline OtGraphNodeClass(const char* n) : name(n) {
@@ -46,7 +45,7 @@ public:
 	template <typename T>
 	inline OtGraphPin addInputPin(const char* name, T& value) {
 		OtGraphPin pin = std::make_shared<OtGraphPinImpl<T>>(name, OtGraphPinClass::inputPin, &value);
-		pin->node = shared_from_this();
+		pin->node = this;
 		inputPins.emplace_back(pin);
 		return pin;
 	}
@@ -54,7 +53,7 @@ public:
 	template <typename T>
 	inline OtGraphPin addOutputPin(const char* name, T& value) {
 		OtGraphPin pin = std::make_shared<OtGraphPinImpl<T>>(name, OtGraphPinClass::outputPin, &value);
-		pin->node = shared_from_this();
+		pin->node = this;
 		outputPins.emplace_back(pin);
 		return pin;
 	}

@@ -15,6 +15,7 @@
 #include "OtBgfxHandle.h"
 
 #include "OtSampler.h"
+#include "OtTexture.h"
 
 
 //
@@ -56,8 +57,12 @@ public:
 	inline int getHeight() { return height; }
 
 	// get textures
-	inline bgfx::TextureHandle getColorTexture() { return colorTexture.getHandle(); }
-	inline bgfx::TextureHandle getDepthTexture() { return depthTexture.getHandle(); }
+	inline OtTexture getColorTexture() { return OtTexture(colorTexture, width, height); }
+	inline OtTexture getDepthTexture() { return OtTexture(depthTexture, width, height); }
+
+	// get texture handles
+	inline bgfx::TextureHandle getColorTextureHandle() { return colorTexture.getHandle(); }
+	inline bgfx::TextureHandle getDepthTextureHandle() { return depthTexture.getHandle(); }
 
 	// get texture indices
 	inline int getColorTextureIndex() { return colorTexture.getIndex(); }

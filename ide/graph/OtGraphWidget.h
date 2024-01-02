@@ -46,7 +46,7 @@ private:
 	void renderRubberBand(ImDrawList* drawlist);
 	void renderNode(ImDrawList* drawlist, OtGraphNode& node);
 	void renderLink(ImDrawList* drawlist, const ImVec2& start, const ImVec2& end, ImU32 color);
-	void renderPin(ImDrawList* drawlist, OtGraphPin& pin, float x);
+	void renderPin(ImDrawList* drawlist, OtGraphPin& pin, float x, float w);
 
 	// utility functions
 	void calculateNodeSize(OtGraphNode& node);

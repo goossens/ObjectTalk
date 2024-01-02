@@ -25,16 +25,26 @@
 
 
 //
+//	OtGraph::~OtGraph
+//
+
+OtGraph::~OtGraph() {
+	// ensure we dispose in the right order due to circular dependencies
+	clear();
+}
+
+
+//
 //	OtGraph::clear
 //
 
 void OtGraph::clear() {
-	nodes.clear();
-	links.clear();
-	nodeIndex.clear();
+	linkIndex.clear();
 	pinIndex.clear();
+	nodeIndex.clear();
+	links.clear();
+	nodes.clear();
 }
-
 
 //
 //	OtGraph::load
@@ -78,7 +88,18 @@ void OtGraph::load(const std::filesystem::path& path, nlohmann::json* metadata) 
 
 	// restore links
 	for (auto& link : data["links"]) {
-		createLink(link["from"], link["to"], link["id"]);
+		uint32_t linkId = link["id"];
+		uint32_t fromId = link["from"];
+		uint32_t toId = link["to"];
+
+		if (pinIndex.count(fromId) == 0) {
+			OtError("Invalid 'from' pin ID [%s] in link [%d]", fromId, linkId);
+
+		} else if (pinIndex.count(toId) == 0) {
+			OtError("Invalid 'to' pin ID [%s] in link [%d]", toId, linkId);
+		}
+
+		createLink(fromId, toId, linkId);
 	}
 
 	// set the flag
@@ -192,10 +213,10 @@ void OtGraph::deleteNodes(const std::vector<uint32_t>& nodes) {
 
 
 //
-//	hasCycle
+//	OtGraph::hasCycle
 //
 
-static bool hasCycle(OtGraphNode node, OtGraphNode newTarget=nullptr) {
+bool OtGraph::hasCycle(OtGraphNodeClass* node, OtGraphNodeClass* newTarget) {
 	// function result
 	bool cycle = false;
 
@@ -217,7 +238,7 @@ static bool hasCycle(OtGraphNode node, OtGraphNode newTarget=nullptr) {
 			});
 
 			// also check the possible new connection (if required)
-			if (!cycle && newTarget != nullptr) {
+			if (!cycle && newTarget) {
 				cycle = hasCycle(newTarget);
 			}
 
@@ -464,7 +485,7 @@ std::string OtGraph::archiveNodes(const std::vector<uint32_t>& selection) {
 		nodes.push_back(node->serialize());
 
 		eachLink([&](OtGraphLink& link) {
-			if (link->from->node == node || link->to->node == node) {
+			if (link->from->node->id == id || link->to->node->id == id) {
 				associatedLinks.insert(link);
 			}
 		});
@@ -489,9 +510,11 @@ OtGraphNode OtGraph::restoreNode(nlohmann::json data, bool restoreIDs, std::file
 	// create a new node
 	auto node = factory.createNode(data["name"]);
 	node->deserialize(data, restoreIDs, basedir);
-	node->needsPlacement = true;
 	nodes.emplace_back(node);
 	needsSorting = true;
+
+	node->needsPlacement = true;
+	node->needsRunning = true;
 
 	// index node and pins
 	indexNode(node);
@@ -549,18 +572,10 @@ void OtGraph::indexNode(OtGraphNode node) {
 	nodeIndex[node->id] = node;
 
 	node->eachInput([this](OtGraphPin& pin) {
-		if (!pin) {
-			int i = 0;
-		}
-
 		pinIndex[pin->id] = pin;
 	});
 
 	node->eachOutput([this](OtGraphPin& pin) {
-		if (!pin) {
-			int i = 0;
-		}
-
 		pinIndex[pin->id] = pin;
 	});
 }
@@ -584,10 +599,10 @@ void OtGraph::unindexNode(OtGraphNode node) {
 
 
 //
-//	visitNode
+//	OtGraph::visitNode
 //
 
-static bool visitNode(OtGraphNode& node, std::vector<OtGraphNode>& nodes) {
+bool OtGraph::visitNode(OtGraphNode& node, std::vector<OtGraphNode>& nodes) {
 	// function result
 	bool cycle = false;
 
@@ -604,7 +619,7 @@ static bool visitNode(OtGraphNode& node, std::vector<OtGraphNode>& nodes) {
 			// visit all nodes it depends on
 			node->eachInput([&] (OtGraphPin& pin) {
 				if (!cycle && pin->sourcePin != nullptr) {
-					cycle = visitNode(pin->sourcePin->node, nodes);
+					cycle = visitNode(nodeIndex[pin->sourcePin->node->id], nodes);
 				}
 			});
 
@@ -622,10 +637,10 @@ static bool visitNode(OtGraphNode& node, std::vector<OtGraphNode>& nodes) {
 
 
 //
-//	sortNodesTopologically
+//	OtGraph::sortNodesTopologically
 //
 
-static bool sortNodesTopologically(std::vector<OtGraphNode>& nodes) {
+bool OtGraph::sortNodesTopologically(std::vector<OtGraphNode>& nodes) {
 	// based on https://en.wikipedia.org/wiki/Topological_sorting
 
 	// clear all flags
@@ -644,6 +659,7 @@ static bool sortNodesTopologically(std::vector<OtGraphNode>& nodes) {
 		}
 	}
 
+	// sort was succesful
 	nodes.swap(sortedNodes);
 	return true;
 }

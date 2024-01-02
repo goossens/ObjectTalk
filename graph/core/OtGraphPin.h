@@ -28,7 +28,6 @@
 //
 
 class OtGraphNodeClass;
-using OtGraphNode = std::shared_ptr<OtGraphNodeClass>;
 
 
 //
@@ -86,11 +85,12 @@ public:
 	uint32_t id;
 	const char* name;
 	int direction;
+	OtGraphNodeClass* node;
+
 	OtGraphPinRenderer render = [](){};
 	float renderingWidth{0.0f};
 	bool hasRenderer{false};
 
-	OtGraphNode node; // set by addInputPin or addOutputPin in OtGraphNodeClass
 	OtGraphPin sourcePin;
 };
 

@@ -33,7 +33,7 @@ public:
 		acquire();
 	}
 
-	// clear the asset refence
+	// clear the asset reference
 	inline void clear() {
 		path.clear();
 		ptr = nullptr;

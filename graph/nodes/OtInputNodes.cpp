@@ -12,6 +12,7 @@
 #include "imgui.h"
 
 #include "OtPathTools.h"
+#include "OtTexture.h"
 #include "OtTextureAsset.h"
 #include "OtUi.h"
 
@@ -44,10 +45,6 @@ public:
 				needsRunning = true;
 				needsSaving = true;
 			}
-
-			if (ImGui::IsItemDeactivated()) {
-				int a = 0;
-			}
 		}, fieldWidth);
 	}
 
@@ -79,19 +76,20 @@ public:
 
 	// configure node
 	inline void configure() override {
-		addOutputPin("Value", index)->addRenderer([this] () {
+		addOutputPin("Image", texture)->addRenderer([this] () {
 			ImGui::SetNextItemWidth(fieldWidth);
 			oldState = serialize().dump();
 
-			if (texture.renderGUI("##texture")) {
-				if (!texture.isNull()) {
-					loading = true;
+			if (asset.renderGUI("##image")) {
+				if (asset.isNull()) {
+					needsRunning = true;
 
 				} else {
-					needsRunning = true;
+					loading = true;
 				}
 
 				newState = serialize().dump();
+				texture.clear();
 				needsSaving = true;
 			}
 		}, fieldWidth);
@@ -99,8 +97,8 @@ public:
 
 	// check for completion of texture load
 	inline void onUpdate() override {
-		if (loading && texture->isReady()) {
-			index = texture->getTexture().getTextureHandle().idx;
+		if (loading && asset->isReady()) {
+			texture = asset->getTexture();
 			needsRunning = true;
 			loading = false;
 		}
@@ -108,19 +106,25 @@ public:
 
 	// (de)serialize input
 	void customSerialize(nlohmann::json* data, std::filesystem::path* basedir) override {
-		(*data)["value"] = OtPathGetRelative(texture.getPath(), basedir);
+		(*data)["image"] = OtPathGetRelative(asset.getPath(), basedir);
 	}
 
 	void customDeserialize(nlohmann::json* data, std::filesystem::path* basedir) override {
-		texture = OtPathGetAbsolute(*data, "value", basedir);
+		asset = OtPathGetAbsolute(*data, "image", basedir);
+
+		texture.clear();
+
+		if (!asset.isNull()) {
+			loading = true;
+		}
 	}
 
 	static constexpr const char* name = "Image Input";
 	static constexpr float fieldWidth = 180.0f;
 
 protected:
-	OtAsset<OtTextureAsset> texture;
-	uint16_t index;
+	OtAsset<OtTextureAsset> asset;
+	OtTexture texture;
 	bool loading = false;
 };
 

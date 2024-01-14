@@ -163,13 +163,13 @@ void OtFramework::initGLFW() {
 	glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
 		OtFramework* fw = (OtFramework*) glfwGetWindowUserPointer(window);
 
-		if (key == GLFW_KEY_F13 && action == GLFW_PRESS) {
+		if (key == GLFW_KEY_F16 && action == GLFW_PRESS) {
 			fw->profiler = !fw->profiler;
 
-		} else if (key == GLFW_KEY_F14 && action == GLFW_PRESS) {
-			fw->metrix = !fw->metrix;
+		} else if (key == GLFW_KEY_F17 && action == GLFW_PRESS) {
+			fw->metrics = !fw->metrics;
 
-		} else if (key == GLFW_KEY_F15 && action == GLFW_PRESS) {
+		} else if (key == GLFW_KEY_F18 && action == GLFW_PRESS) {
 			fw->demo = !fw->demo;
 
 #if !__APPLE__

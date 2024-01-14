@@ -151,7 +151,7 @@ void OtFramework::initIMGUI() {
 	ImGuiIO& io = ImGui::GetIO();
 	io.IniFilename = nullptr;
 
-	// connect IMGUI to GLFW window
+	// connect ImGui to GLFW window
 	io.DisplaySize = ImVec2(width, height);
 	io.DeltaTime = 1.0f / 60.0f;
 
@@ -276,7 +276,7 @@ void OtFramework::frameIMGUI() {
 	// start a new frame
 	ImGui::NewFrame();
 
-	if (metrix) {
+	if (metrics) {
 		ImGui::ShowMetricsWindow();
 	}
 

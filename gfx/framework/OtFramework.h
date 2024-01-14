@@ -94,7 +94,7 @@ private:
 	float loopDuration;
 	float cpuTime;
 
-	// to render IMGUI
+	// to render ImGui
 	bgfx::VertexLayout imguiVertexLayout;
 	OtTexture imguiFontTexture;
 	OtSampler imguiFontSampler{"s_imguiFontAtlas"};
@@ -105,7 +105,7 @@ private:
 
 	// show/hide profiler/demo
 	bool profiler = false;
-	bool metrix = false;
+	bool metrics = false;
 	bool demo = false;
 
 	// are we running?

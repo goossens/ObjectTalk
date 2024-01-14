@@ -182,8 +182,8 @@ void OtGraphEditor::renderMenu() {
 		ImGui::EndMenuBar();
 	}
 
-	// handle keyboard shortcuts
-	if (ImGui::IsKeyDown(ImGuiMod_Shortcut)) {
+	// handle keyboard shortcuts (if required)
+	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows) && ImGui::IsKeyDown(ImGuiMod_Shortcut)) {
 		if (ImGui::IsKeyDown(ImGuiMod_Shift) && ImGui::IsKeyPressed(ImGuiKey_Z, false)) {
 			if (taskManager.canRedo()) {
 				taskManager.redo();
@@ -217,7 +217,7 @@ void OtGraphEditor::renderMenu() {
 //	OtGraphEditor::renderEditor
 //
 
-void OtGraphEditor::renderEditor(bool active) {
+void OtGraphEditor::renderEditor() {
 	// evaluate the graph
 	graph->evaluate();
 

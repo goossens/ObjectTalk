@@ -254,8 +254,76 @@ void OtSceneEditor::renderMenu() {
 		ImGui::EndMenuBar();
 	}
 
-	// handle keyboard
-	handleShortcuts();
+	// handle keyboard shortcuts (if required)
+	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows)) {
+		// handle menu shortcuts
+		if (ImGui::IsKeyDown(ImGuiMod_Shortcut)) {
+			if (ImGui::IsKeyDown(ImGuiMod_Shift) && ImGui::IsKeyPressed(ImGuiKey_Z, false)) {
+				if (taskManager.canRedo()) {
+					taskManager.redo();
+				}
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_Z, false) && taskManager.canUndo()) {
+				// this is a hack as ImGui's InputText keeps a private copy of its content
+				// ClearActiveID() takes the possible focus away and allows undo to work
+				// see ImGuiInputTextFlags_NoUndoRedo documentation in imgui.h
+				// so much for immediate mode :-)
+				ImGui::ClearActiveID();
+				taskManager.undo();
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_X, false) && selected) {
+				cutEntity();
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_C, false) && selected) {
+				copyEntity();
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_V, false) && selected && clipable) {
+				pasteEntity();
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_D, false) && selected) {
+				duplicateEntity();
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_G, false)) {
+				guizmoEnabled = !guizmoEnabled;
+			}
+
+		// handle camera switching shortcuts
+		} else if (ImGui::IsKeyDown(ImGuiMod_Alt)) {
+			if (ImGui::IsKeyPressed(ImGuiKey_0, false)) {
+				setSceneCamera(0);
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_1, false)) {
+				setSceneCamera(1);
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_1, false)) {
+				setSceneCamera(1);
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_2, false)) {
+				setSceneCamera(2);
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_3, false)) {
+				setSceneCamera(3);
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_4, false)) {
+				setSceneCamera(4);
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_5, false)) {
+				setSceneCamera(5);
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_6, false)) {
+				setSceneCamera(6);
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_7, false)) {
+				setSceneCamera(7);
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_8, false)) {
+				setSceneCamera(8);
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_9, false)) {
+				setSceneCamera(9);
+			}
+		}
+	}
 }
 
 
@@ -263,7 +331,7 @@ void OtSceneEditor::renderMenu() {
 //	OtSceneEditor::renderEditor
 //
 
-void OtSceneEditor::renderEditor(bool active) {
+void OtSceneEditor::renderEditor() {
 	// determine button size
 	buttonSize = ImGui::GetFrameHeight();
 
@@ -820,85 +888,6 @@ void OtSceneEditor::renderComponent() {
 
 		// clean ID stack
 		ImGui::PopID();
-	}
-}
-
-
-//
-//	OtSceneEditor::handleShortcuts
-//
-
-void OtSceneEditor::handleShortcuts() {
-	// get status
-	bool selected = scene->isValidEntity(selectedEntity);
-	bool clipable = clipboard.size() > 0;
-
-	// handle keyboard shortcuts
-	if (ImGui::IsKeyDown(ImGuiMod_Shortcut)) {
-		if (ImGui::IsKeyDown(ImGuiMod_Shift) && ImGui::IsKeyPressed(ImGuiKey_Z, false)) {
-			if (taskManager.canRedo()) {
-				taskManager.redo();
-			}
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_Z, false) && taskManager.canUndo()) {
-			// this is a hack as ImGui's InputText keeps a private copy of its content
-			// ClearActiveID() takes the possible focus away and allows undo to work
-			// see ImGuiInputTextFlags_NoUndoRedo documentation in imgui.h
-			// so much for immediate mode :-)
-			ImGui::ClearActiveID();
-			taskManager.undo();
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_X, false) && selected) {
-			cutEntity();
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_C, false) && selected) {
-			copyEntity();
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_V, false) && selected && clipable) {
-			pasteEntity();
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_D, false) && selected) {
-			duplicateEntity();
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_G, false)) {
-			guizmoEnabled = !guizmoEnabled;
-		}
-
-	// handle camera switching shortcuts
-	} else if (ImGui::IsKeyDown(ImGuiMod_Alt)) {
-		if (ImGui::IsKeyPressed(ImGuiKey_0, false)) {
-			setSceneCamera(0);
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_1, false)) {
-			setSceneCamera(1);
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_1, false)) {
-			setSceneCamera(1);
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_2, false)) {
-			setSceneCamera(2);
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_3, false)) {
-			setSceneCamera(3);
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_4, false)) {
-			setSceneCamera(4);
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_5, false)) {
-			setSceneCamera(5);
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_6, false)) {
-			setSceneCamera(6);
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_7, false)) {
-			setSceneCamera(7);
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_8, false)) {
-			setSceneCamera(8);
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_9, false)) {
-			setSceneCamera(9);
-		}
 	}
 }
 

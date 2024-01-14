@@ -32,10 +32,10 @@ public:
 	virtual inline void save() {}
 
 	// render the editor
-	void render(bool active);
+	void render();
 	virtual inline void startRender() {}
 	virtual inline void renderMenu() {}
-	virtual inline void renderEditor(bool active) {}
+	virtual inline void renderEditor() {}
 	virtual inline void endRender() {}
 
 	// get the properties

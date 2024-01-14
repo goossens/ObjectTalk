@@ -292,7 +292,7 @@ void OtWorkspace::openFile(const std::filesystem::path& path) {
 		}
 
 	} else {
-		// editor already exists, just active it
+		// editor already exists, just activate it
 		activateEditor(editor);
 	}
 }
@@ -588,7 +588,7 @@ void OtWorkspace::renderEditors() {
 
 			// create tab and editor
 			if (ImGui::BeginTabItem(editor->getShortName().c_str(), nullptr, flags)) {
-				editor->render(state == editState);
+				editor->render();
 				activeEditor = editor;
 				ImGui::EndTabItem();
 			}

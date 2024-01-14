@@ -43,7 +43,7 @@ public:
 
 	// render the editor
 	void renderMenu() override;
-	void renderEditor(bool active) override;
+	void renderEditor() override;
 
 	// is the editor's content "dirty" (unsaved);
 	bool isDirty() override;

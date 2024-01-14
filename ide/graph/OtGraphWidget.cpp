@@ -117,22 +117,24 @@ void OtGraphWidget::render(OtGraph* g) {
 		}
 	});
 
-	// handle user interactions
-	ImVec2 mousePos = ImGui::GetMousePos();
+	// handle user interactions (if required)
+	if (ImGui::IsWindowFocused()) {
+		ImVec2 mousePos = ImGui::GetMousePos();
 
-	bool inside =
-		mousePos.x > position.x &&
-		mousePos.x < position.x + size.x &&
-		mousePos.y > position.y &&
-		mousePos.y < position.y + size.y;
+		bool inside =
+			mousePos.x > position.x &&
+			mousePos.x < position.x + size.x &&
+			mousePos.y > position.y &&
+			mousePos.y < position.y + size.y;
 
-	if (inside || interactionState != noInteraction) {
-		handleInteractions(drawlist);
-	}
+		if (inside || interactionState != noInteraction) {
+			handleInteractions(drawlist);
+		}
 
-	// are we in the process of connecting nodes?
-	if (interactionState == connecting || interactionState == reconnecting) {
-		renderLink(drawlist, fromPinPos, toPinPos, linkColor);
+		// are we in the process of connecting nodes?
+		if (interactionState == connecting || interactionState == reconnecting) {
+			renderLink(drawlist, fromPinPos, toPinPos, linkColor);
+		}
 	}
 
 	// we should be done rendering now

@@ -60,7 +60,7 @@ private:
 
 	// render the parts
 	void renderMenu() override;
-	void renderEditor(bool active) override;
+	void renderEditor() override;
 	void renderPanels();
 	void renderEntitiesPanel();
 	void renderComponentsPanel();
@@ -91,9 +91,6 @@ private:
 	void renderComponents() {
 		(renderComponent<T>(), ...);
 	}
-
-	// handle keyboard shortcuts
-	void handleShortcuts();
 
 	// the scene being edited
 	std::unique_ptr<OtScene> scene;

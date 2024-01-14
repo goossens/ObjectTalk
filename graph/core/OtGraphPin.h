@@ -107,6 +107,7 @@ public:
 		static_assert(OtTypeListIndexOf<T, OtGraphDataTypes>() != -1, "Data type not allowed for graph node pin");
 		type = OtTypeListIndexOf<T, OtGraphDataTypes>();
 		value = v;
+		defaultValue = *value;
 	}
 
 	// handle connections
@@ -116,6 +117,7 @@ public:
 	}
 
 	inline void disconnect() override {
+		*value = defaultValue;
 		sourcePin = nullptr;
 		source = nullptr;
 	}
@@ -131,6 +133,7 @@ public:
 
 	// properties
 	T* value;
+	T defaultValue;
 	T* source = nullptr;
 };
 

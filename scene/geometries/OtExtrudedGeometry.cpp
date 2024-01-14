@@ -185,10 +185,10 @@ void OtExtrudedGeometryClass::fillGeometry() {
 
 
 //
-//	OtExtrudedGeometryClass::renderGUI
+//	OtExtrudedGeometryClass::renderUI
 //
 
-bool OtExtrudedGeometryClass::renderGUI() {
+bool OtExtrudedGeometryClass::renderUI() {
 	return false;
 }
 

@@ -34,10 +34,10 @@
 
 class OtFramework {
 public:
-	// run the GUI framework
+	// run the UI framework
 	void run(OtFrameworkApp* app, bool child=false);
 
-	// stop the GUI framework
+	// stop the UI framework
 	void stop();
 
 	// see if we can safely quit the program

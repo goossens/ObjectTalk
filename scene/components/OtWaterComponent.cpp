@@ -20,10 +20,10 @@
 
 
 //
-//	OtWaterComponent::renderGUI
+//	OtWaterComponent::renderUI
 //
 
-bool OtWaterComponent::renderGUI() {
+bool OtWaterComponent::renderUI() {
 	bool changed = false;
 
 	changed |= ImGui::DragFloat("Level", &level, 1.0f, -100.0f, 1000.0f);
@@ -34,7 +34,7 @@ bool OtWaterComponent::renderGUI() {
 		changed |= ImGui::ColorEdit3("Color", glm::value_ptr(color));
 	}
 
-	changed |= normals.renderGUI("Normals");
+	changed |= normals.renderUI("Normals");
 	changed |= ImGui::DragFloat("Scale", &scale, 0.01f, 0.01f, 100.0f);
 	changed |= ImGui::DragFloat("Speed", &speed, 0.01f, 0.01f, 10.0f);
 	changed |= ImGui::DragFloat("Metallic", &metallic, 0.01f, 0.0f, 1.0f);

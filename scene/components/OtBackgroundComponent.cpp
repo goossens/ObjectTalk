@@ -19,10 +19,10 @@
 
 
 //
-//	OtBackgroundComponent::renderGUI
+//	OtBackgroundComponent::renderUI
 //
 
-bool OtBackgroundComponent::renderGUI() {
+bool OtBackgroundComponent::renderUI() {
 	return ImGui::ColorEdit3("Color", glm::value_ptr(color));
 }
 

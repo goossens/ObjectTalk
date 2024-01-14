@@ -18,10 +18,10 @@
 
 
 //
-//	OtTerrainHeights::renderGUI
+//	OtTerrainHeights::renderUI
 //
 
-bool OtTerrainHeights::renderGUI() {
+bool OtTerrainHeights::renderUI() {
 	// function result
 	bool changed = false;
 

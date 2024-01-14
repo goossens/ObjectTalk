@@ -77,15 +77,15 @@ OtObject OtBoxGeometryClass::setDepthSegments(int ds) {
 
 
 //
-//	OtBoxGeometryClass::renderGUI
+//	OtBoxGeometryClass::renderUI
 //
 
-bool OtBoxGeometryClass::renderGUI() {
+bool OtBoxGeometryClass::renderUI() {
 	bool changed = false;
 	changed |= ImGui::SliderInt("X Segments", &widthSegments, 1, 20);
 	changed |= ImGui::SliderInt("Y Segments", &heightSegments, 1, 20);
 	changed |= ImGui::SliderInt("Z Segments", &depthSegments, 1, 20);
-	changed |= OtGeometryClass::renderGUI();
+	changed |= OtGeometryClass::renderUI();
 
 	if (changed) {
 		refreshGeometry = true;

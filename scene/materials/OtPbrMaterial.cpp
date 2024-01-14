@@ -24,12 +24,12 @@
 
 
 //
-//	OtPbrMaterialClass::renderGUI
+//	OtPbrMaterialClass::renderUI
 //
 
 #define W() ImGui::SetNextItemWidth(250.0f)
 
-bool OtPbrMaterialClass::renderGUI() {
+bool OtPbrMaterialClass::renderUI() {
 	bool changed = false;
 	float size = ImGui::GetFrameHeight();
 
@@ -47,17 +47,17 @@ bool OtPbrMaterialClass::renderGUI() {
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); changed |= ImGui::ColorEdit4("##albedoColor", glm::value_ptr(albedo));
-			ImGui::TableNextColumn(); W(); changed |= albedoTexture.renderGUI("##albedoTexture");
+			ImGui::TableNextColumn(); W(); changed |= albedoTexture.renderUI("##albedoTexture");
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Albedo");
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn();
-			ImGui::TableNextColumn(); W(); changed |= normalTexture.renderGUI("##normalTexture");
+			ImGui::TableNextColumn(); W(); changed |= normalTexture.renderUI("##normalTexture");
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Normals");
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); changed |= ImGui::SliderFloat("##metallic", &metallic, 0.0f, 1.0f, "%.2f");
-			ImGui::TableNextColumn(); W(); changed |= metallicRoughnessTexture.renderGUI("##metallicRoughnessTexture");
+			ImGui::TableNextColumn(); W(); changed |= metallicRoughnessTexture.renderUI("##metallicRoughnessTexture");
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Metallic");
 
 			ImGui::TableNextRow();
@@ -67,12 +67,12 @@ bool OtPbrMaterialClass::renderGUI() {
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); changed |= ImGui::ColorEdit3("##emissive", glm::value_ptr(emissive));
-			ImGui::TableNextColumn(); W(); changed |= emissiveTexture.renderGUI("##emissiveTexture");
+			ImGui::TableNextColumn(); W(); changed |= emissiveTexture.renderUI("##emissiveTexture");
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Emissive");
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); changed |= ImGui::SliderFloat("##ambientOcclusion", &ao, 0.0f, 1.0f, "%.2f");
-			ImGui::TableNextColumn(); W(); changed |= aoTexture.renderGUI("##aoTexture");
+			ImGui::TableNextColumn(); W(); changed |= aoTexture.renderUI("##aoTexture");
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Ambient Occlusion");
 
 			ImGui::TableNextRow();

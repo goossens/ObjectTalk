@@ -28,8 +28,8 @@ using OtMaterial = OtObjectPointer<OtMaterialClass>;
 
 class OtMaterialClass : public OtObjectClass {
 public:
-	// GUI to change material properties
-	virtual bool renderGUI() { return false; }
+	// UI to change material properties
+	virtual bool renderUI() { return false; }
 
 	// (de)serialize material
 	virtual nlohmann::json serialize(std::filesystem::path* basedir);

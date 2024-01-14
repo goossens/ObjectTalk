@@ -79,10 +79,10 @@ void OtAssetManager::stop() {
 
 
 //
-//	OtAssetManager::renderGUI
+//	OtAssetManager::renderUI
 //
 
-void OtAssetManager::renderGUI() {
+void OtAssetManager::renderUI() {
 	// see if we are currently loading assets
 	if (loading || !queue.empty()) {
 		// spinner size

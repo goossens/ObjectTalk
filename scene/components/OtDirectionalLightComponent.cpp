@@ -19,10 +19,10 @@
 
 
 //
-//	OtDirectionalLightComponent::renderGUI
+//	OtDirectionalLightComponent::renderUI
 //
 
-bool OtDirectionalLightComponent::renderGUI() {
+bool OtDirectionalLightComponent::renderUI() {
 	bool changed = false;
 	changed |= ImGui::ColorEdit3("Color", glm::value_ptr(color));
 	changed |= ImGui::SliderFloat("Ambient", &ambient, 0.0f, 0.3f);

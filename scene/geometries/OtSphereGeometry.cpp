@@ -188,10 +188,10 @@ void OtSphereGeometryClass::fillGeometry() {
 
 
 //
-//	OtSphereGeometryClass::renderGUI
+//	OtSphereGeometryClass::renderUI
 //
 
-bool OtSphereGeometryClass::renderGUI() {
+bool OtSphereGeometryClass::renderUI() {
 	bool changed = false;
 	changed |= ImGui::SliderInt("Phi Segments", &phiSegments, 1, 200);
 	changed |= ImGui::SliderFloat("Phi Start", &phiStart, 0.0f, 360.0f);
@@ -199,7 +199,7 @@ bool OtSphereGeometryClass::renderGUI() {
 	changed |= ImGui::SliderInt("Theta Segments", &thetaSegments, 1, 100);
 	changed |= ImGui::SliderFloat("Theta Start", &thetaStart, 0.0f, 180.0f);
 	changed |= ImGui::SliderFloat("Theta Length", &thetaLength, 0.0f, 180.0f);
-	changed |= OtGeometryClass::renderGUI();
+	changed |= OtGeometryClass::renderUI();
 
 	if (changed) {
 		refreshGeometry = true;

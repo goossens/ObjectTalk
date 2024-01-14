@@ -196,10 +196,10 @@ void OtTorusGeometryClass::fillGeometry() {
 
 
 //
-//	OtTorusGeometryClass::renderGUI
+//	OtTorusGeometryClass::renderUI
 //
 
-bool OtTorusGeometryClass::renderGUI() {
+bool OtTorusGeometryClass::renderUI() {
 	bool changed = false;
 	changed |= ImGui::SliderFloat("Radius", &radius, 0.0f, 1.0f);
 	changed |= ImGui::SliderFloat("Tube Radius", &tubeRadius, 0.0f, 1.0f);
@@ -209,7 +209,7 @@ bool OtTorusGeometryClass::renderGUI() {
 	changed |= ImGui::SliderFloat("Radial Length", &radialLength, 0.0f, 360.0f);
 	changed |= ImGui::SliderFloat("Tubular Start", &tubularStart, 0.0f, 360.0f);
 	changed |= ImGui::SliderFloat("Tubular Length", &tubularLength, 0.0f, 360.0f);
-	changed |= OtGeometryClass::renderGUI();
+	changed |= OtGeometryClass::renderUI();
 
 	if (changed) {
 		refreshGeometry = true;

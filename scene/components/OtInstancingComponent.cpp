@@ -16,10 +16,10 @@
 
 
 //
-//	OtInstancingComponent::renderGUI
+//	OtInstancingComponent::renderUI
 //
 
-bool OtInstancingComponent::renderGUI() {
+bool OtInstancingComponent::renderUI() {
 	return false;
 }
 

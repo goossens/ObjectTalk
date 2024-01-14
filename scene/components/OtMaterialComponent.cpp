@@ -37,10 +37,10 @@ OtMaterialComponent::OtMaterialComponent(const std::string& type) {
 
 
 //
-//	OtMaterialComponent::renderGUI
+//	OtMaterialComponent::renderUI
 //
 
-bool OtMaterialComponent::renderGUI() {
+bool OtMaterialComponent::renderUI() {
 	auto type = material->getTypeName();
 	bool changed = false;
 
@@ -70,7 +70,7 @@ bool OtMaterialComponent::renderGUI() {
 	}
 
 	ImGui::SameLine(0.0f, spacing);
-	changed |= material->renderGUI();
+	changed |= material->renderUI();
 
 	ImGui::SameLine(0.0f, spacing);
 	ImGui::TextUnformatted("Type");

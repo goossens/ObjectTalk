@@ -1,5 +1,5 @@
 ObjectTalk uses a lot of Open Source products without which it would have
-been a lot harder to implement the language and it's libraries.
+been a lot harder to implement the language and it's components.
 
 ## Software
 
@@ -9,7 +9,7 @@ been a lot harder to implement the language and it's libraries.
 * [llhttp](https://llhttp.org) - HTTP protocol parser released under the [MIT license](https://opensource.org/licenses/MIT).
 * [multipart-parser](https://github.com/francoiscolas/multipart-parser) - HTTP multipart body parser released under the [MIT license](https://opensource.org/licenses/MIT).
 
-In case the GUI modules are included, we also use:
+In case User Interface (UI) modules are included, we also use:
 
 * [GLFW](https://www.glfw.org) - multi-platform library for desktop application development released under the [zlib license](https://opensource.org/licenses/Zlib).
 * [bgfx](https://github.com/bkaradzic/bgfx) - cross-platform, graphics API agnostic rendering library. It's dependencies [bimg](https://github.com/bkaradzic/bimg) and [bx](https://github.com/bkaradzic/bx) are also included. All are released under the [BSD 2-Clause "Simplified" License](https://opensource.org/licenses/BSD-2-Clause)

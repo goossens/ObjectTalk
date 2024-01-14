@@ -31,8 +31,8 @@ public:
 	OtMaterialComponent();
 	OtMaterialComponent(const std::string& type);
 
-	// GUI to change geometry properties
-	bool renderGUI();
+	// UI to change geometry properties
+	bool renderUI();
 
 	// (de)serialize geometry
 	nlohmann::json serialize(std::filesystem::path* basedir);

@@ -27,8 +27,8 @@
 
 class OtTerrainHeights {
 public:
-	// GUI to change properties
-	bool renderGUI();
+	// UI to change properties
+	bool renderUI();
 
 	// (de)serialize material
 	nlohmann::json serialize(std::filesystem::path* basedir);

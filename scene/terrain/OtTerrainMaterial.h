@@ -26,8 +26,8 @@
 
 class OtTerrainMaterial {
 public:
-	// GUI to change material properties
-	bool renderGUI();
+	// UI to change material properties
+	bool renderUI();
 
 	// (de)serialize material
 	nlohmann::json serialize(std::filesystem::path* basedir);

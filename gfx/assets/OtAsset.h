@@ -62,8 +62,8 @@ public:
 	inline bool isMissing() { return ptr && ptr->isMissing(); }
 	inline bool isReady() { return ptr && ptr->isReady(); }
 
-	// render GUI to show/select an asset
-	inline bool renderGUI(const char* label) {
+	// render UI to show/select an asset
+	inline bool renderUI(const char* label) {
 		if (OtUiFileSelector(label, path)) {
 			acquire();
 			return true;

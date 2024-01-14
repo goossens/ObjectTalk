@@ -119,15 +119,15 @@ void OtCircleGeometryClass::fillGeometry() {
 
 
 //
-//	OtCircleGeometryClass::renderGUI
+//	OtCircleGeometryClass::renderUI
 //
 
-bool OtCircleGeometryClass::renderGUI() {
+bool OtCircleGeometryClass::renderUI() {
 	bool changed = false;
 	changed |= ImGui::SliderInt("Segments", &segments, 1, 50);
 	changed |= ImGui::SliderFloat("Theta Start", &thetaStart, 0.0f, 360.0f);
 	changed |= ImGui::SliderFloat("Theta Length", &thetaLength, 0.0f, 360.0f);
-	changed |= OtGeometryClass::renderGUI();
+	changed |= OtGeometryClass::renderUI();
 
 	if (changed) {
 		refreshGeometry = true;

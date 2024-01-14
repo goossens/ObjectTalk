@@ -21,11 +21,11 @@
 
 
 //
-//	OtModelComponent::renderGUI
+//	OtModelComponent::renderUI
 //
 
-bool OtModelComponent::renderGUI() {
-	return model.renderGUI("Model");
+bool OtModelComponent::renderUI() {
+	return model.renderUI("Model");
 }
 
 

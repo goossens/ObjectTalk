@@ -39,8 +39,8 @@ public:
 	// see if displacement is active
 	bool isActive() { return (state == Noise) || (state == Map && heightmap.isValid()); }
 
-	// GUI to change properties
-	bool renderGUI();
+	// UI to change properties
+	bool renderUI();
 
 	// (de)serialize properties
 	nlohmann::json serialize(std::filesystem::path* basedir);

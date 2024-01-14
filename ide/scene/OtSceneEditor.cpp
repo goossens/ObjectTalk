@@ -541,7 +541,7 @@ void OtSceneEditor::renderViewPort() {
 	}
 
 	// let asset manager show busy spinner (if required)
-	OtAssetManager::instance()->renderGUI();
+	OtAssetManager::instance()->renderUI();
 	ImGui::EndChild();
 }
 
@@ -839,7 +839,7 @@ void OtSceneEditor::renderComponentEditor() {
 	auto& component = scene->getComponent<T>(selectedEntity);
 	auto oldValue = component.serialize(nullptr).dump();
 
-	if (component.renderGUI()) {
+	if (component.renderUI()) {
 		auto newValue = component.serialize(nullptr).dump();
 		nextTask = std::make_shared<OtEditComponentTask<T>>(scene.get(), selectedEntity, oldValue, newValue);
 	}

@@ -51,10 +51,10 @@
 
 
 //
-//	OtTerrainClass::renderGUI
+//	OtTerrainClass::renderUI
 //
 
-bool OtTerrainClass::renderGUI() {
+bool OtTerrainClass::renderUI() {
 	bool changed = false;
 	changed |= OtUiSelectorPowerOfTwo("Tile Size", tileSize, 4, 64);
 	changed |= ImGui::DragInt("Levels of Detail", &lods, 1, 1, 10);
@@ -66,8 +66,8 @@ bool OtTerrainClass::renderGUI() {
 	changed |= ImGui::DragFloat("Horizontal Scale", &hScale, 0.01f, 0.01f, 10.0f);
 	changed |= ImGui::DragFloat("Vertical Scale", &vScale, 1.0f, 1.0f, 1000.0f);
 	changed |= ImGui::DragFloat("Vertical Offset", &vOffset, 1.0f, -1000.0f, 1000.0f);
-	changed |= heights.renderGUI();
-	changed |= material.renderGUI();
+	changed |= heights.renderUI();
+	changed |= material.renderUI();
 	changed |= ImGui::Checkbox("Wireframe", &wireframe);
 
 #ifdef OT_DEBUG

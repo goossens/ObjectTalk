@@ -19,12 +19,12 @@
 
 
 //
-//	OtSkyBoxComponent::renderGUI
+//	OtSkyBoxComponent::renderUI
 //
 
-bool OtSkyBoxComponent::renderGUI() {
+bool OtSkyBoxComponent::renderUI() {
 	bool changed = false;
-	changed |= cubemap.renderGUI("Cube Map");
+	changed |= cubemap.renderUI("Cube Map");
 	changed |= ImGui::SliderFloat("Brightness", &brightness, 0.1f, 4.0f, "%.2f");
 	changed |= ImGui::SliderFloat("Gamma", &gamma, 0.1f, 4.0f, "%.2f");
 	return changed;

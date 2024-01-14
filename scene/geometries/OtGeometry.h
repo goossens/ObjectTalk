@@ -45,8 +45,8 @@ public:
 	void submitTriangles();
 	void submitLines();
 
-	// GUI to change geometry properties
-	virtual bool renderGUI();
+	// UI to change geometry properties
+	virtual bool renderUI();
 
 	// (de)serialize geometry
 	virtual nlohmann::json serialize(std::filesystem::path* basedir);

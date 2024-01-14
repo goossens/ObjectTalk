@@ -262,10 +262,10 @@ void OtCylinderGeometryClass::generateCap(bool top) {
 
 
 //
-//	OtCylinderGeometryClass::renderGUI
+//	OtCylinderGeometryClass::renderUI
 //
 
-bool OtCylinderGeometryClass::renderGUI() {
+bool OtCylinderGeometryClass::renderUI() {
 	bool changed = false;
 	changed |= ImGui::SliderFloat("Top Radius", &topRadius, 0.0f, 1.0f);
 	changed |= ImGui::SliderFloat("Bottom Radius", &bottomRadius, 0.0f, 1.0f);
@@ -274,7 +274,7 @@ bool OtCylinderGeometryClass::renderGUI() {
 	changed |= ImGui::Checkbox("Open Ended", &openEnded);
 	changed |= ImGui::SliderFloat("Theta Start", &thetaStart, 0.0f, 360.0f);
 	changed |= ImGui::SliderFloat("Theta Length", &thetaLength, 0.0f, 360.0f);
-	changed |= OtGeometryClass::renderGUI();
+	changed |= OtGeometryClass::renderUI();
 
 	if (changed) {
 		refreshGeometry = true;

@@ -41,10 +41,10 @@ void OtDisplacer::displace(std::vector<OtVertex>& vertices, std::vector<uint32_t
 
 
 //
-//	OtDisplacer::renderGUI
+//	OtDisplacer::renderUI
 //
 
-bool OtDisplacer::renderGUI() {
+bool OtDisplacer::renderUI() {
 	bool changed = false;
 	float itemWidth = ImGui::CalcItemWidth();
 

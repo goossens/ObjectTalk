@@ -182,13 +182,13 @@ glm::vec2 OtPolyhedronGeometryClass::generateUV(const glm::vec3& normal) {
 
 
 //
-//	OtPolyhedronGeometryClass::renderGUI
+//	OtPolyhedronGeometryClass::renderUI
 //
 
-bool OtPolyhedronGeometryClass::renderGUI() {
+bool OtPolyhedronGeometryClass::renderUI() {
 	bool changed = false;
 	changed |= ImGui::SliderInt("Detail", &detail, 0, 20);
-	changed |= OtGeometryClass::renderGUI();
+	changed |= OtGeometryClass::renderUI();
 
 	if (changed) {
 		refreshGeometry = true;

@@ -109,11 +109,11 @@ OtDodecahedronGeometryClass::OtDodecahedronGeometryClass() {
 
 
 //
-//	OtDodecahedronGeometryClass::renderGUI
+//	OtDodecahedronGeometryClass::renderUI
 //
 
-bool OtDodecahedronGeometryClass::renderGUI() {
-	return OtPolyhedronGeometryClass::renderGUI();
+bool OtDodecahedronGeometryClass::renderUI() {
+	return OtPolyhedronGeometryClass::renderUI();
 }
 
 

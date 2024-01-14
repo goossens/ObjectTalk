@@ -19,10 +19,10 @@
 
 
 //
-//	OtCameraComponent::renderGUI
+//	OtCameraComponent::renderUI
 //
 
-bool OtCameraComponent::renderGUI() {
+bool OtCameraComponent::renderUI() {
 	bool changed = false;
 	changed |= ImGui::Checkbox("Main Camera", &mainCamera);
 	changed |= ImGui::DragFloat("FoV (Deg)", &fov, 1.0f, 10.0f, 160.0f, "%.0f");

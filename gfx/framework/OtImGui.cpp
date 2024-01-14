@@ -291,7 +291,7 @@ void OtFramework::frameIMGUI() {
 //
 
 void OtFramework::renderIMGUI() {
-	// render GUI to command lists
+	// render UI to command lists
 	ImGui::Render();
 	ImDrawData* drawData = ImGui::GetDrawData();
 

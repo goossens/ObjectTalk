@@ -27,8 +27,8 @@
 
 class OtScriptComponent {
 public:
-	// GUI to change component properties
-	bool renderGUI();
+	// UI to change component properties
+	bool renderUI();
 
 	// load and compile the script
 	void load();

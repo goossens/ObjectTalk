@@ -19,10 +19,10 @@
 
 
 //
-//	OtSkyComponent::renderGUI
+//	OtSkyComponent::renderUI
 //
 
-bool OtSkyComponent::renderGUI() {
+bool OtSkyComponent::renderUI() {
 	bool changed = false;
 	changed |= ImGui::SliderFloat("Sun Elevation", &elevation, -90.0f, 90.0f);
 	changed |= ImGui::SliderFloat("Sun Azimuth", &azimuth, 0.0f, 360.0f);

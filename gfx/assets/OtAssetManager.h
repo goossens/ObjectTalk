@@ -33,7 +33,7 @@ public:
 	void stop();
 
 	// render a "spinner" if we are loading
-	void renderGUI();
+	void renderUI();
 
 	// see if we are currently loading anything
 	inline bool isLoading() { return loading || queue.size(); }

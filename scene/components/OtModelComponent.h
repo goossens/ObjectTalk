@@ -26,8 +26,8 @@
 
 class OtModelComponent {
 public:
-	// GUI to change component properties
-	bool renderGUI();
+	// UI to change component properties
+	bool renderUI();
 
 	// (de)serialize component
 	nlohmann::json serialize(std::filesystem::path* basedir);

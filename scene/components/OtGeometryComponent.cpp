@@ -32,10 +32,10 @@ OtGeometryComponent::OtGeometryComponent(const std::string& type) {
 
 
 //
-//	OtGeometryComponent::renderGUI
+//	OtGeometryComponent::renderUI
 //
 
-bool OtGeometryComponent::renderGUI() {
+bool OtGeometryComponent::renderUI() {
 	auto type = geometry->getTypeName();
 	bool changed = false;
 
@@ -62,7 +62,7 @@ bool OtGeometryComponent::renderGUI() {
 	changed |= ImGui::Checkbox("Wireframe", &wireframe);
 	changed |= ImGui::Checkbox("Transparent", &transparent);
 	changed |= ImGui::Checkbox("Cull Back Faces", &cullback);
-	changed |= geometry->renderGUI();
+	changed |= geometry->renderUI();
 	return changed;
 }
 

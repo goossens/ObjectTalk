@@ -31,8 +31,8 @@ public:
 	// constructor
 	OtDodecahedronGeometryClass();
 
-	// GUI to change geometry properties
-	bool renderGUI() override;
+	// UI to change geometry properties
+	bool renderUI() override;
 
 	// serialize geometry
 	nlohmann::json serialize(std::filesystem::path* basedir) override;

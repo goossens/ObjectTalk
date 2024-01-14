@@ -39,8 +39,8 @@ using OtTerrain = OtObjectPointer<OtTerrainClass>;
 
 class OtTerrainClass : public OtObjectClass {
 public:
-	// GUI to change properties
-	bool renderGUI();
+	// UI to change properties
+	bool renderUI();
 
 	// (de)serialize properties
 	nlohmann::json serialize(std::filesystem::path* basedir);

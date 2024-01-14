@@ -32,8 +32,8 @@ using OtPbrMaterial = OtObjectPointer<OtPbrMaterialClass>;
 
 class OtPbrMaterialClass : public OtMaterialClass {
 public:
-	// GUI to change material properties
-	bool renderGUI() override;
+	// UI to change material properties
+	bool renderUI() override;
 
 	// (de)serialize material
 	nlohmann::json serialize(std::filesystem::path* basedir) override;

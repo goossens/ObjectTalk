@@ -35,8 +35,8 @@ public:
 	OtObject setDepth(float depth);
 	OtObject setSegments(int segments);
 
-	// GUI to change geometry properties
-	bool renderGUI() override;
+	// UI to change geometry properties
+	bool renderUI() override;
 
 	// (de)serialize geometry
 	nlohmann::json serialize(std::filesystem::path* basedir) override;

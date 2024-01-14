@@ -31,10 +31,10 @@ glm::mat4 OtTransformComponent::getTransform() {
 
 
 //
-//	OtTransformComponent::renderGUI
+//	OtTransformComponent::renderUI
 //
 
-bool OtTransformComponent::renderGUI() {
+bool OtTransformComponent::renderUI() {
 	// render transformation editor
 	bool changed = false;
 	changed |= OtUiEditVec3("Translate", translation, 0.1f, 0.0f, 0.0f);

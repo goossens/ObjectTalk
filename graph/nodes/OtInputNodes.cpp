@@ -80,7 +80,7 @@ public:
 			ImGui::SetNextItemWidth(fieldWidth);
 			oldState = serialize().dump();
 
-			if (asset.renderGUI("##image")) {
+			if (asset.renderUI("##image")) {
 				if (asset.isNull()) {
 					needsRunning = true;
 

@@ -210,11 +210,11 @@ void OtGeometryClass::submitLines() {
 
 
 //
-//	OtGeometryClass::renderGUI
+//	OtGeometryClass::renderUI
 //
 
-bool OtGeometryClass::renderGUI() {
-	bool changed = displacer.renderGUI();
+bool OtGeometryClass::renderUI() {
+	bool changed = displacer.renderUI();
 
 	if (changed) {
 		refreshDisplacement = displacer.isActive();

@@ -20,12 +20,12 @@
 
 
 //
-//	OtSkySphereComponent::renderGUI
+//	OtSkySphereComponent::renderUI
 //
 
-bool OtSkySphereComponent::renderGUI() {
+bool OtSkySphereComponent::renderUI() {
 	bool changed = false;
-	changed |= texture.renderGUI("Image");
+	changed |= texture.renderUI("Image");
 	changed |= ImGui::SliderFloat("Brightness", &brightness, 0.1f, 4.0f, "%.1f");
 	changed |= ImGui::SliderFloat("Gamma", &gamma, 0.5f, 3.0f, "%.1f");
 	return changed;

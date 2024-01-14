@@ -46,10 +46,10 @@ class $ : scene.Entity {\n\
 
 
 //
-//	OtScriptComponent::renderGUI
+//	OtScriptComponent::renderUI
 //
 
-bool OtScriptComponent::renderGUI() {
+bool OtScriptComponent::renderUI() {
 	return OtUiFileSelector(
 		"Path", path,
 		[](std::filesystem::path& path) {

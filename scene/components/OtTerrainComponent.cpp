@@ -28,11 +28,11 @@ OtTerrainComponent::OtTerrainComponent() {
 
 
 //
-//	OtTerrainComponent::renderGUI
+//	OtTerrainComponent::renderUI
 //
 
-bool OtTerrainComponent::renderGUI() {
-	return terrain->renderGUI();
+bool OtTerrainComponent::renderUI() {
+	return terrain->renderUI();
 }
 
 

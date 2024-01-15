@@ -18,6 +18,7 @@
 
 #include "OtGraphNode.h"
 #include "OtInputNodes.h"
+#include "OtNodeColors.h"
 
 
 //
@@ -28,7 +29,7 @@
 class OtGraphNodeFloatInput : public OtGraphNodeClass {
 public:
 	// constructor
-	inline OtGraphNodeFloatInput() : OtGraphNodeClass(name) {}
+	inline OtGraphNodeFloatInput() : OtGraphNodeClass(name, OtInputNodeColor) {}
 
 	// configure node
 	inline void configure() override {
@@ -72,7 +73,7 @@ protected:
 class OtGraphNodeImageInput : public OtGraphNodeClass {
 public:
 	// constructor
-	inline OtGraphNodeImageInput() : OtGraphNodeClass(name) {}
+	inline OtGraphNodeImageInput() : OtGraphNodeClass(name, OtInputNodeColor) {}
 
 	// configure node
 	inline void configure() override {
@@ -112,9 +113,14 @@ public:
 	void customDeserialize(nlohmann::json* data, std::filesystem::path* basedir) override {
 		asset = OtPathGetAbsolute(*data, "image", basedir);
 
-		texture.clear();
+		if (asset.isNull()) {
+			texture.clear();
 
-		if (!asset.isNull()) {
+		} else if (asset.isReady()) {
+			texture = asset->getTexture();
+			needsRunning = true;
+
+		} else {
 			loading = true;
 		}
 	}

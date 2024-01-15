@@ -22,6 +22,17 @@
 
 
 //
+//	Helper macro for node colors
+//
+
+#define OT_NODE_COLOR(r, g, b, a) (			\
+	((uint32_t)(a) << 24) |					\
+	((uint32_t) (b) << 16) |				\
+	((uint32_t) (g) << 8) |					\
+	((uint32_t) (r)))
+
+
+//
 //	OtGraphNode
 //
 
@@ -31,7 +42,7 @@ using OtGraphNode = std::shared_ptr<OtGraphNodeClass>;
 class OtGraphNodeClass {
 public:
 	// constructor
-	inline OtGraphNodeClass(const char* n) : name(n) {
+	inline OtGraphNodeClass(const char* n, uint32_t c) : name(n), color(c) {
 		id = OtGraphGenerateID();
 	}
 
@@ -101,6 +112,7 @@ public:
 	// public properties
 	uint32_t id;
 	const char* name;
+	uint32_t color;
 	float x = 0.0f;
 	float y = 0.0f;
 	float w = 0.0f;

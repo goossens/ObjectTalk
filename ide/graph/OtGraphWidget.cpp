@@ -30,7 +30,6 @@ static constexpr ImU32 rubberBandOutlineColor = IM_COL32(5, 130, 255, 192);
 static constexpr ImU32 nodeBackgroundColor = IM_COL32(60, 60, 60, 128);
 static constexpr ImU32 nodeOutlineColor = IM_COL32(100, 100, 100, 255);
 static constexpr ImU32 nodeSelectedColor = IM_COL32(255, 176,  50, 255);
-static constexpr ImU32 nodeHeaderColor = IM_COL32(46, 89, 148, 220);
 static constexpr ImU32 normalLinkColor = IM_COL32(255, 255, 255, 255);
 static constexpr ImU32 creatingLinkColor = IM_COL32(248, 222, 126, 255);
 static constexpr ImU32 validLinkColor = IM_COL32(128, 255, 128, 255);
@@ -302,7 +301,7 @@ void OtGraphWidget::renderNode(ImDrawList* drawlist, OtGraphNode& node) {
 
 	// render the node's background
 	drawlist->AddRectFilled(topLeft, bottomRight, nodeBackgroundColor, nodeRounding);
-	drawlist->AddRectFilled(topLeft, headerBottomRight, nodeHeaderColor, nodeRounding);
+	drawlist->AddRectFilled(topLeft, headerBottomRight, node->color, nodeRounding);
 	drawlist->AddRect(topLeft, bottomRight, node->selected ? nodeSelectedColor : nodeOutlineColor, nodeRounding);
 
 	// handle mouse interactions

@@ -32,6 +32,16 @@ using OtGraphDataTypes = OtTypeList<
 	glm::vec4,
 	OtTexture>;
 
+enum {
+	OtGraphPinBoolType,
+	OtGraphPinIntType,
+	OtGraphPinFloatType,
+	OtGraphPinVec2Type,
+	OtGraphPinVec3Type,
+	OtGraphPinVec4Type,
+	OtGraphPinTextureType
+};
+
 static constexpr const char* OtGraphDataTypeNames[] = {
 	"bool",
 	"int",

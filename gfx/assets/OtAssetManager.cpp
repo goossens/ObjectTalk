@@ -129,27 +129,25 @@ OtAssetBase* OtAssetManager::lookup(const std::filesystem::path& path) {
 	// ensure path points to a valid file
 	if (std::filesystem::is_regular_file(path)) {
 		// see if we already have loaded this asset?
-		auto fullPath = std::filesystem::canonical(path);
-
-		if (assets.find(fullPath) == assets.end()) {
+		if (assets.find(path) == assets.end()) {
 			// nope, let's instantiate it now and schedule it for loading
-			auto instance = OtAssetFactory::instance()->instantiate(fullPath);
+			auto instance = OtAssetFactory::instance()->instantiate(path);
 
 			// ensure the factory can create an asset for this path
 			if (instance) {
-				instance->assetPath = fullPath;
+				instance->assetPath = path;
 				instance->assetState = OtAssetBase::scheduledState;
-				assets[fullPath] = instance;
+				assets[path] = instance;
 				queue.push(instance);
 				return instance;
 
 			} else {
 				// unknown asset type, create a dummy asset
-				OtLogWarning(OtFormat("Unknown asset type [%s]", fullPath.string().c_str()));
+				OtLogWarning(OtFormat("Unknown asset type [%s]", path.string().c_str()));
 				auto dummy = new OtAssetBase();
-				dummy->assetPath = fullPath;
+				dummy->assetPath = path;
 				dummy->assetState = OtAssetBase::invalidState;
-				assets[fullPath] = dummy;
+				assets[path] = dummy;
 				return dummy;
 			}
 

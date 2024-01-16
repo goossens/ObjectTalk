@@ -52,8 +52,8 @@ public:
 	std::string describe() override { return "\"" + (len() > 32 ? left(32) + "...\"" : value) + "\""; }
 
 	// comparison
-	bool operator == (OtObject operand) override { return value == operand->operator std::string(); }
-	bool operator < (OtObject operand) override { return value < operand->operator std::string(); }
+	bool operator==(OtObject operand) override { return value == operand->operator std::string(); }
+	bool operator<(OtObject operand) override { return value < operand->operator std::string(); }
 
 	bool equal(const std::string& operand) { return value == operand; }
 	bool notEqual(const std::string& operand) { return value != operand; }

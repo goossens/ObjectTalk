@@ -90,11 +90,11 @@ public:
 	void getMemberNames(std::vector<std::string_view>& names);
 
 	// comparison
-	virtual bool operator == (OtObject operand);
-	virtual bool operator < (OtObject operand);
+	virtual bool operator==(OtObject operand);
+	virtual bool operator<(OtObject operand);
 
-	bool equal(OtObject operand) { return operator == (operand); }
-	bool notEqual(OtObject operand) { return !(operator == (operand)); }
+	bool equal(OtObject operand) { return operator==(operand); }
+	bool notEqual(OtObject operand) { return !(operator==(operand)); }
 
 	// "call" object (count, parameters)
 	virtual OtObject operator () (size_t, OtObject*) { return nullptr; }

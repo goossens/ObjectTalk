@@ -16,9 +16,7 @@
 
 
 //
-//	Colors
+//	Functions
 //
 
-static constexpr uint32_t OtInputNodeColor = OT_NODE_COLOR(125, 45, 75, 255);
-static constexpr uint32_t OtOutputNodeColor = OT_NODE_COLOR(60, 30, 40, 255);
-static constexpr uint32_t OtMathNodeColor = OT_NODE_COLOR(55, 95, 130, 255);
+void OtImageGeneratorNodesRegister(OtGraph& graph);

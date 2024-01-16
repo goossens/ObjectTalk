@@ -69,10 +69,10 @@ void OtArrayClass::init(size_t count, OtObject* parameters) {
 
 
 //
-//	OtArrayClass::operator ==
+//	OtArrayClass::operator==
 //
 
-bool OtArrayClass::operator == (OtObject operand) {
+bool OtArrayClass::operator==(OtObject operand) {
 	OtArray op = OtArray(operand);
 
 	// ensure object is an array

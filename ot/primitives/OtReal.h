@@ -46,8 +46,8 @@ public:
 	std::string describe() override { return operator std::string(); }
 
 	// comparison
-	bool operator == (OtObject operand) override { return value == operand->operator double(); }
-	bool operator < (OtObject operand) override { return value < operand->operator double(); }
+	bool operator==(OtObject operand) override { return value == operand->operator double(); }
+	bool operator<(OtObject operand) override { return value < operand->operator double(); }
 
 	bool equal(double operand) { return value == operand; }
 	bool notEqual(double operand) { return value != operand; }

@@ -23,8 +23,9 @@
 nlohmann::json OtGraphNodeClass::serialize(std::filesystem::path* basedir) {
 	// serialize node data
 	auto data = nlohmann::json::object();
-	data["name"] = name;
 	data["id"] = id;
+	data["type"] = type;
+	data["title"] = title;
 	data["x"] = x;
 	data["y"] = y;
 
@@ -60,9 +61,10 @@ void OtGraphNodeClass::deserialize(nlohmann::json data, bool restoreIDs, std::fi
 		id = data["id"];
 	}
 
-	// restore location
+	// restore location and title
 	x = data.value("x", 0.0f);
 	y = data.value("y", 0.0f);
+	title = data.value("title", type);
 
 	// restore input pins
 	eachInput([&] (OtGraphPin& pin) {
@@ -87,6 +89,9 @@ void OtGraphNodeClass::deserialize(nlohmann::json data, bool restoreIDs, std::fi
 
 	// do any node specific deserialization
 	customDeserialize(&data, basedir);
+
+	// set flags
+	needsEvaluating = true;
 }
 
 

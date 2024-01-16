@@ -13,7 +13,6 @@
 
 #include "OtGraphNode.h"
 #include "OtMathNodes.h"
-#include "OtNodeColors.h"
 
 
 //
@@ -23,7 +22,7 @@
 class OtGraphNode1by1 : public OtGraphNodeClass {
 public:
 	// constructor
-	inline OtGraphNode1by1(const char* name) : OtGraphNodeClass(name, OtMathNodeColor) {}
+	inline OtGraphNode1by1(const char* name) : OtGraphNodeClass(name, OtGraphNodeClass::math) {}
 
 	// configure node
 	inline void configure() override {
@@ -59,7 +58,7 @@ OT_GRAPH_NODE_1_BY_1(Tan, std::tan(a));
 class OtGraphNode2by1 : public OtGraphNodeClass {
 public:
 	// constructor
-	inline OtGraphNode2by1(const char* name) : OtGraphNodeClass(name, OtMathNodeColor) {}
+	inline OtGraphNode2by1(const char* name) : OtGraphNodeClass(name, OtGraphNodeClass::math) {}
 
 	// configure node
 	inline void configure() override {

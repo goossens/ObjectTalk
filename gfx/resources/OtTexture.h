@@ -58,6 +58,15 @@ public:
 	inline size_t getWidth() { return width; }
 	inline size_t getHeight() { return height; }
 
+	// see if textures are identical
+	inline bool operator==(OtTexture& rhs) {
+		return texture == rhs.texture && width == rhs.width && height == rhs.height;
+	}
+
+	inline bool operator!=(OtTexture& rhs) {
+		return !operator==(rhs);
+	}
+
 private:
 	// texture
 	OtBgfxHandle<bgfx::TextureHandle> texture;

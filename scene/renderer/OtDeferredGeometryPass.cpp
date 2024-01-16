@@ -175,6 +175,7 @@ void OtSceneRenderer::renderDeferredTerrain(OtSceneRendererContext& ctx, OtPass&
 	if (terrain->heights.dirty) {
 		terrain->heights.update(tileableFbm, normalMapper);
 	}
+
 	// process all the terrain meshes
 	for (auto& mesh : terrain->getMeshes(ctx.camera.frustum, ctx.camera.cameraPosition)) {
 		// submit the geometry

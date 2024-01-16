@@ -22,17 +22,6 @@
 
 
 //
-//	Helper macro for node colors
-//
-
-#define OT_NODE_COLOR(r, g, b, a) (			\
-	((uint32_t)(a) << 24) |					\
-	((uint32_t) (b) << 16) |				\
-	((uint32_t) (g) << 8) |					\
-	((uint32_t) (r)))
-
-
-//
 //	OtGraphNode
 //
 
@@ -41,8 +30,16 @@ using OtGraphNode = std::shared_ptr<OtGraphNodeClass>;
 
 class OtGraphNodeClass {
 public:
+	// node categories
+	enum {
+		input,
+		output,
+		math,
+		generator
+	};
+
 	// constructor
-	inline OtGraphNodeClass(const char* n, uint32_t c) : name(n), color(c) {
+	inline OtGraphNodeClass(const char* t, int c) : type(t), title(t), category(c) {
 		id = OtGraphGenerateID();
 	}
 
@@ -109,17 +106,23 @@ public:
 	virtual inline void onExecute() {};
 	virtual inline void onEnd() {};
 
+	// handle custom section of notes
+	virtual inline void customRendering() {}
+	virtual inline float getCustomRenderingWidth() { return 0.0f; }
+	virtual inline float getCustomRenderingHeight() { return 0.0f; }
+
 	// public properties
 	uint32_t id;
-	const char* name;
-	uint32_t color;
+	const char* type;
+	int category;
+	std::string title;
 	float x = 0.0f;
 	float y = 0.0f;
 	float w = 0.0f;
 	float h = 0.0f;
 	bool selected = false;
 	bool needsPlacement = false;
-	bool needsRunning = false;
+	bool needsEvaluating = false;
 	bool needsSaving = false;
 	bool permanentMark = false;
 	bool temporaryMark = false;
@@ -132,6 +135,6 @@ protected:
 	std::vector<OtGraphPin> inputPins;
 	std::vector<OtGraphPin> outputPins;
 
-	virtual void customSerialize(nlohmann::json* data, std::filesystem::path* basedir) {}
-	virtual void customDeserialize(nlohmann::json* data, std::filesystem::path* basedir) {}
+	virtual inline void customSerialize(nlohmann::json* data, std::filesystem::path* basedir) {}
+	virtual inline void customDeserialize(nlohmann::json* data, std::filesystem::path* basedir) {}
 };

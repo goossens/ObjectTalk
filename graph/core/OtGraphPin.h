@@ -86,6 +86,7 @@ public:
 	const char* name;
 	int direction;
 	OtGraphNodeClass* node;
+	bool needsEvaluating{false};
 
 	OtGraphPinRenderer render = [](){};
 	float renderingWidth{0.0f};
@@ -114,12 +115,14 @@ public:
 	inline void connect(OtGraphPin srcPin) override {
 		sourcePin = srcPin;
 		source = srcPin ? std::dynamic_pointer_cast<OtGraphPinImpl<T>>(srcPin)->value : nullptr;
+		needsEvaluating = true;
 	}
 
 	inline void disconnect() override {
 		*value = defaultValue;
 		sourcePin = nullptr;
 		source = nullptr;
+		needsEvaluating = true;
 	}
 
 	inline bool isConnected() { return sourcePin != nullptr; }
@@ -127,7 +130,10 @@ public:
 	// evaluate the pin
 	void evaluate() override {
 		if (source) {
-			*value = *source;
+			if (*value != *source) {
+				*value = *source;
+				needsEvaluating = true;
+			}
 		}
 	}
 

@@ -71,10 +71,10 @@ void OtDictClass::init(size_t count, OtObject* parameters) {
 
 
 //
-//	OtDictClass::operator ==
+//	OtDictClass::operator==
 //
 
-bool OtDictClass::operator == (OtObject operand) {
+bool OtDictClass::operator==(OtObject operand) {
 	OtDict op = operand;
 
 	if (!op) {

@@ -19,6 +19,7 @@
 #include "OtUi.h"
 
 #include "OtGraphEditor.h"
+#include "OtImageGeneratorNodes.h"
 #include "OtInputNodes.h"
 #include "OtMathNodes.h"
 #include "OtOutputNodes.h"
@@ -42,13 +43,10 @@
 
 OtGraphEditor::OtGraphEditor() {
 	graph = std::make_unique<OtGraph>();
-	OtMathNodesRegister(*graph);
+	OtImageGeneratorNodesRegister(*graph);
 	OtInputNodesRegister(*graph);
+	OtMathNodesRegister(*graph);
 	OtOutputNodesRegister(*graph);
-
-	graph->createNode("Add", 100.0f, 100.0f);
-	graph->createNode("Subtract", 400.0f, 100.0f);
-	graph->createNode("Sin", 100.0f, 300.0f);
 
 	widget = std::make_unique<OtGraphWidget>();
 }
@@ -224,14 +222,16 @@ void OtGraphEditor::renderEditor() {
 	// render the graph
 	widget->render(graph.get());
 
-	// handle link creations
+	// handle node editing
 	uint32_t node;
-	uint32_t from;
-	uint32_t to;
 
 	if (widget->isNodeEdited(node)) {
 		nextTask = std::make_shared<OtEditNodeTask>(graph.get(), node);
 	}
+
+	// handle link creations
+	uint32_t from;
+	uint32_t to;
 
 	if (widget->isCreatingLink(from, to)) {
 		nextTask = std::make_shared<OtCreateLinkTask>(graph.get(), from, to);

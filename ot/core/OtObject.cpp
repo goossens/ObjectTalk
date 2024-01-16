@@ -129,10 +129,10 @@ void OtObjectClass::getMemberNames(std::vector<std::string_view>& names) {
 
 
 //
-//	OtObjectClass::operator ==
+//	OtObjectClass::operator==
 //
 
-bool OtObjectClass::operator == (OtObject operand) {
+bool OtObjectClass::operator==(OtObject operand) {
 	if (this == operand.raw()) {
 		return true;
 
@@ -143,10 +143,10 @@ bool OtObjectClass::operator == (OtObject operand) {
 
 
 //
-//	OtObjectClass::operator <
+//	OtObjectClass::operator<
 //
 
-bool OtObjectClass::operator < (OtObject operand) {
+bool OtObjectClass::operator<(OtObject operand) {
 	return this < operand.raw();
 }
 

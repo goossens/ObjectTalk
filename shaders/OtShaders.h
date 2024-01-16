@@ -99,6 +99,11 @@
 #include "generated/generator/OtGeneratorVS_spv.h"
 #include "generated/generator/OtGeneratorVS_essl.h"
 #include "generated/generator/OtGeneratorVS_dx11.h"
+#include "generated/generator/OtFbmFS_mtl.h"
+#include "generated/generator/OtFbmFS_glsl.h"
+#include "generated/generator/OtFbmFS_spv.h"
+#include "generated/generator/OtFbmFS_essl.h"
+#include "generated/generator/OtFbmFS_dx11.h"
 #include "generated/generator/OtTileableFbmFS_mtl.h"
 #include "generated/generator/OtTileableFbmFS_glsl.h"
 #include "generated/generator/OtTileableFbmFS_spv.h"
@@ -276,6 +281,11 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtGeneratorVS),
 	BGFX_EMBEDDED_SHADER(OtGeneratorVS),
 	BGFX_EMBEDDED_SHADER(OtGeneratorVS),
+	BGFX_EMBEDDED_SHADER(OtFbmFS),
+	BGFX_EMBEDDED_SHADER(OtFbmFS),
+	BGFX_EMBEDDED_SHADER(OtFbmFS),
+	BGFX_EMBEDDED_SHADER(OtFbmFS),
+	BGFX_EMBEDDED_SHADER(OtFbmFS),
 	BGFX_EMBEDDED_SHADER(OtTileableFbmFS),
 	BGFX_EMBEDDED_SHADER(OtTileableFbmFS),
 	BGFX_EMBEDDED_SHADER(OtTileableFbmFS),

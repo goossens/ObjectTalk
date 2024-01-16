@@ -163,7 +163,7 @@ OtGraphNode OtGraph::createNode(const std::string& name, float x, float y) {
 	node->x = x;
 	node->y = y;
 	node->needsPlacement = true;
-	node->needsRunning = true;
+	node->needsEvaluating = true;
 
 	// index node and pins
 	indexNode(node);
@@ -508,13 +508,13 @@ std::string OtGraph::archiveNodes(const std::vector<uint32_t>& selection) {
 
 OtGraphNode OtGraph::restoreNode(nlohmann::json data, bool restoreIDs, std::filesystem::path* basedir) {
 	// create a new node
-	auto node = factory.createNode(data["name"]);
+	auto node = factory.createNode(data["type"]);
 	node->deserialize(data, restoreIDs, basedir);
 	nodes.emplace_back(node);
 	needsSorting = true;
 
 	node->needsPlacement = true;
-	node->needsRunning = true;
+	node->needsEvaluating = true;
 
 	// index node and pins
 	indexNode(node);
@@ -674,38 +674,39 @@ void OtGraph::evaluate() {
 	if (needsSorting) {
 		sortNodesTopologically(nodes);
 		needsSorting = false;
-		needsRunning = true;
+		needsEvaluating = true;
 	}
 
 	// update all the nodes
 	for (auto& node : nodes) {
 		node->onUpdate();
-		needsRunning |= node->needsRunning;
+		needsEvaluating |= node->needsEvaluating;
 	}
 
 	// (re)run graph if required
-	if (needsRunning) {
-		// see how any other nodes need running
-		// evaluateNodes(nodes);
-
+	if (needsEvaluating) {
 		// start the run
 		for (auto& node : nodes) {
 			node->onStart();
 		};
 
 		// run until all changes are processed
-		while (needsRunning) {
-			needsRunning = false;
+		while (needsEvaluating) {
+			needsEvaluating = false;
 
 			for (auto& node : nodes) {
-				node->needsRunning = false;
-
-				node->eachInput([] (OtGraphPin& pin) {
+				node->eachInput([node] (OtGraphPin& pin) {
 					pin->evaluate();
+					node->needsEvaluating |= pin->needsEvaluating;
+					pin->needsEvaluating = false;
 				});
 
-				node->onExecute();
-				needsRunning |= node->needsRunning;
+				if (node->needsEvaluating) {
+					node->needsEvaluating = false;
+
+					node->onExecute();
+					needsEvaluating |= node->needsEvaluating;
+				}
 			};
 		}
 

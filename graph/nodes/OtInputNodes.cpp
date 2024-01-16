@@ -10,6 +10,7 @@
 //
 
 #include "imgui.h"
+#include "nlohmann/json.hpp"
 
 #include "OtPathTools.h"
 #include "OtTexture.h"
@@ -18,33 +19,81 @@
 
 #include "OtGraphNode.h"
 #include "OtInputNodes.h"
-#include "OtNodeColors.h"
+
+
+//
+//	OtGraphNodeIntegerInput
+//
+
+class OtGraphNodeIntegerInput : public OtGraphNodeClass {
+public:
+	// constructor
+	inline OtGraphNodeIntegerInput() : OtGraphNodeClass(name, OtGraphNodeClass::input) {}
+
+	// configure node
+	inline void configure() override {
+		addOutputPin("Value", value)->addRenderer([this] () {
+			ImGui::SetNextItemWidth(fieldWidth);
+			ImGui::InputInt("##value", &value, 1, 100, ImGuiInputTextFlags_NoUndoRedo);
+
+			if (ImGui::IsItemActivated()) {
+				oldState = serialize().dump();
+			}
+
+			if (ImGui::IsItemDeactivated()) {
+				newState = serialize().dump();
+
+				if (newState != oldState) {
+					needsEvaluating = true;
+					needsSaving = true;
+				}
+			}
+		}, fieldWidth);
+	}
+
+	// (de)serialize input
+	void customSerialize(nlohmann::json* data, std::filesystem::path* basedir) override {
+		(*data)["value"] = value;
+	}
+
+	void customDeserialize(nlohmann::json* data, std::filesystem::path* basedir) override {
+		value = data->value("value", 0.);
+	}
+
+	static constexpr const char* name = "Integer Input";
+	static constexpr float fieldWidth = 120.0f;
+
+protected:
+	int value = 0;
+};
 
 
 //
 //	OtGraphNodeFloatInput
 //
 
-#include <iostream>
 class OtGraphNodeFloatInput : public OtGraphNodeClass {
 public:
 	// constructor
-	inline OtGraphNodeFloatInput() : OtGraphNodeClass(name, OtInputNodeColor) {}
+	inline OtGraphNodeFloatInput() : OtGraphNodeClass(name, OtGraphNodeClass::input) {}
 
 	// configure node
 	inline void configure() override {
 		addOutputPin("Value", value)->addRenderer([this] () {
-			static constexpr int flags =
-				ImGuiInputTextFlags_NoUndoRedo |
-				ImGuiInputTextFlags_EnterReturnsTrue;
-
-			oldState = serialize().dump();
 			ImGui::SetNextItemWidth(fieldWidth);
+			ImGui::InputFloat("##value", &value, 0.0f, 0.0f, "%.3f", ImGuiInputTextFlags_NoUndoRedo);
 
-			if (ImGui::InputFloat("##value", &value, 0.0f, 0.0f, "%.3f", flags)) {
+			if (ImGui::IsItemActivated()) {
+				oldState = serialize().dump();
+			}
+
+			if (ImGui::IsItemDeactivated()) {
 				newState = serialize().dump();
-				needsRunning = true;
-				needsSaving = true;
+
+				if (newState != oldState) {
+					needsEvaluating = true;
+					needsSaving = true;
+				}
 			}
 		}, fieldWidth);
 	}
@@ -73,24 +122,25 @@ protected:
 class OtGraphNodeImageInput : public OtGraphNodeClass {
 public:
 	// constructor
-	inline OtGraphNodeImageInput() : OtGraphNodeClass(name, OtInputNodeColor) {}
+	inline OtGraphNodeImageInput() : OtGraphNodeClass(name, OtGraphNodeClass::input) {}
 
 	// configure node
 	inline void configure() override {
 		addOutputPin("Image", texture)->addRenderer([this] () {
 			ImGui::SetNextItemWidth(fieldWidth);
-			oldState = serialize().dump();
+			auto old = serialize().dump();
 
 			if (asset.renderUI("##image")) {
 				if (asset.isNull()) {
-					needsRunning = true;
+					needsEvaluating = true;
 
 				} else {
 					loading = true;
 				}
 
-				newState = serialize().dump();
 				texture.clear();
+				oldState = old;
+				newState = serialize().dump();
 				needsSaving = true;
 			}
 		}, fieldWidth);
@@ -100,7 +150,7 @@ public:
 	inline void onUpdate() override {
 		if (loading && asset->isReady()) {
 			texture = asset->getTexture();
-			needsRunning = true;
+			needsEvaluating = true;
 			loading = false;
 		}
 	}
@@ -118,7 +168,7 @@ public:
 
 		} else if (asset.isReady()) {
 			texture = asset->getTexture();
-			needsRunning = true;
+			needsEvaluating = true;
 
 		} else {
 			loading = true;
@@ -143,6 +193,7 @@ protected:
 	graph.registerNodeType<CLASS>("Input", CLASS::name)
 
 void OtInputNodesRegister(OtGraph& graph) {
+	REGISTER(OtGraphNodeIntegerInput);
 	REGISTER(OtGraphNodeFloatInput);
 	REGISTER(OtGraphNodeImageInput);
 }

@@ -14,8 +14,11 @@
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
+#include "nlohmann/json.hpp"
 
 #include "OtNumbers.h"
+
+#include "OtUi.h"
 
 #include "OtGraphWidget.h"
 
@@ -34,6 +37,14 @@ static constexpr ImU32 normalLinkColor = IM_COL32(255, 255, 255, 255);
 static constexpr ImU32 creatingLinkColor = IM_COL32(248, 222, 126, 255);
 static constexpr ImU32 validLinkColor = IM_COL32(128, 255, 128, 255);
 static constexpr ImU32 invalidLinkColor = IM_COL32(255, 32, 32, 255);
+
+static constexpr ImU32 nodeColors[] = {
+	IM_COL32(125, 45, 75, 255),		// input
+	IM_COL32(60, 30, 40, 255),		// output
+	IM_COL32(55, 95, 130, 255),		// math
+	IM_COL32(90, 35, 50, 255)		// generator
+
+};
 
 static constexpr ImU32 pinColors[] = {
 	IM_COL32(206, 167, 215, 255),	// bool
@@ -282,7 +293,7 @@ void OtGraphWidget::renderRubberBand(ImDrawList* drawlist) {
 
 void OtGraphWidget::renderNode(ImDrawList* drawlist, OtGraphNode& node) {
 	// update node size if required
-	if (node->w == 0.0f) {
+	if (node->w == 0.0f || node->h == 0.0f) {
 		calculateNodeSize(node);
 	}
 
@@ -301,7 +312,7 @@ void OtGraphWidget::renderNode(ImDrawList* drawlist, OtGraphNode& node) {
 
 	// render the node's background
 	drawlist->AddRectFilled(topLeft, bottomRight, nodeBackgroundColor, nodeRounding);
-	drawlist->AddRectFilled(topLeft, headerBottomRight, node->color, nodeRounding);
+	drawlist->AddRectFilled(topLeft, headerBottomRight, nodeColors[node->category], nodeRounding);
 	drawlist->AddRect(topLeft, bottomRight, node->selected ? nodeSelectedColor : nodeOutlineColor, nodeRounding);
 
 	// handle mouse interactions
@@ -315,14 +326,27 @@ void OtGraphWidget::renderNode(ImDrawList* drawlist, OtGraphNode& node) {
 	// render title
 	ImGui::SetCursorScreenPos(topLeft + ImVec2(horizontalPadding, topPadding));
 	ImGui::BeginGroup();
-	inset(((node->w - horizontalPadding * 2.0f) - ImGui::CalcTextSize(node->name).x) / 2.0f);
+	inset(((node->w - horizontalPadding * 2.0f) - ImGui::CalcTextSize(node->title.c_str()).x) / 2.0f);
 	ImGui::AlignTextToFramePadding();
-	ImGui::TextUnformatted(node->name);
+	ImGui::TextUnformatted(renamingNode == node->id ? "" : node->title.c_str());
+
+	// handle double clicks (to start editing node title)
+	bool startNodeRenaming = false;
+
+	if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0)) {
+		if (renamingNode != node->id) {
+			renamingNode = node->id;
+			startNodeRenaming = true;
+		}
+	}
 
 	// render all output pins
 	node->eachOutput([&] (OtGraphPin& pin) {
 		renderPin(drawlist, pin, bottomRight.x, node->w);
 	});
+
+	// do the custom node rendering
+	node->customRendering();
 
 	// render all input pins
 	node->eachInput([&] (OtGraphPin& pin) {
@@ -330,6 +354,27 @@ void OtGraphWidget::renderNode(ImDrawList* drawlist, OtGraphNode& node) {
 	});
 
 	ImGui::EndGroup();
+
+	if (node->id == renamingNode) {
+		ImGui::SetCursorScreenPos(topLeft + ImVec2(horizontalPadding, topPadding));
+		ImGui::SetNextItemWidth(node->w - 2.0 * horizontalPadding);
+
+		if (startNodeRenaming) {
+			ImGui::SetKeyboardFocusHere();
+			node->oldState = node->serialize().dump();
+			startNodeRenaming = false;
+		}
+
+		OtUiInputText("##rename", node->title, ImGuiInputTextFlags_NoUndoRedo | ImGuiInputTextFlags_EnterReturnsTrue);
+
+		if (ImGui::IsItemDeactivated()) {
+			node->newState = node->serialize().dump();
+			editedNode = node->id;
+			nodeEdited = true;
+			renamingNode = 0;
+		}
+	}
+
 	ImGui::PopID();
 }
 
@@ -394,17 +439,22 @@ void OtGraphWidget::renderLink(ImDrawList* drawlist, const ImVec2& start, const 
 
 void OtGraphWidget::calculateNodeSize(OtGraphNode& node) {
 	// determine widest line
-	auto w = ImGui::CalcTextSize(node->name).x;
+	auto w = ImGui::CalcTextSize(node->title.c_str()).x;
 
 	node->eachPin([&] (OtGraphPin& pin) {
 		w = std::max(w, pin->hasRenderer ? pin->renderingWidth : ImGui::CalcTextSize(pin->name).x);
 	});
 
+	w = std::max(w, node->getCustomRenderingWidth());
 	node->w = w + horizontalPadding * 2.0f;
 
 	// determine height
 	auto pinCount = node->getOutputPinCount() + node->getInputPinCount();
-	node->h = topPadding + ImGui::GetFrameHeightWithSpacing() * (pinCount + 1);
+
+	node->h =
+		topPadding +
+		ImGui::GetFrameHeightWithSpacing() * (pinCount + 1) +
+		node->getCustomRenderingHeight();
 }
 
 

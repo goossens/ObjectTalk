@@ -16,10 +16,10 @@
 
 
 //
-//	OtCerrClass::operator <<
+//	OtCerrClass::operator<<
 //
 
-OtObject OtCerrClass::operator << (OtObject object) {
+OtObject OtCerrClass::operator<<(OtObject object) {
 	std::cerr << object->operator std::string();
 	return OtObject(this);
 }
@@ -48,7 +48,7 @@ OtType OtCerrClass::getMeta() {
 
 	if (!type) {
 		type = OtType::create<OtCerrClass>("Cerr", OtStreamClass::getMeta());
-		type->set("__lshift__", OtFunction::create(&OtCerrClass::operator <<));
+		type->set("__lshift__", OtFunction::create(&OtCerrClass::operator<<));
 	}
 
 	return type;

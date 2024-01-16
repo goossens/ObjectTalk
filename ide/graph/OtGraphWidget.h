@@ -78,6 +78,7 @@ private:
 	int interactionState = noInteraction;
 
 	bool nodeEdited = false;
+	bool renamingDone = false;
 	bool draggingDone = false;
 	bool connectingDone = false;
 	bool disconnectingDone = false;
@@ -86,6 +87,7 @@ private:
 
 	uint32_t editedNode;
 	uint32_t hoveredNode;
+	uint32_t renamingNode;
 	uint32_t hoveredPin;
 
 	ImVec2 rubberBandStartPos;			// in screen space

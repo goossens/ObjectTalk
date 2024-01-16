@@ -24,6 +24,7 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f forward\OtForwardVS.glsl -o generated\forward\OtForwardVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtForwardVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f forward\OtForwardPbrFS.glsl -o generated\forward\OtForwardPbrFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtForwardPbrFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f generator\OtGeneratorVS.glsl -o generated\generator\OtGeneratorVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtGeneratorVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f generator\OtFbmFS.glsl -o generated\generator\OtFbmFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtFbmFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f generator\OtTileableFbmFS.glsl -o generated\generator\OtTileableFbmFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtTileableFbmFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f grid\OtGridVS.glsl -o generated\grid\OtGridVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtGridVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f grid\OtGridFS.glsl -o generated\grid\OtGridFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtGridFS_dx11

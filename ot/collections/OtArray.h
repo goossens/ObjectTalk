@@ -41,7 +41,7 @@ public:
 	void init(size_t count, OtObject* parameters);
 
 	// comparison
-	bool operator == (OtObject operand) override;
+	bool operator==(OtObject operand) override;
 
 	// access array members
 	OtObject getEntry(size_t index);

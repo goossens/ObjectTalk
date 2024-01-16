@@ -27,7 +27,7 @@ using OtCout = OtObjectPointer<OtCoutClass>;
 class OtCoutClass : public OtStreamClass {
 public:
 	// output an object (will internally be converted to a String first)
-	OtObject operator << (OtObject object);
+	OtObject operator<<(OtObject object);
 
 	// write strings
 	void write(const char* string);

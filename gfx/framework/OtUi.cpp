@@ -333,6 +333,34 @@ void OtUiSplitterHorizontal(float* size, float minSize, float maxSize) {
 
 
 //
+//	OtUiSelectorEnum
+//
+
+bool OtUiSelectorEnum(const char* label, int& value, const char* const names[], size_t count) {
+	bool changed = false;
+
+	if (ImGui::BeginCombo(label, names[value])) {
+		for (auto i = 0; i < count; i++) {
+			if (ImGui::Selectable(names[i], i == value)) {
+				if (value != i) {
+					value = i;
+					changed = true;
+				}
+			}
+
+			if (i == value) {
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+
+		ImGui::EndCombo();
+	}
+
+	return changed;
+}
+
+
+//
 //	OtUiSelectorPowerOfTwo
 //
 

@@ -37,7 +37,7 @@ public:
 	}
 
 	// compare categories
-	inline bool operator < (const OtGraphNodeCategory& category) const {
+	inline bool operator<(const OtGraphNodeCategory& category) const {
 		return name < category.name;
 	}
 

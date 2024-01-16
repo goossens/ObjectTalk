@@ -140,7 +140,7 @@ private:
 	std::unordered_map<uint32_t, OtGraphLink> linkIndex;
 
 	bool needsSorting = false;
-	bool needsRunning = false;
+	bool needsEvaluating = false;
 
 	// (un)index a node and its pins
 	void indexNode(OtGraphNode node);

@@ -47,8 +47,8 @@ public:
 	std::string describe() override { return operator std::string(); }
 
 	// comparison
-	bool operator == (OtObject operand) override { return value == operand->operator int64_t(); }
-	bool operator < (OtObject operand) override { return value < operand->operator int64_t(); }
+	bool operator==(OtObject operand) override { return value == operand->operator int64_t(); }
+	bool operator<(OtObject operand) override { return value < operand->operator int64_t(); }
 
 	bool equal(int64_t operand) { return value == operand; }
 	bool notEqual(int64_t operand) { return value != operand; }

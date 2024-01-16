@@ -38,6 +38,11 @@ public:
 	inline T getHandle() { return handleRef == nullptr ? T(BGFX_INVALID_HANDLE) : handleRef->get(); }
 	inline uint16_t getIndex() { return handleRef ? handleRef->getIndex() : bgfx::kInvalidHandle; }
 
+	// see if handles are identical
+	bool operator==(OtBgfxHandle<T>& rhs) {
+		return getIndex() == rhs.getIndex();
+	}
+
 private:
 	template <typename Ts>
 	class Handle {

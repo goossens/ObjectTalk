@@ -1,0 +1,210 @@
+{
+	"links": [
+		{
+			"from": 655115689,
+			"id": 2158096572,
+			"to": 1526405463
+		},
+		{
+			"from": 655115689,
+			"id": 2558083586,
+			"to": 4094783600
+		},
+		{
+			"from": 2192342675,
+			"id": 741385174,
+			"to": 849638715
+		},
+		{
+			"from": 1177102896,
+			"id": 3323414756,
+			"to": 3698526399
+		},
+		{
+			"from": 531006834,
+			"id": 2673847349,
+			"to": 2380244455
+		},
+		{
+			"from": 2018775607,
+			"id": 1562204924,
+			"to": 850026902
+		},
+		{
+			"from": 4028472516,
+			"id": 1905789637,
+			"to": 3017524261
+		},
+		{
+			"from": 4243123040,
+			"id": 3089266074,
+			"to": 217555214
+		}
+	],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 2758978105,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 655115689,
+					"name": "Value",
+					"type": "int"
+				}
+			],
+			"title": "Size",
+			"type": "Integer Input",
+			"value": 512,
+			"x": 22.0,
+			"y": 82.0
+		},
+		{
+			"id": 2842695751,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 2192342675,
+					"name": "Value",
+					"type": "float"
+				}
+			],
+			"title": "Frequency",
+			"type": "Float Input",
+			"value": 10.0,
+			"x": 22.0,
+			"y": 160.0
+		},
+		{
+			"id": 3704143381,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 1177102896,
+					"name": "Value",
+					"type": "float"
+				}
+			],
+			"title": "Lacunarity",
+			"type": "Float Input",
+			"value": 2.0,
+			"x": 22.0,
+			"y": 239.0
+		},
+		{
+			"id": 2320418202,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 531006834,
+					"name": "Value",
+					"type": "float"
+				}
+			],
+			"title": "Amplitude",
+			"type": "Float Input",
+			"value": 0.5,
+			"x": 22.0,
+			"y": 320.0
+		},
+		{
+			"id": 2893673049,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 2018775607,
+					"name": "Value",
+					"type": "float"
+				}
+			],
+			"title": "Persistence",
+			"type": "Float Input",
+			"value": 0.5,
+			"x": 22.0,
+			"y": 396.0
+		},
+		{
+			"id": 846135667,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 4028472516,
+					"name": "Value",
+					"type": "int"
+				}
+			],
+			"title": "Octaves",
+			"type": "Integer Input",
+			"value": 8,
+			"x": 22.0,
+			"y": 476.0
+		},
+		{
+			"id": 1863888524,
+			"inputs": [
+				{
+					"id": 1526405463,
+					"name": "Width",
+					"type": "int"
+				},
+				{
+					"id": 4094783600,
+					"name": "Height",
+					"type": "int"
+				},
+				{
+					"id": 849638715,
+					"name": "Frequency",
+					"type": "float"
+				},
+				{
+					"id": 3698526399,
+					"name": "Lacunarity",
+					"type": "float"
+				},
+				{
+					"id": 2380244455,
+					"name": "Amplitude",
+					"type": "float"
+				},
+				{
+					"id": 850026902,
+					"name": "Persistence",
+					"type": "float"
+				},
+				{
+					"id": 3017524261,
+					"name": "Octaves",
+					"type": "int"
+				}
+			],
+			"noiseType": 0,
+			"outputs": [
+				{
+					"id": 4243123040,
+					"name": "Image",
+					"type": "image"
+				}
+			],
+			"title": "NoiseMap Generator",
+			"type": "NoiseMap Generator",
+			"x": 245.0,
+			"y": 129.0
+		},
+		{
+			"id": 3557975928,
+			"inputs": [
+				{
+					"id": 217555214,
+					"name": "Image",
+					"type": "image"
+				}
+			],
+			"outputs": [],
+			"title": "Image Output",
+			"type": "Image Output",
+			"x": 660.0,
+			"y": 128.0
+		}
+	]
+}

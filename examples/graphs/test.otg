@@ -51,7 +51,6 @@
 		{
 			"id": 37376410,
 			"inputs": [],
-			"name": "Float Input",
 			"outputs": [
 				{
 					"id": 3348868259,
@@ -59,6 +58,8 @@
 					"type": "float"
 				}
 			],
+			"title": "Float Input",
+			"type": "Float Input",
 			"value": 2.0,
 			"x": 65.0,
 			"y": 148.0
@@ -66,7 +67,6 @@
 		{
 			"id": 2507790077,
 			"inputs": [],
-			"name": "Float Input",
 			"outputs": [
 				{
 					"id": 362673415,
@@ -74,6 +74,8 @@
 					"type": "float"
 				}
 			],
+			"title": "Float Input",
+			"type": "Float Input",
 			"value": 1.0,
 			"x": 65.0,
 			"y": 235.0
@@ -92,7 +94,6 @@
 					"type": "float"
 				}
 			],
-			"name": "Add",
 			"outputs": [
 				{
 					"id": 753009503,
@@ -100,13 +101,14 @@
 					"type": "float"
 				}
 			],
+			"title": "Add",
+			"type": "Add",
 			"x": 264.0,
 			"y": 157.0
 		},
 		{
 			"id": 87380946,
 			"inputs": [],
-			"name": "Float Input",
 			"outputs": [
 				{
 					"id": 3612936401,
@@ -114,6 +116,8 @@
 					"type": "float"
 				}
 			],
+			"title": "Float Input",
+			"type": "Float Input",
 			"value": 5.0,
 			"x": 64.0,
 			"y": 324.0
@@ -132,7 +136,6 @@
 					"type": "float"
 				}
 			],
-			"name": "Subtract",
 			"outputs": [
 				{
 					"id": 1182013951,
@@ -140,6 +143,8 @@
 					"type": "float"
 				}
 			],
+			"title": "Subtract",
+			"type": "Subtract",
 			"x": 444.0,
 			"y": 198.0
 		},
@@ -152,10 +157,11 @@
 					"type": "float"
 				}
 			],
-			"name": "Float Output",
 			"outputs": [],
-			"x": 691.0,
-			"y": 44.0
+			"title": "Float Output",
+			"type": "Float Output",
+			"x": 371.0,
+			"y": 102.0
 		},
 		{
 			"id": 3921401313,
@@ -166,7 +172,6 @@
 					"type": "float"
 				}
 			],
-			"name": "Abs",
 			"outputs": [
 				{
 					"id": 4061513768,
@@ -174,6 +179,8 @@
 					"type": "float"
 				}
 			],
+			"title": "Abs",
+			"type": "Abs",
 			"x": 573.0,
 			"y": 327.0
 		},
@@ -186,16 +193,16 @@
 					"type": "float"
 				}
 			],
-			"name": "Float Output",
 			"outputs": [],
-			"x": 692.0,
-			"y": 230.0
+			"title": "Float Output",
+			"type": "Float Output",
+			"x": 693.0,
+			"y": 326.0
 		},
 		{
 			"id": 1137274146,
 			"image": "../scenes/earth/assets/earth.png",
 			"inputs": [],
-			"name": "Image Input",
 			"outputs": [
 				{
 					"id": 3051670333,
@@ -203,6 +210,8 @@
 					"type": "image"
 				}
 			],
+			"title": "Image Input",
+			"type": "Image Input",
 			"x": 61.0,
 			"y": 456.0
 		},
@@ -215,10 +224,11 @@
 					"type": "float"
 				}
 			],
-			"name": "Float Output",
 			"outputs": [],
-			"x": 693.0,
-			"y": 135.0
+			"title": "Float Output",
+			"type": "Float Output",
+			"x": 593.0,
+			"y": 197.0
 		},
 		{
 			"id": 3964610701,
@@ -229,10 +239,11 @@
 					"type": "image"
 				}
 			],
-			"name": "Image Output",
 			"outputs": [],
-			"x": 693.0,
-			"y": 454.0
+			"title": "Image Output",
+			"type": "Image Output",
+			"x": 311.0,
+			"y": 457.0
 		}
 	]
 }

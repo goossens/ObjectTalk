@@ -68,4 +68,5 @@ void OtUiSplitterVertical(float* size, float minSize, float maxSize);
 void OtUiSplitterHorizontal(float* size, float minSize, float maxSize);
 
 // selectors
+bool OtUiSelectorEnum(const char* label, int& value, const char* const names[], size_t count);
 bool OtUiSelectorPowerOfTwo(const char* label, int& value, int startValue, int endValue);

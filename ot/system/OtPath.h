@@ -47,8 +47,8 @@ public:
 	void replaceExtension(OtObject name) { path.replace_extension(name->operator std::string()); }
 
 	// operators
-	bool operator == (OtObject operand) { return path == operand->operator std::string(); }
-	bool operator < (OtObject operand) { return path < operand->operator std::string(); }
+	bool operator==(OtObject operand) { return path == operand->operator std::string(); }
+	bool operator<(OtObject operand) { return path < operand->operator std::string(); }
 
 	OtObject join(OtObject operand) { return OtPath::create(path / operand->operator std::string()); }
 	bool equal(OtObject operand) { return path == operand->operator std::string(); }

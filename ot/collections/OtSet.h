@@ -42,7 +42,7 @@ public:
 	void init(size_t count, OtObject* parameters);
 
 	// comparison
-	bool operator == (OtObject object) override;
+	bool operator==(OtObject object) override;
 
 	// start iterator
 	OtObject iterate();

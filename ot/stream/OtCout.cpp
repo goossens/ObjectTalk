@@ -16,10 +16,10 @@
 
 
 //
-//	OtCoutClass::operator <<
+//	OtCoutClass::operator<<
 //
 
-OtObject OtCoutClass::operator << (OtObject object) {
+OtObject OtCoutClass::operator<<(OtObject object) {
 	std::cout << object->operator std::string();
 	return OtObject(this);
 }
@@ -48,7 +48,7 @@ OtType OtCoutClass::getMeta() {
 
 	if (!type) {
 		type = OtType::create<OtCoutClass>("Cout", OtStreamClass::getMeta());
-		type->set("__lshift__", OtFunction::create(&OtCoutClass::operator <<));
+		type->set("__lshift__", OtFunction::create(&OtCoutClass::operator<<));
 	}
 
 	return type;

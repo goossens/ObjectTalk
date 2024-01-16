@@ -67,10 +67,10 @@ void OtSetClass::init(size_t count, OtObject* parameters) {
 
 
 //
-//	OtSetClass::operator ==
+//	OtSetClass::operator==
 //
 
-bool OtSetClass::operator == (OtObject object) {
+bool OtSetClass::operator==(OtObject object) {
 	OtSet op = object;
 
 	// ensure object is a set

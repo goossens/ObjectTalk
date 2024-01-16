@@ -14,7 +14,6 @@
 #include "OtTexture.h"
 
 #include "OtGraphNode.h"
-#include "OtNodeColors.h"
 #include "OtOutputNodes.h"
 
 
@@ -25,7 +24,7 @@
 class OtGraphNodeFloatOutput : public OtGraphNodeClass {
 public:
 	// constructor
-	inline OtGraphNodeFloatOutput() : OtGraphNodeClass(name, OtOutputNodeColor) {}
+	inline OtGraphNodeFloatOutput() : OtGraphNodeClass(name, OtGraphNodeClass::output) {}
 
 	// configure node
 	inline void configure() override {
@@ -52,7 +51,7 @@ protected:
 class OtGraphNodeImageOutput : public OtGraphNodeClass {
 public:
 	// constructor
-	inline OtGraphNodeImageOutput() : OtGraphNodeClass(name, OtOutputNodeColor) {}
+	inline OtGraphNodeImageOutput() : OtGraphNodeClass(name, OtGraphNodeClass::output) {}
 
 	// configure node
 	inline void configure() override {

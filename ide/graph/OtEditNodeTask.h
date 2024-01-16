@@ -30,22 +30,24 @@ public:
 
 	// do action
 	void perform() override {
-		oldState = graph->getNode(node)->oldState;
-		newState = graph->getNode(node)->newState;
+		auto targetNode = graph->getNode(node);
+		oldState = targetNode->oldState;
+		newState = targetNode->newState;
+		targetNode->w = 0.0f;
 	}
 
 	// undo action
 	void undo() override {
 		auto targetNode = graph->getNode(node);
-		targetNode->OtGraphNodeClass::deserializeFromString(oldState);
-		targetNode->needsRunning = true;
+		targetNode->deserializeFromString(oldState);
+		targetNode->w = 0.0f;
 	}
 
 	// redo action
 	void redo() override {
 		auto targetNode = graph->getNode(node);
-		targetNode->OtGraphNodeClass::deserializeFromString(newState);
-		targetNode->needsRunning = true;
+		targetNode->deserializeFromString(newState);
+		targetNode->w = 0.0f;
 	}
 
 /*

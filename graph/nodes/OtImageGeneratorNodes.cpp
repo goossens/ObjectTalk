@@ -72,11 +72,10 @@ public:
 		noiseType = data->value("noiseType", OtFbm::simplexNoiseType);
 	}
 
-	// running the noise generation
-	virtual void onExecute() override {
+	// running the noise generator
+	void onExecute() override {
 		// ensure framebuffer has right size
 		framebuffer.update(width, height);
-		texture = framebuffer.getColorTexture();
 
 		// run the generator
 		fbm.setFrequency(frequency);
@@ -86,6 +85,10 @@ public:
 		fbm.setOctaves(octaves);
 		fbm.setNoiseType(noiseType);
 		fbm.render(framebuffer);
+
+		// manage output (version numbers are used to detect changes down the line)
+		texture = framebuffer.getColorTexture();
+		texture.setVersion(version++);
 	}
 
 	static constexpr const char* name = "NoiseMap Generator";
@@ -102,8 +105,9 @@ protected:
 	int noiseType = OtFbm::simplexNoiseType;
 
 	OtFbm fbm;
-	OtFrameBuffer framebuffer{OtFrameBuffer::r16Texture};
+	OtFrameBuffer framebuffer{OtFrameBuffer::rFloat32Texture};
 	OtTexture texture;
+	int version = 1;
 };
 
 

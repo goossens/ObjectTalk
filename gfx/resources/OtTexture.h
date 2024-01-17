@@ -27,11 +27,11 @@ public:
 
 	// constructor
 	OtTexture() = default;
-	OtTexture(OtBgfxHandle<bgfx::TextureHandle> t, size_t w, size_t h) : texture(t), width(w), height(h) {}
+	OtTexture(OtBgfxHandle<bgfx::TextureHandle> t, int w, int h) : texture(t), width(w), height(h) {}
 	OtTexture(const std::filesystem::path& path);
 
 	// clear the resources
-	inline void clear() { texture.clear(); }
+	void clear();
 
 	// see if texture is valid
 	inline bool isValid() { return texture.isValid(); }
@@ -55,12 +55,17 @@ public:
 	}
 
 	// get texture size
-	inline size_t getWidth() { return width; }
-	inline size_t getHeight() { return height; }
+	inline int getWidth() { return width; }
+	inline int getHeight() { return height; }
+
+	// version management
+	inline void setVersion(int v) { version = v; }
+	inline int getVersion() { return version; }
+	inline void incrementVersion() { version++; }
 
 	// see if textures are identical
 	inline bool operator==(OtTexture& rhs) {
-		return texture == rhs.texture && width == rhs.width && height == rhs.height;
+		return texture == rhs.texture && width == rhs.width && height == rhs.height && version == rhs.version;
 	}
 
 	inline bool operator!=(OtTexture& rhs) {
@@ -70,6 +75,7 @@ public:
 private:
 	// texture
 	OtBgfxHandle<bgfx::TextureHandle> texture;
-	size_t width = 1;
-	size_t height = 1;
+	int width = 1;
+	int height = 1;
+	int version = 0;
 };

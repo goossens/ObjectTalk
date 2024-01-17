@@ -39,6 +39,26 @@
 			"from": 4243123040,
 			"id": 3089266074,
 			"to": 217555214
+		},
+		{
+			"from": 4243123040,
+			"id": 148500638,
+			"to": 2817761390
+		},
+		{
+			"from": 3035146654,
+			"id": 1349625612,
+			"to": 3129229881
+		},
+		{
+			"from": 2998180272,
+			"id": 338781203,
+			"to": 279760242
+		},
+		{
+			"from": 3035146654,
+			"id": 2646532601,
+			"to": 4019633566
 		}
 	],
 	"metadata": {},
@@ -71,7 +91,7 @@
 			],
 			"title": "Frequency",
 			"type": "Float Input",
-			"value": 10.0,
+			"value": 3.0,
 			"x": 22.0,
 			"y": 160.0
 		},
@@ -87,7 +107,7 @@
 			],
 			"title": "Lacunarity",
 			"type": "Float Input",
-			"value": 2.0,
+			"value": 1.7000000476837158,
 			"x": 22.0,
 			"y": 239.0
 		},
@@ -135,7 +155,7 @@
 			],
 			"title": "Octaves",
 			"type": "Integer Input",
-			"value": 8,
+			"value": 6,
 			"x": 22.0,
 			"y": 476.0
 		},
@@ -178,7 +198,7 @@
 					"type": "int"
 				}
 			],
-			"noiseType": 0,
+			"noiseType": 1,
 			"outputs": [
 				{
 					"id": 4243123040,
@@ -203,8 +223,80 @@
 			"outputs": [],
 			"title": "Image Output",
 			"type": "Image Output",
-			"x": 660.0,
-			"y": 128.0
+			"x": 488.0,
+			"y": 215.0
+		},
+		{
+			"id": 181894845,
+			"inputs": [
+				{
+					"id": 2817761390,
+					"name": "Input",
+					"type": "image"
+				}
+			],
+			"outputs": [
+				{
+					"id": 3035146654,
+					"name": "Output",
+					"type": "image"
+				}
+			],
+			"title": "Seamless Tiler",
+			"type": "Seamless Tiler",
+			"x": 555.0,
+			"y": 102.0
+		},
+		{
+			"id": 2039127696,
+			"inputs": [
+				{
+					"id": 3129229881,
+					"name": "Input",
+					"type": "image"
+				}
+			],
+			"outputs": [
+				{
+					"id": 2998180272,
+					"name": "Output",
+					"type": "image"
+				}
+			],
+			"title": "HeightMap to NormalMap",
+			"type": "HeightMap to NormalMap",
+			"x": 792.0,
+			"y": 78.0
+		},
+		{
+			"id": 4016356840,
+			"inputs": [
+				{
+					"id": 279760242,
+					"name": "Image",
+					"type": "image"
+				}
+			],
+			"outputs": [],
+			"title": "Image Output",
+			"type": "Image Output",
+			"x": 1044.0,
+			"y": 211.0
+		},
+		{
+			"id": 251467935,
+			"inputs": [
+				{
+					"id": 4019633566,
+					"name": "Image",
+					"type": "image"
+				}
+			],
+			"outputs": [],
+			"title": "Image Output",
+			"type": "Image Output",
+			"x": 769.0,
+			"y": 213.0
 		}
 	]
 }

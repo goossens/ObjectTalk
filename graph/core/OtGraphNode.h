@@ -35,7 +35,8 @@ public:
 		input,
 		output,
 		math,
-		generator
+		generator,
+		filter
 	};
 
 	// constructor

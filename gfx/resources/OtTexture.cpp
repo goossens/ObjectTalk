@@ -26,6 +26,18 @@ OtTexture::OtTexture(const std::filesystem::path& path) {
 
 
 //
+//	OtTexture::clear
+//
+
+void OtTexture::clear() {
+	texture.clear();
+	width = 1;
+	height = 1;
+	version++;
+}
+
+
+//
 //	createRegularTexture
 //
 
@@ -58,13 +70,13 @@ static bgfx::TextureHandle createMipmapTexture(bimg::ImageContainer* image) {
 	const uint32_t blockWidth  = blockInfo.blockWidth;
 	const uint32_t blockHeight = blockInfo.blockHeight;
 
-	uint32_t width = image->m_width;
-	uint32_t height = image->m_height;
+	uint32_t w = image->m_width;
+	uint32_t h = image->m_height;
 
 	// process all mip levels
 	for (auto lod = 0; lod < image->m_numMips; lod++) {
-		width = std::max(blockWidth,  width);
-		height = std::max(blockHeight, height);
+		w = std::max(blockWidth,  w);
+		h = std::max(blockHeight, h);
 
 		bimg::ImageMip mip;
 
@@ -73,13 +85,14 @@ static bgfx::TextureHandle createMipmapTexture(bimg::ImageContainer* image) {
 				texture,
 				0, lod,
 				0, 0,
-				uint16_t(width), uint16_t(height),
+				uint16_t(w), uint16_t(h),
 				bgfx::copy(mip.m_data, mip.m_size));
 		}
 
-		width  >>= 1;
-		height >>= 1;
+		w  >>= 1;
+		h >>= 1;
 	}
+
 
 	return texture;
 }
@@ -97,6 +110,7 @@ void OtTexture::loadFromFile(const std::filesystem::path& path) {
 	// remember size
 	width = container->m_width;
 	height = container->m_height;
+	version++;
 
 	// create texture
 	if (container->m_numMips > 1) {
@@ -116,6 +130,7 @@ void OtTexture::loadFromMemory(int w, int h, uint8_t* pixels) {
 	// remember size
 	width = w;
 	height = h;
+	version++;
 
 	// create texture
 	texture = bgfx::createTexture2D(
@@ -129,6 +144,7 @@ void OtTexture::loadFromMemory(int w, int h, float* pixels) {
 	// remember size
 	width = w;
 	height = h;
+	version++;
 
 	// create texture
 	texture = bgfx::createTexture2D(
@@ -152,6 +168,7 @@ void OtTexture::loadFromFileInMemory(void* data, uint32_t size) {
 	// remember size
 	width = container->m_width;
 	height = container->m_height;
+	version++;
 
 	// create texture
 	texture = createRegularTexture(container);

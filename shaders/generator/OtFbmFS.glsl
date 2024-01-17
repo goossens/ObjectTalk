@@ -107,7 +107,7 @@ float simplexNoise(vec2 uv) {
 	vec3 g;
 	g.x  = a0.x * x0.x + h.x * x0.y;
 	g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-	return 130.0 * dot(m, g);
+	return ((130.0 * dot(m, g)) + 1.0) / 2.0;
 }
 
 float perlinNoise(vec2 uv) {
@@ -146,7 +146,7 @@ float perlinNoise(vec2 uv) {
 	vec2 fade_xy = quintic(Pf.xy);
 	vec2 n_x = mix(vec2(n00, n01), vec2(n10, n11), fade_xy.x);
 	float n_xy = mix(n_x.x, n_x.y, fade_xy.y);
-	return 2.3 * n_xy;
+	return ((2.3 * n_xy) + 1.0) / 2.0;
 }
 
 float gradientNoise(vec2 uv) {

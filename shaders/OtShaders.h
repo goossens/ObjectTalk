@@ -79,6 +79,11 @@
 #include "generated/filter/OtPostProcessFS_spv.h"
 #include "generated/filter/OtPostProcessFS_essl.h"
 #include "generated/filter/OtPostProcessFS_dx11.h"
+#include "generated/filter/OtSeamlessTileFS_mtl.h"
+#include "generated/filter/OtSeamlessTileFS_glsl.h"
+#include "generated/filter/OtSeamlessTileFS_spv.h"
+#include "generated/filter/OtSeamlessTileFS_essl.h"
+#include "generated/filter/OtSeamlessTileFS_dx11.h"
 #include "generated/forward/OtForwardInstancingVS_mtl.h"
 #include "generated/forward/OtForwardInstancingVS_glsl.h"
 #include "generated/forward/OtForwardInstancingVS_spv.h"
@@ -261,6 +266,11 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtPostProcessFS),
 	BGFX_EMBEDDED_SHADER(OtPostProcessFS),
 	BGFX_EMBEDDED_SHADER(OtPostProcessFS),
+	BGFX_EMBEDDED_SHADER(OtSeamlessTileFS),
+	BGFX_EMBEDDED_SHADER(OtSeamlessTileFS),
+	BGFX_EMBEDDED_SHADER(OtSeamlessTileFS),
+	BGFX_EMBEDDED_SHADER(OtSeamlessTileFS),
+	BGFX_EMBEDDED_SHADER(OtSeamlessTileFS),
 	BGFX_EMBEDDED_SHADER(OtForwardInstancingVS),
 	BGFX_EMBEDDED_SHADER(OtForwardInstancingVS),
 	BGFX_EMBEDDED_SHADER(OtForwardInstancingVS),

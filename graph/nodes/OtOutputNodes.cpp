@@ -11,6 +11,8 @@
 
 #include "imgui.h"
 
+#include "OtFormat.h"
+
 #include "OtTexture.h"
 
 #include "OtGraphNode.h"
@@ -63,14 +65,21 @@ public:
 			}
 
 			if (showImage) {
+				auto flags =
+					ImGuiWindowFlags_NoTitleBar |
+					ImGuiWindowFlags_NoCollapse |
+					ImGuiWindowFlags_AlwaysAutoResize;
+
+				auto id = OtFormat("%p", (void*) this);
 				ImGui::SetNextWindowPos(ImGui::GetCursorScreenPos(), ImGuiCond_FirstUseEver);
-				ImGui::Begin("Image", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+				ImGui::PushID(this);
+				ImGui::Begin(id.c_str(), nullptr, flags);
 
 				if (texture.isValid()) {
 					auto w = texture.getWidth();
 					auto h = texture.getHeight();
 
-					while (w > 512.0f || h > 512.0f) {
+					while (w > 256.0f || h > 256.0f) {
 						w /= 2.0f;
 						h /= 2.0f;
 					}
@@ -82,6 +91,7 @@ public:
 				}
 
 				ImGui::End();
+				ImGui::PopID();
 			}
 		}, fieldWidth);
 	}

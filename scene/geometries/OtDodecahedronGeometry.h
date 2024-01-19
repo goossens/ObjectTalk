@@ -35,7 +35,7 @@ public:
 	bool renderUI() override;
 
 	// serialize geometry
-	nlohmann::json serialize(std::filesystem::path* basedir) override;
+	nlohmann::json serialize(std::string* basedir) override;
 
 	// get type name of geometry
 	const char* getTypeName() override { return name; }

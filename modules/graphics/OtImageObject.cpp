@@ -22,7 +22,7 @@
 
 void OtImageObjectClass::init(size_t count, OtObject* parameters) {
 	if (count == 2) {
-		load(std::filesystem::path(
+		load(std::string(
 			parameters[0]->operator std::string()),
 			parameters[1]->operator std::string());
 
@@ -36,7 +36,7 @@ void OtImageObjectClass::init(size_t count, OtObject* parameters) {
 //	OtImageObjectClass::load
 //
 
-void OtImageObjectClass::load(const std::filesystem::path& path, const std::string& format) {
+void OtImageObjectClass::load(const std::string& path, const std::string& format) {
 	// load image based on requested format
 	if (format == "grayscale") {
 		image.loadAsGrayscale(path);
@@ -45,7 +45,7 @@ void OtImageObjectClass::load(const std::filesystem::path& path, const std::stri
 		image.loadAsRGBA(path);
 
 	} else {
-		OtError("Invalid image format (expected \"grayscale\" or \"rgba\")");
+		OtError("Invalid image format (expected [grayscale] or [rgba])");
 	}
 }
 

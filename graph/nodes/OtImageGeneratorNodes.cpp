@@ -64,11 +64,11 @@ public:
 	}
 
 	// (de)serialize input
-	void customSerialize(nlohmann::json* data, std::filesystem::path* basedir) override {
+	void customSerialize(nlohmann::json* data, std::string* basedir) override {
 		(*data)["noiseType"] = noiseType;
 	}
 
-	void customDeserialize(nlohmann::json* data, std::filesystem::path* basedir) override {
+	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
 		noiseType = data->value("noiseType", OtFbm::simplexNoiseType);
 	}
 

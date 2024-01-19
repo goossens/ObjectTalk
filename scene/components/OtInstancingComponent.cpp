@@ -28,7 +28,7 @@ bool OtInstancingComponent::renderUI() {
 //	OtInstancingComponent::serialize
 //
 
-nlohmann::json OtInstancingComponent::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtInstancingComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
 
@@ -46,7 +46,7 @@ nlohmann::json OtInstancingComponent::serialize(std::filesystem::path* basedir) 
 //	OtInstancingComponent::deserialize
 //
 
-void OtInstancingComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+void OtInstancingComponent::deserialize(nlohmann::json data, std::string* basedir) {
 	transforms.clear();
 
 	for (auto& transform : data) {

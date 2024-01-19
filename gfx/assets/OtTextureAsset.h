@@ -23,11 +23,15 @@
 
 class OtTextureAsset : public OtAssetBase {
 public:
-	// load the asset
-	bool load(const std::filesystem::path& path) override;
+	// constructor
+	OtTextureAsset() : OtAssetBase(true) {}
 
-	// get the texture handle
+	// load the asset
+	bool load(const std::string& path) override;
+
+	// access the texture
 	inline OtTexture& getTexture() { return texture; }
+	inline void setTexture(OtTexture& t) { texture = t; }
 
 private:
 	// the actual texture

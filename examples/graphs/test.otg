@@ -39,11 +39,6 @@
 			"from": 1182013951,
 			"id": 2982816052,
 			"to": 2538487069
-		},
-		{
-			"from": 3051670333,
-			"id": 3233047404,
-			"to": 778511389
 		}
 	],
 	"metadata": {},
@@ -158,8 +153,8 @@
 				}
 			],
 			"outputs": [],
-			"title": "Float Output",
-			"type": "Float Output",
+			"title": "Float Probe",
+			"type": "Float Probe",
 			"x": 371.0,
 			"y": 102.0
 		},
@@ -194,26 +189,10 @@
 				}
 			],
 			"outputs": [],
-			"title": "Float Output",
-			"type": "Float Output",
+			"title": "Float Probe",
+			"type": "Float Probe",
 			"x": 693.0,
 			"y": 326.0
-		},
-		{
-			"id": 1137274146,
-			"image": "../scenes/earth/assets/earth.png",
-			"inputs": [],
-			"outputs": [
-				{
-					"id": 3051670333,
-					"name": "Image",
-					"type": "image"
-				}
-			],
-			"title": "Image Input",
-			"type": "Image Input",
-			"x": 61.0,
-			"y": 456.0
 		},
 		{
 			"id": 1000952904,
@@ -225,25 +204,10 @@
 				}
 			],
 			"outputs": [],
-			"title": "Float Output",
-			"type": "Float Output",
+			"title": "Float Probe",
+			"type": "Float Probe",
 			"x": 593.0,
 			"y": 197.0
-		},
-		{
-			"id": 3964610701,
-			"inputs": [
-				{
-					"id": 778511389,
-					"name": "Image",
-					"type": "image"
-				}
-			],
-			"outputs": [],
-			"title": "Image Output",
-			"type": "Image Output",
-			"x": 311.0,
-			"y": 457.0
 		}
 	]
 }

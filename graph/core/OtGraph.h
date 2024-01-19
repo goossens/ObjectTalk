@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include <filesystem>
 #include <functional>
 #include <memory>
 #include <string>
@@ -56,8 +55,8 @@ public:
 	void clear();
 
 	// load and save scene
-	void load(const std::filesystem::path& path, nlohmann::json* metadata=nullptr);
-	void save(const std::filesystem::path& path, nlohmann::json* metadata=nullptr);
+	void load(const std::string& path, nlohmann::json* metadata=nullptr);
+	void save(const std::string& path, nlohmann::json* metadata=nullptr);
 
 	// manipulate nodes
 	OtGraphNode createNode(const std::string& name, float x, float y);
@@ -152,5 +151,5 @@ private:
 	bool sortNodesTopologically(std::vector<OtGraphNode>& nodes);
 
 	// restore a node from its JSON data
-	OtGraphNode restoreNode(nlohmann::json data, bool restoreIDs=true, std::filesystem::path* basedir=nullptr);
+	OtGraphNode restoreNode(nlohmann::json data, bool restoreIDs=true, std::string* basedir=nullptr);
 };

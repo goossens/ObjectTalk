@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include <filesystem>
+#include <string>
 
 #include "nlohmann/json_fwd.hpp"
 
@@ -49,7 +49,7 @@ public:
 	}
 
 	// serialize
-	nlohmann::json serialize(std::filesystem::path* basedir=nullptr);
+	nlohmann::json serialize(std::string* basedir=nullptr);
 
 	// properties
 	uint32_t id;

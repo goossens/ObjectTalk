@@ -24,6 +24,7 @@
 #include "OtInputNodes.h"
 #include "OtMathNodes.h"
 #include "OtOutputNodes.h"
+#include "OtProbeNodes.h"
 
 #include "OtCopyNodesTask.h"
 #include "OtChangeLinkTask.h"
@@ -49,6 +50,7 @@ OtGraphEditor::OtGraphEditor() {
 	OtInputNodesRegister(*graph);
 	OtMathNodesRegister(*graph);
 	OtOutputNodesRegister(*graph);
+	OtProbeNodesRegister(*graph);
 
 	widget = std::make_unique<OtGraphWidget>();
 }
@@ -137,7 +139,7 @@ void OtGraphEditor::duplicateSelectedNodes() {
 //	OtGraphEditor::create
 //
 
-std::shared_ptr<OtGraphEditor> OtGraphEditor::create(const std::filesystem::path& path) {
+std::shared_ptr<OtGraphEditor> OtGraphEditor::create(const std::string& path) {
 	std::shared_ptr<OtGraphEditor> editor = std::make_shared<OtGraphEditor>();
 	editor->setFilePath(path);
 

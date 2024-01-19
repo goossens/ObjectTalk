@@ -10,6 +10,7 @@
 //
 
 #include <filesystem>
+#include <string>
 
 #include <argparse/argparse.hpp>
 
@@ -119,8 +120,8 @@ int main(int argc, char* argv[]) {
 				}
 
 				// run the file
-				auto file = std::filesystem::path(files[0]);
-				auto extension = file.extension();
+				auto file = files[0];
+				auto extension = std::filesystem::path(file).extension().string();
 
 				// execute by type (based by the file extension)
 				if (extension == ".ot" || extension == "") {
@@ -143,12 +144,12 @@ int main(int argc, char* argv[]) {
 				} else if (extension == ".ots") {
 					// handle a scene file
 					OtFramework framework;
-					OtSceneApp app{std::filesystem::path(file)};
+					OtSceneApp app{file};
 					framework.run(&app, program["--child"] == true);
 #endif
 
 				} else {
-					OtLogFatal(OtFormat("Error: can't execute file with extension [%s]", extension.string().c_str()));
+					OtLogFatal(OtFormat("Error: can't execute file with extension [%s]", extension.c_str()));
 				}
 #if defined(INCLUDE_GUI)
 			}

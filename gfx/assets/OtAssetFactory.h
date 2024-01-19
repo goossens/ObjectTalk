@@ -12,12 +12,13 @@
 //	Include files
 //
 
-#include <filesystem>
+#include <string>
 #include <unordered_map>
 
 #include "OtSingleton.h"
 
 #include "OtAssetBase.h"
+#include "OtPathTools.h"
 
 
 //
@@ -34,9 +35,15 @@ public:
 		registry[extention] = creator;
 	}
 
+	// see if this is a valid asset type
+	inline bool isValid(const std::string& path) {
+		auto ext = OtPathGetExtension(path);
+		return registry.find(ext) != registry.end();
+	}
+
 	// create a new instance
-	inline OtAssetBase* instantiate(const std::filesystem::path& path) {
-		auto ext = path.extension().string();
+	inline OtAssetBase* instantiate(const std::string& path) {
+		auto ext = OtPathGetExtension(path);
 		return registry.find(ext) == registry.end() ? nullptr : registry[ext]();
 	}
 

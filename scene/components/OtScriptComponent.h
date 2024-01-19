@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include <filesystem>
+#include <string>
 
 #include "glm/glm.hpp"
 #include "nlohmann/json_fwd.hpp"
@@ -38,14 +38,14 @@ public:
 	void update();
 
 	// (de)serialize component
-	nlohmann::json serialize(std::filesystem::path* basedir);
-	void deserialize(nlohmann::json data, std::filesystem::path* basedir);
+	nlohmann::json serialize(std::string* basedir);
+	void deserialize(nlohmann::json data, std::string* basedir);
 
 	// component name
 	static constexpr char const* name = "Script";
 
 	// stored properties
-	std::filesystem::path path;
+	std::string path;
 
 	// runtime properties
 	OtModule module;

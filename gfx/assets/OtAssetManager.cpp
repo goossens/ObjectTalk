@@ -22,6 +22,7 @@
 
 #include "OtAssetFactory.h"
 #include "OtAssetManager.h"
+#include "OtPathTools.h"
 
 
 //
@@ -125,48 +126,66 @@ void OtAssetManager::renderUI() {
 //	OtAssetManager::lookup
 //
 
-OtAssetBase* OtAssetManager::lookup(const std::filesystem::path& path) {
-	// ensure path points to a valid file
-	if (std::filesystem::is_regular_file(path)) {
-		// see if we already have loaded this asset?
-		if (assets.find(path) == assets.end()) {
-			// nope, let's instantiate it now and schedule it for loading
-			auto instance = OtAssetFactory::instance()->instantiate(path);
+OtAssetBase* OtAssetManager::lookup(const std::string& path) {
+	// see if we are already tracking this asset
+	if (assets.find(path) != assets.end()) {
+		return assets[path];
 
-			// ensure the factory can create an asset for this path
-			if (instance) {
-				instance->assetPath = path;
-				instance->assetState = OtAssetBase::scheduledState;
-				assets[path] = instance;
-				queue.push(instance);
-				return instance;
+	// is this a virtual asset (i.e. a named asset that only exists in memory)
+	} else if (OtPathIsVirtual(path)) {
+		auto instance = OtAssetFactory::instance()->instantiate(path);
 
-			} else {
-				// unknown asset type, create a dummy asset
-				OtLogWarning(OtFormat("Unknown asset type [%s]", path.string().c_str()));
-				auto dummy = new OtAssetBase();
-				dummy->assetPath = path;
-				dummy->assetState = OtAssetBase::invalidState;
-				assets[path] = dummy;
-				return dummy;
-			}
+		// is this a supported asset type
+		if (instance) {
+			instance->assetPath = path;
+			instance->assetState = OtAssetBase::readyState;
+			assets[path] = instance;
+			return instance;
 
 		} else {
-			// asset already exists, use it
-			return assets[path];
+			// unknown asset type, create a dummy asset
+			OtLogWarning(OtFormat("Unknown asset type [%s]", path.c_str()));
+			return createDummy(path, OtAssetBase::invalidState);
+		}
+
+	// is this an existing file
+	} else if (OtPathIsRegularFile(path)) {
+		// ensure the factory can create an asset for this path
+		auto instance = OtAssetFactory::instance()->instantiate(path);
+
+		if (instance) {
+			instance->assetPath = path;
+			instance->assetState = OtAssetBase::scheduledState;
+			assets[path] = instance;
+			queue.push(instance);
+			return instance;
+
+		} else {
+			// unknown asset type, create a dummy asset
+			OtLogWarning(OtFormat("Unknown asset type [%s]", path.c_str()));
+			return createDummy(path, OtAssetBase::invalidState);
 		}
 
 	} else if (assets.find(path) == assets.end()) {
 		// create a dummy asset
-		OtLogWarning(OtFormat("Asset [%s] not found", path.string().c_str()));
-		auto dummy = new OtAssetBase();
-		dummy->assetPath = path;
-		dummy->assetState = OtAssetBase::missingState;
-		assets[path] = dummy;
-		return dummy;
+		OtLogWarning(OtFormat("Asset [%s] not found", path.c_str()));
+		return createDummy(path, OtAssetBase::missingState);
 
 	} else {
 		// dummy entry already exists
 		return assets[path];
 	}
+}
+
+
+//
+//	OtAssetManager::createDummy
+//
+
+OtAssetBase *OtAssetManager::createDummy(const std::string& path, OtAssetBase::AssetState state) {
+	auto dummy = new OtAssetBase();
+	dummy->assetPath = path;
+	dummy->assetState = state;
+	assets[path] = dummy;
+	return dummy;
 }

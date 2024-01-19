@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include <filesystem>
+#include <string>
 #include <thread>
 #include <unordered_map>
 
@@ -40,14 +40,17 @@ public:
 
 	// acquire an asset
 	template<typename T>
-	inline T* acquire(const std::filesystem::path& path) {
+	inline T* acquire(const std::string& path) {
 		static_assert(std::is_base_of<OtAssetBase, T>::value, "Class is not derived from OtAssetBase");
 		return dynamic_cast<T*>(lookup(path));
 	}
 
 private:
 	// find asset instance
-	OtAssetBase* lookup(const std::filesystem::path& path);
+	OtAssetBase* lookup(const std::string& path);
+
+	// create a dummy asset
+	OtAssetBase* createDummy(const std::string& path, OtAssetBase::AssetState state);
 
 	// thread running the async actions
 	std::thread thread;
@@ -58,11 +61,5 @@ private:
 	OtConcurrentQueue<OtAssetBase*> queue;
 
 	// the registry of loaded assets
-	struct PathHash {
-		inline std::size_t operator()(const std::filesystem::path& p) const noexcept {
-			return std::filesystem::hash_value(p);
-		}
-	};
-
-	std::unordered_map<std::filesystem::path, OtAssetBase*, PathHash> assets;
+	std::unordered_map<std::string, OtAssetBase*> assets;
 };

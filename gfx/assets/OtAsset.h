@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include <filesystem>
+#include <string>
 
 #include "OtAssetManager.h"
 #include "OtUi.h"
@@ -28,7 +28,7 @@ public:
 	// constructor
 	OtAsset() = default;
 
-	inline OtAsset(const std::filesystem::path& p) {
+	inline OtAsset(const std::string& p) {
 		path = p;
 		acquire();
 	}
@@ -40,10 +40,10 @@ public:
 	}
 
 	// access the path
-	inline std::filesystem::path& getPath() { return path; }
+	inline std::string& getPath() { return path; }
 
 	// assignment
-	inline OtAsset& operator=(const std::filesystem::path& p) {
+	inline OtAsset& operator=(const std::string& p) {
 		path = p;
 		acquire();
 		return *this;
@@ -75,7 +75,7 @@ public:
 
 private:
 	// asset path
-	std::filesystem::path path;
+	std::string path;
 
 	// pointer to the actual asset
 	T* ptr = nullptr;

@@ -202,7 +202,7 @@ bool OtPolyhedronGeometryClass::renderUI() {
 //	OtPolyhedronGeometryClass::serialize
 //
 
-nlohmann::json OtPolyhedronGeometryClass::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtPolyhedronGeometryClass::serialize(std::string* basedir) {
 	auto data = OtGeometryClass::serialize(basedir);
 	data["type"] = name;
 	data["detail"] = detail;
@@ -213,7 +213,7 @@ nlohmann::json OtPolyhedronGeometryClass::serialize(std::filesystem::path* based
 //	OtPolyhedronGeometryClass::deserialize
 //
 
-void OtPolyhedronGeometryClass::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+void OtPolyhedronGeometryClass::deserialize(nlohmann::json data, std::string* basedir) {
 	OtGeometryClass::deserialize(data, basedir);
 	detail = data.value("detail", 1);
 	refreshGeometry = true;

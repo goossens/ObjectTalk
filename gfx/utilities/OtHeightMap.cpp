@@ -23,7 +23,7 @@
 //	OtHeightMap::load
 //
 
-void OtHeightMap::load(const std::filesystem::path& path) {
+void OtHeightMap::load(const std::string& path) {
 	// load height map from image
 	OtImage image;
 	image.loadAsGrayscale(path);

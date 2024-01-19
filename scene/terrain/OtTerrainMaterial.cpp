@@ -91,17 +91,17 @@ bool OtTerrainMaterial::renderUI() {
 //	OtTerrainMaterial::serialize
 //
 
-nlohmann::json OtTerrainMaterial::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtTerrainMaterial::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["region1Color"] = region1Color;
 	data["region2Color"] = region2Color;
 	data["region3Color"] = region3Color;
 	data["region4Color"] = region4Color;
 
-	data["region1Texture"] = OtPathGetRelative(region1Texture.getPath(), basedir);
-	data["region2Texture"] = OtPathGetRelative(region2Texture.getPath(), basedir);
-	data["region3Texture"] = OtPathGetRelative(region3Texture.getPath(), basedir);
-	data["region4Texture"] = OtPathGetRelative(region4Texture.getPath(), basedir);
+	data["region1Texture"] = OtPathRelative(region1Texture.getPath(), basedir);
+	data["region2Texture"] = OtPathRelative(region2Texture.getPath(), basedir);
+	data["region3Texture"] = OtPathRelative(region3Texture.getPath(), basedir);
+	data["region4Texture"] = OtPathRelative(region4Texture.getPath(), basedir);
 
 	data["region1TextureScale"] = region1TextureScale;
 	data["region2TextureScale"] = region2TextureScale;
@@ -124,7 +124,7 @@ nlohmann::json OtTerrainMaterial::serialize(std::filesystem::path* basedir) {
 //	OtTerrainMaterial::deserialize
 //
 
-void OtTerrainMaterial::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+void OtTerrainMaterial::deserialize(nlohmann::json data, std::string* basedir) {
 	region1Color = data.value("region1Color", glm::vec3(0.965f, 0.894f, 0.678f));
 	region2Color = data.value("region2Color", glm::vec3(0.494f, 0.784f, 0.314f));
 	region3Color = data.value("region3Color", glm::vec3(0.584f, 0.553f, 0.522f));

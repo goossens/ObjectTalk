@@ -33,10 +33,10 @@ bool OtModelComponent::renderUI() {
 //	OtModelComponent::serialize
 //
 
-nlohmann::json OtModelComponent::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtModelComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
-	data["model"] = OtPathGetRelative(model.getPath(), basedir);
+	data["model"] = OtPathRelative(model.getPath(), basedir);
 	return data;
 }
 
@@ -45,6 +45,6 @@ nlohmann::json OtModelComponent::serialize(std::filesystem::path* basedir) {
 //	OtModelComponent::deserialize
 //
 
-void OtModelComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+void OtModelComponent::deserialize(nlohmann::json data, std::string* basedir) {
 	model = OtPathGetAbsolute(data, "model", basedir);
 }

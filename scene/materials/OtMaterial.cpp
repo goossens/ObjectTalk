@@ -18,7 +18,7 @@
 //	OtMaterialClass::serialize
 //
 
-nlohmann::json OtMaterialClass::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtMaterialClass::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	return data;
 }
@@ -28,7 +28,7 @@ nlohmann::json OtMaterialClass::serialize(std::filesystem::path* basedir) {
 //	OtMaterialClass::deserialize
 //
 
-void OtMaterialClass::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+void OtMaterialClass::deserialize(nlohmann::json data, std::string* basedir) {
 }
 
 

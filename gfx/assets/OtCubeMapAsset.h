@@ -24,10 +24,11 @@
 class OtCubeMapAsset : public OtAssetBase {
 public:
 	// load the asset
-	bool load(const std::filesystem::path& path) override;
+	bool load(const std::string& path) override;
 
-	// get the CubeMap handle
+	// access the CubeMap
 	inline OtCubeMap& getCubeMap() { return cubemap; }
+	inline void setCubeMap(OtCubeMap& c) { cubemap = c; }
 
 private:
 	// the actual cubemap

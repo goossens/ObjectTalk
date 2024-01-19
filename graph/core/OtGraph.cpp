@@ -22,6 +22,7 @@
 #include "OtGraph.h"
 #include "OtGraphPin.h"
 #include "OtGraphUtils.h"
+#include "OtPathTools.h"
 
 
 //
@@ -50,22 +51,22 @@ void OtGraph::clear() {
 //	OtGraph::load
 //
 
-void OtGraph::load(const std::filesystem::path& path, nlohmann::json* metadata) {
+void OtGraph::load(const std::string& path, nlohmann::json* metadata) {
 	// load scene from file
 	std::stringstream buffer;
 
 	try {
-		std::ifstream stream(path.string().c_str());
+		std::ifstream stream(path.c_str());
 
 		if (stream.fail()) {
-			OtError("Can't read from file [%s]", path.string().c_str());
+			OtError("Can't read from file [%s]", path.c_str());
 		}
 
 		buffer << stream.rdbuf();
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtError("Can't read from file [%s], error: %s", path.string().c_str(), e.what());
+		OtError("Can't read from file [%s], error: %s", path.c_str(), e.what());
 	}
 
 	// parse json
@@ -80,7 +81,7 @@ void OtGraph::load(const std::filesystem::path& path, nlohmann::json* metadata) 
 	}
 
 	// restore each node
-	auto basedir = path.parent_path();
+	auto basedir = OtPathGetParent(path);
 
 	for (auto& node : data["nodes"]) {
 		restoreNode(node, true, &basedir);
@@ -111,7 +112,7 @@ void OtGraph::load(const std::filesystem::path& path, nlohmann::json* metadata) 
 //	OtGraph::save
 //
 
-void OtGraph::save(const std::filesystem::path& path, nlohmann::json* metadata) {
+void OtGraph::save(const std::string& path, nlohmann::json* metadata) {
 	// create json outline
 	auto data = nlohmann::json::object();
 	data["metadata"] = metadata ? *metadata : nlohmann::json::object();
@@ -119,7 +120,7 @@ void OtGraph::save(const std::filesystem::path& path, nlohmann::json* metadata) 
 	auto links = nlohmann::json::array();
 
 	// save all nodes
-	auto basedir = path.parent_path();
+	auto basedir = OtPathGetParent(path);
 
 	eachNode([&] (OtGraphNode& node) {
 		nodes.push_back(node->serialize(&basedir));
@@ -135,17 +136,17 @@ void OtGraph::save(const std::filesystem::path& path, nlohmann::json* metadata) 
 
 	// write graph to file
 	try {
-		std::ofstream stream(path.string().c_str());
+		std::ofstream stream(path.c_str());
 
 		if (stream.fail()) {
-			OtError("Can't open file [%s] for writing", path.string().c_str());
+			OtError("Can't open file [%s] for writing", path.c_str());
 		}
 
 		stream << data.dump(1, '\t');
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtError("Can't write to file [%s], error: %s", path.string().c_str(), e.what());
+		OtError("Can't write to file [%s], error: %s", path.c_str(), e.what());
 	}
 }
 
@@ -163,6 +164,7 @@ OtGraphNode OtGraph::createNode(const std::string& name, float x, float y) {
 	node->x = x;
 	node->y = y;
 	node->needsPlacement = true;
+	node->needsSizing = true;
 	node->needsEvaluating = true;
 
 	// index node and pins
@@ -506,7 +508,7 @@ std::string OtGraph::archiveNodes(const std::vector<uint32_t>& selection) {
 //	OtGraph::restoreNode
 //
 
-OtGraphNode OtGraph::restoreNode(nlohmann::json data, bool restoreIDs, std::filesystem::path* basedir) {
+OtGraphNode OtGraph::restoreNode(nlohmann::json data, bool restoreIDs, std::string* basedir) {
 	// create a new node
 	auto node = factory.createNode(data["type"]);
 	node->deserialize(data, restoreIDs, basedir);
@@ -514,6 +516,7 @@ OtGraphNode OtGraph::restoreNode(nlohmann::json data, bool restoreIDs, std::file
 	needsSorting = true;
 
 	node->needsPlacement = true;
+	node->needsSizing = true;
 	node->needsEvaluating = true;
 
 	// index node and pins

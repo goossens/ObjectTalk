@@ -84,7 +84,7 @@ bool OtTerrainClass::renderUI() {
 //	OtTerrainClass::serialize
 //
 
-nlohmann::json OtTerrainClass::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtTerrainClass::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["tileSize"] = tileSize;
 	data["lods"] = lods;
@@ -102,7 +102,7 @@ nlohmann::json OtTerrainClass::serialize(std::filesystem::path* basedir) {
 //	OtTerrainClass::deserialize
 //
 
-void OtTerrainClass::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+void OtTerrainClass::deserialize(nlohmann::json data, std::string* basedir) {
 	tileSize = data.value("tileSize", 32);
 	lods = data.value("lods", 4);
 	hScale = data.value("hScale", 1.0f);

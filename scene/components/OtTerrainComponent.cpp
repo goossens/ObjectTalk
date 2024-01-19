@@ -40,7 +40,7 @@ bool OtTerrainComponent::renderUI() {
 //	OtTerrainComponent::serialize
 //
 
-nlohmann::json OtTerrainComponent::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtTerrainComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
 	data.update(terrain->serialize(basedir));
@@ -52,6 +52,6 @@ nlohmann::json OtTerrainComponent::serialize(std::filesystem::path* basedir) {
 //	OtTerrainComponent::deserialize
 //
 
-void OtTerrainComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+void OtTerrainComponent::deserialize(nlohmann::json data, std::string* basedir) {
 	terrain->deserialize(data, basedir);
 }

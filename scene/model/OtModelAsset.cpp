@@ -17,6 +17,7 @@
 #include "OtLog.h"
 
 #include "OtAssetFactory.h"
+#include "OtPathTools.h"
 
 #include "OtModelAsset.h"
 
@@ -35,7 +36,7 @@ static OtAssetFactoryRegister<OtModelAsset> objRegistration{".obj"};
 //	OtModelAsset::load
 //
 
-bool OtModelAsset::load(const std::filesystem::path& path) {
+bool OtModelAsset::load(const std::string& path) {
 	// clear the current data
 	meshes.clear();
 	materials.clear();
@@ -53,17 +54,17 @@ bool OtModelAsset::load(const std::filesystem::path& path) {
 		aiProcess_FlipUVs;
 
 	// read the model file
-	const aiScene* scene = importer.ReadFile(path.string(), flags);
+	const aiScene* scene = importer.ReadFile(path, flags);
 
 	// ensure model was loaded correctly
 	if (scene == nullptr) {
-		OtLogWarning(OtFormat("Unable to load model [%s], error: %s", path.string().c_str(), importer.GetErrorString()));
+		OtLogWarning(OtFormat("Unable to load model [%s], error: %s", path.c_str(), importer.GetErrorString()));
 		return false;
 	}
 
 	// ensure scene is complete
 	if (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) {
-		OtLogWarning(OtFormat("Incomplete model [%s]", path.string().c_str()));
+		OtLogWarning(OtFormat("Incomplete model [%s]", path.c_str()));
 		return false;
 	}
 
@@ -77,7 +78,7 @@ bool OtModelAsset::load(const std::filesystem::path& path) {
 
 	// load all the materials
 	materials.resize(scene->mNumMaterials);
-	auto dir = path.parent_path();
+	auto dir = OtPathGetParent(path);
 
 	for (auto i = 0; i < scene->mNumMaterials; i++) {
 		materials[i].load(scene->mMaterials[i], dir);

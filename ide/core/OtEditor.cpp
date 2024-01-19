@@ -9,11 +9,10 @@
 //	Include files
 //
 
-#include <filesystem>
-
 #include "imgui.h"
 
 #include "OtMessageBus.h"
+#include "OtPathTools.h"
 #include "OtUi.h"
 
 #include "OtEditor.h"
@@ -38,14 +37,8 @@ void OtEditor::render() {
 //	OtEditor::setFilePath
 //
 
-void OtEditor::setFilePath(const std::filesystem::path& p) {
-	if (p.extension() == getFileExtension()) {
-		path = p;
-
-	} else {
-		path = p;
-		path.replace_extension(std::filesystem::path(getFileExtension()));
-	}
+void OtEditor::setFilePath(const std::string& p) {
+	path = OtPathGetExtension(p) == getFileExtension() ? p : OtPathReplaceExtension(p, getFileExtension());
 }
 
 
@@ -54,7 +47,7 @@ void OtEditor::setFilePath(const std::filesystem::path& p) {
 //
 
 bool OtEditor::fileExists() {
-	return std::filesystem::is_regular_file(path);
+	return OtPathIsRegularFile(path);
 }
 
 

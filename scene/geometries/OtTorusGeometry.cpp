@@ -223,7 +223,7 @@ bool OtTorusGeometryClass::renderUI() {
 //	OtTorusGeometryClass::serialize
 //
 
-nlohmann::json OtTorusGeometryClass::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtTorusGeometryClass::serialize(std::string* basedir) {
 	auto data = OtGeometryClass::serialize(basedir);
 	data["type"] = name;
 	data["radius"] = radius;
@@ -242,7 +242,7 @@ nlohmann::json OtTorusGeometryClass::serialize(std::filesystem::path* basedir) {
 //	OtTorusGeometryClass::deserialize
 //
 
-void OtTorusGeometryClass::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+void OtTorusGeometryClass::deserialize(nlohmann::json data, std::string* basedir) {
 	OtGeometryClass::deserialize(data, basedir);
 	radius = data.value("radius", 1.0f);
 	tubeRadius = data.value("tubeRadius", 0.4f);

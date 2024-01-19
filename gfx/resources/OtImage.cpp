@@ -10,7 +10,6 @@
 //
 
 #include <algorithm>
-#include <filesystem>
 #include <fstream>
 
 #include "bx/allocator.h"
@@ -21,6 +20,7 @@
 
 #include "OtImage.h"
 #include "OtFrameworkAtExit.h"
+#include "OtPathTools.h"
 
 
 //
@@ -34,7 +34,7 @@ static bx::DefaultAllocator allocator;
 //	OtImage::OtImage
 //
 
-OtImage::OtImage(const std::filesystem::path& path, bool powerof2, bool square) {
+OtImage::OtImage(const std::string& path, bool powerof2, bool square) {
 	load(path, powerof2, square);
 }
 
@@ -64,33 +64,30 @@ void OtImage::clear() {
 //	OtImage::load
 //
 
-void OtImage::load(const std::filesystem::path& path, bool powerof2, bool square) {
+void OtImage::load(const std::string& path, bool powerof2, bool square) {
 	// clear old image (if required)
 	clear();
 
 	// get image data
-	auto pathstring = path.string();
-	auto filename = pathstring.c_str();
-
-	if (!std::filesystem::exists(filename) || !std::filesystem::is_regular_file(filename)) {
-		OtError("Can't open image in [%s]", filename);
+	if (!OtPathExists(path) || !OtPathIsRegularFile(path)) {
+		OtError("Can't open image in [%s]", path.c_str());
 	}
 
-	auto filesize = std::filesystem::file_size(filename);
+	auto filesize = OtPathGetFileSize(path);
 	auto buffer = new char[filesize];
-	std::ifstream file(filename, std::ios::binary);
+	std::ifstream file(path.c_str(), std::ios::binary);
 	file.read(buffer, filesize);
 
 	if (!file) {
 		delete [] buffer;
-		OtError("Can't open image in [%s]", filename);
+		OtError("Can't open image in [%s]", path.c_str());
 	}
 
 	image = bimg::imageParse(&allocator, buffer, (uint32_t) filesize);
 	delete [] buffer;
 
 	if (!image) {
-		OtError("Can't process image in [%s]", filename);
+		OtError("Can't process image in [%s]", path.c_str());
 	}
 
 	// validate sides are power of 2 (if required)
@@ -116,7 +113,7 @@ void OtImage::load(const std::filesystem::path& path, bool powerof2, bool square
 //	OtImage::loadAsGrayscale
 //
 
-void OtImage::loadAsGrayscale(const std::filesystem::path& path, bool powerof2, bool square) {
+void OtImage::loadAsGrayscale(const std::string& path, bool powerof2, bool square) {
 	// load the image
 	load(path, powerof2, square);
 
@@ -124,7 +121,7 @@ void OtImage::loadAsGrayscale(const std::filesystem::path& path, bool powerof2, 
 	if (image->m_format != bimg::TextureFormat::R32F) {
 		// see if image is convertable
 		if (!bimg::imageConvert(bimg::TextureFormat::R32F, image->m_format)) {
-			OtError("Can't convert image in [%s] to grayscale", path.string().c_str());
+			OtError("Can't convert image in [%s] to grayscale", path.c_str());
 		}
 
 		// convert image
@@ -144,7 +141,7 @@ void OtImage::loadAsGrayscale(const std::filesystem::path& path, bool powerof2, 
 //	OtImage::loadAsRGBA
 //
 
-void OtImage::loadAsRGBA(const std::filesystem::path& path, bool powerof2, bool square) {
+void OtImage::loadAsRGBA(const std::string& path, bool powerof2, bool square) {
 	// load the image
 	load(path, powerof2, square);
 
@@ -152,7 +149,7 @@ void OtImage::loadAsRGBA(const std::filesystem::path& path, bool powerof2, bool 
 	if (image->m_format != bimg::TextureFormat::RGBA8) {
 		// see if image is convertable
 		if (!bimg::imageConvert(bimg::TextureFormat::RGBA8, image->m_format)) {
-			OtError("Can't convert image in [%s] to grayscale", path.string().c_str());
+			OtError("Can't convert image in [%s] to grayscale", path.c_str());
 		}
 
 		// convert image

@@ -213,7 +213,7 @@ bool OtSphereGeometryClass::renderUI() {
 //	OtSphereGeometryClass::serialize
 //
 
-nlohmann::json OtSphereGeometryClass::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtSphereGeometryClass::serialize(std::string* basedir) {
 	auto data = OtGeometryClass::serialize(basedir);
 	data["type"] = name;
 	data["phiSegments"] = phiSegments;
@@ -230,7 +230,7 @@ nlohmann::json OtSphereGeometryClass::serialize(std::filesystem::path* basedir) 
 //	OtSphereGeometryClass::deserialize
 //
 
-void OtSphereGeometryClass::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+void OtSphereGeometryClass::deserialize(nlohmann::json data, std::string* basedir) {
 	OtGeometryClass::deserialize(data, basedir);
 	phiSegments = data.value("phiSegments", 32);
 	phiStart = data.value("phiStart", 0.0f);

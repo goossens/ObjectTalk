@@ -16,6 +16,8 @@
 
 #include "OtException.h"
 
+#include "OtPathTools.h"
+
 #include "OtScene.h"
 
 
@@ -23,22 +25,22 @@
 //	OtScene::load
 //
 
-void OtScene::load(const std::filesystem::path& path, nlohmann::json* metadata) {
+void OtScene::load(const std::string& path, nlohmann::json* metadata) {
 	// load scene from file
 	std::stringstream buffer;
 
 	try {
-		std::ifstream stream(path.string().c_str());
+		std::ifstream stream(path.c_str());
 
 		if (stream.fail()) {
-			OtError("Can't read from file [%s]", path.string().c_str());
+			OtError("Can't read from file [%s]", path.c_str());
 		}
 
 		buffer << stream.rdbuf();
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtError("Can't read from file [%s], error: %s", path.string().c_str(), e.what());
+		OtError("Can't read from file [%s], error: %s", path.c_str(), e.what());
 	}
 
 	// parse json
@@ -50,7 +52,7 @@ void OtScene::load(const std::filesystem::path& path, nlohmann::json* metadata) 
 	}
 
 	// extract entities
-	auto basedir = path.parent_path();
+	auto basedir = OtPathGetParent(path);
 
 	for (auto& entity : tree["entities"]) {
 		addEntityToParent(getRootEntity(), deserializeEntityFromJson(entity, &basedir));
@@ -62,14 +64,14 @@ void OtScene::load(const std::filesystem::path& path, nlohmann::json* metadata) 
 //	OtScene::save
 //
 
-void OtScene::save(const std::filesystem::path& path, nlohmann::json* metadata) {
+void OtScene::save(const std::string& path, nlohmann::json* metadata) {
 	// create json data structure and add metadata
 	auto data = nlohmann::json::object();
 	data["metadata"] = metadata ? *metadata : nlohmann::json::object();
 
 	// write entities and components
 	auto entities = nlohmann::json::array();
-	auto basedir = path.parent_path();
+	auto basedir = OtPathGetParent(path);
 
 	eachChild(getRootEntity(), [&](OtEntity entity) {
 		entities.push_back(serializeEntityToJson(entity, &basedir));
@@ -79,17 +81,17 @@ void OtScene::save(const std::filesystem::path& path, nlohmann::json* metadata) 
 
 	try {
 		// write scene to file
-		std::ofstream stream(path.string().c_str());
+		std::ofstream stream(path.c_str());
 
 		if (stream.fail()) {
-			OtError("Can't open file [%s] for writing", path.string().c_str());
+			OtError("Can't open file [%s] for writing", path.c_str());
 		}
 
 		stream << data.dump(1, '\t');
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtError("Can't write to file [%s], error: %s", path.string().c_str(), e.what());
+		OtError("Can't write to file [%s], error: %s", path.c_str(), e.what());
 	}
 }
 
@@ -98,7 +100,7 @@ void OtScene::save(const std::filesystem::path& path, nlohmann::json* metadata) 
 //	OtScene::serializeEntity
 //
 
-std::string OtScene::serializeEntity(OtEntity entity, int indent, char character, std::filesystem::path* basedir) {
+std::string OtScene::serializeEntity(OtEntity entity, int indent, char character, std::string* basedir) {
 	return serializeEntityToJson(entity, basedir).dump(indent, character);
 }
 
@@ -107,7 +109,7 @@ std::string OtScene::serializeEntity(OtEntity entity, int indent, char character
 //	OtScene::deserializeEntity
 //
 
-OtEntity OtScene::deserializeEntity(const std::string& json, std::filesystem::path* basedir) {
+OtEntity OtScene::deserializeEntity(const std::string& json, std::string* basedir) {
 	auto data = nlohmann::json::parse(json);
 	return deserializeEntityFromJson(data, basedir);
 }
@@ -118,18 +120,18 @@ OtEntity OtScene::deserializeEntity(const std::string& json, std::filesystem::pa
 //
 
 template<typename T>
-static inline void serializeComponentToJson(nlohmann::json& json, OtScene* scene, OtEntity entity, std::filesystem::path* basedir) {
+static inline void serializeComponentToJson(nlohmann::json& json, OtScene* scene, OtEntity entity, std::string* basedir) {
 	if (scene->hasComponent<T>(entity)) {
 		json.push_back(scene->getComponent<T>(entity).serialize(basedir));
 	}
 }
 
 template<typename... T>
-static inline void serializeComponentsToJson(nlohmann::json& json, OtScene* scene, OtEntity entity, std::filesystem::path* basedir) {
+static inline void serializeComponentsToJson(nlohmann::json& json, OtScene* scene, OtEntity entity, std::string* basedir) {
 	(serializeComponentToJson<T>(json, scene, entity, basedir), ...);
 }
 
-nlohmann::json OtScene::serializeEntityToJson(OtEntity entity, std::filesystem::path* basedir) {
+nlohmann::json OtScene::serializeEntityToJson(OtEntity entity, std::string* basedir) {
 	// serialize the entity's components
 	auto data = nlohmann::json::object();
 	auto components = nlohmann::json::array();
@@ -154,18 +156,18 @@ nlohmann::json OtScene::serializeEntityToJson(OtEntity entity, std::filesystem::
 //
 
 template<typename T>
-static inline void deserializeComponentFromJson(nlohmann::json& json, OtScene* scene, OtEntity entity, std::filesystem::path* basedir) {
+static inline void deserializeComponentFromJson(nlohmann::json& json, OtScene* scene, OtEntity entity, std::string* basedir) {
 	if (json["component"] == T::name) {
 		scene->getOrAddComponent<T>(entity).deserialize(json, basedir);
 	}
 }
 
 template<typename... T>
-static inline void deserializeComponentsFromJson(nlohmann::json& json, OtScene* scene, OtEntity entity, std::filesystem::path* basedir) {
+static inline void deserializeComponentsFromJson(nlohmann::json& json, OtScene* scene, OtEntity entity, std::string* basedir) {
 	(deserializeComponentFromJson<T>(json, scene, entity, basedir), ...);
 }
 
-OtEntity OtScene::deserializeEntityFromJson(nlohmann::json& data, std::filesystem::path* basedir) {
+OtEntity OtScene::deserializeEntityFromJson(nlohmann::json& data, std::string* basedir) {
 	// create a new entity
 	auto entity = createEntity();
 	auto tmpUuid = getEntityUuid(entity);

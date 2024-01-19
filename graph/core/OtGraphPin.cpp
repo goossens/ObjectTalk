@@ -25,7 +25,7 @@ static constexpr const char* pinTypeNames[] = { "bool", "float" };
 //	OtGraphPinClass::serialize
 //
 
-nlohmann::json OtGraphPinClass::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtGraphPinClass::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["type"] = getTypeName();
 	data["id"] = id;
@@ -38,7 +38,7 @@ nlohmann::json OtGraphPinClass::serialize(std::filesystem::path* basedir) {
 //	OtGraphPinClass::deserialize
 //
 
-void OtGraphPinClass::deserialize(nlohmann::json data, bool restoreIDs, std::filesystem::path* basedir) {
+void OtGraphPinClass::deserialize(nlohmann::json data, bool restoreIDs, std::string* basedir) {
 	// restore ID (if required)
 	if (restoreIDs) {
 		id = data["id"];

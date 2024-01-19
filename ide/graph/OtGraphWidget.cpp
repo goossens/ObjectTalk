@@ -43,8 +43,8 @@ static constexpr ImU32 nodeColors[] = {
 	IM_COL32(60, 30, 40, 255),		// output
 	IM_COL32(55, 95, 130, 255),		// math
 	IM_COL32(50, 100, 40, 255),		// generator
-	IM_COL32(115, 70, 30, 255)		// filter
-
+	IM_COL32(115, 70, 30, 255),		// filter
+	IM_COL32(50, 50, 90, 255)		// probe
 };
 
 static constexpr ImU32 pinColors[] = {
@@ -63,8 +63,8 @@ static constexpr float nodeRounding = 4.0f;
 
 static constexpr float pinRadius = 6.0f;
 static constexpr float pinBox = pinRadius * 2.0f + 2.0f;
-static constexpr float topPadding = 4.0f;
-static constexpr float horizontalPadding = pinRadius * 1.5f;
+static constexpr float topPadding = 2.0f;
+static constexpr float horizontalPadding = pinRadius + 4.0f;
 
 static constexpr float linkThinkness = 1.5f;
 
@@ -294,8 +294,9 @@ void OtGraphWidget::renderRubberBand(ImDrawList* drawlist) {
 
 void OtGraphWidget::renderNode(ImDrawList* drawlist, OtGraphNode& node) {
 	// update node size if required
-	if (node->w == 0.0f || node->h == 0.0f) {
+	if (node->needsSizing) {
 		calculateNodeSize(node);
+		node->needsSizing = false;
 	}
 
 	// start the node rendering

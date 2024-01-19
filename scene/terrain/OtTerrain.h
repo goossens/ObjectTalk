@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include <filesystem>
+#include <string>
 #include <vector>
 
 #include "glm/glm.hpp"
@@ -43,8 +43,8 @@ public:
 	bool renderUI();
 
 	// (de)serialize properties
-	nlohmann::json serialize(std::filesystem::path* basedir);
-	void deserialize(nlohmann::json data, std::filesystem::path* basedir);
+	nlohmann::json serialize(std::string* basedir);
+	void deserialize(nlohmann::json data, std::string* basedir);
 
 	// access the meshes
 	std::vector<OtTerrainMesh>& getMeshes(OtFrustum& frustum, const glm::vec3& camera);

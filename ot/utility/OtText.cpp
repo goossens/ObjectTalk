@@ -92,6 +92,22 @@ std::string OtText::mid(const std::string& text, size_t start, size_t length) {
 
 
 //
+//	OtText::from
+//
+
+std::string OtText::from(const std::string& text, size_t start) {
+	auto s = text.begin();
+
+	while (start > 0 && s != text.end()) {
+		s += OtCodePoint::size(s);
+		start--;
+	}
+
+	return std::string(s, text.end());
+}
+
+
+//
 //	OtText::get
 //
 

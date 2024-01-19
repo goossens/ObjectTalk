@@ -36,10 +36,10 @@ bool OtSkySphereComponent::renderUI() {
 //	OtSkySphereComponent::serialize
 //
 
-nlohmann::json OtSkySphereComponent::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtSkySphereComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
-	data["texture"] = OtPathGetRelative(texture.getPath(), basedir);
+	data["texture"] = OtPathRelative(texture.getPath(), basedir);
 	data["brightness"] = brightness;
 	data["gamma"] = gamma;
 	return data;
@@ -50,7 +50,7 @@ nlohmann::json OtSkySphereComponent::serialize(std::filesystem::path* basedir) {
 //	OtSkySphereComponent::deserialize
 //
 
-void OtSkySphereComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+void OtSkySphereComponent::deserialize(nlohmann::json data, std::string* basedir) {
 	texture = OtPathGetAbsolute(data, "texture", basedir);
 	brightness = data.value("brightness", 1.0f);
 	gamma = data.value("gamma", 2.2f);

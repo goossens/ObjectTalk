@@ -30,6 +30,7 @@ public:
 	static std::string left(const std::string& text, size_t length);
 	static std::string right(const std::string& text, size_t length);
 	static std::string mid(const std::string& text, size_t start, size_t length);
+	static std::string from(const std::string& text, size_t start);
 
 	// get code point at offset
 	static std::string get(const std::string& text, size_t offset);

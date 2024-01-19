@@ -93,7 +93,7 @@ bool OtPbrMaterialClass::renderUI() {
 //	OtPbrMaterialClass::serialize
 //
 
-nlohmann::json OtPbrMaterialClass::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtPbrMaterialClass::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["type"] = name;
 	data.update(OtMaterialClass::serialize(basedir));
@@ -105,11 +105,11 @@ nlohmann::json OtPbrMaterialClass::serialize(std::filesystem::path* basedir) {
 	data["ao"] = ao;
 	data["scale"] = scale;
 
-	data["albedoTexture"] = OtPathGetRelative(albedoTexture.getPath(), basedir);
-	data["normalTexture"] = OtPathGetRelative(normalTexture.getPath(), basedir);
-	data["metallicRoughnessTexture"] = OtPathGetRelative(metallicRoughnessTexture.getPath(), basedir);
-	data["emissiveTexture"] = OtPathGetRelative(emissiveTexture.getPath(), basedir);
-	data["aoTexture"] = OtPathGetRelative(aoTexture.getPath(), basedir);
+	data["albedoTexture"] = OtPathRelative(albedoTexture.getPath(), basedir);
+	data["normalTexture"] = OtPathRelative(normalTexture.getPath(), basedir);
+	data["metallicRoughnessTexture"] = OtPathRelative(metallicRoughnessTexture.getPath(), basedir);
+	data["emissiveTexture"] = OtPathRelative(emissiveTexture.getPath(), basedir);
+	data["aoTexture"] = OtPathRelative(aoTexture.getPath(), basedir);
 	return data;
 }
 
@@ -118,7 +118,7 @@ nlohmann::json OtPbrMaterialClass::serialize(std::filesystem::path* basedir) {
 //	OtPbrMaterialClass::deserialize
 //
 
-void OtPbrMaterialClass::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+void OtPbrMaterialClass::deserialize(nlohmann::json data, std::string* basedir) {
 	albedo = data.value("albedo", glm::vec4(1.0f));
 	metallic = data.value("metallic", 0.5f);
 	roughness = data.value("roughness", 0.5f);

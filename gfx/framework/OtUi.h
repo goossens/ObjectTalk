@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include <filesystem>
 #include <functional>
 #include <string>
 
@@ -59,9 +58,9 @@ bool OtUiEditVec4(const char* label, glm::vec4& vector, float speed, float minv,
 // create a file path field with file selector popup
 bool OtUiFileSelector(
 	const char* label,
-	std::filesystem::path& path,
-	std::function<void(std::filesystem::path& path)> create=nullptr,
-	std::function<void(std::filesystem::path& path)> edit=nullptr);
+	std::string& path,
+	std::function<void(std::string& path)> create=nullptr,
+	std::function<void(std::string& path)> edit=nullptr);
 
 // create a splitter widget
 void OtUiSplitterVertical(float* size, float minSize, float maxSize);

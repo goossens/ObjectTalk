@@ -99,7 +99,7 @@ bool OtBoxGeometryClass::renderUI() {
 //	OtBoxGeometryClass::serialize
 //
 
-nlohmann::json OtBoxGeometryClass::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtBoxGeometryClass::serialize(std::string* basedir) {
 	auto data = OtGeometryClass::serialize(basedir);
 	data["type"] = name;
 	data["xsegments"] = widthSegments;
@@ -113,7 +113,7 @@ nlohmann::json OtBoxGeometryClass::serialize(std::filesystem::path* basedir) {
 //	OtBoxGeometryClass::deserialize
 //
 
-void OtBoxGeometryClass::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+void OtBoxGeometryClass::deserialize(nlohmann::json data, std::string* basedir) {
 	OtGeometryClass::deserialize(data, basedir);
 	widthSegments = data.value("xsegments", 1);
 	heightSegments = data.value("ysegments", 1);

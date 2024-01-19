@@ -57,7 +57,7 @@ OtTetrahedronGeometryClass::OtTetrahedronGeometryClass() {
 //	OtTetrahedronGeometryClass::serialize
 //
 
-nlohmann::json OtTetrahedronGeometryClass::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtTetrahedronGeometryClass::serialize(std::string* basedir) {
 	auto data = OtPolyhedronGeometryClass::serialize(basedir);
 	data["type"] = name;
 	return data;

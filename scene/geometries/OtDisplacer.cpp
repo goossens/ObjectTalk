@@ -91,10 +91,10 @@ bool OtDisplacer::renderUI() {
 //	OtDisplacer::serialize
 //
 
-nlohmann::json OtDisplacer::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtDisplacer::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["state"] = state;
-	data["map"] = OtPathGetRelative(map, basedir);
+	data["map"] = OtPathRelative(map, basedir);
 	data["seed"] = seed;
 	data["octaves"] = octaves;
 	data["frequency"] = frequency;
@@ -109,7 +109,7 @@ nlohmann::json OtDisplacer::serialize(std::filesystem::path* basedir) {
 //	OtDisplacer::deserialize
 //
 
-void OtDisplacer::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+void OtDisplacer::deserialize(nlohmann::json data, std::string* basedir) {
 	auto oldmap = map;
 	state = data.value("state", Off);
 	map = OtPathGetAbsolute(data, "map", basedir);
@@ -120,7 +120,7 @@ void OtDisplacer::deserialize(nlohmann::json data, std::filesystem::path* basedi
 	persistance = data.value("persistance", 0.5f);
 	scale = data.value("scale", 0.5f);
 
-	if (map != oldmap && std::filesystem::is_regular_file(map)) {
+	if (map != oldmap && OtPathIsRegularFile(map)) {
 		updateHeightmap();
 	}
 }

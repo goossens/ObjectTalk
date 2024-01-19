@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include <filesystem>
 #include <string>
 
 #include "OtBgfxHandle.h"
@@ -25,7 +24,7 @@
 class OtCubeMap {
 public:
 	// load cubemap from the specified file
-	void load(const std::filesystem::path& path);
+	void load(const std::string& path);
 
 	// clear the resources
 	inline void clear() { cubemap.clear(); }
@@ -46,6 +45,6 @@ private:
 	OtBgfxHandle<bgfx::TextureHandle> cubemap;
 
 	// specific cubemap loaders
-	void loadJSON(const std::filesystem::path& path);
-	void loadCubemapImage(const std::filesystem::path& path);
+	void loadJSON(const std::string& path);
+	void loadCubemapImage(const std::string& path);
 };

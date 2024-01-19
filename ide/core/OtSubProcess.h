@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include <filesystem>
 #include <functional>
 #include <string>
 #include <vector>
@@ -28,7 +27,7 @@ class OtSubProcess {
 public:
 	// start a specified subprocess with parameters
 	void start(
-		const std::filesystem::path& path,
+		const std::string& path,
 		const std::vector<std::string>& arguments,
 		std::function<void(int64_t status, int signal)> onExit,
 		std::function<void(const std::string& text)> onStdout,

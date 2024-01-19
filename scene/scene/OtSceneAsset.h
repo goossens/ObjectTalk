@@ -26,7 +26,7 @@
 class OtSceneAsset : public OtAssetBase {
 public:
 	// load the asset
-	bool load(const std::filesystem::path& path) override;
+	bool load(const std::string& path) override;
 
 	// access the scene
 	inline OtScene* getScene() { return scene.get(); }

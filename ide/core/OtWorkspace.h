@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include <filesystem>
 #include <memory>
 #include <string>
 
@@ -44,7 +43,7 @@ public:
 
 	// open a file
 	void openFile();
-	void openFile(const std::filesystem::path& filename);
+	void openFile(const std::string& filename);
 
 	// save content of active file/editor
 	void saveFile();
@@ -60,7 +59,7 @@ public:
 	void deleteEditor(std::shared_ptr<OtEditor> editor);
 
 	// find a named editor
-	std::shared_ptr<OtEditor> findEditor(const std::filesystem::path& filename);
+	std::shared_ptr<OtEditor> findEditor(const std::string& filename);
 
 	// make a specified editor active
 	void activateEditor(std::shared_ptr<OtEditor> editor);
@@ -76,7 +75,7 @@ private:
 	std::string getUntitledName();
 
 	// get executable path
-	std::filesystem::path getExecutablePath();
+	std::string getExecutablePath();
 
 	// highlight error in editor after subprocess run
 	void highlightError();
@@ -122,7 +121,7 @@ private:
 
 	// stuff to run things and show the console
 	OtSubProcess subprocess;
-	std::filesystem::path currentRunnable;
+	std::string currentRunnable;
 	std::string exceptionAsJson;
 	bool partialException = false;
 

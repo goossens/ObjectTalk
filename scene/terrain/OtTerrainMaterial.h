@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include <filesystem>
+#include <string>
 
 #include "nlohmann/json_fwd.hpp"
 
@@ -30,8 +30,8 @@ public:
 	bool renderUI();
 
 	// (de)serialize material
-	nlohmann::json serialize(std::filesystem::path* basedir);
-	void deserialize(nlohmann::json data, std::filesystem::path* basedir);
+	nlohmann::json serialize(std::string* basedir);
+	void deserialize(nlohmann::json data, std::string* basedir);
 
 	// stored properties
 	glm::vec3 region1Color = glm::vec3(0.965f, 0.894f, 0.678f);

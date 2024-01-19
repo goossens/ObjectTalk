@@ -12,10 +12,11 @@
 //	Include files
 //
 
-#include <filesystem>
 #include <string>
 
 #include "OtException.h"
+
+#include "OtPathTools.h"
 
 
 //
@@ -40,12 +41,11 @@ public:
 
 	// get the properties
 	virtual inline std::string getFileExtension() { return ""; }
-	inline std::filesystem::path getFilePath() { return path; }
-	inline std::string getFileName() { return path.string(); }
-	inline std::string getShortName() { return path.filename().string(); }
+	inline std::string getFilePath() { return path; }
+	inline std::string getShortName() { return OtPathGetFilename(path); }
 
 	// get the properties
-	void setFilePath(const std::filesystem::path& path);
+	void setFilePath(const std::string& path);
 
 	// get editor status
 	virtual inline bool isDirty() { return false; }
@@ -62,5 +62,5 @@ protected:
 	void renderCommonViewMenuItems();
 
 	// properties
-	std::filesystem::path path;
+	std::string path;
 };

@@ -18,7 +18,7 @@
 //	OtGraphLinkClass::serialize
 //
 
-nlohmann::json OtGraphLinkClass::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtGraphLinkClass::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["id"] = id;
 	data["from"] = from->id;

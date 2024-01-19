@@ -20,6 +20,7 @@
 #include "imgui_internal.h"
 #include "ImGuiFileDialog.h"
 
+#include "OtPathTools.h"
 #include "OtUi.h"
 
 
@@ -169,9 +170,9 @@ bool OtUiEditVec4(const char* label, glm::vec4& vector, float speed, float minv,
 
 bool OtUiFileSelector(
 	const char* label,
-	std::filesystem::path& path,
-	std::function<void(std::filesystem::path& path)> create,
-	std::function<void(std::filesystem::path& path)> edit) {
+	std::string& path,
+	std::function<void(std::string& path)> create,
+	std::function<void(std::string& path)> edit) {
 
 	// determine number of buttons
 	int buttons =
@@ -196,7 +197,7 @@ bool OtUiFileSelector(
 	static bool creating = false;
 
 	// render path as a button
-	auto filename = path.filename().string();
+	auto filename = OtPathGetFilename(path);
 	ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2(0.0f, 0.5f));
 
 	if (ImGui::Button((filename + "##path").c_str(), ImVec2(pathWidth, itemHeight))) {
@@ -204,7 +205,7 @@ bool OtUiFileSelector(
 			dialogID.c_str(),
 			"Select file...",
 			".*",
-			path.string(),
+			path,
 			1,
 			nullptr,
 			ImGuiFileDialogFlags_Modal |
@@ -229,12 +230,6 @@ bool OtUiFileSelector(
 		ImGui::SameLine(0.0f, spacing);
 
 		if (ImGui::Button("+", ImVec2(itemHeight, itemHeight))) {
-			auto directory = path.parent_path();
-
-			if (directory.empty()) {
-				directory = std::filesystem::current_path();
-			}
-
 			ImGuiFileDialog::Instance()->OpenDialog(
 				dialogID.c_str(),
 				"Create file...",
@@ -272,7 +267,7 @@ bool OtUiFileSelector(
 	if (dialog->Display(dialogID.c_str(), ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
 		if (dialog->IsOk()) {
 			path = ImGuiFileDialog::Instance()->GetFilePathName();
-			std::filesystem::current_path(std::filesystem::path(path).parent_path());
+			OtPathChangeDirectory(OtPathGetParent(path));
 			changed = true;
 
 			if (creating) {

@@ -69,7 +69,7 @@ OtSphericalCubeGeometryClass::OtSphericalCubeGeometryClass() {
 //	OtSphericalCubeGeometryClass::serialize
 //
 
-nlohmann::json OtSphericalCubeGeometryClass::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtSphericalCubeGeometryClass::serialize(std::string* basedir) {
 	auto data = OtPolyhedronGeometryClass::serialize(basedir);
 	data["type"] = name;
 	return data;

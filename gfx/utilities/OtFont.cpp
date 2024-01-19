@@ -9,7 +9,6 @@
 //	Include files
 //
 
-#include <filesystem>
 #include <fstream>
 
 #include "OtCodePoint.h"
@@ -17,6 +16,7 @@
 #include "OtFunction.h"
 
 #include "OtFont.h"
+#include "OtPathTools.h"
 
 
 //
@@ -65,7 +65,7 @@ void OtFontClass::init(size_t count, OtObject* parameters) {
 //	OtFontClass::setFont
 //
 
-OtObject OtFontClass::setFont(const std::string& file) {
+OtObject OtFontClass::setFont(const std::string& path) {
 	// cleanup if required
 	if (data) {
 		delete [] data;
@@ -73,25 +73,23 @@ OtObject OtFontClass::setFont(const std::string& file) {
 	}
 
 	// load font file into memory
-	auto filename = file.c_str();
-
-	if (!std::filesystem::exists(filename) || !std::filesystem::is_regular_file(filename)) {
-		OtError("Can't open font in [%s]", filename);
+	if (!OtPathExists(path) || !OtPathIsRegularFile(path)) {
+		OtError("Can't open font in [%s]", path.c_str());
 	}
 
-	auto filesize = std::filesystem::file_size(filename);
+	auto filesize = OtPathGetFileSize(path);
 	data = new uint8_t[filesize];
-	std::ifstream stream(filename, std::ios::binary);
+	std::ifstream stream(path.c_str(), std::ios::binary);
 	stream.read((char*) data, filesize);
 
 	if (!stream) {
 		delete [] data;
-		OtError("Can't open font in [%s]", filename);
+		OtError("Can't open font in [%s]", path.c_str());
 	}
 
 	// prepare font
 	if (!stbtt_InitFont(&font, data, 0)) {
-		OtError("Can't process font [%s]", filename);
+		OtError("Can't process font [%s]", path.c_str());
 	}
 
 	return OtObject(this);

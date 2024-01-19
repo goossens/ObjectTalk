@@ -36,7 +36,7 @@ bool OtCameraComponent::renderUI() {
 //	OtCameraComponent::serialize
 //
 
-nlohmann::json OtCameraComponent::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtCameraComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
 	data["mainCamera"] = mainCamera;
@@ -51,7 +51,7 @@ nlohmann::json OtCameraComponent::serialize(std::filesystem::path* basedir) {
 //	OtCameraComponent::deserialize
 //
 
-void OtCameraComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+void OtCameraComponent::deserialize(nlohmann::json data, std::string* basedir) {
 	mainCamera = data.value("mainCamera", false);
 	fov = data.value("fov", 60.0f);
 	nearPlane = data.value("near", 0.1f);

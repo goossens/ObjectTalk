@@ -71,7 +71,7 @@ bool OtGeometryComponent::renderUI() {
 //	OtGeometryComponent::serialize
 //
 
-nlohmann::json OtGeometryComponent::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtGeometryComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
 	data["wireframe"] = wireframe;
@@ -86,7 +86,7 @@ nlohmann::json OtGeometryComponent::serialize(std::filesystem::path* basedir) {
 //	OtGeometryComponent::deserialize
 //
 
-void OtGeometryComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+void OtGeometryComponent::deserialize(nlohmann::json data, std::string* basedir) {
 	wireframe = data.value("wireframe", false);
 	transparent = data.value("transparent", false);
 	cullback = data.value("cullback", true);

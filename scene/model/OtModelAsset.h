@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include <filesystem>
+#include <string>
 #include <vector>
 
 #include "OtAsset.h"
@@ -28,7 +28,7 @@
 class OtModelAsset : public OtAssetBase {
 public:
 	// load the model
-	bool load(const std::filesystem::path& path) override;
+	bool load(const std::string& path) override;
 
 	// access the meshes and materials
 	inline std::vector<OtModelMesh>& getMeshes() { return meshes; }

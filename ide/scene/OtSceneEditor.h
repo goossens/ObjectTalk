@@ -12,8 +12,8 @@
 //	Include files
 //
 
-#include <filesystem>
 #include <memory>
+#include <string>
 
 #include "glm/glm.hpp"
 #include "ImGuizmo.h"
@@ -52,7 +52,7 @@ public:
 	void duplicateEntity();
 
 	// create a new object
-	static std::shared_ptr<OtSceneEditor> create(const std::filesystem::path& path);
+	static std::shared_ptr<OtSceneEditor> create(const std::string& path);
 
 private:
 	// switch scene camera

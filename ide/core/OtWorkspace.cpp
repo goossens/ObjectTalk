@@ -10,7 +10,7 @@
 //
 
 #include <algorithm>
-#include <filesystem>
+#include <string>
 
 #include "imgui.h"
 #include "ImGuiFileDialog.h"
@@ -18,6 +18,7 @@
 #include "OtFormat.h"
 
 #include "OtMessageBus.h"
+#include "OtPathTools.h"
 #include "OtUi.h"
 
 #include "OtGraphEditor.h"
@@ -33,11 +34,11 @@
 void OtWorkspace::onSetup() {
 	// set the current directory to examples if we are in development mode
 	auto exec = getExecutablePath();
-	auto root = exec.parent_path().parent_path();
-	auto examples = root.parent_path() / "examples";
+	auto root = OtPathGetParent(OtPathGetParent(OtPathGetParent(exec)));
+	auto examples = OtPathJoin(root, "examples");
 
-	if (std::filesystem::is_directory(examples)) {
-		std::filesystem::current_path(examples);
+	if (OtPathIsDirectory(examples)) {
+		OtPathChangeDirectory(examples);
 	}
 
 	// listen for message bus events
@@ -61,7 +62,7 @@ void OtWorkspace::onMessage(const std::string& message) {
 
 		// process each command
 		if (command == "open") {
-			openFile(std::filesystem::path(file));
+			openFile(file);
 		}
 
 	} else {
@@ -246,7 +247,7 @@ void OtWorkspace::openFile() {
 		"workspace-open",
 		"Select File to Open...",
 		".*",
-		std::filesystem::current_path().string(),
+		OtPathGetCurrentWorkingDirectory(),
 		1,
 		nullptr,
 		ImGuiFileDialogFlags_Modal |
@@ -261,13 +262,13 @@ void OtWorkspace::openFile() {
 //	OtWorkspace::openFile
 //
 
-void OtWorkspace::openFile(const std::filesystem::path& path) {
+void OtWorkspace::openFile(const std::string& path) {
 	std::shared_ptr<OtEditor> editor;
 
 	// don't reopen if it is already open
 	if ((editor = findEditor(path)) == nullptr) {
 		// get file extension to determine editor type
-		auto extension = path.extension();
+		auto extension = OtPathGetExtension(path);
 
 		// open correct editor
 		if (extension == ".ot") {
@@ -288,7 +289,7 @@ void OtWorkspace::openFile(const std::filesystem::path& path) {
 
 		} else {
 			state = confirmErrorState;
-			errorMessage = OtFormat("Can't open file with extension: %s", extension.string().c_str());
+			errorMessage = OtFormat("Can't open file with extension: %s", extension.c_str());
 		}
 
 	} else {
@@ -316,7 +317,7 @@ void OtWorkspace::saveAsFile() {
 		"workspace-saveas",
 		"Save File as...",
 		activeEditor->getFileExtension().c_str(),
-		std::filesystem::current_path().string(),
+		OtPathGetCurrentWorkingDirectory(),
 		activeEditor->getShortName(),
 		1,
 		nullptr,
@@ -363,8 +364,8 @@ void OtWorkspace::runFile() {
 	// compose the argument array
 	std::vector<std::string> args;
 	args.push_back("--child");
-	currentRunnable = activeEditor->getFileName();
-	args.push_back(currentRunnable.string());
+	currentRunnable = activeEditor->getFilePath();
+	args.push_back(currentRunnable);
 
 	// launch a subprocess
 	subprocess.start(
@@ -372,7 +373,7 @@ void OtWorkspace::runFile() {
 		args,
 		[this](int64_t status, int signal) {
 			if (status || signal != 0) {
-				console.writeError(OtFormat("\n[%s] terminated with status %d and signal %d", currentRunnable.string().c_str(), status, signal));
+				console.writeError(OtFormat("\n[%s] terminated with status %d and signal %d", currentRunnable.c_str(), status, signal));
 
 				// highlight error (if required)
 				if (exceptionAsJson.size()) {
@@ -383,10 +384,10 @@ void OtWorkspace::runFile() {
 				}
 
 			} else {
-				console.writeHelp(OtFormat("\n[%s] terminated normally", currentRunnable.string().c_str()));
+				console.writeHelp(OtFormat("\n[%s] terminated normally", currentRunnable.c_str()));
 
 				// hide console after running a scene (user can always bring it back)
-				if (currentRunnable.extension() == ".ots") {
+				if (OtPathGetExtension(currentRunnable) == ".ots") {
 						consoleFullScreen = false;
 				}
 			}
@@ -469,9 +470,9 @@ void OtWorkspace::deleteEditor(std::shared_ptr<OtEditor> editor) {
 //	OtWorkspace::findEditor
 //
 
-std::shared_ptr<OtEditor> OtWorkspace::findEditor(const std::filesystem::path& path) {
+std::shared_ptr<OtEditor> OtWorkspace::findEditor(const std::string& path) {
 	for (auto& editor : editors) {
-		if (editor->getFileName() == path.string() || editor->getShortName() == path.string()) {
+		if (editor->getFilePath() == path || editor->getShortName() == path) {
 			return editor;
 		}
 	}
@@ -676,7 +677,7 @@ void OtWorkspace::renderFileOpen() {
 				state = editState;
 			}
 
-			std::filesystem::current_path(std::filesystem::path(path).parent_path());
+			OtPathChangeDirectory(OtPathGetParent(path));
 
 		} else {
 			state = editors.size() ? editState : splashState;
@@ -706,7 +707,7 @@ void OtWorkspace::renderSaveAs() {
 			activeEditor->save();
 			state = editState;
 
-			std::filesystem::current_path(std::filesystem::path(path).parent_path());
+			OtPathChangeDirectory(OtPathGetParent(path));
 
 		} else {
 			state = editors.size() ? editState : splashState;
@@ -823,7 +824,7 @@ void OtWorkspace::renderSubProcess() {
 		ImGuiWindowFlags_NoBringToFrontOnFocus);
 
 	// render the subprocess control bar
-	std::string title = OtFormat("Runnning [%s]...", currentRunnable.string().c_str());
+	std::string title = OtFormat("Runnning [%s]...", currentRunnable.c_str());
 	ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "%s", title.c_str());
 	ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - 150.0f);
 
@@ -854,14 +855,14 @@ void OtWorkspace::renderSubProcess() {
 //	OtWorkspace::getExecutablePath
 //
 
-std::filesystem::path OtWorkspace::getExecutablePath() {
+std::string OtWorkspace::getExecutablePath() {
 	// figure out where we live
 	char buffer[1024];
 	size_t length = 1024;
 	auto status = uv_exepath(buffer, &length);
 	UV_CHECK_ERROR("uv_exepath", status);
 	buffer[length] = 0;
-	return std::filesystem::canonical(std::filesystem::path(buffer));
+	return buffer;
 }
 
 
@@ -875,9 +876,9 @@ void OtWorkspace::highlightError() {
 	exception.deserialize(exceptionAsJson);
 
 	// see if the module is a valid ObjectTalk file
-	auto module = std::filesystem::path(exception.getModule());
+	auto module = exception.getModule();
 
-	if (std::filesystem::is_regular_file(module) && module.extension() == ".ot") {
+	if (OtPathIsRegularFile(module) && OtPathGetExtension(module) == ".ot") {
 		// see of this file is already open in the IDE
 		auto editor = findEditor(module);
 

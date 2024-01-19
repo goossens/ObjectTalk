@@ -11,98 +11,8 @@
 
 #include "imgui.h"
 
-#include "OtFormat.h"
-
-#include "OtTexture.h"
-
 #include "OtGraphNode.h"
 #include "OtOutputNodes.h"
-
-
-//
-//	OtGraphNodeFloatOutput
-//
-
-class OtGraphNodeFloatOutput : public OtGraphNodeClass {
-public:
-	// constructor
-	inline OtGraphNodeFloatOutput() : OtGraphNodeClass(name, OtGraphNodeClass::output) {}
-
-	// configure node
-	inline void configure() override {
-		auto pin = addInputPin("Value", value);
-
-		pin->addRenderer([&] () {
-			ImGui::SetNextItemWidth(fieldWidth);
-			ImGui::InputFloat("##value", &value, 0.0f, 0.0f, "%.3f", ImGuiInputTextFlags_ReadOnly);
-		}, fieldWidth);
-	}
-
-	static constexpr const char* name = "Float Output";
-	static constexpr float fieldWidth = 120.0f;
-
-protected:
-	float value = 0.0f;
-};
-
-
-//
-//	OtGraphNodeImageOutput
-//
-
-class OtGraphNodeImageOutput : public OtGraphNodeClass {
-public:
-	// constructor
-	inline OtGraphNodeImageOutput() : OtGraphNodeClass(name, OtGraphNodeClass::output) {}
-
-	// configure node
-	inline void configure() override {
-		auto pin = addInputPin("Image", texture);
-
-		pin->addRenderer([&] () {
-			if (ImGui::Button(showImage ? "Hide Image" : "Show Image", ImVec2(fieldWidth, 0.0f))) {
-				showImage = !showImage;
-			}
-
-			if (showImage) {
-				auto flags =
-					ImGuiWindowFlags_NoTitleBar |
-					ImGuiWindowFlags_NoCollapse |
-					ImGuiWindowFlags_AlwaysAutoResize;
-
-				auto id = OtFormat("%p", (void*) this);
-				ImGui::SetNextWindowPos(ImGui::GetCursorScreenPos(), ImGuiCond_FirstUseEver);
-				ImGui::PushID(this);
-				ImGui::Begin(id.c_str(), nullptr, flags);
-
-				if (texture.isValid()) {
-					auto w = texture.getWidth();
-					auto h = texture.getHeight();
-
-					while (w > 256.0f || h > 256.0f) {
-						w /= 2.0f;
-						h /= 2.0f;
-					}
-
-					ImGui::Image((void*)(intptr_t) texture.getTextureIndex(), ImVec2(w, h));
-
-				} else {
-					ImGui::TextUnformatted("No Image available");
-				}
-
-				ImGui::End();
-				ImGui::PopID();
-			}
-		}, fieldWidth);
-	}
-
-	static constexpr const char* name = "Image Output";
-	static constexpr float fieldWidth = 120.0f;
-
-protected:
-	OtTexture texture;
-	bool showImage = false;
-};
 
 
 //
@@ -113,6 +23,5 @@ protected:
 	graph.registerNodeType<CLASS>("Output", CLASS::name)
 
 void OtOutputNodesRegister(OtGraph& graph) {
-	REGISTER(OtGraphNodeFloatOutput);
-	REGISTER(OtGraphNodeImageOutput);
+//	REGISTER(OtGraphNodeFloatOutput);
 }

@@ -13,7 +13,7 @@
 //
 
 
-#include <filesystem>
+#include <string>
 
 #include "assimp/material.h"
 
@@ -33,7 +33,7 @@ public:
 	void clear();
 
 	// load the material
-	void load(const aiMaterial* material, const std::filesystem::path& dir);
+	void load(const aiMaterial* material, const std::string& dir);
 
 	// see if material is valid
 	inline bool isValid() { return valid; }

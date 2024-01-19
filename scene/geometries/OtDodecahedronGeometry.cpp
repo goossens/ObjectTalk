@@ -121,7 +121,7 @@ bool OtDodecahedronGeometryClass::renderUI() {
 //	OtDodecahedronGeometryClass::serialize
 //
 
-nlohmann::json OtDodecahedronGeometryClass::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtDodecahedronGeometryClass::serialize(std::string* basedir) {
 	auto data = OtPolyhedronGeometryClass::serialize(basedir);
 	data["type"] = name;
 	return data;

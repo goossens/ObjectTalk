@@ -29,7 +29,7 @@
 //	OtSceneRuntime::setup
 //
 
-void OtSceneRuntime::setup(std::filesystem::path path) {
+void OtSceneRuntime::setup(std::string path) {
 	// start loading the scene and create a renderer
 	sceneAsset = path;
 	renderer = std::make_unique<OtSceneRenderer>();
@@ -158,6 +158,6 @@ void OtSceneRuntime::initializeRenderingSystem() {
 		activeCamera = firstCamera;
 
 	} else {
-		OtLogFatal(OtFormat("No camera found in scene at [%s]", sceneAsset.getPath().string().c_str()));
+		OtLogFatal(OtFormat("No camera found in scene at [%s]", sceneAsset.getPath().c_str()));
 	}
 }

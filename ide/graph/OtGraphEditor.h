@@ -56,7 +56,7 @@ public:
 	void duplicateSelectedNodes();
 
 	// create a new object
-	static std::shared_ptr<OtGraphEditor> create(const std::filesystem::path& path);
+	static std::shared_ptr<OtGraphEditor> create(const std::string& path);
 
 private:
 	// the graph being edited and the editor's UI

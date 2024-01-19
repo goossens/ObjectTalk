@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include <filesystem>
+#include <string>
 
 #include "TextEditor.h"
 
@@ -43,7 +43,7 @@ public:
 	void clearError();
 
 	// create a new object
-	static std::shared_ptr<OtObjectTalkEditor> create(const std::filesystem::path& path);
+	static std::shared_ptr<OtObjectTalkEditor> create(const std::string& path);
 
 private:
 	// render the parts

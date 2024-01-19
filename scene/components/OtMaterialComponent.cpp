@@ -82,7 +82,7 @@ bool OtMaterialComponent::renderUI() {
 //	OtMaterialComponent::serialize
 //
 
-nlohmann::json OtMaterialComponent::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtMaterialComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
 	data["material"] = material->serialize(basedir);
@@ -94,7 +94,7 @@ nlohmann::json OtMaterialComponent::serialize(std::filesystem::path* basedir) {
 //	OtMaterialComponent::deserialize
 //
 
-void OtMaterialComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+void OtMaterialComponent::deserialize(nlohmann::json data, std::string* basedir) {
 	if (data.contains("material") && data["material"].contains("type")) {
 		createMaterial(data["material"]["type"]);
 		material->deserialize(data["material"], basedir);

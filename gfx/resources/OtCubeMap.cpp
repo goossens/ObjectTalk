@@ -19,14 +19,15 @@
 
 #include "OtCubeMap.h"
 #include "OtImage.h"
+#include "OtPathTools.h"
 
 
 //
 //	OtCubeMap::load
 //
 
-void OtCubeMap::load(const std::filesystem::path& path) {
-	auto ext = path.extension();
+void OtCubeMap::load(const std::string& path) {
+	auto ext = OtPathGetExtension(path);
 
 	if (ext == ".cubemap") {
 		loadJSON(path);
@@ -38,62 +39,40 @@ void OtCubeMap::load(const std::filesystem::path& path) {
 
 
 //
-//	getPath
-//
-
-static inline std::filesystem::path getPath(nlohmann::json data, const char* field, const std::filesystem::path& basedir) {
-	// make a path absolute based on a provided base directory
-	if (data.contains(field)) {
-		std::string value = data[field];
-
-		if (value.size()) {
-			return basedir / std::filesystem::path(value);
-
-		} else {
-			return std::filesystem::path();
-		}
-
-	} else {
-		return std::filesystem::path();
-	}
-}
-
-
-//
 //	OtCubeMap::loadJSON
 //
 
-void OtCubeMap::loadJSON(const std::filesystem::path& path) {
+void OtCubeMap::loadJSON(const std::string& path) {
 	// load cubemap definition from file
 	std::stringstream buffer;
 
 	try {
-		std::ifstream stream(path.string().c_str());
+		std::ifstream stream(path.c_str());
 
 		if (stream.fail()) {
-			OtError("Can't read from file [%s]", path.string().c_str());
+			OtError("Can't read from file [%s]", path.c_str());
 		}
 
 		buffer << stream.rdbuf();
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtError("Can't read from file [%s], error: %s", path.string().c_str(), e.what());
+		OtError("Can't read from file [%s], error: %s", path.c_str(), e.what());
 	}
 
 	// parse json
-	auto basedir = path.parent_path();
+	auto basedir = OtPathGetParent(path);
 	auto data = nlohmann::json::parse(buffer.str());
 
-	auto negx = getPath(data, "negx", basedir);
-	auto negy = getPath(data, "negy", basedir);
-	auto negz = getPath(data, "negz", basedir);
-	auto posx = getPath(data, "posx", basedir);
-	auto posy = getPath(data, "posy", basedir);
-	auto posz = getPath(data, "posz", basedir);
+	auto negx = OtPathGetAbsolute(data, "negx", &basedir);
+	auto negy = OtPathGetAbsolute(data, "negy", &basedir);
+	auto negz = OtPathGetAbsolute(data, "negz", &basedir);
+	auto posx = OtPathGetAbsolute(data, "posx", &basedir);
+	auto posy = OtPathGetAbsolute(data, "posy", &basedir);
+	auto posz = OtPathGetAbsolute(data, "posz", &basedir);
 
 	if (negx.empty() || negy.empty() || negz.empty() || posx.empty() || posy.empty() || posz.empty()) {
-		OtError("Incomplete CubeMap specification in [%s]", path.string().c_str());
+		OtError("Incomplete CubeMap specification in [%s]", path.c_str());
 	}
 
 	// load first side
@@ -167,7 +146,7 @@ void OtCubeMap::loadJSON(const std::filesystem::path& path) {
 //	OtCubeMap::loadCubemapImage
 //
 
-void OtCubeMap::loadCubemapImage(const std::filesystem::path& path) {
+void OtCubeMap::loadCubemapImage(const std::string& path) {
 	// load image
 	OtImage image;
 	image.load(path, true, true);
@@ -175,7 +154,7 @@ void OtCubeMap::loadCubemapImage(const std::filesystem::path& path) {
 
 	// sanity check
 	if (!container->m_cubeMap) {
-		OtError("Image [%s] is not a Cube Map", path.string().c_str());
+		OtError("Image [%s] is not a Cube Map", path.c_str());
 	}
 
 	// create a new cubemap

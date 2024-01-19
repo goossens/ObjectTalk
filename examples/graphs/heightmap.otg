@@ -37,11 +37,6 @@
 		},
 		{
 			"from": 4243123040,
-			"id": 3089266074,
-			"to": 217555214
-		},
-		{
-			"from": 4243123040,
 			"id": 148500638,
 			"to": 2817761390
 		},
@@ -59,6 +54,11 @@
 			"from": 3035146654,
 			"id": 2646532601,
 			"to": 4019633566
+		},
+		{
+			"from": 4243123040,
+			"id": 3089266074,
+			"to": 217555214
 		}
 	],
 	"metadata": {},
@@ -221,9 +221,9 @@
 				}
 			],
 			"outputs": [],
-			"title": "Image Output",
-			"type": "Image Output",
-			"x": 488.0,
+			"title": "Image Probe",
+			"type": "Image Probe",
+			"x": 483.0,
 			"y": 215.0
 		},
 		{
@@ -244,8 +244,8 @@
 			],
 			"title": "Seamless Tiler",
 			"type": "Seamless Tiler",
-			"x": 555.0,
-			"y": 102.0
+			"x": 532.0,
+			"y": 105.0
 		},
 		{
 			"id": 2039127696,
@@ -265,8 +265,8 @@
 			],
 			"title": "HeightMap to NormalMap",
 			"type": "HeightMap to NormalMap",
-			"x": 792.0,
-			"y": 78.0
+			"x": 721.0,
+			"y": 81.0
 		},
 		{
 			"id": 4016356840,
@@ -278,10 +278,10 @@
 				}
 			],
 			"outputs": [],
-			"title": "Image Output",
-			"type": "Image Output",
-			"x": 1044.0,
-			"y": 211.0
+			"title": "Image Probe",
+			"type": "Image Probe",
+			"x": 962.0,
+			"y": 215.0
 		},
 		{
 			"id": 251467935,
@@ -293,10 +293,10 @@
 				}
 			],
 			"outputs": [],
-			"title": "Image Output",
-			"type": "Image Output",
-			"x": 769.0,
-			"y": 213.0
+			"title": "Image Probe",
+			"type": "Image Probe",
+			"x": 730.0,
+			"y": 215.0
 		}
 	]
 }

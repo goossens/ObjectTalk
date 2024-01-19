@@ -29,7 +29,7 @@ static OtAssetFactoryRegister<OtSceneAsset> otsRegistration{".ots"};
 //	OtSceneAsset::load
 //
 
-bool OtSceneAsset::load(const std::filesystem::path& path) {
+bool OtSceneAsset::load(const std::string& path) {
 	try {
 		// create and load the scene
 		scene = std::make_unique<OtScene>();
@@ -37,7 +37,7 @@ bool OtSceneAsset::load(const std::filesystem::path& path) {
 		return true;
 
 	} catch (const OtException& exception) {
-		OtLogWarning(OtFormat("Can't load scene [%s]: %s", path.string().c_str(), exception.what()));
+		OtLogWarning(OtFormat("Can't load scene [%s]: %s", path.c_str(), exception.what()));
 		return false;
 	}
 }

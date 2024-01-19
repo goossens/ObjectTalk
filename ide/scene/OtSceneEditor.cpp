@@ -941,7 +941,7 @@ void OtSceneEditor::duplicateEntity() {
 //	OtSceneEditor::create
 //
 
-std::shared_ptr<OtSceneEditor> OtSceneEditor::create(const std::filesystem::path& path) {
+std::shared_ptr<OtSceneEditor> OtSceneEditor::create(const std::string& path) {
 	std::shared_ptr<OtSceneEditor> editor = std::make_shared<OtSceneEditor>();
 	editor->setFilePath(path);
 

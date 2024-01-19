@@ -32,7 +32,7 @@ void OtModelGeometryClass::init(size_t count, OtObject* parameters) {
 	if (count) {
 		switch (count) {
 			case 1:
-				modelPath = std::filesystem::path(parameters[0]->operator std::string());
+				modelPath = parameters[0]->operator std::string();
 				break;
 
 			default:
@@ -49,7 +49,7 @@ void OtModelGeometryClass::init(size_t count, OtObject* parameters) {
 //
 
 OtObject OtModelGeometryClass::setModel(const std::string& name) {
-	modelPath = std::filesystem::path(name);
+	modelPath = name;
 	refreshGeometry = true;
 	return OtObject(this);
 }
@@ -69,7 +69,7 @@ static inline glm::vec3 ToVec3(const aiVector3D& v) {
 
 void OtModelGeometryClass::fillGeometry() {
 	// do we have a valid file?
-	if (std::filesystem::is_regular_file(modelPath)) {
+	if (OtPathIsRegularFile(modelPath)) {
 		// create an asset importer
 		Assimp::Importer importer;
 
@@ -81,16 +81,16 @@ void OtModelGeometryClass::fillGeometry() {
 			aiProcess_FlipUVs;
 
 		// read the model file
-		const aiScene* scene = importer.ReadFile(modelPath.string(), flags);
+		const aiScene* scene = importer.ReadFile(modelPath, flags);
 
 		// ensure model was loaded correctly
 		if (scene == nullptr) {
-			OtError("Unable to load model [%s], error: %s", modelPath.string().c_str(), importer.GetErrorString());
+			OtError("Unable to load model [%s], error: %s", modelPath.c_str(), importer.GetErrorString());
 		}
 
 		// ensure scene is complete
 		if (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) {
-			OtError("Incomplete model [%s]", modelPath.string().c_str());
+			OtError("Incomplete model [%s]", modelPath.c_str());
 		}
 
 		// load all the meshes
@@ -159,10 +159,10 @@ bool OtModelGeometryClass::renderUI() {
 //	OtModelGeometryClass::serialize
 //
 
-nlohmann::json OtModelGeometryClass::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtModelGeometryClass::serialize(std::string* basedir) {
 	auto data = OtGeometryClass::serialize(basedir);
 	data["type"] = name;
-	data["modelPath"] = OtPathGetRelative(modelPath, basedir);
+	data["modelPath"] = OtPathRelative(modelPath, basedir);
 	return data;
 }
 
@@ -171,7 +171,7 @@ nlohmann::json OtModelGeometryClass::serialize(std::filesystem::path* basedir) {
 //	OtModelGeometryClass::deserialize
 //
 
-void OtModelGeometryClass::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+void OtModelGeometryClass::deserialize(nlohmann::json data, std::string* basedir) {
 	modelPath = OtPathGetAbsolute(data, "modelPath", basedir);
 	refreshGeometry = true;
 }

@@ -12,8 +12,8 @@
 //	Include files
 //
 
-#include <filesystem>
 #include <memory>
+#include <string>
 
 #include "OtSceneAsset.h"
 #include "OtSceneRenderer.h"
@@ -26,7 +26,7 @@
 class OtSceneRuntime {
 public:
 	// setup the scene runtime
-	void setup(std::filesystem::path path);
+	void setup(std::string path);
 
 	// are we ready
 	bool isReady();

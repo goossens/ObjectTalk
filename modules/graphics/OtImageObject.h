@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include <filesystem>
 #include <string>
 
 #include "OtObject.h"
@@ -33,7 +32,7 @@ public:
 	void init(size_t count, OtObject* parameters);
 
 	// load image
-	void load(const std::filesystem::path& path, const std::string& format);
+	void load(const std::string& path, const std::string& format);
 
 	// get image information
 	size_t getWidth();

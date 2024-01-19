@@ -34,7 +34,7 @@ bool OtDirectionalLightComponent::renderUI() {
 //	OtDirectionalLightComponent::serialize
 //
 
-nlohmann::json OtDirectionalLightComponent::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtDirectionalLightComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
 	data["color"] = color;
@@ -47,7 +47,7 @@ nlohmann::json OtDirectionalLightComponent::serialize(std::filesystem::path* bas
 //	OtDirectionalLightComponent::deserialize
 //
 
-void OtDirectionalLightComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+void OtDirectionalLightComponent::deserialize(nlohmann::json data, std::string* basedir) {
 	color = data.value("color", glm::vec3(1.0f));
 	ambient = data.value("ambient", 0.05f);
 }

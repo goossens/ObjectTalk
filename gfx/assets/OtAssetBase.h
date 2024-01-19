@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include <filesystem>
+#include <string>
 
 
 //
@@ -21,11 +21,12 @@
 
 class OtAssetBase {
 public:
-	// destructor
+	// contructor/destructor
+	inline OtAssetBase(bool dv=false) : doesVirtual(dv) {}
 	virtual inline ~OtAssetBase() {}
 
 	// function to load the asset (to be implemented by derived classes)
-	virtual inline bool load(const std::filesystem::path& path) { return false; }
+	virtual inline bool load(const std::string& path) { return false; }
 
 	// get state
 	inline bool isNull() { return assetState == nullState; }
@@ -35,12 +36,15 @@ public:
 	inline bool isInvalid() { return assetState == invalidState; }
 	inline bool isReady() { return assetState == readyState; }
 
+	// can we handle virtual paths
+	inline bool handlesVirtual() { return doesVirtual; }
+
 private:
 	// give the asset manager full access
 	friend class OtAssetManager;
 
 	// path to the asset
-	std::filesystem::path assetPath;
+	std::string assetPath;
 
 	// state of the asset
 	enum AssetState {
@@ -51,4 +55,7 @@ private:
 		invalidState,
 		readyState
 	} assetState = nullState;
+
+	// does this asset support virtual paths
+	bool doesVirtual;
 };

@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include <filesystem>
 #include <string>
 
 #include "glm/glm.hpp"
@@ -66,18 +65,18 @@
 class OtScene : public OtEcs {
 public:
 	// load and save scene
-	void load(const std::filesystem::path& path, nlohmann::json* metadata=nullptr);
-	void save(const std::filesystem::path& path, nlohmann::json* metadata=nullptr);
+	void load(const std::string& path, nlohmann::json* metadata=nullptr);
+	void save(const std::string& path, nlohmann::json* metadata=nullptr);
 
 	// (de)serialize entiry from/to string
-	std::string serializeEntity(OtEntity entity, int indent=-1, char character=' ', std::filesystem::path* basedir=nullptr);
-	OtEntity deserializeEntity(const std::string& data, std::filesystem::path* basedir=nullptr);
+	std::string serializeEntity(OtEntity entity, int indent=-1, char character=' ', std::string* basedir=nullptr);
+	OtEntity deserializeEntity(const std::string& data, std::string* basedir=nullptr);
 
 	// get the composite worldspace transform for the specified entity
 	glm::mat4 getGlobalTransform(OtEntity entity);
 
 private:
 	// (de)serialize from/to JSON
-	nlohmann::json serializeEntityToJson(OtEntity entity, std::filesystem::path* basedir);
-	OtEntity deserializeEntityFromJson(nlohmann::json& data, std::filesystem::path* basedir);
+	nlohmann::json serializeEntityToJson(OtEntity entity, std::string* basedir);
+	OtEntity deserializeEntityFromJson(nlohmann::json& data, std::string* basedir);
 };

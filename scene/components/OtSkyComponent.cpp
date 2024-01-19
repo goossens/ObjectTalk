@@ -42,7 +42,7 @@ bool OtSkyComponent::renderUI() {
 //	OtSkyComponent::serialize
 //
 
-nlohmann::json OtSkyComponent::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtSkyComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
 	data["elevation"] = elevation;
@@ -61,7 +61,7 @@ nlohmann::json OtSkyComponent::serialize(std::filesystem::path* basedir) {
 //	OtSkyComponent::deserialize
 //
 
-void OtSkyComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+void OtSkyComponent::deserialize(nlohmann::json data, std::string* basedir) {
 	elevation = data.value("elevation", 10.0f);
 	azimuth = data.value("azimuth", 180.0f);
 	rayleighCoefficient = data.value("rayleighCoefficient", 3.5f);

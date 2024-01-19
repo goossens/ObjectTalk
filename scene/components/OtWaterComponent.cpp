@@ -67,14 +67,14 @@ bool OtWaterComponent::renderUI() {
 //	OtWaterComponent::serialize
 //
 
-nlohmann::json OtWaterComponent::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtWaterComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
 	data["level"] = level;
 	data["distance"] = distance;
 	data["useRefractance"] = useRefractance;
 	data["color"] = color;
-	data["normals"] = OtPathGetRelative(normals.getPath(), basedir);
+	data["normals"] = OtPathRelative(normals.getPath(), basedir);
 	data["scale"] = scale;
 	data["speed"] = speed;
 	data["metallic"] = metallic;
@@ -89,7 +89,7 @@ nlohmann::json OtWaterComponent::serialize(std::filesystem::path* basedir) {
 //	OtWaterComponent::deserialize
 //
 
-void OtWaterComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+void OtWaterComponent::deserialize(nlohmann::json data, std::string* basedir) {
 	level = data.value("level", 0.0f);
 	distance = data.value("distance", 100.0f);
 	useRefractance = data.value("useRefractance", true);

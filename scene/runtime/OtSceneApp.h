@@ -12,8 +12,8 @@
 //	Include files
 //
 
-#include <filesystem>
 #include <memory>
+#include <string>
 
 #include "OtFrameworkApp.h"
 #include "OtLogo.h"
@@ -28,7 +28,7 @@
 class OtSceneApp : public OtSceneRuntime, public OtFrameworkApp {
 public:
 	// constructor
-	OtSceneApp(std::filesystem::path path) : scenePath(path) {}
+	OtSceneApp(std::string path) : scenePath(path) {}
 
 private:
 	// framework callbacks
@@ -41,7 +41,7 @@ private:
 	void renderViewPort();
 
 	// the scene we are running
-	std::filesystem::path scenePath;
+	std::string scenePath;
 
 	// the logo for the splash screen
 	std::shared_ptr<OtLogo> logo;

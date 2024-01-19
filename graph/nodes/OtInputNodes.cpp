@@ -52,11 +52,11 @@ public:
 	}
 
 	// (de)serialize input
-	void customSerialize(nlohmann::json* data, std::filesystem::path* basedir) override {
+	void customSerialize(nlohmann::json* data, std::string* basedir) override {
 		(*data)["value"] = value;
 	}
 
-	void customDeserialize(nlohmann::json* data, std::filesystem::path* basedir) override {
+	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
 		value = data->value("value", 0.);
 	}
 
@@ -99,11 +99,11 @@ public:
 	}
 
 	// (de)serialize input
-	void customSerialize(nlohmann::json* data, std::filesystem::path* basedir) override {
+	void customSerialize(nlohmann::json* data, std::string* basedir) override {
 		(*data)["value"] = value;
 	}
 
-	void customDeserialize(nlohmann::json* data, std::filesystem::path* basedir) override {
+	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
 		value = data->value("value", 0.0f);
 	}
 
@@ -156,11 +156,11 @@ public:
 	}
 
 	// (de)serialize input
-	void customSerialize(nlohmann::json* data, std::filesystem::path* basedir) override {
-		(*data)["image"] = OtPathGetRelative(asset.getPath(), basedir);
+	void customSerialize(nlohmann::json* data, std::string* basedir) override {
+		(*data)["image"] = OtPathRelative(asset.getPath(), basedir);
 	}
 
-	void customDeserialize(nlohmann::json* data, std::filesystem::path* basedir) override {
+	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
 		asset = OtPathGetAbsolute(*data, "image", basedir);
 
 		if (asset.isNull()) {

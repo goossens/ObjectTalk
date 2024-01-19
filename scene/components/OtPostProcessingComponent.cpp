@@ -34,7 +34,7 @@ bool OtPostProcessingComponent::renderUI() {
 //	OtPostProcessingComponent::serialize
 //
 
-nlohmann::json OtPostProcessingComponent::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtPostProcessingComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
 	data["bloomIntensity"] = bloomIntensity;
@@ -47,7 +47,7 @@ nlohmann::json OtPostProcessingComponent::serialize(std::filesystem::path* based
 //	OtPostProcessingComponent::deserialize
 //
 
-void OtPostProcessingComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+void OtPostProcessingComponent::deserialize(nlohmann::json data, std::string* basedir) {
 	bloomIntensity = data.value("bloomIntensity", 0.8f);
 	exposure = data.value("Exposure", 1.0f);
 }

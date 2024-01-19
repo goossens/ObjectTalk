@@ -20,7 +20,7 @@
 //	OtGraphNodeClass::serialize
 //
 
-nlohmann::json OtGraphNodeClass::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtGraphNodeClass::serialize(std::string* basedir) {
 	// serialize node data
 	auto data = nlohmann::json::object();
 	data["id"] = id;
@@ -55,7 +55,7 @@ nlohmann::json OtGraphNodeClass::serialize(std::filesystem::path* basedir) {
 //	OtGraphNodeClass::deserialize
 //
 
-void OtGraphNodeClass::deserialize(nlohmann::json data, bool restoreIDs, std::filesystem::path* basedir) {
+void OtGraphNodeClass::deserialize(nlohmann::json data, bool restoreIDs, std::string* basedir) {
 	// restore ID (if required)
 	if (restoreIDs) {
 		id = data["id"];
@@ -92,6 +92,7 @@ void OtGraphNodeClass::deserialize(nlohmann::json data, bool restoreIDs, std::fi
 
 	// set flags
 	needsEvaluating = true;
+	needsSizing = true;
 }
 
 
@@ -99,7 +100,7 @@ void OtGraphNodeClass::deserialize(nlohmann::json data, bool restoreIDs, std::fi
 //	OtGraphNodeClass::deserializeFromString
 //
 
-void OtGraphNodeClass::deserializeFromString(const std::string& json, bool restoreIDs, std::filesystem::path* basedir) {
+void OtGraphNodeClass::deserializeFromString(const std::string& json, bool restoreIDs, std::string* basedir) {
 	auto data = nlohmann::json::parse(json);
 	return deserialize(data, restoreIDs, basedir);
 }

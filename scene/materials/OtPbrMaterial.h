@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include <filesystem>
+#include <string>
 
 #include "glm/glm.hpp"
 #include "nlohmann/json_fwd.hpp"
@@ -36,8 +36,8 @@ public:
 	bool renderUI() override;
 
 	// (de)serialize material
-	nlohmann::json serialize(std::filesystem::path* basedir) override;
-	void deserialize(nlohmann::json data, std::filesystem::path* basedir) override;
+	nlohmann::json serialize(std::string* basedir) override;
+	void deserialize(nlohmann::json data, std::string* basedir) override;
 
 	// get type name of material
 	const char* getTypeName() override { return name; }
@@ -55,11 +55,11 @@ public:
 	void setAo(float a) { ao = a; }
 
 	// set the textures
-	void setAlbedoTexture(const std::filesystem::path& path) { albedoTexture = path; }
-	void setNormalTexture(const std::filesystem::path& path) { normalTexture = path; }
-	void setMetallicRoughnessTexture(const std::filesystem::path& path) { metallicRoughnessTexture = path; }
-	void setEmissiveTexture(const std::filesystem::path& path) { emissiveTexture = path; }
-	void setAoTexture(const std::filesystem::path& path) { aoTexture = path; }
+	void setAlbedoTexture(const std::string& path) { albedoTexture = path; }
+	void setNormalTexture(const std::string& path) { normalTexture = path; }
+	void setMetallicRoughnessTexture(const std::string& path) { metallicRoughnessTexture = path; }
+	void setEmissiveTexture(const std::string& path) { emissiveTexture = path; }
+	void setAoTexture(const std::string& path) { aoTexture = path; }
 
 	// get type definition
 	static OtType getMeta();

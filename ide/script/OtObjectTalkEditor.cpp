@@ -76,17 +76,17 @@ void OtObjectTalkEditor::load() {
 	std::stringstream buffer;
 
 	try {
-		std::ifstream stream(path.string().c_str());
+		std::ifstream stream(path.c_str());
 
 		if (stream.fail()) {
-			OtError("Can't read from file [%s]", path.string().c_str());
+			OtError("Can't read from file [%s]", path.c_str());
 		}
 
 		buffer << stream.rdbuf();
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtError("Can't read from file [%s], error: %s", path.string().c_str(), e.what());
+		OtError("Can't read from file [%s], error: %s", path.c_str(), e.what());
 	}
 
 	editor.SetText(buffer.str());
@@ -221,7 +221,7 @@ void OtObjectTalkEditor::clearError() {
 //	OtObjectTalkEditor::create
 //
 
-std::shared_ptr<OtObjectTalkEditor> OtObjectTalkEditor::create(const std::filesystem::path& path) {
+std::shared_ptr<OtObjectTalkEditor> OtObjectTalkEditor::create(const std::string& path) {
 	std::shared_ptr<OtObjectTalkEditor> editor = std::make_shared<OtObjectTalkEditor>();
 	editor->setFilePath(path);
 

@@ -30,14 +30,14 @@ static OtAssetFactoryRegister<OtCubeMapAsset> cubemapRegistration{".cubemap"};
 //	OtCubeMapAsset::load
 //
 
-bool OtCubeMapAsset::load(const std::filesystem::path& path) {
+bool OtCubeMapAsset::load(const std::string& path) {
 	try {
 		// try to load the cubemap
 		cubemap.load(path);
 		return true;
 
 	} catch (const OtException& exception) {
-		OtLogWarning(OtFormat("Can't load CubeMap [%s]: %s", path.string().c_str(), exception.what()));
+		OtLogWarning(OtFormat("Can't load CubeMap [%s]: %s", path.c_str(), exception.what()));
 		return false;
 	}
 }

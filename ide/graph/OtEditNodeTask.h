@@ -33,21 +33,21 @@ public:
 		auto targetNode = graph->getNode(node);
 		oldState = targetNode->oldState;
 		newState = targetNode->newState;
-		targetNode->w = 0.0f;
+		targetNode->needsSizing = true;
 	}
 
 	// undo action
 	void undo() override {
 		auto targetNode = graph->getNode(node);
 		targetNode->deserializeFromString(oldState);
-		targetNode->w = 0.0f;
+		targetNode->needsSizing = true;
 	}
 
 	// redo action
 	void redo() override {
 		auto targetNode = graph->getNode(node);
 		targetNode->deserializeFromString(newState);
-		targetNode->w = 0.0f;
+		targetNode->needsSizing = true;
 	}
 
 /*

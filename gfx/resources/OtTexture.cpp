@@ -20,7 +20,7 @@
 //	OtTexture::OtTexture
 //
 
-OtTexture::OtTexture(const std::filesystem::path& path) {
+OtTexture::OtTexture(const std::string& path) {
 	loadFromFile(path);
 }
 
@@ -102,7 +102,7 @@ static bgfx::TextureHandle createMipmapTexture(bimg::ImageContainer* image) {
 //	OtTexture::loadFromFile
 //
 
-void OtTexture::loadFromFile(const std::filesystem::path& path) {
+void OtTexture::loadFromFile(const std::string& path) {
 	// get the image
 	OtImage image(path);
 	bimg::ImageContainer* container = image.getContainer();

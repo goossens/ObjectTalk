@@ -12,8 +12,8 @@
 //	Include files
 //
 
-#include <filesystem>
 #include <memory>
+#include <string>
 
 #include "glm/glm.hpp"
 
@@ -25,7 +25,7 @@
 class OtHeightMap {
 public:
 	// load heightmap from file
-	void load(const std::filesystem::path& path);
+	void load(const std::string& path);
 
 	// clear heightmap
 	inline void clear() { heightmap = nullptr; }

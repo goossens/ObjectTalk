@@ -51,25 +51,26 @@ class $ : scene.Entity {\n\
 
 bool OtScriptComponent::renderUI() {
 	return OtUiFileSelector(
-		"Path", path,
-		[](std::filesystem::path& path) {
+		"Path",
+		path,
+		[](std::string& path) {
 			// create a new script file (and give it the right extension; can't trust the user :-)
-			path.replace_extension(".ot");
-			std::ofstream stream(path);
+			auto realPath = OtPathReplaceExtension(path, ".ot");
+			std::ofstream stream(realPath);
 
 			std::string script{scriptTemplate};
-			script.replace(script.find("$"), 1, path.stem().string());
+			script.replace(script.find("$"), 1, OtPathGetStem(realPath));
 
 			stream << script;
 			stream.close();
 
 			// open it in the editor
-			OtMessageBus::instance()->send("open " + path.string());
+			OtMessageBus::instance()->send("open " + realPath);
 
 		},
-		[](std::filesystem::path& path) {
+		[](std::string& path) {
 			// open it in the editor
-			OtMessageBus::instance()->send("open " + path.string());
+			OtMessageBus::instance()->send("open " + path);
 		});
 }
 
@@ -84,7 +85,7 @@ void OtScriptComponent::load() {
 	module->load(path);
 
 	// see if the module has the right class definition
-	auto className = path.stem().string();
+	auto className = OtPathGetStem(path);
 
 	if (module->hasByName(className)) {
 		auto classObject = module->getByName(className);
@@ -102,15 +103,15 @@ void OtScriptComponent::load() {
 				hasUpdateMethod = instance->has(updateSelector);
 
 			} else {
-				OtError("Class [%s] in script [%s] is not dereive from [Entity]", className.c_str(), path.string().c_str());
+				OtError("Class [%s] in script [%s] is not dereive from [Entity]", className.c_str(), path.c_str());
 			}
 
 		} else {
-			OtError("Object [%s] in script [%s] is not a class", className.c_str(), path.string().c_str());
+			OtError("Object [%s] in script [%s] is not a class", className.c_str(), path.c_str());
 		}
 
 	} else {
-		OtError("Script [%s] does not contain class [%s]", path.string().c_str(), className.c_str());
+		OtError("Script [%s] does not contain class [%s]", path.c_str(), className.c_str());
 	}
 }
 
@@ -141,10 +142,10 @@ void OtScriptComponent::update() {
 //	OtScriptComponent::serialize
 //
 
-nlohmann::json OtScriptComponent::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtScriptComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
-	data["path"] = OtPathGetRelative(path, basedir);
+	data["path"] = OtPathRelative(path, basedir);
 	return data;
 }
 
@@ -153,6 +154,6 @@ nlohmann::json OtScriptComponent::serialize(std::filesystem::path* basedir) {
 //	OtScriptComponent::deserialize
 //
 
-void OtScriptComponent::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+void OtScriptComponent::deserialize(nlohmann::json data, std::string* basedir) {
 	path = OtPathGetAbsolute(data, "path", basedir);
 }

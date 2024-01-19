@@ -68,7 +68,7 @@ bool OtTerrainHeights::renderUI() {
 //	OtTerrainHeights::serialize
 //
 
-nlohmann::json OtTerrainHeights::serialize(std::filesystem::path* basedir) {
+nlohmann::json OtTerrainHeights::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["size"] = heightmapSize;
 	data["normalStrength"] = normalStrength;
@@ -85,7 +85,7 @@ nlohmann::json OtTerrainHeights::serialize(std::filesystem::path* basedir) {
 //	OtTerrainHeights::deserialize
 //
 
-void OtTerrainHeights::deserialize(nlohmann::json data, std::filesystem::path* basedir) {
+void OtTerrainHeights::deserialize(nlohmann::json data, std::string* basedir) {
 	heightmapSize = data.value("size", 256);
 	normalStrength = data.value("normalStrength", 10.0f);
 	frequency = data.value("frequency", 10);

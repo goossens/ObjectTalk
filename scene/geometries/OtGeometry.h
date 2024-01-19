@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include <filesystem>
+#include <string>
 #include <vector>
 
 #include "nlohmann/json_fwd.hpp"
@@ -49,8 +49,8 @@ public:
 	virtual bool renderUI();
 
 	// (de)serialize geometry
-	virtual nlohmann::json serialize(std::filesystem::path* basedir);
-	virtual void deserialize(nlohmann::json data, std::filesystem::path* basedir);
+	virtual nlohmann::json serialize(std::string* basedir);
+	virtual void deserialize(nlohmann::json data, std::string* basedir);
 
 	// get type name of geometry
 	virtual const char* getTypeName() { return name; }

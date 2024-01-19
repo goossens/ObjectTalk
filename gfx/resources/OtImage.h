@@ -13,7 +13,6 @@
 //
 
 #include <string>
-#include <filesystem>
 
 #include "glm/glm.hpp"
 
@@ -28,7 +27,7 @@ class OtImage {
 public:
 	// constructors/destructor
 	OtImage() = default;
-	OtImage(const std::filesystem::path& path, bool powerof2=false, bool square=false);
+	OtImage(const std::string& path, bool powerof2=false, bool square=false);
 	OtImage(const OtImage&) = delete; // no copy constructor
 	OtImage& operator=(const OtImage&) = delete; // no copy assignment
 	OtImage(OtImage&&) = default;
@@ -39,9 +38,9 @@ public:
 	void clear();
 
 	// load the image from disk
-	void load(const std::filesystem::path& path, bool powerof2=false, bool square=false);
-	void loadAsGrayscale(const std::filesystem::path& path, bool powerof2=false, bool square=false);
-	void loadAsRGBA(const std::filesystem::path& path, bool powerof2=false, bool square=false);
+	void load(const std::string& path, bool powerof2=false, bool square=false);
+	void loadAsGrayscale(const std::string& path, bool powerof2=false, bool square=false);
+	void loadAsRGBA(const std::string& path, bool powerof2=false, bool square=false);
 
 	// load the image from a file in memory
 	void loadFromFileInMemory(void* data, uint32_t size);

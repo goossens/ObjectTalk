@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include <filesystem>
 #include <functional>
 #include <memory>
 #include <string>
@@ -74,8 +73,8 @@ public:
 	virtual void evaluate() = 0;
 
 	// (de)serialize
-	nlohmann::json serialize(std::filesystem::path* basedir=nullptr);
-	void deserialize(nlohmann::json data, bool restoreIDs=true, std::filesystem::path* basedir=nullptr);
+	nlohmann::json serialize(std::string* basedir=nullptr);
+	void deserialize(nlohmann::json data, bool restoreIDs=true, std::string* basedir=nullptr);
 
 	// get the pin type as a string
 	inline std::string getTypeName() { return OtGraphDataTypeNames[type]; }

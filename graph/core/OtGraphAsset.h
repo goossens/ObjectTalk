@@ -24,8 +24,9 @@
 
 class OtGraphAsset : public OtAssetBase {
 public:
-	// load the graph
+	// load/save the graph
 	bool load(const std::string& path) override;
+	bool save() override;
 
 	// access the graph
 	inline OtGraph* getGraph() { return graph.get(); }

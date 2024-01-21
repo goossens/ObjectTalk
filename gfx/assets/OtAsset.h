@@ -28,26 +28,29 @@ public:
 	// constructor
 	OtAsset() = default;
 
-	inline OtAsset(const std::string& p) {
-		path = p;
-		acquire();
+	inline OtAsset(const std::string& path) {
+		acquire(path);
 	}
 
 	// clear the asset reference
 	inline void clear() {
-		path.clear();
 		ptr = nullptr;
 	}
 
-	// access the path
-	inline std::string& getPath() { return path; }
-
 	// assignment
-	inline OtAsset& operator=(const std::string& p) {
-		path = p;
-		acquire();
+	inline OtAsset& operator=(const std::string& path) {
+		acquire(path);
 		return *this;
 	}
+
+	// access the path
+	inline std::string getPath() {
+		return ptr ? ptr->getPath() : "";
+	}
+
+	// save the asset
+	inline bool save() { return ptr ? ptr->save() : false; }
+	inline bool saveAs(const std::string& path) { return ptr ? ptr->saveAs(path) : false; }
 
 	// access to actual asset
 	inline T* operator->() { return ptr; }
@@ -64,8 +67,10 @@ public:
 
 	// render UI to show/select an asset
 	inline bool renderUI(const char* label) {
-		if (OtUiFileSelector(label, path)) {
-			acquire();
+		std::string tmpPath = ptr ? ptr->getPath() : "";
+
+		if (OtUiFileSelector(label, tmpPath)) {
+			acquire(tmpPath);
 			return true;
 
 		} else {
@@ -74,14 +79,11 @@ public:
 	}
 
 private:
-	// asset path
-	std::string path;
-
 	// pointer to the actual asset
 	T* ptr = nullptr;
 
 	// acquire the asset from the asset manager
-	inline void acquire() {
+	inline void acquire(const std::string& path) {
 		// when an empty path is requested, reset the asset
 		if (path.empty()) {
 			ptr = nullptr;

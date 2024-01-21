@@ -123,10 +123,27 @@ void OtAssetManager::renderUI() {
 
 
 //
+//	OtAssetManager::renameAsset
+//
+
+void OtAssetManager::renameAsset(const std::string& newName, const std::string& oldName) {
+	if (assets.find(oldName) != assets.end()) {
+		auto asset = assets[oldName];
+		assets[newName] = asset;
+		assets.erase(oldName);
+
+	} else {
+		OtLogFatal(OtFormat("Can't rename unknown asset [%s]", oldName.c_str()));
+	}
+}
+
+
+
+//
 //	OtAssetManager::lookup
 //
 
-OtAssetBase* OtAssetManager::lookup(const std::string& path) {
+OtAssetBase *OtAssetManager::lookup(const std::string &path) {
 	// see if we are already tracking this asset
 	if (assets.find(path) != assets.end()) {
 		return assets[path];
@@ -176,7 +193,6 @@ OtAssetBase* OtAssetManager::lookup(const std::string& path) {
 		return assets[path];
 	}
 }
-
 
 //
 //	OtAssetManager::createDummy

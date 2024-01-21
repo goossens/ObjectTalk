@@ -45,6 +45,9 @@ public:
 		return dynamic_cast<T*>(lookup(path));
 	}
 
+	// rename an asset
+	void renameAsset(const std::string& newName, const std::string& oldName);
+
 private:
 	// find asset instance
 	OtAssetBase* lookup(const std::string& path);

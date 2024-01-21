@@ -41,3 +41,20 @@ bool OtGraphAsset::load(const std::string& path) {
 		return false;
 	}
 }
+
+
+//
+//	OtGraphAsset::save
+//
+
+bool OtGraphAsset::save() {
+	try {
+		// save the graph
+		graph->save(assetPath);
+		return true;
+
+	} catch (const OtException& exception) {
+		OtLogWarning(OtFormat("Can't save graph [%s]: %s", assetPath.c_str(), exception.what()));
+		return false;
+	}
+}

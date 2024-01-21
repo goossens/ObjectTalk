@@ -21,12 +21,16 @@
 
 class OtAssetBase {
 public:
-	// contructor/destructor
-	inline OtAssetBase(bool dv=false) : doesVirtual(dv) {}
+	// destructor
 	virtual inline ~OtAssetBase() {}
 
-	// function to load the asset (to be implemented by derived classes)
+	// functions to load/save the asset (to be implemented by derived classes)
 	virtual inline bool load(const std::string& path) { return false; }
+	virtual inline bool save() { return false; }
+	bool saveAs(const std::string& path);
+
+	// get the path
+	inline std::string& getPath() { return assetPath; }
 
 	// get state
 	inline bool isNull() { return assetState == nullState; }
@@ -37,9 +41,9 @@ public:
 	inline bool isReady() { return assetState == readyState; }
 
 	// can we handle virtual paths
-	inline bool handlesVirtual() { return doesVirtual; }
+	virtual inline bool handlesVirtual() { return false; }
 
-private:
+protected:
 	// give the asset manager full access
 	friend class OtAssetManager;
 
@@ -55,7 +59,4 @@ private:
 		invalidState,
 		readyState
 	} assetState = nullState;
-
-	// does this asset support virtual paths
-	bool doesVirtual;
 };

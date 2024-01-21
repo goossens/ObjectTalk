@@ -68,7 +68,7 @@ bool OtDisplacer::renderUI() {
 		if (ImGui::RadioButton("Noise", state == Noise)) { state = Noise; changed = true; }
 
 		ImGui::BeginDisabled(state != Map);
-		if (OtUiFileSelector("Map", map)) { updateHeightmap(); changed = true; }
+		if (OtUiFileSelector("Path##MapPath", map)) { updateHeightmap(); changed = true; }
 		ImGui::EndDisabled();
 
 		ImGui::BeginDisabled(state != Noise);

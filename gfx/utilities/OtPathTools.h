@@ -19,8 +19,6 @@
 
 #include "nlohmann/json.hpp"
 
-#include "OtUi.h"
-
 
 //
 //	OtPathIsVirtual
@@ -184,25 +182,29 @@ static inline std::string OtPathRelative(const std::string& path, std::string* b
 //	OtPathGetAbsolute
 //
 
+static inline std::string OtPathGetAbsolute(const std::string& path, std::string* basedir) {
+	// make a path absolute based on a provided base directory
+	if (path.size()) {
+		if (OtPathIsVirtual(path)) {
+			return path;
+
+		} else if (basedir) {
+			return (std::filesystem::path(*basedir) / std::filesystem::path(path)).string();
+
+		} else {
+			return path;
+		}
+
+	} else {
+		return "";
+	}
+}
+
 static inline std::string OtPathGetAbsolute(nlohmann::json data, const char* field, std::string* basedir) {
 	// make a path absolute based on a provided base directory
 	if (data.contains(field)) {
 		std::string path = data[field];
-
-		if (path.size()) {
-			if (OtPathIsVirtual(path)) {
-				return path;
-
-			} else if (basedir) {
-				return (std::filesystem::path(*basedir) / std::filesystem::path(path)).string();
-
-			} else {
-				return path;
-			}
-
-		} else {
-			return "";
-		}
+		return OtPathGetAbsolute(path, basedir);
 
 	} else {
 		return "";

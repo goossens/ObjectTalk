@@ -107,7 +107,7 @@ int main(int argc, char* argv[]) {
 				OtWorkspace workspace;
 
 				for (auto& file : files) {
-					workspace.openFile(file);
+					workspace.openFile(file, OtEditor::inTab);
 				}
 
 				framework.run(&workspace);

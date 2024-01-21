@@ -28,7 +28,8 @@ add_dependencies(scene
 	math
 	tweeny
 	fastnoise
-	assimp)
+	assimp
+	graph)
 
 target_link_libraries(scene PUBLIC
 	json
@@ -38,6 +39,7 @@ target_link_libraries(scene PUBLIC
 	graphics
 	tweeny
 	fastnoise
-	assimp)
+	assimp
+	graph)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${SCENE_INCLUDES} ${SCENE_SOURCES})

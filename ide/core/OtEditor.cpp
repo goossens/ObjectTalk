@@ -19,21 +19,6 @@
 
 
 //
-//	OtEditor::render
-//
-
-void OtEditor::render() {
-	// render the menu and the editor
-	ImGui::BeginChild("editor", ImVec2(), ImGuiChildFlags_Border, ImGuiWindowFlags_MenuBar);
-	startRender();
-	renderMenu();
-	renderEditor();
-	endRender();
-	ImGui::EndChild();
-}
-
-
-//
 //	OtEditor::setFilePath
 //
 
@@ -79,16 +64,14 @@ void OtEditor::renderFileMenu() {
 	}
 
 	// handle shortcuts
-	if (ImGui::IsKeyDown(ImGuiMod_Shortcut)) {
-		bool popupOpen = ImGui::IsPopupOpen("", ImGuiPopupFlags_AnyPopupId | ImGuiPopupFlags_AnyPopupLevel);
-
-		if (ImGui::IsKeyPressed(ImGuiKey_N) && !popupOpen) {
+	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && ImGui::IsKeyDown(ImGuiMod_Shortcut)) {
+		if (ImGui::IsKeyPressed(ImGuiKey_N)) {
 			OtMessageBus::instance()->send("new");
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_O) && !popupOpen) {
+		} else if (ImGui::IsKeyPressed(ImGuiKey_O)) {
 			OtMessageBus::instance()->send("open");
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_S) && !popupOpen) {
+		} else if (ImGui::IsKeyPressed(ImGuiKey_S)) {
 			if (isDirty()) {
 				if (fileExists()) {
 					OtMessageBus::instance()->send("save");
@@ -98,12 +81,12 @@ void OtEditor::renderFileMenu() {
 				}
 			}
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_R) && !popupOpen) {
+		} else if (ImGui::IsKeyPressed(ImGuiKey_R)) {
 			if (!isDirty() && fileExists()) {
 				OtMessageBus::instance()->send("run");
 			}
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_W) && !popupOpen) {
+		} else if (ImGui::IsKeyPressed(ImGuiKey_W)) {
 			OtMessageBus::instance()->send("close");
 		}
 	}

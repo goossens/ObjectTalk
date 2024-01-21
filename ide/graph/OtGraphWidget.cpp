@@ -90,7 +90,7 @@ void OtGraphWidget::render(OtGraph* g) {
 	pinLocations.clear();
 
 	// start rendering
-	ImGui::BeginChild("graph");
+	ImGui::BeginChild("graph", ImVec2(), 0, ImGuiWindowFlags_NoMove);
 	position = ImGui::GetCursorScreenPos();
 	size = ImGui::GetContentRegionAvail();
 	offset = position + scrollingOffset;
@@ -129,7 +129,7 @@ void OtGraphWidget::render(OtGraph* g) {
 	});
 
 	// handle user interactions (if required)
-	if (ImGui::IsWindowFocused()) {
+	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows)) {
 		ImVec2 mousePos = ImGui::GetMousePos();
 
 		bool inside =

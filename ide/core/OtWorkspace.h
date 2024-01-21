@@ -29,9 +29,6 @@
 
 class OtWorkspace : public OtFrameworkApp {
 public:
-	// run the workspace
-	void run();
-
 	// handle message bus commands
 	void onMessage(const std::string& message);
 
@@ -43,7 +40,7 @@ public:
 
 	// open a file
 	void openFile();
-	void openFile(const std::string& filename);
+	void openFile(const std::string& filename, int visualState);
 
 	// save content of active file/editor
 	void saveFile();
@@ -99,7 +96,7 @@ private:
 
 	// track editors
 	std::shared_ptr<OtEditor> activeEditor;
-	std::shared_ptr<OtEditor> activateEditorTab;
+	std::shared_ptr<OtEditor> editorToActivate;
 
 	// tab for "save as" dialog
 	OtEditor saveAsEditor;

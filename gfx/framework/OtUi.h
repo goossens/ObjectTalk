@@ -39,6 +39,9 @@ enum {
 //	Functions
 //
 
+// split am ImGui label into a label and the ID
+void OtUiSplitLabel(const char* text, std::string& label, std::string& id);
+
 // render text centered in the current (child) window
 void OtUiCenteredText(const char* text);
 

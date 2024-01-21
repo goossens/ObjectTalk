@@ -25,6 +25,12 @@
 
 class OtEditor {
 public:
+	// editor state
+	enum {
+		inTab,
+		inWindow
+	};
+
 	// destructor
 	virtual inline ~OtEditor() {}
 
@@ -32,12 +38,14 @@ public:
 	virtual inline void load() {}
 	virtual inline void save() {}
 
-	// render the editor
-	void render();
-	virtual inline void startRender() {}
+	// render the editor parts
 	virtual inline void renderMenu() {}
 	virtual inline void renderEditor() {}
-	virtual inline void endRender() {}
+
+	// set the editor state
+	inline void setVisualState(int vs) { visualState = vs; }
+	inline bool isRenderedInTab() { return visualState == inTab; }
+	inline bool isRenderedInWindow() { return visualState == inWindow; }
 
 	// get the properties
 	virtual inline std::string getFileExtension() { return ""; }
@@ -63,4 +71,5 @@ protected:
 
 	// properties
 	std::string path;
+	int visualState = inTab;
 };

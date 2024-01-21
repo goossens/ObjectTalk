@@ -22,8 +22,8 @@
 
 static OtAssetFactoryRegister<OtTextureAsset> jpgRegistration{".jpg"};
 static OtAssetFactoryRegister<OtTextureAsset> jpegRegistration{".jpeg"};
-static OtAssetFactoryRegister<OtTextureAsset> hdrRegistration{".hdr"};
 static OtAssetFactoryRegister<OtTextureAsset> pngRegistration{".png"};
+static OtAssetFactoryRegister<OtTextureAsset> hdrRegistration{".hdr"};
 
 
 //

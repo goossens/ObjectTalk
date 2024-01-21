@@ -11,7 +11,6 @@
 
 #include <fstream>
 
-#include "glm/ext.hpp"
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
@@ -19,7 +18,6 @@
 #include "OtClass.h"
 #include "OtVM.h"
 
-#include "OtGlm.h"
 #include "OtMessageBus.h"
 #include "OtUi.h"
 
@@ -51,7 +49,7 @@ class $ : scene.Entity {\n\
 
 bool OtScriptComponent::renderUI() {
 	return OtUiFileSelector(
-		"Path",
+		"Path##ScriptPath",
 		path,
 		[](std::string& path) {
 			// create a new script file (and give it the right extension; can't trust the user :-)
@@ -65,12 +63,12 @@ bool OtScriptComponent::renderUI() {
 			stream.close();
 
 			// open it in the editor
-			OtMessageBus::instance()->send("open " + realPath);
+			OtMessageBus::instance()->send("openinwindow " + realPath);
 
 		},
 		[](std::string& path) {
 			// open it in the editor
-			OtMessageBus::instance()->send("open " + path);
+			OtMessageBus::instance()->send("openinwindow " + path);
 		});
 }
 

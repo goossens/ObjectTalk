@@ -150,7 +150,7 @@ void OtModelGeometryClass::fillGeometry() {
 
 bool OtModelGeometryClass::renderUI() {
 	bool changed = false;
-	changed |= OtUiFileSelector("Model", modelPath);
+	changed |= OtUiFileSelector("Path##ModelPath", modelPath);
 	return changed;
 }
 

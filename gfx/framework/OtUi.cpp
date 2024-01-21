@@ -25,6 +25,25 @@
 
 
 //
+//	OtUiSplitLabel
+//
+
+void OtUiSplitLabel(const char* text, std::string& label, std::string& id) {
+	std::string work(text);
+	size_t pos = work.find("##");
+
+	if (pos == std::string::npos) {
+		label = work;
+		id = work;
+
+	} else {
+		label = work.substr(0, pos);
+		id = work.substr(pos + 2);
+	}
+}
+
+
+//
 //	OtUiCenteredText
 //
 
@@ -187,12 +206,17 @@ bool OtUiFileSelector(
 	float buttonWidth = itemHeight + spacing;
 	float pathWidth = itemWidth - buttonWidth * buttons;
 
+	// determine real label and ID
+	std::string realLabel;
+	std::string id;
+	OtUiSplitLabel(label, realLabel, id);
+
 	// get file dialog information
 	auto dialog = ImGuiFileDialog::Instance();
-	auto dialogID = std::string("select-file-") + label;
+	auto dialogID = std::string("select-file-") + id;
 
 	// render widgets
-	ImGui::PushID(label);
+	ImGui::PushID(id.c_str());
 	bool changed = false;
 	static bool creating = false;
 
@@ -255,9 +279,9 @@ bool OtUiFileSelector(
 	}
 
 	// render label (if required)
-	if (label[0] != '#' && label[1] != '#') {
+	if (realLabel.size()) {
 		ImGui::SameLine(0.0f, spacing);
-		ImGui::TextUnformatted(label);
+		ImGui::TextUnformatted(realLabel.c_str());
 	}
 
 	// show file selector (if required)

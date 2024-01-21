@@ -61,8 +61,11 @@ void OtWorkspace::onMessage(const std::string& message) {
 		auto file = message.substr(delimiter + 1);
 
 		// process each command
-		if (command == "open") {
-			openFile(file);
+		if (command == "openintab") {
+			openFile(file, OtEditor::inTab);
+
+		} else if (command == "openinwindow") {
+			openFile(file, OtEditor::inWindow);
 		}
 
 	} else {
@@ -144,7 +147,7 @@ void OtWorkspace::onTerminate() {
 	// clear all resource references in order to release them at the right time
 	editors.clear();
 	activeEditor = nullptr;
-	activateEditorTab = nullptr;
+	editorToActivate = nullptr;
 	logo = nullptr;
 }
 
@@ -262,7 +265,7 @@ void OtWorkspace::openFile() {
 //	OtWorkspace::openFile
 //
 
-void OtWorkspace::openFile(const std::string& path) {
+void OtWorkspace::openFile(const std::string& path, int visualState) {
 	std::shared_ptr<OtEditor> editor;
 
 	// don't reopen if it is already open
@@ -291,6 +294,9 @@ void OtWorkspace::openFile(const std::string& path) {
 			state = confirmErrorState;
 			errorMessage = OtFormat("Can't open file with extension: %s", extension.c_str());
 		}
+
+		// set the state (tab of floating window)
+		editor->setVisualState(visualState);
 
 	} else {
 		// editor already exists, just activate it
@@ -486,7 +492,7 @@ std::shared_ptr<OtEditor> OtWorkspace::findEditor(const std::string& path) {
 //
 
 void OtWorkspace::activateEditor(std::shared_ptr<OtEditor> editor) {
-	activateEditorTab = editor;
+	editorToActivate = editor;
 }
 
 
@@ -568,34 +574,83 @@ void OtWorkspace::renderEditors() {
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, spacing);
 	}
 
-	// start a tab bar
-	if (ImGui::BeginTabBar("Tabs", ImGuiTabBarFlags_AutoSelectNewTabs)) {
-		// make clone of editor list since renderers might change it
-		std::vector<std::shared_ptr<OtEditor>> clone = editors;
+	// make clone of editor list since renderers might change it
+	std::vector<std::shared_ptr<OtEditor>> clone = editors;
 
+	// start a tab bar and render all editors that have an "in tab" state
+	if (ImGui::BeginTabBar("Tabs", ImGuiTabBarFlags_AutoSelectNewTabs)) {
 		// render all editors as tabs
 		for (auto& editor : clone) {
-			// determine flags for tab
-			ImGuiTabItemFlags flags = 0;
+			if (editor->isRenderedInTab()) {
+				// determine flags for tab
+				ImGuiTabItemFlags flags = 0;
 
-			if (activateEditorTab == editor) {
-				flags |= ImGuiTabItemFlags_SetSelected;
-				activateEditorTab = nullptr;
-			}
+				if (editorToActivate == editor) {
+					flags |= ImGuiTabItemFlags_SetSelected;
+					editorToActivate = nullptr;
+				}
 
-			if (editor->isDirty()) {
-				flags |= ImGuiTabItemFlags_UnsavedDocument;
-			}
+				if (editor->isDirty()) {
+					flags |= ImGuiTabItemFlags_UnsavedDocument;
+				}
 
-			// create tab and editor
-			if (ImGui::BeginTabItem(editor->getShortName().c_str(), nullptr, flags)) {
-				editor->render();
-				activeEditor = editor;
-				ImGui::EndTabItem();
+				// create tab and editor
+				if (ImGui::BeginTabItem(editor->getShortName().c_str(), nullptr, flags)) {
+					ImGui::BeginChild("editor", ImVec2(), ImGuiChildFlags_Border, ImGuiWindowFlags_MenuBar);
+					editor->renderMenu();
+					editor->renderEditor();
+					ImGui::EndChild();
+
+					if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows)) {
+						activeEditor = editor;
+					}
+
+					ImGui::EndTabItem();
+				}
 			}
 		}
 
 		ImGui::EndTabBar();
+	}
+
+	// render all editors that have an "in window" state
+	for (auto& editor : clone) {
+		if (editor->isRenderedInWindow()) {
+			// determine window flags
+			ImGuiTabItemFlags flags = ImGuiWindowFlags_MenuBar;
+
+			if (editor->isDirty()) {
+				flags |= ImGuiWindowFlags_UnsavedDocument;
+			}
+
+			// focus on this editor (if required)
+			if (editorToActivate == editor) {
+				ImGui::SetNextWindowFocus();
+				editorToActivate = nullptr;
+			}
+
+			// set size and position when opened for the first time
+			auto size = ImGui::GetIO().DisplaySize;
+			ImGui::SetNextWindowPos(ImVec2(size.x / 6.0f, size.y / 6.0f), ImGuiCond_Once);
+			ImGui::SetNextWindowSize(ImVec2(size.x * 0.6f, size.y * 0.6f), ImGuiCond_Once);
+
+			// render editor in seperate window
+			bool open = true;
+			ImGui::Begin(editor->getShortName().c_str(), &open, flags);
+			editor->renderMenu();
+			editor->renderEditor();
+
+			if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows)) {
+				activeEditor = editor;
+			}
+
+			ImGui::End();
+
+			if (!open) {
+				activeEditor = editor;
+				closeFile();
+			}
+		}
 	}
 
 	if (consoleAsPanel) {
@@ -671,7 +726,7 @@ void OtWorkspace::renderFileOpen() {
 		// open selected file if required
 		if (ImGuiFileDialog::Instance()->IsOk()) {
 			auto path = ImGuiFileDialog::Instance()->GetFilePathName();
-			openFile(path);
+			openFile(path, OtEditor::inTab);
 
 			if (state != confirmErrorState) {
 				state = editState;
@@ -884,7 +939,7 @@ void OtWorkspace::highlightError() {
 
 		if (!editor) {
 			// open the editor
-			openFile(module);
+			openFile(module, OtEditor::inTab);
 			editor = findEditor(module);
 		}
 

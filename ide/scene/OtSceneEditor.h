@@ -19,6 +19,7 @@
 #include "ImGuizmo.h"
 
 #include "OtScene.h"
+#include "OtSceneAsset.h"
 #include "OtSceneEditorCamera.h"
 #include "OtSceneRenderer.h"
 
@@ -33,7 +34,12 @@
 class OtSceneEditor : public OtEditor {
 public:
 	// constructor
-	OtSceneEditor();
+	OtSceneEditor(const std::string& path) : OtEditor(path) {
+		initialize();
+	}
+
+	// initialize the editor
+	void initialize();
 
 	// get file extension
 	inline std::string getFileExtension() override { return ".ots"; }
@@ -42,7 +48,8 @@ public:
 	void load() override;
 	void save() override;
 
-	// is the editor's content "dirty" (unsaved);
+	// get editor status
+	inline bool isReady() override { return asset.isReady(); }
 	bool isDirty() override;
 
 	// clipboard operations
@@ -50,9 +57,6 @@ public:
 	void copyEntity();
 	void pasteEntity();
 	void duplicateEntity();
-
-	// create a new object
-	static std::shared_ptr<OtSceneEditor> create(const std::string& path);
 
 private:
 	// switch scene camera
@@ -93,7 +97,7 @@ private:
 	}
 
 	// the scene being edited
-	std::unique_ptr<OtScene> scene;
+	OtAsset<OtSceneAsset> asset;
 	std::unique_ptr<OtSceneRenderer> renderer;
 	OtEntity selectedEntity = OtEntityNull;
 	OtEntity renamingEntity = OtEntityNull;

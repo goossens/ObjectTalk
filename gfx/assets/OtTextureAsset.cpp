@@ -10,6 +10,7 @@
 //
 
 #include "OtException.h"
+#include "OtFormat.h"
 #include "OtLog.h"
 
 #include "OtAssetFactory.h"
@@ -30,7 +31,7 @@ static OtAssetFactoryRegister<OtTextureAsset> hdrRegistration{".hdr"};
 //	OtTextureAsset::load
 //
 
-bool OtTextureAsset::load(const std::string& path) {
+bool OtTextureAsset::load() {
 	try {
 		// try to load the texture
 		texture.loadFromFile(path);

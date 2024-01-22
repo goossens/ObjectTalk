@@ -36,7 +36,7 @@ static OtAssetFactoryRegister<OtModelAsset> objRegistration{".obj"};
 //	OtModelAsset::load
 //
 
-bool OtModelAsset::load(const std::string& path) {
+bool OtModelAsset::load() {
 	// clear the current data
 	meshes.clear();
 	materials.clear();

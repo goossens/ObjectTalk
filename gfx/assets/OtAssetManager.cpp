@@ -29,6 +29,17 @@
 //	OtAssetManager::start
 //
 
+OtAssetManager::~OtAssetManager() {
+	// sanity check
+	OtAssert(running == false);
+	OtAssert(assets.size() == 0);
+}
+
+
+//
+//	OtAssetManager::start
+//
+
 void OtAssetManager::start() {
 	// sanity check
 	OtAssert(running == false);
@@ -45,7 +56,7 @@ void OtAssetManager::start() {
 			// load next asset
 			if (asset) {
 				asset->assetState = OtAssetBase::loadingState;
-				asset->assetState = asset->load(asset->assetPath) ? OtAssetBase::readyState : OtAssetBase::invalidState;
+				asset->assetState = asset->load() ? OtAssetBase::readyState : OtAssetBase::invalidState;
 
 			} else {
 				// a null asset means we shutdown the loader
@@ -56,7 +67,6 @@ void OtAssetManager::start() {
 		}
 	});
 }
-
 
 //
 //	OtAssetManager::stop
@@ -138,23 +148,23 @@ void OtAssetManager::renameAsset(const std::string& newName, const std::string& 
 }
 
 
-
 //
-//	OtAssetManager::lookup
+//	OtAssetManager::findAsset
 //
 
-OtAssetBase *OtAssetManager::lookup(const std::string &path) {
+OtAssetBase* OtAssetManager::findAsset(const std::string& path) {
 	// see if we are already tracking this asset
 	if (assets.find(path) != assets.end()) {
 		return assets[path];
 
 	// is this a virtual asset (i.e. a named asset that only exists in memory)
-	} else if (OtPathIsVirtual(path)) {
+	// or a new asset that hasn't been saved yet
+	} else if (OtPathIsVirtual(path) || OtPathIsUntitled(path)) {
 		auto instance = OtAssetFactory::instance()->instantiate(path);
 
 		// is this a supported asset type
 		if (instance) {
-			instance->assetPath = path;
+			instance->path = path;
 			instance->assetState = OtAssetBase::readyState;
 			assets[path] = instance;
 			return instance;
@@ -171,7 +181,7 @@ OtAssetBase *OtAssetManager::lookup(const std::string &path) {
 		auto instance = OtAssetFactory::instance()->instantiate(path);
 
 		if (instance) {
-			instance->assetPath = path;
+			instance->path = path;
 			instance->assetState = OtAssetBase::scheduledState;
 			assets[path] = instance;
 			queue.push(instance);
@@ -183,16 +193,13 @@ OtAssetBase *OtAssetManager::lookup(const std::string &path) {
 			return createDummy(path, OtAssetBase::invalidState);
 		}
 
-	} else if (assets.find(path) == assets.end()) {
+	} else {
 		// create a dummy asset
 		OtLogWarning(OtFormat("Asset [%s] not found", path.c_str()));
 		return createDummy(path, OtAssetBase::missingState);
-
-	} else {
-		// dummy entry already exists
-		return assets[path];
 	}
 }
+
 
 //
 //	OtAssetManager::createDummy
@@ -200,7 +207,7 @@ OtAssetBase *OtAssetManager::lookup(const std::string &path) {
 
 OtAssetBase *OtAssetManager::createDummy(const std::string& path, OtAssetBase::AssetState state) {
 	auto dummy = new OtAssetBase();
-	dummy->assetPath = path;
+	dummy->path = path;
 	dummy->assetState = state;
 	assets[path] = dummy;
 	return dummy;

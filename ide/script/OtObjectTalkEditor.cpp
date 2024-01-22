@@ -16,6 +16,7 @@
 
 #include "imgui.h"
 
+#include "OtPathTools.h"
 #include "OtUi.h"
 
 #include "OtConsole.h"
@@ -53,10 +54,10 @@ const static TextEditor::Palette colorPalette = { {
 
 
 //
-//	OtObjectTalkEditor::OtObjectTalkEditor
+//	OtObjectTalkEditor::initialize
 //
 
-OtObjectTalkEditor::OtObjectTalkEditor() {
+void OtObjectTalkEditor::initialize() {
 	editor.SetLanguageDefinition(OtObjectTalkLanguageGetDefinition());
 	editor.SetPalette(colorPalette);
 	editor.SetLineSpacing(1.25f);
@@ -64,6 +65,10 @@ OtObjectTalkEditor::OtObjectTalkEditor() {
 	editor.SetShortTabsEnabled(true);
 	editor.SetShowMatchingBrackets(true);
 	editor.SetCompletePairedGlyphs(true);
+
+	if (!OtPathIsVirtual(path) && !OtPathIsUntitled(path)) {
+		load();
+	}
 }
 
 
@@ -214,20 +219,4 @@ void OtObjectTalkEditor::highlightError(size_t line, const std::string& error) {
 void OtObjectTalkEditor::clearError() {
 	std::map<int, std::string> markers;
 	editor.SetErrorMarkers(markers);
-}
-
-
-//
-//	OtObjectTalkEditor::create
-//
-
-std::shared_ptr<OtObjectTalkEditor> OtObjectTalkEditor::create(const std::string& path) {
-	std::shared_ptr<OtObjectTalkEditor> editor = std::make_shared<OtObjectTalkEditor>();
-	editor->setFilePath(path);
-
-	if (editor->fileExists()) {
-		editor->load();
-	}
-
-	return editor;
 }

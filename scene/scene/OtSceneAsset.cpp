@@ -26,13 +26,22 @@ static OtAssetFactoryRegister<OtSceneAsset> otsRegistration{".ots"};
 
 
 //
+//	OtSceneAsset::OtSceneAsset
+//
+
+OtSceneAsset::OtSceneAsset() {
+	// create the scene
+	scene = std::make_unique<OtScene>();
+}
+
+
+//
 //	OtSceneAsset::load
 //
 
-bool OtSceneAsset::load(const std::string& path) {
+bool OtSceneAsset::load() {
 	try {
-		// create and load the scene
-		scene = std::make_unique<OtScene>();
+		// load the scene
 		scene->load(path);
 		return true;
 

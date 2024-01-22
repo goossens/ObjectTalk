@@ -69,7 +69,7 @@ private:
 	bool onCanQuit() override;
 
 	// create a name for an untitled file
-	std::string getUntitledName();
+	std::string getUntitledName(const std::string& ext);
 
 	// get executable path
 	std::string getExecutablePath();

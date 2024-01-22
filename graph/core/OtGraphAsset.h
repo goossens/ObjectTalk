@@ -14,6 +14,7 @@
 
 #include <memory>
 
+#include "OtAsset.h"
 #include "OtAssetBase.h"
 #include "OtGraph.h"
 
@@ -24,8 +25,11 @@
 
 class OtGraphAsset : public OtAssetBase {
 public:
+	// constructor
+	OtGraphAsset();
+
 	// load/save the graph
-	bool load(const std::string& path) override;
+	bool load() override;
 	bool save() override;
 
 	// access the graph

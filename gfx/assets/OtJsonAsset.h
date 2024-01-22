@@ -5,19 +5,22 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 
+#pragma once
+
+
 //
 //	Include files
 //
 
-#include "OtAssetBase.h"
-#include "OtAssetManager.h"
+#include "OtTextAsset.h"
 
 
 //
-//	OtAssetBase::rename
+//	OtJsonAsset
 //
 
-void OtAssetBase::rename(const std::string& newPath) {
-	OtAssetManager::instance()->renameAsset(newPath, path);
-	path = newPath;
-}
+class OtJsonAsset : public OtTextAsset {
+public:
+
+private:
+};

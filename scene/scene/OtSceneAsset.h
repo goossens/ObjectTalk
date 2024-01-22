@@ -25,8 +25,11 @@
 
 class OtSceneAsset : public OtAssetBase {
 public:
+	// constructpr
+	OtSceneAsset();
+
 	// load the asset
-	bool load(const std::string& path) override;
+	bool load() override;
 
 	// access the scene
 	inline OtScene* getScene() { return scene.get(); }

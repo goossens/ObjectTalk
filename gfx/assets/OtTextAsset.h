@@ -14,25 +14,23 @@
 
 #include "OtAsset.h"
 #include "OtAssetBase.h"
-#include "OtTexture.h"
 
 
 //
-//	OtTextureAsset
+//	OtTextAsset
 //
 
-class OtTextureAsset : public OtAssetBase {
+class OtTextAsset : public OtAssetBase {
 public:
-	// load the asset
+	// load/save the asset
 	bool load() override;
+	bool save() override;
 
-	// access the texture
-	inline OtTexture& getTexture() { return texture; }
-	inline void setTexture(OtTexture& t) { texture = t; }
+	// access the text
+	inline std::string& getText() { return text; }
+	inline void setText(const std::string& t) { text = t; }
 
-	inline bool handlesVirtual() override { return true; }
-
-private:
-	// the actual texture
-	OtTexture texture;
+protected:
+	// the actual text
+	std::string text;
 };

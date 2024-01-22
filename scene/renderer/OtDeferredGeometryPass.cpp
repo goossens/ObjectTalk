@@ -127,9 +127,8 @@ void OtSceneRenderer::renderDeferredGeometry(OtSceneRendererContext& ctx, OtPass
 
 void OtSceneRenderer::renderDeferredModel(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtModelComponent& component) {
 	// process all the meshes (if required)
-	auto model = component.model;
-
-	if (model->isReady()) {
+	if (component.model.isReady()) {
+		auto model = component.model;
 		auto transform = ctx.scene->getGlobalTransform(entity);
 
 		for (auto& mesh : model->getMeshes()) {

@@ -195,12 +195,12 @@ void OtWorkspace::newFile() {
 //	OtWorkspace::getUntitledName
 //
 
-std::string OtWorkspace::getUntitledName() {
+std::string OtWorkspace::getUntitledName(const std::string& ext) {
 	static int seqno = 1;
 	std::string name;
 
 	while (!name.size()) {
-		std::string temp = OtFormat("untitled%d", seqno++);
+		std::string temp = OtFormat("untitled%d%s", seqno++, ext.c_str());
 
 		if (!findEditor(temp)) {
 			name = temp;
@@ -216,7 +216,7 @@ std::string OtWorkspace::getUntitledName() {
 //
 
 void OtWorkspace::newScript() {
-	editors.push_back(OtObjectTalkEditor::create(getUntitledName()));
+	editors.push_back(std::make_shared<OtObjectTalkEditor>(getUntitledName(".ot")));
 	state = editState;
 }
 
@@ -226,7 +226,7 @@ void OtWorkspace::newScript() {
 //
 
 void OtWorkspace::newScene() {
-	editors.push_back(OtSceneEditor::create(getUntitledName()));
+	editors.push_back(std::make_shared<OtSceneEditor>(getUntitledName(".ots")));
 	state = editState;
 }
 
@@ -236,7 +236,7 @@ void OtWorkspace::newScene() {
 //
 
 void OtWorkspace::newGraph() {
-	editors.push_back(OtGraphEditor::create(getUntitledName()));
+	editors.push_back(std::make_shared<OtGraphEditor>(getUntitledName(".otg")));
 	state = editState;
 }
 
@@ -275,18 +275,17 @@ void OtWorkspace::openFile(const std::string& path, int visualState) {
 
 		// open correct editor
 		if (extension == ".ot") {
-			editor = OtObjectTalkEditor::create(path);
+			editor = std::make_shared<OtObjectTalkEditor>(path);
 			editors.push_back(editor);
 			state = editState;
 
 		} else if (extension == ".ots") {
-			editor = OtSceneEditor::create(path);
+			editor = std::make_shared<OtSceneEditor>(path);
 			editors.push_back(editor);
 			state = editState;
 
-
 		} else if (extension == ".otg") {
-			editor = OtGraphEditor::create(path);
+			editor = std::make_shared<OtGraphEditor>(path);
 			editors.push_back(editor);
 			state = editState;
 
@@ -597,8 +596,12 @@ void OtWorkspace::renderEditors() {
 				// create tab and editor
 				if (ImGui::BeginTabItem(editor->getShortName().c_str(), nullptr, flags)) {
 					ImGui::BeginChild("editor", ImVec2(), ImGuiChildFlags_Border, ImGuiWindowFlags_MenuBar);
-					editor->renderMenu();
-					editor->renderEditor();
+
+					if (editor->isReady()) {
+						editor->renderMenu();
+						editor->renderEditor();
+					}
+
 					ImGui::EndChild();
 
 					if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows)) {
@@ -637,8 +640,11 @@ void OtWorkspace::renderEditors() {
 			// render editor in seperate window
 			bool open = true;
 			ImGui::Begin(editor->getShortName().c_str(), &open, flags);
-			editor->renderMenu();
-			editor->renderEditor();
+
+			if (editor->isReady()) {
+				editor->renderMenu();
+				editor->renderEditor();
+			}
 
 			if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows)) {
 				activeEditor = editor;

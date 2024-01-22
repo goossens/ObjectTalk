@@ -28,7 +28,7 @@
 class OtModelAsset : public OtAssetBase {
 public:
 	// load the model
-	bool load(const std::string& path) override;
+	bool load() override;
 
 	// access the meshes and materials
 	inline std::vector<OtModelMesh>& getMeshes() { return meshes; }

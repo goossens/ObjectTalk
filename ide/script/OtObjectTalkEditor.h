@@ -17,6 +17,7 @@
 #include "TextEditor.h"
 
 #include "OtEditor.h"
+#include "OtScriptAsset.h"
 
 
 //
@@ -26,7 +27,12 @@
 class OtObjectTalkEditor : public OtEditor {
 public:
 	// constructor
-	OtObjectTalkEditor();
+	OtObjectTalkEditor(const std::string& path) : OtEditor(path) {
+		initialize();
+	}
+
+	// initialize the editor
+	void initialize();
 
 	// get file extension
 	std::string getFileExtension() override { return ".ot"; }
@@ -35,6 +41,10 @@ public:
 	void load() override;
 	void save() override;
 
+	// render the parts
+	void renderMenu() override;
+	void renderEditor() override;
+
 	// is the editor's content "dirty" (unsaved);
 	bool isDirty() override;
 
@@ -42,13 +52,9 @@ public:
 	void highlightError(size_t line, const std::string& error);
 	void clearError();
 
-	// create a new object
-	static std::shared_ptr<OtObjectTalkEditor> create(const std::string& path);
-
 private:
-	// render the parts
-	void renderMenu() override;
-	void renderEditor() override;
+	// the graph being edited
+	OtAsset<OtScriptAsset> asset;
 
 	// visual text editor
 	TextEditor editor;

@@ -28,6 +28,9 @@
 
 class OtAssetManager : public OtSingleton<OtAssetManager> {
 public:
+	// destructor
+	~OtAssetManager();
+
 	// start/stop the asset manager
 	void start();
 	void stop();
@@ -38,11 +41,11 @@ public:
 	// see if we are currently loading anything
 	inline bool isLoading() { return loading || queue.size(); }
 
-	// acquire an asset
+	// acquire an existing asset
 	template<typename T>
 	inline T* acquire(const std::string& path) {
 		static_assert(std::is_base_of<OtAssetBase, T>::value, "Class is not derived from OtAssetBase");
-		return dynamic_cast<T*>(lookup(path));
+		return dynamic_cast<T*>(findAsset(path));
 	}
 
 	// rename an asset
@@ -50,7 +53,7 @@ public:
 
 private:
 	// find asset instance
-	OtAssetBase* lookup(const std::string& path);
+	OtAssetBase* findAsset(const std::string& path);
 
 	// create a dummy asset
 	OtAssetBase* createDummy(const std::string& path, OtAssetBase::AssetState state);

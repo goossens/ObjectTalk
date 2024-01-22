@@ -31,7 +31,9 @@ public:
 		inWindow
 	};
 
-	// destructor
+	// constructors/destructor
+	OtEditor() = default;
+	OtEditor(const std::string& p) : path(p) {}
 	virtual inline ~OtEditor() {}
 
 	// load/save the document content
@@ -56,6 +58,7 @@ public:
 	void setFilePath(const std::string& path);
 
 	// get editor status
+	virtual inline bool isReady() { return true; }
 	virtual inline bool isDirty() { return false; }
 	bool fileExists();
 

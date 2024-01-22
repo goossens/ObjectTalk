@@ -30,6 +30,15 @@ static inline bool OtPathIsVirtual(const std::string& path) {
 
 
 //
+//	OtPathIsUntitled
+//
+
+static inline bool OtPathIsUntitled(const std::string& path) {
+	return OtText::startsWith(path, "untitled");
+}
+
+
+//
 //	OtPathIsVirtual
 //
 

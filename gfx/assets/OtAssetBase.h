@@ -25,12 +25,14 @@ public:
 	virtual inline ~OtAssetBase() {}
 
 	// functions to load/save the asset (to be implemented by derived classes)
-	virtual inline bool load(const std::string& path) { return false; }
+	virtual inline bool load() { return false; }
 	virtual inline bool save() { return false; }
-	bool saveAs(const std::string& path);
+
+	// rename the asset
+	void rename(const std::string& newPath);
 
 	// get the path
-	inline std::string& getPath() { return assetPath; }
+	inline std::string& getPath() { return path; }
 
 	// get state
 	inline bool isNull() { return assetState == nullState; }
@@ -48,7 +50,7 @@ protected:
 	friend class OtAssetManager;
 
 	// path to the asset
-	std::string assetPath;
+	std::string path;
 
 	// state of the asset
 	enum AssetState {

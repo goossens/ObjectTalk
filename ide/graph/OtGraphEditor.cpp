@@ -19,12 +19,6 @@
 #include "OtUi.h"
 
 #include "OtGraphEditor.h"
-#include "OtImageFilterNodes.h"
-#include "OtImageGeneratorNodes.h"
-#include "OtInputNodes.h"
-#include "OtMathNodes.h"
-#include "OtOutputNodes.h"
-#include "OtProbeNodes.h"
 
 #include "OtCopyNodesTask.h"
 #include "OtChangeLinkTask.h"
@@ -40,18 +34,11 @@
 
 
 //
-//	OtGraphEditor::OtGraphEditor
+//	OtGraphEditor::initialize
 //
 
-OtGraphEditor::OtGraphEditor() {
-	graph = std::make_unique<OtGraph>();
-	OtImageFilterNodesRegister(*graph);
-	OtImageGeneratorNodesRegister(*graph);
-	OtInputNodesRegister(*graph);
-	OtMathNodesRegister(*graph);
-	OtOutputNodesRegister(*graph);
-	OtProbeNodesRegister(*graph);
-
+void OtGraphEditor::initialize() {
+	asset = path;
 	widget = std::make_unique<OtGraphWidget>();
 }
 
@@ -62,8 +49,7 @@ OtGraphEditor::OtGraphEditor() {
 
 void OtGraphEditor::load() {
 	// load graph from file
-	nlohmann::json metadata;
-	graph->load(path, &metadata);
+	asset = path;
 }
 
 
@@ -72,12 +58,8 @@ void OtGraphEditor::load() {
 //
 
 void OtGraphEditor::save() {
-	// build metadata
-	auto metadata = nlohmann::json::object();
-
-	// write scene to file
-	graph->save(path, &metadata);
-	taskManager.baseline();
+	// save graph to file
+	asset.saveAs(path);
 }
 
 
@@ -95,7 +77,7 @@ bool OtGraphEditor::isDirty() {
 //
 
 void OtGraphEditor::cutSelectedNodes() {
-	nextTask = std::make_shared<OtCutNodesTask>(graph.get(), clipboard);
+	nextTask = std::make_shared<OtCutNodesTask>(asset->getGraph(), clipboard);
 }
 
 
@@ -104,7 +86,7 @@ void OtGraphEditor::cutSelectedNodes() {
 //
 
 void OtGraphEditor::copySelectedNodes() {
-	nextTask = std::make_shared<OtCopyNodesTask>(graph.get(), clipboard);
+	nextTask = std::make_shared<OtCopyNodesTask>(asset->getGraph(), clipboard);
 }
 
 
@@ -113,7 +95,7 @@ void OtGraphEditor::copySelectedNodes() {
 //
 
 void OtGraphEditor::pasteSelectedNodes() {
-	nextTask = std::make_shared<OtPasteNodesTask>(graph.get(), clipboard);
+	nextTask = std::make_shared<OtPasteNodesTask>(asset->getGraph(), clipboard);
 }
 
 
@@ -122,7 +104,7 @@ void OtGraphEditor::pasteSelectedNodes() {
 //
 
 void OtGraphEditor::deleteSelectedNodes() {
-	nextTask = std::make_shared<OtDeleteNodesTask>(graph.get());
+	nextTask = std::make_shared<OtDeleteNodesTask>(asset->getGraph());
 }
 
 
@@ -131,23 +113,7 @@ void OtGraphEditor::deleteSelectedNodes() {
 //
 
 void OtGraphEditor::duplicateSelectedNodes() {
-	nextTask = std::make_shared<OtDuplicateNodesTask>(graph.get());
-}
-
-
-//
-//	OtGraphEditor::create
-//
-
-std::shared_ptr<OtGraphEditor> OtGraphEditor::create(const std::string& path) {
-	std::shared_ptr<OtGraphEditor> editor = std::make_shared<OtGraphEditor>();
-	editor->setFilePath(path);
-
-	if (editor->fileExists()) {
-		editor->load();
-	}
-
-	return editor;
+	nextTask = std::make_shared<OtDuplicateNodesTask>(asset->getGraph());
 }
 
 
@@ -157,7 +123,7 @@ std::shared_ptr<OtGraphEditor> OtGraphEditor::create(const std::string& path) {
 
 void OtGraphEditor::renderMenu() {
 	// get status
-	bool selected = graph->hasSelected();
+	bool selected = asset->getGraph()->hasSelected();
 	bool clipable = clipboard.size() > 0;
 
 	// create menubar
@@ -221,16 +187,17 @@ void OtGraphEditor::renderMenu() {
 
 void OtGraphEditor::renderEditor() {
 	// evaluate the graph
+	auto graph = asset->getGraph();
 	graph->evaluate();
 
 	// render the graph
-	widget->render(graph.get());
+	widget->render(graph);
 
 	// handle node editing
 	uint32_t node;
 
 	if (widget->isNodeEdited(node)) {
-		nextTask = std::make_shared<OtEditNodeTask>(graph.get(), node);
+		nextTask = std::make_shared<OtEditNodeTask>(graph, node);
 	}
 
 	// handle link creations
@@ -238,26 +205,26 @@ void OtGraphEditor::renderEditor() {
 	uint32_t to;
 
 	if (widget->isCreatingLink(from, to)) {
-		nextTask = std::make_shared<OtCreateLinkTask>(graph.get(), from, to);
+		nextTask = std::make_shared<OtCreateLinkTask>(graph, from, to);
 	}
 
 	// handle link deletion
 	if (widget->isDroppingLink(from, to)) {
-		nextTask = std::make_shared<OtDeleteLinkTask>(graph.get(), from, to);
+		nextTask = std::make_shared<OtDeleteLinkTask>(graph, from, to);
 	}
 
 	// handle link redirection
 	uint32_t newTo;
 
 	if (widget->isChangingLink(from, to, newTo)) {
-		nextTask = std::make_shared<OtChangeLinkTask>(graph.get(), from, to, newTo);
+		nextTask = std::make_shared<OtChangeLinkTask>(graph, from, to, newTo);
 	}
 
 	// handle node dragging
 	ImVec2 offset;
 
 	if (widget->isDraggingComplete(offset)) {
-		nextTask = std::make_shared<OtDragNodesTask>(graph.get(), offset);
+		nextTask = std::make_shared<OtDragNodesTask>(graph, offset);
 	}
 
 	// handle context menu
@@ -270,14 +237,14 @@ void OtGraphEditor::renderEditor() {
 		ImGui::TextUnformatted("Create Node");
 		ImGui::Separator();
 
-		auto factory = graph->getNodeFactory();
+		auto factory = asset->getGraph()->getNodeFactory();
 
 		factory.eachCategory([&] (OtGraphNodeCategory& category) {
 			if (ImGui::BeginMenu(category.name.c_str())) {
 				category.eachType([&] (OtGraphNodeType& type) {
 					if (ImGui::MenuItem(type.name.c_str())) {
 						nextTask = std::make_shared<OtCreateNodeTask>(
-							graph.get(),
+							graph,
 							type.name,
 							nodePosition.x,
 							nodePosition.y);

@@ -30,7 +30,7 @@ static OtAssetFactoryRegister<OtCubeMapAsset> cubemapRegistration{".cubemap"};
 //	OtCubeMapAsset::load
 //
 
-bool OtCubeMapAsset::load(const std::string& path) {
+bool OtCubeMapAsset::load() {
 	try {
 		// try to load the cubemap
 		cubemap.load(path);

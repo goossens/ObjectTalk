@@ -9,15 +9,12 @@
 //	Include files
 //
 
-#include "OtAssetBase.h"
-#include "OtAssetManager.h"
+#include "OtAssetFactory.h"
+#include "OtJsonAsset.h"
 
 
 //
-//	OtAssetBase::rename
+//	Register texture types
 //
 
-void OtAssetBase::rename(const std::string& newPath) {
-	OtAssetManager::instance()->renameAsset(newPath, path);
-	path = newPath;
-}
+static OtAssetFactoryRegister<OtJsonAsset> jsonRegistration{".json"};

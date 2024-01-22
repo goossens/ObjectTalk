@@ -39,11 +39,11 @@
 
 
 //
-//	OtSceneEditor::OtSceneEditor
+//	OtSceneEditor::initialize
 //
 
-OtSceneEditor::OtSceneEditor() {
-	scene = std::make_unique<OtScene>();
+void OtSceneEditor::initialize() {
+	asset = path;
 	renderer = std::make_unique<OtSceneRenderer>();
 }
 
@@ -55,7 +55,7 @@ OtSceneEditor::OtSceneEditor() {
 void OtSceneEditor::load() {
 	// load scene from file
 	nlohmann::json metadata;
-	scene->load(path, &metadata);
+	asset->getScene()->load(path, &metadata);
 
 	// process metadata
 	editorCamera.setPreset(metadata.value("cameraPreset", OtSceneEditorCamera::smallScenePreset));
@@ -99,7 +99,7 @@ void OtSceneEditor::save() {
 	metadata["gizmo"] = gizmo;
 
 	// write scene to file
-	scene->save(path, &metadata);
+	asset->getScene()->save(path, &metadata);
 	taskManager.baseline();
 }
 
@@ -130,7 +130,8 @@ void OtSceneEditor::setSceneCamera(int cameraNumber) {
 	// get a list of cameras
 	OtEntity list[9];
 	int entries = 0;
-	makeCameraList(scene.get(), scene->getRootEntity(), list, entries);
+	auto scene = asset->getScene();
+	makeCameraList(scene, scene->getRootEntity(), list, entries);
 
 	// see if selected camera is avalable
 	if (cameraNumber - 1 < entries) {
@@ -145,6 +146,7 @@ void OtSceneEditor::setSceneCamera(int cameraNumber) {
 
 void OtSceneEditor::renderMenu() {
 	// get status
+	auto scene = asset->getScene();
 	bool selected = scene->isValidEntity(selectedEntity);
 	bool clipable = clipboard.size() > 0;
 
@@ -205,7 +207,7 @@ void OtSceneEditor::renderMenu() {
 				// get a list of cameras
 				OtEntity list[9];
 				int entries = 0;
-				makeCameraList(scene.get(), scene->getRootEntity(), list, entries);
+				makeCameraList(scene, scene->getRootEntity(), list, entries);
 
 				for (auto i = 0; i < entries; i++) {
 					if (ImGui::RadioButton(scene->getTag(list[i]).c_str(), selectedCamera == list[i])) {
@@ -399,11 +401,11 @@ void OtSceneEditor::renderEntitiesPanel() {
 		true,
 		[this]() {
 			// create menu to add entities
-			renderNewEntitiesMenu(scene->getRootEntity());
+			renderNewEntitiesMenu(asset->getScene()->getRootEntity());
 		},
 		[this]() {
 			// render all root entities
-			renderChildEntities(scene->getRootEntity());
+			renderChildEntities(asset->getScene()->getRootEntity());
 		});
 }
 
@@ -416,14 +418,14 @@ void OtSceneEditor::renderComponentsPanel() {
 	// render the panel
 	renderPanel(
 		"Components",
-		scene->isValidEntity(selectedEntity),
+		asset->getScene()->isValidEntity(selectedEntity),
 		[this]() {
 			// create menu to add components
 			renderNewComponents<OtSceneComponents>();
 		},
 		[this]() {
 			// render component editors if we have a selected entity
-			if (scene->isValidEntity(selectedEntity)) {
+			if (asset->getScene()->isValidEntity(selectedEntity)) {
 				renderComponents<OtSceneComponents>();
 		}
 	});
@@ -436,6 +438,7 @@ void OtSceneEditor::renderComponentsPanel() {
 
 void OtSceneEditor::renderViewPort() {
 	// create the window
+	auto scene = asset->getScene();
 	ImGui::BeginChild("viewport", ImVec2(), true);
 	auto size = ImGui::GetContentRegionAvail();
 
@@ -483,7 +486,7 @@ void OtSceneEditor::renderViewPort() {
 	// render the scene
 	OtCamera camera{int(size.x), int(size.y), nearPlane, farPlane, fov, cameraPosition, cameraViewMatrix};
 	renderer->setGridScale(gridEnabled ? gridScale : 0.0f);
-	auto textureIndex = renderer->render(camera, scene.get(), selectedEntity);
+	auto textureIndex = renderer->render(camera, scene, selectedEntity);
 
 	// show it on the screen
 	if (OtGpuHasOriginBottomLeft()) {
@@ -531,7 +534,7 @@ void OtSceneEditor::renderViewPort() {
 
 			// create an edit task so this can be undone
 			auto newValue = component.serialize(nullptr).dump();
-			nextTask = std::make_shared<OtEditComponentTask<OtTransformComponent>>(scene.get(), selectedEntity, oldValue, newValue);
+			nextTask = std::make_shared<OtEditComponentTask<OtTransformComponent>>(scene, selectedEntity, oldValue, newValue);
 		}
 	}
 
@@ -622,6 +625,9 @@ static inline void* createID(OtEntity entity, uint32_t key) {
 }
 
 void OtSceneEditor::renderEntity(OtEntity entity) {
+	// get scene
+	auto scene = asset->getScene();
+
 	// determine flags
 	ImGuiTreeNodeFlags flags =
 	ImGuiTreeNodeFlags_DefaultOpen |
@@ -675,7 +681,7 @@ void OtSceneEditor::renderEntity(OtEntity entity) {
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("entity")) {
 			OtEntity entityToBeMoved;
 			std::memcpy(&entityToBeMoved, payload->Data, sizeof(OtEntity));
-			nextTask = std::make_shared<OtMoveEntityTask>(scene.get(), entity, entityToBeMoved, false);
+			nextTask = std::make_shared<OtMoveEntityTask>(scene, entity, entityToBeMoved, false);
 		}
 
 		ImGui::EndDragDropTarget();
@@ -701,7 +707,7 @@ void OtSceneEditor::renderEntity(OtEntity entity) {
 
 		if (OtUiInputText("##rename", component.tag)) {
 			auto newValue = component.serialize(nullptr).dump();
-			nextTask = std::make_shared<OtEditComponentTask<OtCoreComponent>>(scene.get(), entity, oldValue, newValue);
+			nextTask = std::make_shared<OtEditComponentTask<OtCoreComponent>>(scene, entity, oldValue, newValue);
 		}
 
 		if (!startEntityRenaming && !ImGui::IsItemFocused()) {
@@ -725,7 +731,7 @@ void OtSceneEditor::renderEntity(OtEntity entity) {
 	ImGui::SameLine(right - buttonSize * 2.0f - ImGui::GetStyle().FramePadding.y);
 
 	if (ImGui::Button("x##remove", ImVec2(buttonSize, buttonSize))) {
-		nextTask = std::make_shared<OtDeleteEntityTask>(scene.get(), entity);
+		nextTask = std::make_shared<OtDeleteEntityTask>(scene, entity);
 	}
 
 	// add button to add an entity
@@ -759,6 +765,7 @@ void OtSceneEditor::renderChildEntities(OtEntity entity) {
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2());
 
 	// process all children
+	auto scene = asset->getScene();
 	auto child = scene->getFirstChild(entity);
 
 	while (scene->isValidEntity(child)) {
@@ -771,7 +778,7 @@ void OtSceneEditor::renderChildEntities(OtEntity entity) {
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("entity")) {
 				OtEntity entityToBeMoved;
 				std::memcpy(&entityToBeMoved, payload->Data, sizeof(OtEntity));
-				nextTask = std::make_shared<OtMoveEntityTask>(scene.get(), child, entityToBeMoved, true);
+				nextTask = std::make_shared<OtMoveEntityTask>(scene, child, entityToBeMoved, true);
 			}
 
 			ImGui::EndDragDropTarget();
@@ -812,7 +819,7 @@ void OtSceneEditor::renderNewEntitiesMenu(OtEntity entity) {
 
 	for (auto& predefined : predefinedEntities) {
 		if (ImGui::MenuItem(predefined.name)) {
-			nextTask = std::make_shared<OtCreateEntityTask>(scene.get(), entity, predefined.type);
+			nextTask = std::make_shared<OtCreateEntityTask>(asset->getScene(), entity, predefined.type);
 		}
 	}
 }
@@ -824,8 +831,8 @@ void OtSceneEditor::renderNewEntitiesMenu(OtEntity entity) {
 
 template <typename T>
 void OtSceneEditor::renderNewComponent() {
-	if (ImGui::MenuItem(T::name, nullptr, false, !scene->hasComponent<T>(selectedEntity))) {
-		nextTask = std::make_shared<OtCreateComponentTask<T>>(scene.get(), selectedEntity);
+	if (ImGui::MenuItem(T::name, nullptr, false, !asset->getScene()->hasComponent<T>(selectedEntity))) {
+		nextTask = std::make_shared<OtCreateComponentTask<T>>(asset->getScene(), selectedEntity);
 	}
 }
 
@@ -836,12 +843,12 @@ void OtSceneEditor::renderNewComponent() {
 
 template <typename T>
 void OtSceneEditor::renderComponentEditor() {
-	auto& component = scene->getComponent<T>(selectedEntity);
+	auto& component = asset->getScene()->getComponent<T>(selectedEntity);
 	auto oldValue = component.serialize(nullptr).dump();
 
 	if (component.renderUI()) {
 		auto newValue = component.serialize(nullptr).dump();
-		nextTask = std::make_shared<OtEditComponentTask<T>>(scene.get(), selectedEntity, oldValue, newValue);
+		nextTask = std::make_shared<OtEditComponentTask<T>>(asset->getScene(), selectedEntity, oldValue, newValue);
 	}
 }
 
@@ -853,7 +860,7 @@ void OtSceneEditor::renderComponentEditor() {
 template <typename T>
 void OtSceneEditor::renderComponent() {
 	// only render if entity has this component
-	if (scene->hasComponent<T>(selectedEntity)) {
+	if (asset->getScene()->hasComponent<T>(selectedEntity)) {
 		// add a new ID to the stack to avoid collisions
 		ImGui::PushID(reinterpret_cast<void*>(typeid(T).hash_code()));
 
@@ -883,7 +890,7 @@ void OtSceneEditor::renderComponent() {
 
 		// remove component (if required)
 		if (removeComponent) {
-			nextTask = std::make_shared<OtDeleteComponentTask<T>>(scene.get(), selectedEntity);
+			nextTask = std::make_shared<OtDeleteComponentTask<T>>(asset->getScene(), selectedEntity);
 		}
 
 		// clean ID stack
@@ -906,7 +913,7 @@ bool OtSceneEditor::isDirty() {
 //
 
 void OtSceneEditor::cutEntity() {
-	nextTask = std::make_shared<OtCutEntityTask>(scene.get(), selectedEntity, clipboard);
+	nextTask = std::make_shared<OtCutEntityTask>(asset->getScene(), selectedEntity, clipboard);
 }
 
 
@@ -915,7 +922,7 @@ void OtSceneEditor::cutEntity() {
 //
 
 void OtSceneEditor::copyEntity() {
-	nextTask = std::make_shared<OtCopyEntityTask>(scene.get(), selectedEntity, clipboard);
+	nextTask = std::make_shared<OtCopyEntityTask>(asset->getScene(), selectedEntity, clipboard);
 }
 
 
@@ -924,7 +931,7 @@ void OtSceneEditor::copyEntity() {
 //
 
 void OtSceneEditor::pasteEntity() {
-	nextTask = std::make_shared<OtPasteEntityTask>(scene.get(), selectedEntity, clipboard);
+	nextTask = std::make_shared<OtPasteEntityTask>(asset->getScene(), selectedEntity, clipboard);
 }
 
 
@@ -933,21 +940,5 @@ void OtSceneEditor::pasteEntity() {
 //
 
 void OtSceneEditor::duplicateEntity() {
-	nextTask = std::make_shared<OtDuplicateEntityTask>(scene.get(), selectedEntity);
-}
-
-
-//
-//	OtSceneEditor::create
-//
-
-std::shared_ptr<OtSceneEditor> OtSceneEditor::create(const std::string& path) {
-	std::shared_ptr<OtSceneEditor> editor = std::make_shared<OtSceneEditor>();
-	editor->setFilePath(path);
-
-	if (editor->fileExists()) {
-		editor->load();
-	}
-
-	return editor;
+	nextTask = std::make_shared<OtDuplicateEntityTask>(asset->getScene(), selectedEntity);
 }

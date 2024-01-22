@@ -17,7 +17,7 @@
 
 #include "imgui.h"
 
-#include "OtGraph.h"
+#include "OtGraphAsset.h"
 
 #include "OtEditor.h"
 #include "OtEditorTask.h"
@@ -32,7 +32,12 @@
 class OtGraphEditor : public OtEditor {
 public:
 	// constructor
-	OtGraphEditor();
+	OtGraphEditor(const std::string& path) : OtEditor(path) {
+		initialize();
+	}
+
+	// initialize the editor
+	void initialize();
 
 	// get file extension
 	inline std::string getFileExtension() override { return ".otg"; }
@@ -45,7 +50,8 @@ public:
 	void renderMenu() override;
 	void renderEditor() override;
 
-	// is the editor's content "dirty" (unsaved);
+	// get editor status
+	inline bool isReady() override { return asset.isReady(); }
 	bool isDirty() override;
 
 	// clipboard operations
@@ -55,12 +61,11 @@ public:
 	void deleteSelectedNodes();
 	void duplicateSelectedNodes();
 
-	// create a new object
-	static std::shared_ptr<OtGraphEditor> create(const std::string& path);
-
 private:
-	// the graph being edited and the editor's UI
-	std::unique_ptr<OtGraph> graph;
+	// the graph being edited
+	OtAsset<OtGraphAsset> asset;
+
+	// the editor's UI
 	std::unique_ptr<OtGraphWidget> widget;
 
 	// to handle do/undo/redo

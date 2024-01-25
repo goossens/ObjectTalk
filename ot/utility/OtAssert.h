@@ -20,4 +20,12 @@
 //	OtAssert
 //
 
+#if OT_DEBUG
+
 #define OtAssert(assertion) if (!(assertion)) OtLogFatal(OtFormat("Assertion error: %s", #assertion))
+
+#else
+
+#define OtAssert(assertion) ((void)0)
+
+#endif

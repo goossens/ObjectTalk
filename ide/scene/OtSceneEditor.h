@@ -34,19 +34,15 @@
 class OtSceneEditor : public OtEditor {
 public:
 	// constructor
-	OtSceneEditor(const std::string& path) : OtEditor(path) {
-		initialize();
-	}
+	OtSceneEditor();
 
-	// initialize the editor
-	void initialize();
-
-	// get file extension
+	// file handling functions
+	void newFile(const std::string& path) override;
+	void openFile(const std::string& path) override;
+	void saveFile() override;
+	void saveAsFile(const std::string& path) override;
 	inline std::string getFileExtension() override { return ".ots"; }
-
-	// load/save content
-	void load() override;
-	void save() override;
+	inline std::string getFilePath() override { return asset->getPath(); }
 
 	// get editor status
 	inline bool isReady() override { return asset.isReady(); }
@@ -59,6 +55,10 @@ public:
 	void duplicateEntity();
 
 private:
+	// metadata methods
+	void processMetaData();
+	void generateMetaData();
+
 	// switch scene camera
 	void setSceneCamera(int cameraNumber);
 
@@ -98,7 +98,12 @@ private:
 
 	// the scene being edited
 	OtAsset<OtSceneAsset> asset;
+	OtAssetPostLoadListerner loadListener;
+
+	// a renderer to show the scene
 	std::unique_ptr<OtSceneRenderer> renderer;
+
+	// tracking entities for certain tasks
 	OtEntity selectedEntity = OtEntityNull;
 	OtEntity renamingEntity = OtEntityNull;
 

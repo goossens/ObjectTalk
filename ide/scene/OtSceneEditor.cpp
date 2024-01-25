@@ -42,22 +42,64 @@
 //	OtSceneEditor::initialize
 //
 
-void OtSceneEditor::initialize() {
-	asset = path;
+OtSceneEditor::OtSceneEditor() {
 	renderer = std::make_unique<OtSceneRenderer>();
 }
 
 
 //
-//	OtSceneEditor::load
+//	OtSceneEditor::newFile
 //
 
-void OtSceneEditor::load() {
-	// load scene from file
-	nlohmann::json metadata;
-	asset->getScene()->load(path, &metadata);
+void OtSceneEditor::newFile(const std::string& path) {
+	// setup the asset
+	asset = path;
+}
 
-	// process metadata
+
+//
+//	OtSceneEditor::openFile
+//
+
+void OtSceneEditor::openFile(const std::string& path) {
+	// setup the asset
+	asset.load(path, [this]() {
+		processMetaData();
+	});
+}
+
+
+//
+//	OtSceneEditor::saveFile
+//
+
+void OtSceneEditor::saveFile() {
+	generateMetaData();
+	asset.save();
+	taskManager.baseline();
+}
+
+
+//
+//	OtSceneEditor::saveAsFile
+//
+
+void OtSceneEditor::saveAsFile(const std::string& path) {
+	generateMetaData();
+	asset.saveAs(path);
+	taskManager.baseline();
+}
+
+
+//
+//	OtSceneEditor::processMetaData
+//
+
+void OtSceneEditor::processMetaData() {
+	// parse the memtadata
+	nlohmann::json metadata = nlohmann::json::parse(asset->getScene()->getMetaData().c_str());
+
+	// process metadata and set editor properties
 	editorCamera.setPreset(metadata.value("cameraPreset", OtSceneEditorCamera::smallScenePreset));
 
 	if (metadata.contains("grid")) {
@@ -77,10 +119,10 @@ void OtSceneEditor::load() {
 
 
 //
-//	OtSceneEditor::save
+//	OtSceneEditor::generateMetaData
 //
 
-void OtSceneEditor::save() {
+void OtSceneEditor::generateMetaData() {
 	// build metadata
 	auto metadata = nlohmann::json::object();
 	metadata["type"] = "scene";
@@ -98,9 +140,8 @@ void OtSceneEditor::save() {
 	gizmo["snapInterval"] = guizmoSnapInterval;
 	metadata["gizmo"] = gizmo;
 
-	// write scene to file
-	asset->getScene()->save(path, &metadata);
-	taskManager.baseline();
+	// set the metadata
+	asset->getScene()->setMetaData(metadata.dump());
 }
 
 

@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <functional>
 #include <string>
 #include <thread>
 #include <unordered_map>
@@ -43,17 +44,26 @@ public:
 
 	// acquire an existing asset
 	template<typename T>
-	inline T* acquire(const std::string& path) {
+	inline T* acquire(const std::string& path, std::function<void()> callback) {
 		static_assert(std::is_base_of<OtAssetBase, T>::value, "Class is not derived from OtAssetBase");
-		return dynamic_cast<T*>(findAsset(path));
+		return dynamic_cast<T*>(findAsset(path, callback));
 	}
 
-	// rename an asset
-	void renameAsset(const std::string& newName, const std::string& oldName);
+	template<typename T>
+	inline T* acquire(const std::string& path) {
+		return acquire<T>(path, [](){});
+	}
+
+	// save an updated asset
+	void save(OtAssetBase* asset);
+	void saveAs(OtAssetBase* asset, const std::string& newName);
 
 private:
 	// find asset instance
-	OtAssetBase* findAsset(const std::string& path);
+	OtAssetBase* findAsset(const std::string& path, std::function<void()> callback);
+
+	// schedule a callback
+	void scheduleLoadedCallback(std::function<void()> callback);
 
 	// create a dummy asset
 	OtAssetBase* createDummy(const std::string& path, OtAssetBase::AssetState state);

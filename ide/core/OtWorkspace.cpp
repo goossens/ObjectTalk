@@ -195,12 +195,12 @@ void OtWorkspace::newFile() {
 //	OtWorkspace::getUntitledName
 //
 
-std::string OtWorkspace::getUntitledName(const std::string& ext) {
+std::string OtWorkspace::getUntitledName(const char* ext) {
 	static int seqno = 1;
 	std::string name;
 
 	while (!name.size()) {
-		std::string temp = OtFormat("untitled%d%s", seqno++, ext.c_str());
+		std::string temp = OtFormat("untitled%d%s", seqno++, ext);
 
 		if (!findEditor(temp)) {
 			name = temp;
@@ -216,7 +216,9 @@ std::string OtWorkspace::getUntitledName(const std::string& ext) {
 //
 
 void OtWorkspace::newScript() {
-	editors.push_back(std::make_shared<OtObjectTalkEditor>(getUntitledName(".ot")));
+	auto editor = std::make_shared<OtObjectTalkEditor>();
+	editor->newFile(getUntitledName(".ot"));
+	editors.push_back(editor);
 	state = editState;
 }
 
@@ -226,7 +228,9 @@ void OtWorkspace::newScript() {
 //
 
 void OtWorkspace::newScene() {
-	editors.push_back(std::make_shared<OtSceneEditor>(getUntitledName(".ots")));
+	auto editor = std::make_shared<OtSceneEditor>();
+	editor->newFile(getUntitledName(".ots"));
+	editors.push_back(editor);
 	state = editState;
 }
 
@@ -236,7 +240,9 @@ void OtWorkspace::newScene() {
 //
 
 void OtWorkspace::newGraph() {
-	editors.push_back(std::make_shared<OtGraphEditor>(getUntitledName(".otg")));
+	auto editor = std::make_shared<OtGraphEditor>();
+	editor->newFile(getUntitledName(".otg"));
+	editors.push_back(editor);
 	state = editState;
 }
 
@@ -275,17 +281,20 @@ void OtWorkspace::openFile(const std::string& path, int visualState) {
 
 		// open correct editor
 		if (extension == ".ot") {
-			editor = std::make_shared<OtObjectTalkEditor>(path);
+			editor = std::make_shared<OtObjectTalkEditor>();
+			editor->openFile(path);
 			editors.push_back(editor);
 			state = editState;
 
 		} else if (extension == ".ots") {
-			editor = std::make_shared<OtSceneEditor>(path);
+			editor = std::make_shared<OtSceneEditor>();
+			editor->openFile(path);
 			editors.push_back(editor);
 			state = editState;
 
 		} else if (extension == ".otg") {
-			editor = std::make_shared<OtGraphEditor>(path);
+			editor = std::make_shared<OtGraphEditor>();
+			editor->openFile(path);
 			editors.push_back(editor);
 			state = editState;
 
@@ -294,13 +303,13 @@ void OtWorkspace::openFile(const std::string& path, int visualState) {
 			errorMessage = OtFormat("Can't open file with extension: %s", extension.c_str());
 		}
 
-		// set the state (tab of floating window)
-		editor->setVisualState(visualState);
-
 	} else {
 		// editor already exists, just activate it
 		activateEditor(editor);
 	}
+
+	// set the state (tab of floating window)
+	editor->setVisualState(visualState);
 }
 
 
@@ -309,7 +318,7 @@ void OtWorkspace::openFile(const std::string& path, int visualState) {
 //
 
 void OtWorkspace::saveFile() {
-	activeEditor->save();
+	activeEditor->saveFile();
 }
 
 
@@ -323,7 +332,7 @@ void OtWorkspace::saveAsFile() {
 		"Save File as...",
 		activeEditor->getFileExtension().c_str(),
 		OtPathGetCurrentWorkingDirectory(),
-		activeEditor->getShortName(),
+		OtPathGetFilename(activeEditor->getFilePath()),
 		1,
 		nullptr,
 		ImGuiFileDialogFlags_Modal |
@@ -477,7 +486,9 @@ void OtWorkspace::deleteEditor(std::shared_ptr<OtEditor> editor) {
 
 std::shared_ptr<OtEditor> OtWorkspace::findEditor(const std::string& path) {
 	for (auto& editor : editors) {
-		if (editor->getFilePath() == path || editor->getShortName() == path) {
+		auto filePath = editor->getFilePath();
+
+		if (filePath == path || OtPathGetFilename(filePath) == path) {
 			return editor;
 		}
 	}
@@ -594,7 +605,7 @@ void OtWorkspace::renderEditors() {
 				}
 
 				// create tab and editor
-				if (ImGui::BeginTabItem(editor->getShortName().c_str(), nullptr, flags)) {
+				if (ImGui::BeginTabItem(OtPathGetFilename(editor->getFilePath()).c_str(), nullptr, flags)) {
 					ImGui::BeginChild("editor", ImVec2(), ImGuiChildFlags_Border, ImGuiWindowFlags_MenuBar);
 
 					if (editor->isReady()) {
@@ -639,7 +650,7 @@ void OtWorkspace::renderEditors() {
 
 			// render editor in seperate window
 			bool open = true;
-			ImGui::Begin(editor->getShortName().c_str(), &open, flags);
+			ImGui::Begin(OtPathGetFilename(editor->getFilePath()).c_str(), &open, flags);
 
 			if (editor->isReady()) {
 				editor->renderMenu();
@@ -763,9 +774,8 @@ void OtWorkspace::renderSaveAs() {
 		// open selected file if required
 		if (ImGuiFileDialog::Instance()->IsOk()) {
 			auto path = ImGuiFileDialog::Instance()->GetFilePathName();
-			activeEditor->setFilePath(path);
-
-			activeEditor->save();
+			path = OtPathReplaceExtension(path, activeEditor->getFileExtension());
+			activeEditor->saveAsFile(path);
 			state = editState;
 
 			OtPathChangeDirectory(OtPathGetParent(path));

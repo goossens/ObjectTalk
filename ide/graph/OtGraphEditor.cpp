@@ -34,33 +34,53 @@
 
 
 //
-//	OtGraphEditor::initialize
+//	OtGraphEditor::OtGraphEditor
 //
 
-void OtGraphEditor::initialize() {
-	asset = path;
+OtGraphEditor::OtGraphEditor() {
 	widget = std::make_unique<OtGraphWidget>();
 }
 
 
 //
-//	OtGraphEditor::load
+//	OtGraphEditor::newFile
 //
 
-void OtGraphEditor::load() {
-	// load graph from file
+void OtGraphEditor::newFile(const std::string& path) {
+	// setup the asset
 	asset = path;
 }
 
 
 //
-//	OtGraphEditor::save
+//	OtGraphEditor::openFile
 //
 
-void OtGraphEditor::save() {
-	// save graph to file
-	asset.saveAs(path);
+void OtGraphEditor::openFile(const std::string& path) {
+	// setup the asset
+	asset.load(path);
 }
+
+
+//
+//	OtGraphEditor::saveFile
+//
+
+void OtGraphEditor::saveFile() {
+	asset.save();
+	taskManager.baseline();
+}
+
+
+//
+//	OtGraphEditor::saveAsFile
+//
+
+void OtGraphEditor::saveAsFile(const std::string& path) {
+	asset.saveAs(path);
+	taskManager.baseline();
+}
+
 
 
 //

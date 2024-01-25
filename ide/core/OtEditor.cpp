@@ -19,24 +19,6 @@
 
 
 //
-//	OtEditor::setFilePath
-//
-
-void OtEditor::setFilePath(const std::string& p) {
-	path = OtPathGetExtension(p) == getFileExtension() ? p : OtPathReplaceExtension(p, getFileExtension());
-}
-
-
-//
-//	OtEditor::fileExists
-//
-
-bool OtEditor::fileExists() {
-	return OtPathIsRegularFile(path);
-}
-
-
-//
 //	OtEditor::renderFileMenu
 //
 
@@ -46,7 +28,7 @@ void OtEditor::renderFileMenu() {
 		if (ImGui::MenuItem("Open...", OT_UI_SHORTCUT "O")) { OtMessageBus::instance()->send("open"); }
 		ImGui::Separator();
 
-		if (fileExists()) {
+		if (OtPathIsRegularFile(getFilePath())) {
 			if (ImGui::MenuItem("Save", OT_UI_SHORTCUT "S", nullptr, isDirty())) { OtMessageBus::instance()->send("save"); }
 			if (ImGui::MenuItem("Save As...")) { OtMessageBus::instance()->send("saveas"); }
 
@@ -55,7 +37,7 @@ void OtEditor::renderFileMenu() {
 		}
 
 		ImGui::Separator();
-		if (ImGui::MenuItem("Run", OT_UI_SHORTCUT "R", nullptr, !isDirty() && fileExists())) { OtMessageBus::instance()->send("run"); }
+		if (ImGui::MenuItem("Run", OT_UI_SHORTCUT "R", nullptr, !isDirty() && OtPathIsRegularFile(getFilePath()))) { OtMessageBus::instance()->send("run"); }
 
 		ImGui::Separator();
 		if (ImGui::MenuItem("Close", OT_UI_SHORTCUT "W")) { OtMessageBus::instance()->send("close"); }
@@ -73,7 +55,7 @@ void OtEditor::renderFileMenu() {
 
 		} else if (ImGui::IsKeyPressed(ImGuiKey_S)) {
 			if (isDirty()) {
-				if (fileExists()) {
+				if (OtPathIsRegularFile(getFilePath())) {
 					OtMessageBus::instance()->send("save");
 
 				} else {
@@ -82,7 +64,7 @@ void OtEditor::renderFileMenu() {
 			}
 
 		} else if (ImGui::IsKeyPressed(ImGuiKey_R)) {
-			if (!isDirty() && fileExists()) {
+			if (!isDirty() && OtPathIsRegularFile(getFilePath())) {
 				OtMessageBus::instance()->send("run");
 			}
 

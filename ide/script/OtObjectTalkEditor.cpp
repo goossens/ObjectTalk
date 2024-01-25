@@ -10,9 +10,6 @@
 //
 
 #include <algorithm>
-#include <fstream>
-#include <iostream>
-#include <sstream>
 
 #include "imgui.h"
 
@@ -54,10 +51,10 @@ const static TextEditor::Palette colorPalette = { {
 
 
 //
-//	OtObjectTalkEditor::initialize
+//	OtObjectTalkEditor::OtObjectTalkEditor
 //
 
-void OtObjectTalkEditor::initialize() {
+OtObjectTalkEditor::OtObjectTalkEditor() {
 	editor.SetLanguageDefinition(OtObjectTalkLanguageGetDefinition());
 	editor.SetPalette(colorPalette);
 	editor.SetLineSpacing(1.25f);
@@ -65,61 +62,50 @@ void OtObjectTalkEditor::initialize() {
 	editor.SetShortTabsEnabled(true);
 	editor.SetShowMatchingBrackets(true);
 	editor.SetCompletePairedGlyphs(true);
-
-	if (!OtPathIsVirtual(path) && !OtPathIsUntitled(path)) {
-		load();
-	}
 }
 
 
 //
-//	OtObjectTalkEditor::load
+//	OtObjectTalkEditor::newFile
 //
 
-void OtObjectTalkEditor::load() {
-	// load text from file
-	std::stringstream buffer;
+void OtObjectTalkEditor::newFile(const std::string& path) {
+	// setup the asset
+	asset = path;
+}
 
-	try {
-		std::ifstream stream(path.c_str());
 
-		if (stream.fail()) {
-			OtError("Can't read from file [%s]", path.c_str());
-		}
+//
+//	OtObjectTalkEditor::openFile
+//
 
-		buffer << stream.rdbuf();
-		stream.close();
+void OtObjectTalkEditor::openFile(const std::string& path) {
+	// setup the asset
+	asset.load(path, [this]() {
+		editor.SetText(asset->getText());
+		version = editor.GetUndoIndex();
+	});
+}
 
-	} catch (std::exception& e) {
-		OtError("Can't read from file [%s], error: %s", path.c_str(), e.what());
-	}
 
-	editor.SetText(buffer.str());
+//
+//	OtObjectTalkEditor::saveFile
+//
+
+void OtObjectTalkEditor::saveFile() {
+	asset->setText(editor.GetText());
+	asset.save();
 	version = editor.GetUndoIndex();
 }
 
 
 //
-//	OtObjectTalkEditor::save
+//	OtObjectTalkEditor::saveAsFile
 //
 
-void OtObjectTalkEditor::save() {
-	try {
-		// write text to file
-		std::ofstream stream(path.c_str());
-
-		if (stream.fail()) {
-			OtError("Can't write to file [%s]", path.c_str());
-		}
-
-		stream << editor.GetText();
-		stream.close();
-
-	} catch (std::exception& e) {
-		OtError("Can't write to file [%s], error: %s", path.c_str(), e.what());
-	}
-
-	// reset current version number (marking the content as clean)
+void OtObjectTalkEditor::saveAsFile(const std::string& path) {
+	asset->setText(editor.GetText());
+	asset.saveAs(path);
 	version = editor.GetUndoIndex();
 }
 

@@ -12,8 +12,6 @@
 #include <fstream>
 #include <sstream>
 
-#include "nlohmann/json.hpp"
-
 #include "OtException.h"
 
 #include "OtPathTools.h"
@@ -25,7 +23,7 @@
 //	OtScene::load
 //
 
-void OtScene::load(const std::string& path, nlohmann::json* metadata) {
+void OtScene::load(const std::string& path) {
 	// load scene from file
 	std::stringstream buffer;
 
@@ -47,9 +45,7 @@ void OtScene::load(const std::string& path, nlohmann::json* metadata) {
 	auto tree = nlohmann::json::parse(buffer.str());
 
 	// extract metadata
-	if (metadata) {
-		*metadata = tree["metadata"];
-	}
+	metadata = tree["metadata"].dump();
 
 	// extract entities
 	auto basedir = OtPathGetParent(path);
@@ -64,10 +60,10 @@ void OtScene::load(const std::string& path, nlohmann::json* metadata) {
 //	OtScene::save
 //
 
-void OtScene::save(const std::string& path, nlohmann::json* metadata) {
+void OtScene::save(const std::string& path) {
 	// create json data structure and add metadata
 	auto data = nlohmann::json::object();
-	data["metadata"] = metadata ? *metadata : nlohmann::json::object();
+	data["metadata"] = nlohmann::json::parse(metadata.c_str());
 
 	// write entities and components
 	auto entities = nlohmann::json::array();

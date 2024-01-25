@@ -27,33 +27,30 @@
 class OtObjectTalkEditor : public OtEditor {
 public:
 	// constructor
-	OtObjectTalkEditor(const std::string& path) : OtEditor(path) {
-		initialize();
-	}
+	OtObjectTalkEditor();
 
-	// initialize the editor
-	void initialize();
+	// file handling functions
+	void newFile(const std::string& path) override;
+	void openFile(const std::string& path) override;
+	void saveFile() override;
+	void saveAsFile(const std::string& path) override;
+	inline std::string getFileExtension() override { return ".ot"; }
+	inline std::string getFilePath() override { return asset->getPath(); }
 
-	// get file extension
-	std::string getFileExtension() override { return ".ot"; }
-
-	// load/save content
-	void load() override;
-	void save() override;
+	// get editor status
+	inline bool isReady() override { return asset.isReady(); }
+	bool isDirty() override;
 
 	// render the parts
 	void renderMenu() override;
 	void renderEditor() override;
-
-	// is the editor's content "dirty" (unsaved);
-	bool isDirty() override;
 
 	// update error markers
 	void highlightError(size_t line, const std::string& error);
 	void clearError();
 
 private:
-	// the graph being edited
+	// the script being edited
 	OtAsset<OtScriptAsset> asset;
 
 	// visual text editor

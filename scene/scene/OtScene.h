@@ -15,7 +15,6 @@
 #include <string>
 
 #include "glm/glm.hpp"
-#include "nlohmann/json_fwd.hpp"
 
 #include "OtEcs.h"
 
@@ -67,8 +66,12 @@
 class OtScene : public OtEcs {
 public:
 	// load and save scene
-	void load(const std::string& path, nlohmann::json* metadata=nullptr);
-	void save(const std::string& path, nlohmann::json* metadata=nullptr);
+	void load(const std::string& path);
+	void save(const std::string& path);
+
+	// access the metadata
+	inline void setMetaData(const std::string& m) { metadata = m; }
+	inline std::string& getMetaData() { return metadata; }
 
 	// (de)serialize entiry from/to string
 	std::string serializeEntity(OtEntity entity, int indent=-1, char character=' ', std::string* basedir=nullptr);
@@ -78,6 +81,9 @@ public:
 	glm::mat4 getGlobalTransform(OtEntity entity);
 
 private:
+	// metadata for editor
+	std::string metadata{"{}"};
+
 	// (de)serialize from/to JSON
 	nlohmann::json serializeEntityToJson(OtEntity entity, std::string* basedir);
 	OtEntity deserializeEntityFromJson(nlohmann::json& data, std::string* basedir);

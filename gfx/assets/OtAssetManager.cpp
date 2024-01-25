@@ -17,6 +17,7 @@
 
 #include "OtAssert.h"
 #include "OtFormat.h"
+#include "OtLibuv.h"
 #include "OtLog.h"
 #include "OtNumbers.h"
 
@@ -55,8 +56,7 @@ void OtAssetManager::start() {
 
 			// load next asset
 			if (asset) {
-				asset->assetState = OtAssetBase::loadingState;
-				asset->assetState = asset->load() ? OtAssetBase::readyState : OtAssetBase::invalidState;
+				asset->postLoad(asset->load() ? OtAssetBase::readyState : OtAssetBase::invalidState);
 
 			} else {
 				// a null asset means we shutdown the loader
@@ -133,41 +133,26 @@ void OtAssetManager::renderUI() {
 
 
 //
-//	OtAssetManager::renameAsset
-//
-
-void OtAssetManager::renameAsset(const std::string& newName, const std::string& oldName) {
-	if (assets.find(oldName) != assets.end()) {
-		auto asset = assets[oldName];
-		assets[newName] = asset;
-		assets.erase(oldName);
-
-	} else {
-		OtLogFatal(OtFormat("Can't rename unknown asset [%s]", oldName.c_str()));
-	}
-}
-
-
-//
 //	OtAssetManager::findAsset
 //
 
-OtAssetBase* OtAssetManager::findAsset(const std::string& path) {
+OtAssetBase* OtAssetManager::findAsset(const std::string& path, std::function<void()> callback) {
 	// see if we are already tracking this asset
 	if (assets.find(path) != assets.end()) {
+		scheduleLoadedCallback(callback);
 		return assets[path];
 
 	// is this a virtual asset (i.e. a named asset that only exists in memory)
 	// or a new asset that hasn't been saved yet
 	} else if (OtPathIsVirtual(path) || OtPathIsUntitled(path)) {
-		auto instance = OtAssetFactory::instance()->instantiate(path);
+		auto asset = OtAssetFactory::instance()->instantiate(path);
 
 		// is this a supported asset type
-		if (instance) {
-			instance->path = path;
-			instance->assetState = OtAssetBase::readyState;
-			assets[path] = instance;
-			return instance;
+		if (asset) {
+			asset->create(path);
+			assets[path] = asset;
+			scheduleLoadedCallback(callback);
+			return asset;
 
 		} else {
 			// unknown asset type, create a dummy asset
@@ -178,14 +163,21 @@ OtAssetBase* OtAssetManager::findAsset(const std::string& path) {
 	// is this an existing file
 	} else if (OtPathIsRegularFile(path)) {
 		// ensure the factory can create an asset for this path
-		auto instance = OtAssetFactory::instance()->instantiate(path);
+		auto asset = OtAssetFactory::instance()->instantiate(path);
 
-		if (instance) {
-			instance->path = path;
-			instance->assetState = OtAssetBase::scheduledState;
-			assets[path] = instance;
-			queue.push(instance);
-			return instance;
+		if (asset) {
+			// track new asset, put it onto the loading queue and send notification
+			assets[path] = asset;
+			queue.push(asset);
+			asset->preLoad(path);
+
+			// register for load completion event so we can call callback
+			asset->onPostLoad([this, callback]() {
+				scheduleLoadedCallback(callback);
+				return false;
+			});
+
+			return asset;
 
 		} else {
 			// unknown asset type, create a dummy asset
@@ -198,6 +190,58 @@ OtAssetBase* OtAssetManager::findAsset(const std::string& path) {
 		OtLogWarning(OtFormat("Asset [%s] not found", path.c_str()));
 		return createDummy(path, OtAssetBase::missingState);
 	}
+}
+
+
+//
+//	OtAssetManager::scheduleLoadedCallback
+//
+
+void OtAssetManager::scheduleLoadedCallback(std::function<void()> callback) {
+	struct Handle {
+		uv_async_t async;
+		std::function<void()> callback;
+	};
+
+	auto callbackHandle = new Handle;
+	callbackHandle->callback = callback;
+
+	auto status = uv_async_init(uv_default_loop(), (uv_async_t*) callbackHandle, [](uv_async_t* handle){
+		// execute callback on completion
+		((Handle*) handle)->callback();
+
+		// cleanup
+		uv_close((uv_handle_t*) handle, [](uv_handle_t* handle) {
+			delete (Handle*) handle;
+		});
+	});
+
+	UV_CHECK_ERROR("uv_async_init", status);
+
+	status = uv_async_send((uv_async_t*) callbackHandle);
+	UV_CHECK_ERROR("uv_async_send", status);
+}
+
+
+//
+//	OtAssetManager::save
+//
+
+void OtAssetManager::save(OtAssetBase* asset) {
+	asset->preSave();
+	asset->save();
+	asset->postSave();
+}
+
+
+//
+//	OtAssetManager::saveAs
+//
+
+void OtAssetManager::saveAs(OtAssetBase* asset, const std::string &newName) {
+	asset->preSave(newName);
+	asset->save();
+	asset->postSave();
 }
 
 

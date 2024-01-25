@@ -32,27 +32,23 @@
 class OtGraphEditor : public OtEditor {
 public:
 	// constructor
-	OtGraphEditor(const std::string& path) : OtEditor(path) {
-		initialize();
-	}
+	OtGraphEditor();
 
-	// initialize the editor
-	void initialize();
-
-	// get file extension
+	// file handling functions
+	void newFile(const std::string& path) override;
+	void openFile(const std::string& path) override;
+	void saveFile() override;
+	void saveAsFile(const std::string& path) override;
 	inline std::string getFileExtension() override { return ".otg"; }
-
-	// load/save content
-	void load() override;
-	void save() override;
-
-	// render the editor
-	void renderMenu() override;
-	void renderEditor() override;
+	inline std::string getFilePath() override { return asset->getPath(); }
 
 	// get editor status
 	inline bool isReady() override { return asset.isReady(); }
 	bool isDirty() override;
+
+	// render the editor
+	void renderMenu() override;
+	void renderEditor() override;
 
 	// clipboard operations
 	void cutSelectedNodes();

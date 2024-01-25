@@ -32,13 +32,15 @@ public:
 	};
 
 	// constructors/destructor
-	OtEditor() = default;
-	OtEditor(const std::string& p) : path(p) {}
 	virtual inline ~OtEditor() {}
 
-	// load/save the document content
-	virtual inline void load() {}
-	virtual inline void save() {}
+	// these methods must be overriden by subclasses
+	virtual void newFile(const std::string& path) {}
+	virtual void openFile(const std::string& path) {}
+	virtual void saveFile() {}
+	virtual void saveAsFile(const std::string& path) {}
+	virtual std::string getFileExtension() { return ""; }
+	virtual std::string getFilePath() { return ""; }
 
 	// render the editor parts
 	virtual inline void renderMenu() {}
@@ -49,18 +51,9 @@ public:
 	inline bool isRenderedInTab() { return visualState == inTab; }
 	inline bool isRenderedInWindow() { return visualState == inWindow; }
 
-	// get the properties
-	virtual inline std::string getFileExtension() { return ""; }
-	inline std::string getFilePath() { return path; }
-	inline std::string getShortName() { return OtPathGetFilename(path); }
-
-	// get the properties
-	void setFilePath(const std::string& path);
-
 	// get editor status
 	virtual inline bool isReady() { return true; }
 	virtual inline bool isDirty() { return false; }
-	bool fileExists();
 
 	// handle exception during a "run"
 	virtual inline void error(OtException e) {}
@@ -73,6 +66,5 @@ protected:
 	void renderCommonViewMenuItems();
 
 	// properties
-	std::string path;
 	int visualState = inTab;
 };

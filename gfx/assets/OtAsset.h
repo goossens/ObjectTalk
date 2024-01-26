@@ -15,8 +15,6 @@
 #include <string>
 
 #include "OtAssert.h"
-#include "OtFormat.h"
-#include "OtLog.h"
 
 #include "OtAssetBase.h"
 #include "OtAssetManager.h"
@@ -37,9 +35,6 @@
 template <typename T>
 class OtAsset {
 public:
-	// constructor
-	OtAsset() = default;
-
 	// clear the asset reference
 	inline void clear() {
 		ptr = nullptr;
@@ -47,33 +42,34 @@ public:
 
 	// assignment (which also loads the asset)
 	inline OtAsset& operator=(const std::string& path) {
-		ptr = OtAssetManager::instance()->acquire<T>(path);
+		load(path);
 		return *this;
 	}
 
-	// load/save the asset
-	inline void load(const std::string& path) {
-		ptr = OtAssetManager::instance()->acquire<T>(path);
+	// load the asset
+	inline void load(const std::string& path, std::function<void()> callback=nullptr) {
+		if (path == "") {
+			clear();
+
+		} else {
+			ptr = OtAssetManager::instance()->acquire<T>(path);
+		}
 	}
 
-	inline void load(const std::string& path, std::function<void()> callback) {
-		ptr = OtAssetManager::instance()->acquire<T>(path, callback);
-	}
+	// save the asset
 	inline void save() {
 		OtAssert(ptr);
 		OtAssetManager::instance()->save(ptr);
 	}
 
+	// save the asset under a new name
 	inline void saveAs(const std::string& path) {
 		OtAssert(ptr);
 		OtAssetManager::instance()->saveAs(ptr, path);
 	}
 
 	// get the current path
-	inline std::string getPath() {
-		OtAssert(ptr);
-		return ptr->getPath();
-	}
+	inline std::string getPath() { return ptr ? ptr->getPath() : ""; };
 
 	// access the actual asset
 	inline T* operator->() { return ptr; }
@@ -87,7 +83,12 @@ public:
 	inline bool isMissing() { return ptr && ptr->isMissing(); }
 	inline bool isInvalid() { return ptr && ptr->isInvalid(); }
 	inline bool isReady() { return ptr && ptr->isReady(); }
-	inline bool isVirtual() { return ptr && OtPathIsVirtual(ptr->getPath()); }
+	inline bool isVirtual() { return ptr && ptr->isVirtual(); }
+	inline bool canHandleVirtual() { return T::canHandleVirtual; }
+
+	// handle virtual mode
+	bool getVirtualMode() { return virtualMode; }
+	void setVirtualMode(bool vm) { virtualMode = vm; }
 
 	// register callbacks
 	// if the callback returns false, that listener is automatically removed
@@ -99,7 +100,7 @@ public:
 	inline OtAssetChangedListerner onChange(std::function<bool()> cb) { OtAssert(ptr); return ptr->onChange(cb); }
 	inline OtAssetRenamedListerner onReload(std::function<bool()> cb) { OtAssert(ptr); return ptr->onReload(cb); }
 
-	// cancel callbakcs
+	// cancel callbacks
 	inline void cancelListener(OtAssetPreLoadListerner listener) { OtAssert(ptr); ptr->unlisten(listener); }
 	inline void cancelListener(OtAssetPostLoadListerner listener) { OtAssert(ptr); ptr->unlisten(listener); }
 	inline void cancelListener(OtAssetPreSaveListerner listener) { OtAssert(ptr); ptr->unlisten(listener); }
@@ -110,9 +111,10 @@ public:
 	// render UI to show/select an asset path
 	inline bool renderUI(const char* label) {
 		std::string tmpPath = ptr ? ptr->getPath() : "";
+		virtualMode |= isVirtual();
 
-		if (OtUiFileSelector(label, tmpPath)) {
-			ptr = OtAssetManager::instance()->acquire<T>(tmpPath);
+		if (OtUiFileSelector(label, tmpPath, canHandleVirtual() ? &virtualMode : nullptr)) {
+			load(tmpPath);
 			return true;
 
 		} else {
@@ -123,4 +125,5 @@ public:
 private:
 	// pointer to the actual asset
 	T* ptr = nullptr;
+	bool virtualMode = false;
 };

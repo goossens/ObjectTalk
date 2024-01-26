@@ -18,6 +18,8 @@
 #include "OtLibuv.h"
 #include "OtPubSub.h"
 
+#include "OtPathTools.h"
+
 
 //
 //	Message types
@@ -61,9 +63,8 @@ public:
 	inline bool isMissing() { return assetState == missingState; }
 	inline bool isInvalid() { return assetState == invalidState; }
 	inline bool isReady() { return assetState == readyState; }
-
-	// can we handle virtual paths
-	virtual inline bool handlesVirtual() { return false; }
+	inline bool isVirtual() { return OtPathIsVirtual(path); }
+	static constexpr bool canHandleVirtual = false;
 
 	// event handlers
 	// if the callback returns false, that listener is automatically removed
@@ -111,6 +112,7 @@ private:
 	// functions to load/save the asset (to be implemented by derived classes)
 	virtual inline bool load() { return false; }
 	virtual inline bool save() { return false; }
+	virtual inline bool supportsVirtual() { return false; }
 
 	// internal housekeeping functions (primarily used by the asset manager)
 	void create(const std::string& path);

@@ -44,14 +44,9 @@ public:
 
 	// acquire an existing asset
 	template<typename T>
-	inline T* acquire(const std::string& path, std::function<void()> callback) {
+	inline T* acquire(const std::string& path, std::function<void()> callback=nullptr) {
 		static_assert(std::is_base_of<OtAssetBase, T>::value, "Class is not derived from OtAssetBase");
 		return dynamic_cast<T*>(findAsset(path, callback));
-	}
-
-	template<typename T>
-	inline T* acquire(const std::string& path) {
-		return acquire<T>(path, [](){});
 	}
 
 	// save an updated asset

@@ -190,14 +190,22 @@ bool OtUiEditVec4(const char* label, glm::vec4& vector, float speed, float minv,
 bool OtUiFileSelector(
 	const char* label,
 	std::string& path,
+	bool* virtualMode,
 	std::function<void(std::string& path)> create,
 	std::function<void(std::string& path)> edit) {
 
+	// determine button status
+	bool showClearButton = !path.empty();
+	bool showVirtualButton = virtualMode;
+	bool showCreateButton = path.empty() && create;
+	bool showEditButton = !path.empty() && edit;
+
 	// determine number of buttons
 	int buttons =
-		(path.empty() ? 0 : 1) +
-		(path.empty() && create ? 1 : 0) +
-		(!path.empty() && edit ? 1 : 0);
+		(showClearButton ? 1 : 0) +
+		(showVirtualButton ? 1 : 0) +
+		(showCreateButton ? 1 : 0) +
+		(showEditButton ? 1 : 0);
 
 	// calculate component sizes
 	float itemWidth = ImGui::CalcItemWidth();
@@ -220,27 +228,41 @@ bool OtUiFileSelector(
 	bool changed = false;
 	static bool creating = false;
 
-	// render path as a button
+	// get the filename without the path
 	auto filename = OtPathGetFilename(path);
-	ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2(0.0f, 0.5f));
 
-	if (ImGui::Button((filename + "##path").c_str(), ImVec2(pathWidth, itemHeight))) {
-		dialog->OpenDialog(
-			dialogID.c_str(),
-			"Select file...",
-			".*",
-			path,
-			1,
-			nullptr,
-			ImGuiFileDialogFlags_Modal |
-				ImGuiFileDialogFlags_DontShowHiddenFiles |
-				ImGuiFileDialogFlags_ReadOnlyFileNameField);
+	if (virtualMode && *virtualMode) {
+		// render path as a textfield
+		ImGui::SetNextItemWidth(pathWidth);
+		OtUiInputText("##virtualpath", filename, ImGuiInputTextFlags_NoUndoRedo);
+
+		if (ImGui::IsItemDeactivated() && path != "virtual:" + filename) {
+			path = "virtual:" + filename;
+			changed = true;
+		}
+
+	} else {
+		// render path as a button
+		ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2(0.0f, 0.5f));
+
+		if (ImGui::Button((filename + "##path").c_str(), ImVec2(pathWidth, itemHeight))) {
+			dialog->OpenDialog(
+				dialogID.c_str(),
+				"Select file...",
+				".*",
+				path,
+				1,
+				nullptr,
+				ImGuiFileDialogFlags_Modal |
+					ImGuiFileDialogFlags_DontShowHiddenFiles |
+					ImGuiFileDialogFlags_ReadOnlyFileNameField);
+		}
+
+		ImGui::PopStyleVar();
 	}
 
-	ImGui::PopStyleVar();
-
 	// render clear button (if required)
-	if (!path.empty()) {
+	if (showClearButton) {
 		ImGui::SameLine(0.0f, spacing);
 
 		if (ImGui::Button("x", ImVec2(itemHeight, itemHeight))) {
@@ -249,8 +271,28 @@ bool OtUiFileSelector(
 		}
 	}
 
+	// render virtual button (if required)
+	if (showVirtualButton) {
+		ImGui::SameLine(0.0f, spacing);
+		bool colored = *virtualMode;
+
+		if (colored) {
+			ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4) ImColor::HSV(0.45f, 0.5f, 0.5f));
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4) ImColor::HSV(0.45f, 0.6f, 0.6f));
+			ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4) ImColor::HSV(0.45f, 0.7f, 0.7f));
+		}
+
+		if (ImGui::Button("v", ImVec2(itemHeight, itemHeight))) {
+			*virtualMode = !(*virtualMode);
+		}
+
+		if (colored) {
+			ImGui::PopStyleColor(3);
+		}
+	}
+
 	// render create button (if required)
-	if (path.empty() && create) {
+	if (showCreateButton) {
 		ImGui::SameLine(0.0f, spacing);
 
 		if (ImGui::Button("+", ImVec2(itemHeight, itemHeight))) {
@@ -270,7 +312,7 @@ bool OtUiFileSelector(
 	}
 
 	// render edit button (if required)
-	if (!path.empty() && edit) {
+	if (showEditButton) {
 		ImGui::SameLine(0.0f, spacing);
 
 		if (ImGui::Button("e", ImVec2(itemHeight, itemHeight))) {

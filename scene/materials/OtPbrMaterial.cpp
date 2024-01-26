@@ -43,7 +43,7 @@ bool OtPbrMaterialClass::renderUI() {
 		if (ImGui::BeginTable("layout", 3)) {
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Fixed Values");
-			ImGui::TableNextColumn(); ImGui::TextUnformatted("Texure Maps");
+			ImGui::TableNextColumn(); ImGui::TextUnformatted("Texture Maps");
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); changed |= ImGui::ColorEdit4("##albedoColor", glm::value_ptr(albedo));

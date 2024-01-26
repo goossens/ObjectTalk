@@ -28,8 +28,9 @@ public:
 	// constructpr
 	OtSceneAsset();
 
-	// load the asset
+	// load/save the asset
 	bool load() override;
+	bool save() override;
 
 	// access the scene
 	inline OtScene* getScene() { return scene.get(); }

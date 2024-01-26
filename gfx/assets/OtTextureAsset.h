@@ -30,7 +30,8 @@ public:
 	inline OtTexture& getTexture() { return texture; }
 	inline void setTexture(OtTexture& t) { texture = t; }
 
-	inline bool handlesVirtual() override { return true; }
+	// can the asset handle virtual paths?
+	static constexpr bool canHandleVirtual = true;
 
 private:
 	// the actual texture

@@ -139,7 +139,10 @@ void OtAssetManager::renderUI() {
 OtAssetBase* OtAssetManager::findAsset(const std::string& path, std::function<void()> callback) {
 	// see if we are already tracking this asset
 	if (assets.find(path) != assets.end()) {
-		scheduleLoadedCallback(callback);
+		if (callback) {
+			scheduleLoadedCallback(callback);
+		}
+
 		return assets[path];
 
 	// is this a virtual asset (i.e. a named asset that only exists in memory)
@@ -151,7 +154,11 @@ OtAssetBase* OtAssetManager::findAsset(const std::string& path, std::function<vo
 		if (asset) {
 			asset->create(path);
 			assets[path] = asset;
-			scheduleLoadedCallback(callback);
+
+			if (callback) {
+				scheduleLoadedCallback(callback);
+			}
+
 			return asset;
 
 		} else {
@@ -172,10 +179,12 @@ OtAssetBase* OtAssetManager::findAsset(const std::string& path, std::function<vo
 			asset->preLoad(path);
 
 			// register for load completion event so we can call callback
-			asset->onPostLoad([this, callback]() {
-				scheduleLoadedCallback(callback);
-				return false;
-			});
+			if (callback) {
+				asset->onPostLoad([this, callback]() {
+					scheduleLoadedCallback(callback);
+					return false;
+				});
+			}
 
 			return asset;
 

@@ -50,3 +50,20 @@ bool OtSceneAsset::load() {
 		return false;
 	}
 }
+
+
+//
+//	OtSceneAsset::save
+//
+
+bool OtSceneAsset::save() {
+	try {
+		// save the scene
+		scene->save(path);
+		return true;
+
+	} catch (const OtException& exception) {
+		OtLogWarning(OtFormat("Can't save scene [%s]: %s", path.c_str(), exception.what()));
+		return false;
+	}
+}

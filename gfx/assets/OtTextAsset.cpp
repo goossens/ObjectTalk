@@ -61,7 +61,6 @@ bool OtTextAsset::save() {
 		std::ofstream stream(path.c_str());
 		stream << text;
 		stream.close();
-
 		return true;
 
 	} catch (const OtException& exception) {

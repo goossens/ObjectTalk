@@ -62,6 +62,7 @@ bool OtUiEditVec4(const char* label, glm::vec4& vector, float speed, float minv,
 bool OtUiFileSelector(
 	const char* label,
 	std::string& path,
+	bool* virtualMode=nullptr,
 	std::function<void(std::string& path)> create=nullptr,
 	std::function<void(std::string& path)> edit=nullptr);
 

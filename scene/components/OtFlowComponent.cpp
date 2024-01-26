@@ -43,6 +43,7 @@ bool OtFlowComponent::renderUI() {
 	return OtUiFileSelector(
 		"Path##FlowPath",
 		path,
+		nullptr,
 		[](std::string& path) {
 			// create a new graph file (and give it the right extension; can't trust the user :-)
 			auto realPath = OtPathReplaceExtension(path, ".otg");

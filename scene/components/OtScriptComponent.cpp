@@ -51,6 +51,7 @@ bool OtScriptComponent::renderUI() {
 	return OtUiFileSelector(
 		"Path##ScriptPath",
 		path,
+		nullptr,
 		[](std::string& path) {
 			// create a new script file (and give it the right extension; can't trust the user :-)
 			auto realPath = OtPathReplaceExtension(path, ".ot");

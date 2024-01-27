@@ -10,6 +10,8 @@ set(FT_DISABLE_PNG ON CACHE BOOL "" FORCE)
 set(FT_DISABLE_HARFBUZZ ON CACHE BOOL "" FORCE)
 set(FT_DISABLE_BROTLI ON CACHE BOOL "" FORCE)
 
+set(CMAKE_WARN_DEPRECATED OFF CACHE BOOL "" FORCE)
+
 FetchContent_Declare(freetype GIT_REPOSITORY "https://github.com/freetype/freetype" GIT_TAG "VER-2-13-2")
 FetchContent_MakeAvailable(freetype)
 set_target_properties(freetype PROPERTIES FOLDER deps)

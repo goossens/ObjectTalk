@@ -14,15 +14,7 @@
 #include "OtFormat.h"
 #include "OtLog.h"
 
-#include "OtAssetFactory.h"
 #include "OtSceneAsset.h"
-
-
-//
-//	Register texture types
-//
-
-static OtAssetFactoryRegister<OtSceneAsset> otsRegistration{".ots"};
 
 
 //

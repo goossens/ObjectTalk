@@ -21,7 +21,6 @@
 #include "OtLog.h"
 #include "OtNumbers.h"
 
-#include "OtAssetFactory.h"
 #include "OtAssetManager.h"
 #include "OtPathTools.h"
 
@@ -133,102 +132,73 @@ void OtAssetManager::renderUI() {
 
 
 //
-//	OtAssetManager::findAsset
+//	OtAssetManager::scheduleAssetForLoading
 //
 
-OtAssetBase* OtAssetManager::findAsset(const std::string& path, std::function<void()> callback) {
-	// see if we are already tracking this asset
-	if (assets.find(path) != assets.end()) {
-		if (callback) {
-			scheduleLoadedCallback(callback);
-		}
+void OtAssetManager::scheduleAssetForLoading(OtAssetBase* asset, std::function<void()> callback) {
+	// see if asset exists
+	auto path = asset->getPath();
 
-		return assets[path];
-
-	// is this a virtual asset (i.e. a named asset that only exists in memory)
-	// or a new asset that hasn't been saved yet
-	} else if (OtPathIsVirtual(path) || OtPathIsUntitled(path)) {
-		auto asset = OtAssetFactory::instance()->instantiate(path);
-
-		// is this a supported asset type
-		if (asset) {
-			asset->create(path);
-			assets[path] = asset;
-
-			if (callback) {
-				scheduleLoadedCallback(callback);
-			}
-
-			return asset;
-
-		} else {
-			// unknown asset type, create a dummy asset
-			OtLogWarning(OtFormat("Unknown asset type [%s]", path.c_str()));
-			return createDummy(path, OtAssetBase::invalidState);
-		}
-
-	// is this an existing file
-	} else if (OtPathIsRegularFile(path)) {
-		// ensure the factory can create an asset for this path
-		auto asset = OtAssetFactory::instance()->instantiate(path);
-
-		if (asset) {
-			// track new asset, put it onto the loading queue and send notification
-			assets[path] = asset;
+	if (OtPathIsRegularFile(path)) {
+		// ensure file extension is supported by asset type
+		if (asset->supportsFileType(OtPathGetExtension(path))) {
+			// schedule asset for loading
 			queue.push(asset);
 			asset->preLoad(path);
 
-			// register for load completion event so we can call callback
+			// register for load completion event so we can schedule callback
 			if (callback) {
 				asset->onPostLoad([this, callback]() {
-					scheduleLoadedCallback(callback);
+					scheduleReadyCallback(callback);
 					return false;
 				});
 			}
 
-			return asset;
-
 		} else {
-			// unknown asset type, create a dummy asset
-			OtLogWarning(OtFormat("Unknown asset type [%s]", path.c_str()));
-			return createDummy(path, OtAssetBase::invalidState);
+			OtLogWarning(OtFormat("Asset [%s] refers to unsupported type", path.c_str()));
+			asset->markInvalid();
 		}
 
 	} else {
-		// create a dummy asset
 		OtLogWarning(OtFormat("Asset [%s] not found", path.c_str()));
-		return createDummy(path, OtAssetBase::missingState);
+		asset->markMissing();
 	}
 }
 
 
 //
-//	OtAssetManager::scheduleLoadedCallback
+//	OtAssetManager::scheduleReadyCallback
 //
 
-void OtAssetManager::scheduleLoadedCallback(std::function<void()> callback) {
-	struct Handle {
-		uv_async_t async;
-		std::function<void()> callback;
-	};
+void OtAssetManager::scheduleReadyCallback(std::function<void()> callback) {
+	// ignore if we have a NULL callback
+	if (callback) {
+		// create an async event handle
+		struct Handle {
+			uv_async_t async;
+			std::function<void()> callback;
+		};
 
-	auto callbackHandle = new Handle;
-	callbackHandle->callback = callback;
+		auto callbackHandle = new Handle;
+		callbackHandle->callback = callback;
 
-	auto status = uv_async_init(uv_default_loop(), (uv_async_t*) callbackHandle, [](uv_async_t* handle){
-		// execute callback on completion
-		((Handle*) handle)->callback();
+		// setup the async event
+		auto status = uv_async_init(uv_default_loop(), (uv_async_t*) callbackHandle, [](uv_async_t* handle){
+			// execute callback
+			((Handle*) handle)->callback();
 
-		// cleanup
-		uv_close((uv_handle_t*) handle, [](uv_handle_t* handle) {
-			delete (Handle*) handle;
+			// cleanup
+			uv_close((uv_handle_t*) handle, [](uv_handle_t* handle) {
+				delete (Handle*) handle;
+			});
 		});
-	});
 
-	UV_CHECK_ERROR("uv_async_init", status);
+		UV_CHECK_ERROR("uv_async_init", status);
 
-	status = uv_async_send((uv_async_t*) callbackHandle);
-	UV_CHECK_ERROR("uv_async_send", status);
+		// activate the async event
+		status = uv_async_send((uv_async_t*) callbackHandle);
+		UV_CHECK_ERROR("uv_async_send", status);
+	}
 }
 
 
@@ -251,17 +221,4 @@ void OtAssetManager::saveAs(OtAssetBase* asset, const std::string &newName) {
 	asset->preSave(newName);
 	asset->save();
 	asset->postSave();
-}
-
-
-//
-//	OtAssetManager::createDummy
-//
-
-OtAssetBase *OtAssetManager::createDummy(const std::string& path, OtAssetBase::AssetState state) {
-	auto dummy = new OtAssetBase();
-	dummy->path = path;
-	dummy->assetState = state;
-	assets[path] = dummy;
-	return dummy;
 }

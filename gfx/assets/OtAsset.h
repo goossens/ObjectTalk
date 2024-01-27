@@ -12,12 +12,14 @@
 //	Include files
 //
 
+#include <functional>
 #include <string>
 
 #include "OtAssert.h"
 
 #include "OtAssetBase.h"
 #include "OtAssetManager.h"
+#include "OtAssetSelector.h"
 #include "OtUi.h"
 
 
@@ -35,9 +37,17 @@
 template <typename T>
 class OtAsset {
 public:
+	// destructor
+	~OtAsset() {
+		clear();
+	}
+
 	// clear the asset reference
 	inline void clear() {
-		ptr = nullptr;
+		if (ptr) {
+			ptr->dereference();
+			ptr = nullptr;
+		}
 	}
 
 	// assignment (which also loads the asset)
@@ -48,11 +58,13 @@ public:
 
 	// load the asset
 	inline void load(const std::string& path, std::function<void()> callback=nullptr) {
-		if (path == "") {
+		if (ptr) {
 			clear();
+		}
 
-		} else {
-			ptr = OtAssetManager::instance()->acquire<T>(path);
+		if (path != "") {
+			ptr = OtAssetManager::instance()->acquire<T>(path, callback);
+			ptr->reference();
 		}
 	}
 
@@ -85,13 +97,14 @@ public:
 	inline bool isReady() { return ptr && ptr->isReady(); }
 	inline bool isVirtual() { return ptr && ptr->isVirtual(); }
 	inline bool canHandleVirtual() { return T::canHandleVirtual; }
+	inline const char* getSupportedFileTypes() { return T::supportedFileTypes; }
 
 	// handle virtual mode
 	bool getVirtualMode() { return virtualMode; }
 	void setVirtualMode(bool vm) { virtualMode = vm; }
 
 	// register callbacks
-	// if the callback returns false, that listener is automatically removed
+	// if the callback returns false, it is automatically cancelled
 	// if the callback returns true, it remains active
 	inline OtAssetPreLoadListerner onPreLoad(std::function<bool()> cb) { OtAssert(ptr); return ptr->onPreLoad(cb); }
 	inline OtAssetPostLoadListerner onPostLoad(std::function<bool()> cb) { OtAssert(ptr); return ptr->onPostLoad(cb); }
@@ -109,17 +122,38 @@ public:
 	inline void cancelListener(OtAssetRenamedListerner listener) { OtAssert(ptr); ptr->unlisten(listener); }
 
 	// render UI to show/select an asset path
-	inline bool renderUI(const char* label) {
-		std::string tmpPath = ptr ? ptr->getPath() : "";
+	inline bool renderUI(const char* label, std::function<void(const std::string&)> creator=nullptr) {
 		virtualMode |= isVirtual();
 
-		if (OtUiFileSelector(label, tmpPath, canHandleVirtual() ? &virtualMode : nullptr)) {
-			load(tmpPath);
+		OtAssetSelector::Info info;
+		info.label = label;
+		info.path = ptr ? ptr->getPath() : "";
+		info.supportedFileTypes = T::supportedFileTypes;
+		info.hasEditor = T::hasEditor;
+		info.virtualMode = canHandleVirtual() ? &virtualMode : nullptr;
+		info.creator = creator;
+
+		if (OtAssetSelector::renderUI(info)) {
+			load(info.path);
 			return true;
 
 		} else {
 			return false;
 		}
+	}
+
+	// render UI to only allow virtual assets
+	inline bool renderVirtualUI(const char* label) {
+		OtAssert(canHandleVirtual());
+		virtualMode = true;
+
+		OtAssetSelector::Info info;
+		info.label = label;
+		info.path = ptr ? ptr->getPath() : "";
+		info.virtualOnly = true;
+		info.virtualMode = &virtualMode;
+
+		return OtAssetSelector::renderUI(info);
 	}
 
 private:

@@ -118,7 +118,7 @@ void OtSceneRuntime::initializeScriptingSystem() {
 
 	// load and compile all the scripts
 	for (auto&& [entity, component] : scene->view<OtScriptComponent>().each()) {
-		component.load();
+		component.process();
 		OtEntityObject(component.instance)->linkToECS(scene, entity);
 	}
 

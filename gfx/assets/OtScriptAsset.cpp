@@ -9,15 +9,7 @@
 //	Include files
 //
 
-#include "OtAssetFactory.h"
 #include "OtScriptAsset.h"
-
-
-//
-//	Register texture types
-//
-
-static OtAssetFactoryRegister<OtScriptAsset> otRegistration{".ot"};
 
 
 //

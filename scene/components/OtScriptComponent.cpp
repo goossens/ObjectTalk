@@ -16,6 +16,7 @@
 
 #include "OtException.h"
 #include "OtClass.h"
+#include "OtSelector.h"
 #include "OtVM.h"
 
 #include "OtMessageBus.h"
@@ -48,69 +49,60 @@ class $ : scene.Entity {\n\
 //
 
 bool OtScriptComponent::renderUI() {
-	return OtUiFileSelector(
-		"Path##ScriptPath",
-		path,
-		nullptr,
-		[](std::string& path) {
-			// create a new script file (and give it the right extension; can't trust the user :-)
-			auto realPath = OtPathReplaceExtension(path, ".ot");
-			std::ofstream stream(realPath);
+	return script.renderUI("Path##ScriptPath", [](const std::string& path) {
+		// create a new script file
+		std::ofstream stream(path);
 
-			std::string script{scriptTemplate};
-			script.replace(script.find("$"), 1, OtPathGetStem(realPath));
+		std::string script{scriptTemplate};
+		script.replace(script.find("$"), 1, OtPathGetStem(path));
 
-			stream << script;
-			stream.close();
-
-			// open it in the editor
-			OtMessageBus::instance()->send("openinwindow " + realPath);
-
-		},
-		[](std::string& path) {
-			// open it in the editor
-			OtMessageBus::instance()->send("openinwindow " + path);
-		});
+		stream << script;
+		stream.close();
+	});
 }
 
 
 //
-//	OtScriptComponent::load
+//	OtScriptComponent::process
 //
 
-void OtScriptComponent::load() {
-	// load the script and compile it
-	module = OtModule::create();
-	module->load(path);
+void OtScriptComponent::process() {
+	// ensure asset is ready
+	if (script->isReady()) {
+		// load the script and compile it
+		script->compile();
 
-	// see if the module has the right class definition
-	auto className = OtPathGetStem(path);
+		// see if the module has the right class definition
+		auto path = script->getPath();
+		auto className = OtPathGetStem(path);
+		auto module = script->getModule();
 
-	if (module->hasByName(className)) {
-		auto classObject = module->getByName(className);
+		if (module->hasByName(className)) {
+			auto classObject = module->getByName(className);
 
-		// ensure it is a class object
-		if (classObject.isKindOf<OtClassClass>()) {
-			// create instance of class
-			instance = OtClass(classObject)->instantiate(0, nullptr);
+			// ensure it is a class object
+			if (classObject.isKindOf<OtClassClass>()) {
+				// create instance of class
+				instance = OtClass(classObject)->instantiate(0, nullptr);
 
-			// ensure the class is derived from Entity
-			if (instance.isKindOf<OtEntityObjectClass>()) {
-				createSelector = OtSelector::create("create");
-				updateSelector = OtSelector::create("update");
-				hasCreateMethod = instance->has(createSelector);
-				hasUpdateMethod = instance->has(updateSelector);
+				// ensure the class is derived from Entity
+				if (instance.isKindOf<OtEntityObjectClass>()) {
+					createSelector = OtSelector::create("create");
+					updateSelector = OtSelector::create("update");
+					hasCreateMethod = instance->has(createSelector);
+					hasUpdateMethod = instance->has(updateSelector);
+
+				} else {
+					OtError("Class [%s] in script [%s] is not dereive from [Entity]", className.c_str(), path.c_str());
+				}
 
 			} else {
-				OtError("Class [%s] in script [%s] is not dereive from [Entity]", className.c_str(), path.c_str());
+				OtError("Object [%s] in script [%s] is not a class", className.c_str(), path.c_str());
 			}
 
 		} else {
-			OtError("Object [%s] in script [%s] is not a class", className.c_str(), path.c_str());
+			OtError("Script [%s] does not contain class [%s]", path.c_str(), className.c_str());
 		}
-
-	} else {
-		OtError("Script [%s] does not contain class [%s]", path.c_str(), className.c_str());
 	}
 }
 
@@ -144,7 +136,7 @@ void OtScriptComponent::update() {
 nlohmann::json OtScriptComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
-	data["path"] = OtPathRelative(path, basedir);
+	data["path"] = OtPathRelative(script.getPath(), basedir);
 	return data;
 }
 
@@ -154,5 +146,5 @@ nlohmann::json OtScriptComponent::serialize(std::string* basedir) {
 //
 
 void OtScriptComponent::deserialize(nlohmann::json data, std::string* basedir) {
-	path = OtPathGetAbsolute(data, "path", basedir);
+	script = OtPathGetAbsolute(data, "path", basedir);
 }

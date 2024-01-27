@@ -31,6 +31,16 @@ OtEcs::~OtEcs() {
 
 
 //
+//	OtEcs::clear
+//
+
+void OtEcs::clear() {
+	registry.clear();
+	root = createEntity();
+}
+
+
+//
 //	OtEcs::createEntity
 //
 

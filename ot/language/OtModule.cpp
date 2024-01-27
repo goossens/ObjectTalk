@@ -73,13 +73,6 @@ void OtModuleClass::load(const std::filesystem::path& path) {
 		OtError("Can't find module [%s]", path.string().c_str());
 	}
 
-	// start with a clean slate
-	unsetAll();
-
-	// add metadata to module
-	set("__FILE__", OtString::create(fullPath.string()));
-	set("__DIR__", OtString::create(fullPath.parent_path().string()));
-
 	// load source code
 	std::ifstream stream(fullPath.string().c_str());
 	std::stringstream buffer;
@@ -87,10 +80,27 @@ void OtModuleClass::load(const std::filesystem::path& path) {
 	stream.close();
 
 	// compile and run module code
-	OtCompiler compiler;
-	OtSource source = OtSourceClass::create(fullPath.string(), buffer.str());
+	load(fullPath, buffer.str());
+}
 
-	localPath.push_back(fullPath.parent_path());
+
+//
+//	OtModuleClass::load
+//
+
+void OtModuleClass::load(const std::filesystem::path& path, const std::string& code) {
+	// start with a clean slate
+	unsetAll();
+
+	// add metadata to module
+	set("__FILE__", OtString::create(path.string()));
+	set("__DIR__", OtString::create(path.parent_path().string()));
+
+	// compile and run module code
+	OtCompiler compiler;
+	OtSource source = OtSourceClass::create(path.string(), code);
+
+	localPath.push_back(path.parent_path());
 
 	try {
 		auto bytecode = compiler.compileSource(source, OtModule(this));
@@ -118,7 +128,7 @@ void OtModuleClass::buildModulePath() {
 
 	if (path) {
 		std::vector<std::string> parts;
-		OtText::split(path, parts,';');
+		OtText::split(path, parts, ';');
 
 		for (auto part = parts.begin(); part != parts.end(); ++part) {
 			modulePath.push_back(*part);

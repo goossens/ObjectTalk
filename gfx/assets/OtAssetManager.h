@@ -18,9 +18,11 @@
 #include <unordered_map>
 
 #include "OtConcurrentQueue.h"
+#include "OtHash.h"
 #include "OtSingleton.h"
 
 #include "OtAssetBase.h"
+#include "OtPathTools.h"
 
 
 //
@@ -42,11 +44,50 @@ public:
 	// see if we are currently loading anything
 	inline bool isLoading() { return loading || queue.size(); }
 
-	// acquire an existing asset
+	// see if a certain asset is already loaded
+	template<typename T>
+	inline bool isLoaded(const std::string& path) {
+		Key key{typeid(T).hash_code(), path};
+		return assets.find(key) != assets.end();
+	}
+
+	// acquire an asset
 	template<typename T>
 	inline T* acquire(const std::string& path, std::function<void()> callback=nullptr) {
+		// sanity check
 		static_assert(std::is_base_of<OtAssetBase, T>::value, "Class is not derived from OtAssetBase");
-		return dynamic_cast<T*>(findAsset(path, callback));
+
+		// calculate registry key
+		Key key{typeid(T).hash_code(), path};
+
+		// is this a known asset?
+		auto i = assets.find(key);
+
+		if (i != assets.end()) {
+			// yes, return it and schedule a ready callback
+			scheduleReadyCallback(callback);
+			return dynamic_cast<T*>(i->second);
+
+		// asset must be created
+		} else {
+			auto asset = new T;
+			assets[key] = asset;
+
+			// is this a virtual asset (i.e. a named asset that only exists in memory)
+			// or a new asset that hasn't been saved yet
+			if (OtPathIsVirtual(path) || OtPathIsUntitled(path)) {
+				// create the asset and we're done
+				asset->initializeReady(path);
+				scheduleReadyCallback(callback);
+
+			} else {
+				// asset loading is asynchronous
+				asset->initializeInvalid(path);
+				scheduleAssetForLoading(asset, callback);
+			}
+
+			return asset;
+		}
 	}
 
 	// save an updated asset
@@ -54,14 +95,11 @@ public:
 	void saveAs(OtAssetBase* asset, const std::string& newName);
 
 private:
-	// find asset instance
-	OtAssetBase* findAsset(const std::string& path, std::function<void()> callback);
+	// schedule an asset for loading
+	void scheduleAssetForLoading(OtAssetBase* asset, std::function<void()> callback);
 
 	// schedule a callback
-	void scheduleLoadedCallback(std::function<void()> callback);
-
-	// create a dummy asset
-	OtAssetBase* createDummy(const std::string& path, OtAssetBase::AssetState state);
+	void scheduleReadyCallback(std::function<void()> callback);
 
 	// thread running the async actions
 	std::thread thread;
@@ -71,6 +109,23 @@ private:
 	// keeping track of loading jobs
 	OtConcurrentQueue<OtAssetBase*> queue;
 
+	// the key to the asset library
+	struct Key {
+		// constructor
+		Key(size_t t, const std::string& p) : type(t), path(p) {}
+
+		// check for equality
+		bool operator==(const Key &other) const { return type == other.type && path == other.path; }
+
+		// properties
+		size_t type;
+		std::string path;
+	};
+
+	struct KeyHasher {
+		std::size_t operator()(const Key& k) const { return OtHash(k.type, k.path); }
+	};
+
 	// the registry of loaded assets
-	std::unordered_map<std::string, OtAssetBase*> assets;
+	std::unordered_map<Key, OtAssetBase*, KeyHasher> assets;
 };

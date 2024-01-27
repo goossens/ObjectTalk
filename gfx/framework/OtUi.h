@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include <functional>
 #include <string>
 
 #include "glm/glm.hpp"
@@ -59,12 +58,7 @@ bool OtUiEditVec3(const char* label, glm::vec3& vector, float speed, float minv,
 bool OtUiEditVec4(const char* label, glm::vec4& vector, float speed, float minv, float maxv);
 
 // create a file path field with file selector popup
-bool OtUiFileSelector(
-	const char* label,
-	std::string& path,
-	bool* virtualMode=nullptr,
-	std::function<void(std::string& path)> create=nullptr,
-	std::function<void(std::string& path)> edit=nullptr);
+bool OtUiFileSelector(const char* label, std::string& path);
 
 // create a splitter widget
 void OtUiSplitterVertical(float* size, float minSize, float maxSize);

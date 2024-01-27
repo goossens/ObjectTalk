@@ -13,18 +13,7 @@
 #include "OtFormat.h"
 #include "OtLog.h"
 
-#include "OtAssetFactory.h"
 #include "OtTextureAsset.h"
-
-
-//
-//	Register texture types
-//
-
-static OtAssetFactoryRegister<OtTextureAsset> jpgRegistration{".jpg"};
-static OtAssetFactoryRegister<OtTextureAsset> jpegRegistration{".jpeg"};
-static OtAssetFactoryRegister<OtTextureAsset> pngRegistration{".png"};
-static OtAssetFactoryRegister<OtTextureAsset> hdrRegistration{".hdr"};
 
 
 //

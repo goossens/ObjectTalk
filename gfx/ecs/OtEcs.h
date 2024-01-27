@@ -32,6 +32,9 @@ public:
 	OtEcs();
 	~OtEcs();
 
+	// clear entire system
+	void clear();
+
 	// create a new entity
 	OtEntity createEntity(uint32_t uuid=0, const std::string& tag="untitled");
 

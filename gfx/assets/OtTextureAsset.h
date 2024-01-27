@@ -30,8 +30,10 @@ public:
 	inline OtTexture& getTexture() { return texture; }
 	inline void setTexture(OtTexture& t) { texture = t; }
 
-	// can the asset handle virtual paths?
+	// asset properties
 	static constexpr bool canHandleVirtual = true;
+	static constexpr const char* supportedFileTypes = ".jpg,.jpeg,.png,.hdr";
+	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
 
 private:
 	// the actual texture

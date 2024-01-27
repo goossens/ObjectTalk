@@ -29,6 +29,12 @@ public:
 	// access the scrip module
 	OtModule& getModule() { return module; }
 
+	// asset properties
+	static constexpr bool hasEditor = true;
+	static constexpr bool canHandleVirtual = false;
+	static constexpr const char* supportedFileTypes = ".ot";
+	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
+
 private:
 	// the compiled module
 	OtModule module;

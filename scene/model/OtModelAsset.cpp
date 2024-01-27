@@ -16,20 +16,9 @@
 #include "OtFormat.h"
 #include "OtLog.h"
 
-#include "OtAssetFactory.h"
 #include "OtPathTools.h"
 
 #include "OtModelAsset.h"
-
-
-//
-//	Register model types
-//
-
-static OtAssetFactoryRegister<OtModelAsset> blenderRegistration{".blender"};
-static OtAssetFactoryRegister<OtModelAsset> fbxRegistration{".fbx"};
-static OtAssetFactoryRegister<OtModelAsset> gltfRegistration{".gltf"};
-static OtAssetFactoryRegister<OtModelAsset> objRegistration{".obj"};
 
 
 //

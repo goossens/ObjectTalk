@@ -30,6 +30,11 @@ public:
 	inline std::string& getText() { return text; }
 	inline void setText(const std::string& t) { text = t; }
 
+	// asset properties
+	static constexpr bool canHandleVirtual = false;
+	static constexpr const char* supportedFileTypes = ".txt";
+	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
+
 protected:
 	// the actual text
 	std::string text;

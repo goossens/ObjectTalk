@@ -45,13 +45,15 @@ void OtGraph::clear() {
 	nodeIndex.clear();
 	links.clear();
 	nodes.clear();
+	metadata = "{}";
 }
+
 
 //
 //	OtGraph::load
 //
 
-void OtGraph::load(const std::string& path, nlohmann::json* metadata) {
+void OtGraph::load(const std::string& path) {
 	// load scene from file
 	std::stringstream buffer;
 
@@ -69,38 +71,41 @@ void OtGraph::load(const std::string& path, nlohmann::json* metadata) {
 		OtError("Can't read from file [%s], error: %s", path.c_str(), e.what());
 	}
 
-	// parse json
-	auto data = nlohmann::json::parse(buffer.str());
-
 	// clear graph
 	clear();
 
-	// extract metadata
-	if (metadata) {
-		*metadata = data["metadata"];
-	}
+	// treat an empty file as a blank graph
+	if (buffer.str().size()) {
+		// parse json
+		auto data = nlohmann::json::parse(buffer.str());
 
-	// restore each node
-	auto basedir = OtPathGetParent(path);
-
-	for (auto& node : data["nodes"]) {
-		restoreNode(node, true, &basedir);
-	}
-
-	// restore links
-	for (auto& link : data["links"]) {
-		uint32_t linkId = link["id"];
-		uint32_t fromId = link["from"];
-		uint32_t toId = link["to"];
-
-		if (pinIndex.count(fromId) == 0) {
-			OtError("Invalid 'from' pin ID [%s] in link [%d]", fromId, linkId);
-
-		} else if (pinIndex.count(toId) == 0) {
-			OtError("Invalid 'to' pin ID [%s] in link [%d]", toId, linkId);
+		// extract metadata
+		if (data.contains("metadata")) {
+			metadata = data["metadata"].dump();
 		}
 
-		createLink(fromId, toId, linkId);
+		// restore each node
+		auto basedir = OtPathGetParent(path);
+
+		for (auto& node : data["nodes"]) {
+			restoreNode(node, true, &basedir);
+		}
+
+		// restore links
+		for (auto& link : data["links"]) {
+			uint32_t linkId = link["id"];
+			uint32_t fromId = link["from"];
+			uint32_t toId = link["to"];
+
+			if (pinIndex.count(fromId) == 0) {
+				OtError("Invalid 'from' pin ID [%s] in link [%d]", fromId, linkId);
+
+			} else if (pinIndex.count(toId) == 0) {
+				OtError("Invalid 'to' pin ID [%s] in link [%d]", toId, linkId);
+			}
+
+			createLink(fromId, toId, linkId);
+		}
 	}
 
 	// set the flag
@@ -112,10 +117,10 @@ void OtGraph::load(const std::string& path, nlohmann::json* metadata) {
 //	OtGraph::save
 //
 
-void OtGraph::save(const std::string& path, nlohmann::json* metadata) {
+void OtGraph::save(const std::string& path) {
 	// create json outline
 	auto data = nlohmann::json::object();
-	data["metadata"] = metadata ? *metadata : nlohmann::json::object();
+	data["metadata"] = nlohmann::json::parse(metadata.c_str());
 	auto nodes = nlohmann::json::array();
 	auto links = nlohmann::json::array();
 

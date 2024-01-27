@@ -25,7 +25,7 @@
 
 class OtSceneAsset : public OtAssetBase {
 public:
-	// constructpr
+	// constructor
 	OtSceneAsset();
 
 	// load/save the asset
@@ -34,6 +34,12 @@ public:
 
 	// access the scene
 	inline OtScene* getScene() { return scene.get(); }
+
+	// asset properties
+	static constexpr bool hasEditor = true;
+	static constexpr bool canHandleVirtual = false;
+	static constexpr const char* supportedFileTypes = ".ots";
+	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
 
 private:
 	// the actual scene

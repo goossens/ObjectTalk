@@ -37,6 +37,11 @@ public:
 	// access bounding box
 	OtAABB& getAABB() { return aabb; }
 
+	// asset properties
+	static constexpr bool canHandleVirtual = false;
+	static constexpr const char* supportedFileTypes = ".blender,.fbx,.gltf,.obj";
+	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
+
 private:
 	// our meshes and materials
 	std::vector<OtModelMesh> meshes;

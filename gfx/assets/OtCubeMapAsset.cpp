@@ -13,17 +13,7 @@
 #include "OtFormat.h"
 #include "OtLog.h"
 
-#include "OtAssetFactory.h"
 #include "OtCubeMapAsset.h"
-
-
-//
-//	Register CubeMap types
-//
-
-static OtAssetFactoryRegister<OtCubeMapAsset> ddsRegistration{".dds"};
-static OtAssetFactoryRegister<OtCubeMapAsset> ktxRegistration{".ktx"};
-static OtAssetFactoryRegister<OtCubeMapAsset> cubemapRegistration{".cubemap"};
 
 
 //

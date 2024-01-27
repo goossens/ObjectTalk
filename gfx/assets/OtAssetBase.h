@@ -30,7 +30,7 @@ struct OtAssetPostLoad : OtMessage<> {};
 struct OtAssetPreSave : OtMessage<> {};
 struct OtAssetPostSave : OtMessage<> {};
 struct OtAssetChanged : OtMessage<> {};
-struct OtAssetRenamed : OtMessage<> {};
+struct OtAssetRenamed : OtMessage<std::string> {};
 
 
 //
@@ -64,7 +64,14 @@ public:
 	inline bool isInvalid() { return assetState == invalidState; }
 	inline bool isReady() { return assetState == readyState; }
 	inline bool isVirtual() { return OtPathIsVirtual(path); }
+	bool supportsFileType(const std::string& ext);
+
+	// asset properties
+	static constexpr bool hasEditor = false;
+	static constexpr bool hasCreator = false;
 	static constexpr bool canHandleVirtual = false;
+	static constexpr const char* supportedFileTypes = "";
+	inline virtual const char* getSupportedFileTypes() { return supportedFileTypes; }
 
 	// event handlers
 	// if the callback returns false, that listener is automatically removed
@@ -74,7 +81,7 @@ public:
 	inline OtAssetPreSaveListerner onPreSave(std::function<bool()> cb) { return publisher.listen<OtAssetPreSave>(cb); }
 	inline OtAssetPostSaveListerner onPostSave(std::function<bool()> cb) { return publisher.listen<OtAssetPostSave>(cb); }
 	inline OtAssetChangedListerner onChange(std::function<bool()> cb) { return publisher.listen<OtAssetChanged>(cb); }
-	inline OtAssetRenamedListerner onReload(std::function<bool()> cb) { return publisher.listen<OtAssetRenamed>(cb); }
+	inline OtAssetRenamedListerner onReload(std::function<bool(const std::string&)> cb) { return publisher.listen<OtAssetRenamed>(cb); }
 
 	inline void cancelListener(OtAssetPreLoadListerner listener) { publisher.unlisten(listener); }
 	inline void cancelListener(OtAssetPostLoadListerner listener) { publisher.unlisten(listener); }
@@ -83,6 +90,9 @@ public:
 	inline void cancelListener(OtAssetChangedListerner listener) { publisher.unlisten(listener); }
 	inline void cancelListener(OtAssetRenamedListerner listener) { publisher.unlisten(listener); }
 
+	inline void reference() { references++; }
+	inline void dereference() { references--; }
+
 protected:
 	// path to the asset
 	std::string path;
@@ -90,6 +100,9 @@ protected:
 private:
 	// give the asset manager full access
 	friend class OtAssetManager;
+
+	// reference count
+	size_t references = 0;
 
 	// state of the asset
 	enum AssetState {
@@ -112,10 +125,10 @@ private:
 	// functions to load/save the asset (to be implemented by derived classes)
 	virtual inline bool load() { return false; }
 	virtual inline bool save() { return false; }
-	virtual inline bool supportsVirtual() { return false; }
 
-	// internal housekeeping functions (primarily used by the asset manager)
-	void create(const std::string& path);
+	// internal housekeeping functions
+	void initializeInvalid(const std::string& path);
+	void initializeReady(const std::string& path);
 	void preLoad(const std::string& path);
 	void postLoad(AssetState state);
 	void preSave();
@@ -124,6 +137,9 @@ private:
 	void changed();
 	void renamed(const std::string& path);
 
+	inline void markMissing() { assetState = missingState; }
+	inline void markInvalid() { assetState = invalidState; }
+
 	// our publisher to notify subscribers
 	struct Publisher : OtPublisher<OtAssetPreLoad, OtAssetPostLoad, OtAssetPreSave, OtAssetPostSave, OtAssetChanged, OtAssetRenamed> {
 		void preLoad() { notify<OtAssetPreLoad>(); }
@@ -131,6 +147,6 @@ private:
 		void preSave() { notify<OtAssetPreSave>(); }
 		void postSave() { notify<OtAssetPostSave>(); }
 		void changed() { notify<OtAssetChanged>(); }
-		void renamed() { notify<OtAssetRenamed>(); }
+		void renamed(const std::string& path) { notify<OtAssetRenamed>(path); }
 	} publisher;
 };

@@ -14,7 +14,6 @@
 #include "OtFormat.h"
 #include "OtLog.h"
 
-#include "OtAssetFactory.h"
 #include "OtGraphAsset.h"
 
 #include "OtImageFilterNodes.h"
@@ -23,13 +22,6 @@
 #include "OtMathNodes.h"
 #include "OtOutputNodes.h"
 #include "OtProbeNodes.h"
-
-
-//
-//	Register texture types
-//
-
-static OtAssetFactoryRegister<OtGraphAsset> otgRegistration{".otg"};
 
 
 //

@@ -32,6 +32,7 @@ public:
 
 	// load the module
 	void load(const std::filesystem::path& path);
+	void load(const std::filesystem::path& root, const std::string& code);
 
 	// get type definition
 	static OtType getMeta();

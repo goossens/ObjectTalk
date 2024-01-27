@@ -35,6 +35,12 @@ public:
 	// access the graph
 	inline OtGraph* getGraph() { return graph.get(); }
 
+	// asset properties
+	static constexpr bool hasEditor = true;
+	static constexpr bool canHandleVirtual = false;
+	static constexpr const char* supportedFileTypes = ".otg";
+	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
+
 private:
 	// the actual graph
 	std::unique_ptr<OtGraph> graph;

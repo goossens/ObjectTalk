@@ -41,17 +41,25 @@ void OtScene::load(const std::string& path) {
 		OtError("Can't read from file [%s], error: %s", path.c_str(), e.what());
 	}
 
-	// parse json
-	auto tree = nlohmann::json::parse(buffer.str());
+	// clear scene
+	clear();
 
-	// extract metadata
-	metadata = tree["metadata"].dump();
+	// treat an empty file as a blank scene
+	if (buffer.str().size()) {
+		// parse json
+		auto data = nlohmann::json::parse(buffer.str());
 
-	// extract entities
-	auto basedir = OtPathGetParent(path);
+		// extract metadata
+		if (data.contains("metadata")) {
+			metadata = data["metadata"].dump();
+		}
 
-	for (auto& entity : tree["entities"]) {
-		addEntityToParent(getRootEntity(), deserializeEntityFromJson(entity, &basedir));
+		// extract entities
+		auto basedir = OtPathGetParent(path);
+
+		for (auto& entity : data["entities"]) {
+			addEntityToParent(getRootEntity(), deserializeEntityFromJson(entity, &basedir));
+		}
 	}
 }
 
@@ -89,6 +97,16 @@ void OtScene::save(const std::string& path) {
 	} catch (std::exception& e) {
 		OtError("Can't write to file [%s], error: %s", path.c_str(), e.what());
 	}
+}
+
+
+//
+//	OtScene::clear
+//
+
+void OtScene::clear() {
+	OtEcs::clear();
+	metadata = "{}";
 }
 
 

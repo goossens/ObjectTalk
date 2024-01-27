@@ -15,15 +15,7 @@
 #include "OtFormat.h"
 #include "OtLog.h"
 
-#include "OtAssetFactory.h"
 #include "OtTextAsset.h"
-
-
-//
-//	Register texture types
-//
-
-static OtAssetFactoryRegister<OtTextAsset> jxtRegistration{".txt"};
 
 
 //

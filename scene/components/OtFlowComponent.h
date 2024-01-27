@@ -37,8 +37,5 @@ public:
 	static constexpr char const* name = "Flow";
 
 	// stored properties
-	std::string path;
-
-	// runtime properties
-	OtGraphAsset graph;
+	OtAsset<OtGraphAsset> graph;
 };

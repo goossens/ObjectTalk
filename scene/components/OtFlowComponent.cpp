@@ -40,25 +40,12 @@ static const char* flowTemplate = "\
 //
 
 bool OtFlowComponent::renderUI() {
-	return OtUiFileSelector(
-		"Path##FlowPath",
-		path,
-		nullptr,
-		[](std::string& path) {
-			// create a new graph file (and give it the right extension; can't trust the user :-)
-			auto realPath = OtPathReplaceExtension(path, ".otg");
-			std::ofstream stream(realPath);
-			stream << flowTemplate;
-			stream.close();
-
-			// open it in the editor
-			OtMessageBus::instance()->send("openinwindow " + realPath);
-
-		},
-		[](std::string& path) {
-			// open it in the editor
-			OtMessageBus::instance()->send("openinwindow " + path);
-		});
+	return graph.renderUI("Path##FlowPath", [](const std::string& path) {
+		// create a new graph file
+		std::ofstream stream(path);
+		stream << flowTemplate;
+		stream.close();
+	});
 }
 
 
@@ -69,7 +56,7 @@ bool OtFlowComponent::renderUI() {
 nlohmann::json OtFlowComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
-	data["path"] = OtPathRelative(path, basedir);
+	data["path"] = OtPathRelative(graph.getPath(), basedir);
 	return data;
 }
 
@@ -79,5 +66,5 @@ nlohmann::json OtFlowComponent::serialize(std::string* basedir) {
 //
 
 void OtFlowComponent::deserialize(nlohmann::json data, std::string* basedir) {
-	path = OtPathGetAbsolute(data, "path", basedir);
+	graph = OtPathGetAbsolute(data, "path", basedir);
 }

@@ -30,6 +30,11 @@ public:
 	inline OtCubeMap& getCubeMap() { return cubemap; }
 	inline void setCubeMap(OtCubeMap& c) { cubemap = c; }
 
+	// asset properties
+	static constexpr bool canHandleVirtual = false;
+	static constexpr const char* supportedFileTypes = ".dds,.ktx,.cubemap";
+	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
+
 private:
 	// the actual cubemap
 	OtCubeMap cubemap;

@@ -21,6 +21,8 @@
 
 class OtJsonAsset : public OtTextAsset {
 public:
-
-private:
+	// asset properties
+	static constexpr bool canHandleVirtual = false;
+	static constexpr const char* supportedFileTypes = ".json";
+	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
 };

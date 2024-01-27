@@ -17,8 +17,7 @@
 #include "glm/glm.hpp"
 #include "nlohmann/json_fwd.hpp"
 
-#include "OtModule.h"
-#include "OtSelector.h"
+#include "OtScriptAsset.h"
 
 
 //
@@ -31,7 +30,7 @@ public:
 	bool renderUI();
 
 	// load and compile the script
-	void load();
+	void process();
 
 	// runtime methods
 	void create();
@@ -45,10 +44,9 @@ public:
 	static constexpr char const* name = "Script";
 
 	// stored properties
-	std::string path;
+	OtAsset<OtScriptAsset> script;
 
 	// runtime properties
-	OtModule module;
 	OtObject instance;
 	size_t createSelector;
 	size_t updateSelector;

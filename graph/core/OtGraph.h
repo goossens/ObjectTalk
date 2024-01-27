@@ -55,8 +55,8 @@ public:
 	void clear();
 
 	// load and save scene
-	void load(const std::string& path, nlohmann::json* metadata=nullptr);
-	void save(const std::string& path, nlohmann::json* metadata=nullptr);
+	void load(const std::string& path);
+	void save(const std::string& path);
 
 	// manipulate nodes
 	OtGraphNode createNode(const std::string& name, float x, float y);
@@ -140,6 +140,9 @@ private:
 
 	bool needsSorting = false;
 	bool needsEvaluating = false;
+
+	// metadata for editor
+	std::string metadata{"{}"};
 
 	// (un)index a node and its pins
 	void indexNode(OtGraphNode node);

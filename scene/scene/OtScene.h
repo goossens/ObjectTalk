@@ -69,6 +69,9 @@ public:
 	void load(const std::string& path);
 	void save(const std::string& path);
 
+	// clear a scene
+	void clear();
+
 	// access the metadata
 	inline void setMetaData(const std::string& m) { metadata = m; }
 	inline std::string& getMetaData() { return metadata; }

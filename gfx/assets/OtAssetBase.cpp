@@ -9,7 +9,11 @@
 //	Include files
 //
 
+#include <algorithm>
+#include <vector>
+
 #include "OtAssert.h"
+#include "OtText.h"
 
 #include "OtAssetBase.h"
 #include "OtPathTools.h"
@@ -23,6 +27,17 @@ OtAssetBase::~OtAssetBase() {
 	if (following) {
 		unfollow();
 	}
+}
+
+
+//
+//	OtAssetBase::supportsFileType
+//
+
+bool OtAssetBase::supportsFileType(const std::string& ext) {
+	std::vector<std::string> extensions;
+	OtText::split(getSupportedFileTypes(), extensions, ',');
+	return std::find(extensions.begin(), extensions.end(), ext) != extensions.end();
 }
 
 
@@ -80,10 +95,24 @@ void OtAssetBase::unfollow() {
 
 
 //
-//	OtAssetBase::createNew
+//	OtAssetBase::initializeInvalid
 //
 
-void OtAssetBase::create(const std::string& p) {
+void OtAssetBase::initializeInvalid(const std::string& p) {
+	if (following) {
+		unfollow();
+	}
+
+	path = p;
+	assetState = OtAssetBase::invalidState;
+}
+
+
+//
+//	OtAssetBase::initializeReady
+//
+
+void OtAssetBase::initializeReady(const std::string& p) {
 	if (following) {
 		unfollow();
 	}
@@ -142,8 +171,8 @@ void OtAssetBase::preLoad(const std::string& p) {
 //
 
 void OtAssetBase::postLoad(AssetState state) {
-	// given that the asset manager loads stuff in a differnt thread,
-	// we just report completion  and let callback above handle it in main thread
+	// given that the asset manager loads stuff in a different thread,
+	// we just let callback above handle notification in main thread
 	assetState = state;
 	auto status = uv_async_send(loaderEventHandle);
 	UV_CHECK_ERROR("uv_async_send", status);
@@ -186,7 +215,7 @@ void OtAssetBase::postSave() {
 //
 
 void OtAssetBase::changed() {
-
+	publisher.changed();
 }
 
 
@@ -195,5 +224,5 @@ void OtAssetBase::changed() {
 //
 
 void OtAssetBase::renamed(const std::string& path) {
-
+	publisher.renamed(path);
 }

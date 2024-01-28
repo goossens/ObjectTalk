@@ -348,7 +348,7 @@ void OtGraphWidget::renderNode(ImDrawList* drawlist, OtGraphNode& node) {
 	});
 
 	// do the custom node rendering
-	node->customRendering();
+	node->customRendering(node->w - horizontalPadding * 2.0f);
 
 	// render all input pins
 	node->eachInput([&] (OtGraphPin& pin) {
@@ -405,17 +405,15 @@ void OtGraphWidget::renderPin(ImDrawList* drawlist, OtGraphPin& pin, float x, fl
 
 	ImGui::SetCursorScreenPos(savedPos);
 
-	// render label
-	if (pin->isOutput()) {
-		auto width = pin->hasRenderer ? pin->renderingWidth : ImGui::CalcTextSize(pin->name).x;
-		inset(w - horizontalPadding * 2.0f - width);
-	}
-
 	// see if we have a custom renderer
 	if (pin->hasRenderer) {
-		pin->render();
+		pin->render(w - horizontalPadding * 2.0f);
 
 	} else {
+		if (pin->isOutput()) {
+			inset(w - ImGui::CalcTextSize(pin->name).x - horizontalPadding * 2.0f);
+		}
+
 		ImGui::AlignTextToFramePadding();
 		ImGui::TextUnformatted(pin->name);
 	}

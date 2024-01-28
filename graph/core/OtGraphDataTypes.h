@@ -49,4 +49,4 @@ static constexpr const char* OtGraphDataTypeNames[] = {
 	"vec2",
 	"vec3",
 	"vec4",
-	"image" };
+	"texture" };

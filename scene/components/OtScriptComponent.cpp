@@ -73,7 +73,7 @@ void OtScriptComponent::process() {
 		script->compile();
 
 		// see if the module has the right class definition
-		auto path = script->getPath();
+		auto path = script.getPath();
 		auto className = OtPathGetStem(path);
 		auto module = script->getModule();
 

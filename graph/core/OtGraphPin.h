@@ -35,7 +35,7 @@ class OtGraphNodeClass;
 
 class OtGraphPinClass;
 using OtGraphPin = std::shared_ptr<OtGraphPinClass>;
-typedef std::function<void()> OtGraphPinRenderer;
+typedef std::function<void(float)> OtGraphPinRenderer;
 
 class OtGraphPinClass {
 public:
@@ -87,7 +87,7 @@ public:
 	OtGraphNodeClass* node;
 	bool needsEvaluating{false};
 
-	OtGraphPinRenderer render = [](){};
+	OtGraphPinRenderer render = [](float){};
 	float renderingWidth{0.0f};
 	bool hasRenderer{false};
 

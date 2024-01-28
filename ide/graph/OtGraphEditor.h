@@ -40,7 +40,7 @@ public:
 	void saveFile() override;
 	void saveAsFile(const std::string& path) override;
 	inline std::string getFileExtension() override { return ".otg"; }
-	inline std::string getFilePath() override { return asset->getPath(); }
+	inline std::string getFilePath() override { return asset.getPath(); }
 
 	// get editor status
 	inline bool isReady() override { return asset.isReady(); }

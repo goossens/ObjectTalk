@@ -25,7 +25,7 @@ public:
 	struct Info {
 		const char* label;
 		std::string path;
-		const char* supportedFileTypes = nullptr;
+		const char* supportedFileTypes = "";
 		bool hasEditor = false;
 		bool virtualOnly = false;
 		bool* virtualMode = nullptr;

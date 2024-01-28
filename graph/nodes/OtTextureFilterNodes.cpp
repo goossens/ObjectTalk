@@ -15,17 +15,17 @@
 #include "OtTexture.h"
 
 #include "OtGraphNode.h"
-#include "OtImageFilterNodes.h"
+#include "OtTextureFilterNodes.h"
 
 
 //
-//	OtImageFilterNode
+//	OtTextureFilterNode
 //
 
-class OtImageFilterNode : public OtGraphNodeClass {
+class OtTextureFilterNode : public OtGraphNodeClass {
 public:
 	// constructor
-	inline OtImageFilterNode(const char* name) : OtGraphNodeClass(name, OtGraphNodeClass::filter) {}
+	inline OtTextureFilterNode(const char* name) : OtGraphNodeClass(name, OtGraphNodeClass::filter) {}
 
 	// configure node
 	inline void configure() override {
@@ -67,10 +67,10 @@ public:
 //	OtHeightmapToNormalMap
 //
 
-class OtHeightmapToNormalMap : public OtImageFilterNode {
+class OtHeightmapToNormalMap : public OtTextureFilterNode {
 public:
 	// constructor
-	inline OtHeightmapToNormalMap() : OtImageFilterNode(name) {}
+	inline OtHeightmapToNormalMap() : OtTextureFilterNode(name) {}
 
 	// run filter
 	void onFilter() {
@@ -88,10 +88,10 @@ public:
 //	OtSeamlessTileFilter
 //
 
-class OtSeamlessTileFilter : public OtImageFilterNode {
+class OtSeamlessTileFilter : public OtTextureFilterNode {
 public:
 	// constructor
-	inline OtSeamlessTileFilter() : OtImageFilterNode(name) {}
+	inline OtSeamlessTileFilter() : OtTextureFilterNode(name) {}
 
 	// run filter
 	void onFilter() {
@@ -106,13 +106,13 @@ public:
 
 
 //
-//	OtImageFilterNodesRegister
+//	OtTextureFilterNodesRegister
 //
 
 #define REGISTER(CLASS) \
-	graph.registerNodeType<CLASS>("Image Filters", CLASS::name)
+	graph.registerNodeType<CLASS>("Texture Filters", CLASS::name)
 
-void OtImageFilterNodesRegister(OtGraph &graph) {
+void OtTextureFilterNodesRegister(OtGraph &graph) {
 	REGISTER(OtHeightmapToNormalMap);
 	REGISTER(OtSeamlessTileFilter);
 }

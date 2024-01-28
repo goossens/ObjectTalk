@@ -30,8 +30,8 @@ public:
 
 	// configure node
 	inline void configure() override {
-		addInputPin("Value", value)->addRenderer([&] () {
-			ImGui::SetNextItemWidth(fieldWidth);
+		addInputPin("Value", value)->addRenderer([&](float width) {
+			ImGui::SetNextItemWidth(width);
 			ImGui::InputFloat("##value", &value, 0.0f, 0.0f, "%.3f", ImGuiInputTextFlags_ReadOnly);
 		}, fieldWidth);
 	}
@@ -45,20 +45,20 @@ protected:
 
 
 //
-//	OtGraphNodeImageProbe
+//	OtGraphNodeTextureProbe
 //
 
-class OtGraphNodeImageProbe : public OtGraphNodeClass {
+class OtGraphNodeTextureProbe : public OtGraphNodeClass {
 public:
 	// constructor
-	inline OtGraphNodeImageProbe() : OtGraphNodeClass(name, OtGraphNodeClass::probe) {}
+	inline OtGraphNodeTextureProbe() : OtGraphNodeClass(name, OtGraphNodeClass::probe) {}
 
 	// configure node
 	inline void configure() override {
-		auto pin = addInputPin("Image", texture);
+		auto pin = addInputPin("Texture", texture);
 	}
 
-	// nothing to do on execute but we'll use it to determine image size
+	// nothing to do on execute but we'll use it to determine texture size
 	void onExecute() override {
 		if (texture.isValid()) {
 			customW = std::min(fieldWidth, (float) texture.getWidth());
@@ -73,12 +73,13 @@ public:
 	}
 
 	// rendering custom fields
-	void customRendering() override {
+	void customRendering(float width) override {
 		if (texture.isValid()) {
+			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (width - customW) / 2.0f);
 			ImGui::Image((void*)(intptr_t) texture.getTextureIndex(), ImVec2(customW, customH));
 
 		} else {
-			ImGui::TextUnformatted("No Image available");
+			ImGui::TextUnformatted("No Texture available");
 		}
 	}
 
@@ -90,7 +91,7 @@ public:
 		return customH;
 	}
 
-	static constexpr const char* name = "Image Probe";
+	static constexpr const char* name = "Texture Probe";
 	static constexpr float fieldWidth = 170.0f;
 
 protected:
@@ -109,5 +110,5 @@ protected:
 
 void OtProbeNodesRegister(OtGraph& graph) {
 	REGISTER(OtGraphNodeFloatProbe);
-	REGISTER(OtGraphNodeImageProbe);
+	REGISTER(OtGraphNodeTextureProbe);
 }

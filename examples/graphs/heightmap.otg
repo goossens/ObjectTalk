@@ -59,6 +59,21 @@
 			"from": 4243123040,
 			"id": 3089266074,
 			"to": 217555214
+		},
+		{
+			"from": 2998180272,
+			"id": 2096614039,
+			"to": 3948927624
+		},
+		{
+			"from": 3035146654,
+			"id": 893081468,
+			"to": 2663289011
+		},
+		{
+			"from": 4161053947,
+			"id": 2811983836,
+			"to": 1766002379
 		}
 	],
 	"metadata": {},
@@ -76,8 +91,8 @@
 			"title": "Size",
 			"type": "Integer Input",
 			"value": 512,
-			"x": 22.0,
-			"y": 82.0
+			"x": 38.0,
+			"y": 105.0
 		},
 		{
 			"id": 2842695751,
@@ -92,8 +107,8 @@
 			"title": "Frequency",
 			"type": "Float Input",
 			"value": 3.0,
-			"x": 22.0,
-			"y": 160.0
+			"x": 38.0,
+			"y": 169.0
 		},
 		{
 			"id": 3704143381,
@@ -108,8 +123,8 @@
 			"title": "Lacunarity",
 			"type": "Float Input",
 			"value": 1.7000000476837158,
-			"x": 22.0,
-			"y": 239.0
+			"x": 39.0,
+			"y": 232.0
 		},
 		{
 			"id": 2320418202,
@@ -124,8 +139,8 @@
 			"title": "Amplitude",
 			"type": "Float Input",
 			"value": 0.5,
-			"x": 22.0,
-			"y": 320.0
+			"x": 38.0,
+			"y": 295.0
 		},
 		{
 			"id": 2893673049,
@@ -140,8 +155,8 @@
 			"title": "Persistence",
 			"type": "Float Input",
 			"value": 0.5,
-			"x": 22.0,
-			"y": 396.0
+			"x": 36.0,
+			"y": 360.0
 		},
 		{
 			"id": 846135667,
@@ -156,8 +171,8 @@
 			"title": "Octaves",
 			"type": "Integer Input",
 			"value": 6,
-			"x": 22.0,
-			"y": 476.0
+			"x": 36.0,
+			"y": 426.0
 		},
 		{
 			"id": 1863888524,
@@ -202,29 +217,29 @@
 			"outputs": [
 				{
 					"id": 4243123040,
-					"name": "Image",
-					"type": "image"
+					"name": "Texture",
+					"type": "texture"
 				}
 			],
 			"title": "NoiseMap Generator",
 			"type": "NoiseMap Generator",
-			"x": 245.0,
-			"y": 129.0
+			"x": 246.0,
+			"y": 106.0
 		},
 		{
 			"id": 3557975928,
 			"inputs": [
 				{
 					"id": 217555214,
-					"name": "Image",
-					"type": "image"
+					"name": "Texture",
+					"type": "texture"
 				}
 			],
 			"outputs": [],
-			"title": "Image Probe",
-			"type": "Image Probe",
-			"x": 483.0,
-			"y": 215.0
+			"title": "Texture Probe",
+			"type": "Texture Probe",
+			"x": 508.0,
+			"y": 303.0
 		},
 		{
 			"id": 181894845,
@@ -232,20 +247,20 @@
 				{
 					"id": 2817761390,
 					"name": "Input",
-					"type": "image"
+					"type": "texture"
 				}
 			],
 			"outputs": [
 				{
 					"id": 3035146654,
 					"name": "Output",
-					"type": "image"
+					"type": "texture"
 				}
 			],
 			"title": "Seamless Tiler",
 			"type": "Seamless Tiler",
-			"x": 532.0,
-			"y": 105.0
+			"x": 556.0,
+			"y": 82.0
 		},
 		{
 			"id": 2039127696,
@@ -253,50 +268,113 @@
 				{
 					"id": 3129229881,
 					"name": "Input",
-					"type": "image"
+					"type": "texture"
 				}
 			],
 			"outputs": [
 				{
 					"id": 2998180272,
 					"name": "Output",
-					"type": "image"
+					"type": "texture"
 				}
 			],
 			"title": "HeightMap to NormalMap",
 			"type": "HeightMap to NormalMap",
-			"x": 721.0,
-			"y": 81.0
+			"x": 766.0,
+			"y": 134.0
 		},
 		{
 			"id": 4016356840,
 			"inputs": [
 				{
 					"id": 279760242,
-					"name": "Image",
-					"type": "image"
+					"name": "Texture",
+					"type": "texture"
 				}
 			],
 			"outputs": [],
-			"title": "Image Probe",
-			"type": "Image Probe",
-			"x": 962.0,
-			"y": 215.0
+			"title": "Texture Probe",
+			"type": "Texture Probe",
+			"x": 1028.0,
+			"y": 305.0
 		},
 		{
 			"id": 251467935,
 			"inputs": [
 				{
 					"id": 4019633566,
-					"name": "Image",
-					"type": "image"
+					"name": "Texture",
+					"type": "texture"
 				}
 			],
 			"outputs": [],
-			"title": "Image Probe",
-			"type": "Image Probe",
-			"x": 730.0,
-			"y": 215.0
+			"title": "Texture Probe",
+			"type": "Texture Probe",
+			"x": 765.0,
+			"y": 303.0
+		},
+		{
+			"id": 2403835562,
+			"inputs": [
+				{
+					"id": 3948927624,
+					"name": "Input",
+					"type": "texture"
+				}
+			],
+			"outputs": [],
+			"path": "virtual:normalmap",
+			"title": "Virtual NormalMap",
+			"type": "Virtual Texture Output",
+			"x": 1027.0,
+			"y": 135.0
+		},
+		{
+			"id": 1857257203,
+			"inputs": [
+				{
+					"id": 2663289011,
+					"name": "Input",
+					"type": "texture"
+				}
+			],
+			"outputs": [],
+			"path": "virtual:heightmap",
+			"title": "Virtual HeightMap",
+			"type": "Virtual Texture Output",
+			"x": 1028.0,
+			"y": 60.0
+		},
+		{
+			"id": 1426578722,
+			"image": "virtual:heightmap",
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 4161053947,
+					"name": "Texture",
+					"type": "texture"
+				}
+			],
+			"title": "Texture Input",
+			"type": "Texture Input",
+			"x": 34.0,
+			"y": 711.0
+		},
+		{
+			"id": 6291075,
+			"inputs": [
+				{
+					"id": 1766002379,
+					"name": "Texture",
+					"type": "texture"
+				}
+			],
+			"outputs": [],
+			"title": "Texture Probe",
+			"type": "Texture Probe",
+			"x": 258.0,
+			"y": 537.0
 		}
 	]
 }

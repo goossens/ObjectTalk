@@ -19,4 +19,4 @@
 //	Functions
 //
 
-void OtImageFilterNodesRegister(OtGraph& graph);
+void OtTextureFilterNodesRegister(OtGraph& graph);

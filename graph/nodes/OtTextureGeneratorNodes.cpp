@@ -18,7 +18,7 @@
 #include "OtUi.h"
 
 #include "OtGraphNode.h"
-#include "OtImageGeneratorNodes.h"
+#include "OtTextureGeneratorNodes.h"
 
 
 //
@@ -39,12 +39,12 @@ public:
 		addInputPin("Amplitude", amplitude);
 		addInputPin("Persistence", persistence);
 		addInputPin("Octaves", octaves);
-		addOutputPin("Image", texture);
+		addOutputPin("Texture", texture);
 	}
 
 	// rendering custom fields
-	void customRendering() override {
-		ImGui::SetNextItemWidth(fieldWidth);
+	void customRendering(float width) override {
+		ImGui::SetNextItemWidth(width);
 		auto old = serialize().dump();
 
 		if (OtUiSelectorEnum("##noiseType", noiseType, OtFbm::noiseTypes, OtFbm::noiseTypeCount)) {
@@ -112,12 +112,12 @@ protected:
 
 
 //
-//	OtImageGeneratorNodesRegister
+//	OtTextureGeneratorNodesRegister
 //
 
 #define REGISTER(CLASS) \
-	graph.registerNodeType<CLASS>("Image Generators", CLASS::name)
+	graph.registerNodeType<CLASS>("Texture Generators", CLASS::name)
 
-void OtImageGeneratorNodesRegister(OtGraph& graph) {
+void OtTextureGeneratorNodesRegister(OtGraph& graph) {
 	REGISTER(OtNoiseMapGenerator);
 }

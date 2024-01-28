@@ -32,8 +32,8 @@ public:
 
 	// configure node
 	inline void configure() override {
-		addOutputPin("Value", value)->addRenderer([this] () {
-			ImGui::SetNextItemWidth(fieldWidth);
+		addOutputPin("Value", value)->addRenderer([this] (float width) {
+			ImGui::SetNextItemWidth(width);
 			ImGui::InputInt("##value", &value, 1, 100, ImGuiInputTextFlags_NoUndoRedo);
 
 			if (ImGui::IsItemActivated()) {
@@ -57,7 +57,7 @@ public:
 	}
 
 	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		value = data->value("value", 0.);
+		value = data->value("value", 0);
 	}
 
 	static constexpr const char* name = "Integer Input";
@@ -79,8 +79,8 @@ public:
 
 	// configure node
 	inline void configure() override {
-		addOutputPin("Value", value)->addRenderer([this] () {
-			ImGui::SetNextItemWidth(fieldWidth);
+		addOutputPin("Value", value)->addRenderer([this](float width) {
+			ImGui::SetNextItemWidth(width);
 			ImGui::InputFloat("##value", &value, 0.0f, 0.0f, "%.3f", ImGuiInputTextFlags_NoUndoRedo);
 
 			if (ImGui::IsItemActivated()) {
@@ -116,29 +116,34 @@ protected:
 
 
 //
-//	OtGraphNodeImageInput
+//	OtGraphNodeTextureInput
 //
 
-class OtGraphNodeImageInput : public OtGraphNodeClass {
+class OtGraphNodeTextureInput : public OtGraphNodeClass {
 public:
 	// constructor
-	inline OtGraphNodeImageInput() : OtGraphNodeClass(name, OtGraphNodeClass::input) {}
+	inline OtGraphNodeTextureInput() : OtGraphNodeClass(name, OtGraphNodeClass::input) {}
 
 	// configure node
 	inline void configure() override {
-		addOutputPin("Image", texture)->addRenderer([this] () {
-			ImGui::SetNextItemWidth(fieldWidth);
+		addOutputPin("Texture", texture)->addRenderer([this](float width) {
+			ImGui::SetNextItemWidth(width);
 			auto old = serialize().dump();
 
 			if (asset.renderUI("##image")) {
 				if (asset.isNull()) {
+					texture.clear();
+					needsEvaluating = true;
+
+				} else if (asset.isReady()) {
+					texture = asset->getTexture();
 					needsEvaluating = true;
 
 				} else {
+					texture.clear();
 					loading = true;
 				}
 
-				texture.clear();
 				oldState = old;
 				newState = serialize().dump();
 				needsSaving = true;
@@ -146,12 +151,17 @@ public:
 		}, fieldWidth);
 	}
 
-	// check for completion of texture load
+	// update state
 	inline void onUpdate() override {
 		if (loading && asset->isReady()) {
 			texture = asset->getTexture();
 			needsEvaluating = true;
 			loading = false;
+
+		} else if (asset.isReady() && asset->getTexture().getVersion() != version) {
+			texture = asset->getTexture();
+			version = texture.getVersion();
+			needsEvaluating = true;
 		}
 	}
 
@@ -175,12 +185,13 @@ public:
 		}
 	}
 
-	static constexpr const char* name = "Image Input";
+	static constexpr const char* name = "Texture Input";
 	static constexpr float fieldWidth = 180.0f;
 
 protected:
 	OtAsset<OtTextureAsset> asset;
 	OtTexture texture;
+	int version = 0;
 	bool loading = false;
 };
 
@@ -195,5 +206,5 @@ protected:
 void OtInputNodesRegister(OtGraph& graph) {
 	REGISTER(OtGraphNodeIntegerInput);
 	REGISTER(OtGraphNodeFloatInput);
-	REGISTER(OtGraphNodeImageInput);
+	REGISTER(OtGraphNodeTextureInput);
 }

@@ -108,7 +108,7 @@ public:
 	virtual inline void onEnd() {};
 
 	// handle custom section of notes
-	virtual inline void customRendering() {}
+	virtual inline void customRendering(float width) {}
 	virtual inline float getCustomRenderingWidth() { return 0.0f; }
 	virtual inline float getCustomRenderingHeight() { return 0.0f; }
 

@@ -54,7 +54,7 @@ public:
 	// clear the entire graph
 	void clear();
 
-	// load and save scene
+	// load and save graph
 	void load(const std::string& path);
 	void save(const std::string& path);
 
@@ -142,7 +142,7 @@ private:
 	bool needsEvaluating = false;
 
 	// metadata for editor
-	std::string metadata{"{}"};
+	std::string metadata = "{}";
 
 	// (un)index a node and its pins
 	void indexNode(OtGraphNode node);

@@ -19,4 +19,4 @@
 //	Functions
 //
 
-void OtImageGeneratorNodesRegister(OtGraph& graph);
+void OtTextureGeneratorNodesRegister(OtGraph& graph);

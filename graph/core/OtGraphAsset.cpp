@@ -16,12 +16,12 @@
 
 #include "OtGraphAsset.h"
 
-#include "OtImageFilterNodes.h"
-#include "OtImageGeneratorNodes.h"
 #include "OtInputNodes.h"
 #include "OtMathNodes.h"
 #include "OtOutputNodes.h"
 #include "OtProbeNodes.h"
+#include "OtTextureFilterNodes.h"
+#include "OtTextureGeneratorNodes.h"
 
 
 //
@@ -31,12 +31,12 @@
 OtGraphAsset::OtGraphAsset() {
 	// create the graph
 	graph = std::make_unique<OtGraph>();
-	OtImageFilterNodesRegister(*graph);
-	OtImageGeneratorNodesRegister(*graph);
 	OtInputNodesRegister(*graph);
 	OtMathNodesRegister(*graph);
 	OtOutputNodesRegister(*graph);
 	OtProbeNodesRegister(*graph);
+	OtTextureFilterNodesRegister(*graph);
+	OtTextureGeneratorNodesRegister(*graph);
 }
 
 

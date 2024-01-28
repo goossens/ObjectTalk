@@ -153,7 +153,13 @@ public:
 		info.virtualOnly = true;
 		info.virtualMode = &virtualMode;
 
-		return OtAssetSelector::renderUI(info);
+		if (OtAssetSelector::renderUI(info)) {
+			load(info.path);
+			return true;
+
+		} else {
+			return false;
+		}
 	}
 
 private:

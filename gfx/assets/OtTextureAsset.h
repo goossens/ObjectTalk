@@ -29,6 +29,7 @@ public:
 	// access the texture
 	inline OtTexture& getTexture() { return texture; }
 	inline void setTexture(OtTexture& t) { texture = t; }
+	inline void clearTexture() { texture.clear(); }
 
 	// asset properties
 	static constexpr bool canHandleVirtual = true;

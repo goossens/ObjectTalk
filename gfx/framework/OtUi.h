@@ -38,6 +38,9 @@ enum {
 //	Functions
 //
 
+// is mouse in rectangle
+bool OtUiIsMouseInRect(const ImVec2& topLeft, const ImVec2& bottomRight);
+
 // split am ImGui label into a label and the ID
 void OtUiSplitLabel(const char* text, std::string& label, std::string& id);
 
@@ -67,3 +70,6 @@ void OtUiSplitterHorizontal(float* size, float minSize, float maxSize);
 // selectors
 bool OtUiSelectorEnum(const char* label, int& value, const char* const names[], size_t count);
 bool OtUiSelectorPowerOfTwo(const char* label, int& value, int startValue, int endValue);
+
+// bezier curve editor
+bool OtUiBezier(const char* label, float P[4]);

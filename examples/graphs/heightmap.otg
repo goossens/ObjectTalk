@@ -74,6 +74,16 @@
 			"from": 4161053947,
 			"id": 2811983836,
 			"to": 1766002379
+		},
+		{
+			"from": 2550862960,
+			"id": 3269341256,
+			"to": 3237085801
+		},
+		{
+			"from": 4243123040,
+			"id": 408184764,
+			"to": 56501210
 		}
 	],
 	"metadata": {},
@@ -91,8 +101,8 @@
 			"title": "Size",
 			"type": "Integer Input",
 			"value": 512,
-			"x": 38.0,
-			"y": 105.0
+			"x": 23.0,
+			"y": 38.0
 		},
 		{
 			"id": 2842695751,
@@ -107,8 +117,8 @@
 			"title": "Frequency",
 			"type": "Float Input",
 			"value": 3.0,
-			"x": 38.0,
-			"y": 169.0
+			"x": 23.0,
+			"y": 102.0
 		},
 		{
 			"id": 3704143381,
@@ -123,8 +133,8 @@
 			"title": "Lacunarity",
 			"type": "Float Input",
 			"value": 1.7000000476837158,
-			"x": 39.0,
-			"y": 232.0
+			"x": 24.0,
+			"y": 165.0
 		},
 		{
 			"id": 2320418202,
@@ -139,8 +149,8 @@
 			"title": "Amplitude",
 			"type": "Float Input",
 			"value": 0.5,
-			"x": 38.0,
-			"y": 295.0
+			"x": 23.0,
+			"y": 228.0
 		},
 		{
 			"id": 2893673049,
@@ -155,8 +165,8 @@
 			"title": "Persistence",
 			"type": "Float Input",
 			"value": 0.5,
-			"x": 36.0,
-			"y": 360.0
+			"x": 21.0,
+			"y": 293.0
 		},
 		{
 			"id": 846135667,
@@ -171,8 +181,8 @@
 			"title": "Octaves",
 			"type": "Integer Input",
 			"value": 6,
-			"x": 36.0,
-			"y": 426.0
+			"x": 21.0,
+			"y": 359.0
 		},
 		{
 			"id": 1863888524,
@@ -223,8 +233,8 @@
 			],
 			"title": "NoiseMap Generator",
 			"type": "NoiseMap Generator",
-			"x": 246.0,
-			"y": 106.0
+			"x": 231.0,
+			"y": 39.0
 		},
 		{
 			"id": 3557975928,
@@ -238,8 +248,8 @@
 			"outputs": [],
 			"title": "Texture Probe",
 			"type": "Texture Probe",
-			"x": 508.0,
-			"y": 303.0
+			"x": 496.0,
+			"y": 177.0
 		},
 		{
 			"id": 181894845,
@@ -259,8 +269,8 @@
 			],
 			"title": "Seamless Tiler",
 			"type": "Seamless Tiler",
-			"x": 556.0,
-			"y": 82.0
+			"x": 541.0,
+			"y": 15.0
 		},
 		{
 			"id": 2039127696,
@@ -280,8 +290,8 @@
 			],
 			"title": "HeightMap to NormalMap",
 			"type": "HeightMap to NormalMap",
-			"x": 766.0,
-			"y": 134.0
+			"x": 751.0,
+			"y": 67.0
 		},
 		{
 			"id": 4016356840,
@@ -295,8 +305,8 @@
 			"outputs": [],
 			"title": "Texture Probe",
 			"type": "Texture Probe",
-			"x": 1028.0,
-			"y": 305.0
+			"x": 1016.0,
+			"y": 179.0
 		},
 		{
 			"id": 251467935,
@@ -310,8 +320,8 @@
 			"outputs": [],
 			"title": "Texture Probe",
 			"type": "Texture Probe",
-			"x": 765.0,
-			"y": 303.0
+			"x": 753.0,
+			"y": 177.0
 		},
 		{
 			"id": 2403835562,
@@ -326,8 +336,8 @@
 			"path": "virtual:normalmap",
 			"title": "Virtual NormalMap",
 			"type": "Virtual Texture Output",
-			"x": 1027.0,
-			"y": 135.0
+			"x": 1015.0,
+			"y": 108.0
 		},
 		{
 			"id": 1857257203,
@@ -342,8 +352,8 @@
 			"path": "virtual:heightmap",
 			"title": "Virtual HeightMap",
 			"type": "Virtual Texture Output",
-			"x": 1028.0,
-			"y": 60.0
+			"x": 1012.0,
+			"y": 17.0
 		},
 		{
 			"id": 1426578722,
@@ -358,8 +368,8 @@
 			],
 			"title": "Texture Input",
 			"type": "Texture Input",
-			"x": 34.0,
-			"y": 711.0
+			"x": 19.0,
+			"y": 644.0
 		},
 		{
 			"id": 6291075,
@@ -373,8 +383,45 @@
 			"outputs": [],
 			"title": "Texture Probe",
 			"type": "Texture Probe",
-			"x": 258.0,
-			"y": 537.0
+			"x": 243.0,
+			"y": 470.0
+		},
+		{
+			"distance": 0,
+			"id": 2454258453,
+			"inputs": [
+				{
+					"id": 56501210,
+					"name": "Input",
+					"type": "texture"
+				}
+			],
+			"outputs": [
+				{
+					"id": 2550862960,
+					"name": "Output",
+					"type": "texture"
+				}
+			],
+			"title": "Islandizer",
+			"type": "Islandizer",
+			"x": 509.0,
+			"y": 602.0
+		},
+		{
+			"id": 4242090497,
+			"inputs": [
+				{
+					"id": 3237085801,
+					"name": "Texture",
+					"type": "texture"
+				}
+			],
+			"outputs": [],
+			"title": "Texture Probe",
+			"type": "Texture Probe",
+			"x": 1018.0,
+			"y": 428.0
 		}
 	]
 }

@@ -86,11 +86,17 @@ void OtGraphWidget::render(OtGraph* g) {
 	// reset state
 	graph = g;
 	hoveredNode = 0;
+	hoveredInNodeContent = false;
 	hoveredPin = 0;
 	pinLocations.clear();
 
 	// start rendering
-	ImGui::BeginChild("graph", ImVec2(), 0, ImGuiWindowFlags_NoMove);
+	ImGuiChildFlags flags =
+		ImGuiWindowFlags_NoMove |
+		ImGuiWindowFlags_NoScrollbar |
+		ImGuiWindowFlags_NoScrollWithMouse;
+
+	ImGui::BeginChild("graph", ImVec2(), 0, flags);
 	position = ImGui::GetCursorScreenPos();
 	size = ImGui::GetContentRegionAvail();
 	offset = position + scrollingOffset;
@@ -317,12 +323,29 @@ void OtGraphWidget::renderNode(ImDrawList* drawlist, OtGraphNode& node) {
 	drawlist->AddRectFilled(topLeft, headerBottomRight, nodeColors[node->category], nodeRounding);
 	drawlist->AddRect(topLeft, bottomRight, node->selected ? nodeSelectedColor : nodeOutlineColor, nodeRounding);
 
-	// handle mouse interactions
+	// is mouse over node?
+	if (OtUiIsMouseInRect(topLeft, bottomRight)) {
+		// yes, remember the ID
+		hoveredNode = node->id;
+		hoveredInNodeContent = true;
+	}
+
+	// handle mouse interactions with header
+	bool startNodeRenaming = false;
 	ImGui::SetCursorScreenPos(topLeft);
-	ImGui::Dummy(nodeSize);
+	ImGui::InvisibleButton("", headerBottomRight - topLeft);
 
 	if (ImGui::IsItemHovered()) {
-		hoveredNode = node->id;
+		// the header doesn't count as the node content area
+		hoveredInNodeContent = false;
+
+		// handle double clicks (to start editing node title)
+		if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+			if (renamingNode != node->id) {
+				renamingNode = node->id;
+				startNodeRenaming = true;
+			}
+		}
 	}
 
 	// render title
@@ -331,16 +354,6 @@ void OtGraphWidget::renderNode(ImDrawList* drawlist, OtGraphNode& node) {
 	inset(((node->w - horizontalPadding * 2.0f) - ImGui::CalcTextSize(node->title.c_str()).x) / 2.0f);
 	ImGui::AlignTextToFramePadding();
 	ImGui::TextUnformatted(renamingNode == node->id ? "" : node->title.c_str());
-
-	// handle double clicks (to start editing node title)
-	bool startNodeRenaming = false;
-
-	if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0)) {
-		if (renamingNode != node->id) {
-			renamingNode = node->id;
-			startNodeRenaming = true;
-		}
-	}
 
 	// render all output pins
 	node->eachOutput([&] (OtGraphPin& pin) {
@@ -466,7 +479,7 @@ void OtGraphWidget::handleInteractions(ImDrawList* drawlist) {
 	// see if we have the start of a new mouse interaction
 	if (interactionState == noInteraction) {
 		// handle left mouse button events
-		if (ImGui::IsMouseDown(ImGuiPopupFlags_MouseButtonLeft)) {
+		if (ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
 			// are we hitting a pin?
 			if (hoveredPin) {
 				auto pin = graph->getPin(hoveredPin);
@@ -492,13 +505,21 @@ void OtGraphWidget::handleInteractions(ImDrawList* drawlist) {
 
 			// are we hitting a node?
 			} else if (hoveredNode) {
-				if (!graph->isNodeSelected(hoveredNode)) {
-					graph->select(hoveredNode, !ImGui::IsKeyDown(ImGuiMod_Shift));
+				// yes, is it the content area (body)?
+				if (hoveredInNodeContent) {
+					// ignore mouse events until mouse is released
+						interactionState = ignoreMouse;
+
+				} else {
+					// we hit the header, handle node selection
+					if (!graph->isNodeSelected(hoveredNode)) {
+						graph->select(hoveredNode, !ImGui::IsKeyDown(ImGuiMod_Shift));
+					}
+
+					interactionState = selectNode;
 				}
 
-				interactionState = selectNode;
-
-			// we hit the background
+			// we hitting the background
 			} else {
 				// start rubber banding
 				rubberBandStartPos = ImGui::GetMousePos();
@@ -508,32 +529,38 @@ void OtGraphWidget::handleInteractions(ImDrawList* drawlist) {
 			}
 
 		// handle right mouse button events
-		} else if (ImGui::IsMouseDown(ImGuiPopupFlags_MouseButtonRight)) {
+		} else if (ImGui::IsMouseDown(ImGuiMouseButton_Right)) {
 			if (!hoveredPin && !hoveredNode) {
 				contextMenuDone = true;
 			}
 
 		// handle middle mouse button events
-		} else if (ImGui::IsMouseDown(ImGuiPopupFlags_MouseButtonMiddle)) {
+		} else if (ImGui::IsMouseDown(ImGuiMouseButton_Middle)) {
 			scrollingStartPos = ImGui::GetMousePos() - scrollingOffset;
 			interactionState = scrolling;
+		}
+
+	// handle ignore mouse state
+	} else if (interactionState == ignoreMouse) {
+		if (!ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
+			interactionState = noInteraction;
 		}
 
 	// handle select node state
 	} else if (interactionState == selectNode) {
 		// end state if required
-		if (!ImGui::IsMouseDown(ImGuiPopupFlags_MouseButtonLeft)) {
+		if (!ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
 			interactionState = noInteraction;
 
 		// see if we started dragging
-		} else if (ImGui::IsMouseDragging(ImGuiPopupFlags_MouseButtonLeft)) {
+		} else if (ImGui::IsMouseDragging(ImGuiMouseButton_Left)) {
 			draggingStartPos = ImGui::GetMousePos();
 			interactionState = dragNodes;
 		}
 
 	// handle drag node state
 	} else if (interactionState == dragNodes) {
-		if (ImGui::IsMouseDown(ImGuiPopupFlags_MouseButtonLeft)) {
+		if (ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
 			draggingOffset = ImGui::GetMousePos() - draggingStartPos;
 
 		} else {
@@ -545,7 +572,7 @@ void OtGraphWidget::handleInteractions(ImDrawList* drawlist) {
 
 	// handle rubberband state
 	} else if (interactionState == rubberBand) {
-		if (ImGui::IsMouseDown(ImGuiPopupFlags_MouseButtonLeft)) {
+		if (ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
 			auto pos = ImGui::GetMousePos();
 
 			rubberBandTopLeft = ImVec2(
@@ -575,7 +602,7 @@ void OtGraphWidget::handleInteractions(ImDrawList* drawlist) {
 
 	// handle node connection (create a new link)
 	} else if (interactionState == connecting) {
-		if (ImGui::IsMouseDown(ImGuiPopupFlags_MouseButtonLeft)) {
+		if (ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
 			// are we hovering over another pin?
 			if (hoveredPin && hoveredPin != fromPin) {
 				toPin = hoveredPin;
@@ -600,7 +627,7 @@ void OtGraphWidget::handleInteractions(ImDrawList* drawlist) {
 
 	// handle node reconnection (change an existing link)
 	} else if (interactionState == reconnecting) {
-		if (ImGui::IsMouseDown(ImGuiPopupFlags_MouseButtonLeft)) {
+		if (ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
 			// are we hovering over another pin?
 			if (hoveredPin) {
 				toPin = hoveredPin;

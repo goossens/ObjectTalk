@@ -452,6 +452,15 @@ void OtGraph::select(int x1, int y1, int x2, int y2) {
 
 
 //
+//	OtGraph::deselect
+//
+
+void OtGraph::deselect(uint32_t id) {
+	nodeIndex[id]->selected = false;
+}
+
+
+//
 //	OtGraph::getSelected
 //
 

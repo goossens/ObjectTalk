@@ -67,6 +67,7 @@ private:
 	// interaction properties
 	enum {
 		noInteraction,
+		ignoreMouse,
 		selectNode,
 		dragNodes,
 		rubberBand,
@@ -87,6 +88,7 @@ private:
 
 	uint32_t editedNode;
 	uint32_t hoveredNode;
+	bool hoveredInNodeContent;
 	uint32_t renamingNode;
 	uint32_t hoveredPin;
 

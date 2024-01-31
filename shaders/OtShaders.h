@@ -69,6 +69,11 @@
 #include "generated/filter/OtBlurFS_spv.h"
 #include "generated/filter/OtBlurFS_essl.h"
 #include "generated/filter/OtBlurFS_dx11.h"
+#include "generated/filter/OtIslandizerFS_mtl.h"
+#include "generated/filter/OtIslandizerFS_glsl.h"
+#include "generated/filter/OtIslandizerFS_spv.h"
+#include "generated/filter/OtIslandizerFS_essl.h"
+#include "generated/filter/OtIslandizerFS_dx11.h"
 #include "generated/filter/OtNormalMapperFS_mtl.h"
 #include "generated/filter/OtNormalMapperFS_glsl.h"
 #include "generated/filter/OtNormalMapperFS_spv.h"
@@ -256,6 +261,11 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtBlurFS),
 	BGFX_EMBEDDED_SHADER(OtBlurFS),
 	BGFX_EMBEDDED_SHADER(OtBlurFS),
+	BGFX_EMBEDDED_SHADER(OtIslandizerFS),
+	BGFX_EMBEDDED_SHADER(OtIslandizerFS),
+	BGFX_EMBEDDED_SHADER(OtIslandizerFS),
+	BGFX_EMBEDDED_SHADER(OtIslandizerFS),
+	BGFX_EMBEDDED_SHADER(OtIslandizerFS),
 	BGFX_EMBEDDED_SHADER(OtNormalMapperFS),
 	BGFX_EMBEDDED_SHADER(OtNormalMapperFS),
 	BGFX_EMBEDDED_SHADER(OtNormalMapperFS),

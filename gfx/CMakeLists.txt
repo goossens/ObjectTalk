@@ -7,7 +7,7 @@
 file(GLOB GFX_INCLUDES */*.h)
 file(GLOB GFX_SOURCES */*.cpp)
 
-if (APPLE)
+if(APPLE)
 	list(APPEND GFX_SOURCES framework/OtMacos.mm)
 
 	find_library(COCOA Cocoa REQUIRED)

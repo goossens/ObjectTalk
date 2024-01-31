@@ -99,6 +99,7 @@ public:
 	void select(uint32_t id, bool deselect=true);
 	void select(const std::vector<uint32_t>& nodes, bool deselect=true);
 	void select(int x1, int y1, int x2, int y2);
+	void deselect(uint32_t id);
 	inline bool isNodeSelected(uint32_t id) { return nodeIndex[id]->selected; }
 
 	std::vector<uint32_t> getSelected();

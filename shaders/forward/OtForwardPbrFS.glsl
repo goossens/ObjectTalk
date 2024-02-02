@@ -24,9 +24,9 @@ uniform vec4 u_pbrMaterial[5];
 #define u_hasAlbedoTexture bool(u_pbrMaterial[3].r)
 #define u_hasMetallicRoughnessTexture bool(u_pbrMaterial[3].g)
 
-#define u_hasEmissiveTexture bool(u_pbrMaterial[3].r)
-#define u_hasAoTexture bool(u_pbrMaterial[3].g)
-#define u_hasNormalTexture bool(u_pbrMaterial[3].b)
+#define u_hasEmissiveTexture bool(u_pbrMaterial[4].r)
+#define u_hasAoTexture bool(u_pbrMaterial[4].g)
+#define u_hasNormalTexture bool(u_pbrMaterial[4].b)
 
 uniform vec4 u_lighting[3];
 #define u_cameraPosition u_lighting[0].xyz
@@ -65,12 +65,6 @@ void main() {
 		discard;
 	}
 
-	// determine PBR parameters
-	pbr.metallic = u_hasMetallicRoughnessTexture ? texture2D(s_deferredGeometryMetallicRoughnessTexture, uv).b * u_metallic : u_metallic;
-	pbr.roughness = u_hasMetallicRoughnessTexture ? texture2D(s_deferredGeometryMetallicRoughnessTexture, uv).g * u_roughness : u_roughness;
-	pbr.emissive = u_hasEmissiveTexture ? texture2D(s_deferredGeometryEmissiveTexture, uv).rgb * u_emissive : u_emissive;
-	pbr.ao = u_hasAoTexture ? texture2D(s_deferredGeometryAoTexture, uv).r * u_ao : u_ao;
-
 	// determine normal
 	if (u_hasNormalTexture) {
 		vec3 tangent = normalize(v_tangent);
@@ -82,6 +76,12 @@ void main() {
 	} else {
 		pbr.N = normalize(v_normal);
 	}
+
+	// determine PBR parameters
+	pbr.metallic = u_hasMetallicRoughnessTexture ? texture2D(s_deferredGeometryMetallicRoughnessTexture, uv).b * u_metallic : u_metallic;
+	pbr.roughness = u_hasMetallicRoughnessTexture ? texture2D(s_deferredGeometryMetallicRoughnessTexture, uv).g * u_roughness : u_roughness;
+	pbr.emissive = u_hasEmissiveTexture ? texture2D(s_deferredGeometryEmissiveTexture, uv).rgb * u_emissive : u_emissive;
+	pbr.ao = u_hasAoTexture ? texture2D(s_deferredGeometryAoTexture, uv).r * u_ao : u_ao;
 
 	// calculate vectors
 	pbr.V = normalize(u_cameraPosition - v_position);

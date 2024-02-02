@@ -28,3 +28,11 @@ inline bool OtGpuHasOriginBottomLeft() {
 inline bool OtGpuHasHomogeneousDepth() {
 	return bgfx::getCaps()->homogeneousDepth;
 }
+
+
+//
+//	DirectX:	NDC depth [0, 1],  origin top left
+//	Metal:		NDC depth [0, 1],  origin top left
+//	OpenGL:		NDC depth [-1, 1], origin bottom left
+//	Vulkan:		NDC depth [0, 1],  origin top left
+//

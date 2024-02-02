@@ -20,6 +20,8 @@ uniform vec4 u_lighting[3];
 #define u_directionalLightColor u_lighting[2].xyz
 #define u_directionalLightAmbience u_lighting[2].a
 
+uniform mat4 u_invViewProjUniform;
+
 // texture samplers
 SAMPLER2D(s_deferredLightingAlbedoTexture, 0);
 SAMPLER2D(s_deferredLightingNormalTexture, 1);
@@ -40,7 +42,8 @@ void main() {
 	float depth = texture2D(s_deferredLightingDepthTexture, v_texcoord0).x;
 
 	// determine world coordinates
-	vec3 pos = uvToWorldSpace(v_texcoord0, depth);
+	vec4 p = mul(u_invViewProjUniform, vec4(uvToClipSpace(v_texcoord0, depth), 1.0f));
+	vec3 pos = p.xyz / p.w;
 
 	// collect PBR data
 	PBR pbr;
@@ -54,7 +57,7 @@ void main() {
 	pbr.directionalLightAmbience = u_directionalLightAmbience;
 
 	// calculate vectors
-	pbr.N = normalize(texture2D(s_deferredLightingNormalTexture, v_texcoord0).rgb);
+	pbr.N = normalize(texture2D(s_deferredLightingNormalTexture, v_texcoord0).xyz);
 	pbr.V = normalize(u_cameraPosition - pos);
 	pbr.L = normalize(u_directionalLightDirection);
 

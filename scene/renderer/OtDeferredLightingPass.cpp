@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include "glm/glm.hpp"
 #include "OtSceneRenderer.h"
 
 
@@ -24,6 +25,9 @@ void OtSceneRenderer::renderDeferredLightingPass(OtSceneRendererContext& ctx) {
 
 	// submit the uniforms
 	submitLightUniforms(ctx.scene, ctx.camera.cameraPosition);
+
+	invViewProjUniform.set(0, glm::inverse(ctx.camera.viewProjectionMatrix));
+	invViewProjUniform.submit();
 
 	// bind all textures
 	ctx.deferedBuffer.bindAlbedoTexture(deferredLightingAlbedoSampler, 0);

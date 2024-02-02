@@ -23,6 +23,7 @@
 #include "OtShaderProgram.h"
 #include "OtSphereGeometry.h"
 #include "OtTileableFbm.h"
+#include "OtUniformMat4.h"
 #include "OtUniformVec4.h"
 
 #include "OtCamera.h"
@@ -120,8 +121,11 @@ private:
 	OtUniformVec4 bloomUniforms{"u_bloom", 1};
 	OtUniformVec4 postProcessUniforms{"u_postProcess", 1};
 
+	OtUniformMat4 invViewProjUniform{"u_invViewProjUniform", 1};
+
 	// samplers
 	OtSampler deferredGeometryAlbedoSampler{"s_deferredGeometryAlbedoTexture"};
+	OtSampler deferredGeometryPositionSampler{"s_deferredGeometryPositionTexture"};
 	OtSampler deferredGeometryNormalSampler{"s_deferredGeometryNormalTexture"};
 	OtSampler deferredGeometryMetallicRoughnessSampler{"s_deferredGeometryMetallicRoughnessTexture"};
 	OtSampler deferredGeometryEmissiveSampler{"s_deferredGeometryEmissiveSampler"};

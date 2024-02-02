@@ -24,9 +24,9 @@ struct PBR {
 	float roughness;
 	vec3 emissive;
 	float ao;
-	vec3 N; // normal
-	vec3 V; // view direction
-	vec3 L; // light direction
+	vec3 N; // surface normal
+	vec3 V; // direction to view point
+	vec3 L; // direction to light
 	vec3 directionalLightColor;
 	float directionalLightAmbience;
 };
@@ -68,7 +68,7 @@ vec4 applyPBR(PBR pbr) {
 	// calculate reflectance
 	vec3 F0 = mix(vec3_splat(0.04), albedo, pbr.metallic);
 
-	// calculate halfway vector betwwen view direction and light direction
+	// calculate halfway vector between view direction and light direction
 	vec3 H = normalize(pbr.V + pbr.L);
 
 	// Cook-Torrance Bidirectional Reflective Distribution Function (BRDF)

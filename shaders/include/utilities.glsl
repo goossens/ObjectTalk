@@ -7,12 +7,11 @@
 #ifndef OT_UTILITIES_GLSL
 #define OT_UTILITIES_GLSL
 
+#include <bgfx_shader.glsl>
 
 // convert depth from depth buffer to linear space
 float linearizeDepth(float depth, float near, float far) {
-//	return near * far / (far - depth * (far - near));
 	return (2.0 * near) / (far + near - depth * (far - near));
-
 }
 
 // convert depth from depth buffer to clip space depth
@@ -36,26 +35,23 @@ vec3 clipToWorldSpace(vec3 pos) {
 	return p.xyz / p.w;
 }
 
+// convert point from uv to clip space
+vec3 uvToClipSpace(vec2 uv, float depth) {
+#if BGFX_SHADER_LANGUAGE_GLSL
+	return vec3(uv * 2.0 - 1.0, depthToClipSpace(depth));
+#else
+	return vec3(uv.x * 2.0 - 1.0, uv.y * -2.0 + 1.0, depthToClipSpace(depth));
+#endif
+}
+
 // convert point from uv to view space
 vec3 uvToViewSpace(vec2 uv, float depth) {
-	vec3 clip = vec3(uv * 2.0 - 1.0, depthToClipSpace(depth));
-
-#if !BGFX_SHADER_LANGUAGE_GLSL
-	clip.y = -clip.y;
-#endif
-
-	return clipToViewSpace(clip);
+	return clipToViewSpace(uvToClipSpace(uv, depth));
 }
 
 // convert point from uv to world space
 vec3 uvToWorldSpace(vec2 uv, float depth) {
-	vec3 clip = vec3(uv * 2.0 - 1.0, depthToClipSpace(depth));
-
-#if !BGFX_SHADER_LANGUAGE_GLSL
-	clip.y = -clip.y;
-#endif
-
-	return clipToWorldSpace(clip);
+	return clipToWorldSpace(uvToClipSpace(uv, depth));
 }
 
 // convert point from world to clip space
@@ -67,13 +63,12 @@ vec3 worldToClipSpace(vec3 pos) {
 // determine UV coordinates from world coordinates
 vec2 worldSpaceToUv(vec3 pos) {
 	vec3 p = worldToClipSpace(pos);
-	vec2 uv = (p.xy + 1.0) * 0.5;
 
-#if !BGFX_SHADER_LANGUAGE_GLSL
-	uv.y = 1.0 - uv.y;
+#if BGFX_SHADER_LANGUAGE_GLSL
+	return (p.xy + 1.0) * 0.5;
+#else
+	return vec2((p.x + 1.0) * 0.5, 1.0 - ((p.y + 1.0) * 0.5));
 #endif
-
-	return uv;
 }
 
 

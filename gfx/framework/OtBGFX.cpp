@@ -71,7 +71,7 @@ void OtFramework::initBGFX() {
 #if __APPLE__
 	init.type = bgfx::RendererType::Metal;
 
-#elif defined(_WIN32)
+#elif _WIN32
 	init.type = bgfx::RendererType::Direct3D12;
 
 #else

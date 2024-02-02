@@ -15,7 +15,7 @@
 #if __APPLE__
 #define GLFW_EXPOSE_NATIVE_COCOA
 
-#elif defined(_WIN32)
+#elif _WIN32
 #define GLFW_EXPOSE_NATIVE_WIN32
 #define GLFW_EXPOSE_NATIVE_WGL
 #define WIN32_LEAN_AND_MEAN
@@ -35,6 +35,38 @@
 #include "OtLog.h"
 
 #include "OtFramework.h"
+
+
+//
+//	keysToMod
+//
+
+#if !__APPLE__ && !_WIN32
+static int keysToMods(GLFWwindow* window) {
+	// keyboard modifiers are not handled correctly on Linux with X11
+	// see https://github.com/glfw/glfw/issues/1630
+
+	int mods = 0;
+
+	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS) {
+		mods |= GLFW_MOD_CONTROL;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS) {
+		mods |= GLFW_MOD_SHIFT;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_ALT) == GLFW_PRESS) {
+		mods |= GLFW_MOD_ALT;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_LEFT_SUPER) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SUPER) == GLFW_PRESS) {
+		mods |= GLFW_MOD_SUPER;
+	}
+
+	return mods;
+}
+#endif
 
 
 //
@@ -90,7 +122,7 @@ void OtFramework::initGLFW() {
 	nativeDisplayHandle = glfwGetCocoaWindow(window);
 	createMetalLayer();
 
-#elif defined(_WIN32)
+#elif _WIN32
 	nativeDisplayHandle = glfwGetWin32Window(window);
 
 #else
@@ -126,7 +158,7 @@ void OtFramework::initGLFW() {
 		if (focused) {
 			double xpos, ypos;
 			glfwGetCursorPos(window, &xpos, &ypos);
-			fw->eventQueue.pushMouseMoveEvent(xpos, ypos);
+			fw->eventQueue.pushMouseMoveEvent((float) xpos, (float) ypos);
 		}
 	});
 
@@ -138,7 +170,12 @@ void OtFramework::initGLFW() {
 		glfwGetCursorPos(window, &xpos, &ypos);
 
 		fw->modifiers = (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS) ? mods : 0;
-		fw->eventQueue.pushMouseButtonEvent(button, action, mods, xpos, ypos);
+
+#if !__APPLE__ && !_WIN32
+		mods = (action == GLFW_PRESS) ? mods | keysToMods(window) : mods & ~keysToMods(window);
+#endif
+
+		fw->eventQueue.pushMouseButtonEvent(button, action, mods, (float) xpos, (float) ypos);
 	});
 
 	// setup mouse move callback
@@ -149,14 +186,14 @@ void OtFramework::initGLFW() {
 			fw->eventQueue.pushMouseDragEvent(GLFW_MOUSE_BUTTON_1, fw->modifiers, xpos, ypos);
 
 		} else {
-			fw->eventQueue.pushMouseMoveEvent(xpos, ypos);
+			fw->eventQueue.pushMouseMoveEvent((float) xpos, (float) ypos);
 		}
 	});
 
 	// setup scroll wheel callback
 	glfwSetScrollCallback(window, [](GLFWwindow* window, double xoffset, double yoffset) {
 		OtFramework* fw = (OtFramework*) glfwGetWindowUserPointer(window);
-		fw->eventQueue.pushMouseWheelEvent(xoffset, yoffset);
+		fw->eventQueue.pushMouseWheelEvent((float) xoffset, (float) yoffset);
 	});
 
 	// set keyboard callback
@@ -176,11 +213,15 @@ void OtFramework::initGLFW() {
 		} else if ((mods & GLFW_MOD_CONTROL) && key == GLFW_KEY_Q && action == GLFW_PRESS) {
 			if (fw->canQuit()) {
 				fw->stopGLFW();
-			}
+		}
 
 #endif
 
 		} else {
+#if !__APPLE__ && !_WIN32
+			mods = (action == GLFW_PRESS) ? mods | keysToMods(window) : mods & ~keysToMods(window);
+#endif
+
 			fw->eventQueue.pushKeyboardEvent(key, scancode, action, mods);
 		}
 	});

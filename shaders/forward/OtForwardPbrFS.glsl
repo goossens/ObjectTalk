@@ -49,19 +49,19 @@ void main() {
 	// determine UV coordinates
 	vec2 uv = v_texcoord0 * u_scale;
 
-	// PBR data
-	PBR pbr;
+	// material data
+	Material material;
 
 	// determine albedo
 	if (u_hasAlbedoTexture) {
-		pbr.albedo = texture2D(s_deferredGeometryAlbedoTexture, uv) * u_albedo;
+		material.albedo = texture2D(s_deferredGeometryAlbedoTexture, uv) * u_albedo;
 
 	} else {
-		pbr.albedo = u_albedo;
+		material.albedo = u_albedo;
 	}
 
 	// discard pixel if too transparent
-	if (pbr.albedo.a < 0.3) {
+	if (material.albedo.a < 0.3) {
 		discard;
 	}
 
@@ -71,26 +71,26 @@ void main() {
 		vec3 bitangent = normalize(v_bitangent);
 		vec3 normal = normalize(v_normal);
 		mat3 TBN = mtxFromCols(tangent, bitangent, normal);
-		pbr.N = normalize(mul(TBN, texture2D(s_deferredGeometryNormalTexture, uv).rgb * 2.0 - 1.0));
+		material.N = normalize(mul(TBN, texture2D(s_deferredGeometryNormalTexture, uv).rgb * 2.0 - 1.0));
 
 	} else {
-		pbr.N = normalize(v_normal);
+		material.N = normalize(v_normal);
 	}
 
 	// determine PBR parameters
-	pbr.metallic = u_hasMetallicRoughnessTexture ? texture2D(s_deferredGeometryMetallicRoughnessTexture, uv).b * u_metallic : u_metallic;
-	pbr.roughness = u_hasMetallicRoughnessTexture ? texture2D(s_deferredGeometryMetallicRoughnessTexture, uv).g * u_roughness : u_roughness;
-	pbr.emissive = u_hasEmissiveTexture ? texture2D(s_deferredGeometryEmissiveTexture, uv).rgb * u_emissive : u_emissive;
-	pbr.ao = u_hasAoTexture ? texture2D(s_deferredGeometryAoTexture, uv).r * u_ao : u_ao;
-
-	// calculate vectors
-	pbr.V = normalize(u_cameraPosition - v_position);
-	pbr.L = normalize(u_directionalLightDirection);
+	material.metallic = u_hasMetallicRoughnessTexture ? texture2D(s_deferredGeometryMetallicRoughnessTexture, uv).b * u_metallic : u_metallic;
+	material.roughness = u_hasMetallicRoughnessTexture ? texture2D(s_deferredGeometryMetallicRoughnessTexture, uv).g * u_roughness : u_roughness;
+	material.ao = u_hasAoTexture ? texture2D(s_deferredGeometryAoTexture, uv).r * u_ao : u_ao;
 
 	// set light information
-	pbr.directionalLightColor = u_directionalLightColor;
-	pbr.directionalLightAmbience = u_directionalLightAmbience;
+	DirectionalLight light;
+	light.L = normalize(u_directionalLightDirection);
+	light.color = u_directionalLightColor;
+	light.ambience = u_directionalLightAmbience;
 
 	// apply PBR (tonemapping and Gamma correction are done during post-processing)
-	gl_FragColor = applyPBR(pbr);
+	vec4 color = directionalLightPBR(material, light, normalize(u_cameraPosition - v_position));
+	vec3 emissive = u_hasEmissiveTexture ? texture2D(s_deferredGeometryEmissiveTexture, uv).rgb * u_emissive : u_emissive;
+	color += vec4(emissive, 1.0);
+	gl_FragColor = color;
 }

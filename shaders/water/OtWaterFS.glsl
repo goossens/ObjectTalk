@@ -91,20 +91,21 @@ void main() {
 	vec3 color = mix(reflectionColor, refractionColor, refractiveFactor);
 	float alpha = clamp((waterDepth / 1.0), 0.0, 1.0);
 
-	// PBR data
-	PBR pbr;
-	pbr.albedo = vec4(color, alpha);
-	pbr.metallic = u_metallic;
-	pbr.roughness = u_roughness;
-	pbr.emissive = vec3_splat(0.0);
-	pbr.ao = u_ao;
-	pbr.N = normal;
-	pbr.V = viewDirection;
-	pbr.L = normalize(u_directionalLightDirection);
-	pbr.directionalLightColor = u_directionalLightColor;
-	pbr.directionalLightAmbience = u_directionalLightAmbience;
+	// material data
+	Material material;
+	material.albedo = vec4(color, alpha);
+	material.metallic = u_metallic;
+	material.roughness = u_roughness;
+	material.ao = u_ao;
+	material.N = normal;
+
+	// light data
+	DirectionalLight light;
+	light.L = normalize(u_directionalLightDirection);
+	light.color = u_directionalLightColor;
+	light.ambience = u_directionalLightAmbience;
 
 	// apply PBR (tonemapping and Gamma correction are done during post-processing)
-	gl_FragColor = applyPBR(pbr);
+	gl_FragColor = directionalLightPBR(material, light, viewDirection);
 	gl_FragDepth = waterClipPos.z;
 }

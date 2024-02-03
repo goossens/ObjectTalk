@@ -45,23 +45,24 @@ void main() {
 	vec4 p = mul(u_invViewProjUniform, vec4(uvToClipSpace(v_texcoord0, depth), 1.0f));
 	vec3 pos = p.xyz / p.w;
 
-	// collect PBR data
-	PBR pbr;
-	pbr.albedo = vec4(albedoSample.rgb, 1.0);
+	// material data
+	Material material;
+	material.albedo = vec4(albedoSample.rgb, 1.0);
 	vec4 data = texture2D(s_deferredLightingPbrTexture, v_texcoord0);
-	pbr.metallic = data.r;
-	pbr.roughness = data.g;
-	pbr.ao = data.b;
-	pbr.emissive = texture2D(s_deferredLightingEmissiveTexture, v_texcoord0).rgb;
-	pbr.directionalLightColor = u_directionalLightColor;
-	pbr.directionalLightAmbience = u_directionalLightAmbience;
+	material.metallic = data.r;
+	material.roughness = data.g;
+	material.ao = data.b;
+	material.N = normalize(texture2D(s_deferredLightingNormalTexture, v_texcoord0).xyz);
 
-	// calculate vectors
-	pbr.N = normalize(texture2D(s_deferredLightingNormalTexture, v_texcoord0).xyz);
-	pbr.V = normalize(u_cameraPosition - pos);
-	pbr.L = normalize(u_directionalLightDirection);
+	// light data
+	DirectionalLight light;
+	light.L = normalize(u_directionalLightDirection);
+	light.color = u_directionalLightColor;
+	light.ambience = u_directionalLightAmbience;
 
 	// apply PBR (tonemapping and Gamma correction are done during post-processing)
-	gl_FragColor = applyPBR(pbr);
+	vec4 color = directionalLightPBR(material, light, normalize(u_cameraPosition - pos));
+	color += vec4(texture2D(s_deferredLightingEmissiveTexture, v_texcoord0).rgb, 1.0);
+	gl_FragColor = color;
 	gl_FragDepth = depth;
 }

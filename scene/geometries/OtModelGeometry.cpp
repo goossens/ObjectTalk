@@ -17,6 +17,7 @@
 
 #include "OtFunction.h"
 
+#include "OtGpu.h"
 #include "OtUi.h"
 
 #include "OtModelGeometry.h"
@@ -74,11 +75,11 @@ void OtModelGeometryClass::fillGeometry() {
 		Assimp::Importer importer;
 
 		// determine the import flags
-		static constexpr uint32_t flags =
+		uint32_t flags =
 			aiProcessPreset_TargetRealtime_Quality |
 			aiProcess_OptimizeMeshes |
 			aiProcess_PreTransformVertices |
-			aiProcess_FlipUVs;
+		(OtGpuHasOriginBottomLeft() ? 0 : aiProcess_FlipUVs);
 
 		// read the model file
 		const aiScene* scene = importer.ReadFile(modelPath, flags);

@@ -176,10 +176,10 @@ void OtTexture::loadFromFileInMemory(void* data, uint32_t size) {
 
 
 //
-//	OtTexture::getTextureHandle
+//	OtTexture::getHandle
 //
 
-bgfx::TextureHandle OtTexture::getTextureHandle() {
+bgfx::TextureHandle OtTexture::getHandle() {
 	// unsure we have a valid texture
 	if (isValid()) {
 		return texture.getHandle();

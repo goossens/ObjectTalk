@@ -111,6 +111,35 @@ struct OtVertexPosUv {
 
 
 //
+//	OtVertexPosNormUv
+//
+
+struct OtVertexPosNormUv {
+	// vertex elements
+	glm::vec3 position;
+	glm::vec3 normal;
+	glm::vec2 uv;
+
+	// constructors
+	OtVertexPosNormUv() = default;
+	inline OtVertexPosNormUv(const glm::vec3& p, const glm::vec3& n, const glm::vec2& u=glm::vec2(0.0f)) : position(p), normal(n), uv(u) {}
+
+	// get vertex description
+	static inline bgfx::VertexLayout getLayout() {
+		bgfx::VertexLayout layout;
+
+		layout.begin()
+			.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+			.add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
+			.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
+			.end();
+
+		return layout;
+	}
+};
+
+
+//
 //	OtVertexPosNorm
 //
 

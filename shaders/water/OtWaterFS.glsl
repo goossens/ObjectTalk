@@ -105,7 +105,7 @@ void main() {
 	light.color = u_directionalLightColor;
 	light.ambience = u_directionalLightAmbience;
 
-	// apply PBR (tonemapping and Gamma correction are done during post-processing)
+	// apply PBR (tonemapping and gamma correction are done during post-processing)
 	gl_FragColor = directionalLightPBR(material, light, viewDirection);
 	gl_FragDepth = waterClipPos.z;
 }

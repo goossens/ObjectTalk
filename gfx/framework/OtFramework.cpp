@@ -28,6 +28,14 @@
 
 
 //
+//	Globals
+//
+
+static std::vector<std::function<void()>> oneTimers;
+static std::mutex oneTimersLock;
+
+
+//
 //	OtFramework::run
 //
 
@@ -104,6 +112,11 @@ void OtFramework::runThread2() {
 			// reset view ID
 			OtPassReset();
 
+			// handle libuv events
+			// this is done at this point so that asyncronous callbacks
+			// can take part in the rendering process and use the GPU
+			uv_run(uv_default_loop(), UV_RUN_NOWAIT);
+
 			// let app render a frame
 			app->onRender();
 
@@ -118,9 +131,6 @@ void OtFramework::runThread2() {
 			// put results on screen
 			renderIMGUI();
 			renderBGFX();
-
-			// handle libuv events
-			uv_run(uv_default_loop(), UV_RUN_NOWAIT);
 		}
 
 		// tell app we're done

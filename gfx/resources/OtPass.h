@@ -33,6 +33,7 @@ public:
 	// manipulate pass
 	void setClear(bool color, bool depth, const glm::vec4& rgba=glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), float depthValue=1.0f);
 	void setRectangle(int x, int y, int w, int h);
+	void setFrameBuffer(bgfx::FrameBufferHandle framebuffer);
 	void setFrameBuffer(OtFrameBuffer& framebuffer);
 	void setFrameBuffer(OtGbuffer& gbuffer);
 	void setTransform(const glm::mat4& view, const glm::mat4& projection);

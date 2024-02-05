@@ -88,9 +88,9 @@ void main() {
 	light.color = u_directionalLightColor;
 	light.ambience = u_directionalLightAmbience;
 
-	// apply PBR (tonemapping and Gamma correction are done during post-processing)
+	// apply PBR (tonemapping and gamma correction are done during post-processing)
 	vec4 color = directionalLightPBR(material, light, normalize(u_cameraPosition - v_position));
 	vec3 emissive = u_hasEmissiveTexture ? texture2D(s_deferredGeometryEmissiveTexture, uv).rgb * u_emissive : u_emissive;
-	color += vec4(emissive, 1.0);
+	color += vec4(emissive, 0.0);
 	gl_FragColor = color;
 }

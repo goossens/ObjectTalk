@@ -14,7 +14,11 @@
 
 #include <string>
 
+#include "OtLibuv.h"
+
 #include "OtBgfxHandle.h"
+#include "OtSampler.h"
+#include "OtShaderProgram.h"
 
 
 //
@@ -33,10 +37,10 @@ public:
 	inline bool isValid() { return cubemap.isValid(); }
 
 	// return cubemap handle
-	inline bgfx::TextureHandle getTextureHandle() { return cubemap.getHandle(); }
+	inline bgfx::TextureHandle getHandle() { return cubemap.getHandle(); }
 
 	// return cubemap index
-	inline uint16_t getTextureIndex() {
+	inline uint16_t getIndex() {
 		return isValid() ? cubemap.getIndex() : bgfx::kInvalidHandle;
 	}
 
@@ -44,7 +48,18 @@ private:
 	// cubemap texture
 	OtBgfxHandle<bgfx::TextureHandle> cubemap;
 
+	// temporary handles (in case we dynamically create a cubemap)
+	uv_async_t* hdrConversionHandle = nullptr;
+	OtBgfxHandle<bgfx::TextureHandle> tmpTexture;
+	OtBgfxHandle<bgfx::FrameBufferHandle> framebuffers[6];
+	OtSampler sampler{"s_equirectangularMap"};
+	OtShaderProgram reprojectShader{"OtHdrReprojectVS", "OtHdrReprojectFS"};
+
 	// specific cubemap loaders
 	void loadJSON(const std::string& path);
 	void loadCubemapImage(const std::string& path);
+	void loadHdrImage(const std::string& path);
+
+	// render the cubemap from an HDR image
+	void renderCubemap();
 };

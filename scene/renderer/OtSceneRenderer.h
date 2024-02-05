@@ -128,7 +128,7 @@ private:
 	OtSampler deferredGeometryPositionSampler{"s_deferredGeometryPositionTexture"};
 	OtSampler deferredGeometryNormalSampler{"s_deferredGeometryNormalTexture"};
 	OtSampler deferredGeometryMetallicRoughnessSampler{"s_deferredGeometryMetallicRoughnessTexture"};
-	OtSampler deferredGeometryEmissiveSampler{"s_deferredGeometryEmissiveSampler"};
+	OtSampler deferredGeometryEmissiveSampler{"s_deferredGeometryEmissiveTexture"};
 	OtSampler deferredGeometryAoSampler{"s_deferredGeometryAoTexture"};
 
 	OtSampler deferredLightingAlbedoSampler{"s_deferredLightingAlbedoTexture", OtSampler::pointSampling | OtSampler::clampSampling};

@@ -47,7 +47,7 @@ void OtSceneRenderer::renderSkyPass(OtSceneRendererContext& ctx) {
 
 	// see if we have any sky boxes
 	for (auto&& [entity, component] : ctx.scene->view<OtSkyBoxComponent>().each()) {
-		if (component.cubemap.isReady()) {
+		if (component.cubemap.isReady() && component.cubemap->getCubeMap().isValid()) {
 			renderSkyBox(ctx, pass, component);
 		}
 	};

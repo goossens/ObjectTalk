@@ -85,7 +85,7 @@ private:
 //
 
 template <typename... ARGS>
-void OtError(const char* format, ARGS && ...args) {
+void OtError(const char* format, ARGS&& ...args) {
 	if constexpr(sizeof...(ARGS) == 0) {
 		throw OtException(format);
 

@@ -47,10 +47,10 @@ public:
 	void loadFromFileInMemory(void* data, uint32_t size);
 
 	// return texture handle
-	bgfx::TextureHandle getTextureHandle();
+	bgfx::TextureHandle getHandle();
 
 	// return texture index
-	inline uint16_t getTextureIndex() {
+	inline uint16_t getIndex() {
 		return isValid() ? texture.getIndex() : bgfx::kInvalidHandle;
 	}
 

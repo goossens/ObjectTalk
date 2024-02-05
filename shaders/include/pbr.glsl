@@ -12,10 +12,7 @@
 
 
 #include <bgfx_shader.glsl>
-
-
-// constants
-#define PI 3.14159265359
+#include <constants.glsl>
 
 // material data
 struct Material {
@@ -29,7 +26,6 @@ struct Material {
 // directional light data
 struct DirectionalLight {
 	vec3 L; // direction to light
-	vec3 V; // direction to view point
 	vec3 color;
 	float ambience;
 };

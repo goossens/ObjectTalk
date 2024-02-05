@@ -16,6 +16,7 @@
 #include "OtFormat.h"
 #include "OtLog.h"
 
+#include "OtGpu.h"
 #include "OtPathTools.h"
 
 #include "OtModelAsset.h"
@@ -35,7 +36,7 @@ bool OtModelAsset::load() {
 	Assimp::Importer importer;
 
 	// determine the import flags
-	static constexpr uint32_t flags =
+	uint32_t flags =
 		aiProcessPreset_TargetRealtime_Quality |
 		aiProcess_OptimizeMeshes |
 		aiProcess_PreTransformVertices |

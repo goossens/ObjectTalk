@@ -36,7 +36,9 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f highlight\OtSelectFS.glsl -o generated\highlight\OtSelectFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtSelectFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f imgui\OtImGuiVS.glsl -o generated\imgui\OtImGuiVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtImGuiVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f imgui\OtImGuiFS.glsl -o generated\imgui\OtImGuiFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtImGuiFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f sky\OtHdrReprojectVS.glsl -o generated\sky\OtHdrReprojectVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtHdrReprojectVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f sky\OtSkyVS.glsl -o generated\sky\OtSkyVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtSkyVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f sky\OtHdrReprojectFS.glsl -o generated\sky\OtHdrReprojectFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtHdrReprojectFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f sky\OtSkyBoxFS.glsl -o generated\sky\OtSkyBoxFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtSkyBoxFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f sky\OtSkyFS.glsl -o generated\sky\OtSkyFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtSkyFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f sky\OtSkySphereFS.glsl -o generated\sky\OtSkySphereFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtSkySphereFS_dx11

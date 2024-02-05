@@ -6813,5 +6813,5 @@ uint16_t OtLogo::getTextureIndex() {
 		texture.loadFromFileInMemory((void*) &OtLogoData, sizeof(OtLogoData));
 	}
 
-	return texture.getTextureIndex();
+	return texture.getIndex();
 }

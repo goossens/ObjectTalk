@@ -83,14 +83,13 @@ void OtPass::setRectangle(int x, int y, int w, int h) {
 //	OtPass::setFrameBuffer
 //
 
+void OtPass::setFrameBuffer(bgfx::FrameBufferHandle framebuffer) {
+	bgfx::setViewFrameBuffer(view, framebuffer);
+}
+
 void OtPass::setFrameBuffer(OtFrameBuffer& framebuffer) {
 	framebuffer.submit(view);
 }
-
-
-//
-//	OtPass::setFrameBuffer
-//
 
 void OtPass::setFrameBuffer(OtGbuffer& gbuffer) {
 	gbuffer.submit(view);

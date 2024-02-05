@@ -16,6 +16,22 @@
 
 
 //
+//	API definitions
+//
+
+#if __APPLE__
+#define OT_GPU_METAL 1
+
+#elif _WIN32
+#define OT_GPU_DIRECT3D 1
+
+#else
+#define OT_GPU_OPENGL 1
+//#define OT_GPU_VULKAN 1
+#endif
+
+
+//
 //	Functions
 //
 
@@ -31,7 +47,7 @@ inline bool OtGpuHasHomogeneousDepth() {
 
 
 //
-//	DirectX:	NDC depth [0, 1],  origin top left
+//	Direct3D:	NDC depth [0, 1],  origin top left
 //	Metal:		NDC depth [0, 1],  origin top left
 //	OpenGL:		NDC depth [-1, 1], origin bottom left
 //	Vulkan:		NDC depth [0, 1],  origin top left

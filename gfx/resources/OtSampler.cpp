@@ -11,7 +11,9 @@
 
 #include "OtLog.h"
 
+#include "OtCubeMap.h"
 #include "OtSampler.h"
+#include "OtTexture.h"
 
 
 //
@@ -58,7 +60,7 @@ void OtSampler::submit(int unit, const char* n) {
 
 	// submit dummy texture
 	OtTexture dummy;
-	bgfx::setTexture(unit, uniform.getHandle(), dummy.getTextureHandle(), flags);
+	bgfx::setTexture(unit, uniform.getHandle(), dummy.getHandle(), flags);
 }
 
 void OtSampler::submit(int unit, OtTexture& texture, const char* name) {
@@ -75,7 +77,7 @@ void OtSampler::submit(int unit, OtTexture& texture, const char* name) {
 		}
 
 		// submit texture
-		bgfx::setTexture(unit, uniform.getHandle(), texture.getTextureHandle(), flags);
+		bgfx::setTexture(unit, uniform.getHandle(), texture.getHandle(), flags);
 
 	} else {
 		// submit dummy texture
@@ -116,7 +118,7 @@ void OtSampler::submit(int unit, OtCubeMap& cubemap, const char* name) {
 	}
 
 	// submit texture
-	bgfx::setTexture(unit, uniform.getHandle(), cubemap.getTextureHandle(), flags);
+	bgfx::setTexture(unit, uniform.getHandle(), cubemap.getHandle(), flags);
 }
 
 

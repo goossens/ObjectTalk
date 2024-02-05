@@ -35,8 +35,24 @@
 				},
 				{
 					"Exposure": 1.0,
-					"bloomIntensity": 0.5299999713897705,
+					"bloomIntensity": 0.1899999976158142,
 					"component": "Post Processing"
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Skybox",
+					"uuid": 397016261
+				},
+				{
+					"brightness": 0.28999999165534973,
+					"component": "Sky Box",
+					"cubemap": "assets/sunset.hdr",
+					"gamma": 1.8300000429153442
 				}
 			]
 		},

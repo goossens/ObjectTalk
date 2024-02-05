@@ -16,8 +16,13 @@
 
 #include "OtBgfxHandle.h"
 
-#include "OtCubeMap.h"
-#include "OtTexture.h"
+
+//
+//	Forward declarations
+//
+
+class OtCubeMap;
+class OtTexture;
 
 
 //

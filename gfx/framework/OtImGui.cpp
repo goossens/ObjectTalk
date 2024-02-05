@@ -207,7 +207,7 @@ void OtFramework::initIMGUI() {
 	int fw, fh;
 	io.Fonts->GetTexDataAsRGBA32(&pixels, &fw, &fh);
 	imguiFontTexture.loadFromMemory(fw, fh, pixels);
-	io.Fonts->TexID = (void*)(intptr_t) imguiFontTexture.getTextureIndex();
+	io.Fonts->TexID = (void*)(intptr_t) imguiFontTexture.getIndex();
 
 	// setup vertex declaration
 	imguiVertexLayout
@@ -335,8 +335,8 @@ void OtFramework::renderIMGUI() {
 		uint32_t numVertices = (uint32_t) cmd_list->VtxBuffer.size();
 		uint32_t numIndices = (uint32_t) cmd_list->IdxBuffer.size();
 
-		if ((numVertices != bgfx::getAvailTransientVertexBuffer(numVertices, imguiVertexLayout)) ||
-			(numIndices != bgfx::getAvailTransientIndexBuffer(numIndices))) {
+		if ((bgfx::getAvailTransientVertexBuffer(numVertices, imguiVertexLayout) != numVertices) ||
+			(bgfx::getAvailTransientIndexBuffer(numIndices) != numIndices)) {
 			// not enough space in transient buffer, quit drawing the rest...
 			break;
 		}

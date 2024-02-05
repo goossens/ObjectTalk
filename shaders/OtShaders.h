@@ -159,11 +159,21 @@
 #include "generated/imgui/OtImGuiFS_spv.h"
 #include "generated/imgui/OtImGuiFS_essl.h"
 #include "generated/imgui/OtImGuiFS_dx11.h"
+#include "generated/sky/OtHdrReprojectVS_mtl.h"
+#include "generated/sky/OtHdrReprojectVS_glsl.h"
+#include "generated/sky/OtHdrReprojectVS_spv.h"
+#include "generated/sky/OtHdrReprojectVS_essl.h"
+#include "generated/sky/OtHdrReprojectVS_dx11.h"
 #include "generated/sky/OtSkyVS_mtl.h"
 #include "generated/sky/OtSkyVS_glsl.h"
 #include "generated/sky/OtSkyVS_spv.h"
 #include "generated/sky/OtSkyVS_essl.h"
 #include "generated/sky/OtSkyVS_dx11.h"
+#include "generated/sky/OtHdrReprojectFS_mtl.h"
+#include "generated/sky/OtHdrReprojectFS_glsl.h"
+#include "generated/sky/OtHdrReprojectFS_spv.h"
+#include "generated/sky/OtHdrReprojectFS_essl.h"
+#include "generated/sky/OtHdrReprojectFS_dx11.h"
 #include "generated/sky/OtSkyBoxFS_mtl.h"
 #include "generated/sky/OtSkyBoxFS_glsl.h"
 #include "generated/sky/OtSkyBoxFS_spv.h"
@@ -351,11 +361,21 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtImGuiFS),
 	BGFX_EMBEDDED_SHADER(OtImGuiFS),
 	BGFX_EMBEDDED_SHADER(OtImGuiFS),
+	BGFX_EMBEDDED_SHADER(OtHdrReprojectVS),
+	BGFX_EMBEDDED_SHADER(OtHdrReprojectVS),
+	BGFX_EMBEDDED_SHADER(OtHdrReprojectVS),
+	BGFX_EMBEDDED_SHADER(OtHdrReprojectVS),
+	BGFX_EMBEDDED_SHADER(OtHdrReprojectVS),
 	BGFX_EMBEDDED_SHADER(OtSkyVS),
 	BGFX_EMBEDDED_SHADER(OtSkyVS),
 	BGFX_EMBEDDED_SHADER(OtSkyVS),
 	BGFX_EMBEDDED_SHADER(OtSkyVS),
 	BGFX_EMBEDDED_SHADER(OtSkyVS),
+	BGFX_EMBEDDED_SHADER(OtHdrReprojectFS),
+	BGFX_EMBEDDED_SHADER(OtHdrReprojectFS),
+	BGFX_EMBEDDED_SHADER(OtHdrReprojectFS),
+	BGFX_EMBEDDED_SHADER(OtHdrReprojectFS),
+	BGFX_EMBEDDED_SHADER(OtHdrReprojectFS),
 	BGFX_EMBEDDED_SHADER(OtSkyBoxFS),
 	BGFX_EMBEDDED_SHADER(OtSkyBoxFS),
 	BGFX_EMBEDDED_SHADER(OtSkyBoxFS),

@@ -92,19 +92,23 @@ void OtImage::load(const std::string& path, bool powerof2, bool square) {
 
 	// validate sides are power of 2 (if required)
 	if (powerof2 && !(bx::isPowerOf2(image->m_width))) {
+		size_t width = image->m_width;
 		clear();
-		OtError("Image width %d is not a power of 2", image->m_width);
+		OtError("Image width %d is not a power of 2", width);
 	}
 
 	if (powerof2 && !(bx::isPowerOf2(image->m_height))) {
+		size_t height = image->m_height;
 		clear();
-		OtError("Image height %d is not a power of 2", image->m_height);
+		OtError("Image height %d is not a power of 2", height);
 	}
 
 	// validate squareness (if required)
 	if (square && image->m_width != image->m_height) {
+		size_t width = image->m_width;
+		size_t height = image->m_height;
 		clear();
-		OtError("Image must be square not %d by %d", image->m_width, image->m_height);
+		OtError("Image must be square not %d by %d", width, height);
 	}
 }
 

@@ -20,6 +20,7 @@
 #include "OtLog.h"
 
 #include "OtFramework.h"
+#include "OtGpu.h"
 #include "OtPass.h"
 
 
@@ -68,15 +69,20 @@ void OtFramework::initBGFX() {
 	// initialize bgfx
 	bgfx::Init init;
 
-#if __APPLE__
+#if OT_GPU_METAL
 	init.type = bgfx::RendererType::Metal;
 
-#elif _WIN32
+#elif OT_GPU_DIRECT3D
 	init.type = bgfx::RendererType::Direct3D12;
 
-#else
-//	init.type = bgfx::RendererType::OpenGL;
+#elif OT_GPU_OPENGL
+	init.type = bgfx::RendererType::OpenGL;
+
+#elif OT_GPU_VULKAN
 	init.type = bgfx::RendererType::Vulkan;
+
+#else
+	OtLogFatal("No renderer API detected in OtGpu.h");
 #endif
 
 	init.platformData.nwh = nativeDisplayHandle;

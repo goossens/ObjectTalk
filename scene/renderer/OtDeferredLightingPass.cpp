@@ -30,11 +30,11 @@ void OtSceneRenderer::renderDeferredLightingPass(OtSceneRendererContext& ctx) {
 	invViewProjUniform.submit();
 
 	// bind all textures
-	ctx.deferedBuffer.bindAlbedoTexture(deferredLightingAlbedoSampler, 0);
-	ctx.deferedBuffer.bindNormalTexture(deferredLightingNormalSampler, 1);
-	ctx.deferedBuffer.bindPbrTexture(deferredLightingPbrSampler, 2);
-	ctx.deferedBuffer.bindEmissiveTexture(deferredLightingEmissiveSampler, 3);
-	ctx.deferedBuffer.bindDepthTexture(deferredLightingDepthSampler, 4);
+	ctx.deferedBuffer.bindAlbedoTexture(lightingAlbedoSampler, 0);
+	ctx.deferedBuffer.bindNormalTexture(lightingNormalSampler, 1);
+	ctx.deferedBuffer.bindPbrTexture(lightingPbrSampler, 2);
+	ctx.deferedBuffer.bindEmissiveTexture(lightingEmissiveSampler, 3);
+	ctx.deferedBuffer.bindDepthTexture(lightingDepthSampler, 4);
 
 	// run the program
 	deferredLightingProgram.setState(

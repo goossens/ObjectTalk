@@ -23,23 +23,23 @@ uniform vec4 u_lighting[3];
 uniform mat4 u_invViewProjUniform;
 
 // texture samplers
-SAMPLER2D(s_deferredLightingAlbedoTexture, 0);
-SAMPLER2D(s_deferredLightingNormalTexture, 1);
-SAMPLER2D(s_deferredLightingPbrTexture, 2);
-SAMPLER2D(s_deferredLightingEmissiveTexture, 3);
-SAMPLER2D(s_deferredLightingDepthTexture, 4);
+SAMPLER2D(s_lightingAlbedoTexture, 0);
+SAMPLER2D(s_lightingNormalTexture, 1);
+SAMPLER2D(s_lightingPbrTexture, 2);
+SAMPLER2D(s_lightingEmissiveTexture, 3);
+SAMPLER2D(s_lightingDepthTexture, 4);
 
 // main function
 void main() {
 	// ignore pixels without geometry
-	vec4 albedoSample = texture2D(s_deferredLightingAlbedoTexture, v_texcoord0);
+	vec4 albedoSample = texture2D(s_lightingAlbedoTexture, v_texcoord0);
 
 	if (albedoSample.a == 0.0) {
 		discard;
 	}
 
 	// determine depth
-	float depth = texture2D(s_deferredLightingDepthTexture, v_texcoord0).x;
+	float depth = texture2D(s_lightingDepthTexture, v_texcoord0).x;
 
 	// determine world coordinates
 	vec4 p = mul(u_invViewProjUniform, vec4(uvToClipSpace(v_texcoord0, depth), 1.0f));
@@ -48,11 +48,11 @@ void main() {
 	// material data
 	Material material;
 	material.albedo = vec4(albedoSample.rgb, 1.0);
-	vec4 data = texture2D(s_deferredLightingPbrTexture, v_texcoord0);
+	vec4 data = texture2D(s_lightingPbrTexture, v_texcoord0);
 	material.metallic = data.r;
 	material.roughness = data.g;
 	material.ao = data.b;
-	material.N = normalize(texture2D(s_deferredLightingNormalTexture, v_texcoord0).xyz);
+	material.N = normalize(texture2D(s_lightingNormalTexture, v_texcoord0).xyz);
 
 	// light data
 	DirectionalLight light;
@@ -62,7 +62,7 @@ void main() {
 
 	// apply PBR (tonemapping and gamma correction are done during post-processing)
 	vec4 color = directionalLightPBR(material, light, normalize(u_cameraPosition - pos));
-	vec3 emissive = texture2D(s_deferredLightingEmissiveTexture, v_texcoord0).rgb;
+	vec3 emissive = texture2D(s_lightingEmissiveTexture, v_texcoord0).rgb;
 	gl_FragColor = color + vec4(emissive, 0.0);
 	gl_FragDepth = depth;
 }

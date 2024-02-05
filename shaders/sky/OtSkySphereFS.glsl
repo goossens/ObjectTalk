@@ -13,10 +13,10 @@ uniform vec4 u_sky[3];
 #define u_brightness u_sky[0].x
 #define u_gamma u_sky[0].y
 
-SAMPLER2D(s_skySampler, 0);
+SAMPLER2D(s_skyTexture, 0);
 
 void main() {
-	vec3 color = texture2D(s_skySampler, vec2(1.0 - v_texcoord0.x, v_texcoord0.y)).rgb;
+	vec3 color = texture2D(s_skyTexture, vec2(1.0 - v_texcoord0.x, v_texcoord0.y)).rgb;
 	color = pow(color, vec3_splat(u_gamma));
 	color = u_brightness * color;
 	gl_FragColor = vec4(color, 1.0f);

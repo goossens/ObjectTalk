@@ -28,11 +28,11 @@ uniform vec4 u_pbrMaterial[5];
 #define u_hasNormalTexture bool(u_pbrMaterial[4].b)
 
 // texture samplers
-SAMPLER2D(s_deferredGeometryAlbedoTexture, 0);
-SAMPLER2D(s_deferredGeometryMetallicRoughnessTexture, 1);
-SAMPLER2D(s_deferredGeometryEmissiveTexture, 2);
-SAMPLER2D(s_deferredGeometryAoTexture, 3);
-SAMPLER2D(s_deferredGeometryNormalTexture, 4);
+SAMPLER2D(s_albedoTexture, 0);
+SAMPLER2D(s_metallicRoughnessTexture, 1);
+SAMPLER2D(s_emissiveTexture, 2);
+SAMPLER2D(s_aoTexture, 3);
+SAMPLER2D(s_normalTexture, 4);
 
 // main function
 void main() {
@@ -46,7 +46,7 @@ void main() {
 	vec3 albedo = u_albedo;
 
 	if (u_hasAlbedoTexture) {
-		albedo = texture2D(s_deferredGeometryAlbedoTexture, uv).rgb * albedo;
+		albedo = texture2D(s_albedoTexture, uv).rgb * albedo;
 	}
 
 	// determine normal
@@ -57,14 +57,14 @@ void main() {
 		vec3 tangent = normalize(v_tangent);
 		vec3 bitangent = normalize(v_bitangent);
 		mat3 TBN = mtxFromCols(tangent, bitangent, normal);
-		normal = normalize(mul(TBN, texture2D(s_deferredGeometryNormalTexture, uv).rgb * 2.0 - 1.0));
+		normal = normalize(mul(TBN, texture2D(s_normalTexture, uv).rgb * 2.0 - 1.0));
 	}
 
 	// determine PBR parameters
-	float metallic = u_hasMetallicRoughnessTexture ? texture2D(s_deferredGeometryMetallicRoughnessTexture, uv).b * u_metallic : u_metallic;
-	float roughness = u_hasMetallicRoughnessTexture ? texture2D(s_deferredGeometryMetallicRoughnessTexture, uv).g * u_roughness : u_roughness;
-	vec3 emissive = u_hasEmissiveTexture ? texture2D(s_deferredGeometryEmissiveTexture, uv).rgb * u_emissive : u_emissive;
-	float ao = u_hasAoTexture ? texture2D(s_deferredGeometryAoTexture, uv).r * u_ao : u_ao;
+	float metallic = u_hasMetallicRoughnessTexture ? texture2D(s_metallicRoughnessTexture, uv).b * u_metallic : u_metallic;
+	float roughness = u_hasMetallicRoughnessTexture ? texture2D(s_metallicRoughnessTexture, uv).g * u_roughness : u_roughness;
+	vec3 emissive = u_hasEmissiveTexture ? texture2D(s_emissiveTexture, uv).rgb * u_emissive : u_emissive;
+	float ao = u_hasAoTexture ? texture2D(s_aoTexture, uv).r * u_ao : u_ao;
 
 	// store information in gbuffer
 	gl_FragData[0] = vec4(albedo, 1.0);

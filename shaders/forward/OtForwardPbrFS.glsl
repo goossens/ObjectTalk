@@ -35,11 +35,11 @@ uniform vec4 u_lighting[3];
 #define u_directionalLightAmbience u_lighting[2].a
 
 // texture samplers
-SAMPLER2D(s_deferredGeometryAlbedoTexture, 0);
-SAMPLER2D(s_deferredGeometryMetallicRoughnessTexture, 1);
-SAMPLER2D(s_deferredGeometryEmissiveTexture, 2);
-SAMPLER2D(s_deferredGeometryAoTexture, 3);
-SAMPLER2D(s_deferredGeometryNormalTexture, 4);
+SAMPLER2D(s_albedoTexture, 0);
+SAMPLER2D(s_metallicRoughnessTexture, 1);
+SAMPLER2D(s_emissiveTexture, 2);
+SAMPLER2D(s_aoTexture, 3);
+SAMPLER2D(s_normalTexture, 4);
 
 // main function
 void main() {
@@ -54,7 +54,7 @@ void main() {
 
 	// determine albedo
 	if (u_hasAlbedoTexture) {
-		material.albedo = texture2D(s_deferredGeometryAlbedoTexture, uv) * u_albedo;
+		material.albedo = texture2D(s_albedoTexture, uv) * u_albedo;
 
 	} else {
 		material.albedo = u_albedo;
@@ -71,16 +71,16 @@ void main() {
 		vec3 bitangent = normalize(v_bitangent);
 		vec3 normal = normalize(v_normal);
 		mat3 TBN = mtxFromCols(tangent, bitangent, normal);
-		material.N = normalize(mul(TBN, texture2D(s_deferredGeometryNormalTexture, uv).rgb * 2.0 - 1.0));
+		material.N = normalize(mul(TBN, texture2D(s_normalTexture, uv).rgb * 2.0 - 1.0));
 
 	} else {
 		material.N = normalize(v_normal);
 	}
 
 	// determine PBR parameters
-	material.metallic = u_hasMetallicRoughnessTexture ? texture2D(s_deferredGeometryMetallicRoughnessTexture, uv).b * u_metallic : u_metallic;
-	material.roughness = u_hasMetallicRoughnessTexture ? texture2D(s_deferredGeometryMetallicRoughnessTexture, uv).g * u_roughness : u_roughness;
-	material.ao = u_hasAoTexture ? texture2D(s_deferredGeometryAoTexture, uv).r * u_ao : u_ao;
+	material.metallic = u_hasMetallicRoughnessTexture ? texture2D(s_metallicRoughnessTexture, uv).b * u_metallic : u_metallic;
+	material.roughness = u_hasMetallicRoughnessTexture ? texture2D(s_metallicRoughnessTexture, uv).g * u_roughness : u_roughness;
+	material.ao = u_hasAoTexture ? texture2D(s_aoTexture, uv).r * u_ao : u_ao;
 
 	// set light information
 	DirectionalLight light;
@@ -90,7 +90,7 @@ void main() {
 
 	// apply PBR (tonemapping and gamma correction are done during post-processing)
 	vec4 color = directionalLightPBR(material, light, normalize(u_cameraPosition - v_position));
-	vec3 emissive = u_hasEmissiveTexture ? texture2D(s_deferredGeometryEmissiveTexture, uv).rgb * u_emissive : u_emissive;
+	vec3 emissive = u_hasEmissiveTexture ? texture2D(s_emissiveTexture, uv).rgb * u_emissive : u_emissive;
 	color += vec4(emissive, 0.0);
 	gl_FragColor = color;
 }

@@ -124,31 +124,29 @@ private:
 	OtUniformMat4 invViewProjUniform{"u_invViewProjUniform", 1};
 
 	// samplers
-	OtSampler deferredGeometryAlbedoSampler{"s_deferredGeometryAlbedoTexture"};
-	OtSampler deferredGeometryPositionSampler{"s_deferredGeometryPositionTexture"};
-	OtSampler deferredGeometryNormalSampler{"s_deferredGeometryNormalTexture"};
-	OtSampler deferredGeometryMetallicRoughnessSampler{"s_deferredGeometryMetallicRoughnessTexture"};
-	OtSampler deferredGeometryEmissiveSampler{"s_deferredGeometryEmissiveTexture"};
-	OtSampler deferredGeometryAoSampler{"s_deferredGeometryAoTexture"};
+	OtSampler albedoSampler{"s_albedoTexture"};
+	OtSampler normalSampler{"s_normalTexture"};
+	OtSampler metallicRoughnessSampler{"s_metallicRoughnessTexture"};
+	OtSampler emissiveSampler{"s_emissiveTexture"};
+	OtSampler aoSampler{"s_aoTexture"};
 
-	OtSampler deferredLightingAlbedoSampler{"s_deferredLightingAlbedoTexture", OtSampler::pointSampling | OtSampler::clampSampling};
-	OtSampler deferredLightingPositionSampler{"s_deferredLightingPositionTexture", OtSampler::pointSampling | OtSampler::clampSampling};
-	OtSampler deferredLightingNormalSampler{"s_deferredLightingNormalTexture", OtSampler::pointSampling | OtSampler::clampSampling};
-	OtSampler deferredLightingPbrSampler{"s_deferredLightingPbrTexture", OtSampler::pointSampling | OtSampler::clampSampling};
-	OtSampler deferredLightingEmissiveSampler{"s_deferredLightingEmissiveTexture", OtSampler::pointSampling | OtSampler::clampSampling};
-	OtSampler deferredLightingDepthSampler{"s_deferredLightingDepthTexture", OtSampler::pointSampling | OtSampler::clampSampling};
+	OtSampler lightingAlbedoSampler{"s_lightingAlbedoTexture", OtSampler::pointSampling | OtSampler::clampSampling};
+	OtSampler lightingNormalSampler{"s_lightingNormalTexture", OtSampler::pointSampling | OtSampler::clampSampling};
+	OtSampler lightingPbrSampler{"s_lightingPbrTexture", OtSampler::pointSampling | OtSampler::clampSampling};
+	OtSampler lightingEmissiveSampler{"s_lightingEmissiveTexture", OtSampler::pointSampling | OtSampler::clampSampling};
+	OtSampler lightingDepthSampler{"s_lightingDepthTexture", OtSampler::pointSampling | OtSampler::clampSampling};
 
-	OtSampler region1Sampler{"s_region1Sampler"};
-	OtSampler region2Sampler{"s_region2Sampler"};
-	OtSampler region3Sampler{"s_region3Sampler"};
-	OtSampler region4Sampler{"s_region4Sampler"};
+	OtSampler region1Sampler{"s_region1Texture"};
+	OtSampler region2Sampler{"s_region2Texture"};
+	OtSampler region3Sampler{"s_region3Texture"};
+	OtSampler region4Sampler{"s_region4Texture"};
 
-	OtSampler normalmapSampler{"s_normalmapSampler"};
-	OtSampler reflectionSampler{"s_reflectionSampler"};
-	OtSampler refractionSampler{"s_refractionSampler"};
-	OtSampler refractionDepthSampler{"s_refractionDepthSampler"};
+	OtSampler normalmapSampler{"s_normalmapTexture"};
+	OtSampler reflectionSampler{"s_reflectionTexture"};
+	OtSampler refractionSampler{"s_refractionTexture"};
+	OtSampler refractionDepthSampler{"s_refractionDepthTexture"};
 
-	OtSampler skySampler{"s_skySampler"};
+	OtSampler skySampler{"s_skyTexture"};
 
 	OtSampler selectedSampler{"s_selectedTexture", OtSampler::pointSampling | OtSampler::clampSampling};
 

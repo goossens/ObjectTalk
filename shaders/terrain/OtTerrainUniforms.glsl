@@ -45,10 +45,10 @@ uniform vec4 u_terrain[9];
 #define u_regionTextured(i) bool(u_terrain[i + 4].a)
 
 // texture samplers
-SAMPLER2D(s_normalmapSampler, 0);
-SAMPLER2D(s_region1Sampler, 1);
-SAMPLER2D(s_region2Sampler, 2);
-SAMPLER2D(s_region3Sampler, 3);
-SAMPLER2D(s_region4Sampler, 4);
+SAMPLER2D(s_normalmapTexture, 0);
+SAMPLER2D(s_region1Texture, 1);
+SAMPLER2D(s_region2Texture, 2);
+SAMPLER2D(s_region3Texture, 3);
+SAMPLER2D(s_region4Texture, 4);
 
 #endif

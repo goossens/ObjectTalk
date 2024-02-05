@@ -31,10 +31,10 @@ void main() {
 	float height = (v_position.y - u_vOffset) / u_vScale;
 
 	// sample textures
-	vec3 region1Albedo = getRegionColor(1, s_region1Sampler, uv1);
-	vec3 region2Albedo = getRegionColor(2, s_region2Sampler, uv2);
-	vec3 region3Albedo = getRegionColor(3, s_region3Sampler, uv3);
-	vec3 region4Albedo = getRegionColor(4, s_region4Sampler, uv4);
+	vec3 region1Albedo = getRegionColor(1, s_region1Texture, uv1);
+	vec3 region2Albedo = getRegionColor(2, s_region2Texture, uv2);
+	vec3 region3Albedo = getRegionColor(3, s_region3Texture, uv3);
+	vec3 region4Albedo = getRegionColor(4, s_region4Texture, uv4);
 
 	// adjust texture by slope
 	float slope = abs(dot(v_normal, vec3(0.0, 1.0, 0.0)));

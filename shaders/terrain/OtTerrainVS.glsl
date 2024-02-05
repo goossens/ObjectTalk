@@ -16,7 +16,7 @@ void main() {
 	vec2 uv = mul(u_model[0], vec4(a_position, 1.0)).xz * u_hScale / u_heightMapSize;
 
 	// determine height and normal
-	vec4 sample = texture2DLod(s_normalmapSampler, uv, 1);
+	vec4 sample = texture2DLod(s_normalmapTexture, uv, 1);
 	float height = sample.w;
 
 	vec3 normal = sample.xzy;

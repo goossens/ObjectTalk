@@ -33,10 +33,10 @@ uniform vec4 u_lighting[3];
 #define u_directionalLightColor u_lighting[2].xyz
 #define u_directionalLightAmbience u_lighting[2].a
 
-SAMPLER2D(s_normalmapSampler, 0);
-SAMPLER2D(s_reflectionSampler, 1);
-SAMPLER2D(s_refractionSampler, 2);
-SAMPLER2D(s_refractionDepthSampler, 3);
+SAMPLER2D(s_normalmapTexture, 0);
+SAMPLER2D(s_reflectionTexture, 1);
+SAMPLER2D(s_refractionTexture, 2);
+SAMPLER2D(s_refractionDepthTexture, 3);
 
 // main program
 void main() {
@@ -65,24 +65,24 @@ void main() {
 	vec2 uv4 = uv - vec2(u_time / 109.0, u_time / -113.0);
 
 	vec4 noise =
-		texture2D(s_normalmapSampler, uv1) +
-		texture2D(s_normalmapSampler, uv2) +
-		texture2D(s_normalmapSampler, uv3) +
-		texture2D(s_normalmapSampler, uv4);
+		texture2D(s_normalmapTexture, uv1) +
+		texture2D(s_normalmapTexture, uv2) +
+		texture2D(s_normalmapTexture, uv3) +
+		texture2D(s_normalmapTexture, uv4);
 
 	vec3 normal = normalize((noise.xzy * 0.5 - 1.0) * vec3(1.5, 1.0, 1.5));
 
 	// determine reflection and refraction colors
 	vec2 refractionUv = gl_FragCoord.xy / u_viewRect.zw;
 	vec2 reflectionUv = vec2(refractionUv.x, 1.0 - refractionUv.y);
-	vec3 reflectionColor = texture2D(s_reflectionSampler, reflectionUv).rgb;
-	vec3 refractionColor = u_refractanceFlag ? texture2D(s_refractionSampler, refractionUv).rgb : u_color;
+	vec3 reflectionColor = texture2D(s_reflectionTexture, reflectionUv).rgb;
+	vec3 refractionColor = u_refractanceFlag ? texture2D(s_refractionTexture, refractionUv).rgb : u_color;
 
 	// determine view direction and water depth
 	vec3 viewDirection = normalize(u_cameraPosition - waterWorldPos);
 
 	// determine water depth
-	float refractionDepth = texture2D(s_refractionDepthSampler, refractionUv).r;
+	float refractionDepth = texture2D(s_refractionDepthTexture, refractionUv).r;
 	vec3 refractionWorldPos = uvToWorldSpace(gl_FragCoord.xy / u_viewRect.zw, refractionDepth);
 	float waterDepth = length(refractionWorldPos - waterWorldPos);
 

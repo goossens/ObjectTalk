@@ -51,13 +51,6 @@ void OtSceneRenderer::renderSkyPass(OtSceneRendererContext& ctx) {
 			renderSkyBox(ctx, pass, component);
 		}
 	};
-
-	// see if we have any sky spheres
-	for (auto&& [entity, component] : ctx.scene->view<OtSkySphereComponent>().each()) {
-		if (component.texture.isReady()) {
-			renderSkySphere(ctx, pass, component);
-		}
-	};
 }
 
 
@@ -133,34 +126,4 @@ void OtSceneRenderer::renderSkyBox(OtSceneRendererContext& ctx, OtPass& pass, Ot
 		OtStateDepthTestLessEqual);
 
 	pass.runShaderProgram(skyBoxProgram);
-}
-
-
-//
-//	OtSceneRenderer::renderSkySphere
-//
-
-void OtSceneRenderer::renderSkySphere(OtSceneRendererContext& ctx, OtPass& pass, OtSkySphereComponent& component) {
-	// setup the mesh
-	if (!unitySphereGeometry) {
-		unitySphereGeometry = OtSphereGeometry::create();
-	}
-
-	unitySphereGeometry->submitTriangles();
-
-	// set the uniform values
-	skyUniforms.setValue(0, component.brightness, component.gamma, 0.0f, 0.0f);
-	skyUniforms.submit();
-
-	// submit texture via sampler
-	skySampler.submit(0, component.texture->getTexture());
-
-	// run the program
-	skySphereProgram.setState(
-		OtStateWriteRgb |
-		OtStateWriteA |
-		OtStateWriteZ |
-		OtStateDepthTestLessEqual);
-
-	pass.runShaderProgram(skySphereProgram);
 }

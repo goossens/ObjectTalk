@@ -184,11 +184,6 @@
 #include "generated/sky/OtSkyFS_spv.h"
 #include "generated/sky/OtSkyFS_essl.h"
 #include "generated/sky/OtSkyFS_dx11.h"
-#include "generated/sky/OtSkySphereFS_mtl.h"
-#include "generated/sky/OtSkySphereFS_glsl.h"
-#include "generated/sky/OtSkySphereFS_spv.h"
-#include "generated/sky/OtSkySphereFS_essl.h"
-#include "generated/sky/OtSkySphereFS_dx11.h"
 #include "generated/terrain/OtTerrainVS_mtl.h"
 #include "generated/terrain/OtTerrainVS_glsl.h"
 #include "generated/terrain/OtTerrainVS_spv.h"
@@ -386,11 +381,6 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtSkyFS),
 	BGFX_EMBEDDED_SHADER(OtSkyFS),
 	BGFX_EMBEDDED_SHADER(OtSkyFS),
-	BGFX_EMBEDDED_SHADER(OtSkySphereFS),
-	BGFX_EMBEDDED_SHADER(OtSkySphereFS),
-	BGFX_EMBEDDED_SHADER(OtSkySphereFS),
-	BGFX_EMBEDDED_SHADER(OtSkySphereFS),
-	BGFX_EMBEDDED_SHADER(OtSkySphereFS),
 	BGFX_EMBEDDED_SHADER(OtTerrainVS),
 	BGFX_EMBEDDED_SHADER(OtTerrainVS),
 	BGFX_EMBEDDED_SHADER(OtTerrainVS),

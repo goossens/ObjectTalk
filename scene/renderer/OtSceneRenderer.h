@@ -64,7 +64,6 @@ private:
 	void renderDeferredTerrain(OtSceneRendererContext& ctx, OtPass& pass, OtTerrainComponent& terrain);
 	void renderSky(OtSceneRendererContext& ctx, OtPass& pass, OtSkyComponent& component);
 	void renderSkyBox(OtSceneRendererContext& ctx, OtPass& pass, OtSkyBoxComponent& component);
-	void renderSkySphere(OtSceneRendererContext& ctx, OtPass& pass, OtSkySphereComponent& component);
 	void renderForwardWater(OtSceneRendererContext& ctx, OtPass& pass, OtWaterComponent& water);
 	void renderForwardGeometry(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtGeometryComponent& geometry, OtMaterialComponent& material);
 	void renderHighlight(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity);
@@ -166,7 +165,6 @@ private:
 	OtShaderProgram outlineProgram{"OtOutlineVS", "OtOutlineFS"};
 	OtShaderProgram skyProgram{"OtSkyVS", "OtSkyFS"};
 	OtShaderProgram skyBoxProgram{"OtSkyVS", "OtSkyBoxFS"};
-	OtShaderProgram skySphereProgram{"OtSkyVS", "OtSkySphereFS"};
 	OtShaderProgram bloomDownSampleProgram{"OtFilterVS", "OtBloomDownSampleFS"};
 	OtShaderProgram bloomUpSampleProgram{"OtFilterVS", "OtBloomUpSampleFS"};
 	OtShaderProgram postProcessProgram{"OtFilterVS", "OtPostProcessFS"};

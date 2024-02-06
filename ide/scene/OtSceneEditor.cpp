@@ -853,7 +853,6 @@ void OtSceneEditor::renderNewEntitiesMenu(OtEntity entity) {
 		{ "Geometry", OtCreateEntityTask::geometry},
 		{ "Procedural Sky", OtCreateEntityTask::sky},
 		{ "Sky box", OtCreateEntityTask::skybox},
-		{ "Sky sphere", OtCreateEntityTask::skysphere},
 		{ "Infinite Terrain", OtCreateEntityTask::terrain},
 		{ "Procedural Water", OtCreateEntityTask::water},
 	};

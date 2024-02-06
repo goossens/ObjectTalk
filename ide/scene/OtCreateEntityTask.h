@@ -33,7 +33,6 @@ public:
 		geometry,
 		sky,
 		skybox,
-		skysphere,
 		terrain,
 		water
 	};
@@ -117,10 +116,6 @@ private:
 
 			case skybox:
 				scene->addComponent<OtSkyBoxComponent>(entity);
-				break;
-
-			case skysphere:
-				scene->addComponent<OtSkySphereComponent>(entity);
 				break;
 
 			case terrain:

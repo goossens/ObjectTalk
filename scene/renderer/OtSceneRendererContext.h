@@ -64,9 +64,7 @@ public:
 				hasTerrainEntities = true;
 			}
 
-			if (scene->hasComponent<OtSkyComponent>(entity) ||
-				scene->hasComponent<OtSkyBoxComponent>(entity) ||
-				scene->hasComponent<OtSkySphereComponent>(entity)) {
+			if (scene->hasComponent<OtSkyComponent>(entity) || scene->hasComponent<OtSkyBoxComponent>(entity)) {
 				hasSkyEntities = true;
 			}
 

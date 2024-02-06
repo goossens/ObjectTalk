@@ -47,13 +47,13 @@ void main() {
 		discard;
 	}
 
-	// get the world and clip space positions
+	// get the world and NDC positions
 	vec3 waterWorldPos = v_near + t * (v_far - v_near);
-	vec4 pos = mul(u_viewProj, vec4(waterWorldPos, 1.0));
-	vec3 waterClipPos = pos.xyz / pos.w;
+	vec4 waterClipPos = mul(u_viewProj, vec4(waterWorldPos, 1.0));
+	vec3 waterNdcPos = waterClipPos.xyz / waterClipPos.w;
 
 	// clip to distance
-	if (waterClipPos.z > u_distance) {
+	if (waterNdcPos.z > u_distance) {
 		discard;
 	}
 
@@ -107,5 +107,10 @@ void main() {
 
 	// apply PBR (tonemapping and gamma correction are done during post-processing)
 	gl_FragColor = directionalLightPBR(material, light, viewDirection);
-	gl_FragDepth = waterClipPos.z;
+
+#if BGFX_SHADER_LANGUAGE_GLSL
+	gl_FragDepth = (waterNdcPos.z + 1.0) * 0.5;
+#else
+	gl_FragDepth = waterNdcPos.z;
+#endif
 }

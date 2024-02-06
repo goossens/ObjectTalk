@@ -26,8 +26,8 @@
 #define OT_GPU_DIRECT3D 1
 
 #else
-#define OT_GPU_OPENGL 1
-//#define OT_GPU_VULKAN 1
+//#define OT_GPU_OPENGL 1
+#define OT_GPU_VULKAN 1
 #endif
 
 

@@ -121,6 +121,10 @@ void OtFramework::initBGFX() {
 		OtLogFatal("Your system/graphics card does not support texture readback");
 	}
 
+	if (!(caps->supported & BGFX_CAPS_COMPUTE)) {
+		OtLogFatal("Your system/graphics card does not support compute shaders");
+	}
+
 	// initialize time management
 	lastTime = bx::getHPCounter();
 }

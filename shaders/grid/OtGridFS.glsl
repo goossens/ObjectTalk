@@ -25,14 +25,14 @@ void main() {
 
 	// get the world and clip space positions
 	vec3 worldSpacePos = v_near + t * (v_far - v_near);
-	vec4 pos = mul(u_viewProj, vec4(worldSpacePos, 1.0));
-	vec3 clipSpacePos = pos.xyz / pos.w;
+	vec4 clipSpacePos = mul(u_viewProj, vec4(worldSpacePos, 1.0));
+	vec3 ndcPos = clipSpacePos.xyz / clipSpacePos.w;
 
 	// get the fade factor based on distance in clip space
 #if BGFX_SHADER_LANGUAGE_GLSL
-	float fading = (clipSpacePos.z + 1.0) / 2.0;
+	float fading = (ndcPos.z + 1.0) / 2.0;
 #else
-	float fading = clipSpacePos.z;
+	float fading = ndcPos.z;
 #endif
 
 	// determine grid color
@@ -46,5 +46,10 @@ void main() {
 	color.a *= min((1.0 - fading) * 1.2, 1.0);
 
 	gl_FragColor = color;
-	gl_FragDepth = clipSpacePos.z;
+
+#if BGFX_SHADER_LANGUAGE_GLSL
+	gl_FragDepth = (ndcPos.z + 1.0) * 0.5;
+#else
+	gl_FragDepth = ndcPos.z;
+#endif
 }

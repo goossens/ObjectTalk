@@ -37,11 +37,9 @@ public:
 		viewMatrix(vm) {
 
 		// calculate projection matrix
-		float aspectRatio = (float) width / (float) height;
-
 		projectionMatrix = OtGpuHasHomogeneousDepth()
-			? glm::perspectiveRH_NO(glm::radians(fov), aspectRatio, nearPlane, farPlane)
-			: glm::perspectiveRH_ZO(glm::radians(fov), aspectRatio, nearPlane, farPlane);
+			? glm::perspectiveFovRH_NO(glm::radians(fov), (float) width, (float) height, nearPlane, farPlane)
+			: glm::perspectiveFovRH_ZO(glm::radians(fov), (float) width, (float) height, nearPlane, farPlane);
 
 		// determine view/projection matrix
 		viewProjectionMatrix = projectionMatrix * viewMatrix;

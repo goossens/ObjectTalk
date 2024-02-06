@@ -285,7 +285,7 @@ void OtCubeMap::loadHdrImage(const std::string& path) {
 
 void OtCubeMap::renderCubemap() {
 	// create an empty cubemap
-	static constexpr uint16_t size = 1024;
+	static constexpr uint16_t size = 512;
 
 	cubemap = bgfx::createTextureCube(
 		size,

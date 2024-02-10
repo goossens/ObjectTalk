@@ -283,18 +283,21 @@ void OtWorkspace::openFile(const std::string& path, int visualState) {
 		if (extension == ".ot") {
 			editor = std::make_shared<OtObjectTalkEditor>();
 			editor->openFile(path);
+			editor->setVisualState(visualState);
 			editors.push_back(editor);
 			state = editState;
 
 		} else if (extension == ".ots") {
 			editor = std::make_shared<OtSceneEditor>();
 			editor->openFile(path);
+			editor->setVisualState(visualState);
 			editors.push_back(editor);
 			state = editState;
 
 		} else if (extension == ".otg") {
 			editor = std::make_shared<OtGraphEditor>();
 			editor->openFile(path);
+			editor->setVisualState(visualState);
 			editors.push_back(editor);
 			state = editState;
 
@@ -307,9 +310,6 @@ void OtWorkspace::openFile(const std::string& path, int visualState) {
 		// editor already exists, just activate it
 		activateEditor(editor);
 	}
-
-	// set the state (tab of floating window)
-	editor->setVisualState(visualState);
 }
 
 

@@ -23,6 +23,7 @@
 #include "OtDirectionalLightComponent.h"
 #include "OtFlowComponent.h"
 #include "OtGeometryComponent.h"
+#include "OtIblComponent.h"
 #include "OtInstancingComponent.h"
 #include "OtMaterialComponent.h"
 #include "OtModelComponent.h"
@@ -43,6 +44,7 @@
 	OtGeometryComponent, \
 	OtModelComponent, \
 	OtTransformComponent, \
+	OtIblComponent, \
 	OtInstancingComponent, \
 	OtMaterialComponent, \
 	OtCameraComponent, \

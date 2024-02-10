@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include <cstdint>
+
 #include "bgfx/bgfx.h"
 
 #include "OtFrameBuffer.h"

@@ -10,6 +10,7 @@ $input v_near, v_far
 #include <pbr.glsl>
 #include <utilities.glsl>
 
+// uniforms
 uniform vec4 u_water[4];
 
 #define u_level u_water[0].x
@@ -29,14 +30,24 @@ uniform vec4 u_water[4];
 
 uniform vec4 u_lighting[3];
 #define u_cameraPosition u_lighting[0].xyz
+#define u_hasDirectionalLighting bool(u_lighting[0].w)
 #define u_directionalLightDirection u_lighting[1].xyz
 #define u_directionalLightColor u_lighting[2].xyz
 #define u_directionalLightAmbience u_lighting[2].a
 
+uniform vec4 u_ibl[1];
+#define u_hasImageBasedLighting bool(u_ibl[0].x)
+#define u_iblEnvLevels int(u_ibl[0].y)
+
+// texture samplers
 SAMPLER2D(s_normalmapTexture, 0);
 SAMPLER2D(s_reflectionTexture, 1);
 SAMPLER2D(s_refractionTexture, 2);
 SAMPLER2D(s_refractionDepthTexture, 3);
+
+SAMPLER2D(s_iblBrdfLut, 5);
+SAMPLERCUBE(s_iblIrradianceMap, 6);
+SAMPLERCUBE(s_iblEnvironmentMap, 7);
 
 // main program
 void main() {
@@ -94,10 +105,10 @@ void main() {
 	// material data
 	Material material;
 	material.albedo = vec4(color, alpha);
+	material.normal = normal;
 	material.metallic = u_metallic;
 	material.roughness = u_roughness;
 	material.ao = u_ao;
-	material.N = normal;
 
 	// light data
 	DirectionalLight light;
@@ -105,8 +116,29 @@ void main() {
 	light.color = u_directionalLightColor;
 	light.ambience = u_directionalLightAmbience;
 
+	// determine view direction
+	vec3 V = normalize(u_cameraPosition - waterWorldPos);
+
+	// total color
+	color = vec3_splat(0.0);
+
+	// process directional light (if required)
+	if (u_hasDirectionalLighting) {
+		DirectionalLight light;
+		light.L = normalize(u_directionalLightDirection);
+		light.color = u_directionalLightColor;
+		light.ambience = u_directionalLightAmbience;
+		color += directionalLightPBR(material, light, V);
+	}
+
+	// process image basedlighting (if required)
+	if (u_hasImageBasedLighting) {
+		color += imageBasedLightingPBR(material, V, u_iblEnvLevels, s_iblBrdfLut, s_iblIrradianceMap, s_iblEnvironmentMap);
+	}
+
+
 	// apply PBR (tonemapping and gamma correction are done during post-processing)
-	gl_FragColor = directionalLightPBR(material, light, viewDirection);
+	gl_FragColor = vec4(color, 1.0);
 
 #if BGFX_SHADER_LANGUAGE_GLSL
 	gl_FragDepth = (waterNdcPos.z + 1.0) * 0.5;

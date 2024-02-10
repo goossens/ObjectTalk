@@ -20,7 +20,7 @@
 //	OtSampler::initialize
 //
 
-void OtSampler::initialize(const char* n, uint32_t f) {
+void OtSampler::initialize(const char* n, uint64_t f) {
 	if (n != name || flags != f) {
 		if (isValid()) {
 			uniform.clear();
@@ -37,7 +37,7 @@ void OtSampler::initialize(const char* n, uint32_t f) {
 //
 
 void OtSampler::clear() {
-	flags = defaultSampling;
+	flags = OtTexture::defaultSampling;
 	name.clear();
 	uniform.clear();
 }
@@ -46,22 +46,6 @@ void OtSampler::clear() {
 //
 //	OtSampler::submit
 //
-
-void OtSampler::submit(int unit, const char* n) {
-	// initialize sampler if new name is provided
-	if (n) {
-		initialize(n);
-	}
-
-	// generate resource (if required)
-	if (!isValid()) {
-		createUniform();
-	}
-
-	// submit dummy texture
-	OtTexture dummy;
-	bgfx::setTexture(unit, uniform.getHandle(), dummy.getHandle(), flags);
-}
 
 void OtSampler::submit(int unit, OtTexture& texture, const char* name) {
 	// see if texture is valid/ready
@@ -77,11 +61,11 @@ void OtSampler::submit(int unit, OtTexture& texture, const char* name) {
 		}
 
 		// submit texture
-		bgfx::setTexture(unit, uniform.getHandle(), texture.getHandle(), flags);
+		bgfx::setTexture(unit, uniform.getHandle(), texture.getHandle(), uint32_t(flags));
 
 	} else {
 		// submit dummy texture
-		submit(unit, name);
+		submitDummyTexture(unit, name);
 	}
 }
 
@@ -99,17 +83,43 @@ void OtSampler::submit(int unit, bgfx::TextureHandle texture, const char* name) 
 		}
 
 		// submit texture
-		bgfx::setTexture(unit, uniform.getHandle(), texture, flags);
+		bgfx::setTexture(unit, uniform.getHandle(), texture, uint32_t(flags));
 
 	} else {
-		submit(unit, name);
+		submitDummyTexture(unit, name);
 	}
 }
 
 void OtSampler::submit(int unit, OtCubeMap& cubemap, const char* name) {
+	// see if cubemap is valid/ready
+	if (cubemap.isValid()) {
+		// initialize sampler if new name is provided
+		if (name) {
+			initialize(name);
+		}
+
+		// generate resource (if required)
+		if (!isValid()) {
+			createUniform();
+		}
+
+		// submit texture
+		bgfx::setTexture(unit, uniform.getHandle(), cubemap.getHandle(), uint32_t(flags));
+
+	} else {
+		submitDummyCubeMap(unit, name);
+	}
+}
+
+
+//
+//	OtSampler::submitDummyTexture
+//
+
+void OtSampler::submitDummyTexture(int unit, const char* n) {
 	// initialize sampler if new name is provided
-	if (name) {
-		initialize(name);
+	if (n) {
+		initialize(n);
 	}
 
 	// generate resource (if required)
@@ -117,8 +127,30 @@ void OtSampler::submit(int unit, OtCubeMap& cubemap, const char* name) {
 		createUniform();
 	}
 
-	// submit texture
-	bgfx::setTexture(unit, uniform.getHandle(), cubemap.getHandle(), flags);
+	// submit dummy texture
+	OtTexture dummy;
+	bgfx::setTexture(unit, uniform.getHandle(), dummy.getHandle(), uint32_t(flags));
+}
+
+
+//
+//	OtSampler::submitDummyCubeMap
+//
+
+void OtSampler::submitDummyCubeMap(int unit, const char* n) {
+	// initialize sampler if new name is provided
+	if (n) {
+		initialize(n);
+	}
+
+	// generate resource (if required)
+	if (!isValid()) {
+		createUniform();
+	}
+
+	// submit dummy texture
+	OtCubeMap dummy;
+	bgfx::setTexture(unit, uniform.getHandle(), dummy.getHandle(), uint32_t(flags));
 }
 
 

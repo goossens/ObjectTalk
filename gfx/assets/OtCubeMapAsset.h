@@ -23,19 +23,22 @@
 
 class OtCubeMapAsset : public OtAssetBase {
 public:
-	// load the asset
-	bool load() override;
-
 	// access the CubeMap
 	inline OtCubeMap& getCubeMap() { return cubemap; }
-	inline void setCubeMap(OtCubeMap& c) { cubemap = c; }
 
 	// asset properties
 	static constexpr bool canHandleVirtual = false;
 	static constexpr const char* supportedFileTypes = ".dds,.ktx,.cubemap,.hdr";
 	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
 
+protected:
+	// load the asset
+	AssetState load() override;
+
 private:
 	// the actual cubemap
 	OtCubeMap cubemap;
+
+	// post-processing event handler
+	uv_async_t* postProcessingEventHandle = nullptr;
 };

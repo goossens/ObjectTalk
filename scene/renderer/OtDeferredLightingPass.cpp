@@ -24,7 +24,7 @@ void OtSceneRenderer::renderDeferredLightingPass(OtSceneRendererContext& ctx) {
 	pass.submitQuad(ctx.camera.width, ctx.camera.height);
 
 	// submit the uniforms
-	submitLightUniforms(ctx.scene, ctx.camera.cameraPosition);
+	submitLightUniforms(ctx);
 
 	invViewProjUniform.set(0, glm::inverse(ctx.camera.viewProjectionMatrix));
 	invViewProjUniform.submit();

@@ -23,6 +23,11 @@ int OtSceneRenderer::render(OtCamera& camera, OtScene* scene, OtEntity selected)
 		deferredRenderingBuffer, deferredCompositeBuffer, postProcessBuffer,
 		scene};
 
+	// handle image based lighting (if required)
+	if (context.hasImageBasedLighting) {
+		renderIblPass(context);
+	}
+
 	// generate reflection (if required)
 	if (context.hasWaterEntities) {
 		renderReflectionPass(context);

@@ -11,6 +11,7 @@
 //
 
 #include <algorithm>
+#include <cstdint>
 #include <chrono>
 
 #include "OtException.h"
@@ -79,8 +80,23 @@ void OtSceneRenderer::submitTextureSampler(OtSampler& sampler, int unit, OtAsset
 		sampler.submit(unit, texture->getTexture());
 
 	} else {
-		sampler.submit(unit);
+		sampler.submitDummyTexture(unit);
 	}
+}
+
+
+//
+//	OtSceneRenderer::submitCubeMapSampler
+//
+
+void OtSceneRenderer::submitCubeMapSampler(OtSampler& sampler, int unit, OtAsset<OtCubeMapAsset>& cubemap) {
+	if (cubemap.isReady()) {
+		sampler.submit(unit, cubemap->getCubeMap());
+
+	} else {
+		sampler.submitDummyCubeMap(unit);
+	}
+
 }
 
 
@@ -192,30 +208,41 @@ void OtSceneRenderer::submitTerrainUniforms(OtTerrain terrain) {
 //	OtSceneRenderer::submitLightUniforms
 //
 
-void OtSceneRenderer::submitLightUniforms(OtScene* scene, glm::vec3 cameraPosition) {
-	// get the directional light information
+void OtSceneRenderer::submitLightUniforms(OtSceneRendererContext& ctx) {
 	glm::vec3 direction = glm::vec3(0.0f);
 	glm::vec3 color = glm::vec3(0.0f);
 	float ambient = 0.0f;
 
-	for (auto&& [entity, light, transform] : scene->view<OtDirectionalLightComponent, OtTransformComponent>().each()) {
-		direction = transform.getTransform()[3];
-		color = light.color;
-		ambient = light.ambient;
-	}
+	// get the directional light information (if required)
+	if (ctx.hasDirectionalLighting) {
+		for (auto&& [entity, light, transform] : ctx.scene->view<OtDirectionalLightComponent, OtTransformComponent>().each()) {
+			direction = transform.getTransform()[3];
+			color = light.color;
+			ambient = light.ambient;
+		}
 
-	for (auto&& [entity, sky] : scene->view<OtSkyComponent>().each()) {
-		direction = sky.getDirectionToSun();
-		color = glm::vec3(0.2f + std::clamp(sky.elevation / 10.0f, 0.0f, 0.8f));
-		ambient = std::clamp((sky.elevation + 6.0f) / 200.0f, 0.0f, 0.2f);
+		for (auto&& [entity, sky] : ctx.scene->view<OtSkyComponent>().each()) {
+			direction = sky.getDirectionToSun();
+			color = glm::vec3(0.2f + std::clamp(sky.elevation / 10.0f, 0.0f, 0.8f));
+			ambient = std::clamp((sky.elevation + 6.0f) / 200.0f, 0.0f, 0.2f);
+		}
 	}
 
 	// build and submit the light uniforms
 	glm::vec4* uniforms = lightingUniforms.getValues();
-	uniforms[0] = glm::vec4(cameraPosition, 0.0f);
+	uniforms[0] = glm::vec4(ctx.camera.cameraPosition, float(ctx.hasDirectionalLighting));
 	uniforms[1] = glm::vec4(direction, 0.0f);
 	uniforms[2] = glm::vec4(color, ambient);
 	lightingUniforms.submit();
+
+	// build and submit the IBL uniform
+	iblUniform.setValue(0, float(ctx.hasImageBasedLighting), float(maxEnvLevel), 0.0f, 0.0f);
+	iblUniform.submit();
+
+	// submit the IBL samplers
+	iblBrdfLutSampler.submit(5, iblBrdfLut);
+	iblIrradianceMapSampler.submit(6, iblIrradianceMap);
+	iblEnvironmentMapSampler.submit(7, iblEnvironmentMap);
 }
 
 

@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include <cstdint>
+
 #include "llhttp.h"
 
 #include "OtHttp.h"

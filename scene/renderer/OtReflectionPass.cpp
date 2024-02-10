@@ -19,15 +19,8 @@
 //
 
 void OtSceneRenderer::renderReflectionPass(OtSceneRendererContext& ctx) {
-	// for now, we only support one water entity (last one in scene wins)
-	OtEntity waterEntity;
-
-	for (auto&& [entity, component] : ctx.scene->view<OtWaterComponent>().each()) {
-		waterEntity = entity;
-	}
-
 	// get the water component
-	auto& water = ctx.scene->getComponent<OtWaterComponent>(waterEntity);
+	auto& water = ctx.scene->getComponent<OtWaterComponent>(ctx.waterEntity);
 
 	// setup the refraction camera
 	OtCamera refractionCamera{
@@ -85,11 +78,6 @@ void OtSceneRenderer::renderReflectionPass(OtSceneRendererContext& ctx) {
 
 	// render the scene
 	renderReflectionRefractionScene(reflectionContext);
-
-#if OT_DEBUG
-	water.reflectionTextureIndex = reflectionBuffer.getColorTextureIndex();
-	water.refractionTextureIndex = refractionBuffer.getColorTextureIndex();
-#endif
 }
 
 

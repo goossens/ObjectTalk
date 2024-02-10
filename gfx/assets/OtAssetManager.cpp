@@ -55,7 +55,7 @@ void OtAssetManager::start() {
 
 			// load next asset
 			if (asset) {
-				asset->postLoad(asset->load() ? OtAssetBase::readyState : OtAssetBase::invalidState);
+				asset->postLoad(asset->load());
 
 			} else {
 				// a null asset means we shutdown the loader

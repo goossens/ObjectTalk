@@ -29,6 +29,7 @@ In case User Interface (UI) modules are included, we also use:
 
 * Some of the shaders use code snippets from the [LYGIA Shader Library](https://github.com/patriciogonzalezvivo/lygia) released under the [Prosperity Public License](https://prosperitylicense.com/versions/3.0.0).
 * The sky shader is based on a [GitHub project](https://github.com/shff/opengl_sky) released under the [MIT License](https://opensource.org/licenses/MIT).
+* The Image Based Lighting (IBL) shaders are based on an article by [Bruno Opsenica](https://bruop.github.io/ibl/).
 
 ## Data
 

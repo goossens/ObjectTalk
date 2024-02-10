@@ -159,6 +159,28 @@ void OtPass::touch() {
 
 
 //
+//	OtPass::setImage
+//
+
+void OtPass::setImage(int stage, OtTexture& texture, int mip, int access) {
+	bgfx::setImage(stage, texture.getHandle(), mip, bgfx::Access::Enum(access));
+}
+
+void OtPass::setImage(int stage, OtCubeMap& cubemap, int mip, int access) {
+	bgfx::setImage(stage, cubemap.getHandle(), mip, bgfx::Access::Enum(access));
+}
+
+
+//
+//	OtPass::runComputeProgram
+//
+
+void OtPass::runComputeProgram(OtComputeProgram& program, uint32_t x, uint32_t y, uint32_t z) {
+	program.dispatch(view, x, y, z);
+}
+
+
+//
 //	OtPass::blit
 //
 

@@ -40,10 +40,14 @@ target_link_libraries(bgfx PUBLIC bx bimg)
 
 target_compile_definitions(bgfx PRIVATE "BGFX_CONFIG_RENDERER_OPENGLES_MIN_VERSION=1")
 
+if(APPLE)
+	target_compile_definitions(bgfx PRIVATE "BGFX_CONFIG_RENDERER_METAL=1")
+endif()
+
 if(UNIX AND NOT APPLE)
 	find_package(X11 REQUIRED)
-	find_package(OpenGL REQUIRED)
 	target_link_libraries(bgfx PUBLIC ${X11_LIBRARIES} ${OPENGL_LIBRARIES})
+	target_compile_definitions(bgfx PRIVATE "BGFX_CONFIG_RENDERER_VULKAN=1")
 
 	target_include_directories(bgfx
 		PRIVATE
@@ -55,6 +59,7 @@ endif()
 
 if(WIN32)
 	target_compile_definitions(bgfx PRIVATE "_CRT_SECURE_NO_WARNINGS")
+	target_compile_definitions(bgfx PRIVATE "BGFX_CONFIG_RENDERER_DIRECT3D11=1")
 
 	target_include_directories(bgfx
 		PRIVATE

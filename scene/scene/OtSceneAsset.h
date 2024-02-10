@@ -28,10 +28,6 @@ public:
 	// constructor
 	OtSceneAsset();
 
-	// load/save the asset
-	bool load() override;
-	bool save() override;
-
 	// access the scene
 	inline OtScene* getScene() { return scene.get(); }
 
@@ -40,6 +36,11 @@ public:
 	static constexpr bool canHandleVirtual = false;
 	static constexpr const char* supportedFileTypes = ".ots";
 	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
+
+protected:
+	// load/save the asset
+	AssetState load() override;
+	AssetState save() override;
 
 private:
 	// the actual scene

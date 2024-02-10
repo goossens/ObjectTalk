@@ -9,6 +9,13 @@
 
 
 //
+//	Include files
+//
+
+#include <cstdint>
+
+
+//
 //	Functions
 //
 

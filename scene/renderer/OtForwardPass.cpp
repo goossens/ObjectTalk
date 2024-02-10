@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <cstdint>
+
 #include "imgui.h"
 
 #include "OtTransientIndexBuffer.h"
@@ -79,7 +81,7 @@ void OtSceneRenderer::renderForwardWater(OtSceneRendererContext& ctx, OtPass& pa
 	waterUniforms.setValue(3, water.color, float(water.useRefractance));
 	waterUniforms.submit();
 
-	submitLightUniforms(ctx.scene, ctx.camera.cameraPosition);
+	submitLightUniforms(ctx);
 
 	// bind the textures
 	submitTextureSampler(normalmapSampler, 0, water.normals);
@@ -107,7 +109,7 @@ void OtSceneRenderer::renderForwardGeometry(OtSceneRendererContext& ctx, OtPass&
 	// submit the material, clipping and light uniforms
 	submitMaterialUniforms(material.material);
 	submitClippingUniforms(ctx.clippingPlane);
-	submitLightUniforms(ctx.scene, ctx.camera.cameraPosition);
+	submitLightUniforms(ctx);
 
 	// submit the geometry
 	if (geometry.wireframe) {

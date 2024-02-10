@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <cstdint>
 #include <string>
 #include <vector>
 

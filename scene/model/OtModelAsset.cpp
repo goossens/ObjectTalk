@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <cstdint>
+
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
@@ -26,7 +28,7 @@
 //	OtModelAsset::load
 //
 
-bool OtModelAsset::load() {
+OtAssetBase::AssetState OtModelAsset::load() {
 	// clear the current data
 	meshes.clear();
 	materials.clear();
@@ -49,13 +51,13 @@ bool OtModelAsset::load() {
 	// ensure model was loaded correctly
 	if (scene == nullptr) {
 		OtLogWarning(OtFormat("Unable to load model [%s], error: %s", path.c_str(), importer.GetErrorString()));
-		return false;
+		return invalidState;
 	}
 
 	// ensure scene is complete
 	if (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) {
 		OtLogWarning(OtFormat("Incomplete model [%s]", path.c_str()));
-		return false;
+		return invalidState;
 	}
 
 	// load all the meshes
@@ -74,5 +76,5 @@ bool OtModelAsset::load() {
 		materials[i].load(scene->mMaterials[i], dir);
 	}
 
-	return true;
+	return readyState;
 }

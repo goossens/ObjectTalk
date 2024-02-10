@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <cstdint>
+
 #include "OtLog.h"
 
 #include "OtDynamicIndexBuffer.h"

@@ -30,9 +30,14 @@ uniform vec4 u_pbrMaterial[5];
 
 uniform vec4 u_lighting[3];
 #define u_cameraPosition u_lighting[0].xyz
+#define u_hasDirectionalLighting bool(u_lighting[0].w)
 #define u_directionalLightDirection u_lighting[1].xyz
 #define u_directionalLightColor u_lighting[2].xyz
 #define u_directionalLightAmbience u_lighting[2].a
+
+uniform vec4 u_ibl[1];
+#define u_hasImageBasedLighting bool(u_ibl[0].x)
+#define u_iblEnvLevels int(u_ibl[0].y)
 
 // texture samplers
 SAMPLER2D(s_albedoTexture, 0);
@@ -40,6 +45,10 @@ SAMPLER2D(s_metallicRoughnessTexture, 1);
 SAMPLER2D(s_emissiveTexture, 2);
 SAMPLER2D(s_aoTexture, 3);
 SAMPLER2D(s_normalTexture, 4);
+
+SAMPLER2D(s_iblBrdfLut, 5);
+SAMPLERCUBE(s_iblIrradianceMap, 6);
+SAMPLERCUBE(s_iblEnvironmentMap, 7);
 
 // main function
 void main() {
@@ -53,17 +62,21 @@ void main() {
 	Material material;
 
 	// determine albedo
+	vec4 albedo;
+
 	if (u_hasAlbedoTexture) {
-		material.albedo = texture2D(s_albedoTexture, uv) * u_albedo;
+		albedo = texture2D(s_albedoTexture, uv) * u_albedo;
 
 	} else {
-		material.albedo = u_albedo;
+		albedo = u_albedo;
 	}
 
 	// discard pixel if too transparent
-	if (material.albedo.a < 0.3) {
+	if (albedo.a < 0.3) {
 		discard;
 	}
+
+	material.albedo = albedo.rgb;
 
 	// determine normal
 	if (u_hasNormalTexture) {
@@ -71,10 +84,10 @@ void main() {
 		vec3 bitangent = normalize(v_bitangent);
 		vec3 normal = normalize(v_normal);
 		mat3 TBN = mtxFromCols(tangent, bitangent, normal);
-		material.N = normalize(mul(TBN, texture2D(s_normalTexture, uv).rgb * 2.0 - 1.0));
+		material.normal = normalize(mul(TBN, texture2D(s_normalTexture, uv).rgb * 2.0 - 1.0));
 
 	} else {
-		material.N = normalize(v_normal);
+		material.normal = normalize(v_normal);
 	}
 
 	// determine PBR parameters
@@ -82,15 +95,27 @@ void main() {
 	material.roughness = u_hasMetallicRoughnessTexture ? texture2D(s_metallicRoughnessTexture, uv).g * u_roughness : u_roughness;
 	material.ao = u_hasAoTexture ? texture2D(s_aoTexture, uv).r * u_ao : u_ao;
 
-	// set light information
-	DirectionalLight light;
-	light.L = normalize(u_directionalLightDirection);
-	light.color = u_directionalLightColor;
-	light.ambience = u_directionalLightAmbience;
+	// determine view direction
+	vec3 V = normalize(u_cameraPosition - v_position);
 
-	// apply PBR (tonemapping and gamma correction are done during post-processing)
-	vec4 color = directionalLightPBR(material, light, normalize(u_cameraPosition - v_position));
-	vec3 emissive = u_hasEmissiveTexture ? texture2D(s_emissiveTexture, uv).rgb * u_emissive : u_emissive;
-	color += vec4(emissive, 0.0);
-	gl_FragColor = color;
+	// total color
+	vec3 color = vec3_splat(0.0);
+
+	// process directional light (if required)
+	if (u_hasDirectionalLighting) {
+		DirectionalLight light;
+		light.L = normalize(u_directionalLightDirection);
+		light.color = u_directionalLightColor;
+		light.ambience = u_directionalLightAmbience;
+		color += directionalLightPBR(material, light, V);
+	}
+
+	// process image basedlighting (if required)
+	if (u_hasImageBasedLighting) {
+		color += imageBasedLightingPBR(material, V, u_iblEnvLevels, s_iblBrdfLut, s_iblIrradianceMap, s_iblEnvironmentMap);
+	}
+
+	// finalize color (tonemapping and gamma correction are done during post-processing)
+	vec3 emissive = texture2D(s_emissiveTexture, v_texcoord0).rgb;
+	gl_FragColor = vec4(color + emissive, albedo.a);
 }

@@ -22,6 +22,7 @@
 #include "OtSceneAsset.h"
 #include "OtSceneEditorCamera.h"
 #include "OtSceneRenderer.h"
+#include "OtSceneRendererDebug.h"
 
 #include "OtEditor.h"
 #include "OtTaskManager.h"
@@ -102,6 +103,11 @@ private:
 
 	// a renderer to show the scene
 	std::unique_ptr<OtSceneRenderer> renderer;
+
+	// a debug window for the renderer
+	std::unique_ptr<OtSceneRendererDebug> renderDebug;
+	bool showRendererDebug = false;
+	void toggleRendererDebug();
 
 	// tracking entities for certain tasks
 	OtEntity selectedEntity = OtEntityNull;

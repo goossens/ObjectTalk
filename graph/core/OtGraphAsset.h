@@ -28,10 +28,6 @@ public:
 	// constructor
 	OtGraphAsset();
 
-	// load/save the graph
-	bool load() override;
-	bool save() override;
-
 	// access the graph
 	inline OtGraph* getGraph() { return graph.get(); }
 
@@ -40,6 +36,11 @@ public:
 	static constexpr bool canHandleVirtual = false;
 	static constexpr const char* supportedFileTypes = ".otg";
 	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
+
+protected:
+	// load/save the graph
+	AssetState load() override;
+	AssetState save() override;
 
 private:
 	// the actual graph

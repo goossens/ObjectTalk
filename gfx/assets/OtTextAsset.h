@@ -22,10 +22,6 @@
 
 class OtTextAsset : public OtAssetBase {
 public:
-	// load/save the asset
-	bool load() override;
-	bool save() override;
-
 	// access the text
 	inline std::string& getText() { return text; }
 	inline void setText(const std::string& t) { text = t; }
@@ -36,6 +32,10 @@ public:
 	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
 
 protected:
+	// load/save the asset
+	AssetState load() override;
+	AssetState save() override;
+
 	// the actual text
 	std::string text;
 };

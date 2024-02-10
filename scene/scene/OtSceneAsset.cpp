@@ -31,15 +31,15 @@ OtSceneAsset::OtSceneAsset() {
 //	OtSceneAsset::load
 //
 
-bool OtSceneAsset::load() {
+OtAssetBase::AssetState OtSceneAsset::load() {
 	try {
 		// load the scene
 		scene->load(path);
-		return true;
+		return readyState;
 
 	} catch (const OtException& exception) {
 		OtLogWarning(OtFormat("Can't load scene [%s]: %s", path.c_str(), exception.what()));
-		return false;
+		return invalidState;
 	}
 }
 
@@ -48,14 +48,14 @@ bool OtSceneAsset::load() {
 //	OtSceneAsset::save
 //
 
-bool OtSceneAsset::save() {
+OtAssetBase::AssetState OtSceneAsset::save() {
 	try {
 		// save the scene
 		scene->save(path);
-		return true;
+		return readyState;
 
 	} catch (const OtException& exception) {
 		OtLogWarning(OtFormat("Can't save scene [%s]: %s", path.c_str(), exception.what()));
-		return false;
+		return invalidState;
 	}
 }

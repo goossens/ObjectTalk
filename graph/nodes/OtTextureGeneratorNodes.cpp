@@ -105,7 +105,7 @@ protected:
 	int noiseType = OtFbm::simplexNoiseType;
 
 	OtFbm fbm;
-	OtFrameBuffer framebuffer{OtFrameBuffer::rFloat32Texture};
+	OtFrameBuffer framebuffer{OtTexture::rFloat32Texture};
 	OtTexture texture;
 	int version = 1;
 };

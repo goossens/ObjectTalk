@@ -10,6 +10,7 @@
 //
 
 #include <algorithm>
+#include <cstdint>
 
 #include "imgui.h"
 #include "nlohmann/json.hpp"

@@ -24,7 +24,6 @@ OtTexture::OtTexture(const std::string& path) {
 	loadFromFile(path);
 }
 
-
 //
 //	OtTexture::clear
 //
@@ -34,6 +33,25 @@ void OtTexture::clear() {
 	width = 1;
 	height = 1;
 	version++;
+}
+
+
+//
+//	OtTexture::create
+//
+
+void OtTexture::create(int w, int h, int format, uint64_t flags) {
+	width = w;
+	height = h;
+	version++;
+
+	texture = bgfx::createTexture2D(
+		uint16_t(w),
+		uint16_t(h),
+		false,
+		1,
+		bgfx::TextureFormat::Enum(format),
+		flags);
 }
 
 
@@ -180,14 +198,14 @@ void OtTexture::loadFromFileInMemory(void* data, uint32_t size) {
 //
 
 bgfx::TextureHandle OtTexture::getHandle() {
-	// unsure we have a valid texture
+	// ensure we have a valid texture
 	if (isValid()) {
 		return texture.getHandle();
 
 	} else {
 		static bgfx::TextureHandle dummy = BGFX_INVALID_HANDLE;
 
-		// create dummy texure (if required)
+		// create dummy texture (if required)
 		if (!bgfx::isValid(dummy)) {
 			OtImage image;
 			bimg::ImageContainer* container = image.getContainer();

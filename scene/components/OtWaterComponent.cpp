@@ -41,24 +41,6 @@ bool OtWaterComponent::renderUI() {
 	changed |= ImGui::DragFloat("Roughness", &roughness, 0.01f, 0.0f, 1.0f);
 	changed |= ImGui::DragFloat("Ambient Occlusion", &ao, 0.01f, 0.0f, 1.0f);
 	changed |= ImGui::DragFloat("Reflectivity", &reflectivity, 0.01f, 0.1f, 10.0f);
-
-#if OT_DEBUG
-	int width = ImGui::CalcItemWidth();
-	int height = (width * 9) / 15;
-
-	if (reflectionTextureIndex != OtTexture::invalidIndex) {
-		ImGui::Image((void*)(intptr_t) reflectionTextureIndex, ImVec2(width, height));
-		ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-		ImGui::TextUnformatted("Reflection");
-	}
-
-	if (refractionTextureIndex != OtTexture::invalidIndex) {
-		ImGui::Image((void*)(intptr_t) refractionTextureIndex, ImVec2(width, height));
-		ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-		ImGui::TextUnformatted("Refraction");
-	}
-#endif
-
 	return changed;
 }
 

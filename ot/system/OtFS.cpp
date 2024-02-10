@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include <cstdint>
 #include <filesystem>
 #include <fstream>
 #include <random>

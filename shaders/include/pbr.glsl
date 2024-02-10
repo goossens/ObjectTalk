@@ -16,11 +16,11 @@
 
 // material data
 struct Material {
-	vec4 albedo;
+	vec3 albedo;
+	vec3 normal;
 	float metallic;
 	float roughness;
 	float ao;
-	vec3 N; // surface normal
 };
 
 // directional light data
@@ -65,12 +65,9 @@ float geometrySmith(vec3 N, vec3 V, vec3 L, float roughness) {
 }
 
 //	PBR calculation for directional light
-vec4 directionalLightPBR(Material material, DirectionalLight light, vec3 V) {
-	// get material color
-	vec3 albedo = material.albedo.rgb;
-
+vec3 directionalLightPBR(Material material, DirectionalLight light, vec3 V) {
 	// calculate surface reflection at zero incidence
-	vec3 F0 = mix(vec3_splat(0.04), albedo, material.metallic);
+	vec3 F0 = mix(vec3_splat(0.04), material.albedo, material.metallic);
 
 	// calculate halfway vector between view direction and light direction
 	vec3 H = normalize(V + light.L);
@@ -79,26 +76,51 @@ vec4 directionalLightPBR(Material material, DirectionalLight light, vec3 V) {
 	vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0); // Schlick Fresnel function
 
 	// Cook-Torrance Microfacet Bidirectional Reflective Distribution (BRDF)
-	float NDF = distributionGGX(material.N, H, material.roughness); // GGX normal distribution function
-	float G = geometrySmith(material.N, V, light.L, material.roughness); // Smith Schlick geometry function
+	float NDF = distributionGGX(material.normal, H, material.roughness); // GGX normal distribution function
+	float G = geometrySmith(material.normal, V, light.L, material.roughness); // Smith Schlick geometry function
 
 	vec3 specular =
 		(NDF * G * F) /
-		(4.0 * max(dot(material.N, V), 0.0) * max(dot(material.N, light.L), 0.0) + 0.0001);
+		(4.0 * max(dot(material.normal, V), 0.0) * max(dot(material.normal, light.L), 0.0) + 0.0001);
 
 	// calculate contribution to the reflectance equation
 	vec3 kS = F;
 	vec3 kD = (vec3_splat(1.0) - kS) * (1.0 - material.metallic);
 
 	// determine outgoing radiance
-	float NdotL = max(dot(material.N, light.L), 0.0);
-	vec3 color = (kD * albedo / PI + specular) * light.color * NdotL;
+	float NdotL = max(dot(material.normal, light.L), 0.0);
+	vec3 color = (kD * material.albedo / PI + specular) * light.color * NdotL;
 
 	// add ambient light
-	color += light.ambience * albedo * material.ao;
+	color += light.ambience * material.albedo * material.ao;
 
 	// return result
-	return vec4(color, material.albedo.a);
+	return color;
+}
+
+//	PBR calculation for image based lighting
+vec3 imageBasedLightingPBR(Material material, vec3 V, int envLevels, sampler2D brdfLUT, samplerCube irradianceMap, samplerCube envMap) {
+	// calculate surface reflection at zero incidence
+	vec3 F0 = mix(vec3_splat(0.04), material.albedo, material.metallic);
+
+	// calculate the ratio between specular and diffuse reflection
+	vec3 F = fresnelSchlickRoughness(max(dot(material.normal, V), 0.0), F0, material.roughness);
+
+	// calculate contribution to the reflectance equation
+	vec3 kS = F;
+	vec3 kD = (vec3_splat(1.0) - kS) * (1.0 - material.metallic);
+
+	// get diffuse part
+    vec3 diffuse = kD * textureCube(irradianceMap, material.normal).rgb * material.albedo;
+
+	// get specular part
+	vec3 R = reflect(-V, material.normal);
+	vec3 prefilteredColor = textureCubeLod(envMap, R, material.roughness * envLevels).rgb;
+	vec2 brdf = texture2D(brdfLUT, vec2(max(dot(material.normal, V), 0.0), material.roughness)).rg;
+	vec3 specular = prefilteredColor * (kS * brdf.r + brdf.g);
+
+	// determine outgoing radiance
+	return (diffuse + specular) * material.ao;
 }
 
 

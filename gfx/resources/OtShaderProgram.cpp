@@ -42,19 +42,9 @@ void OtShaderProgram::initialize(const char* vertex, const char* fragment) {
 void OtShaderProgram::submit(bgfx::ViewId view) {
 	if (!isValid()) {
 		if (vertexShaderName.size() && fragmentShaderName.size()) {
-			bgfx::RendererType::Enum type = bgfx::getRendererType();
-
-			auto vertexShader = bgfx::createEmbeddedShader(embeddedShaders, type, vertexShaderName.c_str());
-			auto fragmentShader = bgfx::createEmbeddedShader(embeddedShaders, type, fragmentShaderName.c_str());
+			auto vertexShader = OtShaders::get(vertexShaderName);
+			auto fragmentShader = OtShaders::get(fragmentShaderName);
 			program = bgfx::createProgram(vertexShader, fragmentShader, true);
-
-			if (!bgfx::isValid(vertexShader)) {
-				OtLogFatal(OtFormat("Internal error: Unknown vertex shader [%s]", vertexShaderName.c_str()));
-			}
-
-			if (!bgfx::isValid(fragmentShader)) {
-				OtLogFatal(OtFormat("Internal error: Unknown vertex shader [%s]", fragmentShaderName.c_str()));
-			}
 
 			if (!isValid()) {
 				OtLogFatal("Internal error: Can't create shader program");

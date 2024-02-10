@@ -174,8 +174,12 @@ void OtAssetBase::postLoad(AssetState state) {
 	// given that the asset manager loads stuff in a different thread,
 	// we just let callback above handle notification in main thread
 	assetState = state;
-	auto status = uv_async_send(loaderEventHandle);
-	UV_CHECK_ERROR("uv_async_send", status);
+
+	// send notification if the asset is now completely ready (i.e. is not postprocessing)
+	if (assetState == readyState) {
+		auto status = uv_async_send(loaderEventHandle);
+		UV_CHECK_ERROR("uv_async_send", status);
+	}
 }
 
 

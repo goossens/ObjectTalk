@@ -62,9 +62,6 @@ protected:
 	// render a file menu
 	void renderFileMenu();
 
-	// render common items on view menu
-	void renderCommonViewMenuItems();
-
 	// properties
 	int visualState = inTab;
 };

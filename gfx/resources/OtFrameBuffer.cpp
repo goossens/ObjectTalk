@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <cstdint>
+
 #include "OtLog.h"
 
 #include "OtFrameBuffer.h"
@@ -92,11 +94,11 @@ void OtFrameBuffer::update(int w, int h) {
 		uint64_t flags = computeTextureRtMsaaFlag(antiAliasing);
 		uint64_t blit = blitTarget ? BGFX_TEXTURE_BLIT_DST : 0;
 
-		if (colorTextureType != noTexture) {
+		if (colorTextureType != OtTexture::noTexture) {
 			colorTexture = bgfx::createTexture2D(w, h, false, 1, (bgfx::TextureFormat::Enum) colorTextureType, flags | blit);
 		}
 
-		if (depthTextureType != noTexture) {
+		if (depthTextureType != OtTexture::noTexture) {
 			depthTexture = bgfx::createTexture2D(w, h, false, 1, (bgfx::TextureFormat::Enum) depthTextureType, flags | blit);
 		}
 

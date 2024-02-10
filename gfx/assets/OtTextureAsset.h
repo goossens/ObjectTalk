@@ -23,9 +23,6 @@
 
 class OtTextureAsset : public OtAssetBase {
 public:
-	// load the asset
-	bool load() override;
-
 	// access the texture
 	inline OtTexture& getTexture() { return texture; }
 	inline void setTexture(OtTexture& t) { texture = t; }
@@ -35,6 +32,10 @@ public:
 	static constexpr bool canHandleVirtual = true;
 	static constexpr const char* supportedFileTypes = ".jpg,.jpeg,.png,.hdr";
 	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
+
+protected:
+	// load the asset
+	AssetState load() override;
 
 private:
 	// the actual texture

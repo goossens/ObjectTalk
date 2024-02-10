@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include <cstdint>
+
 #include "bgfx/bgfx.h"
 
 #include "OtFrameBuffer.h"
@@ -44,7 +46,7 @@ private:
 	virtual void execute(OtPass& pass) = 0;
 
 	// the texture sampler
-	OtSampler textureSampler{"s_texture", OtSampler::pointSampling | OtSampler::clampSampling};
+	OtSampler textureSampler{"s_texture", OtTexture::pointSampling | OtTexture::clampSampling};
 
 	// rendering state
 	uint64_t state = BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A;

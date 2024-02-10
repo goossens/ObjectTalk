@@ -73,13 +73,3 @@ void OtEditor::renderFileMenu() {
 		}
 	}
 }
-
-
-//
-//	OtEditor::renderCommonViewMenuItems
-//
-
-void OtEditor::renderCommonViewMenuItems() {
-	if (ImGui::MenuItem("Toggle Console")) { OtMessageBus::instance()->send("toggleconsole"); }
-	ImGui::Separator();
-}

@@ -46,9 +46,4 @@ public:
 	float roughness = 0.2f;
 	float ao = 0.25f;
 	float reflectivity = 1.0f;
-
-#if OT_DEBUG
-	uint16_t reflectionTextureIndex = OtTexture::invalidIndex;
-	uint16_t refractionTextureIndex = OtTexture::invalidIndex;
-#endif
 };

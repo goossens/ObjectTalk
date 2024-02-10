@@ -26,7 +26,6 @@
 #define OT_GPU_DIRECT3D 1
 
 #else
-//#define OT_GPU_OPENGL 1
 #define OT_GPU_VULKAN 1
 #endif
 
@@ -44,11 +43,3 @@ inline bool OtGpuHasOriginBottomLeft() {
 inline bool OtGpuHasHomogeneousDepth() {
 	return bgfx::getCaps()->homogeneousDepth;
 }
-
-
-//
-//	Direct3D:	NDC depth [0, 1],  origin top left
-//	Metal:		NDC depth [0, 1],  origin top left
-//	OpenGL:		NDC depth [-1, 1], origin bottom left
-//	Vulkan:		NDC depth [0, 1],  origin top left
-//

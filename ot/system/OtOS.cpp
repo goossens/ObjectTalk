@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include <cstdint>
 #include <chrono>
 #include <ctime>
 #include <random>

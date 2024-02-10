@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include <cstdint>
+
 #include "bgfx/bgfx.h"
 #include "glm/glm.hpp"
 
@@ -103,6 +105,33 @@ struct OtVertexPosUv {
 		layout.begin()
 			.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
 			.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
+			.end();
+
+		return layout;
+	}
+};
+
+
+//
+//	OtVertexPosUvw
+//
+
+struct OtVertexPosUvw {
+	// vertex elements
+	glm::vec3 position;
+	glm::vec3 uvw;
+
+	// constructors
+	OtVertexPosUvw() = default;
+	inline OtVertexPosUvw(const glm::vec3& p, const glm::vec3& u=glm::vec3(0.0f)) : position(p), uvw(u) {}
+
+	// get vertex description
+	static inline bgfx::VertexLayout getLayout() {
+		bgfx::VertexLayout layout;
+
+		layout.begin()
+			.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+			.add(bgfx::Attrib::TexCoord0, 3, bgfx::AttribType::Float)
 			.end();
 
 		return layout;

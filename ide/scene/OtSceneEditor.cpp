@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include <cstdint>
 #include <cstring>
 #include <functional>
 
@@ -18,6 +19,7 @@
 #include "nlohmann/json.hpp"
 
 #include "OtAssetManager.h"
+#include "OtMessageBus.h"
 #include "OtUi.h"
 
 #include "OtSceneEditor.h"
@@ -212,7 +214,9 @@ void OtSceneEditor::renderMenu() {
 		}
 
 		if (ImGui::BeginMenu("View")) {
-			renderCommonViewMenuItems();
+			if (ImGui::MenuItem("Toggle Console")) { OtMessageBus::instance()->send("toggleconsole"); }
+			if (ImGui::MenuItem("Toggle Debug")) { toggleRendererDebug(); }
+			ImGui::Separator();
 
 			// render camera scale selector
 			if (ImGui::BeginMenu("Scene Scale")) {
@@ -367,6 +371,10 @@ void OtSceneEditor::renderMenu() {
 			}
 		}
 	}
+
+	if (ImGui::IsKeyPressed(ImGuiKey_F19, false)) {
+		toggleRendererDebug();
+	}
 }
 
 
@@ -397,6 +405,11 @@ void OtSceneEditor::renderEditor() {
 
 		// clear task so we don't perform it again
 		nextTask = nullptr;
+	}
+
+	// show the debug window (if required)
+	if (showRendererDebug) {
+		renderDebug->render(*renderer);
 	}
 }
 
@@ -981,4 +994,17 @@ void OtSceneEditor::pasteEntity() {
 
 void OtSceneEditor::duplicateEntity() {
 	nextTask = std::make_shared<OtDuplicateEntityTask>(asset->getScene(), selectedEntity);
+}
+
+
+//
+//	OtSceneEditor::toggleRendererDebug
+//
+
+void OtSceneEditor::toggleRendererDebug() {
+	if (!renderDebug) {
+		renderDebug = std::make_unique<OtSceneRendererDebug>();
+	}
+
+	showRendererDebug = !showRendererDebug;
 }

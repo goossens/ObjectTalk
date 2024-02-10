@@ -15,6 +15,8 @@
 #include "glm/glm.hpp"
 
 #include "OtBoxGeometry.h"
+#include "OtComputeProgram.h"
+#include "OtCubeMap.h"
 #include "OtFrameBuffer.h"
 #include "OtGbuffer.h"
 #include "OtNormalMapper.h"
@@ -22,6 +24,7 @@
 #include "OtSampler.h"
 #include "OtShaderProgram.h"
 #include "OtSphereGeometry.h"
+#include "OtTexture.h"
 #include "OtTileableFbm.h"
 #include "OtUniformMat4.h"
 #include "OtUniformVec4.h"
@@ -45,7 +48,11 @@ public:
 	int render(OtCamera& camera, OtScene* scene, OtEntity selected=OtEntityNull);
 
 private:
+	// give the debugger access to the inner circle
+	friend class OtSceneRendererDebug;
+
 	// render passes
+	void renderIblPass(OtSceneRendererContext& ctx);
 	void renderReflectionPass(OtSceneRendererContext& ctx);
 	// void renderShadowPass(OtSceneRendererContext& ctx);
 	void renderDeferredGeometryPass(OtSceneRendererContext& ctx);
@@ -71,9 +78,10 @@ private:
 
 	// rendering tools
 	void submitTextureSampler(OtSampler& sampler, int unit, OtAsset<OtTextureAsset>& texture);
+	void submitCubeMapSampler(OtSampler& sampler, int unit, OtAsset<OtCubeMapAsset>& cubemap);
 	void submitMaterialUniforms(OtMaterial material);
 	void submitPbrUniforms(OtPbrMaterial material);
-	void submitLightUniforms(OtScene* scene, glm::vec3 cameraPosition);
+	void submitLightUniforms(OtSceneRendererContext& ctx);
 	void submitTerrainUniforms(OtTerrain terrain);
 	void submitClippingUniforms(const glm::vec4& clippingPlane);
 
@@ -87,15 +95,15 @@ private:
 
 	// framebuffers
 	OtGbuffer deferredRenderingBuffer;
-	OtFrameBuffer deferredCompositeBuffer{OtFrameBuffer::rgbaFloat16Texture, OtFrameBuffer::dFloatTexture};
-	OtFrameBuffer postProcessBuffer{OtFrameBuffer::rgba8Texture, OtFrameBuffer::noTexture};
-	OtFrameBuffer selectedBuffer{OtFrameBuffer::r8Texture, OtFrameBuffer::noTexture};
+	OtFrameBuffer deferredCompositeBuffer{OtTexture::rgbaFloat16Texture, OtTexture::dFloatTexture};
+	OtFrameBuffer postProcessBuffer{OtTexture::rgba8Texture, OtTexture::noTexture};
+	OtFrameBuffer selectedBuffer{OtTexture::r8Texture, OtTexture::noTexture};
 
 	OtGbuffer reflectionRenderingBuffer;
-	OtFrameBuffer reflectionCompositeBuffer{OtFrameBuffer::rgba16Texture, OtFrameBuffer::dFloatTexture};
-	OtFrameBuffer refractionCompositeBuffer{OtFrameBuffer::rgba16Texture, OtFrameBuffer::dFloatTexture};
-	OtFrameBuffer reflectionBuffer{OtFrameBuffer::rgba8Texture, OtFrameBuffer::noTexture};
-	OtFrameBuffer refractionBuffer{OtFrameBuffer::rgba8Texture, OtFrameBuffer::noTexture};
+	OtFrameBuffer reflectionCompositeBuffer{OtTexture::rgba16Texture, OtTexture::dFloatTexture};
+	OtFrameBuffer refractionCompositeBuffer{OtTexture::rgba16Texture, OtTexture::dFloatTexture};
+	OtFrameBuffer reflectionBuffer{OtTexture::rgba8Texture, OtTexture::noTexture};
+	OtFrameBuffer refractionBuffer{OtTexture::rgba8Texture, OtTexture::noTexture};
 
 	static constexpr int bloomDepth = 5;
 	OtFrameBuffer bloomBuffer[bloomDepth];
@@ -109,11 +117,13 @@ private:
 	OtNormalMapper normalMapper;
 
 	// uniforms
+	OtUniformVec4 iblEnviromentUniform{"u_iblEnvironment", 1};
 	OtUniformVec4 pbrMaterialUniforms{"u_pbrMaterial", 5};
 	OtUniformVec4 clipUniforms{"u_clip", 1};
 	OtUniformVec4 terrainUniforms{"u_terrain", 9};
 	OtUniformVec4 waterUniforms{"u_water", 4};
 	OtUniformVec4 lightingUniforms{"u_lighting", 3};
+	OtUniformVec4 iblUniform{"u_ibl", 1};
 	OtUniformVec4 skyUniforms{"u_sky", 3};
 	OtUniformVec4 gridUniforms{"u_grid", 1};
 	OtUniformVec4 outlineUniforms{"u_outline", 1};
@@ -122,18 +132,36 @@ private:
 
 	OtUniformMat4 invViewProjUniform{"u_invViewProjUniform", 1};
 
+	// textures
+	OtTexture iblBrdfLut;
+
+	// cubemaps
+	OtCubeMap* iblSkyMap;
+	OtCubeMap iblIrradianceMap;
+	OtCubeMap iblEnvironmentMap;
+
+	// image based lighting data
+	int iblSkyMapVersion = 0;
+	int maxEnvLevel;
+
 	// samplers
+	OtSampler cubemapSampler{"s_cubemap"};
+
 	OtSampler albedoSampler{"s_albedoTexture"};
 	OtSampler normalSampler{"s_normalTexture"};
 	OtSampler metallicRoughnessSampler{"s_metallicRoughnessTexture"};
 	OtSampler emissiveSampler{"s_emissiveTexture"};
 	OtSampler aoSampler{"s_aoTexture"};
 
-	OtSampler lightingAlbedoSampler{"s_lightingAlbedoTexture", OtSampler::pointSampling | OtSampler::clampSampling};
-	OtSampler lightingNormalSampler{"s_lightingNormalTexture", OtSampler::pointSampling | OtSampler::clampSampling};
-	OtSampler lightingPbrSampler{"s_lightingPbrTexture", OtSampler::pointSampling | OtSampler::clampSampling};
-	OtSampler lightingEmissiveSampler{"s_lightingEmissiveTexture", OtSampler::pointSampling | OtSampler::clampSampling};
-	OtSampler lightingDepthSampler{"s_lightingDepthTexture", OtSampler::pointSampling | OtSampler::clampSampling};
+	OtSampler lightingAlbedoSampler{"s_lightingAlbedoTexture", OtTexture::pointSampling | OtTexture::clampSampling};
+	OtSampler lightingNormalSampler{"s_lightingNormalTexture", OtTexture::pointSampling | OtTexture::clampSampling};
+	OtSampler lightingPbrSampler{"s_lightingPbrTexture", OtTexture::pointSampling | OtTexture::clampSampling};
+	OtSampler lightingEmissiveSampler{"s_lightingEmissiveTexture", OtTexture::pointSampling | OtTexture::clampSampling};
+	OtSampler lightingDepthSampler{"s_lightingDepthTexture", OtTexture::pointSampling | OtTexture::clampSampling};
+
+	OtSampler iblBrdfLutSampler{"s_iblBrdfLut"};
+	OtSampler iblIrradianceMapSampler{"s_iblIrradianceMap"};
+	OtSampler iblEnvironmentMapSampler{"s_iblEnvironmentMap"};
 
 	OtSampler region1Sampler{"s_region1Texture"};
 	OtSampler region2Sampler{"s_region2Texture"};
@@ -147,10 +175,10 @@ private:
 
 	OtSampler skySampler{"s_skyTexture"};
 
-	OtSampler selectedSampler{"s_selectedTexture", OtSampler::pointSampling | OtSampler::clampSampling};
+	OtSampler selectedSampler{"s_selectedTexture", OtTexture::pointSampling | OtTexture::clampSampling};
 
-	OtSampler postProcessSampler{"s_postProcessTexture", OtSampler::pointSampling | OtSampler::clampSampling};
-	OtSampler bloomSampler{"s_bloomTexture", OtSampler::pointSampling | OtSampler::clampSampling};
+	OtSampler postProcessSampler{"s_postProcessTexture", OtTexture::pointSampling | OtTexture::clampSampling};
+	OtSampler bloomSampler{"s_bloomTexture", OtTexture::pointSampling | OtTexture::clampSampling};
 
 	// shader programs
 	OtShaderProgram deferredPbrProgram{"OtDeferredVS", "OtDeferredPbrFS"};
@@ -168,4 +196,9 @@ private:
 	OtShaderProgram bloomDownSampleProgram{"OtFilterVS", "OtBloomDownSampleFS"};
 	OtShaderProgram bloomUpSampleProgram{"OtFilterVS", "OtBloomUpSampleFS"};
 	OtShaderProgram postProcessProgram{"OtFilterVS", "OtPostProcessFS"};
+
+	// compute programs
+	OtComputeProgram program{"OtBrdfLutCS"};
+	OtComputeProgram irradianceProgram{"OtIblIrradianceMapCS"};
+	OtComputeProgram envmapProgram{"OtIblEnvironmentMapCS"};
 };

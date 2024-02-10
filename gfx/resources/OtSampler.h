@@ -12,17 +12,18 @@
 //	Include files
 //
 
+#include <cstdint>
 #include <string>
 
 #include "OtBgfxHandle.h"
+#include "OtTexture.h"
 
 
 //
-//	Forward declarations
+//	Forward declaration
 //
 
 class OtCubeMap;
-class OtTexture;
 
 
 //
@@ -31,38 +32,32 @@ class OtTexture;
 
 class OtSampler {
 public:
-	// flags
-	static constexpr uint32_t defaultSampling = UINT32_MAX;
-	static constexpr uint32_t linearSampling = BGFX_SAMPLER_NONE;
-	static constexpr uint32_t pointSampling = BGFX_SAMPLER_POINT;
-	static constexpr uint32_t anisotropicSampling = BGFX_SAMPLER_MIN_ANISOTROPIC | BGFX_SAMPLER_MAG_ANISOTROPIC;
-	static constexpr uint32_t repeatSampling = BGFX_SAMPLER_NONE;
-	static constexpr uint32_t clampSampling = BGFX_SAMPLER_UVW_CLAMP;
-	static constexpr uint32_t mirrorSampling = BGFX_SAMPLER_UVW_MIRROR;
 
 	// constructor/destructor
 	OtSampler() = default;
-	inline OtSampler(const char* n, uint32_t f=defaultSampling) : name(n), flags(f) {}
+	inline OtSampler(const char* n, uint64_t f=OtTexture::defaultSampling) : name(n), flags(f) {}
 
 	// initialize sampler
-	void initialize(const char* name, uint32_t flags=defaultSampling);
+	void initialize(const char* name, uint64_t flags=OtTexture::defaultSampling);
 
 	// clear the resources
 	void clear();
 
 	// (re)set/get the flags
-	inline void resetFlags() { flags = defaultSampling; }
-	inline void setFlags(uint32_t f) { flags = f; }
-	inline uint32_t getFlags() { return flags; }
+	inline void resetFlags() { flags = OtTexture::defaultSampling; }
+	inline void setFlags(uint64_t f) { flags = f; }
+	inline uint64_t getFlags() { return flags; }
 
 	// see if sampler is valid
 	inline bool isValid() { return uniform.isValid(); }
 
-	// bind texture to sampler and submit to GPU
-	void submit(int unit, const char* name=nullptr); // bind dummy texture
+	// bind texture/cubemap to sampler and submit to GPU
 	void submit(int unit, OtTexture& texture, const char* name=nullptr);
 	void submit(int unit, bgfx::TextureHandle texture, const char* name=nullptr);
 	void submit(int unit, OtCubeMap& cubemap, const char* name=nullptr);
+
+	void submitDummyTexture(int unit, const char* name=nullptr); // bind dummy texture
+	void submitDummyCubeMap(int unit, const char* name=nullptr); // bind dummy cubemap
 
 private:
 	// private method to create the uniform
@@ -70,7 +65,7 @@ private:
 
 	// properties
 	std::string name;
-	uint32_t flags = defaultSampling;
+	uint64_t flags = OtTexture::defaultSampling;
 
 	// uniform
 	OtBgfxHandle<bgfx::UniformHandle> uniform;

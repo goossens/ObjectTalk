@@ -13,6 +13,7 @@
 
 #include "imgui.h"
 
+#include "OtMessageBus.h"
 #include "OtPathTools.h"
 #include "OtUi.h"
 
@@ -138,7 +139,8 @@ void OtObjectTalkEditor::renderMenu() {
 		}
 
 		if (ImGui::BeginMenu("View")) {
-			renderCommonViewMenuItems();
+			if (ImGui::MenuItem("Toggle Console")) { OtMessageBus::instance()->send("toggleconsole"); }
+			ImGui::Separator();
 
 			bool flag;
 			flag = editor.IsShowWhitespacesEnabled(); if (ImGui::MenuItem("Show Whitespaces", nullptr, &flag)) { editor.SetShowWhitespacesEnabled(flag); };

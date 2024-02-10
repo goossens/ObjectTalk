@@ -47,8 +47,8 @@ public:
 	bool dirty = true;
 
 	// the maps on the GPU
-	OtFrameBuffer heightmap{OtFrameBuffer::rFloat32Texture};
-	OtFrameBuffer normalmap{OtFrameBuffer::rgbaFloat32Texture};
+	OtFrameBuffer heightmap{OtTexture::rFloat32Texture};
+	OtFrameBuffer normalmap{OtTexture::rgbaFloat32Texture};
 
 	// update the heightmap
 	void update(OtTileableFbm& noise, OtNormalMapper& normals);

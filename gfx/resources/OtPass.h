@@ -12,13 +12,18 @@
 //	Include files
 //
 
+#include <cstdint>
+
 #include "bgfx/bgfx.h"
 #include "glm/glm.hpp"
 
 
+#include "OtComputeProgram.h"
+#include "OtCubeMap.h"
 #include "OtFrameBuffer.h"
 #include "OtGbuffer.h"
 #include "OtShaderProgram.h"
+#include "OtTexture.h"
 
 
 //
@@ -27,10 +32,15 @@
 
 class OtPass {
 public:
+	// access flags
+	static constexpr int readAccess = bgfx::Access::Read;
+	static constexpr int writeAccess = bgfx::Access::Write;
+	static constexpr int readWriteAccess = bgfx::Access::ReadWrite;
+
 	// constructor
 	OtPass();
 
-	// manipulate pass
+	// handle rendering pass
 	void setClear(bool color, bool depth, const glm::vec4& rgba=glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), float depthValue=1.0f);
 	void setRectangle(int x, int y, int w, int h);
 	void setFrameBuffer(bgfx::FrameBufferHandle framebuffer);
@@ -41,6 +51,12 @@ public:
 	void runShaderProgram(OtShaderProgram& program);
 	void touch();
 
+	// handle compute pass
+	void setImage(int stage, OtTexture& texture, int mip, int access);
+	void setImage(int stage, OtCubeMap& cubemap, int mip, int access);
+	void runComputeProgram(OtComputeProgram& program, uint32_t x, uint32_t y, uint32_t z);
+
+	// handle blit pass
 	void blit(
 		bgfx::TextureHandle dest,
 		uint16_t dx, uint16_t dy,

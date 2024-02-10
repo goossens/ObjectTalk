@@ -94,6 +94,7 @@ public:
 	inline bool isLoading() { return ptr && ptr->isLoading(); }
 	inline bool isMissing() { return ptr && ptr->isMissing(); }
 	inline bool isInvalid() { return ptr && ptr->isInvalid(); }
+	inline bool isLoaded() { return ptr && ptr->isLoaded(); }
 	inline bool isReady() { return ptr && ptr->isReady(); }
 	inline bool isVirtual() { return ptr && ptr->isVirtual(); }
 	inline bool canHandleVirtual() { return T::canHandleVirtual; }

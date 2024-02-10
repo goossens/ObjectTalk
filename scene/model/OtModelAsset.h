@@ -27,9 +27,6 @@
 
 class OtModelAsset : public OtAssetBase {
 public:
-	// load the model
-	bool load() override;
-
 	// access the meshes and materials
 	inline std::vector<OtModelMesh>& getMeshes() { return meshes; }
 	inline std::vector<OtModelMaterial>& getMaterials() { return materials; }
@@ -41,6 +38,10 @@ public:
 	static constexpr bool canHandleVirtual = false;
 	static constexpr const char* supportedFileTypes = ".blender,.fbx,.gltf,.obj";
 	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
+
+protected:
+	// load the model
+	AssetState load() override;
 
 private:
 	// our meshes and materials

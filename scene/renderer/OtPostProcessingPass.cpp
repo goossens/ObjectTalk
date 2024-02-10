@@ -63,7 +63,7 @@ void OtSceneRenderer::renderBloom(OtSceneRendererContext& ctx, float bloomIntens
 	// initialize bloom buffers (if required)
 	if (!bloomBuffer[0].isValid()) {
 		for (auto i = 0; i < bloomDepth; i++) {
-			bloomBuffer[i].initialize(OtFrameBuffer::rgbaFloat16Texture, OtFrameBuffer::noTexture);
+			bloomBuffer[i].initialize(OtTexture::rgbaFloat16Texture, OtTexture::noTexture);
 		}
 	}
 

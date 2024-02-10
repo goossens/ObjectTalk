@@ -44,15 +44,15 @@ OtGraphAsset::OtGraphAsset() {
 //	OtGraphAsset::load
 //
 
-bool OtGraphAsset::load() {
+OtAssetBase::AssetState OtGraphAsset::load() {
 	try {
 		// load the graph
 		graph->load(path);
-		return true;
+		return readyState;
 
 	} catch (const OtException& exception) {
 		OtLogWarning(OtFormat("Can't load graph [%s]: %s", path.c_str(), exception.what()));
-		return false;
+		return invalidState;
 	}
 }
 
@@ -61,14 +61,14 @@ bool OtGraphAsset::load() {
 //	OtGraphAsset::save
 //
 
-bool OtGraphAsset::save() {
+OtAssetBase::AssetState OtGraphAsset::save() {
 	try {
 		// save the graph
 		graph->save(path);
-		return true;
+		return readyState;
 
 	} catch (const OtException& exception) {
 		OtLogWarning(OtFormat("Can't save graph [%s]: %s", path.c_str(), exception.what()));
-		return false;
+		return invalidState;
 	}
 }

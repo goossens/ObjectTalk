@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <cstdint>
+
 #include "OtTransientIndexBuffer.h"
 #include "OtTransientVertexBuffer.h"
 #include "OtVertex.h"

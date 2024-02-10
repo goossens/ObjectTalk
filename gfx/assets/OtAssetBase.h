@@ -62,6 +62,7 @@ public:
 	inline bool isLoading() { return assetState == loadingState; }
 	inline bool isMissing() { return assetState == missingState; }
 	inline bool isInvalid() { return assetState == invalidState; }
+	inline bool isLoaded() { return assetState == loadedState; }
 	inline bool isReady() { return assetState == readyState; }
 	inline bool isVirtual() { return OtPathIsVirtual(path); }
 	bool supportsFileType(const std::string& ext);
@@ -74,7 +75,7 @@ public:
 	inline virtual const char* getSupportedFileTypes() { return supportedFileTypes; }
 
 	// event handlers
-	// if the callback returns false, that listener is automatically removed
+	// if the callback returns false, that listener is automatically deactivated
 	// if the callback returns true, it remains active
 	inline OtAssetPreLoadListerner onPreLoad(std::function<bool()> cb) { return publisher.listen<OtAssetPreLoad>(cb); }
 	inline OtAssetPostLoadListerner onPostLoad(std::function<bool()> cb) { return publisher.listen<OtAssetPostLoad>(cb); }
@@ -97,34 +98,19 @@ protected:
 	// path to the asset
 	std::string path;
 
-private:
-	// give the asset manager full access
-	friend class OtAssetManager;
-
-	// reference count
-	size_t references = 0;
-
 	// state of the asset
 	enum AssetState {
 		nullState,
 		loadingState,
 		missingState,
 		invalidState,
+		loadedState,
 		readyState
 	} assetState = nullState;
 
-	// loader event handling
-	uv_async_t* loaderEventHandle = nullptr;
-
-	// filesystem event handling
-	uv_fs_event_t* fsEventHandle = nullptr;
-	bool following = false;
-	void follow();
-	void unfollow();
-
 	// functions to load/save the asset (to be implemented by derived classes)
-	virtual inline bool load() { return false; }
-	virtual inline bool save() { return false; }
+	virtual inline AssetState load() { return nullState; }
+	virtual inline AssetState save() { return nullState; }
 
 	// internal housekeeping functions
 	void initializeInvalid(const std::string& path);
@@ -139,6 +125,22 @@ private:
 
 	inline void markMissing() { assetState = missingState; }
 	inline void markInvalid() { assetState = invalidState; }
+
+private:
+	// give the asset manager full access
+	friend class OtAssetManager;
+
+	// reference count
+	size_t references = 0;
+
+	// loader event handling
+	uv_async_t* loaderEventHandle = nullptr;
+
+	// filesystem event handling
+	uv_fs_event_t* fsEventHandle = nullptr;
+	bool following = false;
+	void follow();
+	void unfollow();
 
 	// our publisher to notify subscribers
 	struct Publisher : OtPublisher<OtAssetPreLoad, OtAssetPostLoad, OtAssetPreSave, OtAssetPostSave, OtAssetChanged, OtAssetRenamed> {

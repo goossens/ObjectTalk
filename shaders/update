@@ -12,6 +12,7 @@ SHADERC=~/bin/shaderc
 FORCE=0
 
 SHADER_INCLUDES=""
+SHADER_DUMMIES=""
 SHADER_DEFINES=""
 SHADER_BAT=""
 
@@ -60,6 +61,27 @@ function needsUpdate() {
 
 
 #
+#	defineShader
+#
+
+function defineShader() {
+	# get calling parameter
+	SOURCE=$1
+
+	# extract names
+	BASENAME=$(basename ${SOURCE})
+	SHADER=${BASENAME%.*}
+
+	# create dummy shaders for OpenGL and OpenGLES
+	SHADER_DUMMIES+="static const uint8_t ${SHADER}_glsl[1] = {0};\n"
+	SHADER_DUMMIES+="static const uint8_t ${SHADER}_essl[1] = {0};\n"
+
+	# add shader to list of include files and defines
+	SHADER_DEFINES+="\tBGFX_EMBEDDED_SHADER(${SHADER}),\n"
+}
+
+
+#
 #	compileShader
 #
 
@@ -91,7 +113,7 @@ function compileShader() {
 		fi
 
 		# add shader to batch script
-		SHADER_BAT+="%HOMEDRIVE%%HOMEPATH%\\\\bin\\\\shaderc -f ${GROUP}\\\\${BASENAME} -o generated\\\\${GROUP}\\\\${SHADER}_${ID}.h -i include --type ${TYPE} --platform ${PLATFORM} --profile ${PROFILE} -O 3 --bin2c ${SHADER}_${ID}\n"
+		SHADER_BAT+="%HOMEDRIVE%%HOMEPATH%\\bin\\shaderc -f ${GROUP}\\${BASENAME} -o generated\\${GROUP}\\${SHADER}_${ID}.h -i include --type ${TYPE} --platform ${PLATFORM} --profile ${PROFILE} -O 3 --bin2c ${SHADER}_${ID}\n"
 
 	else
 		# no, hallelujah, it's not for windows so just compile the shader (if required)
@@ -102,9 +124,8 @@ function compileShader() {
 		fi
 	fi
 
-	# add  shader to list of include files and defines
+	# add shader to list of include files
 	SHADER_INCLUDES+="#include \"${TARGET}\"\n"
-	SHADER_DEFINES+="\tBGFX_EMBEDDED_SHADER(${SHADER}),\n"
 }
 
 
@@ -134,43 +155,37 @@ do
 	for SHADER_PATH in ${GROUP_NAME}/*VS.glsl
 	do
 		compileShader ${SHADER_PATH} vertex osx metal mtl
-		compileShader ${SHADER_PATH} vertex linux 120 glsl
 		compileShader ${SHADER_PATH} vertex linux spirv spv
-		compileShader ${SHADER_PATH} vertex android 100_es essl
 		compileShader ${SHADER_PATH} vertex windows s_5_0 dx11
+		defineShader ${SHADER_PATH}
 	done
 
 	# process all fragment shaders
 	for SHADER_PATH in ${GROUP_NAME}/*FS.glsl
 	do
 		compileShader ${SHADER_PATH} fragment osx metal mtl
-		compileShader ${SHADER_PATH} fragment linux 120 glsl
 		compileShader ${SHADER_PATH} fragment linux spirv spv
-		compileShader ${SHADER_PATH} fragment android 100_es essl
 		compileShader ${SHADER_PATH} fragment windows s_5_0 dx11
+		defineShader ${SHADER_PATH}
 	done
 
 	# process all compute shaders
 	for SHADER_PATH in ${GROUP_NAME}/*CS.glsl
 	do
 		compileShader ${SHADER_PATH} compute osx metal mtl
-		compileShader ${SHADER_PATH} compute linux 430 glsl
 		compileShader ${SHADER_PATH} compute linux spirv spv
-		compileShader ${SHADER_PATH} compute android 300_es essl
 		compileShader ${SHADER_PATH} compute windows s_5_0 dx11
+		defineShader ${SHADER_PATH}
 	done
 done
 
 # create master shader include file
-cat >OtShaders.h <<END
+cat <<END | sed -e 's/\\n/\n/g' -e 's/\\t/\t/g' >OtShaders.cpp
 //	ObjectTalk Scripting Language
 //	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
 //
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
-
-
-#pragma once
 
 
 //
@@ -179,21 +194,43 @@ cat >OtShaders.h <<END
 
 #include "bgfx/embedded_shader.h"
 
-$(echo -e ${SHADER_INCLUDES})
+#include "OtFormat.h"
+#include "OtLog.h"
+
+#include "OtShaders.h"
+${SHADER_INCLUDES}
 
 
 //
 //	Globals
 //
 
+${SHADER_DUMMIES}
+
 static const bgfx::EmbeddedShader embeddedShaders[] = {
-$(echo -e ${SHADER_DEFINES})
+${SHADER_DEFINES}
 	BGFX_EMBEDDED_SHADER_END()
 };
+
+
+//
+//	OtShaders::get
+//
+
+bgfx::ShaderHandle OtShaders::get(const char* name) {
+	bgfx::RendererType::Enum type = bgfx::getRendererType();
+	auto shader = bgfx::createEmbeddedShader(embeddedShaders, type, name);
+
+	if (!bgfx::isValid(shader)) {
+		OtLogFatal(OtFormat("Internal error: Unknown shader [%s]", name));
+	}
+
+	return shader;
+}
 END
 
 # create shader update script for windows
-cat >update.bat <<END
+cat <<END | sed 's/\\n/\n/g' >update.bat
 ::	ObjectTalk Scripting Language
 ::	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
 ::
@@ -203,7 +240,6 @@ cat >update.bat <<END
 
 pushd "%~dp0"
 
-$(echo -e ${SHADER_BAT})
-
+${SHADER_BAT}
 popd
 END

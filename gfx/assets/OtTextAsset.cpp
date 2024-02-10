@@ -22,7 +22,7 @@
 //	OtTextAsset::load
 //
 
-bool OtTextAsset::load() {
+OtAssetBase::AssetState OtTextAsset::load() {
 	try {
 		// try to load the text
 		std::ifstream stream(path.c_str());
@@ -34,11 +34,11 @@ bool OtTextAsset::load() {
 		text.assign((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());
 		stream.close();
 
-		return true;
+		return readyState;
 
 	} catch (const OtException& exception) {
 		OtLogWarning(OtFormat("Can't load text from [%s]: %s", path.c_str(), exception.what()));
-		return false;
+		return invalidState;
 	}
 }
 
@@ -47,16 +47,16 @@ bool OtTextAsset::load() {
 //	OtTextAsset::save
 //
 
-bool OtTextAsset::save() {
+OtAssetBase::AssetState OtTextAsset::save() {
 	try {
 		// try to save the text
 		std::ofstream stream(path.c_str());
 		stream << text;
 		stream.close();
-		return true;
+		return readyState;
 
 	} catch (const OtException& exception) {
 		OtLogWarning(OtFormat("Can't save text to [%s]: %s", path.c_str(), exception.what()));
-		return false;
+		return invalidState;
 	}
 }

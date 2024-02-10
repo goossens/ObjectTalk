@@ -6,7 +6,7 @@
 #ifndef BGFX_COMPUTE_H_HEADER_GUARD
 #define BGFX_COMPUTE_H_HEADER_GUARD
 
-#include "bgfx_shader.sh"
+#include "bgfx_shader.glsl"
 
 #ifndef __cplusplus
 
@@ -101,7 +101,7 @@
 
 #define IMAGE2D_WR( _name, _format, _reg)                                                 \
 	WRITEONLY FORMAT(_format) RWTexture2D<COMP_ ## _format> _name : REGISTER(u, _reg);  \
-	
+
 #define UIMAGE2D_WR(_name, _format, _reg) IMAGE2D_WR(_name, _format, _reg)
 
 #define IMAGE2D_RW( _name, _format, _reg)                            \

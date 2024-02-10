@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include <cstdint>
 #include <cstring>
 #include <string>
 
@@ -73,7 +74,7 @@ void OtFramework::initBGFX() {
 	init.type = bgfx::RendererType::Metal;
 
 #elif OT_GPU_DIRECT3D
-	init.type = bgfx::RendererType::Direct3D12;
+	init.type = bgfx::RendererType::Direct3D11;
 
 #elif OT_GPU_OPENGL
 	init.type = bgfx::RendererType::OpenGL;
@@ -188,7 +189,7 @@ void OtFramework::renderProfiler() {
 	float toMsGpu = 1000.0f / stats->gpuTimerFreq;
 	auto labelWith = ImGui::CalcTextSize("                         ").x;
 
-	ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Once);
 	ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Framerate:"); ImGui::SameLine(labelWith); ImGui::Text("%.1f", 1000.0f / loopDuration);
 	ImGui::Text("CPU [ms per frame]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.2f", cpuTime);

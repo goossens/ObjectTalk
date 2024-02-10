@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include <cstdint>
 #include <cmath>
 
 #include "imgui.h"

@@ -13,6 +13,7 @@
 #include <fstream>
 #include <sstream>
 
+#include "bx/allocator.h"
 #include "glm/glm.hpp"
 #include "nlohmann/json.hpp"
 
@@ -20,7 +21,7 @@
 #include "OtLog.h"
 
 #include "OtCubeMap.h"
-#include "OtGpu.h"
+#include "OtFrameworkAtExit.h"
 #include "OtImage.h"
 #include "OtPass.h"
 #include "OtPathTools.h"
@@ -31,7 +32,7 @@
 //	Globals
 //
 
-static float vertices[] = {
+static float cubeVertices[] = {
 	// back face
 	-1.0f, -1.0f, -1.0f,	// bottom-left
 	 1.0f,  1.0f, -1.0f,	// top-right
@@ -76,7 +77,21 @@ static float vertices[] = {
 	-1.0f,  1.0f,  1.0f,	// bottom-left
 };
 
-static constexpr size_t vertexCount = sizeof(vertices) / sizeof(*vertices) / 3;
+static constexpr size_t cubeVertexCount = sizeof(cubeVertices) / sizeof(*cubeVertices) / 3;
+
+
+//
+//	OtCubeMap::create
+//
+
+void OtCubeMap::create(int s, bool m, int l, int f, uint64_t flags) {
+	size = s;
+	mip = m;
+	layers = l;
+	format = f;
+	cubemap = bgfx::createTextureCube(size, mip, layers, bgfx::TextureFormat::Enum(format), flags);
+	version++;
+}
 
 
 //
@@ -141,6 +156,10 @@ void OtCubeMap::loadJSON(const std::string& path) {
 	bimg::ImageContainer* container = image.getContainer();
 	uint16_t imageSize = container->m_width;
 	bimg::TextureFormat::Enum imageFormat = container->m_format;
+	size = imageSize;
+	mip = false;
+	layers = 1;
+	format = bgfx::TextureFormat::Enum(imageFormat);
 
 	// create a new cubemap
 	cubemap = bgfx::createTextureCube(imageSize, false, 1, bgfx::TextureFormat::Enum(imageFormat), BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE);
@@ -199,8 +218,8 @@ void OtCubeMap::loadJSON(const std::string& path) {
 
 	mem = bgfx::copy(container->m_data, container->m_size);
 	bgfx::updateTextureCube(cubemap.getHandle(), 0, 5, 0, 0, 0, imageSize, imageSize, mem);
+	version++;
 }
-
 
 //
 //	OtCubeMap::loadCubemapImage
@@ -225,6 +244,12 @@ void OtCubeMap::loadCubemapImage(const std::string& path) {
 	} else {
 		OtError("Image is not a cubemap");
 	}
+
+	size = container->m_width;
+	mip = container->m_numMips > 0;
+	layers = container->m_numLayers;
+	format = bgfx::TextureFormat::Enum(container->m_format);
+	version++;
 }
 
 
@@ -284,25 +309,14 @@ void OtCubeMap::loadHdrImage(const std::string& path) {
 //
 
 void OtCubeMap::renderCubemap() {
-	// create an empty cubemap
-	static constexpr uint16_t size = 512;
-
-	cubemap = bgfx::createTextureCube(
-		size,
-		false,
-		1,
-		bgfx::TextureFormat::RGBA16F,
-		BGFX_TEXTURE_RT,
-		nullptr);
-
 	// create a unity cube
-	if (bgfx::getAvailTransientVertexBuffer(vertexCount, OtVertexPosUv::getLayout()) != vertexCount) {
+	if (bgfx::getAvailTransientVertexBuffer(cubeVertexCount, OtVertexPos::getLayout()) != cubeVertexCount) {
 		OtLogFatal("Internal error: insufficient transient buffer space");
 	}
 
 	bgfx::TransientVertexBuffer tvb;
-	bgfx::allocTransientVertexBuffer(&tvb, vertexCount, OtVertexPos::getLayout());
-	memcpy(tvb.data, vertices, sizeof(vertices));
+	bgfx::allocTransientVertexBuffer(&tvb, cubeVertexCount, OtVertexPos::getLayout());
+	memcpy(tvb.data, cubeVertices, sizeof(cubeVertices));
 
 	// define the projection matrix
 	glm::mat4 projectionMatrix = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
@@ -311,15 +325,25 @@ void OtCubeMap::renderCubemap() {
 	glm::mat4 viewMatrices[] = {
 		glm::lookAt(glm::vec3(0.0f), glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
 		glm::lookAt(glm::vec3(0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
-#if OT_GPU_OPENGL
-		glm::lookAt(glm::vec3(0.0f), glm::vec3( 0.0f,  1.0f,  0.0f), glm::vec3(0.0f, 0.0f,  1.0f)),
-		glm::lookAt(glm::vec3(0.0f), glm::vec3( 0.0f, -1.0f,  0.0f), glm::vec3(0.0f, 0.0f, -1.0f)),
-#else
 		glm::lookAt(glm::vec3(0.0f), glm::vec3( 0.0f, -1.0f,  0.0f), glm::vec3(0.0f, 0.0f, -1.0f)),
 		glm::lookAt(glm::vec3(0.0f), glm::vec3( 0.0f,  1.0f,  0.0f), glm::vec3(0.0f, 0.0f,  1.0f)),
-#endif
 		glm::lookAt(glm::vec3(0.0f), glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
 		glm::lookAt(glm::vec3(0.0f), glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f))};
+
+	// create an empty cubemap
+	size = 512;
+	mip = true;
+	layers = 1;
+	format = bgfx::TextureFormat::RGBA16F;
+	version++;
+
+	cubemap = bgfx::createTextureCube(
+		size,
+		mip,
+		layers,
+		bgfx::TextureFormat::RGBA16F,
+		BGFX_TEXTURE_RT,
+		nullptr);
 
 	// render all 6 sides of the cube
 	for (int side = 0; side < 6; side++) {
@@ -336,12 +360,49 @@ void OtCubeMap::renderCubemap() {
 		pass.setTransform(viewMatrices[side], projectionMatrix);
 
 		// setup sampler
-		sampler.submit(0, tmpTexture.getHandle());
+		remapSampler.submit(0, tmpTexture.getHandle());
 
 		// submit geometry
 		bgfx::setVertexBuffer(0, &tvb);
 
 		reprojectShader.setState(OtStateWriteRgb | OtStateWriteA | OtStateCullCcw);
 		pass.runShaderProgram(reprojectShader);
+	}
+}
+
+
+//
+//	OtCubeMap::getHandle
+//
+
+bgfx::TextureHandle OtCubeMap::getHandle() {
+	// ensure we have a valid cubemap
+	if (isValid()) {
+		return cubemap.getHandle();
+
+	} else {
+		static bgfx::TextureHandle dummy = BGFX_INVALID_HANDLE;
+
+		// create dummy cubemap (if required)
+		if (!bgfx::isValid(dummy)) {
+			static bx::DefaultAllocator allocator;
+			bimg::ImageContainer* image = bimg::imageAlloc(&allocator, bimg::TextureFormat::R8, 1, 1, 1, 1, true, false);
+			const bgfx::Memory* mem = bgfx::copy(image->m_data, image->m_size);
+			bimg::imageFree(image);
+
+			dummy = bgfx::createTextureCube(
+				1, false, 1,
+				bgfx::TextureFormat::R8,
+				BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
+				mem);
+
+			// dummy texture will be destroyed when program exits
+			OtFrameworkAtExit::instance()->add([] () {
+				bgfx::destroy(dummy);
+			});
+		}
+
+		// just return a dummy image to keep everybody happy
+		return dummy;
 	}
 }

@@ -10,6 +10,7 @@
 //
 
 #include <algorithm>
+#include <cstdint>
 #include <cstring>
 
 #include "glm/glm.hpp"
@@ -320,8 +321,7 @@ void OtFramework::renderIMGUI() {
 	drawData->ScaleClipRects(io.DisplayFramebufferScale);
 
 	// setup orthographic projection matrix
-	glm::mat4 matrix;
-	matrix = glm::ortho(0.0f, io.DisplaySize.x, io.DisplaySize.y, 0.0f, -1.0f, 1.0f);
+	glm::mat4 matrix = glm::ortho(0.0f, io.DisplaySize.x, io.DisplaySize.y, 0.0f, -1.0f, 1.0f);
 	bgfx::setViewTransform(255, nullptr, glm::value_ptr(matrix));
 	bgfx::setViewRect(255, 0, 0, fb_width, fb_height);
 

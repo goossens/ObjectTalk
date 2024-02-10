@@ -37,6 +37,8 @@ public:
 		clippingPlane(clp) {
 
 		// reset flags
+		hasDirectionalLighting = false;
+		hasImageBasedLighting = false;
 		hasOpaqueEntities = false;
 		hasOpaqueGeometries = false;
 		hasOpaqueModels = false;
@@ -45,8 +47,24 @@ public:
 		hasTransparentEntities = false;
 		hasWaterEntities = false;
 
+		iblEntity = OtEntityNull;
+		waterEntity = OtEntityNull;
+
 		// check entities and set flags
 		scene->eachEntityDepthFirst([&](OtEntity entity) {
+			if (scene->hasComponent<OtDirectionalLightComponent>(entity) && scene->hasComponent<OtTransformComponent>(entity)) {
+				hasDirectionalLighting = true;
+			}
+
+			if (scene->hasComponent<OtSkyComponent>(entity)) {
+				hasDirectionalLighting = true;
+			}
+
+			if (scene->hasComponent<OtIblComponent>(entity)) {
+				hasImageBasedLighting |= scene->getComponent<OtIblComponent>(entity).cubemap.isReady();
+				iblEntity = entity;
+			}
+
 			if (scene->hasComponent<OtGeometryComponent>(entity) && scene->hasComponent<OtMaterialComponent>(entity)) {
 				bool transparent = scene->getComponent<OtGeometryComponent>(entity).transparent;
 				hasOpaqueEntities |= !transparent;
@@ -71,6 +89,7 @@ public:
 			if (water && scene->hasComponent<OtWaterComponent>(entity)) {
 				hasTransparentEntities = true;
 				hasWaterEntities = true;
+				waterEntity = entity;
 			}
 		});
 	}
@@ -90,6 +109,8 @@ public:
 	glm::vec4 clippingPlane;
 
 	// rendering flags
+	bool hasDirectionalLighting;
+	bool hasImageBasedLighting;
 	bool hasOpaqueEntities;
 	bool hasOpaqueGeometries;
 	bool hasOpaqueModels;
@@ -97,4 +118,7 @@ public:
 	bool hasSkyEntities;
 	bool hasTransparentEntities;
 	bool hasWaterEntities;
+
+	OtEntity iblEntity = OtEntityNull;
+	OtEntity waterEntity = OtEntityNull;
 };

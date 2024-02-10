@@ -35,8 +35,8 @@ public:
 	}
 
 	// configure output framebuffer
-	inline virtual int getColorTextureType() { return OtFrameBuffer::rgbaFloat32Texture; }
-	inline virtual int getDepthTextureType() { return OtFrameBuffer::noTexture; }
+	inline virtual int getColorTextureType() { return OtTexture::rgbaFloat32Texture; }
+	inline virtual int getDepthTextureType() { return OtTexture::noTexture; }
 
 	// configure node
 	inline void configure() override {
@@ -126,7 +126,7 @@ public:
 	inline OtIslandizerFilter() : OtTextureFilterNode(name) {}
 
 	// configure output framebuffer
-	inline int getColorTextureType() override { return OtFrameBuffer::rFloat32Texture; }
+	inline int getColorTextureType() override { return OtTexture::rFloat32Texture; }
 
 	// rendering custom fields
 	void customRendering(float width) override {

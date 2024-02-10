@@ -34,7 +34,7 @@
 					"near": 0.10000000149011612
 				},
 				{
-					"Exposure": 1.0,
+					"Exposure": 0.4000000059604645,
 					"bloomIntensity": 0.1899999976158142,
 					"component": "Post Processing"
 				}
@@ -61,35 +61,12 @@
 			"components": [
 				{
 					"component": "Core",
-					"tag": "Directional Light",
-					"uuid": 3334984001
+					"tag": "IBL",
+					"uuid": 1816997939
 				},
 				{
-					"component": "Transform",
-					"rotation": [
-						0.0,
-						0.0,
-						0.0
-					],
-					"scale": [
-						1.0,
-						1.0,
-						1.0
-					],
-					"translation": [
-						5.0,
-						5.0,
-						5.0
-					]
-				},
-				{
-					"ambient": 0.05000000074505806,
-					"color": [
-						1.0,
-						1.0,
-						1.0
-					],
-					"component": "Directional Light"
+					"component": "Image Based Lighting (IBL)",
+					"cubemap": "assets/sunset.hdr"
 				}
 			]
 		},

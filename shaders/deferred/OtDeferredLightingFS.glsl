@@ -59,7 +59,7 @@ void main() {
 
 	// determine material data
 	Material material;
-	material.albedo = albedoSample.rgb;
+	material.albedo = toLinear(albedoSample.rgb);
 	material.normal = normalize(texture2D(s_lightingNormalTexture, v_texcoord0).xyz);
 	vec4 data = texture2D(s_lightingPbrTexture, v_texcoord0);
 	material.metallic = data.r;
@@ -85,6 +85,6 @@ void main() {
 
 	// finalize color (tonemapping and gamma correction are done during post-processing)
 	vec3 emissive = texture2D(s_lightingEmissiveTexture, v_texcoord0).rgb;
-	gl_FragColor = vec4(color + emissive, 1.0);
+	gl_FragColor = vec4(color + toLinear(emissive), 1.0);
 	gl_FragDepth = depth;
 }

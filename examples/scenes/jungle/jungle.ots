@@ -34,8 +34,8 @@
 					"near": 0.10000000149011612
 				},
 				{
-					"Exposure": 0.6299999952316284,
-					"bloomIntensity": 0.49000000953674316,
+					"Exposure": 1.1100000143051147,
+					"bloomIntensity": 0.5199999809265137,
 					"component": "Post Processing"
 				}
 			]
@@ -53,7 +53,7 @@
 					"cirrus": 0.5199999809265137,
 					"component": "Sky",
 					"cumulus": 0.5720000267028809,
-					"elevation": 32.28200149536133,
+					"elevation": 32.28300094604492,
 					"mieCoefficient": 5.451000213623047,
 					"mieScattering": 0.9900000095367432,
 					"rayleighCoefficient": 2.753000020980835,

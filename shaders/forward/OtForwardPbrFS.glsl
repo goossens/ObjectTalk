@@ -76,7 +76,7 @@ void main() {
 		discard;
 	}
 
-	material.albedo = albedo.rgb;
+	material.albedo = toLinear(albedo.rgb);
 
 	// determine normal
 	if (u_hasNormalTexture) {
@@ -117,5 +117,5 @@ void main() {
 
 	// finalize color (tonemapping and gamma correction are done during post-processing)
 	vec3 emissive = texture2D(s_emissiveTexture, v_texcoord0).rgb;
-	gl_FragColor = vec4(color + emissive, albedo.a);
+	gl_FragColor = vec4(color + toLinear(emissive), albedo.a);
 }

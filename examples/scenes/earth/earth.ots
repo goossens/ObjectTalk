@@ -38,8 +38,8 @@
 					"path": "assets/camera.ot"
 				},
 				{
-					"Exposure": 1.0099999904632568,
-					"bloomIntensity": 0.6000000238418579,
+					"Exposure": 1.659999966621399,
+					"bloomIntensity": 0.75,
 					"component": "Post Processing"
 				}
 			]
@@ -163,9 +163,9 @@
 								"ao": 1.0,
 								"aoTexture": "",
 								"emissive": [
-									0.0,
-									0.0,
-									0.0
+									0.19911503791809082,
+									0.1920667141675949,
+									0.1920667141675949
 								],
 								"emissiveTexture": "",
 								"metallic": 0.5,
@@ -247,10 +247,10 @@
 									0.0
 								],
 								"emissiveTexture": "",
-								"metallic": 0.23000000417232513,
+								"metallic": 0.27000001072883606,
 								"metallicRoughnessTexture": "",
 								"normalTexture": "",
-								"roughness": 0.4000000059604645,
+								"roughness": 0.5699999928474426,
 								"scale": 1.0,
 								"type": "PBR"
 							}
@@ -326,10 +326,10 @@
 									0.0
 								],
 								"emissiveTexture": "",
-								"metallic": 0.5,
+								"metallic": 0.1899999976158142,
 								"metallicRoughnessTexture": "",
 								"normalTexture": "",
-								"roughness": 0.5,
+								"roughness": 0.4099999964237213,
 								"scale": 1.0,
 								"type": "PBR"
 							}

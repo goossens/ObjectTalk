@@ -34,7 +34,7 @@
 					"near": 0.10000000149011612
 				},
 				{
-					"Exposure": 2.069999933242798,
+					"Exposure": 2.3499999046325684,
 					"bloomIntensity": 0.6899999976158142,
 					"component": "Post Processing"
 				}
@@ -160,10 +160,10 @@
 							0.0
 						],
 						"emissiveTexture": "",
-						"metallic": 0.0,
+						"metallic": 0.550000011920929,
 						"metallicRoughnessTexture": "",
 						"normalTexture": "assets/grass-normal.png",
-						"roughness": 1.0,
+						"roughness": 0.5199999809265137,
 						"scale": 6.5,
 						"type": "PBR"
 					}

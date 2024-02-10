@@ -34,8 +34,8 @@
 					"near": 1.0
 				},
 				{
-					"Exposure": 0.47999998927116394,
-					"bloomIntensity": 0.49000000953674316,
+					"Exposure": 0.9300000071525574,
+					"bloomIntensity": 0.41999998688697815,
 					"component": "Post Processing"
 				}
 			]
@@ -102,18 +102,18 @@
 						"region2TextureScale": 25.0,
 						"region2Transition": 0.49000000953674316,
 						"region3Color": [
-							0.5839999914169312,
-							0.5529999732971191,
-							0.5220000147819519
+							0.6991150379180908,
+							0.6511668562889099,
+							0.6032187342643738
 						],
 						"region3Overlap": 0.05000000074505806,
 						"region3Texture": "assets/rock.jpg",
 						"region3TextureScale": 70.0,
 						"region3Transition": 0.5799999833106995,
 						"region4Color": [
-							0.8999999761581421,
-							0.8999999761581421,
-							0.8999999761581421
+							0.8716814517974854,
+							0.8716814517974854,
+							0.8716814517974854
 						],
 						"region4Texture": "assets/snow.jpg",
 						"region4TextureScale": 28.100000381469727

@@ -30,6 +30,15 @@ struct DirectionalLight {
 	float ambience;
 };
 
+// convert color to linear colorspace
+vec3 toLinear(vec3 color) {
+	return pow(color, vec3_splat(2.2));
+}
+
+vec4 toLinear(vec4 color) {
+	return vec4(toLinear(color.rgb), color.a);
+}
+
 // fresnel equations
 vec3 fresnelSchlick(float cosTheta, vec3 F0) {
 	return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);

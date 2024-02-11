@@ -116,6 +116,6 @@ void OtMaterialComponent::createMaterial(const std::string& type) {
 		material = factory->create(type);
 
 	} else {
-		OtError("Internal error: invalid material type [%s]", type.c_str());
+		OtError("Internal error: invalid material type [{}]", type);
 	}
 }

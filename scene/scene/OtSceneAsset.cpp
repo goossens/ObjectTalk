@@ -11,7 +11,6 @@
 
 
 #include "OtException.h"
-#include "OtFormat.h"
 #include "OtLog.h"
 
 #include "OtSceneAsset.h"
@@ -38,7 +37,7 @@ OtAssetBase::AssetState OtSceneAsset::load() {
 		return readyState;
 
 	} catch (const OtException& exception) {
-		OtLogWarning(OtFormat("Can't load scene [%s]: %s", path.c_str(), exception.what()));
+		OtLogWarning("Can't load scene [{}]: {}", path, exception.what());
 		return invalidState;
 	}
 }
@@ -55,7 +54,7 @@ OtAssetBase::AssetState OtSceneAsset::save() {
 		return readyState;
 
 	} catch (const OtException& exception) {
-		OtLogWarning(OtFormat("Can't save scene [%s]: %s", path.c_str(), exception.what()));
+		OtLogWarning("Can't save scene [{}]: {}", path, exception.what());
 		return invalidState;
 	}
 }

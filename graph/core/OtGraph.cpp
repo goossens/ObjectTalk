@@ -61,14 +61,14 @@ void OtGraph::load(const std::string& path) {
 		std::ifstream stream(path.c_str());
 
 		if (stream.fail()) {
-			OtError("Can't read from file [%s]", path.c_str());
+			OtError("Can't read from file [{}]", path);
 		}
 
 		buffer << stream.rdbuf();
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtError("Can't read from file [%s], error: %s", path.c_str(), e.what());
+		OtError("Can't read from file [{}], error: {}", path, e.what());
 	}
 
 	// clear graph
@@ -98,10 +98,10 @@ void OtGraph::load(const std::string& path) {
 			uint32_t toId = link["to"];
 
 			if (pinIndex.count(fromId) == 0) {
-				OtError("Invalid 'from' pin ID [%s] in link [%d]", fromId, linkId);
+				OtError("Invalid 'from' pin ID [{}] in link [{}]", fromId, linkId);
 
 			} else if (pinIndex.count(toId) == 0) {
-				OtError("Invalid 'to' pin ID [%s] in link [%d]", toId, linkId);
+				OtError("Invalid 'to' pin ID [{}] in link [{}]", toId, linkId);
 			}
 
 			createLink(fromId, toId, linkId);
@@ -144,14 +144,14 @@ void OtGraph::save(const std::string& path) {
 		std::ofstream stream(path.c_str());
 
 		if (stream.fail()) {
-			OtError("Can't open file [%s] for writing", path.c_str());
+			OtError("Can't open file [{}] for writing", path);
 		}
 
 		stream << data.dump(1, '\t');
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtError("Can't write to file [%s], error: %s", path.c_str(), e.what());
+		OtError("Can't write to file [{}], error: {}", path, e.what());
 	}
 }
 

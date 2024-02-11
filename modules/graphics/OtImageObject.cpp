@@ -27,7 +27,7 @@ void OtImageObjectClass::init(size_t count, OtObject* parameters) {
 			parameters[1]->operator std::string());
 
 	} else if (count !=0) {
-		OtError("[Image] constructor expects 0 or 2 arguments (not %ld)", count);
+		OtError("[Image] constructor expects 0 or 2 arguments (not {})", count);
 	}
 }
 
@@ -89,12 +89,12 @@ OtObject OtImageObjectClass::getPixelRgba(size_t x, size_t y) {
 	}
 
 	if (x >= image.getWidth()) {
-		OtError("Image x coordinate [%ld] out of range [max %ld]", x, image.getWidth());
+		OtError("Image x coordinate [{}] out of range [max {}]", x, image.getWidth());
 
 	}
 
 	if (y >= image.getHeight()) {
-		OtError("Image y coordinate [%ld] out of range [max %ld]", x, image.getHeight());
+		OtError("Image y coordinate [{}] out of range [max {}]", x, image.getHeight());
 
 	}
 
@@ -113,12 +113,12 @@ float OtImageObjectClass::getPixelGray(size_t x, size_t y) {
 	}
 
 	if (x >= image.getWidth()) {
-		OtError("Image x coordinate [%ld] out of range [max %ld]", x, image.getWidth());
+		OtError("Image x coordinate [{}] out of range [max {}]", x, image.getWidth());
 
 	}
 
 	if (y >= image.getHeight()) {
-		OtError("Image y coordinate [%ld] out of range [max %ld]", y, image.getHeight());
+		OtError("Image y coordinate [{}] out of range [max {}]", y, image.getHeight());
 
 	}
 
@@ -137,12 +137,12 @@ float OtImageObjectClass::sampleValue(float x, float y) {
 	}
 
 	if (x < 0.0f || x > 1.0f) {
-		OtError("Image x coordinate [%ld] out of range [0.0 - 1.0]", x);
+		OtError("Image x coordinate [{}] out of range [0.0 - 1.0]", x);
 
 	}
 
 	if (y < 0.0f || y > 1.0f) {
-		OtError("Image y coordinate [%ld] out of range [0.0 - 1.0]", y);
+		OtError("Image y coordinate [{}] out of range [0.0 - 1.0]", y);
 
 	}
 

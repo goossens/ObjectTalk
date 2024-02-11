@@ -38,7 +38,7 @@ OtTypeClass::OtTypeClass(const std::string& n, OtType p, OtTypeAllocator a) {
 
 OtObject OtTypeClass::allocate() {
 	if (!allocator) {
-		OtError("Can't allocation incomplete type [%s]", name.c_str());
+		OtError("Can't allocation incomplete type [{}]", name);
 	}
 
 	return allocator();

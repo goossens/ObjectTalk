@@ -315,7 +315,7 @@ static OtRgbColor parse(const std::string& text) {
 		}
 
 	} catch (std::exception& e) {
-		OtError("Invalid color [%s], error: %s", text.c_str(), e.what());
+		OtError("Invalid color [{}], error: {}", text, e.what());
 	}
 
 	// we never get her but we need to please the compiler

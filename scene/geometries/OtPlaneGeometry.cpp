@@ -34,7 +34,7 @@ void OtPlaneGeometryClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-			OtError("Too many parameters [%ld] for [PlaneGeometry] constructor (max 2)", count);
+			OtError("Too many parameters [{}] for [PlaneGeometry] constructor (max 2)", count);
 	}
 }
 

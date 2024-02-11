@@ -20,7 +20,7 @@
 void OtSubProcess::start(const std::string& path, const std::vector<std::string>& arguments, std::function <void(int64_t status, int signal)> onExit, std::function <void(const std::string& text)> onStdout, std::function <void(const std::string& text)> onStderr) {
 	// sanity check
 	if (running) {
-		OtError("Can't start subprocess [%s] as one is already running", path.c_str());
+		OtError("Can't start subprocess [{}] as one is already running", path);
 	}
 
 	// remember callbacks

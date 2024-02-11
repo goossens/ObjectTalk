@@ -409,9 +409,6 @@ void bezierTable(ImVec2 P[4], ImVec2 results[steps + 1] ) {
 	}
 }
 
-#include "OtFormat.h"
-#include "OtLog.h"
-
 bool OtUiBezier(const char *label, float P[4]) {
 	// based on https://github.com/ocornut/imgui/issues/786
 	enum { SMOOTHNESS = 64 }; // curve smoothness: the higher number of segments, the smoother curve

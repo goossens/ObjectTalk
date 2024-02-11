@@ -10,7 +10,6 @@
 //
 
 #include "OtException.h"
-#include "OtFormat.h"
 #include "OtLog.h"
 
 #include "OtCubeMapAsset.h"
@@ -67,7 +66,7 @@ OtAssetBase::AssetState OtCubeMapAsset::load() {
 		}
 
 	} catch (const OtException& exception) {
-		OtLogWarning(OtFormat("Can't load CubeMap [%s]: %s", path.c_str(), exception.what()));
+		OtLogWarning("Can't load CubeMap [{}]: {}", path, exception.what());
 		return invalidState;
 	}
 }

@@ -146,7 +146,7 @@ void OtPbrMaterialClass::setAlbedo(OtObject object) {
 		albedo = glm::vec4(object->operator float());
 
 	} else {
-		OtError("Expected a [Vec4] or a [Real], not a [%s]", object->getType()->getName().c_str());
+		OtError("Expected a [Vec4] or a [Real], not a [{}]", object->getType()->getName());
 	}
 }
 
@@ -163,7 +163,7 @@ void OtPbrMaterialClass::setEmissive(OtObject object) {
 		emissive = glm::vec3(object->operator float());
 
 	} else {
-		OtError("Expected a [Vec3] or a [Real], not a [%s]", object->getType()->getName().c_str());
+		OtError("Expected a [Vec3] or a [Real], not a [{}]", object->getType()->getName());
 	}
 }
 

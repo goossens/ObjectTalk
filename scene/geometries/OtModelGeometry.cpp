@@ -39,7 +39,7 @@ void OtModelGeometryClass::init(size_t count, OtObject* parameters) {
 				break;
 
 			default:
-				OtError("Too many parameters [%ld] for [ModelGeometry] constructor (max 1)", count);
+				OtError("Too many parameters [{}] for [ModelGeometry] constructor (max 1)", count);
 		}
 
 		refreshGeometry = true;
@@ -88,12 +88,12 @@ void OtModelGeometryClass::fillGeometry() {
 
 		// ensure model was loaded correctly
 		if (scene == nullptr) {
-			OtError("Unable to load model [%s], error: %s", modelPath.c_str(), importer.GetErrorString());
+			OtError("Unable to load model [{}], error: {}", modelPath, importer.GetErrorString());
 		}
 
 		// ensure scene is complete
 		if (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) {
-			OtError("Incomplete model [%s]", modelPath.c_str());
+			OtError("Incomplete model [{}]", modelPath);
 		}
 
 		// load all the meshes

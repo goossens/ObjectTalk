@@ -66,7 +66,7 @@ void OtSceneRenderer::submitMaterialUniforms(OtMaterial material) {
 		submitPbrUniforms(OtPbrMaterial(material));
 
 	} else {
-		OtError("Internal error: invalid material type [%s]", material->getTypeName());
+		OtError("Internal error: invalid material type [{}]", material->getTypeName());
 	}
 }
 

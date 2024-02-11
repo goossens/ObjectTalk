@@ -7,6 +7,7 @@
 include(FetchContent)
 
 add_subdirectory(argparse)
+add_subdirectory(fmt)
 add_subdirectory(libuv)
 add_subdirectory(json)
 

@@ -9,7 +9,6 @@
 //	Include files
 //
 
-#include "OtFormat.h"
 #include "OtLog.h"
 
 #include "OtShaderProgram.h"

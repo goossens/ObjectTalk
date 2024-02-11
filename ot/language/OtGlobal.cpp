@@ -145,7 +145,7 @@ OtObject OtGlobalClass::range(size_t count, OtObject* parameters) {
 		increment = parameters[2]->operator int64_t();
 
 	}else {
-		OtError("Range functions required 1, 2 or 3 parameters, not %ld", count);
+		OtError("Range functions required 1, 2 or 3 parameters, not {}", count);
 	}
 
 	if (increment == 0) {
@@ -182,7 +182,7 @@ void OtGlobalClass::print(size_t count, OtObject* parameters) {
 OtObject OtGlobalClass::super(size_t count, OtObject* parameters) {
 	// sanity check
 	if (count < 2) {
-		OtError("Super requires at least 2 parameters (%ld given)", count);
+		OtError("Super requires at least 2 parameters ({} given)", count);
 	}
 
 	// get member from super class
@@ -199,7 +199,7 @@ OtObject OtGlobalClass::super(size_t count, OtObject* parameters) {
 	// sanity check
 	if (!member) {
 		OtError(
-			"Can't find member function [%s] in super class of [%s]",
+			"Can't find member function [{}] in super class of [{}]",
 			memberName.c_str(),
 			parameters[0]->getType()->getName().c_str());
 	}

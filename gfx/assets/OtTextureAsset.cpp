@@ -10,7 +10,6 @@
 //
 
 #include "OtException.h"
-#include "OtFormat.h"
 #include "OtLog.h"
 
 #include "OtTextureAsset.h"
@@ -27,7 +26,7 @@ OtAssetBase::AssetState OtTextureAsset::load() {
 		return readyState;
 
 	} catch (const OtException& exception) {
-		OtLogWarning(OtFormat("Can't load texture [%s]: %s", path.c_str(), exception.what()));
+		OtLogWarning("Can't load texture [{}]: {}", path, exception.what());
 		return invalidState;
 	}
 }

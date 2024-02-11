@@ -15,7 +15,6 @@
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 
-#include "OtFormat.h"
 #include "OtLog.h"
 
 #include "OtGpu.h"
@@ -50,13 +49,13 @@ OtAssetBase::AssetState OtModelAsset::load() {
 
 	// ensure model was loaded correctly
 	if (scene == nullptr) {
-		OtLogWarning(OtFormat("Unable to load model [%s], error: %s", path.c_str(), importer.GetErrorString()));
+		OtLogWarning("Unable to load model [{}], error: {}", path, importer.GetErrorString());
 		return invalidState;
 	}
 
 	// ensure scene is complete
 	if (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) {
-		OtLogWarning(OtFormat("Incomplete model [%s]", path.c_str()));
+		OtLogWarning("Incomplete model [{}]", path);
 		return invalidState;
 	}
 

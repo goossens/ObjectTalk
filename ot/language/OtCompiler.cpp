@@ -10,8 +10,11 @@
 //
 
 #include <fstream>
+#include <iostream>
 #include <sstream>
 #include <vector>
+
+#include "fmt/format.h"
 
 #include "OtByteCodeFunction.h"
 #include "OtCaptureReference.h"
@@ -31,7 +34,7 @@
 OtByteCode OtCompiler::compileFile(const std::filesystem::path& path, OtObject object, bool disassemble) {
 	// sanity check
 	if (!std::filesystem::exists(path)) {
-		OtError("Can't open file [%s]", path.string().c_str());
+		OtError("Can't open file [{}]", path.string());
 	}
 
 	// load source code and compile into bytecode
@@ -249,7 +252,7 @@ void OtCompiler::declareVariable(OtByteCode bytecode, const std::string& name, b
 
 	// avoid double declaration
 	if (scope->locals.count(name)) {
-		scanner.error(OtFormat("Variable [%s] already defined in this scope", name.c_str()));
+		scanner.error(fmt::format("Variable [{}] already defined in this scope", name));
 	}
 
 	// add variable to compiler scope
@@ -319,7 +322,7 @@ void OtCompiler::resolveVariable(OtByteCode bytecode, const std::string& name) {
 
 	// generate error if variable is not found
 	if (!found) {
-		scanner.error(OtFormat("Unknown variable [%s]", name.c_str()));
+		scanner.error(fmt::format("Unknown variable [{}]", name));
 	}
 }
 

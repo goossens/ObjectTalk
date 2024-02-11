@@ -12,14 +12,10 @@
 //	  Include files
 //
 
-#include <cstdio>
-
 #include <exception>
-#include <iostream>
 #include <string>
-#include <vector>
 
-#include "OtFormat.h"
+#include "fmt/format.h"
 
 
 //
@@ -90,10 +86,8 @@ void OtError(const char* format, ARGS&& ...args) {
 		throw OtException(format);
 
 	} else {
-		auto size = std::snprintf(nullptr, 0, format, std::forward<ARGS>(args)...);
-		std::vector<char> buffer(size + 1);
-		std::snprintf(buffer.data(), size + 1, format, std::forward<ARGS>(args)...);
-		throw OtException(std::string(buffer.data()));
+		auto message = fmt::format(format, args...);
+		throw OtException(message);
 	}
 }
 

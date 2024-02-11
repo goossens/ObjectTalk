@@ -125,14 +125,14 @@ void OtCubeMap::loadJSON(const std::string& path) {
 		std::ifstream stream(path.c_str());
 
 		if (stream.fail()) {
-			OtError("Can't read from file [%s]", path.c_str());
+			OtError("Can't read from file [{}]", path);
 		}
 
 		buffer << stream.rdbuf();
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtError("Can't read from file [%s], error: %s", path.c_str(), e.what());
+		OtError("Can't read from file [{}], error: {}", path, e.what());
 	}
 
 	// parse json
@@ -147,7 +147,7 @@ void OtCubeMap::loadJSON(const std::string& path) {
 	auto posz = OtPathGetAbsolute(data, "posz", &basedir);
 
 	if (negx.empty() || negy.empty() || negz.empty() || posx.empty() || posy.empty() || posz.empty()) {
-		OtError("Incomplete CubeMap specification in [%s]", path.c_str());
+		OtError("Incomplete CubeMap specification in [{}]", path);
 	}
 
 	// load first side

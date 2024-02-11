@@ -10,6 +10,7 @@
 //
 
 #include <cstdlib>
+#include <iostream>
 #include <thread>
 
 #include "OtCerr.h"

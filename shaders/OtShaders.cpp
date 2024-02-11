@@ -11,7 +11,6 @@
 
 #include "bgfx/embedded_shader.h"
 
-#include "OtFormat.h"
 #include "OtLog.h"
 
 #include "OtShaders.h"
@@ -297,7 +296,7 @@ bgfx::ShaderHandle OtShaders::get(const char* name) {
 	auto shader = bgfx::createEmbeddedShader(embeddedShaders, type, name);
 
 	if (!bgfx::isValid(shader)) {
-		OtLogFatal(OtFormat("Internal error: Unknown shader [%s]", name));
+		OtLogFatal("Internal error: Unknown shader [{}]", name);
 	}
 
 	return shader;

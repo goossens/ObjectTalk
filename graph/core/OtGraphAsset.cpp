@@ -11,7 +11,6 @@
 
 
 #include "OtException.h"
-#include "OtFormat.h"
 #include "OtLog.h"
 
 #include "OtGraphAsset.h"
@@ -51,7 +50,7 @@ OtAssetBase::AssetState OtGraphAsset::load() {
 		return readyState;
 
 	} catch (const OtException& exception) {
-		OtLogWarning(OtFormat("Can't load graph [%s]: %s", path.c_str(), exception.what()));
+		OtLogWarning("Can't load graph [{}]: {}", path, exception.what());
 		return invalidState;
 	}
 }
@@ -68,7 +67,7 @@ OtAssetBase::AssetState OtGraphAsset::save() {
 		return readyState;
 
 	} catch (const OtException& exception) {
-		OtLogWarning(OtFormat("Can't save graph [%s]: %s", path.c_str(), exception.what()));
+		OtLogWarning("Can't save graph [{}]: {}", path, exception.what());
 		return invalidState;
 	}
 }

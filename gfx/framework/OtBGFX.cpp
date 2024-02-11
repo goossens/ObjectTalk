@@ -17,7 +17,6 @@
 #include "imgui.h"
 
 #include "OtException.h"
-#include "OtFormat.h"
 #include "OtLog.h"
 
 #include "OtFramework.h"
@@ -33,7 +32,7 @@ struct BgfxCallback : public bgfx::CallbackI {
 	virtual ~BgfxCallback() {}
 
 	virtual void fatal(const char* filePath, uint16_t line, bgfx::Fatal::Enum code, const char* str) override {
-		OtLogFatal(OtFormat("Fatal error: 0x%08x: %s", code, str));
+		OtLogFatal("Fatal error: {:#08x}: {}", int(code), str);
 	}
 
 	virtual void traceVargs(const char* filePath, uint16_t line, const char* format, va_list argList) override {

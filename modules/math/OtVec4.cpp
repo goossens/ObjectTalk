@@ -33,7 +33,7 @@ void OtVec4Class::init(size_t count, OtObject* parameters) {
 		vec4 = glm::vec4(parameters[0]->operator float());
 
 	} else if (count != 0) {
-		OtError("[Vec4] constructor expects 0, 1 or 4 arguments (not %ld)", count);
+		OtError("[Vec4] constructor expects 0, 1 or 4 arguments (not {})", count);
 	}
 }
 
@@ -51,7 +51,7 @@ OtObject OtVec4Class::add(OtObject object) {
 		return OtVec4::create(vec4 + object->operator float());
 
 	} else {
-		OtError("Expected a [Vec4], [Real] or [Integer] as the operand, not a [%s]", object->getType()->getName().c_str());
+		OtError("Expected a [Vec4], [Real] or [Integer] as the operand, not a [{}]", object->getType()->getName());
 		return nullptr;
 	}
 }
@@ -70,7 +70,7 @@ OtObject OtVec4Class::subtract(OtObject object) {
 		return OtVec4::create(vec4 - object->operator float());
 
 	} else {
-		OtError("Expected a [Vec4], [Real] or [Integer] as the operand, not a [%s]", object->getType()->getName().c_str());
+		OtError("Expected a [Vec4], [Real] or [Integer] as the operand, not a [{}]", object->getType()->getName());
 		return nullptr;
 	}
 }
@@ -89,7 +89,7 @@ OtObject OtVec4Class::multiply(OtObject object) {
 		return OtVec4::create(vec4 * object->operator float());
 
 	} else {
-		OtError("Expected a [Vec4], [Real] or [Integer] as the operand, not a [%s]", object->getType()->getName().c_str());
+		OtError("Expected a [Vec4], [Real] or [Integer] as the operand, not a [{}]", object->getType()->getName());
 		return nullptr;
 	}
 }
@@ -108,7 +108,7 @@ OtObject OtVec4Class::divide(OtObject object) {
 		return OtVec4::create(vec4 / object->operator float());
 
 	} else {
-		OtError("Expected a [Vec4], [Real] or [Integer] as the operand, not a [%s]", object->getType()->getName().c_str());
+		OtError("Expected a [Vec4], [Real] or [Integer] as the operand, not a [{}]", object->getType()->getName());
 		return nullptr;
 	}
 }
@@ -159,7 +159,7 @@ OtObject OtVec4Class::lerp(OtObject object, float delta) {
 		}
 
 	} else {
-		OtError("Expected a [Vec4] as the operand, not a [%s]", object->getType()->getName().c_str());
+		OtError("Expected a [Vec4] as the operand, not a [{}]", object->getType()->getName());
 		return nullptr;
 	}
 }

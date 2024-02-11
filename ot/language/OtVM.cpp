@@ -11,9 +11,10 @@
 
 #include <string>
 
+#include "fmt/format.h"
+
 #include "OtAssert.h"
 #include "OtException.h"
-#include "OtFormat.h"
 #include "OtFunction.h"
 #include "OtLog.h"
 #include "OtMemberReference.h"
@@ -72,7 +73,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 			switch (bytecode->getOpcode(pc)) {
 				case OtByteCodeClass::debugOpcode:
 					OtLogInfo(bytecode->disassemble());
-					OtLogInfo(OtFormat("PC: %ld\n", pc));
+					OtLogInfo("PC: {}\n", pc);
 					OtLogInfo(stack.debug());
 					break;
 
@@ -256,15 +257,15 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 						statement += '\n';
 					}
 
-					statement += OtFormat("Line %ld: %s", line++, text.c_str());
+					statement += fmt::format("Line {}: {}", line++, text);
 				});
 
 				// format long message
-				auto fullMessage = OtFormat(
-					"%s\nModule: %s\n%s",
+				auto fullMessage = fmt::format(
+					"{}\nModule: {}\n{}",
 					e.what(),
-					source->getModule().c_str(),
-					statement.c_str());
+					source->getModule(),
+					statement);
 
 				// throw exception
 				if (e.getLineNumber()) {

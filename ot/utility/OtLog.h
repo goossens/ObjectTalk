@@ -16,6 +16,8 @@
 #include <fstream>
 #include <string>
 
+#include "fmt/format.h"
+
 #include "OtSingleton.h"
 
 
@@ -36,6 +38,12 @@ public:
 
 	// log a message
 	void log(const char* filename, int lineno, int type, const std::string& message);
+
+	template<typename... ARGS>
+	void log(const char* filename, int lineno, int type, const char* format, ARGS... args) {
+		auto message = fmt::format(format, args...);
+		log(filename, lineno, type, message);
+	}
 
 	// set options
 	void setSubprocessMode(bool flag) { subprocessMode = flag; }
@@ -58,17 +66,17 @@ private:
 //	Macros
 //
 
-#define OtLog(type, message) (OtLogger::instance()->log(__FILE__, __LINE__, type, message))
+#define OtLog(type, ...) (OtLogger::instance()->log(__FILE__, __LINE__, type, __VA_ARGS__))
 
 #if OT_DEBUG
-#define OtLogDebug(message) OtLog(OtLogger::debug, message)
-#define OtLogInfo(message) OtLog(OtLogger::info, message)
-#define OtLogWarning(message) OtLog(OtLogger::warning, message)
+#define OtLogDebug(...) OtLog(OtLogger::debug, __VA_ARGS__)
+#define OtLogInfo(...) OtLog(OtLogger::info, __VA_ARGS__)
+#define OtLogWarning(...) OtLog(OtLogger::warning, __VA_ARGS__)
 #else
 #define OtLogDebug(message)
 #define OtLogInfo(message)
 #define OtLogWarning(message)
 #endif
 
-#define OtLogError(message) OtLog(OtLogger::error, message)
-#define OtLogFatal(message) OtLog(OtLogger::fatal, message)
+#define OtLogError(...) OtLog(OtLogger::error, __VA_ARGS__)
+#define OtLogFatal(...) OtLog(OtLogger::fatal, __VA_ARGS__)

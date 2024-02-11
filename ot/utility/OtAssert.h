@@ -12,7 +12,6 @@
 //	  Include files
 //
 
-#include "OtFormat.h"
 #include "OtLog.h"
 
 
@@ -22,7 +21,7 @@
 
 #if OT_DEBUG
 
-#define OtAssert(assertion) if (!(assertion)) OtLogFatal(OtFormat("Assertion error: %s", #assertion))
+#define OtAssert(assertion) if (!(assertion)) OtLogFatal("Assertion error: {}", #assertion)
 
 #else
 

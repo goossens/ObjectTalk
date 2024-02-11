@@ -56,7 +56,7 @@ void OtFontClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-			OtError("[Font] constructor expects up to 2 arguments (not %ld)", count);
+			OtError("[Font] constructor expects up to 2 arguments (not {})", count);
 	}
 }
 
@@ -74,7 +74,7 @@ OtObject OtFontClass::setFont(const std::string& path) {
 
 	// load font file into memory
 	if (!OtPathExists(path) || !OtPathIsRegularFile(path)) {
-		OtError("Can't open font in [%s]", path.c_str());
+		OtError("Can't open font in [{}]", path);
 	}
 
 	auto filesize = OtPathGetFileSize(path);
@@ -84,12 +84,12 @@ OtObject OtFontClass::setFont(const std::string& path) {
 
 	if (!stream) {
 		delete [] data;
-		OtError("Can't open font in [%s]", path.c_str());
+		OtError("Can't open font in [{}]", path);
 	}
 
 	// prepare font
 	if (!stbtt_InitFont(&font, data, 0)) {
-		OtError("Can't process font [%s]", path.c_str());
+		OtError("Can't process font [{}]", path);
 	}
 
 	return OtObject(this);

@@ -12,7 +12,6 @@
 #include <fstream>
 
 #include "OtException.h"
-#include "OtFormat.h"
 #include "OtLog.h"
 
 #include "OtTextAsset.h"
@@ -37,7 +36,7 @@ OtAssetBase::AssetState OtTextAsset::load() {
 		return readyState;
 
 	} catch (const OtException& exception) {
-		OtLogWarning(OtFormat("Can't load text from [%s]: %s", path.c_str(), exception.what()));
+		OtLogWarning("Can't load text from [{}]: {}", path, exception.what());
 		return invalidState;
 	}
 }
@@ -56,7 +55,7 @@ OtAssetBase::AssetState OtTextAsset::save() {
 		return readyState;
 
 	} catch (const OtException& exception) {
-		OtLogWarning(OtFormat("Can't save text to [%s]: %s", path.c_str(), exception.what()));
+		OtLogWarning("Can't save text to [{}]: {}", path, exception.what());
 		return invalidState;
 	}
 }

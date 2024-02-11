@@ -15,7 +15,6 @@
 #include <argparse/argparse.hpp>
 
 #include "OtCompiler.h"
-#include "OtFormat.h"
 #include "OtLibuv.h"
 #include "OtLog.h"
 #include "OtModule.h"
@@ -34,11 +33,6 @@
 //
 
 int main(int argc, char* argv[]) {
-	// log calling parameters
-	for (auto i = 0; i < argc; i++) {
-		OtLogDebug(OtFormat("argv[%d]: %s", i, argv[i]));
-	}
-
 	// parse all command line parameters
 	argparse::ArgumentParser program(argv[0], "0.2");
 
@@ -116,7 +110,7 @@ int main(int argc, char* argv[]) {
 #endif
 				// we can only handle one file
 				if (files.size() != 1) {
-					OtLogFatal(OtFormat("Error: you can only run one file, you specified [%d]", files.size()));
+					OtLogFatal("Error: you can only run one file, you specified {}", files.size());
 				}
 
 				// run the file
@@ -149,7 +143,7 @@ int main(int argc, char* argv[]) {
 #endif
 
 				} else {
-					OtLogFatal(OtFormat("Error: can't execute file with extension [%s]", extension.c_str()));
+					OtLogFatal("Error: can't execute file with extension {}", extension);
 				}
 #if defined(INCLUDE_GUI)
 			}
@@ -168,7 +162,7 @@ int main(int argc, char* argv[]) {
 		}
 
 		// output human readable text
-		OtLogFatal(OtFormat("Error: ", e.what()));
+		OtLogFatal("Error: {}", e.what());
 	}
 
 	return 0;

@@ -9,7 +9,8 @@
 //	Include files
 //
 
-#include "OtFormat.h"
+#include "fmt/format.h"
+
 #include "OtFunction.h"
 #include "OtHttpNotFound.h"
 #include "OtHttpSession.h"
@@ -57,7 +58,7 @@ OtHttpSessionClass::OtHttpSessionClass(uv_stream_t* stream, OtHttpRouter r) : ro
 	settings.on_headers_complete = [](llhttp_t* parser) -> int {
 		((OtHttpSessionClass*)(parser->data))->request->onHeadersComplete(
 			std::string(llhttp_method_name((llhttp_method_t) parser->method)),
-			OtFormat("HTTP/%d.%d", parser->http_major, parser->http_minor));
+			fmt::format("HTTP/{}.{}", parser->http_major, parser->http_minor));
 
 		return HPE_OK;
 	};
@@ -184,7 +185,7 @@ void OtHttpSessionClass::onRead(const uv_buf_t* buffer, ssize_t nread) {
 		auto status = llhttp_execute(&parser, buffer->base, nread);
 
 		if (status) {
-			OtLogWarning(OtFormat("llhttp error in llhttp_execute: %s", llhttp_errno_name(status)));
+			OtLogWarning("llhttp error in llhttp_execute: {}", llhttp_errno_name(status));
 			close();
 		}
 
@@ -198,7 +199,7 @@ void OtHttpSessionClass::onRead(const uv_buf_t* buffer, ssize_t nread) {
 		free(buffer->base);
 
 	} else if (nread < 0) {
-		OtLogWarning(OtFormat("libuv error in read: %s", uv_strerror((int) nread)));
+		OtLogWarning("libuv error in read: {}", uv_strerror((int) nread));
 		close();
 	}
 }

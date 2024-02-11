@@ -16,7 +16,6 @@
 #include "imgui.h"
 
 #include "OtAssert.h"
-#include "OtFormat.h"
 #include "OtLibuv.h"
 #include "OtLog.h"
 #include "OtNumbers.h"
@@ -155,12 +154,12 @@ void OtAssetManager::scheduleAssetForLoading(OtAssetBase* asset, std::function<v
 			}
 
 		} else {
-			OtLogWarning(OtFormat("Asset [%s] refers to unsupported type", path.c_str()));
+			OtLogWarning("Asset [{}] refers to unsupported type", path);
 			asset->markInvalid();
 		}
 
 	} else {
-		OtLogWarning(OtFormat("Asset [%s] not found", path.c_str()));
+		OtLogWarning("Asset [{}] not found", path);
 		asset->markMissing();
 	}
 }

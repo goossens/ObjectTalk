@@ -12,10 +12,9 @@
 #include <algorithm>
 #include <string>
 
+#include "fmt/format.h"
 #include "imgui.h"
 #include "ImGuiFileDialog.h"
-
-#include "OtFormat.h"
 
 #include "OtMessageBus.h"
 #include "OtPathTools.h"
@@ -200,7 +199,7 @@ std::string OtWorkspace::getUntitledName(const char* ext) {
 	std::string name;
 
 	while (!name.size()) {
-		std::string temp = OtFormat("untitled%d%s", seqno++, ext);
+		std::string temp = fmt::format("untitled{}{}", seqno++, ext);
 
 		if (!findEditor(temp)) {
 			name = temp;
@@ -303,7 +302,7 @@ void OtWorkspace::openFile(const std::string& path, int visualState) {
 
 		} else {
 			state = confirmErrorState;
-			errorMessage = OtFormat("Can't open file with extension: %s", extension.c_str());
+			errorMessage = fmt::format("Can't open file with extension: {}", extension);
 		}
 
 	} else {
@@ -387,7 +386,7 @@ void OtWorkspace::runFile() {
 		args,
 		[this](int64_t status, int signal) {
 			if (status || signal != 0) {
-				console.writeError(OtFormat("\n[%s] terminated with status %d and signal %d", currentRunnable.c_str(), status, signal));
+				console.writeError(fmt::format("\n[{}] terminated with status {} and signal {}", currentRunnable, status, signal));
 
 				// highlight error (if required)
 				if (exceptionAsJson.size()) {
@@ -398,7 +397,7 @@ void OtWorkspace::runFile() {
 				}
 
 			} else {
-				console.writeHelp(OtFormat("\n[%s] terminated normally", currentRunnable.c_str()));
+				console.writeHelp(fmt::format("\n[{}] terminated normally", currentRunnable));
 
 				// hide console after running a scene (user can always bring it back)
 				if (OtPathGetExtension(currentRunnable) == ".ots") {
@@ -895,7 +894,7 @@ void OtWorkspace::renderSubProcess() {
 		ImGuiWindowFlags_NoBringToFrontOnFocus);
 
 	// render the subprocess control bar
-	std::string title = OtFormat("Runnning [%s]...", currentRunnable.c_str());
+	std::string title = fmt::format("Runnning [[]]...", currentRunnable);
 	ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "%s", title.c_str());
 	ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - 150.0f);
 

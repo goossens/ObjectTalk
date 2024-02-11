@@ -22,7 +22,7 @@
 
 void OtURLClass::init(size_t count, OtObject* parameters) {
 	if (count != 1) {
-		OtError("URL initializer expected 1 parameter not [%d]", count);
+		OtError("URL initializer expected 1 parameter not [{}]", count);
 	}
 
 	parse(parameters[0]->operator std::string());
@@ -55,7 +55,7 @@ void OtURLClass::parse(const std::string& url) {
 	std::smatch match;
 
 	if (!std::regex_match(url, match, urlRegex)) {
-		OtError("Invalid URL [%s]", url.c_str());
+		OtError("Invalid URL [{}]", url);
 	}
 
 	scheme = submatch(match, 1);
@@ -76,7 +76,7 @@ void OtURLClass::parse(const std::string& url) {
 		std::smatch authorityMatch;
 
 		if (!std::regex_match(authority, authorityMatch, authorityRegex)) {
-			OtError("Invalid URL authority [%s]", authority.c_str());
+			OtError("Invalid URL authority [{}]", authority);
 		}
 
 		username = submatch(authorityMatch, 1);

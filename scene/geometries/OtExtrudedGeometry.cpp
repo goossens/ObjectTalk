@@ -42,7 +42,7 @@ void OtExtrudedGeometryClass::init(size_t count, OtObject* parameters) {
 				break;
 
 			default:
-				OtError("Too many parameters [%ld] for [ExtrudedGeometry] constructor (max 3)", count);
+				OtError("Too many parameters [{}] for [ExtrudedGeometry] constructor (max 3)", count);
 		}
 
 		refreshGeometry = true;

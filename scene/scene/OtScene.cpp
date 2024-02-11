@@ -31,14 +31,14 @@ void OtScene::load(const std::string& path) {
 		std::ifstream stream(path.c_str());
 
 		if (stream.fail()) {
-			OtError("Can't read from file [%s]", path.c_str());
+			OtError("Can't read from file [{}]", path);
 		}
 
 		buffer << stream.rdbuf();
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtError("Can't read from file [%s], error: %s", path.c_str(), e.what());
+		OtError("Can't read from file [{}], error: {}", path, e.what());
 	}
 
 	// clear scene
@@ -88,14 +88,14 @@ void OtScene::save(const std::string& path) {
 		std::ofstream stream(path.c_str());
 
 		if (stream.fail()) {
-			OtError("Can't open file [%s] for writing", path.c_str());
+			OtError("Can't open file [{}] for writing", path);
 		}
 
 		stream << data.dump(1, '\t');
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtError("Can't write to file [%s], error: %s", path.c_str(), e.what());
+		OtError("Can't write to file [{}], error: {}", path, e.what());
 	}
 }
 

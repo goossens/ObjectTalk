@@ -70,7 +70,7 @@ void OtImage::load(const std::string& path, bool powerof2, bool square) {
 
 	// get image data
 	if (!OtPathExists(path) || !OtPathIsRegularFile(path)) {
-		OtError("Can't open image in [%s]", path.c_str());
+		OtError("Can't open image in [{}]", path);
 	}
 
 	auto filesize = OtPathGetFileSize(path);
@@ -80,27 +80,27 @@ void OtImage::load(const std::string& path, bool powerof2, bool square) {
 
 	if (!file) {
 		delete [] buffer;
-		OtError("Can't open image in [%s]", path.c_str());
+		OtError("Can't open image in [{}]", path);
 	}
 
 	image = bimg::imageParse(&allocator, buffer, (uint32_t) filesize);
 	delete [] buffer;
 
 	if (!image) {
-		OtError("Can't process image in [%s]", path.c_str());
+		OtError("Can't process image in [{}]", path);
 	}
 
 	// validate sides are power of 2 (if required)
 	if (powerof2 && !(bx::isPowerOf2(image->m_width))) {
 		size_t width = image->m_width;
 		clear();
-		OtError("Image width %d is not a power of 2", width);
+		OtError("Image width {} is not a power of 2", width);
 	}
 
 	if (powerof2 && !(bx::isPowerOf2(image->m_height))) {
 		size_t height = image->m_height;
 		clear();
-		OtError("Image height %d is not a power of 2", height);
+		OtError("Image height {} is not a power of 2", height);
 	}
 
 	// validate squareness (if required)
@@ -108,7 +108,7 @@ void OtImage::load(const std::string& path, bool powerof2, bool square) {
 		size_t width = image->m_width;
 		size_t height = image->m_height;
 		clear();
-		OtError("Image must be square not %d by %d", width, height);
+		OtError("Image must be square not {} by {}", width, height);
 	}
 }
 
@@ -125,7 +125,7 @@ void OtImage::loadAsGrayscale(const std::string& path, bool powerof2, bool squar
 	if (image->m_format != bimg::TextureFormat::R32F) {
 		// see if image is convertable
 		if (!bimg::imageConvert(bimg::TextureFormat::R32F, image->m_format)) {
-			OtError("Can't convert image in [%s] to grayscale", path.c_str());
+			OtError("Can't convert image in [{}] to grayscale", path);
 		}
 
 		// convert image
@@ -153,7 +153,7 @@ void OtImage::loadAsRGBA(const std::string& path, bool powerof2, bool square) {
 	if (image->m_format != bimg::TextureFormat::RGBA8) {
 		// see if image is convertable
 		if (!bimg::imageConvert(bimg::TextureFormat::RGBA8, image->m_format)) {
-			OtError("Can't convert image in [%s] to grayscale", path.c_str());
+			OtError("Can't convert image in [{}] to grayscale", path);
 		}
 
 		// convert image

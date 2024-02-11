@@ -11,7 +11,6 @@
 
 #include "glm/glm.hpp"
 
-#include "OtFormat.h"
 #include "OtLog.h"
 
 #include "OtAssetManager.h"
@@ -158,6 +157,6 @@ void OtSceneRuntime::initializeRenderingSystem() {
 		activeCamera = firstCamera;
 
 	} else {
-		OtLogFatal(OtFormat("No camera found in scene at [%s]", sceneAsset.getPath().c_str()));
+		OtLogFatal("No camera found in scene at [{}]", sceneAsset.getPath());
 	}
 }

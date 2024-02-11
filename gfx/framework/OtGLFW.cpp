@@ -29,7 +29,6 @@
 
 #include "GLFW/glfw3native.h"
 
-#include "OtFormat.h"
 #include "OtFunction.h"
 #include "OtInteger.h"
 #include "OtLog.h"

@@ -25,15 +25,15 @@
 void OtInstancingComponentObjectClass::appendInstance(OtObject translation, OtObject rotation, OtObject scale) {
 	// sanity checks
 	if (!translation.isKindOf<OtVec3Class>()) {
-		OtError("Expected a [Vec3] for translation, not a [%s]", translation->getType()->getName().c_str());
+		OtError("Expected a [Vec3] for translation, not a [{}]", translation->getType()->getName());
 	}
 
 	if (!rotation.isKindOf<OtVec3Class>()) {
-		OtError("Expected a [Vec3] for rotation, not a [%s]", rotation->getType()->getName().c_str());
+		OtError("Expected a [Vec3] for rotation, not a [{}]", rotation->getType()->getName());
 	}
 
 	if (!scale.isKindOf<OtVec3Class>()) {
-		OtError("Expected a [Vec3] for scaling, not a [%s]", scale->getType()->getName().c_str());
+		OtError("Expected a [Vec3] for scaling, not a [{}]", scale->getType()->getName());
 	}
 
 	// add new instance
@@ -48,7 +48,7 @@ void OtInstancingComponentObjectClass::appendInstance(OtObject translation, OtOb
 OtObject OtInstancingComponentObjectClass::getInstance(size_t index) {
 	// sanity checks
 	if (index >= instancing->instanceCount()) {
-		OtError("Invalid index [%ld] for instancing component with size [%ld]", index, instancing->instanceCount());
+		OtError("Invalid index [{}] for instancing component with size [{}]", index, instancing->instanceCount());
 	}
 
 	return OtTransformComponentObject::create(&instancing->getInstance(index));
@@ -62,19 +62,19 @@ OtObject OtInstancingComponentObjectClass::getInstance(size_t index) {
 void OtInstancingComponentObjectClass::setInstance(size_t index, OtObject translation, OtObject rotation, OtObject scale) {
 	// sanity checks
 	if (index >= instancing->instanceCount()) {
-		OtError("Invalid index [%ld] for instancing component with size [%ld]", index, instancing->instanceCount());
+		OtError("Invalid index [{}] for instancing component with size [{}]", index, instancing->instanceCount());
 	}
 
 	if (!translation.isKindOf<OtVec3Class>()) {
-		OtError("Expected a [Vec3] for translation, not a [%s]", translation->getType()->getName().c_str());
+		OtError("Expected a [Vec3] for translation, not a [{}]", translation->getType()->getName());
 	}
 
 	if (!rotation.isKindOf<OtVec3Class>()) {
-		OtError("Expected a [Vec3] for rotation, not a [%s]", rotation->getType()->getName().c_str());
+		OtError("Expected a [Vec3] for rotation, not a [{}]", rotation->getType()->getName());
 	}
 
 	if (!scale.isKindOf<OtVec3Class>()) {
-		OtError("Expected a [Vec3] for scaling, not a [%s]", scale->getType()->getName().c_str());
+		OtError("Expected a [Vec3] for scaling, not a [{}]", scale->getType()->getName());
 	}
 
 	// add new instance
@@ -89,7 +89,7 @@ void OtInstancingComponentObjectClass::setInstance(size_t index, OtObject transl
 void OtInstancingComponentObjectClass::eraseInstance(size_t index) {
 	// sanity checks
 	if (index >= instancing->instanceCount()) {
-		OtError("Invalid index [%ld] for instancing component with size [%ld]", index, instancing->instanceCount());
+		OtError("Invalid index [{}] for instancing component with size [{}]", index, instancing->instanceCount());
 	}
 
 	// delete instance

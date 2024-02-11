@@ -53,7 +53,7 @@ void OtTorusGeometryClass::init(size_t count, OtObject* parameters) {
 				break;
 
 			default:
-				OtError("Too many parameters [%ld] for [TorusGeometry] constructor (max 8)", count);
+				OtError("Too many parameters [{}] for [TorusGeometry] constructor (max 8)", count);
 		}
 
 		refreshGeometry = true;

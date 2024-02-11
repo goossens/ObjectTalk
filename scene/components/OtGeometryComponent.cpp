@@ -113,6 +113,6 @@ void OtGeometryComponent::createGeometry(const std::string& type) {
 		geometry->computeTangents();
 
 	} else {
-		OtError("Internal error: invalid geometry type [%s]", type.c_str());
+		OtError("Internal error: invalid geometry type [{}]", type);
 	}
 }

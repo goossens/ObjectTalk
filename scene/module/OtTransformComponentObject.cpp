@@ -24,7 +24,7 @@
 void OtTransformComponentObjectClass::setTranslation(OtObject object) {
 	// sanity check
 	if (!object.isKindOf<OtVec3Class>()) {
-		OtError("Expected a [Vec3], not a [%s]", object->getType()->getName().c_str());
+		OtError("Expected a [Vec3], not a [{}]", object->getType()->getName());
 	}
 
 	// set new value
@@ -39,7 +39,7 @@ void OtTransformComponentObjectClass::setTranslation(OtObject object) {
 void OtTransformComponentObjectClass::setRotation(OtObject object) {
 	// sanity check
 	if (!object.isKindOf<OtVec3Class>()) {
-		OtError("Expected a [Vec3], not a [%s]", object->getType()->getName().c_str());
+		OtError("Expected a [Vec3], not a [{}]", object->getType()->getName());
 	}
 
 	// set new value
@@ -54,7 +54,7 @@ void OtTransformComponentObjectClass::setRotation(OtObject object) {
 void OtTransformComponentObjectClass::setScale(OtObject object) {
 	// sanity check
 	if (!object.isKindOf<OtVec3Class>()) {
-		OtError("Expected a [Vec3], not a [%s]", object->getType()->getName().c_str());
+		OtError("Expected a [Vec3], not a [{}]", object->getType()->getName());
 	}
 
 	// set new value

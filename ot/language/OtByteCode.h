@@ -211,7 +211,7 @@ private:
 
 	inline void emitByte(size_t index) {
 		if (index > 127) {
-			OtError("You have more than 127 local variables [%ld]. REALLY!", index);
+			OtError("You have more than 127 local variables [{}]. REALLY!", index);
 		}
 
 		bytecode.emplace_back((uint8_t) index);

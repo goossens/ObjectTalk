@@ -22,3 +22,4 @@ target_include_directories(input PUBLIC ${INPUT_INCLUDE_DIRS})
 target_link_libraries(input PUBLIC ot imgui math)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${INPUT_INCLUDES} ${INPUT_SOURCES})
+set_target_properties(input PROPERTIES FOLDER modules)

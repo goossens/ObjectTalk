@@ -22,3 +22,4 @@ target_include_directories(http PUBLIC ${HTTP_INCLUDE_DIRS})
 target_link_libraries(http PUBLIC ot PRIVATE llhttp multipart)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${HTTP_INCLUDES} ${HTTP_SOURCES})
+set_target_properties(http PROPERTIES FOLDER modules)

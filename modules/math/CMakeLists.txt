@@ -22,3 +22,4 @@ target_include_directories(math PUBLIC ${MATH_INCLUDE_DIRS})
 target_link_libraries(math PUBLIC ot glm)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${MATH_INCLUDES} ${MATH_SOURCES})
+set_target_properties(math PROPERTIES FOLDER modules)

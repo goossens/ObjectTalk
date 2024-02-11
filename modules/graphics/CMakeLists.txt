@@ -22,3 +22,4 @@ target_include_directories(graphics PUBLIC ${GRAPICS_INCLUDE_DIRS})
 target_link_libraries(graphics PUBLIC math gfx ot glm)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${GRAPICS_INCLUDES} ${GRAPICS_SOURCES})
+set_target_properties(graphics PROPERTIES FOLDER modules)

@@ -24,6 +24,7 @@
 //
 
 void OtSceneRendererDebug::render(OtSceneRenderer& renderer) {
+	// render the debug window
 	auto size = ImGui::GetIO().DisplaySize;
 	ImGui::SetNextWindowPos(ImVec2(size.x / 10.0f, size.y / 10.0f), ImGuiCond_Once);
 	ImGui::SetNextWindowSize(ImVec2(size.x * 0.3f, size.y * 0.7f), ImGuiCond_Once);
@@ -31,6 +32,7 @@ void OtSceneRendererDebug::render(OtSceneRenderer& renderer) {
 	ImGui::Begin("Scene Renderer Debug", nullptr, ImGuiWindowFlags_NoCollapse);
 	renderIbl(renderer);
 	renderReflection(renderer);
+	renderGbuffer(renderer);
 	ImGui::End();
 }
 
@@ -79,8 +81,42 @@ void OtSceneRendererDebug::renderReflection(OtSceneRenderer& renderer) {
 
 
 //
+//	OtSceneRendererDebug::renderGbuffer
+//
+
+#define RENDER_GBUFFER(title, part)											\
+	renderTexture(															\
+		title,																\
+		renderer.deferredRenderingBuffer.get ## part ## TextureIndex(),		\
+		renderer.deferredRenderingBuffer.getWidth(),						\
+		renderer.deferredRenderingBuffer.getHeight())
+
+void OtSceneRendererDebug::renderGbuffer(OtSceneRenderer& renderer) {
+	if (ImGui::CollapsingHeader("GBuffer")) {
+		if (renderer.deferredRenderingBuffer.isValid()) {
+			RENDER_GBUFFER("Albedo", Albedo);
+			RENDER_GBUFFER("Normal", Normal);
+			RENDER_GBUFFER("PBR", Pbr);
+			RENDER_GBUFFER("Emissive", Emissive);
+
+		} else {
+			ImGui::SeparatorText("No Data");
+		}
+	}
+}
+
+
+//
 //	OtSceneRendererDebug::renderTexture
 //
+
+void OtSceneRendererDebug::renderTexture(const char* title, uint16_t index, int width, int height) {
+	if (ImGui::TreeNode(title)) {
+		int size = ImGui::GetContentRegionAvail().x;
+		ImGui::Image((void*)(intptr_t) index, ImVec2(size, size * height / width));
+		ImGui::TreePop();
+	}
+}
 
 void OtSceneRendererDebug::renderTexture(const char* title, OtTexture& texture) {
 	if (ImGui::TreeNode(title)) {

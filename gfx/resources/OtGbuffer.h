@@ -35,12 +35,12 @@ public:
 	inline int getWidth() { return width; }
 	inline int getHeight() { return height; }
 
-	// get textures
-	inline bgfx::TextureHandle getAlbedoTexture() { return albedoTexture.getHandle(); }
-	inline bgfx::TextureHandle getNormalTexture() { return normalTexture.getHandle(); }
-	inline bgfx::TextureHandle getPbrTexture() { return pbrTexture.getHandle(); }
-	inline bgfx::TextureHandle getEmissiveTexture() { return emissiveTexture.getHandle(); }
-	inline bgfx::TextureHandle getDepthTexture() { return depthTexture.getHandle(); }
+	// get texture handles
+	inline bgfx::TextureHandle getAlbedoTextureHandle() { return albedoTexture.getHandle(); }
+	inline bgfx::TextureHandle getNormalTextureHandle() { return normalTexture.getHandle(); }
+	inline bgfx::TextureHandle getPbrTextureHandle() { return pbrTexture.getHandle(); }
+	inline bgfx::TextureHandle getEmissiveTextureHandle() { return emissiveTexture.getHandle(); }
+	inline bgfx::TextureHandle getDepthTextureHandle() { return depthTexture.getHandle(); }
 
 	// get texture indices
 	inline int getAlbedoTextureIndex() { return albedoTexture.getIndex(); }

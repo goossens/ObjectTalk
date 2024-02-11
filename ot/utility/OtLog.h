@@ -73,9 +73,9 @@ private:
 #define OtLogInfo(...) OtLog(OtLogger::info, __VA_ARGS__)
 #define OtLogWarning(...) OtLog(OtLogger::warning, __VA_ARGS__)
 #else
-#define OtLogDebug(message)
-#define OtLogInfo(message)
-#define OtLogWarning(message)
+#define OtLogDebug(...)
+#define OtLogInfo(...)
+#define OtLogWarning(...)
 #endif
 
 #define OtLogError(...) OtLog(OtLogger::error, __VA_ARGS__)

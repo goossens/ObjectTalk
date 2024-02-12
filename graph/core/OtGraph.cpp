@@ -127,7 +127,7 @@ void OtGraph::save(const std::string& path) {
 	// save all nodes
 	auto basedir = OtPathGetParent(path);
 
-	eachNode([&] (OtGraphNode& node) {
+	eachNode([&](OtGraphNode& node) {
 		nodes.push_back(node->serialize(&basedir));
 	});
 
@@ -186,7 +186,7 @@ OtGraphNode OtGraph::createNode(const std::string& name, float x, float y) {
 
 void OtGraph::deleteNode(OtGraphNode node) {
 	// find the node
-	auto i = std::find_if(nodes.begin(), nodes.end(), [node] (OtGraphNode& candidate) {
+	auto i = std::find_if(nodes.begin(), nodes.end(), [node](OtGraphNode& candidate) {
 		return candidate->id == node->id;
 	});
 
@@ -238,7 +238,7 @@ bool OtGraph::hasCycle(OtGraphNodeClass* node, OtGraphNodeClass* newTarget) {
 			node->temporaryMark = true;
 
 			// visit all nodes it depends on
-			node->eachInput([&] (OtGraphPin& pin) {
+			node->eachInput([&](OtGraphPin& pin) {
 				if (!cycle && pin->sourcePin != nullptr) {
 					cycle = hasCycle(pin->sourcePin->node);
 				}
@@ -328,7 +328,7 @@ OtGraphLink OtGraph::createLink(OtGraphPin from, OtGraphPin to, uint32_t id) {
 
 OtGraphLink OtGraph::findLink(OtGraphPin from, OtGraphPin to) {
 	// find the link
-	auto i = std::find_if(links.begin(), links.end(), [&] (OtGraphLink& candidate) {
+	auto i = std::find_if(links.begin(), links.end(), [&](OtGraphLink& candidate) {
 		return candidate->from == from && candidate->to == to;
 	});
 
@@ -345,7 +345,7 @@ void OtGraph::deleteLink(OtGraphLink link) {
 	link->disconnect();
 	linkIndex.erase(link->id);
 
-	links.erase(std::remove_if(links.begin(), links.end(), [link] (OtGraphLink& candidate) {
+	links.erase(std::remove_if(links.begin(), links.end(), [link](OtGraphLink& candidate) {
 		return candidate == link;
 	}), links.end());
 
@@ -355,7 +355,7 @@ void OtGraph::deleteLink(OtGraphLink link) {
 
 void OtGraph::deleteLink(OtGraphPin from, OtGraphPin to) {
 	// find the link
-	auto i = std::find_if(links.begin(), links.end(), [&] (OtGraphLink& candidate) {
+	auto i = std::find_if(links.begin(), links.end(), [&](OtGraphLink& candidate) {
 		return candidate->from == from && candidate->to == to;
 	});
 
@@ -634,7 +634,7 @@ bool OtGraph::visitNode(OtGraphNode& node, std::vector<OtGraphNode>& nodes) {
 			node->temporaryMark = true;
 
 			// visit all nodes it depends on
-			node->eachInput([&] (OtGraphPin& pin) {
+			node->eachInput([&](OtGraphPin& pin) {
 				if (!cycle && pin->sourcePin != nullptr) {
 					cycle = visitNode(nodeIndex[pin->sourcePin->node->id], nodes);
 				}
@@ -712,7 +712,7 @@ void OtGraph::evaluate() {
 			needsEvaluating = false;
 
 			for (auto& node : nodes) {
-				node->eachInput([node] (OtGraphPin& pin) {
+				node->eachInput([node](OtGraphPin& pin) {
 					pin->evaluate();
 					node->needsEvaluating |= pin->needsEvaluating;
 					pin->needsEvaluating = false;

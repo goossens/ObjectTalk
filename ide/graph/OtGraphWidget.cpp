@@ -111,7 +111,7 @@ void OtGraphWidget::render(OtGraph* g) {
 	drawlist->ChannelsSplit(2);
 	drawlist->ChannelsSetCurrent(1);
 
-	graph->eachNode([&] (OtGraphNode& node) {
+	graph->eachNode([&](OtGraphNode& node) {
 		renderNode(drawlist, node);
 
 		if (node->needsSaving) {
@@ -124,7 +124,7 @@ void OtGraphWidget::render(OtGraph* g) {
 	// render each link
 	drawlist->ChannelsSetCurrent(0);
 
-	graph->eachLink([&] (OtGraphLink& link) {
+	graph->eachLink([&](OtGraphLink& link) {
 		if (link->id != ignoreLink) {
 			renderLink(
 				drawlist,
@@ -356,7 +356,7 @@ void OtGraphWidget::renderNode(ImDrawList* drawlist, OtGraphNode& node) {
 	ImGui::TextUnformatted(renamingNode == node->id ? "" : node->title.c_str());
 
 	// render all output pins
-	node->eachOutput([&] (OtGraphPin& pin) {
+	node->eachOutput([&](OtGraphPin& pin) {
 		renderPin(drawlist, pin, bottomRight.x, node->w);
 	});
 
@@ -364,7 +364,7 @@ void OtGraphWidget::renderNode(ImDrawList* drawlist, OtGraphNode& node) {
 	node->customRendering(node->w - horizontalPadding * 2.0f);
 
 	// render all input pins
-	node->eachInput([&] (OtGraphPin& pin) {
+	node->eachInput([&](OtGraphPin& pin) {
 		renderPin(drawlist, pin, topLeft.x, node->w);
 	});
 
@@ -454,7 +454,7 @@ void OtGraphWidget::calculateNodeSize(OtGraphNode& node) {
 	// determine widest line
 	auto w = ImGui::CalcTextSize(node->title.c_str()).x;
 
-	node->eachPin([&] (OtGraphPin& pin) {
+	node->eachPin([&](OtGraphPin& pin) {
 		w = std::max(w, pin->hasRenderer ? pin->renderingWidth : ImGui::CalcTextSize(pin->name).x);
 	});
 

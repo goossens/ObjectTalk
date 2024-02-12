@@ -68,7 +68,7 @@ bool OtScriptComponent::renderUI() {
 
 void OtScriptComponent::process() {
 	// ensure asset is ready
-	if (script->isReady()) {
+	if (script.isReady()) {
 		// load the script and compile it
 		script->compile();
 

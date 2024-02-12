@@ -154,7 +154,7 @@
 						"amplitude": 0.5,
 						"frequency": 10,
 						"lacunarity": 2,
-						"normalStrength": 10.0,
+						"normalStrength": 2.0,
 						"octaves": 5,
 						"persistence": 0.5,
 						"size": 256
@@ -198,7 +198,7 @@
 					},
 					"tileSize": 32,
 					"vOffset": -1.0,
-					"vScale": 4.0,
+					"vScale": 5.0,
 					"wireframe": false
 				}
 			]

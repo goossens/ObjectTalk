@@ -9,8 +9,12 @@
 //	Include files
 //
 
+#include <string>
+
 #include "imgui.h"
 
+#include "OtAssetManager.h"
+#include "OtPathTools.h"
 #include "OtPass.h"
 #include "OtTransientIndexBuffer.h"
 #include "OtTransientVertexBuffer.h"
@@ -33,6 +37,7 @@ void OtSceneRendererDebug::render(OtSceneRenderer& renderer) {
 	renderIbl(renderer);
 	renderReflection(renderer);
 	renderGbuffer(renderer);
+	renderAssets(renderer);
 	ImGui::End();
 }
 
@@ -101,6 +106,49 @@ void OtSceneRendererDebug::renderGbuffer(OtSceneRenderer& renderer) {
 
 		} else {
 			ImGui::SeparatorText("No Data");
+		}
+	}
+}
+
+
+//
+//	OtSceneRendererDebug::renderAssets
+//
+
+void OtSceneRendererDebug::renderAssets(OtSceneRenderer& renderer) {
+	if (ImGui::CollapsingHeader("Asset Manager")) {
+		auto manager = OtAssetManager::instance();
+
+		ImGuiTableFlags flags =
+			ImGuiTableFlags_Borders |
+			ImGuiTableFlags_Sortable |
+			ImGuiTableFlags_Resizable |
+			ImGuiTableFlags_SizingStretchProp;
+
+		if (ImGui::BeginTable("assets", 3, flags)) {
+			ImGui::TableSetupColumn("Path", 0, 6.0f);
+			ImGui::TableSetupColumn("State", 0, 1.0f);
+			ImGui::TableSetupColumn("Refs", 0, 1.0f);
+			ImGui::TableHeadersRow();
+
+			manager->each([](OtAssetBase* asset) {
+				auto path = asset->getPath();
+				auto name = OtPathGetFilename(path);
+
+				ImGui::TableNextRow();
+				ImGui::TableNextColumn(); ImGui::TextUnformatted(name.c_str());
+
+				if (ImGui::IsItemHovered(ImGuiHoveredFlags_ForTooltip)) {
+					ImGui::BeginTooltip();
+					ImGui::TextUnformatted(path.c_str());
+					ImGui::EndTooltip();
+				}
+
+				ImGui::TableNextColumn(); ImGui::TextUnformatted(asset->getStateName());
+				ImGui::TableNextColumn(); ImGui::TextUnformatted(std::to_string(asset->getReferences()).c_str());
+			});
+
+			ImGui::EndTable();
 		}
 	}
 }

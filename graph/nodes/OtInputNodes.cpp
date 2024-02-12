@@ -32,7 +32,7 @@ public:
 
 	// configure node
 	inline void configure() override {
-		addOutputPin("Value", value)->addRenderer([this] (float width) {
+		addOutputPin("Value", value)->addRenderer([this](float width) {
 			ImGui::SetNextItemWidth(width);
 			ImGui::InputInt("##value", &value, 1, 100, ImGuiInputTextFlags_NoUndoRedo);
 
@@ -153,7 +153,7 @@ public:
 
 	// update state
 	inline void onUpdate() override {
-		if (loading && asset->isReady()) {
+		if (loading && asset.isReady()) {
 			texture = asset->getTexture();
 			needsEvaluating = true;
 			loading = false;

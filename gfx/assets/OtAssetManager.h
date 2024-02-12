@@ -19,6 +19,7 @@
 
 #include "OtConcurrentQueue.h"
 #include "OtHash.h"
+#include "OtLibuv.h"
 #include "OtSingleton.h"
 
 #include "OtAssetBase.h"
@@ -94,12 +95,18 @@ public:
 	void save(OtAssetBase* asset);
 	void saveAs(OtAssetBase* asset, const std::string& newName);
 
+	// interate through al loaded assets
+	void each(std::function<void(OtAssetBase*)> callback);
+
 private:
 	// schedule an asset for loading
 	void scheduleAssetForLoading(OtAssetBase* asset, std::function<void()> callback);
 
 	// schedule a callback
 	void scheduleReadyCallback(std::function<void()> callback);
+
+	// clear unused assets
+	void clearUnusedAssets();
 
 	// thread running the async actions
 	std::thread thread;
@@ -108,6 +115,9 @@ private:
 
 	// keeping track of loading jobs
 	OtConcurrentQueue<OtAssetBase*> queue;
+
+	// timer to run the "garbage collector"
+	uv_timer_t cleanupTimerHandle;
 
 	// the key to the asset library
 	struct Key {

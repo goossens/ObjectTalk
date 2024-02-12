@@ -45,6 +45,7 @@ private:
 	void renderIbl(OtSceneRenderer& renderer);
 	void renderReflection(OtSceneRenderer& renderer);
 	void renderGbuffer(OtSceneRenderer& renderer);
+	void renderAssets(OtSceneRenderer& renderer);
 
 	void renderTexture(const char* title, uint16_t index, int width, int height);
 	void renderTexture(const char* title, OtTexture& texture);

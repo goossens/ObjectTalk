@@ -203,7 +203,7 @@ size_t OtObjectClass::attach(std::function<void(void)> callback) {
 
 void OtObjectClass::detach(size_t id) {
 	if (observers) {
-		observers->erase(std::remove_if(observers->begin(), observers->end(), [id] (OtObserver& observer) {
+		observers->erase(std::remove_if(observers->begin(), observers->end(), [id](OtObserver& observer) {
 			return observer.id == id;
 		}), observers->end());
 	}

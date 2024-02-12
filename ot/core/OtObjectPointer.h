@@ -33,6 +33,9 @@ class OtObjectClass;
 template <typename T>
 class OtObjectPointer {
 public:
+	// sanity check
+	static_assert(std::is_base_of<OtObjectClass, T>::value, "Instance is not derived from OtObjectClass");
+
 	// default constructor
 	OtObjectPointer() : ptr(nullptr) {}
 
@@ -41,7 +44,6 @@ public:
 
 	// constructor for when we already have a pointer
 	OtObjectPointer(T* instance) : ptr(instance) {
-		static_assert(std::is_base_of<OtObjectClass, T>::value, "Instance is not derived from OtObjectClass");
 		incrementReference();
 	}
 

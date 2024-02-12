@@ -95,7 +95,7 @@ OtObject OtHttpServerClass::listen(const std::string& ip, int port) {
 
 void OtHttpServerClass::cleanup() {
 	// remove dead sessions
-	sessions.erase(std::remove_if(sessions.begin(), sessions.end(), [] (OtHttpSession& session) {
+	sessions.erase(std::remove_if(sessions.begin(), sessions.end(), [](OtHttpSession& session) {
 		return !session->isAlive();
 	}), sessions.end());
 }

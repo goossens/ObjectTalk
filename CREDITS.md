@@ -35,7 +35,7 @@ In case User Interface (UI) modules are included, we also use:
 ## Data
 
 The [BitStream Vera Mono Font](https://en.wikipedia.org/wiki/Bitstream_Vera) is extracted from
-[here] (https://download.gnome.org/sources/ttf-bitstream-vera/1.10/) and it was released onder a
+[here](https://download.gnome.org/sources/ttf-bitstream-vera/1.10/) and it was released onder a
 [generous license](https://raw.githubusercontent.com/goossens/ObjectTalk/master/gfx/framework/OtBitstreamVeraMono.lic)
 similar to the [SIL Open Font License](https://openfontlicense.org/documents/OFL.txt).
 

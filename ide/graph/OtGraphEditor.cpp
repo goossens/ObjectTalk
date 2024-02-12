@@ -259,9 +259,9 @@ void OtGraphEditor::renderEditor() {
 
 		auto factory = asset->getGraph()->getNodeFactory();
 
-		factory.eachCategory([&] (OtGraphNodeCategory& category) {
+		factory.eachCategory([&](OtGraphNodeCategory& category) {
 			if (ImGui::BeginMenu(category.name.c_str())) {
-				category.eachType([&] (OtGraphNodeType& type) {
+				category.eachType([&](OtGraphNodeType& type) {
 					if (ImGui::MenuItem(type.name.c_str())) {
 						nextTask = std::make_shared<OtCreateNodeTask>(
 							graph,

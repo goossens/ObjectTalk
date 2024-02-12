@@ -16,7 +16,6 @@
 #include "imgui.h"
 
 #include "OtAssert.h"
-#include "OtLibuv.h"
 #include "OtLog.h"
 #include "OtNumbers.h"
 
@@ -42,6 +41,18 @@ OtAssetManager::~OtAssetManager() {
 void OtAssetManager::start() {
 	// sanity check
 	OtAssert(running == false);
+
+	// start the cleanup timer
+	int status = uv_timer_init(uv_default_loop(), &cleanupTimerHandle);
+	UV_CHECK_ERROR("uv_timer_init", status);
+	cleanupTimerHandle.data = this;
+
+	status = uv_timer_start(&cleanupTimerHandle, [](uv_timer_t* handle) {
+		auto manager = (OtAssetManager*) handle->data;
+		manager->clearUnusedAssets();
+	}, 10000, 10000);
+
+	UV_CHECK_ERROR("cleanupTimerHandle", status);
 
 	// start a new thread
 	thread = std::thread([this]() {
@@ -78,7 +89,16 @@ void OtAssetManager::stop() {
 	queue.push(nullptr);
 	thread.join();
 
-	// clear all the assets
+	// stop the cleanup timer
+	int status = uv_timer_stop(&cleanupTimerHandle);
+	UV_CHECK_ERROR("uv_timer_stop", status);
+
+	uv_close((uv_handle_t*) &cleanupTimerHandle, nullptr);
+
+	// first clear all unused assets
+	clearUnusedAssets();
+
+	// clear all the remaining assets
 	for (const auto& [path, asset] : assets) {
 		delete asset;
 	}
@@ -220,4 +240,44 @@ void OtAssetManager::saveAs(OtAssetBase* asset, const std::string &newName) {
 	asset->preSave(newName);
 	asset->save();
 	asset->postSave();
+}
+
+
+//
+//	OtAssetManager::each
+//
+
+void OtAssetManager::each(std::function<void(OtAssetBase*)> callback) {
+	for (const auto& [path, asset] : assets) {
+		callback(asset);
+	}
+}
+
+
+//
+//	OtAssetManager::clearUnusedAssets
+//
+
+void OtAssetManager::clearUnusedAssets() {
+	// possibly need to loop multiple times due to asset dependancies
+	size_t lastCleared;
+	size_t cleared = 0;
+
+	do {
+		lastCleared = cleared;
+		cleared = 0;
+
+		for (auto it = assets.begin(); it != assets.end();) {
+			auto asset = it->second;
+
+			if (asset->getReferences() == 0 && !asset->isLoading()) {
+				delete asset;
+				it = assets.erase(it);
+				cleared++;
+
+			} else {
+				it++;
+			}
+		}
+	} while (cleared != lastCleared);
 }

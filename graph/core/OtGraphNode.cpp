@@ -33,11 +33,11 @@ nlohmann::json OtGraphNodeClass::serialize(std::string* basedir) {
 	auto inputs = nlohmann::json::array();
 	auto outputs = nlohmann::json::array();
 
-	eachInput([&] (OtGraphPin& pin) {
+	eachInput([&](OtGraphPin& pin) {
 		inputs.push_back(pin->serialize(basedir));
 	});
 
-	eachOutput([&] (OtGraphPin& pin) {
+	eachOutput([&](OtGraphPin& pin) {
 		outputs.push_back(pin->serialize(basedir));
 	});
 
@@ -67,7 +67,7 @@ void OtGraphNodeClass::deserialize(nlohmann::json data, bool restoreIDs, std::st
 	title = data.value("title", type);
 
 	// restore input pins
-	eachInput([&] (OtGraphPin& pin) {
+	eachInput([&](OtGraphPin& pin) {
 		for (auto& input : data["inputs"]) {
 			auto n = input["name"];
 			auto t = input["type"];
@@ -79,7 +79,7 @@ void OtGraphNodeClass::deserialize(nlohmann::json data, bool restoreIDs, std::st
 	});
 
 	// restore output pins
-	eachOutput([&] (OtGraphPin& pin) {
+	eachOutput([&](OtGraphPin& pin) {
 		for (auto& output : data["outputs"]) {
 			if (output["name"] == pin->name && output["type"] == pin->getTypeName()) {
 				pin->deserialize(output, restoreIDs, basedir);

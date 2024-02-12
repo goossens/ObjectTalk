@@ -83,6 +83,9 @@ void OtFramework::runThread2() {
 		initBGFX();
 		initIMGUI();
 
+		// start the asset manager
+		OtAssetManager::instance()->start();
+		
 		// listen for stop events on the message bus
 		auto bus = OtMessageBus::instance();
 
@@ -91,9 +94,6 @@ void OtFramework::runThread2() {
 				stop();
 			}
 		});
-
-		// start the asset manager
-		OtAssetManager::instance()->start();
 
 		// let app perform its own setup
 		app->onSetup();
@@ -137,14 +137,14 @@ void OtFramework::runThread2() {
 		// tell app we're done
 		app->onTerminate();
 
-		// stop the asset manager
-		OtAssetManager::instance()->stop();
-
 		// clear the message bus
 		bus->clear();
 
 		// call exit callbacks
 		OtFrameworkAtExit::instance()->run();
+
+		// stop the asset manager
+		OtAssetManager::instance()->stop();
 
 		// terminate libraries
 		endIMGUI();

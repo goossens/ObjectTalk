@@ -65,6 +65,7 @@ public:
 	inline bool isLoaded() { return assetState == loadedState; }
 	inline bool isReady() { return assetState == readyState; }
 	inline bool isVirtual() { return OtPathIsVirtual(path); }
+	const char* getStateName();
 	bool supportsFileType(const std::string& ext);
 
 	// asset properties
@@ -93,6 +94,7 @@ public:
 
 	inline void reference() { references++; }
 	inline void dereference() { references--; }
+	inline size_t getReferences() { return references; }
 
 protected:
 	// path to the asset

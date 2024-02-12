@@ -10,6 +10,7 @@
 //
 
 #include <algorithm>
+#include <cassert>
 #include <vector>
 
 #include "OtAssert.h"
@@ -27,6 +28,26 @@ OtAssetBase::~OtAssetBase() {
 	if (following) {
 		unfollow();
 	}
+
+	assert(references == 0);
+}
+
+
+//
+//	OtAssetBase::getStateName
+//
+
+const char* OtAssetBase::getStateName() {
+	static const char* names[] = {
+		"Null",
+		"Loading",
+		"Missing",
+		"Invalid",
+		"Loaded",
+		"Ready"
+	};
+
+	return names[assetState];
 }
 
 

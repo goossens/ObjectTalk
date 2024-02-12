@@ -33,7 +33,7 @@ void OtAnimator::update() {
 	float timestep = ImGui::GetIO().DeltaTime;
 
 	// update all animations (and remove them from the list when they are done)
-	animations.erase(std::remove_if(animations.begin(), animations.end(), [timestep] (OtAnimation animation) {
+	animations.erase(std::remove_if(animations.begin(), animations.end(), [timestep](OtAnimation animation) {
 		return !animation->step(timestep);
 	}), animations.end());
 }

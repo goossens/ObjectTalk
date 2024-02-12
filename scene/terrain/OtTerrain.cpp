@@ -151,7 +151,7 @@ std::vector<OtTerrainMesh>& OtTerrainClass::getMeshes(OtFrustum& frustum, const 
 	centerZ = std::floor(camera.z / factor) * factor;
 
 	// lambda function to process a single tile
-	auto processTile = [&] (OtTerrainTile& tile, OtFrustum& frustum, int lod) {
+	auto processTile = [&](OtTerrainTile& tile, OtFrustum& frustum, int lod) {
 		OtTerrainMesh mesh(tile, float(tileSize), centerX, vOffset, centerZ, hScale * (1 << lod), vScale);
 
 		if (frustum.isVisibleAABB(mesh.aabb)) {

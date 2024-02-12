@@ -469,7 +469,7 @@ void OtWorkspace::runFile() {
 
 void OtWorkspace::deleteEditor(std::shared_ptr<OtEditor> editor) {
 	// remove specified editor from list
-	editors.erase(std::remove_if(editors.begin(), editors.end(), [this] (std::shared_ptr<OtEditor> candidate) {
+	editors.erase(std::remove_if(editors.begin(), editors.end(), [this](std::shared_ptr<OtEditor> candidate) {
 		return candidate == activeEditor;
 	}), editors.end());
 
@@ -613,12 +613,8 @@ void OtWorkspace::renderEditors() {
 					}
 
 					ImGui::EndChild();
-
-					if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows)) {
-						activeEditor = editor;
-					}
-
 					ImGui::EndTabItem();
+					activeEditor = editor;
 				}
 			}
 		}

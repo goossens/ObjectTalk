@@ -49,11 +49,11 @@
 					"uuid": 864477290
 				},
 				{
-					"azimuth": 5.869999885559082,
+					"azimuth": 7.827000141143799,
 					"cirrus": 0.45399999618530273,
 					"component": "Sky",
 					"cumulus": 0.800000011920929,
-					"elevation": 28.368999481201172,
+					"elevation": 20.542999267578125,
 					"mieCoefficient": 5.734000205993652,
 					"mieScattering": 0.9900000095367432,
 					"rayleighCoefficient": 2.8420000076293945,
@@ -76,7 +76,7 @@
 						"amplitude": 0.5,
 						"frequency": 10,
 						"lacunarity": 2,
-						"normalStrength": 10.0,
+						"normalStrength": 6.0,
 						"octaves": 5,
 						"persistence": 0.5,
 						"size": 256
@@ -119,8 +119,8 @@
 						"region4TextureScale": 28.100000381469727
 					},
 					"tileSize": 64,
-					"vOffset": -12.0,
-					"vScale": 37.0,
+					"vOffset": -14.0,
+					"vScale": 39.0,
 					"wireframe": false
 				}
 			]

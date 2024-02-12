@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <cassert>
 #include <functional>
 #include <string>
 
@@ -37,8 +38,57 @@
 template <typename T>
 class OtAsset {
 public:
+	// sanity check
+	static_assert(std::is_base_of<OtAssetBase, T>::value, "Instance is not derived from OtAssetBase");
+
+	// constructors
+	OtAsset() = default;
+
+	inline OtAsset(T* instance) {
+		ptr = instance;
+		ptr->reference();
+	}
+
+	inline OtAsset(const OtAsset& asset) {
+		if (asset.ptr) {
+			ptr = asset.ptr;
+			virtualMode = asset.virtualMode;
+			ptr->reference();
+		}
+	}
+
+	template <typename Ts>
+	OtAsset(const OtAsset<Ts>& asset) {
+		static_assert(std::is_base_of<Ts, T>::value || std::is_base_of<T, Ts>::value, "Can't convert asset types");
+
+		if (asset.ptr) {
+			ptr = dynamic_cast<T*>(asset.ptr);
+			virtualMode = asset.virtualMode;
+			ptr->reference();
+		}
+	}
+
+	inline OtAsset(OtAsset&& asset) {
+		if (asset.ptr) {
+			ptr = asset.ptr;
+			virtualMode = asset.virtualMode;
+			asset.ptr = nullptr;
+		}
+	}
+
+	template <typename Ts>
+	OtAsset(OtAsset<Ts>&& asset) {
+		static_assert(std::is_base_of<Ts, T>::value || std::is_base_of<T, Ts>::value, "Can't convert asset types");
+
+		if (asset.ptr) {
+			ptr = asset.ptr;
+			virtualMode = asset.virtualMode;
+			asset.ptr = nullptr;
+		}
+	}
+
 	// destructor
-	~OtAsset() {
+	inline ~OtAsset() {
 		clear();
 	}
 
@@ -48,6 +98,8 @@ public:
 			ptr->dereference();
 			ptr = nullptr;
 		}
+
+		virtualMode = false;
 	}
 
 	// assignment (which also loads the asset)
@@ -56,11 +108,63 @@ public:
 		return *this;
 	}
 
+	// other assignment operators
+	OtAsset& operator=(const OtAsset& asset) {
+		clear();
+
+		if (asset.ptr) {
+			ptr = asset.ptr;
+			virtualMode = asset.virtualMode;
+			ptr->reference();
+		}
+
+		return *this;
+	}
+
+	template <typename Ts>
+	OtAsset& operator=(const OtAsset<Ts>& asset) {
+		static_assert(std::is_base_of<Ts, T>::value || std::is_base_of<T, Ts>::value, "Can't convert asset types");
+		clear();
+
+		if (asset.ptr) {
+			ptr = dynamic_cast<T*>(asset.ptr);
+			virtualMode = asset.virtualMode;
+			ptr->reference();
+		}
+
+		return *this;
+	}
+
+	// move assignment operators
+	OtAsset& operator=(OtAsset&& asset) {
+		clear();
+
+		if (asset.ptr) {
+			ptr = asset.ptr;
+			virtualMode = asset.virtualMode;
+			asset.ptr = nullptr;
+		}
+
+		return *this;
+	}
+
+	template <typename Ts>
+	OtAsset& operator=(OtAsset<Ts>&& asset) {
+		static_assert(std::is_base_of<Ts, T>::value || std::is_base_of<T, Ts>::value, "Can't convert asset types");
+		clear();
+
+		if (asset.ptr) {
+			ptr = dynamic_cast<T*>(asset.ptr);
+			virtualMode = asset.virtualMode;
+			asset.ptr = nullptr;
+		}
+
+		return *this;
+	}
+
 	// load the asset
 	inline void load(const std::string& path, std::function<void()> callback=nullptr) {
-		if (ptr) {
-			clear();
-		}
+		clear();
 
 		if (path != "") {
 			ptr = OtAssetManager::instance()->acquire<T>(path, callback);
@@ -84,10 +188,10 @@ public:
 	inline std::string getPath() { return ptr ? ptr->getPath() : ""; };
 
 	// access the actual asset
-	inline T* operator->() { return ptr; }
-	inline const T* operator->() const { return ptr; }
-	inline T& operator*() { return *ptr; }
-	inline const T& operator*() const { return *ptr; }
+	inline T* operator->() { assert(ptr); return ptr; }
+	inline const T* operator->() const { assert(ptr); return ptr; }
+	inline T& operator*() { assert(ptr); return *ptr; }
+	inline const T& operator*() const { assert(ptr); return *ptr; }
 
 	// check asset status
 	inline bool isNull() { return !ptr || ptr->isNull(); }
@@ -100,7 +204,7 @@ public:
 	inline bool canHandleVirtual() { return T::canHandleVirtual; }
 	inline const char* getSupportedFileTypes() { return T::supportedFileTypes; }
 
-	// handle virtual mode
+	// OtAsset virtual mode
 	bool getVirtualMode() { return virtualMode; }
 	void setVirtualMode(bool vm) { virtualMode = vm; }
 

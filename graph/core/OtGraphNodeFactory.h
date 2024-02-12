@@ -31,7 +31,7 @@ public:
 	// register a new type (name has to be globally unique in this factory, not just in category)
 	inline void registerType(const char* category, const char* name, std::function<OtGraphNode()> constructor) {
 		// find the category
-		auto i = std::find_if(categories.begin(), categories.end(), [category] (OtGraphNodeCategory& candidate) {
+		auto i = std::find_if(categories.begin(), categories.end(), [category](OtGraphNodeCategory& candidate) {
 			return candidate.name == category;
 		});
 

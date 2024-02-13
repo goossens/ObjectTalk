@@ -68,7 +68,7 @@ void main() {
 
 	// store information in gbuffer
 	gl_FragData[0] = vec4(albedo, 1.0);
-	gl_FragData[1] = vec4(normal, 1.0);
+	gl_FragData[1] = vec4((normal * 0.5 + 0.5), 1.0);
 	gl_FragData[2] = vec4(metallic, roughness, ao, 1.0);
 	gl_FragData[3] = vec4(emissive, 1.0);
 }

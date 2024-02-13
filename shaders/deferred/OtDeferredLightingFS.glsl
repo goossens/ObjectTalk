@@ -60,7 +60,7 @@ void main() {
 	// determine material data
 	Material material;
 	material.albedo = toLinear(albedoSample.rgb);
-	material.normal = normalize(texture2D(s_lightingNormalTexture, v_texcoord0).xyz);
+	material.normal = texture2D(s_lightingNormalTexture, v_texcoord0).xyz * 2.0 - 1.0;
 	vec4 data = texture2D(s_lightingPbrTexture, v_texcoord0);
 	material.metallic = data.r;
 	material.roughness = data.g;

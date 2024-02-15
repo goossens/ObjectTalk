@@ -4,7 +4,9 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-file(GLOB ETC2_SOURCES ${bimg_SOURCE_DIR}/3rdparty/etc2/*.cpp ${bimg_SOURCE_DIR}/3rdparty/etc2/*.h)
+file(GLOB ETC2_SOURCES
+	${bimg_SOURCE_DIR}/3rdparty/etc2/*.cpp
+	${bimg_SOURCE_DIR}/3rdparty/etc2/*.h)
 
 add_library(etc2 STATIC ${ETC2_SOURCES})
 target_include_directories(etc2 PUBLIC ${bimg_SOURCE_DIR}/3rdparty)

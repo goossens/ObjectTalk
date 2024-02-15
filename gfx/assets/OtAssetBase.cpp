@@ -10,7 +10,6 @@
 //
 
 #include <algorithm>
-#include <cassert>
 #include <vector>
 
 #include "OtAssert.h"
@@ -29,7 +28,7 @@ OtAssetBase::~OtAssetBase() {
 		unfollow();
 	}
 
-	assert(references == 0);
+	OtAssert(references == 0);
 }
 
 

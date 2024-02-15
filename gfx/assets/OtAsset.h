@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include <cassert>
 #include <functional>
 #include <string>
 
@@ -188,10 +187,10 @@ public:
 	inline std::string getPath() { return ptr ? ptr->getPath() : ""; };
 
 	// access the actual asset
-	inline T* operator->() { assert(ptr); return ptr; }
-	inline const T* operator->() const { assert(ptr); return ptr; }
-	inline T& operator*() { assert(ptr); return *ptr; }
-	inline const T& operator*() const { assert(ptr); return *ptr; }
+	inline T* operator->() { OtAssert(ptr); return ptr; }
+	inline const T* operator->() const { OtAssert(ptr); return ptr; }
+	inline T& operator*() { OtAssert(ptr); return *ptr; }
+	inline const T& operator*() const { OtAssert(ptr); return *ptr; }
 
 	// check asset status
 	inline bool isNull() { return !ptr || ptr->isNull(); }

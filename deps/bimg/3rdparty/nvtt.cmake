@@ -4,9 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-file(
-	GLOB
-	NVTT_SOURCES
+file(GLOB NVTT_SOURCES
 	${bimg_SOURCE_DIR}/3rdparty/nvtt/bc6h/*.cpp
 	${bimg_SOURCE_DIR}/3rdparty/nvtt/bc6h/*.h
 	${bimg_SOURCE_DIR}/3rdparty/nvtt/bc7/*.cpp

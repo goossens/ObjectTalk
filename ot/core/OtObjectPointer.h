@@ -12,11 +12,12 @@
 //	Include files
 //
 
-#include <cassert>
 #include <cstddef>
 #include <cstdint>
 #include <type_traits>
 #include <utility>
+
+#include "OtAssert.h"
 
 
 //
@@ -57,7 +58,7 @@ public:
 	OtObjectPointer(const OtObjectPointer<Ts>& ref) {
 		static_assert(std::is_base_of<Ts, T>::value || std::is_base_of<T, Ts>::value, "Can't convert smart pointers");
 		ptr = dynamic_cast<T*>(ref.ptr);
-		assert(ptr || !ref.ptr);
+		OtAssert(ptr || !ref.ptr);
 		incrementReference();
 	}
 
@@ -71,7 +72,7 @@ public:
 	OtObjectPointer(OtObjectPointer<Ts>&& ref) {
 		static_assert(std::is_base_of<Ts, T>::value || std::is_base_of<T, Ts>::value, "Can't convert smart pointers");
 		ptr = dynamic_cast<T*>(ref.ptr);
-		assert(ptr || !ref.ptr);
+		OtAssert(ptr || !ref.ptr);
 		ref.ptr = nullptr;
 	}
 
@@ -99,7 +100,7 @@ public:
 		decrementReference();
 		static_assert(std::is_base_of<Ts, T>::value || std::is_base_of<T, Ts>::value, "Can't convert smart pointers");
 		ptr = dynamic_cast<T*>(ref.ptr);
-		assert(ptr || !ref.ptr);
+		OtAssert(ptr || !ref.ptr);
 		incrementReference();
 		return *this;
 	}
@@ -117,7 +118,7 @@ public:
 		decrementReference();
 		static_assert(std::is_base_of<Ts, T>::value || std::is_base_of<T, Ts>::value, "Can't convert smart pointers");
 		ptr = dynamic_cast<T*>(ref.ptr);
-		assert(ptr || !ref.ptr);
+		OtAssert(ptr || !ref.ptr);
 		ref.ptr = nullptr;
 		return *this;
 	}

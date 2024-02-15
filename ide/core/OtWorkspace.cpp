@@ -16,6 +16,8 @@
 #include "imgui.h"
 #include "ImGuiFileDialog.h"
 
+#include "OtAssert.h"
+
 #include "OtMessageBus.h"
 #include "OtPathTools.h"
 #include "OtUi.h"
@@ -959,7 +961,7 @@ void OtWorkspace::highlightError() {
 
 		// ask editor to highlight error
 		auto scriptEditor = std::dynamic_pointer_cast<OtObjectTalkEditor>(editor);
-		assert(scriptEditor);
+		OtAssert(scriptEditor);
 
 		scriptEditor->highlightError(exception.getLineNumber(), exception.getShortErrorMessage());
 	}

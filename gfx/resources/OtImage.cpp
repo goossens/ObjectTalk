@@ -13,9 +13,13 @@
 #include <fstream>
 
 #include "bx/allocator.h"
+#include <bx/file.h>
 #include "bimg/decode.h"
+#include "bimg/encode.h"
 
+#include "OtAssert.h"
 #include "OtException.h"
+#include "OtLog.h"
 #include "OtNumbers.h"
 
 #include "OtImage.h"
@@ -31,6 +35,13 @@ static bx::DefaultAllocator allocator;
 
 
 //
+//	Error handler
+//
+
+#define CHECK(name, ptr) if (!ptr) { OtLogFatal("Function [{}] failed", name); }
+
+
+//
 //	OtImage::OtImage
 //
 
@@ -40,22 +51,24 @@ OtImage::OtImage(const std::string& path, bool powerof2, bool square) {
 
 
 //
-//	OtImage::~OtImage
+//	OtImage::update
 //
 
-OtImage::~OtImage() {
-	clear();
-}
+void OtImage::update(int width, int height, int format) {
+	if (!image || image->m_width != width || image->m_height != height || image->m_format != format) {
+		// allocate space for a new image
+		auto imageContainer = bimg::imageAlloc(
+			&allocator,
+			bimg::TextureFormat::Enum(format),
+			uint16_t(width),
+			uint16_t(height),
+			1,
+			1,
+			false,
+			false);
 
-
-//
-//	OtImage::clear
-//
-
-void OtImage::clear() {
-	if (image) {
-		bimg::imageFree(image);
-		image = nullptr;
+		CHECK("bimg::imageAlloc", imageContainer);
+		assignImageContainer(imageContainer);
 	}
 }
 
@@ -65,9 +78,6 @@ void OtImage::clear() {
 //
 
 void OtImage::load(const std::string& path, bool powerof2, bool square) {
-	// clear old image (if required)
-	clear();
-
 	// get image data
 	if (!OtPathExists(path) || !OtPathIsRegularFile(path)) {
 		OtError("Can't open image in [{}]", path);
@@ -75,7 +85,7 @@ void OtImage::load(const std::string& path, bool powerof2, bool square) {
 
 	auto filesize = OtPathGetFileSize(path);
 	auto buffer = new char[filesize];
-	std::ifstream file(path.c_str(), std::ios::binary);
+	std::ifstream file(path, std::ios::binary);
 	file.read(buffer, filesize);
 
 	if (!file) {
@@ -83,33 +93,49 @@ void OtImage::load(const std::string& path, bool powerof2, bool square) {
 		OtError("Can't open image in [{}]", path);
 	}
 
-	image = bimg::imageParse(&allocator, buffer, (uint32_t) filesize);
+	auto imageContainer = bimg::imageParse(&allocator, buffer, (uint32_t) filesize);
 	delete [] buffer;
+	CHECK("bimg::imageParse", imageContainer);
 
-	if (!image) {
+	if (!imageContainer) {
 		OtError("Can't process image in [{}]", path);
 	}
 
 	// validate sides are power of 2 (if required)
-	if (powerof2 && !(bx::isPowerOf2(image->m_width))) {
-		size_t width = image->m_width;
-		clear();
+	if (powerof2 && !(bx::isPowerOf2(imageContainer->m_width))) {
+		int width = imageContainer->m_width;
+		bimg::imageFree(imageContainer);
 		OtError("Image width {} is not a power of 2", width);
 	}
 
-	if (powerof2 && !(bx::isPowerOf2(image->m_height))) {
-		size_t height = image->m_height;
-		clear();
+	if (powerof2 && !(bx::isPowerOf2(imageContainer->m_height))) {
+		int height = imageContainer->m_height;
+		bimg::imageFree(imageContainer);
 		OtError("Image height {} is not a power of 2", height);
 	}
 
 	// validate squareness (if required)
-	if (square && image->m_width != image->m_height) {
-		size_t width = image->m_width;
-		size_t height = image->m_height;
-		clear();
+	if (square && imageContainer->m_width != imageContainer->m_height) {
+		int width = imageContainer->m_width;
+		int height = imageContainer->m_height;
+		bimg::imageFree(imageContainer);
 		OtError("Image must be square not {} by {}", width, height);
 	}
+
+	assignImageContainer(imageContainer);
+}
+
+
+//
+//	convertImage
+//
+
+static bimg::ImageContainer* convertImage(bimg::ImageContainer& input, bimg::TextureFormat::Enum format) {
+	if (!bimg::imageConvert(format, input.m_format)) {
+		OtLogFatal("Can't convert image from [{}] to [{}]", bimg::getName(input.m_format), bimg::getName(format));
+	}
+
+	return bimg::imageConvert(&allocator, format, input);
 }
 
 
@@ -121,22 +147,9 @@ void OtImage::loadAsGrayscale(const std::string& path, bool powerof2, bool squar
 	// load the image
 	load(path, powerof2, square);
 
-	// don't do anything if we are already in the right format
+	// convert image (if required)
 	if (image->m_format != bimg::TextureFormat::R32F) {
-		// see if image is convertable
-		if (!bimg::imageConvert(bimg::TextureFormat::R32F, image->m_format)) {
-			OtError("Can't convert image in [{}] to grayscale", path);
-		}
-
-		// convert image
-		bimg::ImageContainer* newImage = bimg::imageConvert(
-			&allocator,
-			bimg::TextureFormat::R32F,
-			*image);
-
-		// delete old image and use new one
-		clear();
-		image = newImage;
+		convertImage(*image, bimg::TextureFormat::R32F);
 	}
 }
 
@@ -149,22 +162,9 @@ void OtImage::loadAsRGBA(const std::string& path, bool powerof2, bool square) {
 	// load the image
 	load(path, powerof2, square);
 
-	// don't do anything if we are already in the right format
+	// convert image (if required)
 	if (image->m_format != bimg::TextureFormat::RGBA8) {
-		// see if image is convertable
-		if (!bimg::imageConvert(bimg::TextureFormat::RGBA8, image->m_format)) {
-			OtError("Can't convert image in [{}] to grayscale", path);
-		}
-
-		// convert image
-		bimg::ImageContainer* newImage = bimg::imageConvert(
-			&allocator,
-			bimg::TextureFormat::RGBA8,
-			*image);
-
-		// delete old image and use new one
-		clear();
-		image = newImage;
+		convertImage(*image, bimg::TextureFormat::RGBA8);
 	}
 }
 
@@ -174,15 +174,140 @@ void OtImage::loadAsRGBA(const std::string& path, bool powerof2, bool square) {
 //
 
 void OtImage::loadFromFileInMemory(void* data, uint32_t size) {
-	// clear old image (if required)
-	clear();
-
 	// create the image
-	image = bimg::imageParse(&allocator, data, size);
+	auto imageContainer = bimg::imageParse(&allocator, data, size);
 
 	// check for errors
-	if (!image) {
+	if (!imageContainer) {
 		OtError("Internal error: Can't process in-memory image");
+	}
+
+	assignImageContainer(imageContainer);
+}
+
+
+//
+//	writeToPNG
+//
+
+static void writeToPNG(const std::string& path, const bimg::ImageContainer& image) {
+	bx::FileWriter writer;
+	bx::Error err;
+
+	if (bx::open(&writer, path.c_str(), false, &err)) {
+		bimg::imageWritePng(
+			&writer,
+			image.m_width,
+			image.m_height,
+			image.m_width * (image.m_format == bimg::TextureFormat::R8 ? 1 : 4),
+			image.m_data,
+			image.m_format,
+			false,
+			&err);
+
+		if (!err.isOk()) {
+			auto msg = err.getMessage();
+			auto message = std::string(msg.getPtr(), msg.getLength());
+			OtError("Can't write PNG to file at [{}], error: {}", path, message);
+		}
+
+		bx::close(&writer);;
+
+	} else {
+		auto msg = err.getMessage();
+		auto message = std::string(msg.getPtr(), msg.getLength());
+		OtError("Can't open PNG file at [{}] for write, error: {}", path, message);
+	}
+}
+
+
+//
+//	OtImage::saveToPNG
+//
+
+void OtImage::saveToPNG(const std::string& path) {
+	// sanity check
+	OtAssert(image);
+
+	if (image->m_format == r8Image) {
+		writeToPNG(path, *image);
+
+	} else if (image->m_format == r16Image || image->m_format == rFloat32Image) {
+		bimg::ImageContainer* newImage = convertImage(*image, bimg::TextureFormat::R8);
+		writeToPNG(path, *newImage);
+		bimg::imageFree(newImage);
+
+	} else if (image->m_format == rgba8Image) {
+		writeToPNG(path, *image);
+
+	} else {
+		bimg::ImageContainer* newImage = convertImage(*image, bimg::TextureFormat::RGBA8);
+		writeToPNG(path, *newImage);
+		bimg::imageFree(newImage);
+	}
+}
+
+
+//
+//	writeToDDS
+//
+
+static void writeToDDS(const std::string& path, bimg::ImageContainer& image) {
+	bx::FileWriter writer;
+	bx::Error err;
+
+	if (bx::open(&writer, path.c_str(), false, &err)) {
+		bimg::imageWriteDds(
+			&writer,
+			image,
+			image.m_data,
+			image.m_size,
+			&err);
+
+		if (!err.isOk()) {
+			auto msg = err.getMessage();
+			auto message = std::string(msg.getPtr(), msg.getLength());
+			OtError("Can't write DDS to file at [{}], error: {}", path, message);
+		}
+
+		bx::close(&writer);;
+
+	} else {
+		auto msg = err.getMessage();
+		auto message = std::string(msg.getPtr(), msg.getLength());
+		OtError("Can't open DDS file at [{}] for write, error: {}", path, message);
+	}
+}
+
+
+//
+//	OtImage::saveToDDS
+//
+
+void OtImage::saveToDDS(const std::string& path) {
+	// sanity check
+	OtAssert(image);
+
+	if (image->m_format == r8Image) {
+		writeToDDS(path, *image);
+
+	} else if (image->m_format == r16Image) {
+		bimg::ImageContainer* newImage = convertImage(*image, bimg::TextureFormat::R16U);
+		writeToDDS(path, *newImage);
+		bimg::imageFree(newImage);
+
+	} else if (image->m_format == rFloat32Image) {
+		bimg::ImageContainer* newImage = convertImage(*image, bimg::TextureFormat::R32U);
+		writeToDDS(path, *newImage);
+		bimg::imageFree(newImage);
+
+	} else if (image->m_format == rgba8Image) {
+		writeToDDS(path, *image);
+
+	} else {
+		bimg::ImageContainer* newImage = convertImage(*image, bimg::TextureFormat::RGBA8);
+		writeToDDS(path, *newImage);
+		bimg::imageFree(newImage);
 	}
 }
 
@@ -194,14 +319,13 @@ void OtImage::loadFromFileInMemory(void* data, uint32_t size) {
 bimg::ImageContainer* OtImage::getContainer() {
 	// ensure we have a valid image
 	if (isValid()) {
-		return image;
+		return image.get();
 
 	} else {
 		static bimg::ImageContainer* dummy = nullptr;
 
 		// create dummy image (if required)
 		if (!dummy) {
-			static bx::DefaultAllocator allocator;
 			dummy = bimg::imageAlloc(&allocator, bimg::TextureFormat::R8, 1, 1, 0, 1, false, false);
 
 			OtFrameworkAtExit::instance()->add([]() {
@@ -219,9 +343,12 @@ bimg::ImageContainer* OtImage::getContainer() {
 //	OtImage::getPixelRgba
 //
 
-glm::vec4 OtImage::getPixelRgba(size_t x, size_t y) {
-	x = std::clamp(x, (size_t) 0, (size_t) (image->m_width - 1));
-	y = std::clamp(y, (size_t) 0, (size_t) (image->m_height - 1));
+glm::vec4 OtImage::getPixelRgba(int x, int y) {
+	// sanity check
+	OtAssert(isValid());
+
+	x = std::clamp(x, 0, (int) (image->m_width - 1));
+	y = std::clamp(y, 0, (int) (image->m_height - 1));
 
 	if (image->m_format == bimg::TextureFormat::R8) {
 		auto value = ((float*) image->m_data)[y * image->m_width + x];
@@ -238,9 +365,12 @@ glm::vec4 OtImage::getPixelRgba(size_t x, size_t y) {
 //	OtImage::getPixelGray
 //
 
-float OtImage::getPixelGray(size_t x, size_t y) {
-	x = std::clamp(x, (size_t) 0, (size_t) image->m_width - 1);
-	y = std::clamp(y, (size_t) 0, (size_t) image->m_height - 1);
+float OtImage::getPixelGray(int x, int y) {
+	// sanity check
+	OtAssert(isValid());
+
+	x = std::clamp(x, 0, (int) image->m_width - 1);
+	y = std::clamp(y, 0, (int) image->m_height - 1);
 
 	if (image->m_format == bimg::TextureFormat::R8) {
 		return ((float*) image->m_data)[y * image->m_width + x];
@@ -257,6 +387,9 @@ float OtImage::getPixelGray(size_t x, size_t y) {
 //
 
 float OtImage::sampleValue(float x, float y) {
+	// sanity check
+	OtAssert(isValid());
+
 	x *= image->m_width - 1;
 	y *= image->m_height - 1;
 
@@ -273,4 +406,21 @@ float OtImage::sampleValue(float x, float y) {
 	auto hx1 = std::lerp(h11, h21, x - x1);
 	auto hx2 = std::lerp(h12, h22, x - x1);
 	return std::lerp(hx1, hx2, y - y1);
+}
+
+
+//
+//	OtImage::assignImageContainer
+//
+
+void OtImage::assignImageContainer(bimg::ImageContainer* container) {
+	// the deleter for an image container
+	struct Deleter {
+		void operator()(bimg::ImageContainer* image) {
+			bimg::imageFree(image);
+		}
+	} deleter;
+
+	// assign a new image container to the shared pointer
+	image.reset(container, deleter);
 }

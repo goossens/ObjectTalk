@@ -20,6 +20,7 @@
 #include "OtLog.h"
 
 #include "OtFramework.h"
+#include "OtFrameworkAtFrame.h"
 #include "OtGpu.h"
 #include "OtPass.h"
 
@@ -220,7 +221,10 @@ void OtFramework::renderProfiler() {
 
 void OtFramework::renderBGFX() {
 	// render BGFX frame
-	bgfx::frame();
+	auto frame = bgfx::frame();
+
+	// call callbacks targetting this frame
+	OtFrameworkAtFrame::instance()->run(frame);
 }
 
 

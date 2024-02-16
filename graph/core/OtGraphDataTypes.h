@@ -16,6 +16,7 @@
 
 #include "OtTypeList.h"
 
+#include "OtImage.h"
 #include "OtTexture.h"
 
 
@@ -30,6 +31,7 @@ using OtGraphDataTypes = OtTypeList<
 	glm::vec2,
 	glm::vec3,
 	glm::vec4,
+	OtImage,
 	OtTexture>;
 
 enum {
@@ -39,6 +41,7 @@ enum {
 	OtGraphPinVec2Type,
 	OtGraphPinVec3Type,
 	OtGraphPinVec4Type,
+	OtGraphPinImageType,
 	OtGraphPinTextureType
 };
 
@@ -49,4 +52,5 @@ static constexpr const char* OtGraphDataTypeNames[] = {
 	"vec2",
 	"vec3",
 	"vec4",
+	"image",
 	"texture" };

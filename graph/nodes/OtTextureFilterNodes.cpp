@@ -30,13 +30,10 @@
 class OtTextureFilterNode : public OtGraphNodeClass {
 public:
 	// constructor
-	inline OtTextureFilterNode(const char* name) : OtGraphNodeClass(name, OtGraphNodeClass::filter) {
-		framebuffer.initialize(getColorTextureType(), getDepthTextureType());
-	}
+	inline OtTextureFilterNode(const char* name) : OtGraphNodeClass(name, OtGraphNodeClass::filter) {}
 
-	// configure output framebuffer
-	inline virtual int getColorTextureType() { return OtTexture::rgbaFloat32Texture; }
-	inline virtual int getDepthTextureType() { return OtTexture::noTexture; }
+	// get output format (noTexture means use the same format as the incoming texture)
+	inline virtual int getOutputFormat() { return OtTexture::noTexture; }
 
 	// configure node
 	inline void configure() override {
@@ -48,7 +45,12 @@ public:
 	void onExecute() override {
 		// do we have a valid input
 		if (inputTexture.isValid()) {
-			// ensure framebuffer has right size
+			// determine output texture format for framebuffer
+			auto format = getOutputFormat();
+			format = format == OtTexture::noTexture ? inputTexture.getFormat() : format;
+			framebuffer.initialize(format);
+
+			// ensure framebuffer has the right size
 			framebuffer.update(inputTexture.getWidth(), inputTexture.getHeight());
 
 			// run filter
@@ -82,6 +84,9 @@ class OtHeightmapToNormalMap : public OtTextureFilterNode {
 public:
 	// constructor
 	inline OtHeightmapToNormalMap() : OtTextureFilterNode(name) {}
+
+	// get output format
+	inline int getOutputFormat() override { return OtTexture::rgba8Texture; }
 
 	// run filter
 	void onFilter() override {
@@ -124,9 +129,6 @@ class OtIslandizerFilter : public OtTextureFilterNode {
 public:
 	// constructor
 	inline OtIslandizerFilter() : OtTextureFilterNode(name) {}
-
-	// configure output framebuffer
-	inline int getColorTextureType() override { return OtTexture::rFloat32Texture; }
 
 	// rendering custom fields
 	void customRendering(float width) override {

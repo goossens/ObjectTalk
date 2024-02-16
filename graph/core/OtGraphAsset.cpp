@@ -21,10 +21,11 @@
 #include "OtProbeNodes.h"
 #include "OtTextureFilterNodes.h"
 #include "OtTextureGeneratorNodes.h"
+#include "OtTransformerNodes.h"
 
 
 //
-//
+//	OtGraphAsset::OtGraphAsset
 //
 
 OtGraphAsset::OtGraphAsset() {
@@ -36,6 +37,7 @@ OtGraphAsset::OtGraphAsset() {
 	OtProbeNodesRegister(*graph);
 	OtTextureFilterNodesRegister(*graph);
 	OtTextureGeneratorNodesRegister(*graph);
+	OtTransformerNodesRegister(*graph);
 }
 
 

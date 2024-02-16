@@ -35,12 +35,12 @@ public:
 	void load(const std::string& path, const std::string& format);
 
 	// get image information
-	size_t getWidth();
-	size_t getHeight();
+	int getWidth();
+	int getHeight();
 
 	// get pixel values
-	OtObject getPixelRgba(size_t x, size_t y);
-	float getPixelGray(size_t x, size_t y);
+	OtObject getPixelRgba(int x, int y);
+	float getPixelGray(int x, int y);
 	float sampleValue(float x, float y);
 
 	// get type definition

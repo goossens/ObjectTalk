@@ -37,6 +37,7 @@ public:
 		math,
 		generator,
 		filter,
+		transformer,
 		probe
 	};
 

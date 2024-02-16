@@ -32,6 +32,7 @@ void OtTexture::clear() {
 	texture.clear();
 	width = 1;
 	height = 1;
+	format = noTexture;
 	version++;
 }
 
@@ -40,14 +41,15 @@ void OtTexture::clear() {
 //	OtTexture::create
 //
 
-void OtTexture::create(int w, int h, int format, uint64_t flags) {
+void OtTexture::create(int w, int h, int f, uint64_t flags) {
 	width = w;
 	height = h;
+	format = f;
 	version++;
 
 	texture = bgfx::createTexture2D(
-		uint16_t(w),
-		uint16_t(h),
+		uint16_t(width),
+		uint16_t(height),
 		false,
 		1,
 		bgfx::TextureFormat::Enum(format),
@@ -128,6 +130,7 @@ void OtTexture::loadFromFile(const std::string& path) {
 	// remember size
 	width = container->m_width;
 	height = container->m_height;
+	format = container->m_format;
 	version++;
 
 	// create texture
@@ -148,6 +151,7 @@ void OtTexture::loadFromMemory(int w, int h, uint8_t* pixels) {
 	// remember size
 	width = w;
 	height = h;
+	format = rgba8Texture;
 	version++;
 
 	// create texture
@@ -162,6 +166,7 @@ void OtTexture::loadFromMemory(int w, int h, float* pixels) {
 	// remember size
 	width = w;
 	height = h;
+	format = rgbaFloat32Texture;
 	version++;
 
 	// create texture
@@ -186,6 +191,7 @@ void OtTexture::loadFromFileInMemory(void* data, uint32_t size) {
 	// remember size
 	width = container->m_width;
 	height = container->m_height;
+	format = container->m_format;
 	version++;
 
 	// create texture

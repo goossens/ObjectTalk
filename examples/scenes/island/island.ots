@@ -1,0 +1,158 @@
+{
+	"entities": [
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Camera",
+					"uuid": 2486935567
+				},
+				{
+					"component": "Transform",
+					"rotation": [
+						0.0,
+						0.0,
+						0.0
+					],
+					"scale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"translation": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"component": "Camera",
+					"far": 100.0,
+					"fov": 60.0,
+					"mainCamera": false,
+					"near": 0.10000000149011612
+				},
+				{
+					"Exposure": 1.0,
+					"bloomIntensity": 0.800000011920929,
+					"component": "Post Processing"
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Sky",
+					"uuid": 769720788
+				},
+				{
+					"azimuth": 180.0,
+					"cirrus": 0.4000000059604645,
+					"component": "Sky",
+					"cumulus": 0.800000011920929,
+					"elevation": 25.0,
+					"mieCoefficient": 5.0,
+					"mieScattering": 0.9900000095367432,
+					"rayleighCoefficient": 3.5,
+					"speed": 2.0
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Island",
+					"uuid": 2028805799
+				},
+				{
+					"component": "Geometry",
+					"cullback": true,
+					"geometry": {
+						"displacement": {
+							"frequency": 8.399999618530273,
+							"lacunarity": 1.0,
+							"map": "",
+							"octaves": 5,
+							"persistance": 0.7099999785423279,
+							"scale": 0.8199999928474426,
+							"seed": 1337,
+							"state": 0
+						},
+						"heightSegments": 97,
+						"type": "Plane",
+						"widthSegments": 86
+					},
+					"transparent": false,
+					"wireframe": false
+				},
+				{
+					"component": "Transform",
+					"rotation": [
+						-90.0,
+						0.0,
+						0.0
+					],
+					"scale": [
+						400.0,
+						400.0,
+						45.5
+					],
+					"translation": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"component": "Material",
+					"material": {
+						"albedo": [
+							1.0,
+							1.0,
+							1.0,
+							1.0
+						],
+						"albedoTexture": "",
+						"ao": 1.0,
+						"aoTexture": "",
+						"emissive": [
+							0.0,
+							0.0,
+							0.0
+						],
+						"emissiveTexture": "",
+						"metallic": 0.5,
+						"metallicRoughnessTexture": "",
+						"normalTexture": "",
+						"roughness": 0.5,
+						"scale": 1.0,
+						"type": "PBR"
+					}
+				}
+			]
+		}
+	],
+	"metadata": {
+		"cameraPreset": 4,
+		"gizmo": {
+			"enabled": false,
+			"mode": 7,
+			"snapInterval": [
+				0.10000000149011612,
+				0.10000000149011612,
+				0.10000000149011612
+			],
+			"snapping": false
+		},
+		"grid": {
+			"enabled": false,
+			"scale": 1.0
+		},
+		"type": "scene"
+	}
+}

@@ -54,7 +54,7 @@ public:
 	virtual inline ~OtGraphPinClass() {};
 
 	// handle custom renderer
-	inline void addRenderer(OtGraphPinRenderer renderer, float width) {
+	inline void addRenderer(OtGraphPinRenderer renderer, float width=0.0f) {
 		render = renderer;
 		renderingWidth = width;
 		hasRenderer = true;

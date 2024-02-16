@@ -54,7 +54,7 @@ void OtImageObjectClass::load(const std::string& path, const std::string& format
 //	OtImageObjectClass::getWidth
 //
 
-size_t OtImageObjectClass::getWidth() {
+int OtImageObjectClass::getWidth() {
 	// sanity check
 	if (!image.isValid()) {
 		OtError("Image not yet loaded");
@@ -68,7 +68,7 @@ size_t OtImageObjectClass::getWidth() {
 //	OtImageObjectClass::getHeight
 //
 
-size_t OtImageObjectClass::getHeight() {
+int OtImageObjectClass::getHeight() {
 	// sanity check
 	if (!image.isValid()) {
 		OtError("Image not yet loaded");
@@ -82,7 +82,7 @@ size_t OtImageObjectClass::getHeight() {
 //	OtImageObjectClass::getPixelRgba
 //
 
-OtObject OtImageObjectClass::getPixelRgba(size_t x, size_t y) {
+OtObject OtImageObjectClass::getPixelRgba(int x, int y) {
 	// sanity check
 	if (!image.isValid()) {
 		OtError("Image not yet loaded");
@@ -106,7 +106,7 @@ OtObject OtImageObjectClass::getPixelRgba(size_t x, size_t y) {
 //	eObjectClass::getPixelGray
 //
 
-float OtImageObjectClass::getPixelGray(size_t x, size_t y) {
+float OtImageObjectClass::getPixelGray(int x, int y) {
 		// sanity check
 	if (!image.isValid()) {
 		OtError("Image not yet loaded");

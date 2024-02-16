@@ -15,13 +15,6 @@
 
 
 //
-//	Constants
-//
-
-static constexpr const char* pinTypeNames[] = { "bool", "float" };
-
-
-//
 //	OtGraphPinClass::serialize
 //
 

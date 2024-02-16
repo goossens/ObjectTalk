@@ -56,7 +56,7 @@ public:
 
 	// constructor
 	OtTexture() = default;
-	OtTexture(OtBgfxHandle<bgfx::TextureHandle> t, int w, int h) : texture(t), width(w), height(h) {}
+	OtTexture(OtBgfxHandle<bgfx::TextureHandle> t, int w, int h, int f) : texture(t), width(w), height(h), format(f) {}
 	OtTexture(const std::string& path);
 
 	// clear the resources
@@ -84,9 +84,10 @@ public:
 	// return texture index
 	inline uint16_t getIndex() { return isValid() ? texture.getIndex() : bgfx::kInvalidHandle; }
 
-	// get texture size
+	// get texture properties
 	inline int getWidth() { return width; }
 	inline int getHeight() { return height; }
+	inline int getFormat() { return format; }
 
 	// version management
 	inline void setVersion(int v) { version = v; }
@@ -107,5 +108,6 @@ private:
 	OtBgfxHandle<bgfx::TextureHandle> texture;
 	int width = 1;
 	int height = 1;
+	int format = noTexture;
 	int version = 0;
 };

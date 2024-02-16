@@ -18,6 +18,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include "OtException.h"
+
 #include "OtGraphNode.h"
 #include "OtGraphNodeCategory.h"
 
@@ -58,6 +60,12 @@ public:
 
 	// create new node
 	inline OtGraphNode createNode(const std::string& name) {
+		// sanity check
+		if (constructors.count(name) == 0) {
+			OtError("Unknown node type[{}]", name);
+		}
+
+		// construct a new instance
 		return constructors[name]();
 	}
 

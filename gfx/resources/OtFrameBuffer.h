@@ -45,8 +45,8 @@ public:
 	inline int getHeight() { return height; }
 
 	// get textures
-	inline OtTexture getColorTexture() { return OtTexture(colorTexture, width, height); }
-	inline OtTexture getDepthTexture() { return OtTexture(depthTexture, width, height); }
+	inline OtTexture getColorTexture() { return OtTexture(colorTexture, width, height, colorTextureType); }
+	inline OtTexture getDepthTexture() { return OtTexture(depthTexture, width, height, depthTextureType); }
 
 	// get texture handles
 	inline bgfx::TextureHandle getColorTextureHandle() { return colorTexture.getHandle(); }

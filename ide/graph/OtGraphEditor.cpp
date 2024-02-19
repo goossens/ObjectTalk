@@ -171,31 +171,36 @@ void OtGraphEditor::renderMenu() {
 	}
 
 	// handle keyboard shortcuts (if required)
-	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows) && ImGui::IsKeyDown(ImGuiMod_Shortcut)) {
-		if (ImGui::IsKeyDown(ImGuiMod_Shift) && ImGui::IsKeyPressed(ImGuiKey_Z, false)) {
-			if (taskManager.canRedo()) {
-				taskManager.redo();
+	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows)) {
+		if (ImGui::IsKeyDown(ImGuiMod_Shortcut)) {
+			if (ImGui::IsKeyDown(ImGuiMod_Shift) && ImGui::IsKeyPressed(ImGuiKey_Z, false)) {
+				if (taskManager.canRedo()) {
+					taskManager.redo();
+				}
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_Z, false) && taskManager.canUndo()) {
+				// this is a hack as ImGui's InputText keeps a private copy of its content
+				// ClearActiveID() takes the possible focus away and allows undo to work
+				// see ImGuiInputTextFlags_NoUndoRedo documentation in imgui.h
+				// so much for immediate mode :-)
+				ImGui::ClearActiveID();
+				taskManager.undo();
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_X, false) && selected) {
+				cutSelectedNodes();
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_C, false) && selected) {
+				copySelectedNodes();
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_V, false) && selected && clipable) {
+				pasteSelectedNodes();
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_D, false) && selected) {
+				duplicateSelectedNodes();
 			}
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_Z, false) && taskManager.canUndo()) {
-			// this is a hack as ImGui's InputText keeps a private copy of its content
-			// ClearActiveID() takes the possible focus away and allows undo to work
-			// see ImGuiInputTextFlags_NoUndoRedo documentation in imgui.h
-			// so much for immediate mode :-)
-			ImGui::ClearActiveID();
-			taskManager.undo();
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_X, false) && selected) {
-			cutSelectedNodes();
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_C, false) && selected) {
-			copySelectedNodes();
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_V, false) && selected && clipable) {
-			pasteSelectedNodes();
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_D, false) && selected) {
-			duplicateSelectedNodes();
+		} else if ((ImGui::IsKeyPressed(ImGuiKey_Backspace, false) || ImGui::IsKeyPressed(ImGuiKey_Delete, false)) && selected) {
+			deleteSelectedNodes();
 		}
 	}
 }

@@ -36,19 +36,9 @@
 			"to": 3017524261
 		},
 		{
-			"from": 2998180272,
-			"id": 338781203,
-			"to": 279760242
-		},
-		{
 			"from": 4243123040,
 			"id": 3089266074,
 			"to": 217555214
-		},
-		{
-			"from": 2550862960,
-			"id": 3269341256,
-			"to": 3237085801
 		},
 		{
 			"from": 4243123040,
@@ -61,11 +51,6 @@
 			"to": 3129229881
 		},
 		{
-			"from": 691126220,
-			"id": 2617143215,
-			"to": 3585421219
-		},
-		{
 			"from": 2998180272,
 			"id": 872584614,
 			"to": 3152811694
@@ -74,6 +59,16 @@
 			"from": 691126220,
 			"id": 2617963249,
 			"to": 1703346358
+		},
+		{
+			"from": 2998180272,
+			"id": 338781203,
+			"to": 279760242
+		},
+		{
+			"from": 2550862960,
+			"id": 3269341256,
+			"to": 3237085801
 		}
 	],
 	"metadata": {},
@@ -285,36 +280,6 @@
 			"y": 146.0
 		},
 		{
-			"id": 4016356840,
-			"inputs": [
-				{
-					"id": 279760242,
-					"name": "Texture",
-					"type": "texture"
-				}
-			],
-			"outputs": [],
-			"title": "Texture Probe",
-			"type": "Texture Probe",
-			"x": 991.0,
-			"y": 244.0
-		},
-		{
-			"id": 4242090497,
-			"inputs": [
-				{
-					"id": 3237085801,
-					"name": "Texture",
-					"type": "texture"
-				}
-			],
-			"outputs": [],
-			"title": "Texture Probe",
-			"type": "Texture Probe",
-			"x": 755.0,
-			"y": 243.0
-		},
-		{
 			"id": 833814754,
 			"inputs": [
 				{
@@ -351,19 +316,34 @@
 			"y": 16.0
 		},
 		{
-			"id": 2886197394,
+			"id": 4016356840,
 			"inputs": [
 				{
-					"id": 3585421219,
-					"name": "Input",
-					"type": "image"
+					"id": 279760242,
+					"name": "Texture",
+					"type": "texture"
 				}
 			],
 			"outputs": [],
-			"title": "Save Image To DDS",
-			"type": "Save Image To DDS",
-			"x": 1225.0,
-			"y": 99.0
+			"title": "Texture Probe",
+			"type": "Texture Probe",
+			"x": 991.0,
+			"y": 244.0
+		},
+		{
+			"id": 4242090497,
+			"inputs": [
+				{
+					"id": 3237085801,
+					"name": "Texture",
+					"type": "texture"
+				}
+			],
+			"outputs": [],
+			"title": "Texture Probe",
+			"type": "Texture Probe",
+			"x": 755.0,
+			"y": 243.0
 		}
 	]
 }

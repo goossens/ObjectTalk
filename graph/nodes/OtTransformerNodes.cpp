@@ -17,6 +17,38 @@
 
 
 //
+//	OtImageToTextureTransformer
+//
+
+class OtImageToTextureTransformer : public OtGraphNodeClass {
+public:
+	// constructor
+	inline OtImageToTextureTransformer() : OtGraphNodeClass(name, OtGraphNodeClass::transformer) {}
+
+	inline void configure() override {
+		addInputPin("Input", image);
+		addOutputPin("Output", texture);
+	}
+
+	// when the input changes, we read back the texture into a CPU buffer
+	void onExecute() override {
+		if (image.isValid()) {
+			texture.loadFromImage(image);
+
+		} else {
+			texture.clear();
+		}
+	}
+
+	static constexpr const char* name = "Image to Texture";
+
+protected:
+	OtImage image;
+	OtTexture texture;
+};
+
+
+//
 //	OtTextureToImageTransformer
 //
 
@@ -58,5 +90,6 @@ protected:
 	graph.registerNodeType<CLASS>("Transformers", CLASS::name)
 
 void OtTransformerNodesRegister(OtGraph& graph) {
+	REGISTER(OtImageToTextureTransformer);
 	REGISTER(OtTextureToImageTransformer);
 }

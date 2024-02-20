@@ -13,6 +13,8 @@
 #include "nlohmann/json.hpp"
 
 #include "OtPathTools.h"
+#include "OtImage.h"
+#include "OtImageAsset.h"
 #include "OtTexture.h"
 #include "OtTextureAsset.h"
 #include "OtUi.h"
@@ -116,6 +118,87 @@ protected:
 
 
 //
+//	OtGraphNodeImageInput
+//
+
+class OtGraphNodeImageInput : public OtGraphNodeClass {
+public:
+	// constructor
+	inline OtGraphNodeImageInput() : OtGraphNodeClass(name, OtGraphNodeClass::input) {}
+
+	// configure node
+	inline void configure() override {
+		addOutputPin("Image", image)->addRenderer([this](float width) {
+			ImGui::SetNextItemWidth(width);
+			auto old = serialize().dump();
+
+			if (asset.renderUI("##image")) {
+				if (asset.isNull()) {
+					image.clear();
+					needsEvaluating = true;
+
+				} else if (asset.isReady()) {
+					image = asset->getImage();
+					needsEvaluating = true;
+
+				} else {
+					image.clear();
+					loading = true;
+				}
+
+				oldState = old;
+				newState = serialize().dump();
+				needsSaving = true;
+			}
+		}, fieldWidth);
+	}
+
+	// update state
+	inline void onUpdate() override {
+		if (loading && asset.isReady()) {
+			image = asset->getImage();
+			needsEvaluating = true;
+			loading = false;
+
+		} else if (asset.isReady() && asset->getImage().getVersion() != version) {
+			image = asset->getImage();
+			version = image.getVersion();
+			needsEvaluating = true;
+		}
+	}
+
+	// (de)serialize input
+	void customSerialize(nlohmann::json* data, std::string* basedir) override {
+		(*data)["image"] = OtPathRelative(asset.getPath(), basedir);
+	}
+
+	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
+		asset = OtPathGetAbsolute(*data, "image", basedir);
+
+		if (asset.isNull()) {
+			image.clear();
+
+		} else if (asset.isReady()) {
+			image = asset->getImage();
+			needsEvaluating = true;
+
+		} else {
+			loading = true;
+		}
+	}
+
+	static constexpr const char* name = "Image Input";
+	static constexpr float fieldWidth = 180.0f;
+
+protected:
+	OtAsset<OtImageAsset> asset;
+	OtImage image;
+	int version = 0;
+	bool loading = false;
+};
+
+
+//
 //	OtGraphNodeTextureInput
 //
 
@@ -206,5 +289,6 @@ protected:
 void OtInputNodesRegister(OtGraph& graph) {
 	REGISTER(OtGraphNodeIntegerInput);
 	REGISTER(OtGraphNodeFloatInput);
+	REGISTER(OtGraphNodeImageInput);
 	REGISTER(OtGraphNodeTextureInput);
 }

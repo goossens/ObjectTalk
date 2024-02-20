@@ -51,24 +51,34 @@
 			"to": 3129229881
 		},
 		{
-			"from": 2998180272,
-			"id": 872584614,
+			"from": 2550862960,
+			"id": 1354971200,
 			"to": 3152811694
 		},
 		{
 			"from": 691126220,
-			"id": 2617963249,
-			"to": 1703346358
+			"id": 3791187671,
+			"to": 3997980780
+		},
+		{
+			"from": 1335437949,
+			"id": 3741656229,
+			"to": 2369983768
+		},
+		{
+			"from": 1665173662,
+			"id": 1100433188,
+			"to": 276718913
 		},
 		{
 			"from": 2998180272,
-			"id": 338781203,
-			"to": 279760242
+			"id": 2571497274,
+			"to": 1535187009
 		},
 		{
-			"from": 2550862960,
-			"id": 3269341256,
-			"to": 3237085801
+			"from": 3878442117,
+			"id": 3287349770,
+			"to": 279760242
 		}
 	],
 	"metadata": {},
@@ -233,8 +243,8 @@
 			"outputs": [],
 			"title": "Texture Probe",
 			"type": "Texture Probe",
-			"x": 490.0,
-			"y": 244.0
+			"x": 485.0,
+			"y": 170.0
 		},
 		{
 			"distance": 0,
@@ -301,19 +311,20 @@
 			"y": 16.0
 		},
 		{
-			"id": 3283409508,
-			"inputs": [
+			"id": 2949711206,
+			"image": "virtual:normalmap",
+			"inputs": [],
+			"outputs": [
 				{
-					"id": 1703346358,
-					"name": "Input",
-					"type": "image"
+					"id": 3878442117,
+					"name": "Texture",
+					"type": "texture"
 				}
 			],
-			"outputs": [],
-			"title": "Save Image To PNG",
-			"type": "Save Image To PNG",
-			"x": 1225.0,
-			"y": 16.0
+			"title": "Texture Input",
+			"type": "Texture Input",
+			"x": 30.0,
+			"y": 703.0
 		},
 		{
 			"id": 4016356840,
@@ -327,14 +338,67 @@
 			"outputs": [],
 			"title": "Texture Probe",
 			"type": "Texture Probe",
-			"x": 991.0,
-			"y": 244.0
+			"x": 749.0,
+			"y": 532.0
 		},
 		{
-			"id": 4242090497,
+			"id": 615521881,
 			"inputs": [
 				{
-					"id": 3237085801,
+					"id": 3997980780,
+					"name": "Input",
+					"type": "image"
+				}
+			],
+			"outputs": [],
+			"path": "virtual:heightmap",
+			"title": "Save Image To Virtual",
+			"type": "Save Image To Virtual",
+			"x": 1219.0,
+			"y": 16.0
+		},
+		{
+			"id": 1174859016,
+			"image": "virtual:heightmap",
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 1335437949,
+					"name": "Image",
+					"type": "image"
+				}
+			],
+			"title": "Image Input",
+			"type": "Image Input",
+			"x": 29.0,
+			"y": 620.0
+		},
+		{
+			"id": 102618380,
+			"inputs": [
+				{
+					"id": 2369983768,
+					"name": "Input",
+					"type": "image"
+				}
+			],
+			"outputs": [
+				{
+					"id": 1665173662,
+					"name": "Output",
+					"type": "texture"
+				}
+			],
+			"title": "Image to Texture",
+			"type": "Image to Texture",
+			"x": 328.0,
+			"y": 551.0
+		},
+		{
+			"id": 2846125169,
+			"inputs": [
+				{
+					"id": 276718913,
 					"name": "Texture",
 					"type": "texture"
 				}
@@ -342,8 +406,24 @@
 			"outputs": [],
 			"title": "Texture Probe",
 			"type": "Texture Probe",
-			"x": 755.0,
-			"y": 243.0
+			"x": 749.0,
+			"y": 291.0
+		},
+		{
+			"id": 2220175463,
+			"inputs": [
+				{
+					"id": 1535187009,
+					"name": "Input",
+					"type": "texture"
+				}
+			],
+			"outputs": [],
+			"path": "virtual:normalmap",
+			"title": "Save Texture To Virtual",
+			"type": "Save Texture To Virtual",
+			"x": 1219.0,
+			"y": 149.0
 		}
 	]
 }

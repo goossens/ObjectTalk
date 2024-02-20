@@ -119,12 +119,11 @@ static bgfx::TextureHandle createMipmapTexture(bimg::ImageContainer* image) {
 
 
 //
-//	OtTexture::loadFromFile
+//	OtTexture::loadFromImage
 //
 
-void OtTexture::loadFromFile(const std::string& path) {
-	// get the image
-	OtImage image(path);
+void OtTexture::loadFromImage(OtImage& image) {
+	// get the image data
 	bimg::ImageContainer* container = image.getContainer();
 
 	// remember size
@@ -140,6 +139,17 @@ void OtTexture::loadFromFile(const std::string& path) {
 	} else {
 		texture = createRegularTexture(container);
 	}
+}
+
+
+//
+//	OtTexture::loadFromFile
+//
+
+void OtTexture::loadFromFile(const std::string& path) {
+	// get the image
+	OtImage image(path);
+	loadFromImage(image);
 }
 
 

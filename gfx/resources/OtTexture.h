@@ -16,6 +16,7 @@
 #include <string>
 
 #include "OtBgfxHandle.h"
+#include "OtImage.h"
 
 
 //
@@ -67,6 +68,9 @@ public:
 
 	// create an empty texture
 	void create(int w, int h, int format, uint64_t flags);
+
+	// load from image
+	void loadFromImage(OtImage& image);
 
 	// load from file
 	void loadFromFile(const std::string& path);

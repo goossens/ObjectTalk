@@ -593,6 +593,9 @@ void OtWorkspace::renderEditors() {
 		// render all editors as tabs
 		for (auto& editor : clone) {
 			if (editor->isRenderedInTab()) {
+				// this ID is required to handle duplicate filenames
+				ImGui::PushID(editor.get());
+
 				// determine flags for tab
 				ImGuiTabItemFlags flags = 0;
 
@@ -618,6 +621,8 @@ void OtWorkspace::renderEditors() {
 					ImGui::EndTabItem();
 					activeEditor = editor;
 				}
+
+				ImGui::PopID();
 			}
 		}
 

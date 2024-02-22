@@ -16,6 +16,11 @@
 #include <ctime>
 #include <iostream>
 
+#if _WIN32
+#else
+#include <signal.h>
+#endif
+
 #include "OtException.h"
 #include "OtLog.h"
 
@@ -81,7 +86,19 @@ void OtLogger::log(const char* filename, int lineno, int type, const std::string
 		throw OtException(message);
 
 	} else if (type == fatal) {
+
+#if OT_DEBUG
+
+#if _WIN32
+	__builtin_trap();
+#else
+	raise(SIGTRAP);
+#endif
+
+#else
 		std::_Exit(EXIT_FAILURE);
+#endif
+
 	}
 }
 

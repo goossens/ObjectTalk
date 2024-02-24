@@ -36,7 +36,7 @@ public:
 	void newFile();
 	void newScript();
 	void newScene();
-	void newGraph();
+	void newNodes();
 
 	// open a file
 	void openFile();

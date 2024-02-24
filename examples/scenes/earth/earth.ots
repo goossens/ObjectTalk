@@ -104,33 +104,29 @@
 					"components": [
 						{
 							"component": "Core",
+							"tag": "Sphere",
+							"uuid": 209078832
+						},
+						{
+							"component": "Nodes",
+							"path": "assets/sphere.otn"
+						}
+					]
+				},
+				{
+					"children": [],
+					"components": [
+						{
+							"component": "Core",
 							"tag": "Grid",
 							"uuid": 3890719025
 						},
 						{
 							"component": "Geometry",
 							"cullback": false,
-							"geometry": {
-								"displacement": {
-									"frequency": 0.009999999776482582,
-									"lacunarity": 1.0,
-									"map": "",
-									"octaves": 3,
-									"persistance": 0.5,
-									"scale": 0.5,
-									"seed": 1337,
-									"state": 0
-								},
-								"phiLength": 360.0,
-								"phiSegments": 16,
-								"phiStart": 0.0,
-								"thetaLength": 180.0,
-								"thetaSegments": 32,
-								"thetaStart": 0.0,
-								"type": "Sphere"
-							},
-							"transparent": false,
-							"wireframe": true
+							"path": "virtual:sphere",
+							"transparent": true,
+							"wireframe": false
 						},
 						{
 							"component": "Transform",
@@ -159,7 +155,7 @@
 									0.1568627506494522,
 									1.0
 								],
-								"albedoTexture": "",
+								"albedoTexture": "assets/grid.png",
 								"ao": 1.0,
 								"aoTexture": "",
 								"emissive": [
@@ -168,12 +164,11 @@
 									0.1920667141675949
 								],
 								"emissiveTexture": "",
-								"metallic": 0.5,
+								"metallic": 1.0,
 								"metallicRoughnessTexture": "",
 								"normalTexture": "",
-								"roughness": 0.5,
-								"scale": 1.0,
-								"type": "PBR"
+								"roughness": 0.0,
+								"scale": 1.0
 							}
 						}
 					]
@@ -188,26 +183,8 @@
 						},
 						{
 							"component": "Geometry",
-							"cullback": true,
-							"geometry": {
-								"displacement": {
-									"frequency": 0.009999999776482582,
-									"lacunarity": 1.0,
-									"map": "",
-									"octaves": 3,
-									"persistance": 0.5,
-									"scale": 0.5,
-									"seed": 1337,
-									"state": 0
-								},
-								"phiLength": 360.0,
-								"phiSegments": 32,
-								"phiStart": 0.0,
-								"thetaLength": 180.0,
-								"thetaSegments": 64,
-								"thetaStart": 0.0,
-								"type": "Sphere"
-							},
+							"cullback": false,
+							"path": "virtual:sphere",
 							"transparent": true,
 							"wireframe": false
 						},
@@ -251,8 +228,7 @@
 								"metallicRoughnessTexture": "",
 								"normalTexture": "",
 								"roughness": 0.5699999928474426,
-								"scale": 1.0,
-								"type": "PBR"
+								"scale": 1.0
 							}
 						}
 					]
@@ -267,26 +243,8 @@
 						},
 						{
 							"component": "Geometry",
-							"cullback": true,
-							"geometry": {
-								"displacement": {
-									"frequency": 0.009999999776482582,
-									"lacunarity": 1.0,
-									"map": "",
-									"octaves": 3,
-									"persistance": 0.5,
-									"scale": 0.5,
-									"seed": 1337,
-									"state": 0
-								},
-								"phiLength": 360.0,
-								"phiSegments": 32,
-								"phiStart": 0.0,
-								"thetaLength": 180.0,
-								"thetaSegments": 64,
-								"thetaStart": 0.0,
-								"type": "Sphere"
-							},
+							"cullback": false,
+							"path": "virtual:sphere",
 							"transparent": true,
 							"wireframe": false
 						},
@@ -330,8 +288,7 @@
 								"metallicRoughnessTexture": "",
 								"normalTexture": "",
 								"roughness": 0.4099999964237213,
-								"scale": 1.0,
-								"type": "PBR"
+								"scale": 1.0
 							}
 						}
 					]

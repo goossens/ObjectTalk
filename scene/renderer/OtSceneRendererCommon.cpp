@@ -16,7 +16,6 @@
 
 #include "OtException.h"
 
-#include "OtMaterials.h"
 #include "OtSceneRenderer.h"
 
 
@@ -57,21 +56,6 @@ size_t OtSceneRenderer::getTextureAssetHeight(OtAsset<OtTextureAsset>& texture) 
 
 
 //
-//	OtSceneRenderer::submitMaterialUniforms
-//
-
-void OtSceneRenderer::submitMaterialUniforms(OtMaterial material) {
-	// submit based on type
-	if (material.isKindOf<OtPbrMaterialClass>()) {
-		submitPbrUniforms(OtPbrMaterial(material));
-
-	} else {
-		OtError("Internal error: invalid material type [{}]", material->getTypeName());
-	}
-}
-
-
-//
 //	OtSceneRenderer::submitTextureSampler
 //
 
@@ -101,45 +85,45 @@ void OtSceneRenderer::submitCubeMapSampler(OtSampler& sampler, int unit, OtAsset
 
 
 //
-//	OtSceneRenderer::submitPbrUniforms
+//	OtSceneRenderer::submitMaterialUniforms
 //
 
-void OtSceneRenderer::submitPbrUniforms(OtPbrMaterial material) {
+void OtSceneRenderer::submitMaterialUniforms(OtMaterial& material) {
 	// set the uniform values
 	glm::vec4* uniforms = pbrMaterialUniforms.getValues();
-	uniforms[0] = material->albedo;
+	uniforms[0] = material.albedo;
 
 	uniforms[1] = glm::vec4(
-		material->metallic,
-		material->roughness,
-		material->ao,
-		material->scale);
+		material.metallic,
+		material.roughness,
+		material.ao,
+		material.scale);
 
 	uniforms[2] = glm::vec4(
-		material->emissive,
+		material.emissive,
 		0.0f);
 
 	uniforms[3] = glm::vec4(
-		material->albedoTexture.isReady(),
-		material->metallicRoughnessTexture.isReady(),
+		material.albedoTexture.isReady(),
+		material.metallicRoughnessTexture.isReady(),
 		0.0f,
 		0.0f);
 
 	uniforms[4] = glm::vec4(
-		material->emissiveTexture.isReady(),
-		material->aoTexture.isReady(),
-		material->normalTexture.isReady(),
+		material.emissiveTexture.isReady(),
+		material.aoTexture.isReady(),
+		material.normalTexture.isReady(),
 		0.0);
 
 	// submit the uniforms
 	pbrMaterialUniforms.submit();
 
 	// submit all material textures (or dummies if they are not set (yet))
-	submitTextureSampler(albedoSampler, 0, material->albedoTexture);
-	submitTextureSampler(metallicRoughnessSampler, 1, material->metallicRoughnessTexture);
-	submitTextureSampler(emissiveSampler, 2, material->emissiveTexture);
-	submitTextureSampler(aoSampler, 3, material->aoTexture);
-	submitTextureSampler(normalSampler, 4, material->normalTexture);
+	submitTextureSampler(albedoSampler, 0, material.albedoTexture);
+	submitTextureSampler(metallicRoughnessSampler, 1, material.metallicRoughnessTexture);
+	submitTextureSampler(emissiveSampler, 2, material.emissiveTexture);
+	submitTextureSampler(aoSampler, 3, material.aoTexture);
+	submitTextureSampler(normalSampler, 4, material.normalTexture);
 }
 
 

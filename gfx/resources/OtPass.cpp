@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <cstring>
+
 #include "glm/ext.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
@@ -133,6 +135,68 @@ void OtPass::submitQuad(int w, int h) {
 
 		glm::mat4 projMatrix = glm::ortho(0.0f, (float) w, (float) h, 0.0f, -1.0f, 1.0f);
 		bgfx::setViewTransform(view, nullptr, glm::value_ptr(projMatrix));
+
+	} else {
+		OtLogFatal("Internal error: insufficient transient buffer space");
+	}
+}
+
+
+//
+//	OtPass::submitCube
+//
+
+void OtPass::submitCube() {
+	float vertices[] = {
+		-1.0f,  1.0f, -1.0f,
+		-1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+
+		-1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+
+		-1.0f, -1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+
+		-1.0f,  1.0f, -1.0f,
+		 1.0f,  1.0f, -1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f, -1.0f,
+
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		 1.0f, -1.0f,  1.0f
+	};
+
+	// submit the cube geometry
+	if (bgfx::getAvailTransientVertexBuffer(36, OtVertexPos::getLayout()) == 36) {
+		bgfx::TransientVertexBuffer vb;
+		bgfx::allocTransientVertexBuffer(&vb, 36, OtVertexPos::getLayout());
+		std::memcpy(vb.data, vertices, vb.size);
+		bgfx::setVertexBuffer(0, &vb);
 
 	} else {
 		OtLogFatal("Internal error: insufficient transient buffer space");

@@ -1,0 +1,49 @@
+{
+	"links": [
+		{
+			"from": 141066482,
+			"id": 4082992494,
+			"to": 1241675404
+		}
+	],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 2677775489,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 141066482,
+					"name": "Geometry",
+					"type": "geometry"
+				}
+			],
+			"primitive": {
+				"type": "Cube",
+				"xsegments": 1,
+				"ysegments": 1,
+				"zsegments": 1
+			},
+			"title": "Geometry Generator",
+			"type": "Geometry Generator",
+			"x": 98.0,
+			"y": 205.0
+		},
+		{
+			"id": 1829953391,
+			"inputs": [
+				{
+					"id": 1241675404,
+					"name": "Input",
+					"type": "geometry"
+				}
+			],
+			"outputs": [],
+			"path": "virtual:cube",
+			"title": "Save Geometry To Virtual",
+			"type": "Save Geometry To Virtual",
+			"x": 383.0,
+			"y": 204.0
+		}
+	]
+}

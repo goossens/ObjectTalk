@@ -42,7 +42,7 @@ OtAssetBase::AssetState OtModelAsset::load() {
 		aiProcess_OptimizeMeshes |
 		aiProcess_PreTransformVertices |
 		aiProcess_GenBoundingBoxes |
-		aiProcess_FlipUVs;
+		(OtGpuHasOriginBottomLeft() ? 0 : aiProcess_FlipUVs);
 
 	// read the model file
 	const aiScene* scene = importer.ReadFile(path, flags);

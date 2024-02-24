@@ -25,8 +25,8 @@ class OtImageAsset : public OtAssetBase {
 public:
 	// access the image
 	inline OtImage& getImage() { return image; }
-	inline void setImage(OtImage& i) { image = i; }
-	inline void clearImage() { image.clear(); }
+	inline void setImage(OtImage& i) { image = i; markReady(); }
+	inline void clearImage() { image.clear();markMissing(); }
 
 	// asset properties
 	static constexpr bool canHandleVirtual = true;

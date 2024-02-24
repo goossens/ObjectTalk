@@ -115,6 +115,7 @@ protected:
 	virtual inline AssetState save() { return nullState; }
 
 	// internal housekeeping functions
+	void initializeMissing(const std::string& path);
 	void initializeInvalid(const std::string& path);
 	void initializeReady(const std::string& path);
 	void preLoad(const std::string& path);
@@ -127,6 +128,7 @@ protected:
 
 	inline void markMissing() { assetState = missingState; }
 	inline void markInvalid() { assetState = invalidState; }
+	inline void markReady() { assetState = readyState; }
 
 private:
 	// give the asset manager full access

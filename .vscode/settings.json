@@ -83,6 +83,7 @@
 		"valarray": "cpp",
 		"ranges": "cpp",
 		"*.ots": "json",
+		"*.otn": "json",
 		"span": "cpp",
 		"__verbose_abort": "cpp",
 		"bit": "cpp",

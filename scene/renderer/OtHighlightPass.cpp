@@ -77,10 +77,14 @@ void OtSceneRenderer::renderHighlight(OtSceneRendererContext& ctx, OtPass& pass,
 	// only render if all components are available
 	if (ctx.scene->hasComponent<OtGeometryComponent>(entity) && ctx.scene->hasComponent<OtMaterialComponent>(entity)) {
 		// render geometry
-		ctx.scene->getComponent<OtGeometryComponent>(entity).geometry->submitTriangles();
-		selectProgram.setTransform(ctx.scene->getGlobalTransform(entity));
-		selectProgram.setState(OtStateWriteRgb);
-		pass.runShaderProgram(selectProgram);
+		auto& asset = ctx.scene->getComponent<OtGeometryComponent>(entity).asset;
+
+		if (asset.isReady()) {
+			asset->getGeometry().submitTriangles();
+			selectProgram.setTransform(ctx.scene->getGlobalTransform(entity));
+			selectProgram.setState(OtStateWriteRgb);
+			pass.runShaderProgram(selectProgram);
+		}
 
 	} else if (ctx.scene->hasComponent<OtModelComponent>(entity)) {
 		// render model

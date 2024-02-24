@@ -12,9 +12,10 @@
 //	Include files
 //
 
+#include <memory>
+
 #include "glm/glm.hpp"
 
-#include "OtBoxGeometry.h"
 #include "OtComputeProgram.h"
 #include "OtCubeMap.h"
 #include "OtFrameBuffer.h"
@@ -23,7 +24,6 @@
 #include "OtPass.h"
 #include "OtSampler.h"
 #include "OtShaderProgram.h"
-#include "OtSphereGeometry.h"
 #include "OtTexture.h"
 #include "OtTileableFbm.h"
 #include "OtUniformMat4.h"
@@ -79,8 +79,7 @@ private:
 	// rendering tools
 	void submitTextureSampler(OtSampler& sampler, int unit, OtAsset<OtTextureAsset>& texture);
 	void submitCubeMapSampler(OtSampler& sampler, int unit, OtAsset<OtCubeMapAsset>& cubemap);
-	void submitMaterialUniforms(OtMaterial material);
-	void submitPbrUniforms(OtPbrMaterial material);
+	void submitMaterialUniforms(OtMaterial& material);
 	void submitLightUniforms(OtSceneRendererContext& ctx);
 	void submitTerrainUniforms(OtTerrain terrain);
 	void submitClippingUniforms(const glm::vec4& clippingPlane);
@@ -108,10 +107,6 @@ private:
 	static constexpr int bloomDepth = 5;
 	OtFrameBuffer bloomBuffer[bloomDepth];
 
-	// standard geometries
-	OtBoxGeometry unityBoxGeometry;
-	OtSphereGeometry unitySphereGeometry;
-
 	// generators/filters
 	OtTileableFbm tileableFbm;
 	OtNormalMapper normalMapper;
@@ -131,6 +126,7 @@ private:
 	OtUniformVec4 postProcessUniforms{"u_postProcess", 1};
 
 	OtUniformMat4 invViewProjUniform{"u_invViewProjUniform", 1};
+	OtUniformMat4 skyInvViewProjUniform{"u_skyInvViewProjUniform", 1};
 
 	// textures
 	OtTexture iblBrdfLut;

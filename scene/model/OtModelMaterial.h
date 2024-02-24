@@ -17,7 +17,7 @@
 
 #include "assimp/material.h"
 
-#include "OtPbrMaterial.h"
+#include "OtMaterial.h"
 
 
 //
@@ -26,12 +26,6 @@
 
 class OtModelMaterial {
 public:
-	// constructor
-	OtModelMaterial();
-
-	// clear the material
-	void clear();
-
 	// load the material
 	void load(const aiMaterial* material, const std::string& dir);
 
@@ -39,10 +33,10 @@ public:
 	inline bool isValid() { return valid; }
 
 	// access the material
-	inline OtPbrMaterial& getPbrMaterial() { return material; }
+	inline OtMaterial& getPbrMaterial() { return material; }
 
 private:
 	// the PBR material
-	OtPbrMaterial material;
+	OtMaterial material;
 	bool valid = false;
 };

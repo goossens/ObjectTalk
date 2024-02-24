@@ -224,3 +224,17 @@ glm::mat4 OtScene::getGlobalTransform(OtEntity entity) {
 		return glm::mat4(1.0f);
 	}
 }
+
+
+//
+//	OtScene::evaluateNodes
+//
+
+void OtScene::evaluateNodes() {
+	// evaluate the nodes
+	for (auto&& [entity, component] : view<OtNodesComponent>().each()) {
+		if (component.asset.isReady()) {
+			component.asset->getNodes().evaluate();
+		}
+	}
+}

@@ -1,0 +1,52 @@
+{
+	"links": [
+		{
+			"from": 141066482,
+			"id": 4082992494,
+			"to": 1241675404
+		}
+	],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 2677775489,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 141066482,
+					"name": "Geometry",
+					"type": "geometry"
+				}
+			],
+			"primitive": {
+				"phiLength": 360.0,
+				"phiSegments": 50,
+				"phiStart": 0.0,
+				"thetaLength": 180.0,
+				"thetaSegments": 100,
+				"thetaStart": 0.0,
+				"type": "Sphere"
+			},
+			"title": "Geometry Generator",
+			"type": "Geometry Generator",
+			"x": 98.0,
+			"y": 205.0
+		},
+		{
+			"id": 1829953391,
+			"inputs": [
+				{
+					"id": 1241675404,
+					"name": "Input",
+					"type": "geometry"
+				}
+			],
+			"outputs": [],
+			"path": "virtual:sphere",
+			"title": "Save Geometry To Virtual",
+			"type": "Save Geometry To Virtual",
+			"x": 383.0,
+			"y": 204.0
+		}
+	]
+}

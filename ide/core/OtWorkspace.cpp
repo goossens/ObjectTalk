@@ -22,7 +22,7 @@
 #include "OtPathTools.h"
 #include "OtUi.h"
 
-#include "OtGraphEditor.h"
+#include "OtNodesEditor.h"
 #include "OtObjectTalkEditor.h"
 #include "OtSceneEditor.h"
 #include "OtWorkspace.h"
@@ -237,12 +237,12 @@ void OtWorkspace::newScene() {
 
 
 //
-//	OtWorkspace::newGraph
+//	OtWorkspace::newNodes
 //
 
-void OtWorkspace::newGraph() {
-	auto editor = std::make_shared<OtGraphEditor>();
-	editor->newFile(getUntitledName(".otg"));
+void OtWorkspace::newNodes() {
+	auto editor = std::make_shared<OtNodesEditor>();
+	editor->newFile(getUntitledName(".otn"));
 	editors.push_back(editor);
 	state = editState;
 }
@@ -295,8 +295,8 @@ void OtWorkspace::openFile(const std::string& path, int visualState) {
 			editors.push_back(editor);
 			state = editState;
 
-		} else if (extension == ".otg") {
-			editor = std::make_shared<OtGraphEditor>();
+		} else if (extension == ".otn") {
+			editor = std::make_shared<OtNodesEditor>();
 			editor->openFile(path);
 			editor->setVisualState(visualState);
 			editors.push_back(editor);
@@ -715,8 +715,8 @@ void OtWorkspace::renderNewFileType() {
 
 		ImGui::SameLine();
 
-		if (ImGui::Button("Graph", ImVec2(120, 0))) {
-			newGraph();
+		if (ImGui::Button("Nodes", ImVec2(120, 0))) {
+			newNodes();
 			ImGui::CloseCurrentPopup();
 		}
 

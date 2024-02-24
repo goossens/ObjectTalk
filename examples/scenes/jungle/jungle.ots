@@ -72,20 +72,7 @@
 				{
 					"component": "Geometry",
 					"cullback": false,
-					"geometry": {
-						"displacement": {
-							"frequency": 0.009999999776482582,
-							"lacunarity": 1.0,
-							"map": "",
-							"octaves": 3,
-							"persistance": 0.5,
-							"scale": 0.5,
-							"seed": 1337,
-							"state": 0
-						},
-						"modelPath": "assets/palmtree.obj",
-						"type": "Model"
-					},
+					"path": "assets/palmtree.obj",
 					"transparent": true,
 					"wireframe": false
 				},
@@ -129,8 +116,7 @@
 						"metallicRoughnessTexture": "",
 						"normalTexture": "",
 						"roughness": 1.0,
-						"scale": 1.0,
-						"type": "PBR"
+						"scale": 1.0
 					}
 				},
 				{
@@ -154,7 +140,7 @@
 						"amplitude": 0.5,
 						"frequency": 10,
 						"lacunarity": 2,
-						"normalStrength": 2.0,
+						"normalStrength": 10.0,
 						"octaves": 5,
 						"persistence": 0.5,
 						"size": 256

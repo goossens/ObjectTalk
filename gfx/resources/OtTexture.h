@@ -55,7 +55,7 @@ public:
 	static constexpr uint64_t blitDst = BGFX_TEXTURE_BLIT_DST;
 	static constexpr uint64_t readBack = BGFX_TEXTURE_READ_BACK;
 
-	// constructor
+	// constructors
 	OtTexture() = default;
 	OtTexture(OtBgfxHandle<bgfx::TextureHandle> t, int w, int h, int f) : texture(t), width(w), height(h), format(f) {}
 	OtTexture(const std::string& path);

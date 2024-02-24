@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <memory>
 #include <string>
 
 #include "glm/glm.hpp"
@@ -29,12 +30,11 @@ class OtMaterialComponent {
 public:
 	// constructors
 	OtMaterialComponent();
-	OtMaterialComponent(const std::string& type);
 
-	// UI to change geometry properties
+	// UI to change primitive's properties
 	bool renderUI();
 
-	// (de)serialize geometry
+	// (de)serialize primitive
 	nlohmann::json serialize(std::string* basedir);
 	void deserialize(nlohmann::json data, std::string* basedir);
 
@@ -42,7 +42,7 @@ public:
 	static constexpr char const* name = "Material";
 
 	// stored properties
-	OtMaterial material;
+	std::shared_ptr<OtMaterial> material;
 
 private:
 	// create a named material instance

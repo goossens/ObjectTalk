@@ -17,6 +17,7 @@
 #include <iostream>
 
 #if _WIN32
+#include <intrin.h>
 #else
 #include <signal.h>
 #endif
@@ -90,7 +91,7 @@ void OtLogger::log(const char* filename, int lineno, int type, const std::string
 #if OT_DEBUG
 
 #if _WIN32
-	__builtin_trap();
+	__debugbreak();
 #else
 	raise(SIGTRAP);
 #endif

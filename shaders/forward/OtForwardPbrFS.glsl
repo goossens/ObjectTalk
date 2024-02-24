@@ -116,6 +116,6 @@ void main() {
 	}
 
 	// finalize color (tonemapping and gamma correction are done during post-processing)
-	vec3 emissive = texture2D(s_emissiveTexture, v_texcoord0).rgb;
+	vec3 emissive = u_hasEmissiveTexture ? texture2D(s_emissiveTexture, uv).rgb * u_emissive : u_emissive;
 	gl_FragColor = vec4(color + toLinear(emissive), albedo.a);
 }

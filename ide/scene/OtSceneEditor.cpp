@@ -383,6 +383,9 @@ void OtSceneEditor::renderMenu() {
 //
 
 void OtSceneEditor::renderEditor() {
+	// update (evaluate) all the nodes
+	asset->getScene()->evaluateNodes();
+
 	// determine button size
 	buttonSize = ImGui::GetFrameHeight();
 

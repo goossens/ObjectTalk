@@ -74,6 +74,9 @@ int OtSceneRuntime::render(int width, int height) {
 		component.update();
 	}
 
+	// update (evaluate) all the nodes
+	scene->evaluateNodes();
+
 	// get camera information
 	auto& component = scene->getComponent<OtCameraComponent>(activeCamera);
 	glm::mat4 transform = scene->getGlobalTransform(activeCamera);
@@ -133,12 +136,12 @@ void OtSceneRuntime::initializeScriptingSystem() {
 //
 
 void OtSceneRuntime::initializeRenderingSystem() {
+	// access the scene
+	auto scene = sceneAsset->getScene();
+
 	// select default camera
 	OtEntity firstCamera = OtEntityNull;
 	OtEntity mainCamera = OtEntityNull;
-
-	// access the scene
-	auto scene = sceneAsset->getScene();
 
 	for (auto&& [entity, component] : scene->view<OtCameraComponent>().each()) {
 		if (!scene->isValidEntity(firstCamera)) {

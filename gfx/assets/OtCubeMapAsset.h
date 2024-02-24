@@ -23,7 +23,7 @@
 
 class OtCubeMapAsset : public OtAssetBase {
 public:
-	// access the CubeMap
+	// access the cubemap
 	inline OtCubeMap& getCubeMap() { return cubemap; }
 
 	// asset properties

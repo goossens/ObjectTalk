@@ -15,20 +15,6 @@
 #include "OtException.h"
 
 #include "OtGeometryComponent.h"
-#include "OtGeometryFactory.h"
-
-
-//
-//	OtGeometryComponent::OtGeometryComponent
-//
-
-OtGeometryComponent::OtGeometryComponent() {
-	createGeometry("Sphere");
-}
-
-OtGeometryComponent::OtGeometryComponent(const std::string& type) {
-	createGeometry(type);
-}
 
 
 //
@@ -36,33 +22,10 @@ OtGeometryComponent::OtGeometryComponent(const std::string& type) {
 //
 
 bool OtGeometryComponent::renderUI() {
-	auto type = geometry->getTypeName();
-	bool changed = false;
-
-	if (ImGui::BeginCombo("Type", type)) {
-		OtGeometryFactory::instance()->each([&](const char* name) {
-			bool isSelectedOne = !std::strcmp(type, name);
-
-			if (ImGui::Selectable(name, isSelectedOne)) {
-				if (std::strcmp(type, name)) {
-					createGeometry(name);
-					changed = true;
-				}
-			}
-
-			// ensure selected entry is in focus
-			if (isSelectedOne) {
-				ImGui::SetItemDefaultFocus();
-			}
-		});
-
-		ImGui::EndCombo();
-	}
-
+	bool changed = asset.renderUI("Path##GeometryPath");
 	changed |= ImGui::Checkbox("Wireframe", &wireframe);
 	changed |= ImGui::Checkbox("Transparent", &transparent);
 	changed |= ImGui::Checkbox("Cull Back Faces", &cullback);
-	changed |= geometry->renderUI();
 	return changed;
 }
 
@@ -74,10 +37,10 @@ bool OtGeometryComponent::renderUI() {
 nlohmann::json OtGeometryComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
+	data["path"] = OtPathRelative(asset.getPath(), basedir);
 	data["wireframe"] = wireframe;
 	data["transparent"] = transparent;
 	data["cullback"] = cullback;
-	data["geometry"] = geometry->serialize(basedir);
 	return data;
 }
 
@@ -87,32 +50,8 @@ nlohmann::json OtGeometryComponent::serialize(std::string* basedir) {
 //
 
 void OtGeometryComponent::deserialize(nlohmann::json data, std::string* basedir) {
+	asset = OtPathGetAbsolute(data, "path", basedir);
 	wireframe = data.value("wireframe", false);
 	transparent = data.value("transparent", false);
 	cullback = data.value("cullback", true);
-
-	if (data.contains("geometry") && data["geometry"].contains("type")) {
-		createGeometry(data["geometry"]["type"]);
-		geometry->deserialize(data["geometry"], basedir);
-
-	} else {
-		createGeometry("Sphere");
-	}
-}
-
-
-//
-//	OtGeometryComponent::createGeometry
-//
-
-void OtGeometryComponent::createGeometry(const std::string& type) {
-	auto factory = OtGeometryFactory::instance();
-
-	if (factory->exists(type)) {
-		geometry = factory->create(type);
-		geometry->computeTangents();
-
-	} else {
-		OtError("Internal error: invalid geometry type [{}]", type);
-	}
 }

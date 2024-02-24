@@ -51,7 +51,7 @@ void main() {
 	float depth = texture2D(s_lightingDepthTexture, v_texcoord0).x;
 
 	// determine world coordinates
-	vec4 p = mul(u_invViewProjUniform, vec4(uvToClipSpace(v_texcoord0, depth), 1.0f));
+	vec4 p = mul(u_invViewProjUniform, vec4(uvToClipSpace(v_texcoord0, depth), 1.0));
 	vec3 pos = p.xyz / p.w;
 
 	// determine view direction

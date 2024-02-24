@@ -115,6 +115,20 @@ void OtAssetBase::unfollow() {
 
 
 //
+//	OtAssetBase::initializeMissing
+//
+
+void OtAssetBase::initializeMissing(const std::string& p) {
+	if (following) {
+		unfollow();
+	}
+
+	path = p;
+	assetState = OtAssetBase::missingState;
+}
+
+
+//
 //	OtAssetBase::initializeInvalid
 //
 

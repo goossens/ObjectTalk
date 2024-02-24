@@ -12,11 +12,12 @@
 //	Include files
 //
 
+#include <memory>
 #include <string>
 
 #include "nlohmann/json_fwd.hpp"
 
-#include "OtGeometry.h"
+#include "OtGeometryAsset.h"
 
 
 //
@@ -25,10 +26,6 @@
 
 class OtGeometryComponent {
 public:
-	// constructors
-	OtGeometryComponent();
-	OtGeometryComponent(const std::string& type);
-
 	// UI to change component properties
 	bool renderUI();
 
@@ -40,12 +37,8 @@ public:
 	static constexpr char const* name = "Geometry";
 
 	// stored properties
-	OtGeometry geometry;
+	OtAsset<OtGeometryAsset> asset;
 	bool wireframe = false;
 	bool transparent = false;
 	bool cullback = true;
-
-private:
-	// create a named geometry instance
-	void createGeometry(const std::string& type);
 };

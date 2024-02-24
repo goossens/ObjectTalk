@@ -75,8 +75,11 @@ public:
 			assets[key] = asset;
 
 			// is this a virtual asset (i.e. a named asset that only exists in memory)
-			// or a new asset that hasn't been saved yet
-			if (OtPathIsVirtual(path) || OtPathIsUntitled(path)) {
+			if (OtPathIsVirtual(path)) {
+				asset->initializeMissing(path);
+
+			// is this a new asset that hasn't been saved yet
+			} else if (OtPathIsUntitled(path)) {
 				// create the asset and we're done
 				asset->initializeReady(path);
 				scheduleReadyCallback(callback);

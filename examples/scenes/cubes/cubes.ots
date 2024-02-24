@@ -82,12 +82,12 @@
 			"components": [
 				{
 					"component": "Core",
-					"tag": "Animator",
-					"uuid": 2066162489
+					"tag": "Geometry",
+					"uuid": 3459683369
 				},
 				{
-					"component": "Script",
-					"path": "rotator.ot"
+					"component": "Nodes",
+					"path": "assets/cube.otn"
 				}
 			]
 		},
@@ -102,22 +102,7 @@
 				{
 					"component": "Geometry",
 					"cullback": true,
-					"geometry": {
-						"displacement": {
-							"frequency": 0.009999999776482582,
-							"lacunarity": 1.0,
-							"map": "",
-							"octaves": 3,
-							"persistance": 0.5,
-							"scale": 0.5,
-							"seed": 1337,
-							"state": 0
-						},
-						"type": "Box",
-						"xsegments": 1,
-						"ysegments": 1,
-						"zsegments": 1
-					},
+					"path": "virtual:cube",
 					"transparent": false,
 					"wireframe": false
 				},
@@ -161,8 +146,7 @@
 						"metallicRoughnessTexture": "",
 						"normalTexture": "",
 						"roughness": 0.5,
-						"scale": 1.0,
-						"type": "PBR"
+						"scale": 1.0
 					}
 				}
 			]
@@ -178,22 +162,7 @@
 				{
 					"component": "Geometry",
 					"cullback": true,
-					"geometry": {
-						"displacement": {
-							"frequency": 0.009999999776482582,
-							"lacunarity": 1.0,
-							"map": "",
-							"octaves": 3,
-							"persistance": 0.5,
-							"scale": 0.5,
-							"seed": 1337,
-							"state": 0
-						},
-						"type": "Box",
-						"xsegments": 1,
-						"ysegments": 1,
-						"zsegments": 1
-					},
+					"path": "virtual:cube",
 					"transparent": false,
 					"wireframe": false
 				},
@@ -237,8 +206,7 @@
 						"metallicRoughnessTexture": "",
 						"normalTexture": "",
 						"roughness": 0.5,
-						"scale": 1.0,
-						"type": "PBR"
+						"scale": 1.0
 					}
 				}
 			]
@@ -254,22 +222,7 @@
 				{
 					"component": "Geometry",
 					"cullback": true,
-					"geometry": {
-						"displacement": {
-							"frequency": 0.009999999776482582,
-							"lacunarity": 1.0,
-							"map": "",
-							"octaves": 3,
-							"persistance": 0.5,
-							"scale": 0.5,
-							"seed": 1337,
-							"state": 0
-						},
-						"type": "Box",
-						"xsegments": 1,
-						"ysegments": 1,
-						"zsegments": 1
-					},
+					"path": "virtual:cube",
 					"transparent": false,
 					"wireframe": false
 				},
@@ -313,9 +266,22 @@
 						"metallicRoughnessTexture": "",
 						"normalTexture": "",
 						"roughness": 0.5,
-						"scale": 1.0,
-						"type": "PBR"
+						"scale": 1.0
 					}
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Animator",
+					"uuid": 2066162489
+				},
+				{
+					"component": "Script",
+					"path": "assets/rotator.ot"
 				}
 			]
 		}

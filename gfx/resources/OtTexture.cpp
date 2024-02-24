@@ -113,7 +113,6 @@ static bgfx::TextureHandle createMipmapTexture(bimg::ImageContainer* image) {
 		h >>= 1;
 	}
 
-
 	return texture;
 }
 

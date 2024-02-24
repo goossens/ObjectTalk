@@ -1,0 +1,83 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+
+//
+//	Include files
+//
+
+#include "imgui.h"
+#include "nlohmann/json.hpp"
+
+#include "OtGeometryAsset.h"
+
+#include "OtNodesFactory.h"
+
+
+//
+//	OtVirtualGeometryOutputNode
+//
+
+class OtVirtualGeometryOutputNode : public OtNodeClass {
+public:
+	// constructor
+	inline OtVirtualGeometryOutputNode() : OtNodeClass(name, OtNodeClass::output) {}
+
+	// configure node
+	inline void configure() override {
+		addInputPin("Input", geometry)->addRenderer([&](float width) {
+			auto old = serialize().dump();
+
+			OtGeometryAsset* oldAsset = nullptr;
+
+			if (!asset.isNull()) {
+				oldAsset = &(*asset);
+			}
+
+			ImGui::SetNextItemWidth(width);
+
+			if (asset.renderVirtualUI("##name")) {
+				if (oldAsset && asset.isNull()) {
+					oldAsset->clearGeometry();
+				}
+
+				oldState = old;
+				newState = serialize().dump();
+				needsEvaluating = true;
+				needsSaving = true;
+			}
+		}, fieldWidth);
+	}
+
+	// synchronize the asset with the incoming geometry
+	void onExecute() override {
+		if (geometry.isValid()) {
+			asset->setGeometry(geometry);
+
+		} else {
+			asset.clear();
+		}
+	}
+
+	// (de)serialize input
+	void customSerialize(nlohmann::json* data, std::string* basedir) override {
+		auto t = asset.getPath();
+		(*data)["path"] = asset.getPath();
+	}
+
+	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
+		asset = data->value("path", "");
+	}
+
+	static constexpr const char* name = "Save Geometry To Virtual";
+	static constexpr float fieldWidth = 170.0f;
+
+protected:
+	OtGeometry geometry;
+	OtAsset<OtGeometryAsset> asset;
+};
+
+static OtNodesFactoryRegister<OtVirtualGeometryOutputNode> type("Output");

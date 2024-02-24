@@ -31,14 +31,15 @@ void OtSceneRenderer::renderSkyPass(OtSceneRendererContext& ctx) {
 	glm::vec4 perspective;
 	glm::decompose(ctx.camera.viewMatrix, scale, rotate, translate, skew, perspective);
 
-	// create a new matrix that only honors the rotation
-	glm::mat4 newViewMatrix = glm::toMat4(rotate);
+	// submit inverse view projection matrix as a uniform
+	skyInvViewProjUniform.set(0, glm::inverse(ctx.camera.projectionMatrix * glm::toMat4(rotate)));
+	skyInvViewProjUniform.submit();
 
 	// setup pass
 	OtPass pass;
 	pass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
 	pass.setFrameBuffer(ctx.compositeBuffer);
-	pass.setTransform(newViewMatrix, ctx.camera.projectionMatrix);
+	pass.submitQuad(ctx.camera.width, ctx.camera.height);
 
 	// see if we have any sky components
 	for (auto&& [entity, component] : ctx.scene->view<OtSkyComponent>().each()) {
@@ -59,13 +60,6 @@ void OtSceneRenderer::renderSkyPass(OtSceneRendererContext& ctx) {
 //
 
 void OtSceneRenderer::renderSky(OtSceneRendererContext& ctx, OtPass& pass, OtSkyComponent& component) {
-	// setup the mesh
-	if (!unitySphereGeometry) {
-		unitySphereGeometry = OtSphereGeometry::create();
-	}
-
-	unitySphereGeometry->submitTriangles();
-
 	// set the uniform values
 	static float time = 0.0f;
 	time += ImGui::GetIO().DeltaTime;
@@ -95,7 +89,6 @@ void OtSceneRenderer::renderSky(OtSceneRendererContext& ctx, OtPass& pass, OtSky
 		OtStateDepthTestLessEqual);
 
 	pass.runShaderProgram(skyProgram);
-
 }
 
 
@@ -104,13 +97,6 @@ void OtSceneRenderer::renderSky(OtSceneRendererContext& ctx, OtPass& pass, OtSky
 //
 
 void OtSceneRenderer::renderSkyBox(OtSceneRendererContext& ctx, OtPass& pass, OtSkyBoxComponent& component) {
-	// setup the mesh
-	if (!unityBoxGeometry) {
-		unityBoxGeometry = OtBoxGeometry::create();
-	}
-
-	unityBoxGeometry->submitTriangles();
-
 	// set the uniform values
 	skyUniforms.setValue(0, component.brightness, component.gamma, 0.0f, 0.0f);
 	skyUniforms.submit();

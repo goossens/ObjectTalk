@@ -18,6 +18,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include "OtException.h"
+
 
 //
 //	OtFactory
@@ -37,12 +39,16 @@ public:
 		list.emplace_back<std::string_view>(T::name);
 
 		map.emplace(T::name, []() {
-			return OtObjectPointer<T>::create();
+			return std::make_shared<T>();
 		});
 	}
 
 	// create a new instance by name
-	B create(std::string_view name) {
+	std::shared_ptr<B> create(std::string_view name) {
+		if (!exists(name)) {
+			OtError("Internal error: factory can't create instance of type [{}]", name);
+		}
+
 		return map.find(name)->second();
 	}
 
@@ -59,6 +65,6 @@ public:
 	}
 
 private:
-	std::unordered_map<std::string_view, std::function<B()>> map;
+	std::unordered_map<std::string_view, std::function<std::shared_ptr<B>()>> map;
 	std::vector<std::string_view> list;
 };

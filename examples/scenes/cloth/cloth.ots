@@ -106,21 +106,7 @@
 				{
 					"component": "Geometry",
 					"cullback": true,
-					"geometry": {
-						"displacement": {
-							"frequency": 0.009999999776482582,
-							"lacunarity": 1.0,
-							"map": "",
-							"octaves": 3,
-							"persistance": 0.5,
-							"scale": 0.5,
-							"seed": 1337,
-							"state": 0
-						},
-						"heightSegments": 26,
-						"type": "Plane",
-						"widthSegments": 25
-					},
+					"path": "virtual:grass",
 					"transparent": false,
 					"wireframe": false
 				},
@@ -164,9 +150,12 @@
 						"metallicRoughnessTexture": "",
 						"normalTexture": "assets/grass-normal.png",
 						"roughness": 0.5199999809265137,
-						"scale": 6.5,
-						"type": "PBR"
+						"scale": 6.5
 					}
+				},
+				{
+					"component": "Nodes",
+					"path": "assets/plane.otn"
 				}
 			]
 		}

@@ -5,13 +5,15 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 $input a_position, a_texcoord0
-$output v_position, v_texcoord0
+$output v_position
 
 #include <bgfx_shader.glsl>
+#include <utilities.glsl>
+
+uniform mat4 u_skyInvViewProjUniform;
 
 void main() {
-	v_position = a_position;
-	v_texcoord0 = a_texcoord0;
-	vec4 pos = mul(u_modelViewProj, vec4(a_position, 1.0));
-	gl_Position = pos.xyww;
+	vec4 pos = mul(u_skyInvViewProjUniform, vec4(uvToClipSpace(a_texcoord0, 1.0), 1.0));
+	v_position = pos.xyz / pos.w;
+	gl_Position = mul(u_modelViewProj, vec4(a_position, 1.0));
 }

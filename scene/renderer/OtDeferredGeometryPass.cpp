@@ -35,7 +35,7 @@ void OtSceneRenderer::renderDeferredGeometryPass(OtSceneRendererContext& ctx) {
 	// render all opaque geometries
 	if (ctx.hasOpaqueGeometries) {
 		ctx.scene->view<OtGeometryComponent, OtMaterialComponent>().each([&](auto entity, auto& geometry, auto& material) {
-			if (!geometry.transparent) {
+			if (!geometry.transparent && geometry.asset.isReady()) {
 				renderDeferredGeometry(ctx, pass, entity, geometry, material);
 			}
 		});
@@ -64,32 +64,26 @@ void OtSceneRenderer::renderDeferredGeometryPass(OtSceneRendererContext& ctx) {
 void OtSceneRenderer::renderDeferredGeometry(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtGeometryComponent& geometry, OtMaterialComponent& material) {
 	// see if geometry is visible
 	auto transform = ctx.scene->getGlobalTransform(entity);
-	auto aabb = geometry.geometry->getAABB().transform(transform);
+	auto geom = geometry.asset->getGeometry();
+	auto aabb = geom.getAABB().transform(transform);
 
 	// is this entity visible
 	if (ctx.camera.frustum.isVisibleAABB(aabb)) {
-		// determine the program
-		OtShaderProgram* program;
-
-		if (material.material.isKindOf<OtPbrMaterialClass>()) {
-			program = &deferredPbrProgram;
-		}
-
 		// submit the material and clipping uniforms
-		submitMaterialUniforms(material.material);
+		submitMaterialUniforms(*material.material);
 		submitClippingUniforms(ctx.clippingPlane);
 
 		// submit the geometry
 		if (geometry.wireframe) {
-			geometry.geometry->submitLines();
+			geom.submitLines();
 
 		} else {
-			geometry.geometry->submitTriangles();
+			geom.submitTriangles();
 		}
 
 		// set the program state
 		if (geometry.wireframe) {
-			program->setState(
+			deferredPbrProgram.setState(
 				OtStateWriteRgb |
 				OtStateWriteA |
 				OtStateWriteZ |
@@ -97,7 +91,7 @@ void OtSceneRenderer::renderDeferredGeometry(OtSceneRendererContext& ctx, OtPass
 				OtStateLines);
 
 		} else if (geometry.cullback) {
-			program->setState(
+			deferredPbrProgram.setState(
 				OtStateWriteRgb |
 				OtStateWriteA |
 				OtStateWriteZ |
@@ -105,7 +99,7 @@ void OtSceneRenderer::renderDeferredGeometry(OtSceneRendererContext& ctx, OtPass
 				OtStateCullCw);
 
 		} else {
-			program->setState(
+			deferredPbrProgram.setState(
 				OtStateWriteRgb |
 				OtStateWriteA |
 				OtStateWriteZ |
@@ -113,10 +107,10 @@ void OtSceneRenderer::renderDeferredGeometry(OtSceneRendererContext& ctx, OtPass
 		}
 
 		// set the transform
-		program->setTransform(transform);
+		deferredPbrProgram.setTransform(transform);
 
 		// run the program
-		pass.runShaderProgram(*program);
+		pass.runShaderProgram(deferredPbrProgram);
 	}
 }
 
@@ -138,7 +132,7 @@ void OtSceneRenderer::renderDeferredModel(OtSceneRendererContext& ctx, OtPass& p
 
 			if (ctx.camera.frustum.isVisibleAABB(aabb)) {
 				// submit the material and clipping information
-				submitPbrUniforms(model->getMaterials()[mesh.getMaterialIndex()].getPbrMaterial());
+				submitMaterialUniforms(model->getMaterials()[mesh.getMaterialIndex()].getPbrMaterial());
 				submitClippingUniforms(ctx.clippingPlane);
 
 				// submit the geometry

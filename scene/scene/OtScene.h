@@ -21,12 +21,12 @@
 #include "OtBackgroundComponent.h"
 #include "OtCameraComponent.h"
 #include "OtDirectionalLightComponent.h"
-#include "OtFlowComponent.h"
 #include "OtGeometryComponent.h"
 #include "OtIblComponent.h"
 #include "OtInstancingComponent.h"
 #include "OtMaterialComponent.h"
 #include "OtModelComponent.h"
+#include "OtNodesComponent.h"
 #include "OtScriptComponent.h"
 #include "OtSkyBoxComponent.h"
 #include "OtPostProcessingComponent.h"
@@ -50,7 +50,7 @@
 	OtCameraComponent, \
 	OtDirectionalLightComponent, \
 	OtScriptComponent, \
-	OtFlowComponent, \
+	OtNodesComponent, \
 	OtBackgroundComponent, \
 	OtTerrainComponent, \
 	OtSkyComponent, \
@@ -82,6 +82,9 @@ public:
 
 	// get the composite worldspace transform for the specified entity
 	glm::mat4 getGlobalTransform(OtEntity entity);
+
+	// evaluate all nodes
+	void evaluateNodes();
 
 private:
 	// metadata for editor

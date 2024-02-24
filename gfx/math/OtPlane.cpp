@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include "OtFunction.h"
-
 #include "OtGlm.h"
 #include "OtPlane.h"
 

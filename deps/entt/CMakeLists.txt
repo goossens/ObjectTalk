@@ -4,7 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Declare(entt GIT_REPOSITORY "https://github.com/skypjack/entt" GIT_TAG "v3.12.2")
+FetchContent_Declare(entt GIT_REPOSITORY "https://github.com/skypjack/entt" GIT_TAG "v3.13.1")
 FetchContent_Populate(entt)
 
 add_library(entt INTERFACE)

@@ -4,7 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Declare(imguifd GIT_REPOSITORY "https://github.com/aiekick/ImGuiFileDialog" GIT_TAG "v0.6.6.1")
+FetchContent_Declare(imguifd GIT_REPOSITORY "https://github.com/aiekick/ImGuiFileDialog" GIT_TAG "v0.6.7")
 FetchContent_Populate(imguifd)
 
 set(IMGUIFD_SOURCES

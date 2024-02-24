@@ -37,17 +37,14 @@ public:
 			}
 
 			if (ImGui::Button("Save As...", ImVec2(width, 0.0f))) {
-				ImGuiFileDialog::Instance()->OpenDialog(
-					"image-saveas-png",
-					"Save Image as...",
-					".*",
-					OtPathGetCurrentWorkingDirectory(),
-					"",
-					1,
-					nullptr,
-					ImGuiFileDialogFlags_Modal |
+				IGFD::FileDialogConfig config;
+				config.countSelectionMax = 1;
+
+				config.flags = ImGuiFileDialogFlags_Modal |
 						ImGuiFileDialogFlags_DontShowHiddenFiles |
-						ImGuiFileDialogFlags_ConfirmOverwrite);
+						ImGuiFileDialogFlags_ConfirmOverwrite;
+
+				ImGuiFileDialog::Instance()->OpenDialog("image-saveas", "Save Image as...", ".png", config);
 			}
 
 			if (!image.isValid()) {
@@ -61,7 +58,8 @@ public:
 			if (ImGuiFileDialog::Instance()->Display("image-saveas-png", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
 				// open selected file if required
 				if (ImGuiFileDialog::Instance()->IsOk()) {
-					auto path = ImGuiFileDialog::Instance()->GetFilePathName();
+					auto dialog = ImGuiFileDialog::Instance();
+					auto path = OtPathJoin(dialog->GetCurrentPath(), dialog->GetCurrentFileName());
 					path = OtPathReplaceExtension(path, ".png");
 					OtPathChangeDirectory(OtPathGetParent(path));
 					image.saveToPNG(path);

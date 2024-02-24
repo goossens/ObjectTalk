@@ -253,17 +253,15 @@ void OtWorkspace::newNodes() {
 //
 
 void OtWorkspace::openFile() {
-	ImGuiFileDialog::Instance()->OpenDialog(
-		"workspace-open",
-		"Select File to Open...",
-		".*",
-		OtPathGetCurrentWorkingDirectory(),
-		1,
-		nullptr,
-		ImGuiFileDialogFlags_Modal |
-			ImGuiFileDialogFlags_DontShowHiddenFiles |
-			ImGuiFileDialogFlags_ReadOnlyFileNameField);
+	IGFD::FileDialogConfig config;
+	config.path = OtPathGetCurrentWorkingDirectory();
+	config.countSelectionMax = 1;
 
+	config.flags = ImGuiFileDialogFlags_Modal |
+			ImGuiFileDialogFlags_DontShowHiddenFiles |
+			ImGuiFileDialogFlags_ReadOnlyFileNameField;
+
+	ImGuiFileDialog::Instance()->OpenDialog("workspace-open", "Select File to Open...", ".*", config);
 	state = openFileState;
 }
 
@@ -328,17 +326,19 @@ void OtWorkspace::saveFile() {
 //
 
 void OtWorkspace::saveAsFile() {
+	IGFD::FileDialogConfig config;
+	config.path = OtPathGetCurrentWorkingDirectory();
+	config.countSelectionMax = 1;
+
+	config.flags = ImGuiFileDialogFlags_Modal |
+			ImGuiFileDialogFlags_DontShowHiddenFiles |
+			ImGuiFileDialogFlags_ConfirmOverwrite;
+
 	ImGuiFileDialog::Instance()->OpenDialog(
 		"workspace-saveas",
 		"Save File as...",
 		activeEditor->getFileExtension().c_str(),
-		OtPathGetCurrentWorkingDirectory(),
-		OtPathGetFilename(activeEditor->getFilePath()),
-		1,
-		nullptr,
-		ImGuiFileDialogFlags_Modal |
-			ImGuiFileDialogFlags_DontShowHiddenFiles |
-			ImGuiFileDialogFlags_ConfirmOverwrite);
+		config);
 
 	state = saveFileAsState;
 }
@@ -744,7 +744,8 @@ void OtWorkspace::renderFileOpen() {
 	if (ImGuiFileDialog::Instance()->Display("workspace-open", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
 		// open selected file if required
 		if (ImGuiFileDialog::Instance()->IsOk()) {
-			auto path = ImGuiFileDialog::Instance()->GetFilePathName();
+			auto dialog = ImGuiFileDialog::Instance();
+			auto path = OtPathJoin(dialog->GetCurrentPath(), dialog->GetCurrentFileName());
 			openFile(path, OtEditor::inTab);
 
 			if (state != confirmErrorState) {
@@ -775,7 +776,8 @@ void OtWorkspace::renderSaveAs() {
 	if (ImGuiFileDialog::Instance()->Display("workspace-saveas", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
 		// open selected file if required
 		if (ImGuiFileDialog::Instance()->IsOk()) {
-			auto path = ImGuiFileDialog::Instance()->GetFilePathName();
+			auto dialog = ImGuiFileDialog::Instance();
+			auto path = OtPathJoin(dialog->GetCurrentPath(), dialog->GetCurrentFileName());
 			path = OtPathReplaceExtension(path, activeEditor->getFileExtension());
 			activeEditor->saveAsFile(path);
 			state = editState;

@@ -84,16 +84,15 @@ bool OtAssetSelector::renderUI(Info& info) {
 		ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2(0.0f, 0.5f));
 
 		if (ImGui::Button((filename + "##path").c_str(), ImVec2(pathWidth, itemHeight))) {
-			dialog->OpenDialog(
-				dialogID.c_str(),
-				"Select file...",
-				filter.c_str(),
-				info.path,
-				1,
-				nullptr,
-				ImGuiFileDialogFlags_Modal |
+			IGFD::FileDialogConfig config;
+			config.filePathName = info.path;
+			config.countSelectionMax = 1;
+
+			config.flags = ImGuiFileDialogFlags_Modal |
 					ImGuiFileDialogFlags_DontShowHiddenFiles |
-					ImGuiFileDialogFlags_ReadOnlyFileNameField);
+					ImGuiFileDialogFlags_ReadOnlyFileNameField;
+
+			dialog->OpenDialog(dialogID.c_str(), "Select file...", filter.c_str(), config);
 		}
 
 		ImGui::PopStyleVar();
@@ -136,17 +135,15 @@ bool OtAssetSelector::renderUI(Info& info) {
 		ImGui::SameLine(0.0f, spacing);
 
 		if (ImGui::Button("+", ImVec2(itemHeight, itemHeight))) {
-			ImGuiFileDialog::Instance()->OpenDialog(
-				dialogID.c_str(),
-				"Create file...",
-				filter.c_str(),
-				".",
-				1,
-				nullptr,
-				ImGuiFileDialogFlags_Modal |
-					ImGuiFileDialogFlags_DontShowHiddenFiles |
-					ImGuiFileDialogFlags_ConfirmOverwrite);
+			IGFD::FileDialogConfig config;
+			config.path = ".";
+			config.countSelectionMax = 1;
 
+			config.flags = ImGuiFileDialogFlags_Modal |
+					ImGuiFileDialogFlags_DontShowHiddenFiles |
+					ImGuiFileDialogFlags_ConfirmOverwrite;
+
+			dialog->OpenDialog(dialogID.c_str(), "Create file...", filter.c_str(), config);
 			creating = true;
 		}
 	}
@@ -172,7 +169,8 @@ bool OtAssetSelector::renderUI(Info& info) {
 
 	if (dialog->Display(dialogID.c_str(), ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
 		if (dialog->IsOk()) {
-			info.path = ImGuiFileDialog::Instance()->GetFilePathName();
+			auto dialog = ImGuiFileDialog::Instance();
+			info.path = OtPathJoin(dialog->GetCurrentPath(), dialog->GetCurrentFileName());
 			OtPathChangeDirectory(OtPathGetParent(info.path));
 			changed = true;
 

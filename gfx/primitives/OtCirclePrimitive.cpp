@@ -43,16 +43,9 @@ void OtCirclePrimitive::createMesh(OtMesh* mesh) {
 			glm::vec2((x + 1.0f) / 2.0f, 1.0f - ((y + 1.0f) / 2.0f))));
 	}
 
-	// add triangles and lines
+	// add triangles
 	for (auto c = 1; c <= segments; c++) {
 		mesh->addTriangle(c, c + 1, 0);
-
-		mesh->addLine(0, c);
-		mesh->addLine(c, c + 1);
-
-		if (c == segments) {
-			mesh->addLine(0, c + 1);
-		}
 	}
 }
 

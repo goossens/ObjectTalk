@@ -67,7 +67,7 @@ void OtCylinderPrimitive::generateTorso(OtMesh* mesh) {
 		}
 	}
 
-	// add triangles and lines
+	// add triangles
 	for (auto y = 0; y < heightSegments; y++) {
 		for (auto x = 0; x < radialSegments; x++) {
 			auto a = y * (radialSegments + 1) + x;
@@ -77,17 +77,6 @@ void OtCylinderPrimitive::generateTorso(OtMesh* mesh) {
 
 			mesh->addTriangle(a, b, d);
 			mesh->addTriangle(b, c, d);
-
-			if (y == 0) {
-				mesh->addLine(a, d);
-			}
-
-			mesh->addLine(a, b);
-			mesh->addLine(b, c);
-
-			if (x == radialSegments - 1) {
-				mesh->addLine(c, d);
-			}
 		}
 	}
 }

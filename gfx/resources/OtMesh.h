@@ -34,7 +34,7 @@ public:
 	void clear();
 
 	// see if mesh is valid
-	inline bool isValid() { return vertices.size() && triangles.size(); }
+	inline bool isValid() { return vertices.size() && indices.size(); }
 
 	// generate simple primitives
 	void generateCube();
@@ -43,31 +43,25 @@ public:
 	void load(const std::string& path);
 	void save(const std::string& path);
 
-	// add vertices/triangles/lines to the geometry
+	// add vertices/indices/lines to the geometry
 	inline void addVertex(const OtVertex& vertex) {
 		vertices.emplace_back(vertex);
 		aabb.addPoint(vertex.position);
 		refreshBuffers = true;
+		refreshLinesBuffer = true;
 	}
 
 
 	inline void addTriangle(uint32_t p1, uint32_t p2, uint32_t p3) {
-		triangles.emplace_back(p1);
-		triangles.emplace_back(p2);
-		triangles.emplace_back(p3);
+		indices.emplace_back(p1);
+		indices.emplace_back(p2);
+		indices.emplace_back(p3);
 		refreshBuffers = true;
-	}
-
-	inline void addLine(uint32_t p1, uint32_t p2) {
-		lines.emplace_back(p1);
-		lines.emplace_back(p2);
+		refreshLinesBuffer = true;
 	}
 
 	inline void addIndex(uint32_t p1, uint32_t p2, uint32_t p3) {
 		addTriangle(p1, p2, p3);
-		addLine(p1, p2);
-		addLine(p2, p3);
-		addLine(p3, p1);
 	}
 
 	// quick way to add complete faces
@@ -80,10 +74,6 @@ public:
 		addVertex(OtVertex(c, n));
 
 		addTriangle(offset, offset + 1, offset + 2);
-
-		addLine(offset, offset + 1);
-		addLine(offset + 1, offset + 2);
-		addLine(offset + 2, offset);
 	}
 
 	void addFace(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c, const glm::vec3& d) {
@@ -97,24 +87,18 @@ public:
 
 		addTriangle(offset, offset + 1, offset + 2);
 		addTriangle(offset, offset + 2, offset + 3);
-
-		addLine(offset, offset + 1);
-		addLine(offset + 1, offset + 2);
-		addLine(offset + 2, offset + 3);
-		addLine(offset + 3, offset);
 	}
 
 	// get counts
 	size_t getVertexCount() { return vertices.size(); }
-	size_t getIndexCount() { return triangles.size(); }
+	size_t getIndexCount() { return indices.size(); }
 
 	// generate normals and tangents
 	void generateNormals();
 	void generateTangents();
-	void generateLines();
 
 	// post process a mesh before it is submitted to the GPU
-	void postProcess(std::function<void(std::vector<OtVertex>& vertices, std::vector<uint32_t>& triangles)>);
+	void postProcess(std::function<void(std::vector<OtVertex>& vertices, std::vector<uint32_t>& indices)>);
 
 	// submit to GPU
 	void submitTriangles();
@@ -126,16 +110,16 @@ public:
 private:
 	// geometry data
 	std::vector<OtVertex> vertices;
-	std::vector<uint32_t> triangles;
-	std::vector<uint32_t> lines;
+	std::vector<uint32_t> indices;
 
 	// Axis-aligned Bounding Box (AABB)
 	OtAABB aabb;
 
 	// GPU resources
 	OtVertexBuffer vertexBuffer;
-	OtIndexBuffer triangleIndexBuffer;
-	OtIndexBuffer lineIndexBuffer;
+	OtIndexBuffer indexBuffer;
+	OtIndexBuffer lineBuffer;
 	bool refreshBuffers = true;
-	void updateBuffers();
+	bool refreshLinesBuffer = true;
+	void updateBuffers(bool updateLines=false);
 };

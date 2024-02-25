@@ -118,10 +118,6 @@
 						"roughness": 1.0,
 						"scale": 1.0
 					}
-				},
-				{
-					"component": "Script",
-					"path": "assets/palmtrees.ot"
 				}
 			]
 		},

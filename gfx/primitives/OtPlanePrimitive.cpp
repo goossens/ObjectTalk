@@ -42,7 +42,7 @@ void OtPlanePrimitive::createMesh(OtMesh* mesh) {
 		}
 	}
 
-	// add triangles and lines
+	// add triangles
 	for (auto iy = 0; iy < heightSegments; iy++) {
 		for (auto ix = 0; ix < widthSegments; ix++) {
 			auto a = ix + gridX1 * iy;
@@ -52,17 +52,6 @@ void OtPlanePrimitive::createMesh(OtMesh* mesh) {
 
 			mesh->addTriangle(a, b, d);
 			mesh->addTriangle(b, c, d);
-
-			if (iy == 0) {
-				mesh->addLine(a, d);
-			}
-
-			mesh->addLine(a, b);
-			mesh->addLine(b, c);
-
-			if (ix == widthSegments - 1) {
-				mesh->addLine(c, d);
-			}
 		}
 	}
 }

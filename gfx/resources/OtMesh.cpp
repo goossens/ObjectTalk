@@ -29,14 +29,13 @@
 
 void OtMesh::clear() {
 	vertices.clear();
-	triangles.clear();
-	lines.clear();
+	indices.clear();
 
 	aabb.clear();
 
 	vertexBuffer.clear();
-	triangleIndexBuffer.clear();
-	lineIndexBuffer.clear();
+	indexBuffer.clear();
+	lineBuffer.clear();
 }
 
 
@@ -101,7 +100,7 @@ void OtMesh::generateCube() {
 			glm::vec2(v[(i * 8) + 6], v[(i * 8) + 7])));
 	}
 
-	// add triangles
+	// add indices
 	for (auto i = 0; i < 12; i++) {
 		addTriangle(i * 3, (i * 3) + 1, (i * 3) + 2);
 	}
@@ -172,7 +171,7 @@ void OtMesh::load(const std::string& path) {
 				aimesh->mTangents ? ToVec3(aimesh->mBitangents[i]) : glm::vec3()));
 		}
 
-		// process all triangles
+		// process all indices
 		for(auto i = 0; i < aimesh->mNumFaces; i++) {
 			auto i0 = aimesh->mFaces[i].mIndices[0] + offset;
 			auto i1 = aimesh->mFaces[i].mIndices[1] + offset;
@@ -187,8 +186,6 @@ void OtMesh::load(const std::string& path) {
 	if (needsTangents) {
 		generateTangents();
 	}
-
-	generateLines();
 }
 
 
@@ -215,8 +212,8 @@ void OtMesh::save(const std::string& path) {
 		stream << fmt::format("vt {} {}\n", vertex.uv.x, vertex.uv.y);
 	}
 
-	// write all triangles
-	for (auto i = triangles.begin(); i < triangles.end(); i += 3) {
+	// write all indices
+	for (auto i = indices.begin(); i < indices.end(); i += 3) {
 		stream << fmt::format("f {} {} {}\n", *i + 1, *(i + 1) + 1,  *(i + 2) + 1);
 	}
 
@@ -235,10 +232,10 @@ void OtMesh::generateNormals() {
 	}
 
 	// generate new normals
-	for (auto c = 0; c < triangles.size(); c += 3) {
-		OtVertex& v0 = vertices[triangles[c]];
-		OtVertex& v1 = vertices[triangles[c + 1]];
-		OtVertex& v2 = vertices[triangles[c + 2]];
+	for (auto c = 0; c < indices.size(); c += 3) {
+		OtVertex& v0 = vertices[indices[c]];
+		OtVertex& v1 = vertices[indices[c + 1]];
+		OtVertex& v2 = vertices[indices[c + 2]];
 
 		auto normal = glm::cross(v2.position - v1.position, v0.position - v1.position);
 		v0.normal += normal;
@@ -267,10 +264,10 @@ void OtMesh::generateTangents() {
 	}
 
 	// generate new tangents
-	for (auto i = 0; i < triangles.size(); i += 3) {
-		OtVertex& v0 = vertices[triangles[i]];
-		OtVertex& v1 = vertices[triangles[i + 1]];
-		OtVertex& v2 = vertices[triangles[i + 2]];
+	for (auto i = 0; i < indices.size(); i += 3) {
+		OtVertex& v0 = vertices[indices[i]];
+		OtVertex& v1 = vertices[indices[i + 1]];
+		OtVertex& v2 = vertices[indices[i + 2]];
 
 		glm::vec3 edge1 = v1.position - v0.position;
 		glm::vec3 edge2 = v2.position - v0.position;
@@ -312,29 +309,13 @@ void OtMesh::generateTangents() {
 
 
 //
-//	OtMesh::generateLines
-//
-
-void OtMesh::generateLines() {
-	for (auto i = 0; i < triangles.size(); i += 3) {
-		auto p0 = triangles[i];
-		auto p1 = triangles[i + 1];
-		auto p2 = triangles[i + 2];
-
-		addLine(p0, p1);
-		addLine(p1, p2);
-		addLine(p2, p0);
-	}
-}
-
-
-//
 //	OtMesh::postProcess
 //
 
-void OtMesh::postProcess(std::function<void(std::vector<OtVertex> &vertices, std::vector<uint32_t> &triangles)> callback) {
-	callback(vertices, triangles);
+void OtMesh::postProcess(std::function<void(std::vector<OtVertex> &vertices, std::vector<uint32_t> &indices)> callback) {
+	callback(vertices, indices);
 	refreshBuffers = true;
+	refreshLinesBuffer = true;
 }
 
 
@@ -345,7 +326,7 @@ void OtMesh::postProcess(std::function<void(std::vector<OtVertex> &vertices, std
 void OtMesh::submitTriangles() {
 	updateBuffers();
 	vertexBuffer.submit();
-	triangleIndexBuffer.submit();
+	indexBuffer.submit();
 }
 
 
@@ -354,9 +335,9 @@ void OtMesh::submitTriangles() {
 //
 
 void OtMesh::submitLines() {
-	updateBuffers();
+	updateBuffers(true);
 	vertexBuffer.submit();
-	lineIndexBuffer.submit();
+	lineBuffer.submit();
 }
 
 
@@ -364,16 +345,33 @@ void OtMesh::submitLines() {
 //	OtMesh::updateBuffers
 //
 
-void OtMesh::updateBuffers() {
+void OtMesh::updateBuffers(bool updateLines) {
 	// update the buffers (if required)
 	if (refreshBuffers) {
 		if (!isValid()) {
-			OtLogFatal("You can't submit a mesh without vertices and/or triangles");
+			OtLogFatal("You can't submit a mesh without vertices and/or indices");
 		}
 
 		vertexBuffer.set(vertices.data(), vertices.size(), OtVertex::getLayout());
-		triangleIndexBuffer.set(triangles.data(), triangles.size());
-		lineIndexBuffer.set(lines.data(), lines.size());
+		indexBuffer.set(indices.data(), indices.size());
 		refreshBuffers = false;
+	}
+
+	// update lines buffer (if required)
+	if (updateLines && refreshLinesBuffer) {
+		std::vector<uint32_t> lines;
+
+		for (auto i = 0; i < indices.size(); i += 3) {
+			auto p0 = indices[i];
+			auto p1 = indices[i + 1];
+			auto p2 = indices[i + 2];
+
+			lines.emplace_back(p0); lines.emplace_back(p1);
+			lines.emplace_back(p1); lines.emplace_back(p2);
+			lines.emplace_back(p2); lines.emplace_back(p0);
+		}
+
+		lineBuffer.set(lines.data(), lines.size());
+		refreshLinesBuffer = false;
 	}
 }

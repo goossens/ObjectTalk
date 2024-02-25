@@ -101,7 +101,7 @@ void OtCubePrimitive::buildPlane(OtMesh* mesh, int udir, int vdir, float w, floa
 		}
 	}
 
-	// add triangles and lines
+	// add triangles
 	for (auto iy = 0; iy < gridY; iy++) {
 		for (auto ix = 0; ix < gridX; ix++) {
 			auto a = offset + ix + gridX1 * iy;
@@ -111,17 +111,6 @@ void OtCubePrimitive::buildPlane(OtMesh* mesh, int udir, int vdir, float w, floa
 
 			mesh->addTriangle(a, b, d);
 			mesh->addTriangle(b, c, d);
-
-			if (iy == 0) {
-				mesh->addLine(a, d);
-			}
-
-			mesh->addLine(a, b);
-			mesh->addLine(b, c);
-
-			if (ix == widthSegments - 1) {
-				mesh->addLine(c, d);
-			}
 		}
 	}
 }

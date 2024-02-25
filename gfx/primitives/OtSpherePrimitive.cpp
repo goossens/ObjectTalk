@@ -47,7 +47,7 @@ void OtSpherePrimitive::createMesh(OtMesh* mesh) {
 		}
 	}
 
-	// add triangles and lines
+	// add triangles
 	for (auto ring = 0; ring < phiSegments; ring++) {
 		for (auto seg = 0; seg < thetaSegments; seg++) {
 			auto a = ring * (thetaSegments + 1) + seg;
@@ -57,13 +57,6 @@ void OtSpherePrimitive::createMesh(OtMesh* mesh) {
 
 			mesh->addTriangle(a, b, d);
 			mesh->addTriangle(b, c, d);
-
-			if (ring == 0) {
-				mesh->addLine(a, d);
-			}
-
-			mesh->addLine(a, b);
-			mesh->addLine(b, c);
 		}
 	}
 }

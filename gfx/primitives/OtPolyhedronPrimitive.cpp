@@ -88,9 +88,6 @@ void OtPolyhedronPrimitive::createMesh(OtMesh* mesh) {
 	// add all triangles and lines
 	for (auto i = 0; i < mesh->getVertexCount(); i += 3) {
 		mesh->addTriangle(i, i + 1, i + 2);
-		mesh->addLine(i, i + 1);
-		mesh->addLine(i + 1, i + 2);
-		mesh->addLine(i + 2, i);
 	}
 
 	// correct the UVs

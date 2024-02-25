@@ -40,7 +40,7 @@ void OtTorusPrimitive::createMesh(OtMesh* mesh) {
 		}
 	}
 
-	// add triangles and lines
+	// add triangles
 	for (auto j = 1; j <= radialSegments; j++) {
 		for (auto i = 1; i <= tubularSegments; i++) {
 			auto a = (tubularSegments + 1) * j + i - 1;
@@ -50,14 +50,6 @@ void OtTorusPrimitive::createMesh(OtMesh* mesh) {
 
 			mesh->addTriangle(a, b, d);
 			mesh->addTriangle(b, c, d);
-
-			if (i == 1) {
-				mesh->addLine(a, b);
-			}
-
-			mesh->addLine(b, c);
-			mesh->addLine(c, d);
-			mesh->addLine(d, a);
 		}
 	}
 }

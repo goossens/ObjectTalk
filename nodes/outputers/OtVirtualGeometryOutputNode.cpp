@@ -30,13 +30,7 @@ public:
 	inline void configure() override {
 		addInputPin("Input", geometry)->addRenderer([&](float width) {
 			auto old = serialize().dump();
-
-			OtGeometryAsset* oldAsset = nullptr;
-
-			if (!asset.isNull()) {
-				oldAsset = &(*asset);
-			}
-
+			OtGeometryAsset* oldAsset = asset.isNull() ? nullptr : &(*asset);
 			ImGui::SetNextItemWidth(width);
 
 			if (asset.renderVirtualUI("##name")) {
@@ -55,10 +49,12 @@ public:
 	// synchronize the asset with the incoming geometry
 	void onExecute() override {
 		if (geometry.isValid()) {
-			asset->setGeometry(geometry);
+			if (!asset.isNull()) {
+				asset->setGeometry(geometry);
+			}
 
-		} else {
-			asset.clear();
+		} else if (!asset.isNull()) {
+			asset->clearGeometry();
 		}
 	}
 

@@ -33,7 +33,7 @@ void OtTexture::clear() {
 	width = 1;
 	height = 1;
 	format = noTexture;
-	version++;
+	incrementVersion();
 }
 
 
@@ -45,7 +45,7 @@ void OtTexture::create(int w, int h, int f, uint64_t flags) {
 	width = w;
 	height = h;
 	format = f;
-	version++;
+	incrementVersion();
 
 	texture = bgfx::createTexture2D(
 		uint16_t(width),
@@ -125,11 +125,11 @@ void OtTexture::loadFromImage(OtImage& image) {
 	// get the image data
 	bimg::ImageContainer* container = image.getContainer();
 
-	// remember size
+	// update properties
 	width = container->m_width;
 	height = container->m_height;
 	format = container->m_format;
-	version++;
+	incrementVersion();
 
 	// create texture
 	if (container->m_numMips > 1) {
@@ -157,11 +157,11 @@ void OtTexture::loadFromFile(const std::string& path) {
 //
 
 void OtTexture::loadFromMemory(int w, int h, uint8_t* pixels) {
-	// remember size
+	// update properties
 	width = w;
 	height = h;
 	format = rgba8Texture;
-	version++;
+	incrementVersion();
 
 	// create texture
 	texture = bgfx::createTexture2D(
@@ -172,11 +172,11 @@ void OtTexture::loadFromMemory(int w, int h, uint8_t* pixels) {
 }
 
 void OtTexture::loadFromMemory(int w, int h, float* pixels) {
-	// remember size
+	// update properties
 	width = w;
 	height = h;
 	format = rgbaFloat32Texture;
-	version++;
+	incrementVersion();
 
 	// create texture
 	texture = bgfx::createTexture2D(
@@ -197,11 +197,11 @@ void OtTexture::loadFromFileInMemory(void* data, uint32_t size) {
 	image.loadFromFileInMemory(data, size);
 	bimg::ImageContainer* container = image.getContainer();
 
-	// remember size
+	// update properties
 	width = container->m_width;
 	height = container->m_height;
 	format = container->m_format;
-	version++;
+	incrementVersion();
 
 	// create texture
 	texture = createRegularTexture(container);

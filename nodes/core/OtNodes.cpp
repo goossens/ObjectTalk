@@ -108,7 +108,7 @@ void OtNodes::load(const std::string& path) {
 		}
 	}
 
-	// set the flag
+	// set the sorting flag
 	needsSorting = true;
 }
 
@@ -316,7 +316,7 @@ OtNodesLink OtNodes::createLink(OtNodesPin from, OtNodesPin to, uint32_t id) {
 	linkIndex[link->id] = link;
 	link->connect();
 
-	// re-sort node list
+	// set sorting flag
 	needsSorting = true;
 	return link;
 }
@@ -349,7 +349,7 @@ void OtNodes::deleteLink(OtNodesLink link) {
 		return candidate == link;
 	}), links.end());
 
-	// re-sort node list
+	// set sorting flag
 	needsSorting = true;
 }
 
@@ -694,13 +694,13 @@ void OtNodes::evaluate() {
 		needsEvaluating = true;
 	}
 
-	// update all the nodes
+	// update all the nodes and see if we have to (re)run all nodes
 	for (auto& node : nodes) {
-		node->onUpdate();
+		needsEvaluating |= node->onUpdate();
 		needsEvaluating |= node->needsEvaluating;
 	}
 
-	// (re)run nodes if required
+	// (re)run nodes (if required)
 	if (needsEvaluating) {
 		// start the run
 		for (auto& node : nodes) {

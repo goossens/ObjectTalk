@@ -42,7 +42,7 @@ public:
 	OtImage(const std::string& path, bool powerof2=false, bool square=false);
 
 	// clear the resources
-	inline void clear() { image.reset(); }
+	void clear();
 
 	// create/update an image
 	void update(int width, int height, int format);

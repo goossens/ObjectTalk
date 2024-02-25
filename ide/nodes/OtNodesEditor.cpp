@@ -212,7 +212,7 @@ void OtNodesEditor::renderMenu() {
 
 void OtNodesEditor::renderEditor() {
 	// evaluate the nodes
-	auto nodes = asset->getNodes();
+	auto& nodes = asset->getNodes();
 	nodes.evaluate();
 
 	// render the nodes

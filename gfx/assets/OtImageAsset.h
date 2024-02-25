@@ -26,7 +26,7 @@ public:
 	// access the image
 	inline OtImage& getImage() { return image; }
 	inline void setImage(OtImage& i) { image = i; markReady(); }
-	inline void clearImage() { image.clear();markMissing(); }
+	inline void clearImage() { image.clear(); markMissing(); }
 
 	// asset properties
 	static constexpr bool canHandleVirtual = true;

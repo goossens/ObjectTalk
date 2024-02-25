@@ -104,7 +104,7 @@ public:
 	}
 
 	// interfaces
-	virtual inline void onUpdate() {};
+	virtual inline bool onUpdate() { return false; };
 	virtual inline void onStart() {};
 	virtual inline void onExecute() {};
 	virtual inline void onEnd() {};

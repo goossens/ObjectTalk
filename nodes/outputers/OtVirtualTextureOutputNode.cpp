@@ -30,13 +30,7 @@ public:
 	inline void configure() override {
 		addInputPin("Input", texture)->addRenderer([&](float width) {
 			auto old = serialize().dump();
-
-			OtTextureAsset* oldAsset = nullptr;
-
-			if (!asset.isNull()) {
-				oldAsset = &(*asset);
-			}
-
+			OtTextureAsset* oldAsset = asset.isNull() ? nullptr : &(*asset);
 			ImGui::SetNextItemWidth(width);
 
 			if (asset.renderVirtualUI("##name")) {
@@ -55,10 +49,12 @@ public:
 	// synchronize the asset with the incoming texture
 	void onExecute() override {
 		if (texture.isValid()) {
-			asset->setTexture(texture);
+			if (!asset.isNull()) {
+				asset->setTexture(texture);
+			}
 
-		} else {
-			asset.clear();
+		} else if (!asset.isNull()) {
+			asset->clearTexture();
 		}
 	}
 

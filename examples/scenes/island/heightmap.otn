@@ -422,8 +422,8 @@
 			"path": "virtual:normalmap",
 			"title": "Save Texture To Virtual",
 			"type": "Save Texture To Virtual",
-			"x": 1219.0,
-			"y": 149.0
+			"x": 1221.0,
+			"y": 147.0
 		}
 	]
 }

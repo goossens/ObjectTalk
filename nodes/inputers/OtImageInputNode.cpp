@@ -45,7 +45,6 @@ public:
 
 				} else {
 					image.clear();
-					loading = true;
 				}
 
 				oldState = old;
@@ -56,16 +55,13 @@ public:
 	}
 
 	// update state
-	inline void onUpdate() override {
-		if (loading && asset.isReady()) {
+	inline bool onUpdate() override {
+		if (!asset.isNull() && asset->getImage() != image) {
 			image = asset->getImage();
-			needsEvaluating = true;
-			loading = false;
+			return true;
 
-		} else if (asset.isReady() && asset->getImage().getVersion() != version) {
-			image = asset->getImage();
-			version = image.getVersion();
-			needsEvaluating = true;
+		} else {
+			return false;
 		}
 	}
 
@@ -82,10 +78,6 @@ public:
 
 		} else if (asset.isReady()) {
 			image = asset->getImage();
-			needsEvaluating = true;
-
-		} else {
-			loading = true;
 		}
 	}
 
@@ -95,8 +87,6 @@ public:
 protected:
 	OtAsset<OtImageAsset> asset;
 	OtImage image;
-	int version = 0;
-	bool loading = false;
 };
 
 static OtNodesFactoryRegister<OtImageInputNode> type("Input");

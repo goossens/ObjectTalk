@@ -45,7 +45,6 @@ public:
 
 				} else {
 					texture.clear();
-					loading = true;
 				}
 
 				oldState = old;
@@ -56,16 +55,13 @@ public:
 	}
 
 	// update state
-	inline void onUpdate() override {
-		if (loading && asset.isReady()) {
+	inline bool onUpdate() override {
+		if (!asset.isNull() && asset->getTexture() != texture) {
 			texture = asset->getTexture();
-			needsEvaluating = true;
-			loading = false;
+			return true;
 
-		} else if (asset.isReady() && asset->getTexture().getVersion() != version) {
-			texture = asset->getTexture();
-			version = texture.getVersion();
-			needsEvaluating = true;
+		} else {
+			return false;
 		}
 	}
 
@@ -83,9 +79,6 @@ public:
 		} else if (asset.isReady()) {
 			texture = asset->getTexture();
 			needsEvaluating = true;
-
-		} else {
-			loading = true;
 		}
 	}
 
@@ -95,8 +88,6 @@ public:
 protected:
 	OtAsset<OtTextureAsset> asset;
 	OtTexture texture;
-	int version = 0;
-	bool loading = false;
 };
 
 static OtNodesFactoryRegister<OtTextureInputNode> type("Input");

@@ -30,13 +30,7 @@ public:
 	inline void configure() override {
 		addInputPin("Input", image)->addRenderer([&](float width) {
 			auto old = serialize().dump();
-
-			OtImageAsset* oldAsset = nullptr;
-
-			if (!asset.isNull()) {
-				oldAsset = &(*asset);
-			}
-
+			OtImageAsset* oldAsset = asset.isNull() ? nullptr : &(*asset);
 			ImGui::SetNextItemWidth(width);
 
 			if (asset.renderVirtualUI("##name")) {
@@ -55,10 +49,12 @@ public:
 	// synchronize the asset with the incoming image
 	void onExecute() override {
 		if (image.isValid()) {
-			asset->setImage(image);
+			if (!asset.isNull()) {
+				asset->setImage(image);
+			}
 
-		} else {
-			asset.clear();
+		} else if (!asset.isNull()) {
+			asset->clearImage();
 		}
 	}
 

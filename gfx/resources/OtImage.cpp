@@ -51,6 +51,15 @@ OtImage::OtImage(const std::string& path, bool powerof2, bool square) {
 
 
 //
+//	OtImage::clear
+//
+
+void OtImage::clear() {
+	image.reset();
+	incrementVersion();
+}
+
+//
 //	OtImage::update
 //
 

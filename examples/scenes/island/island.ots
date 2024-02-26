@@ -11,7 +11,7 @@
 				{
 					"component": "Transform",
 					"rotation": [
-						0.0,
+						-18.700000762939453,
 						0.0,
 						0.0
 					],
@@ -21,16 +21,16 @@
 						1.0
 					],
 					"translation": [
-						0.0,
-						0.0,
-						0.0
+						-1.399999976158142,
+						46.29999923706055,
+						224.8000030517578
 					]
 				},
 				{
 					"component": "Camera",
-					"far": 100.0,
+					"far": 514.0,
 					"fov": 60.0,
-					"mainCamera": false,
+					"mainCamera": true,
 					"near": 0.10000000149011612
 				},
 				{
@@ -49,15 +49,15 @@
 					"uuid": 769720788
 				},
 				{
-					"azimuth": 180.0,
-					"cirrus": 0.4000000059604645,
+					"azimuth": 123.26000213623047,
+					"cirrus": 0.421999990940094,
 					"component": "Sky",
-					"cumulus": 0.800000011920929,
-					"elevation": 25.0,
+					"cumulus": 0.6209999918937683,
+					"elevation": 14.23799991607666,
 					"mieCoefficient": 5.0,
 					"mieScattering": 0.9900000095367432,
 					"rayleighCoefficient": 3.5,
-					"speed": 2.0
+					"speed": 1.8370000123977661
 				}
 			]
 		},
@@ -71,41 +71,27 @@
 				},
 				{
 					"component": "Geometry",
-					"cullback": true,
-					"geometry": {
-						"displacement": {
-							"frequency": 8.399999618530273,
-							"lacunarity": 1.0,
-							"map": "",
-							"octaves": 5,
-							"persistance": 0.7099999785423279,
-							"scale": 0.8199999928474426,
-							"seed": 1337,
-							"state": 0
-						},
-						"heightSegments": 97,
-						"type": "Plane",
-						"widthSegments": 86
-					},
+					"cullback": false,
+					"path": "virtual:island",
 					"transparent": false,
 					"wireframe": false
 				},
 				{
 					"component": "Transform",
 					"rotation": [
-						-90.0,
+						0.0,
 						0.0,
 						0.0
 					],
 					"scale": [
-						400.0,
-						400.0,
-						45.5
+						200.0,
+						57.5,
+						200.0
 					],
 					"translation": [
 						0.0,
-						0.0,
-						0.0
+						8.300000190734863,
+						33.29999923706055
 					]
 				},
 				{
@@ -117,7 +103,7 @@
 							1.0,
 							1.0
 						],
-						"albedoTexture": "",
+						"albedoTexture": "assets/rock.jpg",
 						"ao": 1.0,
 						"aoTexture": "",
 						"emissive": [
@@ -130,9 +116,40 @@
 						"metallicRoughnessTexture": "",
 						"normalTexture": "",
 						"roughness": 0.5,
-						"scale": 1.0,
-						"type": "PBR"
+						"scale": 15.100000381469727
 					}
+				},
+				{
+					"component": "Nodes",
+					"path": "assets/island.otn"
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Water",
+					"uuid": 2088255789
+				},
+				{
+					"ao": 0.44999998807907104,
+					"color": [
+						0.2666666805744171,
+						0.4627451002597809,
+						0.800000011920929
+					],
+					"component": "Water",
+					"distance": 500.0,
+					"level": 15.0,
+					"metallic": 0.10000000149011612,
+					"normals": "assets/water.jpg",
+					"reflectivity": 1.3899999856948853,
+					"roughness": 0.30000001192092896,
+					"scale": 50.0,
+					"speed": 2.5799999237060547,
+					"useRefractance": false
 				}
 			]
 		}

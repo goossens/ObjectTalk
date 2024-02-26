@@ -9,9 +9,6 @@
 //	Include files
 //
 
-#include "imgui.h"
-#include "nlohmann/json.hpp"
-
 #include "OtImage.h"
 #include "OtTexture.h"
 
@@ -27,12 +24,13 @@ public:
 	// constructor
 	inline OtImageToTextureNode() : OtNodeClass(name, OtNodeClass::transformer) {}
 
+	// configure node
 	inline void configure() override {
 		addInputPin("Input", image);
 		addOutputPin("Output", texture);
 	}
 
-	// when the input changes, we read back the texture into a CPU buffer
+	// when the input changes, we write the image to the GPUs texture
 	void onExecute() override {
 		if (image.isValid()) {
 			texture.loadFromImage(image);

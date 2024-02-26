@@ -69,11 +69,11 @@ void main() {
 	}
 
 	// get normal
-	vec2 uv = waterWorldPos.xz / u_size * u_scale;
-	vec2 uv1 = uv + vec2(u_time / 17.0, u_time / 29.0);
-	vec2 uv2 = uv - vec2(u_time / -19.0, u_time / 31.0);
-	vec2 uv3 = uv + vec2(u_time / 101.0, u_time / 97.0);
-	vec2 uv4 = uv - vec2(u_time / 109.0, u_time / -113.0);
+	vec2 uv = waterWorldPos.xz * u_scale;
+	vec2 uv1 = (uv / 103.0) + vec2(u_time / 17.0, u_time / 29.0);
+	vec2 uv2 = (uv / 107.0) - vec2(u_time / -19.0, u_time / 31.0) + vec2_splat(0.23);
+	vec2 uv3 = (uv / vec2(897.0, 983.0)) + vec2(u_time / 101.0, u_time / 97.0) + vec2_splat(0.51);
+	vec2 uv4 = (uv / vec2(991.0, 877.0)) - vec2(u_time / 109.0, u_time / -113.0) + vec2_splat(0.71);
 
 	vec4 noise =
 		texture2D(s_normalmapTexture, uv1) +
@@ -81,7 +81,10 @@ void main() {
 		texture2D(s_normalmapTexture, uv3) +
 		texture2D(s_normalmapTexture, uv4);
 
-	vec3 normal = normalize((noise.xzy * 0.5 - 1.0) * vec3(1.5, 1.0, 1.5));
+	noise = noise * 0.5 - 1.0;
+
+	float dist = length(u_cameraPosition - waterWorldPos);
+	vec3 normal = normalize(noise.xzy * vec3(2.0, clamp(dist * 0.001, 1.0, 100.0), 2.0));
 
 	// determine reflection and refraction colors
 	vec2 refractionUv = gl_FragCoord.xy / u_viewRect.zw;
@@ -136,8 +139,7 @@ void main() {
 		color += imageBasedLightingPBR(material, V, u_iblEnvLevels, s_iblBrdfLut, s_iblIrradianceMap, s_iblEnvironmentMap);
 	}
 
-
-	// apply PBR (tonemapping and gamma correction are done during post-processing)
+	// set results
 	gl_FragColor = vec4(color, 1.0);
 
 #if BGFX_SHADER_LANGUAGE_GLSL

@@ -65,7 +65,7 @@ public:
 		}
 	}
 
-	// (de)serialize input
+	// (de)serialize node
 	void customSerialize(nlohmann::json* data, std::string* basedir) override {
 		(*data)["image"] = OtPathRelative(asset.getPath(), basedir);
 	}

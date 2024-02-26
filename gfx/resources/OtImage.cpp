@@ -360,12 +360,24 @@ glm::vec4 OtImage::getPixelRgba(int x, int y) {
 	y = std::clamp(y, 0, (int) (image->m_height - 1));
 
 	if (image->m_format == bimg::TextureFormat::R8) {
+		auto value = ((uint8_t*) image->m_data)[y * image->m_width + x] / 256.0f;
+		return glm::vec4(value, value, value, 1.0f);
+
+	} else if (image->m_format == bimg::TextureFormat::R32F) {
 		auto value = ((float*) image->m_data)[y * image->m_width + x];
-		return glm::vec4(value, value, value,1.0f);
+		return glm::vec4(value, value, value, 1.0f);
+
+	} else if (image->m_format == bimg::TextureFormat::RGBA8) {
+		auto value = &((uint8_t*) image->m_data)[y * image->m_width + x];
+		return glm::vec4(value[0] / 255.0f, value[1] / 255.0f, value[2] / 255.0f, value[3] / 255.0f);
+
+	} else if (image->m_format == bimg::TextureFormat::RGBA32F) {
+		auto value = &((float*) image->m_data)[y * image->m_width + x];
+		return glm::vec4(value[0], value[1], value[2], value[3]);
 
 	} else {
-		auto value = &((uint8_t*) image->m_data)[y * image->m_width + x];
-		return glm::vec4((float) value[0] / 255.0f, (float) value[1] / 255.0f, (float) value[2] / 255.0f, (float) value[3] / 255.0f);
+		OtLogFatal("Can't get pixel from image in [{}] format", bimg::getName(image->m_format));
+		return glm::vec4();
 	}
 }
 
@@ -382,11 +394,22 @@ float OtImage::getPixelGray(int x, int y) {
 	y = std::clamp(y, 0, (int) image->m_height - 1);
 
 	if (image->m_format == bimg::TextureFormat::R8) {
+		return ((uint8_t*) image->m_data)[y * image->m_width + x] / 256.0f;
+
+	} else if (image->m_format == bimg::TextureFormat::R32F) {
 		return ((float*) image->m_data)[y * image->m_width + x];
 
-	} else {
+	} else if (image->m_format == bimg::TextureFormat::RGBA8) {
 		auto value = &((uint8_t*) image->m_data)[y * image->m_width + x];
-		return (float) value[0] / 255.0f * 0.3f + (float) value[1] / 255.0f * 0.59f + (float) value[2] / 255.0f * 0.11f;
+		return value[0] / 255.0f * 0.3f + value[1] / 255.0f * 0.59f + value[2] / 255.0f * 0.11f;
+
+	} else if (image->m_format == bimg::TextureFormat::RGBA32F) {
+		auto value = &((float*) image->m_data)[y * image->m_width + x];
+		return value[0] * 0.3f + value[1] * 0.59f + value[2] * 0.11f;
+
+	} else {
+		OtLogFatal("Can't get pixel from image in [{}] format", bimg::getName(image->m_format));
+		return 0.0f;
 	}
 }
 

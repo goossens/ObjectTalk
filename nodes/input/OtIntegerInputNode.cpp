@@ -45,7 +45,7 @@ public:
 		}, fieldWidth);
 	}
 
-	// (de)serialize input
+	// (de)serialize node
 	void customSerialize(nlohmann::json* data, std::string* basedir) override {
 		(*data)["value"] = value;
 	}

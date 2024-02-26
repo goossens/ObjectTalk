@@ -9,9 +9,6 @@
 //	Include files
 //
 
-#include "imgui.h"
-#include "nlohmann/json.hpp"
-
 #include "OtImage.h"
 #include "OtReadBackBuffer.h"
 #include "OtTexture.h"
@@ -28,6 +25,7 @@ public:
 	// constructor
 	inline OtTextureToImageNode() : OtNodeClass(name, OtNodeClass::transformer) {}
 
+	// configure node
 	inline void configure() override {
 		addInputPin("Input", texture);
 		addOutputPin("Output", image);

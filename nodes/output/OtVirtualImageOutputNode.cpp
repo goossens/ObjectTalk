@@ -12,30 +12,30 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
-#include "OtTextureAsset.h"
+#include "OtImageAsset.h"
 
 #include "OtNodesFactory.h"
 
 
 //
-//	OtVirtualTextureOutputNode
+//	OtVirtualImageOutputNode
 //
 
-class OtVirtualTextureOutputNode : public OtNodeClass {
+class OtVirtualImageOutputNode : public OtNodeClass {
 public:
 	// constructor
-	inline OtVirtualTextureOutputNode() : OtNodeClass(name, OtNodeClass::output) {}
+	inline OtVirtualImageOutputNode() : OtNodeClass(name, OtNodeClass::output) {}
 
 	// configure node
 	inline void configure() override {
-		addInputPin("Input", texture)->addRenderer([&](float width) {
+		addInputPin("Input", image)->addRenderer([&](float width) {
 			auto old = serialize().dump();
-			OtTextureAsset* oldAsset = asset.isNull() ? nullptr : &(*asset);
+			OtImageAsset* oldAsset = asset.isNull() ? nullptr : &(*asset);
 			ImGui::SetNextItemWidth(width);
 
 			if (asset.renderVirtualUI("##name")) {
 				if (oldAsset && asset.isNull()) {
-					oldAsset->clearTexture();
+					oldAsset->clearImage();
 				}
 
 				oldState = old;
@@ -46,19 +46,19 @@ public:
 		}, fieldWidth);
 	}
 
-	// synchronize the asset with the incoming texture
+	// synchronize the asset with the incoming image
 	void onExecute() override {
-		if (texture.isValid()) {
+		if (image.isValid()) {
 			if (!asset.isNull()) {
-				asset->setTexture(texture);
+				asset->setImage(image);
 			}
 
 		} else if (!asset.isNull()) {
-			asset->clearTexture();
+			asset->clearImage();
 		}
 	}
 
-	// (de)serialize input
+	// (de)serialize node
 	void customSerialize(nlohmann::json* data, std::string* basedir) override {
 		auto t = asset.getPath();
 		(*data)["path"] = asset.getPath();
@@ -68,12 +68,12 @@ public:
 		asset = data->value("path", "");
 	}
 
-	static constexpr const char* name = "Save Texture To Virtual";
+	static constexpr const char* name = "Save Image To Virtual";
 	static constexpr float fieldWidth = 170.0f;
 
 protected:
-	OtTexture texture;
-	OtAsset<OtTextureAsset> asset;
+	OtImage image;
+	OtAsset<OtImageAsset> asset;
 };
 
-static OtNodesFactoryRegister<OtVirtualTextureOutputNode> type("Output");
+static OtNodesFactoryRegister<OtVirtualImageOutputNode> type("Output");

@@ -45,6 +45,7 @@ static constexpr ImU32 nodeColors[] = {
 	IM_COL32(50, 100, 40, 255),		// generator
 	IM_COL32(115, 70, 30, 255),		// filter
 	IM_COL32(35, 60, 130, 255),		// transformer
+	IM_COL32(30, 110, 90, 255),		// geometry
 	IM_COL32(50, 50, 90, 255)		// probe
 };
 

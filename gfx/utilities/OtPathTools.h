@@ -137,7 +137,7 @@ static inline std::string OtPathReplaceExtension(const std::string path, const s
 static inline std::string OtPathJoin(const std::string& base, const std::string& tail) {
 	return OtPathIsVirtual(tail)
 		? tail
-		: std::filesystem::canonical(std::filesystem::path(base) / std::filesystem::path(tail)).string();
+		: (std::filesystem::path(base) / std::filesystem::path(tail)).string();
 }
 
 

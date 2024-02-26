@@ -38,6 +38,7 @@ public:
 		generator,
 		filter,
 		transformer,
+		geometry,
 		probe
 	};
 

@@ -62,7 +62,7 @@ public:
 		return ImGui::GetFrameHeightWithSpacing();
 	}
 
-	// (de)serialize input
+	// (de)serialize node
 	void customSerialize(nlohmann::json* data, std::string* basedir) override {
 		(*data)["noiseType"] = noiseType;
 	}

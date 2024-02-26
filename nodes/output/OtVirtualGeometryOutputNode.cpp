@@ -58,7 +58,7 @@ public:
 		}
 	}
 
-	// (de)serialize input
+	// (de)serialize node
 	void customSerialize(nlohmann::json* data, std::string* basedir) override {
 		auto t = asset.getPath();
 		(*data)["path"] = asset.getPath();

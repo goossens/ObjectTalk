@@ -29,73 +29,65 @@ public:
 
 	// configure node
 	inline void configure() override {
-		addInputPin("Width", width);
-		addInputPin("Depth", depth);
 		addInputPin("Input", image);
 		addOutputPin("Output", geometry);
 	}
 
 	// create grid and apply heightmap
 	void onExecute() override {
-		// update geometry if required
-		auto& mesh = geometry.getMesh();
-
-		if (mesh.getVertexCount() != (width + 1) * (depth + 1)) {
-			createMesh(mesh);
-		}
-
-		// update heightmap if required
+		// do we have a valid input
 		if (image.isValid()) {
-			updateHeights(mesh);
-		}
+			// get the mesh
+			auto& mesh = geometry.getMesh();
+
+			// get image dimensions
+			auto imageWidth = image.getWidth();
+			auto imageHeight = image.getHeight();
+
+			// update geometry if required
+			if (width != imageWidth || depth != imageHeight) {
+				width = imageWidth;
+				depth = imageHeight;
+				createMesh(mesh);
+			}
+
+		// update heightmap
+		updateHeights(mesh);
 
 		// update geometries version number
 		geometry.incrementVersion();
-	}
 
-	// (de)serialize node
-	void customSerialize(nlohmann::json* data, std::string* basedir) override {
-		(*data)["width"] = width;
-		(*data)["depth"] = depth;
-	}
-
-	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		width = data->value("width", 256);
-		depth = data->value("depth", 256);
+		} else {
+			// no valid input, just clear the geometry
+			geometry.clear();
+		}
 	}
 
 	// create the terrain mesh
 	void createMesh(OtMesh& mesh) {
+		// clear mesh first
 		mesh.clear();
 
 		// add vertices
-		auto gridX1 = width + 1;
-		auto gridZ1 = depth + 1;
+		for (auto z = 0; z < depth; z++) {
+			auto v = (float) z / (depth - 1);
 
-		auto segmentWidth = 1.0f / (float) width;
-		auto segmentDepth = 1.0f / (float) depth;
-
-		for (auto iz = 0; iz < gridZ1; iz++) {
-			auto z = iz * segmentDepth - 0.5f;
-
-			for (auto ix = 0; ix < gridX1; ix++) {
-				auto x = ix * segmentWidth - 0.5f;
-				auto u = (float) ix / (float) width;
-				auto v = (float) iz / (float) depth;
+			for (auto x = 0; x < width; x++) {
+				auto u = (float) x / (width - 1);
 
 				mesh.addVertex(OtVertex(
-					glm::vec3(x, 0.0f, z),
+					glm::vec3(u - 0.5f, 0.0f, v - 0.5f),
 					glm::vec3(0.0f, 1.0f, 0.0f),
 					glm::vec2(u, v)));
 			}
 		}
 
 		// add triangles
-		for (auto iz = 0; iz < depth; iz++) {
-			for (auto ix = 0; ix < width; ix++) {
-				auto a = ix + gridX1 * iz;
+		for (auto z = 0; z < depth; z++) {
+			for (auto x = 0; x < width; x++) {
+				auto a = x + width * z;
 				auto b = a + 1;
-				auto c = a + gridX1;
+				auto c = a + width;
 				auto d = c + 1;
 
 				mesh.addTriangle(a, c, d);
@@ -106,11 +98,13 @@ public:
 
 	// update the terrain heights
 	void updateHeights(OtMesh& mesh) {
-		mesh.postProcess([&](std::vector<OtVertex>& vertices, std::vector<uint32_t>& indices) {
-			for (auto& vertex : vertices) {
-				vertex.position.y = image.sampleValue(vertex.uv.x, vertex.uv.y);
+		OtVertex* vertex = mesh.getVertices(true).data();
+
+		for (auto z = 0; z < depth; z++) {
+			for (auto x = 0; x < width; x++) {
+				(vertex++)->position.y = image.getPixelGray(x, z);
 			}
-		});
+		}
 
 		mesh.generateNormals();
 	}
@@ -118,10 +112,10 @@ public:
 	static constexpr const char* name = "Terrain Builder";
 
 protected:
-	int width = 256;
-	int depth = 256;
 	OtImage image;
 	OtGeometry geometry;
+	int width = 0;
+	int depth = 0;
 };
 
 static OtNodesFactoryRegister<OtTerrainBuilder> type("Geometry");

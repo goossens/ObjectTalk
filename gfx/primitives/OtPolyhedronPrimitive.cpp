@@ -91,29 +91,29 @@ void OtPolyhedronPrimitive::createMesh(OtMesh* mesh) {
 	}
 
 	// correct the UVs
-	mesh->postProcess([this](std::vector<OtVertex>& vertices, std::vector<uint32_t>& triangles) {
-		for (auto i = vertices.begin(); i < vertices.end();) {
-			auto a = i++;
-			auto b = i++;
-			auto c = i++;
+	auto& vertices = mesh->getVertices();
 
-			auto centroid = (a->position + b->position + c->position) / 3.0f;
-			auto azi = azimuth(centroid);
+	for (auto i = vertices.begin(); i < vertices.end();) {
+		auto a = i++;
+		auto b = i++;
+		auto c = i++;
 
-			a->uv.x = correctUV(a->normal, a->uv.x, azi);
-			b->uv.x = correctUV(b->normal, b->uv.x, azi);
-			c->uv.x = correctUV(c->normal, c->uv.x, azi);
+		auto centroid = (a->position + b->position + c->position) / 3.0f;
+		auto azi = azimuth(centroid);
 
-			auto minU = std::min(a->uv.x, std::min(b->uv.x, c->uv.x));
-			auto maxU = std::max(a->uv.x, std::max(b->uv.x, c->uv.x));
+		a->uv.x = correctUV(a->normal, a->uv.x, azi);
+		b->uv.x = correctUV(b->normal, b->uv.x, azi);
+		c->uv.x = correctUV(c->normal, c->uv.x, azi);
 
-			if (maxU > 0.9 && minU < 0.1) {
-				if (a->uv.x < 0.2) a->uv.x += 1.0;
-				if (b->uv.x < 0.2) b->uv.x += 1.0;
-				if (c->uv.x < 0.2) c->uv.x += 1.0;
-			}
+		auto minU = std::min(a->uv.x, std::min(b->uv.x, c->uv.x));
+		auto maxU = std::max(a->uv.x, std::max(b->uv.x, c->uv.x));
+
+		if (maxU > 0.9 && minU < 0.1) {
+			if (a->uv.x < 0.2) a->uv.x += 1.0;
+			if (b->uv.x < 0.2) b->uv.x += 1.0;
+			if (c->uv.x < 0.2) c->uv.x += 1.0;
 		}
-	});
+	}
 }
 
 

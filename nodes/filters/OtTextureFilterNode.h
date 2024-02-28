@@ -43,7 +43,11 @@ public:
 			// determine output texture format for framebuffer
 			auto format = getOutputFormat();
 			format = format == OtTexture::noTexture ? inputTexture.getFormat() : format;
-			framebuffer.initialize(format);
+
+			// reinitialize framebuffer if format changed
+			if (format != framebuffer.getColorTextureType()) {
+				framebuffer.initialize(format);
+			}
 
 			// ensure framebuffer has the right size
 			framebuffer.update(inputTexture.getWidth(), inputTexture.getHeight());

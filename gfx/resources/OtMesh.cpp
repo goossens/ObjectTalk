@@ -309,13 +309,16 @@ void OtMesh::generateTangents() {
 
 
 //
-//	OtMesh::postProcess
+//	OtMesh::getVertices
 //
 
-void OtMesh::postProcess(std::function<void(std::vector<OtVertex> &vertices, std::vector<uint32_t> &indices)> callback) {
-	callback(vertices, indices);
-	refreshBuffers = true;
-	refreshLinesBuffer = true;
+std::vector<OtVertex>& OtMesh::getVertices(bool update) {
+	if (update) {
+		refreshBuffers = true;
+		refreshLinesBuffer = true;
+	}
+
+	return vertices;
 }
 
 

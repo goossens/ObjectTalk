@@ -19,5 +19,4 @@ void main() {
 	vec3 color2 = texture2D(s_texture, uv2).xyz;
 
 	gl_FragColor = vec4(mix(color2, color1, alpha), 1.0);
-//	gl_FragColor = vec4(vec3_splat(alpha), 1.0);
 }

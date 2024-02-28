@@ -97,8 +97,8 @@ public:
 	void generateNormals();
 	void generateTangents();
 
-	// post process a mesh before it is submitted to the GPU
-	void postProcess(std::function<void(std::vector<OtVertex>& vertices, std::vector<uint32_t>& indices)>);
+	// get access to vertices (to allow transformations)
+	std::vector<OtVertex>& getVertices(bool update=false);
 
 	// submit to GPU
 	void submitTriangles();

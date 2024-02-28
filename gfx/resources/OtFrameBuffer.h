@@ -44,6 +44,10 @@ public:
 	inline int getWidth() { return width; }
 	inline int getHeight() { return height; }
 
+	// get texture types
+	inline int getColorTextureType() { return colorTextureType; }
+	inline int getDepthTextureType() { return depthTextureType; }
+
 	// get textures
 	inline OtTexture getColorTexture() { return OtTexture(colorTexture, width, height, colorTextureType); }
 	inline OtTexture getDepthTexture() { return OtTexture(depthTexture, width, height, depthTextureType); }

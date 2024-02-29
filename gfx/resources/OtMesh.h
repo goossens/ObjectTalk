@@ -43,14 +43,13 @@ public:
 	void load(const std::string& path);
 	void save(const std::string& path);
 
-	// add vertices/indices/lines to the geometry
+	// add vertices/indices to the geometry
 	inline void addVertex(const OtVertex& vertex) {
 		vertices.emplace_back(vertex);
 		aabb.addPoint(vertex.position);
 		refreshBuffers = true;
 		refreshLinesBuffer = true;
 	}
-
 
 	inline void addTriangle(uint32_t p1, uint32_t p2, uint32_t p3) {
 		indices.emplace_back(p1);
@@ -121,5 +120,7 @@ private:
 	OtIndexBuffer lineBuffer;
 	bool refreshBuffers = true;
 	bool refreshLinesBuffer = true;
+
+	// house keeping function
 	void updateBuffers(bool updateLines=false);
 };

@@ -21,7 +21,6 @@
 
 OtGeometry::OtGeometry() {
 	mesh = std::make_shared<OtMesh>();
-	mesh->generateCube();
 	incrementVersion();
 }
 
@@ -39,4 +38,13 @@ OtGeometry::OtGeometry(const std::string& path) {
 void OtGeometry::clear() {
 	mesh = std::make_shared<OtMesh>();
 	incrementVersion();
+}
+
+
+//
+//	OtGeometry::cloneMesh
+//
+
+void OtGeometry::cloneMesh(const OtGeometry& geometry) {
+	mesh = std::make_shared<OtMesh>(*geometry.mesh);
 }

@@ -442,11 +442,29 @@ void OtNodesWidget::renderPin(ImDrawList* drawlist, OtNodesPin& pin, float x, fl
 //
 
 void OtNodesWidget::renderLink(ImDrawList* drawlist, const ImVec2& start, const ImVec2& end, ImU32 color) {
-	auto distanceX = end.x - start.x;
-	auto distanceY = end.y - start.y;
-	auto length = std::sqrt(distanceX * distanceX + distanceY * distanceY);
-	auto offset = ImVec2(0.25f * length, 0.0f);
-	drawlist->AddBezierCubic(start, start + offset, end - offset, end, color, linkThinkness);
+	// see what kind of line we need
+	if (start.x < end.x) {
+		// we need a simple left to right curved line
+		auto distanceX = end.x - start.x;
+		auto distanceY = end.y - start.y;
+		auto length = std::sqrt(distanceX * distanceX + distanceY * distanceY);
+		auto offset = ImVec2(0.25f * length, 0.0f);
+		drawlist->AddBezierCubic(start, start + offset, end - offset, end, color, linkThinkness);
+
+	} else {
+		// we need a wrap-around curved line
+		float vd2 = (end.y - start.y) / 2.0f;
+		float vd2a = std::abs(vd2);
+		ImVec2 center1 = start + ImVec2(0.0f, vd2);
+		ImVec2 center2 = end - ImVec2(0.0f, vd2);
+		ImVec2 control1a = start + ImVec2(vd2a, 0.0f);
+		ImVec2 control1b = start + ImVec2(vd2a, vd2);
+		ImVec2 control2a = end - ImVec2(vd2a, vd2);
+		ImVec2 control2b = end - ImVec2(vd2a, 0.0f);
+		drawlist->AddBezierCubic(start, control1a, control1b, center1, color, linkThinkness);
+		drawlist->AddLine(center1, center2, color, linkThinkness);
+		drawlist->AddBezierCubic(center2, control2a, control2b, end, color, linkThinkness);
+	}
 }
 
 

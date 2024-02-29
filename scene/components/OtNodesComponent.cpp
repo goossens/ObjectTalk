@@ -9,7 +9,9 @@
 //	Include files
 //
 
+#include <algorithm>
 #include <fstream>
+#include <vector>
 
 #include "imgui.h"
 #include "nlohmann/json.hpp"
@@ -40,12 +42,39 @@ static const char* flowTemplate = "\
 //
 
 bool OtNodesComponent::renderUI() {
-	return asset.renderUI("Path##FlowPath", [](const std::string& path) {
+	bool changed = asset.renderUI("Path##FlowPath", [](const std::string& path) {
 		// create a new nodes file
 		std::ofstream stream(path);
 		stream << flowTemplate;
 		stream.close();
 	});
+
+	if (asset.isReady()) {
+		auto& nodes = asset->getNodes();
+		std::vector<OtNode> inputNodes;
+
+		nodes.eachNode([&](OtNode& node) {
+			if (node->category == OtNodeClass::input) {
+				inputNodes.emplace_back(node);
+			}
+		});
+
+		std::sort(inputNodes.begin(), inputNodes.end(), [](OtNode a, OtNode b) {
+			return a->y < b->y;
+		});
+
+		for (auto& node : inputNodes) {
+			node->eachPin([node](OtNodesPin& pin) {
+				ImGui::PushID(pin.get());
+				pin->render(ImGui::CalcItemWidth());
+				ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+				ImGui::TextUnformatted(node->title.c_str());
+				ImGui::PopID();
+			});
+		}
+	}
+
+	return changed;
 }
 
 

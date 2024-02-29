@@ -12,17 +12,20 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
+#include "OtGlm.h"
+#include "OtUi.h"
+
 #include "OtNodesFactory.h"
 
 
 //
-//	OtFloatInputNode
+//	OtVec3InputNode
 //
 
-class OtFloatInputNode : public OtNodeClass {
+class OtVec3InputNode : public OtNodeClass {
 public:
 	// constructor
-	inline OtFloatInputNode() : OtNodeClass(name, OtNodeClass::input) {}
+	inline OtVec3InputNode() : OtNodeClass(name, OtNodeClass::input) {}
 
 	// configure node
 	inline void configure() override {
@@ -30,7 +33,7 @@ public:
 			auto old = serialize().dump();
 			ImGui::SetNextItemWidth(width);
 
-			if (ImGui::DragFloat("##value", &value, 0.2f, 0.0f, 0.0f, "%.3f")) {
+			if (OtUiEditVec3("##value", value, 0.1f, 0.0f, 0.0f)) {
 				oldState = old;
 				newState = serialize().dump();
 
@@ -48,14 +51,14 @@ public:
 	}
 
 	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		value = data->value("value", 0.0f);
+		value = data->value("value", glm::vec3(0.0f));
 	}
 
-	static constexpr const char* name = "Float Input";
-	static constexpr float fieldWidth = 120.0f;
+	static constexpr const char* name = "Vec3 Input";
+	static constexpr float fieldWidth = 200.0f;
 
 protected:
-	float value = 0.0f;
+	glm::vec3 value{0.0f};
 };
 
-static OtNodesFactoryRegister<OtFloatInputNode> type("Input");
+static OtNodesFactoryRegister<OtVec3InputNode> type("Input");

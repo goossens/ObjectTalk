@@ -53,7 +53,7 @@
 					"cirrus": 0.421999990940094,
 					"component": "Sky",
 					"cumulus": 0.6209999918937683,
-					"elevation": 14.23799991607666,
+					"elevation": 17.17300033569336,
 					"mieCoefficient": 5.0,
 					"mieScattering": 0.9900000095367432,
 					"rayleighCoefficient": 3.5,
@@ -75,24 +75,6 @@
 					"path": "virtual:island",
 					"transparent": false,
 					"wireframe": false
-				},
-				{
-					"component": "Transform",
-					"rotation": [
-						0.0,
-						0.0,
-						0.0
-					],
-					"scale": [
-						200.0,
-						57.5,
-						200.0
-					],
-					"translation": [
-						0.0,
-						8.300000190734863,
-						33.29999923706055
-					]
 				},
 				{
 					"component": "Material",
@@ -136,18 +118,18 @@
 				{
 					"ao": 0.44999998807907104,
 					"color": [
-						0.2666666805744171,
-						0.4627451002597809,
-						0.800000011920929
+						0.45344191789627075,
+						0.534967839717865,
+						0.8539823293685913
 					],
 					"component": "Water",
 					"distance": 500.0,
 					"level": 15.0,
 					"metallic": 0.10000000149011612,
 					"normals": "assets/water.jpg",
-					"reflectivity": 1.3899999856948853,
+					"reflectivity": 0.4699999988079071,
 					"roughness": 0.30000001192092896,
-					"scale": 50.0,
+					"scale": 48.36000061035156,
 					"speed": 2.5799999237060547,
 					"useRefractance": false
 				}

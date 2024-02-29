@@ -37,6 +37,7 @@ public:
 
 	// access the mesh
 	OtMesh& getMesh() { return *mesh; }
+	void cloneMesh(const OtGeometry& geometry);
 
 	// load/save the geometry
 	inline void load(const std::string& path) { mesh->load(path); }

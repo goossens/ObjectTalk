@@ -11,9 +11,6 @@
 
 #include <cstring>
 
-#include "glm/ext.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-
 #include "OtLog.h"
 
 #include "OtGpu.h"

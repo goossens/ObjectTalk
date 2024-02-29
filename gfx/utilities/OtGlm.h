@@ -15,7 +15,7 @@
 #include <iostream>
 
 #include "glm/glm.hpp"
-#include "glm/gtx/io.hpp"
+#include <glm/gtx/string_cast.hpp>
 #include "nlohmann/json_fwd.hpp"
 
 #include "OtNumbers.h"
@@ -26,7 +26,7 @@
 //
 
 inline glm::vec3 OtGlmMul(const glm::mat4& m, const glm::vec3& v) {
-	auto r = m * glm::vec4(v, 1.0);
+	auto r = m * glm::vec4(v, 1.0f);
 	return glm::vec3(r.x / r.w, r.y / r.w, r.z / r.w);
 }
 
@@ -82,22 +82,22 @@ namespace glm {
 //
 
 inline void OtGlmDebug(const glm::vec2& v) {
-	std::cout << v << std::endl;
+	std::cout << glm::to_string(v) << std::endl;
 }
 
 inline void OtGlmDebug(const glm::vec3& v) {
-	std::cout << v << std::endl;
+	std::cout << glm::to_string(v) << std::endl;
 }
 
 inline void OtGlmDebug(const glm::vec4& v) {
-	std::cout << v << std::endl;
+	std::cout << glm::to_string(v) << std::endl;
 }
 
 
 inline void OtGlmDebug(const glm::mat3& m) {
-	std::cout << m << std::endl;
+	std::cout << glm::to_string(m) << std::endl;
 }
 
 inline void OtGlmDebug(const glm::mat4& m) {
-	std::cout << m << std::endl;
+	std::cout << glm::to_string(m) << std::endl;
 }

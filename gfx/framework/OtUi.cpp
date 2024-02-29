@@ -13,7 +13,7 @@
 #include <cmath>
 #include <string>
 
-#include "glm/ext.hpp"
+#include "glm/gtc/type_ptr.hpp"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
@@ -144,12 +144,16 @@ bool OtUiInputText(const char* label, std::string& value, ImGuiInputTextFlags fl
 //	OtUiEditVecX
 //
 
-static bool OtUiEditVecX(const char* label, float* v, int components, float speed, float minv, float maxv) {
+static bool OtUiEditVecX(const char* labelPlusID, float* v, int components, float speed, float minv, float maxv) {
 	ImGuiWindow* window = ImGui::GetCurrentWindow();
 	bool changed = false;
 
+	std::string label;
+	std::string id;
+	OtUiSplitLabel(labelPlusID, label, id);
+
 	ImGui::BeginGroup();
-	ImGui::PushID(label);
+	ImGui::PushID(id.c_str());
 	ImGui::PushMultiItemsWidths(components, ImGui::CalcItemWidth());
 
 	static const ImU32 colors[] = { 0xBB0000FF, 0xBB00FF00, 0xBBFF0000, 0xBBFFFFFF };
@@ -169,7 +173,11 @@ static bool OtUiEditVecX(const char* label, float* v, int components, float spee
 	}
 
 	ImGui::PopID();
-	ImGui::TextUnformatted(label, ImGui::FindRenderedTextEnd(label));
+
+	if (label.size()) {
+		ImGui::TextUnformatted(label.c_str(), ImGui::FindRenderedTextEnd(label.c_str()));
+	}
+
 	ImGui::EndGroup();
 	return changed;
 }

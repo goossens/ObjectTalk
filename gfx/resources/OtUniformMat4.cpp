@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include "glm/ext.hpp"
-
 #include "OtLog.h"
 
 #include "OtUniformMat4.h"

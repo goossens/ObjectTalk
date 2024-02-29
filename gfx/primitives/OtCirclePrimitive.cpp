@@ -11,7 +11,6 @@
 
 #include <cmath>
 
-#include "glm/glm.hpp"
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 

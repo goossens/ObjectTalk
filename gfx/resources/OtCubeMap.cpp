@@ -14,7 +14,6 @@
 #include <sstream>
 
 #include "bx/allocator.h"
-#include "glm/glm.hpp"
 #include "nlohmann/json.hpp"
 
 #include "OtException.h"

@@ -17,19 +17,6 @@
 
 
 //
-//	Helper functions
-//
-
-static inline glm::vec2 ToVec2(const aiVector3D& v) {
-	return glm::vec2(v.x, v.y);
-}
-
-static inline glm::vec3 ToVec3(const aiVector3D& v) {
-	return glm::vec3(v.x, v.y, v.z);
-}
-
-
-//
 //	OtModelMaterial::load
 //
 

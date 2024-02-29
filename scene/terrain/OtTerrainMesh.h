@@ -13,7 +13,6 @@
 //
 
 #include "glm/glm.hpp"
-#include "glm/ext.hpp"
 
 #include "OtAABB.h"
 #include "OtGlm.h"

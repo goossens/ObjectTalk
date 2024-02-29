@@ -9,7 +9,6 @@
 //	Include files
 //
 
-#include "glm/ext.hpp"
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 

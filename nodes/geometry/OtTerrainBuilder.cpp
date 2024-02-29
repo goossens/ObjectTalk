@@ -9,9 +9,6 @@
 //	Include files
 //
 
-#include "imgui.h"
-#include "nlohmann/json.hpp"
-
 #include "OtGeometry.h"
 #include "OtImage.h"
 
@@ -51,11 +48,11 @@ public:
 				createMesh(mesh);
 			}
 
-		// update heightmap
-		updateHeights(mesh);
+			// update heightmap
+			updateHeights(mesh);
 
-		// update geometries version number
-		geometry.incrementVersion();
+			// update geometries version number
+			geometry.incrementVersion();
 
 		} else {
 			// no valid input, just clear the geometry

@@ -14,7 +14,6 @@
 
 
 #include "glm/glm.hpp"
-#include "glm/ext.hpp"
 
 #include "OtFrustum.h"
 #include "OtGpu.h"

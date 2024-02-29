@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include "glm/glm.hpp"
-
 #include "OtBlit.h"
 
 

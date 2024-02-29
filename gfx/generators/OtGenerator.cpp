@@ -10,7 +10,6 @@
 //
 
 #include "bgfx/bgfx.h"
-#include "glm/glm.hpp"
 
 #include "OtGenerator.h"
 #include "OtPass.h"

@@ -13,9 +13,7 @@
 //
 
 #include <cstdint>
-
-#include "glm/glm.hpp"
-#include "glm/ext.hpp"
+#include <string>
 
 #include "OtBgfxHandle.h"
 

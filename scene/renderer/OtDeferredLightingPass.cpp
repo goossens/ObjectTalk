@@ -9,7 +9,6 @@
 //	Include files
 //
 
-#include "glm/glm.hpp"
 #include "OtSceneRenderer.h"
 
 

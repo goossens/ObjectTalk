@@ -11,8 +11,6 @@
 
 #include <cmath>
 
-#include "glm/glm.hpp"
-
 #include "OtSceneRenderer.h"
 
 

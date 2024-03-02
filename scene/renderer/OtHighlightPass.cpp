@@ -80,10 +80,30 @@ void OtSceneRenderer::renderHighlight(OtSceneRendererContext& ctx, OtPass& pass,
 		auto& asset = ctx.scene->getComponent<OtGeometryComponent>(entity).asset;
 
 		if (asset.isReady()) {
-			asset->getGeometry().submitTriangles();
-			selectProgram.setTransform(ctx.scene->getGlobalTransform(entity));
-			selectProgram.setState(OtStateWriteRgb);
-			pass.runShaderProgram(selectProgram);
+			auto& geometry = asset->getGeometry();
+			geometry.submitTriangles();
+
+			// is this a case of instancing?
+			if (ctx.scene->hasComponent<OtInstancingComponent>(entity)) {
+				// only render instances if we have a valid asset and at least one instance is visible
+				auto& instancing = ctx.scene->getComponent<OtInstancingComponent>(entity);
+
+				if (!instancing.asset.isNull() && instancing.asset->getInstances().submit()) {
+					selectInstancingProgram.setTransform(ctx.scene->getGlobalTransform(entity));
+					selectInstancingProgram.setState(OtStateWriteRgb);
+					pass.runShaderProgram(selectInstancingProgram);
+				}
+
+			} else {
+				// see if geometry is visible
+				auto aabb = geometry.getAABB().transform(ctx.scene->getGlobalTransform(entity));
+
+				if (ctx.camera.frustum.isVisibleAABB(aabb)) {
+					selectProgram.setTransform(ctx.scene->getGlobalTransform(entity));
+					selectProgram.setState(OtStateWriteRgb);
+					pass.runShaderProgram(selectProgram);
+				}
+			}
 		}
 
 	} else if (ctx.scene->hasComponent<OtModelComponent>(entity)) {

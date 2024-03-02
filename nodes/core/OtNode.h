@@ -39,6 +39,7 @@ public:
 		filter,
 		transformer,
 		geometry,
+		instances,
 		probe
 	};
 

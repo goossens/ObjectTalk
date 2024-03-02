@@ -46,20 +46,22 @@ static constexpr ImU32 nodeColors[] = {
 	IM_COL32(115, 70, 30, 255),		// filter
 	IM_COL32(35, 60, 130, 255),		// transformer
 	IM_COL32(30, 110, 90, 255),		// geometry
+	IM_COL32(30, 110, 90, 255),		// instances
 	IM_COL32(50, 50, 90, 255)		// probe
 };
 
 static constexpr ImU32 pinColors[] = {
-	IM_COL32(206, 167, 215, 255),	// bool
-	IM_COL32(96, 159, 98, 255),		// int
+	IM_COL32(220, 130, 0, 255),		// bool
+	IM_COL32(100, 160, 100, 255),	// int
 	IM_COL32(180, 180, 180, 255),	// float
-	IM_COL32(117, 0, 117, 255),		// vec2
-	IM_COL32(117, 117, 255, 255),	// vec3
-	IM_COL32(180, 117, 255, 255),	// vec4
+	IM_COL32(120, 0, 120, 255),		// vec2
+	IM_COL32(120, 60, 255, 200),	// vec3
+	IM_COL32(180, 120, 255, 255),	// vec4
 	IM_COL32(200, 190, 120, 255),	// image
 	IM_COL32(180, 90, 0, 255),		// texture
-	IM_COL32(0, 215, 65, 255),		// geometry
-	IM_COL32(199, 199, 41, 255)		// color
+	IM_COL32(0, 120, 65, 255),		// geometry
+	IM_COL32(0, 160, 220, 255),		// instances
+	IM_COL32(200, 200, 40, 255)		// color
 };
 
 static constexpr float gridSpacing = 64.0f;

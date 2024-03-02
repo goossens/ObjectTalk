@@ -42,13 +42,14 @@ static const char* flowTemplate = "\
 //
 
 bool OtNodesComponent::renderUI() {
-	bool changed = asset.renderUI("Path##FlowPath", [](const std::string& path) {
+	bool changed = asset.renderUI("Path##NodesPath", [](const std::string& path) {
 		// create a new nodes file
 		std::ofstream stream(path);
 		stream << flowTemplate;
 		stream.close();
 	});
 
+/*
 	if (asset.isReady()) {
 		auto& nodes = asset->getNodes();
 		std::vector<OtNode> inputNodes;
@@ -73,6 +74,7 @@ bool OtNodesComponent::renderUI() {
 			});
 		}
 	}
+*/
 
 	return changed;
 }

@@ -71,9 +71,13 @@ inline glm::vec3 OtGlmUvToNormal(const glm::vec2& uv) {
 namespace glm {
 	void to_json(nlohmann::json& j, const glm::vec3& v);
 	void to_json(nlohmann::json& j, const glm::vec4& v);
+	void to_json(nlohmann::json& j, const glm::mat3& m);
+	void to_json(nlohmann::json& j, const glm::mat4& m);
 
 	void from_json(const nlohmann::json& j, glm::vec3& v);
 	void from_json(const nlohmann::json& j, glm::vec4& v);
+	void from_json(const nlohmann::json& j, glm::mat3& m);
+	void from_json(const nlohmann::json& j, glm::mat4& m);
 }
 
 

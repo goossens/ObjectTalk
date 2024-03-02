@@ -14,7 +14,6 @@
 #include <glm/gtx/quaternion.hpp>
 
 #include "OtGeometry.h"
-#include "OtImage.h"
 
 #include "OtNodesFactory.h"
 
@@ -48,9 +47,9 @@ public:
 
 			// clone the mesh
 			output.cloneMesh(input);
-			auto& mesh = output.getMesh();
 
-			// get acces to the vertices mesh
+			// get accesss to the mesh and vertex list
+			auto& mesh = output.getMesh();
 			OtVertex* vertex = mesh.getVertices().data();
 			auto count = mesh.getVertexCount();
 
@@ -61,16 +60,13 @@ public:
 				vertex++;
 			}
 
-			// update geometries version number
-			output.incrementVersion();
-
 		} else {
 			// no valid input, just clear the output
 			output.clear();
 		}
 	}
 
-	static constexpr const char* name = "Transform Geometry";
+	static constexpr const char* name = "Geometry Transform";
 
 protected:
 	OtGeometry input;

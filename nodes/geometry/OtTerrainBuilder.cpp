@@ -34,25 +34,18 @@ public:
 	void onExecute() override {
 		// do we have a valid input
 		if (image.isValid()) {
-			// get the mesh
-			auto& mesh = geometry.getMesh();
-
-			// get image dimensions
+			// recreate mesh if required
 			auto imageWidth = image.getWidth();
 			auto imageHeight = image.getHeight();
 
-			// update geometry if required
 			if (width != imageWidth || depth != imageHeight) {
 				width = imageWidth;
 				depth = imageHeight;
-				createMesh(mesh);
+				createMesh();
 			}
 
 			// update heightmap
-			updateHeights(mesh);
-
-			// update geometries version number
-			geometry.incrementVersion();
+			updateHeights();
 
 		} else {
 			// no valid input, just clear the geometry
@@ -61,9 +54,10 @@ public:
 	}
 
 	// create the terrain mesh
-	void createMesh(OtMesh& mesh) {
-		// clear mesh first
-		mesh.clear();
+	void createMesh() {
+		// clear geometry and get access to mesh
+		geometry.clear();
+		auto& mesh = geometry.getMesh();
 
 		// add vertices
 		for (auto z = 0; z < depth; z++) {
@@ -94,16 +88,23 @@ public:
 	}
 
 	// update the terrain heights
-	void updateHeights(OtMesh& mesh) {
+	void updateHeights() {
+		// get accesss to the mesh and vertex list
+		auto& mesh = geometry.getMesh();
 		OtVertex* vertex = mesh.getVertices(true).data();
 
+		// update height of each vertex
 		for (auto z = 0; z < depth; z++) {
 			for (auto x = 0; x < width; x++) {
 				(vertex++)->position.y = image.getPixelGray(x, z);
 			}
 		}
 
+		// now we need to update all normals
 		mesh.generateNormals();
+
+		// update geometry version number
+		geometry.incrementVersion();
 	}
 
 	static constexpr const char* name = "Terrain Builder";

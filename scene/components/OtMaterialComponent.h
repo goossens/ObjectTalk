@@ -15,7 +15,6 @@
 #include <memory>
 #include <string>
 
-#include "glm/glm.hpp"
 #include "nlohmann/json_fwd.hpp"
 
 #include "OtMaterial.h"

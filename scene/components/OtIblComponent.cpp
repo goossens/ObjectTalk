@@ -23,9 +23,7 @@
 //
 
 bool OtIblComponent::renderUI() {
-	bool changed = false;
-	changed |= cubemap.renderUI("Cube Map");
-	return changed;
+	return cubemap.renderUI("Cube Map");
 }
 
 

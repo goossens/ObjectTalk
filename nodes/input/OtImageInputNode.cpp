@@ -67,11 +67,11 @@ public:
 
 	// (de)serialize node
 	void customSerialize(nlohmann::json* data, std::string* basedir) override {
-		(*data)["image"] = OtPathRelative(asset.getPath(), basedir);
+		(*data)["path"] = OtPathRelative(asset.getPath(), basedir);
 	}
 
 	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		asset = OtPathGetAbsolute(*data, "image", basedir);
+		asset = OtPathGetAbsolute(*data, "path", basedir);
 
 		if (asset.isNull()) {
 			image.clear();

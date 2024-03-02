@@ -24,6 +24,7 @@
 
 #include "OtGeometry.h"
 #include "OtImage.h"
+#include "OtInstances.h"
 #include "OtTexture.h"
 
 #include "OtNodesUtils.h"
@@ -49,7 +50,8 @@ using OtNodesPinTypes = OtTypeList<
 	glm::vec4,
 	OtImage,
 	OtTexture,
-	OtGeometry>;
+	OtGeometry,
+	OtInstances>;
 
 enum {
 	OtNodesPinBoolType,
@@ -60,7 +62,8 @@ enum {
 	OtNodesPinVec4Type,
 	OtNodesPinImageType,
 	OtNodesPinTextureType,
-	OtNodesPinGeometryType
+	OtNodesPinGeometryType,
+	OtNodesPinInstancesType
 };
 
 static constexpr const char* OtNodesPinTypeNames[] = {
@@ -72,7 +75,8 @@ static constexpr const char* OtNodesPinTypeNames[] = {
 	"vec4",
 	"image",
 	"texture",
-	"geometry" };
+	"geometry",
+	"instances" };
 
 
 //

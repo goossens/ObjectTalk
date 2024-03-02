@@ -25,7 +25,7 @@
 class OtGeometryGeneratorNode : public OtNodeClass {
 public:
 	// constructor
-	inline OtGeometryGeneratorNode() : OtNodeClass(name, OtNodeClass::generator) {
+	inline OtGeometryGeneratorNode() : OtNodeClass(name, OtNodeClass::geometry) {
 		primitive = OtPrimitiveFactory::instance()->create("Cube");
 	}
 
@@ -121,4 +121,4 @@ protected:
 	int version = 1;
 };
 
-static OtNodesFactoryRegister<OtGeometryGeneratorNode> type("Generators");
+static OtNodesFactoryRegister<OtGeometryGeneratorNode> type("Geometry");

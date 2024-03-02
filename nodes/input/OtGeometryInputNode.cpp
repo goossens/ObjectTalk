@@ -12,39 +12,39 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
+#include "OtGeometry.h"
+#include "OtGeometryAsset.h"
 #include "OtPathTools.h"
-#include "OtTexture.h"
-#include "OtTextureAsset.h"
 
 #include "OtNodesFactory.h"
 
 
 //
-//	OtTextureInputNode
+//	OtGeometryInputNode
 //
 
-class OtTextureInputNode : public OtNodeClass {
+class OtGeometryInputNode : public OtNodeClass {
 public:
 	// constructor
-	inline OtTextureInputNode() : OtNodeClass(name, OtNodeClass::input) {}
+	inline OtGeometryInputNode() : OtNodeClass(name, OtNodeClass::input) {}
 
 	// configure node
 	inline void configure() override {
-		addOutputPin("Texture", texture)->addRenderer([this](float width) {
+		addOutputPin("Geometry", geometry)->addRenderer([this](float width) {
 			ImGui::SetNextItemWidth(width);
 			auto old = serialize().dump();
 
-			if (asset.renderUI("##image")) {
+			if (asset.renderUI("##geometry")) {
 				if (asset.isNull()) {
-					texture.clear();
+					geometry.clear();
 					needsEvaluating = true;
 
 				} else if (asset.isReady()) {
-					texture = asset->getTexture();
+					geometry = asset->getGeometry();
 					needsEvaluating = true;
 
 				} else {
-					texture.clear();
+					geometry.clear();
 				}
 
 				oldState = old;
@@ -56,8 +56,8 @@ public:
 
 	// update state
 	inline bool onUpdate() override {
-		if (!asset.isNull() && asset->getTexture() != texture) {
-			texture = asset->getTexture();
+		if (!asset.isNull() && asset->getGeometry() != geometry) {
+			geometry = asset->getGeometry();
 			return true;
 
 		} else {
@@ -74,20 +74,19 @@ public:
 		asset = OtPathGetAbsolute(*data, "path", basedir);
 
 		if (asset.isNull()) {
-			texture.clear();
+			geometry.clear();
 
 		} else if (asset.isReady()) {
-			texture = asset->getTexture();
-			needsEvaluating = true;
+			geometry = asset->getGeometry();
 		}
 	}
 
-	static constexpr const char* name = "Texture Input";
+	static constexpr const char* name = "Geometry Input";
 	static constexpr float fieldWidth = 180.0f;
 
 protected:
-	OtAsset<OtTextureAsset> asset;
-	OtTexture texture;
+	OtAsset<OtGeometryAsset> asset;
+	OtGeometry geometry;
 };
 
-static OtNodesFactoryRegister<OtTextureInputNode> type("Input");
+static OtNodesFactoryRegister<OtGeometryInputNode> type("Input");

@@ -33,6 +33,7 @@ void OtSceneRenderer::renderDeferredGeometryPass(OtSceneRendererContext& ctx) {
 	// render all opaque geometries
 	if (ctx.hasOpaqueGeometries) {
 		ctx.scene->view<OtGeometryComponent, OtMaterialComponent>().each([&](auto entity, auto& geometry, auto& material) {
+			// ensure they are ready to be rendered
 			if (!geometry.transparent && geometry.asset.isReady()) {
 				renderDeferredGeometry(ctx, pass, entity, geometry, material);
 			}
@@ -42,7 +43,9 @@ void OtSceneRenderer::renderDeferredGeometryPass(OtSceneRendererContext& ctx) {
 	// render all opaque models
 	if (ctx.hasOpaqueModels) {
 		ctx.scene->view<OtModelComponent>().each([&](auto entity, auto& model) {
-			renderDeferredModel(ctx, pass, entity, model);
+			if (model.model.isReady()) {
+				renderDeferredModel(ctx, pass, entity, model);
+			}
 		});
 	}
 
@@ -60,18 +63,39 @@ void OtSceneRenderer::renderDeferredGeometryPass(OtSceneRendererContext& ctx) {
 //
 
 void OtSceneRenderer::renderDeferredGeometry(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtGeometryComponent& geometry, OtMaterialComponent& material) {
-	// see if geometry is visible
-	auto transform = ctx.scene->getGlobalTransform(entity);
-	auto geom = geometry.asset->getGeometry();
-	auto aabb = geom.getAABB().transform(transform);
+	// visibility flag and target program
+	bool visible = false;
+	OtShaderProgram* program;
 
-	// is this entity visible
-	if (ctx.camera.frustum.isVisibleAABB(aabb)) {
+	// is this a case of instancing?
+	if (ctx.scene->hasComponent<OtInstancingComponent>(entity)) {
+		// only render instances if we have a valid asset and at least one instance is visible
+		auto& instancing = ctx.scene->getComponent<OtInstancingComponent>(entity);
+
+		if (!instancing.asset.isNull() && instancing.asset->getInstances().submit()) {
+			visible = true;
+			program = &deferredInstancingProgram;
+		}
+
+	} else {
+		// see if geometry is visible
+		auto aabb = geometry.asset->getGeometry().getAABB().transform(ctx.scene->getGlobalTransform(entity));
+
+		if (ctx.camera.frustum.isVisibleAABB(aabb)) {
+			visible = true;
+			program = &deferredPbrProgram;
+		}
+	}
+
+	// ensure geometry is visible
+	if (visible) {
 		// submit the material and clipping uniforms
 		submitMaterialUniforms(*material.material);
 		submitClippingUniforms(ctx.clippingPlane);
 
 		// submit the geometry
+		auto geom = geometry.asset->getGeometry();
+
 		if (geometry.wireframe) {
 			geom.submitLines();
 
@@ -81,7 +105,7 @@ void OtSceneRenderer::renderDeferredGeometry(OtSceneRendererContext& ctx, OtPass
 
 		// set the program state
 		if (geometry.wireframe) {
-			deferredPbrProgram.setState(
+			program->setState(
 				OtStateWriteRgb |
 				OtStateWriteA |
 				OtStateWriteZ |
@@ -89,7 +113,7 @@ void OtSceneRenderer::renderDeferredGeometry(OtSceneRendererContext& ctx, OtPass
 				OtStateLines);
 
 		} else if (geometry.cullback) {
-			deferredPbrProgram.setState(
+			program->setState(
 				OtStateWriteRgb |
 				OtStateWriteA |
 				OtStateWriteZ |
@@ -97,7 +121,7 @@ void OtSceneRenderer::renderDeferredGeometry(OtSceneRendererContext& ctx, OtPass
 				OtStateCullCw);
 
 		} else {
-			deferredPbrProgram.setState(
+			program->setState(
 				OtStateWriteRgb |
 				OtStateWriteA |
 				OtStateWriteZ |
@@ -105,10 +129,10 @@ void OtSceneRenderer::renderDeferredGeometry(OtSceneRendererContext& ctx, OtPass
 		}
 
 		// set the transform
-		deferredPbrProgram.setTransform(transform);
+		program->setTransform(ctx.scene->getGlobalTransform(entity));
 
 		// run the program
-		pass.runShaderProgram(deferredPbrProgram);
+		pass.runShaderProgram(*program);
 	}
 }
 
@@ -118,38 +142,36 @@ void OtSceneRenderer::renderDeferredGeometry(OtSceneRendererContext& ctx, OtPass
 //
 
 void OtSceneRenderer::renderDeferredModel(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtModelComponent& component) {
-	// process all the meshes (if required)
-	if (component.model.isReady()) {
-		auto model = component.model;
-		auto transform = ctx.scene->getGlobalTransform(entity);
+	// process all the meshes
+	auto model = component.model;
+	auto transform = ctx.scene->getGlobalTransform(entity);
 
-		for (auto& mesh : model->getMeshes()) {
-			// see if mesh is visible?
-			auto aabb = mesh.getAABB();
-			aabb.transform(transform);
+	for (auto& mesh : model->getMeshes()) {
+		// see if mesh is visible?
+		auto aabb = mesh.getAABB();
+		aabb.transform(transform);
 
-			if (ctx.camera.frustum.isVisibleAABB(aabb)) {
-				// submit the material and clipping information
-				submitMaterialUniforms(model->getMaterials()[mesh.getMaterialIndex()].getPbrMaterial());
-				submitClippingUniforms(ctx.clippingPlane);
+		if (ctx.camera.frustum.isVisibleAABB(aabb)) {
+			// submit the material and clipping information
+			submitMaterialUniforms(model->getMaterials()[mesh.getMaterialIndex()].getPbrMaterial());
+			submitClippingUniforms(ctx.clippingPlane);
 
-				// submit the geometry
-				mesh.submitTriangles();
+			// submit the geometry
+			mesh.submitTriangles();
 
-				// set the transform
-				deferredPbrProgram.setTransform(transform);
+			// set the transform
+			deferredPbrProgram.setTransform(transform);
 
-				// set the program state
-				deferredPbrProgram.setState(
-					OtStateWriteRgb |
-					OtStateWriteA |
-					OtStateWriteZ |
-					OtStateDepthTestLess |
-					OtStateCullCw);
+			// set the program state
+			deferredPbrProgram.setState(
+				OtStateWriteRgb |
+				OtStateWriteA |
+				OtStateWriteZ |
+				OtStateDepthTestLess |
+				OtStateCullCw);
 
-				// run the program
-				pass.runShaderProgram(deferredPbrProgram);
-			}
+			// run the program
+			pass.runShaderProgram(deferredPbrProgram);
 		}
 	}
 }

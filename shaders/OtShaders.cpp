@@ -98,6 +98,9 @@
 #include "generated/highlight/OtOutlineVS_mtl.h"
 #include "generated/highlight/OtOutlineVS_spv.h"
 #include "generated/highlight/OtOutlineVS_dx11.h"
+#include "generated/highlight/OtSelectInstancingVS_mtl.h"
+#include "generated/highlight/OtSelectInstancingVS_spv.h"
+#include "generated/highlight/OtSelectInstancingVS_dx11.h"
 #include "generated/highlight/OtSelectVS_mtl.h"
 #include "generated/highlight/OtSelectVS_spv.h"
 #include "generated/highlight/OtSelectVS_dx11.h"
@@ -206,6 +209,8 @@ static const uint8_t OtGridFS_glsl[1] = {0};
 static const uint8_t OtGridFS_essl[1] = {0};
 static const uint8_t OtOutlineVS_glsl[1] = {0};
 static const uint8_t OtOutlineVS_essl[1] = {0};
+static const uint8_t OtSelectInstancingVS_glsl[1] = {0};
+static const uint8_t OtSelectInstancingVS_essl[1] = {0};
 static const uint8_t OtSelectVS_glsl[1] = {0};
 static const uint8_t OtSelectVS_essl[1] = {0};
 static const uint8_t OtOutlineFS_glsl[1] = {0};
@@ -267,6 +272,7 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtGridVS),
 	BGFX_EMBEDDED_SHADER(OtGridFS),
 	BGFX_EMBEDDED_SHADER(OtOutlineVS),
+	BGFX_EMBEDDED_SHADER(OtSelectInstancingVS),
 	BGFX_EMBEDDED_SHADER(OtSelectVS),
 	BGFX_EMBEDDED_SHADER(OtOutlineFS),
 	BGFX_EMBEDDED_SHADER(OtSelectFS),

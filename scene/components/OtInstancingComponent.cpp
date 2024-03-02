@@ -20,7 +20,7 @@
 //
 
 bool OtInstancingComponent::renderUI() {
-	return false;
+	return asset.renderUI("Instances");
 }
 
 
@@ -31,13 +31,7 @@ bool OtInstancingComponent::renderUI() {
 nlohmann::json OtInstancingComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
-
-	auto instances = nlohmann::json::array();
-
-	for (auto& transform : transforms) {
-		instances.push_back(transform.serialize(basedir));
-	}
-
+	data["path"] = OtPathRelative(asset.getPath(), basedir);
 	return data;
 }
 
@@ -47,50 +41,6 @@ nlohmann::json OtInstancingComponent::serialize(std::string* basedir) {
 //
 
 void OtInstancingComponent::deserialize(nlohmann::json data, std::string* basedir) {
-	transforms.clear();
-
-	for (auto& transform : data) {
-		transforms.emplace_back().deserialize(transform, basedir);
-	}
+	asset = OtPathGetAbsolute(data, "path", basedir);
 }
 
-
-//
-//	OtInstancingComponent::appendInstance
-//
-
-void OtInstancingComponent::appendInstance(const glm::vec3& translation, const glm::vec3& rotation, const glm::vec3& scale) {
-	auto& transform = transforms.emplace_back();
-	transform.translation = translation;
-	transform.rotation = rotation;
-	transform.scale = scale;
-}
-
-
-//
-//	OtInstancingComponent::setInstance
-//
-
-void OtInstancingComponent::setInstance(size_t index, const glm::vec3& translation, const glm::vec3& rotation, const glm::vec3& scale) {
-	auto& transform = transforms[index];
-	transform.translation = translation;
-	transform.rotation = rotation;
-	transform.scale = scale;
-}
-
-
-//
-//	OtInstancingComponent::determineVisibleInstances
-//
-
-void OtInstancingComponent::determineVisibleInstances(OtFrustum& frustum, OtAABB& aabb) {
-	visibleTransforms.clear();
-
-	for (auto& transform : transforms) {
-		auto matrix = transform.getTransform();
-
-		if (frustum.isVisibleAABB(aabb.transform(matrix))) {
-			visibleTransforms.emplace_back(matrix);
-		}
-	}
-}

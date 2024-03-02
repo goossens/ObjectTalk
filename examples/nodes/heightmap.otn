@@ -312,7 +312,7 @@
 		},
 		{
 			"id": 2949711206,
-			"image": "virtual:normalmap",
+			"path": "virtual:normalmap",
 			"inputs": [],
 			"outputs": [
 				{
@@ -359,7 +359,7 @@
 		},
 		{
 			"id": 1174859016,
-			"image": "virtual:heightmap",
+			"path": "virtual:heightmap",
 			"inputs": [],
 			"outputs": [
 				{

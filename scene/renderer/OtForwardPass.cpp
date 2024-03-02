@@ -106,52 +106,79 @@ void OtSceneRenderer::renderForwardWater(OtSceneRendererContext& ctx, OtPass& pa
 //
 
 void OtSceneRenderer::renderForwardGeometry(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtGeometryComponent& geometry, OtMaterialComponent& material) {
-	// submit the material, clipping and light uniforms
-	submitMaterialUniforms(*material.material);
-	submitClippingUniforms(ctx.clippingPlane);
-	submitLightUniforms(ctx);
+	// visibility flag and target program
+	bool visible = false;
+	OtShaderProgram* program;
 
-	// submit the geometry
-	auto geom = geometry.asset->getGeometry();
+	// is this a case of instancing?
+	if (ctx.scene->hasComponent<OtInstancingComponent>(entity)) {
+		// only render instances if we have a valid asset and at least one instance is visible
+		auto& instancing = ctx.scene->getComponent<OtInstancingComponent>(entity);
 
-	if (geometry.wireframe) {
-		geom.submitLines();
-
-	} else {
-		geom.submitTriangles();
-	}
-
-	// set the program state
-	if (geometry.wireframe) {
-		forwardPbrProgram.setState(
-			OtStateWriteRgb |
-			OtStateWriteA |
-			OtStateWriteZ |
-			OtStateDepthTestLess |
-			OtStateLines |
-			OtStateBlendAlpha);
-
-	} else if (geometry.cullback) {
-		forwardPbrProgram.setState(
-			OtStateWriteRgb |
-			OtStateWriteA |
-			OtStateWriteZ |
-			OtStateDepthTestLess |
-			OtStateCullCw |
-			OtStateBlendAlpha);
+		if (!instancing.asset.isNull() && instancing.asset->getInstances().submit()) {
+			visible = true;
+			program = &forwardInstancingProgram;
+		}
 
 	} else {
-		forwardPbrProgram.setState(
-			OtStateWriteRgb |
-			OtStateWriteA |
-			OtStateWriteZ |
-			OtStateDepthTestLess |
-			OtStateBlendAlpha);
+		// see if geometry is visible
+		auto aabb = geometry.asset->getGeometry().getAABB().transform(ctx.scene->getGlobalTransform(entity));
+
+		if (ctx.camera.frustum.isVisibleAABB(aabb)) {
+			visible = true;
+			program = &forwardPbrProgram;
+		}
 	}
 
-	// set the transform
-	forwardPbrProgram.setTransform(ctx.scene->getGlobalTransform(entity));
+	// ensure geometry is visible
+	if (visible) {
+		// submit the material, clipping and light uniforms
+		submitMaterialUniforms(*material.material);
+		submitClippingUniforms(ctx.clippingPlane);
+		submitLightUniforms(ctx);
 
-	// run the program
-	pass.runShaderProgram(forwardPbrProgram);
+		// submit the geometry
+		auto geom = geometry.asset->getGeometry();
+
+		if (geometry.wireframe) {
+			geom.submitLines();
+
+		} else {
+			geom.submitTriangles();
+		}
+
+		// set the program state
+		if (geometry.wireframe) {
+			program->setState(
+				OtStateWriteRgb |
+				OtStateWriteA |
+				OtStateWriteZ |
+				OtStateDepthTestLess |
+				OtStateLines |
+				OtStateBlendAlpha);
+
+		} else if (geometry.cullback) {
+			program->setState(
+				OtStateWriteRgb |
+				OtStateWriteA |
+				OtStateWriteZ |
+				OtStateDepthTestLess |
+				OtStateCullCw |
+				OtStateBlendAlpha);
+
+		} else {
+			program->setState(
+				OtStateWriteRgb |
+				OtStateWriteA |
+				OtStateWriteZ |
+				OtStateDepthTestLess |
+				OtStateBlendAlpha);
+		}
+
+		// set the transform
+		program->setTransform(ctx.scene->getGlobalTransform(entity));
+
+		// run the program
+		pass.runShaderProgram(*program);
+	}
 }

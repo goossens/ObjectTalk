@@ -14,7 +14,6 @@
 #include "OtAnimation.h"
 #include "OtAnimator.h"
 #include "OtEntityObject.h"
-#include "OtInstancingComponentObject.h"
 #include "OtSceneObject.h"
 #include "OtTransformComponentObject.h"
 
@@ -88,24 +87,6 @@ OtObject OtEntityObjectClass::getTransformComponent() {
 
 
 //
-//	OtEntityObjectClass::hasInstancingComponent
-//
-
-bool OtEntityObjectClass::hasInstancingComponent() {
-	return scene->hasComponent<OtInstancingComponent>(entity);
-}
-
-
-//
-//	OtEntityObjectClass::getInstancingComponent
-//
-
-OtObject OtEntityObjectClass::getInstancingComponent() {
-	return OtInstancingComponentObject::create(&scene->getComponent<OtInstancingComponent>(entity));
-}
-
-
-//
 //	OtEntityObjectClass::getMeta
 //
 
@@ -122,9 +103,6 @@ OtType OtEntityObjectClass::getMeta() {
 
 		type->set("hasTransformComponent", OtFunction::create(&OtEntityObjectClass::hasTransformComponent));
 		type->set("getTransformComponent", OtFunction::create(&OtEntityObjectClass::getTransformComponent));
-
-		type->set("hasInstancingComponent", OtFunction::create(&OtEntityObjectClass::hasInstancingComponent));
-		type->set("getInstancingComponent", OtFunction::create(&OtEntityObjectClass::getInstancingComponent));
 	}
 
 	return type;

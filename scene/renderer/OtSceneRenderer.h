@@ -186,6 +186,7 @@ private:
 	OtShaderProgram forwardWaterProgram{"OtWaterVS", "OtWaterFS"};
 	OtShaderProgram gridProgram{"OtGridVS", "OtGridFS"};
 	OtShaderProgram selectProgram{"OtSelectVS", "OtSelectFS"};
+	OtShaderProgram selectInstancingProgram{"OtSelectInstancingVS", "OtSelectFS"};
 	OtShaderProgram outlineProgram{"OtOutlineVS", "OtOutlineFS"};
 	OtShaderProgram skyProgram{"OtSkyVS", "OtSkyFS"};
 	OtShaderProgram skyBoxProgram{"OtSkyVS", "OtSkyBoxFS"};

@@ -47,4 +47,5 @@ void OtGeometry::clear() {
 
 void OtGeometry::cloneMesh(const OtGeometry& geometry) {
 	mesh = std::make_shared<OtMesh>(*geometry.mesh);
+	incrementVersion();
 }

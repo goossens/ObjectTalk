@@ -35,6 +35,7 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f grid\OtGridVS.glsl -o generated\grid\OtGridVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtGridVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f grid\OtGridFS.glsl -o generated\grid\OtGridFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtGridFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f highlight\OtOutlineVS.glsl -o generated\highlight\OtOutlineVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtOutlineVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f highlight\OtSelectInstancingVS.glsl -o generated\highlight\OtSelectInstancingVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtSelectInstancingVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f highlight\OtSelectVS.glsl -o generated\highlight\OtSelectVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtSelectVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f highlight\OtOutlineFS.glsl -o generated\highlight\OtOutlineFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtOutlineFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f highlight\OtSelectFS.glsl -o generated\highlight\OtSelectFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtSelectFS_dx11

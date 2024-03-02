@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include "glm/glm.hpp"
 #include "nlohmann/json_fwd.hpp"
 
 

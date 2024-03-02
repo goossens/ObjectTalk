@@ -12,39 +12,39 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
+#include "OtInstances.h"
+#include "OtInstancesAsset.h"
 #include "OtPathTools.h"
-#include "OtTexture.h"
-#include "OtTextureAsset.h"
 
 #include "OtNodesFactory.h"
 
 
 //
-//	OtTextureInputNode
+//	OtInstancesInputNode
 //
 
-class OtTextureInputNode : public OtNodeClass {
+class OtInstancesInputNode : public OtNodeClass {
 public:
 	// constructor
-	inline OtTextureInputNode() : OtNodeClass(name, OtNodeClass::input) {}
+	inline OtInstancesInputNode() : OtNodeClass(name, OtNodeClass::input) {}
 
 	// configure node
 	inline void configure() override {
-		addOutputPin("Texture", texture)->addRenderer([this](float width) {
+		addOutputPin("Instances", instances)->addRenderer([this](float width) {
 			ImGui::SetNextItemWidth(width);
 			auto old = serialize().dump();
 
-			if (asset.renderUI("##image")) {
+			if (asset.renderUI("##instances")) {
 				if (asset.isNull()) {
-					texture.clear();
+					instances.clear();
 					needsEvaluating = true;
 
 				} else if (asset.isReady()) {
-					texture = asset->getTexture();
+					instances = asset->getInstances();
 					needsEvaluating = true;
 
 				} else {
-					texture.clear();
+					instances.clear();
 				}
 
 				oldState = old;
@@ -56,8 +56,8 @@ public:
 
 	// update state
 	inline bool onUpdate() override {
-		if (!asset.isNull() && asset->getTexture() != texture) {
-			texture = asset->getTexture();
+		if (!asset.isNull() && asset->getInstances() != instances) {
+			instances = asset->getInstances();
 			return true;
 
 		} else {
@@ -74,20 +74,19 @@ public:
 		asset = OtPathGetAbsolute(*data, "path", basedir);
 
 		if (asset.isNull()) {
-			texture.clear();
+			instances.clear();
 
 		} else if (asset.isReady()) {
-			texture = asset->getTexture();
-			needsEvaluating = true;
+			instances = asset->getInstances();
 		}
 	}
 
-	static constexpr const char* name = "Texture Input";
+	static constexpr const char* name = "Instances Input";
 	static constexpr float fieldWidth = 180.0f;
 
 protected:
-	OtAsset<OtTextureAsset> asset;
-	OtTexture texture;
+	OtAsset<OtInstancesAsset> asset;
+	OtInstances instances;
 };
 
-static OtNodesFactoryRegister<OtTextureInputNode> type("Input");
+static OtNodesFactoryRegister<OtInstancesInputNode> type("Input");

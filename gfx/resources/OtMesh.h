@@ -96,8 +96,9 @@ public:
 	void generateNormals();
 	void generateTangents();
 
-	// get access to vertices (to allow transformations)
+	// get access to vertices and indices (to allow transformations)
 	std::vector<OtVertex>& getVertices(bool update=false);
+	inline std::vector<uint32_t>& getIndices() { return indices; }
 
 	// submit to GPU
 	void submitTriangles();

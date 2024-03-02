@@ -1,0 +1,288 @@
+{
+	"links": [
+		{
+			"from": 141066482,
+			"id": 4082992494,
+			"to": 795908031
+		},
+		{
+			"from": 3339123378,
+			"id": 315265521,
+			"to": 1241675404
+		},
+		{
+			"from": 1306801408,
+			"id": 3014569721,
+			"to": 803165759
+		},
+		{
+			"from": 4191412660,
+			"id": 3329626033,
+			"to": 1027933994
+		},
+		{
+			"from": 3339123378,
+			"id": 3621822820,
+			"to": 3675693576
+		},
+		{
+			"from": 180408701,
+			"id": 288016460,
+			"to": 2346885826
+		},
+		{
+			"from": 3025445172,
+			"id": 3461571239,
+			"to": 3545155075
+		},
+		{
+			"from": 2666321964,
+			"id": 3952791793,
+			"to": 1831560002
+		}
+	],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 2677775489,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 141066482,
+					"name": "Geometry",
+					"type": "geometry"
+				}
+			],
+			"primitive": {
+				"phiLength": 360.0,
+				"phiSegments": 8,
+				"phiStart": 0.0,
+				"thetaLength": 180.0,
+				"thetaSegments": 16,
+				"thetaStart": 0.0,
+				"type": "Sphere"
+			},
+			"title": "Geometry Generator",
+			"type": "Geometry Generator",
+			"x": 95.0,
+			"y": 205.0
+		},
+		{
+			"id": 4129075099,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 1306801408,
+					"name": "Value",
+					"type": "vec3"
+				}
+			],
+			"title": "Scale",
+			"type": "Vec3 Input",
+			"value": [
+				7.0,
+				7.0,
+				7.0
+			],
+			"x": 48.0,
+			"y": 304.0
+		},
+		{
+			"id": 3781631580,
+			"inputs": [
+				{
+					"id": 795908031,
+					"name": "Input",
+					"type": "geometry"
+				},
+				{
+					"id": 997779709,
+					"name": "Translate",
+					"type": "vec3"
+				},
+				{
+					"id": 3911898886,
+					"name": "Rotate",
+					"type": "vec3"
+				},
+				{
+					"id": 803165759,
+					"name": "Scale",
+					"type": "vec3"
+				}
+			],
+			"outputs": [
+				{
+					"id": 3339123378,
+					"name": "Output",
+					"type": "geometry"
+				}
+			],
+			"title": "Geometry Transform",
+			"type": "Geometry Transform",
+			"x": 335.0,
+			"y": 206.0
+		},
+		{
+			"id": 1829953391,
+			"inputs": [
+				{
+					"id": 1241675404,
+					"name": "Input",
+					"type": "geometry"
+				}
+			],
+			"outputs": [],
+			"path": "virtual:parent",
+			"title": "Save Geometry To Virtual",
+			"type": "Save Geometry To Virtual",
+			"x": 832.0,
+			"y": 207.0
+		},
+		{
+			"id": 1849796011,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 4191412660,
+					"name": "Geometry",
+					"type": "geometry"
+				}
+			],
+			"primitive": {
+				"bottomRadius": 1.0,
+				"heightSegments": 1,
+				"openEnded": false,
+				"radialSegments": 32,
+				"thetaLength": 360.0,
+				"thetaStart": 0.0,
+				"topRadius": 0.0,
+				"type": "Cylinder"
+			},
+			"title": "Geometry Generator",
+			"type": "Geometry Generator",
+			"x": 93.0,
+			"y": 492.0
+		},
+		{
+			"id": 767361317,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 2666321964,
+					"name": "Value",
+					"type": "vec3"
+				}
+			],
+			"title": "Vec3 Input",
+			"type": "Vec3 Input",
+			"value": [
+				0.5,
+				2.0,
+				0.5
+			],
+			"x": 49.0,
+			"y": 591.0
+		},
+		{
+			"id": 2146266194,
+			"inputs": [
+				{
+					"id": 1027933994,
+					"name": "Input",
+					"type": "geometry"
+				},
+				{
+					"id": 3674880614,
+					"name": "Translate",
+					"type": "vec3"
+				},
+				{
+					"id": 59766303,
+					"name": "Rotate",
+					"type": "vec3"
+				},
+				{
+					"id": 1831560002,
+					"name": "Scale",
+					"type": "vec3"
+				}
+			],
+			"outputs": [
+				{
+					"id": 3025445172,
+					"name": "Output",
+					"type": "geometry"
+				}
+			],
+			"title": "Geometry Transform",
+			"type": "Geometry Transform",
+			"x": 335.0,
+			"y": 492.0
+		},
+		{
+			"id": 80633612,
+			"inputs": [
+				{
+					"id": 3545155075,
+					"name": "Input",
+					"type": "geometry"
+				}
+			],
+			"outputs": [],
+			"path": "virtual:child",
+			"title": "Save Geometry To Virtual",
+			"type": "Save Geometry To Virtual",
+			"x": 834.0,
+			"y": 492.0
+		},
+		{
+			"id": 2533510625,
+			"inputs": [
+				{
+					"id": 3675693576,
+					"name": "Geometry",
+					"type": "geometry"
+				},
+				{
+					"id": 2278322405,
+					"name": "Rotation",
+					"type": "vec3"
+				},
+				{
+					"id": 502892136,
+					"name": "Scale",
+					"type": "vec3"
+				}
+			],
+			"outputs": [
+				{
+					"id": 180408701,
+					"name": "Instances",
+					"type": "instances"
+				}
+			],
+			"rotateToNormals": true,
+			"title": "Instance on Vertex",
+			"type": "Instance on Vertex",
+			"x": 583.0,
+			"y": 312.0
+		},
+		{
+			"id": 3247491458,
+			"inputs": [
+				{
+					"id": 2346885826,
+					"name": "Input",
+					"type": "instances"
+				}
+			],
+			"outputs": [],
+			"path": "virtual:instances",
+			"title": "Save Instances To Virtual",
+			"type": "Save Instances To Virtual",
+			"x": 832.0,
+			"y": 313.0
+		}
+	]
+}

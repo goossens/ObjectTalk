@@ -14,13 +14,9 @@
 
 #include <vector>
 
-#include "glm/glm.hpp"
 #include "nlohmann/json_fwd.hpp"
 
-#include "OtAABB.h"
-#include "OtFrustum.h"
-
-#include "OtTransformComponent.h"
+#include "OtInstancesAsset.h"
 
 
 //
@@ -39,20 +35,6 @@ public:
 	// component name
 	static constexpr char const* name = "Instancing";
 
-	// manipulate instances
-	void clearInstances() { transforms.clear(); }
-	void appendInstance(const glm::vec3& translation, const glm::vec3& rotation, const glm::vec3& scale);
-	OtTransformComponent& getInstance(size_t index) { return transforms[index]; }
-	void setInstance(size_t index, const glm::vec3& translation, const glm::vec3& rotation, const glm::vec3& scale);
-	void eraseInstance(size_t index) { transforms.erase(transforms.begin() + index); }
-	size_t instanceCount() { return transforms.size(); }
-
-	// determine visible instances
-	void determineVisibleInstances(OtFrustum& frustum, OtAABB& aabb);
-
 	// stored properties
-	std::vector<OtTransformComponent> transforms;
-
-	// runtime properties
-	std::vector<glm::mat4> visibleTransforms;
+	OtAsset<OtInstancesAsset> asset;
 };

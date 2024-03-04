@@ -42,6 +42,16 @@ void OtGeometry::clear() {
 
 
 //
+//	OtGeometry::setMesh
+//
+
+void OtGeometry::setMesh(std::shared_ptr<OtMesh> m) {
+	mesh = m;
+	incrementVersion();
+}
+
+
+//
 //	OtGeometry::cloneMesh
 //
 

@@ -36,7 +36,8 @@ public:
 	inline bool isValid() { return mesh->isValid(); }
 
 	// access the mesh
-	OtMesh& getMesh() { return *mesh; }
+	void setMesh(std::shared_ptr<OtMesh> mesh);
+	OtMesh& getMesh() { return *mesh.get(); }
 	void cloneMesh(const OtGeometry& geometry);
 
 	// load/save the geometry

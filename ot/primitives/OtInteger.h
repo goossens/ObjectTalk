@@ -84,7 +84,7 @@ public:
 	int64_t min(int64_t operand) { return std::min(value, operand); }
 	int64_t max(int64_t operand) { return std::max(value, operand); }
 	int64_t clamp(int64_t min, int64_t max) { return std::clamp(value, min, max); }
-	int64_t random() { return OtRandom(value); };
+	int64_t random() { return (int64_t) OtRandom(double(value)); };
 
 	// get type definition
 	static OtType getMeta();

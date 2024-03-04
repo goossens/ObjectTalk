@@ -22,13 +22,13 @@
 
 
 //
-//	OtInstanceOnVertexNode
+//	OtInstancesOnVerticesNode
 //
 
-class OtInstanceOnVertexNode : public OtNodeClass {
+class OtInstancesOnVerticesNode : public OtNodeClass {
 public:
 	// constructor
-	inline OtInstanceOnVertexNode() : OtNodeClass(name, OtNodeClass::geometry) {}
+	inline OtInstancesOnVerticesNode() : OtNodeClass(name, OtNodeClass::geometry) {}
 
 	// configure node
 	inline void configure() override {
@@ -50,6 +50,14 @@ public:
 		}
 	}
 
+	float getCustomRenderingWidth() override {
+		return fieldWidth;
+	}
+
+	float getCustomRenderingHeight() override {
+		return ImGui::GetFrameHeightWithSpacing();
+	}
+
 	// (de)serialize node
 	void customSerialize(nlohmann::json* data, std::string* basedir) override {
 		(*data)["rotateToNormals"] = rotateToNormals;
@@ -59,12 +67,13 @@ public:
 		rotateToNormals = data->value("rotateToNormals", false);
 	}
 
-	// apply transformation to geometry
+	// create instance for each geometry vertex
 	void onExecute() override {
+		// reset list of instances
+		instances.clear();
+
 		// do we have a valid input
 		if (geometry.isValid()) {
-			// reset list of instances
-			instances.clear();
 
 			// get accesss to the mesh and vertex list
 			auto& mesh = geometry.getMesh();
@@ -72,38 +81,29 @@ public:
 			auto count = mesh.getVertexCount();
 
 			// turn each vertex into an instance
-			glm::vec3 u = glm::vec3(0.0f, 1.0f, 0.0f);
-
 			for (auto i = 0; i < count; i++) {
+				// determine transformation for instance
 				glm::mat4 transform =
 					glm::toMat4(glm::quat(glm::radians(rotation))) *
 					glm::scale(glm::mat4(1.0f), scale);
 
+				// rotate to normals (if required)
 				if (rotateToNormals) {
+					static glm::vec3 u = glm::vec3(0.0f, 1.0f, 0.0f);
 					glm::vec3 v = vertex->normal;
 					auto quat = glm::normalize(glm::quat(1.0f + glm::dot(u, v), glm::cross(u, v)));
-					transform = glm::toMat4(quat) * transform;
+					instances.add(glm::translate(glm::mat4(1.0f), vertex->position) * glm::toMat4(quat) * transform, false);
+
+				} else {
+					instances.add(glm::translate(glm::mat4(1.0f), vertex->position) * transform, false);
 				}
 
-				instances.add(glm::translate(glm::mat4(1.0f), vertex->position) * transform, false);
 				vertex++;
 			}
-
-		} else {
-			// no valid input, just clear the output
-			instances.clear();
 		}
 	}
 
-	float getCustomRenderingWidth() override {
-		return fieldWidth;
-	}
-
-	float getCustomRenderingHeight() override {
-		return ImGui::GetFrameHeightWithSpacing();
-	}
-
-	static constexpr const char* name = "Instance on Vertex";
+	static constexpr const char* name = "Instances on Vertices";
 	static constexpr float fieldWidth = 180.0f;
 
 protected:
@@ -114,4 +114,4 @@ protected:
 	glm::vec3 scale{1.0f};
 };
 
-static OtNodesFactoryRegister<OtInstanceOnVertexNode> type("Geometry");
+static OtNodesFactoryRegister<OtInstancesOnVerticesNode> type("Geometry");

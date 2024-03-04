@@ -29,5 +29,5 @@ double OtRandom(double num1, double num2) {
 
 	double high = std::max(num1, num2);
 	double low = std::min(num1, num2);
-	return std::max(low, (low + ((high - low) * rand() / float(RAND_MAX))) * (1.0f - std::numeric_limits<float>::epsilon()));
+	return std::max(low, (low + ((high - low) * rand() / double(RAND_MAX))) * (1.0 - std::numeric_limits<double>::epsilon()));
 }

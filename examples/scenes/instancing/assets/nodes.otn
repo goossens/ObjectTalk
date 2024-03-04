@@ -6,11 +6,6 @@
 			"to": 795908031
 		},
 		{
-			"from": 3339123378,
-			"id": 315265521,
-			"to": 1241675404
-		},
-		{
 			"from": 1306801408,
 			"id": 3014569721,
 			"to": 803165759
@@ -19,11 +14,6 @@
 			"from": 4191412660,
 			"id": 3329626033,
 			"to": 1027933994
-		},
-		{
-			"from": 3339123378,
-			"id": 3621822820,
-			"to": 3675693576
 		},
 		{
 			"from": 180408701,
@@ -39,6 +29,56 @@
 			"from": 2666321964,
 			"id": 3952791793,
 			"to": 1831560002
+		},
+		{
+			"from": 2748530417,
+			"id": 3737899874,
+			"to": 3196163256
+		},
+		{
+			"from": 3339123378,
+			"id": 1050838188,
+			"to": 3098789528
+		},
+		{
+			"from": 2944071035,
+			"id": 4190059860,
+			"to": 840759907
+		},
+		{
+			"from": 3362849279,
+			"id": 3141863951,
+			"to": 1290617004
+		},
+		{
+			"from": 2248573501,
+			"id": 3314211876,
+			"to": 3675693576
+		},
+		{
+			"from": 216853080,
+			"id": 1274646304,
+			"to": 873477357
+		},
+		{
+			"from": 2248573501,
+			"id": 2159170197,
+			"to": 1241675404
+		},
+		{
+			"from": 216853080,
+			"id": 980787635,
+			"to": 2820934007
+		},
+		{
+			"from": 3339123378,
+			"id": 2722823854,
+			"to": 1603031618
+		},
+		{
+			"from": 94999985,
+			"id": 3741507274,
+			"to": 3674880614
 		}
 	],
 	"metadata": {},
@@ -54,18 +94,13 @@
 				}
 			],
 			"primitive": {
-				"phiLength": 360.0,
-				"phiSegments": 8,
-				"phiStart": 0.0,
-				"thetaLength": 180.0,
-				"thetaSegments": 16,
-				"thetaStart": 0.0,
-				"type": "Sphere"
+				"detail": 4,
+				"type": "Spherical Cube"
 			},
-			"title": "Geometry Generator",
+			"title": "Create Sphere",
 			"type": "Geometry Generator",
-			"x": 95.0,
-			"y": 205.0
+			"x": 61.0,
+			"y": 13.0
 		},
 		{
 			"id": 4129075099,
@@ -77,15 +112,15 @@
 					"type": "vec3"
 				}
 			],
-			"title": "Scale",
+			"title": "Scale Sphere",
 			"type": "Vec3 Input",
 			"value": [
-				7.0,
-				7.0,
-				7.0
+				6.0,
+				6.0,
+				6.0
 			],
-			"x": 48.0,
-			"y": 304.0
+			"x": 11.0,
+			"y": 115.0
 		},
 		{
 			"id": 3781631580,
@@ -120,8 +155,64 @@
 			],
 			"title": "Geometry Transform",
 			"type": "Geometry Transform",
-			"x": 335.0,
-			"y": 206.0
+			"x": 268.0,
+			"y": 13.0
+		},
+		{
+			"id": 1216812251,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 2944071035,
+					"name": "Value",
+					"type": "vec3"
+				}
+			],
+			"title": "Vertex Example Offset",
+			"type": "Vec3 Input",
+			"value": [
+				-7.0,
+				0.0,
+				0.0
+			],
+			"x": 13.0,
+			"y": 182.0
+		},
+		{
+			"id": 2538637514,
+			"inputs": [
+				{
+					"id": 3098789528,
+					"name": "Input",
+					"type": "geometry"
+				},
+				{
+					"id": 840759907,
+					"name": "Translate",
+					"type": "vec3"
+				},
+				{
+					"id": 3245459342,
+					"name": "Rotate",
+					"type": "vec3"
+				},
+				{
+					"id": 2296027807,
+					"name": "Scale",
+					"type": "vec3"
+				}
+			],
+			"outputs": [
+				{
+					"id": 2248573501,
+					"name": "Output",
+					"type": "geometry"
+				}
+			],
+			"title": "Geometry Transform",
+			"type": "Geometry Transform",
+			"x": 462.0,
+			"y": 82.0
 		},
 		{
 			"id": 1829953391,
@@ -133,11 +224,11 @@
 				}
 			],
 			"outputs": [],
-			"path": "virtual:parent",
+			"path": "virtual:parentV",
 			"title": "Save Geometry To Virtual",
 			"type": "Save Geometry To Virtual",
-			"x": 832.0,
-			"y": 207.0
+			"x": 941.0,
+			"y": 7.0
 		},
 		{
 			"id": 1849796011,
@@ -159,10 +250,10 @@
 				"topRadius": 0.0,
 				"type": "Cylinder"
 			},
-			"title": "Geometry Generator",
+			"title": "Create Cone",
 			"type": "Geometry Generator",
-			"x": 93.0,
-			"y": 492.0
+			"x": 67.0,
+			"y": 453.0
 		},
 		{
 			"id": 767361317,
@@ -174,15 +265,35 @@
 					"type": "vec3"
 				}
 			],
-			"title": "Vec3 Input",
+			"title": "Scale Cone",
 			"type": "Vec3 Input",
 			"value": [
 				0.5,
 				2.0,
 				0.5
 			],
-			"x": 49.0,
-			"y": 591.0
+			"x": 17.0,
+			"y": 604.0
+		},
+		{
+			"id": 1871958928,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 94999985,
+					"name": "Value",
+					"type": "vec3"
+				}
+			],
+			"title": "Vec3 Input",
+			"type": "Vec3 Input",
+			"value": [
+				0.0,
+				1.0,
+				0.0
+			],
+			"x": 19.0,
+			"y": 542.0
 		},
 		{
 			"id": 2146266194,
@@ -217,8 +328,8 @@
 			],
 			"title": "Geometry Transform",
 			"type": "Geometry Transform",
-			"x": 335.0,
-			"y": 492.0
+			"x": 273.0,
+			"y": 452.0
 		},
 		{
 			"id": 80633612,
@@ -233,8 +344,8 @@
 			"path": "virtual:child",
 			"title": "Save Geometry To Virtual",
 			"type": "Save Geometry To Virtual",
-			"x": 834.0,
-			"y": 492.0
+			"x": 949.0,
+			"y": 455.0
 		},
 		{
 			"id": 2533510625,
@@ -263,10 +374,10 @@
 				}
 			],
 			"rotateToNormals": true,
-			"title": "Instance on Vertex",
-			"type": "Instance on Vertex",
-			"x": 583.0,
-			"y": 312.0
+			"title": "Instances on Vertices",
+			"type": "Instances on Vertices",
+			"x": 689.0,
+			"y": 116.0
 		},
 		{
 			"id": 3247491458,
@@ -278,11 +389,132 @@
 				}
 			],
 			"outputs": [],
-			"path": "virtual:instances",
+			"path": "virtual:instancesV",
 			"title": "Save Instances To Virtual",
 			"type": "Save Instances To Virtual",
-			"x": 832.0,
-			"y": 313.0
+			"x": 935.0,
+			"y": 116.0
+		},
+		{
+			"id": 1867416432,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 3362849279,
+					"name": "Value",
+					"type": "vec3"
+				}
+			],
+			"title": "Face Example Offset",
+			"type": "Vec3 Input",
+			"value": [
+				7.0,
+				0.0,
+				0.0
+			],
+			"x": 16.0,
+			"y": 299.0
+		},
+		{
+			"id": 3836844752,
+			"inputs": [
+				{
+					"id": 1603031618,
+					"name": "Input",
+					"type": "geometry"
+				},
+				{
+					"id": 1290617004,
+					"name": "Translate",
+					"type": "vec3"
+				},
+				{
+					"id": 2264241974,
+					"name": "Rotate",
+					"type": "vec3"
+				},
+				{
+					"id": 3805232308,
+					"name": "Scale",
+					"type": "vec3"
+				}
+			],
+			"outputs": [
+				{
+					"id": 216853080,
+					"name": "Output",
+					"type": "geometry"
+				}
+			],
+			"title": "Geometry Transform",
+			"type": "Geometry Transform",
+			"x": 461.0,
+			"y": 247.0
+		},
+		{
+			"id": 3537745297,
+			"inputs": [
+				{
+					"id": 873477357,
+					"name": "Geometry",
+					"type": "geometry"
+				},
+				{
+					"id": 2137833022,
+					"name": "Rotation",
+					"type": "vec3"
+				},
+				{
+					"id": 652117834,
+					"name": "Scale",
+					"type": "vec3"
+				}
+			],
+			"instanceCount": 300,
+			"outputs": [
+				{
+					"id": 2748530417,
+					"name": "Instances",
+					"type": "instances"
+				}
+			],
+			"rotateToNormals": true,
+			"title": "Instances on Faces",
+			"type": "Instances on Faces",
+			"x": 691.0,
+			"y": 297.0
+		},
+		{
+			"id": 3606165252,
+			"inputs": [
+				{
+					"id": 3196163256,
+					"name": "Input",
+					"type": "instances"
+				}
+			],
+			"outputs": [],
+			"path": "virtual:instancesF",
+			"title": "Save Instances To Virtual",
+			"type": "Save Instances To Virtual",
+			"x": 945.0,
+			"y": 315.0
+		},
+		{
+			"id": 3529924128,
+			"inputs": [
+				{
+					"id": 2820934007,
+					"name": "Input",
+					"type": "geometry"
+				}
+			],
+			"outputs": [],
+			"path": "virtual:parentF",
+			"title": "Save Geometry To Virtual",
+			"type": "Save Geometry To Virtual",
+			"x": 941.0,
+			"y": 248.0
 		}
 	]
 }

@@ -22,8 +22,8 @@
 					],
 					"translation": [
 						0.0,
-						0.0,
-						0.0
+						-2.200000047683716,
+						23.200000762939453
 					]
 				},
 				{
@@ -35,7 +35,7 @@
 				},
 				{
 					"Exposure": 1.0,
-					"bloomIntensity": 0.800000011920929,
+					"bloomIntensity": 0.6399999856948853,
 					"component": "Post Processing"
 				}
 			]
@@ -61,9 +61,9 @@
 						1.0
 					],
 					"translation": [
-						7.900000095367432,
-						8.100000381469727,
-						7.5
+						6.599999904632568,
+						16.100000381469727,
+						11.399999618530273
 					]
 				},
 				{
@@ -92,108 +92,236 @@
 			]
 		},
 		{
-			"children": [],
+			"children": [
+				{
+					"children": [],
+					"components": [
+						{
+							"component": "Core",
+							"tag": "Parent",
+							"uuid": 2807222734
+						},
+						{
+							"component": "Geometry",
+							"cullback": true,
+							"path": "virtual:parentV",
+							"transparent": false,
+							"wireframe": true
+						},
+						{
+							"component": "Material",
+							"material": {
+								"albedo": [
+									0.23670606315135956,
+									0.7296155095100403,
+									0.8230088353157043,
+									1.0
+								],
+								"albedoTexture": "",
+								"ao": 1.0,
+								"aoTexture": "",
+								"emissive": [
+									0.0,
+									0.0,
+									0.0
+								],
+								"emissiveTexture": "",
+								"metallic": 0.5,
+								"metallicRoughnessTexture": "",
+								"normalTexture": "",
+								"roughness": 0.5,
+								"scale": 1.0
+							}
+						}
+					]
+				},
+				{
+					"children": [],
+					"components": [
+						{
+							"component": "Core",
+							"tag": "Instances (red)",
+							"uuid": 1880476020
+						},
+						{
+							"component": "Geometry",
+							"cullback": true,
+							"path": "virtual:child",
+							"transparent": false,
+							"wireframe": false
+						},
+						{
+							"component": "Transform",
+							"rotation": [
+								0.0,
+								0.0,
+								0.0
+							],
+							"scale": [
+								0.4000000059604645,
+								0.4000000059604645,
+								0.4000000059604645
+							],
+							"translation": [
+								0.0,
+								0.0,
+								0.0
+							]
+						},
+						{
+							"component": "Instancing",
+							"path": "virtual:instancesV"
+						},
+						{
+							"component": "Material",
+							"material": {
+								"albedo": [
+									0.8716814517974854,
+									0.0887109562754631,
+									0.0887109562754631,
+									1.0
+								],
+								"albedoTexture": "",
+								"ao": 1.0,
+								"aoTexture": "",
+								"emissive": [
+									0.0,
+									0.0,
+									0.0
+								],
+								"emissiveTexture": "",
+								"metallic": 0.7900000214576721,
+								"metallicRoughnessTexture": "",
+								"normalTexture": "",
+								"roughness": 0.3400000035762787,
+								"scale": 1.0
+							}
+						}
+					]
+				}
+			],
 			"components": [
 				{
 					"component": "Core",
-					"tag": "Parent",
-					"uuid": 2807222734
-				},
-				{
-					"component": "Geometry",
-					"cullback": true,
-					"path": "virtual:parent",
-					"transparent": false,
-					"wireframe": true
-				},
-				{
-					"component": "Material",
-					"material": {
-						"albedo": [
-							0.23670606315135956,
-							0.7296155095100403,
-							0.8230088353157043,
-							1.0
-						],
-						"albedoTexture": "",
-						"ao": 1.0,
-						"aoTexture": "",
-						"emissive": [
-							0.0,
-							0.0,
-							0.0
-						],
-						"emissiveTexture": "",
-						"metallic": 0.5,
-						"metallicRoughnessTexture": "",
-						"normalTexture": "",
-						"roughness": 0.5,
-						"scale": 1.0
-					}
+					"tag": "Instances on Vertices",
+					"uuid": 977311025
 				}
 			]
 		},
 		{
-			"children": [],
-			"components": [
+			"children": [
 				{
-					"component": "Core",
-					"tag": "Children",
-					"uuid": 1880476020
-				},
-				{
-					"component": "Geometry",
-					"cullback": true,
-					"path": "virtual:child",
-					"transparent": false,
-					"wireframe": false
-				},
-				{
-					"component": "Transform",
-					"rotation": [
-						0.0,
-						0.0,
-						0.0
-					],
-					"scale": [
-						0.4000000059604645,
-						0.20000000298023224,
-						0.4000000059604645
-					],
-					"translation": [
-						0.0,
-						0.0,
-						0.0
+					"children": [],
+					"components": [
+						{
+							"component": "Core",
+							"tag": "Parent",
+							"uuid": 2741517982
+						},
+						{
+							"component": "Geometry",
+							"cullback": true,
+							"path": "virtual:parentF",
+							"transparent": false,
+							"wireframe": true
+						},
+						{
+							"component": "Material",
+							"material": {
+								"albedo": [
+									0.23670606315135956,
+									0.7296155095100403,
+									0.8230088353157043,
+									1.0
+								],
+								"albedoTexture": "",
+								"ao": 1.0,
+								"aoTexture": "",
+								"emissive": [
+									0.0,
+									0.0,
+									0.0
+								],
+								"emissiveTexture": "",
+								"metallic": 0.5,
+								"metallicRoughnessTexture": "",
+								"normalTexture": "",
+								"roughness": 0.5,
+								"scale": 1.0
+							}
+						}
 					]
 				},
 				{
-					"component": "Instancing",
-					"path": "virtual:instances"
-				},
+					"children": [],
+					"components": [
+						{
+							"component": "Core",
+							"tag": "Instances (green)",
+							"uuid": 898881119
+						},
+						{
+							"component": "Geometry",
+							"cullback": true,
+							"path": "virtual:child",
+							"transparent": false,
+							"wireframe": false
+						},
+						{
+							"component": "Transform",
+							"rotation": [
+								0.0,
+								0.0,
+								0.0
+							],
+							"scale": [
+								0.4000000059604645,
+								0.20000000298023224,
+								0.4000000059604645
+							],
+							"translation": [
+								0.0,
+								0.0,
+								0.0
+							]
+						},
+						{
+							"component": "Instancing",
+							"path": "virtual:instancesF"
+						},
+						{
+							"component": "Material",
+							"material": {
+								"albedo": [
+									0.13806875050067902,
+									0.7256637215614319,
+									0.17966829240322113,
+									1.0
+								],
+								"albedoTexture": "",
+								"ao": 1.0,
+								"aoTexture": "",
+								"emissive": [
+									0.0,
+									0.0,
+									0.0
+								],
+								"emissiveTexture": "",
+								"metallic": 1.0,
+								"metallicRoughnessTexture": "",
+								"normalTexture": "",
+								"roughness": 0.36000001430511475,
+								"scale": 1.0
+							}
+						}
+					]
+				}
+			],
+			"components": [
 				{
-					"component": "Material",
-					"material": {
-						"albedo": [
-							0.8938053250312805,
-							0.8580363392829895,
-							0.605098307132721,
-							1.0
-						],
-						"albedoTexture": "",
-						"ao": 1.0,
-						"aoTexture": "",
-						"emissive": [
-							0.0,
-							0.0,
-							0.0
-						],
-						"emissiveTexture": "",
-						"metallic": 1.0,
-						"metallicRoughnessTexture": "",
-						"normalTexture": "",
-						"roughness": 0.36000001430511475,
-						"scale": 1.0
-					}
+					"component": "Core",
+					"tag": "Instances on Faces",
+					"uuid": 1180202796
 				}
 			]
 		}

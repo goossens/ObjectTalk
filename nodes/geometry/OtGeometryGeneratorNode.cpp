@@ -106,9 +106,7 @@ public:
 
 	// create the geometry
 	void onExecute() override {
-		geometry.clear();
-		primitive->createMesh(&geometry.getMesh());
-		geometry.setVersion(version++);
+		geometry.setMesh(primitive->createMesh());
 	}
 
 	static constexpr const char* name = "Geometry Generator";
@@ -118,7 +116,6 @@ protected:
 	// our primitive and geometry
 	std::shared_ptr<OtPrimitiveBase> primitive;
 	OtGeometry geometry;
-	int version = 1;
 };
 
 static OtNodesFactoryRegister<OtGeometryGeneratorNode> type("Geometry");

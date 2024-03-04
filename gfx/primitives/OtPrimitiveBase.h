@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <memory>
 #include <string>
 
 #include "nlohmann/json_fwd.hpp"
@@ -25,8 +26,12 @@
 
 class OtPrimitiveBase {
 public:
-	// subclasses need to override this
-	virtual void createMesh(OtMesh* mesh) = 0;
+	// create a new mesh
+	std::shared_ptr<OtMesh> createMesh() {
+		auto mesh = std::make_shared<OtMesh>();
+		createMesh(mesh.get());
+		return mesh;
+	}
 
 	// UI to change primitive's properties
 	virtual bool renderUI() = 0;
@@ -40,4 +45,8 @@ public:
 
 	// primitive name
 	static constexpr char const* name = "";
+
+protected:
+	// subclasses need to override this
+	virtual void createMesh(OtMesh* mesh) = 0;
 };

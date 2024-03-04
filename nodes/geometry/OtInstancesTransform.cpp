@@ -13,19 +13,19 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include "OtGeometry.h"
+#include "OtInstances.h"
 
 #include "OtNodesFactory.h"
 
 
 //
-//	OtTransformGeometryNode
+//	OtTransformInstancesNode
 //
 
-class OtTransformGeometryNode : public OtNodeClass {
+class OtTransformInstancesNode : public OtNodeClass {
 public:
 	// constructor
-	inline OtTransformGeometryNode() : OtNodeClass(name, OtNodeClass::geometry) {}
+	inline OtTransformInstancesNode() : OtNodeClass(name, OtNodeClass::geometry) {}
 
 	// configure node
 	inline void configure() override {
@@ -38,6 +38,9 @@ public:
 
 	// apply transformation to geometry
 	void onExecute() override {
+		// clear the output
+		output.clear();
+
 		// do we have a valid input
 		if (input.isValid()) {
 			// determine transformation matrix
@@ -45,35 +48,24 @@ public:
 				glm::toMat4(glm::quat(glm::radians(rotate))) *
 				glm::scale(glm::mat4(1.0f), scale);
 
-			// clone the mesh
-			output.cloneMesh(input);
-
-			// get accesss to the mesh and vertex list
-			auto& mesh = output.getMesh();
-			OtVertex* vertex = mesh.getVertices().data();
-			auto count = mesh.getVertexCount();
+			// transform all input instances to the output
+			auto count = input.size();
 
 			// transform all vertices
 			for (auto i = 0; i < count; i++) {
-				vertex->position = glm::vec3(transform * glm::vec4(vertex->position, 1.0f));
-				vertex->normal = glm::vec3(glm::normalize((transform * glm::vec4(vertex->normal, 0.0f))));
-				vertex++;
+				output.add(transform * input[i]);
 			}
-
-		} else {
-			// no valid input, just clear the output
-			output.clear();
 		}
 	}
 
-	static constexpr const char* name = "Geometry Transform";
+	static constexpr const char* name = "Instances Transform";
 
 protected:
-	OtGeometry input;
-	OtGeometry output;
+	OtInstances input;
+	OtInstances output;
 	glm::vec3 translate{0.0f};
 	glm::vec3 rotate{0.0f};
 	glm::vec3 scale{1.0f};
 };
 
-static OtNodesFactoryRegister<OtTransformGeometryNode> type("Geometry");
+static OtNodesFactoryRegister<OtTransformInstancesNode> type("Geometry");

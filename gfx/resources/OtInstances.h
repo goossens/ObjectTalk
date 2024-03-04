@@ -41,6 +41,10 @@ public:
 	// add an instance
 	void add(const glm::mat4& instance, bool updateVersion=true);
 
+	// access individual instances
+	glm::mat4& operator[](int i) { return instances->operator[](i); }
+	size_t size() { return instances->size(); }
+
 	// submit instances to GPU
 	bool submit();
 

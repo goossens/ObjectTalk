@@ -47,7 +47,7 @@ public:
 		}
 
 		// serialize the entity to be deleted
-		json = scene->serializeEntity(entity);
+		json = scene->archiveEntity(entity);
 
 		// now delete the entity
 		scene->removeEntity(entity);
@@ -56,7 +56,7 @@ public:
 	// undo action
 	void undo() override {
 		// recreate the entity
-		auto entity = scene->deserializeEntity(json);
+		auto entity = scene->restoreEntity(json);
 
 		// add it back to its parent
 		auto target = scene->getEntityFromUuid(undoTargetUuid);

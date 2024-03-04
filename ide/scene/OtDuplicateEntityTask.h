@@ -35,8 +35,8 @@ public:
 	void perform() override {
 		// duplicate the target entity
 		auto target = scene->getEntityFromUuid(targetUuid);
-		auto entity = scene->deserializeEntity(scene->serializeEntity(target));
-		scene->assignNewEntityUuids(entity);
+		auto entity = scene->duplicateEntity(scene->archiveEntity(target));
+		json = scene->archiveEntity(entity);
 		entityUuid = scene->getUuidFromEntity(entity);
 
 		// add duplicate after target
@@ -49,10 +49,19 @@ public:
 		scene->removeEntity(scene->getEntityFromUuid(entityUuid));
 	}
 
+	// redo action
+	void redo() override {
+		// recreate entity (tree) as was created during "perform"
+		auto entity = scene->restoreEntity(json);
+		scene->insertEntityAfter(scene->getEntityFromUuid(targetUuid), entity);
+	}
+
 private:
 	// properties
 	OtScene* scene;
 	uint32_t targetUuid;
 	uint32_t entityUuid;
+
+	std::string json;
 };
 

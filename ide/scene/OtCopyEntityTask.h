@@ -37,7 +37,7 @@ public:
 	void perform() override {
 		// serialize entity to clipboard
 		oldClipboard = clipboard;
-		clipboard = scene->serializeEntity(scene->getEntityFromUuid(entityUuid));
+		clipboard = scene->archiveEntity(scene->getEntityFromUuid(entityUuid));
 	}
 
 	// undo action

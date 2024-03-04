@@ -131,27 +131,6 @@ uint32_t OtEcs::getEntityUuid(OtEntity entity) {
 
 
 //
-//	OtEcs::setEntityUuid
-//
-
-void OtEcs::setEntityUuid(OtEntity entity, uint32_t uuid) {
-	// get the core component
-	auto& component = getComponent<OtCoreComponent>(entity);
-
-	// remove old mappings
-	mapUuidToEntity.erase(component.uuid);
-	mapEntityToUuid.erase(entity);
-
-	// create new mappings
-	mapUuidToEntity[uuid] = entity;
-	mapEntityToUuid[entity] = uuid;
-
-	// update the component
-	component.uuid = uuid;
-}
-
-
-//
 //	OtEcs::remapEntityUuid
 //
 
@@ -163,31 +142,6 @@ void OtEcs::remapEntityUuid(OtEntity entity, uint32_t oldUuid, uint32_t newUuid)
 	// create new mappings
 	mapUuidToEntity[newUuid] = entity;
 	mapEntityToUuid[entity] = newUuid;
-}
-
-
-//
-//	OtEcs::assignNewEntityUuids
-//
-
-void OtEcs::assignNewEntityUuids(OtEntity entity) {
-	// remove old mappings
-	mapUuidToEntity.erase(mapEntityToUuid[entity]);
-	mapEntityToUuid.erase(entity);
-
-	// assign new UUID to entity
-	auto& component = getComponent<OtCoreComponent>(entity);
-	component.assignNewUuid();
-
-	// create new mappings
-	auto uuid = component.uuid;
-	mapUuidToEntity[uuid] = entity;
-	mapEntityToUuid[entity] = uuid;
-
-	// assign new UUIDs to all its children
-	eachChild(entity, [this](OtEntity child) {
-		assignNewEntityUuids(child);
-	});
 }
 
 

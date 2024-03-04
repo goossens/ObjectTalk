@@ -58,7 +58,7 @@ void OtScene::load(const std::string& path) {
 		auto basedir = OtPathGetParent(path);
 
 		for (auto& entity : data["entities"]) {
-			addEntityToParent(getRootEntity(), deserializeEntityFromJson(entity, &basedir));
+			addEntityToParent(getRootEntity(), deserializeEntityFromJson(entity, &basedir, true));
 		}
 	}
 }
@@ -111,21 +111,31 @@ void OtScene::clear() {
 
 
 //
-//	OtScene::serializeEntity
+//	OtScene::archiveEntity
 //
 
-std::string OtScene::serializeEntity(OtEntity entity, int indent, char character, std::string* basedir) {
+std::string OtScene::archiveEntity(OtEntity entity, int indent, char character, std::string* basedir) {
 	return serializeEntityToJson(entity, basedir).dump(indent, character);
 }
 
 
 //
-//	OtScene::deserializeEntity
+//	OtScene::restoreEntity
 //
 
-OtEntity OtScene::deserializeEntity(const std::string& json, std::string* basedir) {
+OtEntity OtScene::restoreEntity(const std::string& json, std::string* basedir) {
 	auto data = nlohmann::json::parse(json);
-	return deserializeEntityFromJson(data, basedir);
+	return deserializeEntityFromJson(data, basedir, true);
+}
+
+
+//
+//	OtScene::duplicateEntity
+//
+
+OtEntity OtScene::duplicateEntity(const std::string& json, std::string *basedir) {
+	auto data = nlohmann::json::parse(json);
+	return deserializeEntityFromJson(data, basedir, false);
 }
 
 
@@ -181,7 +191,7 @@ static inline void deserializeComponentsFromJson(nlohmann::json& json, OtScene* 
 	(deserializeComponentFromJson<T>(json, scene, entity, basedir), ...);
 }
 
-OtEntity OtScene::deserializeEntityFromJson(nlohmann::json& data, std::string* basedir) {
+OtEntity OtScene::deserializeEntityFromJson(nlohmann::json& data, std::string* basedir, bool preserveUuid) {
 	// create a new entity
 	auto entity = createEntity();
 	auto tmpUuid = getEntityUuid(entity);
@@ -192,12 +202,20 @@ OtEntity OtScene::deserializeEntityFromJson(nlohmann::json& data, std::string* b
 		deserializeComponentsFromJson<OtSceneComponents>(component, this, entity, basedir);
 	}
 
-	// remap the entity's UUID ("stored" UUID is different from "created" UUID)
-	remapEntityUuid(entity, tmpUuid, getEntityUuid(entity));
+	// do we need to preserve the UUID?
+	if (preserveUuid) {
+		// remap the entity's UUID ("stored" UUID is different from "created" UUID)
+		remapEntityUuid(entity, tmpUuid, getEntityUuid(entity));
+
+	} else {
+		// replace the "restored" UUID with the "created" UUID
+		auto& component = getComponent<OtCoreComponent>(entity);
+		component.uuid = tmpUuid;
+	}
 
 	// deserialize all its children
 	for (auto child : data["children"]) {
-		addEntityToParent(entity, deserializeEntityFromJson(child, basedir));
+		addEntityToParent(entity, deserializeEntityFromJson(child, basedir, preserveUuid));
 	}
 
 	return entity;

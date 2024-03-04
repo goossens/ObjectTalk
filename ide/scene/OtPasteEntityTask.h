@@ -34,11 +34,11 @@ public:
 	// do action
 	void perform() override {
 		// create a new entity from the clipboard content
-		auto entity = scene->deserializeEntity(clipboard);
-		scene->assignNewEntityUuids(entity);
-		json = scene->serializeEntity(entity);
-
+		auto entity = scene->duplicateEntity(clipboard);
+		json = scene->archiveEntity(entity);
 		entityUuid = scene->getUuidFromEntity(entity);
+
+		// add duplicate after target
 		scene->moveEntityTo(scene->getEntityFromUuid(targetUuid), entity);
 	}
 
@@ -51,7 +51,7 @@ public:
 	// redo action
 	void redo() override {
 		// recreate entity (tree) as was created during "perform"
-		auto entity = scene->deserializeEntity(json);
+		auto entity = scene->restoreEntity(json);
 		scene->moveEntityTo(scene->getEntityFromUuid(targetUuid), entity);
 	}
 

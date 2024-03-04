@@ -18,6 +18,8 @@
 
 #include "entt/entity/registry.hpp"
 
+#include "OtAssert.h"
+
 #include "OtEntity.h"
 #include "OtCoreComponent.h"
 
@@ -123,7 +125,7 @@ public:
 		return registry.get<T>(entity);
 	}
 
-	// get an specified component from and entity and add one if it doesn;t exist
+	// get an specified component from and entity and add one if it doesn't exist
 	template<typename T>
 	inline T& getOrAddComponent(OtEntity entity) {
 		if (registry.all_of<T>(entity)) {
@@ -153,18 +155,21 @@ public:
 	}
 
 	// translate entity <-> UUID
-	inline uint32_t getUuidFromEntity(OtEntity entity) { return mapEntityToUuid[entity]; }
-	inline OtEntity getEntityFromUuid(uint32_t uuid) { return mapUuidToEntity[uuid]; }
+	inline uint32_t getUuidFromEntity(OtEntity entity) {
+		OtAssert(mapEntityToUuid.count(entity) > 0);
+		return mapEntityToUuid[entity];
+	}
 
-	// set/get an entity's UUID
+	inline OtEntity getEntityFromUuid(uint32_t uuid) {
+		OtAssert(mapUuidToEntity.count(uuid) > 0);
+		return mapUuidToEntity[uuid];
+	}
+
+	// get an entity's UUID
 	uint32_t getEntityUuid(OtEntity entity);
-	void setEntityUuid(OtEntity entity, uint32_t uuid);
 
 	// remap an entity's UUID
 	void remapEntityUuid(OtEntity entity, uint32_t oldUuid, uint32_t newUuid);
-
-	// assign new UUIDs to an entity and all its children
-	void assignNewEntityUuids(OtEntity entity);
 
 	// set/get an entity's tag
 	std::string getEntityTag(OtEntity entity);

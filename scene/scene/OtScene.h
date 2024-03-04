@@ -76,9 +76,10 @@ public:
 	inline void setMetaData(const std::string& m) { metadata = m; }
 	inline std::string& getMetaData() { return metadata; }
 
-	// (de)serialize entiry from/to string
-	std::string serializeEntity(OtEntity entity, int indent=-1, char character=' ', std::string* basedir=nullptr);
-	OtEntity deserializeEntity(const std::string& data, std::string* basedir=nullptr);
+	// archive/restore entities to/from a string (support for do/undo/redo operations)
+	std::string archiveEntity(OtEntity entity, int indent=-1, char character=' ', std::string* basedir=nullptr);
+	OtEntity restoreEntity(const std::string& data, std::string* basedir=nullptr);
+	OtEntity duplicateEntity(const std::string& data, std::string* basedir=nullptr);
 
 	// get the composite worldspace transform for the specified entity
 	glm::mat4 getGlobalTransform(OtEntity entity);
@@ -92,5 +93,5 @@ private:
 
 	// (de)serialize from/to JSON
 	nlohmann::json serializeEntityToJson(OtEntity entity, std::string* basedir);
-	OtEntity deserializeEntityFromJson(nlohmann::json& data, std::string* basedir);
+	OtEntity deserializeEntityFromJson(nlohmann::json& json, std::string* basedir, bool preserveUuid);
 };

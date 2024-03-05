@@ -35,7 +35,6 @@ public:
 		input,
 		output,
 		math,
-		generator,
 		filter,
 		transformer,
 		geometry,
@@ -56,18 +55,21 @@ public:
 
 	// add pins
 	template <typename T>
-	inline OtNodesPin addInputPin(const char* name, T& value) {
+	inline OtNodesPin addInputPin(const char* name, T& value, bool variable=false) {
 		OtNodesPin pin = std::make_shared<OtNodesPinImpl<T>>(name, OtNodesPinClass::inputPin, &value);
 		pin->node = this;
+		pin->variable = variable;
 		inputPins.emplace_back(pin);
 		return pin;
 	}
 
 	template <typename T>
-	inline OtNodesPin addOutputPin(const char* name, T& value) {
+	inline OtNodesPin addOutputPin(const char* name, T& value, bool variable=false) {
 		OtNodesPin pin = std::make_shared<OtNodesPinImpl<T>>(name, OtNodesPinClass::outputPin, &value);
 		pin->node = this;
+		pin->variable = variable;
 		outputPins.emplace_back(pin);
+		this->variable |= variable;
 		return pin;
 	}
 
@@ -105,6 +107,9 @@ public:
 		}
 	}
 
+	// do we have a variable output pin
+	inline bool isVariable() { return variable; }
+
 	// interfaces
 	virtual inline bool onUpdate() { return false; };
 	virtual inline void onStart() {};
@@ -133,6 +138,8 @@ public:
 	bool permanentMark = false;
 	bool temporaryMark = false;
 
+	bool variable = false;
+
 	std::string oldState;
 	std::string newState;
 
@@ -143,4 +150,6 @@ protected:
 
 	virtual inline void customSerialize(nlohmann::json* data, std::string* basedir) {}
 	virtual inline void customDeserialize(nlohmann::json* data, std::string* basedir) {}
+
+	bool evaluateVariableInputs(bool toplevel=true);
 };

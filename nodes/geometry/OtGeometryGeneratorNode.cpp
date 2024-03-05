@@ -34,7 +34,7 @@ public:
 		addOutputPin("Geometry", geometry);
 	}
 
-	// rendering custom fields
+	// render custom fields
 	void customRendering(float width) override {
 		// render button
 		if (ImGui::Button("Configure", ImVec2(width, 0.0f))) {

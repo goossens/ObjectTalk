@@ -142,16 +142,35 @@ void OtSceneRenderer::renderDeferredGeometry(OtSceneRendererContext& ctx, OtPass
 //
 
 void OtSceneRenderer::renderDeferredModel(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtModelComponent& component) {
-	// process all the meshes
-	auto model = component.model;
-	auto transform = ctx.scene->getGlobalTransform(entity);
+	// visibility flag and target program
+	bool visible = false;
+	OtShaderProgram* program;
 
-	for (auto& mesh : model->getMeshes()) {
-		// see if mesh is visible?
-		auto aabb = mesh.getAABB();
-		aabb.transform(transform);
+	// is this a case of instancing?
+	if (ctx.scene->hasComponent<OtInstancingComponent>(entity)) {
+		// only render instances if we have a valid asset and at least one instance is visible
+		auto& instancing = ctx.scene->getComponent<OtInstancingComponent>(entity);
+
+		if (!instancing.asset.isNull() && instancing.asset->getInstances().submit()) {
+			visible = true;
+			program = &deferredInstancingProgram;
+		}
+
+	} else {
+		// see if model is visible
+		auto aabb = component.model->getAABB().transform(ctx.scene->getGlobalTransform(entity));
 
 		if (ctx.camera.frustum.isVisibleAABB(aabb)) {
+			visible = true;
+			program = &deferredPbrProgram;
+		}
+	}
+
+	if (visible) {
+		// process all the meshes
+		auto model = component.model;
+
+		for (auto& mesh : model->getMeshes()) {
 			// submit the material and clipping information
 			submitMaterialUniforms(model->getMaterials()[mesh.getMaterialIndex()].getPbrMaterial());
 			submitClippingUniforms(ctx.clippingPlane);
@@ -160,10 +179,10 @@ void OtSceneRenderer::renderDeferredModel(OtSceneRendererContext& ctx, OtPass& p
 			mesh.submitTriangles();
 
 			// set the transform
-			deferredPbrProgram.setTransform(transform);
+			program->setTransform(ctx.scene->getGlobalTransform(entity));
 
 			// set the program state
-			deferredPbrProgram.setState(
+			program->setState(
 				OtStateWriteRgb |
 				OtStateWriteA |
 				OtStateWriteZ |
@@ -171,7 +190,7 @@ void OtSceneRenderer::renderDeferredModel(OtSceneRendererContext& ctx, OtPass& p
 				OtStateCullCw);
 
 			// run the program
-			pass.runShaderProgram(deferredPbrProgram);
+			pass.runShaderProgram(*program);
 		}
 	}
 }

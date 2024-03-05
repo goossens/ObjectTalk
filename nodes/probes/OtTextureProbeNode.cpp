@@ -46,7 +46,7 @@ public:
 		needsSizing = true;
 	}
 
-	// rendering custom fields
+	// render custom fields
 	void customRendering(float width) override {
 		if (texture.isValid()) {
 			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (width - customW) / 2.0f);

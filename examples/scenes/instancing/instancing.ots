@@ -151,24 +151,6 @@
 							"wireframe": false
 						},
 						{
-							"component": "Transform",
-							"rotation": [
-								0.0,
-								0.0,
-								0.0
-							],
-							"scale": [
-								0.4000000059604645,
-								0.4000000059604645,
-								0.4000000059604645
-							],
-							"translation": [
-								0.0,
-								0.0,
-								0.0
-							]
-						},
-						{
 							"component": "Instancing",
 							"path": "virtual:instancesV"
 						},
@@ -266,24 +248,6 @@
 							"path": "virtual:child",
 							"transparent": false,
 							"wireframe": false
-						},
-						{
-							"component": "Transform",
-							"rotation": [
-								0.0,
-								0.0,
-								0.0
-							],
-							"scale": [
-								0.4000000059604645,
-								0.20000000298023224,
-								0.4000000059604645
-							],
-							"translation": [
-								0.0,
-								0.0,
-								0.0
-							]
 						},
 						{
 							"component": "Instancing",

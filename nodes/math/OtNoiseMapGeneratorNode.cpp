@@ -27,7 +27,7 @@
 class OtNoiseMapGeneratorNode : public OtNodeClass {
 public:
 	// constructor
-	inline OtNoiseMapGeneratorNode() : OtNodeClass(name, OtNodeClass::generator) {}
+	inline OtNoiseMapGeneratorNode() : OtNodeClass(name, OtNodeClass::math) {}
 
 	// configure node
 	inline void configure() override {
@@ -41,7 +41,7 @@ public:
 		addOutputPin("Texture", texture);
 	}
 
-	// rendering custom fields
+	// render custom fields
 	void customRendering(float width) override {
 		ImGui::SetNextItemWidth(width);
 		auto old = serialize().dump();

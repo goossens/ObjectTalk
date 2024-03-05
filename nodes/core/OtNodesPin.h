@@ -109,9 +109,10 @@ public:
 		hasRenderer = true;
 	}
 
-	// check direction
+	// check status
 	inline bool isInput() { return direction == inputPin; }
 	inline bool isOutput() { return direction == outputPin; }
+	inline bool isVariable() { return variable; }
 
 	// handle connections
 	virtual void connect(OtNodesPin sourcePin) = 0;
@@ -136,6 +137,8 @@ public:
 	int direction;
 	OtNodeClass* node;
 	bool needsEvaluating{false};
+
+	bool variable{false};
 
 	OtNodesPinRenderer render = [](float){};
 	float renderingWidth{0.0f};

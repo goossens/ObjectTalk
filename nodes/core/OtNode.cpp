@@ -104,3 +104,34 @@ void OtNodeClass::deserializeFromString(const std::string& json, bool restoreIDs
 	auto data = nlohmann::json::parse(json);
 	return deserialize(data, restoreIDs, basedir);
 }
+
+
+//
+//	OtNodeClass::evaluateVariableInputs
+//
+
+bool OtNodeClass::evaluateVariableInputs(bool toplevel) {
+	bool changed = isVariable();
+
+	// process all input pins
+	eachInput([&](OtNodesPin& pin){
+		// only look at connected pins
+		if (pin->isConnected()) {
+			// see if source node made changes
+			if (pin->sourcePin->node->evaluateVariableInputs(false)) {
+				pin->evaluate();
+
+				if (pin->needsEvaluating) {
+					pin->needsEvaluating = false;
+					changed = true;
+				}
+			}
+		}
+	});
+
+	if (changed && !toplevel) {
+		onExecute();
+	}
+
+	return changed;
+}

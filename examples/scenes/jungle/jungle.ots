@@ -22,7 +22,7 @@
 					],
 					"translation": [
 						0.0,
-						10.0,
+						4.400000095367432,
 						60.0
 					]
 				},
@@ -53,71 +53,11 @@
 					"cirrus": 0.5199999809265137,
 					"component": "Sky",
 					"cumulus": 0.5720000267028809,
-					"elevation": 32.28300094604492,
+					"elevation": 30.326000213623047,
 					"mieCoefficient": 5.451000213623047,
 					"mieScattering": 0.9900000095367432,
 					"rayleighCoefficient": 2.753000020980835,
 					"speed": 3.3970000743865967
-				}
-			]
-		},
-		{
-			"children": [],
-			"components": [
-				{
-					"component": "Core",
-					"tag": "Palm Tree",
-					"uuid": 1478965393
-				},
-				{
-					"component": "Geometry",
-					"cullback": false,
-					"path": "assets/palmtree.obj",
-					"transparent": true,
-					"wireframe": false
-				},
-				{
-					"component": "Transform",
-					"rotation": [
-						0.0,
-						0.0,
-						0.0
-					],
-					"scale": [
-						1.0,
-						1.0,
-						1.0
-					],
-					"translation": [
-						15.600000381469727,
-						0.10000000149011612,
-						1.399999976158142
-					]
-				},
-				{
-					"component": "Material",
-					"material": {
-						"albedo": [
-							1.0,
-							1.0,
-							1.0,
-							1.0
-						],
-						"albedoTexture": "assets/palmtree.png",
-						"ao": 1.0,
-						"aoTexture": "",
-						"emissive": [
-							0.0,
-							0.0,
-							0.0
-						],
-						"emissiveTexture": "",
-						"metallic": 0.0,
-						"metallicRoughnessTexture": "",
-						"normalTexture": "",
-						"roughness": 1.0,
-						"scale": 1.0
-					}
 				}
 			]
 		},
@@ -179,9 +119,98 @@
 						"region4TextureScale": 1.0
 					},
 					"tileSize": 32,
-					"vOffset": -1.0,
-					"vScale": 5.0,
+					"vOffset": -2.0,
+					"vScale": 2.0,
 					"wireframe": false
+				}
+			]
+		},
+		{
+			"children": [
+				{
+					"children": [],
+					"components": [
+						{
+							"component": "Core",
+							"tag": "Nodes",
+							"uuid": 4109695711
+						},
+						{
+							"component": "Nodes",
+							"path": "assets/trees.otn"
+						}
+					]
+				},
+				{
+					"children": [],
+					"components": [
+						{
+							"component": "Core",
+							"tag": "Palm Trees",
+							"uuid": 607820125
+						},
+						{
+							"component": "Geometry",
+							"cullback": true,
+							"path": "assets/palmtree.obj",
+							"transparent": true,
+							"wireframe": false
+						},
+						{
+							"component": "Transform",
+							"rotation": [
+								0.0,
+								0.0,
+								0.0
+							],
+							"scale": [
+								1.0,
+								1.0,
+								1.0
+							],
+							"translation": [
+								0.0,
+								0.0,
+								0.0
+							]
+						},
+						{
+							"component": "Instancing",
+							"path": "virtual:PalmTrees"
+						},
+						{
+							"component": "Material",
+							"material": {
+								"albedo": [
+									1.0,
+									1.0,
+									1.0,
+									1.0
+								],
+								"albedoTexture": "assets/palmtree.png",
+								"ao": 1.0,
+								"aoTexture": "",
+								"emissive": [
+									0.0,
+									0.0,
+									0.0
+								],
+								"emissiveTexture": "",
+								"metallic": 0.0,
+								"metallicRoughnessTexture": "",
+								"normalTexture": "",
+								"roughness": 1.0,
+								"scale": 1.0
+							}
+						}
+					]
+				}
+			],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Trees",
+					"uuid": 3589041954
 				}
 			]
 		}

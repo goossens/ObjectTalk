@@ -33,12 +33,12 @@ public:
 	// configure node
 	inline void configure() override {
 		addInputPin("Geometry", geometry);
-		addInputPin("Rotation", rotation);
-		addInputPin("Scale", scale);
-		addOutputPin("Instances", instances);
+		addInputPin("Rotation", rotation, true);
+		addInputPin("Scale", scale, true);
+		addOutputPin("Instances", instances, true);
 	}
 
-	// rendering custom fields
+	// render custom fields
 	void customRendering(float width) override {
 		auto old = serialize().dump();
 
@@ -82,6 +82,8 @@ public:
 
 			// turn each vertex into an instance
 			for (auto i = 0; i < count; i++) {
+				evaluateVariableInputs();
+
 				// determine transformation for instance
 				glm::mat4 transform =
 					glm::toMat4(glm::quat(glm::radians(rotation))) *

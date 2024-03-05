@@ -28,7 +28,7 @@ public:
 	// constructor
 	inline OtIslandizerNode() : OtTextureFilterNode(name) {}
 
-	// rendering custom fields
+	// render custom fields
 	void customRendering(float width) override {
 		auto old = serialize().dump();
 		ImGui::SetNextItemWidth(width);

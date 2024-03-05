@@ -30,9 +30,9 @@ public:
 	// configure node
 	inline void configure() override {
 		addInputPin("Input", input);
-		addInputPin("Translate", translate);
-		addInputPin("Rotate", rotate);
-		addInputPin("Scale", scale);
+		addInputPin("Translate", translate, true);
+		addInputPin("Rotate", rotate, true);
+		addInputPin("Scale", scale, true);
 		addOutputPin("Output", output);
 	}
 
@@ -43,17 +43,18 @@ public:
 
 		// do we have a valid input
 		if (input.isValid()) {
-			// determine transformation matrix
-			auto transform = glm::translate(glm::mat4(1.0f), translate) *
-				glm::toMat4(glm::quat(glm::radians(rotate))) *
-				glm::scale(glm::mat4(1.0f), scale);
-
 			// transform all input instances to the output
 			auto count = input.size();
 
 			// transform all vertices
 			for (auto i = 0; i < count; i++) {
-				output.add(transform * input[i]);
+				evaluateVariableInputs();
+
+				output.add(
+					glm::translate(glm::mat4(1.0f), translate) *
+					glm::toMat4(glm::quat(glm::radians(rotate))) *
+					glm::scale(glm::mat4(1.0f), scale) *
+					input[i]);
 			}
 		}
 	}

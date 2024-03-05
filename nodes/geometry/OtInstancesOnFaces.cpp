@@ -37,12 +37,12 @@ public:
 	// configure node
 	inline void configure() override {
 		addInputPin("Geometry", geometry);
-		addInputPin("Rotation", rotation);
-		addInputPin("Scale", scale);
-		addOutputPin("Instances", instances);
+		addInputPin("Rotation", rotation, true);
+		addInputPin("Scale", scale, true);
+		addOutputPin("Instances", instances, true);
 	}
 
-	// rendering custom fields
+	// render custom fields
 	void customRendering(float width) override {
 		auto old = serialize().dump();
 		bool changed = false;
@@ -54,7 +54,6 @@ public:
 			changed = true;
 		}
 
-		ImGui::SetNextItemWidth(width);
 		changed |= ImGui::Checkbox("Rotate to Normals", &rotateToNormals);
 
 		if (changed) {
@@ -91,11 +90,6 @@ public:
 
 		// do we have a valid input
 		if (geometry.isValid()) {
-			// determine shared transformation
-			glm::mat4 transform =
-				glm::toMat4(glm::quat(glm::radians(rotation))) *
-				glm::scale(glm::mat4(1.0f), scale);
-
 			// get accesss to the mesh and vertex list
 			auto& mesh = geometry.getMesh();
 			OtVertex* vertex = mesh.getVertices().data();
@@ -104,6 +98,13 @@ public:
 
 			// pick specified random points on random triangles
 			for (auto i = 0; i < instanceCount; i++) {
+				evaluateVariableInputs();
+
+				// determine shared transformation
+				glm::mat4 transform =
+					glm::toMat4(glm::quat(glm::radians(rotation))) *
+					glm::scale(glm::mat4(1.0f), scale);
+
 				// select a random triangle
 				int triangle = OtRandom(0, int(count) - 1);
 

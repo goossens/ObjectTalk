@@ -110,21 +110,23 @@ void OtSceneRenderer::renderForwardGeometry(OtSceneRendererContext& ctx, OtPass&
 	bool visible = false;
 	OtShaderProgram* program;
 
+	// get camera frustum and geometry AABB
+	auto& frustum = ctx.camera.frustum;
+	auto& aabb =  geometry.asset->getGeometry().getAABB();
+
 	// is this a case of instancing?
 	if (ctx.scene->hasComponent<OtInstancingComponent>(entity)) {
 		// only render instances if we have a valid asset and at least one instance is visible
 		auto& instancing = ctx.scene->getComponent<OtInstancingComponent>(entity);
 
-		if (!instancing.asset.isNull() && instancing.asset->getInstances().submit()) {
+		if (!instancing.asset.isNull() && instancing.asset->getInstances().submit(frustum, aabb)) {
 			visible = true;
 			program = &forwardInstancingProgram;
 		}
 
 	} else {
 		// see if geometry is visible
-		auto aabb = geometry.asset->getGeometry().getAABB().transform(ctx.scene->getGlobalTransform(entity));
-
-		if (ctx.camera.frustum.isVisibleAABB(aabb)) {
+		if (frustum.isVisibleAABB(aabb.transform(ctx.scene->getGlobalTransform(entity)))) {
 			visible = true;
 			program = &forwardPbrProgram;
 		}

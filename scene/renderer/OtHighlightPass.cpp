@@ -83,12 +83,16 @@ void OtSceneRenderer::renderHighlight(OtSceneRendererContext& ctx, OtPass& pass,
 			auto& geometry = asset->getGeometry();
 			geometry.submitTriangles();
 
+			// get camera frustum and geometry AABB
+			auto& frustum = ctx.camera.frustum;
+			auto& aabb =  geometry.getAABB();
+
 			// is this a case of instancing?
 			if (ctx.scene->hasComponent<OtInstancingComponent>(entity)) {
 				// only render instances if we have a valid asset and at least one instance is visible
 				auto& instancing = ctx.scene->getComponent<OtInstancingComponent>(entity);
 
-				if (!instancing.asset.isNull() && instancing.asset->getInstances().submit()) {
+				if (!instancing.asset.isNull() && instancing.asset->getInstances().submit(frustum, aabb)) {
 					selectInstancingProgram.setTransform(ctx.scene->getGlobalTransform(entity));
 					selectInstancingProgram.setState(OtStateWriteRgb);
 					pass.runShaderProgram(selectInstancingProgram);
@@ -96,9 +100,7 @@ void OtSceneRenderer::renderHighlight(OtSceneRendererContext& ctx, OtPass& pass,
 
 			} else {
 				// see if geometry is visible
-				auto aabb = geometry.getAABB().transform(ctx.scene->getGlobalTransform(entity));
-
-				if (ctx.camera.frustum.isVisibleAABB(aabb)) {
+				if (frustum.isVisibleAABB(aabb.transform(ctx.scene->getGlobalTransform(entity)))) {
 					selectProgram.setTransform(ctx.scene->getGlobalTransform(entity));
 					selectProgram.setState(OtStateWriteRgb);
 					pass.runShaderProgram(selectProgram);

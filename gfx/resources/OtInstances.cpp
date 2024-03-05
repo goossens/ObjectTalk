@@ -124,19 +124,33 @@ void OtInstances::add(const glm::mat4 &instance, bool updateVersion) {
 //	OtInstances::submit
 //
 
-bool OtInstances::submit() {
+bool OtInstances::submit(OtFrustum& frustum, OtAABB& aabb) {
 	if (instances->size()) {
+		// filter instances based on visibility
+		std::vector<glm::mat4> tmp;
+
+		for (auto& instance : *instances) {
+			if (frustum.isVisibleAABB(aabb.transform(instance))) {
+				tmp.emplace_back(instance);
+			}
+		}
+
 		// get number of instances and size of instance data
-		uint32_t count = (uint32_t) instances->size();
+		uint32_t count = (uint32_t) tmp.size();
 		uint32_t stride = sizeof(glm::mat4);
 
-		// create instance data buffer and submit it to the GPU
-		bgfx::InstanceDataBuffer idb;
-		count = bgfx::getAvailInstanceDataBuffer(count, stride);
-		bgfx::allocInstanceDataBuffer(&idb, count, stride);
-		std::memcpy(idb.data, instances->data(), idb.size);
-		bgfx::setInstanceDataBuffer(&idb);
-		return true;
+		if (count) {
+			// create instance data buffer and submit it to the GPU
+			bgfx::InstanceDataBuffer idb;
+			count = bgfx::getAvailInstanceDataBuffer(count, stride);
+			bgfx::allocInstanceDataBuffer(&idb, count, stride);
+			std::memcpy(idb.data, tmp.data(), idb.size);
+			bgfx::setInstanceDataBuffer(&idb);
+			return true;
+
+		} else {
+			return false;
+		}
 
 	} else {
 		return false;

@@ -18,6 +18,9 @@
 
 #include "glm/glm.hpp"
 
+#include "OtAABB.h"
+#include "OtFrustum.h"
+
 
 //
 //	OtInstances
@@ -46,7 +49,7 @@ public:
 	size_t size() { return instances->size(); }
 
 	// submit instances to GPU
-	bool submit();
+	bool submit(OtFrustum& frustum, OtAABB& aabb);
 
 	// version management
 	inline void setVersion(int v) { version = v; }

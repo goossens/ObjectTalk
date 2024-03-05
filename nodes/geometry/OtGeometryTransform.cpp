@@ -62,6 +62,8 @@ public:
 				vertex++;
 			}
 
+			mesh.generateAABB();
+
 		} else {
 			// no valid input, just clear the output
 			output.clear();

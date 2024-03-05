@@ -92,7 +92,8 @@ public:
 	size_t getVertexCount() { return vertices.size(); }
 	size_t getIndexCount() { return indices.size(); }
 
-	// generate normals and tangents
+	// generate AABB, normals and tangents
+	void generateAABB();
 	void generateNormals();
 	void generateTangents();
 

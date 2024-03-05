@@ -222,6 +222,19 @@ void OtMesh::save(const std::string& path) {
 
 
 //
+//	OtMesh::generateAABB
+//
+
+void OtMesh::generateAABB() {
+	aabb.clear();
+
+	for (auto& vertex : vertices) {
+		aabb.addPoint(vertex.position);
+	}
+}
+
+
+//
 //	OtMesh::generateNormals
 //
 

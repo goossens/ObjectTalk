@@ -25,9 +25,6 @@
 
 class OtGeometryInputNode : public OtNodeClass {
 public:
-	// constructor
-	inline OtGeometryInputNode() : OtNodeClass(name, OtNodeClass::input) {}
-
 	// configure node
 	inline void configure() override {
 		addOutputPin("Geometry", geometry)->addRenderer([this](float width) {
@@ -81,7 +78,9 @@ public:
 		}
 	}
 
-	static constexpr const char* name = "Geometry Input";
+	static constexpr const char* nodeName = "Geometry Input";
+	static constexpr int nodeCategory = OtNodeClass::input;
+	static constexpr int nodeKind = OtNodeClass::fixed;
 	static constexpr float fieldWidth = 180.0f;
 
 protected:
@@ -89,4 +88,4 @@ protected:
 	OtGeometry geometry;
 };
 
-static OtNodesFactoryRegister<OtGeometryInputNode> type("Input");
+static OtNodesFactoryRegister<OtGeometryInputNode> type;

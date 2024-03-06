@@ -23,9 +23,6 @@
 
 class OtVirtualGeometryOutputNode : public OtNodeClass {
 public:
-	// constructor
-	inline OtVirtualGeometryOutputNode() : OtNodeClass(name, OtNodeClass::output) {}
-
 	// configure node
 	inline void configure() override {
 		addInputPin("Input", geometry)->addRenderer([&](float width) {
@@ -68,7 +65,9 @@ public:
 		asset = data->value("path", "");
 	}
 
-	static constexpr const char* name = "Save Geometry To Virtual";
+	static constexpr const char* nodeName = "Save Geometry To Virtual";
+	static constexpr int nodeCategory = OtNodeClass::output;
+	static constexpr int nodeKind = OtNodeClass::fixed;
 	static constexpr float fieldWidth = 170.0f;
 
 protected:
@@ -76,4 +75,4 @@ protected:
 	OtAsset<OtGeometryAsset> asset;
 };
 
-static OtNodesFactoryRegister<OtVirtualGeometryOutputNode> type("Output");
+static OtNodesFactoryRegister<OtVirtualGeometryOutputNode> type;

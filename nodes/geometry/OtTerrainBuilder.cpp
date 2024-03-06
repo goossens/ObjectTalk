@@ -21,9 +21,6 @@
 
 class OtTerrainBuilder : public OtNodeClass {
 public:
-	// constructor
-	inline OtTerrainBuilder() : OtNodeClass(name, OtNodeClass::geometry) {}
-
 	// configure node
 	inline void configure() override {
 		addInputPin("Input", image);
@@ -107,7 +104,9 @@ public:
 		geometry.incrementVersion();
 	}
 
-	static constexpr const char* name = "Terrain Builder";
+	static constexpr const char* nodeName = "Terrain Builder";
+	static constexpr int nodeCategory = OtNodeClass::geometry;
+	static constexpr int nodeKind = OtNodeClass::fixed;
 
 protected:
 	OtImage image;
@@ -116,4 +115,4 @@ protected:
 	int depth = 0;
 };
 
-static OtNodesFactoryRegister<OtTerrainBuilder> type("Geometry");
+static OtNodesFactoryRegister<OtTerrainBuilder> type;

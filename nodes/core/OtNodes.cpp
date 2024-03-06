@@ -657,7 +657,7 @@ bool OtNodes::visitNode(OtNode& node, std::vector<OtNode>& nodes) {
 //	OtNodes::sortNodesTopologically
 //
 
-bool OtNodes::sortNodesTopologically(std::vector<OtNode>& nodes) {
+bool OtNodes::sortNodesTopologically() {
 	// based on https://en.wikipedia.org/wiki/Topological_sorting
 
 	// clear all flags
@@ -683,13 +683,46 @@ bool OtNodes::sortNodesTopologically(std::vector<OtNode>& nodes) {
 
 
 //
+//	OtNodes::classifyLinks
+//
+
+void OtNodes::classifyLinks() {
+	for (auto& node : nodes) {
+		node->varyingInput = false;
+
+		node->eachInput([&](OtNodesPin& pin) {
+			pin->varying = pin->sourcePin ? pin->varying = pin->sourcePin->varying : false;
+			node->varyingInput |= pin->varying;
+		});
+
+		if (node->kind == OtNodeClass::fixed) {
+			node->eachOutput([](OtNodesPin& pin) {
+				pin->varying = false;
+			});
+
+		} else if (node->kind == OtNodeClass::varying) {
+			node->eachOutput([](OtNodesPin& pin) {
+				pin->varying = true;
+			});
+
+		} else {
+			node->eachOutput([&](OtNodesPin& pin) {
+				pin->varying = node->varyingInput;
+			});
+		}
+	}
+}
+
+
+//
 //	OtNodes::evaluate
 //
 
 void OtNodes::evaluate() {
 	// see if resorting is required
 	if (needsSorting) {
-		sortNodesTopologically(nodes);
+		sortNodesTopologically();
+		classifyLinks();
 		needsSorting = false;
 		needsEvaluating = true;
 	}

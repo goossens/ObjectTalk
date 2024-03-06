@@ -25,9 +25,6 @@
 
 class OtIslandizerNode : public OtTextureFilterNode {
 public:
-	// constructor
-	inline OtIslandizerNode() : OtTextureFilterNode(name) {}
-
 	// render custom fields
 	void customRendering(float width) override {
 		auto old = serialize().dump();
@@ -64,7 +61,9 @@ public:
 		islandizer.render(inputTexture, framebuffer);
 	}
 
-	static constexpr const char* name = "Islandizer";
+	static constexpr const char* nodeName = "Islandizer";
+	static constexpr int nodeCategory = OtNodeClass::filter;
+	static constexpr int nodeKind = OtNodeClass::fixed;
 	static constexpr float fieldWidth = 200.0f;
 
 	// properties
@@ -72,4 +71,4 @@ public:
 	int distance = OtIslandizer::squareBump;
 };
 
-static OtNodesFactoryRegister<OtIslandizerNode> type("Filters");
+static OtNodesFactoryRegister<OtIslandizerNode> type;

@@ -23,9 +23,6 @@
 
 class OtVirtualInstancesOutputNode : public OtNodeClass {
 public:
-	// constructor
-	inline OtVirtualInstancesOutputNode() : OtNodeClass(name, OtNodeClass::output) {}
-
 	// configure node
 	inline void configure() override {
 		addInputPin("Input", instances)->addRenderer([&](float width) {
@@ -68,7 +65,9 @@ public:
 		asset = data->value("path", "");
 	}
 
-	static constexpr const char* name = "Save Instances To Virtual";
+	static constexpr const char* nodeName = "Save Instances To Virtual";
+	static constexpr int nodeCategory = OtNodeClass::output;
+	static constexpr int nodeKind = OtNodeClass::fixed;
 	static constexpr float fieldWidth = 170.0f;
 
 protected:
@@ -76,4 +75,4 @@ protected:
 	OtAsset<OtInstancesAsset> asset;
 };
 
-static OtNodesFactoryRegister<OtVirtualInstancesOutputNode> type("Output");
+static OtNodesFactoryRegister<OtVirtualInstancesOutputNode> type;

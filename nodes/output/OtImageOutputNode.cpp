@@ -24,9 +24,6 @@
 
 class OtImageOutputNode : public OtNodeClass {
 public:
-	// constructor
-	inline OtImageOutputNode() : OtNodeClass(name, OtNodeClass::output) {}
-
 	// configure node
 	inline void configure() override {
 		addInputPin("Input", image)->addRenderer([&](float width) {
@@ -70,10 +67,12 @@ public:
 		});
 	}
 
-	static constexpr const char* name = "Save Image To PNG";
+	static constexpr const char* nodeName = "Save Image To PNG";
+	static constexpr int nodeCategory = OtNodeClass::output;
+	static constexpr int nodeKind = OtNodeClass::fixed;
 
 protected:
 	OtImage image;
 };
 
-static OtNodesFactoryRegister<OtImageOutputNode> type("Output");
+static OtNodesFactoryRegister<OtImageOutputNode> type;

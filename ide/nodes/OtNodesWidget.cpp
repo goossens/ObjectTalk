@@ -408,7 +408,7 @@ void OtNodesWidget::renderPin(ImDrawList* drawlist, OtNodesPin& pin, float x, fl
 	auto color = pinColors[pin->type];
 	auto pos = ImVec2(x, ImGui::GetCursorScreenPos().y + pinOffset);
 
-	if (pin->isVariable()) {
+	if (pin->isVarying()) {
 		drawlist->AddQuadFilled(
 			ImVec2(pos.x, pos.y - pinRadius - 1),
 			ImVec2(pos.x + pinRadius + 1, pos.y),

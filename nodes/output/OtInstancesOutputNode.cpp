@@ -24,9 +24,6 @@
 
 class OtInstancesOutputNode : public OtNodeClass {
 public:
-	// constructor
-	inline OtInstancesOutputNode() : OtNodeClass(name, OtNodeClass::output) {}
-
 	// configure node
 	inline void configure() override {
 		addInputPin("Input", instances)->addRenderer([&](float width) {
@@ -70,10 +67,12 @@ public:
 		});
 	}
 
-	static constexpr const char* name = "Save Instances to OTI";
+	static constexpr const char* nodeName = "Save Instances to OTI";
+	static constexpr int nodeCategory = OtNodeClass::output;
+	static constexpr int nodeKind = OtNodeClass::fixed;
 
 protected:
 	OtInstances instances;
 };
 
-static OtNodesFactoryRegister<OtInstancesOutputNode> type("Output");
+static OtNodesFactoryRegister<OtInstancesOutputNode> type;

@@ -27,15 +27,12 @@
 
 class OtInstancesOnVerticesNode : public OtNodeClass {
 public:
-	// constructor
-	inline OtInstancesOnVerticesNode() : OtNodeClass(name, OtNodeClass::geometry) {}
-
 	// configure node
 	inline void configure() override {
 		addInputPin("Geometry", geometry);
-		addInputPin("Rotation", rotation, true);
-		addInputPin("Scale", scale, true);
-		addOutputPin("Instances", instances, true);
+		addInputPin("Rotation", rotation);
+		addInputPin("Scale", scale);
+		addOutputPin("Instances", instances);
 	}
 
 	// render custom fields
@@ -81,32 +78,42 @@ public:
 			auto count = mesh.getVertexCount();
 
 			// turn each vertex into an instance
-			for (auto i = 0; i < count; i++) {
-				evaluateVariableInputs();
-
-				// determine transformation for instance
-				glm::mat4 transform =
-					glm::toMat4(glm::quat(glm::radians(rotation))) *
-					glm::scale(glm::mat4(1.0f), scale);
-
-				// rotate to normals (if required)
-				if (rotateToNormals) {
-					static glm::vec3 u = glm::vec3(0.0f, 1.0f, 0.0f);
-					glm::vec3 v = vertex->normal;
-					auto quat = glm::normalize(glm::quat(1.0f + glm::dot(u, v), glm::cross(u, v)));
-					instances.add(glm::translate(glm::mat4(1.0f), vertex->position) * glm::toMat4(quat) * transform, false);
-
-				} else {
-					instances.add(glm::translate(glm::mat4(1.0f), vertex->position) * transform, false);
+			if (hasVaryingInput()) {
+				for (auto i = 0; i < count; i++) {
+					evaluateVariableInputs();
+					auto transform = glm::toMat4(glm::quat(glm::radians(rotation))) * glm::scale(glm::mat4(1.0f), scale);
+					generateInstance(vertex++, transform);
 				}
 
-				vertex++;
+			} else {
+				auto transform = glm::toMat4(glm::quat(glm::radians(rotation))) * glm::scale(glm::mat4(1.0f), scale);
+
+				for (auto i = 0; i < count; i++) {
+					generateInstance(vertex++, transform);
+				}
 			}
 		}
 	}
 
-	static constexpr const char* name = "Instances on Vertices";
+	static constexpr const char* nodeName = "Instances on Vertices";
+	static constexpr int nodeCategory = OtNodeClass::geometry;
+	static constexpr int nodeKind = OtNodeClass::fixed;
 	static constexpr float fieldWidth = 180.0f;
+
+private:
+	// generate a single instance
+	void generateInstance(OtVertex* vertex, glm::mat4& transform) {
+		// rotate to normals (if required)
+		if (rotateToNormals) {
+			static glm::vec3 u = glm::vec3(0.0f, 1.0f, 0.0f);
+			glm::vec3 v = vertex->normal;
+			auto quat = glm::normalize(glm::quat(1.0f + glm::dot(u, v), glm::cross(u, v)));
+			instances.add(glm::translate(glm::mat4(1.0f), vertex->position) * glm::toMat4(quat) * transform, false);
+
+		} else {
+			instances.add(glm::translate(glm::mat4(1.0f), vertex->position) * transform, false);
+		}
+	}
 
 protected:
 	OtGeometry geometry;
@@ -116,4 +123,4 @@ protected:
 	glm::vec3 scale{1.0f};
 };
 
-static OtNodesFactoryRegister<OtInstancesOnVerticesNode> type("Geometry");
+static OtNodesFactoryRegister<OtInstancesOnVerticesNode> type;

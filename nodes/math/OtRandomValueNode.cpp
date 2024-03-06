@@ -23,12 +23,9 @@
 
 class OtRandomValueNode : public OtNodeClass {
 public:
-	// constructor
-	inline OtRandomValueNode() : OtNodeClass(name, category) {}
-
 	// configure node
 	inline void configure() override {
-		addOutputPin("Value", value, true);
+		addOutputPin("Value", value);
 	}
 
 	// render custom fields
@@ -73,8 +70,9 @@ public:
 		maxValue = data->value("maxValue", 1.0f);
 	}
 
-	static constexpr const int category = OtNodeClass::math;
-	static constexpr const char* name = "Random Value";
+	static constexpr const char* nodeName = "Random";
+	static constexpr int nodeCategory = OtNodeClass::math;
+	static constexpr int nodeKind = OtNodeClass::varying;
 	static constexpr float fieldWidth = 50.0f;
 	static constexpr float labelWidth = 30.0f;
 	static constexpr float customWidth = fieldWidth + labelWidth;
@@ -85,4 +83,4 @@ protected:
 	float maxValue = 1.0f;
 };
 
-static OtNodesFactoryRegister<OtRandomValueNode> type("Math");
+static OtNodesFactoryRegister<OtRandomValueNode> type;

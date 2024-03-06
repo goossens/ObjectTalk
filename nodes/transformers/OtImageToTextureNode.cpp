@@ -21,9 +21,6 @@
 
 class OtImageToTextureNode : public OtNodeClass {
 public:
-	// constructor
-	inline OtImageToTextureNode() : OtNodeClass(name, OtNodeClass::transformer) {}
-
 	// configure node
 	inline void configure() override {
 		addInputPin("Input", image);
@@ -40,11 +37,13 @@ public:
 		}
 	}
 
-	static constexpr const char* name = "Image to Texture";
+	static constexpr const char* nodeName = "Image to Texture";
+	static constexpr int nodeCategory = OtNodeClass::transformer;
+	static constexpr int nodeKind = OtNodeClass::fixed;
 
 protected:
 	OtImage image;
 	OtTexture texture;
 };
 
-static OtNodesFactoryRegister<OtImageToTextureNode> type("Transformers");
+static OtNodesFactoryRegister<OtImageToTextureNode> type;

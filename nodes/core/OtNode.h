@@ -42,8 +42,26 @@ public:
 		probe
 	};
 
+	static constexpr const char* categoryNames[] = {
+		"Input",
+		"Output",
+		"Math",
+		"Filter",
+		"Transformer",
+		"Geometry",
+		"Instances",
+		"Probe"
+	};
+
+	// node kind
+	enum {
+		fixed,
+		varying,
+		flexible
+	};
+
 	// constructor
-	inline OtNodeClass(const char* t, int c) : type(t), title(t), category(c) {
+	inline OtNodeClass() {
 		id = OtNodesGenerateID();
 	}
 
@@ -55,21 +73,18 @@ public:
 
 	// add pins
 	template <typename T>
-	inline OtNodesPin addInputPin(const char* name, T& value, bool variable=false) {
+	inline OtNodesPin addInputPin(const char* name, T& value) {
 		OtNodesPin pin = std::make_shared<OtNodesPinImpl<T>>(name, OtNodesPinClass::inputPin, &value);
 		pin->node = this;
-		pin->variable = variable;
 		inputPins.emplace_back(pin);
 		return pin;
 	}
 
 	template <typename T>
-	inline OtNodesPin addOutputPin(const char* name, T& value, bool variable=false) {
+	inline OtNodesPin addOutputPin(const char* name, T& value) {
 		OtNodesPin pin = std::make_shared<OtNodesPinImpl<T>>(name, OtNodesPinClass::outputPin, &value);
 		pin->node = this;
-		pin->variable = variable;
 		outputPins.emplace_back(pin);
-		this->variable |= variable;
 		return pin;
 	}
 
@@ -108,7 +123,7 @@ public:
 	}
 
 	// do we have a variable output pin
-	inline bool isVariable() { return variable; }
+	inline bool hasVaryingInput() { return varyingInput; }
 
 	// interfaces
 	virtual inline bool onUpdate() { return false; };
@@ -125,6 +140,7 @@ public:
 	uint32_t id;
 	const char* type;
 	int category;
+	int kind;
 	std::string title;
 	float x = 0.0f;
 	float y = 0.0f;
@@ -138,7 +154,7 @@ public:
 	bool permanentMark = false;
 	bool temporaryMark = false;
 
-	bool variable = false;
+	bool varyingInput = false;
 
 	std::string oldState;
 	std::string newState;

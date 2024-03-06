@@ -25,9 +25,6 @@
 
 class OtTextureInputNode : public OtNodeClass {
 public:
-	// constructor
-	inline OtTextureInputNode() : OtNodeClass(name, OtNodeClass::input) {}
-
 	// configure node
 	inline void configure() override {
 		addOutputPin("Texture", texture)->addRenderer([this](float width) {
@@ -82,7 +79,9 @@ public:
 		}
 	}
 
-	static constexpr const char* name = "Texture Input";
+	static constexpr const char* nodeName = "Texture Input";
+	static constexpr int nodeCategory = OtNodeClass::input;
+	static constexpr int nodeKind = OtNodeClass::fixed;
 	static constexpr float fieldWidth = 180.0f;
 
 protected:
@@ -90,4 +89,4 @@ protected:
 	OtTexture texture;
 };
 
-static OtNodesFactoryRegister<OtTextureInputNode> type("Input");
+static OtNodesFactoryRegister<OtTextureInputNode> type;

@@ -23,9 +23,6 @@
 
 class OtVirtualTextureOutputNode : public OtNodeClass {
 public:
-	// constructor
-	inline OtVirtualTextureOutputNode() : OtNodeClass(name, OtNodeClass::output) {}
-
 	// configure node
 	inline void configure() override {
 		addInputPin("Input", texture)->addRenderer([&](float width) {
@@ -68,7 +65,9 @@ public:
 		asset = data->value("path", "");
 	}
 
-	static constexpr const char* name = "Save Texture To Virtual";
+	static constexpr const char* nodeName = "Save Texture To Virtual";
+	static constexpr int nodeCategory = OtNodeClass::output;
+	static constexpr int nodeKind = OtNodeClass::fixed;
 	static constexpr float fieldWidth = 170.0f;
 
 protected:
@@ -76,4 +75,4 @@ protected:
 	OtAsset<OtTextureAsset> asset;
 };
 
-static OtNodesFactoryRegister<OtVirtualTextureOutputNode> type("Output");
+static OtNodesFactoryRegister<OtVirtualTextureOutputNode> type;

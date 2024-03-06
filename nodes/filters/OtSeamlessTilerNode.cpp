@@ -21,18 +21,17 @@
 
 class OtSeamlessTilerNode : public OtTextureFilterNode {
 public:
-	// constructor
-	inline OtSeamlessTilerNode() : OtTextureFilterNode(name) {}
-
 	// run filter
 	void onFilter() override {
 		tiler.render(inputTexture, framebuffer);
 	}
 
-	static constexpr const char* name = "Seamless Tiler";
+	static constexpr const char* nodeName = "Seamless Tiler";
+	static constexpr int nodeCategory = OtNodeClass::filter;
+	static constexpr int nodeKind = OtNodeClass::fixed;
 
 	// properties
 	OtSeamlessTile tiler;
 };
 
-static OtNodesFactoryRegister<OtSeamlessTilerNode> type("Filters");
+static OtNodesFactoryRegister<OtSeamlessTilerNode> type;

@@ -23,9 +23,6 @@
 
 class OtVirtualImageOutputNode : public OtNodeClass {
 public:
-	// constructor
-	inline OtVirtualImageOutputNode() : OtNodeClass(name, OtNodeClass::output) {}
-
 	// configure node
 	inline void configure() override {
 		addInputPin("Input", image)->addRenderer([&](float width) {
@@ -68,7 +65,9 @@ public:
 		asset = data->value("path", "");
 	}
 
-	static constexpr const char* name = "Save Image To Virtual";
+	static constexpr const char* nodeName = "Save Image To Virtual";
+	static constexpr int nodeCategory = OtNodeClass::output;
+	static constexpr int nodeKind = OtNodeClass::fixed;
 	static constexpr float fieldWidth = 170.0f;
 
 protected:
@@ -76,4 +75,4 @@ protected:
 	OtAsset<OtImageAsset> asset;
 };
 
-static OtNodesFactoryRegister<OtVirtualImageOutputNode> type("Output");
+static OtNodesFactoryRegister<OtVirtualImageOutputNode> type;

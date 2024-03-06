@@ -24,9 +24,6 @@
 
 class OtTextureFilterNode : public OtNodeClass {
 public:
-	// constructor
-	inline OtTextureFilterNode(const char* name) : OtNodeClass(name, OtNodeClass::filter) {}
-
 	// get output format (noTexture means use the same format as the incoming texture)
 	inline virtual int getOutputFormat() { return OtTexture::noTexture; }
 

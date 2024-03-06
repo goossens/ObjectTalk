@@ -31,15 +31,12 @@
 
 class OtInstancesOnFacesNode : public OtNodeClass {
 public:
-	// constructor
-	inline OtInstancesOnFacesNode() : OtNodeClass(name, OtNodeClass::geometry) {}
-
 	// configure node
 	inline void configure() override {
 		addInputPin("Geometry", geometry);
-		addInputPin("Rotation", rotation, true);
-		addInputPin("Scale", scale, true);
-		addOutputPin("Instances", instances, true);
+		addInputPin("Rotation", rotation);
+		addInputPin("Scale", scale);
+		addOutputPin("Instances", instances);
 	}
 
 	// render custom fields
@@ -92,49 +89,69 @@ public:
 		if (geometry.isValid()) {
 			// get accesss to the mesh and vertex list
 			auto& mesh = geometry.getMesh();
-			OtVertex* vertex = mesh.getVertices().data();
+			OtVertex* vertices = mesh.getVertices().data();
 			uint32_t* indices = mesh.getIndices().data();
-			auto count = mesh.getIndexCount() / 3;
+			auto triangles = mesh.getIndexCount() / 3;
 
-			// pick specified random points on random triangles
-			for (auto i = 0; i < instanceCount; i++) {
-				evaluateVariableInputs();
+			// generate instances
+			if (hasVaryingInput()) {
+				for (auto i = 0; i < instanceCount; i++) {
+					evaluateVariableInputs();
 
+					glm::mat4 transform =
+						glm::toMat4(glm::quat(glm::radians(rotation))) *
+						glm::scale(glm::mat4(1.0f), scale);
+
+					// generate instance
+					generateInstance(vertices, indices, triangles, transform);
+				}
+
+			}  else {
 				// determine shared transformation
 				glm::mat4 transform =
 					glm::toMat4(glm::quat(glm::radians(rotation))) *
 					glm::scale(glm::mat4(1.0f), scale);
 
-				// select a random triangle
-				int triangle = OtRandom(0, int(count) - 1);
-
-				// get the corners of the triangle
-				auto index = indices + triangle * 3;
-				auto& v1 = vertex[index[0]];
-				auto& v2 = vertex[index[1]];
-				auto& v3 = vertex[index[2]];
-
-				// pick a random point within the triangle
-				auto p = getRandomPointOnTriangle(v1.position, v2.position, v3.position);
-
-				// rotate to normals (if required)
-				if (rotateToNormals) {
-					static glm::vec3 u = glm::vec3(0.0f, 1.0f, 0.0f);
-					glm::vec3 v = glm::normalize((v1.normal + v2.normal + v3.normal) / 3.0f);
-					auto quat = glm::normalize(glm::quat(1.0f + glm::dot(u, v), glm::cross(u, v)));
-					instances.add(glm::translate(glm::mat4(1.0f), p) * glm::toMat4(quat) * transform, false);
-
-				} else {
-					instances.add(glm::translate(glm::mat4(1.0f), p) * transform, false);
+				// generate instances
+				for (auto i = 0; i < instanceCount; i++) {
+					generateInstance(vertices, indices, triangles, transform);
 				}
 			}
 		}
 	}
 
-	static constexpr const char* name = "Instances on Faces";
+	static constexpr const char* nodeName = "Instances on Faces";
+	static constexpr int nodeCategory = OtNodeClass::geometry;
+	static constexpr int nodeKind = OtNodeClass::fixed;
 	static constexpr float fieldWidth = 180.0f;
 
 private:
+	// generate a single instance
+	void generateInstance(OtVertex* vertices, uint32_t* indices, size_t triangles, glm::mat4& transform) {
+		// select a random triangle
+		int triangle = OtRandom(0, int(triangles) - 1);
+
+		// get the corners of the triangle
+		auto index = indices + triangle * 3;
+		auto& v1 = vertices[index[0]];
+		auto& v2 = vertices[index[1]];
+		auto& v3 = vertices[index[2]];
+
+		// pick a random point within the triangle
+		auto p = getRandomPointOnTriangle(v1.position, v2.position, v3.position);
+
+		// rotate to normals (if required)
+		if (rotateToNormals) {
+			static glm::vec3 u = glm::vec3(0.0f, 1.0f, 0.0f);
+			glm::vec3 v = glm::normalize((v1.normal + v2.normal + v3.normal) / 3.0f);
+			auto quat = glm::normalize(glm::quat(1.0f + glm::dot(u, v), glm::cross(u, v)));
+			instances.add(glm::translate(glm::mat4(1.0f), p) * glm::toMat4(quat) * transform, false);
+
+		} else {
+			instances.add(glm::translate(glm::mat4(1.0f), p) * transform, false);
+		}
+	}
+
 	// get random point inside triangle based on barycentric coordinate
 	glm::vec3 getRandomPointOnTriangle(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3) {
 		auto bc = randomBaryentricCoordinate();
@@ -167,4 +184,4 @@ protected:
 	glm::vec3 scale{1.0f};
 };
 
-static OtNodesFactoryRegister<OtInstancesOnFacesNode> type("Geometry");
+static OtNodesFactoryRegister<OtInstancesOnFacesNode> type;

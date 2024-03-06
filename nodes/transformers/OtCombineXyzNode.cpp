@@ -21,9 +21,6 @@
 
 class OtCombineXyzNode : public OtNodeClass {
 public:
-	// constructor
-	inline OtCombineXyzNode() : OtNodeClass(name, category) {}
-
 	// configure node
 	inline void configure() override {
 		addInputPin("X", x);
@@ -37,14 +34,15 @@ public:
 		value = glm::vec3(x, y, z);
 	}
 
-	static constexpr const int category = OtNodeClass::math;
-	static constexpr const char* name = "Combine XYZ";
+	static constexpr const char* nodeName = "Combine XYZ";
+	static constexpr int nodeCategory = OtNodeClass::transformer;
+	static constexpr int nodeKind = OtNodeClass::flexible;
 
 protected:
-	float x = 0.0f;
-	float y = 0.0f;
-	float z = 0.0f;
+	float x{0.0f};
+	float y{0.0f};
+	float z{0.0f};
 	glm::vec3 value{0.0f};
 };
 
-static OtNodesFactoryRegister<OtCombineXyzNode> type("Math");
+static OtNodesFactoryRegister<OtCombineXyzNode> type;

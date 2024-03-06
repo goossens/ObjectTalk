@@ -20,9 +20,6 @@
 
 class Ot1by1Node : public OtNodeClass {
 public:
-	// constructor
-	inline Ot1by1Node(const char* name) : OtNodeClass(name, OtNodeClass::math) {}
-
 	// configure node
 	inline void configure() override {
 		addInputPin("A", a);
@@ -39,12 +36,13 @@ protected:
 #define OT_NODE_1_BY_1(NAME, FUNCTION) 										\
 class OT_NODE_NAME(NAME) : public Ot1by1Node {								\
 public:																		\
-	inline OT_NODE_NAME(NAME)() : Ot1by1Node(#NAME) {}						\
 	inline void onExecute() override { result = FUNCTION; }					\
-	static constexpr const char* name = #NAME;								\
+	static constexpr const char* nodeName = #NAME;							\
+	static constexpr int nodeCategory = OtNodeClass::math;					\
+	static constexpr int nodeKind = OtNodeClass::flexible;					\
 };																			\
 																			\
-static OtNodesFactoryRegister<OT_NODE_NAME(NAME)> type ## NAME("Math");
+static OtNodesFactoryRegister<OT_NODE_NAME(NAME)> type ## NAME;
 
 
 OT_NODE_1_BY_1(Neg, -a)
@@ -61,9 +59,6 @@ OT_NODE_1_BY_1(Tan, std::tan(a))
 
 class Ot2by1Node : public OtNodeClass {
 public:
-	// constructor
-	inline Ot2by1Node(const char* name) : OtNodeClass(name, OtNodeClass::math) {}
-
 	// configure node
 	inline void configure() override {
 		addInputPin("A", a);
@@ -81,12 +76,13 @@ protected:
 #define OT_NODE_2_BY_1(NAME, FUNCTION) 										\
 class OT_NODE_NAME(NAME) : public Ot2by1Node {								\
 public:																		\
-	inline OT_NODE_NAME(NAME)() : Ot2by1Node(#NAME) {}						\
 	inline void onExecute() override { result = FUNCTION; }					\
-	static constexpr const char* name = #NAME;								\
+	static constexpr const char* nodeName = #NAME;							\
+	static constexpr int nodeCategory = OtNodeClass::math;					\
+	static constexpr int nodeKind = OtNodeClass::flexible;					\
 };																			\
 																			\
-static OtNodesFactoryRegister<OT_NODE_NAME(NAME)> type ## NAME("Math");
+static OtNodesFactoryRegister<OT_NODE_NAME(NAME)> type ## NAME;
 
 OT_NODE_2_BY_1(Add, a + b)
 OT_NODE_2_BY_1(Subtract, a - b)

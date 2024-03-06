@@ -25,9 +25,6 @@
 
 class OtImageInputNode : public OtNodeClass {
 public:
-	// constructor
-	inline OtImageInputNode() : OtNodeClass(name, OtNodeClass::input) {}
-
 	// configure node
 	inline void configure() override {
 		addOutputPin("Image", image)->addRenderer([this](float width) {
@@ -81,7 +78,9 @@ public:
 		}
 	}
 
-	static constexpr const char* name = "Image Input";
+	static constexpr const char* nodeName = "Image Input";
+	static constexpr int nodeCategory = OtNodeClass::input;
+	static constexpr int nodeKind = OtNodeClass::fixed;
 	static constexpr float fieldWidth = 180.0f;
 
 protected:
@@ -89,4 +88,4 @@ protected:
 	OtImage image;
 };
 
-static OtNodesFactoryRegister<OtImageInputNode> type("Input");
+static OtNodesFactoryRegister<OtImageInputNode> type;

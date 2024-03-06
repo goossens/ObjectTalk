@@ -119,9 +119,13 @@ public:
 	static_assert(std::is_base_of<OtNodeClass, T>::value, "Class is not derived from OtNodeClass");
 
 	// constructor
-	OtNodesFactoryRegister(const char* category) {
-		OtNodesFactory::instance()->registerType(category, T::name, []() {
+	OtNodesFactoryRegister() {
+		OtNodesFactory::instance()->registerType(OtNodeClass::categoryNames[T::nodeCategory], T::nodeName, []() {
 			auto node = std::make_shared<T>();
+			node->type = T::nodeName;
+			node->title = T::nodeName;
+			node->category = T::nodeCategory;
+			node->kind = T::nodeKind;
 			node->configure();
 			return node;
 		});

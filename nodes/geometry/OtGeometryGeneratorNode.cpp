@@ -24,13 +24,9 @@
 
 class OtGeometryGeneratorNode : public OtNodeClass {
 public:
-	// constructor
-	inline OtGeometryGeneratorNode() : OtNodeClass(name, OtNodeClass::geometry) {
-		primitive = OtPrimitiveFactory::instance()->create("Cube");
-	}
-
 	// configure node
 	inline void configure() override {
+		primitive = OtPrimitiveFactory::instance()->create("Cube");
 		addOutputPin("Geometry", geometry);
 	}
 
@@ -109,7 +105,9 @@ public:
 		geometry.setMesh(primitive->createMesh());
 	}
 
-	static constexpr const char* name = "Geometry Generator";
+	static constexpr const char* nodeName = "Geometry Generator";
+	static constexpr int nodeCategory = OtNodeClass::geometry;
+	static constexpr int nodeKind = OtNodeClass::fixed;
 	static constexpr float fieldWidth = 150.0f;
 
 protected:
@@ -118,4 +116,4 @@ protected:
 	OtGeometry geometry;
 };
 
-static OtNodesFactoryRegister<OtGeometryGeneratorNode> type("Geometry");
+static OtNodesFactoryRegister<OtGeometryGeneratorNode> type;

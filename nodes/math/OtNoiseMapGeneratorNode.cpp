@@ -26,9 +26,6 @@
 
 class OtNoiseMapGeneratorNode : public OtNodeClass {
 public:
-	// constructor
-	inline OtNoiseMapGeneratorNode() : OtNodeClass(name, OtNodeClass::math) {}
-
 	// configure node
 	inline void configure() override {
 		addInputPin("Width", width);
@@ -90,7 +87,9 @@ public:
 		texture.setVersion(version++);
 	}
 
-	static constexpr const char* name = "NoiseMap Generator";
+	static constexpr const char* nodeName = "NoiseMap Generator";
+	static constexpr int nodeCategory = OtNodeClass::math;
+	static constexpr int nodeKind = OtNodeClass::fixed;
 	static constexpr float fieldWidth = 180.0f;
 
 protected:
@@ -109,4 +108,4 @@ protected:
 	int version = 1;
 };
 
-static OtNodesFactoryRegister<OtNoiseMapGeneratorNode> type("Generators");
+static OtNodesFactoryRegister<OtNoiseMapGeneratorNode> type;

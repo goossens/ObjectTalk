@@ -112,7 +112,7 @@ public:
 	// check status
 	inline bool isInput() { return direction == inputPin; }
 	inline bool isOutput() { return direction == outputPin; }
-	inline bool isVariable() { return variable; }
+	inline bool isVarying() { return varying; }
 
 	// handle connections
 	virtual void connect(OtNodesPin sourcePin) = 0;
@@ -138,7 +138,7 @@ public:
 	OtNodeClass* node;
 	bool needsEvaluating{false};
 
-	bool variable{false};
+	bool varying{false};
 
 	OtNodesPinRenderer render = [](float){};
 	float renderingWidth{0.0f};

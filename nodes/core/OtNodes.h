@@ -148,7 +148,8 @@ private:
 	// helper functions for depth-first searches and topological sorting
 	bool hasCycle(OtNodeClass* node, OtNodeClass* newTarget=0);
 	bool visitNode(OtNode& node, std::vector<OtNode>& nodes);
-	bool sortNodesTopologically(std::vector<OtNode>& nodes);
+	bool sortNodesTopologically();
+	void classifyLinks();
 
 	// restore a node from its JSON data
 	OtNode restoreNode(nlohmann::json data, bool restoreIDs=true, std::string* basedir=nullptr);

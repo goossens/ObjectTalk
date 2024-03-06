@@ -25,9 +25,6 @@
 
 class OtInstancesInputNode : public OtNodeClass {
 public:
-	// constructor
-	inline OtInstancesInputNode() : OtNodeClass(name, OtNodeClass::input) {}
-
 	// configure node
 	inline void configure() override {
 		addOutputPin("Instances", instances)->addRenderer([this](float width) {
@@ -81,7 +78,9 @@ public:
 		}
 	}
 
-	static constexpr const char* name = "Instances Input";
+	static constexpr const char* nodeName = "Instances Input";
+	static constexpr int nodeCategory = OtNodeClass::input;
+	static constexpr int nodeKind = OtNodeClass::fixed;
 	static constexpr float fieldWidth = 180.0f;
 
 protected:
@@ -89,4 +88,4 @@ protected:
 	OtInstances instances;
 };
 
-static OtNodesFactoryRegister<OtInstancesInputNode> type("Input");
+static OtNodesFactoryRegister<OtInstancesInputNode> type;

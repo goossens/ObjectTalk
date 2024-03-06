@@ -21,9 +21,6 @@
 
 class OtIntegerInputNode : public OtNodeClass {
 public:
-	// constructor
-	inline OtIntegerInputNode() : OtNodeClass(name, OtNodeClass::input) {}
-
 	// configure node
 	inline void configure() override {
 		addOutputPin("Value", value)->addRenderer([this](float width) {
@@ -54,11 +51,13 @@ public:
 		value = data->value("value", 0);
 	}
 
-	static constexpr const char* name = "Integer Input";
+	static constexpr const char* nodeName = "Integer Input";
+	static constexpr int nodeCategory = OtNodeClass::input;
+	static constexpr int nodeKind = OtNodeClass::fixed;
 	static constexpr float fieldWidth = 120.0f;
 
 protected:
 	int value = 0;
 };
 
-static OtNodesFactoryRegister<OtIntegerInputNode> type("Input");
+static OtNodesFactoryRegister<OtIntegerInputNode> type;

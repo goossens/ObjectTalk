@@ -19,14 +19,11 @@
 
 
 //
-//	OtNodeTextureProbe
+//	OtTextureProbeNode
 //
 
-class OtNodeTextureProbe : public OtNodeClass {
+class OtTextureProbeNode : public OtNodeClass {
 public:
-	// constructor
-	inline OtNodeTextureProbe() : OtNodeClass(name, OtNodeClass::probe) {}
-
 	// configure node
 	inline void configure() override {
 		auto pin = addInputPin("Texture", texture);
@@ -65,7 +62,9 @@ public:
 		return customH;
 	}
 
-	static constexpr const char* name = "Texture Probe";
+	static constexpr const char* nodeName = "Texture Probe";
+	static constexpr int nodeCategory = OtNodeClass::probe;
+	static constexpr int nodeKind = OtNodeClass::fixed;
 	static constexpr float fieldWidth = 170.0f;
 
 protected:
@@ -74,4 +73,4 @@ protected:
 	float customH;
 };
 
-static OtNodesFactoryRegister<OtNodeTextureProbe> type("Probes");
+static OtNodesFactoryRegister<OtTextureProbeNode> type;

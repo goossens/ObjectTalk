@@ -24,15 +24,12 @@
 
 class OtTransformGeometryNode : public OtNodeClass {
 public:
-	// constructor
-	inline OtTransformGeometryNode() : OtNodeClass(name, OtNodeClass::geometry) {}
-
 	// configure node
 	inline void configure() override {
 		addInputPin("Input", input);
-		addInputPin("Translate", translate, true);
-		addInputPin("Rotate", rotate, true);
-		addInputPin("Scale", scale, true);
+		addInputPin("Translate", translate);
+		addInputPin("Rotate", rotate);
+		addInputPin("Scale", scale);
 		addOutputPin("Output", output);
 	}
 
@@ -49,17 +46,31 @@ public:
 			auto count = mesh.getVertexCount();
 
 			// transform all vertices
-			for (auto i = 0; i < count; i++) {
-				evaluateVariableInputs();
+			if (hasVaryingInput()) {
+				for (auto i = 0; i < count; i++) {
+					evaluateVariableInputs();
 
+					auto transform =
+						glm::translate(glm::mat4(1.0f), translate) *
+						glm::toMat4(glm::quat(glm::radians(rotate))) *
+						glm::scale(glm::mat4(1.0f), scale);
+
+					vertex->position = glm::vec3(transform * glm::vec4(vertex->position, 1.0f));
+					vertex->normal = glm::vec3(glm::normalize((transform * glm::vec4(vertex->normal, 0.0f))));
+					vertex++;
+				}
+
+			} else {
 				auto transform =
 					glm::translate(glm::mat4(1.0f), translate) *
 					glm::toMat4(glm::quat(glm::radians(rotate))) *
 					glm::scale(glm::mat4(1.0f), scale);
 
-				vertex->position = glm::vec3(transform * glm::vec4(vertex->position, 1.0f));
-				vertex->normal = glm::vec3(glm::normalize((transform * glm::vec4(vertex->normal, 0.0f))));
-				vertex++;
+				for (auto i = 0; i < count; i++) {
+					vertex->position = glm::vec3(transform * glm::vec4(vertex->position, 1.0f));
+					vertex->normal = glm::vec3(glm::normalize((transform * glm::vec4(vertex->normal, 0.0f))));
+					vertex++;
+				}
 			}
 
 			mesh.generateAABB();
@@ -70,7 +81,9 @@ public:
 		}
 	}
 
-	static constexpr const char* name = "Geometry Transform";
+	static constexpr const char* nodeName = "Geometry Transform";
+	static constexpr int nodeCategory = OtNodeClass::geometry;
+	static constexpr int nodeKind = OtNodeClass::fixed;
 
 protected:
 	OtGeometry input;
@@ -80,4 +93,4 @@ protected:
 	glm::vec3 scale{1.0f};
 };
 
-static OtNodesFactoryRegister<OtTransformGeometryNode> type("Geometry");
+static OtNodesFactoryRegister<OtTransformGeometryNode> type;

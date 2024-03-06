@@ -20,9 +20,6 @@
 
 class OtFloatProbeNode : public OtNodeClass {
 public:
-	// constructor
-	inline OtFloatProbeNode() : OtNodeClass(name, OtNodeClass::probe) {}
-
 	// configure node
 	inline void configure() override {
 		addInputPin("Value", value)->addRenderer([&](float width) {
@@ -31,7 +28,9 @@ public:
 		}, fieldWidth);
 	}
 
-	static constexpr const char* name = "Float Probe";
+	static constexpr const char* nodeName = "Float Probe";
+	static constexpr int nodeCategory = OtNodeClass::probe;
+	static constexpr int nodeKind = OtNodeClass::fixed;
 	static constexpr float fieldWidth = 120.0f;
 
 protected:
@@ -39,4 +38,4 @@ protected:
 };
 
 
-static OtNodesFactoryRegister<OtFloatProbeNode> type("Probes");
+static OtNodesFactoryRegister<OtFloatProbeNode> type;

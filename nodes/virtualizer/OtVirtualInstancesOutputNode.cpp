@@ -12,27 +12,27 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
-#include "OtImageAsset.h"
+#include "OtInstancesAsset.h"
 
 #include "OtNodesFactory.h"
 
 
 //
-//	OtVirtualImageOutputNode
+//	OtVirtualInstancesOutputNode
 //
 
-class OtVirtualImageOutputNode : public OtNodeClass {
+class OtVirtualInstancesOutputNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addInputPin("Input", image)->addRenderer([&](float width) {
+		addInputPin("Input", instances)->addRenderer([&](float width) {
 			auto old = serialize().dump();
-			OtImageAsset* oldAsset = asset.isNull() ? nullptr : &(*asset);
+			OtInstancesAsset* oldAsset = asset.isNull() ? nullptr : &(*asset);
 			ImGui::SetNextItemWidth(width);
 
 			if (asset.renderVirtualUI("##name")) {
 				if (oldAsset && asset.isNull()) {
-					oldAsset->clearImage();
+					oldAsset->clearInstances();
 				}
 
 				oldState = old;
@@ -43,15 +43,15 @@ public:
 		}, fieldWidth);
 	}
 
-	// synchronize the asset with the incoming image
+	// synchronize the asset with the incoming instances
 	void onExecute() override {
-		if (image.isValid()) {
+		if (instances.isValid()) {
 			if (!asset.isNull()) {
-				asset->setImage(image);
+				asset->setInstances(instances);
 			}
 
 		} else if (!asset.isNull()) {
-			asset->clearImage();
+			asset->clearInstances();
 		}
 	}
 
@@ -65,14 +65,14 @@ public:
 		asset = data->value("path", "");
 	}
 
-	static constexpr const char* nodeName = "Save Image To Virtual";
-	static constexpr int nodeCategory = OtNodeClass::output;
+	static constexpr const char* nodeName = "Save Instances To Virtual";
+	static constexpr int nodeCategory = OtNodeClass::virtualizer;
 	static constexpr int nodeKind = OtNodeClass::fixed;
 	static constexpr float fieldWidth = 170.0f;
 
 protected:
-	OtImage image;
-	OtAsset<OtImageAsset> asset;
+	OtInstances instances;
+	OtAsset<OtInstancesAsset> asset;
 };
 
-static OtNodesFactoryRegister<OtVirtualImageOutputNode> type;
+static OtNodesFactoryRegister<OtVirtualInstancesOutputNode> type;

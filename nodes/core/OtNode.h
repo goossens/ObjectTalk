@@ -35,10 +35,13 @@ public:
 		input,
 		output,
 		math,
+		generator,
 		filter,
 		transformer,
 		geometry,
-		instances,
+		virtualizer,
+		save,
+		load,
 		probe
 	};
 
@@ -46,10 +49,13 @@ public:
 		"Input",
 		"Output",
 		"Math",
+		"Generator",
 		"Filter",
 		"Transformer",
 		"Geometry",
-		"Instances",
+		"Virtualizer",
+		"Save",
+		"Load",
 		"Probe"
 	};
 

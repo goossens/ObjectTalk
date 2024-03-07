@@ -18,10 +18,10 @@
 
 
 //
-//	OtRandomValueNode
+//	OtRandomNode
 //
 
-class OtRandomValueNode : public OtNodeClass {
+class OtRandomNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
@@ -83,4 +83,4 @@ protected:
 	float maxValue = 1.0f;
 };
 
-static OtNodesFactoryRegister<OtRandomValueNode> type;
+static OtNodesFactoryRegister<OtRandomNode> type;

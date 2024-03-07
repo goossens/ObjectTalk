@@ -109,11 +109,11 @@
 				{
 					"id": 1306801408,
 					"name": "Value",
-					"type": "vec3"
+					"type": "vector"
 				}
 			],
 			"title": "Scale Sphere",
-			"type": "Vec3 Input",
+			"type": "Vector Input",
 			"value": [
 				6.0,
 				6.0,
@@ -133,17 +133,17 @@
 				{
 					"id": 997779709,
 					"name": "Translate",
-					"type": "vec3"
+					"type": "vector"
 				},
 				{
 					"id": 3911898886,
 					"name": "Rotate",
-					"type": "vec3"
+					"type": "vector"
 				},
 				{
 					"id": 803165759,
 					"name": "Scale",
-					"type": "vec3"
+					"type": "vector"
 				}
 			],
 			"outputs": [
@@ -165,11 +165,11 @@
 				{
 					"id": 2944071035,
 					"name": "Value",
-					"type": "vec3"
+					"type": "vector"
 				}
 			],
 			"title": "Vertex Example Offset",
-			"type": "Vec3 Input",
+			"type": "Vector Input",
 			"value": [
 				-7.0,
 				0.0,
@@ -189,17 +189,17 @@
 				{
 					"id": 840759907,
 					"name": "Translate",
-					"type": "vec3"
+					"type": "vector"
 				},
 				{
 					"id": 3245459342,
 					"name": "Rotate",
-					"type": "vec3"
+					"type": "vector"
 				},
 				{
 					"id": 2296027807,
 					"name": "Scale",
-					"type": "vec3"
+					"type": "vector"
 				}
 			],
 			"outputs": [
@@ -262,11 +262,11 @@
 				{
 					"id": 2666321964,
 					"name": "Value",
-					"type": "vec3"
+					"type": "vector"
 				}
 			],
 			"title": "Scale Cone",
-			"type": "Vec3 Input",
+			"type": "Vector Input",
 			"value": [
 				0.20000000298023224,
 				0.6000000238418579,
@@ -282,11 +282,11 @@
 				{
 					"id": 94999985,
 					"name": "Value",
-					"type": "vec3"
+					"type": "vector"
 				}
 			],
-			"title": "Vec3 Input",
-			"type": "Vec3 Input",
+			"title": "Vector Input",
+			"type": "Vector Input",
 			"value": [
 				0.0,
 				0.30000001192092896,
@@ -306,17 +306,17 @@
 				{
 					"id": 3674880614,
 					"name": "Translate",
-					"type": "vec3"
+					"type": "vector"
 				},
 				{
 					"id": 59766303,
 					"name": "Rotate",
-					"type": "vec3"
+					"type": "vector"
 				},
 				{
 					"id": 1831560002,
 					"name": "Scale",
-					"type": "vec3"
+					"type": "vector"
 				}
 			],
 			"outputs": [
@@ -358,12 +358,12 @@
 				{
 					"id": 2278322405,
 					"name": "Rotation",
-					"type": "vec3"
+					"type": "vector"
 				},
 				{
 					"id": 502892136,
 					"name": "Scale",
-					"type": "vec3"
+					"type": "vector"
 				}
 			],
 			"outputs": [
@@ -402,11 +402,11 @@
 				{
 					"id": 3362849279,
 					"name": "Value",
-					"type": "vec3"
+					"type": "vector"
 				}
 			],
 			"title": "Face Example Offset",
-			"type": "Vec3 Input",
+			"type": "Vector Input",
 			"value": [
 				7.0,
 				0.0,
@@ -426,17 +426,17 @@
 				{
 					"id": 1290617004,
 					"name": "Translate",
-					"type": "vec3"
+					"type": "vector"
 				},
 				{
 					"id": 2264241974,
 					"name": "Rotate",
-					"type": "vec3"
+					"type": "vector"
 				},
 				{
 					"id": 3805232308,
 					"name": "Scale",
-					"type": "vec3"
+					"type": "vector"
 				}
 			],
 			"outputs": [
@@ -462,12 +462,12 @@
 				{
 					"id": 2137833022,
 					"name": "Rotation",
-					"type": "vec3"
+					"type": "vector"
 				},
 				{
 					"id": 652117834,
 					"name": "Scale",
-					"type": "vec3"
+					"type": "vector"
 				}
 			],
 			"instanceCount": 300,

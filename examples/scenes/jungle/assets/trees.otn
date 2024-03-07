@@ -41,31 +41,6 @@
 			"to": 1636542803
 		},
 		{
-			"from": 2359231075,
-			"id": 3016081338,
-			"to": 2565917263
-		},
-		{
-			"from": 3689894685,
-			"id": 1644888445,
-			"to": 2893687680
-		},
-		{
-			"from": 2348236567,
-			"id": 3756682121,
-			"to": 4170294195
-		},
-		{
-			"from": 2348236567,
-			"id": 4074916664,
-			"to": 3109568093
-		},
-		{
-			"from": 2348236567,
-			"id": 3573401803,
-			"to": 2293604223
-		},
-		{
 			"from": 815527308,
 			"id": 3173803390,
 			"to": 3657129988
@@ -99,6 +74,16 @@
 			"from": 3100736550,
 			"id": 350280186,
 			"to": 3300061242
+		},
+		{
+			"from": 3689894685,
+			"id": 1261535136,
+			"to": 131443721
+		},
+		{
+			"from": 3870351436,
+			"id": 4021910618,
+			"to": 2565917263
 		}
 	],
 	"metadata": {},
@@ -131,11 +116,11 @@
 				{
 					"id": 864399298,
 					"name": "Value",
-					"type": "vec3"
+					"type": "vector"
 				}
 			],
-			"title": "Vec3 Input",
-			"type": "Vec3 Input",
+			"title": "Vector Input",
+			"type": "Vector Input",
 			"value": [
 				90.0,
 				0.0,
@@ -151,11 +136,11 @@
 				{
 					"id": 2630265587,
 					"name": "Value",
-					"type": "vec3"
+					"type": "vector"
 				}
 			],
-			"title": "Vec3 Input",
-			"type": "Vec3 Input",
+			"title": "Vector Input",
+			"type": "Vector Input",
 			"value": [
 				300.0,
 				300.0,
@@ -175,17 +160,17 @@
 				{
 					"id": 3794724185,
 					"name": "Translate",
-					"type": "vec3"
+					"type": "vector"
 				},
 				{
 					"id": 2482379890,
 					"name": "Rotate",
-					"type": "vec3"
+					"type": "vector"
 				},
 				{
 					"id": 1921743067,
 					"name": "Scale",
-					"type": "vec3"
+					"type": "vector"
 				}
 			],
 			"outputs": [
@@ -211,12 +196,12 @@
 				{
 					"id": 4265614440,
 					"name": "Rotation",
-					"type": "vec3"
+					"type": "vector"
 				},
 				{
 					"id": 2201807937,
 					"name": "Scale",
-					"type": "vec3"
+					"type": "vector"
 				}
 			],
 			"instanceCount": 200,
@@ -248,7 +233,7 @@
 			"title": "Random",
 			"type": "Random",
 			"x": 731.0,
-			"y": 97.0
+			"y": 95.0
 		},
 		{
 			"id": 1200162136,
@@ -273,13 +258,13 @@
 				{
 					"id": 4268866276,
 					"name": "Value",
-					"type": "vec3"
+					"type": "vector"
 				}
 			],
 			"title": "Combine XYZ",
 			"type": "Combine XYZ",
-			"x": 877.0,
-			"y": 84.0
+			"x": 872.0,
+			"y": 82.0
 		},
 		{
 			"id": 2964941285,
@@ -296,59 +281,28 @@
 			"title": "Random",
 			"type": "Random",
 			"x": 734.0,
-			"y": 211.0
+			"y": 209.0
 		},
 		{
-			"id": 3964242961,
+			"id": 3968993238,
 			"inputs": [
 				{
-					"id": 2893687680,
+					"id": 131443721,
 					"name": "A",
 					"type": "float"
 				}
 			],
 			"outputs": [
 				{
-					"id": 2348236567,
-					"name": "Result",
-					"type": "float"
-				}
-			],
-			"title": "Abs",
-			"type": "Abs",
-			"x": 900.0,
-			"y": 234.0
-		},
-		{
-			"id": 3398824137,
-			"inputs": [
-				{
-					"id": 4170294195,
-					"name": "X",
-					"type": "float"
-				},
-				{
-					"id": 3109568093,
-					"name": "Y",
-					"type": "float"
-				},
-				{
-					"id": 2293604223,
-					"name": "Z",
-					"type": "float"
-				}
-			],
-			"outputs": [
-				{
-					"id": 2359231075,
+					"id": 3870351436,
 					"name": "Value",
-					"type": "vec3"
+					"type": "vector"
 				}
 			],
-			"title": "Combine XYZ",
-			"type": "Combine XYZ",
-			"x": 998.0,
-			"y": 192.0
+			"title": "Float to Vector",
+			"type": "Float to Vector",
+			"x": 869.0,
+			"y": 237.0
 		},
 		{
 			"id": 1235723697,
@@ -361,17 +315,17 @@
 				{
 					"id": 2840860072,
 					"name": "Translate",
-					"type": "vec3"
+					"type": "vector"
 				},
 				{
 					"id": 1636542803,
 					"name": "Rotate",
-					"type": "vec3"
+					"type": "vector"
 				},
 				{
 					"id": 2565917263,
 					"name": "Scale",
-					"type": "vec3"
+					"type": "vector"
 				}
 			],
 			"outputs": [
@@ -383,8 +337,8 @@
 			],
 			"title": "Instances Transform",
 			"type": "Instances Transform",
-			"x": 1146.0,
-			"y": 13.0
+			"x": 1036.0,
+			"y": 10.0
 		},
 		{
 			"id": 3047086596,
@@ -399,8 +353,8 @@
 			"path": "virtual:Palm Trees",
 			"title": "Save Instances To Virtual",
 			"type": "Save Instances To Virtual",
-			"x": 1346.0,
-			"y": 14.0
+			"x": 1236.0,
+			"y": 11.0
 		},
 		{
 			"id": 2933978725,
@@ -413,12 +367,12 @@
 				{
 					"id": 3339185159,
 					"name": "Rotation",
-					"type": "vec3"
+					"type": "vector"
 				},
 				{
 					"id": 2019562470,
 					"name": "Scale",
-					"type": "vec3"
+					"type": "vector"
 				}
 			],
 			"instanceCount": 400,
@@ -433,7 +387,7 @@
 			"title": "Instances on Faces",
 			"type": "Instances on Faces",
 			"x": 506.0,
-			"y": 320.0
+			"y": 288.0
 		},
 		{
 			"id": 1494172958,
@@ -449,8 +403,8 @@
 			],
 			"title": "Random",
 			"type": "Random",
-			"x": 731.0,
-			"y": 406.0
+			"x": 734.0,
+			"y": 371.0
 		},
 		{
 			"id": 3515365462,
@@ -475,13 +429,13 @@
 				{
 					"id": 24245989,
 					"name": "Value",
-					"type": "vec3"
+					"type": "vector"
 				}
 			],
 			"title": "Combine XYZ",
 			"type": "Combine XYZ",
-			"x": 877.0,
-			"y": 393.0
+			"x": 875.0,
+			"y": 358.0
 		},
 		{
 			"id": 1903449426,
@@ -497,8 +451,8 @@
 			],
 			"title": "Random",
 			"type": "Random",
-			"x": 734.0,
-			"y": 520.0
+			"x": 737.0,
+			"y": 485.0
 		},
 		{
 			"id": 426014087,
@@ -513,13 +467,13 @@
 				{
 					"id": 3100736550,
 					"name": "Value",
-					"type": "vec3"
+					"type": "vector"
 				}
 			],
-			"title": "Float to Vec3",
-			"type": "Float to Vec3",
-			"x": 872.0,
-			"y": 546.0
+			"title": "Float to Vector",
+			"type": "Float to Vector",
+			"x": 870.0,
+			"y": 511.0
 		},
 		{
 			"id": 3086737832,
@@ -532,17 +486,17 @@
 				{
 					"id": 1854721745,
 					"name": "Translate",
-					"type": "vec3"
+					"type": "vector"
 				},
 				{
 					"id": 2271242000,
 					"name": "Rotate",
-					"type": "vec3"
+					"type": "vector"
 				},
 				{
 					"id": 3300061242,
 					"name": "Scale",
-					"type": "vec3"
+					"type": "vector"
 				}
 			],
 			"outputs": [
@@ -554,8 +508,8 @@
 			],
 			"title": "Instances Transform",
 			"type": "Instances Transform",
-			"x": 1146.0,
-			"y": 322.0
+			"x": 1036.0,
+			"y": 287.0
 		},
 		{
 			"id": 317530947,
@@ -570,8 +524,8 @@
 			"path": "virtual:High Trees",
 			"title": "Save Instances To Virtual",
 			"type": "Save Instances To Virtual",
-			"x": 1346.0,
-			"y": 323.0
+			"x": 1236.0,
+			"y": 288.0
 		}
 	]
 }

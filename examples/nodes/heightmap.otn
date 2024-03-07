@@ -321,8 +321,8 @@
 					"type": "texture"
 				}
 			],
-			"title": "Texture Input",
-			"type": "Texture Input",
+			"title": "Load Texture",
+			"type": "Load Texture",
 			"x": 30.0,
 			"y": 703.0
 		},
@@ -368,8 +368,8 @@
 					"type": "image"
 				}
 			],
-			"title": "Image Input",
-			"type": "Image Input",
+			"title": "Load Image",
+			"type": "Load Image",
 			"x": 29.0,
 			"y": 620.0
 		},

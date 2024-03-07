@@ -12,27 +12,27 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
-#include "OtTextureAsset.h"
+#include "OtGeometryAsset.h"
 
 #include "OtNodesFactory.h"
 
 
 //
-//	OtVirtualTextureOutputNode
+//	OtVirtualGeometryOutputNode
 //
 
-class OtVirtualTextureOutputNode : public OtNodeClass {
+class OtVirtualGeometryOutputNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addInputPin("Input", texture)->addRenderer([&](float width) {
+		addInputPin("Input", geometry)->addRenderer([&](float width) {
 			auto old = serialize().dump();
-			OtTextureAsset* oldAsset = asset.isNull() ? nullptr : &(*asset);
+			OtGeometryAsset* oldAsset = asset.isNull() ? nullptr : &(*asset);
 			ImGui::SetNextItemWidth(width);
 
 			if (asset.renderVirtualUI("##name")) {
 				if (oldAsset && asset.isNull()) {
-					oldAsset->clearTexture();
+					oldAsset->clearGeometry();
 				}
 
 				oldState = old;
@@ -43,15 +43,15 @@ public:
 		}, fieldWidth);
 	}
 
-	// synchronize the asset with the incoming texture
+	// synchronize the asset with the incoming geometry
 	void onExecute() override {
-		if (texture.isValid()) {
+		if (geometry.isValid()) {
 			if (!asset.isNull()) {
-				asset->setTexture(texture);
+				asset->setGeometry(geometry);
 			}
 
 		} else if (!asset.isNull()) {
-			asset->clearTexture();
+			asset->clearGeometry();
 		}
 	}
 
@@ -65,14 +65,14 @@ public:
 		asset = data->value("path", "");
 	}
 
-	static constexpr const char* nodeName = "Save Texture To Virtual";
+	static constexpr const char* nodeName = "Save Geometry To Virtual";
 	static constexpr int nodeCategory = OtNodeClass::output;
-	static constexpr int nodeKind = OtNodeClass::fixed;
+	static constexpr int nodeKind = OtNodeClass::virtualizer;
 	static constexpr float fieldWidth = 170.0f;
 
 protected:
-	OtTexture texture;
-	OtAsset<OtTextureAsset> asset;
+	OtGeometry geometry;
+	OtAsset<OtGeometryAsset> asset;
 };
 
-static OtNodesFactoryRegister<OtVirtualTextureOutputNode> type;
+static OtNodesFactoryRegister<OtVirtualGeometryOutputNode> type;

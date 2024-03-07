@@ -12,27 +12,27 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
-#include "OtInstancesAsset.h"
+#include "OtImageAsset.h"
 
 #include "OtNodesFactory.h"
 
 
 //
-//	OtVirtualInstancesOutputNode
+//	OtVirtualImageOutputNode
 //
 
-class OtVirtualInstancesOutputNode : public OtNodeClass {
+class OtVirtualImageOutputNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addInputPin("Input", instances)->addRenderer([&](float width) {
+		addInputPin("Input", image)->addRenderer([&](float width) {
 			auto old = serialize().dump();
-			OtInstancesAsset* oldAsset = asset.isNull() ? nullptr : &(*asset);
+			OtImageAsset* oldAsset = asset.isNull() ? nullptr : &(*asset);
 			ImGui::SetNextItemWidth(width);
 
 			if (asset.renderVirtualUI("##name")) {
 				if (oldAsset && asset.isNull()) {
-					oldAsset->clearInstances();
+					oldAsset->clearImage();
 				}
 
 				oldState = old;
@@ -43,15 +43,15 @@ public:
 		}, fieldWidth);
 	}
 
-	// synchronize the asset with the incoming instances
+	// synchronize the asset with the incoming image
 	void onExecute() override {
-		if (instances.isValid()) {
+		if (image.isValid()) {
 			if (!asset.isNull()) {
-				asset->setInstances(instances);
+				asset->setImage(image);
 			}
 
 		} else if (!asset.isNull()) {
-			asset->clearInstances();
+			asset->clearImage();
 		}
 	}
 
@@ -65,14 +65,14 @@ public:
 		asset = data->value("path", "");
 	}
 
-	static constexpr const char* nodeName = "Save Instances To Virtual";
-	static constexpr int nodeCategory = OtNodeClass::output;
+	static constexpr const char* nodeName = "Save Image To Virtual";
+	static constexpr int nodeCategory = OtNodeClass::virtualizer;
 	static constexpr int nodeKind = OtNodeClass::fixed;
 	static constexpr float fieldWidth = 170.0f;
 
 protected:
-	OtInstances instances;
-	OtAsset<OtInstancesAsset> asset;
+	OtImage image;
+	OtAsset<OtImageAsset> asset;
 };
 
-static OtNodesFactoryRegister<OtVirtualInstancesOutputNode> type;
+static OtNodesFactoryRegister<OtVirtualImageOutputNode> type;

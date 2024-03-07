@@ -12,36 +12,36 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
-#include "OtImage.h"
-#include "OtImageAsset.h"
+#include "OtGeometry.h"
+#include "OtGeometryAsset.h"
 #include "OtPathTools.h"
 
 #include "OtNodesFactory.h"
 
 
 //
-//	OtImageInputNode
+//	OtLoadGeometryNode
 //
 
-class OtImageInputNode : public OtNodeClass {
+class OtLoadGeometryNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addOutputPin("Image", image)->addRenderer([this](float width) {
+		addOutputPin("Geometry", geometry)->addRenderer([this](float width) {
 			ImGui::SetNextItemWidth(width);
 			auto old = serialize().dump();
 
-			if (asset.renderUI("##image")) {
+			if (asset.renderUI("##geometry")) {
 				if (asset.isNull()) {
-					image.clear();
+					geometry.clear();
 					needsEvaluating = true;
 
 				} else if (asset.isReady()) {
-					image = asset->getImage();
+					geometry = asset->getGeometry();
 					needsEvaluating = true;
 
 				} else {
-					image.clear();
+					geometry.clear();
 				}
 
 				oldState = old;
@@ -53,8 +53,8 @@ public:
 
 	// update state
 	inline bool onUpdate() override {
-		if (!asset.isNull() && asset->getImage() != image) {
-			image = asset->getImage();
+		if (!asset.isNull() && asset->getGeometry() != geometry) {
+			geometry = asset->getGeometry();
 			return true;
 
 		} else {
@@ -71,21 +71,21 @@ public:
 		asset = OtPathGetAbsolute(*data, "path", basedir);
 
 		if (asset.isNull()) {
-			image.clear();
+			geometry.clear();
 
 		} else if (asset.isReady()) {
-			image = asset->getImage();
+			geometry = asset->getGeometry();
 		}
 	}
 
-	static constexpr const char* nodeName = "Image Input";
-	static constexpr int nodeCategory = OtNodeClass::input;
+	static constexpr const char* nodeName = "Load Geometry";
+	static constexpr int nodeCategory = OtNodeClass::load;
 	static constexpr int nodeKind = OtNodeClass::fixed;
 	static constexpr float fieldWidth = 180.0f;
 
 protected:
-	OtAsset<OtImageAsset> asset;
-	OtImage image;
+	OtAsset<OtGeometryAsset> asset;
+	OtGeometry geometry;
 };
 
-static OtNodesFactoryRegister<OtImageInputNode> type;
+static OtNodesFactoryRegister<OtLoadGeometryNode> type;

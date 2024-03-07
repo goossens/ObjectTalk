@@ -88,7 +88,7 @@ public:
 	}
 
 	static constexpr const char* nodeName = "NoiseMap Generator";
-	static constexpr int nodeCategory = OtNodeClass::math;
+	static constexpr int nodeCategory = OtNodeClass::generator;
 	static constexpr int nodeKind = OtNodeClass::fixed;
 	static constexpr float fieldWidth = 180.0f;
 

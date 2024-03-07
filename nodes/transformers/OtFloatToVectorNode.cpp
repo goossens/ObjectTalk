@@ -16,10 +16,10 @@
 
 
 //
-//	OtFloatToVec3
+//	OtFloatToVectorNode
 //
 
-class OtFloatToVec3 : public OtNodeClass {
+class OtFloatToVectorNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
@@ -32,7 +32,7 @@ public:
 		value = glm::vec3(a, a, a);
 	}
 
-	static constexpr const char* nodeName = "Float to Vec3";
+	static constexpr const char* nodeName = "Float to Vector";
 	static constexpr int nodeCategory = OtNodeClass::transformer;
 	static constexpr int nodeKind = OtNodeClass::flexible;
 
@@ -41,4 +41,4 @@ protected:
 	glm::vec3 value{0.0f};
 };
 
-static OtNodesFactoryRegister<OtFloatToVec3> type;
+static OtNodesFactoryRegister<OtFloatToVectorNode> type;

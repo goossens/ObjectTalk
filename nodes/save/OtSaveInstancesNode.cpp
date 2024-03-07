@@ -19,10 +19,10 @@
 
 
 //
-//	OtInstancesOutputNode
+//	OtSaveInstancesNode
 //
 
-class OtInstancesOutputNode : public OtNodeClass {
+class OtSaveInstancesNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
@@ -68,11 +68,11 @@ public:
 	}
 
 	static constexpr const char* nodeName = "Save Instances to OTI";
-	static constexpr int nodeCategory = OtNodeClass::output;
+	static constexpr int nodeCategory = OtNodeClass::save;
 	static constexpr int nodeKind = OtNodeClass::fixed;
 
 protected:
 	OtInstances instances;
 };
 
-static OtNodesFactoryRegister<OtInstancesOutputNode> type;
+static OtNodesFactoryRegister<OtSaveInstancesNode> type;

@@ -317,11 +317,11 @@
 				{
 					"id": 501451483,
 					"name": "Value",
-					"type": "vec3"
+					"type": "vector"
 				}
 			],
 			"title": "Translate",
-			"type": "Vec3 Input",
+			"type": "Vector Input",
 			"value": [
 				0.0,
 				8.0,
@@ -337,11 +337,11 @@
 				{
 					"id": 1568520587,
 					"name": "Value",
-					"type": "vec3"
+					"type": "vector"
 				}
 			],
 			"title": "Rotate",
-			"type": "Vec3 Input",
+			"type": "Vector Input",
 			"value": [
 				0.0,
 				0.0,
@@ -357,11 +357,11 @@
 				{
 					"id": 387826249,
 					"name": "Value",
-					"type": "vec3"
+					"type": "vector"
 				}
 			],
 			"title": "Scale",
-			"type": "Vec3 Input",
+			"type": "Vector Input",
 			"value": [
 				200.0,
 				58.0,
@@ -381,17 +381,17 @@
 				{
 					"id": 1779359825,
 					"name": "Translate",
-					"type": "vec3"
+					"type": "vector"
 				},
 				{
 					"id": 950104550,
 					"name": "Rotate",
-					"type": "vec3"
+					"type": "vector"
 				},
 				{
 					"id": 3080108351,
 					"name": "Scale",
-					"type": "vec3"
+					"type": "vector"
 				}
 			],
 			"outputs": [

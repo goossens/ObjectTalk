@@ -12,27 +12,27 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
-#include "OtGeometryAsset.h"
+#include "OtTextureAsset.h"
 
 #include "OtNodesFactory.h"
 
 
 //
-//	OtVirtualGeometryOutputNode
+//	OtVirtualTextureOutputNode
 //
 
-class OtVirtualGeometryOutputNode : public OtNodeClass {
+class OtVirtualTextureOutputNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addInputPin("Input", geometry)->addRenderer([&](float width) {
+		addInputPin("Input", texture)->addRenderer([&](float width) {
 			auto old = serialize().dump();
-			OtGeometryAsset* oldAsset = asset.isNull() ? nullptr : &(*asset);
+			OtTextureAsset* oldAsset = asset.isNull() ? nullptr : &(*asset);
 			ImGui::SetNextItemWidth(width);
 
 			if (asset.renderVirtualUI("##name")) {
 				if (oldAsset && asset.isNull()) {
-					oldAsset->clearGeometry();
+					oldAsset->clearTexture();
 				}
 
 				oldState = old;
@@ -43,15 +43,15 @@ public:
 		}, fieldWidth);
 	}
 
-	// synchronize the asset with the incoming geometry
+	// synchronize the asset with the incoming texture
 	void onExecute() override {
-		if (geometry.isValid()) {
+		if (texture.isValid()) {
 			if (!asset.isNull()) {
-				asset->setGeometry(geometry);
+				asset->setTexture(texture);
 			}
 
 		} else if (!asset.isNull()) {
-			asset->clearGeometry();
+			asset->clearTexture();
 		}
 	}
 
@@ -65,14 +65,14 @@ public:
 		asset = data->value("path", "");
 	}
 
-	static constexpr const char* nodeName = "Save Geometry To Virtual";
-	static constexpr int nodeCategory = OtNodeClass::output;
+	static constexpr const char* nodeName = "Save Texture To Virtual";
+	static constexpr int nodeCategory = OtNodeClass::virtualizer;
 	static constexpr int nodeKind = OtNodeClass::fixed;
 	static constexpr float fieldWidth = 170.0f;
 
 protected:
-	OtGeometry geometry;
-	OtAsset<OtGeometryAsset> asset;
+	OtTexture texture;
+	OtAsset<OtTextureAsset> asset;
 };
 
-static OtNodesFactoryRegister<OtVirtualGeometryOutputNode> type;
+static OtNodesFactoryRegister<OtVirtualTextureOutputNode> type;

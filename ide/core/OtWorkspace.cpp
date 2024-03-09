@@ -612,10 +612,8 @@ void OtWorkspace::renderEditors() {
 				if (ImGui::BeginTabItem(OtPathGetFilename(editor->getFilePath()).c_str(), nullptr, flags)) {
 					ImGui::BeginChild("editor", ImVec2(), ImGuiChildFlags_Border, ImGuiWindowFlags_MenuBar);
 
-					if (editor->isReady()) {
-						editor->renderMenu();
-						editor->renderEditor();
-					}
+					editor->renderMenu();
+					editor->renderEditor();
 
 					ImGui::EndChild();
 					ImGui::EndTabItem();
@@ -654,10 +652,8 @@ void OtWorkspace::renderEditors() {
 			bool open = true;
 			ImGui::Begin(OtPathGetFilename(editor->getFilePath()).c_str(), &open, flags);
 
-			if (editor->isReady()) {
-				editor->renderMenu();
-				editor->renderEditor();
-			}
+			editor->renderMenu();
+			editor->renderEditor();
 
 			if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows)) {
 				activeEditor = editor;

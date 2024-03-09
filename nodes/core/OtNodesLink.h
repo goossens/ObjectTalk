@@ -42,11 +42,13 @@ public:
 
 	// (dis)connect the pins
 	inline void connect() {
-		to->connect(from);
+		to->connectToSource(from);
+		from->connectToDestination(to);
 	}
 
 	inline void disconnect() {
-		to->disconnect();
+		to->disconnectFromSource();
+		from->disconnectFromDestination();
 	}
 
 	// serialize

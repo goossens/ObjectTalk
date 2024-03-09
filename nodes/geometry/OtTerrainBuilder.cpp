@@ -71,9 +71,9 @@ public:
 		}
 
 		// add triangles
-		for (auto z = 0; z < depth; z++) {
-			for (auto x = 0; x < width; x++) {
-				auto a = x + width * z;
+		for (auto z = 0; z < (depth - 1); z++) {
+			for (auto x = 0; x < (width - 1); x++) {
+				auto a = z * width + x;
 				auto b = a + 1;
 				auto c = a + width;
 				auto d = c + 1;

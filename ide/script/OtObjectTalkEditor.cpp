@@ -10,17 +10,16 @@
 //
 
 #include <algorithm>
+#include <fstream>
+#include <map>
 
 #include "imgui.h"
 
 #include "OtMessageBus.h"
-#include "OtPathTools.h"
 #include "OtUi.h"
 
-#include "OtConsole.h"
 #include "OtObjectTalkEditor.h"
 #include "OtObjectTalkLanguage.h"
-#include "OtWorkspace.h"
 
 
 //
@@ -70,9 +69,9 @@ OtObjectTalkEditor::OtObjectTalkEditor() {
 //	OtObjectTalkEditor::newFile
 //
 
-void OtObjectTalkEditor::newFile(const std::string& path) {
+void OtObjectTalkEditor::newFile(const std::string& p) {
 	// setup the asset
-	asset = path;
+	path = p;
 }
 
 
@@ -80,12 +79,21 @@ void OtObjectTalkEditor::newFile(const std::string& path) {
 //	OtObjectTalkEditor::openFile
 //
 
-void OtObjectTalkEditor::openFile(const std::string& path) {
-	// setup the asset
-	asset.load(path, [this]() {
-		editor.SetText(asset->getText());
-		version = editor.GetUndoIndex();
-	});
+void OtObjectTalkEditor::openFile(const std::string& p) {
+	path = p;
+
+	std::ifstream stream(path.c_str());
+	std::string text;
+
+	stream.seekg(0, std::ios::end);
+	text.reserve(stream.tellg());
+	stream.seekg(0, std::ios::beg);
+
+	text.assign((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());
+	stream.close();
+
+	editor.SetText(text);
+	version = editor.GetUndoIndex();
 }
 
 
@@ -94,8 +102,9 @@ void OtObjectTalkEditor::openFile(const std::string& path) {
 //
 
 void OtObjectTalkEditor::saveFile() {
-	asset->setText(editor.GetText());
-	asset.save();
+	std::ofstream stream(path.c_str());
+	stream << editor.GetText();
+	stream.close();
 	version = editor.GetUndoIndex();
 }
 
@@ -104,10 +113,9 @@ void OtObjectTalkEditor::saveFile() {
 //	OtObjectTalkEditor::saveAsFile
 //
 
-void OtObjectTalkEditor::saveAsFile(const std::string& path) {
-	asset->setText(editor.GetText());
-	asset.saveAs(path);
-	version = editor.GetUndoIndex();
+void OtObjectTalkEditor::saveAsFile(const std::string& p) {
+	path = p;
+	saveFile();
 }
 
 

@@ -154,7 +154,7 @@ void OtAssetManager::renderUI() {
 //	OtAssetManager::scheduleAssetForLoading
 //
 
-void OtAssetManager::scheduleAssetForLoading(OtAssetBase* asset, std::function<void()> callback) {
+void OtAssetManager::scheduleAssetForLoading(OtAssetBase* asset) {
 	// see if asset exists
 	auto path = asset->getPath();
 
@@ -165,14 +165,6 @@ void OtAssetManager::scheduleAssetForLoading(OtAssetBase* asset, std::function<v
 			queue.push(asset);
 			asset->preLoad(path);
 
-			// register for load completion event so we can schedule callback
-			if (callback) {
-				asset->onPostLoad([this, callback]() {
-					scheduleReadyCallback(callback);
-					return false;
-				});
-			}
-
 		} else {
 			OtLogWarning("Asset [{}] refers to unsupported type", path);
 			asset->markInvalid();
@@ -182,64 +174,6 @@ void OtAssetManager::scheduleAssetForLoading(OtAssetBase* asset, std::function<v
 		OtLogWarning("Asset [{}] not found", path);
 		asset->markMissing();
 	}
-}
-
-
-//
-//	OtAssetManager::scheduleReadyCallback
-//
-
-void OtAssetManager::scheduleReadyCallback(std::function<void()> callback) {
-	// ignore if we have a NULL callback
-	if (callback) {
-		// create an async event handle
-		struct Handle {
-			uv_async_t async;
-			std::function<void()> callback;
-		};
-
-		auto callbackHandle = new Handle;
-		callbackHandle->callback = callback;
-
-		// setup the async event
-		auto status = uv_async_init(uv_default_loop(), (uv_async_t*) callbackHandle, [](uv_async_t* handle){
-			// execute callback
-			((Handle*) handle)->callback();
-
-			// cleanup
-			uv_close((uv_handle_t*) handle, [](uv_handle_t* handle) {
-				delete (Handle*) handle;
-			});
-		});
-
-		UV_CHECK_ERROR("uv_async_init", status);
-
-		// activate the async event
-		status = uv_async_send((uv_async_t*) callbackHandle);
-		UV_CHECK_ERROR("uv_async_send", status);
-	}
-}
-
-
-//
-//	OtAssetManager::save
-//
-
-void OtAssetManager::save(OtAssetBase* asset) {
-	asset->preSave();
-	asset->save();
-	asset->postSave();
-}
-
-
-//
-//	OtAssetManager::saveAs
-//
-
-void OtAssetManager::saveAs(OtAssetBase* asset, const std::string &newName) {
-	asset->preSave(newName);
-	asset->save();
-	asset->postSave();
 }
 
 

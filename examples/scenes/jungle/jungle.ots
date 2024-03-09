@@ -5,7 +5,7 @@
 			"components": [
 				{
 					"component": "Core",
-					"tag": "Camera",
+					"tag": "Camera (Ground View)",
 					"uuid": 1057740688
 				},
 				{
@@ -45,6 +45,46 @@
 			"components": [
 				{
 					"component": "Core",
+					"tag": "Camera (Top View)",
+					"uuid": 1042070526
+				},
+				{
+					"component": "Transform",
+					"rotation": [
+						-64.4000015258789,
+						0.0,
+						0.0
+					],
+					"scale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"translation": [
+						0.0,
+						269.20001220703125,
+						155.3000030517578
+					]
+				},
+				{
+					"component": "Camera",
+					"far": 462.0,
+					"fov": 60.0,
+					"mainCamera": false,
+					"near": 0.10000000149011612
+				},
+				{
+					"Exposure": 1.0,
+					"bloomIntensity": 0.800000011920929,
+					"component": "Post Processing"
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
 					"tag": "Sky",
 					"uuid": 312324165
 				},
@@ -74,10 +114,10 @@
 					"hScale": 1.0,
 					"heightmap": {
 						"amplitude": 0.5,
-						"frequency": 14,
+						"frequency": 10,
 						"lacunarity": 2,
 						"normalStrength": 10.0,
-						"octaves": 6,
+						"octaves": 5,
 						"persistence": 0.5,
 						"size": 256
 					},
@@ -135,7 +175,16 @@
 				},
 				{
 					"component": "Nodes",
-					"path": "assets/trees.otn"
+					"path": "assets/trees.otn",
+					"settings": {
+						"1626407443": {
+							"value": [
+								300.0,
+								1.0,
+								300.0
+							]
+						}
+					}
 				}
 			]
 		},

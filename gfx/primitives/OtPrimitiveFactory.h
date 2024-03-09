@@ -21,6 +21,7 @@
 #include "OtCirclePrimitive.h"
 #include "OtCylinderPrimitive.h"
 #include "OtDodecahedronPrimitive.h"
+#include "OtGridPrimitive.h"
 #include "OtIcosahedronPrimitive.h"
 #include "OtOctahedronPrimitive.h"
 #include "OtPlanePrimitive.h"
@@ -37,6 +38,7 @@
 
 class OtPrimitiveFactory : public OtSingleton<OtPrimitiveFactory>, public OtFactory<
 	OtPrimitiveBase,
+	OtGridPrimitive,
 	OtPlanePrimitive,
 	OtCirclePrimitive,
 	OtCubePrimitive,

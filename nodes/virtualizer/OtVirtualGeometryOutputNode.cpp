@@ -66,7 +66,7 @@ public:
 	}
 
 	static constexpr const char* nodeName = "Save Geometry To Virtual";
-	static constexpr int nodeCategory = OtNodeClass::output;
+	static constexpr int nodeCategory = OtNodeClass::virtualizer;
 	static constexpr int nodeKind = OtNodeClass::virtualizer;
 	static constexpr float fieldWidth = 170.0f;
 

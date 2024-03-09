@@ -54,6 +54,7 @@ public:
 
 	// load and save nodes
 	void load(const std::string& path);
+	void loadFromString(const std::string& string, std::string& basedir);
 	void save(const std::string& path);
 
 	// manipulate nodes

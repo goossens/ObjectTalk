@@ -13,11 +13,9 @@
 //
 
 #include <memory>
-#include <vector>
+#include <string>
 
-#include "imgui.h"
-
-#include "OtNodesAsset.h"
+#include "OtNodes.h"
 
 #include "OtEditor.h"
 #include "OtEditorTask.h"
@@ -31,20 +29,16 @@
 
 class OtNodesEditor : public OtEditor {
 public:
-	// constructor
-	OtNodesEditor();
-
 	// file handling functions
 	void newFile(const std::string& path) override;
 	void openFile(const std::string& path) override;
 	void saveFile() override;
 	void saveAsFile(const std::string& path) override;
 	inline std::string getFileExtension() override { return ".otn"; }
-	inline std::string getFilePath() override { return asset.getPath(); }
+	inline std::string getFilePath() override { return path; }
 
 	// get editor status
-	inline bool isReady() override { return asset.isReady(); }
-	bool isDirty() override;
+	inline bool isDirty() override { return taskManager.isDirty(); }
 
 	// render the editor
 	void renderMenu() override;
@@ -58,11 +52,14 @@ public:
 	void duplicateSelectedNodes();
 
 private:
+	// the path to the nodes file
+	std::string path;
+
 	// the nodes being edited
-	OtAsset<OtNodesAsset> asset;
+	OtNodes nodes;
 
 	// the editor's UI
-	std::unique_ptr<OtNodesWidget> widget;
+	OtNodesWidget widget;
 
 	// to handle do/undo/redo
 	OtTaskManager taskManager;

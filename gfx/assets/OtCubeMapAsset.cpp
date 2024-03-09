@@ -61,7 +61,7 @@ OtAssetBase::AssetState OtCubeMapAsset::load() {
 			status = uv_async_send(postProcessingEventHandle);
 			UV_CHECK_ERROR("uv_async_send", status);
 
-			// we are in loaed state for now
+			// we are in loaded state for now
 			return loadedState;
 		}
 

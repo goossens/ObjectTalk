@@ -116,7 +116,7 @@ bool OtNodeClass::evaluateVariableInputs(bool toplevel) {
 	// process all input pins
 	eachInput([&](OtNodesPin& pin){
 		// only look at connected pins that are marked as varying
-		if (pin->isConnected() && pin->isVarying()) {
+		if (pin->isSourceConnected() && pin->isVarying()) {
 			// see if source node made changes
 			if (pin->sourcePin->node->evaluateVariableInputs(false)) {
 				pin->evaluate();

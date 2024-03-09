@@ -67,17 +67,28 @@ void OtNodes::load(const std::string& path) {
 		buffer << stream.rdbuf();
 		stream.close();
 
+		auto basedir = OtPathGetParent(path);
+		loadFromString(buffer.str(), basedir);
+
 	} catch (std::exception& e) {
 		OtError("Can't read from file [{}], error: {}", path, e.what());
 	}
 
+}
+
+
+//
+//	OtNodes::loadFromString
+//
+
+void OtNodes::loadFromString(const std::string& string, std::string& basedir) {
 	// clear nodes
 	clear();
 
 	// treat an empty file as a blank nodes
-	if (buffer.str().size()) {
+	if (string.size()) {
 		// parse json
-		auto data = nlohmann::json::parse(buffer.str());
+		auto data = nlohmann::json::parse(string);
 
 		// extract metadata
 		if (data.contains("metadata")) {
@@ -85,8 +96,6 @@ void OtNodes::load(const std::string& path) {
 		}
 
 		// restore each node
-		auto basedir = OtPathGetParent(path);
-
 		for (auto& node : data["nodes"]) {
 			restoreNode(node, true, &basedir);
 		}
@@ -291,7 +300,7 @@ bool OtNodes::isLinkValid(OtNodesPin from, OtNodesPin to) {
 	if (from->isInput() || to->isOutput()) {
 		return false;
 
-	} else if (to->isConnected()) {
+	} else if (to->isSourceConnected()) {
 		return false;
 
 	} else if (from->type != to->type) {

@@ -13,31 +13,18 @@
 //
 
 #include "OtAsset.h"
-#include "OtAssetBase.h"
-#include "OtNodes.h"
+#include "OtTextAsset.h"
 
 
 //
 //	OtNodesAsset
 //
 
-class OtNodesAsset : public OtAssetBase {
+class OtNodesAsset : public OtTextAsset {
 public:
-	// access the nodes
-	inline OtNodes& getNodes() { return nodes; }
-
 	// asset properties
 	static constexpr bool hasEditor = true;
 	static constexpr bool canHandleVirtual = false;
 	static constexpr const char* supportedFileTypes = ".otn";
 	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
-
-protected:
-	// load/save the nodes
-	AssetState load() override;
-	AssetState save() override;
-
-private:
-	// the actual nodes
-	OtNodes nodes;
 };

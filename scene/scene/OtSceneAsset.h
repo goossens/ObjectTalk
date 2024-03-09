@@ -38,9 +38,8 @@ public:
 	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
 
 protected:
-	// load/save the asset
+	// load the asset
 	AssetState load() override;
-	AssetState save() override;
 
 private:
 	// the actual scene

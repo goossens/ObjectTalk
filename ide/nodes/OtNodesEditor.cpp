@@ -34,21 +34,12 @@
 
 
 //
-//	OtNodesEditor::OtNodesEditor
-//
-
-OtNodesEditor::OtNodesEditor() {
-	widget = std::make_unique<OtNodesWidget>();
-}
-
-
-//
 //	OtNodesEditor::newFile
 //
 
-void OtNodesEditor::newFile(const std::string& path) {
-	// setup the asset
-	asset = path;
+void OtNodesEditor::newFile(const std::string& p) {
+	path = p;
+	nodes.clear();
 }
 
 
@@ -56,9 +47,9 @@ void OtNodesEditor::newFile(const std::string& path) {
 //	OtNodesEditor::openFile
 //
 
-void OtNodesEditor::openFile(const std::string& path) {
-	// setup the asset
-	asset.load(path);
+void OtNodesEditor::openFile(const std::string& p) {
+	path = p;
+	nodes.load(path);
 }
 
 
@@ -67,7 +58,7 @@ void OtNodesEditor::openFile(const std::string& path) {
 //
 
 void OtNodesEditor::saveFile() {
-	asset.save();
+	nodes.save(path);
 	taskManager.baseline();
 }
 
@@ -76,19 +67,10 @@ void OtNodesEditor::saveFile() {
 //	OtNodesEditor::saveAsFile
 //
 
-void OtNodesEditor::saveAsFile(const std::string& path) {
-	asset.saveAs(path);
+void OtNodesEditor::saveAsFile(const std::string& p) {
+	path = p;
+	nodes.save(path);
 	taskManager.baseline();
-}
-
-
-
-//
-//	OtNodesEditor::isDirty
-//
-
-bool OtNodesEditor::isDirty() {
-	return taskManager.isDirty();
 }
 
 
@@ -97,7 +79,7 @@ bool OtNodesEditor::isDirty() {
 //
 
 void OtNodesEditor::cutSelectedNodes() {
-	nextTask = std::make_shared<OtCutNodesTask>(&asset->getNodes(), clipboard);
+	nextTask = std::make_shared<OtCutNodesTask>(&nodes, clipboard);
 }
 
 
@@ -106,7 +88,7 @@ void OtNodesEditor::cutSelectedNodes() {
 //
 
 void OtNodesEditor::copySelectedNodes() {
-	nextTask = std::make_shared<OtCopyNodesTask>(&asset->getNodes(), clipboard);
+	nextTask = std::make_shared<OtCopyNodesTask>(&nodes, clipboard);
 }
 
 
@@ -115,7 +97,7 @@ void OtNodesEditor::copySelectedNodes() {
 //
 
 void OtNodesEditor::pasteSelectedNodes() {
-	nextTask = std::make_shared<OtPasteNodesTask>(&asset->getNodes(), clipboard);
+	nextTask = std::make_shared<OtPasteNodesTask>(&nodes, clipboard);
 }
 
 
@@ -124,7 +106,7 @@ void OtNodesEditor::pasteSelectedNodes() {
 //
 
 void OtNodesEditor::deleteSelectedNodes() {
-	nextTask = std::make_shared<OtDeleteNodesTask>(&asset->getNodes());
+	nextTask = std::make_shared<OtDeleteNodesTask>(&nodes);
 }
 
 
@@ -133,7 +115,7 @@ void OtNodesEditor::deleteSelectedNodes() {
 //
 
 void OtNodesEditor::duplicateSelectedNodes() {
-	nextTask = std::make_shared<OtDuplicateNodesTask>(&asset->getNodes());
+	nextTask = std::make_shared<OtDuplicateNodesTask>(&nodes);
 }
 
 
@@ -143,7 +125,7 @@ void OtNodesEditor::duplicateSelectedNodes() {
 
 void OtNodesEditor::renderMenu() {
 	// get status
-	bool selected = asset->getNodes().hasSelected();
+	bool selected = nodes.hasSelected();
 	bool clipable = clipboard.size() > 0;
 
 	// create menubar
@@ -212,16 +194,15 @@ void OtNodesEditor::renderMenu() {
 
 void OtNodesEditor::renderEditor() {
 	// evaluate the nodes
-	auto& nodes = asset->getNodes();
 	nodes.evaluate();
 
 	// render the nodes
-	widget->render(&nodes);
+	widget.render(&nodes);
 
 	// handle node editing
 	uint32_t node;
 
-	if (widget->isNodeEdited(node)) {
+	if (widget.isNodeEdited(node)) {
 		nextTask = std::make_shared<OtEditNodeTask>(&nodes, node);
 	}
 
@@ -229,36 +210,36 @@ void OtNodesEditor::renderEditor() {
 	uint32_t from;
 	uint32_t to;
 
-	if (widget->isCreatingLink(from, to)) {
+	if (widget.isCreatingLink(from, to)) {
 		nextTask = std::make_shared<OtCreateLinkTask>(&nodes, from, to);
 	}
 
 	// handle link deletion
-	if (widget->isDroppingLink(from, to)) {
+	if (widget.isDroppingLink(from, to)) {
 		nextTask = std::make_shared<OtDeleteLinkTask>(&nodes, from, to);
 	}
 
 	// handle link redirection
 	uint32_t newTo;
 
-	if (widget->isChangingLink(from, to, newTo)) {
+	if (widget.isChangingLink(from, to, newTo)) {
 		nextTask = std::make_shared<OtChangeLinkTask>(&nodes, from, to, newTo);
 	}
 
 	// handle node dragging
 	ImVec2 offset;
 
-	if (widget->isDraggingComplete(offset)) {
+	if (widget.isDraggingComplete(offset)) {
 		nextTask = std::make_shared<OtDragNodesTask>(&nodes, offset);
 	}
 
 	// handle context menu
-	if (widget->showContextMenu()) {
+	if (widget.showContextMenu()) {
 		ImGui::OpenPopup("Background Context");
 	}
 
 	if (ImGui::BeginPopup("Background Context")) {
-		auto nodePosition = widget->screenToWidget(ImGui::GetMousePosOnOpeningCurrentPopup());
+		auto nodePosition = widget.screenToWidget(ImGui::GetMousePosOnOpeningCurrentPopup());
 		ImGui::TextUnformatted("Create Node");
 		ImGui::Separator();
 

@@ -13,9 +13,11 @@
 //
 
 #include <string>
+#include <vector>
 
 #include "nlohmann/json_fwd.hpp"
 
+#include "OtNodes.h"
 #include "OtNodesAsset.h"
 
 
@@ -25,6 +27,10 @@
 
 class OtNodesComponent {
 public:
+	// constructor/destructor
+	OtNodesComponent();
+	~OtNodesComponent();
+
 	// UI to change component properties
 	bool renderUI();
 
@@ -37,4 +43,11 @@ public:
 
 	// stored properties
 	OtAsset<OtNodesAsset> asset;
+
+	// runtime properties
+	OtNodes nodes;
+	std::vector<OtNode> inputNodes;
+	std::string savedSettings = "{}";
+
+	void applySettings(nlohmann::json settings, std::string* basedir);
 };

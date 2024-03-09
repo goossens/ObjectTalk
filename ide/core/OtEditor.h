@@ -52,7 +52,6 @@ public:
 	inline bool isRenderedInWindow() { return visualState == inWindow; }
 
 	// get editor status
-	virtual inline bool isReady() { return true; }
 	virtual inline bool isDirty() { return false; }
 
 	// handle exception during a "run"

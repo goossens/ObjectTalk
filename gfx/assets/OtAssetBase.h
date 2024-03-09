@@ -25,24 +25,16 @@
 //	Message types
 //
 
-struct OtAssetPreLoad : OtMessage<> {};
 struct OtAssetPostLoad : OtMessage<> {};
-struct OtAssetPreSave : OtMessage<> {};
-struct OtAssetPostSave : OtMessage<> {};
 struct OtAssetChanged : OtMessage<> {};
-struct OtAssetRenamed : OtMessage<std::string> {};
 
 
 //
 //	Listerner types
 //
 
-using OtAssetPreLoadListerner = OtPublisher<OtAssetPreLoad>::listener;
 using OtAssetPostLoadListerner = OtPublisher<OtAssetPostLoad>::listener;
-using OtAssetPreSaveListerner = OtPublisher<OtAssetPreSave>::listener;
-using OtAssetPostSaveListerner = OtPublisher<OtAssetPostSave>::listener;
 using OtAssetChangedListerner = OtPublisher<OtAssetChanged>::listener;
-using OtAssetRenamedListerner = OtPublisher<OtAssetRenamed>::listener;
 
 
 //
@@ -78,19 +70,11 @@ public:
 	// event handlers
 	// if the callback returns false, that listener is automatically deactivated
 	// if the callback returns true, it remains active
-	inline OtAssetPreLoadListerner onPreLoad(std::function<bool()> cb) { return publisher.listen<OtAssetPreLoad>(cb); }
 	inline OtAssetPostLoadListerner onPostLoad(std::function<bool()> cb) { return publisher.listen<OtAssetPostLoad>(cb); }
-	inline OtAssetPreSaveListerner onPreSave(std::function<bool()> cb) { return publisher.listen<OtAssetPreSave>(cb); }
-	inline OtAssetPostSaveListerner onPostSave(std::function<bool()> cb) { return publisher.listen<OtAssetPostSave>(cb); }
-	inline OtAssetChangedListerner onChange(std::function<bool()> cb) { return publisher.listen<OtAssetChanged>(cb); }
-	inline OtAssetRenamedListerner onReload(std::function<bool(const std::string&)> cb) { return publisher.listen<OtAssetRenamed>(cb); }
+	inline OtAssetChangedListerner onChanged(std::function<bool()> cb) { return publisher.listen<OtAssetChanged>(cb); }
 
-	inline void cancelListener(OtAssetPreLoadListerner listener) { publisher.unlisten(listener); }
 	inline void cancelListener(OtAssetPostLoadListerner listener) { publisher.unlisten(listener); }
-	inline void cancelListener(OtAssetPreSaveListerner listener) { publisher.unlisten(listener); }
-	inline void cancelListener(OtAssetPostSaveListerner listener) { publisher.unlisten(listener); }
 	inline void cancelListener(OtAssetChangedListerner listener) { publisher.unlisten(listener); }
-	inline void cancelListener(OtAssetRenamedListerner listener) { publisher.unlisten(listener); }
 
 	inline void reference() { references++; }
 	inline void dereference() { references--; }
@@ -110,9 +94,8 @@ protected:
 		readyState
 	} assetState = nullState;
 
-	// functions to load/save the asset (to be implemented by derived classes)
+	// functions to load/ the asset (to be implemented by derived classes)
 	virtual inline AssetState load() { return nullState; }
-	virtual inline AssetState save() { return nullState; }
 
 	// internal housekeeping functions
 	void initializeMissing(const std::string& path);
@@ -120,11 +103,7 @@ protected:
 	void initializeReady(const std::string& path);
 	void preLoad(const std::string& path);
 	void postLoad(AssetState state);
-	void preSave();
-	void preSave(const std::string& path);
-	void postSave();
 	void changed();
-	void renamed(const std::string& path);
 
 	inline void markMissing() { assetState = missingState; }
 	inline void markInvalid() { assetState = invalidState; }
@@ -147,12 +126,8 @@ private:
 	void unfollow();
 
 	// our publisher to notify subscribers
-	struct Publisher : OtPublisher<OtAssetPreLoad, OtAssetPostLoad, OtAssetPreSave, OtAssetPostSave, OtAssetChanged, OtAssetRenamed> {
-		void preLoad() { notify<OtAssetPreLoad>(); }
+	struct Publisher : OtPublisher<OtAssetPostLoad, OtAssetChanged> {
 		void postLoad() { notify<OtAssetPostLoad>(); }
-		void preSave() { notify<OtAssetPreSave>(); }
-		void postSave() { notify<OtAssetPostSave>(); }
 		void changed() { notify<OtAssetChanged>(); }
-		void renamed(const std::string& path) { notify<OtAssetRenamed>(path); }
 	} publisher;
 };

@@ -41,20 +41,3 @@ OtAssetBase::AssetState OtSceneAsset::load() {
 		return invalidState;
 	}
 }
-
-
-//
-//	OtSceneAsset::save
-//
-
-OtAssetBase::AssetState OtSceneAsset::save() {
-	try {
-		// save the scene
-		scene->save(path);
-		return readyState;
-
-	} catch (const OtException& exception) {
-		OtLogWarning("Can't save scene [{}]: {}", path, exception.what());
-		return invalidState;
-	}
-}

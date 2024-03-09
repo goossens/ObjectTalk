@@ -99,6 +99,9 @@ public:
 	void deserialize(nlohmann::json data, bool restoreIDs=true, std::string* basedir=nullptr);
 	void deserializeFromString(const std::string& json, bool restoreIDs=true, std::string* basedir=nullptr);
 
+	virtual inline void customSerialize(nlohmann::json* data, std::string* basedir) {}
+	virtual inline void customDeserialize(nlohmann::json* data, std::string* basedir) {}
+
 	// get pin counts
 	inline size_t getInputPinCount() { return inputPins.size(); }
 	inline size_t getOutputPinCount() { return outputPins.size(); }
@@ -137,10 +140,13 @@ public:
 	virtual inline void onExecute() {};
 	virtual inline void onEnd() {};
 
-	// handle custom section of notes
+	// handle custom section of nodes
 	virtual inline void customRendering(float width) {}
 	virtual inline float getCustomRenderingWidth() { return 0.0f; }
 	virtual inline float getCustomRenderingHeight() { return 0.0f; }
+
+	// special rendering for input nodes
+	virtual inline bool customInputRendering(float width) { return false; }
 
 	// public properties
 	uint32_t id;
@@ -169,9 +175,6 @@ protected:
 	// private properties
 	std::vector<OtNodesPin> inputPins;
 	std::vector<OtNodesPin> outputPins;
-
-	virtual inline void customSerialize(nlohmann::json* data, std::string* basedir) {}
-	virtual inline void customDeserialize(nlohmann::json* data, std::string* basedir) {}
 
 	bool evaluateVariableInputs(bool toplevel=true);
 };

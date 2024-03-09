@@ -82,10 +82,6 @@ void OtAssetBase::follow() {
 			if (events & UV_CHANGE) {
 				asset->changed();
 			}
-
-			if (events & UV_RENAME) {
-				asset->renamed(filename);
-			}
 		},
 		path.c_str(),
 		0);
@@ -170,9 +166,6 @@ void OtAssetBase::preLoad(const std::string& p) {
 	path = p;
 	assetState = OtAssetBase::loadingState;
 
-	// notify followers
-	publisher.preLoad();
-
 	// set a callback to catch load completion
 	// we need async here because loading happens in a dfferent thread
 	loaderEventHandle = new uv_async_t;
@@ -218,49 +211,9 @@ void OtAssetBase::postLoad(AssetState state) {
 
 
 //
-//	OtAssetBase::preSave
-//
-
-void OtAssetBase::preSave() {
-	publisher.preSave();
-}
-
-void OtAssetBase::preSave(const std::string& p) {
-	if (path != p) {
-		if (following) {
-			unfollow();
-		}
-
-		follow();
-	}
-
-	path = p;
-	publisher.preSave();
-}
-
-
-//
-//	OtAssetBase::postSave
-//
-
-void OtAssetBase::postSave() {
-	publisher.postSave();
-}
-
-
-//
 //	OtAssetBase::changed
 //
 
 void OtAssetBase::changed() {
 	publisher.changed();
-}
-
-
-//
-//	OtAssetBase::renamed
-//
-
-void OtAssetBase::renamed(const std::string& path) {
-	publisher.renamed(path);
 }

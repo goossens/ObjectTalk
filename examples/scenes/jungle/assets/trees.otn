@@ -21,11 +21,6 @@
 			"to": 1014418491
 		},
 		{
-			"from": 864399298,
-			"id": 2584488712,
-			"to": 2482379890
-		},
-		{
 			"from": 2630265587,
 			"id": 3224350893,
 			"to": 1921743067
@@ -99,35 +94,14 @@
 				}
 			],
 			"primitive": {
-				"segments": 32,
-				"thetaLength": 360.0,
-				"thetaStart": 0.0,
-				"type": "Circle"
+				"depthSegments": 25,
+				"type": "Grid",
+				"widthSegments": 25
 			},
 			"title": "Geometry Generator",
 			"type": "Geometry Generator",
 			"x": 22.0,
 			"y": 115.0
-		},
-		{
-			"id": 3094522217,
-			"inputs": [],
-			"outputs": [
-				{
-					"id": 864399298,
-					"name": "Value",
-					"type": "vector"
-				}
-			],
-			"title": "Vector Input",
-			"type": "Vector Input",
-			"value": [
-				90.0,
-				0.0,
-				0.0
-			],
-			"x": 19.0,
-			"y": 210.0
 		},
 		{
 			"id": 1626407443,
@@ -143,8 +117,8 @@
 			"type": "Vector Input",
 			"value": [
 				300.0,
-				300.0,
-				1.0
+				1.0,
+				300.0
 			],
 			"x": 19.0,
 			"y": 291.0
@@ -375,7 +349,7 @@
 					"type": "vector"
 				}
 			],
-			"instanceCount": 400,
+			"instanceCount": 300,
 			"outputs": [
 				{
 					"id": 4073022152,

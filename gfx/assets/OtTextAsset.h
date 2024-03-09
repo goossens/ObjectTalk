@@ -32,9 +32,8 @@ public:
 	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
 
 protected:
-	// load/save the asset
+	// load the asset
 	AssetState load() override;
-	AssetState save() override;
 
 	// the actual text
 	std::string text;

@@ -42,6 +42,12 @@ public:
 		}, fieldWidth);
 	}
 
+	// special rendering for input nodes
+	inline bool customInputRendering(float width) override {
+		ImGui::SetNextItemWidth(width);
+		return OtUiEditVec3("##value", value, 0.1f, 0.0f, 0.0f);
+	}
+
 	// (de)serialize node
 	void customSerialize(nlohmann::json* data, std::string* basedir) override {
 		(*data)["value"] = value;

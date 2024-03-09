@@ -115,10 +115,15 @@ public:
 	inline bool isVarying() { return varying; }
 
 	// handle connections
-	virtual void connect(OtNodesPin sourcePin) = 0;
-	virtual void disconnect() = 0;
+	virtual void connectToSource(OtNodesPin srcPin) = 0;
+	virtual void disconnectFromSource() = 0;
 	inline OtNodesPin getSource() { return sourcePin; }
-	inline bool isConnected() { return sourcePin != nullptr; }
+	inline bool isSourceConnected() { return sourcePin != nullptr; }
+
+	inline void connectToDestination(OtNodesPin destPin) { destinationPin = destPin; }
+	inline void disconnectFromDestination() { destinationPin = nullptr; }
+	inline OtNodesPin getDestination() { return destinationPin; }
+	inline bool isDestinationConnected() { return destinationPin != nullptr; }
 
 	// evaluate the pin
 	virtual void evaluate() = 0;
@@ -145,6 +150,7 @@ public:
 	bool hasRenderer{false};
 
 	OtNodesPin sourcePin;
+	OtNodesPin destinationPin;
 };
 
 
@@ -164,13 +170,13 @@ public:
 	}
 
 	// handle connections
-	inline void connect(OtNodesPin srcPin) override {
+	inline void connectToSource(OtNodesPin srcPin) override {
 		sourcePin = srcPin;
 		source = srcPin ? std::dynamic_pointer_cast<OtNodesPinImpl<T>>(srcPin)->value : nullptr;
 		needsEvaluating = true;
 	}
 
-	inline void disconnect() override {
+	inline void disconnectFromSource() override {
 		*value = defaultValue;
 		sourcePin = nullptr;
 		source = nullptr;

@@ -11,7 +11,6 @@
 
 #include <algorithm>
 #include <fstream>
-#include <vector>
 
 #include "imgui.h"
 #include "nlohmann/json.hpp"
@@ -38,6 +37,52 @@ static const char* flowTemplate = "\
 
 
 //
+//	OtNodesComponent::OtNodesComponent
+//
+
+OtNodesComponent::OtNodesComponent() {
+	asset.onChange([&]() {
+		if (asset.isReady()) {
+			// load nodes
+			auto basedir = OtPathGetParent(asset->getPath());
+			nodes.loadFromString(asset->getText(), basedir);
+
+			// build list of input nodes
+			inputNodes.clear();
+
+			nodes.eachNode([&](OtNode& node) {
+				if (node->category == OtNodeClass::input) {
+					inputNodes.emplace_back(node);
+				}
+			});
+
+			// sort them by vertical position
+			std::sort(inputNodes.begin(), inputNodes.end(), [](OtNode a, OtNode b) {
+				return a->y < b->y;
+			});
+
+			// apply our settings
+			applySettings(nlohmann::json::parse(savedSettings), &basedir);
+
+		} else {
+			// no nodes specified, just clear things
+			nodes.clear();
+			inputNodes.clear();
+		}
+	});
+}
+
+
+//
+//	OtNodesComponent::~OtNodesComponent
+//
+
+OtNodesComponent::~OtNodesComponent() {
+	asset.onChange(nullptr);
+}
+
+
+//
 //	OtNodesComponent::renderUI
 //
 
@@ -49,32 +94,18 @@ bool OtNodesComponent::renderUI() {
 		stream.close();
 	});
 
-/*
-	if (asset.isReady()) {
-		auto& nodes = asset->getNodes();
-		std::vector<OtNode> inputNodes;
-
-		nodes.eachNode([&](OtNode& node) {
-			if (node->category == OtNodeClass::input) {
-				inputNodes.emplace_back(node);
-			}
-		});
-
-		std::sort(inputNodes.begin(), inputNodes.end(), [](OtNode a, OtNode b) {
-			return a->y < b->y;
-		});
-
+	if (ImGui::TreeNode("Parameters")) {
+		// show all input nodes
 		for (auto& node : inputNodes) {
-			node->eachPin([node](OtNodesPin& pin) {
-				ImGui::PushID(pin.get());
-				pin->render(ImGui::CalcItemWidth());
-				ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-				ImGui::TextUnformatted(node->title.c_str());
-				ImGui::PopID();
-			});
+			ImGui::PushID(node.get());
+			changed |= node->customInputRendering(ImGui::CalcItemWidth());
+			ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+			ImGui::TextUnformatted(node->title.c_str());
+			ImGui::PopID();
 		}
+
+		ImGui::TreePop();
 	}
-*/
 
 	return changed;
 }
@@ -88,6 +119,16 @@ nlohmann::json OtNodesComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
 	data["path"] = OtPathRelative(asset.getPath(), basedir);
+
+	auto settings = nlohmann::json::object();
+
+	for (auto& node : inputNodes) {
+		auto values = nlohmann::json::object();
+		node->customSerialize(&values, basedir);
+		settings[std::to_string(node->id)] = values;
+	}
+
+	data["settings"] = settings;
 	return data;
 }
 
@@ -98,4 +139,29 @@ nlohmann::json OtNodesComponent::serialize(std::string* basedir) {
 
 void OtNodesComponent::deserialize(nlohmann::json data, std::string* basedir) {
 	asset = OtPathGetAbsolute(data, "path", basedir);
+
+	if (data.contains("settings")) {
+		auto settings = data["settings"];
+		applySettings(settings, basedir);
+		savedSettings = settings.dump();
+
+	} else {
+		savedSettings = "{}";
+	}
+}
+
+
+//
+//	OtNodesComponent::applySettings
+//
+
+void OtNodesComponent::applySettings(nlohmann::json settings, std::string* basedir) {
+	for (auto& node : inputNodes) {
+		auto id = std::to_string(node->id);
+
+		if (settings.contains(id)) {
+			node->customDeserialize(&settings[id], basedir);
+			node->needsEvaluating = true;
+		}
+	}
 }

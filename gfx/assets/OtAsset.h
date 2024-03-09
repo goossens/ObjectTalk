@@ -46,6 +46,7 @@ public:
 	inline OtAsset(T* instance) {
 		ptr = instance;
 		ptr->reference();
+		follow();
 	}
 
 	inline OtAsset(const OtAsset& asset) {
@@ -53,6 +54,7 @@ public:
 			ptr = asset.ptr;
 			virtualMode = asset.virtualMode;
 			ptr->reference();
+			follow();
 		}
 	}
 
@@ -64,6 +66,7 @@ public:
 			ptr = dynamic_cast<T*>(asset.ptr);
 			virtualMode = asset.virtualMode;
 			ptr->reference();
+			follow();
 		}
 	}
 
@@ -71,7 +74,11 @@ public:
 		if (asset.ptr) {
 			ptr = asset.ptr;
 			virtualMode = asset.virtualMode;
+			onChangeCallback = asset.onChangeCallback;
+			follow();
+
 			asset.ptr = nullptr;
+			asset.onChangeCallback = nullptr;
 		}
 	}
 
@@ -82,7 +89,11 @@ public:
 		if (asset.ptr) {
 			ptr = asset.ptr;
 			virtualMode = asset.virtualMode;
+			onChangeCallback = asset.onChangeCallback;
+			follow();
+
 			asset.ptr = nullptr;
+			asset.onChangeCallback = nullptr;
 		}
 	}
 
@@ -94,8 +105,10 @@ public:
 	// clear the asset reference
 	inline void clear() {
 		if (ptr) {
+			unfollow();
 			ptr->dereference();
 			ptr = nullptr;
+			notifyChanged();
 		}
 
 		virtualMode = false;
@@ -114,7 +127,9 @@ public:
 		if (asset.ptr) {
 			ptr = asset.ptr;
 			virtualMode = asset.virtualMode;
+			onChangeCallback = nullptr;
 			ptr->reference();
+			follow();
 		}
 
 		return *this;
@@ -128,7 +143,9 @@ public:
 		if (asset.ptr) {
 			ptr = dynamic_cast<T*>(asset.ptr);
 			virtualMode = asset.virtualMode;
+			onChangeCallback = nullptr;
 			ptr->reference();
+			follow();
 		}
 
 		return *this;
@@ -141,7 +158,10 @@ public:
 		if (asset.ptr) {
 			ptr = asset.ptr;
 			virtualMode = asset.virtualMode;
+			onChangeCallback = asset.onChangeCallback;
 			asset.ptr = nullptr;
+			asset.onChangeCallback = nullptr;
+			follow();
 		}
 
 		return *this;
@@ -155,32 +175,24 @@ public:
 		if (asset.ptr) {
 			ptr = dynamic_cast<T*>(asset.ptr);
 			virtualMode = asset.virtualMode;
+			onChangeCallback = asset.onChangeCallback;
 			asset.ptr = nullptr;
+			asset.onChangeCallback = nullptr;
+			follow();
 		}
 
 		return *this;
 	}
 
 	// load the asset
-	inline void load(const std::string& path, std::function<void()> callback=nullptr) {
+	inline void load(const std::string& path) {
 		clear();
 
 		if (path != "") {
-			ptr = OtAssetManager::instance()->acquire<T>(path, callback);
+			ptr = OtAssetManager::instance()->acquire<T>(path);
 			ptr->reference();
+			follow();
 		}
-	}
-
-	// save the asset
-	inline void save() {
-		OtAssert(ptr);
-		OtAssetManager::instance()->save(ptr);
-	}
-
-	// save the asset under a new name
-	inline void saveAs(const std::string& path) {
-		OtAssert(ptr);
-		OtAssetManager::instance()->saveAs(ptr, path);
 	}
 
 	// get the current path
@@ -207,23 +219,8 @@ public:
 	bool getVirtualMode() { return virtualMode; }
 	void setVirtualMode(bool vm) { virtualMode = vm; }
 
-	// register callbacks
-	// if the callback returns false, it is automatically cancelled
-	// if the callback returns true, it remains active
-	inline OtAssetPreLoadListerner onPreLoad(std::function<bool()> cb) { OtAssert(ptr); return ptr->onPreLoad(cb); }
-	inline OtAssetPostLoadListerner onPostLoad(std::function<bool()> cb) { OtAssert(ptr); return ptr->onPostLoad(cb); }
-	inline OtAssetPreSaveListerner onPreSave(std::function<bool()> cb) { OtAssert(ptr); return ptr->onPreSave(cb); }
-	inline OtAssetPostSaveListerner onPostSave(std::function<bool()> cb) { OtAssert(ptr); return ptr->onPostSave(cb); }
-	inline OtAssetChangedListerner onChange(std::function<bool()> cb) { OtAssert(ptr); return ptr->onChange(cb); }
-	inline OtAssetRenamedListerner onReload(std::function<bool()> cb) { OtAssert(ptr); return ptr->onReload(cb); }
-
-	// cancel callbacks
-	inline void cancelListener(OtAssetPreLoadListerner listener) { OtAssert(ptr); ptr->unlisten(listener); }
-	inline void cancelListener(OtAssetPostLoadListerner listener) { OtAssert(ptr); ptr->unlisten(listener); }
-	inline void cancelListener(OtAssetPreSaveListerner listener) { OtAssert(ptr); ptr->unlisten(listener); }
-	inline void cancelListener(OtAssetPostSaveListerner listener) { OtAssert(ptr); ptr->unlisten(listener); }
-	inline void cancelListener(OtAssetChangedListerner listener) { OtAssert(ptr); ptr->unlisten(listener); }
-	inline void cancelListener(OtAssetRenamedListerner listener) { OtAssert(ptr); ptr->unlisten(listener); }
+	// register follower
+	inline void onChange(std::function<void()> cb) { onChangeCallback = cb; }
 
 	// render UI to show/select an asset path
 	inline bool renderUI(const char* label, std::function<void(const std::string&)> creator=nullptr) {
@@ -270,4 +267,36 @@ private:
 	// pointer to the actual asset
 	T* ptr = nullptr;
 	bool virtualMode = false;
+
+	// event management
+	std::function<void()> onChangeCallback = nullptr;
+	OtAssetPostLoadListerner postLoadListerner;
+	OtAssetChangedListerner changedListerner;
+
+	// follow/unfollow the actual asset
+	void follow() {
+		postLoadListerner = ptr->onPostLoad([&]() {
+			notifyChanged();
+			return true;
+		});
+
+		changedListerner = ptr->onChanged([&]() {
+			notifyChanged();
+			return true;
+		});
+
+		notifyChanged();
+	}
+
+	void unfollow() {
+		ptr->cancelListener(postLoadListerner);
+		ptr->cancelListener(changedListerner);
+	}
+
+	// notify follower that changes have happend
+	void notifyChanged() {
+		if (onChangeCallback) {
+			onChangeCallback();
+		}
+	}
 };

@@ -17,7 +17,6 @@
 #include "TextEditor.h"
 
 #include "OtEditor.h"
-#include "OtScriptAsset.h"
 
 
 //
@@ -35,10 +34,9 @@ public:
 	void saveFile() override;
 	void saveAsFile(const std::string& path) override;
 	inline std::string getFileExtension() override { return ".ot"; }
-	inline std::string getFilePath() override { return asset.getPath(); }
+	inline std::string getFilePath() override { return path; }
 
 	// get editor status
-	inline bool isReady() override { return asset.isReady(); }
 	bool isDirty() override;
 
 	// render the parts
@@ -51,7 +49,7 @@ public:
 
 private:
 	// the script being edited
-	OtAsset<OtScriptAsset> asset;
+	std::string path;
 
 	// visual text editor
 	TextEditor editor;

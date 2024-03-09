@@ -54,7 +54,7 @@ public:
 
 	// acquire an asset
 	template<typename T>
-	inline T* acquire(const std::string& path, std::function<void()> callback=nullptr) {
+	inline T* acquire(const std::string& path) {
 		// sanity check
 		static_assert(std::is_base_of<OtAssetBase, T>::value, "Class is not derived from OtAssetBase");
 
@@ -66,7 +66,6 @@ public:
 
 		if (i != assets.end()) {
 			// yes, return it and schedule a ready callback
-			scheduleReadyCallback(callback);
 			return dynamic_cast<T*>(i->second);
 
 		// asset must be created
@@ -82,31 +81,23 @@ public:
 			} else if (OtPathIsUntitled(path)) {
 				// create the asset and we're done
 				asset->initializeReady(path);
-				scheduleReadyCallback(callback);
 
 			} else {
 				// asset loading is asynchronous
 				asset->initializeInvalid(path);
-				scheduleAssetForLoading(asset, callback);
+				scheduleAssetForLoading(asset);
 			}
 
 			return asset;
 		}
 	}
 
-	// save an updated asset
-	void save(OtAssetBase* asset);
-	void saveAs(OtAssetBase* asset, const std::string& newName);
-
 	// interate through al loaded assets
 	void each(std::function<void(OtAssetBase*)> callback);
 
 private:
 	// schedule an asset for loading
-	void scheduleAssetForLoading(OtAssetBase* asset, std::function<void()> callback);
-
-	// schedule a callback
-	void scheduleReadyCallback(std::function<void()> callback);
+	void scheduleAssetForLoading(OtAssetBase* asset);
 
 	// clear unused assets
 	void clearUnusedAssets();

@@ -529,7 +529,7 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 					interactionState = connecting;
 
 				// for a connected input pin we handle a (re/dis)connect
-				} else if (pin->isConnected()) {
+				} else if (pin->isSourceConnected()) {
 					fromPin = pin->getSource()->id;
 					fromPinPos = pinLocations[fromPin];
 					oldToPin = pin->id;

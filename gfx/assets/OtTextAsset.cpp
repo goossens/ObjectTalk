@@ -41,21 +41,3 @@ OtAssetBase::AssetState OtTextAsset::load() {
 	}
 }
 
-
-//
-//	OtTextAsset::save
-//
-
-OtAssetBase::AssetState OtTextAsset::save() {
-	try {
-		// try to save the text
-		std::ofstream stream(path.c_str());
-		stream << text;
-		stream.close();
-		return readyState;
-
-	} catch (const OtException& exception) {
-		OtLogWarning("Can't save text to [{}]: {}", path, exception.what());
-		return invalidState;
-	}
-}

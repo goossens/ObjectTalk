@@ -20,6 +20,7 @@
 #include "OtConcurrentQueue.h"
 #include "OtHash.h"
 #include "OtLibuv.h"
+#include "OtLog.h"
 #include "OtSingleton.h"
 
 #include "OtAssetBase.h"
@@ -68,36 +69,51 @@ public:
 			// yes, return it and schedule a ready callback
 			return dynamic_cast<T*>(i->second);
 
-		// asset must be created
 		} else {
+			// no, asset must be created
 			auto asset = new T;
+			asset->path = path;
 			assets[key] = asset;
 
 			// is this a virtual asset (i.e. a named asset that only exists in memory)
 			if (OtPathIsVirtual(path)) {
-				asset->initializeMissing(path);
-
-			// is this a new asset that hasn't been saved yet
-			} else if (OtPathIsUntitled(path)) {
-				// create the asset and we're done
-				asset->initializeReady(path);
+				// yes, just mark it as missing for now
+				asset->assetState = OtAssetBase::missingState;
 
 			} else {
-				// asset loading is asynchronous
-				asset->initializeInvalid(path);
-				scheduleAssetForLoading(asset);
+				// ensure path exists
+				if (OtPathIsRegularFile(path)) {
+					// ensure file extension is supported by asset type
+					if (asset->supportsFileType(OtPathGetExtension(path))) {
+						// asset loading is asynchronous
+						scheduleLoad(asset);
+
+						// also follow path so we can detect file changes
+						asset->follower.follow(path, [&]() {
+							scheduleLoad(asset);
+						});
+
+					} else {
+						OtLogWarning("Asset [{}] refers to unsupported type, expected [{}]", path, asset->getSupportedFileTypes());
+						asset->assetState = OtAssetBase::invalidState;
+					}
+
+				} else {
+					OtLogWarning("Asset [{}] not found", path);
+					asset->assetState = OtAssetBase::missingState;
+				}
 			}
 
 			return asset;
 		}
 	}
 
-	// interate through al loaded assets
+	// interate through all loaded assets
 	void each(std::function<void(OtAssetBase*)> callback);
 
 private:
 	// schedule an asset for loading
-	void scheduleAssetForLoading(OtAssetBase* asset);
+	void scheduleLoad(OtAssetBase* asset);
 
 	// clear unused assets
 	void clearUnusedAssets();
@@ -113,7 +129,7 @@ private:
 	// timer to run the "garbage collector"
 	uv_timer_t cleanupTimerHandle;
 
-	// the key to the asset library
+	// the key to the asset registry
 	struct Key {
 		// constructor
 		Key(size_t t, const std::string& p) : type(t), path(p) {}

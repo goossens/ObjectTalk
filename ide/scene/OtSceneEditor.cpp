@@ -50,43 +50,29 @@ OtSceneEditor::OtSceneEditor() {
 
 
 //
-//	OtSceneEditor::newFile
+//	OtSceneEditor::clear
 //
 
-void OtSceneEditor::newFile(const std::string& p) {
-	path = p;
+void OtSceneEditor::clear() {
 	scene.clear();
 }
 
 
 //
-//	OtSceneEditor::openFile
+//	OtSceneEditor::load
 //
 
-void OtSceneEditor::openFile(const std::string& p) {
-	path = p;
+void OtSceneEditor::load() {
 	scene.load(path);
 	processMetaData();
 }
 
 
 //
-//	OtSceneEditor::saveFile
+//	OtSceneEditor::save
 //
 
-void OtSceneEditor::saveFile() {
-	generateMetaData();
-	scene.save(path);
-	taskManager.baseline();
-}
-
-
-//
-//	OtSceneEditor::saveAsFile
-//
-
-void OtSceneEditor::saveAsFile(const std::string& p) {
-	path = p;
+void OtSceneEditor::save() {
 	generateMetaData();
 	scene.save(path);
 	taskManager.baseline();

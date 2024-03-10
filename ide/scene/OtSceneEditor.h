@@ -38,16 +38,9 @@ public:
 	// constructor
 	OtSceneEditor();
 
-	// file handling functions
-	void newFile(const std::string& path) override;
-	void openFile(const std::string& path) override;
-	void saveFile() override;
-	void saveAsFile(const std::string& path) override;
-	inline std::string getFileExtension() override { return ".ots"; }
-	inline std::string getFilePath() override { return path; }
-
 	// get editor status
 	bool isDirty() override;
+	inline std::string getExtension() override { return ".ots"; }
 
 	// clipboard operations
 	void cutEntity();
@@ -56,9 +49,17 @@ public:
 	void duplicateEntity();
 
 private:
+	// file access functions
+	void clear() override;
+	void load() override;
+	void save() override;
+
 	// metadata methods
 	void processMetaData();
 	void generateMetaData();
+
+	// follow file changes and update (if possible)
+	void follow();
 
 	// switch scene camera
 	void setSceneCamera(int cameraNumber);
@@ -96,9 +97,6 @@ private:
 	void renderComponents() {
 		(renderComponent<T>(), ...);
 	}
-
-	// the path to the nodes file
-	std::string path;
 
 	// the scene being edited
 	OtScene scene;

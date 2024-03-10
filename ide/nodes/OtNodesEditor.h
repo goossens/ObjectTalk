@@ -29,16 +29,9 @@
 
 class OtNodesEditor : public OtEditor {
 public:
-	// file handling functions
-	void newFile(const std::string& path) override;
-	void openFile(const std::string& path) override;
-	void saveFile() override;
-	void saveAsFile(const std::string& path) override;
-	inline std::string getFileExtension() override { return ".otn"; }
-	inline std::string getFilePath() override { return path; }
-
 	// get editor status
 	inline bool isDirty() override { return taskManager.isDirty(); }
+	inline std::string getExtension() override { return ".otn"; }
 
 	// render the editor
 	void renderMenu() override;
@@ -52,8 +45,10 @@ public:
 	void duplicateSelectedNodes();
 
 private:
-	// the path to the nodes file
-	std::string path;
+	// file access functions
+	void clear() override;
+	void load() override;
+	void save() override;
 
 	// the nodes being edited
 	OtNodes nodes;

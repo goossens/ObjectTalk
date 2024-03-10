@@ -25,7 +25,6 @@
 //	Message types
 //
 
-struct OtAssetPostLoad : OtMessage<> {};
 struct OtAssetChanged : OtMessage<> {};
 
 
@@ -33,7 +32,6 @@ struct OtAssetChanged : OtMessage<> {};
 //	Listerner types
 //
 
-using OtAssetPostLoadListerner = OtPublisher<OtAssetPostLoad>::listener;
 using OtAssetChangedListerner = OtPublisher<OtAssetChanged>::listener;
 
 
@@ -42,6 +40,9 @@ using OtAssetChangedListerner = OtPublisher<OtAssetChanged>::listener;
 //
 
 class OtAssetBase {
+	// give the asset manager full access
+	friend class OtAssetManager;
+
 public:
 	// destructor
 	virtual ~OtAssetBase();
@@ -67,15 +68,14 @@ public:
 	static constexpr const char* supportedFileTypes = "";
 	inline virtual const char* getSupportedFileTypes() { return supportedFileTypes; }
 
-	// event handlers
-	// if the callback returns false, that listener is automatically deactivated
+	// event handler for file system changes
+	// if the callback returns false, the listener is automatically deactivated
 	// if the callback returns true, it remains active
-	inline OtAssetPostLoadListerner onPostLoad(std::function<bool()> cb) { return publisher.listen<OtAssetPostLoad>(cb); }
 	inline OtAssetChangedListerner onChanged(std::function<bool()> cb) { return publisher.listen<OtAssetChanged>(cb); }
-
-	inline void cancelListener(OtAssetPostLoadListerner listener) { publisher.unlisten(listener); }
 	inline void cancelListener(OtAssetChangedListerner listener) { publisher.unlisten(listener); }
+	inline void notify() { publisher.changed(); }
 
+	// reference counting
 	inline void reference() { references++; }
 	inline void dereference() { references--; }
 	inline size_t getReferences() { return references; }
@@ -94,40 +94,21 @@ protected:
 		readyState
 	} assetState = nullState;
 
-	// functions to load/ the asset (to be implemented by derived classes)
+	// functions to load the asset (to be implemented by derived classes)
 	virtual inline AssetState load() { return nullState; }
 
-	// internal housekeeping functions
-	void initializeMissing(const std::string& path);
-	void initializeInvalid(const std::string& path);
-	void initializeReady(const std::string& path);
-	void preLoad(const std::string& path);
-	void postLoad(AssetState state);
-	void changed();
-
-	inline void markMissing() { assetState = missingState; }
-	inline void markInvalid() { assetState = invalidState; }
-	inline void markReady() { assetState = readyState; }
-
 private:
-	// give the asset manager full access
-	friend class OtAssetManager;
-
 	// reference count
 	size_t references = 0;
 
 	// loader event handling
 	uv_async_t* loaderEventHandle = nullptr;
 
-	// filesystem event handling
-	uv_fs_event_t* fsEventHandle = nullptr;
-	bool following = false;
-	void follow();
-	void unfollow();
+	// follower to detect file system changes
+	OtPathFollower follower;
 
 	// our publisher to notify subscribers
-	struct Publisher : OtPublisher<OtAssetPostLoad, OtAssetChanged> {
-		void postLoad() { notify<OtAssetPostLoad>(); }
+	struct Publisher : OtPublisher<OtAssetChanged> {
 		void changed() { notify<OtAssetChanged>(); }
 	} publisher;
 };

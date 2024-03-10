@@ -34,13 +34,12 @@ public:
 	// constructors/destructor
 	virtual inline ~OtEditor() {}
 
-	// these methods must be overriden by subclasses
-	virtual void newFile(const std::string& path) {}
-	virtual void openFile(const std::string& path) {}
-	virtual void saveFile() {}
-	virtual void saveAsFile(const std::string& path) {}
-	virtual std::string getFileExtension() { return ""; }
-	virtual std::string getFilePath() { return ""; }
+	// file I/O operations
+	void newFile(const std::string& path);
+	void openFile(const std::string& path);
+	void saveFile();
+	void saveAsFile(const std::string& path);
+	std::string getPath() { return path; }
 
 	// render the editor parts
 	virtual inline void renderMenu() {}
@@ -53,14 +52,25 @@ public:
 
 	// get editor status
 	virtual inline bool isDirty() { return false; }
+	virtual std::string getExtension() { return ""; }
 
 	// handle exception during a "run"
 	virtual inline void error(OtException e) {}
 
 protected:
+	// these methods must be overriden by subclasses
+	virtual void clear() {}
+	virtual void load() {}
+	virtual void save() {}
+
+	// follow file changes and update (if possible)
+	void follow();
+
 	// render a file menu
 	void renderFileMenu();
 
 	// properties
+	std::string path;
+	OtPathFollower follower;
 	int visualState = inTab;
 };

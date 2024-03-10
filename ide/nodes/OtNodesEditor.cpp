@@ -34,21 +34,19 @@
 
 
 //
-//	OtNodesEditor::newFile
+//	OtNodesEditor::clear
 //
 
-void OtNodesEditor::newFile(const std::string& p) {
-	path = p;
+void OtNodesEditor::clear() {
 	nodes.clear();
 }
 
 
 //
-//	OtNodesEditor::openFile
+//	OtNodesEditor::load
 //
 
-void OtNodesEditor::openFile(const std::string& p) {
-	path = p;
+void OtNodesEditor::load() {
 	nodes.load(path);
 }
 
@@ -57,18 +55,7 @@ void OtNodesEditor::openFile(const std::string& p) {
 //	OtNodesEditor::saveFile
 //
 
-void OtNodesEditor::saveFile() {
-	nodes.save(path);
-	taskManager.baseline();
-}
-
-
-//
-//	OtNodesEditor::saveAsFile
-//
-
-void OtNodesEditor::saveAsFile(const std::string& p) {
-	path = p;
+void OtNodesEditor::save() {
 	nodes.save(path);
 	taskManager.baseline();
 }

@@ -25,8 +25,8 @@ class OtGeometryAsset : public OtAssetBase {
 public:
 	// access the geometry
 	inline OtGeometry& getGeometry() { return geometry; }
-	inline void setGeometry(OtGeometry& g) { geometry = g; markReady(); }
-	inline void clearGeometry() { geometry.clear(); markMissing(); }
+	inline void setGeometry(OtGeometry& g) { geometry = g; assetState = readyState; }
+	inline void clearGeometry() { geometry.clear(); assetState = missingState; }
 
 	// asset properties
 	static constexpr bool canHandleVirtual = true;

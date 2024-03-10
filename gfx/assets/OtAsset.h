@@ -79,6 +79,7 @@ public:
 
 			asset.ptr = nullptr;
 			asset.onChangeCallback = nullptr;
+			asset.unfollow();
 		}
 	}
 
@@ -94,12 +95,16 @@ public:
 
 			asset.ptr = nullptr;
 			asset.onChangeCallback = nullptr;
+			asset.unfollow();
 		}
 	}
 
 	// destructor
 	inline ~OtAsset() {
-		clear();
+		if (ptr) {
+			unfollow();
+			ptr->dereference();
+		}
 	}
 
 	// clear the asset reference
@@ -159,9 +164,11 @@ public:
 			ptr = asset.ptr;
 			virtualMode = asset.virtualMode;
 			onChangeCallback = asset.onChangeCallback;
+			follow();
+
 			asset.ptr = nullptr;
 			asset.onChangeCallback = nullptr;
-			follow();
+			asset.unfollow();
 		}
 
 		return *this;
@@ -176,9 +183,11 @@ public:
 			ptr = dynamic_cast<T*>(asset.ptr);
 			virtualMode = asset.virtualMode;
 			onChangeCallback = asset.onChangeCallback;
+			follow();
+
 			asset.ptr = nullptr;
 			asset.onChangeCallback = nullptr;
-			follow();
+			asset->unfollow();
 		}
 
 		return *this;
@@ -219,7 +228,7 @@ public:
 	bool getVirtualMode() { return virtualMode; }
 	void setVirtualMode(bool vm) { virtualMode = vm; }
 
-	// register follower
+	// register callback to monitor changes
 	inline void onChange(std::function<void()> cb) { onChangeCallback = cb; }
 
 	// render UI to show/select an asset path
@@ -270,16 +279,10 @@ private:
 
 	// event management
 	std::function<void()> onChangeCallback = nullptr;
-	OtAssetPostLoadListerner postLoadListerner;
 	OtAssetChangedListerner changedListerner;
 
 	// follow/unfollow the actual asset
 	void follow() {
-		postLoadListerner = ptr->onPostLoad([&]() {
-			notifyChanged();
-			return true;
-		});
-
 		changedListerner = ptr->onChanged([&]() {
 			notifyChanged();
 			return true;
@@ -289,7 +292,6 @@ private:
 	}
 
 	void unfollow() {
-		ptr->cancelListener(postLoadListerner);
 		ptr->cancelListener(changedListerner);
 	}
 

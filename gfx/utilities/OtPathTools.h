@@ -15,6 +15,7 @@
 #include <filesystem>
 #include <string>
 
+#include "OtLibuv.h"
 #include "OtText.h"
 
 #include "nlohmann/json.hpp"
@@ -219,3 +220,40 @@ static inline std::string OtPathGetAbsolute(nlohmann::json data, const char* fie
 		return "";
 	}
 }
+
+
+//
+//	OtPathFollower
+//
+
+class OtPathFollower {
+public:
+	// constructor/destructor
+	OtPathFollower() = default;
+
+	OtPathFollower(const std::string& path, std::function<void()> callback) {
+		follow(path, callback);
+	}
+
+	~OtPathFollower() {
+		unfollow();
+	}
+
+	// reset the follower
+	void clear() {
+		unfollow();
+	}
+
+	// follow a (new) path
+	void follow(const std::string& path, std::function<void()> callback);
+
+	// unfollow the path
+	void unfollow();
+
+private:
+	// properties
+	std::string path;
+	std::function<void()> callback;
+	uv_fs_event_t* fsEventHandle = nullptr;
+	bool following = false;
+};

@@ -38,8 +38,8 @@ OtAssetBase::AssetState OtCubeMapAsset::load() {
 
 				// is post-processing done?
 				if (asset->cubemap.isValid()) {
-					// yes it is
-					asset->postLoad(readyState);
+					// yes, it is
+					asset->notify();
 
 					// cleanup
 					uv_close((uv_handle_t*) asset->postProcessingEventHandle, [](uv_handle_t* handle) {
@@ -49,7 +49,7 @@ OtAssetBase::AssetState OtCubeMapAsset::load() {
 					});
 
 				} else {
-					// re-fire the async event
+					// no, re-fire the async event
 					auto status = uv_async_send(handle);
 					UV_CHECK_ERROR("uv_async_send", status);
 				}

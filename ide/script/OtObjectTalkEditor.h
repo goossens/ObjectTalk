@@ -28,16 +28,9 @@ public:
 	// constructor
 	OtObjectTalkEditor();
 
-	// file handling functions
-	void newFile(const std::string& path) override;
-	void openFile(const std::string& path) override;
-	void saveFile() override;
-	void saveAsFile(const std::string& path) override;
-	inline std::string getFileExtension() override { return ".ot"; }
-	inline std::string getFilePath() override { return path; }
-
 	// get editor status
 	bool isDirty() override;
+	inline std::string getExtension() override { return ".ot"; }
 
 	// render the parts
 	void renderMenu() override;
@@ -48,8 +41,10 @@ public:
 	void clearError();
 
 private:
-	// the script being edited
-	std::string path;
+	// file access functions
+	void clear() override;
+	void load() override;
+	void save() override;
 
 	// visual text editor
 	TextEditor editor;

@@ -66,22 +66,19 @@ OtObjectTalkEditor::OtObjectTalkEditor() {
 
 
 //
-//	OtObjectTalkEditor::newFile
+//	OtObjectTalkEditor::clear
 //
 
-void OtObjectTalkEditor::newFile(const std::string& p) {
-	// setup the asset
-	path = p;
+void OtObjectTalkEditor::clear() {
+	editor.SetText("");
 }
 
 
 //
-//	OtObjectTalkEditor::openFile
+//	OtObjectTalkEditor::load
 //
 
-void OtObjectTalkEditor::openFile(const std::string& p) {
-	path = p;
-
+void OtObjectTalkEditor::load() {
 	std::ifstream stream(path.c_str());
 	std::string text;
 
@@ -98,24 +95,14 @@ void OtObjectTalkEditor::openFile(const std::string& p) {
 
 
 //
-//	OtObjectTalkEditor::saveFile
+//	OtObjectTalkEditor::save
 //
 
-void OtObjectTalkEditor::saveFile() {
+void OtObjectTalkEditor::save() {
 	std::ofstream stream(path.c_str());
 	stream << editor.GetText();
 	stream.close();
 	version = editor.GetUndoIndex();
-}
-
-
-//
-//	OtObjectTalkEditor::saveAsFile
-//
-
-void OtObjectTalkEditor::saveAsFile(const std::string& p) {
-	path = p;
-	saveFile();
 }
 
 

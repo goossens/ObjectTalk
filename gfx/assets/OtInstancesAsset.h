@@ -25,8 +25,8 @@ class OtInstancesAsset : public OtAssetBase {
 public:
 	// access the instances
 	inline OtInstances& getInstances() { return instances; }
-	inline void setInstances(OtInstances& i) { instances = i; markReady(); }
-	inline void clearInstances() { instances.clear(); markMissing(); }
+	inline void setInstances(OtInstances& i) { instances = i; assetState = readyState; }
+	inline void clearInstances() { instances.clear(); assetState = missingState; }
 
 	// asset properties
 	static constexpr bool canHandleVirtual = true;

@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include "fmt/format.h"
 #include "imgui.h"
 
 #include "OtMessageBus.h"
@@ -16,6 +17,67 @@
 #include "OtUi.h"
 
 #include "OtEditor.h"
+
+
+//
+//	OtEditor::newFile
+//
+
+void OtEditor::newFile(const std::string& p) {
+	path = p;
+	follower.clear();
+	clear();
+}
+
+
+//
+//	OtEditor::openFile
+//
+
+void OtEditor::openFile(const std::string& p) {
+	path = p;
+	load();
+	follow();
+}
+
+
+//
+//	OtEditor::saveFile
+//
+
+void OtEditor::saveFile() {
+	save();
+}
+
+
+//
+//	OtEditor::saveAsFile
+//
+
+void OtEditor::saveAsFile(const std::string& p) {
+	path = p;
+	save();
+	follow();
+}
+
+
+//
+//	OtEditor::follow
+//
+
+void OtEditor::follow() {
+	// follow file changes
+	follower.follow(path, [&](){
+		if (!isDirty()) {
+			// file was not yet edited; it's safe to reload
+			load();
+
+		} else {
+			//file was edited; don't reload but show message
+			OtMessageBus::instance()->send(fmt::format("warning File {} was edited externally.\nBe careful when saving!", path));
+		}
+	});
+}
 
 
 //
@@ -28,7 +90,7 @@ void OtEditor::renderFileMenu() {
 		if (ImGui::MenuItem("Open...", OT_UI_SHORTCUT "O")) { OtMessageBus::instance()->send("open"); }
 		ImGui::Separator();
 
-		if (OtPathIsRegularFile(getFilePath())) {
+		if (OtPathIsRegularFile(path)) {
 			if (ImGui::MenuItem("Save", OT_UI_SHORTCUT "S", nullptr, isDirty())) { OtMessageBus::instance()->send("save"); }
 			if (ImGui::MenuItem("Save As...")) { OtMessageBus::instance()->send("saveas"); }
 
@@ -37,7 +99,7 @@ void OtEditor::renderFileMenu() {
 		}
 
 		ImGui::Separator();
-		if (ImGui::MenuItem("Run", OT_UI_SHORTCUT "R", nullptr, !isDirty() && OtPathIsRegularFile(getFilePath()))) { OtMessageBus::instance()->send("run"); }
+		if (ImGui::MenuItem("Run", OT_UI_SHORTCUT "R", nullptr, !isDirty() && OtPathIsRegularFile(path))) { OtMessageBus::instance()->send("run"); }
 
 		ImGui::Separator();
 		if (ImGui::MenuItem("Close", OT_UI_SHORTCUT "W")) { OtMessageBus::instance()->send("close"); }
@@ -55,7 +117,7 @@ void OtEditor::renderFileMenu() {
 
 		} else if (ImGui::IsKeyPressed(ImGuiKey_S)) {
 			if (isDirty()) {
-				if (OtPathIsRegularFile(getFilePath())) {
+				if (OtPathIsRegularFile(path)) {
 					OtMessageBus::instance()->send("save");
 
 				} else {
@@ -64,7 +126,7 @@ void OtEditor::renderFileMenu() {
 			}
 
 		} else if (ImGui::IsKeyPressed(ImGuiKey_R)) {
-			if (!isDirty() && OtPathIsRegularFile(getFilePath())) {
+			if (!isDirty() && OtPathIsRegularFile(path)) {
 				OtMessageBus::instance()->send("run");
 			}
 

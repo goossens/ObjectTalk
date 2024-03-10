@@ -85,6 +85,7 @@ private:
 	void renderSaveAs();
 	void renderConfirmClose();
 	void renderConfirmQuit();
+	void renderConfirmWarning();
 	void renderConfirmError();
 	void renderSubProcess();
 
@@ -101,8 +102,8 @@ private:
 	// tab for "save as" dialog
 	OtEditor saveAsEditor;
 
-	// error message
-	std::string errorMessage;
+	// message
+	std::string message;
 
 	// workspace state
 	enum {
@@ -113,6 +114,7 @@ private:
 		saveFileAsState,
 		confirmCloseState,
 		confirmQuitState,
+		confirmWarningState,
 		confirmErrorState
 	} state = splashState;
 

@@ -17,6 +17,7 @@
 #include "ImGuiFileDialog.h"
 
 #include "OtAssert.h"
+#include "OtLog.h"
 
 #include "OtMessageBus.h"
 #include "OtPathTools.h"
@@ -53,44 +54,60 @@ void OtWorkspace::onSetup() {
 //	OtWorkspace::onMessage
 //
 
-void OtWorkspace::onMessage(const std::string& message) {
+void OtWorkspace::onMessage(const std::string& msg) {
 	// split the command
-	auto delimiter = message.find(" ");
+	auto delimiter = msg.find(" ");
 
 	if (delimiter != std::string::npos) {
-		auto command = message.substr(0, delimiter);
-		auto file = message.substr(delimiter + 1);
+		auto command = msg.substr(0, delimiter);
+		auto operand = msg.substr(delimiter + 1);
 
 		// process each command
 		if (command == "openintab") {
-			openFile(file, OtEditor::inTab);
+			openFile(operand, OtEditor::inTab);
 
 		} else if (command == "openinwindow") {
-			openFile(file, OtEditor::inWindow);
+			openFile(operand, OtEditor::inWindow);
+
+		} else if (command == "warning") {
+			state = confirmWarningState;
+			message = operand;
+
+		} else if (command == "error") {
+			state = confirmErrorState;
+			message = operand;
+
+		} else {
+			OtLogFatal("Unknow message bus command [{}]", command);
 		}
 
 	} else {
 		// process each command
-		if (message == "new") {
+		auto command = msg;
+
+		if (command == "new") {
 			newFile();
 
-		} else if (message == "open") {
+		} else if (command == "open") {
 			openFile();
 
-		} else if (message == "save") {
+		} else if (command == "save") {
 			saveFile();
 
-		} else if (message == "saveas") {
+		} else if (command == "saveas") {
 			saveAsFile();
 
-		} else if (message == "run") {
+		} else if (command == "run") {
 			runFile();
 
-		} else if (message == "close") {
+		} else if (command == "close") {
 			closeFile();
 
-		} else if (message == "toggleconsole") {
+		} else if (command == "toggleconsole") {
 			consoleAsPanel = !consoleAsPanel;
+
+		} else {
+			OtLogFatal("Unknow message bus command [{}]", command);
 		}
 	}
 }
@@ -132,6 +149,9 @@ void OtWorkspace::onRender()
 
 		} else if (state == confirmQuitState) {
 			renderConfirmQuit();
+
+		} else if (state == confirmWarningState) {
+			renderConfirmWarning();
 
 		} else if (state == confirmErrorState) {
 			renderConfirmError();
@@ -302,7 +322,7 @@ void OtWorkspace::openFile(const std::string& path, int visualState) {
 
 		} else {
 			state = confirmErrorState;
-			errorMessage = fmt::format("Can't open file with extension: {}", extension);
+			message = fmt::format("Can't open file with extension: {}", extension);
 		}
 
 	} else {
@@ -337,7 +357,7 @@ void OtWorkspace::saveAsFile() {
 	ImGuiFileDialog::Instance()->OpenDialog(
 		"workspace-saveas",
 		"Save File as...",
-		activeEditor->getFileExtension().c_str(),
+		activeEditor->getExtension().c_str(),
 		config);
 
 	state = saveFileAsState;
@@ -379,7 +399,7 @@ void OtWorkspace::runFile() {
 	// compose the argument array
 	std::vector<std::string> args;
 	args.push_back("--child");
-	currentRunnable = activeEditor->getFilePath();
+	currentRunnable = activeEditor->getPath();
 	args.push_back(currentRunnable);
 
 	// launch a subprocess
@@ -487,7 +507,7 @@ void OtWorkspace::deleteEditor(std::shared_ptr<OtEditor> editor) {
 
 std::shared_ptr<OtEditor> OtWorkspace::findEditor(const std::string& path) {
 	for (auto& editor : editors) {
-		auto filePath = editor->getFilePath();
+		auto filePath = editor->getPath();
 
 		if (filePath == path || OtPathGetFilename(filePath) == path) {
 			return editor;
@@ -609,7 +629,7 @@ void OtWorkspace::renderEditors() {
 				}
 
 				// create tab and editor
-				if (ImGui::BeginTabItem(OtPathGetFilename(editor->getFilePath()).c_str(), nullptr, flags)) {
+				if (ImGui::BeginTabItem(OtPathGetFilename(editor->getPath()).c_str(), nullptr, flags)) {
 					ImGui::BeginChild("editor", ImVec2(), ImGuiChildFlags_Border, ImGuiWindowFlags_MenuBar);
 
 					editor->renderMenu();
@@ -650,7 +670,7 @@ void OtWorkspace::renderEditors() {
 
 			// render editor in seperate window
 			bool open = true;
-			ImGui::Begin(OtPathGetFilename(editor->getFilePath()).c_str(), &open, flags);
+			ImGui::Begin(OtPathGetFilename(editor->getPath()).c_str(), &open, flags);
 
 			editor->renderMenu();
 			editor->renderEditor();
@@ -774,7 +794,7 @@ void OtWorkspace::renderSaveAs() {
 		if (ImGuiFileDialog::Instance()->IsOk()) {
 			auto dialog = ImGuiFileDialog::Instance();
 			auto path = OtPathJoin(dialog->GetCurrentPath(), dialog->GetCurrentFileName());
-			path = OtPathReplaceExtension(path, activeEditor->getFileExtension());
+			path = OtPathReplaceExtension(path, activeEditor->getExtension());
 			activeEditor->saveAsFile(path);
 			state = editState;
 
@@ -855,6 +875,29 @@ void OtWorkspace::renderConfirmQuit() {
 
 
 //
+//	OtWorkspace::renderConfirmWarning
+//
+
+void OtWorkspace::renderConfirmWarning() {
+	ImGui::OpenPopup("Warning");
+	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5, 0.5));
+
+	if (ImGui::BeginPopupModal("Warning", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+		ImGui::Text("%s\n", message.c_str());
+		ImGui::Separator();
+
+		if (ImGui::Button("OK", ImVec2(120, 0)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
+			state = editors.size() ? editState : splashState;
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();
+	}
+}
+
+
+//
 //	OtWorkspace::renderConfirmError
 //
 
@@ -864,7 +907,7 @@ void OtWorkspace::renderConfirmError() {
 	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5, 0.5));
 
 	if (ImGui::BeginPopupModal("Error", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-		ImGui::Text("%s\n", errorMessage.c_str());
+		ImGui::Text("%s\n", message.c_str());
 		ImGui::Separator();
 
 		if (ImGui::Button("OK", ImVec2(120, 0)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {

@@ -16,7 +16,6 @@
 #include "imgui.h"
 
 #include "OtAssert.h"
-#include "OtLog.h"
 #include "OtNumbers.h"
 
 #include "OtAssetManager.h"
@@ -24,7 +23,7 @@
 
 
 //
-//	OtAssetManager::start
+//	OtAssetManager::~OtAssetManager
 //
 
 OtAssetManager::~OtAssetManager() {
@@ -52,20 +51,23 @@ void OtAssetManager::start() {
 		manager->clearUnusedAssets();
 	}, 10000, 10000);
 
-	UV_CHECK_ERROR("cleanupTimerHandle", status);
+	UV_CHECK_ERROR("uv_timer_start", status);
 
 	// start a new thread
 	thread = std::thread([this]() {
 		running = true;
 
 		while (running) {
+			// wait for next task
 			queue.wait();
 			loading = true;
 			auto asset = queue.pop();
 
-			// load next asset
 			if (asset) {
-				asset->postLoad(asset->load());
+				// load next asset
+				asset->assetState = asset->load();
+				auto status = uv_async_send(asset->loaderEventHandle);
+				UV_CHECK_ERROR("uv_async_send", status);
 
 			} else {
 				// a null asset means we shutdown the loader
@@ -151,29 +153,39 @@ void OtAssetManager::renderUI() {
 
 
 //
-//	OtAssetManager::scheduleAssetForLoading
+//	OtAssetManager::scheduleLoad
 //
 
-void OtAssetManager::scheduleAssetForLoading(OtAssetBase* asset) {
-	// see if asset exists
-	auto path = asset->getPath();
+void OtAssetManager::scheduleLoad(OtAssetBase* asset) {
+	// sanity check
+	OtAssert(asset->loaderEventHandle == nullptr);
 
-	if (OtPathIsRegularFile(path)) {
-		// ensure file extension is supported by asset type
-		if (asset->supportsFileType(OtPathGetExtension(path))) {
-			// schedule asset for loading
-			queue.push(asset);
-			asset->preLoad(path);
+	// set a callback to catch load completion
+	asset->loaderEventHandle = new uv_async_t;
+	asset->loaderEventHandle->data = asset;
 
-		} else {
-			OtLogWarning("Asset [{}] refers to unsupported type", path);
-			asset->markInvalid();
+	auto status = uv_async_init(uv_default_loop(), asset->loaderEventHandle, [](uv_async_t* handle){
+		// were we succesful?
+		auto asset = (OtAssetBase*) handle->data;
+
+		if (asset->isReady()) {
+			// yes, notify subscribers
+			asset->publisher.changed();
 		}
 
-	} else {
-		OtLogWarning("Asset [{}] not found", path);
-		asset->markMissing();
-	}
+		// cleanup
+		uv_close((uv_handle_t*) asset->loaderEventHandle, [](uv_handle_t* handle) {
+			auto asset = (OtAssetBase*) handle->data;
+			delete (uv_fs_event_t*) handle;
+			asset->loaderEventHandle = nullptr;
+		});
+	});
+
+	UV_CHECK_ERROR("uv_async_init", status);
+
+	// schedule asset for loading
+	asset->assetState = OtAssetBase::loadingState;
+	queue.push(asset);
 }
 
 
@@ -186,7 +198,6 @@ void OtAssetManager::each(std::function<void(OtAssetBase*)> callback) {
 		callback(asset);
 	}
 }
-
 
 //
 //	OtAssetManager::clearUnusedAssets

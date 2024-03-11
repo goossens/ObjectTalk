@@ -17,7 +17,6 @@
 #include "ImGuiFileDialog.h"
 
 #include "OtAssert.h"
-#include "OtLog.h"
 
 #include "OtMessageBus.h"
 #include "OtPathTools.h"
@@ -76,9 +75,6 @@ void OtWorkspace::onMessage(const std::string& msg) {
 		} else if (command == "error") {
 			state = confirmErrorState;
 			message = operand;
-
-		} else {
-			OtLogFatal("Unknow message bus command [{}]", command);
 		}
 
 	} else {
@@ -105,9 +101,6 @@ void OtWorkspace::onMessage(const std::string& msg) {
 
 		} else if (command == "toggleconsole") {
 			consoleAsPanel = !consoleAsPanel;
-
-		} else {
-			OtLogFatal("Unknow message bus command [{}]", command);
 		}
 	}
 }

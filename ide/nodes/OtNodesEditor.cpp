@@ -140,7 +140,7 @@ void OtNodesEditor::renderMenu() {
 	}
 
 	// handle keyboard shortcuts (if required)
-	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows)) {
+	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows) && !ImGui::GetIO().WantCaptureKeyboard) {
 		if (ImGui::IsKeyDown(ImGuiMod_Shortcut)) {
 			if (ImGui::IsKeyDown(ImGuiMod_Shift) && ImGui::IsKeyPressed(ImGuiKey_Z, false)) {
 				if (taskManager.canRedo()) {

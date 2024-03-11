@@ -46,6 +46,7 @@ void OtEditor::openFile(const std::string& p) {
 //
 
 void OtEditor::saveFile() {
+	ignoreNextFileUpdate = true;
 	save();
 }
 
@@ -68,7 +69,10 @@ void OtEditor::saveAsFile(const std::string& p) {
 void OtEditor::follow() {
 	// follow file changes
 	follower.follow(path, [&](){
-		if (!isDirty()) {
+		if (ignoreNextFileUpdate) {
+			ignoreNextFileUpdate = false;
+
+		} else if (!isDirty()) {
 			// file was not yet edited; it's safe to reload
 			load();
 

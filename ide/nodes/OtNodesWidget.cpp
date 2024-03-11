@@ -167,6 +167,10 @@ void OtNodesWidget::render(OtNodes* n) {
 }
 
 
+//
+//	OtNodesWidget::isNodeEdited
+//
+
 bool OtNodesWidget::isNodeEdited(uint32_t& node) {
 	if (nodeEdited) {
 		node = editedNode;
@@ -384,7 +388,6 @@ void OtNodesWidget::renderNode(ImDrawList* drawlist, OtNode& node) {
 		if (startNodeRenaming) {
 			ImGui::SetKeyboardFocusHere();
 			node->oldState = node->serialize().dump();
-			startNodeRenaming = false;
 		}
 
 		OtUiInputText("##rename", node->title, ImGuiInputTextFlags_NoUndoRedo | ImGuiInputTextFlags_EnterReturnsTrue);

@@ -697,11 +697,9 @@ void OtSceneEditor::renderEntity(OtEntity entity) {
 	// handle double clicks (to start editing entity tag)
 	bool startEntityRenaming = false;
 
-	if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0)) {
-		if (renamingEntity != entity) {
-			renamingEntity = entity;
-			startEntityRenaming = true;
-		}
+	if (entity != renamingEntity && ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0)) {
+		renamingEntity = entity;
+		startEntityRenaming = true;
 	}
 
 	// entities are drag sources
@@ -747,11 +745,9 @@ void OtSceneEditor::renderEntity(OtEntity entity) {
 			nextTask = std::make_shared<OtEditComponentTask<OtCoreComponent>>(&scene, entity, oldValue, newValue);
 		}
 
-		if (!startEntityRenaming && !ImGui::IsItemFocused()) {
+		if (ImGui::IsItemDeactivated()) {
 			renamingEntity = OtEntityNull;
 		}
-
-		startEntityRenaming = false;
 
 	} else {
 		ImGui::SameLine(rectMin.x);

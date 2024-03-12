@@ -12,31 +12,23 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
-#include "OtGlm.h"
 #include "OtUi.h"
 
 #include "OtNodesFactory.h"
 
 
 //
-//	OtVectorInputNode
+//	OtBooleanInputNode
 //
 
-class OtVectorInputNode : public OtNodeClass {
+class OtBooleanInputNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
 		addOutputPin("Value", value)->addRenderer([this](float width) {
-			auto old = serialize().dump();
-
 			if (customInputRendering(width)) {
-				oldState = old;
-				newState = serialize().dump();
-
-				if (newState != oldState) {
 					needsEvaluating = true;
 					needsSaving = true;
-				}
 			}
 		}, fieldWidth);
 	}
@@ -44,7 +36,7 @@ public:
 	// special rendering for input nodes
 	inline bool customInputRendering(float width) override {
 		ImGui::SetNextItemWidth(width);
-		return OtUiEditVec3("##value", value, 0.1f, 0.0f, 0.0f);
+		return OtUiToggleButton("##value", &value);
 	}
 
 	// (de)serialize node
@@ -53,16 +45,16 @@ public:
 	}
 
 	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		value = data->value("value", glm::vec3(0.0f));
+		value = data->value("value", 0);
 	}
 
-	static constexpr const char* nodeName = "Vector Input";
+	static constexpr const char* nodeName = "Boolean Input";
 	static constexpr int nodeCategory = OtNodeClass::input;
 	static constexpr int nodeKind = OtNodeClass::fixed;
-	static constexpr float fieldWidth = 200.0f;
+	static constexpr float fieldWidth = 100.0f;
 
 protected:
-	glm::vec3 value{0.0f};
+	bool value = false;
 };
 
-static OtNodesFactoryRegister<OtVectorInputNode> type;
+static OtNodesFactoryRegister<OtBooleanInputNode> type;

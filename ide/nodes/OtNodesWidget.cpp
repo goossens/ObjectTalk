@@ -48,7 +48,7 @@ static constexpr ImU32 nodeColors[] = {
 	IM_COL32(30, 110, 90, 255),		// geometry
 	IM_COL32(10, 80, 80, 255),		// virtualizer
 	IM_COL32(120, 115, 55, 255),	// save
-	IM_COL32(150, 60, 110, 255),	// load
+	IM_COL32(150, 60, 110, 255),	// constant
 	IM_COL32(50, 50, 90, 255)		// probe
 };
 
@@ -157,7 +157,12 @@ void OtNodesWidget::render(OtNodes* n) {
 
 		// are we in the process of connecting nodes?
 		if (interactionState == connecting || interactionState == reconnecting) {
-			renderLink(drawlist, fromPinPos, toPinPos, linkColor);
+			if (outputToInput) {
+				renderLink(drawlist, fromPinPos, toPinPos, linkColor);
+
+			} else {
+				renderLink(drawlist, toPinPos, fromPinPos, linkColor);
+			}
 		}
 	}
 
@@ -189,8 +194,16 @@ bool OtNodesWidget::isNodeEdited(uint32_t& node) {
 
 bool OtNodesWidget::isCreatingLink(uint32_t& from, uint32_t& to) {
 	if (connectingDone) {
-		from = fromPin;
-		to = toPin;
+		if (outputToInput) {
+			from = fromPin;
+			to = toPin;
+
+		} else {
+			from = toPin;
+			to = fromPin;
+
+		}
+
 		connectingDone = false;
 		return true;
 
@@ -529,6 +542,7 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 					fromPinPos = pinLocations[pin->id];
 					toPin = 0;
 					toPinPos = fromPinPos;
+					outputToInput = true;
 					interactionState = connecting;
 
 				// for a connected input pin we handle a (re/dis)connect
@@ -539,7 +553,17 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 					toPin = 0;
 					toPinPos = pinLocations[pin->id];
 					ignoreLink = nodes->findLink(fromPin, oldToPin)->id;
+					outputToInput = true;
 					interactionState = reconnecting;
+
+				// for an unconnected input pin we handle a new connection
+				} else {
+					fromPin = hoveredPin;
+					fromPinPos = pinLocations[pin->id];
+					toPin = 0;
+					toPinPos = fromPinPos;
+					outputToInput = false;
+					interactionState = connecting;
 				}
 
 			// are we hitting a node?
@@ -646,7 +670,14 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 			if (hoveredPin && hoveredPin != fromPin) {
 				toPin = hoveredPin;
 				toPinPos = pinLocations[hoveredPin];
-				linkValid = nodes->isLinkValid(fromPin, toPin);
+
+				if (outputToInput) {
+					linkValid = nodes->isLinkValid(fromPin, toPin);
+
+				} else {
+					linkValid = nodes->isLinkValid(toPin, fromPin);
+				}
+
 				linkColor = linkValid ? validLinkColor : invalidLinkColor;
 
 			} else {
@@ -671,7 +702,14 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 			if (hoveredPin) {
 				toPin = hoveredPin;
 				toPinPos = pinLocations[hoveredPin];
-				linkValid = nodes->isLinkValid(fromPin, toPin);
+
+				if (toPin == oldToPin) {
+					linkValid = true;
+
+				} else {
+					linkValid = nodes->isLinkValid(fromPin, toPin);
+				}
+
 				linkColor = linkValid ? validLinkColor : invalidLinkColor;
 
 			} else {
@@ -683,7 +721,9 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 
 		} else {
 			if (linkValid) {
-				reconnectingDone = true;
+				if (toPin != oldToPin) {
+					reconnectingDone = true;
+				}
 
 			} else {
 				disconnectingDone = true;

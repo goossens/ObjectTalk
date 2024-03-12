@@ -26,6 +26,7 @@ nlohmann::json OtNodesPinClass::serialize(std::string* basedir) {
 	return data;
 }
 
+
 //
 //	OtNodesPinClass::deserialize
 //

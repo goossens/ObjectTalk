@@ -109,6 +109,7 @@ private:
 	uint32_t oldToPin = 0;
 	ImVec2 fromPinPos;					// in screen space
 	ImVec2 toPinPos;					// in screen space
+	bool outputToInput;
 	bool linkValid;
 	ImU32 linkColor;
 };

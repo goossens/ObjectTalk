@@ -41,7 +41,7 @@ public:
 		geometry,
 		virtualizer,
 		save,
-		load,
+		constant,
 		probe
 	};
 
@@ -55,7 +55,7 @@ public:
 		"Geometry",
 		"Virtualizer",
 		"Save",
-		"Load",
+		"Constant",
 		"Probe"
 	};
 

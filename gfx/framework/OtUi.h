@@ -50,6 +50,9 @@ void OtUiCenteredText(const char* text);
 // create a header with specified width
 void OtUiHeader(const char* label, float width=0.0f);
 
+// create a toggle button
+bool OtUiToggleButton(const char* label, bool* value);
+
 // create a readonly text filed
 void OtUiReadonlyText(const char* label, std::string& value);
 

@@ -9,20 +9,21 @@
 //	Include files
 //
 
+#include <string>
+
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
-#include "OtGlm.h"
 #include "OtUi.h"
 
 #include "OtNodesFactory.h"
 
 
 //
-//	OtVectorInputNode
+//	OtStringInputNode
 //
 
-class OtVectorInputNode : public OtNodeClass {
+class OtStringInputNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
@@ -44,7 +45,8 @@ public:
 	// special rendering for input nodes
 	inline bool customInputRendering(float width) override {
 		ImGui::SetNextItemWidth(width);
-		return OtUiEditVec3("##value", value, 0.1f, 0.0f, 0.0f);
+		OtUiInputText("##value", value, ImGuiInputTextFlags_NoUndoRedo | ImGuiInputTextFlags_EnterReturnsTrue);
+		return ImGui::IsItemDeactivated();
 	}
 
 	// (de)serialize node
@@ -53,16 +55,16 @@ public:
 	}
 
 	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		value = data->value("value", glm::vec3(0.0f));
+		value = data->value("value", "");
 	}
 
-	static constexpr const char* nodeName = "Vector Input";
+	static constexpr const char* nodeName = "String Input";
 	static constexpr int nodeCategory = OtNodeClass::input;
 	static constexpr int nodeKind = OtNodeClass::fixed;
-	static constexpr float fieldWidth = 200.0f;
+	static constexpr float fieldWidth = 180.0f;
 
 protected:
-	glm::vec3 value{0.0f};
+	std::string value = "";
 };
 
-static OtNodesFactoryRegister<OtVectorInputNode> type;
+static OtNodesFactoryRegister<OtStringInputNode> type;

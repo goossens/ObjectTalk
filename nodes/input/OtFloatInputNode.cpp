@@ -25,9 +25,8 @@ public:
 	inline void configure() override {
 		addOutputPin("Value", value)->addRenderer([this](float width) {
 			auto old = serialize().dump();
-			ImGui::SetNextItemWidth(width);
 
-			if (ImGui::DragFloat("##value", &value, 0.2f, 0.0f, 0.0f, "%.3f")) {
+			if (customInputRendering(width)) {
 				oldState = old;
 				newState = serialize().dump();
 

@@ -120,6 +120,51 @@ void OtUiReadonlyText(const char* label, std::string& value) {
 
 
 //
+//	OtUiToggleButton
+//
+
+bool OtUiToggleButton(const char* label, bool* value) {
+	ImVec4* colors = ImGui::GetStyle().Colors;
+	ImVec2 p = ImGui::GetCursorScreenPos();
+	ImDrawList* drawlist = ImGui::GetWindowDrawList();
+	bool changed = false;
+
+	float height = ImGui::GetFrameHeight();
+	float width = height * 1.55f;
+	float radius = height * 0.5f;
+
+	ImGui::InvisibleButton(label, ImVec2(width, height));
+
+	if (ImGui::IsItemClicked()) {
+		*value = !*value;
+		changed = true;
+	}
+
+	if (ImGui::IsItemHovered()) {
+		drawlist->AddRectFilled(
+			p,
+			ImVec2(p.x + width, p.y + height),
+			ImGui::GetColorU32(*value ? colors[ImGuiCol_ButtonActive] : colors[ImGuiCol_ScrollbarGrabActive]),
+			height * 0.5f);
+
+	} else {
+		drawlist->AddRectFilled(
+			p,
+			ImVec2(p.x + width, p.y + height),
+			ImGui::GetColorU32(*value ? colors[ImGuiCol_Button] : colors[ImGuiCol_ScrollbarGrab]),
+			height * 0.5f);
+	}
+
+	drawlist->AddCircleFilled(
+		ImVec2(p.x + radius + (*value ? 1 : 0) * (width - radius * 2.0f), p.y + radius),
+		radius - 1.5f,
+		IM_COL32(255, 255, 255, 255));
+
+	return changed;
+}
+
+
+//
 //	OtUiInputText
 //
 
@@ -144,7 +189,7 @@ bool OtUiInputText(const char* label, std::string& value, ImGuiInputTextFlags fl
 //	OtUiEditVecX
 //
 
-static bool OtUiEditVecX(const char* labelPlusID, float* v, int components, float speed, float minv, float maxv) {
+static bool OtUiEditVecX(const char* labelPlusID, float* value, int components, float speed, float minv, float maxv) {
 	ImGuiWindow* window = ImGui::GetCurrentWindow();
 	bool changed = false;
 
@@ -161,7 +206,7 @@ static bool OtUiEditVecX(const char* labelPlusID, float* v, int components, floa
 
 	for (int i = 0; i < components; i++) {
 		ImGui::PushID(i);
-		changed |= ImGui::DragFloat("##v", &v[i], speed, minv, maxv, format[i]);
+		changed |= ImGui::DragFloat("##value", &value[i], speed, minv, maxv, format[i]);
 
 		const ImVec2 min = ImGui::GetItemRectMin();
 		const ImVec2 max = ImGui::GetItemRectMax();

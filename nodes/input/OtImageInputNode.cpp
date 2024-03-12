@@ -12,36 +12,36 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
-#include "OtInstances.h"
-#include "OtInstancesAsset.h"
+#include "OtImage.h"
+#include "OtImageAsset.h"
 #include "OtPathTools.h"
 
 #include "OtNodesFactory.h"
 
 
 //
-//	OtLoadInstancesNode
+//	OtLoadImageNode
 //
 
-class OtLoadInstancesNode : public OtNodeClass {
+class OtLoadImageNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addOutputPin("Instances", instances)->addRenderer([this](float width) {
+		addOutputPin("Image", image)->addRenderer([this](float width) {
 			ImGui::SetNextItemWidth(width);
 			auto old = serialize().dump();
 
-			if (asset.renderUI("##instances")) {
+			if (customInputRendering(width)) {
 				if (asset.isNull()) {
-					instances.clear();
+					image.clear();
 					needsEvaluating = true;
 
 				} else if (asset.isReady()) {
-					instances = asset->getInstances();
+					image = asset->getImage();
 					needsEvaluating = true;
 
 				} else {
-					instances.clear();
+					image.clear();
 				}
 
 				oldState = old;
@@ -51,10 +51,16 @@ public:
 		}, fieldWidth);
 	}
 
+	// special rendering for input nodes
+	inline bool customInputRendering(float width) override {
+		ImGui::SetNextItemWidth(width);
+		return asset.renderUI("##image");
+	}
+
 	// update state
 	inline bool onUpdate() override {
-		if (!asset.isNull() && asset->getInstances() != instances) {
-			instances = asset->getInstances();
+		if (!asset.isNull() && asset->getImage() != image) {
+			image = asset->getImage();
 			return true;
 
 		} else {
@@ -71,21 +77,21 @@ public:
 		asset = OtPathGetAbsolute(*data, "path", basedir);
 
 		if (asset.isNull()) {
-			instances.clear();
+			image.clear();
 
 		} else if (asset.isReady()) {
-			instances = asset->getInstances();
+			image = asset->getImage();
 		}
 	}
 
-	static constexpr const char* nodeName = "Load Instances";
-	static constexpr int nodeCategory = OtNodeClass::load;
+	static constexpr const char* nodeName = "Image Input";
+	static constexpr int nodeCategory = OtNodeClass::input;
 	static constexpr int nodeKind = OtNodeClass::fixed;
 	static constexpr float fieldWidth = 180.0f;
 
 protected:
-	OtAsset<OtInstancesAsset> asset;
-	OtInstances instances;
+	OtAsset<OtImageAsset> asset;
+	OtImage image;
 };
 
-static OtNodesFactoryRegister<OtLoadInstancesNode> type;
+static OtNodesFactoryRegister<OtLoadImageNode> type;

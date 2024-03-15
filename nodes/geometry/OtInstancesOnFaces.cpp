@@ -34,50 +34,11 @@ public:
 	// configure node
 	inline void configure() override {
 		addInputPin("Geometry", geometry);
+		addInputPin("Instance Count", instanceCount);
+		addInputPin("Rotate to Normals", rotateToNormals);
 		addInputPin("Rotation", rotation);
 		addInputPin("Scale", scale);
 		addOutputPin("Instances", instances);
-	}
-
-	// render custom fields
-	void customRendering(float width) override {
-		auto old = serialize().dump();
-		bool changed = false;
-
-		ImGui::SetNextItemWidth(width);
-
-		if (ImGui::InputInt("##Instances", &instanceCount)) {
-			instanceCount = std::max(1, instanceCount);
-			changed = true;
-		}
-
-		changed |= ImGui::Checkbox("Rotate to Normals", &rotateToNormals);
-
-		if (changed) {
-			oldState = old;
-			newState = serialize().dump();
-			needsEvaluating = true;
-			needsSaving = true;
-		}
-	}
-
-	float getCustomRenderingWidth() override {
-		return fieldWidth;
-	}
-
-	float getCustomRenderingHeight() override {
-		return 2.0f * ImGui::GetFrameHeightWithSpacing();
-	}
-
-	// (de)serialize node
-	void customSerialize(nlohmann::json* data, std::string* basedir) override {
-		(*data)["instanceCount"] = instanceCount;
-		(*data)["rotateToNormals"] = rotateToNormals;
-	}
-
-	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		instanceCount = data->value("instanceCount", 16);
-		rotateToNormals = data->value("rotateToNormals", false);
 	}
 
 	// randomly create instances on geometry faces
@@ -123,7 +84,6 @@ public:
 	static constexpr const char* nodeName = "Instances on Faces";
 	static constexpr int nodeCategory = OtNodeClass::geometry;
 	static constexpr int nodeKind = OtNodeClass::fixed;
-	static constexpr float fieldWidth = 180.0f;
 
 private:
 	// generate a single instance

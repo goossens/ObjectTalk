@@ -25,7 +25,7 @@ class OtBooleanInputNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addOutputPin("Value", value)->addRenderer([this](float width) {
+		addOutputPin("Value", value)->addCustomRenderer([this](float width) {
 			if (customInputRendering(width)) {
 					needsEvaluating = true;
 					needsSaving = true;

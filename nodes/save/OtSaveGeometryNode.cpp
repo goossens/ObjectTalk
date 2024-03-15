@@ -26,7 +26,7 @@ class OtSaveGeometryNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addInputPin("Input", geometry)->addRenderer([&](float width) {
+		addInputPin("Input", geometry)->addCustomRenderer([&](float width) {
 			// render button to save geometry if geometry is valid
 			if (!geometry.isValid()) {
 				ImGui::BeginDisabled();

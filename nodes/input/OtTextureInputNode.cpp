@@ -27,7 +27,7 @@ class OtLoadTextureNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addOutputPin("Texture", texture)->addRenderer([this](float width) {
+		addOutputPin("Texture", texture)->addCustomRenderer([this](float width) {
 			ImGui::SetNextItemWidth(width);
 			auto old = serialize().dump();
 

@@ -85,9 +85,17 @@ static constexpr const char* OtNodesPinTypeNames[] = {
 
 class OtNodesPinClass;
 using OtNodesPin = std::shared_ptr<OtNodesPinClass>;
+
+struct OtNodesPinInputConfig {
+	std::function<void(nlohmann::json*)> serializeValue;
+	std::function<void(nlohmann::json*)> deserializeValue;
+	std::function<float()> getMinimumSize;
+	std::function<void(OtNodesPin, float)> editValue;
+};
+
 typedef std::function<void(float)> OtNodesPinRenderer;
 
-class OtNodesPinClass {
+class OtNodesPinClass : public std::enable_shared_from_this<OtNodesPinClass> {
 public:
 	enum {
 		inputPin,
@@ -100,13 +108,18 @@ public:
 	}
 
 	// destructor
-	virtual inline ~OtNodesPinClass() {};
+	virtual inline ~OtNodesPinClass() {
+		if (inputConfig) {
+			delete inputConfig;
+		}
+	};
 
 	// handle custom renderer
-	inline void addRenderer(OtNodesPinRenderer renderer, float width=0.0f) {
+	inline OtNodesPin addCustomRenderer(OtNodesPinRenderer renderer, float width=0.0f) {
 		render = renderer;
 		renderingWidth = width;
 		hasRenderer = true;
+		return shared_from_this();
 	}
 
 	// check status
@@ -141,17 +154,34 @@ public:
 	const char* name;
 	int direction;
 	OtNodeClass* node;
-	bool needsEvaluating{false};
+	bool needsEvaluating = false;
 
 	bool varying{false};
 
+	OtNodesPinInputConfig* inputConfig = nullptr;;
 	OtNodesPinRenderer render = [](float){};
-	float renderingWidth{0.0f};
-	bool hasRenderer{false};
+	float renderingWidth = 0.0f;
+	bool hasRenderer = false;
 
 	OtNodesPin sourcePin;
 	OtNodesPin destinationPin;
 };
+
+
+//
+//	OtNodesPinInputConfig
+//
+
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(bool& value);
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(int& value);
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(float& value);
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(std::string& value);
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec3& value);
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec4& value);
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtImage& value);
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtTexture& value);
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtGeometry& value);
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtInstances& value);
 
 
 //
@@ -162,11 +192,12 @@ template <typename T>
 class OtNodesPinImpl : public OtNodesPinClass {
 public:
 	// constructor
-	inline OtNodesPinImpl(const char* n, int d, T* v) : OtNodesPinClass(n, d) {
+	inline OtNodesPinImpl(const char* n, int d, T& v) : OtNodesPinClass(n, d) {
 		static_assert(OtTypeListIndexOf<T, OtNodesPinTypes>() != -1, "Data type not allowed for node pin");
 		type = OtTypeListIndexOf<T, OtNodesPinTypes>();
-		value = v;
+		value = &v;
 		defaultValue = *value;
+		inputConfig = OtNodesPinCreateInputConfig(v);
 	}
 
 	// handle connections
@@ -200,4 +231,3 @@ public:
 	T defaultValue;
 	T* source = nullptr;
 };
-

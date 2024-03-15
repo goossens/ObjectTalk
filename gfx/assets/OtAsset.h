@@ -77,9 +77,9 @@ public:
 			onChangeCallback = asset.onChangeCallback;
 			follow();
 
+			asset.unfollow();
 			asset.ptr = nullptr;
 			asset.onChangeCallback = nullptr;
-			asset.unfollow();
 		}
 	}
 
@@ -93,9 +93,9 @@ public:
 			onChangeCallback = asset.onChangeCallback;
 			follow();
 
+			asset.unfollow();
 			asset.ptr = nullptr;
 			asset.onChangeCallback = nullptr;
-			asset.unfollow();
 		}
 	}
 
@@ -166,9 +166,9 @@ public:
 			onChangeCallback = asset.onChangeCallback;
 			follow();
 
+			asset.unfollow();
 			asset.ptr = nullptr;
 			asset.onChangeCallback = nullptr;
-			asset.unfollow();
 		}
 
 		return *this;
@@ -242,26 +242,6 @@ public:
 		info.hasEditor = T::hasEditor;
 		info.virtualMode = canHandleVirtual() ? &virtualMode : nullptr;
 		info.creator = creator;
-
-		if (OtAssetSelector::renderUI(info)) {
-			load(info.path);
-			return true;
-
-		} else {
-			return false;
-		}
-	}
-
-	// render UI to only allow virtual assets
-	inline bool renderVirtualUI(const char* label) {
-		OtAssert(canHandleVirtual());
-		virtualMode = true;
-
-		OtAssetSelector::Info info;
-		info.label = label;
-		info.path = ptr ? ptr->getPath() : "";
-		info.virtualOnly = true;
-		info.virtualMode = &virtualMode;
 
 		if (OtAssetSelector::renderUI(info)) {
 			load(info.path);

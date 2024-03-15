@@ -307,12 +307,11 @@
 			],
 			"title": "Texture to Image",
 			"type": "Texture to Image",
-			"x": 990.0,
-			"y": 16.0
+			"x": 800.0,
+			"y": 17.0
 		},
 		{
 			"id": 2949711206,
-			"path": "virtual:normalmap",
 			"inputs": [],
 			"outputs": [
 				{
@@ -321,6 +320,7 @@
 					"type": "texture"
 				}
 			],
+			"path": "virtual:normalmap",
 			"title": "Texture Input",
 			"type": "Texture Input",
 			"x": 30.0,
@@ -348,18 +348,23 @@
 					"id": 3997980780,
 					"name": "Input",
 					"type": "image"
+				},
+				{
+					"id": 3156561384,
+					"name": "Name",
+					"type": "string",
+					"value": "heightmap"
 				}
 			],
 			"outputs": [],
 			"path": "virtual:heightmap",
 			"title": "Save Image To Virtual",
 			"type": "Save Image To Virtual",
-			"x": 1219.0,
-			"y": 16.0
+			"x": 1033.0,
+			"y": 17.0
 		},
 		{
 			"id": 1174859016,
-			"path": "virtual:heightmap",
 			"inputs": [],
 			"outputs": [
 				{
@@ -368,6 +373,7 @@
 					"type": "image"
 				}
 			],
+			"path": "virtual:heightmap",
 			"title": "Image Input",
 			"type": "Image Input",
 			"x": 29.0,
@@ -416,14 +422,19 @@
 					"id": 1535187009,
 					"name": "Input",
 					"type": "texture"
+				},
+				{
+					"id": 348143700,
+					"name": "Name",
+					"type": "string",
+					"value": "normalmap"
 				}
 			],
 			"outputs": [],
-			"path": "virtual:normalmap",
 			"title": "Save Texture To Virtual",
 			"type": "Save Texture To Virtual",
-			"x": 1221.0,
-			"y": 147.0
+			"x": 1032.0,
+			"y": 144.0
 		}
 	]
 }

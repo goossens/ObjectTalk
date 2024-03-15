@@ -80,7 +80,7 @@ public:
 	// add pins
 	template <typename T>
 	inline OtNodesPin addInputPin(const char* name, T& value) {
-		OtNodesPin pin = std::make_shared<OtNodesPinImpl<T>>(name, OtNodesPinClass::inputPin, &value);
+		OtNodesPin pin = std::make_shared<OtNodesPinImpl<T>>(name, OtNodesPinClass::inputPin, value);
 		pin->node = this;
 		inputPins.emplace_back(pin);
 		return pin;
@@ -88,7 +88,7 @@ public:
 
 	template <typename T>
 	inline OtNodesPin addOutputPin(const char* name, T& value) {
-		OtNodesPin pin = std::make_shared<OtNodesPinImpl<T>>(name, OtNodesPinClass::outputPin, &value);
+		OtNodesPin pin = std::make_shared<OtNodesPinImpl<T>>(name, OtNodesPinClass::outputPin, value);
 		pin->node = this;
 		outputPins.emplace_back(pin);
 		return pin;

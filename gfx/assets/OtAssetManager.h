@@ -90,6 +90,7 @@ public:
 
 						// also follow path so we can detect file changes
 						asset->follower.follow(path, [&]() {
+							auto p = path;
 							scheduleLoad(asset);
 						});
 

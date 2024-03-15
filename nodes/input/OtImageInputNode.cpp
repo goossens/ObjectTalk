@@ -27,7 +27,7 @@ class OtLoadImageNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addOutputPin("Image", image)->addRenderer([this](float width) {
+		addOutputPin("Image", image)->addCustomRenderer([this](float width) {
 			ImGui::SetNextItemWidth(width);
 			auto old = serialize().dump();
 

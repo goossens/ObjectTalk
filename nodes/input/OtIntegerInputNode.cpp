@@ -23,7 +23,7 @@ class OtIntegerInputNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addOutputPin("Value", value)->addRenderer([this](float width) {
+		addOutputPin("Value", value)->addCustomRenderer([this](float width) {
 			ImGui::SetNextItemWidth(width);
 			ImGui::InputInt("##value", &value, 1, 100, ImGuiInputTextFlags_NoUndoRedo);
 

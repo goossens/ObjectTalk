@@ -324,6 +324,7 @@ OtNodesLink OtNodes::createLink(OtNodesPin from, OtNodesPin to, uint32_t id) {
 	links.emplace_back(link);
 	linkIndex[link->id] = link;
 	link->connect();
+	to->node->needsSizing = true;
 
 	// set sorting flag
 	needsSorting = true;
@@ -350,6 +351,9 @@ OtNodesLink OtNodes::findLink(OtNodesPin from, OtNodesPin to) {
 //
 
 void OtNodes::deleteLink(OtNodesLink link) {
+	// ensure node size is recalculated
+	link->to->node->needsSizing = true;
+
 	// remove specified link
 	link->disconnect();
 	linkIndex.erase(link->id);
@@ -367,6 +371,9 @@ void OtNodes::deleteLink(OtNodesPin from, OtNodesPin to) {
 	auto i = std::find_if(links.begin(), links.end(), [&](OtNodesLink& candidate) {
 		return candidate->from == from && candidate->to == to;
 	});
+
+	// ensure node size is recalculated
+	to->node->needsSizing = true;
 
 	deleteLink(*i);
 }
@@ -398,9 +405,11 @@ void OtNodes::deleteLinks(OtNodesPin any) {
 //
 
 void OtNodes::redirectLink(OtNodesLink link, uint32_t newTo) {
+	link->to->node->needsSizing = true;
 	link->disconnect();
 	link->redirectTo(pinIndex[newTo]);
 	link->connect();
+	link->to->node->needsSizing = true;
 	needsSorting = true;
 }
 

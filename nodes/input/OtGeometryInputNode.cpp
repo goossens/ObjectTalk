@@ -27,7 +27,7 @@ class OtLoadGeometryNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addOutputPin("Geometry", geometry)->addRenderer([this](float width) {
+		addOutputPin("Geometry", geometry)->addCustomRenderer([this](float width) {
 			auto old = serialize().dump();
 
 			if (customInputRendering(width)) {

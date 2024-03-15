@@ -30,38 +30,10 @@ public:
 	// configure node
 	inline void configure() override {
 		addInputPin("Geometry", geometry);
+		addInputPin("Rotate to Normals", rotateToNormals);
 		addInputPin("Rotation", rotation);
 		addInputPin("Scale", scale);
 		addOutputPin("Instances", instances);
-	}
-
-	// render custom fields
-	void customRendering(float width) override {
-		auto old = serialize().dump();
-
-		if (ImGui::Checkbox("Rotate to Normals", &rotateToNormals)) {
-			oldState = old;
-			newState = serialize().dump();
-			needsEvaluating = true;
-			needsSaving = true;
-		}
-	}
-
-	float getCustomRenderingWidth() override {
-		return fieldWidth;
-	}
-
-	float getCustomRenderingHeight() override {
-		return ImGui::GetFrameHeightWithSpacing();
-	}
-
-	// (de)serialize node
-	void customSerialize(nlohmann::json* data, std::string* basedir) override {
-		(*data)["rotateToNormals"] = rotateToNormals;
-	}
-
-	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		rotateToNormals = data->value("rotateToNormals", false);
 	}
 
 	// create instance for each geometry vertex

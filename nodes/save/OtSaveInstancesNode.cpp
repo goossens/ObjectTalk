@@ -26,7 +26,7 @@ class OtSaveInstancesNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addInputPin("Input", instances)->addRenderer([&](float width) {
+		addInputPin("Input", instances)->addCustomRenderer([&](float width) {
 			// render button to save instances if instances is valid
 			if (!instances.isValid()) {
 				ImGui::BeginDisabled();

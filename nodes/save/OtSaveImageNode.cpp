@@ -26,7 +26,7 @@ class OtSaveImageNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addInputPin("Input", image)->addRenderer([&](float width) {
+		addInputPin("Input", image)->addCustomRenderer([&](float width) {
 			// render button to save image if image is valid
 			if (!image.isValid()) {
 				ImGui::BeginDisabled();

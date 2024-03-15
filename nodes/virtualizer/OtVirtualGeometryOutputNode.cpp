@@ -25,53 +25,32 @@ class OtVirtualGeometryOutputNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addInputPin("Input", geometry)->addRenderer([&](float width) {
-			auto old = serialize().dump();
-			OtGeometryAsset* oldAsset = asset.isNull() ? nullptr : &(*asset);
-			ImGui::SetNextItemWidth(width);
-
-			if (asset.renderVirtualUI("##name")) {
-				if (oldAsset && asset.isNull()) {
-					oldAsset->clearGeometry();
-				}
-
-				oldState = old;
-				newState = serialize().dump();
-				needsEvaluating = true;
-				needsSaving = true;
-			}
-		}, fieldWidth);
+		addInputPin("Input", geometry);
+		addInputPin("Name", name);
 	}
 
 	// synchronize the asset with the incoming geometry
 	void onExecute() override {
-		if (geometry.isValid()) {
-			if (!asset.isNull()) {
-				asset->setGeometry(geometry);
-			}
+		if (geometry.isValid() && name.size()) {
+			asset = "virtual:" + name;
+			asset->setGeometry(geometry);
 
-		} else if (!asset.isNull()) {
+		} else if (name.size()) {
+			asset = "virtual:" + name;
 			asset->clearGeometry();
+
+		} else {
+			asset.clear();
 		}
-	}
-
-	// (de)serialize node
-	void customSerialize(nlohmann::json* data, std::string* basedir) override {
-		auto t = asset.getPath();
-		(*data)["path"] = asset.getPath();
-	}
-
-	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		asset = data->value("path", "");
 	}
 
 	static constexpr const char* nodeName = "Save Geometry To Virtual";
 	static constexpr int nodeCategory = OtNodeClass::virtualizer;
 	static constexpr int nodeKind = OtNodeClass::virtualizer;
-	static constexpr float fieldWidth = 170.0f;
 
 protected:
 	OtGeometry geometry;
+	std::string name;
 	OtAsset<OtGeometryAsset> asset;
 };
 

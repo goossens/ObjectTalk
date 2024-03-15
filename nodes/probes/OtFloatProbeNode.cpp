@@ -22,7 +22,7 @@ class OtFloatProbeNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addInputPin("Value", value)->addRenderer([&](float width) {
+		addInputPin("Value", value)->addCustomRenderer([&](float width) {
 			ImGui::SetNextItemWidth(width);
 			ImGui::InputFloat("##value", &value, 0.0f, 0.0f, "%.3f", ImGuiInputTextFlags_ReadOnly);
 		}, fieldWidth);

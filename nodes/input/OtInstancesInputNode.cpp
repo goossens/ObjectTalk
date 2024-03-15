@@ -27,7 +27,7 @@ class OtLoadInstancesNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addOutputPin("Instances", instances)->addRenderer([this](float width) {
+		addOutputPin("Instances", instances)->addCustomRenderer([this](float width) {
 			ImGui::SetNextItemWidth(width);
 			auto old = serialize().dump();
 

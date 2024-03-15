@@ -25,53 +25,32 @@ class OtVirtualTextureOutputNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addInputPin("Input", texture)->addRenderer([&](float width) {
-			auto old = serialize().dump();
-			OtTextureAsset* oldAsset = asset.isNull() ? nullptr : &(*asset);
-			ImGui::SetNextItemWidth(width);
-
-			if (asset.renderVirtualUI("##name")) {
-				if (oldAsset && asset.isNull()) {
-					oldAsset->clearTexture();
-				}
-
-				oldState = old;
-				newState = serialize().dump();
-				needsEvaluating = true;
-				needsSaving = true;
-			}
-		}, fieldWidth);
+		addInputPin("Input", texture);
+		addInputPin("Name", name);
 	}
 
 	// synchronize the asset with the incoming texture
 	void onExecute() override {
-		if (texture.isValid()) {
-			if (!asset.isNull()) {
-				asset->setTexture(texture);
-			}
+		if (texture.isValid() && name.size()) {
+			asset = "virtual:" + name;
+			asset->setTexture(texture);
 
-		} else if (!asset.isNull()) {
+		} else if (name.size()) {
+			asset = "virtual:" + name;
 			asset->clearTexture();
+
+		} else {
+			asset.clear();
 		}
-	}
-
-	// (de)serialize node
-	void customSerialize(nlohmann::json* data, std::string* basedir) override {
-		auto t = asset.getPath();
-		(*data)["path"] = asset.getPath();
-	}
-
-	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		asset = data->value("path", "");
 	}
 
 	static constexpr const char* nodeName = "Save Texture To Virtual";
 	static constexpr int nodeCategory = OtNodeClass::virtualizer;
 	static constexpr int nodeKind = OtNodeClass::fixed;
-	static constexpr float fieldWidth = 170.0f;
 
 protected:
 	OtTexture texture;
+	std::string name;
 	OtAsset<OtTextureAsset> asset;
 };
 

@@ -25,53 +25,32 @@ class OtVirtualImageOutputNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addInputPin("Input", image)->addRenderer([&](float width) {
-			auto old = serialize().dump();
-			OtImageAsset* oldAsset = asset.isNull() ? nullptr : &(*asset);
-			ImGui::SetNextItemWidth(width);
-
-			if (asset.renderVirtualUI("##name")) {
-				if (oldAsset && asset.isNull()) {
-					oldAsset->clearImage();
-				}
-
-				oldState = old;
-				newState = serialize().dump();
-				needsEvaluating = true;
-				needsSaving = true;
-			}
-		}, fieldWidth);
+		addInputPin("Input", image);
+		addInputPin("Name", name);
 	}
 
 	// synchronize the asset with the incoming image
 	void onExecute() override {
-		if (image.isValid()) {
-			if (!asset.isNull()) {
-				asset->setImage(image);
-			}
+		if (image.isValid() && name.size()) {
+			asset = "virtual:" + name;
+			asset->setImage(image);
 
-		} else if (!asset.isNull()) {
+		} else if (name.size()) {
+			asset = "virtual:" + name;
 			asset->clearImage();
+
+		} else {
+			asset.clear();
 		}
-	}
-
-	// (de)serialize node
-	void customSerialize(nlohmann::json* data, std::string* basedir) override {
-		auto t = asset.getPath();
-		(*data)["path"] = asset.getPath();
-	}
-
-	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		asset = data->value("path", "");
 	}
 
 	static constexpr const char* nodeName = "Save Image To Virtual";
 	static constexpr int nodeCategory = OtNodeClass::virtualizer;
 	static constexpr int nodeKind = OtNodeClass::fixed;
-	static constexpr float fieldWidth = 170.0f;
 
 protected:
 	OtImage image;
+	std::string name;
 	OtAsset<OtImageAsset> asset;
 };
 

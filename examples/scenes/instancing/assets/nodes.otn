@@ -221,10 +221,15 @@
 					"id": 1241675404,
 					"name": "Input",
 					"type": "geometry"
+				},
+				{
+					"id": 1312634976,
+					"name": "Name",
+					"type": "string",
+					"value": "parentV"
 				}
 			],
 			"outputs": [],
-			"path": "virtual:parentV",
 			"title": "Save Geometry To Virtual",
 			"type": "Save Geometry To Virtual",
 			"x": 941.0,
@@ -338,10 +343,15 @@
 					"id": 3545155075,
 					"name": "Input",
 					"type": "geometry"
+				},
+				{
+					"id": 1873980317,
+					"name": "Name",
+					"type": "string",
+					"value": "child"
 				}
 			],
 			"outputs": [],
-			"path": "virtual:child",
 			"title": "Save Geometry To Virtual",
 			"type": "Save Geometry To Virtual",
 			"x": 949.0,
@@ -354,6 +364,12 @@
 					"id": 3675693576,
 					"name": "Geometry",
 					"type": "geometry"
+				},
+				{
+					"id": 2253122059,
+					"name": "Rotate to Normals",
+					"type": "bool",
+					"value": true
 				},
 				{
 					"id": 2278322405,
@@ -373,7 +389,6 @@
 					"type": "instances"
 				}
 			],
-			"rotateToNormals": true,
 			"title": "Instances on Vertices",
 			"type": "Instances on Vertices",
 			"x": 689.0,
@@ -386,10 +401,15 @@
 					"id": 2346885826,
 					"name": "Input",
 					"type": "instances"
+				},
+				{
+					"id": 2867761287,
+					"name": "Name",
+					"type": "string",
+					"value": "instancesV"
 				}
 			],
 			"outputs": [],
-			"path": "virtual:instancesV",
 			"title": "Save Instances To Virtual",
 			"type": "Save Instances To Virtual",
 			"x": 935.0,
@@ -460,6 +480,18 @@
 					"type": "geometry"
 				},
 				{
+					"id": 575614436,
+					"name": "Instance Count",
+					"type": "int",
+					"value": 200
+				},
+				{
+					"id": 3079541220,
+					"name": "Rotate to Normals",
+					"type": "bool",
+					"value": true
+				},
+				{
 					"id": 2137833022,
 					"name": "Rotation",
 					"type": "vector"
@@ -470,7 +502,6 @@
 					"type": "vector"
 				}
 			],
-			"instanceCount": 300,
 			"outputs": [
 				{
 					"id": 2748530417,
@@ -478,7 +509,6 @@
 					"type": "instances"
 				}
 			],
-			"rotateToNormals": true,
 			"title": "Instances on Faces",
 			"type": "Instances on Faces",
 			"x": 691.0,
@@ -491,14 +521,19 @@
 					"id": 3196163256,
 					"name": "Input",
 					"type": "instances"
+				},
+				{
+					"id": 3614857548,
+					"name": "Name",
+					"type": "string",
+					"value": "instancesF"
 				}
 			],
 			"outputs": [],
-			"path": "virtual:instancesF",
 			"title": "Save Instances To Virtual",
 			"type": "Save Instances To Virtual",
 			"x": 945.0,
-			"y": 315.0
+			"y": 332.0
 		},
 		{
 			"id": 3529924128,
@@ -507,14 +542,19 @@
 					"id": 2820934007,
 					"name": "Input",
 					"type": "geometry"
+				},
+				{
+					"id": 2866868110,
+					"name": "Name",
+					"type": "string",
+					"value": "parentF"
 				}
 			],
 			"outputs": [],
-			"path": "virtual:parentF",
 			"title": "Save Geometry To Virtual",
 			"type": "Save Geometry To Virtual",
 			"x": 941.0,
-			"y": 248.0
+			"y": 225.0
 		}
 	]
 }

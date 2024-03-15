@@ -457,12 +457,21 @@ void OtNodesWidget::renderPin(ImDrawList* drawlist, OtNodesPin& pin, float x, fl
 		pin->render(w - horizontalPadding * 2.0f);
 
 	} else {
+		// right align labels for output pins
 		if (pin->isOutput()) {
 			inset(w - ImGui::CalcTextSize(pin->name).x - horizontalPadding * 2.0f);
 		}
 
+		// render label
 		ImGui::AlignTextToFramePadding();
 		ImGui::TextUnformatted(pin->name);
+
+		// show UI for unconnected input pins that have that capability
+		if (pin->isInput() && !pin->isSourceConnected() && pin->inputConfig) {
+			ImGui::SameLine(0.0f, horizontalPadding);
+			auto width = w - horizontalPadding * 3.0f - ImGui::CalcTextSize(pin->name).x;
+			pin->inputConfig->editValue(pin, width);
+		}
 	}
 }
 
@@ -504,22 +513,36 @@ void OtNodesWidget::renderLink(ImDrawList* drawlist, const ImVec2& start, const 
 
 void OtNodesWidget::calculateNodeSize(OtNode& node) {
 	// determine widest line
+	// first we look at node title width
 	auto w = ImGui::CalcTextSize(node->title.c_str()).x;
 
+	// then we look at each pin
 	node->eachPin([&](OtNodesPin& pin) {
-		w = std::max(w, pin->hasRenderer ? pin->renderingWidth : ImGui::CalcTextSize(pin->name).x);
+		if (pin->hasRenderer) {
+			// use dimensions for custom pin rendering
+			w = std::max(w, pin->renderingWidth);
+
+		} else if (pin->isInput() && !pin->isSourceConnected() && pin->inputConfig) {
+			// use pin label width, spacer and input field width
+			w = std::max(w, ImGui::CalcTextSize(pin->name).x + horizontalPadding + pin->inputConfig->getMinimumSize());
+
+		} else {
+			// just use pin label width
+			w = std::max(w, ImGui::CalcTextSize(pin->name).x);
+		}
 	});
 
+	// take any node custom rendering into account
 	w = std::max(w, node->getCustomRenderingWidth());
 	node->w = w + horizontalPadding * 2.0f;
 
 	// determine height
-	auto pinCount = node->getOutputPinCount() + node->getInputPinCount();
-
 	node->h =
 		topPadding +
-		ImGui::GetFrameHeightWithSpacing() * (pinCount + 1) +
-		node->getCustomRenderingHeight();
+		ImGui::GetFrameHeightWithSpacing() +
+		ImGui::GetFrameHeightWithSpacing() * node->getOutputPinCount() +
+		node->getCustomRenderingHeight() +
+		ImGui::GetFrameHeightWithSpacing() * node->getInputPinCount();
 }
 
 

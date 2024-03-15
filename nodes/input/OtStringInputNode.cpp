@@ -27,7 +27,7 @@ class OtStringInputNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addOutputPin("Value", value)->addRenderer([this](float width) {
+		addOutputPin("Value", value)->addCustomRenderer([this](float width) {
 			auto old = serialize().dump();
 
 			if (customInputRendering(width)) {

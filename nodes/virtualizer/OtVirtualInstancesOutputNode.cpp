@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <string>
+
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
@@ -25,53 +27,32 @@ class OtVirtualInstancesOutputNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addInputPin("Input", instances)->addRenderer([&](float width) {
-			auto old = serialize().dump();
-			OtInstancesAsset* oldAsset = asset.isNull() ? nullptr : &(*asset);
-			ImGui::SetNextItemWidth(width);
-
-			if (asset.renderVirtualUI("##name")) {
-				if (oldAsset && asset.isNull()) {
-					oldAsset->clearInstances();
-				}
-
-				oldState = old;
-				newState = serialize().dump();
-				needsEvaluating = true;
-				needsSaving = true;
-			}
-		}, fieldWidth);
+		addInputPin("Input", instances);
+		addInputPin("Name", name);
 	}
 
 	// synchronize the asset with the incoming instances
 	void onExecute() override {
-		if (instances.isValid()) {
-			if (!asset.isNull()) {
-				asset->setInstances(instances);
-			}
+		if (instances.isValid() && name.size()) {
+			asset = "virtual:" + name;
+			asset->setInstances(instances);
 
-		} else if (!asset.isNull()) {
+		} else if (name.size()) {
+			asset = "virtual:" + name;
 			asset->clearInstances();
+
+		} else {
+			asset.clear();
 		}
-	}
-
-	// (de)serialize node
-	void customSerialize(nlohmann::json* data, std::string* basedir) override {
-		auto t = asset.getPath();
-		(*data)["path"] = asset.getPath();
-	}
-
-	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		asset = data->value("path", "");
 	}
 
 	static constexpr const char* nodeName = "Save Instances To Virtual";
 	static constexpr int nodeCategory = OtNodeClass::virtualizer;
 	static constexpr int nodeKind = OtNodeClass::fixed;
-	static constexpr float fieldWidth = 170.0f;
 
 protected:
 	OtInstances instances;
+	std::string name;
 	OtAsset<OtInstancesAsset> asset;
 };
 

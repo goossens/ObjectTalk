@@ -41,7 +41,29 @@ public:
 	// special rendering for input nodes
 	inline bool customInputRendering(float width) override {
 		ImGui::SetNextItemWidth(width);
-		return ImGui::DragFloat("##value", &value, 0.2f, 0.0f, 0.0f, "%.3f");
+
+		auto absValue = std::abs(value);
+		float speed;
+		const char* format;
+
+		if (absValue < 1.0f) {
+			speed = 0.01f;
+			format = "%.3f";
+
+		} else if (absValue < 10.0f) {
+			speed = 0.1f;
+			format = "%.2f";
+
+		} else if (absValue < 100.0f) {
+			speed = 1.0f;
+			format = "%.1f";
+
+		} else {
+			speed = 10.0f;
+			format = "%.0f";
+		}
+
+		return ImGui::DragFloat("##value", &value, speed, 0.0f, 0.0f, format);
 	}
 
 	// (de)serialize node

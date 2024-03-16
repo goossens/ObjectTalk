@@ -48,7 +48,6 @@ static constexpr ImU32 nodeColors[] = {
 	IM_COL32(30, 110, 90, 255),		// geometry
 	IM_COL32(10, 80, 80, 255),		// virtualizer
 	IM_COL32(120, 115, 55, 255),	// save
-	IM_COL32(150, 60, 110, 255),	// constant
 	IM_COL32(50, 50, 90, 255)		// probe
 };
 
@@ -58,7 +57,6 @@ static constexpr ImU32 pinColors[] = {
 	IM_COL32(180, 180, 180, 255),	// float
 	IM_COL32(0, 100, 180, 255),		// string
 	IM_COL32(120, 60, 255, 200),	// vector
-	IM_COL32(200, 200, 40, 255),	// color
 	IM_COL32(200, 190, 120, 255),	// image
 	IM_COL32(180, 90, 0, 255),		// texture
 	IM_COL32(0, 120, 65, 255),		// geometry

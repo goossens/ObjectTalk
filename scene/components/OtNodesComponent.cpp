@@ -16,6 +16,7 @@
 #include "nlohmann/json.hpp"
 
 #include "OtException.h"
+#include "OtLog.h"
 
 #include "OtMessageBus.h"
 #include "OtUi.h"
@@ -94,12 +95,16 @@ bool OtNodesComponent::renderUI() {
 		stream.close();
 	});
 
-	if (ImGui::TreeNode("Parameters")) {
-		// show all input nodes
+	// show all input nodes (if required)
+	if (inputNodes.size() && ImGui::TreeNode("Parameters")) {
+		auto width = ImGui::CalcItemWidth();
+		auto spacing = ImGui::GetStyle().ItemInnerSpacing.x;
+
 		for (auto& node : inputNodes) {
+			OtLogDebug("ID {}", (void*) node.get());
 			ImGui::PushID(node.get());
-			changed |= node->customInputRendering(ImGui::CalcItemWidth());
-			ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+			changed |= node->customInputRendering(width);
+			ImGui::SameLine(0.0f, spacing);
 			ImGui::TextUnformatted(node->title.c_str());
 			ImGui::PopID();
 		}

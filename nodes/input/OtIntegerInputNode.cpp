@@ -24,14 +24,10 @@ public:
 	// configure node
 	inline void configure() override {
 		addOutputPin("Value", value)->addCustomRenderer([this](float width) {
-			ImGui::SetNextItemWidth(width);
-			ImGui::InputInt("##value", &value, 1, 100, ImGuiInputTextFlags_NoUndoRedo);
+			auto old = serialize().dump();
 
-			if (ImGui::IsItemActivated()) {
-				oldState = serialize().dump();
-			}
-
-			if (ImGui::IsItemDeactivated()) {
+			if (customInputRendering(width)) {
+				oldState = old;
 				newState = serialize().dump();
 
 				if (newState != oldState) {
@@ -45,7 +41,21 @@ public:
 	// special rendering for input nodes
 	inline bool customInputRendering(float width) override {
 		ImGui::SetNextItemWidth(width);
-		return ImGui::InputInt("##value", &value, 1, 100, ImGuiInputTextFlags_NoUndoRedo);
+
+		auto absValue = std::abs(value);
+		int speed;
+
+		if (absValue < 100) {
+			speed = 1;
+
+		} else if (absValue < 1000) {
+			speed = 10;
+
+		} else {
+			speed = 100;
+		}
+
+		return ImGui::DragInt("##value", &value, speed);
 	}
 
 	// (de)serialize node

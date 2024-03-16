@@ -68,7 +68,7 @@ void OtEditor::saveAsFile(const std::string& p) {
 
 void OtEditor::follow() {
 	// follow file changes
-	follower.follow(path, [&](){
+	follower.follow(path, [this](){
 		if (ignoreNextFileUpdate) {
 			ignoreNextFileUpdate = false;
 

@@ -121,7 +121,10 @@ public:
 
 	// assignment (which also loads the asset)
 	inline OtAsset& operator=(const std::string& path) {
-		load(path);
+		if (!ptr || (ptr && ptr->getPath() != path)) {
+			load(path);
+		}
+
 		return *this;
 	}
 
@@ -263,7 +266,7 @@ private:
 
 	// follow/unfollow the actual asset
 	void follow() {
-		changedListerner = ptr->onChanged([&]() {
+		changedListerner = ptr->onChanged([this]() {
 			notifyChanged();
 			return true;
 		});

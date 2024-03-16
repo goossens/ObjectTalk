@@ -51,7 +51,7 @@
 				{
 					"component": "Transform",
 					"rotation": [
-						-64.4000015258789,
+						-75.0999984741211,
 						0.0,
 						0.0
 					],
@@ -62,13 +62,13 @@
 					],
 					"translation": [
 						0.0,
-						269.20001220703125,
+						572.2000122070313,
 						155.3000030517578
 					]
 				},
 				{
 					"component": "Camera",
-					"far": 462.0,
+					"far": 890.0,
 					"fov": 60.0,
 					"mainCamera": false,
 					"near": 0.10000000149011612
@@ -170,166 +170,410 @@
 			"components": [
 				{
 					"component": "Core",
-					"tag": "Nodes",
-					"uuid": 4109695711
+					"tag": "Area",
+					"uuid": 1976298125
 				},
 				{
 					"component": "Nodes",
-					"path": "assets/trees.otn",
+					"path": "assets/area.otn",
 					"settings": {
-						"1626407443": {
-							"value": [
-								300.0,
-								1.0,
-								300.0
-							]
+						"1846073329": {
+							"value": 450.0
+						},
+						"2403234448": {
+							"value": 450.0
 						}
 					}
 				}
 			]
 		},
 		{
-			"children": [
-				{
-					"children": [],
-					"components": [
-						{
-							"component": "Core",
-							"tag": "High Trees",
-							"uuid": 607820125
-						},
-						{
-							"component": "Geometry",
-							"cullback": false,
-							"path": "assets/hightree.obj",
-							"transparent": true,
-							"wireframe": false
-						},
-						{
-							"component": "Transform",
-							"rotation": [
-								0.0,
-								0.0,
-								0.0
-							],
-							"scale": [
-								0.5,
-								0.5,
-								0.5
-							],
-							"translation": [
-								0.0,
-								0.0,
-								0.0
-							]
-						},
-						{
-							"component": "Instancing",
-							"path": "virtual:High Trees"
-						},
-						{
-							"component": "Material",
-							"material": {
-								"albedo": [
-									1.0,
-									1.0,
-									1.0,
-									1.0
-								],
-								"albedoTexture": "assets/hightree.png",
-								"ao": 1.0,
-								"aoTexture": "",
-								"emissive": [
-									0.0,
-									0.0,
-									0.0
-								],
-								"emissiveTexture": "",
-								"metallic": 0.0,
-								"metallicRoughnessTexture": "",
-								"normalTexture": "",
-								"roughness": 1.0,
-								"scale": 1.0
-							}
-						}
-					]
-				},
-				{
-					"children": [],
-					"components": [
-						{
-							"component": "Core",
-							"tag": "Palm Trees",
-							"uuid": 1175133733
-						},
-						{
-							"component": "Geometry",
-							"cullback": false,
-							"path": "assets/palmtree.obj",
-							"transparent": true,
-							"wireframe": false
-						},
-						{
-							"component": "Transform",
-							"rotation": [
-								0.0,
-								0.0,
-								0.0
-							],
-							"scale": [
-								1.0,
-								1.0,
-								1.0
-							],
-							"translation": [
-								0.0,
-								0.0,
-								0.0
-							]
-						},
-						{
-							"component": "Instancing",
-							"path": "virtual:Palm Trees"
-						},
-						{
-							"component": "Material",
-							"material": {
-								"albedo": [
-									1.0,
-									1.0,
-									1.0,
-									1.0
-								],
-								"albedoTexture": "assets/hightree.png",
-								"ao": 1.0,
-								"aoTexture": "",
-								"emissive": [
-									0.0,
-									0.0,
-									0.0
-								],
-								"emissiveTexture": "",
-								"metallic": 0.0,
-								"metallicRoughnessTexture": "",
-								"normalTexture": "",
-								"roughness": 1.0,
-								"scale": 1.0
-							}
-						}
-					]
-				}
-			],
+			"children": [],
 			"components": [
 				{
 					"component": "Core",
-					"tag": "Trees",
-					"uuid": 3589041954
+					"tag": "High Trees",
+					"uuid": 3900388003
+				},
+				{
+					"component": "Geometry",
+					"cullback": false,
+					"path": "assets/hightree.obj",
+					"transparent": true,
+					"wireframe": false
+				},
+				{
+					"component": "Instancing",
+					"path": "virtual:High Trees"
+				},
+				{
+					"component": "Material",
+					"material": {
+						"albedo": [
+							1.0,
+							1.0,
+							1.0,
+							1.0
+						],
+						"albedoTexture": "assets/hightree.png",
+						"ao": 1.0,
+						"aoTexture": "",
+						"emissive": [
+							0.0,
+							0.0,
+							0.0
+						],
+						"emissiveTexture": "",
+						"metallic": 0.5,
+						"metallicRoughnessTexture": "",
+						"normalTexture": "",
+						"roughness": 0.5,
+						"scale": 1.0
+					}
+				},
+				{
+					"component": "Nodes",
+					"path": "assets/instantiate.otn",
+					"settings": {
+						"2414095796": {
+							"value": "High Trees"
+						},
+						"2767349882": {
+							"value": 400
+						},
+						"3262656160": {
+							"value": 1.0
+						},
+						"538930107": {
+							"path": "virtual:Area"
+						}
+					}
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Palm Trees",
+					"uuid": 3256211151
+				},
+				{
+					"component": "Geometry",
+					"cullback": false,
+					"path": "assets/palmtree.obj",
+					"transparent": false,
+					"wireframe": false
+				},
+				{
+					"component": "Instancing",
+					"path": "virtual:Palm Trees"
+				},
+				{
+					"component": "Material",
+					"material": {
+						"albedo": [
+							1.0,
+							1.0,
+							1.0,
+							1.0
+						],
+						"albedoTexture": "assets/palmtree.png",
+						"ao": 1.0,
+						"aoTexture": "",
+						"emissive": [
+							0.0,
+							0.0,
+							0.0
+						],
+						"emissiveTexture": "",
+						"metallic": 0.5,
+						"metallicRoughnessTexture": "",
+						"normalTexture": "",
+						"roughness": 0.5,
+						"scale": 1.0
+					}
+				},
+				{
+					"component": "Nodes",
+					"path": "assets/instantiate.otn",
+					"settings": {
+						"2414095796": {
+							"value": "Palm Trees"
+						},
+						"2767349882": {
+							"value": 200
+						},
+						"3262656160": {
+							"value": 3.0999999046325684
+						},
+						"538930107": {
+							"path": "virtual:Area"
+						}
+					}
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Bamboo Palm",
+					"uuid": 3209023637
+				},
+				{
+					"component": "Geometry",
+					"cullback": false,
+					"path": "assets/bamboopalm.obj",
+					"transparent": true,
+					"wireframe": false
+				},
+				{
+					"component": "Instancing",
+					"path": "virtual:Bamboo Palm"
+				},
+				{
+					"component": "Material",
+					"material": {
+						"albedo": [
+							1.0,
+							1.0,
+							1.0,
+							1.0
+						],
+						"albedoTexture": "assets/bamboopalm.png",
+						"ao": 1.0,
+						"aoTexture": "",
+						"emissive": [
+							0.0,
+							0.0,
+							0.0
+						],
+						"emissiveTexture": "",
+						"metallic": 0.5,
+						"metallicRoughnessTexture": "",
+						"normalTexture": "",
+						"roughness": 0.5,
+						"scale": 1.0
+					}
+				},
+				{
+					"component": "Nodes",
+					"path": "assets/instantiate.otn",
+					"settings": {
+						"2414095796": {
+							"value": "Bamboo Palm"
+						},
+						"2767349882": {
+							"value": 200
+						},
+						"3262656160": {
+							"value": 1.5
+						},
+						"538930107": {
+							"path": "virtual:Area"
+						}
+					}
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Ground Palm",
+					"uuid": 1452129769
+				},
+				{
+					"component": "Geometry",
+					"cullback": false,
+					"path": "assets/groundpalm.obj",
+					"transparent": true,
+					"wireframe": false
+				},
+				{
+					"component": "Instancing",
+					"path": "virtual:Ground Palm"
+				},
+				{
+					"component": "Material",
+					"material": {
+						"albedo": [
+							1.0,
+							1.0,
+							1.0,
+							1.0
+						],
+						"albedoTexture": "assets/groundpalm.png",
+						"ao": 1.0,
+						"aoTexture": "",
+						"emissive": [
+							0.0,
+							0.0,
+							0.0
+						],
+						"emissiveTexture": "",
+						"metallic": 0.5,
+						"metallicRoughnessTexture": "",
+						"normalTexture": "",
+						"roughness": 0.5,
+						"scale": 1.0
+					}
+				},
+				{
+					"component": "Nodes",
+					"path": "assets/instantiate.otn",
+					"settings": {
+						"2414095796": {
+							"value": "Ground Palm"
+						},
+						"2767349882": {
+							"value": 200
+						},
+						"3262656160": {
+							"value": 2.0
+						},
+						"538930107": {
+							"path": "virtual:Area"
+						}
+					}
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Bush",
+					"uuid": 1226033295
+				},
+				{
+					"component": "Geometry",
+					"cullback": false,
+					"path": "assets/bush.obj",
+					"transparent": true,
+					"wireframe": false
+				},
+				{
+					"component": "Instancing",
+					"path": "virtual:Bush"
+				},
+				{
+					"component": "Material",
+					"material": {
+						"albedo": [
+							1.0,
+							1.0,
+							1.0,
+							1.0
+						],
+						"albedoTexture": "assets/bush.png",
+						"ao": 1.0,
+						"aoTexture": "",
+						"emissive": [
+							0.0,
+							0.0,
+							0.0
+						],
+						"emissiveTexture": "",
+						"metallic": 0.5,
+						"metallicRoughnessTexture": "",
+						"normalTexture": "",
+						"roughness": 0.5,
+						"scale": 1.0
+					}
+				},
+				{
+					"component": "Nodes",
+					"path": "assets/instantiate.otn",
+					"settings": {
+						"2414095796": {
+							"value": "Bush"
+						},
+						"2767349882": {
+							"value": 200
+						},
+						"3262656160": {
+							"value": 1.0
+						},
+						"538930107": {
+							"path": "virtual:Area"
+						}
+					}
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Rock",
+					"uuid": 3824586795
+				},
+				{
+					"component": "Geometry",
+					"cullback": true,
+					"path": "assets/rock.obj",
+					"transparent": false,
+					"wireframe": false
+				},
+				{
+					"component": "Instancing",
+					"path": "virtual:Rock"
+				},
+				{
+					"component": "Material",
+					"material": {
+						"albedo": [
+							1.0,
+							1.0,
+							1.0,
+							1.0
+						],
+						"albedoTexture": "assets/rock.jpg",
+						"ao": 1.0,
+						"aoTexture": "",
+						"emissive": [
+							0.0,
+							0.0,
+							0.0
+						],
+						"emissiveTexture": "",
+						"metallic": 0.5,
+						"metallicRoughnessTexture": "",
+						"normalTexture": "",
+						"roughness": 0.5,
+						"scale": 1.0
+					}
+				},
+				{
+					"component": "Nodes",
+					"path": "assets/instantiate.otn",
+					"settings": {
+						"2414095796": {
+							"value": "Rock"
+						},
+						"2767349882": {
+							"value": 200
+						},
+						"3262656160": {
+							"value": 1.0
+						},
+						"538930107": {
+							"path": "virtual:Area"
+						}
+					}
 				}
 			]
 		}
 	],
 	"metadata": {
-		"cameraPreset": 3,
+		"cameraPreset": 4,
 		"gizmo": {
 			"enabled": false,
 			"mode": 7,

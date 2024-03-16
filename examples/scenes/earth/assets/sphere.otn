@@ -39,10 +39,15 @@
 					"id": 1241675404,
 					"name": "Input",
 					"type": "geometry"
+				},
+				{
+					"id": 3568427161,
+					"name": "Name",
+					"type": "string",
+					"value": "sphere"
 				}
 			],
 			"outputs": [],
-			"path": "virtual:sphere",
 			"title": "Save Geometry To Virtual",
 			"type": "Save Geometry To Virtual",
 			"x": 383.0,

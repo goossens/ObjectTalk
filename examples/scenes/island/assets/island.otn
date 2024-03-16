@@ -413,10 +413,15 @@
 					"id": 1555446075,
 					"name": "Input",
 					"type": "geometry"
+				},
+				{
+					"id": 1477176949,
+					"name": "Name",
+					"type": "string",
+					"value": "island"
 				}
 			],
 			"outputs": [],
-			"path": "virtual:island",
 			"title": "Save Geometry To Virtual",
 			"type": "Save Geometry To Virtual",
 			"x": 954.0,

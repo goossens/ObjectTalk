@@ -35,10 +35,15 @@
 					"id": 1241675404,
 					"name": "Input",
 					"type": "geometry"
+				},
+				{
+					"id": 566759087,
+					"name": "Name",
+					"type": "string",
+					"value": "grass"
 				}
 			],
 			"outputs": [],
-			"path": "virtual:grass",
 			"title": "Save Geometry To Virtual",
 			"type": "Save Geometry To Virtual",
 			"x": 383.0,

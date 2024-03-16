@@ -39,10 +39,15 @@
 					"id": 1241675404,
 					"name": "Input",
 					"type": "geometry"
+				},
+				{
+					"id": 1371122679,
+					"name": "Name",
+					"type": "string",
+					"value": "ball"
 				}
 			],
 			"outputs": [],
-			"path": "virtual:ball",
 			"title": "Save Geometry To Virtual",
 			"type": "Save Geometry To Virtual",
 			"x": 383.0,

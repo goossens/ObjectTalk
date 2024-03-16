@@ -53,8 +53,7 @@ void OtSceneRenderer::renderGridPass(OtSceneRendererContext& ctx) {
 		OtStateWriteA |
 		OtStateWriteZ |
 		OtStateDepthTestLess |
-		OtStateBlendAlpha |
-		OtStateMsaa);
+		OtStateBlendAlpha);
 
 	pass.runShaderProgram(gridProgram);
 }

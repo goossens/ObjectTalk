@@ -47,7 +47,6 @@ using OtNodesPinTypes = OtTypeList<
 	float,
 	std::string,
 	glm::vec3,
-	glm::vec4,
 	OtImage,
 	OtTexture,
 	OtGeometry,
@@ -59,7 +58,6 @@ enum {
 	OtNodesPinFloatType,
 	OtNodesPinStringType,
 	OtNodesPinVectorType,
-	OtNodesPinColoeType,
 	OtNodesPinImageType,
 	OtNodesPinTextureType,
 	OtNodesPinGeometryType,
@@ -72,7 +70,6 @@ static constexpr const char* OtNodesPinTypeNames[] = {
 	"float",
 	"string",
 	"vector",
-	"color",
 	"image",
 	"texture",
 	"geometry",
@@ -97,6 +94,7 @@ typedef std::function<void(float)> OtNodesPinRenderer;
 
 class OtNodesPinClass : public std::enable_shared_from_this<OtNodesPinClass> {
 public:
+	// pin types
 	enum {
 		inputPin,
 		outputPin

@@ -36,10 +36,15 @@
 					"id": 1241675404,
 					"name": "Input",
 					"type": "geometry"
+				},
+				{
+					"id": 1173704416,
+					"name": "Name",
+					"type": "string",
+					"value": "cube"
 				}
 			],
 			"outputs": [],
-			"path": "virtual:cube",
 			"title": "Save Geometry To Virtual",
 			"type": "Save Geometry To Virtual",
 			"x": 383.0,

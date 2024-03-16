@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <chrono>
 #include <memory>
 #include <vector>
 
@@ -28,7 +29,11 @@ public:
 	void perform(std::shared_ptr<OtEditorTask> task) {
 		task->perform();
 
-		if (isDirty() && undoStack.back()->isMergeable(task)) {
+		auto now = std::chrono::system_clock::now();
+		auto interval = std::chrono::duration_cast<std::chrono::milliseconds>(now - last).count();
+		last = now;
+
+		if (isDirty() && interval < 1500 && undoStack.back()->isMergeable(task)) {
 			undoStack.back()->merge(task);
 
 		} else {
@@ -70,6 +75,9 @@ private:
 	// to keep track of tasks
 	std::vector<std::shared_ptr<OtEditorTask>> undoStack;
 	std::vector<std::shared_ptr<OtEditorTask>> redoStack;
+
+	// time of last action
+	std::chrono::time_point<std::chrono::system_clock> last;
 
 	// currently basedlined version (to support "dirty" tracking)
 	int baselineMarker = 0;

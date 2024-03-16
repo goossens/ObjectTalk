@@ -50,7 +50,6 @@ public:
 		targetNode->needsSizing = true;
 	}
 
-/*
 	// support task merging
 	bool isMergeable(std::shared_ptr<OtEditorTask> t) override {
 		auto task = std::dynamic_pointer_cast<OtEditNodeTask>(t);
@@ -61,7 +60,6 @@ public:
 		auto task = std::dynamic_pointer_cast<OtEditNodeTask>(t);
 		newState = task->newState;
 	}
-*/
 
 private:
 	// properties

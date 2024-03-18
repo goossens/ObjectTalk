@@ -32,10 +32,10 @@ void OtSceneRenderer::renderDeferredGeometryPass(OtSceneRendererContext& ctx) {
 
 	// render all opaque geometries
 	if (ctx.hasOpaqueGeometries) {
-		ctx.scene->view<OtGeometryComponent, OtMaterialComponent>().each([&](auto entity, auto& geometry, auto& material) {
+		ctx.scene->view<OtGeometryComponent>().each([&](auto entity, auto& geometry) {
 			// ensure they are ready to be rendered
 			if (!geometry.transparent && geometry.asset.isReady()) {
-				renderDeferredGeometry(ctx, pass, entity, geometry, material);
+				renderDeferredGeometry(ctx, pass, entity, geometry);
 			}
 		});
 	}
@@ -62,7 +62,7 @@ void OtSceneRenderer::renderDeferredGeometryPass(OtSceneRendererContext& ctx) {
 //	OtSceneRenderer::renderDeferredGeometry
 //
 
-void OtSceneRenderer::renderDeferredGeometry(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtGeometryComponent& geometry, OtMaterialComponent& material) {
+void OtSceneRenderer::renderDeferredGeometry(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtGeometryComponent& geometry) {
 	// visibility flag and target program
 	bool visible = false;
 	OtShaderProgram* program;
@@ -92,7 +92,15 @@ void OtSceneRenderer::renderDeferredGeometry(OtSceneRendererContext& ctx, OtPass
 	// ensure geometry is visible
 	if (visible) {
 		// submit the material and clipping uniforms
-		submitMaterialUniforms(*material.material);
+		if (ctx.scene->hasComponent<OtMaterialComponent>(entity)) {
+			auto& material = ctx.scene->getComponent<OtMaterialComponent>(entity);
+			submitMaterialUniforms(*material.material);
+
+		} else {
+			OtMaterial material;
+			submitMaterialUniforms(material);
+		}
+
 		submitClippingUniforms(ctx.clippingPlane);
 
 		// submit the geometry

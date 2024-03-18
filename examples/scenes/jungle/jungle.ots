@@ -162,7 +162,7 @@
 						"region4TextureScale": 1.0
 					},
 					"tileSize": 32,
-					"vOffset": -2.0,
+					"vOffset": -1.0,
 					"vScale": 2.0,
 					"wireframe": false
 				}
@@ -501,7 +501,7 @@
 							"value": 200
 						},
 						"3262656160": {
-							"value": 1.0
+							"value": 0.550000011920929
 						},
 						"538930107": {
 							"path": "virtual:Area"

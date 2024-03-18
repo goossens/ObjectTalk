@@ -64,7 +64,7 @@ public:
 				iblEntity = entity;
 			}
 
-			if (scene->hasComponent<OtGeometryComponent>(entity) && scene->hasComponent<OtMaterialComponent>(entity)) {
+			if (scene->hasComponent<OtGeometryComponent>(entity)) {
 				bool transparent = scene->getComponent<OtGeometryComponent>(entity).transparent;
 				hasOpaqueEntities |= !transparent;
 				hasOpaqueGeometries |= !transparent;

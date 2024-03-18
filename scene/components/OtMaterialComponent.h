@@ -42,8 +42,4 @@ public:
 
 	// stored properties
 	std::shared_ptr<OtMaterial> material;
-
-private:
-	// create a named material instance
-	void createMaterial(const std::string& type);
 };

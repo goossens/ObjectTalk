@@ -39,9 +39,9 @@ void OtSceneRenderer::renderForwardGeometryPass(OtSceneRendererContext& ctx) {
 	}
 
 	// render all transparent geometries
-	ctx.scene->view<OtGeometryComponent, OtMaterialComponent>().each([&](auto entity, auto& geometry, auto& material) {
+	ctx.scene->view<OtGeometryComponent>().each([&](auto entity, auto& geometry) {
 		if (geometry.transparent && geometry.asset.isReady()) {
-			renderForwardGeometry(ctx, pass, entity, geometry, material);
+			renderForwardGeometry(ctx, pass, entity, geometry);
 		}
 	});
 }
@@ -105,7 +105,7 @@ void OtSceneRenderer::renderForwardWater(OtSceneRendererContext& ctx, OtPass& pa
 //	OtSceneRenderer::renderForwardGeometry
 //
 
-void OtSceneRenderer::renderForwardGeometry(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtGeometryComponent& geometry, OtMaterialComponent& material) {
+void OtSceneRenderer::renderForwardGeometry(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtGeometryComponent& geometry) {
 	// visibility flag and target program
 	bool visible = false;
 	OtShaderProgram* program;
@@ -135,7 +135,15 @@ void OtSceneRenderer::renderForwardGeometry(OtSceneRendererContext& ctx, OtPass&
 	// ensure geometry is visible
 	if (visible) {
 		// submit the material, clipping and light uniforms
-		submitMaterialUniforms(*material.material);
+		if (ctx.scene->hasComponent<OtMaterialComponent>(entity)) {
+			auto& material = ctx.scene->getComponent<OtMaterialComponent>(entity);
+			submitMaterialUniforms(*material.material);
+
+		} else {
+			OtMaterial material;
+			submitMaterialUniforms(material);
+		}
+
 		submitClippingUniforms(ctx.clippingPlane);
 		submitLightUniforms(ctx);
 

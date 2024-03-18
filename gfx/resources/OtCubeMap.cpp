@@ -353,7 +353,6 @@ void OtCubeMap::renderCubemap() {
 
 		// setup a rendering pass
 		OtPass pass;
-		pass.setClear(false, false);
 		pass.setRectangle(0, 0, size, size);
 		pass.setFrameBuffer(framebuffers[side].getHandle());
 		pass.setTransform(viewMatrices[side], projectionMatrix);

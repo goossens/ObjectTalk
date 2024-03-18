@@ -62,6 +62,9 @@
 #include "generated/filter/OtBlurFS_mtl.h"
 #include "generated/filter/OtBlurFS_spv.h"
 #include "generated/filter/OtBlurFS_dx11.h"
+#include "generated/filter/OtFogFS_mtl.h"
+#include "generated/filter/OtFogFS_spv.h"
+#include "generated/filter/OtFogFS_dx11.h"
 #include "generated/filter/OtFxaaFS_mtl.h"
 #include "generated/filter/OtFxaaFS_spv.h"
 #include "generated/filter/OtFxaaFS_dx11.h"
@@ -191,6 +194,8 @@ static const uint8_t OtBloomUpSampleFS_glsl[1] = {0};
 static const uint8_t OtBloomUpSampleFS_essl[1] = {0};
 static const uint8_t OtBlurFS_glsl[1] = {0};
 static const uint8_t OtBlurFS_essl[1] = {0};
+static const uint8_t OtFogFS_glsl[1] = {0};
+static const uint8_t OtFogFS_essl[1] = {0};
 static const uint8_t OtFxaaFS_glsl[1] = {0};
 static const uint8_t OtFxaaFS_essl[1] = {0};
 static const uint8_t OtIslandizerFS_glsl[1] = {0};
@@ -270,6 +275,7 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtBloomFS),
 	BGFX_EMBEDDED_SHADER(OtBloomUpSampleFS),
 	BGFX_EMBEDDED_SHADER(OtBlurFS),
+	BGFX_EMBEDDED_SHADER(OtFogFS),
 	BGFX_EMBEDDED_SHADER(OtFxaaFS),
 	BGFX_EMBEDDED_SHADER(OtIslandizerFS),
 	BGFX_EMBEDDED_SHADER(OtNormalMapperFS),

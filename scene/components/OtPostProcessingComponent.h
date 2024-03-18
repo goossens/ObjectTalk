@@ -33,6 +33,9 @@ public:
 
 	// stored properties
 	bool fxaa = false;
+	bool fog = false;
+	float fogDensity = 0.1f;
+	glm::vec3 fogColor = glm::vec3(0.4f, 0.5f, 0.8f);
 	float bloomIntensity = 0.8f;
 	float exposure = 1.0f;
 };

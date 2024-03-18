@@ -74,7 +74,9 @@ private:
 	void renderForwardWater(OtSceneRendererContext& ctx, OtPass& pass, OtWaterComponent& water);
 	void renderForwardGeometry(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtGeometryComponent& geometry, OtMaterialComponent& material);
 	void renderHighlight(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity);
-	void renderBloom(OtSceneRendererContext& ctx, float bloomIntensity);
+	void renderFxaa(OtSceneRendererContext& ctx, OtFrameBuffer* input, OtFrameBuffer* output);
+	void renderFog(OtSceneRendererContext& ctx, OtFrameBuffer* input, OtFrameBuffer* output, float fogDensity, glm::vec3& fogColor);
+	void renderBloom(OtSceneRendererContext& ctx, OtFrameBuffer* input, OtFrameBuffer* output, float bloomIntensity);
 
 	// rendering tools
 	void submitTextureSampler(OtSampler& sampler, int unit, OtAsset<OtTextureAsset>& texture);
@@ -100,7 +102,8 @@ private:
 	OtFrameBuffer reflectionBuffer{OtTexture::rgba16Texture, OtTexture::dFloatTexture};
 	OtFrameBuffer refractionBuffer{OtTexture::rgba16Texture, OtTexture::dFloatTexture};
 
-	OtFrameBuffer postProcessBuffer{OtTexture::rgba16Texture, OtTexture::noTexture};
+	OtFrameBuffer postProcessBuffer1{OtTexture::rgba16Texture, OtTexture::noTexture};
+	OtFrameBuffer postProcessBuffer2{OtTexture::rgba16Texture, OtTexture::noTexture};
 	OtFrameBuffer selectedBuffer{OtTexture::r8Texture, OtTexture::noTexture};
 
 	static constexpr int bloomDepth = 5;
@@ -122,9 +125,11 @@ private:
 	OtUniformVec4 gridUniforms{"u_grid", 1};
 	OtUniformVec4 outlineUniforms{"u_outline", 1};
 	OtUniformVec4 fxaaUniforms{"u_fxaa", 1};
+	OtUniformVec4 fogUniforms{"u_fog", 2};
 	OtUniformVec4 bloomUniforms{"u_bloom", 1};
 	OtUniformVec4 postProcessUniforms{"u_postProcess", 1};
 
+	OtUniformMat4 invProjUniform{"u_invProjUniform", 1};
 	OtUniformMat4 invViewProjUniform{"u_invViewProjUniform", 1};
 	OtUniformMat4 skyInvViewProjUniform{"u_skyInvViewProjUniform", 1};
 
@@ -174,6 +179,7 @@ private:
 	OtSampler selectedSampler{"s_selectedTexture", OtTexture::pointSampling | OtTexture::clampSampling};
 
 	OtSampler postProcessSampler{"s_postProcessTexture", OtTexture::pointSampling | OtTexture::clampSampling};
+	OtSampler depthSampler{"s_depthTexture", OtTexture::pointSampling | OtTexture::clampSampling};
 	OtSampler bloomSampler{"s_bloomTexture", OtTexture::pointSampling | OtTexture::clampSampling};
 
 	// shader programs
@@ -191,6 +197,7 @@ private:
 	OtShaderProgram skyProgram{"OtSkyVS", "OtSkyFS"};
 	OtShaderProgram skyBoxProgram{"OtSkyVS", "OtSkyBoxFS"};
 	OtShaderProgram fxaaProgram{"OtFilterVS", "OtFxaaFS"};
+	OtShaderProgram fogProgram{"OtFilterVS", "OtFogFS"};
 	OtShaderProgram bloomDownSampleProgram{"OtFilterVS", "OtBloomDownSampleFS"};
 	OtShaderProgram bloomUpSampleProgram{"OtFilterVS", "OtBloomUpSampleFS"};
 	OtShaderProgram bloomApplyProgram{"OtFilterVS", "OtBloomApplyFS"};

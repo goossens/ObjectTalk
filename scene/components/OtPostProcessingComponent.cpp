@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include "glm/gtc/type_ptr.hpp"
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
@@ -25,6 +26,13 @@
 bool OtPostProcessingComponent::renderUI() {
 	bool changed;
 	changed |= OtUiToggleButton("FXAA", &fxaa);
+	changed |= OtUiToggleButton("Fog", &fog);
+
+	if (fog) {
+		changed |= ImGui::DragFloat("Fog Density", &fogDensity, 0.01f);
+		changed |= ImGui::ColorEdit3("Fog Color", glm::value_ptr(fogColor));
+	}
+
 	changed |= ImGui::SliderFloat("Bloom Intensity", &bloomIntensity, 0.0f, 3.0f, "%.2f");
 	changed |= ImGui::SliderFloat("Exposure", &exposure, 0.1f, 3.0f, "%.2f");
 	return changed;
@@ -39,6 +47,9 @@ nlohmann::json OtPostProcessingComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
 	data["fxaa"] = fxaa;
+	data["fog"] = fog;
+	data["fogDensity"] = fogDensity;
+	data["fogColor"] = fogColor;
 	data["bloomIntensity"] = bloomIntensity;
 	data["Exposure"] = exposure;
 	return data;
@@ -52,5 +63,8 @@ nlohmann::json OtPostProcessingComponent::serialize(std::string* basedir) {
 void OtPostProcessingComponent::deserialize(nlohmann::json data, std::string* basedir) {
 	fxaa = data.value("fxaa", false);
 	bloomIntensity = data.value("bloomIntensity", 0.8f);
+	fog = data.value("fog", false);
+	fogDensity = data.value("fogDensity", 0.1f);
+	fogColor = data.value("fogColor", glm::vec3(0.4f, 0.5f, 0.8f));
 	exposure = data.value("Exposure", 1.0f);
 }

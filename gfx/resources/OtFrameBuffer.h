@@ -44,6 +44,10 @@ public:
 	inline int getWidth() { return width; }
 	inline int getHeight() { return height; }
 
+	// see if textures are available
+	inline bool hasColorTexture() { return colorTextureType != OtTexture::noTexture; }
+	inline bool hasDepthTexture() { return depthTextureType != OtTexture::noTexture; }
+
 	// get texture types
 	inline int getColorTextureType() { return colorTextureType; }
 	inline int getDepthTextureType() { return depthTextureType; }

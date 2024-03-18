@@ -37,6 +37,13 @@
 					"Exposure": 0.9300000071525574,
 					"bloomIntensity": 0.41999998688697815,
 					"component": "Post Processing",
+					"fog": true,
+					"fogColor": [
+						0.4000000059604645,
+						0.501960813999176,
+						0.800000011920929
+					],
+					"fogDensity": 0.10000000149011612,
 					"fxaa": true
 				}
 			]

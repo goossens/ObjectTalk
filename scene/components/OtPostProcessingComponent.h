@@ -32,6 +32,7 @@ public:
 	static constexpr char const* name = "Post Processing";
 
 	// stored properties
+	bool fxaa = false;
 	float bloomIntensity = 0.8f;
 	float exposure = 1.0f;
 };

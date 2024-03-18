@@ -69,7 +69,7 @@ void OtSceneRenderer::renderDeferredGeometry(OtSceneRendererContext& ctx, OtPass
 
 	// get camera frustum and geometry AABB
 	auto& frustum = ctx.camera.frustum;
-	auto& aabb =  geometry.asset->getGeometry().getAABB();
+	auto& aabb = geometry.asset->getGeometry().getAABB();
 
 	// is this a case of instancing?
 	if (ctx.scene->hasComponent<OtInstancingComponent>(entity)) {

@@ -62,7 +62,7 @@ private:
 	void renderForwardGeometryPass(OtSceneRendererContext& ctx);
 	void renderGridPass(OtSceneRendererContext& ctx);
 	void renderHighlightPass(OtSceneRendererContext& ctx, OtEntity selected);
-	void renderPostProcessingPass(OtSceneRendererContext& ctx, bool renderPostProcessingEffects=true);
+	void renderPostProcessingPass(OtSceneRendererContext& ctx);
 
 	// render entities
 	void renderReflectionRefractionScene(OtSceneRendererContext& ctx);
@@ -94,15 +94,14 @@ private:
 
 	// framebuffers
 	OtGbuffer deferredRenderingBuffer;
-	OtFrameBuffer deferredCompositeBuffer{OtTexture::rgbaFloat16Texture, OtTexture::dFloatTexture};
-	OtFrameBuffer postProcessBuffer{OtTexture::rgba8Texture, OtTexture::noTexture};
-	OtFrameBuffer selectedBuffer{OtTexture::r8Texture, OtTexture::noTexture};
+	OtFrameBuffer compositeBuffer{OtTexture::rgba16Texture, OtTexture::dFloatTexture};
 
 	OtGbuffer reflectionRenderingBuffer;
-	OtFrameBuffer reflectionCompositeBuffer{OtTexture::rgba16Texture, OtTexture::dFloatTexture};
-	OtFrameBuffer refractionCompositeBuffer{OtTexture::rgba16Texture, OtTexture::dFloatTexture};
-	OtFrameBuffer reflectionBuffer{OtTexture::rgba8Texture, OtTexture::noTexture};
-	OtFrameBuffer refractionBuffer{OtTexture::rgba8Texture, OtTexture::noTexture};
+	OtFrameBuffer reflectionBuffer{OtTexture::rgba16Texture, OtTexture::dFloatTexture};
+	OtFrameBuffer refractionBuffer{OtTexture::rgba16Texture, OtTexture::dFloatTexture};
+
+	OtFrameBuffer postProcessBuffer{OtTexture::rgba16Texture, OtTexture::noTexture};
+	OtFrameBuffer selectedBuffer{OtTexture::r8Texture, OtTexture::noTexture};
 
 	static constexpr int bloomDepth = 5;
 	OtFrameBuffer bloomBuffer[bloomDepth];
@@ -122,6 +121,7 @@ private:
 	OtUniformVec4 skyUniforms{"u_sky", 3};
 	OtUniformVec4 gridUniforms{"u_grid", 1};
 	OtUniformVec4 outlineUniforms{"u_outline", 1};
+	OtUniformVec4 fxaaUniforms{"u_fxaa", 1};
 	OtUniformVec4 bloomUniforms{"u_bloom", 1};
 	OtUniformVec4 postProcessUniforms{"u_postProcess", 1};
 
@@ -190,8 +190,10 @@ private:
 	OtShaderProgram outlineProgram{"OtOutlineVS", "OtOutlineFS"};
 	OtShaderProgram skyProgram{"OtSkyVS", "OtSkyFS"};
 	OtShaderProgram skyBoxProgram{"OtSkyVS", "OtSkyBoxFS"};
+	OtShaderProgram fxaaProgram{"OtFilterVS", "OtFxaaFS"};
 	OtShaderProgram bloomDownSampleProgram{"OtFilterVS", "OtBloomDownSampleFS"};
 	OtShaderProgram bloomUpSampleProgram{"OtFilterVS", "OtBloomUpSampleFS"};
+	OtShaderProgram bloomApplyProgram{"OtFilterVS", "OtBloomApplyFS"};
 	OtShaderProgram postProcessProgram{"OtFilterVS", "OtPostProcessFS"};
 
 	// compute programs

@@ -36,7 +36,8 @@
 				{
 					"Exposure": 0.9300000071525574,
 					"bloomIntensity": 0.41999998688697815,
-					"component": "Post Processing"
+					"component": "Post Processing",
+					"fxaa": true
 				}
 			]
 		},
@@ -76,7 +77,7 @@
 						"amplitude": 0.5,
 						"frequency": 10,
 						"lacunarity": 2,
-						"normalStrength": 6.0,
+						"normalStrength": 10.0,
 						"octaves": 5,
 						"persistence": 0.5,
 						"size": 256

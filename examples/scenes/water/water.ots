@@ -72,16 +72,16 @@
 				{
 					"ao": 0.7799999713897705,
 					"color": [
-						0.2830487787723541,
-						0.4586108922958374,
-						0.8097345232963562
+						0.16412796080112457,
+						0.25838640332221985,
+						0.44690263271331787
 					],
 					"component": "Water",
 					"distance": 600.0,
 					"level": 0.0,
 					"metallic": 0.019999999552965164,
 					"normals": "assets/water.jpg",
-					"reflectivity": 0.9200000166893005,
+					"reflectivity": 0.5799999833106995,
 					"roughness": 0.30000001192092896,
 					"scale": 10.0,
 					"speed": 2.380000114440918,
@@ -149,7 +149,8 @@
 				},
 				{
 					"component": "Nodes",
-					"path": "assets/ball.otn"
+					"path": "assets/ball.otn",
+					"settings": {}
 				}
 			]
 		}

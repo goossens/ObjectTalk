@@ -20,7 +20,7 @@ int OtSceneRenderer::render(OtCamera& camera, OtScene* scene, OtEntity selected)
 	// create rendering context
 	OtSceneRendererContext context{
 		camera,
-		deferredRenderingBuffer, deferredCompositeBuffer, postProcessBuffer,
+		deferredRenderingBuffer, compositeBuffer,
 		scene};
 
 	// handle image based lighting (if required)
@@ -65,5 +65,5 @@ int OtSceneRenderer::render(OtCamera& camera, OtScene* scene, OtEntity selected)
 
 	// post process buffer
 	renderPostProcessingPass(context);
-	return postProcessBuffer.getColorTextureIndex();
+	return context.output->getColorTextureIndex();
 }

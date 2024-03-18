@@ -123,7 +123,11 @@ void OtUiReadonlyText(const char* label, std::string& value) {
 //	OtUiToggleButton
 //
 
-bool OtUiToggleButton(const char* label, bool* value) {
+bool OtUiToggleButton(const char* labelPlusID, bool* value) {
+	std::string label;
+	std::string id;
+	OtUiSplitLabel(labelPlusID, label, id);
+
 	ImVec4* colors = ImGui::GetStyle().Colors;
 	ImVec2 p = ImGui::GetCursorScreenPos();
 	ImDrawList* drawlist = ImGui::GetWindowDrawList();
@@ -133,7 +137,7 @@ bool OtUiToggleButton(const char* label, bool* value) {
 	float width = height * 1.55f;
 	float radius = height * 0.5f;
 
-	ImGui::InvisibleButton(label, ImVec2(width, height));
+	ImGui::InvisibleButton(label.c_str(), ImVec2(width, height));
 
 	if (ImGui::IsItemClicked()) {
 		*value = !*value;
@@ -159,6 +163,12 @@ bool OtUiToggleButton(const char* label, bool* value) {
 		ImVec2(p.x + radius + (*value ? 1 : 0) * (width - radius * 2.0f), p.y + radius),
 		radius - 1.5f,
 		IM_COL32(255, 255, 255, 255));
+
+	// render label (if required)
+	if (label.size()) {
+		ImGui::SameLine(0.0f, ImGui::CalcItemWidth() - width + ImGui::GetStyle().ItemInnerSpacing.x);
+		ImGui::TextUnformatted(label.c_str());
+	}
 
 	return changed;
 }

@@ -71,7 +71,9 @@ void OtInstances::load(const std::string &path) {
 	instances = std::make_shared<std::vector<glm::mat4>>();
 
 	for (auto element : data.items()) {
-		instances->emplace_back(element.value());
+		glm::mat4 instance;
+		glm::from_json(element.value(), instance);
+		instances->emplace_back(instance);
 	}
 
 	// increment version number

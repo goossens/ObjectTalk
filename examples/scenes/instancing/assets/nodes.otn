@@ -94,8 +94,13 @@
 				}
 			],
 			"primitive": {
-				"detail": 4,
-				"type": "Spherical Cube"
+				"phiLength": 360.0,
+				"phiSegments": 8,
+				"phiStart": 0.0,
+				"thetaLength": 180.0,
+				"thetaSegments": 16,
+				"thetaStart": 0.0,
+				"type": "Sphere"
 			},
 			"title": "Create Sphere",
 			"type": "Geometry Generator",
@@ -290,7 +295,7 @@
 					"type": "vector"
 				}
 			],
-			"title": "Vector Input",
+			"title": "Translate Cone",
 			"type": "Vector Input",
 			"value": [
 				0.0,

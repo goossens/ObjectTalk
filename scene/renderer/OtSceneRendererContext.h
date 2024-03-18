@@ -28,11 +28,10 @@
 class OtSceneRendererContext {
 public:
 	// constructor
-	OtSceneRendererContext(OtCamera& c, OtGbuffer& db, OtFrameBuffer& cb, OtFrameBuffer& ppb, OtScene* s, const glm::vec4& clp=glm::vec4(0.0f), bool water=true) :
+	OtSceneRendererContext(OtCamera& c, OtGbuffer& db, OtFrameBuffer& cb, OtScene* s, const glm::vec4& clp=glm::vec4(0.0f), bool water=true) :
 		camera(c),
 		deferedBuffer(db),
 		compositeBuffer(cb),
-		postProcessBuffer(ppb),
 		scene(s),
 		clippingPlane(clp) {
 
@@ -100,7 +99,7 @@ public:
 	// rendering buffers
 	OtGbuffer& deferedBuffer;
 	OtFrameBuffer& compositeBuffer;
-	OtFrameBuffer& postProcessBuffer;
+	OtFrameBuffer* output;
 
 	// scene to render
 	OtScene* scene;

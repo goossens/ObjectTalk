@@ -31,7 +31,7 @@ void OtSceneRenderer::renderReflectionPass(OtSceneRendererContext& ctx) {
 	// setup the renderer for the refraction
 	OtSceneRendererContext refractionContext{
 		refractionCamera,
-		reflectionRenderingBuffer, refractionCompositeBuffer, refractionBuffer,
+		reflectionRenderingBuffer, refractionBuffer,
 		ctx.scene,
 		glm::vec4(0.0f, -1.0f, 0.0f, water.level + 1.0f), false};
 
@@ -72,7 +72,7 @@ void OtSceneRenderer::renderReflectionPass(OtSceneRendererContext& ctx) {
 
 	OtSceneRendererContext reflectionContext{
 		reflectionCamera,
-		reflectionRenderingBuffer, reflectionCompositeBuffer, reflectionBuffer,
+		reflectionRenderingBuffer, reflectionBuffer,
 		ctx.scene,
 		glm::vec4(0.0f, 1.0f, 0.0f, -(water.level - 1.0f)), false};
 
@@ -105,7 +105,4 @@ void OtSceneRenderer::renderReflectionRefractionScene(OtSceneRendererContext& ct
 	if (ctx.hasTransparentEntities) {
 		renderForwardGeometryPass(ctx);
 	}
-
-	// post process buffer
-	renderPostProcessingPass(ctx, false);
 }

@@ -36,7 +36,8 @@
 				{
 					"Exposure": 1.1100000143051147,
 					"bloomIntensity": 0.5199999809265137,
-					"component": "Post Processing"
+					"component": "Post Processing",
+					"fxaa": false
 				}
 			]
 		},
@@ -72,11 +73,6 @@
 					"fov": 60.0,
 					"mainCamera": false,
 					"near": 0.10000000149011612
-				},
-				{
-					"Exposure": 1.0,
-					"bloomIntensity": 0.800000011920929,
-					"component": "Post Processing"
 				}
 			]
 		},

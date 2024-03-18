@@ -36,7 +36,8 @@
 				{
 					"Exposure": 1.0,
 					"bloomIntensity": 0.800000011920929,
-					"component": "Post Processing"
+					"component": "Post Processing",
+					"fxaa": true
 				}
 			]
 		},

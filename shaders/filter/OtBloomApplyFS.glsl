@@ -4,13 +4,16 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-$input a_position, i_data0, i_data1, i_data2, i_data3
+$input v_texcoord0
 
 #include <bgfx_shader.glsl>
 
+SAMPLER2D(s_postProcessTexture, 0);
+SAMPLER2D(s_bloomTexture, 1);
+
 void main() {
-	mat4 instance = mtxFromCols(i_data0, i_data1, i_data2, i_data3);
-	mat4 model = mul(u_model[0], instance);
-	vec3 pos = mul(model, vec4(a_position, 1.0)).xyz;
-	gl_Position = mul(u_viewProj, vec4(pos, 1.0));
+	// sample color
+	vec3 color = texture2D(s_postProcessTexture, v_texcoord0).rgb;
+	color += texture2D(s_bloomTexture, v_texcoord0).rgb;
+	gl_FragColor = vec4(color, 1.0);
 }

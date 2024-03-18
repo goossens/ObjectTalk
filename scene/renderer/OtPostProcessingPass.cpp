@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <algorithm>
+
 #include "OtSceneRenderer.h"
 
 
@@ -16,42 +18,85 @@
 //	OtSceneRenderer::renderPostProcessingPass
 //
 
-void OtSceneRenderer::renderPostProcessingPass(OtSceneRendererContext& ctx, bool renderPostProcessingEffects) {
+void OtSceneRenderer::renderPostProcessingPass(OtSceneRendererContext& ctx) {
+	// setup buffers
+	postProcessBuffer.update(ctx.camera.width, ctx.camera.height);
+	OtFrameBuffer* input = &compositeBuffer;
+	OtFrameBuffer* output = &postProcessBuffer;
+
 	// get post-processing information
+	bool fxaa = true;
 	float bloomIntensity = 0.0f;
 	float exposure = 1.0f;
 
-	if (renderPostProcessingEffects) {
-		for (auto&& [entity, component] : ctx.scene->view<OtPostProcessingComponent>().each()) {
-			bloomIntensity = component.bloomIntensity;
-			exposure = component.exposure;
-		}
-
-		// render bloom (if required)
-		if (bloomIntensity > 0.0f) {
-			renderBloom(ctx, bloomIntensity);
-		}
+	for (auto&& [entity, component] : ctx.scene->view<OtPostProcessingComponent>().each()) {
+		fxaa = component.fxaa;
+		bloomIntensity = component.bloomIntensity;
+		exposure = component.exposure;
 	}
 
-	// ensure the post-processing buffer is up to date
-	ctx.postProcessBuffer.update(ctx.camera.width, ctx.camera.height);
+	// apply FXAA ( Fast Approximate Anti-Aliasing) filter (if required)
+	if (fxaa) {
+		// setup pass to apply bloom
+		OtPass applyFxaa;
+		applyFxaa.setFrameBuffer(*output);
+		applyFxaa.submitQuad(ctx.camera.width, ctx.camera.height);
+
+		// set source textures
+		input->bindColorTexture(postProcessSampler, 0);
+
+		// set uniform
+		fxaaUniforms.setValue(0, 1.0f / float(ctx.camera.width), 1.0f / float(ctx.camera.height), 0.0f, 0.0f);
+		fxaaUniforms.submit();
+
+		// run the program
+		fxaaProgram.setState(OtStateWriteRgb | OtStateWriteA | OtStateDepthTestAlways);
+		applyFxaa.runShaderProgram(fxaaProgram);
+
+		// swap framebuffers
+		std::swap(input, output);
+	}
+
+	// render and apply bloom (if required)
+	if (bloomIntensity > 0.0f) {
+		// render bllom by down and up-sampling;
+		renderBloom(ctx, bloomIntensity);
+
+		// setup pass to apply bloom
+		OtPass applyBloom;
+		applyBloom.setFrameBuffer(*output);
+		applyBloom.submitQuad(ctx.camera.width, ctx.camera.height);
+
+		// set source textures
+		input->bindColorTexture(postProcessSampler, 0);
+		bloomBuffer[0].bindColorTexture(bloomSampler, 1);
+
+		// run the program
+		bloomApplyProgram.setState(OtStateWriteRgb | OtStateWriteA | OtStateDepthTestAlways);
+		applyBloom.runShaderProgram(bloomApplyProgram);
+
+		// swap framebuffers
+		std::swap(input, output);
+	}
 
 	// combine all post-processing effects
 	OtPass pass;
-	pass.setFrameBuffer(ctx.postProcessBuffer);
+	pass.setFrameBuffer(*output);
 	pass.submitQuad(ctx.camera.width, ctx.camera.height);
 
 	// set uniform
-	postProcessUniforms.setValue(0, bloomIntensity > 0.0f, exposure, 0.0f, 0.0f);
+	postProcessUniforms.setValue(0, exposure, 0.0f, 0.0f, 0.0f);
 	postProcessUniforms.submit();
 
 	// set source textures
-	ctx.compositeBuffer.bindColorTexture(postProcessSampler, 0);
-	bloomBuffer[0].bindColorTexture(bloomSampler, 1);
+	input->bindColorTexture(postProcessSampler, 0);
 
 	// run the program
 	postProcessProgram.setState(OtStateWriteRgb | OtStateWriteA | OtStateDepthTestAlways);
 	pass.runShaderProgram(postProcessProgram);
+
+	// mark the right output buffer;
+	ctx.output = output;
 }
 
 

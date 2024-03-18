@@ -9,20 +9,13 @@ $input v_texcoord0
 #include <bgfx_shader.glsl>
 
 uniform vec4 u_postProcess;
-#define u_bloomEnabled bool(u_postProcess.x)
-#define u_exposure u_postProcess.y
+#define u_exposure u_postProcess.x
 
 SAMPLER2D(s_postProcessTexture, 0);
-SAMPLER2D(s_bloomTexture, 1);
 
 void main() {
 	// sample color
 	vec3 color = texture2D(s_postProcessTexture, v_texcoord0).rgb;
-
-	// add bloom (if required)
-	if (u_bloomEnabled) {
-		color += texture2D(s_bloomTexture, v_texcoord0).rgb;
-	}
 
 	// apply exposure
 	color *= u_exposure;

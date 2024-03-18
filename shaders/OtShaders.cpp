@@ -47,6 +47,9 @@
 #include "generated/filter/OtBlitFS_mtl.h"
 #include "generated/filter/OtBlitFS_spv.h"
 #include "generated/filter/OtBlitFS_dx11.h"
+#include "generated/filter/OtBloomApplyFS_mtl.h"
+#include "generated/filter/OtBloomApplyFS_spv.h"
+#include "generated/filter/OtBloomApplyFS_dx11.h"
 #include "generated/filter/OtBloomDownSampleFS_mtl.h"
 #include "generated/filter/OtBloomDownSampleFS_spv.h"
 #include "generated/filter/OtBloomDownSampleFS_dx11.h"
@@ -59,6 +62,9 @@
 #include "generated/filter/OtBlurFS_mtl.h"
 #include "generated/filter/OtBlurFS_spv.h"
 #include "generated/filter/OtBlurFS_dx11.h"
+#include "generated/filter/OtFxaaFS_mtl.h"
+#include "generated/filter/OtFxaaFS_spv.h"
+#include "generated/filter/OtFxaaFS_dx11.h"
 #include "generated/filter/OtIslandizerFS_mtl.h"
 #include "generated/filter/OtIslandizerFS_spv.h"
 #include "generated/filter/OtIslandizerFS_dx11.h"
@@ -175,6 +181,8 @@ static const uint8_t OtFilterVS_glsl[1] = {0};
 static const uint8_t OtFilterVS_essl[1] = {0};
 static const uint8_t OtBlitFS_glsl[1] = {0};
 static const uint8_t OtBlitFS_essl[1] = {0};
+static const uint8_t OtBloomApplyFS_glsl[1] = {0};
+static const uint8_t OtBloomApplyFS_essl[1] = {0};
 static const uint8_t OtBloomDownSampleFS_glsl[1] = {0};
 static const uint8_t OtBloomDownSampleFS_essl[1] = {0};
 static const uint8_t OtBloomFS_glsl[1] = {0};
@@ -183,6 +191,8 @@ static const uint8_t OtBloomUpSampleFS_glsl[1] = {0};
 static const uint8_t OtBloomUpSampleFS_essl[1] = {0};
 static const uint8_t OtBlurFS_glsl[1] = {0};
 static const uint8_t OtBlurFS_essl[1] = {0};
+static const uint8_t OtFxaaFS_glsl[1] = {0};
+static const uint8_t OtFxaaFS_essl[1] = {0};
 static const uint8_t OtIslandizerFS_glsl[1] = {0};
 static const uint8_t OtIslandizerFS_essl[1] = {0};
 static const uint8_t OtNormalMapperFS_glsl[1] = {0};
@@ -255,10 +265,12 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtDeferredPbrFS),
 	BGFX_EMBEDDED_SHADER(OtFilterVS),
 	BGFX_EMBEDDED_SHADER(OtBlitFS),
+	BGFX_EMBEDDED_SHADER(OtBloomApplyFS),
 	BGFX_EMBEDDED_SHADER(OtBloomDownSampleFS),
 	BGFX_EMBEDDED_SHADER(OtBloomFS),
 	BGFX_EMBEDDED_SHADER(OtBloomUpSampleFS),
 	BGFX_EMBEDDED_SHADER(OtBlurFS),
+	BGFX_EMBEDDED_SHADER(OtFxaaFS),
 	BGFX_EMBEDDED_SHADER(OtIslandizerFS),
 	BGFX_EMBEDDED_SHADER(OtNormalMapperFS),
 	BGFX_EMBEDDED_SHADER(OtPostProcessFS),

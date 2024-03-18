@@ -87,7 +87,7 @@ void OtSceneRenderer::renderForwardWater(OtSceneRendererContext& ctx, OtPass& pa
 	submitTextureSampler(normalmapSampler, 0, water.normals);
 	reflectionBuffer.bindColorTexture(reflectionSampler, 1);
 	refractionBuffer.bindColorTexture(refractionSampler, 2);
-	refractionCompositeBuffer.bindDepthTexture(refractionDepthSampler, 3);
+	refractionBuffer.bindDepthTexture(refractionDepthSampler, 3);
 
 	// run the program
 	forwardWaterProgram.setState(

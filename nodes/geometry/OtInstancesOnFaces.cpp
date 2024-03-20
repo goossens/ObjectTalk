@@ -35,6 +35,7 @@ public:
 	inline void configure() override {
 		addInputPin("Geometry", geometry);
 		addInputPin("Instance Count", instanceCount);
+		addInputPin("Selection", selection);
 		addInputPin("Rotate to Normals", rotateToNormals);
 		addInputPin("Rotation", rotation);
 		addInputPin("Scale", scale);
@@ -57,14 +58,18 @@ public:
 			// generate instances
 			if (hasVaryingInput()) {
 				for (auto i = 0; i < instanceCount; i++) {
-					evaluateVariableInputs();
+					auto p = getRandomPoint(vertices, indices, triangles);
+					OtNodeVaryingContext context(i, p);
+					evaluateVariableInputs(context);
 
-					glm::mat4 transform =
-						glm::toMat4(glm::quat(glm::radians(rotation))) *
-						glm::scale(glm::mat4(1.0f), scale);
+					if (selection) {
+						glm::mat4 transform =
+							glm::toMat4(glm::quat(glm::radians(rotation))) *
+							glm::scale(glm::mat4(1.0f), scale);
 
-					// generate instance
-					generateInstance(vertices, indices, triangles, transform);
+						// add a new instance
+						addInstance(p, transform);
+					}
 				}
 
 			}  else {
@@ -75,7 +80,8 @@ public:
 
 				// generate instances
 				for (auto i = 0; i < instanceCount; i++) {
-					generateInstance(vertices, indices, triangles, transform);
+					auto p = getRandomPoint(vertices, indices, triangles);
+					addInstance(p, transform);
 				}
 			}
 		}
@@ -135,10 +141,54 @@ private:
 		return glm::vec3(a, b, 1.0f - a - b);
 	}
 
+	// add new instance to the list
+	void addInstance(OtVertex& vertex, glm::mat4& transform) {
+		// rotate to normals (if required)
+		if (rotateToNormals) {
+			static glm::vec3 u = glm::vec3(0.0f, 1.0f, 0.0f);
+			glm::vec3 v = vertex.normal;
+			auto quat = glm::normalize(glm::quat(1.0f + glm::dot(u, v), glm::cross(u, v)));
+			instances.add(glm::translate(glm::mat4(1.0f), vertex.position) * glm::toMat4(quat) * transform, false);
+
+		} else {
+			instances.add(glm::translate(glm::mat4(1.0f), vertex.position) * transform, false);
+		}
+	}
+
+	// get random point inside triangle based on barycentric coordinate
+	OtVertex getRandomPoint(OtVertex* vertices, uint32_t* indices, size_t triangles) {
+		// select a random triangle
+		int triangle = OtRandom(0, int(triangles) - 1);
+
+		// get the corners of the triangle
+		auto index = indices + triangle * 3;
+		auto& v1 = vertices[index[0]];
+		auto& v2 = vertices[index[1]];
+		auto& v3 = vertices[index[2]];
+
+		// generate a random barycentric coordinate
+		auto a = OtRandom(0.0f, 1.0f);
+		auto b = OtRandom(0.0f, 1.0f);
+
+		if (a + b > 1.0f) {
+			a = 1.0f - a;
+			b = 1.0f - b;
+		}
+
+		auto bc = glm::vec3(a, b, 1.0f - a - b);
+
+		// generate vertex at random point
+		return OtVertex(
+			v1.position * bc.x + v2.position * bc.y + v3.position * bc.z,
+			glm::normalize(v1.normal * bc.x + v2.normal * bc.y + v3.normal * bc.z),
+			v1.uv * bc.x + v2.uv * bc.y + v3.uv * bc.z);
+	}
+
 protected:
 	OtGeometry geometry;
 	OtInstances instances;
 	int instanceCount = 16;
+	bool selection = true;
 	bool rotateToNormals = false;
 	glm::vec3 rotation{0.0f};
 	glm::vec3 scale{1.0f};

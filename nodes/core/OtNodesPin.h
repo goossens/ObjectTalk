@@ -136,8 +136,8 @@ public:
 	inline OtNodesPin getDestination() { return destinationPin; }
 	inline bool isDestinationConnected() { return destinationPin != nullptr; }
 
-	// evaluate the pin
-	virtual void evaluate() = 0;
+	// process the input and see if value has changed
+	virtual bool processInput() { return false; };
 
 	// (de)serialize
 	nlohmann::json serialize(std::string* basedir=nullptr);
@@ -152,9 +152,8 @@ public:
 	const char* name;
 	int direction;
 	OtNodeClass* node;
-	bool needsEvaluating = false;
 
-	bool varying{false};
+	bool varying = false;
 
 	OtNodesPinInputConfig* inputConfig = nullptr;;
 	OtNodesPinRenderer render = [](float){};
@@ -202,25 +201,24 @@ public:
 	inline void connectToSource(OtNodesPin srcPin) override {
 		sourcePin = srcPin;
 		source = srcPin ? std::dynamic_pointer_cast<OtNodesPinImpl<T>>(srcPin)->value : nullptr;
-		needsEvaluating = true;
 	}
 
 	inline void disconnectFromSource() override {
 		*value = defaultValue;
 		sourcePin = nullptr;
 		source = nullptr;
-		needsEvaluating = true;
 	}
 
 	inline bool isConnected() { return sourcePin != nullptr; }
 
-	// evaluate the pin
-	void evaluate() override {
-		if (source) {
-			if (*value != *source) {
-				*value = *source;
-				needsEvaluating = true;
-			}
+	// process the input and see if value has changed
+	bool processInput() override {
+		if (source && *value != *source) {
+			*value = *source;
+			return true;
+
+		} else {
+			return false;
 		}
 	}
 

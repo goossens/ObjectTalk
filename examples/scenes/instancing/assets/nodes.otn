@@ -6,11 +6,6 @@
 			"to": 795908031
 		},
 		{
-			"from": 1306801408,
-			"id": 3014569721,
-			"to": 803165759
-		},
-		{
 			"from": 4191412660,
 			"id": 3329626033,
 			"to": 1027933994
@@ -26,44 +21,14 @@
 			"to": 3545155075
 		},
 		{
-			"from": 2666321964,
-			"id": 3952791793,
-			"to": 1831560002
-		},
-		{
 			"from": 2748530417,
 			"id": 3737899874,
 			"to": 3196163256
 		},
 		{
-			"from": 3339123378,
-			"id": 1050838188,
-			"to": 3098789528
-		},
-		{
-			"from": 2944071035,
-			"id": 4190059860,
-			"to": 840759907
-		},
-		{
-			"from": 3362849279,
-			"id": 3141863951,
-			"to": 1290617004
-		},
-		{
-			"from": 2248573501,
-			"id": 3314211876,
-			"to": 3675693576
-		},
-		{
 			"from": 216853080,
 			"id": 1274646304,
 			"to": 873477357
-		},
-		{
-			"from": 2248573501,
-			"id": 2159170197,
-			"to": 1241675404
 		},
 		{
 			"from": 216853080,
@@ -76,9 +41,64 @@
 			"to": 1603031618
 		},
 		{
-			"from": 94999985,
-			"id": 3741507274,
+			"from": 1503567322,
+			"id": 1068871831,
+			"to": 1290617004
+		},
+		{
+			"from": 1534376766,
+			"id": 1164553210,
+			"to": 803165759
+		},
+		{
+			"from": 659017989,
+			"id": 1534377328,
 			"to": 3674880614
+		},
+		{
+			"from": 2775206220,
+			"id": 68838962,
+			"to": 1831560002
+		},
+		{
+			"from": 1968705174,
+			"id": 1769594629,
+			"to": 852880645
+		},
+		{
+			"from": 3339123378,
+			"id": 1050838188,
+			"to": 3098789528
+		},
+		{
+			"from": 2248573501,
+			"id": 3314211876,
+			"to": 3675693576
+		},
+		{
+			"from": 2248573501,
+			"id": 2159170197,
+			"to": 1241675404
+		},
+		{
+			"from": 482523770,
+			"id": 1028679307,
+			"to": 840759907
+		},
+		{
+			"from": 473541455,
+			"id": 2666505135,
+			"to": 554574787
+		},
+		{
+			"from": 1255943026,
+			"id": 382632584,
+			"to": 251076592
+		},
+		{
+			"from": 3645131408,
+			"id": 3332762566,
+			"to": 2041633410
 		}
 	],
 	"metadata": {},
@@ -104,28 +124,30 @@
 			},
 			"title": "Create Sphere",
 			"type": "Geometry Generator",
-			"x": 61.0,
-			"y": 13.0
+			"x": 40.0,
+			"y": 12.0
 		},
 		{
-			"id": 4129075099,
-			"inputs": [],
+			"id": 3367287478,
+			"inputs": [
+				{
+					"id": 4010838657,
+					"name": "A",
+					"type": "float",
+					"value": 6.0
+				}
+			],
 			"outputs": [
 				{
-					"id": 1306801408,
+					"id": 1534376766,
 					"name": "Value",
 					"type": "vector"
 				}
 			],
-			"title": "Scale Sphere",
-			"type": "Vector Input",
-			"value": [
-				6.0,
-				6.0,
-				6.0
-			],
-			"x": 11.0,
-			"y": 115.0
+			"title": "Float to Vector",
+			"type": "Float to Vector",
+			"x": 69.0,
+			"y": 112.0
 		},
 		{
 			"id": 3781631580,
@@ -158,30 +180,44 @@
 					"type": "geometry"
 				}
 			],
-			"title": "Geometry Transform",
+			"title": "Transform",
 			"type": "Geometry Transform",
 			"x": 268.0,
 			"y": 13.0
 		},
 		{
-			"id": 1216812251,
-			"inputs": [],
+			"id": 4008344821,
+			"inputs": [
+				{
+					"id": 3112594517,
+					"name": "X",
+					"type": "float",
+					"value": -7.0
+				},
+				{
+					"id": 825938566,
+					"name": "Y",
+					"type": "float",
+					"value": 0.0
+				},
+				{
+					"id": 3332304188,
+					"name": "Z",
+					"type": "float",
+					"value": 0.0
+				}
+			],
 			"outputs": [
 				{
-					"id": 2944071035,
+					"id": 482523770,
 					"name": "Value",
 					"type": "vector"
 				}
 			],
-			"title": "Vertex Example Offset",
-			"type": "Vector Input",
-			"value": [
-				-7.0,
-				0.0,
-				0.0
-			],
-			"x": 13.0,
-			"y": 182.0
+			"title": "Combine XYZ",
+			"type": "Combine XYZ",
+			"x": 272.0,
+			"y": 177.0
 		},
 		{
 			"id": 2538637514,
@@ -214,10 +250,10 @@
 					"type": "geometry"
 				}
 			],
-			"title": "Geometry Transform",
+			"title": "Transform",
 			"type": "Geometry Transform",
-			"x": 462.0,
-			"y": 82.0
+			"x": 428.0,
+			"y": 29.0
 		},
 		{
 			"id": 1829953391,
@@ -237,8 +273,8 @@
 			"outputs": [],
 			"title": "Save Geometry To Virtual",
 			"type": "Save Geometry To Virtual",
-			"x": 941.0,
-			"y": 7.0
+			"x": 1160.0,
+			"y": 34.0
 		},
 		{
 			"id": 1849796011,
@@ -262,48 +298,76 @@
 			},
 			"title": "Create Cone",
 			"type": "Geometry Generator",
-			"x": 67.0,
-			"y": 453.0
+			"x": 36.0,
+			"y": 418.0
 		},
 		{
-			"id": 767361317,
-			"inputs": [],
+			"id": 1097285194,
+			"inputs": [
+				{
+					"id": 693338791,
+					"name": "X",
+					"type": "float",
+					"value": 0.0
+				},
+				{
+					"id": 1871480518,
+					"name": "Y",
+					"type": "float",
+					"value": 0.5
+				},
+				{
+					"id": 2327237247,
+					"name": "Z",
+					"type": "float",
+					"value": 0.0
+				}
+			],
 			"outputs": [
 				{
-					"id": 2666321964,
+					"id": 659017989,
 					"name": "Value",
 					"type": "vector"
 				}
 			],
-			"title": "Scale Cone",
-			"type": "Vector Input",
-			"value": [
-				0.20000000298023224,
-				0.6000000238418579,
-				0.20000000298023224
-			],
-			"x": 17.0,
-			"y": 604.0
+			"title": "Combine XYZ",
+			"type": "Combine XYZ",
+			"x": 99.0,
+			"y": 508.0
 		},
 		{
-			"id": 1871958928,
-			"inputs": [],
+			"id": 2871743937,
+			"inputs": [
+				{
+					"id": 172137141,
+					"name": "X",
+					"type": "float",
+					"value": 0.20000000298023224
+				},
+				{
+					"id": 2899323893,
+					"name": "Y",
+					"type": "float",
+					"value": 0.6000000238418579
+				},
+				{
+					"id": 4264543295,
+					"name": "Z",
+					"type": "float",
+					"value": 0.20000000298023224
+				}
+			],
 			"outputs": [
 				{
-					"id": 94999985,
+					"id": 2775206220,
 					"name": "Value",
 					"type": "vector"
 				}
 			],
-			"title": "Translate Cone",
-			"type": "Vector Input",
-			"value": [
-				0.0,
-				0.30000001192092896,
-				0.0
-			],
-			"x": 19.0,
-			"y": 542.0
+			"title": "Combine XYZ",
+			"type": "Combine XYZ",
+			"x": 100.0,
+			"y": 648.0
 		},
 		{
 			"id": 2146266194,
@@ -336,10 +400,10 @@
 					"type": "geometry"
 				}
 			],
-			"title": "Geometry Transform",
+			"title": "Transform",
 			"type": "Geometry Transform",
-			"x": 273.0,
-			"y": 452.0
+			"x": 268.0,
+			"y": 498.0
 		},
 		{
 			"id": 80633612,
@@ -359,8 +423,61 @@
 			"outputs": [],
 			"title": "Save Geometry To Virtual",
 			"type": "Save Geometry To Virtual",
-			"x": 949.0,
-			"y": 455.0
+			"x": 1162.0,
+			"y": 498.0
+		},
+		{
+			"id": 3172657298,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 3625227314,
+					"name": "X",
+					"type": "float"
+				},
+				{
+					"id": 1347289520,
+					"name": "Y",
+					"type": "float"
+				},
+				{
+					"id": 473541455,
+					"name": "Z",
+					"type": "float"
+				}
+			],
+			"title": "Position",
+			"type": "Position Field",
+			"x": 549.0,
+			"y": 144.0
+		},
+		{
+			"compareOperator": 5,
+			"id": 837793109,
+			"inputs": [
+				{
+					"id": 554574787,
+					"name": "A",
+					"type": "float"
+				},
+				{
+					"id": 4238422020,
+					"name": "B",
+					"type": "float",
+					"value": 0.0
+				}
+			],
+			"outputs": [
+				{
+					"id": 1968705174,
+					"name": "Result",
+					"type": "bool"
+				}
+			],
+			"title": "Compare",
+			"type": "Compare",
+			"x": 674.0,
+			"y": 144.0
 		},
 		{
 			"id": 2533510625,
@@ -369,6 +486,11 @@
 					"id": 3675693576,
 					"name": "Geometry",
 					"type": "geometry"
+				},
+				{
+					"id": 852880645,
+					"name": "Selection",
+					"type": "bool"
 				},
 				{
 					"id": 2253122059,
@@ -396,8 +518,8 @@
 			],
 			"title": "Instances on Vertices",
 			"type": "Instances on Vertices",
-			"x": 689.0,
-			"y": 116.0
+			"x": 901.0,
+			"y": 83.0
 		},
 		{
 			"id": 3247491458,
@@ -417,28 +539,42 @@
 			"outputs": [],
 			"title": "Save Instances To Virtual",
 			"type": "Save Instances To Virtual",
-			"x": 935.0,
-			"y": 116.0
+			"x": 1156.0,
+			"y": 132.0
 		},
 		{
-			"id": 1867416432,
-			"inputs": [],
+			"id": 155498629,
+			"inputs": [
+				{
+					"id": 2942709651,
+					"name": "X",
+					"type": "float",
+					"value": 7.0
+				},
+				{
+					"id": 2780438258,
+					"name": "Y",
+					"type": "float",
+					"value": 0.0
+				},
+				{
+					"id": 2104688764,
+					"name": "Z",
+					"type": "float",
+					"value": 0.0
+				}
+			],
 			"outputs": [
 				{
-					"id": 3362849279,
+					"id": 1503567322,
 					"name": "Value",
 					"type": "vector"
 				}
 			],
-			"title": "Face Example Offset",
-			"type": "Vector Input",
-			"value": [
-				7.0,
-				0.0,
-				0.0
-			],
-			"x": 16.0,
-			"y": 299.0
+			"title": "Combine XYZ",
+			"type": "Combine XYZ",
+			"x": 271.0,
+			"y": 317.0
 		},
 		{
 			"id": 3836844752,
@@ -471,10 +607,63 @@
 					"type": "geometry"
 				}
 			],
-			"title": "Geometry Transform",
+			"title": "Transform",
 			"type": "Geometry Transform",
-			"x": 461.0,
+			"x": 431.0,
 			"y": 247.0
+		},
+		{
+			"id": 3502237646,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 3754249534,
+					"name": "X",
+					"type": "float"
+				},
+				{
+					"id": 1373093797,
+					"name": "Y",
+					"type": "float"
+				},
+				{
+					"id": 1255943026,
+					"name": "Z",
+					"type": "float"
+				}
+			],
+			"title": "Position",
+			"type": "Position Field",
+			"x": 550.0,
+			"y": 382.0
+		},
+		{
+			"compareOperator": 5,
+			"id": 1242930939,
+			"inputs": [
+				{
+					"id": 251076592,
+					"name": "A",
+					"type": "float"
+				},
+				{
+					"id": 3736512974,
+					"name": "B",
+					"type": "float",
+					"value": 0.0
+				}
+			],
+			"outputs": [
+				{
+					"id": 3645131408,
+					"name": "Result",
+					"type": "bool"
+				}
+			],
+			"title": "Compare",
+			"type": "Compare",
+			"x": 682.0,
+			"y": 383.0
 		},
 		{
 			"id": 3537745297,
@@ -489,6 +678,11 @@
 					"name": "Instance Count",
 					"type": "int",
 					"value": 200
+				},
+				{
+					"id": 2041633410,
+					"name": "Selection",
+					"type": "bool"
 				},
 				{
 					"id": 3079541220,
@@ -516,8 +710,8 @@
 			],
 			"title": "Instances on Faces",
 			"type": "Instances on Faces",
-			"x": 691.0,
-			"y": 297.0
+			"x": 897.0,
+			"y": 308.0
 		},
 		{
 			"id": 3606165252,
@@ -537,8 +731,8 @@
 			"outputs": [],
 			"title": "Save Instances To Virtual",
 			"type": "Save Instances To Virtual",
-			"x": 945.0,
-			"y": 332.0
+			"x": 1161.0,
+			"y": 357.0
 		},
 		{
 			"id": 3529924128,
@@ -558,8 +752,8 @@
 			"outputs": [],
 			"title": "Save Geometry To Virtual",
 			"type": "Save Geometry To Virtual",
-			"x": 941.0,
-			"y": 225.0
+			"x": 1157.0,
+			"y": 250.0
 		}
 	]
 }

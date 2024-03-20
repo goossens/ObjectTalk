@@ -110,28 +110,22 @@ void OtNodeClass::deserializeFromString(const std::string& json, bool restoreIDs
 //	OtNodeClass::evaluateVariableInputs
 //
 
-bool OtNodeClass::evaluateVariableInputs(bool toplevel) {
-	bool changed = kind == varying;
+void OtNodeClass::evaluateVariableInputs(OtNodeVaryingContext& context, bool toplevel) {
+	// handle the varying data context (if required)
+	if (kind == varying) {
+		processVaryingContext(context);
+	}
 
 	// process all input pins
 	eachInput([&](OtNodesPin& pin){
 		// only look at connected pins that are marked as varying
 		if (pin->isSourceConnected() && pin->isVarying()) {
-			// see if source node made changes
-			if (pin->sourcePin->node->evaluateVariableInputs(false)) {
-				pin->evaluate();
-
-				if (pin->needsEvaluating) {
-					pin->needsEvaluating = false;
-					changed = true;
-				}
-			}
+			pin->sourcePin->node->evaluateVariableInputs(context, false);
+			pin->processInput();
 		}
 	});
 
-	if (changed && !toplevel) {
+	if (!toplevel) {
 		onExecute();
 	}
-
-	return changed;
 }

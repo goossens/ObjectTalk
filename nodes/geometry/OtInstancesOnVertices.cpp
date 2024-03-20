@@ -30,6 +30,7 @@ public:
 	// configure node
 	inline void configure() override {
 		addInputPin("Geometry", geometry);
+		addInputPin("Selection", selection);
 		addInputPin("Rotate to Normals", rotateToNormals);
 		addInputPin("Rotation", rotation);
 		addInputPin("Scale", scale);
@@ -52,16 +53,22 @@ public:
 			// turn each vertex into an instance
 			if (hasVaryingInput()) {
 				for (auto i = 0; i < count; i++) {
-					evaluateVariableInputs();
-					auto transform = glm::toMat4(glm::quat(glm::radians(rotation))) * glm::scale(glm::mat4(1.0f), scale);
-					generateInstance(vertex++, transform);
+					OtNodeVaryingContext context(i, vertex[i]);
+					evaluateVariableInputs(context);
+
+					if (selection) {
+						auto transform = glm::toMat4(glm::quat(glm::radians(rotation))) * glm::scale(glm::mat4(1.0f), scale);
+						generateInstance(vertex[i], transform);
+					}
 				}
 
 			} else {
 				auto transform = glm::toMat4(glm::quat(glm::radians(rotation))) * glm::scale(glm::mat4(1.0f), scale);
 
 				for (auto i = 0; i < count; i++) {
-					generateInstance(vertex++, transform);
+					if (selection) {
+						generateInstance(*vertex++, transform);
+					}
 				}
 			}
 		}
@@ -70,26 +77,26 @@ public:
 	static constexpr const char* nodeName = "Instances on Vertices";
 	static constexpr int nodeCategory = OtNodeClass::geometry;
 	static constexpr int nodeKind = OtNodeClass::fixed;
-	static constexpr float fieldWidth = 180.0f;
 
 private:
 	// generate a single instance
-	void generateInstance(OtVertex* vertex, glm::mat4& transform) {
+	void generateInstance(OtVertex& vertex, glm::mat4& transform) {
 		// rotate to normals (if required)
 		if (rotateToNormals) {
 			static glm::vec3 u = glm::vec3(0.0f, 1.0f, 0.0f);
-			glm::vec3 v = vertex->normal;
+			glm::vec3 v = vertex.normal;
 			auto quat = glm::normalize(glm::quat(1.0f + glm::dot(u, v), glm::cross(u, v)));
-			instances.add(glm::translate(glm::mat4(1.0f), vertex->position) * glm::toMat4(quat) * transform, false);
+			instances.add(glm::translate(glm::mat4(1.0f), vertex.position) * glm::toMat4(quat) * transform, false);
 
 		} else {
-			instances.add(glm::translate(glm::mat4(1.0f), vertex->position) * transform, false);
+			instances.add(glm::translate(glm::mat4(1.0f), vertex.position) * transform, false);
 		}
 	}
 
 protected:
 	OtGeometry geometry;
 	OtInstances instances;
+	bool selection = true;
 	bool rotateToNormals = false;
 	glm::vec3 rotation{0.0f};
 	glm::vec3 scale{1.0f};

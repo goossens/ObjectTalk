@@ -15,10 +15,32 @@
 #include <cstdint>
 #include <string>
 
+#include "glm/glm.hpp"
 #include "nlohmann/json_fwd.hpp"
+
+#include "OtVertex.h"
 
 #include "OtNodesPin.h"
 #include "OtNodesUtils.h"
+
+
+//
+//	OtNodeVaryingContext
+//
+
+struct OtNodeVaryingContext {
+	// contructors
+	OtNodeVaryingContext() : index(0), hasVertex(false), hasInstance(false) {}
+	OtNodeVaryingContext(int i, const OtVertex& v) : index(i), hasVertex(true), hasInstance(false), vertex(v) {}
+	OtNodeVaryingContext(int i, const glm::mat4& in) : index(i), hasVertex(false), hasInstance(true), instance(in) {}
+
+	// properties
+	int index;
+	bool hasVertex;
+	bool hasInstance;
+	OtVertex vertex;
+	glm::mat4 instance;
+};
 
 
 //
@@ -34,6 +56,7 @@ public:
 	enum {
 		input,
 		output,
+		field,
 		math,
 		generator,
 		filter,
@@ -47,6 +70,7 @@ public:
 	static constexpr const char* categoryNames[] = {
 		"Input",
 		"Output",
+		"Field",
 		"Math",
 		"Generator",
 		"Filter",
@@ -129,14 +153,15 @@ public:
 		}
 	}
 
-	// do we have a variable output pin
+	// do we have a variable output pin?
 	inline bool hasVaryingInput() { return varyingInput; }
+
+	// process the varying context (called for each iteration)
+	virtual void processVaryingContext(OtNodeVaryingContext& context) {}
 
 	// interfaces
 	virtual inline bool onUpdate() { return false; };
-	virtual inline void onStart() {};
 	virtual inline void onExecute() {};
-	virtual inline void onEnd() {};
 
 	// handle custom section of nodes
 	virtual inline void customRendering(float width) {}
@@ -174,5 +199,5 @@ protected:
 	std::vector<OtNodesPin> inputPins;
 	std::vector<OtNodesPin> outputPins;
 
-	bool evaluateVariableInputs(bool toplevel=true);
+	void evaluateVariableInputs(OtNodeVaryingContext& context, bool toplevel=true);
 };

@@ -16,7 +16,6 @@
 #include "nlohmann/json.hpp"
 
 #include "OtException.h"
-#include "OtLog.h"
 
 #include "OtMessageBus.h"
 #include "OtUi.h"
@@ -101,7 +100,6 @@ bool OtNodesComponent::renderUI() {
 		auto spacing = ImGui::GetStyle().ItemInnerSpacing.x;
 
 		for (auto& node : inputNodes) {
-			OtLogDebug("ID {}", (void*) node.get());
 			ImGui::PushID(node.get());
 			changed |= node->customInputRendering(width);
 			ImGui::SameLine(0.0f, spacing);

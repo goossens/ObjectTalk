@@ -324,10 +324,13 @@ OtNodesLink OtNodes::createLink(OtNodesPin from, OtNodesPin to, uint32_t id) {
 	links.emplace_back(link);
 	linkIndex[link->id] = link;
 	link->connect();
-	to->node->needsSizing = true;
 
-	// set sorting flag
+	// set the flags
+	to->node->needsEvaluating = true;
+	to->node->needsSizing = true;
 	needsSorting = true;
+
+	// return new link
 	return link;
 }
 
@@ -352,6 +355,7 @@ OtNodesLink OtNodes::findLink(OtNodesPin from, OtNodesPin to) {
 
 void OtNodes::deleteLink(OtNodesLink link) {
 	// ensure node size is recalculated
+	link->to->node->needsEvaluating = true;
 	link->to->node->needsSizing = true;
 
 	// remove specified link
@@ -405,10 +409,14 @@ void OtNodes::deleteLinks(OtNodesPin any) {
 //
 
 void OtNodes::redirectLink(OtNodesLink link, uint32_t newTo) {
+	// redirect link
 	link->to->node->needsSizing = true;
 	link->disconnect();
 	link->redirectTo(pinIndex[newTo]);
 	link->connect();
+
+	// set flags
+	link->to->node->needsEvaluating = true;
 	link->to->node->needsSizing = true;
 	needsSorting = true;
 }
@@ -751,36 +759,23 @@ void OtNodes::evaluate() {
 		needsEvaluating |= node->needsEvaluating;
 	}
 
-	// (re)run nodes (if required)
-	if (needsEvaluating) {
-		// start the run
-		for (auto& node : nodes) {
-			node->onStart();
+	// evaluate all nodes
+	for (auto& node : nodes) {
+		node->eachInput([node](OtNodesPin& pin) {
+			if (pin->isVarying() && pin->sourcePin->node->needsEvaluating) {
+				node->needsEvaluating = true;
+			}
+
+			node->needsEvaluating |= pin->processInput();
+		});
+
+		if (node->needsEvaluating) {
+			node->onExecute();
 		};
+	}
 
-		// run until all changes are processed
-		while (needsEvaluating) {
-			needsEvaluating = false;
-
-			for (auto& node : nodes) {
-				node->eachInput([node](OtNodesPin& pin) {
-					pin->evaluate();
-					node->needsEvaluating |= pin->needsEvaluating;
-					pin->needsEvaluating = false;
-				});
-
-				if (node->needsEvaluating) {
-					node->needsEvaluating = false;
-
-					node->onExecute();
-					needsEvaluating |= node->needsEvaluating;
-				}
-			};
-		}
-
-		// end the run
-		for (auto& node : nodes) {
-			node->onEnd();
-		};
+	// reset all nodes
+	for (auto& node : nodes) {
+		node->needsEvaluating = false;
 	}
 }

@@ -45,8 +45,10 @@ public:
 
 			// transform all vertices
 			if (hasVaryingInput()) {
+				OtNodeVaryingContext context;
+
 				for (auto i = 0; i < count; i++) {
-					evaluateVariableInputs();
+					evaluateVariableInputs(context);
 
 					output.add(
 						glm::translate(glm::mat4(1.0f), translate) *

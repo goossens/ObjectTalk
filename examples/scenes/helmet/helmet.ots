@@ -36,7 +36,15 @@
 				{
 					"Exposure": 0.4000000059604645,
 					"bloomIntensity": 0.6299999952316284,
-					"component": "Post Processing"
+					"component": "Post Processing",
+					"fog": false,
+					"fogColor": [
+						0.4000000059604645,
+						0.5,
+						0.800000011920929
+					],
+					"fogDensity": 0.10000000149011612,
+					"fxaa": false
 				}
 			]
 		},
@@ -104,7 +112,18 @@
 		}
 	],
 	"metadata": {
-		"cameraPreset": 1,
+		"camera": {
+			"far": 50.0,
+			"fov": 60.0,
+			"near": 0.10000000149011612,
+			"pitch": -15.413000106811523,
+			"position": [
+				0.0,
+				2.0,
+				5.0
+			],
+			"yaw": 0.004440009593963623
+		},
 		"gizmo": {
 			"enabled": false,
 			"mode": 7,

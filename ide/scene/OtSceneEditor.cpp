@@ -84,11 +84,19 @@ void OtSceneEditor::save() {
 //
 
 void OtSceneEditor::processMetaData() {
-	// parse the memtadata
+	// parse the metadata
 	nlohmann::json metadata = nlohmann::json::parse(scene.getMetaData().c_str());
 
 	// process metadata and set editor properties
-	editorCamera.setPreset(metadata.value("cameraPreset", OtSceneEditorCamera::smallScenePreset));
+	if (metadata.contains("camera")) {
+		auto camera = metadata["camera"];
+		editorCamera.setPosition(camera.value("position", glm::vec3(0.0f, 5.0f, 20.0f)));
+		editorCamera.setPitch(camera.value("pitch", -20.0f));
+		editorCamera.setYaw(camera.value("yaw", 0.0f));
+		editorCamera.setFov(camera.value("fov", 60.0f));
+		editorCamera.setNearPlane(camera.value("near", 0.5f));
+		editorCamera.setFarPlane(camera.value("far", 200.0f));
+	}
 
 	if (metadata.contains("grid")) {
 		auto grid = metadata["grid"];
@@ -114,7 +122,15 @@ void OtSceneEditor::generateMetaData() {
 	// build metadata
 	auto metadata = nlohmann::json::object();
 	metadata["type"] = "scene";
-	metadata["cameraPreset"] = editorCamera.getPreset();
+
+	auto camera = nlohmann::json::object();
+	camera["position"] = editorCamera.getPosition();
+	camera["pitch"] = editorCamera.getPitch();
+	camera["yaw"] = editorCamera.getYaw();
+	camera["fov"] = editorCamera.getFov();
+	camera["near"] = editorCamera.getNearPlane();
+	camera["far"] = editorCamera.getFarPlane();
+	metadata["camera"] = camera;
 
 	auto grid = nlohmann::json::object();
 	grid["enabled"] = gridEnabled;

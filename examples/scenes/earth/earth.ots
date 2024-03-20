@@ -40,7 +40,15 @@
 				{
 					"Exposure": 1.659999966621399,
 					"bloomIntensity": 0.75,
-					"component": "Post Processing"
+					"component": "Post Processing",
+					"fog": false,
+					"fogColor": [
+						0.4000000059604645,
+						0.5,
+						0.800000011920929
+					],
+					"fogDensity": 0.10000000149011612,
+					"fxaa": false
 				}
 			]
 		},
@@ -109,7 +117,8 @@
 						},
 						{
 							"component": "Nodes",
-							"path": "assets/sphere.otn"
+							"path": "assets/sphere.otn",
+							"settings": {}
 						}
 					]
 				},
@@ -304,7 +313,18 @@
 		}
 	],
 	"metadata": {
-		"cameraPreset": 1,
+		"camera": {
+			"far": 50.0,
+			"fov": 60.0,
+			"near": 0.10000000149011612,
+			"pitch": -22.83466911315918,
+			"position": [
+				0.0,
+				1.282647967338562,
+				3.0290920734405518
+			],
+			"yaw": 0.003179982304573059
+		},
 		"gizmo": {
 			"enabled": false,
 			"mode": 7,

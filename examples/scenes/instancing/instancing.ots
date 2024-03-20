@@ -36,7 +36,15 @@
 				{
 					"Exposure": 1.0,
 					"bloomIntensity": 0.6399999856948853,
-					"component": "Post Processing"
+					"component": "Post Processing",
+					"fog": false,
+					"fogColor": [
+						0.4000000059604645,
+						0.5,
+						0.800000011920929
+					],
+					"fogDensity": 0.10000000149011612,
+					"fxaa": false
 				}
 			]
 		},
@@ -87,7 +95,8 @@
 				},
 				{
 					"component": "Nodes",
-					"path": "assets/nodes.otn"
+					"path": "assets/nodes.otn",
+					"settings": {}
 				}
 			]
 		},
@@ -291,7 +300,18 @@
 		}
 	],
 	"metadata": {
-		"cameraPreset": 2,
+		"camera": {
+			"far": 200.0,
+			"fov": 60.0,
+			"near": 0.5,
+			"pitch": -20.0,
+			"position": [
+				0.0,
+				5.0,
+				20.0
+			],
+			"yaw": 0.0
+		},
 		"gizmo": {
 			"enabled": false,
 			"mode": 7,

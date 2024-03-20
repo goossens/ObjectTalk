@@ -29,7 +29,7 @@
 				{
 					"component": "Camera",
 					"far": 254.0,
-					"fov": 51.0,
+					"fov": 54.0,
 					"mainCamera": true,
 					"near": 0.10000000149011612
 				},
@@ -576,7 +576,18 @@
 		}
 	],
 	"metadata": {
-		"cameraPreset": 4,
+		"camera": {
+			"far": 2000.0,
+			"fov": 60.0,
+			"near": 1.0,
+			"pitch": 1.0178292989730835,
+			"position": [
+				0.03672514855861664,
+				7.276876449584961,
+				203.6057891845703
+			],
+			"yaw": -9.100608825683594
+		},
 		"gizmo": {
 			"enabled": false,
 			"mode": 7,

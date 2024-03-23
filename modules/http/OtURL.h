@@ -44,7 +44,7 @@ public:
 	const std::string& getUsername() { return username; }
 	const std::string& getPassword() { return password; }
 	const std::string& getHost() { return host; }
-	const int getPort() { return port; }
+	int getPort() { return port; }
 	const std::string& getPath() { return path; }
 	const std::string& getDirectory() { return directory; }
 	const std::string& getFilename() { return filename; }
@@ -53,19 +53,19 @@ public:
 	const std::string& getQuery() { return query; }
 	const std::string& getFragment() { return fragment; }
 
-	const bool hasParam(const std::string& p) {
+	bool hasParam(const std::string& p) {
 		return queryParams.find(p) != queryParams.end();
 	}
 
-	const OtObject getParam(const std::string& p) {
+	OtObject getParam(const std::string& p) {
 		return OtString::create(queryParams.find(p)->second);
 	}
 
-	const OtObject getParamWithDefault(const std::string& p, const OtObject d) {
+	OtObject getParamWithDefault(const std::string& p, const OtObject d) {
 		return hasParam(p) ? getParam(p) : d;
 	}
 
-	const std::unordered_map<std::string, std::string> getParams() {
+	std::unordered_map<std::string, std::string> getParams() {
 		return queryParams;
 	}
 

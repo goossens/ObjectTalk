@@ -60,27 +60,27 @@ public:
 
 	// access headers
 	void setHeader(const std::string& name, const std::string& value);
-	const bool hasHeader(const std::string& header);
-	const bool headerIs(const std::string& header, const std::string& value);
-	const std::string getHeader(const std::string& header);
-	const OtObject getHeaders();
+	bool hasHeader(const std::string& header);
+	bool headerIs(const std::string& header, const std::string& value);
+	std::string getHeader(const std::string& header);
+	OtObject getHeaders();
 
 	// access query parameters
 	void parseParams(const std::string& text);
 	void setParam(const std::string& name, const std::string& value);
-	const bool hasParam(const std::string& param);
+	bool hasParam(const std::string& param);
 	const std::string& getParam(const std::string& param);
 
 	// access cookies
 	void setCookie(const std::string& name, const std::string& value);
-	const bool hasCookie(const std::string& cookie);
+	bool hasCookie(const std::string& cookie);
 	const std::string& getCookie(const std::string& cookie);
 
 	// access request body
 	const std::string& getBody();
 
 	// send request details back to browser
-	const std::string debug();
+	std::string debug();
 
 	// get type definition
 	static OtType getMeta();

@@ -377,7 +377,7 @@ void OtHttpRequestClass::setHeader(const std::string& name, const std::string& v
 //	OtHttpRequestClass::hasHeader
 //
 
-const bool OtHttpRequestClass::hasHeader(const std::string& header) {
+bool OtHttpRequestClass::hasHeader(const std::string& header) {
 	return headers.find(header) != headers.end();
 }
 
@@ -386,7 +386,7 @@ const bool OtHttpRequestClass::hasHeader(const std::string& header) {
 //	OtHttpRequestClass::headerIs
 //
 
-const bool OtHttpRequestClass::headerIs(const std::string& header, const std::string& value) {
+bool OtHttpRequestClass::headerIs(const std::string& header, const std::string& value) {
 	return getHeader(header) == value;
 }
 
@@ -395,7 +395,7 @@ const bool OtHttpRequestClass::headerIs(const std::string& header, const std::st
 //	std::string OtHttpRequestClass::getHeader
 //
 
-const std::string OtHttpRequestClass::getHeader(const std::string& header) {
+std::string OtHttpRequestClass::getHeader(const std::string& header) {
 	return headers.get(header);
 }
 
@@ -404,7 +404,7 @@ const std::string OtHttpRequestClass::getHeader(const std::string& header) {
 //	OtHttpRequestClass::getHeaders
 //
 
-const OtObject OtHttpRequestClass::getHeaders() {
+OtObject OtHttpRequestClass::getHeaders() {
 	OtDict dict = OtDict::create();
 
 	for (auto i = headers.begin(); i != headers.end(); i++) {
@@ -458,7 +458,7 @@ void OtHttpRequestClass::setParam(const std::string& name, const std::string& va
 //	OtHttpRequestClass::hasParam
 //
 
-const bool OtHttpRequestClass::hasParam(const std::string& param) {
+bool OtHttpRequestClass::hasParam(const std::string& param) {
 	return params.find(param) != params.end();
 }
 
@@ -485,7 +485,7 @@ void OtHttpRequestClass::setCookie(const std::string& name, const std::string& v
 //	tHttpRequestClass::hasCookie
 //
 
-const bool OtHttpRequestClass::hasCookie(const std::string& cookie) {
+bool OtHttpRequestClass::hasCookie(const std::string& cookie) {
 	return cookies.find(cookie) != params.end();
 }
 
@@ -511,7 +511,7 @@ const std::string& OtHttpRequestClass::getBody() {
 //	OtHttpRequestClass::debug
 //
 
-const std::string OtHttpRequestClass::debug() {
+std::string OtHttpRequestClass::debug() {
 	std::stringstream stream;
 
 	stream << "Method: " << method << std::endl;

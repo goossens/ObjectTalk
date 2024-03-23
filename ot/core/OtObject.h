@@ -59,7 +59,7 @@ public:
 	virtual operator int() { return 0; }
 	virtual operator int64_t() { return 0; }
 	virtual operator size_t() { return 0; }
-	virtual operator float() { return 0.0; }
+	virtual operator float() { return 0.0f; }
 	virtual operator double() { return 0.0; }
 	virtual operator std::string() { return ""; }
 	virtual operator std::filesystem::path() { return std::filesystem::path(operator std::string()); }
@@ -97,15 +97,10 @@ public:
 	bool notEqual(OtObject operand) { return !(operator==(operand)); }
 
 	// "call" object (count, parameters)
-	virtual OtObject operator () (size_t, OtObject*) { return nullptr; }
+	virtual OtObject operator() (size_t, OtObject*) { return nullptr; }
 
 	// get an object's class
 	OtObject getClass();
-
-	// support observer pattern through callbacks
-	size_t attach(std::function<void(void)> callback);
-	void detach(size_t id);
-	void notify();
 
 	// get type definition
 	static OtType getMeta();
@@ -120,15 +115,6 @@ protected:
 
 	// members
 	OtMembers* members = nullptr;
-
-	// observers
-	struct OtObserver {
-		OtObserver(size_t i, std::function<void(void)> c) : id(i), callback(c) {}
-		size_t id;
-		std::function<void(void)> callback;
-	};
-
-	std::vector<OtObserver>* observers = nullptr;
 };
 
 

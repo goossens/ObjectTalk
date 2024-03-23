@@ -26,11 +26,6 @@ OtObjectClass::~OtObjectClass() {
 		delete members;
 		members = nullptr;
 	}
-
-	if (observers) {
-		delete observers;
-		observers = nullptr;
-	}
 }
 
 
@@ -177,49 +172,6 @@ void OtObjectClass::expectKindOf(const std::string& className) {
 
 OtObject OtObjectClass::getClass() {
 	return OtClass::create(getType());
-}
-
-
-//
-//	OtObjectClass::attach
-//
-
-size_t OtObjectClass::attach(std::function<void(void)> callback) {
-	if (!observers) {
-		observers = new std::vector<OtObserver>;
-	}
-
-	static size_t nextID = 1;
-	size_t id = nextID++;
-
-	observers->push_back(OtObserver(id, callback));
-	return id;
-}
-
-
-//
-//	OtObjectClass::detach
-//
-
-void OtObjectClass::detach(size_t id) {
-	if (observers) {
-		observers->erase(std::remove_if(observers->begin(), observers->end(), [id](OtObserver& observer) {
-			return observer.id == id;
-		}), observers->end());
-	}
-}
-
-
-//
-//	OtObjectClass::notify
-//
-
-void OtObjectClass::notify() {
-	if (observers) {
-		for (auto& observer : *observers) {
-			observer.callback();
-		}
-	}
 }
 
 

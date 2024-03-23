@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include <filesystem>
+#include <string>
 
 #include "OtInternal.h"
 
@@ -37,7 +37,7 @@ private:
 	static void doAssert(bool condition);
 
 	// import module
-	static OtObject import(const std::filesystem::path& path);
+	static OtObject import(const std::string& path);
 
 	// create a range iterator
 	static OtObject range(size_t count, OtObject* parameters);

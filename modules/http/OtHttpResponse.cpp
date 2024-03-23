@@ -141,7 +141,7 @@ OtObject OtHttpResponseClass::setHeader(const std::string& name, const std::stri
 //	OtHttpResponseClass::hasHeader
 //
 
-const bool OtHttpResponseClass::hasHeader(const std::string& header) {
+bool OtHttpResponseClass::hasHeader(const std::string& header) {
 	return headers.has(header);
 }
 

@@ -28,7 +28,7 @@ OtObject OtFunctionClass::operator()(size_t count, OtObject* parameters) {
 		}
 	}
 
-	return (*invoker)(target, count, parameters);
+	return caller(count, parameters);
 }
 
 

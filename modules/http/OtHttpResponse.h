@@ -39,7 +39,7 @@ public:
 
 	// access headers
 	OtObject setHeader(const std::string& name, const std::string& value);
-	const bool hasHeader(const std::string& header);
+	bool hasHeader(const std::string& header);
 	void sendHeaders();
 
 	// write string as part of body

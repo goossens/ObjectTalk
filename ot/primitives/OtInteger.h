@@ -41,7 +41,7 @@ public:
 	operator size_t() override { return (size_t) value; }
 	operator float() override { return (float) value; }
 	operator double() override { return (double) value; }
-	operator std::string() override {return std::to_string(value); }
+	operator std::string() override { return std::to_string(value); }
 
 	// debugging support
 	std::string describe() override { return operator std::string(); }

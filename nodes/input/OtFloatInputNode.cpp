@@ -78,7 +78,7 @@ public:
 	static constexpr const char* nodeName = "Float Input";
 	static constexpr int nodeCategory = OtNodeClass::input;
 	static constexpr int nodeKind = OtNodeClass::fixed;
-	static constexpr float fieldWidth = 120.0f;
+	static constexpr float fieldWidth = 100.0f;
 
 protected:
 	float value = 0.0f;

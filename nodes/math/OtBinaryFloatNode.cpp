@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <cmath>
+
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
@@ -18,10 +20,10 @@
 
 
 //
-//	OtCompareNode
+//	OtBinaryFloatNode
 //
 
-class OtCompareNode : public OtNodeClass {
+class OtBinaryFloatNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
@@ -57,51 +59,60 @@ public:
 	}
 
 	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		op = data->value("operator", equalOperator);
+		op = data->value("operator", addOperator);
 	}
 
 	// compare values
 	void onExecute() override {
 		switch (op) {
-			case equalOperator: result = (a == b); break;
-			case notEqualOperator: result = (a != b); break;
-			case lessOperator: result = (a < b); break;
-			case lessEqualOperator: result = (a <= b); break;
-			case greaterOperator: result = (a > b); break;
-			case greatertEqualOperator: result = (a >= b); break;
+			case addOperator: result = a + b; break;
+			case subtractOperator: result = a - b; break;
+			case multiplyOperator: result = a * b; break;
+			case divideOperator: result =  a / (b == 0.0f ? 0.000001 : b); break;
+			case moduloOperator: result = std::fmod(a, b); break;
+			case remainderOperator: result = std::remainder(a, b); break;
+			case powOperator: result = std::pow(a, b); break;
+			case minOperator: result = std::min(a, b); break;
+			case maxOperator: result = std::max(a, b); break;
 		}
 	}
 
-	static constexpr const char* nodeName = "Compare";
+	static constexpr const char* nodeName = "Binary Float";
 	static constexpr int nodeCategory = OtNodeClass::math;
 	static constexpr int nodeKind = OtNodeClass::flexible;
-	static constexpr float fieldWidth = 140.0f;
+	static constexpr float fieldWidth = 100.0f;
 
 protected:
 	enum {
-		equalOperator,
-		notEqualOperator,
-		lessOperator,
-		lessEqualOperator,
-		greaterOperator,
-		greatertEqualOperator
+		addOperator,
+		subtractOperator,
+		multiplyOperator,
+		divideOperator,
+		moduloOperator,
+		remainderOperator,
+		powOperator,
+		minOperator,
+		maxOperator
 	};
 
 	static constexpr const char* operatorTypes[] = {
-		"Equal",
-		"Not Equal",
-		"Less",
-		"Less Equal",
-		"Greater",
-		"Greater Equal"
+		"Add",
+		"Subtract",
+		"Multiply",
+		"Divide",
+		"Modulo",
+		"Remainder",
+		"Pow",
+		"Min",
+		"Max"
 	};
 
 	static constexpr size_t operatorTypesCount = sizeof(operatorTypes) / sizeof(*operatorTypes);
 
-	int op = equalOperator;
+	int op = addOperator;
 	float a = 0.0f;
 	float b = 0.0f;
-	bool result = false;
+	float result = 0.0f;
 };
 
-static OtNodesFactoryRegister<OtCompareNode> type;
+static OtNodesFactoryRegister<OtBinaryFloatNode> type;

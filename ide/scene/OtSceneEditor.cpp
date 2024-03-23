@@ -286,6 +286,8 @@ void OtSceneEditor::renderMenu() {
 				if (ImGui::RadioButton("Scale", guizmoOperation == ImGuizmo::SCALE)) {
 					guizmoOperation = ImGuizmo::SCALE;
 				}
+
+				ImGui::EndMenu();
 			}
 
 			// render snap control

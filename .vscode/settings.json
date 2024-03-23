@@ -111,7 +111,8 @@
 		"shared_mutex": "cpp",
 		"typeindex": "cpp",
 		"strstream": "cpp",
-		"__memory": "cpp"
+		"__memory": "cpp",
+		"*.sh": "cpp"
 	},
 	"files.exclude": {
 		"debug/**": true,

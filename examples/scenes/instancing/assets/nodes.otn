@@ -452,7 +452,7 @@
 			"y": 144.0
 		},
 		{
-			"compareOperator": 5,
+			"operator": 5,
 			"id": 837793109,
 			"inputs": [
 				{
@@ -638,7 +638,7 @@
 			"y": 382.0
 		},
 		{
-			"compareOperator": 5,
+			"operator": 5,
 			"id": 1242930939,
 			"inputs": [
 				{

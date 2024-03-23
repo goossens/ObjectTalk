@@ -83,6 +83,34 @@ public:
 		parameterCount = sizeof...(Args);
 	}
 
+	template<typename ...Args>
+	OtFunctionClass(std::function<void(Args...)> function) {
+		caller = [function](size_t count, OtObject* parameters) {
+			std::apply(function,
+				functionArgs<typename std::tuple<Args...>>(
+					parameters,
+					std::make_index_sequence<sizeof...(Args)>()));
+
+			return nullptr;
+		};
+
+		parameterCount = sizeof...(Args);
+	}
+
+	template<typename Result, typename ...Args>
+	OtFunctionClass(std::function<Result(Args...)> function) {
+		caller = [function](size_t count, OtObject* parameters) {
+			return OtValue<Result>::encode(
+				std::apply(
+					function,
+					functionArgs<typename std::tuple<Args...>>(
+						parameters,
+						std::make_index_sequence<sizeof...(Args)>())));
+		};
+
+		parameterCount = sizeof...(Args);
+	}
+
 	template<typename Class>
 	OtFunctionClass(void (Class::*method)(size_t, OtObject*)) {
 		caller = [method](size_t count, OtObject* parameters) {

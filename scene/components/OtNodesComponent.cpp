@@ -62,7 +62,7 @@ OtNodesComponent::OtNodesComponent() {
 			});
 
 			// apply our settings
-			applySettings(nlohmann::json::parse(savedSettings), &basedir);
+			applySettings();
 
 		} else {
 			// no nodes specified, just clear things
@@ -142,11 +142,11 @@ nlohmann::json OtNodesComponent::serialize(std::string* basedir) {
 
 void OtNodesComponent::deserialize(nlohmann::json data, std::string* basedir) {
 	asset = OtPathGetAbsolute(data, "path", basedir);
+	savedBasedir = basedir ? *basedir : "";
 
 	if (data.contains("settings")) {
-		auto settings = data["settings"];
-		applySettings(settings, basedir);
-		savedSettings = settings.dump();
+		savedSettings =  data["settings"].dump();
+		applySettings();
 
 	} else {
 		savedSettings = "{}";
@@ -158,12 +158,14 @@ void OtNodesComponent::deserialize(nlohmann::json data, std::string* basedir) {
 //	OtNodesComponent::applySettings
 //
 
-void OtNodesComponent::applySettings(nlohmann::json settings, std::string* basedir) {
+void OtNodesComponent::applySettings() {
+	auto settings = nlohmann::json::parse(savedSettings);
+
 	for (auto& node : inputNodes) {
 		auto id = std::to_string(node->id);
 
 		if (settings.contains(id)) {
-			node->customDeserialize(&settings[id], basedir);
+			node->customDeserialize(&settings[id], savedBasedir.size() ? &savedBasedir : nullptr);
 			node->needsEvaluating = true;
 		}
 	}

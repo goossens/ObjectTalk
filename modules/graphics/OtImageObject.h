@@ -41,7 +41,9 @@ public:
 	// get pixel values
 	OtObject getPixelRgba(int x, int y);
 	float getPixelGray(int x, int y);
-	float sampleValue(float x, float y);
+
+	OtObject sampleValueRgba(float x, float y);
+	float sampleValueGray(float x, float y);
 
 	// get type definition
 	static OtType getMeta();

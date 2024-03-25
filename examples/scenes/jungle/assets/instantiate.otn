@@ -1,11 +1,6 @@
 {
 	"links": [
 		{
-			"from": 2841268553,
-			"id": 2366898961,
-			"to": 1014418491
-		},
-		{
 			"from": 1264211271,
 			"id": 2894921561,
 			"to": 3668522933
@@ -26,11 +21,6 @@
 			"to": 3827253381
 		},
 		{
-			"from": 1739425664,
-			"id": 507560804,
-			"to": 1305712855
-		},
-		{
 			"from": 3848305466,
 			"id": 1672979964,
 			"to": 102567846
@@ -49,6 +39,41 @@
 			"from": 2464541713,
 			"id": 2955055442,
 			"to": 131443721
+		},
+		{
+			"from": 3601304416,
+			"id": 2653508370,
+			"to": 203729305
+		},
+		{
+			"from": 4216697146,
+			"id": 2356319009,
+			"to": 4266417075
+		},
+		{
+			"from": 3301039066,
+			"id": 3450197298,
+			"to": 3311694367
+		},
+		{
+			"from": 365201105,
+			"id": 2324976220,
+			"to": 3189373295
+		},
+		{
+			"from": 2644089457,
+			"id": 4173385653,
+			"to": 2927469254
+		},
+		{
+			"from": 1739425664,
+			"id": 507560804,
+			"to": 1305712855
+		},
+		{
+			"from": 2841268553,
+			"id": 2388851543,
+			"to": 1014418491
 		}
 	],
 	"metadata": {},
@@ -66,24 +91,8 @@
 			"path": "",
 			"title": "Geometry",
 			"type": "Geometry Input",
-			"x": 13.0,
-			"y": 39.0
-		},
-		{
-			"id": 2767349882,
-			"inputs": [],
-			"outputs": [
-				{
-					"id": 1739425664,
-					"name": "Value",
-					"type": "int"
-				}
-			],
-			"title": "Instance Count",
-			"type": "Integer Input",
-			"value": 200,
-			"x": 15.0,
-			"y": 111.0
+			"x": 35.0,
+			"y": 38.0
 		},
 		{
 			"id": 2964941285,
@@ -110,8 +119,8 @@
 			],
 			"title": "Random",
 			"type": "Random",
-			"x": 206.0,
-			"y": 296.0
+			"x": 230.0,
+			"y": 583.0
 		},
 		{
 			"id": 3262656160,
@@ -126,8 +135,8 @@
 			"title": "Scale",
 			"type": "Float Input",
 			"value": 1.0,
-			"x": 31.0,
-			"y": 383.0
+			"x": 55.0,
+			"y": 670.0
 		},
 		{
 			"id": 2136221550,
@@ -153,8 +162,8 @@
 			],
 			"title": "Binary Float",
 			"type": "Binary Float",
-			"x": 357.0,
-			"y": 313.0
+			"x": 381.0,
+			"y": 600.0
 		},
 		{
 			"id": 3968993238,
@@ -174,8 +183,8 @@
 			],
 			"title": "Float to Vector",
 			"type": "Float to Vector",
-			"x": 538.0,
-			"y": 308.0
+			"x": 562.0,
+			"y": 595.0
 		},
 		{
 			"id": 4237229282,
@@ -202,8 +211,8 @@
 			],
 			"title": "Random",
 			"type": "Random",
-			"x": 354.0,
-			"y": 167.0
+			"x": 378.0,
+			"y": 454.0
 		},
 		{
 			"id": 1200162136,
@@ -235,8 +244,119 @@
 			],
 			"title": "Combine XYZ",
 			"type": "Combine XYZ",
-			"x": 541.0,
-			"y": 153.0
+			"x": 565.0,
+			"y": 440.0
+		},
+		{
+			"id": 4082656913,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 3601304416,
+					"name": "Image",
+					"type": "image"
+				}
+			],
+			"path": "",
+			"title": "Instance Mask",
+			"type": "Image Input",
+			"x": 36.0,
+			"y": 274.0
+		},
+		{
+			"id": 3530977512,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 365201105,
+					"name": "U",
+					"type": "float"
+				},
+				{
+					"id": 2644089457,
+					"name": "V",
+					"type": "float"
+				}
+			],
+			"title": "UV Field",
+			"type": "UV Field",
+			"x": 239.0,
+			"y": 358.0
+		},
+		{
+			"id": 4135589338,
+			"inputs": [
+				{
+					"id": 203729305,
+					"name": "Image",
+					"type": "image"
+				},
+				{
+					"id": 3189373295,
+					"name": "U",
+					"type": "float"
+				},
+				{
+					"id": 2927469254,
+					"name": "V",
+					"type": "float"
+				}
+			],
+			"outputs": [
+				{
+					"id": 4216697146,
+					"name": "Gray",
+					"type": "float"
+				}
+			],
+			"title": "Sample Gray Image",
+			"type": "Sample Gray Image",
+			"x": 401.0,
+			"y": 263.0
+		},
+		{
+			"id": 3345459450,
+			"inputs": [
+				{
+					"id": 4266417075,
+					"name": "A",
+					"type": "float"
+				},
+				{
+					"id": 1830482152,
+					"name": "B",
+					"type": "float",
+					"value": 0.10000000149011612
+				}
+			],
+			"operator": 2,
+			"outputs": [
+				{
+					"id": 3301039066,
+					"name": "Result",
+					"type": "bool"
+				}
+			],
+			"title": "Compare",
+			"type": "Compare",
+			"x": 591.0,
+			"y": 238.0
+		},
+		{
+			"id": 2767349882,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 1739425664,
+					"name": "Value",
+					"type": "int"
+				}
+			],
+			"title": "Instances",
+			"type": "Integer Input",
+			"value": 200,
+			"x": 36.0,
+			"y": 193.0
 		},
 		{
 			"id": 2937495558,
@@ -254,8 +374,7 @@
 				{
 					"id": 3311694367,
 					"name": "Selection",
-					"type": "bool",
-					"value": true
+					"type": "bool"
 				},
 				{
 					"id": 3215647462,
@@ -283,8 +402,8 @@
 			],
 			"title": "Instances on Faces",
 			"type": "Instances on Faces",
-			"x": 716.0,
-			"y": 46.0
+			"x": 838.0,
+			"y": 129.0
 		},
 		{
 			"id": 2414095796,
@@ -296,11 +415,11 @@
 					"type": "string"
 				}
 			],
-			"title": "Instances",
+			"title": "Instance",
 			"type": "String Input",
 			"value": "",
-			"x": 31.0,
-			"y": 461.0
+			"x": 35.0,
+			"y": 116.0
 		},
 		{
 			"id": 3047086596,
@@ -319,8 +438,8 @@
 			"outputs": [],
 			"title": "Save Instances To Virtual",
 			"type": "Save Instances To Virtual",
-			"x": 954.0,
-			"y": 437.0
+			"x": 1100.0,
+			"y": 24.0
 		}
 	]
 }

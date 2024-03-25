@@ -16,33 +16,38 @@
 
 
 //
-//	OtCombineXyzNode
+//	OtSampleGrayImageNode
 //
 
-class OtCombineXyzNode : public OtNodeClass {
+class OtSampleGrayImageNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addInputPin("X", x);
-		addInputPin("Y", y);
-		addInputPin("Z", z);
-		addOutputPin("Value", value);
+		addInputPin("Image", image);
+		addInputPin("U", u);
+		addInputPin("V", v);
+		addOutputPin("Gray", gray);
 	}
 
 	// combine values
 	void onExecute() override {
-		value = glm::vec3(x, y, z);
+		if (image.isValid()) {
+			gray = image.sampleValueGray(u, v);
+
+		} else {
+			gray = 0.0f;
+		}
 	}
 
-	static constexpr const char* nodeName = "Combine XYZ";
+	static constexpr const char* nodeName = "Sample Gray Image";
 	static constexpr int nodeCategory = OtNodeClass::transformer;
 	static constexpr int nodeKind = OtNodeClass::flexible;
 
 protected:
-	float x{0.0f};
-	float y{0.0f};
-	float z{0.0f};
-	glm::vec3 value{0.0f};
+	OtImage image;
+	float u{0.0f};
+	float v{0.0f};
+	float gray{0.0f};
 };
 
-static OtNodesFactoryRegister<OtCombineXyzNode> type;
+static OtNodesFactoryRegister<OtSampleGrayImageNode> type;

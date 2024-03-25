@@ -127,11 +127,11 @@ float OtImageObjectClass::getPixelGray(int x, int y) {
 
 
 //
-//	OtImageObjectClass::sampleValue
+//	OtImageObjectClass::sampleValueRgba
 //
 
-float OtImageObjectClass::sampleValue(float x, float y) {
-		// sanity check
+OtObject OtImageObjectClass::sampleValueRgba(float x, float y) {
+	// sanity check
 	if (!image.isValid()) {
 		OtError("Image not yet loaded");
 	}
@@ -146,9 +146,32 @@ float OtImageObjectClass::sampleValue(float x, float y) {
 
 	}
 
-	return image.sampleValue(x, y);
+	return OtVec4::create(image.sampleValueRgba(x, y));
 }
 
+
+//
+//	OtImageObjectClass::sampleValueGray
+//
+
+float OtImageObjectClass::sampleValueGray(float x, float y) {
+	// sanity check
+	if (!image.isValid()) {
+		OtError("Image not yet loaded");
+	}
+
+	if (x < 0.0f || x > 1.0f) {
+		OtError("Image x coordinate [{}] out of range [0.0 - 1.0]", x);
+
+	}
+
+	if (y < 0.0f || y > 1.0f) {
+		OtError("Image y coordinate [{}] out of range [0.0 - 1.0]", y);
+
+	}
+
+	return image.sampleValueGray(x, y);
+}
 
 //
 //	OtImageObjectClass::getMeta
@@ -167,7 +190,8 @@ OtType OtImageObjectClass::getMeta() {
 
 		type->set("getPixelRgba", OtFunction::create(&OtImageObjectClass::getPixelRgba));
 		type->set("getPixelGray", OtFunction::create(&OtImageObjectClass::getPixelGray));
-		type->set("sampleValue", OtFunction::create(&OtImageObjectClass::sampleValue));
+		type->set("sampleValueRgba", OtFunction::create(&OtImageObjectClass::sampleValueRgba));
+		type->set("sampleValueGray", OtFunction::create(&OtImageObjectClass::sampleValueGray));
 	}
 
 	return type;

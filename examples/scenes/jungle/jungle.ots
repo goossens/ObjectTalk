@@ -34,8 +34,8 @@
 					"near": 0.10000000149011612
 				},
 				{
-					"Exposure": 1.1100000143051147,
-					"bloomIntensity": 0.75,
+					"Exposure": 0.8299999833106995,
+					"bloomIntensity": 0.949999988079071,
 					"component": "Post Processing",
 					"fog": true,
 					"fogColor": [
@@ -43,7 +43,7 @@
 						0.5,
 						0.800000011920929
 					],
-					"fogDensity": 0.1899999976158142,
+					"fogDensity": 0.2199999988079071,
 					"fxaa": true
 				}
 			]
@@ -162,7 +162,7 @@
 						"region4TextureScale": 1.0
 					},
 					"tileSize": 32,
-					"vOffset": 1.0,
+					"vOffset": -1.0,
 					"vScale": 1.0,
 					"wireframe": false
 				}
@@ -242,10 +242,13 @@
 							"value": "High Trees"
 						},
 						"2767349882": {
-							"value": 500
+							"value": 700
 						},
 						"3262656160": {
-							"value": 0.6000000238418579
+							"value": 0.699999988079071
+						},
+						"4082656913": {
+							"path": "assets/path.png"
 						},
 						"538930107": {
 							"path": "virtual:Area"
@@ -306,10 +309,13 @@
 							"value": "Palm Trees"
 						},
 						"2767349882": {
-							"value": 300
+							"value": 600
 						},
 						"3262656160": {
 							"value": 2.0
+						},
+						"4082656913": {
+							"path": "assets/path.png"
 						},
 						"538930107": {
 							"path": "virtual:Area"
@@ -370,10 +376,13 @@
 							"value": "Bamboo Palm"
 						},
 						"2767349882": {
-							"value": 200
+							"value": 300
 						},
 						"3262656160": {
 							"value": 0.699999988079071
+						},
+						"4082656913": {
+							"path": "assets/path.png"
 						},
 						"538930107": {
 							"path": "virtual:Area"
@@ -434,10 +443,13 @@
 							"value": "Ground Palm"
 						},
 						"2767349882": {
-							"value": 200
+							"value": 300
 						},
 						"3262656160": {
-							"value": 0.699999988079071
+							"value": 1.0
+						},
+						"4082656913": {
+							"path": "assets/path.png"
 						},
 						"538930107": {
 							"path": "virtual:Area"
@@ -503,6 +515,9 @@
 						"3262656160": {
 							"value": 0.5
 						},
+						"4082656913": {
+							"path": "assets/path.png"
+						},
 						"538930107": {
 							"path": "virtual:Area"
 						}
@@ -562,10 +577,13 @@
 							"value": "Rock"
 						},
 						"2767349882": {
-							"value": 200
+							"value": 300
 						},
 						"3262656160": {
 							"value": 0.6000000238418579
+						},
+						"4082656913": {
+							"path": "assets/path.png"
 						},
 						"538930107": {
 							"path": "virtual:Area"
@@ -580,13 +598,13 @@
 			"far": 2000.0,
 			"fov": 60.0,
 			"near": 1.0,
-			"pitch": -6.847897052764893,
+			"pitch": 7.04531192779541,
 			"position": [
-				5.476980686187744,
-				7.591052532196045,
-				72.97669982910156
+				-3.4615609645843506,
+				8.93089771270752,
+				3.7555575370788574
 			],
-			"yaw": -121.11019134521484
+			"yaw": 56.42727279663086
 		},
 		"gizmo": {
 			"enabled": false,

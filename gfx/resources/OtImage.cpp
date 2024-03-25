@@ -400,11 +400,11 @@ float OtImage::getPixelGray(int x, int y) {
 		return ((float*) image->m_data)[y * image->m_width + x];
 
 	} else if (image->m_format == bimg::TextureFormat::RGBA8) {
-		auto value = &((uint8_t*) image->m_data)[y * image->m_width + x];
+		auto value = &((uint8_t*) image->m_data)[(y * image->m_width + x) * 4];
 		return value[0] / 255.0f * 0.3f + value[1] / 255.0f * 0.59f + value[2] / 255.0f * 0.11f;
 
 	} else if (image->m_format == bimg::TextureFormat::RGBA32F) {
-		auto value = &((float*) image->m_data)[y * image->m_width + x];
+		auto value = &((float*) image->m_data)[(y * image->m_width + x) * 4];
 		return value[0] * 0.3f + value[1] * 0.59f + value[2] * 0.11f;
 
 	} else {
@@ -415,10 +415,37 @@ float OtImage::getPixelGray(int x, int y) {
 
 
 //
-//	OtImage::sampleValue
+//	OtImage::sampleValueRgba
 //
 
-float OtImage::sampleValue(float x, float y) {
+glm::vec4 OtImage::sampleValueRgba(float x, float y) {
+	// sanity check
+	OtAssert(isValid());
+
+	x *= image->m_width - 1;
+	y *= image->m_height - 1;
+
+	int x1 = std::floor(x);
+	int y1 = std::floor(y);
+	int x2 = x1 + 1;
+	int y2 = y1 + 1;
+
+	auto h11 = getPixelRgba(x1, y1);
+	auto h21 = getPixelRgba(x2, y1);
+	auto h12 = getPixelRgba(x1, y2);
+	auto h22 = getPixelRgba(x2, y2);
+
+	auto hx1 = glm::mix(h11, h21, x - x1);
+	auto hx2 = glm::mix(h12, h22, x - x1);
+	return glm::mix(hx1, hx2, y - y1);
+}
+
+
+//
+//	OtImage::sampleValueGray
+//
+
+float OtImage::sampleValueGray(float x, float y) {
 	// sanity check
 	OtAssert(isValid());
 
@@ -439,7 +466,6 @@ float OtImage::sampleValue(float x, float y) {
 	auto hx2 = std::lerp(h12, h22, x - x1);
 	return std::lerp(hx1, hx2, y - y1);
 }
-
 
 //
 //	OtImage::assignImageContainer

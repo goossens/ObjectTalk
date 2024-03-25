@@ -48,6 +48,7 @@ public:
 	OtNodes nodes;
 	std::vector<OtNode> inputNodes;
 	std::string savedSettings = "{}";
+	std::string savedBasedir;
 
-	void applySettings(nlohmann::json settings, std::string* basedir);
+	void applySettings();
 };

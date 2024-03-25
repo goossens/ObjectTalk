@@ -72,7 +72,9 @@ public:
 	// get pixel values
 	glm::vec4 getPixelRgba(int x, int y);
 	float getPixelGray(int x, int y);
-	float sampleValue(float u, float v);
+
+	glm::vec4 sampleValueRgba(float u, float v);
+	float sampleValueGray(float u, float v);
 
 	// version management
 	inline void setVersion(int v) { version = v; }

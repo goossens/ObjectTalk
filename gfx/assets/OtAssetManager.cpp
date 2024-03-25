@@ -28,7 +28,6 @@
 
 OtAssetManager::~OtAssetManager() {
 	// sanity check
-	OtAssert(running == false);
 	OtAssert(assets.size() == 0);
 }
 
@@ -38,9 +37,6 @@ OtAssetManager::~OtAssetManager() {
 //
 
 void OtAssetManager::start() {
-	// sanity check
-	OtAssert(running == false);
-
 	// start the cleanup timer
 	int status = uv_timer_init(uv_default_loop(), &cleanupTimerHandle);
 	UV_CHECK_ERROR("uv_timer_init", status);
@@ -52,44 +48,16 @@ void OtAssetManager::start() {
 	}, 10000, 10000);
 
 	UV_CHECK_ERROR("uv_timer_start", status);
-
-	// start a new thread
-	thread = std::thread([this]() {
-		running = true;
-
-		while (running) {
-			// wait for next task
-			queue.wait();
-			loading = true;
-			auto asset = queue.pop();
-
-			if (asset) {
-				// load next asset
-				asset->assetState = asset->load();
-				auto status = uv_async_send(asset->loaderEventHandle);
-				UV_CHECK_ERROR("uv_async_send", status);
-
-			} else {
-				// a null asset means we shutdown the loader
-				running = false;
-			}
-
-			loading = false;
-		}
-	});
 }
+
 
 //
 //	OtAssetManager::stop
 //
 
 void OtAssetManager::stop() {
-	// sanity check
-	OtAssert(running == true);
-
-	// wake up runner and wait until thread terminates
-	queue.push(nullptr);
-	thread.join();
+	// wait for all threads to finish
+	threadpool.wait();
 
 	// stop the cleanup timer
 	int status = uv_timer_stop(&cleanupTimerHandle);
@@ -115,7 +83,7 @@ void OtAssetManager::stop() {
 
 void OtAssetManager::renderUI() {
 	// see if we are currently loading assets
-	if (loading || !queue.empty()) {
+	if (loading != 0) {
 		// spinner size
 		static constexpr float spinnerRadius = 40.0f;
 		static constexpr float spinnerMargin = 20.0f;
@@ -185,7 +153,14 @@ void OtAssetManager::scheduleLoad(OtAssetBase* asset) {
 
 	// schedule asset for loading
 	asset->assetState = OtAssetBase::loadingState;
-	queue.push(asset);
+	loading++;
+
+	threadpool.detach_task([this, asset]() {
+		asset->assetState = asset->load();
+		loading--;
+		auto status = uv_async_send(asset->loaderEventHandle);
+		UV_CHECK_ERROR("uv_async_send", status);
+	});
 }
 
 

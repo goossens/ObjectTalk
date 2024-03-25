@@ -12,6 +12,7 @@ add_subdirectory(libuv)
 add_subdirectory(json)
 
 if(OT_GUI)
+	add_subdirectory(bsthreadpool)
 	add_subdirectory(glfw)
 	add_subdirectory(bx)
 	add_subdirectory(bimg)

@@ -14,10 +14,10 @@
 
 #include <functional>
 #include <string>
-#include <thread>
 #include <unordered_map>
 
-#include "OtConcurrentQueue.h"
+#include "BS_thread_pool.hpp"
+
 #include "OtHash.h"
 #include "OtLibuv.h"
 #include "OtLog.h"
@@ -44,7 +44,7 @@ public:
 	void renderUI();
 
 	// see if we are currently loading anything
-	inline bool isLoading() { return loading || queue.size(); }
+	inline bool isLoading() { return loading != 0; }
 
 	// see if a certain asset is already loaded
 	template<typename T>
@@ -118,13 +118,9 @@ private:
 	// clear unused assets
 	void clearUnusedAssets();
 
-	// thread running the async actions
-	std::thread thread;
-	bool running = false;
-	bool loading = false;
-
-	// keeping track of loading jobs
-	OtConcurrentQueue<OtAssetBase*> queue;
+	// the thread pool to handle the asset loading
+	BS::thread_pool threadpool;
+	int loading = 0;
 
 	// timer to run the "garbage collector"
 	uv_timer_t cleanupTimerHandle;

@@ -12,40 +12,39 @@
 #include "glm/glm.hpp"
 #include "nlohmann/json.hpp"
 
-#include "OtLog.h"
-
 #include "OtNodesFactory.h"
 
 
 //
-//	OtCombineXyzNode
+//	OtSeparateXyzNode
 //
 
-class OtCombineXyzNode : public OtNodeClass {
+class OtSeparateXyzNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addInputPin("X", x);
-		addInputPin("Y", y);
-		addInputPin("Z", z);
-		addOutputPin("Value", value);
+		addInputPin("Value", value);
+		addOutputPin("X", x);
+		addOutputPin("Y", y);
+		addOutputPin("Z", z);
 	}
 
-	// combine values
+	// separate values
 	void onExecute() override {
-		value = glm::vec3(x, y, z);
-		OtLogDebug("OtCombineXyzNode {}", value.y);
+		x = value.x;
+		y = value.y;
+		z = value.z;
 	}
 
-	static constexpr const char* nodeName = "Combine XYZ";
+	static constexpr const char* nodeName = "Separate XYZ";
 	static constexpr int nodeCategory = OtNodeClass::transformer;
 	static constexpr int nodeKind = OtNodeClass::flexible;
 
 protected:
+	glm::vec3 value{0.0f};
 	float x{0.0f};
 	float y{0.0f};
 	float z{0.0f};
-	glm::vec3 value{0.0f};
 };
 
-static OtNodesFactoryRegister<OtCombineXyzNode> type;
+static OtNodesFactoryRegister<OtSeparateXyzNode> type;

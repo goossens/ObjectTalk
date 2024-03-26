@@ -17,7 +17,7 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
-#include "OtNumbers.h"
+#include "OtHash.h"
 
 #include "OtGeometry.h"
 #include "OtInstances.h"
@@ -34,6 +34,7 @@ public:
 	// configure node
 	inline void configure() override {
 		addInputPin("Geometry", geometry);
+		addInputPin("Seed", seed);
 		addInputPin("Instance Count", instanceCount);
 		addInputPin("Selection", selection);
 		addInputPin("Rotate to Normals", rotateToNormals);
@@ -58,7 +59,7 @@ public:
 			// generate instances
 			if (hasVaryingInput()) {
 				for (auto i = 0; i < instanceCount; i++) {
-					auto p = getRandomPoint(vertices, indices, triangles);
+					OtVertex p = getRandomPoint(i, vertices, indices, triangles);
 					OtNodeVaryingContext context(i, p);
 					evaluateVariableInputs(context);
 
@@ -80,11 +81,14 @@ public:
 
 				// generate instances
 				for (auto i = 0; i < instanceCount; i++) {
-					auto p = getRandomPoint(vertices, indices, triangles);
+					OtVertex p = getRandomPoint(i, vertices, indices, triangles);
 					addInstance(p, transform);
 				}
 			}
 		}
+
+		// mark instances as a new version
+		instances.incrementVersion();
 	}
 
 	static constexpr const char* nodeName = "Instances on Faces";
@@ -92,55 +96,6 @@ public:
 	static constexpr int nodeKind = OtNodeClass::fixed;
 
 private:
-	// generate a single instance
-	void generateInstance(OtVertex* vertices, uint32_t* indices, size_t triangles, glm::mat4& transform) {
-		// select a random triangle
-		int triangle = OtRandom(0, int(triangles) - 1);
-
-		// get the corners of the triangle
-		auto index = indices + triangle * 3;
-		auto& v1 = vertices[index[0]];
-		auto& v2 = vertices[index[1]];
-		auto& v3 = vertices[index[2]];
-
-		// pick a random point within the triangle
-		auto p = getRandomPointOnTriangle(v1.position, v2.position, v3.position);
-
-		// rotate to normals (if required)
-		if (rotateToNormals) {
-			static glm::vec3 u = glm::vec3(0.0f, 1.0f, 0.0f);
-			glm::vec3 v = glm::normalize((v1.normal + v2.normal + v3.normal) / 3.0f);
-			auto quat = glm::normalize(glm::quat(1.0f + glm::dot(u, v), glm::cross(u, v)));
-			instances.add(glm::translate(glm::mat4(1.0f), p) * glm::toMat4(quat) * transform, false);
-
-		} else {
-			instances.add(glm::translate(glm::mat4(1.0f), p) * transform, false);
-		}
-	}
-
-	// get random point inside triangle based on barycentric coordinate
-	glm::vec3 getRandomPointOnTriangle(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3) {
-		auto bc = randomBaryentricCoordinate();
-
-		return glm::vec3(
-			p1.x * bc.x + p2.x * bc.y + p3.x * bc.z,
-			p1.y * bc.x + p2.y * bc.y + p3.y * bc.z,
-			p1.z * bc.x + p2.z * bc.y + p3.z * bc.z);
-	}
-
-	// generate a random barycentric coordinate
-	glm::vec3 randomBaryentricCoordinate() {
-		auto a = OtRandom(0.0f, 1.0f);
-		auto b = OtRandom(0.0f, 1.0f);
-
-		if (a + b > 1.0f) {
-			a = 1.0f - a;
-			b = 1.0f - b;
-		}
-
-		return glm::vec3(a, b, 1.0f - a - b);
-	}
-
 	// add new instance to the list
 	void addInstance(OtVertex& vertex, glm::mat4& transform) {
 		// rotate to normals (if required)
@@ -156,9 +111,9 @@ private:
 	}
 
 	// get random point inside triangle based on barycentric coordinate
-	OtVertex getRandomPoint(OtVertex* vertices, uint32_t* indices, size_t triangles) {
+	OtVertex getRandomPoint(int id, OtVertex* vertices, uint32_t* indices, size_t triangles) {
 		// select a random triangle
-		int triangle = OtRandom(0, int(triangles) - 1);
+		int triangle = int(OtHash::toFloat(id, seed) * float(triangles - 1));
 
 		// get the corners of the triangle
 		auto index = indices + triangle * 3;
@@ -167,8 +122,8 @@ private:
 		auto& v3 = vertices[index[2]];
 
 		// generate a random barycentric coordinate
-		auto a = OtRandom(0.0f, 1.0f);
-		auto b = OtRandom(0.0f, 1.0f);
+		auto a = OtHash::toFloat(id, seed, 1);
+		auto b = OtHash::toFloat(id, seed, 2);
 
 		if (a + b > 1.0f) {
 			a = 1.0f - a;
@@ -186,6 +141,7 @@ private:
 
 protected:
 	OtGeometry geometry;
+	int seed;
 	OtInstances instances;
 	int instanceCount = 16;
 	bool selection = true;

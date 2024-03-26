@@ -12,6 +12,7 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
+#include "OtHash.h"
 #include "OtNumbers.h"
 
 #include "OtNodesFactory.h"
@@ -25,14 +26,29 @@ class OtRandomNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
+		addInputPin("Seed", seed);
 		addInputPin("Min", minValue);
 		addInputPin("Max", maxValue);
-		addOutputPin("Value", value);
+		outputPin = addOutputPin("Value", value);
+	}
+
+	// process the varying context (called for each iteration)
+	void processVaryingContext(OtNodeVaryingContext& context) override {
+		id = context.index;
 	}
 
 	// generate random number
 	void onExecute() override {
-		value = OtRandom(minValue, maxValue);
+		if (seed == 0) {
+			seed = 1;
+		}
+
+		if (outputPin->isDestinationConnected() && outputPin->destinationPin->isVarying()) {
+			value = OtHash::toFloat(id, seed) * (maxValue - minValue) + minValue;
+
+		} else {
+			value = OtRandom(minValue, maxValue);
+		}
 	}
 
 	static constexpr const char* nodeName = "Random";
@@ -40,9 +56,12 @@ public:
 	static constexpr int nodeKind = OtNodeClass::varying;
 
 protected:
-	float value = 0.0f;
+	int id = 0;
+	int seed = 1;
 	float minValue = 0.0f;
 	float maxValue = 1.0f;
+	float value = 0.0f;
+	OtNodesPin outputPin;
 };
 
 static OtNodesFactoryRegister<OtRandomNode> type;

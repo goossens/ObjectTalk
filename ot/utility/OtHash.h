@@ -19,15 +19,23 @@
 //	OtHash
 //
 
-template <typename T, typename... REST>
-void OtHashRecursive(std::size_t& hash, const T& v, const REST&... rest) {
-	hash ^= std::hash<T>{}(v) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
-	(OtHashRecursive(hash, rest), ...);
-}
+struct OtHash {
+	template <typename T, typename... REST>
+	static void recursive(std::size_t& hash, const T& v, const REST&... rest) {
+		hash ^= std::hash<T>{}(v) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+		(recursive(hash, rest), ...);
+	}
 
-template <typename... PARS>
-std::size_t OtHash(const PARS&... pars) {
-	std::size_t hash = 0;
-	OtHashRecursive(hash, pars...);
-	return hash;
-}
+	template <typename... PARS>
+	static inline std::size_t generate(const PARS&... pars) {
+		std::size_t hash = 0;
+		recursive(hash, pars...);
+		return hash;
+	}
+
+	// hash a uint32_t integer into a float in the range [0, 1]
+	static float toFloat(uint32_t x);
+	static float toFloat(uint32_t x, uint32_t y);
+	static float toFloat(uint32_t x, uint32_t y, uint32_t z);
+	static float toFloat(uint32_t x, uint32_t y, uint32_t z, uint32_t w);
+};

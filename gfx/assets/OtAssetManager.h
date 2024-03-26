@@ -139,7 +139,7 @@ private:
 	};
 
 	struct KeyHasher {
-		std::size_t operator()(const Key& k) const { return OtHash(k.type, k.path); }
+		std::size_t operator()(const Key& k) const { return OtHash::generate(k.type, k.path); }
 	};
 
 	// the registry of loaded assets

@@ -74,6 +74,11 @@
 			"from": 2841268553,
 			"id": 2388851543,
 			"to": 1014418491
+		},
+		{
+			"from": 516188977,
+			"id": 2633180320,
+			"to": 3785390663
 		}
 	],
 	"metadata": {},
@@ -91,17 +96,23 @@
 			"path": "",
 			"title": "Geometry",
 			"type": "Geometry Input",
-			"x": 35.0,
-			"y": 38.0
+			"x": 31.0,
+			"y": 12.0
 		},
 		{
 			"id": 2964941285,
 			"inputs": [
 				{
+					"id": 1202990129,
+					"name": "Seed",
+					"type": "int",
+					"value": 1
+				},
+				{
 					"id": 798292254,
 					"name": "Min",
 					"type": "float",
-					"value": 0.6000000238418579
+					"value": 0.5
 				},
 				{
 					"id": 918957183,
@@ -119,8 +130,8 @@
 			],
 			"title": "Random",
 			"type": "Random",
-			"x": 230.0,
-			"y": 583.0
+			"x": 257.0,
+			"y": 372.0
 		},
 		{
 			"id": 3262656160,
@@ -135,8 +146,8 @@
 			"title": "Scale",
 			"type": "Float Input",
 			"value": 1.0,
-			"x": 55.0,
-			"y": 670.0
+			"x": 33.0,
+			"y": 546.0
 		},
 		{
 			"id": 2136221550,
@@ -162,8 +173,8 @@
 			],
 			"title": "Binary Float",
 			"type": "Binary Float",
-			"x": 381.0,
-			"y": 600.0
+			"x": 444.0,
+			"y": 470.0
 		},
 		{
 			"id": 3968993238,
@@ -183,12 +194,18 @@
 			],
 			"title": "Float to Vector",
 			"type": "Float to Vector",
-			"x": 562.0,
-			"y": 595.0
+			"x": 626.0,
+			"y": 501.0
 		},
 		{
 			"id": 4237229282,
 			"inputs": [
+				{
+					"id": 1160240525,
+					"name": "Seed",
+					"type": "int",
+					"value": 1
+				},
 				{
 					"id": 2905782448,
 					"name": "Min",
@@ -211,8 +228,8 @@
 			],
 			"title": "Random",
 			"type": "Random",
-			"x": 378.0,
-			"y": 454.0
+			"x": 486.0,
+			"y": 324.0
 		},
 		{
 			"id": 1200162136,
@@ -244,8 +261,8 @@
 			],
 			"title": "Combine XYZ",
 			"type": "Combine XYZ",
-			"x": 565.0,
-			"y": 440.0
+			"x": 654.0,
+			"y": 317.0
 		},
 		{
 			"id": 4082656913,
@@ -260,8 +277,8 @@
 			"path": "",
 			"title": "Instance Mask",
 			"type": "Image Input",
-			"x": 36.0,
-			"y": 274.0
+			"x": 28.0,
+			"y": 201.0
 		},
 		{
 			"id": 3530977512,
@@ -280,8 +297,8 @@
 			],
 			"title": "UV Field",
 			"type": "UV Field",
-			"x": 239.0,
-			"y": 358.0
+			"x": 265.0,
+			"y": 275.0
 		},
 		{
 			"id": 4135589338,
@@ -311,8 +328,8 @@
 			],
 			"title": "Sample Gray Image",
 			"type": "Sample Gray Image",
-			"x": 401.0,
-			"y": 263.0
+			"x": 412.0,
+			"y": 174.0
 		},
 		{
 			"id": 3345459450,
@@ -339,8 +356,8 @@
 			],
 			"title": "Compare",
 			"type": "Compare",
-			"x": 591.0,
-			"y": 238.0
+			"x": 603.0,
+			"y": 170.0
 		},
 		{
 			"id": 2767349882,
@@ -352,11 +369,27 @@
 					"type": "int"
 				}
 			],
-			"title": "Instances",
+			"title": "Instance Count",
 			"type": "Integer Input",
 			"value": 200,
-			"x": 36.0,
-			"y": 193.0
+			"x": 30.0,
+			"y": 137.0
+		},
+		{
+			"id": 3405945509,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 516188977,
+					"name": "Value",
+					"type": "int"
+				}
+			],
+			"title": "Random Seed",
+			"type": "Integer Input",
+			"value": 0,
+			"x": 31.0,
+			"y": 74.0
 		},
 		{
 			"id": 2937495558,
@@ -365,6 +398,11 @@
 					"id": 3827253381,
 					"name": "Geometry",
 					"type": "geometry"
+				},
+				{
+					"id": 3785390663,
+					"name": "Seed",
+					"type": "int"
 				},
 				{
 					"id": 1305712855,
@@ -402,8 +440,8 @@
 			],
 			"title": "Instances on Faces",
 			"type": "Instances on Faces",
-			"x": 838.0,
-			"y": 129.0
+			"x": 841.0,
+			"y": 14.0
 		},
 		{
 			"id": 2414095796,
@@ -415,11 +453,11 @@
 					"type": "string"
 				}
 			],
-			"title": "Instance",
+			"title": "Instances Name",
 			"type": "String Input",
 			"value": "",
-			"x": 35.0,
-			"y": 116.0
+			"x": 34.0,
+			"y": 612.0
 		},
 		{
 			"id": 3047086596,
@@ -438,8 +476,8 @@
 			"outputs": [],
 			"title": "Save Instances To Virtual",
 			"type": "Save Instances To Virtual",
-			"x": 1100.0,
-			"y": 24.0
+			"x": 1139.0,
+			"y": 586.0
 		}
 	]
 }

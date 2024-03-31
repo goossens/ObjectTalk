@@ -22,7 +22,7 @@
 //
 
 OtTerrainComponent::OtTerrainComponent() {
-	terrain = OtObjectPointer<OtTerrainClass>::create();
+	terrain = std::make_shared<OtTerrain>();
 }
 
 

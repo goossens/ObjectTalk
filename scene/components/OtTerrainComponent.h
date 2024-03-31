@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include <memory>
+
 #include "glm/glm.hpp"
 #include "nlohmann/json_fwd.hpp"
 
@@ -40,5 +42,5 @@ public:
 	static constexpr char const* name = "Terrain";
 
 	// the actual terrain
-	OtTerrain terrain;
+	std::shared_ptr<OtTerrain> terrain;
 };

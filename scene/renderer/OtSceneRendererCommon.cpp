@@ -131,18 +131,18 @@ void OtSceneRenderer::submitMaterialUniforms(OtMaterial& material) {
 //	OtSceneRenderer::submitTerrainUniforms
 //
 
-void OtSceneRenderer::submitTerrainUniforms(OtTerrain terrain) {
+void OtSceneRenderer::submitTerrainUniforms(OtTerrain& terrain) {
 	// get access to key terrain information
-	OtTerrainHeights& heights = terrain->heights;
-	OtTerrainMaterial& material = terrain->material;
+	OtTerrainHeights& heights = terrain.heights;
+	OtTerrainMaterial& material = terrain.material;
 
 	// set the uniform values
 	glm::vec4* uniforms = terrainUniforms.getValues();
 
 	uniforms[0] = glm::vec4(
-		terrain->hScale,
-		terrain->vScale,
-		terrain->vOffset,
+		terrain.hScale,
+		terrain.vScale,
+		terrain.vOffset,
 		float(heights.heightmapSize));
 
 	uniforms[1] = glm::vec4(

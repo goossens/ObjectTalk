@@ -18,8 +18,6 @@
 #include "glm/glm.hpp"
 #include "nlohmann/json_fwd.hpp"
 
-#include "OtObject.h"
-
 #include "OtAABB.h"
 #include "OtFrustum.h"
 #include "OtIndexBuffer.h"
@@ -35,10 +33,7 @@
 //	OtTerrain
 //
 
-class OtTerrainClass;
-using OtTerrain = OtObjectPointer<OtTerrainClass>;
-
-class OtTerrainClass : public OtObjectClass {
+class OtTerrain {
 public:
 	// UI to change properties
 	bool renderUI();
@@ -53,9 +48,6 @@ public:
 
 	// are we rendering a wireframe
 	inline bool isWireframe() { return wireframe; }
-
-	// get type definition
-	static OtType getMeta();
 
 private:
 	// the scene renderer needs access to our properties

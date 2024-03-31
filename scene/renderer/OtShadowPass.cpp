@@ -189,7 +189,7 @@ void OtSceneRenderer::renderShadowTerrain(OtSceneRendererContext& ctx, OtPass& p
 		mesh.tile.vertices.submit();
 
 		// submit the terrain and clipping uniforms
-		submitTerrainUniforms(terrain);
+		submitTerrainUniforms(*terrain);
 		submitClippingUniforms(ctx);
 
 		// submit the terrain

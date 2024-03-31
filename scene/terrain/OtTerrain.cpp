@@ -52,10 +52,10 @@
 
 
 //
-//	OtTerrainClass::renderUI
+//	OtTerrain::renderUI
 //
 
-bool OtTerrainClass::renderUI() {
+bool OtTerrain::renderUI() {
 	bool changed = false;
 	changed |= OtUiSelectorPowerOfTwo("Tile Size", tileSize, 4, 64);
 	changed |= ImGui::DragInt("Levels of Detail", &lods, 1, 1, 10);
@@ -82,10 +82,10 @@ bool OtTerrainClass::renderUI() {
 
 
 //
-//	OtTerrainClass::serialize
+//	OtTerrain::serialize
 //
 
-nlohmann::json OtTerrainClass::serialize(std::string* basedir) {
+nlohmann::json OtTerrain::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["tileSize"] = tileSize;
 	data["lods"] = lods;
@@ -100,10 +100,10 @@ nlohmann::json OtTerrainClass::serialize(std::string* basedir) {
 
 
 //
-//	OtTerrainClass::deserialize
+//	OtTerrain::deserialize
 //
 
-void OtTerrainClass::deserialize(nlohmann::json data, std::string* basedir) {
+void OtTerrain::deserialize(nlohmann::json data, std::string* basedir) {
 	tileSize = data.value("tileSize", 32);
 	lods = data.value("lods", 4);
 	hScale = data.value("hScale", 1.0f);
@@ -124,10 +124,10 @@ void OtTerrainClass::deserialize(nlohmann::json data, std::string* basedir) {
 
 
 //
-//	OtTerrainClass::getMeshes
+//	OtTerrain::getMeshes
 //
 
-std::vector<OtTerrainMesh>& OtTerrainClass::getMeshes(OtFrustum& frustum, const glm::vec3& camera) {
+std::vector<OtTerrainMesh>& OtTerrain::getMeshes(OtFrustum& frustum, const glm::vec3& camera) {
 	// initialize if required
 	if (!vertices.isValid()) {
 		initialize();
@@ -168,10 +168,10 @@ std::vector<OtTerrainMesh>& OtTerrainClass::getMeshes(OtFrustum& frustum, const 
 
 
 //
-//	OtTerrainClass::getMeshes
+//	OtTerrain::getMeshes
 //
 
-std::vector<OtTerrainMesh>& OtTerrainClass::getMeshes(OtAABB& aabb, const glm::vec3& camera) {
+std::vector<OtTerrainMesh>& OtTerrain::getMeshes(OtAABB& aabb, const glm::vec3& camera) {
 	// initialize if required
 	if (!vertices.isValid()) {
 		initialize();
@@ -212,10 +212,10 @@ std::vector<OtTerrainMesh>& OtTerrainClass::getMeshes(OtAABB& aabb, const glm::v
 
 
 //
-//	OtTerrainClass::createVertices
+//	OtTerrain::createVertices
 //
 
-void OtTerrainClass::createVertices()
+void OtTerrain::createVertices()
 {
 	// create temporary buffer
 	std::vector<glm::vec3> buffer;
@@ -235,7 +235,7 @@ void OtTerrainClass::createVertices()
 
 
 //
-//	OtTerrainClass::createIndices
+//	OtTerrain::createIndices
 //
 
 #define TRIANGLE(p1, p2, p3)														\
@@ -244,7 +244,7 @@ void OtTerrainClass::createVertices()
 	lines.push_back(p2); lines.push_back(p3);										\
 	lines.push_back(p3); lines.push_back(p1)
 
-void OtTerrainClass::createIndices(OtIndexBuffer& triangleBuffer, OtIndexBuffer& lineBuffer, int degenerate) {
+void OtTerrain::createIndices(OtIndexBuffer& triangleBuffer, OtIndexBuffer& lineBuffer, int degenerate) {
 	// create indices
 	std::vector<uint32_t> triangles;
 	std::vector<uint32_t> lines;
@@ -330,10 +330,10 @@ void OtTerrainClass::createIndices(OtIndexBuffer& triangleBuffer, OtIndexBuffer&
 
 
 //
-//	OtTerrainClass::createTiles
+//	OtTerrain::createTiles
 //
 
-void OtTerrainClass::createTiles() {
+void OtTerrain::createTiles() {
 	// create the 4 center tiles for LOD 0
 	centerTiles.emplace_back(vertices, fullTriangles, fullLines, 0.0f, 0.0f, 0.0f);
 	centerTiles.emplace_back(vertices, fullTriangles, fullLines, 0.0f, 0.0f, 90.0f);
@@ -366,10 +366,10 @@ void OtTerrainClass::createTiles() {
 
 
 //
-//	OtTerrainClass::initialize
+//	OtTerrain::initialize
 //
 
-void OtTerrainClass::initialize() {
+void OtTerrain::initialize() {
 	// create vertices
 	createVertices();
 
@@ -384,10 +384,10 @@ void OtTerrainClass::initialize() {
 
 
 //
-//	OtTerrainClass::clear
+//	OtTerrain::clear
 //
 
-void OtTerrainClass::clear() {
+void OtTerrain::clear() {
 	vertices.clear();
 	fullTriangles.clear();
 	sideTriangles.clear();
@@ -398,19 +398,4 @@ void OtTerrainClass::clear() {
 	centerTiles.clear();
 	ringTiles.clear();
 	meshes.clear();
-}
-
-
-//
-//	OtTerrainClass::getMeta
-//
-
-OtType OtTerrainClass::getMeta() {
-	static OtType type;
-
-	if (!type) {
-		type = OtType::create<OtTerrainClass>("Terrain", OtObjectClass::getMeta());
-	}
-
-	return type;
 }

@@ -86,10 +86,10 @@ private:
 	// rendering tools
 	void submitTextureSampler(OtSampler& sampler, int unit, OtAsset<OtTextureAsset>& texture);
 	void submitCubeMapSampler(OtSampler& sampler, int unit, OtAsset<OtCubeMapAsset>& cubemap);
-	void submitMaterialUniforms(OtMaterial& material);
 	void submitClippingUniforms(OtSceneRendererContext& ctx);
 	void submitLightingUniforms(OtSceneRendererContext& ctx);
-	void submitTerrainUniforms(OtTerrain terrain);
+	void submitMaterialUniforms(OtMaterial& material);
+	void submitTerrainUniforms(OtTerrain& terrain);
 
 	// helpers
 	float getRunningTime();

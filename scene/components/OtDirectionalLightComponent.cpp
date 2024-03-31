@@ -14,6 +14,7 @@
 #include "nlohmann/json.hpp"
 
 #include "OtGlm.h"
+#include "OtUi.h"
 
 #include "OtDirectionalLightComponent.h"
 
@@ -26,6 +27,7 @@ bool OtDirectionalLightComponent::renderUI() {
 	bool changed = false;
 	changed |= ImGui::ColorEdit3("Color", glm::value_ptr(color));
 	changed |= ImGui::SliderFloat("Ambient", &ambient, 0.0f, 0.3f);
+	changed |= OtUiToggleButton("Cast Shadow", &castShadow);
 	return changed;
 }
 
@@ -39,6 +41,7 @@ nlohmann::json OtDirectionalLightComponent::serialize(std::string* basedir) {
 	data["component"] = name;
 	data["color"] = color;
 	data["ambient"] = ambient;
+	data["castShadow"] = castShadow;
 	return data;
 }
 
@@ -50,4 +53,5 @@ nlohmann::json OtDirectionalLightComponent::serialize(std::string* basedir) {
 void OtDirectionalLightComponent::deserialize(nlohmann::json data, std::string* basedir) {
 	color = data.value("color", glm::vec3(1.0f));
 	ambient = data.value("ambient", 0.05f);
+	castShadow = data.value("castShadow", false);
 }

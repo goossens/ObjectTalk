@@ -33,11 +33,12 @@ void OtSpherePrimitive::createMesh(OtMesh* mesh) {
 		// address each segment
 		for (auto seg = 0; seg <= thetaSegments; seg++) {
 			auto phi = phiStart + seg * segDelta;
-			glm::vec2 uv = glm::vec2((float) seg / (float) thetaSegments, (float) ring / (float) phiSegments);
 			auto r0 = radius * std::sin(glm::radians(theta));
 			auto y0 = radius * std::cos(glm::radians(theta));
 			auto x0 = r0 * -std::sin(glm::radians(phi));
 			auto z0 = r0 * -std::cos(glm::radians(phi));
+
+			glm::vec2 uv = glm::vec2((float) seg / (float) thetaSegments, (float) ring / (float) phiSegments);
 
 			// add vertex
 			mesh->addVertex(OtVertex(

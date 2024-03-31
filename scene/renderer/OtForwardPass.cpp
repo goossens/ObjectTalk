@@ -81,7 +81,7 @@ void OtSceneRenderer::renderForwardWater(OtSceneRendererContext& ctx, OtPass& pa
 	waterUniforms.setValue(3, water.color, float(water.useRefractance));
 	waterUniforms.submit();
 
-	submitLightUniforms(ctx);
+	submitLightingUniforms(ctx);
 
 	// bind the textures
 	submitTextureSampler(normalmapSampler, 0, water.normals);
@@ -144,8 +144,8 @@ void OtSceneRenderer::renderForwardGeometry(OtSceneRendererContext& ctx, OtPass&
 			submitMaterialUniforms(material);
 		}
 
-		submitClippingUniforms(ctx.clippingPlane);
-		submitLightUniforms(ctx);
+		submitLightingUniforms(ctx);
+		submitClippingUniforms(ctx);
 
 		// submit the geometry
 		auto geom = geometry.asset->getGeometry();

@@ -37,6 +37,9 @@ public:
 	// add another AABB
 	void addAABB(const OtAABB& aabb);
 
+	// does it overlap with another AABB
+	bool overlaps(const OtAABB& aabb);
+
 	// get min/max values
 	inline const glm::vec3& getMin() const { return minp; }
 	inline const glm::vec3& getMax() const { return maxp; }

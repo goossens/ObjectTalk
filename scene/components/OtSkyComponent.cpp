@@ -26,6 +26,7 @@ bool OtSkyComponent::renderUI() {
 	bool changed = false;
 	changed |= ImGui::SliderFloat("Sun Elevation", &elevation, -90.0f, 90.0f);
 	changed |= ImGui::SliderFloat("Sun Azimuth", &azimuth, 0.0f, 360.0f);
+	changed |= OtUiToggleButton("Cast Shadow", &castShadow);
 
 	changed |= ImGui::SliderFloat("Rayleigh Coefficient", &rayleighCoefficient, 0.5f, 6.0f);
 	changed |= ImGui::SliderFloat("Mie Coefficient", &mieCoefficient, 1.0f, 10.0f);
@@ -47,6 +48,7 @@ nlohmann::json OtSkyComponent::serialize(std::string* basedir) {
 	data["component"] = name;
 	data["elevation"] = elevation;
 	data["azimuth"] = azimuth;
+	data["castShadow"] = castShadow;
 	data["rayleighCoefficient"] = rayleighCoefficient;
 	data["mieCoefficient"] = mieCoefficient;
 	data["mieScattering"] = mieScattering;
@@ -64,6 +66,7 @@ nlohmann::json OtSkyComponent::serialize(std::string* basedir) {
 void OtSkyComponent::deserialize(nlohmann::json data, std::string* basedir) {
 	elevation = data.value("elevation", 10.0f);
 	azimuth = data.value("azimuth", 180.0f);
+	castShadow = data.value("castShadow", true);
 	rayleighCoefficient = data.value("rayleighCoefficient", 3.5f);
 	mieCoefficient = data.value("mieCoefficient", 5.0f);
 	mieScattering = data.value("mieScattering", 0.99f);

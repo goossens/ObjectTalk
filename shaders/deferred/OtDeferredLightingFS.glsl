@@ -11,6 +11,7 @@ $input v_texcoord0
 
 #include <bgfx_shader.glsl>
 #include <pbr.glsl>
+#include <shadow.glsl>
 #include <utilities.glsl>
 
 // uniforms
@@ -21,6 +22,7 @@ uniform vec4 u_lighting[3];
 #define u_directionalLightColor u_lighting[2].xyz
 #define u_directionalLightAmbience u_lighting[2].a
 
+uniform mat4 u_viewUniform;
 uniform mat4 u_invViewProjUniform;
 
 uniform vec4 u_ibl[1];
@@ -75,10 +77,12 @@ void main() {
 		light.L = normalize(u_directionalLightDirection);
 		light.color = u_directionalLightColor;
 		light.ambience = u_directionalLightAmbience;
+		light.shadow = getShadow(pos, mul(u_viewUniform, vec4(pos, 1.0)).xyz, dot(material.normal, light.L));
+
 		color += directionalLightPBR(material, light, V);
 	}
 
-	// process image basedlighting (if required)
+	// process image based lighting (if required)
 	if (u_hasImageBasedLighting) {
 		color += imageBasedLightingPBR(material, V, u_iblEnvLevels, s_iblBrdfLut, s_iblIrradianceMap, s_iblEnvironmentMap);
 	}

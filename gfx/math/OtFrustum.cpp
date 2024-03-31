@@ -15,16 +15,6 @@
 
 
 //
-//	project
-//
-
-static inline glm::vec4 project(const glm::mat4& matrix, const glm::vec4& ndc) {
-	glm::vec4 v = matrix * ndc;
-	return glm::vec4(v.x / v.w, v.y / v.w, v.z / v.w, 1.0f);
-}
-
-
-//
 //	OtFrustum::OtFrustum
 //
 
@@ -34,7 +24,7 @@ OtFrustum::OtFrustum() {
 	}
 
 	for (auto& point : points) {
-		point = glm::vec3(0.0);
+		point = glm::vec3(0.0f);
 	}
 }
 
@@ -55,38 +45,17 @@ OtFrustum::OtFrustum(const glm::mat4& matrix) {
 
 	// determine corners
 	glm::mat4 inverse = glm::inverse(matrix);
-	float n = OtGpuHasHomogeneousDepth() ? -1.0 : 0.0;
+	float n = OtGpuHasHomogeneousDepth() ? -1.0f : 0.0f;
 
-	points[nearBottomLeft] = project(inverse, glm::vec4(-1.0, -1.0, n, 1.0));
-	points[nearTopLeft] = project(inverse, glm::vec4(-1.0, 1.0, n, 1.0));
-	points[nearTopRight] = project(inverse, glm::vec4(1.0, 1.0, n, 1.0));
-	points[nearBottomRight] = project(inverse, glm::vec4(1.0, -1.0, n, 1.0));
+	points[nearBottomLeft] = OtGlmMul(inverse, glm::vec4(-1.0f, -1.0f, n, 1.0f));
+	points[nearTopLeft] = OtGlmMul(inverse, glm::vec4(-1.0f, 1.0f, n, 1.0f));
+	points[nearTopRight] = OtGlmMul(inverse, glm::vec4(1.0f, 1.0f, n, 1.0f));
+	points[nearBottomRight] = OtGlmMul(inverse, glm::vec4(1.0f, -1.0f, n, 1.0f));
 
-	points[farBottomLeft] = project(inverse, glm::vec4(-1.0, -1.0, 1.0, 1.0));
-	points[farTopLeft] = project(inverse, glm::vec4(-1.0, 1.0, 1.0, 1.0));
-	points[farTopRight] = project(inverse, glm::vec4(1.0, 1.0, 1.0, 1.0));
-	points[farBottomRight] = project(inverse, glm::vec4(1.0, -1.0, 1.0, 1.0));
-}
-
-OtFrustum::OtFrustum(glm::vec3& nbl, glm::vec3& ntl, glm::vec3& ntr, glm::vec3& nbr, glm::vec3& fbl, glm::vec3& ftl, glm::vec3& ftr, glm::vec3& fbr) {
-	// set corners
-	points[nearBottomLeft] = nbl;
-	points[nearTopLeft] = ntl;
-	points[nearTopRight] = ntr;
-	points[nearBottomRight] = nbr;
-
-	points[farBottomLeft] = fbl;
-	points[farTopLeft] = ftl;
-	points[farTopRight] = ftr;
-	points[farBottomRight] = fbr;
-
-	// set planes
-	planes[leftPlane] = OtPlane(nbl, ntl, ftl);
-	planes[rightPlane] = OtPlane(nbr, ntr, ftr);
-	planes[bottomPlane] = OtPlane(nbl, nbr, fbr);
-	planes[topPlane] = OtPlane(ntl, ntr, ftr);
-	planes[nearPlane] = OtPlane(nbl, ntl, ntr);
-	planes[farPlane] = OtPlane(fbl, ftl, ftr);
+	points[farBottomLeft] = OtGlmMul(inverse, glm::vec4(-1.0f, -1.0f, 1.0f, 1.0f));
+	points[farTopLeft] = OtGlmMul(inverse, glm::vec4(-1.0f, 1.0f, 1.0f, 1.0f));
+	points[farTopRight] = OtGlmMul(inverse, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	points[farBottomRight] = OtGlmMul(inverse, glm::vec4(1.0f, -1.0f, 1.0f, 1.0f));
 }
 
 
@@ -110,26 +79,13 @@ bool OtFrustum::isVisiblePoint(const glm::vec3& point) {
 //
 
 bool OtFrustum::isVisibleAABB(const OtAABB& aabb) {
+	// see https://iquilezles.org/articles/frustumcorrect/
 	glm::vec3 minp = aabb.getMin();
 	glm::vec3 maxp = aabb.getMax();
 
-/*
+	// check box outside/inside of frustum
 	for (auto i = 0; i < planeCount; i++) {
-		glm::vec3 normal = planes[i].getNormal();
-		glm::vec3 v;
-
-		v.x = normal.x < 0.0f ? minp.x : maxp.x;
-		v.y = normal.y < 0.0f ? minp.y : maxp.y;
-		v.z = normal.z < 0.0f ? minp.z : maxp.z;
-
-		if (glm::dot(normal, v) + planes[i].getDistance() < 0) {
-			return false;
-		}
-	}
-*/
-
-	for (auto i = 0; i < planeCount; i++) {
-		const glm::vec4 g = planes[i].getVec4();
+		glm::vec4 g = planes[i].getVec4();
 
 		if ((glm::dot(g, glm::vec4(minp.x, minp.y, minp.z, 1.0f)) < 0.0) &&
 			(glm::dot(g, glm::vec4(maxp.x, minp.y, minp.z, 1.0f)) < 0.0) &&
@@ -139,10 +95,20 @@ bool OtFrustum::isVisibleAABB(const OtAABB& aabb) {
 			(glm::dot(g, glm::vec4(maxp.x, minp.y, maxp.z, 1.0f)) < 0.0) &&
 			(glm::dot(g, glm::vec4(minp.x, maxp.y, maxp.z, 1.0f)) < 0.0) &&
 			(glm::dot(g, glm::vec4(maxp.x, maxp.y, maxp.z, 1.0f)) < 0.0)) {
+
 			// Not visible - all returned negative
 			return false;
 		}
 	}
+
+	// check frustum outside/inside box
+	int out;
+	out = 0; for (auto i = 0; i < pointCount; i++) { out += points[i].x > maxp.x ? 1 : 0; } if (out == pointCount) { return false; }
+	out = 0; for (auto i = 0; i < pointCount; i++) { out += points[i].x < minp.x ? 1 : 0; } if (out == pointCount) { return false; }
+	out = 0; for (auto i = 0; i < pointCount; i++) { out += points[i].y > maxp.y ? 1 : 0; } if (out == pointCount) { return false; }
+	out = 0; for (auto i = 0; i < pointCount; i++) { out += points[i].y < minp.y ? 1 : 0; } if (out == pointCount) { return false; }
+	out = 0; for (auto i = 0; i < pointCount; i++) { out += points[i].z > maxp.z ? 1 : 0; } if (out == pointCount) { return false; }
+	out = 0; for (auto i = 0; i < pointCount; i++) { out += points[i].z < minp.z ? 1 : 0; } if (out == pointCount) { return false; }
 
 	return true;
 }
@@ -190,28 +156,6 @@ OtAABB OtFrustum::getAABB() {
 	}
 
 	return aabb;
-}
-
-
-//
-//	OtFrustum::transform
-//
-
-OtFrustum OtFrustum::transform(const glm::mat4& transform) {
-	glm::vec3 newPoints[pointCount] = {
-		OtGlmMul(transform, points[nearBottomLeft]),
-		OtGlmMul(transform, points[nearTopLeft]),
-		OtGlmMul(transform, points[nearTopRight]),
-		OtGlmMul(transform, points[nearBottomRight]),
-		OtGlmMul(transform, points[farBottomLeft]),
-		OtGlmMul(transform, points[farTopLeft]),
-		OtGlmMul(transform, points[farTopRight]),
-		OtGlmMul(transform, points[farBottomRight])
-	};
-
-	return OtFrustum(
-		newPoints[0], newPoints[1], newPoints[2], newPoints[3],
-		newPoints[4], newPoints[5], newPoints[6], newPoints[7]);
 }
 
 

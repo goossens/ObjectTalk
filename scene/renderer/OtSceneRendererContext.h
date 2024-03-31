@@ -52,11 +52,24 @@ public:
 		// check entities and set flags
 		scene->eachEntityDepthFirst([&](OtEntity entity) {
 			if (scene->hasComponent<OtDirectionalLightComponent>(entity) && scene->hasComponent<OtTransformComponent>(entity)) {
+				auto& light = scene->getComponent<OtDirectionalLightComponent>(entity);
+				auto& transform = scene->getComponent<OtTransformComponent>(entity);
+
 				hasDirectionalLighting = true;
+				directionalLightDirection = glm::normalize(transform.getTransform()[3]);
+				directionalLightColor = light.color;
+				directionalLightAmbient = light.ambient;
+				castShadow = light.castShadow;
 			}
 
 			if (scene->hasComponent<OtSkyComponent>(entity)) {
+				auto& sky = scene->getComponent<OtSkyComponent>(entity);
+
 				hasDirectionalLighting = true;
+				directionalLightDirection = glm::normalize(sky.getDirectionToSun());
+				directionalLightColor = glm::vec3(0.2f + std::clamp(sky.elevation / 10.0f, 0.0f, 0.8f));
+				directionalLightAmbient = std::clamp((sky.elevation + 6.0f) / 200.0f, 0.0f, 0.2f);
+				castShadow = sky.castShadow;
 			}
 
 			if (scene->hasComponent<OtIblComponent>(entity)) {
@@ -118,6 +131,13 @@ public:
 	bool hasTransparentEntities;
 	bool hasWaterEntities;
 
+	// directional light information
+	glm::vec3 directionalLightDirection = glm::vec3(0.0f);
+	glm::vec3 directionalLightColor = glm::vec3(0.0f);
+	float directionalLightAmbient = 0.0f;
+	bool castShadow = false;
+
+	// key entities
 	OtEntity iblEntity = OtEntityNull;
 	OtEntity waterEntity = OtEntityNull;
 };

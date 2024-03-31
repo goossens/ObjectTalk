@@ -20,7 +20,7 @@ static inline uint32_t hashBitRotate(uint32_t x, uint32_t k) {
   return (x << k) | (x >> (32 - k));
 }
 
-static inline void hashBitMix(uint32_t &a, uint32_t &b, uint32_t &c) {
+static inline void hashBitMix(uint32_t& a, uint32_t& b, uint32_t& c) {
 	a -= c;
 	a ^= hashBitRotate(c, 4);
 	c += b;
@@ -41,7 +41,7 @@ static inline void hashBitMix(uint32_t &a, uint32_t &b, uint32_t &c) {
 	b += a;
 }
 
-static inline void hashBitFinal(uint32_t &a, uint32_t &b, uint32_t &c) {
+static inline void hashBitFinal(uint32_t& a, uint32_t& b, uint32_t& c) {
 	c ^= b;
 	c -= hashBitRotate(b, 14);
 	a ^= c;

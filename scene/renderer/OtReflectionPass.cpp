@@ -25,8 +25,7 @@ void OtSceneRenderer::renderReflectionPass(OtSceneRendererContext& ctx) {
 	// setup the refraction camera
 	OtCamera refractionCamera{
 		ctx.camera.width / 4, ctx.camera.height / 4,
-		ctx.camera.nearPlane, ctx.camera.farPlane, ctx.camera.fov,
-		ctx.camera.cameraPosition, ctx.camera.viewMatrix};
+		ctx.camera.cameraPosition, ctx.camera.projectionMatrix, ctx.camera.viewMatrix};
 
 	// setup the renderer for the refraction
 	OtSceneRendererContext refractionContext{
@@ -67,8 +66,7 @@ void OtSceneRenderer::renderReflectionPass(OtSceneRendererContext& ctx) {
 
 	OtCamera reflectionCamera{
 		ctx.camera.width / 4, ctx.camera.height / 4,
-		ctx.camera.nearPlane, ctx.camera.farPlane, ctx.camera.fov,
-		reflectionCameraPos, reflectionViewMatrix};
+		reflectionCameraPos, ctx.camera.projectionMatrix, reflectionViewMatrix};
 
 	OtSceneRendererContext reflectionContext{
 		reflectionCamera,

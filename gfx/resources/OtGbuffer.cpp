@@ -48,7 +48,7 @@ void OtGbuffer::update(int w, int h) {
 			BGFX_TEXTURE_RT;
 
 		// create new textures
-		albedoTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA8, flags);
+		albedoTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA16F, flags);
 		normalTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA8, flags);
 		pbrTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA8, flags);
 		emissiveTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA8, flags);

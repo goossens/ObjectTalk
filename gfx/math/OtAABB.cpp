@@ -63,6 +63,18 @@ void OtAABB::addAABB(const OtAABB& aabb) {
 
 
 //
+//	OtAABB::overlaps
+//
+
+bool OtAABB::overlaps(const OtAABB& aabb) {
+	return
+		minp.x < aabb.maxp.x && aabb.minp.x < maxp.x ||
+		minp.y < aabb.maxp.y && aabb.minp.y < maxp.y ||
+		minp.z < aabb.maxp.z && aabb.minp.z < maxp.z;
+}
+
+
+//
 //	OtAABB::transform
 //
 

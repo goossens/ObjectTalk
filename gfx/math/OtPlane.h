@@ -32,7 +32,7 @@ public:
 	}
 
 	inline OtPlane(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3) {
-		normal = glm::normalize(glm::cross((p3 - p2), (p1 - p2)));
+		normal = glm::normalize(glm::cross((p2 - p1), (p3 - p1)));
 		distance = -glm::dot(p1, normal);
 	}
 

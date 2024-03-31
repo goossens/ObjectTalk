@@ -189,34 +189,15 @@ void OtSceneRenderer::submitTerrainUniforms(OtTerrain terrain) {
 
 
 //
-//	OtSceneRenderer::submitLightUniforms
+//	OtSceneRenderer::submitLightingUniforms
 //
 
-void OtSceneRenderer::submitLightUniforms(OtSceneRendererContext& ctx) {
-	glm::vec3 direction = glm::vec3(0.0f);
-	glm::vec3 color = glm::vec3(0.0f);
-	float ambient = 0.0f;
-
-	// get the directional light information (if required)
-	if (ctx.hasDirectionalLighting) {
-		for (auto&& [entity, light, transform] : ctx.scene->view<OtDirectionalLightComponent, OtTransformComponent>().each()) {
-			direction = transform.getTransform()[3];
-			color = light.color;
-			ambient = light.ambient;
-		}
-
-		for (auto&& [entity, sky] : ctx.scene->view<OtSkyComponent>().each()) {
-			direction = sky.getDirectionToSun();
-			color = glm::vec3(0.2f + std::clamp(sky.elevation / 10.0f, 0.0f, 0.8f));
-			ambient = std::clamp((sky.elevation + 6.0f) / 200.0f, 0.0f, 0.2f);
-		}
-	}
-
+void OtSceneRenderer::submitLightingUniforms(OtSceneRendererContext& ctx) {
 	// build and submit the light uniforms
 	glm::vec4* uniforms = lightingUniforms.getValues();
 	uniforms[0] = glm::vec4(ctx.camera.cameraPosition, float(ctx.hasDirectionalLighting));
-	uniforms[1] = glm::vec4(direction, 0.0f);
-	uniforms[2] = glm::vec4(color, ambient);
+	uniforms[1] = glm::vec4(ctx.directionalLightDirection, 0.0f);
+	uniforms[2] = glm::vec4(ctx.directionalLightColor, ctx.directionalLightAmbient);
 	lightingUniforms.submit();
 
 	// build and submit the IBL uniform
@@ -227,6 +208,26 @@ void OtSceneRenderer::submitLightUniforms(OtSceneRendererContext& ctx) {
 	iblBrdfLutSampler.submit(5, iblBrdfLut);
 	iblIrradianceMapSampler.submit(6, iblIrradianceMap);
 	iblEnvironmentMapSampler.submit(7, iblEnvironmentMap);
+
+	// build and submit the shadow uniforms
+	shadowUniforms.setValue(0, float(ctx.castShadow), 1.0f / shadowMapSize, 0.0f, 0.0f);
+	shadowUniforms.setValue(1, csm.getDistance(0), csm.getDistance(1), csm.getDistance(2), csm.getDistance(3)),
+	shadowUniforms.submit();
+
+	shadowViewProjUniform.setValue(0, csm.getViewProjectionMatrix(0));
+	shadowViewProjUniform.setValue(1, csm.getViewProjectionMatrix(1));
+	shadowViewProjUniform.setValue(2, csm.getViewProjectionMatrix(2));
+	shadowViewProjUniform.setValue(3, csm.getViewProjectionMatrix(3));
+	shadowViewProjUniform.submit();
+
+	viewUniform.set(0, ctx.camera.viewMatrix);
+	viewUniform.submit();
+
+	// submit the shadow samplers
+	csm.getFrameBuffer(0).bindDepthTexture(shadowMap0Sampler, 10);
+	csm.getFrameBuffer(1).bindDepthTexture(shadowMap1Sampler, 11);
+	csm.getFrameBuffer(2).bindDepthTexture(shadowMap2Sampler, 12);
+	csm.getFrameBuffer(3).bindDepthTexture(shadowMap3Sampler, 13);
 }
 
 
@@ -234,7 +235,7 @@ void OtSceneRenderer::submitLightUniforms(OtSceneRendererContext& ctx) {
 //	OtSceneRenderer::submitClippingUniforms
 //
 
-void OtSceneRenderer::submitClippingUniforms(const glm::vec4& clippingPlane) {
-	clipUniforms.setValue(0, clippingPlane);
+void OtSceneRenderer::submitClippingUniforms(OtSceneRendererContext& ctx) {
+	clipUniforms.setValue(0, ctx.clippingPlane);
 	clipUniforms.submit();
 }

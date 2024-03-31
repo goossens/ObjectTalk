@@ -12,8 +12,6 @@
 #include "glm/glm.hpp"
 #include "nlohmann/json.hpp"
 
-#include "OtLog.h"
-
 #include "OtNodesFactory.h"
 
 
@@ -34,7 +32,6 @@ public:
 	// combine values
 	void onExecute() override {
 		value = glm::vec3(x, y, z);
-		OtLogDebug("OtCombineXyzNode {}", value.y);
 	}
 
 	static constexpr const char* nodeName = "Combine XYZ";

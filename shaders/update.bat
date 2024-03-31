@@ -26,6 +26,7 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtFogFS.glsl -o generated\filter\OtFogFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtFogFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtFxaaFS.glsl -o generated\filter\OtFxaaFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtFxaaFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtIslandizerFS.glsl -o generated\filter\OtIslandizerFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtIslandizerFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtLinearizeDepthFS.glsl -o generated\filter\OtLinearizeDepthFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtLinearizeDepthFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtNormalMapperFS.glsl -o generated\filter\OtNormalMapperFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtNormalMapperFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtPostProcessFS.glsl -o generated\filter\OtPostProcessFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtPostProcessFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtSeamlessTileFS.glsl -o generated\filter\OtSeamlessTileFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtSeamlessTileFS_dx11
@@ -47,6 +48,9 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f ibl\OtIblIrradianceMapCS.glsl -o generated\ibl\OtIblIrradianceMapCS_dx11.h -i include --type compute --platform windows --profile s_5_0 -O 3 --bin2c OtIblIrradianceMapCS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f imgui\OtImGuiVS.glsl -o generated\imgui\OtImGuiVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtImGuiVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f imgui\OtImGuiFS.glsl -o generated\imgui\OtImGuiFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtImGuiFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f shadow\OtShadowInstancingVS.glsl -o generated\shadow\OtShadowInstancingVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtShadowInstancingVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f shadow\OtShadowVS.glsl -o generated\shadow\OtShadowVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtShadowVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f shadow\OtShadowFS.glsl -o generated\shadow\OtShadowFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtShadowFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f sky\OtSkyVS.glsl -o generated\sky\OtSkyVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtSkyVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f sky\OtSkyBoxFS.glsl -o generated\sky\OtSkyBoxFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtSkyBoxFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f sky\OtSkyFS.glsl -o generated\sky\OtSkyFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtSkyFS_dx11

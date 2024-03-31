@@ -31,7 +31,7 @@ public:
 	// update gbuffer
 	void update(int width, int height);
 
-	// get framebgbufferuffer dimensions
+	// get framebuffer dimensions
 	inline int getWidth() { return width; }
 	inline int getHeight() { return height; }
 

@@ -153,30 +153,30 @@ void OtMesh::load(const std::string& path) {
 	for (auto i = 0; i < scene->mNumMeshes; i++) {
 		auto aimesh = scene->mMeshes[i];
 
-		// see if we have 2-dimensional UV coordinates
-		bool hasUV = aimesh->mNumUVComponents[0] >= 2 && aimesh->mTextureCoords[0] != nullptr;
-		needsTangents |= aimesh->mTangents == nullptr;
+		// ensure this is a mesh with triangles
+		if (aimesh->mPrimitiveTypes == aiPrimitiveType_TRIANGLE) {
+			// see if we have 2-dimensional UV coordinates
+			bool hasUV = aimesh->mNumUVComponents[0] >= 2 && aimesh->mTextureCoords[0] != nullptr;
+			needsTangents |= aimesh->mTangents == nullptr;
 
-		// process all vertices
-		for (auto i = 0; i < aimesh->mNumVertices; i++) {
-			// get position
-			glm::vec3 pos = ToVec3(aimesh->mVertices[i]);
+			// process all vertices
+			for (auto i = 0; i < aimesh->mNumVertices; i++) {
+				// add a new vertex
+				addVertex(OtVertex(
+					ToVec3(aimesh->mVertices[i]),
+					ToVec3(aimesh->mNormals[i]),
+					hasUV ? ToVec2(aimesh->mTextureCoords[0][i]) : glm::vec2(),
+					aimesh->mTangents ? ToVec3(aimesh->mTangents[i]) : glm::vec3(),
+					aimesh->mTangents ? ToVec3(aimesh->mBitangents[i]) : glm::vec3()));
+			}
 
-			// add a new vertex
-			addVertex(OtVertex(
-				pos,
-				ToVec3(aimesh->mNormals[i]),
-				hasUV ? ToVec2(aimesh->mTextureCoords[0][i]) : glm::vec2(),
-				aimesh->mTangents ? ToVec3(aimesh->mTangents[i]) : glm::vec3(),
-				aimesh->mTangents ? ToVec3(aimesh->mBitangents[i]) : glm::vec3()));
-		}
-
-		// process all indices
-		for(auto i = 0; i < aimesh->mNumFaces; i++) {
-			auto i0 = aimesh->mFaces[i].mIndices[0] + offset;
-			auto i1 = aimesh->mFaces[i].mIndices[1] + offset;
-			auto i2 = aimesh->mFaces[i].mIndices[2] + offset;
-			addTriangle(i0, i1, i2);
+			// process all indices
+			for (auto i = 0; i < aimesh->mNumFaces; i++) {
+				auto i0 = aimesh->mFaces[i].mIndices[0] + offset;
+				auto i1 = aimesh->mFaces[i].mIndices[1] + offset;
+				auto i2 = aimesh->mFaces[i].mIndices[2] + offset;
+				addTriangle(i0, i1, i2);
+			}
 		}
 
 		// update the index offset
@@ -199,22 +199,26 @@ void OtMesh::save(const std::string& path) {
 
 	// write all vertices
 	for (auto& vertex : vertices) {
-		stream << fmt::format("v {} {} {}\n", vertex.position.x, vertex.position.y, vertex.position.z);
+		stream << fmt::format("v {:.4f} {:.4f} {:.4f}\n", vertex.position.x, vertex.position.y, vertex.position.z);
 	}
 
 	// write all normals
 	for (auto& vertex : vertices) {
-		stream << fmt::format("vn {} {} {}\n", vertex.normal.x, vertex.normal.y, vertex.normal.z);
+		stream << fmt::format("vn {:.4f} {:.4f} {:.4f}\n", vertex.normal.x, vertex.normal.y, vertex.normal.z);
 	}
 
 	// write all texture coordinates
 	for (auto& vertex : vertices) {
-		stream << fmt::format("vt {} {}\n", vertex.uv.x, vertex.uv.y);
+		stream << fmt::format("vt {:.4f} {:.4f}\n", vertex.uv.x, vertex.uv.y);
 	}
 
 	// write all indices
 	for (auto i = indices.begin(); i < indices.end(); i += 3) {
-		stream << fmt::format("f {} {} {}\n", *i + 1, *(i + 1) + 1,  *(i + 2) + 1);
+		stream << fmt::format(
+			"f {}/{}/{} {}/{}/{} {}/{}/{}\n",
+			*i + 1, *i + 1, *i + 1,
+			*(i + 1) + 1, *(i + 1) + 1, *(i + 1) + 1,
+			*(i + 2) + 1, *(i + 2) + 1, *(i + 2) + 1);
 	}
 
 	stream.close();

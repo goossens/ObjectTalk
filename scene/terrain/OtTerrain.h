@@ -20,6 +20,7 @@
 
 #include "OtObject.h"
 
+#include "OtAABB.h"
 #include "OtFrustum.h"
 #include "OtIndexBuffer.h"
 #include "OtVertexBuffer.h"
@@ -48,6 +49,7 @@ public:
 
 	// access the meshes
 	std::vector<OtTerrainMesh>& getMeshes(OtFrustum& frustum, const glm::vec3& camera);
+	std::vector<OtTerrainMesh>& getMeshes(OtAABB& aabb, const glm::vec3& camera);
 
 	// are we rendering a wireframe
 	inline bool isWireframe() { return wireframe; }
@@ -97,6 +99,7 @@ private:
 		rightDegenerate = 8
 	};
 
+	void initialize();
 	void clear();
 	void createVertices();
 	void createIndices(OtIndexBuffer& triangleBuffer, OtIndexBuffer& lineBuffer, int degenerate);

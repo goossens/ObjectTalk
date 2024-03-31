@@ -11,6 +11,7 @@
 
 #include <string>
 
+#include "fmt/format.h"
 #include "imgui.h"
 
 #include "OtAssetManager.h"
@@ -35,8 +36,9 @@ void OtSceneRendererDebug::render(OtSceneRenderer& renderer) {
 
 	ImGui::Begin("Scene Renderer Debug", nullptr, ImGuiWindowFlags_NoCollapse);
 	renderIbl(renderer);
-	renderReflection(renderer);
 	renderGbuffer(renderer);
+	renderShadow(renderer);
+	renderReflection(renderer);
 	renderAssets(renderer);
 	ImGui::End();
 }
@@ -53,30 +55,6 @@ void OtSceneRendererDebug::renderIbl(OtSceneRenderer& renderer) {
 			if (renderer.iblIrradianceMap.isValid()) { renderCubeMap("Irrandiance Map", renderer.iblIrradianceMap, iblIrradianceDebug); }
 			if (renderer.iblEnvironmentMap.isValid()) { renderCubeMap("Environment Map", renderer.iblEnvironmentMap, iblEnvironmentDebug); }
 			if (renderer.iblBrdfLut.isValid()) { renderTexture("BRDF LUT", renderer.iblBrdfLut); }
-
-		} else {
-			ImGui::SeparatorText("No Data");
-		}
-	}
-}
-
-
-//
-//	OtSceneRendererDebug::renderReflection
-//
-
-void OtSceneRendererDebug::renderReflection(OtSceneRenderer& renderer) {
-	if (ImGui::CollapsingHeader("Reflection/Refraction")) {
-		if (renderer.reflectionBuffer.isValid()) {
-			if (renderer.reflectionBuffer.isValid()) {
-				auto texture = renderer.reflectionBuffer.getColorTexture();
-				renderTexture("Reflection Buffer", texture);
-			}
-
-			if (renderer.refractionBuffer.isValid()) {
-				auto texture = renderer.refractionBuffer.getColorTexture();
-				renderTexture("Refraction Buffer", texture);
-			}
 
 		} else {
 			ImGui::SeparatorText("No Data");
@@ -103,6 +81,51 @@ void OtSceneRendererDebug::renderGbuffer(OtSceneRenderer& renderer) {
 			RENDER_GBUFFER("Normal", Normal);
 			RENDER_GBUFFER("PBR", Pbr);
 			RENDER_GBUFFER("Emissive", Emissive);
+
+		} else {
+			ImGui::SeparatorText("No Data");
+		}
+	}
+}
+
+
+//
+//	OtSceneRendererDebug::renderShadow
+//
+
+void OtSceneRendererDebug::renderShadow(OtSceneRenderer& renderer) {
+	if (ImGui::CollapsingHeader("Cascaded Shadow Map")) {
+		if (renderer.csm.isValid()) {
+			auto size = renderer.csm.getSize();
+
+			for (auto i = 0; i < OtCascadedShadowMap::cascades; i++) {
+				auto title = fmt::format("Cascade {}", i + 1);
+				renderTexture(title.c_str(), renderer.csm.getDepthTextureIndex(i), size, size);
+			}
+
+		} else {
+			ImGui::SeparatorText("No Data");
+		}
+	}
+}
+
+
+//
+//	OtSceneRendererDebug::renderReflection
+//
+
+void OtSceneRendererDebug::renderReflection(OtSceneRenderer& renderer) {
+	if (ImGui::CollapsingHeader("Reflection/Refraction")) {
+		if (renderer.reflectionBuffer.isValid()) {
+			if (renderer.reflectionBuffer.isValid()) {
+				auto texture = renderer.reflectionBuffer.getColorTexture();
+				renderTexture("Reflection Buffer", texture);
+			}
+
+			if (renderer.refractionBuffer.isValid()) {
+				auto texture = renderer.refractionBuffer.getColorTexture();
+				renderTexture("Refraction Buffer", texture);
+			}
 
 		} else {
 			ImGui::SeparatorText("No Data");
@@ -249,7 +272,7 @@ void OtSceneRendererDebug::renderCubeMapAsCross(OtCubeMap& cubemap, CubeMapDebug
 
 	// setup projection
 	glm::mat4 view = glm::scale(glm::mat4(1.0f), glm::vec3(width / 2.0f, height / 1.5f, 1.0f));
-	glm::mat4 projection = glm::ortho(0.0f, float(width), float(height), 0.0f, -1.0f, 1.0f);
+	glm::mat4 projection = glm::ortho(0.0f, float(width), float(height), 0.0f);
 	pass.setTransform(view, projection);
 
 	// submit geometry for cross

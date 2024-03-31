@@ -57,7 +57,8 @@
 					"uuid": 864477290
 				},
 				{
-					"azimuth": 7.827000141143799,
+					"azimuth": 13.696999549865723,
+					"castShadow": true,
 					"cirrus": 0.45399999618530273,
 					"component": "Sky",
 					"cumulus": 0.800000011920929,

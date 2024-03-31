@@ -43,8 +43,9 @@ private:
 
 	// internal rendering functions
 	void renderIbl(OtSceneRenderer& renderer);
-	void renderReflection(OtSceneRenderer& renderer);
 	void renderGbuffer(OtSceneRenderer& renderer);
+	void renderShadow(OtSceneRenderer& renderer);
+	void renderReflection(OtSceneRenderer& renderer);
 	void renderAssets(OtSceneRenderer& renderer);
 
 	void renderTexture(const char* title, uint16_t index, int width, int height);

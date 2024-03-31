@@ -8,6 +8,7 @@ $input v_near, v_far
 
 #include <bgfx_shader.glsl>
 #include <pbr.glsl>
+#include <shadow.glsl>
 #include <utilities.glsl>
 
 // uniforms
@@ -131,10 +132,12 @@ void main() {
 		light.L = normalize(u_directionalLightDirection);
 		light.color = u_directionalLightColor;
 		light.ambience = u_directionalLightAmbience;
+		light.shadow = getShadow(waterWorldPos, mul(u_view, vec4(waterWorldPos, 1.0)).xyz, dot(material.normal, light.L));
+
 		color += directionalLightPBR(material, light, V);
 	}
 
-	// process image basedlighting (if required)
+	// process image based lighting (if required)
 	if (u_hasImageBasedLighting) {
 		color += imageBasedLightingPBR(material, V, u_iblEnvLevels, s_iblBrdfLut, s_iblIrradianceMap, s_iblEnvironmentMap);
 	}

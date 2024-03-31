@@ -321,7 +321,7 @@ void OtFramework::renderIMGUI() {
 	drawData->ScaleClipRects(io.DisplayFramebufferScale);
 
 	// setup orthographic projection matrix
-	glm::mat4 matrix = glm::ortho(0.0f, io.DisplaySize.x, io.DisplaySize.y, 0.0f, -1.0f, 1.0f);
+	glm::mat4 matrix = glm::ortho(0.0f, io.DisplaySize.x, io.DisplaySize.y, 0.0f);
 	bgfx::setViewTransform(255, nullptr, glm::value_ptr(matrix));
 	bgfx::setViewRect(255, 0, 0, fb_width, fb_height);
 
@@ -364,7 +364,7 @@ void OtFramework::renderIMGUI() {
 					BGFX_STATE_WRITE_RGB |
 					BGFX_STATE_WRITE_A |
 					BGFX_STATE_MSAA |
-					 BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA));
+					BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA));
 
 				bgfx::setScissor(xx, yy, bx::min(cmd->ClipRect.z, 65535.0f) - xx, bx::min(cmd->ClipRect.w, 65535.0f) - yy);
 				bgfx::TextureHandle texture = { (uint16_t)((intptr_t) cmd->TextureId & 0xffff) };

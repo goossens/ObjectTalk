@@ -71,6 +71,9 @@
 #include "generated/filter/OtIslandizerFS_mtl.h"
 #include "generated/filter/OtIslandizerFS_spv.h"
 #include "generated/filter/OtIslandizerFS_dx11.h"
+#include "generated/filter/OtLinearizeDepthFS_mtl.h"
+#include "generated/filter/OtLinearizeDepthFS_spv.h"
+#include "generated/filter/OtLinearizeDepthFS_dx11.h"
 #include "generated/filter/OtNormalMapperFS_mtl.h"
 #include "generated/filter/OtNormalMapperFS_spv.h"
 #include "generated/filter/OtNormalMapperFS_dx11.h"
@@ -134,6 +137,15 @@
 #include "generated/imgui/OtImGuiFS_mtl.h"
 #include "generated/imgui/OtImGuiFS_spv.h"
 #include "generated/imgui/OtImGuiFS_dx11.h"
+#include "generated/shadow/OtShadowInstancingVS_mtl.h"
+#include "generated/shadow/OtShadowInstancingVS_spv.h"
+#include "generated/shadow/OtShadowInstancingVS_dx11.h"
+#include "generated/shadow/OtShadowVS_mtl.h"
+#include "generated/shadow/OtShadowVS_spv.h"
+#include "generated/shadow/OtShadowVS_dx11.h"
+#include "generated/shadow/OtShadowFS_mtl.h"
+#include "generated/shadow/OtShadowFS_spv.h"
+#include "generated/shadow/OtShadowFS_dx11.h"
 #include "generated/sky/OtSkyVS_mtl.h"
 #include "generated/sky/OtSkyVS_spv.h"
 #include "generated/sky/OtSkyVS_dx11.h"
@@ -200,6 +212,8 @@ static const uint8_t OtFxaaFS_glsl[1] = {0};
 static const uint8_t OtFxaaFS_essl[1] = {0};
 static const uint8_t OtIslandizerFS_glsl[1] = {0};
 static const uint8_t OtIslandizerFS_essl[1] = {0};
+static const uint8_t OtLinearizeDepthFS_glsl[1] = {0};
+static const uint8_t OtLinearizeDepthFS_essl[1] = {0};
 static const uint8_t OtNormalMapperFS_glsl[1] = {0};
 static const uint8_t OtNormalMapperFS_essl[1] = {0};
 static const uint8_t OtPostProcessFS_glsl[1] = {0};
@@ -242,6 +256,12 @@ static const uint8_t OtImGuiVS_glsl[1] = {0};
 static const uint8_t OtImGuiVS_essl[1] = {0};
 static const uint8_t OtImGuiFS_glsl[1] = {0};
 static const uint8_t OtImGuiFS_essl[1] = {0};
+static const uint8_t OtShadowInstancingVS_glsl[1] = {0};
+static const uint8_t OtShadowInstancingVS_essl[1] = {0};
+static const uint8_t OtShadowVS_glsl[1] = {0};
+static const uint8_t OtShadowVS_essl[1] = {0};
+static const uint8_t OtShadowFS_glsl[1] = {0};
+static const uint8_t OtShadowFS_essl[1] = {0};
 static const uint8_t OtSkyVS_glsl[1] = {0};
 static const uint8_t OtSkyVS_essl[1] = {0};
 static const uint8_t OtSkyBoxFS_glsl[1] = {0};
@@ -278,6 +298,7 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtFogFS),
 	BGFX_EMBEDDED_SHADER(OtFxaaFS),
 	BGFX_EMBEDDED_SHADER(OtIslandizerFS),
+	BGFX_EMBEDDED_SHADER(OtLinearizeDepthFS),
 	BGFX_EMBEDDED_SHADER(OtNormalMapperFS),
 	BGFX_EMBEDDED_SHADER(OtPostProcessFS),
 	BGFX_EMBEDDED_SHADER(OtSeamlessTileFS),
@@ -299,6 +320,9 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtIblIrradianceMapCS),
 	BGFX_EMBEDDED_SHADER(OtImGuiVS),
 	BGFX_EMBEDDED_SHADER(OtImGuiFS),
+	BGFX_EMBEDDED_SHADER(OtShadowInstancingVS),
+	BGFX_EMBEDDED_SHADER(OtShadowVS),
+	BGFX_EMBEDDED_SHADER(OtShadowFS),
 	BGFX_EMBEDDED_SHADER(OtSkyVS),
 	BGFX_EMBEDDED_SHADER(OtSkyBoxFS),
 	BGFX_EMBEDDED_SHADER(OtSkyFS),

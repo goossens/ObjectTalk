@@ -12,8 +12,8 @@
 //	Include files
 //
 
-
 #include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 #include "OtFrustum.h"
 #include "OtGpu.h"
@@ -25,13 +25,24 @@
 
 class OtCamera {
 public:
-	// constructor
-	OtCamera(int w, int h, float n, float f, float fv, const glm::vec3& cp, const glm::mat4 vm) :
+	// constructors
+	OtCamera(int w, int h, const glm::vec3& cp, const glm::mat4 pm, const glm::mat4 vm) :
 		width(w),
 		height(h),
-		nearPlane(n),
-		farPlane(f),
-		fov(fv),
+		cameraPosition(cp),
+		projectionMatrix(pm),
+		viewMatrix(vm) {
+
+		// determine view/projection matrix
+		viewProjectionMatrix = projectionMatrix * viewMatrix;
+
+		// determine the camera's frustum in worldspace
+		frustum = OtFrustum(viewProjectionMatrix);
+	}
+
+	OtCamera(int w, int h, float nearPlane, float farPlane, float fov, const glm::vec3& cp, const glm::mat4 vm) :
+		width(w),
+		height(h),
 		cameraPosition(cp),
 		viewMatrix(vm) {
 
@@ -47,12 +58,21 @@ public:
 		frustum = OtFrustum(viewProjectionMatrix);
 	}
 
+	// get the near and far value fron the projection matrix
+	void getNearFar(float& nearPlane, float& farPlane) {
+		if ( OtGpuHasHomogeneousDepth()) {
+			nearPlane = (2.0f * projectionMatrix[3][2]) / (2.0f * projectionMatrix[2][2] - 2.0f);
+			farPlane = ((projectionMatrix[2][2] - 1.0f) * nearPlane) / (projectionMatrix[2][2] + 1.0f);
+
+		} else {
+			nearPlane = projectionMatrix[3][2] / projectionMatrix[2][2];
+			farPlane = (projectionMatrix[2][2] * nearPlane) / (projectionMatrix[2][2] + 1.0f);
+		}
+	}
+
 	// properties
 	int width;
 	int height;
-	float nearPlane;
-	float farPlane;
-	float fov;
 	glm::vec3 cameraPosition;
 	glm::mat4 viewMatrix;
 	glm::mat4 projectionMatrix;

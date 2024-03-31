@@ -28,6 +28,7 @@ struct DirectionalLight {
 	vec3 L; // direction to light
 	vec3 color;
 	float ambience;
+	float shadow;
 };
 
 // convert color to linear colorspace
@@ -99,6 +100,9 @@ vec3 directionalLightPBR(Material material, DirectionalLight light, vec3 V) {
 	// determine outgoing radiance
 	float NdotL = max(dot(material.normal, light.L), 0.0);
 	vec3 color = (kD * material.albedo / PI + specular) * light.color * NdotL;
+
+	// apply shadow
+	color *= light.shadow;
 
 	// add ambient light
 	color += light.ambience * material.albedo * material.ao;

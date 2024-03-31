@@ -9,7 +9,7 @@
 
 #include <bgfx_shader.glsl>
 
-// convert depth from depth buffer to linear space
+// convert depth to linear space
 float linearizeDepth(float depth, float near, float far) {
 	return (2.0 * near) / (far + near - depth * (far - near));
 }
@@ -20,6 +20,15 @@ float depthToClipSpace(float depth) {
 	return depth * 2.0 - 1.0;
 #else
 	return depth;
+#endif
+}
+
+// convert point from clip to uv space
+vec2 clipToUvSpace(vec3 pos) {
+#if BGFX_SHADER_LANGUAGE_GLSL
+	return (pos.xy + 1.0) * 0.5;
+#else
+	return vec2((pos.x + 1.0) * 0.5, 1.0 - ((pos.y + 1.0) * 0.5));
 #endif
 }
 
@@ -62,13 +71,7 @@ vec3 worldToClipSpace(vec3 pos) {
 
 // determine UV coordinates from world coordinates
 vec2 worldSpaceToUv(vec3 pos) {
-	vec3 p = worldToClipSpace(pos);
-
-#if BGFX_SHADER_LANGUAGE_GLSL
-	return (p.xy + 1.0) * 0.5;
-#else
-	return vec2((p.x + 1.0) * 0.5, 1.0 - ((p.y + 1.0) * 0.5));
-#endif
+	return clipToUvSpace(worldToClipSpace(pos));
 }
 
 

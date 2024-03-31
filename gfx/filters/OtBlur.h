@@ -34,10 +34,10 @@ private:
 	void execute(OtPass& pass) override;
 
 	// blur properties
-	float horizontalScale = -1.0;
-	float verticalScale = -1.0;
-	float intensity = -1.0;
-	float alpha = -1.0;
+	float horizontalScale = -1.0f;
+	float verticalScale = -1.0f;
+	float intensity = -1.0f;
+	float alpha = -1.0f;
 
 	// GPU assets
 	OtUniformVec4 uniform = OtUniformVec4("u_blur", 1);

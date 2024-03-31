@@ -28,6 +28,11 @@ int OtSceneRenderer::render(OtCamera& camera, OtScene* scene, OtEntity selected)
 		renderIblPass(context);
 	}
 
+	// generate shadow maps (if required)
+	if (context.castShadow) {
+		renderShadowPass(context);
+	}
+
 	// generate reflection (if required)
 	if (context.hasWaterEntities) {
 		renderReflectionPass(context);

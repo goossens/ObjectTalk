@@ -9,6 +9,7 @@ $input v_position, v_normal, v_tangent, v_bitangent, v_texcoord0
 #include <bgfx_shader.glsl>
 #include <clip.glsl>
 #include <pbr.glsl>
+#include <shadow.glsl>
 
 // uniforms
 uniform vec4 u_pbrMaterial[5];
@@ -107,10 +108,12 @@ void main() {
 		light.L = normalize(u_directionalLightDirection);
 		light.color = u_directionalLightColor;
 		light.ambience = u_directionalLightAmbience;
+		light.shadow = getShadow(v_position, mul(u_view, vec4(v_position, 1.0)).xyz, dot(material.normal, light.L));
+
 		color += directionalLightPBR(material, light, V);
 	}
 
-	// process image basedlighting (if required)
+	// process image based lighting (if required)
 	if (u_hasImageBasedLighting) {
 		color += imageBasedLightingPBR(material, V, u_iblEnvLevels, s_iblBrdfLut, s_iblIrradianceMap, s_iblEnvironmentMap);
 	}

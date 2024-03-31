@@ -16,6 +16,8 @@
 
 #include "glm/glm.hpp"
 
+#include "OtAABB.h"
+#include "OtCascadedShadowMap.h"
 #include "OtComputeProgram.h"
 #include "OtCubeMap.h"
 #include "OtFrameBuffer.h"
@@ -54,7 +56,7 @@ private:
 	// render passes
 	void renderIblPass(OtSceneRendererContext& ctx);
 	void renderReflectionPass(OtSceneRendererContext& ctx);
-	// void renderShadowPass(OtSceneRendererContext& ctx);
+	void renderShadowPass(OtSceneRendererContext& ctx);
 	void renderDeferredGeometryPass(OtSceneRendererContext& ctx);
 	void renderBackgroundPass(OtSceneRendererContext& ctx);
 	void renderSkyPass(OtSceneRendererContext& ctx);
@@ -65,6 +67,9 @@ private:
 	void renderPostProcessingPass(OtSceneRendererContext& ctx);
 
 	// render entities
+	void renderShadowGeometry(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtGeometryComponent& geometry, OtAABB& aabb);
+	void renderShadowModel(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtModelComponent& model, OtAABB& aabb);
+	void renderShadowTerrain(OtSceneRendererContext& ctx, OtPass& pass, OtTerrainComponent& terrain, glm::vec3& camera, OtAABB& aabb);
 	void renderReflectionRefractionScene(OtSceneRendererContext& ctx);
 	void renderDeferredGeometry(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtGeometryComponent& geometry);
 	void renderDeferredModel(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtModelComponent& model);
@@ -82,9 +87,9 @@ private:
 	void submitTextureSampler(OtSampler& sampler, int unit, OtAsset<OtTextureAsset>& texture);
 	void submitCubeMapSampler(OtSampler& sampler, int unit, OtAsset<OtCubeMapAsset>& cubemap);
 	void submitMaterialUniforms(OtMaterial& material);
-	void submitLightUniforms(OtSceneRendererContext& ctx);
+	void submitClippingUniforms(OtSceneRendererContext& ctx);
+	void submitLightingUniforms(OtSceneRendererContext& ctx);
 	void submitTerrainUniforms(OtTerrain terrain);
-	void submitClippingUniforms(const glm::vec4& clippingPlane);
 
 	// helpers
 	float getRunningTime();
@@ -96,14 +101,17 @@ private:
 
 	// framebuffers
 	OtGbuffer deferredRenderingBuffer;
-	OtFrameBuffer compositeBuffer{OtTexture::rgba16Texture, OtTexture::dFloatTexture};
+	OtFrameBuffer compositeBuffer{OtTexture::rgbaFloat16Texture, OtTexture::dFloatTexture};
+
+	static constexpr int shadowMapSize = 1024;
+	OtCascadedShadowMap csm;
 
 	OtGbuffer reflectionRenderingBuffer;
-	OtFrameBuffer reflectionBuffer{OtTexture::rgba16Texture, OtTexture::dFloatTexture};
-	OtFrameBuffer refractionBuffer{OtTexture::rgba16Texture, OtTexture::dFloatTexture};
+	OtFrameBuffer reflectionBuffer{OtTexture::rgbaFloat16Texture, OtTexture::dFloatTexture};
+	OtFrameBuffer refractionBuffer{OtTexture::rgbaFloat16Texture, OtTexture::dFloatTexture};
 
-	OtFrameBuffer postProcessBuffer1{OtTexture::rgba16Texture, OtTexture::noTexture};
-	OtFrameBuffer postProcessBuffer2{OtTexture::rgba16Texture, OtTexture::noTexture};
+	OtFrameBuffer postProcessBuffer1{OtTexture::rgbaFloat16Texture, OtTexture::noTexture};
+	OtFrameBuffer postProcessBuffer2{OtTexture::rgbaFloat16Texture, OtTexture::noTexture};
 	OtFrameBuffer selectedBuffer{OtTexture::r8Texture, OtTexture::noTexture};
 
 	static constexpr int bloomDepth = 5;
@@ -116,10 +124,11 @@ private:
 	// uniforms
 	OtUniformVec4 iblEnviromentUniform{"u_iblEnvironment", 1};
 	OtUniformVec4 pbrMaterialUniforms{"u_pbrMaterial", 5};
-	OtUniformVec4 clipUniforms{"u_clip", 1};
 	OtUniformVec4 terrainUniforms{"u_terrain", 9};
 	OtUniformVec4 waterUniforms{"u_water", 4};
+	OtUniformVec4 shadowUniforms{"u_shadow", 2};
 	OtUniformVec4 lightingUniforms{"u_lighting", 3};
+	OtUniformVec4 clipUniforms{"u_clip", 1};
 	OtUniformVec4 iblUniform{"u_ibl", 1};
 	OtUniformVec4 skyUniforms{"u_sky", 3};
 	OtUniformVec4 gridUniforms{"u_grid", 1};
@@ -129,9 +138,11 @@ private:
 	OtUniformVec4 bloomUniforms{"u_bloom", 1};
 	OtUniformVec4 postProcessUniforms{"u_postProcess", 1};
 
+	OtUniformMat4 viewUniform{"u_viewUniform", 1};
 	OtUniformMat4 invProjUniform{"u_invProjUniform", 1};
 	OtUniformMat4 invViewProjUniform{"u_invViewProjUniform", 1};
 	OtUniformMat4 skyInvViewProjUniform{"u_skyInvViewProjUniform", 1};
+	OtUniformMat4 shadowViewProjUniform{"u_shadowViewProjTransform", 4};
 
 	// textures
 	OtTexture iblBrdfLut;
@@ -153,6 +164,11 @@ private:
 	OtSampler metallicRoughnessSampler{"s_metallicRoughnessTexture"};
 	OtSampler emissiveSampler{"s_emissiveTexture"};
 	OtSampler aoSampler{"s_aoTexture"};
+
+	OtSampler shadowMap0Sampler{"s_shadowMap0"};
+	OtSampler shadowMap1Sampler{"s_shadowMap1"};
+	OtSampler shadowMap2Sampler{"s_shadowMap2"};
+	OtSampler shadowMap3Sampler{"s_shadowMap3"};
 
 	OtSampler lightingAlbedoSampler{"s_lightingAlbedoTexture", OtTexture::pointSampling | OtTexture::clampSampling};
 	OtSampler lightingNormalSampler{"s_lightingNormalTexture", OtTexture::pointSampling | OtTexture::clampSampling};
@@ -183,6 +199,8 @@ private:
 	OtSampler bloomSampler{"s_bloomTexture", OtTexture::pointSampling | OtTexture::clampSampling};
 
 	// shader programs
+	OtShaderProgram shadowProgram{"OtShadowVS", "OtShadowFS"};
+	OtShaderProgram shadowInstancingProgram{"OtShadowInstancingVS", "OtShadowFS"};
 	OtShaderProgram deferredPbrProgram{"OtDeferredVS", "OtDeferredPbrFS"};
 	OtShaderProgram deferredInstancingProgram{"OtDeferredInstancingVS", "OtDeferredPbrFS"};
 	OtShaderProgram deferredTerrainProgram{"OtTerrainVS", "OtTerrainFS"};

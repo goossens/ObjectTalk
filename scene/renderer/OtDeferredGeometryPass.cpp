@@ -101,7 +101,8 @@ void OtSceneRenderer::renderDeferredGeometry(OtSceneRendererContext& ctx, OtPass
 			submitMaterialUniforms(material);
 		}
 
-		submitClippingUniforms(ctx.clippingPlane);
+		// submit clipping uniforms
+		submitClippingUniforms(ctx);
 
 		// submit the geometry
 		auto geom = geometry.asset->getGeometry();
@@ -183,9 +184,9 @@ void OtSceneRenderer::renderDeferredModel(OtSceneRendererContext& ctx, OtPass& p
 		auto model = component.model;
 
 		for (auto& mesh : model->getMeshes()) {
-			// submit the material and clipping information
+			// submit the material and clipping uniforms
 			submitMaterialUniforms(model->getMaterials()[mesh.getMaterialIndex()].getPbrMaterial());
-			submitClippingUniforms(ctx.clippingPlane);
+			submitClippingUniforms(ctx);
 
 			// submit the geometry
 			mesh.submitTriangles();
@@ -225,10 +226,11 @@ void OtSceneRenderer::renderDeferredTerrain(OtSceneRendererContext& ctx, OtPass&
 		// submit the geometry
 		mesh.tile.vertices.submit();
 
-		// submit the terrain and uniforms
+		// submit the terrain and clipping uniforms
 		submitTerrainUniforms(terrain);
-		submitClippingUniforms(ctx.clippingPlane);
+		submitClippingUniforms(ctx);
 
+		// submit the terrain
 		if (terrain->isWireframe()) {
 			mesh.tile.lines.submit();
 

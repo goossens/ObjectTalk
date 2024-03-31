@@ -130,7 +130,7 @@ void OtPass::submitQuad(int w, int h) {
 		bgfx::setViewRect(view, 0, 0, (uint16_t) w, (uint16_t) h);
 		bgfx::setViewClear(view, BGFX_CLEAR_NONE, BGFX_CLEAR_NONE);
 
-		glm::mat4 projMatrix = glm::ortho(0.0f, (float) w, (float) h, 0.0f, -1.0f, 1.0f);
+		glm::mat4 projMatrix = glm::ortho(0.0f, (float) w, (float) h, 0.0f);
 		bgfx::setViewTransform(view, nullptr, glm::value_ptr(projMatrix));
 
 	} else {

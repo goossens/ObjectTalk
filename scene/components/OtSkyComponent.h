@@ -43,6 +43,9 @@ public:
 	float azimuth = 180.0f;		// in clockwise degrees from negative Z axis
 								// 0 = "north", 90 = "east", 180 = "south", 270 = "west"
 
+	// shadow flag
+	bool castShadow = true;
+
 	// atmospheric scattering
 	float rayleighCoefficient = 3.5f;
 	float mieCoefficient = 5.0f;

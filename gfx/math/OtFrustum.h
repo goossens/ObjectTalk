@@ -52,17 +52,6 @@ public:
 	OtFrustum();
 	OtFrustum(const glm::mat4& matrix);
 
-	// initialize the frustum based on provided points
-	OtFrustum(
-		glm::vec3& nearBottomLeft,
-		glm::vec3& nearTopLeft,
-		glm::vec3& nearTopRight,
-		glm::vec3& nearBottomRight,
-		glm::vec3& farBottomLeft,
-		glm::vec3& farTopLeft,
-		glm::vec3& farTopRight,
-		glm::vec3& farBottomRight);
-
 	// see if a point is visible
 	bool isVisiblePoint(const glm::vec3& point);
 
@@ -83,9 +72,6 @@ public:
 
 	// get AABB (Axis-Alligned bounding box)
 	OtAABB getAABB();
-
-	// transform frustum
-	OtFrustum transform(const glm::mat4& transform);
 
 	// debugging support
 	void debugPlanes();

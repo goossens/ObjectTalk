@@ -1,0 +1,53 @@
+{
+	"links": [
+		{
+			"from": 296862923,
+			"id": 3010591193,
+			"to": 1682271867
+		}
+	],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 1243778924,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 296862923,
+					"name": "Geometry",
+					"type": "geometry"
+				}
+			],
+			"primitive": {
+				"heightSegments": 1,
+				"type": "Plane",
+				"widthSegments": 1
+			},
+			"title": "Geometry Generator",
+			"type": "Geometry Generator",
+			"x": 149.0,
+			"y": 121.0
+		},
+		{
+			"id": 1593317848,
+			"inputs": [
+				{
+					"id": 1682271867,
+					"name": "Input",
+					"type": "geometry"
+				},
+				{
+					"id": 2607467443,
+					"name": "Name",
+					"type": "string",
+					"value": "wall"
+				}
+			],
+			"outputs": [],
+			"title": "Save Geometry To Virtual",
+			"type": "Save Geometry To Virtual",
+			"x": 440.0,
+			"y": 121.0
+		}
+	]
+}

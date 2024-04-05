@@ -864,6 +864,7 @@ void OtSceneEditor::renderNewEntitiesMenu(OtEntity entity) {
 		{ "Sky box", OtCreateEntityTask::skybox},
 		{ "Infinite Terrain", OtCreateEntityTask::terrain},
 		{ "Procedural Water", OtCreateEntityTask::water},
+		{ "Particles", OtCreateEntityTask::particles}
 	};
 
 	for (auto& predefined : predefinedEntities) {

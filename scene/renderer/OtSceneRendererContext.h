@@ -45,6 +45,7 @@ public:
 		hasSkyEntities = false;
 		hasTransparentEntities = false;
 		hasWaterEntities = false;
+		hasParticlesEntities = false;
 
 		iblEntity = OtEntityNull;
 		waterEntity = OtEntityNull;
@@ -103,6 +104,10 @@ public:
 				hasWaterEntities = true;
 				waterEntity = entity;
 			}
+
+			if (scene->hasComponent<OtParticlesComponent>(entity)) {
+				hasParticlesEntities = true;
+			}
 		});
 	}
 
@@ -130,6 +135,7 @@ public:
 	bool hasSkyEntities;
 	bool hasTransparentEntities;
 	bool hasWaterEntities;
+	bool hasParticlesEntities;
 
 	// directional light information
 	glm::vec3 directionalLightDirection = glm::vec3(0.0f);

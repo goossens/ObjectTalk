@@ -59,6 +59,10 @@ int OtSceneRenderer::render(OtCamera& camera, OtScene* scene, OtEntity selected)
 		renderForwardGeometryPass(context);
 	}
 
+	if (context.hasParticlesEntities) {
+		renderParticlesPass(context);
+	}
+
 	// handle editor passes
 	if (gridScale > 0.0f) {
 		renderGridPass(context);

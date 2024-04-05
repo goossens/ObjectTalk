@@ -34,7 +34,8 @@ public:
 		sky,
 		skybox,
 		terrain,
-		water
+		water,
+		particles
 	};
 
 	// constructor
@@ -124,6 +125,11 @@ private:
 
 			case water:
 				scene->addComponent<OtWaterComponent>(entity);
+				break;
+
+			case particles:
+				scene->addComponent<OtParticlesComponent>(entity);
+				scene->addComponent<OtTransformComponent>(entity);
 				break;
 		}
 	}

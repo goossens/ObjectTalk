@@ -38,8 +38,6 @@ target_include_directories(bgfx
 
 target_link_libraries(bgfx PUBLIC bx bimg)
 
-target_compile_definitions(bgfx PRIVATE "BGFX_CONFIG_RENDERER_OPENGLES_MIN_VERSION=1")
-
 if(APPLE)
 	target_compile_definitions(bgfx PRIVATE "BGFX_CONFIG_RENDERER_METAL=1")
 endif()

@@ -31,6 +31,7 @@
 #include "OtSkyBoxComponent.h"
 #include "OtPostProcessingComponent.h"
 #include "OtSkyComponent.h"
+#include "OtParticlesComponent.h"
 #include "OtTerrainComponent.h"
 #include "OtTransformComponent.h"
 #include "OtWaterComponent.h"
@@ -55,6 +56,7 @@
 	OtTerrainComponent, \
 	OtSkyComponent, \
 	OtSkyBoxComponent, \
+	OtParticlesComponent, \
 	OtPostProcessingComponent, \
 	OtWaterComponent
 

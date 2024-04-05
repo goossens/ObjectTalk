@@ -47,7 +47,7 @@ void OtMesh::generateCube() {
 	// clear the mesh
 	clear();
 
-	float v[] = {
+	static float v[] = {
 		// back face
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
 		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right

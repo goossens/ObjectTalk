@@ -137,6 +137,12 @@
 #include "generated/imgui/OtImGuiFS_mtl.h"
 #include "generated/imgui/OtImGuiFS_spv.h"
 #include "generated/imgui/OtImGuiFS_dx11.h"
+#include "generated/particles/OtParticlesVS_mtl.h"
+#include "generated/particles/OtParticlesVS_spv.h"
+#include "generated/particles/OtParticlesVS_dx11.h"
+#include "generated/particles/OtParticlesFS_mtl.h"
+#include "generated/particles/OtParticlesFS_spv.h"
+#include "generated/particles/OtParticlesFS_dx11.h"
 #include "generated/shadow/OtShadowInstancingVS_mtl.h"
 #include "generated/shadow/OtShadowInstancingVS_spv.h"
 #include "generated/shadow/OtShadowInstancingVS_dx11.h"
@@ -256,6 +262,10 @@ static const uint8_t OtImGuiVS_glsl[1] = {0};
 static const uint8_t OtImGuiVS_essl[1] = {0};
 static const uint8_t OtImGuiFS_glsl[1] = {0};
 static const uint8_t OtImGuiFS_essl[1] = {0};
+static const uint8_t OtParticlesVS_glsl[1] = {0};
+static const uint8_t OtParticlesVS_essl[1] = {0};
+static const uint8_t OtParticlesFS_glsl[1] = {0};
+static const uint8_t OtParticlesFS_essl[1] = {0};
 static const uint8_t OtShadowInstancingVS_glsl[1] = {0};
 static const uint8_t OtShadowInstancingVS_essl[1] = {0};
 static const uint8_t OtShadowVS_glsl[1] = {0};
@@ -320,6 +330,8 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtIblIrradianceMapCS),
 	BGFX_EMBEDDED_SHADER(OtImGuiVS),
 	BGFX_EMBEDDED_SHADER(OtImGuiFS),
+	BGFX_EMBEDDED_SHADER(OtParticlesVS),
+	BGFX_EMBEDDED_SHADER(OtParticlesFS),
 	BGFX_EMBEDDED_SHADER(OtShadowInstancingVS),
 	BGFX_EMBEDDED_SHADER(OtShadowVS),
 	BGFX_EMBEDDED_SHADER(OtShadowFS),

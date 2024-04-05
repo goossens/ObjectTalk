@@ -62,6 +62,7 @@ private:
 	void renderSkyPass(OtSceneRendererContext& ctx);
 	void renderDeferredLightingPass(OtSceneRendererContext& ctx);
 	void renderForwardGeometryPass(OtSceneRendererContext& ctx);
+	void renderParticlesPass(OtSceneRendererContext& ctx);
 	void renderGridPass(OtSceneRendererContext& ctx);
 	void renderHighlightPass(OtSceneRendererContext& ctx, OtEntity selected);
 	void renderPostProcessingPass(OtSceneRendererContext& ctx);
@@ -78,6 +79,7 @@ private:
 	void renderSkyBox(OtSceneRendererContext& ctx, OtPass& pass, OtSkyBoxComponent& component);
 	void renderForwardWater(OtSceneRendererContext& ctx, OtPass& pass, OtWaterComponent& water);
 	void renderForwardGeometry(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtGeometryComponent& geometry);
+	void renderParticles(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtParticlesComponent& particles);
 	void renderHighlight(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity);
 	void renderFxaa(OtSceneRendererContext& ctx, OtFrameBuffer* input, OtFrameBuffer* output);
 	void renderFog(OtSceneRendererContext& ctx, OtFrameBuffer* input, OtFrameBuffer* output, float fogDensity, glm::vec3& fogColor);
@@ -192,6 +194,8 @@ private:
 
 	OtSampler skySampler{"s_skyTexture"};
 
+	OtSampler particlesSampler{"s_particlesTexture"};
+
 	OtSampler selectedSampler{"s_selectedTexture", OtTexture::pointSampling | OtTexture::clampSampling};
 
 	OtSampler postProcessSampler{"s_postProcessTexture", OtTexture::pointSampling | OtTexture::clampSampling};
@@ -214,6 +218,7 @@ private:
 	OtShaderProgram outlineProgram{"OtOutlineVS", "OtOutlineFS"};
 	OtShaderProgram skyProgram{"OtSkyVS", "OtSkyFS"};
 	OtShaderProgram skyBoxProgram{"OtSkyVS", "OtSkyBoxFS"};
+	OtShaderProgram particlesProgram{"OtParticlesVS", "OtParticlesFS"};
 	OtShaderProgram fxaaProgram{"OtFilterVS", "OtFxaaFS"};
 	OtShaderProgram fogProgram{"OtFilterVS", "OtFogFS"};
 	OtShaderProgram bloomDownSampleProgram{"OtFilterVS", "OtBloomDownSampleFS"};

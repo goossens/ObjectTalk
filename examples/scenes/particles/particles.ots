@@ -1,0 +1,783 @@
+{
+	"entities": [
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Camera",
+					"uuid": 2548702117
+				},
+				{
+					"component": "Transform",
+					"rotation": [
+						0.0,
+						0.0,
+						0.0
+					],
+					"scale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"translation": [
+						0.0,
+						-2.299999952316284,
+						3.9000000953674316
+					]
+				},
+				{
+					"component": "Camera",
+					"far": 100.0,
+					"fov": 60.0,
+					"mainCamera": false,
+					"near": 0.10000000149011612
+				},
+				{
+					"Exposure": 1.7000000476837158,
+					"bloomIntensity": 0.5699999928474426,
+					"component": "Post Processing",
+					"fog": false,
+					"fogColor": [
+						0.18783771991729736,
+						0.23158632218837738,
+						0.36283183097839355
+					],
+					"fogDensity": 5.75,
+					"fxaa": false
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Light",
+					"uuid": 897607119
+				},
+				{
+					"component": "Transform",
+					"rotation": [
+						0.0,
+						0.0,
+						0.0
+					],
+					"scale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"translation": [
+						3.5999999046325684,
+						-1.100000023841858,
+						-6.099999904632568
+					]
+				},
+				{
+					"ambient": 0.05000000074505806,
+					"castShadow": true,
+					"color": [
+						0.45098039507865906,
+						0.25246578454971313,
+						0.09196462482213974
+					],
+					"component": "Directional Light"
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Background",
+					"uuid": 3232977651
+				},
+				{
+					"color": [
+						0.008027256466448307,
+						0.012514765374362469,
+						0.04424780607223511
+					],
+					"component": "Background"
+				}
+			]
+		},
+		{
+			"children": [
+				{
+					"children": [],
+					"components": [
+						{
+							"component": "Core",
+							"tag": "Left",
+							"uuid": 2396579673
+						},
+						{
+							"component": "Geometry",
+							"cullback": true,
+							"path": "virtual:wall",
+							"transparent": false,
+							"wireframe": false
+						},
+						{
+							"component": "Transform",
+							"rotation": [
+								0.0,
+								90.0,
+								0.0
+							],
+							"scale": [
+								4.0,
+								4.0,
+								4.0
+							],
+							"translation": [
+								-2.0,
+								-2.0,
+								0.0
+							]
+						},
+						{
+							"component": "Material",
+							"material": {
+								"albedo": [
+									1.0,
+									1.0,
+									1.0,
+									1.0
+								],
+								"albedoTexture": "assets/wall/albedo.jpg",
+								"ao": 1.0,
+								"aoTexture": "",
+								"emissive": [
+									0.0,
+									0.0,
+									0.0
+								],
+								"emissiveTexture": "",
+								"metallic": 0.0,
+								"metallicRoughnessTexture": "",
+								"normalTexture": "assets/wall/normals.jpg",
+								"roughness": 1.0,
+								"scale": 1.0
+							}
+						}
+					]
+				},
+				{
+					"children": [],
+					"components": [
+						{
+							"component": "Core",
+							"tag": "Back",
+							"uuid": 634174959
+						},
+						{
+							"component": "Geometry",
+							"cullback": true,
+							"path": "virtual:wall",
+							"transparent": false,
+							"wireframe": false
+						},
+						{
+							"component": "Transform",
+							"rotation": [
+								0.0,
+								0.0,
+								0.0
+							],
+							"scale": [
+								4.0,
+								4.0,
+								4.0
+							],
+							"translation": [
+								0.0,
+								-2.0,
+								-2.0
+							]
+						},
+						{
+							"component": "Material",
+							"material": {
+								"albedo": [
+									1.0,
+									1.0,
+									1.0,
+									1.0
+								],
+								"albedoTexture": "assets/wall/albedo.jpg",
+								"ao": 1.0,
+								"aoTexture": "",
+								"emissive": [
+									0.0,
+									0.0,
+									0.0
+								],
+								"emissiveTexture": "",
+								"metallic": 0.0,
+								"metallicRoughnessTexture": "",
+								"normalTexture": "assets/wall/normals.jpg",
+								"roughness": 1.0,
+								"scale": 1.0
+							}
+						}
+					]
+				},
+				{
+					"children": [],
+					"components": [
+						{
+							"component": "Core",
+							"tag": "Right",
+							"uuid": 1401126317
+						},
+						{
+							"component": "Geometry",
+							"cullback": true,
+							"path": "virtual:wall",
+							"transparent": false,
+							"wireframe": false
+						},
+						{
+							"component": "Transform",
+							"rotation": [
+								0.0,
+								-90.0,
+								0.0
+							],
+							"scale": [
+								4.0,
+								4.0,
+								4.0
+							],
+							"translation": [
+								2.0,
+								-2.0,
+								0.0
+							]
+						},
+						{
+							"component": "Material",
+							"material": {
+								"albedo": [
+									1.0,
+									1.0,
+									1.0,
+									1.0
+								],
+								"albedoTexture": "assets/wall/albedo.jpg",
+								"ao": 1.0,
+								"aoTexture": "",
+								"emissive": [
+									0.0,
+									0.0,
+									0.0
+								],
+								"emissiveTexture": "",
+								"metallic": 0.0,
+								"metallicRoughnessTexture": "",
+								"normalTexture": "assets/wall/normals.jpg",
+								"roughness": 1.0,
+								"scale": 1.0
+							}
+						}
+					]
+				},
+				{
+					"children": [],
+					"components": [
+						{
+							"component": "Core",
+							"tag": "Floor",
+							"uuid": 1238961594
+						},
+						{
+							"component": "Geometry",
+							"cullback": true,
+							"path": "virtual:wall",
+							"transparent": false,
+							"wireframe": false
+						},
+						{
+							"component": "Transform",
+							"rotation": [
+								-90.0,
+								0.0,
+								0.0
+							],
+							"scale": [
+								4.0,
+								4.0,
+								4.0
+							],
+							"translation": [
+								0.0,
+								-4.0,
+								0.0
+							]
+						},
+						{
+							"component": "Material",
+							"material": {
+								"albedo": [
+									1.0,
+									1.0,
+									1.0,
+									1.0
+								],
+								"albedoTexture": "assets/wall/albedo.jpg",
+								"ao": 1.0,
+								"aoTexture": "",
+								"emissive": [
+									0.0,
+									0.0,
+									0.0
+								],
+								"emissiveTexture": "",
+								"metallic": 0.0,
+								"metallicRoughnessTexture": "",
+								"normalTexture": "assets/wall/normals.jpg",
+								"roughness": 1.0,
+								"scale": 1.0
+							}
+						}
+					]
+				}
+			],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Walls",
+					"uuid": 1763250769
+				},
+				{
+					"component": "Nodes",
+					"path": "assets/wall.otn",
+					"settings": {}
+				}
+			]
+		},
+		{
+			"children": [
+				{
+					"children": [],
+					"components": [
+						{
+							"component": "Core",
+							"tag": "Firewood",
+							"uuid": 2618592115
+						},
+						{
+							"component": "Model",
+							"model": "assets/firewood/Firewood1.gltf"
+						},
+						{
+							"component": "Transform",
+							"rotation": [
+								-10.0,
+								0.0,
+								0.0
+							],
+							"scale": [
+								2.0,
+								2.0,
+								2.0
+							],
+							"translation": [
+								0.0,
+								-3.799999952316284,
+								0.5
+							]
+						}
+					]
+				},
+				{
+					"children": [],
+					"components": [
+						{
+							"component": "Core",
+							"tag": "Flames",
+							"uuid": 2654667679
+						},
+						{
+							"component": "Transform",
+							"rotation": [
+								0.0,
+								0.0,
+								0.0
+							],
+							"scale": [
+								1.2000000476837158,
+								1.5,
+								1.5
+							],
+							"translation": [
+								0.0,
+								-3.299999952316284,
+								0.800000011920929
+							]
+						},
+						{
+							"component": "Particles",
+							"settings": {
+								"alphaEnd": 0.4020000100135803,
+								"alphaStart": 1.0,
+								"atlas": "assets/firewood/flames.png",
+								"atlasColumns": 8,
+								"atlasRows": 8,
+								"direction": 1,
+								"gravity": 0.0,
+								"lifeSpanHigh": 2.7890000343322754,
+								"lifeSpanLow": 2.25,
+								"particles": 4,
+								"rotationEnd": 0.0,
+								"rotationStart": 0.0,
+								"scaleEnd": 0.9769999980926514,
+								"scaleStart": 0.8569999933242798,
+								"shape": 0,
+								"upVariation": 0.10000000149011612,
+								"velocity": 0.0
+							}
+						}
+					]
+				},
+				{
+					"children": [],
+					"components": [
+						{
+							"component": "Core",
+							"tag": "Smoke",
+							"uuid": 815822172
+						},
+						{
+							"component": "Transform",
+							"rotation": [
+								0.0,
+								0.0,
+								0.0
+							],
+							"scale": [
+								1.0,
+								1.0,
+								1.0
+							],
+							"translation": [
+								0.0,
+								-4.0,
+								-0.10000000149011612
+							]
+						},
+						{
+							"component": "Particles",
+							"settings": {
+								"alphaEnd": 0.12200000137090683,
+								"alphaStart": 0.2549999952316284,
+								"atlas": "assets/firewood/smoke.png",
+								"atlasColumns": 1,
+								"atlasRows": 1,
+								"direction": 0,
+								"gravity": -0.6959999799728394,
+								"lifeSpanHigh": 2.490999937057495,
+								"lifeSpanLow": 1.5829999446868896,
+								"particles": 100,
+								"rotationEnd": 210.73199462890625,
+								"rotationStart": 0.0,
+								"scaleEnd": 0.9779999852180481,
+								"scaleStart": 0.9779999852180481,
+								"shape": 0,
+								"upVariation": 0.5960000157356262,
+								"velocity": 0.13600000739097595
+							}
+						}
+					]
+				},
+				{
+					"children": [],
+					"components": [
+						{
+							"component": "Core",
+							"tag": "Soot",
+							"uuid": 2550898856
+						},
+						{
+							"component": "Transform",
+							"rotation": [
+								0.0,
+								0.0,
+								0.0
+							],
+							"scale": [
+								1.0,
+								1.0,
+								1.0
+							],
+							"translation": [
+								0.0,
+								-4.0,
+								0.0
+							]
+						},
+						{
+							"component": "Particles",
+							"settings": {
+								"alphaEnd": 0.8539999723434448,
+								"alphaStart": 0.4880000054836273,
+								"atlas": "assets/firewood/soot.png",
+								"atlasColumns": 1,
+								"atlasRows": 1,
+								"direction": 0,
+								"gravity": 0.10899999737739563,
+								"lifeSpanHigh": 3.3420000076293945,
+								"lifeSpanLow": 2.0,
+								"particles": 20,
+								"rotationEnd": 206.3419952392578,
+								"rotationStart": 87.80500030517578,
+								"scaleEnd": 1.0,
+								"scaleStart": 1.0,
+								"shape": 0,
+								"upVariation": 0.10000000149011612,
+								"velocity": 0.7730000019073486
+							}
+						}
+					]
+				}
+			],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Fire",
+					"uuid": 1468282234
+				}
+			]
+		},
+		{
+			"children": [
+				{
+					"children": [
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Torch",
+									"uuid": 2634288849
+								},
+								{
+									"component": "Model",
+									"model": "assets/torch/Torch.gltf"
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										90.0,
+										0.0
+									],
+									"scale": [
+										2.0,
+										2.0,
+										2.0
+									],
+									"translation": [
+										-2.0,
+										-2.0,
+										0.0
+									]
+								}
+							]
+						},
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Flame",
+									"uuid": 1674273830
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"scale": [
+										0.699999988079071,
+										1.399999976158142,
+										1.0
+									],
+									"translation": [
+										-1.600000023841858,
+										-1.2999999523162842,
+										0.0
+									]
+								},
+								{
+									"component": "Particles",
+									"settings": {
+										"alphaEnd": 0.45100000500679016,
+										"alphaStart": 0.7200000286102295,
+										"atlas": "assets/torch/flames.png",
+										"atlasColumns": 16,
+										"atlasRows": 4,
+										"direction": 1,
+										"gravity": 0.0010000000474974513,
+										"lifeSpanHigh": 1.8489999771118164,
+										"lifeSpanLow": 1.343000054359436,
+										"particles": 1,
+										"rotationEnd": 0.0,
+										"rotationStart": 0.0,
+										"scaleEnd": 0.8579999804496765,
+										"scaleStart": 0.8579999804496765,
+										"shape": 0,
+										"upVariation": 0.10000000149011612,
+										"velocity": 0.0
+									}
+								}
+							]
+						}
+					],
+					"components": [
+						{
+							"component": "Core",
+							"tag": "Left",
+							"uuid": 724284883
+						}
+					]
+				},
+				{
+					"children": [
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Torch",
+									"uuid": 236632611
+								},
+								{
+									"component": "Model",
+									"model": "assets/torch/Torch.gltf"
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										-90.0,
+										0.0
+									],
+									"scale": [
+										2.0,
+										2.0,
+										2.0
+									],
+									"translation": [
+										2.0,
+										-2.0,
+										0.0
+									]
+								}
+							]
+						},
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Flame",
+									"uuid": 2740174447
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"scale": [
+										0.699999988079071,
+										1.399999976158142,
+										1.0
+									],
+									"translation": [
+										1.600000023841858,
+										-1.2999999523162842,
+										0.0
+									]
+								},
+								{
+									"component": "Particles",
+									"settings": {
+										"alphaEnd": 0.5,
+										"alphaStart": 0.5130000114440918,
+										"atlas": "assets/torch/flames.png",
+										"atlasColumns": 16,
+										"atlasRows": 4,
+										"direction": 1,
+										"gravity": 0.0010000000474974513,
+										"lifeSpanHigh": 1.8489999771118164,
+										"lifeSpanLow": 1.343000054359436,
+										"particles": 1,
+										"rotationEnd": 0.0,
+										"rotationStart": 0.0,
+										"scaleEnd": 0.8579999804496765,
+										"scaleStart": 0.8579999804496765,
+										"shape": 0,
+										"upVariation": 0.10000000149011612,
+										"velocity": 0.0
+									}
+								}
+							]
+						}
+					],
+					"components": [
+						{
+							"component": "Core",
+							"tag": "Right",
+							"uuid": 2172251004
+						}
+					]
+				}
+			],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Torches",
+					"uuid": 1733465189
+				}
+			]
+		}
+	],
+	"metadata": {
+		"camera": {
+			"far": 50.0,
+			"fov": 60.0,
+			"near": 0.10000000149011612,
+			"pitch": -0.6108770966529846,
+			"position": [
+				-0.10031388700008392,
+				-2.2630882263183594,
+				3.9711458683013916
+			],
+			"yaw": -0.8107970356941223
+		},
+		"gizmo": {
+			"enabled": false,
+			"mode": 7,
+			"snapInterval": [
+				0.10000000149011612,
+				0.10000000149011612,
+				0.10000000149011612
+			],
+			"snapping": false
+		},
+		"grid": {
+			"enabled": false,
+			"scale": 1.0
+		},
+		"type": "scene"
+	}
+}

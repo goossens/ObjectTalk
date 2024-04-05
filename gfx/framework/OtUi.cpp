@@ -448,11 +448,11 @@ bool OtUiSelectorPowerOfTwo(const char* label, int& value, int startValue, int e
 //
 
 template<int steps>
-void bezierTable(ImVec2 P[4], ImVec2 results[steps + 1] ) {
+void bezierTable(ImVec2 P[4], ImVec2 results[steps + 1]) {
 	static float C[(steps + 1) * 4];
 	static bool initialized = false;
 
-	if(!initialized) {
+	if (!initialized) {
 		for (unsigned step = 0; step <= steps; ++step) {
 			float t = (float)step/(float)steps;
 			C[step * 4 + 0] = (1 - t) * (1 - t) * (1 - t);		// * P0
@@ -475,7 +475,7 @@ bool OtUiBezier(const char *label, float P[4]) {
 	// based on https://github.com/ocornut/imgui/issues/786
 	enum { SMOOTHNESS = 64 }; // curve smoothness: the higher number of segments, the smoother curve
 	enum { CURVE_WIDTH = 3 }; // main curved line width
-	enum { LINE_WIDTH  = 1 }; // handlers: small lines width
+	enum { LINE_WIDTH = 1 }; // handlers: small lines width
 	enum { GRAB_RADIUS = 6 }; // handlers: circle radius
 	enum { GRAB_BORDER = 2 }; // handlers: circle border width
 
@@ -578,7 +578,7 @@ bool OtUiBezier(const char *label, float P[4]) {
 	// draw curve
 	ImColor color(style.Colors[ImGuiCol_PlotLines]);
 
-	for(int i = 0; i < SMOOTHNESS; i++) {
+	for (int i = 0; i < SMOOTHNESS; i++) {
 		ImVec2 p = { results[i + 0].x, 1 - results[i + 0].y };
 		ImVec2 q = { results[i + 1].x, 1 - results[i + 1].y };
 		ImVec2 r(p.x * (bb.Max.x - bb.Min.x) + bb.Min.x, p.y * (bb.Max.y - bb.Min.y) + bb.Min.y);

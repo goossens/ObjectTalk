@@ -11,6 +11,8 @@
 
 #include <cmath>
 
+#include "ImGuiCurve.h"
+
 #include "OtNumbers.h"
 
 #include "OtParticle.h"
@@ -48,40 +50,43 @@ static glm::vec3 getRandomPointinCircle() {
 //
 
 void OtParticle::spawn(const OtParticleSettings& settings) {
-	// determine starting point for particle
+	// determine starting position and velocity for particle
 	switch (settings.shape) {
 		case OtParticleSettings::pointShape:
-			position = glm::vec3(0.0f, 0.1f, 0.0f);
-			break;
-
-		case OtParticleSettings::sphereShape:
-			position = getRandomPointOnSphere();
-			break;
-
-		case OtParticleSettings::hemisphereShape:
-			position = getRandomPointOnHemisphere();
+			position = glm::vec3(0.0f, 0.0f, 0.0f);
+			velocity = glm::vec3(0.0f, 1.0f, 0.0f);
 			break;
 
 		case OtParticleSettings::circleShape:
 			position = getRandomPointinCircle();
+			velocity = glm::normalize(glm::vec3(position.x, 1.0f, position.z));
+			break;
+
+		case OtParticleSettings::coneShape:
+			position = glm::vec3(0.0f, 0.0f, 0.0f);
+			velocity = glm::normalize(glm::vec3(OtRandom(-0.3f, 0.3f), 1.0f, OtRandom(-0.3f, 0.3f)));
+			break;
+
+		case OtParticleSettings::hemisphereShape:
+			position = getRandomPointOnHemisphere();
+			velocity = glm::normalize(position);
+			break;
+
+		case OtParticleSettings::sphereShape:
+			position = getRandomPointOnSphere();
+			velocity = glm::normalize(position);
 			break;
 	}
 
-	// determine starting velocity
-	float variation = settings.upVariation;
-
-	velocity = settings.direction == OtParticleSettings::upDirection
-		? glm::vec3(OtRandom(-variation, variation), 1.0f, OtRandom(-variation, variation))
-		: glm::normalize(position);
-
-	velocity *= settings.velocity;
+	// apply speed
+	velocity *= settings.speed;
 
 	// determine other properties
 	gravity = settings.gravity;
 	rotation = settings.rotation[0];
-	scale = settings.scale[0];
-	alpha = settings.alpha[0];
-	lifespan = OtRandom(settings.lifeSpan[0], settings.lifeSpan[1]);
+	scale = ImGui::CurveValue(0.0f, settings.scale.size(), settings.scale.data());
+	alpha = ImGui::CurveValue(0.0f, settings.alpha.size(), settings.alpha.data());
+	lifespan = OtRandom(settings.lifeSpanLow, settings.lifeSpanHigh);
 	remaining = lifespan;
 }
 
@@ -97,6 +102,6 @@ void OtParticle::update(const OtParticleSettings& settings) {
 	age = (lifespan - remaining) / lifespan;
 
 	rotation = std::lerp(settings.rotation[0], settings.rotation[1], age);
-	scale = std::lerp(settings.scale[0], settings.scale[1], age);
-	alpha = std::lerp(settings.alpha[0], settings.alpha[1], age);
+	scale = ImGui::CurveValue(age, settings.scale.size(), settings.scale.data());
+	alpha = ImGui::CurveValue(age, settings.alpha.size(), settings.alpha.data());
 }

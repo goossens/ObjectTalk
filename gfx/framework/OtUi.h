@@ -16,6 +16,7 @@
 
 #include "glm/glm.hpp"
 #include "imgui.h"
+#include "nlohmann/json_fwd.hpp"
 
 
 //
@@ -76,3 +77,11 @@ bool OtUiSelectorPowerOfTwo(const char* label, int& value, int startValue, int e
 
 // bezier curve editor
 bool OtUiBezier(const char* label, float P[4]);
+
+
+//
+//	(De)serialization to/from JSON
+//
+
+void to_json(nlohmann::json& j, const ImVec2& v);
+void from_json(const nlohmann::json& j, ImVec2& v);

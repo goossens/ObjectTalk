@@ -54,7 +54,7 @@ void OtParticles::update(const OtParticleSettings& settings) {
 	// if this is the first run, distribute remaining life and run simulation
 	if (first) {
 		for (size_t i = 0; i < count; i++) {
-			particles[i].remaining = settings.lifeSpan[1] * (float) i / (float) count;
+			particles[i].remaining = settings.lifeSpanHigh * (float) i / (float) count;
 		}
 
 		for (size_t i = count >> 1; i < count; i++) {

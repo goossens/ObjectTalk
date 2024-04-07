@@ -636,14 +636,6 @@
 						0.0,
 						0.0
 					]
-				},
-				{
-					"component": "Particles",
-					"direction": 0,
-					"gravity": 0.5,
-					"lifeSpanHigh": 4.0,
-					"lifeSpanLow": 2.0,
-					"particles": 1024
 				}
 			]
 		}

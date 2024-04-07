@@ -624,3 +624,17 @@ bool OtUiBezier(const char *label, float P[4]) {
 
 	return changed;
 }
+
+
+//
+//	to/from_json
+//
+
+void to_json(nlohmann::json& j, const ImVec2& v)  {
+	j = nlohmann::json{v.x, v.y};
+}
+
+void from_json(const nlohmann::json& j, ImVec2& v) {
+	v.x = j[0];
+	v.y = j[1];
+}

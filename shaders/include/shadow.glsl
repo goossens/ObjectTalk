@@ -66,9 +66,9 @@ float getCascadeShadow(sampler2D shadowmap, vec2 shadowCoord, float depth, float
 
 // get shadow value at specified position and distance from camera
 float getShadow(vec3 wordPosition, vec3 viewPosition, float NdotL) {
-	// see if we have shadow maps
+	// see if we have shadowmaps
 	if (u_shadowEnabled) {
-		// determine shadow bias based on slope (shadow map reslution is applied below)
+		// determine shadow bias based on slope (shadowmap resolution is applied below)
 		float bias = max(0.05 * (1.0 - NdotL), 0.005);
 
 		// determine cascade and calculate shadow

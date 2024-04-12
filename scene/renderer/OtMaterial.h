@@ -50,7 +50,7 @@ public:
 
 private:
 	// the scene renderer needs access to our properties
-	friend class OtSceneRenderer;
+	friend class OtSceneRenderPass;
 
 	// stored properties
 	glm::vec4 albedo{1.0f};

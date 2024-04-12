@@ -46,6 +46,7 @@ private:
 	void renderGbuffer(OtSceneRenderer& renderer);
 	void renderShadow(OtSceneRenderer& renderer);
 	void renderReflection(OtSceneRenderer& renderer);
+	void renderOclussion(OtSceneRenderer& renderer);
 	void renderAssets(OtSceneRenderer& renderer);
 
 	void renderTexture(const char* title, uint16_t index, int width, int height);
@@ -53,7 +54,7 @@ private:
 	void renderCubeMap(const char* title, OtCubeMap& cubemap, CubeMapDebug& debug);
 	void renderCubeMapAsCross(OtCubeMap& cubemap, CubeMapDebug& debug);
 
-	// properties to help debug rendering
+	// properties
 	CubeMapDebug iblSkyMapDebug;
 	CubeMapDebug iblIrradianceDebug;
 	CubeMapDebug iblEnvironmentDebug;

@@ -8,37 +8,27 @@ $input v_position, v_normal, v_tangent, v_bitangent, v_texcoord0
 
 #include <bgfx_shader.glsl>
 #include <clip.glsl>
+#include <lighting.glsl>
 #include <pbr.glsl>
 #include <shadow.glsl>
 
 // uniforms
-uniform vec4 u_pbrMaterial[5];
-#define u_albedo u_pbrMaterial[0]
+uniform vec4 u_material[5];
+#define u_albedo u_material[0]
 
-#define u_metallic u_pbrMaterial[1].r
-#define u_roughness u_pbrMaterial[1].g
-#define u_ao u_pbrMaterial[1].b
-#define u_scale u_pbrMaterial[1].a
+#define u_metallic u_material[1].r
+#define u_roughness u_material[1].g
+#define u_ao u_material[1].b
+#define u_scale u_material[1].a
 
-#define u_emissive u_pbrMaterial[2].rgb
+#define u_emissive u_material[2].rgb
 
-#define u_hasAlbedoTexture bool(u_pbrMaterial[3].r)
-#define u_hasMetallicRoughnessTexture bool(u_pbrMaterial[3].g)
+#define u_hasAlbedoTexture bool(u_material[3].r)
+#define u_hasMetallicRoughnessTexture bool(u_material[3].g)
 
-#define u_hasEmissiveTexture bool(u_pbrMaterial[4].r)
-#define u_hasAoTexture bool(u_pbrMaterial[4].g)
-#define u_hasNormalTexture bool(u_pbrMaterial[4].b)
-
-uniform vec4 u_lighting[3];
-#define u_cameraPosition u_lighting[0].xyz
-#define u_hasDirectionalLighting bool(u_lighting[0].w)
-#define u_directionalLightDirection u_lighting[1].xyz
-#define u_directionalLightColor u_lighting[2].xyz
-#define u_directionalLightAmbience u_lighting[2].a
-
-uniform vec4 u_ibl[1];
-#define u_hasImageBasedLighting bool(u_ibl[0].x)
-#define u_iblEnvLevels int(u_ibl[0].y)
+#define u_hasEmissiveTexture bool(u_material[4].r)
+#define u_hasAoTexture bool(u_material[4].g)
+#define u_hasNormalTexture bool(u_material[4].b)
 
 // texture samplers
 SAMPLER2D(s_albedoTexture, 0);
@@ -47,10 +37,6 @@ SAMPLER2D(s_emissiveTexture, 2);
 SAMPLER2D(s_aoTexture, 3);
 SAMPLER2D(s_normalTexture, 4);
 
-SAMPLER2D(s_iblBrdfLut, 5);
-SAMPLERCUBE(s_iblIrradianceMap, 6);
-SAMPLERCUBE(s_iblEnvironmentMap, 7);
-
 // main function
 void main() {
 	// apply clip plane
@@ -58,9 +44,6 @@ void main() {
 
 	// determine UV coordinates
 	vec2 uv = v_texcoord0 * u_scale;
-
-	// material data
-	Material material;
 
 	// determine albedo
 	vec4 albedo;
@@ -77,6 +60,8 @@ void main() {
 		discard;
 	}
 
+	// material data
+	Material material;
 	material.albedo = toLinear(albedo.rgb);
 
 	// determine normal

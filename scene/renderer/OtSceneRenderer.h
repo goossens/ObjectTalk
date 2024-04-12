@@ -16,25 +16,26 @@
 
 #include "glm/glm.hpp"
 
-#include "OtAABB.h"
-#include "OtCascadedShadowMap.h"
-#include "OtComputeProgram.h"
-#include "OtCubeMap.h"
 #include "OtFrameBuffer.h"
 #include "OtGbuffer.h"
-#include "OtNormalMapper.h"
-#include "OtPass.h"
-#include "OtSampler.h"
-#include "OtShaderProgram.h"
-#include "OtTexture.h"
-#include "OtTileableFbm.h"
-#include "OtUniformMat4.h"
-#include "OtUniformVec4.h"
 
 #include "OtCamera.h"
 #include "OtEntity.h"
 #include "OtScene.h"
-#include "OtSceneRendererContext.h"
+
+#include "OtImageBasedLighting.h"
+
+#include "OtBackgroundPass.h"
+#include "OtDeferredPass.h"
+#include "OtForwardPass.h"
+#include "OtOcclusionPass.h"
+#include "OtParticlesPass.h"
+#include "OtShadowPass.h"
+#include "OtSkyPass.h"
+#include "OtWaterPass.h"
+#include "OtGridPass.h"
+#include "OtHighlightPass.h"
+#include "OtPostProcessingPass.h"
 
 
 //
@@ -44,7 +45,7 @@
 class OtSceneRenderer {
 public:
 	// set properties
-	void setGridScale(float gs) { gridScale = gs; }
+	void setGridScale(float gridScale) { gridPass.setGridScale(gridScale); }
 
 	// render specified scene
 	int render(OtCamera& camera, OtScene* scene, OtEntity selected=OtEntityNull);
@@ -53,181 +54,22 @@ private:
 	// give the debugger access to the inner circle
 	friend class OtSceneRendererDebug;
 
-	// render passes
-	void renderIblPass(OtSceneRendererContext& ctx);
-	void renderReflectionPass(OtSceneRendererContext& ctx);
-	void renderShadowPass(OtSceneRendererContext& ctx);
-	void renderDeferredGeometryPass(OtSceneRendererContext& ctx);
-	void renderBackgroundPass(OtSceneRendererContext& ctx);
-	void renderSkyPass(OtSceneRendererContext& ctx);
-	void renderDeferredLightingPass(OtSceneRendererContext& ctx);
-	void renderForwardGeometryPass(OtSceneRendererContext& ctx);
-	void renderParticlesPass(OtSceneRendererContext& ctx);
-	void renderGridPass(OtSceneRendererContext& ctx);
-	void renderHighlightPass(OtSceneRendererContext& ctx, OtEntity selected);
-	void renderPostProcessingPass(OtSceneRendererContext& ctx);
-
-	// render entities
-	void renderShadowGeometry(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtGeometryComponent& geometry, OtAABB& aabb);
-	void renderShadowModel(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtModelComponent& model, OtAABB& aabb);
-	void renderShadowTerrain(OtSceneRendererContext& ctx, OtPass& pass, OtTerrainComponent& terrain, glm::vec3& camera, OtAABB& aabb);
-	void renderReflectionRefractionScene(OtSceneRendererContext& ctx);
-	void renderDeferredGeometry(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtGeometryComponent& geometry);
-	void renderDeferredModel(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtModelComponent& model);
-	void renderDeferredTerrain(OtSceneRendererContext& ctx, OtPass& pass, OtTerrainComponent& terrain);
-	void renderSky(OtSceneRendererContext& ctx, OtPass& pass, OtSkyComponent& component);
-	void renderSkyBox(OtSceneRendererContext& ctx, OtPass& pass, OtSkyBoxComponent& component);
-	void renderForwardWater(OtSceneRendererContext& ctx, OtPass& pass, OtWaterComponent& water);
-	void renderForwardGeometry(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtGeometryComponent& geometry);
-	void renderParticles(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity, OtParticlesComponent& particles);
-	void renderHighlight(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity);
-	void renderFxaa(OtSceneRendererContext& ctx, OtFrameBuffer* input, OtFrameBuffer* output);
-	void renderFog(OtSceneRendererContext& ctx, OtFrameBuffer* input, OtFrameBuffer* output, float fogDensity, glm::vec3& fogColor);
-	void renderBloom(OtSceneRendererContext& ctx, OtFrameBuffer* input, OtFrameBuffer* output, float bloomIntensity);
-
-	// rendering tools
-	void submitTextureSampler(OtSampler& sampler, int unit, OtAsset<OtTextureAsset>& texture);
-	void submitCubeMapSampler(OtSampler& sampler, int unit, OtAsset<OtCubeMapAsset>& cubemap);
-	void submitClippingUniforms(OtSceneRendererContext& ctx);
-	void submitLightingUniforms(OtSceneRendererContext& ctx);
-	void submitMaterialUniforms(OtMaterial& material);
-	void submitTerrainUniforms(OtTerrain& terrain);
-
-	// helpers
-	float getRunningTime();
-	size_t getTextureAssetWidth(OtAsset<OtTextureAsset>& texture);
-	size_t getTextureAssetHeight(OtAsset<OtTextureAsset>& texture);
-
-	// grid scale (0.0 means no grid)
-	float gridScale = 0.0f;
-
 	// framebuffers
 	OtGbuffer deferredRenderingBuffer;
 	OtFrameBuffer compositeBuffer{OtTexture::rgbaFloat16Texture, OtTexture::dFloatTexture};
 
-	static constexpr int shadowMapSize = 1024;
 	OtCascadedShadowMap csm;
+	OtImageBasedLighting ibl;
 
-	OtGbuffer reflectionRenderingBuffer;
-	OtFrameBuffer reflectionBuffer{OtTexture::rgbaFloat16Texture, OtTexture::dFloatTexture};
-	OtFrameBuffer refractionBuffer{OtTexture::rgbaFloat16Texture, OtTexture::dFloatTexture};
-
-	OtFrameBuffer postProcessBuffer1{OtTexture::rgbaFloat16Texture, OtTexture::noTexture};
-	OtFrameBuffer postProcessBuffer2{OtTexture::rgbaFloat16Texture, OtTexture::noTexture};
-	OtFrameBuffer selectedBuffer{OtTexture::r8Texture, OtTexture::noTexture};
-
-	static constexpr int bloomDepth = 5;
-	OtFrameBuffer bloomBuffer[bloomDepth];
-
-	// generators/filters
-	OtTileableFbm tileableFbm;
-	OtNormalMapper normalMapper;
-
-	// uniforms
-	OtUniformVec4 iblEnviromentUniform{"u_iblEnvironment", 1};
-	OtUniformVec4 pbrMaterialUniforms{"u_pbrMaterial", 5};
-	OtUniformVec4 terrainUniforms{"u_terrain", 9};
-	OtUniformVec4 waterUniforms{"u_water", 4};
-	OtUniformVec4 shadowUniforms{"u_shadow", 2};
-	OtUniformVec4 lightingUniforms{"u_lighting", 3};
-	OtUniformVec4 clipUniforms{"u_clip", 1};
-	OtUniformVec4 iblUniform{"u_ibl", 1};
-	OtUniformVec4 skyUniforms{"u_sky", 3};
-	OtUniformVec4 gridUniforms{"u_grid", 1};
-	OtUniformVec4 outlineUniforms{"u_outline", 1};
-	OtUniformVec4 fxaaUniforms{"u_fxaa", 1};
-	OtUniformVec4 fogUniforms{"u_fog", 2};
-	OtUniformVec4 bloomUniforms{"u_bloom", 1};
-	OtUniformVec4 postProcessUniforms{"u_postProcess", 1};
-
-	OtUniformMat4 viewUniform{"u_viewUniform", 1};
-	OtUniformMat4 invProjUniform{"u_invProjUniform", 1};
-	OtUniformMat4 invViewProjUniform{"u_invViewProjUniform", 1};
-	OtUniformMat4 skyInvViewProjUniform{"u_skyInvViewProjUniform", 1};
-	OtUniformMat4 shadowViewProjUniform{"u_shadowViewProjTransform", 4};
-
-	// textures
-	OtTexture iblBrdfLut;
-
-	// cubemaps
-	OtCubeMap* iblSkyMap;
-	OtCubeMap iblIrradianceMap;
-	OtCubeMap iblEnvironmentMap;
-
-	// image based lighting data
-	int iblSkyMapVersion = 0;
-	int maxEnvLevel;
-
-	// samplers
-	OtSampler cubemapSampler{"s_cubemap"};
-
-	OtSampler albedoSampler{"s_albedoTexture"};
-	OtSampler normalSampler{"s_normalTexture"};
-	OtSampler metallicRoughnessSampler{"s_metallicRoughnessTexture"};
-	OtSampler emissiveSampler{"s_emissiveTexture"};
-	OtSampler aoSampler{"s_aoTexture"};
-
-	OtSampler shadowMap0Sampler{"s_shadowMap0"};
-	OtSampler shadowMap1Sampler{"s_shadowMap1"};
-	OtSampler shadowMap2Sampler{"s_shadowMap2"};
-	OtSampler shadowMap3Sampler{"s_shadowMap3"};
-
-	OtSampler lightingAlbedoSampler{"s_lightingAlbedoTexture", OtTexture::pointSampling | OtTexture::clampSampling};
-	OtSampler lightingNormalSampler{"s_lightingNormalTexture", OtTexture::pointSampling | OtTexture::clampSampling};
-	OtSampler lightingPbrSampler{"s_lightingPbrTexture", OtTexture::pointSampling | OtTexture::clampSampling};
-	OtSampler lightingEmissiveSampler{"s_lightingEmissiveTexture", OtTexture::pointSampling | OtTexture::clampSampling};
-	OtSampler lightingDepthSampler{"s_lightingDepthTexture", OtTexture::pointSampling | OtTexture::clampSampling};
-
-	OtSampler iblBrdfLutSampler{"s_iblBrdfLut"};
-	OtSampler iblIrradianceMapSampler{"s_iblIrradianceMap"};
-	OtSampler iblEnvironmentMapSampler{"s_iblEnvironmentMap"};
-
-	OtSampler region1Sampler{"s_region1Texture"};
-	OtSampler region2Sampler{"s_region2Texture"};
-	OtSampler region3Sampler{"s_region3Texture"};
-	OtSampler region4Sampler{"s_region4Texture"};
-
-	OtSampler normalmapSampler{"s_normalmapTexture"};
-	OtSampler reflectionSampler{"s_reflectionTexture"};
-	OtSampler refractionSampler{"s_refractionTexture"};
-	OtSampler refractionDepthSampler{"s_refractionDepthTexture"};
-
-	OtSampler skySampler{"s_skyTexture"};
-
-	OtSampler particlesSampler{"s_particlesTexture"};
-
-	OtSampler selectedSampler{"s_selectedTexture", OtTexture::pointSampling | OtTexture::clampSampling};
-
-	OtSampler postProcessSampler{"s_postProcessTexture", OtTexture::pointSampling | OtTexture::clampSampling};
-	OtSampler depthSampler{"s_depthTexture", OtTexture::pointSampling | OtTexture::clampSampling};
-	OtSampler bloomSampler{"s_bloomTexture", OtTexture::pointSampling | OtTexture::clampSampling};
-
-	// shader programs
-	OtShaderProgram shadowProgram{"OtShadowVS", "OtShadowFS"};
-	OtShaderProgram shadowInstancingProgram{"OtShadowInstancingVS", "OtShadowFS"};
-	OtShaderProgram deferredPbrProgram{"OtDeferredVS", "OtDeferredPbrFS"};
-	OtShaderProgram deferredInstancingProgram{"OtDeferredInstancingVS", "OtDeferredPbrFS"};
-	OtShaderProgram deferredTerrainProgram{"OtTerrainVS", "OtTerrainFS"};
-	OtShaderProgram deferredLightingProgram{"OtDeferredLightingVS", "OtDeferredLightingFS"};
-	OtShaderProgram forwardPbrProgram{"OtForwardVS", "OtForwardPbrFS"};
-	OtShaderProgram forwardInstancingProgram{"OtForwardInstancingVS", "OtForwardPbrFS"};
-	OtShaderProgram forwardWaterProgram{"OtWaterVS", "OtWaterFS"};
-	OtShaderProgram gridProgram{"OtGridVS", "OtGridFS"};
-	OtShaderProgram selectProgram{"OtSelectVS", "OtSelectFS"};
-	OtShaderProgram selectInstancingProgram{"OtSelectInstancingVS", "OtSelectFS"};
-	OtShaderProgram outlineProgram{"OtOutlineVS", "OtOutlineFS"};
-	OtShaderProgram skyProgram{"OtSkyVS", "OtSkyFS"};
-	OtShaderProgram skyBoxProgram{"OtSkyVS", "OtSkyBoxFS"};
-	OtShaderProgram particlesProgram{"OtParticlesVS", "OtParticlesFS"};
-	OtShaderProgram fxaaProgram{"OtFilterVS", "OtFxaaFS"};
-	OtShaderProgram fogProgram{"OtFilterVS", "OtFogFS"};
-	OtShaderProgram bloomDownSampleProgram{"OtFilterVS", "OtBloomDownSampleFS"};
-	OtShaderProgram bloomUpSampleProgram{"OtFilterVS", "OtBloomUpSampleFS"};
-	OtShaderProgram bloomApplyProgram{"OtFilterVS", "OtBloomApplyFS"};
-	OtShaderProgram postProcessProgram{"OtFilterVS", "OtPostProcessFS"};
-
-	// compute programs
-	OtComputeProgram program{"OtBrdfLutCS"};
-	OtComputeProgram irradianceProgram{"OtIblIrradianceMapCS"};
-	OtComputeProgram envmapProgram{"OtIblEnvironmentMapCS"};
+	// rendering passes
+	OtShadowPass shadowPass;
+	OtBackgroundPass backgroundPass{compositeBuffer};
+	OtSkyPass skyPass{compositeBuffer};
+	OtDeferredPass deferredPass{deferredRenderingBuffer, compositeBuffer};
+	OtForwardPass forwardPass{compositeBuffer};
+	OtWaterPass waterPass{compositeBuffer};
+	OtParticlesPass particlePass{compositeBuffer};
+	OtGridPass gridPass{compositeBuffer};
+	OtHighlightPass highlightPass{compositeBuffer};
+	OtPostProcessingPass postProcessingPass{compositeBuffer};
 };

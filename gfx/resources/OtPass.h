@@ -48,6 +48,7 @@ public:
 	void setFrameBuffer(OtGbuffer& gbuffer);
 	void setTransform(const glm::mat4& view, const glm::mat4& projection);
 	void submitQuad(int w, int h);
+	void submitCircle(int segments);
 	void submitCube();
 	void runShaderProgram(OtShaderProgram& program);
 	void touch();

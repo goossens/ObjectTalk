@@ -21,7 +21,7 @@
 //	OtCascadedShadowMap::update
 //
 
-void OtCascadedShadowMap::update(int size, OtCamera& camera, const glm::vec3& lightDirection) {
+void OtCascadedShadowMap::update(OtCamera& camera, const glm::vec3& lightDirection, int size) {
 	// create resources if required
 	if (!isValid()) {
 		for (auto& framebuffer : framebuffers) {
@@ -121,8 +121,8 @@ void OtCascadedShadowMap::update(int size, OtCamera& camera, const glm::vec3& li
 		radius = std::ceil(radius * 16.0f) / 16.0f;
 
 		// calculate the view and projection matrix
-		cameraPosition[cascade] = cascadeCenter + lightDirection * radius;
-		glm::mat4 lightViewMatrix = glm::lookAt(cameraPosition[cascade], cascadeCenter, glm::vec3(0.0f, 1.0f, 0.0f));
+		auto cameraPosition = cascadeCenter + lightDirection * radius;
+		glm::mat4 lightViewMatrix = glm::lookAt(cameraPosition, cascadeCenter, glm::vec3(0.0f, 1.0f, 0.0f));
 
 		glm::mat4 lightProjectionMatrix = OtGpuHasHomogeneousDepth()
 			? glm::orthoRH_NO(-radius, radius, -radius, radius, 0.0f, radius + radius)
@@ -149,8 +149,7 @@ void OtCascadedShadowMap::update(int size, OtCamera& camera, const glm::vec3& li
 
 		// store information
 		distances[cascade] = minZ + splitDist * range;
-		viewMatrix[cascade] = lightViewMatrix;
-		projectionMatrix[cascade] = lightProjectionMatrix;
+		cameras[cascade] = OtCamera(size, size, cameraPosition, lightProjectionMatrix, lightViewMatrix);
 		lastSplitDist = splitDist;
 	}
 }

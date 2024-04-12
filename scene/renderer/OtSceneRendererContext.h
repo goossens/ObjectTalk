@@ -14,10 +14,11 @@
 
 #include "glm/glm.hpp"
 
-#include "OtFrameBuffer.h"
-#include "OtGbuffer.h"
-
 #include "OtCamera.h"
+#include "OtCascadedShadowMap.h"
+#include "OtPass.h"
+
+#include "OtImageBasedLighting.h"
 #include "OtScene.h"
 
 
@@ -27,103 +28,33 @@
 
 class OtSceneRendererContext {
 public:
-	// constructor
-	OtSceneRendererContext(OtCamera& c, OtGbuffer& db, OtFrameBuffer& cb, OtScene* s, const glm::vec4& clp=glm::vec4(0.0f), bool water=true) :
-		camera(c),
-		deferedBuffer(db),
-		compositeBuffer(cb),
-		scene(s),
-		clippingPlane(clp) {
-
-		// reset flags
-		hasDirectionalLighting = false;
-		hasImageBasedLighting = false;
-		hasOpaqueEntities = false;
-		hasOpaqueGeometries = false;
-		hasOpaqueModels = false;
-		hasTerrainEntities = false;
-		hasSkyEntities = false;
-		hasTransparentEntities = false;
-		hasWaterEntities = false;
-		hasParticlesEntities = false;
-
-		iblEntity = OtEntityNull;
-		waterEntity = OtEntityNull;
-
-		// check entities and set flags
-		scene->eachEntityDepthFirst([&](OtEntity entity) {
-			if (scene->hasComponent<OtDirectionalLightComponent>(entity) && scene->hasComponent<OtTransformComponent>(entity)) {
-				auto& light = scene->getComponent<OtDirectionalLightComponent>(entity);
-				auto& transform = scene->getComponent<OtTransformComponent>(entity);
-
-				hasDirectionalLighting = true;
-				directionalLightDirection = glm::normalize(transform.getTransform()[3]);
-				directionalLightColor = light.color;
-				directionalLightAmbient = light.ambient;
-				castShadow = light.castShadow;
-			}
-
-			if (scene->hasComponent<OtSkyComponent>(entity)) {
-				auto& sky = scene->getComponent<OtSkyComponent>(entity);
-
-				hasDirectionalLighting = true;
-				directionalLightDirection = glm::normalize(sky.getDirectionToSun());
-				directionalLightColor = glm::vec3(0.2f + std::clamp(sky.elevation / 10.0f, 0.0f, 0.8f));
-				directionalLightAmbient = std::clamp((sky.elevation + 6.0f) / 200.0f, 0.0f, 0.2f);
-				castShadow = sky.castShadow;
-			}
-
-			if (scene->hasComponent<OtIblComponent>(entity)) {
-				hasImageBasedLighting |= scene->getComponent<OtIblComponent>(entity).cubemap.isReady();
-				iblEntity = entity;
-			}
-
-			if (scene->hasComponent<OtGeometryComponent>(entity)) {
-				bool transparent = scene->getComponent<OtGeometryComponent>(entity).transparent;
-				hasOpaqueEntities |= !transparent;
-				hasOpaqueGeometries |= !transparent;
-				hasTransparentEntities |= transparent;
-			}
-
-			if (scene->hasComponent<OtModelComponent>(entity)) {
-				hasOpaqueEntities = true;
-				hasOpaqueModels = true;
-			}
-
-			if (scene->hasComponent<OtTerrainComponent>(entity)) {
-				hasOpaqueEntities = true;
-				hasTerrainEntities = true;
-			}
-
-			if (scene->hasComponent<OtSkyComponent>(entity) || scene->hasComponent<OtSkyBoxComponent>(entity)) {
-				hasSkyEntities = true;
-			}
-
-			if (water && scene->hasComponent<OtWaterComponent>(entity)) {
-				hasTransparentEntities = true;
-				hasWaterEntities = true;
-				waterEntity = entity;
-			}
-
-			if (scene->hasComponent<OtParticlesComponent>(entity)) {
-				hasParticlesEntities = true;
-			}
-		});
+	// constructors
+	OtSceneRendererContext(OtCamera c, OtScene* s, OtImageBasedLighting* i, OtCascadedShadowMap* sm, const glm::vec4& clp=glm::vec4(0.0f)) :
+			camera(c),
+			scene(s),
+			ibl(i),
+			csm(sm),
+			clippingPlane(clp) {
+		initialize();
 	}
 
 	// camera information
-	OtCamera& camera;
-
-	// rendering buffers
-	OtGbuffer& deferedBuffer;
-	OtFrameBuffer& compositeBuffer;
-	OtFrameBuffer* output;
+	OtCamera camera;
 
 	// scene to render
 	OtScene* scene;
 
+	// rendering pass
+	OtPass* pass;
+
 	// clipping plane
 	glm::vec4 clippingPlane;
+
+	// image base lighting
+	OtImageBasedLighting* ibl;
+
+	// shadows
+	OtCascadedShadowMap* csm;
 
 	// rendering flags
 	bool hasDirectionalLighting;
@@ -141,9 +72,14 @@ public:
 	glm::vec3 directionalLightDirection = glm::vec3(0.0f);
 	glm::vec3 directionalLightColor = glm::vec3(0.0f);
 	float directionalLightAmbient = 0.0f;
+	bool renderDirectionalLight = false;
 	bool castShadow = false;
 
 	// key entities
 	OtEntity iblEntity = OtEntityNull;
 	OtEntity waterEntity = OtEntityNull;
+
+private:
+	// initialize context
+	void initialize();
 };

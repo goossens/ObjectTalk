@@ -128,6 +128,11 @@ void OtTerrain::deserialize(nlohmann::json data, std::string* basedir) {
 //
 
 std::vector<OtTerrainMesh>& OtTerrain::getMeshes(OtFrustum& frustum, const glm::vec3& camera) {
+	// update heights if required
+	if (heights.dirty) {
+		heights.update(tileableFbm, normalMapper);
+	}
+
 	// initialize if required
 	if (!vertices.isValid()) {
 		initialize();
@@ -159,50 +164,6 @@ std::vector<OtTerrainMesh>& OtTerrain::getMeshes(OtFrustum& frustum, const glm::
 	for (auto i = 0; i < lods; i++) {
 		for (auto& tile: ringTiles) {
 			processTile(tile, frustum, i);
-		}
-	}
-
-	// return the list of visible meshes
-	return meshes;
-}
-
-
-//
-//	OtTerrain::getMeshes
-//
-
-std::vector<OtTerrainMesh>& OtTerrain::getMeshes(OtAABB& aabb, const glm::vec3& camera) {
-	// initialize if required
-	if (!vertices.isValid()) {
-		initialize();
-	}
-
-	// clear list of visible meshes
-	meshes.clear();
-
-	// determine center of terrain's geoclipmap
-	float factor = 16.0f * hScale;
-	centerX = std::floor(camera.x / factor) * factor;
-	centerZ = std::floor(camera.z / factor) * factor;
-
-	// lambda function to process a single tile
-	auto processTile = [&](OtTerrainTile& tile, OtAABB& aabb, int lod) {
-		OtTerrainMesh mesh(tile, float(tileSize), centerX, vOffset, centerZ, hScale * (1 << lod), vScale);
-
-		if (aabb.overlaps(mesh.aabb)) {
-			meshes.push_back(mesh);
-		}
-	};
-
-	// process the four center tiles
-	for (auto& tile: centerTiles) {
-		processTile(tile, aabb, 0);
-	}
-
-	// process the rings for LODs 0..N
-	for (auto i = 0; i < lods; i++) {
-		for (auto& tile: ringTiles) {
-			processTile(tile, aabb, i);
 		}
 	}
 

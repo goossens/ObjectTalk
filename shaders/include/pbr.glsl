@@ -13,6 +13,7 @@
 
 #include <bgfx_shader.glsl>
 #include <constants.glsl>
+#include <lighting.glsl>
 
 // material data
 struct Material {
@@ -21,14 +22,6 @@ struct Material {
 	float metallic;
 	float roughness;
 	float ao;
-};
-
-// directional light data
-struct DirectionalLight {
-	vec3 L; // direction to light
-	vec3 color;
-	float ambience;
-	float shadow;
 };
 
 // convert color to linear colorspace

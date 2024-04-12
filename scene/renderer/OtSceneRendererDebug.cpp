@@ -39,6 +39,7 @@ void OtSceneRendererDebug::render(OtSceneRenderer& renderer) {
 	renderGbuffer(renderer);
 	renderShadow(renderer);
 	renderReflection(renderer);
+	renderOclussion(renderer);
 	renderAssets(renderer);
 	ImGui::End();
 }
@@ -50,11 +51,13 @@ void OtSceneRendererDebug::render(OtSceneRenderer& renderer) {
 
 void OtSceneRendererDebug::renderIbl(OtSceneRenderer& renderer) {
 	if (ImGui::CollapsingHeader("Image Based Lighting (IBL)")) {
-		if (renderer.iblEnvironmentMap.isValid()) {
-			if (renderer.iblSkyMap->isValid()) { renderCubeMap("Sky Map", *renderer.iblSkyMap, iblSkyMapDebug); }
-			if (renderer.iblIrradianceMap.isValid()) { renderCubeMap("Irrandiance Map", renderer.iblIrradianceMap, iblIrradianceDebug); }
-			if (renderer.iblEnvironmentMap.isValid()) { renderCubeMap("Environment Map", renderer.iblEnvironmentMap, iblEnvironmentDebug); }
-			if (renderer.iblBrdfLut.isValid()) { renderTexture("BRDF LUT", renderer.iblBrdfLut); }
+		auto& ibl = renderer.ibl;
+
+		if (ibl.iblEnvironmentMap.isValid()) {
+			if (ibl.iblSkyMap->isValid()) { renderCubeMap("Sky Map", *ibl.iblSkyMap, iblSkyMapDebug); }
+			if (ibl.iblIrradianceMap.isValid()) { renderCubeMap("Irrandiance Map", ibl.iblIrradianceMap, iblIrradianceDebug); }
+			if (ibl.iblEnvironmentMap.isValid()) { renderCubeMap("Environment Map", ibl.iblEnvironmentMap, iblEnvironmentDebug); }
+			if (ibl.iblBrdfLut.isValid()) { renderTexture("BRDF LUT", ibl.iblBrdfLut); }
 
 		} else {
 			ImGui::SeparatorText("No Data");
@@ -116,16 +119,37 @@ void OtSceneRendererDebug::renderShadow(OtSceneRenderer& renderer) {
 
 void OtSceneRendererDebug::renderReflection(OtSceneRenderer& renderer) {
 	if (ImGui::CollapsingHeader("Reflection/Refraction")) {
-		if (renderer.reflectionBuffer.isValid()) {
-			if (renderer.reflectionBuffer.isValid()) {
-				auto texture = renderer.reflectionBuffer.getColorTexture();
+		auto& water = renderer.waterPass;
+
+		if (water.reflectionBuffer.isValid()) {
+			if (water.reflectionBuffer.isValid()) {
+				auto texture = water.reflectionBuffer.getColorTexture();
 				renderTexture("Reflection Buffer", texture);
 			}
 
-			if (renderer.refractionBuffer.isValid()) {
-				auto texture = renderer.refractionBuffer.getColorTexture();
+			if (water.refractionBuffer.isValid()) {
+				auto texture = water.refractionBuffer.getColorTexture();
 				renderTexture("Refraction Buffer", texture);
 			}
+
+		} else {
+			ImGui::SeparatorText("No Data");
+		}
+	}
+}
+
+
+//
+//	OtSceneRendererDebug::renderOclussion
+//
+
+void OtSceneRendererDebug::renderOclussion(OtSceneRenderer& renderer) {
+	if (ImGui::CollapsingHeader("Oclussion")) {
+		auto& postProcessor = renderer.postProcessingPass;
+
+		if (postProcessor.occlusionBuffer.isValid()) {
+			auto texture = postProcessor.occlusionBuffer.getColorTexture();
+			renderTexture("Oclussion Buffer", texture);
 
 		} else {
 			ImGui::SeparatorText("No Data");

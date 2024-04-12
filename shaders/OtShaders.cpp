@@ -98,9 +98,18 @@
 #include "generated/generator/OtFbmFS_mtl.h"
 #include "generated/generator/OtFbmFS_spv.h"
 #include "generated/generator/OtFbmFS_dx11.h"
+#include "generated/generator/OtRenderLightFS_mtl.h"
+#include "generated/generator/OtRenderLightFS_spv.h"
+#include "generated/generator/OtRenderLightFS_dx11.h"
 #include "generated/generator/OtTileableFbmFS_mtl.h"
 #include "generated/generator/OtTileableFbmFS_spv.h"
 #include "generated/generator/OtTileableFbmFS_dx11.h"
+#include "generated/godrays/OtGodraysVS_mtl.h"
+#include "generated/godrays/OtGodraysVS_spv.h"
+#include "generated/godrays/OtGodraysVS_dx11.h"
+#include "generated/godrays/OtGodraysFS_mtl.h"
+#include "generated/godrays/OtGodraysFS_spv.h"
+#include "generated/godrays/OtGodraysFS_dx11.h"
 #include "generated/grid/OtGridVS_mtl.h"
 #include "generated/grid/OtGridVS_spv.h"
 #include "generated/grid/OtGridVS_dx11.h"
@@ -137,6 +146,18 @@
 #include "generated/imgui/OtImGuiFS_mtl.h"
 #include "generated/imgui/OtImGuiFS_spv.h"
 #include "generated/imgui/OtImGuiFS_dx11.h"
+#include "generated/occlusion/OtOcclusionInstancingVS_mtl.h"
+#include "generated/occlusion/OtOcclusionInstancingVS_spv.h"
+#include "generated/occlusion/OtOcclusionInstancingVS_dx11.h"
+#include "generated/occlusion/OtOcclusionVS_mtl.h"
+#include "generated/occlusion/OtOcclusionVS_spv.h"
+#include "generated/occlusion/OtOcclusionVS_dx11.h"
+#include "generated/occlusion/OtOcclusionOpaqueFS_mtl.h"
+#include "generated/occlusion/OtOcclusionOpaqueFS_spv.h"
+#include "generated/occlusion/OtOcclusionOpaqueFS_dx11.h"
+#include "generated/occlusion/OtOcclusionTransparentFS_mtl.h"
+#include "generated/occlusion/OtOcclusionTransparentFS_spv.h"
+#include "generated/occlusion/OtOcclusionTransparentFS_dx11.h"
 #include "generated/particles/OtParticlesVS_mtl.h"
 #include "generated/particles/OtParticlesVS_spv.h"
 #include "generated/particles/OtParticlesVS_dx11.h"
@@ -149,9 +170,12 @@
 #include "generated/shadow/OtShadowVS_mtl.h"
 #include "generated/shadow/OtShadowVS_spv.h"
 #include "generated/shadow/OtShadowVS_dx11.h"
-#include "generated/shadow/OtShadowFS_mtl.h"
-#include "generated/shadow/OtShadowFS_spv.h"
-#include "generated/shadow/OtShadowFS_dx11.h"
+#include "generated/shadow/OtShadowOpaqueFS_mtl.h"
+#include "generated/shadow/OtShadowOpaqueFS_spv.h"
+#include "generated/shadow/OtShadowOpaqueFS_dx11.h"
+#include "generated/shadow/OtShadowTransparentFS_mtl.h"
+#include "generated/shadow/OtShadowTransparentFS_spv.h"
+#include "generated/shadow/OtShadowTransparentFS_dx11.h"
 #include "generated/sky/OtSkyVS_mtl.h"
 #include "generated/sky/OtSkyVS_spv.h"
 #include "generated/sky/OtSkyVS_dx11.h"
@@ -161,6 +185,9 @@
 #include "generated/sky/OtSkyFS_mtl.h"
 #include "generated/sky/OtSkyFS_spv.h"
 #include "generated/sky/OtSkyFS_dx11.h"
+#include "generated/terrain/OtTerrainSimpleVS_mtl.h"
+#include "generated/terrain/OtTerrainSimpleVS_spv.h"
+#include "generated/terrain/OtTerrainSimpleVS_dx11.h"
 #include "generated/terrain/OtTerrainVS_mtl.h"
 #include "generated/terrain/OtTerrainVS_spv.h"
 #include "generated/terrain/OtTerrainVS_dx11.h"
@@ -236,8 +263,14 @@ static const uint8_t OtGeneratorVS_glsl[1] = {0};
 static const uint8_t OtGeneratorVS_essl[1] = {0};
 static const uint8_t OtFbmFS_glsl[1] = {0};
 static const uint8_t OtFbmFS_essl[1] = {0};
+static const uint8_t OtRenderLightFS_glsl[1] = {0};
+static const uint8_t OtRenderLightFS_essl[1] = {0};
 static const uint8_t OtTileableFbmFS_glsl[1] = {0};
 static const uint8_t OtTileableFbmFS_essl[1] = {0};
+static const uint8_t OtGodraysVS_glsl[1] = {0};
+static const uint8_t OtGodraysVS_essl[1] = {0};
+static const uint8_t OtGodraysFS_glsl[1] = {0};
+static const uint8_t OtGodraysFS_essl[1] = {0};
 static const uint8_t OtGridVS_glsl[1] = {0};
 static const uint8_t OtGridVS_essl[1] = {0};
 static const uint8_t OtGridFS_glsl[1] = {0};
@@ -262,6 +295,14 @@ static const uint8_t OtImGuiVS_glsl[1] = {0};
 static const uint8_t OtImGuiVS_essl[1] = {0};
 static const uint8_t OtImGuiFS_glsl[1] = {0};
 static const uint8_t OtImGuiFS_essl[1] = {0};
+static const uint8_t OtOcclusionInstancingVS_glsl[1] = {0};
+static const uint8_t OtOcclusionInstancingVS_essl[1] = {0};
+static const uint8_t OtOcclusionVS_glsl[1] = {0};
+static const uint8_t OtOcclusionVS_essl[1] = {0};
+static const uint8_t OtOcclusionOpaqueFS_glsl[1] = {0};
+static const uint8_t OtOcclusionOpaqueFS_essl[1] = {0};
+static const uint8_t OtOcclusionTransparentFS_glsl[1] = {0};
+static const uint8_t OtOcclusionTransparentFS_essl[1] = {0};
 static const uint8_t OtParticlesVS_glsl[1] = {0};
 static const uint8_t OtParticlesVS_essl[1] = {0};
 static const uint8_t OtParticlesFS_glsl[1] = {0};
@@ -270,14 +311,18 @@ static const uint8_t OtShadowInstancingVS_glsl[1] = {0};
 static const uint8_t OtShadowInstancingVS_essl[1] = {0};
 static const uint8_t OtShadowVS_glsl[1] = {0};
 static const uint8_t OtShadowVS_essl[1] = {0};
-static const uint8_t OtShadowFS_glsl[1] = {0};
-static const uint8_t OtShadowFS_essl[1] = {0};
+static const uint8_t OtShadowOpaqueFS_glsl[1] = {0};
+static const uint8_t OtShadowOpaqueFS_essl[1] = {0};
+static const uint8_t OtShadowTransparentFS_glsl[1] = {0};
+static const uint8_t OtShadowTransparentFS_essl[1] = {0};
 static const uint8_t OtSkyVS_glsl[1] = {0};
 static const uint8_t OtSkyVS_essl[1] = {0};
 static const uint8_t OtSkyBoxFS_glsl[1] = {0};
 static const uint8_t OtSkyBoxFS_essl[1] = {0};
 static const uint8_t OtSkyFS_glsl[1] = {0};
 static const uint8_t OtSkyFS_essl[1] = {0};
+static const uint8_t OtTerrainSimpleVS_glsl[1] = {0};
+static const uint8_t OtTerrainSimpleVS_essl[1] = {0};
 static const uint8_t OtTerrainVS_glsl[1] = {0};
 static const uint8_t OtTerrainVS_essl[1] = {0};
 static const uint8_t OtTerrainFS_glsl[1] = {0};
@@ -317,7 +362,10 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtForwardPbrFS),
 	BGFX_EMBEDDED_SHADER(OtGeneratorVS),
 	BGFX_EMBEDDED_SHADER(OtFbmFS),
+	BGFX_EMBEDDED_SHADER(OtRenderLightFS),
 	BGFX_EMBEDDED_SHADER(OtTileableFbmFS),
+	BGFX_EMBEDDED_SHADER(OtGodraysVS),
+	BGFX_EMBEDDED_SHADER(OtGodraysFS),
 	BGFX_EMBEDDED_SHADER(OtGridVS),
 	BGFX_EMBEDDED_SHADER(OtGridFS),
 	BGFX_EMBEDDED_SHADER(OtOutlineVS),
@@ -330,14 +378,20 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtIblIrradianceMapCS),
 	BGFX_EMBEDDED_SHADER(OtImGuiVS),
 	BGFX_EMBEDDED_SHADER(OtImGuiFS),
+	BGFX_EMBEDDED_SHADER(OtOcclusionInstancingVS),
+	BGFX_EMBEDDED_SHADER(OtOcclusionVS),
+	BGFX_EMBEDDED_SHADER(OtOcclusionOpaqueFS),
+	BGFX_EMBEDDED_SHADER(OtOcclusionTransparentFS),
 	BGFX_EMBEDDED_SHADER(OtParticlesVS),
 	BGFX_EMBEDDED_SHADER(OtParticlesFS),
 	BGFX_EMBEDDED_SHADER(OtShadowInstancingVS),
 	BGFX_EMBEDDED_SHADER(OtShadowVS),
-	BGFX_EMBEDDED_SHADER(OtShadowFS),
+	BGFX_EMBEDDED_SHADER(OtShadowOpaqueFS),
+	BGFX_EMBEDDED_SHADER(OtShadowTransparentFS),
 	BGFX_EMBEDDED_SHADER(OtSkyVS),
 	BGFX_EMBEDDED_SHADER(OtSkyBoxFS),
 	BGFX_EMBEDDED_SHADER(OtSkyFS),
+	BGFX_EMBEDDED_SHADER(OtTerrainSimpleVS),
 	BGFX_EMBEDDED_SHADER(OtTerrainVS),
 	BGFX_EMBEDDED_SHADER(OtTerrainFS),
 	BGFX_EMBEDDED_SHADER(OtWaterVS),

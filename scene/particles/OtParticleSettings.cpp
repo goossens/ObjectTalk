@@ -39,8 +39,8 @@ bool OtParticleSettings::renderUI() {
 	changed |= ImGui::SliderFloat2("Rotation", rotation, 0.0f, 360.0f);
 
 	ImVec2 size{ImGui::GetContentRegionAvail().x, 80.0f};
-	changed |= ImGui::Curve("Scale", size, scale.size(), scale.data(), &scaleSelection);
-	changed |= ImGui::Curve("Alpha", size, alpha.size(), alpha.data(), &alphaSelection);
+	changed |= ImGui::Curve("Scale", size, (int) scale.size(), scale.data(), &scaleSelection);
+	changed |= ImGui::Curve("Alpha", size, (int) alpha.size(), alpha.data(), &alphaSelection);
 
 	return changed;
 }

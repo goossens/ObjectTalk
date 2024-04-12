@@ -1,0 +1,108 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+
+//
+//	Include files
+//
+
+#include "OtSceneRendererContext.h"
+
+
+//
+//	OtSceneRendererContext::initialize
+//
+
+void OtSceneRendererContext::initialize() {
+	// reset flags
+	hasDirectionalLighting = false;
+	hasImageBasedLighting = false;
+	hasOpaqueEntities = false;
+	hasOpaqueGeometries = false;
+	hasOpaqueModels = false;
+	hasTerrainEntities = false;
+	hasSkyEntities = false;
+	hasTransparentEntities = false;
+	hasWaterEntities = false;
+	hasParticlesEntities = false;
+
+	renderDirectionalLight = false;
+	castShadow = false;
+
+	iblEntity = OtEntityNull;
+	waterEntity = OtEntityNull;
+
+	// check entities, collect data and set flags
+	scene->eachEntityDepthFirst([&](OtEntity entity) {
+		// process directional lights
+		if (scene->hasComponent<OtDirectionalLightComponent>(entity) && scene->hasComponent<OtTransformComponent>(entity)) {
+			auto& light = scene->getComponent<OtDirectionalLightComponent>(entity);
+			auto& transform = scene->getComponent<OtTransformComponent>(entity);
+
+			hasDirectionalLighting = true;
+			directionalLightDirection = glm::normalize(transform.getTransform()[3]);
+			directionalLightColor = light.color;
+			directionalLightAmbient = light.ambient;
+			renderDirectionalLight = true;
+			castShadow = light.castShadow;
+		}
+
+		// process procedural sky
+		if (scene->hasComponent<OtSkyComponent>(entity)) {
+			auto& sky = scene->getComponent<OtSkyComponent>(entity);
+
+			hasDirectionalLighting = true;
+			directionalLightDirection = glm::normalize(sky.getDirectionToSun());
+			directionalLightColor = glm::vec3(0.2f + std::clamp(sky.elevation / 10.0f, 0.0f, 0.8f));
+			directionalLightAmbient = std::clamp((sky.elevation + 6.0f) / 200.0f, 0.0f, 0.2f);
+			renderDirectionalLight = false;
+			castShadow = sky.castShadow;
+		}
+
+		// process image based lighting
+		if (scene->hasComponent<OtIblComponent>(entity)) {
+			hasImageBasedLighting |= scene->getComponent<OtIblComponent>(entity).cubemap.isReady();
+			iblEntity = entity;
+		}
+
+		// process all geometry entities
+		if (scene->hasComponent<OtGeometryComponent>(entity)) {
+			bool transparent = scene->getComponent<OtGeometryComponent>(entity).transparent;
+			hasOpaqueEntities |= !transparent;
+			hasOpaqueGeometries |= !transparent;
+			hasTransparentEntities |= transparent;
+		}
+
+		// process all model entities
+		if (scene->hasComponent<OtModelComponent>(entity)) {
+			hasOpaqueEntities = true;
+			hasOpaqueModels = true;
+		}
+
+		// process all terrain entities
+		if (scene->hasComponent<OtTerrainComponent>(entity)) {
+			hasOpaqueEntities = true;
+			hasTerrainEntities = true;
+		}
+
+		// process all sky entities
+		if (scene->hasComponent<OtSkyComponent>(entity) || scene->hasComponent<OtSkyBoxComponent>(entity)) {
+			hasSkyEntities = true;
+		}
+
+		// process all water entities
+		if (scene->hasComponent<OtWaterComponent>(entity)) {
+			hasTransparentEntities = true;
+			hasWaterEntities = true;
+			waterEntity = entity;
+		}
+
+		// process all particle entities
+		if (scene->hasComponent<OtParticlesComponent>(entity)) {
+			hasParticlesEntities = true;
+		}
+	});
+}

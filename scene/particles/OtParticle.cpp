@@ -84,8 +84,8 @@ void OtParticle::spawn(const OtParticleSettings& settings) {
 	// determine other properties
 	gravity = settings.gravity;
 	rotation = settings.rotation[0];
-	scale = ImGui::CurveValue(0.0f, settings.scale.size(), settings.scale.data());
-	alpha = ImGui::CurveValue(0.0f, settings.alpha.size(), settings.alpha.data());
+	scale = ImGui::CurveValue(0.0f, (int) settings.scale.size(), settings.scale.data());
+	alpha = ImGui::CurveValue(0.0f, (int) settings.alpha.size(), settings.alpha.data());
 	lifespan = OtRandom(settings.lifeSpanLow, settings.lifeSpanHigh);
 	remaining = lifespan;
 }
@@ -102,6 +102,6 @@ void OtParticle::update(const OtParticleSettings& settings) {
 	age = (lifespan - remaining) / lifespan;
 
 	rotation = std::lerp(settings.rotation[0], settings.rotation[1], age);
-	scale = ImGui::CurveValue(age, settings.scale.size(), settings.scale.data());
-	alpha = ImGui::CurveValue(age, settings.alpha.size(), settings.alpha.data());
+	scale = ImGui::CurveValue(age, (int) settings.scale.size(), settings.scale.data());
+	alpha = ImGui::CurveValue(age, (int) settings.alpha.size(), settings.alpha.data());
 }

@@ -153,6 +153,6 @@ void OtFrameBuffer::submit(bgfx::ViewId view) {
 		bgfx::setViewFrameBuffer(view, framebuffer.getHandle());
 
 	} else {
-		OtLogFatal("Internal error: IndexBuffer not initialized before submission");
+		OtLogFatal("Internal error: FrameBuffer not initialized before submission");
 	}
 }

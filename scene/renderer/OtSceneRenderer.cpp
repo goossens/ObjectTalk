@@ -18,61 +18,51 @@
 
 int OtSceneRenderer::render(OtCamera& camera, OtScene* scene, OtEntity selected) {
 	// create rendering context
-	OtSceneRendererContext context{
-		camera,
-		deferredRenderingBuffer, compositeBuffer,
-		scene};
+	OtSceneRendererContext ctx{camera, scene, &ibl, &csm};
 
-	// handle image based lighting (if required)
-	if (context.hasImageBasedLighting) {
-		renderIblPass(context);
+	// update image based lighting (if required)
+	if (ctx.hasImageBasedLighting) {
+		ibl.update(ctx.scene->getComponent<OtIblComponent>(ctx.iblEntity));
 	}
 
 	// generate shadow maps (if required)
-	if (context.castShadow) {
-		renderShadowPass(context);
+	if (ctx.castShadow) {
+		shadowPass.render(ctx);
 	}
 
-	// generate reflection (if required)
-	if (context.hasWaterEntities) {
-		renderReflectionPass(context);
+	// render background items
+	compositeBuffer.update(camera.width, camera.height);
+	backgroundPass.render(ctx);
+
+	if (ctx.hasSkyEntities) {
+		skyPass.render(ctx);
 	}
 
-	// see if we need to do some deferred rendering into a gbuffer?
-	if (context.hasOpaqueEntities) {
-		// render deferred entities
-		renderDeferredGeometryPass(context);
+	// render opaque entities
+	if (ctx.hasOpaqueEntities) {
+		deferredRenderingBuffer.update(camera.width, camera.height);
+		deferredPass.render(ctx);
 	}
 
-	// start rendering to composite buffer
-	renderBackgroundPass(context);
-
-	if (context.hasSkyEntities) {
-		renderSkyPass(context);
+	// render transparent entities
+	if (ctx.hasTransparentEntities) {
+		forwardPass.render(ctx);
 	}
 
-	if (context.hasOpaqueEntities) {
-		renderDeferredLightingPass(context);
+	// generate water (if required)
+	if (ctx.hasWaterEntities) {
+		waterPass.render(ctx);
 	}
 
-	if (context.hasTransparentEntities) {
-		renderForwardGeometryPass(context);
-	}
-
-	if (context.hasParticlesEntities) {
-		renderParticlesPass(context);
+	// render particles
+	if (ctx.hasParticlesEntities) {
+		particlePass.render(ctx);
 	}
 
 	// handle editor passes
-	if (gridScale > 0.0f) {
-		renderGridPass(context);
-	}
+	gridPass.render(ctx);
+	highlightPass.render(ctx, selected);
 
-	if (selected != OtEntityNull) {
-		renderHighlightPass(context, selected);
-	}
-
-	// post process buffer
-	renderPostProcessingPass(context);
-	return context.output->getColorTextureIndex();
+	// post process frame
+	return postProcessingPass.render(ctx);
 }

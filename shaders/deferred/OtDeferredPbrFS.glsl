@@ -10,22 +10,22 @@ $input v_position, v_normal, v_tangent, v_bitangent, v_texcoord0
 #include <clip.glsl>
 
 // uniforms
-uniform vec4 u_pbrMaterial[5];
-#define u_albedo u_pbrMaterial[0].rgb
+uniform vec4 u_material[5];
+#define u_albedo u_material[0].rgb
 
-#define u_metallic u_pbrMaterial[1].r
-#define u_roughness u_pbrMaterial[1].g
-#define u_ao u_pbrMaterial[1].b
-#define u_scale u_pbrMaterial[1].a
+#define u_metallic u_material[1].r
+#define u_roughness u_material[1].g
+#define u_ao u_material[1].b
+#define u_scale u_material[1].a
 
-#define u_emissive u_pbrMaterial[2].rgb
+#define u_emissive u_material[2].rgb
 
-#define u_hasAlbedoTexture bool(u_pbrMaterial[3].r)
-#define u_hasMetallicRoughnessTexture bool(u_pbrMaterial[3].g)
+#define u_hasAlbedoTexture bool(u_material[3].r)
+#define u_hasMetallicRoughnessTexture bool(u_material[3].g)
 
-#define u_hasEmissiveTexture bool(u_pbrMaterial[4].r)
-#define u_hasAoTexture bool(u_pbrMaterial[4].g)
-#define u_hasNormalTexture bool(u_pbrMaterial[4].b)
+#define u_hasEmissiveTexture bool(u_material[4].r)
+#define u_hasAoTexture bool(u_material[4].g)
+#define u_hasNormalTexture bool(u_material[4].b)
 
 // texture samplers
 SAMPLER2D(s_albedoTexture, 0);

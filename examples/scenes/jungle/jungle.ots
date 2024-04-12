@@ -44,7 +44,9 @@
 						0.800000011920929
 					],
 					"fogDensity": 0.2199999988079071,
-					"fxaa": true
+					"fxaa": true,
+					"godrays": false,
+					"lensFlare": false
 				}
 			]
 		},
@@ -610,48 +612,20 @@
 					}
 				}
 			]
-		},
-		{
-			"children": [],
-			"components": [
-				{
-					"component": "Core",
-					"tag": "Fire",
-					"uuid": 1443698330
-				},
-				{
-					"component": "Transform",
-					"rotation": [
-						0.0,
-						0.0,
-						0.0
-					],
-					"scale": [
-						1.0,
-						1.0,
-						1.0
-					],
-					"translation": [
-						0.0,
-						0.0,
-						0.0
-					]
-				}
-			]
 		}
 	],
 	"metadata": {
 		"camera": {
 			"far": 2000.0,
 			"fov": 60.0,
-			"near": 1.0,
-			"pitch": 15.239630699157715,
+			"near": 0.10000000149011612,
+			"pitch": 15.0321683883667,
 			"position": [
 				5.327436923980713,
 				6.7072858810424805,
 				2.8324992656707764
 			],
-			"yaw": -97.89765167236328
+			"yaw": -83.05144500732422
 		},
 		"gizmo": {
 			"enabled": false,

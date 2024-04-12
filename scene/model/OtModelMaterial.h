@@ -13,6 +13,7 @@
 //
 
 
+#include <memory>
 #include <string>
 
 #include "assimp/material.h"
@@ -33,10 +34,10 @@ public:
 	inline bool isValid() { return valid; }
 
 	// access the material
-	inline OtMaterial& getPbrMaterial() { return material; }
+	inline std::shared_ptr<OtMaterial> getMaterial() { return material; }
 
 private:
 	// the PBR material
-	OtMaterial material;
+	std::shared_ptr<OtMaterial> material;
 	bool valid = false;
 };

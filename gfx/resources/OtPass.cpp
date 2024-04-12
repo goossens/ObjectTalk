@@ -9,12 +9,17 @@
 //	Include files
 //
 
+#include <cstdint>
+#include <cmath>
 #include <cstring>
+#include <vector>
 
-#include "OtLog.h"
+#include "OtNumbers.h"
 
 #include "OtGpu.h"
 #include "OtPass.h"
+#include "OtTransientIndexBuffer.h"
+#include "OtTransientVertexBuffer.h"
 #include "OtVertex.h"
 
 
@@ -110,32 +115,54 @@ void OtPass::setTransform(const glm::mat4& viewTransform, const glm::mat4& proje
 
 void OtPass::submitQuad(int w, int h) {
 	// submit a "single triangle" covering the rectangular quad
-	if (bgfx::getAvailTransientVertexBuffer(3, OtVertexPosUv::getLayout()) == 3) {
-		bool originBottomLeft = OtGpuHasOriginBottomLeft();
+	bool originBottomLeft = OtGpuHasOriginBottomLeft();
+	OtVertexPosUv vertices[3];
 
-		bgfx::TransientVertexBuffer vb;
-		bgfx::allocTransientVertexBuffer(&vb, 3, OtVertexPosUv::getLayout());
-		OtVertexPosUv* vertex = (OtVertexPosUv*) vb.data;
+	vertices[0].position = glm::vec3(-w, 0.0, 0.0);
+	vertices[0].uv = originBottomLeft ? glm::vec2(-1.0, 1.0) : glm::vec2(-1.0, 0.0);
 
-		vertex[0].position = glm::vec3(-w, 0.0, 0.0);
-		vertex[0].uv = originBottomLeft ? glm::vec2(-1.0, 1.0) : glm::vec2(-1.0, 0.0);
+	vertices[1].position = glm::vec3(w, 0.0, 0.0);
+	vertices[1].uv = originBottomLeft ? glm::vec2(1.0, 1.0) : glm::vec2(1.0, 0.0);
 
-		vertex[1].position = glm::vec3(w, 0.0, 0.0);
-		vertex[1].uv = originBottomLeft ? glm::vec2(1.0, 1.0) : glm::vec2(1.0, 0.0);
+	vertices[2].position = glm::vec3(w, h * 2.0, 0.0);
+	vertices[2].uv = originBottomLeft ? glm::vec2(1.0, -1.0) : glm::vec2(1.0, 2.0);
 
-		vertex[2].position = glm::vec3(w, h * 2.0, 0.0);
-		vertex[2].uv = originBottomLeft ? glm::vec2(1.0, -1.0) : glm::vec2(1.0, 2.0);
+	OtTransientVertexBuffer tvb;
+	tvb.submit(vertices, sizeof(vertices) / sizeof(*vertices), OtVertexPosUv::getLayout());
 
-		bgfx::setVertexBuffer(0, &vb);
-		bgfx::setViewRect(view, 0, 0, (uint16_t) w, (uint16_t) h);
-		bgfx::setViewClear(view, BGFX_CLEAR_NONE, BGFX_CLEAR_NONE);
+	bgfx::setViewRect(view, 0, 0, (uint16_t) w, (uint16_t) h);
+	bgfx::setViewClear(view, BGFX_CLEAR_NONE, BGFX_CLEAR_NONE);
 
-		glm::mat4 projMatrix = glm::ortho(0.0f, (float) w, (float) h, 0.0f);
-		bgfx::setViewTransform(view, nullptr, glm::value_ptr(projMatrix));
+	glm::mat4 projMatrix = glm::ortho(0.0f, (float) w, (float) h, 0.0f);
+	bgfx::setViewTransform(view, nullptr, glm::value_ptr(projMatrix));
+}
 
-	} else {
-		OtLogFatal("Internal error: insufficient transient buffer space");
+
+//
+//	OtPass::submitCircle
+//
+
+void OtPass::submitCircle(int segments) {
+	std::vector<glm::vec3> vertices;
+	std::vector<uint32_t> indices;
+	float segment = std::numbers::pi2 / segments;
+
+	for (auto i = 0; i < segments; i++) {
+		float angle = segment * i;
+		vertices.emplace_back(glm::vec3(std::cos(angle), std::sin(angle), 0.0f));
 	}
+
+	for (auto i = 0; i < segments - 2; i++) {
+		indices.emplace_back(0);
+		indices.emplace_back(i + 1);
+		indices.emplace_back(i + 2);
+	}
+
+	OtTransientVertexBuffer tvb;
+	tvb.submit(vertices.data(), vertices.size(), OtVertexPos::getLayout());
+
+	OtTransientIndexBuffer tib;
+	tib.submit(indices.data(), indices.size());
 }
 
 
@@ -189,15 +216,8 @@ void OtPass::submitCube() {
 	};
 
 	// submit the cube geometry
-	if (bgfx::getAvailTransientVertexBuffer(36, OtVertexPos::getLayout()) == 36) {
-		bgfx::TransientVertexBuffer vb;
-		bgfx::allocTransientVertexBuffer(&vb, 36, OtVertexPos::getLayout());
-		std::memcpy(vb.data, vertices, vb.size);
-		bgfx::setVertexBuffer(0, &vb);
-
-	} else {
-		OtLogFatal("Internal error: insufficient transient buffer space");
-	}
+	OtTransientVertexBuffer tvb;
+	tvb.submit(vertices, sizeof(vertices) / sizeof(*vertices), OtVertexPos::getLayout());
 }
 
 

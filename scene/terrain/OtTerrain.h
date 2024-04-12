@@ -21,6 +21,8 @@
 #include "OtAABB.h"
 #include "OtFrustum.h"
 #include "OtIndexBuffer.h"
+#include "OtNormalMapper.h"
+#include "OtTileableFbm.h"
 #include "OtVertexBuffer.h"
 
 #include "OtTerrainHeights.h"
@@ -44,14 +46,13 @@ public:
 
 	// access the meshes
 	std::vector<OtTerrainMesh>& getMeshes(OtFrustum& frustum, const glm::vec3& camera);
-	std::vector<OtTerrainMesh>& getMeshes(OtAABB& aabb, const glm::vec3& camera);
 
 	// are we rendering a wireframe
 	inline bool isWireframe() { return wireframe; }
 
 private:
 	// the scene renderer needs access to our properties
-	friend class OtSceneRenderer;
+	friend class OtSceneRenderPass;
 
 	// terrain properties
 	int tileSize = 32;
@@ -77,6 +78,8 @@ private:
 	// terrain heights and material
 	OtTerrainHeights heights;
 	OtTerrainMaterial material;
+	OtTileableFbm tileableFbm;
+	OtNormalMapper normalMapper;
 
 	// current geoclipmap center
 	float centerX;

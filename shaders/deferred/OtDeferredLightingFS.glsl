@@ -11,23 +11,13 @@ $input v_texcoord0
 
 #include <bgfx_shader.glsl>
 #include <pbr.glsl>
+#include <lighting.glsl>
 #include <shadow.glsl>
 #include <utilities.glsl>
 
 // uniforms
-uniform vec4 u_lighting[3];
-#define u_cameraPosition u_lighting[0].xyz
-#define u_hasDirectionalLighting bool(u_lighting[0].w)
-#define u_directionalLightDirection u_lighting[1].xyz
-#define u_directionalLightColor u_lighting[2].xyz
-#define u_directionalLightAmbience u_lighting[2].a
-
 uniform mat4 u_viewUniform;
 uniform mat4 u_invViewProjUniform;
-
-uniform vec4 u_ibl[1];
-#define u_hasImageBasedLighting bool(u_ibl[0].x)
-#define u_iblEnvLevels int(u_ibl[0].y)
 
 // texture samplers
 SAMPLER2D(s_lightingAlbedoTexture, 0);
@@ -35,10 +25,6 @@ SAMPLER2D(s_lightingNormalTexture, 1);
 SAMPLER2D(s_lightingPbrTexture, 2);
 SAMPLER2D(s_lightingEmissiveTexture, 3);
 SAMPLER2D(s_lightingDepthTexture, 4);
-
-SAMPLER2D(s_iblBrdfLut, 5);
-SAMPLERCUBE(s_iblIrradianceMap, 6);
-SAMPLERCUBE(s_iblEnvironmentMap, 7);
 
 // main function
 void main() {

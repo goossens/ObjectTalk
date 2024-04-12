@@ -26,6 +26,8 @@
 class OtCamera {
 public:
 	// constructors
+	OtCamera() = default;
+
 	OtCamera(int w, int h, const glm::vec3& cp, const glm::mat4 pm, const glm::mat4 vm) :
 		width(w),
 		height(h),
@@ -60,7 +62,7 @@ public:
 
 	// get the near and far value fron the projection matrix
 	void getNearFar(float& nearPlane, float& farPlane) {
-		if ( OtGpuHasHomogeneousDepth()) {
+		if (OtGpuHasHomogeneousDepth()) {
 			nearPlane = (2.0f * projectionMatrix[3][2]) / (2.0f * projectionMatrix[2][2] - 2.0f);
 			farPlane = ((projectionMatrix[2][2] - 1.0f) * nearPlane) / (projectionMatrix[2][2] + 1.0f);
 

@@ -50,7 +50,6 @@ public:
 
 	// submit instances to GPU
 	bool submit(OtFrustum& frustum, OtAABB& aabb);
-	bool submit(OtAABB& camera, OtAABB& aabb);
 
 	// version management
 	inline void setVersion(int v) { version = v; }

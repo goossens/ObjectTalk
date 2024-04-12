@@ -7,6 +7,7 @@
 $input v_near, v_far
 
 #include <bgfx_shader.glsl>
+#include <lighting.glsl>
 #include <pbr.glsl>
 #include <shadow.glsl>
 #include <utilities.glsl>
@@ -29,26 +30,11 @@ uniform vec4 u_water[4];
 #define u_color u_water[3].rgb
 #define u_refractanceFlag bool(u_water[3].a)
 
-uniform vec4 u_lighting[3];
-#define u_cameraPosition u_lighting[0].xyz
-#define u_hasDirectionalLighting bool(u_lighting[0].w)
-#define u_directionalLightDirection u_lighting[1].xyz
-#define u_directionalLightColor u_lighting[2].xyz
-#define u_directionalLightAmbience u_lighting[2].a
-
-uniform vec4 u_ibl[1];
-#define u_hasImageBasedLighting bool(u_ibl[0].x)
-#define u_iblEnvLevels int(u_ibl[0].y)
-
 // texture samplers
 SAMPLER2D(s_normalmapTexture, 0);
 SAMPLER2D(s_reflectionTexture, 1);
 SAMPLER2D(s_refractionTexture, 2);
 SAMPLER2D(s_refractionDepthTexture, 3);
-
-SAMPLER2D(s_iblBrdfLut, 5);
-SAMPLERCUBE(s_iblIrradianceMap, 6);
-SAMPLERCUBE(s_iblEnvironmentMap, 7);
 
 // main program
 void main() {

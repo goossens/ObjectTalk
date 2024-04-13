@@ -31,7 +31,6 @@ static constexpr uint64_t OtStateWriteZ = BGFX_STATE_WRITE_Z;
 
 static constexpr uint64_t OtStateDepthTestLess = BGFX_STATE_DEPTH_TEST_LESS;
 static constexpr uint64_t OtStateDepthTestLessEqual = BGFX_STATE_DEPTH_TEST_LEQUAL;
-static constexpr uint64_t OtStateDepthTestAlways = BGFX_STATE_DEPTH_TEST_ALWAYS;
 
 static constexpr uint64_t OtStateCullCw = BGFX_STATE_CULL_CW;
 static constexpr uint64_t OtStateCullCcw = BGFX_STATE_CULL_CCW;

@@ -34,8 +34,8 @@
 					"near": 0.10000000149011612
 				},
 				{
-					"Exposure": 0.8299999833106995,
-					"bloomIntensity": 0.8500000238418579,
+					"Exposure": 1.4600000381469727,
+					"bloomIntensity": 0.5199999809265137,
 					"component": "Post Processing",
 					"fog": true,
 					"fogColor": [
@@ -45,7 +45,7 @@
 					],
 					"fogDensity": 0.2199999988079071,
 					"fxaa": true,
-					"godrays": false,
+					"godrays": true,
 					"lensFlare": false
 				}
 			]
@@ -99,7 +99,7 @@
 					"cirrus": 0.5199999809265137,
 					"component": "Sky",
 					"cumulus": 0.5720000267028809,
-					"elevation": 29.347999572753906,
+					"elevation": 31.30500030517578,
 					"mieCoefficient": 5.451000213623047,
 					"mieScattering": 0.9900000095367432,
 					"rayleighCoefficient": 2.753000020980835,

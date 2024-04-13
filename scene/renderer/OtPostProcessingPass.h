@@ -131,7 +131,7 @@ public:
 		input->bindColorTexture(postProcessSampler, 0);
 
 		// run the program
-		postProcessProgram.setState(OtStateWriteRgb | OtStateWriteA | OtStateDepthTestAlways);
+		postProcessProgram.setState(OtStateWriteRgb | OtStateWriteA);
 		pass.runShaderProgram(postProcessProgram);
 
 		// mark the right output buffer;
@@ -153,7 +153,7 @@ public:
 		fxaaUniforms.submit();
 
 		// run the program
-		fxaaProgram.setState(OtStateWriteRgb | OtStateWriteA | OtStateDepthTestAlways);
+		fxaaProgram.setState(OtStateWriteRgb | OtStateWriteA);
 		pass.runShaderProgram(fxaaProgram);
 	}
 
@@ -177,7 +177,7 @@ public:
 		invProjUniform.submit();
 
 		// run the program
-		fxaaProgram.setState(OtStateWriteRgb | OtStateWriteA | OtStateDepthTestAlways);
+		fxaaProgram.setState(OtStateWriteRgb | OtStateWriteA);
 		pass.runShaderProgram(fogProgram);
 	}
 
@@ -220,7 +220,7 @@ public:
 			}
 
 			// run the program
-			bloomDownSampleProgram.setState(OtStateWriteRgb | OtStateWriteA | OtStateDepthTestAlways);
+			bloomDownSampleProgram.setState(OtStateWriteRgb | OtStateWriteA);
 			pass.runShaderProgram(bloomDownSampleProgram);
 		}
 
@@ -244,44 +244,65 @@ public:
 			bloomBuffer[i].bindColorTexture(bloomSampler, 0);
 
 			// run the program
-			bloomUpSampleProgram.setState(OtStateWriteRgb | OtStateWriteA | OtStateDepthTestAlways);
+			bloomUpSampleProgram.setState(OtStateWriteRgb | OtStateWriteA);
 			pass.runShaderProgram(bloomUpSampleProgram);
 		}
 
 		// setup pass to apply bloom
-		OtPass applyBloom;
-		applyBloom.setFrameBuffer(*output);
-		applyBloom.submitQuad(ctx.camera.width, ctx.camera.height);
+		OtPass pass;
+		pass.setFrameBuffer(*output);
+		pass.submitQuad(ctx.camera.width, ctx.camera.height);
 
 		// set source textures
 		input->bindColorTexture(postProcessSampler, 0);
 		bloomBuffer[0].bindColorTexture(bloomSampler, 1);
 
 		// run the program
-		bloomApplyProgram.setState(OtStateWriteRgb | OtStateWriteA | OtStateDepthTestAlways);
-		applyBloom.runShaderProgram(bloomApplyProgram);
+		bloomApplyProgram.setState(OtStateWriteRgb | OtStateWriteA);
+		pass.runShaderProgram(bloomApplyProgram);
 	}
 
 	void renderGodrays(OtSceneRendererContext& ctx, OtFrameBuffer* input, OtFrameBuffer* output, glm::vec2& uv) {
-		// update the frame buffer
-		int w = ctx.camera.width / 2;
-		int h = ctx.camera.height / 2;
-		occlusionBuffer.update(w, h);
+		// update occlusion buffer
+		int width = ctx.camera.width / 2;
+		int height = ctx.camera.height / 2;
+		occlusionBuffer.update(width, height);
 
-		// setup light rendering pass
+		// render light to occlusion buffer
 		OtRenderLight renderLight;
 		renderLight.setCenter(uv);
-		renderLight.setSize(glm::vec2(0.05f, 0.05f * w / h));
+		renderLight.setSize(glm::vec2(0.05f, 0.05f * width / height));
 		renderLight.setColor(ctx.directionalLightColor);
 		renderLight.render(occlusionBuffer);
 
-		// setup occlusion pass
-	/*
-		OtPass occlusionPass;
-		occlusionPass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
-		occlusionPass.setFrameBuffer(occlusionBuffer);
-		occlusionPass.setTransform(ctx.camera.viewMatrix, ctx.camera.projectionMatrix);
-	*/
+		// create an occlusion camera
+		OtCamera camera{ctx.camera};
+		camera.width = width;
+		camera.height = height;
+
+		// render all objects to the occlusion buffer
+		OtSceneRendererContext octx{ctx};
+		octx.camera = camera;
+		occlusionPass.render(octx);
+
+		// setup godray pass
+		OtPass pass;
+		pass.setFrameBuffer(*output);
+		pass.submitQuad(ctx.camera.width, ctx.camera.height);
+
+		// set the uniforms
+		godrayUniforms.setValue(0, uv, 0.0f, 0.0f);
+		godrayUniforms.setValue(1, ctx.directionalLightColor, 0.6f);
+		godrayUniforms.setValue(2, 0.9f, 0.5f, 0.9f, 0.5f);
+		godrayUniforms.submit();
+
+		// bind the textures
+		input->bindColorTexture(postProcessSampler, 0);
+		occlusionBuffer.bindColorTexture(occlusionSampler, 1);
+
+		// run the program
+		godrayProgram.setState(OtStateWriteRgb | OtStateWriteA);
+		pass.runShaderProgram(godrayProgram);
 	}
 
 private:
@@ -302,7 +323,7 @@ private:
 	OtUniformVec4 fxaaUniforms{"u_fxaa", 1};
 	OtUniformVec4 fogUniforms{"u_fog", 2};
 	OtUniformVec4 bloomUniforms{"u_bloom", 1};
-	OtUniformVec4 godrayUniforms{"u_godray", 1};
+	OtUniformVec4 godrayUniforms{"u_godrays", 3};
 	OtUniformVec4 postProcessUniforms{"u_postProcess", 1};
 
 	OtUniformMat4 invProjUniform{"u_invProjUniform", 1};
@@ -310,12 +331,13 @@ private:
 	OtSampler postProcessSampler{"s_postProcessTexture", OtTexture::pointSampling | OtTexture::clampSampling};
 	OtSampler depthSampler{"s_depthTexture", OtTexture::pointSampling | OtTexture::clampSampling};
 	OtSampler bloomSampler{"s_bloomTexture", OtTexture::pointSampling | OtTexture::clampSampling};
+	OtSampler occlusionSampler{"s_occlusionTexture"};
 
 	OtShaderProgram fxaaProgram{"OtFilterVS", "OtFxaaFS"};
 	OtShaderProgram fogProgram{"OtFilterVS", "OtFogFS"};
 	OtShaderProgram bloomDownSampleProgram{"OtFilterVS", "OtBloomDownSampleFS"};
 	OtShaderProgram bloomUpSampleProgram{"OtFilterVS", "OtBloomUpSampleFS"};
 	OtShaderProgram bloomApplyProgram{"OtFilterVS", "OtBloomApplyFS"};
-	OtShaderProgram godrayProgram{"OtGodrayVS", "OtGodrayFS"};
+	OtShaderProgram godrayProgram{"OtGodraysVS", "OtGodraysFS"};
 	OtShaderProgram postProcessProgram{"OtFilterVS", "OtPostProcessFS"};
 };

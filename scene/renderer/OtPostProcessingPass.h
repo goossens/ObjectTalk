@@ -47,7 +47,6 @@ public:
 		glm::vec3 fogColor;
 		float bloomIntensity = 0.0f;
 		bool godrays = false;
-		bool lensFlare = false;
 		float exposure = 1.0f;
 
 		for (auto&& [entity, component] : ctx.scene->view<OtPostProcessingComponent>().each()) {
@@ -57,14 +56,13 @@ public:
 			fogColor = component.fogColor;
 			bloomIntensity = component.bloomIntensity;
 			godrays = component.godrays;
-			lensFlare = component.lensFlare;
 			exposure = component.exposure;
 		}
 
-		// do some special processing for godrays and lens flare
+		// do some special processing for godrays
 		glm::vec2 uv;
 
-		if (godrays || lensFlare) {
+		if (godrays) {
 			// determin light position in clipspace
 			glm::vec4 clipspace = ctx.camera.viewProjectionMatrix * glm::vec4(ctx.directionalLightDirection, 0.0f);
 			clipspace /= clipspace.w;
@@ -80,7 +78,6 @@ public:
 			if (uv.x < -0.5f || uv.x > 1.5f || uv.y < -0.5f || uv.y > 1.5f) {
 				// nope, just turn it off for this frame
 				godrays = false;
-				lensFlare = false;
 			}
 		}
 
@@ -269,7 +266,6 @@ public:
 		occlusionBuffer.update(width, height);
 
 		// render light to occlusion buffer
-		OtRenderLight renderLight;
 		renderLight.setCenter(uv);
 		renderLight.setSize(glm::vec2(0.05f, 0.05f * width / height));
 		renderLight.setColor(ctx.directionalLightColor);
@@ -293,7 +289,7 @@ public:
 		// set the uniforms
 		godrayUniforms.setValue(0, uv, 0.0f, 0.0f);
 		godrayUniforms.setValue(1, ctx.directionalLightColor, 0.6f);
-		godrayUniforms.setValue(2, 0.9f, 0.5f, 0.9f, 0.5f);
+		godrayUniforms.setValue(2, 0.92f, 0.5f, 0.9f, 0.5f);
 		godrayUniforms.submit();
 
 		// bind the textures
@@ -315,6 +311,7 @@ private:
 	OtFrameBuffer postProcessBuffer2{OtTexture::rgbaFloat16Texture, OtTexture::noTexture};
 	OtFrameBuffer occlusionBuffer{OtTexture::r8Texture, OtTexture::noTexture};
 
+	OtRenderLight renderLight;
 	OtOcclusionPass occlusionPass{occlusionBuffer};
 
 	static constexpr int bloomDepth = 5;

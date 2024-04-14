@@ -38,6 +38,5 @@ public:
 	glm::vec3 fogColor = glm::vec3(0.4f, 0.5f, 0.8f);
 	float bloomIntensity = 0.8f;
 	bool godrays = false;
-	bool lensFlare = false;
 	float exposure = 1.0f;
 };

@@ -38,7 +38,7 @@
 					"path": "assets/camera.ot"
 				},
 				{
-					"Exposure": 1.659999966621399,
+					"exposure": 1.659999966621399,
 					"bloomIntensity": 0.75,
 					"component": "Post Processing",
 					"fog": false,

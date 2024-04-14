@@ -34,7 +34,7 @@
 					"near": 0.10000000149011612
 				},
 				{
-					"Exposure": 1.7000000476837158,
+					"exposure": 1.7000000476837158,
 					"bloomIntensity": 0.5699999928474426,
 					"component": "Post Processing",
 					"fog": false,

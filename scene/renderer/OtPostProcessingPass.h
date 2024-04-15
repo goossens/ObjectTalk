@@ -48,6 +48,7 @@ public:
 		float bloomIntensity = 0.0f;
 		bool godrays = false;
 		float exposure = 1.0f;
+		float contrast = 1.0f;
 
 		for (auto&& [entity, component] : ctx.scene->view<OtPostProcessingComponent>().each()) {
 			fxaa = component.fxaa;
@@ -57,6 +58,7 @@ public:
 			bloomIntensity = component.bloomIntensity;
 			godrays = component.godrays;
 			exposure = component.exposure;
+			contrast = component.contrast;
 		}
 
 		// do some special processing for godrays
@@ -121,7 +123,7 @@ public:
 		pass.submitQuad(ctx.camera.width, ctx.camera.height);
 
 		// set uniform
-		postProcessUniforms.setValue(0, exposure, 0.0f, 0.0f, 0.0f);
+		postProcessUniforms.setValue(0, exposure, contrast, 0.0f, 0.0f);
 		postProcessUniforms.submit();
 
 		// set source textures

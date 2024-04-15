@@ -38,9 +38,10 @@
 					"path": "assets/camera.ot"
 				},
 				{
-					"exposure": 1.659999966621399,
 					"bloomIntensity": 0.75,
 					"component": "Post Processing",
+					"contrast": 1.0700000524520874,
+					"exposure": 1.5299999713897705,
 					"fog": false,
 					"fogColor": [
 						0.4000000059604645,
@@ -48,7 +49,8 @@
 						0.800000011920929
 					],
 					"fogDensity": 0.10000000149011612,
-					"fxaa": false
+					"fxaa": false,
+					"godrays": false
 				}
 			]
 		},
@@ -80,6 +82,7 @@
 				},
 				{
 					"ambient": 0.10700000077486038,
+					"castShadow": false,
 					"color": [
 						1.0,
 						1.0,

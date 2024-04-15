@@ -39,4 +39,5 @@ public:
 	float bloomIntensity = 0.8f;
 	bool godrays = false;
 	float exposure = 1.0f;
+	float contrast = 1.0f;
 };

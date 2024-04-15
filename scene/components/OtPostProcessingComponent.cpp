@@ -37,6 +37,7 @@ bool OtPostProcessingComponent::renderUI() {
 
 	changed |= OtUiToggleButton("Godrays", &godrays);
 	changed |= ImGui::SliderFloat("Exposure", &exposure, 0.1f, 3.0f, "%.2f");
+	changed |= ImGui::SliderFloat("Contrast", &contrast, 0.5f, 2.0f, "%.2f");
 	return changed;
 }
 
@@ -55,6 +56,7 @@ nlohmann::json OtPostProcessingComponent::serialize(std::string* basedir) {
 	data["bloomIntensity"] = bloomIntensity;
 	data["godrays"] = godrays;
 	data["exposure"] = exposure;
+	data["contrast"] = contrast;
 	return data;
 }
 
@@ -71,4 +73,5 @@ void OtPostProcessingComponent::deserialize(nlohmann::json data, std::string* ba
 	fogColor = data.value("fogColor", glm::vec3(0.4f, 0.5f, 0.8f));
 	godrays = data.value("godrays", false);
 	exposure = data.value("exposure", 1.0f);
+	contrast = data.value("contrast", 1.0f);
 }

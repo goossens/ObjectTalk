@@ -34,9 +34,10 @@
 					"near": 0.10000000149011612
 				},
 				{
-					"exposure": 1.7000000476837158,
 					"bloomIntensity": 0.5699999928474426,
 					"component": "Post Processing",
+					"contrast": 0.9800000190734863,
+					"exposure": 1.909999966621399,
 					"fog": false,
 					"fogColor": [
 						0.18783771991729736,
@@ -44,7 +45,8 @@
 						0.36283183097839355
 					],
 					"fogDensity": 5.75,
-					"fxaa": false
+					"fxaa": false,
+					"godrays": false
 				}
 			]
 		},

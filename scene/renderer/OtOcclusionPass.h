@@ -45,7 +45,7 @@ protected:
 	bool isRenderingTransparent() override { return true; };
 
 	OtShaderProgram* getOpaqueProgram() override { return &opaqueProgram; }
-	OtShaderProgram* getInstancedOpaqueProgram() override  { return &instancedOpaqueProgram; }
+	OtShaderProgram* getInstancedOpaqueProgram() override { return &instancedOpaqueProgram; }
 	OtShaderProgram* getTransparentProgram() override { return &transparentProgram; }
 	OtShaderProgram* getInstancedTransparentProgram() override { return &instancedTransparentProgram; }
 	OtShaderProgram* getTerrainProgram() override { return &terrainProgram; }

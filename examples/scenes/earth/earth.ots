@@ -36,21 +36,6 @@
 				{
 					"component": "Script",
 					"path": "assets/camera.ot"
-				},
-				{
-					"bloomIntensity": 0.75,
-					"component": "Post Processing",
-					"contrast": 1.0700000524520874,
-					"exposure": 1.5299999713897705,
-					"fog": false,
-					"fogColor": [
-						0.4000000059604645,
-						0.5,
-						0.800000011920929
-					],
-					"fogDensity": 0.10000000149011612,
-					"fxaa": false,
-					"godrays": false
 				}
 			]
 		},
@@ -343,5 +328,19 @@
 			"scale": 1.0
 		},
 		"type": "scene"
+	},
+	"processing": {
+		"bloomIntensity": 0.800000011920929,
+		"contrast": 1.0700000524520874,
+		"exposure": 1.4600000381469727,
+		"fog": false,
+		"fogColor": [
+			0.4000000059604645,
+			0.5,
+			0.800000011920929
+		],
+		"fogDensity": 0.10000000149011612,
+		"fxaa": false,
+		"godrays": false
 	}
 }

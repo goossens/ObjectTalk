@@ -89,7 +89,6 @@ private:
 			case camera:
 				scene->addComponent<OtCameraComponent>(entity);
 				scene->addComponent<OtTransformComponent>(entity);
-				scene->addComponent<OtPostProcessingComponent>(entity);
 				break;
 
 			case directionalLight:

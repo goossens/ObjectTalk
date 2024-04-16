@@ -60,6 +60,11 @@ void OtScene::load(const std::string& path) {
 		for (auto& entity : data["entities"]) {
 			addEntityToParent(getRootEntity(), deserializeEntityFromJson(entity, &basedir, true));
 		}
+
+		// extract post processing settings
+		if (data.contains("processing")) {
+			postProcessing.deserialize(data["processing"], &basedir);
+		}
 	}
 }
 
@@ -82,6 +87,9 @@ void OtScene::save(const std::string& path) {
 	});
 
 	data["entities"] = entities;
+
+	// write post processing settings
+	data["processing"] = postProcessing.serialize(&basedir);
 
 	try {
 		// write scene to file

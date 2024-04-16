@@ -15,6 +15,7 @@
 #include "imgui.h"
 
 #include "OtGpu.h"
+#include "OtUi.h"
 
 #include "OtSceneEditorCamera.h"
 
@@ -42,6 +43,74 @@ void OtSceneEditorCamera::update() {
 	// also re-calculate the right and up vector
 	right = glm::normalize(glm::cross(forward, glm::vec3(0.0f, 1.0f, 0.0f)));
 	up = glm::normalize(glm::cross(right, forward));
+}
+
+
+//
+//	OtSceneEditorCamera::renderUI
+//
+
+bool OtSceneEditorCamera::renderUI() {
+	bool changed = false;
+	changed |= OtUiEditVec3("Position", position, 0.1f, 0.0f, 0.0f);
+	changed |= ImGui::DragFloat("Pitch (Deg)", &pitch, 1.0f, -90.0f, 90.0f, "%.0f");
+	changed |= ImGui::DragFloat("Yaw (Deg)", &yaw, 1.0f, -180.0f, 180.0f, "%.0f");
+
+	changed |= ImGui::DragFloat("FoV (Deg)", &fov, 1.0f, 10.0f, 160.0f, "%.0f");
+	changed |= ImGui::DragFloat("Near Plane", &nearPlane, 1.0f, 0.0f, 0.0f, "%.1f");
+	changed |= ImGui::DragFloat("Far Plane", &farPlane, 1.0f, 0.0f, 0.0f, "%.1f");
+
+	if (ImGui::BeginMenu("Presets")) {
+		if (ImGui::MenuItem("Tiny Scene")) {
+			position = glm::vec3(0.0f, 2.0f, 5.0f);
+			pitch = -20.0f;
+			yaw = 0.0f;
+			fov = 60.0f;
+			nearPlane = 0.1f;
+			farPlane = 50.0f;
+			changed = true;
+
+		} else if (ImGui::MenuItem("Small Scene")) {
+			position = glm::vec3(0.0f, 5.0f, 20.0f);
+			pitch = -20.0f;
+			yaw = 0.0f;
+			fov = 60.0f;
+			nearPlane = 0.5f;
+			farPlane = 200.0f;
+			changed = true;
+
+		} else if (ImGui::MenuItem("Medium Scene")) {
+			position = glm::vec3(0.0f, 10.0f, 50.0f);
+			pitch = -20.0f;
+			yaw = 0.0f;
+			fov = 60.0f;
+			nearPlane = 1.0f;
+			farPlane = 500.0f;
+			changed = true;
+
+		} else if (ImGui::MenuItem("Large Scene")) {
+			position = glm::vec3(0.0f, 20.0f, 200.0f);
+			pitch = -20.0f;
+			yaw = 0.0f;
+			fov = 60.0f;
+			nearPlane = 1.0f;
+			farPlane = 2000.0f;
+			changed = true;
+
+		} else if (ImGui::MenuItem("Huge Scene")) {
+			position = glm::vec3(0.0f, 50.0f, 500.0f);
+			pitch = -20.0f;
+			yaw = 0.0f;
+			fov = 60.0f;
+			nearPlane = 1.0f;
+			farPlane = 5000.0f;
+			changed = true;
+		}
+
+		ImGui::EndMenu();
+	}
+
+	return changed;
 }
 
 
@@ -104,57 +173,6 @@ void OtSceneEditorCamera::handleKeyboardAndMouse() {
 	}
 
  	fov = std::clamp(fov, 20.0f, 160.0f);
-}
-
-
-//
-//	OtSceneEditorCamera::setPreset
-//
-
-void OtSceneEditorCamera::setPreset(int p) {
-	// remember new preset and set camera properties
-	preset = p;
-
-	if (preset == tinyScenePreset) {
-		position = glm::vec3(0.0f, 2.0f, 5.0f);
-		pitch = -20.0f;
-		yaw = 0.0f;
-		fov = 60.0f;
-		nearPlane = 0.1f;
-		farPlane = 50.0f;
-
-	} else if (preset == smallScenePreset) {
-		position = glm::vec3(0.0f, 5.0f, 20.0f);
-		pitch = -20.0f;
-		yaw = 0.0f;
-		fov = 60.0f;
-		nearPlane = 0.5f;
-		farPlane = 200.0f;
-
-	} else if (preset == mediumScenePreset) {
-		position = glm::vec3(0.0f, 10.0f, 50.0f);
-		pitch = -20.0f;
-		yaw = 0.0f;
-		fov = 60.0f;
-		nearPlane = 1.0f;
-		farPlane = 500.0f;
-
-	} else if (preset == largeScenePreset) {
-		position = glm::vec3(0.0f, 20.0f, 200.0f);
-		pitch = -20.0f;
-		yaw = 0.0f;
-		fov = 60.0f;
-		nearPlane = 1.0f;
-		farPlane = 2000.0f;
-
-	} else if (preset == hugeScenePreset) {
-		position = glm::vec3(0.0f, 50.0f, 500.0f);
-		pitch = -20.0f;
-		yaw = 0.0f;
-		fov = 60.0f;
-		nearPlane = 1.0f;
-		farPlane = 5000.0f;
-	}
 }
 
 

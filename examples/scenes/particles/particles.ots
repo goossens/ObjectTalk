@@ -32,21 +32,6 @@
 					"fov": 56.0,
 					"mainCamera": false,
 					"near": 0.10000000149011612
-				},
-				{
-					"bloomIntensity": 0.5699999928474426,
-					"component": "Post Processing",
-					"contrast": 0.9800000190734863,
-					"exposure": 1.909999966621399,
-					"fog": false,
-					"fogColor": [
-						0.18783771991729736,
-						0.23158632218837738,
-						0.36283183097839355
-					],
-					"fogDensity": 5.75,
-					"fxaa": false,
-					"godrays": false
 				}
 			]
 		},
@@ -993,5 +978,19 @@
 			"scale": 1.0
 		},
 		"type": "scene"
+	},
+	"processing": {
+		"bloomIntensity": 0.6000000238418579,
+		"contrast": 0.9700000286102295,
+		"exposure": 1.4900000095367432,
+		"fog": false,
+		"fogColor": [
+			0.4000000059604645,
+			0.5,
+			0.800000011920929
+		],
+		"fogDensity": 0.10000000149011612,
+		"fxaa": false,
+		"godrays": false
 	}
 }

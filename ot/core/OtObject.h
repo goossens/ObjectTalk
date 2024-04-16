@@ -84,7 +84,7 @@ public:
 	virtual bool hasByName(const std::string& name) { return has(OtSelector::create(name)); }
 	virtual OtObject setByName(const std::string& name, OtObject value) { return set(OtSelector::create(name), value); }
 	virtual OtObject getByName(const std::string& name) { return get(OtSelector::create(name)); }
-	virtual void unsetByName(const std::string& name)  { return unset(OtSelector::create(name)); }
+	virtual void unsetByName(const std::string& name) { return unset(OtSelector::create(name)); }
 
 	bool hasMembers() { return members != nullptr; }
 	void getMemberNames(std::vector<std::string_view>& names);

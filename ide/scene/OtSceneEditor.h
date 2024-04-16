@@ -58,9 +58,6 @@ private:
 	void processMetaData();
 	void generateMetaData();
 
-	// follow file changes and update (if possible)
-	void follow();
-
 	// switch scene camera
 	void setSceneCamera(int cameraNumber);
 

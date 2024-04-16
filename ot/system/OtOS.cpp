@@ -105,7 +105,7 @@ std::string OtOSClass::release() {
 //	OtOSClass::version
 //
 
-std::string OtOSClass::version()  {
+std::string OtOSClass::version() {
 	uv_utsname_t info;
 	auto status = uv_os_uname(&info);
 	UV_CHECK_ERROR("uv_os_uname", status);
@@ -117,7 +117,7 @@ std::string OtOSClass::version()  {
 //	OtOSClass::machine
 //
 
-std::string OtOSClass::machine()  {
+std::string OtOSClass::machine() {
 	uv_utsname_t info;
 	auto status = uv_os_uname(&info);
 	UV_CHECK_ERROR("uv_os_uname", status);

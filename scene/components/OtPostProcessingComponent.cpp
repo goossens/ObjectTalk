@@ -48,7 +48,6 @@ bool OtPostProcessingComponent::renderUI() {
 
 nlohmann::json OtPostProcessingComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
-	data["component"] = name;
 	data["fxaa"] = fxaa;
 	data["fog"] = fog;
 	data["fogDensity"] = fogDensity;

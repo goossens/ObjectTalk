@@ -26,6 +26,8 @@
 #include "OtTaskManager.h"
 #include "OtWorkspace.h"
 
+#include "OtEditPostProcessingTask.h"
+
 #include "OtCreateEntityTask.h"
 #include "OtDeleteEntityTask.h"
 #include "OtMoveEntityTask.h"
@@ -218,33 +220,8 @@ void OtSceneEditor::renderMenu() {
 			if (ImGui::MenuItem("Toggle Debug")) { toggleRendererDebug(); }
 			ImGui::Separator();
 
-			// render camera scale selector
-			if (ImGui::BeginMenu("Scene Scale")) {
-				if (ImGui::RadioButton("Tiny", editorCamera.getPreset() == OtSceneEditorCamera::tinyScenePreset)) {
-					editorCamera.setPreset(OtSceneEditorCamera::tinyScenePreset);
-				}
-
-				if (ImGui::RadioButton("Small", editorCamera.getPreset() == OtSceneEditorCamera::smallScenePreset)) {
-					editorCamera.setPreset(OtSceneEditorCamera::smallScenePreset);
-				}
-
-				if (ImGui::RadioButton("Medium", editorCamera.getPreset() == OtSceneEditorCamera::mediumScenePreset)) {
-					editorCamera.setPreset(OtSceneEditorCamera::mediumScenePreset);
-				}
-
-				if (ImGui::RadioButton("Large", editorCamera.getPreset() == OtSceneEditorCamera::largeScenePreset)) {
-					editorCamera.setPreset(OtSceneEditorCamera::largeScenePreset);
-				}
-
-				if (ImGui::RadioButton("Huge", editorCamera.getPreset() == OtSceneEditorCamera::hugeScenePreset)) {
-					editorCamera.setPreset(OtSceneEditorCamera::hugeScenePreset);
-				}
-
-				ImGui::EndMenu();
-			}
-
 			// render camera selector
-			if (ImGui::BeginMenu("Camera")) {
+			if (ImGui::BeginMenu("Active Camera")) {
 				if (ImGui::RadioButton("Editor Camera", selectedCamera == OtEntityNull)) {
 					selectedCamera = OtEntityNull;
 				}
@@ -260,6 +237,12 @@ void OtSceneEditor::renderMenu() {
 					}
 				}
 
+				ImGui::EndMenu();
+			}
+
+			// render editor camera settings
+			if (ImGui::BeginMenu("Editor Camera Settings")) {
+				editorCamera.renderUI();
 				ImGui::EndMenu();
 			}
 
@@ -295,6 +278,22 @@ void OtSceneEditor::renderMenu() {
 				ImGui::Checkbox("Snaping", &guizmoSnapping);
 				OtUiEditVec3("##Interval", guizmoSnapInterval, 0.0f, 0.0f, 0.1f);
 				ImGui::EndMenu();
+			}
+
+			ImGui::EndMenu();
+		}
+
+		// render post processing menu
+		if (ImGui::BeginMenu("Processing")) {
+			auto& processor = scene.getPostProcessing();
+			auto oldValue = processor.serialize(nullptr).dump();
+
+			OtUiHeader("Post Proceessing Settings");
+			ImGui::Dummy(ImVec2(0.0f, 0.0f));
+
+			if (processor.renderUI()) {
+				auto newValue = processor.serialize(nullptr).dump();
+				nextTask = std::make_shared<OtEditPostProcessingTask>(&scene, oldValue, newValue);
 			}
 
 			ImGui::EndMenu();
@@ -397,7 +396,6 @@ void OtSceneEditor::renderEditor() {
 	OtUiSplitterHorizontal(&panelWidth, minPanelWidth, maxPanelWidth);
 	renderViewPort();
 
-	// perform editing task (if required)
 	if (nextTask) {
 		taskManager.perform(nextTask);
 

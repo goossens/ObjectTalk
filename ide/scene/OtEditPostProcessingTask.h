@@ -13,27 +13,22 @@
 //
 
 #include <memory>
-#include <typeinfo>
 
 #include "OtEditorTask.h"
-#include "OtEntity.h"
 #include "OtScene.h"
 
 
 //
-//	OtEditComponentTask
+//	OtEditPostProcessingTask
 //
 
-template <typename T>
-class OtEditComponentTask : public OtEditorTask {
+class OtEditPostProcessingTask : public OtEditorTask {
 public:
 	// constructor
-	OtEditComponentTask(OtScene* s, OtEntity e, const std::string& o, const std::string& n) : scene(s), oldValue(o), newValue(n) {
-		entityUuid = scene->getUuidFromEntity(e);
-	}
+	OtEditPostProcessingTask(OtScene* s, const std::string& o, const std::string& n) : scene(s), oldValue(o), newValue(n) {}
 
 	// get task name
-	std::string name() { return "edit component"; }
+	std::string name() { return "edit post processing"; }
 
 	// do action
 	void perform() override {
@@ -43,36 +38,31 @@ public:
 	// undo action
 	void undo() override {
 		// restore old value
-		auto entity = scene->getEntityFromUuid(entityUuid);
-		auto& component = scene->getComponent<T>(entity);
 		auto data = nlohmann::json::parse(oldValue);
-		component.deserialize(data, nullptr);
+		scene->getPostProcessing().deserialize(data, nullptr);
 	}
 
 	// redo action
 	void redo() override {
-		auto entity = scene->getEntityFromUuid(entityUuid);
-		auto& component = scene->getComponent<T>(entity);
+		// restore new value
 		auto data = nlohmann::json::parse(newValue);
-		component.deserialize(data, nullptr);
+		scene->getPostProcessing().deserialize(data, nullptr);
 	}
 
 	// support task merging
 	bool isMergeable(std::shared_ptr<OtEditorTask> t) override {
-		auto task = std::dynamic_pointer_cast<OtEditComponentTask>(t);
-		return task && task->type == type;
+		auto task = std::dynamic_pointer_cast<OtEditPostProcessingTask>(t);
+		return task != nullptr;
 	}
 
 	void merge(std::shared_ptr<OtEditorTask> t) override {
-		auto task = std::dynamic_pointer_cast<OtEditComponentTask>(t);
+		auto task = std::dynamic_pointer_cast<OtEditPostProcessingTask>(t);
 		newValue = task->newValue;
 	}
 
 private:
 	// properties
 	OtScene* scene;
-	uint32_t entityUuid;
 	std::string oldValue;
 	std::string newValue;
-	std::size_t type = typeid(T).hash_code();
 };

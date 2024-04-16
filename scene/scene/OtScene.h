@@ -57,7 +57,6 @@
 	OtSkyComponent, \
 	OtSkyBoxComponent, \
 	OtParticlesComponent, \
-	OtPostProcessingComponent, \
 	OtWaterComponent
 
 
@@ -86,12 +85,18 @@ public:
 	// get the composite worldspace transform for the specified entity
 	glm::mat4 getGlobalTransform(OtEntity entity);
 
+	// post processing access
+	inline OtPostProcessingComponent& getPostProcessing() { return postProcessing; }
+
 	// evaluate all nodes
 	void evaluateNodes();
 
 private:
 	// metadata for editor
 	std::string metadata{"{}"};
+
+	// post processing settings
+	OtPostProcessingComponent postProcessing;
 
 	// (de)serialize from/to JSON
 	nlohmann::json serializeEntityToJson(OtEntity entity, std::string* basedir);

@@ -40,31 +40,13 @@ public:
 		OtFrameBuffer* input = &framebuffer;
 		OtFrameBuffer* output = &postProcessBuffer1;
 
-		// get post-processing information
-		bool fxaa = false;
-		bool fog = false;
-		float fogDensity;
-		glm::vec3 fogColor;
-		float bloomIntensity = 0.0f;
-		bool godrays = false;
-		float exposure = 1.0f;
-		float contrast = 1.0f;
-
-		for (auto&& [entity, component] : ctx.scene->view<OtPostProcessingComponent>().each()) {
-			fxaa = component.fxaa;
-			fog = component.fog;
-			fogDensity = component.fogDensity;
-			fogColor = component.fogColor;
-			bloomIntensity = component.bloomIntensity;
-			godrays = component.godrays;
-			exposure = component.exposure;
-			contrast = component.contrast;
-		}
+		// get post processing settings
+		auto& settings = ctx.scene->getPostProcessing();
 
 		// do some special processing for godrays
 		glm::vec2 uv;
 
-		if (godrays) {
+		if (settings.godrays) {
 			// determin light position in clipspace
 			glm::vec4 clipspace = ctx.camera.viewProjectionMatrix * glm::vec4(ctx.directionalLightDirection, 0.0f);
 			clipspace /= clipspace.w;
@@ -79,7 +61,7 @@ public:
 			// see if it has any effect
 			if (uv.x < -0.5f || uv.x > 1.5f || uv.y < -0.5f || uv.y > 1.5f) {
 				// nope, just turn it off for this frame
-				godrays = false;
+				settings.godrays = false;
 			}
 		}
 
@@ -93,26 +75,26 @@ public:
 		};
 
 		// apply FXAA (Fast Approximate Anti-Aliasing) filter (if required)
-		if (fxaa) {
+		if (settings.fxaa) {
 			renderFxaa(ctx, input, output);
 			swap();
 		}
 
 		// apply fog (if required)
-		if (fog) {
-			renderFog(ctx, input, output, fogDensity, fogColor);
+		if (settings.fog) {
+			renderFog(ctx, input, output, settings.fogDensity, settings.fogColor);
 			swap();
 		}
 
 		// render and apply bloom (if required)
-		if (bloomIntensity > 0.0f) {
+		if (settings.bloomIntensity > 0.0f) {
 			// render bloom by down and up-sampling
-			renderBloom(ctx, input, output, bloomIntensity);
+			renderBloom(ctx, input, output, settings.bloomIntensity);
 			swap();
 		}
 
 		// render godrays (if required)
-		if (godrays) {
+		if (settings.godrays) {
 			renderGodrays(ctx, input, output, uv);
 			swap();
 		}
@@ -123,7 +105,7 @@ public:
 		pass.submitQuad(ctx.camera.width, ctx.camera.height);
 
 		// set uniform
-		postProcessUniforms.setValue(0, exposure, contrast, 0.0f, 0.0f);
+		postProcessUniforms.setValue(0, settings.exposure, settings.contrast, 0.0f, 0.0f);
 		postProcessUniforms.submit();
 
 		// set source textures

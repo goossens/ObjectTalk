@@ -98,20 +98,43 @@ public:
 		}
 	}
 
-	// iterate through all of an entity's children (depth-first)
-	inline void eachChildDepthFirst(OtEntity entity, std::function<void(OtEntity)> callback) {
+	// iterate through all entities in breadth-first order (based on hierarchy)
+	inline void eachEntityBreadthFirst(OtEntity entity, std::function<void(OtEntity)> callback) {
+		// don't expose the hidden root entity
+		if (entity != root) {
+			callback(entity);
+		}
+
 		auto child = getComponent<OtCoreComponent>(entity).firstChild;
 
 		while (isValidEntity(child)) {
-			auto nextChild = getComponent<OtCoreComponent>(child).nextSibling;
-			callback(child);
-			eachChild(child, callback);
-			child = nextChild;
+			eachEntityBreadthFirst(child, callback);
+			child = getComponent<OtCoreComponent>(child).nextSibling;
 		}
 	}
 
+	inline void eachEntityBreadthFirst(std::function<void(OtEntity)> callback) {
+		eachEntityBreadthFirst(root, callback);
+	}
+
 	// iterate through all entities in depth-first order (based on hierarchy)
-	inline void eachEntityDepthFirst(std::function<void(OtEntity)> callback) { eachChildDepthFirst(root, callback); }
+	inline void eachEntityDepthFirst(OtEntity entity, std::function<void(OtEntity)> callback) {
+		auto child = getComponent<OtCoreComponent>(entity).firstChild;
+
+		while (isValidEntity(child)) {
+			eachEntityDepthFirst(child, callback);
+			child = getComponent<OtCoreComponent>(child).nextSibling;
+		}
+
+		// don't expose the hidden root entity
+		if (entity != root) {
+			callback(entity);
+		}
+	}
+
+	inline void eachEntityDepthFirst(std::function<void(OtEntity)> callback) {
+		eachEntityDepthFirst(root, callback);
+	}
 
 	// add a new component to an entity
 	template<typename T, typename... Args>

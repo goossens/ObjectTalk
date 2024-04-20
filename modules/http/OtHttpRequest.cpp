@@ -284,7 +284,7 @@ void OtHttpRequestClass::onMultipartHeadersComplete() {
 					uv_fs_t req;
 					uv_fs_mkstemp(uv_default_loop(), &req, tmpl.string().c_str(), 0);
 					multipartFile = req.path;
-					multipartFD = (uv_file) req.result;
+					multipartFD = (uv_os_fd_t) req.result;
 					uv_fs_req_cleanup(&req);
 				}
 			}

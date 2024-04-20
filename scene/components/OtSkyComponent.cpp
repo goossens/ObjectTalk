@@ -10,7 +10,6 @@
 //
 
 #include <glm/gtc/matrix_transform.hpp>
-#include "imgui.h"
 #include "nlohmann/json.hpp"
 
 #include "OtUi.h"
@@ -24,17 +23,17 @@
 
 bool OtSkyComponent::renderUI() {
 	bool changed = false;
-	changed |= ImGui::SliderFloat("Sun Elevation", &elevation, -90.0f, 90.0f);
-	changed |= ImGui::SliderFloat("Sun Azimuth", &azimuth, 0.0f, 360.0f);
+	changed |= OtUiDragFloat("Sun Elevation", &elevation, -90.0f, 90.0f);
+	changed |= OtUiDragFloat("Sun Azimuth", &azimuth, 0.0f, 360.0f);
 	changed |= OtUiToggleButton("Cast Shadow", &castShadow);
 
-	changed |= ImGui::SliderFloat("Rayleigh Coefficient", &rayleighCoefficient, 0.5f, 6.0f);
-	changed |= ImGui::SliderFloat("Mie Coefficient", &mieCoefficient, 1.0f, 10.0f);
-	changed |= ImGui::SliderFloat("Mie Scattering", &mieScattering, 0.9f, 0.99f);
+	changed |= OtUiDragFloat("Rayleigh Coefficient", &rayleighCoefficient, 0.5f, 6.0f);
+	changed |= OtUiDragFloat("Mie Coefficient", &mieCoefficient, 1.0f, 10.0f);
+	changed |= OtUiDragFloat("Mie Scattering", &mieScattering, 0.9f, 0.99f);
 
-	changed |= ImGui::SliderFloat("Cirrus Clouds", &cirrus, 0.0f, 1.0f);
-	changed |= ImGui::SliderFloat("Cumulus Clouds", &cumulus, 0.0f, 1.0f);
-	changed |= ImGui::SliderFloat("Cloud Speed", &speed, 0.0f, 10.0f);
+	changed |= OtUiDragFloat("Cirrus Clouds", &cirrus, 0.0f, 1.0f);
+	changed |= OtUiDragFloat("Cumulus Clouds", &cumulus, 0.0f, 1.0f);
+	changed |= OtUiDragFloat("Cloud Speed", &speed, 0.0f, 10.0f);
 	return changed;
 }
 

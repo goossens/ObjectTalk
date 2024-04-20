@@ -30,7 +30,7 @@
 					"component": "Camera",
 					"far": 100.0,
 					"fov": 56.0,
-					"mainCamera": false,
+					"mainCamera": true,
 					"near": 0.10000000149011612
 				}
 			]
@@ -82,13 +82,6 @@
 							"component": "Core",
 							"tag": "Left",
 							"uuid": 2396579673
-						},
-						{
-							"component": "Geometry",
-							"cullback": true,
-							"path": "virtual:wall",
-							"transparent": false,
-							"wireframe": false
 						},
 						{
 							"component": "Geometry",
@@ -158,13 +151,6 @@
 							"wireframe": false
 						},
 						{
-							"component": "Geometry",
-							"cullback": true,
-							"path": "virtual:wall",
-							"transparent": false,
-							"wireframe": false
-						},
-						{
 							"component": "Transform",
 							"rotation": [
 								0.0,
@@ -225,13 +211,6 @@
 							"wireframe": false
 						},
 						{
-							"component": "Geometry",
-							"cullback": true,
-							"path": "virtual:wall",
-							"transparent": false,
-							"wireframe": false
-						},
-						{
 							"component": "Transform",
 							"rotation": [
 								0.0,
@@ -283,13 +262,6 @@
 							"component": "Core",
 							"tag": "Floor",
 							"uuid": 1238961594
-						},
-						{
-							"component": "Geometry",
-							"cullback": true,
-							"path": "virtual:wall",
-							"transparent": false,
-							"wireframe": false
 						},
 						{
 							"component": "Geometry",
@@ -1036,14 +1008,14 @@
 	],
 	"metadata": {
 		"camera": {
-			"far": 50.0,
+			"far": 10.0,
 			"fov": 60.0,
-			"near": 0.10000000149011612,
+			"near": 0.5,
 			"pitch": -3.210111379623413,
 			"position": [
-				-0.11357256770133972,
-				-2.240532398223877,
-				4.372554779052734
+				-0.11313693970441818,
+				-2.2376434803009033,
+				4.424063205718994
 			],
 			"yaw": -0.48456811904907227
 		},

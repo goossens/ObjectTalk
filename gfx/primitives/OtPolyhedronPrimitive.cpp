@@ -12,12 +12,12 @@
 #include <cmath>
 #include <vector>
 
-#include "imgui.h"
 #include "nlohmann/json.hpp"
 
 #include "OtNumbers.h"
 
 #include "OtPolyhedronPrimitive.h"
+#include "OtUi.h"
 
 
 //
@@ -155,7 +155,7 @@ glm::vec2 OtPolyhedronPrimitive::generateUV(const glm::vec3& normal) {
 //
 
 bool OtPolyhedronPrimitive::renderUI() {
-	return ImGui::SliderInt("Detail", &detail, 0, 20);
+	return OtUiDragInt("Detail", &detail, 0, 20);
 }
 
 

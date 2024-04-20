@@ -39,13 +39,13 @@ bool OtTerrainHeights::renderUI() {
 			ImGui::TableNextRow();
 
 			ImGui::TableNextColumn();
-			changed |= OtUiSelectorPowerOfTwo("Heightmap Size", heightmapSize, 256, 2048);
-			changed |= ImGui::DragFloat("Normal Strength", &normalStrength, 1.0f, 1.0f, 100.0f);
-			changed |= ImGui::SliderInt("Frequency", &frequency, 2, 20);
-			changed |= ImGui::SliderInt("Lacunarity", &lacunarity, 1, 10);
-			changed |= ImGui::DragFloat("Amplitude", &amplitude, 0.1f, 0.1f, 1.0f);
-			changed |= ImGui::DragFloat("Persistence", &persistence, 0.1f, 0.1f, 1.0f);
-			changed |= ImGui::DragInt("Octaves", &octaves, 1, 1, 10);
+			changed |= OtUiSelectorPowerOfTwo("Heightmap Size", &heightmapSize, 256, 2048);
+			changed |= OtUiDragFloat("Normal Strength", &normalStrength, 1.0f, 100.0f);
+			changed |= OtUiDragInt("Frequency", &frequency, 2, 20);
+			changed |= OtUiDragInt("Lacunarity", &lacunarity, 1, 10);
+			changed |= OtUiDragFloat("Amplitude", &amplitude, 0.1f, 1.0f);
+			changed |= OtUiDragFloat("Persistence", &persistence, 0.1f, 1.0f);
+			changed |= OtUiDragInt("Octaves", &octaves, 1, 10);
 
 			ImGui::TableNextColumn();
 

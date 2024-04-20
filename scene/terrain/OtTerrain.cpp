@@ -12,7 +12,6 @@
 #include <cstdint>
 #include <cmath>
 
-#include "imgui.h"
 #include "nlohmann/json.hpp"
 
 #include "OtUi.h"
@@ -57,24 +56,25 @@
 
 bool OtTerrain::renderUI() {
 	bool changed = false;
-	changed |= OtUiSelectorPowerOfTwo("Tile Size", tileSize, 4, 64);
-	changed |= ImGui::DragInt("Levels of Detail", &lods, 1, 1, 10);
+	changed |= OtUiSelectorPowerOfTwo("Tile Size", &tileSize, 4, 64);
+	changed |= OtUiDragInt("Levels of Detail", &lods, 1, 10);
 
 	if (changed) {
 		clear();
 	}
 
-	changed |= ImGui::DragFloat("Horizontal Scale", &hScale, 0.01f, 0.01f, 10.0f);
-	changed |= ImGui::DragFloat("Vertical Scale", &vScale, 1.0f, 1.0f, 1000.0f);
-	changed |= ImGui::DragFloat("Vertical Offset", &vOffset, 1.0f, -1000.0f, 1000.0f);
+	changed |= OtUiDragFloat("Horizontal Scale", &hScale, 0.01f, 10.0f);
+	changed |= OtUiDragFloat("Vertical Scale", &vScale, 1.0f, 1000.0f);
+	changed |= OtUiDragFloat("Vertical Offset", &vOffset, -1000.0f, 1000.0f);
 	changed |= heights.renderUI();
 	changed |= material.renderUI();
-	changed |= ImGui::Checkbox("Wireframe", &wireframe);
+	changed |= OtUiToggleButton("Wireframe", &wireframe);
 
 #ifdef OT_DEBUG
-	static char buffer[16];
-	snprintf(buffer, 16, "%d", (int) meshes.size());
-	ImGui::InputText("Visible Meshes", buffer, 16, ImGuiInputTextFlags_ReadOnly);
+	std::string buffer = std::to_string(meshes.size());
+	void OtUiReadonlyText(const char* label, std::string& value);
+
+	OtUiReadonlyText("Visible Meshes", buffer);
 #endif
 
 	return changed;

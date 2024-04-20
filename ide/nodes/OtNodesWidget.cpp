@@ -402,7 +402,7 @@ void OtNodesWidget::renderNode(ImDrawList* drawlist, OtNode& node) {
 			node->oldState = node->serialize().dump();
 		}
 
-		OtUiInputText("##rename", node->title, ImGuiInputTextFlags_NoUndoRedo | ImGuiInputTextFlags_EnterReturnsTrue);
+		OtUiInputText("##rename", &node->title, ImGuiInputTextFlags_NoUndoRedo | ImGuiInputTextFlags_EnterReturnsTrue);
 
 		if (ImGui::IsItemDeactivated()) {
 			node->newState = node->serialize().dump();

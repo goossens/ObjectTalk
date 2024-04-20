@@ -91,20 +91,7 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(int& value) {
 			ImGui::PushID(&value);
 			ImGui::SetNextItemWidth(width);
 
-			auto absValue = std::abs(value);
-			int speed;
-
-			if (absValue < 100) {
-				speed = 1;
-
-			} else if (absValue < 1000) {
-				speed = 10;
-
-			} else {
-				speed = 100;
-			}
-
-			if (ImGui::DragInt("##value", &value, speed)) {
+			if (OtUiDragInt("##value", &value)) {
 				node->oldState = old;
 				node->newState = node->serialize().dump();
 				node->needsEvaluating = true;
@@ -171,7 +158,7 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(std::string& value) {
 			ImGui::PushID(&value);
 			ImGui::SetNextItemWidth(width);
 
-			OtUiInputText("##value", value, ImGuiInputTextFlags_NoUndoRedo | ImGuiInputTextFlags_EnterReturnsTrue);
+			OtUiInputText("##value", &value, ImGuiInputTextFlags_NoUndoRedo | ImGuiInputTextFlags_EnterReturnsTrue);
 			if (ImGui::IsItemDeactivated()) {
 				node->oldState = old;
 				node->newState = node->serialize().dump();

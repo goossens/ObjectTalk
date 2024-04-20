@@ -11,10 +11,10 @@
 
 #include <cmath>
 
-#include "imgui.h"
 #include "nlohmann/json.hpp"
 
 #include "OtTorusPrimitive.h"
+#include "OtUi.h"
 
 
 //
@@ -61,14 +61,14 @@ void OtTorusPrimitive::createMesh(OtMesh* mesh) {
 
 bool OtTorusPrimitive::renderUI() {
 	bool changed = false;
-	changed |= ImGui::SliderFloat("Radius", &radius, 0.0f, 1.0f);
-	changed |= ImGui::SliderFloat("Tube Radius", &tubeRadius, 0.0f, 1.0f);
-	changed |= ImGui::SliderInt("Radial Segments", &radialSegments, 1, 64);
-	changed |= ImGui::SliderInt("Tubular Segments", &tubularSegments, 1, 32);
-	changed |= ImGui::SliderFloat("Radial Start", &radialStart, 0.0f, 360.0f);
-	changed |= ImGui::SliderFloat("Radial Length", &radialLength, 0.0f, 360.0f);
-	changed |= ImGui::SliderFloat("Tubular Start", &tubularStart, 0.0f, 360.0f);
-	changed |= ImGui::SliderFloat("Tubular Length", &tubularLength, 0.0f, 360.0f);
+	changed |= OtUiDragFloat("Radius", &radius, 0.0f, 1.0f);
+	changed |= OtUiDragFloat("Tube Radius", &tubeRadius, 0.0f, 1.0f);
+	changed |= OtUiDragInt("Radial Segments", &radialSegments, 1, 64);
+	changed |= OtUiDragInt("Tubular Segments", &tubularSegments, 1, 32);
+	changed |= OtUiDragFloat("Radial Start", &radialStart, 0.0f, 360.0f);
+	changed |= OtUiDragFloat("Radial Length", &radialLength, 0.0f, 360.0f);
+	changed |= OtUiDragFloat("Tubular Start", &tubularStart, 0.0f, 360.0f);
+	changed |= OtUiDragFloat("Tubular Length", &tubularLength, 0.0f, 360.0f);
 	return changed;
 }
 

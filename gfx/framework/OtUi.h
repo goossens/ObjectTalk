@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <limits>
 #include <string>
 
 #include "glm/glm.hpp"
@@ -54,26 +55,30 @@ void OtUiHeader(const char* label, float width=0.0f);
 // create a toggle button
 bool OtUiToggleButton(const char* label, bool* value);
 
-// create a readonly text filed
-void OtUiReadonlyText(const char* label, std::string& value);
+// create a readonly text field
+void OtUiReadonlyText(const char* label, std::string* value);
 
 // create an input field based on a std::string
-bool OtUiInputText(const char* label, std::string& value, ImGuiInputTextFlags flags=ImGuiInputTextFlags_None);
+bool OtUiInputText(const char* label, std::string* value, ImGuiInputTextFlags flags=ImGuiInputTextFlags_None);
+
+// create a field to edit numbers
+bool OtUiDragInt(const char* label, int* value, int minv=-std::numeric_limits<int>::max(), int maxv=std::numeric_limits<int>::max());
+bool OtUiDragFloat(const char* label, float* value, float minv=-std::numeric_limits<float>::max(), float maxv=std::numeric_limits<float>::max());
 
 // create a field to edit glm vectors
-bool OtUiEditVec3(const char* label, glm::vec3& vector, float speed, float minv, float maxv);
-bool OtUiEditVec4(const char* label, glm::vec4& vector, float speed, float minv, float maxv);
+bool OtUiEditVec3(const char* label, glm::vec3* vector, float minv=-std::numeric_limits<float>::max(), float maxv=std::numeric_limits<float>::max());
+bool OtUiEditVec4(const char* label, glm::vec4* vector, float minv=-std::numeric_limits<float>::max(), float maxv=std::numeric_limits<float>::max());
 
 // create a file path field with file selector popup
-bool OtUiFileSelector(const char* label, std::string& path, const char* filter);
+bool OtUiFileSelector(const char* label, std::string* path, const char* filter);
 
 // create a splitter widget
 void OtUiSplitterVertical(float* size, float minSize, float maxSize);
 void OtUiSplitterHorizontal(float* size, float minSize, float maxSize);
 
 // selectors
-bool OtUiSelectorEnum(const char* label, int& value, const char* const names[], size_t count);
-bool OtUiSelectorPowerOfTwo(const char* label, int& value, int startValue, int endValue);
+bool OtUiSelectorEnum(const char* label, int* value, const char* const names[], size_t count);
+bool OtUiSelectorPowerOfTwo(const char* label, int* value, int startValue, int endValue);
 
 // bezier curve editor
 bool OtUiBezier(const char* label, float P[4]);

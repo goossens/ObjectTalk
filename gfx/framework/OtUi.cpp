@@ -178,12 +178,12 @@ bool OtUiToggleButton(const char* labelPlusID, bool* value) {
 //	OtUiInputText
 //
 
-bool OtUiInputText(const char* label, std::string& value, ImGuiInputTextFlags flags) {
+bool OtUiInputText(const char* label, std::string* value, ImGuiInputTextFlags flags) {
 	flags |=
 		ImGuiInputTextFlags_NoUndoRedo |
 		ImGuiInputTextFlags_CallbackResize;
 
-	return ImGui::InputText(label, (char*) value.c_str(), value.capacity() + 1, flags, [](ImGuiInputTextCallbackData* data) {
+	return ImGui::InputText(label, (char*) value->c_str(), value->capacity() + 1, flags, [](ImGuiInputTextCallbackData* data) {
 		if (data->EventFlag == ImGuiInputTextFlags_CallbackResize) {
 			std::string* value = (std::string*) data->UserData;
 			value->resize(data->BufTextLen);
@@ -195,11 +195,73 @@ bool OtUiInputText(const char* label, std::string& value, ImGuiInputTextFlags fl
 }
 
 
+bool OtUiDragInt(const char* label, int* value, int minv, int maxv) {
+	// automatically determine drag speed
+	auto absValue = std::abs(*value);
+	int speed;
+
+	if (absValue < 100) {
+		speed = 1;
+
+	} else if (absValue < 1000) {
+		speed = 10;
+
+	} else {
+		speed = 100;
+	}
+
+	if (ImGui::DragInt(label, value, speed, minv, maxv)) {
+		*value = std::clamp(*value, minv, maxv);
+		return true;
+
+	} else {
+		return false;
+	}
+}
+
+
+//
+//	OtUiDragFloat
+//
+
+bool OtUiDragFloat(const char* label, float* value, float minv, float maxv) {
+	// automatically determine drag speed and display resolution
+	auto absValue = std::abs(*value);
+	float speed;
+	const char* format;
+
+	if (absValue < 1.0f) {
+		speed = 0.01f;
+		format = "%.3f";
+
+	} else if (absValue < 10.0f) {
+		speed = 0.1f;
+		format = "%.2f";
+
+	} else if (absValue < 100.0f) {
+		speed = 1.0f;
+		format = "%.1f";
+
+	} else {
+		speed = 10.0f;
+		format = "%.0f";
+	}
+
+	if (ImGui::DragFloat(label, value, speed, minv, maxv, format)) {
+		*value = std::clamp(*value, minv, maxv);
+		return true;
+
+	} else {
+		return false;
+	}
+}
+
+
 //
 //	OtUiEditVecX
 //
 
-static bool OtUiEditVecX(const char* labelPlusID, float* value, int components, float speed, float minv, float maxv) {
+static bool OtUiEditVecX(const char* labelPlusID, float* value, int components, float minv, float maxv) {
 	ImGuiWindow* window = ImGui::GetCurrentWindow();
 	bool changed = false;
 
@@ -212,11 +274,10 @@ static bool OtUiEditVecX(const char* labelPlusID, float* value, int components, 
 	ImGui::PushMultiItemsWidths(components, ImGui::CalcItemWidth());
 
 	static const ImU32 colors[] = { 0xBB0000FF, 0xBB00FF00, 0xBBFF0000, 0xBBFFFFFF };
-	static const char* format[] = { "X:%.1f", "Y:%.1f", "Z:%.1f", "W:%.1f" };
 
 	for (int i = 0; i < components; i++) {
 		ImGui::PushID(i);
-		changed |= ImGui::DragFloat("##value", &value[i], speed, minv, maxv, format[i]);
+		changed |= OtUiDragFloat("##value", &value[i], minv, maxv);
 
 		const ImVec2 min = ImGui::GetItemRectMin();
 		const ImVec2 max = ImGui::GetItemRectMax();
@@ -242,8 +303,8 @@ static bool OtUiEditVecX(const char* labelPlusID, float* value, int components, 
 //	OtUiEditVec3
 //
 
-bool OtUiEditVec3(const char* label, glm::vec3& vector, float speed, float minv, float maxv) {
-	return OtUiEditVecX(label, glm::value_ptr(vector), 3, speed, minv, maxv);
+bool OtUiEditVec3(const char* label, glm::vec3* vector, float minv, float maxv) {
+	return OtUiEditVecX(label, glm::value_ptr(*vector), 3, minv, maxv);
 }
 
 
@@ -251,8 +312,8 @@ bool OtUiEditVec3(const char* label, glm::vec3& vector, float speed, float minv,
 //	OtUiEditVec4
 //
 
-bool OtUiEditVec4(const char* label, glm::vec4& vector, float speed, float minv, float maxv) {
-	return OtUiEditVecX(label, glm::value_ptr(vector), 4, speed, minv, maxv);
+bool OtUiEditVec4(const char* label, glm::vec4* vector, float minv, float maxv) {
+	return OtUiEditVecX(label, glm::value_ptr(*vector), 4, minv, maxv);
 }
 
 
@@ -260,9 +321,9 @@ bool OtUiEditVec4(const char* label, glm::vec4& vector, float speed, float minv,
 //	OtUiFileSelector
 //
 
-bool OtUiFileSelector(const char* label, std::string& path, const char* filter) {
+bool OtUiFileSelector(const char* label, std::string* path, const char* filter) {
 	// determine button status
-	bool showClearButton = !path.empty();
+	bool showClearButton = !path->empty();
 
 	// determine number of buttons
 	int buttons = showClearButton ? 1 : 0;
@@ -289,14 +350,14 @@ bool OtUiFileSelector(const char* label, std::string& path, const char* filter) 
 	static bool creating = false;
 
 	// get the filename without the path
-	auto filename = OtPathGetFilename(path);
+	auto filename = OtPathGetFilename(*path);
 
 	// render path as a button
 	ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2(0.0f, 0.5f));
 
 	if (ImGui::Button((filename + "##path").c_str(), ImVec2(pathWidth, itemHeight))) {
 		IGFD::FileDialogConfig config;
-		config.filePathName = path;
+		config.filePathName = *path;
 		config.countSelectionMax = 1;
 
 		config.flags = ImGuiFileDialogFlags_Modal |
@@ -313,7 +374,7 @@ bool OtUiFileSelector(const char* label, std::string& path, const char* filter) 
 		ImGui::SameLine(0.0f, spacing);
 
 		if (ImGui::Button("x", ImVec2(itemHeight, itemHeight))) {
-			path.clear();
+			path->clear();
 			changed = true;
 		}
 	}
@@ -330,8 +391,8 @@ bool OtUiFileSelector(const char* label, std::string& path, const char* filter) 
 
 	if (dialog->Display(dialogID.c_str(), ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
 		if (dialog->IsOk()) {
-			path = ImGuiFileDialog::Instance()->GetFilePathName();
-			OtPathChangeDirectory(OtPathGetParent(path));
+			*path = ImGuiFileDialog::Instance()->GetFilePathName();
+			OtPathChangeDirectory(OtPathGetParent(*path));
 			changed = true;
 		}
 
@@ -391,19 +452,19 @@ void OtUiSplitterHorizontal(float* size, float minSize, float maxSize) {
 //	OtUiSelectorEnum
 //
 
-bool OtUiSelectorEnum(const char* label, int& value, const char* const names[], size_t count) {
+bool OtUiSelectorEnum(const char* label, int* value, const char* const names[], size_t count) {
 	bool changed = false;
 
-	if (ImGui::BeginCombo(label, names[value])) {
+	if (ImGui::BeginCombo(label, names[*value])) {
 		for (auto i = 0; i < count; i++) {
-			if (ImGui::Selectable(names[i], i == value)) {
-				if (value != i) {
-					value = i;
+			if (ImGui::Selectable(names[i], i == *value)) {
+				if (*value != i) {
+					*value = i;
 					changed = true;
 				}
 			}
 
-			if (i == value) {
+			if (i == *value) {
 				ImGui::SetItemDefaultFocus();
 			}
 		}
@@ -419,19 +480,19 @@ bool OtUiSelectorEnum(const char* label, int& value, const char* const names[], 
 //	OtUiSelectorPowerOfTwo
 //
 
-bool OtUiSelectorPowerOfTwo(const char* label, int& value, int startValue, int endValue) {
+bool OtUiSelectorPowerOfTwo(const char* label, int* value, int startValue, int endValue) {
 	bool changed = false;
 
-	if (ImGui::BeginCombo(label, std::to_string(value).c_str())) {
+	if (ImGui::BeginCombo(label, std::to_string(*value).c_str())) {
 		for (auto size = startValue; size <= endValue; size <<= 1) {
-			if (ImGui::Selectable(std::to_string(size).c_str(), size == value)) {
-				if (value != size) {
-					value = size;
+			if (ImGui::Selectable(std::to_string(size).c_str(), size == *value)) {
+				if (*value != size) {
+					*value = size;
 					changed = true;
 				}
 			}
 
-			if (size == value) {
+			if (size == *value) {
 				ImGui::SetItemDefaultFocus();
 			}
 		}

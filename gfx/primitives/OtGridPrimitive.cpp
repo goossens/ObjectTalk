@@ -9,10 +9,10 @@
 //	Include files
 //
 
-#include "imgui.h"
 #include "nlohmann/json.hpp"
 
 #include "OtGridPrimitive.h"
+#include "OtUi.h"
 
 
 //
@@ -55,8 +55,8 @@ void OtGridPrimitive::createMesh(OtMesh* mesh) {
 
 bool OtGridPrimitive::renderUI() {
 	bool changed = false;
-	changed |= ImGui::SliderInt("Width Segments", &widthSegments, 1, 256);
-	changed |= ImGui::SliderInt("Depth Segments", &depthSegments, 1, 256);
+	changed |= OtUiDragInt("Width Segments", &widthSegments, 1, 256);
+	changed |= OtUiDragInt("Depth Segments", &depthSegments, 1, 256);
 	return changed;
 }
 

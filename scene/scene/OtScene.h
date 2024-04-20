@@ -44,7 +44,6 @@
 
 #define OtSceneComponents \
 	OtGeometryComponent, \
-	OtGeometryComponent, \
 	OtModelComponent, \
 	OtTransformComponent, \
 	OtInstancingComponent, \

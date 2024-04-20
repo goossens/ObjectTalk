@@ -35,7 +35,7 @@ public:
 		ImGui::SetNextItemWidth(width);
 		auto old = serialize().dump();
 
-		if (OtUiSelectorEnum("##operator", op, operatorTypes, operatorTypesCount)) {
+		if (OtUiSelectorEnum("##operator", &op, operatorTypes, operatorTypesCount)) {
 			oldState = old;
 			newState = serialize().dump();
 			needsEvaluating = true;

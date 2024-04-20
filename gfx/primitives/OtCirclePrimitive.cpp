@@ -11,10 +11,10 @@
 
 #include <cmath>
 
-#include "imgui.h"
 #include "nlohmann/json.hpp"
 
 #include "OtCirclePrimitive.h"
+#include "OtUi.h"
 
 
 //
@@ -55,9 +55,9 @@ void OtCirclePrimitive::createMesh(OtMesh* mesh) {
 
 bool OtCirclePrimitive::renderUI() {
 	bool changed = false;
-	changed |= ImGui::SliderInt("Segments", &segments, 1, 50);
-	changed |= ImGui::SliderFloat("Theta Start", &thetaStart, 0.0f, 360.0f);
-	changed |= ImGui::SliderFloat("Theta Length", &thetaLength, 0.0f, 360.0f);
+	changed |= OtUiDragInt("Segments", &segments, 1, 50);
+	changed |= OtUiDragFloat("Theta Start", &thetaStart, 0.0f, 360.0f);
+	changed |= OtUiDragFloat("Theta Length", &thetaLength, 0.0f, 360.0f);
 	return changed;
 }
 

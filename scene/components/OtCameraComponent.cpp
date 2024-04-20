@@ -12,8 +12,9 @@
 #include <algorithm>
 #include <cmath>
 
-#include "imgui.h"
 #include "nlohmann/json.hpp"
+
+#include "OtUi.h"
 
 #include "OtCameraComponent.h"
 
@@ -24,10 +25,10 @@
 
 bool OtCameraComponent::renderUI() {
 	bool changed = false;
-	changed |= ImGui::Checkbox("Main Camera", &mainCamera);
-	changed |= ImGui::DragFloat("FoV (Deg)", &fov, 1.0f, 10.0f, 160.0f, "%.0f");
-	changed |= ImGui::DragFloat("Near Plane", &nearPlane, 1.0f, 0.0f, 0.0f, "%.1f");
-	changed |= ImGui::DragFloat("Far Plane", &farPlane, 1.0f, 0.0f, 0.0f, "%.1f");
+	changed |= OtUiToggleButton("Main Camera", &mainCamera);
+	changed |= OtUiDragFloat("FoV (Deg)", &fov, 10.0f, 160.0f);
+	changed |= OtUiDragFloat("Near Plane", &nearPlane, 0.001f);
+	changed |= OtUiDragFloat("Far Plane", &farPlane, nearPlane);
 	return changed;
 }
 

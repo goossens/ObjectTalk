@@ -20,6 +20,7 @@
 #include "OtTransientIndexBuffer.h"
 #include "OtTransientVertexBuffer.h"
 #include "OtVertex.h"
+#include "OtUi.h"
 
 #include "OtSceneRendererDebug.h"
 
@@ -230,7 +231,7 @@ void OtSceneRendererDebug::renderTexture(const char* title, OtTexture& texture) 
 
 void OtSceneRendererDebug::renderCubeMap(const char* title, OtCubeMap& cubemap, CubeMapDebug& debug) {
 	if (ImGui::TreeNode(title)) {
-		ImGui::SliderInt("Mip Level", &debug.requestedMip, 0, cubemap.getMipLevels());
+		OtUiDragInt("Mip Level", &debug.requestedMip, 0, cubemap.getMipLevels());
 
 		if (cubemap.getVersion() != debug.renderedVersion || debug.requestedMip != debug.renderedMip) {
 			renderCubeMapAsCross(cubemap, debug);

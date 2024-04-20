@@ -52,13 +52,13 @@ void OtSceneEditorCamera::update() {
 
 bool OtSceneEditorCamera::renderUI() {
 	bool changed = false;
-	changed |= OtUiEditVec3("Position", position, 0.1f, 0.0f, 0.0f);
-	changed |= ImGui::DragFloat("Pitch (Deg)", &pitch, 1.0f, -90.0f, 90.0f, "%.0f");
-	changed |= ImGui::DragFloat("Yaw (Deg)", &yaw, 1.0f, -180.0f, 180.0f, "%.0f");
+	changed |= OtUiEditVec3("Position", &position);
+	changed |= OtUiDragFloat("Pitch (Deg)", &pitch, -90.0f, 90.0f);
+	changed |= OtUiDragFloat("Yaw (Deg)", &yaw, -180.0f, 180.0f);
 
-	changed |= ImGui::DragFloat("FoV (Deg)", &fov, 1.0f, 10.0f, 160.0f, "%.0f");
-	changed |= ImGui::DragFloat("Near Plane", &nearPlane, 1.0f, 0.0f, 0.0f, "%.1f");
-	changed |= ImGui::DragFloat("Far Plane", &farPlane, 1.0f, 0.0f, 0.0f, "%.1f");
+	changed |= OtUiDragFloat("FoV (Deg)", &fov, 10.0f, 160.0f);
+	changed |= OtUiDragFloat("Near Plane", &nearPlane, 0.01f);
+	changed |= OtUiDragFloat("Far Plane", &farPlane, nearPlane);
 
 	if (ImGui::BeginMenu("Presets")) {
 		if (ImGui::MenuItem("Tiny Scene")) {

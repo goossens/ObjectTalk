@@ -250,7 +250,7 @@ void OtSceneEditor::renderMenu() {
 			ImGui::MenuItem("Grid", OT_UI_SHORTCUT "D", &gridEnabled);
 
 			if (ImGui::BeginMenu("Grid Scale", gridEnabled)) {
-				ImGui::DragFloat("##scale", &gridScale, 0.1, 0.1f, 100.0f, "%.1f");
+				OtUiDragFloat("##scale", &gridScale, 0.1f, 100.0f);
 				ImGui::EndMenu();
 			}
 
@@ -275,8 +275,8 @@ void OtSceneEditor::renderMenu() {
 
 			// render snap control
 			if (ImGui::BeginMenu("Gizmo Snap", guizmoEnabled)) {
-				ImGui::Checkbox("Snaping", &guizmoSnapping);
-				OtUiEditVec3("##Interval", guizmoSnapInterval, 0.0f, 0.0f, 0.1f);
+				OtUiToggleButton("Snaping", &guizmoSnapping);
+				OtUiEditVec3("##Interval", &guizmoSnapInterval, 0.0f, 0.1f);
 				ImGui::EndMenu();
 			}
 
@@ -756,7 +756,7 @@ void OtSceneEditor::renderEntity(OtEntity entity) {
 			ImGui::SetKeyboardFocusHere();
 		}
 
-		if (OtUiInputText("##rename", component.tag)) {
+		if (OtUiInputText("##rename", &component.tag)) {
 			auto newValue = component.serialize(nullptr).dump();
 			nextTask = std::make_shared<OtEditComponentTask<OtCoreComponent>>(&scene, entity, oldValue, newValue);
 		}

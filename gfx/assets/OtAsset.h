@@ -270,8 +270,6 @@ private:
 			notifyChanged();
 			return true;
 		});
-
-		notifyChanged();
 	}
 
 	void unfollow() {

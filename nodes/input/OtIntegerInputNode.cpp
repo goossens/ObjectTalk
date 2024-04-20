@@ -12,6 +12,8 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
+#include "OtUi.h"
+
 #include "OtNodesFactory.h"
 
 
@@ -41,21 +43,7 @@ public:
 	// special rendering for input nodes
 	inline bool customInputRendering(float width) override {
 		ImGui::SetNextItemWidth(width);
-
-		auto absValue = std::abs(value);
-		int speed;
-
-		if (absValue < 100) {
-			speed = 1;
-
-		} else if (absValue < 1000) {
-			speed = 10;
-
-		} else {
-			speed = 100;
-		}
-
-		return ImGui::DragInt("##value", &value, speed);
+		return OtUiDragInt("##value", &value);
 	}
 
 	// (de)serialize node

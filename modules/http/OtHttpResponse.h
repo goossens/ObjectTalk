@@ -80,7 +80,7 @@ private:
 	OtHttpHeaders headers;
 
 	uv_stream_t* clientStream;
-	uv_file uv_read_fd;
+	uv_os_fd_t uv_read_fd;
 	uv_fs_t uv_read_req;
 	char* uv_read_buffer;
 };

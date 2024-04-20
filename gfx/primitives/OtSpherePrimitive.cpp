@@ -11,10 +11,10 @@
 
 #include <cmath>
 
-#include "imgui.h"
 #include "nlohmann/json.hpp"
 
 #include "OtSpherePrimitive.h"
+#include "OtUi.h"
 
 
 //
@@ -69,12 +69,12 @@ void OtSpherePrimitive::createMesh(OtMesh* mesh) {
 
 bool OtSpherePrimitive::renderUI() {
 	bool changed = false;
-	changed |= ImGui::SliderInt("Phi Segments", &phiSegments, 1, 200);
-	changed |= ImGui::SliderFloat("Phi Start", &phiStart, 0.0f, 360.0f);
-	changed |= ImGui::SliderFloat("Phi Length", &phiLength, 0.0f, 360.0f);
-	changed |= ImGui::SliderInt("Theta Segments", &thetaSegments, 1, 100);
-	changed |= ImGui::SliderFloat("Theta Start", &thetaStart, 0.0f, 180.0f);
-	changed |= ImGui::SliderFloat("Theta Length", &thetaLength, 0.0f, 180.0f);
+	changed |= OtUiDragInt("Phi Segments", &phiSegments, 1, 200);
+	changed |= OtUiDragFloat("Phi Start", &phiStart, 0.0f, 360.0f);
+	changed |= OtUiDragFloat("Phi Length", &phiLength, 0.0f, 360.0f);
+	changed |= OtUiDragInt("Theta Segments", &thetaSegments, 1, 100);
+	changed |= OtUiDragFloat("Theta Start", &thetaStart, 0.0f, 180.0f);
+	changed |= OtUiDragFloat("Theta Length", &thetaLength, 0.0f, 180.0f);
 	return changed;
 }
 

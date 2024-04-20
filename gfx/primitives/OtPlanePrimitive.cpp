@@ -9,10 +9,10 @@
 //	Include files
 //
 
-#include "imgui.h"
 #include "nlohmann/json.hpp"
 
 #include "OtPlanePrimitive.h"
+#include "OtUi.h"
 
 
 //
@@ -63,8 +63,8 @@ void OtPlanePrimitive::createMesh(OtMesh* mesh) {
 
 bool OtPlanePrimitive::renderUI() {
 	bool changed = false;
-	changed |= ImGui::SliderInt("Width Segments", &widthSegments, 1, 256);
-	changed |= ImGui::SliderInt("Height Segments", &heightSegments, 1, 256);
+	changed |= OtUiDragInt("Width Segments", &widthSegments, 1, 256);
+	changed |= OtUiDragInt("Height Segments", &heightSegments, 1, 256);
 	return changed;
 }
 

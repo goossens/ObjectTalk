@@ -9,12 +9,12 @@
 //	Include files
 //
 
-#include "imgui.h"
 #include "nlohmann/json.hpp"
 
 #include "OtException.h"
 
 #include "OtGeometryComponent.h"
+#include "OtUi.h"
 
 
 //
@@ -23,9 +23,9 @@
 
 bool OtGeometryComponent::renderUI() {
 	bool changed = asset.renderUI("Path##GeometryPath");
-	changed |= ImGui::Checkbox("Wireframe", &wireframe);
-	changed |= ImGui::Checkbox("Transparent", &transparent);
-	changed |= ImGui::Checkbox("Cull Back Faces", &cullback);
+	changed |= OtUiToggleButton("Wireframe", &wireframe);
+	changed |= OtUiToggleButton("Transparent", &transparent);
+	changed |= OtUiToggleButton("Cull Back Faces", &cullback);
 	return changed;
 }
 

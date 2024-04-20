@@ -14,6 +14,7 @@
 #include "nlohmann/json.hpp"
 
 #include "OtGlm.h"
+#include "OtUi.h"
 
 #include "OtPathTools.h"
 #include "OtWaterComponent.h"
@@ -26,21 +27,21 @@
 bool OtWaterComponent::renderUI() {
 	bool changed = false;
 
-	changed |= ImGui::DragFloat("Level", &level, 1.0f, -100.0f, 1000.0f);
-	changed |= ImGui::DragFloat("Distance", &distance, 1.0f, 1.0f, 1000.0f);
-	changed |= ImGui::Checkbox("Use Refractance", &useRefractance);
+	changed |= OtUiDragFloat("Level", &level, -100.0f, 1000.0f);
+	changed |= OtUiDragFloat("Distance", &distance, 1.0f, 1000.0f);
+	changed |= OtUiToggleButton("Use Refractance", &useRefractance);
 
 	if (!useRefractance) {
 		changed |= ImGui::ColorEdit3("Color", glm::value_ptr(color));
 	}
 
 	changed |= normals.renderUI("Normals");
-	changed |= ImGui::DragFloat("Scale", &scale, 0.01f, 0.01f, 100.0f);
-	changed |= ImGui::DragFloat("Speed", &speed, 0.01f, 0.01f, 10.0f);
-	changed |= ImGui::DragFloat("Metallic", &metallic, 0.01f, 0.0f, 1.0f);
-	changed |= ImGui::DragFloat("Roughness", &roughness, 0.01f, 0.0f, 1.0f);
-	changed |= ImGui::DragFloat("Ambient Occlusion", &ao, 0.01f, 0.0f, 1.0f);
-	changed |= ImGui::DragFloat("Reflectivity", &reflectivity, 0.01f, 0.1f, 10.0f);
+	changed |= OtUiDragFloat("Scale", &scale, 0.01f, 100.0f);
+	changed |= OtUiDragFloat("Speed", &speed, 0.01f, 10.0f);
+	changed |= OtUiDragFloat("Metallic", &metallic, 0.0f, 1.0f);
+	changed |= OtUiDragFloat("Roughness", &roughness, 0.0f, 1.0f);
+	changed |= OtUiDragFloat("Ambient Occlusion", &ao, 0.0f, 1.0f);
+	changed |= OtUiDragFloat("Reflectivity", &reflectivity, 0.1f, 10.0f);
 	return changed;
 }
 

@@ -11,10 +11,10 @@
 
 #include <cstdint>
 
-#include "imgui.h"
 #include "nlohmann/json.hpp"
 
 #include "OtCubePrimitive.h"
+#include "OtUi.h"
 
 
 //
@@ -23,9 +23,9 @@
 
 bool OtCubePrimitive::renderUI() {
 	bool changed = false;
-	changed |= ImGui::SliderInt("X Segments", &widthSegments, 1, 20);
-	changed |= ImGui::SliderInt("Y Segments", &heightSegments, 1, 20);
-	changed |= ImGui::SliderInt("Z Segments", &depthSegments, 1, 20);
+	changed |= OtUiDragInt("X Segments", &widthSegments, 1, 20);
+	changed |= OtUiDragInt("Y Segments", &heightSegments, 1, 20);
+	changed |= OtUiDragInt("Z Segments", &depthSegments, 1, 20);
 	return changed;
 }
 

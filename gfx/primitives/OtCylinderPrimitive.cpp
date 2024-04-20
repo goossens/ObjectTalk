@@ -12,10 +12,10 @@
 #include <cstdint>
 #include <cmath>
 
-#include "imgui.h"
 #include "nlohmann/json.hpp"
 
 #include "OtCylinderPrimitive.h"
+#include "OtUi.h"
 
 
 //
@@ -132,13 +132,13 @@ void OtCylinderPrimitive::generateCap(OtMesh* mesh, bool top) {
 
 bool OtCylinderPrimitive::renderUI() {
 	bool changed = false;
-	changed |= ImGui::SliderFloat("Top Radius", &topRadius, 0.0f, 1.0f);
-	changed |= ImGui::SliderFloat("Bottom Radius", &bottomRadius, 0.0f, 1.0f);
-	changed |= ImGui::SliderInt("Radial Segments", &radialSegments, 1, 64);
-	changed |= ImGui::SliderInt("Height Segments", &heightSegments, 1, 32);
-	changed |= ImGui::Checkbox("Open Ended", &openEnded);
-	changed |= ImGui::SliderFloat("Theta Start", &thetaStart, 0.0f, 360.0f);
-	changed |= ImGui::SliderFloat("Theta Length", &thetaLength, 0.0f, 360.0f);
+	changed |= OtUiDragFloat("Top Radius", &topRadius, 0.0f, 1.0f);
+	changed |= OtUiDragFloat("Bottom Radius", &bottomRadius, 0.0f, 1.0f);
+	changed |= OtUiDragInt("Radial Segments", &radialSegments, 1, 64);
+	changed |= OtUiDragInt("Height Segments", &heightSegments, 1, 32);
+	changed |= OtUiToggleButton("Open Ended", &openEnded);
+	changed |= OtUiDragFloat("Theta Start", &thetaStart, 0.0f, 360.0f);
+	changed |= OtUiDragFloat("Theta Length", &thetaLength, 0.0f, 360.0f);
 	return changed;
 }
 

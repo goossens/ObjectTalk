@@ -29,15 +29,15 @@ bool OtPostProcessingComponent::renderUI() {
 	changed |= OtUiToggleButton("Fog", &fog);
 
 	if (fog) {
-		changed |= ImGui::DragFloat("Fog Density", &fogDensity, 0.01f);
+		changed |= OtUiDragFloat("Fog Density", &fogDensity);
 		changed |= ImGui::ColorEdit3("Fog Color", glm::value_ptr(fogColor));
 	}
 
-	changed |= ImGui::SliderFloat("Bloom Intensity", &bloomIntensity, 0.0f, 3.0f, "%.2f");
+	changed |= OtUiDragFloat("Bloom Intensity", &bloomIntensity, 0.0f, 3.0f);
 
 	changed |= OtUiToggleButton("Godrays", &godrays);
-	changed |= ImGui::SliderFloat("Exposure", &exposure, 0.1f, 3.0f, "%.2f");
-	changed |= ImGui::SliderFloat("Contrast", &contrast, 0.5f, 2.0f, "%.2f");
+	changed |= OtUiDragFloat("Exposure", &exposure, 0.1f, 3.0f);
+	changed |= OtUiDragFloat("Contrast", &contrast, 0.5f, 2.0f);
 	return changed;
 }
 

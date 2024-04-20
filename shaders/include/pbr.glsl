@@ -104,6 +104,37 @@ vec3 directionalLightPBR(Material material, DirectionalLight light, vec3 V) {
 	return color;
 }
 
+//	PBR calculation for point light
+vec3 pointLightPBR(Material material, PointLight light, vec3 V) {
+	// calculate surface reflection at zero incidence
+	vec3 F0 = mix(vec3_splat(0.04), material.albedo, material.metallic);
+
+	// calculate halfway vector between view direction and light direction
+	vec3 H = normalize(V + light.L);
+
+	// calculate the ratio between specular and diffuse reflection
+	vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0); // Schlick Fresnel function
+
+	// Cook-Torrance Microfacet Bidirectional Reflective Distribution (BRDF)
+	float NDF = distributionGGX(material.normal, H, material.roughness); // GGX normal distribution function
+	float G = geometrySmith(material.normal, V, light.L, material.roughness); // Smith Schlick geometry function
+
+	vec3 specular =
+		(NDF * G * F) /
+		(4.0 * max(dot(material.normal, V), 0.0) * max(dot(material.normal, light.L), 0.0) + 0.0001);
+
+	// calculate contribution to the reflectance equation
+	vec3 kS = F;
+	vec3 kD = (vec3_splat(1.0) - kS) * (1.0 - material.metallic);
+
+	// determine outgoing radiance
+	float NdotL = saturate(dot(material.normal, light.L));
+	vec3 color = (kD / PI + specular) * light.color * NdotL;
+
+	// return result
+	return (kD / PI + specular) * light.color * NdotL * light.attenuation;
+}
+
 //	PBR calculation for image based lighting
 vec3 imageBasedLightingPBR(Material material, vec3 V, int envLevels, sampler2D brdfLUT, samplerCube irradianceMap, samplerCube envMap) {
 	// calculate surface reflection at zero incidence

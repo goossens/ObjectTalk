@@ -34,5 +34,25 @@ struct DirectionalLight {
 	float shadow;
 };
 
+// point light data
+struct PointLight {
+	float radius;
+	vec3 color;
+	float attenuation;
+	vec3 L; // direction to light
+};
+
+// only for point lights
+float distanceAttenuation(float distance) {
+	// inverse square falloff
+	return 1.0 / max(distance * distance, 0.01 * 0.01);
+}
+
+// window function with smooth transition to 0
+float smoothAttenuation(float distance, float radius) {
+	float nom = saturate(1.0 - pow(distance / radius, 4.0));
+	return nom * nom * distanceAttenuation(distance);
+}
+
 
 #endif

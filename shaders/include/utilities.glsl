@@ -69,9 +69,51 @@ vec3 worldToClipSpace(vec3 pos) {
 	return p.xyz / p.w;
 }
 
-// determine UV coordinates from world coordinates
+// determine UV screeninates from world screeninates
 vec2 worldSpaceToUv(vec3 pos) {
 	return clipToUvSpace(worldToClipSpace(pos));
+}
+
+// convert point from screen to view space
+vec3 screenToViewSpace(vec4 screen) {
+#if BGFX_SHADER_LANGUAGE_GLSL
+	vec3 ndc = vec3(
+		2.0 * (screen.x - u_viewRect.x) / u_viewRect.z - 1.0,
+		2.0 * (screen.y - u_viewRect.y) / u_viewRect.w - 1.0,
+		2.0 * screen.z - 1.0
+	);
+#else
+	vec3 ndc = vec3(
+		2.0 * (screen.x - u_viewRect.x) / u_viewRect.z - 1.0,
+		2.0 * (u_viewRect.w - screen.y - 1 - u_viewRect.y) / u_viewRect.w - 1.0,
+		screen.z
+	);
+#endif
+
+	vec4 view = mul(u_invProj, vec4(ndc, 1.0));
+	view = view / view.w;
+	return view.xyz;
+}
+
+// convert point from screen to world space
+vec3 screenToWorldSpace(vec4 screen) {
+#if BGFX_SHADER_LANGUAGE_GLSL
+	vec3 ndc = vec3(
+		2.0 * (screen.x - u_viewRect.x) / u_viewRect.z - 1.0,
+		2.0 * (screen.y - u_viewRect.y) / u_viewRect.w - 1.0,
+		2.0 * screen.z - 1.0
+	);
+#else
+	vec3 ndc = vec3(
+		2.0 * (screen.x - u_viewRect.x) / u_viewRect.z - 1.0,
+		2.0 * (u_viewRect.w - screen.y - 1 - u_viewRect.y) / u_viewRect.w - 1.0,
+		screen.z
+	);
+#endif
+
+	vec4 world = mul(u_invViewProj, vec4(ndc, 1.0));
+	world = world / world.w;
+	return world.xyz;
 }
 
 

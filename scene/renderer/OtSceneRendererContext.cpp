@@ -18,8 +18,9 @@
 
 void OtSceneRendererContext::initialize() {
 	// reset flags
-	hasDirectionalLighting = false;
 	hasImageBasedLighting = false;
+	hasDirectionalLighting = false;
+	hasPointLighting = false;
 	hasOpaqueEntities = false;
 	hasOpaqueGeometries = false;
 	hasOpaqueModels = false;
@@ -36,7 +37,13 @@ void OtSceneRendererContext::initialize() {
 	waterEntity = OtEntityNull;
 
 	// check entities, collect data and set flags
-	scene->eachEntityDepthFirst([&](OtEntity entity) {
+	scene->eachEntityBreadthFirst([&](OtEntity entity) {
+		// process image based lighting
+		if (scene->hasComponent<OtIblComponent>(entity)) {
+			hasImageBasedLighting |= scene->getComponent<OtIblComponent>(entity).cubemap.isReady();
+			iblEntity = entity;
+		}
+
 		// process directional lights
 		if (scene->hasComponent<OtDirectionalLightComponent>(entity) && scene->hasComponent<OtTransformComponent>(entity)) {
 			auto& light = scene->getComponent<OtDirectionalLightComponent>(entity);
@@ -62,10 +69,9 @@ void OtSceneRendererContext::initialize() {
 			castShadow = sky.castShadow;
 		}
 
-		// process image based lighting
-		if (scene->hasComponent<OtIblComponent>(entity)) {
-			hasImageBasedLighting |= scene->getComponent<OtIblComponent>(entity).cubemap.isReady();
-			iblEntity = entity;
+		// process point lighting
+		if (scene->hasComponent<OtPointLightComponent>(entity)) {
+			hasPointLighting = true;
 		}
 
 		// process all geometry entities

@@ -12,12 +12,19 @@
 //	Include files
 //
 
+#include <glm/gtx/matrix_decompose.hpp>
+#include <glm/gtx/quaternion.hpp>
+
 #include "OtFrameBuffer.h"
 #include "OtGbuffer.h"
+#include "OtInstanceDataBuffer.h"
 #include "OtPass.h"
 #include "OtSampler.h"
 #include "OtShaderProgram.h"
+#include "OtTransientIndexBuffer.h"
+#include "OtTransientVertexBuffer.h"
 #include "OtUniformMat4.h"
+#include "OtVertex.h"
 
 #include "OtSceneRenderEntitiesPass.h"
 
@@ -35,9 +42,14 @@ public:
 	void render(OtSceneRendererContext& ctx) {
 		// run the geometry and lighting passes
 		renderGeometry(ctx);
-		renderLight(ctx);
+		renderDirectionalLight(ctx);
+
+		if (ctx.hasPointLighting) {
+			renderPointLights(ctx);
+		}
 	}
 
+	// render all opaque geometry
 	void renderGeometry(OtSceneRendererContext& ctx) {
 		// setup the rendering pass
 		OtPass pass;
@@ -51,7 +63,8 @@ public:
 		renderEntities(ctx, pass);
 	}
 
-	void renderLight(OtSceneRendererContext& ctx) {
+	// run direct lighting calculations
+	void renderDirectionalLight(OtSceneRendererContext& ctx) {
 		// setup pass
 		OtPass pass;
 		pass.setFrameBuffer(framebuffer);
@@ -72,13 +85,91 @@ public:
 		gbuffer.bindDepthTexture(lightingDepthSampler, 4);
 
 		// run the program
-		program.setState(
+		directionalLightProgram.setState(
 			OtStateWriteRgb |
 			OtStateWriteA |
 			OtStateWriteZ |
 			OtStateDepthTestLess);
 
-		pass.runShaderProgram(program);
+		pass.runShaderProgram(directionalLightProgram);
+	}
+
+	// render point lights
+	void renderPointLights(OtSceneRendererContext& ctx) {
+		// setup pass
+		OtPass pass;
+		pass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
+		pass.setFrameBuffer(framebuffer);
+		pass.setTransform(ctx.camera.viewMatrix, ctx.camera.projectionMatrix);
+
+		// send out geometry
+		static constexpr float LEFT = -1.0f, RIGHT = 1.0f, BOTTOM = -1.0f, TOP = 1.0f, FRONT = 1.0f, BACK = -1.0f;
+
+		static glm::vec3 vertices[] = {
+			glm::vec3{LEFT, BOTTOM, FRONT}, glm::vec3{ RIGHT, BOTTOM, FRONT}, glm::vec3{LEFT, TOP, FRONT}, glm::vec3{RIGHT, TOP, FRONT},
+			glm::vec3{LEFT, BOTTOM, BACK},  glm::vec3{ RIGHT, BOTTOM, BACK},  glm::vec3{LEFT, TOP, BACK},  glm::vec3{RIGHT, TOP, BACK},
+		};
+
+		OtTransientVertexBuffer tvb;
+		tvb.submit(vertices, sizeof(vertices) / sizeof(*vertices), OtVertexPos::getLayout());
+
+		static uint32_t indices[] = {
+			0, 1, 3, 3, 2, 0, // front
+			5, 4, 6, 6, 7, 5, // back
+			4, 0, 2, 2, 6, 4, // left
+			1, 5, 7, 7, 3, 1, // right
+			2, 3, 7, 7, 6, 2, // top
+			4, 5, 1, 1, 0, 4  // bottom
+		};
+
+		OtTransientIndexBuffer tib;
+		tib.submit(indices, sizeof(indices) / sizeof(*indices));
+
+		// collect all point light data
+		struct Light {
+			Light(glm::vec3 p, float r, glm::vec3 c) : position(p), radius(r), color(c) {}
+			glm::vec3 position;
+			float radius;
+			glm::vec3 color;
+			float unused;
+		};
+
+		std::vector<Light> lights;
+
+		for (auto&& [entity, component] : ctx.scene->view<OtPointLightComponent>().each()) {
+			glm::mat4 transform = ctx.scene->getGlobalTransform(entity);
+
+			glm::vec3 translate;
+			glm::quat rotate;
+			glm::vec3 scale;
+			glm::vec3 skew;
+			glm::vec4 perspective;
+			glm::decompose(transform, scale, rotate, translate, skew, perspective);
+
+			lights.emplace_back(scale * component.offset + translate, component.radius, component.color);
+		}
+
+		// send out instance data
+		OtInstanceDataBuffer idb;
+		idb.submit(lights.data(), lights.size(), sizeof(Light));
+
+		// submit the uniforms
+		submitLightingUniforms(ctx);
+
+		// bind all textures
+		gbuffer.bindAlbedoTexture(lightingAlbedoSampler, 0);
+		gbuffer.bindNormalTexture(lightingNormalSampler, 1);
+		gbuffer.bindPbrTexture(lightingPbrSampler, 2);
+		gbuffer.bindDepthTexture(lightingDepthSampler, 3);
+
+		// run the program
+		pointLightProgram.setState(
+			OtStateWriteRgb |
+			OtStateDepthTestGreaterEqual |
+			OtStateCullCcw |
+			OtStateBlendAdd);
+
+		pass.runShaderProgram(pointLightProgram);
 	}
 
 protected:
@@ -146,5 +237,6 @@ private:
 	OtShaderProgram instancedOpaqueProgram{"OtDeferredInstancingVS", "OtDeferredPbrFS"};
 	OtShaderProgram terrainProgram{"OtTerrainVS", "OtTerrainFS"};
 
-	OtShaderProgram program{"OtDeferredLightingVS", "OtDeferredLightingFS"};
+	OtShaderProgram directionalLightProgram{"OtDeferredLightingVS", "OtDeferredLightingFS"};
+	OtShaderProgram pointLightProgram{"OtPointLightsVS", "OtPointLightsFS"};
 };

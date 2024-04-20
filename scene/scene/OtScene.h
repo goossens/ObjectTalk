@@ -29,6 +29,7 @@
 #include "OtNodesComponent.h"
 #include "OtScriptComponent.h"
 #include "OtSkyBoxComponent.h"
+#include "OtPointLightComponent.h"
 #include "OtPostProcessingComponent.h"
 #include "OtSkyComponent.h"
 #include "OtParticlesComponent.h"
@@ -43,13 +44,15 @@
 
 #define OtSceneComponents \
 	OtGeometryComponent, \
+	OtGeometryComponent, \
 	OtModelComponent, \
 	OtTransformComponent, \
-	OtIblComponent, \
 	OtInstancingComponent, \
 	OtMaterialComponent, \
 	OtCameraComponent, \
+	OtIblComponent, \
 	OtDirectionalLightComponent, \
+	OtPointLightComponent, \
 	OtScriptComponent, \
 	OtNodesComponent, \
 	OtBackgroundComponent, \

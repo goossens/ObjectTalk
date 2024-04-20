@@ -91,6 +91,13 @@
 							"wireframe": false
 						},
 						{
+							"component": "Geometry",
+							"cullback": true,
+							"path": "virtual:wall",
+							"transparent": false,
+							"wireframe": false
+						},
+						{
 							"component": "Transform",
 							"rotation": [
 								0.0,
@@ -142,6 +149,13 @@
 							"component": "Core",
 							"tag": "Back",
 							"uuid": 634174959
+						},
+						{
+							"component": "Geometry",
+							"cullback": true,
+							"path": "virtual:wall",
+							"transparent": false,
+							"wireframe": false
 						},
 						{
 							"component": "Geometry",
@@ -211,6 +225,13 @@
 							"wireframe": false
 						},
 						{
+							"component": "Geometry",
+							"cullback": true,
+							"path": "virtual:wall",
+							"transparent": false,
+							"wireframe": false
+						},
+						{
 							"component": "Transform",
 							"rotation": [
 								0.0,
@@ -262,6 +283,13 @@
 							"component": "Core",
 							"tag": "Floor",
 							"uuid": 1238961594
+						},
+						{
+							"component": "Geometry",
+							"cullback": true,
+							"path": "virtual:wall",
+							"transparent": false,
+							"wireframe": false
 						},
 						{
 							"component": "Geometry",
@@ -693,6 +721,20 @@
 										-2.0,
 										0.0
 									]
+								},
+								{
+									"color": [
+										0.11764705926179886,
+										0.0784313753247261,
+										0.019607843831181526
+									],
+									"component": "Point Light",
+									"offset": [
+										0.17000000178813934,
+										0.10000000149011612,
+										0.029999999329447746
+									],
+									"radius": 0.30000001192092896
 								}
 							]
 						},
@@ -721,6 +763,20 @@
 										-1.100000023841858,
 										-0.10000000149011612
 									]
+								},
+								{
+									"color": [
+										0.05752211809158325,
+										0.04267420992255211,
+										0.0050904517993330956
+									],
+									"component": "Point Light",
+									"offset": [
+										-1.600000023841858,
+										-0.20000000298023224,
+										-0.10000000149011612
+									],
+									"radius": 1.0
 								},
 								{
 									"component": "Particles",
@@ -832,6 +888,20 @@
 										-2.0,
 										0.0
 									]
+								},
+								{
+									"color": [
+										0.11764705926179886,
+										0.0784313753247261,
+										0.019607843831181526
+									],
+									"component": "Point Light",
+									"offset": [
+										-0.20000000298023224,
+										0.10000000149011612,
+										0.019999999552965164
+									],
+									"radius": 0.30000001192092896
 								}
 							]
 						},
@@ -860,6 +930,20 @@
 										-1.100000023841858,
 										-0.10000000149011612
 									]
+								},
+								{
+									"color": [
+										0.16814160346984863,
+										0.12200108170509338,
+										0.005207922775298357
+									],
+									"component": "Point Light",
+									"offset": [
+										-0.6000000238418579,
+										-0.20000000298023224,
+										-0.10000000149011612
+									],
+									"radius": 1.2000000476837158
 								},
 								{
 									"component": "Particles",

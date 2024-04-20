@@ -57,8 +57,9 @@ public:
 	OtCascadedShadowMap* csm;
 
 	// rendering flags
-	bool hasDirectionalLighting;
 	bool hasImageBasedLighting;
+	bool hasDirectionalLighting;
+	bool hasPointLighting;
 	bool hasOpaqueEntities;
 	bool hasOpaqueGeometries;
 	bool hasOpaqueModels;

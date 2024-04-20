@@ -38,7 +38,7 @@ public:
 		return getPoint(u);
 	}
 
-	// get a unit vector tangent at t  [0, 1]
+	// get a unit vector tangent at t [0, 1]
 	inline glm::vec2 getTangent(float t) override {
 		return glm::normalize(p2 - p1);
 	}

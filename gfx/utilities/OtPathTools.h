@@ -255,5 +255,6 @@ private:
 	std::string path;
 	std::function<void()> callback;
 	uv_fs_event_t* fsEventHandle = nullptr;
+	std::filesystem::file_time_type lastUpdateTime;
 	bool following = false;
 };

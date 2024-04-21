@@ -24,8 +24,8 @@
 //
 
 void OtEditor::newFile(const std::string& p) {
+	unfollow();
 	path = p;
-	follower.clear();
 	clear();
 }
 
@@ -56,6 +56,7 @@ void OtEditor::saveFile() {
 //
 
 void OtEditor::saveAsFile(const std::string& p) {
+	unfollow();
 	path = p;
 	save();
 	follow();
@@ -81,6 +82,15 @@ void OtEditor::follow() {
 			OtMessageBus::instance()->send(fmt::format("warning File {} was edited externally.\nBe careful when saving!", path));
 		}
 	});
+}
+
+
+//
+//	OtEditor::unfollow
+//
+
+void OtEditor::unfollow() {
+	follower.unfollow();
 }
 
 

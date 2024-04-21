@@ -65,6 +65,7 @@ protected:
 
 	// follow file changes and update (if possible)
 	void follow();
+	void unfollow();
 	bool ignoreNextFileUpdate = false;
 
 	// render a file menu

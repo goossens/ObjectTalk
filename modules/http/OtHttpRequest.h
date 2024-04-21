@@ -113,7 +113,7 @@ private:
 	std::string multipartValue;
 
 	std::string multipartFile;
-	uv_os_fd_t multipartFD;
+	uv_file multipartFD;
 
 	multipartparser_callbacks multipartCallbacks;
 	multipartparser multipartParser;

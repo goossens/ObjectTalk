@@ -289,7 +289,7 @@ OtObject OtHttpResponseClass::sendfile(const std::string& name) {
 		auto status = uv_fs_open(uv_default_loop(), &open_req, name.c_str(), O_RDONLY, 0, nullptr);
 		UV_CHECK_ERROR("uv_fs_open", status);
 		uv_fs_req_cleanup(&open_req);
-		uv_read_fd = (uv_os_fd_t) open_req.result;
+		uv_read_fd = (uv_file) open_req.result;
 
 		uv_read_req.data = this;
 		uv_read_buffer = (char*) malloc(64 * 1024);

@@ -17,7 +17,7 @@
 //
 
 void OtPathFollower::follow(const std::string& p, std::function<void()> cb) {
-	// cleaup first (if required)
+	// cleanup first (if required)
 	if (following) {
 		unfollow();
 	}
@@ -25,6 +25,9 @@ void OtPathFollower::follow(const std::string& p, std::function<void()> cb) {
 	// remember properties
 	path = p;
 	callback = cb;
+
+	// get last update time for file
+	lastUpdateTime = std::filesystem::last_write_time(path);
 
 	// create a new event handle
 	fsEventHandle = new uv_fs_event_t;
@@ -36,10 +39,16 @@ void OtPathFollower::follow(const std::string& p, std::function<void()> cb) {
 	status = uv_fs_event_start(
 		fsEventHandle,
 		[](uv_fs_event_t* handle, const char* filename, int events, int status) {
-			// call callback (if required)
+			// get pointer to follower object
 			auto follower = (OtPathFollower*) handle->data;
 
-			if (follower->callback && events & UV_CHANGE) {
+			// we need to track file version dates ourselves as libuv sometimes
+			// calls us twice for the same file change
+			std::filesystem::file_time_type ftime = std::filesystem::last_write_time(follower->path);
+
+			// call callback (if required)
+			if (follower->callback && (events & UV_CHANGE) && (ftime > follower->lastUpdateTime)) {
+				follower->lastUpdateTime = ftime;
 				follower->callback();
 			}
 		},

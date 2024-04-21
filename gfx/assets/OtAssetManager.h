@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <atomic>
 #include <functional>
 #include <string>
 #include <unordered_map>
@@ -120,7 +121,7 @@ private:
 
 	// the thread pool to handle the asset loading
 	BS::thread_pool threadpool;
-	int loading = 0;
+	std::atomic<int> loading = 0;
 
 	// timer to run the "garbage collector"
 	uv_timer_t cleanupTimerHandle;

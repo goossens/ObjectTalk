@@ -27,6 +27,7 @@
 #include "OtWorkspace.h"
 
 #include "OtEditPostProcessingTask.h"
+#include "OtSaveEditorCameraToTask.h"
 
 #include "OtCreateEntityTask.h"
 #include "OtDeleteEntityTask.h"
@@ -229,6 +230,22 @@ void OtSceneEditor::renderMenu() {
 			// render editor camera settings
 			if (ImGui::BeginMenu("Editor Camera Settings")) {
 				editorCamera.renderUI();
+				ImGui::EndMenu();
+			}
+
+			// allow editor camera settings to be transferred to scene camera
+			if (ImGui::BeginMenu("Save Editor Camera To")) {
+				// get a list of cameras
+				OtEntity list[9];
+				int entries = 0;
+				makeCameraList(&scene, scene.getRootEntity(), list, entries);
+
+				for (auto i = 0; i < entries; i++) {
+					if (ImGui::MenuItem(scene.getTag(list[i]).c_str())) {
+						saveEditorCameraTo(list[i]);
+					}
+				}
+
 				ImGui::EndMenu();
 			}
 
@@ -975,6 +992,32 @@ void OtSceneEditor::pasteEntity() {
 
 void OtSceneEditor::duplicateEntity() {
 	nextTask = std::make_shared<OtDuplicateEntityTask>(&scene, selectedEntity);
+}
+
+
+//
+//	OtSceneEditor::saveEditorCameraTo
+//
+
+void OtSceneEditor::saveEditorCameraTo(OtEntity entity) {
+	// get camera components
+	auto& camera = scene.getComponent<OtCameraComponent>(entity);
+	auto& transform = scene.getComponent<OtTransformComponent>(entity);
+	auto oldCamera = camera.serialize(nullptr).dump();
+	auto oldTransform = transform.serialize(nullptr).dump();
+
+	// transfer values
+	camera.fov = editorCamera.getFov();
+	camera.nearPlane = editorCamera.getNearPlane();
+	camera.farPlane = editorCamera.getFarPlane();
+
+	transform.translation = editorCamera.getPosition();
+	transform.rotation = glm::vec3(editorCamera.getPitch(), editorCamera.getYaw(), 0.0f);
+
+	// create an edit task so this can be undone
+	auto newCamera = camera.serialize(nullptr).dump();
+	auto newTransform = transform.serialize(nullptr).dump();
+	nextTask = std::make_shared<OtSaveEditorCameraToTask>(&scene, entity, oldCamera, oldTransform, newCamera, newTransform);
 }
 
 

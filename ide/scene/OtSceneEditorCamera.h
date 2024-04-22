@@ -13,6 +13,7 @@
 //
 
 #include "glm/glm.hpp"
+#include "nlohmann/json_fwd.hpp"
 
 
 //
@@ -26,6 +27,10 @@ public:
 
 	// render a user interface for the camera
 	bool renderUI();
+
+	// (de)serialize data
+	nlohmann::json serialize(std::string* basedir);
+	void deserialize(nlohmann::json data, std::string* basedir);
 
 	// process posible camera inputs
 	void handleKeyboardAndMouse();
@@ -58,6 +63,7 @@ private:
 	float fov = 60.0f;
 	float nearPlane = 0.1f;
 	float farPlane = 100.0f;
+	float speed = 3.0f;
 
 	// work properties
 	glm::vec3 forward;

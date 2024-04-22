@@ -91,13 +91,7 @@ void OtSceneEditor::processMetaData() {
 
 	// process metadata and set editor properties
 	if (metadata.contains("camera")) {
-		auto camera = metadata["camera"];
-		editorCamera.setPosition(camera.value("position", glm::vec3(0.0f, 5.0f, 20.0f)));
-		editorCamera.setPitch(camera.value("pitch", -20.0f));
-		editorCamera.setYaw(camera.value("yaw", 0.0f));
-		editorCamera.setFov(camera.value("fov", 60.0f));
-		editorCamera.setNearPlane(camera.value("near", 0.5f));
-		editorCamera.setFarPlane(camera.value("far", 200.0f));
+		editorCamera.deserialize(metadata["camera"], nullptr);
 	}
 
 	if (metadata.contains("grid")) {
@@ -124,15 +118,7 @@ void OtSceneEditor::generateMetaData() {
 	// build metadata
 	auto metadata = nlohmann::json::object();
 	metadata["type"] = "scene";
-
-	auto camera = nlohmann::json::object();
-	camera["position"] = editorCamera.getPosition();
-	camera["pitch"] = editorCamera.getPitch();
-	camera["yaw"] = editorCamera.getYaw();
-	camera["fov"] = editorCamera.getFov();
-	camera["near"] = editorCamera.getNearPlane();
-	camera["far"] = editorCamera.getFarPlane();
-	metadata["camera"] = camera;
+	metadata["camera"] = editorCamera.serialize(nullptr);
 
 	auto grid = nlohmann::json::object();
 	grid["enabled"] = gridEnabled;
@@ -859,7 +845,7 @@ void OtSceneEditor::renderNewEntitiesMenu(OtEntity entity) {
 		{ "Model", OtCreateEntityTask::model},
 		{ "Geometry", OtCreateEntityTask::geometry},
 		{ "Procedural Sky", OtCreateEntityTask::sky},
-		{ "Sky box", OtCreateEntityTask::skybox},
+		{ "Sky Box", OtCreateEntityTask::skybox},
 		{ "Infinite Terrain", OtCreateEntityTask::terrain},
 		{ "Procedural Water", OtCreateEntityTask::water},
 		{ "Particles", OtCreateEntityTask::particles}

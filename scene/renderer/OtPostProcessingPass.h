@@ -41,7 +41,7 @@ public:
 		OtFrameBuffer* output = &postProcessBuffer1;
 
 		// get post processing settings
-		auto& settings = ctx.scene->getPostProcessing();
+		auto settings = ctx.scene->getPostProcessing();
 
 		// do some special processing for godrays
 		glm::vec2 uv;

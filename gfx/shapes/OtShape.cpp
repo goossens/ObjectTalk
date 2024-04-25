@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <fstream>
+
 #include "OtFunction.h"
 
 #include "OtShape.h"
@@ -16,127 +18,146 @@
 
 
 //
-//	OtShapeClass::moveTo
+//	OtShape::load
 //
 
-OtObject OtShapeClass::moveTo(float x, float y) {
-	if (currentPath && currentPath->hasSegments()) {
-		currentPath->close();
-	}
-
-	if (!currentPath || currentPath->hasSegments()) {
-		currentPath = std::make_shared<OtCurvePathClass>();
-		paths.push_back(currentPath);
-	}
-
-	currentPath->moveTo(glm::vec2(x, y));
-	return OtObject(this);
+void OtShape::load(const std::string &path) {
 }
 
 
 //
-//	OtShapeClass::lineTo
+//	OtShape::save
 //
 
-OtObject OtShapeClass::lineTo(float x, float y) {
-	if (!currentPath) {
-		currentPath = std::make_shared<OtCurvePathClass>();
-		paths.push_back(currentPath);
+void OtShape::save(const std::string& path) {
+	std::string output;
+
+	// see if we have any paths
+	if (paths) {
+		for (auto& path : *paths) {
+			output += path.toString();
+		}
 	}
 
-	currentPath->lineTo(glm::vec2(x, y));
-	return OtObject(this);
-}
+	// write shape to file
+	try {
+		std::ofstream stream(path.c_str());
 
-
-//
-//	OtShapeClass::quadraticCurveTo
-//
-
-OtObject OtShapeClass::quadraticCurveTo(float cx, float cy, float x, float y) {
-	if (!currentPath) {
-		currentPath = std::make_shared<OtCurvePathClass>();
-		paths.push_back(currentPath);
-	}
-
-	currentPath->quadraticCurveTo(glm::vec2(cx, cy), glm::vec2(x, y));
-	return OtObject(this);
-}
-
-
-//
-//	OtShapeClass::quadBezierTo
-//
-
-OtObject OtShapeClass::bezierCurveTo(float cx1, float cy1, float cx2, float cy2, float x, float y) {
-	if (!currentPath) {
-		currentPath = std::make_shared<OtCurvePathClass>();
-		paths.push_back(currentPath);
-	}
-
-	currentPath->bezierCurveTo(glm::vec2(cx1, cy1), glm::vec2(cx2, cy2), glm::vec2(x, y));
-	return OtObject(this);
-}
-
-
-//
-//	OtShapeClass::close
-//
-
-OtObject OtShapeClass::close() {
-	if (!currentPath || currentPath->hasSegments()) {
-		if (currentPath) {
-			currentPath->close();
+		if (stream.fail()) {
+			OtError("Can't open file [{}] for writing", path);
 		}
 
-		currentPath = std::make_shared<OtCurvePathClass>();
-		paths.push_back(currentPath);
-	}
+		stream << output;
+		stream.close();
 
-	return OtObject(this);
+	} catch (std::exception& e) {
+		OtError("Can't write to file [{}], error: {}", path, e.what());
+	}
 }
 
 
 //
-//	OtShapeClass::circle
+//	OtShape::moveTo
 //
 
-OtObject OtShapeClass::circle(float x, float y, float radius, bool clockwise) {
+OtShape* OtShape::moveTo(float x, float y) {
+	if (currentPath.hasSegments()) {
+		close();
+	}
+
+	currentPath.moveTo(glm::vec2(x, y));
+	return this;
+}
+
+
+//
+//	OtShape::lineTo
+//
+
+OtShape* OtShape::lineTo(float x, float y) {
+	currentPath.lineTo(glm::vec2(x, y));
+	return this;
+}
+
+
+//
+//	OtShape::quadraticCurveTo
+//
+
+OtShape* OtShape::quadraticCurveTo(float cx, float cy, float x, float y) {
+	currentPath.quadraticCurveTo(glm::vec2(cx, cy), glm::vec2(x, y));
+	return this;
+}
+
+
+//
+//	OtShape::quadBezierTo
+//
+
+OtShape* OtShape::bezierCurveTo(float cx1, float cy1, float cx2, float cy2, float x, float y) {
+	currentPath.bezierCurveTo(glm::vec2(cx1, cy1), glm::vec2(cx2, cy2), glm::vec2(x, y));
+	return this;
+}
+
+
+//
+//	OtShape::close
+//
+
+OtShape* OtShape::close() {
+	if (currentPath.hasSegments()) {
+		currentPath.close();
+
+		if (!paths) {
+			paths = std::make_shared<std::vector<OtShapePath>>();
+		}
+
+		paths->push_back(currentPath);
+		currentPath.clear();
+		incrementVersion();
+	}
+
+	return this;
+}
+
+
+//
+//	OtShape::circle
+//
+
+OtShape* OtShape::circle(float x, float y, float radius) {
+	// see https://stackoverflow.com/questions/1734745/how-to-create-circle-with-bézier-curves
+	// for explanation of this approximation
+	auto segment = [&](float x, float y, float rx, float ry) {
+		moveTo(x - rx, y);
+		bezierCurveTo(x - rx, y - 0.552 * ry, x - 0.552 * rx, y - ry,  x,  y - ry);
+	};
+
 	close();
-	currentPath->circle(x, y, radius, clockwise);
-	return OtObject(this);
+	segment(x, y, -radius, radius);
+	segment(x, y, radius, radius);
+	segment(x, y, radius, -radius);
+	segment(x, y, -radius, -radius);
+	close();
+
+	return this;
 }
 
 
 //
-//	OtShapeClass::text
+//	OtShape::text
 //
 
-OtObject OtShapeClass::text(OtObject object, const std::string& text) {
-	object->expectKindOf("Font");
-	OtFont(object)->createShape(OtShape(this), text);
-	return OtObject(this);
-}
+OtShape* OtShape::text(OtFont& font, const std::string& text, float size) {
+	close();
 
+	font.parseGlyph(
+		text, size,
+		[&](float x, float y) { moveTo(x, y); },
+		[&](float x, float y) { lineTo(x, y); },
+		[&](float cx, float cy, float x, float y) { quadraticCurveTo(cx, cy, x, y); },
+		[&](float cx1, float cy1, float cx2, float cy2, float x, float y) { bezierCurveTo(cx1, cy1, cx2, cy2, x, y); });
 
-//
-//	OtShapeClass::getMeta
-//
-
-OtType OtShapeClass::getMeta() {
-	static OtType type;
-
-	if (!type) {
-		type = OtType::create<OtShapeClass>("Shape", OtObjectClass::getMeta());
-		type->set("moveTo", OtFunction::create(&OtShapeClass::moveTo));
-		type->set("lineTo", OtFunction::create(&OtShapeClass::lineTo));
-		type->set("quadraticCurveTo", OtFunction::create(&OtShapeClass::quadraticCurveTo));
-		type->set("bezierCurveTo", OtFunction::create(&OtShapeClass::bezierCurveTo));
-		type->set("close", OtFunction::create(&OtShapeClass::close));
-
-		type->set("circle", OtFunction::create(&OtShapeClass::circle));
-		type->set("text", OtFunction::create(&OtShapeClass::text));
-	}
-
-	return type;
+	close();
+	return this;
 }

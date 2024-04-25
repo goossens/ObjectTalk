@@ -183,7 +183,7 @@ bool OtUiInputText(const char* label, std::string* value, ImGuiInputTextFlags fl
 		ImGuiInputTextFlags_NoUndoRedo |
 		ImGuiInputTextFlags_CallbackResize;
 
-	return ImGui::InputText(label, (char*) value->c_str(), value->capacity() + 1, flags, [](ImGuiInputTextCallbackData* data) {
+	ImGui::InputText(label, (char*) value->c_str(), value->capacity() + 1, flags, [](ImGuiInputTextCallbackData* data) {
 		if (data->EventFlag == ImGuiInputTextFlags_CallbackResize) {
 			std::string* value = (std::string*) data->UserData;
 			value->resize(data->BufTextLen);
@@ -191,7 +191,9 @@ bool OtUiInputText(const char* label, std::string* value, ImGuiInputTextFlags fl
 		}
 
 		return 0;
-	}, &value);
+	}, value);
+
+	return ImGui::IsItemDeactivatedAfterEdit();
 }
 
 

@@ -52,7 +52,7 @@ public:
 			ImVec2 minSize = ImVec2(maxSize.x * 0.5, maxSize.y * 0.5);
 
 			if (ImGuiFileDialog::Instance()->Display("instances-saveas", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
-				// open selected file if required
+				// save file (if required)
 				if (ImGuiFileDialog::Instance()->IsOk()) {
 					auto dialog = ImGuiFileDialog::Instance();
 					auto path = OtPathJoin(dialog->GetCurrentPath(), dialog->GetCurrentFileName());
@@ -67,7 +67,7 @@ public:
 		});
 	}
 
-	static constexpr const char* nodeName = "Save Instances to OTI";
+	static constexpr const char* nodeName = "Save Instances to File";
 	static constexpr int nodeCategory = OtNodeClass::save;
 	static constexpr int nodeKind = OtNodeClass::fixed;
 

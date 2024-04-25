@@ -16,29 +16,27 @@
 #include <memory>
 #include <vector>
 
+#include "fmt/core.h"
 #include "glm/glm.hpp"
 
 
 //
-//	OtCurveClass
+//	OtShapeSegment
 //
 
-class OtCurveClass;
-typedef std::shared_ptr<OtCurveClass> OtCurve;
-
-class OtCurveClass {
+class OtShapeSegment {
 public:
-	// get a point on the curve at t [0, 1]
+	// get a point in the segment at curve parameter t [0, 1]
 	virtual inline glm::vec2 getPoint(float t) {
 		return glm::vec2(0.0f);
 	}
 
-	// get a point on the curve at distance n [0, 1]
-	virtual inline glm::vec2 getPointAt(float u) {
+	// get a point in the segment at arc length u [0, 1]
+	virtual inline glm::vec2 getPointAtArcLength(float u) {
 		return getPoint(u2t(u));
 	}
 
-	// get sequence of points on curve
+	// get sequence of points in segment
 	inline void getPoints(std::vector<glm::vec2>& result, size_t division = 5) {
 		result.clear();
 
@@ -47,12 +45,12 @@ public:
 		}
 	}
 
-	// get sequence of equally spaced points on curve
+	// get sequence of equally spaced points in segment
 	inline void getSpacedPoints(std::vector<glm::vec2>& result, size_t division = 5) {
 		result.clear();
 
 		for (auto i = 0; i <= division; i++) {
-			result.push_back(getPointAt((float) i / (float) division));
+			result.push_back(getPointAtArcLength((float) i / (float) division));
 		}
 	}
 
@@ -69,13 +67,18 @@ public:
 		return getTangent(u2t(u));
 	}
 
-	// get the length of the curve
+	// get the length of the segment
 	virtual inline float getLength() {
 		if (!lengths.size()) {
 			getLengths();
 		}
 
 		return lengths.back();
+	}
+
+	// convert segment to string representation
+	virtual inline std::string toString() {
+		return "";
 	}
 
 protected:
@@ -96,7 +99,7 @@ protected:
 		}
 	}
 
-	// convert distance u to equation parameter t
+	// convert arc length u to equation parameter t
 	inline float u2t(float u) {
 		if (!lengths.size()) {
 			getLengths();

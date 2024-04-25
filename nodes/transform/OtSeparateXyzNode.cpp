@@ -10,7 +10,6 @@
 //
 
 #include "glm/glm.hpp"
-#include "nlohmann/json.hpp"
 
 #include "OtNodesFactory.h"
 
@@ -37,7 +36,7 @@ public:
 	}
 
 	static constexpr const char* nodeName = "Separate XYZ";
-	static constexpr int nodeCategory = OtNodeClass::transformer;
+	static constexpr int nodeCategory = OtNodeClass::transform;
 	static constexpr int nodeKind = OtNodeClass::flexible;
 
 protected:

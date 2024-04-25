@@ -1,0 +1,190 @@
+{
+	"entities": [
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Camera",
+					"uuid": 1223536663
+				},
+				{
+					"component": "Transform",
+					"rotation": [
+						-14.397780418395996,
+						-1.2881314754486084,
+						0.0
+					],
+					"scale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"translation": [
+						0.5671269297599792,
+						3.5236403942108154,
+						24.77860450744629
+					]
+				},
+				{
+					"component": "Camera",
+					"far": 500.0,
+					"fov": 60.0,
+					"mainCamera": false,
+					"near": 1.0
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Light",
+					"uuid": 2146993424
+				},
+				{
+					"component": "Transform",
+					"rotation": [
+						0.0,
+						0.0,
+						0.0
+					],
+					"scale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"translation": [
+						-17.799999237060547,
+						0.41999998688697815,
+						22.200000762939453
+					]
+				},
+				{
+					"ambient": 0.05000000074505806,
+					"castShadow": false,
+					"color": [
+						0.6460176706314087,
+						0.5516876578330994,
+						0.5516876578330994
+					],
+					"component": "Directional Light"
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Text",
+					"uuid": 449063505
+				},
+				{
+					"component": "Geometry",
+					"cullback": false,
+					"path": "virtual:text",
+					"transparent": false,
+					"wireframe": false
+				},
+				{
+					"component": "Transform",
+					"rotation": [
+						-8.979999542236328,
+						-17.0,
+						0.8899999856948853
+					],
+					"scale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"translation": [
+						-9.0,
+						-6.630000114440918,
+						-3.2200000286102295
+					]
+				},
+				{
+					"component": "Material",
+					"material": {
+						"albedo": [
+							0.787610650062561,
+							0.7353664636611938,
+							0.25092020630836487,
+							1.0
+						],
+						"albedoTexture": "",
+						"ao": 1.0,
+						"aoTexture": "",
+						"emissive": [
+							0.0,
+							0.0,
+							0.0
+						],
+						"emissiveTexture": "",
+						"metallic": 0.7200000286102295,
+						"metallicRoughnessTexture": "",
+						"normalTexture": "",
+						"roughness": 0.4000000059604645,
+						"scale": 1.0
+					}
+				},
+				{
+					"component": "Nodes",
+					"path": "assets/text.otn",
+					"settings": {
+						"2625173197": {
+							"path": "assets/roboto.ttf"
+						}
+					}
+				}
+			]
+		}
+	],
+	"metadata": {
+		"camera": {
+			"far": 500.0,
+			"fov": 60.0,
+			"near": 1.0,
+			"pitch": -14.397780418395996,
+			"position": [
+				0.5671269297599792,
+				3.5236403942108154,
+				24.77860450744629
+			],
+			"speed": 3.0,
+			"yaw": -1.2881314754486084
+		},
+		"gizmo": {
+			"enabled": false,
+			"mode": 7,
+			"snapInterval": [
+				0.10000000149011612,
+				0.10000000149011612,
+				0.10000000149011612
+			],
+			"snapping": false
+		},
+		"grid": {
+			"enabled": false,
+			"scale": 1.0
+		},
+		"type": "scene"
+	},
+	"processing": {
+		"bloomIntensity": 0.7099999785423279,
+		"contrast": 1.0,
+		"exposure": 0.8199999928474426,
+		"fog": false,
+		"fogColor": [
+			0.4000000059604645,
+			0.5,
+			0.800000011920929
+		],
+		"fogDensity": 0.10000000149011612,
+		"fxaa": false,
+		"godrays": false
+	}
+}

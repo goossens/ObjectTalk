@@ -10,35 +10,38 @@
 //
 
 #include "glm/glm.hpp"
-#include "nlohmann/json.hpp"
 
 #include "OtNodesFactory.h"
 
 
 //
-//	OtFloatToVectorNode
+//	OtCombineXyzNode
 //
 
-class OtFloatToVectorNode : public OtNodeClass {
+class OtCombineXyzNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addInputPin("A", a);
+		addInputPin("X", x);
+		addInputPin("Y", y);
+		addInputPin("Z", z);
 		addOutputPin("Value", value);
 	}
 
 	// combine values
 	void onExecute() override {
-		value = glm::vec3(a, a, a);
+		value = glm::vec3(x, y, z);
 	}
 
-	static constexpr const char* nodeName = "Float to Vector";
-	static constexpr int nodeCategory = OtNodeClass::transformer;
+	static constexpr const char* nodeName = "Combine XYZ";
+	static constexpr int nodeCategory = OtNodeClass::transform;
 	static constexpr int nodeKind = OtNodeClass::flexible;
 
 protected:
-	float a{0.0f};
+	float x{0.0f};
+	float y{0.0f};
+	float z{0.0f};
 	glm::vec3 value{0.0f};
 };
 
-static OtNodesFactoryRegister<OtFloatToVectorNode> type;
+static OtNodesFactoryRegister<OtCombineXyzNode> type;

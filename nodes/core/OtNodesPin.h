@@ -22,9 +22,11 @@
 
 #include "OtTypeList.h"
 
+#include "OtFont.h"
 #include "OtGeometry.h"
 #include "OtImage.h"
 #include "OtInstances.h"
+#include "OtShape.h"
 #include "OtTexture.h"
 
 #include "OtNodesUtils.h"
@@ -47,8 +49,10 @@ using OtNodesPinTypes = OtTypeList<
 	float,
 	std::string,
 	glm::vec3,
+	OtFont,
 	OtImage,
 	OtTexture,
+	OtShape,
 	OtGeometry,
 	OtInstances>;
 
@@ -58,8 +62,10 @@ enum {
 	OtNodesPinFloatType,
 	OtNodesPinStringType,
 	OtNodesPinVectorType,
+	OtNodesPinFontType,
 	OtNodesPinImageType,
 	OtNodesPinTextureType,
+	OtNodesPinShapeType,
 	OtNodesPinGeometryType,
 	OtNodesPinInstancesType
 };
@@ -70,8 +76,10 @@ static constexpr const char* OtNodesPinTypeNames[] = {
 	"float",
 	"string",
 	"vector",
+	"font",
 	"image",
 	"texture",
+	"shape",
 	"geometry",
 	"instances" };
 
@@ -175,8 +183,10 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(float& value);
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(std::string& value);
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec3& value);
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec4& value);
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtFont& value);
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtImage& value);
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtTexture& value);
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtShape& value);
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtGeometry& value);
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtInstances& value);
 

@@ -58,11 +58,12 @@ public:
 		output,
 		field,
 		math,
-		generator,
+		generate,
 		filter,
-		transformer,
+		transform,
+		shape,
 		geometry,
-		virtualizer,
+		virtualize,
 		save,
 		probe
 	};
@@ -72,11 +73,12 @@ public:
 		"Output",
 		"Field",
 		"Math",
-		"Generator",
+		"Generate",
 		"Filter",
-		"Transformer",
+		"Transform",
+		"Shape",
 		"Geometry",
-		"Virtualizer",
+		"Virtualize",
 		"Save",
 		"Probe"
 	};

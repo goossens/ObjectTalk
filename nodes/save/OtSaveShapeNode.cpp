@@ -12,23 +12,23 @@
 #include "imgui.h"
 #include "ImGuiFileDialog.h"
 
-#include "OtImage.h"
 #include "OtPathTools.h"
+#include "OtShape.h"
 
 #include "OtNodesFactory.h"
 
 
 //
-//	OtSaveImageNode
+//	OtSaveShapeNode
 //
 
-class OtSaveImageNode : public OtNodeClass {
+class OtSaveShapeNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addInputPin("Input", image)->addCustomRenderer([&](float width) {
-			// render button to save image if image is valid
-			if (!image.isValid()) {
+		addInputPin("Input", shape)->addCustomRenderer([&](float width) {
+			// render button to save shape if shape is valid
+			if (!shape.isValid()) {
 				ImGui::BeginDisabled();
 			}
 
@@ -40,10 +40,10 @@ public:
 						ImGuiFileDialogFlags_DontShowHiddenFiles |
 						ImGuiFileDialogFlags_ConfirmOverwrite;
 
-				ImGuiFileDialog::Instance()->OpenDialog("image-saveas", "Save Image as...", ".png", config);
+				ImGuiFileDialog::Instance()->OpenDialog("shape-saveas", "Save Shape as...", ".shape", config);
 			}
 
-			if (!image.isValid()) {
+			if (!shape.isValid()) {
 				ImGui::EndDisabled();
 			}
 
@@ -51,14 +51,14 @@ public:
 			ImVec2 maxSize = ImGui::GetIO().DisplaySize;
 			ImVec2 minSize = ImVec2(maxSize.x * 0.5, maxSize.y * 0.5);
 
-			if (ImGuiFileDialog::Instance()->Display("image-saveas", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
+			if (ImGuiFileDialog::Instance()->Display("shape-saveas", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
 				// save file (if required)
 				if (ImGuiFileDialog::Instance()->IsOk()) {
 					auto dialog = ImGuiFileDialog::Instance();
 					auto path = OtPathJoin(dialog->GetCurrentPath(), dialog->GetCurrentFileName());
-					path = OtPathReplaceExtension(path, ".png");
+					path = OtPathReplaceExtension(path, ".shape");
 					OtPathChangeDirectory(OtPathGetParent(path));
-					image.saveToPNG(path);
+					shape.save(path);
 				}
 
 				// close dialog
@@ -67,12 +67,12 @@ public:
 		});
 	}
 
-	static constexpr const char* nodeName = "Save Image To File";
+	static constexpr const char* nodeName = "Save Shape to File";
 	static constexpr int nodeCategory = OtNodeClass::save;
 	static constexpr int nodeKind = OtNodeClass::fixed;
 
 protected:
-	OtImage image;
+	OtShape shape;
 };
 
-static OtNodesFactoryRegister<OtSaveImageNode> type;
+static OtNodesFactoryRegister<OtSaveShapeNode> type;

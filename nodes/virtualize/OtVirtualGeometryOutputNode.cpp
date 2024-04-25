@@ -12,46 +12,46 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
-#include "OtTextureAsset.h"
+#include "OtGeometryAsset.h"
 
 #include "OtNodesFactory.h"
 
 
 //
-//	OtVirtualTextureOutputNode
+//	OtVirtualGeometryOutputNode
 //
 
-class OtVirtualTextureOutputNode : public OtNodeClass {
+class OtVirtualGeometryOutputNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addInputPin("Input", texture);
+		addInputPin("Input", geometry);
 		addInputPin("Name", name);
 	}
 
-	// synchronize the asset with the incoming texture
+	// synchronize the asset with the incoming geometry
 	void onExecute() override {
-		if (texture.isValid() && name.size()) {
+		if (geometry.isValid() && name.size()) {
 			asset = "virtual:" + name;
-			asset->setTexture(texture);
+			asset->setGeometry(geometry);
 
 		} else if (name.size()) {
 			asset = "virtual:" + name;
-			asset->clearTexture();
+			asset->clearGeometry();
 
 		} else {
 			asset.clear();
 		}
 	}
 
-	static constexpr const char* nodeName = "Save Texture To Virtual";
-	static constexpr int nodeCategory = OtNodeClass::virtualizer;
-	static constexpr int nodeKind = OtNodeClass::fixed;
+	static constexpr const char* nodeName = "Save Geometry To Virtual";
+	static constexpr int nodeCategory = OtNodeClass::virtualize;
+	static constexpr int nodeKind = OtNodeClass::virtualize;
 
 protected:
-	OtTexture texture;
+	OtGeometry geometry;
 	std::string name;
-	OtAsset<OtTextureAsset> asset;
+	OtAsset<OtGeometryAsset> asset;
 };
 
-static OtNodesFactoryRegister<OtVirtualTextureOutputNode> type;
+static OtNodesFactoryRegister<OtVirtualGeometryOutputNode> type;

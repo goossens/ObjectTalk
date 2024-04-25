@@ -9,49 +9,51 @@
 //	Include files
 //
 
+#include <string>
+
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
-#include "OtImageAsset.h"
+#include "OtInstancesAsset.h"
 
 #include "OtNodesFactory.h"
 
 
 //
-//	OtVirtualImageOutputNode
+//	OtVirtualInstancesOutputNode
 //
 
-class OtVirtualImageOutputNode : public OtNodeClass {
+class OtVirtualInstancesOutputNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addInputPin("Input", image);
+		addInputPin("Input", instances);
 		addInputPin("Name", name);
 	}
 
-	// synchronize the asset with the incoming image
+	// synchronize the asset with the incoming instances
 	void onExecute() override {
-		if (image.isValid() && name.size()) {
+		if (instances.isValid() && name.size()) {
 			asset = "virtual:" + name;
-			asset->setImage(image);
+			asset->setInstances(instances);
 
 		} else if (name.size()) {
 			asset = "virtual:" + name;
-			asset->clearImage();
+			asset->clearInstances();
 
 		} else {
 			asset.clear();
 		}
 	}
 
-	static constexpr const char* nodeName = "Save Image To Virtual";
-	static constexpr int nodeCategory = OtNodeClass::virtualizer;
+	static constexpr const char* nodeName = "Save Instances To Virtual";
+	static constexpr int nodeCategory = OtNodeClass::virtualize;
 	static constexpr int nodeKind = OtNodeClass::fixed;
 
 protected:
-	OtImage image;
+	OtInstances instances;
 	std::string name;
-	OtAsset<OtImageAsset> asset;
+	OtAsset<OtInstancesAsset> asset;
 };
 
-static OtNodesFactoryRegister<OtVirtualImageOutputNode> type;
+static OtNodesFactoryRegister<OtVirtualInstancesOutputNode> type;

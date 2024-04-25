@@ -45,7 +45,8 @@ static constexpr ImU32 nodeColors[] = {
 	IM_COL32(55, 95, 130, 255),		// math
 	IM_COL32(50, 100, 40, 255),		// generator
 	IM_COL32(115, 70, 30, 255),		// filter
-	IM_COL32(35, 60, 130, 255),		// transformer
+	IM_COL32(35, 60, 130, 255),		// transform
+	IM_COL32(80, 130, 170, 255),	// shape
 	IM_COL32(30, 110, 90, 255),		// geometry
 	IM_COL32(10, 80, 80, 255),		// virtualizer
 	IM_COL32(120, 115, 55, 255),	// save
@@ -58,8 +59,10 @@ static constexpr ImU32 pinColors[] = {
 	IM_COL32(180, 180, 180, 255),	// float
 	IM_COL32(0, 100, 180, 255),		// string
 	IM_COL32(120, 60, 255, 200),	// vector
+	IM_COL32(140, 190, 40, 255),	// font
 	IM_COL32(200, 190, 120, 255),	// image
 	IM_COL32(180, 90, 0, 255),		// texture
+	IM_COL32(110, 140, 190, 255),	// shape
 	IM_COL32(0, 120, 65, 255),		// geometry
 	IM_COL32(0, 160, 220, 255)		// instances
 };
@@ -402,9 +405,7 @@ void OtNodesWidget::renderNode(ImDrawList* drawlist, OtNode& node) {
 			node->oldState = node->serialize().dump();
 		}
 
-		OtUiInputText("##rename", &node->title, ImGuiInputTextFlags_NoUndoRedo | ImGuiInputTextFlags_EnterReturnsTrue);
-
-		if (ImGui::IsItemDeactivated()) {
+		if (OtUiInputText("##rename", &node->title)) {
 			node->newState = node->serialize().dump();
 			editedNode = node->id;
 			nodeEdited = true;

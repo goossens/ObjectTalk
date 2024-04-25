@@ -114,28 +114,7 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(float& value) {
 			ImGui::PushID(&value);
 			ImGui::SetNextItemWidth(width);
 
-			auto absValue = std::abs(value);
-			float speed;
-			const char* format;
-
-			if (absValue < 1.0f) {
-				speed = 0.01f;
-				format = "%.3f";
-
-			} else if (absValue < 10.0f) {
-				speed = 0.1f;
-				format = "%.2f";
-
-			} else if (absValue < 100.0f) {
-				speed = 1.0f;
-				format = "%.1f";
-
-			} else {
-				speed = 10.0f;
-				format = "%.0f";
-			}
-
-			if (ImGui::DragFloat("##value", &value, speed, 0.0f, 0.0f, format)) {
+			if (OtUiDragFloat("##value", &value)) {
 				node->oldState = old;
 				node->newState = node->serialize().dump();
 				node->needsEvaluating = true;
@@ -150,7 +129,7 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(std::string& value) {
 	return new OtNodesPinInputConfig{
 		[&](nlohmann::json* data) { (*data)["value"] = value; },
 		[&](nlohmann::json* data) { if (data->contains("value")) { value = (*data)["value"]; } },
-		[]() { return 60.0f; },
+		[]() { return 100.0f; },
 
 		[&](OtNodesPin pin, float width) {
 			auto node = pin->node;
@@ -158,8 +137,7 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(std::string& value) {
 			ImGui::PushID(&value);
 			ImGui::SetNextItemWidth(width);
 
-			OtUiInputText("##value", &value, ImGuiInputTextFlags_NoUndoRedo | ImGuiInputTextFlags_EnterReturnsTrue);
-			if (ImGui::IsItemDeactivated()) {
+			if (OtUiInputText("##value", &value)) {
 				node->oldState = old;
 				node->newState = node->serialize().dump();
 				node->needsEvaluating = true;
@@ -170,12 +148,11 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(std::string& value) {
 		}};
 }
 
-OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec3& value) {
-	return nullptr;
-}
-
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec3& value) { return nullptr; }
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec4& value) { return nullptr; }
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtFont& value) { return nullptr; }
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtImage& value) { return nullptr; }
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtTexture& value) { return nullptr; }
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtShape& value) { return nullptr; }
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtGeometry& value) { return nullptr; }
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtInstances& value) { return nullptr; }

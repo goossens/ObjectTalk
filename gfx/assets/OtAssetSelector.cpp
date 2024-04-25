@@ -72,9 +72,7 @@ bool OtAssetSelector::renderUI(Info& info) {
 	if (info.virtualMode && *info.virtualMode) {
 		// render path as a textfield
 		ImGui::SetNextItemWidth(pathWidth);
-		OtUiInputText("##virtualpath", &filename, ImGuiInputTextFlags_NoUndoRedo);
-
-		if (ImGui::IsItemDeactivated() && info.path != "virtual:" + filename) {
+		if (OtUiInputText("##virtualpath", &filename) && info.path != "virtual:" + filename) {
 			info.path = "virtual:" + filename;
 			changed = true;
 		}

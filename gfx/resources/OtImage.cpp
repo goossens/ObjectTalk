@@ -59,6 +59,7 @@ void OtImage::clear() {
 	incrementVersion();
 }
 
+
 //
 //	OtImage::update
 //
@@ -466,6 +467,7 @@ float OtImage::sampleValueGray(float x, float y) {
 	auto hx2 = std::lerp(h12, h22, x - x1);
 	return std::lerp(hx1, hx2, y - y1);
 }
+
 
 //
 //	OtImage::assignImageContainer

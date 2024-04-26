@@ -8,6 +8,9 @@ set(LIBUV_BUILD_SHARED OFF CACHE BOOL "" FORCE)
 set(LIBUV_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(LIBUV_BUILD_BENCH OFF CACHE BOOL "" FORCE)
 
+# this hack uses a CMake internal property to stop generating test targets in IDEs
+set_property(GLOBAL PROPERTY CTEST_TARGETS_ADDED 1)
+
 FetchContent_Declare(libuv GIT_REPOSITORY "https://github.com/libuv/libuv" GIT_TAG "v1.48.0")
 FetchContent_GetProperties(libuv)
 

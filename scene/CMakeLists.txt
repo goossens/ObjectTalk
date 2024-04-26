@@ -27,6 +27,7 @@ add_dependencies(scene
 	input
 	math
 	tweeny
+	Jolt
 	nodes)
 
 target_link_libraries(scene PUBLIC
@@ -36,6 +37,7 @@ target_link_libraries(scene PUBLIC
 	math
 	graphics
 	tweeny
+	Jolt
 	nodes)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${SCENE_INCLUDES} ${SCENE_SOURCES})

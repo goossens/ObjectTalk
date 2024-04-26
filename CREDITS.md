@@ -23,6 +23,7 @@ In case User Interface (UI) modules are included, we also use:
 * [EnTT](https://github.com/skypjack/entt) - Entity Component System (ECS) released under the [MIT license](https://opensource.org/licenses/MIT).
 * [JSON for Modern C++](https://github.com/nlohmann/json) - JSON creation/parsing library released under the [MIT license](https://opensource.org/licenses/MIT).
 * [BS::thread_pool](https://github.com/bshoshany/thread-pool) - A fast, lightweight, and easy-to-use C++17 thread pool library released under the [MIT license](https://opensource.org/licenses/MIT).
+* [Jolt Physics](https://github.com/jrouwe/JoltPhysics) - A multi core friendly 3D rigid body physics and collision detection library released under the [MIT license](https://opensource.org/licenses/MIT).
 * [Box2D](https://box2d.org) - 2D physics engine released under the [MIT license](https://opensource.org/licenses/MIT).
 * [tweeny](https://github.com/mobius3/tweeny) - animation library released under the [MIT license](https://opensource.org/licenses/MIT).
 * [assimp](https://github.com/assimp/assimp) - to import 3D models released under a [custom license](https://github.com/assimp/assimp/blob/master/LICENSE) based on the [3-clause BSD-License license](https://opensource.org/licenses/BSD-3-Clause).
@@ -33,6 +34,7 @@ In case User Interface (UI) modules are included, we also use:
 * The sky shader is based on a [GitHub project](https://github.com/shff/opengl_sky) released under the [MIT License](https://opensource.org/licenses/MIT).
 * The Image Based Lighting (IBL) shaders are based on an article by [Bruno Opsenica](https://bruop.github.io/ibl/).
 * The Fast Approximate Anti-Aliasing (FXAA) post-processing shader was originally developped by Timothy Lottes at Nvidia. It was released under a public domain license. A later version is released under a [3-clause BSD license](https://opensource.org/license/bsd-3-clause).
+* Some shaders and shader ideas are based on [JungleIN](https://github.com/BKcore/JungleIN), an OpenGL jungle viewer written as part of a scholar project, released under the [MIT license](https://opensource.org/licenses/MIT).
 
 ## Data
 

@@ -12,14 +12,14 @@
 //	Include files
 //
 
-#include "OtShapeSegment.h"
+#include "OtCurveSegment.h"
 
 
 //
 //	OtCubicBezierSegment
 //
 
-class OtCubicBezierSegment : public OtShapeSegment {
+class OtCubicBezierSegment : public OtCurveSegment {
 public:
 	// constructor
 	inline OtCubicBezierSegment(const glm::vec2& v1, const glm::vec2& v2, const glm::vec2& v3, const glm::vec2& v4) {
@@ -27,6 +27,7 @@ public:
 		p2 = v2;
 		p3 = v3;
 		p4 = v4;
+		calculateLength();
 	}
 
 	// get a point in the segment at curve parameter t [0, 1]

@@ -10,6 +10,7 @@
 //
 
 #include <fstream>
+#include <sstream>
 
 #include "OtFunction.h"
 
@@ -22,6 +23,52 @@
 //
 
 void OtShape::load(const std::string &path) {
+	clear();
+
+	// read shape from file
+	try {
+		std::ifstream stream(path.c_str());
+
+		if (stream.fail()) {
+			OtError("Can't open file [{}] for reading", path);
+		}
+
+		std::string line;
+
+		while (std::getline(stream, line)) {
+		    std::istringstream iss(line);
+			char command;
+
+			if (line[0] == 'm') {
+				float x, y;
+				iss >> command >> x >> y;
+				moveTo(x, y);
+
+			} else if (line[0] == 'l') {
+				float x, y;
+				iss >> command >> x >> y;
+				lineTo(x, y);
+
+			} else if (line[0] == 'q') {
+				float cx, cy, x, y;
+				iss >> command >> cx >> cy >> x >> y;
+				quadraticCurveTo(cx, cy, x, y);
+
+			} else if (line[0] == 'c') {
+				float cx1, cy1, cx2, cy2, x, y;
+				iss >> command >> cx1 >> cy1 >> cx2 >> cy2 >> x >> y;
+				bezierCurveTo(cx1, cy1, cx2, cy2, x, y);
+
+			} else if (line[0] == 'z') {
+				close();
+			}
+		}
+
+		stream.close();
+
+	} catch (std::exception& e) {
+		OtError("Can't read from file [{}], error: {}", path, e.what());
+	}
 }
 
 
@@ -148,15 +195,18 @@ OtShape* OtShape::circle(float x, float y, float radius) {
 //	OtShape::text
 //
 
-OtShape* OtShape::text(OtFont& font, const std::string& text, float size) {
+OtShape* OtShape::text(OtFont& font, const std::string& text, float size, bool center) {
 	close();
+
+	auto width = font.getWidth(text, size);
+	auto dx = center ? -width / 2.0f : 0.0f;
 
 	font.parseGlyph(
 		text, size,
-		[&](float x, float y) { moveTo(x, y); },
-		[&](float x, float y) { lineTo(x, y); },
-		[&](float cx, float cy, float x, float y) { quadraticCurveTo(cx, cy, x, y); },
-		[&](float cx1, float cy1, float cx2, float cy2, float x, float y) { bezierCurveTo(cx1, cy1, cx2, cy2, x, y); });
+		[&](float x, float y) { moveTo(dx + x, y); },
+		[&](float x, float y) { lineTo(dx + x, y); },
+		[&](float cx, float cy, float x, float y) { quadraticCurveTo(dx + cx, cy, dx + x, y); },
+		[&](float cx1, float cy1, float cx2, float cy2, float x, float y) { bezierCurveTo(dx + cx1, cy1, dx + cx2, cy2, dx + x, y); });
 
 	close();
 	return this;

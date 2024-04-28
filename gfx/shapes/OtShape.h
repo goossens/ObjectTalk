@@ -53,7 +53,7 @@ public:
 
 	// add simple geometries
 	OtShape* circle(float x, float y, float radius);
-	OtShape* text(OtFont& font, const std::string& text, float size);
+	OtShape* text(OtFont& font, const std::string& text, float size, bool center);
 
 	// get number of polygons in shape
 	inline size_t getPolygonCount() {
@@ -61,8 +61,8 @@ public:
 	}
 
 	// get Nth polygon
-	inline void getPolygon(std::vector<glm::vec2>& points, size_t n, size_t division) {
-		return (*paths)[n].getSpacedPoints(points, division);
+	inline void getPolygon(std::vector<glm::vec2>& points, size_t n) {
+		return (*paths)[n].getPoints(points);
 	}
 
 	// return area of polygon
@@ -89,7 +89,7 @@ public:
 
 	// see if shapes are identical
 	inline bool operator==(OtShape& rhs) {
-		return paths == rhs.paths && version == rhs.version;
+		return version == rhs.version;
 	}
 
 	inline bool operator!=(OtShape& rhs) {

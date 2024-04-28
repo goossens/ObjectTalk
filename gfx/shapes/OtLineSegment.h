@@ -27,28 +27,14 @@ public:
 		p2 = v2;
 	}
 
-	// get a point in the segment at curve parameter t [0, 1]
-	inline glm::vec2 getPoint(float t) override {
-		return glm::mix(p1, p2, t);
-	}
-
-	// get a point in the segment at arc length u [0, 1]
-	inline glm::vec2 getPointAtArcLength(float u) override {
-		return getPoint(u);
-	}
-
-	// get a unit vector tangent at t [0, 1]
-	inline glm::vec2 getTangent(float t) override {
-		return glm::normalize(p2 - p1);
-	}
-
-	virtual inline glm::vec2 getTangentAt(float u) override {
-		return getTangent(u);
-	}
-
 	// get the length of the segment
 	inline float getLength() override {
 		return glm::distance(p1, p2);
+	}
+
+	// get points on segment
+	virtual void getPoints(std::vector<glm::vec2>& result) override {
+		result.push_back(p2);
 	}
 
 	// convert segment to string representation

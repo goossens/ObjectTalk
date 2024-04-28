@@ -28,6 +28,7 @@ public:
 		addInputPin("Font", font);
 		addInputPin("Text", text);
 		addInputPin("Size", size);
+		addInputPin("Center", center);
 		addOutputPin("Shape", shape);
 	}
 
@@ -36,7 +37,7 @@ public:
 		shape.clear();
 
 		if (font.isValid() && text.size() && size != 0.0f) {
-			shape.text(font, text, size);
+			shape.text(font, text, size, center);
 		}
 	}
 
@@ -48,6 +49,7 @@ protected:
 	OtFont font;
 	std::string text;
 	float size = 12.0f;
+	bool center = true;
 	OtShape shape;
 };
 

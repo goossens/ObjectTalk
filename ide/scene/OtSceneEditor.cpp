@@ -762,9 +762,6 @@ void OtSceneEditor::renderEntity(OtEntity entity) {
 		if (OtUiInputText("##rename", &component.tag)) {
 			auto newValue = component.serialize(nullptr).dump();
 			nextTask = std::make_shared<OtEditComponentTask<OtCoreComponent>>(&scene, entity, oldValue, newValue);
-		}
-
-		if (ImGui::IsItemDeactivated()) {
 			renamingEntity = OtEntityNull;
 		}
 

@@ -14,6 +14,26 @@
 			"from": 2873823255,
 			"id": 2160878527,
 			"to": 3195650876
+		},
+		{
+			"from": 4048718069,
+			"id": 2920632154,
+			"to": 729637025
+		},
+		{
+			"from": 3521990454,
+			"id": 2178711956,
+			"to": 2381672726
+		},
+		{
+			"from": 2547115557,
+			"id": 1069569191,
+			"to": 3761969199
+		},
+		{
+			"from": 143155056,
+			"id": 3271718652,
+			"to": 605994486
 		}
 	],
 	"metadata": {},
@@ -35,6 +55,54 @@
 			"y": 77.0
 		},
 		{
+			"id": 1509100340,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 4048718069,
+					"name": "Value",
+					"type": "float"
+				}
+			],
+			"title": "Size",
+			"type": "Float Input",
+			"value": 12.0,
+			"x": 69.0,
+			"y": 246.0
+		},
+		{
+			"id": 240854171,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 3521990454,
+					"name": "Value",
+					"type": "string"
+				}
+			],
+			"title": "Text",
+			"type": "String Input",
+			"value": "Test",
+			"x": 69.0,
+			"y": 160.0
+		},
+		{
+			"id": 2590841629,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 143155056,
+					"name": "Value",
+					"type": "bool"
+				}
+			],
+			"title": "Center",
+			"type": "Boolean Input",
+			"value": true,
+			"x": 71.0,
+			"y": 328.0
+		},
+		{
 			"id": 325703201,
 			"inputs": [
 				{
@@ -45,14 +113,17 @@
 				{
 					"id": 2381672726,
 					"name": "Text",
-					"type": "string",
-					"value": "Test"
+					"type": "string"
 				},
 				{
 					"id": 729637025,
 					"name": "Size",
-					"type": "float",
-					"value": 12.0
+					"type": "float"
+				},
+				{
+					"id": 605994486,
+					"name": "Center",
+					"type": "bool"
 				}
 			],
 			"outputs": [
@@ -68,6 +139,22 @@
 			"y": 52.0
 		},
 		{
+			"id": 1210579916,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 2547115557,
+					"name": "Value",
+					"type": "float"
+				}
+			],
+			"title": "Depth",
+			"type": "Float Input",
+			"value": 3.0,
+			"x": 72.0,
+			"y": 410.0
+		},
+		{
 			"id": 3232750156,
 			"inputs": [
 				{
@@ -78,14 +165,7 @@
 				{
 					"id": 3761969199,
 					"name": "Depth",
-					"type": "float",
-					"value": 3.0
-				},
-				{
-					"id": 4124497261,
-					"name": "Segments",
-					"type": "int",
-					"value": 400
+					"type": "float"
 				}
 			],
 			"outputs": [
@@ -97,8 +177,8 @@
 			],
 			"title": "Extrude Shape",
 			"type": "Extrude Shape",
-			"x": 667.0,
-			"y": 27.0
+			"x": 665.0,
+			"y": 174.0
 		},
 		{
 			"id": 2601550030,
@@ -118,8 +198,8 @@
 			"outputs": [],
 			"title": "Save Geometry To Virtual",
 			"type": "Save Geometry To Virtual",
-			"x": 929.0,
-			"y": 28.0
+			"x": 925.0,
+			"y": 174.0
 		}
 	]
 }

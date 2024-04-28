@@ -34,7 +34,6 @@ public:
 	inline void configure() override {
 		addInputPin("Shape", shape);
 		addInputPin("Depth", depth);
-		addInputPin("Segments", segments);
 		addOutputPin("Geometry", geometry);
 	}
 
@@ -56,7 +55,7 @@ public:
 
 			for (auto i = 0; i < polygonCount; i++) {
 				// get the points on the polygon
-				shape.getPolygon(polygon, i, segments);
+				shape.getPolygon(polygon, i);
 
 				// determine winding order of first polygon
 				if (i == 0) {
@@ -86,11 +85,9 @@ public:
 				OtLogFatal("Can't tesselate geometry");
 			}
 
-			int vertexCount = tessGetVertexCount(tess);
-			int indexCount = tessGetElementCount(tess);
-			int offset = (uint32_t) mesh->getVertexCount();
-
 			// create the front and back-facing vertices (interwoven)
+			int offset = (uint32_t) mesh->getVertexCount();
+			int vertexCount = tessGetVertexCount(tess);
 			const TESSreal* verts = tessGetVertices(tess);
 
 			for (auto i = 0; i < vertexCount; i++) {
@@ -102,6 +99,7 @@ public:
 			}
 
 			// create the front and back-facing indices
+			int indexCount = tessGetElementCount(tess);
 			const TESSindex* indices = tessGetElements(tess);
 
 			for (auto i = 0; i < indexCount; i++) {
@@ -119,6 +117,7 @@ public:
 			geometry.setMesh(mesh);
 
 		} else {
+			// no valid shape so we clear out output
 			geometry.clear();
 		}
 	}
@@ -130,7 +129,6 @@ public:
 protected:
 	OtShape shape;
 	float depth = 1.0f;
-	int segments = 100;
 	OtGeometry geometry;
 };
 

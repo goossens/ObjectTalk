@@ -18,90 +18,89 @@
 #include "fmt/core.h"
 #include "glm/glm.hpp"
 
-#include "OtShapeSegment.h"
+#include "OtAssert.h"
+
 #include "OtCubicBezierSegment.h"
 #include "OtLineSegment.h"
 #include "OtQuadraticBezierSegment.h"
+#include "OtShapeSegment.h"
 
 
 //
 //	OtShapePath
 //
 
-class OtShapePath : public OtShapeSegment {
+class OtShapePath {
 public:
-	// constructor
-	inline OtShapePath() {
-		lengths.push_back(0.0f);
-	}
-
 	// clear the path
 	inline void clear() {
 		segments.clear();
-		lengths.clear();
-		lengths.push_back(0.0f);
+		startPoint = glm::vec2(0.0);
+		currentPoint = glm::vec2(0.0);
+		state = undefined;
 	}
 
 	// create a path out of segments
 	inline void moveTo(const glm::vec2& point) {
+		OtAssert(state == undefined);
+		state = started;
 		startPoint = point;
 		currentPoint = point;
 	}
 
 	inline void lineTo(const glm::vec2& point){
+		OtAssert(state == started || state == building);
+		state = building;
 		add(std::make_shared<OtLineSegment>(currentPoint, point));
 		currentPoint = point;
 	}
 
 	inline void quadraticCurveTo(const glm::vec2& control, const glm::vec2& point) {
+		OtAssert(state == started || state == building);
+		state = building;
 		add(std::make_shared<OtQuadraticBezierSegment>(currentPoint, control, point));
 		currentPoint = point;
 	}
 
 	inline void bezierCurveTo(const glm::vec2& control1, const glm::vec2& control2, const glm::vec2& point) {
+		OtAssert(state == started || state == building);
+		state = building;
 		add(std::make_shared<OtCubicBezierSegment>(currentPoint, control1, control2, point));
 		currentPoint = point;
 	}
 
 	inline void close() {
+		OtAssert(state == building);
+
 		if (startPoint != currentPoint) {
 			moveTo(startPoint);
 		}
-	}
 
-	// get a point on the path at t [0, 1]
-	inline glm::vec2 getPoint(float t) override {
-		return getPointAtArcLength(t);
-	}
-
-	// get a point on the path at arc length u [0, 1]
-	inline glm::vec2 getPointAtArcLength(float u) override {
-		float fraction;
-		auto segment = findSegment(u, &fraction);
-		return segment->getPointAtArcLength(fraction);
-	}
-
-	// get a unit vector tangent
-	inline glm::vec2 getTangent(float t) override {
-		return getTangentAt(t);
-	}
-
-	inline glm::vec2 getTangentAt(float u) override {
-		float fraction;
-		auto segment = findSegment(u, &fraction);
-		return segment->getTangentAt(fraction);
+		state = closed;
 	}
 
 	// get the length of the segment
-	inline float getLength() override {
+	inline float getLength() {
 		return currentLength;
 	}
 
+	// see if we have completed segments
 	inline bool hasSegments() {
 		return segments.size();
 	}
 
-	std::string toString() override {
+	// get points on entire shape
+	void getPoints(std::vector<glm::vec2>& result) {
+		OtAssert(state == closed);
+		result.clear();
+		result.push_back(startPoint);
+
+		for (auto& segment : segments) {
+			segment->getPoints(result);
+		}
+	}
+
+	std::string toString() {
 		std::string result = fmt::format("m {} {}\n", startPoint.x, startPoint.y);
 
 		for (auto& segment : segments) {
@@ -117,42 +116,16 @@ private:
 	inline void add(std::shared_ptr<OtShapeSegment> segment) {
 		currentLength += segment->getLength();
 		segments.push_back(segment);
-		lengths.push_back(currentLength);
 	}
 
-	// find the segment at u [0, 1]
-	inline std::shared_ptr<OtShapeSegment> findSegment(float u, float* fraction) {
-		float target = currentLength * u;
-		size_t low = 0;
-		size_t high = lengths.size() - 1;
-		size_t i;
+	// properties
+	enum {
+		undefined,
+		started,
+		building,
+		closed
+	} state = undefined;
 
-		while (low <= high) {
-			i = (low + high) / 2;
-
-			if (target > lengths[i]) {
-				low = i + 1;
-
-			} else if (target < lengths[i]) {
-				high = i - 1;
-
-			} else {
-				if (i == lengths.size() - 1) {
-					*fraction = 1.0;
-					return segments[i - 1];
-
-				} else {
-					*fraction = 0.0;
-					return segments[i];
-				}
-			}
-		}
-
-		*fraction = (target - lengths[high]) / (lengths[high + 1] - lengths[high]);
-		return segments[high];
-	}
-
-	// segments that make up this path
 	std::vector<std::shared_ptr<OtShapeSegment>> segments;
 	glm::vec2 startPoint = glm::vec2(0.0);
 	glm::vec2 currentPoint = glm::vec2(0.0);

@@ -12,20 +12,21 @@
 //	Include files
 //
 
-#include "OtShapeSegment.h"
+#include "OtCurveSegment.h"
 
 
 //
 //	OtQuadraticBezierSegment
 //
 
-class OtQuadraticBezierSegment : public OtShapeSegment {
+class OtQuadraticBezierSegment : public OtCurveSegment {
 public:
 	// constructor
 	inline OtQuadraticBezierSegment(const glm::vec2& v1, const glm::vec2& v2, const glm::vec2& v3) {
 		p1 = v1;
 		p2 = v2;
 		p3 = v3;
+		calculateLength();
 	}
 
 	// get a point in the segment at curve parameter t [0, 1]

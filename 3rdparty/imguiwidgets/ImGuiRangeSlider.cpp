@@ -7,15 +7,39 @@
 
 namespace ImGui
 {
-
 static float RoundScalarWithFormatFloat(const char* format, ImGuiDataType data_type, float v)
 {
-    return RoundScalarWithFormatT<float>(format, data_type, v);
+    IM_UNUSED(data_type);
+    IM_ASSERT(data_type == ImGuiDataType_Float || data_type == ImGuiDataType_Double);
+    const char* fmt_start = ImParseFormatFindStart(format);
+    if (fmt_start[0] != '%' || fmt_start[1] == '%') // Don't apply if the value is not visible in the format string
+        return v;
+
+    // Sanitize format
+    char fmt_sanitized[32];
+    ImParseFormatSanitizeForPrinting(fmt_start, fmt_sanitized, IM_ARRAYSIZE(fmt_sanitized));
+    fmt_start = fmt_sanitized;
+
+    // Format value with our rounding, and read back
+    char v_str[64];
+    ImFormatString(v_str, IM_ARRAYSIZE(v_str), fmt_start, v);
+    const char* p = v_str;
+    while (*p == ' ')
+        p++;
+    v = (float)ImAtof(p);
+
+    return v;
 }
 
 static float SliderCalcRatioFromValueFloat(ImGuiDataType data_type, float v, float v_min, float v_max, float power, float linear_zero_pos)
 {
-    return ScaleRatioFromValueT<float, float, float>(data_type, v, v_min, v_max, false, power, linear_zero_pos);
+    if (v_min == v_max)
+        return 0.0f;
+    IM_UNUSED(data_type);
+
+    const float v_clamped = (v_min < v_max) ? ImClamp(v, v_min, v_max) : ImClamp(v, v_max, v_min);
+    // Linear slider
+    return (float)((float)(float)(v_clamped - v_min) / (float)(float)(v_max - v_min));
 }
 
 // ~80% common code with ImGui::SliderBehavior

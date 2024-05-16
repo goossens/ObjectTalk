@@ -19,8 +19,6 @@
 #include "OtLog.h"
 #include "OtModule.h"
 
-#include "OtHttpModule.h"
-
 #if defined(INCLUDE_GUI)
 #include "OtFramework.h"
 #include "OtSceneApp.h"
@@ -77,9 +75,6 @@ int main(int argc, char* argv[]) {
 	try {
 		// initialize libuv
 		OtLibUv::init(argc, argv);
-
-		// register HTTP module
-		OtHttpModuleRegister();
 
 		// where any files specified?
 		if (files.size() == 0) {

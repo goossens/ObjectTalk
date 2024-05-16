@@ -12,20 +12,17 @@
 #include "OtClass.h"
 #include "OtModule.h"
 
-#include "OtHttpModule.h"
 #include "OtURL.h"
 #include "OtHttpRouter.h"
 #include "OtHttpServer.h"
 
 
 //
-//	OtHttpModuleRegister
+//	Register module
 //
 
-void OtHttpModuleRegister() {
-	OtModuleClass::registerInternal("http", [](OtModule module) {
-		module->set("URL", OtClass::create(OtURLClass::getMeta()));
-		module->set("Router", OtClass::create(OtHttpRouterClass::getMeta()));
-		module->set("Server", OtClass::create(OtHttpServerClass::getMeta()));
-	});
-}
+static OtModuleRegister registration{"http", [](OtModule module) {
+	module->set("URL", OtClass::create(OtURLClass::getMeta()));
+	module->set("Router", OtClass::create(OtHttpRouterClass::getMeta()));
+	module->set("Server", OtClass::create(OtHttpServerClass::getMeta()));
+}};

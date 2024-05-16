@@ -15,15 +15,11 @@
 
 #include "OtImageObject.h"
 
-#include "OtGraphicsModule.h"
-
 
 //
-//	OtGraphicsModuleRegister
+//	Register module
 //
 
-void OtGraphicsModuleRegister() {
-	OtModuleClass::registerInternal("graphics", [](OtModule module) {
-		module->set("Image", OtClass::create(OtImageObjectClass::getMeta()));
-	});
-}
+static OtModuleRegister registration{"graphics", [](OtModule module) {
+	module->set("Image", OtClass::create(OtImageObjectClass::getMeta()));
+}};

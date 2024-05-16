@@ -27,9 +27,6 @@ using OtModule = OtObjectPointer<OtModuleClass>;
 
 class OtModuleClass : public OtInternalClass {
 public:
-	// register an internal module
-	static void registerInternal(const std::string& name, std::function<void(OtModule)> creator);
-
 	// load the module
 	void load(const std::filesystem::path& path);
 	void load(const std::filesystem::path& root, const std::string& code);
@@ -47,4 +44,20 @@ private:
 	// determine full path name for module
 	static std::filesystem::path checkPath(std::filesystem::path path);
 	static std::filesystem::path getFullPath(std::filesystem::path path);
+};
+
+
+//
+//	OtModuleRegister
+//
+
+class OtModuleRegister {
+public:
+	// constructors
+	OtModuleRegister() = delete;
+	OtModuleRegister(const char* name, std::function<void(OtModule)> creator);
+	OtModuleRegister(const OtModuleRegister&) = delete; // no copy constructor
+	OtModuleRegister& operator=(const OtModuleRegister&) = delete; // no copy assignment
+	OtModuleRegister(OtModuleRegister&&) = delete;
+	OtModuleRegister& operator=(OtModuleRegister&&) = delete;
 };

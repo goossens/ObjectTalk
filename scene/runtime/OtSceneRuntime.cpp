@@ -14,13 +14,9 @@
 #include "OtLog.h"
 
 #include "OtAssetManager.h"
-#include "OtGraphicsModule.h"
-#include "OtInputModule.h"
-#include "OtMathModule.h"
 
 #include "OtAnimator.h"
 #include "OtEntityObject.h"
-#include "OtSceneModule.h"
 #include "OtSceneRuntime.h"
 
 
@@ -109,12 +105,6 @@ void OtSceneRuntime::terminate() {
 //
 
 void OtSceneRuntime::initializeScriptingSystem() {
-	// register modules
-	OtInputModuleRegister();
-	OtMathModuleRegister();
-	OtGraphicsModuleRegister();
-	OtSceneModuleRegister();
-
 	// access the scene
 	auto scene = sceneAsset->getScene();
 

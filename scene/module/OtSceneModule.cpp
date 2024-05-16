@@ -17,12 +17,10 @@
 
 
 //
-//	OtSceneModuleRegister
+//	Register module
 //
 
-void OtSceneModuleRegister() {
-	OtModuleClass::registerInternal("scene", [](OtModule module) {
-		module->set("Animation", OtClass::create(OtAnimationClass::getMeta()));
-		module->set("Entity", OtClass::create(OtEntityObjectClass::getMeta()));
-	});
-}
+static OtModuleRegister registration{"scene", [](OtModule module) {
+	module->set("Animation", OtClass::create(OtAnimationClass::getMeta()));
+	module->set("Entity", OtClass::create(OtEntityObjectClass::getMeta()));
+}};

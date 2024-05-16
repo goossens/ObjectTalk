@@ -49,18 +49,6 @@ static std::vector<std::filesystem::path> localPath;
 
 
 //
-//	OtModuleClass::registerInternal
-//
-
-void OtModuleClass::registerInternal(const std::string& name, std::function<void(OtModule)> creator)
-{
-	OtModuleRegistryEntry entry;
-	entry.creator = creator;
-	OtModuleRegistry::instance()->set(name, entry);
-}
-
-
-//
 //	OtModuleClass::load
 //
 
@@ -246,4 +234,15 @@ OtModule OtModuleClass::import(const std::string& name) {
 		module->load(name);
 		return module;
 	}
+}
+
+
+//
+//	OtModuleRegister::OtModuleRegister
+//
+
+OtModuleRegister::OtModuleRegister(const char* name, std::function<void(OtModule)> creator) {
+	OtModuleRegistryEntry entry;
+	entry.creator = creator;
+	OtModuleRegistry::instance()->set(name, entry);
 }

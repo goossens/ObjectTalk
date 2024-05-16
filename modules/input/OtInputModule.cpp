@@ -15,7 +15,6 @@
 #include "OtInteger.h"
 #include "OtModule.h"
 
-#include "OtInputModule.h"
 #include "OtVec2.h"
 
 
@@ -188,17 +187,15 @@ static OtObject GetMouseDrag() {
 
 
 //
-//	OtInputModuleRegister
+//	Register module
 //
 
-void OtInputModuleRegister() {
-	OtModuleClass::registerInternal("input", [](OtModule module) {
-		// register enums
-		RegisterEnums(module);
+static OtModuleRegister registration{"input", [](OtModule module) {
+	// register enums
+	RegisterEnums(module);
 
-		// register functions
-		module->set("isButtonDown", OtFunction::create(&IsButtonDown));
-		module->set("isButtonPressed", OtFunction::create(&IsButtonPressed));
-		module->set("getMouseDrag", OtFunction::create(&GetMouseDrag));
-	});
-}
+	// register functions
+	module->set("isButtonDown", OtFunction::create(&IsButtonDown));
+	module->set("isButtonPressed", OtFunction::create(&IsButtonPressed));
+	module->set("getMouseDrag", OtFunction::create(&GetMouseDrag));
+}};

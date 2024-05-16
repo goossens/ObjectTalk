@@ -6,8 +6,6 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-export DOCKER_BUILDKIT=0
-
 docker build -t ot-alpine .
 docker run --interactive --tty --name ot-alpine --volume $(cd ../..; pwd):/ot ot-alpine sh
 docker container rm ot-alpine

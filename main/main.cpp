@@ -9,7 +9,6 @@
 //	Include files
 //
 
-#include <filesystem>
 #include <string>
 
 #include <argparse/argparse.hpp>
@@ -17,6 +16,7 @@
 #include "OtCompiler.h"
 #include "OtLibuv.h"
 #include "OtLog.h"
+#include "OtPathTools.h"
 #include "OtModule.h"
 
 #if defined(INCLUDE_GUI)
@@ -110,7 +110,7 @@ int main(int argc, char* argv[]) {
 
 				// run the file
 				auto file = files[0];
-				auto extension = std::filesystem::path(file).extension().string();
+				auto extension = OtPathGetExtension(file);
 
 				// execute by type (based by the file extension)
 				if (extension == ".ot" || extension == "") {

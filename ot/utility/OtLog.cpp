@@ -24,6 +24,7 @@
 
 #include "OtException.h"
 #include "OtLog.h"
+#include "OtPathTools.h"
 
 
 //
@@ -69,17 +70,17 @@ std::string GetTimestamp() {
 void OtLogger::log(const char* filename, int lineno, int type, const std::string& message) {
 	// get timestamp, filename and message type
 	auto timestamp = GetTimestamp();
-	auto shortname = std::filesystem::path(filename).filename();
+	auto shortname = OtPathGetFilename(filename);
 	auto messageType = types[type];
 
 	// send to STDERR (if required)
 	if (logToStderr) {
-		std::cerr << timestamp << " [" << messageType << "] " << shortname.string() << " (" << lineno << "): " << message << std::endl;
+		std::cerr << timestamp << " [" << messageType << "] " << shortname << " (" << lineno << "): " << message << std::endl;
 	}
 
 	// send to log file (if required)
 	if (ofs.is_open()) {
-		ofs << timestamp << " [" << messageType << "] " << shortname.string() << "(" << lineno << "): " << message << std::endl;
+		ofs << timestamp << " [" << messageType << "] " << shortname << "(" << lineno << "): " << message << std::endl;
 	}
 
 	// throw exception or terminate program (if required)
@@ -108,13 +109,13 @@ void OtLogger::log(const char* filename, int lineno, int type, const std::string
 //	OtLogger::fileLogging
 //
 
-void OtLogger::fileLogging(const std::filesystem::path& path)
+void OtLogger::fileLogging(const std::string& name)
 {
 	if (ofs.is_open()) {
 		ofs.close();
 	}
 
-	if (!path.empty()) {
-		ofs.open(path);
+	if (!name.empty()) {
+		ofs.open(name);
 	}
 }

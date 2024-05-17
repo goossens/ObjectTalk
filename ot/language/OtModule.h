@@ -12,8 +12,8 @@
 //	Include files
 //
 
-#include <filesystem>
 #include <functional>
+#include <string>
 
 #include "OtInternal.h"
 
@@ -28,8 +28,8 @@ using OtModule = OtObjectPointer<OtModuleClass>;
 class OtModuleClass : public OtInternalClass {
 public:
 	// load the module
-	void load(const std::filesystem::path& path);
-	void load(const std::filesystem::path& root, const std::string& code);
+	void load(const std::string& path);
+	void load(const std::string& root, const std::string& code);
 
 	// get type definition
 	static OtType getMeta();
@@ -42,8 +42,8 @@ private:
 	static void buildModulePath();
 
 	// determine full path name for module
-	static std::filesystem::path checkPath(std::filesystem::path path);
-	static std::filesystem::path getFullPath(std::filesystem::path path);
+	static std::string checkPath(const std::string& path);
+	static std::string getFullPath(const std::string& path);
 };
 
 

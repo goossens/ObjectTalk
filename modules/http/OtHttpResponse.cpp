@@ -10,12 +10,12 @@
 //
 
 #include <cstring>
-#include <filesystem>
 
 #include "OtException.h"
 #include "OtFunction.h"
 #include "OtHttpResponse.h"
 #include "OtMimeTypes.h"
+#include "OtPathTools.h"
 
 
 //
@@ -268,10 +268,8 @@ OtObject OtHttpResponseClass::json(OtObject object) {
 //
 
 OtObject OtHttpResponseClass::sendfile(const std::string& name) {
-	std::filesystem::file_status stat = std::filesystem::status(name);
-
 	// handle file not found error
-	if (!std::filesystem::is_regular_file(stat)) {
+	if (!OtPathIsRegularFile(name)) {
 		setStatus(404);
 		end();
 
@@ -280,9 +278,8 @@ OtObject OtHttpResponseClass::sendfile(const std::string& name) {
 		setStatus(200);
 
 		// set headers
-		std::filesystem::path path(name);
-		headers.emplace("Content-Length", std::to_string(std::filesystem::file_size(name)));
-		headers.emplace("Content-Type", OtMimeTypeGet(path.extension().string().substr(1, std::string::npos)));
+		headers.emplace("Content-Length", std::to_string(OtPathGetFileSize(name)));
+		headers.emplace("Content-Type", OtMimeTypeGet(OtPathGetExtension(name).substr(1, std::string::npos)));
 
 		// open file
 		uv_fs_t open_req;
@@ -346,8 +343,7 @@ void OtHttpResponseClass::onFileRead(ssize_t size) {
 //
 
 OtObject OtHttpResponseClass::download(const std::string& name) {
-	std::filesystem::path path(name);
-	headers.emplace("Content-Disposition", "attachment; filename=" + path.filename().string());
+	headers.emplace("Content-Disposition", "attachment; filename=" + name);
 	return sendfile(name);
 }
 

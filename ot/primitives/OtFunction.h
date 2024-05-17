@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include <filesystem>
 #include <tuple>
 #include <utility>
 

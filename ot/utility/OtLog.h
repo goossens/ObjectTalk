@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include <filesystem>
 #include <fstream>
 #include <string>
 
@@ -50,7 +49,7 @@ public:
 
 	// set logging targets
 	void stderrLogging(bool flag) { logToStderr = flag; }
-	void fileLogging(const std::filesystem::path& path);
+	void fileLogging(const std::string& name);
 
 private:
 	// configuration

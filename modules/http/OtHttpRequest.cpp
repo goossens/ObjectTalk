@@ -9,12 +9,11 @@
 //	Include files
 //
 
-#include <filesystem>
-
 #include "OtDict.h"
 #include "OtException.h"
 #include "OtFunction.h"
 #include "OtHttpRequest.h"
+#include "OtPathTools.h"
 
 
 //
@@ -279,10 +278,10 @@ void OtHttpRequestClass::onMultipartHeadersComplete() {
 					multipartFileName = val;
 
 					// create temporary file
-					std::filesystem::path tmpl = std::filesystem::temp_directory_path() / "ot-XXXXXX";
+					std::string tmpl = OtPathJoin(OtPathGetTmpDirectory(), "ot-XXXXXX");
 
 					uv_fs_t req;
-					uv_fs_mkstemp(uv_default_loop(), &req, tmpl.string().c_str(), 0);
+					uv_fs_mkstemp(uv_default_loop(), &req, tmpl.c_str(), 0);
 					multipartFile = req.path;
 					multipartFD = (uv_file) req.result;
 					uv_fs_req_cleanup(&req);

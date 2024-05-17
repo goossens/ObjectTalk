@@ -13,7 +13,6 @@
 //
 
 #include <string>
-#include <filesystem>
 
 #include "OtBoolean.h"
 #include "OtInteger.h"

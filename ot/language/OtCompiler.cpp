@@ -24,6 +24,7 @@
 #include "OtException.h"
 #include "OtInteger.h"
 #include "OtMemberReference.h"
+#include "OtPathTools.h"
 #include "OtReal.h"
 #include "OtSelector.h"
 #include "OtStackReference.h"
@@ -31,10 +32,10 @@
 #include "OtThrow.h"
 
 
-OtByteCode OtCompiler::compileFile(const std::filesystem::path& path, OtObject object, bool disassemble) {
+OtByteCode OtCompiler::compileFile(const std::string& path, OtObject object, bool disassemble) {
 	// sanity check
-	if (!std::filesystem::exists(path)) {
-		OtError("Can't open file [{}]", path.string());
+	if (!OtPathExists(path)) {
+		OtError("Can't open file [{}]", path);
 	}
 
 	// load source code and compile into bytecode
@@ -42,7 +43,7 @@ OtByteCode OtCompiler::compileFile(const std::filesystem::path& path, OtObject o
 	std::stringstream buffer;
 	buffer << stream.rdbuf();
 	stream.close();
-	OtSource source = OtSourceClass::create(path.string(), buffer.str());
+	OtSource source = OtSourceClass::create(path, buffer.str());
 	return compileSource(source, object, disassemble);
 }
 

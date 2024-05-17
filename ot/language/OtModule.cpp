@@ -20,6 +20,7 @@
 #include "OtException.h"
 #include "OtLibuv.h"
 #include "OtModule.h"
+#include "OtPathTools.h"
 #include "OtRegistry.h"
 #include "OtSingleton.h"
 #include "OtSource.h"
@@ -44,25 +45,25 @@ class OtModuleRegistry : public OtSingleton<OtModuleRegistry>, public OtRegistry
 //	Module search path
 //
 
-static std::vector<std::filesystem::path> modulePath;
-static std::vector<std::filesystem::path> localPath;
+static std::vector<std::string> modulePath;
+static std::vector<std::string> localPath;
 
 
 //
 //	OtModuleClass::load
 //
 
-void OtModuleClass::load(const std::filesystem::path& path) {
+void OtModuleClass::load(const std::string& path) {
 	// get full path of module
 	auto fullPath = getFullPath(path);
 
 	// ensure module exists
 	if (fullPath.empty()) {
-		OtError("Can't find module [{}]", path.string());
+		OtError("Can't find module [{}]", path);
 	}
 
 	// load source code
-	std::ifstream stream(fullPath.string().c_str());
+	std::ifstream stream(fullPath.c_str());
 	std::stringstream buffer;
 	buffer << stream.rdbuf();
 	stream.close();
@@ -76,19 +77,19 @@ void OtModuleClass::load(const std::filesystem::path& path) {
 //	OtModuleClass::load
 //
 
-void OtModuleClass::load(const std::filesystem::path& path, const std::string& code) {
+void OtModuleClass::load(const std::string& path, const std::string& code) {
 	// start with a clean slate
 	unsetAll();
 
 	// add metadata to module
-	set("__FILE__", OtString::create(path.string()));
-	set("__DIR__", OtString::create(path.parent_path().string()));
+	set("__FILE__", OtString::create(path));
+	set("__DIR__", OtString::create(OtPathGetParent(path)));
 
 	// compile and run module code
 	OtCompiler compiler;
-	OtSource source = OtSourceClass::create(path.string(), code);
+	OtSource source = OtSourceClass::create(path, code);
 
-	localPath.push_back(path.parent_path());
+	localPath.push_back(OtPathGetParent(path));
 
 	try {
 		auto bytecode = compiler.compileSource(source, OtModule(this));
@@ -109,7 +110,7 @@ void OtModuleClass::load(const std::filesystem::path& path, const std::string& c
 
 void OtModuleClass::buildModulePath() {
 	// use local directory as default
-	modulePath.push_back(std::filesystem::canonical("."));
+	modulePath.push_back(".");
 
 	// use OT_PATH environment variable if provided
 	auto path = std::getenv("OT_PATH");
@@ -128,14 +129,13 @@ void OtModuleClass::buildModulePath() {
 	size_t length = 1024;
 	auto status = uv_exepath(buffer, &length);
 	UV_CHECK_ERROR("uv_exepath", status);
-	std::string home(buffer, length);
+	std::string exec(buffer, length);
 
 	// use lib directory
-	auto exec = std::filesystem::path(home);
-	auto root = std::filesystem::canonical(exec).parent_path().parent_path();
-	auto lib = root / "lib" / "ot";
+	auto root = OtPathGetParent(OtPathGetParent(exec));
+	auto lib = OtPathJoin(OtPathJoin(root, "lib"), "ot");
 
-	if (std::filesystem::is_directory(lib)) {
+	if (OtPathIsDirectory(lib)) {
 		modulePath.push_back(lib);
 	}
 }
@@ -145,20 +145,20 @@ void OtModuleClass::buildModulePath() {
 //	OtModuleClass::checkPath
 //
 
-std::filesystem::path OtModuleClass::checkPath(std::filesystem::path path) {
+std::string OtModuleClass::checkPath(const std::string& path) {
 	// see if path points to a regular file
-	if (std::filesystem::exists(path) && std::filesystem::is_regular_file(path)) {
-		return std::filesystem::canonical(path);
+	if (OtPathIsRegularFile(path)) {
+		return path;
 
 	// see if module exists without a path prepended and extension appended?
 	} else {
-		auto pathWithExt = path.replace_extension(".ot");
+		auto pathWithExt = OtPathReplaceExtension(path, ".ot");
 
-		if (std::filesystem::exists(pathWithExt) && std::filesystem::is_regular_file(pathWithExt)) {
-			return std::filesystem::canonical(pathWithExt);
+		if (OtPathIsRegularFile(pathWithExt)) {
+			return pathWithExt;
 
 		} else {
-			return std::filesystem::path();
+			return std::string();
 		}
 	}
 }
@@ -168,24 +168,24 @@ std::filesystem::path OtModuleClass::checkPath(std::filesystem::path path) {
 //	OtModuleClass::getFullPath
 //
 
-std::filesystem::path OtModuleClass::getFullPath(std::filesystem::path path) {
+std::string OtModuleClass::getFullPath(const std::string& path) {
 	// build module path (if required)
 	if (modulePath.size() == 0) {
 		buildModulePath();
 	}
 
 	// see if name addresses a module
-	std::filesystem::path fullName = checkPath(path);
+	std::string fullName = checkPath(path);
 
 	// find module on path (if still required)
 	for (size_t i = 0; i < modulePath.size() && fullName.empty(); i++) {
-		fullName = checkPath(modulePath[i] / path);
+		fullName = checkPath(OtPathJoin(modulePath[i], path));
 	}
 
 	// find module in local path (if still required)
 	if (fullName.empty() && localPath.size()) {
 		for (int i = (int) localPath.size() - 1; i >= 0 && fullName.empty(); i--) {
-			fullName = checkPath(localPath[i] / path);
+			fullName = checkPath(OtPathJoin(localPath[i], path));
 		}
 	}
 

@@ -112,7 +112,9 @@
 		"typeindex": "cpp",
 		"strstream": "cpp",
 		"__memory": "cpp",
-		"*.sh": "cpp"
+		"*.sh": "cpp",
+		"execution": "cpp",
+		"text_encoding": "cpp"
 	},
 	"files.exclude": {
 		"debug/**": true,

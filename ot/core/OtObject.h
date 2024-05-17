@@ -13,7 +13,6 @@
 //
 
 #include <cstdint>
-#include <filesystem>
 #include <functional>
 #include <string>
 #include <utility>
@@ -62,7 +61,6 @@ public:
 	virtual operator float() { return 0.0f; }
 	virtual operator double() { return 0.0; }
 	virtual operator std::string() { return ""; }
-	virtual operator std::filesystem::path() { return std::filesystem::path(operator std::string()); }
 	virtual operator OtObject() { return OtObject(this); }
 
 	// get object's JSON representation

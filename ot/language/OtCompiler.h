@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include <filesystem>
 #include <string>
 #include <unordered_map>
 
@@ -32,7 +31,7 @@
 class OtCompiler {
 public:
 	// compile ObjectTalk script into bytecode
-	OtByteCode compileFile(const std::filesystem::path& path, OtObject object, bool disassemble=false);
+	OtByteCode compileFile(const std::string& path, OtObject object, bool disassemble=false);
 	OtByteCode compileText(const std::string& text, OtObject object, bool disassemble=false);
 	OtByteCode compileSource(OtSource source, OtObject object, bool disassemble=false);
 

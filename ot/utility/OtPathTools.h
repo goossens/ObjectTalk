@@ -13,6 +13,8 @@
 //
 
 #include <filesystem>
+#include <random>
+#include <sstream>
 #include <string>
 
 #include "OtLibuv.h"
@@ -157,6 +159,42 @@ static inline std::string OtPathGetCurrentWorkingDirectory() {
 
 static inline void OtPathChangeDirectory(const std::string& path) {
 	std::filesystem::current_path(std::filesystem::path(path));
+}
+
+
+//
+//	OtPathGetTmpDirectory
+//
+
+static inline std::string OtPathGetTmpDirectory() {
+	return std::filesystem::temp_directory_path().string();
+}
+
+
+//
+//	OtPathGetTmpFilename
+//
+
+static inline std::string OtPathGetTmpFilename() {
+	static std::random_device device;
+	static std::mt19937 generator(device());
+	std::uniform_int_distribution<uint64_t> rand(0);
+
+	auto tmp = std::filesystem::temp_directory_path();
+	std::filesystem::path path;
+	bool done = false;
+
+	while (!done) {
+		std::stringstream ss;
+		ss << std::hex << rand(generator);
+		path = tmp / ss.str();
+
+		if (!std::filesystem::exists(path)) {
+			done = true;
+		}
+	}
+
+	return path.string();
 }
 
 

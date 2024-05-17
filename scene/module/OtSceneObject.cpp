@@ -34,11 +34,11 @@ OtObject OtSceneObjectClass::getEntity(const std::string& tag) {
 
 	// see if this entity has a script component
 	if (scene->hasComponent<OtScriptComponent>(entity)) {
-		// we use the script instance
+		// yes it does so we use the script's instance (which is derived from Entity)
 		return scene->getComponent<OtScriptComponent>(entity).instance;
 
 	} else {
-		// create a new entity reference
+		// create a new entity object
 		return OtEntityObject::create(scene, entity);
 	}
 }

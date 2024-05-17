@@ -9,14 +9,7 @@ var math = import("math");
 
 class rotator : scene.Entity {
 	function create(this) {
-		this.addRotator("Cube 1");
-		this.addRotator("Cube 2");
-		this.addRotator("Cube 3");
-	}
-
-	function addRotator(this, tag) {
-		var cube = this.getEntity(tag);
-		var transform = cube.getTransformComponent();
+		var transform = this.getTransformComponent();
 
 		this.createAnimation()
 			.from(0.0)

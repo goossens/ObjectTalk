@@ -145,6 +145,10 @@
 						"roughness": 0.5,
 						"scale": 1.0
 					}
+				},
+				{
+					"component": "Script",
+					"path": "assets/rotator.ot"
 				}
 			]
 		},
@@ -205,6 +209,10 @@
 						"roughness": 0.5,
 						"scale": 1.0
 					}
+				},
+				{
+					"component": "Script",
+					"path": "assets/rotator.ot"
 				}
 			]
 		},
@@ -265,16 +273,6 @@
 						"roughness": 0.5,
 						"scale": 1.0
 					}
-				}
-			]
-		},
-		{
-			"children": [],
-			"components": [
-				{
-					"component": "Core",
-					"tag": "Animator",
-					"uuid": 2066162489
 				},
 				{
 					"component": "Script",
@@ -294,6 +292,7 @@
 				2.0,
 				5.0
 			],
+			"speed": 3.0,
 			"yaw": 0.0
 		},
 		"gizmo": {

@@ -128,9 +128,12 @@
 #include "generated/highlight/OtOutlineFS_mtl.h"
 #include "generated/highlight/OtOutlineFS_spv.h"
 #include "generated/highlight/OtOutlineFS_dx11.h"
-#include "generated/highlight/OtSelectFS_mtl.h"
-#include "generated/highlight/OtSelectFS_spv.h"
-#include "generated/highlight/OtSelectFS_dx11.h"
+#include "generated/highlight/OtSelectOpaqueFS_mtl.h"
+#include "generated/highlight/OtSelectOpaqueFS_spv.h"
+#include "generated/highlight/OtSelectOpaqueFS_dx11.h"
+#include "generated/highlight/OtSelectTransparentFS_mtl.h"
+#include "generated/highlight/OtSelectTransparentFS_spv.h"
+#include "generated/highlight/OtSelectTransparentFS_dx11.h"
 #include "generated/ibl/OtBrdfLutCS_mtl.h"
 #include "generated/ibl/OtBrdfLutCS_spv.h"
 #include "generated/ibl/OtBrdfLutCS_dx11.h"
@@ -289,8 +292,10 @@ static const uint8_t OtSelectVS_glsl[1] = {0};
 static const uint8_t OtSelectVS_essl[1] = {0};
 static const uint8_t OtOutlineFS_glsl[1] = {0};
 static const uint8_t OtOutlineFS_essl[1] = {0};
-static const uint8_t OtSelectFS_glsl[1] = {0};
-static const uint8_t OtSelectFS_essl[1] = {0};
+static const uint8_t OtSelectOpaqueFS_glsl[1] = {0};
+static const uint8_t OtSelectOpaqueFS_essl[1] = {0};
+static const uint8_t OtSelectTransparentFS_glsl[1] = {0};
+static const uint8_t OtSelectTransparentFS_essl[1] = {0};
 static const uint8_t OtBrdfLutCS_glsl[1] = {0};
 static const uint8_t OtBrdfLutCS_essl[1] = {0};
 static const uint8_t OtIblEnvironmentMapCS_glsl[1] = {0};
@@ -382,7 +387,8 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtSelectInstancingVS),
 	BGFX_EMBEDDED_SHADER(OtSelectVS),
 	BGFX_EMBEDDED_SHADER(OtOutlineFS),
-	BGFX_EMBEDDED_SHADER(OtSelectFS),
+	BGFX_EMBEDDED_SHADER(OtSelectOpaqueFS),
+	BGFX_EMBEDDED_SHADER(OtSelectTransparentFS),
 	BGFX_EMBEDDED_SHADER(OtBrdfLutCS),
 	BGFX_EMBEDDED_SHADER(OtIblEnvironmentMapCS),
 	BGFX_EMBEDDED_SHADER(OtIblIrradianceMapCS),

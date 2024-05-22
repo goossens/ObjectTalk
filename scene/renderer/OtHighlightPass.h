@@ -18,14 +18,14 @@
 #include "OtShaderProgram.h"
 #include "OtUniformVec4.h"
 
-#include "OtSceneRenderPass.h"
+#include "OtSceneRenderEntitiesPass.h"
 
 
 //
 //	OtHighlightPass
 //
 
-class OtHighlightPass : public OtSceneRenderPass {
+class OtHighlightPass : public OtSceneRenderEntitiesPass {
 public:
 	// constructor
 	OtHighlightPass(OtFrameBuffer& fb) : framebuffer(fb) {}
@@ -43,6 +43,7 @@ public:
 		}
 	}
 
+private:
 	// render entities as opaque blobs
 	void renderSelectedPass(OtSceneRendererContext& ctx, OtEntity entity) {
 		// setup pass to render entities as opaque blobs
@@ -74,55 +75,8 @@ public:
 
 	// recursive method to render an entity and it's children
 	void renderHighlight(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity) {
-		// only render if all components are available
-		if (ctx.scene->hasComponent<OtGeometryComponent>(entity)) {
-			// render geometry
-			auto& asset = ctx.scene->getComponent<OtGeometryComponent>(entity).asset;
-
-			if (asset.isReady()) {
-				auto& geometry = asset->getGeometry();
-				geometry.submitTriangles();
-
-				// get camera frustum and geometry AABB
-				auto& frustum = ctx.camera.frustum;
-				auto& aabb =  geometry.getAABB();
-
-				// is this a case of instancing?
-				if (ctx.scene->hasComponent<OtInstancingComponent>(entity)) {
-					// only render instances if we have a valid asset and at least one instance is visible
-					auto& instancing = ctx.scene->getComponent<OtInstancingComponent>(entity);
-
-					if (!instancing.asset.isNull() && instancing.asset->getInstances().submit(frustum, aabb)) {
-						selectInstancingProgram.setTransform(ctx.scene->getGlobalTransform(entity));
-						selectInstancingProgram.setState(OtStateWriteRgb);
-						pass.runShaderProgram(selectInstancingProgram);
-					}
-
-				} else {
-					// see if geometry is visible
-					if (frustum.isVisibleAABB(aabb.transform(ctx.scene->getGlobalTransform(entity)))) {
-						selectProgram.setTransform(ctx.scene->getGlobalTransform(entity));
-						selectProgram.setState(OtStateWriteRgb);
-						pass.runShaderProgram(selectProgram);
-					}
-				}
-			}
-
-		} else if (ctx.scene->hasComponent<OtModelComponent>(entity)) {
-			// render model
-			auto& model = ctx.scene->getComponent<OtModelComponent>(entity).model;
-
-			if (model.isReady()) {
-				for (auto& mesh : model->getMeshes()) {
-					mesh.submitTriangles();
-					selectProgram.setTransform(ctx.scene->getGlobalTransform(entity));
-					selectProgram.setState(OtStateWriteRgb);
-					pass.runShaderProgram(selectProgram);
-				}
-			}
-		}
-
-		// also render all the children
+		// render entity and its children
+		renderEntity(ctx, pass, entity);
 		OtEntity child = ctx.scene->getFirstChild(entity);
 
 		while (ctx.scene->isValidEntity(child)) {
@@ -150,6 +104,25 @@ public:
 		return highlightable;
 	}
 
+protected:
+	// methods that must be overriden by subclasses (when required)
+	bool isRenderingOpaque() override { return true; };
+	bool isRenderingTransparent() override { return true; };
+
+	OtShaderProgram* getOpaqueProgram() override { return &opaqueProgram; }
+	OtShaderProgram* getInstancedOpaqueProgram() override { return &instancedOpaqueProgram; }
+	OtShaderProgram* getTransparentProgram() override { return &transparentProgram; }
+	OtShaderProgram* getInstancedTransparentProgram() override { return &instancedTransparentProgram; }
+	OtShaderProgram* getTerrainProgram() override { return nullptr; }
+
+	inline uint64_t getNormalState() override { return OtStateWriteRgb; }
+	inline uint64_t getCullbackState() override { return OtStateWriteRgb; };
+	inline uint64_t getWireframeState() override { return OtStateWriteRgb; };
+
+	inline void submitUniforms(OtSceneRendererContext& ctx, Scope& scope) override {
+		if (scope.isTransparent) { submitAlbedoUniforms(*scope.material); }
+	}
+
 private:
 	// properties
 	OtFrameBuffer& framebuffer;
@@ -159,7 +132,9 @@ private:
 
 	OtSampler selectedSampler{"s_selectedTexture", OtTexture::pointSampling | OtTexture::clampSampling};
 
-	OtShaderProgram selectProgram{"OtSelectVS", "OtSelectFS"};
-	OtShaderProgram selectInstancingProgram{"OtSelectInstancingVS", "OtSelectFS"};
+	OtShaderProgram opaqueProgram{"OtSelectVS", "OtSelectOpaqueFS"};
+	OtShaderProgram instancedOpaqueProgram{"OtSelectInstancingVS", "OtSelectOpaqueFS"};
+	OtShaderProgram transparentProgram{"OtSelectVS", "OtSelectTransparentFS"};
+	OtShaderProgram instancedTransparentProgram{"OtSelectInstancingVS", "OtSelectTransparentFS"};
 	OtShaderProgram outlineProgram{"OtOutlineVS", "OtOutlineFS"};
 };

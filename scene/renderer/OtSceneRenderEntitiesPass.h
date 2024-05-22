@@ -51,6 +51,7 @@ protected:
 protected:
 	// utility methods for subclasses
 	void renderEntities(OtSceneRendererContext& ctx, OtPass& pass);
+	void renderEntity(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity);
 
 private:
 	// private methods to better structure rendering pipeline
@@ -58,8 +59,6 @@ private:
 	void renderOpaqueModel(OtSceneRendererContext& ctx, OtEntity entity, OtModelComponent& model);
 	void renderTerrain(OtSceneRendererContext& ctx, OtEntity entity, OtTerrainComponent& terrain);
 	void renderTransparentGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry);
-
-	void submitTextureSampler(OtSampler& sampler, int unit, OtAsset<OtTextureAsset>& texture);
 
 	// private properties
 	OtUniformVec4 clipUniforms{"u_clip", 1};

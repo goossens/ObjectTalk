@@ -61,6 +61,39 @@ void OtSceneRenderEntitiesPass::renderEntities(OtSceneRendererContext& ctx, OtPa
 
 
 //
+//	OtSceneRenderEntitiesPass::renderEntity
+///
+
+void OtSceneRenderEntitiesPass::renderEntity(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity) {
+	// remember pass
+	ctx.pass = &pass;
+
+	// render geometry (if required)
+	if (ctx.scene->hasComponent<OtGeometryComponent>(entity)) {
+		auto& geometry = ctx.scene->getComponent<OtGeometryComponent>(entity);
+
+		if (geometry.asset.isReady()) {
+			if (isRenderingOpaque() && !geometry.transparent) {
+				renderOpaqueGeometry(ctx, entity, geometry);
+
+			} else if (isRenderingTransparent() && geometry.transparent) {
+				renderTransparentGeometry(ctx, entity, geometry);
+			}
+		}
+	}
+
+	// render model (if required)
+	if (ctx.scene->hasComponent<OtModelComponent>(entity)) {
+		auto& model = ctx.scene->getComponent<OtModelComponent>(entity);
+
+		if (isRenderingOpaque() && model.model.isReady()) {
+			renderOpaqueModel(ctx, entity, model);
+		}
+	}
+}
+
+
+//
 //	OtSceneRenderEntitiesPass::renderOpaqueGeometry
 //
 

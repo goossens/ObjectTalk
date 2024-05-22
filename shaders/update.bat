@@ -45,7 +45,8 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f highlight\OtSelectInstancingVS.glsl -o generated\highlight\OtSelectInstancingVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtSelectInstancingVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f highlight\OtSelectVS.glsl -o generated\highlight\OtSelectVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtSelectVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f highlight\OtOutlineFS.glsl -o generated\highlight\OtOutlineFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtOutlineFS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f highlight\OtSelectFS.glsl -o generated\highlight\OtSelectFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtSelectFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f highlight\OtSelectOpaqueFS.glsl -o generated\highlight\OtSelectOpaqueFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtSelectOpaqueFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f highlight\OtSelectTransparentFS.glsl -o generated\highlight\OtSelectTransparentFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtSelectTransparentFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f ibl\OtBrdfLutCS.glsl -o generated\ibl\OtBrdfLutCS_dx11.h -i include --type compute --platform windows --profile s_5_0 -O 3 --bin2c OtBrdfLutCS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f ibl\OtIblEnvironmentMapCS.glsl -o generated\ibl\OtIblEnvironmentMapCS_dx11.h -i include --type compute --platform windows --profile s_5_0 -O 3 --bin2c OtIblEnvironmentMapCS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f ibl\OtIblIrradianceMapCS.glsl -o generated\ibl\OtIblIrradianceMapCS_dx11.h -i include --type compute --platform windows --profile s_5_0 -O 3 --bin2c OtIblIrradianceMapCS_dx11

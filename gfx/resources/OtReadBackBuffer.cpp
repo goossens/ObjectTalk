@@ -31,7 +31,7 @@ void OtReadBackBuffer::clear() {
 //	OtReadBackBuffer::readback
 //
 
-void OtReadBackBuffer::readback(OtTexture& texture) {
+void OtReadBackBuffer::readback(OtTexture& texture, std::function<void()> callback) {
 	// update texture and buffer if required
 	if (!readbackTexture.isValid() || width != texture.getWidth() || height != texture.getHeight() || format != texture.getFormat()) {
 		// remember new specs
@@ -64,7 +64,11 @@ void OtReadBackBuffer::readback(OtTexture& texture) {
 	auto frame = bgfx::readTexture(readbackTexture.getHandle(), image.getPixels());
 
 	// it takes 2 frames before the readback is complete so we increment the version in a callback
-	OtFrameworkAtFrame::instance()->add(frame, [this](){
+	OtFrameworkAtFrame::instance()->add(frame, [this, callback]() {
 		image.incrementVersion();
+
+		if (callback) {
+			callback();
+		}
 	});
 }

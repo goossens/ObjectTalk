@@ -28,21 +28,18 @@ public:
 	// constructors
 	OtCamera() = default;
 
-	OtCamera(int w, int h, const glm::vec3& cp, const glm::mat4 pm, const glm::mat4 vm) :
+	OtCamera(int w, int h, const glm::vec3& cp, const glm::mat4 pm, const glm::mat4& vm) :
 		width(w),
 		height(h),
 		cameraPosition(cp),
 		projectionMatrix(pm),
 		viewMatrix(vm) {
 
-		// determine view/projection matrix
-		viewProjectionMatrix = projectionMatrix * viewMatrix;
-
-		// determine the camera's frustum in worldspace
-		frustum = OtFrustum(viewProjectionMatrix);
+		// initialize camera
+		init();
 	}
 
-	OtCamera(int w, int h, float nearPlane, float farPlane, float fov, const glm::vec3& cp, const glm::mat4 vm) :
+	OtCamera(int w, int h, float nearPlane, float farPlane, float fov, const glm::vec3& cp, const glm::mat4& vm) :
 		width(w),
 		height(h),
 		cameraPosition(cp),
@@ -53,11 +50,24 @@ public:
 			? glm::perspectiveFovRH_NO(glm::radians(fov), (float) width, (float) height, nearPlane, farPlane)
 			: glm::perspectiveFovRH_ZO(glm::radians(fov), (float) width, (float) height, nearPlane, farPlane);
 
-		// determine view/projection matrix
-		viewProjectionMatrix = projectionMatrix * viewMatrix;
+		// initialize camera
+		init();
+	}
 
-		// determine the camera's frustum in worldspace
-		frustum = OtFrustum(viewProjectionMatrix);
+	OtCamera(int w, int h, float nearPlane, float farPlane, float fov, const glm::vec3& eye, const glm::vec3& at) :
+		width(w),
+		height(h),
+		cameraPosition(eye) {
+
+		// determine view and projection matrices
+		viewMatrix = glm::lookAt(eye, at, glm::vec3(0.0f, 1.0f, 0.0f));
+
+		projectionMatrix = OtGpuHasHomogeneousDepth()
+			? glm::perspectiveFovRH_NO(glm::radians(fov), (float) width, (float) height, nearPlane, farPlane)
+			: glm::perspectiveFovRH_ZO(glm::radians(fov), (float) width, (float) height, nearPlane, farPlane);
+
+		// initialize camera
+		init();
 	}
 
 	// get the near and far value fron the projection matrix
@@ -70,6 +80,15 @@ public:
 			nearPlane = projectionMatrix[3][2] / projectionMatrix[2][2];
 			farPlane = (projectionMatrix[2][2] * nearPlane) / (projectionMatrix[2][2] + 1.0f);
 		}
+	}
+
+	// initialize camera
+	void init() {
+		// determine view/projection matrix
+		viewProjectionMatrix = projectionMatrix * viewMatrix;
+
+		// determine the camera's frustum in worldspace
+		frustum = OtFrustum(viewProjectionMatrix);
 	}
 
 	// properties

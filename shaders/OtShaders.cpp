@@ -167,6 +167,18 @@
 #include "generated/particles/OtParticlesFS_mtl.h"
 #include "generated/particles/OtParticlesFS_spv.h"
 #include "generated/particles/OtParticlesFS_dx11.h"
+#include "generated/picking/OtPickingInstancingVS_mtl.h"
+#include "generated/picking/OtPickingInstancingVS_spv.h"
+#include "generated/picking/OtPickingInstancingVS_dx11.h"
+#include "generated/picking/OtPickingVS_mtl.h"
+#include "generated/picking/OtPickingVS_spv.h"
+#include "generated/picking/OtPickingVS_dx11.h"
+#include "generated/picking/OtPickingOpaqueFS_mtl.h"
+#include "generated/picking/OtPickingOpaqueFS_spv.h"
+#include "generated/picking/OtPickingOpaqueFS_dx11.h"
+#include "generated/picking/OtPickingTransparentFS_mtl.h"
+#include "generated/picking/OtPickingTransparentFS_spv.h"
+#include "generated/picking/OtPickingTransparentFS_dx11.h"
 #include "generated/pointlights/OtPointLightsVS_mtl.h"
 #include "generated/pointlights/OtPointLightsVS_spv.h"
 #include "generated/pointlights/OtPointLightsVS_dx11.h"
@@ -318,6 +330,14 @@ static const uint8_t OtParticlesVS_glsl[1] = {0};
 static const uint8_t OtParticlesVS_essl[1] = {0};
 static const uint8_t OtParticlesFS_glsl[1] = {0};
 static const uint8_t OtParticlesFS_essl[1] = {0};
+static const uint8_t OtPickingInstancingVS_glsl[1] = {0};
+static const uint8_t OtPickingInstancingVS_essl[1] = {0};
+static const uint8_t OtPickingVS_glsl[1] = {0};
+static const uint8_t OtPickingVS_essl[1] = {0};
+static const uint8_t OtPickingOpaqueFS_glsl[1] = {0};
+static const uint8_t OtPickingOpaqueFS_essl[1] = {0};
+static const uint8_t OtPickingTransparentFS_glsl[1] = {0};
+static const uint8_t OtPickingTransparentFS_essl[1] = {0};
 static const uint8_t OtPointLightsVS_glsl[1] = {0};
 static const uint8_t OtPointLightsVS_essl[1] = {0};
 static const uint8_t OtPointLightsFS_glsl[1] = {0};
@@ -400,6 +420,10 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtOcclusionTransparentFS),
 	BGFX_EMBEDDED_SHADER(OtParticlesVS),
 	BGFX_EMBEDDED_SHADER(OtParticlesFS),
+	BGFX_EMBEDDED_SHADER(OtPickingInstancingVS),
+	BGFX_EMBEDDED_SHADER(OtPickingVS),
+	BGFX_EMBEDDED_SHADER(OtPickingOpaqueFS),
+	BGFX_EMBEDDED_SHADER(OtPickingTransparentFS),
 	BGFX_EMBEDDED_SHADER(OtPointLightsVS),
 	BGFX_EMBEDDED_SHADER(OtPointLightsFS),
 	BGFX_EMBEDDED_SHADER(OtShadowInstancingVS),

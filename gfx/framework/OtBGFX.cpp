@@ -223,7 +223,7 @@ void OtFramework::renderBGFX() {
 	// render BGFX frame
 	auto frame = bgfx::frame();
 
-	// call callbacks targetting this frame
+	// call frame callbacks
 	OtFrameworkAtFrame::instance()->run(frame);
 }
 

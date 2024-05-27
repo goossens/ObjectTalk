@@ -594,7 +594,7 @@ void OtWorkspace::renderEditors() {
 		determinePanelHeights();
 		auto spacing = ImGui::GetStyle().ItemSpacing;
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
-		ImGui::BeginChild("Editors", ImVec2(0.0f, editorsHeight), false);
+		ImGui::BeginChild("Editors", ImVec2(0.0f, editorsHeight));
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, spacing);
 	}
 

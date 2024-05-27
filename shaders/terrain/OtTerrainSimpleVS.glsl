@@ -8,6 +8,7 @@ $input a_position
 $output v_texcoord0
 
 #include <bgfx_shader.glsl>
+
 #include <OtTerrainUniforms.glsl>
 
 // functions

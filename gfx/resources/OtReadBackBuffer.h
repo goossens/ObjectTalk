@@ -13,6 +13,7 @@
 //
 
 #include <cstdint>
+#include <functional>
 
 #include "OtBgfxHandle.h"
 #include "OtImage.h"
@@ -29,7 +30,7 @@ public:
 	void clear();
 
 	// readback the specified texture
-	void readback(OtTexture& texture);
+	void readback(OtTexture& texture, std::function<void()> callback=nullptr);
 
 	// get properties
 	inline OtImage& getImage() { return image; }

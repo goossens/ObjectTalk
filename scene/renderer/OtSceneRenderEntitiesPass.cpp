@@ -90,6 +90,12 @@ void OtSceneRenderEntitiesPass::renderEntity(OtSceneRendererContext& ctx, OtPass
 			renderOpaqueModel(ctx, entity, model);
 		}
 	}
+
+	// render terrain
+	if (ctx.scene->hasComponent<OtTerrainComponent>(entity)) {
+		auto& terrain = ctx.scene->getComponent<OtTerrainComponent>(entity);
+		renderTerrain(ctx, entity, terrain);
+	}
 }
 
 

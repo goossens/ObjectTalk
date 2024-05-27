@@ -16,7 +16,7 @@
 //	OtSceneRenderer::render
 //
 
-int OtSceneRenderer::render(OtCamera& camera, OtScene* scene, OtEntity selected) {
+int OtSceneRenderer::render(OtCamera& camera, OtScene* scene) {
 	// create rendering context
 	OtSceneRendererContext ctx{camera, scene, &ibl, &csm};
 
@@ -61,7 +61,15 @@ int OtSceneRenderer::render(OtCamera& camera, OtScene* scene, OtEntity selected)
 
 	// handle editor passes
 	gridPass.render(ctx);
-	highlightPass.render(ctx, selected);
+
+	if (scene->isValidEntity(selectedEntity)) {
+		highlightPass.render(ctx, selectedEntity);
+	}
+
+	if (pickingEntity) {
+		pickingPass.render(ctx, pickingEntity, pickingNDC);
+		pickingEntity = nullptr;
+	}
 
 	// post process frame
 	return postProcessingPass.render(ctx);

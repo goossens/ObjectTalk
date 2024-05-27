@@ -35,6 +35,7 @@
 #include "OtWaterPass.h"
 #include "OtGridPass.h"
 #include "OtHighlightPass.h"
+#include "OtPickingPass.h"
 #include "OtPostProcessingPass.h"
 
 
@@ -45,10 +46,19 @@
 class OtSceneRenderer {
 public:
 	// set properties
-	void setGridScale(float gridScale) { gridPass.setGridScale(gridScale); }
+	inline void setGridScale(float gridScale) { gridPass.setGridScale(gridScale); }
+	inline void setSelectedEntity(OtEntity entity) { selectedEntity = entity; }
+
+	// support entity picking
+	inline void pickEntity(OtEntity* entity, glm::vec2 ndc) {
+		pickingEntity = entity;
+		pickingNDC = ndc;
+	}
+
+	inline bool isPicking() { return pickingPass.isPicking(); }
 
 	// render specified scene
-	int render(OtCamera& camera, OtScene* scene, OtEntity selected=OtEntityNull);
+	int render(OtCamera& camera, OtScene* scene);
 
 private:
 	// give the debugger access to the inner circle
@@ -71,5 +81,11 @@ private:
 	OtParticlesPass particlePass{compositeBuffer};
 	OtGridPass gridPass{compositeBuffer};
 	OtHighlightPass highlightPass{compositeBuffer};
+	OtPickingPass pickingPass;
 	OtPostProcessingPass postProcessingPass{compositeBuffer};
+
+	// support for selected entities and entity picking
+	OtEntity selectedEntity = OtEntityNull;
+	OtEntity* pickingEntity = nullptr;
+	glm::vec2 pickingNDC;
 };

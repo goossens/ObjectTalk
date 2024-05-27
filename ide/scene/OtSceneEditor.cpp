@@ -13,6 +13,7 @@
 #include <cstring>
 #include <functional>
 
+#define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "ImGuizmo.h"
@@ -431,7 +432,7 @@ void OtSceneEditor::renderPanels() {
 	// create the entities panel
 	auto spacing = ImGui::GetStyle().ItemSpacing;
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
-	ImGui::BeginChild("entities", ImVec2(0.0, entityPanelHeight), true);
+	ImGui::BeginChild("entities", ImVec2(0.0, entityPanelHeight), ImGuiChildFlags_Border);
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, spacing);
 	renderEntitiesPanel();
 	ImGui::PopStyleVar();
@@ -442,7 +443,7 @@ void OtSceneEditor::renderPanels() {
 	OtUiSplitterVertical(&entityPanelHeight, minEntityPanelHeight, maxEntityPanelHeight);
 
 	// create the components panel
-	ImGui::BeginChild("components", ImVec2(), true);
+	ImGui::BeginChild("components", ImVec2(), ImGuiChildFlags_Border);
 	renderComponentsPanel();
 	ImGui::EndChild();
 
@@ -498,7 +499,7 @@ void OtSceneEditor::renderComponentsPanel() {
 
 void OtSceneEditor::renderViewPort() {
 	// create the window
-	ImGui::BeginChild("viewport", ImVec2(), true);
+	ImGui::BeginChild("viewport", ImVec2(), ImGuiChildFlags_Border);
 	auto size = ImGui::GetContentRegionAvail();
 
 	// unset selected entity if it is no longer valid
@@ -542,10 +543,23 @@ void OtSceneEditor::renderViewPort() {
 		fov = editorCamera.getFov();
 	}
 
+	// handle mouse interactions
+	auto savedPos = ImGui::GetCursorScreenPos();
+	ImGui::Dummy(size);
+
+	if (!renderer->isPicking() && ImGui::IsItemClicked()) {
+		auto position = ImGui::GetMousePos() - ImGui::GetItemRectMin();
+		glm::vec2 ndc{position.x / size.x * 2.0f - 1.0f, (size.y - position.y) / size.y * 2.0f - 1.0f};
+		renderer->pickEntity(&selectedEntity, ndc);
+	}
+
+	ImGui::SetCursorScreenPos(savedPos);
+
 	// render the scene
 	OtCamera camera{int(size.x), int(size.y), nearPlane, farPlane, fov, cameraPosition, cameraViewMatrix};
 	renderer->setGridScale(gridEnabled ? gridScale : 0.0f);
-	auto textureIndex = renderer->render(camera, &scene, selectedEntity);
+	renderer->setSelectedEntity(selectedEntity);
+	auto textureIndex = renderer->render(camera, &scene);
 
 	// show it on the screen
 	if (OtGpuHasOriginBottomLeft()) {

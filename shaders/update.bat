@@ -58,6 +58,10 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f occlusion\OtOcclusionTransparentFS.glsl -o generated\occlusion\OtOcclusionTransparentFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtOcclusionTransparentFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f particles\OtParticlesVS.glsl -o generated\particles\OtParticlesVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtParticlesVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f particles\OtParticlesFS.glsl -o generated\particles\OtParticlesFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtParticlesFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f picking\OtPickingInstancingVS.glsl -o generated\picking\OtPickingInstancingVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtPickingInstancingVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f picking\OtPickingVS.glsl -o generated\picking\OtPickingVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtPickingVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f picking\OtPickingOpaqueFS.glsl -o generated\picking\OtPickingOpaqueFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtPickingOpaqueFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f picking\OtPickingTransparentFS.glsl -o generated\picking\OtPickingTransparentFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtPickingTransparentFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f pointlights\OtPointLightsVS.glsl -o generated\pointlights\OtPointLightsVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtPointLightsVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f pointlights\OtPointLightsFS.glsl -o generated\pointlights\OtPointLightsFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtPointLightsFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f shadow\OtShadowInstancingVS.glsl -o generated\shadow\OtShadowInstancingVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtShadowInstancingVS_dx11

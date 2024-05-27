@@ -52,6 +52,7 @@ private:
 		pass.setFrameBuffer(selectedBuffer);
 		pass.setClear(true, false);
 		pass.setTransform(ctx.camera.viewMatrix, ctx.camera.projectionMatrix);
+		pass.touch();
 
 		// highlight entity (and its children)
 		renderHighlight(ctx, pass, entity);
@@ -90,8 +91,9 @@ private:
 		bool highlightable = false;
 
 		if (scene->isValidEntity(entity)) {
-			highlightable |= scene->hasComponent<OtGeometryComponent>(entity) && scene->hasComponent<OtMaterialComponent>(entity);
+			highlightable |= scene->hasComponent<OtGeometryComponent>(entity);
 			highlightable |= scene->hasComponent<OtModelComponent>(entity);
+			highlightable |= scene->hasComponent<OtTerrainComponent>(entity);
 
 			OtEntity child = scene->getFirstChild(entity);
 
@@ -113,7 +115,7 @@ protected:
 	OtShaderProgram* getInstancedOpaqueProgram() override { return &instancedOpaqueProgram; }
 	OtShaderProgram* getTransparentProgram() override { return &transparentProgram; }
 	OtShaderProgram* getInstancedTransparentProgram() override { return &instancedTransparentProgram; }
-	OtShaderProgram* getTerrainProgram() override { return nullptr; }
+	OtShaderProgram* getTerrainProgram() override { return &terrainProgram; }
 
 	inline uint64_t getNormalState() override { return OtStateWriteRgb; }
 	inline uint64_t getCullbackState() override { return OtStateWriteRgb; };
@@ -136,5 +138,6 @@ private:
 	OtShaderProgram instancedOpaqueProgram{"OtSelectInstancingVS", "OtSelectOpaqueFS"};
 	OtShaderProgram transparentProgram{"OtSelectVS", "OtSelectTransparentFS"};
 	OtShaderProgram instancedTransparentProgram{"OtSelectInstancingVS", "OtSelectTransparentFS"};
+	OtShaderProgram terrainProgram{"OtTerrainSimpleVS", "OtSelectOpaqueFS"};
 	OtShaderProgram outlineProgram{"OtOutlineVS", "OtOutlineFS"};
 };

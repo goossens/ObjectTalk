@@ -105,7 +105,7 @@ void OtNodesWidget::render(OtNodes* n) {
 		ImGuiWindowFlags_NoScrollbar |
 		ImGuiWindowFlags_NoScrollWithMouse;
 
-	ImGui::BeginChild("nodes", ImVec2(), 0, flags);
+	ImGui::BeginChild("nodes", ImVec2(), ImGuiChildFlags_None, flags);
 	position = ImGui::GetCursorScreenPos();
 	size = ImGui::GetContentRegionAvail();
 	offset = position + scrollingOffset;

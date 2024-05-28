@@ -13,6 +13,7 @@
 //
 
 #include <cstdint>
+#include <functional>
 #include <unordered_map>
 
 #include "glm/glm.hpp"
@@ -38,12 +39,10 @@
 class OtPickingPass : public OtSceneRenderEntitiesPass {
 public:
 	// render the pass
-	void render(OtSceneRendererContext& ctx, OtEntity* entity, glm::vec2 ndc) {
+	void render(OtSceneRendererContext& ctx, glm::vec2 ndc, std::function<void(OtEntity)> callback) {
 		// sanity check
-		OtAssert(!isPicking());
-
-		// remember target entity address
-		selectedEntity = entity;
+		OtAssert(!picking);
+		picking = true;
 
 		// update buffer (if required)
 		idBuffer.update(bufferSize, bufferSize);
@@ -56,7 +55,7 @@ public:
 		float nearPlane, farPlane;
 		ctx.camera.getNearFar(nearPlane, farPlane);
 
-		OtCamera camera{bufferSize, bufferSize, nearPlane, farPlane, 3.0f, eye, at};
+		OtCamera camera{bufferSize, bufferSize, nearPlane, farPlane, 1.0f, eye, at};
 
 		// setup pass to render entities as opaque blobs
 		OtPass pass;
@@ -78,7 +77,7 @@ public:
 		// transfer ID buffer back to CPU (this takes 2 frames hence the callback)
 		auto texture = idBuffer.getColorTexture();
 
-		idReadback.readback(texture, [this]() {
+		idReadback.readback(texture, [this, callback]() {
 			// find entity ID that appears most often in readback buffer
 			std::unordered_map<int, int> frequency;
 			int maxCount = 0;
@@ -106,19 +105,13 @@ public:
 
 			// if something was hit, report it back
 			// clear selection otherwise
-			if (maxCount) {
-				*selectedEntity = entityMap[picked];
-
-			} else {
-				*selectedEntity = OtEntityNull;
-			}
-
-			selectedEntity = nullptr;
+			callback(maxCount ? entityMap[picked] : OtEntityNull);
+			picking = false;
 		});
 	}
 
 	// see if we are currently "picking"
-	bool isPicking() { return selectedEntity != nullptr; }
+	bool isPicking() { return picking; }
 
 protected:
 	// methods that must be overriden by subclasses (when required)
@@ -165,11 +158,10 @@ protected:
 
 private:
 	// properties
-	OtEntity* selectedEntity = nullptr;
-
 	OtFrameBuffer idBuffer{OtTexture::r8Texture, OtTexture::dFloatTexture};
 	OtReadBackBuffer idReadback;
 	static constexpr int bufferSize = 8;
+	bool picking = false;
 
 	std::unordered_map<int, OtEntity> entityMap;
 	int nextID = 1;

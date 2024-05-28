@@ -66,9 +66,9 @@ int OtSceneRenderer::render(OtCamera& camera, OtScene* scene) {
 		highlightPass.render(ctx, selectedEntity);
 	}
 
-	if (pickingEntity) {
-		pickingPass.render(ctx, pickingEntity, pickingNDC);
-		pickingEntity = nullptr;
+	if (pickingCallback) {
+		pickingPass.render(ctx, pickingNDC, pickingCallback);
+		pickingCallback = nullptr;
 	}
 
 	// post process frame

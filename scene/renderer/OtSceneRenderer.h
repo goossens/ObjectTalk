@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <functional>
 #include <memory>
 
 #include "glm/glm.hpp"
@@ -50,9 +51,9 @@ public:
 	inline void setSelectedEntity(OtEntity entity) { selectedEntity = entity; }
 
 	// support entity picking
-	inline void pickEntity(OtEntity* entity, glm::vec2 ndc) {
-		pickingEntity = entity;
+	inline void pickEntity(glm::vec2 ndc, std::function<void(OtEntity)> callback) {
 		pickingNDC = ndc;
+		pickingCallback = callback;
 	}
 
 	inline bool isPicking() { return pickingPass.isPicking(); }
@@ -86,6 +87,6 @@ private:
 
 	// support for selected entities and entity picking
 	OtEntity selectedEntity = OtEntityNull;
-	OtEntity* pickingEntity = nullptr;
 	glm::vec2 pickingNDC;
+	std::function<void(OtEntity)> pickingCallback;
 };

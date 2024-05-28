@@ -112,6 +112,7 @@ private:
 	// tracking entities for certain tasks
 	OtEntity selectedEntity = OtEntityNull;
 	OtEntity renamingEntity = OtEntityNull;
+	bool scrollToSelected = false;
 
 	// to handle do/undo/redo
 	OtTaskManager taskManager;

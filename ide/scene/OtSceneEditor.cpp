@@ -550,7 +550,14 @@ void OtSceneEditor::renderViewPort() {
 	if (!renderer->isPicking() && ImGui::IsItemClicked()) {
 		auto position = ImGui::GetMousePos() - ImGui::GetItemRectMin();
 		glm::vec2 ndc{position.x / size.x * 2.0f - 1.0f, (size.y - position.y) / size.y * 2.0f - 1.0f};
-		renderer->pickEntity(&selectedEntity, ndc);
+
+		renderer->pickEntity(ndc, [this](OtEntity entity) {
+			selectedEntity = entity;
+
+			if (selectedEntity != OtEntityNull) {
+				scrollToSelected = true;
+			}
+		});
 	}
 
 	ImGui::SetCursorScreenPos(savedPos);
@@ -720,6 +727,15 @@ void OtSceneEditor::renderEntity(OtEntity entity) {
 	bool open = ImGui::TreeNodeEx("##node", flags);
 	auto rectMin = ImGui::GetItemRectMin();
 	auto rectMax = ImGui::GetItemRectMax();
+
+	// scroll to this entity (if required)
+	if (entity == selectedEntity && scrollToSelected) {
+		if (!ImGui::IsItemVisible()) {
+			ImGui::SetScrollHereY();
+		}
+
+		scrollToSelected = false;
+	}
 
 	// handle entity selections
 	if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen() && renamingEntity != entity) {

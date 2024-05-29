@@ -902,6 +902,15 @@ void TextEditor::EnterCharacter(ImWchar aChar, bool aShift)
 {
 	assert(!mReadOnly);
 
+	// ignore closing characters if they were automatically inserted as part of a glyph pair
+	if (autoInserted) {
+		auto closer = autoInserted == '{' ? '}' : (autoInserted == '[' ? ']' : (autoInserted == '(' ? ')' : autoInserted));
+		autoInserted = 0;
+
+		if (mCompletePairedGlyphs && aChar == closer)
+			return;
+	}
+
 	bool hasSelection = AnyCursorHasSelection();
 	bool anyCursorHasMultilineSelection = false;
 	for (int c = mState.mCurrentCursor; c > -1; c--)
@@ -989,6 +998,7 @@ void TextEditor::EnterCharacter(ImWchar aChar, bool aShift)
 					u.mOperations.push_back(removed);
 				}
 
+				// automatically complete paired glyphs when feature is turned on
 				if (mCompletePairedGlyphs && (aChar == '{' || aChar == '[' || aChar == '(' || aChar == '"' || aChar == '\''))
 				{
 					auto closer = aChar == '{' ? '}' : (aChar == '[' ? ']' : (aChar == '(' ? ')' : aChar));
@@ -1003,6 +1013,7 @@ void TextEditor::EnterCharacter(ImWchar aChar, bool aShift)
 					added.mText = buf;
 					added.mEnd = Coordinates(coord.mLine, GetCharacterColumn(coord.mLine, cindex));
 					SetCursorPosition(Coordinates(coord.mLine, GetCharacterColumn(coord.mLine, cindex - 1)), c);
+					autoInserted = closer;
 				}
 				else
 				{
@@ -2036,7 +2047,7 @@ void TextEditor::HandleKeyboardInputs(bool aParentIsFocused)
 			SelectAll();
 		else if (isShortcut && ImGui::IsKeyPressed(ImGuiKey_D))
 			AddCursorForNextOccurrence();
-        else if (!mReadOnly && !alt && !ctrl && !shift && !super && (ImGui::IsKeyPressed(ImGuiKey_Enter)) || ImGui::IsKeyPressed(ImGuiKey_KeypadEnter))
+        else if (!mReadOnly && !alt && !ctrl && !shift && !super && (ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_KeypadEnter)))
 			EnterCharacter('\n', false);
 		else if (!mReadOnly && !alt && !ctrl && !super && ImGui::IsKeyPressed(ImGuiKey_Tab))
 			EnterCharacter('\t', shift);

@@ -931,7 +931,7 @@ void OtWorkspace::renderSubProcess() {
 		ImGuiWindowFlags_NoBringToFrontOnFocus);
 
 	// render the subprocess control bar
-	std::string title = fmt::format("Runnning [[]]...", currentRunnable);
+	std::string title = fmt::format("Runnning [{}]...", currentRunnable);
 	ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "%s", title.c_str());
 	ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - 150.0f);
 

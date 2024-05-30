@@ -212,7 +212,7 @@ bool OtUiDragInt(const char* label, int* value, int minv, int maxv) {
 		speed = 100;
 	}
 
-	if (ImGui::DragInt(label, value, speed, minv, maxv)) {
+	if (ImGui::DragInt(label, value, speed, minv, maxv, "%d", ImGuiSliderFlags_AlwaysClamp)) {
 		*value = std::clamp(*value, minv, maxv);
 		return true;
 
@@ -249,7 +249,7 @@ bool OtUiDragFloat(const char* label, float* value, float minv, float maxv) {
 		format = "%.0f";
 	}
 
-	if (ImGui::DragFloat(label, value, speed, minv, maxv, format)) {
+	if (ImGui::DragFloat(label, value, speed, minv, maxv, format, ImGuiSliderFlags_AlwaysClamp)) {
 		*value = std::clamp(*value, minv, maxv);
 		return true;
 

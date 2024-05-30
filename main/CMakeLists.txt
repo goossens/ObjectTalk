@@ -9,9 +9,9 @@ add_dependencies(main ot http)
 target_link_libraries(main ot http argparse)
 
 if(OT_GUI)
-	add_dependencies(main shaders gfx graphics input math nodes scene ide)
+	add_dependencies(main shaders gfx gui graphics input math nodes scene ide)
 	target_compile_definitions(main PRIVATE INCLUDE_GUI)
-	target_link_libraries(main shaders gfx graphics input math nodes scene ide)
+	target_link_libraries(main shaders gfx gui graphics input math nodes scene ide)
 endif()
 
 set_target_properties(main PROPERTIES OUTPUT_NAME ot)

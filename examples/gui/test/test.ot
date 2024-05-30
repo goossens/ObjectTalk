@@ -1,0 +1,41 @@
+#!/usr/local/bin/ot
+
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var gui = import("gui");
+
+class MyApp : gui.App {
+	function setup(this) {
+		var hsplitter = gui.Hsplit(0.25, 0.2, 0.8);
+		this.add(hsplitter);
+
+		var vsplitter = gui.Vsplit(0.25, 0.2, 0.8);
+		hsplitter.add(vsplitter);
+
+		var panel = gui.Panel();
+		vsplitter.add(panel);
+		
+		panel.add(gui.Checkbox("Boolean", false, function(checked) {
+			print("Boolean: ", checked);
+		}));
+		
+		panel.add(gui.IntegerSlider("Integer", 50, 0, 100, function(value) {
+			print("Integer: ", value);
+		}));
+
+		panel.add(gui.RealSlider("Real", 0.5, 0.0, 1.0, function(value) {
+			print("Real: ", value);
+		}));
+
+		panel.add(gui.TextField("String", "", function(value) {
+			print("String: ", value);
+		}));
+	}
+}
+
+var app = MyApp();
+app.run();

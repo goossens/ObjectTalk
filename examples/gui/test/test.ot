@@ -13,26 +13,36 @@ class MyApp : gui.App {
 		var hsplitter = gui.Hsplit(0.25, 0.2, 0.8);
 		this.add(hsplitter);
 
-		var vsplitter = gui.Vsplit(0.25, 0.2, 0.8);
+		var vsplitter = gui.Vsplit(0.45, 0.3, 0.6);
 		hsplitter.add(vsplitter);
 
-		var panel = gui.Panel();
-		vsplitter.add(panel);
+		var topPanel = gui.Panel();
+		vsplitter.add(topPanel);
+		topPanel.add(gui.Header("Clock"));
+		topPanel.add(gui.Tron());
+
+		var bottomPanel = gui.Panel();
+		vsplitter.add(bottomPanel);
+		bottomPanel.add(gui.Header("Properties"));
 		
-		panel.add(gui.Checkbox("Boolean", false, function(checked) {
+		bottomPanel.add(gui.Checkbox("Boolean", false, function(checked) {
 			print("Boolean: ", checked);
 		}));
 		
-		panel.add(gui.IntegerSlider("Integer", 50, 0, 100, function(value) {
+		bottomPanel.add(gui.IntegerSlider("Integer", 50, 0, 100, function(value) {
 			print("Integer: ", value);
 		}));
 
-		panel.add(gui.RealSlider("Real", 0.5, 0.0, 1.0, function(value) {
+		bottomPanel.add(gui.RealSlider("Real", 0.5, 0.0, 1.0, function(value) {
 			print("Real: ", value);
 		}));
 
-		panel.add(gui.TextField("String", "", function(value) {
+		bottomPanel.add(gui.TextField("String", "", function(value) {
 			print("String: ", value);
+		}));
+
+		bottomPanel.add(gui.Combobox("Selector", "", ["", "one", "two", "three"], function(value) {
+			print("Selector: ", value);
 		}));
 	}
 }

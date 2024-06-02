@@ -457,7 +457,6 @@ private:
 	Coordinates mMatchingBracketCoords;
 	float mCursorAnimationTimer = 0.0f;
 	std::map<int, std::string> mErrorMarkers;
-	int autoInserted = 0;
 
 	int mColorRangeMin = 0;
 	int mColorRangeMax = 0;

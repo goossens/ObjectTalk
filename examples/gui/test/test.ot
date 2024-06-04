@@ -18,30 +18,32 @@ class MyApp : gui.App {
 
 		var topPanel = gui.Panel();
 		vsplitter.add(topPanel);
-		topPanel.add(gui.Header("Clock"));
+		topPanel.add(gui.Header("Tron Clock"));
 		topPanel.add(gui.Tron());
 
 		var bottomPanel = gui.Panel();
 		vsplitter.add(bottomPanel);
-		bottomPanel.add(gui.Header("Properties"));
+
+		var widgets = gui.TreeNode("Panel Widgets");
+		bottomPanel.add(widgets);
 		
-		bottomPanel.add(gui.Checkbox("Boolean", false, function(checked) {
+		widgets.add(gui.Checkbox("Boolean", false, function(checked) {
 			print("Boolean: ", checked);
 		}));
 		
-		bottomPanel.add(gui.IntegerSlider("Integer", 50, 0, 100, function(value) {
+		widgets.add(gui.IntegerSlider("Integer", 50, 0, 100, function(value) {
 			print("Integer: ", value);
 		}));
 
-		bottomPanel.add(gui.RealSlider("Real", 0.5, 0.0, 1.0, function(value) {
+		widgets.add(gui.RealSlider("Real", 0.5, 0.0, 1.0, function(value) {
 			print("Real: ", value);
 		}));
 
-		bottomPanel.add(gui.TextField("String", "", function(value) {
+		widgets.add(gui.TextField("String", "", function(value) {
 			print("String: ", value);
 		}));
 
-		bottomPanel.add(gui.Combobox("Selector", "", ["", "one", "two", "three"], function(value) {
+		widgets.add(gui.Combobox("Selector", "", ["", "one", "two", "three"], function(value) {
 			print("Selector: ", value);
 		}));
 	}

@@ -22,6 +22,7 @@
 #include "OtPanel.h"
 #include "OtRealSlider.h"
 #include "OtTextField.h"
+#include "OtTreeNode.h"
 #include "OtTron.h"
 #include "OtVsplit.h"
 
@@ -41,6 +42,7 @@ static OtModuleRegister registration{"gui", [](OtModule module) {
 	module->set("Panel", OtClass::create(OtPanelClass::getMeta()));
 	module->set("RealSlider", OtClass::create(OtRealSliderClass::getMeta()));
 	module->set("TextField", OtClass::create(OtTextFieldClass::getMeta()));
+	module->set("TreeNode", OtClass::create(OtTreeNodeClass::getMeta()));
 	module->set("Tron", OtClass::create(OtTronClass::getMeta()));
 	module->set("Vsplit", OtClass::create(OtVsplitClass::getMeta()));
 }};

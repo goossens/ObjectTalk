@@ -20,10 +20,10 @@
 
 
 //
-//	Register module
+//	Module registration
 //
 
-static OtModuleRegister registration{"math", [](OtModule module) {
+static OtModuleRegistration registration{"math", [](OtModule module) {
 	module->set("Matrix", OtClass::create(OtMatrixClass::getMeta()));
 	module->set("Vec2", OtClass::create(OtVec2Class::getMeta()));
 	module->set("Vec3", OtClass::create(OtVec3Class::getMeta()));

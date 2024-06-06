@@ -238,10 +238,10 @@ OtModule OtModuleClass::import(const std::string& name) {
 
 
 //
-//	OtModuleRegister::OtModuleRegister
+//	OtModuleRegistration::OtModuleRegistration
 //
 
-OtModuleRegister::OtModuleRegister(const char* name, std::function<void(OtModule)> creator) {
+OtModuleRegistration::OtModuleRegistration(const char* name, std::function<void(OtModule)> creator) {
 	OtModuleRegistryEntry entry;
 	entry.creator = creator;
 	OtModuleRegistry::instance()->set(name, entry);

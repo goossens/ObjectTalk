@@ -28,10 +28,10 @@
 
 
 //
-//	Register module
+//	Module registration
 //
 
-static OtModuleRegister registration{"gui", [](OtModule module) {
+static OtModuleRegistration registration{"gui", [](OtModule module) {
 	module->set("App", OtClass::create(OtAppClass::getMeta()));
 	module->set("Checkbox", OtClass::create(OtCheckboxClass::getMeta()));
 	module->set("Columns", OtClass::create(OtColumnsClass::getMeta()));

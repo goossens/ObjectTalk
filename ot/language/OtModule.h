@@ -48,16 +48,16 @@ private:
 
 
 //
-//	OtModuleRegister
+//	OtModuleRegistration
 //
 
-class OtModuleRegister {
+class OtModuleRegistration {
 public:
 	// constructors
-	OtModuleRegister() = delete;
-	OtModuleRegister(const char* name, std::function<void(OtModule)> creator);
-	OtModuleRegister(const OtModuleRegister&) = delete; // no copy constructor
-	OtModuleRegister& operator=(const OtModuleRegister&) = delete; // no copy assignment
-	OtModuleRegister(OtModuleRegister&&) = delete;
-	OtModuleRegister& operator=(OtModuleRegister&&) = delete;
+	OtModuleRegistration() = delete;
+	OtModuleRegistration(const char* name, std::function<void(OtModule)> creator);
+	OtModuleRegistration(const OtModuleRegistration&) = delete; // no copy constructor
+	OtModuleRegistration& operator=(const OtModuleRegistration&) = delete; // no copy assignment
+	OtModuleRegistration(OtModuleRegistration&&) = delete;
+	OtModuleRegistration& operator=(OtModuleRegistration&&) = delete;
 };

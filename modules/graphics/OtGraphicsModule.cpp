@@ -17,9 +17,9 @@
 
 
 //
-//	Register module
+//	Module registration
 //
 
-static OtModuleRegister registration{"graphics", [](OtModule module) {
+static OtModuleRegistration registration{"graphics", [](OtModule module) {
 	module->set("Image", OtClass::create(OtImageObjectClass::getMeta()));
 }};

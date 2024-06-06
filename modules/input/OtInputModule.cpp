@@ -187,10 +187,10 @@ static OtObject GetMouseDrag() {
 
 
 //
-//	Register module
+//	Module registration
 //
 
-static OtModuleRegister registration{"input", [](OtModule module) {
+static OtModuleRegistration registration{"input", [](OtModule module) {
 	// register enums
 	RegisterEnums(module);
 

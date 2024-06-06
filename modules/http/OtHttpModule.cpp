@@ -18,10 +18,10 @@
 
 
 //
-//	Register module
+//	Module registration
 //
 
-static OtModuleRegister registration{"http", [](OtModule module) {
+static OtModuleRegistration registration{"http", [](OtModule module) {
 	module->set("URL", OtClass::create(OtURLClass::getMeta()));
 	module->set("Router", OtClass::create(OtHttpRouterClass::getMeta()));
 	module->set("Server", OtClass::create(OtHttpServerClass::getMeta()));

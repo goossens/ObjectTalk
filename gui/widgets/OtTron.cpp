@@ -221,9 +221,9 @@ void OtTronClass::render() {
 
 	// render hours and minutes
 	OtLed7(list, center.x - 200.0f * scale, center.y - 80.0f * scale, 160.0f * scale, '8', color20);
-	OtLed7(list, center.x - 200.0f * scale, center.y - 80.0f * scale, 160.0f * scale, '0' + now->tm_hour / 12, color100);
+	OtLed7(list, center.x - 200.0f * scale, center.y - 80.0f * scale, 160.0f * scale, '0' + now->tm_hour / 10, color100);
 	OtLed7(list, center.x - 100.0f * scale, center.y - 80.0f * scale, 160.0f * scale, '8', color20);
-	OtLed7(list, center.x - 100.0f * scale, center.y - 80.0f * scale, 160.0f * scale, '0' + now->tm_hour % 12, color100);
+	OtLed7(list, center.x - 100.0f * scale, center.y - 80.0f * scale, 160.0f * scale, '0' + now->tm_hour % 10, color100);
 	list->AddCircleFilled(ImVec2(center.x, center.y - 30.0f * scale), 10.0f * scale, color100);
 	list->AddCircleFilled(ImVec2(center.x, center.y + 30.0f * scale), 10.0f * scale, color100);
 	OtLed7(list, center.x + 20.0f * scale, center.y - 80.0f * scale, 160.0f * scale, '8', color20);

@@ -10,19 +10,18 @@ var gui = import("gui");
 
 class MyApp : gui.App {
 	function setup(this) {
-		var hsplitter = gui.Hsplit(0.25, 0.2, 0.8);
-		this.add(hsplitter);
+		var columns = gui.Columns([25, 50, 25]);
+		this.add(columns);
 
-		var vsplitter = gui.Vsplit(0.45, 0.3, 0.6);
-		hsplitter.add(vsplitter);
+		var rows = gui.Rows([45, 55]);
+		columns.add(rows);
 
 		var topPanel = gui.Panel();
-		vsplitter.add(topPanel);
-		topPanel.add(gui.Header("Tron Clock"));
+		rows.add(topPanel);
 		topPanel.add(gui.Tron());
 
 		var bottomPanel = gui.Panel();
-		vsplitter.add(bottomPanel);
+		rows.add(bottomPanel);
 
 		var widgets = gui.TreeNode("Panel Widgets");
 		bottomPanel.add(widgets);
@@ -46,6 +45,9 @@ class MyApp : gui.App {
 		widgets.add(gui.Combobox("Selector", "", ["", "one", "two", "three"], function(value) {
 			print("Selector: ", value);
 		}));
+		
+		columns.add(gui.Header("Column 2"));
+		columns.add(gui.Header("Column 3"));
 	}
 }
 

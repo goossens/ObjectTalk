@@ -411,8 +411,13 @@ bool OtUiFileSelector(const char* label, std::string* path, const char* filter) 
 //	OtUiSplitter
 //
 
-static void OtUiSplitter(bool vertical, float* size, float minSize, float maxSize) {
-	auto thickness = ImGui::GetStyle().ItemSpacing.y * 2.0f;
+float OtUiGetSplitterGap() {
+	return ImGui::GetStyle().ItemSpacing.y * 2.0f;
+}
+
+static bool OtUiSplitter(bool vertical, float* size, float minSize, float maxSize) {
+	bool result = false;
+	auto gap = OtUiGetSplitterGap();
 
 	ImGui::PushID(size);
 	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
@@ -421,32 +426,38 @@ static void OtUiSplitter(bool vertical, float* size, float minSize, float maxSiz
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 
 	if (!vertical) {
-		ImGui::SameLine();
+		ImGui::SameLine(0.0f, 0.0f);
 	}
 
-	ImGui::Button("##splitter", ImVec2(vertical ? -1.0f : thickness, vertical ? thickness : -1.0f));
+	ImGui::Button("##splitter", ImVec2(vertical ? -1.0f : gap, vertical ? gap : -1.0f));
 
 	if (!vertical) {
-		ImGui::SameLine();
+		ImGui::SameLine(0.0f, 0.0f);
 	}
 
 	ImGui::PopStyleVar();
 	ImGui::PopStyleColor(3);
 
 	if (ImGui::IsItemActive()) {
+		auto oldSize = *size;
 		*size += vertical ? ImGui::GetIO().MouseDelta.y : ImGui::GetIO().MouseDelta.x;
 		*size = std::clamp(*size, minSize, maxSize);
+
+		if (*size != oldSize) {
+			result = true;
+		}
 	}
 
 	ImGui::PopID();
+	return result;
 }
 
-void OtUiSplitterVertical(float* size, float minSize, float maxSize) {
-	OtUiSplitter(true, size, minSize, maxSize);
+bool OtUiSplitterVertical(float *size, float minSize, float maxSize) {
+	return OtUiSplitter(true, size, minSize, maxSize);
 }
 
-void OtUiSplitterHorizontal(float* size, float minSize, float maxSize) {
-	OtUiSplitter(false, size, minSize, maxSize);
+bool OtUiSplitterHorizontal(float* size, float minSize, float maxSize) {
+	return OtUiSplitter(false, size, minSize, maxSize);
 }
 
 

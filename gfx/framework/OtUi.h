@@ -73,8 +73,9 @@ bool OtUiEditVec4(const char* label, glm::vec4* vector, float minv=-std::numeric
 bool OtUiFileSelector(const char* label, std::string* path, const char* filter);
 
 // create a splitter widget
-void OtUiSplitterVertical(float* size, float minSize, float maxSize);
-void OtUiSplitterHorizontal(float* size, float minSize, float maxSize);
+float OtUiGetSplitterGap();
+bool OtUiSplitterVertical(float* size, float minSize, float maxSize);
+bool OtUiSplitterHorizontal(float* size, float minSize, float maxSize);
 
 // selectors
 bool OtUiSelectorEnum(const char* label, int* value, const char* const names[], size_t count);

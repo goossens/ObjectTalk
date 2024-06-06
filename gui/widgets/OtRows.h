@@ -12,35 +12,30 @@
 //	Include files
 //
 
+#include <vector>
+
 #include "OtWidget.h"
 
 
 //
-//	OtHsplitClass
+//	OtRowsClass
 //
 
-class OtHsplitClass;
-using OtHsplit = OtObjectPointer<OtHsplitClass>;
+class OtRowsClass;
+using OtRows = OtObjectPointer<OtRowsClass>;
 
-class OtHsplitClass : public OtWidgetClass {
+class OtRowsClass : public OtWidgetClass {
 public:
 	// initialize
 	void init(size_t count, OtObject* parameters);
 
-	// set location and limits
-	inline OtObject setSplit(float s) {
-		split = s;
-		return OtWidget(this);
-	}
-
-	inline OtObject setSplitLimits(float mn, float mx) {
-		minSplit = mn;
-		maxSplit = mx;
-		return OtWidget(this);
-	}
+	// set properties
+	OtObject setHeights(OtObject heights);
+	OtObject setBorders(bool b);
+	OtObject setResizable(bool r);
 
 	// get maximum number of children
-	inline int getMaxChildren() override { return 2; }
+	inline int getMaxChildren() override { return -1; }
 
 	// render content
 	void render() override;
@@ -50,7 +45,7 @@ public:
 
 private:
 	// properties
-	float split = 0.5f;
-	float minSplit = 0.25f;
-	float maxSplit = 0.75f;
+	std::vector<float> logicalHeights;
+	bool borders = true;
+	bool resizable = true;
 };

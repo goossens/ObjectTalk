@@ -18,6 +18,7 @@
 #include "OtLog.h"
 #include "OtPathTools.h"
 #include "OtModule.h"
+#include "OtStderrMultiplexer.h"
 
 #if defined(INCLUDE_GUI)
 #include "OtFramework.h"
@@ -45,7 +46,7 @@ int main(int argc, char* argv[]) {
 		.implicit_value(true);
 
 	program.add_argument("-c", "--child")
-		.help("run program as an IDE child process")
+		.help("run as an IDE child process")
 		.default_value(false)
 		.implicit_value(true);
 
@@ -138,7 +139,7 @@ int main(int argc, char* argv[]) {
 #endif
 
 				} else {
-					OtLogFatal("Error: can't execute file with extension {}", extension);
+					OtLogFatal("Error: can't execute file with extension [{}]", extension);
 				}
 #if defined(INCLUDE_GUI)
 			}
@@ -151,9 +152,7 @@ int main(int argc, char* argv[]) {
 	} catch (OtException& e) {
 		// handle all failures
 		if (program["--child"] == true) {
-			// serialize exception and send it to the IDE that started us
-			// (wrapped in STX (start of text) and ETX (end of text) ASCII codes)
-			std::cerr << '\x02' << e.serialize() << '\x03';
+			OtStderrMultiplexer::instance()->multiplex(e);
 		}
 
 		// output human readable text

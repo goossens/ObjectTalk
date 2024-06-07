@@ -17,6 +17,7 @@
 #include "ImGuiFileDialog.h"
 
 #include "OtAssert.h"
+#include "OtStderrMultiplexer.h"
 
 #include "OtMessageBus.h"
 #include "OtPathTools.h"
@@ -377,9 +378,8 @@ void OtWorkspace::closeFile() {
 //
 
 void OtWorkspace::runFile() {
-	// clear the console, error buffer and all error highlighting
+	// clear the console and all error highlighting
 	console.clear();
-	exceptionAsJson.clear();
 
 	for (auto editor : editors) {
 		auto scriptEditor = std::dynamic_pointer_cast<OtObjectTalkEditor>(editor);
@@ -401,23 +401,16 @@ void OtWorkspace::runFile() {
 		args,
 		[this](int64_t status, int signal) {
 			if (status || signal != 0) {
-				console.writeError(fmt::format("\n[{}] terminated with status {} and signal {}", currentRunnable, status, signal));
-
-				// highlight error (if required)
-				if (exceptionAsJson.size()) {
-					std::cout << exceptionAsJson << std::endl;
-					highlightError();
-					consoleFullScreen = false;
-					consoleAsPanel = true;
-				}
+				console.writeError(fmt::format("\n[{}] terminated with status {} and signal {}\n", currentRunnable, status, signal));
 
 			} else {
-				console.writeHelp(fmt::format("\n[{}] terminated normally", currentRunnable));
+				console.writeSuccess(fmt::format("\n[{}] terminated normally\n", currentRunnable));
+			}
 
-				// hide console after running a scene (user can always bring it back)
-				if (OtPathGetExtension(currentRunnable) == ".ots") {
-						consoleFullScreen = false;
-				}
+			consoleFullScreen = false;
+
+			if (OtPathGetExtension(currentRunnable) != ".ots") {
+				consoleAsPanel = true;
 			}
 		},
 
@@ -426,50 +419,17 @@ void OtWorkspace::runFile() {
 		},
 
 		[this](const std::string& text) {
-			// see if we have an exception report
-			// (signified by start of text (STX) ASCII code)
-			auto stx = text.find('\x02');
-
-			if (stx != std::string::npos) {
-				// send first part to console
-				console.writeError(text.substr(0, stx));
-
-				// see if we also have an ETX in the same chunk
-				auto etx = text.find('\x03');
-
-				if (etx != std::string::npos) {
-					// extract the exception expressed as JSON
-					exceptionAsJson = text.substr(stx + 1, etx - stx - 1);
-
-					// send the rest of the message to the console
-					console.writeError(text.substr(etx + 1));
-
-				} else {
-					// extract the partial exception and set a flag
-					exceptionAsJson = text.substr(stx + 1);
-					partialException = true;
-				}
-
-			} else if (partialException) {
-				// see if we have the rest of the exception now
-				auto etx = text.find('\x03');
-
-				if (etx != std::string::npos) {
-					// add to JSON
-					exceptionAsJson += text.substr(0, etx);
-					partialException = false;
-
-					// send the rest of the message to the console
-					console.writeError(text.substr(etx + 1));
-
-				} else {
-					// add chunk and keep waiting for the end flag
-					exceptionAsJson += text;
-				}
-
-			} else {
-				console.writeError(text);
-			}
+			OtStderrMultiplexer::instance()->demuliplex(
+				text,
+				[this](const std::string& message) {
+					console.writeError(message);
+				},
+				[this](int type, const std::string& message) {
+					console.writeLog(type, message);
+				},
+				[this](OtException& exception) {
+					highlightError(exception);
+				});
 		});
 
 	// show the console
@@ -977,11 +937,7 @@ std::string OtWorkspace::getExecutablePath() {
 //	OtWorkspace::highlightError
 //
 
-void OtWorkspace::highlightError() {
-	// deserialize the exception
-	OtException exception;
-	exception.deserialize(exceptionAsJson);
-
+void OtWorkspace::highlightError(OtException& exception) {
 	// see if the module is a valid ObjectTalk file
 	auto module = exception.getModule();
 

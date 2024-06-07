@@ -22,9 +22,12 @@
 #include <signal.h>
 #endif
 
+#include "fmt/format.h"
+
 #include "OtException.h"
 #include "OtLog.h"
 #include "OtPathTools.h"
+#include "OtStderrMultiplexer.h"
 
 
 //
@@ -72,15 +75,21 @@ void OtLogger::log(const char* filename, int lineno, int type, const std::string
 	auto timestamp = GetTimestamp();
 	auto shortname = OtPathGetFilename(filename);
 	auto messageType = types[type];
+	auto output = fmt::format("{} [{}] {} ({}): {}\n", timestamp, messageType, shortname, lineno, message);
 
 	// send to STDERR (if required)
 	if (logToStderr) {
-		std::cerr << timestamp << " [" << messageType << "] " << shortname << " (" << lineno << "): " << message << std::endl;
+		if (subprocessMode) {
+			OtStderrMultiplexer::instance()->multiplex(type, output);
+
+		} else {
+			std::cerr << output;
+		}
 	}
 
 	// send to log file (if required)
 	if (ofs.is_open()) {
-		ofs << timestamp << " [" << messageType << "] " << shortname << "(" << lineno << "): " << message << std::endl;
+		ofs << output;
 	}
 
 	// throw exception or terminate program (if required)

@@ -36,17 +36,26 @@ public:
 
 	// write to console
 	void write(const std::string& text);
+	void writeError(const std::string& text);
 	void writeHelp(const std::string& text);
 	void writeInput(const std::string& text);
-	void writeError(const std::string& text);
+	void writeSuccess(const std::string& text);
+	void writeLog(int type, const std::string& text);
 
 private:
 	// screen text
 	enum LineType {
-		Normal,
-		Help,
-		Input,
-		Error
+		standardOut,
+		standardError,
+		help,
+		input,
+		success,
+
+		debug = 10,
+		info,
+		warning,
+		error,
+		fatal
 	};
 
 	struct Line {

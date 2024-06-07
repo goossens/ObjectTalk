@@ -15,6 +15,8 @@
 #include <memory>
 #include <string>
 
+#include "OtException.h"
+
 #include "OtFrameworkApp.h"
 #include "OtLogo.h"
 
@@ -75,7 +77,7 @@ private:
 	std::string getExecutablePath();
 
 	// highlight error in editor after subprocess run
-	void highlightError();
+	void highlightError(OtException& exception);
 
 	// render parts of workspace
 	void renderSplashScreen();
@@ -121,8 +123,6 @@ private:
 	// stuff to run things and show the console
 	OtSubProcess subprocess;
 	std::string currentRunnable;
-	std::string exceptionAsJson;
-	bool partialException = false;
 
 	OtConsole console;
 	bool consoleFullScreen = false;

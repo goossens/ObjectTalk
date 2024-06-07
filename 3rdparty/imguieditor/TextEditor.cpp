@@ -993,12 +993,19 @@ void TextEditor::EnterCharacter(ImWchar aChar, bool aShift)
 
 			added.mText = "";
 			added.mText += (char)aChar;
+
 			if (mAutoIndent)
-				for (int i = 0; i < line.size() && isascii(line[i].mChar) && isblank(line[i].mChar); ++i)
+			{
+				auto cindex = GetCharacterIndexR(coord);
+
+				for (int i = 0; i < line.size() && isascii(line[i].mChar) && isblank(line[i].mChar); ++i, ++cindex)
 				{
-					newLine.push_back(line[i]);
-					added.mText += line[i].mChar;
+					if (line[i].mChar != line[cindex].mChar) {
+						newLine.push_back(line[i]);
+						added.mText += line[i].mChar;
+					}
 				}
+			}
 
 			const size_t whitespaceSize = newLine.size();
 			auto cindex = GetCharacterIndexR(coord);

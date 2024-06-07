@@ -74,7 +74,7 @@ void OtStderrMultiplexer::demuliplex(
 					process(log, except);
 
 				} else {
-					// extract the partial information
+					// extract the partial message
 					buffer = input.substr(stx + 1);
 					inMessage = true;
 					input.clear();

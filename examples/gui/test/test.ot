@@ -14,22 +14,29 @@ class MyApp : gui.App {
 		this.add(columns);
 
 		var rows = gui.Rows([45, 55]);
+		rows.add(this.tronPanel());
+		rows.add(this.propertiesPanel());
 		columns.add(rows);
 
-		var topPanel = gui.Panel();
-		rows.add(topPanel);
-		topPanel.add(gui.Tron());
+		columns.add(gui.Header("Column 2"));
+		columns.add(gui.Header("Column 3"));
+	}
 
-		var bottomPanel = gui.Panel();
-		rows.add(bottomPanel);
+	function tronPanel(this) {
+		var panel = gui.Panel();
+		panel.add(gui.Tron());
+		return panel;
+	}
 
-		var widgets = gui.TreeNode("Panel Widgets");
-		bottomPanel.add(widgets);
-		
+	function propertiesPanel(this) {
+		var properties = gui.Panel();
+		var widgets = gui.TreeNode("Property Widgets");
+		properties.add(widgets);
+
 		widgets.add(gui.Checkbox("Boolean", false, function(checked) {
 			print("Boolean: ", checked);
 		}));
-		
+
 		widgets.add(gui.IntegerSlider("Integer", 50, 0, 100, function(value) {
 			print("Integer: ", value);
 		}));
@@ -45,9 +52,8 @@ class MyApp : gui.App {
 		widgets.add(gui.Combobox("Selector", "", ["", "one", "two", "three"], function(value) {
 			print("Selector: ", value);
 		}));
-		
-		columns.add(gui.Header("Column 2"));
-		columns.add(gui.Header("Column 3"));
+
+		return properties;
 	}
 }
 

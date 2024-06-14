@@ -24,9 +24,19 @@
 //	Constants
 //
 
-enum {
+enum OtUiFont {
 	uiDefaultFont = 0,
 	uiEditorFont
+};
+
+enum OtUiAlignment {
+	OtUiAlignNone,
+	OtUiAlignLeft,
+	OtUiAlignCenter,
+	OtUiAlignRight,
+	OtUiAlignTop,
+	OtUiAlignMiddle,
+	OtUiAlignBottom
 };
 
 #if __APPLE__
@@ -39,6 +49,9 @@ enum {
 //
 //	Functions
 //
+
+// determine psotional based on alignment
+ImVec2 OtUiGetAlignedPosition(ImVec2 size, OtUiAlignment horizontal, OtUiAlignment vertical);
 
 // is mouse in rectangle
 bool OtUiIsMouseInRect(const ImVec2& topLeft, const ImVec2& bottomRight);

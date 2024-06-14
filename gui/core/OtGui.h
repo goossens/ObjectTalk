@@ -13,6 +13,9 @@
 //
 
 #include "OtObject.h"
+#include "OtValue.h"
+
+#include "OtUi.h"
 
 
 //
@@ -26,4 +29,16 @@ class OtGuiClass : public OtObjectClass {
 public:
 	// get type definition
 	static OtType getMeta();
+};
+
+
+//
+//	Allow OtUiAlignment as ObjectTalk value
+//
+
+
+template <>
+struct OtValue<OtUiAlignment> {
+	static inline OtObject encode(OtUiAlignment value) { return OtInteger::create(int(value)); }
+	static inline OtUiAlignment decode(OtObject object) { return OtUiAlignment(object->operator int()); }
 };

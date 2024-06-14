@@ -15,6 +15,8 @@
 #include <functional>
 #include <vector>
 
+#include "OtUi.h"
+
 #include "OtGui.h"
 
 

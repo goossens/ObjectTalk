@@ -27,6 +27,35 @@
 
 
 //
+//	OtUiGetAlignedPosition
+//
+
+ImVec2 OtUiGetAlignedPosition(ImVec2 size, OtUiAlignment horizontal, OtUiAlignment vertical) {
+	// get current position and available space
+	auto pos = ImGui::GetCursorPos();
+	auto available = ImGui::GetContentRegionAvail();
+
+	// handle horizontal alignment (if required)
+	if (horizontal == OtUiAlignCenter) {
+		pos.x += (available.x - size.x) / 2.0f;
+
+	} else if (horizontal == OtUiAlignRight) {
+		pos.x += available.x - size.x;
+	}
+
+	// handle horizontal alignment (if required)
+	if (vertical == OtUiAlignMiddle) {
+		pos.y += (available.y - size.y) / 2.0f;
+
+	} else if (vertical == OtUiAlignBottom) {
+		pos.y += available.y - size.y;
+	}
+
+	return pos;
+}
+
+
+//
 //	OtUiIsMouseInRect
 //
 
@@ -34,7 +63,6 @@ bool OtUiIsMouseInRect(const ImVec2& topLeft, const ImVec2& bottomRight) {
 	ImVec2 mouse = ImGui::GetMousePos();
 	return mouse.x >= topLeft.x && mouse.x <= bottomRight.x && mouse.y >= topLeft.y && mouse.y <= bottomRight.y;
 }
-
 
 //
 //	OtUiSplitLabel

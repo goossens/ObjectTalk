@@ -10,12 +10,14 @@
 //
 
 #include "OtClass.h"
+#include "OtInteger.h"
 #include "OtModule.h"
 
 #include "OtApp.h"
 #include "OtCheckbox.h"
 #include "OtColumns.h"
 #include "OtCombobox.h"
+#include "OtFilmStrip.h"
 #include "OtHeader.h"
 #include "OtIntegerSlider.h"
 #include "OtMenubar.h"
@@ -36,6 +38,7 @@ static OtModuleRegistration registration{"gui", [](OtModule module) {
 	module->set("Checkbox", OtClass::create(OtCheckboxClass::getMeta()));
 	module->set("Columns", OtClass::create(OtColumnsClass::getMeta()));
 	module->set("Combobox", OtClass::create(OtComboboxClass::getMeta()));
+	module->set("FilmStrip", OtClass::create(OtFilmStripClass::getMeta()));
 	module->set("Header", OtClass::create(OtHeaderClass::getMeta()));
 	module->set("IntegerSlider", OtClass::create(OtIntegerSliderClass::getMeta()));
 	module->set("Menubar", OtClass::create(OtMenubarClass::getMeta()));
@@ -45,4 +48,12 @@ static OtModuleRegistration registration{"gui", [](OtModule module) {
 	module->set("TextField", OtClass::create(OtTextFieldClass::getMeta()));
 	module->set("TreeNode", OtClass::create(OtTreeNodeClass::getMeta()));
 	module->set("Tron", OtClass::create(OtTronClass::getMeta()));
+
+	module->set("alignNone", OtInteger::create(int(OtUiAlignNone)));
+	module->set("alignLeft", OtInteger::create(int(OtUiAlignLeft)));
+	module->set("alignCenter", OtInteger::create(int(OtUiAlignCenter)));
+	module->set("alignRight", OtInteger::create(int(OtUiAlignRight)));
+	module->set("alignTop", OtInteger::create(int(OtUiAlignTop)));
+	module->set("alignMiddle", OtInteger::create(int(OtUiAlignMiddle)));
+	module->set("alignBottom", OtInteger::create(int(OtUiAlignBottom)));
 }};

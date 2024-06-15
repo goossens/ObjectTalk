@@ -11,18 +11,18 @@ file(GLOB BGFX_SOURCES
 	${bgfx_SOURCE_DIR}/src/*.cpp
 	${bgfx_SOURCE_DIR}/src/*.h
 	${bgfx_SOURCE_DIR}/include/bgfx/*.h
-	${bgfx_SOURCE_DIR}/include/bgfx/c99/*.h)
+	${bgfx_SOURCE_DIR}/include/bgfx/c99/*.h
+	${bgfx_SOURCE_DIR}/examples/common/nanovg/*.cpp
+	${bgfx_SOURCE_DIR}/examples/common/nanovg/*.h)
 
 list(REMOVE_ITEM BGFX_SOURCES ${bgfx_SOURCE_DIR}/src/amalgamated.cpp)
 
 if(APPLE)
 	set_source_files_properties(${bgfx_SOURCE_DIR}/src/renderer_vk.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
-	file(GLOB BGFX_MAC_SOURCES ${bgfx_SOURCE_DIR}/src/*.mm)
-	list(REMOVE_ITEM BGFX_MAC_SOURCES ${bgfx_SOURCE_DIR}/src/amalgamated.mm)
-	list(APPEND BGFX_SOURCES ${BGFX_MAC_SOURCES})
+	list(APPEND BGFX_SOURCES ${bgfx_SOURCE_DIR}/src/renderer_mtl.mm)
 endif()
 
-if(NOT UNIX OR APPLE)
+if(APPLE OR WIN32)
 	list(REMOVE_ITEM BGFX_SOURCES ${bgfx_SOURCE_DIR}/src/glcontext_glx.cp)
 endif()
 
@@ -34,7 +34,8 @@ target_include_directories(bgfx
 		${bgfx_SOURCE_DIR}/3rdparty
 		${bgfx_SOURCE_DIR}/3rdparty/khronos
 	PUBLIC
-		${bgfx_SOURCE_DIR}/include)
+		${bgfx_SOURCE_DIR}/include
+		${bgfx_SOURCE_DIR}/examples/common/nanovg)
 
 target_link_libraries(bgfx PUBLIC bx bimg)
 

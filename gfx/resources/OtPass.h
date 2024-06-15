@@ -66,6 +66,9 @@ public:
 		uint16_t sx=0, uint16_t sy=0,
 		uint16_t sw=UINT16_MAX, uint16_t sh=UINT16_MAX);
 
+	// get view ID
+	inline bgfx::ViewId getViewId() { return view; }
+
 private:
 	// properties
 	bgfx::ViewId view = 0;

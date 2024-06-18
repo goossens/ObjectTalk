@@ -19,6 +19,7 @@ if(WIN32)
 	target_include_directories(bx PUBLIC ${bx_SOURCE_DIR}/include/compat/msvc)
 
 	target_compile_options(bx PUBLIC "/Zc:__cplusplus")
+	target_compile_options(bx PUBLIC "/Zc:preprocessor")
 
 	target_compile_definitions(bx PUBLIC "__STDC_LIMIT_MACROS")
 	target_compile_definitions(bx PUBLIC "__STDC_FORMAT_MACROS")

@@ -357,16 +357,16 @@ void OtFramework::renderIMGUI() {
 				cmd->UserCallback(cmd_list, cmd);
 
 			} else {
-				const uint16_t xx = (uint16_t) bx::max(cmd->ClipRect.x, 0.0f);
-				const uint16_t yy = (uint16_t) bx::max(cmd->ClipRect.y, 0.0f);
+				const uint16_t xx = (uint16_t) std::max(cmd->ClipRect.x, 0.0f);
+				const uint16_t yy = (uint16_t) std::max(cmd->ClipRect.y, 0.0f);
 
 				bgfx::setState(
 					BGFX_STATE_WRITE_RGB |
 					BGFX_STATE_WRITE_A |
 					BGFX_STATE_MSAA |
-					BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA));
+					BGFX_STATE_BLEND_ALPHA);
 
-				bgfx::setScissor(xx, yy, bx::min(cmd->ClipRect.z, 65535.0f) - xx, bx::min(cmd->ClipRect.w, 65535.0f) - yy);
+				bgfx::setScissor(xx, yy, std::min(cmd->ClipRect.z, 65535.0f) - xx, std::min(cmd->ClipRect.w, 65535.0f) - yy);
 				bgfx::TextureHandle texture = { (uint16_t)((intptr_t) cmd->TextureId & 0xffff) };
 				imguiFontSampler.submit(0, texture);
 				bgfx::setVertexBuffer(0, &tvb);

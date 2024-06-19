@@ -266,6 +266,7 @@ bool OtNodesWidget::isDraggingComplete(ImVec2& offset)
 	}
 }
 
+
 //
 //	OtNodesWidget::showContextMenu
 //

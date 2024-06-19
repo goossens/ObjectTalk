@@ -291,7 +291,7 @@ void OtSceneRendererDebug::renderCubeMapAsCross(OtCubeMap& cubemap, CubeMapDebug
 
 	// start a rendering pass
 	OtPass pass;
-	pass.setClear(true, false);
+	pass.setClear(true);
 	pass.setRectangle(0, 0, width, height);
 	pass.setFrameBuffer(debug.framebuffer);
 

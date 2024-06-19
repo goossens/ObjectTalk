@@ -171,7 +171,7 @@ void OtPass::submitCircle(int segments) {
 //
 
 void OtPass::submitCube() {
-	float vertices[] = {
+	static float vertices[] = {
 		-1.0f,  1.0f, -1.0f,
 		-1.0f, -1.0f, -1.0f,
 		 1.0f, -1.0f, -1.0f,

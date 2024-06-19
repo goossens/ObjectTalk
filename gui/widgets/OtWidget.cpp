@@ -87,12 +87,11 @@ void OtWidgetClass::clear() {
 	// empty children first
 	for (auto& child : children) {
 		child->clear();
+		child->parent = nullptr;
 	}
 
 	// remove all children
-	while (children.size()) {
-		remove(children[0]);
-	}
+	children.clear();
 }
 
 

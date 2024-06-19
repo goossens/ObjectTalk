@@ -101,6 +101,7 @@ bool OtOptimizer::optimizePushStackReferenceSequence(size_t& instruction, size_t
 	}
 }
 
+
 //
 //	OtOptimizer::optimizePushMemberReferenceSequence
 //

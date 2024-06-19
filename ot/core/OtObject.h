@@ -76,7 +76,7 @@ public:
 	virtual OtObject set(const std::string& name, OtObject value) { return set(OtSelector::create(name), value); }
 	virtual OtObject& get(size_t selector);
 	virtual void unset(size_t selector);
-	virtual void unsetAll() { members = nullptr; }
+	virtual void unsetAll();
 
 	// member acccess by name
 	virtual bool hasByName(const std::string& name) { return has(OtSelector::create(name)); }

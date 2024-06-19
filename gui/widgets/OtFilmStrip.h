@@ -28,7 +28,7 @@ using OtFilmStrip = OtObjectPointer<OtFilmStripClass>;
 class OtFilmStripClass : public OtWidgetClass {
 public:
 	// initialize
-	void init(size_t count, OtObject* paraFilmStrips);
+	void init(size_t count, OtObject* parameters);
 
 	// access properties
 	inline OtObject setTexture(const std::string& path) {

@@ -10,6 +10,7 @@
 //
 
 #include "OtCanvas.h"
+#include "OtPass.h"
 
 
 //
@@ -49,4 +50,18 @@ void OtCanvas::clear() {
 		nvgDelete(context);
 		context = nullptr;
 	}
+}
+
+
+//
+//	OtCanvas::render
+//
+
+void OtCanvas::render(OtFrameBuffer &framebuffer) {
+	// setup rendering pass
+	OtPass pass;
+	pass.touch();
+	auto view = pass.getViewId();
+	bgfx::setViewMode(view, bgfx::ViewMode::Sequential);
+	nvgSetViewId(context, view);
 }

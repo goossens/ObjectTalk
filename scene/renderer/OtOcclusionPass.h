@@ -33,7 +33,7 @@ public:
 		pass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
 		pass.setTransform(ctx.camera.viewMatrix, ctx.camera.projectionMatrix);
 		pass.setFrameBuffer(framebuffer);
-		pass.setClear(false, false);
+		pass.setClear(false);
 
 		// render all entities
 		renderEntities(ctx, pass);

@@ -41,6 +41,12 @@
 #include "generated/deferred/OtDeferredPbrFS_mtl.h"
 #include "generated/deferred/OtDeferredPbrFS_spv.h"
 #include "generated/deferred/OtDeferredPbrFS_dx11.h"
+#include "generated/dial/OtDialVS_mtl.h"
+#include "generated/dial/OtDialVS_spv.h"
+#include "generated/dial/OtDialVS_dx11.h"
+#include "generated/dial/OtDialFS_mtl.h"
+#include "generated/dial/OtDialFS_spv.h"
+#include "generated/dial/OtDialFS_dx11.h"
 #include "generated/filter/OtFilterVS_mtl.h"
 #include "generated/filter/OtFilterVS_spv.h"
 #include "generated/filter/OtFilterVS_dx11.h"
@@ -246,6 +252,10 @@ static const uint8_t OtDeferredLightingFS_glsl[1] = {0};
 static const uint8_t OtDeferredLightingFS_essl[1] = {0};
 static const uint8_t OtDeferredPbrFS_glsl[1] = {0};
 static const uint8_t OtDeferredPbrFS_essl[1] = {0};
+static const uint8_t OtDialVS_glsl[1] = {0};
+static const uint8_t OtDialVS_essl[1] = {0};
+static const uint8_t OtDialFS_glsl[1] = {0};
+static const uint8_t OtDialFS_essl[1] = {0};
 static const uint8_t OtFilterVS_glsl[1] = {0};
 static const uint8_t OtFilterVS_essl[1] = {0};
 static const uint8_t OtBlitFS_glsl[1] = {0};
@@ -378,6 +388,8 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtDeferredVS),
 	BGFX_EMBEDDED_SHADER(OtDeferredLightingFS),
 	BGFX_EMBEDDED_SHADER(OtDeferredPbrFS),
+	BGFX_EMBEDDED_SHADER(OtDialVS),
+	BGFX_EMBEDDED_SHADER(OtDialFS),
 	BGFX_EMBEDDED_SHADER(OtFilterVS),
 	BGFX_EMBEDDED_SHADER(OtBlitFS),
 	BGFX_EMBEDDED_SHADER(OtBloomApplyFS),

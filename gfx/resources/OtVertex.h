@@ -113,6 +113,33 @@ struct OtVertexPosUv {
 
 
 //
+//	OtVertexPosUv2D
+//
+
+struct OtVertexPosUv2D {
+	// vertex elements
+	glm::vec2 position;
+	glm::vec2 uv;
+
+	// constructors
+	OtVertexPosUv2D() = default;
+	inline OtVertexPosUv2D(const glm::vec2& p, const glm::vec2& u=glm::vec2(0.0f)) : position(p), uv(u) {}
+
+	// get vertex description
+	static inline bgfx::VertexLayout getLayout() {
+		bgfx::VertexLayout layout;
+
+		layout.begin()
+			.add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
+			.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
+			.end();
+
+		return layout;
+	}
+};
+
+
+//
 //	OtVertexPosUvw
 //
 

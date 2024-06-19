@@ -27,10 +27,10 @@
 
 
 //
-//	OtUiGetAlignedPosition
+//	OtUiAlign
 //
 
-ImVec2 OtUiGetAlignedPosition(ImVec2 size, OtUiAlignment horizontal, OtUiAlignment vertical) {
+void OtUiAlign(ImVec2 size, OtUiAlignment horizontal, OtUiAlignment vertical) {
 	// get current position and available space
 	auto pos = ImGui::GetCursorPos();
 	auto available = ImGui::GetContentRegionAvail();
@@ -51,7 +51,7 @@ ImVec2 OtUiGetAlignedPosition(ImVec2 size, OtUiAlignment horizontal, OtUiAlignme
 		pos.y += available.y - size.y;
 	}
 
-	return pos;
+	ImGui::SetCursorPos(pos);
 }
 
 
@@ -63,6 +63,7 @@ bool OtUiIsMouseInRect(const ImVec2& topLeft, const ImVec2& bottomRight) {
 	ImVec2 mouse = ImGui::GetMousePos();
 	return mouse.x >= topLeft.x && mouse.x <= bottomRight.x && mouse.y >= topLeft.y && mouse.y <= bottomRight.y;
 }
+
 
 //
 //	OtUiSplitLabel

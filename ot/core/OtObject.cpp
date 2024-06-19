@@ -22,10 +22,7 @@
 //
 
 OtObjectClass::~OtObjectClass() {
-	if (members) {
-		delete members;
-		members = nullptr;
-	}
+	unsetAll();
 }
 
 
@@ -105,6 +102,18 @@ void OtObjectClass::unset(size_t selector) {
 	} else {
 		auto name = OtSelector::name(selector);
 		OtError("Unknown member [%.*s] in instance of class [{}]", name.size(), name.data(), type->getName());
+	}
+}
+
+
+//
+//	OtObjectClass::unsetAll
+//
+
+void OtObjectClass::unsetAll() {
+	if (members) {
+		delete members;
+		members = nullptr;
 	}
 }
 

@@ -50,7 +50,7 @@ private:
 		OtPass pass;
 		pass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
 		pass.setFrameBuffer(selectedBuffer);
-		pass.setClear(true, false);
+		pass.setClear(true);
 		pass.setTransform(ctx.camera.viewMatrix, ctx.camera.projectionMatrix);
 		pass.touch();
 
@@ -128,7 +128,7 @@ protected:
 private:
 	// properties
 	OtFrameBuffer& framebuffer;
-	OtFrameBuffer selectedBuffer{OtTexture::r8Texture, OtTexture::noTexture};
+	OtFrameBuffer selectedBuffer{OtTexture::r8Texture};
 
 	OtUniformVec4 outlineUniforms{"u_outline", 1};
 

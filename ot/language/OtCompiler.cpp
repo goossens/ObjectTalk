@@ -1466,6 +1466,7 @@ void OtCompiler::forStatement(OtByteCode bytecode) {
 	popScope();
 }
 
+
 //
 //	OtCompiler::ifStatement
 //

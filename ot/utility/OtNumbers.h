@@ -26,7 +26,11 @@ namespace std {
 	}
 }
 
+
+//
 //	Non-cryptographic random numbers
+//
+
 double OtRandom(double num1, double num2);
 inline double OtRandom(double num) { return OtRandom(0.0, num); }
 inline double OtRandom() { return OtRandom(0.0, 1.0); }

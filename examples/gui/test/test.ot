@@ -19,7 +19,7 @@ class MyApp : gui.App {
 		columns.add(rows);
 
 		columns.add(gui.Header("Column 2"));
-		columns.add(gui.Header("Column 3"));
+		columns.add(this.dialPanel());
 	}
 
 	function tronPanel(this) {
@@ -29,7 +29,7 @@ class MyApp : gui.App {
 	}
 
 	function propertiesPanel(this) {
-		var properties = gui.Panel();
+		var properties = gui.Properties(0.25);
 		var widgets = gui.TreeNode("Property Widgets");
 		properties.add(widgets);
 
@@ -54,6 +54,23 @@ class MyApp : gui.App {
 		}));
 
 		return properties;
+	}
+	
+	function dialPanel(this) {
+		this.steam = gui.Dial()
+			.setBackground(__DIR__ + "/assets/steam.png", 150, 150)
+			.setNeedle(__DIR__ + "/assets/needle.png", 150, 150)
+			.setRotationLimits(-150.0, 150.0)
+			.setValueLimits(0.0, 500.0)
+			.setValue(400.0)
+			.setScale(0.5)
+			.setHorizontalAlignment(gui.alignCenter)
+			.setVerticalAlignment(gui.alignMiddle);
+
+		var dials = gui.Panel();
+		dials.add(gui.Header("Dials"));
+		dials.add(this.steam);
+		return dials;
 	}
 }
 

@@ -45,6 +45,7 @@ static glm::vec3 getRandomPointinCircle() {
 	return glm::vec3(std::cos(angle) * radius, 0.0f, std::sin(angle) * radius);
 }
 
+
 //
 //	OtParticle::spawn
 //

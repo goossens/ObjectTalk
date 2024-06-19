@@ -41,7 +41,7 @@ void OtComboboxClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-			OtLogFatal("[Combobox] constructor expects up to 3 argument (not {})", count);
+			OtLogFatal("[Combobox] constructor expects up to 4 arguments (not {})", count);
 	}
 }
 
@@ -99,6 +99,7 @@ void OtComboboxClass::render() {
 
 	ImGui::PopID();
 }
+
 
 //
 //	OtComboboxClass::getMeta

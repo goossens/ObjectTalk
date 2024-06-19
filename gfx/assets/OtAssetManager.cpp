@@ -174,6 +174,7 @@ void OtAssetManager::each(std::function<void(OtAssetBase*)> callback) {
 	}
 }
 
+
 //
 //	OtAssetManager::clearUnusedAssets
 //

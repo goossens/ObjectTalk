@@ -17,11 +17,13 @@
 #include "OtCheckbox.h"
 #include "OtColumns.h"
 #include "OtCombobox.h"
+#include "OtDial.h"
 #include "OtFilmStrip.h"
 #include "OtHeader.h"
 #include "OtIntegerSlider.h"
 #include "OtMenubar.h"
 #include "OtPanel.h"
+#include "OtProperties.h"
 #include "OtRealSlider.h"
 #include "OtRows.h"
 #include "OtTextField.h"
@@ -38,11 +40,13 @@ static OtModuleRegistration registration{"gui", [](OtModule module) {
 	module->set("Checkbox", OtClass::create(OtCheckboxClass::getMeta()));
 	module->set("Columns", OtClass::create(OtColumnsClass::getMeta()));
 	module->set("Combobox", OtClass::create(OtComboboxClass::getMeta()));
+	module->set("Dial", OtClass::create(OtDialClass::getMeta()));
 	module->set("FilmStrip", OtClass::create(OtFilmStripClass::getMeta()));
 	module->set("Header", OtClass::create(OtHeaderClass::getMeta()));
 	module->set("IntegerSlider", OtClass::create(OtIntegerSliderClass::getMeta()));
 	module->set("Menubar", OtClass::create(OtMenubarClass::getMeta()));
 	module->set("Panel", OtClass::create(OtPanelClass::getMeta()));
+	module->set("Properties", OtClass::create(OtPropertiesClass::getMeta()));
 	module->set("RealSlider", OtClass::create(OtRealSliderClass::getMeta()));
 	module->set("Rows", OtClass::create(OtRowsClass::getMeta()));
 	module->set("TextField", OtClass::create(OtTextFieldClass::getMeta()));

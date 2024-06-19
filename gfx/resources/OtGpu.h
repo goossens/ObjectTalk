@@ -39,6 +39,7 @@ inline bool OtGpuHasOriginBottomLeft() {
 	return bgfx::getCaps()->originBottomLeft;
 }
 
+
 // see if NDC depth is in [-1, 1] range, otherwise it's in the [0, 1] range
 inline bool OtGpuHasHomogeneousDepth() {
 	return bgfx::getCaps()->homogeneousDepth;

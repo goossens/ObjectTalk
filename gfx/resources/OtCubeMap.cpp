@@ -220,6 +220,7 @@ void OtCubeMap::loadJSON(const std::string& path) {
 	version++;
 }
 
+
 //
 //	OtCubeMap::loadCubemapImage
 //

@@ -33,8 +33,12 @@ public:
 	// release canvas data
 	void clear();
 
-	// render canvas to dramebuffer
+	// start a new frame
+	void startFrame();
+
+	// render canvas to framebuffer
 	void render(OtFrameBuffer& framebuffer);
+
 private:
 	// properties
 	int width;

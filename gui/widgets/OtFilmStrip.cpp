@@ -22,25 +22,25 @@
 //	OtFilmStripClass::init
 //
 
-void OtFilmStripClass::init(size_t count, OtObject *paraFilmStrips) {
+void OtFilmStripClass::init(size_t count, OtObject *parameters) {
 	switch (count) {
 		case 4:
-			setHorizontalAlignment(OtUiAlignment(paraFilmStrips[3]->operator int()));
+			setHorizontalAlignment(OtUiAlignment(parameters[3]->operator int()));
 
 		case 3:
-			setHorizontalAlignment(OtUiAlignment(paraFilmStrips[2]->operator int()));
+			setHorizontalAlignment(OtUiAlignment(parameters[2]->operator int()));
 
 		case 2:
-			setValue(paraFilmStrips[1]->operator float());
+			setValue(parameters[1]->operator float());
 
 		case 1:
-			setTexture(paraFilmStrips[0]->operator std::string());
+			setTexture(parameters[0]->operator std::string());
 
 		case 0:
 			break;
 
 		default:
-			OtLogFatal("[FilmStrip] constructor expects up to 5 argument (not {})", count);
+			OtLogFatal("[FilmStrip] constructor expects up to 4 arguments (not {})", count);
 	}
 }
 
@@ -53,6 +53,7 @@ void OtFilmStripClass::render() {
 	ImGui::PushID(this);
 	ImGui::PopID();
 }
+
 
 //
 //	OtFilmStripClass::getMeta

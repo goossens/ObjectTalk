@@ -173,6 +173,7 @@ float OtImageObjectClass::sampleValueGray(float x, float y) {
 	return image.sampleValueGray(x, y);
 }
 
+
 //
 //	OtImageObjectClass::getMeta
 //

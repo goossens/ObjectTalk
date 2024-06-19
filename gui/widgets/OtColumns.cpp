@@ -39,7 +39,7 @@ void OtColumnsClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-			OtLogFatal("[Columns] constructor expects up to 3 argument (not {})", count);
+			OtLogFatal("[Columns] constructor expects up to 3 arguments (not {})", count);
 	}
 }
 

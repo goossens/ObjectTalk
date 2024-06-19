@@ -170,6 +170,7 @@ nlohmann::json OtPolyhedronPrimitive::serialize(std::string* basedir) {
 	return data;
 }
 
+
 //
 //	OtPolyhedronPrimitive::deserialize
 //

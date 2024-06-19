@@ -488,6 +488,7 @@ bool OtHttpRequestClass::hasCookie(const std::string& cookie) {
 	return cookies.find(cookie) != params.end();
 }
 
+
 //
 //	OtHttpRequestClass::getCookie
 //

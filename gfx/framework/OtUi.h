@@ -50,8 +50,8 @@ enum OtUiAlignment {
 //	Functions
 //
 
-// determine psotional based on alignment
-ImVec2 OtUiGetAlignedPosition(ImVec2 size, OtUiAlignment horizontal, OtUiAlignment vertical);
+// adjust cursor position based on alignment
+void OtUiAlign(ImVec2 size, OtUiAlignment horizontal, OtUiAlignment vertical);
 
 // is mouse in rectangle
 bool OtUiIsMouseInRect(const ImVec2& topLeft, const ImVec2& bottomRight);

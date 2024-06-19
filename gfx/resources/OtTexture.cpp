@@ -24,6 +24,7 @@ OtTexture::OtTexture(const std::string& path) {
 	loadFromFile(path);
 }
 
+
 //
 //	OtTexture::clear
 //

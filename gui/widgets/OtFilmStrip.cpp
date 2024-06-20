@@ -9,9 +9,12 @@
 //	Include files
 //
 
+#include <algorithm>
+
 #include "imgui.h"
 
 #include "OtFunction.h"
+#include "OtVM.h"
 
 #include "OtUi.h"
 
@@ -24,23 +27,31 @@
 
 void OtFilmStripClass::init(size_t count, OtObject *parameters) {
 	switch (count) {
+		case 6:
+			setHorizontalAlignment(OtUiAlignment(parameters[5]->operator int()));
+
+		case 5:
+			setHorizontalAlignment(OtUiAlignment(parameters[4]->operator int()));
+
 		case 4:
-			setHorizontalAlignment(OtUiAlignment(parameters[3]->operator int()));
+			setValue(parameters[3]->operator float());
 
 		case 3:
-			setHorizontalAlignment(OtUiAlignment(parameters[2]->operator int()));
+			if (parameters[2]->operator float()) {
+				setHorizontal();
+			}
 
 		case 2:
-			setValue(parameters[1]->operator float());
+			setFrames(parameters[1]->operator int());
 
 		case 1:
-			setTexture(parameters[0]->operator std::string());
+			setFilmStrip(parameters[0]->operator std::string());
 
 		case 0:
 			break;
 
 		default:
-			OtLogFatal("[FilmStrip] constructor expects up to 4 arguments (not {})", count);
+			OtLogFatal("[FilmStrip] constructor expects up to 5 arguments (not {})", count);
 	}
 }
 
@@ -50,8 +61,60 @@ void OtFilmStripClass::init(size_t count, OtObject *parameters) {
 //
 
 void OtFilmStripClass::render() {
-	ImGui::PushID(this);
-	ImGui::PopID();
+	// sanity check
+	if (filmstrip.isNull()) {
+		OtLogFatal("[FilmStrip] does not have the filmstrip");
+	}
+
+	if (!frames) {
+		OtLogFatal("[FilmStrip] does not have frame count");
+	}
+
+	// wait until texture is ready
+	if (filmstrip.isReady()) {
+		// determine framesize
+		auto& texture = filmstrip->getTexture();
+		float wt = texture.getWidth();
+		float ht = texture.getHeight();
+		float w = wt / (horizontal ? frames : 1);
+		float h = ht / (!horizontal ? frames : 1);
+
+		// determine coordinates of frame in filmstrip
+		auto frame = std::floor(value * (frames - 1)) / frames;
+		auto tl = horizontal ? ImVec2(frame, 0.0f) : ImVec2(0.0f, frame);
+		auto br = horizontal ? ImVec2(frame + w / wt, 1.0f) : ImVec2(1.0f, frame + h / ht);
+
+		// determine visible size and position
+		auto size = ImVec2(w * scale, h * scale);
+		ImGui::Dummy(ImVec2(0, ImGui::GetStyle().FramePadding.y));
+		OtUiAlign(size, horizontalAlign, verticalAlign);
+		auto pos = ImGui::GetCursorPos();
+
+		// render frame
+		ImGui::Image((void*)(intptr_t) texture.getIndex(), size, tl, br);
+
+		// handle user interaction (if required)
+		if (callback) {
+			ImGui::PushID(this);
+			ImGuiIO& io = ImGui::GetIO();
+			ImGui::SetCursorPos(pos);
+			ImGui::InvisibleButton("", size, 0);
+
+			if (ImGui::IsItemActive() && io.MouseDelta.y != 0.0) {
+				auto newValue = std::clamp(value - io.MouseDelta.y / 200.0f, 0.0f, 1.0f);
+
+				// call user callback if value has changed
+				if (callback && newValue != value) {
+					OtVM::instance()->callMemberFunction(callback, "__call__", OtValue<float>::encode(value));
+				}
+
+				value = newValue;
+			}
+
+			ImGui::PopID();
+			ImGui::Dummy(ImVec2(0, ImGui::GetStyle().FramePadding.y));
+		}
+	}
 }
 
 
@@ -65,11 +128,15 @@ OtType OtFilmStripClass::getMeta() {
 	if (!type) {
 		type = OtType::create<OtFilmStripClass>("FilmStrip", OtWidgetClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtFilmStripClass::init));
-		type->set("setTexture", OtFunction::create(&OtFilmStripClass::setTexture));
+		type->set("setFilmStrip", OtFunction::create(&OtFilmStripClass::setFilmStrip));
+		type->set("setFrames", OtFunction::create(&OtFilmStripClass::setFrames));
+		type->set("setHorizontal", OtFunction::create(&OtFilmStripClass::setHorizontal));
 		type->set("setValue", OtFunction::create(&OtFilmStripClass::setValue));
 		type->set("getValue", OtFunction::create(&OtFilmStripClass::getValue));
+		type->set("setScale", OtFunction::create(&OtFilmStripClass::setScale));
 		type->set("setHorizontalAlignment", OtFunction::create(&OtFilmStripClass::setHorizontalAlignment));
 		type->set("setVerticalAlignment", OtFunction::create(&OtFilmStripClass::setVerticalAlignment));
+		type->set("setCallback", OtFunction::create(&OtFilmStripClass::setCallback));
 	}
 
 	return type;

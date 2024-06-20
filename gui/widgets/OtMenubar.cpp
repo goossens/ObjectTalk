@@ -13,25 +13,25 @@
 
 #include "OtLog.h"
 
-#include "OtMenubar.h"
+#include "OtMenuBar.h"
 
 
 //
-//	OtMenubarClass::validateChild
+//	OtMenuBarClass::validateChild
 //
 
-void OtMenubarClass::validateChild(OtWidget child) {
+void OtMenuBarClass::validateChild(OtWidget child) {
 	if (!child->isKindOf("Menu")) {
-		OtLogFatal("An [Menubar] can only have [Menu]s as children, not [{}]", child->getType()->getName());
+		OtLogFatal("An [MenuBar] can only have [Menu]s as children, not [{}]", child->getType()->getName());
 	}
 }
 
 
 //
-//	OtMenubarClass::render
+//	OtMenuBarClass::render
 //
 
-void OtMenubarClass::render() {
+void OtMenuBarClass::render() {
 	if (ImGui::BeginMainMenuBar()) {
 		OtWidgetClass::render();
 		ImGui::EndMainMenuBar();
@@ -40,14 +40,14 @@ void OtMenubarClass::render() {
 
 
 //
-//	OtMenubarClass::getMeta
+//	OtMenuBarClass::getMeta
 //
 
-OtType OtMenubarClass::getMeta() {
+OtType OtMenuBarClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtType::create<OtMenubarClass>("Menubar", OtWidgetClass::getMeta());
+		type = OtType::create<OtMenuBarClass>("MenuBar", OtWidgetClass::getMeta());
 	}
 
 	return type;

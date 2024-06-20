@@ -13,17 +13,18 @@
 
 #include "OtArray.h"
 #include "OtFunction.h"
-#include "OtUi.h"
 #include "OtVM.h"
 
-#include "OtCombobox.h"
+#include "OtUi.h"
+
+#include "OtComboBox.h"
 
 
 //
-//	OtComboboxClass::init
+//	OtComboBoxClass::init
 //
 
-void OtComboboxClass::init(size_t count, OtObject* parameters) {
+void OtComboBoxClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
 		case 4:
 			setCallback(parameters[3]);
@@ -41,16 +42,16 @@ void OtComboboxClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-			OtLogFatal("[Combobox] constructor expects up to 4 arguments (not {})", count);
+			OtLogFatal("[ComboBox] constructor expects up to 4 arguments (not {})", count);
 	}
 }
 
 
 //
-//	OtComboboxClass::setOptions
+//	OtComboBoxClass::setOptions
 //
 
-OtObject OtComboboxClass::setOptions(OtObject vals) {
+OtObject OtComboBoxClass::setOptions(OtObject vals) {
 	// sanity check
 	vals->expectKindOf("Array");
 
@@ -66,10 +67,10 @@ OtObject OtComboboxClass::setOptions(OtObject vals) {
 
 
 //
-//	OtComboboxClass::render
+//	OtComboBoxClass::render
 //
 
-void OtComboboxClass::render() {
+void OtComboBoxClass::render() {
 	ImGui::PushID(this);
 
 	// start combobox
@@ -102,19 +103,19 @@ void OtComboboxClass::render() {
 
 
 //
-//	OtComboboxClass::getMeta
+//	OtComboBoxClass::getMeta
 //
 
-OtType OtComboboxClass::getMeta() {
+OtType OtComboBoxClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtType::create<OtComboboxClass>("Combobox", OtWidgetClass::getMeta());
-		type->set("__init__", OtFunction::create(&OtComboboxClass::init));
-		type->set("setLabel", OtFunction::create(&OtComboboxClass::setLabel));
-		type->set("setValue", OtFunction::create(&OtComboboxClass::setValue));
-		type->set("setOptions", OtFunction::create(&OtComboboxClass::setOptions));
-		type->set("getValue", OtFunction::create(&OtComboboxClass::getValue));
+		type = OtType::create<OtComboBoxClass>("ComboBox", OtWidgetClass::getMeta());
+		type->set("__init__", OtFunction::create(&OtComboBoxClass::init));
+		type->set("setLabel", OtFunction::create(&OtComboBoxClass::setLabel));
+		type->set("setValue", OtFunction::create(&OtComboBoxClass::setValue));
+		type->set("setOptions", OtFunction::create(&OtComboBoxClass::setOptions));
+		type->set("getValue", OtFunction::create(&OtComboBoxClass::getValue));
 	}
 
 	return type;

@@ -12,8 +12,9 @@
 #include "imgui.h"
 
 #include "OtFunction.h"
-#include "OtUi.h"
 #include "OtVM.h"
+
+#include "OtUi.h"
 
 #include "OtTextField.h"
 

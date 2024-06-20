@@ -31,7 +31,7 @@ void OtPropertiesClass::init(size_t count, OtObject *parameters) {
 			break;
 
 		default:
-			OtLogFatal("[Combobox] constructor expects up to 1 argument (not {})", count);
+			OtLogFatal("[ComboBox] constructor expects up to 1 argument (not {})", count);
 	}
 }
 

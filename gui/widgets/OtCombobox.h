@@ -16,17 +16,18 @@
 #include <vector>
 
 #include "OtCallback.h"
+
 #include "OtWidget.h"
 
 
 //
-//	OtComboboxClass
+//	OtComboBoxClass
 //
 
-class OtComboboxClass;
-using OtCombobox = OtObjectPointer<OtComboboxClass>;
+class OtComboBoxClass;
+using OtComboBox = OtObjectPointer<OtComboBoxClass>;
 
-class OtComboboxClass : public OtWidgetClass {
+class OtComboBoxClass : public OtWidgetClass {
 public:
 	// initialize
 	void init(size_t count, OtObject* parameters);

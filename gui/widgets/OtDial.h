@@ -30,10 +30,6 @@ using OtDial = OtObjectPointer<OtDialClass>;
 
 class OtDialClass : public OtWidgetClass {
 public:
-	~OtDialClass() {
-		int i = 0;
-	}
-
 	// initialize
 	void init(size_t count, OtObject* parameters);
 
@@ -115,7 +111,7 @@ private:
 	float value = 0.0f;
 
 	// work valiables
-	OtFrameBuffer framebuffer{OtTexture::rgba8Texture, OtTexture::noTexture, 1, true};
+	OtFrameBuffer framebuffer{OtTexture::rgba8Texture};
 	OtSampler sampler{"s_texture", OtTexture::pointSampling | OtTexture::clampSampling};
 	OtShaderProgram program{"OtDialVS", "OtDialFS"};
 	bool redraw = true;

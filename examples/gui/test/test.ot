@@ -29,12 +29,12 @@ class MyApp : gui.App {
 	}
 
 	function propertiesPanel(this) {
-		var properties = gui.Properties(0.25);
+		var properties = gui.Properties(0.55);
 		var widgets = gui.TreeNode("Property Widgets");
 		properties.add(widgets);
 
-		widgets.add(gui.Checkbox("Boolean", false, function(checked) {
-			print("Boolean: ", checked);
+		widgets.add(gui.CheckBox("Boolean", false, function(value) {
+			print("Boolean: ", value);
 		}));
 
 		widgets.add(gui.IntegerSlider("Integer", 50, 0, 100, function(value) {
@@ -49,13 +49,17 @@ class MyApp : gui.App {
 			print("String: ", value);
 		}));
 
-		widgets.add(gui.Combobox("Selector", "", ["", "one", "two", "three"], function(value) {
+		widgets.add(gui.ComboBox("Selector", "", ["", "one", "two", "three"], function(value) {
 			print("Selector: ", value);
+		}));
+
+		widgets.add(gui.RealSlider("Steam", 200.0, 0.0, 500.0, function(value) {
+			this.steam.setValue(value);
 		}));
 
 		return properties;
 	}
-	
+
 	function dialPanel(this) {
 		this.steam = gui.Dial()
 			.setBackground(__DIR__ + "/assets/steam.png", 150, 150)
@@ -64,12 +68,21 @@ class MyApp : gui.App {
 			.setValueLimits(0.0, 500.0)
 			.setValue(400.0)
 			.setScale(0.5)
+			.setHorizontalAlignment(gui.alignCenter);
+
+		this.knob = gui.FilmStrip()
+			.setFilmStrip(__DIR__ + "/assets/knob.png")
+			.setFrames(128)
+			.setValue(0.5)
 			.setHorizontalAlignment(gui.alignCenter)
-			.setVerticalAlignment(gui.alignMiddle);
+			.setCallback(function(value) {
+				this.steam.setValue(value * 500.0);
+			});
 
 		var dials = gui.Panel();
 		dials.add(gui.Header("Dials"));
 		dials.add(this.steam);
+		dials.add(this.knob);
 		return dials;
 	}
 }

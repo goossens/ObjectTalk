@@ -15,6 +15,7 @@
 #include "OtFunction.h"
 #include "OtLog.h"
 
+#include "OtBlit.h"
 #include "OtPass.h"
 #include "OtTransientVertexBuffer.h"
 #include "OtUi.h"
@@ -60,6 +61,7 @@ void OtDialClass::render() {
 		OtLogFatal("[Dial] does not have a background");
 	}
 
+	// wait until background is ready
 	if (background.isReady()) {
 		// do we need to redraw widget
 		if (redraw) {
@@ -70,8 +72,8 @@ void OtDialClass::render() {
 			framebuffer.update(w, h);
 
 			// render background
-			OtPass pass;
-			pass.blit(framebuffer.getColorTextureHandle(), 0, 0, texture.getHandle());
+			OtBlit blit;
+			blit.render(texture, framebuffer);
 
 			// render needle (if required)
 			if (needle.isReady()) {
@@ -79,7 +81,8 @@ void OtDialClass::render() {
 				auto ratio = (value - minValue) / (maxValue - minValue);
 				auto rotation = minRotation + ratio * (maxRotation - minRotation);
 
-				// configure pass
+				// configure rendering pass
+				OtPass pass;
 				pass.setClear(false);
 				pass.setRectangle(0, 0, w, h);
 				pass.setFrameBuffer(framebuffer);

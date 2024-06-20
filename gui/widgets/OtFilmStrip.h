@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include "OtCallback.h"
+
 #include "OtTextureAsset.h"
 #include "OtUi.h"
 
@@ -31,8 +33,29 @@ public:
 	void init(size_t count, OtObject* parameters);
 
 	// access properties
-	inline OtObject setTexture(const std::string& path) {
-		texture = path;
+	inline OtObject setFilmStrip(const std::string& path) {
+		filmstrip = path;
+		return OtWidget(this);
+	}
+
+	inline OtObject setFrames(const int f) {
+		frames = f;
+		return OtWidget(this);
+	}
+
+	inline OtObject setHorizontal() {
+		horizontal = true;
+		return OtWidget(this);
+	}
+
+	inline OtObject setScale(float s) {
+		scale = s;
+		return OtWidget(this);
+	}
+
+	inline OtObject setCallback(OtObject cb) {
+		OtCallbackValidate(cb, 1);
+		callback = cb;
 		return OtWidget(this);
 	}
 
@@ -61,8 +84,12 @@ public:
 
 private:
 	// properties
-	OtAsset<OtTextureAsset> texture;
+	OtAsset<OtTextureAsset> filmstrip;
+	int frames = 0;
+	bool horizontal = false;
+	float scale = 1.0f;
 	OtUiAlignment horizontalAlign = OtUiAlignLeft;
 	OtUiAlignment verticalAlign = OtUiAlignTop;
 	float value = 0.0f;
+	OtObject callback;
 };

@@ -16,13 +16,13 @@
 
 
 //
-//	OtMenubarClass
+//	OtMenuBarClass
 //
 
-class OtMenubarClass;
-using OtMenubar = OtObjectPointer<OtMenubarClass>;
+class OtMenuBarClass;
+using OtMenuBar = OtObjectPointer<OtMenuBarClass>;
 
-class OtMenubarClass : public OtWidgetClass {
+class OtMenuBarClass : public OtWidgetClass {
 public:
 	// ensure specified node is allowed as a child
 	void validateChild(OtWidget child) override;

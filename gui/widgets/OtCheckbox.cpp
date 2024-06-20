@@ -12,17 +12,18 @@
 #include "imgui.h"
 
 #include "OtFunction.h"
-#include "OtUi.h"
 #include "OtVM.h"
 
-#include "OtCheckbox.h"
+#include "OtUi.h"
+
+#include "OtCheckBox.h"
 
 
 //
-//	OtCheckboxClass::init
+//	OtCheckBoxClass::init
 //
 
-void OtCheckboxClass::init(size_t count, OtObject* parameters) {
+void OtCheckBoxClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
 		case 3:
 			setCallback(parameters[2]);
@@ -37,16 +38,16 @@ void OtCheckboxClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-			OtLogFatal("[Checkbox] constructor expects 3 or less arguments (not {})", count);
+			OtLogFatal("[CheckBox] constructor expects 3 or less arguments (not {})", count);
 	}
 }
 
 
 //
-//	OtCheckboxClass::render
+//	OtCheckBoxClass::render
 //
 
-void OtCheckboxClass::render() {
+void OtCheckBoxClass::render() {
 	ImGui::PushID(this);
 
 	if (OtUiToggleButton(label.c_str(), &checked)) {
@@ -58,19 +59,19 @@ void OtCheckboxClass::render() {
 
 
 //
-//	OtCheckboxClass::getMeta
+//	OtCheckBoxClass::getMeta
 //
 
-OtType OtCheckboxClass::getMeta() {
+OtType OtCheckBoxClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtType::create<OtCheckboxClass>("Checkbox", OtWidgetClass::getMeta());
-		type->set("__init__", OtFunction::create(&OtCheckboxClass::init));
-		type->set("setLabel", OtFunction::create(&OtCheckboxClass::setLabel));
-		type->set("setChecked", OtFunction::create(&OtCheckboxClass::setChecked));
-		type->set("setCallback", OtFunction::create(&OtCheckboxClass::setCallback));
-		type->set("isChecked", OtFunction::create(&OtCheckboxClass::isChecked));
+		type = OtType::create<OtCheckBoxClass>("Checkbox", OtWidgetClass::getMeta());
+		type->set("__init__", OtFunction::create(&OtCheckBoxClass::init));
+		type->set("setLabel", OtFunction::create(&OtCheckBoxClass::setLabel));
+		type->set("setChecked", OtFunction::create(&OtCheckBoxClass::setChecked));
+		type->set("setCallback", OtFunction::create(&OtCheckBoxClass::setCallback));
+		type->set("isChecked", OtFunction::create(&OtCheckBoxClass::isChecked));
 	}
 
 	return type;

@@ -15,17 +15,18 @@
 #include <string>
 
 #include "OtCallback.h"
+
 #include "OtWidget.h"
 
 
 //
-//	OtCheckboxClass
+//	OtCheckBoxClass
 //
 
-class OtCheckboxClass;
-using OtCheckbox = OtObjectPointer<OtCheckboxClass>;
+class OtCheckBoxClass;
+using OtCheckBox = OtObjectPointer<OtCheckBoxClass>;
 
-class OtCheckboxClass : public OtWidgetClass {
+class OtCheckBoxClass : public OtWidgetClass {
 public:
 	// initialize
 	void init(size_t count, OtObject* parameters);

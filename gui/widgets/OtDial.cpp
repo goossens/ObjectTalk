@@ -66,14 +66,14 @@ void OtDialClass::render() {
 		// do we need to redraw widget
 		if (redraw) {
 			// determine framebuffer dimensions
-			auto& texture = background->getTexture();
-			auto w = texture.getWidth();
-			auto h = texture.getHeight();
+			auto& backgroundTexture = background->getTexture();
+			auto w = backgroundTexture.getWidth();
+			auto h = backgroundTexture.getHeight();
 			framebuffer.update(w, h);
 
 			// render background
 			OtBlit blit;
-			blit.render(texture, framebuffer);
+			blit.render(backgroundTexture, framebuffer);
 
 			// render needle (if required)
 			if (needle.isReady()) {
@@ -90,9 +90,9 @@ void OtDialClass::render() {
 				pass.setTransform(glm::mat4(1.0f), projMatrix);
 
 				// render needle
-				texture = needle->getTexture();
-				w = texture.getWidth();
-				h = texture.getHeight();
+				auto& needleTexture = needle->getTexture();
+				w = needleTexture.getWidth();
+				h = needleTexture.getHeight();
 
 				// submit vertices
 				static float vertices[] = {
@@ -109,8 +109,8 @@ void OtDialClass::render() {
 				OtTransientVertexBuffer tvb;
 				tvb.submit(vertices, sizeof(vertices) / sizeof(*vertices), OtVertexPosUv2D::getLayout());
 
-				// bind needle to smapler
-				sampler.submit(0, texture);
+				// bind needle to sampler
+				sampler.submit(0, needleTexture);
 
 				// determine transformation
 				glm::mat4 model{1.0f};
@@ -123,10 +123,9 @@ void OtDialClass::render() {
 				program.setTransform(model);
 
 				program.setState(
-					BGFX_STATE_WRITE_RGB |
-					BGFX_STATE_WRITE_A |
-					BGFX_STATE_MSAA |
-					BGFX_STATE_BLEND_ALPHA);
+					OtStateWriteRgb |
+					OtStateWriteA |
+					OtStateBlendAlpha);
 
 				pass.runShaderProgram(program);
 			}

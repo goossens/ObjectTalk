@@ -53,10 +53,6 @@ class MyApp : gui.App {
 			print("Selector: ", value);
 		}));
 
-		widgets.add(gui.RealSlider("Steam", 200.0, 0.0, 500.0, function(value) {
-			this.steam.setValue(value);
-		}));
-
 		return properties;
 	}
 
@@ -73,14 +69,14 @@ class MyApp : gui.App {
 		this.knob = gui.FilmStrip()
 			.setFilmStrip(__DIR__ + "/assets/knob.png")
 			.setFrames(128)
-			.setValue(0.5)
+			.setValue(this.steam.getValue() / 500.0)
 			.setHorizontalAlignment(gui.alignCenter)
 			.setCallback(function(value) {
 				this.steam.setValue(value * 500.0);
 			});
 
 		var dials = gui.Panel();
-		dials.add(gui.Header("Dials"));
+		dials.add(gui.Header("Dials/Meters/Knobs"));
 		dials.add(this.steam);
 		dials.add(this.knob);
 		return dials;

@@ -10,7 +10,7 @@
 #define THREADS 8
 #define MIN_ROUGHNESS 0.045
 
-IMAGE2D_WR(s_target, rg16f, 0);
+IMAGE2D_WO(s_target, rg16f, 0);
 
 // Karis 2014
 vec2 integrateBRDF(float roughness, float NoV) {

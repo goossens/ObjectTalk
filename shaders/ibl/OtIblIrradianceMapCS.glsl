@@ -13,7 +13,7 @@
 #define THREADS 8
 
 SAMPLERCUBE(s_cubemap, 0);
-IMAGE2D_ARRAY_WR(s_target, rgba16f, 1);
+IMAGE2D_ARRAY_WO(s_target, rgba16f, 1);
 
 NUM_THREADS(THREADS, THREADS, 6)
 void main() {

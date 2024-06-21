@@ -18,7 +18,7 @@ uniform vec4 u_iblEnvironment;
 #define u_size u_iblEnvironment.z
 
 SAMPLERCUBE(s_cubemap, 0);
-IMAGE2D_ARRAY_WR(s_target, rgba16f, 1);
+IMAGE2D_ARRAY_WO(s_target, rgba16f, 1);
 
 // From Karis, 2014
 vec3 prefilterEnvMap(float roughness, vec3 R, float imgSize){

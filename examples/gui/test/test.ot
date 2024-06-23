@@ -18,7 +18,7 @@ class MyApp : gui.App {
 		rows.add(this.propertiesPanel());
 		columns.add(rows);
 
-		columns.add(gui.Header("Column 2"));
+		columns.add(this.logoPanel());
 		columns.add(this.dialPanel());
 	}
 
@@ -54,6 +54,13 @@ class MyApp : gui.App {
 		}));
 
 		return properties;
+	}
+
+	function logoPanel(this) {
+		return gui.Picture()
+			.setPicture(__DIR__ + "/assets/logo.png")
+			.setHorizontalAlignment(gui.alignCenter)
+			.setVerticalAlignment(gui.alignMiddle);
 	}
 
 	function dialPanel(this) {

@@ -23,6 +23,7 @@
 #include "OtIntegerSlider.h"
 #include "OtMenuBar.h"
 #include "OtPanel.h"
+#include "OtPicture.h"
 #include "OtProperties.h"
 #include "OtRealSlider.h"
 #include "OtRows.h"
@@ -46,6 +47,7 @@ static OtModuleRegistration registration{"gui", [](OtModule module) {
 	module->set("IntegerSlider", OtClass::create(OtIntegerSliderClass::getMeta()));
 	module->set("MenuBar", OtClass::create(OtMenuBarClass::getMeta()));
 	module->set("Panel", OtClass::create(OtPanelClass::getMeta()));
+	module->set("Picture", OtClass::create(OtPictureClass::getMeta()));
 	module->set("Properties", OtClass::create(OtPropertiesClass::getMeta()));
 	module->set("RealSlider", OtClass::create(OtRealSliderClass::getMeta()));
 	module->set("Rows", OtClass::create(OtRowsClass::getMeta()));

@@ -9,17 +9,12 @@
 //	Include files
 //
 
-#include "glm/glm.hpp"
 #include "imgui.h"
 
 #include "OtFunction.h"
 #include "OtLog.h"
 
-#include "OtBlit.h"
-#include "OtPass.h"
-#include "OtTransientVertexBuffer.h"
 #include "OtUi.h"
-#include "OtVertex.h"
 
 #include "OtPicture.h"
 

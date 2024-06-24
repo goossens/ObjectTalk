@@ -12,9 +12,6 @@
 //	Include files
 //
 
-#include "OtFrameBuffer.h"
-#include "OtSampler.h"
-#include "OtShaderProgram.h"
 #include "OtTextureAsset.h"
 #include "OtUi.h"
 

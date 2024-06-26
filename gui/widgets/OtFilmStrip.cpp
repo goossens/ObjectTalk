@@ -28,7 +28,7 @@
 void OtFilmStripClass::init(size_t count, OtObject *parameters) {
 	switch (count) {
 		case 6:
-			setHorizontalAlignment(OtUiAlignment(parameters[5]->operator int()));
+			setVerticalAlignment(OtUiAlignment(parameters[5]->operator int()));
 
 		case 5:
 			setHorizontalAlignment(OtUiAlignment(parameters[4]->operator int()));

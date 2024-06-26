@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include <string>
+
 #include "OtFrameBuffer.h"
 #include "OtSampler.h"
 #include "OtShaderProgram.h"

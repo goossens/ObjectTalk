@@ -26,7 +26,7 @@
 void OtPictureClass::init(size_t count, OtObject *parameters) {
 	switch (count) {
 		case 4:
-			setHorizontalAlignment(OtUiAlignment(parameters[3]->operator int()));
+			setVerticalAlignment(OtUiAlignment(parameters[3]->operator int()));
 
 		case 3:
 			setHorizontalAlignment(OtUiAlignment(parameters[2]->operator int()));
@@ -75,6 +75,7 @@ OtType OtPictureClass::getMeta() {
 
 	if (!type) {
 		type = OtType::create<OtPictureClass>("Picture", OtWidgetClass::getMeta());
+		type->set("__init__", OtFunction::create(&OtPictureClass::init));
 		type->set("setPicture", OtFunction::create(&OtPictureClass::setPicture));
 		type->set("setScale", OtFunction::create(&OtPictureClass::setScale));
 		type->set("setHorizontalAlignment", OtFunction::create(&OtPictureClass::setHorizontalAlignment));

@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include <string>
+
 #include "OtCallback.h"
 
 #include "OtTextureAsset.h"

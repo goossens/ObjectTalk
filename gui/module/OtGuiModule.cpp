@@ -21,6 +21,7 @@
 #include "OtFilmStrip.h"
 #include "OtHeader.h"
 #include "OtIntegerSlider.h"
+#include "OtLabel.h"
 #include "OtMenuBar.h"
 #include "OtPanel.h"
 #include "OtPicture.h"
@@ -45,6 +46,7 @@ static OtModuleRegistration registration{"gui", [](OtModule module) {
 	module->set("FilmStrip", OtClass::create(OtFilmStripClass::getMeta()));
 	module->set("Header", OtClass::create(OtHeaderClass::getMeta()));
 	module->set("IntegerSlider", OtClass::create(OtIntegerSliderClass::getMeta()));
+	module->set("Label", OtClass::create(OtLabelClass::getMeta()));
 	module->set("MenuBar", OtClass::create(OtMenuBarClass::getMeta()));
 	module->set("Panel", OtClass::create(OtPanelClass::getMeta()));
 	module->set("Picture", OtClass::create(OtPictureClass::getMeta()));

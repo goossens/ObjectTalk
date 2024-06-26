@@ -85,6 +85,7 @@ class MyApp : gui.App {
 		var dials = gui.Panel();
 		dials.add(gui.Header("Dials/Meters/Knobs"));
 		dials.add(this.steam);
+		dials.add(gui.Label("Level", gui.alignCenter));
 		dials.add(this.knob);
 		return dials;
 	}

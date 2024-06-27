@@ -14,6 +14,12 @@
 #include "OtLog.h"
 
 #include "OtShaders.h"
+#include "generated/canvas/OtCanvasVS_mtl.h"
+#include "generated/canvas/OtCanvasVS_spv.h"
+#include "generated/canvas/OtCanvasVS_dx11.h"
+#include "generated/canvas/OtCanvasFS_mtl.h"
+#include "generated/canvas/OtCanvasFS_spv.h"
+#include "generated/canvas/OtCanvasFS_dx11.h"
 #include "generated/cubemap/OtCubeMapCrossVS_mtl.h"
 #include "generated/cubemap/OtCubeMapCrossVS_spv.h"
 #include "generated/cubemap/OtCubeMapCrossVS_dx11.h"
@@ -234,6 +240,10 @@
 //	Globals
 //
 
+static const uint8_t OtCanvasVS_glsl[1] = {0};
+static const uint8_t OtCanvasVS_essl[1] = {0};
+static const uint8_t OtCanvasFS_glsl[1] = {0};
+static const uint8_t OtCanvasFS_essl[1] = {0};
 static const uint8_t OtCubeMapCrossVS_glsl[1] = {0};
 static const uint8_t OtCubeMapCrossVS_essl[1] = {0};
 static const uint8_t OtHdrReprojectVS_glsl[1] = {0};
@@ -379,6 +389,8 @@ static const uint8_t OtWaterFS_essl[1] = {0};
 
 
 static const bgfx::EmbeddedShader embeddedShaders[] = {
+	BGFX_EMBEDDED_SHADER(OtCanvasVS),
+	BGFX_EMBEDDED_SHADER(OtCanvasFS),
 	BGFX_EMBEDDED_SHADER(OtCubeMapCrossVS),
 	BGFX_EMBEDDED_SHADER(OtHdrReprojectVS),
 	BGFX_EMBEDDED_SHADER(OtCubeMapCrossFS),

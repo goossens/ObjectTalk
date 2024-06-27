@@ -157,34 +157,22 @@ void OtTexture::loadFromFile(const std::string& path) {
 //	OtTexture::loadFromMemory
 //
 
-void OtTexture::loadFromMemory(int w, int h, uint8_t* pixels) {
+void OtTexture::loadFromMemory(int w, int h, int f, void* pixels) {
 	// update properties
 	width = w;
 	height = h;
-	format = rgba8Texture;
+	format = f;
 	incrementVersion();
+
+	// determine image size
+	int size = bimg::imageGetSize(nullptr, w, h, 1, false, false, 1, bimg::TextureFormat::Enum(format));
 
 	// create texture
 	texture = bgfx::createTexture2D(
 		w, h, false, 1,
-		bgfx::TextureFormat::RGBA8,
+		bgfx::TextureFormat::Enum(format),
 		BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
-		bgfx::copy(pixels, w * h * 4));
-}
-
-void OtTexture::loadFromMemory(int w, int h, float* pixels) {
-	// update properties
-	width = w;
-	height = h;
-	format = rgbaFloat32Texture;
-	incrementVersion();
-
-	// create texture
-	texture = bgfx::createTexture2D(
-		w, h, false, 1,
-		bgfx::TextureFormat::RGBA32F,
-		BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
-		bgfx::copy(pixels, w * h * 4 * sizeof(float)));
+		bgfx::copy(pixels, size));
 }
 
 
@@ -206,6 +194,23 @@ void OtTexture::loadFromFileInMemory(void* data, uint32_t size) {
 
 	// create texture
 	texture = createRegularTexture(container);
+}
+
+
+//
+//	OtTexture::update
+//
+
+void OtTexture::update(int x, int y, int w, int h, void* pixels) {
+	// determine size of update
+	int size = bimg::imageGetSize(nullptr, w, h, 1, false, false, 1, bimg::TextureFormat::Enum(format));
+
+	// update the texture
+	bgfx::updateTexture2D(
+		texture.getHandle(),
+		0, 0,
+		uint16_t(x), uint16_t(y), uint16_t(w), uint16_t(h),
+		bgfx::copy(pixels, size));
 }
 
 

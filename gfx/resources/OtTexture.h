@@ -67,7 +67,7 @@ public:
 	inline bool isValid() { return texture.isValid(); }
 
 	// create an empty texture
-	void create(int w, int h, int format, uint64_t flags);
+	void create(int width, int height, int format, uint64_t flags = linearSampling | repeatSampling);
 
 	// load from image
 	void loadFromImage(OtImage& image);
@@ -75,12 +75,14 @@ public:
 	// load from file
 	void loadFromFile(const std::string& path);
 
-	// load from memory (pixels must be RGBA in row order)
-	void loadFromMemory(int width, int height, uint8_t* pixels);
-	void loadFromMemory(int width, int height, float* pixels);
+	// load from memory
+	void loadFromMemory(int width, int height, int format, void* pixels);
 
 	// load from file in memory
 	void loadFromFileInMemory(void* data, uint32_t size);
+
+	// update (part of) texture
+	void update(int x, int y, int width, int height, void* pixels);
 
 	// return texture handle
 	bgfx::TextureHandle getHandle();

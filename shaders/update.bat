@@ -8,7 +8,9 @@
 pushd "%~dp0"
 
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f canvas\OtCanvasVS.glsl -o generated\canvas\OtCanvasVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtCanvasVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f canvas\OtVectorDisplayVS.glsl -o generated\canvas\OtVectorDisplayVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtVectorDisplayVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f canvas\OtCanvasFS.glsl -o generated\canvas\OtCanvasFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtCanvasFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f canvas\OtVectorDisplayFS.glsl -o generated\canvas\OtVectorDisplayFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtVectorDisplayFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f cubemap\OtCubeMapCrossVS.glsl -o generated\cubemap\OtCubeMapCrossVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtCubeMapCrossVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f cubemap\OtHdrReprojectVS.glsl -o generated\cubemap\OtHdrReprojectVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtHdrReprojectVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f cubemap\OtCubeMapCrossFS.glsl -o generated\cubemap\OtCubeMapCrossFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtCubeMapCrossFS_dx11

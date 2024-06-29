@@ -21,10 +21,17 @@
 
 class OtDynamicIndexBuffer {
 public:
+	// constructors
+	OtDynamicIndexBuffer() = default;
+	OtDynamicIndexBuffer(size_t s) : size(s) {}
+
 	// clear the resources
 	inline void clear() { indexBuffer.clear(); }
 
-	// set vertices
+	// set size
+	inline void setSize(size_t s) { size = s; }
+
+	// set indices
 	void set(void* data, size_t count);
 
 	// see if buffer is valid
@@ -36,4 +43,5 @@ public:
 private:
 	// the actual buffer
 	OtBgfxHandle<bgfx::DynamicIndexBufferHandle> indexBuffer;
+	size_t size = 20000;
 };

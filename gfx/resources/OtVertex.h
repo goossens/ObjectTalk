@@ -86,6 +86,35 @@ struct OtVertexPosUvCol {
 
 
 //
+//	OtVertexPosUvCol2D
+//
+
+struct OtVertexPosUvCol2D {
+	// vertex elements
+	glm::vec2 position;
+	glm::vec2 uv;
+	uint32_t color;
+
+	// constructors
+	OtVertexPosUvCol2D() = default;
+	inline OtVertexPosUvCol2D(const glm::vec2& p, const glm::vec2& u=glm::vec2(0.0f), uint32_t c=0) : position(p), uv(u), color(c) {}
+
+	// get vertex description
+	static inline bgfx::VertexLayout getLayout() {
+		bgfx::VertexLayout layout;
+
+		layout.begin()
+			.add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
+			.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
+			.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
+			.end();
+
+		return layout;
+	}
+};
+
+
+//
 //	OtVertexPosUv
 //
 

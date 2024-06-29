@@ -21,8 +21,15 @@
 
 class OtDynamicVertexBuffer {
 public:
+	// constructors
+	OtDynamicVertexBuffer() = default;
+	OtDynamicVertexBuffer(size_t s) : size(s) {}
+
 	// clear the resources
 	inline void clear() { vertexBuffer.clear(); }
+
+	// set size
+	inline void setSize(size_t s) { size = s; }
 
 	// set vertices
 	void set(void* data, size_t count, const bgfx::VertexLayout& layout);
@@ -37,4 +44,5 @@ private:
 	// vertex layout and the actual buffer
 	bgfx::VertexLayout layout;
 	OtBgfxHandle<bgfx::DynamicVertexBufferHandle> vertexBuffer;
+	size_t size = 20000;
 };

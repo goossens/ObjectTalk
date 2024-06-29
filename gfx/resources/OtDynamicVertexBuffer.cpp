@@ -25,13 +25,12 @@ void OtDynamicVertexBuffer::set(void* data, size_t count, const bgfx::VertexLayo
 		clear();
 	}
 
-	if (isValid()) {
-		bgfx::update(vertexBuffer.getHandle(), 0, bgfx::copy(data, layout.getSize((uint32_t) count)));
-
-	} else {
+	if (!isValid()) {
 		layout = l;
-		vertexBuffer = bgfx::createDynamicVertexBuffer(bgfx::copy(data, layout.getSize((uint32_t) count)), layout);
+		vertexBuffer = bgfx::createDynamicVertexBuffer(uint32_t(size), layout);
 	}
+
+	bgfx::update(vertexBuffer.getHandle(), 0, bgfx::copy(data, layout.getSize((uint32_t) count)));
 }
 
 

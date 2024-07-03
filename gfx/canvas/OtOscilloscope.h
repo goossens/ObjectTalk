@@ -41,16 +41,16 @@ public:
 		height = h;
 	}
 
+	inline void setBrightness(float b) { brightness = b; }
+	inline void setTopLeftOrigin() { origin = topLeftOrigin; }
+	inline void setBottomLeftOrigin() { origin = bottomLeftOrigin; }
+	inline void setCenterOrigin() { origin = centerOrigin; }
+
 	inline void setDecay(int s, float ds, float dv) {
 		decaySteps = s;
 		decayStart = ds;
 		decayValue = dv;
 	}
-
-	inline void setBrightness(float b) { brightness = b; }
-	inline void setTopLeftOrigin() { origin = topLeftOrigin; }
-	inline void setBottomLeftOrigin() { origin = bottomLeftOrigin; }
-	inline void setCenterOrigin() { origin = centerOrigin; }
 
 	// style releated methods
 	inline void setColor(const std::string& color) { style.color = OtColorParseToUint32(color); }
@@ -65,15 +65,12 @@ public:
 		styles.pop_back();
 	}
 
-	float getSevenSegmentWidth(const std::string& text, float size);
-	float getTextWidth(const std::string& text, float size);
-
 	// high level draw functions
 	void drawLine(float x0, float y0, float x1, float y1);
 	void drawRectangle(float x, float y, float w, float h);
 	void drawCircle(float x, float y, float radius, float steps);
 	void drawSevenSegment(float x, float y, float size, const std::string& text);
-	void drawText(float x, float y, float size, bool centered, const std::string& text);
+	void drawText(float x, float y, float size, const std::string& text);
 
 	// render the vector display
 	void render();

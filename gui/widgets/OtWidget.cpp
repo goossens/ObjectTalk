@@ -96,20 +96,6 @@ void OtWidgetClass::clear() {
 
 
 //
-//	OtWidgetClass::update
-//
-
-void OtWidgetClass::update() {
-	// update all children
-	for (auto& child : children) {
-		if (child->isEnabled()) {
-			OtWidget(child)->update();
-		}
-	}
-}
-
-
-//
 //	OtWidgetClass::render
 //
 

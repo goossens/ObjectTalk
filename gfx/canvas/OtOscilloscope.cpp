@@ -210,13 +210,9 @@ void OtOscilloscope::drawSevenSegment(float x, float y, float size, const std::s
 //	OtOscilloscope::drawText
 //
 
-void OtOscilloscope::drawText(float x, float y, float size, bool centered, const std::string& text) {
+void OtOscilloscope::drawText(float x, float y, float size, const std::string& text) {
 	auto scaleX = size / 32.0f;
 	auto scaleY = scaleX * (origin == topLeftOrigin ? -1.0f : 1.0f);
-
-	if (centered) {
-		x -= getTextWidth(text, size) / 2.0f;
-	}
 
 	for (auto& c : text) {
 		if (c >= 32 || c <= 126) {
@@ -250,34 +246,6 @@ void OtOscilloscope::drawText(float x, float y, float size, bool centered, const
 			x += chr[1] * scaleX;
 		}
 	}
-}
-
-
-//
-//	OtOscilloscope::getSevenSegmentWidth
-//
-
-float OtOscilloscope::getSevenSegmentWidth(const std::string& text, float size) {
-	return text.size() * 0.8f * size - 0.3f * size;
-}
-
-
-//
-//	OtOscilloscope::getTextWidth
-//
-
-float OtOscilloscope::getTextWidth(const std::string& text, float size) {
-	auto scale = size / 32.0f;
-	float width = 0.0;
-
-	for (auto& c : text) {
-		if (c >= 32 || c <= 126) {
-			const int8_t* chr = simplex[c - 32];
-			width += (float) chr[1] * scale;
-		}
-	}
-
-	return width;
 }
 
 

@@ -62,9 +62,6 @@ public:
 	OtObject setEnabled(bool e) { enabled = e; return OtObject(this); }
 	bool isEnabled() { return enabled; }
 
-	// update state (called every frame so be carefull)
-	virtual void update();
-
 	// render content
 	virtual void render();
 

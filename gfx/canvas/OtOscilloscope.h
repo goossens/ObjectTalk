@@ -52,25 +52,12 @@ public:
 		decayValue = dv;
 	}
 
-	// style releated methods
-	inline void setColor(const std::string& color) { style.color = OtColorParseToUint32(color); }
-	inline void setAlpha(float alpha) { style.color = (style.color & 0xffffff) | int(alpha * 255.0f); }
-	inline void setWidth(float width) { style.width = width; }
-	inline void setCenteredText() { style.centeredText = true; }
-
-	inline void pushStyle() { styles.push_back(style); }
-
-	inline void popStyle() {
-		style = styles.back();
-		styles.pop_back();
-	}
-
 	// high level draw functions
-	void drawLine(float x0, float y0, float x1, float y1);
-	void drawRectangle(float x, float y, float w, float h);
-	void drawCircle(float x, float y, float radius, float steps);
-	void drawSevenSegment(float x, float y, float size, const std::string& text);
-	void drawText(float x, float y, float size, const std::string& text);
+	void drawLine(float x0, float y0, float x1, float y1, float lineWidth, uint32_t color);
+	void drawRectangle(float x, float y, float w, float h, float lineWidth, uint32_t color);
+	void drawCircle(float x, float y, float radius, float steps, float lineWidth, uint32_t color);
+	void drawSevenSegment(float x, float y, float size, const std::string& text, float lineWidth, uint32_t color);
+	void drawText(float x, float y, float size, const std::string& text, float lineWidth, uint32_t color);
 
 	// render the vector display
 	void render();
@@ -91,32 +78,23 @@ private:
 		centerOrigin
 	} origin = topLeftOrigin;
 
-	struct Style {
-		uint32_t color = 0xffffffff;
-		float width = 1.0f;
-		bool centeredText = false;
-	};
-
-	Style style;
-	std::vector<Style> styles;
-
 	// draw a series of connected line segments
 	void beginDraw(float x, float y);
 	void drawTo(float x, float y);
-	void endDraw();
+	void endDraw(float lineWidth, uint32_t color);
 
 	// rendering variable
 	std::vector<glm::vec2> points;
 	std::vector<OtVertexPosUvCol2D> vertices;
 
-	inline void addVertex(float x, float y, float u, float v) {
+	inline void addVertex(float x, float y, float u, float v, uint32_t color) {
 		vertices.emplace_back(
 			glm::vec2(x, y),
 			glm::vec2(u / brushSize, 1.0f - v / brushSize),
-			style.color);
+			color);
 	}
 
-	void drawFan(float _cx, float _cy, float _pa, float _a, float _t, float _s, float _e);
+	void drawFan(float _cx, float _cy, float _pa, float _a, float _t, float _s, float _e, uint32_t color);
 
 	std::vector<OtDynamicVertexBuffer> vertexBuffers;
 	std::vector<uint32_t> vertexBufferSizes;

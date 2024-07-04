@@ -196,7 +196,7 @@ void OtVectorDisplayClass::popStyle() {
 //
 
 float OtVectorDisplayClass::getSevenSegmentWidth(const std::string& text, float size) {
-	return text.size() * 0.8f * size - 0.3f * size;
+	return (text.size() * 0.8f * size - 0.3f * size) * scale;
 }
 
 
@@ -205,17 +205,17 @@ float OtVectorDisplayClass::getSevenSegmentWidth(const std::string& text, float 
 //
 
 float OtVectorDisplayClass::getTextWidth(const std::string& text, float size) {
-	auto scale = size / 32.0f;
+	auto factor = size / 32.0f;
 	float width = 0.0;
 
 	for (auto& c : text) {
 		if (c >= 32 || c <= 126) {
 			const int8_t* chr = simplex[c - 32];
-			width += (float) chr[1] * scale;
+			width += (float) chr[1] * factor;
 		}
 	}
 
-	return width;
+	return width * scale;
 }
 
 
@@ -563,12 +563,57 @@ void OtVectorDisplayClass::render() {
 	// handle auto scaling
 	if (autoScale) {
 		auto available = ImGui::GetContentRegionAvail();
-		scale = std::min(available.x / width, available.y / height);
+		scale = std::min(available.x / float(width), available.y / float(height));
 	}
 
 	// calculate size of scope
 	ImVec2 size{width * scale, height * scale};
 	scope.setSize(size.x, size.y);
+
+	// render all shapes
+	for (auto& shape : shapes) {
+		if (shape.enabled) {
+			switch (shape.type) {
+				case Shape::lineType:
+					scope.drawLine(
+						shape.x0 * scale, shape.y0 * scale,
+						shape.x1 * scale, shape.y1 * scale,
+						shape.width, shape.color);
+					break;
+
+				case Shape::rectangleType:
+					scope.drawRectangle(
+						shape.x * scale, shape.y * scale,
+						shape.w * scale, shape.h  * scale,
+						shape.width, shape.color);
+					break;
+
+				case Shape::circleType:
+					scope.drawCircle(
+						shape.x * scale, shape.y * scale,
+						shape.radius * scale, shape.steps,
+						shape.width, shape.color);
+					break;
+
+				case Shape::sevenSegmentType:
+					scope.drawSevenSegment(
+						shape.x * scale, shape.y * scale,
+						shape.size * scale,
+						shape.text,
+						shape.width, shape.color);
+					break;
+
+				case Shape::textType:
+					scope.drawText(
+						shape.x * scale,
+						shape.y * scale,
+						shape.size * scale,
+						shape.text,
+						shape.width, shape.color);
+					break;
+			}
+		}
+	}
 }
 
 

@@ -25,23 +25,23 @@
 //	OtOscilloscope::drawLine
 //
 
-void OtOscilloscope::drawLine(float x0, float y0, float x1, float y1) {
+void OtOscilloscope::drawLine(float x0, float y0, float x1, float y1, float lineWidth, uint32_t color) {
 	beginDraw(x0, y0);
 	drawTo(x1, y1);
-	endDraw();
+	endDraw(lineWidth, color);
 }
 
 //
 //	OtOscilloscope::drawRectangle
 //
 
-void OtOscilloscope::drawRectangle(float x, float y, float w, float h) {
+void OtOscilloscope::drawRectangle(float x, float y, float w, float h, float lineWidth, uint32_t color) {
 	beginDraw(x, y);
 	drawTo(x + w, y);
 	drawTo(x + w, y + h);
 	drawTo(x, y + h);
 	drawTo(x, y);
-	endDraw();
+	endDraw(lineWidth, color);
 }
 
 
@@ -49,7 +49,7 @@ void OtOscilloscope::drawRectangle(float x, float y, float w, float h) {
 //	OtOscilloscope::drawCircle
 //
 
-void OtOscilloscope::drawCircle(float x, float y, float radius, float steps) {
+void OtOscilloscope::drawCircle(float x, float y, float radius, float steps, float lineWidth, uint32_t color) {
 	beginDraw(x, y - radius);
 
 	float step = std::numbers::pi * 2.0 / steps;
@@ -59,7 +59,7 @@ void OtOscilloscope::drawCircle(float x, float y, float radius, float steps) {
 	}
 
 	drawTo(x, y - radius);
-	endDraw();
+	endDraw(lineWidth, color);
 }
 
 
@@ -67,7 +67,7 @@ void OtOscilloscope::drawCircle(float x, float y, float radius, float steps) {
 //	OtOscilloscope::drawSevenSegment
 //
 
-void OtOscilloscope::drawSevenSegment(float x, float y, float size, const std::string &text) {
+void OtOscilloscope::drawSevenSegment(float x, float y, float size, const std::string &text, float lineWidth, uint32_t color) {
 	// calculate scaling
 	auto s = size / 100.0f;
 	auto t = origin == topLeftOrigin ? s : -s;
@@ -128,7 +128,7 @@ void OtOscilloscope::drawSevenSegment(float x, float y, float size, const std::s
 			drawTo(x + 9.8f * s, y + 8.0f * t);
 			drawTo(x + 2.2f * s, y + 0.5f * t);
 			drawTo(x + 2.7f * s, y + 0.0f);
-			endDraw();
+			endDraw(lineWidth, color);
 		}
 
 		// segment B
@@ -140,7 +140,7 @@ void OtOscilloscope::drawSevenSegment(float x, float y, float size, const std::s
 			drawTo(x + 42.0f * s, y + 9.8f * t);
 			drawTo(x + 50.0f * s, y + 2.2f * t);
 			drawTo(x + 50.0f * s, y + 2.7f * t);
-			endDraw();
+			endDraw(lineWidth, color);
 		}
 
 		// segment C
@@ -151,7 +151,7 @@ void OtOscilloscope::drawSevenSegment(float x, float y, float size, const std::s
 			drawTo(x + 46.0f * s, y + 51.0f * t);
 			drawTo(x + 50.0f * s, y + 51.0f * t);
 			drawTo(x + 50.0f * s, y + 98.0f * t);
-			endDraw();
+			endDraw(lineWidth, color);
 		}
 
 		// segment D
@@ -162,7 +162,7 @@ void OtOscilloscope::drawSevenSegment(float x, float y, float size, const std::s
 			drawTo(x + 49.0f * s, y + 100.0f * t);
 			drawTo(x + 2.7f * s, y + 100.0f * t);
 			drawTo(x + 2.2f * s, y + 100.0f * t);
-			endDraw();
+			endDraw(lineWidth, color);
 		}
 
 		// segment E
@@ -174,7 +174,7 @@ void OtOscilloscope::drawSevenSegment(float x, float y, float size, const std::s
 			drawTo(x + 8.0f * s, y + 91.0f * t);
 			drawTo(x + 0.5f * s, y + 98.0f * t);
 			drawTo(x + 0.0, y + 98.0f * t);
-			endDraw();
+			endDraw(lineWidth, color);
 		}
 
 		// segment F
@@ -186,7 +186,7 @@ void OtOscilloscope::drawSevenSegment(float x, float y, float size, const std::s
 			drawTo(x + 0.0f * s, y + 49.0f * t);
 			drawTo(x + 0.0f * s, y + 2.7f * t);
 			drawTo(x + 0.5f * s, y + 2.2f * t);
-			endDraw();
+			endDraw(lineWidth, color);
 		}
 
 		// segment G
@@ -198,7 +198,7 @@ void OtOscilloscope::drawSevenSegment(float x, float y, float size, const std::s
 			drawTo(x + 10.2f * s, y + 54.0f * t);
 			drawTo(x + 6.2f * s, y + 50.0f * t);
 			drawTo(x + 10.2f * s, y + 46.0f * t);
-			endDraw();
+			endDraw(lineWidth, color);
 		}
 
 		x += size * 0.8f;
@@ -210,7 +210,7 @@ void OtOscilloscope::drawSevenSegment(float x, float y, float size, const std::s
 //	OtOscilloscope::drawText
 //
 
-void OtOscilloscope::drawText(float x, float y, float size, const std::string& text) {
+void OtOscilloscope::drawText(float x, float y, float size, const std::string& text, float lineWidth, uint32_t color) {
 	auto scaleX = size / 32.0f;
 	auto scaleY = scaleX * (origin == topLeftOrigin ? -1.0f : 1.0f);
 
@@ -226,7 +226,7 @@ void OtOscilloscope::drawText(float x, float y, float size, const std::string& t
 
 				if (vx == -1 && vy == -1) {
 					if (isDrawing) {
-						endDraw();
+						endDraw(lineWidth, color);
 						isDrawing = false;
 					}
 
@@ -240,7 +240,7 @@ void OtOscilloscope::drawText(float x, float y, float size, const std::string& t
 			}
 
 			if (isDrawing) {
-				endDraw();
+				endDraw(lineWidth, color);
 			}
 
 			x += chr[1] * scaleX;
@@ -423,7 +423,7 @@ static inline float normalizeAngle(float angle) {
 //	OtOscilloscope::endDraw
 //
 
-void OtOscilloscope::endDraw() {
+void OtOscilloscope::endDraw(float lineWidth, uint32_t color) {
 	if (points.size() < 2) {
 		OtLogFatal("Invalid number of points in VectorDisplay draw action");
 	}
@@ -453,7 +453,7 @@ void OtOscilloscope::endDraw() {
 	size_t nlines = points.size() - 1;
 	Line* lines = new Line[nlines];
 
-	float t = std::max((0.01f * (width + height) / 2.0f) * style.width / 2.0f, 6.0f);
+	float t = std::max((0.01f * (width + height) / 2.0f) * lineWidth / 2.0f, 6.0f);
 	bool firstIsLast = std::abs(points[0].x - points[nlines].x) < 0.1f && std::abs(points[0].y - points[nlines].y) < 0.1f;
 
 	// compute basics
@@ -569,10 +569,10 @@ void OtOscilloscope::endDraw() {
 			float a2pa = normalizeAngle(line->a - pline->a);
 
 			if (a2pa < pa2a) {
-				drawFan(line->xr0, line->yr0, pline->a, line->a, line->tl0 + line->tr0, (float) halfBrushSize + (line->tr0 / t * (float) halfBrushSize), 0);
+				drawFan(line->xr0, line->yr0, pline->a, line->a, line->tl0 + line->tr0, (float) halfBrushSize + (line->tr0 / t * (float) halfBrushSize), 0, color);
 
 			} else {
-				drawFan(line->xl0, line->yl0, pline->a, line->a, line->tl0 + line->tr0, (float) halfBrushSize - (line->tl0 / t * (float) halfBrushSize), (float)brushSize);
+				drawFan(line->xl0, line->yl0, pline->a, line->a, line->tl0 + line->tr0, (float) halfBrushSize - (line->tl0 / t * (float) halfBrushSize), (float) brushSize, color);
 			}
 		}
 
@@ -582,29 +582,29 @@ void OtOscilloscope::endDraw() {
 		float tr0 = (float) halfBrushSize + (line->tr0 / t) * (float) halfBrushSize;
 		float tr1 = (float) halfBrushSize + (line->tr1 / t) * (float) halfBrushSize;
 
-		addVertex(line->xr0, line->yr0, tr0, (float) halfBrushSize);
-		addVertex(line->xr1, line->yr1, tr1, (float) halfBrushSize);
-		addVertex(line->xl1, line->yl1, tl1, (float) halfBrushSize);
-		addVertex(line->xl0, line->yl0, tl0, (float) halfBrushSize);
-		addVertex(line->xr0, line->yr0, tr0, (float) halfBrushSize);
-		addVertex(line->xl1, line->yl1, tl1, (float) halfBrushSize);
+		addVertex(line->xr0, line->yr0, tr0, (float) halfBrushSize, color);
+		addVertex(line->xr1, line->yr1, tr1, (float) halfBrushSize, color);
+		addVertex(line->xl1, line->yl1, tl1, (float) halfBrushSize, color);
+		addVertex(line->xl0, line->yl0, tl0, (float) halfBrushSize, color);
+		addVertex(line->xr0, line->yr0, tr0, (float) halfBrushSize, color);
+		addVertex(line->xl1, line->yl1, tl1, (float) halfBrushSize, color);
 
 		if (!line->has_prev) {
-			addVertex(line->xl0, line->yl0, tl0, (float) halfBrushSize);
-			addVertex(line->xlt0, line->ylt0, tl0, 0.0f);
-			addVertex(line->xr0, line->yr0, tr0, (float) halfBrushSize);
-			addVertex(line->xr0, line->yr0, tr0, (float) halfBrushSize);
-			addVertex(line->xlt0, line->ylt0, tl0, 0.0f);
-			addVertex(line->xrt0, line->yrt0, tr0, 0.0f);
+			addVertex(line->xl0, line->yl0, tl0, (float) halfBrushSize, color);
+			addVertex(line->xlt0, line->ylt0, tl0, 0.0f, color);
+			addVertex(line->xr0, line->yr0, tr0, (float) halfBrushSize, color);
+			addVertex(line->xr0, line->yr0, tr0, (float) halfBrushSize, color);
+			addVertex(line->xlt0, line->ylt0, tl0, 0.0f, color);
+			addVertex(line->xrt0, line->yrt0, tr0, 0.0, color);
 		}
 
 		if (!line->has_next) {
-			addVertex(line->xlt1, line->ylt1, tl1, 0.0f);
-			addVertex(line->xl1, line->yl1, tl1, (float) halfBrushSize);
-			addVertex(line->xr1, line->yr1, tr1, (float) halfBrushSize);
-			addVertex(line->xlt1, line->ylt1, tl1, 0.0f);
-			addVertex(line->xr1, line->yr1, tr1, (float) halfBrushSize);
-			addVertex(line->xrt1, line->yrt1, tr1, 0.0f);
+			addVertex(line->xlt1, line->ylt1, tl1, 0.0f, color);
+			addVertex(line->xl1, line->yl1, tl1, (float) halfBrushSize, color);
+			addVertex(line->xr1, line->yr1, tr1, (float) halfBrushSize, color);
+			addVertex(line->xlt1, line->ylt1, tl1, 0.0f, color);
+			addVertex(line->xr1, line->yr1, tr1, (float) halfBrushSize, color);
+			addVertex(line->xrt1, line->yrt1, tr1, 0.0f, color);
 		}
 	}
 
@@ -617,7 +617,7 @@ void OtOscilloscope::endDraw() {
 //	OtOscilloscope::drawFan
 //
 
-void OtOscilloscope::drawFan(float _cx, float _cy, float _pa, float _a, float _t, float _s, float _e) {
+void OtOscilloscope::drawFan(float _cx, float _cy, float _pa, float _a, float _t, float _s, float _e, uint32_t color) {
 	int nsteps;
 	float* angles;
 
@@ -643,8 +643,8 @@ void OtOscilloscope::drawFan(float _cx, float _cy, float _pa, float _a, float _t
 	}
 
 	for (auto i = 1; i <= nsteps; i++) {
-		addVertex(_cx + _t * std::sin(angles[i - 1]), _cy - _t * std::cos(angles[i - 1]), _e, (float) halfBrushSize);
-		addVertex(_cx, _cy, _s, (float) halfBrushSize);
-		addVertex(_cx + _t * std::sin(angles[i]), _cy - _t * std::cos(angles[i]), _e, (float) halfBrushSize);
+		addVertex(_cx + _t * std::sin(angles[i - 1]), _cy - _t * std::cos(angles[i - 1]), _e, (float) halfBrushSize, color);
+		addVertex(_cx, _cy, _s, (float) halfBrushSize, color);
+		addVertex(_cx + _t * std::sin(angles[i]), _cy - _t * std::cos(angles[i]), _e, (float) halfBrushSize, color);
 	}
 }

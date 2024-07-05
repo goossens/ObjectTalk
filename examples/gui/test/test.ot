@@ -18,7 +18,7 @@ class MyApp : gui.App {
 		rows.add(this.propertiesPanel());
 		columns.add(rows);
 
-		columns.add(this.logoPanel());
+		columns.add(this.tabPanel());
 		columns.add(this.dialPanel());
 	}
 
@@ -56,6 +56,19 @@ class MyApp : gui.App {
 		return properties;
 	}
 
+	function tabPanel(this) {
+		this.tabs = gui.TabBar();
+		this.addTab("Logo", this.logoPanel());
+		this.addTab("File", gui.Label("File"));
+		this.addTab("Edit", gui.Label("Edit"));
+		return this.tabs;
+	}
+
+	function addTab(this, label, widget) {
+		var tab = gui.Tab(label);
+		tab.add(widget);
+		this.tabs.add(tab);
+	}
 	function logoPanel(this) {
 		return gui.Picture()
 			.setPicture(__DIR__ + "/assets/logo.png")

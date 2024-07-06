@@ -336,7 +336,6 @@ private:
 	void SetCursorPosition(const Coordinates& aPosition, int aCursor = -1, bool aClearSelection = true);
 
 	int InsertTextAt(Coordinates& aWhere, const char* aValue);
-	void InsertTextAtCursor(const std::string& aValue, int aCursor = -1);
 	void InsertTextAtCursor(const char* aValue, int aCursor = -1);
 
 	enum class MoveDirection { Right = 0, Left = 1, Up = 2, Down = 3 };

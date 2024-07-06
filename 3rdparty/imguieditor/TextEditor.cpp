@@ -199,6 +199,9 @@ void TextEditor::Paste()
 	if (mReadOnly)
 		return;
 
+	if (ImGui::GetClipboardText() == nullptr)
+		return; // something other than text in the clipboard
+
 	// check if we should do multicursor paste
 	std::string clipText = ImGui::GetClipboardText();
 	bool canPasteToMultipleCursors = false;
@@ -238,12 +241,12 @@ void TextEditor::Paste()
 			if (canPasteToMultipleCursors)
 			{
 				std::string clipSubText = clipText.substr(clipTextLines[c].first, clipTextLines[c].second - clipTextLines[c].first);
-				InsertTextAtCursor(clipSubText, c);
+				InsertTextAtCursor(clipSubText.c_str(), c);
 				u.mOperations.push_back({ clipSubText, start, GetActualCursorCoordinates(c), UndoOperationType::Add });
 			}
 			else
 			{
-				InsertTextAtCursor(clipText, c);
+				InsertTextAtCursor(clipText.c_str(), c);
 				u.mOperations.push_back({ clipText, start, GetActualCursorCoordinates(c), UndoOperationType::Add });
 			}
 		}
@@ -671,11 +674,6 @@ int TextEditor::InsertTextAt(Coordinates& /* inout */ aWhere, const char* aValue
 	}
 
 	return totalLines;
-}
-
-void TextEditor::InsertTextAtCursor(const std::string& aValue, int aCursor)
-{
-	InsertTextAtCursor(aValue.c_str(), aCursor);
 }
 
 void TextEditor::InsertTextAtCursor(const char* aValue, int aCursor)
@@ -1913,7 +1911,13 @@ void TextEditor::RemoveLines(int aStart, int aEnd)
 		{
 			int targetLine = mState.mCursors[c].mInteractiveEnd.mLine - (aEnd - aStart);
 			targetLine = targetLine < 0 ? 0 : targetLine;
-			SetCursorPosition({ targetLine , mState.mCursors[c].mInteractiveEnd.mColumn }, c);
+			mState.mCursors[c].mInteractiveEnd.mLine = targetLine;
+		}
+		if (mState.mCursors[c].mInteractiveStart.mLine >= aStart)
+		{
+			int targetLine = mState.mCursors[c].mInteractiveStart.mLine - (aEnd - aStart);
+			targetLine = targetLine < 0 ? 0 : targetLine;
+			mState.mCursors[c].mInteractiveStart.mLine = targetLine;
 		}
 	}
 
@@ -1956,6 +1960,10 @@ void TextEditor::DeleteRange(const Coordinates& aStart, const Coordinates& aEnd)
 			AddGlyphsToLine(aStart.mLine, int(firstLine.size()), lastLine.begin(), lastLine.end());
 			for (int c = 0; c <= mState.mCurrentCursor; c++) // move up cursors in line that is being moved up
 			{
+				// if cursor is selecting the same range we are deleting, it's because this is being called from
+				// DeleteSelection which already sets the cursor position after the range is deleted
+				if (mState.mCursors[c].GetSelectionStart() == aStart && mState.mCursors[c].GetSelectionEnd() == aEnd)
+					continue;
 				if (mState.mCursors[c].mInteractiveEnd.mLine > aEnd.mLine)
 					break;
 				else if (mState.mCursors[c].mInteractiveEnd.mLine != aEnd.mLine)
@@ -1982,9 +1990,10 @@ void TextEditor::DeleteSelection(int aCursor)
 	if (mState.mCursors[aCursor].GetSelectionEnd() == mState.mCursors[aCursor].GetSelectionStart())
 		return;
 
-	DeleteRange(mState.mCursors[aCursor].GetSelectionStart(), mState.mCursors[aCursor].GetSelectionEnd());
-	SetCursorPosition(mState.mCursors[aCursor].GetSelectionStart(), aCursor);
-	Colorize(mState.mCursors[aCursor].GetSelectionStart().mLine, 1);
+	Coordinates newCursorPos = mState.mCursors[aCursor].GetSelectionStart();
+	DeleteRange(newCursorPos, mState.mCursors[aCursor].GetSelectionEnd());
+	SetCursorPosition(newCursorPos, aCursor);
+	Colorize(newCursorPos.mLine, 1);
 }
 
 void TextEditor::RemoveGlyphsFromLine(int aLine, int aStartChar, int aEndChar)

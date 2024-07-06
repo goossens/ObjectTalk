@@ -1,0 +1,171 @@
+#!/usr/local/bin/ot
+
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var gui = import("gui");
+
+class Target : Object {
+	function __init__(this, x1, y1, x2, y2, vd) {
+		this.x1 = x1;
+		this.y1 = y1;
+		this.x2 = x2;
+		this.y2 = y2;
+		this.loopTime = 150.0 + 50.0.random();
+
+		vd.setAlpha(0.6);
+		this.circle1 = vd.addCircle(-200, -200, 0.5, 32);
+
+		vd.setAlpha(0.2);
+		this.circle2 = vd.addCircle(-200, -200, 0.5, 32);
+
+		vd.setAlpha(0.15);
+		this.circle3 = vd.addCircle(-200, -200, 0.5, 32);
+
+		vd.setAlpha(0.1);
+		this.circle4 = vd.addCircle(-200, -200, 0.5, 32);
+	}
+
+	function update(this, time, vd, beam, beamLength) {
+		var ratio = (time / this.loopTime) % 1.0;
+		var x = ratio.lerp(this.x1, this.x2);
+		var y = ratio.lerp(this.y1, this.y2);
+		var distance = (x * x + y * y).sqrt();
+		var angle = y.atan2(x);
+		var diff = (angle - beam + pi) % (pi * 2.0) - pi;
+		diff = (diff < -pi ? diff + pi * 2.0 : diff).abs();
+
+		if (diff < 0.1) {
+			if (distance > beamLength) {
+				vd.disableShape(this.circle1);
+				vd.disableShape(this.circle2);
+				vd.disableShape(this.circle3);
+				vd.disableShape(this.circle4);
+
+			} else {
+				vd.enableShape(this.circle1);
+				vd.updateCircle(this.circle1, x, y, 0.5, 32);
+
+				ratio -= 0.02;
+				x = ratio.lerp(this.x1, this.x2);
+				y = ratio.lerp(this.y1, this.y2);
+				vd.enableShape(this.circle2);
+				vd.updateCircle(this.circle2, x, y, 0.5, 32);
+
+				ratio -= 0.02;
+				x = ratio.lerp(this.x1, this.x2);
+				y = ratio.lerp(this.y1, this.y2);
+				vd.enableShape(this.circle3);
+				vd.updateCircle(this.circle3, x, y, 0.5, 32);
+
+				ratio -= 0.02;
+				x = ratio.lerp(this.x1, this.x2);
+				y = ratio.lerp(this.y1, this.y2);
+				vd.enableShape(this.circle4);
+				vd.updateCircle(this.circle4, x, y, 0.5, 32);
+			}
+		}
+	}
+}
+
+class Radar : gui.VectorDisplay {
+	var radius = 100.0;
+	var size = radius * 2.1;
+	var brightness = 1.4;
+	var markerLength = 6.0;
+	var beamLength = radius - 1.5 * markerLength;
+	var beamWidth = 4;
+	var decaySteps = 3;
+	var decayStep = 0.12;
+	var decayWidth = 30.0;
+	var decayAlphaStart = 0.3;
+	var decayAlphaEnd = 0.1;
+
+	function __init__(this) {
+		this.setSize(size, size);
+		this.setAutoScale();
+		this.setCenterOrigin();
+		this.setBrightness(brightness);
+		this.setHorizontalAlignment(gui.alignCenter);
+
+		this.createBackPlate();
+		this.createSweep();
+		this.createTargets();
+	}
+
+	function createBackPlate(this) {
+		this.setColor("#3b8");
+		this.addCircle(0, 0, radius, 120);
+
+		for step in range(60) {
+			var angle = (pi / 30.0) * step;
+			var r1 = radius - 1;
+			var r2 = radius - markerLength;
+			this.addLine(angle.cos() * r1, angle.sin() * r1, angle.cos() * r2, angle.sin() * r2);
+		}
+
+		this.setColor("#032");
+		this.addCircle(0, 0, 0.3 * radius, 120);
+		this.addCircle(0, 0, 0.6 * radius, 120);
+	}
+
+	function createSweep(this) {
+		// create radar beam
+		this.setColor("#164");
+		this.setWidth(beamWidth);
+		this.beam = this.addLine(0, 0, 0, 0);
+
+		// create radar decay (afterglow)
+		var increment = (decayAlphaStart - decayAlphaEnd) / decaySteps;
+		this.setWidth(decayWidth);
+		this.setColor("#041");
+		this.afterglow = [];
+
+		for i in range(decaySteps) {
+			this.setAlpha(decayAlphaStart - (increment * i));
+			this.afterglow.append(this.addLine(0, 0, 0, 0));
+		}
+	}
+
+	function createTargets(this) {
+		this.setWidth(6);
+		this.setColor("#3b8");
+
+		this.targets = [];
+		this.targets.append(Target(-10, -100, 10, 100, this));
+		this.targets.append(Target(100, 10, -100, -50, this));
+		this.targets.append(Target(-100, -100, -20, 100, this));
+		this.targets.append(Target(100, -70, 10, 100, this));
+		this.targets.append(Target(-100, -30, 100, 100, this));
+		this.targets.append(Target(-100, 30, 40, 100, this));
+		this.targets.append(Target(-100, 30, -40, 100, this));
+		this.targets.append(Target(100, 70, -100, 30, this));
+	}
+
+	function update(this) {
+		// determine angle of radar sweep based on clock
+		var time = os.clock();
+		var angle = (-2.0 * time) % (pi * 2.0);
+
+		// update targets
+		for target in this.targets {
+			target.update(time, this, angle, beamLength);
+		}
+
+		// update radar beam
+		var r1 = beamLength;
+		this.updateLine(this.beam, 0, 0, angle.cos() * r1, angle.sin() * r1);
+
+		for i in range(0, decaySteps - 1) {
+			angle += decayStep;
+			var r2 = 12 * (i + 1);
+			var cos = angle.cos();
+			var sin = angle.sin();
+
+			this.updateLine(this.afterglow[i], cos * r2, sin * r2, cos * r1, sin * r1);
+		}
+	}
+}

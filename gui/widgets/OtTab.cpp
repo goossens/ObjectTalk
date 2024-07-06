@@ -43,10 +43,7 @@ void OtTabClass::init(size_t count, OtObject *parameters) {
 
 void OtTabClass::render() {
 	if (ImGui::BeginTabItem(label.c_str())) {
-		for (auto& child : children) {
-			child->render();
-		}
-
+		renderChildren();
 		ImGui::EndTabItem();
 	}
 }

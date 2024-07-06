@@ -38,9 +38,9 @@ public:
 	// access members
 	operator glm::vec3() { return vec3; }
 
-	OtObject setX(float value) { vec3.x = value; return OtObject(this); }
-	OtObject setY(float value) { vec3.y = value; return OtObject(this); }
-	OtObject setZ(float value) { vec3.z = value; return OtObject(this); }
+	OtObject setX(float value) { vec3.x = value; return OtVec3(this); }
+	OtObject setY(float value) { vec3.y = value; return OtVec3(this); }
+	OtObject setZ(float value) { vec3.z = value; return OtVec3(this); }
 
 	float getX() { return vec3.x; }
 	float getY() { return vec3.y; }

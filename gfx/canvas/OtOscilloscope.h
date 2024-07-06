@@ -60,7 +60,7 @@ public:
 	void drawText(float x, float y, float size, const std::string& text, float lineWidth, uint32_t color);
 
 	// render the vector display
-	void render();
+	int render();
 
 private:
 	// properties
@@ -105,8 +105,7 @@ private:
 	OtBlit blit;
 
 	// GPU resources
-	OtFrameBuffer original{OtTexture::rgba8Texture};
-	OtFrameBuffer result{OtTexture::rgba8Texture};
+	OtFrameBuffer texture{OtTexture::rgba8Texture};
 	OtFrameBuffer blur1{OtTexture::rgba8Texture};
 	OtFrameBuffer blur2{OtTexture::rgba8Texture};
 	OtUniformVec4 uniform = OtUniformVec4("u_params", 1);

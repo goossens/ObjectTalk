@@ -22,7 +22,7 @@
 
 OtObject OtAnimationClass::from(double value) {
 	animator = tweeny::from(value);
-	return OtObject(this);
+	return OtAnimation(this);
 }
 
 
@@ -32,7 +32,7 @@ OtObject OtAnimationClass::from(double value) {
 
 OtObject OtAnimationClass::to(double value) {
 	animator.to(value);
-	return OtObject(this);
+	return OtAnimation(this);
 }
 
 
@@ -42,7 +42,7 @@ OtObject OtAnimationClass::to(double value) {
 
 OtObject OtAnimationClass::via(const std::string& easing) {
 	animator.via(easing);
-	return OtObject(this);
+	return OtAnimation(this);
 }
 
 
@@ -52,7 +52,7 @@ OtObject OtAnimationClass::via(const std::string& easing) {
 
 OtObject OtAnimationClass::during(double seconds) {
 	animator.during((int32_t) (seconds * 1000.0));
-	return OtObject(this);
+	return OtAnimation(this);
 }
 
 
@@ -73,7 +73,7 @@ OtObject OtAnimationClass::repeat(size_t times) {
 		return false;
 	});
 
-	return OtObject(this);
+	return OtAnimation(this);
 }
 
 
@@ -92,7 +92,7 @@ OtObject OtAnimationClass::continuous() {
 		return false;
 	});
 
-	return OtObject(this);
+	return OtAnimation(this);
 }
 
 
@@ -102,7 +102,7 @@ OtObject OtAnimationClass::continuous() {
 
 OtObject OtAnimationClass::seek(double percentage) {
 	animator.seek((float) percentage);
-	return OtObject(this);
+	return OtAnimation(this);
 }
 
 
@@ -116,7 +116,7 @@ OtObject OtAnimationClass::onStep(OtObject callback) {
 		return false;
 	});
 
-	return OtObject(this);
+	return OtAnimation(this);
 }
 
 

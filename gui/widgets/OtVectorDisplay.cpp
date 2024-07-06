@@ -67,7 +67,7 @@ OtObject OtVectorDisplayClass::setSize(int w, int h) {
 
 OtObject OtVectorDisplayClass::setScale(float s) {
 	scale = s;
-	return OtObject();
+	return OtWidget(this);
 }
 
 
@@ -77,7 +77,7 @@ OtObject OtVectorDisplayClass::setScale(float s) {
 
 OtObject OtVectorDisplayClass::setAutoScale() {
 	autoScale = true;
-	return OtObject();
+	return OtWidget(this);
 }
 
 
@@ -614,6 +614,11 @@ void OtVectorDisplayClass::render() {
 			}
 		}
 	}
+
+	// render scope frame, align it and put it on the screen
+	auto index = scope.render();
+	OtUiAlign(size, horizontalAlign, verticalAlign);
+	ImGui::Image((void*)(intptr_t) index, size);
 }
 
 

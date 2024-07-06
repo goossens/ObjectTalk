@@ -38,10 +38,10 @@ public:
 	// access members
 	operator glm::vec4() { return vec4; }
 
-	OtObject setX(float value) { vec4.x = value; return OtObject(this); }
-	OtObject setY(float value) { vec4.y = value; return OtObject(this); }
-	OtObject setZ(float value) { vec4.z = value; return OtObject(this); }
-	OtObject setW(float value) { vec4.w = value; return OtObject(this); }
+	OtObject setX(float value) { vec4.x = value; return OtVec4(this); }
+	OtObject setY(float value) { vec4.y = value; return OtVec4(this); }
+	OtObject setZ(float value) { vec4.z = value; return OtVec4(this); }
+	OtObject setW(float value) { vec4.w = value; return OtVec4(this); }
 
 	float getX() { return vec4.x; }
 	float getY() { return vec4.y; }

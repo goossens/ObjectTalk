@@ -1,0 +1,70 @@
+#!/usr/local/bin/ot
+
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var gui = import("gui");
+
+class Clock : gui.VectorDisplay {
+	var radius = 100;
+	var rh = 60;
+	var rm = 80;
+	var rs = 85;
+
+	function __init__(this) {
+		this.setSize(210, 210);
+		this.setAutoScale();
+		this.setCenterOrigin();
+		this.setBrightness(1.7);
+		this.setHorizontalAlignment(gui.alignCenter);
+
+		this.createBackPlate();
+		this.addHands();
+	}
+
+	function createBackPlate(this) {
+		this.setColor("#3bf");
+		this.addCircle(0, 0, radius, 128);
+
+		for step in range(60) {
+			var angle = (pi / 30.0) * step;
+
+			var radius1 = radius - 2;
+			var radius2 = (step % 5) == 0 ? radius - 12 : radius - 5;
+
+			this.addLine(
+				angle.cos() * radius1, angle.sin() * radius1,
+				angle.cos() * radius2, angle.sin() * radius2);
+		}
+	}
+
+	function addHands(this) {
+		this.setWidth(2.0);
+		this.setColor("#3bb");
+		this.hours = this.addLine(0, 0, 0, 0);
+		this.minutes = this.addLine(0, 0, 0, 0);
+
+		this.setWidth(1.0);
+		this.addCircle(0, 0, 3, 16);
+
+		this.setColor("#b33");
+		this.seconds = this.addLine(0, 0, 0, 0);
+	}
+
+	function update(this) {
+		var seconds = os.getSeconds();
+		var minutes = os.getMinutes().real() + seconds.real() / 60.0;
+		var hours = os.getHours().real() + minutes.real() / 60.0;
+
+		var hourAngle = (-pi / 6.0) * hours + pi / 2.0;
+		var minuteAngle = (-pi / 30.0) * minutes + pi / 2.0;
+		var secondAngle = (-pi / 30.0) * seconds + pi / 2.0;
+
+		this.updateLine(this.hours, 0, 0, hourAngle.cos() * rh, hourAngle.sin() * rh);
+		this.updateLine(this.minutes, 0, 0, minuteAngle.cos() * rm, minuteAngle.sin() * rm);
+		this.updateLine(this.seconds, 0, 0, secondAngle.cos() * rs, secondAngle.sin() * rs);
+	}
+}

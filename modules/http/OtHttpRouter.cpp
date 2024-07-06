@@ -153,7 +153,7 @@ private:
 OtObject OtHttpRouterClass::addHandler(const std::string& method, const std::string& path, OtObject callback) {
 	OtCallbackValidate(callback, 3);
 	handlers.push_back(std::make_shared<OtHttpMethodHandler>(method, path, callback));
-	return OtObject(this);
+	return OtHttpRouter(this);
 }
 
 
@@ -178,7 +178,7 @@ void OtHttpRouterClass::runHandler(const size_t index, OtHttpRequest req, OtHttp
 OtObject OtHttpRouterClass::useHandler(OtObject callback) {
 	OtCallbackValidate(callback, 3);
 	handlers.push_back(std::make_shared<OtHttpMethodHandler>("", "*", callback));
-	return OtObject(this);
+	return OtHttpRouter(this);
 }
 
 
@@ -233,7 +233,7 @@ OtObject OtHttpRouterClass::deleleteHandler(const std::string& path, OtObject ca
 
 OtObject OtHttpRouterClass::staticFiles(const std::string& serverPath, const std::string& filePath) {
 	handlers.push_back(std::make_shared<OtStaticHandler>(serverPath, filePath));
-	return OtObject(this);
+	return OtHttpRouter(this);
 }
 
 
@@ -243,7 +243,7 @@ OtObject OtHttpRouterClass::staticFiles(const std::string& serverPath, const std
 
 OtObject OtHttpRouterClass::call(OtObject req, OtObject res, OtObject next) {
 	runHandler(0, OtHttpRequest(req), OtHttpResponse(res), next);
-	return OtObject(this);
+	return OtHttpRouter(this);
 }
 
 

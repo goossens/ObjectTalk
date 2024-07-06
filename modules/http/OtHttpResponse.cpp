@@ -119,7 +119,7 @@ OtObject OtHttpResponseClass::setStatus(int s) {
 		default: explanation = ""; break;
 	}
 
-	return OtObject(this);
+	return OtHttpResponse(this);
 }
 
 
@@ -133,7 +133,7 @@ OtObject OtHttpResponseClass::setHeader(const std::string& name, const std::stri
 	}
 
 	headers.emplace(name, value);
-	return OtObject(this);
+	return OtHttpResponse(this);
 }
 
 
@@ -199,7 +199,7 @@ OtObject OtHttpResponseClass::write(const char* data, size_t size) {
 		free(req);
 	});
 
-	return OtObject(this);
+	return OtHttpResponse(this);
 }
 
 
@@ -224,7 +224,7 @@ OtObject OtHttpResponseClass::end() {
 	}
 
 	responseState = COMPLETE;
-	return OtObject(this);
+	return OtHttpResponse(this);
 }
 
 
@@ -243,7 +243,7 @@ OtObject OtHttpResponseClass::send(const std::string& text) {
 	write(text);
 	end();
 
-	return OtObject(this);
+	return OtHttpResponse(this);
 };
 
 
@@ -259,7 +259,7 @@ OtObject OtHttpResponseClass::json(OtObject object) {
 	write(text);
 	end();
 
-	return OtObject(this);
+	return OtHttpResponse(this);
 }
 
 
@@ -301,7 +301,7 @@ OtObject OtHttpResponseClass::sendfile(const std::string& name) {
 		UV_CHECK_ERROR("uv_fs_read", status);
 	}
 
-	return OtObject(this);
+	return OtHttpResponse(this);
 }
 
 

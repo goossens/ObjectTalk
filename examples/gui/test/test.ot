@@ -8,6 +8,9 @@
 
 var gui = import("gui");
 
+var clock = import("clock");
+var radar = import("radar");
+
 class MyApp : gui.App {
 	function setup(this) {
 		var columns = gui.Columns([25, 50, 25]);
@@ -59,8 +62,8 @@ class MyApp : gui.App {
 	function tabPanel(this) {
 		this.tabs = gui.TabBar();
 		this.addTab("Logo", this.logoPanel());
-		this.addTab("File", gui.Label("File"));
-		this.addTab("Edit", gui.Label("Edit"));
+		this.addTab("Clock", clock.Clock());
+		this.addTab("Radar", radar.Radar());
 		return this.tabs;
 	}
 

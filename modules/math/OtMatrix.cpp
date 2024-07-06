@@ -23,7 +23,7 @@
 
 OtObject OtMatrixClass::rotateX(float angle) {
 	rotating = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(1.0f, 0.0f, 0.0f));
-	return OtObject(this);
+	return OtMatrix(this);
 }
 
 
@@ -33,7 +33,7 @@ OtObject OtMatrixClass::rotateX(float angle) {
 
 OtObject OtMatrixClass::rotateY(float angle) {
 	rotating = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 1.0f, 0.0f));
-	return OtObject(this);
+	return OtMatrix(this);
 }
 
 
@@ -43,7 +43,7 @@ OtObject OtMatrixClass::rotateY(float angle) {
 
 OtObject OtMatrixClass::rotateZ(float angle) {
 	rotating = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 0.0f, 1.0f));
-	return OtObject(this);
+	return OtMatrix(this);
 }
 
 
@@ -53,7 +53,7 @@ OtObject OtMatrixClass::rotateZ(float angle) {
 
 OtObject OtMatrixClass::rotateAroundVector(float angle, float x, float y, float z) {
 	rotating = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(x, y, z));
-	return OtObject(this);
+	return OtMatrix(this);
 }
 
 
@@ -63,7 +63,7 @@ OtObject OtMatrixClass::rotateAroundVector(float angle, float x, float y, float 
 
 OtObject OtMatrixClass::yawPitchRoll(float yaw, float pitch, float roll) {
 	rotating = glm::yawPitchRoll(yaw, pitch, roll);
-	return OtObject(this);
+	return OtMatrix(this);
 }
 
 
@@ -73,7 +73,7 @@ OtObject OtMatrixClass::yawPitchRoll(float yaw, float pitch, float roll) {
 
 OtObject OtMatrixClass::scale(float x, float y, float z) {
 	scaling = glm::scale(glm::mat4(1.0f), glm::vec3(x, y, z));
-	return OtObject(this);
+	return OtMatrix(this);
 }
 
 
@@ -83,7 +83,7 @@ OtObject OtMatrixClass::scale(float x, float y, float z) {
 
 OtObject OtMatrixClass::translate(float x, float y, float z) {
 	translating = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, z));
-	return OtObject(this);
+	return OtMatrix(this);
 }
 
 

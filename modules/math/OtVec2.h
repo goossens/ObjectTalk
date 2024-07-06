@@ -38,8 +38,8 @@ public:
 	// access members
 	operator glm::vec2() { return vec2; }
 
-	OtObject setX(float value) { vec2.x = value; return OtObject(this); }
-	OtObject setY(float value) { vec2.y = value; return OtObject(this); }
+	OtObject setX(float value) { vec2.x = value; return OtVec2(this); }
+	OtObject setY(float value) { vec2.y = value; return OtVec2(this); }
 
 	float getX() { return vec2.x; }
 	float getY() { return vec2.y; }

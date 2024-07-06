@@ -47,12 +47,13 @@ void OtAppClass::onRender() {
 			ImGuiWindowFlags_NoResize |
 			ImGuiWindowFlags_NoBringToFrontOnFocus);
 
-	// render all children
-	for (auto& child : children) {
-		if (child->isEnabled()) {
-			OtWidget(child)->render();
-		}
+	// call subclass member function (if we have one)
+	if (hasByName("update")) {
+		OtVM::instance()->callMemberFunction(OtApp(this), "update");
 	}
+
+	// render all children
+	renderChildren();
 
 	ImGui::End();
 	ImGui::PopStyleVar();

@@ -21,7 +21,7 @@
 
 OtObject OtCoutClass::operator<<(OtObject object) {
 	std::cout << object->operator std::string();
-	return OtObject(this);
+	return OtCout(this);
 }
 
 

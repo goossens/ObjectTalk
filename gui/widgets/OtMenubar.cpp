@@ -33,7 +33,7 @@ void OtMenuBarClass::validateChild(OtWidget child) {
 
 void OtMenuBarClass::render() {
 	if (ImGui::BeginMainMenuBar()) {
-		OtWidgetClass::render();
+		renderChildren();
 		ImGui::EndMainMenuBar();
 	}
 }

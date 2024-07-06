@@ -13,6 +13,7 @@
 
 #include "OtFunction.h"
 #include "OtLog.h"
+#include "OtVM.h"
 
 #include "OtWidget.h"
 
@@ -52,7 +53,7 @@ OtObject OtWidgetClass::add(OtObject object) {
 
 	// add new child
 	children.push_back(child);
-	return OtObject(this);
+	return OtWidget(this);
 }
 
 
@@ -75,7 +76,7 @@ OtObject OtWidgetClass::remove(OtObject object) {
 		}
 	}
 
-	return OtObject(this);
+	return OtWidget(this);
 }
 
 
@@ -96,14 +97,21 @@ void OtWidgetClass::clear() {
 
 
 //
-//	OtWidgetClass::render
+//	OtWidgetClass::renderChildren
 //
 
-void OtWidgetClass::render() {
-	// render all children
+void OtWidgetClass::renderChildren() {
+	// traverse all children
 	for (auto& child : children) {
+		// ensure child is enabled
 		if (child->isEnabled()) {
-			OtWidget(child)->render();
+			// call subclass member function (if we have one)
+			if (child->hasByName("update")) {
+				OtVM::instance()->callMemberFunction(child, "update");
+			}
+
+			// render child
+			child->render();
 		}
 	}
 }

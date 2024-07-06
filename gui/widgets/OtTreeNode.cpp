@@ -55,7 +55,7 @@ void OtTreeNodeClass::render() {
 	}
 
 	if (ImGui::TreeNodeEx("treenode", flags, "%s", label.c_str())) {
-		OtWidgetClass::render();
+		renderChildren();
 		ImGui::TreePop();
 		openFlag = true;
 

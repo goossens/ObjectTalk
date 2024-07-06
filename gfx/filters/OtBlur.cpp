@@ -21,8 +21,8 @@ void OtBlur::execute(OtPass& pass) {
 		0,
 		intensity == -1.0f ? 2.0f : intensity,
 		alpha == -1.0f ? 1.0f : alpha,
-		0.0f,
-		0.0f);
+		horizontalScale,
+		verticalScale);
 
 	uniform.submit();
 	pass.runShaderProgram(program);

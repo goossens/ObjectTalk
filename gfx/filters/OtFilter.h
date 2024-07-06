@@ -36,10 +36,7 @@ public:
 
 	// render filter
 	void render(OtTexture& origin, OtFrameBuffer& destination);
-	void render(OtTexture& origin);
-
 	void render(OtFrameBuffer& origin, OtFrameBuffer& destination);
-	void render(OtFrameBuffer& origin);
 
 private:
 	// execute filter

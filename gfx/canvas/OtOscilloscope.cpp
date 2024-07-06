@@ -253,15 +253,15 @@ void OtOscilloscope::drawText(float x, float y, float size, const std::string& t
 //	OtOscilloscope::render
 //
 
-void OtOscilloscope::render() {
+int OtOscilloscope::render() {
 	// update vertex buffers (if required)
 	if (vertexBuffers.size() != decaySteps) {
 		vertexBuffers.resize(decaySteps);
+		vertexBufferSizes.resize(decaySteps);
 	}
 
 	// update framebuffers
-	original.update(width, height);
-	result.update(width, height);
+	texture.update(width, height);
 	blur1.update(width / 3.0f, height / 3.0f);
 	blur2.update(width / 3.0f, height / 3.0f);
 
@@ -286,7 +286,7 @@ void OtOscilloscope::render() {
 	OtPass pass;
 	pass.setClear(true);
 	pass.setRectangle(0, 0, width, height);
-	pass.setFrameBuffer(original);
+	pass.setFrameBuffer(texture);
 
 	glm::mat4 matrix;
 
@@ -326,7 +326,7 @@ void OtOscilloscope::render() {
 			float alpha;
 
 			if (stepi == 0) {
-				alpha = 1.0;
+				alpha = 1.0f;
 
 			} else if (stepi == 1) {
 				alpha = decayStart;
@@ -358,11 +358,11 @@ void OtOscilloscope::render() {
 
 	for (auto p = 0; p < 4; p++) {
 		// run horizontal blur
-		blur.setHorizontalScale(1.0f / width * 3.0f);
+		blur.setHorizontalScale(1.0f / width);
 		blur.setVerticalScale(0.0f);
 
 		if (p == 0) {
-			blur.render(original, blur1);
+			blur.render(texture, blur1);
 
 		} else {
 			blur.render(blur2, blur1);
@@ -370,23 +370,21 @@ void OtOscilloscope::render() {
 
 		// run vertical blur
 		blur.setHorizontalScale(0.0f);
-		blur.setVerticalScale(1.0f / height * 3.0f);
+		blur.setVerticalScale(1.0f / height);
 		blur.render(blur1, blur2);
 	}
 
 	// combine original rendering with glow
-	blit.setIntensity(1.0f);
-	blit.setAlpha(1.0f);
-
 	blit.setState(
 		OtStateWriteRgb |
 		OtStateWriteA |
 		OtStateBlendAdd);
 
-	// composite original and glow
-	blit.render(original, result);
 	blit.setIntensity(1.25f + ((brightness - 1.0f) / 2.0f));
-	blit.render(blur2, result);
+	blit.render(blur2, texture);
+
+	// return ID of resulting texture
+	return texture.getColorTextureIndex();
 }
 
 

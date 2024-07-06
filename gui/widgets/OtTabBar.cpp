@@ -33,10 +33,7 @@ void OtTabBarClass::validateChild(OtWidget child) {
 
 void OtTabBarClass::render() {
 	if (ImGui::BeginTabBar("Tabs", ImGuiTabBarFlags_AutoSelectNewTabs)) {
-		for (auto& child : children) {
-			child->render();
-		}
-
+		renderChildren();
 		ImGui::EndTabBar();
 	}
 }

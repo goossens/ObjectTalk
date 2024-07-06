@@ -57,13 +57,13 @@ public:
 	size_t size() { return children.size(); }
 
 	// update enabled flag
-	OtObject enable() { enabled = true; return OtObject(this); }
-	OtObject disable() { enabled = false; return OtObject(this); }
-	OtObject setEnabled(bool e) { enabled = e; return OtObject(this); }
+	OtObject enable() { enabled = true; return OtWidget(this); }
+	OtObject disable() { enabled = false; return OtWidget(this); }
+	OtObject setEnabled(bool e) { enabled = e; return OtWidget(this); }
 	bool isEnabled() { return enabled; }
 
 	// render content
-	virtual void render();
+	virtual void render() {}
 
 	// get type definition
 	static OtType getMeta();
@@ -77,4 +77,7 @@ protected:
 
 	// enabled flag
 	bool enabled = true;
+
+	// render all the enabled children
+	void renderChildren();
 };

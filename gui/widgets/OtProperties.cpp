@@ -46,11 +46,7 @@ void OtPropertiesClass::render() {
 	ImGui::BeginChild("panel");
 	ImGui::PushItemWidth(ImGui::GetWindowWidth() * split);
 
-	for (auto& child : children) {
-		if (child->isEnabled()) {
-			OtWidget(child)->render();
-		}
-	}
+	renderChildren();
 
 	ImGui::PopItemWidth();
 	ImGui::EndChild();

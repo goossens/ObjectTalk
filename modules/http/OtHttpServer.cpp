@@ -85,7 +85,7 @@ OtObject OtHttpServerClass::listen(const std::string& ip, int port) {
 	});
 
 	UV_CHECK_ERROR("uv_listen", status);
-	return OtObject(this);
+	return OtHttpServer(this);
 }
 
 

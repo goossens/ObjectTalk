@@ -21,7 +21,7 @@
 
 OtObject OtCerrClass::operator<<(OtObject object) {
 	std::cerr << object->operator std::string();
-	return OtObject(this);
+	return OtCerr(this);
 }
 
 

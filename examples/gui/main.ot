@@ -10,6 +10,7 @@ var gui = import("gui");
 
 var clock = import("clock");
 var radar = import("radar");
+var vd = import("vd");
 
 class MyApp : gui.App {
 	function setup(this) {
@@ -64,6 +65,7 @@ class MyApp : gui.App {
 		this.addTab("Logo", this.logoPanel());
 		this.addTab("Clock", clock.Clock());
 		this.addTab("Radar", radar.Radar());
+		this.addTab("Test", vd.Vd());
 		return this.tabs;
 	}
 

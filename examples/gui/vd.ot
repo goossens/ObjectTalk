@@ -1,0 +1,57 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var gui = import("gui");
+
+class Vd : gui.VectorDisplay {
+	function __init__(this) {
+		this.setSize(1000, 1000);
+		this.setAutoScale();
+		this.setHorizontalAlignment(gui.alignCenter);
+
+		this.setColor("#aaf");
+
+		this.addText(50,  80, 50, "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+		this.addText(50, 140, 50, "abcdefghijklmnopqrstuvwxyz");
+		this.addText(50, 200, 50, "!@#$%^&*()-=<>/?;:'\"{}[]|\\+=-_");
+
+		this.setColor("#aff");
+
+		this.setWidth(2);
+		this.addLine(50, 240, 900, 240);
+		this.addLine(50, 260, 900, 260);
+
+		this.setColor("#faa");
+
+		this.setWidth(1);
+		this.addCircle(260, 400, 7, 32);
+		this.setWidth(2);
+		this.addCircle(315, 400, 15, 32);
+		this.setWidth(3);
+		this.addCircle(380, 400, 30, 32);
+		this.setWidth(4);
+		this.addCircle(490, 400, 40, 64);
+
+		this.setColor("#afa");
+
+		this.setWidth(1);
+		this.addRectangle(250, 550, 20, 20);
+		this.setWidth(2);
+		this.addRectangle(300, 550, 30, 30);
+		this.setWidth(3);
+		this.addRectangle(350, 550, 60, 60);
+		this.setWidth(4);
+		this.addRectangle(450, 550, 80, 80);
+
+		this.setColor("#ffa");
+
+		for i in range(0, 3) {
+			this.setWidth(i + 1);
+			this.addLine(50, 340 + 40 * i, 180, 340 + 40 * i);
+			this.addLine(50 + 40 * i, 520, 50 + 40 * i, 650.0);
+		}
+	}
+}

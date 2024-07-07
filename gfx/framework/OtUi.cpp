@@ -127,7 +127,7 @@ void OtUiHeader(const char* label, float width) {
 	window->DrawList->AddLine(
 		ImVec2(bb.Min.x, bb.Max.y - 1.0f),
 		ImVec2(bb.Max.x, bb.Max.y - 1.0f),
-		ImGui::GetColorU32(ImGuiCol_TabActive));
+		ImGui::GetColorU32(ImGuiCol_TabSelected));
 
 	// render label
 	ImGui::RenderTextClipped(

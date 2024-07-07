@@ -163,7 +163,6 @@ static void RegisterEnums(OtModule module) {
 	module->set("modShift", OtInteger::create(ImGuiMod_Shift));
 	module->set("modAlt", OtInteger::create(ImGuiMod_Alt));
 	module->set("modSuper", OtInteger::create(ImGuiMod_Super));
-	module->set("modShortcut", OtInteger::create(ImGuiMod_Shortcut));
 }
 
 

@@ -521,7 +521,7 @@ void OtWorkspace::renderSplashScreen() {
 	ImGui::End();
 
 	// handle shortcuts
-	if (ImGui::IsKeyDown(ImGuiMod_Shortcut)) {
+	if (ImGui::IsKeyDown(ImGuiMod_Ctrl)) {
 		if (ImGui::IsKeyPressed(ImGuiKey_N)) {
 			newFile();
 
@@ -905,7 +905,7 @@ void OtWorkspace::renderSubProcess() {
 			consoleFullScreen = false;
 		}
 
-		if (ImGui::IsKeyDown(ImGuiMod_Shortcut) && ImGui::IsKeyPressed(ImGuiKey_W, false)) {
+		if (ImGui::IsKeyDown(ImGuiMod_Ctrl) && ImGui::IsKeyPressed(ImGuiKey_W, false)) {
 			consoleFullScreen = false;
 		}
 	}

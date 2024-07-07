@@ -122,7 +122,7 @@ void OtEditor::renderFileMenu() {
 	}
 
 	// handle shortcuts
-	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && ImGui::IsKeyDown(ImGuiMod_Shortcut)) {
+	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && ImGui::IsKeyDown(ImGuiMod_Ctrl)) {
 		if (ImGui::IsKeyPressed(ImGuiKey_N)) {
 			OtMessageBus::instance()->send("new");
 

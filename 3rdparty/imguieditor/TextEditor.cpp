@@ -2051,22 +2051,20 @@ void TextEditor::HandleKeyboardInputs(bool aParentIsFocused)
 	{
 		if (ImGui::IsWindowHovered())
 			ImGui::SetMouseCursor(ImGuiMouseCursor_TextInput);
-		//ImGui::CaptureKeyboardFromApp(true);
 
-		ImGuiIO& io = ImGui::GetIO();
-		auto isOSX = io.ConfigMacOSXBehaviors;
-		auto alt = io.KeyAlt;
-		auto ctrl = io.KeyCtrl;
-		auto shift = io.KeyShift;
-		auto super = io.KeySuper;
+		auto shift = ImGui::IsKeyDown(ImGuiMod_Shift);
+		auto ctrl = ImGui::IsKeyDown(ImGuiMod_Ctrl);
+		auto alt = ImGui::IsKeyDown(ImGuiMod_Alt);
+		auto super = ImGui::IsKeyDown(ImGuiMod_Super);
 
-		auto isShortcut = (isOSX ? (super && !ctrl) : (ctrl && !super)) && !alt && !shift;
-		auto isShiftShortcut = (isOSX ? (super && !ctrl) : (ctrl && !super)) && shift && !alt;
-		auto isWordmoveKey = isOSX ? alt : ctrl;
+		auto isShortcut = ctrl && !shift && !alt;
+		auto isShiftShortcut = ctrl && shift && !alt;
+		auto isWordmoveKey = ctrl;
 		auto isAltOnly = alt && !ctrl && !shift && !super;
 		auto isCtrlOnly = ctrl && !alt && !shift && !super;
 		auto isShiftOnly = shift && !alt && !ctrl && !super;
 
+		ImGuiIO& io = ImGui::GetIO();
 		io.WantCaptureKeyboard = true;
 		io.WantTextInput = true;
 
@@ -2082,10 +2080,10 @@ void TextEditor::HandleKeyboardInputs(bool aParentIsFocused)
 			MoveUp(1, shift);
 		else if (!alt && !ctrl && !super && ImGui::IsKeyPressed(ImGuiKey_DownArrow))
 			MoveDown(1, shift);
-		else if ((isOSX ? !ctrl : !alt) && !super && ImGui::IsKeyPressed(ImGuiKey_LeftArrow))
-			MoveLeft(shift, isWordmoveKey);
-		else if ((isOSX ? !ctrl : !alt) && !super && ImGui::IsKeyPressed(ImGuiKey_RightArrow))
-			MoveRight(shift, isWordmoveKey);
+		else if (!alt && !super && ImGui::IsKeyPressed(ImGuiKey_LeftArrow))
+			MoveLeft(shift, ctrl);
+		else if (!alt && !super && ImGui::IsKeyPressed(ImGuiKey_RightArrow))
+			MoveRight(shift, ctrl);
 		else if (!alt && !ctrl && !super && ImGui::IsKeyPressed(ImGuiKey_PageUp))
 			MoveUp(mVisibleLineCount - 2, shift);
 		else if (!alt && !ctrl && !super && ImGui::IsKeyPressed(ImGuiKey_PageDown))

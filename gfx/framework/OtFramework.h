@@ -100,6 +100,9 @@ private:
 	OtSampler imguiFontSampler{"s_imguiFontAtlas"};
 	OtShaderProgram imguiShaderProgram{"OtImGuiVS", "OtImGuiFS"};
 
+	// cursors
+	GLFWcursor* cursors[ImGuiMouseCursor_COUNT];
+
 	// anti-aliasing setting
 	int antiAliasing = 0;
 

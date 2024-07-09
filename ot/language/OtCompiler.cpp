@@ -532,6 +532,7 @@ bool OtCompiler::postfix(OtByteCode bytecode) {
 	while (token == OtScanner::LBRACKET_TOKEN ||
 		   token == OtScanner::LPAREN_TOKEN ||
 		   token == OtScanner::PERIOD_TOKEN ||
+		   token == OtScanner::DOUBLE_COLON_TOKEN ||
 		   token == OtScanner::INCREMENT_TOKEN ||
 		   token == OtScanner::DECREMENT_TOKEN) {
 		scanner.advance();
@@ -577,7 +578,18 @@ bool OtCompiler::postfix(OtByteCode bytecode) {
 				bytecode->member(scanner.getText());
 				scanner.advance();
 				reference = true;
+				break;
 
+			case OtScanner::DOUBLE_COLON_TOKEN:
+				// unbound member access
+				if (reference) {
+					bytecode->method("__deref__", 0);
+				}
+
+				scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
+				bytecode->unbound(scanner.getText());
+				scanner.advance();
+				reference = false;
 				break;
 
 			case OtScanner::INCREMENT_TOKEN:

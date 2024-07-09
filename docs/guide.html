@@ -1905,7 +1905,7 @@ print(&quot;The default temperature is &quot;, f.temperature, &quot;° Fahrenhei
 
 class Fahrenheit : Temperature {
 	function __init__(this) {
-		Temperature.__init__(this);
+		Temperature::__init__(this);
 		this.temperature = 32;
 	}
 }
@@ -1965,7 +1965,7 @@ class B : A {
 </code></pre>
             <p>
               It’s valid for a subclass member to call a superclass member using
-              the global <strong>super</strong> function:
+              the Scope Resolution Operator (<strong>::</strong>):
             </p>
             <pre><code>class A : Object {
 	function someMethod(this, value) {
@@ -1975,7 +1975,7 @@ class B : A {
 
 class B : A {
 	function someMethod(this, value) {
-		super(this, &quot;someMethod&quot;, value);
+		A::someMethod(this, value);
 		print(&quot;B.someMethod(&quot;, value, &quot;)&quot;);
 	}
 }

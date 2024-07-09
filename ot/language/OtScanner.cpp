@@ -34,6 +34,7 @@ OtScanner::OtScanner() {
 	addToken("}", RBRACE_TOKEN);
 	addToken(",", COMMA_TOKEN);
 	addToken(".", PERIOD_TOKEN);
+	addToken("::", DOUBLE_COLON_TOKEN);
 	addToken(":", COLON_TOKEN);
 	addToken(";", SEMICOLON_TOKEN);
 	addToken("?", QUESTION_TOKEN);

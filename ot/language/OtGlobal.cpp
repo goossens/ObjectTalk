@@ -62,7 +62,6 @@ OtGlobalClass::OtGlobalClass() {
 	set("range", OtFunction::create(&OtGlobalClass::range));
 	set("import", OtFunction::create(&OtGlobalClass::import));
 	set("print", OtFunction::create(&OtGlobalClass::print));
-	set("super", OtFunction::create(&OtGlobalClass::super));
 	set("members", OtFunction::create(&OtGlobalClass::members));
 
 	// add default classes
@@ -172,40 +171,6 @@ void OtGlobalClass::print(size_t count, OtObject* parameters) {
 	}
 
 	std::cout << std::endl;
-}
-
-
-//
-//	OtGlobalClass::super
-//
-
-OtObject OtGlobalClass::super(size_t count, OtObject* parameters) {
-	// sanity check
-	if (count < 2) {
-		OtError("Super requires at least 2 parameters ({} given)", count);
-	}
-
-	// get member from super class
-	OtType type = parameters[0]->getType()->getParent();
-	std::string memberName = parameters[1]->operator std::string();
-	size_t selector = OtSelector::create(memberName);
-	OtObject member;
-
-	while (type && !member) {
-		member = type->get(selector);
-		type = type->getParent();
-	}
-
-	// sanity check
-	if (!member) {
-		OtError(
-			"Can't find member function [{}] in super class of [{}]",
-			memberName.c_str(),
-			parameters[0]->getType()->getName().c_str());
-	}
-
-	// call member function
-	return OtVM::instance()->callMemberFunction(parameters[0], member, count - 2, &(parameters[2]));
 }
 
 

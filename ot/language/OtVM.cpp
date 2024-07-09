@@ -144,6 +144,15 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 					break;
 				}
 
+				case OtByteCodeClass::unboundOpcode: {
+					// put an unbound member on the stack
+					auto object = stack.pop();
+					auto member = bytecode->getNumber(pc);
+					auto unbound = OtMemberReferenceClass::resolveMember(object, member, true);
+					stack.push(unbound);
+					break;
+				}
+
 				case OtByteCodeClass::methodOpcode: {
 					// get method and number of calling parameters
 					auto method = bytecode->getNumber(pc);

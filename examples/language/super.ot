@@ -14,7 +14,7 @@ class A : Object {
 
 class B : A {
 	function someMethod(this, value) {
-		super(this, "someMethod", value);
+		A::someMethod(this, value);
 		print("B.someMethod(", value, ")");
 	}
 }

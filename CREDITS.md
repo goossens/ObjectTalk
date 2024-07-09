@@ -50,7 +50,7 @@ released under the [GNU General Public License, version 2](https://www.gnu.org/l
 ## Tools
 
 A special thanks also goes to [Gunther Rademacher](https://github.com/GuntherRademacher) for his
-["RailRoad Diagram Generator"](https://www.bottlecaps.de/rr/ui)
+["RailRoad Diagram Generator"](https://github.com/GuntherRademacher/rr)
 which is used in the documentation to visualize the ObjectTalk grammar. The tool is release under the
 [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 

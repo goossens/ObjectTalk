@@ -221,7 +221,7 @@ the superclass constructor must also be called like:
 
 	class Fahrenheit : Temperature {
 		function __init__(this) {
-			Temperature.__init__(this);
+			Temperature::__init__(this);
 			this.temperature = 32;
 		}
 	}
@@ -272,7 +272,7 @@ all classes in ObjectTalk have a parent class with the exception of the
 	}
 
 It’s valid for a subclass member to call a superclass member using the
-global **super** function:
+Scope Resolution Operator (**::**):
 
 	class A : Object {
 		function someMethod(this, value) {
@@ -282,7 +282,7 @@ global **super** function:
 
 	class B : A {
 		function someMethod(this, value) {
-			super(this, "someMethod", value);
+			A::someMethod(this, value);
 			print("B.someMethod(", value, ")");
 		}
 	}

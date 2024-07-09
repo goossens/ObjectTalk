@@ -60,6 +60,7 @@ public:
 		jumpTrueOpcode,
 		jumpFalseOpcode,
 		memberOpcode,
+		unboundOpcode,
 		methodOpcode,
 		exitOpcode,
 		pushTryOpcode,
@@ -94,6 +95,10 @@ public:
 	inline void member(const char* name) { emitOpcode(memberOpcode); emitSelector(name); }
 	inline void member(const std::string_view name) { emitOpcode(memberOpcode); emitSelector(name); }
 	inline void member(const std::string& name) { emitOpcode(memberOpcode); emitSelector(name); }
+	inline void unbound(size_t selector) { emitOpcode(unboundOpcode); emitNumber(selector); }
+	inline void unbound(const char* name) { emitOpcode(unboundOpcode); emitSelector(name); }
+	inline void unbound(const std::string_view name) { emitOpcode(unboundOpcode); emitSelector(name); }
+	inline void unbound(const std::string& name) { emitOpcode(unboundOpcode); emitSelector(name); }
 	inline void method(size_t selector, size_t count) { emitOpcode(methodOpcode); emitNumber(selector); emitNumber(count); }
 	inline void method(const char* name, size_t count) { emitOpcode(methodOpcode); emitSelector(name); emitNumber(count); }
 	inline void method(const std::string_view name, size_t count) { emitOpcode(methodOpcode); emitSelector(name); emitNumber(count); }

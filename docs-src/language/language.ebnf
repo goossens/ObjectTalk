@@ -45,7 +45,7 @@ addition ::= multiplication ("+" multiplication | "-" multiplication)*
 multiplication ::= prefix ("*" prefix | "/" prefix | "%" prefix)*
 
 prefix ::= ("-" | "+" | "!" | "^" | "++" | "--")? postfix
-postfix ::= primary ("[" expression "]" | "(" expression ("," expression)* ")" | "." name | "++" | "--")*
+postfix ::= primary ("[" expression "]" | "(" expression ("," expression)* ")" | "." name  | "::" name | "++" | "--")*
 
 primary ::= "(" expression ")"
 | "[" expression ("," expression)* "]"

@@ -1,9 +1,10 @@
 ![Logo](img/logo-small.png)
 
 Welcome to the documentation for the ObjectTalk scripting
-language. It provides the authoritative reference for ObjectTalk,
-offers a guided tour, a comprehensive guide, and a formal reference of
-the language. As the documentation is included in the source code
+language and the associated ecosystem. this documentation provides the
+authoritative reference for ObjectTalk, offers a guided tour, a comprehensive guide,
+and a formal reference of the language as well as the many extensions that make up
+the whole ecosystem. As the documentation is included in the source code
 of the language's compiler and runtime, every effort is made to
 keep the code and documentation synchronized.
 
@@ -39,8 +40,3 @@ keep the code and documentation synchronized.
 * [ObjectTalk Language Reference in EBNF](language.html)
 * [ObjectTalk Classes](classes.html)
 * [ObjectTalk Architecture](architecture.html)
-
-**Tutorials**
-
-* [3D Tutorial](tutorial.html#3d)
-* [HTTP Tutorial](tutorial.html#http)

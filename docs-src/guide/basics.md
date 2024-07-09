@@ -39,7 +39,7 @@ in the variable.
 
 **Comments**
 
-In ObjectTalk, you can uses comments to include non-executable text in
+In ObjectTalk, you can use comments to include non-executable text in
 your code or as a note or reminder to yourself. Comments are ignored by
 the ObjectTalk compiler when your code is compiled. ObjectTalk allows
 three types of comments: multiline C-style comments, single line

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <title>ObjectTalk Reference</title>
@@ -65,22 +65,6 @@
                 ><a class="nav-link page-scroll" href="architecture.html"
                   >Architecture</a
                 >
-              </div>
-            </li>
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                id="Tutorials"
-                role="button"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-                >Tutorials</a
-              >
-              <div class="dropdown-menu" aria-labelledby="Tutorials">
-                <a class="nav-link page-scroll" href="web.html">Web</a
-                ><a class="nav-link page-scroll" href="3d.html">3D</a>
               </div>
             </li>
           </ul>
@@ -256,6 +240,12 @@
 </code></pre>
           </div>
           <div id="postfix">
+            <h1 class="pb-2">prefix</h1>
+            <p><img src="img/prefix.png" alt="Railroad Diagram" /></p>
+            <pre><code>prefix ::= (&quot;-&quot; | &quot;!&quot; | &quot;^&quot; | &quot;++&quot; | &quot;--&quot;)? postfix
+</code></pre>
+          </div>
+          <div id="postfix">
             <h1 class="pb-2">postfix</h1>
             <p><img src="img/postfix.png" alt="Railroad Diagram" /></p>
             <pre><code>postfix ::= primary (&quot;[&quot; expression &quot;]&quot; | &quot;(&quot; expression (&quot;,&quot; expression)* &quot;)&quot; | &quot;.&quot; name | &quot;++&quot; | &quot;--&quot;)*
@@ -308,7 +298,7 @@
       </div>
       <div class="row flex-shrink-0 py-1 manual-footer" id="copyright">
         <p class="mx-auto py-0 my-0 small">
-          Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+          Copyright (c) 1993-2023 Johan A. Goossens. All rights reserved.
         </p>
       </div>
     </div>

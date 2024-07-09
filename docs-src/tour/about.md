@@ -36,6 +36,7 @@ The objectives for the development of ObjectTalk are:
 * Have enough capability to create simple applications like:
 	* Web servers based on a few lines of code.
 	* Cool looking desktop applications including 2D/3D games.
+* Have fun.
 
 So I believe (and yes, I might be a little biased), that ObjectTalk is
 meeting the objectives above and will provide others the ability to
@@ -55,8 +56,7 @@ their own language.
 So what makes ObjectTalk great (at least in my little mind)?
 
 * It's easy to learn (simple yet consistent grammar and no
-"over-the-top, you'll-never-use-it but
-look-at-how-smart-I-am language creep").
+"over-the-top, you'll-never-use-it but look-at-how-smart-I-am language creep").
 * It is truly object-oriented as everything is an object
 (even numbers, strings and functions) with members and member functions.
 * The language will feel comfortable to everyone who has worked on

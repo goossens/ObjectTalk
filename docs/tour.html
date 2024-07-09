@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <title>ObjectTalk Tour</title>
@@ -65,22 +65,6 @@
                 ><a class="nav-link page-scroll" href="architecture.html"
                   >Architecture</a
                 >
-              </div>
-            </li>
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                id="Tutorials"
-                role="button"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-                >Tutorials</a
-              >
-              <div class="dropdown-menu" aria-labelledby="Tutorials">
-                <a class="nav-link page-scroll" href="web.html">Web</a
-                ><a class="nav-link page-scroll" href="3d.html">3D</a>
               </div>
             </li>
           </ul>
@@ -162,6 +146,7 @@
                   </li>
                 </ul>
               </li>
+              <li>Have fun.</li>
             </ul>
             <p>
               So I believe (and yes, I might be a little biased), that
@@ -230,9 +215,9 @@
               development at that time, memory and disk capacities were a scarce
               commodity and optimization strategies were always important. In
               the system I worked on, our custom Operating System and real-time
-              applications were written in assembler. You can probably imagine
-              that it became a rats nest over time. In one case, a programmer
-              was so smart that he patched jump instructions to
+              applications were written in raw assembly. You can probably
+              imagine that it became a rats nest over time. In one case, a
+              programmer was so smart that he patched jump instructions to
               &quot;efficiently&quot; create a switch/case type statement. As
               you probably already expect, this was not maintainable and
               pre-deployment testing started to take way too much time.
@@ -240,16 +225,16 @@
             <p>
               Luckily, our assembler had a simple pre-processor that allowed
               macros and I developed a set of macros for structured programming
-              in assembler. This stopped all hacking and the code became more
-              readable. Control structures and program flows where more visible
-              and thanks to a coding style guide, all of our products became
-              more stable.
+              in raw CPU assembly. This stopped all hacking and the code became
+              more readable. Control structures and program flows where more
+              visible and thanks to a coding style guide, all of our products
+              became more stable and even faster.
             </p>
             <p>
               At the same time, we also started to receive &quot;desktop&quot;
               UNIX computers which I initially used for software development and
               code verification. This also opened the door for higher level
-              language development and I write my first compiler that took
+              language development and I wrote my first compiler that took
               higher level code and translated it to the assembler required for
               our mainframe. This worked very well and my interest in computer
               language development was born.
@@ -291,7 +276,10 @@
             <p>
               Well, as you can read in my biography, I'm now retired and I've
               decided to dust a lot of this stuff off and make ObjectTalk
-              available as Open Source.
+              available as Open Source. These days, ObjectTalk goes far beyond
+              just a scripting language as it offers an Integrated Development
+              Environment (IDE) with support for GUIs, 3D scenes based on Entity
+              Component Systems (ECS), node-based logic.
             </p>
           </div>
           <div id="overview">
@@ -758,7 +746,7 @@ print(&quot;Recovered from exception&quot;);
       </div>
       <div class="row flex-shrink-0 py-1 manual-footer" id="copyright">
         <p class="mx-auto py-0 my-0 small">
-          Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+          Copyright (c) 1993-2023 Johan A. Goossens. All rights reserved.
         </p>
       </div>
     </div>

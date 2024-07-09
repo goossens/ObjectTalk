@@ -284,8 +284,9 @@ You can combine multiple logical operators to create longer compound expressions
 
 This example uses multiple && and || operators to create a longer compound
 expression. However, the && and || operators still operate on only two
-values, so this is actually three smaller expressions chained together. The
-example can be read as:
+values, so this is actually three smaller expressions chained together.
+The example above is evaluated from left to right but it would probably
+make sense to use parenthesis for readability (see below).
 
 If we’ve entered the correct door code and passed the retina scan, or if we
 have a valid door key, or if we know the emergency override password, then

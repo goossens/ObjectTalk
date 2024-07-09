@@ -5,7 +5,7 @@ environment is used to test a headless version (just
 a command line tool without a GUI) and the Ubuntu version
 is used to test the GUI version. In practice, any
 combination should work as it just depends on the
-availability of X-Windows and OpenGL. Other flavors
+availability of X-Windows and Vulkan. Other flavors
 of Linux will likely work as well but we'll let the
 community provide the instructions.
 

@@ -1,3 +1,0 @@
-**Web Tutorial**
-
-* [Overview](#overview)

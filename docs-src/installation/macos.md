@@ -1,5 +1,5 @@
-ObjectTalk is supported on Monterey (MacOS 12) or
-Big Sur (MacOS 11). There are 4 simple requirements
+ObjectTalk is supported on Sonoma (MacOS 14), Ventura (MacOS 13),
+Monterey (MacOS 12) and Big Sur (MacOS 11). There are 4 simple requirements
 to get your machine ready for ObjectTalk development:
 
 * Install Xcode from the App Store

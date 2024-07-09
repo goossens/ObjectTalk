@@ -1,4 +1,4 @@
-As was explained above the ObjectTalk ecosystem comes as a single executable file called “ot”.
+As was explained above, the ObjectTalk ecosystem comes as a single executable file called “ot”.
 This single executable can run in four different modes depending on how it was launched.
 
 **Simple Mode**
@@ -21,9 +21,9 @@ The startup script as well as the event loop are all executed from the main and 
 
 ![Graphics Mode](img/graphics-mode.png)
 
-In graphics mode, the starting point is not a script but rather a JSON file that contains the
-entity component system detailing the structure and capabilities of the GUI, board or scene to be rendered.
-The JSON file will refer to external assets such as images, sprites or models and will also refer to
+In graphics mode, the starting point can be a script or a JSON file that contains all the information
+detailing the structure and capabilities of a board, scene or node-based processing.
+The JSON file can refer to external assets such as images, sprites or models and can also refer to
 ObjectTalk scripts that act as controllers in the created graphical world.
 
 The required JSON file can be constructed by hand but this is not recommended. The provided IDE
@@ -48,4 +48,5 @@ with the application or scripts thread.
 In the Integrate Development Environment (IDE) mode is the IDE will act as the main application
 just like any other program in graphics mode. When the IDE runs a script or graphics application,
 a subprocess is spawned in the applicable mode. Bi-directional Inter Process Communication (IPC) is
-setup to allow the IDE to communicate with the ObjectTalk script, GUI, board or scene.
+setup to allow the IDE to communicate with the ObjectTalk script, GUI, board, scene or
+node-based apps.

@@ -6,8 +6,7 @@ cross-platform challenges. Right now, all platforms
 support the build process from the command line using
 very simple instructions. MacOS and Windows also support
 using visual development environments like Xcode and
-Visual Studio. For Linux, visual tool support is on
-the agenda.
+Visual Studio (Code).
 
 ObjectTalk uses a large number of 3rd party
 Open Source packages. The Cmake process automatically

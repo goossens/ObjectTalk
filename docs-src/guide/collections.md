@@ -17,7 +17,7 @@ You can create an array using a literal or the Array class constructor:
 	var array1 = [];
 	var array2 = [1, 2, 3.14, "test"];
 	var array3 = Array();
-	var array4 = Array(1, 2, 3.14, "test);
+	var array4 = Array(1, 2, 3.14, "test");
 
 **Accessing and Modifying an Array**
 

@@ -2,7 +2,7 @@ In the 80s, I was developing military command and control systems in an
 international setting. As was true for most software development at that
 time, memory and disk capacities were a scarce commodity and optimization
 strategies were always important. In the system I worked on, our custom
-Operating System and real-time applications were written in assembler.
+Operating System and real-time applications were written in raw assembly.
 You can probably imagine that it became a rats nest over time.
 In one case, a programmer was so smart that he patched jump instructions
 to "efficiently" create a switch/case type statement. As you probably
@@ -10,15 +10,16 @@ already expect, this was not maintainable and pre-deployment testing
 started to take way too much time.
 
 Luckily, our assembler had a simple pre-processor that allowed macros
-and I developed a set of macros for structured programming in assembler.
-This stopped all hacking and the code became more readable.
+and I developed a set of macros for structured programming in raw CPU
+assembly. This stopped all hacking and the code became more readable.
 Control structures and program flows where more visible and thanks to
-a coding style guide, all of our products became more stable.
+a coding style guide, all of our products became more stable and even
+faster.
 
 At the same time, we also started to receive "desktop" UNIX computers
 which I initially used for software development and code verification.
 This also opened the door for higher level language development and
-I write my first compiler that took higher level code and translated it
+I wrote my first compiler that took higher level code and translated it
 to the assembler required for our mainframe. This worked very well and
 my interest in computer language development was born.
 
@@ -52,3 +53,6 @@ work on this.
 
 Well, as you can read in my biography, I'm now retired and I've decided
 to dust a lot of this stuff off and make ObjectTalk available as Open Source.
+These days, ObjectTalk goes far beyond just a scripting language as it
+offers an Integrated Development Environment (IDE) with support for
+GUIs, 3D scenes based on Entity Component Systems (ECS), node-based logic.

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <title>ObjectTalk Guide</title>
@@ -67,22 +67,6 @@
                 >
               </div>
             </li>
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                id="Tutorials"
-                role="button"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-                >Tutorials</a
-              >
-              <div class="dropdown-menu" aria-labelledby="Tutorials">
-                <a class="nav-link page-scroll" href="web.html">Web</a
-                ><a class="nav-link page-scroll" href="3d.html">3D</a>
-              </div>
-            </li>
           </ul>
         </div>
       </nav>
@@ -149,9 +133,9 @@ print(myClass.myVariable); // this will print the number 10.
             </p>
             <p><strong>Comments</strong></p>
             <p>
-              In ObjectTalk, you can uses comments to include non-executable
-              text in your code or as a note or reminder to yourself. Comments
-              are ignored by the ObjectTalk compiler when your code is compiled.
+              In ObjectTalk, you can use comments to include non-executable text
+              in your code or as a note or reminder to yourself. Comments are
+              ignored by the ObjectTalk compiler when your code is compiled.
               ObjectTalk allows three types of comments: multiline C-style
               comments, single line C++ style comments and single line
               shell-style comments.
@@ -341,7 +325,7 @@ test1(test2);
             <pre><code>var array1 = [];
 var array2 = [1, 2, 3.14, &quot;test&quot;];
 var array3 = Array();
-var array4 = Array(1, 2, 3.14, &quot;test);
+var array4 = Array(1, 2, 3.14, &quot;test&quot;);
 </code></pre>
             <p><strong>Accessing and Modifying an Array</strong></p>
             <p>
@@ -864,8 +848,9 @@ if hasDoorKey || knowsOverridePassword {
               This example uses multiple &amp;&amp; and || operators to create a
               longer compound expression. However, the &amp;&amp; and ||
               operators still operate on only two values, so this is actually
-              three smaller expressions chained together. The example can be
-              read as:
+              three smaller expressions chained together. The example above is
+              evaluated from left to right but it would probably make sense to
+              use parenthesis for readability (see below).
             </p>
             <p>
               If we’ve entered the correct door code and passed the retina scan,
@@ -2197,6 +2182,7 @@ while (currentValue != 0) {
 }
 
 print(&quot;zero!&quot;);
+
 // -4...
 // -3...
 // -2...
@@ -2208,7 +2194,7 @@ print(&quot;zero!&quot;);
       </div>
       <div class="row flex-shrink-0 py-1 manual-footer" id="copyright">
         <p class="mx-auto py-0 my-0 small">
-          Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+          Copyright (c) 1993-2023 Johan A. Goossens. All rights reserved.
         </p>
       </div>
     </div>

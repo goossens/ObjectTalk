@@ -24,9 +24,6 @@ So for example:
 
 * Just running the executable without parameters launches
 an Integrated Development Environment (IDE) that allow
-you to edit ObjectTalk scripts, run them as see possible
-errors.
-* You can directly run an ObjectTalk script using
-**ot [script name]**
-* you can also open a script directly in the IDE by
-using **ot -i [script name]**
+you to edit ObjectTalk scripts, scenes, boards, GUIs or node-based logic.
+* You can directly run an ObjectTalk script using **ot [script name]**
+* you can also open a script directly in the IDE by using **ot -i [script name]**

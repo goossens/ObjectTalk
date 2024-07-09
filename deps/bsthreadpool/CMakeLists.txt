@@ -5,7 +5,7 @@
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
 FetchContent_Declare(bsthreadpool GIT_REPOSITORY "https://github.com/bshoshany/thread-pool" GIT_TAG "v4.1.0")
-FetchContent_Populate(bsthreadpool)
+FetchContent_MakeAvailable(bsthreadpool)
 
 add_library(bsthreadpool INTERFACE)
 target_include_directories(bsthreadpool INTERFACE ${bsthreadpool_SOURCE_DIR}/include)

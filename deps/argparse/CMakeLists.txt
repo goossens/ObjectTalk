@@ -4,8 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Declare(argparse GIT_REPOSITORY "https://github.com/p-ranav/argparse" GIT_TAG "v3.0")
-FetchContent_Populate(argparse)
+FetchContent_Populate(argparse QUIET GIT_REPOSITORY "https://github.com/p-ranav/argparse" GIT_TAG "v3.0")
 
 add_library(argparse INTERFACE)
 target_include_directories(argparse INTERFACE ${argparse_SOURCE_DIR}/include)

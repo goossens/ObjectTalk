@@ -5,7 +5,7 @@
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
 FetchContent_Declare(bimg GIT_REPOSITORY "https://github.com/bkaradzic/bimg")
-FetchContent_Populate(bimg)
+FetchContent_MakeAvailable(bimg)
 
 include(3rdparty/astc-encoder.cmake)
 include(3rdparty/edtaa3.cmake)

@@ -34,6 +34,7 @@
 #include "OtTreeNode.h"
 #include "OtTron.h"
 #include "OtVectorDisplay.h"
+#include "OtWidgetStack.h"
 
 
 //
@@ -62,6 +63,7 @@ static OtModuleRegistration registration{"gui", [](OtModule module) {
 	module->set("TreeNode", OtClass::create(OtTreeNodeClass::getMeta()));
 	module->set("Tron", OtClass::create(OtTronClass::getMeta()));
 	module->set("VectorDisplay", OtClass::create(OtVectorDisplayClass::getMeta()));
+	module->set("WidgetStack", OtClass::create(OtWidgetStackClass::getMeta()));
 
 	module->set("alignNone", OtInteger::create(int(OtUiAlignNone)));
 	module->set("alignLeft", OtInteger::create(int(OtUiAlignLeft)));

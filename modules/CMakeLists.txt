@@ -8,6 +8,7 @@ add_subdirectory(http)
 
 if(OT_GUI)
 	add_subdirectory(graphics)
-	add_subdirectory(math)
 	add_subdirectory(input)
+	add_subdirectory(math)
+	add_subdirectory(physics2d)
 endif()

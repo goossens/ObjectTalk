@@ -9,16 +9,19 @@
 //	Include files
 //
 
-#include "OtClass.h"
-#include "OtModule.h"
-
-#include "OtImageObject.h"
+#include "OtPhysics2D.h"
 
 
 //
-//	Module registration
+//	OtPhysics2DClass::getMeta
 //
 
-static OtModuleRegistration registration{"graphics", [](OtModule module) {
-	module->set("Image", OtClass::create(OtImageObjectClass::getMeta()));
-}};
+OtType OtPhysics2DClass::getMeta() {
+	static OtType type;
+
+	if (!type) {
+		type = OtType::create<OtPhysics2DClass>("Physics2D", OtObjectClass::getMeta());
+	}
+
+	return type;
+}

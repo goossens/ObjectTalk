@@ -178,8 +178,17 @@ static bool IsButtonPressed(int key) {
 	return ImGui::IsKeyPressed((ImGuiKey) key);
 }
 
+static bool IsButtonReleased(int key) {
+	return ImGui::IsKeyReleased((ImGuiKey) key);
+}
+
+static OtObject GetMousePos() {
+	auto pos = ImGui::GetMousePos();
+	return OtVec2::create(pos.x, pos.y);
+}
+
 static OtObject GetMouseDrag() {
-	ImVec2 drag = ImGui::GetMouseDragDelta();
+	auto drag = ImGui::GetMouseDragDelta();
 	ImGui::ResetMouseDragDelta();
 	return OtVec2::create(drag.x, drag.y);
 }
@@ -196,5 +205,6 @@ static OtModuleRegistration registration{"input", [](OtModule module) {
 	// register functions
 	module->set("isButtonDown", OtFunction::create(&IsButtonDown));
 	module->set("isButtonPressed", OtFunction::create(&IsButtonPressed));
+	module->set("GetMousePos", OtFunction::create(&GetMousePos));
 	module->set("getMouseDrag", OtFunction::create(&GetMouseDrag));
 }};

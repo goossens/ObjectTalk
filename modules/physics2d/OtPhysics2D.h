@@ -5,20 +5,25 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 
+#pragma once
+
+
 //
 //	Include files
 //
 
-#include "OtClass.h"
-#include "OtModule.h"
-
-#include "OtImageObject.h"
+#include "OtObject.h"
 
 
 //
-//	Module registration
+//	OtPhysics2D
 //
 
-static OtModuleRegistration registration{"graphics", [](OtModule module) {
-	module->set("Image", OtClass::create(OtImageObjectClass::getMeta()));
-}};
+class OtPhysics2DClass;
+using OtPhysics2D = OtObjectPointer<OtPhysics2DClass>;
+
+class OtPhysics2DClass : public OtObjectClass {
+public:
+	// get type definition
+	static OtType getMeta();
+};

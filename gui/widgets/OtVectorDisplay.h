@@ -59,7 +59,6 @@ public:
 	OtObject setColor(const std::string& color);
 	OtObject setAlpha(float alpha);
 	OtObject setWidth(float width);
-	OtObject setCenteredText();
 
 	void pushStyle();
 	void popStyle();
@@ -113,7 +112,6 @@ private:
 	struct Style {
 		uint32_t color = 0xffffffff;
 		float width = 1.0f;
-		bool centeredText = false;
 	};
 
 	Style style;
@@ -156,7 +154,6 @@ private:
 			float y1;
 			float h;
 			float steps;
-			bool centered;
 		};
 
 		std::string text;

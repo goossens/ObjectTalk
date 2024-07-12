@@ -105,15 +105,24 @@ void OtWidgetClass::renderChildren() {
 	for (auto& child : children) {
 		// ensure child is enabled
 		if (child->isEnabled()) {
-			// call subclass member function (if we have one)
-			if (child->hasByName("update")) {
-				OtVM::instance()->callMemberFunction(child, "update");
-			}
-
-			// render child
-			child->render();
+			renderChild(child);
 		}
 	}
+}
+
+
+//
+//	OtWidgetClass::renderChild
+//
+
+void OtWidgetClass::renderChild(OtWidget child) {
+	// call subclass member function (if we have one)
+	if (child->hasByName("update")) {
+		OtVM::instance()->callMemberFunction(child, "update");
+	}
+
+	// render child
+	child->render();
 }
 
 

@@ -11,8 +11,6 @@
 
 #include "imgui.h"
 
-#include "OtFunction.h"
-
 #include "OtUi.h"
 
 #include "OtPanel.h"
@@ -45,7 +43,6 @@ OtType OtPanelClass::getMeta() {
 
 	if (!type) {
 		type = OtType::create<OtPanelClass>("Panel", OtWidgetClass::getMeta());
-//		type->set("setSplit", OtFunction::create(&OtPanelClass::setSplit));
 	}
 
 	return type;

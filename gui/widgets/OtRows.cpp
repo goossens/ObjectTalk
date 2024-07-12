@@ -128,7 +128,7 @@ void OtRowsClass::render() {
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 		ImGui::BeginChild("row", ImVec2(0.0f, screenHeights[i]), borders ? ImGuiChildFlags_Border : ImGuiChildFlags_None);
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, spacing);
-		children[i]->render();
+		renderChild(children[i]);
 		ImGui::PopStyleVar();
 		ImGui::EndChild();
 		ImGui::PopStyleVar();

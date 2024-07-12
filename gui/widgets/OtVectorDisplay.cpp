@@ -163,16 +163,6 @@ OtObject OtVectorDisplayClass::setWidth(float width) {
 
 
 //
-//	OtVectorDisplayClass::setCenteredText
-//
-
-OtObject OtVectorDisplayClass::setCenteredText() {
-	style.centeredText = true;
-	return OtWidget(this);
-}
-
-
-//
 //	OtVectorDisplayClass::pushStyle
 //
 
@@ -330,7 +320,6 @@ int OtVectorDisplayClass::addText(float x, float y, float size, const std::strin
 	shape.type = Shape::textType;
 	shape.width = style.width;
 	shape.color = style.color;
-	shape.centered = style.centeredText;
 	shape.x = x;
 	shape.y = y;
 	shape.size = size;
@@ -647,7 +636,6 @@ OtType OtVectorDisplayClass::getMeta() {
 		type->set("setColor", OtFunction::create(&OtVectorDisplayClass::setColor));
 		type->set("setAlpha", OtFunction::create(&OtVectorDisplayClass::setAlpha));
 		type->set("setWidth", OtFunction::create(&OtVectorDisplayClass::setWidth));
-		type->set("setCenteredText", OtFunction::create(&OtVectorDisplayClass::setCenteredText));
 
 		type->set("pushStyle", OtFunction::create(&OtVectorDisplayClass::pushStyle));
 		type->set("popStyle", OtFunction::create(&OtVectorDisplayClass::popStyle));

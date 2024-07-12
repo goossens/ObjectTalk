@@ -125,7 +125,7 @@ void OtColumnsClass::render() {
 
 		// render child widget
 		ImGui::BeginChild("column", ImVec2(screenWidths[i], 0.0f), borders ? ImGuiChildFlags_Border : ImGuiChildFlags_None);
-		children[i]->render();
+		renderChild(children[i]);
 		ImGui::EndChild();
 
 		// render seperator (if required)

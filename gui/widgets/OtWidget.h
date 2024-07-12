@@ -78,6 +78,9 @@ protected:
 	// enabled flag
 	bool enabled = true;
 
-	// render all the enabled children
+	// render all enabled children
 	void renderChildren();
+
+	// render a single child
+	void renderChild(OtWidget child);
 };

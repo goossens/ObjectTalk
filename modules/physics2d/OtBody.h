@@ -64,10 +64,11 @@ public:
 	// get type definition
 	static OtType getMeta();
 
-private:
+protected:
 	// tracking our Box2D object
 	b2Body* body = nullptr;
 
+private:
 	// list of our fixtures
 	std::vector<OtObject> fixtures;
 };

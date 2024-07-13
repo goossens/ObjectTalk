@@ -104,93 +104,6 @@ OtObject OtWorldClass::addEndContactCallback(OtObject callback) {
 
 
 //
-//	OtWorldClass::addStaticBody
-//
-
-OtObject OtWorldClass::addStaticBody(size_t count, OtObject* parameters) {
-	// sanity check
-	if (count > 1) {
-		OtLogFatal("[addStaticBody] expect up to 1 parameter, not %{}", count);
-	}
-
-	b2BodyDef def;
-	def.type = b2_staticBody;
-	b2Body* b = world->CreateBody(&def);
-	OtBody body;
-
-	if (count) {
-		parameters[0]->expectKindOf("Body");
-		body = OtBody(parameters[0]);
-		body->setBody(b);
-
-	} else {
-		body = OtBody::create(b);
-	}
-
-	bodies.push_back(body);
-	return body;
-}
-
-
-//
-//	OtWorldClass::addKinematicBody
-//
-
-OtObject OtWorldClass::addKinematicBody(size_t count, OtObject* parameters) {
-	// sanity check
-	if (count > 1) {
-		OtLogFatal("[addKinematicBody] expect up to 1 parameter, not {}", count);
-	}
-
-	b2BodyDef def;
-	def.type = b2_kinematicBody;
-	b2Body* b = world->CreateBody(&def);
-	OtBody body;
-
-	if (count) {
-		parameters[0]->expectKindOf("Body");
-		body = OtBody(parameters[0]);
-		body->setBody(b);
-
-	} else {
-		body = OtBody::create(b);
-	}
-
-	bodies.push_back(body);
-	return body;
-}
-
-
-//
-//	OtWorldClass::addDynamicBody
-//
-
-OtObject OtWorldClass::addDynamicBody(size_t count, OtObject* parameters) {
-	// sanity check
-	if (count > 1) {
-		OtLogFatal("[addDynamicBody] expect up to 1 parameter, not {}", count);
-	}
-
-	b2BodyDef def;
-	def.type = b2_dynamicBody;
-	b2Body* b = world->CreateBody(&def);
-	OtBody body;
-
-	if (count) {
-		parameters[0]->expectKindOf("Body");
-		body = OtBody(parameters[0]);
-		body->setBody(b);
-
-	} else {
-		body = OtBody::create(b);
-	}
-
-	bodies.push_back(body);
-	return body;
-}
-
-
-//
 //	OtWorldClass::step
 //
 
@@ -254,10 +167,6 @@ OtType OtWorldClass::getMeta() {
 		type->set("setGravity", OtFunction::create(&OtWorldClass::setGravity));
 		type->set("allowSleeping", OtFunction::create(&OtWorldClass::allowSleeping));
 		type->set("continuousPhysics", OtFunction::create(&OtWorldClass::continuousPhysics));
-
-		type->set("addStaticBody", OtFunction::create(&OtWorldClass::addStaticBody));
-		type->set("addKinematicBody", OtFunction::create(&OtWorldClass::addKinematicBody));
-		type->set("addDynamicBody", OtFunction::create(&OtWorldClass::addDynamicBody));
 
 		type->set("addBeginContactCallback", OtFunction::create(&OtWorldClass::addBeginContactCallback));
 		type->set("addEndContactCallback", OtFunction::create(&OtWorldClass::addEndContactCallback));

@@ -12,8 +12,10 @@
 #include "OtClass.h"
 #include "OtModule.h"
 
-#include "OtBody.h"
+#include "OtDynamicBody.h"
 #include "OtFixture.h"
+#include "OtKinematicBody.h"
+#include "OtStaticBody.h"
 #include "OtWorld.h"
 
 
@@ -22,7 +24,9 @@
 //
 
 static OtModuleRegistration registration{"physics2d", [](OtModule module) {
-	module->set("Body", OtClass::create(OtBodyClass::getMeta()));
+	module->set("DynamicBody", OtClass::create(OtDynamicBodyClass::getMeta()));
 	module->set("Fixture", OtClass::create(OtFixtureClass::getMeta()));
+	module->set("KinematicBody", OtClass::create(OtKinematicBodyClass::getMeta()));
+	module->set("StaticBody", OtClass::create(OtStaticBodyClass::getMeta()));
 	module->set("World", OtClass::create(OtWorldClass::getMeta()));
 }};

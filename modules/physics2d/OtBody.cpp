@@ -34,7 +34,7 @@ void OtBodyClass::clear() {
 
 OtObject OtBodyClass::setPosition(float x, float y) {
 	body->SetTransform(b2Vec2(x, y), body->GetAngle());
-	return OtObject(this);
+	return OtBody(this);
 }
 
 
@@ -44,7 +44,7 @@ OtObject OtBodyClass::setPosition(float x, float y) {
 
 OtObject OtBodyClass::setLinearVelocity(float x, float y) {
 	body->SetLinearVelocity(b2Vec2(x, y));
-	return OtObject(this);
+	return OtBody(this);
 }
 
 
@@ -54,7 +54,7 @@ OtObject OtBodyClass::setLinearVelocity(float x, float y) {
 
 OtObject OtBodyClass::setAngle(float angle) {
 	body->SetTransform(body->GetPosition(), angle);
-	return OtObject(this);
+	return OtBody(this);
 }
 
 
@@ -64,7 +64,7 @@ OtObject OtBodyClass::setAngle(float angle) {
 
 OtObject OtBodyClass::enable() {
 	body->SetEnabled(true);
-	return OtObject(this);
+	return OtBody(this);
 }
 
 
@@ -74,7 +74,7 @@ OtObject OtBodyClass::enable() {
 
 OtObject OtBodyClass::disable() {
 	body->SetEnabled(false);
-	return OtObject(this);
+	return OtBody(this);
 }
 
 

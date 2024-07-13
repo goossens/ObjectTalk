@@ -545,6 +545,15 @@ void OtVectorDisplayClass::deleteShape(int id) {
 
 
 //
+//	OtVectorDisplayClass::clear
+//
+
+void OtVectorDisplayClass::clear() {
+	shapes.clear();
+}
+
+
+//
 //	OtVectorDisplayClass::render
 //
 

@@ -63,9 +63,11 @@ public:
 	void pushStyle();
 	void popStyle();
 
+	// determine sizes
 	float getSevenSegmentWidth(const std::string& text, float size);
 	float getTextWidth(const std::string& text, float size);
 
+	// manage shapes
 	int addLine(float x0, float y0, float x1, float y1);
 	int addRectangle(float x, float y, float w, float h);
 	int addCenteredRectangle(float x, float y, float w, float h);
@@ -89,6 +91,8 @@ public:
 	void enableShape(int id);
 	void disableShape(int id);
 	void deleteShape(int id);
+
+	void clear();
 
 	// render content
 	void render() override;

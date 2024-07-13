@@ -44,22 +44,18 @@ public:
 	OtObject addBeginContactCallback(OtObject callback);
 	OtObject addEndContactCallback(OtObject callback);
 
-	// create a new body
-	OtObject addStaticBody(size_t count, OtObject* parameters);
-	OtObject addKinematicBody(size_t count, OtObject* parameters);
-	OtObject addDynamicBody(size_t count, OtObject* parameters);
-
 	// run simulation
 	void step(int32_t deltaMilliseconds);
-
-	// handle simulation events
-	void BeginContact(b2Contact* contact);
-	void EndContact(b2Contact* contact);
 
 	// get type definition
 	static OtType getMeta();
 
 private:
+	// so they can access the "world" member
+	friend class OtDynamicBodyClass;
+	friend class OtKinematicBodyClass;
+	friend class OtStaticBodyClass;
+
 	// tracking our Box2D object
 	b2World* world = nullptr;
 
@@ -80,4 +76,8 @@ private:
 	std::vector<Callback> callbacks;
 	OtObject beginContactCallback;
 	OtObject endContactCallback;
+
+	// handle physics events
+	void BeginContact(b2Contact* contact);
+	void EndContact(b2Contact* contact);
 };

@@ -344,7 +344,7 @@ void OtScanner::error(std::string message) {
 	}
 
 	marker +='^';
-	auto fullMessage = fmt::format("Module: {}, Line %{}: {}:\n{}\n{}", moduleName, lineNumber, message, lineText, marker);
+	auto fullMessage = fmt::format("Module: {}, Line: {}: {}:\n{}\n{}", moduleName, lineNumber, message, lineText, marker);
 
 	// throw exception
 	throw OtException(moduleName, lineNumber, tokenStart, tokenEnd, message, fullMessage);

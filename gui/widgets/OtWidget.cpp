@@ -93,6 +93,7 @@ void OtWidgetClass::clear() {
 
 	// remove all children
 	children.clear();
+	unsetAll();
 }
 
 

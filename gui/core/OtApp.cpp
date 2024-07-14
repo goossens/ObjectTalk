@@ -72,9 +72,6 @@ void OtAppClass::onTerminate() {
 
 	// remove all children from the app to avoid memory leaks
 	clear();
-
-	// also remove app instance variables that the user might have added
-	unsetAll();
 }
 
 

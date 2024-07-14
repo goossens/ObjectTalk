@@ -170,24 +170,24 @@ static void RegisterEnums(OtModule module) {
 //	Functions
 //
 
-static bool IsButtonDown(int key) {
+static bool isButtonDown(int key) {
 	return ImGui::IsKeyDown((ImGuiKey) key);
 }
 
-static bool IsButtonPressed(int key) {
-	return ImGui::IsKeyPressed((ImGuiKey) key);
-}
-
-static bool IsButtonReleased(int key) {
+static bool isButtonReleased(int key) {
 	return ImGui::IsKeyReleased((ImGuiKey) key);
 }
 
-static OtObject GetMousePos() {
+static bool isButtonPressed(int key) {
+	return ImGui::IsKeyPressed((ImGuiKey) key);
+}
+
+static OtObject getMousePos() {
 	auto pos = ImGui::GetMousePos();
 	return OtVec2::create(pos.x, pos.y);
 }
 
-static OtObject GetMouseDrag() {
+static OtObject getMouseDrag() {
 	auto drag = ImGui::GetMouseDragDelta();
 	ImGui::ResetMouseDragDelta();
 	return OtVec2::create(drag.x, drag.y);
@@ -203,8 +203,9 @@ static OtModuleRegistration registration{"input", [](OtModule module) {
 	RegisterEnums(module);
 
 	// register functions
-	module->set("isButtonDown", OtFunction::create(&IsButtonDown));
-	module->set("isButtonPressed", OtFunction::create(&IsButtonPressed));
-	module->set("GetMousePos", OtFunction::create(&GetMousePos));
-	module->set("getMouseDrag", OtFunction::create(&GetMouseDrag));
+	module->set("isButtonDown", OtFunction::create(&isButtonDown));
+	module->set("isButtonReleased", OtFunction::create(&isButtonReleased));
+	module->set("isButtonPressed", OtFunction::create(&isButtonPressed));
+	module->set("getMousePos", OtFunction::create(&getMousePos));
+	module->set("getMouseDrag", OtFunction::create(&getMouseDrag));
 }};

@@ -17,9 +17,9 @@ endforeach()
 list(REMOVE_DUPLICATES PHYSICS2D_INCLUDE_DIRS)
 
 add_library(physics2d OBJECT ${PHYSICS2D_INCLUDES} ${PHYSICS2D_SOURCES})
-add_dependencies(physics2d ot box2d)
+add_dependencies(physics2d ot imgui box2d)
 target_include_directories(physics2d PUBLIC ${PHYSICS2D_INCLUDE_DIRS})
-target_link_libraries(physics2d PUBLIC ot box2d)
+target_link_libraries(physics2d PUBLIC ot imgui box2d)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${PHYSICS2D_INCLUDES} ${PHYSICS2D_SOURCES})
 set_target_properties(physics2d PROPERTIES FOLDER modules)

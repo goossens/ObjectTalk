@@ -44,8 +44,13 @@ public:
 	OtObject addBeginContactCallback(OtObject callback);
 	OtObject addEndContactCallback(OtObject callback);
 
+	// start/stop simulation
+	OtObject start();
+	OtObject stop();
+	inline bool isRunning() { return running; }
+
 	// run simulation
-	void step(int32_t deltaMilliseconds);
+	void step();
 
 	// get type definition
 	static OtType getMeta();
@@ -60,6 +65,8 @@ private:
 	b2World* world = nullptr;
 
 	// tracking time in update loop to ensure constant simulation speed
+	static constexpr double secondsPerUpdate = 1 / 30.0;
+	bool running = false;
 	double delta = 0.0;
 
 	// list of our bodies

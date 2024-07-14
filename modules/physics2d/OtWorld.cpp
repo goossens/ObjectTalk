@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include "imgui.h"
+
 #include "OtCallback.h"
 #include "OtFunction.h"
 #include "OtLog.h"
@@ -104,25 +106,47 @@ OtObject OtWorldClass::addEndContactCallback(OtObject callback) {
 
 
 //
+//	OtWorldClass::start
+//
+
+OtObject OtWorldClass::start() {
+	running = true;
+	delta = 0.0;
+	return OtObject();
+}
+
+
+//
+//	OtWorldClass::stop
+//
+
+OtObject OtWorldClass::stop() {
+	running = false;
+	return OtObject();
+}
+
+
+//
 //	OtWorldClass::step
 //
 
-static const double secondsPerUpdate = 1/30.0;
+void OtWorldClass::step() {
+	// ensure we are running
+	if (running) {
+		// calculate time since last update
+		delta += ((double) ImGui::GetIO().DeltaTime) / 1000.0;
 
-void OtWorldClass::step(int32_t deltaMilliseconds) {
-	// convert to seconds
-	delta += ((double) deltaMilliseconds) / 1000.0;
+		// run step if required
+		if (delta > secondsPerUpdate) {
+			delta -= secondsPerUpdate;
+			world->Step(secondsPerUpdate, 8, 1);
 
-	// run step if required
-	if (delta > secondsPerUpdate) {
-		delta -= secondsPerUpdate;
-		world->Step(secondsPerUpdate, 8, 1);
+			for (auto& callback : callbacks) {
+				OtVM::instance()->callMemberFunction(callback.callback, "__call__", callback.body1, callback.body2);
+			}
 
-		for (auto& callback : callbacks) {
-			OtVM::instance()->callMemberFunction(callback.callback, "__call__", callback.body1, callback.body2);
+			callbacks.clear();
 		}
-
-		callbacks.clear();
 	}
 }
 
@@ -170,6 +194,10 @@ OtType OtWorldClass::getMeta() {
 
 		type->set("addBeginContactCallback", OtFunction::create(&OtWorldClass::addBeginContactCallback));
 		type->set("addEndContactCallback", OtFunction::create(&OtWorldClass::addEndContactCallback));
+
+		type->set("start", OtFunction::create(&OtWorldClass::start));
+		type->set("stop", OtFunction::create(&OtWorldClass::stop));
+		type->set("step", OtFunction::create(&OtWorldClass::step));
 	}
 
 	return type;

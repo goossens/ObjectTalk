@@ -134,7 +134,7 @@ void OtWorldClass::step() {
 	// ensure we are running
 	if (running) {
 		// calculate time since last update
-		delta += ((double) ImGui::GetIO().DeltaTime) / 1000.0;
+		delta += double(ImGui::GetIO().DeltaTime);
 
 		// run step if required
 		if (delta > secondsPerUpdate) {

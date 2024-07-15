@@ -31,6 +31,7 @@ void OtKinematicBodyClass::init(OtObject w) {
 	b2BodyDef def;
 	def.type = b2_kinematicBody;
 	body = world->world->CreateBody(&def);
+	body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
 }
 
 

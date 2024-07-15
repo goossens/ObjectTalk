@@ -31,6 +31,7 @@ void OtStaticBodyClass::init(OtObject w) {
 	b2BodyDef def;
 	def.type = b2_staticBody;
 	body = world->world->CreateBody(&def);
+	body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
 }
 
 

@@ -182,6 +182,27 @@ static bool isButtonPressed(int key) {
 	return ImGui::IsKeyPressed((ImGuiKey) key);
 }
 
+static bool isDoubleClicked() {
+	return ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left);
+}
+
+static bool hasMouseMoved() {
+	static bool initialized = false;
+	static ImVec2 mousePos;
+
+	if (initialized) {
+		auto newMousePos = ImGui::GetMousePos();
+		auto moved = newMousePos.x != mousePos.x || newMousePos.y != mousePos.y;
+		mousePos = newMousePos;
+		return moved;
+
+	} else {
+		mousePos = ImGui::GetMousePos();
+		initialized = true;
+		return false;
+	}
+}
+
 static OtObject getMousePos() {
 	auto pos = ImGui::GetMousePos();
 	return OtVec2::create(pos.x, pos.y);
@@ -206,6 +227,8 @@ static OtModuleRegistration registration{"input", [](OtModule module) {
 	module->set("isButtonDown", OtFunction::create(&isButtonDown));
 	module->set("isButtonReleased", OtFunction::create(&isButtonReleased));
 	module->set("isButtonPressed", OtFunction::create(&isButtonPressed));
+	module->set("isDoubleClicked", OtFunction::create(&isDoubleClicked));
+	module->set("hasMouseMoved", OtFunction::create(&hasMouseMoved));
 	module->set("getMousePos", OtFunction::create(&getMousePos));
 	module->set("getMouseDrag", OtFunction::create(&getMouseDrag));
 }};

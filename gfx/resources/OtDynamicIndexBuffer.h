@@ -23,13 +23,13 @@ class OtDynamicIndexBuffer {
 public:
 	// constructors
 	OtDynamicIndexBuffer() = default;
-	OtDynamicIndexBuffer(size_t s) : size(s) {}
+	OtDynamicIndexBuffer(size_t ms) : maxSize(ms) {}
 
 	// clear the resources
 	inline void clear() { indexBuffer.clear(); }
 
 	// set size
-	inline void setSize(size_t s) { size = s; }
+	inline void setMaxSize(size_t ms) { maxSize = ms; }
 
 	// set indices
 	void set(void* data, size_t count);
@@ -43,5 +43,6 @@ public:
 private:
 	// the actual buffer
 	OtBgfxHandle<bgfx::DynamicIndexBufferHandle> indexBuffer;
-	size_t size = 20000;
+	size_t maxSize = 20000;
+	size_t indexCount;
 };

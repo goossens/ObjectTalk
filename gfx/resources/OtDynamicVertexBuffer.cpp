@@ -27,10 +27,11 @@ void OtDynamicVertexBuffer::set(void* data, size_t count, const bgfx::VertexLayo
 
 	if (!isValid()) {
 		layout = l;
-		vertexBuffer = bgfx::createDynamicVertexBuffer(uint32_t(size), layout);
+		vertexBuffer = bgfx::createDynamicVertexBuffer(uint32_t(maxSize), layout);
 	}
 
-	bgfx::update(vertexBuffer.getHandle(), 0, bgfx::copy(data, layout.getSize((uint32_t) count)));
+	bgfx::update(vertexBuffer.getHandle(), 0, bgfx::copy(data, layout.getSize(uint32_t(count))));
+	vertexCount = count;
 }
 
 
@@ -40,7 +41,7 @@ void OtDynamicVertexBuffer::set(void* data, size_t count, const bgfx::VertexLayo
 
 void OtDynamicVertexBuffer::submit(uint8_t stream) {
 	if (isValid()) {
-		bgfx::setVertexBuffer(stream, vertexBuffer.getHandle());
+		bgfx::setVertexBuffer(stream, vertexBuffer.getHandle(), 0, uint32_t(vertexCount));
 
 	} else {
 		OtLogFatal("Internal error: DynamicVertexBuffer not initialized before submission");

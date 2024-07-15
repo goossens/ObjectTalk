@@ -22,10 +22,11 @@
 
 void OtDynamicIndexBuffer::set(void* data, size_t count) {
 	if (!isValid()) {
-		indexBuffer = bgfx::createDynamicIndexBuffer(uint32_t(size));
+		indexBuffer = bgfx::createDynamicIndexBuffer(uint32_t(count));
 	}
 
-	bgfx::update(indexBuffer.getHandle(), 0, bgfx::copy(data, (uint32_t) (count * sizeof(uint32_t))));
+	bgfx::update(indexBuffer.getHandle(), 0, bgfx::copy(data, uint32_t(count * sizeof(uint32_t))));
+	indexCount = count;
 }
 
 
@@ -35,7 +36,7 @@ void OtDynamicIndexBuffer::set(void* data, size_t count) {
 
 void OtDynamicIndexBuffer::submit() {
 	if (isValid()) {
-		bgfx::setIndexBuffer(indexBuffer.getHandle());
+		bgfx::setIndexBuffer(indexBuffer.getHandle(), 0, uint32_t(indexCount));
 
 	} else {
 		OtLogFatal("Internal error: DynamicIndexBuffer not initialized before submission");

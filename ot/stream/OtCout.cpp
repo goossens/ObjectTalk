@@ -20,7 +20,7 @@
 //
 
 OtObject OtCoutClass::operator<<(OtObject object) {
-	std::cout << object->operator std::string();
+	std::cout << object->operator std::string() << std::flush;
 	return OtCout(this);
 }
 
@@ -30,12 +30,12 @@ OtObject OtCoutClass::operator<<(OtObject object) {
 //
 
 void OtCoutClass::write(const char* string) {
-	std::cout << string;
+	std::cout << string << std::flush;
 }
 
 
 void OtCoutClass::write(const std::string& string) {
-	std::cout << string;
+	std::cout << string << std::flush;
 }
 
 

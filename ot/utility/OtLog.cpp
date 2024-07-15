@@ -83,7 +83,7 @@ void OtLogger::log(const char* filename, int lineno, int type, const std::string
 			OtStderrMultiplexer::instance()->multiplex(type, output);
 
 		} else {
-			std::cerr << output;
+			std::cerr << output << std::flush;
 		}
 	}
 

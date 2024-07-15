@@ -20,7 +20,7 @@
 //
 
 OtObject OtCerrClass::operator<<(OtObject object) {
-	std::cerr << object->operator std::string();
+	std::cerr << object->operator std::string() << std::flush;
 	return OtCerr(this);
 }
 
@@ -30,12 +30,12 @@ OtObject OtCerrClass::operator<<(OtObject object) {
 //
 
 void OtCerrClass::write(const char* string) {
-	std::cerr << string;
+	std::cerr << string << std::flush;
 }
 
 
 void OtCerrClass::write(const std::string& string) {
-	std::cerr << string;
+	std::cerr << string << std::flush;
 }
 
 

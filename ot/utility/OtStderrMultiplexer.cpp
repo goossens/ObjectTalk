@@ -19,11 +19,11 @@
 //
 
 void OtStderrMultiplexer::multiplex(int type, const std::string& message) {
-	std::cerr << '\x02' << char(10 + type) << message << '\x03';
+	std::cerr << '\x02' << char(10 + type) << message << '\x03' << std::flush;
 }
 
 void OtStderrMultiplexer::multiplex(OtException& exception) {
-	std::cerr << '\x02' << '\x00' << exception.serialize() << '\x03';
+	std::cerr << '\x02' << '\x00' << exception.serialize() << '\x03' << std::flush;
 }
 
 

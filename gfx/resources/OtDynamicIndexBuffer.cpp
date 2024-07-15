@@ -22,7 +22,7 @@
 
 void OtDynamicIndexBuffer::set(void* data, size_t count) {
 	if (!isValid()) {
-		indexBuffer = bgfx::createDynamicIndexBuffer(uint32_t(count));
+		indexBuffer = bgfx::createDynamicIndexBuffer(1000);
 	}
 
 	bgfx::update(indexBuffer.getHandle(), 0, bgfx::copy(data, uint32_t(count * sizeof(uint32_t))));

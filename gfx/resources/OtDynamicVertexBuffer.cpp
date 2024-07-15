@@ -27,7 +27,7 @@ void OtDynamicVertexBuffer::set(void* data, size_t count, const bgfx::VertexLayo
 
 	if (!isValid()) {
 		layout = l;
-		vertexBuffer = bgfx::createDynamicVertexBuffer(uint32_t(maxSize), layout);
+		vertexBuffer = bgfx::createDynamicVertexBuffer(1000, layout, BGFX_BUFFER_ALLOW_RESIZE);
 	}
 
 	bgfx::update(vertexBuffer.getHandle(), 0, bgfx::copy(data, layout.getSize(uint32_t(count))));

@@ -211,7 +211,7 @@ examples above. Here's another example:
 	// Prints "The default temperature is 32° Fahrenheit"
 
 In case the class is derived from a class that also has a constructor,
-the superclass constructor must also be called like:
+the superclass constructor must also be called like this:
 
 	class Temperature : Object {
 		function __init__(this) {
@@ -221,7 +221,7 @@ the superclass constructor must also be called like:
 
 	class Fahrenheit : Temperature {
 		function __init__(this) {
-			Temperature::__init__(this);
+			super.__init__(this);
 			this.temperature = 32;
 		}
 	}
@@ -272,7 +272,7 @@ all classes in ObjectTalk have a parent class with the exception of the
 	}
 
 It’s valid for a subclass member to call a superclass member using the
-Scope Resolution Operator (**::**):
+**super** special keyword.
 
 	class A : Object {
 		function someMethod(this, value) {
@@ -282,10 +282,21 @@ Scope Resolution Operator (**::**):
 
 	class B : A {
 		function someMethod(this, value) {
-			A::someMethod(this, value);
+			super.someMethod(this, value);
 			print("B.someMethod(", value, ")");
 		}
 	}
 
 	var b = B();
 	b.someMethod(2);
+
+Please note that the **super** mechanism can only be used in a class
+definition and it is basically a shortcut to the superclass' specified
+member function. As such, the resulting reference is unbound and you
+have to pass the target object as the first parameter in the member
+function call.
+
+In the above example **b.someMethod(2)** is translated into a bound
+member function call and **someMethod** is called with **b** and **2**
+as parameters. **super.someMethod** is an unbound member function call
+and you will have to pass the object.

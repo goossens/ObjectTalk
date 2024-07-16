@@ -16,6 +16,7 @@
 #include <unordered_map>
 
 #include "OtByteCode.h"
+#include "OtClass.h"
 #include "OtModule.h"
 #include "OtOptimizer.h"
 #include "OtScanner.h"
@@ -61,6 +62,9 @@ private:
 
 	// compile function
 	void function(OtByteCode bytecode);
+
+	// compile superclass reference
+	void super(OtByteCode bytecode);
 
 	// compile primary expression
 	bool primary(OtByteCode bytecode);
@@ -183,6 +187,9 @@ private:
 	};
 
 	std::vector<OtScope> scopeStack;
+
+	// class tracker
+	std::vector<OtClass> classStack;
 
 	// debugging support
 	bool disassembleBytecode = false;

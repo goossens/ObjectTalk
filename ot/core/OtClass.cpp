@@ -87,6 +87,25 @@ OtObject& OtClassClass::get(size_t selector) {
 
 
 //
+//	OtClassClass::getSuper
+//
+
+ OtObject OtClassClass::getSuper(size_t selector) {
+	for (auto t = classType ? classType->getParent() : classType; t; t = t->getParent()) {
+		if (t->has(selector)) {
+			return t->get(selector);
+		}
+	}
+
+	auto name = OtSelector::name(selector);
+	OtError("Unknown member [{}] in superclass of [{}]", name, type->getName());
+
+	// we will never get here because of the exception but a return statement keeps the compiler happy
+	return members->get(selector);
+ }
+
+
+//
 //	OtClassClass::getMeta
 //
 

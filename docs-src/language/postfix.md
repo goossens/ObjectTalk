@@ -1,3 +1,3 @@
 ![Railroad Diagram](img/postfix.png)
 
-	postfix ::= primary ("[" expression "]" | "(" expression ("," expression)* ")" | "." name | "::" name | "++" | "--")*
+	postfix ::= primary ("[" expression "]" | "(" expression ("," expression)* ")" | "." name | "++" | "--")*

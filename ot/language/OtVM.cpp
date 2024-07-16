@@ -14,6 +14,7 @@
 #include "fmt/format.h"
 
 #include "OtAssert.h"
+#include "OtClass.h"
 #include "OtException.h"
 #include "OtFunction.h"
 #include "OtLog.h"
@@ -144,12 +145,11 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 					break;
 				}
 
-				case OtByteCodeClass::unboundOpcode: {
-					// put an unbound member on the stack
-					auto object = stack.pop();
+				case OtByteCodeClass::superOpcode: {
+					auto cls = OtClass(stack.pop());
 					auto member = bytecode->getNumber(pc);
-					auto unbound = OtMemberReferenceClass::resolveMember(object, member, true);
-					stack.push(unbound);
+					auto result = cls->getSuper(member);
+					stack.push(result);
 					break;
 				}
 

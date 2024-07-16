@@ -42,12 +42,12 @@ public:
 	OtObject assign(OtObject value) { return object->set(member, value); }
 
 	// resolve member reference and deal with bound functions if required
-	static OtObject resolveMember(OtObject& object, size_t member, bool unbound=false) {
+	static OtObject resolveMember(OtObject& object, size_t member) {
 		// get the member
 		auto memberObject = object->get(member);
 
 		// never create bound functions for Modules or Globals
-		if (unbound || object.isKindOf<OtModuleClass>() || object.isKindOf<OtGlobalClass>()) {
+		if (object.isKindOf<OtModuleClass>() || object.isKindOf<OtGlobalClass>()) {
 			return memberObject;
 
 		// create bound function if required

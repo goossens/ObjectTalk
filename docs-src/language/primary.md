@@ -8,3 +8,4 @@
 	| string
 	| function
 	| name
+	| "super" "." name

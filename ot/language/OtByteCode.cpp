@@ -87,16 +87,16 @@ std::string OtByteCodeClass::disassemble() {
 				buffer << "member" << OtSelector::name(getNumber(pc));
 				break;
 
-			case unboundOpcode:
-				buffer << "unbound" << OtSelector::name(getNumber(pc));
-				break;
-
 			case methodOpcode: {
 				auto method = getNumber(pc);
 				auto count =getNumber(pc);
 				buffer << "method" << OtSelector::name(method) << "(" << count << ")";
 				break;
 			}
+
+			case superOpcode:
+				buffer << "super" << OtSelector::name(getNumber(pc));
+				break;
 
 			case exitOpcode:
 				buffer << "exit";
@@ -203,8 +203,8 @@ void OtByteCodeClass::copyInstruction(OtByteCode other, size_t pc) {
 			member(other->getNumber(pc));
 			break;
 
-		case unboundOpcode:
-			unbound(other->getNumber(pc));
+		case superOpcode:
+			super(other->getNumber(pc));
 			break;
 
 		case methodOpcode: {
@@ -313,12 +313,12 @@ size_t OtByteCodeClass::getInstructionSize(size_t offset) {
 			getNumber(pc);
 			break;
 
-		case unboundOpcode:
+		case methodOpcode:
+			getNumber(pc);
 			getNumber(pc);
 			break;
 
-		case methodOpcode:
-			getNumber(pc);
+		case superOpcode:
 			getNumber(pc);
 			break;
 

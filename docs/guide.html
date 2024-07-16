@@ -1895,7 +1895,8 @@ print(&quot;The default temperature is &quot;, f.temperature, &quot;° Fahrenhei
 </code></pre>
             <p>
               In case the class is derived from a class that also has a
-              constructor, the superclass constructor must also be called like:
+              constructor, the superclass constructor must also be called like
+              this:
             </p>
             <pre><code>class Temperature : Object {
 	function __init__(this) {
@@ -1905,7 +1906,7 @@ print(&quot;The default temperature is &quot;, f.temperature, &quot;° Fahrenhei
 
 class Fahrenheit : Temperature {
 	function __init__(this) {
-		Temperature::__init__(this);
+		super.__init__(this);
 		this.temperature = 32;
 	}
 }
@@ -1965,7 +1966,7 @@ class B : A {
 </code></pre>
             <p>
               It’s valid for a subclass member to call a superclass member using
-              the Scope Resolution Operator (<strong>::</strong>):
+              the <strong>super</strong> special keyword.
             </p>
             <pre><code>class A : Object {
 	function someMethod(this, value) {
@@ -1975,7 +1976,7 @@ class B : A {
 
 class B : A {
 	function someMethod(this, value) {
-		A::someMethod(this, value);
+		super.someMethod(this, value);
 		print(&quot;B.someMethod(&quot;, value, &quot;)&quot;);
 	}
 }
@@ -1983,6 +1984,21 @@ class B : A {
 var b = B();
 b.someMethod(2);
 </code></pre>
+            <p>
+              Please note that the <strong>super</strong> mechanism can only be
+              used in a class definition and it is basically a shortcut to the
+              superclass' specified member function. As such, the resulting
+              reference is unbound and you have to pass the target object as the
+              first parameter in the member function call.
+            </p>
+            <p>
+              In the above example <strong>b.someMethod(2)</strong> is
+              translated into a bound member function call and
+              <strong>someMethod</strong> is called with <strong>b</strong> and
+              <strong>2</strong> as parameters.
+              <strong>super.someMethod</strong> is an unbound member function
+              call and you will have to pass the object.
+            </p>
           </div>
           <div id="functions">
             <h1 class="pb-2">Functions</h1>

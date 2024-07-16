@@ -406,6 +406,27 @@ void OtCompiler::function(OtByteCode bytecode) {
 
 
 //
+//	OtCompiler::super
+//
+
+void OtCompiler::super(OtByteCode bytecode) {
+	// ensure we are in a class definition
+	if (!classStack.size()) {
+		OtError("Can't use [super] outside of a class definition");
+	}
+
+	// put class reference on stack
+	bytecode->push(classStack.back());
+
+	// parse member reference and create super instruction
+	scanner.expect(OtScanner::PERIOD_TOKEN);
+	scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
+	bytecode->super(scanner.getText());
+	scanner.advance();
+}
+
+
+//
 //	OtCompiler::primary
 //
 
@@ -446,6 +467,13 @@ bool OtCompiler::primary(OtByteCode bytecode) {
 			// handle function definition
 			scanner.advance();
 			function(bytecode);
+			reference = false;
+			break;
+
+		case OtScanner::SUPER_TOKEN:
+			// handle superclass construct
+			scanner.advance();
+			super(bytecode);
 			reference = false;
 			break;
 
@@ -532,7 +560,6 @@ bool OtCompiler::postfix(OtByteCode bytecode) {
 	while (token == OtScanner::LBRACKET_TOKEN ||
 		   token == OtScanner::LPAREN_TOKEN ||
 		   token == OtScanner::PERIOD_TOKEN ||
-		   token == OtScanner::DOUBLE_COLON_TOKEN ||
 		   token == OtScanner::INCREMENT_TOKEN ||
 		   token == OtScanner::DECREMENT_TOKEN) {
 		scanner.advance();
@@ -578,18 +605,6 @@ bool OtCompiler::postfix(OtByteCode bytecode) {
 				bytecode->member(scanner.getText());
 				scanner.advance();
 				reference = true;
-				break;
-
-			case OtScanner::DOUBLE_COLON_TOKEN:
-				// unbound member access
-				if (reference) {
-					bytecode->method("__deref__", 0);
-				}
-
-				scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
-				bytecode->unbound(scanner.getText());
-				scanner.advance();
-				reference = false;
 				break;
 
 			case OtScanner::INCREMENT_TOKEN:
@@ -1342,6 +1357,7 @@ void OtCompiler::classDeclaration(OtByteCode bytecode) {
 
 	// create new class
 	OtClass cls = OtClass::create(name);
+	classStack.push_back(cls);
 
 	// add class to current scope
 	declareVariable(bytecode, name);
@@ -1374,6 +1390,7 @@ void OtCompiler::classDeclaration(OtByteCode bytecode) {
 
 	// end class scope
 	popScope();
+	classStack.pop_back();
 }
 
 

@@ -248,7 +248,7 @@
           <div id="postfix">
             <h1 class="pb-2">postfix</h1>
             <p><img src="img/postfix.png" alt="Railroad Diagram" /></p>
-            <pre><code>postfix ::= primary (&quot;[&quot; expression &quot;]&quot; | &quot;(&quot; expression (&quot;,&quot; expression)* &quot;)&quot; | &quot;.&quot; name | &quot;::&quot; name | &quot;++&quot; | &quot;--&quot;)*
+            <pre><code>postfix ::= primary (&quot;[&quot; expression &quot;]&quot; | &quot;(&quot; expression (&quot;,&quot; expression)* &quot;)&quot; | &quot;.&quot; name | &quot;++&quot; | &quot;--&quot;)*
 </code></pre>
           </div>
           <div id="primary">
@@ -262,6 +262,7 @@
 | string
 | function
 | name
+| &quot;super&quot; &quot;.&quot; name
 </code></pre>
           </div>
           <div id="integer">

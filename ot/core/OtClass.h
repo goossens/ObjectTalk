@@ -47,6 +47,9 @@ public:
 	OtObject set(size_t selector, OtObject value) override { return classType->set(selector, value); }
 	void unset(size_t selector) override { return classType->unset(selector); }
 
+	// special superclass member access
+	OtObject getSuper(size_t selector);
+
 	// get the classes type
 	OtType getClassType() { return classType; }
 

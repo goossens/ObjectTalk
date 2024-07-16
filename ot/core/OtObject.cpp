@@ -129,7 +129,7 @@ void OtObjectClass::getMemberNames(std::vector<std::string_view>& names) {
 	} else {
 		names.clear();
 	}
- }
+}
 
 
 //

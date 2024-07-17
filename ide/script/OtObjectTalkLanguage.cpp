@@ -201,7 +201,7 @@ const TextEditor::LanguageDefinition& OtObjectTalkLanguageGetDefinition() {
 		}
 
 		static const char* const otKeywords[] = {
-			"catch", "class", "do", "elif", "else", "for", "if", "in", "not", "return", "throw", "try", "while"
+			"catch", "class", "do", "elif", "else", "for", "if", "in", "not", "return", "super", "throw", "try", "while"
 		};
 
 		for (auto& k : otKeywords) {
@@ -209,7 +209,7 @@ const TextEditor::LanguageDefinition& OtObjectTalkLanguageGetDefinition() {
 		}
 
 		static const char* const otFunctions[] = {
-			"assert", "import", "members", "print", "range", "super"
+			"assert", "import", "members", "print", "range"
 		};
 
 		for (auto& f : otFunctions) {

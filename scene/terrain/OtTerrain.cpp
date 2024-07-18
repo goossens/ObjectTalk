@@ -72,9 +72,7 @@ bool OtTerrain::renderUI() {
 
 #ifdef OT_DEBUG
 	std::string buffer = std::to_string(meshes.size());
-	void OtUiReadonlyText(const char* label, std::string& value);
-
-	OtUiReadonlyText("Visible Meshes", buffer);
+	OtUiReadonlyText("Visible Meshes", &buffer);
 #endif
 
 	return changed;

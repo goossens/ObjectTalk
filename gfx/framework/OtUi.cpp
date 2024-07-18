@@ -140,15 +140,6 @@ void OtUiHeader(const char* label, float width) {
 
 
 //
-//	OtUiReadonlyText
-//
-
-void OtUiReadonlyText(const char* label, std::string& value) {
-	ImGui::InputText(label, (char*) value.c_str(), value.capacity() + 1, ImGuiInputTextFlags_ReadOnly);
-}
-
-
-//
 //	OtUiToggleButton
 //
 
@@ -200,6 +191,15 @@ bool OtUiToggleButton(const char* labelPlusID, bool* value) {
 	}
 
 	return changed;
+}
+
+
+//
+//	OtUiReadonlyText
+//
+
+void OtUiReadonlyText(const char* label, std::string* value) {
+	ImGui::InputText(label, (char*) value->c_str(), value->capacity() + 1, ImGuiInputTextFlags_ReadOnly);
 }
 
 

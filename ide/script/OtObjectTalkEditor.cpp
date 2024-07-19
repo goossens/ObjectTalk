@@ -129,6 +129,9 @@ void OtObjectTalkEditor::renderMenu() {
 			if (ImGui::MenuItem("Paste", OT_UI_SHORTCUT "V", nullptr, ImGui::GetClipboardText() != nullptr)) { editor.Paste(); }
 
 			ImGui::Separator();
+			if (ImGui::MenuItem("Find", OT_UI_SHORTCUT "F")) { openSearchReplace(); }
+
+			ImGui::Separator();
 			if (ImGui::MenuItem("Select All", OT_UI_SHORTCUT "A", nullptr, editor.GetText().size() != 0)) { editor.SelectAll(); }
 			ImGui::EndMenu();
 		}
@@ -151,6 +154,16 @@ void OtObjectTalkEditor::renderMenu() {
 
 		ImGui::EndMenuBar();
 	}
+
+	// handle keyboard shortcuts (if required)
+	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows)) {
+		// handle menu shortcuts
+		if (ImGui::IsKeyDown(ImGuiMod_Ctrl)) {
+			if (ImGui::IsKeyPressed(ImGuiKey_F, false)) {
+				openSearchReplace();
+			}
+		}
+	}
 }
 
 
@@ -159,9 +172,18 @@ void OtObjectTalkEditor::renderMenu() {
 //
 
 void OtObjectTalkEditor::renderEditor() {
+	// get current position and available space
+	auto pos = ImGui::GetCursorPos();
+	auto available = ImGui::GetContentRegionAvail();
+
+	// ensure editor has focus (if required)
+	if (focusOnEditor) {
+		ImGui::SetNextWindowFocus();
+		focusOnEditor = false;
+	}
+
 	// render the text editor
-	ImGuiIO& io = ImGui::GetIO();
-	ImGui::PushFont(io.Fonts->Fonts[uiEditorFont]);
+	ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[uiEditorFont]);
 	editor.Render("TextEditor");
 	ImGui::PopFont();
 
@@ -170,6 +192,69 @@ void OtObjectTalkEditor::renderEditor() {
 	if (scrollToLine) {
 		editor.SetCursorPosition(scrollToLine - 1, 0);
 		scrollToLine = 0;
+	}
+
+	// render search/replace window (if required)
+	if (searchReplaceVisible) {
+		// calculate sizes
+		auto& style = ImGui::GetStyle();
+		auto fieldWidth = 250.0f;
+
+		auto replaceWidth = ImGui::CalcTextSize(" Replace ").x + style.FramePadding.x * 2.0f;
+		auto replaceAllWidth = ImGui::CalcTextSize(" Replace All ").x + style.FramePadding.x * 2.0f;
+		auto optionWidth = ImGui::CalcTextSize("Aa").x + style.FramePadding.x * 2.0f;
+
+		auto windowHeight =
+			style.ChildBorderSize * 2.0f +
+			style.WindowPadding.y * 2.0f +
+			ImGui::GetFrameHeight() * 2.0f +
+			style.ItemSpacing.y;
+
+		auto windowWidth =
+			style.ChildBorderSize * 2.0f +
+			style.WindowPadding.x * 2.0f +
+			fieldWidth + style.ItemSpacing.x +
+			replaceWidth + style.ItemSpacing.x +
+			replaceAllWidth + style.ItemSpacing.x +
+			optionWidth * 3.0f + style.ItemSpacing.x * 2.0f;
+
+		// create window
+		ImGui::SetCursorPos(ImVec2(
+			pos.x + available.x - windowWidth - style.ScrollbarSize - style.ItemSpacing.x,
+			pos.y + style.ItemSpacing.y * 2.0f));
+
+		ImGui::BeginChild("search-replace", ImVec2(windowWidth, windowHeight), ImGuiChildFlags_Border);
+
+		ImGui::SetNextItemWidth(fieldWidth);
+
+		if (focusOnSearch) {
+			ImGui::SetKeyboardFocusHere(0);
+			focusOnSearch = false;
+		}
+
+		OtUiInputText("###search", &searchText);
+		ImGui::SameLine();
+		ImGui::Button("Find", ImVec2(replaceWidth, 0.0f));
+		ImGui::SameLine();
+		ImGui::Button("Find All", ImVec2(replaceAllWidth, 0.0f));
+		ImGui::SameLine();
+		ImGui::Button("Aa", ImVec2(optionWidth, 0.0f));
+		ImGui::SameLine();
+		ImGui::Button("[]", ImVec2(optionWidth, 0.0f));
+		ImGui::SameLine();
+
+		if (ImGui::Button("x", ImVec2(optionWidth, 0.0f))) {
+			searchReplaceVisible = false;
+		}
+
+		ImGui::SetNextItemWidth(fieldWidth);
+		OtUiInputText("###replace", &replaceText);
+		ImGui::SameLine();
+		ImGui::Button("Replace", ImVec2(replaceWidth, 0.0f));
+		ImGui::SameLine();
+		ImGui::Button("Replace All", ImVec2(replaceAllWidth, 0.0f));
+
+		ImGui::EndChild();
 	}
 }
 
@@ -202,4 +287,14 @@ void OtObjectTalkEditor::highlightError(size_t line, const std::string& error) {
 void OtObjectTalkEditor::clearError() {
 	std::map<int, std::string> markers;
 	editor.SetErrorMarkers(markers);
+}
+
+
+//
+//	OtObjectTalkEditor::searchReplace
+//
+
+void OtObjectTalkEditor::openSearchReplace() {
+	searchReplaceVisible = true;
+	focusOnSearch = true;
 }

@@ -48,8 +48,17 @@ private:
 
 	// visual text editor
 	TextEditor editor;
+	bool focusOnEditor = true;
+
+	// search and replace support
+	bool searchReplaceVisible = false;
+	bool focusOnSearch = false;
+	std::string searchText;
+	std::string replaceText;
+
+	void openSearchReplace();
 
 	// properties
 	int version = 0;
-	int scrollToLine = 0;
+	int scrollToLine = 1;
 };

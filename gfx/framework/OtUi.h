@@ -72,7 +72,7 @@ bool OtUiToggleButton(const char* label, bool* value);
 void OtUiReadonlyText(const char* label, std::string* value);
 
 // create an input field based on a std::string
-bool OtUiInputText(const char* label, std::string* value, ImGuiInputTextFlags flags=ImGuiInputTextFlags_None);
+bool OtUiInputText(const char* label, std::string* value, ImGuiInputTextFlags flags=ImGuiInputTextFlags_EnterReturnsTrue);
 
 // create a field to edit numbers
 bool OtUiDragInt(const char* label, int* value, int minv=-std::numeric_limits<int>::max(), int maxv=std::numeric_limits<int>::max());

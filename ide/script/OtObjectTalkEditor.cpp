@@ -129,9 +129,6 @@ void OtObjectTalkEditor::renderMenu() {
 			if (ImGui::MenuItem("Paste", OT_UI_SHORTCUT "V", nullptr, ImGui::GetClipboardText() != nullptr)) { editor.Paste(); }
 
 			ImGui::Separator();
-			if (ImGui::MenuItem("Find", OT_UI_SHORTCUT "F")) { openSearchReplace(); }
-
-			ImGui::Separator();
 			if (ImGui::MenuItem("Select All", OT_UI_SHORTCUT "A", nullptr, editor.GetText().size() != 0)) { editor.SelectAll(); }
 			ImGui::EndMenu();
 		}
@@ -152,6 +149,14 @@ void OtObjectTalkEditor::renderMenu() {
 			ImGui::EndMenu();
 		}
 
+		if (ImGui::BeginMenu("Find")) {
+			if (ImGui::MenuItem("Find", OT_UI_SHORTCUT "F")) { openSearchReplace(); }
+			if (ImGui::MenuItem("Find Next", OT_UI_SHORTCUT "G"), searchText.size()) { find(); }
+			if (ImGui::MenuItem("Find All", "^" OT_UI_SHORTCUT "G", searchText.size())) { findAll(); }
+			ImGui::Separator();
+			ImGui::EndMenu();
+		}
+
 		ImGui::EndMenuBar();
 	}
 
@@ -161,6 +166,12 @@ void OtObjectTalkEditor::renderMenu() {
 		if (ImGui::IsKeyDown(ImGuiMod_Ctrl)) {
 			if (ImGui::IsKeyPressed(ImGuiKey_F, false)) {
 				openSearchReplace();
+
+			} else if (ImGui::IsKeyDown(ImGuiMod_Shift) && ImGui::IsKeyPressed(ImGuiKey_G, false)) {
+				findAll();
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_G, false)) {
+				find();
 			}
 		}
 	}
@@ -232,27 +243,66 @@ void OtObjectTalkEditor::renderEditor() {
 			focusOnSearch = false;
 		}
 
-		OtUiInputText("###search", &searchText);
+		if (OtUiInputText("###search", &searchText)) {
+			find();
+		}
+
+		if (!searchText.size()) {
+			ImGui::BeginDisabled();
+		}
+
 		ImGui::SameLine();
-		ImGui::Button("Find", ImVec2(replaceWidth, 0.0f));
+
+		if (ImGui::Button("Find", ImVec2(replaceWidth, 0.0f))) {
+			find();
+		}
+
 		ImGui::SameLine();
-		ImGui::Button("Find All", ImVec2(replaceAllWidth, 0.0f));
+
+		if (ImGui::Button("Find All", ImVec2(replaceAllWidth, 0.0f))) {
+			findAll();
+		}
+
+		if (!searchText.size()) {
+			ImGui::EndDisabled();
+		}
+
 		ImGui::SameLine();
-		ImGui::Button("Aa", ImVec2(optionWidth, 0.0f));
+		OtUiLatchButton("Aa", &caseSensitiveSearch, ImVec2(optionWidth, 0.0f));
 		ImGui::SameLine();
-		ImGui::Button("[]", ImVec2(optionWidth, 0.0f));
+		OtUiLatchButton("[]", &wholeWordSearch, ImVec2(optionWidth, 0.0f));
 		ImGui::SameLine();
 
 		if (ImGui::Button("x", ImVec2(optionWidth, 0.0f))) {
 			searchReplaceVisible = false;
+			focusOnEditor = true;
 		}
 
 		ImGui::SetNextItemWidth(fieldWidth);
-		OtUiInputText("###replace", &replaceText);
+
+		if (OtUiInputText("###replace", &replaceText)) {
+
+		}
+
 		ImGui::SameLine();
-		ImGui::Button("Replace", ImVec2(replaceWidth, 0.0f));
+
+		if (!searchText.size() || !replaceText.size()) {
+			ImGui::BeginDisabled();
+		}
+
+		if (ImGui::Button("Replace", ImVec2(replaceWidth, 0.0f))) {
+			replace();
+		}
+
 		ImGui::SameLine();
-		ImGui::Button("Replace All", ImVec2(replaceAllWidth, 0.0f));
+
+		if (ImGui::Button("Replace All", ImVec2(replaceAllWidth, 0.0f))) {
+			replaceAll();
+		}
+
+		if (!searchText.size() || !replaceText.size()) {
+			ImGui::EndDisabled();
+		}
 
 		ImGui::EndChild();
 	}
@@ -297,4 +347,44 @@ void OtObjectTalkEditor::clearError() {
 void OtObjectTalkEditor::openSearchReplace() {
 	searchReplaceVisible = true;
 	focusOnSearch = true;
+}
+
+
+//
+//	OtObjectTalkEditor::find
+//
+
+void OtObjectTalkEditor::find() {
+	if (searchText.size()) {
+		editor.SelectNextOccurrenceOf(searchText.c_str(), searchText.size(), caseSensitiveSearch);
+		focusOnEditor = true;
+	}
+}
+
+
+//
+//	OtObjectTalkEditor::findAll
+//
+
+void OtObjectTalkEditor::findAll() {
+	if (searchText.size()) {
+		editor.SelectAllOccurrencesOf(searchText.c_str(), searchText.size(), caseSensitiveSearch);
+		focusOnEditor = true;
+	}
+}
+
+
+//
+//	OtObjectTalkEditor::replace
+//
+
+void OtObjectTalkEditor::replace() {
+}
+
+
+//
+//	OtObjectTalkEditor::replaceAll
+//
+
+void OtObjectTalkEditor::replaceAll() {
 }

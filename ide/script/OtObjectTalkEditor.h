@@ -55,8 +55,14 @@ private:
 	bool focusOnSearch = false;
 	std::string searchText;
 	std::string replaceText;
+	bool caseSensitiveSearch = false;
+	bool wholeWordSearch = false;
 
 	void openSearchReplace();
+	void find();
+	void findAll();
+	void replace();
+	void replaceAll();
 
 	// properties
 	int version = 0;

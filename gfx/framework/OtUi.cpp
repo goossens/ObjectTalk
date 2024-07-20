@@ -195,6 +195,34 @@ bool OtUiToggleButton(const char* labelPlusID, bool* value) {
 
 
 //
+//	OtUiLatchButton
+//
+
+void OtUiLatchButton(const char* label, bool* value, const ImVec2& size) {
+	ImVec4* colors = ImGui::GetStyle().Colors;
+
+	if (*value) {
+		ImGui::PushStyleColor(ImGuiCol_Button, colors[ImGuiCol_ButtonActive]);
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colors[ImGuiCol_ButtonActive]);
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, colors[ImGuiCol_TableBorderLight]);
+
+	} else {
+		ImGui::PushStyleColor(ImGuiCol_Button, colors[ImGuiCol_TableBorderLight]);
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colors[ImGuiCol_TableBorderLight]);
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, colors[ImGuiCol_ButtonActive]);
+	}
+
+	ImGui::Button(label, size);
+
+	if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
+		*value = !*value;
+	}
+
+	ImGui::PopStyleColor(3);
+}
+
+
+//
 //	OtUiReadonlyText
 //
 

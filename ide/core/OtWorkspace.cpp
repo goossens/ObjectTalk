@@ -450,6 +450,7 @@ void OtWorkspace::deleteEditor(std::shared_ptr<OtEditor> editor) {
 
 	if (editors.size() == 0) {
 		state = splashState;
+		activeEditor = nullptr;
 	}
 }
 

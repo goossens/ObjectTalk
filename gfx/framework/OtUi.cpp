@@ -236,25 +236,8 @@ void OtUiReadonlyText(const char* label, std::string* value) {
 //
 
 bool OtUiInputText(const char* label, std::string* value, ImGuiInputTextFlags flags) {
-	bool reportEveryChange = !(flags & ImGuiInputTextFlags_EnterReturnsTrue);
-
-	flags &= ~ImGuiInputTextFlags_EnterReturnsTrue;
-
-	flags |=
-		ImGuiInputTextFlags_NoUndoRedo |
-		ImGuiInputTextFlags_CallbackResize;
-
-	bool changed = ImGui::InputText(label, (char*) value->c_str(), value->capacity() + 1, flags, [](ImGuiInputTextCallbackData* data) {
-		if (data->EventFlag == ImGuiInputTextFlags_CallbackResize) {
-			std::string* value = (std::string*) data->UserData;
-			value->resize(data->BufTextLen);
-			data->Buf = (char*) value->c_str();
-		}
-
-		return 0;
-	}, value);
-
-	return reportEveryChange ? changed : ImGui::IsItemDeactivatedAfterEdit();
+	OtUiInputString(label, value, flags);
+	return ImGui::IsItemDeactivatedAfterEdit();
 }
 
 

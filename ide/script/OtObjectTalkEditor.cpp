@@ -239,12 +239,15 @@ void OtObjectTalkEditor::renderEditor() {
 		ImGui::SetNextItemWidth(fieldWidth);
 
 		if (focusOnSearch) {
-			ImGui::SetKeyboardFocusHere(0);
+			ImGui::SetKeyboardFocusHere();
 			focusOnSearch = false;
 		}
 
-		if (OtUiInputText("###search", &searchText)) {
-			find();
+		if (OtUiInputString("###search", &searchText)) {
+			if (searchText.size()) {
+				editor.SetCursorPosition(0, 0);
+				editor.SelectNextOccurrenceOf(searchText.c_str(), searchText.size(), caseSensitiveSearch);
+			}
 		}
 
 		if (!searchText.size()) {
@@ -279,11 +282,7 @@ void OtObjectTalkEditor::renderEditor() {
 		}
 
 		ImGui::SetNextItemWidth(fieldWidth);
-
-		if (OtUiInputText("###replace", &replaceText)) {
-
-		}
-
+		OtUiInputText("###replace", &replaceText);
 		ImGui::SameLine();
 
 		if (!searchText.size() || !replaceText.size()) {
@@ -379,6 +378,15 @@ void OtObjectTalkEditor::findAll() {
 //
 
 void OtObjectTalkEditor::replace() {
+	if (searchText.size()) {
+		if (!editor.AnyCursorHasSelection()) {
+			editor.SelectNextOccurrenceOf(searchText.c_str(), searchText.size(), caseSensitiveSearch);
+		}
+
+		editor.ReplaceTextInCurrentCursor(replaceText);
+		editor.SelectNextOccurrenceOf(searchText.c_str(), searchText.size(), caseSensitiveSearch);
+		focusOnEditor = true;
+	}
 }
 
 
@@ -387,4 +395,10 @@ void OtObjectTalkEditor::replace() {
 //
 
 void OtObjectTalkEditor::replaceAll() {
+	if (searchText.size()) {
+		editor.SelectAllOccurrencesOf(searchText.c_str(), searchText.size(), caseSensitiveSearch);
+		editor.ReplaceTextInAllCursors(replaceText);
+		editor.ClearExtraCursors();
+		focusOnEditor = true;
+	}
 }

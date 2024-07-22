@@ -69,13 +69,29 @@ void OtUiHeader(const char* label, float width=0.0f);
 bool OtUiToggleButton(const char* label, bool* value);
 
 // create a latch button
-void OtUiLatchButton(const char* label, bool* value, const ImVec2 &size=ImVec2(0.0f, 0.0f));
+void OtUiLatchButton(const char* label, bool* value, const ImVec2& size=ImVec2(0.0f, 0.0f));
 
 // create a readonly text field
 void OtUiReadonlyText(const char* label, std::string* value);
 
 // create an input field based on a std::string
-bool OtUiInputText(const char* label, std::string* value, ImGuiInputTextFlags flags=ImGuiInputTextFlags_EnterReturnsTrue);
+inline bool OtUiInputString(const char* label, std::string* value, ImGuiInputTextFlags flags=ImGuiInputTextFlags_None) {
+	flags |=
+		ImGuiInputTextFlags_NoUndoRedo |
+		ImGuiInputTextFlags_CallbackResize;
+
+	return ImGui::InputText(label, (char*) value->c_str(), value->capacity() + 1, flags, [](ImGuiInputTextCallbackData* data) {
+		if (data->EventFlag == ImGuiInputTextFlags_CallbackResize) {
+			std::string* value = (std::string*) data->UserData;
+			value->resize(data->BufTextLen);
+			data->Buf = (char*) value->c_str();
+		}
+
+		return 0;
+	}, value);
+}
+
+bool OtUiInputText(const char* label, std::string* value, ImGuiInputTextFlags flags=ImGuiInputTextFlags_None);
 
 // create a field to edit numbers
 bool OtUiDragInt(const char* label, int* value, int minv=-std::numeric_limits<int>::max(), int maxv=std::numeric_limits<int>::max());

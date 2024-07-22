@@ -127,6 +127,56 @@ void TextEditor::ClearSelections()
 		mState.mCursors[c].GetSelectionEnd();
 }
 
+void TextEditor::ReplaceTextInCurrentCursor(const std::string& aText)
+{
+	if (mReadOnly)
+		return;
+
+	if (!AnyCursorHasSelection())
+		return;
+
+	UndoRecord u;
+	u.mBefore = mState;
+	int cursor = mState.mCurrentCursor;
+
+	u.mOperations.push_back({ GetSelectedText(cursor), mState.mCursors[cursor].GetSelectionStart(), mState.mCursors[cursor].GetSelectionEnd(), UndoOperationType::Delete });
+	DeleteSelection(cursor);
+	Coordinates start = GetActualCursorCoordinates(cursor);
+	InsertTextAtCursor(aText.c_str(), cursor);
+	u.mOperations.push_back({ aText, start, GetActualCursorCoordinates(cursor), UndoOperationType::Add });
+
+	u.mAfter = mState;
+	AddUndo(u);
+}
+
+void TextEditor::ReplaceTextInAllCursors(const std::string& aText)
+{
+	if (mReadOnly)
+		return;
+
+	if (!AnyCursorHasSelection())
+		return;
+
+	UndoRecord u;
+	u.mBefore = mState;
+
+	for (int c = mState.mCurrentCursor; c > -1; c--)
+	{
+		u.mOperations.push_back({ GetSelectedText(c), mState.mCursors[c].GetSelectionStart(), mState.mCursors[c].GetSelectionEnd(), UndoOperationType::Delete });
+		DeleteSelection(c);
+	}
+
+	for (int c = mState.mCurrentCursor; c > -1; c--)
+	{
+		Coordinates start = GetActualCursorCoordinates(c);
+		InsertTextAtCursor(aText.c_str(), c);
+		u.mOperations.push_back({ aText, start, GetActualCursorCoordinates(c), UndoOperationType::Add });
+	}
+
+	u.mAfter = mState;
+	AddUndo(u);
+}
+
 void TextEditor::SetCursorPosition(int aLine, int aCharIndex)
 {
 	SetCursorPosition({ aLine, GetCharacterColumn(aLine, aCharIndex) }, -1, true);

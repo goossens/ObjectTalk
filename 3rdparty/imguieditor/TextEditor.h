@@ -127,6 +127,8 @@ public:
 	bool AllCursorsHaveSelection() const;
 	void ClearExtraCursors();
 	void ClearSelections();
+	void ReplaceTextInCurrentCursor(const std::string& aText);
+	void ReplaceTextInAllCursors(const std::string& aText);
 	void SetCursorPosition(int aLine, int aCharIndex);
 	inline void GetCursorPosition(int& outLine, int& outColumn) const
 	{

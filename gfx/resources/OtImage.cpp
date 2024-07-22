@@ -217,7 +217,7 @@ static void writeToPNG(const std::string& path, const bimg::ImageContainer& imag
 
 		if (!err.isOk()) {
 			auto msg = err.getMessage();
-			auto message = std::string(msg.getPtr(), msg.getLength());
+			auto message = std::string(msg.getCPtr(), msg.getLength());
 			OtError("Can't write PNG to file at [{}], error: {}", path, message);
 		}
 
@@ -225,7 +225,7 @@ static void writeToPNG(const std::string& path, const bimg::ImageContainer& imag
 
 	} else {
 		auto msg = err.getMessage();
-		auto message = std::string(msg.getPtr(), msg.getLength());
+		auto message = std::string(msg.getCPtr(), msg.getLength());
 		OtError("Can't open PNG file at [{}] for write, error: {}", path, message);
 	}
 }
@@ -276,7 +276,7 @@ static void writeToDDS(const std::string& path, bimg::ImageContainer& image) {
 
 		if (!err.isOk()) {
 			auto msg = err.getMessage();
-			auto message = std::string(msg.getPtr(), msg.getLength());
+			auto message = std::string(msg.getCPtr(), msg.getLength());
 			OtError("Can't write DDS to file at [{}], error: {}", path, message);
 		}
 
@@ -284,7 +284,7 @@ static void writeToDDS(const std::string& path, bimg::ImageContainer& image) {
 
 	} else {
 		auto msg = err.getMessage();
-		auto message = std::string(msg.getPtr(), msg.getLength());
+		auto message = std::string(msg.getCPtr(), msg.getLength());
 		OtError("Can't open DDS file at [{}] for write, error: {}", path, message);
 	}
 }

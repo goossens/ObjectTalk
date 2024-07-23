@@ -150,9 +150,9 @@ void OtObjectTalkEditor::renderMenu() {
 		}
 
 		if (ImGui::BeginMenu("Find")) {
-			if (ImGui::MenuItem("Find", OT_UI_SHORTCUT "F")) { openSearchReplace(); }
-			if (ImGui::MenuItem("Find Next", OT_UI_SHORTCUT "G"), searchText.size()) { find(); }
-			if (ImGui::MenuItem("Find All", "^" OT_UI_SHORTCUT "G", searchText.size())) { findAll(); }
+			if (ImGui::MenuItem("Find", OT_UI_SHORTCUT "F")) { openFindReplace(); }
+			if (ImGui::MenuItem("Find Next", OT_UI_SHORTCUT "G"), findText.size()) { find(); }
+			if (ImGui::MenuItem("Find All", "^" OT_UI_SHORTCUT "G", findText.size())) { findAll(); }
 			ImGui::Separator();
 			ImGui::EndMenu();
 		}
@@ -164,7 +164,7 @@ void OtObjectTalkEditor::renderMenu() {
 	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows)) {
 		// handle menu shortcuts
 		if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_F)) {
-			openSearchReplace();
+			openFindReplace();
 
 		} else if (ImGui::Shortcut(ImGuiMod_Shift | ImGuiMod_Ctrl | ImGuiKey_G)) {
 			findAll();
@@ -203,8 +203,8 @@ void OtObjectTalkEditor::renderEditor() {
 		scrollToLine = 0;
 	}
 
-	// render search/replace window (if required)
-	if (searchReplaceVisible) {
+	// render find/replace window (if required)
+	if (findReplaceVisible) {
 		// calculate sizes
 		auto& style = ImGui::GetStyle();
 		auto fieldWidth = 250.0f;
@@ -232,26 +232,26 @@ void OtObjectTalkEditor::renderEditor() {
 			pos.x + available.x - windowWidth - style.ScrollbarSize - style.ItemSpacing.x,
 			pos.y + style.ItemSpacing.y * 2.0f));
 
-		ImGui::BeginChild("search-replace", ImVec2(windowWidth, windowHeight), ImGuiChildFlags_Border);
+		ImGui::BeginChild("find-replace", ImVec2(windowWidth, windowHeight), ImGuiChildFlags_Border);
 
 		ImGui::SetNextItemWidth(fieldWidth);
 
-		if (focusOnSearch) {
+		if (focusOnFind) {
 			ImGui::SetKeyboardFocusHere();
-			focusOnSearch = false;
+			focusOnFind = false;
 		}
 
-		if (OtUiInputString("###search", &searchText)) {
-			if (searchText.size()) {
+		if (OtUiInputString("###find", &findText)) {
+			if (findText.size()) {
 				editor.SetCursorPosition(0, 0);
-				editor.SelectNextOccurrenceOf(searchText.c_str(), searchText.size(), caseSensitiveSearch, wholeWordSearch);
+				editor.SelectNextOccurrenceOf(findText.c_str(), findText.size(), caseSensitiveFind, wholeWordFind);
 
 			} else {
 				editor.ClearSelections();
 			}
 		}
 
-		if (!searchText.size()) {
+		if (!findText.size()) {
 			ImGui::BeginDisabled();
 		}
 
@@ -267,20 +267,20 @@ void OtObjectTalkEditor::renderEditor() {
 			findAll();
 		}
 
-		if (!searchText.size()) {
+		if (!findText.size()) {
 			ImGui::EndDisabled();
 		}
 
 		ImGui::SameLine();
 
-		if (OtUiLatchButton("Aa", &caseSensitiveSearch, ImVec2(optionWidth, 0.0f))) {
+		if (OtUiLatchButton("Aa", &caseSensitiveFind, ImVec2(optionWidth, 0.0f))) {
 			editor.SetCursorPosition(0, 0);
 			find();
 		}
 
 		ImGui::SameLine();
 
-		if (OtUiLatchButton("[]", &wholeWordSearch, ImVec2(optionWidth, 0.0f))) {
+		if (OtUiLatchButton("[]", &wholeWordFind, ImVec2(optionWidth, 0.0f))) {
 			editor.SetCursorPosition(0, 0);
 			find();
 		}
@@ -288,7 +288,7 @@ void OtObjectTalkEditor::renderEditor() {
 		ImGui::SameLine();
 
 		if (ImGui::Button("x", ImVec2(optionWidth, 0.0f))) {
-			searchReplaceVisible = false;
+			findReplaceVisible = false;
 			focusOnEditor = true;
 		}
 
@@ -296,7 +296,7 @@ void OtObjectTalkEditor::renderEditor() {
 		OtUiInputText("###replace", &replaceText);
 		ImGui::SameLine();
 
-		if (!searchText.size() || !replaceText.size()) {
+		if (!findText.size() || !replaceText.size()) {
 			ImGui::BeginDisabled();
 		}
 
@@ -310,7 +310,7 @@ void OtObjectTalkEditor::renderEditor() {
 			replaceAll();
 		}
 
-		if (!searchText.size() || !replaceText.size()) {
+		if (!findText.size() || !replaceText.size()) {
 			ImGui::EndDisabled();
 		}
 
@@ -351,12 +351,12 @@ void OtObjectTalkEditor::clearError() {
 
 
 //
-//	OtObjectTalkEditor::searchReplace
+//	OtObjectTalkEditor::findReplace
 //
 
-void OtObjectTalkEditor::openSearchReplace() {
-	searchReplaceVisible = true;
-	focusOnSearch = true;
+void OtObjectTalkEditor::openFindReplace() {
+	findReplaceVisible = true;
+	focusOnFind = true;
 }
 
 
@@ -365,8 +365,8 @@ void OtObjectTalkEditor::openSearchReplace() {
 //
 
 void OtObjectTalkEditor::find() {
-	if (searchText.size()) {
-		editor.SelectNextOccurrenceOf(searchText.c_str(), searchText.size(), caseSensitiveSearch, wholeWordSearch);
+	if (findText.size()) {
+		editor.SelectNextOccurrenceOf(findText.c_str(), findText.size(), caseSensitiveFind, wholeWordFind);
 		focusOnEditor = true;
 	}
 }
@@ -377,8 +377,8 @@ void OtObjectTalkEditor::find() {
 //
 
 void OtObjectTalkEditor::findAll() {
-	if (searchText.size()) {
-		editor.SelectAllOccurrencesOf(searchText.c_str(), searchText.size(), caseSensitiveSearch, wholeWordSearch);
+	if (findText.size()) {
+		editor.SelectAllOccurrencesOf(findText.c_str(), findText.size(), caseSensitiveFind, wholeWordFind);
 		focusOnEditor = true;
 	}
 }
@@ -389,13 +389,13 @@ void OtObjectTalkEditor::findAll() {
 //
 
 void OtObjectTalkEditor::replace() {
-	if (searchText.size()) {
+	if (findText.size()) {
 		if (!editor.AnyCursorHasSelection()) {
-			editor.SelectNextOccurrenceOf(searchText.c_str(), searchText.size(), caseSensitiveSearch, wholeWordSearch);
+			editor.SelectNextOccurrenceOf(findText.c_str(), findText.size(), caseSensitiveFind, wholeWordFind);
 		}
 
 		editor.ReplaceTextInCurrentCursor(replaceText);
-		editor.SelectNextOccurrenceOf(searchText.c_str(), searchText.size(), caseSensitiveSearch, wholeWordSearch);
+		editor.SelectNextOccurrenceOf(findText.c_str(), findText.size(), caseSensitiveFind, wholeWordFind);
 		focusOnEditor = true;
 	}
 }
@@ -406,8 +406,8 @@ void OtObjectTalkEditor::replace() {
 //
 
 void OtObjectTalkEditor::replaceAll() {
-	if (searchText.size()) {
-		editor.SelectAllOccurrencesOf(searchText.c_str(), searchText.size(), caseSensitiveSearch, wholeWordSearch);
+	if (findText.size()) {
+		editor.SelectAllOccurrencesOf(findText.c_str(), findText.size(), caseSensitiveFind, wholeWordFind);
 		editor.ReplaceTextInAllCursors(replaceText);
 		editor.ClearExtraCursors();
 		focusOnEditor = true;

@@ -50,15 +50,15 @@ private:
 	TextEditor editor;
 	bool focusOnEditor = true;
 
-	// search and replace support
-	bool searchReplaceVisible = false;
-	bool focusOnSearch = false;
-	std::string searchText;
+	// find and replace support
+	bool findReplaceVisible = false;
+	bool focusOnFind = false;
+	std::string findText;
 	std::string replaceText;
-	bool caseSensitiveSearch = false;
-	bool wholeWordSearch = false;
+	bool caseSensitiveFind = false;
+	bool wholeWordFind = false;
 
-	void openSearchReplace();
+	void openFindReplace();
 	void find();
 	void findAll();
 	void replace();

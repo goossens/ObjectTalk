@@ -198,7 +198,8 @@ bool OtUiToggleButton(const char* labelPlusID, bool* value) {
 //	OtUiLatchButton
 //
 
-void OtUiLatchButton(const char* label, bool* value, const ImVec2& size) {
+bool OtUiLatchButton(const char* label, bool* value, const ImVec2& size) {
+	bool changed = false;
 	ImVec4* colors = ImGui::GetStyle().Colors;
 
 	if (*value) {
@@ -216,9 +217,11 @@ void OtUiLatchButton(const char* label, bool* value, const ImVec2& size) {
 
 	if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
 		*value = !*value;
+		changed = true;
 	}
 
 	ImGui::PopStyleColor(3);
+	return changed;
 }
 
 

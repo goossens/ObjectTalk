@@ -69,7 +69,7 @@ void OtUiHeader(const char* label, float width=0.0f);
 bool OtUiToggleButton(const char* label, bool* value);
 
 // create a latch button
-void OtUiLatchButton(const char* label, bool* value, const ImVec2& size=ImVec2(0.0f, 0.0f));
+bool OtUiLatchButton(const char* label, bool* value, const ImVec2& size=ImVec2(0.0f, 0.0f));
 
 // create a readonly text field
 void OtUiReadonlyText(const char* label, std::string* value);

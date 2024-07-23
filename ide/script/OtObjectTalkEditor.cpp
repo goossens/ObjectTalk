@@ -163,16 +163,14 @@ void OtObjectTalkEditor::renderMenu() {
 	// handle keyboard shortcuts (if required)
 	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows)) {
 		// handle menu shortcuts
-		if (ImGui::IsKeyDown(ImGuiMod_Ctrl)) {
-			if (ImGui::IsKeyPressed(ImGuiKey_F, false)) {
-				openSearchReplace();
+		if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_F)) {
+			openSearchReplace();
 
-			} else if (ImGui::IsKeyDown(ImGuiMod_Shift) && ImGui::IsKeyPressed(ImGuiKey_G, false)) {
-				findAll();
+		} else if (ImGui::Shortcut(ImGuiMod_Shift | ImGuiMod_Ctrl | ImGuiKey_G)) {
+			findAll();
 
-			} else if (ImGui::IsKeyPressed(ImGuiKey_G, false)) {
-				find();
-			}
+		} else if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_G)) {
+			find();
 		}
 	}
 }
@@ -246,7 +244,10 @@ void OtObjectTalkEditor::renderEditor() {
 		if (OtUiInputString("###search", &searchText)) {
 			if (searchText.size()) {
 				editor.SetCursorPosition(0, 0);
-				editor.SelectNextOccurrenceOf(searchText.c_str(), searchText.size(), caseSensitiveSearch);
+				editor.SelectNextOccurrenceOf(searchText.c_str(), searchText.size(), caseSensitiveSearch, wholeWordSearch);
+
+			} else {
+				editor.ClearSelections();
 			}
 		}
 
@@ -271,9 +272,19 @@ void OtObjectTalkEditor::renderEditor() {
 		}
 
 		ImGui::SameLine();
-		OtUiLatchButton("Aa", &caseSensitiveSearch, ImVec2(optionWidth, 0.0f));
+
+		if (OtUiLatchButton("Aa", &caseSensitiveSearch, ImVec2(optionWidth, 0.0f))) {
+			editor.SetCursorPosition(0, 0);
+			find();
+		}
+
 		ImGui::SameLine();
-		OtUiLatchButton("[]", &wholeWordSearch, ImVec2(optionWidth, 0.0f));
+
+		if (OtUiLatchButton("[]", &wholeWordSearch, ImVec2(optionWidth, 0.0f))) {
+			editor.SetCursorPosition(0, 0);
+			find();
+		}
+
 		ImGui::SameLine();
 
 		if (ImGui::Button("x", ImVec2(optionWidth, 0.0f))) {
@@ -355,7 +366,7 @@ void OtObjectTalkEditor::openSearchReplace() {
 
 void OtObjectTalkEditor::find() {
 	if (searchText.size()) {
-		editor.SelectNextOccurrenceOf(searchText.c_str(), searchText.size(), caseSensitiveSearch);
+		editor.SelectNextOccurrenceOf(searchText.c_str(), searchText.size(), caseSensitiveSearch, wholeWordSearch);
 		focusOnEditor = true;
 	}
 }
@@ -367,7 +378,7 @@ void OtObjectTalkEditor::find() {
 
 void OtObjectTalkEditor::findAll() {
 	if (searchText.size()) {
-		editor.SelectAllOccurrencesOf(searchText.c_str(), searchText.size(), caseSensitiveSearch);
+		editor.SelectAllOccurrencesOf(searchText.c_str(), searchText.size(), caseSensitiveSearch, wholeWordSearch);
 		focusOnEditor = true;
 	}
 }
@@ -380,11 +391,11 @@ void OtObjectTalkEditor::findAll() {
 void OtObjectTalkEditor::replace() {
 	if (searchText.size()) {
 		if (!editor.AnyCursorHasSelection()) {
-			editor.SelectNextOccurrenceOf(searchText.c_str(), searchText.size(), caseSensitiveSearch);
+			editor.SelectNextOccurrenceOf(searchText.c_str(), searchText.size(), caseSensitiveSearch, wholeWordSearch);
 		}
 
 		editor.ReplaceTextInCurrentCursor(replaceText);
-		editor.SelectNextOccurrenceOf(searchText.c_str(), searchText.size(), caseSensitiveSearch);
+		editor.SelectNextOccurrenceOf(searchText.c_str(), searchText.size(), caseSensitiveSearch, wholeWordSearch);
 		focusOnEditor = true;
 	}
 }
@@ -396,7 +407,7 @@ void OtObjectTalkEditor::replace() {
 
 void OtObjectTalkEditor::replaceAll() {
 	if (searchText.size()) {
-		editor.SelectAllOccurrencesOf(searchText.c_str(), searchText.size(), caseSensitiveSearch);
+		editor.SelectAllOccurrencesOf(searchText.c_str(), searchText.size(), caseSensitiveSearch, wholeWordSearch);
 		editor.ReplaceTextInAllCursors(replaceText);
 		editor.ClearExtraCursors();
 		focusOnEditor = true;

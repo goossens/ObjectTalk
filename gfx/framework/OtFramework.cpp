@@ -9,9 +9,11 @@
 //	Include files
 //
 
-#include <cstdlib>
-#include <iostream>
+#include <functional>
+#include <mutex>
+#include <string>
 #include <thread>
+#include <vector>
 
 #include "OtCerr.h"
 #include "OtException.h"
@@ -40,10 +42,9 @@ static std::mutex oneTimersLock;
 //	OtFramework::run
 //
 
-void OtFramework::run(OtFrameworkApp* targetApp, bool child) {
-	// remember the app and the child mode
+void OtFramework::run(OtFrameworkApp* targetApp) {
+	// remember the app
 	app = targetApp;
-	childMode = child;
 
 	// the framework runs in two threads:
 	// 1. the main thread handles the rendering and window events (as required by most operating systems)
@@ -85,7 +86,7 @@ void OtFramework::runThread2() {
 
 		// start the asset manager
 		OtAssetManager::instance()->start();
-		
+
 		// listen for stop events on the message bus
 		auto bus = OtMessageBus::instance();
 
@@ -151,15 +152,11 @@ void OtFramework::runThread2() {
 		endBGFX();
 
 	} catch (OtException& e) {
-		// handle all failures
-		if (childMode) {
-			// serialize exception and send it to the IDE that started us
-			// (wrapped in STX (start of text) and ETX (end of text) ASCII codes)
-			std::cerr << '\x02' << e.serialize() << '\x03';
-		}
+		// send exception back to IDE (if required)
+		OtLogger::instance()->exception(e);
 
-		std::cerr << std::endl << "Error: " << e.what() << std::endl;
-		std::_Exit(EXIT_FAILURE);
+		// output human readable text and exit program
+		OtLogFatal("Error: {}", e.what());
 	}
 }
 

@@ -77,14 +77,13 @@ void OtLogger::log(const char* filename, int lineno, int type, const std::string
 	auto messageType = types[type];
 	auto output = fmt::format("{} [{}] {} ({}): {}\n", timestamp, messageType, shortname, lineno, message);
 
-	// send to STDERR (if required)
-	if (logToStderr) {
-		if (subprocessMode) {
-			OtStderrMultiplexer::instance()->multiplex(type, output);
+	// send to IDE (if required)
+	if (subprocessMode) {
+		OtStderrMultiplexer::instance()->multiplex(type, output);
 
-		} else {
-			std::cerr << output << std::flush;
-		}
+	// send to STDERR (if required)
+	} else if (logToStderr) {
+		std::cerr << output << std::flush;
 	}
 
 	// send to log file (if required)
@@ -92,10 +91,11 @@ void OtLogger::log(const char* filename, int lineno, int type, const std::string
 		ofs << output;
 	}
 
-	// throw exception or terminate program (if required)
+	// throw exception (if required)
 	if (type == error) {
 		throw OtException(message);
 
+	// terminate program (if required)
 	} else if (type == fatal) {
 
 #if OT_DEBUG
@@ -109,7 +109,17 @@ void OtLogger::log(const char* filename, int lineno, int type, const std::string
 #else
 		std::_Exit(EXIT_FAILURE);
 #endif
+	}
+}
 
+
+//
+//	OtLogger::exception
+//
+
+void OtLogger::exception(OtException& e) {
+	if (subprocessMode) {
+		OtStderrMultiplexer::instance()->multiplex(e);
 	}
 }
 
@@ -118,8 +128,7 @@ void OtLogger::log(const char* filename, int lineno, int type, const std::string
 //	OtLogger::fileLogging
 //
 
-void OtLogger::fileLogging(const std::string& name)
-{
+void OtLogger::fileLogging(const std::string& name) {
 	if (ofs.is_open()) {
 		ofs.close();
 	}

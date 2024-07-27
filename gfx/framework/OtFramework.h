@@ -35,7 +35,7 @@
 class OtFramework {
 public:
 	// run the UI framework
-	void run(OtFrameworkApp* app, bool child=false);
+	void run(OtFrameworkApp* app);
 
 	// stop the UI framework
 	void stop();
@@ -135,5 +135,4 @@ private:
 
 	// our app
 	OtFrameworkApp* app;
-	bool childMode;
 };

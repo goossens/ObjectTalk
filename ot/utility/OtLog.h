@@ -17,6 +17,7 @@
 
 #include "fmt/format.h"
 
+#include "OtException.h"
 #include "OtSingleton.h"
 
 
@@ -44,8 +45,12 @@ public:
 		log(filename, lineno, type, message);
 	}
 
-	// set options
+	// process a fatal exception
+	void exception(OtException& e);
+
+	// access subprocess mode
 	void setSubprocessMode(bool flag) { subprocessMode = flag; }
+	bool inSubprocessMode() { return subprocessMode; }
 
 	// set logging targets
 	void stderrLogging(bool flag) { logToStderr = flag; }

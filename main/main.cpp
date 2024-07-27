@@ -18,7 +18,6 @@
 #include "OtLog.h"
 #include "OtPathTools.h"
 #include "OtModule.h"
-#include "OtStderrMultiplexer.h"
 
 #if defined(INCLUDE_GUI)
 #include "OtFramework.h"
@@ -135,7 +134,7 @@ int main(int argc, char* argv[]) {
 					// handle a scene file
 					OtFramework framework;
 					OtSceneApp app{file};
-					framework.run(&app, program["--child"] == true);
+					framework.run(&app);
 #endif
 
 				} else {
@@ -150,10 +149,8 @@ int main(int argc, char* argv[]) {
 		OtLibUv::end();
 
 	} catch (OtException& e) {
-		// handle all failures
-		if (program["--child"] == true) {
-			OtStderrMultiplexer::instance()->multiplex(e);
-		}
+		// send exception back to IDE (if required)
+		OtLogger::instance()->exception(e);
 
 		// output human readable text
 		OtLogFatal("Error: {}", e.what());

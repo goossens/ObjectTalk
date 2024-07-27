@@ -27,7 +27,7 @@
 struct OtRgbColor {
 	OtRgbColor() = default;
 	OtRgbColor(float _r, float _g, float _b, float _a) : r(_r), g(_g), b(_b), a(_a) {}
-	float r = 0, g = 0, b = 0, a = 0;
+	float r = 0.0f, g = 0.0f, b = 0.0f, a = 0.0f;
 };
 
 
@@ -184,19 +184,19 @@ static OtRgbColor hexadecimal2rgb(const std::string& text) {
 		int iv = std::stoi(text.substr(1), 0, 16);
 
 		return OtRgbColor(
-			static_cast<uint8_t>(((iv & 0xf00) >> 4) | ((iv & 0xf00) >> 8)) / 255.0,
-			static_cast<uint8_t>((iv & 0xf0) | ((iv & 0xf0) >> 4)) / 255.0,
-			static_cast<uint8_t>((iv & 0xf) | ((iv & 0xf) << 4)) / 255.0,
-			1.0);
+			static_cast<uint8_t>(((iv & 0xf00) >> 4) | ((iv & 0xf00) >> 8)) / 255.0f,
+			static_cast<uint8_t>((iv & 0xf0) | ((iv & 0xf0) >> 4)) / 255.0f,
+			static_cast<uint8_t>((iv & 0xf) | ((iv & 0xf) << 4)) / 255.0f,
+			1.0f);
 
 	} else if (text.length() == 7) {
 		int iv = std::stoi(text.substr(1), 0, 16);
 
 		return OtRgbColor(
-			static_cast<uint8_t>((iv & 0xff0000) >> 16) / 255.0,
-			static_cast<uint8_t>((iv & 0xff00) >> 8) / 255.0,
-			static_cast<uint8_t>(iv & 0xff) / 255.0,
-			1.0);
+			static_cast<uint8_t>((iv & 0xff0000) >> 16) / 255.0f,
+			static_cast<uint8_t>((iv & 0xff00) >> 8) / 255.0f,
+			static_cast<uint8_t>(iv & 0xff) / 255.0f,
+			1.0f);
 
 	} else {
 		throw std::length_error("hexadecimal colors are 3 or 6 digits");
@@ -211,11 +211,11 @@ static OtRgbColor hexadecimal2rgb(const std::string& text) {
 static OtRgbColor rgb2rgb(const std::string& text) {
 	if (text.rfind("rgb(", 0) == 0) {
 		std::vector<int> parts = parseParts(text, 3, 3);
-		return OtRgbColor(parts[0] / 255.0, parts[1] / 255.0, parts[2] / 255.0, 1.0);
+		return OtRgbColor(parts[0] / 255.0f, parts[1] / 255.0f, parts[2] / 255.0f, 1.0f);
 
 	} else {
 		std::vector<int> parts = parseParts(text, 4, 4);
-		return OtRgbColor(parts[0] / 255.0, parts[1] / 255.0, parts[2] / 255.0, parts[3] / 255.0);
+		return OtRgbColor(parts[0] / 255.0f, parts[1] / 255.0f, parts[2] / 255.0f, parts[3] / 255.0f);
 	}
 }
 
@@ -225,11 +225,11 @@ static OtRgbColor rgb2rgb(const std::string& text) {
 //
 
 static float hue2rgb(float p, float q, float t) {
-	if (t < 0.0) t += 1.0;
-	if (t > 1.0) t -= 1.0;
-	if (t < 1.0 / 6.0) return p + (q - p) * 6.0 * t;
-	if (t < 1.0 / 2.0) return q;
-	if (t < 2.0 / 3.0) return p + (q - p) * (2.0 / 3.0 - t) * 6.0;
+	if (t < 0.0f) t += 1.0f;
+	if (t > 1.0f) t -= 1.0f;
+	if (t < 1.0f / 6.0f) return p + (q - p) * 6.0f * t;
+	if (t < 1.0f / 2.0f) return q;
+	if (t < 2.0f / 3.0f) return p + (q - p) * (2.0f / 3.0f - t) * 6.0f;
 	return p;
 }
 
@@ -248,22 +248,22 @@ static OtRgbColor hsl2rgb(const std::string& text) {
 		throw std::length_error("wrong number of parameters");
 	}
 
-	float h = parts[0] / 255.0;
-	float s = parts[1] / 255.0;
-	float l = parts[2] / 255.0;
-	float a = parts[3] / 255.0;
+	float h = parts[0] / 255.0f;
+	float s = parts[1] / 255.0f;
+	float l = parts[2] / 255.0f;
+	float a = parts[3] / 255.0f;
 
 	if (s == 0.0) {
-		return OtRgbColor(1.0, 1.0, 1.0, a);
+		return OtRgbColor(1.0f, 1.0f, 1.0f, a);
 
 	} else {
-		float q = l < 0.5 ? l * (1.0 + s) : l + s - l * s;
-		float p = 2.0 * l - q;
+		float q = l < 0.5f ? l * (1.0f + s) : l + s - l * s;
+		float p = 2.0f * l - q;
 
 		return OtRgbColor(
-			hue2rgb(p, q, h + 1.0 / 3.0),
+			hue2rgb(p, q, h + 1.0f / 3.0f),
 			hue2rgb(p, q, h),
-			hue2rgb(p, q, h - 1.0 / 3.0),
+			hue2rgb(p, q, h - 1.0f / 3.0f),
 			a);
 	}
 }
@@ -277,10 +277,10 @@ static OtRgbColor name2rgb(const std::string& text) {
 	for (const auto& namedColor : namedColors) {
 		if (text == namedColor.name) {
 			return OtRgbColor(
-				namedColor.r / 255.0,
-				namedColor.g / 255.0,
-				namedColor.b / 255.0,
-				1.0);
+				namedColor.r / 255.0f,
+				namedColor.g / 255.0f,
+				namedColor.b / 255.0f,
+				1.0f);
 		}
 	}
 
@@ -315,11 +315,11 @@ static OtRgbColor parse(const std::string& text) {
 		}
 
 	} catch (std::exception& e) {
-		OtError("Invalid color [{}], error: {}", text, e.what());
+		OtError("Invalid color [{}]: {}", text, e.what());
 	}
 
-	// we never get her but we need to please the compiler
-	return OtRgbColor(0, 0, 0, 0);
+	// we never get here but we need to keep the compiler happy
+	return OtRgbColor(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 
@@ -349,9 +349,9 @@ glm::vec4 OtColorParseToVec4(const std::string& css) {
 
 uint32_t OtColorParseToUint32(const std::string& color) {
 	glm::vec4 c = OtColorParseToVec4(color);
-	int r = c.r * 255.0;
-	int g = c.g * 255.0;
-	int b = c.b * 255.0;
-	int a = c.a * 255.0;
+	int r = c.r * 255.0f;
+	int g = c.g * 255.0f;
+	int b = c.b * 255.0f;
+	int a = c.a * 255.0f;
 	return a << 24 | b << 16 | g << 8 | r;
 }

@@ -129,8 +129,8 @@ OtObject OtGlobalClass::range(size_t count, OtObject* parameters) {
 	int64_t increment;
 
 	if (count == 1) {
-		from = 1;
-		to = parameters[0]->operator int64_t();
+		from = 0;
+		to = parameters[0]->operator int64_t() - 1;
 		increment = 1;
 
 	} else if (count == 2) {

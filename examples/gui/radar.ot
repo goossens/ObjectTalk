@@ -157,7 +157,7 @@ class Radar : gui.VectorDisplay {
 		var r1 = beamLength;
 		this.updateLine(this.beam, 0, 0, angle.cos() * r1, angle.sin() * r1);
 
-		for i in range(0, decaySteps - 1) {
+		for i in range(decaySteps) {
 			angle += decayStep;
 			var r2 = 12 * (i + 1);
 			var cos = angle.cos();

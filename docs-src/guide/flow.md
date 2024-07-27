@@ -272,7 +272,7 @@ To use a preset range, you can use the **range** generator:
 		print(number);
 	}
 
-	// prints 1 2 3 4
+	// prints 0 1 2 3
 
 	for number in range(2, 6) {
 		print(number);

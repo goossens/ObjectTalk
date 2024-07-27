@@ -1821,31 +1821,35 @@ var array3 = [3.14, [3, 5, 4], 34, 1];
                 </tr>
                 <tr>
                   <td>append(object)</td>
-                  <td>Append object to array.</td>
+                  <td>Append object to array and return array.</td>
                 </tr>
                 <tr>
                   <td>insert(index, object)</td>
-                  <td>Insert object at specified location.</td>
+                  <td>Insert object at specified location and return array.</td>
                 </tr>
                 <tr>
                   <td>erase(index)</td>
-                  <td>Remove object at specified location.</td>
+                  <td>Remove object at specified location and return array.</td>
                 </tr>
                 <tr>
                   <td>eraseMultiple(from, to)</td>
-                  <td>Remove all objects between specified locations.</td>
+                  <td>
+                    Remove all objects between specified locations and return
+                    array.
+                  </td>
                 </tr>
                 <tr>
                   <td>sort()</td>
                   <td>
-                    Sort array in ascending order. Sort is performed in place.
+                    Sort array in ascending order and return array. Sort is
+                    performed in place.
                   </td>
                 </tr>
                 <tr>
                   <td>rsort()</td>
                   <td>
-                    Reverse sort array in ascending order. Sort is performed in
-                    place.
+                    Reverse sort array in ascending order and return array. Sort
+                    is performed in place.
                   </td>
                 </tr>
                 <tr>
@@ -1854,14 +1858,15 @@ var array3 = [3.14, [3, 5, 4], 34, 1];
                     Sort array in an order controlled by a provided function.
                     The function must take two parameters and return true if
                     they are in the right order or false if they need to be
-                    reversed. Sort is performed in place.
+                    reversed. Sort returns array and is performed in place.
                   </td>
                 </tr>
                 <tr>
                   <td>push(object)</td>
                   <td>
-                    Push object to array. This is the same as append but makes
-                    it more logical if you use an array as a stack.
+                    Push object to array and return array. This is the same as
+                    append but makes it more logical if you use an array as a
+                    stack.
                   </td>
                 </tr>
                 <tr>
@@ -1873,7 +1878,10 @@ var array3 = [3.14, [3, 5, 4], 34, 1];
                 </tr>
                 <tr>
                   <td>fill(count, object)</td>
-                  <td>Fill array with N copies of provided object.</td>
+                  <td>
+                    Fill array with N copies of provided object and return
+                    array.
+                  </td>
                 </tr>
                 <tr>
                   <td>join(separator)</td>

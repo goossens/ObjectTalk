@@ -75,30 +75,30 @@ public:
 	OtObject merge(OtObject object);
 
 	// add new member to the end
-	void append(OtObject object);
+	OtObject append(OtObject object);
 
 	// insert object at specified location
-	void insert(size_t index, OtObject object);
+	OtObject insert(size_t index, OtObject object);
 
 	// remove member at specified location
-	void erase(size_t index);
+	OtObject erase(size_t index);
 
 	// erase member from until specified locations
-	void eraseMultiple(size_t index1, size_t index2);
+	OtObject eraseMultiple(size_t index1, size_t index2);
 
 	// sort array in place
-	void sort();
-	void rsort();
-	void csort(OtObject function);
+	OtObject sort();
+	OtObject rsort();
+	OtObject csort(OtObject function);
 
 	// push object to end of array
-	void push(OtObject object);
+	OtObject push(OtObject object);
 
 	// pop object from and of array
 	OtObject pop();
 
 	// fill an array with N copies of provided object
-	void fill(size_t count, OtObject object);
+	OtObject fill(size_t count, OtObject object);
 
 	// join array entries into a string with separator
 	std::string join(const std::string& separator);

@@ -243,8 +243,9 @@ OtObject OtArrayClass::merge(OtObject object) {
 //	OtArrayClass::append
 //
 
-void OtArrayClass::append(OtObject object) {
+OtObject OtArrayClass::append(OtObject object) {
 	array.push_back(object);
+	return OtArray(this);
 }
 
 
@@ -252,7 +253,7 @@ void OtArrayClass::append(OtObject object) {
 //	OtArrayClass::insert
 //
 
-void OtArrayClass::insert(size_t index, OtObject object) {
+OtObject OtArrayClass::insert(size_t index, OtObject object) {
 	if (index < 0) {
 		OtError("Negative index [{}] is not allowed in array", index);
 
@@ -262,6 +263,7 @@ void OtArrayClass::insert(size_t index, OtObject object) {
 	}
 
 	array.insert(array.begin() + index, std::move(object));
+	return OtArray(this);
 }
 
 
@@ -269,7 +271,7 @@ void OtArrayClass::insert(size_t index, OtObject object) {
 //	OtArrayClass::erase
 //
 
-void OtArrayClass::erase(size_t index) {
+OtObject OtArrayClass::erase(size_t index) {
 	if (index < 0) {
 		OtError("Negative index [{}] is not allowed in array", index);
 
@@ -279,6 +281,7 @@ void OtArrayClass::erase(size_t index) {
 	}
 
 	array.erase(array.begin() + index);
+	return OtArray(this);
 }
 
 
@@ -286,7 +289,7 @@ void OtArrayClass::erase(size_t index) {
 //	OtArrayClass::eraseMultiple
 //
 
-void OtArrayClass::eraseMultiple(size_t index1, size_t index2) {
+OtObject OtArrayClass::eraseMultiple(size_t index1, size_t index2) {
 	if (index1 < 0) {
 		OtError("Negative index [{}] is not allowed in array", index1);
 
@@ -308,6 +311,7 @@ void OtArrayClass::eraseMultiple(size_t index1, size_t index2) {
 	}
 
 	array.erase(array.begin() + index1, array.begin() + index2);
+	return OtArray(this);
 }
 
 
@@ -315,10 +319,12 @@ void OtArrayClass::eraseMultiple(size_t index1, size_t index2) {
 //	OtArrayClass::sort
 //
 
-void OtArrayClass::sort() {
+OtObject OtArrayClass::sort() {
 	std::sort(array.begin(), array.end(), [](OtObject a, OtObject b) {
 		return *a < *b;
 	});
+
+	return OtArray(this);
 }
 
 
@@ -326,10 +332,12 @@ void OtArrayClass::sort() {
 //	OtArrayClass::rsort
 //
 
-void OtArrayClass::rsort() {
+OtObject OtArrayClass::rsort() {
 	std::sort(array.begin(), array.end(), [](OtObject a, OtObject b) {
 		return !(*a < *b);
 	});
+
+	return OtArray(this);
 }
 
 
@@ -337,11 +345,13 @@ void OtArrayClass::rsort() {
 //	OtArrayClass::csort
 //
 
-void OtArrayClass::csort(OtObject function) {
+OtObject OtArrayClass::csort(OtObject function) {
 	std::sort(array.begin(), array.end(), [function](OtObject a, OtObject b) {
 		auto result = OtVM::instance()->callMemberFunction(function, "__call__", a, b);
 		return result->operator bool();
 	});
+
+	return OtArray(this);
 }
 
 
@@ -349,8 +359,9 @@ void OtArrayClass::csort(OtObject function) {
 //	OtArrayClass::push
 //
 
-void OtArrayClass::push(OtObject object) {
+OtObject OtArrayClass::push(OtObject object) {
 	array.push_back(object);
+	return OtArray(this);
 }
 
 
@@ -369,12 +380,14 @@ OtObject OtArrayClass::pop() {
 //	OtArrayClass::fill
 //
 
-void OtArrayClass::fill(size_t count, OtObject object) {
+OtObject OtArrayClass::fill(size_t count, OtObject object) {
 	array.clear();
 
 	for (auto c = 0; c < count; c++) {
 		array.push_back(object);
 	}
+
+	return OtArray(this);
 }
 
 

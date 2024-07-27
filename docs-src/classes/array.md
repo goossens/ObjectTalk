@@ -25,16 +25,16 @@ many member functions to manipulate the content of an array.
 | clone() | Return a clone of the array. |
 | merge(array) | Append array to object's value and return a new array. |
 | clear() | Clear (empty) the array. |
-| append(object) | Append object to array. |
-| insert(index, object) | Insert object at specified location. |
-| erase(index) | Remove object at specified location. |
-| eraseMultiple(from, to) | Remove all objects between specified locations. |
-| sort() | Sort array in ascending order. Sort is performed in place. |
-| rsort() | Reverse sort array in ascending order. Sort is performed in place. |
-| csort(function) | Sort array in an order controlled by a provided function. The function must take two parameters and return true if they are in the right order or false if they need to be reversed. Sort is performed in place. |
-| push(object) | Push object to array. This is the same as append but makes it more logical if you use an array as a stack. |
+| append(object) | Append object to array and return array. |
+| insert(index, object) | Insert object at specified location and return array. |
+| erase(index) | Remove object at specified location and return array. |
+| eraseMultiple(from, to) | Remove all objects between specified locations and return array. |
+| sort() | Sort array in ascending order and return array. Sort is performed in place. |
+| rsort() | Reverse sort array in ascending order and return array. Sort is performed in place. |
+| csort(function) | Sort array in an order controlled by a provided function. The function must take two parameters and return true if they are in the right order or false if they need to be reversed. Sort returns array and is performed in place. |
+| push(object) | Push object to array and return array. This is the same as append but makes it more logical if you use an array as a stack. |
 | pop() | Pop object from the end of the array allowing it to be used as a stack. |
-| fill(count, object) |  Fill array with N copies of provided object. |
+| fill(count, object) |  Fill array with N copies of provided object and return array. |
 | join(separator) |  Join array entries into a string with separator. |
 
 **Overrides**

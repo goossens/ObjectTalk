@@ -17,6 +17,7 @@
 
 #include "OtPrimitive.h"
 #include "OtValue.h"
+#include "OtVM.h"
 
 
 //
@@ -34,7 +35,7 @@ public:
 	OtFunctionClass(void (*function)(size_t, OtObject*)) {
 		caller = [function](size_t count, OtObject* parameters) {
 			function(count, parameters);
-			return nullptr;
+			return OtVM::instance()->getNull();
 		};
 
 		parameterCount = SIZE_MAX;
@@ -62,7 +63,7 @@ public:
 					parameters,
 					std::make_index_sequence<sizeof...(Args)>()));
 
-			return nullptr;
+			return OtVM::instance()->getNull();
 		};
 
 		parameterCount = sizeof...(Args);
@@ -90,7 +91,7 @@ public:
 					parameters,
 					std::make_index_sequence<sizeof...(Args)>()));
 
-			return nullptr;
+			return OtVM::instance()->getNull();
 		};
 
 		parameterCount = sizeof...(Args);
@@ -115,7 +116,7 @@ public:
 		caller = [method](size_t count, OtObject* parameters) {
 			OtObjectPointer<Class> object = parameters[0];
 			((*object).*method)(count - 1, parameters + 1);
-			return nullptr;
+			return OtVM::instance()->getNull();
 		};
 
 		parameterCount = SIZE_MAX;
@@ -147,7 +148,7 @@ public:
 					parameters,
 					std::make_index_sequence<sizeof...(Args)>()));
 
-			return nullptr;
+			return OtVM::instance()->getNull();
 		};
 
 		parameterCount = sizeof...(Args) + 1;

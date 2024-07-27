@@ -19,6 +19,7 @@
 #include "OtFunction.h"
 #include "OtLog.h"
 #include "OtMemberReference.h"
+#include "OtSelector.h"
 #include "OtString.h"
 #include "OtVM.h"
 
@@ -162,7 +163,9 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 					auto parameters = stack.sp(count + 1);
 
 					// sanity check
-					OtAssert(parameters[0]);
+					if (!parameters[0]) {
+						OtLogFatal("Internal error: can't call method [{}] with [{}] parameters on nullptr", OtSelector::name(method), count);
+					}
 
 					// call method
 					auto result = parameters[0]->get(method)->operator () (count + 1, parameters);

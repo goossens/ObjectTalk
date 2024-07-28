@@ -16,6 +16,7 @@ file(GLOB BGFX_SOURCES
 list(REMOVE_ITEM BGFX_SOURCES ${bgfx_SOURCE_DIR}/src/amalgamated.cpp)
 
 if(APPLE)
+	set_source_files_properties(${bgfx_SOURCE_DIR}/src/renderer_mtl.mm PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations")
 	set_source_files_properties(${bgfx_SOURCE_DIR}/src/renderer_vk.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
 	list(APPEND BGFX_SOURCES ${bgfx_SOURCE_DIR}/src/renderer_mtl.mm)
 endif()

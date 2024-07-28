@@ -9,6 +9,8 @@ file(GLOB ASTC_ENCODER_SOURCES
 	${bimg_SOURCE_DIR}/3rdparty/astc-encoder/source/*.h
 	${bimg_SOURCE_DIR}/3rdparty/astc-encoder/include/*.h)
 
+list(REMOVE_ITEM ASTC_ENCODER_SOURCES ${bimg_SOURCE_DIR}/3rdparty/astc-encoder/source/astcenc_diagnostic_trace.cpp)
+
 add_library(astc-encoder STATIC ${ASTC_ENCODER_SOURCES})
 target_include_directories(astc-encoder PUBLIC ${bimg_SOURCE_DIR}/3rdparty/astc-encoder/include)
 

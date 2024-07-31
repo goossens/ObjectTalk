@@ -1,0 +1,41 @@
+#!/usr/local/bin/ot
+
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var gui = import("gui");
+
+var home = import("home");
+var pong = import("pong");
+var breakout = import("breakout");
+var tetris = import("tetris");
+
+class Arcade : gui.App {
+	function setup(this) {
+		// create widget stack
+		this.stack = gui.WidgetStack();
+		this.add(this.stack);
+
+		// create games
+		var games = [];
+
+		function addGame(game) {
+			game.disable();
+			this.stack.add(game);
+			games.append(game);
+		}
+		
+		addGame(pong.Pong());
+		addGame(breakout.Breakout());
+		addGame(tetris.Tetris());
+
+		// create home screen
+		this.stack.add(home.Home(games));
+	}
+}
+
+var app = Arcade();
+app.run();

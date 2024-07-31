@@ -1,0 +1,437 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var input = import("input");
+var game = import("game");
+var physics2d = import("physics2d");
+
+// game geometry and looks
+var worldWidth = 16.0;
+var worldHeight = 9.0;
+var edgeOffset = 0.05;
+var ballRadius = 0.2;
+var paddleWidth = 0.1;
+var paddleHeight = 1.2;
+var netSegments = 10.0;
+var scoreSize = 0.75;
+
+//
+//	Net class
+//
+
+class Net : Object {
+	function __init__(this, display) {
+		// create graphics
+		this.shapes = [];
+		var segment = worldHeight / (netSegments * 2 + 1);
+		var start = segment;
+
+		for i in range(netSegments) {
+			var end = start + segment;
+			this.shapes.append(display.addLine(worldWidth / 2, start, worldWidth / 2, end));
+			start += 2.0 * segment;
+		}
+
+		return this;
+	}
+
+	function show(this, display) {
+		for shape in this.shapes {
+			display.enableShape(shape);
+		}
+	}
+
+	function hide(this, display) {
+		for shape in this.shapes {
+			display.disableShape(shape);
+		}
+	}
+}
+
+//
+//	Scoreboard class
+//
+
+class Scoreboard : Object {
+	function __init__(this, display) {
+		// setup scoreboard
+		this.player = 0;
+		this.computer = 0;
+
+		// create graphics
+		display.pushStyle();
+		display.setColor("#47f");
+		var center = worldWidth / 2.0;
+		var y = worldHeight - scoreSize;
+		var w = display.getSevenSegmentWidth("0", scoreSize);
+		this.scorePlayer = display.addSevenSegment(center - w * 2.0, y, scoreSize, "0");
+		this.scoreComputer = display.addSevenSegment(center + w, y, scoreSize, "0");
+		display.popStyle();
+	}
+
+	function reset(this, display) {
+		this.player = 0;
+		this.computer = 0;
+		display.updateSevenSegmentString(this.scorePlayer, "0");
+		display.updateSevenSegmentString(this.scoreComputer, "0");
+	}
+
+	function pointToPlayer(this, display) {
+		this.player++;
+		display.updateSevenSegmentString(this.scorePlayer, this.player);
+		return this.player == 5;
+	}
+
+	function pointToComputer(this, display) {
+		this.computer++;
+		display.updateSevenSegmentString(this.scoreComputer, this.computer);
+		return this.computer == 5;
+	}
+}
+
+//
+//	Walls class
+//
+
+class Walls : physics2d.DynamicBody {
+	function __init__(this, display, world) {
+		// initialize superclass
+		super.__init__(this, world);
+		this.name = "wall";
+
+		// add simulation parts
+		this.addEdgeFixture(0, edgeOffset, worldWidth, edgeOffset);
+		this.addEdgeFixture(0, worldHeight - edgeOffset, worldWidth, worldHeight - edgeOffset);
+
+		// create graphics
+		display.pushStyle();
+		display.setWidth(4.0);
+		display.setColor("#47f");
+		display.addLine(0, edgeOffset, worldWidth, edgeOffset);
+		display.addLine(0, worldHeight - edgeOffset, worldWidth, worldHeight - edgeOffset);
+		display.popStyle();
+	}
+}
+
+//
+//	GoalLine class
+//
+
+class GoalLine : physics2d.DynamicBody {
+	function __init__(this, display, world, name, x) {
+		// initialize superclass
+		super.__init__(this, world);
+		this.name = name;
+
+		// add simulation parts
+		this.addEdgeFixture(x, 0.0, x, worldHeight);
+	}
+}
+
+//
+//	Ball class
+//
+
+class Ball : physics2d.DynamicBody {
+	function __init__(this, display, world) {
+		// initialize superclass
+		super.__init__(this, world);
+		this.name = "ball";
+
+		// add simulation parts
+		var fixture = this.addCircularFixture(0.0, 0.0, ballRadius);
+		fixture.setDensity(1.0);
+		fixture.setRestitution(1.0);
+
+		// create graphics
+		this.shape = display.addCircle(0.0, 0.0, ballRadius, 32);
+	}
+
+	function show(this, display) {
+		display.enableShape(this.shape);
+	}
+
+	function hide(this, display) {
+		display.disableShape(this.shape);
+	}
+
+	function reset(this) {
+		this.setPosition(worldWidth * 0.75, worldHeight / 2.0);
+		var r = 0.4.random();
+		var direction = r < 0.2 ? -1.0 : 1.0;
+		this.applyLinearImpulse(-1.0, (0.4 + r) * direction);
+		this.updateVelocity();
+	}
+
+	function updateVelocity(this) {
+		// ensure significant vertical horizontal ball motion
+		var xv = this.getLinearVelocityX();
+		var yv = this.getLinearVelocityY();
+
+		if (yv.abs() < 0.2) {
+			yv = 0.2 * yv.sign();
+		}
+
+		if (xv.abs() < yv.abs()) {
+			xv = yv.abs() * xv.sign();
+		}
+
+		// normalize ball velocity
+		var ratio = 6.0 / (xv * xv + yv * yv).sqrt();
+		xv *= ratio;
+		yv *= ratio;
+		this.setLinearVelocity(xv, yv);
+	}
+
+	function update(this, display) {
+		// update ball location
+		display.updateCircle(this.shape, this.getX(), this.getY(), ballRadius, 32);
+	}
+}
+
+//
+//	Paddle class
+//
+
+class Paddle : physics2d.DynamicBody {
+	function __init__(this, display, world, name, color, x) {
+		// initialize superclass
+		super.__init__(this, world);
+		this.name = name;
+
+		// add simulation parts
+		this.setPosition(x, worldHeight / 2.0);
+		this.addRectangularFixture(0.0, 0.0, paddleWidth, paddleHeight);
+
+		// create graphics
+		display.pushStyle();
+		display.setColor(color);
+		this.shapes = display.addCenteredRectangle(x, worldHeight / 2.0, paddleWidth, paddleHeight);
+		display.popStyle();
+	}
+
+	function moveTo(this, display, y) {
+		//update the model
+		var x = this.getX();
+		y = y.clamp(paddleHeight / 2.0, worldHeight - paddleHeight / 2.0);
+		this.setPosition(x, y);
+
+		// update the graphics
+		display.updateCenteredRectangle(this.shapes, x, y, paddleWidth, paddleHeight);
+	}
+
+	function moveBy(this, display, offset) {
+		this.moveTo(display, this.getY() + offset);
+	}
+}
+
+//
+//	Player class
+//
+
+class Player : Paddle {
+	function __init__(this, display, world) {
+		// initialize superclass
+		super.__init__(this, display, world, "player", "#3b3", paddleWidth * 1.5);
+	}
+}
+
+//
+//	Computer class
+//
+
+class Computer : Paddle {
+	function __init__(this, display, world) {
+		// initialize superclass
+		super.__init__(this, display, world, "computer", "#b33", worldWidth - paddleWidth * 1.5);
+	}
+
+	function update(this, display, ball) {
+		// get ball position and speed
+		var x = ball.getX();
+		var y = ball.getY();
+		var xv = ball.getLinearVelocityX();
+		var yv = ball.getLinearVelocityY();
+
+		// wait until ball moves our way
+		if (xv > 0) {
+			// determine goal line intersection point
+			var py = y + ((worldWidth - x) / xv) * yv;
+
+			while (py < 0 || py > worldHeight) {
+				if (py < 0) {
+					py = -py;
+
+				} elif (py > worldHeight) {
+					py = worldHeight * 2.0 - py;
+				}
+			}
+
+			this.moveBy(display, 0.03 * (py - this.getY()).sign());
+		}
+	}
+}
+
+//
+//	Pong game class
+//
+
+class Pong : game.Game {
+	var name = "Pong";
+
+	function __init__(this) {
+		// initialize superclass
+		super.__init__(this);
+
+		// register collision callback
+		this.world.addBeginContactCallback(function(body1, body2) {
+			this.contact(body1, body2);
+		});
+
+		// add the parts of the game
+		this.net = Net(this);
+		this.scoreboard = Scoreboard(this);
+		this.walls = Walls(this, this.world);
+		this.left = GoalLine(this, this.world, "left", 0);
+		this.right = GoalLine(this, this.world, "right", worldWidth);
+		this.ball = Ball(this, this.world);
+		this.player = Player(this, this.world);
+		this.computer = Computer(this, this.world);
+
+		// create messages
+		this.startupMessage = this.createMessage(5, [
+			"Welcome to the Game of Pong",
+			"Hit spacebar or mouse button to start...",
+			"Hit ESC to return to the menu..."
+		]);
+
+		this.pauseMessage = this.createMessage(4, [
+			"Score!",
+			"Hit spacebar or mouse button to continue..."
+		]);
+
+		this.gameOverMessage = this.createMessage(4, [
+			"GAME OVER!",
+			"Hit spacebar or mouse button to continue..."
+		]);
+	}
+
+	function onSelect(this) {
+		this.scoreboard.reset(this);
+	}
+
+	function onShowSplash(this) {
+		this.net.hide(this);
+		this.ball.hide(this);
+		this.showMessage(this.startupMessage);
+	}
+
+	function onHideSplash(this) {
+		this.hideMessage(this.startupMessage);
+		this.ball.show(this);
+		this.net.show(this);
+	}
+
+	function onStart(this) {
+		this.ball.reset();
+	}
+
+	function onStop(this) {
+		this.ball.hide(this);
+	}
+
+	function onPause(this) {
+		this.net.hide(this);
+		this.ball.hide(this);
+		this.showMessage(this.pauseMessage);
+	}
+
+	function onResume(this) {
+		this.hideMessage(this.pauseMessage);
+		this.net.show(this);
+		this.ball.show(this);
+	}
+
+	function onShowGameOver(this) {
+		this.net.hide(this);
+		this.ball.hide(this);
+		this.showMessage(this.gameOverMessage);
+	}
+
+	function onHideGameOver(this) {
+		this.hideMessage(this.gameOverMessage);
+	}
+
+	function onUpdate(this) {
+		var accel = input.isButtonDown(input.keyLeftShift) || input.isButtonDown(input.keyRightShift);
+		var distance = paddleHeight / 6.0 * (accel ? 1.0 : 2.0);
+
+		if (input.isButtonPressed(input.keyUpArrow)) {
+			this.player.moveBy(this, distance);
+
+		} elif (input.isButtonPressed(input.keyDownArrow)) {
+			this.player.moveBy(this, -distance);
+
+		} elif (input.hasMouseMoved()) {
+			this.player.moveTo(this, worldHeight - this.getMousePos().getY());
+		}
+
+		this.ball.update(this);
+		this.computer.update(this, this.ball);
+	}
+
+	function contact(this, body1, body2) {
+		if (body1.name == "player") {
+			// change vertical velocity of ball based on where paddle was hit
+			this.ball.setLinearVelocity(
+				this.ball.getLinearVelocityX(),
+				(body2.getY() - body1.getY()) * 4.0);
+
+		} elif (body1.name == "left") {
+			if (this.scoreboard.pointToComputer(this)) {
+				this.gameover();
+
+			} else {
+				this.pause();
+			}
+
+		} elif (body1.name == "right") {
+			if (this.scoreboard.pointToPlayer(this)) {
+				this.gameover();
+
+			} else {
+				this.pause();
+			}
+		}
+
+		this.ball.updateVelocity();
+	}
+
+	function renderIcon(this, display, x, y, w, h) {
+		// render top and bottom lines
+		display.pushStyle();
+		display.setColor("#47f");
+		display.addLine(x, y, x + w, y);
+		display.addLine(x, y + h, x + w, y + h);
+		display.popStyle();
+
+		// render center line
+		var segment = h / 20.0;
+
+		for i in range(7) {
+			var start = y + 2.0 * (i + 1) * segment;
+			var end = start + segment;
+			display.addLine(x + w / 2, start, x+ w / 2, end);
+		}
+
+		// render paddles
+		display.addLine(x, y + h * 0.6, x, y + h * 0.75);
+		display.addLine(x + w, y + h * 0.3, x + w, y + h * 0.45);
+
+		// render ball
+		display.addCircle(x + w / 1.5, y + h / 1.5, 0.02, 8);
+	}
+}

@@ -1,0 +1,138 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var gui = import("gui");
+var input = import("input");
+var screen = import("screen");
+
+class Home : screen.Screen {
+	function __init__(this, games) {
+		// initialize superclass
+		super.__init__(this);
+
+		// configure screen
+		this.setTopLeftOrigin();
+
+		// create header
+		this.pushStyle();
+		this.setColor("#47f");
+		this.setWidth(2.0);
+		this.addText(3.9, 2.3, 1.0, "ObjectTalk Arcade");
+
+		this.setWidth(3.0);
+		this.addLine(3.9, 2.8, 12.8, 2.8);
+		this.popStyle();
+
+		// calculate button spacing
+		var count = games.size();
+		var gaps = 4 + count - 1;
+		var gapSize = (16.0 - 3.2 * count) / gaps;
+		var xOffset = gapSize * 2.0;
+		var yOffset = 5.0;
+		var selection = 0;
+
+		// render all games buttons
+		for game in games {
+			this.pushStyle();
+			this.setColor("#99f");
+			game.menu = this.addRectangle(xOffset, yOffset, 3.2, 1.8);
+			game.x0 = xOffset;
+			game.x1 = xOffset + 3.2;
+			game.y0 = yOffset;
+			game.y1 = yOffset + 1.8;
+			game.selection = selection++;
+
+			this.setColor("#274");
+			var textSize = this.getTextWidth(game.name, 0.3);
+			this.addText(xOffset + 1.6 - textSize / 2.0, yOffset + 1.6, 0.3, game.name);
+			this.popStyle();
+
+			game.renderIcon(this, xOffset + 0.1, yOffset + 0.1, 3.0, 1.6);
+			xOffset += 3.2 + gapSize;
+		}
+
+		// remember games
+		this.games = games;
+		this.updateSelection(0);
+	}
+
+	function updateSelection(this, game) {
+		if (game < 0) {
+			game = this.games.size() - 1;
+
+		} elif (game == this.games.size()) {
+			game = 0;
+		}
+
+		this.currentSelection = game;
+		var index = 0;
+
+		for game in this.games {
+			if (this.currentSelection == index++) {
+				this.updateColor(game.menu, "#b33");
+				this.updateWidth(game.menu, 3.0);
+
+			} else {
+				this.updateColor(game.menu, "#99f");
+				this.updateWidth(game.menu, 1.0);
+			}
+		}
+	}
+
+	function update(this) {
+		if (input.isButtonPressed(input.keyLeftArrow)) {
+			this.updateSelection(this.currentSelection - 1);
+
+		} elif (input.isButtonPressed(input.keyRightArrow)) {
+			this.updateSelection(this.currentSelection + 1);
+
+		} elif (input.isButtonPressed(input.keyEnter)) {
+			this.games[this.currentSelection].select();
+
+		} elif (input.isButtonPressed(input.mouseLeft)) {
+			var mouse = this.getMousePos();
+			var x = mouse.getX();
+			var y = mouse.getY();
+
+			for game in this.games {
+				if (x >= game.x0 && x <= game.x1 && y >= game.y0 && y <= game.y1) {
+					this.updateSelection(game.selection);
+				}
+			}
+		}
+
+		if (input.isDoubleClicked()) {
+			this.games[this.currentSelection].select();
+		}
+	}
+
+	function onMouseMove(this, x, y) {
+		x /= this.displayScale;
+		y /= this.displayScale;
+
+		for game in this.games {
+			if (x >= game.x0 && x <= game.x1 && y >= game.y0 && y <= game.y1) {
+				this.updateSelection(game.selection);
+			}
+		}
+	}
+
+	function onGamepadAxis(this, gamepad, axis, value) {
+	}
+
+	function onGamepadButton(this, gamepad, button, action) {
+		if (gamepad == 0 && action) {
+			if (button == 0) {
+				this.updateSelection(this.currentSelection - 1);
+
+			} elif (button == 2) {
+				this.updateSelection(this.currentSelection + 1);
+
+			} elif (button == 3) {
+			}
+		}
+	}
+}

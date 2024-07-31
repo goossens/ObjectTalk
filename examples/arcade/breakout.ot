@@ -1,0 +1,371 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var game = import("game");
+var input = import("input");
+var physics2d = import("physics2d");
+
+// game geometry and looks
+var worldWidth = 16.0;
+var worldHeight = 9.0;
+var ballRadius = 0.2;
+var paddleWidth = 3.0;
+var paddleHeight = 0.1;
+var brickWidth = 1.0;
+var brickHeight = 0.1;
+var brickRows = 8;
+var brickCols = 14;
+var brickMargin = (worldWidth - (brickCols * brickWidth)) / (brickCols + 1);
+
+var colors = [
+	"#000", "#fff",
+	"#b33", "#3b3", "#33b",
+	"#bb3", "#b3b", "#3bb",
+	"#b60"
+];
+
+class Breakout : game.Game {
+	var name = "Breakout";
+
+	function __init__(this) {
+		// initialize superclass
+		super.__init__(this);
+
+		this.world.addBeginContactCallback(function(body1, body2) {
+			this.contact(body1, body2);
+		});
+
+		// add a floor
+		this.bottom = physics2d.StaticBody(this.world);
+		this.bottom.name = "bottom";
+		this.bottom.addEdgeFixture(0, 0, worldWidth, 0);
+
+		// add the walls
+		this.walls = physics2d.StaticBody(this.world);
+		this.walls.name = "walls";
+		this.walls.addEdgeFixture(worldWidth, 0, worldWidth, worldHeight);
+		this.walls.addEdgeFixture(worldWidth, worldHeight, 0, worldHeight);
+		this.walls.addEdgeFixture(0, worldHeight, 0, 0);
+
+		// add a ball
+		this.ball = physics2d.DynamicBody(this.world);
+		this.ball.name = "ball";
+		this.ball.setPosition(-worldWidth, 0.0);
+		this.ball.shape = this.addCircle(0, 0, ballRadius, 32);
+		var fixture = this.ball.addCircularFixture(0.0, 0.0, ballRadius);
+		fixture.setDensity(1.0);
+		fixture.setRestitution(1.0);
+
+		// add a paddle
+		this.paddle = physics2d.StaticBody(this.world);
+		this.paddle.name = "paddle";
+		this.paddle.shape = this.addRectangle(0, 0, 0, 0);
+		this.paddle.addRectangularFixture(0.0, 0.0, paddleWidth, paddleHeight);
+
+		// add all the bricks
+		this.bricks = [];
+
+		for y in range(brickRows) {
+			var py = worldHeight - (brickHeight + brickMargin) * (y + 4);
+
+			for x in range(brickCols) {
+				var px = brickMargin + brickWidth / 2.0 + (brickMargin + brickWidth) * x;
+				var brick = physics2d.StaticBody(this.world);
+				brick.name = "brick";
+				brick.points = brickRows - y;
+				brick.setPosition(px, py);
+				brick.addRectangularFixture(0.0, 0.0, brickWidth, brickHeight);
+				brick.shape = this.addRectangle(px - brickWidth / 2.0, py - brickHeight / 2.0, brickWidth, brickHeight);
+				this.bricks.append(brick);
+			}
+		}
+
+		// create scoreboard
+		this.pushStyle();
+		this.setColor("#47f");
+		this.setWidth(2);
+
+		var y = worldHeight - 0.6;
+		this.livesCounter = this.addText(0.25, y, 0.6, "0 Lives");
+
+		var x = worldWidth / 2.0 - this.getTextWidth("Time 000", 0.6) / 2.0;
+		this.timeCounter = this.addText(x, y, 0.6, "Time 000");
+
+		x = worldWidth - 0.25 - this.getTextWidth("Points 000", 0.6);
+		this.scoreCounter = this.addText(x, y, 0.6, "Points 000");
+		this.popStyle();
+
+		// create the messages
+		this.startupMessage = this.createMessage(4, [
+			"Welcome to the Game of Breakout",
+			"Hit spacebar or mouse button to start...",
+			"Hit ESC to return to the menu..."
+		]);
+
+		this.pauseMessage = this.createMessage(4, [
+			"You missed but you still have some life left",
+			"Hit spacebar or mouse button to continue..."
+		]);
+
+		this.gameOverMessage = this.createMessage(4, [
+			"GAME OVER!",
+			"Hit spacebar or mouse button to continue..."
+		]);
+	}
+
+	function loadBoard(this, level) {
+		var board = io.readJSON(Path(__DIR__, "assets", "breakout" + level + ".json"));
+		assert(board.size() == brickRows * brickCols);
+
+		var index = 0;
+		this.brickCount = 0;
+
+		for y in range(brickRows) {
+			for x in range(brickCols) {
+				var brick = this.bricks[index];
+
+				if (board[index]) {
+					if (board[index] != 1) {
+						this.brickCount++;
+					}
+
+					brick.enable();
+					brick.destructible = board[index] != 1;
+					this.enableShape(brick.shape);
+					this.updateColor(brick.shape, colors[board[index]]);
+
+				} else {
+					brick.disable();
+					this.disableShape(brick.shape);
+				}
+
+				index++;
+			}
+		}
+	}
+
+	function resetBall(this) {
+		this.ball.setPosition(worldWidth / 2.0, 1.0);
+		var r = 0.4.random();
+		var direction = r < 0.2 ? -1.0 : 1.0;
+		this.ball.applyLinearImpulse((0.4 + r) * direction, 1.0);
+		this.updateBallVelocity();
+	}
+
+	function onSelect(this) {
+		// load level 1 board
+		this.loadBoard(1);
+
+		// reset counters
+		this.lives = 3;
+		this.updateTextString(this.livesCounter, "3 More Lives");
+
+		this.startTime = os.clock();
+		this.time = 0;
+		this.updateTextString(this.timeCounter, "Time %03i".format(this.time));
+
+		this.score = 0;
+		this.updateTextString(this.scoreCounter, "Points %03i".format(this.score));
+
+		// hide the ball
+		this.disableShape(this.ball.shape);
+
+		// center the paddle
+		this.paddlePos = worldWidth / 2.0;
+		this.updatePaddlePos(0.0);
+	}
+
+	function onShowSplash(this) {
+		this.showMessage(this.startupMessage);
+	}
+
+	function onHideSplash(this) {
+		this.hideMessage(this.startupMessage);
+	}
+
+	function onStart(this) {
+		this.decrementLives();
+		this.resetBall();
+		this.enableShape(this.ball.shape);
+	}
+
+	function onPause(this) {
+		this.disableShape(this.ball.shape);
+		this.showMessage(this.pauseMessage);
+	}
+
+	function onResume(this) {
+		this.decrementLives();
+		this.hideMessage(this.pauseMessage);
+		this.resetBall();
+		this.enableShape(this.ball.shape);
+	}
+
+	function onStop(this) {
+		this.disableShape(this.ball.shape);
+	}
+
+	function onShowGameOver(this) {
+		this.disableShape(this.ball.shape);
+		this.showMessage(this.gameOverMessage);
+	}
+
+	function onHideGameOver(this) {
+		this.hideMessage(this.gameOverMessage);
+	}
+
+	function onUpdate(this) {
+		// handle inputs
+		var accel = input.isButtonDown(input.keyLeftShift) || input.isButtonDown(input.keyRightShift);
+		var distance = paddleWidth / 4.0 * (accel ? 1.0 : 2.0);
+
+		if (input.isButtonPressed(input.keyLeftArrow)) {
+			this.updatePaddlePos(-distance);
+
+		} elif (input.isButtonPressed(input.keyRightArrow)) {
+			this.updatePaddlePos(distance);
+
+		} elif (input.hasMouseMoved()) {
+			this.paddlePos = this.getMousePos().getX().clamp(paddleWidth / 2.0, worldWidth - paddleWidth / 2.0);
+			this.paddle.setPosition(this.paddlePos, 1.5 * paddleHeight);
+		}
+
+		// update ball location
+		this.updateCircle(this.ball.shape, this.ball.getX(), this.ball.getY(), ballRadius, 32);
+
+		// update paddle location
+		var x = this.paddle.getX() - paddleWidth / 2.0;
+		var y = this.paddle.getY() - paddleHeight / 2.0;
+		this.updateRectangle(this.paddle.shape, x, y, paddleWidth, paddleHeight);
+
+		// update timer if required
+		if (this.state != "gameover") {
+			this.time = os.clock() - this.startTime;
+		}
+
+		this.updateTextString(this.timeCounter, "Time %03i".format(this.time));
+	}
+
+	function updatePaddlePos(this, offset) {
+		this.paddlePos += offset;
+		this.paddlePos = this.paddlePos.clamp(paddleWidth / 2.0, worldWidth - paddleWidth / 2.0);
+		this.paddle.setPosition(this.paddlePos, 1.5 * paddleHeight);
+	}
+
+	function updateBallVelocity(this) {
+		// ensure significant vertical ball motion
+		var xv = this.ball.getLinearVelocityX();
+		var yv = this.ball.getLinearVelocityY();
+
+		if (yv.abs() < xv.abs()) {
+			yv = yv < 0 ? -xv.abs() : xv.abs();
+		}
+
+		// normalize ball velocity
+		var ratio = 9.0 / (xv * xv + yv * yv).sqrt();
+		xv *= ratio;
+		yv *= ratio;
+		this.ball.setLinearVelocity(xv, yv);
+	}
+
+	function decrementLives(this) {
+		this.lives--;
+
+		if (this.lives == 1) {
+			this.updateTextString(this.livesCounter, "1 More Life");
+
+		} else {
+			this.updateTextString(this.livesCounter, "%i More Lives".format(this.lives));
+		}
+	}
+
+	function contact(this, body1, body2) {
+		if (body1.name == "paddle") {
+			// change horizontal velocity of ball based on where paddle was hit
+			this.ball.setLinearVelocity(
+				(body2.getX() - body1.getX()) * 3.0,
+				this.ball.getLinearVelocityY());
+
+		} elif (body1.name == "brick") {
+			if (body1.destructible) {
+				this.score += body1.points;
+				this.updateTextString(this.scoreCounter, "Points %03i".format(this.score));
+
+				body1.disable();
+				this.disableShape(body1.shape);
+				this.brickCount--;
+
+				if (this.brickCount == 0) {
+					this.gameover();
+				}
+			}
+
+		} elif (body1.name == "bottom") {
+			if (this.lives == 0) {
+				this.gameover();
+
+			} else {
+				this.pause();
+			}
+		}
+
+		this.updateBallVelocity();
+	}
+
+	function renderIcon(this, vd, x, y, w, h) {
+		vd.pushStyle();
+
+		// render bricks
+		var gap = 0.1;
+		var bw = (w - gap * 6) / 5.0;
+		var bx = x + gap;
+		var by = y + gap;
+		vd.setColor("#b33");
+
+		for c in range(5) {
+			vd.addLine(bx, by, bx + bw, by);
+			bx += bw + gap;
+		}
+
+		bx = x + gap;
+		by += gap;
+		vd.setColor("#b60");
+
+		for c in range(5) {
+			vd.addLine(bx, by, bx + bw, by);
+			bx += bw + gap;
+		}
+
+		bx = x + gap;
+		by += gap;
+		vd.setColor("#3b3");
+
+		for c in range(5) {
+			vd.addLine(bx, by, bx + bw, by);
+			bx += bw + gap;
+		}
+
+		bx = x + gap;
+		by += gap;
+		vd.setColor("#bb3");
+
+		for c in range(5) {
+			vd.addLine(bx, by, bx + bw, by);
+			bx += bw + gap;
+		}
+
+		// render ball
+		vd.setColor("#fff");
+		vd.addCircle(x + w / 2.0, y + h / 2.0, 0.02, 8);
+
+		// render paddle
+		bx = x + gap + (bw + gap) * 2.0;
+		by += gap * 7.0;
+		vd.addLine(bx, by, bx + bw, by);
+
+		vd.popStyle();
+	}
+}

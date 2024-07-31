@@ -1,0 +1,25 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var gui = import("gui");
+var input = import("input");
+var math = import("math");
+
+class Screen : gui.VectorDisplay {
+	function __init__(this) {
+		this.setSize(16, 9);
+		this.setBrightness(1.2);
+		this.setHorizontalAlignment(gui.alignCenter);
+		this.setVerticalAlignment(gui.alignMiddle);
+		this.setAutoScale();
+	}
+
+	function getMousePos(this) {
+		var pos = input.getMousePos();
+		var scale = this.getScale();
+		return math.Vec2(pos.getX() / scale, pos.getY() / scale);
+	}
+}

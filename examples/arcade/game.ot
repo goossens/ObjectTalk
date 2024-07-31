@@ -1,0 +1,212 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var input = import("input");
+var physics2d = import("physics2d");
+var screen = import("screen");
+
+//
+//	This an abstract game class that implements state-transition logic
+//	to simplify game development. The state of a game is stored in the "state"
+//	property of an instance. Here is the life of a game within the arcade:
+//
+//	1.	Each game instance must have a "name" property and a "renderIcon" member
+//		function. These are used by the arcade to display the initial menu.
+//
+//	2.	At the start, games are in the "setup" state. When entering this state,
+//		this class creates a vector display for the game and stores a reference
+//		in the "vd" property. This class adds the vector display to the app
+//		and manages its visibility. At the same time, the game's "onSetup"
+//		member function is called to allow the game to initialize. Once all
+//		startup activities are done, the game enters the "idle" state.
+//
+//	3.	In the "idle" state, the game is dormant and the vector display is
+//		disabled. The player is actually looking at the menu in this state so
+//		all games are idling at this point.
+//
+//	4.	When a game is selected, it enters the "splash" state. When this happens,
+//		the game's "onSelect" member function is called followed by a call to
+//		"onShowSplash". When the player hits a button on the keyboard or the game
+//		controller, an "onHideSplash" is sent and the game enters the "running"
+//		state. The game now gets a "onStart" call.
+//
+//	5.	From now on, the game is in charge until the player aborts the game
+//		using the escape key, hitting the X button on the controller or
+//		when the game calls gameover. The "onUpdate" member function is called
+//		every frame.
+//
+//	6.	An optional "pause" state is available and the game can determine
+//		when to do this. On entering this state, the "onPause" method is called.
+//		After the player hits a button, the "onResume" method is called.
+//
+//	7.	When entering the "gameover" state, the game receive an "onStop" call
+//		followed by an "onShowGameOver" call. Once the player hits a button,
+//		"onHideGameOver" is called and the game returns to the idle state.
+//		At this point the game is hidden and the menu is shown again.
+
+class Game : screen.Screen {
+	// constructor
+	function __init__(this) {
+		// configure screen
+		super.__init__(this);
+		this.setBottomLeftOrigin();
+		this.setBrightness(1.1);
+		this.disable();
+
+		// create physics simulation
+		this.world = physics2d.World();
+		this.world.continuousPhysics(true);
+
+		// entering the startup state
+		this.state = "setup";
+
+		// let game initialize itself
+		this.onSetup();
+
+		// moving on to the "idle state"
+		this.state = "idle";
+	}
+
+	// methods to manage game state
+	function select(this) {
+		// game has been selected from the menu, enter the "splash" state
+		this.onSelect();
+		this.state = "splash";
+		this.onShowSplash();
+		this.enable();
+	}
+
+	function run(this) {
+		// enter the running state
+		this.onHideSplash();
+		this.state = "running";
+		this.world.start();
+		this.onStart();
+	}
+
+	function pause(this) {
+		// enter the pause state
+		this.state = "pause";
+		this.world.stop();
+		this.onPause();
+	}
+
+	function resume(this) {
+		// re-enter the running state
+		this.state = "running";
+		this.world.start();
+		this.onResume();
+	}
+
+	function abort(this) {
+		// abort the current game and return to the menu
+		if (this.state == "splash") {
+			this.onHideSplash();
+
+		} elif (this.state == "running") {
+			this.onStop();
+
+		} elif (this.state == "pause") {
+			this.onResume();
+			this.onStop();
+
+		} elif (this.state == "gameover") {
+			this.onHideGameOver();
+		}
+
+		this.world.stop();
+		this.disable();
+		this.state = "idle";
+	}
+
+	function gameover(this) {
+		// enter the gameover state
+		this.world.stop();
+		this.onStop();
+		this.state = "gameover";
+		this.onShowGameOver();
+	}
+
+	function end(this) {
+		// re-enter the idle state
+		this.onHideGameOver();
+		this.state = "idle";
+		this.disable();
+	}
+
+	// handle frame updates
+	function update(this) {
+		// check UI inputs
+		if (input.isButtonPressed(input.keyEscape) ||
+			input.isButtonPressed(input.gamepadBack)) {
+			this.abort();
+
+		} elif (input.isButtonPressed(input.keySpace) ||
+				input.isButtonPressed(input.keyEnter) ||
+				input.isButtonPressed(input.keyKeypadEnter) ||
+				input.isButtonPressed(input.mouseLeft) ||
+				input.isButtonPressed(input.gamepadStart)) {
+			if (this.state == "splash") {
+				this.run();
+
+			} elif (this.state == "pause") {
+				this.resume();
+
+			} elif (this.state == "gameover") {
+				this.end();
+			}
+
+		} elif (this.state == "running") {
+			// run step in physics simulation
+			this.world.step();
+
+			// notify game
+			this.onUpdate();
+		}
+	}
+
+	// these member functions must be overridden by games
+	function onSetup(this) {}
+	function onSelect(this) {}
+	function onShowSplash(this) {}
+	function onHideSplash(this) {}
+	function onStart(this) {}
+	function onPause(this) {}
+	function onResume(this) {}
+	function onUpdate(this) {}
+	function onStop(this) {}
+	function onShowGameOver(this) {}
+	function onHideGameOver(this) {}
+
+	// functions to create show and hide messages
+	function createMessage(this, y, lines) {
+		var message = [];
+		this.pushStyle();
+		this.setColor("#47f");
+
+		for line in lines {
+			var textSize = this.getTextWidth(line, 0.6);
+			message.append(this.addText(8.0 - textSize / 2.0, y, 0.6, line));
+			y -= 1;
+		}
+
+		this.popStyle();
+		this.hideMessage(message);
+		return message;
+	}
+
+	function showMessage(this, message) {
+		for line in message {
+			this.enableShape(line);
+		}
+	}
+
+	function hideMessage(this, message) {
+		for line in message {
+			this.disableShape(line);
+		}
+	}
+}

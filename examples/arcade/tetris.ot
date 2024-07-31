@@ -1,0 +1,369 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var input = import("input");
+var game = import("game");
+
+var colors = [
+	"#000", "#bbb",
+	"#b33", "#3b3", "#33b",
+	"#bb3", "#b3b", "#3bb",
+	"#b60"
+];
+
+var rows = 18;
+var columns = 24;
+
+class Field : Object {
+	var size = 9.0 / rows;
+
+	var minoMargin = 0.15 * size;
+	var lineMargin = minoMargin;
+
+	var xoffset = 15.75 - size * columns;
+	var yoffset = 0.05;
+
+	var left = xoffset - lineMargin - minoMargin;
+	var right = xoffset + size * columns + lineMargin;
+
+	function __init__(this, vd) {
+		// create a field of minos
+		this.minos = [];
+
+		vd.pushStyle();
+		vd.setWidth(1.2);
+		vd.setColor(colors[0]);
+
+		for y in range(rows - 1, 0, -1) {
+			for x in range(columns) {
+				this.minos.append(vd.addRectangle(
+					size * x + xoffset,
+					size * y + yoffset,
+					size - minoMargin,
+					size - minoMargin));
+			}
+		}
+
+		this.colors = [].fill(rows * columns, 0);
+
+		// mark playing field borders
+		vd.setWidth(3.0);
+		vd.setColor("#47f");
+		this.leftLine = vd.addLine(left, 9.0 - lineMargin, left, lineMargin);
+		this.rightLine = vd.addLine(right, 9.0 - lineMargin, right, lineMargin);
+
+		vd.popStyle();
+	}
+
+	function hide(this, vd) {
+		for mino in this.minos {
+			vd.disableShape(mino);
+		}
+
+		vd.disableShape(this.leftLine);
+		vd.disableShape(this.rightLine);
+	}
+
+	function show(this, vd) {
+		for mino in this.minos {
+			vd.enableShape(mino);
+		}
+
+		vd.enableShape(this.leftLine);
+		vd.enableShape(this.rightLine);
+	}
+
+	function clear(this, vd) {
+		for mino in this.minos {
+			vd.updateColor(mino, colors[0]);
+		}
+
+		this.colors = [].fill(rows * columns, 0);
+	}
+
+	function renderTetrimino(this, vd, tetrimino, x , y, color) {
+		for r in range(4) {
+			for c in range(4) {
+				if (y + r >= 0 && tetrimino[r * 4 + c]) {
+					var offset = (y + r) * columns + x + c;
+					vd.updateColor(this.minos[offset], colors[color]);
+					this.colors[offset] = color;
+				}
+			}
+		}
+	}
+
+	function isOccupied(this, x, y) {
+		return this.colors[y * columns + x] != 0;
+	}
+
+	function isAllowed(this, tetrimino, x, y) {
+		for r in range(4) {
+			if (y + r >= 0) {
+				for c in range(4) {
+					if (tetrimino[r * 4 + c]) {
+						var sx = x + c;
+						var sy = y + r;
+
+						if (sx < 0 || sx >= columns || sy < 0 || sy >= rows) {
+							return false;
+
+						} elif (this.isOccupied(sx, sy)) {
+							return false;
+						}
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	function removeRow(this, vd, row) {
+		for y in range(row, 1, -1) {
+			for x in range(columns) {
+				var offsetFrom = (y - 1) * columns + x;
+				var offsetTo = y * columns + x;
+
+				var color = this.colors[offsetFrom];
+				vd.updateColor(this.minos[offsetTo], colors[color]);
+				this.colors[offsetTo] = color;
+			}
+		}
+
+		for x in range(columns) {
+			var offset = row * columns + x;
+			vd.updateColor(this.minos[0], colors[0]);
+			this.colors[offset] = 0;
+		}
+	}
+
+	function removeCompleteRows(this, vd) {
+		var score = 0;
+
+		for y in range(rows - 1, 0, -1) {
+			var complete = true;
+			var x = 0;
+
+			while (complete && x < columns) {
+				if (!this.isOccupied(x, y)) {
+					complete = false;
+				}
+
+				x++;
+			}
+
+			if (complete) {
+				this.removeRow(vd, y);
+				score += 10;
+			}
+		}
+
+		return score;
+	}
+}
+
+class Tetris : game.Game {
+	var name = "Tetris";
+
+	function __init__(this) {
+		// initialize superclass
+		super.__init__(this);
+
+		// load the tetrominos
+		function loadTetrimino(id) {
+			this.tetrominos.append(io.readJSON(Path(__DIR__, "assets", "tetris-" + id + ".json")));
+		}
+
+		this.tetrominos = [];
+		loadTetrimino("i");
+		loadTetrimino("l1");
+		loadTetrimino("l2");
+		loadTetrimino("o");
+		loadTetrimino("s");
+		loadTetrimino("t");
+		loadTetrimino("z1");
+		loadTetrimino("z2");
+		this.nextTetromino = this.tetrominos[0];
+
+		// create the field
+		this.field = Field(this);
+
+		// create scoreboard
+		this.pushStyle();
+		this.setColor("#47f");
+		this.setWidth(2);
+		this.addText(0.25, 8.0, 1.0, "Tetris");
+		this.popStyle();
+
+		// create the messages
+		this.startupMessage = this.createMessage(6, [
+			"Welcome to the Game of Tetris",
+			"Hit spacebar or mouse button to start...",
+			"Hit arrow keys to move tetromino...",
+			"Hit enter to drop tetromino...",
+			"Hit ESC to return to the menu..."
+		]);
+
+		this.gameOverMessage = this.createMessage(4, [
+			"GAME OVER!",
+			"Hit spacebar or mouse button to continue..."
+		]);
+	}
+
+	function onSelect(this) {
+		this.field.clear(this);
+	}
+
+	function onShowSplash(this) {
+		this.field.hide(this);
+		this.showMessage(this.startupMessage);
+	}
+
+	function onHideSplash(this) {
+		this.hideMessage(this.startupMessage);
+		this.field.show(this);
+	}
+
+	function onStart(this) {
+		this.time = os.clock();
+		this.newTetromino();
+	}
+
+	function onPause(this) {
+		this.field.hide(this);
+		this.showMessage(this.pauseMessage);
+	}
+
+	function onResume(this) {
+		this.hideMessage(this.pauseMessage);
+		this.field.show(this);
+		this.time = os.clock();
+	}
+
+	function onUpdate(this) {
+		if (input.isButtonPressed(input.keyLeftArrow)) {
+			this.moveTetromino(-1, 0);
+
+		} elif (input.isButtonPressed(input.keyRightArrow)) {
+			this.moveTetromino(1, 0);
+
+		} elif (input.isButtonPressed(input.keyUpArrow) || input.isButtonPressed(input.keyR)) {
+			this.rotateTetromino();
+
+		} elif (input.isButtonPressed(input.keyDownArrow) || input.isButtonPressed(input.keyF)) {
+			this.interval = 0.08;
+		}
+
+		var time = os.clock();
+
+		if (time - this.time > this.interval) {
+			if (!this.moveTetromino(0, 1)) {
+				if (this.y < 0) {
+					this.gameover();
+
+				} else {
+					this.field.removeCompleteRows(this);
+					this.newTetromino();
+				}
+			}
+
+			this.time = time;
+		}
+	}
+
+	function onStop(this) {
+		this.field.hide(this);
+	}
+
+	function onShowGameOver(this) {
+		this.showMessage(this.gameOverMessage);
+	}
+
+	function onHideGameOver(this) {
+		this.hideMessage(this.gameOverMessage);
+	}
+
+	function newTetromino(this) {
+		this.currentTetromino = this.nextTetromino;
+		this.nextTetromino = this.tetrominos[this.tetrominos.size().random()];
+
+		this.rotation = 0;
+		this.tetromino = this.currentTetromino[this.rotation];
+		this.color = 1 + (colors.size() - 1).random();
+
+		this.x = (columns - 4) / 2;
+		this.y = -4;
+
+		this.interval = 0.5;
+	}
+
+	function hideTetromino(this) {
+		this.field.renderTetrimino(this, this.tetromino, this.x, this.y, 0);
+	}
+
+	function showTetromino(this) {
+			this.field.renderTetrimino(this, this.tetromino, this.x, this.y, this.color);
+	}
+
+	function moveTetromino(this, x, y) {
+		this.hideTetromino();
+
+		if (this.field.isAllowed(this.tetromino, this.x + x, this.y + y)) {
+			this.x += x;
+			this.y += y;
+			this.showTetromino();
+			return true;
+
+		} else {
+			this.showTetromino();
+			return false;
+		}
+	}
+
+	function rotateTetromino(this) {
+		this.hideTetromino();
+		var rotation = (this.rotation + 1) % 4;
+		var tetromino = this.currentTetromino[rotation];
+
+		if (this.field.isAllowed(tetromino, this.x, this.y)) {
+			this.rotation = rotation;
+			this.tetromino = tetromino;
+		}
+
+		this.showTetromino();
+	}
+
+	function renderIcon(this, vd, x, y, w, h) {
+		function addMino(mx, my, color) {
+			vd.setColor(colors[color]);
+			vd.addRectangle(0.22 * mx + x,  0.22 * my + y, 0.18, 0.18);
+		}
+
+		vd.pushStyle();
+			addMino(5, 0, 4);
+			addMino(6, 0, 4);
+			addMino(7, 0, 4);
+			addMino(6, 1, 4);
+
+			addMino(1, 2, 5);
+			addMino(1, 3, 5);
+			addMino(1, 4, 5);
+			addMino(2, 4, 5);
+
+			addMino(2, 3, 2);
+			addMino(3, 3, 2);
+			addMino(3, 4, 2);
+			addMino(4, 4, 2);
+
+			addMino(9, 4, 6);
+			addMino(10, 4, 6);
+			addMino(11, 4, 6);
+			addMino(12, 4, 6);
+
+		vd.popStyle();
+	}
+}

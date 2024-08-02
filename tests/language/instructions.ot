@@ -76,7 +76,7 @@ for value in range(4) {
 	result += value;
 }
 
-assert(result == 10);
+assert(result == 6);
 
 result = 0;
 

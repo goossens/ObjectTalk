@@ -23,7 +23,7 @@ var scoreSize = 0.75;
 //
 
 class Net : Object {
-	function __init__(this, display) {
+	function __init__(this, vd) {
 		// create graphics
 		this.shapes = [];
 		var segment = worldHeight / (netSegments * 2 + 1);
@@ -31,22 +31,22 @@ class Net : Object {
 
 		for i in range(netSegments) {
 			var end = start + segment;
-			this.shapes.append(display.addLine(worldWidth / 2, start, worldWidth / 2, end));
+			this.shapes.append(vd.addLine(worldWidth / 2, start, worldWidth / 2, end));
 			start += 2.0 * segment;
 		}
 
 		return this;
 	}
 
-	function show(this, display) {
+	function show(this, vd) {
 		for shape in this.shapes {
-			display.enableShape(shape);
+			vd.enableShape(shape);
 		}
 	}
 
-	function hide(this, display) {
+	function hide(this, vd) {
 		for shape in this.shapes {
-			display.disableShape(shape);
+			vd.disableShape(shape);
 		}
 	}
 }
@@ -56,38 +56,38 @@ class Net : Object {
 //
 
 class Scoreboard : Object {
-	function __init__(this, display) {
+	function __init__(this, vd) {
 		// setup scoreboard
 		this.player = 0;
 		this.computer = 0;
 
 		// create graphics
-		display.pushStyle();
-		display.setColor("#47f");
+		vd.pushStyle();
+		vd.setColor("#47f");
 		var center = worldWidth / 2.0;
 		var y = worldHeight - scoreSize;
-		var w = display.getSevenSegmentWidth("0", scoreSize);
-		this.scorePlayer = display.addSevenSegment(center - w * 2.0, y, scoreSize, "0");
-		this.scoreComputer = display.addSevenSegment(center + w, y, scoreSize, "0");
-		display.popStyle();
+		var w = vd.getSevenSegmentWidth("0", scoreSize);
+		this.scorePlayer = vd.addSevenSegment(center - w * 2.0, y, scoreSize, "0");
+		this.scoreComputer = vd.addSevenSegment(center + w, y, scoreSize, "0");
+		vd.popStyle();
 	}
 
-	function reset(this, display) {
+	function reset(this, vd) {
 		this.player = 0;
 		this.computer = 0;
-		display.updateSevenSegmentString(this.scorePlayer, "0");
-		display.updateSevenSegmentString(this.scoreComputer, "0");
+		vd.updateSevenSegmentString(this.scorePlayer, "0");
+		vd.updateSevenSegmentString(this.scoreComputer, "0");
 	}
 
-	function pointToPlayer(this, display) {
+	function pointToPlayer(this, vd) {
 		this.player++;
-		display.updateSevenSegmentString(this.scorePlayer, this.player);
+		vd.updateSevenSegmentString(this.scorePlayer, this.player);
 		return this.player == 5;
 	}
 
-	function pointToComputer(this, display) {
+	function pointToComputer(this, vd) {
 		this.computer++;
-		display.updateSevenSegmentString(this.scoreComputer, this.computer);
+		vd.updateSevenSegmentString(this.scoreComputer, this.computer);
 		return this.computer == 5;
 	}
 }
@@ -97,7 +97,7 @@ class Scoreboard : Object {
 //
 
 class Walls : physics2d.DynamicBody {
-	function __init__(this, display, world) {
+	function __init__(this, vd, world) {
 		// initialize superclass
 		super.__init__(this, world);
 		this.name = "wall";
@@ -107,12 +107,12 @@ class Walls : physics2d.DynamicBody {
 		this.addEdgeFixture(0, worldHeight - edgeOffset, worldWidth, worldHeight - edgeOffset);
 
 		// create graphics
-		display.pushStyle();
-		display.setWidth(4.0);
-		display.setColor("#47f");
-		display.addLine(0, edgeOffset, worldWidth, edgeOffset);
-		display.addLine(0, worldHeight - edgeOffset, worldWidth, worldHeight - edgeOffset);
-		display.popStyle();
+		vd.pushStyle();
+		vd.setWidth(4.0);
+		vd.setColor("#47f");
+		vd.addLine(0, edgeOffset, worldWidth, edgeOffset);
+		vd.addLine(0, worldHeight - edgeOffset, worldWidth, worldHeight - edgeOffset);
+		vd.popStyle();
 	}
 }
 
@@ -121,7 +121,7 @@ class Walls : physics2d.DynamicBody {
 //
 
 class GoalLine : physics2d.DynamicBody {
-	function __init__(this, display, world, name, x) {
+	function __init__(this, vd, world, name, x) {
 		// initialize superclass
 		super.__init__(this, world);
 		this.name = name;
@@ -136,7 +136,7 @@ class GoalLine : physics2d.DynamicBody {
 //
 
 class Ball : physics2d.DynamicBody {
-	function __init__(this, display, world) {
+	function __init__(this, vd, world) {
 		// initialize superclass
 		super.__init__(this, world);
 		this.name = "ball";
@@ -147,15 +147,15 @@ class Ball : physics2d.DynamicBody {
 		fixture.setRestitution(1.0);
 
 		// create graphics
-		this.shape = display.addCircle(0.0, 0.0, ballRadius, 32);
+		this.shape = vd.addCircle(0.0, 0.0, ballRadius, 32);
 	}
 
-	function show(this, display) {
-		display.enableShape(this.shape);
+	function show(this, vd) {
+		vd.enableShape(this.shape);
 	}
 
-	function hide(this, display) {
-		display.disableShape(this.shape);
+	function hide(this, vd) {
+		vd.disableShape(this.shape);
 	}
 
 	function reset(this) {
@@ -186,9 +186,9 @@ class Ball : physics2d.DynamicBody {
 		this.setLinearVelocity(xv, yv);
 	}
 
-	function update(this, display) {
+	function update(this, vd) {
 		// update ball location
-		display.updateCircle(this.shape, this.getX(), this.getY(), ballRadius, 32);
+		vd.updateCircle(this.shape, this.getX(), this.getY(), ballRadius, 32);
 	}
 }
 
@@ -197,7 +197,7 @@ class Ball : physics2d.DynamicBody {
 //
 
 class Paddle : physics2d.DynamicBody {
-	function __init__(this, display, world, name, color, x) {
+	function __init__(this, vd, world, name, color, x) {
 		// initialize superclass
 		super.__init__(this, world);
 		this.name = name;
@@ -207,24 +207,24 @@ class Paddle : physics2d.DynamicBody {
 		this.addRectangularFixture(0.0, 0.0, paddleWidth, paddleHeight);
 
 		// create graphics
-		display.pushStyle();
-		display.setColor(color);
-		this.shapes = display.addCenteredRectangle(x, worldHeight / 2.0, paddleWidth, paddleHeight);
-		display.popStyle();
+		vd.pushStyle();
+		vd.setColor(color);
+		this.shapes = vd.addCenteredRectangle(x, worldHeight / 2.0, paddleWidth, paddleHeight);
+		vd.popStyle();
 	}
 
-	function moveTo(this, display, y) {
+	function moveTo(this, vd, y) {
 		//update the model
 		var x = this.getX();
 		y = y.clamp(paddleHeight / 2.0, worldHeight - paddleHeight / 2.0);
 		this.setPosition(x, y);
 
 		// update the graphics
-		display.updateCenteredRectangle(this.shapes, x, y, paddleWidth, paddleHeight);
+		vd.updateCenteredRectangle(this.shapes, x, y, paddleWidth, paddleHeight);
 	}
 
-	function moveBy(this, display, offset) {
-		this.moveTo(display, this.getY() + offset);
+	function moveBy(this, vd, offset) {
+		this.moveTo(vd, this.getY() + offset);
 	}
 }
 
@@ -233,9 +233,9 @@ class Paddle : physics2d.DynamicBody {
 //
 
 class Player : Paddle {
-	function __init__(this, display, world) {
+	function __init__(this, vd, world) {
 		// initialize superclass
-		super.__init__(this, display, world, "player", "#3b3", paddleWidth * 1.5);
+		super.__init__(this, vd, world, "player", "#3b3", paddleWidth * 1.5);
 	}
 }
 
@@ -244,12 +244,12 @@ class Player : Paddle {
 //
 
 class Computer : Paddle {
-	function __init__(this, display, world) {
+	function __init__(this, vd, world) {
 		// initialize superclass
-		super.__init__(this, display, world, "computer", "#b33", worldWidth - paddleWidth * 1.5);
+		super.__init__(this, vd, world, "computer", "#b33", worldWidth - paddleWidth * 1.5);
 	}
 
-	function update(this, display, ball) {
+	function update(this, vd, ball) {
 		// get ball position and speed
 		var x = ball.getX();
 		var y = ball.getY();
@@ -270,7 +270,7 @@ class Computer : Paddle {
 				}
 			}
 
-			this.moveBy(display, 0.03 * (py - this.getY()).sign());
+			this.moveBy(vd, 0.03 * (py - this.getY()).sign());
 		}
 	}
 }
@@ -410,13 +410,13 @@ class Pong : game.Game {
 		this.ball.updateVelocity();
 	}
 
-	function renderIcon(this, display, x, y, w, h) {
+	function renderIcon(this, vd, x, y, w, h) {
 		// render top and bottom lines
-		display.pushStyle();
-		display.setColor("#47f");
-		display.addLine(x, y, x + w, y);
-		display.addLine(x, y + h, x + w, y + h);
-		display.popStyle();
+		vd.pushStyle();
+		vd.setColor("#47f");
+		vd.addLine(x, y, x + w, y);
+		vd.addLine(x, y + h, x + w, y + h);
+		vd.popStyle();
 
 		// render center line
 		var segment = h / 20.0;
@@ -424,14 +424,14 @@ class Pong : game.Game {
 		for i in range(7) {
 			var start = y + 2.0 * (i + 1) * segment;
 			var end = start + segment;
-			display.addLine(x + w / 2, start, x+ w / 2, end);
+			vd.addLine(x + w / 2, start, x+ w / 2, end);
 		}
 
 		// render paddles
-		display.addLine(x, y + h * 0.6, x, y + h * 0.75);
-		display.addLine(x + w, y + h * 0.3, x + w, y + h * 0.45);
+		vd.addLine(x, y + h * 0.6, x, y + h * 0.75);
+		vd.addLine(x + w, y + h * 0.3, x + w, y + h * 0.45);
 
 		// render ball
-		display.addCircle(x + w / 1.5, y + h / 1.5, 0.02, 8);
+		vd.addCircle(x + w / 1.5, y + h / 1.5, 0.02, 8);
 	}
 }

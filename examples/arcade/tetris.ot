@@ -7,6 +7,7 @@
 var input = import("input");
 var game = import("game");
 
+// constants
 var colors = [
 	"#000", "#bbb",
 	"#b33", "#3b3", "#33b",
@@ -18,6 +19,7 @@ var rows = 18;
 var columns = 24;
 
 class Field : Object {
+	// constants
 	var size = 9.0 / rows;
 
 	var minoMargin = 0.15 * size;
@@ -59,32 +61,40 @@ class Field : Object {
 	}
 
 	function hide(this, vd) {
+		// hide all minos
 		for mino in this.minos {
 			vd.disableShape(mino);
 		}
 
+		// hide lines
 		vd.disableShape(this.leftLine);
 		vd.disableShape(this.rightLine);
 	}
 
 	function show(this, vd) {
+		// show all minos
 		for mino in this.minos {
 			vd.enableShape(mino);
 		}
 
+		// show lines
 		vd.enableShape(this.leftLine);
 		vd.enableShape(this.rightLine);
 	}
 
 	function clear(this, vd) {
+		// clear all minos
 		for mino in this.minos {
 			vd.updateColor(mino, colors[0]);
 		}
 
+		// reset color matrix (used to track occupancy)
 		this.colors = [].fill(rows * columns, 0);
 	}
 
 	function renderTetrimino(this, vd, tetrimino, x , y, color) {
+		// render a tetromino at a specifie location
+		// (using color 0 effectively clears the tetrimino)
 		for r in range(4) {
 			for c in range(4) {
 				if (y + r >= 0 && tetrimino[r * 4 + c]) {
@@ -97,20 +107,25 @@ class Field : Object {
 	}
 
 	function isOccupied(this, x, y) {
+		// see if a specified mino is occupied
 		return this.colors[y * columns + x] != 0;
 	}
 
 	function isAllowed(this, tetrimino, x, y) {
+		// see a tetromino can occupy the specified location
 		for r in range(4) {
+			// ignore rows that haven't become visible yet
 			if (y + r >= 0) {
 				for c in range(4) {
 					if (tetrimino[r * 4 + c]) {
 						var sx = x + c;
 						var sy = y + r;
 
-						if (sx < 0 || sx >= columns || sy < 0 || sy >= rows) {
+						// offscreen locations are not allowed
+						if (sx < 0 || sx >= columns || sy >= rows) {
 							return false;
 
+						// occupied positions aren't allowed either
 						} elif (this.isOccupied(sx, sy)) {
 							return false;
 						}
@@ -123,46 +138,121 @@ class Field : Object {
 	}
 
 	function removeRow(this, vd, row) {
+		// remove the specified row by moving rows above it down
 		for y in range(row, 1, -1) {
-			for x in range(columns) {
-				var offsetFrom = (y - 1) * columns + x;
-				var offsetTo = y * columns + x;
+			var offsetFrom = (y - 1) * columns;
+			var offsetTo = y * columns;
 
-				var color = this.colors[offsetFrom];
+			for x in range(columns) {
+				var color = this.colors[offsetFrom++];
 				vd.updateColor(this.minos[offsetTo], colors[color]);
-				this.colors[offsetTo] = color;
+				this.colors[offsetTo++] = color;
 			}
 		}
 
+		// clear the top row
 		for x in range(columns) {
-			var offset = row * columns + x;
-			vd.updateColor(this.minos[0], colors[0]);
-			this.colors[offset] = 0;
+			vd.updateColor(this.minos[x], colors[0]);
+			this.colors[x] = 0;
 		}
 	}
 
 	function removeCompleteRows(this, vd) {
+		// keep track of points scored
 		var score = 0;
 
+		// process all rows
 		for y in range(rows - 1, 0, -1) {
+			// see if row is complete
 			var complete = true;
 			var x = 0;
 
 			while (complete && x < columns) {
-				if (!this.isOccupied(x, y)) {
+				if (!this.isOccupied(x++, y)) {
 					complete = false;
 				}
-
-				x++;
 			}
 
+			// remove the row if it's complete and give some points
 			if (complete) {
 				this.removeRow(vd, y);
 				score += 10;
 			}
 		}
 
+		// return the points collected
 		return score;
+	}
+}
+
+class Scoreboard : Object {
+	function __init__(this, vd) {
+		// reset point count
+		this.points = 0;
+
+		// create title
+		vd.pushStyle();
+		vd.setColor("#47f");
+		vd.setWidth(2);
+		vd.addText(0.25, 8.0, 1.0, "Tetris");
+
+		// create score display
+		vd.setColor("#2b5");
+		vd.setWidth(1);
+		this.scoreTitle = vd.addText(0.65, 5.5, 0.7, "Score");
+		this.scoreDisplay = vd.addSevenSegment(0.85, 5.2, 0.7, "000");
+
+		// create next tetrimino display
+		vd.setColor("#b52");
+		this.nextTitle = vd.addText(0.8, 2.5, 0.7, "Next");
+		this.minos = [];
+
+		for y in range(4) {
+			for x in range(4) {
+				this.minos.append(vd.addRectangle(1.0 + 0.3 * x,  2.0 - 0.3 * y, 0.25, 0.25));
+			}
+		}
+
+		vd.popStyle();
+	}
+
+	function clear(this, vd) {
+		// reset point count
+		this.points = 0;
+		vd.updateSevenSegmentString(this.scoreDisplay, "%03i".format(this.points));
+	}
+
+	function addPoints(this, vd, points) {
+		// add point to the scoreboard
+		this.points += points;
+		vd.updateSevenSegmentString(this.scoreDisplay, "%03i".format(this.points));
+	}
+
+	function setNextTetromino(this, vd, tetromino) {
+		// render the shape of the next tetromino
+		for index in range(16) {
+			vd.updateColor(this.minos[index], tetromino[index] == 0 ? "#000" : "#b52");
+		}
+	}
+
+	function show(this, vd) {
+		vd.enableShape(this.scoreTitle);
+		vd.enableShape(this.scoreDisplay);
+		vd.enableShape(this.nextTitle);
+
+		for mino in this.minos {
+			vd.enableShape(mino);
+		}
+	}
+
+	function hide(this, vd) {
+		vd.disableShape(this.scoreTitle);
+		vd.disableShape(this.scoreDisplay);
+		vd.disableShape(this.nextTitle);
+
+		for mino in this.minos {
+			vd.disableShape(mino);
+		}
 	}
 }
 
@@ -187,28 +277,33 @@ class Tetris : game.Game {
 		loadTetrimino("t");
 		loadTetrimino("z1");
 		loadTetrimino("z2");
-		this.nextTetromino = this.tetrominos[0];
+
+		// pick the first tetronino
+		this.nextTetromino = this.tetrominos[this.tetrominos.size().random()];
+		this.nextRotation = 4.random();
 
 		// create the field
 		this.field = Field(this);
 
 		// create scoreboard
-		this.pushStyle();
-		this.setColor("#47f");
-		this.setWidth(2);
-		this.addText(0.25, 8.0, 1.0, "Tetris");
-		this.popStyle();
+		this.scoreboard = Scoreboard(this);
 
 		// create the messages
-		this.startupMessage = this.createMessage(6, [
+		this.startupMessage = this.createMessage(6.5, [
 			"Welcome to the Game of Tetris",
 			"Hit spacebar or mouse button to start...",
-			"Hit arrow keys to move tetromino...",
-			"Hit enter to drop tetromino...",
+			"Hit left/right keys to move tetromino...",
+			"Hit R to rotate and F to drop tetromino...",
+			"Hit P to pause game...",
 			"Hit ESC to return to the menu..."
 		]);
 
-		this.gameOverMessage = this.createMessage(4, [
+		this.pauseMessage = this.createMessage(5, [
+			"Game Paused",
+			"Hit spacebar or mouse button to continue..."
+		]);
+
+		this.gameOverMessage = this.createMessage(5, [
 			"GAME OVER!",
 			"Hit spacebar or mouse button to continue..."
 		]);
@@ -219,6 +314,7 @@ class Tetris : game.Game {
 	}
 
 	function onShowSplash(this) {
+		this.scoreboard.hide(this);
 		this.field.hide(this);
 		this.showMessage(this.startupMessage);
 	}
@@ -226,14 +322,17 @@ class Tetris : game.Game {
 	function onHideSplash(this) {
 		this.hideMessage(this.startupMessage);
 		this.field.show(this);
+		this.scoreboard.show(this);
 	}
 
 	function onStart(this) {
 		this.time = os.clock();
+		this.scoreboard.clear(this);
 		this.newTetromino();
 	}
 
 	function onPause(this) {
+		this.scoreboard.hide(this);
 		this.field.hide(this);
 		this.showMessage(this.pauseMessage);
 	}
@@ -241,11 +340,16 @@ class Tetris : game.Game {
 	function onResume(this) {
 		this.hideMessage(this.pauseMessage);
 		this.field.show(this);
+		this.scoreboard.show(this);
 		this.time = os.clock();
 	}
 
 	function onUpdate(this) {
-		if (input.isButtonPressed(input.keyLeftArrow)) {
+		// handle keyboard inputs
+		if (input.isButtonPressed(input.keyP)) {
+			this.pause();
+
+		} elif (input.isButtonPressed(input.keyLeftArrow)) {
 			this.moveTetromino(-1, 0);
 
 		} elif (input.isButtonPressed(input.keyRightArrow)) {
@@ -258,6 +362,7 @@ class Tetris : game.Game {
 			this.interval = 0.08;
 		}
 
+		// see if we need to drop the current tetromino
 		var time = os.clock();
 
 		if (time - this.time > this.interval) {
@@ -266,7 +371,7 @@ class Tetris : game.Game {
 					this.gameover();
 
 				} else {
-					this.field.removeCompleteRows(this);
+					this.scoreboard.addPoints(this, this.field.removeCompleteRows(this));
 					this.newTetromino();
 				}
 			}
@@ -276,6 +381,7 @@ class Tetris : game.Game {
 	}
 
 	function onStop(this) {
+		this.scoreboard.hide(this);
 		this.field.hide(this);
 	}
 
@@ -288,17 +394,25 @@ class Tetris : game.Game {
 	}
 
 	function newTetromino(this) {
+		// make next tetromino the current one
 		this.currentTetromino = this.nextTetromino;
-		this.nextTetromino = this.tetrominos[this.tetrominos.size().random()];
-
-		this.rotation = 0;
+		this.rotation = this.nextRotation;
 		this.tetromino = this.currentTetromino[this.rotation];
 		this.color = 1 + (colors.size() - 1).random();
 
+		// put it in the launch position
 		this.x = (columns - 4) / 2;
 		this.y = -4;
 
+		// pick a new random tetromino with random orientation
+		this.nextTetromino = this.tetrominos[this.tetrominos.size().random()];
+		this.nextRotation = 4.random();
+
+		// (re)set drop speed
 		this.interval = 0.5;
+
+		// report next tetrimino to scoreboard
+		this.scoreboard.setNextTetromino(this, this.nextTetromino[this.nextRotation]);
 	}
 
 	function hideTetromino(this) {

@@ -46,11 +46,11 @@ void OtShaderProgram::submit(bgfx::ViewId view) {
 			program = bgfx::createProgram(vertexShader, fragmentShader, true);
 
 			if (!isValid()) {
-				OtLogFatal("Internal error: Can't create shader program");
+				OtLogFatal("Internal error: can't create shader program");
 			}
 
 		} else {
-			OtLogFatal("Internal error: Shader program not initialized before submission");
+			OtLogFatal("Internal error: shader program not initialized before submission");
 		}
 	}
 

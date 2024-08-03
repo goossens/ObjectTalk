@@ -34,6 +34,6 @@ void OtVertexBuffer::submit(uint8_t stream) {
 		bgfx::setVertexBuffer(stream, vertexBuffer.getHandle());
 
 	} else {
-		OtLogFatal("Internal error: VertexBuffer not initialized before submission");
+		OtLogFatal("Internal error: vertexBuffer not initialized before submission");
 	}
 }

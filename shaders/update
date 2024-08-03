@@ -221,7 +221,7 @@ bgfx::ShaderHandle OtShaders::get(const char* name) {
 	auto shader = bgfx::createEmbeddedShader(embeddedShaders, type, name);
 
 	if (!bgfx::isValid(shader)) {
-		OtLogFatal("Internal error: Unknown shader [{}]", name);
+		OtLogFatal("Internal error: unknown shader [{}]", name);
 	}
 
 	return shader;

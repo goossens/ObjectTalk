@@ -84,7 +84,7 @@ void OtUniformMat3::submit() {
 			uniform = bgfx::createUniform(name.c_str(), bgfx::UniformType::Mat3, size);
 
 		} else {
-			OtLogFatal("Internal error: Uniform not initialized before submission");
+			OtLogFatal("Internal error: uniform not initialized before submission");
 		}
 	}
 

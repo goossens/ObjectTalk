@@ -189,7 +189,7 @@ void OtImage::loadFromFileInMemory(void* data, uint32_t size) {
 
 	// check for errors
 	if (!imageContainer) {
-		OtError("Internal error: Can't process in-memory image");
+		OtError("Internal error: can't process in-memory image");
 	}
 
 	assignImageContainer(imageContainer);

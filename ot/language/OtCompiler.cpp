@@ -227,13 +227,13 @@ void OtCompiler::declareCapture(const std::string& name, OtStackItem item) {
 
 	// sanity check
 	if (scope == scopeStack.rend()) {
-		OtError("Internal error. No function scope on stack");
+		OtError("Internal error: no function scope on stack");
 	}
 
 	// see if this variable is already captured
 	if (scope->captures.count(name)) {
 		if (scope->captures[name] != item) {
-			OtError("Internal error. Captured variable has different stack offset");
+			OtError("Internal error: captured variable has different stack offset");
 		}
 
 	} else {

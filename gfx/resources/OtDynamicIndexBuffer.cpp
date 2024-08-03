@@ -39,6 +39,6 @@ void OtDynamicIndexBuffer::submit() {
 		bgfx::setIndexBuffer(indexBuffer.getHandle(), 0, uint32_t(indexCount));
 
 	} else {
-		OtLogFatal("Internal error: DynamicIndexBuffer not initialized before submission");
+		OtLogFatal("Internal error: dynamicIndexBuffer not initialized before submission");
 	}
 }

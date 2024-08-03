@@ -44,11 +44,11 @@ void OtComputeProgram::dispatch(bgfx::ViewId view, uint32_t x, uint32_t y, uint3
 			program = bgfx::createProgram(computeShader, true);
 
 			if (!isValid()) {
-				OtLogFatal("Internal error: Can't create compute program");
+				OtLogFatal("Internal error: can't create compute program");
 			}
 
 		} else {
-			OtLogFatal("Internal error: Compute program not initialized before submission");
+			OtLogFatal("Internal error: compute program not initialized before submission");
 		}
 	}
 

@@ -115,7 +115,7 @@ void OtFrameBuffer::update(int w, int h) {
 			framebuffer = bgfx::createFrameBuffer(1, &textures[1]);
 
 		} else {
-			OtLogFatal("Internal error: You can't have a FrameBuffer without Textures");
+			OtLogFatal("Internal error: you can't have a FrameBuffer without Textures");
 		}
 
 		// remember dimensions

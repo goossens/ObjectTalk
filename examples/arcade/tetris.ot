@@ -371,7 +371,7 @@ class Tetris : game.Game {
 					this.gameover();
 
 				} else {
-					this.scoreboard.addPoints(this, this.field.removeCompleteRows(this));
+					this.scoreboard.addPoints(this, 1 + this.field.removeCompleteRows(this));
 					this.newTetromino();
 				}
 			}

@@ -32,7 +32,7 @@
 #include "OtThrow.h"
 
 
-OtByteCode OtCompiler::compileFile(const std::string& path, OtObject object, bool disassemble) {
+OtByteCode OtCompiler::compileFile(const std::string& path, bool disassemble) {
 	// sanity check
 	if (!OtPathExists(path)) {
 		OtError("Can't open file [{}]", path);
@@ -44,7 +44,7 @@ OtByteCode OtCompiler::compileFile(const std::string& path, OtObject object, boo
 	buffer << stream.rdbuf();
 	stream.close();
 	OtSource source = OtSourceClass::create(path, buffer.str());
-	return compileSource(source, object, disassemble);
+	return compileSource(source, nullptr, disassemble);
 }
 
 
@@ -52,10 +52,10 @@ OtByteCode OtCompiler::compileFile(const std::string& path, OtObject object, boo
 //	OtCompiler::compileText
 //
 
-OtByteCode OtCompiler::compileText(const std::string& text, OtObject object, bool disassemble) {
+OtByteCode OtCompiler::compileText(const std::string& text, bool disassemble) {
 	// convert to source object, compile and return bytecode
 	OtSource source = OtSourceClass::create("__internal__", text);
-	return compileSource(source, object, disassemble);
+	return compileSource(source, nullptr, disassemble);
 }
 
 
@@ -87,12 +87,14 @@ OtByteCode OtCompiler::compileSource(OtSource src, OtObject object, bool disasse
 		declareVariable(bytecode, std::string(name));
 	}
 
-	// setup object scope
-	pushObjectScope(object);
-	object->getMemberNames(names);
+	// setup object scope (if required)
+	if (object) {
+		pushObjectScope(object);
+		object->getMemberNames(names);
 
-	for (auto name : names) {
-		declareVariable(bytecode, std::string(name));
+		for (auto name : names) {
+			declareVariable(bytecode, std::string(name));
+		}
 	}
 
 	// process all statements
@@ -174,7 +176,7 @@ OtByteCode OtCompiler::compileExpression(OtSource src, bool disassemble) {
 //
 
 void OtCompiler::pushObjectScope(OtObject object) {
-	scopeStack.emplace_back(OtScope(OBJECT_SCOPE, object));
+	scopeStack.emplace_back(Scope(Scope::objectScope, object));
 }
 
 
@@ -183,7 +185,7 @@ void OtCompiler::pushObjectScope(OtObject object) {
 //
 
 void OtCompiler::pushFunctionScope() {
-	scopeStack.emplace_back(OtScope(FUNCTION_SCOPE));
+	scopeStack.emplace_back(Scope(Scope::functionScope));
 }
 
 
@@ -192,14 +194,14 @@ void OtCompiler::pushFunctionScope() {
 //
 
 void OtCompiler::pushBlockScope() {
-	auto scope = &(scopeStack.back());
-	auto stackFrameOffset = scope->stackFrameOffset;
+	auto& scope = scopeStack.back();
+	auto stackFrameOffset = scope.stackFrameOffset;
 
-	if (scope->type == FUNCTION_SCOPE || scope->type == BLOCK_SCOPE) {
-		stackFrameOffset += scope->locals.size();
+	if (scope.type == Scope::functionScope || scope.type == Scope::blockScope) {
+		stackFrameOffset += scope.locals.size();
 	}
 
-	scopeStack.emplace_back(OtScope(BLOCK_SCOPE, stackFrameOffset));
+	scopeStack.emplace_back(Scope(Scope::blockScope, stackFrameOffset));
 }
 
 
@@ -221,7 +223,7 @@ void OtCompiler::declareCapture(const std::string& name, OtStackItem item) {
 	// find most recent function scope
 	auto scope = scopeStack.rbegin();
 
-	while (scope->type != FUNCTION_SCOPE && scope != scopeStack.rend()) {
+	while (scope->type != Scope::functionScope && scope != scopeStack.rend()) {
 		scope++;
 	}
 
@@ -249,17 +251,17 @@ void OtCompiler::declareCapture(const std::string& name, OtStackItem item) {
 
 void OtCompiler::declareVariable(OtByteCode bytecode, const std::string& name, bool alreadyOnStack) {
 	// get current scope
-	auto scope = &(scopeStack.back());
+	auto& scope = scopeStack.back();
 
 	// avoid double declaration
-	if (scope->locals.count(name)) {
+	if (scope.locals.count(name)) {
 		scanner.error(fmt::format("Variable [{}] already defined in this scope", name));
 	}
 
 	// add variable to compiler scope
-	if (scope->type == FUNCTION_SCOPE || scope->type == BLOCK_SCOPE) {
+	if (scope.type == Scope::functionScope || scope.type == Scope::blockScope) {
 		// variable lives on the stack
-		scope->locals[name] = scope->stackFrameOffset + scope->locals.size();
+		scope.locals[name] = scope.stackFrameOffset + scope.locals.size();
 
 		// reserve space
 		if (!alreadyOnStack) {
@@ -268,7 +270,7 @@ void OtCompiler::declareVariable(OtByteCode bytecode, const std::string& name, b
 
 	} else {
 		// variable lives on the heap
-		scope->locals[name] = 0;
+		scope.locals[name] = 0;
 	}
 }
 
@@ -288,13 +290,13 @@ void OtCompiler::resolveVariable(OtByteCode bytecode, const std::string& name) {
 		if (scope->locals.count(name)) {
 			// yes, handle different scope types
 			switch(scope->type) {
-				case OBJECT_SCOPE:
+				case Scope::objectScope:
 					// variable is object member
 					bytecode->push(OtMemberReference::create(scope->object, OtSelector::create(name)));
 					break;
 
-				case FUNCTION_SCOPE:
-				case BLOCK_SCOPE:
+				case Scope::functionScope:
+				case Scope::blockScope:
 					if (functionLevel == 0) {
 						// variable lives on the stack in the current stack frame
 						bytecode->push(OtStackReference::create(name, scope->locals[name]));
@@ -315,7 +317,7 @@ void OtCompiler::resolveVariable(OtByteCode bytecode, const std::string& name) {
 		}
 
 		// do some housekeeping if we had a function scope
-		if (!found && scope->type == FUNCTION_SCOPE) {
+		if (!found && scope->type == Scope::functionScope) {
 			// track how many function levels we go back
 			functionLevel++;
 		}
@@ -386,11 +388,11 @@ void OtCompiler::function(OtByteCode bytecode) {
 	auto function = OtByteCodeFunction::create(optimized, count);
 
 	// see if this function captures variables and needs a closure?
-	auto scope = &(scopeStack.back());
+	auto& scope = scopeStack.back();
 
-	if (scope->captures.size()) {
+	if (scope.captures.size()) {
 		// function does capture variables so let's wrap it in a closure
-		bytecode->push(OtClosure::create(function, scope->captures));
+		bytecode->push(OtClosure::create(function, scope.captures));
 
 		// generate code to perform the actual capture
 		bytecode->method("__capture__", 0);
@@ -1561,7 +1563,7 @@ void OtCompiler::returnStatement(OtByteCode bytecode) {
 	// cleanup stack (since we're doing a jump over all end of blocks)
 	size_t locals = 0;
 
-	for (auto i = scopeStack.rbegin(); i->type == BLOCK_SCOPE && i != scopeStack.rend(); i++) {
+	for (auto i = scopeStack.rbegin(); i->type == Scope::blockScope && i != scopeStack.rend(); i++) {
 		locals += i->locals.size();
 	}
 

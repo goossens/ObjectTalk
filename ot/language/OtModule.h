@@ -27,14 +27,14 @@ using OtModule = OtObjectPointer<OtModuleClass>;
 
 class OtModuleClass : public OtInternalClass {
 public:
-	// load the module
+	// load module from disk or provided source code
 	void load(const std::string& path);
 	void load(const std::string& root, const std::string& code);
 
 	// get type definition
 	static OtType getMeta();
 
-	// import a module (either load from disk or get from the memory cash)
+	// import a module from disk, our cache or from an internal generator
 	static OtModule import(const std::string& path);
 
 private:
@@ -48,7 +48,7 @@ private:
 
 
 //
-//	OtModuleRegistration
+//	OtModuleRegistration (for internal modules)
 //
 
 class OtModuleRegistration {

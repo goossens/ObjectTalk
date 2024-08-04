@@ -118,8 +118,7 @@ int main(int argc, char* argv[]) {
 					if (program["--disassemble"] == true) {
 						// don't run; just compile, optimize and disassemble bytecode
 						OtCompiler compiler;
-						auto object = OtObject::create();
-						auto bytecode = compiler.compileFile(file, object, true);
+						auto bytecode = compiler.compileFile(file, true);
 
 					} else {
 						// compile, optimize and run script as a module

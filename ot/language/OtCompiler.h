@@ -13,7 +13,6 @@
 //
 
 #include <string>
-#include <unordered_map>
 
 #include "OtByteCode.h"
 #include "OtClass.h"
@@ -21,7 +20,6 @@
 #include "OtOptimizer.h"
 #include "OtScanner.h"
 #include "OtSource.h"
-#include "OtStack.h"
 #include "OtVM.h"
 
 
@@ -32,8 +30,8 @@
 class OtCompiler {
 public:
 	// compile ObjectTalk script into bytecode
-	OtByteCode compileFile(const std::string& path, OtObject object, bool disassemble=false);
-	OtByteCode compileText(const std::string& text, OtObject object, bool disassemble=false);
+	OtByteCode compileFile(const std::string& path, bool disassemble=false);
+	OtByteCode compileText(const std::string& text, bool disassemble=false);
 	OtByteCode compileSource(OtSource source, OtObject object, bool disassemble=false);
 
 	// compile expression into bytecode
@@ -138,9 +136,6 @@ private:
 	// compile a return statement
 	void returnStatement(OtByteCode bytecode);
 
-	// compile a switch statement
-	void switchStatement(OtByteCode bytecode);
-
 	// compile a throw statement
 	void throwStatement(OtByteCode bytecode);
 
@@ -164,29 +159,30 @@ private:
 	OtOptimizer optimizer;
 
 	// scope tracker
-	typedef enum {
-		UNDEFINED_SCOPE,
-		OBJECT_SCOPE,
-		FUNCTION_SCOPE,
-		BLOCK_SCOPE
-	} OtScopeType;
-
-	class OtScope {
+	class Scope {
 	public:
+		// scope types
+		typedef enum {
+			undefinedScope,
+			objectScope,
+			functionScope,
+			blockScope
+		} Type;
+
 		// constructors
-		OtScope(OtScopeType t, OtObject o) : type(t), object(o) {}
-		OtScope(OtScopeType t) : type(t), stackFrameOffset(0) {}
-		OtScope(OtScopeType t, size_t sfo) : type(t), stackFrameOffset(sfo) {}
+		Scope(Type t, OtObject o) : type(t), object(o) {}
+		Scope(Type t) : type(t), stackFrameOffset(0) {}
+		Scope(Type t, size_t sfo) : type(t), stackFrameOffset(sfo) {}
 
 		// scope details
-		OtScopeType type = UNDEFINED_SCOPE;
+		Type type = undefinedScope;
 		OtObject object = nullptr;
 		size_t stackFrameOffset = 0;
 		std::unordered_map<std::string, size_t> locals;
 		std::unordered_map<std::string, OtStackItem> captures;
 	};
 
-	std::vector<OtScope> scopeStack;
+	std::vector<Scope> scopeStack;
 
 	// class tracker
 	std::vector<OtClass> classStack;

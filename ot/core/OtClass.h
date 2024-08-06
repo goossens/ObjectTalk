@@ -42,13 +42,13 @@ public:
 	bool isKindOf(const std::string& className) { return classType->isKindOf(className); }
 
 	// special member acccess (so we can manipulate metaclass members via class)
-	bool has(size_t selector) override;
-	OtObject& get(size_t selector) override;
-	OtObject set(size_t selector, OtObject value) override { return classType->set(selector, value); }
-	void unset(size_t selector) override { return classType->unset(selector); }
+	bool has(size_t symbol) override;
+	OtObject& get(size_t symbol) override;
+	OtObject set(size_t symbol, OtObject value) override { return classType->set(symbol, value); }
+	void unset(size_t symbol) override { return classType->unset(symbol); }
 
 	// special superclass member access
-	OtObject getSuper(size_t selector);
+	OtObject getSuper(size_t symbol);
 
 	// get the classes type
 	OtType getClassType() { return classType; }

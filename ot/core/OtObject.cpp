@@ -39,13 +39,13 @@ std::string OtObjectClass::describe() {
 //	OtObjectClass::has
 //
 
-bool OtObjectClass::has(size_t selector) {
-	if (members && members->has(selector)) {
+bool OtObjectClass::has(size_t symbol) {
+	if (members && members->has(symbol)) {
 		return true;
 	}
 
 	for (auto t = type; t; t = t->getParent()) {
-		if (t->has(selector)) {
+		if (t->has(symbol)) {
 			return true;
 		}
 	}
@@ -58,12 +58,12 @@ bool OtObjectClass::has(size_t selector) {
 //	OtObjectClass::set
 //
 
-OtObject OtObjectClass::set(size_t selector, OtObject value) {
+OtObject OtObjectClass::set(size_t symbol, OtObject value) {
 	if (!members) {
 		members = new OtMembers;
 	}
 
-	members->set(selector, value);
+	members->set(symbol, value);
 	return value;
 }
 
@@ -72,22 +72,22 @@ OtObject OtObjectClass::set(size_t selector, OtObject value) {
 //	OtObjectClass::get
 //
 
-OtObject& OtObjectClass::get(size_t selector) {
-	if (members && members->has(selector)) {
-		return members->get(selector);
+OtObject& OtObjectClass::get(size_t symbol) {
+	if (members && members->has(symbol)) {
+		return members->get(symbol);
 	}
 
 	for (auto t = type; t; t = t->getParent()) {
-		if (t->has(selector)) {
-			return t->get(selector);
+		if (t->has(symbol)) {
+			return t->get(symbol);
 		}
 	}
 
-	auto name = OtSelector::name(selector);
+	auto name = OtSymbol::name(symbol);
 	OtError("Unknown member [{}] in instance of class [{}]", name, type->getName());
 
 	// we will never get here because of the exception but a return statement keeps the compiler happy
-	return members->get(selector);
+	return members->get(symbol);
 }
 
 
@@ -95,12 +95,12 @@ OtObject& OtObjectClass::get(size_t selector) {
 //	OtObjectClass::unset
 //
 
-void OtObjectClass::unset(size_t selector) {
-	if (members && members->has(selector)) {
-		members->unset(selector);
+void OtObjectClass::unset(size_t symbol) {
+	if (members && members->has(symbol)) {
+		members->unset(symbol);
 
 	} else {
-		auto name = OtSelector::name(selector);
+		auto name = OtSymbol::name(symbol);
 		OtError("Unknown member [%.*s] in instance of class [{}]", name.size(), name.data(), type->getName());
 	}
 }

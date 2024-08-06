@@ -24,12 +24,12 @@
 
 
 //
-//	OtSelector
+//	OtSymbol
 //
 
-class OtSelector : public OtSingleton<OtSelector> {
+class OtSymbol : public OtSingleton<OtSymbol> {
 public:
-	// get a new selector
+	// get a new symbol
 	size_t get(const char* text) {
 		return get(std::string_view(text));
 	}
@@ -39,22 +39,22 @@ public:
 	}
 
 	size_t get(const std::string_view text) {
-		// see if this selector was already created
-		if (selectorIndex.count(text)) {
-			return selectorIndex[text];
+		// see if this symbol was already created
+		if (symbolIndex.count(text)) {
+			return symbolIndex[text];
 
 		} else {
-			auto selector = selectors.size();
-			auto name = saveSelector(text);
-			selectors.emplace_back(name);
-			selectorIndex[name] = selector;
-			return selector;
+			auto symbol = symbols.size();
+			auto name = saveSymbol(text);
+			symbols.emplace_back(name);
+			symbolIndex[name] = symbol;
+			return symbol;
 		}
 	}
 
-	// get the string associated with the selector
-	const std::string_view get(size_t selector) {
-		return selectors[selector];
+	// get the string associated with the symbol
+	const std::string_view get(size_t symbol) {
+		return symbols[symbol];
 	}
 
 	// static shortcuts
@@ -70,8 +70,8 @@ public:
 		return instance()->get(text);
 	}
 
-	static std::string_view name(size_t selector) {
-		return instance()->get(selector);
+	static std::string_view name(size_t symbol) {
+		return instance()->get(symbol);
 	}
 
 private:
@@ -95,8 +95,8 @@ private:
 		}
 	};
 
-	// save named selector
-	std::string_view saveSelector(const std::string_view text) {
+	// save named symbol
+	std::string_view saveSymbol(const std::string_view text) {
 		// create a new chunk buffer if required
 		if (!buffers.size() || buffers.back().hasSpace(text.size())) {
 			buffers.emplace_back();
@@ -109,7 +109,7 @@ private:
 	// properties
 	std::list<Buffer> buffers;
 
-	// list of selectors already created
-	std::vector<std::string_view> selectors;
-	std::unordered_map<std::string_view, size_t> selectorIndex;
+	// list of symbols already in use
+	std::vector<std::string_view> symbols;
+	std::unordered_map<std::string_view, size_t> symbolIndex;
 };

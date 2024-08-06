@@ -70,19 +70,19 @@ public:
 	virtual std::string describe();
 
 	// member acccess
-	virtual bool has(size_t selector);
-	virtual OtObject set(size_t selector, OtObject value);
-	virtual OtObject set(const char* name, OtObject value) { return set(OtSelector::create(name), value); }
-	virtual OtObject set(const std::string& name, OtObject value) { return set(OtSelector::create(name), value); }
-	virtual OtObject& get(size_t selector);
-	virtual void unset(size_t selector);
+	virtual bool has(size_t symbol);
+	virtual OtObject set(size_t symbol, OtObject value);
+	virtual OtObject set(const char* name, OtObject value) { return set(OtSymbol::create(name), value); }
+	virtual OtObject set(const std::string& name, OtObject value) { return set(OtSymbol::create(name), value); }
+	virtual OtObject& get(size_t symbol);
+	virtual void unset(size_t symbol);
 	virtual void unsetAll();
 
 	// member acccess by name
-	virtual bool hasByName(const std::string& name) { return has(OtSelector::create(name)); }
-	virtual OtObject setByName(const std::string& name, OtObject value) { return set(OtSelector::create(name), value); }
-	virtual OtObject getByName(const std::string& name) { return get(OtSelector::create(name)); }
-	virtual void unsetByName(const std::string& name) { return unset(OtSelector::create(name)); }
+	virtual bool hasByName(const std::string& name) { return has(OtSymbol::create(name)); }
+	virtual OtObject setByName(const std::string& name, OtObject value) { return set(OtSymbol::create(name), value); }
+	virtual OtObject getByName(const std::string& name) { return get(OtSymbol::create(name)); }
+	virtual void unsetByName(const std::string& name) { return unset(OtSymbol::create(name)); }
 
 	bool hasMembers() { return members != nullptr; }
 	void getMemberNames(std::vector<std::string_view>& names);

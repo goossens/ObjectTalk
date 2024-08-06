@@ -15,7 +15,7 @@
 
 #include "OtByteCode.h"
 #include "OtMemberReference.h"
-#include "OtSelector.h"
+#include "OtSymbol.h"
 #include "OtStackReference.h"
 
 
@@ -84,18 +84,18 @@ std::string OtByteCodeClass::disassemble() {
 				break;
 
 			case memberOpcode:
-				buffer << "member" << OtSelector::name(getNumber(pc));
+				buffer << "member" << OtSymbol::name(getNumber(pc));
 				break;
 
 			case methodOpcode: {
 				auto method = getNumber(pc);
 				auto count =getNumber(pc);
-				buffer << "method" << OtSelector::name(method) << "(" << count << ")";
+				buffer << "method" << OtSymbol::name(method) << "(" << count << ")";
 				break;
 			}
 
 			case superOpcode:
-				buffer << "super" << OtSelector::name(getNumber(pc));
+				buffer << "super" << OtSymbol::name(getNumber(pc));
 				break;
 
 			case exitOpcode:
@@ -115,11 +115,11 @@ std::string OtByteCodeClass::disassemble() {
 				break;
 
 			case pushObjectMemberOpcode:
-				buffer << "pushObjectMember" << OtObjectDescribe(constants[getNumber(pc)]) << " " << OtSelector::name(getNumber(pc));
+				buffer << "pushObjectMember" << OtObjectDescribe(constants[getNumber(pc)]) << " " << OtSymbol::name(getNumber(pc));
 				break;
 
 			case pushMemberOpcode:
-				buffer << "pushMember" << OtSelector::name(getNumber(pc));
+				buffer << "pushMember" << OtSymbol::name(getNumber(pc));
 				break;
 
 			case assignStackOpcode:
@@ -127,7 +127,7 @@ std::string OtByteCodeClass::disassemble() {
 				break;
 
 			case assignMemberOpcode:
-				buffer << "assignMember" << OtObjectDescribe(constants[getNumber(pc)]) << " " << OtSelector::name(getNumber(pc));
+				buffer << "assignMember" << OtObjectDescribe(constants[getNumber(pc)]) << " " << OtSymbol::name(getNumber(pc));
 				break;
 		}
 
@@ -208,9 +208,9 @@ void OtByteCodeClass::copyInstruction(OtByteCode other, size_t pc) {
 			break;
 
 		case methodOpcode: {
-			auto selector = other->getNumber(pc);
+			auto symbol = other->getNumber(pc);
 			auto count = other->getNumber(pc);
-			method(selector, count);
+			method(symbol, count);
 			break;
 		}
 
@@ -449,7 +449,7 @@ bool OtByteCodeClass::isMember(size_t pc, size_t& member) {
 
 bool OtByteCodeClass::isMethodDeref(size_t pc) {
 	if (getOpcode(pc) == methodOpcode) {
-		return  getNumber(pc) == OtSelector::create("__deref__");
+		return  getNumber(pc) == OtSymbol::create("__deref__");
 
 	} else {
 		return false;
@@ -463,7 +463,7 @@ bool OtByteCodeClass::isMethodDeref(size_t pc) {
 
 bool OtByteCodeClass::isMethodAssign(size_t pc) {
 	if (getOpcode(pc) == methodOpcode) {
-		return  getNumber(pc) == OtSelector::create("__assign__");
+		return  getNumber(pc) == OtSymbol::create("__assign__");
 
 	} else {
 		return false;

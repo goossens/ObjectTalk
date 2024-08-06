@@ -15,7 +15,7 @@
 #include "OtObject.h"
 #include "OtByteCode.h"
 #include "OtGlobal.h"
-#include "OtSelector.h"
+#include "OtSymbol.h"
 #include "OtSingleton.h"
 #include "OtStack.h"
 
@@ -51,7 +51,7 @@ public:
 
 	template<typename... ARGS>
 	OtObject callMemberFunction(OtObject target, const std::string& member, ARGS... args) {
-		return callMemberFunction(target, OtSelector::create(member), std::forward<ARGS>(args)...);
+		return callMemberFunction(target, OtSymbol::create(member), std::forward<ARGS>(args)...);
 	}
 
 	inline OtObject callMemberFunction(OtObject target, OtObject member, size_t count, OtObject* args) {
@@ -82,7 +82,7 @@ public:
 
 	template<typename... ARGS>
 	inline OtObject redirectMemberFunction(OtObject target, const std::string& member, size_t count) {
-		return redirectMemberFunction(target, OtSelector::create(member), count);
+		return redirectMemberFunction(target, OtSymbol::create(member), count);
 	}
 
 private:

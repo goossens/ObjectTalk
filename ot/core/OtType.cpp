@@ -73,10 +73,10 @@ bool OtTypeClass::isKindOf(const std::string& className) {
 //	OtTypeClass::set
 //
 
-OtObject OtTypeClass::set(size_t selector, OtObject value) {
-	members.set(selector, value); return value;
+OtObject OtTypeClass::set(size_t symbol, OtObject value) {
+	members.set(symbol, value); return value;
 }
 
 OtObject OtTypeClass::set(const char* name, OtObject value) {
-	return set(OtSelector::create(name), value);
+	return set(OtSymbol::create(name), value);
 }

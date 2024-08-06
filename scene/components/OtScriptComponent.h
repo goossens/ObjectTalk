@@ -47,8 +47,8 @@ public:
 
 	// runtime properties
 	OtObject instance;
-	size_t createSelector;
-	size_t updateSelector;
+	size_t createSymbol;
+	size_t updateSymbol;
 	bool hasCreateMethod;
 	bool hasUpdateMethod;
 };

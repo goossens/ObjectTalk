@@ -17,8 +17,8 @@
 //	OtMembers::set
 //
 
-void OtMembers::set(size_t selector, OtObject member) {
-	members[selector] = member;
+void OtMembers::set(size_t symbol, OtObject member) {
+	members[symbol] = member;
 }
 
 
@@ -28,9 +28,9 @@ void OtMembers::set(size_t selector, OtObject member) {
 
 void OtMembers::getMemberNames(std::vector<std::string_view>& names) {
 	names.clear();
-	auto selector = OtSelector::instance();
+	auto symbol = OtSymbol::instance();
 
 	for (auto i : members) {
-		names.emplace_back(selector->get(i.first));
+		names.emplace_back(symbol->get(i.first));
 	}
 }

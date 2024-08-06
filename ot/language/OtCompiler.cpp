@@ -26,7 +26,7 @@
 #include "OtMemberReference.h"
 #include "OtPathTools.h"
 #include "OtReal.h"
-#include "OtSelector.h"
+#include "OtSymbol.h"
 #include "OtStackReference.h"
 #include "OtString.h"
 #include "OtThrow.h"
@@ -292,7 +292,7 @@ void OtCompiler::resolveVariable(OtByteCode bytecode, const std::string& name) {
 			switch(scope->type) {
 				case Scope::objectScope:
 					// variable is object member
-					bytecode->push(OtMemberReference::create(scope->object, OtSelector::create(name)));
+					bytecode->push(OtMemberReference::create(scope->object, OtSymbol::create(name)));
 					break;
 
 				case Scope::functionScope:
@@ -304,7 +304,7 @@ void OtCompiler::resolveVariable(OtByteCode bytecode, const std::string& name) {
 					} else {
 						// variable is in an enclosing function, we need to capture it
 						declareCapture(name, OtStackItem(functionLevel - 1, scope->locals[name]));
-						bytecode->push(OtCaptureReference::create(OtSelector::create(name)));
+						bytecode->push(OtCaptureReference::create(OtSymbol::create(name)));
 					}
 
 					break;

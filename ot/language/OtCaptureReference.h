@@ -13,7 +13,7 @@
 //
 
 #include "OtReference.h"
-#include "OtSelector.h"
+#include "OtSymbol.h"
 
 
 //
@@ -30,7 +30,7 @@ public:
 	OtCaptureReferenceClass(size_t m) :  member(m) {}
 
 	// debugging support
-	std::string describe() override { return std::string(OtSelector::name(member)); }
+	std::string describe() override { return std::string(OtSymbol::name(member)); }
 
 	// (de)reference functions
 	OtObject deref();

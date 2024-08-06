@@ -91,18 +91,18 @@ public:
 	inline size_t jump(size_t offset) { emitOpcode(jumpOpcode); return emitOffset(offset); }
 	inline size_t jumpTrue(size_t offset) { emitOpcode(jumpTrueOpcode); return emitOffset(offset); }
 	inline size_t jumpFalse(size_t offset) { emitOpcode(jumpFalseOpcode); return emitOffset(offset); }
-	inline void member(size_t selector) { emitOpcode(memberOpcode); emitNumber(selector); }
-	inline void member(const char* name) { emitOpcode(memberOpcode); emitSelector(name); }
-	inline void member(const std::string_view name) { emitOpcode(memberOpcode); emitSelector(name); }
-	inline void member(const std::string& name) { emitOpcode(memberOpcode); emitSelector(name); }
-	inline void method(size_t selector, size_t count) { emitOpcode(methodOpcode); emitNumber(selector); emitNumber(count); }
-	inline void method(const char* name, size_t count) { emitOpcode(methodOpcode); emitSelector(name); emitNumber(count); }
-	inline void method(const std::string_view name, size_t count) { emitOpcode(methodOpcode); emitSelector(name); emitNumber(count); }
-	inline void method(const std::string& name, size_t count) { emitOpcode(methodOpcode); emitSelector(name); emitNumber(count); }
-	inline void super(size_t selector) { emitOpcode(superOpcode); emitNumber(selector); }
-	inline void super(const char* name) { emitOpcode(superOpcode); emitSelector(name); }
-	inline void super(const std::string_view name) { emitOpcode(superOpcode); emitSelector(name); }
-	inline void super(const std::string& name) { emitOpcode(superOpcode); emitSelector(name); }
+	inline void member(size_t symbol) { emitOpcode(memberOpcode); emitNumber(symbol); }
+	inline void member(const char* name) { emitOpcode(memberOpcode); emitSymbol(name); }
+	inline void member(const std::string_view name) { emitOpcode(memberOpcode); emitSymbol(name); }
+	inline void member(const std::string& name) { emitOpcode(memberOpcode); emitSymbol(name); }
+	inline void method(size_t symbol, size_t count) { emitOpcode(methodOpcode); emitNumber(symbol); emitNumber(count); }
+	inline void method(const char* name, size_t count) { emitOpcode(methodOpcode); emitSymbol(name); emitNumber(count); }
+	inline void method(const std::string_view name, size_t count) { emitOpcode(methodOpcode); emitSymbol(name); emitNumber(count); }
+	inline void method(const std::string& name, size_t count) { emitOpcode(methodOpcode); emitSymbol(name); emitNumber(count); }
+	inline void super(size_t symbol) { emitOpcode(superOpcode); emitNumber(symbol); }
+	inline void super(const char* name) { emitOpcode(superOpcode); emitSymbol(name); }
+	inline void super(const std::string_view name) { emitOpcode(superOpcode); emitSymbol(name); }
+	inline void super(const std::string& name) { emitOpcode(superOpcode); emitSymbol(name); }
 	inline void exit() { emitOpcode(exitOpcode); }
 	inline size_t pushTry() { emitOpcode(pushTryOpcode); return emitOffset(0); }
 	inline void pushTry(size_t offset) { emitOpcode(pushTryOpcode); emitOffset(offset); }
@@ -180,16 +180,16 @@ private:
 		emitNumber(index);
 	}
 
-	inline void emitSelector(const char* name) {
-		emitNumber(OtSelector::create(name));
+	inline void emitSymbol(const char* name) {
+		emitNumber(OtSymbol::create(name));
 	}
 
-	inline void emitSelector(const std::string_view name) {
-		emitNumber(OtSelector::create(name));
+	inline void emitSymbol(const std::string_view name) {
+		emitNumber(OtSymbol::create(name));
 	}
 
-	inline void emitSelector(const std::string& name) {
-		emitNumber(OtSelector::create(name));
+	inline void emitSymbol(const std::string& name) {
+		emitNumber(OtSymbol::create(name));
 	}
 
 	inline void emitMark(size_t mark) {

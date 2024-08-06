@@ -11,7 +11,7 @@
 
 #include "OtMemberReference.h"
 #include "OtOptimizer.h"
-#include "OtSelector.h"
+#include "OtSymbol.h"
 #include "OtStackReference.h"
 
 
@@ -20,8 +20,8 @@
 //
 
 OtOptimizer::OtOptimizer() {
-	derefSelector = OtSelector::create("__deref__");
-	callSelector = OtSelector::create("__call__");
+	derefSymbol = OtSymbol::create("__deref__");
+	callSymbol = OtSymbol::create("__call__");
 }
 
 

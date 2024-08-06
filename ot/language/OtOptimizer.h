@@ -49,7 +49,7 @@ private:
 	// translation table to fix jumps
 	std::unordered_map<size_t, size_t> jumpMapping;
 
-	// selectors for frequently used items
-	size_t derefSelector;
-	size_t callSelector;
+	// symbols for frequently used items
+	size_t derefSymbol;
+	size_t callSymbol;
 };

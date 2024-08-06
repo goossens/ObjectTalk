@@ -18,7 +18,7 @@
 #include "OtGlobal.h"
 #include "OtModule.h"
 #include "OtReference.h"
-#include "OtSelector.h"
+#include "OtSymbol.h"
 
 
 //
@@ -35,7 +35,7 @@ public:
 	OtMemberReferenceClass(OtObject o, size_t m) : object(o), member(m) {}
 
 	// debugging support
-	std::string describe() override { return object->getType()->getName() + " " + std::string(OtSelector::name(member)); }
+	std::string describe() override { return object->getType()->getName() + " " + std::string(OtSymbol::name(member)); }
 
 	// (de)reference functions
 	OtObject deref() { return resolveMember(object, member); }

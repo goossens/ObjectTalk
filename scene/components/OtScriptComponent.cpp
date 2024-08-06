@@ -16,7 +16,7 @@
 
 #include "OtException.h"
 #include "OtClass.h"
-#include "OtSelector.h"
+#include "OtSymbol.h"
 #include "OtVM.h"
 
 #include "OtMessageBus.h"
@@ -87,10 +87,10 @@ void OtScriptComponent::process() {
 
 				// ensure the class is derived from Entity
 				if (instance.isKindOf<OtEntityObjectClass>()) {
-					createSelector = OtSelector::create("create");
-					updateSelector = OtSelector::create("update");
-					hasCreateMethod = instance->has(createSelector);
-					hasUpdateMethod = instance->has(updateSelector);
+					createSymbol = OtSymbol::create("create");
+					updateSymbol = OtSymbol::create("update");
+					hasCreateMethod = instance->has(createSymbol);
+					hasUpdateMethod = instance->has(updateSymbol);
 
 				} else {
 					OtError("Class [{}] in script [{}] is not dereive from [Entity]", className, path);
@@ -113,7 +113,7 @@ void OtScriptComponent::process() {
 
 void OtScriptComponent::create() {
 	if (hasCreateMethod) {
-		OtVM::instance()->callMemberFunction(instance, createSelector);
+		OtVM::instance()->callMemberFunction(instance, createSymbol);
 	}
 }
 
@@ -124,7 +124,7 @@ void OtScriptComponent::create() {
 
 void OtScriptComponent::update() {
 	if (hasUpdateMethod) {
-		OtVM::instance()->callMemberFunction(instance, updateSelector);
+		OtVM::instance()->callMemberFunction(instance, updateSymbol);
 	}
 }
 

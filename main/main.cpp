@@ -34,8 +34,8 @@ int main(int argc, char* argv[]) {
 	// parse all command line parameters
 	argparse::ArgumentParser program(argv[0], "0.2");
 
-	program.add_argument("-d", "--disassemble")
-		.help("disassemble bytecode")
+	program.add_argument("-d", "--debug")
+		.help("run in debug mode")
 		.default_value(false)
 		.implicit_value(true);
 
@@ -71,6 +71,9 @@ int main(int argc, char* argv[]) {
 
 	// configure logging engine
 	OtLogger::instance()->setSubprocessMode(program["--child"] == true);
+
+	// configure ObjectTalk compiler
+	OtCompiler::setDebug(program["--debug"] == true || program["--child"] == true);
 
 	try {
 		// initialize libuv
@@ -114,19 +117,10 @@ int main(int argc, char* argv[]) {
 
 				// execute by type (based by the file extension)
 				if (extension == ".ot" || extension == "") {
-					// handle a script file
-					if (program["--disassemble"] == true) {
-						// don't run; just compile, optimize and disassemble bytecode
-						OtCompiler compiler;
-						auto bytecode = compiler.compileFile(file, true);
-
-					} else {
-						// compile, optimize and run script as a module
-						// (to ensure relative import paths work)
-						auto module = OtModule::create();
-						module->load(file);
-						module->unsetAll();
-					}
+					// compile and run script as a module
+					auto module = OtModule::create();
+					module->load(file);
+					module->unsetAll();
 
 #if defined(INCLUDE_GUI)
 				} else if (extension == ".ots") {

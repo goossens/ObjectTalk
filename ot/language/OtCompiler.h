@@ -30,12 +30,15 @@
 class OtCompiler {
 public:
 	// compile ObjectTalk script into bytecode
-	OtByteCode compileFile(const std::string& path, bool disassemble=false);
-	OtByteCode compileText(const std::string& text, bool disassemble=false);
-	OtByteCode compileSource(OtSource source, OtObject object, bool disassemble=false);
+	OtByteCode compileFile(const std::string& path);
+	OtByteCode compileText(const std::string& text);
+	OtByteCode compileSource(OtSource source, OtObject object);
 
 	// compile expression into bytecode
-	OtByteCode compileExpression(OtSource source, bool disassemble=false);
+	OtByteCode compileExpression(OtSource source);
+
+	// set debug mode
+	inline static void setDebug(bool d) { debug = d; }
 
 private:
 	// push a new scope onto the scope stack
@@ -59,7 +62,7 @@ private:
 	void assignVariable(OtByteCode bytecode, const std::string& name);
 
 	// compile function
-	void function(OtByteCode bytecode);
+	void function(OtByteCode bytecode, const std::string& name);
 
 	// compile superclass reference
 	void super(OtByteCode bytecode);
@@ -188,6 +191,5 @@ private:
 	std::vector<OtClass> classStack;
 
 	// debugging support
-	bool disassembleBytecode = false;
-	void outputDisassembledBytecode(OtByteCode original, OtByteCode optimized);
+	static bool debug;
 };

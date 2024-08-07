@@ -32,7 +32,7 @@ OtOptimizer::OtOptimizer() {
 OtByteCode OtOptimizer::optimize(OtByteCode bytecode) {
 	// remember the old bytecode and create a new one
 	oldByteCode = bytecode;
-	newByteCode = OtByteCode::create(bytecode->getSource());
+	newByteCode = OtByteCode::create(bytecode->getSource(), bytecode->getName());
 
 	// calculate the start position of each instruction in the old bytecode
 	size_t pc = 0;

@@ -34,10 +34,6 @@ std::string OtByteCodeClass::disassemble() {
 		buffer << std::left << std::setw(20);
 
 		switch (bytecode[pc++]) {
-			case debugOpcode:
-				buffer << "debug";
-				break;
-
 			case markOpcode:
 				buffer << "mark" << marks[getNumber(pc)];
 				break;
@@ -69,6 +65,14 @@ std::string OtByteCodeClass::disassemble() {
 
 			case reserveOpcode:
 				buffer << "reserve";
+				break;
+
+			case pushSymbolOpcode:
+				buffer << "pushSymbol" << OtSymbol::name(getNumber(pc));
+				break;
+
+			case popSymbolsOpcode:
+				buffer << "popSymbols" << offsets[getNumber(pc)];
 				break;
 
 			case jumpOpcode:
@@ -151,14 +155,6 @@ std::string OtByteCodeClass::disassemble() {
 
 void OtByteCodeClass::copyInstruction(OtByteCode other, size_t pc) {
 	switch (other->bytecode[pc++]) {
-		case debugOpcode:
-			debug();
-			break;
-
-		case markOpcode:
-			mark(other->marks[other->getNumber(pc)]);
-			break;
-
 		case pushOpcode:
 			push(other->constants[other->getNumber(pc)]);
 			break;
@@ -185,6 +181,14 @@ void OtByteCodeClass::copyInstruction(OtByteCode other, size_t pc) {
 
 		case reserveOpcode:
 			reserve();
+			break;
+
+		case pushSymbolOpcode:
+			pushSymbol(other->getNumber(pc));
+			break;
+
+		case popSymbolsOpcode:
+			popSymbols(other->getNumber(pc));
 			break;
 
 		case jumpOpcode:
@@ -266,9 +270,6 @@ size_t OtByteCodeClass::getInstructionSize(size_t offset) {
 
 	// increment "program counter"
 	switch (bytecode[pc++]) {
-		case debugOpcode:
-			break;
-
 		case markOpcode:
 			getNumber(pc);
 			break;
@@ -295,6 +296,14 @@ size_t OtByteCodeClass::getInstructionSize(size_t offset) {
 			break;
 
 		case reserveOpcode:
+			break;
+
+		case pushSymbolOpcode:
+			getNumber(pc);
+			break;
+
+		case popSymbolsOpcode:
+			getNumber(pc);
 			break;
 
 		case jumpOpcode:

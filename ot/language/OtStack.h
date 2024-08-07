@@ -16,8 +16,10 @@
 #include <iomanip>
 #include <memory>
 #include <sstream>
+#include <string>
 #include <vector>
 
+#include "OtByteCode.h"
 #include "OtObject.h"
 
 
@@ -43,6 +45,23 @@ public:
 	// stack item address
 	size_t frame = 0;
 	size_t slot = 0;
+};
+
+
+//
+//	OtStackFrame
+//
+
+class OtStackFrame {
+public:
+	// constructors
+	OtStackFrame() = default;
+	OtStackFrame(OtByteCode b, size_t o) : bytecode(b), offset(o) {}
+
+	// frame data
+	OtByteCode bytecode;
+	size_t offset;
+	std::vector<size_t> symbols;
 };
 
 
@@ -87,11 +106,16 @@ public:
 	inline void reserve() { stack.resize(stack.size() + 1); }
 	inline OtObject* sp(size_t offset) { return &(stack[stack.size() - offset]); }
 
-	// stack frame access functions
-	inline void openFrame(size_t offset=0) { frames.emplace_back(stack.size() - offset); }
-	inline OtObject getFrameItem(OtStackItem item) { return stack[frames[frames.size() - item.frame - 1] + item.slot]; }
-	inline void setFrameItem(OtStackItem item, OtObject object) { stack[frames[frames.size() - item.frame - 1] + item.slot] = object; }
+	// frame access functions
+	inline void openFrame(OtByteCode bytecode, size_t offset) { frames.emplace_back(bytecode, stack.size() - offset); }
+	inline OtObject getFrameItem(OtStackItem item) { return stack[frames[frames.size() - item.frame - 1].offset + item.slot]; }
+	inline void setFrameItem(OtStackItem item, OtObject object) { stack[frames[frames.size() - item.frame - 1].offset + item.slot] = object; }
 	inline void closeFrame() { frames.pop_back(); }
+	inline size_t getFrameCount() { return frames.size(); }
+
+	inline void pushSymbol(size_t symbol) { frames.back().symbols.emplace_back(symbol); }
+	inline void popSymbols(size_t count) { frames.back().symbols.resize(frames.back().symbols.size() - count); }
+	inline std::vector<size_t>& getSymbols(size_t frame) { return frames[frames.size() - frame - 1].symbols; }
 
 	// closure access functions
 	inline void pushClosure(OtObject closure) { closures.emplace_back(closure); }
@@ -121,7 +145,7 @@ public:
 
 		for (auto frame: frames) {
 			buffer << std::setw(3) << std::setfill('0') << count++ << std::setfill(' ') << " ";
-			buffer << frame << std::endl;
+			buffer << frame.offset << std::endl;
 		}
 
 		return buffer.str();
@@ -129,6 +153,6 @@ public:
 
 private:
 	std::vector<OtObject> stack;
-	std::vector<size_t> frames;
+	std::vector<OtStackFrame> frames;
 	std::vector<OtObject> closures;
 };

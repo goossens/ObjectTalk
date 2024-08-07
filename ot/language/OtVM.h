@@ -80,7 +80,6 @@ public:
 		return target->get(member)->operator () (count + 1, sp);
 	}
 
-	template<typename... ARGS>
 	inline OtObject redirectMemberFunction(OtObject target, const std::string& member, size_t count) {
 		return redirectMemberFunction(target, OtSymbol::create(member), count);
 	}

@@ -67,18 +67,12 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 	size_t mark;
 
 	// open a new stack frame
-	stack.openFrame(callingParameters);
+	stack.openFrame(bytecode, callingParameters);
 
 	// execute all instructions
 	while (pc < end) {
 		try {
 			switch (bytecode->getOpcode(pc)) {
-				case OtByteCodeClass::debugOpcode:
-					OtLogInfo(bytecode->disassemble());
-					OtLogInfo("PC: {}\n", pc);
-					OtLogInfo(stack.debug());
-					break;
-
 				case OtByteCodeClass::markOpcode:
 					mark = bytecode->getNumber(pc);
 					break;
@@ -109,6 +103,14 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 
 				case OtByteCodeClass::reserveOpcode:
 					stack.reserve();
+					break;
+
+				case OtByteCodeClass::pushSymbolOpcode:
+					stack.pushSymbol(bytecode->getNumber(pc));
+					break;
+
+				case OtByteCodeClass::popSymbolsOpcode:
+					stack.popSymbols(bytecode->getNumber(pc));
 					break;
 
 				case OtByteCodeClass::jumpOpcode:

@@ -667,13 +667,12 @@ void OtSceneEditor::determinePanelSizes() {
 
 void OtSceneEditor::renderPanel(const std::string& name, bool canAdd, std::function<void()> menu, std::function<void()> content) {
 	// render a header
-	auto padding = ImGui::GetStyle().FramePadding;
-	float buttonSpace = canAdd ? buttonSize + padding.x : 0.0f;
-	OtUiHeader(name.c_str(), ImGui::GetWindowContentRegionMax().x - ImGui::GetCursorPos().x - buttonSpace + 1.0f);
+	float buttonSpace = canAdd ? buttonSize + ImGui::GetStyle().FramePadding.x : 0.0f;
+	OtUiHeader(name.c_str(), ImGui::GetContentRegionAvail().x - buttonSpace);
 
 	// add a button to add more things (if required)
 	if (canAdd) {
-		ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - buttonSize);
+		ImGui::SameLine(ImGui::GetCursorPos().x + ImGui::GetContentRegionAvail().x - buttonSize);
 		auto popupName = name + "Menu";
 
 		if (ImGui::Button("+", ImVec2(buttonSize, buttonSize))) {
@@ -793,6 +792,9 @@ void OtSceneEditor::renderEntity(OtEntity entity) {
 			auto newValue = component.serialize(nullptr).dump();
 			nextTask = std::make_shared<OtEditComponentTask<OtCoreComponent>>(&scene, entity, oldValue, newValue);
 			renamingEntity = OtEntityNull;
+
+		} else if (ImGui::IsItemDeactivated()) {
+			renamingEntity = OtEntityNull;
 		}
 
 	} else {
@@ -806,8 +808,9 @@ void OtSceneEditor::renderEntity(OtEntity entity) {
 	}
 
 	// add button to remove an entity
-	auto right = ImGui::GetWindowContentRegionMax().x;
-	ImGui::SameLine(right - buttonSize * 2.0f - ImGui::GetStyle().FramePadding.y);
+	auto& style = ImGui::GetStyle();
+	auto right = ImGui::GetCursorPos().x + ImGui::GetContentRegionAvail().x;
+	ImGui::SameLine(right - buttonSize * 2.0f - style.FramePadding.y);
 
 	if (ImGui::Button("x##remove", ImVec2(buttonSize, buttonSize))) {
 		nextTask = std::make_shared<OtDeleteEntityTask>(&scene, entity);
@@ -849,7 +852,7 @@ void OtSceneEditor::renderChildEntities(OtEntity entity) {
 	while (scene.isValidEntity(child)) {
 		// create drop target
 		ImGui::PushID(createID(child, 2));
-		ImGui::InvisibleButton("##", ImVec2(ImGui::GetWindowContentRegionMax().x - ImGui::GetCursorPos().x, ImGui::GetStyle().FramePadding.y));
+		ImGui::InvisibleButton("##", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetStyle().FramePadding.y));
 		ImGui::PushStyleColor(ImGuiCol_DragDropTarget, 0x8000b0b0);
 
 		if (ImGui::BeginDragDropTarget()) {
@@ -954,7 +957,7 @@ void OtSceneEditor::renderComponent() {
 		bool removeComponent = false;
 
 		// add button to remove the component
-		ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - buttonSize);
+		ImGui::SameLine(ImGui::GetCursorPos().x + ImGui::GetContentRegionAvail().x - buttonSize);
 		removeComponent = ImGui::Button("x##remove", ImVec2(buttonSize, buttonSize));
 
 		// render the component editor (if required)

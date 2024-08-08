@@ -894,10 +894,10 @@ void OtWorkspace::renderSubProcess() {
 	// render the subprocess control bar
 	std::string title = fmt::format("Runnning [{}]...", currentRunnable);
 	ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "%s", title.c_str());
-	ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - 150.0f);
+	ImGui::SameLine(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x - 150.0f);
 
 	if (subprocess.isRunning()) {
-		if (ImGui::Button("Kill Process")) {
+		if (ImGui::Button("Kill Process", ImVec2(150.0f, 0.0f))) {
 			subprocess.kill(SIGINT);
 		}
 

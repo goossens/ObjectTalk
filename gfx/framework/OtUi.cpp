@@ -101,7 +101,7 @@ void OtUiCenteredText(const char* text) {
 void OtUiHeader(const char* label, float width) {
 	// get default width if required
 	if (width <= 0.0f) {
-		width = ImGui::GetWindowContentRegionMax().x - ImGui::GetCursorPos().x;
+		width = ImGui::GetContentRegionAvail().x;
 	}
 
 	// get meta information
@@ -240,7 +240,17 @@ void OtUiReadonlyText(const char* label, std::string* value) {
 
 bool OtUiInputText(const char* label, std::string* value, ImGuiInputTextFlags flags) {
 	OtUiInputString(label, value, flags);
-	return ImGui::IsItemDeactivatedAfterEdit();
+
+	if (ImGui::IsItemDeactivatedAfterEdit()) {
+		if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+			return false;
+
+		} else {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 

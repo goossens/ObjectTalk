@@ -411,7 +411,11 @@ void OtNodesWidget::renderNode(ImDrawList* drawlist, OtNode& node) {
 			editedNode = node->id;
 			nodeEdited = true;
 			renamingNode = 0;
+
+		} else if (ImGui::IsItemDeactivated()) {
+			renamingNode = 0;
 		}
+
 	}
 
 	ImGui::PopID();

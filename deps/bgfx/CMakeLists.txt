@@ -26,7 +26,6 @@ if(APPLE OR WIN32)
 endif()
 
 add_library(bgfx STATIC ${BGFX_SOURCES})
-add_dependencies(bgfx bx bimg)
 
 target_include_directories(bgfx
 	PRIVATE

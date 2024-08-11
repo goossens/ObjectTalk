@@ -27,7 +27,6 @@ target_compile_definitions(imgui PUBLIC "IMGUI_DISABLE_OBSOLETE_FUNCTIONS")
 target_compile_definitions(imgui PUBLIC "IMGUI_DISABLE_OBSOLETE_KEYIO")
 target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR})
 
-add_dependencies(imgui freetype)
 target_link_libraries(imgui PUBLIC freetype)
 
 if(APPLE)

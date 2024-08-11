@@ -5,13 +5,11 @@
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
 add_executable(main main.cpp)
-add_dependencies(main ot http)
-target_link_libraries(main ot http argparse)
+target_link_libraries(main ot argparse)
 
 if(OT_GUI)
-	add_dependencies(main shaders gfx gui graphics input math physics2d nodes scene ide)
 	target_compile_definitions(main PRIVATE INCLUDE_GUI)
-	target_link_libraries(main shaders gfx gui graphics input math physics2d nodes scene ide)
+	target_link_libraries(main shaders gfx gui nodes scene physics ide)
 endif()
 
 set_target_properties(main PROPERTIES OUTPUT_NAME ot)

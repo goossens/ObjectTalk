@@ -20,7 +20,6 @@ set(GUI_INCLUDE_DIRS ${GUI_INCLUDE_DIRS} PARENT_SCOPE)
 add_library(gui OBJECT ${GUI_INCLUDES} ${GUI_SOURCES})
 target_include_directories(gui PUBLIC ${GUI_INCLUDE_DIRS})
 
-add_dependencies(gui ot shaders gfx)
 target_link_libraries(gui PUBLIC ot shaders gfx)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${GUI_INCLUDES} ${GUI_SOURCES})

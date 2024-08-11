@@ -12,7 +12,6 @@ set(imguizmo_SOURCES
 	${imguizmo_SOURCE_DIR}/ImGuizmo.cpp)
 
 add_library(imguizmo STATIC ${imguizmo_SOURCES})
-add_dependencies(imguizmo imgui)
 target_include_directories(imguizmo PUBLIC ${imguizmo_SOURCE_DIR})
 target_link_libraries(imguizmo imgui)
 

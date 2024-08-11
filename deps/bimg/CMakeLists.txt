@@ -22,7 +22,6 @@ file(GLOB BIMG_SOURCES
 	${bimg_SOURCE_DIR}/include/bimg/*.h)
 
 add_library(bimg STATIC ${BIMG_SOURCES})
-add_dependencies(bimg bx)
 target_include_directories(bimg PUBLIC ${bimg_SOURCE_DIR}/include ${bimg_SOURCE_DIR}/3rdparty)
 target_link_libraries(bimg PUBLIC bx PRIVATE astc-encoder edtaa3 etc1 etc2 iqa squish nvtt pvrtc tinyexr)
 

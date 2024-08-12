@@ -15,7 +15,6 @@
 #include "OtObject.h"
 
 #include "OtTransformComponent.h"
-#include "OtScene.h"
 
 
 //
@@ -32,13 +31,13 @@ public:
 	OtTransformComponentObjectClass(OtTransformComponent* component) : transform(component) {}
 
 	// access transform parts
-	void setTranslation(OtObject object);
-	void setRotation(OtObject object);
-	void setScale(OtObject object);
+	inline void setTranslation(glm::vec3 translation) { transform->translation = translation; }
+	inline void setRotation(glm::vec3 rotation) { transform->rotation = rotation; }
+	inline void setScale(glm::vec3 scale) { transform->scale = scale; }
 
-	OtObject getTranslation();
-	OtObject getRotation();
-	OtObject getScale();
+	inline glm::vec3 getTranslation() { return transform->translation; }
+	inline glm::vec3 getRotation()  { return transform->rotation; }
+	inline glm::vec3 getScale()  { return transform->scale; }
 
 	// get type definition
 	static OtType getMeta();

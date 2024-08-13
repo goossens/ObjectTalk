@@ -23,7 +23,7 @@ if (UNIX)
 endif()
 
 target_include_directories(ot PUBLIC ${OT_INCLUDE_DIRS})
-target_link_libraries(ot PUBLIC uv_a json fmt multipart llhttp ${OT_EXTRA_LIBS})
+target_link_libraries(ot PUBLIC uv_a json fmt isocline multipart llhttp ${OT_EXTRA_LIBS})
 
 set_target_properties(ot PROPERTIES PREFIX "")
 set_target_properties(ot PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)

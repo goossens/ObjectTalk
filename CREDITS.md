@@ -9,6 +9,7 @@ been a lot harder to implement the language and it's components.
 * [argparse](https://github.com/p-ranav/argparse) - command line argument parser released under the [MIT license](https://opensource.org/licenses/MIT).
 * [llhttp](https://llhttp.org) - HTTP protocol parser released under the [MIT license](https://opensource.org/licenses/MIT).
 * [multipart-parser](https://github.com/francoiscolas/multipart-parser) - HTTP multipart body parser released under the [MIT license](https://opensource.org/licenses/MIT).
+* [isocline](https://github.com/daanx/isocline) - cross-platform library that can be used as an alternative to the GNU readline library released under the [MIT license](https://opensource.org/licenses/MIT).
 
 In case User Interface (UI) modules are included, we also use:
 

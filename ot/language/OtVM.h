@@ -30,10 +30,14 @@ public:
 	// constructor
 	OtVM();
 
+	// control debug mode
+	void setDebugMode(bool dm);
+
 	// get engine parameters
 	OtStack* getStack() { return &stack; }
 	OtGlobal getGlobal() { return global; }
 	OtObject getNull() { return null; }
+	bool runsDebugMode() { return debugMode; }
 
 	// execute bytecode in the virtual machine
 	OtObject execute(OtByteCode bytecode, size_t callingParameters=0);
@@ -89,4 +93,5 @@ private:
 	OtStack stack;
 	OtGlobal global;
 	OtObject null;
+	bool debugMode = false;
 };

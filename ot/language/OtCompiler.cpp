@@ -33,13 +33,6 @@
 
 
 //
-//	Globals
-//
-
-bool OtCompiler::debug = false;
-
-
-//
 //	OtCompiler::compileFile
 //
 
@@ -77,6 +70,9 @@ OtByteCode OtCompiler::compileText(const std::string& text) {
 OtByteCode OtCompiler::compileSource(OtSource src, OtObject object) {
 	// remember source code
 	source = src;
+
+	// get debug settings
+	debug = OtVM::instance()->runsDebugMode();
 
 	// clear scope stack
 	scopeStack.clear();
@@ -118,7 +114,7 @@ OtByteCode OtCompiler::compileSource(OtSource src, OtObject object) {
 	// ensure we leave a default result on the stack
 	bytecode->push(OtVM::instance()->getNull());
 
-	// in debug mode, don't optimize
+	// don't optimize in debug mode
 	if (!debug) {
 		bytecode = optimizer.optimize(bytecode);
 	}
@@ -383,7 +379,7 @@ void OtCompiler::function(OtByteCode bytecode, const std::string& name) {
 	// default return value in case function does not have return statement
 	functionCode->push(OtVM::instance()->getNull());
 
-	// optimize code (if required)
+	// don't optimize in debug mode
 	if (!debug) {
 		functionCode = optimizer.optimize(functionCode);
 	}

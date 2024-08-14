@@ -15,6 +15,7 @@
 
 #include "OtAssert.h"
 #include "OtClass.h"
+#include "OtDebugger.h"
 #include "OtException.h"
 #include "OtFunction.h"
 #include "OtLog.h"
@@ -46,6 +47,22 @@ OtVM::OtVM() {
 
 	// create null object
 	null = OtObject::create();
+}
+
+
+//
+//	OtVM::setDebugMode
+//
+
+void OtVM::setDebugMode(bool dm) {
+ 	debugMode = dm;
+
+	if (debugMode) {
+		global->setByName("debug", OtDebugger::create());
+
+	} else if (global->hasByName("debug")) {
+		global->unsetByName("debug");
+	}
 }
 
 

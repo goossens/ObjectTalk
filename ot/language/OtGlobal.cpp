@@ -144,7 +144,7 @@ OtObject OtGlobalClass::range(size_t count, OtObject* parameters) {
 		increment = parameters[2]->operator int64_t();
 
 	}else {
-		OtError("Range functions required 1, 2 or 3 parameters, not {}", count);
+		OtError("Range function requires 1, 2 or 3 parameters, not {}", count);
 	}
 
 	if (increment == 0) {

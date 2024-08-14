@@ -18,6 +18,7 @@
 #include "OtLog.h"
 #include "OtPathTools.h"
 #include "OtModule.h"
+#include "OtVM.h"
 
 #if defined(INCLUDE_GUI)
 #include "OtFramework.h"
@@ -72,8 +73,8 @@ int main(int argc, char* argv[]) {
 	// configure logging engine
 	OtLogger::instance()->setSubprocessMode(program["--child"] == true);
 
-	// configure ObjectTalk compiler
-	OtCompiler::setDebug(program["--debug"] == true || program["--child"] == true);
+	// configure debug mode
+	OtVM::instance()->setDebugMode(program["--debug"] == true || program["--child"] == true);
 
 	try {
 		// initialize libuv

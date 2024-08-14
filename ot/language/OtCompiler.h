@@ -37,9 +37,6 @@ public:
 	// compile expression into bytecode
 	OtByteCode compileExpression(OtSource source);
 
-	// set debug mode
-	inline static void setDebug(bool d) { debug = d; }
-
 private:
 	// push a new scope onto the scope stack
 	void pushObjectScope(OtObject object);
@@ -191,5 +188,5 @@ private:
 	std::vector<OtClass> classStack;
 
 	// debugging support
-	static bool debug;
+	bool debug;
 };

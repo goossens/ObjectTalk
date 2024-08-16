@@ -26,6 +26,7 @@
 #include "OtSource.h"
 #include "OtString.h"
 #include "OtText.h"
+#include "OtVM.h"
 
 
 //

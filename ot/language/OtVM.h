@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include <functional>
+
 #include "OtObject.h"
 #include "OtByteCode.h"
 #include "OtGlobal.h"
@@ -24,20 +26,15 @@
 //	The ObjectTalk Virtual Machine
 //
 
-
 class OtVM : public OtPerThreadSingleton<OtVM> {
 public:
 	// constructor
 	OtVM();
 
-	// control debug mode
-	void setDebugMode(bool dm);
-
 	// get engine parameters
-	OtStack* getStack() { return &stack; }
-	OtGlobal getGlobal() { return global; }
-	OtObject getNull() { return null; }
-	bool runsDebugMode() { return debugMode; }
+	inline OtStack* getStack() { return &stack; }
+	inline OtGlobal getGlobal() { return global; }
+	inline OtObject getNull() { return null; }
 
 	// execute bytecode in the virtual machine
 	OtObject execute(OtByteCode bytecode, size_t callingParameters=0);
@@ -93,5 +90,7 @@ private:
 	OtStack stack;
 	OtGlobal global;
 	OtObject null;
-	bool debugMode = false;
+
+	// debugging properties
+	std::function<void(size_t mark)> lineHook;
 };

@@ -13,12 +13,10 @@
 
 #include <argparse/argparse.hpp>
 
-#include "OtCompiler.h"
+#include "OtConfig.h"
 #include "OtLibuv.h"
-#include "OtLog.h"
 #include "OtPathTools.h"
 #include "OtModule.h"
-#include "OtVM.h"
 
 #if defined(INCLUDE_GUI)
 #include "OtFramework.h"
@@ -70,11 +68,9 @@ int main(int argc, char* argv[]) {
 	} catch (std::logic_error& e) {
 	}
 
-	// configure logging engine
-	OtLogger::instance()->setSubprocessMode(program["--child"] == true);
-
-	// configure debug mode
-	OtVM::instance()->setDebugMode(program["--debug"] == true || program["--child"] == true);
+	// set configuration
+	OtConfig::instance()->setDebugMode(program["--debug"] == true || program["--child"] == true);
+	OtConfig::instance()->setSubprocessMode(program["--child"] == true);
 
 	try {
 		// initialize libuv

@@ -20,7 +20,7 @@
 #include "OtOptimizer.h"
 #include "OtScanner.h"
 #include "OtSource.h"
-#include "OtVM.h"
+#include "OtStack.h"
 
 
 //

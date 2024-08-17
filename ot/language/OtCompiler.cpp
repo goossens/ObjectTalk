@@ -22,7 +22,6 @@
 #include "OtClosure.h"
 #include "OtCompiler.h"
 #include "OtConfig.h"
-#include "OtDebugger.h"
 #include "OtException.h"
 #include "OtInteger.h"
 #include "OtMemberReference.h"
@@ -88,16 +87,6 @@ OtByteCode OtCompiler::compileSource(OtSource src, OtObject object) {
 	// setup global scope
 	std::vector<std::string_view> names;
 	OtGlobal global = OtVM::instance()->getGlobal();
-
-	if (debug) {
-		if (!global->hasByName("debug")) {
-			global->setByName("debug", OtDebugger::create());
-		}
-
-	} else if (global->hasByName("debug")) {
-		global->unsetByName("debug");
-	}
-
 	pushObjectScope(global);
 	global->getMemberNames(names);
 

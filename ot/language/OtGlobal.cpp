@@ -42,7 +42,7 @@
 
 #include "OtRangeIterator.h"
 
-#include "OtVM.h"
+#include "OtDebugger.h"
 
 
 //
@@ -96,6 +96,8 @@ OtGlobalClass::OtGlobalClass() {
 
 	set("cout", OtCout::create());
 	set("cerr", OtCerr::create());
+
+	set("debug", OtDebugger::create());
 }
 
 

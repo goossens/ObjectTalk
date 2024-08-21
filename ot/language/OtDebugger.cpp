@@ -9,9 +9,17 @@
 //	Include files
 //
 
+#include <cstdlib>
+#include <vector>
+
+#include "fmt/format.h"
+#include "isocline.h"
+
+#include "OtConfig.h"
 #include "OtDebugger.h"
 #include "OtException.h"
 #include "OtFunction.h"
+#include "OtText.h"
 #include "OtVM.h"
 
 
@@ -25,7 +33,94 @@ void OtDebuggerClass::debug(size_t count, OtObject* parameters) {
 	}
 
 	if (count == 0 || parameters[0]->operator bool()) {
+		// activate instruction hook in VM
+		auto vm = OtVM::instance();
 
+		vm->setInstructionHook([this]() {
+			if (OtVM::instance()->getStack()->getFrameCount() == stackFrame) {
+				processCommand();
+			}
+		});
+
+		// set our state
+		breakOnInstruction = true;
+		stackFrame = vm->getStack()->getFrameCount();
+	}
+}
+
+
+//
+//	OtDebuggerClass::where
+//
+
+std::string OtDebuggerClass::where() {
+	auto vm = OtVM::instance();
+	return fmt::format("Module: {}\n{}\n", vm->getCurrentModule(), vm->getCurrentStatement());
+}
+
+
+//
+//	OtDebuggerClass::disassemble
+//
+
+std::string OtDebuggerClass::disassemble() {
+	return OtVM::instance()->getStack()->getFrame().bytecode->disassemble();
+}
+
+
+//
+//	OtDebuggerClass::processCommand
+//
+
+void OtDebuggerClass::processCommand() {
+	// run the debugger
+	bool debugging = true;
+
+	while (debugging) {
+		// get command line input
+		char* input = ic_readline("ot");
+
+		// sanity check
+		if (!input) {
+			OtLogFatal("Internal error during ic_readline");
+		}
+
+		// parse command
+		std::vector<std::string> command;
+		OtText::split(OtText::compressWhitespace(input), command);
+
+		if (command.size()) {
+			// process each command
+			if (command[0] == "where" || command[0] == "w") {
+				ic_print(where().c_str());
+
+			} else if (command[0] == "disassemble" || command[0] == "d") {
+				ic_print(disassemble().c_str());
+
+			} else if (command[0] == "continue" || command[0] == "c") {
+				breakOnInstruction = false;
+				debugging = false;
+
+			} else if (command[0] == "step" || command[0] == "s") {
+				debugging = false;
+
+			} else if (command[0] == "in" || command[0] == "i") {
+				stackFrame++;
+				debugging = false;
+
+			} else if (command[0] == "out" || command[0] == "o") {
+				stackFrame--;
+				debugging = false;
+
+			} else if (command[0] == "quit" || command[0] == "q") {
+				std::_Exit(EXIT_FAILURE);
+
+			} else {
+				ic_println(fmt::format("[red]Unknown command: {}[/red]", input).c_str());
+			}
+
+			ic_free(input);
+		}
 	}
 }
 
@@ -40,6 +135,8 @@ OtType OtDebuggerClass::getMeta() {
 	if (!type) {
 		type = OtType::create<OtGlobalClass>("Debugger", OtInternalClass::getMeta());
 		type->set("__call__", OtFunction::create(&OtDebuggerClass::debug));
+		type->set("where", OtFunction::create(&OtDebuggerClass::where));
+		type->set("disassemble", OtFunction::create(&OtDebuggerClass::disassemble));
 	}
 
 	return type;

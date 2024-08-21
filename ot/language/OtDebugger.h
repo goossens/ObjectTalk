@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include <string>
+
 #include "OtInternal.h"
 
 
@@ -24,11 +26,24 @@ using OtDebugger = OtObjectPointer<OtDebuggerClass>;
 
 class OtDebuggerClass : public OtInternalClass {
 public:
-	// debug
+	// enter debugger
 	void debug(size_t count, OtObject* parameters);
+
+	// get current location information
+	std::string where();
+
+	// get disassembled bytecode for current function
+	std::string disassemble();
 
 	// get type definition
 	static OtType getMeta();
 
 private:
+	// process a debug command
+	void processCommand();
+
+	// debugger state
+	bool breakOnInstruction = false;
+	size_t stackFrame = 0;
+	size_t instructionStart;
 };

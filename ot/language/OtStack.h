@@ -110,6 +110,7 @@ public:
 	inline void openFrame(OtByteCode bytecode, size_t offset) { frames.emplace_back(bytecode, stack.size() - offset); }
 	inline OtObject getFrameItem(OtStackItem item) { return stack[frames[frames.size() - item.frame - 1].offset + item.slot]; }
 	inline void setFrameItem(OtStackItem item, OtObject object) { stack[frames[frames.size() - item.frame - 1].offset + item.slot] = object; }
+	inline OtStackFrame& getFrame() { return frames.back(); }
 	inline void closeFrame() { frames.pop_back(); }
 	inline size_t getFrameCount() { return frames.size(); }
 

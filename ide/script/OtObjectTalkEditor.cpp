@@ -244,7 +244,7 @@ void OtObjectTalkEditor::renderEditor() {
 		if (OtUiInputString("###find", &findText)) {
 			if (findText.size()) {
 				editor.SetCursorPosition(0, 0);
-				editor.SelectNextOccurrenceOf(findText.c_str(), findText.size(), caseSensitiveFind, wholeWordFind);
+				editor.SelectNextOccurrenceOf(findText.c_str(), (int) findText.size(), caseSensitiveFind, wholeWordFind);
 
 			} else {
 				editor.ClearSelections();
@@ -366,7 +366,7 @@ void OtObjectTalkEditor::openFindReplace() {
 
 void OtObjectTalkEditor::find() {
 	if (findText.size()) {
-		editor.SelectNextOccurrenceOf(findText.c_str(), findText.size(), caseSensitiveFind, wholeWordFind);
+		editor.SelectNextOccurrenceOf(findText.c_str(), (int) findText.size(), caseSensitiveFind, wholeWordFind);
 		focusOnEditor = true;
 	}
 }
@@ -378,7 +378,7 @@ void OtObjectTalkEditor::find() {
 
 void OtObjectTalkEditor::findAll() {
 	if (findText.size()) {
-		editor.SelectAllOccurrencesOf(findText.c_str(), findText.size(), caseSensitiveFind, wholeWordFind);
+		editor.SelectAllOccurrencesOf(findText.c_str(), (int) findText.size(), caseSensitiveFind, wholeWordFind);
 		focusOnEditor = true;
 	}
 }
@@ -391,11 +391,11 @@ void OtObjectTalkEditor::findAll() {
 void OtObjectTalkEditor::replace() {
 	if (findText.size()) {
 		if (!editor.AnyCursorHasSelection()) {
-			editor.SelectNextOccurrenceOf(findText.c_str(), findText.size(), caseSensitiveFind, wholeWordFind);
+			editor.SelectNextOccurrenceOf(findText.c_str(), (int) findText.size(), caseSensitiveFind, wholeWordFind);
 		}
 
 		editor.ReplaceTextInCurrentCursor(replaceText);
-		editor.SelectNextOccurrenceOf(findText.c_str(), findText.size(), caseSensitiveFind, wholeWordFind);
+		editor.SelectNextOccurrenceOf(findText.c_str(), (int) findText.size(), caseSensitiveFind, wholeWordFind);
 		focusOnEditor = true;
 	}
 }
@@ -407,7 +407,7 @@ void OtObjectTalkEditor::replace() {
 
 void OtObjectTalkEditor::replaceAll() {
 	if (findText.size()) {
-		editor.SelectAllOccurrencesOf(findText.c_str(), findText.size(), caseSensitiveFind, wholeWordFind);
+		editor.SelectAllOccurrencesOf(findText.c_str(), (int) findText.size(), caseSensitiveFind, wholeWordFind);
 		editor.ReplaceTextInAllCursors(replaceText);
 		editor.ClearExtraCursors();
 		focusOnEditor = true;

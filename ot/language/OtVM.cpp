@@ -64,7 +64,6 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 	size_t sp = stack.size();
 	size_t pc = 0;
 	size_t end = bytecode->size();
-	size_t mark;
 
 	// open a new stack frame
 	stack.openFrame(bytecode, callingParameters);
@@ -78,11 +77,11 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 
 				case OtByteCodeClass::markOpcode:
 					// mark start of an instruction
-					mark = bytecode->getNumber(pc);
+					markIndex = bytecode->getNumber(pc);
 
-					// call hook (if required)
-					if (lineHook) {
-						lineHook(mark);
+					// call instruction hook (if required)
+					if (instructionHook) {
+						instructionHook();
 					}
 
 					break;
@@ -284,11 +283,11 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 				OtSource source = bytecode->getSource();
 
 				// find start and end marker
-				size_t startMarker = bytecode->getMark(mark);
-				size_t endMarker = bytecode->getNextMark(mark);
+				size_t startMarker = bytecode->getMark(markIndex);
+				size_t endMarker = bytecode->getNextMark(markIndex);
 
 				// get offending line(s)
-				auto line = source->getLineNumber(startMarker);
+				auto lineNo = source->getLineNumber(startMarker);
 				auto lines = source->getLines(startMarker, endMarker);
 
 				// format nicely
@@ -301,7 +300,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 						statement += '\n';
 					}
 
-					statement += fmt::format("Line {}: {}", line++, text);
+					statement += fmt::format("Line {}: {}", lineNo++, text);
 				});
 
 				// format long message
@@ -346,4 +345,50 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 
 	// return execution result
 	return result;
+}
+
+
+//
+//	OtVM::getCurrentModule
+//
+
+std::string OtVM::getCurrentModule() {
+	// return current moduel name
+	return stack.getFrame().bytecode->getSource()->getModule();
+}
+
+
+//
+//	OtVM::getCurrentStatement
+//
+
+std::string OtVM::getCurrentStatement() {
+	// get bytecode
+	auto bytecode = stack.getFrame().bytecode;
+
+	// get source code
+	OtSource source = bytecode->getSource();
+
+	// find start and end marker
+	size_t startMarker = bytecode->getMark(markIndex);
+	size_t endMarker = bytecode->getNextMark(markIndex);
+
+	// get offending line(s)
+	auto lineNo = source->getLineNumber(startMarker);
+	auto lines = source->getLines(startMarker, endMarker);
+
+	// format nicely
+	std::string statement;
+
+	OtText::splitIterator(lines.data(), lines.data() + lines.size(), '\n', [&](const char* b, const char* e) {
+		std::string text(b, e - b);
+
+		if (statement.size()) {
+			statement += '\n';
+		}
+
+		statement += fmt::format("Line {}: {}", lineNo++, text);
+	});
+
+	return statement;
 }

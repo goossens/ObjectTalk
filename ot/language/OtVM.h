@@ -85,12 +85,18 @@ public:
 		return redirectMemberFunction(target, OtSymbol::create(member), count);
 	}
 
+	// debugging functions
+	inline void setInstructionHook(std::function<void()> hook) { instructionHook = hook; }
+	std::string getCurrentModule();
+	std::string getCurrentStatement();
+
 private:
 	// VM properties
 	OtStack stack;
 	OtGlobal global;
 	OtObject null;
 
-	// debugging properties
-	std::function<void(size_t mark)> lineHook;
+	// debugging support
+	std::function<void()> instructionHook;
+	size_t markIndex;
 };

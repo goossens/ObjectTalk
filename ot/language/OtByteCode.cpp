@@ -33,7 +33,7 @@ std::string OtByteCodeClass::disassemble() {
 		buffer << std::setw(4) << std::setfill('0') << pc << std::setfill(' ') << " ";
 		buffer << std::left << std::setw(20);
 
-		switch (bytecode[pc++]) {
+		switch (getOpcode(pc)) {
 			case markOpcode:
 				buffer << "mark" << marks[getNumber(pc)];
 				break;
@@ -154,7 +154,11 @@ std::string OtByteCodeClass::disassemble() {
 //
 
 void OtByteCodeClass::copyInstruction(OtByteCode other, size_t pc) {
-	switch (other->bytecode[pc++]) {
+	switch (other->getOpcode(pc)) {
+		case markOpcode:
+			mark(other->marks[other->getNumber(pc)]);
+			break;
+
 		case pushOpcode:
 			push(other->constants[other->getNumber(pc)]);
 			break;
@@ -269,7 +273,7 @@ size_t OtByteCodeClass::getInstructionSize(size_t offset) {
 	size_t pc = offset;
 
 	// increment "program counter"
-	switch (bytecode[pc++]) {
+	switch (getOpcode(pc)) {
 		case markOpcode:
 			getNumber(pc);
 			break;

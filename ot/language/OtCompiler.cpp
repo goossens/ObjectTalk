@@ -1668,7 +1668,7 @@ void OtCompiler::whileStatement(OtByteCode bytecode) {
 
 void OtCompiler::statement(OtByteCode bytecode) {
 	// mark start of statement
-	bytecode->mark(scanner.getTokenStart());
+	auto index = bytecode->pushInstruction(scanner.getTokenStart());
 
 	// process statement
 	switch (scanner.getToken()) {
@@ -1724,5 +1724,6 @@ void OtCompiler::statement(OtByteCode bytecode) {
 	}
 
 	// mark end of statement
-	bytecode->mark(scanner.getLastTokenEnd());
+	bytecode->patchInstruction(index, scanner.getTokenStart());
+	bytecode->popInstruction();
 }

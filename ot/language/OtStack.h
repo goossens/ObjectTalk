@@ -62,6 +62,7 @@ public:
 	OtByteCode bytecode;
 	size_t offset;
 	std::vector<size_t> symbols;
+	std::vector<size_t> instructions;
 };
 
 
@@ -113,6 +114,10 @@ public:
 	inline OtStackFrame& getFrame() { return frames.back(); }
 	inline void closeFrame() { frames.pop_back(); }
 	inline size_t getFrameCount() { return frames.size(); }
+
+	inline void pushInstruction(size_t instruction) { frames.back().instructions.emplace_back(instruction); }
+	inline void popInstruction() { frames.back().instructions.pop_back(); }
+	inline size_t getInstruction() { return frames.back().instructions.back(); }
 
 	inline void pushSymbol(size_t symbol) { frames.back().symbols.emplace_back(symbol); }
 	inline void popSymbols(size_t count) { frames.back().symbols.resize(frames.back().symbols.size() - count); }

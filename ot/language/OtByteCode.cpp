@@ -34,10 +34,6 @@ std::string OtByteCodeClass::disassemble() {
 		buffer << std::left << std::setw(20);
 
 		switch (getOpcode(pc)) {
-			case markOpcode:
-				buffer << "mark" << marks[getNumber(pc)];
-				break;
-
 			case pushOpcode: {
 				buffer << "push" << OtObjectDescribe(constants[getNumber(pc)]);
 				break;
@@ -61,18 +57,6 @@ std::string OtByteCodeClass::disassemble() {
 
 			case moveOpcode:
 				buffer << "move" << getNumber(pc);
-				break;
-
-			case reserveOpcode:
-				buffer << "reserve";
-				break;
-
-			case pushSymbolOpcode:
-				buffer << "pushSymbol" << OtSymbol::name(getNumber(pc));
-				break;
-
-			case popSymbolsOpcode:
-				buffer << "popSymbols" << offsets[getNumber(pc)];
 				break;
 
 			case jumpOpcode:
@@ -104,6 +88,26 @@ std::string OtByteCodeClass::disassemble() {
 
 			case exitOpcode:
 				buffer << "exit";
+				break;
+
+			case pushInstructionOpcode:
+				buffer << "pushInstruction" << getNumber(pc);
+				break;
+
+			case popInstructionOpcode:
+				buffer << "popInstruction";
+				break;
+
+			case reserveOpcode:
+				buffer << "reserve";
+				break;
+
+			case pushSymbolOpcode:
+				buffer << "pushSymbol" << OtSymbol::name(getNumber(pc));
+				break;
+
+			case popSymbolsOpcode:
+				buffer << "popSymbols" << offsets[getNumber(pc)];
 				break;
 
 			case pushTryOpcode:
@@ -138,13 +142,6 @@ std::string OtByteCodeClass::disassemble() {
 		buffer << std::endl;
 	}
 
-	buffer << std::endl;
-
-	buffer << "bytecode: " << bytecode.size() << std::endl;
-	buffer << "constants: " << constants.size() << std::endl;
-	buffer << "marks: " << marks.size() << std::endl;
-	buffer << "offsets: " << offsets.size() << std::endl;
-
 	return buffer.str();
 }
 
@@ -155,10 +152,6 @@ std::string OtByteCodeClass::disassemble() {
 
 void OtByteCodeClass::copyInstruction(OtByteCode other, size_t pc) {
 	switch (other->getOpcode(pc)) {
-		case markOpcode:
-			mark(other->marks[other->getNumber(pc)]);
-			break;
-
 		case pushOpcode:
 			push(other->constants[other->getNumber(pc)]);
 			break;
@@ -181,18 +174,6 @@ void OtByteCodeClass::copyInstruction(OtByteCode other, size_t pc) {
 
 		case moveOpcode:
 			move(other->getNumber(pc));
-			break;
-
-		case reserveOpcode:
-			reserve();
-			break;
-
-		case pushSymbolOpcode:
-			pushSymbol(other->getNumber(pc));
-			break;
-
-		case popSymbolsOpcode:
-			popSymbols(other->getNumber(pc));
 			break;
 
 		case jumpOpcode:
@@ -225,6 +206,29 @@ void OtByteCodeClass::copyInstruction(OtByteCode other, size_t pc) {
 		case exitOpcode:
 			exit();
 			break;
+
+		case pushInstructionOpcode: {
+			auto instruction = other->instructions[other->getNumber(pc)];
+			pushInstruction(instruction.first, instruction.second);
+			break;
+		}
+
+		case popInstructionOpcode:
+			popInstruction();
+			break;
+
+		case reserveOpcode:
+			reserve();
+			break;
+
+		case pushSymbolOpcode:
+			pushSymbol(other->getNumber(pc));
+			break;
+
+		case popSymbolsOpcode:
+			popSymbols(other->getNumber(pc));
+			break;
+
 
 		case pushTryOpcode:
 			pushTry(other->offsets[other->getNumber(pc)]);
@@ -274,10 +278,6 @@ size_t OtByteCodeClass::getInstructionSize(size_t offset) {
 
 	// increment "program counter"
 	switch (getOpcode(pc)) {
-		case markOpcode:
-			getNumber(pc);
-			break;
-
 		case pushOpcode:
 			getNumber(pc);
 			break;
@@ -296,17 +296,6 @@ size_t OtByteCodeClass::getInstructionSize(size_t offset) {
 			break;
 
 		case moveOpcode:
-			getNumber(pc);
-			break;
-
-		case reserveOpcode:
-			break;
-
-		case pushSymbolOpcode:
-			getNumber(pc);
-			break;
-
-		case popSymbolsOpcode:
 			getNumber(pc);
 			break;
 
@@ -336,6 +325,24 @@ size_t OtByteCodeClass::getInstructionSize(size_t offset) {
 			break;
 
 		case exitOpcode:
+			break;
+
+		case pushInstructionOpcode:
+			getNumber(pc);
+			break;
+
+		case popInstructionOpcode:
+			break;
+
+		case reserveOpcode:
+			break;
+
+		case pushSymbolOpcode:
+			getNumber(pc);
+			break;
+
+		case popSymbolsOpcode:
+			getNumber(pc);
 			break;
 
 		case pushTryOpcode:

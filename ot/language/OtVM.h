@@ -98,5 +98,4 @@ private:
 
 	// debugging support
 	std::function<void()> instructionHook;
-	size_t markIndex;
 };

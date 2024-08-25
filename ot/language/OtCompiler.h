@@ -186,7 +186,4 @@ private:
 
 	// class tracker
 	std::vector<OtClass> classStack;
-
-	// debugging support
-	bool debug;
 };

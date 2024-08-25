@@ -56,11 +56,11 @@ class OtStackFrame {
 public:
 	// constructors
 	OtStackFrame() = default;
-	OtStackFrame(OtByteCode b, size_t o) : bytecode(b), offset(o) {}
+	OtStackFrame(OtByteCode b, size_t c) : bytecode(b), callingParameters(c) {}
 
 	// frame data
 	OtByteCode bytecode;
-	size_t offset;
+	size_t callingParameters;
 	std::vector<size_t> symbols;
 	std::vector<size_t> instructions;
 };
@@ -74,12 +74,14 @@ class OtStackState {
 public:
 	// constructors
 	OtStackState() = default;
-	OtStackState(size_t s, size_t f, size_t c) : stack(s), frames(f), closures(c) {}
+	OtStackState(size_t s, size_t f, size_t c, size_t y, size_t i) : stack(s), frames(f), closures(c), symbols(y), instructions(i) {}
 
 	// stack state
 	size_t stack;
 	size_t frames;
 	size_t closures;
+	size_t symbols;
+	size_t instructions;
 };
 
 
@@ -108,9 +110,9 @@ public:
 	inline OtObject* sp(size_t offset) { return &(stack[stack.size() - offset]); }
 
 	// frame access functions
-	inline void openFrame(OtByteCode bytecode, size_t offset) { frames.emplace_back(bytecode, stack.size() - offset); }
-	inline OtObject getFrameItem(OtStackItem item) { return stack[frames[frames.size() - item.frame - 1].offset + item.slot]; }
-	inline void setFrameItem(OtStackItem item, OtObject object) { stack[frames[frames.size() - item.frame - 1].offset + item.slot] = object; }
+	inline void openFrame(OtByteCode bytecode, size_t callingParameters) { frames.emplace_back(bytecode, stack.size() - callingParameters); }
+	inline OtObject getFrameItem(OtStackItem item) { return stack[frames[frames.size() - item.frame - 1].callingParameters + item.slot]; }
+	inline void setFrameItem(OtStackItem item, OtObject object) { stack[frames[frames.size() - item.frame - 1].callingParameters + item.slot] = object; }
 	inline OtStackFrame& getFrame() { return frames.back(); }
 	inline void closeFrame() { frames.pop_back(); }
 	inline size_t getFrameCount() { return frames.size(); }
@@ -129,8 +131,26 @@ public:
 	inline void popClosure() { closures.pop_back(); }
 
 	// manipulate stack state
-	inline OtStackState getState() { return OtStackState(stack.size(), frames.size(), closures.size()); }
-	inline void restoreState(OtStackState state) { stack.resize(state.stack); frames.resize(state.frames); closures.resize(state.closures); }
+	inline OtStackState getState() {
+		auto& frame = frames.back();
+
+		return OtStackState(
+			stack.size(),
+			frames.size(),
+			closures.size(),
+			frame.symbols.size(),
+			frame.instructions.size());
+	}
+
+	inline void restoreState(OtStackState& state) {
+		stack.resize(state.stack);
+		frames.resize(state.frames);
+		closures.resize(state.closures);
+
+		auto& frame = frames.back();
+		frame.symbols.resize(state.symbols);
+		frame.instructions.resize(state.instructions);
+	}
 
 	// debug stack
 	std::string debug() {
@@ -151,7 +171,7 @@ public:
 
 		for (auto frame: frames) {
 			buffer << std::setw(3) << std::setfill('0') << count++ << std::setfill(' ') << " ";
-			buffer << frame.offset << std::endl;
+			buffer << frame.callingParameters << std::endl;
 		}
 
 		return buffer.str();

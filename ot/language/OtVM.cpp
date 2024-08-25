@@ -57,9 +57,6 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 	// try/catch stack
 	std::vector<OtTryCatch> tryCatch;
 
-	// save the current stack state (so we can restore it in case of an uncaught exception)
-	OtStackState state = stack.getState();
-
 	// local variables
 	size_t sp = stack.size();
 	size_t pc = 0;
@@ -67,6 +64,9 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 
 	// open a new stack frame
 	stack.openFrame(bytecode, callingParameters);
+
+	// save the current stack state (so we can restore it in case of an uncaught exception)
+	OtStackState state = stack.getState();
 
 	// execute all instructions
 	while (pc < end) {
@@ -229,7 +229,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 				}
 
 				case OtByteCodeClass::pushObjectMemberOpcode: {
-					// push a constant object member back onto the stack
+					// push a constant object member onto the stack
 					auto object = bytecode->getConstant(bytecode->getNumber(pc));
 					auto member = bytecode->getNumber(pc);
 					auto resolvedMember = OtMemberReferenceClass::resolveMember(object, member);
@@ -237,7 +237,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 					break;
 				}
 				case OtByteCodeClass::pushMemberOpcode: {
-					// push a heap-based object member back onto the stack
+					// push a heap-based object member onto the stack
 					auto object = stack.pop();
 					auto member = bytecode->getNumber(pc);
 					auto resolvedMember = OtMemberReferenceClass::resolveMember(object, member);
@@ -274,7 +274,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 				pc = trycatch.pc;
 				stack.restoreState(trycatch.stack);
 
-				// put exception on stack
+				// put exception on the stack
 				auto message = OtString::create(e.what());
 				stack.push(message);
 
@@ -311,6 +311,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 
 				// restore the stack state
 				stack.restoreState(state);
+				stack.closeFrame();
 
 				// throw exception
 				if (e.getLineNumber()) {

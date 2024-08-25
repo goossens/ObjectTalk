@@ -21,7 +21,6 @@
 #include "OtClass.h"
 #include "OtClosure.h"
 #include "OtCompiler.h"
-#include "OtConfig.h"
 #include "OtException.h"
 #include "OtInteger.h"
 #include "OtMemberReference.h"
@@ -72,9 +71,6 @@ OtByteCode OtCompiler::compileSource(OtSource src, OtObject object) {
 	// remember source code
 	source = src;
 
-	// get debug settings
-	debug = OtConfig::instance()->inDebugMode();
-
 	// clear scope stack
 	scopeStack.clear();
 
@@ -115,12 +111,8 @@ OtByteCode OtCompiler::compileSource(OtSource src, OtObject object) {
 	// ensure we leave a default result on the stack
 	bytecode->push(OtVM::instance()->getNull());
 
-	// don't optimize in debug mode
-	if (!debug) {
-		bytecode = optimizer.optimize(bytecode);
-	}
-
-	return bytecode;
+	// optimize code
+	return optimizer.optimize(bytecode);
 }
 
 
@@ -161,12 +153,8 @@ OtByteCode OtCompiler::compileExpression(OtSource src) {
 	// clear scope stack
 	scopeStack.clear();
 
-	// don't optimize in debug mode
-	if (!debug) {
-		bytecode = optimizer.optimize(bytecode);
-	}
-
-	return bytecode;
+	// optimize code
+	return optimizer.optimize(bytecode);
 }
 
 
@@ -267,10 +255,8 @@ void OtCompiler::declareVariable(OtByteCode bytecode, const std::string& name, b
 			bytecode->reserve();
 		}
 
-		// track symbol in debug mode
-		if (debug) {
-			bytecode->pushSymbol(name);
-		}
+		// track symbol
+		bytecode->pushSymbol(name);
 
 	} else {
 		// variable lives on the heap
@@ -380,13 +366,8 @@ void OtCompiler::function(OtByteCode bytecode, const std::string& name) {
 	// default return value in case function does not have return statement
 	functionCode->push(OtVM::instance()->getNull());
 
-	// don't optimize in debug mode
-	if (!debug) {
-		functionCode = optimizer.optimize(functionCode);
-	}
-
-	// create a new bytecode function
-	auto function = OtByteCodeFunction::create(functionCode, count);
+	// create a new (optimized) bytecode function
+	auto function = OtByteCodeFunction::create(optimizer.optimize(functionCode), count);
 
 	// see if this function captures variables and needs a closure?
 	auto& scope = scopeStack.back();
@@ -1307,10 +1288,7 @@ void OtCompiler::block(OtByteCode bytecode) {
 
 	if (locals) {
 		bytecode->pop(locals);
-
-		if (debug) {
-			bytecode->popSymbols(locals);
-		}
+		bytecode->popSymbols(locals);
 	}
 
 	// remove the block scope
@@ -1573,10 +1551,7 @@ void OtCompiler::returnStatement(OtByteCode bytecode) {
 	if (locals) {
 		bytecode->move(locals);
 		bytecode->pop(locals);
-
-		if (debug) {
-			bytecode->popSymbols(locals);
-		}
+		bytecode->popSymbols(locals);
 	}
 
 	// the return value should now be top of the stack

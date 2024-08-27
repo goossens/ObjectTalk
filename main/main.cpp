@@ -78,7 +78,7 @@ int main(int argc, char* argv[]) {
 
 		// where any files specified?
 		if (files.size() == 0) {
-			// no, do we start an IDE workspace?
+			// no, start an IDE workspace if we are compiled in GUI mode
 #if defined(INCLUDE_GUI)
 			OtFramework framework;
 			OtWorkspace workspace;

@@ -141,14 +141,20 @@ public:
 	// get variable length number
 	inline size_t getNumber(size_t& pc) {
 		size_t result = 0;
-		size_t digit = 0;
+		size_t shift = 0;
 
-		while (bytecode[pc] & 0x80) {
-			size_t value = bytecode[pc++] & 0x7f;
-			result |= value << (7 * digit++);
+		while (true) {
+			auto byte = bytecode[pc++];
+			result |= size_t(byte & 0x7f) << shift;
+
+			if (!(byte & 0x80)) {
+				break;
+			}
+
+			shift += 7;
 		}
 
-		return result | (size_t) bytecode[pc++] << (7 * digit);
+		return result;
 	}
 
 	// disassemble the bytecode
@@ -213,8 +219,8 @@ private:
 	}
 
 	inline void emitNumber(size_t number) {
-		while (number > 127) {
-			bytecode.emplace_back(((uint8_t)(number & 127)) | 128);
+		while (number > 0x7f) {
+			bytecode.emplace_back(((uint8_t)(number & 0x7f)) | 0x80);
 			number >>= 7;
 		}
 

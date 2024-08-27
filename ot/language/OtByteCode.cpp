@@ -107,7 +107,7 @@ std::string OtByteCodeClass::disassemble() {
 				break;
 
 			case popSymbolsOpcode:
-				buffer << "popSymbols" << offsets[getNumber(pc)];
+				buffer << "popSymbols" << getNumber(pc);
 				break;
 
 			case pushTryOpcode:

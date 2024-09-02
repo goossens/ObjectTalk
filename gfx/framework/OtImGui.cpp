@@ -184,17 +184,6 @@ void OtFramework::initIMGUI() {
 		return glfwGetClipboardString(framework->window);
 	};
 
-	// create cursors
-	cursors[ImGuiMouseCursor_Arrow] = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
-	cursors[ImGuiMouseCursor_TextInput] = glfwCreateStandardCursor(GLFW_IBEAM_CURSOR);
-	cursors[ImGuiMouseCursor_ResizeNS] = glfwCreateStandardCursor(GLFW_VRESIZE_CURSOR);
-	cursors[ImGuiMouseCursor_ResizeEW] = glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR);
-	cursors[ImGuiMouseCursor_Hand] = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
-	cursors[ImGuiMouseCursor_ResizeAll] = glfwCreateStandardCursor(GLFW_RESIZE_ALL_CURSOR);
-	cursors[ImGuiMouseCursor_ResizeNESW] = glfwCreateStandardCursor(GLFW_RESIZE_NESW_CURSOR);
-	cursors[ImGuiMouseCursor_ResizeNWSE] = glfwCreateStandardCursor(GLFW_RESIZE_NWSE_CURSOR);
-	cursors[ImGuiMouseCursor_NotAllowed] = glfwCreateStandardCursor(GLFW_NOT_ALLOWED_CURSOR);
-
 	// add custom font
 	ImFontConfig config;
 	config.FontDataOwnedByAtlas = false;
@@ -297,18 +286,15 @@ void OtFramework::frameIMGUI() {
 		}
 	}
 
-	// handle cursor support
-	if (!(io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange) && glfwGetInputMode(window, GLFW_CURSOR) != GLFW_CURSOR_DISABLED) {
-		ImGuiMouseCursor cursor = ImGui::GetMouseCursor();
+	// handle cursor which is actually set in main thread because that's where the window manager runs
+	setCursor = !(io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange) && glfwGetInputMode(window, GLFW_CURSOR) != GLFW_CURSOR_DISABLED;
 
-		if (cursor == ImGuiMouseCursor_None || io.MouseDrawCursor) {
-			// hide OS mouse cursor if imgui is drawing it or if it wants no cursor
-			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+	if (setCursor) {
+		if (io.MouseDrawCursor) {
+			cursor = ImGuiMouseCursor_None;
 
 		} else {
-			// Show OS mouse cursor
-			glfwSetCursor(window, cursors[cursor] ? cursors[cursor] : cursors[ImGuiMouseCursor_Arrow]);
-			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			cursor = ImGui::GetMouseCursor();
 		}
 	}
 
@@ -414,10 +400,5 @@ void OtFramework::endIMGUI() {
 	imguiFontTexture.clear();
 	imguiFontSampler.clear();
 	imguiShaderProgram.clear();
-
-	for (ImGuiMouseCursor c = 0; c < ImGuiMouseCursor_COUNT; c++) {
-		glfwDestroyCursor(cursors[c]);
-	}
-
 	ImGui::DestroyContext();
 }

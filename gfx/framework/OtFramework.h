@@ -102,6 +102,8 @@ private:
 
 	// cursors
 	GLFWcursor* cursors[ImGuiMouseCursor_COUNT];
+	ImGuiMouseCursor cursor;
+	bool setCursor = false;
 
 	// anti-aliasing setting
 	int antiAliasing = 0;

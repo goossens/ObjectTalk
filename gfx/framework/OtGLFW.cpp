@@ -133,6 +133,25 @@ void OtFramework::initGLFW() {
 	fixMenuLabels();
 #endif
 
+	// create cursors
+	cursors[ImGuiMouseCursor_Arrow] = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
+	cursors[ImGuiMouseCursor_TextInput] = glfwCreateStandardCursor(GLFW_IBEAM_CURSOR);
+	cursors[ImGuiMouseCursor_ResizeNS] = glfwCreateStandardCursor(GLFW_VRESIZE_CURSOR);
+	cursors[ImGuiMouseCursor_ResizeEW] = glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR);
+	cursors[ImGuiMouseCursor_Hand] = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
+
+#if __APPLE__ || _WIN32
+	cursors[ImGuiMouseCursor_ResizeAll] = glfwCreateStandardCursor(GLFW_RESIZE_ALL_CURSOR);
+	cursors[ImGuiMouseCursor_ResizeNESW] = glfwCreateStandardCursor(GLFW_RESIZE_NESW_CURSOR);
+	cursors[ImGuiMouseCursor_ResizeNWSE] = glfwCreateStandardCursor(GLFW_RESIZE_NWSE_CURSOR);
+	cursors[ImGuiMouseCursor_NotAllowed] = glfwCreateStandardCursor(GLFW_NOT_ALLOWED_CURSOR);
+#else
+	cursors[ImGuiMouseCursor_ResizeAll] = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
+	cursors[ImGuiMouseCursor_ResizeNESW] = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
+	cursors[ImGuiMouseCursor_ResizeNWSE] = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
+	cursors[ImGuiMouseCursor_NotAllowed] = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
+#endif
+
 	// setup window close callback
 	glfwSetWindowCloseCallback(window, [](GLFWwindow* window) {
 		OtFramework* fw = (OtFramework*) glfwGetWindowUserPointer(window);
@@ -212,7 +231,7 @@ void OtFramework::initGLFW() {
 		} else if ((mods & GLFW_MOD_CONTROL) && key == GLFW_KEY_Q && action == GLFW_PRESS) {
 			if (fw->canQuit()) {
 				fw->stopGLFW();
-		}
+			}
 
 #endif
 
@@ -253,7 +272,20 @@ bool OtFramework::runningGLFW() {
 
 void OtFramework::eventsGLFW() {
 	// wait for window events
-	glfwWaitEventsTimeout(0.016);
+	glfwWaitEventsTimeout(0.01f);
+
+	// update cursor (if required)
+	if (setCursor) {
+		if (cursor == ImGuiMouseCursor_None) {
+			// hide OS mouse cursor if imgui is drawing it or if it wants no cursor
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+
+		} else {
+			// Show OS mouse cursor
+			glfwSetCursor(window, cursors[cursor] ? cursors[cursor] : cursors[ImGuiMouseCursor_Arrow]);
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
+	}
 
 	// poll gamepad events
 	for (auto gamepad = 0; gamepad < 4; gamepad++) {
@@ -295,6 +327,11 @@ void OtFramework::stopGLFW() {
 //
 
 void OtFramework::endGLFW() {
+	// free cursors
+	for (ImGuiMouseCursor c = 0; c < ImGuiMouseCursor_COUNT; c++) {
+		glfwDestroyCursor(cursors[c]);
+	}
+
 	// terminate GLFW
 	glfwDestroyWindow(window);
 	glfwTerminate();

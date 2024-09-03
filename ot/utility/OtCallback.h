@@ -22,7 +22,7 @@
 //	Sanity check
 //
 
-inline void OtCallbackValidate(OtObject callback, size_t pars) {
+inline void OtCallbackValidate(OtObject& callback, size_t pars) {
 	// sanity check
 	if (callback->isKindOf("Function")) {
 		auto parameters = OtFunction(callback)->getParameterCount();

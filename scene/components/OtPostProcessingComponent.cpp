@@ -24,7 +24,7 @@
 //
 
 bool OtPostProcessingComponent::renderUI() {
-	bool changed;
+	bool changed = false;
 	changed |= OtUiToggleButton("FXAA", &fxaa);
 	changed |= OtUiToggleButton("Fog", &fog);
 

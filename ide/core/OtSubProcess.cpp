@@ -75,6 +75,9 @@ void OtSubProcess::start(const std::string& path, const std::vector<std::string>
 	if (status) {
 		delete [] args;
 		UV_CHECK_ERROR2("uv_spawn", status, path.c_str());
+
+		// keep compiler/analyzer happy
+		return;
 	}
 
 	running = true;

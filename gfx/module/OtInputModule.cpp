@@ -22,7 +22,7 @@
 //	RegisterEnums
 //
 
-static void RegisterEnums(OtModule module) {
+static void RegisterEnums(OtModule& module) {
 	module->set("keyTab", OtInteger::create(ImGuiKey_Tab));
 	module->set("keyLeftArrow", OtInteger::create(ImGuiKey_LeftArrow));
 	module->set("keyRightArrow", OtInteger::create(ImGuiKey_RightArrow));

@@ -159,17 +159,19 @@ static void makeCameraList(OtScene* scene, OtEntity entity, OtEntity* list, int&
 }
 
 void OtSceneEditor::setSceneCamera(int cameraNumber) {
-	// the default answer is the editor camera
-	selectedCamera = OtEntityNull;
-
 	// get a list of cameras
-	OtEntity list[9];
-	int entries = 0;
+	OtEntity list[10];
+	list[0] = OtEntityNull;
+	int entries = 1;
 	makeCameraList(&scene, scene.getRootEntity(), list, entries);
 
 	// see if selected camera is avalable
-	if (cameraNumber - 1 < entries) {
-		selectedCamera = list[cameraNumber - 1];
+	if (cameraNumber < entries) {
+		selectedCamera = list[cameraNumber];
+
+	} else {
+		// the default answer is the editor camera
+		selectedCamera = OtEntityNull;
 	}
 }
 

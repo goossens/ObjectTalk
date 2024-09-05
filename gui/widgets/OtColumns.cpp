@@ -124,7 +124,7 @@ void OtColumnsClass::render() {
 		ImGui::PushID(i);
 
 		// render child widget
-		ImGui::BeginChild("column", ImVec2(screenWidths[i], 0.0f), borders ? ImGuiChildFlags_Border : ImGuiChildFlags_None);
+		ImGui::BeginChild("column", ImVec2(screenWidths[i], 0.0f), borders ? ImGuiChildFlags_Borders : ImGuiChildFlags_None);
 		renderChild(children[i]);
 		ImGui::EndChild();
 

@@ -232,7 +232,7 @@ void OtObjectTalkEditor::renderEditor() {
 			pos.x + available.x - windowWidth - style.ScrollbarSize - style.ItemSpacing.x,
 			pos.y + style.ItemSpacing.y * 2.0f));
 
-		ImGui::BeginChild("find-replace", ImVec2(windowWidth, windowHeight), ImGuiChildFlags_Border);
+		ImGui::BeginChild("find-replace", ImVec2(windowWidth, windowHeight), ImGuiChildFlags_Borders);
 
 		ImGui::SetNextItemWidth(fieldWidth);
 

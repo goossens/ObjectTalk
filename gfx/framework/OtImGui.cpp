@@ -172,15 +172,16 @@ void OtFramework::initIMGUI() {
 	ImGui::GetMainViewport()->PlatformHandleRaw = nativeDisplayHandle;
 
 	// setup clipboard functions
-	io.ClipboardUserData = this;
+	ImGuiPlatformIO& pio = ImGui::GetPlatformIO();
+	pio.Platform_ClipboardUserData = this;
 
-	io.SetClipboardTextFn = [](void* data, const char* text) {
-		OtFramework* framework = (OtFramework*) data;
+	pio.Platform_SetClipboardTextFn = [](ImGuiContext* ctx, const char* text) {
+		OtFramework* framework = (OtFramework*) ImGui::GetPlatformIO().Platform_ClipboardUserData;
 		glfwSetClipboardString(framework->window, text);
 	};
 
-	io.GetClipboardTextFn = [](void* data) {
-		OtFramework* framework = (OtFramework*) data;
+	pio.Platform_GetClipboardTextFn = [](ImGuiContext* ctx) {
+		OtFramework* framework = (OtFramework*) ImGui::GetPlatformIO().Platform_ClipboardUserData;
 		return glfwGetClipboardString(framework->window);
 	};
 

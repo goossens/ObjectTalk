@@ -584,7 +584,7 @@ void OtWorkspace::renderEditors() {
 
 				// create tab and editor
 				if (ImGui::BeginTabItem(OtPathGetFilename(editor->getPath()).c_str(), nullptr, flags)) {
-					ImGui::BeginChild("editor", ImVec2(), ImGuiChildFlags_Border, ImGuiWindowFlags_MenuBar);
+					ImGui::BeginChild("editor", ImVec2(), ImGuiChildFlags_Borders, ImGuiWindowFlags_MenuBar);
 
 					editor->renderMenu();
 					editor->renderEditor();

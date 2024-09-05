@@ -29,7 +29,7 @@ OtConsole::OtConsole() {
 
 void OtConsole::render() {
 	// create the window
-	ImGui::BeginChild("Console", ImVec2(0.0, 0.0), ImGuiChildFlags_Border, ImGuiWindowFlags_HorizontalScrollbar);
+	ImGui::BeginChild("Console", ImVec2(0.0, 0.0), ImGuiChildFlags_Borders, ImGuiWindowFlags_HorizontalScrollbar);
 
 	ImGuiListClipper clipper;
 	clipper.Begin((int) lines.size());

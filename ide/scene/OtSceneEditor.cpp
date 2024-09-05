@@ -434,7 +434,7 @@ void OtSceneEditor::renderPanels() {
 	// create the entities panel
 	auto spacing = ImGui::GetStyle().ItemSpacing;
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
-	ImGui::BeginChild("entities", ImVec2(0.0f, entityPanelHeight), ImGuiChildFlags_Border);
+	ImGui::BeginChild("entities", ImVec2(0.0f, entityPanelHeight), ImGuiChildFlags_Borders);
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, spacing);
 	renderEntitiesPanel();
 	ImGui::PopStyleVar();
@@ -445,7 +445,7 @@ void OtSceneEditor::renderPanels() {
 	OtUiSplitterVertical(&entityPanelHeight, minEntityPanelHeight, maxEntityPanelHeight);
 
 	// create the components panel
-	ImGui::BeginChild("components", ImVec2(), ImGuiChildFlags_Border);
+	ImGui::BeginChild("components", ImVec2(), ImGuiChildFlags_Borders);
 	renderComponentsPanel();
 	ImGui::EndChild();
 
@@ -501,7 +501,7 @@ void OtSceneEditor::renderComponentsPanel() {
 
 void OtSceneEditor::renderViewPort() {
 	// create the window
-	ImGui::BeginChild("viewport", ImVec2(), ImGuiChildFlags_Border);
+	ImGui::BeginChild("viewport", ImVec2(), ImGuiChildFlags_Borders);
 	auto size = ImGui::GetContentRegionAvail();
 
 	// unset selected entity if it is no longer valid

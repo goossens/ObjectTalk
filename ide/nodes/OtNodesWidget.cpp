@@ -416,6 +416,10 @@ void OtNodesWidget::renderNode(ImDrawList* drawlist, OtNode& node) {
 			renamingNode = 0;
 		}
 
+		// don't know why this is required in this case
+		if (ImGui::IsItemHovered()) {
+			ImGui::SetMouseCursor(ImGuiMouseCursor_TextInput);
+		}
 	}
 
 	ImGui::PopID();

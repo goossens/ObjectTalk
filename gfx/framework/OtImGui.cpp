@@ -164,6 +164,11 @@ void OtFramework::initIMGUI() {
 	ImGuiIO& io = ImGui::GetIO();
 	io.IniFilename = nullptr;
 
+	// setup backend metadata
+ 	io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
+ 	io.BackendPlatformName = "ObjectTalk";
+	io.BackendRendererName = "BGFX/GLFW";
+
 	// connect ImGui to GLFW window
 	io.DisplaySize = ImVec2(width, height);
 	io.DeltaTime = 1.0f / 60.0f;

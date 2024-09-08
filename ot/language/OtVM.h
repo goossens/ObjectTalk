@@ -86,9 +86,10 @@ public:
 	}
 
 	// debugging functions
-	inline void setInstructionHook(std::function<void()> hook) { instructionHook = hook; }
-	std::string getCurrentModule();
-	std::string getCurrentStatement();
+	inline void setStatementHook(std::function<void(OtByteCode, size_t)> hook) {
+		statementHook = hook;
+		callHook = hook != nullptr;
+	}
 
 private:
 	// VM properties
@@ -97,5 +98,6 @@ private:
 	OtObject null;
 
 	// debugging support
-	std::function<void()> instructionHook;
+	std::function<void(OtByteCode, size_t)> statementHook;
+	bool callHook = false;
 };

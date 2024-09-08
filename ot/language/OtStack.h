@@ -61,8 +61,6 @@ public:
 	// frame data
 	OtByteCode bytecode;
 	size_t callingParameters;
-	std::vector<size_t> symbols;
-	std::vector<size_t> instructions;
 };
 
 
@@ -74,14 +72,12 @@ class OtStackState {
 public:
 	// constructors
 	OtStackState() = default;
-	OtStackState(size_t s, size_t f, size_t c, size_t y, size_t i) : stack(s), frames(f), closures(c), symbols(y), instructions(i) {}
+	OtStackState(size_t s, size_t f, size_t c) : stack(s), frames(f), closures(c) {}
 
 	// stack state
 	size_t stack;
 	size_t frames;
 	size_t closures;
-	size_t symbols;
-	size_t instructions;
 };
 
 
@@ -117,14 +113,6 @@ public:
 	inline void closeFrame() { frames.pop_back(); }
 	inline size_t getFrameCount() { return frames.size(); }
 
-	inline void pushInstruction(size_t instruction) { frames.back().instructions.emplace_back(instruction); }
-	inline void popInstruction() { frames.back().instructions.pop_back(); }
-	inline size_t getInstruction() { return frames.back().instructions.back(); }
-
-	inline void pushSymbol(size_t symbol) { frames.back().symbols.emplace_back(symbol); }
-	inline void popSymbols(size_t count) { frames.back().symbols.resize(frames.back().symbols.size() - count); }
-	inline std::vector<size_t>& getSymbols(size_t frame) { return frames[frames.size() - frame - 1].symbols; }
-
 	// closure access functions
 	inline void pushClosure(OtObject closure) { closures.emplace_back(closure); }
 	inline OtObject getClosure() { return closures.back(); }
@@ -133,23 +121,13 @@ public:
 	// manipulate stack state
 	inline OtStackState getState() {
 		auto& frame = frames.back();
-
-		return OtStackState(
-			stack.size(),
-			frames.size(),
-			closures.size(),
-			frame.symbols.size(),
-			frame.instructions.size());
+		return OtStackState(stack.size(), frames.size(), closures.size());
 	}
 
 	inline void restoreState(OtStackState& state) {
 		stack.resize(state.stack);
 		frames.resize(state.frames);
 		closures.resize(state.closures);
-
-		auto& frame = frames.back();
-		frame.symbols.resize(state.symbols);
-		frame.instructions.resize(state.instructions);
 	}
 
 	// debug stack

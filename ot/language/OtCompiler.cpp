@@ -255,9 +255,6 @@ void OtCompiler::declareVariable(OtByteCode bytecode, const std::string& name, b
 			bytecode->reserve();
 		}
 
-		// track symbol
-		bytecode->pushSymbol(name);
-
 	} else {
 		// variable lives on the heap
 		scope.locals[name] = 0;
@@ -1288,7 +1285,6 @@ void OtCompiler::block(OtByteCode bytecode) {
 
 	if (locals) {
 		bytecode->pop(locals);
-		bytecode->popSymbols(locals);
 	}
 
 	// remove the block scope
@@ -1551,7 +1547,6 @@ void OtCompiler::returnStatement(OtByteCode bytecode) {
 	if (locals) {
 		bytecode->move(locals);
 		bytecode->pop(locals);
-		bytecode->popSymbols(locals);
 	}
 
 	// the return value should now be top of the stack
@@ -1642,8 +1637,12 @@ void OtCompiler::whileStatement(OtByteCode bytecode) {
 //
 
 void OtCompiler::statement(OtByteCode bytecode) {
-	// mark start of statement
-	auto index = bytecode->pushInstruction(scanner.getTokenStart());
+	// get start of statement information
+	auto sourceStart = scanner.getTokenStart();
+	auto opcodeStart = bytecode->size();
+
+	// mark start of statement in bytecode
+	bytecode->statement();
 
 	// process statement
 	switch (scanner.getToken()) {
@@ -1698,7 +1697,8 @@ void OtCompiler::statement(OtByteCode bytecode) {
 			break;
 	}
 
-	// mark end of statement
-	bytecode->patchInstruction(index, scanner.getTokenStart());
-	bytecode->popInstruction();
+	// register statement
+	bytecode->addStatement(
+		sourceStart, scanner.getTokenStart(),
+		opcodeStart, bytecode->size());
 }

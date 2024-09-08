@@ -33,11 +33,13 @@ void OtDebuggerClass::debug(size_t count, OtObject* parameters) {
 	}
 
 	if (count == 0 || parameters[0]->operator bool()) {
-		// activate instruction hook in VM
+		// activate statement hook in VM
 		auto vm = OtVM::instance();
 
-		vm->setInstructionHook([this]() {
+		vm->setStatementHook([this](OtByteCode bc, size_t p) {
 			if (OtVM::instance()->getStack()->getFrameCount() == stackFrame) {
+				bytecode = bc;
+				pc = p;
 				processCommand();
 			}
 		});
@@ -55,7 +57,7 @@ void OtDebuggerClass::debug(size_t count, OtObject* parameters) {
 
 std::string OtDebuggerClass::where() {
 	auto vm = OtVM::instance();
-	return fmt::format("Module: {}\n{}\n", vm->getCurrentModule(), vm->getCurrentStatement());
+	return fmt::format("Module: {}\n{}\n", bytecode->getModule(), bytecode->getStatementSourceCode(pc));
 }
 
 

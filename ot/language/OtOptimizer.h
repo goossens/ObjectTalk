@@ -13,7 +13,6 @@
 //
 
 #include <cstdint>
-#include <unordered_map>
 #include <vector>
 
 #include "OtByteCode.h"
@@ -25,31 +24,21 @@
 
 class OtOptimizer {
 public:
-	// constructor
-	OtOptimizer();
-
 	// optimize a bytecode sequenze and return a new version
 	OtByteCode optimize(OtByteCode bytecode);
 
 private:
-	// optimize sequences of instructions
-	bool optimizePushStackReferenceSequence(size_t& instruction, size_t available);
-	bool optimizePushMemberReferenceSequence(size_t& instruction, size_t available);
-	bool optimizePushMemberSequence(size_t& instruction, size_t available);
-	bool optimizePushStackSwapAssignSequence(size_t& instruction, size_t available);
-	bool optimizePushMemberSwapAssignSequence(size_t& instruction, size_t available);
+	// optimize sequences of opcodes
+	bool optimizePushStackReferenceSequence(size_t& opcode, size_t available);
+	bool optimizePushMemberReferenceSequence(size_t& opcode, size_t available);
+	bool optimizePushMemberSequence(size_t& opcode, size_t available);
+	bool optimizePushStackSwapAssignSequence(size_t& opcode, size_t available);
+	bool optimizePushMemberSwapAssignSequence(size_t& opcode, size_t available);
 
 	// old and new bytecodes
 	OtByteCode oldByteCode;
 	OtByteCode newByteCode;
 
-	// start of each instruction
-	std::vector<size_t> instructions;
-
-	// translation table to fix jumps
-	std::unordered_map<size_t, size_t> jumpMapping;
-
-	// symbols for frequently used items
-	size_t derefSymbol;
-	size_t callSymbol;
+	// start of each opcode
+	std::vector<size_t> opcodes;
 };

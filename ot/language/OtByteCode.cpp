@@ -13,10 +13,14 @@
 #include <iomanip>
 #include <sstream>
 
+#include "fmt/format.h"
+
 #include "OtByteCode.h"
+#include "OtLog.h"
 #include "OtMemberReference.h"
 #include "OtSymbol.h"
 #include "OtStackReference.h"
+#include "OtText.h"
 
 
 //
@@ -34,6 +38,10 @@ std::string OtByteCodeClass::disassemble() {
 		buffer << std::left << std::setw(20);
 
 		switch (getOpcode(pc)) {
+			case statementOpcode:
+				buffer << "statementOpcode";
+				break;
+
 			case pushOpcode: {
 				buffer << "push" << OtObjectDescribe(constants[getNumber(pc)]);
 				break;
@@ -90,24 +98,8 @@ std::string OtByteCodeClass::disassemble() {
 				buffer << "exit";
 				break;
 
-			case pushInstructionOpcode:
-				buffer << "pushInstruction" << getNumber(pc);
-				break;
-
-			case popInstructionOpcode:
-				buffer << "popInstruction";
-				break;
-
 			case reserveOpcode:
 				buffer << "reserve";
-				break;
-
-			case pushSymbolOpcode:
-				buffer << "pushSymbol" << OtSymbol::name(getNumber(pc));
-				break;
-
-			case popSymbolsOpcode:
-				buffer << "popSymbols" << getNumber(pc);
 				break;
 
 			case pushTryOpcode:
@@ -147,11 +139,15 @@ std::string OtByteCodeClass::disassemble() {
 
 
 //
-//	OtByteCodeClass::copyInstruction
+//	OtByteCodeClass::copyOpcode
 //
 
-void OtByteCodeClass::copyInstruction(OtByteCode other, size_t pc) {
+void OtByteCodeClass::copyOpcode(OtByteCode other, size_t pc) {
 	switch (other->getOpcode(pc)) {
+		case statementOpcode:
+			statement();
+			break;
+
 		case pushOpcode:
 			push(other->constants[other->getNumber(pc)]);
 			break;
@@ -207,28 +203,9 @@ void OtByteCodeClass::copyInstruction(OtByteCode other, size_t pc) {
 			exit();
 			break;
 
-		case pushInstructionOpcode: {
-			auto instruction = other->instructions[other->getNumber(pc)];
-			pushInstruction(instruction.first, instruction.second);
-			break;
-		}
-
-		case popInstructionOpcode:
-			popInstruction();
-			break;
-
 		case reserveOpcode:
 			reserve();
 			break;
-
-		case pushSymbolOpcode:
-			pushSymbol(other->getNumber(pc));
-			break;
-
-		case popSymbolsOpcode:
-			popSymbols(other->getNumber(pc));
-			break;
-
 
 		case pushTryOpcode:
 			pushTry(other->offsets[other->getNumber(pc)]);
@@ -270,14 +247,17 @@ void OtByteCodeClass::copyInstruction(OtByteCode other, size_t pc) {
 
 
 //
-//	OtByteCodeClass::getInstructionSize
+//	OtByteCodeClass::getOpcodeSize
 //
 
-size_t OtByteCodeClass::getInstructionSize(size_t offset) {
+size_t OtByteCodeClass::getOpcodeSize(size_t offset) {
 	size_t pc = offset;
 
 	// increment "program counter"
 	switch (getOpcode(pc)) {
+		case statementOpcode:
+			break;
+
 		case pushOpcode:
 			getNumber(pc);
 			break;
@@ -327,22 +307,7 @@ size_t OtByteCodeClass::getInstructionSize(size_t offset) {
 		case exitOpcode:
 			break;
 
-		case pushInstructionOpcode:
-			getNumber(pc);
-			break;
-
-		case popInstructionOpcode:
-			break;
-
 		case reserveOpcode:
-			break;
-
-		case pushSymbolOpcode:
-			getNumber(pc);
-			break;
-
-		case popSymbolsOpcode:
-			getNumber(pc);
 			break;
 
 		case pushTryOpcode:
@@ -377,7 +342,6 @@ size_t OtByteCodeClass::getInstructionSize(size_t offset) {
 
 	return pc - offset;
 }
-
 
 //
 //	OtByteCodeClass::isPush
@@ -505,6 +469,82 @@ bool OtByteCodeClass::isAnyJump(size_t pc, size_t& offset) {
 	} else {
 		return false;
 	}
+}
+
+
+//
+//	OtByteCodeClass::getStatementStart
+//
+
+size_t OtByteCodeClass::getStatementStart(size_t pc) {
+	// find statement
+	for (auto& statement : statements) {
+		if (pc >= statement.opcodeStart && pc < statement.opcodeEnd) {
+			return statement.sourceStart;
+		}
+	}
+
+	OtLogFatal("Internal error: can't find statement");
+
+	// we'll never get here but it keeps the compiler happy
+	return 0;
+}
+
+//
+//	OtByteCodeClass::getStatementEnd
+//
+
+size_t OtByteCodeClass::getStatementEnd(size_t pc) {
+	// find statement
+	for (auto& statement : statements) {
+		if (pc >= statement.opcodeStart && pc < statement.opcodeEnd) {
+			return statement.sourceEnd;
+		}
+	}
+
+	OtLogFatal("Internal error: can't find statement");
+
+	// we'll never get here but it keeps the compiler happy
+	return 0;
+}
+
+
+//
+//	OtByteCodeClass::getLineNumber
+//
+
+size_t OtByteCodeClass::getLineNumber(size_t pc) {
+	return source->getLineNumber(getStatementStart(pc));
+}
+
+
+//
+//	OtByteCodeClass::getStatementSourceCode
+//
+
+std::string OtByteCodeClass::getStatementSourceCode(size_t pc) {
+	// for start and end of statement
+	auto start = getStatementStart(pc);
+	auto end = getStatementEnd(pc);
+
+	// get the line number of the start and all source code lines
+	auto lineNo = source->getLineNumber(start);
+	auto lines = source->getLines(start, end);
+
+	// format nicely
+	std::string statement;
+
+	OtText::splitIterator(lines.data(), lines.data() + lines.size(), '\n', [&](const char* b, const char* e) {
+		std::string text(b, e - b);
+
+		if (statement.size()) {
+			statement += '\n';
+		}
+
+		statement += fmt::format("Line {}: {}", lineNo++, text);
+	});
+
+	return statement;
 }
 
 

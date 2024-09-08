@@ -14,6 +14,7 @@
 
 #include <string>
 
+#include "OtByteCode.h"
 #include "OtInternal.h"
 
 
@@ -46,4 +47,7 @@ private:
 	bool breakOnInstruction = false;
 	size_t stackFrame = 0;
 	size_t instructionStart;
+
+	OtByteCode bytecode;
+	size_t pc;
 };

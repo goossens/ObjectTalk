@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include <algorithm>
-
 #include "OtException.h"
 #include "OtClass.h"
 #include "OtFunction.h"
@@ -83,7 +81,7 @@ OtObject& OtObjectClass::get(size_t symbol) {
 		}
 	}
 
-	auto name = OtSymbol::name(symbol);
+	auto name = OtSymbolizer::name(symbol);
 	OtError("Unknown member [{}] in instance of class [{}]", name, type->getName());
 
 	// we will never get here because of the exception but a return statement keeps the compiler happy
@@ -100,7 +98,7 @@ void OtObjectClass::unset(size_t symbol) {
 		members->unset(symbol);
 
 	} else {
-		auto name = OtSymbol::name(symbol);
+		auto name = OtSymbolizer::name(symbol);
 		OtError("Unknown member [%.*s] in instance of class [{}]", name.size(), name.data(), type->getName());
 	}
 }

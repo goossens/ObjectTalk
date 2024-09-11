@@ -18,7 +18,7 @@
 #include <vector>
 
 #include "OtObjectPointer.h"
-#include "OtSymbol.h"
+#include "OtSymbolizer.h"
 
 
 //

@@ -13,7 +13,7 @@
 
 #include "OtMemberReference.h"
 #include "OtOptimizer.h"
-#include "OtSymbol.h"
+#include "OtSymbolizer.h"
 #include "OtStackReference.h"
 
 

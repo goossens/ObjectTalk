@@ -20,7 +20,7 @@
 //
 
 OtObject OtCaptureReferenceClass::deref() {
-	OtClosure closure = OtVM::instance()->getStack()->getClosure();
+	OtClosure closure = OtVM::getClosure();
 	return closure->get(member);
 }
 
@@ -30,7 +30,7 @@ OtObject OtCaptureReferenceClass::deref() {
 //
 
 OtObject OtCaptureReferenceClass::assign(OtObject value) {
-	OtClosure closure = OtVM::instance()->getStack()->getClosure();
+	OtClosure closure = OtVM::getClosure();
 	return closure->set(member, value);
 }
 

@@ -24,21 +24,21 @@
 
 
 //
-//	OtSymbol
+//	OtSymbolizer
 //
 
-class OtSymbol : public OtSingleton<OtSymbol> {
+class OtSymbolizer : public OtSingleton<OtSymbolizer> {
 public:
 	// get a new symbol
-	size_t get(const char* text) {
+	inline size_t get(const char* text) {
 		return get(std::string_view(text));
 	}
 
-	size_t get(const std::string& text) {
+	inline size_t get(const std::string& text) {
 		return get(std::string_view(text));
 	}
 
-	size_t get(const std::string_view text) {
+	inline size_t get(const std::string_view text) {
 		// see if this symbol was already created
 		if (symbolIndex.count(text)) {
 			return symbolIndex[text];
@@ -53,24 +53,24 @@ public:
 	}
 
 	// get the string associated with the symbol
-	const std::string_view get(size_t symbol) {
+	inline const std::string_view get(size_t symbol) {
 		return symbols[symbol];
 	}
 
 	// static shortcuts
-	static size_t create(const char* text) {
+	static inline size_t create(const char* text) {
 		return instance()->get(text);
 	}
 
-	static size_t create(const std::string& text) {
+	static inline size_t create(const std::string& text) {
 		return instance()->get(text);
 	}
 
-	static size_t create(const std::string_view text) {
+	static inline size_t create(const std::string_view text) {
 		return instance()->get(text);
 	}
 
-	static std::string_view name(size_t symbol) {
+	static inline std::string_view name(size_t symbol) {
 		return instance()->get(symbol);
 	}
 
@@ -96,7 +96,7 @@ private:
 	};
 
 	// save named symbol
-	std::string_view saveSymbol(const std::string_view text) {
+	inline std::string_view saveSymbol(const std::string_view text) {
 		// create a new chunk buffer if required
 		if (!buffers.size() || buffers.back().hasSpace(text.size())) {
 			buffers.emplace_back();

@@ -12,6 +12,9 @@
 //	Include files
 //
 
+#include <list>
+#include <string>
+
 #include "OtMembers.h"
 #include "OtObjectPointer.h"
 

@@ -78,5 +78,5 @@ OtObject OtTypeClass::set(size_t symbol, OtObject value) {
 }
 
 OtObject OtTypeClass::set(const char* name, OtObject value) {
-	return set(OtSymbol::create(name), value);
+	return set(OtSymbolizer::create(name), value);
 }

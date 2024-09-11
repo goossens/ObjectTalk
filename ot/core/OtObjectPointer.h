@@ -28,7 +28,7 @@ class OtObjectClass;
 
 
 //
-//  Shared pointer (not thread safe, not all bells and whistles but fast)
+//  Shared pointer (not thread safe, not all the bells and whistles but fast)
 //
 
 template <typename T>

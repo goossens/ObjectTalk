@@ -199,15 +199,15 @@ private:
 	}
 
 	inline void emitSymbol(const char* name) {
-		emitNumber(OtSymbol::create(name));
+		emitNumber(OtSymbolizer::create(name));
 	}
 
 	inline void emitSymbol(const std::string_view name) {
-		emitNumber(OtSymbol::create(name));
+		emitNumber(OtSymbolizer::create(name));
 	}
 
 	inline void emitSymbol(const std::string& name) {
-		emitNumber(OtSymbol::create(name));
+		emitNumber(OtSymbolizer::create(name));
 	}
 
 	inline size_t emitOffset(size_t offset) {

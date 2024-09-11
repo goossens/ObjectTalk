@@ -37,7 +37,7 @@ void OtDebuggerClass::debug(size_t count, OtObject* parameters) {
 		auto vm = OtVM::instance();
 
 		vm->setStatementHook([this](OtByteCode bc, size_t p) {
-			if (OtVM::instance()->getStack()->getFrameCount() == stackFrame) {
+			if (OtVM::getStack()->getFrameCount() == stackFrame) {
 				bytecode = bc;
 				pc = p;
 				processCommand();
@@ -66,7 +66,7 @@ std::string OtDebuggerClass::where() {
 //
 
 std::string OtDebuggerClass::disassemble() {
-	return OtVM::instance()->getStack()->getFrame().bytecode->disassemble();
+	return OtVM::getStack()->getFrame().bytecode->disassemble();
 }
 
 

@@ -22,7 +22,7 @@
 template<typename T>
 class OtSingleton {
 public:
-	static T* instance() {
+	static inline T* instance() {
 		static std::unique_ptr<T> instance;
 
 		if (!instance) {
@@ -49,7 +49,7 @@ protected:
 template<typename T>
 class OtPerThreadSingleton {
 public:
-	static T* instance() {
+	static inline T* instance() {
 		thread_local std::unique_ptr<T> instance;
 
 		if (!instance) {

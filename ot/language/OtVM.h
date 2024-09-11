@@ -16,8 +16,9 @@
 
 #include "OtObject.h"
 #include "OtByteCode.h"
+#include "OtClosure.h"
 #include "OtGlobal.h"
-#include "OtSymbol.h"
+#include "OtSymbolizer.h"
 #include "OtSingleton.h"
 #include "OtStack.h"
 
@@ -30,11 +31,6 @@ class OtVM : public OtPerThreadSingleton<OtVM> {
 public:
 	// constructor
 	OtVM();
-
-	// get engine parameters
-	inline OtStack* getStack() { return &stack; }
-	inline OtGlobal getGlobal() { return global; }
-	inline OtObject getNull() { return null; }
 
 	// execute bytecode in the virtual machine
 	OtObject execute(OtByteCode bytecode, size_t callingParameters=0);
@@ -52,7 +48,7 @@ public:
 
 	template<typename... ARGS>
 	OtObject callMemberFunction(OtObject target, const std::string& member, ARGS... args) {
-		return callMemberFunction(target, OtSymbol::create(member), std::forward<ARGS>(args)...);
+		return callMemberFunction(target, OtSymbolizer::create(member), std::forward<ARGS>(args)...);
 	}
 
 	inline OtObject callMemberFunction(OtObject target, OtObject member, size_t count, OtObject* args) {
@@ -82,7 +78,7 @@ public:
 	}
 
 	inline OtObject redirectMemberFunction(OtObject target, const std::string& member, size_t count) {
-		return redirectMemberFunction(target, OtSymbol::create(member), count);
+		return redirectMemberFunction(target, OtSymbolizer::create(member), count);
 	}
 
 	// debugging functions
@@ -90,6 +86,12 @@ public:
 		statementHook = hook;
 		callHook = hook != nullptr;
 	}
+
+	// get engine parameters
+	static inline OtStack* getStack() { return &instance()->stack; }
+	static inline OtClosure getClosure() { return instance()->stack.getClosure(); }
+	static inline OtGlobal getGlobal() { return instance()->global; }
+	static inline OtObject getNull() { return instance()->null; }
 
 private:
 	// VM properties

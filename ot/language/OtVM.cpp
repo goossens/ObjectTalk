@@ -19,7 +19,7 @@
 #include "OtFunction.h"
 #include "OtLog.h"
 #include "OtMemberReference.h"
-#include "OtSymbol.h"
+#include "OtSymbolizer.h"
 #include "OtString.h"
 #include "OtVM.h"
 
@@ -171,7 +171,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 
 					// sanity check
 					if (!parameters[0]) {
-						OtLogFatal("Internal error: can't call method [{}] with [{}] parameters on nullptr", OtSymbol::name(method), count);
+						OtLogFatal("Internal error: can't call method [{}] with [{}] parameters on nullptr", OtSymbolizer::name(method), count);
 					}
 
 					// call method

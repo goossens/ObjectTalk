@@ -97,7 +97,7 @@ OtObject& OtClassClass::get(size_t symbol) {
 		}
 	}
 
-	auto name = OtSymbol::name(symbol);
+	auto name = OtSymbolizer::name(symbol);
 	OtError("Unknown member [{}] in superclass of [{}]", name, type->getName());
 
 	// we will never get here because of the exception but a return statement keeps the compiler happy

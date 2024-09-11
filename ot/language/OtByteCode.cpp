@@ -18,7 +18,7 @@
 #include "OtByteCode.h"
 #include "OtLog.h"
 #include "OtMemberReference.h"
-#include "OtSymbol.h"
+#include "OtSymbolizer.h"
 #include "OtStackReference.h"
 #include "OtText.h"
 
@@ -80,18 +80,18 @@ std::string OtByteCodeClass::disassemble() {
 				break;
 
 			case memberOpcode:
-				buffer << "member" << OtSymbol::name(getNumber(pc));
+				buffer << "member" << OtSymbolizer::name(getNumber(pc));
 				break;
 
 			case methodOpcode: {
 				auto method = getNumber(pc);
 				auto count =getNumber(pc);
-				buffer << "method" << OtSymbol::name(method) << "(" << count << ")";
+				buffer << "method" << OtSymbolizer::name(method) << "(" << count << ")";
 				break;
 			}
 
 			case superOpcode:
-				buffer << "super" << OtSymbol::name(getNumber(pc));
+				buffer << "super" << OtSymbolizer::name(getNumber(pc));
 				break;
 
 			case exitOpcode:
@@ -115,11 +115,11 @@ std::string OtByteCodeClass::disassemble() {
 				break;
 
 			case pushObjectMemberOpcode:
-				buffer << "pushObjectMember" << OtObjectDescribe(constants[getNumber(pc)]) << " " << OtSymbol::name(getNumber(pc));
+				buffer << "pushObjectMember" << OtObjectDescribe(constants[getNumber(pc)]) << " " << OtSymbolizer::name(getNumber(pc));
 				break;
 
 			case pushMemberOpcode:
-				buffer << "pushMember" << OtSymbol::name(getNumber(pc));
+				buffer << "pushMember" << OtSymbolizer::name(getNumber(pc));
 				break;
 
 			case assignStackOpcode:
@@ -127,7 +127,7 @@ std::string OtByteCodeClass::disassemble() {
 				break;
 
 			case assignMemberOpcode:
-				buffer << "assignMember" << OtObjectDescribe(constants[getNumber(pc)]) << " " << OtSymbol::name(getNumber(pc));
+				buffer << "assignMember" << OtObjectDescribe(constants[getNumber(pc)]) << " " << OtSymbolizer::name(getNumber(pc));
 				break;
 		}
 
@@ -433,7 +433,7 @@ bool OtByteCodeClass::isMember(size_t pc, size_t& member) {
 
 bool OtByteCodeClass::isMethodDeref(size_t pc) {
 	if (getOpcode(pc) == methodOpcode) {
-		return  getNumber(pc) == OtSymbol::create("__deref__");
+		return  getNumber(pc) == OtSymbolizer::create("__deref__");
 
 	} else {
 		return false;
@@ -447,7 +447,7 @@ bool OtByteCodeClass::isMethodDeref(size_t pc) {
 
 bool OtByteCodeClass::isMethodAssign(size_t pc) {
 	if (getOpcode(pc) == methodOpcode) {
-		return  getNumber(pc) == OtSymbol::create("__assign__");
+		return  getNumber(pc) == OtSymbolizer::create("__assign__");
 
 	} else {
 		return false;

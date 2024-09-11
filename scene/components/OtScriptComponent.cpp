@@ -16,7 +16,7 @@
 
 #include "OtException.h"
 #include "OtClass.h"
-#include "OtSymbol.h"
+#include "OtSymbolizer.h"
 #include "OtVM.h"
 
 #include "OtMessageBus.h"
@@ -87,8 +87,8 @@ void OtScriptComponent::process() {
 
 				// ensure the class is derived from Entity
 				if (instance.isKindOf<OtEntityObjectClass>()) {
-					createSymbol = OtSymbol::create("create");
-					updateSymbol = OtSymbol::create("update");
+					createSymbol = OtSymbolizer::create("create");
+					updateSymbol = OtSymbolizer::create("update");
 					hasCreateMethod = instance->has(createSymbol);
 					hasUpdateMethod = instance->has(updateSymbol);
 

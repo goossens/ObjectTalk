@@ -26,7 +26,8 @@
 #include "OtMemberReference.h"
 #include "OtPathTools.h"
 #include "OtReal.h"
-#include "OtSymbol.h"
+#include "OtSymbolizer.h"
+#include "OtSymbolTable.h"
 #include "OtStackReference.h"
 #include "OtString.h"
 #include "OtThrow.h"
@@ -82,7 +83,7 @@ OtByteCode OtCompiler::compileSource(OtSource src, OtObject object) {
 
 	// setup global scope
 	std::vector<std::string_view> names;
-	OtGlobal global = OtVM::instance()->getGlobal();
+	OtGlobal global = OtVM::getGlobal();
 	pushObjectScope(global);
 	global->getMemberNames(names);
 
@@ -109,7 +110,7 @@ OtByteCode OtCompiler::compileSource(OtSource src, OtObject object) {
 	scopeStack.clear();
 
 	// ensure we leave a default result on the stack
-	bytecode->push(OtVM::instance()->getNull());
+	bytecode->push(OtVM::getNull());
 
 	// optimize code
 	return optimizer.optimize(bytecode);
@@ -135,7 +136,7 @@ OtByteCode OtCompiler::compileExpression(OtSource src) {
 
 	// setup global scope
 	std::vector<std::string_view> names;
-	OtGlobal global = OtVM::instance()->getGlobal();
+	OtGlobal global = OtVM::getGlobal();
 	global->getMemberNames(names);
 	pushObjectScope(global);
 
@@ -279,7 +280,7 @@ void OtCompiler::resolveVariable(OtByteCode bytecode, const std::string& name) {
 			switch(scope->type) {
 				case Scope::objectScope:
 					// variable is object member
-					bytecode->push(OtMemberReference::create(scope->object, OtSymbol::create(name)));
+					bytecode->push(OtMemberReference::create(scope->object, OtSymbolizer::create(name)));
 					break;
 
 				case Scope::functionScope:
@@ -291,7 +292,7 @@ void OtCompiler::resolveVariable(OtByteCode bytecode, const std::string& name) {
 					} else {
 						// variable is in an enclosing function, we need to capture it
 						declareCapture(name, OtStackItem(functionLevel - 1, scope->locals[name]));
-						bytecode->push(OtCaptureReference::create(OtSymbol::create(name)));
+						bytecode->push(OtCaptureReference::create(OtSymbolizer::create(name)));
 					}
 
 					break;
@@ -361,7 +362,7 @@ void OtCompiler::function(OtByteCode bytecode, const std::string& name) {
 	block(functionCode);
 
 	// default return value in case function does not have return statement
-	functionCode->push(OtVM::instance()->getNull());
+	functionCode->push(OtVM::getNull());
 
 	// create a new (optimized) bytecode function
 	auto function = OtByteCodeFunction::create(optimizer.optimize(functionCode), count);
@@ -370,7 +371,7 @@ void OtCompiler::function(OtByteCode bytecode, const std::string& name) {
 	auto& scope = scopeStack.back();
 
 	if (scope.captures.size()) {
-		// function does capture variables so let's wrap it in a closure
+		// function does capture variables so let's wrap them in a closure
 		bytecode->push(OtClosure::create(function, scope.captures));
 
 		// generate code to perform the actual capture

@@ -18,7 +18,7 @@
 #include "OtByteCode.h"
 #include "OtLog.h"
 #include "OtMemberReference.h"
-#include "OtSymbolizer.h"
+#include "OtIdentifier.h"
 #include "OtStackReference.h"
 #include "OtText.h"
 
@@ -47,6 +47,11 @@ std::string OtByteCodeClass::disassemble() {
 				break;
 			}
 
+			case pushNullOpcode: {
+				buffer << "pushNull";
+				break;
+			}
+
 			case popOpcode:
 				buffer << "pop";
 				break;
@@ -68,30 +73,30 @@ std::string OtByteCodeClass::disassemble() {
 				break;
 
 			case jumpOpcode:
-				buffer << "jump" << offsets[getNumber(pc)];
+				buffer << "jump" << jumps[getNumber(pc)];
 				break;
 
 			case jumpTrueOpcode:
-				buffer << "jumpTrue" << offsets[getNumber(pc)];
+				buffer << "jumpTrue" << jumps[getNumber(pc)];
 				break;
 
 			case jumpFalseOpcode:
-				buffer << "jumpTrue" << offsets[getNumber(pc)];
+				buffer << "jumpTrue" << jumps[getNumber(pc)];
 				break;
 
 			case memberOpcode:
-				buffer << "member" << OtSymbolizer::name(getNumber(pc));
+				buffer << "member" << OtIdentifier::name(getNumber(pc));
 				break;
 
 			case methodOpcode: {
 				auto method = getNumber(pc);
 				auto count =getNumber(pc);
-				buffer << "method" << OtSymbolizer::name(method) << "(" << count << ")";
+				buffer << "method" << OtIdentifier::name(method) << "(" << count << ")";
 				break;
 			}
 
 			case superOpcode:
-				buffer << "super" << OtSymbolizer::name(getNumber(pc));
+				buffer << "super" << OtIdentifier::name(getNumber(pc));
 				break;
 
 			case exitOpcode:
@@ -103,7 +108,7 @@ std::string OtByteCodeClass::disassemble() {
 				break;
 
 			case pushTryOpcode:
-				buffer << "pushTry" << offsets[getNumber(pc)];
+				buffer << "pushTry" << jumps[getNumber(pc)];
 				break;
 
 			case popTryOpcode:
@@ -115,11 +120,11 @@ std::string OtByteCodeClass::disassemble() {
 				break;
 
 			case pushObjectMemberOpcode:
-				buffer << "pushObjectMember" << OtObjectDescribe(constants[getNumber(pc)]) << " " << OtSymbolizer::name(getNumber(pc));
+				buffer << "pushObjectMember" << OtObjectDescribe(constants[getNumber(pc)]) << " " << OtIdentifier::name(getNumber(pc));
 				break;
 
 			case pushMemberOpcode:
-				buffer << "pushMember" << OtSymbolizer::name(getNumber(pc));
+				buffer << "pushMember" << OtIdentifier::name(getNumber(pc));
 				break;
 
 			case assignStackOpcode:
@@ -127,7 +132,7 @@ std::string OtByteCodeClass::disassemble() {
 				break;
 
 			case assignMemberOpcode:
-				buffer << "assignMember" << OtObjectDescribe(constants[getNumber(pc)]) << " " << OtSymbolizer::name(getNumber(pc));
+				buffer << "assignMember" << OtObjectDescribe(constants[getNumber(pc)]) << " " << OtIdentifier::name(getNumber(pc));
 				break;
 		}
 
@@ -152,6 +157,10 @@ void OtByteCodeClass::copyOpcode(OtByteCode other, size_t pc) {
 			push(other->constants[other->getNumber(pc)]);
 			break;
 
+		case pushNullOpcode:
+			pushNull();
+			break;
+
 		case popOpcode:
 			pop();
 			break;
@@ -173,15 +182,15 @@ void OtByteCodeClass::copyOpcode(OtByteCode other, size_t pc) {
 			break;
 
 		case jumpOpcode:
-			jump(other->offsets[other->getNumber(pc)]);
+			jump(other->jumps[other->getNumber(pc)]);
 			break;
 
 		case jumpTrueOpcode:
-			jumpTrue(other->offsets[other->getNumber(pc)]);
+			jumpTrue(other->jumps[other->getNumber(pc)]);
 			break;
 
 		case jumpFalseOpcode:
-			jumpFalse(other->offsets[other->getNumber(pc)]);
+			jumpFalse(other->jumps[other->getNumber(pc)]);
 			break;
 
 		case memberOpcode:
@@ -193,9 +202,9 @@ void OtByteCodeClass::copyOpcode(OtByteCode other, size_t pc) {
 			break;
 
 		case methodOpcode: {
-			auto symbol = other->getNumber(pc);
+			auto id = other->getNumber(pc);
 			auto count = other->getNumber(pc);
-			method(symbol, count);
+			method(id, count);
 			break;
 		}
 
@@ -208,7 +217,7 @@ void OtByteCodeClass::copyOpcode(OtByteCode other, size_t pc) {
 			break;
 
 		case pushTryOpcode:
-			pushTry(other->offsets[other->getNumber(pc)]);
+			pushTry(other->jumps[other->getNumber(pc)]);
 			break;
 
 		case popTryOpcode:
@@ -260,6 +269,9 @@ size_t OtByteCodeClass::getOpcodeSize(size_t offset) {
 
 		case pushOpcode:
 			getNumber(pc);
+			break;
+
+		case pushNullOpcode:
 			break;
 
 		case popOpcode:
@@ -433,7 +445,7 @@ bool OtByteCodeClass::isMember(size_t pc, size_t& member) {
 
 bool OtByteCodeClass::isMethodDeref(size_t pc) {
 	if (getOpcode(pc) == methodOpcode) {
-		return  getNumber(pc) == OtSymbolizer::create("__deref__");
+		return  getNumber(pc) == OtIdentifier::create("__deref__");
 
 	} else {
 		return false;
@@ -447,7 +459,7 @@ bool OtByteCodeClass::isMethodDeref(size_t pc) {
 
 bool OtByteCodeClass::isMethodAssign(size_t pc) {
 	if (getOpcode(pc) == methodOpcode) {
-		return  getNumber(pc) == OtSymbolizer::create("__assign__");
+		return  getNumber(pc) == OtIdentifier::create("__assign__");
 
 	} else {
 		return false;

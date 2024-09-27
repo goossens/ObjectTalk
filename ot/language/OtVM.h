@@ -18,7 +18,7 @@
 #include "OtByteCode.h"
 #include "OtClosure.h"
 #include "OtGlobal.h"
-#include "OtSymbolizer.h"
+#include "OtIdentifier.h"
 #include "OtSingleton.h"
 #include "OtStack.h"
 
@@ -48,7 +48,7 @@ public:
 
 	template<typename... ARGS>
 	OtObject callMemberFunction(OtObject target, const std::string& member, ARGS... args) {
-		return callMemberFunction(target, OtSymbolizer::create(member), std::forward<ARGS>(args)...);
+		return callMemberFunction(target, OtIdentifier::create(member), std::forward<ARGS>(args)...);
 	}
 
 	inline OtObject callMemberFunction(OtObject target, OtObject member, size_t count, OtObject* args) {
@@ -78,7 +78,7 @@ public:
 	}
 
 	inline OtObject redirectMemberFunction(OtObject target, const std::string& member, size_t count) {
-		return redirectMemberFunction(target, OtSymbolizer::create(member), count);
+		return redirectMemberFunction(target, OtIdentifier::create(member), count);
 	}
 
 	// debugging functions

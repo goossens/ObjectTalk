@@ -19,7 +19,7 @@
 #include "OtFunction.h"
 #include "OtLog.h"
 #include "OtMemberReference.h"
-#include "OtSymbolizer.h"
+#include "OtIdentifier.h"
 #include "OtString.h"
 #include "OtVM.h"
 
@@ -88,6 +88,11 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 					stack.push(bytecode->getConstant(bytecode->getNumber(pc)));
 					break;
 
+				case OtByteCodeClass::pushNullOpcode:
+					// push null object onto the stack
+					stack.push(null);
+					break;
+
 				case OtByteCodeClass::popOpcode:
 					// pop an object from the stack
 					stack.pop();
@@ -115,12 +120,12 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 
 				case OtByteCodeClass::jumpOpcode:
 					// jump to the specified bytecode location
-					pc = bytecode->getOffset(bytecode->getNumber(pc));
+					pc = bytecode->getJump(bytecode->getNumber(pc));
 					break;
 
 				case OtByteCodeClass::jumpTrueOpcode: {
 					// jump to the specified bytecode location if the top stack object is true
-					auto jump = bytecode->getOffset(bytecode->getNumber(pc));
+					auto jump = bytecode->getJump(bytecode->getNumber(pc));
 					auto value = stack.pop();
 
 					if (value->operator bool()) {
@@ -132,7 +137,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 
 				case OtByteCodeClass::jumpFalseOpcode: {
 					// jump to the specified bytecode location if the top stack object is false
-					auto jump = bytecode->getOffset(bytecode->getNumber(pc));
+					auto jump = bytecode->getJump(bytecode->getNumber(pc));
 					auto value = stack.pop();
 
 					if (!value->operator bool()) {
@@ -171,7 +176,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 
 					// sanity check
 					if (!parameters[0]) {
-						OtLogFatal("Internal error: can't call method [{}] with [{}] parameters on nullptr", OtSymbolizer::name(method), count);
+						OtLogFatal("Internal error: can't call method [{}] with [{}] parameters on nullptr", OtIdentifier::name(method), count);
 					}
 
 					// call method
@@ -179,7 +184,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 
 					// remove arguments from stack and put result back on it
 					stack.pop(count + 1);
-					stack.push(result);
+					stack.push(result ? result : null);
 					break;
 				}
 
@@ -195,7 +200,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 
 				case OtByteCodeClass::pushTryOpcode:
 					// start a new try/catch cycle
-					tryCatch.push_back(OtTryCatch(bytecode->getOffset(bytecode->getNumber(pc)), stack.getState()));
+					tryCatch.push_back(OtTryCatch(bytecode->getJump(bytecode->getNumber(pc)), stack.getState()));
 					break;
 
 				case OtByteCodeClass::popTryOpcode:
@@ -298,7 +303,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 		}
 	}
 
-	// get code result
+	// get result
 	auto result = stack.pop();
 
 	// close the stack frame

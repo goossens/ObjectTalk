@@ -62,12 +62,12 @@ OtObject OtClassClass::instantiate(size_t count, OtObject* parameters) {
 //	OtClassClass::has
 //
 
-bool OtClassClass::has(size_t symbol) {
-	if (OtInternalClass::has(symbol)) {
+bool OtClassClass::has(size_t id) {
+	if (OtInternalClass::has(id)) {
 		return true;
 
 	} else {
-		return classType->has(symbol);
+		return classType->has(id);
 	}
 }
 
@@ -76,12 +76,12 @@ bool OtClassClass::has(size_t symbol) {
 //	OtClassClass::get
 //
 
-OtObject& OtClassClass::get(size_t symbol) {
-	if (OtInternalClass::has(symbol)) {
-		return OtInternalClass::get(symbol);
+OtObject& OtClassClass::get(size_t id) {
+	if (OtInternalClass::has(id)) {
+		return OtInternalClass::get(id);
 
 	} else {
-		return classType->get(symbol);
+		return classType->get(id);
 	}
 }
 
@@ -90,18 +90,18 @@ OtObject& OtClassClass::get(size_t symbol) {
 //	OtClassClass::getSuper
 //
 
- OtObject OtClassClass::getSuper(size_t symbol) {
+ OtObject OtClassClass::getSuper(size_t id) {
 	for (auto t = classType ? classType->getParent() : classType; t; t = t->getParent()) {
-		if (t->has(symbol)) {
-			return t->get(symbol);
+		if (t->has(id)) {
+			return t->get(id);
 		}
 	}
 
-	auto name = OtSymbolizer::name(symbol);
+	auto name = OtIdentifier::name(id);
 	OtError("Unknown member [{}] in superclass of [{}]", name, type->getName());
 
 	// we will never get here because of the exception but a return statement keeps the compiler happy
-	return members->get(symbol);
+	return members->get(id);
  }
 
 

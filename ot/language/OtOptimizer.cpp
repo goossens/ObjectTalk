@@ -13,7 +13,7 @@
 
 #include "OtMemberReference.h"
 #include "OtOptimizer.h"
-#include "OtSymbolizer.h"
+#include "OtIdentifier.h"
 #include "OtStackReference.h"
 
 
@@ -57,7 +57,7 @@ OtByteCode OtOptimizer::optimize(OtByteCode bytecode) {
 	}
 
 	// fix all the jumps
-	for (auto& offset : newByteCode->getOffsets()) {
+	for (auto& offset : newByteCode->getJumps()) {
 		offset = opcodeMapping[offset];
 	}
 

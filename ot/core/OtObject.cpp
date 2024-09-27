@@ -37,13 +37,13 @@ std::string OtObjectClass::describe() {
 //	OtObjectClass::has
 //
 
-bool OtObjectClass::has(size_t symbol) {
-	if (members && members->has(symbol)) {
+bool OtObjectClass::has(size_t id) {
+	if (members && members->has(id)) {
 		return true;
 	}
 
 	for (auto t = type; t; t = t->getParent()) {
-		if (t->has(symbol)) {
+		if (t->has(id)) {
 			return true;
 		}
 	}
@@ -56,12 +56,12 @@ bool OtObjectClass::has(size_t symbol) {
 //	OtObjectClass::set
 //
 
-OtObject OtObjectClass::set(size_t symbol, OtObject value) {
+OtObject OtObjectClass::set(size_t id, OtObject value) {
 	if (!members) {
 		members = new OtMembers;
 	}
 
-	members->set(symbol, value);
+	members->set(id, value);
 	return value;
 }
 
@@ -70,22 +70,22 @@ OtObject OtObjectClass::set(size_t symbol, OtObject value) {
 //	OtObjectClass::get
 //
 
-OtObject& OtObjectClass::get(size_t symbol) {
-	if (members && members->has(symbol)) {
-		return members->get(symbol);
+OtObject& OtObjectClass::get(size_t id) {
+	if (members && members->has(id)) {
+		return members->get(id);
 	}
 
 	for (auto t = type; t; t = t->getParent()) {
-		if (t->has(symbol)) {
-			return t->get(symbol);
+		if (t->has(id)) {
+			return t->get(id);
 		}
 	}
 
-	auto name = OtSymbolizer::name(symbol);
+	auto name = OtIdentifier::name(id);
 	OtError("Unknown member [{}] in instance of class [{}]", name, type->getName());
 
 	// we will never get here because of the exception but a return statement keeps the compiler happy
-	return members->get(symbol);
+	return members->get(id);
 }
 
 
@@ -93,12 +93,12 @@ OtObject& OtObjectClass::get(size_t symbol) {
 //	OtObjectClass::unset
 //
 
-void OtObjectClass::unset(size_t symbol) {
-	if (members && members->has(symbol)) {
-		members->unset(symbol);
+void OtObjectClass::unset(size_t id) {
+	if (members && members->has(id)) {
+		members->unset(id);
 
 	} else {
-		auto name = OtSymbolizer::name(symbol);
+		auto name = OtIdentifier::name(id);
 		OtError("Unknown member [%.*s] in instance of class [{}]", name.size(), name.data(), type->getName());
 	}
 }

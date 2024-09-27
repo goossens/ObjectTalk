@@ -24,12 +24,12 @@
 
 
 //
-//	OtSymbolizer
+//	OtIdentifier
 //
 
-class OtSymbolizer : public OtSingleton<OtSymbolizer> {
+class OtIdentifier : public OtSingleton<OtIdentifier> {
 public:
-	// get a new symbol
+	// get a new id
 	inline size_t get(const char* text) {
 		return get(std::string_view(text));
 	}
@@ -39,22 +39,22 @@ public:
 	}
 
 	inline size_t get(const std::string_view text) {
-		// see if this symbol was already created
+		// see if this id was already created
 		if (symbolIndex.count(text)) {
 			return symbolIndex[text];
 
 		} else {
-			auto symbol = symbols.size();
+			auto id = symbols.size();
 			auto name = saveSymbol(text);
 			symbols.emplace_back(name);
-			symbolIndex[name] = symbol;
-			return symbol;
+			symbolIndex[name] = id;
+			return id;
 		}
 	}
 
-	// get the string associated with the symbol
-	inline const std::string_view get(size_t symbol) {
-		return symbols[symbol];
+	// get the string associated with the id
+	inline const std::string_view get(size_t id) {
+		return symbols[id];
 	}
 
 	// static shortcuts
@@ -70,8 +70,8 @@ public:
 		return instance()->get(text);
 	}
 
-	static inline std::string_view name(size_t symbol) {
-		return instance()->get(symbol);
+	static inline std::string_view name(size_t id) {
+		return instance()->get(id);
 	}
 
 private:
@@ -95,7 +95,7 @@ private:
 		}
 	};
 
-	// save named symbol
+	// save named id
 	inline std::string_view saveSymbol(const std::string_view text) {
 		// create a new chunk buffer if required
 		if (!buffers.size() || buffers.back().hasSpace(text.size())) {

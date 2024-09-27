@@ -17,8 +17,8 @@
 //	OtMembers::set
 //
 
-void OtMembers::set(size_t symbol, OtObject member) {
-	members[symbol] = member;
+void OtMembers::set(size_t id, OtObject member) {
+	members[id] = member;
 }
 
 
@@ -28,7 +28,7 @@ void OtMembers::set(size_t symbol, OtObject member) {
 
 void OtMembers::getMemberNames(std::vector<std::string_view>& names) {
 	names.clear();
-	auto symbolizer = OtSymbolizer::instance();
+	auto symbolizer = OtIdentifier::instance();
 
 	for (auto i : members) {
 		names.emplace_back(symbolizer->get(i.first));

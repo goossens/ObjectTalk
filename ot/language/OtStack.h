@@ -56,11 +56,11 @@ class OtStackFrame {
 public:
 	// constructors
 	OtStackFrame() = default;
-	OtStackFrame(OtByteCode b, size_t c) : bytecode(b), callingParameters(c) {}
+	OtStackFrame(OtByteCode b, size_t o) : bytecode(b), offset(o) {}
 
 	// frame data
 	OtByteCode bytecode;
-	size_t callingParameters;
+	size_t offset;
 };
 
 
@@ -107,8 +107,8 @@ public:
 
 	// frame access functions
 	inline void openFrame(OtByteCode bytecode, size_t callingParameters) { frames.emplace_back(bytecode, stack.size() - callingParameters); }
-	inline OtObject getFrameItem(OtStackItem item) { return stack[frames[frames.size() - item.frame - 1].callingParameters + item.slot]; }
-	inline void setFrameItem(OtStackItem item, OtObject object) { stack[frames[frames.size() - item.frame - 1].callingParameters + item.slot] = object; }
+	inline OtObject getFrameItem(OtStackItem item) { return stack[frames[frames.size() - item.frame - 1].offset + item.slot]; }
+	inline void setFrameItem(OtStackItem item, OtObject object) { stack[frames[frames.size() - item.frame - 1].offset + item.slot] = object; }
 	inline OtStackFrame& getFrame() { return frames.back(); }
 	inline void closeFrame() { frames.pop_back(); }
 	inline size_t getFrameCount() { return frames.size(); }
@@ -149,7 +149,7 @@ public:
 
 		for (auto frame: frames) {
 			buffer << std::setw(3) << std::setfill('0') << count++ << std::setfill(' ') << " ";
-			buffer << frame.callingParameters << std::endl;
+			buffer << frame.offset << std::endl;
 		}
 
 		return buffer.str();

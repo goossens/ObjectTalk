@@ -81,11 +81,11 @@ public:
 	OtType getParent() { return parent; }
 
 	// member access
-	bool has(size_t symbol) { return members.has(symbol) != 0; }
-	OtObject set(size_t symbol, OtObject value);
+	bool has(size_t id) { return members.has(id) != 0; }
+	OtObject set(size_t id, OtObject value);
 	OtObject set(const char* name, OtObject value);
-	OtObject& get(size_t symbol) { return members.get(symbol); }
-	void unset(size_t symbol) { members.unset(symbol); }
+	OtObject& get(size_t id) { return members.get(id); }
+	void unset(size_t id) { members.unset(id); }
 	void getMemberNames(std::vector<std::string_view>& names) { members.getMemberNames(names); }
 
 private:

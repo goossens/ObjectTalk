@@ -18,7 +18,7 @@
 #include <vector>
 
 #include "OtObjectPointer.h"
-#include "OtSymbolizer.h"
+#include "OtIdentifier.h"
 
 
 //
@@ -36,10 +36,10 @@ using OtObject = OtObjectPointer<OtObjectClass>;
 class OtMembers {
 public:
 	// access the members
-	bool has(size_t symbol) {	return members.count(symbol); }
-	OtObject& get(size_t symbol) { return members[symbol]; }
-	void set(size_t symbol, OtObject member);
-	void unset(size_t symbol) { members.erase(symbol); }
+	bool has(size_t id) {	return members.count(id); }
+	OtObject& get(size_t id) { return members[id]; }
+	void set(size_t id, OtObject member);
+	void unset(size_t id) { members.erase(id); }
 	void unsetAll() { members.clear(); }
 
 	// get all member names

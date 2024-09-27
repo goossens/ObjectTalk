@@ -26,8 +26,7 @@
 #include "OtMemberReference.h"
 #include "OtPathTools.h"
 #include "OtReal.h"
-#include "OtSymbolizer.h"
-#include "OtSymbolTable.h"
+#include "OtIdentifier.h"
 #include "OtStackReference.h"
 #include "OtString.h"
 #include "OtThrow.h"
@@ -110,7 +109,7 @@ OtByteCode OtCompiler::compileSource(OtSource src, OtObject object) {
 	scopeStack.clear();
 
 	// ensure we leave a default result on the stack
-	bytecode->push(OtVM::getNull());
+	bytecode->pushNull();
 
 	// optimize code
 	return optimizer.optimize(bytecode);
@@ -280,7 +279,7 @@ void OtCompiler::resolveVariable(OtByteCode bytecode, const std::string& name) {
 			switch(scope->type) {
 				case Scope::objectScope:
 					// variable is object member
-					bytecode->push(OtMemberReference::create(scope->object, OtSymbolizer::create(name)));
+					bytecode->push(OtMemberReference::create(scope->object, OtIdentifier::create(name)));
 					break;
 
 				case Scope::functionScope:
@@ -292,7 +291,7 @@ void OtCompiler::resolveVariable(OtByteCode bytecode, const std::string& name) {
 					} else {
 						// variable is in an enclosing function, we need to capture it
 						declareCapture(name, OtStackItem(functionLevel - 1, scope->locals[name]));
-						bytecode->push(OtCaptureReference::create(OtSymbolizer::create(name)));
+						bytecode->push(OtCaptureReference::create(OtIdentifier::create(name)));
 					}
 
 					break;
@@ -362,7 +361,7 @@ void OtCompiler::function(OtByteCode bytecode, const std::string& name) {
 	block(functionCode);
 
 	// default return value in case function does not have return statement
-	functionCode->push(OtVM::getNull());
+	functionCode->pushNull();
 
 	// create a new (optimized) bytecode function
 	auto function = OtByteCodeFunction::create(optimizer.optimize(functionCode), count);

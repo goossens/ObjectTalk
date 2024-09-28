@@ -71,12 +71,12 @@ OtByteCode OtOptimizer::optimize(OtByteCode bytecode) {
 	// capture optimized bytecode
 	auto result = newByteCode;
 
-	// clear the optimizer state
-	OtByteCode oldByteCode = nullptr;
-	OtByteCode newByteCode = nullptr;
+	// clear our state
+	oldByteCode = nullptr;
+	newByteCode = nullptr;
 	opcodes.clear();
 
-	// get start of each opcode
+	// return optimized code
 	return result;
 }
 

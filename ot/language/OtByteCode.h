@@ -24,7 +24,7 @@
 #include "OtObject.h"
 #include "OtSource.h"
 #include "OtStatement.h"
-#include "OtSymbol.h"
+#include "OtSymbolTable.h"
 
 
 //
@@ -114,11 +114,6 @@ public:
 	// patch jump offset
 	inline void patchJump(size_t jump) { jumps[jump] = bytecode.size(); }
 
-	// add statement reference
-	inline void addStatement(size_t sourceStart, size_t sourceEnd, size_t opcodeStart, size_t opcodeEnd) {
-		statements.emplace_back(sourceStart, sourceEnd, opcodeStart, opcodeEnd);
-	}
-
 	// add optimizer opcodes
 	inline void pushStack(size_t slot) { emitOpcode(pushStackOpcode); emitNumber(slot); }
 	inline void pushObjectMember(OtObject object, size_t member) { emitOpcode(pushObjectMemberOpcode); emitConstant(object); emitNumber(member); }
@@ -158,6 +153,11 @@ public:
 
 	// copy from other bytecode
 	void copyOpcode(OtByteCode bytecode, size_t pc);
+
+	// add statement reference
+	inline void addStatement(size_t sourceStart, size_t sourceEnd, size_t opcodeStart, size_t opcodeEnd) {
+		statements.emplace_back(sourceStart, sourceEnd, opcodeStart, opcodeEnd);
+	}
 
 	// get code parts
 	inline std::string getModule() { return source->getModule(); }
@@ -235,5 +235,5 @@ private:
 	std::vector<OtObject> constants;
 	std::vector<size_t> jumps;
 	std::vector<OtStatement> statements;
-	std::vector<OtSymbol> symbols;
+	OtSymbolTable symbols;
 };

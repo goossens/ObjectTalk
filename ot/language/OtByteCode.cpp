@@ -568,7 +568,7 @@ OtType OtByteCodeClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtType::create<OtByteCodeClass>("Code", OtInternalClass::getMeta());
+		type = OtType::create<OtByteCodeClass>("ByteCode", OtInternalClass::getMeta());
 	}
 
 	return type;

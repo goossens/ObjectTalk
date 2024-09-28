@@ -114,7 +114,8 @@
 		"__memory": "cpp",
 		"*.sh": "cpp",
 		"execution": "cpp",
-		"text_encoding": "cpp"
+		"text_encoding": "cpp",
+		"print": "cpp"
 	},
 	"files.exclude": {
 		"debug/**": true,

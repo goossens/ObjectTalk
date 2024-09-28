@@ -21,8 +21,8 @@
 
 struct OtSymbol {
 	// constructors
-	inline OtSymbol(size_t s, OtObject o) : type(heapType), id(s), object(o) {}
-	inline OtSymbol(size_t s, size_t o) : type(stackType), id(s), slot(o) {}
+	inline OtSymbol(size_t i, OtObject o, size_t os, bool d) : type(heapType), id(i), object(o), opcodeStart(os), opcodeEnd(0), declared(d) {}
+	inline OtSymbol(size_t i, size_t s, size_t os, bool d) : type(stackType), id(i), slot(s), opcodeStart(os), opcodeEnd(0), declared(d) {}
 
 	enum Type {
 		heapType,
@@ -37,5 +37,4 @@ struct OtSymbol {
 	size_t opcodeStart;
 	size_t opcodeEnd;
 	bool declared;
-	bool referenced;
 };

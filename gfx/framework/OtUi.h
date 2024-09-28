@@ -94,12 +94,12 @@ inline bool OtUiInputString(const char* label, std::string* value, ImGuiInputTex
 bool OtUiInputText(const char* label, std::string* value, ImGuiInputTextFlags flags=ImGuiInputTextFlags_None);
 
 // create a field to edit numbers
-bool OtUiDragInt(const char* label, int* value, int minv=-std::numeric_limits<int>::max(), int maxv=std::numeric_limits<int>::max());
-bool OtUiDragFloat(const char* label, float* value, float minv=-std::numeric_limits<float>::max(), float maxv=std::numeric_limits<float>::max());
+bool OtUiDragInt(const char* label, int* value, int minv=std::numeric_limits<int>::lowest(), int maxv=std::numeric_limits<int>::max());
+bool OtUiDragFloat(const char* label, float* value, float minv=std::numeric_limits<float>::lowest(), float maxv=std::numeric_limits<float>::max());
 
 // create a field to edit glm vectors
-bool OtUiEditVec3(const char* label, glm::vec3* vector, float minv=-std::numeric_limits<float>::max(), float maxv=std::numeric_limits<float>::max());
-bool OtUiEditVec4(const char* label, glm::vec4* vector, float minv=-std::numeric_limits<float>::max(), float maxv=std::numeric_limits<float>::max());
+bool OtUiEditVec3(const char* label, glm::vec3* vector, float minv=std::numeric_limits<float>::lowest(), float maxv=std::numeric_limits<float>::max());
+bool OtUiEditVec4(const char* label, glm::vec4* vector, float minv=std::numeric_limits<float>::lowest(), float maxv=std::numeric_limits<float>::max());
 
 // create a file path field with file selector popup
 bool OtUiFileSelector(const char* label, std::string* path, const char* filter);

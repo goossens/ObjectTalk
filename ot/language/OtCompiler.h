@@ -39,9 +39,9 @@ public:
 
 private:
 	// push a new scope onto the scope stack
-	void pushObjectScope(OtObject object);
-	void pushFunctionScope();
-	void pushBlockScope();
+	void pushObjectScope(OtByteCode bytecode, OtObject object);
+	void pushFunctionScope(OtByteCode bytecode);
+	void pushBlockScope(OtByteCode bytecode);
 
 	// pop the last scope from the scope stack
 	void popScope();
@@ -50,13 +50,13 @@ private:
 	void declareCapture(const std::string& name, OtStackItem item);
 
 	// declare a new variable in the current scope
-	void declareVariable(OtByteCode bytecode, const std::string& name, bool declareVariable=false);
+	void declareVariable(const std::string& name, bool declareVariable=false);
 
 	// resolve variable name by pushing a reference to the stack
-	void resolveVariable(OtByteCode bytecode, const std::string& name);
+	void resolveVariable(const std::string& name);
 
 	// assign top stack value to named variable
-	void assignVariable(OtByteCode bytecode, const std::string& name);
+	void assignVariable(const std::string& name);
 
 	// compile function
 	void function(OtByteCode bytecode, const std::string& name);
@@ -163,19 +163,19 @@ private:
 	public:
 		// scope types
 		typedef enum {
-			undefinedScope,
 			objectScope,
 			functionScope,
 			blockScope
 		} Type;
 
 		// constructors
-		Scope(Type t, OtObject o) : type(t), object(o) {}
-		Scope(Type t) : type(t), stackFrameOffset(0) {}
-		Scope(Type t, size_t sfo) : type(t), stackFrameOffset(sfo) {}
+		Scope(OtByteCode b, OtObject o) : type(objectScope), bytecode(b), object(o) {}
+		Scope(OtByteCode b) : type(functionScope), bytecode(b), stackFrameOffset(0) {}
+		Scope(OtByteCode b, size_t sfo) : type(blockScope), bytecode(b), stackFrameOffset(sfo) {}
 
 		// scope details
-		Type type = undefinedScope;
+		Type type;
+		OtByteCode bytecode;
 		OtObject object = nullptr;
 		size_t stackFrameOffset = 0;
 		std::unordered_map<std::string, size_t> locals;

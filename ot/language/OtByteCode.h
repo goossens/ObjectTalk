@@ -13,6 +13,7 @@
 //	Include files
 //
 
+#include <algorithm>
 #include <cstdint>
 #include <string>
 #include <string_view>
@@ -24,7 +25,7 @@
 #include "OtObject.h"
 #include "OtSource.h"
 #include "OtStatement.h"
-#include "OtSymbolTable.h"
+#include "OtSymbol.h"
 
 
 //
@@ -159,6 +160,42 @@ public:
 		statements.emplace_back(sourceStart, sourceEnd, opcodeStart, opcodeEnd);
 	}
 
+	// declare a new symbol located on the heap
+	inline void declareSymbol(size_t id, OtObject object) {
+		symbols.emplace_back(id, object, bytecode.size(), true);
+	}
+
+	// declare a new symbol located on the stack
+	inline void declareSymbol(size_t id, size_t slot) {
+		symbols.emplace_back(id, slot, bytecode.size(), true);
+	}
+
+	// reference a symbol located on the heap
+	inline void referenceSymbol(size_t id, OtObject object) {
+		symbols.emplace_back(id, object, bytecode.size(), false);
+	}
+
+	// reference a symbol located on the stack
+	inline void referenceSymbol(size_t id, size_t slot) {
+		symbols.emplace_back(id, slot, bytecode.size(), false);
+	}
+
+	// end visibility of specified symbol
+	inline void hideSymbol(size_t id) {
+		lookupSymbol(id)->opcodeEnd = bytecode.size();
+	}
+
+	// see if symbol is known
+	inline bool hasSymbol(size_t id) {
+		return lookupSymbol(id) != symbols.rend();
+	}
+
+	// see if symbol is declared
+	inline bool isSymbolDeclared(size_t id) {
+		auto i = lookupSymbol(id);
+		return i != symbols.rend() && i->declared;
+	}
+
 	// get code parts
 	inline std::string getModule() { return source->getModule(); }
 	inline OtSource& getSource() { return source; }
@@ -168,6 +205,7 @@ public:
 	inline std::vector<size_t>& getJumps() { return jumps; }
 	inline size_t getJump(size_t jump) { return jumps[jump]; }
 	inline std::vector<OtStatement>& getStatements() { return statements; }
+	inline std::vector<OtSymbol>& getSymbols() { return symbols; }
 
 	// bytecode introspection
 	size_t getOpcodeSize(size_t pc);
@@ -229,11 +267,18 @@ private:
 		bytecode.emplace_back((uint8_t) number);
 	}
 
+	// lookup a symbol
+	inline std::vector<OtSymbol>::reverse_iterator lookupSymbol(size_t id) {
+		return std::find_if(symbols.rbegin(), symbols.rend(), [id](const OtSymbol& symbol){
+			return symbol.id == id && !symbol.opcodeEnd;
+		});
+	}
+
 	OtSource source;
 	std::string name;
 	std::vector<uint8_t> bytecode;
 	std::vector<OtObject> constants;
 	std::vector<size_t> jumps;
 	std::vector<OtStatement> statements;
-	OtSymbolTable symbols;
+	std::vector<OtSymbol> symbols;
 };

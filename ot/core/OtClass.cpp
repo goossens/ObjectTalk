@@ -115,8 +115,8 @@ OtType OtClassClass::getMeta() {
 	if (!type) {
 		type = OtType::create<OtClassClass>("Class", OtInternalClass::getMeta());
 		type->set("__call__", OtFunction::create(&OtClassClass::instantiate));
+		type->set("__parent__", OtFunction::create(&OtClassClass::setParent));
 		type->set("getName", OtFunction::create(&OtClassClass::getName));
-		type->set("setParent", OtFunction::create(&OtClassClass::setParent));
 		type->set("hasParent", OtFunction::create(&OtClassClass::hasParent));
 		type->set("getParent", OtFunction::create(&OtClassClass::getParent));
 		type->set("isKindOf", OtFunction::create(&OtClassClass::isKindOf));

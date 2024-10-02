@@ -16,11 +16,13 @@
 
 #include "OtByteCode.h"
 #include "OtClass.h"
+#include "OtIdentifier.h"
 #include "OtModule.h"
 #include "OtOptimizer.h"
 #include "OtScanner.h"
 #include "OtSource.h"
 #include "OtStack.h"
+#include "OtSymbol.h"
 
 
 //
@@ -53,7 +55,7 @@ private:
 	void declareVariable(const std::string& name, bool declareVariable=false);
 
 	// resolve variable name by pushing a reference to the stack
-	void resolveVariable(const std::string& name);
+	void resolveVariable(const std::string& name, bool processSymbol=true);
 
 	// assign top stack value to named variable
 	void assignVariable(const std::string& name);
@@ -180,10 +182,50 @@ private:
 		size_t stackFrameOffset = 0;
 		std::unordered_map<std::string, size_t> locals;
 		std::unordered_map<std::string, OtStackItem> captures;
+		std::vector<OtSymbol> symbols;
+		std::unordered_map<std::string, size_t> symbolIndex;
 	};
 
 	std::vector<Scope> scopeStack;
 
 	// class tracker
 	std::vector<OtClass> classStack;
+
+	// internal method identifiers used by compiler
+	size_t addID = OtIdentifier::create("__add__");
+	size_t assignID = OtIdentifier::create("__assign__");
+	size_t bitwiseAndID = OtIdentifier::create("__band__");
+	size_t bitwiseNotID = OtIdentifier::create("__bnot__");
+	size_t bitwiseOrID = OtIdentifier::create("__bor__");
+	size_t bitwiseXorID = OtIdentifier::create("__bxor__");
+	size_t callID = OtIdentifier::create("__call__");
+	size_t captureID = OtIdentifier::create("__capture__");
+	size_t containsID = OtIdentifier::create("__contains__");
+	size_t decrementID = OtIdentifier::create("__dec__");
+	size_t dereferenceID = OtIdentifier::create("__deref__");
+	size_t divideID = OtIdentifier::create("__div__");
+	size_t endID = OtIdentifier::create("__end__");
+	size_t equalID = OtIdentifier::create("__eq__");
+	size_t greaterEqualID = OtIdentifier::create("__ge__");
+	size_t greaterThenID = OtIdentifier::create("__gt__");
+	size_t incrementID = OtIdentifier::create("__inc__");
+	size_t indexID = OtIdentifier::create("__index__");
+	size_t initID = OtIdentifier::create("__init__");
+	size_t iteratorID = OtIdentifier::create("__iter__");
+	size_t leftShiftID = OtIdentifier::create("__lshift__");
+	size_t lessEqualID = OtIdentifier::create("__le__");
+	size_t lessThenID = OtIdentifier::create("__lt__");
+	size_t logicalAndID = OtIdentifier::create("__and__");
+	size_t logicalNotID = OtIdentifier::create("__not__");
+	size_t logicalOrID = OtIdentifier::create("__or__");
+	size_t moduloID = OtIdentifier::create("__mod__");
+	size_t multiplyID = OtIdentifier::create("__mul__");
+	size_t negateID = OtIdentifier::create("__neg__");
+	size_t nextID = OtIdentifier::create("__next__");
+	size_t notEqualID = OtIdentifier::create("__ne__");
+	size_t parentID = OtIdentifier::create("__parent__");
+	size_t plusID = OtIdentifier::create("__plus__");
+	size_t powerID = OtIdentifier::create("__power__");
+	size_t rightShiftID = OtIdentifier::create("__rshift__");
+	size_t subtractID = OtIdentifier::create("__sub__");
 };

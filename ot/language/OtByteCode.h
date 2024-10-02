@@ -16,7 +16,6 @@
 #include <algorithm>
 #include <cstdint>
 #include <string>
-#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -95,17 +94,8 @@ public:
 	inline size_t jumpTrue(size_t offset) { emitOpcode(jumpTrueOpcode); return emitJump(offset); }
 	inline size_t jumpFalse(size_t offset) { emitOpcode(jumpFalseOpcode); return emitJump(offset); }
 	inline void member(size_t id) { emitOpcode(memberOpcode); emitNumber(id); }
-	inline void member(const char* name) { emitOpcode(memberOpcode); emitSymbol(name); }
-	inline void member(const std::string_view name) { emitOpcode(memberOpcode); emitSymbol(name); }
-	inline void member(const std::string& name) { emitOpcode(memberOpcode); emitSymbol(name); }
 	inline void method(size_t id, size_t count) { emitOpcode(methodOpcode); emitNumber(id); emitNumber(count); }
-	inline void method(const char* name, size_t count) { emitOpcode(methodOpcode); emitSymbol(name); emitNumber(count); }
-	inline void method(const std::string_view name, size_t count) { emitOpcode(methodOpcode); emitSymbol(name); emitNumber(count); }
-	inline void method(const std::string& name, size_t count) { emitOpcode(methodOpcode); emitSymbol(name); emitNumber(count); }
 	inline void super(size_t id) { emitOpcode(superOpcode); emitNumber(id); }
-	inline void super(const char* name) { emitOpcode(superOpcode); emitSymbol(name); }
-	inline void super(const std::string_view name) { emitOpcode(superOpcode); emitSymbol(name); }
-	inline void super(const std::string& name) { emitOpcode(superOpcode); emitSymbol(name); }
 	inline void exit() { emitOpcode(exitOpcode); }
 	inline void reserve() { emitOpcode(reserveOpcode); }
 	inline size_t pushTry() { emitOpcode(pushTryOpcode); return emitJump(0); }
@@ -160,40 +150,9 @@ public:
 		statements.emplace_back(sourceStart, sourceEnd, opcodeStart, opcodeEnd);
 	}
 
-	// declare a new symbol located on the heap
-	inline void declareSymbol(size_t id, OtObject object) {
-		symbols.emplace_back(id, object, bytecode.size(), true);
-	}
-
-	// declare a new symbol located on the stack
-	inline void declareSymbol(size_t id, size_t slot) {
-		symbols.emplace_back(id, slot, bytecode.size(), true);
-	}
-
-	// reference a symbol located on the heap
-	inline void referenceSymbol(size_t id, OtObject object) {
-		symbols.emplace_back(id, object, bytecode.size(), false);
-	}
-
-	// reference a symbol located on the stack
-	inline void referenceSymbol(size_t id, size_t slot) {
-		symbols.emplace_back(id, slot, bytecode.size(), false);
-	}
-
-	// end visibility of specified symbol
-	inline void hideSymbol(size_t id) {
-		lookupSymbol(id)->opcodeEnd = bytecode.size();
-	}
-
-	// see if symbol is known
-	inline bool hasSymbol(size_t id) {
-		return lookupSymbol(id) != symbols.rend();
-	}
-
-	// see if symbol is declared
-	inline bool isSymbolDeclared(size_t id) {
-		auto i = lookupSymbol(id);
-		return i != symbols.rend() && i->declared;
+	// add a new symbol located on the heap
+	inline void addSymbol(const OtSymbol& symbol) {
+		symbols.emplace_back(symbol);
 	}
 
 	// get code parts
@@ -239,18 +198,6 @@ private:
 		emitNumber(index);
 	}
 
-	inline void emitSymbol(const char* name) {
-		emitNumber(OtIdentifier::create(name));
-	}
-
-	inline void emitSymbol(const std::string_view name) {
-		emitNumber(OtIdentifier::create(name));
-	}
-
-	inline void emitSymbol(const std::string& name) {
-		emitNumber(OtIdentifier::create(name));
-	}
-
 	inline size_t emitJump(size_t offset) {
 		auto jump = jumps.size();
 		jumps.emplace_back(offset);
@@ -265,13 +212,6 @@ private:
 		}
 
 		bytecode.emplace_back((uint8_t) number);
-	}
-
-	// lookup a symbol
-	inline std::vector<OtSymbol>::reverse_iterator lookupSymbol(size_t id) {
-		return std::find_if(symbols.rbegin(), symbols.rend(), [id](const OtSymbol& symbol){
-			return symbol.id == id && !symbol.opcodeEnd;
-		});
 	}
 
 	OtSource source;

@@ -191,6 +191,9 @@ private:
 	// class tracker
 	std::vector<OtClass> classStack;
 
+	// current statement start
+	size_t statementStart;
+
 	// internal method identifiers used by compiler
 	size_t addID = OtIdentifier::create("__add__");
 	size_t assignID = OtIdentifier::create("__assign__");

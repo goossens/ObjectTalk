@@ -21,7 +21,6 @@
 #include "OtLibuv.h"
 #include "OtLog.h"
 #include "OtMeasure.h"
-#include "OtVM.h"
 
 #include "OtAssetManager.h"
 #include "OtFramework.h"

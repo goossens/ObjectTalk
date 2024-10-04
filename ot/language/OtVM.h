@@ -29,9 +29,6 @@
 
 class OtVM : public OtPerThreadSingleton<OtVM> {
 public:
-	// constructor
-	OtVM();
-
 	// execute bytecode in the virtual machine
 	OtObject execute(OtByteCode bytecode, size_t callingParameters=0);
 
@@ -82,24 +79,26 @@ public:
 	}
 
 	// debugging functions
-	inline void setStatementHook(std::function<void(OtByteCode, size_t)> hook) {
+	inline void setStatementHook(std::function<void()> hook) {
 		statementHook = hook;
 		callHook = hook != nullptr;
 	}
 
 	// get engine parameters
 	static inline OtStack* getStack() { return &instance()->stack; }
-	static inline OtClosure getClosure() { return instance()->stack.getClosure(); }
 	static inline OtGlobal getGlobal() { return instance()->global; }
 	static inline OtObject getNull() { return instance()->null; }
+
+	static inline OtClosure getClosure() { return instance()->stack.getClosure(); }
+	static inline OtStackFrame& getStackFrame() { return instance()->stack.getFrame(); }
 
 private:
 	// VM properties
 	OtStack stack;
-	OtGlobal global;
-	OtObject null;
+	OtGlobal global = OtGlobal::create();
+	OtObject null = OtObject::create();
 
 	// debugging support
-	std::function<void(OtByteCode, size_t)> statementHook;
+	std::function<void()> statementHook;
 	bool callHook = false;
 };

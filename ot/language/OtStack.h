@@ -13,6 +13,7 @@
 //
 
 #include <algorithm>
+#include <functional>
 #include <iomanip>
 #include <memory>
 #include <sstream>
@@ -56,11 +57,12 @@ class OtStackFrame {
 public:
 	// constructors
 	OtStackFrame() = default;
-	OtStackFrame(OtByteCode b, size_t o) : bytecode(b), offset(o) {}
+	OtStackFrame(OtByteCode b, size_t o, std::function<size_t()> g) : bytecode(b), offset(o), getPC(g) {}
 
 	// frame data
 	OtByteCode bytecode;
 	size_t offset;
+	std::function<size_t()> getPC;
 };
 
 
@@ -106,7 +108,7 @@ public:
 	inline OtObject* sp(size_t offset) { return &(stack[stack.size() - offset]); }
 
 	// frame access functions
-	inline void openFrame(OtByteCode bytecode, size_t callingParameters) { frames.emplace_back(bytecode, stack.size() - callingParameters); }
+	inline void openFrame(OtByteCode bytecode, size_t callingParameters, std::function<size_t()> getPC) { frames.emplace_back(bytecode, stack.size() - callingParameters, getPC); }
 	inline OtObject getFrameItem(OtStackItem item) { return stack[frames[frames.size() - item.frame - 1].offset + item.slot]; }
 	inline void setFrameItem(OtStackItem item, OtObject object) { stack[frames[frames.size() - item.frame - 1].offset + item.slot] = object; }
 	inline OtStackFrame& getFrame() { return frames.back(); }

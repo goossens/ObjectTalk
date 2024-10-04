@@ -15,10 +15,12 @@
 #include "fmt/format.h"
 #include "isocline.h"
 
+#include "OtArray.h"
 #include "OtConfig.h"
 #include "OtDebugger.h"
 #include "OtException.h"
 #include "OtFunction.h"
+#include "OtString.h"
 #include "OtText.h"
 #include "OtVM.h"
 
@@ -36,37 +38,33 @@ void OtDebuggerClass::debug(size_t count, OtObject* parameters) {
 		// activate statement hook in VM
 		auto vm = OtVM::instance();
 
-		vm->setStatementHook([this](OtByteCode bc, size_t p) {
+		vm->setStatementHook([this]() {
 			if (OtVM::getStack()->getFrameCount() == stackFrame) {
-				bytecode = bc;
-				pc = p;
 				processCommand();
 			}
 		});
 
 		// set our state
-		breakOnInstruction = true;
 		stackFrame = vm->getStack()->getFrameCount();
 	}
 }
 
 
 //
-//	OtDebuggerClass::where
+//	OtDebuggerClass::getVariableNames
 //
 
-std::string OtDebuggerClass::where() {
-	auto vm = OtVM::instance();
-	return fmt::format("Module: {}\n{}\n", bytecode->getModule(), bytecode->getStatementSourceCode(pc));
-}
+OtObject OtDebuggerClass::getVariableNames() {
+	// create list of variable names used at current location in current stack frame
+	auto& frame = OtVM::getStackFrame();
+	auto names = frame.bytecode->getUsedSymbolNames(frame.getPC());
+	auto array = OtArray::create();
 
+	for (auto& name : names) {
+		array->append(OtString::create(name));
+	}
 
-//
-//	OtDebuggerClass::disassemble
-//
-
-std::string OtDebuggerClass::disassemble() {
-	return OtVM::getStack()->getFrame().bytecode->disassemble();
+	return array;
 }
 
 
@@ -84,6 +82,7 @@ static void wordCompleter(ic_completion_env_t* cenv, const char* word) {
 		"in",
 		"out",
 		"quit",
+		"variables",
 		nullptr};
 
 	ic_add_completions(cenv, word, completions);
@@ -106,6 +105,7 @@ static const char* help =
 	"[ansi-blue]step[/]        step over the current instruction\n"
 	"[ansi-blue]in[/]          step into the next function\n"
 	"[ansi-blue]out[/]         step out of the current function\n"
+	"[ansi-blue]variables[/]   show all relevant variables\n"
 	"[ansi-blue]quit[/]        terminate the debugger\n";
 
 
@@ -151,7 +151,7 @@ void OtDebuggerClass::processCommand() {
 				ic_print(disassemble().c_str());
 
 			} else if (command[0] == "continue" || command[0] == "c") {
-				breakOnInstruction = false;
+				OtVM::instance()->setStatementHook(nullptr);
 				debugging = false;
 
 			} else if (command[0] == "step" || command[0] == "s") {
@@ -164,6 +164,9 @@ void OtDebuggerClass::processCommand() {
 			} else if (command[0] == "out" || command[0] == "o") {
 				stackFrame--;
 				debugging = false;
+
+			} else if (command[0] == "variables" || command[0] == "v") {
+				ic_print(variables().c_str());
 
 			} else if (command[0] == "quit" || command[0] == "q") {
 				std::_Exit(EXIT_FAILURE);
@@ -179,6 +182,46 @@ void OtDebuggerClass::processCommand() {
 
 
 //
+//	OtDebuggerClass::where
+//
+
+std::string OtDebuggerClass::where() {
+	auto& frame = OtVM::getStackFrame();
+
+	return fmt::format(
+		"Module: {}\n{}\n",
+		frame.bytecode->getModule(),
+		frame.bytecode->getStatementSourceCode(frame.getPC()));
+}
+
+
+//
+//	OtDebuggerClass::disassemble
+//
+
+std::string OtDebuggerClass::disassemble() {
+	return OtVM::getStackFrame().bytecode->disassemble();
+}
+
+
+//
+//	OtDebuggerClass::variables
+//
+
+std::string OtDebuggerClass::variables() {
+	std::string result;
+	auto& frame = OtVM::getStackFrame();
+	auto names = frame.bytecode->getUsedSymbolNames(frame.getPC());
+
+	for (auto& name : names) {
+		result += name + "\n";
+	}
+
+	return result;
+}
+
+
+//
 //	OtDebuggerClass::getMeta
 //
 
@@ -190,6 +233,7 @@ OtType OtDebuggerClass::getMeta() {
 		type->set("__call__", OtFunction::create(&OtDebuggerClass::debug));
 		type->set("where", OtFunction::create(&OtDebuggerClass::where));
 		type->set("disassemble", OtFunction::create(&OtDebuggerClass::disassemble));
+		type->set("getVariableNames", OtFunction::create(&OtDebuggerClass::getVariableNames));
 	}
 
 	return type;

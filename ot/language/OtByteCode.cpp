@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <sstream>
+#include <unordered_map>
 
 #include "fmt/format.h"
 
@@ -557,6 +558,25 @@ std::string OtByteCodeClass::getStatementSourceCode(size_t pc) {
 	});
 
 	return statement;
+}
+
+
+//
+//	OtByteCodeClass::getUsedSymbolNames
+//
+
+std::vector<std::string> OtByteCodeClass::getUsedSymbolNames(size_t pc) {
+	std::vector<std::string> names;
+	std::unordered_map<size_t, size_t> index;
+
+	for (auto& symbol : symbols) {
+		if (pc >= symbol.opcodeStart && pc < symbol.opcodeEnd && index.count(symbol.id) == 0) {
+			names.emplace_back(OtIdentifier::name(symbol.id));
+			index[symbol.id] = true;
+		}
+	}
+
+	return names;
 }
 
 

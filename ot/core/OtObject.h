@@ -106,7 +106,7 @@ protected:
 	OtType type;
 
 	// reference count
-	size_t referenceCount{0};
+	size_t referenceCount = 0;
 	template <typename T> friend class OtObjectPointer;
 
 	// members

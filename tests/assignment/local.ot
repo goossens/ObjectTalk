@@ -4,15 +4,15 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-function dummy(something) {
-}
-
 {
 	var a = "before";
 	assert(a == "before");
 
 	a = "after";
 	assert(a == "after");
+
+	function dummy(something) {
+	}
 
 	dummy(a = "arg");
 	assert(a == "arg");

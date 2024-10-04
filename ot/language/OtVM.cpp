@@ -37,19 +37,6 @@ public:
 
 
 //
-//	OtVM::OtVM
-//
-
-OtVM::OtVM() {
-	// create globals
-	global = OtGlobal::create();
-
-	// create null object
-	null = OtObject::create();
-}
-
-
-//
 //	OtVM::execute
 //
 
@@ -58,12 +45,14 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 	std::vector<OtTryCatch> tryCatch;
 
 	// local variables
-	size_t sp = stack.size();
 	size_t pc = 0;
+	size_t sp = stack.size();
 	size_t end = bytecode->size();
 
 	// open a new stack frame
-	stack.openFrame(bytecode, callingParameters);
+	stack.openFrame(bytecode, callingParameters, [&pc]() {
+		return pc;
+	});
 
 	// save the current stack state (so we can restore it in case of an uncaught exception)
 	OtStackState state = stack.getState();
@@ -78,7 +67,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 				case OtByteCodeClass::statementOpcode:
 					// call statement hook (if required)
 					if (callHook) {
-						statementHook(bytecode, pc);
+						statementHook();
 					}
 
 					break;

@@ -30,11 +30,8 @@ public:
 	// enter debugger
 	void debug(size_t count, OtObject* parameters);
 
-	// get current location information
-	std::string where();
-
-	// get disassembled bytecode for current function
-	std::string disassemble();
+	// get variable names
+	OtObject getVariableNames();
 
 	// get type definition
 	static OtType getMeta();
@@ -43,11 +40,16 @@ private:
 	// process a debug command
 	void processCommand();
 
+	// get current location information
+	std::string where();
+
+	// get disassembled bytecode for current function
+	std::string disassemble();
+
+	// get current variables and values
+	std::string variables();
+
 	// debugger state
-	bool breakOnInstruction = false;
 	size_t stackFrame = 0;
 	size_t instructionStart;
-
-	OtByteCode bytecode;
-	size_t pc;
 };

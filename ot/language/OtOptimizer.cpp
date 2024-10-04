@@ -68,6 +68,13 @@ OtByteCode OtOptimizer::optimize(OtByteCode bytecode) {
 			opcodeMapping[statement.opcodeStart], opcodeMapping[statement.opcodeEnd]);
 	}
 
+	// clone and fix symbol table
+	for (auto& symbol : oldByteCode->getSymbols()) {
+		symbol.opcodeStart = opcodeMapping[symbol.opcodeStart];
+		symbol.opcodeEnd = opcodeMapping[symbol.opcodeEnd];
+		newByteCode->addSymbol(symbol);
+	}
+
 	// capture optimized bytecode
 	auto result = newByteCode;
 

@@ -17,7 +17,6 @@
 
 #include "OtPrimitive.h"
 #include "OtValue.h"
-#include "OtVM.h"
 
 
 //

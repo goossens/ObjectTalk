@@ -57,7 +57,7 @@ void OtDebuggerClass::debug(size_t count, OtObject* parameters) {
 OtObject OtDebuggerClass::getVariableNames() {
 	// create list of variable names used at current location in current stack frame
 	auto& frame = OtVM::getStackFrame();
-	auto names = frame.bytecode->getUsedSymbolNames(frame.getPC());
+	auto names = frame.bytecode->getUsedSymbolNames(*frame.pc);
 	auto array = OtArray::create();
 
 	for (auto& name : names) {
@@ -191,7 +191,7 @@ std::string OtDebuggerClass::where() {
 	return fmt::format(
 		"Module: {}\n{}\n",
 		frame.bytecode->getModule(),
-		frame.bytecode->getStatementSourceCode(frame.getPC()));
+		frame.bytecode->getStatementSourceCode(*frame.pc));
 }
 
 
@@ -211,7 +211,7 @@ std::string OtDebuggerClass::disassemble() {
 std::string OtDebuggerClass::variables() {
 	std::string result;
 	auto& frame = OtVM::getStackFrame();
-	auto names = frame.bytecode->getUsedSymbolNames(frame.getPC());
+	auto names = frame.bytecode->getUsedSymbolNames(*frame.pc);
 
 	for (auto& name : names) {
 		result += name + "\n";

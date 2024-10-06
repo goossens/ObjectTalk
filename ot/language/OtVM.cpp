@@ -50,9 +50,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 	size_t end = bytecode->size();
 
 	// open a new stack frame
-	stack.openFrame(bytecode, callingParameters, [&pc]() {
-		return pc;
-	});
+	stack.openFrame(bytecode, callingParameters, &pc);
 
 	// save the current stack state (so we can restore it in case of an uncaught exception)
 	OtStackState state = stack.getState();

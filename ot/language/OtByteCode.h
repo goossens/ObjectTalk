@@ -20,6 +20,7 @@
 #include <vector>
 
 #include "OtException.h"
+#include "OtIdentifier.h"
 #include "OtInternal.h"
 #include "OtObject.h"
 #include "OtSource.h"
@@ -79,7 +80,7 @@ public:
 
 	// constructors
 	OtByteCodeClass() = default;
-	OtByteCodeClass(OtSource s, const std::string& n) : source(s), name(n) {}
+	OtByteCodeClass(OtSource s, size_t i) : source(s), id(i) {}
 
 	// add compiler opcodes
 	inline void statement() { emitOpcode(statementOpcode); }
@@ -158,7 +159,7 @@ public:
 	// get code parts
 	inline std::string getModule() { return source->getModule(); }
 	inline OtSource& getSource() { return source; }
-	inline std::string& getName() { return name; }
+	inline size_t getID() { return id; }
 	inline uint8_t* getCode() { return bytecode.data(); }
 	inline OtObject& getConstant(size_t index) { return constants[index]; }
 	inline std::vector<size_t>& getJumps() { return jumps; }
@@ -217,7 +218,7 @@ private:
 	}
 
 	OtSource source;
-	std::string name;
+	size_t id;
 	std::vector<uint8_t> bytecode;
 	std::vector<OtObject> constants;
 	std::vector<size_t> jumps;

@@ -30,7 +30,7 @@ class OtClosureClass : public OtInternalClass {
 public:
 	// constructor
 	OtClosureClass() = default;
-	OtClosureClass(OtByteCodeFunction f, const std::unordered_map<std::string, OtStackItem>& c) : function(f), captures(c) {}
+	OtClosureClass(OtByteCodeFunction f, const std::unordered_map<size_t, OtStackItem>& c) : function(f), captures(c) {}
 
 	// capture required variables in returned clone
 	OtObject capture();
@@ -46,5 +46,5 @@ public:
 
 private:
 	OtByteCodeFunction function;
-	std::unordered_map<std::string, OtStackItem> captures;
+	std::unordered_map<size_t, OtStackItem> captures;
 };

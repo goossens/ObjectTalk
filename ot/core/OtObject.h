@@ -13,6 +13,7 @@
 //
 
 #include <cstdint>
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -83,7 +84,10 @@ public:
 	virtual void unsetByName(const std::string& name) { return unset(OtIdentifier::create(name)); }
 
 	bool hasMembers() { return members != nullptr; }
-	void getMemberNames(std::vector<std::string_view>& names);
+
+	// iterate through the members
+	inline void eachMember(std::function<void(size_t, OtObject object)> callback) { members->each(callback); }
+	inline void eachMemberID(std::function<void(size_t)> callback) { members->eachID(callback); }
 
 	// comparison
 	virtual bool operator==(OtObject operand);
@@ -120,7 +124,7 @@ protected:
 
 inline std::string OtObjectDescribe(OtObject object) {
 	if (object) {
-		auto type = object->getType()->getName();
+		auto type = std::string(OtIdentifier::name(object->getType()->getID()));
 		auto description = object->describe();
 
 		if (type == description) {

@@ -16,15 +16,6 @@
 
 
 //
-//	OtClassClass::OtClassClass
-//
-
-OtClassClass::OtClassClass(const std::string& name) {
-	classType = OtType::create(name);
-}
-
-
-//
 //	OtClassClass::setParent
 //
 
@@ -55,34 +46,6 @@ OtObject OtClassClass::instantiate(size_t count, OtObject* parameters) {
 	}
 
 	return object;
-}
-
-
-//
-//	OtClassClass::has
-//
-
-bool OtClassClass::has(size_t id) {
-	if (OtInternalClass::has(id)) {
-		return true;
-
-	} else {
-		return classType->has(id);
-	}
-}
-
-
-//
-//	OtClassClass::get
-//
-
-OtObject& OtClassClass::get(size_t id) {
-	if (OtInternalClass::has(id)) {
-		return OtInternalClass::get(id);
-
-	} else {
-		return classType->get(id);
-	}
 }
 
 

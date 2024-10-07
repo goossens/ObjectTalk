@@ -40,21 +40,21 @@ public:
 
 	inline size_t get(const std::string_view text) {
 		// see if this id was already created
-		if (symbolIndex.count(text)) {
-			return symbolIndex[text];
+		if (indentifierIndex.count(text)) {
+			return indentifierIndex[text];
 
 		} else {
-			auto id = symbols.size();
-			auto name = saveSymbol(text);
-			symbols.emplace_back(name);
-			symbolIndex[name] = id;
+			auto id = indentifiers.size();
+			auto name = saveIdentifier(text);
+			indentifiers.emplace_back(name);
+			indentifierIndex[name] = id;
 			return id;
 		}
 	}
 
 	// get the string associated with the id
 	inline const std::string_view get(size_t id) {
-		return symbols[id];
+		return indentifiers[id];
 	}
 
 	// static shortcuts
@@ -96,7 +96,7 @@ private:
 	};
 
 	// save named id
-	inline std::string_view saveSymbol(const std::string_view text) {
+	inline std::string_view saveIdentifier(const std::string_view text) {
 		// create a new chunk buffer if required
 		if (!buffers.size() || buffers.back().hasSpace(text.size())) {
 			buffers.emplace_back();
@@ -109,7 +109,7 @@ private:
 	// properties
 	std::list<Buffer> buffers;
 
-	// list of symbols already in use
-	std::vector<std::string_view> symbols;
-	std::unordered_map<std::string_view, size_t> symbolIndex;
+	// list of indentifiers already in use
+	std::vector<std::string_view> indentifiers;
+	std::unordered_map<std::string_view, size_t> indentifierIndex;
 };

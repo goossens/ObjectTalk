@@ -13,12 +13,12 @@
 //
 
 #include <cstddef>
-#include <string_view>
+#include <functional>
 #include <unordered_map>
 #include <vector>
 
-#include "OtObjectPointer.h"
 #include "OtIdentifier.h"
+#include "OtObjectPointer.h"
 
 
 //
@@ -36,14 +36,24 @@ using OtObject = OtObjectPointer<OtObjectClass>;
 class OtMembers {
 public:
 	// access the members
-	bool has(size_t id) {	return members.count(id); }
-	OtObject& get(size_t id) { return members[id]; }
-	void set(size_t id, OtObject member);
-	void unset(size_t id) { members.erase(id); }
-	void unsetAll() { members.clear(); }
+	inline bool has(size_t id) { return members.count(id); }
+	inline OtObject& get(size_t id) { return members[id]; }
+	inline void set(size_t id, OtObject member) { members[id] = member; }
+	inline void unset(size_t id) { members.erase(id); }
+	inline void unsetAll() { members.clear(); }
 
-	// get all member names
-	void getMemberNames(std::vector<std::string_view>& names);
+	// iterate through the members
+	inline void each(std::function<void(size_t, OtObject object)> callback) {
+		for (auto i : members) {
+			callback(i.first, i.second);
+		}
+	}
+
+	inline void eachID(std::function<void(size_t)> callback) {
+		for (auto i : members) {
+			callback(i.first);
+		}
+	}
 
 private:
 	// the actual members

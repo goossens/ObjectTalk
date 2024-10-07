@@ -49,19 +49,19 @@ private:
 	void popScope();
 
 	// declare a new captured variable
-	void declareCapture(const std::string& name, OtStackItem item);
+	void declareCapture(size_t id, OtStackItem item);
 
 	// declare a new variable in the current scope
-	void declareVariable(const std::string& name, bool declareVariable=false);
+	void declareVariable(size_t id, bool declareVariable=false);
 
 	// resolve variable name by pushing a reference to the stack
-	void resolveVariable(const std::string& name, bool processSymbol=true);
+	void resolveVariable(size_t id, bool processSymbol=true);
 
 	// assign top stack value to named variable
-	void assignVariable(const std::string& name);
+	void assignVariable(size_t id);
 
 	// compile function
-	void function(OtByteCode bytecode, const std::string& name);
+	void function(OtByteCode bytecode, size_t id);
 
 	// compile superclass reference
 	void super(OtByteCode bytecode);
@@ -180,10 +180,10 @@ private:
 		OtByteCode bytecode;
 		OtObject object = nullptr;
 		size_t stackFrameOffset = 0;
-		std::unordered_map<std::string, size_t> locals;
-		std::unordered_map<std::string, OtStackItem> captures;
+		std::unordered_map<size_t, size_t> locals;
+		std::unordered_map<size_t, OtStackItem> captures;
 		std::vector<OtSymbol> symbols;
-		std::unordered_map<std::string, size_t> symbolIndex;
+		std::unordered_map<size_t, size_t> symbolIndex;
 	};
 
 	std::vector<Scope> scopeStack;
@@ -196,6 +196,7 @@ private:
 
 	// internal method identifiers used by compiler
 	size_t addID = OtIdentifier::create("__add__");
+	size_t anonymousID = OtIdentifier::create("__anonymous__");
 	size_t assignID = OtIdentifier::create("__assign__");
 	size_t bitwiseAndID = OtIdentifier::create("__band__");
 	size_t bitwiseNotID = OtIdentifier::create("__bnot__");
@@ -209,6 +210,7 @@ private:
 	size_t divideID = OtIdentifier::create("__div__");
 	size_t endID = OtIdentifier::create("__end__");
 	size_t equalID = OtIdentifier::create("__eq__");
+	size_t expressionID = OtIdentifier::create("__expression__");
 	size_t greaterEqualID = OtIdentifier::create("__ge__");
 	size_t greaterThenID = OtIdentifier::create("__gt__");
 	size_t incrementID = OtIdentifier::create("__inc__");
@@ -231,4 +233,9 @@ private:
 	size_t powerID = OtIdentifier::create("__power__");
 	size_t rightShiftID = OtIdentifier::create("__rshift__");
 	size_t subtractID = OtIdentifier::create("__sub__");
+
+	// internal method identifiers used by compiler
+	size_t blankID = OtIdentifier::create("");
+	size_t arrayID = OtIdentifier::create("Array");
+	size_t dictID = OtIdentifier::create("Dict");
 };

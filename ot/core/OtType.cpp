@@ -25,8 +25,8 @@ std::list<OtTypeClass> OtType::types;
 //	OtTypeClass::OtTypeClass
 //
 
-OtTypeClass::OtTypeClass(const std::string& n, OtType p, OtTypeAllocator a) {
-	name = n;
+OtTypeClass::OtTypeClass(size_t i, OtType p, OtTypeAllocator a) {
+	id = i;
 	parent = p;
 	allocator = a ? a : p ? p->allocator : nullptr;
 }
@@ -38,7 +38,7 @@ OtTypeClass::OtTypeClass(const std::string& n, OtType p, OtTypeAllocator a) {
 
 OtObject OtTypeClass::allocate() {
 	if (!allocator) {
-		OtError("Can't allocate incomplete type [{}]", name);
+		OtError("Can't allocate incomplete type [{}]", OtIdentifier::name(id));
 	}
 
 	return allocator();
@@ -58,14 +58,18 @@ void OtTypeClass::setParent(OtType p) {
 //	OtTypeClass::isKindOf
 //
 
-bool OtTypeClass::isKindOf(const std::string& className) {
+bool OtTypeClass::isKindOf(size_t otherID) {
 	for (auto p = this; p; p = p->parent.raw()) {
-		if (p->name == className) {
+		if (p->id == otherID) {
 			return true;
 		}
 	}
 
 	return false;
+}
+
+bool OtTypeClass::isKindOf(const std::string& name) {
+	return isKindOf(OtIdentifier::create(name));
 }
 
 
@@ -74,7 +78,8 @@ bool OtTypeClass::isKindOf(const std::string& className) {
 //
 
 OtObject OtTypeClass::set(size_t id, OtObject value) {
-	members.set(id, value); return value;
+	members.set(id, value);
+	return value;
 }
 
 OtObject OtTypeClass::set(const char* name, OtObject value) {

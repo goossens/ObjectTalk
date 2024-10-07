@@ -6,6 +6,7 @@
 
 var error = 0;
 
+// these should fail
 try { var test = null(); } catch e { error++; }
 try { var test = true(); } catch e { error++; }
 try { var test = 1(); } catch e { error++; }
@@ -17,6 +18,7 @@ function f() {
 
 var e = f;
 
+// these should not fail
 try { e(); } catch e { error++; }
 try { Boolean(); } catch e { error++; }
 

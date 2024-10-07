@@ -76,26 +76,23 @@ OtByteCode OtCompiler::compileSource(OtSource src, OtObject object) {
 	scanner.loadSource(src);
 
 	// setup global scope
-	std::vector<std::string_view> names;
 	OtGlobal global = OtVM::getGlobal();
 	pushObjectScope(nullptr, global);
-	global->getMemberNames(names);
 
-	for (auto name : names) {
-		declareVariable(std::string(name));
-	}
+	global->eachMemberID([this](size_t id) {
+		declareVariable(id);
+	});
 
 	// setup bytecode
-	OtByteCode bytecode = OtByteCode::create(src, OtPathGetStem(src->getModule()));
+	OtByteCode bytecode = OtByteCode::create(src, OtIdentifier::create(OtPathGetStem(src->getModule())));
 
 	// setup module scope (if required)
 	if (object) {
 		pushObjectScope(bytecode, object);
-		object->getMemberNames(names);
 
-		for (auto name : names) {
-			declareVariable(std::string(name));
-		}
+		object->eachMemberID([this](size_t id) {
+			declareVariable(id);
+		});
 	}
 
 	// process all statements
@@ -134,17 +131,15 @@ OtByteCode OtCompiler::compileExpression(OtSource src) {
 	scanner.loadSource(src);
 
 	// setup global scope
-	std::vector<std::string_view> names;
 	OtGlobal global = OtVM::getGlobal();
-	global->getMemberNames(names);
 	pushObjectScope(nullptr, global);
 
-	for (auto name : names) {
-		declareVariable(std::string(name));
-	}
+	global->eachMemberID([this](size_t id) {
+		declareVariable(id);
+	});
 
 	// setup bytecode
-	OtByteCode bytecode = OtByteCode::create(src, "__expression__");
+	OtByteCode bytecode = OtByteCode::create(src, expressionID);
 
 	// setup local scope
 	pushBlockScope(bytecode);
@@ -233,7 +228,7 @@ void OtCompiler::popScope() {
 //	OtCompiler::declareCapture
 //
 
-void OtCompiler::declareCapture(const std::string& name, OtStackItem item) {
+void OtCompiler::declareCapture(size_t id, OtStackItem item) {
 	// find most recent function scope
 	auto scope = scopeStack.rbegin();
 
@@ -247,14 +242,14 @@ void OtCompiler::declareCapture(const std::string& name, OtStackItem item) {
 	}
 
 	// see if this variable is already captured
-	if (scope->captures.count(name)) {
-		if (scope->captures[name] != item) {
-			OtError("Internal error: captured variable has different stack offset");
+	if (scope->captures.count(id)) {
+		if (scope->captures[id] != item) {
+			OtError("Internal error: captured variable [{}] has different stack offset", OtIdentifier::name(id));
 		}
 
 	} else {
 		// add item to list of captured variables
-		scope->captures[name] = item;
+		scope->captures[id] = item;
 	}
 }
 
@@ -263,31 +258,31 @@ void OtCompiler::declareCapture(const std::string& name, OtStackItem item) {
 //	OtCompiler::declareVariable
 //
 
-void OtCompiler::declareVariable(const std::string& name, bool alreadyOnStack) {
+void OtCompiler::declareVariable(size_t id, bool alreadyOnStack) {
 	// get current scope
 	auto& scope = scopeStack.back();
 	auto offset = scope.bytecode ? scope.bytecode->size() : 0;
 
 	// avoid double declaration
-	if (scope.locals.count(name)) {
-		scanner.error(fmt::format("Variable [{}] already defined in this scope", name));
+	if (scope.locals.count(id)) {
+		scanner.error(fmt::format("Variable [{}] already defined in this scope", OtIdentifier::name(id)));
 	}
 
 	// see if this variable obscures one referenced from a different scope
-	if (scope.symbolIndex.count(name)) {
+	if (scope.symbolIndex.count(id)) {
 		// close the visibility of that variable
-		scope.symbols[scope.symbolIndex[name]].opcodeEnd = offset;
+		scope.symbols[scope.symbolIndex[id]].opcodeEnd = offset;
 	}
 
 	// add variable to current scope
 	if (scope.type == Scope::functionScope || scope.type == Scope::blockScope) {
 		// variable lives on the stack
 		auto slot = scope.stackFrameOffset + scope.locals.size();
-		scope.locals[name] = slot;
+		scope.locals[id] = slot;
 
 		// add symbol to symbol table
-		scope.symbolIndex[name] = scope.symbols.size();
-		scope.symbols.emplace_back(OtIdentifier::create(name), slot, offset);
+		scope.symbolIndex[id] = scope.symbols.size();
+		scope.symbols.emplace_back(id, slot, offset);
 
 		// reserve space (if required)
 		if (!alreadyOnStack) {
@@ -296,11 +291,11 @@ void OtCompiler::declareVariable(const std::string& name, bool alreadyOnStack) {
 
 	} else {
 		// variable lives on the heap
-		scope.locals[name] = 0;
+		scope.locals[id] = 0;
 
 		// add symbol to symbol table
-		scope.symbolIndex[name] = scope.symbols.size();
-		scope.symbols.emplace_back(OtIdentifier::create(name), scope.object, offset);
+		scope.symbolIndex[id] = scope.symbols.size();
+		scope.symbols.emplace_back(id, scope.object, offset);
 	}
 }
 
@@ -309,7 +304,7 @@ void OtCompiler::declareVariable(const std::string& name, bool alreadyOnStack) {
 //	OtCompiler::resolveVariable
 //
 
-void OtCompiler::resolveVariable(const std::string& name, bool processSymbol) {
+void OtCompiler::resolveVariable(size_t id, bool processSymbol) {
 	// try to resolve name
 	bool found = false;
 	size_t functionLevel = 0;
@@ -319,16 +314,16 @@ void OtCompiler::resolveVariable(const std::string& name, bool processSymbol) {
 	// look at all scope levels in reverse order
 	for (auto i = scopeStack.rbegin(); !found && i != scopeStack.rend(); i++) {
 		// is variable in this scope?
-		if (i->locals.count(name)) {
+		if (i->locals.count(id)) {
 			// yes, handle different scope types
 			switch(i->type) {
 				case Scope::objectScope:
 					// variable is object member
-					bytecode->push(OtMemberReference::create(i->object, OtIdentifier::create(name)));
+					bytecode->push(OtMemberReference::create(i->object, id));
 
 					// process symbol if (required)
-					if (processSymbol && !scope.symbolIndex.count(name)) {
-						scope.symbols.emplace_back(OtIdentifier::create(name), i->object, statementStart);
+					if (processSymbol && !scope.symbolIndex.count(id)) {
+						scope.symbols.emplace_back(id, i->object, statementStart);
 					}
 
 					break;
@@ -337,21 +332,21 @@ void OtCompiler::resolveVariable(const std::string& name, bool processSymbol) {
 				case Scope::blockScope:
 					if (functionLevel == 0) {
 						// variable lives on the stack in the current stack frame
-						bytecode->push(OtStackReference::create(name, i->locals[name]));
+						bytecode->push(OtStackReference::create(id, i->locals[id]));
 
 						// process symbol if (required)
-						if (processSymbol && !scope.symbolIndex.count(name)) {
-							scope.symbols.emplace_back(OtIdentifier::create(name), i->locals[name], statementStart);
+						if (processSymbol && !scope.symbolIndex.count(id)) {
+							scope.symbols.emplace_back(id, i->locals[id], statementStart);
 						}
 
 					} else {
 						// variable is in an enclosing function, we need to capture it
-						declareCapture(name, OtStackItem(functionLevel - 1, i->locals[name]));
-						bytecode->push(OtCaptureReference::create(OtIdentifier::create(name)));
+						declareCapture(id, OtStackItem(functionLevel - 1, i->locals[id]));
+						bytecode->push(OtCaptureReference::create(id));
 
 						// process symbol if (required)
-						if (processSymbol && !scope.symbolIndex.count(name)) {
-							scope.symbols.emplace_back(OtIdentifier::create(name), statementStart);
+						if (processSymbol && !scope.symbolIndex.count(id)) {
+							scope.symbols.emplace_back(id, statementStart);
 						}
 					}
 
@@ -373,7 +368,7 @@ void OtCompiler::resolveVariable(const std::string& name, bool processSymbol) {
 
 	// generate error if variable is not found
 	if (!found) {
-		scanner.error(fmt::format("Unknown variable [{}]", name));
+		scanner.error(fmt::format("Unknown variable [{}]", OtIdentifier::name(id)));
 	}
 }
 
@@ -382,8 +377,8 @@ void OtCompiler::resolveVariable(const std::string& name, bool processSymbol) {
 //	OtCompiler::assignVariable
 //
 
-void OtCompiler::assignVariable(const std::string& name) {
-	resolveVariable(name);
+void OtCompiler::assignVariable(size_t id) {
+	resolveVariable(id);
 
 	auto bytecode = scopeStack.back().bytecode;
 	bytecode->swap();
@@ -396,9 +391,9 @@ void OtCompiler::assignVariable(const std::string& name) {
 //	OtCompiler::function
 //
 
-void OtCompiler::function(OtByteCode bytecode, const std::string& name) {
+void OtCompiler::function(OtByteCode bytecode, size_t id) {
 	// each function has its own bytecode
-	OtByteCode functionCode = OtByteCode::create(source, name);
+	OtByteCode functionCode = OtByteCode::create(source, id);
 
 	// start a new function scope
 	pushFunctionScope(functionCode);
@@ -409,7 +404,7 @@ void OtCompiler::function(OtByteCode bytecode, const std::string& name) {
 
 	while (!scanner.matchToken(OtScanner::RPAREN_TOKEN) && !scanner.matchToken(OtScanner::EOS_TOKEN)) {
 		scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
-		declareVariable(scanner.getText(), true);
+		declareVariable(scanner.getID(), true);
 		scanner.advance();
 		count++;
 
@@ -465,7 +460,7 @@ void OtCompiler::super(OtByteCode bytecode) {
 	// parse member reference and create super instruction
 	scanner.expect(OtScanner::PERIOD_TOKEN);
 	scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
-	bytecode->super(OtIdentifier::create(scanner.getText()));
+	bytecode->super(scanner.getID());
 	scanner.advance();
 }
 
@@ -510,7 +505,7 @@ bool OtCompiler::primary(OtByteCode bytecode) {
 		case OtScanner::FUNCTION_TOKEN:
 			// handle function definition
 			scanner.advance();
-			function(bytecode, "__anonymous__");
+			function(bytecode, anonymousID);
 			reference = false;
 			break;
 
@@ -523,8 +518,7 @@ bool OtCompiler::primary(OtByteCode bytecode) {
 
 		case OtScanner::IDENTIFIER_TOKEN: {
 			// handle named reference
-			auto name = scanner.getText();
-			resolveVariable(name);
+			resolveVariable(scanner.getID());
 			scanner.advance();
 			reference = true;
 			break;
@@ -533,7 +527,7 @@ bool OtCompiler::primary(OtByteCode bytecode) {
 		case OtScanner::LBRACKET_TOKEN:
 			// handle array constant
 			scanner.advance();
-			resolveVariable("Array", false);
+			resolveVariable(arrayID, false);
 			bytecode->method(dereferenceID, 0);
 			bytecode->method(callID, 0);
 			bytecode->dup();
@@ -550,7 +544,7 @@ bool OtCompiler::primary(OtByteCode bytecode) {
 		case OtScanner::LBRACE_TOKEN:
 			// handle dictionary constant
 			scanner.advance();
-			resolveVariable("Dict", false);
+			resolveVariable(dictID, false);
 			bytecode->method(dereferenceID, 0);
 			bytecode->method(callID, 0);
 			bytecode->dup();
@@ -607,7 +601,6 @@ bool OtCompiler::postfix(OtByteCode bytecode) {
 		   token == OtScanner::INCREMENT_TOKEN ||
 		   token == OtScanner::DECREMENT_TOKEN) {
 		scanner.advance();
-		std::string member;
 		size_t count;
 
 		// generate code
@@ -646,7 +639,7 @@ bool OtCompiler::postfix(OtByteCode bytecode) {
 				}
 
 				scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
-				bytecode->member(OtIdentifier::create(scanner.getText()));
+				bytecode->member(scanner.getID());
 				scanner.advance();
 				reference = true;
 				break;
@@ -1364,11 +1357,11 @@ void OtCompiler::variableDeclaration(OtByteCode bytecode) {
 	// handle variable name
 	scanner.expect(OtScanner::VAR_TOKEN);
 	scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
-	std::string name = scanner.getText();
+	auto id = scanner.getID();
 	scanner.advance();
 
 	// add variable to scope
-	declareVariable(name);
+	declareVariable(id);
 
 	// process initial value (if required)
 	if (scanner.matchToken(OtScanner::ASSIGNMENT_TOKEN)) {
@@ -1385,7 +1378,7 @@ void OtCompiler::variableDeclaration(OtByteCode bytecode) {
 	}
 
 	// assign value to variable
-	assignVariable(name);
+	assignVariable(id);
 
 	// must have semicolon at the end of a variable declaration
 	scanner.expect(OtScanner::SEMICOLON_TOKEN);
@@ -1400,16 +1393,16 @@ void OtCompiler::classDeclaration(OtByteCode bytecode) {
 	// handle class name
 	scanner.expect(OtScanner::CLASS_TOKEN);
 	scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
-	std::string name = scanner.getText();
+	auto id = scanner.getID();
 
 	// create new class
-	OtClass cls = OtClass::create(name);
+	OtClass cls = OtClass::create(id);
 	classStack.push_back(cls);
 
 	// add class to current scope
-	declareVariable(name);
+	declareVariable(id);
 	bytecode->push(cls);
-	assignVariable(name);
+	assignVariable(id);
 	scanner.advance();
 
 	// handle parent class
@@ -1449,17 +1442,17 @@ void OtCompiler::functionDeclaration(OtByteCode bytecode) {
 	// get function name
 	scanner.expect(OtScanner::FUNCTION_TOKEN);
 	scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
-	std::string name = scanner.getText();
+	auto id = scanner.getID();
 
 	// add function to scope to allow for recursion
-	declareVariable(name);
+	declareVariable(id);
 	scanner.advance();
 
 	// parse function definition to function object on stack
-	function(bytecode, name);
+	function(bytecode, id);
 
 	// assign function object to variable name
-	assignVariable(name);
+	assignVariable(id);
 }
 
 
@@ -1496,10 +1489,10 @@ void OtCompiler::forStatement(OtByteCode bytecode) {
 
 	// get name of iteration variable
 	scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
-	std::string name = scanner.getText();
+	auto id = scanner.getID();
 
 	// create loop variable on the stack
-	declareVariable(name);
+	declareVariable(id);
 
 	// get the object to be iterated on
 	scanner.advance();
@@ -1510,7 +1503,7 @@ void OtCompiler::forStatement(OtByteCode bytecode) {
 	}
 
 	// pretend iterator is a local variable (that can't be addressed)
-	declareVariable("", true);
+	declareVariable(blankID, true);
 
 	// turn object into an iterator
 	bytecode->method(iteratorID, 0);
@@ -1524,7 +1517,7 @@ void OtCompiler::forStatement(OtByteCode bytecode) {
 	// get the next iteration
 	bytecode->dup();
 	bytecode->method(nextID, 0);
-	assignVariable(name);
+	assignVariable(id);
 
 	// process the actual for loop block
 	block(bytecode);
@@ -1659,13 +1652,13 @@ void OtCompiler::tryStatement(OtByteCode bytecode) {
 	// handle catch block
 	scanner.expect(OtScanner::CATCH_TOKEN);
 	scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
-	std::string name = scanner.getText();
+	auto id = scanner.getID();
 
 	// create a new block scope to handle error variable
 	pushBlockScope(bytecode);
 
 	// declare error variable whose value is already on stack (courtesy of the VM)
-	declareVariable(name, true);
+	declareVariable(id, true);
 	scanner.advance();
 
 	// compile "catch" block

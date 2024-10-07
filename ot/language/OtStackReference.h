@@ -29,23 +29,26 @@ class OtStackReferenceClass : public OtReferenceClass {
 public:
 	// constructors
 	OtStackReferenceClass() = default;
-	OtStackReferenceClass(const std::string& n, size_t s) : name(n), slot(s) {}
+	OtStackReferenceClass(size_t i, size_t s) : id(i), slot(s) {}
 
 	// debugging support
-	std::string describe() override { return name + " (slot " + std::to_string(slot) + ")"; }
+	inline std::string describe() override {
+		std::string name(OtIdentifier::name(id));
+		return name + " (slot " + std::to_string(slot) + ")";
+	}
 
 	// (de)reference functions
 	OtObject deref();
 	OtObject assign(OtObject value);
 
 	// access members
-	std::string& getName() { return name; }
-	size_t getSlot() { return slot; }
+	inline size_t getID() { return id; }
+	inline size_t getSlot() { return slot; }
 
 	// get type definition
 	static OtType getMeta();
 
 private:
-	std::string name;
+	size_t id;
 	size_t slot;
 };

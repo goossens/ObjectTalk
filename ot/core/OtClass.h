@@ -15,6 +15,7 @@
 #include <string>
 
 #include "OtInternal.h"
+#include "OtType.h"
 
 
 //
@@ -26,34 +27,34 @@ public:
 	// constructors
 	OtClassClass() = default;
 	OtClassClass(OtType t) : classType(t) {}
-	OtClassClass(const std::string& name);
+	OtClassClass(size_t id) { classType = OtType::create(id); }
 
 	// debugging support
-	std::string describe() override { return classType->getName(); }
+	inline std::string describe() override { return classType->getName(); }
 
 	// access member information
 	void setParent(OtObject parent);
-	std::string getName() { return classType->getName(); }
-	bool hasParent() { return classType->getParent(); }
-	OtObject getParent() { return OtClass::create(classType->getParent()); }
+	inline std::string getName() { return classType->getName(); }
+	inline bool hasParent() { return classType->getParent(); }
+	inline OtObject getParent() { return OtClass::create(classType->getParent()); }
 
 	// create a new class instance
 	OtObject instantiate(size_t count, OtObject* parameters);
 
 	// see if class is kind of
-	bool isKindOf(const std::string& className) { return classType->isKindOf(className); }
+	inline bool isKindOf(const std::string& className) { return classType->isKindOf(className); }
 
 	// special member acccess (so we can manipulate metaclass members via class)
-	bool has(size_t id) override;
-	OtObject& get(size_t id) override;
-	OtObject set(size_t id, OtObject value) override { return classType->set(id, value); }
-	void unset(size_t id) override { return classType->unset(id); }
+	inline bool has(size_t id) override { return OtInternalClass::has(id) ? true : classType->has(id); }
+	inline OtObject& get(size_t id) override { return OtInternalClass::has(id) ? OtInternalClass::get(id) : classType->get(id); }
+	inline OtObject set(size_t id, OtObject value) override { return classType->set(id, value); }
+	inline void unset(size_t id) override { return classType->unset(id); }
 
 	// special superclass member access
 	OtObject getSuper(size_t id);
 
 	// get the classes type
-	OtType getClassType() { return classType; }
+	inline OtType getClassType() { return classType; }
 
 	// get type definition
 	static OtType getMeta();

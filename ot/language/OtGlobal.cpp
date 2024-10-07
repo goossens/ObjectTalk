@@ -182,22 +182,17 @@ void OtGlobalClass::print(size_t count, OtObject* parameters) {
 
 OtObject OtGlobalClass::members(OtObject object) {
 	OtArray array = OtArray::create();
-	std::vector<std::string_view> names;
 
 	// special treatment for class objects
 	if (object->isKindOf("Class")) {
-		OtClass(object)->getClassType()->getMemberNames(names);
-
-		for (auto& name : names) {
-			array->append(OtString::create(name));
-		}
+		OtClass(object)->getClassType()->eachMemberID([&](size_t id) {
+			array->append(OtString::create(OtIdentifier::name(id)));
+		});
 
 	} else if (object->hasMembers()) {
-		object->getMemberNames(names);
-
-		for (auto& name : names) {
-			array->append(OtString::create(name));
-		}
+		object->eachMemberID([&](size_t id) {
+			array->append(OtString::create(OtIdentifier::name(id)));
+		});
 	}
 
 	// return results

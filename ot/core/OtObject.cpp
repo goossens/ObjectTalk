@@ -12,6 +12,7 @@
 #include "OtException.h"
 #include "OtClass.h"
 #include "OtFunction.h"
+#include "OtIdentifier.h"
 #include "OtObject.h"
 
 
@@ -82,7 +83,7 @@ OtObject& OtObjectClass::get(size_t id) {
 	}
 
 	auto name = OtIdentifier::name(id);
-	OtError("Unknown member [{}] in instance of class [{}]", name, type->getName());
+	OtError("Unknown member [{}] in instance of class [{}]", name, OtIdentifier::name(type->getID()));
 
 	// we will never get here because of the exception but a return statement keeps the compiler happy
 	return members->get(id);
@@ -99,7 +100,7 @@ void OtObjectClass::unset(size_t id) {
 
 	} else {
 		auto name = OtIdentifier::name(id);
-		OtError("Unknown member [%.*s] in instance of class [{}]", name.size(), name.data(), type->getName());
+		OtError("Unknown member [%.*s] in instance of class [{}]", name.size(), name.data(), OtIdentifier::name(type->getID()));
 	}
 }
 
@@ -112,20 +113,6 @@ void OtObjectClass::unsetAll() {
 	if (members) {
 		delete members;
 		members = nullptr;
-	}
-}
-
-
-//
-//	OtObjectClass::getMemberNames
-//
-
-void OtObjectClass::getMemberNames(std::vector<std::string_view>& names) {
-	if (members) {
-		members->getMemberNames(names);
-
-	} else {
-		names.clear();
 	}
 }
 
@@ -168,7 +155,7 @@ void OtObjectClass::expectKindOf(const std::string& className) {
 		OtError("Expected {} [{}] instance, not a [{}]",
 			isvowel(className[0]) ? "an" : "a",
 			className.c_str(),
-			getType()->getName().c_str());
+			OtIdentifier::name(getType()->getID()));
 	}
 }
 

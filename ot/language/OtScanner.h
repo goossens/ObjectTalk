@@ -19,6 +19,7 @@
 #include <vector>
 
 #include "OtException.h"
+#include "OtIdentifier.h"
 #include "OtSource.h"
 
 
@@ -122,14 +123,15 @@ public:
 	OtToken advance();
 
 	// get current token information
-	OtToken getToken() { return token; }
-	bool matchToken(OtToken _token) { return token == _token; }
-	size_t getTokenStart() { return tokenStart; }
-	size_t getLastTokenEnd() { return lastTokenEnd; }
-	std::string getText() { return source->substr(tokenStart, position - tokenStart); }
-	int64_t getInteger() { return integerValue; }
-	double getReal() { return realValue; }
-	std::string getString() { return stringValue; }
+	inline OtToken getToken() { return token; }
+	inline bool matchToken(OtToken _token) { return token == _token; }
+	inline size_t getTokenStart() { return tokenStart; }
+	inline size_t getLastTokenEnd() { return lastTokenEnd; }
+	inline std::string getText() { return source->substr(tokenStart, position - tokenStart); }
+	inline int64_t getInteger() { return integerValue; }
+	inline double getReal() { return realValue; }
+	inline std::string getString() { return stringValue; }
+	inline size_t getID() { return OtIdentifier::create(getText()); }
 
 	// throw an exection
 	void error(std::string message);

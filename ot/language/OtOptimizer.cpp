@@ -135,7 +135,7 @@ bool OtOptimizer::optimizePushMemberReferenceSequence(size_t& opcode, size_t ava
 //
 
 bool OtOptimizer::optimizePushMemberSequence(size_t& opcode, size_t available) {
-	size_t member;
+	OtID member;
 
 	if (available >= 2 &&
 		oldByteCode->isMember(opcodes[opcode], member) &&

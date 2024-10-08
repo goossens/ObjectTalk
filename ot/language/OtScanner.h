@@ -131,7 +131,7 @@ public:
 	inline int64_t getInteger() { return integerValue; }
 	inline double getReal() { return realValue; }
 	inline std::string getString() { return stringValue; }
-	inline size_t getID() { return OtIdentifier::create(getText()); }
+	inline OtID getID() { return OtIdentifier::create(getText()); }
 
 	// throw an exection
 	void error(std::string message);

@@ -27,7 +27,7 @@ public:
 	// constructors
 	OtClassClass() = default;
 	OtClassClass(OtType t) : classType(t) {}
-	OtClassClass(size_t id) { classType = OtType::create(id); }
+	OtClassClass(OtID id) { classType = OtType::create(id); }
 
 	// debugging support
 	inline std::string describe() override { return classType->getName(); }
@@ -45,13 +45,13 @@ public:
 	inline bool isKindOf(const std::string& className) { return classType->isKindOf(className); }
 
 	// special member acccess (so we can manipulate metaclass members via class)
-	inline bool has(size_t id) override { return OtInternalClass::has(id) ? true : classType->has(id); }
-	inline OtObject& get(size_t id) override { return OtInternalClass::has(id) ? OtInternalClass::get(id) : classType->get(id); }
-	inline OtObject set(size_t id, OtObject value) override { return classType->set(id, value); }
-	inline void unset(size_t id) override { return classType->unset(id); }
+	inline bool has(OtID id) override { return OtInternalClass::has(id) ? true : classType->has(id); }
+	inline OtObject& get(OtID id) override { return OtInternalClass::has(id) ? OtInternalClass::get(id) : classType->get(id); }
+	inline OtObject set(OtID id, OtObject value) override { return classType->set(id, value); }
+	inline void unset(OtID id) override { return classType->unset(id); }
 
 	// special superclass member access
-	OtObject getSuper(size_t id);
+	OtObject getSuper(OtID id);
 
 	// get the classes type
 	inline OtType getClassType() { return classType; }

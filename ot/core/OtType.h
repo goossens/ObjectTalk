@@ -50,10 +50,10 @@ public:
 	static OtType create(const std::string& name, OtType parent=nullptr, OtTypeAllocator allocator=nullptr);
 
 	template <class T>
-	static OtType create(size_t id, OtType parent=nullptr, OtTypeAllocator allocator=nullptr);
+	static OtType create(OtID id, OtType parent=nullptr, OtTypeAllocator allocator=nullptr);
 
 	// create an incomplete type (parent must be set later)
-	static OtType create(size_t id);
+	static OtType create(OtID id);
 
 private:
 	OtTypeClass* type;
@@ -71,7 +71,7 @@ using OtObject = OtObjectPointer<OtObjectClass>;
 class OtTypeClass {
 public:
 	// constructor
-	OtTypeClass(size_t id, OtType p={}, OtTypeAllocator a=nullptr);
+	OtTypeClass(OtID id, OtType p={}, OtTypeAllocator a=nullptr);
 
 	// allocate a new instance
 	OtObject allocate();
@@ -80,28 +80,28 @@ public:
 	void setParent(OtType p);
 
 	// see if type is kind of
-	bool isKindOf(size_t id);
+	bool isKindOf(OtID id);
 	bool isKindOf(const std::string& name);
 
 	// get information
-	inline size_t getID() { return id; }
+	inline OtID getID() { return id; }
 	inline OtType getParent() { return parent; }
 	inline std::string getName() { return std::string(OtIdentifier::name(id)); }
 
 	// member access
-	inline bool has(size_t id) { return members.has(id) != 0; }
-	OtObject set(size_t id, OtObject value);
+	inline bool has(OtID id) { return members.has(id) != 0; }
+	OtObject set(OtID id, OtObject value);
 	OtObject set(const char* name, OtObject value);
-	inline OtObject& get(size_t id) { return members.get(id); }
-	inline void unset(size_t id) { members.unset(id); }
+	inline OtObject& get(OtID id) { return members.get(id); }
+	inline void unset(OtID id) { members.unset(id); }
 
 	// iterate through the members
-	inline void eachMember(std::function<void(size_t, OtObject object)> callback) { members.each(callback); }
-	inline void eachMemberID(std::function<void(size_t)> callback) { members.eachID(callback); }
+	inline void eachMember(std::function<void(OtID, OtObject object)> callback) { members.each(callback); }
+	inline void eachMemberID(std::function<void(OtID)> callback) { members.eachID(callback); }
 
 private:
 	// attributes
-	size_t id;
+	OtID id;
 	OtType parent;
 	OtMembers members;
 	OtTypeAllocator allocator;
@@ -118,7 +118,7 @@ OtType OtType::create(const std::string& name, OtType parent, OtTypeAllocator al
 }
 
 template <class T>
-OtType OtType::create(size_t id, OtType parent, OtTypeAllocator allocator) {
+OtType OtType::create(OtID id, OtType parent, OtTypeAllocator allocator) {
 	if (!allocator) {
 		allocator = []() {
 			return (OtObject) OtObjectPointer<T>::create();
@@ -128,6 +128,6 @@ OtType OtType::create(size_t id, OtType parent, OtTypeAllocator allocator) {
 	return OtType(&types.emplace_back(id, parent, allocator));
 }
 
-inline OtType OtType::create(size_t id) {
+inline OtType OtType::create(OtID id) {
 	return OtType(&types.emplace_back(id));
 }

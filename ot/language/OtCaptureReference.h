@@ -27,7 +27,7 @@ class OtCaptureReferenceClass : public OtReferenceClass {
 public:
 	// constructors
 	OtCaptureReferenceClass() = default;
-	OtCaptureReferenceClass(size_t m) :  member(m) {}
+	OtCaptureReferenceClass(OtID m) :  member(m) {}
 
 	// debugging support
 	std::string describe() override { return std::string(OtIdentifier::name(member)); }
@@ -40,5 +40,5 @@ public:
 	static OtType getMeta();
 
 private:
-	size_t member;
+	OtID member;
 };

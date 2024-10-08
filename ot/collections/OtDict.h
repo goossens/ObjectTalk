@@ -35,7 +35,7 @@ public:
 	operator std::string() override;
 
 	// debugging support
-	std::string describe() override { return std::to_string(dict.size()) + " entries"; }
+	inline std::string describe() override { return std::to_string(dict.size()) + " entries"; }
 
 	// initializer
 	void init(size_t count, OtObject* parameters);
@@ -54,10 +54,10 @@ public:
 	OtObject add(OtObject value);
 
 	// does dictionary contains specified object
-	bool contains(const std::string& name) { return dict.find(name) != dict.end(); }
+	inline bool contains(const std::string& name) { return dict.find(name) != dict.end(); }
 
 	// get dictionary size
-	size_t size() { return dict.size(); }
+	inline size_t size() { return dict.size(); }
 
 	// return dictionary clone
 	OtObject clone();
@@ -66,7 +66,7 @@ public:
 	OtObject merge(OtObject object);
 
 	// remove all dictionary entries
-	void clear() { dict.clear(); }
+	inline void clear() { dict.clear(); }
 
 	// remove dictionary entry
 	void eraseEntry(const std::string& name);

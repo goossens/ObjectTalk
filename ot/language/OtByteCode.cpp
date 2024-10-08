@@ -86,18 +86,18 @@ std::string OtByteCodeClass::disassemble() {
 				break;
 
 			case memberOpcode:
-				buffer << "member" << OtIdentifier::name(getNumber(pc));
+				buffer << "member" << OtIdentifier::name(getID(pc));
 				break;
 
 			case methodOpcode: {
-				auto method = getNumber(pc);
+				auto method = getID(pc);
 				auto count =getNumber(pc);
 				buffer << "method" << OtIdentifier::name(method) << "(" << count << ")";
 				break;
 			}
 
 			case superOpcode:
-				buffer << "super" << OtIdentifier::name(getNumber(pc));
+				buffer << "super" << OtIdentifier::name(getID(pc));
 				break;
 
 			case exitOpcode:
@@ -121,11 +121,11 @@ std::string OtByteCodeClass::disassemble() {
 				break;
 
 			case pushObjectMemberOpcode:
-				buffer << "pushObjectMember" << OtObjectDescribe(constants[getNumber(pc)]) << " " << OtIdentifier::name(getNumber(pc));
+				buffer << "pushObjectMember" << OtObjectDescribe(constants[getNumber(pc)]) << " " << OtIdentifier::name(getID(pc));
 				break;
 
 			case pushMemberOpcode:
-				buffer << "pushMember" << OtIdentifier::name(getNumber(pc));
+				buffer << "pushMember" << OtIdentifier::name(getID(pc));
 				break;
 
 			case assignStackOpcode:
@@ -133,7 +133,7 @@ std::string OtByteCodeClass::disassemble() {
 				break;
 
 			case assignMemberOpcode:
-				buffer << "assignMember" << OtObjectDescribe(constants[getNumber(pc)]) << " " << OtIdentifier::name(getNumber(pc));
+				buffer << "assignMember" << OtObjectDescribe(constants[getNumber(pc)]) << " " << OtIdentifier::name(getID(pc));
 				break;
 		}
 
@@ -195,15 +195,15 @@ void OtByteCodeClass::copyOpcode(OtByteCode other, size_t pc) {
 			break;
 
 		case memberOpcode:
-			member(other->getNumber(pc));
+			member(other->getID(pc));
 			break;
 
 		case superOpcode:
-			super(other->getNumber(pc));
+			super(other->getID(pc));
 			break;
 
 		case methodOpcode: {
-			auto id = other->getNumber(pc);
+			auto id = other->getID(pc);
 			auto count = other->getNumber(pc);
 			method(id, count);
 			break;
@@ -231,13 +231,13 @@ void OtByteCodeClass::copyOpcode(OtByteCode other, size_t pc) {
 
 		case pushObjectMemberOpcode: {
 			auto object = other->getNumber(pc);
-			auto member = other->getNumber(pc);
+			auto member = other->getID(pc);
 			pushObjectMember(other->constants[object], member);
 			break;
 		}
 
 		case pushMemberOpcode: {
-			auto member = other->getNumber(pc);
+			auto member = other->getID(pc);
 			pushMember(member);
 			break;
 		}
@@ -248,7 +248,7 @@ void OtByteCodeClass::copyOpcode(OtByteCode other, size_t pc) {
 
 		case assignMemberOpcode: {
 			auto object = other->getNumber(pc);
-			auto member = other->getNumber(pc);
+			auto member = other->getID(pc);
 			assignMember(other->constants[object], member);
 			break;
 		}
@@ -429,9 +429,9 @@ bool OtByteCodeClass::isSwap(size_t pc) {
 //	OtByteCodeClass::isMember
 //
 
-bool OtByteCodeClass::isMember(size_t pc, size_t& member) {
+bool OtByteCodeClass::isMember(size_t pc, OtID& member) {
 	if (getOpcode(pc) == memberOpcode) {
-		member = getNumber(pc);
+		member = getID(pc);
 		return true;
 
 	} else {
@@ -446,7 +446,7 @@ bool OtByteCodeClass::isMember(size_t pc, size_t& member) {
 
 bool OtByteCodeClass::isMethodDeref(size_t pc) {
 	if (getOpcode(pc) == methodOpcode) {
-		return  getNumber(pc) == OtIdentifier::create("__deref__");
+		return  getNumber(pc) == dereferenceID;
 
 	} else {
 		return false;
@@ -460,7 +460,7 @@ bool OtByteCodeClass::isMethodDeref(size_t pc) {
 
 bool OtByteCodeClass::isMethodAssign(size_t pc) {
 	if (getOpcode(pc) == methodOpcode) {
-		return  getNumber(pc) == OtIdentifier::create("__assign__");
+		return  getNumber(pc) == assignID;
 
 	} else {
 		return false;

@@ -36,7 +36,7 @@ public:
 	operator std::string() override;
 
 	// debugging support
-	std::string describe() override { return std::to_string(set.size()) + " entries"; }
+	inline std::string describe() override { return std::to_string(set.size()) + " entries"; }
 
 	// clear array and add all parameters
 	void init(size_t count, OtObject* parameters);
@@ -51,7 +51,7 @@ public:
 	OtObject subtract(OtObject object);
 
 	// return number of set members
-	size_t size() { return set.size(); }
+	inline size_t size() { return set.size(); }
 
 	// see if object is in set
 	bool contains(OtObject object);
@@ -63,7 +63,7 @@ public:
 	OtObject merge(OtObject object);
 
 	// empty a set
-	void clear() { set.clear(); }
+	inline void clear() { set.clear(); }
 
 	// insert a new member in the set
 	void insert(OtObject object);

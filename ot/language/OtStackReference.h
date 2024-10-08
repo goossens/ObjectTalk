@@ -29,7 +29,7 @@ class OtStackReferenceClass : public OtReferenceClass {
 public:
 	// constructors
 	OtStackReferenceClass() = default;
-	OtStackReferenceClass(size_t i, size_t s) : id(i), slot(s) {}
+	OtStackReferenceClass(OtID i, size_t s) : id(i), slot(s) {}
 
 	// debugging support
 	inline std::string describe() override {
@@ -42,13 +42,13 @@ public:
 	OtObject assign(OtObject value);
 
 	// access members
-	inline size_t getID() { return id; }
+	inline OtID getID() { return id; }
 	inline size_t getSlot() { return slot; }
 
 	// get type definition
 	static OtType getMeta();
 
 private:
-	size_t id;
+	OtID id;
 	size_t slot;
 };

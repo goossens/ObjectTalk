@@ -29,13 +29,13 @@ public:
 	OtBooleanClass(bool boolean) : value(boolean) {}
 
 	// conversions
-	operator bool() override { return value; }
-	operator int() override { return value ? 1 : 0; }
-	operator int64_t() override { return value ? 1 : 0; }
-	operator size_t() override { return value ? 1 : 0; }
-	operator float() override { return value ? 1.0 : 0.0; }
-	operator double() override { return value ? 1.0 : 0.0; }
-	operator std::string() override { return value ? "true" : "false"; }
+	inline operator bool() override { return value; }
+	inline operator int() override { return value ? 1 : 0; }
+	inline operator int64_t() override { return value ? 1 : 0; }
+	inline operator size_t() override { return value ? 1 : 0; }
+	inline operator float() override { return value ? 1.0 : 0.0; }
+	inline operator double() override { return value ? 1.0 : 0.0; }
+	inline operator std::string() override { return value ? "true" : "false"; }
 
 	std::string describe() override { return operator std::string(); }
 

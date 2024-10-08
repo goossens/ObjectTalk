@@ -36,20 +36,20 @@ using OtObject = OtObjectPointer<OtObjectClass>;
 class OtMembers {
 public:
 	// access the members
-	inline bool has(size_t id) { return members.count(id); }
-	inline OtObject& get(size_t id) { return members[id]; }
-	inline void set(size_t id, OtObject member) { members[id] = member; }
-	inline void unset(size_t id) { members.erase(id); }
+	inline bool has(OtID id) { return members.count(id); }
+	inline OtObject& get(OtID id) { return members[id]; }
+	inline void set(OtID id, OtObject member) { members[id] = member; }
+	inline void unset(OtID id) { members.erase(id); }
 	inline void unsetAll() { members.clear(); }
 
 	// iterate through the members
-	inline void each(std::function<void(size_t, OtObject object)> callback) {
+	inline void each(std::function<void(OtID, OtObject object)> callback) {
 		for (auto i : members) {
 			callback(i.first, i.second);
 		}
 	}
 
-	inline void eachID(std::function<void(size_t)> callback) {
+	inline void eachID(std::function<void(OtID)> callback) {
 		for (auto i : members) {
 			callback(i.first);
 		}
@@ -57,5 +57,5 @@ public:
 
 private:
 	// the actual members
-	std::unordered_map<size_t, OtObject> members;
+	std::unordered_map<OtID, OtObject> members;
 };

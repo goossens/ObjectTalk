@@ -38,7 +38,7 @@ std::string OtObjectClass::describe() {
 //	OtObjectClass::has
 //
 
-bool OtObjectClass::has(size_t id) {
+bool OtObjectClass::has(OtID id) {
 	if (members && members->has(id)) {
 		return true;
 	}
@@ -57,7 +57,7 @@ bool OtObjectClass::has(size_t id) {
 //	OtObjectClass::set
 //
 
-OtObject OtObjectClass::set(size_t id, OtObject value) {
+OtObject OtObjectClass::set(OtID id, OtObject value) {
 	if (!members) {
 		members = new OtMembers;
 	}
@@ -71,7 +71,7 @@ OtObject OtObjectClass::set(size_t id, OtObject value) {
 //	OtObjectClass::get
 //
 
-OtObject& OtObjectClass::get(size_t id) {
+OtObject& OtObjectClass::get(OtID id) {
 	if (members && members->has(id)) {
 		return members->get(id);
 	}
@@ -94,7 +94,7 @@ OtObject& OtObjectClass::get(size_t id) {
 //	OtObjectClass::unset
 //
 
-void OtObjectClass::unset(size_t id) {
+void OtObjectClass::unset(OtID id) {
 	if (members && members->has(id)) {
 		members->unset(id);
 

@@ -80,7 +80,7 @@ public:
 
 	// constructors
 	OtByteCodeClass() = default;
-	OtByteCodeClass(OtSource s, size_t i) : source(s), id(i) {}
+	OtByteCodeClass(OtSource s, OtID i) : source(s), id(i) {}
 
 	// add compiler opcodes
 	inline void statement() { emitOpcode(statementOpcode); }
@@ -94,9 +94,9 @@ public:
 	inline size_t jump(size_t offset) { emitOpcode(jumpOpcode); return emitJump(offset); }
 	inline size_t jumpTrue(size_t offset) { emitOpcode(jumpTrueOpcode); return emitJump(offset); }
 	inline size_t jumpFalse(size_t offset) { emitOpcode(jumpFalseOpcode); return emitJump(offset); }
-	inline void member(size_t id) { emitOpcode(memberOpcode); emitNumber(id); }
-	inline void method(size_t id, size_t count) { emitOpcode(methodOpcode); emitNumber(id); emitNumber(count); }
-	inline void super(size_t id) { emitOpcode(superOpcode); emitNumber(id); }
+	inline void member(OtID id) { emitOpcode(memberOpcode); emitID(id); }
+	inline void method(OtID id, size_t count) { emitOpcode(methodOpcode); emitID(id); emitNumber(count); }
+	inline void super(OtID id) { emitOpcode(superOpcode); emitID(id); }
 	inline void exit() { emitOpcode(exitOpcode); }
 	inline void reserve() { emitOpcode(reserveOpcode); }
 	inline size_t pushTry() { emitOpcode(pushTryOpcode); return emitJump(0); }
@@ -108,10 +108,10 @@ public:
 
 	// add optimizer opcodes
 	inline void pushStack(size_t slot) { emitOpcode(pushStackOpcode); emitNumber(slot); }
-	inline void pushObjectMember(OtObject object, size_t member) { emitOpcode(pushObjectMemberOpcode); emitConstant(object); emitNumber(member); }
-	inline void pushMember(const size_t member) { emitOpcode(pushMemberOpcode); emitNumber(member); }
+	inline void pushObjectMember(OtObject object, OtID member) { emitOpcode(pushObjectMemberOpcode); emitConstant(object); emitID(member); }
+	inline void pushMember(OtID member) { emitOpcode(pushMemberOpcode); emitID(member); }
 	inline void assignStack(size_t slot) { emitOpcode(assignStackOpcode); emitNumber(slot); }
-	inline void assignMember(OtObject object, size_t member) { emitOpcode(assignMemberOpcode); emitConstant(object); emitNumber(member); }
+	inline void assignMember(OtObject object, OtID member) { emitOpcode(assignMemberOpcode); emitConstant(object); emitID(member); }
 
 	// get current code size
 	inline size_t size() { return bytecode.size(); }
@@ -140,6 +140,9 @@ public:
 		return result;
 	}
 
+	// get an identifier
+	inline OtID getID(size_t& pc) { return (OtID) getNumber(pc); }
+
 	// disassemble the bytecode
 	std::string disassemble();
 
@@ -159,7 +162,7 @@ public:
 	// get code parts
 	inline std::string getModule() { return source->getModule(); }
 	inline OtSource& getSource() { return source; }
-	inline size_t getID() { return id; }
+	inline OtID getID() { return id; }
 	inline uint8_t* getCode() { return bytecode.data(); }
 	inline OtObject& getConstant(size_t index) { return constants[index]; }
 	inline std::vector<size_t>& getJumps() { return jumps; }
@@ -174,7 +177,7 @@ public:
 	bool isPushStackReference(size_t pc, OtStackReference& reference);
 	bool isPushMemberReference(size_t pc, OtMemberReference& reference);
 	bool isSwap(size_t pc);
-	bool isMember(size_t pc, size_t& member);
+	bool isMember(size_t pc, OtID& member);
 	bool isMethodDeref(size_t pc);
 	bool isMethodAssign(size_t pc);
 	bool isAnyJump(size_t pc, size_t& offset);
@@ -208,6 +211,8 @@ private:
 		return jump;
 	}
 
+	inline void emitID(OtID id) { emitNumber((size_t) id); }
+
 	inline void emitNumber(size_t number) {
 		while (number > 0x7f) {
 			bytecode.emplace_back(((uint8_t)(number & 0x7f)) | 0x80);
@@ -217,11 +222,16 @@ private:
 		bytecode.emplace_back((uint8_t) number);
 	}
 
+	// properties
 	OtSource source;
-	size_t id;
+	OtID id;
 	std::vector<uint8_t> bytecode;
 	std::vector<OtObject> constants;
 	std::vector<size_t> jumps;
 	std::vector<OtStatement> statements;
 	std::vector<OtSymbol> symbols;
+
+	// internal method identifiers used by compiler
+	OtID assignID = OtIdentifier::create("__assign__");
+	OtID dereferenceID = OtIdentifier::create("__deref__");
 };

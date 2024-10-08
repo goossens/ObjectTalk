@@ -185,12 +185,12 @@ OtObject OtGlobalClass::members(OtObject object) {
 
 	// special treatment for class objects
 	if (object->isKindOf("Class")) {
-		OtClass(object)->getClassType()->eachMemberID([&](size_t id) {
+		OtClass(object)->getClassType()->eachMemberID([&](OtID id) {
 			array->append(OtString::create(OtIdentifier::name(id)));
 		});
 
 	} else if (object->hasMembers()) {
-		object->eachMemberID([&](size_t id) {
+		object->eachMemberID([&](OtID id) {
 			array->append(OtString::create(OtIdentifier::name(id)));
 		});
 	}

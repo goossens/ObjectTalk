@@ -25,7 +25,7 @@ std::list<OtTypeClass> OtType::types;
 //	OtTypeClass::OtTypeClass
 //
 
-OtTypeClass::OtTypeClass(size_t i, OtType p, OtTypeAllocator a) {
+OtTypeClass::OtTypeClass(OtID i, OtType p, OtTypeAllocator a) {
 	id = i;
 	parent = p;
 	allocator = a ? a : p ? p->allocator : nullptr;
@@ -58,7 +58,7 @@ void OtTypeClass::setParent(OtType p) {
 //	OtTypeClass::isKindOf
 //
 
-bool OtTypeClass::isKindOf(size_t otherID) {
+bool OtTypeClass::isKindOf(OtID otherID) {
 	for (auto p = this; p; p = p->parent.raw()) {
 		if (p->id == otherID) {
 			return true;
@@ -77,7 +77,7 @@ bool OtTypeClass::isKindOf(const std::string& name) {
 //	OtTypeClass::set
 //
 
-OtObject OtTypeClass::set(size_t id, OtObject value) {
+OtObject OtTypeClass::set(OtID id, OtObject value) {
 	members.set(id, value);
 	return value;
 }

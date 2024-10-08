@@ -53,41 +53,41 @@ public:
 	void expectKindOf(const std::string& className);
 
 	// default conversion operators
-	virtual operator bool() { return false; }
-	virtual operator int() { return 0; }
-	virtual operator int64_t() { return 0; }
-	virtual operator size_t() { return 0; }
-	virtual operator float() { return 0.0f; }
-	virtual operator double() { return 0.0; }
-	virtual operator std::string() { return ""; }
-	virtual operator OtObject() { return OtObject(this); }
+	virtual inline operator bool() { return false; }
+	virtual inline operator int() { return 0; }
+	virtual inline operator int64_t() { return 0; }
+	virtual inline operator size_t() { return 0; }
+	virtual inline operator float() { return 0.0f; }
+	virtual inline operator double() { return 0.0; }
+	virtual inline operator std::string() { return ""; }
+	virtual inline operator OtObject() { return OtObject(this); }
 
 	// get object's JSON representation
-	virtual std::string json() { return operator std::string(); }
+	virtual inline std::string json() { return operator std::string(); }
 
 	// describe object for debugging purposes
 	virtual std::string describe();
 
 	// member acccess
-	virtual bool has(size_t id);
-	virtual OtObject set(size_t id, OtObject value);
-	virtual OtObject set(const char* name, OtObject value) { return set(OtIdentifier::create(name), value); }
-	virtual OtObject set(const std::string& name, OtObject value) { return set(OtIdentifier::create(name), value); }
-	virtual OtObject& get(size_t id);
-	virtual void unset(size_t id);
+	virtual bool has(OtID id);
+	virtual OtObject set(OtID id, OtObject value);
+	virtual inline OtObject set(const char* name, OtObject value) { return set(OtIdentifier::create(name), value); }
+	virtual inline OtObject set(const std::string& name, OtObject value) { return set(OtIdentifier::create(name), value); }
+	virtual OtObject& get(OtID id);
+	virtual void unset(OtID id);
 	virtual void unsetAll();
 
 	// member acccess by name
-	virtual bool hasByName(const std::string& name) { return has(OtIdentifier::create(name)); }
-	virtual OtObject setByName(const std::string& name, OtObject value) { return set(OtIdentifier::create(name), value); }
-	virtual OtObject getByName(const std::string& name) { return get(OtIdentifier::create(name)); }
-	virtual void unsetByName(const std::string& name) { return unset(OtIdentifier::create(name)); }
+	virtual inline bool hasByName(const std::string& name) { return has(OtIdentifier::create(name)); }
+	virtual inline OtObject setByName(const std::string& name, OtObject value) { return set(OtIdentifier::create(name), value); }
+	virtual inline OtObject getByName(const std::string& name) { return get(OtIdentifier::create(name)); }
+	virtual inline void unsetByName(const std::string& name) { return unset(OtIdentifier::create(name)); }
 
 	bool hasMembers() { return members != nullptr; }
 
 	// iterate through the members
-	inline void eachMember(std::function<void(size_t, OtObject object)> callback) { members->each(callback); }
-	inline void eachMemberID(std::function<void(size_t)> callback) { members->eachID(callback); }
+	inline void eachMember(std::function<void(OtID, OtObject object)> callback) { members->each(callback); }
+	inline void eachMemberID(std::function<void(OtID)> callback) { members->eachID(callback); }
 
 	// comparison
 	virtual bool operator==(OtObject operand);

@@ -35,7 +35,7 @@ public:
 	operator std::string() override;
 
 	// debugging support
-	std::string describe() override { return std::to_string(array.size()) + " entries"; }
+	inline std::string describe() override { return std::to_string(array.size()) + " entries"; }
 
 	// clear array and add all parameters
 	void init(size_t count, OtObject* parameters);
@@ -60,7 +60,7 @@ public:
 	bool contains(OtObject object);
 
 	// return number of array members
-	size_t size() { return array.size(); }
+	inline size_t size() { return array.size(); }
 
 	// find an array entry and return index (-1 if not found)
 	int64_t find(OtObject object);

@@ -53,7 +53,7 @@ OtObject OtClassClass::instantiate(size_t count, OtObject* parameters) {
 //	OtClassClass::getSuper
 //
 
- OtObject OtClassClass::getSuper(size_t id) {
+ OtObject OtClassClass::getSuper(OtID id) {
 	for (auto t = classType ? classType->getParent() : classType; t; t = t->getParent()) {
 		if (t->has(id)) {
 			return t->get(id);

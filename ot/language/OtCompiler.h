@@ -49,19 +49,19 @@ private:
 	void popScope();
 
 	// declare a new captured variable
-	void declareCapture(size_t id, OtStackItem item);
+	void declareCapture(OtID id, OtStackItem item);
 
 	// declare a new variable in the current scope
-	void declareVariable(size_t id, bool declareVariable=false);
+	void declareVariable(OtID id, bool declareVariable=false);
 
 	// resolve variable name by pushing a reference to the stack
-	void resolveVariable(size_t id, bool processSymbol=true);
+	void resolveVariable(OtID id, bool processSymbol=true);
 
 	// assign top stack value to named variable
-	void assignVariable(size_t id);
+	void assignVariable(OtID id);
 
 	// compile function
-	void function(OtByteCode bytecode, size_t id);
+	void function(OtByteCode bytecode, OtID id);
 
 	// compile superclass reference
 	void super(OtByteCode bytecode);
@@ -180,10 +180,10 @@ private:
 		OtByteCode bytecode;
 		OtObject object = nullptr;
 		size_t stackFrameOffset = 0;
-		std::unordered_map<size_t, size_t> locals;
-		std::unordered_map<size_t, OtStackItem> captures;
+		std::unordered_map<OtID, size_t> locals;
+		std::unordered_map<OtID, OtStackItem> captures;
 		std::vector<OtSymbol> symbols;
-		std::unordered_map<size_t, size_t> symbolIndex;
+		std::unordered_map<OtID, size_t> symbolIndex;
 	};
 
 	std::vector<Scope> scopeStack;
@@ -195,47 +195,47 @@ private:
 	size_t statementStart;
 
 	// internal method identifiers used by compiler
-	size_t addID = OtIdentifier::create("__add__");
-	size_t anonymousID = OtIdentifier::create("__anonymous__");
-	size_t assignID = OtIdentifier::create("__assign__");
-	size_t bitwiseAndID = OtIdentifier::create("__band__");
-	size_t bitwiseNotID = OtIdentifier::create("__bnot__");
-	size_t bitwiseOrID = OtIdentifier::create("__bor__");
-	size_t bitwiseXorID = OtIdentifier::create("__bxor__");
-	size_t callID = OtIdentifier::create("__call__");
-	size_t captureID = OtIdentifier::create("__capture__");
-	size_t containsID = OtIdentifier::create("__contains__");
-	size_t decrementID = OtIdentifier::create("__dec__");
-	size_t dereferenceID = OtIdentifier::create("__deref__");
-	size_t divideID = OtIdentifier::create("__div__");
-	size_t endID = OtIdentifier::create("__end__");
-	size_t equalID = OtIdentifier::create("__eq__");
-	size_t expressionID = OtIdentifier::create("__expression__");
-	size_t greaterEqualID = OtIdentifier::create("__ge__");
-	size_t greaterThenID = OtIdentifier::create("__gt__");
-	size_t incrementID = OtIdentifier::create("__inc__");
-	size_t indexID = OtIdentifier::create("__index__");
-	size_t initID = OtIdentifier::create("__init__");
-	size_t iteratorID = OtIdentifier::create("__iter__");
-	size_t leftShiftID = OtIdentifier::create("__lshift__");
-	size_t lessEqualID = OtIdentifier::create("__le__");
-	size_t lessThenID = OtIdentifier::create("__lt__");
-	size_t logicalAndID = OtIdentifier::create("__and__");
-	size_t logicalNotID = OtIdentifier::create("__not__");
-	size_t logicalOrID = OtIdentifier::create("__or__");
-	size_t moduloID = OtIdentifier::create("__mod__");
-	size_t multiplyID = OtIdentifier::create("__mul__");
-	size_t negateID = OtIdentifier::create("__neg__");
-	size_t nextID = OtIdentifier::create("__next__");
-	size_t notEqualID = OtIdentifier::create("__ne__");
-	size_t parentID = OtIdentifier::create("__parent__");
-	size_t plusID = OtIdentifier::create("__plus__");
-	size_t powerID = OtIdentifier::create("__power__");
-	size_t rightShiftID = OtIdentifier::create("__rshift__");
-	size_t subtractID = OtIdentifier::create("__sub__");
+	OtID addID = OtIdentifier::create("__add__");
+	OtID anonymousID = OtIdentifier::create("__anonymous__");
+	OtID assignID = OtIdentifier::create("__assign__");
+	OtID bitwiseAndID = OtIdentifier::create("__band__");
+	OtID bitwiseNotID = OtIdentifier::create("__bnot__");
+	OtID bitwiseOrID = OtIdentifier::create("__bor__");
+	OtID bitwiseXorID = OtIdentifier::create("__bxor__");
+	OtID callID = OtIdentifier::create("__call__");
+	OtID captureID = OtIdentifier::create("__capture__");
+	OtID containsID = OtIdentifier::create("__contains__");
+	OtID decrementID = OtIdentifier::create("__dec__");
+	OtID dereferenceID = OtIdentifier::create("__deref__");
+	OtID divideID = OtIdentifier::create("__div__");
+	OtID endID = OtIdentifier::create("__end__");
+	OtID equalID = OtIdentifier::create("__eq__");
+	OtID expressionID = OtIdentifier::create("__expression__");
+	OtID greaterEqualID = OtIdentifier::create("__ge__");
+	OtID greaterThenID = OtIdentifier::create("__gt__");
+	OtID incrementID = OtIdentifier::create("__inc__");
+	OtID indexID = OtIdentifier::create("__index__");
+	OtID initID = OtIdentifier::create("__init__");
+	OtID iteratorID = OtIdentifier::create("__iter__");
+	OtID leftShiftID = OtIdentifier::create("__lshift__");
+	OtID lessEqualID = OtIdentifier::create("__le__");
+	OtID lessThenID = OtIdentifier::create("__lt__");
+	OtID logicalAndID = OtIdentifier::create("__and__");
+	OtID logicalNotID = OtIdentifier::create("__not__");
+	OtID logicalOrID = OtIdentifier::create("__or__");
+	OtID moduloID = OtIdentifier::create("__mod__");
+	OtID multiplyID = OtIdentifier::create("__mul__");
+	OtID negateID = OtIdentifier::create("__neg__");
+	OtID nextID = OtIdentifier::create("__next__");
+	OtID notEqualID = OtIdentifier::create("__ne__");
+	OtID parentID = OtIdentifier::create("__parent__");
+	OtID plusID = OtIdentifier::create("__plus__");
+	OtID powerID = OtIdentifier::create("__power__");
+	OtID rightShiftID = OtIdentifier::create("__rshift__");
+	OtID subtractID = OtIdentifier::create("__sub__");
 
 	// internal method identifiers used by compiler
-	size_t blankID = OtIdentifier::create("");
-	size_t arrayID = OtIdentifier::create("Array");
-	size_t dictID = OtIdentifier::create("Dict");
+	OtID blankID = OtIdentifier::create("");
+	OtID arrayID = OtIdentifier::create("Array");
+	OtID dictID = OtIdentifier::create("Dict");
 };

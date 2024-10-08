@@ -34,7 +34,7 @@ public:
 
 	// call a member function on an object with arguments
 	template<typename... ARGS>
-	OtObject callMemberFunction(OtObject target, size_t member, ARGS... args) {
+	OtObject callMemberFunction(OtObject target, OtID member, ARGS... args) {
 		const size_t count = sizeof...(ARGS) + 1;
 		stack.push(target);
 		(stack.push(args), ...);
@@ -68,7 +68,7 @@ public:
 		return member->operator () (count + 1, sp);
 	}
 
-	inline OtObject redirectMemberFunction(OtObject target, size_t member, size_t count) {
+	inline OtObject redirectMemberFunction(OtObject target, OtID member, size_t count) {
 		auto sp = stack.sp(count + 1);
 		*sp = target;
 		return target->get(member)->operator () (count + 1, sp);

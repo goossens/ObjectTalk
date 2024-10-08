@@ -137,7 +137,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 				case OtByteCodeClass::memberOpcode: {
 					// create an object member reference
 					auto object = stack.pop();
-					auto member = bytecode->getNumber(pc);
+					auto member = bytecode->getID(pc);
 					auto reference = OtMemberReference::create(object, member);
 					stack.push(reference);
 					break;
@@ -146,7 +146,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 				case OtByteCodeClass::superOpcode: {
 					// get a specifed member in a superclass
 					auto cls = OtClass(stack.pop());
-					auto member = bytecode->getNumber(pc);
+					auto member = bytecode->getID(pc);
 					auto result = cls->getSuper(member);
 					stack.push(result);
 					break;
@@ -155,7 +155,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 				case OtByteCodeClass::methodOpcode: {
 					// call a method on a specified object
 					// get method and number of calling parameters
-					auto method = bytecode->getNumber(pc);
+					auto method = bytecode->getID(pc);
 					auto count = bytecode->getNumber(pc);
 
 					// get a pointer to the calling parameters and target object
@@ -208,7 +208,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 				case OtByteCodeClass::pushObjectMemberOpcode: {
 					// push a constant object member onto the stack
 					auto object = bytecode->getConstant(bytecode->getNumber(pc));
-					auto member = bytecode->getNumber(pc);
+					auto member = bytecode->getID(pc);
 					auto resolvedMember = OtMemberReferenceClass::resolveMember(object, member);
 					stack.push(resolvedMember);
 					break;
@@ -216,7 +216,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 				case OtByteCodeClass::pushMemberOpcode: {
 					// push a heap-based object member onto the stack
 					auto object = stack.pop();
-					auto member = bytecode->getNumber(pc);
+					auto member = bytecode->getID(pc);
 					auto resolvedMember = OtMemberReferenceClass::resolveMember(object, member);
 					stack.push(resolvedMember);
 					break;
@@ -233,7 +233,7 @@ OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
 				case OtByteCodeClass::assignMemberOpcode: {
 					// put the top stack object into a heap-based object member
 					auto object = bytecode->getConstant(bytecode->getNumber(pc));
-					auto member = bytecode->getNumber(pc);
+					auto member = bytecode->getID(pc);
 					auto value = stack.back();
 					object->set(member, value);
 					break;

@@ -16,9 +16,9 @@
 #include "OtByteCodeFunction.h"
 #include "OtFunction.h"
 #include "OtGlobal.h"
+#include "OtIdentifier.h"
 #include "OtModule.h"
 #include "OtReference.h"
-#include "OtIdentifier.h"
 
 
 //
@@ -32,7 +32,7 @@ class OtMemberReferenceClass : public OtReferenceClass {
 public:
 	// constructors
 	OtMemberReferenceClass() = default;
-	OtMemberReferenceClass(OtObject o, size_t m) : object(o), member(m) {}
+	OtMemberReferenceClass(OtObject o, OtID m) : object(o), member(m) {}
 
 	// debugging support
 	std::string describe() override { return object->getType()->getName() + " " + std::string(OtIdentifier::name(member)); }
@@ -42,7 +42,7 @@ public:
 	OtObject assign(OtObject value) { return object->set(member, value); }
 
 	// resolve member reference and deal with bound functions if required
-	static OtObject resolveMember(OtObject& object, size_t member) {
+	static OtObject resolveMember(OtObject& object, OtID member) {
 		// get the member
 		auto memberObject = object->get(member);
 
@@ -62,12 +62,12 @@ public:
 
 	// access properties
 	OtObject& getObject() { return object; }
-	size_t getMember() { return member; }
+	OtID getMember() { return member; }
 
 	// get type definition
 	static OtType getMeta();
 
 private:
 	OtObject object;
-	size_t member;
+	OtID member;
 };

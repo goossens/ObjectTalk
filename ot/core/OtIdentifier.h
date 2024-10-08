@@ -13,6 +13,7 @@
 //
 
 #include <cstddef>
+#include <cstdint>
 #include <cstring>
 #include <list>
 #include <string>
@@ -24,27 +25,34 @@
 
 
 //
+//	OtID
+//
+
+using OtID = uint64_t;
+
+
+//
 //	OtIdentifier
 //
 
 class OtIdentifier : public OtSingleton<OtIdentifier> {
 public:
 	// get a new id
-	inline size_t get(const char* text) {
+	inline OtID get(const char* text) {
 		return get(std::string_view(text));
 	}
 
-	inline size_t get(const std::string& text) {
+	inline OtID get(const std::string& text) {
 		return get(std::string_view(text));
 	}
 
-	inline size_t get(const std::string_view text) {
+	inline OtID get(const std::string_view text) {
 		// see if this id was already created
 		if (indentifierIndex.count(text)) {
 			return indentifierIndex[text];
 
 		} else {
-			auto id = indentifiers.size();
+			OtID id = (OtID) indentifiers.size();
 			auto name = saveIdentifier(text);
 			indentifiers.emplace_back(name);
 			indentifierIndex[name] = id;
@@ -53,24 +61,24 @@ public:
 	}
 
 	// get the string associated with the id
-	inline const std::string_view get(size_t id) {
+	inline const std::string_view get(OtID id) {
 		return indentifiers[id];
 	}
 
 	// static shortcuts
-	static inline size_t create(const char* text) {
+	static inline OtID create(const char* text) {
 		return instance()->get(text);
 	}
 
-	static inline size_t create(const std::string& text) {
+	static inline OtID create(const std::string& text) {
 		return instance()->get(text);
 	}
 
-	static inline size_t create(const std::string_view text) {
+	static inline OtID create(const std::string_view text) {
 		return instance()->get(text);
 	}
 
-	static inline std::string_view name(size_t id) {
+	static inline std::string_view name(OtID id) {
 		return instance()->get(id);
 	}
 
@@ -111,5 +119,5 @@ private:
 
 	// list of indentifiers already in use
 	std::vector<std::string_view> indentifiers;
-	std::unordered_map<std::string_view, size_t> indentifierIndex;
+	std::unordered_map<std::string_view, OtID> indentifierIndex;
 };

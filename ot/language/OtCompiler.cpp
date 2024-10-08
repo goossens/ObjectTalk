@@ -79,7 +79,7 @@ OtByteCode OtCompiler::compileSource(OtSource src, OtObject object) {
 	OtGlobal global = OtVM::getGlobal();
 	pushObjectScope(nullptr, global);
 
-	global->eachMemberID([this](size_t id) {
+	global->eachMemberID([this](OtID id) {
 		declareVariable(id);
 	});
 
@@ -90,7 +90,7 @@ OtByteCode OtCompiler::compileSource(OtSource src, OtObject object) {
 	if (object) {
 		pushObjectScope(bytecode, object);
 
-		object->eachMemberID([this](size_t id) {
+		object->eachMemberID([this](OtID id) {
 			declareVariable(id);
 		});
 	}
@@ -134,7 +134,7 @@ OtByteCode OtCompiler::compileExpression(OtSource src) {
 	OtGlobal global = OtVM::getGlobal();
 	pushObjectScope(nullptr, global);
 
-	global->eachMemberID([this](size_t id) {
+	global->eachMemberID([this](OtID id) {
 		declareVariable(id);
 	});
 
@@ -228,7 +228,7 @@ void OtCompiler::popScope() {
 //	OtCompiler::declareCapture
 //
 
-void OtCompiler::declareCapture(size_t id, OtStackItem item) {
+void OtCompiler::declareCapture(OtID id, OtStackItem item) {
 	// find most recent function scope
 	auto scope = scopeStack.rbegin();
 
@@ -258,7 +258,7 @@ void OtCompiler::declareCapture(size_t id, OtStackItem item) {
 //	OtCompiler::declareVariable
 //
 
-void OtCompiler::declareVariable(size_t id, bool alreadyOnStack) {
+void OtCompiler::declareVariable(OtID id, bool alreadyOnStack) {
 	// get current scope
 	auto& scope = scopeStack.back();
 	auto offset = scope.bytecode ? scope.bytecode->size() : 0;
@@ -304,7 +304,7 @@ void OtCompiler::declareVariable(size_t id, bool alreadyOnStack) {
 //	OtCompiler::resolveVariable
 //
 
-void OtCompiler::resolveVariable(size_t id, bool processSymbol) {
+void OtCompiler::resolveVariable(OtID id, bool processSymbol) {
 	// try to resolve name
 	bool found = false;
 	size_t functionLevel = 0;
@@ -377,7 +377,7 @@ void OtCompiler::resolveVariable(size_t id, bool processSymbol) {
 //	OtCompiler::assignVariable
 //
 
-void OtCompiler::assignVariable(size_t id) {
+void OtCompiler::assignVariable(OtID id) {
 	resolveVariable(id);
 
 	auto bytecode = scopeStack.back().bytecode;
@@ -391,7 +391,7 @@ void OtCompiler::assignVariable(size_t id) {
 //	OtCompiler::function
 //
 
-void OtCompiler::function(OtByteCode bytecode, size_t id) {
+void OtCompiler::function(OtByteCode bytecode, OtID id) {
 	// each function has its own bytecode
 	OtByteCode functionCode = OtByteCode::create(source, id);
 

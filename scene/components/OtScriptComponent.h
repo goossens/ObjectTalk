@@ -16,6 +16,8 @@
 
 #include "nlohmann/json_fwd.hpp"
 
+#include "OtIdentifier.h"
+
 #include "OtScriptAsset.h"
 
 
@@ -47,8 +49,9 @@ public:
 
 	// runtime properties
 	OtObject instance;
-	size_t createSymbol;
-	size_t updateSymbol;
 	bool hasCreateMethod;
 	bool hasUpdateMethod;
+
+	OtID createSymbol = OtIdentifier::create("create");
+	OtID updateSymbol = OtIdentifier::create("update");
 };

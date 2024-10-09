@@ -29,7 +29,8 @@ public:
 	OtObjectTalkEditor();
 
 	// get editor status
-	bool isDirty() override;
+	inline bool isRunnable() override { return true; }
+	inline bool isDirty() override { return editor.GetUndoIndex() != version; }
 	inline std::string getExtension() override { return ".ot"; }
 
 	// render the parts

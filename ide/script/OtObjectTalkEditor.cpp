@@ -320,15 +320,6 @@ void OtObjectTalkEditor::renderEditor() {
 
 
 //
-//	OtObjectTalkEditor::isDirty
-//
-
-bool OtObjectTalkEditor::isDirty() {
-	return editor.GetUndoIndex() != version;
-}
-
-
-//
 //	OtObjectTalkEditor::highlightError
 //
 

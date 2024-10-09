@@ -113,7 +113,7 @@ void OtEditor::renderFileMenu() {
 		}
 
 		ImGui::Separator();
-		if (ImGui::MenuItem("Run", OT_UI_SHORTCUT "R", nullptr, !isDirty() && OtPathIsRegularFile(path))) { OtMessageBus::instance()->send("run"); }
+		if (ImGui::MenuItem("Run", OT_UI_SHORTCUT "R", nullptr, isRunnable() && !isDirty() && OtPathIsRegularFile(path))) { OtMessageBus::instance()->send("run"); }
 
 		ImGui::Separator();
 		if (ImGui::MenuItem("Close", OT_UI_SHORTCUT "W")) { OtMessageBus::instance()->send("close"); }
@@ -140,7 +140,7 @@ void OtEditor::renderFileMenu() {
 			}
 
 		} else if (ImGui::IsKeyPressed(ImGuiKey_R)) {
-			if (!isDirty() && OtPathIsRegularFile(path)) {
+			if (isRunnable() && !isDirty() && OtPathIsRegularFile(path)) {
 				OtMessageBus::instance()->send("run");
 			}
 

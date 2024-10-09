@@ -285,33 +285,29 @@ void OtWorkspace::openFile() {
 //
 
 void OtWorkspace::openFile(const std::string& path, int visualState) {
-	std::shared_ptr<OtEditor> editor;
+	// don't reopen if it's already open
+	std::shared_ptr<OtEditor> editor = findEditor(path);
 
-	// don't reopen if it is already open
-	if ((editor = findEditor(path)) == nullptr) {
+	if (editor == nullptr) {
 		// get file extension to determine editor type
 		auto extension = OtPathGetExtension(path);
 
 		// open correct editor
-		if (extension == ".ot") {
+		if (extension == ".ot" || extension == ".ots" || extension == ".otn") {
+			if (extension == ".ot") {
 			editor = std::make_shared<OtObjectTalkEditor>();
-			editor->openFile(path);
-			editor->setVisualState(visualState);
-			editors.push_back(editor);
-			state = editState;
 
-		} else if (extension == ".ots") {
-			editor = std::make_shared<OtSceneEditor>();
-			editor->openFile(path);
-			editor->setVisualState(visualState);
-			editors.push_back(editor);
-			state = editState;
+			} else if (extension == ".ots") {
+				editor = std::make_shared<OtSceneEditor>();
 
-		} else if (extension == ".otn") {
-			editor = std::make_shared<OtNodesEditor>();
+			} else if (extension == ".otn") {
+				editor = std::make_shared<OtNodesEditor>();
+			}
+
 			editor->openFile(path);
 			editor->setVisualState(visualState);
 			editors.push_back(editor);
+			activateEditor(editor);
 			state = editState;
 
 		} else {

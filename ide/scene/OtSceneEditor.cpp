@@ -983,15 +983,6 @@ void OtSceneEditor::renderComponent() {
 
 
 //
-//	OtSceneEditor::isDirty
-//
-
-bool OtSceneEditor::isDirty() {
-	return taskManager.isDirty();
-}
-
-
-//
 //	OtSceneEditor::cutEntity
 //
 

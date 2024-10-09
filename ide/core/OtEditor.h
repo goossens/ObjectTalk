@@ -45,14 +45,14 @@ public:
 	virtual inline void renderMenu() {}
 	virtual inline void renderEditor() {}
 
-	// set the editor state
+	// access the editor state
 	inline void setVisualState(int vs) { visualState = vs; }
 	inline bool isRenderedInTab() { return visualState == inTab; }
 	inline bool isRenderedInWindow() { return visualState == inWindow; }
 
-	// get editor status
+	virtual inline bool isRunnable() { return false; }
 	virtual inline bool isDirty() { return false; }
-	virtual std::string getExtension() { return ""; }
+	virtual inline std::string getExtension() { return ""; }
 
 	// handle exception during a "run"
 	virtual inline void error(OtException e) {}

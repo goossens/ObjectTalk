@@ -39,7 +39,8 @@ public:
 	OtSceneEditor();
 
 	// get editor status
-	bool isDirty() override;
+	inline bool isRunnable() override { return true; }
+	inline bool isDirty() override { return taskManager.isDirty(); }
 	inline std::string getExtension() override { return ".ots"; }
 
 	// clipboard operations

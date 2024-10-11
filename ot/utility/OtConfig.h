@@ -19,15 +19,15 @@
 //	OtConfig
 //
 
-class OtConfig : public OtSingleton<OtConfig> {
+class OtConfig : OtSingleton<OtConfig> {
 public:
 	// access debug mode
-	void setDebugMode(bool flag) { debugMode = flag; }
-	bool inDebugMode() { return debugMode; }
+	static inline void setDebugMode(bool flag) { instance().debugMode = flag; }
+	static inline bool inDebugMode() { return instance().debugMode; }
 
 	// access subprocess mode
-	void setSubprocessMode(bool flag) { subprocessMode = flag; }
-	bool inSubprocessMode() { return subprocessMode; }
+	static inline void setSubprocessMode(bool flag) { instance().subprocessMode = flag; }
+	static inline bool inSubprocessMode() { return instance().subprocessMode; }
 
 private:
 	// configuration

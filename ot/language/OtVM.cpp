@@ -37,10 +37,10 @@ public:
 
 
 //
-//	OtVM::execute
+//	OtVM::executeByteCode
 //
 
-OtObject OtVM::execute(OtByteCode bytecode, size_t callingParameters) {
+OtObject OtVM::executeByteCode(OtByteCode bytecode, size_t callingParameters) {
 	// try/catch stack
 	std::vector<OtTryCatch> tryCatch;
 

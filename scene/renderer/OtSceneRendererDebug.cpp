@@ -165,8 +165,6 @@ void OtSceneRendererDebug::renderOclussion(OtSceneRenderer& renderer) {
 
 void OtSceneRendererDebug::renderAssets(OtSceneRenderer& renderer) {
 	if (ImGui::CollapsingHeader("Asset Manager")) {
-		auto manager = OtAssetManager::instance();
-
 		ImGuiTableFlags flags =
 			ImGuiTableFlags_Borders |
 			ImGuiTableFlags_Sortable |
@@ -179,7 +177,7 @@ void OtSceneRendererDebug::renderAssets(OtSceneRenderer& renderer) {
 			ImGui::TableSetupColumn("Refs", 0, 1.0f);
 			ImGui::TableHeadersRow();
 
-			manager->each([](OtAssetBase* asset) {
+			OtAssetManager::each([](OtAssetBase* asset) {
 				auto path = asset->getPath();
 				auto name = OtPathGetFilename(path);
 

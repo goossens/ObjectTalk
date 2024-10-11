@@ -171,7 +171,7 @@ void OtNodes::save(const std::string& path) {
 
 OtNode OtNodes::createNode(const std::string& name, float x, float y) {
 	// create a new node
-	auto node = OtNodesFactory::instance()->createNode(name);
+	auto node = OtNodesFactory::createNode(name);
 	nodes.emplace_back(node);
 	needsSorting = true;
 
@@ -550,7 +550,7 @@ std::string OtNodes::archiveNodes(const std::vector<uint32_t>& selection) {
 
 OtNode OtNodes::restoreNode(nlohmann::json data, bool restoreIDs, std::string* basedir) {
 	// create a new node
-	auto node = OtNodesFactory::instance()->createNode(data["type"]);
+	auto node = OtNodesFactory::createNode(data["type"]);
 	node->deserialize(data, restoreIDs, basedir);
 	nodes.emplace_back(node);
 	needsSorting = true;

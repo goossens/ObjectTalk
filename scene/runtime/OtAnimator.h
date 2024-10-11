@@ -14,6 +14,8 @@
 
 #include <vector>
 
+#include "imgui.h"
+
 #include "OtSingleton.h"
 
 #include "OtAnimation.h"
@@ -23,13 +25,23 @@
 //	OtAnimator
 //
 
-class OtAnimator : public OtSingleton<OtAnimator> {
+class OtAnimator : OtSingleton<OtAnimator> {
 public:
 	// add a new animation
-	void add(OtAnimation animation);
+	static inline void add(OtAnimation animation){ instance().animations.push_back(animation); }
 
 	// update all animations
-	void update();
+	static inline void update() {
+		// determine timestep
+		float timestep = ImGui::GetIO().DeltaTime;
+
+		// update all animations (and remove them from the list when they are done)
+		auto& animations = instance().animations;
+
+		animations.erase(std::remove_if(animations.begin(), animations.end(), [timestep](OtAnimation animation) {
+			return !animation->step(timestep);
+		}), animations.end());
+	}
 
 private:
 	// list of current animations

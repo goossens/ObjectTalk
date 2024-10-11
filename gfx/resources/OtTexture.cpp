@@ -239,7 +239,7 @@ bgfx::TextureHandle OtTexture::getHandle() {
 				mem);
 
 			// dummy texture will be destroyed when program exits
-			OtFrameworkAtExit::instance()->add([]() {
+			OtFrameworkAtExit::add([]() {
 				bgfx::destroy(dummy);
 			});
 		}

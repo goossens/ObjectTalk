@@ -63,7 +63,7 @@ OtObject OtEntityObjectClass::getEntity(const std::string& tag) {
 
 OtObject OtEntityObjectClass::createAnimation() {
 	auto animation = OtAnimation::create();
-	OtAnimator::instance()->add(animation);
+	OtAnimator::add(animation);
 	return animation;
 }
 

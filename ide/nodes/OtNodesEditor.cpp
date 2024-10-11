@@ -110,14 +110,14 @@ void OtNodesEditor::duplicateSelectedNodes() {
 //	OtNodesEditor::renderMenu
 //
 
-void OtNodesEditor::renderMenu() {
+void OtNodesEditor::renderMenu(bool canRun) {
 	// get status
 	bool selected = nodes.hasSelected();
 	bool clipable = clipboard.size() > 0;
 
 	// create menubar
 	if (ImGui::BeginMenuBar()) {
-		renderFileMenu();
+		renderFileMenu(canRun);
 
 		if (ImGui::BeginMenu("Edit")) {
 			if (ImGui::MenuItem("Undo", OT_UI_SHORTCUT "Z", nullptr, taskManager.canUndo())) { taskManager.undo(); }
@@ -230,7 +230,7 @@ void OtNodesEditor::renderEditor() {
 		ImGui::TextUnformatted("Create Node");
 		ImGui::Separator();
 
-		OtNodesFactory::instance()->eachCategory([&](OtNodeCategory& category) {
+		OtNodesFactory::eachCategory([&](OtNodeCategory& category) {
 			if (ImGui::BeginMenu(category.name.c_str())) {
 				category.eachType([&](const std::string& type) {
 					if (ImGui::MenuItem(type.c_str())) {

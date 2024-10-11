@@ -13,7 +13,6 @@
 //
 
 #include "OtFactory.h"
-#include "OtSingleton.h"
 
 #include "OtPrimitiveBase.h"
 
@@ -36,7 +35,7 @@
 //	OtPrimitiveFactory
 //
 
-class OtPrimitiveFactory : public OtSingleton<OtPrimitiveFactory>, public OtFactory<
+class OtPrimitiveFactory : public OtFactory<
 	OtPrimitiveBase,
 	OtGridPrimitive,
 	OtPlanePrimitive,

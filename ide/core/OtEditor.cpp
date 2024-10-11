@@ -79,7 +79,7 @@ void OtEditor::follow() {
 
 		} else {
 			//file was edited; don't reload but show message
-			OtMessageBus::instance()->send(fmt::format("warning File {} was edited externally.\nBe careful when saving!", path));
+			OtMessageBus::send(fmt::format("warning File {} was edited externally.\nBe careful when saving!", path));
 		}
 	});
 }
@@ -98,25 +98,27 @@ void OtEditor::unfollow() {
 //	OtEditor::renderFileMenu
 //
 
-void OtEditor::renderFileMenu() {
+void OtEditor::renderFileMenu(bool canRun) {
+	bool runnable = canRun && isRunnable() && !isDirty() && OtPathIsRegularFile(path);
+
 	if (ImGui::BeginMenu("File")) {
-		if (ImGui::MenuItem("New", OT_UI_SHORTCUT "N")) { OtMessageBus::instance()->send("new"); }
-		if (ImGui::MenuItem("Open...", OT_UI_SHORTCUT "O")) { OtMessageBus::instance()->send("open"); }
+		if (ImGui::MenuItem("New", OT_UI_SHORTCUT "N")) { OtMessageBus::send("new"); }
+		if (ImGui::MenuItem("Open...", OT_UI_SHORTCUT "O")) { OtMessageBus::send("open"); }
 		ImGui::Separator();
 
 		if (OtPathIsRegularFile(path)) {
-			if (ImGui::MenuItem("Save", OT_UI_SHORTCUT "S", nullptr, isDirty())) { OtMessageBus::instance()->send("save"); }
-			if (ImGui::MenuItem("Save As...")) { OtMessageBus::instance()->send("saveas"); }
+			if (ImGui::MenuItem("Save", OT_UI_SHORTCUT "S", nullptr, isDirty())) { OtMessageBus::send("save"); }
+			if (ImGui::MenuItem("Save As...")) { OtMessageBus::send("saveas"); }
 
 		} else {
-			if (ImGui::MenuItem("Save As...", OT_UI_SHORTCUT "S", nullptr, isDirty())) { OtMessageBus::instance()->send("saveas"); }
+			if (ImGui::MenuItem("Save As...", OT_UI_SHORTCUT "S", nullptr, isDirty())) { OtMessageBus::send("saveas"); }
 		}
 
 		ImGui::Separator();
-		if (ImGui::MenuItem("Run", OT_UI_SHORTCUT "R", nullptr, isRunnable() && !isDirty() && OtPathIsRegularFile(path))) { OtMessageBus::instance()->send("run"); }
+		if (ImGui::MenuItem("Run", OT_UI_SHORTCUT "R", nullptr, runnable)) { OtMessageBus::send("run"); }
 
 		ImGui::Separator();
-		if (ImGui::MenuItem("Close", OT_UI_SHORTCUT "W")) { OtMessageBus::instance()->send("close"); }
+		if (ImGui::MenuItem("Close", OT_UI_SHORTCUT "W")) { OtMessageBus::send("close"); }
 
 		ImGui::EndMenu();
 	}
@@ -124,28 +126,26 @@ void OtEditor::renderFileMenu() {
 	// handle shortcuts
 	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && ImGui::IsKeyDown(ImGuiMod_Ctrl)) {
 		if (ImGui::IsKeyPressed(ImGuiKey_N)) {
-			OtMessageBus::instance()->send("new");
+			OtMessageBus::send("new");
 
 		} else if (ImGui::IsKeyPressed(ImGuiKey_O)) {
-			OtMessageBus::instance()->send("open");
+			OtMessageBus::send("open");
 
 		} else if (ImGui::IsKeyPressed(ImGuiKey_S)) {
 			if (isDirty()) {
 				if (OtPathIsRegularFile(path)) {
-					OtMessageBus::instance()->send("save");
+					OtMessageBus::send("save");
 
 				} else {
-					OtMessageBus::instance()->send("saveas");
+					OtMessageBus::send("saveas");
 				}
 			}
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_R)) {
-			if (isRunnable() && !isDirty() && OtPathIsRegularFile(path)) {
-				OtMessageBus::instance()->send("run");
-			}
+		} else if (ImGui::IsKeyPressed(ImGuiKey_R) && runnable) {
+			OtMessageBus::send("run");
 
 		} else if (ImGui::IsKeyPressed(ImGuiKey_W)) {
-			OtMessageBus::instance()->send("close");
+			OtMessageBus::send("close");
 		}
 	}
 }

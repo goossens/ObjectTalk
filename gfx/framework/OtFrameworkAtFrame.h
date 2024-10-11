@@ -23,15 +23,17 @@
 //	OtFrameworkAtFrame
 //
 
-class OtFrameworkAtFrame : public OtSingleton<OtFrameworkAtFrame> {
+class OtFrameworkAtFrame : OtSingleton<OtFrameworkAtFrame> {
 public:
 	// register function to be called at specified frame
-	inline void add(uint32_t frame, std::function<void(void)> callback) {
-		callbacks.emplace_back(frame, callback);
+	static inline void add(uint32_t frame, std::function<void(void)> callback) {
+		instance().callbacks.emplace_back(frame, callback);
 	}
 
 	// run all functions that are targeting this frame
-	inline void run(uint32_t frame) {
+	static inline void run(uint32_t frame) {
+		auto& callbacks = instance().callbacks;
+
 		for (auto i = callbacks.begin(); i < callbacks.end();) {
 			if (i->frame == frame) {
 				i->callback();

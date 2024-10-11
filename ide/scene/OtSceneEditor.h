@@ -63,7 +63,7 @@ private:
 	void setSceneCamera(int cameraNumber);
 
 	// render the parts
-	void renderMenu() override;
+	void renderMenu(bool canRun) override;
 	void renderEditor() override;
 	void renderPanels();
 	void renderEntitiesPanel();

@@ -33,10 +33,10 @@ OtAssetManager::~OtAssetManager() {
 
 
 //
-//	OtAssetManager::start
+//	OtAssetManager::startManager
 //
 
-void OtAssetManager::start() {
+void OtAssetManager::startManager() {
 	// start the cleanup timer
 	int status = uv_timer_init(uv_default_loop(), &cleanupTimerHandle);
 	UV_CHECK_ERROR("uv_timer_init", status);
@@ -52,10 +52,10 @@ void OtAssetManager::start() {
 
 
 //
-//	OtAssetManager::stop
+//	OtAssetManager::stopManager
 //
 
-void OtAssetManager::stop() {
+void OtAssetManager::stopManager() {
 	// wait for all threads to finish
 	threadpool.wait();
 
@@ -78,10 +78,10 @@ void OtAssetManager::stop() {
 
 
 //
-//	OtAssetManager::renderUI
+//	OtAssetManager::renderManagerUI
 //
 
-void OtAssetManager::renderUI() {
+void OtAssetManager::renderManagerUI() {
 	// see if we are currently loading assets
 	if (loading != 0) {
 		// spinner size
@@ -161,17 +161,6 @@ void OtAssetManager::scheduleLoad(OtAssetBase* asset) {
 		auto status = uv_async_send(asset->loaderEventHandle);
 		UV_CHECK_ERROR("uv_async_send", status);
 	});
-}
-
-
-//
-//	OtAssetManager::each
-//
-
-void OtAssetManager::each(std::function<void(OtAssetBase*)> callback) {
-	for (const auto& [path, asset] : assets) {
-		callback(asset);
-	}
 }
 
 

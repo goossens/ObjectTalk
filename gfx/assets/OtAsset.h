@@ -201,7 +201,7 @@ public:
 		clear();
 
 		if (path != "") {
-			ptr = OtAssetManager::instance()->acquire<T>(path);
+			ptr = OtAssetManager::acquire<T>(path);
 			ptr->reference();
 			follow();
 		}

@@ -31,7 +31,7 @@ OtObject OtByteCodeFunctionClass::operator()(size_t count, OtObject* parameters)
 	}
 
 	// execute function in VM
-	auto result = OtVM::instance()->execute(bytecode, count);
+	auto result = OtVM::execute(bytecode, count);
 	return result;
 }
 

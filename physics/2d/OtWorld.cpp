@@ -142,7 +142,7 @@ void OtWorldClass::step() {
 			world->Step(secondsPerUpdate, 8, 1);
 
 			for (auto& callback : callbacks) {
-				OtVM::instance()->callMemberFunction(callback.callback, "__call__", callback.body1, callback.body2);
+				OtVM::callMemberFunction(callback.callback, "__call__", callback.body1, callback.body2);
 			}
 
 			callbacks.clear();

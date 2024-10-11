@@ -32,31 +32,32 @@
 //	OtAssetManager
 //
 
-class OtAssetManager : public OtSingleton<OtAssetManager> {
+class OtAssetManager : OtSingleton<OtAssetManager> {
 public:
 	// destructor
 	~OtAssetManager();
 
 	// start/stop the asset manager
-	void start();
-	void stop();
+	static inline void start() { instance().startManager(); }
+	static inline void stop() { instance().stopManager(); }
 
 	// render a "spinner" if we are loading
-	void renderUI();
+	static inline void renderUI() { instance().renderManagerUI(); }
 
 	// see if we are currently loading anything
-	inline bool isLoading() { return loading != 0; }
+	static inline bool isLoading() { return instance().loading != 0; }
 
 	// see if a certain asset is already loaded
 	template<typename T>
-	inline bool isLoaded(const std::string& path) {
+	static inline bool isLoaded(const std::string& path) {
 		Key key{typeid(T).hash_code(), path};
+		auto& assets = instance().assets;
 		return assets.find(key) != assets.end();
 	}
 
 	// acquire an asset
 	template<typename T>
-	inline T* acquire(const std::string& path) {
+	static inline T* acquire(const std::string& path) {
 		// sanity check
 		static_assert(std::is_base_of<OtAssetBase, T>::value, "Class is not derived from OtAssetBase");
 
@@ -64,6 +65,8 @@ public:
 		Key key{typeid(T).hash_code(), path};
 
 		// is this a known asset?
+		auto manager = &instance();
+		auto& assets = manager->assets;
 		auto i = assets.find(key);
 
 		if (i != assets.end()) {
@@ -87,11 +90,11 @@ public:
 					// ensure file extension is supported by asset type
 					if (asset->supportsFileType(OtPathGetExtension(path))) {
 						// asset loading is asynchronous
-						scheduleLoad(asset);
+						manager->scheduleLoad(asset);
 
 						// also follow path so we can detect file changes
-						asset->follower.follow(path, [this, asset]() {
-							scheduleLoad(asset);
+						asset->follower.follow(path, [manager, asset]() {
+							manager->scheduleLoad(asset);
 						});
 
 					} else {
@@ -110,9 +113,20 @@ public:
 	}
 
 	// interate through all loaded assets
-	void each(std::function<void(OtAssetBase*)> callback);
+	static void each(std::function<void(OtAssetBase*)> callback) {
+		for (const auto& [path, asset] : instance().assets) {
+			callback(asset);
+		}
+	}
 
 private:
+	// start/stop the asset manager
+	void startManager();
+	void stopManager();
+
+	// render a "spinner" if we are loading
+	void renderManagerUI();
+
 	// schedule an asset for loading
 	void scheduleLoad(OtAssetBase* asset);
 

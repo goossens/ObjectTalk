@@ -25,7 +25,7 @@
 void OtAppClass::onSetup() {
 	// call subclass member function (if we have one)
 	if (hasByName("setup")) {
-		OtVM::instance()->callMemberFunction(OtApp(this), "setup");
+		OtVM::callMemberFunction(OtApp(this), "setup");
 	}
 }
 
@@ -49,7 +49,7 @@ void OtAppClass::onRender() {
 
 	// call subclass member function (if we have one)
 	if (hasByName("update")) {
-		OtVM::instance()->callMemberFunction(OtApp(this), "update");
+		OtVM::callMemberFunction(OtApp(this), "update");
 	}
 
 	// render all children
@@ -67,7 +67,7 @@ void OtAppClass::onRender() {
 void OtAppClass::onTerminate() {
 	// call subclass member function (if we have one)
 	if (hasByName("terminate")) {
-		OtVM::instance()->callMemberFunction(OtApp(this), "terminate");
+		OtVM::callMemberFunction(OtApp(this), "terminate");
 	}
 
 	// remove all children from the app to avoid memory leaks

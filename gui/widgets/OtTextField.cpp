@@ -51,7 +51,7 @@ void OtTextFieldClass::render() {
 	ImGui::PushID(this);
 
 	if (OtUiInputText(label.c_str(), &value)) {
-		OtVM::instance()->callMemberFunction(callback, "__call__", OtValue<std::string>::encode(value));
+		OtVM::callMemberFunction(callback, "__call__", OtValue<std::string>::encode(value));
 	}
 
 	ImGui::PopID();

@@ -42,7 +42,7 @@ public:
 	std::string getPath() { return path; }
 
 	// render the editor parts
-	virtual inline void renderMenu() {}
+	virtual inline void renderMenu(bool canRun) {}
 	virtual inline void renderEditor() {}
 
 	// access the editor state
@@ -69,7 +69,7 @@ protected:
 	bool ignoreNextFileUpdate = false;
 
 	// render a file menu
-	void renderFileMenu();
+	void renderFileMenu(bool canRun);
 
 	// properties
 	std::string path;

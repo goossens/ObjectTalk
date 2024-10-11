@@ -338,7 +338,7 @@ bimg::ImageContainer* OtImage::getContainer() {
 		if (!dummy) {
 			dummy = bimg::imageAlloc(&allocator, bimg::TextureFormat::R8, 1, 1, 0, 1, false, false);
 
-			OtFrameworkAtExit::instance()->add([]() {
+			OtFrameworkAtExit::add([]() {
 				bimg::imageFree(dummy);
 			});
 		}

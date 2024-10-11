@@ -111,7 +111,7 @@ void OtScriptComponent::process() {
 
 void OtScriptComponent::create() {
 	if (hasCreateMethod) {
-		OtVM::instance()->callMemberFunction(instance, createSymbol);
+		OtVM::callMemberFunction(instance, createSymbol);
 	}
 }
 
@@ -122,7 +122,7 @@ void OtScriptComponent::create() {
 
 void OtScriptComponent::update() {
 	if (hasUpdateMethod) {
-		OtVM::instance()->callMemberFunction(instance, updateSymbol);
+		OtVM::callMemberFunction(instance, updateSymbol);
 	}
 }
 

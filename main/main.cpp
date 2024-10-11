@@ -69,8 +69,8 @@ int main(int argc, char* argv[]) {
 	}
 
 	// set configuration
-	OtConfig::instance()->setDebugMode(program["--debug"] == true || program["--child"] == true);
-	OtConfig::instance()->setSubprocessMode(program["--child"] == true);
+	OtConfig::setDebugMode(program["--debug"] == true || program["--child"] == true);
+	OtConfig::setSubprocessMode(program["--child"] == true);
 
 	try {
 		// initialize libuv
@@ -140,7 +140,7 @@ int main(int argc, char* argv[]) {
 
 	} catch (OtException& e) {
 		// send exception back to IDE (if required)
-		OtLogger::instance()->exception(e);
+		OtLogger::exception(e);
 
 		// output human readable text
 		OtLogFatal("Error: {}", e.what());

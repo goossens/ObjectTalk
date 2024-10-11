@@ -35,8 +35,26 @@ using OtID = uint64_t;
 //	OtIdentifier
 //
 
-class OtIdentifier : public OtSingleton<OtIdentifier> {
+class OtIdentifier : OtSingleton<OtIdentifier> {
 public:
+	// static shortcuts
+	static inline OtID create(const char* text) {
+		return instance().get(text);
+	}
+
+	static inline OtID create(const std::string& text) {
+		return instance().get(text);
+	}
+
+	static inline OtID create(const std::string_view text) {
+		return instance().get(text);
+	}
+
+	static inline std::string_view name(OtID id) {
+		return instance().get(id);
+	}
+
+private:
 	// get a new id
 	inline OtID get(const char* text) {
 		return get(std::string_view(text));
@@ -65,24 +83,6 @@ public:
 		return indentifiers[id];
 	}
 
-	// static shortcuts
-	static inline OtID create(const char* text) {
-		return instance()->get(text);
-	}
-
-	static inline OtID create(const std::string& text) {
-		return instance()->get(text);
-	}
-
-	static inline OtID create(const std::string_view text) {
-		return instance()->get(text);
-	}
-
-	static inline std::string_view name(OtID id) {
-		return instance()->get(id);
-	}
-
-private:
 	// buffer to store text chunks
 	struct Buffer {
 		// properties

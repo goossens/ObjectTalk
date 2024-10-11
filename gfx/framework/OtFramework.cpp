@@ -84,12 +84,10 @@ void OtFramework::runThread2() {
 		initIMGUI();
 
 		// start the asset manager
-		OtAssetManager::instance()->start();
+		OtAssetManager::start();
 
 		// listen for stop events on the message bus
-		auto bus = OtMessageBus::instance();
-
-		bus->listen([this](const std::string& message) {
+		OtMessageBus::listen([this](const std::string& message) {
 			if (message == "stop") {
 				stop();
 			}
@@ -108,7 +106,7 @@ void OtFramework::runThread2() {
 			OtMeasureStopWatch stopwatch;
 
 			// process all messages on the bus
-			bus->process();
+			OtMessageBus::process();
 
 			// reset view ID
 			OtPassReset();
@@ -138,13 +136,13 @@ void OtFramework::runThread2() {
 		app->onTerminate();
 
 		// clear the message bus
-		bus->clear();
+		OtMessageBus::clear();
 
 		// call exit callbacks
-		OtFrameworkAtExit::instance()->run();
+		OtFrameworkAtExit::run();
 
 		// stop the asset manager
-		OtAssetManager::instance()->stop();
+		OtAssetManager::stop();
 
 		// terminate libraries
 		endIMGUI();
@@ -152,7 +150,7 @@ void OtFramework::runThread2() {
 
 	} catch (OtException& e) {
 		// send exception back to IDE (if required)
-		OtLogger::instance()->exception(e);
+		OtLogger::exception(e);
 
 		// output human readable text and exit program
 		OtLogFatal("Error: {}", e.what());

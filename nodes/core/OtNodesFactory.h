@@ -61,47 +61,52 @@ public:
 //	OtNodesFactory
 //
 
-class OtNodesFactory : public OtSingleton<OtNodesFactory> {
+class OtNodesFactory : OtSingleton<OtNodesFactory> {
 public:
 	// register a new type (name has to be globally unique in this factory, not just in category)
-	inline void registerType(const char* category, const char* name, std::function<OtNode()> constructor) {
+	static inline void registerType(const char* category, const char* name, std::function<OtNode()> constructor) {
 		// find the category
-		auto i = std::find_if(categories.begin(), categories.end(), [category](OtNodeCategory& candidate) {
+		auto& factory = instance();
+
+		auto i = std::find_if(factory.categories.begin(), factory.categories.end(), [category](OtNodeCategory& candidate) {
 			return candidate.name == category;
 		});
 
 		// add type to (existing/new) category
-		if (i == categories.end()) {
-			categories.emplace_back(category);
-			categories.back().addType(name);
-			std::sort(categories.begin(), categories.end());
+		if (i == factory.categories.end()) {
+			factory.categories.emplace_back(category);
+			factory.categories.back().addType(name);
+			std::sort(factory.categories.begin(), factory.categories.end());
 
 		} else {
 			i->addType(name);
 		}
 
 		// save constructor for fast access
-		constructors[name] = constructor;
+		factory.constructors[name] = constructor;
 	}
 
 	// iterate through categories
-	inline void eachCategory(std::function<void(OtNodeCategory&)> callback) {
-		for (auto& category : categories) {
+	static inline void eachCategory(std::function<void(OtNodeCategory&)> callback) {
+		for (auto& category : instance().categories) {
 			callback(category);
 		}
 	}
 
 	// create new node
-	inline OtNode createNode(const std::string& name) {
+	static inline OtNode createNode(const std::string& name) {
 		// sanity check
-		if (constructors.count(name) == 0) {
+		auto& factory = instance();
+
+		if (factory.constructors.count(name) == 0) {
 			OtError("Unknown node type[{}]", name);
 		}
 
 		// construct a new instance
-		return constructors[name]();
+		return factory.constructors[name]();
 	}
 
+private:
 	// properties
 	std::vector<OtNodeCategory> categories;
 	std::unordered_map<std::string, std::function<OtNode()>> constructors;
@@ -120,7 +125,7 @@ public:
 
 	// constructor
 	OtNodesFactoryRegister() {
-		OtNodesFactory::instance()->registerType(OtNodeClass::categoryNames[T::nodeCategory], T::nodeName, []() {
+		OtNodesFactory::registerType(OtNodeClass::categoryNames[T::nodeCategory], T::nodeName, []() {
 			auto node = std::make_shared<T>();
 			node->type = T::nodeName;
 			node->title = T::nodeName;

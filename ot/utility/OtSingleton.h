@@ -9,27 +9,15 @@
 
 
 //
-//	Include files
-//
-
-#include <memory>
-
-
-//
 //	OtSingleton
 //
 
 template<typename T>
 class OtSingleton {
 public:
-	static inline T* instance() {
-		static std::unique_ptr<T> instance;
-
-		if (!instance) {
-			instance = std::make_unique<T>();
-		}
-
-		return instance.get();
+	static inline T& instance() {
+		static T instance;
+		return instance;
 	}
 
 	OtSingleton(const OtSingleton&) = delete;
@@ -49,14 +37,9 @@ protected:
 template<typename T>
 class OtPerThreadSingleton {
 public:
-	static inline T* instance() {
-		thread_local std::unique_ptr<T> instance;
-
-		if (!instance) {
-			instance = std::make_unique<T>();
-		}
-
-		return instance.get();
+	static inline T& instance() {
+		thread_local T instance;
+		return instance;
 	}
 
 	OtPerThreadSingleton(const OtPerThreadSingleton&) = delete;

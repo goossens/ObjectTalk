@@ -22,16 +22,16 @@
 //	OtFrameworkAtExit
 //
 
-class OtFrameworkAtExit : public OtSingleton<OtFrameworkAtExit> {
+class OtFrameworkAtExit : OtSingleton<OtFrameworkAtExit> {
 public:
 	// register function to be called at exit
-	inline void add(std::function<void(void)> callback) {
-		callbacks.push_back(callback);
+	static inline void add(std::function<void(void)> callback) {
+		instance().callbacks.push_back(callback);
 	}
 
 	// run all exit functions
-	inline void run() {
-		for (auto& callback : callbacks) {
+	static inline void run() {
+		for (auto& callback : instance().callbacks) {
 			callback();
 		}
 	}

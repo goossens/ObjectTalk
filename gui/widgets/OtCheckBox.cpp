@@ -51,7 +51,7 @@ void OtCheckBoxClass::render() {
 	ImGui::PushID(this);
 
 	if (OtUiToggleButton(label.c_str(), &checked)) {
-		OtVM::instance()->callMemberFunction(callback, "__call__", OtValue<bool>::encode(checked));
+		OtVM::callMemberFunction(callback, "__call__", OtValue<bool>::encode(checked));
 	}
 
 	ImGui::PopID();

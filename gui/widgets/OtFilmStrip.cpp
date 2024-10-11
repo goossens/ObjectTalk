@@ -105,7 +105,7 @@ void OtFilmStripClass::render() {
 
 				// call user callback if value has changed
 				if (callback && newValue != value) {
-					OtVM::instance()->callMemberFunction(callback, "__call__", OtValue<float>::encode(value));
+					OtVM::callMemberFunction(callback, "__call__", OtValue<float>::encode(value));
 				}
 
 				value = newValue;

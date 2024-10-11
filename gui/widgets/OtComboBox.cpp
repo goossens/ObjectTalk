@@ -83,7 +83,7 @@ void OtComboBoxClass::render() {
 			if (ImGui::Selectable(option.c_str(), isSelectedOne)) {
 				if (value != option) {
 					value = option;
-					OtVM::instance()->callMemberFunction(callback, "__call__", OtValue<std::string>::encode(value));
+					OtVM::callMemberFunction(callback, "__call__", OtValue<std::string>::encode(value));
 				}
 			}
 

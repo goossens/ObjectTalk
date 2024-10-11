@@ -112,7 +112,7 @@ OtObject OtAnimationClass::seek(double percentage) {
 
 OtObject OtAnimationClass::onStep(OtObject callback) {
 	animator.onStep([callback](tweeny::tween<double>& a, double value) {
-		OtVM::instance()->callMemberFunction(callback, "__call__", OtReal::create(value));
+		OtVM::callMemberFunction(callback, "__call__", OtReal::create(value));
 		return false;
 	});
 

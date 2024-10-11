@@ -44,7 +44,7 @@ void OtWorkspace::onSetup() {
 	}
 
 	// listen for message bus events
-	OtMessageBus::instance()->listen([this](const std::string& message) {
+	OtMessageBus::listen([this](const std::string& message) {
 		onMessage(message);
 	});
 }
@@ -415,7 +415,7 @@ void OtWorkspace::runFile() {
 		},
 
 		[this](const std::string& text) {
-			OtStderrMultiplexer::instance()->demuliplex(
+			OtStderrMultiplexer::demuliplex(
 				text,
 				[this](const std::string& message) {
 					console.writeError(message);
@@ -567,7 +567,7 @@ void OtWorkspace::renderEditors() {
 				ImGui::PushID(editor.get());
 
 				// determine flags for tab
-				ImGuiTabItemFlags flags = 0;
+				ImGuiTabItemFlags flags = ImGuiTabItemFlags_None;
 
 				if (editorToActivate == editor) {
 					flags |= ImGuiTabItemFlags_SetSelected;
@@ -582,7 +582,7 @@ void OtWorkspace::renderEditors() {
 				if (ImGui::BeginTabItem(OtPathGetFilename(editor->getPath()).c_str(), nullptr, flags)) {
 					ImGui::BeginChild("editor", ImVec2(), ImGuiChildFlags_Borders, ImGuiWindowFlags_MenuBar);
 
-					editor->renderMenu();
+					editor->renderMenu(!subprocess.isRunning());
 					editor->renderEditor();
 
 					ImGui::EndChild();
@@ -622,7 +622,7 @@ void OtWorkspace::renderEditors() {
 			bool open = true;
 			ImGui::Begin(OtPathGetFilename(editor->getPath()).c_str(), &open, flags);
 
-			editor->renderMenu();
+			editor->renderMenu(!subprocess.isRunning());
 			editor->renderEditor();
 
 			if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows)) {
@@ -806,7 +806,7 @@ void OtWorkspace::renderConfirmQuit() {
 		ImGui::Separator();
 
 		if (ImGui::Button("OK", ImVec2(120, 0))) {
-			OtMessageBus::instance()->send("stop");
+			OtMessageBus::send("stop");
 			state = editState;
 			ImGui::CloseCurrentPopup();
 		}

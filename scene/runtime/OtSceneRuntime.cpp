@@ -41,7 +41,7 @@ bool OtSceneRuntime::isReady() {
 		return true;
 
 	// are we still loading assets?
-	} else if (OtAssetManager::instance()->isLoading()) {
+	} else if (OtAssetManager::isLoading()) {
 		return false;
 
 	// just finished loading our assets so we can now complete the setup
@@ -60,7 +60,7 @@ bool OtSceneRuntime::isReady() {
 
 int OtSceneRuntime::render(int width, int height) {
 	// run all animations
-	OtAnimator::instance()->update();
+	OtAnimator::update();
 
 	// get our scene
 	auto scene = sceneAsset->getScene();

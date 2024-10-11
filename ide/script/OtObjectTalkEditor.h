@@ -34,7 +34,7 @@ public:
 	inline std::string getExtension() override { return ".ot"; }
 
 	// render the parts
-	void renderMenu() override;
+	void renderMenu(bool canRun) override;
 	void renderEditor() override;
 
 	// update error markers

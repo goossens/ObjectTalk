@@ -119,7 +119,7 @@ void OtWidgetClass::renderChildren() {
 void OtWidgetClass::renderChild(OtWidget child) {
 	// call subclass member function (if we have one)
 	if (child->hasByName("update")) {
-		OtVM::instance()->callMemberFunction(child, "update");
+		OtVM::callMemberFunction(child, "update");
 	}
 
 	// render child

@@ -34,7 +34,7 @@ public:
 	inline std::string getExtension() override { return ".otn"; }
 
 	// render the editor
-	void renderMenu() override;
+	void renderMenu(bool canRun) override;
 	void renderEditor() override;
 
 	// clipboard operations

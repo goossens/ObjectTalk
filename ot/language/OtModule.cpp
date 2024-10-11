@@ -94,7 +94,7 @@ void OtModuleClass::load(const std::string& path, const std::string& code) {
 
 	try {
 		auto bytecode = compiler.compileSource(source, OtModule(this));
-		OtVM::instance()->execute(bytecode);
+		OtVM::execute(bytecode);
 
 	} catch (const OtException& e) {
 		localPath.pop_back();
@@ -215,10 +215,10 @@ OtType OtModuleClass::getMeta() {
 
 OtModule OtModuleClass::import(const std::string& name) {
 	// see if this is an "internal" module
-	auto registry = OtModuleRegistry::instance();
+	auto& registry = OtModuleRegistry::instance();
 
-	if (registry->has(name)) {
-		OtModuleRegistryEntry& entry = registry->at(name);
+	if (registry.has(name)) {
+		OtModuleRegistryEntry& entry = registry.at(name);
 
 		// instantiate the module if required
 		if (!entry.module) {
@@ -245,5 +245,5 @@ OtModule OtModuleClass::import(const std::string& name) {
 OtModuleRegistration::OtModuleRegistration(const char* name, std::function<void(OtModule)> creator) {
 	OtModuleRegistryEntry entry;
 	entry.creator = creator;
-	OtModuleRegistry::instance()->set(name, entry);
+	OtModuleRegistry::instance().set(name, entry);
 }

@@ -151,7 +151,7 @@ bool OtAssetSelector::renderUI(Info& info) {
 		ImGui::SameLine(0.0f, spacing);
 
 		if (ImGui::Button("e", ImVec2(itemHeight, itemHeight))) {
-			OtMessageBus::instance()->send("openinwindow " + info.path);
+			OtMessageBus::send("openinwindow " + info.path);
 		}
 	}
 
@@ -180,7 +180,7 @@ bool OtAssetSelector::renderUI(Info& info) {
 
 				// create the file and open the editor
 				info.creator(info.path);
-				OtMessageBus::instance()->send("openinwindow " + info.path);
+				OtMessageBus::send("openinwindow " + info.path);
 			}
 		}
 

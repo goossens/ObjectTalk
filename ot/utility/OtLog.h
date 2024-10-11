@@ -19,13 +19,14 @@
 
 #include "OtException.h"
 #include "OtSingleton.h"
+#include "OtStderrMultiplexer.h"
 
 
 //
 //	OtLogger
 //
 
-class OtLogger : public OtSingleton<OtLogger> {
+class OtLogger : OtSingleton<OtLogger> {
 public:
 	// log entry types
 	enum {
@@ -37,26 +38,40 @@ public:
 	};
 
 	// log a message
-	void log(const char* filename, int lineno, int type, const std::string& message);
+	static inline void log(const char* filename, int lineno, int type, const std::string& message) {
+		instance().logMessage(filename, lineno, type, message);
+	}
 
 	template<typename... ARGS>
-	void log(const char* filename, int lineno, int type, const char* format, ARGS... args) {
+	static inline void log(const char* filename, int lineno, int type, const char* format, ARGS... args) {
 		auto message = fmt::format(format, args...);
-		log(filename, lineno, type, message);
+		instance().logMessage(filename, lineno, type, message);
 	}
 
 	// process a fatal exception
-	void exception(OtException& e);
+	static void exception(OtException& e)  {
+		if (instance().subprocessMode) {
+			OtStderrMultiplexer::multiplex(e);
+		}
+	}
 
 	// access subprocess mode
-	void setSubprocessMode(bool flag) { subprocessMode = flag; }
-	bool inSubprocessMode() { return subprocessMode; }
+	static inline void setSubprocessMode(bool flag) { instance().subprocessMode = flag; }
+	static inline bool inSubprocessMode() { return instance().subprocessMode; }
 
 	// set logging targets
-	void stderrLogging(bool flag) { logToStderr = flag; }
-	void fileLogging(const std::string& name);
+	static inline void stderrLogging(bool flag) { instance().logToStderr = flag; }
+
+	static inline void fileLogging(const std::string& name) {
+		auto& ofs = instance().ofs;
+		if (ofs.is_open()) { ofs.close(); }
+		if (!name.empty()) { ofs.open(name); }
+	}
 
 private:
+	// log the message
+	void logMessage(const char* filename, int lineno, int type, const std::string& message);
+
 	// configuration
 	bool subprocessMode = false;
 
@@ -70,7 +85,7 @@ private:
 //	Macros
 //
 
-#define OtLog(type, ...) (OtLogger::instance()->log(__FILE__, __LINE__, type, __VA_ARGS__))
+#define OtLog(type, ...) (OtLogger::log(__FILE__, __LINE__, type, __VA_ARGS__))
 
 #if OT_DEBUG
 #define OtLogDebug(...) OtLog(OtLogger::debug, __VA_ARGS__)

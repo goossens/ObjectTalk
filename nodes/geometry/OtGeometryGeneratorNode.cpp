@@ -26,7 +26,7 @@ class OtGeometryGeneratorNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		primitive = OtPrimitiveFactory::instance()->create("Cube");
+		primitive = factory.create("Cube");
 		addOutputPin("Geometry", geometry);
 	}
 
@@ -42,16 +42,15 @@ public:
 			auto old = serialize().dump();
 
 			bool changed = false;
-			auto factory = OtPrimitiveFactory::instance();
 			auto type = primitive->getTypeName();
 
 			if (ImGui::BeginCombo("Type", type)) {
-				factory->each([&](const char* name) {
+				factory.each([&](const char* name) {
 					bool isSelectedOne = !std::strcmp(type, name);
 
 					if (ImGui::Selectable(name, isSelectedOne)) {
 						if (std::strcmp(type, name)) {
-							primitive = factory->create(name);
+							primitive = factory.create(name);
 							changed = true;
 						}
 					}
@@ -94,7 +93,7 @@ public:
 	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
 		if (data->contains("primitive") && (*data)["primitive"].contains("type") ) {
 			std::string type = (*data)["primitive"]["type"];
-			primitive = OtPrimitiveFactory::instance()->create(type);
+			primitive = factory.create(type);
 		}
 
 		primitive->deserialize((*data)["primitive"], basedir);
@@ -114,6 +113,9 @@ protected:
 	// our primitive and geometry
 	std::shared_ptr<OtPrimitiveBase> primitive;
 	OtGeometry geometry;
+
+	// factory to create primitives
+	OtPrimitiveFactory factory;
 };
 
 static OtNodesFactoryRegister<OtGeometryGeneratorNode> type;

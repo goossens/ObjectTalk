@@ -11,27 +11,15 @@
 
 #include <iostream>
 
+#include "OtException.h"
 #include "OtStderrMultiplexer.h"
 
 
 //
-//	OtStderrMultiplexer::multiplex
+//	OtStderrMultiplexer::demuliplexInput
 //
 
-void OtStderrMultiplexer::multiplex(int type, const std::string& message) {
-	std::cerr << '\x02' << char(10 + type) << message << '\x03' << std::flush;
-}
-
-void OtStderrMultiplexer::multiplex(OtException& exception) {
-	std::cerr << '\x02' << '\x00' << exception.serialize() << '\x03' << std::flush;
-}
-
-
-//
-//	OtStderrMultiplexer::demuliplex
-//
-
-void OtStderrMultiplexer::demuliplex(
+void OtStderrMultiplexer::demuliplexInput(
 	std::string input,
 	std::function<void(const std::string& message)> normal,
 	std::function<void(int type, const std::string &message)> log,

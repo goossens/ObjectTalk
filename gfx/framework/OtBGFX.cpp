@@ -36,7 +36,7 @@ struct BgfxCallback : public bgfx::CallbackI {
 		OtLogFatal("Fatal error: {:#08x}: {}", int(code), str);
 	}
 
-	virtual void traceVargs(const char* filePath, uint16_t line, const char* format, va_list argList) override {
+	virtual inline void traceVargs(const char* filePath, uint16_t line, const char* format, va_list argList) override {
 		char buffer[256];
 		auto size = std::vsnprintf(buffer, 256, format, argList);
 
@@ -44,7 +44,7 @@ struct BgfxCallback : public bgfx::CallbackI {
 			buffer[size - 1] = 0;
 		}
 
-		OtLogger::instance()->log(filePath, line, OtLogger::debug, std::string(buffer));
+		OtLogger::log(filePath, line, OtLogger::debug, std::string(buffer));
 	}
 
 	virtual void profilerBegin(const char* name, uint32_t abgr, const char* filePath, uint16_t line) override {}
@@ -224,7 +224,7 @@ void OtFramework::renderBGFX() {
 	auto frame = bgfx::frame();
 
 	// call frame callbacks
-	OtFrameworkAtFrame::instance()->run(frame);
+	OtFrameworkAtFrame::run(frame);
 }
 
 

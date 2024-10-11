@@ -64,7 +64,7 @@ void OtReadBackBuffer::readback(OtTexture& texture, std::function<void()> callba
 	auto frame = bgfx::readTexture(readbackTexture.getHandle(), image.getPixels());
 
 	// it takes 2 frames before the readback is complete so we increment the version in a callback
-	OtFrameworkAtFrame::instance()->add(frame, [this, callback]() {
+	OtFrameworkAtFrame::add(frame, [this, callback]() {
 		image.incrementVersion();
 
 		if (callback) {

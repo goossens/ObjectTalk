@@ -24,33 +24,36 @@
 //	OtMessageBus
 //
 
-class OtMessageBus : public OtSingleton<OtMessageBus> {
+class OtMessageBus : OtSingleton<OtMessageBus> {
 public:
 	// lister for messages on the bus
-	inline void listen(std::function<void (const std::string&)> listener) {
-		listeners.push_back(listener);
+	static inline void listen(std::function<void (const std::string&)> listener) {
+		instance().listeners.push_back(listener);
 	}
 
 	// send a message to all the listeners
-	inline void send(const std::string& message) {
-		messages.push(message);
+	static inline void send(const std::string& message) {
+		instance().messages.push(message);
 	}
 
 	// process all the messages (by sending them to all the listeners)
-	inline void process() {
-		while (!messages.empty()) {
-			for (auto& listener : listeners) {
-				listener(messages.front());
+	static inline void process() {
+		auto& bus = instance();
+
+		while (!bus.messages.empty()) {
+			for (auto& listener : bus.listeners) {
+				listener(bus.messages.front());
 			}
 
-			messages.pop();
+			bus.messages.pop();
 		}
 	}
 
 	// clear the bus
-	inline void clear() {
-		listeners.clear();
-		messages = {};
+	static inline void clear() {
+		auto& bus = instance();
+		bus.listeners.clear();
+		bus.messages = {};
 	}
 
 private:

@@ -39,7 +39,7 @@ public:
 	// register a node type
 	template <typename T>
 	inline void registerNodeType(const char* category, const char* name) {
-		OtNodesFactory::instance()->registerType(
+		OtNodesFactory::registerType(
 			category,
 			name,
 			[]() {

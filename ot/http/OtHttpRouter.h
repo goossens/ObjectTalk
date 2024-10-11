@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <memory>
 #include <vector>
 
 #include "OtHttp.h"

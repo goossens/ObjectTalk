@@ -180,14 +180,14 @@ void OtSceneEditor::setSceneCamera(int cameraNumber) {
 //	OtSceneEditor::renderMenu
 //
 
-void OtSceneEditor::renderMenu() {
+void OtSceneEditor::renderMenu(bool canRun) {
 	// get status
 	bool selected = scene.isValidEntity(selectedEntity);
 	bool clipable = clipboard.size() > 0;
 
 	// create menubar
 	if (ImGui::BeginMenuBar()) {
-		renderFileMenu();
+		renderFileMenu(canRun);
 
 		if (ImGui::BeginMenu("Edit")) {
 			if (ImGui::MenuItem("Undo", OT_UI_SHORTCUT "Z", nullptr, taskManager.canUndo())) { taskManager.undo(); }
@@ -206,7 +206,7 @@ void OtSceneEditor::renderMenu() {
 		}
 
 		if (ImGui::BeginMenu("View")) {
-			if (ImGui::MenuItem("Toggle Console")) { OtMessageBus::instance()->send("toggleconsole"); }
+			if (ImGui::MenuItem("Toggle Console")) { OtMessageBus::send("toggleconsole"); }
 			if (ImGui::MenuItem("Toggle Debug")) { toggleRendererDebug(); }
 			ImGui::Separator();
 
@@ -626,7 +626,7 @@ void OtSceneEditor::renderViewPort() {
 	}
 
 	// let asset manager show busy spinner (if required)
-	OtAssetManager::instance()->renderUI();
+	OtAssetManager::renderUI();
 	ImGui::EndChild();
 }
 

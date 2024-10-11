@@ -67,10 +67,10 @@ std::string GetTimestamp() {
 
 
 //
-//	OtLogger::log
+//	OtLogger::logMessage
 //
 
-void OtLogger::log(const char* filename, int lineno, int type, const std::string& message) {
+void OtLogger::logMessage(const char* filename, int lineno, int type, const std::string& message) {
 	// get timestamp, filename and message type
 	auto timestamp = GetTimestamp();
 	auto shortname = OtPathGetFilename(filename);
@@ -79,7 +79,7 @@ void OtLogger::log(const char* filename, int lineno, int type, const std::string
 
 	// send to IDE (if required)
 	if (subprocessMode) {
-		OtStderrMultiplexer::instance()->multiplex(type, output);
+		OtStderrMultiplexer::multiplex(type, output);
 
 	// send to STDERR (if required)
 	} else if (logToStderr) {
@@ -109,31 +109,5 @@ void OtLogger::log(const char* filename, int lineno, int type, const std::string
 #else
 		std::_Exit(EXIT_FAILURE);
 #endif
-	}
-}
-
-
-//
-//	OtLogger::exception
-//
-
-void OtLogger::exception(OtException& e) {
-	if (subprocessMode) {
-		OtStderrMultiplexer::instance()->multiplex(e);
-	}
-}
-
-
-//
-//	OtLogger::fileLogging
-//
-
-void OtLogger::fileLogging(const std::string& name) {
-	if (ofs.is_open()) {
-		ofs.close();
-	}
-
-	if (!name.empty()) {
-		ofs.open(name);
 	}
 }

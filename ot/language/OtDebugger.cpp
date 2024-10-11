@@ -36,16 +36,14 @@ void OtDebuggerClass::debug(size_t count, OtObject* parameters) {
 
 	if (count == 0 || parameters[0]->operator bool()) {
 		// activate statement hook in VM
-		auto vm = OtVM::instance();
-
-		vm->setStatementHook([this]() {
+		OtVM::setStatementHook([this]() {
 			if (OtVM::getStack()->getFrameCount() == stackFrame) {
 				processCommand();
 			}
 		});
 
 		// set our state
-		stackFrame = vm->getStack()->getFrameCount();
+		stackFrame = OtVM::getStack()->getFrameCount();
 	}
 }
 
@@ -151,7 +149,7 @@ void OtDebuggerClass::processCommand() {
 				ic_print(disassemble().c_str());
 
 			} else if (command[0] == "continue" || command[0] == "c") {
-				OtVM::instance()->setStatementHook(nullptr);
+				OtVM::setStatementHook(nullptr);
 				debugging = false;
 
 			} else if (command[0] == "step" || command[0] == "s") {

@@ -110,10 +110,10 @@ void OtObjectTalkEditor::save() {
 //	OtObjectTalkEditor::renderMenu
 //
 
-void OtObjectTalkEditor::renderMenu() {
+void OtObjectTalkEditor::renderMenu(bool canRun) {
 	// create menubar
 	if (ImGui::BeginMenuBar()) {
-		renderFileMenu();
+		renderFileMenu(canRun);
 
 		if (ImGui::BeginMenu("Edit")) {
 			if (ImGui::MenuItem("Undo", OT_UI_SHORTCUT "Z", nullptr, editor.CanUndo())) { editor.Undo(); }
@@ -134,7 +134,7 @@ void OtObjectTalkEditor::renderMenu() {
 		}
 
 		if (ImGui::BeginMenu("View")) {
-			if (ImGui::MenuItem("Toggle Console")) { OtMessageBus::instance()->send("toggleconsole"); }
+			if (ImGui::MenuItem("Toggle Console")) { OtMessageBus::send("toggleconsole"); }
 			ImGui::Separator();
 
 			bool flag;

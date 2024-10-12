@@ -13,6 +13,7 @@
 //
 
 #include <algorithm>
+#include <cstdlib>
 #include <iomanip>
 #include <memory>
 #include <sstream>
@@ -88,26 +89,23 @@ public:
 
 class OtStack {
 public:
+	// constructor/destructor
+	inline OtStack() { reserve(512); }
+	inline ~OtStack() { clear(); }
+
 	// stack access functions
-	inline OtObject back() { return stack.back(); }
-	inline void push(OtObject& object) { stack.emplace_back(object); }
-
-	template<typename T>
-	inline void push(T& object) { stack.emplace_back(object); }
-
-	inline OtObject pop() { auto value = stack.back(); stack.pop_back(); return value; }
-	inline void pop(size_t count) { stack.resize(stack.size() - count); }
-	inline void dup() { stack.emplace_back(stack.back()); }
-	inline void swap() { std::swap(stack[stack.size() - 1], stack[stack.size() - 2]); }
-	inline void move(size_t count) { auto e = stack.rbegin(); std::rotate(e, e + 1, e + count + 1); }
-
-	inline size_t size() { return stack.size(); }
-	inline void resize(size_t size) { stack.resize(size); }
-	inline void reserve() { stack.resize(stack.size() + 1); }
-	inline OtObject* sp(size_t offset) { return &(stack[stack.size() - offset]); }
+	inline void push(const OtObject& object) { if (sp == capacity) { reserve(capacity * 2); } stack[sp++] = object; }
+	inline OtObject pop() { return stack[--sp]; }
+	inline void pop(size_t count) { sp -= count; }
+	inline void dup() { if (sp == capacity) { reserve(capacity * 2); } stack[sp] = stack[sp - 1]; sp++; }
+	inline void swap() { std::swap(stack[sp - 1], stack[sp - 2]); }
+	inline void move(size_t count) { stack[sp - count - 1] = stack[sp - 1]; sp -= count; }
+	inline size_t size() { return sp; }
+	inline OtObject* getSP(size_t offset) { return stack + sp - offset; }
+	inline OtObject top() { return stack[sp - 1]; }
 
 	// frame access functions
-	inline void openFrame(OtByteCode bytecode, size_t callingParameters, size_t* pc) { frames.emplace_back(bytecode, stack.size() - callingParameters, pc); }
+	inline void openFrame(OtByteCode bytecode, size_t callingParameters, size_t* pc) { frames.emplace_back(bytecode, sp - callingParameters, pc); }
 	inline OtObject getFrameItem(OtStackItem item) { return stack[frames[frames.size() - item.frame - 1].offset + item.slot]; }
 	inline void setFrameItem(OtStackItem item, OtObject object) { stack[frames[frames.size() - item.frame - 1].offset + item.slot] = object; }
 	inline OtStackFrame& getFrame() { return frames.back(); }
@@ -122,42 +120,40 @@ public:
 	// manipulate stack state
 	inline OtStackState getState() {
 		auto& frame = frames.back();
-		return OtStackState(stack.size(), frames.size(), closures.size());
+		return OtStackState(sp, frames.size(), closures.size());
 	}
 
 	inline void restoreState(OtStackState& state) {
-		stack.resize(state.stack);
+		sp = state.stack;
 		frames.resize(state.frames);
 		closures.resize(state.closures);
 	}
 
-	// debug stack
-	std::string debug() {
-		std::stringstream buffer;
+private:
+	// reserve specified capapavity on stack
+	inline void reserve(size_t newCapacity) {
+		stack = reinterpret_cast<OtObject*>(std::realloc(stack, sizeof(OtObject) * newCapacity));
 
-		buffer << "Stack:" << std::endl;
-		buffer << "------" << std::endl << std::endl;
-		size_t count = 0;
-
-		for (auto element: stack) {
-			buffer << std::setw(3) << std::setfill('0') << count++ << std::setfill(' ') << " ";
-			buffer << OtObjectDescribe(element) << std::endl;
+		for (auto i = stack + capacity; i < stack + newCapacity; i++) {
+			new(i) OtObject;
 		}
 
-		buffer	<< std::endl << "frames:" << std::endl;
-		buffer << "-------" << std::endl << std::endl;
-		count = 0;
-
-		for (auto frame: frames) {
-			buffer << std::setw(3) << std::setfill('0') << count++ << std::setfill(' ') << " ";
-			buffer << frame.offset << std::endl;
-		}
-
-		return buffer.str();
+		capacity = newCapacity;
 	}
 
-private:
-	std::vector<OtObject> stack;
+	// clear the stack
+	inline void clear() {
+		std::free(stack);
+		stack = nullptr;
+		sp = 0;
+		capacity = 0;
+	}
+
+	// properties
+	OtObject* stack = nullptr;
+	size_t sp = 0;
+	size_t capacity = 0;
+
 	std::vector<OtStackFrame> frames;
 	std::vector<OtObject> closures;
 };

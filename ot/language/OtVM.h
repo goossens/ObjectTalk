@@ -39,7 +39,7 @@ public:
 		const size_t count = sizeof...(ARGS) + 1;
 		stack.push(target);
 		(stack.push(args), ...);
-		auto result = target->get(member)->operator () (count, stack.sp(count));
+		auto result = target->get(member)->operator () (count, stack.getSP(count));
 		stack.pop(count);
 		return result;
 	}
@@ -58,20 +58,20 @@ public:
 		}
 
 		count++;
-		auto result = member->operator () (count, stack.sp(count));
+		auto result = member->operator () (count, stack.getSP(count));
 		stack.pop(count);
 		return result;
 	}
 
 	// redirect member function to a new target
 	static inline OtObject redirectMemberFunction(OtObject target, OtObject member, size_t count) {
-		auto sp = instance().stack.sp(count + 1);
+		auto sp = instance().stack.getSP(count + 1);
 		*sp = target;
 		return member->operator () (count + 1, sp);
 	}
 
 	static inline OtObject redirectMemberFunction(OtObject target, OtID member, size_t count) {
-		auto sp = instance().stack.sp(count + 1);
+		auto sp = instance().stack.getSP(count + 1);
 		*sp = target;
 		return target->get(member)->operator () (count + 1, sp);
 	}

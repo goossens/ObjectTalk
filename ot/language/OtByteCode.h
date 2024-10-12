@@ -66,7 +66,6 @@ public:
 		superOpcode,
 		methodOpcode,
 		exitOpcode,
-		reserveOpcode,
 		pushTryOpcode,
 		popTryOpcode,
 
@@ -98,7 +97,6 @@ public:
 	inline void method(OtID id, size_t count) { emitOpcode(methodOpcode); emitID(id); emitNumber(count); }
 	inline void super(OtID id) { emitOpcode(superOpcode); emitID(id); }
 	inline void exit() { emitOpcode(exitOpcode); }
-	inline void reserve() { emitOpcode(reserveOpcode); }
 	inline size_t pushTry() { emitOpcode(pushTryOpcode); return emitJump(0); }
 	inline void pushTry(size_t offset) { emitOpcode(pushTryOpcode); emitJump(offset); }
 	inline void popTry() { emitOpcode(popTryOpcode); }

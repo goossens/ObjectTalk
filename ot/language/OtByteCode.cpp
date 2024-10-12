@@ -104,10 +104,6 @@ std::string OtByteCodeClass::disassemble() {
 				buffer << "exit";
 				break;
 
-			case reserveOpcode:
-				buffer << "reserve";
-				break;
-
 			case pushTryOpcode:
 				buffer << "pushTry" << jumps[getNumber(pc)];
 				break;
@@ -213,10 +209,6 @@ void OtByteCodeClass::copyOpcode(OtByteCode other, size_t pc) {
 			exit();
 			break;
 
-		case reserveOpcode:
-			reserve();
-			break;
-
 		case pushTryOpcode:
 			pushTry(other->jumps[other->getNumber(pc)]);
 			break;
@@ -318,9 +310,6 @@ size_t OtByteCodeClass::getOpcodeSize(size_t offset) {
 			break;
 
 		case exitOpcode:
-			break;
-
-		case reserveOpcode:
 			break;
 
 		case pushTryOpcode:

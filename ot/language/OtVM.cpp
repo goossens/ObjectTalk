@@ -101,7 +101,7 @@ OtObject OtVM::executeByteCode(OtByteCode bytecode, size_t callingParameters) {
 					break;
 
 				case OtByteCodeClass::moveOpcode:
-					// move the top stack object back a specifed number of slots
+					// move the top stack object back a specifed number of slots and shorten stack
 					stack.move(bytecode->getNumber(pc));
 					break;
 
@@ -159,7 +159,7 @@ OtObject OtVM::executeByteCode(OtByteCode bytecode, size_t callingParameters) {
 					auto count = bytecode->getNumber(pc);
 
 					// get a pointer to the calling parameters and target object
-					auto parameters = stack.sp(count + 1);
+					auto parameters = stack.getSP(count + 1);
 
 					// sanity check
 					if (!parameters[0]) {
@@ -167,7 +167,7 @@ OtObject OtVM::executeByteCode(OtByteCode bytecode, size_t callingParameters) {
 					}
 
 					// call method
-					auto result = parameters[0]->get(method)->operator () (count + 1, parameters);
+					auto result = parameters[0]->get(method)->operator()(count + 1, parameters);
 
 					// remove arguments from stack and put result back on it
 					stack.pop(count + 1);
@@ -178,11 +178,6 @@ OtObject OtVM::executeByteCode(OtByteCode bytecode, size_t callingParameters) {
 				case OtByteCodeClass::exitOpcode:
 					// exit instructions
 					pc = end;
-					break;
-
-				case OtByteCodeClass::reserveOpcode:
-					// reserve a new slot on the stack
-					stack.reserve();
 					break;
 
 				case OtByteCodeClass::pushTryOpcode:
@@ -225,7 +220,7 @@ OtObject OtVM::executeByteCode(OtByteCode bytecode, size_t callingParameters) {
 				case OtByteCodeClass::assignStackOpcode: {
 					// put the top stack object into a stack-based slot
 					auto slot = bytecode->getNumber(pc);
-					auto value = stack.back();
+					auto value = stack.top();
 					stack.setFrameItem(OtStackItem(0, slot), value);
 					break;
 				}
@@ -234,7 +229,7 @@ OtObject OtVM::executeByteCode(OtByteCode bytecode, size_t callingParameters) {
 					// put the top stack object into a heap-based object member
 					auto object = bytecode->getConstant(bytecode->getNumber(pc));
 					auto member = bytecode->getID(pc);
-					auto value = stack.back();
+					auto value = stack.top();
 					object->set(member, value);
 					break;
 				}

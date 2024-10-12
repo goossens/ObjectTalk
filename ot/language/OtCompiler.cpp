@@ -284,9 +284,9 @@ void OtCompiler::declareVariable(OtID id, bool alreadyOnStack) {
 		scope.symbolIndex[id] = scope.symbols.size();
 		scope.symbols.emplace_back(id, slot, offset);
 
-		// reserve space (if required)
+		// reserve space by putting a null object on the stack (if required)
 		if (!alreadyOnStack) {
-			scope.bytecode->reserve();
+			scope.bytecode->pushNull();
 		}
 
 	} else {
@@ -1607,8 +1607,8 @@ void OtCompiler::returnStatement(OtByteCode bytecode) {
 
 	// no cleanup is required if we don't have any locals
 	if (locals) {
+		// move up result past the locals and shorten stack
 		bytecode->move(locals);
-		bytecode->pop(locals);
 	}
 
 	// the return value should now be top of the stack

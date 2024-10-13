@@ -141,12 +141,19 @@ private:
 		capacity = newCapacity;
 	}
 
-	// clear the stack
+	// clear the stack and release the memory
 	inline void clear() {
+		for (auto i = stack; i < stack + capacity; i++) {
+			i->~OtObject();
+		}
+
 		std::free(stack);
 		stack = nullptr;
 		sp = 0;
 		capacity = 0;
+
+		frames.clear();
+		closures.clear();
 	}
 
 	// properties

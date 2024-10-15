@@ -32,16 +32,16 @@ public:
 	OtStringReferenceClass(OtString s, size_t i) : string(s), index(i) {}
 
 	// debugging support
-	std::string describe() override {
+	inline std::string describe() override {
 		return "[" + std::to_string(index) + "]";
 	}
 
 	// (de)reference functions
-	std::string deref() {
+	inline std::string deref() {
 		return string->getEntry(index);
 	}
 
-	OtObject assign(OtObject value) {
+	inline OtObject assign(OtObject value) {
 		return OtString::create(string->setEntry(
 			index,
 			value->operator std::string()));

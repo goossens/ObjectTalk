@@ -21,7 +21,7 @@ namespace std::numbers {
 
 namespace std {
 	template <typename T>
-	T lerp(T a, T b, T t) {
+	inline T lerp(T a, T b, T t) {
 		return a + t * (b - a);
 	}
 }

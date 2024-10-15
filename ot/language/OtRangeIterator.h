@@ -30,14 +30,14 @@ public:
 	OtRangeIteratorClass(int64_t f, int64_t t, int64_t i) : from(f), to(t), increment(i), index(f) {}
 
 	// start iterator
-	OtObject iterate() { return OtRangeIterator(this); }
+	inline OtObject iterate() { return OtRangeIterator(this); }
 
 	// iteration operations
-	bool end() {
+	inline bool end() {
 		return (to > from) ? (index > to) : (index < to);
 	}
 
-	int64_t next() {
+	inline int64_t next() {
 		auto result = index; index += increment;
 		return result;
 	}

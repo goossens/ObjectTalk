@@ -26,7 +26,7 @@ template<typename K, typename V, size_t S = 1024>
 class OtLruCache {
 public:
 	// change the cache size
-	void setSize(size_t s) {
+	inline void setSize(size_t s) {
 		size = s;
 
 		// remove entries if required
@@ -37,23 +37,23 @@ public:
 	}
 
 	// return the cache size
-	size_t getSize() {
+	inline size_t getSize() {
 		return size;
 	}
 
 	// return number of cache entries
-	size_t getNumberOfEntries() {
+	inline size_t getNumberOfEntries() {
 		return items.size();
 	}
 
 	// remove all entries
-	void clear() {
+	inline void clear() {
 		items.clear();
 		index.clear();
 	}
 
 	// set or update an entry
-	void set(const K key, const V value) {
+	inline void set(const K key, const V value) {
 		// see if this is a known entry
 		auto pos = index.find(key);
 
@@ -76,12 +76,12 @@ public:
 	}
 
 	// see if entry is in cache
-	bool has(const K key) {
+	inline bool has(const K key) {
 		return index.find(key) != index.end();
 	}
 
 	// get a cache entry and move it to the front for LRU
-	V get(const K key) {
+	inline V get(const K key) {
 		auto pos = index.find(key);
 
 		if (pos == index.end()) {

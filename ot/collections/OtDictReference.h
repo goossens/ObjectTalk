@@ -32,11 +32,11 @@ public:
 	OtDictReferenceClass(OtDict d, const std::string& i) : dict(d), index(i) {}
 
 	// debugging support
-	std::string describe() override { return "[\"" + index + "\"]"; }
+	inline std::string describe() override { return "[\"" + index + "\"]"; }
 
 	// (de)reference functions
-	OtObject deref() { return dict->getEntry(index); }
-	OtObject assign(OtObject value) { dict->setEntry(index, value); return value; }
+	inline OtObject deref() { return dict->getEntry(index); }
+	inline OtObject assign(OtObject value) { dict->setEntry(index, value); return value; }
 
 	// get type definition
 	static OtType getMeta();

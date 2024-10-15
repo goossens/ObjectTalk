@@ -31,17 +31,17 @@ public:
 	// constructors
 	OtStringIteratorClass() = default;
 
-	OtStringIteratorClass(OtString string) {
+	inline OtStringIteratorClass(OtString string) {
 		pos = string->value.cbegin();
 		last = string->value.cend();
 	}
 
 	// iteration operations
-	bool end() {
+	inline bool end() {
 		return pos == last;
 	}
 
-	std::string next() {
+	inline std::string next() {
 		size_t size = OtCodePoint::size(pos);
 		std::string result(pos, pos + size);
 		pos += size;

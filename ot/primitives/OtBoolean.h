@@ -37,19 +37,19 @@ public:
 	inline operator double() override { return value ? 1.0 : 0.0; }
 	inline operator std::string() override { return value ? "true" : "false"; }
 
-	std::string describe() override { return operator std::string(); }
+	inline std::string describe() override { return operator std::string(); }
 
 	// comparison
-	bool operator==(OtObject operand) override { return value == operand->operator bool(); }
-	bool operator<(OtObject operand) override { return value < operand->operator bool(); }
+	inline bool operator==(OtObject operand) override { return value == operand->operator bool(); }
+	inline bool operator<(OtObject operand) override { return value < operand->operator bool(); }
 
-	bool equal(bool operand) { return value == operand; }
-	bool notEqual(bool operand) { return value != operand; }
+	inline bool equal(bool operand) { return value == operand; }
+	inline bool notEqual(bool operand) { return value != operand; }
 
 	// arithmetic
-	bool logicalAnd(bool operand) { return value && operand; }
-	bool logicalOr(bool operand) { return value || operand; }
-	bool logicalNot() { return !value; }
+	inline bool logicalAnd(bool operand) { return value && operand; }
+	inline bool logicalOr(bool operand) { return value || operand; }
+	inline bool logicalNot() { return !value; }
 
 	// get type definition
 	static OtType getMeta();

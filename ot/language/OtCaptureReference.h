@@ -30,7 +30,7 @@ public:
 	OtCaptureReferenceClass(OtID m) :  member(m) {}
 
 	// debugging support
-	std::string describe() override { return std::string(OtIdentifier::name(member)); }
+	inline std::string describe() override { return std::string(OtIdentifier::name(member)); }
 
 	// (de)reference functions
 	OtObject deref();

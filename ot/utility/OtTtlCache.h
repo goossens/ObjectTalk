@@ -25,27 +25,27 @@ template<typename K, typename V>
 class OtTtlCache {
 public:
 	// return number of cache entries
-	size_t getNumberOfEntries() {
+	inline size_t getNumberOfEntries() {
 		return entries.size();
 	}
 
 	// remove all entries
-	void clear() {
+	inline void clear() {
 		entries.clear();
 	}
 
 	// see if entry is in cache
-	bool has(const K& key) {
+	inline bool has(const K& key) {
 		return entries.find(key) != entries.end();
 	}
 
 	// create a new cache entry in place and return a reference
-	V& emplace(const K& key) {
+	inline V& emplace(const K& key) {
 		return entries.emplace(key, V()).first->second.value;
 	}
 
 	// set a cache entry
-	V& set(const K& key, const V& value) {
+	inline V& set(const K& key, const V& value) {
 		entries[key] = Entry(value);
 		auto pos = entries.find(key);
 		pos->second.ttl = 0.0f;
@@ -53,7 +53,7 @@ public:
 	}
 
 	// get a cache entry
-	V& get(const K& key) {
+	inline V& get(const K& key) {
 		auto pos = entries.find(key);
 
 		if (pos == entries.end()) {
@@ -65,7 +65,7 @@ public:
 	}
 
 	// update the cache
-	void update(float interval, float threshold) {
+	inline void update(float interval, float threshold) {
 		//process all entries
 		for (auto i = entries.begin(); i != entries.end();) {
 			// update time-to-live

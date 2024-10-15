@@ -35,25 +35,25 @@ public:
 	OtType(OtTypeClass* t) : type(t) {}
 
 	// pointer access
-	OtTypeClass* operator->() { return type; }
-	OtTypeClass& operator*() { return *type; }
-	OtTypeClass* raw() { return type; }
+	inline OtTypeClass* operator->() { return type; }
+	inline OtTypeClass& operator*() { return *type; }
+	inline OtTypeClass* raw() { return type; }
 
 	// see if type is valid
-	operator bool() { return type != nullptr; }
+	inline operator bool() { return type != nullptr; }
 
 	// see if types are equal
-	bool operator==(OtType other) const { return type == other.type; }
+	inline bool operator==(OtType other) const { return type == other.type; }
 
 	// create a new type
 	template <class T>
-	static OtType create(const std::string& name, OtType parent=nullptr, OtTypeAllocator allocator=nullptr);
+	static inline OtType create(const std::string& name, OtType parent=nullptr, OtTypeAllocator allocator=nullptr);
 
 	template <class T>
-	static OtType create(OtID id, OtType parent=nullptr, OtTypeAllocator allocator=nullptr);
+	static inline OtType create(OtID id, OtType parent=nullptr, OtTypeAllocator allocator=nullptr);
 
 	// create an incomplete type (parent must be set later)
-	static OtType create(OtID id);
+	static inline OtType create(OtID id);
 
 private:
 	OtTypeClass* type;

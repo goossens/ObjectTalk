@@ -29,10 +29,10 @@ public:
 	OtSourceClass(const std::string& m, const std::string& s) : module(m), source(s) {}
 
 	// return size of source code
-	size_t size() { return source.size(); }
+	inline size_t size() { return source.size(); }
 
 	// access source code at position
-	char at(size_t index) { return source[index]; }
+	inline char at(size_t index) { return source[index]; }
 
 	// get part of source code
 	std::string substr(size_t position, size_t size) { return source.substr(position, size); }

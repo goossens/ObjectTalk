@@ -57,7 +57,7 @@ public:
 
 	// split UTF-8 string by delimeter into a container
 	template <class CONTAINER>
-	static void split(const std::string& text, CONTAINER& container, char delimeter=' ') {
+	static inline void split(const std::string& text, CONTAINER& container, char delimeter=' ') {
 		std::stringstream ss(text);
 		std::string token;
 
@@ -68,7 +68,7 @@ public:
 
 	// UTF-8 string iterators
 	template <class FUNCTION>
-	static void splitIterator(const char* begin, const char* end, char character, FUNCTION function) {
+	static inline void splitIterator(const char* begin, const char* end, char character, FUNCTION function) {
 		auto i = begin;
 		auto start = begin;
 
@@ -87,7 +87,7 @@ public:
 	}
 
 	template <class FUNCTION>
-	static void splitTrimIterator(const char* begin, const char* end, char character, FUNCTION function) {
+	static inline void splitTrimIterator(const char* begin, const char* end, char character, FUNCTION function) {
 		splitIterator(begin, end, character, [&](const char *b, const char *e) {
 			while (isspace(*b) && b < e) {
 				b++;

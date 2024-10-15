@@ -25,13 +25,13 @@ template <typename T>
 class OtConcurrentQueue {
 public:
 	// clear queue
-	void clear() {
+	inline void clear() {
 		std::unique_lock<std::mutex> mlock(mutex);
 		queue = {};
 	}
 
 	// put item on queue
-	void push(const T& item) {
+	inline void push(const T& item) {
 		std::unique_lock<std::mutex> mlock(mutex);
 		queue.push(item);
 		mlock.unlock();
@@ -39,19 +39,19 @@ public:
 	}
 
 	// return number of queue entries
-	size_t size() {
+	inline size_t size() {
 		std::unique_lock<std::mutex> mlock(mutex);
 		return queue.size();
 	}
 
 	// see if queue has entries
-	bool empty() {
+	inline bool empty() {
 		std::unique_lock<std::mutex> mlock(mutex);
 		return queue.empty();
 	}
 
 	// wait until queue is not empty
-	void wait() {
+	inline void wait() {
 		std::unique_lock<std::mutex> mlock(mutex);
 
 		while (queue.empty()) {
@@ -60,7 +60,7 @@ public:
 	}
 
 	// pop item from queue and wait if queue is empty
-	T pop() {
+	inline T pop() {
 		std::unique_lock<std::mutex> mlock(mutex);
 
 		while (queue.empty()) {

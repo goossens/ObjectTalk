@@ -43,11 +43,11 @@ public:
 	virtual ~OtObjectClass();
 
 	// type access
-	void setType(OtType t) { type = t; }
-	OtType getType() { return type; }
+	inline void setType(OtType t) { type = t; }
+	inline OtType getType() { return type; }
 
 	// see if object "is kind of"
-	bool isKindOf(const std::string& className) { return type->isKindOf(className); }
+	inline bool isKindOf(const std::string& className) { return type->isKindOf(className); }
 
 	// expect object "is kind of" (exception is raised in case it is not)
 	void expectKindOf(const std::string& className);
@@ -93,8 +93,8 @@ public:
 	virtual bool operator==(OtObject operand);
 	virtual bool operator<(OtObject operand);
 
-	bool equal(OtObject operand) { return operator==(operand); }
-	bool notEqual(OtObject operand) { return !(operator==(operand)); }
+	inline bool equal(OtObject operand) { return operator==(operand); }
+	inline bool notEqual(OtObject operand) { return !(operator==(operand)); }
 
 	// "call" object (count, parameters)
 	virtual OtObject operator() (size_t, OtObject*) { return nullptr; }

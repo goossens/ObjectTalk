@@ -35,14 +35,14 @@ public:
 	OtMemberReferenceClass(OtObject o, OtID m) : object(o), member(m) {}
 
 	// debugging support
-	std::string describe() override { return object->getType()->getName() + " " + std::string(OtIdentifier::name(member)); }
+	inline std::string describe() override { return object->getType()->getName() + " " + std::string(OtIdentifier::name(member)); }
 
 	// (de)reference functions
-	OtObject deref() { return resolveMember(object, member); }
-	OtObject assign(OtObject value) { return object->set(member, value); }
+	inline OtObject deref() { return resolveMember(object, member); }
+	inline OtObject assign(OtObject value) { return object->set(member, value); }
 
 	// resolve member reference and deal with bound functions if required
-	static OtObject resolveMember(OtObject& object, OtID member) {
+	static inline OtObject resolveMember(OtObject& object, OtID member) {
 		// get the member
 		auto memberObject = object->get(member);
 

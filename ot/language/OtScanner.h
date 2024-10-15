@@ -148,7 +148,7 @@ private:
 	class OtScannerState {
 	public:
 		// constructor
-		OtScannerState() {
+		inline OtScannerState() {
 			for (auto c = 0; c < 256; c++) {
 				transitions[c] = noTransition;
 			}

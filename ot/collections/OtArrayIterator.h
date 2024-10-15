@@ -32,8 +32,8 @@ public:
 	OtArrayIteratorClass(OtArray a) : array(a) {}
 
 	// iteration operations
-	bool end() { return index == array->size(); }
-	OtObject next() { return array->getEntry(index++); }
+	inline bool end() { return index == array->size(); }
+	inline OtObject next() { return array->getEntry(index++); }
 
 	// get type definition
 	static OtType getMeta();

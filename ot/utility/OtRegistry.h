@@ -28,7 +28,7 @@ template<class T>
 class OtRegistry {
 public:
 	// add a new member to the registry
-	void set(const std::string& name, T member) {
+	inline void set(const std::string& name, T member) {
 		if (registry.count(name)) {
 			OtError("Member [{}] already in registry", name);
 		}
@@ -37,7 +37,7 @@ public:
 	}
 
 	// get member from registry
-	T get(const std::string& name) {
+	inline T get(const std::string& name) {
 		if (!registry.count(name)) {
 			OtError("Member [{}] not in registry", name);
 		}
@@ -46,7 +46,7 @@ public:
 	}
 
 	// get reference to registry member
-	T& at(const std::string& name) {
+	inline T& at(const std::string& name) {
 		if (!registry.count(name)) {
 			OtError("Member [{}] not in registry", name);
 		}
@@ -55,36 +55,36 @@ public:
 	}
 
 	// see if registry has specified member
-	bool has(const std::string& name) {
+	inline bool has(const std::string& name) {
 		return registry.count(name) != 0;
 	}
 
 	// iterate through registry members
-	void iterate(std::function<void(const std::string&, T&)> callback) {
+	inline void iterate(std::function<void(const std::string&, T&)> callback) {
 		for (std::pair<std::string, T> entry : registry) {
 			callback(entry.first, entry.second);
 		}
 	}
 
-	void iterateKeys(std::function<void(const std::string&)> callback) {
+	inline void iterateKeys(std::function<void(const std::string&)> callback) {
 		for (std::pair<std::string, T> entry : registry) {
 			callback(entry.first);
 		}
 	}
 
-	void iterateValues(std::function<void(T&)> callback) {
+	inline void iterateValues(std::function<void(T&)> callback) {
 		for (std::pair<std::string, T> entry : registry) {
 			callback(entry.second);
 		}
 	}
 
 	// get size of registry
-	size_t size() {
+	inline size_t size() {
 		return registry.size();
 	}
 
 	// clear the registry
-	void clear() {
+	inline void clear() {
 		registry.clear();
 	}
 

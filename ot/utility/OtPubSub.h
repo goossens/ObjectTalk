@@ -48,7 +48,7 @@ public:
 
 	template<typename T>
 	std::enable_if_t<std::is_same<Tm, T>::value, listener>
-	listen(typename Tm::handler handler) {
+	inline listen(typename Tm::handler handler) {
 		return { listeners.insert(listeners.end(), handler) };
 	}
 
@@ -59,7 +59,7 @@ public:
 protected:
 	template<typename T, typename... Args>
 	std::enable_if_t<std::is_same<Tm, T>::value>
-	notify(Args&& ...args) {
+	inline notify(Args&& ...args) {
 		auto i = listeners.begin();
 
 		while (i != listeners.end()) {

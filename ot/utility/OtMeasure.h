@@ -21,7 +21,7 @@
 //
 
 template<typename F, typename... Args>
-float OtMeasureFunction(F func, Args&&... args) {
+inline float OtMeasureFunction(F func, Args&&... args) {
 	auto start = std::chrono::high_resolution_clock::now();
 	std::forward<decltype(func)>(func)(std::forward<decltype(args)>(args)...);
 	auto stop = std::chrono::high_resolution_clock::now();
@@ -36,11 +36,11 @@ float OtMeasureFunction(F func, Args&&... args) {
 class OtMeasureStopWatch {
 public:
 	// constructor
-	OtMeasureStopWatch() {
+	inline OtMeasureStopWatch() {
 		start = std::chrono::high_resolution_clock::now();
 	}
 
-	float getTime() {
+	inline float getTime() {
 		auto now = std::chrono::high_resolution_clock::now();
 		auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(now - start).count();
 		return (float) microseconds / 1000.0f;

@@ -43,15 +43,15 @@ public:
 
 	OtException(std::string m) : shortMessage(m), longMessage(m) {}
 
-	const char* what() const throw() { return longMessage.c_str(); }
+	inline const char* what() const throw() { return longMessage.c_str(); }
 
 	// access properties
-	std::string getModule() const { return module; }
-	size_t getLineNumber() const { return lineNumber; }
-	size_t getStart() const { return start; }
-	size_t getEnd() const { return end; }
-	std::string getShortErrorMessage() const { return shortMessage; }
-	std::string getLongErrorMessage() const { return longMessage; }
+	inline std::string getModule() const { return module; }
+	inline size_t getLineNumber() const { return lineNumber; }
+	inline size_t getStart() const { return start; }
+	inline size_t getEnd() const { return end; }
+	inline std::string getShortErrorMessage() const { return shortMessage; }
+	inline std::string getLongErrorMessage() const { return longMessage; }
 
 	// (de)serializer
 	std::string serialize();

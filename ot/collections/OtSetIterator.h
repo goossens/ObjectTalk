@@ -29,14 +29,11 @@ class OtSetIteratorClass : public OtIteratorClass {
 public:
 	// constructors
 	OtSetIteratorClass() = default;
-
-	OtSetIteratorClass(OtSet s) : set(s) {
-		iterator = set->set.begin();
-	}
+	inline OtSetIteratorClass(OtSet s) : set(s) { iterator = set->set.begin(); }
 
 	// iteration operations
-	bool end() { return iterator == set->set.end(); }
-	OtObject next() { return *iterator++; }
+	inline bool end() { return iterator == set->set.end(); }
+	inline OtObject next() { return *iterator++; }
 
 	// get type definition
 	static OtType getMeta();

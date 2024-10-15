@@ -49,7 +49,7 @@ public:
 	}
 
 	// process a fatal exception
-	static void exception(OtException& e)  {
+	static inline void exception(OtException& e)  {
 		if (instance().subprocessMode) {
 			OtStderrMultiplexer::multiplex(e);
 		}

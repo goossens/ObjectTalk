@@ -31,7 +31,7 @@ public:
 	// constructors
 	OtFunctionClass() = default;
 
-	OtFunctionClass(void (*function)(size_t, OtObject*)) {
+	inline OtFunctionClass(void (*function)(size_t, OtObject*)) {
 		caller = [function](size_t count, OtObject* parameters) {
 			function(count, parameters);
 			return nullptr;
@@ -40,7 +40,7 @@ public:
 		parameterCount = SIZE_MAX;
 	}
 
-	OtFunctionClass(OtObject (*function)(size_t, OtObject*)) {
+	inline OtFunctionClass(OtObject (*function)(size_t, OtObject*)) {
 		caller = [function](size_t count, OtObject* parameters) {
 			return function(count, parameters);
 		};
@@ -49,12 +49,12 @@ public:
 	}
 
 	template <typename Args, std::size_t... I>
-	static auto functionArgs(OtObject* parameters, std::index_sequence<I...>) {
+	static inline auto functionArgs(OtObject* parameters, std::index_sequence<I...>) {
 		return std::make_tuple(OtValue<std::tuple_element_t<I, Args>>::decode(parameters[I])...);
 	}
 
 	template<typename ...Args>
-	OtFunctionClass(void (*function)(Args...)) {
+	inline OtFunctionClass(void (*function)(Args...)) {
 		caller = [function](size_t count, OtObject* parameters) {
 			std::apply(
 				function,
@@ -69,7 +69,7 @@ public:
 	}
 
 	template<typename Result, typename ...Args>
-	OtFunctionClass(Result (*function)(Args...)) {
+	inline OtFunctionClass(Result (*function)(Args...)) {
 		caller = [function](size_t count, OtObject* parameters) {
 			return OtValue<Result>::encode(
 				std::apply(
@@ -83,7 +83,7 @@ public:
 	}
 
 	template<typename ...Args>
-	OtFunctionClass(std::function<void(Args...)> function) {
+	inline OtFunctionClass(std::function<void(Args...)> function) {
 		caller = [function](size_t count, OtObject* parameters) {
 			std::apply(function,
 				functionArgs<typename std::tuple<Args...>>(
@@ -97,7 +97,7 @@ public:
 	}
 
 	template<typename Result, typename ...Args>
-	OtFunctionClass(std::function<Result(Args...)> function) {
+	inline OtFunctionClass(std::function<Result(Args...)> function) {
 		caller = [function](size_t count, OtObject* parameters) {
 			return OtValue<Result>::encode(
 				std::apply(
@@ -111,7 +111,7 @@ public:
 	}
 
 	template<typename Class>
-	OtFunctionClass(void (Class::*method)(size_t, OtObject*)) {
+	inline OtFunctionClass(void (Class::*method)(size_t, OtObject*)) {
 		caller = [method](size_t count, OtObject* parameters) {
 			OtObjectPointer<Class> object = parameters[0];
 			((*object).*method)(count - 1, parameters + 1);
@@ -122,7 +122,7 @@ public:
 	}
 
 	template<typename Class>
-	OtFunctionClass(OtObject (Class::*method)(size_t, OtObject*)) {
+	inline OtFunctionClass(OtObject (Class::*method)(size_t, OtObject*)) {
 		caller = [method](size_t count, OtObject* parameters) {
 			OtObjectPointer<Class> object = parameters[0];
 			return ((*object).*method)(count - 1, parameters + 1);
@@ -132,14 +132,14 @@ public:
 	}
 
 	template <typename Class, typename Args, std::size_t... I>
-	static auto methodArgs(OtObject* parameters, std::index_sequence<I...>) {
+	static inline auto methodArgs(OtObject* parameters, std::index_sequence<I...>) {
 		return std::make_tuple(
 			OtObjectPointer<Class>(parameters[0]),
 			OtValue<std::tuple_element_t<I, Args>>::decode(parameters[I + 1])...);
 	}
 
 	template<typename Class, typename ...Args>
-	OtFunctionClass(void (Class::*method)(Args...)) {
+	inline OtFunctionClass(void (Class::*method)(Args...)) {
 		caller = [method](size_t count, OtObject* parameters) {
 			std::apply(
 				method,
@@ -154,7 +154,7 @@ public:
 	}
 
 	template<typename Class, typename Result, typename ...Args>
-	OtFunctionClass(Result (Class::*method)(Args...)) {
+	inline OtFunctionClass(Result (Class::*method)(Args...)) {
 		caller = [method](size_t count, OtObject* parameters) {
 			return OtValue<Result>::encode(
 				std::apply(
@@ -168,7 +168,7 @@ public:
 	}
 
 	template<typename Class, typename Result, typename ...Args>
-	OtFunctionClass(Result (Class::*method)(Args...) const) {
+	inline OtFunctionClass(Result (Class::*method)(Args...) const) {
 		caller = [method](size_t count, OtObject* parameters) {
 			return OtValue<Result>::encode(
 				std::apply(

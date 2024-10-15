@@ -40,7 +40,7 @@ public:
 	OtObject operator()(size_t count, OtObject* parameters) override;
 
 	// get parameter count
-	size_t getParameterCount() { return function->getParameterCount(); }
+	inline size_t getParameterCount() { return function->getParameterCount(); }
 
 	// get type definition
 	static OtType getMeta();

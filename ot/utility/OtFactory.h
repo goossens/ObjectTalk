@@ -29,13 +29,13 @@ template <typename B, typename... Ts>
 class OtFactory {
 public:
 	// constructors
-	OtFactory() {
+	inline OtFactory() {
 		(add<Ts>(), ...);
 	}
 
 	// add a new type to the factory
 	template <typename T>
-	void add() {
+	inline void add() {
 		list.emplace_back<std::string_view>(T::name);
 
 		map.emplace(T::name, []() {
@@ -44,7 +44,7 @@ public:
 	}
 
 	// create a new instance by name
-	std::shared_ptr<B> create(std::string_view name) {
+	inline std::shared_ptr<B> create(std::string_view name) {
 		if (!exists(name)) {
 			OtError("Internal error: factory can't create instance of type [{}]", name);
 		}
@@ -53,12 +53,12 @@ public:
 	}
 
 	// see if a specified name can be instantiated
-	bool exists(std::string_view name) {
+	inline bool exists(std::string_view name) {
 		return map.find(name) != map.cend();
 	}
 
 	// interate through the type names
-	void each(std::function<void(const char* name)> callback) {
+	inline void each(std::function<void(const char* name)> callback) {
 		for(const auto& entry : list) {
 			callback(entry.data());
 		}

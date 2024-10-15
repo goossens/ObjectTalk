@@ -28,10 +28,10 @@ using OtPathIterator = OtObjectPointer<OtPathIteratorClass>;
 class OtPathIteratorClass : public OtIteratorClass {
 public:
 	OtPathIteratorClass() = default;
-	OtPathIteratorClass(OtPath p) { path = p; iterator = p->path.begin(); last = p->path.end(); }
+	inline OtPathIteratorClass(OtPath p) { path = p; iterator = p->path.begin(); last = p->path.end(); }
 
-	bool end() { return iterator == last; }
-	OtObject next() { return OtPath::create(*(iterator++)); }
+	inline bool end() { return iterator == last; }
+	inline OtObject next() { return OtPath::create(*(iterator++)); }
 
 	// get type definition
 	static OtType getMeta();

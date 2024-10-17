@@ -55,6 +55,9 @@ public:
 	static std::string compressWhitespace(const std::string& text, const std::string& chars="\t\n\v\f\r ");
 	static std::string removeAllWhitespace(const std::string& text, const std::string& chars="\t\n\v\f\r ");
 
+	// pad a text string to a specified length using the provided character
+	static std::string pad(const std::string& text, size_t size, char character=' ');
+
 	// split UTF-8 string by delimeter into a container
 	template <class CONTAINER>
 	static inline void split(const std::string& text, CONTAINER& container, char delimeter=' ') {

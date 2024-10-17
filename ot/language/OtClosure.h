@@ -13,6 +13,7 @@
 //
 
 #include <unordered_map>
+#include <utility>
 
 #include "OtByteCodeFunction.h"
 #include "OtIdentifier.h"
@@ -31,7 +32,7 @@ class OtClosureClass : public OtInternalClass {
 public:
 	// constructor
 	OtClosureClass() = default;
-	OtClosureClass(OtByteCodeFunction f, const std::unordered_map<OtID, OtStackItem>& c) : function(f), captures(c) {}
+	OtClosureClass(OtByteCodeFunction f, const std::unordered_map<OtID, std::pair<size_t, size_t>>& c) : function(f), captures(c) {}
 
 	// capture required variables in returned clone
 	OtObject capture();
@@ -47,5 +48,5 @@ public:
 
 private:
 	OtByteCodeFunction function;
-	std::unordered_map<OtID, OtStackItem> captures;
+	std::unordered_map<OtID, std::pair<size_t, size_t>> captures;
 };

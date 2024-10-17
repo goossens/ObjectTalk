@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include <algorithm>
 #include <cstdlib>
 #include <vector>
 
@@ -54,8 +55,7 @@ void OtDebuggerClass::debug(size_t count, OtObject* parameters) {
 
 OtObject OtDebuggerClass::getVariableNames() {
 	// create list of variable names used at current location in current stack frame
-	auto& frame = OtVM::getStackFrame();
-	auto names = frame.bytecode->getUsedSymbolNames(*frame.pc);
+	auto names = OtVM::getByteCode()->getUsedSymbolNames(OtVM::getPC());
 	auto array = OtArray::create();
 
 	for (auto& name : names) {
@@ -79,8 +79,8 @@ static void wordCompleter(ic_completion_env_t* cenv, const char* word) {
 		"step",
 		"in",
 		"out",
-		"quit",
 		"variables",
+		"quit",
 		nullptr};
 
 	ic_add_completions(cenv, word, completions);
@@ -184,12 +184,12 @@ void OtDebuggerClass::processCommand() {
 //
 
 std::string OtDebuggerClass::where() {
-	auto& frame = OtVM::getStackFrame();
+	auto bytecode = OtVM::getByteCode();
 
 	return fmt::format(
 		"Module: {}\n{}\n",
-		frame.bytecode->getModule(),
-		frame.bytecode->getStatementSourceCode(*frame.pc));
+		bytecode->getModule(),
+		bytecode->getStatementSourceCode(OtVM::getPC()));
 }
 
 
@@ -198,7 +198,7 @@ std::string OtDebuggerClass::where() {
 //
 
 std::string OtDebuggerClass::disassemble() {
-	return OtVM::getStackFrame().bytecode->disassemble();
+	return OtVM::getByteCode()->disassemble();
 }
 
 
@@ -207,12 +207,58 @@ std::string OtDebuggerClass::disassemble() {
 //
 
 std::string OtDebuggerClass::variables() {
-	std::string result;
-	auto& frame = OtVM::getStackFrame();
-	auto names = frame.bytecode->getUsedSymbolNames(*frame.pc);
+	// get list of variable used in current context
+	auto symbols = OtVM::getByteCode()->getUsedSymbols(OtVM::getPC());
 
-	for (auto& name : names) {
-		result += name + "\n";
+	// determine names and values
+	std::vector<std::pair<std::string, OtObject>> variables;
+
+	for (auto& symbol : symbols) {
+		auto name = std::string(OtIdentifier::name(symbol.id));
+		OtObject value;
+
+		switch (symbol.type) {
+			case OtSymbol::heapType:
+				value = symbol.object->get(symbol.id);
+				break;
+
+			case OtSymbol::stackType:
+				value = OtVM::getStack()->getFrameItem(symbol.slot);
+				break;
+
+			case OtSymbol::captureType:
+				break;
+		}
+
+		variables.emplace_back(name, value);
+	}
+
+	// determine longest strings
+	size_t longestName = 8;
+	size_t longestClassName = 5;
+
+	for (auto& variable : variables) {
+		longestName = std::max(longestName, variable.first.size());
+	}
+
+	for (auto& variable : variables) {
+		longestClassName = std::max(longestClassName, variable.second->getType()->getName().size());
+	}
+
+	// format output
+	std::string result = OtText::pad("Variable", longestName + 2) + OtText::pad("Class", longestClassName + 2) + "Details\n";
+
+	for (auto& variable : variables) {
+		auto variableName = OtText::pad(variable.first, longestName + 2);
+		auto classType = variable.second->getType()->getName();
+		auto className = OtText::pad(classType, longestClassName + 2);
+		auto description = variable.second->describe();
+
+		if (description == classType) {
+			description = " ";
+		}
+
+		result += variableName + className + description + "\n";
 	}
 
 	return result;

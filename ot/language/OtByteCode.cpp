@@ -551,12 +551,31 @@ std::string OtByteCodeClass::getStatementSourceCode(size_t pc) {
 
 
 //
+//	OtByteCodeClass::getUsedSymbols
+//
+
+std::vector<OtSymbol> OtByteCodeClass::getUsedSymbols(size_t pc) {
+	std::vector<OtSymbol> syms;
+	std::unordered_map<size_t, bool> index;
+
+	for (auto& symbol : symbols) {
+		if (pc >= symbol.opcodeStart && pc < symbol.opcodeEnd && index.count(symbol.id) == 0) {
+			syms.emplace_back(symbol);
+			index[symbol.id] = true;
+		}
+	}
+
+	return syms;
+}
+
+
+//
 //	OtByteCodeClass::getUsedSymbolNames
 //
 
 std::vector<std::string> OtByteCodeClass::getUsedSymbolNames(size_t pc) {
 	std::vector<std::string> names;
-	std::unordered_map<size_t, size_t> index;
+	std::unordered_map<size_t, bool> index;
 
 	for (auto& symbol : symbols) {
 		if (pc >= symbol.opcodeStart && pc < symbol.opcodeEnd && index.count(symbol.id) == 0) {

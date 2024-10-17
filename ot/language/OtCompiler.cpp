@@ -202,7 +202,7 @@ void OtCompiler::pushBlockScope(OtByteCode bytecode) {
 //
 
 void OtCompiler::popScope() {
-	// process all symbols (if required)
+	// process all symbols in this scope (if required)
 	auto& scope = scopeStack.back();
 
 	if (scope.bytecode) {
@@ -228,7 +228,7 @@ void OtCompiler::popScope() {
 //	OtCompiler::declareCapture
 //
 
-void OtCompiler::declareCapture(OtID id, OtStackItem item) {
+void OtCompiler::declareCapture(OtID id, std::pair<size_t, size_t> item) {
 	// find most recent function scope
 	auto scope = scopeStack.rbegin();
 
@@ -241,14 +241,8 @@ void OtCompiler::declareCapture(OtID id, OtStackItem item) {
 		OtError("Internal error: no function scope on stack");
 	}
 
-	// see if this variable is already captured
-	if (scope->captures.count(id)) {
-		if (scope->captures[id] != item) {
-			OtError("Internal error: captured variable [{}] has different stack offset", OtIdentifier::name(id));
-		}
-
-	} else {
-		// add item to list of captured variables
+	// add item to list of captured variables (if not already captured)
+	if (scope->captures.count(id) == 0) {
 		scope->captures[id] = item;
 	}
 }
@@ -341,7 +335,7 @@ void OtCompiler::resolveVariable(OtID id, bool processSymbol) {
 
 					} else {
 						// variable is in an enclosing function, we need to capture it
-						declareCapture(id, OtStackItem(functionLevel - 1, i->locals[id]));
+						declareCapture(id, {functionLevel - 1, i->locals[id]});
 						bytecode->push(OtCaptureReference::create(id));
 
 						// process symbol if (required)
@@ -418,6 +412,9 @@ void OtCompiler::function(OtByteCode bytecode, OtID id) {
 	// get function level bytecode
 	block(functionCode);
 
+	// end function scope
+	popScope();
+
 	// default return value in case function does not have return statement
 	functionCode->pushNull();
 
@@ -438,9 +435,6 @@ void OtCompiler::function(OtByteCode bytecode, OtID id) {
 		// no captures so just put new function on the stack
 		bytecode->push(function);
 	}
-
-	// end function scope
-	popScope();
 }
 
 

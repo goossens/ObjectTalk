@@ -13,6 +13,7 @@
 //
 
 #include "OtByteCode.h"
+#include "OtIdentifier.h"
 #include "OtInternal.h"
 
 
@@ -28,6 +29,9 @@ public:
 	// constructor
 	OtByteCodeFunctionClass() = default;
 	OtByteCodeFunctionClass(OtByteCode c, size_t p) : bytecode(c), parameterCount(p) {}
+
+	// debugging support
+	inline std::string describe() override { return std::string(OtIdentifier::name(bytecode->getID())); }
 
 	// call code
 	OtObject operator()(size_t count, OtObject* parameters) override;

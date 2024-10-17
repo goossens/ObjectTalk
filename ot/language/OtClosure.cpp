@@ -25,7 +25,7 @@ OtObject OtClosureClass::capture() {
 
 	// setup all captured variables
 	for (auto const& capture : captures) {
-		clone->set(capture.first, OtVM::getStack()->getFrameItem(capture.second));
+		clone->set(capture.first, OtVM::getStack()->getFrameItem(capture.second.first, capture.second.second));
 	}
 
 	// return a cloned closure with the captured variables

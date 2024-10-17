@@ -37,6 +37,7 @@ public:
 	inline operator double() override { return value ? 1.0 : 0.0; }
 	inline operator std::string() override { return value ? "true" : "false"; }
 
+	// debugging support
 	inline std::string describe() override { return operator std::string(); }
 
 	// comparison

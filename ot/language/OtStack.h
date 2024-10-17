@@ -18,35 +18,11 @@
 #include <memory>
 #include <sstream>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "OtByteCode.h"
 #include "OtObject.h"
-
-
-//
-//	OtStackItem
-//
-
-class OtStackItem {
-public:
-	// constructors
-	OtStackItem() = default;
-	OtStackItem(size_t f, size_t s) : frame(f), slot(s) {}
-
-	// comparison operators
-	bool operator==(const OtStackItem& item) const {
-		return frame == item.frame && slot == item.slot;
-	}
-
-	bool operator!=(const OtStackItem& item) const {
-		return frame != item.frame || slot != item.slot;
-	}
-
-	// stack item address
-	size_t frame = 0;
-	size_t slot = 0;
-};
 
 
 //
@@ -106,8 +82,10 @@ public:
 
 	// frame access functions
 	inline void openFrame(OtByteCode bytecode, size_t callingParameters, size_t* pc) { frames.emplace_back(bytecode, sp - callingParameters, pc); }
-	inline OtObject getFrameItem(OtStackItem item) { return stack[frames[frames.size() - item.frame - 1].offset + item.slot]; }
-	inline void setFrameItem(OtStackItem item, OtObject object) { stack[frames[frames.size() - item.frame - 1].offset + item.slot] = object; }
+	inline OtObject getFrameItem(size_t slot) { return stack[frames.back().offset + slot]; }
+	inline OtObject getFrameItem(size_t frame, size_t slot) { return stack[frames[frames.size() - frame - 1].offset + slot]; }
+	inline void setFrameItem(size_t slot, OtObject object) { stack[frames.back().offset + slot] = object; }
+	inline void setFrameItem(size_t frame, size_t slot, OtObject object) { stack[frames[frames.size() - frame - 1].offset + slot] = object; }
 	inline OtStackFrame& getFrame() { return frames.back(); }
 	inline void closeFrame() { frames.pop_back(); }
 	inline size_t getFrameCount() { return frames.size(); }

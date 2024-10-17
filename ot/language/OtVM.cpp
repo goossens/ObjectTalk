@@ -195,7 +195,7 @@ OtObject OtVM::executeByteCode(OtByteCode bytecode, size_t callingParameters) {
 				case OtByteCodeClass::pushStackOpcode: {
 					// push a stack-based object back onto the stack
 					auto slot = bytecode->getNumber(pc);
-					auto object  = stack.getFrameItem(OtStackItem(0, slot));
+					auto object  = stack.getFrameItem(slot);
 					stack.push(object);
 					break;
 				}
@@ -221,7 +221,7 @@ OtObject OtVM::executeByteCode(OtByteCode bytecode, size_t callingParameters) {
 					// put the top stack object into a stack-based slot
 					auto slot = bytecode->getNumber(pc);
 					auto value = stack.top();
-					stack.setFrameItem(OtStackItem(0, slot), value);
+					stack.setFrameItem(slot, value);
 					break;
 				}
 

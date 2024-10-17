@@ -185,6 +185,7 @@ public:
 	size_t getLineNumber(size_t pc);
 	std::string getStatementSourceCode(size_t pc);
 
+	std::vector<OtSymbol> getUsedSymbols(size_t pc);
 	std::vector<std::string> getUsedSymbolNames(size_t pc);
 
 	// get type definition

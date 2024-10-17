@@ -313,6 +313,25 @@ std::string OtText::removeAllWhitespace(const std::string& text, const std::stri
 
 
 //
+//	OtText::pad
+//
+
+std::string OtText::pad(const std::string& text, size_t size, char character) {
+	auto currentSize = len(text);
+
+	if (size < currentSize) {
+		return left(text, size);
+
+	} else if (size == currentSize) {
+		return text;
+
+	} else {
+		return text + std::string(size - currentSize, character);
+	}
+}
+
+
+//
 //	OtText::EncodeURL
 //
 

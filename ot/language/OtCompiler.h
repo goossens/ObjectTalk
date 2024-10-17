@@ -13,6 +13,7 @@
 //
 
 #include <string>
+#include <utility>
 
 #include "OtByteCode.h"
 #include "OtClass.h"
@@ -49,7 +50,7 @@ private:
 	void popScope();
 
 	// declare a new captured variable
-	void declareCapture(OtID id, OtStackItem item);
+	void declareCapture(OtID id, std::pair<size_t, size_t> item);
 
 	// declare a new variable in the current scope
 	void declareVariable(OtID id, bool declareVariable=false);
@@ -172,7 +173,7 @@ private:
 
 		// constructors
 		Scope(OtByteCode b, OtObject o) : type(objectScope), bytecode(b), object(o) {}
-		Scope(OtByteCode b) : type(functionScope), bytecode(b), stackFrameOffset(0) {}
+		Scope(OtByteCode b) : type(functionScope), bytecode(b) {}
 		Scope(OtByteCode b, size_t sfo) : type(blockScope), bytecode(b), stackFrameOffset(sfo) {}
 
 		// scope details
@@ -181,7 +182,7 @@ private:
 		OtObject object = nullptr;
 		size_t stackFrameOffset = 0;
 		std::unordered_map<OtID, size_t> locals;
-		std::unordered_map<OtID, OtStackItem> captures;
+		std::unordered_map<OtID, std::pair<size_t, size_t>> captures;
 		std::vector<OtSymbol> symbols;
 		std::unordered_map<OtID, size_t> symbolIndex;
 	};

@@ -6,7 +6,7 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-function test() {
+function outer(argument) {
 	function inner() {
 		print("inner");
 	}
@@ -16,4 +16,5 @@ function test() {
 	print("outer");
 }
 
-test();
+outer(1);
+print("done");

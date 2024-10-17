@@ -92,7 +92,8 @@ public:
 	static inline OtObject getNull() { return instance().null; }
 
 	static inline OtClosure getClosure() { return instance().stack.getClosure(); }
-	static inline OtStackFrame& getStackFrame() { return instance().stack.getFrame(); }
+	static inline OtByteCode getByteCode() { return instance().stack.getFrame().bytecode; }
+	static inline size_t getPC() { return *instance().stack.getFrame().pc; }
 
 private:
 	// execute bytecode in the virtual machine

@@ -29,6 +29,7 @@ public:
 
 private:
 	// optimize sequences of opcodes
+	bool optimizePushStackMemberReferenceSequence(size_t& opcode, size_t available);
 	bool optimizePushStackReferenceSequence(size_t& opcode, size_t available);
 	bool optimizePushMemberReferenceSequence(size_t& opcode, size_t available);
 	bool optimizePushMemberSequence(size_t& opcode, size_t available);

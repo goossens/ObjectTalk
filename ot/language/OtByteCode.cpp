@@ -40,7 +40,7 @@ std::string OtByteCodeClass::disassemble() {
 
 		switch (getOpcode(pc)) {
 			case statementOpcode:
-				buffer << "statementOpcode";
+				buffer << "statement";
 				break;
 
 			case pushOpcode: {
@@ -112,8 +112,12 @@ std::string OtByteCodeClass::disassemble() {
 				buffer << "popTry";
 				break;
 
-			case pushStackOpcode:
-				buffer << "pushStack" << getNumber(pc);
+			case pushStackObjectOpcode:
+				buffer << "pushStackObject" << getNumber(pc);
+				break;
+
+			case pushStackMemberOpcode:
+				buffer << "pushStackMember" << getNumber(pc) << " " << OtIdentifier::name(getID(pc));
 				break;
 
 			case pushObjectMemberOpcode:
@@ -217,9 +221,16 @@ void OtByteCodeClass::copyOpcode(OtByteCode other, size_t pc) {
 			popTry();
 			break;
 
-		case pushStackOpcode:
-			pushStack(other->getNumber(pc));
+		case pushStackObjectOpcode:
+			pushStackObject(other->getNumber(pc));
 			break;
+
+		case pushStackMemberOpcode: {
+			auto slot = other->getNumber(pc);
+			auto member = other->getID(pc);
+			pushStackMember(slot, member);
+			break;
+		}
 
 		case pushObjectMemberOpcode: {
 			auto object = other->getNumber(pc);
@@ -319,7 +330,12 @@ size_t OtByteCodeClass::getOpcodeSize(size_t offset) {
 		case popTryOpcode:
 			break;
 
-		case pushStackOpcode:
+		case pushStackObjectOpcode:
+			getNumber(pc);
+			break;
+
+		case pushStackMemberOpcode:
+			getNumber(pc);
 			getNumber(pc);
 			break;
 

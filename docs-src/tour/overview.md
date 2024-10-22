@@ -21,7 +21,7 @@ in detail in the rest of the documentation.
 
 In ObjectTalk, everything is an Object derived from a Class. The number 1
 is an object derived from the Integer class and so are 3.14 (derived from
-the Real class) and "test" (derived from the string class). To take this
+the Real class) and "test" (derived from the String class). To take this
 a step further, operators like +, -, *, /, [] and () are actually member
 functions on an Object. This keeps the Virtual Machine (VM) very simple as
 it has no mathematical instructions. The VM actually only executes member
@@ -40,7 +40,7 @@ to understand the compiler and VM, you have to understand both.
 
 Given that operators become member function calls, custom Classes
 can implement operators so it is very simple in ObjectTalk to implement
-a Vector class that implements a dot product operator.
+a Vector class that implements a dot product using '*' (__mul__) operator.
 
 ## Variables
 

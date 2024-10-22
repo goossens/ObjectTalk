@@ -48,6 +48,7 @@ OtByteCode OtOptimizer::optimize(OtByteCode bytecode) {
 
 		// try all optimization sequences (in the right order)
 		bool optimized = false;
+		if (!optimized) { optimized = optimizePushStackMemberReferenceSequence(opcode, end - opcode); }
 		if (!optimized) { optimized = optimizePushStackReferenceSequence(opcode, end - opcode); }
 		if (!optimized) { optimized = optimizePushMemberReferenceSequence(opcode, end - opcode); }
 		if (!optimized) { optimized = optimizePushMemberSequence(opcode, end - opcode); }
@@ -89,6 +90,30 @@ OtByteCode OtOptimizer::optimize(OtByteCode bytecode) {
 
 
 //
+//	OtOptimizer::optimizePushStackMemberReferenceSequence
+//
+
+bool OtOptimizer::optimizePushStackMemberReferenceSequence(size_t& opcode, size_t available) {
+	OtStackReference reference;
+	OtID member;
+
+	if (available >= 4 &&
+		oldByteCode->isPushStackReference(opcodes[opcode], reference) &&
+		oldByteCode->isMethodDeref(opcodes[opcode + 1]) &&
+		oldByteCode->isMember(opcodes[opcode + 2], member) &&
+		oldByteCode->isMethodDeref(opcodes[opcode + 3])) {
+
+		newByteCode->pushStackMember(reference->getSlot(), member);
+		opcode += 4;
+		return true;
+
+	} else {
+		return false;
+	}
+}
+
+
+//
 //	OtOptimizer::optimizePushStackReferenceSequence
 //
 
@@ -99,7 +124,7 @@ bool OtOptimizer::optimizePushStackReferenceSequence(size_t& opcode, size_t avai
 		oldByteCode->isPushStackReference(opcodes[opcode], reference) &&
 		oldByteCode->isMethodDeref(opcodes[opcode + 1])) {
 
-		newByteCode->pushStack(reference->getSlot());
+		newByteCode->pushStackObject(reference->getSlot());
 		opcode += 2;
 		return true;
 

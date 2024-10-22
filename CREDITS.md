@@ -64,7 +64,7 @@ A another special thanks goes to the team that wrote the [Swift](https://swift.o
 
 The following tutorials were used in the development of ObjectTalk:
 
-* [Crafting Interpreters](https://www.craftinginterpreters.com) by [Robert Nystrom](http://journal.stuffwithstuff.com) release under the [MIT License](https://opensource.org/licenses/MIT) and the [CC BY-NC-ND 4.0 license](https://creativecommons.org/licenses/by-nc-nd/4.0/).
+* [Crafting Interpreters](http://craftinginterpreters.com) by [Robert Nystrom](http://journal.stuffwithstuff.com) release under the [MIT License](https://opensource.org/licenses/MIT) and the [CC BY-NC-ND 4.0 license](https://creativecommons.org/licenses/by-nc-nd/4.0/).
 Please see his [github repository](https://github.com/munificent/craftinginterpreters/blob/master/LICENSE) for an explanation on
 what applies where.
 * [Learn OpenGL](https://learnopengl.com) by [Joey de Vries](http://joeydevries.com/#home) released under the [Creative Commons Attribution-NonCommercial 4.0 International License](https://creativecommons.org/licenses/by-nc/4.0/legalcode).

@@ -46,6 +46,9 @@ private:
 	void pushFunctionScope(OtByteCode bytecode);
 	void pushBlockScope(OtByteCode bytecode);
 
+	// close scope by finalizing local symbol "visibility"
+	void closeScope();
+
 	// pop the last scope from the scope stack
 	void popScope();
 
@@ -185,6 +188,7 @@ private:
 		std::unordered_map<OtID, std::pair<size_t, size_t>> captures;
 		std::vector<OtSymbol> symbols;
 		std::unordered_map<OtID, size_t> symbolIndex;
+		bool closed = false;
 	};
 
 	std::vector<Scope> scopeStack;

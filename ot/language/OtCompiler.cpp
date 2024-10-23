@@ -198,14 +198,14 @@ void OtCompiler::pushBlockScope(OtByteCode bytecode) {
 
 
 //
-//	OtCompiler::popScope
+//	OtCompiler::closeScope
 //
 
-void OtCompiler::popScope() {
+void OtCompiler::closeScope() {
 	// process all symbols in this scope (if required)
 	auto& scope = scopeStack.back();
 
-	if (scope.bytecode) {
+	if (scope.bytecode && !scope.closed) {
 		auto offset = scope.bytecode->size();
 
 		for (auto& symbol : scope.symbols) {
@@ -219,7 +219,17 @@ void OtCompiler::popScope() {
 		}
 	}
 
-	// remove last scope
+	scope.closed = true;
+}
+
+
+//
+//	OtCompiler::popScope
+//
+
+void OtCompiler::popScope() {
+	// close and remove last scope
+	closeScope();
 	scopeStack.pop_back();
 }
 
@@ -412,8 +422,8 @@ void OtCompiler::function(OtByteCode bytecode, OtID id) {
 	// get function level bytecode
 	block(functionCode);
 
-	// end function scope
-	popScope();
+	// close out local symbols now so the optimizer calculates their visibility ranges correctly
+	closeScope();
 
 	// default return value in case function does not have return statement
 	functionCode->pushNull();
@@ -435,6 +445,9 @@ void OtCompiler::function(OtByteCode bytecode, OtID id) {
 		// no captures so just put new function on the stack
 		bytecode->push(function);
 	}
+
+	// end function scope
+	popScope();
 }
 
 

@@ -47,7 +47,7 @@ public:
 	void customRendering(float width) override {
 		if (texture.isValid()) {
 			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (width - customW) / 2.0f);
-			ImGui::Image((void*)(intptr_t) texture.getIndex(), ImVec2(customW, customH));
+			ImGui::Image((ImTextureID)(intptr_t) texture.getIndex(), ImVec2(customW, customH));
 
 		} else {
 			ImGui::TextUnformatted("No Texture available");

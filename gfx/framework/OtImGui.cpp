@@ -214,7 +214,7 @@ void OtFramework::initIMGUI() {
 	int fw, fh;
 	io.Fonts->GetTexDataAsRGBA32(&pixels, &fw, &fh);
 	imguiFontTexture.loadFromMemory(fw, fh, OtTexture::rgba8Texture, pixels);
-	io.Fonts->TexID = (void*)(intptr_t) imguiFontTexture.getIndex();
+	io.Fonts->TexID = (ImTextureID)(intptr_t) imguiFontTexture.getIndex();
 
 	// setup vertex declaration
 	imguiVertexLayout

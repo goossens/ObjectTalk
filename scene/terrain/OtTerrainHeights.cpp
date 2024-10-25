@@ -50,7 +50,7 @@ bool OtTerrainHeights::renderUI() {
 			ImGui::TableNextColumn();
 
 			if (normalmap.isValid()) {
-				ImGui::Image((void*)(intptr_t) normalmap.getColorTextureIndex(), ImVec2(512, 512));
+				ImGui::Image((ImTextureID)(intptr_t) normalmap.getColorTextureIndex(), ImVec2(512, 512));
 			}
 
 			ImGui::EndTable();

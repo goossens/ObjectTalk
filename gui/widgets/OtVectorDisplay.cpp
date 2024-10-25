@@ -616,7 +616,7 @@ void OtVectorDisplayClass::render() {
 	// render scope frame, align it and put it on the screen
 	auto index = scope.render();
 	OtUiAlign(size, horizontalAlign, verticalAlign);
-	ImGui::Image((void*)(intptr_t) index, size);
+	ImGui::Image((ImTextureID)(intptr_t) index, size);
 }
 
 

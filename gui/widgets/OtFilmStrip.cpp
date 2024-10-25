@@ -91,7 +91,7 @@ void OtFilmStripClass::render() {
 		auto pos = ImGui::GetCursorPos();
 
 		// render frame
-		ImGui::Image((void*)(intptr_t) texture.getIndex(), size, tl, br);
+		ImGui::Image((ImTextureID)(intptr_t) texture.getIndex(), size, tl, br);
 
 		// handle user interaction (if required)
 		if (callback) {

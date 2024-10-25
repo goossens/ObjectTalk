@@ -500,7 +500,7 @@ void OtWorkspace::renderSplashScreen() {
 			ImGuiWindowFlags_NoBringToFrontOnFocus |
 			ImGuiWindowFlags_NoInputs);
 
-	ImGui::Image((void*)(intptr_t) logo->getTextureIndex(), ImVec2(logo->getWidth(), logo->getHeight()));
+	ImGui::Image((ImTextureID)(intptr_t) logo->getTextureIndex(), ImVec2(logo->getWidth(), logo->getHeight()));
 
 	OtUiCenteredText("Welcome to the ObjectTalk");
 	OtUiCenteredText("Integrated Development Environment (IDE)");

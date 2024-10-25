@@ -572,10 +572,10 @@ void OtSceneEditor::renderViewPort() {
 
 	// show it on the screen
 	if (OtGpuHasOriginBottomLeft()) {
-		ImGui::Image((void*)(intptr_t) textureIndex, size, ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
+		ImGui::Image((ImTextureID)(intptr_t) textureIndex, size, ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
 
 	} else {
-		ImGui::Image((void*)(intptr_t) textureIndex, size);
+		ImGui::Image((ImTextureID)(intptr_t) textureIndex, size);
 	}
 
 	// only show guizmo if it's enabled and the selected entity has a transform

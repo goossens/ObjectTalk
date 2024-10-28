@@ -116,13 +116,19 @@ std::string OtByteCodeClass::disassemble() {
 				buffer << "pushStackObject" << getNumber(pc);
 				break;
 
-			case pushStackMemberOpcode:
-				buffer << "pushStackMember" << getNumber(pc) << " " << OtIdentifier::name(getID(pc));
+			case pushStackMemberOpcode: {
+				auto offset = getNumber(pc);
+				auto memberName = OtIdentifier::name(getID(pc));
+				buffer << "pushStackMember" << offset << " " << memberName;
 				break;
+			}
 
-			case pushObjectMemberOpcode:
-				buffer << "pushObjectMember" << OtObjectDescribe(constants[getNumber(pc)]) << " " << OtIdentifier::name(getID(pc));
+			case pushObjectMemberOpcode: {
+				auto objectName = OtObjectDescribe(constants[getNumber(pc)]);
+				auto memberName = OtIdentifier::name(getID(pc));
+				buffer << "pushObjectMember" << objectName << " " << memberName;
 				break;
+			}
 
 			case pushMemberOpcode:
 				buffer << "pushMember" << OtIdentifier::name(getID(pc));
@@ -132,9 +138,12 @@ std::string OtByteCodeClass::disassemble() {
 				buffer << "assignStack" << getNumber(pc);
 				break;
 
-			case assignMemberOpcode:
-				buffer << "assignMember" << OtObjectDescribe(constants[getNumber(pc)]) << " " << OtIdentifier::name(getID(pc));
+			case assignMemberOpcode: {
+				auto objectName = OtObjectDescribe(constants[getNumber(pc)]);
+				auto memberName = OtIdentifier::name(getID(pc));
+				buffer << "assignMember" << objectName << " " << memberName;
 				break;
+			}
 		}
 
 		buffer << std::endl;

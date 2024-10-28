@@ -97,7 +97,6 @@ public:
 
 	// manipulate stack state
 	inline OtStackState getState() {
-		auto& frame = frames.back();
 		return OtStackState(sp, frames.size(), closures.size());
 	}
 
@@ -108,7 +107,7 @@ public:
 	}
 
 private:
-	// reserve specified capapavity on stack
+	// reserve specified capacity on stack
 	inline void reserve(size_t newCapacity) {
 		stack = reinterpret_cast<OtObject*>(std::realloc(stack, sizeof(OtObject) * newCapacity));
 
@@ -121,17 +120,19 @@ private:
 
 	// clear the stack and release the memory
 	inline void clear() {
-		for (auto i = stack; i < stack + capacity; i++) {
-			i->~OtObject();
+		if (stack) {
+			for (auto i = stack; i < stack + capacity; i++) {
+				i->~OtObject();
+			}
+
+			std::free(stack);
+			stack = nullptr;
+			sp = 0;
+			capacity = 0;
+
+			frames.clear();
+			closures.clear();
 		}
-
-		std::free(stack);
-		stack = nullptr;
-		sp = 0;
-		capacity = 0;
-
-		frames.clear();
-		closures.clear();
 	}
 
 	// properties

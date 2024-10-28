@@ -250,22 +250,22 @@ OtObject OtVM::executeByteCode(OtByteCode bytecode, size_t callingParameters) {
 			// do we have an exception handler
 			if (tryCatch.size()) {
 				// yes, use it
-				OtTryCatch trycatch = tryCatch.back();
+				OtTryCatch tc = tryCatch.back();
 				tryCatch.pop_back();
 
 				// restore program counter and stack
-				pc = trycatch.pc;
-				stack.restoreState(trycatch.stack);
+				pc = tc.pc;
+				stack.restoreState(tc.stack);
 
 				// put exception on the stack
-				auto message = OtString::create(e.what());
+				auto message = OtString::create(e.getShortErrorMessage());
 				stack.push(message);
 
 			} else {
 				// format long message
 				auto fullMessage = fmt::format(
 					"{}\nModule: {}\n{}",
-					e.what(),
+					e.getLongErrorMessage(),
 					bytecode->getModule(),
 					bytecode->getStatementSourceCode(pc));
 
@@ -280,7 +280,7 @@ OtObject OtVM::executeByteCode(OtByteCode bytecode, size_t callingParameters) {
 						e.getLineNumber(),
 						e.getStart(),
 						e.getEnd(),
-						e.what(),
+						e.getShortErrorMessage(),
 						fullMessage);
 
 				} else {
@@ -289,7 +289,7 @@ OtObject OtVM::executeByteCode(OtByteCode bytecode, size_t callingParameters) {
 						bytecode->getLineNumber(pc),
 						bytecode->getStatementStart(pc),
 						bytecode->getStatementEnd(pc),
-						e.what(),
+						e.getShortErrorMessage(),
 						fullMessage);
 				}
 			}

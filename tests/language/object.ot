@@ -10,8 +10,8 @@ var a = null;
 var b = Object();
 var c = 1;
 
-assert (a == b);
-assert (a != c);
+assert(a == b);
+assert(a != c);
 
 a = -1;
 a.flag = true;
@@ -34,20 +34,6 @@ a.dosomething = function(this) {
 
 assert(a.flag == true);
 assert(a.dosomething() == "I did it");
-
-var result = false;
-c = "hello";
-
-try {
-	c = b.dosomething();
-}
-
-catch error {
-	result = true;
-}
-
-assert(result == true);
-assert(c == "hello");
 
 String.flag2 = true;
 

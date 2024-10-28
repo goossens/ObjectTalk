@@ -82,8 +82,9 @@ OtObject& OtObjectClass::get(OtID id) {
 		}
 	}
 
-	auto name = OtIdentifier::name(id);
-	OtError("Unknown member [{}] in instance of class [{}]", name, OtIdentifier::name(type->getID()));
+	std::string memberName(OtIdentifier::name(id));
+	std::string className(OtIdentifier::name(type->getID()));
+	OtError("Unknown member [{}] in instance of class [{}]", memberName, className);
 
 	// we will never get here because of the exception but a return statement keeps the compiler happy
 	return members->get(id);

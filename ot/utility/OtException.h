@@ -24,6 +24,7 @@
 
 class OtException : public std::exception {
 public:
+	// constructors
 	OtException() = default;
 
 	OtException(
@@ -43,7 +44,7 @@ public:
 
 	OtException(std::string m) : shortMessage(m), longMessage(m) {}
 
-	inline const char* what() const throw() { return longMessage.c_str(); }
+	inline const char* what() const noexcept { return longMessage.c_str(); }
 
 	// access properties
 	inline std::string getModule() const { return module; }
@@ -81,7 +82,7 @@ private:
 //
 
 template <typename... ARGS>
-void OtError(const char* format, ARGS&& ...args) {
+inline void OtError(const char* format, ARGS&& ...args) {
 	if constexpr(sizeof...(ARGS) == 0) {
 		throw OtException(format);
 

@@ -24,7 +24,6 @@ class Zoo : Object {
 	function mouse(this)  { return this.fox; }
 }
 
-debug();
 var zoo = Zoo();
 var sum = 0.0;
 var start = os.clock();

@@ -4,6 +4,8 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
+set(CPP_EXCEPTIONS_ENABLED ON CACHE BOOL "" FORCE)
+
 FetchContent_Declare(jolt GIT_REPOSITORY "https://github.com/jrouwe/JoltPhysics" GIT_TAG "v5.1.0")
 FetchContent_MakeAvailable(jolt)
 

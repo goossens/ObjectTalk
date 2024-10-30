@@ -13,11 +13,15 @@
 //
 
 #include <chrono>
+#include <string>
+#include <string_view>
 #include <utility>
+
+#include "OtLog.h"
 
 
 //
-//	Measure time to execute function
+//	Measure time to execute function in milliseconds
 //
 
 template<typename F, typename... Args>
@@ -37,10 +41,16 @@ class OtMeasureStopWatch {
 public:
 	// constructor
 	inline OtMeasureStopWatch() {
+		reset();
+	}
+
+	// reset the stopwatch
+	inline void reset() {
 		start = std::chrono::high_resolution_clock::now();
 	}
 
-	inline float getTime() {
+	// return elapsed time in milliseconds
+	inline float elapsed() {
 		auto now = std::chrono::high_resolution_clock::now();
 		auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(now - start).count();
 		return (float) microseconds / 1000.0f;
@@ -49,4 +59,25 @@ public:
 private:
 	// start of measurement
 	std::chrono::time_point<std::chrono::high_resolution_clock> start;
+};
+
+
+//
+//	OtMeasureScope
+//
+
+class OtMeasureScope {
+public:
+	// constructor
+	OtMeasureScope(const std::string_view& n) : name(n) {}
+
+	// destructor
+	~OtMeasureScope() {
+		OtLogDebug("{}: {} ms", name, timer.elapsed());
+	}
+
+private:
+	// properties
+	std::string name;
+	OtMeasureStopWatch timer;
 };

@@ -120,7 +120,7 @@ void OtFramework::runThread2() {
 			app->onRender();
 
 			// calculate CPU time
-			cpuTime = stopwatch.getTime();
+			cpuTime = stopwatch.elapsed();
 
 			// show profiler (if required)
 			if (profiler) {

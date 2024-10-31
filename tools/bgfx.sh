@@ -8,8 +8,19 @@
 
 OT_HOME="$(cd -P "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)"
 
+mkdir -p ~/bin
 mkdir -p ~/tmp/bgfx
 cd ~/tmp/bgfx
+
+if [ -d genie ]
+then
+	cd genie
+	git pull
+	cd ..
+
+else
+	git clone https://github.com/bkaradzic/genie.git
+fi
 
 if [ -d bx ]
 then
@@ -41,21 +52,33 @@ else
 	git clone https://github.com/bkaradzic/bgfx.git
 fi
 
+cd genie
+make
+cd  ..
+
 cd bgfx
-make build
 
-if [ -f tools/bin/darwin/shaderc ]
-then
-	mkdir -p ~/bin
-	cp tools/bin/darwin/* ~/bin
-fi
+case $(uname | tr '[:upper:]' '[:lower:]') in
+	darwin*)
+		../genie/bin/darwin/genie --with-tools --with-combined-examples --with-shared-lib --gcc=osx-x64 gmake
+		make -C .build/projects/gmake-osx-x64 config=release
+		cp ".build/osx-x64/bin/geometrycRelease" ~/bin/geometryc
+		cp ".build/osx-x64/bin/geometryvRelease" ~/bin/geometryv
+		cp ".build/osx-x64/bin/shadercRelease" ~/bin/shaderc
+		cp ".build/osx-x64/bin/texturecRelease" ~/bin/texturec
+		cp ".build/osx-x64/bin/texturevRelease" ~/bin/texturev
+    	;;
 
-if [ -f tools/bin/linux/shaderc ]
-then
-	mkdir -p ~/bin
-	cp tools/bin/linux/* ~/bin
-fi
+	linux*)
+		../genie/bin/darwin/genie --with-tools --with-combined-examples --with-shared-lib --gcc=linux-gcc gmake
+		make -C .build/projects/gmake-linux-gcc config=release64
+		cp ".build/linux-gcc/bin/geometrycRelease" ~/bin/geometryc
+		cp ".build/linux-gcc/bin/geometryvRelease" ~/bin/geometryv
+		cp ".build/linux-gcc/bin/shadercRelease" ~/bin/shaderc
+		cp ".build/linux-gcc/bin/texturecRelease" ~/bin/texturec
+		cp ".build/linux-gcc/bin/texturevRelease" ~/bin/texturev
+		;;
+esac
 
-cd ..
-cp bgfx/src/bgfx_shader.sh ${OT_HOME}/shaders/include/bgfx_shader.glsl
-sed 's/bgfx_shader.sh/bgfx_shader.glsl/g' < bgfx/src/bgfx_compute.sh >${OT_HOME}/shaders/include/bgfx_compute.glsl
+cp src/bgfx_shader.sh ${OT_HOME}/shaders/include/bgfx_shader.glsl
+sed 's/bgfx_shader.sh/bgfx_shader.glsl/g' < src/bgfx_compute.sh >${OT_HOME}/shaders/include/bgfx_compute.glsl

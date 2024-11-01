@@ -24,21 +24,6 @@
 //	Constants
 //
 
-enum OtUiFont {
-	uiDefaultFont = 0,
-	uiEditorFont
-};
-
-enum OtUiAlignment {
-	OtUiAlignNone,
-	OtUiAlignLeft,
-	OtUiAlignCenter,
-	OtUiAlignRight,
-	OtUiAlignTop,
-	OtUiAlignMiddle,
-	OtUiAlignBottom
-};
-
 #if __APPLE__
 #define OT_UI_SHORTCUT "Cmd-"
 #else
@@ -47,74 +32,99 @@ enum OtUiAlignment {
 
 
 //
-//	Functions
+//	OtUi
 //
 
-// adjust cursor position based on alignment
-void OtUiAlign(ImVec2 size, OtUiAlignment horizontal, OtUiAlignment vertical);
+class OtUi {
+public:
+	enum Font {
+		defaultFont = 0,
+		editorFont
+	};
 
-// is mouse in rectangle
-bool OtUiIsMouseInRect(const ImVec2& topLeft, const ImVec2& bottomRight);
+	enum Alignment {
+		alignNone,
+		alignLeft,
+		alignCenter,
+		alignRight,
+		alignTop,
+		alignMiddle,
+		alignBottom
+	};
 
-// split am ImGui label into a label and the ID
-void OtUiSplitLabel(const char* text, std::string& label, std::string& id);
+	// adjust cursor position based on alignment
+	static void align(ImVec2 size, Alignment horizontal, Alignment vertical);
 
-// render text centered in the current (child) window
-void OtUiCenteredText(const char* text);
+	// is mouse in rectangle
+	static bool isMouseInRect(const ImVec2& topLeft, const ImVec2& bottomRight);
 
-// create a header with specified width
-void OtUiHeader(const char* label, float width=0.0f);
+	// split am ImGui label into a label and the ID
+	static void splitLabel(const char* text, std::string& label, std::string& id);
 
-// create a toggle button
-bool OtUiToggleButton(const char* label, bool* value);
+	// render text centered in the current (child) window
+	static void centeredText(const char* text);
 
-// create a latch button
-bool OtUiLatchButton(const char* label, bool* value, const ImVec2& size=ImVec2(0.0f, 0.0f));
+	// header with specified width
+	static void header(const char* label, float width=0.0f);
 
-// create a readonly text field
-void OtUiReadonlyText(const char* label, std::string* value);
+	// toggle button
+	static bool toggleButton(const char* label, bool* value);
 
-// create an input field based on a std::string
-inline bool OtUiInputString(const char* label, std::string* value, ImGuiInputTextFlags flags=ImGuiInputTextFlags_None) {
-	flags |=
-		ImGuiInputTextFlags_NoUndoRedo |
-		ImGuiInputTextFlags_CallbackResize;
+	// latch button
+	static bool latchButton(const char* label, bool* value, const ImVec2& size=ImVec2(0.0f, 0.0f));
 
-	return ImGui::InputText(label, (char*) value->c_str(), value->capacity() + 1, flags, [](ImGuiInputTextCallbackData* data) {
-		if (data->EventFlag == ImGuiInputTextFlags_CallbackResize) {
-			std::string* value = (std::string*) data->UserData;
-			value->resize(data->BufTextLen);
-			data->Buf = (char*) value->c_str();
-		}
+	// readonly text field
+	static void readonlyText(const char* label, std::string* value);
 
-		return 0;
-	}, value);
-}
+	// field based on a std::string
+	static inline bool inputString(const char* label, std::string* value, ImGuiInputTextFlags flags=ImGuiInputTextFlags_None) {
+		flags |=
+			ImGuiInputTextFlags_NoUndoRedo |
+			ImGuiInputTextFlags_CallbackResize;
 
-bool OtUiInputText(const char* label, std::string* value, ImGuiInputTextFlags flags=ImGuiInputTextFlags_None);
+		return ImGui::InputText(label, (char*) value->c_str(), value->capacity() + 1, flags, [](ImGuiInputTextCallbackData* data) {
+			if (data->EventFlag == ImGuiInputTextFlags_CallbackResize) {
+				std::string* value = (std::string*) data->UserData;
+				value->resize(data->BufTextLen);
+				data->Buf = (char*) value->c_str();
+			}
 
-// create a field to edit numbers
-bool OtUiDragInt(const char* label, int* value, int minv=std::numeric_limits<int>::lowest(), int maxv=std::numeric_limits<int>::max());
-bool OtUiDragFloat(const char* label, float* value, float minv=std::numeric_limits<float>::lowest(), float maxv=std::numeric_limits<float>::max());
+			return 0;
+		}, value);
+	}
 
-// create a field to edit glm vectors
-bool OtUiEditVec3(const char* label, glm::vec3* vector, float minv=std::numeric_limits<float>::lowest(), float maxv=std::numeric_limits<float>::max());
-bool OtUiEditVec4(const char* label, glm::vec4* vector, float minv=std::numeric_limits<float>::lowest(), float maxv=std::numeric_limits<float>::max());
+	static bool inputText(const char* label, std::string* value, ImGuiInputTextFlags flags=ImGuiInputTextFlags_None);
 
-// create a file path field with file selector popup
-bool OtUiFileSelector(const char* label, std::string* path, const char* filter);
+	// field to edit numbers
+	static bool dragInt(const char* label, int* value, int minv=std::numeric_limits<int>::lowest(), int maxv=std::numeric_limits<int>::max());
+	static bool dragFloat(const char* label, float* value, float minv=std::numeric_limits<float>::lowest(), float maxv=std::numeric_limits<float>::max());
 
-// create a splitter widget
-float OtUiGetSplitterGap();
-bool OtUiSplitterVertical(float* size, float minSize, float maxSize);
-bool OtUiSplitterHorizontal(float* size, float minSize, float maxSize);
+	// field to edit glm vectors
+	static bool editVec3(const char* label, glm::vec3* vector, float minv=std::numeric_limits<float>::lowest(), float maxv=std::numeric_limits<float>::max());
+	static bool editVec4(const char* label, glm::vec4* vector, float minv=std::numeric_limits<float>::lowest(), float maxv=std::numeric_limits<float>::max());
 
-// selectors
-bool OtUiSelectorEnum(const char* label, int* value, const char* const names[], size_t count);
-bool OtUiSelectorPowerOfTwo(const char* label, int* value, int startValue, int endValue);
+	// file path field with file selector popup
+	static bool fileSelector(const char* label, std::string* path, const char* filter);
 
-// bezier curve editor
-bool OtUiBezier(const char* label, float P[4]);
+	// splitter widgets
+	static float getSplitterGap();
+	static bool splitterVertical(float* size, float minSize, float maxSize);
+	static bool splitterHorizontal(float* size, float minSize, float maxSize);
+
+	// selectors
+	static bool selectorEnum(const char* label, int* value, const char* const names[], size_t count);
+	static bool selectorPowerOfTwo(const char* label, int* value, int startValue, int endValue);
+
+	// bezier curve editor
+	static bool bezier(const char* label, float P[4]);
+
+private:
+	// generic vector editor
+	static bool editVecX(const char* labelPlusID, float* value, int components, float minv, float maxv);
+
+	// generic splitter
+	static bool splitter(bool vertical, float* size, float minSize, float maxSize);
+};
 
 
 //

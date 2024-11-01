@@ -28,10 +28,10 @@
 void OtFilmStripClass::init(size_t count, OtObject *parameters) {
 	switch (count) {
 		case 6:
-			setVerticalAlignment(OtUiAlignment(parameters[5]->operator int()));
+			setVerticalAlignment(OtUi::Alignment(parameters[5]->operator int()));
 
 		case 5:
-			setHorizontalAlignment(OtUiAlignment(parameters[4]->operator int()));
+			setHorizontalAlignment(OtUi::Alignment(parameters[4]->operator int()));
 
 		case 4:
 			setValue(parameters[3]->operator float());
@@ -87,7 +87,7 @@ void OtFilmStripClass::render() {
 		// determine visible size and position
 		auto size = ImVec2(w * scale, h * scale);
 		ImGui::Dummy(ImVec2(0, ImGui::GetStyle().FramePadding.y));
-		OtUiAlign(size, horizontalAlign, verticalAlign);
+		OtUi::align(size, horizontalAlign, verticalAlign);
 		auto pos = ImGui::GetCursorPos();
 
 		// render frame

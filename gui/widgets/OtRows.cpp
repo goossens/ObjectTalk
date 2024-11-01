@@ -103,7 +103,7 @@ void OtRowsClass::render() {
 	}
 
 	// determine gap (splitter spacing)
-	float gap = OtUiGetSplitterGap();
+	float gap = OtUi::getSplitterGap();
 
 	// determine screen space for visible rows
 	float space = visibleRows ? available.y - gap * (visibleRows - 1) : available.y;
@@ -138,7 +138,7 @@ void OtRowsClass::render() {
 			if (resizable) {
 				float newSize = screenHeights[i];
 
-				if (OtUiSplitterVertical(&newSize, 0.0f, screenHeights[i] + screenHeights[i + 1])) {
+				if (OtUi::splitterVertical(&newSize, 0.0f, screenHeights[i] + screenHeights[i + 1])) {
 					float delta = newSize - screenHeights[i];
 					logicalHeights[i] = (screenHeights[i] + delta) / ratio;
 					logicalHeights[i + 1] = (screenHeights[i + 1] - delta) / ratio;

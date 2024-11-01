@@ -256,7 +256,7 @@ void OtSceneEditor::renderMenu(bool canRun) {
 			ImGui::MenuItem("Grid", OT_UI_SHORTCUT "D", &gridEnabled);
 
 			if (ImGui::BeginMenu("Grid Scale", gridEnabled)) {
-				OtUiDragFloat("##scale", &gridScale, 0.1f, 100.0f);
+				OtUi::dragFloat("##scale", &gridScale, 0.1f, 100.0f);
 				ImGui::EndMenu();
 			}
 
@@ -281,8 +281,8 @@ void OtSceneEditor::renderMenu(bool canRun) {
 
 			// render snap control
 			if (ImGui::BeginMenu("Gizmo Snap", guizmoEnabled)) {
-				OtUiToggleButton("Snaping", &guizmoSnapping);
-				OtUiEditVec3("##Interval", &guizmoSnapInterval, 0.0f, 0.1f);
+				OtUi::toggleButton("Snaping", &guizmoSnapping);
+				OtUi::editVec3("##Interval", &guizmoSnapInterval, 0.0f, 0.1f);
 				ImGui::EndMenu();
 			}
 
@@ -294,7 +294,7 @@ void OtSceneEditor::renderMenu(bool canRun) {
 			auto& processor = scene.getPostProcessing();
 			auto oldValue = processor.serialize(nullptr).dump();
 
-			OtUiHeader("Post Proceessing Settings");
+			OtUi::header("Post Proceessing Settings");
 			ImGui::Dummy(ImVec2(0.0f, 0.0f));
 
 			if (processor.renderUI()) {
@@ -399,7 +399,7 @@ void OtSceneEditor::renderEditor() {
 	// render the editor parts
 	determinePanelSizes();
 	renderPanels();
-	OtUiSplitterHorizontal(&panelWidth, minPanelWidth, maxPanelWidth);
+	OtUi::splitterHorizontal(&panelWidth, minPanelWidth, maxPanelWidth);
 	renderViewPort();
 
 	if (nextTask) {
@@ -442,7 +442,7 @@ void OtSceneEditor::renderPanels() {
 	ImGui::PopStyleVar();
 
 	// render splitter between entity and component panels
-	OtUiSplitterVertical(&entityPanelHeight, minEntityPanelHeight, maxEntityPanelHeight);
+	OtUi::splitterVertical(&entityPanelHeight, minEntityPanelHeight, maxEntityPanelHeight);
 
 	// create the components panel
 	ImGui::BeginChild("components", ImVec2(), ImGuiChildFlags_Borders);
@@ -670,7 +670,7 @@ void OtSceneEditor::determinePanelSizes() {
 void OtSceneEditor::renderPanel(const std::string& name, bool canAdd, std::function<void()> menu, std::function<void()> content) {
 	// render a header
 	float buttonSpace = canAdd ? buttonSize + ImGui::GetStyle().FramePadding.x : 0.0f;
-	OtUiHeader(name.c_str(), ImGui::GetContentRegionAvail().x - buttonSpace);
+	OtUi::header(name.c_str(), ImGui::GetContentRegionAvail().x - buttonSpace);
 
 	// add a button to add more things (if required)
 	if (canAdd) {
@@ -790,7 +790,7 @@ void OtSceneEditor::renderEntity(OtEntity entity) {
 			ImGui::SetKeyboardFocusHere();
 		}
 
-		if (OtUiInputText("##rename", &component.tag)) {
+		if (OtUi::inputText("##rename", &component.tag)) {
 			auto newValue = component.serialize(nullptr).dump();
 			nextTask = std::make_shared<OtEditComponentTask<OtCoreComponent>>(&scene, entity, oldValue, newValue);
 			renamingEntity = OtEntityNull;

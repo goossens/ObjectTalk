@@ -26,10 +26,10 @@
 void OtLabelClass::init(size_t count, OtObject *parameters) {
 	switch (count) {
 		case 3:
-			setVerticalAlignment(OtUiAlignment(parameters[2]->operator int()));
+			setVerticalAlignment(OtUi::Alignment(parameters[2]->operator int()));
 
 		case 2:
-			setHorizontalAlignment(OtUiAlignment(parameters[1]->operator int()));
+			setHorizontalAlignment(OtUi::Alignment(parameters[1]->operator int()));
 
 		case 1:
 			setLabel(parameters[0]->operator std::string());
@@ -55,7 +55,7 @@ void OtLabelClass::render() {
 
 	// render label
 	ImGui::Dummy(ImVec2(0.0f, style.FramePadding.y + style.ItemSpacing.y));
-	OtUiAlign(size, horizontalAlign, verticalAlign);
+	OtUi::align(size, horizontalAlign, verticalAlign);
 	ImGui::TextUnformatted(label.c_str());
 }
 

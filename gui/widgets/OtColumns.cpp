@@ -103,7 +103,7 @@ void OtColumnsClass::render() {
 	}
 
 	// determine gap (splitter spacing)
-	float gap = OtUiGetSplitterGap();
+	float gap = OtUi::getSplitterGap();
 
 	// determine screen space for visible columns
 	float space = visibleColumns ? available.x - gap * (visibleColumns - 1) : available.x;
@@ -133,7 +133,7 @@ void OtColumnsClass::render() {
 			if (resizable) {
 				float newSize = screenWidths[i];
 
-				if (OtUiSplitterHorizontal(&newSize, 0.0f, screenWidths[i] + screenWidths[i + 1])) {
+				if (OtUi::splitterHorizontal(&newSize, 0.0f, screenWidths[i] + screenWidths[i + 1])) {
 					float delta = newSize - screenWidths[i];
 					logicalWidths[i] = (screenWidths[i] + delta) / ratio;
 					logicalWidths[i + 1] = (screenWidths[i + 1] - delta) / ratio;

@@ -27,27 +27,27 @@
 
 
 //
-//	OtUiAlign
+//	OtUi::align
 //
 
-void OtUiAlign(ImVec2 size, OtUiAlignment horizontal, OtUiAlignment vertical) {
+void OtUi::align(ImVec2 size, Alignment horizontal, Alignment vertical) {
 	// get current position and available space
 	auto pos = ImGui::GetCursorPos();
 	auto available = ImGui::GetContentRegionAvail();
 
 	// handle horizontal alignment (if required)
-	if (horizontal == OtUiAlignCenter) {
+	if (horizontal == alignCenter) {
 		pos.x += (available.x - size.x) / 2.0f;
 
-	} else if (horizontal == OtUiAlignRight) {
+	} else if (horizontal == alignRight) {
 		pos.x += available.x - size.x;
 	}
 
 	// handle horizontal alignment (if required)
-	if (vertical == OtUiAlignMiddle) {
+	if (vertical == alignMiddle) {
 		pos.y += (available.y - size.y) / 2.0f;
 
-	} else if (vertical == OtUiAlignBottom) {
+	} else if (vertical == alignBottom) {
 		pos.y += available.y - size.y;
 	}
 
@@ -56,20 +56,20 @@ void OtUiAlign(ImVec2 size, OtUiAlignment horizontal, OtUiAlignment vertical) {
 
 
 //
-//	OtUiIsMouseInRect
+//	OtUi::isMouseInRect
 //
 
-bool OtUiIsMouseInRect(const ImVec2& topLeft, const ImVec2& bottomRight) {
+bool OtUi::isMouseInRect(const ImVec2& topLeft, const ImVec2& bottomRight) {
 	ImVec2 mouse = ImGui::GetMousePos();
 	return mouse.x >= topLeft.x && mouse.x <= bottomRight.x && mouse.y >= topLeft.y && mouse.y <= bottomRight.y;
 }
 
 
 //
-//	OtUiSplitLabel
+//	OtUi::splitLabel
 //
 
-void OtUiSplitLabel(const char* text, std::string& label, std::string& id) {
+void OtUi::splitLabel(const char* text, std::string& label, std::string& id) {
 	std::string work(text);
 	size_t pos = work.find("##");
 
@@ -85,20 +85,20 @@ void OtUiSplitLabel(const char* text, std::string& label, std::string& id) {
 
 
 //
-//	OtUiCenteredText
+//	OtUi::centeredText
 //
 
-void OtUiCenteredText(const char* text) {
+void OtUi::centeredText(const char* text) {
 	ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(text).x) * 0.5f);
 	ImGui::TextUnformatted(text);
 }
 
 
 //
-//	OtUiHeader
+//	OtUi::header
 //
 
-void OtUiHeader(const char* label, float width) {
+void OtUi::header(const char* label, float width) {
 	// get default width if required
 	if (width <= 0.0f) {
 		width = ImGui::GetContentRegionAvail().x;
@@ -140,13 +140,13 @@ void OtUiHeader(const char* label, float width) {
 
 
 //
-//	OtUiToggleButton
+//	OtUi::toggleButton
 //
 
-bool OtUiToggleButton(const char* labelPlusID, bool* value) {
+bool OtUi::toggleButton(const char* labelPlusID, bool* value) {
 	std::string label;
 	std::string id;
-	OtUiSplitLabel(labelPlusID, label, id);
+	splitLabel(labelPlusID, label, id);
 
 	ImVec4* colors = ImGui::GetStyle().Colors;
 	ImVec2 p = ImGui::GetCursorScreenPos();
@@ -195,10 +195,10 @@ bool OtUiToggleButton(const char* labelPlusID, bool* value) {
 
 
 //
-//	OtUiLatchButton
+//	OtUi::latchButton
 //
 
-bool OtUiLatchButton(const char* label, bool* value, const ImVec2& size) {
+bool OtUi::latchButton(const char* label, bool* value, const ImVec2& size) {
 	bool changed = false;
 	ImVec4* colors = ImGui::GetStyle().Colors;
 
@@ -226,20 +226,20 @@ bool OtUiLatchButton(const char* label, bool* value, const ImVec2& size) {
 
 
 //
-//	OtUiReadonlyText
+//	OtUi::readonlyText
 //
 
-void OtUiReadonlyText(const char* label, std::string* value) {
+void OtUi::readonlyText(const char* label, std::string* value) {
 	ImGui::InputText(label, (char*) value->c_str(), value->capacity() + 1, ImGuiInputTextFlags_ReadOnly);
 }
 
 
 //
-//	OtUiInputText
+//	OtUi::inputText
 //
 
-bool OtUiInputText(const char* label, std::string* value, ImGuiInputTextFlags flags) {
-	OtUiInputString(label, value, flags);
+bool OtUi::inputText(const char* label, std::string* value, ImGuiInputTextFlags flags) {
+	inputString(label, value, flags);
 
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
 		if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
@@ -254,7 +254,7 @@ bool OtUiInputText(const char* label, std::string* value, ImGuiInputTextFlags fl
 }
 
 
-bool OtUiDragInt(const char* label, int* value, int minv, int maxv) {
+bool OtUi::dragInt(const char* label, int* value, int minv, int maxv) {
 	// automatically determine drag speed
 	auto absValue = std::abs(*value);
 	int speed;
@@ -280,10 +280,10 @@ bool OtUiDragInt(const char* label, int* value, int minv, int maxv) {
 
 
 //
-//	OtUiDragFloat
+//	OtUi::dragFloat
 //
 
-bool OtUiDragFloat(const char* label, float* value, float minv, float maxv) {
+bool OtUi::dragFloat(const char* label, float* value, float minv, float maxv) {
 	// automatically determine drag speed and display resolution
 	auto absValue = std::abs(*value);
 	float speed;
@@ -317,16 +317,16 @@ bool OtUiDragFloat(const char* label, float* value, float minv, float maxv) {
 
 
 //
-//	OtUiEditVecX
+//	OtUi::editVecX
 //
 
-static bool OtUiEditVecX(const char* labelPlusID, float* value, int components, float minv, float maxv) {
+bool OtUi::editVecX(const char* labelPlusID, float* value, int components, float minv, float maxv) {
 	ImGuiWindow* window = ImGui::GetCurrentWindow();
 	bool changed = false;
 
 	std::string label;
 	std::string id;
-	OtUiSplitLabel(labelPlusID, label, id);
+	splitLabel(labelPlusID, label, id);
 
 	ImGui::BeginGroup();
 	ImGui::PushID(id.c_str());
@@ -336,7 +336,7 @@ static bool OtUiEditVecX(const char* labelPlusID, float* value, int components, 
 
 	for (int i = 0; i < components; i++) {
 		ImGui::PushID(i);
-		changed |= OtUiDragFloat("##value", &value[i], minv, maxv);
+		changed |= dragFloat("##value", &value[i], minv, maxv);
 
 		const ImVec2 min = ImGui::GetItemRectMin();
 		const ImVec2 max = ImGui::GetItemRectMax();
@@ -359,28 +359,28 @@ static bool OtUiEditVecX(const char* labelPlusID, float* value, int components, 
 
 
 //
-//	OtUiEditVec3
+//	OtUi::editVec3
 //
 
-bool OtUiEditVec3(const char* label, glm::vec3* vector, float minv, float maxv) {
-	return OtUiEditVecX(label, glm::value_ptr(*vector), 3, minv, maxv);
+bool OtUi::editVec3(const char* label, glm::vec3* vector, float minv, float maxv) {
+	return editVecX(label, glm::value_ptr(*vector), 3, minv, maxv);
 }
 
 
 //
-//	OtUiEditVec4
+//	OtUi::editVec4
 //
 
-bool OtUiEditVec4(const char* label, glm::vec4* vector, float minv, float maxv) {
-	return OtUiEditVecX(label, glm::value_ptr(*vector), 4, minv, maxv);
+bool OtUi::editVec4(const char* label, glm::vec4* vector, float minv, float maxv) {
+	return editVecX(label, glm::value_ptr(*vector), 4, minv, maxv);
 }
 
 
 //
-//	OtUiFileSelector
+//	OtUi::fileSelector
 //
 
-bool OtUiFileSelector(const char* label, std::string* path, const char* filter) {
+bool OtUi::fileSelector(const char* label, std::string* path, const char* filter) {
 	// determine button status
 	bool showClearButton = !path->empty();
 
@@ -397,7 +397,7 @@ bool OtUiFileSelector(const char* label, std::string* path, const char* filter) 
 	// determine real label and ID
 	std::string realLabel;
 	std::string id;
-	OtUiSplitLabel(label, realLabel, id);
+	splitLabel(label, realLabel, id);
 
 	// get file dialog information
 	auto dialog = ImGuiFileDialog::Instance();
@@ -465,16 +465,21 @@ bool OtUiFileSelector(const char* label, std::string* path, const char* filter) 
 
 
 //
-//	OtUiSplitter
+//	OtUi::getSplitterGap
 //
 
-float OtUiGetSplitterGap() {
+float OtUi::getSplitterGap() {
 	return ImGui::GetStyle().ItemSpacing.y * 2.0f;
 }
 
-static bool OtUiSplitter(bool vertical, float* size, float minSize, float maxSize) {
+
+//
+//	OtUi::splitter
+//
+
+bool OtUi::splitter(bool vertical, float* size, float minSize, float maxSize) {
 	bool result = false;
-	auto gap = OtUiGetSplitterGap();
+	auto gap = OtUi::getSplitterGap();
 
 	ImGui::PushID(size);
 	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
@@ -509,20 +514,30 @@ static bool OtUiSplitter(bool vertical, float* size, float minSize, float maxSiz
 	return result;
 }
 
-bool OtUiSplitterVertical(float *size, float minSize, float maxSize) {
-	return OtUiSplitter(true, size, minSize, maxSize);
-}
 
-bool OtUiSplitterHorizontal(float* size, float minSize, float maxSize) {
-	return OtUiSplitter(false, size, minSize, maxSize);
+//
+//	OtUi::splitterVertical
+//
+
+bool OtUi::splitterVertical(float *size, float minSize, float maxSize) {
+	return splitter(true, size, minSize, maxSize);
 }
 
 
 //
-//	OtUiSelectorEnum
+//	OtUi::splitterVertical
 //
 
-bool OtUiSelectorEnum(const char* label, int* value, const char* const names[], size_t count) {
+bool OtUi::splitterHorizontal(float* size, float minSize, float maxSize) {
+	return splitter(false, size, minSize, maxSize);
+}
+
+
+//
+//	OtUi::selectorEnum
+//
+
+bool OtUi::selectorEnum(const char* label, int* value, const char* const names[], size_t count) {
 	bool changed = false;
 
 	if (ImGui::BeginCombo(label, names[*value])) {
@@ -547,10 +562,10 @@ bool OtUiSelectorEnum(const char* label, int* value, const char* const names[], 
 
 
 //
-//	OtUiSelectorPowerOfTwo
+//	OtUi::selectorPowerOfTwo
 //
 
-bool OtUiSelectorPowerOfTwo(const char* label, int* value, int startValue, int endValue) {
+bool OtUi::selectorPowerOfTwo(const char* label, int* value, int startValue, int endValue) {
 	bool changed = false;
 
 	if (ImGui::BeginCombo(label, std::to_string(*value).c_str())) {
@@ -575,7 +590,7 @@ bool OtUiSelectorPowerOfTwo(const char* label, int* value, int startValue, int e
 
 
 //
-//	OtUiBezier
+//	OtUi::bezier
 //
 
 template<int steps>
@@ -602,7 +617,7 @@ void bezierTable(ImVec2 P[4], ImVec2 results[steps + 1]) {
 	}
 }
 
-bool OtUiBezier(const char *label, float P[4]) {
+bool OtUi::bezier(const char *label, float P[4]) {
 	// based on https://github.com/ocornut/imgui/issues/786
 	enum { SMOOTHNESS = 64 }; // curve smoothness: the higher number of segments, the smoother curve
 	enum { CURVE_WIDTH = 3 }; // main curved line width
@@ -731,7 +746,7 @@ bool OtUiBezier(const char *label, float P[4]) {
 	drawList->AddCircleFilled(p2, GRAB_RADIUS - GRAB_BORDER, ImColor(cyan));
 
 	// handle preset popup
-	if (OtUiIsMouseInRect(bb.Min, bb.Max) && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+	if (isMouseInRect(bb.Min, bb.Max) && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
 		ImGui::OpenPopup("presets");
 	}
 

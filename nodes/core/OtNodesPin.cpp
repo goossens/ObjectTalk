@@ -68,7 +68,7 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(bool& value) {
 			ImGui::PushID(&value);
 			ImGui::SetNextItemWidth(width);
 
-			if (OtUiToggleButton("##value", &value)) {
+			if (OtUi::toggleButton("##value", &value)) {
 				node->oldState = old;
 				node->newState = node->serialize().dump();
 				node->needsEvaluating = true;
@@ -91,7 +91,7 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(int& value) {
 			ImGui::PushID(&value);
 			ImGui::SetNextItemWidth(width);
 
-			if (OtUiDragInt("##value", &value)) {
+			if (OtUi::dragInt("##value", &value)) {
 				node->oldState = old;
 				node->newState = node->serialize().dump();
 				node->needsEvaluating = true;
@@ -114,7 +114,7 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(float& value) {
 			ImGui::PushID(&value);
 			ImGui::SetNextItemWidth(width);
 
-			if (OtUiDragFloat("##value", &value)) {
+			if (OtUi::dragFloat("##value", &value)) {
 				node->oldState = old;
 				node->newState = node->serialize().dump();
 				node->needsEvaluating = true;
@@ -137,7 +137,7 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(std::string& value) {
 			ImGui::PushID(&value);
 			ImGui::SetNextItemWidth(width);
 
-			if (OtUiInputText("##value", &value)) {
+			if (OtUi::inputText("##value", &value)) {
 				node->oldState = old;
 				node->newState = node->serialize().dump();
 				node->needsEvaluating = true;

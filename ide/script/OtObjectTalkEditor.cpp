@@ -192,7 +192,7 @@ void OtObjectTalkEditor::renderEditor() {
 	}
 
 	// render the text editor
-	ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[uiEditorFont]);
+	ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[OtUi::editorFont]);
 	editor.Render("TextEditor");
 	ImGui::PopFont();
 
@@ -241,7 +241,7 @@ void OtObjectTalkEditor::renderEditor() {
 			focusOnFind = false;
 		}
 
-		if (OtUiInputString("###find", &findText)) {
+		if (OtUi::inputString("###find", &findText)) {
 			if (findText.size()) {
 				editor.SetCursorPosition(0, 0);
 				editor.SelectNextOccurrenceOf(findText.c_str(), (int) findText.size(), caseSensitiveFind, wholeWordFind);
@@ -273,14 +273,14 @@ void OtObjectTalkEditor::renderEditor() {
 
 		ImGui::SameLine();
 
-		if (OtUiLatchButton("Aa", &caseSensitiveFind, ImVec2(optionWidth, 0.0f))) {
+		if (OtUi::latchButton("Aa", &caseSensitiveFind, ImVec2(optionWidth, 0.0f))) {
 			editor.SetCursorPosition(0, 0);
 			find();
 		}
 
 		ImGui::SameLine();
 
-		if (OtUiLatchButton("[]", &wholeWordFind, ImVec2(optionWidth, 0.0f))) {
+		if (OtUi::latchButton("[]", &wholeWordFind, ImVec2(optionWidth, 0.0f))) {
 			editor.SetCursorPosition(0, 0);
 			find();
 		}
@@ -293,7 +293,7 @@ void OtObjectTalkEditor::renderEditor() {
 		}
 
 		ImGui::SetNextItemWidth(fieldWidth);
-		OtUiInputText("###replace", &replaceText);
+		OtUi::inputText("###replace", &replaceText);
 		ImGui::SameLine();
 
 		if (!findText.size() || !replaceText.size()) {

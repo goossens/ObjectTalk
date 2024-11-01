@@ -83,8 +83,8 @@ void OtSceneApp::renderSplashScreen() {
 
 	ImGui::Image((ImTextureID)(intptr_t) logo->getTextureIndex(), ImVec2(logo->getWidth(), logo->getHeight()));
 
-	OtUiCenteredText("Loading scene...");
-	OtUiCenteredText("");
+	OtUi::centeredText("Loading scene...");
+	OtUi::centeredText("");
 
 	ImGui::End();
 }

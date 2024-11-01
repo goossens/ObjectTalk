@@ -23,17 +23,17 @@
 
 bool OtSkyComponent::renderUI() {
 	bool changed = false;
-	changed |= OtUiDragFloat("Sun Elevation", &elevation, -90.0f, 90.0f);
-	changed |= OtUiDragFloat("Sun Azimuth", &azimuth, 0.0f, 360.0f);
-	changed |= OtUiToggleButton("Cast Shadow", &castShadow);
+	changed |= OtUi::dragFloat("Sun Elevation", &elevation, -90.0f, 90.0f);
+	changed |= OtUi::dragFloat("Sun Azimuth", &azimuth, 0.0f, 360.0f);
+	changed |= OtUi::toggleButton("Cast Shadow", &castShadow);
 
-	changed |= OtUiDragFloat("Rayleigh Coefficient", &rayleighCoefficient, 0.5f, 6.0f);
-	changed |= OtUiDragFloat("Mie Coefficient", &mieCoefficient, 1.0f, 10.0f);
-	changed |= OtUiDragFloat("Mie Scattering", &mieScattering, 0.9f, 0.99f);
+	changed |= OtUi::dragFloat("Rayleigh Coefficient", &rayleighCoefficient, 0.5f, 6.0f);
+	changed |= OtUi::dragFloat("Mie Coefficient", &mieCoefficient, 1.0f, 10.0f);
+	changed |= OtUi::dragFloat("Mie Scattering", &mieScattering, 0.9f, 0.99f);
 
-	changed |= OtUiDragFloat("Cirrus Clouds", &cirrus, 0.0f, 1.0f);
-	changed |= OtUiDragFloat("Cumulus Clouds", &cumulus, 0.0f, 1.0f);
-	changed |= OtUiDragFloat("Cloud Speed", &speed, 0.0f, 10.0f);
+	changed |= OtUi::dragFloat("Cirrus Clouds", &cirrus, 0.0f, 1.0f);
+	changed |= OtUi::dragFloat("Cumulus Clouds", &cumulus, 0.0f, 1.0f);
+	changed |= OtUi::dragFloat("Cloud Speed", &speed, 0.0f, 10.0f);
 	return changed;
 }
 

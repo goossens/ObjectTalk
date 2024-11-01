@@ -502,17 +502,17 @@ void OtWorkspace::renderSplashScreen() {
 
 	ImGui::Image((ImTextureID)(intptr_t) logo->getTextureIndex(), ImVec2(logo->getWidth(), logo->getHeight()));
 
-	OtUiCenteredText("Welcome to the ObjectTalk");
-	OtUiCenteredText("Integrated Development Environment (IDE)");
-	OtUiCenteredText("");
+	OtUi::centeredText("Welcome to the ObjectTalk");
+	OtUi::centeredText("Integrated Development Environment (IDE)");
+	OtUi::centeredText("");
 
 	if (ImGui::GetIO().ConfigMacOSXBehaviors) {
-		OtUiCenteredText("Use Cmd-N to create a new file");
-		OtUiCenteredText("Use Cmd-O to open an existing file");
+		OtUi::centeredText("Use Cmd-N to create a new file");
+		OtUi::centeredText("Use Cmd-O to open an existing file");
 
 	} else {
-		OtUiCenteredText("Use Ctrl-N to create a new file");
-		OtUiCenteredText("Use Ctrl-O to open an existing file");
+		OtUi::centeredText("Use Ctrl-N to create a new file");
+		OtUi::centeredText("Use Ctrl-O to open an existing file");
 	}
 
 	ImGui::End();
@@ -643,7 +643,7 @@ void OtWorkspace::renderEditors() {
 		ImGui::PopStyleVar();
 		ImGui::EndChild();
 		ImGui::PopStyleVar();
-		OtUiSplitterVertical(&editorsHeight, editorsMinHeight, editorsMaxHeight);
+		OtUi::splitterVertical(&editorsHeight, editorsMinHeight, editorsMaxHeight);
 		console.render();
 	}
 

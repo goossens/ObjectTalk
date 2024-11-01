@@ -43,7 +43,7 @@ public:
 		ImGui::SetNextItemWidth(width);
 		auto old = serialize().dump();
 
-		if (OtUiSelectorEnum("##noiseType", &noiseType, OtFbm::noiseTypes, OtFbm::noiseTypeCount)) {
+		if (OtUi::selectorEnum("##noiseType", &noiseType, OtFbm::noiseTypes, OtFbm::noiseTypeCount)) {
 			oldState = old;
 			newState = serialize().dump();
 			needsEvaluating = true;

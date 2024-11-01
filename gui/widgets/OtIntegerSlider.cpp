@@ -55,7 +55,7 @@ void OtIntegerSliderClass::init(size_t count, OtObject* parameters) {
 void OtIntegerSliderClass::render() {
 	ImGui::PushID(this);
 
-	if (OtUiDragInt(label.c_str(), &value, minValue, maxValue)) {
+	if (OtUi::dragInt(label.c_str(), &value, minValue, maxValue)) {
 		OtVM::callMemberFunction(callback, "__call__", OtValue<int>::encode(value));
 	}
 

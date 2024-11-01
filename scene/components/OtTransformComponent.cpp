@@ -37,9 +37,9 @@ glm::mat4 OtTransformComponent::getTransform() {
 bool OtTransformComponent::renderUI() {
 	// render transformation editor
 	bool changed = false;
-	changed |= OtUiEditVec3("Translate", &translation);
-	changed |= OtUiEditVec3("Rotate", &rotation);
-	changed |= OtUiEditVec3("Scale", &scale);
+	changed |= OtUi::editVec3("Translate", &translation);
+	changed |= OtUi::editVec3("Rotate", &rotation);
+	changed |= OtUi::editVec3("Scale", &scale);
 	return changed;
 }
 

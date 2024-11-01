@@ -45,12 +45,12 @@ public:
 
 	inline float getScale() { return scale; }
 
-	inline OtObject setHorizontalAlignment(OtUiAlignment alignment) {
+	inline OtObject setHorizontalAlignment(OtUi::Alignment alignment) {
 		horizontalAlign = alignment;
 		return OtWidget(this);
 	}
 
-	inline OtObject setVerticalAlignment(OtUiAlignment alignment) {
+	inline OtObject setVerticalAlignment(OtUi::Alignment alignment) {
 		verticalAlign = alignment;
 		return OtWidget(this);
 	}
@@ -106,8 +106,8 @@ private:
 	float height = 0.0f;
 	float scale = 1.0f;
 	bool autoScale = false;
-	OtUiAlignment horizontalAlign = OtUiAlignLeft;
-	OtUiAlignment verticalAlign = OtUiAlignTop;
+	OtUi::Alignment horizontalAlign = OtUi::alignLeft;
+	OtUi::Alignment verticalAlign = OtUi::alignTop;
 
 	// oscilloscope to render display
 	OtOscilloscope scope;

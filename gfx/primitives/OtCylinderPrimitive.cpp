@@ -132,13 +132,13 @@ void OtCylinderPrimitive::generateCap(OtMesh* mesh, bool top) {
 
 bool OtCylinderPrimitive::renderUI() {
 	bool changed = false;
-	changed |= OtUiDragFloat("Top Radius", &topRadius, 0.0f, 1.0f);
-	changed |= OtUiDragFloat("Bottom Radius", &bottomRadius, 0.0f, 1.0f);
-	changed |= OtUiDragInt("Radial Segments", &radialSegments, 1, 64);
-	changed |= OtUiDragInt("Height Segments", &heightSegments, 1, 32);
-	changed |= OtUiToggleButton("Open Ended", &openEnded);
-	changed |= OtUiDragFloat("Theta Start", &thetaStart, 0.0f, 360.0f);
-	changed |= OtUiDragFloat("Theta Length", &thetaLength, 0.0f, 360.0f);
+	changed |= OtUi::dragFloat("Top Radius", &topRadius, 0.0f, 1.0f);
+	changed |= OtUi::dragFloat("Bottom Radius", &bottomRadius, 0.0f, 1.0f);
+	changed |= OtUi::dragInt("Radial Segments", &radialSegments, 1, 64);
+	changed |= OtUi::dragInt("Height Segments", &heightSegments, 1, 32);
+	changed |= OtUi::toggleButton("Open Ended", &openEnded);
+	changed |= OtUi::dragFloat("Theta Start", &thetaStart, 0.0f, 360.0f);
+	changed |= OtUi::dragFloat("Theta Length", &thetaLength, 0.0f, 360.0f);
 	return changed;
 }
 

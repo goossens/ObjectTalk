@@ -25,10 +25,10 @@
 
 bool OtCameraComponent::renderUI() {
 	bool changed = false;
-	changed |= OtUiToggleButton("Main Camera", &mainCamera);
-	changed |= OtUiDragFloat("FoV (Deg)", &fov, 10.0f, 160.0f);
-	changed |= OtUiDragFloat("Near Plane", &nearPlane, 0.001f);
-	changed |= OtUiDragFloat("Far Plane", &farPlane, nearPlane);
+	changed |= OtUi::toggleButton("Main Camera", &mainCamera);
+	changed |= OtUi::dragFloat("FoV (Deg)", &fov, 10.0f, 160.0f);
+	changed |= OtUi::dragFloat("Near Plane", &nearPlane, 0.001f);
+	changed |= OtUi::dragFloat("Far Plane", &farPlane, nearPlane);
 	return changed;
 }
 

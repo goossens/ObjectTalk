@@ -26,8 +26,8 @@
 bool OtDirectionalLightComponent::renderUI() {
 	bool changed = false;
 	changed |= ImGui::ColorEdit3("Color", glm::value_ptr(color));
-	changed |= OtUiDragFloat("Ambient", &ambient, 0.0f, 0.3f);
-	changed |= OtUiToggleButton("Cast Shadow", &castShadow);
+	changed |= OtUi::dragFloat("Ambient", &ambient, 0.0f, 0.3f);
+	changed |= OtUi::toggleButton("Cast Shadow", &castShadow);
 	return changed;
 }
 

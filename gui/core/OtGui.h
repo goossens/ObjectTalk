@@ -33,12 +33,12 @@ public:
 
 
 //
-//	Allow OtUiAlignment as ObjectTalk value
+//	Allow OtUi::Alignment as ObjectTalk value
 //
 
 
 template <>
-struct OtValue<OtUiAlignment> {
-	static inline OtObject encode(OtUiAlignment value) { return OtInteger::create(int(value)); }
-	static inline OtUiAlignment decode(OtObject object) { return OtUiAlignment(object->operator int()); }
+struct OtValue<OtUi::Alignment> {
+	static inline OtObject encode(OtUi::Alignment value) { return OtInteger::create(int(value)); }
+	static inline OtUi::Alignment decode(OtObject object) { return OtUi::Alignment(object->operator int()); }
 };

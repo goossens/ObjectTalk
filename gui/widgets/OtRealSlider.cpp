@@ -55,7 +55,7 @@ void OtRealSliderClass::init(size_t count, OtObject* parameters) {
 void OtRealSliderClass::render() {
 	ImGui::PushID(this);
 
-	if (OtUiDragFloat(label.c_str(), &value, minValue, maxValue)) {
+	if (OtUi::dragFloat(label.c_str(), &value, minValue, maxValue)) {
 		OtVM::callMemberFunction(callback, "__call__", OtValue<float>::encode(value));
 	}
 

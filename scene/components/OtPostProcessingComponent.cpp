@@ -25,19 +25,19 @@
 
 bool OtPostProcessingComponent::renderUI() {
 	bool changed = false;
-	changed |= OtUiToggleButton("FXAA", &fxaa);
-	changed |= OtUiToggleButton("Fog", &fog);
+	changed |= OtUi::toggleButton("FXAA", &fxaa);
+	changed |= OtUi::toggleButton("Fog", &fog);
 
 	if (fog) {
-		changed |= OtUiDragFloat("Fog Density", &fogDensity);
+		changed |= OtUi::dragFloat("Fog Density", &fogDensity);
 		changed |= ImGui::ColorEdit3("Fog Color", glm::value_ptr(fogColor));
 	}
 
-	changed |= OtUiDragFloat("Bloom Intensity", &bloomIntensity, 0.0f, 3.0f);
+	changed |= OtUi::dragFloat("Bloom Intensity", &bloomIntensity, 0.0f, 3.0f);
 
-	changed |= OtUiToggleButton("Godrays", &godrays);
-	changed |= OtUiDragFloat("Exposure", &exposure, 0.1f, 3.0f);
-	changed |= OtUiDragFloat("Contrast", &contrast, 0.5f, 2.0f);
+	changed |= OtUi::toggleButton("Godrays", &godrays);
+	changed |= OtUi::dragFloat("Exposure", &exposure, 0.1f, 3.0f);
+	changed |= OtUi::dragFloat("Contrast", &contrast, 0.5f, 2.0f);
 	return changed;
 }
 

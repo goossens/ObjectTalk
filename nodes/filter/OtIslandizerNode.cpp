@@ -30,7 +30,7 @@ public:
 		auto old = serialize().dump();
 		ImGui::SetNextItemWidth(width);
 
-		if (OtUiSelectorEnum("##distance", &distance, OtIslandizer::distanceFunctions, OtIslandizer::distanceFunctionCount)) {
+		if (OtUi::selectorEnum("##distance", &distance, OtIslandizer::distanceFunctions, OtIslandizer::distanceFunctionCount)) {
 			oldState = old;
 			newState = serialize().dump();
 			needsEvaluating = true;

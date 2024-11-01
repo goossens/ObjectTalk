@@ -50,7 +50,7 @@ void OtTextFieldClass::init(size_t count, OtObject* parameters) {
 void OtTextFieldClass::render() {
 	ImGui::PushID(this);
 
-	if (OtUiInputText(label.c_str(), &value)) {
+	if (OtUi::inputText(label.c_str(), &value)) {
 		OtVM::callMemberFunction(callback, "__call__", OtValue<std::string>::encode(value));
 	}
 

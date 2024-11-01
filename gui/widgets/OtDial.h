@@ -79,12 +79,12 @@ public:
 		return OtWidget(this);
 	}
 
-	inline OtObject setHorizontalAlignment(OtUiAlignment alignment) {
+	inline OtObject setHorizontalAlignment(OtUi::Alignment alignment) {
 		horizontalAlign = alignment;
 		return OtWidget(this);
 	}
 
-	inline OtObject setVerticalAlignment(OtUiAlignment alignment) {
+	inline OtObject setVerticalAlignment(OtUi::Alignment alignment) {
 		verticalAlign = alignment;
 		return OtWidget(this);
 	}
@@ -106,8 +106,8 @@ private:
 	float scale = 1.0f;
 	float minRotation = -90.0f;
 	float maxRotation = 90.0f;
-	OtUiAlignment horizontalAlign = OtUiAlignLeft;
-	OtUiAlignment verticalAlign = OtUiAlignTop;
+	OtUi::Alignment horizontalAlign = OtUi::alignLeft;
+	OtUi::Alignment verticalAlign = OtUi::alignTop;
 	float minValue = 0.0f;
 	float maxValue = 1.0f;
 	float value = 0.0f;

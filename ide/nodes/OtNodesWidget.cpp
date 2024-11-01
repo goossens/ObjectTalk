@@ -351,7 +351,7 @@ void OtNodesWidget::renderNode(ImDrawList* drawlist, OtNode& node) {
 	drawlist->AddRect(topLeft, bottomRight, node->selected ? nodeSelectedColor : nodeOutlineColor, nodeRounding);
 
 	// is mouse over node?
-	if (OtUiIsMouseInRect(topLeft, bottomRight)) {
+	if (OtUi::isMouseInRect(topLeft, bottomRight)) {
 		// yes, remember the ID
 		hoveredNode = node->id;
 		hoveredInNodeContent = true;
@@ -406,7 +406,7 @@ void OtNodesWidget::renderNode(ImDrawList* drawlist, OtNode& node) {
 			node->oldState = node->serialize().dump();
 		}
 
-		if (OtUiInputText("##rename", &node->title)) {
+		if (OtUi::inputText("##rename", &node->title)) {
 			node->newState = node->serialize().dump();
 			editedNode = node->id;
 			nodeEdited = true;

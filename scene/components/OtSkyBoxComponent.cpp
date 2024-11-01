@@ -25,8 +25,8 @@
 bool OtSkyBoxComponent::renderUI() {
 	bool changed = false;
 	changed |= cubemap.renderUI("Cube Map");
-	changed |= OtUiDragFloat("Brightness", &brightness, 0.1f, 4.0f);
-	changed |= OtUiDragFloat("Gamma", &gamma, 0.1f, 4.0f);
+	changed |= OtUi::dragFloat("Brightness", &brightness, 0.1f, 4.0f);
+	changed |= OtUi::dragFloat("Gamma", &gamma, 0.1f, 4.0f);
 	return changed;
 }
 

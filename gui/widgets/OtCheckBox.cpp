@@ -50,7 +50,7 @@ void OtCheckBoxClass::init(size_t count, OtObject* parameters) {
 void OtCheckBoxClass::render() {
 	ImGui::PushID(this);
 
-	if (OtUiToggleButton(label.c_str(), &checked)) {
+	if (OtUi::toggleButton(label.c_str(), &checked)) {
 		OtVM::callMemberFunction(callback, "__call__", OtValue<bool>::encode(checked));
 	}
 

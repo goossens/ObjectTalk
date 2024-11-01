@@ -69,12 +69,12 @@ void OtSpherePrimitive::createMesh(OtMesh* mesh) {
 
 bool OtSpherePrimitive::renderUI() {
 	bool changed = false;
-	changed |= OtUiDragInt("Phi Segments", &phiSegments, 1, 200);
-	changed |= OtUiDragFloat("Phi Start", &phiStart, 0.0f, 360.0f);
-	changed |= OtUiDragFloat("Phi Length", &phiLength, 0.0f, 360.0f);
-	changed |= OtUiDragInt("Theta Segments", &thetaSegments, 1, 100);
-	changed |= OtUiDragFloat("Theta Start", &thetaStart, 0.0f, 180.0f);
-	changed |= OtUiDragFloat("Theta Length", &thetaLength, 0.0f, 180.0f);
+	changed |= OtUi::dragInt("Phi Segments", &phiSegments, 1, 200);
+	changed |= OtUi::dragFloat("Phi Start", &phiStart, 0.0f, 360.0f);
+	changed |= OtUi::dragFloat("Phi Length", &phiLength, 0.0f, 360.0f);
+	changed |= OtUi::dragInt("Theta Segments", &thetaSegments, 1, 100);
+	changed |= OtUi::dragFloat("Theta Start", &thetaStart, 0.0f, 180.0f);
+	changed |= OtUi::dragFloat("Theta Length", &thetaLength, 0.0f, 180.0f);
 	return changed;
 }
 

@@ -43,12 +43,12 @@ public:
 		return OtWidget(this);
 	}
 
-	inline OtObject setHorizontalAlignment(OtUiAlignment alignment) {
+	inline OtObject setHorizontalAlignment(OtUi::Alignment alignment) {
 		horizontalAlign = alignment;
 		return OtWidget(this);
 	}
 
-	inline OtObject setVerticalAlignment(OtUiAlignment alignment) {
+	inline OtObject setVerticalAlignment(OtUi::Alignment alignment) {
 		verticalAlign = alignment;
 		return OtWidget(this);
 	}
@@ -63,6 +63,6 @@ private:
 	// properties
 	OtAsset<OtTextureAsset> picture;
 	float scale = 1.0f;
-	OtUiAlignment horizontalAlign = OtUiAlignLeft;
-	OtUiAlignment verticalAlign = OtUiAlignTop;
+	OtUi::Alignment horizontalAlign = OtUi::alignLeft;
+	OtUi::Alignment verticalAlign = OtUi::alignTop;
 };

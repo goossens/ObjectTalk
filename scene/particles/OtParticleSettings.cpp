@@ -26,16 +26,16 @@
 
 bool OtParticleSettings::renderUI() {
 	bool changed = false;
-	changed |= OtUiDragInt("Particle Count", &particles, 1, 10000);
+	changed |= OtUi::dragInt("Particle Count", &particles, 1, 10000);
 	changed |= ImGui::RangeSliderFloat("Lifespan Range", &lifeSpanLow, &lifeSpanHigh, 0.1f, 5.0f);
 
 	changed |= atlas.renderUI("Particle Atlas");
-	changed |= OtUiSelectorPowerOfTwo("Atlas Rows", &atlasRows, 1, 32);
-	changed |= OtUiSelectorPowerOfTwo("Atlas Columns", &atlasColumns, 1, 32);
+	changed |= OtUi::selectorPowerOfTwo("Atlas Rows", &atlasRows, 1, 32);
+	changed |= OtUi::selectorPowerOfTwo("Atlas Columns", &atlasColumns, 1, 32);
 
-	changed |= OtUiSelectorEnum("Emitter Shape", &shape, OtParticleSettings::shapeTypes, OtParticleSettings::shapeTypesCount);
-	changed |= OtUiDragFloat("Emitter Speed", &speed, 0.0f, 5.0f);
-	changed |= OtUiDragFloat("Gravity", &gravity, -2.0f, 2.0f);
+	changed |= OtUi::selectorEnum("Emitter Shape", &shape, OtParticleSettings::shapeTypes, OtParticleSettings::shapeTypesCount);
+	changed |= OtUi::dragFloat("Emitter Speed", &speed, 0.0f, 5.0f);
+	changed |= OtUi::dragFloat("Gravity", &gravity, -2.0f, 2.0f);
 	changed |= ImGui::DragFloat2("Rotation", rotation, 0.0f, 360.0f);
 
 	ImVec2 size{ImGui::GetContentRegionAvail().x, 80.0f};

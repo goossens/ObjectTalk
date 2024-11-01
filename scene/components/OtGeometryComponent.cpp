@@ -23,9 +23,9 @@
 
 bool OtGeometryComponent::renderUI() {
 	bool changed = asset.renderUI("Path##GeometryPath");
-	changed |= OtUiToggleButton("Wireframe", &wireframe);
-	changed |= OtUiToggleButton("Transparent", &transparent);
-	changed |= OtUiToggleButton("Cull Back Faces", &cullback);
+	changed |= OtUi::toggleButton("Wireframe", &wireframe);
+	changed |= OtUi::toggleButton("Transparent", &transparent);
+	changed |= OtUi::toggleButton("Cull Back Faces", &cullback);
 	return changed;
 }
 

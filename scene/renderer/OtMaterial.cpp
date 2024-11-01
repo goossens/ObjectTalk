@@ -58,12 +58,12 @@ bool OtMaterial::renderUI() {
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Normals");
 
 			ImGui::TableNextRow();
-			ImGui::TableNextColumn(); W(); changed |= OtUiDragFloat("##metallic", &metallic, 0.0f, 1.0f);
+			ImGui::TableNextColumn(); W(); changed |= OtUi::dragFloat("##metallic", &metallic, 0.0f, 1.0f);
 			ImGui::TableNextColumn(); W(); changed |= metallicRoughnessTexture.renderUI("##metallicRoughnessTexture");
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Metallic");
 
 			ImGui::TableNextRow();
-			ImGui::TableNextColumn(); W(); OtUiDragFloat("##roughness", &roughness, 0.0f, 1.0f);
+			ImGui::TableNextColumn(); W(); OtUi::dragFloat("##roughness", &roughness, 0.0f, 1.0f);
 			ImGui::TableNextColumn();
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Roughness");
 
@@ -73,12 +73,12 @@ bool OtMaterial::renderUI() {
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Emissive");
 
 			ImGui::TableNextRow();
-			ImGui::TableNextColumn(); W(); changed |= OtUiDragFloat("##ambientOcclusion", &ao, 0.0f, 1.0f);
+			ImGui::TableNextColumn(); W(); changed |= OtUi::dragFloat("##ambientOcclusion", &ao, 0.0f, 1.0f);
 			ImGui::TableNextColumn(); W(); changed |= aoTexture.renderUI("##aoTexture");
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Ambient Occlusion");
 
 			ImGui::TableNextRow();
-			ImGui::TableNextColumn(); W(); changed |= OtUiDragFloat("##scale", &scale, 0.0f, 100.0f);
+			ImGui::TableNextColumn(); W(); changed |= OtUi::dragFloat("##scale", &scale, 0.0f, 100.0f);
 			ImGui::TableNextColumn();
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Scale");
 			ImGui::EndTable();

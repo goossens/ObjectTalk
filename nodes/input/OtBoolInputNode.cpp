@@ -43,7 +43,7 @@ public:
 	// special rendering for input nodes
 	inline bool customInputRendering(float width) override {
 		ImGui::SetNextItemWidth(width);
-		return OtUiToggleButton("##value", &value);
+		return OtUi::toggleButton("##value", &value);
 	}
 
 	// (de)serialize node

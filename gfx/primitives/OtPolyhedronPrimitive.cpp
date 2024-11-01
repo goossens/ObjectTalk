@@ -155,7 +155,7 @@ glm::vec2 OtPolyhedronPrimitive::generateUV(const glm::vec3& normal) {
 //
 
 bool OtPolyhedronPrimitive::renderUI() {
-	return OtUiDragInt("Detail", &detail, 0, 20);
+	return OtUi::dragInt("Detail", &detail, 0, 20);
 }
 
 

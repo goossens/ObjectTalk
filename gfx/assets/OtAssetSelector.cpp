@@ -50,7 +50,7 @@ bool OtAssetSelector::renderUI(Info& info) {
 	// determine real label and ID
 	std::string realLabel;
 	std::string id;
-	OtUiSplitLabel(info.label, realLabel, id);
+	OtUi::splitLabel(info.label, realLabel, id);
 
 	// get file dialog information
 	auto dialog = ImGuiFileDialog::Instance();
@@ -72,7 +72,7 @@ bool OtAssetSelector::renderUI(Info& info) {
 	if (info.virtualMode && *info.virtualMode) {
 		// render path as a textfield
 		ImGui::SetNextItemWidth(pathWidth);
-		if (OtUiInputText("##virtualpath", &filename) && info.path != "virtual:" + filename) {
+		if (OtUi::inputText("##virtualpath", &filename) && info.path != "virtual:" + filename) {
 			info.path = "virtual:" + filename;
 			changed = true;
 		}

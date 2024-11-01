@@ -56,23 +56,23 @@
 
 bool OtTerrain::renderUI() {
 	bool changed = false;
-	changed |= OtUiSelectorPowerOfTwo("Tile Size", &tileSize, 4, 64);
-	changed |= OtUiDragInt("Levels of Detail", &lods, 1, 10);
+	changed |= OtUi::selectorPowerOfTwo("Tile Size", &tileSize, 4, 64);
+	changed |= OtUi::dragInt("Levels of Detail", &lods, 1, 10);
 
 	if (changed) {
 		clear();
 	}
 
-	changed |= OtUiDragFloat("Horizontal Scale", &hScale, 0.01f, 10.0f);
-	changed |= OtUiDragFloat("Vertical Scale", &vScale, 1.0f, 1000.0f);
-	changed |= OtUiDragFloat("Vertical Offset", &vOffset, -1000.0f, 1000.0f);
+	changed |= OtUi::dragFloat("Horizontal Scale", &hScale, 0.01f, 10.0f);
+	changed |= OtUi::dragFloat("Vertical Scale", &vScale, 1.0f, 1000.0f);
+	changed |= OtUi::dragFloat("Vertical Offset", &vOffset, -1000.0f, 1000.0f);
 	changed |= heights.renderUI();
 	changed |= material.renderUI();
-	changed |= OtUiToggleButton("Wireframe", &wireframe);
+	changed |= OtUi::toggleButton("Wireframe", &wireframe);
 
 #ifdef OT_DEBUG
 	std::string buffer = std::to_string(meshes.size());
-	OtUiReadonlyText("Visible Meshes", &buffer);
+	OtUi::readonlyText("Visible Meshes", &buffer);
 #endif
 
 	return changed;

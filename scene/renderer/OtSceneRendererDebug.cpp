@@ -229,7 +229,7 @@ void OtSceneRendererDebug::renderTexture(const char* title, OtTexture& texture) 
 
 void OtSceneRendererDebug::renderCubeMap(const char* title, OtCubeMap& cubemap, CubeMapDebug& debug) {
 	if (ImGui::TreeNode(title)) {
-		OtUiDragInt("Mip Level", &debug.requestedMip, 0, cubemap.getMipLevels());
+		OtUi::dragInt("Mip Level", &debug.requestedMip, 0, cubemap.getMipLevels());
 
 		if (cubemap.getVersion() != debug.renderedVersion || debug.requestedMip != debug.renderedMip) {
 			renderCubeMapAsCross(cubemap, debug);

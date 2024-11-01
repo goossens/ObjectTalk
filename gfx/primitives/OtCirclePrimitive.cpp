@@ -55,9 +55,9 @@ void OtCirclePrimitive::createMesh(OtMesh* mesh) {
 
 bool OtCirclePrimitive::renderUI() {
 	bool changed = false;
-	changed |= OtUiDragInt("Segments", &segments, 1, 50);
-	changed |= OtUiDragFloat("Theta Start", &thetaStart, 0.0f, 360.0f);
-	changed |= OtUiDragFloat("Theta Length", &thetaLength, 0.0f, 360.0f);
+	changed |= OtUi::dragInt("Segments", &segments, 1, 50);
+	changed |= OtUi::dragFloat("Theta Start", &thetaStart, 0.0f, 360.0f);
+	changed |= OtUi::dragFloat("Theta Length", &thetaLength, 0.0f, 360.0f);
 	return changed;
 }
 

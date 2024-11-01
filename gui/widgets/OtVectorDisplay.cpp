@@ -30,10 +30,10 @@
 void OtVectorDisplayClass::init(size_t count, OtObject *parameters) {
 	switch (count) {
 		case 5:
-			setVerticalAlignment(OtUiAlignment(parameters[4]->operator int()));
+			setVerticalAlignment(OtUi::Alignment(parameters[4]->operator int()));
 
 		case 4:
-			setHorizontalAlignment(OtUiAlignment(parameters[3]->operator int()));
+			setHorizontalAlignment(OtUi::Alignment(parameters[3]->operator int()));
 
 		case 3:
 			setScale(parameters[2]->operator float());
@@ -615,7 +615,7 @@ void OtVectorDisplayClass::render() {
 
 	// render scope frame, align it and put it on the screen
 	auto index = scope.render();
-	OtUiAlign(size, horizontalAlign, verticalAlign);
+	OtUi::align(size, horizontalAlign, verticalAlign);
 	ImGui::Image((ImTextureID)(intptr_t) index, size);
 }
 

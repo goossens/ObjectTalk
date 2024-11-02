@@ -390,6 +390,20 @@
 							]
 						},
 						{
+							"color": [
+								0.11764705926179886,
+								0.0784313753247261,
+								0.019607843831181526
+							],
+							"component": "Point Light",
+							"offset": [
+								0.0,
+								0.09000000357627869,
+								-0.03999999910593033
+							],
+							"radius": 0.9200000166893005
+						},
+						{
 							"component": "Particles",
 							"settings": {
 								"alpha": [
@@ -1048,6 +1062,7 @@
 		],
 		"fogDensity": 0.10000000149011612,
 		"fxaa": false,
-		"godrays": false
+		"godrays": false,
+		"tonemap": 3
 	}
 }

@@ -12,6 +12,8 @@
 #include "glm/glm.hpp"
 
 #include "OtLog.h"
+#include "OtModule.h"
+#include "OtVM.h"
 
 #include "OtAssetManager.h"
 
@@ -97,6 +99,11 @@ void OtSceneRuntime::terminate() {
 	// clear the scene and the renderer to release all resources
 	sceneAsset.clear();
 	renderer = nullptr;
+
+	// clear all entities that might cache objects
+	// this is to ensure any UI resources are released before the those libraries are shutdown
+	OtVM::clear();
+	OtModuleClass::clear();
 }
 
 

@@ -67,7 +67,7 @@ class OtStack {
 public:
 	// constructor/destructor
 	inline OtStack() { reserve(512); }
-	inline ~OtStack() { clear(); }
+	inline ~OtStack() { release(); }
 
 	// stack access functions
 	inline void push(const OtObject& object) { if (sp == capacity) { reserve(capacity * 2); } stack[sp++] = object; }
@@ -106,6 +106,20 @@ public:
 		closures.resize(state.closures);
 	}
 
+	// clear the stack
+	inline void clear() {
+		if (stack) {
+			for (auto i = stack; i < stack + capacity; i++) {
+				*i = nullptr;
+			}
+
+			sp = 0;
+
+			frames.clear();
+			closures.clear();
+		}
+	}
+
 private:
 	// reserve specified capacity on stack
 	inline void reserve(size_t newCapacity) {
@@ -118,8 +132,8 @@ private:
 		capacity = newCapacity;
 	}
 
-	// clear the stack and release the memory
-	inline void clear() {
+	// release the stack's memory
+	inline void release() {
 		if (stack) {
 			for (auto i = stack; i < stack + capacity; i++) {
 				i->~OtObject();

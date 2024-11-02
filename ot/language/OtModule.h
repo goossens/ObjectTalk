@@ -34,8 +34,11 @@ public:
 	// get type definition
 	static OtType getMeta();
 
-	// import a module from disk, our cache or from an internal generator
+	// import a module from disk or an internal generator
 	static OtModule import(const std::string& path);
+
+	// clear the internal cache
+	static void clear();
 
 private:
 	// list of directories to search for modules in

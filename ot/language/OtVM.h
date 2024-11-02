@@ -86,6 +86,18 @@ public:
 		instance().callHook = hook != nullptr;
 	}
 
+	// clear the virtual machine (releases any memory still used by the engine)
+	// virtual machine is no longer usable after this call (you are warned)
+
+	// it is only here to destruct objects that might possibly allocate UI resources
+	// VM's are thread singletons that are destructed when the thread ends (which is to late for UI resources)
+	static inline void clear() {
+		auto& vm = instance();
+		vm.stack.clear();
+		vm.global = nullptr;
+		vm.null = nullptr;
+	}
+
 	// get engine parameters
 	static inline OtStack* getStack() { return &instance().stack; }
 	static inline OtGlobal getGlobal() { return instance().global; }

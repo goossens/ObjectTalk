@@ -299,7 +299,7 @@
 			"title": "Create Cone",
 			"type": "Geometry Generator",
 			"x": 36.0,
-			"y": 418.0
+			"y": 431.0
 		},
 		{
 			"id": 1097285194,
@@ -333,7 +333,7 @@
 			"title": "Combine XYZ",
 			"type": "Combine XYZ",
 			"x": 99.0,
-			"y": 508.0
+			"y": 521.0
 		},
 		{
 			"id": 2871743937,
@@ -367,7 +367,7 @@
 			"title": "Combine XYZ",
 			"type": "Combine XYZ",
 			"x": 100.0,
-			"y": 648.0
+			"y": 661.0
 		},
 		{
 			"id": 2146266194,
@@ -403,7 +403,7 @@
 			"title": "Transform",
 			"type": "Geometry Transform",
 			"x": 268.0,
-			"y": 498.0
+			"y": 511.0
 		},
 		{
 			"id": 80633612,
@@ -424,7 +424,7 @@
 			"title": "Save Geometry To Virtual",
 			"type": "Save Geometry To Virtual",
 			"x": 1162.0,
-			"y": 498.0
+			"y": 511.0
 		},
 		{
 			"id": 3172657298,
@@ -452,7 +452,6 @@
 			"y": 144.0
 		},
 		{
-			"operator": 5,
 			"id": 837793109,
 			"inputs": [
 				{
@@ -467,6 +466,7 @@
 					"value": 0.0
 				}
 			],
+			"operator": 5,
 			"outputs": [
 				{
 					"id": 1968705174,
@@ -638,7 +638,6 @@
 			"y": 382.0
 		},
 		{
-			"operator": 5,
 			"id": 1242930939,
 			"inputs": [
 				{
@@ -653,6 +652,7 @@
 					"value": 0.0
 				}
 			],
+			"operator": 5,
 			"outputs": [
 				{
 					"id": 3645131408,
@@ -672,6 +672,12 @@
 					"id": 873477357,
 					"name": "Geometry",
 					"type": "geometry"
+				},
+				{
+					"id": 3713176088,
+					"name": "Seed",
+					"type": "int",
+					"value": 0
 				},
 				{
 					"id": 575614436,

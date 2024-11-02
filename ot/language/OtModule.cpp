@@ -239,6 +239,18 @@ OtModule OtModuleClass::import(const std::string& name) {
 
 
 //
+//	OtModuleClass::clear
+//
+
+void OtModuleClass::clear() {
+	// clear the module cache
+	OtModuleRegistry::instance().iterateValues([](OtModuleRegistryEntry& entry) {
+		entry.module = nullptr;
+	});
+}
+
+
+//
 //	OtModuleRegistration::OtModuleRegistration
 //
 

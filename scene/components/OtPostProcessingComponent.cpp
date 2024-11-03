@@ -38,6 +38,9 @@ bool OtPostProcessingComponent::renderUI() {
 	changed |= OtUi::toggleButton("Godrays", &godrays);
 	changed |= OtUi::dragFloat("Exposure", &exposure, 0.1f, 3.0f);
 	changed |= OtUi::dragFloat("Contrast", &contrast, 0.5f, 2.0f);
+
+	changed |= OtUi::selectorEnum("Tonemap", &tonemap, tonemapTypes, tonemapTypeCount);
+
 	return changed;
 }
 
@@ -56,6 +59,7 @@ nlohmann::json OtPostProcessingComponent::serialize(std::string* basedir) {
 	data["godrays"] = godrays;
 	data["exposure"] = exposure;
 	data["contrast"] = contrast;
+	data["tonemap"] = tonemap;
 	return data;
 }
 
@@ -73,4 +77,5 @@ void OtPostProcessingComponent::deserialize(nlohmann::json data, std::string* ba
 	godrays = data.value("godrays", false);
 	exposure = data.value("exposure", 1.0f);
 	contrast = data.value("contrast", 1.0f);
+	tonemap = data.value("tonemap", acesFilmic);
 }

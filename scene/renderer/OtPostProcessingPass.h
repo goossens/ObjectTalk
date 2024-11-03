@@ -105,7 +105,7 @@ public:
 		pass.submitQuad(ctx.camera.width, ctx.camera.height);
 
 		// set uniform
-		postProcessUniforms.setValue(0, settings.exposure, settings.contrast, 0.0f, 0.0f);
+		postProcessUniforms.setValue(0, settings.exposure, settings.contrast, float(settings.tonemap), 0.0f);
 		postProcessUniforms.submit();
 
 		// set source textures

@@ -21,6 +21,28 @@
 
 class OtPostProcessingComponent {
 public:
+	enum {
+		reinhardSimple,
+		reinhardExtended,
+		filmic,
+		acesFilmic,
+		uncharted2,
+		lottes,
+		uchimura
+	};
+
+	static constexpr const char* tonemapTypes[] = {
+		"Reinhard Simple",
+		"Reinhard Extended",
+		"Filmic",
+		"Aces Filmic",
+		"Uncharted 2",
+		"Lottes",
+		"Uchimura"
+	};
+
+	static constexpr size_t tonemapTypeCount = sizeof(tonemapTypes) / sizeof(*tonemapTypes);
+
 	// UI to change component properties
 	bool renderUI();
 
@@ -40,4 +62,5 @@ public:
 	bool godrays = false;
 	float exposure = 1.0f;
 	float contrast = 1.0f;
+	int tonemap = acesFilmic;
 };

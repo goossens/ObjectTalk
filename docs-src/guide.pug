@@ -6,31 +6,31 @@ include /manual.pug
 
 		+manual-body()
 			+manual-toc()
-				include:markdown-it guide/toc.md
+				include:markdown guide/toc.md
 
 			+manual-content()
 				+manual-chapter("basics", "The Basics")
-					include:markdown-it guide/basics.md
+					include:markdown guide/basics.md
 
 				+manual-chapter("collections", "Collections")
-					include:markdown-it guide/collections.md
+					include:markdown guide/collections.md
 
 				+manual-chapter("operators", "Operators")
-					include:markdown-it guide/operators.md
+					include:markdown guide/operators.md
 
 				+manual-chapter("flow", "Control Flow")
-					include:markdown-it guide/flow.md
+					include:markdown guide/flow.md
 
 				+manual-chapter("scope", "Scope")
-					include:markdown-it guide/scope.md
+					include:markdown guide/scope.md
 
 				+manual-chapter("modules", "Modules")
-					include:markdown-it guide/modules.md
+					include:markdown guide/modules.md
 
 				+manual-chapter("classes", "Classes")
-					include:markdown-it guide/classes.md
+					include:markdown guide/classes.md
 
 				+manual-chapter("functions", "Functions")
-					include:markdown-it guide/functions.md
+					include:markdown guide/functions.md
 
 		include common/footer.pug

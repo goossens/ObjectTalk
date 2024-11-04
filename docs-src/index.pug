@@ -6,10 +6,10 @@ include /manual.pug
 
 		+manual-body()
 			+manual-toc()
-				include:markdown-it main/toc.md
+				include:markdown main/toc.md
 
 			+manual-content()
 				+manual-chapter("intro", "")
-					include:markdown-it main/intro.md
+					include:markdown main/intro.md
 
 		include common/footer.pug

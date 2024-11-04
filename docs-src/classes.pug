@@ -6,55 +6,55 @@ include /manual.pug
 
 		+manual-body()
 			+manual-toc()
-				include:markdown-it classes/toc.md
+				include:markdown classes/toc.md
 
 			+manual-content()
 				+manual-chapter("classes", "ObjectTalk Classes")
-					include:markdown-it classes/classes.md
+					include:markdown classes/classes.md
 
 				+manual-chapter("object", "Object Class")
-					include:markdown-it classes/object.md
+					include:markdown classes/object.md
 
 				+manual-chapter("primitive", "Primitive Class")
-					include:markdown-it classes/primitive.md
+					include:markdown classes/primitive.md
 
 				+manual-chapter("boolean", "Boolean Class")
-					include:markdown-it classes/boolean.md
+					include:markdown classes/boolean.md
 
 				+manual-chapter("integer", "Integer Class")
-					include:markdown-it classes/integer.md
+					include:markdown classes/integer.md
 
 				+manual-chapter("real", "Real Class")
-					include:markdown-it classes/real.md
+					include:markdown classes/real.md
 
 				+manual-chapter("string", "String Class")
-					include:markdown-it classes/String.md
+					include:markdown classes/String.md
 
 				+manual-chapter("function", "Function Class")
-					include:markdown-it classes/function.md
+					include:markdown classes/function.md
 
 				+manual-chapter("collection", "Collection Class")
-					include:markdown-it classes/collection.md
+					include:markdown classes/collection.md
 
 				+manual-chapter("array", "Array Class")
-					include:markdown-it classes/array.md
+					include:markdown classes/array.md
 
 				+manual-chapter("dict", "Dict Class")
-					include:markdown-it classes/dict.md
+					include:markdown classes/dict.md
 
 				+manual-chapter("set", "Set Class")
-					include:markdown-it classes/set.md
+					include:markdown classes/set.md
 
 				+manual-chapter("system", "System Class")
-					include:markdown-it classes/system.md
+					include:markdown classes/system.md
 
 				+manual-chapter("path", "Path Class")
-					include:markdown-it classes/path.md
+					include:markdown classes/path.md
 
 				+manual-chapter("os", "OS Class")
-					include:markdown-it classes/os.md
+					include:markdown classes/os.md
 
 				+manual-chapter("fs", "FS Class")
-					include:markdown-it classes/fs.md
+					include:markdown classes/fs.md
 
 		include common/footer.pug

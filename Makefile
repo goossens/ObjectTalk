@@ -52,20 +52,6 @@ cleanup:
 	perl -i -pe 's/\s+\n/\n/' $(SRC) $(INC) $(TST)
 	ls $(SRC) $(INC) $(TST) | xargs -o -n 1 vim -c 'set ts=4|set noet|%retab!|wq'
 
-.PHONY: alpine
-alpine:
-	cd docker/alpine && ./run
-
-.PHONY: ubuntu
-ubuntu:
-	cd docker/ubuntu && ./run
-
 .PHONY: clean
 clean:
 	rm -rf build debug release xcode vs
-
-.PHONY: distclean
-distclean: clean
-	cd docker/alpine && ./clean
-	cd docker/ubuntu && ./clean
-	docker builder prune --force

@@ -165,23 +165,11 @@
             <h1 class="pb-2">Build and Install on Linux</h1>
             <p>
               ObjectTalk is supported on Linux. Given the large number of
-              flavors, the core team only tests the build process on Alpine
-              Linux and Ubuntu 22.04 Desktop. The Alpine environment is used to
-              test a headless version (just a command line tool without a GUI)
-              and the Ubuntu version is used to test the GUI version. In
-              practice, any combination should work as it just depends on the
-              availability of X-Windows and Vulkan. Other flavors of Linux will
-              likely work as well but we'll let the community provide the
-              instructions.
-            </p>
-            <p>
-              The headless versions can be easily tested with Docker. The
-              <strong>docker</strong> folder contains the recipes and you can
-              quickly spawn a docker container by doing a
-              <strong>make alpine</strong> or <strong>make ubuntu</strong> from
-              the top-level directory. You obviously have to have Docker and
-              make installed on your host platform. The developers use this
-              frequently on a MacOS platform.
+              flavors, the core team only tests the build process on Kubuntu
+              24.10 and Ubuntu 22.04 Desktop. In practice, any distribution
+              should work as it just depends on the availability of X-Windows
+              and Vulkan. Other flavors of Linux will likely work as well but
+              we'll let the community provide the instructions.
             </p>
             <p>
               To build the full version of ObjectTalk on Ubuntu 22.04 Desktop
@@ -223,10 +211,6 @@
                 <strong>./release/bin/ot</strong> depending on the build type
               </li>
             </ul>
-            <p>
-              If you don't want the GUI, look at the Dockerfiles to see what
-              packages are required.
-            </p>
           </div>
           <div id="windows">
             <h1 class="pb-2">Build and Install on Windows</h1>

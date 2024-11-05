@@ -59,10 +59,6 @@ public:
 
 	// render the water's reflection
 	void renderReflection(OtSceneRendererContext& ctx, OtWaterComponent& water) {
-		// setup the reflection camera
-		glm::vec3 reflectionCameraPos = ctx.camera.cameraPosition;
-		reflectionCameraPos.y = water.level - (reflectionCameraPos.y - water.level);
-
 		// determine new view matrix
 		// see http://khayyam.kaplinski.com/2011/09/reflective-water-with-glsl-part-i.html
 		// and http://bcnine.com/articles/water/water.md.html
@@ -87,7 +83,7 @@ public:
 		glm::mat4 reflectionViewMatrix = glm::inverse(reflectionCameraMatrix);
 
 		// setup the reflection camera
-		OtCamera reflectionCamera{width, height, reflectionCameraPos, ctx.camera.projectionMatrix, reflectionViewMatrix};
+		OtCamera reflectionCamera{width, height, ctx.camera.projectionMatrix, reflectionViewMatrix};
 
 		// setup the renderer for the reflection
 		OtSceneRendererContext reflectionContext{ctx};
@@ -104,7 +100,7 @@ public:
 	// render the water's refraction
 	void renderRefraction(OtSceneRendererContext& ctx, OtWaterComponent& water) {
 		// setup the refraction camera
-		OtCamera refractionCamera{width, height, ctx.camera.cameraPosition, ctx.camera.projectionMatrix, ctx.camera.viewMatrix};
+		OtCamera refractionCamera{width, height, ctx.camera.projectionMatrix, ctx.camera.viewMatrix};
 
 		// setup the renderer for the refraction
 		OtSceneRendererContext refractionContext{ctx};

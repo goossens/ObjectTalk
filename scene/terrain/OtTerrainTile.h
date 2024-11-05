@@ -25,7 +25,7 @@
 class OtTerrainTile {
 public:
 	// constructor
-	OtTerrainTile(OtVertexBuffer& v, OtIndexBuffer& t, OtIndexBuffer& l, float xoffset, float zoffset, float rotate) : vertices(v), triangles(t), lines(l) {
+	inline OtTerrainTile(OtVertexBuffer& v, OtIndexBuffer& t, OtIndexBuffer& l, float xoffset, float zoffset, float rotate) : vertices(v), triangles(t), lines(l) {
 		// calculate local space transform
 		transform = glm::mat4(1.0f);
 		transform = glm::rotate(transform, glm::radians(rotate), glm::vec3(0.0f, 1.0f, 0.0f));

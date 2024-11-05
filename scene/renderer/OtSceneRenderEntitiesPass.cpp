@@ -234,7 +234,7 @@ void OtSceneRenderEntitiesPass::renderTerrain(OtSceneRendererContext& ctx, OtEnt
 	// process all the terrain meshes
 	auto terrain = component.terrain;
 
-	for (auto& mesh : terrain->getMeshes(ctx.camera.frustum, ctx.camera.cameraPosition)) {
+	for (auto& mesh : terrain->getMeshes(ctx.camera.frustum, ctx.camera.position)) {
 		// submit the geometry
 		mesh.tile.vertices.submit();
 

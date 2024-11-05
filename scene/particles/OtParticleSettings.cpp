@@ -73,7 +73,7 @@ nlohmann::json OtParticleSettings::serialize(std::string *basedir) {
 //	OtParticleSettings::deserialize
 //
 
-void OtParticleSettings::deserialize(nlohmann::json data, std::string *basedir) {
+void OtParticleSettings::deserialize(nlohmann::json data, std::string* basedir) {
 	particles = data.value("particles", 1024);
 	lifeSpanLow = data.value("lifeSpanLow", 2.0f);
 	lifeSpanHigh = data.value("lifeSpanHigh", 4.0f);

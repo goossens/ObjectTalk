@@ -26,7 +26,7 @@
 class OtTerrainMesh {
 public:
 	// constructor
-	OtTerrainMesh(OtTerrainTile& t, float size, float xoffset, float yoffset, float zoffset, float hscale, float vscale) : tile(t) {
+	inline OtTerrainMesh(OtTerrainTile& t, float size, float xoffset, float yoffset, float zoffset, float hscale, float vscale) : tile(t) {
 		// determine wold space transform
 		transform = glm::mat4(1.0f);
 		transform = glm::translate(transform, glm::vec3(xoffset, yoffset, zoffset));

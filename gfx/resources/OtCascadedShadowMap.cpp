@@ -149,7 +149,7 @@ void OtCascadedShadowMap::update(OtCamera& camera, const glm::vec3& lightDirecti
 
 		// store information
 		distances[cascade] = minZ + splitDist * range;
-		cameras[cascade] = OtCamera(size, size, cameraPosition, lightProjectionMatrix, lightViewMatrix);
+		cameras[cascade] = OtCamera(size, size, lightProjectionMatrix, lightViewMatrix);
 		lastSplitDist = splitDist;
 	}
 }

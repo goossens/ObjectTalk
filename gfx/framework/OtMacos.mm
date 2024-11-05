@@ -38,7 +38,7 @@ void OtFramework::fixMenuLabels() {
 void OtFramework::createMetalLayer() {
 	// get content view
 	NSWindow* nsWindow = (NSWindow*) nativeDisplayHandle;
-	NSView *contentView = [nsWindow contentView];
+	NSView* contentView = [nsWindow contentView];
 
 	// create metal layer
 	[contentView setWantsLayer: YES];

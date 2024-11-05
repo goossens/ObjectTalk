@@ -85,7 +85,7 @@ void OtInstances::load(const std::string &path) {
 //	OtInstances::save
 //
 
-void OtInstances::save(const std::string &path) {
+void OtInstances::save(const std::string& path) {
 	auto data = nlohmann::json::array();
 
 	for (auto& instance : *instances) {

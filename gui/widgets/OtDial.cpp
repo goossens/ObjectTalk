@@ -28,7 +28,7 @@
 //	OtDialClass::init
 //
 
-void OtDialClass::init(size_t count, OtObject *parameters) {
+void OtDialClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
 		case 4:
 			setVerticalAlignment(OtUi::Alignment(parameters[3]->operator int()));

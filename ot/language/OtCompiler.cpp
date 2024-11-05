@@ -37,7 +37,7 @@
 //	OtCompiler::compileFile
 //
 
-OtByteCode OtCompiler::compileFile(const std::string &path) {
+OtByteCode OtCompiler::compileFile(const std::string& path) {
 	// sanity check
 	if (!OtPathExists(path)) {
 		OtError("Can't open file [{}]", path);

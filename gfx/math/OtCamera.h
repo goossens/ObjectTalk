@@ -28,21 +28,19 @@ public:
 	// constructors
 	OtCamera() = default;
 
-	inline OtCamera(int w, int h, const glm::vec3& cp, const glm::mat4 pm, const glm::mat4& vm) :
+	inline OtCamera(int w, int h, const glm::mat4 pm, const glm::mat4& vm) :
 		width(w),
 		height(h),
-		cameraPosition(cp),
 		projectionMatrix(pm),
 		viewMatrix(vm) {
 
-		// initialize camera
-		init();
+		// update camera
+		update();
 	}
 
-	inline OtCamera(int w, int h, float nearPlane, float farPlane, float fov, const glm::vec3& cp, const glm::mat4& vm) :
+	inline OtCamera(int w, int h, float nearPlane, float farPlane, float fov, const glm::mat4& vm) :
 		width(w),
 		height(h),
-		cameraPosition(cp),
 		viewMatrix(vm) {
 
 		// calculate projection matrix
@@ -50,14 +48,13 @@ public:
 			? glm::perspectiveFovRH_NO(glm::radians(fov), (float) width, (float) height, nearPlane, farPlane)
 			: glm::perspectiveFovRH_ZO(glm::radians(fov), (float) width, (float) height, nearPlane, farPlane);
 
-		// initialize camera
-		init();
+		// update camera
+		update();
 	}
 
 	inline OtCamera(int w, int h, float nearPlane, float farPlane, float fov, const glm::vec3& eye, const glm::vec3& at) :
 		width(w),
-		height(h),
-		cameraPosition(eye) {
+		height(h) {
 
 		// determine view and projection matrices
 		viewMatrix = glm::lookAt(eye, at, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -67,7 +64,7 @@ public:
 			: glm::perspectiveFovRH_ZO(glm::radians(fov), (float) width, (float) height, nearPlane, farPlane);
 
 		// initialize camera
-		init();
+		update();
 	}
 
 	// get the near and far value fron the projection matrix
@@ -82,8 +79,11 @@ public:
 		}
 	}
 
-	// initialize camera
-	inline void init() {
+	// update camera
+	inline void update() {
+		// determine camera position
+		position = -glm::vec3(viewMatrix[3]);
+
 		// determine view/projection matrix
 		viewProjectionMatrix = projectionMatrix * viewMatrix;
 
@@ -92,11 +92,11 @@ public:
 	}
 
 	// properties
-	int width;
-	int height;
-	glm::vec3 cameraPosition;
-	glm::mat4 viewMatrix;
-	glm::mat4 projectionMatrix;
-	glm::mat4 viewProjectionMatrix;
+	int width = 0;
+	int height = 0;
+	glm::vec3 position = glm::vec3(0.0f);
+	glm::mat4 viewMatrix = glm::mat4(0.0f);
+	glm::mat4 projectionMatrix = glm::mat4(0.0f);
+	glm::mat4 viewProjectionMatrix = glm::mat4(0.0f);
 	OtFrustum frustum;
 };

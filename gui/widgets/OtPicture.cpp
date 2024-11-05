@@ -23,7 +23,7 @@
 //	OtPictureClass::init
 //
 
-void OtPictureClass::init(size_t count, OtObject *parameters) {
+void OtPictureClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
 		case 4:
 			setVerticalAlignment(OtUi::Alignment(parameters[3]->operator int()));

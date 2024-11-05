@@ -28,7 +28,7 @@ class OtFixtureClass : public OtPhysics2DClass {
 public:
 	// constructors
 	OtFixtureClass() = default;
-	OtFixtureClass(b2Fixture* f) : fixture(f) {}
+	inline OtFixtureClass(b2Fixture* f) : fixture(f) {}
 
 	// get type definition
 	static OtType getMeta();
@@ -38,9 +38,9 @@ public:
 	OtObject setFriction(float friction);
 	OtObject setRestitution(float restitution);
 
-	float getDensity() { return fixture->GetDensity(); }
-	float getFriction() { return fixture->GetFriction(); }
-	float getRestitution() { return fixture->GetRestitution(); }
+	inline float getDensity() { return fixture->GetDensity(); }
+	inline float getFriction() { return fixture->GetFriction(); }
+	inline float getRestitution() { return fixture->GetRestitution(); }
 
 private:
 	// tracking our Box2D object

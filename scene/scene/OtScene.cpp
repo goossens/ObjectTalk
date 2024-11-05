@@ -141,7 +141,7 @@ OtEntity OtScene::restoreEntity(const std::string& json, std::string* basedir) {
 //	OtScene::duplicateEntity
 //
 
-OtEntity OtScene::duplicateEntity(const std::string& json, std::string *basedir) {
+OtEntity OtScene::duplicateEntity(const std::string& json, std::string* basedir) {
 	auto data = nlohmann::json::parse(json);
 	return deserializeEntityFromJson(data, basedir, false);
 }

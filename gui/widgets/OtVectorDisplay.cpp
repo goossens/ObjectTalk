@@ -27,7 +27,7 @@
 //	OtVectorDisplayClass::init
 //
 
-void OtVectorDisplayClass::init(size_t count, OtObject *parameters) {
+void OtVectorDisplayClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
 		case 5:
 			setVerticalAlignment(OtUi::Alignment(parameters[4]->operator int()));

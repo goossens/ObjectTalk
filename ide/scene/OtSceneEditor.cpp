@@ -28,7 +28,7 @@
 #include "OtWorkspace.h"
 
 #include "OtEditPostProcessingTask.h"
-#include "OtSaveEditorCameraToTask.h"
+#include "OtSaveEditorCameraTask.h"
 
 #include "OtCreateEntityTask.h"
 #include "OtDeleteEntityTask.h"
@@ -245,7 +245,7 @@ void OtSceneEditor::renderMenu(bool canRun) {
 
 				for (auto i = 0; i < entries; i++) {
 					if (ImGui::MenuItem(scene.getTag(list[i]).c_str())) {
-						saveEditorCameraTo(list[i]);
+						saveEditorCamera(list[i]);
 					}
 				}
 
@@ -520,7 +520,6 @@ void OtSceneEditor::renderViewPort() {
 	}
 
 	// get camera information
-	glm::vec3 cameraPosition;
 	glm::mat4 cameraViewMatrix;
 	float nearPlane;
 	float farPlane;
@@ -528,7 +527,6 @@ void OtSceneEditor::renderViewPort() {
 
 	if (scene.isValidEntity(selectedCamera)) {
 		glm::mat4 transform = scene.getGlobalTransform(selectedCamera);
-		cameraPosition = glm::vec3(transform[3]);
 		cameraViewMatrix = glm::inverse(transform);
 
 		auto& camera = scene.getComponent<OtCameraComponent>(selectedCamera);
@@ -538,7 +536,6 @@ void OtSceneEditor::renderViewPort() {
 
 	} else {
 		editorCamera.update();
-		cameraPosition = editorCamera.getPosition();
 		cameraViewMatrix = editorCamera.getViewMatrix();
 		nearPlane = editorCamera.getNearPlane();
 		farPlane = editorCamera.getFarPlane();
@@ -565,7 +562,7 @@ void OtSceneEditor::renderViewPort() {
 	ImGui::SetCursorScreenPos(savedPos);
 
 	// render the scene
-	OtCamera camera{int(size.x), int(size.y), nearPlane, farPlane, fov, cameraPosition, cameraViewMatrix};
+	OtCamera camera{int(size.x), int(size.y), nearPlane, farPlane, fov, cameraViewMatrix};
 	renderer->setGridScale(gridEnabled ? gridScale : 0.0f);
 	renderer->setSelectedEntity(selectedEntity);
 	auto textureIndex = renderer->render(camera, &scene);
@@ -1019,10 +1016,10 @@ void OtSceneEditor::duplicateEntity() {
 
 
 //
-//	OtSceneEditor::saveEditorCameraTo
+//	OtSceneEditor::saveEditorCamera
 //
 
-void OtSceneEditor::saveEditorCameraTo(OtEntity entity) {
+void OtSceneEditor::saveEditorCamera(OtEntity entity) {
 	// get camera components
 	auto& camera = scene.getComponent<OtCameraComponent>(entity);
 	auto& transform = scene.getComponent<OtTransformComponent>(entity);
@@ -1040,7 +1037,7 @@ void OtSceneEditor::saveEditorCameraTo(OtEntity entity) {
 	// create an edit task so this can be undone
 	auto newCamera = camera.serialize(nullptr).dump();
 	auto newTransform = transform.serialize(nullptr).dump();
-	nextTask = std::make_shared<OtSaveEditorCameraToTask>(&scene, entity, oldCamera, oldTransform, newCamera, newTransform);
+	nextTask = std::make_shared<OtSaveEditorCameraTask>(&scene, entity, oldCamera, oldTransform, newCamera, newTransform);
 }
 
 

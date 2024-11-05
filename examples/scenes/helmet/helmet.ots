@@ -44,10 +44,10 @@
 					"uuid": 397016261
 				},
 				{
-					"brightness": 0.28999999165534973,
+					"brightness": 0.5699999928474426,
 					"component": "Sky Box",
 					"cubemap": "assets/sunset.hdr",
-					"gamma": 1.8300000429153442
+					"gamma": 2.5999999046325684
 				}
 			]
 		},
@@ -103,13 +103,14 @@
 			"far": 50.0,
 			"fov": 60.0,
 			"near": 0.10000000149011612,
-			"pitch": -15.413000106811523,
+			"pitch": -21.55008888244629,
 			"position": [
 				0.0,
 				2.0,
 				5.0
 			],
-			"yaw": 0.0
+			"speed": 3.0,
+			"yaw": 1.596582055091858
 		},
 		"gizmo": {
 			"enabled": false,
@@ -129,8 +130,8 @@
 	},
 	"processing": {
 		"bloomIntensity": 0.44999998807907104,
-		"contrast": 1.2400000095367432,
-		"exposure": 0.6899999976158142,
+		"contrast": 1.5099999904632568,
+		"exposure": 0.5299999713897705,
 		"fog": false,
 		"fogColor": [
 			0.4000000059604645,
@@ -139,6 +140,7 @@
 		],
 		"fogDensity": 0.10000000149011612,
 		"fxaa": false,
-		"godrays": false
+		"godrays": false,
+		"tonemap": 6
 	}
 }

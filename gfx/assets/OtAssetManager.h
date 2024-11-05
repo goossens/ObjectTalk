@@ -146,7 +146,7 @@ private:
 		Key(size_t t, const std::string& p) : type(t), path(p) {}
 
 		// check for equality
-		bool operator==(const Key &other) const { return type == other.type && path == other.path; }
+		bool operator==(const Key& other) const { return type == other.type && path == other.path; }
 
 		// properties
 		size_t type;

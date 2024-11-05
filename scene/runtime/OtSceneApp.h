@@ -28,7 +28,7 @@
 class OtSceneApp : public OtSceneRuntime, public OtFrameworkApp {
 public:
 	// constructor
-	OtSceneApp(std::string path) : scenePath(path) {}
+	inline OtSceneApp(std::string path) : scenePath(path) {}
 
 private:
 	// framework callbacks

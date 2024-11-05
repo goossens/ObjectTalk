@@ -22,7 +22,7 @@
 void OtStderrMultiplexer::demuliplexInput(
 	std::string input,
 	std::function<void(const std::string& message)> normal,
-	std::function<void(int type, const std::string &message)> log,
+	std::function<void(int type, const std::string& message)> log,
 	std::function<void(OtException& e)> except) {
 
 	// process entire input

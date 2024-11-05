@@ -37,7 +37,7 @@ public:
 
 	// access the mesh
 	void setMesh(std::shared_ptr<OtMesh> mesh);
-	OtMesh& getMesh() { return *mesh.get(); }
+	OtMesh& getMesh() { return* mesh.get(); }
 	void cloneMesh(const OtGeometry& geometry);
 
 	// load/save the geometry

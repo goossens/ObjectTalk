@@ -67,7 +67,7 @@ void OtOscilloscope::drawCircle(float x, float y, float radius, float steps, flo
 //	OtOscilloscope::drawSevenSegment
 //
 
-void OtOscilloscope::drawSevenSegment(float x, float y, float size, const std::string &text, float lineWidth, uint32_t color) {
+void OtOscilloscope::drawSevenSegment(float x, float y, float size, const std::string& text, float lineWidth, uint32_t color) {
 	// calculate scaling
 	auto s = size / 100.0f;
 	auto t = origin == topLeftOrigin ? s : -s;

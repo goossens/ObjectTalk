@@ -20,13 +20,13 @@
 
 
 //
-//	OtSaveEditorCameraToTask
+//	OtSaveEditorCameraTask
 //
 
-class OtSaveEditorCameraToTask : public OtEditorTask {
+class OtSaveEditorCameraTask : public OtEditorTask {
 public:
 	// constructor
-	OtSaveEditorCameraToTask(
+	OtSaveEditorCameraTask(
 		OtScene* s,
 		OtEntity e,
 		const std::string& oc, const std::string& ot,

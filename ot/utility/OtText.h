@@ -91,7 +91,7 @@ public:
 
 	template <class FUNCTION>
 	static inline void splitTrimIterator(const char* begin, const char* end, char character, FUNCTION function) {
-		splitIterator(begin, end, character, [&](const char *b, const char *e) {
+		splitIterator(begin, end, character, [&](const char* b, const char* e) {
 			while (isspace(*b) && b < e) {
 				b++;
 			}

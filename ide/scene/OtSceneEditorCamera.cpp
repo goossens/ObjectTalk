@@ -161,7 +161,7 @@ void OtSceneEditorCamera::handleKeyboardAndMouse() {
 		// handle mouse interactions
 		ImVec2 drag = ImGui::GetMouseDragDelta();
 
-		if (drag.x != 0.0 || drag.y != 0.0) {
+		if (drag.x != 0.0f || drag.y != 0.0f) {
 			pitch += drag.y * maxRotationPerSecond * delta / 2.0f;
 			yaw += drag.x * maxRotationPerSecond * delta;
 			ImGui::ResetMouseDragDelta();

@@ -22,7 +22,7 @@
 //	OtShape::load
 //
 
-void OtShape::load(const std::string &path) {
+void OtShape::load(const std::string& path) {
 	clear();
 
 	// read shape from file

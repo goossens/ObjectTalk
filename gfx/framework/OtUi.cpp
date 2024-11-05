@@ -626,7 +626,7 @@ bool OtUi::bezier(const char *label, float P[4]) {
 	enum { GRAB_BORDER = 2 }; // handlers: circle border width
 
 	static struct {
-		const char *name;
+		const char* name;
 		float points[4];
 	} presets[] = {
 		{ "Linear", 0.250f, 0.250f, 0.750f, 0.750f },

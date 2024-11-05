@@ -26,10 +26,10 @@ void OtSceneRenderPass::submitClippingUniforms(OtSceneRendererContext& ctx) {
 //	OtSceneRenderPass::submitLightingUniforms
 //
 
-void OtSceneRenderPass::submitLightingUniforms(OtSceneRendererContext &ctx) {
+void OtSceneRenderPass::submitLightingUniforms(OtSceneRendererContext& ctx) {
 	// build and submit the light uniforms
 	glm::vec4* uniforms = lightingUniforms.getValues();
-	uniforms[0] = glm::vec4(ctx.camera.cameraPosition, float(ctx.hasDirectionalLighting));
+	uniforms[0] = glm::vec4(ctx.camera.position, float(ctx.hasDirectionalLighting));
 	uniforms[1] = glm::vec4(ctx.directionalLightDirection, 0.0f);
 	uniforms[2] = glm::vec4(ctx.directionalLightColor, ctx.directionalLightAmbient);
 	uniforms[3] = glm::vec4(float(ctx.hasImageBasedLighting), float(ctx.ibl ? ctx.ibl->maxEnvLevel : 0), 0.0f, 0.0f);

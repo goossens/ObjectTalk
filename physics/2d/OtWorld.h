@@ -74,7 +74,7 @@ private:
 
 	// callback management
 	struct Callback {
-		Callback(OtObject c, OtObject b1, OtObject b2) : callback(c), body1(b1), body2(b2) {}
+		inline Callback(OtObject c, OtObject b1, OtObject b2) : callback(c), body1(b1), body2(b2) {}
 		OtObject callback;
 		OtObject body1;
 		OtObject body2;

@@ -30,7 +30,7 @@ class OtBodyClass : public OtPhysics2DClass {
 public:
 	// constructors
 	OtBodyClass() = default;
-	OtBodyClass(b2Body* b) : body(b) {}
+	inline OtBodyClass(b2Body* b) : body(b) {}
 
 	// clear all content
 	void clear();
@@ -50,10 +50,10 @@ public:
 	OtObject addRectangularFixture(float x, float y, float w, float h);
 
 	// get information
-	float getX() { return body->GetPosition().x; }
-	float getY() { return body->GetPosition().y; }
-	float getLinearVelocityX() { return body->GetLinearVelocity().x; }
-	float getLinearVelocityY() { return body->GetLinearVelocity().y; }
+	inline float getX() { return body->GetPosition().x; }
+	inline float getY() { return body->GetPosition().y; }
+	inline float getLinearVelocityX() { return body->GetLinearVelocity().x; }
+	inline float getLinearVelocityY() { return body->GetLinearVelocity().y; }
 
 	// manipulate body
 	void applyLinearImpulse(float x, float y);

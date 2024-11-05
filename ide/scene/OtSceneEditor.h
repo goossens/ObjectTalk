@@ -97,7 +97,7 @@ private:
 	}
 
 	// save editor camera to scene camera
-	void saveEditorCameraTo(OtEntity entity);
+	void saveEditorCamera(OtEntity entity);
 
 	// the scene being edited
 	OtScene scene;

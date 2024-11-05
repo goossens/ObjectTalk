@@ -80,7 +80,7 @@ void OtCanvas::clear() {
 //	OtCanvas::render
 //
 
-void OtCanvas::render(OtFrameBuffer &framebuffer) {
+void OtCanvas::render(OtFrameBuffer& framebuffer) {
 	// setup rendering pass
 	OtPass pass;
 	pass.touch();

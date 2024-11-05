@@ -23,7 +23,7 @@
 //	OtLabelClass::init
 //
 
-void OtLabelClass::init(size_t count, OtObject *parameters) {
+void OtLabelClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
 		case 3:
 			setVerticalAlignment(OtUi::Alignment(parameters[2]->operator int()));

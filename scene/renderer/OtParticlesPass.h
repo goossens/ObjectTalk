@@ -58,7 +58,7 @@ public:
 			auto& settings = component.settings;
 			auto& particles = *component.particles;
 
-			settings.cameraPosition = ctx.camera.cameraPosition;
+			settings.cameraPosition = ctx.camera.position;
 			settings.deltatime = ImGui::GetIO().DeltaTime;
 			particles.update(settings);
 

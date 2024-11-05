@@ -25,7 +25,7 @@
 //	OtFilmStripClass::init
 //
 
-void OtFilmStripClass::init(size_t count, OtObject *parameters) {
+void OtFilmStripClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
 		case 6:
 			setVerticalAlignment(OtUi::Alignment(parameters[5]->operator int()));

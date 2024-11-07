@@ -16,4 +16,4 @@ Desktop with GUI and IDE, run the following commands:
 * **cd ObjectTalk**
 * Create a debug version with **make debug** or create a release version with **make release**
 * You can run the test suite for the language with **make test** or **make rtest** depending on the build type
-* The created binary will be **./build/Linix/Debug/ot** or **./Linix/Releast/ot** depending on the build type
+* The created binary will be **./build/Linux/Debug/ot** or **./Linux/Release/ot** depending on the build type

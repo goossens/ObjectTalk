@@ -18,22 +18,17 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Configure
-      run: |
-        mkdir build
-        cd build
-        cmake .. -G "${{ matrix.config.toolchain }}" -A ${{ matrix.config.arch }}
+      run: cmake -B build -G "${{ matrix.config.toolchain }}" -A ${{ matrix.config.arch }}
 
     - name: Build
-      run: cmake --build build
+      run: cmake --build build --config Release
 
     - name: Test
-      run: |
-        cd build
-        ctest -C Debug --output-on-failure
+      run: ctest --test-dir build --build-config Release --output-on-failure
 
     - name: Package
       run: |
-        cd build/bin
+        cd build/Release
         7z a ../../windows-${{ matrix.config.server }}.zip ot.exe
 
     - name: Release

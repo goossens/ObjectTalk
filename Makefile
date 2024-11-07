@@ -4,44 +4,52 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-SRC=$(wildcard app/*.cpp libot/*/*.cpp modules/*/*.cpp  modules/*/*/*.cpp)
-INC=$(wildcard libot/include/*.h libot/include/ot/*.h modules/*/*.h modules/*/*/*.h)
-TST=$(wildcard tests/*/*.ot)
+SRC = $(wildcard *.cpp */*.cpp */*/*.cpp */*/*.glsl)
+INC = $(wildcard *.h */*.h */*/*.h)
+TST = $(wildcard tests/*/*.ot)
+
+ifeq ($(OS),Windows_NT)
+    SYSTEM = Windows
+else
+    SYSTEM = $(shell sh -c 'uname 2>/dev/null || echo Unknown')
+endif
 
 .PHONY: debug
-debug:
-	cmake -Bdebug -DCMAKE_BUILD_TYPE=Debug
-	cd debug && make
+debug: ninja
+	cmake --build build/$(SYSTEM) --config Debug
 
 .PHONY: release
-release:
-	cmake -Brelease -DCMAKE_BUILD_TYPE=Release
-	cd release && make
+release: ninja
+	cmake --build build/$(SYSTEM) --config Release
+
+.PHONY: ninja
+ninja:
+	cmake -B build/$(SYSTEM) -G "Ninja Multi-Config"
 
 .PHONY: shaders
 shaders:
-	./gui/shaders/update
+	./shaders/update
 
 .PHONY: shaders-force
 shaders-force:
-	./gui/shaders/update --force
+	./shaders/update --force
 
 .PHONY: xcode
 xcode:
-	cmake -Bxcode -GXcode
+	cmake -B build/xcode -G Xcode
 
 .PHONY: vs
 vs:
-	cmake -Bvs -G "Visual Studio 17 2022" -A x64
-	cd vs && cmake --build .
+	cmake -B build/vs -G "Visual Studio 17 2022" -A x64
+	cmake --build build/vs
 
 .PHONY: test
 test: debug
-	cd debug && make test
+	ctest --test-dir build/$(SYSTEM) --build-config Debug --output-on-failure
 
 .PHONY: rtest
 rtest: release
-	cd release && make test
+	ctest --test-dir build/$(SYSTEM) --build-config Release --output-on-failure
 
 .PHONY: docs
 docs:
@@ -54,4 +62,4 @@ cleanup:
 
 .PHONY: clean
 clean:
-	rm -rf build debug release xcode vs
+	rm -rf build

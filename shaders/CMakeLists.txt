@@ -10,6 +10,6 @@ file(GLOB SHADERS_GLSL update */*.glsl */*.sc)
 
 add_library(shaders OBJECT ${SHADERS_INCLUDES} ${SHADERS_SOURCES})
 target_include_directories(shaders PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(shaders PUBLIC ot bgfx)
+target_link_libraries(shaders PUBLIC language bgfx)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${SHADERS_INCLUDES} ${SHADERS_SOURCES} ${SHADERS_GLSL})

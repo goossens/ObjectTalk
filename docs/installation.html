@@ -132,6 +132,10 @@
                 Install Cmake using <strong>brew install cmake</strong> from the
                 command line
               </li>
+              <li>
+                Install Ninja using <strong>brew install ninja</strong> from the
+                command line
+              </li>
             </ul>
             <p>To build ObjectTalk, do the following from the command line:</p>
             <ul>
@@ -156,8 +160,8 @@
               </li>
               <li>
                 You can also build an Xcode project with
-                <strong>make xcode</strong>: the project will be in the xcode
-                directory
+                <strong>make xcode</strong>: the project will be in the
+                <strong>build/xcode</strong> directory
               </li>
             </ul>
           </div>
@@ -179,9 +183,9 @@
               <li>
                 Install additional software using
                 <strong
-                  >sudo apt-get install build-essential cmake git xorg-dev
-                  libgl1-mesa-dev x11proto-core-dev libx11-dev libwayland-dev
-                  libxkbcommon-x11-dev</strong
+                  >sudo apt-get install build-essential cmake ninja-build git
+                  xorg-dev libgl1-mesa-dev x11proto-core-dev libx11-dev
+                  libwayland-dev libxkbcommon-x11-dev</strong
                 >
               </li>
               <li><strong>cd [to your favorite build directory]</strong></li>
@@ -204,26 +208,27 @@
               </li>
               <li>
                 You can run the test suite for the language with
-                <strong>make test</strong>
+                <strong>make test</strong> or
+                <strong>make rtest</strong> depending on the build type
               </li>
               <li>
-                The created binary will be <strong>./debug/bin/ot</strong> or
-                <strong>./release/bin/ot</strong> depending on the build type
+                The created binary will be
+                <strong>./build/Linix/Debug/ot</strong> or
+                <strong>./Linix/Releast/ot</strong> depending on the build type
               </li>
             </ul>
           </div>
           <div id="windows">
             <h1 class="pb-2">Build and Install on Windows</h1>
             <p>
-              ObjectTalk is supported on Windows 10, 11, Server 2019 or Server
+              ObjectTalk is supported on Windows 10, 11, Server 2019 and Server
               2022. There are 3 simple requirements to get your machine ready
               for ObjectTalk development:
             </p>
             <ul>
               <li>
                 Install Visual Studio 17 2022 (make sure you pick the
-                &quot;Desktop development with C++&quot; option): Visual Studio
-                16 2019 also works
+                &quot;Desktop development with C++&quot; option)
               </li>
               <li>
                 Install git from
@@ -260,18 +265,23 @@
               <li><strong>cd ObjectTalk</strong></li>
               <li>
                 <strong
-                  >cmake -Bvs -G &quot;Visual Studio 17 2022&quot; -A
+                  >cmake -B build/vs -G &quot;Visual Studio 17 2022&quot; -A
                   x64</strong
                 >
               </li>
               <li>
                 Build ObjectTalk by Hand:
                 <ul>
-                  <li><strong>cd vs</strong></li>
-                  <li><strong>cmake --build .</strong></li>
+                  <li><strong>cmake --build build/vs</strong></li>
                   <li>
                     Run the tests:
-                    <strong>ctest -C Debug --output-on-failure</strong>
+                    <strong
+                      >ctest --test-dir build/vs --build-config Debug
+                      --output-on-failure</strong
+                    >
+                  </li>
+                  <li>
+                    Run the executable at <strong>build/vs/Debug/ot.exe</strong>
                   </li>
                 </ul>
               </li>
@@ -280,7 +290,7 @@
                 <ul>
                   <li>
                     Open the <strong>ObjectTalk.sln</strong> solution in the
-                    <strong>vs</strong> folder and go crazy.
+                    <strong>build/vs</strong> folder and go crazy.
                   </li>
                 </ul>
               </li>

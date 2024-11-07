@@ -16,18 +16,17 @@ jobs:
         sudo apt-get install xorg-dev libegl-dev libgl1-mesa-dev x11proto-core-dev libx11-dev
 
     - name: Configure
-      run: cmake -Brelease -DCMAKE_BUILD_TYPE=Release
+      run: cmake -B build -G "Ninja Multi-Config"
 
     - name: Build
-      run: cd release && make
+      run: cmake --build build --config Release
 
     - name: Test
-      run: cd release && make test
+      run: ctest --test-dir build --build-config Release --output-on-failure
 
     - name: Package
       run: |
-        cd release/bin
-        ls -l ot
+        cd build/Release
         tar cvfz ../../ubuntu.tgz ot
 
     - name: Release

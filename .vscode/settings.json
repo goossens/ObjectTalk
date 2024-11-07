@@ -140,5 +140,6 @@
     "C_Cpp.vcFormat.space.withinInitializerListBraces": false,
     "telemetry.telemetryLevel": "off",
     "cmake.configureOnOpen": false,
+	"cmake.buildDirectory": "${workspaceFolder}/build/vscode",
 	"files.trimTrailingWhitespace": true
 }

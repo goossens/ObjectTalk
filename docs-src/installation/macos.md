@@ -6,6 +6,7 @@ to get your machine ready for ObjectTalk development:
 * Install **homebrew** using the instructions at [https://brew.sh](https://brew.sh)
 * Install git using **brew install git** from the command line
 * Install Cmake using **brew install cmake** from the command line
+* Install Ninja using **brew install ninja** from the command line
 
 To build ObjectTalk, do the following from the command line:
 
@@ -15,4 +16,4 @@ To build ObjectTalk, do the following from the command line:
 * Create a debug version with **make debug** or create a release version with **make release**
 * You can run the test suite for the language with **make test**
 * The created binary will be **./debug/bin/ot** or **./release/bin/ot** depending on the build type
-* You can also build an Xcode project with **make xcode**: the project will be in the xcode directory
+* You can also build an Xcode project with **make xcode**: the project will be in the **build/xcode** directory

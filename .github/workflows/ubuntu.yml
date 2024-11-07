@@ -10,10 +10,11 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Setup libraries
+    - name: Setup libraries and tools
       run: |
         sudo apt update
-        sudo apt-get install xorg-dev libegl-dev libgl1-mesa-dev x11proto-core-dev libx11-dev
+        sudo apt install xorg-dev libegl-dev libgl1-mesa-dev x11proto-core-dev libx11-dev
+        sudo apt install ninja-build
 
     - name: Configure
       run: cmake -B build -G "Ninja Multi-Config"

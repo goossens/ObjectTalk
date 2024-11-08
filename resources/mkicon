@@ -1,5 +1,12 @@
 #!/bin/bash
+#
+#	ObjectTalk Scripting Language
+#	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+#
+#	This work is licensed under the terms of the MIT license.
+#	For a copy, see <https://opensource.org/licenses/MIT>.
 
+cd -P "$(dirname "${BASH_SOURCE[0]}")"
 mkdir icon.iconset
 
 sips -z 16 16     icon.png --out icon.iconset/icon_16x16.png

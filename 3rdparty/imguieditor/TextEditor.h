@@ -105,6 +105,7 @@ public:
 		static const LanguageDefinition& Lua();
 		static const LanguageDefinition& Cs();
 		static const LanguageDefinition& Json();
+		static const LanguageDefinition& Markdown();
 	};
 
 	void SetLanguageDefinition(const LanguageDefinition& aLanguageDef);

@@ -882,7 +882,6 @@ const TextEditor::LanguageDefinition& TextEditor::LanguageDefinition::Json()
 		langDef.mKeywords.clear();
 		langDef.mIdentifiers.clear();
 
-
 		langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"##(\"(\\.|[^\"])*\")##", PaletteIndex::String));
 		langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"##([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)([eE][+-]?[0-9]+)?)##", PaletteIndex::Number));
 		langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"##([\[\]\{\}\!\%\^\&\*\(\)\-\+\=\~\|\<\>\?\/\;\,\.\:])##", PaletteIndex::Punctuation));
@@ -895,6 +894,57 @@ const TextEditor::LanguageDefinition& TextEditor::LanguageDefinition::Json()
 		langDef.mCaseSensitive = true;
 
 		langDef.mName = "Json";
+
+		inited = true;
+	}
+	return langDef;
+}
+
+const TextEditor::LanguageDefinition& TextEditor::LanguageDefinition::Markdown() {
+	static bool inited = false;
+	static LanguageDefinition langDef;
+	if (!inited) {
+		langDef.mName = "Markdown";
+
+		// Headers
+		langDef.mTokenRegexStrings.push_back(std::make_pair("#+.*", TextEditor::PaletteIndex::Keyword));
+
+		// Emphasis
+		langDef.mTokenRegexStrings.push_back(std::make_pair("\\*\\*[^\\*]+\\*\\*", TextEditor::PaletteIndex::Keyword)); // bold
+		langDef.mTokenRegexStrings.push_back(std::make_pair("\\*[^\\*]+\\*", TextEditor::PaletteIndex::Keyword)); // italic
+		langDef.mTokenRegexStrings.push_back(std::make_pair("~~[^~]+~~", TextEditor::PaletteIndex::Keyword)); // strikethrough
+
+		// Links and Images
+		langDef.mTokenRegexStrings.push_back(std::make_pair("\\!\\[.*\\]\\(.*\\)", TextEditor::PaletteIndex::String)); // image
+		langDef.mTokenRegexStrings.push_back(std::make_pair("\\[.*\\]\\(.*\\)", TextEditor::PaletteIndex::String)); // link
+
+		// Inline code
+		langDef.mTokenRegexStrings.push_back(std::make_pair("`[^`]+`", TextEditor::PaletteIndex::Keyword));
+
+		// Code blocks
+		langDef.mTokenRegexStrings.push_back(std::make_pair("```.*```", TextEditor::PaletteIndex::Keyword));
+
+		// Blockquotes
+		langDef.mTokenRegexStrings.push_back(std::make_pair("^> .*", TextEditor::PaletteIndex::Comment));
+
+		// Lists
+		langDef.mTokenRegexStrings.push_back(std::make_pair("^- .*", TextEditor::PaletteIndex::Keyword));
+		langDef.mTokenRegexStrings.push_back(std::make_pair("^\\* .*", TextEditor::PaletteIndex::Keyword));
+		langDef.mTokenRegexStrings.push_back(std::make_pair("^\\d+\\. .*", TextEditor::PaletteIndex::Keyword));
+
+		// Horizontal rules
+		langDef.mTokenRegexStrings.push_back(std::make_pair("^(-{3,}|\\*{3,}|_{3,})$", TextEditor::PaletteIndex::Keyword));
+
+		// Escaped characters
+		langDef.mTokenRegexStrings.push_back(std::make_pair("\\\\.", TextEditor::PaletteIndex::Default));
+
+		langDef.mCommentStart = "<!--";
+		langDef.mCommentEnd = "-->";
+		langDef.mSingleLineComment = "";
+
+		langDef.mCaseSensitive = true;
+
+		langDef.mName = "Markdown";
 
 		inited = true;
 	}

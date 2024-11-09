@@ -2226,9 +2226,9 @@ void TextEditor::HandleKeyboardInputs(bool aParentIsFocused)
 void TextEditor::HandleMouseInputs()
 {
 	ImGuiIO& io = ImGui::GetIO();
-	auto shift = io.KeyShift;
-	auto ctrl = io.ConfigMacOSXBehaviors ? io.KeySuper : io.KeyCtrl;
-	auto alt = io.ConfigMacOSXBehaviors ? io.KeyCtrl : io.KeyAlt;
+	auto shift = ImGui::IsKeyDown(ImGuiMod_Shift);
+	auto ctrl = ImGui::IsKeyDown(ImGuiMod_Ctrl);
+	auto alt = ImGui::IsKeyDown(ImGuiMod_Alt);
 
 	/*
 	Pan with middle mouse button

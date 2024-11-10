@@ -13,6 +13,8 @@
 //
 
 #include <array>
+#include <string>
+#include <vector>
 
 #define GLFW_INCLUDE_NONE
 #include "GLFW/glfw3.h"
@@ -34,6 +36,12 @@
 
 class OtFramework {
 public:
+	// initialize UI framework
+	void initialize();
+
+	// terminate UI framework
+	void terminate();
+
 	// run the UI framework
 	void run(OtFrameworkApp* app);
 
@@ -45,6 +53,14 @@ public:
 
 	// set anti-aliasing
 	void setAntiAliasing(int level);
+
+	// get list of file to open on startup
+	inline static std::vector<std::string>& getStartupFiles() { return filesToOpen; }
+
+#if __APPLE__
+	// add file to open at startup
+	static void addStartupFile(const char* filename);
+#endif
 
 private:
 #if __APPLE__
@@ -80,6 +96,9 @@ private:
 	void frameIMGUI();
 	void renderIMGUI();
 	void endIMGUI();
+
+	// files to open on startup
+	static std::vector<std::string> filesToOpen;
 
 	// main window
 	GLFWwindow* window;

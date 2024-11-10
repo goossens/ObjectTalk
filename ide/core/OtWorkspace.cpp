@@ -35,7 +35,7 @@
 
 void OtWorkspace::onSetup() {
 	// set the current directory to examples if we are in development mode
-	auto exec = getExecutablePath();
+	auto exec = OtPathGetExecutable();
 	auto root = OtPathGetParent(OtPathGetParent(OtPathGetParent(exec)));
 	auto examples = OtPathJoin(root, "examples");
 
@@ -393,7 +393,7 @@ void OtWorkspace::runFile() {
 
 	// launch a subprocess
 	subprocess.start(
-		getExecutablePath(),
+		OtPathGetExecutable(),
 		args,
 		[this](int64_t status, int signal) {
 			if (status || signal != 0) {
@@ -912,21 +912,6 @@ void OtWorkspace::renderSubProcess() {
 
 	ImGui::End();
 	ImGui::PopStyleVar();
-}
-
-
-//
-//	OtWorkspace::getExecutablePath
-//
-
-std::string OtWorkspace::getExecutablePath() {
-	// figure out where we live
-	char buffer[1024];
-	size_t length = 1024;
-	auto status = uv_exepath(buffer, &length);
-	UV_CHECK_ERROR("uv_exepath", status);
-	buffer[length] = 0;
-	return buffer;
 }
 
 

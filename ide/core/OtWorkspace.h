@@ -73,9 +73,6 @@ private:
 	// create a name for an untitled file
 	std::string getUntitledName(const char* ext);
 
-	// get executable path
-	std::string getExecutablePath();
-
 	// highlight error in editor after subprocess run
 	void highlightError(OtException& exception);
 

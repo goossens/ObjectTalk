@@ -11,7 +11,7 @@ add_subdirectory(fmt)
 add_subdirectory(libuv)
 add_subdirectory(json)
 
-if(OT_GUI)
+if(OT_INCLUDE_UI)
 	add_subdirectory(bsthreadpool)
 	add_subdirectory(glfw)
 	add_subdirectory(bx)

@@ -88,7 +88,7 @@ void OtLogger::logMessage(const char* filename, int lineno, int type, const std:
 
 	// send to log file (if required)
 	if (ofs.is_open()) {
-		ofs << output;
+		ofs << output << std::flush;
 	}
 
 	// throw exception (if required)

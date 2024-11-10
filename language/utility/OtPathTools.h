@@ -145,6 +145,21 @@ static inline std::string OtPathJoin(const std::string& base, const std::string&
 
 
 //
+//	OtPathGetExecutable
+//
+
+static inline std::string OtPathGetExecutable() {
+	// figure out where we live
+	char buffer[1024];
+	size_t length = 1024;
+	auto status = uv_exepath(buffer, &length);
+	UV_CHECK_ERROR("uv_exepath", status);
+	buffer[length] = 0;
+	return buffer;
+}
+
+
+//
 //	OtPathGetCurrentWorkingDirectory
 //
 

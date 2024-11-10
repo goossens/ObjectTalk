@@ -2,7 +2,7 @@
     "configurations": [
         {
             "name": "Mac",
-			"compileCommands": "${workspaceFolder}/build/compile_commands.json",
+			"compileCommands": "${workspaceFolder}/build/vscode/compile_commands.json",
             "defines": [],
             "macFrameworkPath": [
                 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks"

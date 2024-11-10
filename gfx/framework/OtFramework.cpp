@@ -33,8 +33,29 @@
 //	Globals
 //
 
+std::vector<std::string> OtFramework::filesToOpen;
 static std::vector<std::function<void()>> oneTimers;
 static std::mutex oneTimersLock;
+
+
+//
+//	OtFramework::initialize
+//
+
+void OtFramework::initialize() {
+	// initialize window library
+	initGLFW();
+}
+
+
+//
+//	OtFramework::terminate
+//
+
+void OtFramework::terminate() {
+	// close window library
+	endGLFW();
+}
 
 
 //
@@ -50,9 +71,6 @@ void OtFramework::run(OtFrameworkApp* targetApp) {
 	// 2. the second thread runs the application logic as well as the asynchronous libuv events
 	running = true;
 
-	// initialize window library
-	initGLFW();
-
 	// start the second thread
 	std::thread thread([this]() {
 		this->runThread2();
@@ -67,9 +85,6 @@ void OtFramework::run(OtFrameworkApp* targetApp) {
 	// wait for second thread to finish
 	running = false;
 	thread.join();
-
-	// close window library
-	endGLFW();
 }
 
 

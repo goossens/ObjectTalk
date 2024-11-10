@@ -16,7 +16,7 @@ add_library(multipart STATIC multipart/multipartparser.c multipart/multipartpars
 target_include_directories(multipart PUBLIC multipart)
 set_target_properties(multipart PROPERTIES FOLDER 3rdParty)
 
-if(OT_GUI)
+if(OT_INCLUDE_UI)
 	add_library(imguieditor STATIC imguieditor/TextEditor.cpp imguieditor/TextEditor.h imguieditor/LanguageDefinitions.cpp)
 	target_compile_definitions(imguieditor PUBLIC IMGUI_EDITOR_NO_BOOST)
 	target_include_directories(imguieditor PUBLIC imguieditor)

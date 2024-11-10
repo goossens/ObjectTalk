@@ -125,15 +125,8 @@ void OtModuleClass::buildModulePath() {
 		}
 	}
 
-	// figure out where we live
-	char buffer[1024];
-	size_t length = 1024;
-	auto status = uv_exepath(buffer, &length);
-	UV_CHECK_ERROR("uv_exepath", status);
-	std::string exec(buffer, length);
-
 	// use lib directory
-	auto root = OtPathGetParent(OtPathGetParent(exec));
+	auto root = OtPathGetParent(OtPathGetParent(OtPathGetExecutable()));
 	auto lib = OtPathJoin(OtPathJoin(root, "lib"), "ot");
 
 	if (OtPathIsDirectory(lib)) {

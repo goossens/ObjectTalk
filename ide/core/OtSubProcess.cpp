@@ -37,7 +37,6 @@ void OtSubProcess::start(const std::string& path, const std::vector<std::string>
 
 	// setup stdio handles
 	uv_stdio_container_t stdio[3];
-	stdio[0].flags = UV_IGNORE;
 	stdio[0].flags = (uv_stdio_flags) (UV_CREATE_PIPE | UV_READABLE_PIPE);
 	stdio[0].data.stream = (uv_stream_t *) &stdinPipe;
 	stdio[1].flags = (uv_stdio_flags) (UV_CREATE_PIPE | UV_WRITABLE_PIPE);

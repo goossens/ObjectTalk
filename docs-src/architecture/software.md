@@ -9,7 +9,7 @@ host operating system offers GUI libraries.
 
 ObjectTalk currently runs on MacOS, Linux and Windows. In general, the main development
 platform is MacOS and typically the latest version is used.
-For Linux, Ubuntu 22.04 is used and on Billy boxes, Window 11. The Github continuous
+For Linux, Ubuntu 22.04 is used and on Billy boxes, Windows 11. The Github continuous
 integration tasks also use the latest versions of these operating systems. For those
 that use other Linux distributions, it is likely that ObjectTalk will compile out-of-the-box,
 but this is not verified.

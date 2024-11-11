@@ -1,8 +1,8 @@
 ObjectTalk is supported on Linux. Given the large number
 of flavors, the core team only tests the build process
-on Kubuntu 24.10 and Ubuntu 22.04 Desktop. In practice,
-any distribution should work as it just depends on the
-availability of X-Windows and Vulkan. Other flavors
+on Ubuntu 22.04 Desktop. In practice, any distribution
+should work as it just depends on the availability of
+X-Windows, Wayland and Vulkan. Other flavors
 of Linux will likely work as well but we'll let the
 community provide the instructions.
 

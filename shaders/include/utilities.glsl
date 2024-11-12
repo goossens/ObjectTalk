@@ -9,17 +9,21 @@
 
 #include <bgfx_shader.glsl>
 
-// convert depth to linear space
-float linearizeDepth(float depth, float near, float far) {
-	return (2.0 * near) / (far + near - depth * (far - near));
-}
-
 // convert depth from depth buffer to clip space depth
 float depthToClipSpace(float depth) {
 #if BGFX_SHADER_LANGUAGE_GLSL
 	return depth * 2.0 - 1.0;
 #else
 	return depth;
+#endif
+}
+
+// convert depth to linear space
+float linearizeDepth(float depth, float near, float far) {
+#if BGFX_SHADER_LANGUAGE_GLSL
+    return (2.0 * near * far) / (far + near - depthToClipSpace(depth) * (far - near));
+#else
+	return near * far / (far + depth * (near - far));
 #endif
 }
 

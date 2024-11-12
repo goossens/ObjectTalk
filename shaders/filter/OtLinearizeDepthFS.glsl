@@ -16,7 +16,7 @@ uniform vec4 u_linearize;
 SAMPLER2D(s_texture, 0);
 
 void main() {
-	float depth = texture2D(s_texture, v_texcoord0).x;
-	float linearized = linearizeDepth(depth, u_near, u_far);
+	float depth = texture2D(s_texture, v_texcoord0).r;
+	float linearized = linearizeDepth(depth, u_near, u_far) / u_far;
 	gl_FragColor = vec4(linearized, 0.0, 0.0, 1.0);
 }

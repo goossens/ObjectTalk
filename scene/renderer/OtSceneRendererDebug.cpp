@@ -38,7 +38,7 @@ void OtSceneRendererDebug::render(OtSceneRenderer& renderer) {
 	ImGui::Begin("Scene Renderer Debug", nullptr, ImGuiWindowFlags_NoCollapse);
 	renderIbl(renderer);
 	renderGbuffer(renderer);
-	renderShadow(renderer);
+	renderShadowMaps(renderer);
 	renderReflection(renderer);
 	renderOclussion(renderer);
 	renderAssets(renderer);
@@ -94,15 +94,17 @@ void OtSceneRendererDebug::renderGbuffer(OtSceneRenderer& renderer) {
 
 
 //
-//	OtSceneRendererDebug::renderShadow
+//	OtSceneRendererDebug::renderShadowMaps
 //
 
-void OtSceneRendererDebug::renderShadow(OtSceneRenderer& renderer) {
+void OtSceneRendererDebug::renderShadowMaps(OtSceneRenderer& renderer) {
+	// shadow maps are created using an orthographic projection
+	// this means the depth buffer is linear and doesn't need to be transformed
 	if (ImGui::CollapsingHeader("Cascaded Shadow Map")) {
 		if (renderer.csm.isValid()) {
 			auto size = renderer.csm.getSize();
 
-			for (auto i = 0; i < OtCascadedShadowMap::cascades; i++) {
+			for (auto i = 0; i < OtCascadedShadowMap::maxCascades; i++) {
 				auto title = fmt::format("Cascade {}", i + 1);
 				renderTexture(title.c_str(), renderer.csm.getDepthTextureIndex(i), size, size);
 			}

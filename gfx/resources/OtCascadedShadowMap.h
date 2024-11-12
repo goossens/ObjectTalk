@@ -33,25 +33,30 @@ public:
 	void clear();
 
 	// see if shadowmap is valid
-	inline bool isValid() { return framebuffers[0].isValid(); }
+	inline bool isValid() { return cascades[0].framebuffer.isValid(); }
 
 	// get dimensions
-	inline int getSize() { return framebuffers[0].getWidth(); }
+	inline int getSize() { return cascades[0].framebuffer.getWidth(); }
 
 	// get cascade specific information
-	inline float getDistance(int cascade) { return distances[cascade]; }
-	inline OtCamera& getCamera(int cascade) { return cameras[cascade]; }
- 	inline OtFrameBuffer& getFrameBuffer(int cascade) { return framebuffers[cascade]; }
-	inline bgfx::TextureHandle getDepthTextureHandle(int cascade) { return framebuffers[cascade].getDepthTextureHandle(); }
-	inline int getDepthTextureIndex(int cascade) { return framebuffers[cascade].getDepthTextureIndex(); }
+	inline float getDistance(int cascade) { return cascades[cascade].distance; }
+	inline OtCamera& getCamera(int cascade) { return cascades[cascade].camera; }
+ 	inline OtFrameBuffer& getFrameBuffer(int cascade) { return cascades[cascade].framebuffer; }
+	inline OtTexture getDepthTexture(int cascade) { return cascades[cascade].framebuffer.getDepthTexture(); }
+	inline bgfx::TextureHandle getDepthTextureHandle(int cascade) { return cascades[cascade].framebuffer.getDepthTextureHandle(); }
+	inline int getDepthTextureIndex(int cascade) { return cascades[cascade].framebuffer.getDepthTextureIndex(); }
 
 	// number of cascades in shadowmap
-	constexpr static int cascades = 4;
+	constexpr static int maxCascades = 4;
 
 private:
 	// cascade details
-	float distances[cascades];
-	std::array<OtCamera, cascades> cameras;
-	std::array<OtAABB, cascades> aabb;
-	std::array<OtFrameBuffer, cascades> framebuffers;
+	struct Cascade {
+		float distance;
+		OtCamera camera;
+		OtAABB aabb;
+		OtFrameBuffer framebuffer;
+	};
+
+	std::array<Cascade, maxCascades> cascades;
 };

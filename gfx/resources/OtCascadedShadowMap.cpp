@@ -24,15 +24,15 @@
 void OtCascadedShadowMap::update(OtCamera& camera, const glm::vec3& lightDirection, int size) {
 	// create resources if required
 	if (!isValid()) {
-		for (auto& framebuffer : framebuffers) {
-			framebuffer.initialize(OtTexture::noTexture, OtTexture::dFloatTexture);
+		for (auto& cascade : cascades) {
+			cascade.framebuffer.initialize(OtTexture::noTexture, OtTexture::dFloatTexture);
 		}
 	}
 
 	// update framebuffers if required
-	if (framebuffers[0].getWidth() != size) {
-		for (auto& framebuffer : framebuffers) {
-			framebuffer.update(size, size);
+	if (cascades[0].framebuffer.getWidth() != size) {
+		for (auto& cascade : cascades) {
+			cascade.framebuffer.update(size, size);
 		}
 	}
 
@@ -45,10 +45,10 @@ void OtCascadedShadowMap::update(OtCamera& camera, const glm::vec3& lightDirecti
 	float ratio = maxZ / minZ;
 
 	float cascadeSplitLambda = 0.95f;
-	float cascadeSplits[cascades];
+	float cascadeSplits[maxCascades];
 
-	for (auto i = 0; i < cascades; i++) {
-		float p = (float) (i + 1) / (float) cascades;
+	for (auto i = 0; i < maxCascades; i++) {
+		float p = (float) (i + 1) / (float) maxCascades;
 		float log = minZ * glm::pow(ratio, p);
 		float uniform = minZ + range * p;
 		float d = cascadeSplitLambda * (log - uniform) + uniform;
@@ -82,7 +82,7 @@ void OtCascadedShadowMap::update(OtCamera& camera, const glm::vec3& lightDirecti
 	// calculate orthographic projection matrix for each cascade
 	float lastSplitDist = 0.0f;
 
-	for (auto cascade = 0; cascade < cascades; cascade++) {
+	for (auto cascade = 0; cascade < maxCascades; cascade++) {
 		float splitDist = cascadeSplits[cascade];
 
 		// determine casecade corners
@@ -95,10 +95,10 @@ void OtCascadedShadowMap::update(OtCamera& camera, const glm::vec3& lightDirecti
 		}
 
 		// determine AABB for cascade
-		aabb[cascade].clear();
+		cascades[cascade].aabb.clear();
 
 		for (auto& cascadeCorner : cascadeCorners) {
-			aabb[cascade].addPoint(cascadeCorner);
+			cascades[cascade].aabb.addPoint(cascadeCorner);
 		}
 
 		// get cascade center
@@ -134,7 +134,7 @@ void OtCascadedShadowMap::update(OtCamera& camera, const glm::vec3& lightDirecti
 		glm::vec4 shadowOrigin = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		shadowOrigin = shadowMatrix * shadowOrigin;
 		float storedW = shadowOrigin.w;
-		float size = static_cast<float>(framebuffers[cascade].getWidth());
+		float size = static_cast<float>(cascades[cascade].framebuffer.getWidth());
 		shadowOrigin = shadowOrigin * size / 2.0f;
 
 		glm::vec4 roundedOrigin = glm::round(shadowOrigin);
@@ -148,8 +148,8 @@ void OtCascadedShadowMap::update(OtCamera& camera, const glm::vec3& lightDirecti
 		lightProjectionMatrix = shadowProj;
 
 		// store information
-		distances[cascade] = minZ + splitDist * range;
-		cameras[cascade] = OtCamera(size, size, lightProjectionMatrix, lightViewMatrix);
+		cascades[cascade].distance = minZ + splitDist * range;
+		cascades[cascade].camera = OtCamera(size, size, lightProjectionMatrix, lightViewMatrix);
 		lastSplitDist = splitDist;
 	}
 }
@@ -160,7 +160,7 @@ void OtCascadedShadowMap::update(OtCamera& camera, const glm::vec3& lightDirecti
 //
 
 void OtCascadedShadowMap::clear() {
-	for (auto& framebuffer : framebuffers) {
-		framebuffer.clear();
+	for (auto& cascade : cascades) {
+		cascade.framebuffer.clear();
 	}
 }

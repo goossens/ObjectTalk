@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <array>
 #include <cstdint>
 
 #include "OtCubeMap.h"
@@ -44,7 +45,7 @@ private:
 	// internal rendering functions
 	void renderIbl(OtSceneRenderer& renderer);
 	void renderGbuffer(OtSceneRenderer& renderer);
-	void renderShadow(OtSceneRenderer& renderer);
+	void renderShadowMaps(OtSceneRenderer& renderer);
 	void renderReflection(OtSceneRenderer& renderer);
 	void renderOclussion(OtSceneRenderer& renderer);
 	void renderAssets(OtSceneRenderer& renderer);

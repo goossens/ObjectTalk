@@ -29,7 +29,7 @@ public:
 		ctx.csm->update(ctx.camera, ctx.directionalLightDirection);
 
 		// render each cascade
-		for (auto i = 0; i < OtCascadedShadowMap::cascades; i++) {
+		for (auto i = 0; i < OtCascadedShadowMap::maxCascades; i++) {
 
 			// setup pass to render entities as opaque blobs
 			OtPass pass;

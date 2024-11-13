@@ -35,12 +35,35 @@
 
 void OtWorkspace::onSetup() {
 	// set the current directory to examples if we are in development mode
+	// set it to documents or home directory otherwise
 	auto exec = OtPathGetExecutable();
 	auto root = OtPathGetParent(OtPathGetParent(OtPathGetParent(exec)));
 	auto examples = OtPathJoin(root, "examples");
 
 	if (OtPathIsDirectory(examples)) {
 		OtPathChangeDirectory(examples);
+
+	} else {
+		root = OtPathGetParent(OtPathGetParent(OtPathGetParent(OtPathGetParent(root))));
+		examples = OtPathJoin(root, "examples");
+
+		if (OtPathIsDirectory(examples)) {
+			OtPathChangeDirectory(examples);
+
+		} else {
+			auto path = OtPathGetDocumentsDirectory();
+
+			if (OtPathIsDirectory(path)) {
+				OtPathChangeDirectory(path);
+
+			} else {
+				path = OtPathGetHomeDirectory();
+
+				if (OtPathIsDirectory(path)) {
+					OtPathChangeDirectory(path);
+				}
+			}
+		}
 	}
 
 	// listen for message bus events

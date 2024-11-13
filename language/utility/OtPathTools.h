@@ -154,8 +154,7 @@ static inline std::string OtPathGetExecutable() {
 	size_t length = 1024;
 	auto status = uv_exepath(buffer, &length);
 	UV_CHECK_ERROR("uv_exepath", status);
-	buffer[length] = 0;
-	return buffer;
+	return std::string(buffer, length);
 }
 
 
@@ -174,6 +173,35 @@ static inline std::string OtPathGetCurrentWorkingDirectory() {
 
 static inline void OtPathChangeDirectory(const std::string& path) {
 	std::filesystem::current_path(std::filesystem::path(path));
+}
+
+
+//
+//	OtPathGetHomeDirectory
+//
+
+static inline std::string OtPathGetHomeDirectory() {
+	char buffer[1024];
+	size_t length = 1024;
+	auto status = uv_os_homedir(buffer, &length);
+	UV_CHECK_ERROR("uv_os_homedir", status);
+	return std::string(buffer, length);
+}
+
+
+//
+//	OtPathGetDocumentsDirectory
+//
+
+static inline std::string OtPathGetDocumentsDirectory() {
+	auto home = OtPathGetHomeDirectory();
+
+#if _WIN32
+	return OtPathJoin(home, "My Documents");
+
+#else
+	return OtPathJoin(home, "Documents");
+#endif
 }
 
 

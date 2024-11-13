@@ -316,10 +316,10 @@ static inline double ease(int easetype, double t)
 		}
 	}
 
-#define tween$bounceout(p)																							 \
-	((p) < 4 / 11.0   ? (121 * (p) * (p)) / 16.0																	   \
-	 : (p) < 8 / 11.0 ? (363 / 40.0 * (p) * (p)) - (99 / 10.0 * (p)) + 17 / 5.0										\
-	 : (p) < 9 / 10.0 ? (4356 / 361.0 * (p) * (p)) - (35442 / 1805.0 * (p)) + 16061 / 1805.0						   \
+#define tween$bounceout(p)																						\
+	((p) < 4 / 11.0   ? (121 * (p) * (p)) / 16.0																\
+	 : (p) < 8 / 11.0 ? (363 / 40.0 * (p) * (p)) - (99 / 10.0 * (p)) + 17 / 5.0									\
+	 : (p) < 9 / 10.0 ? (4356 / 361.0 * (p) * (p)) - (35442 / 1805.0 * (p)) + 16061 / 1805.0					\
 					  : (54 / 5.0 * (p) * (p)) - (513 / 25.0 * (p)) + 268 / 25.0)
 
 	case TYPE::BOUNCEIN: {
@@ -427,24 +427,17 @@ void spline(const float* key, int num, float t, float* v)
 
 float CurveValueSmooth(float p, int maxpoints, const ImVec2* points)
 {
-	if (maxpoints < 2 || points == 0)
+    if (maxpoints < 2 || points == 0)
 		return 0.0f;
 
-	if (p < 0)
-		return points[0].y;
+    if (p < 0.0f)
+        return points[0].y;
 
-	float* input = new float[maxpoints * 2];
-	float output[4];
+    float output[4];
 
-	for (int i = 0; i < maxpoints; i++) {
-		input[i * 2 + 0] = points[i].x;
-		input[i * 2 + 1] = points[i].y;
-	}
+    spline<1>(reinterpret_cast<const float*>(points), maxpoints, p, output);
 
-	spline<1>(input, maxpoints, p, output);
-
-	delete[] input;
-	return output[0];
+    return output[0];
 }
 
 float CurveValue(float p, int maxpoints, const ImVec2* points)
@@ -592,16 +585,13 @@ bool Curve(const char* label, const ImVec2& size, const int maxpoints, ImVec2* p
 
 		if (action == action_add_point) {
 			if (pointCount < maxpoints) {
-				// select
-				currentSelection = left + 1;
-
-				++pointCount;
-
-				for (i = pointCount; i > left; --i) {
+				for (i = pointCount; i > left; i--) {
 					points[i] = points[i - 1];
 				}
 
 				points[left + 1] = pos;
+				currentSelection = left + 1;
+				pointCount++;
 
 				if (pointCount < maxpoints) {
 					points[pointCount].x = CurveTerminator;
@@ -617,8 +607,7 @@ bool Curve(const char* label, const ImVec2& size, const int maxpoints, ImVec2* p
 					points[i] = points[i + 1];
 				}
 
-				--pointCount;
-				points[pointCount].x = CurveTerminator;
+				points[--pointCount].x = CurveTerminator;
 				currentSelection = -1;
 				modified = true;
 			}

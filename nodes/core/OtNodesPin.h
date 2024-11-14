@@ -22,6 +22,7 @@
 
 #include "OtTypeList.h"
 
+#include "OtColor.h"
 #include "OtFont.h"
 #include "OtGeometry.h"
 #include "OtImage.h"
@@ -49,6 +50,7 @@ using OtNodesPinTypes = OtTypeList<
 	float,
 	std::string,
 	glm::vec3,
+	OtColor,
 	OtFont,
 	OtImage,
 	OtTexture,
@@ -62,6 +64,7 @@ enum {
 	OtNodesPinFloatType,
 	OtNodesPinStringType,
 	OtNodesPinVectorType,
+	OtNodesPinColorType,
 	OtNodesPinFontType,
 	OtNodesPinImageType,
 	OtNodesPinTextureType,
@@ -76,6 +79,7 @@ static constexpr const char* OtNodesPinTypeNames[] = {
 	"float",
 	"string",
 	"vector",
+	"color",
 	"font",
 	"image",
 	"texture",
@@ -183,6 +187,7 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(float& value);
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(std::string& value);
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec3& value);
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec4& value);
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtColor& value);
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtFont& value);
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtImage& value);
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtTexture& value);

@@ -62,6 +62,9 @@
 #include "generated/filter/OtFilterVS_mtl.h"
 #include "generated/filter/OtFilterVS_spv.h"
 #include "generated/filter/OtFilterVS_dx11.h"
+#include "generated/filter/OtAlphaOverFS_mtl.h"
+#include "generated/filter/OtAlphaOverFS_spv.h"
+#include "generated/filter/OtAlphaOverFS_dx11.h"
 #include "generated/filter/OtBlitFS_mtl.h"
 #include "generated/filter/OtBlitFS_spv.h"
 #include "generated/filter/OtBlitFS_dx11.h"
@@ -80,6 +83,9 @@
 #include "generated/filter/OtBlurFS_mtl.h"
 #include "generated/filter/OtBlurFS_spv.h"
 #include "generated/filter/OtBlurFS_dx11.h"
+#include "generated/filter/OtContrastSaturationBrightnessFS_mtl.h"
+#include "generated/filter/OtContrastSaturationBrightnessFS_spv.h"
+#include "generated/filter/OtContrastSaturationBrightnessFS_dx11.h"
 #include "generated/filter/OtFogFS_mtl.h"
 #include "generated/filter/OtFogFS_spv.h"
 #include "generated/filter/OtFogFS_dx11.h"
@@ -101,6 +107,9 @@
 #include "generated/filter/OtSeamlessTileFS_mtl.h"
 #include "generated/filter/OtSeamlessTileFS_spv.h"
 #include "generated/filter/OtSeamlessTileFS_dx11.h"
+#include "generated/filter/OtSharpenFS_mtl.h"
+#include "generated/filter/OtSharpenFS_spv.h"
+#include "generated/filter/OtSharpenFS_dx11.h"
 #include "generated/forward/OtForwardInstancingVS_mtl.h"
 #include "generated/forward/OtForwardInstancingVS_spv.h"
 #include "generated/forward/OtForwardInstancingVS_dx11.h"
@@ -113,6 +122,12 @@
 #include "generated/generator/OtGeneratorVS_mtl.h"
 #include "generated/generator/OtGeneratorVS_spv.h"
 #include "generated/generator/OtGeneratorVS_dx11.h"
+#include "generated/generator/OtCheckerBoardFS_mtl.h"
+#include "generated/generator/OtCheckerBoardFS_spv.h"
+#include "generated/generator/OtCheckerBoardFS_dx11.h"
+#include "generated/generator/OtColorWheelFS_mtl.h"
+#include "generated/generator/OtColorWheelFS_spv.h"
+#include "generated/generator/OtColorWheelFS_dx11.h"
 #include "generated/generator/OtFbmFS_mtl.h"
 #include "generated/generator/OtFbmFS_spv.h"
 #include "generated/generator/OtFbmFS_dx11.h"
@@ -278,6 +293,8 @@ static const uint8_t OtDialFS_glsl[1] = {0};
 static const uint8_t OtDialFS_essl[1] = {0};
 static const uint8_t OtFilterVS_glsl[1] = {0};
 static const uint8_t OtFilterVS_essl[1] = {0};
+static const uint8_t OtAlphaOverFS_glsl[1] = {0};
+static const uint8_t OtAlphaOverFS_essl[1] = {0};
 static const uint8_t OtBlitFS_glsl[1] = {0};
 static const uint8_t OtBlitFS_essl[1] = {0};
 static const uint8_t OtBloomApplyFS_glsl[1] = {0};
@@ -290,6 +307,8 @@ static const uint8_t OtBloomUpSampleFS_glsl[1] = {0};
 static const uint8_t OtBloomUpSampleFS_essl[1] = {0};
 static const uint8_t OtBlurFS_glsl[1] = {0};
 static const uint8_t OtBlurFS_essl[1] = {0};
+static const uint8_t OtContrastSaturationBrightnessFS_glsl[1] = {0};
+static const uint8_t OtContrastSaturationBrightnessFS_essl[1] = {0};
 static const uint8_t OtFogFS_glsl[1] = {0};
 static const uint8_t OtFogFS_essl[1] = {0};
 static const uint8_t OtFxaaFS_glsl[1] = {0};
@@ -304,6 +323,8 @@ static const uint8_t OtPostProcessFS_glsl[1] = {0};
 static const uint8_t OtPostProcessFS_essl[1] = {0};
 static const uint8_t OtSeamlessTileFS_glsl[1] = {0};
 static const uint8_t OtSeamlessTileFS_essl[1] = {0};
+static const uint8_t OtSharpenFS_glsl[1] = {0};
+static const uint8_t OtSharpenFS_essl[1] = {0};
 static const uint8_t OtForwardInstancingVS_glsl[1] = {0};
 static const uint8_t OtForwardInstancingVS_essl[1] = {0};
 static const uint8_t OtForwardVS_glsl[1] = {0};
@@ -312,6 +333,10 @@ static const uint8_t OtForwardPbrFS_glsl[1] = {0};
 static const uint8_t OtForwardPbrFS_essl[1] = {0};
 static const uint8_t OtGeneratorVS_glsl[1] = {0};
 static const uint8_t OtGeneratorVS_essl[1] = {0};
+static const uint8_t OtCheckerBoardFS_glsl[1] = {0};
+static const uint8_t OtCheckerBoardFS_essl[1] = {0};
+static const uint8_t OtColorWheelFS_glsl[1] = {0};
+static const uint8_t OtColorWheelFS_essl[1] = {0};
 static const uint8_t OtFbmFS_glsl[1] = {0};
 static const uint8_t OtFbmFS_essl[1] = {0};
 static const uint8_t OtRenderLightFS_glsl[1] = {0};
@@ -415,12 +440,14 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtDialVS),
 	BGFX_EMBEDDED_SHADER(OtDialFS),
 	BGFX_EMBEDDED_SHADER(OtFilterVS),
+	BGFX_EMBEDDED_SHADER(OtAlphaOverFS),
 	BGFX_EMBEDDED_SHADER(OtBlitFS),
 	BGFX_EMBEDDED_SHADER(OtBloomApplyFS),
 	BGFX_EMBEDDED_SHADER(OtBloomDownSampleFS),
 	BGFX_EMBEDDED_SHADER(OtBloomFS),
 	BGFX_EMBEDDED_SHADER(OtBloomUpSampleFS),
 	BGFX_EMBEDDED_SHADER(OtBlurFS),
+	BGFX_EMBEDDED_SHADER(OtContrastSaturationBrightnessFS),
 	BGFX_EMBEDDED_SHADER(OtFogFS),
 	BGFX_EMBEDDED_SHADER(OtFxaaFS),
 	BGFX_EMBEDDED_SHADER(OtIslandizerFS),
@@ -428,10 +455,13 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtNormalMapperFS),
 	BGFX_EMBEDDED_SHADER(OtPostProcessFS),
 	BGFX_EMBEDDED_SHADER(OtSeamlessTileFS),
+	BGFX_EMBEDDED_SHADER(OtSharpenFS),
 	BGFX_EMBEDDED_SHADER(OtForwardInstancingVS),
 	BGFX_EMBEDDED_SHADER(OtForwardVS),
 	BGFX_EMBEDDED_SHADER(OtForwardPbrFS),
 	BGFX_EMBEDDED_SHADER(OtGeneratorVS),
+	BGFX_EMBEDDED_SHADER(OtCheckerBoardFS),
+	BGFX_EMBEDDED_SHADER(OtColorWheelFS),
 	BGFX_EMBEDDED_SHADER(OtFbmFS),
 	BGFX_EMBEDDED_SHADER(OtRenderLightFS),
 	BGFX_EMBEDDED_SHADER(OtTileableFbmFS),

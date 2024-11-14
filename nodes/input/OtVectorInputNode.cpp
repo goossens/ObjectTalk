@@ -38,7 +38,7 @@ public:
 					needsSaving = true;
 				}
 			}
-		}, fieldWidth);
+		}, 200.0f);
 	}
 
 	// special rendering for input nodes
@@ -59,7 +59,6 @@ public:
 	static constexpr const char* nodeName = "Vector Input";
 	static constexpr int nodeCategory = OtNodeClass::input;
 	static constexpr int nodeKind = OtNodeClass::fixed;
-	static constexpr float fieldWidth = 200.0f;
 
 protected:
 	glm::vec3 value{0.0f};

@@ -46,7 +46,7 @@ public:
 	}
 
 	float getCustomRenderingWidth() override {
-		return fieldWidth;
+		return 100.0f;
 	}
 
 	float getCustomRenderingHeight() override {
@@ -98,7 +98,6 @@ public:
 	static constexpr const char* nodeName = "Unary Float";
 	static constexpr int nodeCategory = OtNodeClass::math;
 	static constexpr int nodeKind = OtNodeClass::flexible;
-	static constexpr float fieldWidth = 100.0f;
 
 protected:
 	enum {

@@ -55,7 +55,7 @@ public:
 	// adjust cursor position based on alignment
 	static void align(ImVec2 size, Alignment horizontal, Alignment vertical);
 
-	// is mouse in rectangle
+	// is mouse in rectangle?
 	static bool isMouseInRect(const ImVec2& topLeft, const ImVec2& bottomRight);
 
 	// split am ImGui label into a label and the ID
@@ -72,6 +72,9 @@ public:
 
 	// latch button
 	static bool latchButton(const char* label, bool* value, const ImVec2& size=ImVec2(0.0f, 0.0f));
+
+	// radio button
+	static bool radioButton(const char* label, int* value, int buttonValue, const ImVec2& size=ImVec2(0.0f, 0.0f));
 
 	// readonly text field
 	static void readonlyText(const char* label, std::string* value);

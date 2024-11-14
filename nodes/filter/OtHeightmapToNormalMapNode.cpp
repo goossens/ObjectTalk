@@ -25,8 +25,8 @@ public:
 	inline int getOutputFormat() override { return OtTexture::rgba8Texture; }
 
 	// run filter
-	void onFilter() override {
-		mapper.render(inputTexture, framebuffer);
+	void onFilter(OtTexture& input, OtFrameBuffer& output) override {
+		mapper.render(input, output);
 	}
 
 	static constexpr const char* nodeName = "HeightMap to NormalMap";

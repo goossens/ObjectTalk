@@ -78,7 +78,7 @@ public:
 	}
 
 	float getCustomRenderingWidth() override {
-		return fieldWidth;
+		return 150.0f;
 	}
 
 	float getCustomRenderingHeight() override {
@@ -107,7 +107,6 @@ public:
 	static constexpr const char* nodeName = "Geometry Generator";
 	static constexpr int nodeCategory = OtNodeClass::geometry;
 	static constexpr int nodeKind = OtNodeClass::fixed;
-	static constexpr float fieldWidth = 150.0f;
 
 protected:
 	// our primitive and geometry

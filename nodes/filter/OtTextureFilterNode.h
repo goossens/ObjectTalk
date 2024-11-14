@@ -33,7 +33,7 @@ public:
 		addOutputPin("Output", outputTexture);
 	}
 
-	// running the HeightMap to NormalMap filter
+	// run the filter
 	void onExecute() override {
 		// do we have a valid input
 		if (inputTexture.isValid()) {
@@ -50,7 +50,7 @@ public:
 			framebuffer.update(inputTexture.getWidth(), inputTexture.getHeight());
 
 			// run filter
-			onFilter();
+			onFilter(inputTexture, framebuffer);
 
 			// manage output (versions number are used to detect changes down the line)
 			outputTexture = framebuffer.getColorTexture();
@@ -62,7 +62,7 @@ public:
 	}
 
 	// the actual filter execution (to be overriden by subclasses)
-	virtual void onFilter() = 0;
+	virtual void onFilter(OtTexture& input, OtFrameBuffer& output) = 0;
 
 	// properties
 	OtFrameBuffer framebuffer;

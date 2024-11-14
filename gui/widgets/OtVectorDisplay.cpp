@@ -16,7 +16,7 @@
 #include "OtFunction.h"
 #include "OtLog.h"
 
-#include "OtColor.h"
+#include "OtColorParser.h"
 #include "OtSimplexFont.h"
 #include "OtUi.h"
 
@@ -136,7 +136,7 @@ OtObject OtVectorDisplayClass::setCenterOrigin() {
 //
 
 OtObject OtVectorDisplayClass::setColor(const std::string& color) {
-	style.color = OtColorParseToUint32(color);
+	style.color = OtColorParser::toUint32(color);
 	return OtWidget(this);
 }
 
@@ -480,7 +480,7 @@ void OtVectorDisplayClass::updateWidth(int id, float width) {
 void OtVectorDisplayClass::updateColor(int id, const std::string& color) {
 	for (auto& shape : shapes) {
 		if (shape.id == id) {
-			shape.color = OtColorParseToUint32(color);
+			shape.color = OtColorParser::toUint32(color);
 			return;
 		}
 	}

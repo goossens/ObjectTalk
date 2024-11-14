@@ -29,18 +29,3 @@ void OtGenerator::render(OtFrameBuffer& destination) {
 	bgfx::setState(state);
 	execute(pass);
 }
-
-
-//
-//	OtGenerator::render
-//
-
-void OtGenerator::render(int w, int h) {
-	// setup generator pass
-	OtPass pass;
-	pass.submitQuad(w, h);
-
-	// execute generator
-	bgfx::setState(state);
-	execute(pass);
-}

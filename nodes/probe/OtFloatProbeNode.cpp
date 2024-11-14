@@ -25,13 +25,12 @@ public:
 		addInputPin("Value", value)->addCustomRenderer([&](float width) {
 			ImGui::SetNextItemWidth(width);
 			ImGui::InputFloat("##value", &value, 0.0f, 0.0f, "%.3f", ImGuiInputTextFlags_ReadOnly);
-		}, fieldWidth);
+		}, 100.0f);
 	}
 
 	static constexpr const char* nodeName = "Float Probe";
 	static constexpr int nodeCategory = OtNodeClass::probe;
 	static constexpr int nodeKind = OtNodeClass::fixed;
-	static constexpr float fieldWidth = 100.0f;
 
 protected:
 	float value = 0.0f;

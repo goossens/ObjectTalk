@@ -19,7 +19,6 @@
 
 #include "OtBlit.h"
 #include "OtBlur.h"
-#include "OtColor.h"
 #include "OtDynamicVertexBuffer.h"
 #include "OtFrameBuffer.h"
 #include "OtSampler.h"

@@ -31,6 +31,8 @@ public:
 
 	// nothing to do on execute but we'll use it to determine texture size
 	void onExecute() override {
+		auto fieldWidth = 170.0f;
+
 		if (texture.isValid()) {
 			customW = std::min(fieldWidth, (float) texture.getWidth());
 			customH = customW * texture.getHeight() / texture.getWidth();
@@ -65,7 +67,6 @@ public:
 	static constexpr const char* nodeName = "Texture Probe";
 	static constexpr int nodeCategory = OtNodeClass::probe;
 	static constexpr int nodeKind = OtNodeClass::fixed;
-	static constexpr float fieldWidth = 170.0f;
 
 protected:
 	OtTexture texture;

@@ -32,8 +32,8 @@ private:
 	void execute(OtPass& pass) override;
 
 	// blit properties
-	float intensity = -1.0;
-	float alpha = -1.0;
+	float intensity = 1.0;
+	float alpha = 1.0;
 
 	// GPU assets
 	OtUniformVec4 uniform = OtUniformVec4("u_blit", 1);

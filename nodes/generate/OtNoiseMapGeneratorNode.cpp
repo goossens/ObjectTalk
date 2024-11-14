@@ -52,7 +52,7 @@ public:
 	}
 
 	float getCustomRenderingWidth() override {
-		return fieldWidth;
+		return 180.0f;
 	}
 
 	float getCustomRenderingHeight() override {
@@ -90,7 +90,6 @@ public:
 	static constexpr const char* nodeName = "NoiseMap Generator";
 	static constexpr int nodeCategory = OtNodeClass::generate;
 	static constexpr int nodeKind = OtNodeClass::fixed;
-	static constexpr float fieldWidth = 180.0f;
 
 protected:
 	int width = 256;

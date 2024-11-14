@@ -1,0 +1,378 @@
+{
+	"links": [
+		{
+			"from": 247541741,
+			"id": 1726244112,
+			"to": 820290338
+		},
+		{
+			"from": 3816759435,
+			"id": 2448640900,
+			"to": 4116703860
+		},
+		{
+			"from": 791440556,
+			"id": 1235231060,
+			"to": 2801698915
+		},
+		{
+			"from": 2715654959,
+			"id": 1278451278,
+			"to": 1338447091
+		},
+		{
+			"from": 791440556,
+			"id": 3017707884,
+			"to": 4227670383
+		},
+		{
+			"from": 247541741,
+			"id": 2305349477,
+			"to": 2789468809
+		}
+	],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 3970389783,
+			"inputs": [
+				{
+					"id": 1834681142,
+					"name": "Width",
+					"type": "int",
+					"value": 256
+				},
+				{
+					"id": 3472883228,
+					"name": "Height",
+					"type": "int",
+					"value": 256
+				},
+				{
+					"id": 1485466306,
+					"name": "Repeat",
+					"type": "float",
+					"value": 5.0
+				},
+				{
+					"id": 1484689294,
+					"name": "Black Color",
+					"type": "color",
+					"value": [
+						0.0,
+						0.0,
+						0.0,
+						0.3283582329750061
+					]
+				},
+				{
+					"id": 1392545106,
+					"name": "White Color",
+					"type": "color",
+					"value": [
+						0.11071737855672836,
+						0.8628318309783936,
+						0.8291550278663635,
+						0.5621890425682068
+					]
+				}
+			],
+			"outputs": [
+				{
+					"id": 247541741,
+					"name": "Texture",
+					"type": "texture"
+				}
+			],
+			"title": "CheckerBoard Generator",
+			"type": "CheckerBoard Generator",
+			"x": 123.0,
+			"y": 500.0
+		},
+		{
+			"id": 1930234911,
+			"inputs": [
+				{
+					"id": 1627118466,
+					"name": "Width",
+					"type": "int",
+					"value": 256
+				},
+				{
+					"id": 626793599,
+					"name": "Height",
+					"type": "int",
+					"value": 256
+				}
+			],
+			"outputs": [
+				{
+					"id": 3816759435,
+					"name": "Texture",
+					"type": "texture"
+				}
+			],
+			"title": "ColorWheel Generator",
+			"type": "ColorWheel Generator",
+			"x": 139.0,
+			"y": 247.0
+		},
+		{
+			"id": 3442159350,
+			"inputs": [
+				{
+					"id": 4116703860,
+					"name": "Input",
+					"type": "texture"
+				},
+				{
+					"id": 3991368935,
+					"name": "Contrast",
+					"type": "float",
+					"value": 1.0
+				},
+				{
+					"id": 1364435771,
+					"name": "Saturation",
+					"type": "float",
+					"value": 0.5099999904632568
+				},
+				{
+					"id": 2489830904,
+					"name": "Brightness",
+					"type": "float",
+					"value": 1.0
+				}
+			],
+			"outputs": [
+				{
+					"id": 791440556,
+					"name": "Output",
+					"type": "texture"
+				}
+			],
+			"title": "Contrast Saturation Brightness",
+			"type": "Contrast Saturation Brightness",
+			"x": 379.0,
+			"y": 221.0
+		},
+		{
+			"id": 2263877632,
+			"inputs": [
+				{
+					"id": 2801698915,
+					"name": "Texture",
+					"type": "texture"
+				}
+			],
+			"outputs": [],
+			"title": "Texture Probe",
+			"type": "Texture Probe",
+			"x": 1038.0,
+			"y": 5.0
+		},
+		{
+			"id": 919731800,
+			"inputs": [
+				{
+					"id": 820290338,
+					"name": "Texture",
+					"type": "texture"
+				}
+			],
+			"outputs": [],
+			"title": "Texture Probe",
+			"type": "Texture Probe",
+			"x": 706.0,
+			"y": 552.0
+		},
+		{
+			"id": 3963284735,
+			"inputs": [
+				{
+					"id": 4227670383,
+					"name": "Input",
+					"type": "texture"
+				},
+				{
+					"id": 2789468809,
+					"name": "Overlay",
+					"type": "texture"
+				}
+			],
+			"outputs": [
+				{
+					"id": 2715654959,
+					"name": "Output",
+					"type": "texture"
+				}
+			],
+			"title": "Alpha Over",
+			"type": "Alpha Over",
+			"x": 1029.0,
+			"y": 350.0
+		},
+		{
+			"id": 13766053,
+			"inputs": [
+				{
+					"id": 1338447091,
+					"name": "Texture",
+					"type": "texture"
+				}
+			],
+			"outputs": [],
+			"title": "Texture Probe",
+			"type": "Texture Probe",
+			"x": 1217.0,
+			"y": 335.0
+		},
+		{
+			"blueLUT": [
+				[
+					-10000.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0
+				]
+			],
+			"commonLUT": [
+				[
+					-10000.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0
+				]
+			],
+			"greenLUT": [
+				[
+					-10000.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0
+				]
+			],
+			"id": 2664374366,
+			"inputs": [
+				{
+					"id": 3494443297,
+					"name": "Input",
+					"type": "texture"
+				},
+				{
+					"id": 4168410756,
+					"name": "Black Level",
+					"type": "color",
+					"value": [
+						0.0,
+						0.0,
+						0.0,
+						1.0
+					]
+				},
+				{
+					"id": 3416641359,
+					"name": "White Level",
+					"type": "color",
+					"value": [
+						1.0,
+						1.0,
+						1.0,
+						1.0
+					]
+				}
+			],
+			"outputs": [
+				{
+					"id": 553306647,
+					"name": "Output",
+					"type": "texture"
+				}
+			],
+			"redLUT": [
+				[
+					-10000.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0
+				]
+			],
+			"title": "RGB Curves",
+			"type": "RGB Curves",
+			"x": 696.0,
+			"y": 41.0
+		}
+	]
+}

@@ -35,7 +35,6 @@ public:
 
 	// run generator
 	void render(OtFrameBuffer& destination);
-	void render(int w, int h);
 
 private:
 	// execute generator

@@ -39,7 +39,7 @@ public:
 	}
 
 	float getCustomRenderingWidth() override {
-		return fieldWidth;
+		return 200.0f;
 	}
 
 	float getCustomRenderingHeight() override {
@@ -56,15 +56,14 @@ public:
 	}
 
 	// run filter
-	void onFilter() override {
+	void onFilter(OtTexture& input, OtFrameBuffer& output) override {
 		islandizer.setDistanceFunction(distance);
-		islandizer.render(inputTexture, framebuffer);
+		islandizer.render(input, output);
 	}
 
 	static constexpr const char* nodeName = "Islandizer";
 	static constexpr int nodeCategory = OtNodeClass::filter;
 	static constexpr int nodeKind = OtNodeClass::fixed;
-	static constexpr float fieldWidth = 200.0f;
 
 	// properties
 	OtIslandizer islandizer;

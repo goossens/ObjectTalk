@@ -37,7 +37,7 @@ public:
 					needsSaving = true;
 				}
 			}
-		}, fieldWidth);
+		}, 120.0f);
 	}
 
 	// special rendering for input nodes
@@ -58,7 +58,6 @@ public:
 	static constexpr const char* nodeName = "Integer Input";
 	static constexpr int nodeCategory = OtNodeClass::input;
 	static constexpr int nodeKind = OtNodeClass::fixed;
-	static constexpr float fieldWidth = 120.0f;
 
 protected:
 	int value = 0;

@@ -22,8 +22,8 @@
 class OtSeamlessTilerNode : public OtTextureFilterNode {
 public:
 	// run filter
-	void onFilter() override {
-		tiler.render(inputTexture, framebuffer);
+	void onFilter(OtTexture& input, OtFrameBuffer& output) override {
+		tiler.render(input, output);
 	}
 
 	static constexpr const char* nodeName = "Seamless Tiler";

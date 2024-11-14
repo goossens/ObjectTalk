@@ -148,6 +148,35 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(std::string& value) {
 		}};
 }
 
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtColor& value) {
+	return new OtNodesPinInputConfig{
+		[&](nlohmann::json* data) { (*data)["value"] = value; },
+		[&](nlohmann::json* data) { if (data->contains("value")) { value = (*data)["value"]; } },
+		[]() { return 20.0f; },
+
+		[&](OtNodesPin pin, float width) {
+			auto node = pin->node;
+			auto old = node->serialize().dump();
+			ImGui::PushID(&value);
+			ImGui::SameLine(0.0f, width - 10.0f);
+
+			ImGuiColorEditFlags flags =
+				ImGuiColorEditFlags_Float |
+				ImGuiColorEditFlags_NoInputs |
+				ImGuiColorEditFlags_AlphaBar |
+				ImGuiColorEditFlags_AlphaPreview;
+
+			if (ImGui::ColorEdit4("##value", value.data(), flags)) {
+				node->oldState = old;
+				node->newState = node->serialize().dump();
+				node->needsEvaluating = true;
+				node->needsSaving = true;
+			}
+
+			ImGui::PopID();
+		}};
+}
+
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec3& value) { return nullptr; }
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec4& value) { return nullptr; }
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtFont& value) { return nullptr; }

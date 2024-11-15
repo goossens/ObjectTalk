@@ -104,6 +104,9 @@
 #include "generated/filter/OtPostProcessFS_mtl.h"
 #include "generated/filter/OtPostProcessFS_spv.h"
 #include "generated/filter/OtPostProcessFS_dx11.h"
+#include "generated/filter/OtRgbCurvesFS_mtl.h"
+#include "generated/filter/OtRgbCurvesFS_spv.h"
+#include "generated/filter/OtRgbCurvesFS_dx11.h"
 #include "generated/filter/OtSeamlessTileFS_mtl.h"
 #include "generated/filter/OtSeamlessTileFS_spv.h"
 #include "generated/filter/OtSeamlessTileFS_dx11.h"
@@ -321,6 +324,8 @@ static const uint8_t OtNormalMapperFS_glsl[1] = {0};
 static const uint8_t OtNormalMapperFS_essl[1] = {0};
 static const uint8_t OtPostProcessFS_glsl[1] = {0};
 static const uint8_t OtPostProcessFS_essl[1] = {0};
+static const uint8_t OtRgbCurvesFS_glsl[1] = {0};
+static const uint8_t OtRgbCurvesFS_essl[1] = {0};
 static const uint8_t OtSeamlessTileFS_glsl[1] = {0};
 static const uint8_t OtSeamlessTileFS_essl[1] = {0};
 static const uint8_t OtSharpenFS_glsl[1] = {0};
@@ -454,6 +459,7 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtLinearizeDepthFS),
 	BGFX_EMBEDDED_SHADER(OtNormalMapperFS),
 	BGFX_EMBEDDED_SHADER(OtPostProcessFS),
+	BGFX_EMBEDDED_SHADER(OtRgbCurvesFS),
 	BGFX_EMBEDDED_SHADER(OtSeamlessTileFS),
 	BGFX_EMBEDDED_SHADER(OtSharpenFS),
 	BGFX_EMBEDDED_SHADER(OtForwardInstancingVS),

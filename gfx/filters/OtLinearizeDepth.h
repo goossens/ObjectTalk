@@ -30,7 +30,7 @@ private:
 	// execute filter
 	void execute(OtPass& pass) override;
 
-	// blur properties
+	// properties
 	float nearPlane = 0.01f;
 	float farPlane = 10.0f;
 

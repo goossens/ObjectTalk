@@ -211,6 +211,8 @@ void OtTexture::update(int x, int y, int w, int h, void* pixels) {
 		0, 0,
 		uint16_t(x), uint16_t(y), uint16_t(w), uint16_t(h),
 		bgfx::copy(pixels, size));
+
+	incrementVersion();
 }
 
 

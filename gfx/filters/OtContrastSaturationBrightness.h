@@ -32,7 +32,7 @@ private:
 	// execute filter
 	void execute(OtPass& pass) override;
 
-	// filter properties
+	// properties
 	float contrast = 1.0f;
 	float saturation = 1.0f;
 	float brightness = 1.0f;

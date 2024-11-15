@@ -13,8 +13,9 @@
 //
 
 #include "OtFilter.h"
+#include "OtSampler.h"
 #include "OtShaderProgram.h"
-#include "OtUniformVec4.h"
+#include "OtTexture.h"
 
 
 //

@@ -33,7 +33,7 @@ private:
 	// execute filter
 	void execute(OtPass& pass) override;
 
-	// blur properties
+	// properties
 	float horizontalScale = -1.0f;
 	float verticalScale = -1.0f;
 	float intensity = -1.0f;

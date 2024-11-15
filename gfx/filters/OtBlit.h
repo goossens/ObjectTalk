@@ -31,7 +31,7 @@ private:
 	// execute filter
 	void execute(OtPass& pass) override;
 
-	// blit properties
+	// properties
 	float intensity = 1.0;
 	float alpha = 1.0;
 

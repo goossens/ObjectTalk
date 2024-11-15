@@ -57,6 +57,7 @@ public:
 
 	// constructors
 	OtTexture() = default;
+	OtTexture(int w, int h, int f, uint64_t flgs = linearSampling | repeatSampling) { create(w, h, f, flgs); }
 	OtTexture(OtBgfxHandle<bgfx::TextureHandle> t, int w, int h, int f) : texture(t), width(w), height(h), format(f) {}
 	OtTexture(const std::string& path);
 

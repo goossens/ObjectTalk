@@ -30,7 +30,7 @@ private:
 	// execute filter
 	void execute(OtPass& pass) override;
 
-	// filter properties
+	// properties
 	float strength = 1.0f;
 
 	// GPU assets

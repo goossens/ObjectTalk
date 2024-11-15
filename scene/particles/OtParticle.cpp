@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include <algorithm>
 #include <cmath>
 
 #include "ImGuiCurve.h"
@@ -85,8 +86,8 @@ void OtParticle::spawn(const OtParticleSettings& settings) {
 	// determine other properties
 	gravity = settings.gravity;
 	rotation = settings.rotation[0];
-	scale = ImGui::CurveValue(0.0f, (int) settings.scale.size(), settings.scale.data());
-	alpha = ImGui::CurveValue(0.0f, (int) settings.alpha.size(), settings.alpha.data());
+	scale = ImGui::CurveValueSmooth(0.0f, (int) settings.scale.size(), settings.scale.data());
+	alpha = ImGui::CurveValueSmooth(0.0f, (int) settings.alpha.size(), settings.alpha.data());
 	lifespan = OtRandom(settings.lifeSpanLow, settings.lifeSpanHigh);
 	remaining = lifespan;
 }
@@ -100,9 +101,9 @@ void OtParticle::update(const OtParticleSettings& settings) {
 	velocity.y -= gravity * settings.deltatime;
 	position += velocity * settings.deltatime;
 	remaining -= settings.deltatime;
-	age = (lifespan - remaining) / lifespan;
+	age = std::clamp((lifespan - remaining) / lifespan, 0.0f, 1.0f);
 
 	rotation = std::lerp(settings.rotation[0], settings.rotation[1], age);
-	scale = ImGui::CurveValue(age, (int) settings.scale.size(), settings.scale.data());
-	alpha = ImGui::CurveValue(age, (int) settings.alpha.size(), settings.alpha.data());
+	scale = ImGui::CurveValueSmooth(age, (int) settings.scale.size(), settings.scale.data());
+	alpha = ImGui::CurveValueSmooth(age, (int) settings.alpha.size(), settings.alpha.data());
 }

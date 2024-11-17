@@ -78,7 +78,7 @@ void OtEditor::follow() {
 			load();
 
 		} else {
-			//file was edited; don't reload but show message
+			// file was edited; don't reload but show message
 			OtMessageBus::send(fmt::format("warning File {} was edited externally.\nBe careful when saving!", path));
 		}
 	});

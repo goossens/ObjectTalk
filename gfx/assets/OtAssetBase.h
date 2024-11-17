@@ -32,7 +32,7 @@ struct OtAssetChanged : OtMessage<> {};
 //	Listerner types
 //
 
-using OtAssetChangedListerner = OtPublisher<OtAssetChanged>::listener;
+using OtAssetListerner = OtPublisher<OtAssetChanged>::listener;
 
 
 //
@@ -71,8 +71,8 @@ public:
 	// event handler for file system changes
 	// if the callback returns false, the listener is automatically deactivated
 	// if the callback returns true, it remains active
-	inline OtAssetChangedListerner onChanged(std::function<bool()> cb) { return publisher.listen<OtAssetChanged>(cb); }
-	inline void cancelListener(OtAssetChangedListerner listener) { publisher.unlisten(listener); }
+	inline OtAssetListerner addListener(std::function<bool()> cb) { return publisher.listen<OtAssetChanged>(cb); }
+	inline void cancelListener(OtAssetListerner listener) { publisher.unlisten(listener); }
 	inline void notify() { publisher.changed(); }
 
 	// reference counting

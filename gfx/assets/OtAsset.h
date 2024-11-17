@@ -262,11 +262,11 @@ private:
 
 	// event management
 	std::function<void()> onChangeCallback = nullptr;
-	OtAssetChangedListerner changedListerner;
+	OtAssetListerner changedListerner;
 
 	// follow/unfollow the actual asset
 	void follow() {
-		changedListerner = ptr->onChanged([this]() {
+		changedListerner = ptr->addListener([this]() {
 			notifyChanged();
 			return true;
 		});

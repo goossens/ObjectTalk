@@ -32,6 +32,11 @@
 
 class OtPass {
 public:
+	// view modes
+	static constexpr int sequential = bgfx::ViewMode::Sequential;
+	static constexpr int depthAscending = bgfx::ViewMode::DepthAscending;
+	static constexpr int depthDecending = bgfx::ViewMode::DepthDescending;
+
 	// access flags
 	static constexpr int readAccess = bgfx::Access::Read;
 	static constexpr int writeAccess = bgfx::Access::Write;
@@ -47,6 +52,7 @@ public:
 	void setFrameBuffer(OtFrameBuffer& framebuffer);
 	void setFrameBuffer(OtGbuffer& gbuffer);
 	void setTransform(const glm::mat4& view, const glm::mat4& projection);
+	void setViewMode(int mode);
 	void submitQuad(int w, int h);
 	void submitCircle(int segments);
 	void submitCube();

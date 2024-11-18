@@ -91,7 +91,7 @@ void OtScriptComponent::process() {
 					hasUpdateMethod = instance->has(updateSymbol);
 
 				} else {
-					OtError("Class [{}] in script [{}] is not dereive from [Entity]", className, path);
+					OtError("Class [{}] in script [{}] is not derived from [Entity]", className, path);
 				}
 
 			} else {

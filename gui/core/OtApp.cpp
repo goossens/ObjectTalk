@@ -73,11 +73,6 @@ void OtAppClass::onTerminate() {
 
 	// remove all children from the app to avoid memory leaks
 	clear();
-
-	// clear all entities that might cache objects
-	// this is to ensure any UI resources are released before the those libraries are shutdown
-	OtVM::clear();
-	OtModuleClass::clear();
 }
 
 

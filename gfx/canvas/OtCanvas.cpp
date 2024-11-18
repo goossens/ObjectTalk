@@ -9,6 +9,9 @@
 //	Include files
 //
 
+#include "nanovg_bgfx.h"
+
+#include "OtFunction.h"
 #include "OtLog.h"
 
 #include "OtCanvas.h"
@@ -16,47 +19,11 @@
 
 
 //
-//	OtCanvas::OtCanvas
+//	OtCanvasClass::OtCanvasClass
 //
 
-OtCanvas::OtCanvas(int width, int height) {
-	update(width, height);
-}
-
-
-//
-//	OtCanvas::~OtCanvas
-//
-
-OtCanvas::~OtCanvas() {
-	clear();
-}
-
-
-//
-//	OtCanvas::update
-//
-
-void OtCanvas::update(int width, int height) {
-	// cleanup first
-	clear();
-
-	// create a new rendering context
-	struct NVGparams params;
-	params.userPtr = this;
-	params.edgeAntiAlias = 1;
-	params.renderCreate = renderCreate;
-	params.renderCreateTexture = renderCreateTexture;
-	params.renderDeleteTexture = renderDeleteTexture;
-	params.renderUpdateTexture = renderUpdateTexture;
-	params.renderGetTextureSize = renderGetTextureSize;
-	params.renderViewport = renderViewport;
-	params.renderFlush = renderFlush;
-	params.renderFill = renderFill;
-	params.renderStroke = renderStroke;
-	params.renderTriangles = renderTriangles;
-	params.renderDelete = renderDelete;
-	context = nvgCreateInternal(&params);
+OtCanvasClass::OtCanvasClass() {
+	context = nvgCreate(1, 0);
 
 	if (!context) {
 		OtLogFatal("Internal error: can't create a new canvas context");
@@ -65,185 +32,93 @@ void OtCanvas::update(int width, int height) {
 
 
 //
-//	OtCanvas::clear
+//	OtCanvasClass::~OtCanvasClass
 //
 
-void OtCanvas::clear() {
-	if (context) {
-		nvgDeleteInternal(context);
-		context = nullptr;
-	}
+OtCanvasClass::~OtCanvasClass() {
+	nvgDelete(context);
 }
 
 
 //
-//	OtCanvas::render
+//	OtCanvasClass::render
 //
 
-void OtCanvas::render(OtFrameBuffer& framebuffer) {
+void OtCanvasClass::render(OtFrameBuffer& framebuffer, std::function<void(OtCanvas)> renderer) {
 	// setup rendering pass
 	OtPass pass;
-	pass.touch();
-	auto view = pass.getViewId();
-	bgfx::setViewMode(view, bgfx::ViewMode::Sequential);
+	pass.setClear(framebuffer.hasColorTexture(), framebuffer.hasDepthTexture(), glm::vec4(0.0f), 1.0f);
+	pass.setViewMode(OtPass::sequential);
+	pass.setFrameBuffer(framebuffer);
+
+	// render the canvas
+	nvgSetViewId(context, pass.getViewId());
+	nvgBeginFrame(context, framebuffer.getWidth(), framebuffer.getHeight(), 1.0);
+
+	renderer(OtCanvas(this));
+	nvgEndFrame(context);
 }
 
 
-//
-//	OtCanvas::renderCreate
-//
-
-int OtCanvas::renderCreate(void* ptr) {
-	OtCanvas* canvas = (OtCanvas*) ptr;
-	return 1;
-}
-
 
 //
-//	OtCanvas::renderCreate
+//	OtCanvasClass::getMeta
 //
 
-int OtCanvas::renderCreateTexture(void* ptr, int type, int w, int h, int imageFlags, const unsigned char* data) {
-	OtCanvas* canvas = (OtCanvas*) ptr;
+OtType OtCanvasClass::getMeta() {
+	static OtType type = nullptr;
 
-	// create the texture
-	auto texture = std::make_unique<OtTexture>();
-	auto format = (type == NVG_TEXTURE_RGBA) ? OtTexture::rgba8Texture : OtTexture::r8Texture;
+	if (!type) {
+		type = OtType::create<OtCanvasClass>("Canvas", OtObjectClass::getMeta());
+		type->set("saveState", OtFunction::create(&OtCanvasClass::saveState));
+		type->set("restoreState", OtFunction::create(&OtCanvasClass::restoreState));
+		type->set("resetState", OtFunction::create(&OtCanvasClass::resetState));
 
-	if (data) {
-		texture->loadFromMemory(w, h, format, (void*) data);
+		type->set("antiAlias", OtFunction::create(&OtCanvasClass::antiAlias));
+		type->set("strokeColor", OtFunction::create(&OtCanvasClass::strokeColor));
+		type->set("fillColor", OtFunction::create(&OtCanvasClass::fillColor));
+		type->set("miterLimit", OtFunction::create(&OtCanvasClass::miterLimit));
+		type->set("strokeWidth", OtFunction::create(&OtCanvasClass::strokeWidth));
+		type->set("lineCap", OtFunction::create(&OtCanvasClass::lineCap));
+		type->set("lineJoin", OtFunction::create(&OtCanvasClass::lineJoin));
+		type->set("globalAlpha", OtFunction::create(&OtCanvasClass::globalAlpha));
 
-	} else {
-		texture->create(w, h, format);
+		type->set("translate", OtFunction::create(&OtCanvasClass::translate));
+		type->set("rotate", OtFunction::create(&OtCanvasClass::rotate));
+		type->set("scale", OtFunction::create(&OtCanvasClass::scale));
+		type->set("skewX", OtFunction::create(&OtCanvasClass::skewX));
+		type->set("skewY", OtFunction::create(&OtCanvasClass::skewY));
+		type->set("resetTransform", OtFunction::create(&OtCanvasClass::resetTransform));
+
+		type->set("beginPath", OtFunction::create(&OtCanvasClass::beginPath));
+		type->set("moveTo", OtFunction::create(&OtCanvasClass::moveTo));
+		type->set("lineTo", OtFunction::create(&OtCanvasClass::lineTo));
+		type->set("bezierTo", OtFunction::create(&OtCanvasClass::bezierTo));
+		type->set("quadTo", OtFunction::create(&OtCanvasClass::quadTo));
+		type->set("arcTo", OtFunction::create(&OtCanvasClass::arcTo));
+		type->set("closePath", OtFunction::create(&OtCanvasClass::closePath));
+		type->set("pathWinding", OtFunction::create(&OtCanvasClass::pathWinding));
+
+		type->set("drawArc", OtFunction::create(&OtCanvasClass::drawArc));
+		type->set("drawRect", OtFunction::create(&OtCanvasClass::drawRect));
+		type->set("drawRoundedRect", OtFunction::create(&OtCanvasClass::drawRoundedRect));
+		type->set("drawEllipse", OtFunction::create(&OtCanvasClass::drawEllipse));
+		type->set("drawCircle", OtFunction::create(&OtCanvasClass::drawCircle));
+
+		type->set("stroke", OtFunction::create(&OtCanvasClass::stroke));
+		type->set("fill", OtFunction::create(&OtCanvasClass::fill));
+
+		type->set("buttCap", OtInteger::create(NVG_BUTT));
+		type->set("roundCap", OtInteger::create(NVG_ROUND));
+		type->set("squareCap", OtInteger::create(NVG_SQUARE));
+
+		type->set("miterJoin", OtInteger::create(NVG_MITER));
+		type->set("roundJoin", OtInteger::create(NVG_ROUND));
+		type->set("bevelJoin", OtInteger::create(NVG_BEVEL));
+
+		type->set("ccwWinding", OtInteger::create(NVG_SOLID));
+		type->set("cwWinding", OtInteger::create(NVG_HOLE));
 	}
 
-	// add it to the cache
-	auto index = texture->getIndex();
-	canvas->textures[index] = std::move(texture);
-	return index;
-}
-
-
-//
-//	OtCanvas::renderDeleteTexture
-//
-
-int OtCanvas::renderDeleteTexture(void* ptr, int image) {
-	OtCanvas* canvas = (OtCanvas*) ptr;
-
-	// find and delete texture
-	auto entry = canvas->textures.find(image);
-
-	if (entry != canvas->textures.end()) {
-		canvas->textures.erase(entry);
-	}
-
-	return 1;
-}
-
-
-//
-//	OtCanvas::renderUpdateTexture
-//
-
-int OtCanvas::renderUpdateTexture(void* ptr, int image, int x, int y, int w, int h, const unsigned char* data) {
-	OtCanvas* canvas = (OtCanvas*) ptr;
-
-	// find texture
-	auto entry = canvas->textures.find(image);
-
-	if (entry == canvas->textures.end()) {
-		OtLogFatal("Can't find texture in canvas with id {}", image);
-	}
-
-	// update the texture
-	entry->second->update(x, y, w, h, (void*) data);
-	return 1;
-}
-
-
-//
-//	OtCanvas::renderGetTextureSize
-//
-
-int OtCanvas::renderGetTextureSize(void* ptr, int image, int* w, int* h) {
-	OtCanvas* canvas = (OtCanvas*) ptr;
-
-	// find texture
-	auto entry = canvas->textures.find(image);
-
-	if (entry == canvas->textures.end()) {
-		OtLogFatal("Can't find texture in canvas with id {}", image);
-	}
-
-	// get the size
-	*w = entry->second->getWidth();
-	*h = entry->second->getHeight();
-	return 1;
-}
-
-
-//
-//	OtCanvas::renderViewport
-//
-
-void OtCanvas::renderViewport(void* ptr, float width, float height, float devicePixelRatio) {
-	OtCanvas* canvas = (OtCanvas*) ptr;
-	canvas->viewportWidth = width;
-	canvas->viewportHeight = height;
-	canvas->devicePixelRatio = devicePixelRatio;
-}
-
-
-//
-//	OtCanvas::renderCancel
-//
-
-void OtCanvas::renderCancel(void* ptr) {
-	OtCanvas* canvas = (OtCanvas*) ptr;
-}
-
-
-//
-//	OtCanvas::renderFlush
-//
-
-void OtCanvas::renderFlush(void* ptr) {
-	OtCanvas* canvas = (OtCanvas*) ptr;
-}
-
-
-//
-//	OtCanvas::renderFill
-//
-
-void OtCanvas::renderFill(void* ptr, NVGpaint* paint, NVGcompositeOperationState compositeOperation, NVGscissor* scissor, float fringe, const float* bounds, const NVGpath* paths, int npaths) {
-	OtCanvas* canvas = (OtCanvas*) ptr;
-}
-
-
-//
-//	OtCanvas::renderStroke
-//
-
-void OtCanvas::renderStroke(void* ptr, NVGpaint* paint, NVGcompositeOperationState compositeOperation, NVGscissor* scissor, float fringe, float strokeWidth, int lineStyle, float lineLength, const NVGpath* paths, int npaths) {
-	OtCanvas* canvas = (OtCanvas*) ptr;
-}
-
-
-//
-//	OtCanvas::renderTriangles
-//
-
-void OtCanvas::renderTriangles(void* ptr, NVGpaint* paint, NVGcompositeOperationState compositeOperation, NVGscissor* scissor, const NVGvertex* verts, int nverts, float fringe, int text) {
-	OtCanvas* canvas = (OtCanvas*) ptr;
-}
-
-
-//
-//	OtCanvas::renderDelete
-//
-
-void OtCanvas::renderDelete(void* ptr) {
-	OtCanvas* canvas = (OtCanvas*) ptr;
+	return type;
 }

@@ -32,7 +32,7 @@ public:
 		addOutputPin("Texture", texture);
 	}
 
-	// running the noise generator
+	// execute the node by generating a new version of the output
 	void onExecute() override {
 		// ensure framebuffer has right size
 		framebuffer.update(width, height);

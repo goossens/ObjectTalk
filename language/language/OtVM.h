@@ -86,18 +86,6 @@ public:
 		instance().callHook = hook != nullptr;
 	}
 
-	// clear the virtual machine (releases any memory still used by the engine)
-	// virtual machine is no longer usable after this call (you are warned)
-
-	// it is only here to destruct objects that might possibly allocate UI resources
-	// VM's are thread singletons that are destructed when the thread ends (which is to late for UI resources)
-	static inline void clear() {
-		auto& vm = instance();
-		vm.stack.clear();
-		vm.global = nullptr;
-		vm.null = nullptr;
-	}
-
 	// get engine parameters
 	static inline OtStack* getStack() { return &instance().stack; }
 	static inline OtGlobal getGlobal() { return instance().global; }
@@ -110,6 +98,22 @@ public:
 private:
 	// execute bytecode in the virtual machine
 	OtObject executeByteCode(OtByteCode bytecode, size_t callingParameters);
+
+	// clear the virtual machine (releases any memory still used by the engine)
+	// virtual machine is no longer usable after this call
+
+	// it is only here to destruct objects that might possibly allocate UI resources
+	// VMs are thread singletons that are destructed when the thread ends (which is to late to release UI resources)
+
+	// it should only be called by the UI framework
+	friend class OtFramework;
+
+	static inline void clear() {
+		auto& vm = instance();
+		vm.stack.clear();
+		vm.global = nullptr;
+		vm.null = nullptr;
+	}
 
 	// VM properties
 	OtStack stack;

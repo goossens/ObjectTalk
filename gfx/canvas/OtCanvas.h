@@ -12,79 +12,78 @@
 //	Include files
 //
 
+#include <functional>
 #include <memory>
-#include <unordered_map>
 
 #include "nanovg.h"
 
+#include "OtObject.h"
+
 #include "OtFrameBuffer.h"
-#include "OtSampler.h"
-#include "OtShaderProgram.h"
-#include "OtTexture.h"
-#include "OtUniformMat3.h"
-#include "OtUniformVec4.h"
 
 
 //
 //	OtCanvas
 //
 
-class OtCanvas {
+class OtCanvasClass;
+using OtCanvas = OtObjectPointer<OtCanvasClass>;
+
+class OtCanvasClass : public OtObjectClass {
 public:
-	// constructors/destructor
-	OtCanvas(int width, int height);
-	~OtCanvas();
+	// constructor/destructor
+	OtCanvasClass();
+	~OtCanvasClass();
 
-	// update canvas size
-	void update(int width, int height);
+	// manipulate rendering state
+	inline void saveState() { nvgSave(context); }
+	inline void restoreState() { nvgRestore(context); }
+	inline void resetState() { nvgReset(context); }
 
-	// release canvas data
-	void clear();
+	// manipulate styles
+	inline void antiAlias(bool enabled) { nvgShapeAntiAlias(context, enabled); }
+	inline void strokeColor(float r, float g, float b, float a) { nvgStrokeColor(context, nvgRGBAf(r, g, b, a)); }
+	// void nvgStrokePaint(NVGcontext* ctx, NVGpaint paint);
+	inline void fillColor(float r, float g, float b, float a) { nvgFillColor(context, nvgRGBAf(r, g, b, a)); }
+	// void nvgFillPaint(NVGcontext* ctx, NVGpaint paint);
+	inline void miterLimit(float limit) { nvgMiterLimit(context, limit); }
+	inline void strokeWidth(float width) { nvgStrokeWidth(context, width); }
+	inline void lineCap(int cap) { nvgLineCap(context, cap); }
+	inline void lineJoin(int join) { nvgLineJoin(context, join); }
+	inline void globalAlpha(float alpha) { nvgGlobalAlpha(context, alpha); }
 
-	// start a new frame
-	void startFrame();
+	inline void translate(float x, float y) { nvgTranslate(context, x, y); }
+	inline void rotate(float angle) { nvgRotate(context, angle); }
+	inline void scale(float x, float y) { nvgScale(context, x, y); }
+	inline void skewX(float angle) { nvgSkewX(context, angle); }
+	inline void skewY(float angle) { nvgSkewY(context, angle); }
+	inline void resetTransform() { nvgResetTransform(context); }
+
+	inline void beginPath() { nvgBeginPath(context); }
+	inline void moveTo(float x, float y) { nvgMoveTo(context, x, y); }
+	inline void lineTo(float x, float y) { nvgLineTo(context, x, y); }
+	inline void bezierTo(float c1x, float c1y, float c2x, float c2y, float x, float y) { nvgBezierTo(context, c1x, c1y, c2x, c2y, x, y); }
+	inline void quadTo(float cx, float cy, float x, float y) { nvgQuadTo(context, cx, cy, x, y); }
+	inline void arcTo(float x1, float y1, float x2, float y2, float radius) { nvgArcTo(context, x1, y1, x2, y2, radius); }
+	inline void closePath() { nvgClosePath(context); }
+	inline void pathWinding(int winding) { nvgPathWinding(context, NVGwinding(winding)); }
+
+	inline void drawArc(float cx, float cy, float r, float a0, float a1, int dir) { nvgArc(context, cx, cy, r, a0, a1, dir); }
+	inline void drawRect(float x, float y, float w, float h) { nvgRect(context, x, y, w, h); }
+	inline void drawRoundedRect(float x, float y, float w, float h, float r) { nvgRoundedRect(context, x, y, w, h, r); }
+	inline void drawEllipse(float cx, float cy, float rx, float ry) { nvgEllipse(context, cx, cy, rx, ry); }
+	inline void drawCircle(float cx, float cy, float r) { nvgCircle(context, cx, cy, r); }
+
+	inline void stroke() { nvgStroke(context); }
+	inline void fill() { nvgFill(context); }
 
 	// render canvas to framebuffer
-	void render(OtFrameBuffer& framebuffer);
+	void render(OtFrameBuffer& framebuffer, std::function<void(OtCanvas)> renderer);
+
+	// get type definition
+	static OtType getMeta();
 
 private:
 	// properties
-	int width;
-	int height;
 	NVGcontext* context = nullptr;
-
-	// canvas viewport
-	float viewportWidth;
-	float viewportHeight;
-	float devicePixelRatio;
-
-	// texture cache
-	std::unordered_map<int, std::unique_ptr<OtTexture>> textures;
-
-	// shader resources
-	OtShaderProgram program{"OtCanvasVS", "OtCanvasFS"};
-	OtUniformMat3 scissorMat{"u_scissorMat", 1};
-	OtUniformMat3 paintMat{"u_paintMat", 1};
-	OtUniformVec4 uniforms{"u_canvas", 7};
-	OtUniformVec4 innerCol{"u_innerCol", 1};
-	OtUniformVec4 outerCol{"u_outerCol", 1};
-	OtUniformVec4 viewSize{"u_viewSize", 1};
-	OtUniformVec4 scissorExtScale{"u_scissorExtScale", 1};
-	OtUniformVec4 extentRadius{"u_extentRadius", 1};
-	OtUniformVec4 params{"u_params", 1};
-	OtSampler textureSampler{"s_texture"};
-
-	// internal functions
-	static int renderCreate(void* ptr);
-	static int renderCreateTexture(void* ptr, int type, int w, int h, int imageFlags, const unsigned char* data);
-	static int renderDeleteTexture(void* ptr, int image);
-	static int renderUpdateTexture(void* ptr, int image, int x, int y, int w, int h, const unsigned char* data);
-	static int renderGetTextureSize(void* ptr, int image, int* w, int* h);
-	static void renderViewport(void* ptr, float width, float height, float devicePixelRatio);
-	static void renderCancel(void* ptr);
-	static void renderFlush(void* ptr);
-	static void renderFill(void* ptr, NVGpaint* paint, NVGcompositeOperationState compositeOperation, NVGscissor* scissor, float fringe, const float* bounds, const NVGpath* paths, int npaths);
-	static void renderStroke(void* ptr, NVGpaint* paint, NVGcompositeOperationState compositeOperation, NVGscissor* scissor, float fringe, float strokeWidth, int lineStyle, float lineLength, const NVGpath* paths, int npaths);
-	static void renderTriangles(void* ptr, NVGpaint* paint, NVGcompositeOperationState compositeOperation, NVGscissor* scissor, const NVGvertex* verts, int nverts, float fringe, int text);
-	static void renderDelete(void* ptr);
 };

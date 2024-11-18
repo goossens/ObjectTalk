@@ -110,6 +110,15 @@ void OtPass::setTransform(const glm::mat4& viewTransform, const glm::mat4& proje
 
 
 //
+//	OtPass::setViewMode
+//
+
+void OtPass::setViewMode(int mode) {
+	bgfx::setViewMode(view, bgfx::ViewMode::Enum(mode));
+}
+
+
+//
 //	OtPass::submitQuad
 //
 

@@ -29,7 +29,7 @@ class OtModuleClass : public OtInternalClass {
 public:
 	// load module from disk or provided source code
 	void load(const std::string& path);
-	void load(const std::string& root, const std::string& code);
+	void load(const std::string& path, const std::string& code);
 
 	// get type definition
 	static OtType getMeta();
@@ -37,10 +37,11 @@ public:
 	// import a module from disk or an internal generator
 	static OtModule import(const std::string& path);
 
+private:
 	// clear the internal cache
+	friend class OtFramework;
 	static void clear();
 
-private:
 	// list of directories to search for modules in
 	static void buildModulePath();
 

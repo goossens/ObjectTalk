@@ -21,6 +21,8 @@
 #include "OtLibuv.h"
 #include "OtLog.h"
 #include "OtMeasure.h"
+#include "OtModule.h"
+#include "OtVM.h"
 
 #include "OtAssetManager.h"
 #include "OtFramework.h"
@@ -149,6 +151,12 @@ void OtFramework::runThread2() {
 
 		// tell app we're done
 		app->onTerminate();
+
+
+		// clear all language releated singletons that might cache objects
+		// this is to ensure any UI resources stored in those objects are released now
+		OtVM::clear();
+		OtModuleClass::clear();
 
 		// clear the message bus
 		OtMessageBus::clear();

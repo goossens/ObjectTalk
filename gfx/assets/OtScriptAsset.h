@@ -26,7 +26,7 @@ public:
 	// compile the script (text) into a module
 	void compile();
 
-	// access the scrip module
+	// access the script module
 	OtModule& getModule() { return module; }
 
 	// asset properties

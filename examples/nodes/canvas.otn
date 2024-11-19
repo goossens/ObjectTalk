@@ -30,13 +30,13 @@
 					"id": 1356280732,
 					"name": "Width",
 					"type": "int",
-					"value": 500
+					"value": 1024
 				},
 				{
 					"id": 95135891,
 					"name": "Height",
 					"type": "int",
-					"value": 500
+					"value": 1024
 				}
 			],
 			"outputs": [
@@ -46,7 +46,7 @@
 					"type": "texture"
 				}
 			],
-			"path": "canvas.ot",
+			"path": "assets/canvas.ot",
 			"title": "Canvas Generator",
 			"type": "Canvas Generator",
 			"x": 75.0,

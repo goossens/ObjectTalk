@@ -10,10 +10,7 @@
 //
 
 #include "OtClass.h"
-#include "OtException.h"
-#include "OtFunction.h"
 #include "OtModule.h"
-#include "OtValue.h"
 
 #include "OtVec2.h"
 #include "OtVec3.h"

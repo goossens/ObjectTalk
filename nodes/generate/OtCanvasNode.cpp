@@ -13,6 +13,8 @@
 
 #include "nlohmann/json.hpp"
 
+#include "OtClass.h"
+#include "OtIdentifier.h"
 #include "OtPathTools.h"
 #include "OtVM.h"
 
@@ -29,7 +31,11 @@
 //
 
 static const char* scriptTemplate = "\
-function render(canvas) {\n\
+var canvas = import(\"canvas\");\n\
+\n\
+class Renderer : canvas.Canvas {\n\
+	function render(this) {\n\
+	}\n\
 }\n\
 ";
 
@@ -86,16 +92,13 @@ public:
 
 	// run the texture generator
 	void onGenerate(OtFrameBuffer& output) override {
-		// is our script ready?
-		if (script.isReady() && renderer) {
-			// yes, create a canvas (if required)
-			if (!canvas) {
-				canvas = OtCanvas::create();
-			}
+		if (script.isReady() && instance && hasRenderMethod) {
+			// get access to the canvas
+			auto canvas = OtCanvas(instance);
 
 			// render the canvas by calling the script
-			canvas->render(output, [this](OtCanvas canvas) {
-				OtVM::callMemberFunction(renderer, "__call__", canvas);
+			canvas->render(output, [&](OtCanvas canvas) {
+				OtVM::callMemberFunction(instance, renderSymbol);
 			});
 
 		} else {
@@ -104,22 +107,39 @@ public:
 		}
 	}
 
-	// gets called when script is specified or changed
+	// gets called when canvas script is specified or changed
 	void onScriptChange() {
+		instance = nullptr;
+		hasRenderMethod = false;
+
 		if (script.isReady()) {
 			script->compile();
+			auto path = script.getPath();
 			auto module = script->getModule();
 
-			if (module->hasByName("render")) {
-				renderer = module->getByName("render");
+			if (module->hasByName("Renderer")) {
+				auto classObject = module->getByName("Renderer");
+
+				// ensure it is a class object
+				if (classObject.isKindOf<OtClassClass>()) {
+					// create instance of class
+					instance = OtClass(classObject)->instantiate(0, nullptr);
+
+					// ensure the class is derived from Canvas
+					if (instance.isKindOf<OtCanvasClass>()) {
+						hasRenderMethod = instance->has(renderSymbol);
+
+					} else {
+						OtError("Class [Renderer] in script [{}] is not derived from [Canvas]", path);
+					}
+
+				} else {
+					OtError("Object [Renderer] in script [{}] is not a class", path);
+				}
 
 			} else {
-				renderer = nullptr;
-				OtError("Script [{}] does not contain function [render]", script.getPath());
+				OtError("Script [{}] does not contain class [Renderer]", path);
 			}
-
-		} else {
-			renderer = nullptr;
 		}
 
 		needsEvaluating = true;
@@ -131,8 +151,10 @@ public:
 
 protected:
 	OtAsset<OtScriptAsset> script;
-	OtObject renderer;
-	OtCanvas canvas;
+	OtObject instance;
+
+	OtID renderSymbol = OtIdentifier::create("render");
+	bool hasRenderMethod = false;
 };
 
 static OtNodesFactoryRegister<OtCanvasNode> type;

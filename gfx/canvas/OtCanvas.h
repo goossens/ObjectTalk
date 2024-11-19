@@ -13,11 +13,13 @@
 //
 
 #include <functional>
-#include <memory>
+#include <string>
+#include <unordered_map>
 
 #include "nanovg.h"
 
 #include "OtObject.h"
+#include "OtPathTools.h"
 
 #include "OtFrameBuffer.h"
 
@@ -35,17 +37,36 @@ public:
 	OtCanvasClass();
 	~OtCanvasClass();
 
+	// manipulate composite operation
+	inline void compositeOperation(int operation) { nvgGlobalCompositeOperation(context, operation); }
+	inline void compositeBlendFunc(int operation, int sfactor, int dfactor) { nvgGlobalCompositeBlendFunc(context, sfactor, dfactor); }
+	inline void compositeBlendFuncSeparate(int operation, int srcRGB, int dstRGB, int srcAlpha, int dstAlpha) { nvgGlobalCompositeBlendFuncSeparate(context, srcRGB, dstRGB, srcAlpha, dstAlpha); }
+
 	// manipulate rendering state
 	inline void saveState() { nvgSave(context); }
 	inline void restoreState() { nvgRestore(context); }
 	inline void resetState() { nvgReset(context); }
 
+	// manage textures
+	int loadTexture(const std::string& path, int flags);
+	inline void deleteTexture(int id) { nvgDeleteImage(context, id); }
+
+	// manage paints
+	int createLinearGradient(float sx, float sy, float ex, float ey, float sr, float sg, float sb, float sa, float er, float eg, float eb, float ea);
+	int createBoxGradient(float x, float y, float w, float h, float r, float f, float sr, float sg, float sb, float sa, float er, float eg, float eb, float ea);
+	int createRadialGradient(float cx, float cy, float inner, float outer, float sr, float sg, float sb, float sa, float er, float eg, float eb, float ea);
+	int createTexturePattern(float sx, float sy, float ex, float ey, float angle, int texture, float alpha);
+	void deletePaint(int id);
+
+	// manage fonts
+	inline int createFont(const std::string& path) { return nvgCreateFont(context, OtPathGetStem(path).c_str(), path.c_str()); }
+
 	// manipulate styles
 	inline void antiAlias(bool enabled) { nvgShapeAntiAlias(context, enabled); }
 	inline void strokeColor(float r, float g, float b, float a) { nvgStrokeColor(context, nvgRGBAf(r, g, b, a)); }
-	// void nvgStrokePaint(NVGcontext* ctx, NVGpaint paint);
+	inline void strokePaint(int id) { nvgStrokePaint(context, paints[id]); }
 	inline void fillColor(float r, float g, float b, float a) { nvgFillColor(context, nvgRGBAf(r, g, b, a)); }
-	// void nvgFillPaint(NVGcontext* ctx, NVGpaint paint);
+	inline void fillPaint(int id) { nvgFillPaint(context, paints[id]); }
 	inline void miterLimit(float limit) { nvgMiterLimit(context, limit); }
 	inline void strokeWidth(float width) { nvgStrokeWidth(context, width); }
 	inline void lineCap(int cap) { nvgLineCap(context, cap); }
@@ -77,6 +98,15 @@ public:
 	inline void stroke() { nvgStroke(context); }
 	inline void fill() { nvgFill(context); }
 
+	inline void fontFace(int id) { nvgFontFaceId(context, id); }
+	inline void fontSize(float size) { nvgFontSize(context, size); }
+	inline void fontBlur(float blur) { nvgFontBlur(context, blur); }
+	inline void fontLetterSpacing(float spacing) { nvgTextLetterSpacing(context, spacing); }
+	inline void fontLineHeight(float height) { nvgTextLineHeight(context, height); }
+	inline void fontAlign(int align) { nvgTextAlign(context, align); }
+	inline float text(float x, float y, const std::string& s) { return nvgText(context, x, y, s.c_str(), nullptr); }
+	inline void textBox(float x, float y, float w, const std::string& s) { nvgTextBox(context, x, y, w, s.c_str(), nullptr); }
+
 	// render canvas to framebuffer
 	void render(OtFrameBuffer& framebuffer, std::function<void(OtCanvas)> renderer);
 
@@ -86,4 +116,9 @@ public:
 private:
 	// properties
 	NVGcontext* context = nullptr;
+	std::unordered_map<int, NVGpaint> paints;
+
+	// helper functions
+	int addPaint(const NVGpaint& paint);
+	int paintID = 1;
 };

@@ -1,0 +1,24 @@
+var canvas = import("canvas");
+
+class Renderer : canvas.Canvas {
+	function render(this) {
+		this.beginPath();
+		this.drawRoundedRect(220, 120, 200, 200, 10);
+		this.fillColor(0.0, 0.8, 1.0, 0.8);
+		this.fill();
+		this.strokeColor(0.0, 0.0, 0.0, 0.8);
+		this.strokeWidth(15);
+		this.stroke();
+
+		this.beginPath();
+		this.moveTo(160, 160);
+		this.lineTo(280, 160);
+		this.lineTo(220, 220);
+		this.closePath();
+		this.fillColor(0.5, 0.0, 0.8, 1.0);
+		this.fill();
+		this.strokeColor(0.0, 0.0, 0.0, 1.0);
+		this.strokeWidth(15);
+		this.stroke();
+	}
+}

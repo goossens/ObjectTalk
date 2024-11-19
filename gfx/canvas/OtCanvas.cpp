@@ -15,6 +15,7 @@
 #include "OtLog.h"
 
 #include "OtCanvas.h"
+#include "OtImage.h"
 #include "OtPass.h"
 
 
@@ -37,6 +38,69 @@ OtCanvasClass::OtCanvasClass() {
 
 OtCanvasClass::~OtCanvasClass() {
 	nvgDelete(context);
+}
+
+
+//
+//	OtCanvasClass::loadTexture
+//
+
+int OtCanvasClass::loadTexture(const std::string &path, int flags) {
+	OtImage image{path};
+	return nvgCreateImageRGBA(context, image.getWidth(), image.getHeight(), flags, (const unsigned char *) image.getPixels());
+}
+
+
+//
+//	OtCanvasClass::createLinearGradient
+//
+
+int OtCanvasClass::createLinearGradient(float sx, float sy, float ex, float ey, float sr, float sg, float sb, float sa, float er, float eg, float eb, float ea) {
+	auto paint = nvgLinearGradient(context, sx, sy, ex, ey, nvgRGBAf(sr, sg, sb, sa), nvgRGBAf(er, eg, eb, ea));
+	return addPaint(paint);
+}
+
+
+//
+//	OtCanvasClass::createBoxGradient
+//
+
+int OtCanvasClass::createBoxGradient(float x, float y, float w, float h, float r, float f, float sr, float sg, float sb, float sa, float er, float eg, float eb, float ea) {
+	auto paint = nvgBoxGradient(context, x, y, w, h, r, f, nvgRGBAf(sr, sg, sb, sa), nvgRGBAf(er, eg, eb, ea));
+	return addPaint(paint);
+}
+
+
+//
+//	OtCanvasClass::createRadialGradient
+//
+
+int OtCanvasClass::createRadialGradient(float cx, float cy, float inner, float outer, float sr, float sg, float sb, float sa, float er, float eg, float eb, float ea) {
+	auto paint = nvgRadialGradient(context, cx, cy, inner, outer, nvgRGBAf(sr, sg, sb, sa), nvgRGBAf(er, eg, eb, ea));
+	return addPaint(paint);
+}
+
+
+//
+//	OtCanvasClass::deletePaint
+//
+
+void OtCanvasClass::deletePaint(int id) {
+	auto entry = paints.find(id);
+
+	if (entry != paints.end()) {
+		paints.erase(entry);
+	}
+}
+
+
+//
+//	createTexturePattern
+//
+
+int OtCanvasClass::createTexturePattern(float sx, float sy, float ex, float ey, float angle, int texture, float alpha) {
+	auto paint = nvgImagePattern(context, sx, sy, ex, ey, angle, texture, alpha);
+	return addPaint(paint);
 }
 
 
@@ -70,13 +134,31 @@ OtType OtCanvasClass::getMeta() {
 
 	if (!type) {
 		type = OtType::create<OtCanvasClass>("Canvas", OtObjectClass::getMeta());
+
+		type->set("compositeOperation", OtFunction::create(&OtCanvasClass::compositeOperation));
+		type->set("compositeBlendFunc", OtFunction::create(&OtCanvasClass::compositeBlendFunc));
+		type->set("compositeBlendFuncSeparate", OtFunction::create(&OtCanvasClass::compositeBlendFuncSeparate));
+
 		type->set("saveState", OtFunction::create(&OtCanvasClass::saveState));
 		type->set("restoreState", OtFunction::create(&OtCanvasClass::restoreState));
 		type->set("resetState", OtFunction::create(&OtCanvasClass::resetState));
 
+		type->set("loadTexture", OtFunction::create(&OtCanvasClass::loadTexture));
+		type->set("deleteTexture", OtFunction::create(&OtCanvasClass::deleteTexture));
+
+		type->set("createLinearGradient", OtFunction::create(&OtCanvasClass::createLinearGradient));
+		type->set("createBoxGradient", OtFunction::create(&OtCanvasClass::createBoxGradient));
+		type->set("createRadialGradient", OtFunction::create(&OtCanvasClass::createRadialGradient));
+		type->set("createTexturePattern", OtFunction::create(&OtCanvasClass::createTexturePattern));
+		type->set("deletePaint", OtFunction::create(&OtCanvasClass::deletePaint));
+
+		type->set("createFont", OtFunction::create(&OtCanvasClass::createFont));
+
 		type->set("antiAlias", OtFunction::create(&OtCanvasClass::antiAlias));
 		type->set("strokeColor", OtFunction::create(&OtCanvasClass::strokeColor));
+		type->set("strokePaint", OtFunction::create(&OtCanvasClass::strokePaint));
 		type->set("fillColor", OtFunction::create(&OtCanvasClass::fillColor));
+		type->set("fillPaint", OtFunction::create(&OtCanvasClass::fillPaint));
 		type->set("miterLimit", OtFunction::create(&OtCanvasClass::miterLimit));
 		type->set("strokeWidth", OtFunction::create(&OtCanvasClass::strokeWidth));
 		type->set("lineCap", OtFunction::create(&OtCanvasClass::lineCap));
@@ -108,17 +190,26 @@ OtType OtCanvasClass::getMeta() {
 		type->set("stroke", OtFunction::create(&OtCanvasClass::stroke));
 		type->set("fill", OtFunction::create(&OtCanvasClass::fill));
 
-		type->set("buttCap", OtInteger::create(NVG_BUTT));
-		type->set("roundCap", OtInteger::create(NVG_ROUND));
-		type->set("squareCap", OtInteger::create(NVG_SQUARE));
-
-		type->set("miterJoin", OtInteger::create(NVG_MITER));
-		type->set("roundJoin", OtInteger::create(NVG_ROUND));
-		type->set("bevelJoin", OtInteger::create(NVG_BEVEL));
-
-		type->set("ccwWinding", OtInteger::create(NVG_SOLID));
-		type->set("cwWinding", OtInteger::create(NVG_HOLE));
+		type->set("fontFace", OtFunction::create(&OtCanvasClass::fontFace));
+		type->set("fontSize", OtFunction::create(&OtCanvasClass::fontSize));
+		type->set("fontBlur", OtFunction::create(&OtCanvasClass::fontBlur));
+		type->set("fontLetterSpacing", OtFunction::create(&OtCanvasClass::fontLetterSpacing));
+		type->set("fontLineHeight", OtFunction::create(&OtCanvasClass::fontLineHeight));
+		type->set("fontAlign", OtFunction::create(&OtCanvasClass::fontAlign));
+		type->set("text", OtFunction::create(&OtCanvasClass::text));
+		type->set("textBox", OtFunction::create(&OtCanvasClass::textBox));
 	}
 
 	return type;
+}
+
+
+//
+//	OtCanvasClass::addPaint
+//
+
+int OtCanvasClass::addPaint(const NVGpaint& paint) {
+	auto id = paintID++;
+	paints[id] = paint;
+	return id;
 }

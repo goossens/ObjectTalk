@@ -35,8 +35,10 @@ OtObject OtClassClass::instantiate(size_t count, OtObject* parameters) {
 	object->setType(classType);
 
 	// run possible init function
-	if (object->hasByName("__init__")) {
-		OtVM::redirectMemberFunction(object, "__init__", count);
+	OtID initID = OtIdentifier::create("__init__");
+
+	if (object->has(initID)) {
+		OtVM::callMemberFunction(object, initID, count, parameters);
 
 	} else if (count) {
 		OtError(

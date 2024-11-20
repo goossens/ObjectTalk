@@ -346,7 +346,7 @@ OtObject OtArrayClass::rsort() {
 //
 
 OtObject OtArrayClass::csort(OtObject function) {
-	std::sort(array.begin(), array.end(), [function](OtObject a, OtObject b) {
+	std::sort(array.begin(), array.end(), [&](OtObject a, OtObject b) {
 		auto result = OtVM::callMemberFunction(function, "__call__", a, b);
 		return result->operator bool();
 	});

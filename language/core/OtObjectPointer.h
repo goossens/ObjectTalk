@@ -180,6 +180,6 @@ private:
 	}
 
 	// pointer to the object
-	T* ptr = nullptr;
+	T* ptr;
 	template <typename Ts> friend class OtObjectPointer;
 };

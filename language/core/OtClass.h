@@ -39,7 +39,7 @@ public:
 	inline OtObject getParent() { return OtClass::create(classType->getParent()); }
 
 	// create a new class instance
-	OtObject instantiate(size_t count, OtObject* parameters);
+	OtObject instantiate(size_t count=0, OtObject* parameters=nullptr);
 
 	// see if class is kind of
 	inline bool isKindOf(const std::string& className) { return classType->isKindOf(className); }

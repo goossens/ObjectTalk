@@ -83,7 +83,7 @@ void OtScriptComponent::process() {
 			// ensure it is a class object
 			if (classObject.isKindOf<OtClassClass>()) {
 				// create instance of class
-				instance = OtClass(classObject)->instantiate(0, nullptr);
+				instance = OtClass(classObject)->instantiate();
 
 				// ensure the class is derived from Entity
 				if (instance.isKindOf<OtEntityObjectClass>()) {

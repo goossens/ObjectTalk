@@ -71,8 +71,9 @@ public:
 
 	// stack access functions
 	inline void push(const OtObject& object) { if (sp == capacity) { reserve(capacity * 2); } stack[sp++] = object; }
-	inline OtObject pop() { return stack[--sp]; }
-	inline void pop(size_t count) { sp -= count; }
+	inline void push(size_t count, OtObject* objects) { if (sp + count >= capacity) { reserve(capacity * 2); } while (count--) { stack[sp++] = *objects++; } }
+	inline OtObject pop() { auto result = stack[--sp]; stack[sp] = nullptr; return result; }
+	inline void pop(size_t count) { while (count--) { stack[--sp] = nullptr; } }
 	inline void dup() { if (sp == capacity) { reserve(capacity * 2); } stack[sp] = stack[sp - 1]; sp++; }
 	inline void swap() { std::swap(stack[sp - 1], stack[sp - 2]); }
 	inline void move(size_t count) { stack[sp - count - 1] = stack[sp - 1]; sp -= count; }

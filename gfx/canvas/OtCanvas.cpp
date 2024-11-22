@@ -182,7 +182,7 @@ OtType OtCanvasClass::getMeta() {
 		type->set("createTexturePattern", OtFunction::create(&OtCanvasClass::createTexturePattern));
 		type->set("deletePaint", OtFunction::create(&OtCanvasClass::deletePaint));
 
-		type->set("createFont", OtFunction::create(&OtCanvasClass::createFont));
+		type->set("loadFont", OtFunction::create(&OtCanvasClass::loadFont));
 
 		type->set("antiAlias", OtFunction::create(&OtCanvasClass::antiAlias));
 		type->set("strokeColor", OtFunction::create(&OtCanvasClass::strokeColor));

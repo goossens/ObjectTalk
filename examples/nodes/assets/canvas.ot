@@ -9,6 +9,7 @@ var canvas = import("canvas");
 class Renderer : canvas.Canvas {
 	function __init__(this) {
 		this.logo = this.loadImage(Path(__DIR__, "logo.png"), 0);
+		this.font = this.loadFont(Path(__DIR__, "roboto.ttf"));
 	}
 
 	function render(this) {
@@ -37,5 +38,9 @@ class Renderer : canvas.Canvas {
 		this.drawImage(this.logo, 160, 400, w / 4.0, h / 4.0);
 		this.drawImage(this.logo, 300, 400, w / 2.0, h / 2.0);
 		this.drawImage(this.logo, 500, 400);
+
+		this.fontFace(this.font);
+		this.fontSize(100);
+		this.text(160, 900, "ObjectTalk");
 	}
 }

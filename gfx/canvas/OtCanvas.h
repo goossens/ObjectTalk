@@ -61,7 +61,7 @@ public:
 	void deletePaint(int id);
 
 	// manage fonts
-	inline int createFont(const std::string& path) { return nvgCreateFont(context, OtPathGetStem(path).c_str(), path.c_str()); }
+	inline int loadFont(const std::string& path) { return nvgCreateFont(context, OtPathGetStem(path).c_str(), path.c_str()); }
 
 	// manipulate styles
 	inline void antiAlias(bool enabled) { nvgShapeAntiAlias(context, enabled); }

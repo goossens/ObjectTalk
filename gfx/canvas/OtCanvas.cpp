@@ -42,10 +42,10 @@ OtCanvasClass::~OtCanvasClass() {
 
 
 //
-//	OtCanvasClass::loadTexture
+//	OtCanvasClass::loadImage
 //
 
-int OtCanvasClass::loadTexture(const std::string &path, int flags) {
+int OtCanvasClass::loadImage(const std::string &path, int flags) {
 	OtImage image{path};
 	return nvgCreateImageRGBA(context, image.getWidth(), image.getHeight(), flags, (const unsigned char *) image.getPixels());
 }
@@ -105,10 +105,40 @@ int OtCanvasClass::createTexturePattern(float sx, float sy, float ex, float ey, 
 
 
 //
-//	OtCanvasClass::render
+//	OtCanvasClass::drawImage
 //
 
-void OtCanvasClass::render(OtFrameBuffer& framebuffer, std::function<void(OtCanvas)> renderer) {
+void OtCanvasClass::drawImage(int image, float x, float y) {
+	int w, h;
+	nvgImageSize(context, image, &w, &h);
+	drawImage(image, 0.0f, 0.0f, float(w), float(h), x, y, w, h);
+}
+
+void OtCanvasClass::drawImage(int image, float x, float y, float w, float h) {
+	int sw, sh;
+	nvgImageSize(context, image, &sw, &sh);
+	drawImage(image, 0.0f, 0.0f, float(sw), float(sh), x, y, w, h);
+}
+
+void OtCanvasClass::drawImage(int image, float sx, float sy, float sw, float sh, float x, float y, float w, float h) {
+	int iw, ih;
+	nvgImageSize(context, image, &iw, &ih);
+
+	float ax = w / sw;
+	float ay = h / sh;
+	NVGpaint imgPaint = nvgImagePattern(context, x - sx * ax, y - sy * ay, float(iw) * ax, float(ih) * ay, 0.0f, image, 1.0f);
+
+	nvgBeginPath(context);
+	nvgRect(context, x, y, w, h);
+	nvgFillPaint(context, imgPaint);
+	nvgFill(context);
+}
+
+
+//
+//	OtCanvasClass::render
+//
+void OtCanvasClass::render(OtFrameBuffer &framebuffer, std::function<void()> renderer) {
 	// setup rendering pass
 	OtPass pass;
 	pass.setClear(framebuffer.hasColorTexture(), framebuffer.hasDepthTexture(), glm::vec4(0.0f), 1.0f);
@@ -119,11 +149,9 @@ void OtCanvasClass::render(OtFrameBuffer& framebuffer, std::function<void(OtCanv
 	nvgSetViewId(context, pass.getViewId());
 	nvgBeginFrame(context, framebuffer.getWidth(), framebuffer.getHeight(), 1.0);
 
-	renderer(OtCanvas(this));
+	renderer();
 	nvgEndFrame(context);
 }
-
-
 
 //
 //	OtCanvasClass::getMeta
@@ -143,8 +171,10 @@ OtType OtCanvasClass::getMeta() {
 		type->set("restoreState", OtFunction::create(&OtCanvasClass::restoreState));
 		type->set("resetState", OtFunction::create(&OtCanvasClass::resetState));
 
-		type->set("loadTexture", OtFunction::create(&OtCanvasClass::loadTexture));
-		type->set("deleteTexture", OtFunction::create(&OtCanvasClass::deleteTexture));
+		type->set("loadImage", OtFunction::create(&OtCanvasClass::loadImage));
+		type->set("deleteImage", OtFunction::create(&OtCanvasClass::deleteImage));
+		type->set("getImageWidth", OtFunction::create(&OtCanvasClass::getImageWidth));
+		type->set("getImageHeight", OtFunction::create(&OtCanvasClass::getImageHeight));
 
 		type->set("createLinearGradient", OtFunction::create(&OtCanvasClass::createLinearGradient));
 		type->set("createBoxGradient", OtFunction::create(&OtCanvasClass::createBoxGradient));
@@ -186,6 +216,7 @@ OtType OtCanvasClass::getMeta() {
 		type->set("drawRoundedRect", OtFunction::create(&OtCanvasClass::drawRoundedRect));
 		type->set("drawEllipse", OtFunction::create(&OtCanvasClass::drawEllipse));
 		type->set("drawCircle", OtFunction::create(&OtCanvasClass::drawCircle));
+		type->set("drawImage", OtFunction::create(&OtCanvasClass::drawImageStub));
 
 		type->set("stroke", OtFunction::create(&OtCanvasClass::stroke));
 		type->set("fill", OtFunction::create(&OtCanvasClass::fill));
@@ -212,4 +243,48 @@ int OtCanvasClass::addPaint(const NVGpaint& paint) {
 	auto id = paintID++;
 	paints[id] = paint;
 	return id;
+}
+
+
+//
+//	OtCanvasClass::drawImageStub
+//
+
+void OtCanvasClass::drawImageStub(size_t count, OtObject* parameters) {
+	switch (count) {
+		case 9:
+			drawImage(
+				parameters[0]->operator int(),
+				parameters[1]->operator float(),
+				parameters[2]->operator float(),
+				parameters[3]->operator float(),
+				parameters[4]->operator float(),
+				parameters[5]->operator float(),
+				parameters[6]->operator float(),
+				parameters[7]->operator float(),
+				parameters[8]->operator float());
+
+			break;
+
+		case 5:
+			drawImage(
+				parameters[0]->operator int(),
+				parameters[1]->operator float(),
+				parameters[2]->operator float(),
+				parameters[3]->operator float(),
+				parameters[4]->operator float());
+
+			break;
+
+		case 3:
+			drawImage(
+				parameters[0]->operator int(),
+				parameters[1]->operator float(),
+				parameters[2]->operator float());
+
+			break;
+
+		default:
+			OtLogFatal("[drawImage expects 3, 5, or 9 arguments (not {})", count);
+	}
 }

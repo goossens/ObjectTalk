@@ -97,8 +97,8 @@ public:
 			auto canvas = OtCanvas(instance);
 
 			// render the canvas by calling the script
-			canvas->render(output, [&](OtCanvas canvas) {
-				OtVM::callMemberFunction(instance, renderSymbol);
+			canvas->render(output, [this]() {
+				OtVM::callMemberFunction(instance, renderID);
 			});
 
 		} else {
@@ -117,17 +117,17 @@ public:
 			auto path = script.getPath();
 			auto module = script->getModule();
 
-			if (module->hasByName("Renderer")) {
-				auto classObject = module->getByName("Renderer");
+			if (module->has(rendererID)) {
+				auto classObject = module->get(rendererID);
 
 				// ensure it is a class object
 				if (classObject.isKindOf<OtClassClass>()) {
 					// create instance of class
-					instance = OtClass(classObject)->instantiate(0, nullptr);
+					instance = OtClass(classObject)->instantiate();
 
 					// ensure the class is derived from Canvas
 					if (instance.isKindOf<OtCanvasClass>()) {
-						hasRenderMethod = instance->has(renderSymbol);
+						hasRenderMethod = instance->has(renderID);
 
 					} else {
 						OtError("Class [Renderer] in script [{}] is not derived from [Canvas]", path);
@@ -153,7 +153,8 @@ protected:
 	OtAsset<OtScriptAsset> script;
 	OtObject instance;
 
-	OtID renderSymbol = OtIdentifier::create("render");
+	OtID renderID = OtIdentifier::create("render");
+	OtID rendererID = OtIdentifier::create("Renderer");
 	bool hasRenderMethod = false;
 };
 

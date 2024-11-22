@@ -1,9 +1,19 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
 var canvas = import("canvas");
 
 class Renderer : canvas.Canvas {
+	function __init__(this) {
+		this.logo = this.loadImage(Path(__DIR__, "logo.png"), 0);
+	}
+
 	function render(this) {
 		this.beginPath();
-		this.drawRoundedRect(220, 120, 200, 200, 10);
+		this.drawRoundedRect(120, 120, 200, 200, 10);
 		this.fillColor(0.0, 0.8, 1.0, 0.8);
 		this.fill();
 		this.strokeColor(0.0, 0.0, 0.0, 0.8);
@@ -20,5 +30,12 @@ class Renderer : canvas.Canvas {
 		this.strokeColor(0.0, 0.0, 0.0, 1.0);
 		this.strokeWidth(15);
 		this.stroke();
+
+		var w = this.getImageWidth(this.logo);
+		var h = this.getImageHeight(this.logo);
+
+		this.drawImage(this.logo, 160, 400, w / 4.0, h / 4.0);
+		this.drawImage(this.logo, 300, 400, w / 2.0, h / 2.0);
+		this.drawImage(this.logo, 500, 400);
 	}
 }

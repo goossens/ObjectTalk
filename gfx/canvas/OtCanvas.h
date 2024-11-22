@@ -47,9 +47,11 @@ public:
 	inline void restoreState() { nvgRestore(context); }
 	inline void resetState() { nvgReset(context); }
 
-	// manage textures
-	int loadTexture(const std::string& path, int flags);
-	inline void deleteTexture(int id) { nvgDeleteImage(context, id); }
+	// manage images
+	int loadImage(const std::string& path, int flags);
+	inline void deleteImage(int image) { nvgDeleteImage(context, image); }
+	inline float getImageWidth(int image) { int w, h; nvgImageSize(context, image, &w, &h); return float(w); }
+	inline float getImageHeight(int image) { int w, h; nvgImageSize(context, image, &w, &h); return float(h); }
 
 	// manage paints
 	int createLinearGradient(float sx, float sy, float ex, float ey, float sr, float sg, float sb, float sa, float er, float eg, float eb, float ea);
@@ -95,6 +97,10 @@ public:
 	inline void drawEllipse(float cx, float cy, float rx, float ry) { nvgEllipse(context, cx, cy, rx, ry); }
 	inline void drawCircle(float cx, float cy, float r) { nvgCircle(context, cx, cy, r); }
 
+	void drawImage(int image, float x, float y);
+	void drawImage(int image, float x, float y, float w, float h);
+	void drawImage(int image, float sx, float sy, float sw, float sh, float x, float y, float w, float h);
+
 	inline void stroke() { nvgStroke(context); }
 	inline void fill() { nvgFill(context); }
 
@@ -108,17 +114,19 @@ public:
 	inline void textBox(float x, float y, float w, const std::string& s) { nvgTextBox(context, x, y, w, s.c_str(), nullptr); }
 
 	// render canvas to framebuffer
-	void render(OtFrameBuffer& framebuffer, std::function<void(OtCanvas)> renderer);
+	void render(OtFrameBuffer& framebuffer, std::function<void()> renderer);
 
 	// get type definition
 	static OtType getMeta();
 
 private:
 	// properties
-	NVGcontext* context = nullptr;
+	NVGcontext* context;
 	std::unordered_map<int, NVGpaint> paints;
 
 	// helper functions
 	int addPaint(const NVGpaint& paint);
 	int paintID = 1;
+
+	void drawImageStub(size_t count, OtObject* parameters);
 };

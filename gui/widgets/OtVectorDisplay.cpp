@@ -561,7 +561,7 @@ void OtVectorDisplayClass::render() {
 	// handle auto scaling
 	if (autoScale) {
 		auto available = ImGui::GetContentRegionAvail();
-		scale = std::min(available.x / float(width), available.y / float(height));
+		scale = std::min(available.x / width, available.y / height);
 	}
 
 	// calculate size of scope

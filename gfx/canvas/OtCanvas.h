@@ -113,8 +113,11 @@ public:
 	inline float text(float x, float y, const std::string& s) { return nvgText(context, x, y, s.c_str(), nullptr); }
 	inline void textBox(float x, float y, float w, const std::string& s) { nvgTextBox(context, x, y, w, s.c_str(), nullptr); }
 
+	inline float getWidth() { return width; }
+	inline float getHeight() { return height; }
+
 	// render canvas to framebuffer
-	void render(OtFrameBuffer& framebuffer, std::function<void()> renderer);
+	void render(OtFrameBuffer& framebuffer, float scale, std::function<void()> renderer);
 
 	// get type definition
 	static OtType getMeta();
@@ -123,6 +126,9 @@ private:
 	// properties
 	NVGcontext* context;
 	std::unordered_map<int, NVGpaint> paints;
+
+	float width;
+	float height;
 
 	// helper functions
 	int addPaint(const NVGpaint& paint);

@@ -21,6 +21,7 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f dial\OtDialVS.glsl -o generated\dial\OtDialVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtDialVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f dial\OtDialFS.glsl -o generated\dial\OtDialFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtDialFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtFilterVS.glsl -o generated\filter\OtFilterVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtFilterVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtAlphaFS.glsl -o generated\filter\OtAlphaFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtAlphaFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtAlphaOverFS.glsl -o generated\filter\OtAlphaOverFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtAlphaOverFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtBlitFS.glsl -o generated\filter\OtBlitFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtBlitFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtBloomApplyFS.glsl -o generated\filter\OtBloomApplyFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtBloomApplyFS_dx11

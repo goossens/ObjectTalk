@@ -8,9 +8,10 @@
 
 var gui = import("gui");
 
-var clock = import("clock");
-var radar = import("radar");
-var vd = import("vd");
+var drawing = import("widgets/drawing");
+var clock = import("widgets/clock");
+var radar = import("widgets/radar");
+var vd = import("widgets/vd");
 
 class MyApp : gui.App {
 	function setup(this) {
@@ -66,6 +67,7 @@ class MyApp : gui.App {
 		this.addTab("Clock", clock.Clock());
 		this.addTab("Radar", radar.Radar());
 		this.addTab("Test", vd.Vd());
+		this.addTab("Drawing", drawing.Drawing());
 		return this.tabs;
 	}
 

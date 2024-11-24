@@ -13,6 +13,7 @@
 
 #include "nlohmann/json.hpp"
 
+#include "OtException.h"
 #include "OtClass.h"
 #include "OtIdentifier.h"
 #include "OtPathTools.h"
@@ -97,7 +98,7 @@ public:
 			auto canvas = OtCanvas(instance);
 
 			// render the canvas by calling the script
-			canvas->render(output, [this]() {
+			canvas->render(output, 1.0f, [this]() {
 				OtVM::callMemberFunction(instance, renderID);
 			});
 
@@ -117,29 +118,26 @@ public:
 			auto path = script.getPath();
 			auto module = script->getModule();
 
-			if (module->has(rendererID)) {
-				auto classObject = module->get(rendererID);
-
-				// ensure it is a class object
-				if (classObject.isKindOf<OtClassClass>()) {
-					// create instance of class
-					instance = OtClass(classObject)->instantiate();
-
-					// ensure the class is derived from Canvas
-					if (instance.isKindOf<OtCanvasClass>()) {
-						hasRenderMethod = instance->has(renderID);
-
-					} else {
-						OtError("Class [Renderer] in script [{}] is not derived from [Canvas]", path);
-					}
-
-				} else {
-					OtError("Object [Renderer] in script [{}] is not a class", path);
-				}
-
-			} else {
+			if (!module->has(rendererID)) {
 				OtError("Script [{}] does not contain class [Renderer]", path);
 			}
+
+			auto classObject = module->get(rendererID);
+
+			// ensure it is a class object
+			if (!classObject.isKindOf<OtClassClass>()) {
+				OtError("Object [Renderer] in script [{}] is not a class", path);
+			}
+
+			// create instance of class
+			instance = OtClass(classObject)->instantiate();
+
+			// ensure the class is derived from Canvas
+			if (!instance.isKindOf<OtCanvasClass>()) {
+				OtError("Class [Renderer] in script [{}] is not derived from [Canvas]", path);
+			}
+
+			hasRenderMethod = instance->has(renderID);
 		}
 
 		needsEvaluating = true;

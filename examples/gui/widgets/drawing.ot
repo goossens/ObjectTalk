@@ -1,0 +1,65 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var gui = import("gui");
+var canvas = import("canvas");
+
+class Background : canvas.Canvas {
+	function __init__(this) {
+		this.logo = this.loadImage(Path(__DIR__, "..", "assets", "logo.png"), 0);
+	}
+
+	function render(this) {
+		this.beginPath();
+		this.drawRoundedRect(120, 120, 200, 200, 10);
+		this.fillColor(0.0, 0.8, 1.0, 0.8);
+		this.fill();
+		this.strokeColor(0.0, 0.0, 0.0, 0.8);
+		this.strokeWidth(15);
+		this.stroke();
+
+		this.beginPath();
+		this.moveTo(160, 160);
+		this.lineTo(280, 160);
+		this.lineTo(220, 220);
+		this.closePath();
+		this.fillColor(0.5, 0.0, 0.8, 1.0);
+		this.fill();
+		this.strokeColor(0.0, 0.0, 0.0, 1.0);
+		this.strokeWidth(15);
+		this.stroke();
+
+		var w = this.getImageWidth(this.logo);
+		var h = this.getImageHeight(this.logo);
+
+		this.drawImage(this.logo, 160, 400, w / 4.0, h / 4.0);
+		this.drawImage(this.logo, 300, 400, w / 2.0, h / 2.0);
+		this.drawImage(this.logo, 500, 400);
+	}
+}
+
+class Foreground : canvas.Canvas {
+	function __init__(this) {
+		this.font = this.loadFont(Path(__DIR__, "..", "assets", "roboto.ttf"));
+	}
+
+	function render(this) {
+		this.fontFace(this.font);
+		this.fontSize(100);
+		this.text(160, 900, "ObjectTalk");
+	}
+}
+
+class Drawing : gui.CanvasStack {
+	function __init__(this) {
+		this.setSize(1000, 1000);
+		this.setHorizontalAlignment(gui.alignCenter);
+		this.setVerticalAlignment(gui.alignMiddle);
+
+		this.addCanvas(Background());
+		this.addCanvas(Foreground());
+	}
+}

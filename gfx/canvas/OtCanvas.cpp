@@ -138,7 +138,12 @@ void OtCanvasClass::drawImage(int image, float sx, float sy, float sw, float sh,
 //
 //	OtCanvasClass::render
 //
-void OtCanvasClass::render(OtFrameBuffer &framebuffer, std::function<void()> renderer) {
+
+void OtCanvasClass::render(OtFrameBuffer &framebuffer, float scale, std::function<void()> renderer) {
+	// get dimensions
+	width = float(framebuffer.getWidth());
+	height = float(framebuffer.getHeight());
+
 	// setup rendering pass
 	OtPass pass;
 	pass.setClear(framebuffer.hasColorTexture(), framebuffer.hasDepthTexture(), glm::vec4(0.0f), 1.0f);
@@ -147,8 +152,8 @@ void OtCanvasClass::render(OtFrameBuffer &framebuffer, std::function<void()> ren
 
 	// render the canvas
 	nvgSetViewId(context, pass.getViewId());
-	nvgBeginFrame(context, framebuffer.getWidth(), framebuffer.getHeight(), 1.0);
-
+	nvgBeginFrame(context, width, height, 1.0);
+	nvgScale(context, scale, scale);
 	renderer();
 	nvgEndFrame(context);
 }
@@ -229,6 +234,9 @@ OtType OtCanvasClass::getMeta() {
 		type->set("fontAlign", OtFunction::create(&OtCanvasClass::fontAlign));
 		type->set("text", OtFunction::create(&OtCanvasClass::text));
 		type->set("textBox", OtFunction::create(&OtCanvasClass::textBox));
+
+		type->set("getWidth", OtFunction::create(&OtCanvasClass::getWidth));
+		type->set("getHeight", OtFunction::create(&OtCanvasClass::getHeight));
 	}
 
 	return type;

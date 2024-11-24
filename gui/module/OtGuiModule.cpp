@@ -14,6 +14,7 @@
 #include "OtModule.h"
 
 #include "OtApp.h"
+#include "OtCanvasStack.h"
 #include "OtCheckBox.h"
 #include "OtColumns.h"
 #include "OtComboBox.h"
@@ -43,6 +44,7 @@
 
 static OtModuleRegistration registration{"gui", [](OtModule module) {
 	module->set("App", OtClass::create(OtAppClass::getMeta()));
+	module->set("CanvasStack", OtClass::create(OtCanvasStackClass::getMeta()));
 	module->set("CheckBox", OtClass::create(OtCheckBoxClass::getMeta()));
 	module->set("Columns", OtClass::create(OtColumnsClass::getMeta()));
 	module->set("ComboBox", OtClass::create(OtComboBoxClass::getMeta()));

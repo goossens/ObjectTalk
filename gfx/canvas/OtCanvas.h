@@ -21,6 +21,7 @@
 #include "OtObject.h"
 #include "OtPathTools.h"
 
+#include "OtColorParser.h"
 #include "OtFrameBuffer.h"
 
 
@@ -54,9 +55,9 @@ public:
 	inline float getImageHeight(int image) { int w, h; nvgImageSize(context, image, &w, &h); return float(h); }
 
 	// manage paints
-	int createLinearGradient(float sx, float sy, float ex, float ey, float sr, float sg, float sb, float sa, float er, float eg, float eb, float ea);
-	int createBoxGradient(float x, float y, float w, float h, float r, float f, float sr, float sg, float sb, float sa, float er, float eg, float eb, float ea);
-	int createRadialGradient(float cx, float cy, float inner, float outer, float sr, float sg, float sb, float sa, float er, float eg, float eb, float ea);
+	int createLinearGradient(float sx, float sy, float ex, float ey, const std::string& startColor, const std::string& endColor);
+	int createBoxGradient(float x, float y, float w, float h, float r, float f, const std::string& startColor, const std::string& endColor);
+	int createRadialGradient(float cx, float cy, float inner, float outer, const std::string& startColor, const std::string& endColor);
 	int createTexturePattern(float sx, float sy, float ex, float ey, float angle, int texture, float alpha);
 	void deletePaint(int id);
 
@@ -65,9 +66,9 @@ public:
 
 	// manipulate styles
 	inline void antiAlias(bool enabled) { nvgShapeAntiAlias(context, enabled); }
-	inline void strokeColor(float r, float g, float b, float a) { nvgStrokeColor(context, nvgRGBAf(r, g, b, a)); }
+	inline void strokeColor(const std::string& color) { auto c = OtColorParser::toVec4(color); nvgStrokeColor(context, nvgRGBAf(c.r, c.g, c.b, c.a)); }
 	inline void strokePaint(int id) { nvgStrokePaint(context, paints[id]); }
-	inline void fillColor(float r, float g, float b, float a) { nvgFillColor(context, nvgRGBAf(r, g, b, a)); }
+	inline void fillColor(const std::string& color) { auto c = OtColorParser::toVec4(color); nvgFillColor(context, nvgRGBAf(c.r, c.g, c.b, c.a)); }
 	inline void fillPaint(int id) { nvgFillPaint(context, paints[id]); }
 	inline void miterLimit(float limit) { nvgMiterLimit(context, limit); }
 	inline void strokeWidth(float width) { nvgStrokeWidth(context, width); }
@@ -91,18 +92,18 @@ public:
 	inline void closePath() { nvgClosePath(context); }
 	inline void pathWinding(int winding) { nvgPathWinding(context, NVGwinding(winding)); }
 
-	inline void drawArc(float cx, float cy, float r, float a0, float a1, int dir) { nvgArc(context, cx, cy, r, a0, a1, dir); }
-	inline void drawRect(float x, float y, float w, float h) { nvgRect(context, x, y, w, h); }
-	inline void drawRoundedRect(float x, float y, float w, float h, float r) { nvgRoundedRect(context, x, y, w, h, r); }
-	inline void drawEllipse(float cx, float cy, float rx, float ry) { nvgEllipse(context, cx, cy, rx, ry); }
-	inline void drawCircle(float cx, float cy, float r) { nvgCircle(context, cx, cy, r); }
+	inline void arc(float cx, float cy, float r, float a0, float a1, int dir) { nvgArc(context, cx, cy, r, a0, a1, dir); }
+	inline void rect(float x, float y, float w, float h) { nvgRect(context, x, y, w, h); }
+	inline void roundedRect(float x, float y, float w, float h, float r) { nvgRoundedRect(context, x, y, w, h, r); }
+	inline void ellipse(float cx, float cy, float rx, float ry) { nvgEllipse(context, cx, cy, rx, ry); }
+	inline void circle(float cx, float cy, float r) { nvgCircle(context, cx, cy, r); }
+
+	inline void stroke() { nvgStroke(context); }
+	inline void fill() { nvgFill(context); }
 
 	void drawImage(int image, float x, float y);
 	void drawImage(int image, float x, float y, float w, float h);
 	void drawImage(int image, float sx, float sy, float sw, float sh, float x, float y, float w, float h);
-
-	inline void stroke() { nvgStroke(context); }
-	inline void fill() { nvgFill(context); }
 
 	inline void fontFace(int id) { nvgFontFaceId(context, id); }
 	inline void fontSize(float size) { nvgFontSize(context, size); }

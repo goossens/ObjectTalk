@@ -55,8 +55,10 @@ int OtCanvasClass::loadImage(const std::string &path, int flags) {
 //	OtCanvasClass::createLinearGradient
 //
 
-int OtCanvasClass::createLinearGradient(float sx, float sy, float ex, float ey, float sr, float sg, float sb, float sa, float er, float eg, float eb, float ea) {
-	auto paint = nvgLinearGradient(context, sx, sy, ex, ey, nvgRGBAf(sr, sg, sb, sa), nvgRGBAf(er, eg, eb, ea));
+int OtCanvasClass::createLinearGradient(float sx, float sy, float ex, float ey, const std::string& startColor, const std::string& endColor) {
+	auto sc = OtColorParser::toVec4(startColor);
+	auto ec = OtColorParser::toVec4(startColor);
+	auto paint = nvgLinearGradient(context, sx, sy, ex, ey, nvgRGBAf(sc.r, sc.g, sc.b, sc.a), nvgRGBAf(ec.r, ec.g, ec.b, ec.a));
 	return addPaint(paint);
 }
 
@@ -65,8 +67,10 @@ int OtCanvasClass::createLinearGradient(float sx, float sy, float ex, float ey, 
 //	OtCanvasClass::createBoxGradient
 //
 
-int OtCanvasClass::createBoxGradient(float x, float y, float w, float h, float r, float f, float sr, float sg, float sb, float sa, float er, float eg, float eb, float ea) {
-	auto paint = nvgBoxGradient(context, x, y, w, h, r, f, nvgRGBAf(sr, sg, sb, sa), nvgRGBAf(er, eg, eb, ea));
+int OtCanvasClass::createBoxGradient(float x, float y, float w, float h, float r, float f, const std::string& startColor, const std::string& endColor) {
+	auto sc = OtColorParser::toVec4(startColor);
+	auto ec = OtColorParser::toVec4(startColor);
+	auto paint = nvgBoxGradient(context, x, y, w, h, r, f, nvgRGBAf(sc.r, sc.g, sc.b, sc.a), nvgRGBAf(ec.r, ec.g, ec.b, ec.a));
 	return addPaint(paint);
 }
 
@@ -75,8 +79,10 @@ int OtCanvasClass::createBoxGradient(float x, float y, float w, float h, float r
 //	OtCanvasClass::createRadialGradient
 //
 
-int OtCanvasClass::createRadialGradient(float cx, float cy, float inner, float outer, float sr, float sg, float sb, float sa, float er, float eg, float eb, float ea) {
-	auto paint = nvgRadialGradient(context, cx, cy, inner, outer, nvgRGBAf(sr, sg, sb, sa), nvgRGBAf(er, eg, eb, ea));
+int OtCanvasClass::createRadialGradient(float cx, float cy, float inner, float outer, const std::string& startColor, const std::string& endColor) {
+	auto sc = OtColorParser::toVec4(startColor);
+	auto ec = OtColorParser::toVec4(startColor);
+	auto paint = nvgRadialGradient(context, cx, cy, inner, outer, nvgRGBAf(sc.r, sc.g, sc.b, sc.a), nvgRGBAf(ec.r, ec.g, ec.b, ec.a));
 	return addPaint(paint);
 }
 
@@ -216,15 +222,16 @@ OtType OtCanvasClass::getMeta() {
 		type->set("closePath", OtFunction::create(&OtCanvasClass::closePath));
 		type->set("pathWinding", OtFunction::create(&OtCanvasClass::pathWinding));
 
-		type->set("drawArc", OtFunction::create(&OtCanvasClass::drawArc));
-		type->set("drawRect", OtFunction::create(&OtCanvasClass::drawRect));
-		type->set("drawRoundedRect", OtFunction::create(&OtCanvasClass::drawRoundedRect));
-		type->set("drawEllipse", OtFunction::create(&OtCanvasClass::drawEllipse));
-		type->set("drawCircle", OtFunction::create(&OtCanvasClass::drawCircle));
-		type->set("drawImage", OtFunction::create(&OtCanvasClass::drawImageStub));
+		type->set("arc", OtFunction::create(&OtCanvasClass::arc));
+		type->set("rect", OtFunction::create(&OtCanvasClass::rect));
+		type->set("roundedRect", OtFunction::create(&OtCanvasClass::roundedRect));
+		type->set("ellipse", OtFunction::create(&OtCanvasClass::ellipse));
+		type->set("circle", OtFunction::create(&OtCanvasClass::circle));
 
 		type->set("stroke", OtFunction::create(&OtCanvasClass::stroke));
 		type->set("fill", OtFunction::create(&OtCanvasClass::fill));
+
+		type->set("drawImage", OtFunction::create(&OtCanvasClass::drawImageStub));
 
 		type->set("fontFace", OtFunction::create(&OtCanvasClass::fontFace));
 		type->set("fontSize", OtFunction::create(&OtCanvasClass::fontSize));

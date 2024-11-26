@@ -14,10 +14,10 @@ class Background : canvas.Canvas {
 
 	function render(this) {
 		this.beginPath();
-		this.drawRoundedRect(120, 120, 200, 200, 10);
-		this.fillColor(0.0, 0.8, 1.0, 0.8);
+		this.roundedRect(120, 120, 200, 200, 10);
+		this.fillColor("#ffc0ff");
 		this.fill();
-		this.strokeColor(0.0, 0.0, 0.0, 0.8);
+		this.strokeColor("#000000");
 		this.strokeWidth(15);
 		this.stroke();
 
@@ -26,9 +26,9 @@ class Background : canvas.Canvas {
 		this.lineTo(280, 160);
 		this.lineTo(220, 220);
 		this.closePath();
-		this.fillColor(0.5, 0.0, 0.8, 1.0);
+		this.fillColor("#7f00c0");
 		this.fill();
-		this.strokeColor(0.0, 0.0, 0.0, 1.0);
+		this.strokeColor("#000000");
 		this.strokeWidth(15);
 		this.stroke();
 

@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include <cstdint>
 #include <array>
 
 #include "imgui.h"
@@ -97,7 +98,7 @@ public:
 	// run filter
 	void onFilter(OtTexture& input, OtFrameBuffer& output) override {
 		// update lookup table
-		u_int8_t lutValues[256];
+		uint8_t lutValues[256];
 
 		for (auto i = 0; i < 256; i++) {
 			lutValues[i] = ImGui::CurveValueSmooth(float(i) / 255.0f, curvePoints, lut.data()) * 255;

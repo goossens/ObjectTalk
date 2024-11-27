@@ -24,14 +24,14 @@
 
 class OtTextureFilterNode : public OtNodeClass {
 public:
-	// get output format (noTexture means use the same format as the incoming texture)
-	inline virtual int getOutputFormat() { return OtTexture::noTexture; }
-
 	// configure node
 	inline void configure() override {
 		addInputPin("Input", inputTexture);
 		addOutputPin("Output", outputTexture);
 	}
+
+	// get output format (noTexture means use the same format as the incoming texture)
+	inline virtual int getOutputFormat() { return OtTexture::noTexture; }
 
 	// run the filter
 	void onExecute() override {

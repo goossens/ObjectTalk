@@ -32,8 +32,16 @@ public:
 		addOutputPin("Texture", texture);
 	}
 
+	// configure the framebuffer
+	inline virtual void configureFrameBuffer() { framebuffer.initialize(OtTexture::rgba8Texture); }
+
 	// execute the node by generating a new version of the output
-	void onExecute() override {
+	inline void onExecute() override {
+		// initialize framebuffer (if required)
+		if (!framebuffer.isValid()) {
+			configureFrameBuffer();
+		}
+
 		// ensure framebuffer has right size
 		framebuffer.update(width, height);
 
@@ -51,7 +59,7 @@ public:
 protected:
 	int width = 256;
 	int height = 256;
-	OtFrameBuffer framebuffer{OtTexture::rgba8Texture};
+	OtFrameBuffer framebuffer;
 	OtTexture texture;
 	int version = 1;
 };

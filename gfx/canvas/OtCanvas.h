@@ -44,9 +44,9 @@ public:
 	inline void compositeBlendFuncSeparate(int operation, int srcRGB, int dstRGB, int srcAlpha, int dstAlpha) { nvgGlobalCompositeBlendFuncSeparate(context, srcRGB, dstRGB, srcAlpha, dstAlpha); }
 
 	// manipulate rendering state
-	inline void saveState() { nvgSave(context); }
-	inline void restoreState() { nvgRestore(context); }
-	inline void resetState() { nvgReset(context); }
+	inline void save() { nvgSave(context); }
+	inline void restore() { nvgRestore(context); }
+	inline void reset() { nvgReset(context); }
 
 	// manage images
 	int loadImage(const std::string& path, int flags);

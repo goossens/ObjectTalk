@@ -178,9 +178,9 @@ OtType OtCanvasClass::getMeta() {
 		type->set("compositeBlendFunc", OtFunction::create(&OtCanvasClass::compositeBlendFunc));
 		type->set("compositeBlendFuncSeparate", OtFunction::create(&OtCanvasClass::compositeBlendFuncSeparate));
 
-		type->set("saveState", OtFunction::create(&OtCanvasClass::saveState));
-		type->set("restoreState", OtFunction::create(&OtCanvasClass::restoreState));
-		type->set("resetState", OtFunction::create(&OtCanvasClass::resetState));
+		type->set("save", OtFunction::create(&OtCanvasClass::save));
+		type->set("restore", OtFunction::create(&OtCanvasClass::restore));
+		type->set("reset", OtFunction::create(&OtCanvasClass::reset));
 
 		type->set("loadImage", OtFunction::create(&OtCanvasClass::loadImage));
 		type->set("deleteImage", OtFunction::create(&OtCanvasClass::deleteImage));

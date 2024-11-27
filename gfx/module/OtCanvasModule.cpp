@@ -60,8 +60,8 @@ static void RegisterEnums(OtModule& module) {
 	module->set("roundJoin", OtInteger::create(NVG_ROUND));
 	module->set("bevelJoin", OtInteger::create(NVG_BEVEL));
 
-	module->set("ccwWinding", OtInteger::create(NVG_SOLID));
-	module->set("cwWinding", OtInteger::create(NVG_HOLE));
+	module->set("ccw", OtInteger::create(NVG_CCW));
+	module->set("cw", OtInteger::create(NVG_CW));
 
 	module->set("left", OtInteger::create(NVG_ALIGN_LEFT));
 	module->set("center", OtInteger::create(NVG_ALIGN_CENTER));

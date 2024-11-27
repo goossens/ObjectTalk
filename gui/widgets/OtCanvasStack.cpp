@@ -153,7 +153,7 @@ void OtCanvasStackClass::render() {
 		OtPass pass;
 		pass.setFrameBuffer(framebuffer);
 		pass.setRectangle(0, 0, int(size.x), int(size.y));
-		pass.setClear(true);
+		pass.setClear(true, true);
 		pass.touch();
 
 		for (auto& canvas : canvases) {

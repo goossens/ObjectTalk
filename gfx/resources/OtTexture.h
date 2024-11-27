@@ -41,6 +41,8 @@ public:
 	static constexpr int rgbaFloat32Texture = bgfx::TextureFormat::RGBA32F;
 	static constexpr int d16Texture = bgfx::TextureFormat::D16;
 	static constexpr int dFloatTexture = bgfx::TextureFormat::D32F;
+	static constexpr int d24s8Texture = bgfx::TextureFormat::D24S8;
+	static constexpr int d0s8Texture = bgfx::TextureFormat::D0S8;
 
 	// texture flags
 	static constexpr uint64_t defaultSampling = UINT32_MAX;

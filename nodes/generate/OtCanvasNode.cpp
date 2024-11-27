@@ -53,8 +53,11 @@ public:
 		script.onChange([&]() { onScriptChange(); });
 	}
 
+	// configure the framebuffer
+	inline void configureFrameBuffer() override { framebuffer.initialize(OtTexture::rgba8Texture, OtTexture::d24s8Texture); }
+
 	// render custom fields
-	void customRendering(float width) override {
+	inline void customRendering(float width) override {
 		ImGui::SetNextItemWidth(width);
 		auto old = serialize().dump();
 
@@ -74,25 +77,25 @@ public:
 		}
 	}
 
-	float getCustomRenderingWidth() override {
+	inline float getCustomRenderingWidth() override {
 		return 200.0f;
 	}
 
-	float getCustomRenderingHeight() override {
+	inline float getCustomRenderingHeight() override {
 		return ImGui::GetFrameHeightWithSpacing();
 	}
 
 	// (de)serialize node
-	void customSerialize(nlohmann::json* data, std::string* basedir) override {
+	inline void customSerialize(nlohmann::json* data, std::string* basedir) override {
 		(*data)["path"] = OtPathRelative(script.getPath(), basedir);
 	}
 
-	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
+	inline void customDeserialize(nlohmann::json* data, std::string* basedir) override {
 		script = OtPathGetAbsolute(*data, "path", basedir);
 	}
 
 	// run the texture generator
-	void onGenerate(OtFrameBuffer& output) override {
+	inline void onGenerate(OtFrameBuffer& output) override {
 		if (script.isReady() && instance && hasRenderMethod) {
 			// get access to the canvas
 			auto canvas = OtCanvas(instance);
@@ -109,7 +112,7 @@ public:
 	}
 
 	// gets called when canvas script is specified or changed
-	void onScriptChange() {
+	inline void onScriptChange() {
 		instance = nullptr;
 		hasRenderMethod = false;
 

@@ -100,17 +100,29 @@ bool OtDictClass::operator==(OtObject operand) {
 
 
 //
-//	OtDictClass::getEntry
+//	OtDictClass::set
 //
 
-OtObject OtDictClass::getEntry(const std::string& index) {
-	// sanity check
-	if (dict.find(index) == dict.end()) {
-		OtError("Unkown dictionary member [{}]", index);
-	}
+OtObject OtDictClass::set(OtID id, OtObject value) {
+	auto index = std::string(OtIdentifier::name(id));
+	setEntry(index, value);
+	return value;
+}
 
-	// return entry
-	return dict[index];
+
+//
+//	OtDictClass::get
+//
+
+OtObject OtDictClass::get(OtID id) {
+	auto index = std::string(OtIdentifier::name(id));
+
+	if (contains(index)) {
+		return getEntry(index);
+
+	} else {
+		return OtCollectionClass::get(id);
+	}
 }
 
 
@@ -122,6 +134,21 @@ OtObject OtDictClass::setEntry(const std::string& index, OtObject object) {
 	// set entry
 	dict[index] = object;
 	return object;
+}
+
+
+//
+//	OtDictClass::getEntry
+//
+
+OtObject OtDictClass::getEntry(const std::string& index) {
+	// sanity check
+	if (dict.find(index) == dict.end()) {
+		OtError("Unkown dictionary member [{}]", index);
+	}
+
+	// return entry
+	return dict[index];
 }
 
 

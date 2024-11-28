@@ -16,12 +16,18 @@ assert(("wrong" not in dict) == true);
 dict["pi"] = 3.14;
 assert(dict.size() == 4);
 assert(dict["pi"] == 3.14);
+assert(dict.pi == 3.14);
+
+dict.pi2 = 3.14;
+assert(dict.size() == 5);
+assert(dict["pi2"] == 3.14);
+assert(dict.pi2 == 3.14);
 
 var dict2 = dict.clone();
-assert(dict2.size() == 4);
+assert(dict2.size() == 5);
 dict2.erase("pi");
-assert(dict2.size() == 3);
-assert(dict.size() == 4);
+assert(dict2.size() == 4);
+assert(dict.size() == 5);
 
 dict2.clear();
 assert(dict2.size() == 0);

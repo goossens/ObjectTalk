@@ -16,6 +16,7 @@
 #include <unordered_map>
 
 #include "OtCollection.h"
+#include "OtIdentifier.h"
 
 
 //
@@ -44,8 +45,11 @@ public:
 	bool operator==(OtObject operand) override;
 
 	// access dict members
-	OtObject getEntry(const std::string& index);
+	OtObject set(OtID id, OtObject value) override;
+	OtObject get(OtID id) override;
+
 	OtObject setEntry(const std::string& index, OtObject object);
+	OtObject getEntry(const std::string& index);
 
 	// support indexing
 	OtObject index(const std::string& index);

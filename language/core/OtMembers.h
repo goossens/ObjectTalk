@@ -37,7 +37,7 @@ class OtMembers {
 public:
 	// access the members
 	inline bool has(OtID id) { return members.count(id); }
-	inline OtObject& get(OtID id) { return members[id]; }
+	inline OtObject get(OtID id) { return members[id]; }
 	inline void set(OtID id, OtObject member) { members[id] = member; }
 	inline void unset(OtID id) { members.erase(id); }
 	inline void unsetAll() { members.clear(); }

@@ -12,8 +12,10 @@
 //	Include files
 //
 
+#include "fmt/format.h"
 #include "glm/glm.hpp"
 
+#include "OtIdentifier.h"
 #include "OtInteger.h"
 #include "OtObject.h"
 #include "OtReal.h"
@@ -38,8 +40,15 @@ public:
 	// initialize
 	void init(size_t count, OtObject* parameters);
 
+	// debugging support
+	inline std::string describe() override { return fmt::format("Vec2({}, {})", value.x, value.y); }
+	inline operator std::string() override { return describe(); }
+
 	// access members
 	inline operator glm::vec2() { return value; }
+
+	OtObject set(OtID id, OtObject value) override;
+	OtObject get(OtID id) override;
 
 	inline OtObject setX(float x) { value.x = x; return OtVec2(this); }
 	inline OtObject setY(float y) { value.y = y; return OtVec2(this); }
@@ -77,6 +86,9 @@ public:
 
 private:
 	glm::vec2 value = glm::vec2(1.0f);
+
+	inline static OtID xID = OtIdentifier::create("x");
+	inline static OtID yID = OtIdentifier::create("y");
 };
 
 

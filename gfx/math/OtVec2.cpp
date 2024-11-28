@@ -11,6 +11,7 @@
 
 #include "OtException.h"
 #include "OtFunction.h"
+#include "OtReal.h"
 
 #include "OtVec2.h"
 
@@ -33,6 +34,42 @@ void OtVec2Class::init(size_t count, OtObject* parameters) {
 
 
 //
+//	OtVec2Class::set
+//
+
+OtObject OtVec2Class::set(OtID id, OtObject v) {
+	if (id == xID) {
+		value.x = v->operator float();
+
+	} else if (id == yID) {
+		value.y = v->operator float();
+
+	} else {
+		OtObjectClass::set(id, v);
+	}
+
+	return v;
+}
+
+
+//
+//	OtVec2Class::get
+//
+
+OtObject OtVec2Class::get(OtID id) {
+	if (id == xID) {
+		return OtReal::create(value.x);
+
+	} else if (id == yID) {
+		return OtReal::create(value.y);
+
+	} else {
+		return OtObjectClass::get(id);
+	}
+}
+
+
+//
 //	OtVec2Class::getMeta
 //
 
@@ -42,12 +79,6 @@ OtType OtVec2Class::getMeta() {
 	if (!type) {
 		type = OtType::create<OtVec2Class>("Vec2", OtObjectClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtVec2Class::init));
-
-		type->set("setX", OtFunction::create(&OtVec2Class::setX));
-		type->set("setY", OtFunction::create(&OtVec2Class::setY));
-
-		type->set("getX", OtFunction::create(&OtVec2Class::getX));
-		type->set("getY", OtFunction::create(&OtVec2Class::getY));
 
 		type->set("__add__", OtFunction::create(&OtVec2Class::add));
 		type->set("__sub__", OtFunction::create(&OtVec2Class::subtract));

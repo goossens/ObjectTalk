@@ -20,6 +20,6 @@ class Screen : gui.VectorDisplay {
 	function getMousePos(this) {
 		var pos = input.getMousePos();
 		var scale = this.getScale();
-		return math.Vec2(pos.getX() / scale, pos.getY() / scale);
+		return math.Vec2(pos.x / scale, pos.y / scale);
 	}
 }

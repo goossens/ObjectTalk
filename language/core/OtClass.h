@@ -46,7 +46,7 @@ public:
 
 	// special member acccess (so we can manipulate metaclass members via class)
 	inline bool has(OtID id) override { return OtInternalClass::has(id) ? true : classType->has(id); }
-	inline OtObject& get(OtID id) override { return OtInternalClass::has(id) ? OtInternalClass::get(id) : classType->get(id); }
+	inline OtObject get(OtID id) override { return OtInternalClass::has(id) ? OtInternalClass::get(id) : classType->get(id); }
 	inline OtObject set(OtID id, OtObject value) override { return classType->set(id, value); }
 	inline void unset(OtID id) override { return classType->unset(id); }
 

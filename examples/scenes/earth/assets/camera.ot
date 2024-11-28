@@ -19,9 +19,9 @@ class camera : scene.Entity {
 		if (input.isButtonDown(input.mouseLeft)) {
 			var drag = input.getMouseDrag();
 
-			if (drag.getX() != 0.0 || drag.getY() != 0.0) {
-				this.pitch += drag.getY() * 0.15;
-				this.yaw -= drag.getX() * 0.3;
+			if (drag.x != 0.0 || drag.y != 0.0) {
+				this.pitch += drag.y * 0.15;
+				this.yaw -= drag.x * 0.3;
 
 				var pitchRad = this.pitch.radians();
 				var yawRad = this.yaw.radians();

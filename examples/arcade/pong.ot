@@ -168,27 +168,27 @@ class Ball : physics2d.DynamicBody {
 
 	function updateVelocity(this) {
 		// ensure significant vertical horizontal ball motion
-		var xv = this.getLinearVelocityX();
-		var yv = this.getLinearVelocityY();
+		var vx = this.vx;
+		var vy = this.vy;
 
-		if (yv.abs() < 0.2) {
-			yv = 0.2 * yv.sign();
+		if (vy.abs() < 0.2) {
+			vy = 0.2 * vy.sign();
 		}
 
-		if (xv.abs() < yv.abs()) {
-			xv = yv.abs() * xv.sign();
+		if (vx.abs() < vy.abs()) {
+			vx = vy.abs() * vx.sign();
 		}
 
 		// normalize ball velocity
-		var ratio = 6.0 / (xv * xv + yv * yv).sqrt();
-		xv *= ratio;
-		yv *= ratio;
-		this.setLinearVelocity(xv, yv);
+		var ratio = 6.0 / (vx * vx + vy * vy).sqrt();
+		vx *= ratio;
+		vy *= ratio;
+		this.setLinearVelocity(vx, vy);
 	}
 
 	function update(this, vd) {
 		// update ball location
-		vd.updateCircle(this.shape, this.getX(), this.getY(), ballRadius, 32);
+		vd.updateCircle(this.shape, this.x, this.y, ballRadius, 32);
 	}
 }
 
@@ -215,16 +215,15 @@ class Paddle : physics2d.DynamicBody {
 
 	function moveTo(this, vd, y) {
 		//update the model
-		var x = this.getX();
 		y = y.clamp(paddleHeight / 2.0, worldHeight - paddleHeight / 2.0);
-		this.setPosition(x, y);
+		this.setPosition(this.x, y);
 
 		// update the graphics
-		vd.updateCenteredRectangle(this.shapes, x, y, paddleWidth, paddleHeight);
+		vd.updateCenteredRectangle(this.shapes, this.x, y, paddleWidth, paddleHeight);
 	}
 
 	function moveBy(this, vd, offset) {
-		this.moveTo(vd, this.getY() + offset);
+		this.moveTo(vd, this.y + offset);
 	}
 }
 
@@ -250,16 +249,10 @@ class Computer : Paddle {
 	}
 
 	function update(this, vd, ball) {
-		// get ball position and speed
-		var x = ball.getX();
-		var y = ball.getY();
-		var xv = ball.getLinearVelocityX();
-		var yv = ball.getLinearVelocityY();
-
 		// wait until ball moves our way
-		if (xv > 0) {
+		if (ball.vx > 0) {
 			// determine goal line intersection point
-			var py = y + ((worldWidth - x) / xv) * yv;
+			var py = ball.y + ((worldWidth - ball.x) / ball.vx) * ball.vy;
 
 			while (py < 0 || py > worldHeight) {
 				if (py < 0) {
@@ -270,7 +263,7 @@ class Computer : Paddle {
 				}
 			}
 
-			this.moveBy(vd, 0.03 * (py - this.getY()).sign());
+			this.moveBy(vd, 0.03 * (py - this.y).sign());
 		}
 	}
 }
@@ -376,7 +369,7 @@ class Pong : game.Game {
 			this.player.moveBy(this, -distance);
 
 		} elif (input.hasMouseMoved()) {
-			this.player.moveTo(this, worldHeight - this.getMousePos().getY());
+			this.player.moveTo(this, worldHeight - this.getMousePos().y);
 		}
 
 		this.ball.update(this);
@@ -388,7 +381,7 @@ class Pong : game.Game {
 			// change vertical velocity of ball based on where paddle was hit
 			this.ball.setLinearVelocity(
 				this.ball.getLinearVelocityX(),
-				(body2.getY() - body1.getY()) * 4.0);
+				(body2.y - body1.y) * 4.0);
 
 		} elif (body1.name == "left") {
 			if (this.scoreboard.pointToComputer(this)) {

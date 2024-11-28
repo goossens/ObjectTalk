@@ -16,6 +16,8 @@
 
 #include "box2d/box2d.h"
 
+#include "OtIdentifier.h"
+
 #include "OtPhysics2D.h"
 
 
@@ -50,6 +52,8 @@ public:
 	OtObject addRectangularFixture(float x, float y, float w, float h);
 
 	// get information
+	OtObject get(OtID id) override;
+
 	inline float getX() { return body->GetPosition().x; }
 	inline float getY() { return body->GetPosition().y; }
 	inline float getLinearVelocityX() { return body->GetLinearVelocity().x; }
@@ -71,4 +75,9 @@ protected:
 private:
 	// list of our fixtures
 	std::vector<OtObject> fixtures;
+
+	inline static OtID xID = OtIdentifier::create("x");
+	inline static OtID yID = OtIdentifier::create("y");
+	inline static OtID vxID = OtIdentifier::create("vx");
+	inline static OtID vyID = OtIdentifier::create("vy");
 };

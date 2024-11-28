@@ -71,7 +71,7 @@ OtObject OtObjectClass::set(OtID id, OtObject value) {
 //	OtObjectClass::get
 //
 
-OtObject& OtObjectClass::get(OtID id) {
+OtObject OtObjectClass::get(OtID id) {
 	if (members && members->has(id)) {
 		return members->get(id);
 	}

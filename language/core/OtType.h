@@ -92,7 +92,7 @@ public:
 	inline bool has(OtID id) { return members.has(id) != 0; }
 	OtObject set(OtID id, OtObject value);
 	OtObject set(const char* name, OtObject value);
-	inline OtObject& get(OtID id) { return members.get(id); }
+	inline OtObject get(OtID id) { return members.get(id); }
 	inline void unset(OtID id) { members.unset(id); }
 
 	// iterate through the members

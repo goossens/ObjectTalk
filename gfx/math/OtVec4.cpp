@@ -39,6 +39,54 @@ void OtVec4Class::init(size_t count, OtObject* parameters) {
 
 
 //
+//	OtVec4Class::set
+//
+
+OtObject OtVec4Class::set(OtID id, OtObject v) {
+	if (id == xID) {
+		value.x = v->operator float();
+
+	} else if (id == yID) {
+		value.y = v->operator float();
+
+	} else if (id == zID) {
+		value.z = v->operator float();
+
+	} else if (id == wID) {
+		value.w = v->operator float();
+
+	} else {
+		OtObjectClass::set(id, v);
+	}
+
+	return v;
+}
+
+
+//
+//	OtVec4Class::get
+//
+
+OtObject OtVec4Class::get(OtID id) {
+	if (id == xID) {
+		return OtReal::create(value.x);
+
+	} else if (id == yID) {
+		return OtReal::create(value.y);
+
+	} else if (id == zID) {
+		return OtReal::create(value.z);
+
+	} else if (id == wID) {
+		return OtReal::create(value.w);
+
+	} else {
+		return OtObjectClass::get(id);
+	}
+}
+
+
+//
 //	OtVec4Class::getMeta
 //
 
@@ -48,16 +96,6 @@ OtType OtVec4Class::getMeta() {
 	if (!type) {
 		type = OtType::create<OtVec4Class>("Vec4", OtObjectClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtVec4Class::init));
-
-		type->set("setX", OtFunction::create(&OtVec4Class::setX));
-		type->set("setY", OtFunction::create(&OtVec4Class::setY));
-		type->set("setZ", OtFunction::create(&OtVec4Class::setZ));
-		type->set("setW", OtFunction::create(&OtVec4Class::setW));
-
-		type->set("getX", OtFunction::create(&OtVec4Class::getX));
-		type->set("getY", OtFunction::create(&OtVec4Class::getY));
-		type->set("getZ", OtFunction::create(&OtVec4Class::getZ));
-		type->set("getW", OtFunction::create(&OtVec4Class::getW));
 
 		type->set("__add__", OtFunction::create(&OtVec4Class::add));
 		type->set("__sub__", OtFunction::create(&OtVec4Class::subtract));

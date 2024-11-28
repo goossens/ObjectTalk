@@ -94,11 +94,9 @@ class Home : screen.Screen {
 
 		} elif (input.isButtonPressed(input.mouseLeft)) {
 			var mouse = this.getMousePos();
-			var x = mouse.getX();
-			var y = mouse.getY();
 
 			for game in this.games {
-				if (x >= game.x0 && x <= game.x1 && y >= game.y0 && y <= game.y1) {
+				if (mouse.x >= game.x0 && mouse.x <= game.x1 && mouse.y >= game.y0 && mouse.y <= game.y1) {
 					this.updateSelection(game.selection);
 				}
 			}

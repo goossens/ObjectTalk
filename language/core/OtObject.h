@@ -68,20 +68,21 @@ public:
 	// describe object for debugging purposes
 	virtual std::string describe();
 
-	// member acccess
+	// member access
 	virtual bool has(OtID id);
 	virtual OtObject set(OtID id, OtObject value);
-	virtual inline OtObject set(const char* name, OtObject value) { return set(OtIdentifier::create(name), value); }
-	virtual inline OtObject set(const std::string& name, OtObject value) { return set(OtIdentifier::create(name), value); }
-	virtual OtObject& get(OtID id);
+	virtual OtObject get(OtID id);
 	virtual void unset(OtID id);
 	virtual void unsetAll();
 
-	// member acccess by name
-	virtual inline bool hasByName(const std::string& name) { return has(OtIdentifier::create(name)); }
-	virtual inline OtObject setByName(const std::string& name, OtObject value) { return set(OtIdentifier::create(name), value); }
-	virtual inline OtObject getByName(const std::string& name) { return get(OtIdentifier::create(name)); }
-	virtual inline void unsetByName(const std::string& name) { return unset(OtIdentifier::create(name)); }
+	inline OtObject set(const char* name, OtObject value) { return set(OtIdentifier::create(name), value); }
+	inline OtObject set(const std::string& name, OtObject value) { return set(OtIdentifier::create(name), value); }
+
+	// member access by name
+	inline bool hasByName(const std::string& name) { return has(OtIdentifier::create(name)); }
+	inline OtObject setByName(const std::string& name, OtObject value) { return set(OtIdentifier::create(name), value); }
+	inline OtObject getByName(const std::string& name) { return get(OtIdentifier::create(name)); }
+	inline void unsetByName(const std::string& name) { return unset(OtIdentifier::create(name)); }
 
 	bool hasMembers() { return members != nullptr; }
 

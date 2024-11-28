@@ -10,6 +10,7 @@
 //
 
 #include "OtFunction.h"
+#include "OtReal.h"
 
 #include "OtBody.h"
 #include "OtFixture.h"
@@ -119,6 +120,29 @@ OtObject OtBodyClass::addRectangularFixture(float x, float y, float w, float h) 
 
 
 //
+//	OtBodyClass::get
+//
+
+OtObject OtBodyClass::get(OtID id) {
+	if (id == xID) {
+		return OtReal::create(body->GetPosition().x);
+
+	} else if (id == yID) {
+		return OtReal::create(body->GetPosition().y);
+
+	} else if (id == vxID) {
+		return OtReal::create(body->GetLinearVelocity().x);
+
+	} else if (id == vyID) {
+		return OtReal::create(body->GetLinearVelocity().y);
+
+	} else {
+		return OtPhysics2DClass::get(id);
+	}
+}
+
+
+//
 //	OtBodyClass::applyLinearImpulse
 //
 
@@ -156,11 +180,6 @@ OtType OtBodyClass::getMeta() {
 		type->set("addCircularFixture", OtFunction::create(&OtBodyClass::addCircularFixture));
 		type->set("addEdgeFixture", OtFunction::create(&OtBodyClass::addEdgeFixture));
 		type->set("addRectangularFixture", OtFunction::create(&OtBodyClass::addRectangularFixture));
-
-		type->set("getX", OtFunction::create(&OtBodyClass::getX));
-		type->set("getY", OtFunction::create(&OtBodyClass::getY));
-		type->set("getLinearVelocityX", OtFunction::create(&OtBodyClass::getLinearVelocityX));
-		type->set("getLinearVelocityY", OtFunction::create(&OtBodyClass::getLinearVelocityY));
 
 		type->set("applyLinearImpulse", OtFunction::create(&OtBodyClass::applyLinearImpulse));
 	}

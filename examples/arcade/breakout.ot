@@ -229,16 +229,16 @@ class Breakout : game.Game {
 			this.updatePaddlePos(distance);
 
 		} elif (input.hasMouseMoved()) {
-			this.paddlePos = this.getMousePos().getX().clamp(paddleWidth / 2.0, worldWidth - paddleWidth / 2.0);
+			this.paddlePos = this.getMousePos().x.clamp(paddleWidth / 2.0, worldWidth - paddleWidth / 2.0);
 			this.paddle.setPosition(this.paddlePos, 1.5 * paddleHeight);
 		}
 
 		// update ball location
-		this.updateCircle(this.ball.shape, this.ball.getX(), this.ball.getY(), ballRadius, 32);
+		this.updateCircle(this.ball.shape, this.ball.x, this.ball.y, ballRadius, 32);
 
 		// update paddle location
-		var x = this.paddle.getX() - paddleWidth / 2.0;
-		var y = this.paddle.getY() - paddleHeight / 2.0;
+		var x = this.paddle.x - paddleWidth / 2.0;
+		var y = this.paddle.y - paddleHeight / 2.0;
 		this.updateRectangle(this.paddle.shape, x, y, paddleWidth, paddleHeight);
 
 		// update timer if required
@@ -257,18 +257,18 @@ class Breakout : game.Game {
 
 	function updateBallVelocity(this) {
 		// ensure significant vertical ball motion
-		var xv = this.ball.getLinearVelocityX();
-		var yv = this.ball.getLinearVelocityY();
+		var vx = this.ball.vx;
+		var vy = this.ball.vy;
 
-		if (yv.abs() < xv.abs()) {
-			yv = yv < 0 ? -xv.abs() : xv.abs();
+		if (vy.abs() < vx.abs()) {
+			vy = vy < 0 ? -vx.abs() : vx.abs();
 		}
 
 		// normalize ball velocity
-		var ratio = 9.0 / (xv * xv + yv * yv).sqrt();
-		xv *= ratio;
-		yv *= ratio;
-		this.ball.setLinearVelocity(xv, yv);
+		var ratio = 9.0 / (vx * vx + vy * vy).sqrt();
+		vx *= ratio;
+		vy *= ratio;
+		this.ball.setLinearVelocity(vx, vy);
 	}
 
 	function decrementLives(this) {
@@ -286,7 +286,7 @@ class Breakout : game.Game {
 		if (body1.name == "paddle") {
 			// change horizontal velocity of ball based on where paddle was hit
 			this.ball.setLinearVelocity(
-				(body2.getX() - body1.getX()) * 3.0,
+				(body2.x - body1.x) * 3.0,
 				this.ball.getLinearVelocityY());
 
 		} elif (body1.name == "brick") {

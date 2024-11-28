@@ -34,7 +34,7 @@ public:
 
 	// call a member function on an object with arguments
 	template<typename... ARGS>
-	static inline OtObject callMemberFunction(OtObject& target, OtID member, ARGS... args) {
+	static inline OtObject callMemberFunction(OtObject target, OtID member, ARGS... args) {
 		auto& stack = instance().stack;
 		const size_t count = sizeof...(ARGS) + 1;
 		stack.push(target);
@@ -45,11 +45,11 @@ public:
 	}
 
 	template<typename... ARGS>
-	static inline OtObject callMemberFunction(OtObject& target, const std::string& member, ARGS... args) {
+	static inline OtObject callMemberFunction(OtObject target, const std::string& member, ARGS... args) {
 		return callMemberFunction(target, OtIdentifier::create(member), std::forward<ARGS>(args)...);
 	}
 
-	static inline OtObject callMemberFunction(OtObject& target, OtObject member, size_t count, OtObject* args) {
+	static inline OtObject callMemberFunction(OtObject target, OtObject member, size_t count, OtObject* args) {
 		auto& stack = instance().stack;
 		stack.push(target);
 		stack.push(count, args);
@@ -59,7 +59,7 @@ public:
 		return result;
 	}
 
-	static inline OtObject callMemberFunction(OtObject& target, OtID member, size_t count, OtObject* args) {
+	static inline OtObject callMemberFunction(OtObject target, OtID member, size_t count, OtObject* args) {
 		auto& stack = instance().stack;
 		stack.push(target);
 		stack.push(count, args);
@@ -70,7 +70,7 @@ public:
 	}
 
 	// redirect member function to a new target
-	static inline OtObject redirectMemberFunction(OtObject& target, OtObject member, size_t count) {
+	static inline OtObject redirectMemberFunction(OtObject target, OtObject member, size_t count) {
 		auto sp = instance().stack.getSP(count + 1);
 		*sp = target;
 		return member->operator () (count + 1, sp);

@@ -152,7 +152,7 @@ void OtCanvasClass::render(OtFrameBuffer &framebuffer, float scale, std::functio
 
 	// setup rendering pass
 	OtPass pass;
-	pass.setClear(framebuffer.hasColorTexture(), framebuffer.hasDepthTexture(), glm::vec4(0.0f), 1.0f);
+	pass.setClear(framebuffer.hasColorTexture(), framebuffer.hasDepthTexture(), glm::vec4(0.0f));
 	pass.setViewMode(OtPass::sequential);
 	pass.setFrameBuffer(framebuffer);
 

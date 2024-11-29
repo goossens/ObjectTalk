@@ -46,7 +46,8 @@ public:
 
 	// see if textures are available
 	inline bool hasColorTexture() { return colorTextureType != OtTexture::noTexture; }
-	inline bool hasDepthTexture() { return depthTextureType != OtTexture::noTexture; }
+	inline bool hasDepthTexture() { return OtTexture::hasDepth(depthTextureType); }
+	inline bool hasStencilTexture() { return OtTexture::hasStencil(depthTextureType); }
 
 	// get texture types
 	inline int getColorTextureType() { return colorTextureType; }

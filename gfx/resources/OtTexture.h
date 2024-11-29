@@ -112,6 +112,28 @@ public:
 		return !operator==(rhs);
 	}
 
+	// see if format has depth component
+	static inline bool hasDepth(int format) {
+		if (format) {
+			bimg::ImageBlockInfo info = bimg::getBlockInfo(bimg::TextureFormat::Enum(format));
+			return info.depthBits > 0;
+
+		} else {
+			return false;
+		}
+	}
+
+	// see if format has stencil component
+	static inline bool hasStencil(int format) {
+		if (format) {
+			bimg::ImageBlockInfo info = bimg::getBlockInfo(bimg::TextureFormat::Enum(format));
+			return info.stencilBits > 0;
+
+		} else {
+			return false;
+		}
+	}
+
 private:
 	// texture
 	OtBgfxHandle<bgfx::TextureHandle> texture;

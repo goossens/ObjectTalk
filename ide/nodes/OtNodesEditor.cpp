@@ -16,6 +16,7 @@
 #include "imgui_internal.h"
 #include "nlohmann/json.hpp"
 
+#include "OtMessageBus.h"
 #include "OtUi.h"
 
 #include "OtNodesEditor.h"
@@ -133,6 +134,11 @@ void OtNodesEditor::renderMenu(bool canRun) {
 			if (ImGui::MenuItem("Paste", OT_UI_SHORTCUT "V", nullptr, selected && clipable)) { pasteSelectedNodes(); }
 			if (ImGui::MenuItem("Delete", "Del", nullptr, selected)) { deleteSelectedNodes(); }
 			if (ImGui::MenuItem("Duplicate", OT_UI_SHORTCUT "D", nullptr, selected)) { duplicateSelectedNodes(); }
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("View")) {
+			if (ImGui::MenuItem("Toggle Console")) { OtMessageBus::send("toggleconsole"); }
 			ImGui::EndMenu();
 		}
 

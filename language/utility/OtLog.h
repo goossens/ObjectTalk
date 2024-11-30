@@ -19,7 +19,6 @@
 
 #include "OtException.h"
 #include "OtSingleton.h"
-#include "OtStderrMultiplexer.h"
 
 
 //
@@ -48,17 +47,6 @@ public:
 		instance().logMessage(filename, lineno, type, message);
 	}
 
-	// process a fatal exception
-	static inline void exception(OtException& e)  {
-		if (instance().subprocessMode) {
-			OtStderrMultiplexer::multiplex(e);
-		}
-	}
-
-	// access subprocess mode
-	static inline void setSubprocessMode(bool flag) { instance().subprocessMode = flag; }
-	static inline bool inSubprocessMode() { return instance().subprocessMode; }
-
 	// set logging targets
 	static inline void stderrLogging(bool flag) { instance().logToStderr = flag; }
 
@@ -71,9 +59,6 @@ public:
 private:
 	// log the message
 	void logMessage(const char* filename, int lineno, int type, const std::string& message);
-
-	// configuration
-	bool subprocessMode = false;
 
 	// logging targets
 	bool logToStderr = true;

@@ -15,13 +15,14 @@
 #include <thread>
 #include <vector>
 
-#include "OtCerr.h"
+#include "OtConfig.h"
 #include "OtException.h"
 #include "OtFunction.h"
 #include "OtLibuv.h"
 #include "OtLog.h"
 #include "OtMeasure.h"
 #include "OtModule.h"
+#include "OtStderrMultiplexer.h"
 #include "OtVM.h"
 
 #include "OtAssetManager.h"
@@ -173,7 +174,9 @@ void OtFramework::runThread2() {
 
 	} catch (OtException& e) {
 		// send exception back to IDE (if required)
-		OtLogger::exception(e);
+		if (OtConfig::inSubprocessMode()) {
+			OtStderrMultiplexer::multiplex(e);
+		}
 
 		// output human readable text and exit program
 		OtLogFatal("Error: {}", e.what());

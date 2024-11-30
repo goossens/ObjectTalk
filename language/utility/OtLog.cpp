@@ -77,12 +77,8 @@ void OtLogger::logMessage(const char* filename, int lineno, int type, const std:
 	auto messageType = types[type];
 	auto output = fmt::format("{} [{}] {} ({}): {}\n", timestamp, messageType, shortname, lineno, message);
 
-	// send to IDE (if required)
-	if (subprocessMode) {
-		OtStderrMultiplexer::multiplex(type, output);
-
 	// send to STDERR (if required)
-	} else if (logToStderr) {
+	if (logToStderr) {
 		std::cerr << output << std::flush;
 	}
 
@@ -102,6 +98,7 @@ void OtLogger::logMessage(const char* filename, int lineno, int type, const std:
 
 #if _WIN32
 	__debugbreak();
+
 #else
 	raise(SIGTRAP);
 #endif

@@ -17,6 +17,7 @@
 #include "OtConfig.h"
 #include "OtLibuv.h"
 #include "OtPathTools.h"
+#include "OtStderrMultiplexer.h"
 #include "OtModule.h"
 
 #if defined(OT_INCLUDE_UI)
@@ -259,7 +260,9 @@ int main(int argc, char* argv[]) {
 
 	} catch (OtException& e) {
 		// send exception back to IDE (if required)
-		OtLogger::exception(e);
+		if (OtConfig::inSubprocessMode()) {
+			OtStderrMultiplexer::multiplex(e);
+		}
 
 		// output human readable text
 		OtLogFatal("Error: {}", e.what());

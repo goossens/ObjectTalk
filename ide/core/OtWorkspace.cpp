@@ -427,10 +427,7 @@ void OtWorkspace::runFile() {
 			}
 
 			consoleFullScreen = false;
-
-			if (OtPathGetExtension(currentRunnable) != ".ots") {
-				consoleAsPanel = true;
-			}
+			consoleAsPanel = OtPathGetExtension(currentRunnable) == ".ot";
 		},
 
 		[this](const std::string& text) {

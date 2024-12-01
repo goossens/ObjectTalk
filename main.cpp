@@ -68,16 +68,17 @@
 int main(int argc, char* argv[]) {
 	// parse all command line parameters
 	argparse::ArgumentParser program(argv[0], "0.2");
-
-	program.add_argument("-d", "--debug")
-		.help("run in debug mode")
-		.default_value(false)
-		.implicit_value(true);
+	bool childProcessFlag = false;
+	std::string logFile;
 
 	program.add_argument("-c", "--child")
 		.help("run as an IDE child process")
-		.default_value(false)
-		.implicit_value(true);
+		.store_into(childProcessFlag);
+
+	program.add_argument("-l", "--log")
+		.help("specify a file to send log to")
+		.metavar("filename")
+		.store_into(logFile);
 
 	program.add_argument("files")
 		.help("files to process")
@@ -100,8 +101,12 @@ int main(int argc, char* argv[]) {
 	}
 
 	// set configuration
-	OtConfig::setDebugMode(program["--debug"] == true || program["--child"] == true);
-	OtConfig::setSubprocessMode(program["--child"] == true);
+	OtConfig::setSubprocessMode(childProcessFlag);
+
+	// log to file (if required)
+	if (logFile.size()) {
+		OtLog::setFileLogging(logFile);
+	}
 
 	try {
 		// initialize libuv

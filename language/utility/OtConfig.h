@@ -21,16 +21,11 @@
 
 class OtConfig : OtSingleton<OtConfig> {
 public:
-	// access debug mode
-	static inline void setDebugMode(bool flag) { instance().debugMode = flag; }
-	static inline bool inDebugMode() { return instance().debugMode; }
-
 	// access subprocess mode
 	static inline void setSubprocessMode(bool flag) { instance().subprocessMode = flag; }
 	static inline bool inSubprocessMode() { return instance().subprocessMode; }
 
 private:
 	// configuration
-	bool debugMode = false;
 	bool subprocessMode = false;
 };

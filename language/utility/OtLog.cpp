@@ -67,10 +67,10 @@ std::string GetTimestamp() {
 
 
 //
-//	OtLogger::logMessage
+//	OtLog::logMessage
 //
 
-void OtLogger::logMessage(const char* filename, int lineno, int type, const std::string& message) {
+void OtLog::logMessage(const char* filename, int lineno, int type, const std::string& message) {
 	// get timestamp, filename and message type
 	auto timestamp = GetTimestamp();
 	auto shortname = OtPathGetFilename(filename);

@@ -44,7 +44,7 @@ struct BgfxCallback : public bgfx::CallbackI {
 			buffer[size - 1] = 0;
 		}
 
-		OtLogger::log(filePath, line, OtLogger::debug, std::string(buffer));
+		OtLog::log(filePath, line, OtLog::debug, std::string(buffer));
 	}
 
 	virtual void profilerBegin(const char* name, uint32_t abgr, const char* filePath, uint16_t line) override {}

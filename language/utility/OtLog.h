@@ -22,10 +22,10 @@
 
 
 //
-//	OtLogger
+//	OtLog
 //
 
-class OtLogger : OtSingleton<OtLogger> {
+class OtLog : OtSingleton<OtLog> {
 public:
 	// log entry types
 	enum {
@@ -48,9 +48,9 @@ public:
 	}
 
 	// set logging targets
-	static inline void stderrLogging(bool flag) { instance().logToStderr = flag; }
+	static inline void setStderrLogging(bool flag) { instance().logToStderr = flag; }
 
-	static inline void fileLogging(const std::string& name) {
+	static inline void setFileLogging(const std::string& name) {
 		auto& ofs = instance().ofs;
 		if (ofs.is_open()) { ofs.close(); }
 		if (!name.empty()) { ofs.open(name); }
@@ -70,17 +70,17 @@ private:
 //	Macros
 //
 
-#define OtLog(type, ...) (OtLogger::log(__FILE__, __LINE__, type, __VA_ARGS__))
+#define OtLogMessage(type, ...) (OtLog::log(__FILE__, __LINE__, type, __VA_ARGS__))
 
 #if OT_DEBUG
-#define OtLogDebug(...) OtLog(OtLogger::debug, __VA_ARGS__)
-#define OtLogInfo(...) OtLog(OtLogger::info, __VA_ARGS__)
-#define OtLogWarning(...) OtLog(OtLogger::warning, __VA_ARGS__)
+#define OtLogDebug(...) OtLogMessage(OtLog::debug, __VA_ARGS__)
+#define OtLogInfo(...) OtLogMessage(OtLog::info, __VA_ARGS__)
+#define OtLogWarning(...) OtLogMessage(OtLog::warning, __VA_ARGS__)
 #else
 #define OtLogDebug(...)
 #define OtLogInfo(...)
 #define OtLogWarning(...)
 #endif
 
-#define OtLogError(...) OtLog(OtLogger::error, __VA_ARGS__)
-#define OtLogFatal(...) OtLog(OtLogger::fatal, __VA_ARGS__)
+#define OtLogError(...) OtLogMessage(OtLog::error, __VA_ARGS__)
+#define OtLogFatal(...) OtLogMessage(OtLog::fatal, __VA_ARGS__)

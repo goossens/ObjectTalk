@@ -1020,7 +1020,9 @@ void TextEditor::EnterCharacter(ImWchar aChar, bool aShift)
 		}
 	}
 
+	IM_ASSERT(!mLines.empty());
 	std::vector<Coordinates> coords;
+
 	for (int c = mState.mCurrentCursor; c > -1; c--) // order important here for typing \n in the same line at the same time
 	{
 		auto coord = GetActualCursorCoordinates(c);
@@ -1029,36 +1031,48 @@ void TextEditor::EnterCharacter(ImWchar aChar, bool aShift)
 		added.mType = UndoOperationType::Add;
 		added.mStart = coord;
 
-		IM_ASSERT(!mLines.empty());
-
+		// special handling for newline
 		if (aChar == '\n')
 		{
-			InsertLine(coord.mLine + 1);
-			auto& line = mLines[coord.mLine];
-			auto& newLine = mLines[coord.mLine + 1];
-
-			added.mText = "";
-			added.mText += (char)aChar;
+			std::string insert = "\n";
+			std::string whitespace;
+			int column = 0;
 
 			if (mAutoIndent)
 			{
+				auto& line = mLines[coord.mLine];
 				auto cindex = GetCharacterIndexR(coord);
+				char previousChar = cindex > 0 ? line[cindex - 1].mChar : 0;
+				char nextChar = cindex <= (int) line.size() - 1 ? line[cindex].mChar : 0;
 
-				for (int i = 0; i < line.size() && isascii(line[i].mChar) && isblank(line[i].mChar); ++i, ++cindex)
-				{
-					if (line[i].mChar != line[cindex].mChar) {
-						newLine.push_back(line[i]);
-						added.mText += line[i].mChar;
+				// determine whitespace at start of line and add it to the new line
+				for (int i = 0; i < line.size() && isblank(line[i].mChar); ++i)
+					whitespace += line[i].mChar;
+
+				insert += whitespace;
+				column = (int)whitespace.size();
+
+				// handle special cases
+				if (previousChar == '[' || previousChar == '{') {
+					// add to an existing block
+					insert += "\t";
+					column++;
+
+					if ((previousChar == '[' && nextChar == ']') || (previousChar == '{' && nextChar == '}')) {
+						// open a new block
+						insert += "\n" + whitespace;
 					}
 				}
 			}
 
-			const size_t whitespaceSize = newLine.size();
-			auto cindex = GetCharacterIndexR(coord);
-			AddGlyphsToLine(coord.mLine + 1, int(newLine.size()), line.begin() + cindex, line.end());
-			RemoveGlyphsFromLine(coord.mLine, cindex);
-			SetCursorPosition(Coordinates(coord.mLine + 1, GetCharacterColumn(coord.mLine + 1, (int)whitespaceSize)), c);
-			added.mEnd = GetActualCursorCoordinates(c);
+			// insert new text
+			Coordinates insertEnd = coord;
+			InsertTextAt(insertEnd, insert.c_str());
+			added.mText = insert;
+			added.mEnd = insertEnd;
+
+			// set new cursor position
+			SetCursorPosition(Coordinates(coord.mLine + 1, GetCharacterColumn(coord.mLine + 1, column)), c);
 		}
 		else
 		{
@@ -2438,6 +2452,8 @@ void TextEditor::Render(bool aParentIsFocused)
 						mPalette[(int)PaletteIndex::Selection]);
 			}
 
+			auto errorIt = mErrorMarkers.find(lineNo + 1);
+
 			// Draw line number (right aligned)
 			if (mShowLineNumbers)
 			{
@@ -2445,11 +2461,10 @@ void TextEditor::Render(bool aParentIsFocused)
 				float lineNoWidth = (digits + 2) * mCharAdvance.x;
 
 				// Draw error marker (if required)
-				auto errorIt = mErrorMarkers.find(lineNo + 1);
 				if (errorIt != mErrorMarkers.end())
 				{
-					auto start = ImVec2(lineStartScreenPos.x + mTextStart - lineNoWidth, lineStartScreenPos.y);
-					auto end = ImVec2(start.x + digits * mCharAdvance.x, lineStartScreenPos.y + mCharAdvance.y);
+					auto start = ImVec2(lineStartScreenPos.x + mTextStart - lineNoWidth - 2, lineStartScreenPos.y);
+					auto end = ImVec2(start.x + digits * mCharAdvance.x + 4, lineStartScreenPos.y + mCharAdvance.y);
 					drawList->AddRectFilled(start, end, mPalette[(int)PaletteIndex::ErrorMarker]);
 
 					// Draw tooltip (if mouse is hovering over line number)
@@ -2584,6 +2599,14 @@ void TextEditor::Render(bool aParentIsFocused)
 				}
 
 				MoveCharIndexAndColumn(lineNo, charIndex, column);
+			}
+
+			if (errorIt != mErrorMarkers.end())
+			{
+				// underline error line
+				auto start = ImVec2(lineStartScreenPos.x, lineStartScreenPos.y + mCharAdvance.y - 4);
+				auto end = ImVec2(lineStartScreenPos.x + mContentWidth, lineStartScreenPos.y + mCharAdvance.y - 1);
+				drawList->AddRectFilled(start, end, mPalette[(int)PaletteIndex::ErrorMarker]);
 			}
 		}
 	}

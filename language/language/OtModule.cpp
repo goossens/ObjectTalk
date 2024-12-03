@@ -9,16 +9,13 @@
 //	Include files
 //
 
-#include <iostream>
+#include <cstdlib>
 #include <fstream>
-#include <functional>
 #include <sstream>
-#include <system_error>
 
 #include "OtByteCode.h"
 #include "OtCompiler.h"
 #include "OtException.h"
-#include "OtLibuv.h"
 #include "OtModule.h"
 #include "OtPathTools.h"
 #include "OtRegistry.h"
@@ -40,14 +37,6 @@ struct OtModuleRegistryEntry {
 
 class OtModuleRegistry : public OtSingleton<OtModuleRegistry>, public OtRegistry<OtModuleRegistryEntry> {
 };
-
-
-//
-//	Module search path
-//
-
-static std::vector<std::string> modulePath;
-static std::vector<std::string> localPath;
 
 
 //
@@ -228,6 +217,21 @@ OtModule OtModuleClass::import(const std::string& name) {
 		module->load(name);
 		return module;
 	}
+}
+
+
+//
+//	OtModuleClass::addPath
+//
+
+void OtModuleClass::addPath(const std::string& path) {
+	// build module path (if required)
+	if (modulePath.size() == 0) {
+		buildModulePath();
+	}
+
+	// add the path
+	modulePath.push_back(path);
 }
 
 

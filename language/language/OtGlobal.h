@@ -36,6 +36,9 @@ private:
 	// check assertion
 	static void doAssert(bool condition);
 
+	// add a module import path
+	static void addImportPath(const std::string& path);
+
 	// import module
 	static OtObject import(const std::string& path);
 

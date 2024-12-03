@@ -60,6 +60,7 @@ OtGlobalClass::OtGlobalClass() {
 	// add default functions
 	set("assert", OtFunction::create(&OtGlobalClass::doAssert));
 	set("range", OtFunction::create(&OtGlobalClass::range));
+	set("addImportPath", OtFunction::create(&OtGlobalClass::addImportPath));
 	set("import", OtFunction::create(&OtGlobalClass::import));
 	set("print", OtFunction::create(&OtGlobalClass::print));
 	set("members", OtFunction::create(&OtGlobalClass::members));
@@ -109,6 +110,15 @@ void OtGlobalClass::doAssert(bool condition) {
 	if (!condition) {
 		OtError("Assertion error");
 	}
+}
+
+
+//
+//	OtGlobalClass::addImportPath
+//
+
+void OtGlobalClass::addImportPath(const std::string& path) {
+	OtModuleClass::addPath(path);
 }
 
 

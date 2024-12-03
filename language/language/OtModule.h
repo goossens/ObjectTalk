@@ -14,6 +14,7 @@
 
 #include <functional>
 #include <string>
+#include <vector>
 
 #include "OtInternal.h"
 
@@ -37,6 +38,9 @@ public:
 	// import a module from disk or an internal generator
 	static OtModule import(const std::string& path);
 
+	// add a path to search for modules
+	static void addPath(const std::string& path);
+
 private:
 	// clear the internal cache
 	friend class OtFramework;
@@ -48,6 +52,10 @@ private:
 	// determine full path name for module
 	static std::string checkPath(const std::string& path);
 	static std::string getFullPath(const std::string& path);
+
+	// module search path
+	inline static std::vector<std::string> modulePath;
+	inline static std::vector<std::string> localPath;
 };
 
 

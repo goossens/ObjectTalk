@@ -78,15 +78,15 @@ class MyApp : gui.App {
 	}
 	function logoPanel(this) {
 		return gui.Picture()
-			.setPicture(__DIR__ + "/assets/logo.png")
+			.setPicture(Path(__DIR__, "assets", "logo.png"))
 			.setHorizontalAlignment(gui.alignCenter)
 			.setVerticalAlignment(gui.alignMiddle);
 	}
 
 	function dialPanel(this) {
 		this.steam = gui.Dial()
-			.setBackground(__DIR__ + "/assets/steam.png", 150, 150)
-			.setNeedle(__DIR__ + "/assets/needle.png", 150, 150)
+			.setBackground(Path(__DIR__, "assets", "steam.png"), 150, 150)
+			.setNeedle(Path(__DIR__, "assets", "needle.png"), 150, 150)
 			.setRotationLimits(-150.0, 150.0)
 			.setValueLimits(0.0, 500.0)
 			.setValue(400.0)
@@ -94,7 +94,7 @@ class MyApp : gui.App {
 			.setHorizontalAlignment(gui.alignCenter);
 
 		this.knob = gui.FilmStrip()
-			.setFilmStrip(__DIR__ + "/assets/knob.png")
+			.setFilmStrip(Path(__DIR__, "assets", "knob.png"))
 			.setFrames(128)
 			.setValue(this.steam.getValue() / 500.0)
 			.setHorizontalAlignment(gui.alignCenter)

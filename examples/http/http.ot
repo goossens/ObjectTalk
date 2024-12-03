@@ -14,7 +14,7 @@ function info(req, res, next) {
 }
 
 var router = http.Router()
-	.static("/static", __DIR__ + "/static")
+	.static("/static", __DIR__.join("static"))
 	.get("/info", info)
 
 	.use(function(req, res, next) {
@@ -44,7 +44,7 @@ var router = http.Router()
 	})
 
 	.get("/file", function(req, res, next) {
-		res.sendfile(__DIR__ + "/static/test.txt");
+		res.sendfile(Path(__DIR__, "static", "test.txt"));
 	})
 
 	.get("/stop", function(req, res, next) {

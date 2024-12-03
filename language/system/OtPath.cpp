@@ -59,6 +59,7 @@ OtType OtPathClass::getMeta() {
 		type->set("__eq__", OtFunction::create(&OtPathClass::equal));
 		type->set("__ne__", OtFunction::create(&OtPathClass::notEqual));
 
+		type->set("join", OtFunction::create(&OtPathClass::join));
 		type->set("clear", OtFunction::create(&OtPathClass::clear));
 		type->set("removeFilename", OtFunction::create(&OtPathClass::removeFilename));
 		type->set("replaceFilename", OtFunction::create(&OtPathClass::replaceFilename));

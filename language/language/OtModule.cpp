@@ -17,6 +17,7 @@
 #include "OtCompiler.h"
 #include "OtException.h"
 #include "OtModule.h"
+#include "OtPath.h"
 #include "OtPathTools.h"
 #include "OtRegistry.h"
 #include "OtSingleton.h"
@@ -72,8 +73,8 @@ void OtModuleClass::load(const std::string& path, const std::string& code) {
 	unsetAll();
 
 	// add metadata to module
-	set("__FILE__", OtString::create(path));
-	set("__DIR__", OtString::create(OtPathGetParent(path)));
+	set("__FILE__", OtPath::create(path));
+	set("__DIR__", OtPath::create(OtPathGetParent(path)));
 
 	// compile and run module code
 	OtCompiler compiler;

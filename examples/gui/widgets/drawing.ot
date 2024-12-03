@@ -9,7 +9,7 @@ var canvas = import("canvas");
 
 class Background : canvas.Canvas {
 	function __init__(this) {
-		this.logo = this.loadImage(Path(__DIR__, "..", "assets", "logo.png"), 0);
+		this.logo = this.loadImage(Path(__DIR__.directory(), "assets", "logo.png"), 0);
 	}
 
 	function render(this) {
@@ -43,7 +43,7 @@ class Background : canvas.Canvas {
 
 class Foreground : canvas.Canvas {
 	function __init__(this) {
-		this.font = this.loadFont(Path(__DIR__, "..", "assets", "roboto.ttf"));
+		this.font = this.loadFont(Path(Path(__DIR__.directory(), "assets", "roboto.ttf"));
 	}
 
 	function render(this) {

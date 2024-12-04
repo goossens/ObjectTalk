@@ -78,6 +78,9 @@ private:
 	std::vector<Canvas> canvases;
 	int layerID = 1;
 
+	// find specified canvas
+	Canvas* findCanvas(int id);
+
 	// GPU resource
 	OtFrameBuffer framebuffer{OtTexture::rgba8Texture};
 	OtSampler sampler{"s_texture", OtTexture::pointSampling | OtTexture::clampSampling};

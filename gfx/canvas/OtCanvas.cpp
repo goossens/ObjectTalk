@@ -101,6 +101,21 @@ void OtCanvasClass::deletePaint(int id) {
 
 
 //
+//	OtCanvasClass::loadFont
+//
+
+int OtCanvasClass::loadFont(const std::string& path) {
+	auto id =  nvgCreateFont(context, OtPathGetStem(path).c_str(), path.c_str());
+
+	if (id < 0) {
+		OtError("Can't load font at [{}]", path);
+	}
+
+	return id;
+}
+
+
+//
 //	createTexturePattern
 //
 

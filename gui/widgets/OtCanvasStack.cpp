@@ -82,12 +82,7 @@ void OtCanvasStackClass::deleteCanvas(int id) {
 //
 
 void OtCanvasStackClass::enableCanvas(int id) {
-	for (auto& canvas : canvases) {
-		if (canvas.id == id) {
-			canvas.enabled = true;
-			return;
-		}
-	}
+	findCanvas(id)->enabled = true;
 }
 
 
@@ -96,12 +91,7 @@ void OtCanvasStackClass::enableCanvas(int id) {
 //
 
 void OtCanvasStackClass::disableCanvas(int id) {
-	for (auto& canvas : canvases) {
-		if (canvas.id == id) {
-			canvas.enabled = false;
-			return;
-		}
-	}
+	findCanvas(id)->enabled = false;
 }
 
 
@@ -110,12 +100,7 @@ void OtCanvasStackClass::disableCanvas(int id) {
 //
 
 void OtCanvasStackClass::rerenderCanvas(int id) {
-	for (auto& canvas : canvases) {
-		if (canvas.id == id) {
-			canvas.dirty = true;
-			return;
-		}
-	}
+	findCanvas(id)->dirty = true;
 }
 
 
@@ -169,6 +154,22 @@ void OtCanvasStackClass::render() {
 	OtUi::align(size, horizontalAlign, verticalAlign);
 	ImGui::Image((ImTextureID)(intptr_t) texture.getIndex(), size);
 	ImGui::PopID();
+}
+
+
+//
+//	OtCanvasStackClass::findCanvas
+//
+
+OtCanvasStackClass::Canvas* OtCanvasStackClass::findCanvas(int id) {
+	for (auto& canvas : canvases) {
+		if (canvas.id == id) {
+			return &canvas;
+		}
+	}
+
+	OtError("Unknown canvas ID [{}]", id);
+	return nullptr;
 }
 
 

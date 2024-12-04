@@ -287,7 +287,7 @@ class Breakout : game.Game {
 			// change horizontal velocity of ball based on where paddle was hit
 			this.ball.setLinearVelocity(
 				(body2.x - body1.x) * 3.0,
-				this.ball.getLinearVelocityY());
+				this.ball.vx);
 
 		} elif (body1.name == "brick") {
 			if (body1.destructible) {

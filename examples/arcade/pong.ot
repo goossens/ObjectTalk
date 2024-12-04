@@ -380,7 +380,7 @@ class Pong : game.Game {
 		if (body1.name == "player") {
 			// change vertical velocity of ball based on where paddle was hit
 			this.ball.setLinearVelocity(
-				this.ball.getLinearVelocityX(),
+				this.ball.vx,
 				(body2.y - body1.y) * 4.0);
 
 		} elif (body1.name == "left") {

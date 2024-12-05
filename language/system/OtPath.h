@@ -78,6 +78,9 @@ public:
 	inline OtObject stem() { return OtPath::create(path.stem()); }
 	inline OtObject extension() { return OtPath::create(path.extension()); }
 
+	//
+	inline OtObject canonical() { return OtPath::create(std::filesystem::canonical(path)); }
+
 	// get relative path to other location
 	inline OtObject relative(OtObject name) { return OtPath::create(path.lexically_relative(name->operator std::string())); }
 

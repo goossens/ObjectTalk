@@ -134,6 +134,15 @@ static inline std::string OtPathReplaceExtension(const std::string path, const s
 
 
 //
+//	OtPathGetCanonical
+//
+
+static inline std::string OtPathGetCanonical(const std::string& path) {
+	return OtPathIsVirtual(path) ? path : std::filesystem::canonical(std::filesystem::path(path)).string();
+}
+
+
+//
 //	OtPathJoin
 //
 

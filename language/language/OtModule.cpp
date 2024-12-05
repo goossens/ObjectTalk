@@ -100,8 +100,8 @@ void OtModuleClass::load(const std::string& path, const std::string& code) {
 //
 
 void OtModuleClass::buildModulePath() {
-	// use local directory as default
-	modulePath.push_back(".");
+	// use current directory as default
+	modulePath.push_back(OtPathGetCurrentWorkingDirectory());
 
 	// use OT_PATH environment variable if provided
 	auto path = std::getenv("OT_PATH");
@@ -111,7 +111,7 @@ void OtModuleClass::buildModulePath() {
 		OtText::split(path, parts, ';');
 
 		for (auto part = parts.begin(); part != parts.end(); ++part) {
-			modulePath.push_back(*part);
+			modulePath.push_back(OtPathGetCanonical(*part));
 		}
 	}
 
@@ -132,14 +132,14 @@ void OtModuleClass::buildModulePath() {
 std::string OtModuleClass::checkPath(const std::string& path) {
 	// see if path points to a regular file
 	if (OtPathIsRegularFile(path)) {
-		return path;
+		return OtPathGetCanonical(path);
 
-	// see if module exists without a path prepended and extension appended?
+	// see if module exists with an extension appended?
 	} else {
 		auto pathWithExt = OtPathReplaceExtension(path, ".ot");
 
 		if (OtPathIsRegularFile(pathWithExt)) {
-			return pathWithExt;
+			return OtPathGetCanonical(pathWithExt);
 
 		} else {
 			return std::string();
@@ -161,12 +161,12 @@ std::string OtModuleClass::getFullPath(const std::string& path) {
 	// see if name addresses a module
 	std::string fullName = checkPath(path);
 
-	// find module on path (if still required)
+	// find module on paths (if still required)
 	for (size_t i = 0; i < modulePath.size() && fullName.empty(); i++) {
 		fullName = checkPath(OtPathJoin(modulePath[i], path));
 	}
 
-	// find module in local path (if still required)
+	// find module in local paths (if still required)
 	if (fullName.empty() && localPath.size()) {
 		for (int i = (int) localPath.size() - 1; i >= 0 && fullName.empty(); i--) {
 			fullName = checkPath(OtPathJoin(localPath[i], path));

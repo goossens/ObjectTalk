@@ -87,6 +87,7 @@ OtType OtPathClass::getMeta() {
 		type->set("stem", OtFunction::create(&OtPathClass::stem));
 		type->set("extension", OtFunction::create(&OtPathClass::extension));
 
+		type->set("canonical", OtFunction::create(&OtPathClass::canonical));
 		type->set("relative", OtFunction::create(&OtPathClass::relative));
 	}
 

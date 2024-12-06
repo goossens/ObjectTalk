@@ -26,7 +26,7 @@
 
 #include "OtException.h"
 #include "OtLog.h"
-#include "OtPathTools.h"
+#include "OtPath.h"
 #include "OtStderrMultiplexer.h"
 
 
@@ -73,7 +73,7 @@ std::string GetTimestamp() {
 void OtLog::logMessage(const char* filename, int lineno, int type, const std::string& message) {
 	// get timestamp, filename and message type
 	auto timestamp = GetTimestamp();
-	auto shortname = OtPathGetFilename(filename);
+	auto shortname = OtPath::getFilename(filename);
 	auto messageType = types[type];
 	auto output = fmt::format("{} [{}] {} ({}): {}\n", timestamp, messageType, shortname, lineno, message);
 

@@ -15,7 +15,7 @@
 #include "OtCodePoint.h"
 
 #include "OtFont.h"
-#include "OtPathTools.h"
+#include "OtPath.h"
 
 
 //
@@ -36,11 +36,11 @@ void OtFont::load(const std::string& path) {
 	clear();
 
 	// load font file into memory
-	if (!OtPathExists(path) || !OtPathIsRegularFile(path)) {
+	if (!OtPath::exists(path) || !OtPath::isRegularFile(path)) {
 		OtError("Can't open font in [{}]", path);
 	}
 
-	auto filesize = OtPathGetFileSize(path);
+	auto filesize = OtPath::getFileSize(path);
 	fontdata = std::make_shared<FontData>(filesize);
 	std::ifstream stream(path.c_str(), std::ios::binary);
 	stream.read((char*) fontdata->bytes.data(), filesize);

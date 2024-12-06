@@ -22,7 +22,7 @@
 #include "OtNodes.h"
 #include "OtNodesPin.h"
 #include "OtNodesUtils.h"
-#include "OtPathTools.h"
+#include "OtPath.h"
 
 
 //
@@ -67,7 +67,7 @@ void OtNodes::load(const std::string& path) {
 		buffer << stream.rdbuf();
 		stream.close();
 
-		auto basedir = OtPathGetParent(path);
+		auto basedir = OtPath::getParent(path);
 		loadFromString(buffer.str(), basedir);
 
 	} catch (std::exception& e) {
@@ -134,7 +134,7 @@ void OtNodes::save(const std::string& path) {
 	auto links = nlohmann::json::array();
 
 	// save all nodes
-	auto basedir = OtPathGetParent(path);
+	auto basedir = OtPath::getParent(path);
 
 	eachNode([&](OtNode& node) {
 		nodes.push_back(node->serialize(&basedir));

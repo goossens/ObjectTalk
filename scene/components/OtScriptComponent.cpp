@@ -22,7 +22,7 @@
 #include "OtMessageBus.h"
 #include "OtUi.h"
 
-#include "OtPathTools.h"
+#include "OtPath.h"
 #include "OtEntityObject.h"
 #include "OtScriptComponent.h"
 
@@ -54,7 +54,7 @@ bool OtScriptComponent::renderUI() {
 		std::ofstream stream(path);
 
 		std::string script{scriptTemplate};
-		script.replace(script.find("$"), 1, OtPathGetStem(path));
+		script.replace(script.find("$"), 1, OtPath::getStem(path));
 
 		stream << script;
 		stream.close();
@@ -74,7 +74,7 @@ void OtScriptComponent::process() {
 
 		// see if the module has the right class definition
 		auto path = script.getPath();
-		auto className = OtPathGetStem(path);
+		auto className = OtPath::getStem(path);
 		auto module = script->getModule();
 
 		if (module->hasByName(className)) {
@@ -134,7 +134,7 @@ void OtScriptComponent::update() {
 nlohmann::json OtScriptComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
-	data["path"] = OtPathRelative(script.getPath(), basedir);
+	data["path"] = OtAssetSerialize(script.getPath(), basedir);
 	return data;
 }
 
@@ -144,5 +144,5 @@ nlohmann::json OtScriptComponent::serialize(std::string* basedir) {
 //
 
 void OtScriptComponent::deserialize(nlohmann::json data, std::string* basedir) {
-	script = OtPathGetAbsolute(data, "path", basedir);
+	script = OtAssetDeserialize(&data, "path", basedir);
 }

@@ -20,7 +20,7 @@
 #include "OtStderrMultiplexer.h"
 
 #include "OtMessageBus.h"
-#include "OtPathTools.h"
+#include "OtPath.h"
 #include "OtUi.h"
 
 #include "OtNodesEditor.h"
@@ -36,31 +36,31 @@
 void OtWorkspace::onSetup() {
 	// set the current directory to examples if we are in development mode
 	// set it to documents or home directory otherwise
-	auto exec = OtPathGetExecutable();
-	auto root = OtPathGetParent(OtPathGetParent(OtPathGetParent(exec)));
-	auto examples = OtPathJoin(root, "examples");
+	auto exec = OtPath::getExecutable();
+	auto root = OtPath::getParent(OtPath::getParent(OtPath::getParent(exec)));
+	auto examples = OtPath::join(root, "examples");
 
-	if (OtPathIsDirectory(examples)) {
-		OtPathChangeDirectory(examples);
+	if (OtPath::isDirectory(examples)) {
+		OtPath::changeDirectory(examples);
 
 	} else {
-		root = OtPathGetParent(OtPathGetParent(OtPathGetParent(OtPathGetParent(root))));
-		examples = OtPathJoin(root, "examples");
+		root = OtPath::getParent(OtPath::getParent(OtPath::getParent(OtPath::getParent(root))));
+		examples = OtPath::join(root, "examples");
 
-		if (OtPathIsDirectory(examples)) {
-			OtPathChangeDirectory(examples);
+		if (OtPath::isDirectory(examples)) {
+			OtPath::changeDirectory(examples);
 
 		} else {
-			auto path = OtPathGetDocumentsDirectory();
+			auto path = OtPath::getDocumentsDirectory();
 
-			if (OtPathIsDirectory(path)) {
-				OtPathChangeDirectory(path);
+			if (OtPath::isDirectory(path)) {
+				OtPath::changeDirectory(path);
 
 			} else {
-				path = OtPathGetHomeDirectory();
+				path = OtPath::getHomeDirectory();
 
-				if (OtPathIsDirectory(path)) {
-					OtPathChangeDirectory(path);
+				if (OtPath::isDirectory(path)) {
+					OtPath::changeDirectory(path);
 				}
 			}
 		}
@@ -291,7 +291,7 @@ void OtWorkspace::newNodes() {
 
 void OtWorkspace::openFile() {
 	IGFD::FileDialogConfig config;
-	config.path = OtPathGetCurrentWorkingDirectory();
+	config.path = OtPath::getCWD();
 	config.countSelectionMax = 1;
 
 	config.flags = ImGuiFileDialogFlags_Modal |
@@ -313,7 +313,7 @@ void OtWorkspace::openFile(const std::string& path, int visualState) {
 
 	if (editor == nullptr) {
 		// get file extension to determine editor type
-		auto extension = OtPathGetExtension(path);
+		auto extension = OtPath::getExtension(path);
 
 		// open correct editor
 		if (extension == ".ot" || extension == ".ots" || extension == ".otn") {
@@ -360,7 +360,7 @@ void OtWorkspace::saveFile() {
 
 void OtWorkspace::saveAsFile() {
 	IGFD::FileDialogConfig config;
-	config.path = OtPathGetCurrentWorkingDirectory();
+	config.path = OtPath::getCWD();
 	config.countSelectionMax = 1;
 
 	config.flags = ImGuiFileDialogFlags_Modal |
@@ -416,7 +416,7 @@ void OtWorkspace::runFile() {
 
 	// launch a subprocess
 	subprocess.start(
-		OtPathGetExecutable(),
+		OtPath::getExecutable(),
 		args,
 		[this](int64_t status, int signal) {
 			if (status || signal != 0) {
@@ -427,7 +427,7 @@ void OtWorkspace::runFile() {
 			}
 
 			consoleFullScreen = false;
-			consoleAsPanel = OtPathGetExtension(currentRunnable) == ".ot";
+			consoleAsPanel = OtPath::getExtension(currentRunnable) == ".ot";
 		},
 
 		[this](const std::string& text) {
@@ -479,7 +479,7 @@ std::shared_ptr<OtEditor> OtWorkspace::findEditor(const std::string& path) {
 	for (auto& editor : editors) {
 		auto filePath = editor->getPath();
 
-		if (filePath == path || OtPathGetFilename(filePath) == path) {
+		if (filePath == path || OtPath::getFilename(filePath) == path) {
 			return editor;
 		}
 	}
@@ -599,7 +599,7 @@ void OtWorkspace::renderEditors() {
 				}
 
 				// create tab and editor
-				if (ImGui::BeginTabItem(OtPathGetFilename(editor->getPath()).c_str(), nullptr, flags)) {
+				if (ImGui::BeginTabItem(OtPath::getFilename(editor->getPath()).c_str(), nullptr, flags)) {
 					ImGui::BeginChild("editor", ImVec2(), ImGuiChildFlags_Borders, ImGuiWindowFlags_MenuBar);
 
 					editor->renderMenu(!subprocess.isRunning());
@@ -640,7 +640,7 @@ void OtWorkspace::renderEditors() {
 
 			// render editor in seperate window
 			bool open = true;
-			ImGui::Begin(OtPathGetFilename(editor->getPath()).c_str(), &open, flags);
+			ImGui::Begin(OtPath::getFilename(editor->getPath()).c_str(), &open, flags);
 
 			editor->renderMenu(!subprocess.isRunning());
 			editor->renderEditor();
@@ -731,14 +731,14 @@ void OtWorkspace::renderFileOpen() {
 		// open selected file if required
 		if (ImGuiFileDialog::Instance()->IsOk()) {
 			auto dialog = ImGuiFileDialog::Instance();
-			auto path = OtPathJoin(dialog->GetCurrentPath(), dialog->GetCurrentFileName());
+			auto path = OtPath::join(dialog->GetCurrentPath(), dialog->GetCurrentFileName());
 			openFile(path, OtEditor::inTab);
 
 			if (state != confirmErrorState) {
 				state = editState;
 			}
 
-			OtPathChangeDirectory(OtPathGetParent(path));
+			OtPath::changeDirectory(OtPath::getParent(path));
 
 		} else {
 			state = editors.size() ? editState : splashState;
@@ -763,12 +763,12 @@ void OtWorkspace::renderSaveAs() {
 		// open selected file if required
 		if (ImGuiFileDialog::Instance()->IsOk()) {
 			auto dialog = ImGuiFileDialog::Instance();
-			auto path = OtPathJoin(dialog->GetCurrentPath(), dialog->GetCurrentFileName());
-			path = OtPathReplaceExtension(path, activeEditor->getExtension());
+			auto path = OtPath::join(dialog->GetCurrentPath(), dialog->GetCurrentFileName());
+			path = OtPath::replaceExtension(path, activeEditor->getExtension());
 			activeEditor->saveAsFile(path);
 			state = editState;
 
-			OtPathChangeDirectory(OtPathGetParent(path));
+			OtPath::changeDirectory(OtPath::getParent(path));
 
 		} else {
 			state = editors.size() ? editState : splashState;
@@ -943,7 +943,7 @@ void OtWorkspace::highlightError(OtException& exception) {
 	// see if the module is a valid ObjectTalk file
 	auto module = exception.getModule();
 
-	if (OtPathIsRegularFile(module) && OtPathGetExtension(module) == ".ot") {
+	if (OtPath::isRegularFile(module) && OtPath::getExtension(module) == ".ot") {
 		// see of this file is already open in the IDE
 		auto editor = findEditor(module);
 

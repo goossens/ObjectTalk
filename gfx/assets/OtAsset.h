@@ -15,6 +15,8 @@
 #include <functional>
 #include <string>
 
+#include "nlohmann/json_fwd.hpp"
+
 #include "OtAssert.h"
 
 #include "OtAssetBase.h"
@@ -227,10 +229,6 @@ public:
 	inline bool canHandleVirtual() { return T::canHandleVirtual; }
 	inline const char* getSupportedFileTypes() { return T::supportedFileTypes; }
 
-	// OtAsset virtual mode
-	bool getVirtualMode() { return virtualMode; }
-	void setVirtualMode(bool vm) { virtualMode = vm; }
-
 	// register callback to monitor changes
 	inline void onChange(std::function<void()> cb) { onChangeCallback = cb; }
 
@@ -258,6 +256,8 @@ public:
 private:
 	// pointer to the actual asset
 	T* ptr = nullptr;
+
+	// track virtual mode for UI
 	bool virtualMode = false;
 
 	// event management
@@ -285,3 +285,7 @@ private:
 		}
 	}
 };
+
+// (de)serialize asset reference
+std::string OtAssetSerialize(const std::string& path, std::string* basedir);
+std::string OtAssetDeserialize(nlohmann::json* data, const char* field, std::string* basedir);

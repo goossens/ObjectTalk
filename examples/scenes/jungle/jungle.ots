@@ -641,6 +641,7 @@
 		],
 		"fogDensity": 0.2199999988079071,
 		"fxaa": true,
-		"godrays": true
+		"godrays": true,
+		"tonemap": 3
 	}
 }

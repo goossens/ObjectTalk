@@ -12,6 +12,7 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
+
 #include "OtInstancingComponent.h"
 
 
@@ -31,7 +32,7 @@ bool OtInstancingComponent::renderUI() {
 nlohmann::json OtInstancingComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
-	data["path"] = OtPathRelative(asset.getPath(), basedir);
+	data["path"] = OtAssetSerialize(asset.getPath(), basedir);
 	return data;
 }
 
@@ -41,6 +42,6 @@ nlohmann::json OtInstancingComponent::serialize(std::string* basedir) {
 //
 
 void OtInstancingComponent::deserialize(nlohmann::json data, std::string* basedir) {
-	asset = OtPathGetAbsolute(data, "path", basedir);
+	asset = OtAssetDeserialize(&data, "path", basedir);
 }
 

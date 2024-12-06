@@ -13,7 +13,7 @@
 #include "ImGuiFileDialog.h"
 
 #include "OtImage.h"
-#include "OtPathTools.h"
+#include "OtPath.h"
 
 #include "OtNodesFactory.h"
 
@@ -55,9 +55,9 @@ public:
 				// save file (if required)
 				if (ImGuiFileDialog::Instance()->IsOk()) {
 					auto dialog = ImGuiFileDialog::Instance();
-					auto path = OtPathJoin(dialog->GetCurrentPath(), dialog->GetCurrentFileName());
-					path = OtPathReplaceExtension(path, ".png");
-					OtPathChangeDirectory(OtPathGetParent(path));
+					auto path = OtPath::join(dialog->GetCurrentPath(), dialog->GetCurrentFileName());
+					path = OtPath::replaceExtension(path, ".png");
+					OtPath::changeDirectory(OtPath::getParent(path));
 					image.saveToPNG(path);
 				}
 

@@ -23,9 +23,10 @@
 #include "OtLibuv.h"
 #include "OtLog.h"
 #include "OtSingleton.h"
+#include "OtText.h"
 
 #include "OtAssetBase.h"
-#include "OtPathTools.h"
+#include "OtPath.h"
 
 
 //
@@ -80,15 +81,15 @@ public:
 			assets[key] = asset;
 
 			// is this a virtual asset (i.e. a named asset that only exists in memory)
-			if (OtPathIsVirtual(path)) {
+			if (OtText::startsWith(path, "virtual:")) {
 				// yes, just mark it as missing for now
 				asset->assetState = OtAssetBase::missingState;
 
 			} else {
 				// ensure path exists
-				if (OtPathIsRegularFile(path)) {
+				if (OtPath::isRegularFile(path)) {
 					// ensure file extension is supported by asset type
-					if (asset->supportsFileType(OtPathGetExtension(path))) {
+					if (asset->supportsFileType(OtPath::getExtension(path))) {
 						// asset loading is asynchronous
 						manager->scheduleLoad(asset);
 

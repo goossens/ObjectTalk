@@ -18,7 +18,7 @@
 #include "OtLog.h"
 
 #include "OtGpu.h"
-#include "OtPathTools.h"
+#include "OtPath.h"
 
 #include "OtModelAsset.h"
 
@@ -69,7 +69,7 @@ OtAssetBase::AssetState OtModelAsset::load() {
 
 	// load all the materials
 	materials.resize(scene->mNumMaterials);
-	auto dir = OtPathGetParent(path);
+	auto dir = OtPath::getParent(path);
 
 	for (auto i = 0; i < scene->mNumMaterials; i++) {
 		materials[i].load(scene->mMaterials[i], dir);

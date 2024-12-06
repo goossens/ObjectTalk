@@ -18,7 +18,7 @@
 
 #include "OtAssetSelector.h"
 #include "OtMessageBus.h"
-#include "OtPathTools.h"
+#include "OtPath.h"
 #include "OtUi.h"
 
 
@@ -66,12 +66,11 @@ bool OtAssetSelector::renderUI(Info& info) {
 	bool changed = false;
 	static bool creating = false;
 
-	// get the filename without the path
-	auto filename = OtPathGetFilename(info.path);
-
 	if (info.virtualMode && *info.virtualMode) {
 		// render path as a textfield
+		auto filename = OtText::from(info.path, 8);
 		ImGui::SetNextItemWidth(pathWidth);
+
 		if (OtUi::inputText("##virtualpath", &filename) && info.path != "virtual:" + filename) {
 			info.path = "virtual:" + filename;
 			changed = true;
@@ -79,6 +78,7 @@ bool OtAssetSelector::renderUI(Info& info) {
 
 	} else {
 		// render path as a button
+		auto filename = OtPath::getFilename(info.path);
 		ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2(0.0f, 0.5f));
 
 		if (ImGui::Button((filename + "##path").c_str(), ImVec2(pathWidth, itemHeight))) {
@@ -168,15 +168,15 @@ bool OtAssetSelector::renderUI(Info& info) {
 	if (dialog->Display(dialogID.c_str(), ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
 		if (dialog->IsOk()) {
 			auto dialog = ImGuiFileDialog::Instance();
-			info.path = OtPathJoin(dialog->GetCurrentPath(), dialog->GetCurrentFileName());
-			OtPathChangeDirectory(OtPathGetParent(info.path));
+			info.path = OtPath::join(dialog->GetCurrentPath(), dialog->GetCurrentFileName());
+			OtPath::changeDirectory(OtPath::getParent(info.path));
 			changed = true;
 
 			if (creating) {
 				// ensure correct file extension
 				std::vector<std::string> extensions;
 				OtText::split(info.supportedFileTypes, extensions, ',');
-				info.path = OtPathReplaceExtension(info.path, extensions[0]);
+				info.path = OtPath::replaceExtension(info.path, extensions[0]);
 
 				// create the file and open the editor
 				info.creator(info.path);

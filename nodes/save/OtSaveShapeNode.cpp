@@ -12,7 +12,7 @@
 #include "imgui.h"
 #include "ImGuiFileDialog.h"
 
-#include "OtPathTools.h"
+#include "OtPath.h"
 #include "OtShape.h"
 
 #include "OtNodesFactory.h"
@@ -55,9 +55,9 @@ public:
 				// save file (if required)
 				if (ImGuiFileDialog::Instance()->IsOk()) {
 					auto dialog = ImGuiFileDialog::Instance();
-					auto path = OtPathJoin(dialog->GetCurrentPath(), dialog->GetCurrentFileName());
-					path = OtPathReplaceExtension(path, ".shape");
-					OtPathChangeDirectory(OtPathGetParent(path));
+					auto path = OtPath::join(dialog->GetCurrentPath(), dialog->GetCurrentFileName());
+					path = OtPath::replaceExtension(path, ".shape");
+					OtPath::changeDirectory(OtPath::getParent(path));
 					shape.save(path);
 				}
 

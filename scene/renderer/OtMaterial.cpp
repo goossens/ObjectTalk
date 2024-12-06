@@ -20,7 +20,6 @@
 #include "OtVec4.h"
 
 #include "OtMaterial.h"
-#include "OtPathTools.h"
 
 
 //
@@ -105,11 +104,11 @@ nlohmann::json OtMaterial::serialize(std::string* basedir) {
 	data["ao"] = ao;
 	data["scale"] = scale;
 
-	data["albedoTexture"] = OtPathRelative(albedoTexture.getPath(), basedir);
-	data["normalTexture"] = OtPathRelative(normalTexture.getPath(), basedir);
-	data["metallicRoughnessTexture"] = OtPathRelative(metallicRoughnessTexture.getPath(), basedir);
-	data["emissiveTexture"] = OtPathRelative(emissiveTexture.getPath(), basedir);
-	data["aoTexture"] = OtPathRelative(aoTexture.getPath(), basedir);
+	data["albedoTexture"] = OtAssetSerialize(albedoTexture.getPath(), basedir);
+	data["normalTexture"] = OtAssetSerialize(normalTexture.getPath(), basedir);
+	data["metallicRoughnessTexture"] = OtAssetSerialize(metallicRoughnessTexture.getPath(), basedir);
+	data["emissiveTexture"] = OtAssetSerialize(emissiveTexture.getPath(), basedir);
+	data["aoTexture"] = OtAssetSerialize(aoTexture.getPath(), basedir);
 	return data;
 }
 
@@ -126,9 +125,9 @@ void OtMaterial::deserialize(nlohmann::json data, std::string* basedir) {
 	ao = data.value("ao", 1.0f);
 	scale = data.value("scale", 1.0f);
 
-	albedoTexture = OtPathGetAbsolute(data, "albedoTexture", basedir);
-	normalTexture = OtPathGetAbsolute(data, "normalTexture", basedir);
-	metallicRoughnessTexture = OtPathGetAbsolute(data, "metallicRoughnessTexture", basedir);
-	emissiveTexture = OtPathGetAbsolute(data, "emissiveTexture", basedir);
-	aoTexture = OtPathGetAbsolute(data, "aoTexture", basedir);
+	albedoTexture = OtAssetDeserialize(&data, "albedoTexture", basedir);
+	normalTexture = OtAssetDeserialize(&data, "normalTexture", basedir);
+	metallicRoughnessTexture = OtAssetDeserialize(&data, "metallicRoughnessTexture", basedir);
+	emissiveTexture = OtAssetDeserialize(&data, "emissiveTexture", basedir);
+	aoTexture = OtAssetDeserialize(&data, "aoTexture", basedir);
 }

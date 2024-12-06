@@ -16,7 +16,6 @@
 
 #include "OtUi.h"
 
-#include "OtPathTools.h"
 #include "OtModelComponent.h"
 
 
@@ -36,7 +35,7 @@ bool OtModelComponent::renderUI() {
 nlohmann::json OtModelComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
-	data["model"] = OtPathRelative(model.getPath(), basedir);
+	data["model"] = OtAssetSerialize(model.getPath(), basedir);
 	return data;
 }
 
@@ -46,5 +45,5 @@ nlohmann::json OtModelComponent::serialize(std::string* basedir) {
 //
 
 void OtModelComponent::deserialize(nlohmann::json data, std::string* basedir) {
-	model = OtPathGetAbsolute(data, "model", basedir);
+	model = OtAssetDeserialize(&data, "model", basedir);
 }

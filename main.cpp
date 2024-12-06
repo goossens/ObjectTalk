@@ -16,7 +16,7 @@
 
 #include "OtConfig.h"
 #include "OtLibuv.h"
-#include "OtPathTools.h"
+#include "OtPath.h"
 #include "OtStderrMultiplexer.h"
 #include "OtModule.h"
 
@@ -120,7 +120,7 @@ int main(int argc, char* argv[]) {
 		if (files.size() == 1) {
 				// handle case of single file on command line
 				auto file = files[0];
-				auto extension = OtPathGetExtension(file);
+				auto extension = OtPath::getExtension(file);
 
 				// check file extension
 				if (extension == ".ot" || extension == "") {
@@ -184,7 +184,7 @@ int main(int argc, char* argv[]) {
 				char** args = new char* [files.size() + 2];
 
 				// create argument array
-				auto executable = OtPathGetExecutable();
+				auto executable = OtPath::getExecutable();
 				args[0] = (char*) executable.c_str();
 				int i = 1;
 
@@ -246,7 +246,7 @@ int main(int argc, char* argv[]) {
 
 			// run the file
 			auto file = files[0];
-			auto extension = OtPathGetExtension(file);
+			auto extension = OtPath::getExtension(file);
 
 			if (extension == ".ot") {
 				// compile and run script as a module

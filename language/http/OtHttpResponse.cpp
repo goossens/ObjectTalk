@@ -15,7 +15,7 @@
 #include "OtFunction.h"
 #include "OtHttpResponse.h"
 #include "OtMimeTypes.h"
-#include "OtPathTools.h"
+#include "OtPath.h"
 
 
 //
@@ -269,7 +269,7 @@ OtObject OtHttpResponseClass::json(OtObject object) {
 
 OtObject OtHttpResponseClass::sendfile(const std::string& name) {
 	// handle file not found error
-	if (!OtPathIsRegularFile(name)) {
+	if (!OtPath::isRegularFile(name)) {
 		setStatus(404);
 		end();
 
@@ -278,8 +278,8 @@ OtObject OtHttpResponseClass::sendfile(const std::string& name) {
 		setStatus(200);
 
 		// set headers
-		headers.emplace("Content-Length", std::to_string(OtPathGetFileSize(name)));
-		headers.emplace("Content-Type", OtMimeTypeGet(OtPathGetExtension(name).substr(1, std::string::npos)));
+		headers.emplace("Content-Length", std::to_string(OtPath::getFileSize(name)));
+		headers.emplace("Content-Type", OtMimeTypeGet(OtPath::getExtension(name).substr(1, std::string::npos)));
 
 		// open file
 		uv_fs_t open_req;

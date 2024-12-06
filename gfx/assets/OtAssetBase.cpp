@@ -17,7 +17,6 @@
 
 #include "OtAssetBase.h"
 #include "OtAssetManager.h"
-#include "OtPathTools.h"
 
 
 //

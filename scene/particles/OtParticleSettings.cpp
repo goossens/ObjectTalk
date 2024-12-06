@@ -12,6 +12,7 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
+
 #include "ImGuiCurve.h"
 #include "ImGuiRangeSlider.h"
 
@@ -55,7 +56,7 @@ nlohmann::json OtParticleSettings::serialize(std::string *basedir) {
 	data["particles"] = particles;
 	data["lifeSpanLow"] = lifeSpanLow;
 	data["lifeSpanHigh"] = lifeSpanHigh;
-	data["atlas"] = OtPathRelative(atlas.getPath(), basedir);
+	data["atlas"] = OtAssetSerialize(atlas.getPath(), basedir);
 	data["atlasRows"] = atlasRows;
 	data["atlasColumns"] = atlasColumns;
 	data["shape"] = shape;
@@ -77,7 +78,7 @@ void OtParticleSettings::deserialize(nlohmann::json data, std::string* basedir) 
 	particles = data.value("particles", 1024);
 	lifeSpanLow = data.value("lifeSpanLow", 2.0f);
 	lifeSpanHigh = data.value("lifeSpanHigh", 4.0f);
-	atlas = OtPathGetAbsolute(data, "atlas", basedir);
+	atlas = OtAssetDeserialize(&data, "atlas", basedir);
 	atlasRows = data.value("atlasRows", 1);
 	atlasColumns = data.value("atlasColumns", 1);
 	shape = data.value("shape", OtParticleSettings::pointShape);

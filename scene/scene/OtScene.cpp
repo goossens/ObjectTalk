@@ -12,9 +12,10 @@
 #include <fstream>
 #include <sstream>
 
-#include "OtException.h"
+#include "nlohmann/json.hpp"
 
-#include "OtPathTools.h"
+#include "OtException.h"
+#include "OtPath.h"
 
 #include "OtScene.h"
 
@@ -55,7 +56,7 @@ void OtScene::load(const std::string& path) {
 		}
 
 		// extract entities
-		auto basedir = OtPathGetParent(path);
+		auto basedir = OtPath::getParent(path);
 
 		for (auto& entity : data["entities"]) {
 			addEntityToParent(getRootEntity(), deserializeEntityFromJson(entity, &basedir, true));
@@ -80,7 +81,7 @@ void OtScene::save(const std::string& path) {
 
 	// write entities and components
 	auto entities = nlohmann::json::array();
-	auto basedir = OtPathGetParent(path);
+	auto basedir = OtPath::getParent(path);
 
 	eachChild(getRootEntity(), [&](OtEntity entity) {
 		entities.push_back(serializeEntityToJson(entity, &basedir));

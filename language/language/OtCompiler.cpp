@@ -25,7 +25,7 @@
 #include "OtIdentifier.h"
 #include "OtInteger.h"
 #include "OtMemberReference.h"
-#include "OtPathTools.h"
+#include "OtPath.h"
 #include "OtReal.h"
 #include "OtStackReference.h"
 #include "OtString.h"
@@ -39,7 +39,7 @@
 
 OtByteCode OtCompiler::compileFile(const std::string& path) {
 	// sanity check
-	if (!OtPathExists(path)) {
+	if (!OtPath::exists(path)) {
 		OtError("Can't open file [{}]", path);
 	}
 
@@ -84,7 +84,7 @@ OtByteCode OtCompiler::compileSource(OtSource src, OtObject object) {
 	});
 
 	// setup bytecode
-	OtByteCode bytecode = OtByteCode::create(src, OtIdentifier::create(OtPathGetStem(src->getModule())));
+	OtByteCode bytecode = OtByteCode::create(src, OtIdentifier::create(OtPath::getStem(src->getModule())));
 
 	// setup module scope (if required)
 	if (object) {

@@ -15,7 +15,7 @@
 #include <filesystem>
 
 #include "OtIterator.h"
-#include "OtPath.h"
+#include "OtPathObject.h"
 
 
 //
@@ -28,16 +28,16 @@ using OtPathIterator = OtObjectPointer<OtPathIteratorClass>;
 class OtPathIteratorClass : public OtIteratorClass {
 public:
 	OtPathIteratorClass() = default;
-	inline OtPathIteratorClass(OtPath p) { path = p; iterator = p->path.begin(); last = p->path.end(); }
+	inline OtPathIteratorClass(OtPathObject p) { path = p; iterator = p->path.begin(); last = p->path.end(); }
 
 	inline bool end() { return iterator == last; }
-	inline OtObject next() { return OtPath::create(*(iterator++)); }
+	inline OtObject next() { return OtPathObject::create(*(iterator++)); }
 
 	// get type definition
 	static OtType getMeta();
 
 private:
-	OtPath path;
+	OtPathObject path;
 	std::filesystem::path::iterator iterator;
 	std::filesystem::path::iterator last;
 };

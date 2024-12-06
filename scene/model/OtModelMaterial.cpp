@@ -11,7 +11,7 @@
 
 #include "glm/glm.hpp"
 
-#include "OtPathTools.h"
+#include "OtPath.h"
 
 #include "OtModelMaterial.h"
 
@@ -55,35 +55,35 @@ void OtModelMaterial::load(const aiMaterial* mat, const std::string& dir) {
 	// albedo texture
 	if (mat->GetTexture(aiTextureType_BASE_COLOR, 0, &string) == AI_SUCCESS) {
 		auto file = std::string(string.data, string.length);
-		material->setAlbedoTexture(OtPathJoin(dir, file));
+		material->setAlbedoTexture(OtPath::join(dir, file));
 
 	} else if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &string) == AI_SUCCESS) {
 		auto file = std::string(string.data, string.length);
-		material->setAlbedoTexture(OtPathJoin(dir, file));
+		material->setAlbedoTexture(OtPath::join(dir, file));
 	}
 
 	// normal texture
 	if (mat->GetTexture(aiTextureType_NORMALS, 0, &string) == AI_SUCCESS) {
 		auto file = std::string(string.data, string.length);
-		material->setNormalTexture(OtPathJoin(dir, file));
+		material->setNormalTexture(OtPath::join(dir, file));
 	}
 
 	// metallic texture
 	if (mat->GetTexture(aiTextureType_METALNESS, 0, &string) == AI_SUCCESS) {
 		auto file = std::string(string.data, string.length);
-		material->setMetallicRoughnessTexture(OtPathJoin(dir, file));
+		material->setMetallicRoughnessTexture(OtPath::join(dir, file));
 	}
 
 	// emissive texture
 	if (mat->GetTexture(aiTextureType_EMISSIVE, 0, &string) == AI_SUCCESS) {
 		auto file = std::string(string.data, string.length);
-		material->setEmissiveTexture(OtPathJoin(dir, file));
+		material->setEmissiveTexture(OtPath::join(dir, file));
 	}
 
 	// ambient occlusion texture
 	if (mat->GetTexture(aiTextureType_AMBIENT_OCCLUSION, 0, &string) == AI_SUCCESS) {
 		auto file = std::string(string.data, string.length);
-		material->setAoTexture(OtPathJoin(dir, file));
+		material->setAoTexture(OtPath::join(dir, file));
 	}
 
 	valid = true;

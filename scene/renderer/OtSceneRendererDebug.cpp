@@ -15,7 +15,7 @@
 #include "imgui.h"
 
 #include "OtAssetManager.h"
-#include "OtPathTools.h"
+#include "OtPath.h"
 #include "OtPass.h"
 #include "OtTransientIndexBuffer.h"
 #include "OtTransientVertexBuffer.h"
@@ -181,7 +181,7 @@ void OtSceneRendererDebug::renderAssets(OtSceneRenderer& renderer) {
 
 			OtAssetManager::each([](OtAssetBase* asset) {
 				auto path = asset->getPath();
-				auto name = OtPathGetFilename(path);
+				auto name = OtPath::getFilename(path);
 
 				ImGui::TableNextRow();
 				ImGui::TableNextColumn(); ImGui::TextUnformatted(name.c_str());

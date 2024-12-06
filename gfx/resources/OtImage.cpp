@@ -24,7 +24,7 @@
 
 #include "OtImage.h"
 #include "OtFrameworkAtExit.h"
-#include "OtPathTools.h"
+#include "OtPath.h"
 
 
 //
@@ -89,11 +89,11 @@ void OtImage::update(int width, int height, int format) {
 
 void OtImage::load(const std::string& path, bool powerof2, bool square) {
 	// get image data
-	if (!OtPathExists(path) || !OtPathIsRegularFile(path)) {
+	if (!OtPath::exists(path) || !OtPath::isRegularFile(path)) {
 		OtError("Can't open image in [{}]", path);
 	}
 
-	auto filesize = OtPathGetFileSize(path);
+	auto filesize = OtPath::getFileSize(path);
 	auto buffer = new char[filesize];
 	std::ifstream file(path, std::ios::binary);
 	file.read(buffer, filesize);

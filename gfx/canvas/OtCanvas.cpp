@@ -13,6 +13,7 @@
 
 #include "OtFunction.h"
 #include "OtLog.h"
+#include "OtPath.h"
 
 #include "OtCanvas.h"
 #include "OtImage.h"
@@ -105,7 +106,7 @@ void OtCanvasClass::deletePaint(int id) {
 //
 
 int OtCanvasClass::loadFont(const std::string& path) {
-	auto id =  nvgCreateFont(context, OtPathGetStem(path).c_str(), path.c_str());
+	auto id =  nvgCreateFont(context, OtPath::getStem(path).c_str(), path.c_str());
 
 	if (id < 0) {
 		OtError("Can't load font at [{}]", path);

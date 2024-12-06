@@ -12,9 +12,9 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
+
 #include "OtUi.h"
 
-#include "OtPathTools.h"
 #include "OtIblComponent.h"
 
 
@@ -34,7 +34,7 @@ bool OtIblComponent::renderUI() {
 nlohmann::json OtIblComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
-	data["cubemap"] = OtPathRelative(cubemap.getPath(), basedir);
+	data["cubemap"] = OtAssetSerialize(cubemap.getPath(), basedir);
 	return data;
 }
 
@@ -44,5 +44,5 @@ nlohmann::json OtIblComponent::serialize(std::string* basedir) {
 //
 
 void OtIblComponent::deserialize(nlohmann::json data, std::string* basedir) {
-	cubemap = OtPathGetAbsolute(data, "cubemap", basedir);
+	cubemap = OtAssetDeserialize(&data, "cubemap", basedir);
 }

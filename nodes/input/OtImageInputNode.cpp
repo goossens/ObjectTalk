@@ -12,9 +12,9 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
+
 #include "OtImage.h"
 #include "OtImageAsset.h"
-#include "OtPathTools.h"
 
 #include "OtNodesFactory.h"
 
@@ -70,11 +70,11 @@ public:
 
 	// (de)serialize node
 	void customSerialize(nlohmann::json* data, std::string* basedir) override {
-		(*data)["path"] = OtPathRelative(asset.getPath(), basedir);
+		(*data)["path"] = OtAssetSerialize(asset.getPath(), basedir);
 	}
 
 	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		asset = OtPathGetAbsolute(*data, "path", basedir);
+		asset = OtAssetDeserialize(data, "path", basedir);
 
 		if (asset.isNull()) {
 			image.clear();

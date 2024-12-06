@@ -14,6 +14,7 @@
 #include <string>
 
 #include "glm/gtc/type_ptr.hpp"
+#include "nlohmann/json.hpp"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
@@ -22,7 +23,7 @@
 
 #include "OtNumbers.h"
 
-#include "OtPathTools.h"
+#include "OtPath.h"
 #include "OtUi.h"
 
 
@@ -440,7 +441,7 @@ bool OtUi::fileSelector(const char* label, std::string* path, const char* filter
 	static bool creating = false;
 
 	// get the filename without the path
-	auto filename = OtPathGetFilename(*path);
+	auto filename = OtPath::getFilename(*path);
 
 	// render path as a button
 	ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2(0.0f, 0.5f));
@@ -482,7 +483,7 @@ bool OtUi::fileSelector(const char* label, std::string* path, const char* filter
 	if (dialog->Display(dialogID.c_str(), ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
 		if (dialog->IsOk()) {
 			*path = ImGuiFileDialog::Instance()->GetFilePathName();
-			OtPathChangeDirectory(OtPathGetParent(*path));
+			OtPath::changeDirectory(OtPath::getParent(*path));
 			changed = true;
 		}
 

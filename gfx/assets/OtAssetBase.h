@@ -16,9 +16,10 @@
 #include <string>
 
 #include "OtLibuv.h"
+#include "OtPath.h"
+#include "OtPathFollower.h"
 #include "OtPubSub.h"
-
-#include "OtPathTools.h"
+#include "OtText.h"
 
 
 //
@@ -57,7 +58,8 @@ public:
 	inline bool isInvalid() { return assetState == invalidState; }
 	inline bool isLoaded() { return assetState == loadedState; }
 	inline bool isReady() { return assetState == readyState; }
-	inline bool isVirtual() { return OtPathIsVirtual(path); }
+	inline bool isVirtual() { return OtText::startsWith(path, "virtual:"); }
+
 	const char* getStateName();
 	bool supportsFileType(const std::string& ext);
 

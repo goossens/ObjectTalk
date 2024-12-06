@@ -28,7 +28,7 @@
 #include "OtSet.h"
 
 #include "OtSystem.h"
-#include "OtPath.h"
+#include "OtPathObject.h"
 #include "OtIO.h"
 #include "OtOS.h"
 #include "OtFS.h"
@@ -81,7 +81,7 @@ OtGlobalClass::OtGlobalClass() {
 	set("Set", OtClass::create(OtSetClass::getMeta()));
 
 	set("System", OtClass::create(OtSystemClass::getMeta()));
-	set("Path", OtClass::create(OtPathClass::getMeta()));
+	set("Path", OtClass::create(OtPathObjectClass::getMeta()));
 	set("IO", OtClass::create(OtIOClass::getMeta()));
 	set("OS", OtClass::create(OtOSClass::getMeta()));
 	set("FS", OtClass::create(OtFSClass::getMeta()));

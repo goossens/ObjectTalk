@@ -19,11 +19,12 @@
 #include "OtException.h"
 #include "OtLog.h"
 
+#include "OtAsset.h"
 #include "OtCubeMap.h"
 #include "OtFrameworkAtExit.h"
 #include "OtImage.h"
 #include "OtPass.h"
-#include "OtPathTools.h"
+#include "OtPath.h"
 #include "OtVertex.h"
 
 
@@ -98,7 +99,7 @@ void OtCubeMap::create(int s, bool m, int l, int f, uint64_t flags) {
 //
 
 void OtCubeMap::load(const std::string& path) {
-	auto ext = OtPathGetExtension(path);
+	auto ext = OtPath::getExtension(path);
 
 	if (ext == ".cubemap") {
 		loadJSON(path);
@@ -135,15 +136,15 @@ void OtCubeMap::loadJSON(const std::string& path) {
 	}
 
 	// parse json
-	auto basedir = OtPathGetParent(path);
+	auto basedir = OtPath::getParent(path);
 	auto data = nlohmann::json::parse(buffer.str());
 
-	auto negx = OtPathGetAbsolute(data, "negx", &basedir);
-	auto negy = OtPathGetAbsolute(data, "negy", &basedir);
-	auto negz = OtPathGetAbsolute(data, "negz", &basedir);
-	auto posx = OtPathGetAbsolute(data, "posx", &basedir);
-	auto posy = OtPathGetAbsolute(data, "posy", &basedir);
-	auto posz = OtPathGetAbsolute(data, "posz", &basedir);
+	auto negx = OtAssetDeserialize(&data, "negx", &basedir);
+	auto negy = OtAssetDeserialize(&data, "negy", &basedir);
+	auto negz = OtAssetDeserialize(&data, "negz", &basedir);
+	auto posx = OtAssetDeserialize(&data, "posx", &basedir);
+	auto posy = OtAssetDeserialize(&data, "posy", &basedir);
+	auto posz = OtAssetDeserialize(&data, "posz", &basedir);
 
 	if (negx.empty() || negy.empty() || negz.empty() || posx.empty() || posy.empty() || posz.empty()) {
 		OtError("Incomplete CubeMap specification in [{}]", path);

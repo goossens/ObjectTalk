@@ -13,7 +13,7 @@
 #include "imgui.h"
 
 #include "OtMessageBus.h"
-#include "OtPathTools.h"
+#include "OtPath.h"
 #include "OtUi.h"
 
 #include "OtEditor.h"
@@ -99,14 +99,14 @@ void OtEditor::unfollow() {
 //
 
 void OtEditor::renderFileMenu(bool canRun) {
-	bool runnable = canRun && isRunnable() && !isDirty() && OtPathIsRegularFile(path);
+	bool runnable = canRun && isRunnable() && !isDirty() && OtPath::isRegularFile(path);
 
 	if (ImGui::BeginMenu("File")) {
 		if (ImGui::MenuItem("New", OT_UI_SHORTCUT "N")) { OtMessageBus::send("new"); }
 		if (ImGui::MenuItem("Open...", OT_UI_SHORTCUT "O")) { OtMessageBus::send("open"); }
 		ImGui::Separator();
 
-		if (OtPathIsRegularFile(path)) {
+		if (OtPath::isRegularFile(path)) {
 			if (ImGui::MenuItem("Save", OT_UI_SHORTCUT "S", nullptr, isDirty())) { OtMessageBus::send("save"); }
 			if (ImGui::MenuItem("Save As...")) { OtMessageBus::send("saveas"); }
 
@@ -133,7 +133,7 @@ void OtEditor::renderFileMenu(bool canRun) {
 
 		} else if (ImGui::IsKeyPressed(ImGuiKey_S)) {
 			if (isDirty()) {
-				if (OtPathIsRegularFile(path)) {
+				if (OtPath::isRegularFile(path)) {
 					OtMessageBus::send("save");
 
 				} else {

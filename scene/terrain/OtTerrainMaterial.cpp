@@ -16,7 +16,6 @@
 #include "OtGlm.h"
 #include "OtUi.h"
 
-#include "OtPathTools.h"
 #include "OtTerrainMaterial.h"
 
 
@@ -100,10 +99,10 @@ nlohmann::json OtTerrainMaterial::serialize(std::string* basedir) {
 	data["region3Color"] = region3Color;
 	data["region4Color"] = region4Color;
 
-	data["region1Texture"] = OtPathRelative(region1Texture.getPath(), basedir);
-	data["region2Texture"] = OtPathRelative(region2Texture.getPath(), basedir);
-	data["region3Texture"] = OtPathRelative(region3Texture.getPath(), basedir);
-	data["region4Texture"] = OtPathRelative(region4Texture.getPath(), basedir);
+	data["region1Texture"] = OtAssetSerialize(region1Texture.getPath(), basedir);
+	data["region2Texture"] = OtAssetSerialize(region2Texture.getPath(), basedir);
+	data["region3Texture"] = OtAssetSerialize(region3Texture.getPath(), basedir);
+	data["region4Texture"] = OtAssetSerialize(region4Texture.getPath(), basedir);
 
 	data["region1TextureScale"] = region1TextureScale;
 	data["region2TextureScale"] = region2TextureScale;
@@ -132,10 +131,10 @@ void OtTerrainMaterial::deserialize(nlohmann::json data, std::string* basedir) {
 	region3Color = data.value("region3Color", glm::vec3(0.584f, 0.553f, 0.522f));
 	region4Color = data.value("region4Color", glm::vec3(0.9f, 0.9f, 0.9f));
 
-	region1Texture = OtPathGetAbsolute(data, "region1Texture", basedir);
-	region2Texture = OtPathGetAbsolute(data, "region2Texture", basedir);
-	region3Texture = OtPathGetAbsolute(data, "region3Texture", basedir);
-	region4Texture = OtPathGetAbsolute(data, "region4Texture", basedir);
+	region1Texture = OtAssetDeserialize(&data, "region1Texture", basedir);
+	region2Texture = OtAssetDeserialize(&data, "region2Texture", basedir);
+	region3Texture = OtAssetDeserialize(&data, "region3Texture", basedir);
+	region4Texture = OtAssetDeserialize(&data, "region4Texture", basedir);
 
 	region1TextureScale = data.value("region1TextureScale", 1.0f);
 	region2TextureScale = data.value("region2TextureScale", 1.0f);

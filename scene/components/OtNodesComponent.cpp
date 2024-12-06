@@ -21,7 +21,7 @@
 #include "OtUi.h"
 
 #include "OtNodesComponent.h"
-#include "OtPathTools.h"
+#include "OtPath.h"
 
 
 //
@@ -44,7 +44,7 @@ OtNodesComponent::OtNodesComponent() {
 	asset.onChange([&]() {
 		if (asset.isReady()) {
 			// load nodes
-			auto basedir = OtPathGetParent(asset->getPath());
+			auto basedir = OtPath::getParent(asset->getPath());
 			nodes.loadFromString(asset->getText(), basedir);
 
 			// build list of input nodes
@@ -121,7 +121,7 @@ bool OtNodesComponent::renderUI() {
 nlohmann::json OtNodesComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
-	data["path"] = OtPathRelative(asset.getPath(), basedir);
+	data["path"] = OtAssetSerialize(asset.getPath(), basedir);
 
 	auto settings = nlohmann::json::object();
 
@@ -141,7 +141,7 @@ nlohmann::json OtNodesComponent::serialize(std::string* basedir) {
 //
 
 void OtNodesComponent::deserialize(nlohmann::json data, std::string* basedir) {
-	asset = OtPathGetAbsolute(data, "path", basedir);
+	asset = OtAssetDeserialize(&data, "path", basedir);
 	savedBasedir = basedir ? *basedir : "";
 
 	if (data.contains("settings")) {

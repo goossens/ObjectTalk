@@ -13,10 +13,10 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
+
 #include "OtGlm.h"
 #include "OtUi.h"
 
-#include "OtPathTools.h"
 #include "OtWaterComponent.h"
 
 
@@ -57,7 +57,7 @@ nlohmann::json OtWaterComponent::serialize(std::string* basedir) {
 	data["distance"] = distance;
 	data["useRefractance"] = useRefractance;
 	data["color"] = color;
-	data["normals"] = OtPathRelative(normals.getPath(), basedir);
+	data["normals"] = OtAssetSerialize(normals.getPath(), basedir);
 	data["scale"] = scale;
 	data["speed"] = speed;
 	data["metallic"] = metallic;
@@ -77,7 +77,7 @@ void OtWaterComponent::deserialize(nlohmann::json data, std::string* basedir) {
 	distance = data.value("distance", 100.0f);
 	useRefractance = data.value("useRefractance", true);
 	color = data.value("color", glm::vec3(0.5f, 0.6f, 0.8f));
-	normals = OtPathGetAbsolute(data, "normals", basedir);
+	normals = OtAssetDeserialize(&data, "normals", basedir);
 	scale = data.value("scale", 10.0f);
 	speed = data.value("speed", 1.0f);
 	metallic = data.value("metallic", 0.3f);

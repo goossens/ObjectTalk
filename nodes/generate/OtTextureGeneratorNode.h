@@ -10,7 +10,6 @@
 //
 
 #include "imgui.h"
-#include "nlohmann/json.hpp"
 
 #include "OtFrameBuffer.h"
 #include "OtTexture.h"

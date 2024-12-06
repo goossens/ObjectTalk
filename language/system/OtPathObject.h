@@ -18,21 +18,19 @@
 
 
 //
-//	OtPath
+//	OtPathObjectObject
 //
 
-class OtPathClass;
-using OtPath = OtObjectPointer<OtPathClass>;
+class OtPathObjectClass;
+using OtPathObject = OtObjectPointer<OtPathObjectClass>;
 
-class OtPathClass : public OtSystemClass {
-	friend class OtPathIteratorClass;
-
+class OtPathObjectClass : public OtSystemClass {
 public:
 	// constructors
-	OtPathClass() = default;
-	OtPathClass(const char* p) : path(p) {}
-	OtPathClass(const std::string& p) : path(p) {}
-	OtPathClass(const std::filesystem::path& p) : path(p) {}
+	OtPathObjectClass() = default;
+	OtPathObjectClass(const char* p) : path(p) {}
+	OtPathObjectClass(const std::string& p) : path(p) {}
+	OtPathObjectClass(const std::filesystem::path& p) : path(p) {}
 
 	// convert to string
 	inline operator std::string() { return path.string(); }
@@ -50,7 +48,7 @@ public:
 	inline bool operator==(OtObject operand) { return path == operand->operator std::string(); }
 	inline bool operator<(OtObject operand) { return path < operand->operator std::string(); }
 
-	inline OtObject join(OtObject operand) { return OtPath::create(path / operand->operator std::string()); }
+	inline OtObject join(OtObject operand) { return OtPathObject::create(path / operand->operator std::string()); }
 	inline bool equal(OtObject operand) { return path == operand->operator std::string(); }
 	inline bool notEqual(OtObject operand) { return !equal(operand); }
 
@@ -70,19 +68,19 @@ public:
 	inline bool hasExtension() { return path.has_extension(); }
 
 	// get path elements
-	inline OtObject rootName() { return OtPath::create(path.root_name()); }
-	inline OtObject rootDirectory() { return OtPath::create(path.root_directory()); }
-	inline OtObject rootPath() { return OtPath::create(path.root_path()); }
-	inline OtObject directory() { return OtPath::create(path.parent_path()); }
-	inline OtObject filename() { return OtPath::create(path.filename()); }
-	inline OtObject stem() { return OtPath::create(path.stem()); }
-	inline OtObject extension() { return OtPath::create(path.extension()); }
+	inline OtObject rootName() { return OtPathObject::create(path.root_name()); }
+	inline OtObject rootDirectory() { return OtPathObject::create(path.root_directory()); }
+	inline OtObject rootPath() { return OtPathObject::create(path.root_path()); }
+	inline OtObject directory() { return OtPathObject::create(path.parent_path()); }
+	inline OtObject filename() { return OtPathObject::create(path.filename()); }
+	inline OtObject stem() { return OtPathObject::create(path.stem()); }
+	inline OtObject extension() { return OtPathObject::create(path.extension()); }
 
 	//
-	inline OtObject canonical() { return OtPath::create(std::filesystem::canonical(path)); }
+	inline OtObject canonical() { return OtPathObject::create(std::filesystem::canonical(path)); }
 
 	// get relative path to other location
-	inline OtObject relative(OtObject name) { return OtPath::create(path.lexically_relative(name->operator std::string())); }
+	inline OtObject relative(OtObject name) { return OtPathObject::create(path.lexically_relative(name->operator std::string())); }
 
 	// iterate through path elements
 	OtObject iterate();
@@ -91,5 +89,6 @@ public:
 	static OtType getMeta();
 
 private:
+	friend class OtPathIteratorClass;
 	std::filesystem::path path;
 };

@@ -13,7 +13,7 @@
 #include "OtException.h"
 #include "OtFunction.h"
 #include "OtHttpRequest.h"
-#include "OtPathTools.h"
+#include "OtPath.h"
 
 
 //
@@ -278,7 +278,7 @@ void OtHttpRequestClass::onMultipartHeadersComplete() {
 					multipartFileName = val;
 
 					// create temporary file
-					std::string tmpl = OtPathJoin(OtPathGetTmpDirectory(), "ot-XXXXXX");
+					std::string tmpl = OtPath::join(OtPath::getTmpDirectory(), "ot-XXXXXX");
 
 					uv_fs_t req;
 					uv_fs_mkstemp(uv_default_loop(), &req, tmpl.c_str(), 0);

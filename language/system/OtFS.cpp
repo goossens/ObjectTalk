@@ -19,7 +19,7 @@
 #include "OtFunction.h"
 #include "OtFS.h"
 #include "OtLibuv.h"
-#include "OtPath.h"
+#include "OtPathObject.h"
 
 
 //
@@ -32,7 +32,7 @@ OtObject OtFSClass::gethome() {
 	auto status = uv_os_homedir(buffer, &length);
 	UV_CHECK_ERROR("uv_os_homedir", status);
 	std::string home(buffer, length);
-	return OtPath::create(std::filesystem::canonical(std::string(buffer, length)));
+	return OtPathObject::create(std::filesystem::canonical(std::string(buffer, length)));
 }
 
 
@@ -41,7 +41,7 @@ OtObject OtFSClass::gethome() {
 //
 
 OtObject OtFSClass::gettmp() {
-	return OtPath::create(std::filesystem::canonical(
+	return OtPathObject::create(std::filesystem::canonical(
 		std::filesystem::temp_directory_path()));
 }
 
@@ -69,7 +69,7 @@ OtObject OtFSClass::tmpnam() {
 		}
 	}
 
-	return OtPath::create(path);
+	return OtPathObject::create(path);
 }
 
 
@@ -79,7 +79,7 @@ OtObject OtFSClass::tmpnam() {
 
 OtObject OtFSClass::getcwd() {
 	try {
-		return OtPath::create(std::filesystem::canonical(
+		return OtPathObject::create(std::filesystem::canonical(
 			std::filesystem::current_path()));
 
 	} catch (std::exception& e) {
@@ -114,7 +114,7 @@ OtObject OtFSClass::ls(const std::string& path) {
 		OtArray content = OtArray::create();
 
 		for (auto& p : std::filesystem::directory_iterator(path)) {
-			content->append(OtPath::create(p.path()));
+			content->append(OtPathObject::create(p.path()));
 		}
 
 		return content;
@@ -299,7 +299,7 @@ OtObject OtFSClass::mktmpdir() {
 		}
 	}
 
-	return OtPath::create(path);
+	return OtPathObject::create(path);
 }
 
 

@@ -19,7 +19,6 @@
 #include "nanovg.h"
 
 #include "OtObject.h"
-#include "OtPathTools.h"
 
 #include "OtColorParser.h"
 #include "OtFrameBuffer.h"

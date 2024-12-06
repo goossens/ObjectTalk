@@ -16,7 +16,6 @@
 #include "OtException.h"
 #include "OtClass.h"
 #include "OtIdentifier.h"
-#include "OtPathTools.h"
 #include "OtVM.h"
 
 #include "OtCanvas.h"
@@ -87,11 +86,11 @@ public:
 
 	// (de)serialize node
 	inline void customSerialize(nlohmann::json* data, std::string* basedir) override {
-		(*data)["path"] = OtPathRelative(script.getPath(), basedir);
+		(*data)["path"] = OtAssetSerialize(script.getPath(), basedir);
 	}
 
 	inline void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		script = OtPathGetAbsolute(*data, "path", basedir);
+		script = OtAssetDeserialize(data, "path", basedir);
 	}
 
 	// run the texture generator

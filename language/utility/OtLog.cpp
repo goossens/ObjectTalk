@@ -24,6 +24,7 @@
 
 #include "fmt/format.h"
 
+#include "OtConfig.h"
 #include "OtException.h"
 #include "OtLog.h"
 #include "OtPath.h"
@@ -77,8 +78,12 @@ void OtLog::logMessage(const char* filename, int lineno, int type, const std::st
 	auto messageType = types[type];
 	auto output = fmt::format("{} [{}] {} ({}): {}\n", timestamp, messageType, shortname, lineno, message);
 
+	// send to IDE (if required)
+	if (OtConfig::inSubprocessMode()) {
+		OtStderrMultiplexer::multiplex(type, output);
+
 	// send to STDERR (if required)
-	if (logToStderr) {
+	} else if (logToStderr) {
 		std::cerr << output << std::flush;
 	}
 

@@ -82,7 +82,7 @@ void OtCanvasStackClass::deleteCanvas(int id) {
 //
 
 void OtCanvasStackClass::enableCanvas(int id) {
-	findCanvas(id)->enabled = true;
+	OtCanvas(findCanvas(id)->canvas)->enable();
 }
 
 
@@ -91,7 +91,7 @@ void OtCanvasStackClass::enableCanvas(int id) {
 //
 
 void OtCanvasStackClass::disableCanvas(int id) {
-	findCanvas(id)->enabled = false;
+	OtCanvas(findCanvas(id)->canvas)->disable();
 }
 
 
@@ -100,7 +100,7 @@ void OtCanvasStackClass::disableCanvas(int id) {
 //
 
 void OtCanvasStackClass::rerenderCanvas(int id) {
-	findCanvas(id)->dirty = true;
+	OtCanvas(findCanvas(id)->canvas)->requestRerender();
 }
 
 
@@ -114,38 +114,47 @@ void OtCanvasStackClass::render() {
 	auto scale = std::min(available.x / width, available.y / height);
 	ImVec2 size{width * scale, height * scale};
 
+	bool sizeChanged = size.x != framebuffer.getWidth() || size.y != framebuffer.getHeight();
 	bool dirty = false;
 
 	for (auto& canvas : canvases) {
-		if (canvas.enabled && canvas.dirty) {
+		auto cvs = OtCanvas(canvas.canvas);
+
+		if (sizeChanged || cvs->needsRerender()) {
 			// update framebuffer size (if required)
 			canvas.framebuffer.update(size.x, size.y);
 
-			// render the canvas by calling the script
-			OtCanvas(canvas.canvas)->render(canvas.framebuffer, scale, [&]() {
+			// render the canvas
+			cvs->render(canvas.framebuffer, scale, [&]() {
 				OtVM::callMemberFunction(canvas.canvas, "render");
 			});
 
-			canvas.dirty = false;
+			cvs->markClean();
 			dirty = true;
 		}
 	}
 
+	// (re)-composite all layers (if required)
 	if (dirty) {
-		// (re)-composite all layers
 		framebuffer.update(size.x, size.y);
 
-		OtPass pass;
-		pass.setFrameBuffer(framebuffer);
-		pass.setRectangle(0, 0, int(size.x), int(size.y));
-		pass.setClear(true, true);
-		pass.touch();
+		OtPass clearPass;
+		clearPass.setFrameBuffer(framebuffer);
+		clearPass.setRectangle(0, 0, int(size.x), int(size.y));
+		clearPass.setClear(true);
+		clearPass.touch();
 
 		for (auto& canvas : canvases) {
-			pass.submitQuad(int(size.x), int(size.y));
-			sampler.submit(0, canvas.framebuffer.getColorTextureHandle());
-			program.setState(OtStateWriteRgb | OtStateWriteA | OtStateBlendAlpha);
-			pass.runShaderProgram(program);
+			if (OtCanvas(canvas.canvas)->isEnabled()) {
+				OtPass overlayPass;
+				overlayPass.setFrameBuffer(framebuffer);
+				overlayPass.setRectangle(0, 0, int(size.x), int(size.y));
+
+				overlayPass.submitQuad(int(size.x), int(size.y));
+				sampler.submit(0, canvas.framebuffer.getColorTextureHandle());
+				program.setState(OtStateWriteRgb | OtStateWriteA | OtStateBlendAlpha);
+				overlayPass.runShaderProgram(program);
+			}
 		}
 	}
 

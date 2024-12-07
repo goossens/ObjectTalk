@@ -113,8 +113,20 @@ public:
 	inline float text(float x, float y, const std::string& s) { return nvgText(context, x, y, s.c_str(), nullptr); }
 	inline void textBox(float x, float y, float w, const std::string& s) { nvgTextBox(context, x, y, w, s.c_str(), nullptr); }
 
+	OtObject textSize(const std::string& string);
+	OtObject textBoxSize(const std::string& string, float w);
+
 	inline float getWidth() { return width; }
 	inline float getHeight() { return height; }
+
+	// access state
+	inline void enable() { enabled = true; dirty = true; }
+	inline void disable() { enabled = false; }
+	inline bool isEnabled() { return enabled; }
+
+	inline void requestRerender() { dirty = true; }
+	inline void markClean() { dirty = false; }
+	inline bool needsRerender() { return dirty; }
 
 	// render canvas to framebuffer
 	void render(OtFrameBuffer& framebuffer, float scale, std::function<void()> renderer);
@@ -126,6 +138,9 @@ private:
 	// properties
 	NVGcontext* context;
 	std::unordered_map<int, NVGpaint> paints;
+
+	bool enabled{true};
+	bool dirty{true};
 
 	float width;
 	float height;

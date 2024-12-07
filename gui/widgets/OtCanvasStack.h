@@ -71,8 +71,6 @@ private:
 		int id;
 		OtObject canvas;
 		OtFrameBuffer framebuffer{OtTexture::rgba8Texture, OtTexture::d24s8Texture};
-		bool enabled{true};
-		bool dirty{true};
 	};
 
 	std::vector<Canvas> canvases;

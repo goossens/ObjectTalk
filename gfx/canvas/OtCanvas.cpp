@@ -18,6 +18,7 @@
 #include "OtCanvas.h"
 #include "OtImage.h"
 #include "OtPass.h"
+#include "OtVec2.h"
 
 
 //
@@ -158,6 +159,28 @@ void OtCanvasClass::drawImage(int image, float sx, float sy, float sw, float sh,
 
 
 //
+//	OtCanvasClass::textSize
+//
+
+OtObject OtCanvasClass::textSize(const std::string& string) {
+	float bounds[4];
+	nvgTextBounds(context, 0.0f, 0.0f, string.c_str(), nullptr, bounds);
+	return OtVec2::create(bounds[2] - bounds[0], bounds[3] - bounds[1]);
+}
+
+
+//
+//	OtCanvasClass::textBoxSize
+//
+
+OtObject OtCanvasClass::textBoxSize(const std::string& string, float width) {
+	float bounds[4];
+	nvgTextBoxBounds(context, 0.0f, 0.0f, width, string.c_str(), nullptr, bounds);
+	return OtVec2::create(bounds[2] - bounds[0], bounds[3] - bounds[1]);
+}
+
+
+//
 //	OtCanvasClass::render
 //
 
@@ -168,9 +191,10 @@ void OtCanvasClass::render(OtFrameBuffer &framebuffer, float scale, std::functio
 
 	// setup rendering pass
 	OtPass pass;
-	pass.setClear(framebuffer.hasColorTexture(), framebuffer.hasDepthTexture(), glm::vec4(0.0f));
+	pass.setClear(framebuffer.hasColorTexture(), framebuffer.hasStencilTexture(), glm::vec4(0.0f));
 	pass.setViewMode(OtPass::sequential);
 	pass.setFrameBuffer(framebuffer);
+	pass.touch();
 
 	// render the canvas
 	nvgSetViewId(context, pass.getViewId());
@@ -179,6 +203,7 @@ void OtCanvasClass::render(OtFrameBuffer &framebuffer, float scale, std::functio
 	renderer();
 	nvgEndFrame(context);
 }
+
 
 //
 //	OtCanvasClass::getMeta
@@ -258,8 +283,19 @@ OtType OtCanvasClass::getMeta() {
 		type->set("text", OtFunction::create(&OtCanvasClass::text));
 		type->set("textBox", OtFunction::create(&OtCanvasClass::textBox));
 
+		type->set("textSize", OtFunction::create(&OtCanvasClass::textSize));
+		type->set("textBoxSize", OtFunction::create(&OtCanvasClass::textBoxSize));
+
 		type->set("getWidth", OtFunction::create(&OtCanvasClass::getWidth));
 		type->set("getHeight", OtFunction::create(&OtCanvasClass::getHeight));
+
+		type->set("enable", OtFunction::create(&OtCanvasClass::enable));
+		type->set("disable", OtFunction::create(&OtCanvasClass::disable));
+		type->set("isEnabled", OtFunction::create(&OtCanvasClass::isEnabled));
+
+		type->set("requestRerender", OtFunction::create(&OtCanvasClass::requestRerender));
+		type->set("markClean", OtFunction::create(&OtCanvasClass::markClean));
+		type->set("needsRerender", OtFunction::create(&OtCanvasClass::needsRerender));
 	}
 
 	return type;

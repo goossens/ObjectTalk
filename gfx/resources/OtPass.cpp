@@ -66,6 +66,7 @@ void OtPass::setClear(bool color, bool depth, const glm::vec4& rgba, float depth
 	glm::u8vec4 result = glm::u8vec4(glm::round(rgba * 255.0f));
 	uint32_t clearColor = (result[0] << 24) | (result[1] << 16) | (result[2] << 8) | result[3];
 
+	// without this call, the default is (view, BGFX_CLEAR_NONE, 0, 0.0f, 0)
 	bgfx::setViewClear(
 		view,
 		(color ? BGFX_CLEAR_COLOR : BGFX_CLEAR_NONE) | (depth ? BGFX_CLEAR_DEPTH : BGFX_CLEAR_NONE),

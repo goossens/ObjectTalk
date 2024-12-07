@@ -43,7 +43,7 @@ class Background : canvas.Canvas {
 
 class Foreground : canvas.Canvas {
 	function __init__(this) {
-		this.font = this.loadFont(Path(Path(__DIR__.directory(), "assets", "roboto.ttf"));
+		this.font = this.loadFont(Path(__DIR__, "..", "assets", "roboto.ttf"));
 	}
 
 	function render(this) {

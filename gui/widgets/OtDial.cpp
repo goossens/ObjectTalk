@@ -83,7 +83,6 @@ void OtDialClass::render() {
 
 				// configure rendering pass
 				OtPass pass;
-				pass.setClear(false);
 				pass.setRectangle(0, 0, w, h);
 				pass.setFrameBuffer(framebuffer);
 				glm::mat4 projMatrix = glm::ortho(0.0f, (float) w, (float) h, 0.0f);

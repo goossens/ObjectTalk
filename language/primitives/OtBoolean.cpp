@@ -34,6 +34,11 @@ OtType OtBooleanClass::getMeta() {
 		type->set("__and__", OtFunction::create(&OtBooleanClass::logicalAnd));
 		type->set("__or__", OtFunction::create(&OtBooleanClass::logicalOr));
 		type->set("__not__", OtFunction::create(&OtBooleanClass::logicalNot));
+
+		type->set("__band__", OtFunction::create(&OtBooleanClass::bitwiseAnd));
+		type->set("__bor__", OtFunction::create(&OtBooleanClass::bitwiseOr));
+		type->set("__bxor__", OtFunction::create(&OtBooleanClass::bitwiseXor));
+		type->set("__bnot__", OtFunction::create(&OtBooleanClass::bitwiseNot));
 	}
 
 	return type;

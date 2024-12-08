@@ -52,6 +52,11 @@ public:
 	inline bool logicalOr(bool operand) { return value || operand; }
 	inline bool logicalNot() { return !value; }
 
+	inline bool bitwiseAnd(bool operand) { return value && operand; }
+	inline bool bitwiseOr(bool operand) { return value || operand; }
+	inline bool bitwiseXor(bool operand) { return value ^ operand; }
+	inline bool bitwiseNot() { return !value; }
+
 	// get type definition
 	static OtType getMeta();
 

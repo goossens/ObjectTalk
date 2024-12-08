@@ -890,6 +890,40 @@ assert(b.dosomething() == &quot;I did it&quot;);
                     operator.
                   </td>
                 </tr>
+                <tr>
+                  <td>__band__(boolean)</td>
+                  <td>
+                    Perform a bitwise logical AND between object's value and
+                    boolean and return result. This member function is called
+                    when you use the <strong>bitwise and</strong> (&amp;)
+                    operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__bor__(boolean)</td>
+                  <td>
+                    Perform a bitwise logical OR between object's value and
+                    boolean and return result. This member function is called
+                    when you use the <strong>bitwise or</strong> (
+                  </td>
+                </tr>
+                <tr>
+                  <td>__bxor__(boolean)</td>
+                  <td>
+                    Perform a bitwise logical exclusive OR between object's
+                    value and boolean and return result. This member function is
+                    called when you use the
+                    <strong>bitwise exclusive or</strong> (^) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__bnot__()</td>
+                  <td>
+                    Perform logical negation of the object's value and return
+                    result. This member function is called when you use the
+                    <strong>bitwise not</strong> (~) operator.
+                  </td>
+                </tr>
               </tbody>
             </table>
             <p><strong>Overrides</strong></p>
@@ -1070,7 +1104,7 @@ assert(b.dosomething() == &quot;I did it&quot;);
                   <td>
                     Perform logical negation of each bit in object's value and
                     return result. This member function is called when you use
-                    the <strong>bitwise and</strong> (~) operator.
+                    the <strong>bitwise not</strong> (~) operator.
                   </td>
                 </tr>
                 <tr>

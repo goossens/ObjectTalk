@@ -63,10 +63,10 @@ OtScanner::OtScanner() {
 	addToken("%=", MODULO_ASSIGNMENT_TOKEN);
 	addToken("%", MODULO_TOKEN);
 	addToken("||", OR_TOKEN);
-	addToken("|=", BITWISE_AND_ASSIGNMENT_TOKEN);
+	addToken("|=", BITWISE_OR_ASSIGNMENT_TOKEN);
 	addToken("|", BITWISE_OR_TOKEN);
 	addToken("&&", AND_TOKEN);
-	addToken("&=", BITWISE_OR_ASSIGNMENT_TOKEN);
+	addToken("&=", BITWISE_AND_ASSIGNMENT_TOKEN);
 	addToken("&", BITWISE_AND_TOKEN);
 	addToken("^=", BITWISE_XOR_ASSIGNMENT_TOKEN);
 	addToken("^", BITWISE_XOR_TOKEN);

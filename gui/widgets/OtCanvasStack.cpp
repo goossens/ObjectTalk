@@ -112,9 +112,10 @@ void OtCanvasStackClass::render() {
 	// determine size and scale
 	auto available = ImGui::GetContentRegionAvail();
 	auto scale = std::min(available.x / width, available.y / height);
-	ImVec2 size{width * scale, height * scale};
+	auto w = int(width * scale);
+	auto h = int(height * scale);
 
-	bool sizeChanged = size.x != framebuffer.getWidth() || size.y != framebuffer.getHeight();
+	bool sizeChanged = w != framebuffer.getWidth() || h != framebuffer.getHeight();
 	bool dirty = false;
 
 	for (auto& canvas : canvases) {
@@ -122,7 +123,7 @@ void OtCanvasStackClass::render() {
 
 		if (sizeChanged || cvs->needsRerender()) {
 			// update framebuffer size (if required)
-			canvas.framebuffer.update(size.x, size.y);
+			canvas.framebuffer.update(w, h);
 
 			// render the canvas
 			cvs->render(canvas.framebuffer, scale, [&]() {
@@ -136,11 +137,11 @@ void OtCanvasStackClass::render() {
 
 	// (re)-composite all layers (if required)
 	if (dirty) {
-		framebuffer.update(size.x, size.y);
+		framebuffer.update(w, h);
 
 		OtPass clearPass;
 		clearPass.setFrameBuffer(framebuffer);
-		clearPass.setRectangle(0, 0, int(size.x), int(size.y));
+		clearPass.setRectangle(0, 0, w, h);
 		clearPass.setClear(true);
 		clearPass.touch();
 
@@ -148,9 +149,9 @@ void OtCanvasStackClass::render() {
 			if (OtCanvas(canvas.canvas)->isEnabled()) {
 				OtPass overlayPass;
 				overlayPass.setFrameBuffer(framebuffer);
-				overlayPass.setRectangle(0, 0, int(size.x), int(size.y));
+				overlayPass.setRectangle(0, 0, w, h);
 
-				overlayPass.submitQuad(int(size.x), int(size.y));
+				overlayPass.submitQuad(w, h);
 				sampler.submit(0, canvas.framebuffer.getColorTextureHandle());
 				program.setState(OtStateWriteRgb | OtStateWriteA | OtStateBlendAlpha);
 				overlayPass.runShaderProgram(program);
@@ -158,8 +159,10 @@ void OtCanvasStackClass::render() {
 		}
 	}
 
-	ImGui::PushID(this);
+	ImVec2 size{float(w), float(h)};
 	auto texture = framebuffer.getColorTexture();
+
+	ImGui::PushID(this);
 	OtUi::align(size, horizontalAlign, verticalAlign);
 	ImGui::Image((ImTextureID)(intptr_t) texture.getIndex(), size);
 	ImGui::PopID();

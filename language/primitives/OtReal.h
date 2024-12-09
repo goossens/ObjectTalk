@@ -73,6 +73,7 @@ public:
 	inline int64_t ceil() { return std::ceil(value); }
 	inline int64_t floor() { return std::floor(value); }
 	inline int64_t trunc() { return std::trunc(value); }
+	inline double fraction() { return std::fmod(value, 1.0f); }
 	inline double min(double operand) { return std::min(value, operand); }
 	inline double max(double operand) { return std::max(value, operand); }
 	inline double clamp(double min, double max) { return std::clamp(value, min, max); }

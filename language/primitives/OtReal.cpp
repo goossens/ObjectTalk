@@ -65,6 +65,7 @@ OtType OtRealClass::getMeta() {
 		type->set("ceil", OtFunction::create(&OtRealClass::ceil));
 		type->set("floor", OtFunction::create(&OtRealClass::floor));
 		type->set("trunc", OtFunction::create(&OtRealClass::trunc));
+		type->set("fraction", OtFunction::create(&OtRealClass::fraction));
 		type->set("min", OtFunction::create(&OtRealClass::min));
 		type->set("max", OtFunction::create(&OtRealClass::max));
 		type->set("clamp", OtFunction::create(&OtRealClass::clamp));

@@ -23,6 +23,7 @@ systems, Reals are implemented using 8 bytes and have a range of
 | ceil() | Rounds object's value upward, returning the smallest integral value that is not less than object's value.
 | floor() | Rounds object's value downward, returning the largest integral value that is not greater than object's value.
 | trunc() | Rounds object's value toward zero, returning the nearest integral value that is not larger in magnitude than object's value.
+| fraction() | Return the fractional part of the object's value.
 | min(real) | Return the minimum of real and the object's value.
 | max(real) | Return the maximum of real and the object's value.
 | clamp(min, max) | Return clamped value between min and max.

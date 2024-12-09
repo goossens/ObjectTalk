@@ -35,12 +35,19 @@ public:
 		// determine timestep
 		float timestep = ImGui::GetIO().DeltaTime;
 
-		// update all animations (and remove them from the list when they are done)
+		// remove animations from the list when they are done
 		auto& animations = instance().animations;
 
 		animations.erase(std::remove_if(animations.begin(), animations.end(), [timestep](OtAnimation animation) {
-			return !animation->step(timestep);
+			return !animation->isRunning();
 		}), animations.end());
+
+		// update all animations
+		for (auto& animation : animations) {
+			if (!animation->isPaused()) {
+				animation->step(timestep);
+			}
+		}
 	}
 
 private:

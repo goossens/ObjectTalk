@@ -38,9 +38,6 @@ public:
 	bool entityExists(const std::string& tag);
 	OtObject getEntity(const std::string& tag);
 
-	// create an animation object
-	OtObject createAnimation();
-
 	// access components
 	bool hasTransformComponent();
 	OtObject getTransformComponent();

@@ -9,16 +9,19 @@
 //	Include files
 //
 
+#include "imgui.h"
+
 #include "OtClass.h"
 #include "OtModule.h"
 
-#include "OtEntityObject.h"
+#include "OtAnimation.h"
 
 
 //
 //	Module registration
 //
 
-static OtModuleRegistration registration{"scene", [](OtModule module) {
-	module->set("Entity", OtClass::create(OtEntityObjectClass::getMeta()));
+static OtModuleRegistration registration{"animation", [](OtModule module) {
+	// register classes
+	module->set("Animation", OtClass::create(OtAnimationClass::getMeta()));
 }};

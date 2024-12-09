@@ -58,17 +58,6 @@ OtObject OtEntityObjectClass::getEntity(const std::string& tag) {
 
 
 //
-//	OtEntityObjectClass::createAnimation
-//
-
-OtObject OtEntityObjectClass::createAnimation() {
-	auto animation = OtAnimation::create();
-	OtAnimator::add(animation);
-	return animation;
-}
-
-
-//
 //	OtEntityObjectClass::hasTransformComponent
 //
 
@@ -98,8 +87,6 @@ OtType OtEntityObjectClass::getMeta() {
 
 		type->set("entityExists", OtFunction::create(&OtEntityObjectClass::entityExists));
 		type->set("getEntity", OtFunction::create(&OtEntityObjectClass::getEntity));
-
-		type->set("createAnimation", OtFunction::create(&OtEntityObjectClass::createAnimation));
 
 		type->set("hasTransformComponent", OtFunction::create(&OtEntityObjectClass::hasTransformComponent));
 		type->set("getTransformComponent", OtFunction::create(&OtEntityObjectClass::getTransformComponent));

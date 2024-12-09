@@ -39,8 +39,16 @@ public:
 
 	OtObject onStep(OtObject callback);
 
+	// control animation
+	OtObject start();
+	OtObject stop();
+	OtObject pause();
+
+	inline bool isRunning() { return running; }
+	inline bool isPaused() { return paused; }
+
 	// step forward in animation
-	bool step(double seconds);
+	void step(double seconds);
 
 	// get type definition
 	static OtType getMeta();
@@ -52,6 +60,8 @@ private:
 	// repeat counter
 	size_t repeatCounter = 0;
 
-	// run forever
+	// control flags
 	bool forever = false;
+	bool running = false;
+	bool paused = false;
 };

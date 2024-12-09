@@ -15,7 +15,6 @@
 
 #include "OtAssetManager.h"
 
-#include "OtAnimator.h"
 #include "OtEntityObject.h"
 #include "OtSceneRuntime.h"
 
@@ -59,9 +58,6 @@ bool OtSceneRuntime::isReady() {
 //
 
 int OtSceneRuntime::render(int width, int height) {
-	// run all animations
-	OtAnimator::update();
-
 	// get our scene
 	auto scene = sceneAsset->getScene();
 

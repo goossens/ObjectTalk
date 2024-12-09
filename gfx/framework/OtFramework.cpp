@@ -25,6 +25,7 @@
 #include "OtStderrMultiplexer.h"
 #include "OtVM.h"
 
+#include "OtAnimator.h"
 #include "OtAssetManager.h"
 #include "OtFramework.h"
 #include "OtFrameworkAtExit.h"
@@ -125,6 +126,9 @@ void OtFramework::runThread2() {
 
 			// process all messages on the bus
 			OtMessageBus::process();
+
+			// run all animations
+			OtAnimator::update();
 
 			// reset view ID
 			OtPassReset();

@@ -20,6 +20,6 @@ set(SCENE_INCLUDE_DIRS ${SCENE_INCLUDE_DIRS} PARENT_SCOPE)
 add_library(scene OBJECT ${SCENE_INCLUDES} ${SCENE_SOURCES})
 target_include_directories(scene PUBLIC ${SCENE_INCLUDE_DIRS})
 
-target_link_libraries(scene PUBLIC json gfx tweeny Jolt nodes)
+target_link_libraries(scene PUBLIC json gfx Jolt nodes)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${SCENE_INCLUDES} ${SCENE_SOURCES})

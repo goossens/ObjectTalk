@@ -14,6 +14,7 @@
 #include "OtVM.h"
 
 #include "OtAnimation.h"
+#include "OtAnimator.h"
 
 
 //
@@ -121,12 +122,47 @@ OtObject OtAnimationClass::onStep(OtObject callback) {
 
 
 //
+//	OtAnimationClass::start
+//
+
+OtObject OtAnimationClass::start() {
+	running = true;
+	paused = false;
+
+	auto animation = OtAnimation(this);
+	OtAnimator::add(animation);
+	return animation;
+}
+
+
+//
+//	OtAnimationClass::stop
+//
+
+OtObject OtAnimationClass::stop() {
+	running = false;
+	paused = true;
+	return OtAnimation(this);
+}
+
+
+//
+//	OtAnimationClass::pause
+//
+
+OtObject OtAnimationClass::pause() {
+	paused = true;
+	return OtAnimation(this);
+}
+
+
+//
 //	OtAnimationClass::step
 //
 
-bool OtAnimationClass::step(double seconds) {
+void OtAnimationClass::step(double seconds) {
 	animator.step((int32_t) (seconds * 1000.0));
-	return forever || repeatCounter || animator.progress() < 1.0;
+	running = forever || repeatCounter || animator.progress() < 1.0;
 }
 
 
@@ -139,6 +175,7 @@ OtType OtAnimationClass::getMeta() {
 
 	if (!type) {
 		type = OtType::create<OtAnimationClass>("Animation", OtObjectClass::getMeta());
+
 		type->set("from", OtFunction::create(&OtAnimationClass::from));
 		type->set("to", OtFunction::create(&OtAnimationClass::to));
 		type->set("via", OtFunction::create(&OtAnimationClass::via));
@@ -146,6 +183,11 @@ OtType OtAnimationClass::getMeta() {
 		type->set("repeat", OtFunction::create(&OtAnimationClass::repeat));
 		type->set("continuous", OtFunction::create(&OtAnimationClass::continuous));
 		type->set("seek", OtFunction::create(&OtAnimationClass::seek));
+
+		type->set("start", OtFunction::create(&OtAnimationClass::start));
+		type->set("stop", OtFunction::create(&OtAnimationClass::stop));
+		type->set("pause", OtFunction::create(&OtAnimationClass::pause));
+
 		type->set("onStep", OtFunction::create(&OtAnimationClass::onStep));
 	}
 

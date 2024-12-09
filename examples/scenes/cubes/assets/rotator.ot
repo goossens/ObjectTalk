@@ -4,20 +4,22 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-var scene = import("scene");
+var animation = import("animation");
 var math = import("math");
+var scene = import("scene");
 
 class rotator : scene.Entity {
 	function create(this) {
 		var transform = this.getTransformComponent();
 
-		this.createAnimation()
+		animation.Animation()
 			.from(0.0)
 			.to(360.0)
 			.during (5.0 + 10.0.random())
 			.continuous()
 			.onStep(function(angle) {
 				transform.setRotation(math.Vec3(angle));
-			});
+			})
+			.start();
 	}
 }

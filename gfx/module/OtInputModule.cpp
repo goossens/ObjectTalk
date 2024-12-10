@@ -14,6 +14,7 @@
 #include "OtFunction.h"
 #include "OtInteger.h"
 #include "OtModule.h"
+#include "OtReal.h"
 
 #include "OtVec2.h"
 
@@ -214,6 +215,14 @@ static OtObject getMouseDrag() {
 	return OtVec2::create(drag.x, drag.y);
 }
 
+static OtObject getDeltaTime() {
+	return OtReal::create(ImGui::GetIO().DeltaTime);
+}
+
+static OtObject getTime() {
+	return OtReal::create(ImGui::GetTime());
+}
+
 
 //
 //	Module registration
@@ -231,4 +240,7 @@ static OtModuleRegistration registration{"input", [](OtModule module) {
 	module->set("hasMouseMoved", OtFunction::create(&hasMouseMoved));
 	module->set("getMousePos", OtFunction::create(&getMousePos));
 	module->set("getMouseDrag", OtFunction::create(&getMouseDrag));
+
+	module->set("getDeltaTime", OtFunction::create(&getDeltaTime));
+	module->set("getTime", OtFunction::create(&getTime));
 }};

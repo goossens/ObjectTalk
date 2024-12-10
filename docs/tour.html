@@ -468,10 +468,11 @@ var thirdValue = array1[3];
               through the Dict class constructor. The Dict class also has many
               member functions to manipulate the content of a dictionary.
             </p>
-            <pre><code>var dict1 = [ &quot;First Name&quot;: &quot;John&quot;, &quot;Last Name&quot;: &quot;Doe&quot;, &quot;Age&quot;: 34 };
+            <pre><code>var dict1 = { &quot;First Name&quot;: &quot;John&quot;, &quot;Last Name&quot;: &quot;Doe&quot;, &quot;Age&quot;: 34 };
 var dict2 = Dict(&quot;Name&quot;, &quot;John Doe&quot;, &quot;Address&quot;, &quot;Unknown&quot;);
 
 dict1[&quot;Last Update&quot;] = &quot;1 Apr 2000&quot;;
+dict2.Age = 64;
 var name = dict2[&quot;Name&quot;];
 </code></pre>
             <p>
@@ -577,7 +578,7 @@ if C {
 
 var test = function(var1) {
 	return var1;
-});
+};
 </code></pre>
             <p>
               Later we'll talk about member functions in Object and Classes but

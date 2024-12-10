@@ -1119,13 +1119,22 @@ bool OtCompiler::andExpression(OtByteCode bytecode) {
 			bytecode->method(dereferenceID, 0);
 		}
 
+		// see if we can short-circuit the evaluation
+		bytecode->dup();
+		size_t offset = bytecode->jumpFalse(0);
+
 		// parse right side
 		if (bitwiseOr(bytecode)) {
 			bytecode->method(dereferenceID, 0);
 		}
 
-		// generate code
+		// perform logical AND
 		bytecode->method(logicalAndID, 1);
+
+		// patch shortcut path
+		bytecode->patchJump(offset);
+
+		// item on stack is now a value
 		reference = false;
 	}
 
@@ -1151,13 +1160,22 @@ bool OtCompiler::orExpression(OtByteCode bytecode) {
 			bytecode->method(dereferenceID, 0);
 		}
 
+		// see if we can short-circuit the evaluation
+		bytecode->dup();
+		size_t offset = bytecode->jumpTrue(0);
+
 		// parse right side
 		if (andExpression(bytecode)) {
 			bytecode->method(dereferenceID, 0);
 		}
 
-		// generate code
+		// perform logical OR
 		bytecode->method(logicalOrID, 1);
+
+		// patch shortcut path
+		bytecode->patchJump(offset);
+
+		// item on stack is now a value
 		reference = false;
 	}
 

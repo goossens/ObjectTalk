@@ -191,6 +191,12 @@ C-based languages:
 * Logical AND (a && b)
 * Logical OR (a || b)
 
+Please note that the logical AND and OR operators use short-circuit evaluation
+meaning that of the left side of AND eveluates to false or the left side
+of OR eveluates to true, the right side is not evaluated as the result
+is already known. You can read more about this on
+[Wikipedia](https://en.wikipedia.org/wiki/Short-circuit_evaluation).
+
 **Logical NOT Operator**
 
 The logical NOT operator **(!a)** inverts a Boolean value so that true

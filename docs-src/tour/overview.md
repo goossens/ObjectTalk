@@ -152,10 +152,11 @@ are constructed using curly brackets ({}) or through the Dict class
 constructor. The Dict class also has many member functions to manipulate
 the content of a dictionary.
 
-	var dict1 = [ "First Name": "John", "Last Name": "Doe", "Age": 34 };
+	var dict1 = { "First Name": "John", "Last Name": "Doe", "Age": 34 };
 	var dict2 = Dict("Name", "John Doe", "Address", "Unknown");
 
 	dict1["Last Update"] = "1 Apr 2000";
+	dict2.Age = 64;
 	var name = dict2["Name"];
 
 Both arrays and dictionaries follow JSON rules and the ObjectTalk
@@ -251,7 +252,7 @@ ObjectTalk, the following two are the same:
 
 	var test = function(var1) {
 		return var1;
-	});
+	};
 
 Later we'll talk about member functions in Object and Classes but their
 syntax is basically the same.

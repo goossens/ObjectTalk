@@ -6,7 +6,6 @@
 
 
 FetchContent_Populate(imguifd QUIET GIT_REPOSITORY "https://github.com/goossens/ImGuiFileDialog")
-# FetchContent_Populate(imguifd QUIET GIT_REPOSITORY "https://github.com/aiekick/ImGuiFileDialog" GIT_TAG "ddccdd6")
 
 set(IMGUIFD_SOURCES
 	${imguifd_SOURCE_DIR}/ImGuiFileDialog.h

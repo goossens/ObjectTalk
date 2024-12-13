@@ -151,7 +151,7 @@ void OtObjectTalkEditor::renderMenu(bool canRun) {
 
 		if (ImGui::BeginMenu("Find")) {
 			if (ImGui::MenuItem("Find", OT_UI_SHORTCUT "F")) { openFindReplace(); }
-			if (ImGui::MenuItem("Find Next", OT_UI_SHORTCUT "G"), findText.size()) { find(); }
+			if (ImGui::MenuItem("Find Next", OT_UI_SHORTCUT "G"), findText.size()) { findNext(); }
 			if (ImGui::MenuItem("Find All", "^" OT_UI_SHORTCUT "G", findText.size())) { findAll(); }
 			ImGui::Separator();
 			ImGui::EndMenu();
@@ -170,7 +170,7 @@ void OtObjectTalkEditor::renderMenu(bool canRun) {
 			findAll();
 
 		} else if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_G)) {
-			find();
+			findNext();
 		}
 	}
 }
@@ -241,7 +241,7 @@ void OtObjectTalkEditor::renderEditor() {
 			focusOnFind = false;
 		}
 
-		if (OtUi::inputString("###find", &findText)) {
+		if (OtUi::inputString("###find", &findText, ImGuiInputTextFlags_AutoSelectAll)) {
 			if (findText.size()) {
 				editor.SetCursorPosition(0, 0);
 				editor.SelectNextOccurrenceOf(findText.c_str(), (int) findText.size(), caseSensitiveFind, wholeWordFind);
@@ -258,7 +258,7 @@ void OtObjectTalkEditor::renderEditor() {
 		ImGui::SameLine();
 
 		if (ImGui::Button("Find", ImVec2(replaceWidth, 0.0f))) {
-			find();
+			findNext();
 		}
 
 		ImGui::SameLine();
@@ -275,14 +275,14 @@ void OtObjectTalkEditor::renderEditor() {
 
 		if (OtUi::latchButton("Aa", &caseSensitiveFind, ImVec2(optionWidth, 0.0f))) {
 			editor.SetCursorPosition(0, 0);
-			find();
+			findNext();
 		}
 
 		ImGui::SameLine();
 
 		if (OtUi::latchButton("[]", &wholeWordFind, ImVec2(optionWidth, 0.0f))) {
 			editor.SetCursorPosition(0, 0);
-			find();
+			findNext();
 		}
 
 		ImGui::SameLine();
@@ -352,10 +352,10 @@ void OtObjectTalkEditor::openFindReplace() {
 
 
 //
-//	OtObjectTalkEditor::find
+//	OtObjectTalkEditor::findNext
 //
 
-void OtObjectTalkEditor::find() {
+void OtObjectTalkEditor::findNext() {
 	if (findText.size()) {
 		editor.SelectNextOccurrenceOf(findText.c_str(), (int) findText.size(), caseSensitiveFind, wholeWordFind);
 		focusOnEditor = true;

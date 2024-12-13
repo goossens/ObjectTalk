@@ -60,7 +60,7 @@ private:
 	bool wholeWordFind = false;
 
 	void openFindReplace();
-	void find();
+	void findNext();
 	void findAll();
 	void replace();
 	void replaceAll();

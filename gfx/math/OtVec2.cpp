@@ -84,13 +84,30 @@ OtType OtVec2Class::getMeta() {
 		type->set("__sub__", OtFunction::create(&OtVec2Class::subtract));
 		type->set("__mul__", OtFunction::create(&OtVec2Class::multiply));
 		type->set("__div__", OtFunction::create(&OtVec2Class::divide));
+		type->set("__mod__", OtFunction::create(&OtVec2Class::modulo));
 
 		type->set("__eq__", OtFunction::create(&OtVec2Class::equal));
 		type->set("__ne__", OtFunction::create(&OtVec2Class::notEqual));
 
 		type->set("length", OtFunction::create(&OtVec2Class::length));
-		type->set("normalize", OtFunction::create(&OtVec2Class::normalize));
 		type->set("distance", OtFunction::create(&OtVec2Class::distance));
+
+		type->set("min", OtFunction::create(&OtVec2Class::min));
+		type->set("max", OtFunction::create(&OtVec2Class::max));
+
+		type->set("abs", OtFunction::create(&OtVec2Class::abs));
+		type->set("ceil", OtFunction::create(&OtVec2Class::floor));
+		type->set("floor", OtFunction::create(&OtVec2Class::floor));
+		type->set("fract", OtFunction::create(&OtVec2Class::fract));
+		type->set("normalize", OtFunction::create(&OtVec2Class::normalize));
+		type->set("round", OtFunction::create(&OtVec2Class::floor));
+		type->set("sign", OtFunction::create(&OtVec2Class::floor));
+		type->set("trunc", OtFunction::create(&OtVec2Class::floor));
+
+		type->set("clamp", OtFunction::create(&OtVec2Class::clamp));
+		type->set("smoothstep", OtFunction::create(&OtVec2Class::smoothstep));
+		type->set("step", OtFunction::create(&OtVec2Class::step));
+
 		type->set("lerp", OtFunction::create(&OtVec2Class::lerp));
 	}
 

@@ -63,15 +63,32 @@ public:
 	inline glm::vec3 subtract(glm::vec3 operand) { return value - operand; }
 	inline glm::vec3 multiply(glm::vec3 operand) { return value * operand; }
 	inline glm::vec3 divide(glm::vec3 operand) { return value / operand; }
+	inline glm::vec3 modulo(glm::vec3 operand) { return glm::mod(value, operand); }
 
 	inline bool equal(glm::vec3 operand) { return value == operand; }
 	inline bool notEqual(glm::vec3 operand) { return value != operand; }
 
 	inline float length() { return glm::length(value); }
-	inline glm::vec3 normalize() { return glm::normalize(value); }
 	inline float distance(glm::vec3 operand) { return glm::distance(value, operand); }
+
 	inline float dot(glm::vec3 operand) { return glm::dot(value, operand); }
 	inline glm::vec3 cross(glm::vec3 operand) { return glm::cross(value, operand); }
+
+	inline glm::vec3 min(glm::vec3 operand) { return glm::min(value, operand); }
+	inline glm::vec3 max(glm::vec3 operand) { return glm::max(value, operand); }
+
+	inline glm::vec3 abs() { return glm::abs(value); }
+	inline glm::vec3 ceil() { return glm::ceil(value); }
+	inline glm::vec3 floor() { return glm::floor(value); }
+	inline glm::vec3 fract() { return glm::fract(value); }
+	inline glm::vec3 normalize() { return glm::normalize(value); }
+	inline glm::vec3 round() { return glm::round(value); }
+	inline glm::vec3 sign() { return glm::sign(value); }
+	inline glm::vec3 trunc() { return glm::trunc(value); }
+
+	inline glm::vec3 clamp(glm::vec3 low, glm::vec3 high) { return glm::clamp(value, low, high); }
+	inline glm::vec3 smoothstep(glm::vec3 operand, float x) { return glm::mix(value, operand, x); }
+	inline glm::vec3 step(glm::vec3 operand) { return glm::step(value, operand); }
 
 	inline glm::vec3 lerp(glm::vec3 operand, float delta) {
 		if (delta < 0.0f) {

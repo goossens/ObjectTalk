@@ -41,6 +41,14 @@ class OtModuleRegistry : public OtSingleton<OtModuleRegistry>, public OtRegistry
 
 
 //
+//	OtModuleCache
+//
+
+class OtModuleCache : public OtSingleton<OtModuleCache>, public OtRegistry<OtModule> {
+};
+
+
+//
 //	OtModuleClass::load
 //
 
@@ -213,10 +221,27 @@ OtModule OtModuleClass::import(const std::string& name) {
 		return entry.module;
 
 	} else {
-		// create a new module and load it
-		OtModule module = OtModule::create();
-		module->load(name);
-		return module;
+		// determine absolute path of module
+		auto path = getFullPath(name);
+
+		// ensure module exists
+		if (path.empty()) {
+			OtError("Can't find module [{}]", name);
+		}
+
+		// see if this "external" module is already in the cache
+		auto& cache = OtModuleCache::instance();
+
+		if (cache.has(path)) {
+			return cache.get(path);
+
+		} else {
+			// create a new module and load it
+			OtModule module = OtModule::create();
+			module->load(path);
+			cache.set(path, module);
+			return module;
+		}
 	}
 }
 
@@ -241,10 +266,13 @@ void OtModuleClass::addPath(const std::string& path) {
 //
 
 void OtModuleClass::clear() {
-	// clear the module cache
+	// clear the "internal" module cache
 	OtModuleRegistry::instance().iterateValues([](OtModuleRegistryEntry& entry) {
 		entry.module = nullptr;
 	});
+
+	// clear the "external" module cache
+	OtModuleCache::instance().clear();
 }
 
 

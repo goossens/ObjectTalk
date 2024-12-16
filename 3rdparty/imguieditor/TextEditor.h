@@ -48,6 +48,7 @@ public:
 	inline bool IsCompletingPairedGlyphs() const { return mCompletePairedGlyphs; }
 	inline int GetLineCount() const {  return int(mLines.size()); }
 	inline bool IsOverwriteEnabled() const { return mOverwrite; }
+	inline bool IsEmpty() const {  return mLines.size() == 1 && mLines[0].size() == 0; }
 
 	enum class PaletteIndex
 	{

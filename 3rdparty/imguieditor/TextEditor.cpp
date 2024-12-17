@@ -967,8 +967,8 @@ void TextEditor::EnterCharacter(ImWchar aChar, bool aShift)
 	UndoRecord u;
 	u.mBefore = mState;
 
-	bool bracketSelection = hasSelection && mCompletePairedGlyphs && (aChar == '{' || aChar == '[' || aChar == '(' || aChar == '"' || aChar == '\'');
-	if (bracketSelection) {
+	if (hasSelection && mCompletePairedGlyphs && (aChar == '{' || aChar == '[' || aChar == '(' || aChar == '"' || aChar == '\''))
+	{
 		auto closer = aChar == '{' ? '}' : (aChar == '[' ? ']' : (aChar == '(' ? ')' : aChar));
 
 		for (int c = mState.mCurrentCursor; c > -1; c--)
@@ -1045,7 +1045,7 @@ void TextEditor::EnterCharacter(ImWchar aChar, bool aShift)
 				char previousChar = cindex > 0 ? line[cindex - 1].mChar : 0;
 				char nextChar = cindex <= (int) line.size() - 1 ? line[cindex].mChar : 0;
 
-				// determine whitespace at start of line and add it to the new line
+				// determine whitespace at start of old line and add it to the new line
 				for (int i = 0; i < line.size() && isblank(line[i].mChar); ++i)
 					whitespace += line[i].mChar;
 
@@ -1053,15 +1053,28 @@ void TextEditor::EnterCharacter(ImWchar aChar, bool aShift)
 				column = (int)whitespace.size();
 
 				// handle special cases
-				if (previousChar == '[' || previousChar == '{') {
+				if (previousChar == '[' || previousChar == '{')
+				{
 					// add to an existing block
 					insert += "\t";
 					column++;
 
-					if ((previousChar == '[' && nextChar == ']') || (previousChar == '{' && nextChar == '}')) {
+					if ((previousChar == '[' && nextChar == ']') || (previousChar == '{' && nextChar == '}'))
 						// open a new block
 						insert += "\n" + whitespace;
-					}
+				}
+
+				if (isblank(nextChar))
+				{
+					// remove extra whitespaces
+					std::string deleted;
+
+					while (cindex <= (int) line.size() - 1 && isblank(line[cindex].mChar))
+						deleted += line[cindex++].mChar;
+
+					auto end = Coordinates(coord.mLine, GetCharacterColumn(coord.mLine, cindex));
+					u.mOperations.push_back({deleted, coord, end, UndoOperationType::Delete});
+					DeleteRange(coord, end);
 				}
 			}
 
@@ -1070,6 +1083,7 @@ void TextEditor::EnterCharacter(ImWchar aChar, bool aShift)
 			InsertTextAt(insertEnd, insert.c_str());
 			added.mText = insert;
 			added.mEnd = insertEnd;
+			u.mOperations.push_back(added);
 
 			// set new cursor position
 			SetCursorPosition(Coordinates(coord.mLine + 1, GetCharacterColumn(coord.mLine + 1, column)), c);
@@ -1160,12 +1174,10 @@ void TextEditor::EnterCharacter(ImWchar aChar, bool aShift)
 					SetCursorPosition(Coordinates(coord.mLine, GetCharacterColumn(coord.mLine, cindex)), c);
 					added.mEnd = GetActualCursorCoordinates(c);
 				}
-			}
-			else
-				continue;
-		}
 
-		u.mOperations.push_back(added);
+				u.mOperations.push_back(added);
+			}
+		}
 	}
 
 	u.mAfter = mState;

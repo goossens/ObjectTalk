@@ -99,6 +99,10 @@ void OtObjectTalkEditor::load() {
 //
 
 void OtObjectTalkEditor::save() {
+	// strip all trailing whitespaces to make code look better
+	editor.StripTrailingWhitespaces();
+
+	// save to file and baseline version (we still can undo back to before save but "dirty" tracking works)
 	std::ofstream stream(path.c_str());
 	stream << editor.GetText();
 	stream.close();

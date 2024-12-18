@@ -399,6 +399,45 @@ std::vector<std::string> TextEditor::GetTextLines() const
 	return result;
 }
 
+void TextEditor::StripTrailingWhitespaces()
+{
+	UndoRecord u;
+	u.mBefore = mState;
+
+	// process all the lines
+	for (int i = 0; i < mLines.size(); i++)
+	{
+		int size = int(mLines[i].size());
+		int cindex = size;
+		int whitespace = -1;
+
+		// look for first non-whitespace at the end of the line
+		while (Move(i, cindex, true, true))
+		{
+			if (isspace(mLines[i][cindex].mChar))
+				whitespace = cindex;
+			else
+				break;
+		}
+
+		// remove all white spaces if required
+		if (whitespace >= 0)
+		{
+			auto start = Coordinates(i, GetCharacterColumn(i, whitespace));
+			auto end = Coordinates(i, GetCharacterColumn(i, size));
+			u.mOperations.push_back({GetText(start, end), start, end, UndoOperationType::Delete});
+			DeleteRange(start, end);
+		}
+	}
+
+	// only create an undo record if any line had whitespaces at the end
+	if (u.mOperations.size())
+	{
+		u.mAfter = mState;
+		AddUndo(u);
+	}
+}
+
 bool TextEditor::Render(const char* aTitle, bool aParentIsFocused, const ImVec2& aSize, bool aBorder)
 {
 	if (mCursorPositionChanged)

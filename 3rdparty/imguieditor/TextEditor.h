@@ -46,9 +46,10 @@ public:
 	inline bool IsShowingMatchingBrackets() const { return mShowMatchingBrackets; }
 	inline void SetCompletePairedGlyphs(bool aValue) { mCompletePairedGlyphs = aValue; }
 	inline bool IsCompletingPairedGlyphs() const { return mCompletePairedGlyphs; }
-	inline int GetLineCount() const {  return int(mLines.size()); }
 	inline bool IsOverwriteEnabled() const { return mOverwrite; }
+
 	inline bool IsEmpty() const {  return mLines.size() == 1 && mLines[0].size() == 0; }
+	inline int GetLineCount() const {  return int(mLines.size()); }
 
 	enum class PaletteIndex
 	{
@@ -79,6 +80,8 @@ public:
 
 	void SetPalette(const Palette& aValue);
 	inline const Palette& GetPalette() const { return mPaletteBase; }
+	inline static void SetDefaultPalette(const Palette& aValue) { defaultPalette = aValue; }
+	inline static Palette& GetDefaultPalette() { return defaultPalette; }
 
 	struct LanguageDefinition
 	{
@@ -111,13 +114,11 @@ public:
 	void SetLanguageDefinition(const LanguageDefinition& aLanguageDef);
 	inline const LanguageDefinition& GetLanguageDefinition() const { return *mLanguageDefinition; };
 	const char* GetLanguageDefinitionName() const;
+
 	void SetTabSize(int aValue);
 	inline int GetTabSize() const { return mTabSize; }
 	void SetLineSpacing(float aValue);
 	inline float GetLineSpacing() const { return mLineSpacing;  }
-
-	inline static void SetDefaultPalette(const Palette& aValue) { defaultPalette = aValue; }
-	inline static Palette& GetDefaultPalette() { return defaultPalette; }
 
 	void SelectAll();
 	void SelectLine(int aLine);
@@ -157,6 +158,8 @@ public:
 	std::vector<std::string> GetTextLines() const;
 
 	void SetErrorMarkers(const std::map<int, std::string>& aMarkers) { mErrorMarkers = aMarkers; }
+
+	void StripTrailingWhitespaces();
 
 	bool Render(const char* aTitle, bool aParentIsFocused = false, const ImVec2& aSize = ImVec2(), bool aBorder = false);
 

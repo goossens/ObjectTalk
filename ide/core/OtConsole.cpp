@@ -80,6 +80,13 @@ void OtConsole::render() {
 		ImGui::SetScrollHereY(1.0);
 	}
 
+	// show context menu (if required)
+	if (ImGui::BeginPopupContextWindow("Console")) {
+		if (ImGui::MenuItem("Clear")) { clear(); }
+		if (ImGui::MenuItem("Copy")) { copy(); }
+		ImGui::EndPopup();
+	}
+
 	ImGui::EndChild();
 }
 
@@ -91,6 +98,21 @@ void OtConsole::render() {
 void OtConsole::clear() {
 	lines.clear();
 	lines.push_back(Line(standardOut, ""));
+}
+
+
+//
+//	OtConsole::copy
+//
+
+void OtConsole::copy() {
+	std::string text;
+
+	for (auto& line : lines) {
+		text += line.text + "\n";
+	}
+
+	ImGui::SetClipboardText(text.c_str());
 }
 
 

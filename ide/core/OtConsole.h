@@ -31,6 +31,9 @@ public:
 	// clear the console
 	void clear();
 
+	// copy console context to clipboard
+	void copy();
+
 	// scroll to the bottom
 	void scrollToBottom() { scrollBottom = true; }
 

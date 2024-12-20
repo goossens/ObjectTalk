@@ -27,26 +27,26 @@
 //
 
 const static TextEditor::Palette colorPalette = { {
-	0xd4d4d4ff,	// Default
-	0xc586c0ff,	// Keyword
-	0xb5cea8ff,	// Number
-	0xce9178ff,	// String
-	0xce9178ff, // Char literal
-	0xffffffff, // Punctuation
-	0x808040ff,	// Preprocessor
-	0x9cdcfeff, // Identifier
-	0x4fc1ffff, // Known identifier
-	0x63c6abff, // Preproc identifier
-	0x6a9955ff, // Comment (single line)
-	0x6a9955ff, // Comment (multi line)
-	0x1e1e1eff, // Background
-	0xe0e0e0ff, // Cursor
-	0x2060a0ff, // Selection
-	0x800020ff, // ErrorMarker
-	0x404040ff, // ControlCharacter
-	0x0080f040, // Breakpoint
-	0x6e7681ff, // Line number
-	0xccccccff, // Current line number
+	IM_COL32(212, 212, 212, 255),	// Default
+	IM_COL32(197, 134, 192, 255),	// Keyword
+	IM_COL32(181, 206, 168, 255),	// Number
+	IM_COL32(206, 145, 120, 255),	// String
+	IM_COL32(206, 145, 120, 255),	// Char literal
+	IM_COL32(255, 255, 255, 255),	// Punctuation
+	IM_COL32(128, 128,  64, 255),	// Preprocessor
+	IM_COL32(156, 220, 254, 255),	// Identifier
+	IM_COL32( 79, 193, 255, 255),	// Known identifier
+	IM_COL32( 99, 198, 171, 255),	// Preproc identifier
+	IM_COL32(106, 153,  85, 255),	// Comment (single line)
+	IM_COL32(106, 153,  85, 255),	// Comment (multi line)
+	IM_COL32( 30,  30,  30, 255),	// Background
+	IM_COL32(224, 224, 224, 255),	// Cursor
+	IM_COL32( 32,  96, 160, 255),	// Selection
+	IM_COL32(128,   0,  32, 255),	// ErrorMarker
+	IM_COL32( 64,  64,  64, 255),	// ControlCharacter
+	IM_COL32(  0, 128, 240,  64),	// Breakpoint
+	IM_COL32(110, 118, 129, 255),	// Line number
+	IM_COL32(204, 204, 204, 255),	// Current line number
 } };
 
 

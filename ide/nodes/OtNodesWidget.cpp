@@ -563,8 +563,13 @@ void OtNodesWidget::calculateNodeSize(OtNode& node) {
 void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 	// see if we have the start of a new mouse interaction
 	if (interactionState == noInteraction) {
+		// scrooling event
+		if (ImGui::IsKeyDown(ImGuiMod_Ctrl) && ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
+			scrollingStartPos = ImGui::GetMousePos() - scrollingOffset;
+			interactionState = scrolling;
+
 		// handle left mouse button events
-		if (ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
+		} else if (ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
 			// are we hitting a pin?
 			if (hoveredPin) {
 				auto pin = nodes->getPin(hoveredPin);
@@ -615,7 +620,7 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 					interactionState = selectNode;
 				}
 
-			// we hitting the background
+			// we are hitting the background
 			} else {
 				// start rubber banding
 				rubberBandStartPos = ImGui::GetMousePos();
@@ -629,11 +634,6 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 			if (!hoveredPin && !hoveredNode) {
 				contextMenuDone = true;
 			}
-
-		// handle middle mouse button events
-		} else if (ImGui::IsMouseDown(ImGuiMouseButton_Middle)) {
-			scrollingStartPos = ImGui::GetMousePos() - scrollingOffset;
-			interactionState = scrolling;
 		}
 
 	// handle ignore mouse state

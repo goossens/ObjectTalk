@@ -4,6 +4,7 @@
 #include <array>
 #include <map>
 #include <string>
+#include <unordered_map>
 #include <unordered_set>
 #include <utility>
 #include <vector>
@@ -164,7 +165,7 @@ public:
 	void StripTrailingWhitespaces();
 
 	// render the editor in a Dear ImGui context
-	bool Render(const char* aTitle, bool aParentIsFocused = false, const ImVec2& aSize = ImVec2(), bool aBorder = false);
+	void Render(const char* aTitle, const ImVec2& aSize = ImVec2(), bool aBorder = false);
 
 	// debugging support
 	void ImGuiDebugPanel(const std::string& panelName = "Debug");
@@ -377,10 +378,11 @@ private:
 	void HandleKeyboardInputs(bool aParentIsFocused = false);
 	void HandleMouseInputs();
 	void UpdateViewVariables(float aScrollX, float aScrollY);
-	void Render(bool aParentIsFocused = false);
+	void Render();
 
 	void OnCursorPositionChanged();
-	void OnLineChanged(bool aBeforeChange, int aLine, int aColumn, int aCharCount, bool aDeleted);
+	void OnBeforeLineChange(int aLine, int aColumn, int aCharCount, bool aDeleted);
+	void OnAfterLineChange(int aLine, int aColumn, int aCharCount, bool aDeleted);
 	void MergeCursorsIfPossible();
 
 	void AddUndo(UndoRecord& aValue);
@@ -422,7 +424,6 @@ private:
 	float mCurrentSpaceHeight = 20.0f;
 	float mCurrentSpaceWidth = 20.0f;
 	float mLastClickTime = -1.0f;
-	ImVec2 mLastClickPos;
 	int mFirstVisibleLine = 0;
 	int mLastVisibleLine = 0;
 	int mVisibleLineCount = 0;
@@ -433,13 +434,11 @@ private:
 	float mContentHeight = 0.0f;
 	float mScrollX = 0.0f;
 	float mScrollY = 0.0f;
-	bool mPanning = false;
-	bool mDraggingSelection = false;
-	ImVec2 mLastMousePos;
 	bool mCursorPositionChanged = false;
 	bool mCursorOnBracket = false;
 	Coordinates mMatchingBracketCoords;
 	float mCursorAnimationTimer = 0.0f;
+	std::unordered_map<int, int> cursorCharIndices;
 	std::map<int, std::string> mErrorMarkers;
 
 	int mColorRangeMin = 0;

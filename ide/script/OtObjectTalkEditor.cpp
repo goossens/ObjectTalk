@@ -255,6 +255,10 @@ void OtObjectTalkEditor::renderEditor() {
 			}
 		}
 
+		if (ImGui::IsItemDeactivatedAfterEdit()) {
+			focusOnEditor = true;
+		}
+
 		if (!findText.size()) {
 			ImGui::BeginDisabled();
 		}

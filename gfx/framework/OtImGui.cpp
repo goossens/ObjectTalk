@@ -251,10 +251,6 @@ void OtFramework::frameIMGUI() {
 					inRightClick = event.mouseButton.action == GLFW_PRESS;
 					io.AddMouseButtonEvent(ImGuiMouseButton_Right, inRightClick);
 
-				} else if (inMiddleClick || ((event.mouseButton.mods & GLFW_MOD_SUPER) && event.mouseButton.button == ImGuiMouseButton_Left)) {
-					inMiddleClick = event.mouseButton.action == GLFW_PRESS;
-					io.AddMouseButtonEvent(ImGuiMouseButton_Middle, inMiddleClick);
-
 				} else {
 					io.AddMouseButtonEvent(event.mouseButton.button, event.mouseButton.action == GLFW_PRESS);
 				}

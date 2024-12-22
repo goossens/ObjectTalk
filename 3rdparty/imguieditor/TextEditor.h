@@ -158,8 +158,10 @@ public:
 	inline bool IsEmpty() const {  return mLines.size() == 1 && mLines[0].size() == 0; }
 	inline int GetLineCount() const {  return int(mLines.size()); }
 
-	// set error markers (can also be used to clear the markers by providing an empty map)
-	void SetErrorMarkers(const std::map<int, std::string>& aMarkers) { mErrorMarkers = aMarkers; }
+	// access error markers
+	inline void SetErrorMarkers(const std::map<int, std::string>& aMarkers) { mErrorMarkers = aMarkers; }
+	inline void ClearErrorMarkers() { mErrorMarkers.clear(); }
+	inline bool HasErrorMarkers() const { return mErrorMarkers.size() != 0; }
 
 	// useful editor functions
 	void StripTrailingWhitespaces();
@@ -190,7 +192,6 @@ private:
 			IM_ASSERT(aLine >= 0);
 			IM_ASSERT(aColumn >= 0);
 		}
-		static Coordinates Invalid() { static Coordinates invalid(-1, -1); return invalid; }
 
 		bool operator ==(const Coordinates& o) const
 		{
@@ -292,8 +293,7 @@ private:
 	class UndoRecord
 	{
 	public:
-		UndoRecord() {}
-		~UndoRecord() {}
+		UndoRecord() = default;
 
 		UndoRecord(
 			const std::vector<UndoOperation>& aOperations,
@@ -317,6 +317,8 @@ private:
 
 	int InsertTextAt(Coordinates& aWhere, const char* aValue);
 	void InsertTextAtCursor(const char* aValue, int aCursor = -1);
+	void InsertLineBelow();
+	void InsertLineAbove();
 
 	enum class MoveDirection { Right = 0, Left = 1, Up = 2, Down = 3 };
 	bool Move(int& aLine, int& aCharIndex, bool aLeft = false, bool aLockLine = false) const;

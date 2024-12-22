@@ -41,7 +41,8 @@ public:
 	// get editor status
 	inline bool isRunnable() override { return true; }
 	inline bool isDirty() override { return taskManager.isDirty(); }
-	inline std::string getExtension() override { return ".ots"; }
+	inline std::string getExtension() override { return extension; }
+	static constexpr const char* extension = ".ots";
 
 	// clipboard operations
 	void cutEntity();

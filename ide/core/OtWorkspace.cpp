@@ -23,10 +23,28 @@
 #include "OtPath.h"
 #include "OtUi.h"
 
+#include "OtJsonEditor.h"
+#include "OtMarkdownEditor.h"
 #include "OtNodesEditor.h"
 #include "OtObjectTalkEditor.h"
 #include "OtSceneEditor.h"
+#include "OtTxtEditor.h"
 #include "OtWorkspace.h"
+
+
+//
+//	OtWorkspace::OtWorkspace
+//
+
+OtWorkspace::OtWorkspace() {
+	// register editor types
+	registerEditorType<OtJsonEditor>();
+	registerEditorType<OtMarkdownEditor>();
+	registerEditorType<OtNodesEditor>();
+	registerEditorType<OtObjectTalkEditor>();
+	registerEditorType<OtSceneEditor>();
+	registerEditorType<OtTxtEditor>();
+}
 
 
 //
@@ -219,7 +237,6 @@ bool OtWorkspace::onCanQuit() {
 	}
 }
 
-
 //
 //	OtWorkspace::newFile
 //
@@ -230,56 +247,34 @@ void OtWorkspace::newFile() {
 
 
 //
-//	OtWorkspace::getUntitledName
+//	OtWorkspace::createEditor
 //
 
-std::string OtWorkspace::getUntitledName(const char* ext) {
+std::shared_ptr<OtEditor> OtWorkspace::createEditor(const std::string &extension) {
+	return editorTypes.count(extension) ? editorTypes[extension]() : nullptr;
+}
+
+
+//
+//	OtWorkspace::newFile
+//
+
+void OtWorkspace::newFile(const std::string& extension) {
+	// create a new name
 	static int seqno = 1;
 	std::string name;
 
 	while (!name.size()) {
-		std::string temp = fmt::format("untitled{}{}", seqno++, ext);
+		std::string temp = fmt::format("untitled{}{}", seqno++, extension);
 
 		if (!findEditor(temp)) {
 			name = temp;
 		}
 	}
 
-	return name;
-}
-
-
-//
-//	OtWorkspace::newScript
-//
-
-void OtWorkspace::newScript() {
-	auto editor = std::make_shared<OtObjectTalkEditor>();
-	editor->newFile(getUntitledName(".ot"));
-	editors.push_back(editor);
-	state = editState;
-}
-
-
-//
-//	OtWorkspace::newScene
-//
-
-void OtWorkspace::newScene() {
-	auto editor = std::make_shared<OtSceneEditor>();
-	editor->newFile(getUntitledName(".ots"));
-	editors.push_back(editor);
-	state = editState;
-}
-
-
-//
-//	OtWorkspace::newNodes
-//
-
-void OtWorkspace::newNodes() {
-	auto editor = std::make_shared<OtNodesEditor>();
-	editor->newFile(getUntitledName(".otn"));
+	// create a new editor
+	auto editor = createEditor(extension);
+	editor->newFile(name);
 	editors.push_back(editor);
 	state = editState;
 }
@@ -315,18 +310,10 @@ void OtWorkspace::openFile(const std::string& path, int visualState) {
 		// get file extension to determine editor type
 		auto extension = OtPath::getExtension(path);
 
-		// open correct editor
-		if (extension == ".ot" || extension == ".ots" || extension == ".otn") {
-			if (extension == ".ot") {
-			editor = std::make_shared<OtObjectTalkEditor>();
+		// create a new editor for file type
+		editor = createEditor(extension);
 
-			} else if (extension == ".ots") {
-				editor = std::make_shared<OtSceneEditor>();
-
-			} else if (extension == ".otn") {
-				editor = std::make_shared<OtNodesEditor>();
-			}
-
+		if (editor) {
 			editor->openFile(path);
 			editor->setVisualState(visualState);
 			editors.push_back(editor);
@@ -682,31 +669,19 @@ void OtWorkspace::renderNewFileType() {
 	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5, 0.5));
 
 	if (ImGui::BeginPopupModal("New File...", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-		ImGui::Text("Please select a file type:");
+		ImGui::Spacing();
+
+		if (ImGui::Button("Script", ImVec2(120, 0))) { newFile(".ot"); ImGui::CloseCurrentPopup(); } ImGui::SameLine();
+		if (ImGui::Button("Scene", ImVec2(120, 0))) { newFile(".ots"); ImGui::CloseCurrentPopup(); } ImGui::SameLine();
+		if (ImGui::Button("Nodes", ImVec2(120, 0))) { newFile(".otn"); ImGui::CloseCurrentPopup(); }
+
+		if (ImGui::Button("Text", ImVec2(120, 0))) { newFile(".txt"); ImGui::CloseCurrentPopup(); } ImGui::SameLine();
+		if (ImGui::Button("JSON", ImVec2(120, 0))) { newFile(".json"); ImGui::CloseCurrentPopup(); } ImGui::SameLine();
+		if (ImGui::Button("Markdown", ImVec2(120, 0))) { newFile(".md"); ImGui::CloseCurrentPopup(); }
+
+		ImGui::Spacing();
 		ImGui::Separator();
-
-		if (ImGui::Button("Script", ImVec2(120, 0))) {
-			// create a new text editor
-			newScript();
-			ImGui::CloseCurrentPopup();
-		}
-
-		ImGui::SetItemDefaultFocus();
-		ImGui::SameLine();
-
-		if (ImGui::Button("Scene", ImVec2(120, 0))) {
-			newScene();
-			ImGui::CloseCurrentPopup();
-		}
-
-		ImGui::SameLine();
-
-		if (ImGui::Button("Nodes", ImVec2(120, 0))) {
-			newNodes();
-			ImGui::CloseCurrentPopup();
-		}
-
-		ImGui::SameLine();
+		ImGui::Spacing();
 
 		if (ImGui::Button("Cancel", ImVec2(120, 0)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
 			state = editors.size() ? editState : splashState;

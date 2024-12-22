@@ -41,6 +41,7 @@
 //				.ot  - compile and run script
 //				.ots - run scene file
 //				.otn - open nodes in IDE
+//				.* - open file in IDE
 //
 //		Elseif more than one files is specified on the command line
 //			Open all files in the IDE
@@ -137,20 +138,16 @@ int main(int argc, char* argv[]) {
 					framework.run(&app);
 					framework.terminate();
 
-				} else if (extension == ".otn") {
-					// handle a node file
+				} else {
+					// handle other file types
 					OtFramework framework;
 					framework.initialize();
 
-					// open nodes in IDE
+					// open in IDE
 					OtWorkspace workspace;
 					workspace.openFile(file, OtEditor::inTab);
-
 					framework.run(&workspace);
 					framework.terminate();
-
-				} else {
-					OtLogFatal("Error: can't execute file with extension [{}]", extension);
 				}
 
 		} else if (files.size() > 1) {
@@ -173,7 +170,7 @@ int main(int argc, char* argv[]) {
 			OtFramework framework;
 			framework.initialize();
 
-			// see if we have any files passed by the Finder (this only appies to MacOS)
+			// see if we have any files passed by the Finder (this only applies to MacOS)
 			for (auto& filename : OtFramework::getStartupFiles()) {
 				files.emplace_back(filename);
 			}
@@ -231,10 +228,10 @@ int main(int argc, char* argv[]) {
 
 #else
 		//
-		// Non-UI conguration
+		// Non-UI configuration
 		//
 
-		// where any files specified?
+		// were any files specified?
 		if (files.size() == 0) {
 			OtLogFatal("No files specified");
 
@@ -269,7 +266,7 @@ int main(int argc, char* argv[]) {
 			OtStderrMultiplexer::multiplex(e);
 		}
 
-		// output human readable text
+		// output human readable error message
 		OtLogFatal("Error: {}", e.what());
 	}
 

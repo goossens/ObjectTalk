@@ -12,8 +12,11 @@
 //	Include files
 //
 
+#include <functional>
 #include <memory>
 #include <string>
+#include <unordered_map>
+#include <vector>
 
 #include "OtException.h"
 
@@ -31,14 +34,15 @@
 
 class OtWorkspace : public OtFrameworkApp {
 public:
+	// constructor
+	OtWorkspace();
+
 	// handle message bus commands
 	void onMessage(const std::string& message);
 
 	// create a new file
 	void newFile();
-	void newScript();
-	void newScene();
-	void newNodes();
+	void newFile(const std::string& extension);
 
 	// open a file
 	void openFile();
@@ -63,6 +67,12 @@ public:
 	// make a specified editor active
 	void activateEditor(std::shared_ptr<OtEditor> editor);
 
+	// register an editor type
+	template <typename T>
+	void registerEditorType() {
+		editorTypes[T::extension] = []() { return std::make_shared<T>(); };
+	}
+
 private:
 	// framework callbacks
 	void onSetup() override;
@@ -70,8 +80,8 @@ private:
 	void onTerminate() override;
 	bool onCanQuit() override;
 
-	// create a name for an untitled file
-	std::string getUntitledName(const char* ext);
+	// create an editor by file extension
+	std::shared_ptr<OtEditor> createEditor(const std::string& extension);
 
 	// highlight error in editor after subprocess run
 	void highlightError(OtException& exception);
@@ -90,6 +100,9 @@ private:
 
 	// the logo for the splash screen
 	std::shared_ptr<OtLogo> logo;
+
+	// list of editor types
+	std::unordered_map<std::string, std::function<std::shared_ptr<OtEditor>()>> editorTypes;
 
 	// list of open editors
 	std::vector<std::shared_ptr<OtEditor>> editors;

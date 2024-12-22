@@ -193,7 +193,7 @@ const TextEditor::LanguageDefinition& OtObjectTalkLanguageGetDefinition() {
 
 	if (!initialized) {
 		static const char* const otDeclarations[] = {
-			"function", "var"
+			"class", "function", "var"
 		};
 
 		for (auto& d : otDeclarations) {
@@ -201,7 +201,7 @@ const TextEditor::LanguageDefinition& OtObjectTalkLanguageGetDefinition() {
 		}
 
 		static const char* const otKeywords[] = {
-			"catch", "class", "do", "elif", "else", "for", "if", "in", "not", "return", "super", "throw", "try", "while"
+			"catch", "do", "elif", "else", "for", "if", "in", "not", "return", "super", "throw", "try", "while"
 		};
 
 		for (auto& k : otKeywords) {
@@ -255,6 +255,7 @@ const TextEditor::LanguageDefinition& OtObjectTalkLanguageGetDefinition() {
 		langDef.mCommentStart = "/*";
 		langDef.mCommentEnd = "*/";
 		langDef.mSingleLineComment = "//";
+		langDef.mPreprocChar = 0;
 		langDef.mCaseSensitive = true;
 		langDef.mName = "ObjectTalk";
 		initialized = true;

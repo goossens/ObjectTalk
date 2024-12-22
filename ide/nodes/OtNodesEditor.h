@@ -31,7 +31,8 @@ class OtNodesEditor : public OtEditor {
 public:
 	// get editor status
 	inline bool isDirty() override { return taskManager.isDirty(); }
-	inline std::string getExtension() override { return ".otn"; }
+	inline std::string getExtension() override { return extension; }
+	static constexpr const char* extension = ".otn";
 
 	// render the editor
 	void renderMenu(bool canRun) override;

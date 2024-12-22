@@ -418,8 +418,10 @@ void TextEditor::StripTrailingWhitespaces()
 void TextEditor::Render(const char* aTitle, const ImVec2& aSize, bool aBorder)
 {
 	if (mCursorPositionChanged)
+	{
 		OnCursorPositionChanged();
-	mCursorPositionChanged = false;
+		mCursorPositionChanged = false;
+	}
 
 	if (mPaletteAlpha != ImGui::GetStyle().Alpha)
 		UpdatePalette();
@@ -752,6 +754,52 @@ void TextEditor::InsertTextAtCursor(const char* aValue, int aCursor)
 	Colorize(start.mLine - 1, totalLines + 2);
 }
 
+
+void TextEditor::InsertLineBelow()
+{
+	UndoRecord u;
+	u.mBefore = mState;
+
+	for (int c = mState.mCurrentCursor; c > -1; c--)
+	{
+		auto coord = GetActualCursorCoordinates(c);
+		auto lastLine = int(mLines.size()) - 1;
+
+		if (coord.mLine == lastLine)
+		{
+			mLines.emplace_back(Line());
+			SetCursorPosition(Coordinates(lastLine + 1, 0), c);
+			u.mOperations.push_back({ "\n", Coordinates(lastLine, GetLineMaxColumn(lastLine)), Coordinates(lastLine + 1, 0), UndoOperationType::Add });
+		}
+		else
+		{
+			mLines.insert(mLines.begin() + coord.mLine + 1, Line());
+			SetCursorPosition(Coordinates(coord.mLine + 1, 0), c);
+			u.mOperations.push_back({ "\n", Coordinates(coord.mLine + 1, 0), Coordinates(coord.mLine + 2, 0), UndoOperationType::Add });
+		}
+	}
+
+	u.mAfter = mState;
+	AddUndo(u);
+}
+
+void TextEditor::InsertLineAbove()
+{
+	UndoRecord u;
+	u.mBefore = mState;
+
+	for (int c = mState.mCurrentCursor; c > -1; c--)
+	{
+		auto coord = GetActualCursorCoordinates(c);
+		mLines.insert(mLines.begin() + coord.mLine, Line());
+		SetCursorPosition(Coordinates(coord.mLine, 0), c);
+		u.mOperations.push_back({ "\n", Coordinates(coord.mLine, 0), Coordinates(coord.mLine + 1, 0), UndoOperationType::Add });
+	}
+
+	u.mAfter = mState;
+	AddUndo(u);
+}
+
 bool TextEditor::Move(int& aLine, int& aCharIndex, bool aLeft, bool aLockLine) const
 {
 	// assumes given char index is not in the middle of utf8 sequence
@@ -991,7 +1039,6 @@ void TextEditor::EnterCharacter(ImWchar aChar)
 			SetCursorPosition(end, c);
 			Colorize(coord.mLine, end.mLine - coord.mLine + 1);
 		}
-
 
 		ClearSelections();
 		u.mAfter = mState;
@@ -2257,6 +2304,10 @@ void TextEditor::HandleKeyboardInputs(bool aParentIsFocused)
 		// handle new line
 		else if (!mReadOnly && isNoModifiers && (ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_KeypadEnter)))
 			EnterCharacter('\n');
+		else if (!mReadOnly && isShortcut && (ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_KeypadEnter)))
+			InsertLineBelow();
+		else if (!mReadOnly && isShiftShortcut && (ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_KeypadEnter)))
+			InsertLineAbove();
 
 		// handle tabs
 		else if (!mReadOnly && ImGui::IsKeyPressed(ImGuiKey_Tab))

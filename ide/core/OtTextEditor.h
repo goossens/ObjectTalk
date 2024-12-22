@@ -20,28 +20,22 @@
 
 
 //
-//	OtObjectTalkEditor
+//	OtTextEditor
 //
 
-class OtObjectTalkEditor : public OtEditor {
+class OtTextEditor : public OtEditor {
 public:
 	// constructor
-	OtObjectTalkEditor();
+	OtTextEditor();
 
 	// get editor status
-	inline bool isRunnable() override { return true; }
 	inline bool isDirty() override { return editor.GetUndoIndex() != version; }
-	inline std::string getExtension() override { return ".ot"; }
 
 	// render the parts
 	void renderMenu(bool canRun) override;
 	void renderEditor() override;
 
-	// update error markers
-	void highlightError(size_t line, const std::string& error);
-	void clearError();
-
-private:
+protected:
 	// file access functions
 	void clear() override;
 	void load() override;

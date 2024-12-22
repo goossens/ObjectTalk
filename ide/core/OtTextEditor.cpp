@@ -18,8 +18,7 @@
 #include "OtMessageBus.h"
 #include "OtUi.h"
 
-#include "OtObjectTalkEditor.h"
-#include "OtObjectTalkLanguage.h"
+#include "OtTextEditor.h"
 
 
 //
@@ -51,34 +50,31 @@ const static TextEditor::Palette colorPalette = { {
 
 
 //
-//	OtObjectTalkEditor::OtObjectTalkEditor
+//	OtTextEditor::OtTextEditor
 //
 
-OtObjectTalkEditor::OtObjectTalkEditor() {
-	editor.SetLanguageDefinition(OtObjectTalkLanguageGetDefinition());
-	editor.SetPalette(colorPalette);
+OtTextEditor::OtTextEditor() {
 	editor.SetLineSpacing(1.25f);
 	editor.SetShowWhitespacesEnabled(true);
 	editor.SetShortTabsEnabled(true);
-	editor.SetShowMatchingBrackets(true);
-	editor.SetCompletePairedGlyphs(true);
+	editor.SetPalette(colorPalette);
 }
 
 
 //
-//	OtObjectTalkEditor::clear
+//	OtTextEditor::clear
 //
 
-void OtObjectTalkEditor::clear() {
+void OtTextEditor::clear() {
 	editor.SetText("");
 }
 
 
 //
-//	OtObjectTalkEditor::load
+//	OtTextEditor::load
 //
 
-void OtObjectTalkEditor::load() {
+void OtTextEditor::load() {
 	std::ifstream stream(path.c_str());
 	std::string text;
 
@@ -95,11 +91,11 @@ void OtObjectTalkEditor::load() {
 
 
 //
-//	OtObjectTalkEditor::save
+//	OtTextEditor::save
 //
 
-void OtObjectTalkEditor::save() {
-	// strip all trailing whitespaces to make code look better
+void OtTextEditor::save() {
+	// strip all trailing whitespaces to make text look better
 	editor.StripTrailingWhitespaces();
 
 	// save to file and baseline version (we still can undo back to before save but "dirty" tracking works)
@@ -111,10 +107,10 @@ void OtObjectTalkEditor::save() {
 
 
 //
-//	OtObjectTalkEditor::renderMenu
+//	OtTextEditor::renderMenu
 //
 
-void OtObjectTalkEditor::renderMenu(bool canRun) {
+void OtTextEditor::renderMenu(bool canRun) {
 	// create menubar
 	if (ImGui::BeginMenuBar()) {
 		renderFileMenu(canRun);
@@ -149,7 +145,7 @@ void OtObjectTalkEditor::renderMenu(bool canRun) {
 			flag = editor.IsCompletingPairedGlyphs(); if (ImGui::MenuItem("Complete Matchng Glyphs", nullptr, &flag)) { editor.SetCompletePairedGlyphs(flag); };
 
 			ImGui::Separator();
-			if (ImGui::MenuItem("Clear Errors")) { clearError(); }
+			if (ImGui::MenuItem("Clear Errors", nullptr, nullptr, editor.HasErrorMarkers())) { editor.ClearErrorMarkers(); }
 			ImGui::EndMenu();
 		}
 
@@ -167,13 +163,13 @@ void OtObjectTalkEditor::renderMenu(bool canRun) {
 	// handle keyboard shortcuts (if required)
 	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows)) {
 		// handle menu shortcuts
-		if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_F)) {
+		if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_F)) {
 			openFindReplace();
 
-		} else if (ImGui::Shortcut(ImGuiMod_Shift | ImGuiMod_Ctrl | ImGuiKey_G)) {
+		} else if (ImGui::IsKeyChordPressed(ImGuiMod_Shift | ImGuiMod_Ctrl | ImGuiKey_G)) {
 			findAll();
 
-		} else if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_G)) {
+		} else if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_G)) {
 			findNext();
 		}
 	}
@@ -181,10 +177,10 @@ void OtObjectTalkEditor::renderMenu(bool canRun) {
 
 
 //
-//	OtObjectTalkEditor::renderEditor
+//	OtTextEditor::renderEditor
 //
 
-void OtObjectTalkEditor::renderEditor() {
+void OtTextEditor::renderEditor() {
 	// get current position and available space
 	auto pos = ImGui::GetCursorPos();
 	auto available = ImGui::GetContentRegionAvail();
@@ -328,42 +324,20 @@ void OtObjectTalkEditor::renderEditor() {
 
 
 //
-//	OtObjectTalkEditor::highlightError
+//	OtTextEditor::findReplace
 //
 
-void OtObjectTalkEditor::highlightError(size_t line, const std::string& error) {
-	std::map<int, std::string> markers;
-	markers[(int) line] = error;
-	editor.SetErrorMarkers(markers);
-	scrollToLine = (int) line;
-}
-
-
-//
-//	OtObjectTalkEditor::clearError
-//
-
-void OtObjectTalkEditor::clearError() {
-	std::map<int, std::string> markers;
-	editor.SetErrorMarkers(markers);
-}
-
-
-//
-//	OtObjectTalkEditor::findReplace
-//
-
-void OtObjectTalkEditor::openFindReplace() {
+void OtTextEditor::openFindReplace() {
 	findReplaceVisible = true;
 	focusOnFind = true;
 }
 
 
 //
-//	OtObjectTalkEditor::findNext
+//	OtTextEditor::findNext
 //
 
-void OtObjectTalkEditor::findNext() {
+void OtTextEditor::findNext() {
 	if (findText.size()) {
 		editor.SelectNextOccurrenceOf(findText.c_str(), (int) findText.size(), caseSensitiveFind, wholeWordFind);
 		focusOnEditor = true;
@@ -372,10 +346,10 @@ void OtObjectTalkEditor::findNext() {
 
 
 //
-//	OtObjectTalkEditor::findAll
+//	OtTextEditor::findAll
 //
 
-void OtObjectTalkEditor::findAll() {
+void OtTextEditor::findAll() {
 	if (findText.size()) {
 		editor.SelectAllOccurrencesOf(findText.c_str(), (int) findText.size(), caseSensitiveFind, wholeWordFind);
 		focusOnEditor = true;
@@ -384,10 +358,10 @@ void OtObjectTalkEditor::findAll() {
 
 
 //
-//	OtObjectTalkEditor::replace
+//	OtTextEditor::replace
 //
 
-void OtObjectTalkEditor::replace() {
+void OtTextEditor::replace() {
 	if (findText.size()) {
 		if (!editor.AnyCursorHasSelection()) {
 			editor.SelectNextOccurrenceOf(findText.c_str(), (int) findText.size(), caseSensitiveFind, wholeWordFind);
@@ -401,10 +375,10 @@ void OtObjectTalkEditor::replace() {
 
 
 //
-//	OtObjectTalkEditor::replaceAll
+//	OtTextEditor::replaceAll
 //
 
-void OtObjectTalkEditor::replaceAll() {
+void OtTextEditor::replaceAll() {
 	if (findText.size()) {
 		editor.SelectAllOccurrencesOf(findText.c_str(), (int) findText.size(), caseSensitiveFind, wholeWordFind);
 		editor.ReplaceTextInAllCursors(replaceText);

@@ -46,7 +46,7 @@ public:
 
 	// open a file
 	void openFile();
-	void openFile(const std::string& filename, int visualState);
+	void openFile(const std::string& filename, OtEditor::VisualState visualState);
 
 	// save content of active file/editor
 	void saveFile();
@@ -118,17 +118,19 @@ private:
 	std::string message;
 
 	// workspace state
-	enum {
-		splashState,
-		editState,
-		newFileState,
-		openFileState,
-		saveFileAsState,
-		confirmCloseState,
-		confirmQuitState,
-		confirmWarningState,
-		confirmErrorState
-	} state = splashState;
+	enum class State {
+		splash,
+		edit,
+		newFile,
+		openFile,
+		saveFileAs,
+		confirmClose,
+		confirmQuit,
+		confirmWarning,
+		confirmError
+	};
+
+	State state = State::splash;
 
 	// stuff to run things and show the console
 	OtSubProcess subprocess;

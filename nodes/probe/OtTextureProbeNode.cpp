@@ -65,8 +65,8 @@ public:
 	}
 
 	static constexpr const char* nodeName = "Texture Probe";
-	static constexpr int nodeCategory = OtNodeClass::probe;
-	static constexpr int nodeKind = OtNodeClass::fixed;
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::probe;
+	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 protected:
 	OtTexture texture;

@@ -19,14 +19,14 @@
 //	OtCubeMapAsset::load
 //
 
-OtAssetBase::AssetState OtCubeMapAsset::load() {
+OtAssetBase::State OtCubeMapAsset::load() {
 	try {
 		// try to load the cubemap
 		cubemap.load(path);
 
 		// see if the cubemap needs postprocessing (in which case it's not ready yet)
 		if (cubemap.isValid()) {
-			return readyState;
+			return State::ready;
 
 		} else {
 			// it does, create an event handler to check on the status every frame
@@ -62,11 +62,11 @@ OtAssetBase::AssetState OtCubeMapAsset::load() {
 			UV_CHECK_ERROR("uv_async_send", status);
 
 			// we are in loaded state for now
-			return loadedState;
+			return State::loaded;
 		}
 
 	} catch (const OtException& exception) {
 		OtLogWarning("Can't load CubeMap [{}]: {}", path, exception.what());
-		return invalidState;
+		return State::invalid;
 	}
 }

@@ -152,11 +152,11 @@ void OtAssetManager::scheduleLoad(OtAssetBase* asset) {
 	UV_CHECK_ERROR("uv_async_init", status);
 
 	// schedule asset for loading
-	asset->assetState = OtAssetBase::loadingState;
+	asset->state = OtAssetBase::State::loading;
 	loading++;
 
 	threadpool.detach_task([this, asset]() {
-		asset->assetState = asset->load();
+		asset->state = asset->load();
 		loading--;
 		auto status = uv_async_send(asset->loaderEventHandle);
 		UV_CHECK_ERROR("uv_async_send", status);

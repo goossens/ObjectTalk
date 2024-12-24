@@ -19,14 +19,14 @@
 //	OtFontAsset::load
 //
 
-OtAssetBase::AssetState OtFontAsset::load() {
+OtAssetBase::State OtFontAsset::load() {
 	try {
 		// try to load the font
 		font.load(path);
-		return readyState;
+		return State::ready;
 
 	} catch (const OtException& exception) {
 		OtLogWarning("Can't load font [{}]: {}", path, exception.what());
-		return invalidState;
+		return State::invalid;
 	}
 }

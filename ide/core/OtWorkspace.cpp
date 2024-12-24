@@ -105,17 +105,17 @@ void OtWorkspace::onMessage(const std::string& msg) {
 
 		// process each command
 		if (command == "openintab") {
-			openFile(operand, OtEditor::inTab);
+			openFile(operand, OtEditor::VisualState::inTab);
 
 		} else if (command == "openinwindow") {
-			openFile(operand, OtEditor::inWindow);
+			openFile(operand, OtEditor::VisualState::inWindow);
 
 		} else if (command == "warning") {
-			state = confirmWarningState;
+			state = State::confirmWarning;
 			message = operand;
 
 		} else if (command == "error") {
-			state = confirmErrorState;
+			state = State::confirmError;
 			message = operand;
 		}
 
@@ -170,25 +170,25 @@ void OtWorkspace::onRender()
 		}
 
 		// render any dialog boxes
-		if (state == newFileState) {
+		if (state == State::newFile) {
 			renderNewFileType();
 
-		} else if (state == openFileState) {
+		} else if (state == State::openFile) {
 			renderFileOpen();
 
-		} else if (state == saveFileAsState) {
+		} else if (state == State::saveFileAs) {
 			renderSaveAs();
 
-		} else if (state == confirmCloseState) {
+		} else if (state == State::confirmClose) {
 			renderConfirmClose();
 
-		} else if (state == confirmQuitState) {
+		} else if (state == State::confirmQuit) {
 			renderConfirmQuit();
 
-		} else if (state == confirmWarningState) {
+		} else if (state == State::confirmWarning) {
 			renderConfirmWarning();
 
-		} else if (state == confirmErrorState) {
+		} else if (state == State::confirmError) {
 			renderConfirmError();
 		}
 	}
@@ -219,7 +219,7 @@ bool OtWorkspace::onCanQuit() {
 		return false;
 
 	// are we showing a dialog box that we shouldn't quit?
-	} else if (state == saveFileAsState || state == confirmCloseState || state == confirmQuitState) {
+	} else if (state == State::saveFileAs || state == State::confirmClose || state == State::confirmQuit) {
 		// then we can't quit
 		return false;
 
@@ -227,7 +227,7 @@ bool OtWorkspace::onCanQuit() {
 	} else {
 		for (auto& editor : editors) {
 			if (editor->isDirty()) {
-				state = confirmQuitState;
+				state = State::confirmQuit;
 				return false;
 			}
 		}
@@ -242,7 +242,7 @@ bool OtWorkspace::onCanQuit() {
 //
 
 void OtWorkspace::newFile() {
-	state = newFileState;
+	state = State::newFile;
 }
 
 
@@ -276,7 +276,7 @@ void OtWorkspace::newFile(const std::string& extension) {
 	auto editor = createEditor(extension);
 	editor->newFile(name);
 	editors.push_back(editor);
-	state = editState;
+	state = State::edit;
 }
 
 
@@ -294,7 +294,7 @@ void OtWorkspace::openFile() {
 			ImGuiFileDialogFlags_ReadOnlyFileNameField;
 
 	ImGuiFileDialog::Instance()->OpenDialog("workspace-open", "Select File to Open...", ".*", config);
-	state = openFileState;
+	state = State::openFile;
 }
 
 
@@ -302,7 +302,7 @@ void OtWorkspace::openFile() {
 //	OtWorkspace::openFile
 //
 
-void OtWorkspace::openFile(const std::string& path, int visualState) {
+void OtWorkspace::openFile(const std::string& path, OtEditor::VisualState visualState) {
 	// don't reopen if it's already open
 	std::shared_ptr<OtEditor> editor = findEditor(path);
 
@@ -318,10 +318,10 @@ void OtWorkspace::openFile(const std::string& path, int visualState) {
 			editor->setVisualState(visualState);
 			editors.push_back(editor);
 			activateEditor(editor);
-			state = editState;
+			state = State::edit;
 
 		} else {
-			state = confirmErrorState;
+			state = State::confirmError;
 			message = fmt::format("Can't open file with extension: {}", extension);
 		}
 
@@ -360,7 +360,7 @@ void OtWorkspace::saveAsFile() {
 		activeEditor->getExtension().c_str(),
 		config);
 
-	state = saveFileAsState;
+	state = State::saveFileAs;
 }
 
 
@@ -371,7 +371,7 @@ void OtWorkspace::saveAsFile() {
 void OtWorkspace::closeFile() {
 	// see if editor is dirty
 	if (activeEditor->isDirty()) {
-		state = confirmCloseState;
+		state = State::confirmClose;
 
 	} else {
 		deleteEditor(activeEditor);
@@ -427,7 +427,7 @@ void OtWorkspace::runFile() {
 				[this](const std::string& message) {
 					console.writeError(message);
 				},
-				[this](int type, const std::string& message) {
+				[this](OtLog::Type type, const std::string& message) {
 					console.writeLog(type, message);
 				},
 				[this](OtException& exception) {
@@ -452,7 +452,7 @@ void OtWorkspace::deleteEditor(std::shared_ptr<OtEditor> editor) {
 	}), editors.end());
 
 	if (editors.size() == 0) {
-		state = splashState;
+		state = State::splash;
 		activeEditor = nullptr;
 	}
 }
@@ -684,7 +684,7 @@ void OtWorkspace::renderNewFileType() {
 		ImGui::Spacing();
 
 		if (ImGui::Button("Cancel", ImVec2(120, 0)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
-			state = editors.size() ? editState : splashState;
+			state = editors.size() ? State::edit : State::splash;
 			ImGui::CloseCurrentPopup();
 		}
 
@@ -707,16 +707,16 @@ void OtWorkspace::renderFileOpen() {
 		if (ImGuiFileDialog::Instance()->IsOk()) {
 			auto dialog = ImGuiFileDialog::Instance();
 			auto path = OtPath::join(dialog->GetCurrentPath(), dialog->GetCurrentFileName());
-			openFile(path, OtEditor::inTab);
+			openFile(path, OtEditor::VisualState::inTab);
 
-			if (state != confirmErrorState) {
-				state = editState;
+			if (state != State::confirmError) {
+				state = State::edit;
 			}
 
 			OtPath::changeDirectory(OtPath::getParent(path));
 
 		} else {
-			state = editors.size() ? editState : splashState;
+			state = editors.size() ? State::edit : State::splash;
 		}
 
 		// close dialog
@@ -741,12 +741,12 @@ void OtWorkspace::renderSaveAs() {
 			auto path = OtPath::join(dialog->GetCurrentPath(), dialog->GetCurrentFileName());
 			path = OtPath::replaceExtension(path, activeEditor->getExtension());
 			activeEditor->saveAsFile(path);
-			state = editState;
+			state = State::edit;
 
 			OtPath::changeDirectory(OtPath::getParent(path));
 
 		} else {
-			state = editors.size() ? editState : splashState;
+			state = editors.size() ? State::edit : State::splash;
 		}
 
 		// close dialog
@@ -770,7 +770,7 @@ void OtWorkspace::renderConfirmClose() {
 
 		if (ImGui::Button("OK", ImVec2(120, 0))) {
 			deleteEditor(activeEditor);
-			state = editors.size() ? editState : splashState;
+			state = editors.size() ? State::edit : State::splash;
 			ImGui::CloseCurrentPopup();
 		}
 
@@ -778,7 +778,7 @@ void OtWorkspace::renderConfirmClose() {
 		ImGui::SameLine();
 
 		if (ImGui::Button("Cancel", ImVec2(120, 0)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
-			state = editState;
+			state = State::edit;
 			ImGui::CloseCurrentPopup();
 		}
 
@@ -802,7 +802,7 @@ void OtWorkspace::renderConfirmQuit() {
 
 		if (ImGui::Button("OK", ImVec2(120, 0))) {
 			OtMessageBus::send("stop");
-			state = editState;
+			state = State::edit;
 			ImGui::CloseCurrentPopup();
 		}
 
@@ -810,7 +810,7 @@ void OtWorkspace::renderConfirmQuit() {
 		ImGui::SameLine();
 
 		if (ImGui::Button("Cancel", ImVec2(120, 0)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
-			state = editState;
+			state = State::edit;
 			ImGui::CloseCurrentPopup();
 		}
 
@@ -833,7 +833,7 @@ void OtWorkspace::renderConfirmWarning() {
 		ImGui::Separator();
 
 		if (ImGui::Button("OK", ImVec2(120, 0)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
-			state = editors.size() ? editState : splashState;
+			state = editors.size() ? State::edit : State::splash;
 			ImGui::CloseCurrentPopup();
 		}
 
@@ -856,7 +856,7 @@ void OtWorkspace::renderConfirmError() {
 		ImGui::Separator();
 
 		if (ImGui::Button("OK", ImVec2(120, 0)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
-			state = editors.size() ? editState : splashState;
+			state = editors.size() ? State::edit : State::splash;
 			ImGui::CloseCurrentPopup();
 		}
 
@@ -924,7 +924,7 @@ void OtWorkspace::highlightError(OtException& exception) {
 
 		if (!editor) {
 			// open the editor
-			openFile(module, OtEditor::inTab);
+			openFile(module, OtEditor::VisualState::inTab);
 			editor = findEditor(module);
 		}
 

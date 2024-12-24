@@ -240,7 +240,7 @@ void OtFramework::frameIMGUI() {
 		auto event = eventQueue.pop();
 
 		switch (event.type) {
-			case OtFwEvent::mouseButtonEvent:
+			case OtFwEvent::Type::mouseButton:
 				io.AddKeyEvent(ImGuiMod_Ctrl, (event.mouseButton.mods & GLFW_MOD_CONTROL) != 0);
 				io.AddKeyEvent(ImGuiMod_Shift, (event.mouseButton.mods & GLFW_MOD_SHIFT) != 0);
 				io.AddKeyEvent(ImGuiMod_Alt, (event.mouseButton.mods & GLFW_MOD_ALT) != 0);
@@ -259,19 +259,19 @@ void OtFramework::frameIMGUI() {
 #endif
 				break;
 
-			case OtFwEvent::mouseMoveEvent:
+			case OtFwEvent::Type::mouseMove:
 				io.AddMousePosEvent(event.mouseMove.x, event.mouseMove.y);
 				break;
 
-			case OtFwEvent::mouseDragEvent:
+			case OtFwEvent::Type::mouseDrag:
 				io.AddMousePosEvent(event.mouseDrag.x, event.mouseDrag.y);
 				break;
 
-			case OtFwEvent::mouseWheelEvent:
+			case OtFwEvent::Type::mouseWheel:
 				io.AddMouseWheelEvent(event.mouseWheel.xOffset, event.mouseWheel.yOffset);
 				break;
 
-			case OtFwEvent::keyboardEvent:
+			case OtFwEvent::Type::keyboard:
 				io.AddKeyEvent(ImGuiMod_Ctrl, (event.keyboard.mods & GLFW_MOD_CONTROL) != 0);
 				io.AddKeyEvent(ImGuiMod_Shift, (event.keyboard.mods & GLFW_MOD_SHIFT) != 0);
 				io.AddKeyEvent(ImGuiMod_Alt, (event.keyboard.mods & GLFW_MOD_ALT) != 0);
@@ -279,7 +279,7 @@ void OtFramework::frameIMGUI() {
 				io.AddKeyEvent(toImGuiKey(event.keyboard.key), (event.keyboard.action != GLFW_RELEASE));
 				break;
 
-			case OtFwEvent::characterEvent:
+			case OtFwEvent::Type::character:
 				io.AddInputCharacter(event.character.codepoint);
 				break;
 

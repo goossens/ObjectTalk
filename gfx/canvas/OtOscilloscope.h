@@ -41,9 +41,9 @@ public:
 	}
 
 	inline void setBrightness(float b) { brightness = b; }
-	inline void setTopLeftOrigin() { origin = topLeftOrigin; }
-	inline void setBottomLeftOrigin() { origin = bottomLeftOrigin; }
-	inline void setCenterOrigin() { origin = centerOrigin; }
+	inline void setTopLeftOrigin() { origin = Origin::topLeft; }
+	inline void setBottomLeftOrigin() { origin = Origin::bottomLeft; }
+	inline void setCenterOrigin() { origin = Origin::center; }
 
 	inline void setDecay(int s, float ds, float dv) {
 		decaySteps = s;
@@ -71,11 +71,13 @@ private:
 	float decayStart = 0.1f;
 	float decayValue = 0.8f;
 
-	enum {
-		topLeftOrigin,
-		bottomLeftOrigin,
-		centerOrigin
-	} origin = topLeftOrigin;
+	enum class Origin {
+		topLeft,
+		bottomLeft,
+		center
+	};
+
+	Origin origin = Origin::topLeft;
 
 	// draw a series of connected line segments
 	void beginDraw(float x, float y);

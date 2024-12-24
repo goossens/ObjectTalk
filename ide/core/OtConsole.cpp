@@ -36,34 +36,34 @@ void OtConsole::render() {
 
 	while (clipper.Step()) {
 		for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
-			if (lines[i].type == LineType::standardOut) {
+			if (lines[i].type == Type::standardOut) {
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0, 1.0, 1.0, 1.0));
 
-			} else if (lines[i].type == LineType::standardError) {
+			} else if (lines[i].type == Type::standardError) {
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0, 0.0, 0.0, 1.0));
 
-			} else if (lines[i].type == LineType::help) {
+			} else if (lines[i].type == Type::help) {
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0, 0.7, 0.7, 1.0));
 
-			} else if (lines[i].type == LineType::input) {
+			} else if (lines[i].type == Type::input) {
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0, 0.7, 1.0, 1.0));
 
-			} else if (lines[i].type == LineType::success) {
+			} else if (lines[i].type == Type::success) {
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0, 1.0, 0.0, 1.0));
 
-			} else if (lines[i].type == LineType::debug) {
+			} else if (lines[i].type == Type::debug) {
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7, 0.7, 0.7, 1.0));
 
-			} else if (lines[i].type == LineType::info) {
+			} else if (lines[i].type == Type::info) {
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5, 0.8, 1.0, 1.0));
 
-			} else if (lines[i].type == LineType::warning) {
+			} else if (lines[i].type == Type::warning) {
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0, 0.8, 0.0, 1.0));
 
-			} else if (lines[i].type == LineType::error) {
+			} else if (lines[i].type == Type::error) {
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0, 0.3, 0.0, 1.0));
 
-			} else if (lines[i].type == LineType::fatal) {
+			} else if (lines[i].type == Type::fatal) {
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0, 0.3, 0.0, 1.0));
 
 			} else {
@@ -97,7 +97,7 @@ void OtConsole::render() {
 
 void OtConsole::clear() {
 	lines.clear();
-	lines.push_back(Line(standardOut, ""));
+	lines.push_back(Line(Type::standardOut, ""));
 }
 
 
@@ -120,7 +120,7 @@ void OtConsole::copy() {
 //	OtConsole::writeColored
 //
 
-void OtConsole::writeColored(LineType type, const std::string& text) {
+void OtConsole::writeColored(Type type, const std::string& text) {
 	std::string part;
 
 	for (auto& c : text) {
@@ -148,7 +148,7 @@ void OtConsole::writeColored(LineType type, const std::string& text) {
 //
 
 void OtConsole::write(const std::string& text) {
-	writeColored(standardOut, text);
+	writeColored(Type::standardOut, text);
 }
 
 
@@ -157,7 +157,7 @@ void OtConsole::write(const std::string& text) {
 //
 
 void OtConsole::writeError(const std::string& text) {
-	writeColored(standardError, text);
+	writeColored(Type::standardError, text);
 }
 
 
@@ -166,7 +166,7 @@ void OtConsole::writeError(const std::string& text) {
 //
 
 void OtConsole::writeHelp(const std::string& text) {
-	writeColored(help, text);
+	writeColored(Type::help, text);
 }
 
 
@@ -175,7 +175,7 @@ void OtConsole::writeHelp(const std::string& text) {
 //
 
 void OtConsole::writeInput(const std::string& text) {
-	writeColored(input, std::string("<< ") + text);
+	writeColored(Type::input, std::string("<< ") + text);
 }
 
 
@@ -184,7 +184,7 @@ void OtConsole::writeInput(const std::string& text) {
 //
 
 void OtConsole::writeSuccess(const std::string& text) {
-	writeColored(success, text);
+	writeColored(Type::success, text);
 }
 
 
@@ -192,6 +192,6 @@ void OtConsole::writeSuccess(const std::string& text) {
 //	OtConsole::writeLog
 //
 
-void OtConsole::writeLog(int type, const std::string& text) {
-	writeColored(LineType(type + 10), text);
+void OtConsole::writeLog(OtLog::Type type, const std::string& text) {
+	writeColored(static_cast<Type>(static_cast<int>(type) + 10), text);
 }

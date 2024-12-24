@@ -42,7 +42,7 @@ const char* OtAssetBase::getStateName() {
 		"Ready"
 	};
 
-	return names[assetState];
+	return names[static_cast<size_t>(state)];
 }
 
 

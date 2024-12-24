@@ -37,18 +37,18 @@ void OtUi::align(ImVec2 size, Alignment horizontal, Alignment vertical) {
 	auto available = ImGui::GetContentRegionAvail();
 
 	// handle horizontal alignment (if required)
-	if (horizontal == alignCenter) {
+	if (horizontal == Alignment::center) {
 		pos.x += (available.x - size.x) / 2.0f;
 
-	} else if (horizontal == alignRight) {
+	} else if (horizontal == Alignment::right) {
 		pos.x += available.x - size.x;
 	}
 
 	// handle horizontal alignment (if required)
-	if (vertical == alignMiddle) {
+	if (vertical == Alignment::middle) {
 		pos.y += (available.y - size.y) / 2.0f;
 
-	} else if (vertical == alignBottom) {
+	} else if (vertical == Alignment::bottom) {
 		pos.y += available.y - size.y;
 	}
 
@@ -218,37 +218,6 @@ bool OtUi::latchButton(const char* label, bool* value, const ImVec2& size) {
 
 	if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
 		*value = !*value;
-		changed = true;
-	}
-
-	ImGui::PopStyleColor(3);
-	return changed;
-}
-
-
-//
-//	OtUi::radioButton
-//
-
-bool OtUi::radioButton(const char* label, int* value, int buttonValue, const ImVec2& size) {
-	bool changed = false;
-	ImVec4* colors = ImGui::GetStyle().Colors;
-
-	if (*value == buttonValue) {
-		ImGui::PushStyleColor(ImGuiCol_Button, colors[ImGuiCol_ButtonActive]);
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colors[ImGuiCol_ButtonActive]);
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, colors[ImGuiCol_TableBorderLight]);
-
-	} else {
-		ImGui::PushStyleColor(ImGuiCol_Button, colors[ImGuiCol_TableBorderLight]);
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colors[ImGuiCol_TableBorderLight]);
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, colors[ImGuiCol_ButtonActive]);
-	}
-
-	ImGui::Button(label, size);
-
-	if (ImGui::IsItemClicked(ImGuiMouseButton_Left) && *value != buttonValue) {
-		*value = buttonValue;
 		changed = true;
 	}
 
@@ -566,34 +535,6 @@ bool OtUi::splitterHorizontal(float* size, float minSize, float maxSize) {
 
 
 //
-//	OtUi::selectorEnum
-//
-
-bool OtUi::selectorEnum(const char* label, int* value, const char* const names[], size_t count) {
-	bool changed = false;
-
-	if (ImGui::BeginCombo(label, names[*value])) {
-		for (auto i = 0; i < count; i++) {
-			if (ImGui::Selectable(names[i], i == *value)) {
-				if (*value != i) {
-					*value = i;
-					changed = true;
-				}
-			}
-
-			if (i == *value) {
-				ImGui::SetItemDefaultFocus();
-			}
-		}
-
-		ImGui::EndCombo();
-	}
-
-	return changed;
-}
-
-
-//
 //	OtUi::selectorPowerOfTwo
 //
 
@@ -649,13 +590,13 @@ void bezierTable(ImVec2 P[4], ImVec2 results[steps + 1]) {
 	}
 }
 
-bool OtUi::bezier(const char *label, float P[4]) {
+bool OtUi::bezier(const char* label, float P[4]) {
 	// based on https://github.com/ocornut/imgui/issues/786
-	enum { SMOOTHNESS = 64 }; // curve smoothness: the higher number of segments, the smoother curve
-	enum { CURVE_WIDTH = 3 }; // main curved line width
-	enum { LINE_WIDTH = 1 }; // handlers: small lines width
-	enum { GRAB_RADIUS = 6 }; // handlers: circle radius
-	enum { GRAB_BORDER = 2 }; // handlers: circle border width
+	static constexpr int smoothness = 64;	// curve smoothness: the higher number of segments, the smoother curve
+	static constexpr int curveWidth = 3;	// main curved line width
+	static constexpr int lineWidth = 1;		// handlers: small lines width
+	static constexpr int grabRadius = 6;	// handlers: circle radius
+	static constexpr int grabBorder = 2;	// handlers: circle border width
 
 	static struct {
 		const char* name;
@@ -723,8 +664,8 @@ bool OtUi::bezier(const char *label, float P[4]) {
 
 	// eval curve
 	ImVec2 Q[4] = {{0, 0}, {P[0], P[1]}, {P[2], P[3]}, {1, 1}};
-	ImVec2 results[SMOOTHNESS + 1];
-	bezierTable<SMOOTHNESS>(Q, results);
+	ImVec2 results[smoothness + 1];
+	bezierTable<smoothness>(Q, results);
 
 	// handle grabbers
 	bool changed = false;
@@ -734,10 +675,10 @@ bool OtUi::bezier(const char *label, float P[4]) {
 		float& py = P[i * 2 + 1];
 
 		ImVec2 pos = ImVec2(px, 1.0f - py) * (bb.Max - bb.Min) + bb.Min;
-		ImGui::SetCursorScreenPos(pos - ImVec2(GRAB_RADIUS, GRAB_RADIUS));
+		ImGui::SetCursorScreenPos(pos - ImVec2(grabRadius, grabRadius));
 
 		ImGui::PushID(i);
-		ImGui::InvisibleButton("", ImVec2(2.0f * GRAB_RADIUS, 2.0f * GRAB_RADIUS));
+		ImGui::InvisibleButton("", ImVec2(2.0f * grabRadius, 2.0f * grabRadius));
 		ImGui::PopID();
 
 		if (ImGui::IsItemActive() && ImGui::IsMouseDragging(ImGuiMouseButton_Left)) {
@@ -756,12 +697,12 @@ bool OtUi::bezier(const char *label, float P[4]) {
 	// draw curve
 	ImColor color(style.Colors[ImGuiCol_PlotLines]);
 
-	for (int i = 0; i < SMOOTHNESS; i++) {
+	for (int i = 0; i < smoothness; i++) {
 		ImVec2 p = { results[i + 0].x, 1 - results[i + 0].y };
 		ImVec2 q = { results[i + 1].x, 1 - results[i + 1].y };
 		ImVec2 r(p.x * (bb.Max.x - bb.Min.x) + bb.Min.x, p.y * (bb.Max.y - bb.Min.y) + bb.Min.y);
 		ImVec2 s(q.x * (bb.Max.x - bb.Min.x) + bb.Min.x, q.y * (bb.Max.y - bb.Min.y) + bb.Min.y);
-		drawList->AddLine(r, s, color, CURVE_WIDTH);
+		drawList->AddLine(r, s, color, curveWidth);
 	}
 
 	// draw lines and grabbers
@@ -770,12 +711,12 @@ bool OtUi::bezier(const char *label, float P[4]) {
 	ImVec4 white(style.Colors[ImGuiCol_Text]);
 	ImVec2 p1 = ImVec2(P[0], 1 - P[1]) * (bb.Max - bb.Min) + bb.Min;
 	ImVec2 p2 = ImVec2(P[2], 1 - P[3]) * (bb.Max - bb.Min) + bb.Min;
-	drawList->AddLine(ImVec2(bb.Min.x, bb.Max.y), p1, ImColor(white), LINE_WIDTH);
-	drawList->AddLine(ImVec2(bb.Max.x, bb.Min.y), p2, ImColor(white), LINE_WIDTH);
-	drawList->AddCircleFilled(p1, GRAB_RADIUS, ImColor(white));
-	drawList->AddCircleFilled(p1, GRAB_RADIUS - GRAB_BORDER, ImColor(pink));
-	drawList->AddCircleFilled(p2, GRAB_RADIUS, ImColor(white));
-	drawList->AddCircleFilled(p2, GRAB_RADIUS - GRAB_BORDER, ImColor(cyan));
+	drawList->AddLine(ImVec2(bb.Min.x, bb.Max.y), p1, ImColor(white), lineWidth);
+	drawList->AddLine(ImVec2(bb.Max.x, bb.Min.y), p2, ImColor(white), lineWidth);
+	drawList->AddCircleFilled(p1, grabRadius, ImColor(white));
+	drawList->AddCircleFilled(p1, grabRadius - grabBorder, ImColor(pink));
+	drawList->AddCircleFilled(p2, grabRadius, ImColor(white));
+	drawList->AddCircleFilled(p2, grabRadius - grabBorder, ImColor(cyan));
 
 	// handle preset popup
 	if (isMouseInRect(bb.Min, bb.Max) && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
@@ -798,7 +739,7 @@ bool OtUi::bezier(const char *label, float P[4]) {
 	}
 
 	// restore cursor pos
-	ImGui::SetCursorScreenPos(ImVec2(bb.Min.x, bb.Max.y + GRAB_RADIUS));
+	ImGui::SetCursorScreenPos(ImVec2(bb.Min.x, bb.Max.y + grabRadius));
 
 	return changed;
 }

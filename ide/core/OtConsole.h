@@ -15,6 +15,8 @@
 #include <string>
 #include <vector>
 
+#include "OtLog.h"
+
 
 //
 //	OtConsole
@@ -43,11 +45,11 @@ public:
 	void writeHelp(const std::string& text);
 	void writeInput(const std::string& text);
 	void writeSuccess(const std::string& text);
-	void writeLog(int type, const std::string& text);
+	void writeLog(OtLog::Type type, const std::string& text);
 
 private:
 	// screen text
-	enum LineType {
+	enum class Type {
 		standardOut,
 		standardError,
 		help,
@@ -62,8 +64,8 @@ private:
 	};
 
 	struct Line {
-		Line(LineType tp, std::string txt) : type(tp), text(txt) {}
-		LineType type;
+		Line(Type tp, std::string txt) : type(tp), text(txt) {}
+		Type type;
 		std::string text;
 	};
 
@@ -71,7 +73,7 @@ private:
 	std::string buffer;
 
 	// write colored line of text
-	void writeColored(LineType type, const std::string& text);
+	void writeColored(Type type, const std::string& text);
 
 	// properties
 	bool scrollBottom = false;

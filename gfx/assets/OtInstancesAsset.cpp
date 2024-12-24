@@ -19,14 +19,14 @@
 //	OtInstancesAsset::load
 //
 
-OtAssetBase::AssetState OtInstancesAsset::load() {
+OtAssetBase::State OtInstancesAsset::load() {
 	try {
 		// try to load the instances
 		instances.load(path);
-		return readyState;
+		return State::ready;
 
 	} catch (const OtException& exception) {
 		OtLogWarning("Can't load instances [{}]: {}", path, exception.what());
-		return invalidState;
+		return State::invalid;
 	}
 }

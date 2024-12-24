@@ -168,16 +168,16 @@ private:
 	class Scope {
 	public:
 		// scope types
-		typedef enum {
-			objectScope,
-			functionScope,
-			blockScope
-		} Type;
+		enum class Type {
+			object,
+			function,
+			block
+		};
 
 		// constructors
-		Scope(OtByteCode b, OtObject o) : type(objectScope), bytecode(b), object(o) {}
-		Scope(OtByteCode b) : type(functionScope), bytecode(b) {}
-		Scope(OtByteCode b, size_t sfo) : type(blockScope), bytecode(b), stackFrameOffset(sfo) {}
+		Scope(OtByteCode b, OtObject o) : type(Type::object), bytecode(b), object(o) {}
+		Scope(OtByteCode b) : type(Type::function), bytecode(b) {}
+		Scope(OtByteCode b, size_t sfo) : type(Type::block), bytecode(b), stackFrameOffset(sfo) {}
 
 		// scope details
 		Type type;

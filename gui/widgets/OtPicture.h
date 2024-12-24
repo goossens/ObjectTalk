@@ -63,6 +63,6 @@ private:
 	// properties
 	OtAsset<OtTextureAsset> picture;
 	float scale = 1.0f;
-	OtUi::Alignment horizontalAlign = OtUi::alignLeft;
-	OtUi::Alignment verticalAlign = OtUi::alignTop;
+	OtUi::Alignment horizontalAlign = OtUi::Alignment::left;
+	OtUi::Alignment verticalAlign = OtUi::Alignment::top;
 };

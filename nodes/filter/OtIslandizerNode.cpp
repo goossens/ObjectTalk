@@ -52,7 +52,7 @@ public:
 	}
 
 	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		distance = data->value("distance", OtIslandizer::squareBump);
+		distance = data->value("distance", OtIslandizer::DistanceFunction::squareBump);
 	}
 
 	// run filter
@@ -62,12 +62,12 @@ public:
 	}
 
 	static constexpr const char* nodeName = "Islandizer";
-	static constexpr int nodeCategory = OtNodeClass::filter;
-	static constexpr int nodeKind = OtNodeClass::fixed;
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::filter;
+	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 	// properties
 	OtIslandizer islandizer;
-	int distance = OtIslandizer::squareBump;
+	OtIslandizer::DistanceFunction distance = OtIslandizer::DistanceFunction::squareBump;
 };
 
 static OtNodesFactoryRegister<OtIslandizerNode> type;

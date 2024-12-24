@@ -33,7 +33,7 @@ public:
 
 protected:
 	// load the asset
-	AssetState load() override;
+	OtAssetBase::State load() override;
 
 private:
 	// the actual cubemap

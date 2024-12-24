@@ -68,8 +68,8 @@ public:
 	}
 
 	static constexpr const char* nodeName = "Save Instances to File";
-	static constexpr int nodeCategory = OtNodeClass::save;
-	static constexpr int nodeKind = OtNodeClass::fixed;
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::save;
+	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 protected:
 	OtInstances instances;

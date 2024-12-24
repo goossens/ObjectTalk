@@ -112,7 +112,7 @@ void OtNodeClass::deserializeFromString(const std::string& json, bool restoreIDs
 
 void OtNodeClass::evaluateVariableInputs(OtNodeVaryingContext& context, bool toplevel) {
 	// handle the varying data context (if required)
-	if (kind == varying) {
+	if (kind == Kind::varying) {
 		processVaryingContext(context);
 	}
 

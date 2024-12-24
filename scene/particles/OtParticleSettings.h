@@ -35,12 +35,12 @@ struct OtParticleSettings {
 	void deserialize(nlohmann::json data, std::string* basedir);
 
 	// enums
-	enum {
-		pointShape,
-		circleShape,
-		coneShape,
-		hemisphereShape,
-		sphereShape
+	enum class Shape{
+		point,
+		circle,
+		cone,
+		hemisphere,
+		sphere
 	};
 
 	static constexpr const char* shapeTypes[] = {
@@ -60,7 +60,7 @@ struct OtParticleSettings {
 	OtAsset<OtTextureAsset> atlas;
 	int atlasRows = 1;
 	int atlasColumns = 1;
-	int shape = circleShape;
+	Shape shape = Shape::circle;
 	float speed = 0.5f;
 	float gravity = 0.3f;
 	float rotation[2] = {0.0f, 0.0f};

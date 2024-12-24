@@ -125,7 +125,7 @@ public:
 
 	// constructor
 	OtNodesFactoryRegister() {
-		OtNodesFactory::registerType(OtNodeClass::categoryNames[T::nodeCategory], T::nodeName, []() {
+		OtNodesFactory::registerType(OtNodeClass::categoryNames[static_cast<int>(T::nodeCategory)], T::nodeName, []() {
 			auto node = std::make_shared<T>();
 			node->type = T::nodeName;
 			node->title = T::nodeName;

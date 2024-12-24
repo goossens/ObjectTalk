@@ -19,14 +19,14 @@
 //	OtGeometryAsset::load
 //
 
-OtAssetBase::AssetState OtGeometryAsset::load() {
+OtAssetBase::State OtGeometryAsset::load() {
 	try {
 		// try to load the geometry
 		geometry.load(path);
-		return readyState;
+		return State::ready;
 
 	} catch (const OtException& exception) {
 		OtLogWarning("Can't load geometry [{}]: {}", path, exception.what());
-		return invalidState;
+		return State::invalid;
 	}
 }

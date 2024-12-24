@@ -27,7 +27,7 @@
 //	OtModelAsset::load
 //
 
-OtAssetBase::AssetState OtModelAsset::load() {
+OtAssetBase::State OtModelAsset::load() {
 	// clear the current data
 	meshes.clear();
 	materials.clear();
@@ -50,13 +50,13 @@ OtAssetBase::AssetState OtModelAsset::load() {
 	// ensure model was loaded correctly
 	if (scene == nullptr) {
 		OtLogWarning("Unable to load model [{}], error: {}", path, importer.GetErrorString());
-		return invalidState;
+		return State::invalid;
 	}
 
 	// ensure scene is complete
 	if (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) {
 		OtLogWarning("Incomplete model [{}]", path);
-		return invalidState;
+		return State::invalid;
 	}
 
 	// load all the meshes
@@ -75,5 +75,5 @@ OtAssetBase::AssetState OtModelAsset::load() {
 		materials[i].load(scene->mMaterials[i], dir);
 	}
 
-	return readyState;
+	return State::ready;
 }

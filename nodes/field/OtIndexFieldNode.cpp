@@ -34,8 +34,8 @@ public:
 	}
 
 	static constexpr const char* nodeName = "Index Field";
-	static constexpr int nodeCategory = OtNodeClass::field;
-	static constexpr int nodeKind = OtNodeClass::varying;
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::field;
+	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::varying;
 
 protected:
 	int index = 0;

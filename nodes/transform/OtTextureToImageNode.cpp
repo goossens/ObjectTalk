@@ -50,8 +50,8 @@ public:
 	}
 
 	static constexpr const char* nodeName = "Texture to Image";
-	static constexpr int nodeCategory = OtNodeClass::transform;
-	static constexpr int nodeKind = OtNodeClass::fixed;
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::transform;
+	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 protected:
 	OtTexture texture;

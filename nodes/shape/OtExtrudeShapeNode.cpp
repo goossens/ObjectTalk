@@ -123,8 +123,8 @@ public:
 	}
 
 	static constexpr const char* nodeName = "Extrude Shape";
-	static constexpr int nodeCategory = OtNodeClass::shape;
-	static constexpr int nodeKind = OtNodeClass::fixed;
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::shape;
+	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 protected:
 	OtShape shape;

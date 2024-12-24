@@ -86,13 +86,11 @@ private:
 	float centerZ;
 
 	// create terrain entities
-	enum {
-		noDegenerate = 0,
-		topDegenerate = 1,
-		leftDegenerate = 2,
-		bottomDegenerate = 4,
-		rightDegenerate = 8
-	};
+	static inline constexpr int noDegenerate = 0;
+	static inline constexpr int topDegenerate = 1;
+	static inline constexpr int leftDegenerate = 2;
+	static inline constexpr int bottomDegenerate = 4;
+	static inline constexpr int rightDegenerate = 8;
 
 	void initialize();
 	void clear();

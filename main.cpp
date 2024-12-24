@@ -145,7 +145,7 @@ int main(int argc, char* argv[]) {
 
 					// open in IDE
 					OtWorkspace workspace;
-					workspace.openFile(file, OtEditor::inTab);
+					workspace.openFile(file, OtEditor::VisualState::inTab);
 					framework.run(&workspace);
 					framework.terminate();
 				}
@@ -159,7 +159,7 @@ int main(int argc, char* argv[]) {
 			OtWorkspace workspace;
 
 			for (auto& file : files) {
-				workspace.openFile(file, OtEditor::inTab);
+				workspace.openFile(file, OtEditor::VisualState::inTab);
 			}
 
 			framework.run(&workspace);

@@ -22,7 +22,7 @@
 void OtStderrMultiplexer::demuliplexInput(
 	std::string input,
 	std::function<void(const std::string& message)> normal,
-	std::function<void(int type, const std::string& message)> log,
+	std::function<void(OtLog::Type type, const std::string& message)> log,
 	std::function<void(OtException& e)> except) {
 
 	// process entire input
@@ -82,17 +82,18 @@ void OtStderrMultiplexer::demuliplexInput(
 //
 
 void OtStderrMultiplexer::process(
-	std::function<void(int type, const std::string& message)> log,
+	std::function<void(OtLog::Type type, const std::string& message)> log,
 	std::function<void(OtException& e)> except) {
 
 	if (buffer[0] == 0) {
+		// deserialize the log message and report
+		log(static_cast<OtLog::Type>(buffer[1]), buffer.substr(2));
+
+	} else if (buffer[0] == 1) {
 		// deserialize the exception and report
 		OtException exception;
 		exception.deserialize(buffer.substr(1));
 		except(exception);
-
-	} else {
-		log(buffer[0] - 10, buffer.substr(1));
 	}
 
 	buffer.clear();

@@ -22,71 +22,71 @@
 
 OtScanner::OtScanner() {
 	// set default scanner state
-	token = ILLEGAL_TOKEN;
+	token = Token::illegal;
 	stateTable.resize(1);
 
 	// setup scanner
-	addToken("(", LPAREN_TOKEN);
-	addToken(")", RPAREN_TOKEN);
-	addToken("[", LBRACKET_TOKEN);
-	addToken("]", RBRACKET_TOKEN);
-	addToken("{", LBRACE_TOKEN);
-	addToken("}", RBRACE_TOKEN);
-	addToken(",", COMMA_TOKEN);
-	addToken(".", PERIOD_TOKEN);
-	addToken(":", COLON_TOKEN);
-	addToken(";", SEMICOLON_TOKEN);
-	addToken("?", QUESTION_TOKEN);
-	addToken("==", EQUAL_TOKEN);
-	addToken("=", ASSIGNMENT_TOKEN);
-	addToken("!=", NOT_EQUAL_TOKEN);
-	addToken("!", NEGATE_TOKEN);
-	addToken("<=", LESS_EQUAL_TOKEN);
-	addToken("<<=", SHIFT_LEFT_ASSIGNMENT_TOKEN);
-	addToken("<<", SHIFT_LEFT_TOKEN);
-	addToken("<", LESS_TOKEN);
-	addToken(">=", GREATER_EQUAL_TOKEN);
-	addToken(">>=", SHIFT_RIGHT_ASSIGNMENT_TOKEN);
-	addToken(">>", SHIFT_RIGHT_TOKEN);
-	addToken(">", GREATER_TOKEN);
-	addToken("++", INCREMENT_TOKEN);
-	addToken("+=", ADD_ASSIGNMENT_TOKEN);
-	addToken("+", ADD_TOKEN);
-	addToken("--", DECREMENT_TOKEN);
-	addToken("-=", SUBTRACT_ASSIGNMENT_TOKEN);
-	addToken("-", SUBTRACT_TOKEN);
-	addToken("*=", MULTIPLY_ASSIGNMENT_TOKEN);
-	addToken("**", POWER_TOKEN);
-	addToken("*", MULTIPLY_TOKEN);
-	addToken("/=", DIVIDE_ASSIGNMENT_TOKEN);
-	addToken("/", DIVIDE_TOKEN);
-	addToken("%=", MODULO_ASSIGNMENT_TOKEN);
-	addToken("%", MODULO_TOKEN);
-	addToken("||", OR_TOKEN);
-	addToken("|=", BITWISE_OR_ASSIGNMENT_TOKEN);
-	addToken("|", BITWISE_OR_TOKEN);
-	addToken("&&", AND_TOKEN);
-	addToken("&=", BITWISE_AND_ASSIGNMENT_TOKEN);
-	addToken("&", BITWISE_AND_TOKEN);
-	addToken("^=", BITWISE_XOR_ASSIGNMENT_TOKEN);
-	addToken("^", BITWISE_XOR_TOKEN);
-	addToken("~", BITWISE_NOT_TOKEN);
-	addToken("catch", CATCH_TOKEN);
-	addToken("class", CLASS_TOKEN);
-	addToken("do", DO_TOKEN);
-	addToken("elif", ELIF_TOKEN);
-	addToken("else", ELSE_TOKEN);
-	addToken("for", FOR_TOKEN);
-	addToken("function", FUNCTION_TOKEN);
-	addToken("if", IF_TOKEN);
-	addToken("in", IN_TOKEN);
-	addToken("not", NOT_TOKEN);
-	addToken("return", RETURN_TOKEN);
-	addToken("super", SUPER_TOKEN);
-	addToken("throw", THROW_TOKEN);
-	addToken("try", TRY_TOKEN);
-	addToken("var", VAR_TOKEN);
-	addToken("while", WHILE_TOKEN);
+	addToken("(", Token::leftParenthesis);
+	addToken(")", Token::rightParenthesis);
+	addToken("[", Token::leftBracket);
+	addToken("]", Token::rightBracket);
+	addToken("{", Token::leftBrace);
+	addToken("}", Token::rightBrace);
+	addToken(",", Token::comma);
+	addToken(".", Token::period);
+	addToken(":", Token::colon);
+	addToken(";", Token::colon);
+	addToken("?", Token::questionMark);
+	addToken("==", Token::equalOperator);
+	addToken("=", Token::assignment);
+	addToken("!=", Token::notEqualOperator);
+	addToken("!", Token::negateOperator);
+	addToken("<=", Token::lessEqualOperator);
+	addToken("<<=", Token::shiftLeftAssignment);
+	addToken("<<", Token::shiftLeftOperator);
+	addToken("<", Token::lessOperator);
+	addToken(">=", Token::greaterEqualOperator);
+	addToken(">>=", Token::shiftRightAssignment);
+	addToken(">>", Token::shiftRightOperator);
+	addToken(">", Token::greaterOperator);
+	addToken("++", Token::incrementOperator);
+	addToken("+=", Token::addAssignment);
+	addToken("+", Token::addOperator);
+	addToken("--", Token::decrementOperator);
+	addToken("-=", Token::subtractAssignment);
+	addToken("-", Token::subtractOperator);
+	addToken("*=", Token::multiplyAssignment);
+	addToken("**", Token::powerOperator);
+	addToken("*", Token::multiplyOperator);
+	addToken("/=", Token::divideAssignment);
+	addToken("/", Token::divideOperator);
+	addToken("%=", Token::moduloAssignment);
+	addToken("%", Token::moduloOperator);
+	addToken("||", Token::orOperator);
+	addToken("|=", Token::bitwiseOrAssignment);
+	addToken("|", Token::bitwiseOrOperator);
+	addToken("&&", Token::andOperator);
+	addToken("&=", Token::bitwiseAndAssignment);
+	addToken("&", Token::bitwiseAndOperator);
+	addToken("^=", Token::bitwiseXorAssignment);
+	addToken("^", Token::bitwiseXorOperator);
+	addToken("~", Token::bitwiseNotOperator);
+	addToken("catch", Token::catchKeyword);
+	addToken("class", Token::classKeyword);
+	addToken("do", Token::doKeyword);
+	addToken("elif", Token::elifKeyword);
+	addToken("else", Token::elseKeyword);
+	addToken("for", Token::forKeyword);
+	addToken("function", Token::functionKeyword);
+	addToken("if", Token::ifKeyword);
+	addToken("in", Token::inKeyword);
+	addToken("not", Token::notKeyword);
+	addToken("return", Token::returnKeyword);
+	addToken("super", Token::superKeyword);
+	addToken("throw", Token::throwKeyword);
+	addToken("try", Token::tryKeyword);
+	addToken("var", Token::varKeyword);
+	addToken("while", Token::whileKeyword);
 }
 
 
@@ -111,7 +111,7 @@ void OtScanner::loadSource(OtSource src) {
 //	OtScanner::advance
 //
 
-OtToken OtScanner::advance() {
+OtScanner::Token OtScanner::advance() {
 	// skip all white space and comments
 	while (isspace(source->at(position)) ||
 		   (source->at(position) == '#') ||
@@ -170,7 +170,7 @@ OtToken OtScanner::advance() {
 
 	// check for end of string
 	if (position == size) {
-		token = EOS_TOKEN;
+		token = Token::endOfText;
 
 	// handle numerical values
 	} else if (std::isdigit(source->at(position)) ||
@@ -197,7 +197,7 @@ OtToken OtScanner::advance() {
 			}
 
 			integerValue = sign * std::stol(source->substr(value, position - value), 0, 2);
-			token = INTEGER_TOKEN;
+			token = Token::integerLiteral;
 
 		// see if we have an octal constant
 		} else if (source->at(position) == '0' && (source->at(position + 1) == 'o' || source->at(position + 1) == 'O')) {
@@ -209,7 +209,7 @@ OtToken OtScanner::advance() {
 			}
 
 			integerValue = sign * std::stol(source->substr(value, position - value), 0, 8);
-			token = INTEGER_TOKEN;
+			token = Token::integerLiteral;
 
 		// see if we have a hexadecimal constant
 		} else if (source->at(position) == '0' && (source->at(position + 1) == 'x' || source->at(position + 1) == 'X')) {
@@ -221,7 +221,7 @@ OtToken OtScanner::advance() {
 			}
 
 			integerValue = sign * std::stol(source->substr(value, position - value), 0, 16);
-			token = INTEGER_TOKEN;
+			token = Token::integerLiteral;
 
 		// handle integers and reals
 		} else {
@@ -254,11 +254,11 @@ OtToken OtScanner::advance() {
 				}
 
 				realValue = std::stod(source->substr(start, position - start));
-				token = REAL_TOKEN;
+				token = Token::realLiteral;
 
 			} else {
 				integerValue = std::stoi(source->substr(start, position - start));
-				token = INTEGER_TOKEN;
+				token = Token::integerLiteral;
 			}
 		}
 
@@ -276,7 +276,7 @@ OtToken OtScanner::advance() {
 			position++;
 		}
 
-		token = STRING_TOKEN;
+		token = Token::stringLiteral;
 
 	// handle identifiers (and tokens with identifier structure)
 	} else if (source->at(position) =='_' || std::isalpha(source->at(position))) {
@@ -287,30 +287,30 @@ OtToken OtScanner::advance() {
 		size_t state = 0;
 
 		for (auto p = tokenStart; state != OtScannerState::noTransition && p < position; p++) {
-			state = stateTable[state].transitions[(int) source->at(p)];
+			state = stateTable[state].transitions[static_cast<size_t>(source->at(p))];
 		}
 
-		if (state != OtScannerState::noTransition && stateTable[state].token != ILLEGAL_TOKEN) {
+		if (state != OtScannerState::noTransition && stateTable[state].token != Token::illegal) {
 			token = stateTable[state].token;
 
 		} else {
-			token = IDENTIFIER_TOKEN;
+			token = Token::identifier;
 		}
 
 	// handle (non-identifier) tokens
 	} else {
 		size_t state = 0;
 
-		while (position < size && stateTable[state].transitions[(int) source->at(position)] != OtScannerState::noTransition) {
-			state = stateTable[state].transitions[(int) source->at(position++)];
+		while (position < size && stateTable[state].transitions[static_cast<size_t>(source->at(position))] != OtScannerState::noTransition) {
+			state = stateTable[state].transitions[static_cast<size_t>(source->at(position++))];
 		}
 
-		if (position > tokenStart && stateTable[state].token != ILLEGAL_TOKEN) {
+		if (position > tokenStart && stateTable[state].token != Token::illegal) {
 			token = stateTable[state].token;
 
 		} else {
 			// we tried but whatever we are looking at, it's illegal
-			token = ILLEGAL_TOKEN;
+			token = Token::illegal;
 		}
 	}
 
@@ -355,14 +355,14 @@ void OtScanner::error(std::string message) {
 //	OtScanner::expect
 //
 
-void OtScanner::expect(OtToken t, bool a) {
-	if (token == t) {
-		if (a) {
+void OtScanner::expect(Token expectedToken, bool advanceToNextToken) {
+	if (token == expectedToken) {
+		if (advanceToNextToken) {
 			advance();
 		}
 
 	} else {
-		error(fmt::format("Expected [{}]", tokens[t]));
+		error(fmt::format("Expected [{}]", tokens[expectedToken]));
 	}
 }
 
@@ -371,7 +371,7 @@ void OtScanner::expect(OtToken t, bool a) {
 //	OtScanner::addToken
 //
 
-void OtScanner::addToken(const std::string text, int token) {
+void OtScanner::addToken(const std::string text, Token token) {
 	// add token to lookup
 	tokens[token] = text;
 
@@ -381,13 +381,13 @@ void OtScanner::addToken(const std::string text, int token) {
 	// process all characters
 	for (auto i = text.begin(); i < text.end(); i++) {
 		// determine next state
-		auto next = stateTable[state].transitions[(int) *i];
+		auto next = stateTable[state].transitions[static_cast<size_t>(*i)];
 
 		// add a new state if required
 		if (next == OtScannerState::noTransition) {
 			next = stateTable.size();
 			stateTable.resize(next + 1);
-			stateTable[state].transitions[(int) *i] = next;
+			stateTable[state].transitions[static_cast<size_t>(*i)] = next;
 		}
 
 		// set the next state

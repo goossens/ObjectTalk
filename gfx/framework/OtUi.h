@@ -37,19 +37,19 @@
 
 class OtUi {
 public:
-	enum Font {
-		defaultFont = 0,
-		editorFont
+	enum class Font {
+		standard = 0,
+		editor
 	};
 
-	enum Alignment {
-		alignNone,
-		alignLeft,
-		alignCenter,
-		alignRight,
-		alignTop,
-		alignMiddle,
-		alignBottom
+	enum class Alignment {
+		none,
+		left,
+		center,
+		right,
+		top,
+		middle,
+		bottom
 	};
 
 	// adjust cursor position based on alignment
@@ -74,7 +74,32 @@ public:
 	static bool latchButton(const char* label, bool* value, const ImVec2& size=ImVec2(0.0f, 0.0f));
 
 	// radio button
-	static bool radioButton(const char* label, int* value, int buttonValue, const ImVec2& size=ImVec2(0.0f, 0.0f));
+	template <typename T>
+	static bool radioButton(const char* label, T* value, T buttonValue, const ImVec2& size=ImVec2(0.0f, 0.0f))  {
+		bool changed = false;
+		ImVec4* colors = ImGui::GetStyle().Colors;
+
+		if (*value == buttonValue) {
+			ImGui::PushStyleColor(ImGuiCol_Button, colors[ImGuiCol_ButtonActive]);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colors[ImGuiCol_ButtonActive]);
+			ImGui::PushStyleColor(ImGuiCol_ButtonActive, colors[ImGuiCol_TableBorderLight]);
+
+		} else {
+			ImGui::PushStyleColor(ImGuiCol_Button, colors[ImGuiCol_TableBorderLight]);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colors[ImGuiCol_TableBorderLight]);
+			ImGui::PushStyleColor(ImGuiCol_ButtonActive, colors[ImGuiCol_ButtonActive]);
+		}
+
+		ImGui::Button(label, size);
+
+		if (ImGui::IsItemClicked(ImGuiMouseButton_Left) && *value != buttonValue) {
+			*value = buttonValue;
+			changed = true;
+		}
+
+		ImGui::PopStyleColor(3);
+		return changed;
+	}
 
 	// readonly text field
 	static void readonlyText(const char* label, std::string* value);
@@ -115,7 +140,30 @@ public:
 	static bool splitterHorizontal(float* size, float minSize, float maxSize);
 
 	// selectors
-	static bool selectorEnum(const char* label, int* value, const char* const names[], size_t count);
+	template <typename T>
+	static bool selectorEnum(const char* label, T* value, const char* const names[], size_t count) {
+		bool changed = false;
+
+		if (ImGui::BeginCombo(label, names[static_cast<size_t>(*value)])) {
+			for (auto i = 0; i < count; i++) {
+				if (ImGui::Selectable(names[i], static_cast<size_t>(*value) == i)) {
+					if (static_cast<size_t>(*value) != i) {
+						*value = static_cast<T>(i);
+						changed = true;
+					}
+				}
+
+				if (i == static_cast<size_t>(*value)) {
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+
+			ImGui::EndCombo();
+		}
+
+		return changed;
+	}
+
 	static bool selectorPowerOfTwo(const char* label, int* value, int startValue, int endValue);
 
 	// bezier curve editor

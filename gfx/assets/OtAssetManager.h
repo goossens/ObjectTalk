@@ -83,7 +83,7 @@ public:
 			// is this a virtual asset (i.e. a named asset that only exists in memory)
 			if (OtText::startsWith(path, "virtual:")) {
 				// yes, just mark it as missing for now
-				asset->assetState = OtAssetBase::missingState;
+				asset->state = OtAssetBase::State::missing;
 
 			} else {
 				// ensure path exists
@@ -100,12 +100,12 @@ public:
 
 					} else {
 						OtLogWarning("Asset [{}] refers to unsupported type, expected [{}]", path, asset->getSupportedFileTypes());
-						asset->assetState = OtAssetBase::invalidState;
+						asset->state = OtAssetBase::State::invalid;
 					}
 
 				} else {
 					OtLogWarning("Asset [{}] not found", path);
-					asset->assetState = OtAssetBase::missingState;
+					asset->state = OtAssetBase::State::missing;
 				}
 			}
 

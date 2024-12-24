@@ -146,8 +146,8 @@ public:
 	}
 
 	static constexpr const char* nodeName = "Canvas Generator";
-	static constexpr int nodeCategory = OtNodeClass::generate;
-	static constexpr int nodeKind = OtNodeClass::fixed;
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::generate;
+	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 protected:
 	OtAsset<OtScriptAsset> script;

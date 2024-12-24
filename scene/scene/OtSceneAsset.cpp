@@ -30,14 +30,14 @@ OtSceneAsset::OtSceneAsset() {
 //	OtSceneAsset::load
 //
 
-OtAssetBase::AssetState OtSceneAsset::load() {
+OtAssetBase::State OtSceneAsset::load() {
 	try {
 		// load the scene
 		scene->load(path);
-		return readyState;
+		return State::ready;
 
 	} catch (const OtException& exception) {
 		OtLogWarning("Can't load scene [{}]: {}", path, exception.what());
-		return invalidState;
+		return State::invalid;
 	}
 }

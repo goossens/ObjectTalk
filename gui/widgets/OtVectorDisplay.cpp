@@ -217,7 +217,7 @@ int OtVectorDisplayClass::addLine(float x0, float y0, float x1, float y1) {
 	Shape shape;
 	shape.id = nextShapeID++;
 	shape.enabled = true;
-	shape.type = Shape::lineType;
+	shape.type = Shape::Type::line;
 	shape.width = style.width;
 	shape.color = style.color;
 	shape.x0 = x0;
@@ -237,7 +237,7 @@ int OtVectorDisplayClass::addRectangle(float x, float y, float w, float h) {
 	Shape shape;
 	shape.id = nextShapeID++;
 	shape.enabled = true;
-	shape.type = Shape::rectangleType;
+	shape.type = Shape::Type::rectangle;
 	shape.width = style.width;
 	shape.color = style.color;
 	shape.x = x;
@@ -257,7 +257,7 @@ int OtVectorDisplayClass::addCenteredRectangle(float x, float y, float w, float 
 	Shape shape;
 	shape.id = nextShapeID++;
 	shape.enabled = true;
-	shape.type = Shape::rectangleType;
+	shape.type = Shape::Type::rectangle;
 	shape.width = style.width;
 	shape.color = style.color;
 	shape.x = x - w / 2.0;
@@ -277,7 +277,7 @@ int OtVectorDisplayClass::addCircle(float x, float y, float radius, float steps)
 	Shape shape;
 	shape.id = nextShapeID++;
 	shape.enabled = true;
-	shape.type = Shape::circleType;
+	shape.type = Shape::Type::circle;
 	shape.width = style.width;
 	shape.color = style.color;
 	shape.x = x;
@@ -297,7 +297,7 @@ int OtVectorDisplayClass::addSevenSegment(float x, float y, float size, const st
 	Shape shape;
 	shape.enabled = true;
 	shape.id = nextShapeID++;
-	shape.type = Shape::sevenSegmentType;
+	shape.type = Shape::Type::sevenSegment;
 	shape.width = style.width;
 	shape.color = style.color;
 	shape.x = x;
@@ -317,7 +317,7 @@ int OtVectorDisplayClass::addText(float x, float y, float size, const std::strin
 	Shape shape;
 	shape.enabled = true;
 	shape.id = nextShapeID++;
-	shape.type = Shape::textType;
+	shape.type = Shape::Type::text;
 	shape.width = style.width;
 	shape.color = style.color;
 	shape.x = x;
@@ -572,28 +572,28 @@ void OtVectorDisplayClass::render() {
 	for (auto& shape : shapes) {
 		if (shape.enabled) {
 			switch (shape.type) {
-				case Shape::lineType:
+				case Shape::Type::line:
 					scope.drawLine(
 						shape.x0 * scale, shape.y0 * scale,
 						shape.x1 * scale, shape.y1 * scale,
 						shape.width, shape.color);
 					break;
 
-				case Shape::rectangleType:
+				case Shape::Type::rectangle:
 					scope.drawRectangle(
 						shape.x * scale, shape.y * scale,
 						shape.w * scale, shape.h  * scale,
 						shape.width, shape.color);
 					break;
 
-				case Shape::circleType:
+				case Shape::Type::circle:
 					scope.drawCircle(
 						shape.x * scale, shape.y * scale,
 						shape.radius * scale, shape.steps,
 						shape.width, shape.color);
 					break;
 
-				case Shape::sevenSegmentType:
+				case Shape::Type::sevenSegment:
 					scope.drawSevenSegment(
 						shape.x * scale, shape.y * scale,
 						shape.size * scale,
@@ -601,7 +601,7 @@ void OtVectorDisplayClass::render() {
 						shape.width, shape.color);
 					break;
 
-				case Shape::textType:
+				case Shape::Type::text:
 					scope.drawText(
 						shape.x * scale,
 						shape.y * scale,

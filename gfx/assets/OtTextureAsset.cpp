@@ -19,14 +19,14 @@
 //	OtTextureAsset::load
 //
 
-OtAssetBase::AssetState OtTextureAsset::load() {
+OtAssetBase::State OtTextureAsset::load() {
 	try {
 		// try to load the texture
 		texture.loadFromFile(path);
-		return readyState;
+		return State::ready;
 
 	} catch (const OtException& exception) {
 		OtLogWarning("Can't load texture [{}]: {}", path, exception.what());
-		return invalidState;
+		return State::invalid;
 	}
 }

@@ -84,8 +84,8 @@ public:
 	}
 
 	static constexpr const char* nodeName = "Geometry Input";
-	static constexpr int nodeCategory = OtNodeClass::input;
-	static constexpr int nodeKind = OtNodeClass::fixed;
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::input;
+	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 protected:
 	OtAsset<OtGeometryAsset> asset;

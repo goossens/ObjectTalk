@@ -59,8 +59,8 @@ private:
 	// properties
 	float width = 100.0f;
 	float height = 100.0f;
-	OtUi::Alignment horizontalAlign = OtUi::alignLeft;
-	OtUi::Alignment verticalAlign = OtUi::alignTop;
+	OtUi::Alignment horizontalAlign = OtUi::Alignment::left;
+	OtUi::Alignment verticalAlign = OtUi::Alignment::top;
 
 	// canvas layers
 	struct Canvas {

@@ -23,7 +23,7 @@ OtFrustum::OtFrustum() {
 		plane = OtPlane();
 	}
 
-	for (auto& point : points) {
+	for (auto& point : corners) {
 		point = glm::vec3(0.0f);
 	}
 }
@@ -31,31 +31,31 @@ OtFrustum::OtFrustum() {
 OtFrustum::OtFrustum(const glm::mat4& matrix) {
 	// determine planes
 	glm::mat4 m = glm::transpose(matrix);
-	planes[leftPlane] = OtPlane(m[3] + m[0]);
-	planes[rightPlane] = OtPlane(m[3] - m[0]);
-	planes[bottomPlane] = OtPlane(m[3] + m[1]);
-	planes[topPlane] = OtPlane(m[3] - m[1]);
-	planes[nearPlane] = OtPlane(OtGpuHasHomogeneousDepth() ? m[3] + m[2] : m[2]);
-	planes[farPlane] = OtPlane(m[3] - m[2]);
+	planes[0] = OtPlane(m[3] + m[0]);
+	planes[1] = OtPlane(m[3] - m[0]);
+	planes[2] = OtPlane(m[3] + m[1]);
+	planes[3] = OtPlane(m[3] - m[1]);
+	planes[4] = OtPlane(OtGpuHasHomogeneousDepth() ? m[3] + m[2] : m[2]);
+	planes[5] = OtPlane(m[3] - m[2]);
 
 	// normalize planes
-	for (auto c = 0; c < planeCount; c++) {
-		planes[c].normalize();
+	for (auto& plane : planes) {
+		plane.normalize();
 	}
 
 	// determine corners
 	glm::mat4 inverse = glm::inverse(matrix);
 	float n = OtGpuHasHomogeneousDepth() ? -1.0f : 0.0f;
 
-	points[nearBottomLeft] = OtGlmMul(inverse, glm::vec4(-1.0f, -1.0f, n, 1.0f));
-	points[nearTopLeft] = OtGlmMul(inverse, glm::vec4(-1.0f, 1.0f, n, 1.0f));
-	points[nearTopRight] = OtGlmMul(inverse, glm::vec4(1.0f, 1.0f, n, 1.0f));
-	points[nearBottomRight] = OtGlmMul(inverse, glm::vec4(1.0f, -1.0f, n, 1.0f));
+	corners[0] = OtGlmMul(inverse, glm::vec4(-1.0f, -1.0f, n, 1.0f));
+	corners[1] = OtGlmMul(inverse, glm::vec4(-1.0f, 1.0f, n, 1.0f));
+	corners[2] = OtGlmMul(inverse, glm::vec4(1.0f, 1.0f, n, 1.0f));
+	corners[3] = OtGlmMul(inverse, glm::vec4(1.0f, -1.0f, n, 1.0f));
 
-	points[farBottomLeft] = OtGlmMul(inverse, glm::vec4(-1.0f, -1.0f, 1.0f, 1.0f));
-	points[farTopLeft] = OtGlmMul(inverse, glm::vec4(-1.0f, 1.0f, 1.0f, 1.0f));
-	points[farTopRight] = OtGlmMul(inverse, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	points[farBottomRight] = OtGlmMul(inverse, glm::vec4(1.0f, -1.0f, 1.0f, 1.0f));
+	corners[4] = OtGlmMul(inverse, glm::vec4(-1.0f, -1.0f, 1.0f, 1.0f));
+	corners[5] = OtGlmMul(inverse, glm::vec4(-1.0f, 1.0f, 1.0f, 1.0f));
+	corners[6] = OtGlmMul(inverse, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	corners[7] = OtGlmMul(inverse, glm::vec4(1.0f, -1.0f, 1.0f, 1.0f));
 }
 
 
@@ -64,8 +64,8 @@ OtFrustum::OtFrustum(const glm::mat4& matrix) {
 //
 
 bool OtFrustum::isVisiblePoint(const glm::vec3& point) {
-	for (auto i = 0; i < planeCount; i++) {
-		if (glm::dot(planes[i].getNormal(), point) + planes[i].getDistance() < 0) {
+	for (auto& plane : planes) {
+		if (glm::dot(plane.getNormal(), point) + plane.getDistance() < 0) {
 			return false;
 		}
 	}
@@ -84,8 +84,8 @@ bool OtFrustum::isVisibleAABB(const OtAABB& aabb) {
 	glm::vec3 maxp = aabb.getMax();
 
 	// check box outside/inside of frustum
-	for (auto i = 0; i < planeCount; i++) {
-		glm::vec4 g = planes[i].getVec4();
+	for (auto& plane : planes) {
+		glm::vec4 g = plane.getVec4();
 
 		if ((glm::dot(g, glm::vec4(minp.x, minp.y, minp.z, 1.0f)) < 0.0) &&
 			(glm::dot(g, glm::vec4(maxp.x, minp.y, minp.z, 1.0f)) < 0.0) &&
@@ -103,12 +103,12 @@ bool OtFrustum::isVisibleAABB(const OtAABB& aabb) {
 
 	// check frustum outside/inside box
 	int out;
-	out = 0; for (auto i = 0; i < pointCount; i++) { out += points[i].x > maxp.x ? 1 : 0; } if (out == pointCount) { return false; }
-	out = 0; for (auto i = 0; i < pointCount; i++) { out += points[i].x < minp.x ? 1 : 0; } if (out == pointCount) { return false; }
-	out = 0; for (auto i = 0; i < pointCount; i++) { out += points[i].y > maxp.y ? 1 : 0; } if (out == pointCount) { return false; }
-	out = 0; for (auto i = 0; i < pointCount; i++) { out += points[i].y < minp.y ? 1 : 0; } if (out == pointCount) { return false; }
-	out = 0; for (auto i = 0; i < pointCount; i++) { out += points[i].z > maxp.z ? 1 : 0; } if (out == pointCount) { return false; }
-	out = 0; for (auto i = 0; i < pointCount; i++) { out += points[i].z < minp.z ? 1 : 0; } if (out == pointCount) { return false; }
+	out = 0; for (auto& corner : corners) { out += corner.x > maxp.x ? 1 : 0; } if (out == 8) { return false; }
+	out = 0; for (auto& corner : corners) { out += corner.x < minp.x ? 1 : 0; } if (out == 8) { return false; }
+	out = 0; for (auto& corner : corners) { out += corner.y > maxp.y ? 1 : 0; } if (out == 8) { return false; }
+	out = 0; for (auto& corner : corners) { out += corner.y < minp.y ? 1 : 0; } if (out == 8) { return false; }
+	out = 0; for (auto& corner : corners) { out += corner.z > maxp.z ? 1 : 0; } if (out == 8) { return false; }
+	out = 0; for (auto& corner : corners) { out += corner.z < minp.z ? 1 : 0; } if (out == 8) { return false; }
 
 	return true;
 }
@@ -119,8 +119,8 @@ bool OtFrustum::isVisibleAABB(const OtAABB& aabb) {
 //
 
 bool OtFrustum::isVisibleSphere(const glm::vec3& center, float radius) {
-	for (auto i = 0; i < planeCount; i++) {
-		if (glm::dot(planes[i].getNormal(), center) + planes[i].getDistance() + radius < 0) {
+	for (auto& plane : planes) {
+		if (glm::dot(plane.getNormal(), center) + plane.getDistance() + radius < 0) {
 			return false;
 		}
 	}
@@ -136,11 +136,11 @@ bool OtFrustum::isVisibleSphere(const glm::vec3& center, float radius) {
 glm::vec3 OtFrustum::getCenter() {
 	glm::vec3 center = glm::vec3(0.0);
 
-	for (auto& point : points) {
+	for (auto& point : corners) {
 		center += point;
 	}
 
-	return center / (float) pointCount;
+	return center / 8.0f;
 }
 
 
@@ -151,7 +151,7 @@ glm::vec3 OtFrustum::getCenter() {
 OtAABB OtFrustum::getAABB() {
 	OtAABB aabb;
 
-	for (auto& point : points) {
+	for (auto& point : corners) {
 		aabb.addPoint(point);
 	}
 
@@ -175,7 +175,7 @@ void OtFrustum::debugPlanes() {
 //
 
 void OtFrustum::debugPoints() {
-	for (auto& point : points) {
+	for (auto& point : corners) {
 		OtGlmDebug(point);
 	}
 }

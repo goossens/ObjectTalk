@@ -20,16 +20,17 @@
 //
 
 struct OtSymbol {
-	// constructors
-	inline OtSymbol(OtID i, OtObject o, size_t os) : type(heapType), id(i), object(o), opcodeStart(os), opcodeEnd(0) {}
-	inline OtSymbol(OtID i, size_t s, size_t os) : type(stackType), id(i), slot(s), opcodeStart(os), opcodeEnd(0) {}
-	inline OtSymbol(OtID i, size_t os) : type(captureType), id(i), opcodeStart(os), opcodeEnd(0) {}
-
-	enum Type {
-		heapType,
-		stackType,
-		captureType
+	// symbol types
+	enum class Type {
+		heap,
+		stack,
+		capture
 	};
+
+	// constructors
+	inline OtSymbol(OtID i, OtObject o, size_t os) : type(Type::heap), id(i), object(o), opcodeStart(os), opcodeEnd(0) {}
+	inline OtSymbol(OtID i, size_t s, size_t os) : type(Type::stack), id(i), slot(s), opcodeStart(os), opcodeEnd(0) {}
+	inline OtSymbol(OtID i, size_t os) : type(Type::capture), id(i), opcodeStart(os), opcodeEnd(0) {}
 
 	// properties
 	Type type;

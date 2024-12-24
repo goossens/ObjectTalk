@@ -105,8 +105,8 @@ public:
 	}
 
 	static constexpr const char* nodeName = "Terrain Builder";
-	static constexpr int nodeCategory = OtNodeClass::geometry;
-	static constexpr int nodeKind = OtNodeClass::fixed;
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::geometry;
+	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 protected:
 	OtImage image;

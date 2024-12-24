@@ -34,8 +34,8 @@ public:
 	}
 
 	static constexpr const char* nodeName = "Combine XYZ";
-	static constexpr int nodeCategory = OtNodeClass::transform;
-	static constexpr int nodeKind = OtNodeClass::flexible;
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::transform;
+	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::flexible;
 
 protected:
 	float x{0.0f};

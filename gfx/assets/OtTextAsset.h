@@ -33,7 +33,7 @@ public:
 
 protected:
 	// load the asset
-	AssetState load() override;
+	OtAssetBase::State load() override;
 
 	// the actual text
 	std::string text;

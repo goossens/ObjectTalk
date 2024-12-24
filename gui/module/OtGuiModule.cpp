@@ -67,11 +67,11 @@ static OtModuleRegistration registration{"gui", [](OtModule module) {
 	module->set("VectorDisplay", OtClass::create(OtVectorDisplayClass::getMeta()));
 	module->set("WidgetStack", OtClass::create(OtWidgetStackClass::getMeta()));
 
-	module->set("alignNone", OtInteger::create(int(OtUi::alignNone)));
-	module->set("alignLeft", OtInteger::create(int(OtUi::alignLeft)));
-	module->set("alignCenter", OtInteger::create(int(OtUi::alignCenter)));
-	module->set("alignRight", OtInteger::create(int(OtUi::alignRight)));
-	module->set("alignTop", OtInteger::create(int(OtUi::alignTop)));
-	module->set("alignMiddle", OtInteger::create(int(OtUi::alignMiddle)));
-	module->set("alignBottom", OtInteger::create(int(OtUi::alignBottom)));
+	module->set("alignNone", OtInteger::create(int(OtUi::Alignment::none)));
+	module->set("alignLeft", OtInteger::create(int(OtUi::Alignment::left)));
+	module->set("alignCenter", OtInteger::create(int(OtUi::Alignment::center)));
+	module->set("alignRight", OtInteger::create(int(OtUi::Alignment::right)));
+	module->set("alignTop", OtInteger::create(int(OtUi::Alignment::top)));
+	module->set("alignMiddle", OtInteger::create(int(OtUi::Alignment::middle)));
+	module->set("alignBottom", OtInteger::create(int(OtUi::Alignment::bottom)));
 }};

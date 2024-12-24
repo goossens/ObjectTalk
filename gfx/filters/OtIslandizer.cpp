@@ -18,7 +18,7 @@
 
 void OtIslandizer::execute(OtPass& pass) {
 	// Run islander filter
-	uniform.setValue(0, distanceFunction, 0.0f, 0.0f, 0.0f);
+	uniform.setValue(0, static_cast<float>(distanceFunction), 0.0f, 0.0f, 0.0f);
 	uniform.submit();
 	pass.runShaderProgram(program);
 }

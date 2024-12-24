@@ -25,8 +25,8 @@ class OtGeometryAsset : public OtAssetBase {
 public:
 	// access the geometry
 	inline OtGeometry& getGeometry() { return geometry; }
-	inline void setGeometry(OtGeometry& g) { geometry = g; assetState = readyState; }
-	inline void clearGeometry() { geometry.clear(); assetState = missingState; }
+	inline void setGeometry(OtGeometry& g) { geometry = g; state = State::ready; }
+	inline void clearGeometry() { geometry.clear(); state = State::missing; }
 
 	// asset properties
 	static constexpr bool canHandleVirtual = true;
@@ -35,7 +35,7 @@ public:
 
 protected:
 	// load the asset
-	AssetState load() override;
+	OtAssetBase::State load() override;
 
 private:
 	// the actual geometry

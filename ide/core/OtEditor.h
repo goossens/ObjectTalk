@@ -24,8 +24,8 @@
 
 class OtEditor {
 public:
-	// editor state
-	enum {
+	// editor visual state
+	enum class VisualState {
 		inTab,
 		inWindow
 	};
@@ -45,9 +45,9 @@ public:
 	virtual inline void renderEditor() {}
 
 	// access the editor state
-	inline void setVisualState(int vs) { visualState = vs; }
-	inline bool isRenderedInTab() { return visualState == inTab; }
-	inline bool isRenderedInWindow() { return visualState == inWindow; }
+	inline void setVisualState(VisualState vs) { visualState = vs; }
+	inline bool isRenderedInTab() { return visualState == VisualState::inTab; }
+	inline bool isRenderedInWindow() { return visualState == VisualState::inWindow; }
 
 	virtual inline bool isRunnable() { return false; }
 	virtual inline bool isDirty() { return false; }
@@ -73,5 +73,5 @@ protected:
 	// properties
 	std::string path;
 	OtPathFollower follower;
-	int visualState = inTab;
+	VisualState visualState = VisualState::inTab;
 };

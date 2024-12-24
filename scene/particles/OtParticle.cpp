@@ -54,27 +54,27 @@ static glm::vec3 getRandomPointinCircle() {
 void OtParticle::spawn(const OtParticleSettings& settings) {
 	// determine starting position and velocity for particle
 	switch (settings.shape) {
-		case OtParticleSettings::pointShape:
+		case OtParticleSettings::Shape::point:
 			position = glm::vec3(0.0f, 0.0f, 0.0f);
 			velocity = glm::vec3(0.0f, 1.0f, 0.0f);
 			break;
 
-		case OtParticleSettings::circleShape:
+		case OtParticleSettings::Shape::circle:
 			position = getRandomPointinCircle();
 			velocity = glm::normalize(glm::vec3(position.x, 1.0f, position.z));
 			break;
 
-		case OtParticleSettings::coneShape:
+		case OtParticleSettings::Shape::cone:
 			position = glm::vec3(0.0f, 0.0f, 0.0f);
 			velocity = glm::normalize(glm::vec3(OtRandom(-0.3f, 0.3f), 1.0f, OtRandom(-0.3f, 0.3f)));
 			break;
 
-		case OtParticleSettings::hemisphereShape:
+		case OtParticleSettings::Shape::hemisphere:
 			position = getRandomPointOnHemisphere();
 			velocity = glm::normalize(position);
 			break;
 
-		case OtParticleSettings::sphereShape:
+		case OtParticleSettings::Shape::sphere:
 			position = getRandomPointOnSphere();
 			velocity = glm::normalize(position);
 			break;

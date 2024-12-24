@@ -91,12 +91,12 @@ private:
 	std::string path;
 	std::string version;
 
-	enum OtHttpHeaderState {
-		WAITING_FOR_NAME = 1,
-		WAITING_FOR_VALUE
+	enum class HeaderState {
+		waitingForName,
+		waitingForValue
 	};
 
-	OtHttpHeaderState headerState;
+	HeaderState headerState;
 	std::string headerName;
 	std::string headerValue;
 	OtHttpHeaders headers;

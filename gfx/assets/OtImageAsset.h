@@ -25,8 +25,8 @@ class OtImageAsset : public OtAssetBase {
 public:
 	// access the image
 	inline OtImage& getImage() { return image; }
-	inline void setImage(OtImage& i) { image = i; assetState = readyState; }
-	inline void clearImage() { image.clear(); assetState = missingState; }
+	inline void setImage(OtImage& i) { image = i; state = State::ready; }
+	inline void clearImage() { image.clear(); state = State::missing; }
 
 	// asset properties
 	static constexpr bool canHandleVirtual = true;
@@ -35,7 +35,7 @@ public:
 
 protected:
 	// load the asset
-	AssetState load() override;
+	OtAssetBase::State load() override;
 
 private:
 	// the actual image

@@ -90,8 +90,8 @@ private:
 	int frames = 0;
 	bool horizontal = false;
 	float scale = 1.0f;
-	OtUi::Alignment horizontalAlign = OtUi::alignLeft;
-	OtUi::Alignment verticalAlign = OtUi::alignTop;
+	OtUi::Alignment horizontalAlign = OtUi::Alignment::left;
+	OtUi::Alignment verticalAlign = OtUi::Alignment::top;
 	float value = 0.0f;
 	OtObject callback;
 };

@@ -25,8 +25,8 @@ class OtFontAsset : public OtAssetBase {
 public:
 	// access the font
 	inline OtFont& getFont() { return font; }
-	inline void setFont(OtFont& f) { font = f; assetState = readyState; }
-	inline void clearFont() { font.clear(); assetState = missingState; }
+	inline void setFont(OtFont& f) { font = f; state = State::ready; }
+	inline void clearFont() { font.clear(); state = State::missing; }
 
 	// asset properties
 	static constexpr bool canHandleVirtual = false;
@@ -35,7 +35,7 @@ public:
 
 protected:
 	// load the asset
-	AssetState load() override;
+	OtAssetBase::State load() override;
 
 private:
 	// the actual font

@@ -21,7 +21,7 @@
 //	OtTextAsset::load
 //
 
-OtAssetBase::AssetState OtTextAsset::load() {
+OtAssetBase::State OtTextAsset::load() {
 	try {
 		// try to load the text
 		std::ifstream stream(path.c_str());
@@ -33,11 +33,11 @@ OtAssetBase::AssetState OtTextAsset::load() {
 		text.assign((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());
 		stream.close();
 
-		return readyState;
+		return State::ready;
 
 	} catch (const OtException& exception) {
 		OtLogWarning("Can't load text from [{}]: {}", path, exception.what());
-		return invalidState;
+		return State::invalid;
 	}
 }
 

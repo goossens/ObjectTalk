@@ -96,7 +96,7 @@ OtByteCode OtCompiler::compileSource(OtSource src, OtObject object) {
 	}
 
 	// process all statements
-	while (!scanner.matchToken(OtScanner::EOS_TOKEN)) {
+	while (!scanner.matchToken(OtScanner::Token::endOfText)) {
 		statement(bytecode);
 	}
 
@@ -149,7 +149,7 @@ OtByteCode OtCompiler::compileExpression(OtSource src) {
 		bytecode->method(dereferenceID, 0);
 	}
 
-	scanner.expect(OtScanner::EOS_TOKEN);
+	scanner.expect(OtScanner::Token::endOfText);
 
 	// clear local and global scope
 	popScope();
@@ -189,7 +189,7 @@ void OtCompiler::pushBlockScope(OtByteCode bytecode) {
 	auto& scope = scopeStack.back();
 	auto stackFrameOffset = scope.stackFrameOffset;
 
-	if (scope.type == Scope::functionScope || scope.type == Scope::blockScope) {
+	if (scope.type == Scope::Type::function || scope.type == Scope::Type::block) {
 		stackFrameOffset += scope.locals.size();
 	}
 
@@ -242,7 +242,7 @@ void OtCompiler::declareCapture(OtID id, std::pair<size_t, size_t> item) {
 	// find most recent function scope
 	auto scope = scopeStack.rbegin();
 
-	while (scope->type != Scope::functionScope && scope != scopeStack.rend()) {
+	while (scope->type != Scope::Type::function && scope != scopeStack.rend()) {
 		scope++;
 	}
 
@@ -279,7 +279,7 @@ void OtCompiler::declareVariable(OtID id, bool alreadyOnStack) {
 	}
 
 	// add variable to current scope
-	if (scope.type == Scope::functionScope || scope.type == Scope::blockScope) {
+	if (scope.type == Scope::Type::function || scope.type == Scope::Type::block) {
 		// variable lives on the stack
 		auto slot = scope.stackFrameOffset + scope.locals.size();
 		scope.locals[id] = slot;
@@ -321,7 +321,7 @@ void OtCompiler::resolveVariable(OtID id, bool processSymbol) {
 		if (i->locals.count(id)) {
 			// yes, handle different scope types
 			switch(i->type) {
-				case Scope::objectScope:
+				case Scope::Type::object:
 					// variable is object member
 					bytecode->push(OtMemberReference::create(i->object, id));
 
@@ -332,8 +332,8 @@ void OtCompiler::resolveVariable(OtID id, bool processSymbol) {
 
 					break;
 
-				case Scope::functionScope:
-				case Scope::blockScope:
+				case Scope::Type::function:
+				case Scope::Type::block:
 					if (functionLevel == 0) {
 						// variable lives on the stack in the current stack frame
 						bytecode->push(OtStackReference::create(id, i->locals[id]));
@@ -364,7 +364,7 @@ void OtCompiler::resolveVariable(OtID id, bool processSymbol) {
 		}
 
 		// do some housekeeping if we had a function scope
-		if (!found && i->type == Scope::functionScope) {
+		if (!found && i->type == Scope::Type::function) {
 			// track how many function levels we go back
 			functionLevel++;
 		}
@@ -403,21 +403,21 @@ void OtCompiler::function(OtByteCode bytecode, OtID id) {
 	pushFunctionScope(functionCode);
 
 	// parse calling parameters
-	scanner.expect(OtScanner::LPAREN_TOKEN);
+	scanner.expect(OtScanner::Token::leftParenthesis);
 	size_t count = 0;
 
-	while (!scanner.matchToken(OtScanner::RPAREN_TOKEN) && !scanner.matchToken(OtScanner::EOS_TOKEN)) {
-		scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
+	while (!scanner.matchToken(OtScanner::Token::rightParenthesis) && !scanner.matchToken(OtScanner::Token::endOfText)) {
+		scanner.expect(OtScanner::Token::identifier, false);
 		declareVariable(scanner.getID(), true);
 		scanner.advance();
 		count++;
 
-		if (!scanner.matchToken(OtScanner::RPAREN_TOKEN)) {
-			scanner.expect(OtScanner::COMMA_TOKEN);
+		if (!scanner.matchToken(OtScanner::Token::rightParenthesis)) {
+			scanner.expect(OtScanner::Token::comma);
 		}
 	}
 
-	scanner.expect(OtScanner::RPAREN_TOKEN);
+	scanner.expect(OtScanner::Token::rightParenthesis);
 
 	// get function level bytecode
 	block(functionCode);
@@ -465,8 +465,8 @@ void OtCompiler::super(OtByteCode bytecode) {
 	bytecode->push(classStack.back());
 
 	// parse member reference and create super instruction
-	scanner.expect(OtScanner::PERIOD_TOKEN);
-	scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
+	scanner.expect(OtScanner::Token::period);
+	scanner.expect(OtScanner::Token::identifier, false);
 	bytecode->super(scanner.getID());
 	scanner.advance();
 }
@@ -481,49 +481,49 @@ bool OtCompiler::primary(OtByteCode bytecode) {
 	size_t count = 0;
 
 	switch (scanner.getToken()) {
-		case OtScanner::LPAREN_TOKEN:
+		case OtScanner::Token::leftParenthesis:
 			// handle sub-expression
 			scanner.advance();
 			reference = expression(bytecode);
-			scanner.expect(OtScanner::RPAREN_TOKEN);
+			scanner.expect(OtScanner::Token::rightParenthesis);
 			break;
 
-		case OtScanner::INTEGER_TOKEN:
+		case OtScanner::Token::integerLiteral:
 			// handle integer constants
 			bytecode->push(OtInteger::create(scanner.getInteger()));
 			scanner.advance();
 			reference = false;
 			break;
 
-		case OtScanner::REAL_TOKEN:
+		case OtScanner::Token::realLiteral:
 			// handle real constants
 			bytecode->push(OtReal::create(scanner.getReal()));
 			scanner.advance();
 			reference = false;
 			break;
 
-		case OtScanner::STRING_TOKEN:
+		case OtScanner::Token::stringLiteral:
 			// handle string constants
 			bytecode->push(OtString::create(scanner.getString()));
 			scanner.advance();
 			reference = false;
 			break;
 
-		case OtScanner::FUNCTION_TOKEN:
+		case OtScanner::Token::functionKeyword:
 			// handle function definition
 			scanner.advance();
 			function(bytecode, anonymousID);
 			reference = false;
 			break;
 
-		case OtScanner::SUPER_TOKEN:
+		case OtScanner::Token::superKeyword:
 			// handle superclass construct
 			scanner.advance();
 			super(bytecode);
 			reference = false;
 			break;
 
-		case OtScanner::IDENTIFIER_TOKEN: {
+		case OtScanner::Token::identifier: {
 			// handle named reference
 			resolveVariable(scanner.getID());
 			scanner.advance();
@@ -531,7 +531,7 @@ bool OtCompiler::primary(OtByteCode bytecode) {
 			break;
 		}
 
-		case OtScanner::LBRACKET_TOKEN:
+		case OtScanner::Token::leftBracket:
 			// handle array constant
 			scanner.advance();
 			resolveVariable(arrayID, false);
@@ -539,16 +539,16 @@ bool OtCompiler::primary(OtByteCode bytecode) {
 			bytecode->method(callID, 0);
 			bytecode->dup();
 
-			if (scanner.getToken() != OtScanner::RBRACKET_TOKEN) {
+			if (scanner.getToken() != OtScanner::Token::rightBracket) {
 				bytecode->method(initID, expressions(bytecode));
 			}
 
 			bytecode->pop();
-			scanner.expect(OtScanner::RBRACKET_TOKEN);
+			scanner.expect(OtScanner::Token::rightBracket);
 			reference = false;
 			break;
 
-		case OtScanner::LBRACE_TOKEN:
+		case OtScanner::Token::leftBrace:
 			// handle dictionary constant
 			scanner.advance();
 			resolveVariable(dictID, false);
@@ -556,11 +556,11 @@ bool OtCompiler::primary(OtByteCode bytecode) {
 			bytecode->method(callID, 0);
 			bytecode->dup();
 
-			while (scanner.getToken() != OtScanner::RBRACE_TOKEN && scanner.getToken() != OtScanner::EOS_TOKEN) {
-				scanner.expect(OtScanner::STRING_TOKEN, false);
+			while (scanner.getToken() != OtScanner::Token::rightBrace && scanner.getToken() != OtScanner::Token::endOfText) {
+				scanner.expect(OtScanner::Token::stringLiteral, false);
 				bytecode->push(OtString::create(scanner.getString()));
 				scanner.advance();
-				scanner.expect(OtScanner::COLON_TOKEN);
+				scanner.expect(OtScanner::Token::colon);
 
 				if (expression(bytecode)) {
 					bytecode->method(dereferenceID, 0);
@@ -568,12 +568,12 @@ bool OtCompiler::primary(OtByteCode bytecode) {
 
 				count += 2;
 
-				if (scanner.getToken() == OtScanner::COMMA_TOKEN) {
+				if (scanner.getToken() == OtScanner::Token::comma) {
 					scanner.advance();
 				}
 			}
 
-			scanner.expect(OtScanner::RBRACE_TOKEN);
+			scanner.expect(OtScanner::Token::rightBrace);
 
 			if (count) {
 				bytecode->method(initID, count);
@@ -599,20 +599,20 @@ bool OtCompiler::primary(OtByteCode bytecode) {
 bool OtCompiler::postfix(OtByteCode bytecode) {
 	// parse left side
 	bool reference = primary(bytecode);
-	OtToken token = scanner.getToken();
+	OtScanner::Token token = scanner.getToken();
 
 	// process postfix
-	while (token == OtScanner::LBRACKET_TOKEN ||
-		   token == OtScanner::LPAREN_TOKEN ||
-		   token == OtScanner::PERIOD_TOKEN ||
-		   token == OtScanner::INCREMENT_TOKEN ||
-		   token == OtScanner::DECREMENT_TOKEN) {
+	while (token == OtScanner::Token::leftBracket ||
+		   token == OtScanner::Token::leftParenthesis ||
+		   token == OtScanner::Token::period ||
+		   token == OtScanner::Token::incrementOperator ||
+		   token == OtScanner::Token::decrementOperator) {
 		scanner.advance();
 		size_t count;
 
 		// generate code
 		switch (token) {
-			case OtScanner::LBRACKET_TOKEN:
+			case OtScanner::Token::leftBracket:
 				// index object
 				if (reference) {
 					bytecode->method(dereferenceID, 0);
@@ -622,36 +622,36 @@ bool OtCompiler::postfix(OtByteCode bytecode) {
 					bytecode->method(dereferenceID, 0);
 				}
 
-				scanner.expect(OtScanner::RBRACKET_TOKEN);
+				scanner.expect(OtScanner::Token::rightBracket);
 				bytecode->method(indexID, 1);
 				reference = true;
 				break;
 
-			case OtScanner::LPAREN_TOKEN:
+			case OtScanner::Token::leftParenthesis:
 				// call object
 				if (reference) {
 					bytecode->method(dereferenceID, 0);
 				}
 
-				count = scanner.matchToken(OtScanner::RPAREN_TOKEN) ? 0 : expressions(bytecode);
-				scanner.expect(OtScanner::RPAREN_TOKEN);
+				count = scanner.matchToken(OtScanner::Token::rightParenthesis) ? 0 : expressions(bytecode);
+				scanner.expect(OtScanner::Token::rightParenthesis);
 				bytecode->method(callID, count);
 				reference = false;
 				break;
 
-			case OtScanner::PERIOD_TOKEN:
+			case OtScanner::Token::period:
 				// member access
 				if (reference) {
 					bytecode->method(dereferenceID, 0);
 				}
 
-				scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
+				scanner.expect(OtScanner::Token::identifier, false);
 				bytecode->member(scanner.getID());
 				scanner.advance();
 				reference = true;
 				break;
 
-			case OtScanner::INCREMENT_TOKEN:
+			case OtScanner::Token::incrementOperator:
 				if (!reference) {
 					scanner.error("Lvalue required for '++'");
 				}
@@ -667,7 +667,7 @@ bool OtCompiler::postfix(OtByteCode bytecode) {
 				reference = false;
 				break;
 
-			case OtScanner::DECREMENT_TOKEN:
+			case OtScanner::Token::decrementOperator:
 				if (!reference) {
 					scanner.error("Lvalue required for '--'");
 				}
@@ -681,6 +681,9 @@ bool OtCompiler::postfix(OtByteCode bytecode) {
 				bytecode->method(assignID, 1);
 				bytecode->pop();
 				reference = false;
+				break;
+
+			default:
 				break;
 		}
 
@@ -696,20 +699,20 @@ bool OtCompiler::postfix(OtByteCode bytecode) {
 //
 
 bool OtCompiler::prefix(OtByteCode bytecode) {
-	OtToken token = scanner.getToken();
+	OtScanner::Token token = scanner.getToken();
 
 	// process prefix
-	if (token == OtScanner::SUBTRACT_TOKEN ||
-		token == OtScanner::NEGATE_TOKEN ||
-		token == OtScanner::BITWISE_NOT_TOKEN ||
-		token == OtScanner::INCREMENT_TOKEN ||
-		token == OtScanner::DECREMENT_TOKEN) {
+	if (token == OtScanner::Token::subtractOperator ||
+		token == OtScanner::Token::negateOperator ||
+		token == OtScanner::Token::bitwiseNotOperator ||
+		token == OtScanner::Token::incrementOperator ||
+		token == OtScanner::Token::decrementOperator) {
 		scanner.advance();
 		bool reference = postfix(bytecode);
 
 		// generate code
 		switch (token) {
-			case OtScanner::SUBTRACT_TOKEN:
+			case OtScanner::Token::subtractOperator:
 				if (reference) {
 					bytecode->method(dereferenceID, 0);
 				}
@@ -717,7 +720,7 @@ bool OtCompiler::prefix(OtByteCode bytecode) {
 				bytecode->method(negateID, 0);
 				break;
 
-		case OtScanner::ADD_TOKEN:
+		case OtScanner::Token::addOperator:
 			if (reference) {
 				bytecode->method(dereferenceID, 0);
 			}
@@ -725,7 +728,7 @@ bool OtCompiler::prefix(OtByteCode bytecode) {
 			bytecode->method(plusID, 0);
 			break;
 
-			case OtScanner::NEGATE_TOKEN:
+			case OtScanner::Token::negateOperator:
 				if (reference) {
 					bytecode->method(dereferenceID, 0);
 				}
@@ -733,7 +736,7 @@ bool OtCompiler::prefix(OtByteCode bytecode) {
 				bytecode->method(logicalNotID, 0);
 				break;
 
-			case OtScanner::BITWISE_NOT_TOKEN:
+			case OtScanner::Token::bitwiseNotOperator:
 				if (reference) {
 					bytecode->method(dereferenceID, 0);
 				}
@@ -741,7 +744,7 @@ bool OtCompiler::prefix(OtByteCode bytecode) {
 				bytecode->method(bitwiseNotID, 0);
 				break;
 
-			case OtScanner::INCREMENT_TOKEN:
+			case OtScanner::Token::incrementOperator:
 				if (!reference) {
 					scanner.error("Lvalue required for '++'");
 				}
@@ -752,7 +755,7 @@ bool OtCompiler::prefix(OtByteCode bytecode) {
 				bytecode->method(assignID, 1);
 				break;
 
-			case OtScanner::DECREMENT_TOKEN:
+			case OtScanner::Token::decrementOperator:
 				if (!reference) {
 					scanner.error("Lvalue required for '--'");
 				}
@@ -761,6 +764,9 @@ bool OtCompiler::prefix(OtByteCode bytecode) {
 				bytecode->method(dereferenceID, 0);
 				bytecode->method(decrementID, 0);
 				bytecode->method(assignID, 1);
+				break;
+
+			default:
 				break;
 		}
 
@@ -779,12 +785,12 @@ bool OtCompiler::prefix(OtByteCode bytecode) {
 bool OtCompiler::multiplications(OtByteCode bytecode) {
 	// parse left side
 	bool reference = prefix(bytecode);
-	OtToken token = scanner.getToken();
+	OtScanner::Token token = scanner.getToken();
 
-	while (token == OtScanner::MULTIPLY_TOKEN ||
-		   token == OtScanner::DIVIDE_TOKEN ||
-		   token == OtScanner::POWER_TOKEN ||
-		   token == OtScanner::MODULO_TOKEN) {
+	while (token == OtScanner::Token::multiplyOperator ||
+		   token == OtScanner::Token::divideOperator ||
+		   token == OtScanner::Token::powerOperator ||
+		   token == OtScanner::Token::moduloOperator) {
 		// deref if required
 		scanner.advance();
 
@@ -799,20 +805,23 @@ bool OtCompiler::multiplications(OtByteCode bytecode) {
 
 		// generate code
 		switch (token) {
-			case OtScanner::MULTIPLY_TOKEN:
+			case OtScanner::Token::multiplyOperator:
 				bytecode->method(multiplyID, 1);
 				break;
 
-			case OtScanner::DIVIDE_TOKEN:
+			case OtScanner::Token::divideOperator:
 				bytecode->method(divideID, 1);
 				break;
 
-			case OtScanner::POWER_TOKEN:
+			case OtScanner::Token::powerOperator:
 				bytecode->method(powerID, 1);
 				break;
 
-			case OtScanner::MODULO_TOKEN:
+			case OtScanner::Token::moduloOperator:
 				bytecode->method(moduloID, 1);
+				break;
+
+			default:
 				break;
 		}
 
@@ -831,9 +840,9 @@ bool OtCompiler::multiplications(OtByteCode bytecode) {
 bool OtCompiler::additions(OtByteCode bytecode) {
 	// parse left side
 	bool reference = multiplications(bytecode);
-	OtToken token = scanner.getToken();
+	OtScanner::Token token = scanner.getToken();
 
-	while (token == OtScanner::ADD_TOKEN || token == OtScanner::SUBTRACT_TOKEN) {
+	while (token == OtScanner::Token::addOperator || token == OtScanner::Token::subtractOperator) {
 		// deref if required
 		scanner.advance();
 
@@ -847,7 +856,7 @@ bool OtCompiler::additions(OtByteCode bytecode) {
 		}
 
 		// generate code
-		if (token == OtScanner::ADD_TOKEN) {
+		if (token == OtScanner::Token::addOperator) {
 			bytecode->method(addID, 1);
 
 		} else {
@@ -869,9 +878,9 @@ bool OtCompiler::additions(OtByteCode bytecode) {
 bool OtCompiler::shift(OtByteCode bytecode) {
 	// parse left side
 	bool reference = additions(bytecode);
-	OtToken token = scanner.getToken();
+	OtScanner::Token token = scanner.getToken();
 
-	while (token == OtScanner::SHIFT_LEFT_TOKEN || token == OtScanner::SHIFT_RIGHT_TOKEN) {
+	while (token == OtScanner::Token::shiftLeftOperator || token == OtScanner::Token::shiftRightOperator) {
 		// deref if required
 		scanner.advance();
 
@@ -885,7 +894,7 @@ bool OtCompiler::shift(OtByteCode bytecode) {
 		}
 
 		// generate code
-		if (token == OtScanner::SHIFT_LEFT_TOKEN) {
+		if (token == OtScanner::Token::shiftLeftOperator) {
 			bytecode->method(leftShiftID, 1);
 
 		} else {
@@ -907,19 +916,19 @@ bool OtCompiler::shift(OtByteCode bytecode) {
 bool OtCompiler::relation(OtByteCode bytecode) {
 	// parse left side
 	bool reference = shift(bytecode);
-	OtToken token = scanner.getToken();
+	OtScanner::Token token = scanner.getToken();
 
-	while (token == OtScanner::LESS_TOKEN ||
-		   token == OtScanner::LESS_EQUAL_TOKEN ||
-		   token == OtScanner::GREATER_TOKEN ||
-		   token == OtScanner::GREATER_EQUAL_TOKEN ||
-		   token == OtScanner::IN_TOKEN ||
-		   token == OtScanner::NOT_TOKEN) {
+	while (token == OtScanner::Token::lessOperator ||
+		   token == OtScanner::Token::lessEqualOperator ||
+		   token == OtScanner::Token::greaterOperator ||
+		   token == OtScanner::Token::greaterEqualOperator ||
+		   token == OtScanner::Token::inKeyword ||
+		   token == OtScanner::Token::notKeyword) {
 		scanner.advance();
 
 		// expect "in" if required
-		if (token == OtScanner::NOT_TOKEN) {
-			scanner.expect(OtScanner::IN_TOKEN);
+		if (token == OtScanner::Token::notKeyword) {
+			scanner.expect(OtScanner::Token::inKeyword);
 		}
 
 		// deref if required
@@ -934,31 +943,34 @@ bool OtCompiler::relation(OtByteCode bytecode) {
 
 		// generate code
 		switch (token) {
-			case OtScanner::LESS_TOKEN:
+			case OtScanner::Token::lessOperator:
 				bytecode->method(lessThenID, 1);
 				break;
 
-			case OtScanner::LESS_EQUAL_TOKEN:
+			case OtScanner::Token::lessEqualOperator:
 				bytecode->method(lessEqualID, 1);
 				break;
 
-			case OtScanner::GREATER_TOKEN:
+			case OtScanner::Token::greaterOperator:
 				bytecode->method(greaterThenID, 1);
 				break;
 
-			case OtScanner::GREATER_EQUAL_TOKEN:
+			case OtScanner::Token::greaterEqualOperator:
 				bytecode->method(greaterEqualID, 1);
 				break;
 
-			case OtScanner::IN_TOKEN:
+			case OtScanner::Token::inKeyword:
 				bytecode->swap();
 				bytecode->method(containsID, 1);
 				break;
 
-			case OtScanner::NOT_TOKEN:
+			case OtScanner::Token::notKeyword:
 				bytecode->swap();
 				bytecode->method(containsID, 1);
 				bytecode->method(logicalNotID, 0);
+				break;
+
+			default:
 				break;
 		}
 
@@ -977,9 +989,9 @@ bool OtCompiler::relation(OtByteCode bytecode) {
 bool OtCompiler::equal(OtByteCode bytecode) {
 	// parse left side
 	bool reference = relation(bytecode);
-	OtToken token = scanner.getToken();
+	OtScanner::Token token = scanner.getToken();
 
-	while (token == OtScanner::EQUAL_TOKEN || token == OtScanner::NOT_EQUAL_TOKEN) {
+	while (token == OtScanner::Token::equalOperator || token == OtScanner::Token::notEqualOperator) {
 		scanner.advance();
 
 		// deref if required
@@ -993,7 +1005,7 @@ bool OtCompiler::equal(OtByteCode bytecode) {
 		}
 
 		// generate code
-		if (token == OtScanner::EQUAL_TOKEN) {
+		if (token == OtScanner::Token::equalOperator) {
 			bytecode->method(equalID, 1);
 
 		} else {
@@ -1017,7 +1029,7 @@ bool OtCompiler::bitwiseAnd(OtByteCode bytecode) {
 	bool reference = equal(bytecode);
 
 	// handle all "&" operators
-	if (scanner.matchToken(OtScanner::BITWISE_AND_TOKEN)) {
+	if (scanner.matchToken(OtScanner::Token::bitwiseAndOperator)) {
 		// deref if required
 		scanner.advance();
 
@@ -1048,7 +1060,7 @@ bool OtCompiler::bitwiseXor(OtByteCode bytecode) {
 	bool reference = bitwiseAnd(bytecode);
 
 	// handle all "&" operators
-	if (scanner.matchToken(OtScanner::BITWISE_XOR_TOKEN)) {
+	if (scanner.matchToken(OtScanner::Token::bitwiseXorOperator)) {
 		// deref if required
 		scanner.advance();
 
@@ -1079,7 +1091,7 @@ bool OtCompiler::bitwiseOr(OtByteCode bytecode) {
 	bool reference = bitwiseXor(bytecode);
 
 	// handle all "|" operators
-	if (scanner.matchToken(OtScanner::BITWISE_OR_TOKEN)) {
+	if (scanner.matchToken(OtScanner::Token::bitwiseOrOperator)) {
 		// deref if required
 		scanner.advance();
 
@@ -1110,7 +1122,7 @@ bool OtCompiler::andExpression(OtByteCode bytecode) {
 	bool reference = bitwiseOr(bytecode);
 
 	// handle all "&&" operators
-	while (scanner.matchToken(OtScanner::AND_TOKEN)) {
+	while (scanner.matchToken(OtScanner::Token::andOperator)) {
 		// skip token
 		scanner.advance();
 
@@ -1151,7 +1163,7 @@ bool OtCompiler::orExpression(OtByteCode bytecode) {
 	bool reference = andExpression(bytecode);
 
 	// handle all "||" operators
-	while (scanner.matchToken(OtScanner::OR_TOKEN)) {
+	while (scanner.matchToken(OtScanner::Token::orOperator)) {
 		// skip token
 		scanner.advance();
 
@@ -1191,7 +1203,7 @@ bool OtCompiler::conditional(OtByteCode bytecode) {
 	// parse left side
 	bool reference = orExpression(bytecode);
 
-	if (scanner.matchToken(OtScanner::QUESTION_TOKEN)) {
+	if (scanner.matchToken(OtScanner::Token::questionMark)) {
 		// deref if required
 		scanner.advance();
 
@@ -1207,7 +1219,7 @@ bool OtCompiler::conditional(OtByteCode bytecode) {
 			bytecode->method(dereferenceID, 0);
 		}
 
-		scanner.expect(OtScanner::COLON_TOKEN);
+		scanner.expect(OtScanner::Token::colon);
 
 		// jump around "false" expression and patch first jump
 		size_t offset2 = bytecode->jump(0);
@@ -1234,27 +1246,27 @@ bool OtCompiler::conditional(OtByteCode bytecode) {
 bool OtCompiler::expression(OtByteCode bytecode) {
 	// parse left side
 	bool reference = conditional(bytecode);
-	OtToken token = scanner.getToken();
+	OtScanner::Token token = scanner.getToken();
 
 	// process all assignment operators
-	while (token == OtScanner::ASSIGNMENT_TOKEN ||
-		   token == OtScanner::MULTIPLY_ASSIGNMENT_TOKEN ||
-		   token == OtScanner::DIVIDE_ASSIGNMENT_TOKEN ||
-		   token == OtScanner::MODULO_ASSIGNMENT_TOKEN ||
-		   token == OtScanner::ADD_ASSIGNMENT_TOKEN ||
-		   token == OtScanner::SUBTRACT_ASSIGNMENT_TOKEN ||
-		   token == OtScanner::SHIFT_LEFT_ASSIGNMENT_TOKEN ||
-		   token == OtScanner::SHIFT_RIGHT_ASSIGNMENT_TOKEN ||
-		   token == OtScanner::BITWISE_AND_ASSIGNMENT_TOKEN ||
-		   token == OtScanner::BITWISE_OR_ASSIGNMENT_TOKEN ||
-		   token == OtScanner::BITWISE_XOR_ASSIGNMENT_TOKEN) {
+	while (token == OtScanner::Token::assignment ||
+		   token == OtScanner::Token::multiplyAssignment ||
+		   token == OtScanner::Token::divideAssignment ||
+		   token == OtScanner::Token::moduloAssignment ||
+		   token == OtScanner::Token::addAssignment ||
+		   token == OtScanner::Token::subtractAssignment ||
+		   token == OtScanner::Token::shiftLeftAssignment ||
+		   token == OtScanner::Token::shiftRightAssignment ||
+		   token == OtScanner::Token::bitwiseAndAssignment ||
+		   token == OtScanner::Token::bitwiseOrAssignment ||
+		   token == OtScanner::Token::bitwiseXorAssignment) {
 		// sanity check
 		if (!reference) {
 			scanner.error("Lvalue required for assignments");
 		}
 
 		// duplicate left side if required
-		if (token != OtScanner::ASSIGNMENT_TOKEN) {
+		if (token != OtScanner::Token::assignment) {
 			bytecode->dup();
 			bytecode->method(dereferenceID, 0);
 		}
@@ -1268,44 +1280,47 @@ bool OtCompiler::expression(OtByteCode bytecode) {
 
 		// handle different assignments
 		switch (token) {
-			case OtScanner::MULTIPLY_ASSIGNMENT_TOKEN:
+			case OtScanner::Token::multiplyAssignment:
 				bytecode->method(multiplyID, 1);
 				break;
 
-			case OtScanner::DIVIDE_ASSIGNMENT_TOKEN:
+			case OtScanner::Token::divideAssignment:
 				bytecode->method(divideID, 1);
 				break;
 
-			case OtScanner::MODULO_ASSIGNMENT_TOKEN:
+			case OtScanner::Token::moduloAssignment:
 				bytecode->method(moduloID, 1);
 				break;
 
-			case OtScanner::ADD_ASSIGNMENT_TOKEN:
+			case OtScanner::Token::addAssignment:
 				bytecode->method(addID, 1);
 				break;
 
-			case OtScanner::SUBTRACT_ASSIGNMENT_TOKEN:
+			case OtScanner::Token::subtractAssignment:
 				bytecode->method(subtractID, 1);
 				break;
 
-			case OtScanner::SHIFT_LEFT_ASSIGNMENT_TOKEN:
+			case OtScanner::Token::shiftLeftAssignment:
 				bytecode->method(leftShiftID, 1);
 				break;
 
-			case OtScanner::SHIFT_RIGHT_ASSIGNMENT_TOKEN:
+			case OtScanner::Token::shiftRightAssignment:
 				bytecode->method(rightShiftID, 1);
 				break;
 
-			case OtScanner::BITWISE_AND_ASSIGNMENT_TOKEN:
+			case OtScanner::Token::bitwiseAndAssignment:
 				bytecode->method(bitwiseAndID, 1);
 				break;
 
-			case OtScanner::BITWISE_OR_ASSIGNMENT_TOKEN:
+			case OtScanner::Token::bitwiseOrAssignment:
 				bytecode->method(bitwiseOrID, 1);
 				break;
 
-			case OtScanner::BITWISE_XOR_ASSIGNMENT_TOKEN:
+			case OtScanner::Token::bitwiseXorAssignment:
 				bytecode->method(bitwiseXorID, 1);
+				break;
+
+			default:
 				break;
 		}
 
@@ -1332,7 +1347,7 @@ size_t OtCompiler::expressions(OtByteCode bytecode) {
 		bytecode->method(dereferenceID, 0);
 	}
 
-	while (scanner.matchToken(OtScanner::COMMA_TOKEN)) {
+	while (scanner.matchToken(OtScanner::Token::comma)) {
 		scanner.advance();
 
 		if (expression(bytecode)) {
@@ -1352,15 +1367,15 @@ size_t OtCompiler::expressions(OtByteCode bytecode) {
 
 void OtCompiler::block(OtByteCode bytecode) {
 	// enter a new block scope
-	scanner.expect(OtScanner::LBRACE_TOKEN);
+	scanner.expect(OtScanner::Token::leftBrace);
 	pushBlockScope(bytecode);
 
 	// process all statements in a block
-	while (!scanner.matchToken(OtScanner::RBRACE_TOKEN) && !scanner.matchToken(OtScanner::EOS_TOKEN)) {
+	while (!scanner.matchToken(OtScanner::Token::rightBrace) && !scanner.matchToken(OtScanner::Token::endOfText)) {
 		statement(bytecode);
 	}
 
-	scanner.expect(OtScanner::RBRACE_TOKEN);
+	scanner.expect(OtScanner::Token::rightBrace);
 
 	// locals are going out of scope so we remove them from the stack (if required)
 	auto locals = scopeStack.back().locals.size();
@@ -1380,8 +1395,8 @@ void OtCompiler::block(OtByteCode bytecode) {
 
 void OtCompiler::variableDeclaration(OtByteCode bytecode) {
 	// handle variable name
-	scanner.expect(OtScanner::VAR_TOKEN);
-	scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
+	scanner.expect(OtScanner::Token::varKeyword);
+	scanner.expect(OtScanner::Token::identifier, false);
 	auto id = scanner.getID();
 	scanner.advance();
 
@@ -1389,7 +1404,7 @@ void OtCompiler::variableDeclaration(OtByteCode bytecode) {
 	declareVariable(id);
 
 	// process initial value (if required)
-	if (scanner.matchToken(OtScanner::ASSIGNMENT_TOKEN)) {
+	if (scanner.matchToken(OtScanner::Token::assignment)) {
 		// process expression
 		scanner.advance();
 
@@ -1406,7 +1421,7 @@ void OtCompiler::variableDeclaration(OtByteCode bytecode) {
 	assignVariable(id);
 
 	// must have semicolon at the end of a variable declaration
-	scanner.expect(OtScanner::SEMICOLON_TOKEN);
+	scanner.expect(OtScanner::Token::colon);
 }
 
 
@@ -1416,8 +1431,8 @@ void OtCompiler::variableDeclaration(OtByteCode bytecode) {
 
 void OtCompiler::classDeclaration(OtByteCode bytecode) {
 	// handle class name
-	scanner.expect(OtScanner::CLASS_TOKEN);
-	scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
+	scanner.expect(OtScanner::Token::classKeyword);
+	scanner.expect(OtScanner::Token::identifier, false);
 	auto id = scanner.getID();
 
 	// create new class
@@ -1431,7 +1446,7 @@ void OtCompiler::classDeclaration(OtByteCode bytecode) {
 	scanner.advance();
 
 	// handle parent class
-	scanner.expect(OtScanner::COLON_TOKEN);
+	scanner.expect(OtScanner::Token::colon);
 	bytecode->push(cls);
 
 	if (expression(bytecode)) {
@@ -1445,13 +1460,13 @@ void OtCompiler::classDeclaration(OtByteCode bytecode) {
 	pushObjectScope(bytecode, cls);
 
 	// process class content
-	scanner.expect(OtScanner::LBRACE_TOKEN);
+	scanner.expect(OtScanner::Token::leftBrace);
 
-	while (!scanner.matchToken(OtScanner::RBRACE_TOKEN) && !scanner.matchToken(OtScanner::EOS_TOKEN)) {
+	while (!scanner.matchToken(OtScanner::Token::rightBrace) && !scanner.matchToken(OtScanner::Token::endOfText)) {
 		statement(bytecode);
 	}
 
-	scanner.expect(OtScanner::RBRACE_TOKEN);
+	scanner.expect(OtScanner::Token::rightBrace);
 
 	// end class scope
 	popScope();
@@ -1465,8 +1480,8 @@ void OtCompiler::classDeclaration(OtByteCode bytecode) {
 
 void OtCompiler::functionDeclaration(OtByteCode bytecode) {
 	// get function name
-	scanner.expect(OtScanner::FUNCTION_TOKEN);
-	scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
+	scanner.expect(OtScanner::Token::functionKeyword);
+	scanner.expect(OtScanner::Token::identifier, false);
 	auto id = scanner.getID();
 
 	// add function to scope to allow for recursion
@@ -1486,19 +1501,19 @@ void OtCompiler::functionDeclaration(OtByteCode bytecode) {
 //
 
 void OtCompiler::doStatement(OtByteCode bytecode) {
-	scanner.expect(OtScanner::DO_TOKEN);
+	scanner.expect(OtScanner::Token::doKeyword);
 	size_t offset = bytecode->size();
 
 	block(bytecode);
 
-	scanner.expect(OtScanner::WHILE_TOKEN);
+	scanner.expect(OtScanner::Token::whileKeyword);
 
 	if (expression(bytecode)) {
 		bytecode->method(dereferenceID, 0);
 	}
 
 	bytecode->jumpTrue(offset);
-	scanner.expect(OtScanner::SEMICOLON_TOKEN);
+	scanner.expect(OtScanner::Token::colon);
 }
 
 
@@ -1507,13 +1522,13 @@ void OtCompiler::doStatement(OtByteCode bytecode) {
 //
 
 void OtCompiler::forStatement(OtByteCode bytecode) {
-	scanner.expect(OtScanner::FOR_TOKEN);
+	scanner.expect(OtScanner::Token::forKeyword);
 
 	// "for loop" is "fake" block to handle loop variables
 	pushBlockScope(bytecode);
 
 	// get name of iteration variable
-	scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
+	scanner.expect(OtScanner::Token::identifier, false);
 	auto id = scanner.getID();
 
 	// create loop variable on the stack
@@ -1521,7 +1536,7 @@ void OtCompiler::forStatement(OtByteCode bytecode) {
 
 	// get the object to be iterated on
 	scanner.advance();
-	scanner.expect(OtScanner::IN_TOKEN);
+	scanner.expect(OtScanner::Token::inKeyword);
 
 	if (expression(bytecode)) {
 		bytecode->method(dereferenceID, 0);
@@ -1570,7 +1585,7 @@ void OtCompiler::ifStatement(OtByteCode bytecode) {
 	std::vector<size_t> patches;
 
 	// handle if clause and block
-	scanner.expect(OtScanner::IF_TOKEN);
+	scanner.expect(OtScanner::Token::ifKeyword);
 
 	if (expression(bytecode)) {
 		bytecode->method(dereferenceID, 0);
@@ -1583,7 +1598,7 @@ void OtCompiler::ifStatement(OtByteCode bytecode) {
 	bytecode->patchJump(offset);
 
 	// handle possible elsif clauses and their blocks
-	while (scanner.matchToken(OtScanner::ELIF_TOKEN)) {
+	while (scanner.matchToken(OtScanner::Token::elifKeyword)) {
 		scanner.advance();
 
 		if (expression(bytecode)) {
@@ -1598,7 +1613,7 @@ void OtCompiler::ifStatement(OtByteCode bytecode) {
 	}
 
 	// handle possible else clause and block
-	if (scanner.matchToken(OtScanner::ELSE_TOKEN)) {
+	if (scanner.matchToken(OtScanner::Token::elseKeyword)) {
 		scanner.advance();
 
 		block(bytecode);
@@ -1616,7 +1631,7 @@ void OtCompiler::ifStatement(OtByteCode bytecode) {
 //
 
 void OtCompiler::returnStatement(OtByteCode bytecode) {
-	scanner.expect(OtScanner::RETURN_TOKEN);
+	scanner.expect(OtScanner::Token::returnKeyword);
 
 	// get return value
 	if (expression(bytecode)) {
@@ -1626,7 +1641,7 @@ void OtCompiler::returnStatement(OtByteCode bytecode) {
 	// cleanup stack (since we're doing a jump over all end of blocks)
 	size_t locals = 0;
 
-	for (auto i = scopeStack.rbegin(); i->type == Scope::blockScope && i != scopeStack.rend(); i++) {
+	for (auto i = scopeStack.rbegin(); i->type == Scope::Type::block && i != scopeStack.rend(); i++) {
 		locals += i->locals.size();
 	}
 
@@ -1638,7 +1653,7 @@ void OtCompiler::returnStatement(OtByteCode bytecode) {
 
 	// the return value should now be top of the stack
 	bytecode->exit();
-	scanner.expect(OtScanner::SEMICOLON_TOKEN);
+	scanner.expect(OtScanner::Token::colon);
 }
 
 
@@ -1647,7 +1662,7 @@ void OtCompiler::returnStatement(OtByteCode bytecode) {
 //
 
 void OtCompiler::throwStatement(OtByteCode bytecode) {
-	scanner.expect(OtScanner::THROW_TOKEN);
+	scanner.expect(OtScanner::Token::throwKeyword);
 	bytecode->push(OtThrow::create());
 
 	if (expression(bytecode)) {
@@ -1655,7 +1670,7 @@ void OtCompiler::throwStatement(OtByteCode bytecode) {
 	}
 
 	bytecode->method(callID, 1);
-	scanner.expect(OtScanner::SEMICOLON_TOKEN);
+	scanner.expect(OtScanner::Token::colon);
 }
 
 
@@ -1665,7 +1680,7 @@ void OtCompiler::throwStatement(OtByteCode bytecode) {
 
 void OtCompiler::tryStatement(OtByteCode bytecode) {
 	// handle "try" block
-	scanner.expect(OtScanner::TRY_TOKEN);
+	scanner.expect(OtScanner::Token::tryKeyword);
 	size_t offset1 = bytecode->pushTry();
 	block(bytecode);
 	bytecode->popTry();
@@ -1675,8 +1690,8 @@ void OtCompiler::tryStatement(OtByteCode bytecode) {
 	bytecode->patchJump(offset1);
 
 	// handle catch block
-	scanner.expect(OtScanner::CATCH_TOKEN);
-	scanner.expect(OtScanner::IDENTIFIER_TOKEN, false);
+	scanner.expect(OtScanner::Token::catchKeyword);
+	scanner.expect(OtScanner::Token::identifier, false);
 	auto id = scanner.getID();
 
 	// create a new block scope to handle error variable
@@ -1705,7 +1720,7 @@ void OtCompiler::tryStatement(OtByteCode bytecode) {
 //
 
 void OtCompiler::whileStatement(OtByteCode bytecode) {
-	scanner.expect(OtScanner::WHILE_TOKEN);
+	scanner.expect(OtScanner::Token::whileKeyword);
 	size_t offset1 = bytecode->size();
 
 	if (expression(bytecode)) {
@@ -1734,54 +1749,54 @@ void OtCompiler::statement(OtByteCode bytecode) {
 
 	// process statement
 	switch (scanner.getToken()) {
-		case OtScanner::LBRACE_TOKEN:
+		case OtScanner::Token::leftBrace:
 			block(bytecode);
 			break;
 
-		case OtScanner::VAR_TOKEN:
+		case OtScanner::Token::varKeyword:
 			variableDeclaration(bytecode);
 			break;
 
-		case OtScanner::CLASS_TOKEN:
+		case OtScanner::Token::classKeyword:
 			classDeclaration(bytecode);
 			break;
 
-		case OtScanner::FUNCTION_TOKEN:
+		case OtScanner::Token::functionKeyword:
 			functionDeclaration(bytecode);
 			break;
 
-		case OtScanner::DO_TOKEN:
+		case OtScanner::Token::doKeyword:
 			doStatement(bytecode);
 			break;
 
-		case OtScanner::FOR_TOKEN:
+		case OtScanner::Token::forKeyword:
 			forStatement(bytecode);
 			break;
 
-		case OtScanner::IF_TOKEN:
+		case OtScanner::Token::ifKeyword:
 			ifStatement(bytecode);
 			break;
 
-		case OtScanner::RETURN_TOKEN:
+		case OtScanner::Token::returnKeyword:
 			returnStatement(bytecode);
 			break;
 
-		case OtScanner::THROW_TOKEN:
+		case OtScanner::Token::throwKeyword:
 			throwStatement(bytecode);
 			break;
 
-		case OtScanner::TRY_TOKEN:
+		case OtScanner::Token::tryKeyword:
 			tryStatement(bytecode);
 			break;
 
-		case OtScanner::WHILE_TOKEN:
+		case OtScanner::Token::whileKeyword:
 			whileStatement(bytecode);
 			break;
 
 		default:
 			expression(bytecode);
 			bytecode->pop();
-			scanner.expect(OtScanner::SEMICOLON_TOKEN);
+			scanner.expect(OtScanner::Token::colon);
 			break;
 	}
 

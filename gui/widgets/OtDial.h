@@ -106,8 +106,8 @@ private:
 	float scale = 1.0f;
 	float minRotation = -90.0f;
 	float maxRotation = 90.0f;
-	OtUi::Alignment horizontalAlign = OtUi::alignLeft;
-	OtUi::Alignment verticalAlign = OtUi::alignTop;
+	OtUi::Alignment horizontalAlign = OtUi::Alignment::left;
+	OtUi::Alignment verticalAlign = OtUi::Alignment::top;
 	float minValue = 0.0f;
 	float maxValue = 1.0f;
 	float value = 0.0f;

@@ -51,7 +51,7 @@ OtNodesComponent::OtNodesComponent() {
 			inputNodes.clear();
 
 			nodes.eachNode([&](OtNode& node) {
-				if (node->category == OtNodeClass::input) {
+				if (node->category == OtNodeClass::Category::input) {
 					inputNodes.emplace_back(node);
 				}
 			});

@@ -722,12 +722,12 @@ void OtNodes::classifyLinks() {
 			node->varyingInput |= pin->varying;
 		});
 
-		if (node->kind == OtNodeClass::fixed) {
+		if (node->kind == OtNodeClass::Kind::fixed) {
 			node->eachOutput([](OtNodesPin& pin) {
 				pin->varying = false;
 			});
 
-		} else if (node->kind == OtNodeClass::varying) {
+		} else if (node->kind == OtNodeClass::Kind::varying) {
 			node->eachOutput([](OtNodesPin& pin) {
 				pin->varying = true;
 			});

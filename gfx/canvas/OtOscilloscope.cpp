@@ -70,7 +70,7 @@ void OtOscilloscope::drawCircle(float x, float y, float radius, float steps, flo
 void OtOscilloscope::drawSevenSegment(float x, float y, float size, const std::string& text, float lineWidth, uint32_t color) {
 	// calculate scaling
 	auto s = size / 100.0f;
-	auto t = origin == topLeftOrigin ? s : -s;
+	auto t = (origin == Origin::topLeft) ? s : -s;
 
 	// render each digit
 	for (auto& c : text) {
@@ -212,7 +212,7 @@ void OtOscilloscope::drawSevenSegment(float x, float y, float size, const std::s
 
 void OtOscilloscope::drawText(float x, float y, float size, const std::string& text, float lineWidth, uint32_t color) {
 	auto scaleX = size / 32.0f;
-	auto scaleY = scaleX * (origin == topLeftOrigin ? -1.0f : 1.0f);
+	auto scaleY = scaleX * ((origin == Origin::topLeft) ? -1.0f : 1.0f);
 
 	for (auto& c : text) {
 		if (c >= 32 || c <= 126) {
@@ -291,15 +291,15 @@ int OtOscilloscope::render() {
 	glm::mat4 matrix;
 
 	switch (origin) {
-		case topLeftOrigin:
+		case Origin::topLeft:
 			matrix = glm::ortho(0.0f, float(width), float(height), 0.0f);
 			break;
 
-		case bottomLeftOrigin:
+		case Origin::bottomLeft:
 			matrix = glm::ortho(0.0f, float(width), 0.0f, float(height));
 			break;
 
-		case centerOrigin:
+		case Origin::center:
 			matrix = glm::ortho(float(-width / 2), float(width / 2), float(-height / 2), float(height / 2));
 			break;
 	}

@@ -71,11 +71,11 @@ std::string GetTimestamp() {
 //	OtLog::logMessage
 //
 
-void OtLog::logMessage(const char* filename, int lineno, int type, const std::string& message) {
+void OtLog::logMessage(const char* filename, int lineno, Type type, const std::string& message) {
 	// get timestamp, filename and message type
 	auto timestamp = GetTimestamp();
 	auto shortname = OtPath::getFilename(filename);
-	auto messageType = types[type];
+	auto messageType = types[static_cast<int>(type)];
 	auto output = fmt::format("{} [{}] {} ({}): {}\n", timestamp, messageType, shortname, lineno, message);
 
 	// send to IDE (if required)
@@ -93,11 +93,11 @@ void OtLog::logMessage(const char* filename, int lineno, int type, const std::st
 	}
 
 	// throw exception (if required)
-	if (type == error) {
+	if (type == Type::error) {
 		throw OtException(message);
 
 	// terminate program (if required)
-	} else if (type == fatal) {
+	} else if (type == Type::fatal) {
 
 #if OT_DEBUG
 

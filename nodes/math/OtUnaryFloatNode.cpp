@@ -37,7 +37,7 @@ public:
 		ImGui::SetNextItemWidth(width);
 		auto old = serialize().dump();
 
-		if (OtUi::selectorEnum("##operator", &op, operatorTypes, operatorTypesCount)) {
+		if (OtUi::selectorEnum("##operator", &op, operators, operatorCount)) {
 			oldState = old;
 			newState = serialize().dump();
 			needsEvaluating = true;
@@ -59,7 +59,7 @@ public:
 	}
 
 	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		op = data->value("operator", negOperator);
+		op = data->value("operator", Operator::neg);
 	}
 
 	// compare values
@@ -67,63 +67,63 @@ public:
 		float b;
 
 		switch (op) {
-			case negOperator: result = -a; break;
+			case Operator::neg: result = -a; break;
 
-			case absOperator: result = std::abs(a); break;
-			case roundOperator: result = std::round(a); break;
-			case floorOperator: result = std::floor(a); break;
-			case ceilOperator: result = std::ceil(a); break;
-			case truncateOperator: result = std::trunc(a); break;
-			case fractionOperator: result = std::modf(a, &b); break;
-			case signOperator: result = (x > 0.0f) ? 1.0f : ((x < 0.0f) ? -1.0f : 0.0f); break;
+			case Operator::abs: result = std::abs(a); break;
+			case Operator::round: result = std::round(a); break;
+			case Operator::floor: result = std::floor(a); break;
+			case Operator::ceil: result = std::ceil(a); break;
+			case Operator::truncate: result = std::trunc(a); break;
+			case Operator::fraction: result = std::modf(a, &b); break;
+			case Operator::sign: result = (x > 0.0f) ? 1.0f : ((x < 0.0f) ? -1.0f : 0.0f); break;
 
-			case sqrtOperator: result = std::sqrt(a); break;
-			case invSqrtOperator: result = 1.0f / std::sqrt(a); break;
+			case Operator::sqrt: result = std::sqrt(a); break;
+			case Operator::invSqrt: result = 1.0f / std::sqrt(a); break;
 
-			case sinOperator: result = std::sin(a); break;
-			case cosOperator: result = std::cos(a); break;
-			case tanOperator: result = std::tan(a); break;
-			case asinOperator: result = std::asin(a); break;
-			case acosOperator: result = std::acos(a); break;
-			case atanOperator: result = std::atan(a); break;
+			case Operator::sin: result = std::sin(a); break;
+			case Operator::cos: result = std::cos(a); break;
+			case Operator::tan: result = std::tan(a); break;
+			case Operator::asin: result = std::asin(a); break;
+			case Operator::acos: result = std::acos(a); break;
+			case Operator::atan: result = std::atan(a); break;
 
-			case radiansOperator: result = glm::radians(a); break;
-			case degreesOperator: result = glm::degrees(a); break;
+			case Operator::radians: result = glm::radians(a); break;
+			case Operator::degrees: result = glm::degrees(a); break;
 
-			case logOperator: result = std::log(a); break;
-			case expOperator: result = std::exp(a); break;
+			case Operator::log: result = std::log(a); break;
+			case Operator::exp: result = std::exp(a); break;
 		}
 	}
 
 	static constexpr const char* nodeName = "Unary Float";
-	static constexpr int nodeCategory = OtNodeClass::math;
-	static constexpr int nodeKind = OtNodeClass::flexible;
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::math;
+	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::flexible;
 
 protected:
-	enum {
-		negOperator,
-		absOperator,
-		roundOperator,
-		floorOperator,
-		ceilOperator,
-		truncateOperator,
-		fractionOperator,
-		signOperator,
-		sqrtOperator,
-		invSqrtOperator,
-		sinOperator,
-		cosOperator,
-		tanOperator,
-		asinOperator,
-		acosOperator,
-		atanOperator,
-		radiansOperator,
-		degreesOperator,
-		logOperator,
-		expOperator
+	enum class Operator {
+		neg,
+		abs,
+		round,
+		floor,
+		ceil,
+		truncate,
+		fraction,
+		sign,
+		sqrt,
+		invSqrt,
+		sin,
+		cos,
+		tan,
+		asin,
+		acos,
+		atan,
+		radians,
+		degrees,
+		log,
+		exp
 	};
 
-	static constexpr const char* operatorTypes[] = {
+	static constexpr const char* operators[] = {
 		"Neg",
 		"Abs",
 		"Round",
@@ -146,9 +146,9 @@ protected:
 		"Exp"
 	};
 
-	static constexpr size_t operatorTypesCount = sizeof(operatorTypes) / sizeof(*operatorTypes);
+	static constexpr size_t operatorCount = sizeof(operators) / sizeof(*operators);
 
-	int op = negOperator;
+	Operator op = Operator::neg;
 	float a = 0.0f;
 	float result = 0.0f;
 };

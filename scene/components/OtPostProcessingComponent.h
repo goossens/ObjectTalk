@@ -21,7 +21,7 @@
 
 class OtPostProcessingComponent {
 public:
-	enum {
+	enum class Tonemap {
 		reinhardSimple,
 		reinhardExtended,
 		filmic,
@@ -62,5 +62,5 @@ public:
 	bool godrays = false;
 	float exposure = 1.0f;
 	float contrast = 1.0f;
-	int tonemap = acesFilmic;
+	Tonemap tonemap = Tonemap::acesFilmic;
 };

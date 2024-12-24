@@ -27,16 +27,16 @@
 class OtRgbCurve : public OtFilter {
 public:
 	// curve types
-	enum {
-		rgbCurve,
-		redCurve,
-		greenCurve,
-		blueCurve,
-		alphaCurve
+	enum class Curve {
+		rgb,
+		red,
+		green,
+		blue,
+		alpha
 	};
 
 	// set properties
-	inline void setCurve(int c) { curve = c; }
+	inline void setCurve(Curve c) { curve = c; }
 	inline void setLUT(OtTexture lut) { lutTexture = lut; }
 	inline void setBlackLevel(OtColor color) { blackLevel = color; }
 	inline void setWhiteLevel(OtColor color) { whiteLevel = color; }
@@ -46,7 +46,7 @@ private:
 	void execute(OtPass& pass) override;
 
 	// properties
-	int curve = rgbCurve;
+	Curve curve = Curve::rgb;
 	OtColor blackLevel{0.0f, 0.0f, 0.0f};
 	OtColor whiteLevel{1.0f, 1.0f, 1.0f};
 

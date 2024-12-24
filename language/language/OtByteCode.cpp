@@ -39,106 +39,106 @@ std::string OtByteCodeClass::disassemble() {
 		buffer << std::left << std::setw(20);
 
 		switch (getOpcode(pc)) {
-			case statementOpcode:
+			case Opcode::statement:
 				buffer << "statement";
 				break;
 
-			case pushOpcode: {
+			case Opcode::push: {
 				buffer << "push" << OtObjectDescribe(constants[getNumber(pc)]);
 				break;
 			}
 
-			case pushNullOpcode: {
+			case Opcode::pushNull: {
 				buffer << "pushNull";
 				break;
 			}
 
-			case popOpcode:
+			case Opcode::pop:
 				buffer << "pop";
 				break;
 
-			case popCountOpcode:
+			case Opcode::popCount:
 				buffer << "popCount" << getNumber(pc);
 				break;
 
-			case dupOpcode:
+			case Opcode::dup:
 				buffer << "dup";
 				break;
 
-			case swapOpcode:
+			case Opcode::swap:
 				buffer << "swap";
 				break;
 
-			case moveOpcode:
+			case Opcode::move:
 				buffer << "move" << getNumber(pc);
 				break;
 
-			case jumpOpcode:
+			case Opcode::jump:
 				buffer << "jump" << jumps[getNumber(pc)];
 				break;
 
-			case jumpTrueOpcode:
+			case Opcode::jumpTrue:
 				buffer << "jumpTrue" << jumps[getNumber(pc)];
 				break;
 
-			case jumpFalseOpcode:
+			case Opcode::jumpFalse:
 				buffer << "jumpTrue" << jumps[getNumber(pc)];
 				break;
 
-			case memberOpcode:
+			case Opcode::member:
 				buffer << "member" << OtIdentifier::name(getID(pc));
 				break;
 
-			case methodOpcode: {
+			case Opcode::method: {
 				auto method = getID(pc);
 				auto count =getNumber(pc);
 				buffer << "method" << OtIdentifier::name(method) << "(" << count << ")";
 				break;
 			}
 
-			case superOpcode:
+			case Opcode::super:
 				buffer << "super" << OtIdentifier::name(getID(pc));
 				break;
 
-			case exitOpcode:
+			case Opcode::exit:
 				buffer << "exit";
 				break;
 
-			case pushTryOpcode:
+			case Opcode::pushTry:
 				buffer << "pushTry" << jumps[getNumber(pc)];
 				break;
 
-			case popTryOpcode:
+			case Opcode::popTry:
 				buffer << "popTry";
 				break;
 
-			case pushStackObjectOpcode:
+			case Opcode::pushStackObject:
 				buffer << "pushStackObject" << getNumber(pc);
 				break;
 
-			case pushStackMemberOpcode: {
+			case Opcode::pushStackMember: {
 				auto offset = getNumber(pc);
 				auto memberName = OtIdentifier::name(getID(pc));
 				buffer << "pushStackMember" << offset << " " << memberName;
 				break;
 			}
 
-			case pushObjectMemberOpcode: {
+			case Opcode::pushObjectMember: {
 				auto objectName = OtObjectDescribe(constants[getNumber(pc)]);
 				auto memberName = OtIdentifier::name(getID(pc));
 				buffer << "pushObjectMember" << objectName << " " << memberName;
 				break;
 			}
 
-			case pushMemberOpcode:
+			case Opcode::pushMember:
 				buffer << "pushMember" << OtIdentifier::name(getID(pc));
 				break;
 
-			case assignStackOpcode:
+			case Opcode::assignStack:
 				buffer << "assignStack" << getNumber(pc);
 				break;
 
-			case assignMemberOpcode: {
+			case Opcode::assignMember: {
 				auto objectName = OtObjectDescribe(constants[getNumber(pc)]);
 				auto memberName = OtIdentifier::name(getID(pc));
 				buffer << "assignMember" << objectName << " " << memberName;
@@ -159,106 +159,106 @@ std::string OtByteCodeClass::disassemble() {
 
 void OtByteCodeClass::copyOpcode(OtByteCode other, size_t pc) {
 	switch (other->getOpcode(pc)) {
-		case statementOpcode:
+		case Opcode::statement:
 			statement();
 			break;
 
-		case pushOpcode:
+		case Opcode::push:
 			push(other->constants[other->getNumber(pc)]);
 			break;
 
-		case pushNullOpcode:
+		case Opcode::pushNull:
 			pushNull();
 			break;
 
-		case popOpcode:
+		case Opcode::pop:
 			pop();
 			break;
 
-		case popCountOpcode:
+		case Opcode::popCount:
 			pop(other->getNumber(pc));
 			break;
 
-		case dupOpcode:
+		case Opcode::dup:
 			dup();
 			break;
 
-		case swapOpcode:
+		case Opcode::swap:
 			swap();
 			break;
 
-		case moveOpcode:
+		case Opcode::move:
 			move(other->getNumber(pc));
 			break;
 
-		case jumpOpcode:
+		case Opcode::jump:
 			jump(other->jumps[other->getNumber(pc)]);
 			break;
 
-		case jumpTrueOpcode:
+		case Opcode::jumpTrue:
 			jumpTrue(other->jumps[other->getNumber(pc)]);
 			break;
 
-		case jumpFalseOpcode:
+		case Opcode::jumpFalse:
 			jumpFalse(other->jumps[other->getNumber(pc)]);
 			break;
 
-		case memberOpcode:
+		case Opcode::member:
 			member(other->getID(pc));
 			break;
 
-		case superOpcode:
+		case Opcode::super:
 			super(other->getID(pc));
 			break;
 
-		case methodOpcode: {
+		case Opcode::method: {
 			auto id = other->getID(pc);
 			auto count = other->getNumber(pc);
 			method(id, count);
 			break;
 		}
 
-		case exitOpcode:
+		case Opcode::exit:
 			exit();
 			break;
 
-		case pushTryOpcode:
+		case Opcode::pushTry:
 			pushTry(other->jumps[other->getNumber(pc)]);
 			break;
 
-		case popTryOpcode:
+		case Opcode::popTry:
 			popTry();
 			break;
 
-		case pushStackObjectOpcode:
+		case Opcode::pushStackObject:
 			pushStackObject(other->getNumber(pc));
 			break;
 
-		case pushStackMemberOpcode: {
+		case Opcode::pushStackMember: {
 			auto slot = other->getNumber(pc);
 			auto member = other->getID(pc);
 			pushStackMember(slot, member);
 			break;
 		}
 
-		case pushObjectMemberOpcode: {
+		case Opcode::pushObjectMember: {
 			auto object = other->getNumber(pc);
 			auto member = other->getID(pc);
 			pushObjectMember(other->constants[object], member);
 			break;
 		}
 
-		case pushMemberOpcode: {
+		case Opcode::pushMember: {
 			auto member = other->getID(pc);
 			pushMember(member);
 			break;
 		}
 
-		case assignStackOpcode:
+		case Opcode::assignStack:
 			assignStack(other->getNumber(pc));
 			break;
 
-		case assignMemberOpcode: {
+		case Opcode::assignMember: {
 			auto object = other->getNumber(pc);
 			auto member = other->getID(pc);
 			assignMember(other->constants[object], member);
@@ -277,91 +277,91 @@ size_t OtByteCodeClass::getOpcodeSize(size_t offset) {
 
 	// increment "program counter"
 	switch (getOpcode(pc)) {
-		case statementOpcode:
+		case Opcode::statement:
 			break;
 
-		case pushOpcode:
+		case Opcode::push:
 			getNumber(pc);
 			break;
 
-		case pushNullOpcode:
+		case Opcode::pushNull:
 			break;
 
-		case popOpcode:
+		case Opcode::pop:
 			break;
 
-		case popCountOpcode:
+		case Opcode::popCount:
 			getNumber(pc);
 			break;
 
-		case dupOpcode:
+		case Opcode::dup:
 			break;
 
-		case swapOpcode:
+		case Opcode::swap:
 			break;
 
-		case moveOpcode:
+		case Opcode::move:
 			getNumber(pc);
 			break;
 
-		case jumpOpcode:
+		case Opcode::jump:
 			getNumber(pc);
 			break;
 
-		case jumpTrueOpcode:
+		case Opcode::jumpTrue:
 			getNumber(pc);
 			break;
 
-		case jumpFalseOpcode:
+		case Opcode::jumpFalse:
 			getNumber(pc);
 			break;
 
-		case memberOpcode:
+		case Opcode::member:
 			getNumber(pc);
 			break;
 
-		case methodOpcode:
-			getNumber(pc);
-			getNumber(pc);
-			break;
-
-		case superOpcode:
-			getNumber(pc);
-			break;
-
-		case exitOpcode:
-			break;
-
-		case pushTryOpcode:
-			getNumber(pc);
-			break;
-
-		case popTryOpcode:
-			break;
-
-		case pushStackObjectOpcode:
-			getNumber(pc);
-			break;
-
-		case pushStackMemberOpcode:
+		case Opcode::method:
 			getNumber(pc);
 			getNumber(pc);
 			break;
 
-		case pushObjectMemberOpcode:
+		case Opcode::super:
+			getNumber(pc);
+			break;
+
+		case Opcode::exit:
+			break;
+
+		case Opcode::pushTry:
+			getNumber(pc);
+			break;
+
+		case Opcode::popTry:
+			break;
+
+		case Opcode::pushStackObject:
+			getNumber(pc);
+			break;
+
+		case Opcode::pushStackMember:
 			getNumber(pc);
 			getNumber(pc);
 			break;
 
-		case pushMemberOpcode:
+		case Opcode::pushObjectMember:
+			getNumber(pc);
 			getNumber(pc);
 			break;
 
-		case assignStackOpcode:
+		case Opcode::pushMember:
 			getNumber(pc);
 			break;
 
-		case assignMemberOpcode:
+		case Opcode::assignStack:
+			getNumber(pc);
+			break;
+
+		case Opcode::assignMember:
 			getNumber(pc);
 			getNumber(pc);
 			break;
@@ -375,7 +375,7 @@ size_t OtByteCodeClass::getOpcodeSize(size_t offset) {
 //
 
 bool OtByteCodeClass::isPush(size_t pc, OtObject& object) {
-	if (getOpcode(pc) == pushOpcode) {
+	if (getOpcode(pc) == Opcode::push) {
 		object = constants[getNumber(pc)];
 		return true;
 
@@ -390,7 +390,7 @@ bool OtByteCodeClass::isPush(size_t pc, OtObject& object) {
 //
 
 bool OtByteCodeClass::isPushStackReference(size_t pc, OtStackReference& reference) {
-	if (getOpcode(pc) == pushOpcode) {
+	if (getOpcode(pc) == Opcode::push) {
 		OtObject object = constants[getNumber(pc)];
 
 		if (object.isKindOf<OtStackReferenceClass>()) {
@@ -413,7 +413,7 @@ bool OtByteCodeClass::isPushStackReference(size_t pc, OtStackReference& referenc
 //
 
 bool OtByteCodeClass::isPushMemberReference(size_t pc, OtMemberReference& reference) {
-	if (getOpcode(pc) == pushOpcode) {
+	if (getOpcode(pc) == Opcode::push) {
 		OtObject object = constants[getNumber(pc)];
 
 		if (object.isKindOf<OtMemberReferenceClass>()) {
@@ -435,7 +435,7 @@ bool OtByteCodeClass::isPushMemberReference(size_t pc, OtMemberReference& refere
 //
 
 bool OtByteCodeClass::isSwap(size_t pc) {
-	return getOpcode(pc) == swapOpcode;
+	return getOpcode(pc) == Opcode::swap;
 }
 
 
@@ -444,7 +444,7 @@ bool OtByteCodeClass::isSwap(size_t pc) {
 //
 
 bool OtByteCodeClass::isMember(size_t pc, OtID& member) {
-	if (getOpcode(pc) == memberOpcode) {
+	if (getOpcode(pc) == Opcode::member) {
 		member = getID(pc);
 		return true;
 
@@ -459,7 +459,7 @@ bool OtByteCodeClass::isMember(size_t pc, OtID& member) {
 //
 
 bool OtByteCodeClass::isMethodDeref(size_t pc) {
-	if (getOpcode(pc) == methodOpcode) {
+	if (getOpcode(pc) == Opcode::method) {
 		return  getNumber(pc) == dereferenceID;
 
 	} else {
@@ -473,7 +473,7 @@ bool OtByteCodeClass::isMethodDeref(size_t pc) {
 //
 
 bool OtByteCodeClass::isMethodAssign(size_t pc) {
-	if (getOpcode(pc) == methodOpcode) {
+	if (getOpcode(pc) == Opcode::method) {
 		return  getNumber(pc) == assignID;
 
 	} else {
@@ -489,7 +489,7 @@ bool OtByteCodeClass::isMethodAssign(size_t pc) {
 bool OtByteCodeClass::isAnyJump(size_t pc, size_t& offset) {
 	auto opcode = getOpcode(pc);
 
-	if (opcode == jumpOpcode || opcode == jumpTrueOpcode || opcode == jumpFalseOpcode) {
+	if (opcode == Opcode::jump || opcode == Opcode::jumpTrue || opcode == Opcode::jumpFalse) {
 		offset = getNumber(pc);
 		return true;
 

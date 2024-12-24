@@ -19,14 +19,14 @@
 //	OtImageAsset::load
 //
 
-OtAssetBase::AssetState OtImageAsset::load() {
+OtAssetBase::State OtImageAsset::load() {
 	try {
 		// try to load the image
 		image.load(path);
-		return readyState;
+		return State::ready;
 
 	} catch (const OtException& exception) {
 		OtLogWarning("Can't load image [{}]: {}", path, exception.what());
-		return invalidState;
+		return State::invalid;
 	}
 }

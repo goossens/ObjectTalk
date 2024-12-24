@@ -52,8 +52,8 @@ public:
 	}
 
 	static constexpr const char* nodeName = "Random";
-	static constexpr int nodeCategory = OtNodeClass::math;
-	static constexpr int nodeKind = OtNodeClass::varying;
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::math;
+	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::varying;
 
 protected:
 	int id = 0;

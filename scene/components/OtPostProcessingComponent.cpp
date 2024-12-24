@@ -77,5 +77,5 @@ void OtPostProcessingComponent::deserialize(nlohmann::json data, std::string* ba
 	godrays = data.value("godrays", false);
 	exposure = data.value("exposure", 1.0f);
 	contrast = data.value("contrast", 1.0f);
-	tonemap = data.value("tonemap", acesFilmic);
+	tonemap = data.value("tonemap", Tonemap::acesFilmic);
 }

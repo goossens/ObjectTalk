@@ -22,16 +22,18 @@
 //
 
 struct OtFwEvent {
-	enum {
-		mouseButtonEvent,
-		mouseMoveEvent,
-		mouseDragEvent,
-		mouseWheelEvent,
-		keyboardEvent,
-		characterEvent,
-		gamepadAxisEvent,
-		gamepadButtonEvent
-	} type;
+	enum class Type {
+		mouseButton,
+		mouseMove,
+		mouseDrag,
+		mouseWheel,
+		keyboard,
+		character,
+		gamepadAxis,
+		gamepadButton
+	};
+
+	Type type;
 
 	union {
 		struct {
@@ -92,20 +94,20 @@ struct OtFwEvent {
 	};
 
 	inline bool isMouseEvent() {
-		return type == OtFwEvent::mouseButtonEvent ||
-			type == OtFwEvent::mouseMoveEvent ||
-			type == OtFwEvent::mouseDragEvent ||
-			type == OtFwEvent::mouseWheelEvent;
+		return type == Type::mouseButton ||
+			type == Type::mouseMove ||
+			type == Type::mouseDrag ||
+			type == Type::mouseWheel;
 	}
 
 	inline bool isKeyboardEvent() {
-		return type == OtFwEvent::keyboardEvent ||
-			type == OtFwEvent::characterEvent;
+		return type == Type::keyboard ||
+			type == Type::character;
 	}
 
 	inline bool isGamepadEvent() {
-		return type == gamepadAxisEvent ||
-			type == gamepadButtonEvent;
+		return type == Type::gamepadAxis ||
+			type == Type::gamepadButton;
 	}
 };
 
@@ -118,7 +120,7 @@ class OtFwEventQueue : public OtConcurrentQueue<OtFwEvent> {
 public:
 	inline void pushMouseButtonEvent(int button, int action, int mods, float x, float y) {
 		OtFwEvent event;
-		event.type = OtFwEvent::mouseButtonEvent;
+		event.type = OtFwEvent::Type::mouseButton;
 		event.mouseButton.button = button;
 		event.mouseButton.action = action;
 		event.mouseButton.mods = mods;
@@ -129,7 +131,7 @@ public:
 
 	inline void pushMouseMoveEvent(float x, float y) {
 		OtFwEvent event;
-		event.type = OtFwEvent::mouseMoveEvent;
+		event.type = OtFwEvent::Type::mouseMove;
 		event.mouseMove.x = x;
 		event.mouseMove.y = y;
 		push(event);
@@ -137,7 +139,7 @@ public:
 
 	inline void pushMouseDragEvent(int button, int mods, float x, float y) {
 		OtFwEvent event;
-		event.type = OtFwEvent::mouseDragEvent;
+		event.type = OtFwEvent::Type::mouseDrag;
 		event.mouseDrag.button = button;
 		event.mouseDrag.mods = mods;
 		event.mouseDrag.x = x;
@@ -147,7 +149,7 @@ public:
 
 	inline void pushMouseWheelEvent(float xOffset, float yOffset) {
 		OtFwEvent event;
-		event.type = OtFwEvent::mouseWheelEvent;
+		event.type = OtFwEvent::Type::mouseWheel;
 		event.mouseWheel.xOffset = xOffset;
 		event.mouseWheel.yOffset = yOffset;
 		push(event);
@@ -155,7 +157,7 @@ public:
 
 	inline void pushKeyboardEvent(int key, int scancode, int action, int mods) {
 		OtFwEvent event;
-		event.type = OtFwEvent::keyboardEvent;
+		event.type = OtFwEvent::Type::keyboard;
 		event.keyboard.key = key;
 		event.keyboard.scancode = scancode;
 		event.keyboard.action = action;
@@ -165,14 +167,14 @@ public:
 
 	inline void pushCharacterEvent(int codepoint) {
 		OtFwEvent event;
-		event.type = OtFwEvent::characterEvent;
+		event.type = OtFwEvent::Type::character;
 		event.character.codepoint = codepoint;
 		push(event);
 	}
 
 	inline void pushGamepadAxisEvent(int gamepad, int axis, int value) {
 		OtFwEvent event;
-		event.type = OtFwEvent::gamepadAxisEvent;
+		event.type = OtFwEvent::Type::gamepadAxis;
 		event.gamepadAxis.gamepad = gamepad;
 		event.gamepadAxis.axis = axis;
 		event.gamepadAxis.value = value;
@@ -181,7 +183,7 @@ public:
 
 	inline void pushGamepadButtonEvent(int gamepad, int button, int action) {
 		OtFwEvent event;
-		event.type = OtFwEvent::gamepadButtonEvent;
+		event.type = OtFwEvent::Type::gamepadButton;
 		event.gamepadButton.gamepad = gamepad;
 		event.gamepadButton.button = button;
 		event.gamepadButton.action = action;

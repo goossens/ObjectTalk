@@ -47,8 +47,8 @@ public:
 	}
 
 	static constexpr const char* nodeName = "Save Instances To Virtual";
-	static constexpr int nodeCategory = OtNodeClass::virtualize;
-	static constexpr int nodeKind = OtNodeClass::fixed;
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::virtualize;
+	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 protected:
 	OtInstances instances;

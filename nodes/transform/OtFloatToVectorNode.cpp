@@ -32,8 +32,8 @@ public:
 	}
 
 	static constexpr const char* nodeName = "Float to Vector";
-	static constexpr int nodeCategory = OtNodeClass::transform;
-	static constexpr int nodeKind = OtNodeClass::flexible;
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::transform;
+	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::flexible;
 
 protected:
 	float a{0.0f};

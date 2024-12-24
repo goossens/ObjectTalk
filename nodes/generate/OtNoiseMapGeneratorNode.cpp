@@ -65,7 +65,7 @@ public:
 	}
 
 	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		noiseType = data->value("noiseType", OtFbm::simplexNoiseType);
+		noiseType = data->value("noiseType", OtFbm::NoiseType::simplex);
 	}
 
 	// running the noise generator
@@ -88,8 +88,8 @@ public:
 	}
 
 	static constexpr const char* nodeName = "NoiseMap Generator";
-	static constexpr int nodeCategory = OtNodeClass::generate;
-	static constexpr int nodeKind = OtNodeClass::fixed;
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::generate;
+	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 protected:
 	int width = 256;
@@ -99,7 +99,7 @@ protected:
 	float amplitude = 0.5f;
 	float persistence = 0.5f;
 	int octaves = 5;
-	int noiseType = OtFbm::simplexNoiseType;
+	OtFbm::NoiseType noiseType = OtFbm::NoiseType::simplex;
 
 	OtFbm fbm;
 	OtFrameBuffer framebuffer{OtTexture::rFloat32Texture};

@@ -56,8 +56,8 @@ public:
 	}
 
 	static constexpr const char* nodeName = "Boolean Input";
-	static constexpr int nodeCategory = OtNodeClass::input;
-	static constexpr int nodeKind = OtNodeClass::fixed;
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::input;
+	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 protected:
 	bool value = false;

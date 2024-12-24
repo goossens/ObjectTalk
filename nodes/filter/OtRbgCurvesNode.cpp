@@ -43,26 +43,26 @@ public:
 		auto old = serialize().dump();
 
 		ImGui::PushID("Mode");
-		changed |= OtUi::radioButton("RGB", &curve, OtRgbCurve::rgbCurve);
+		changed |= OtUi::radioButton("RGB", &curve, OtRgbCurve::Curve::rgb);
 		ImGui::SameLine(0.0f, 5.0f);
-		changed |= OtUi::radioButton("R", &curve, OtRgbCurve::redCurve);
+		changed |= OtUi::radioButton("R", &curve, OtRgbCurve::Curve::red);
 		ImGui::SameLine(0.0f, 0.0f);
-		changed |= OtUi::radioButton("G", &curve, OtRgbCurve::greenCurve);
+		changed |= OtUi::radioButton("G", &curve, OtRgbCurve::Curve::green);
 		ImGui::SameLine(0.0f, 0.0f);
-		changed |= OtUi::radioButton("B", &curve, OtRgbCurve::blueCurve);
+		changed |= OtUi::radioButton("B", &curve, OtRgbCurve::Curve::blue);
 		ImGui::SameLine(0.0f, 0.0f);
-		changed |= OtUi::radioButton("A", &curve, OtRgbCurve::alphaCurve);
+		changed |= OtUi::radioButton("A", &curve, OtRgbCurve::Curve::alpha);
 		ImGui::PopID();
 
 		ImVec2 size{width, getCustomRenderingWidth()};
 		const char* title;
 
 		switch (curve) {
-			case OtRgbCurve::rgbCurve: title = "RGB"; break;
-			case OtRgbCurve::redCurve: title = "Red"; break;
-			case OtRgbCurve::greenCurve: title = "Green"; break;
-			case OtRgbCurve::blueCurve: title = "Blue"; break;
-			case OtRgbCurve::alphaCurve: title = "Alpha"; break;
+			case OtRgbCurve::Curve::rgb: title = "RGB"; break;
+			case OtRgbCurve::Curve::red: title = "Red"; break;
+			case OtRgbCurve::Curve::green: title = "Green"; break;
+			case OtRgbCurve::Curve::blue: title = "Blue"; break;
+			case OtRgbCurve::Curve::alpha: title = "Alpha"; break;
 		}
 
 		changed |= ImGui::Curve(title, size, curvePoints, lut.data(), &lutSelection);
@@ -91,7 +91,7 @@ public:
 	}
 
 	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		curve = data->value("curve", OtRgbCurve::rgbCurve);
+		curve = data->value("curve", OtRgbCurve::Curve::rgb);
 		lut = data->value("lut", std::array<ImVec2, curvePoints>{ImVec2(ImGui::CurveTerminator, 0.0f)});
 	}
 
@@ -118,11 +118,11 @@ public:
 	}
 
 	static constexpr const char* nodeName = "RGB Curves";
-	static constexpr int nodeCategory = OtNodeClass::filter;
-	static constexpr int nodeKind = OtNodeClass::fixed;
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::filter;
+	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 	// properties
-	int curve = OtRgbCurve::rgbCurve;
+	OtRgbCurve::Curve curve = OtRgbCurve::Curve::rgb;
 
 	static constexpr int curvePoints = 6;
 	std::array<ImVec2, curvePoints> lut{ImVec2(ImGui::CurveTerminator, 0.0f)};

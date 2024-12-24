@@ -25,8 +25,8 @@ class OtTextureAsset : public OtAssetBase {
 public:
 	// access the texture
 	inline OtTexture& getTexture() { return texture; }
-	inline void setTexture(OtTexture& t) { texture = t; assetState = readyState; }
-	inline void clearTexture() { texture.clear(); assetState = missingState; }
+	inline void setTexture(OtTexture& t) { texture = t; state = State::ready; }
+	inline void clearTexture() { texture.clear(); state = State::missing; }
 
 	// asset properties
 	static constexpr bool canHandleVirtual = true;
@@ -35,7 +35,7 @@ public:
 
 protected:
 	// load the asset
-	AssetState load() override;
+	OtAssetBase::State load() override;
 
 private:
 	// the actual texture

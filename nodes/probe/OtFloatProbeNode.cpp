@@ -29,8 +29,8 @@ public:
 	}
 
 	static constexpr const char* nodeName = "Float Probe";
-	static constexpr int nodeCategory = OtNodeClass::probe;
-	static constexpr int nodeKind = OtNodeClass::fixed;
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::probe;
+	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 protected:
 	float value = 0.0f;

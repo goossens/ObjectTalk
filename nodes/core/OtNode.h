@@ -53,7 +53,7 @@ using OtNode = std::shared_ptr<OtNodeClass>;
 class OtNodeClass {
 public:
 	// node categories
-	enum {
+	enum class Category {
 		input,
 		output,
 		field,
@@ -84,7 +84,7 @@ public:
 	};
 
 	// node kind
-	enum {
+	enum class Kind {
 		fixed,
 		varying,
 		flexible
@@ -104,7 +104,7 @@ public:
 	// add pins
 	template <typename T>
 	inline OtNodesPin addInputPin(const char* name, T& value) {
-		OtNodesPin pin = std::make_shared<OtNodesPinImpl<T>>(name, OtNodesPinClass::inputPin, value);
+		OtNodesPin pin = std::make_shared<OtNodesPinImpl<T>>(name, OtNodesPinClass::Direction::input, value);
 		pin->node = this;
 		inputPins.emplace_back(pin);
 		return pin;
@@ -112,7 +112,7 @@ public:
 
 	template <typename T>
 	inline OtNodesPin addOutputPin(const char* name, T& value) {
-		OtNodesPin pin = std::make_shared<OtNodesPinImpl<T>>(name, OtNodesPinClass::outputPin, value);
+		OtNodesPin pin = std::make_shared<OtNodesPinImpl<T>>(name, OtNodesPinClass::Direction::output, value);
 		pin->node = this;
 		outputPins.emplace_back(pin);
 		return pin;
@@ -176,8 +176,8 @@ public:
 	// public properties
 	uint32_t id;
 	const char* type;
-	int category;
-	int kind;
+	Category category;
+	Kind kind;
 	std::string title;
 	float x = 0.0f;
 	float y = 0.0f;

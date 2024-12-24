@@ -25,8 +25,8 @@ class OtInstancesAsset : public OtAssetBase {
 public:
 	// access the instances
 	inline OtInstances& getInstances() { return instances; }
-	inline void setInstances(OtInstances& i) { instances = i; assetState = readyState; }
-	inline void clearInstances() { instances.clear(); assetState = missingState; }
+	inline void setInstances(OtInstances& i) { instances = i; state = State::ready; }
+	inline void clearInstances() { instances.clear(); state = State::missing; }
 
 	// asset properties
 	static constexpr bool canHandleVirtual = true;
@@ -35,7 +35,7 @@ public:
 
 protected:
 	// load the asset
-	AssetState load() override;
+	OtAssetBase::State load() override;
 
 private:
 	// the actual instances

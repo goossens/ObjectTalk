@@ -81,7 +81,7 @@ void OtParticleSettings::deserialize(nlohmann::json data, std::string* basedir) 
 	atlas = OtAssetDeserialize(&data, "atlas", basedir);
 	atlasRows = data.value("atlasRows", 1);
 	atlasColumns = data.value("atlasColumns", 1);
-	shape = data.value("shape", OtParticleSettings::pointShape);
+	shape = data.value("shape", Shape::point);
 	speed = data.value("speed", 0.3f);
 	gravity = data.value("gravity", 0.3f);
 	rotation[0] = data.value("rotationStart", 0.0f);

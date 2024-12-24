@@ -106,8 +106,8 @@ private:
 	float height = 0.0f;
 	float scale = 1.0f;
 	bool autoScale = false;
-	OtUi::Alignment horizontalAlign = OtUi::alignLeft;
-	OtUi::Alignment verticalAlign = OtUi::alignTop;
+	OtUi::Alignment horizontalAlign = OtUi::Alignment::left;
+	OtUi::Alignment verticalAlign = OtUi::Alignment::top;
 
 	// oscilloscope to render display
 	OtOscilloscope scope;
@@ -123,17 +123,17 @@ private:
 
 	// shapes that make up the display
 	struct Shape {
-		enum {
-			lineType,
-			rectangleType,
-			circleType,
-			sevenSegmentType,
-			textType
+		enum class Type {
+			line,
+			rectangle,
+			circle,
+			sevenSegment,
+			text
 		};
 
 		int id;
 		bool enabled;
-		int type;
+		Type type;
 		float width;
 		uint32_t color;
 

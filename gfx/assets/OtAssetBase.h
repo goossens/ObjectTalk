@@ -52,12 +52,12 @@ public:
 	inline std::string& getPath() { return path; }
 
 	// get state
-	inline bool isNull() { return assetState == nullState; }
-	inline bool isLoading() { return assetState == loadingState; }
-	inline bool isMissing() { return assetState == missingState; }
-	inline bool isInvalid() { return assetState == invalidState; }
-	inline bool isLoaded() { return assetState == loadedState; }
-	inline bool isReady() { return assetState == readyState; }
+	inline bool isNull() { return state == State::null; }
+	inline bool isLoading() { return state == State::loading; }
+	inline bool isMissing() { return state == State::missing; }
+	inline bool isInvalid() { return state == State::invalid; }
+	inline bool isLoaded() { return state == State::loaded; }
+	inline bool isReady() { return state == State::ready; }
 	inline bool isVirtual() { return OtText::startsWith(path, "virtual:"); }
 
 	const char* getStateName();
@@ -87,17 +87,19 @@ protected:
 	std::string path;
 
 	// state of the asset
-	enum AssetState {
-		nullState,
-		loadingState,
-		missingState,
-		invalidState,
-		loadedState,
-		readyState
-	} assetState = nullState;
+	enum class State {
+		null,
+		loading,
+		missing,
+		invalid,
+		loaded,
+		ready
+	};
+
+	State state = State::null;
 
 	// functions to load the asset (to be implemented by derived classes)
-	virtual inline AssetState load() { return nullState; }
+	virtual inline State load() { return State::null; }
 
 private:
 	// reference count

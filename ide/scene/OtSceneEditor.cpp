@@ -885,16 +885,16 @@ void OtSceneEditor::renderNewEntitiesMenu(OtEntity entity) {
 		const char* name;
 		OtCreateEntityTask::Type type;
 	} predefinedEntities[] = {
-		{ "Empty Entity", OtCreateEntityTask::empty},
-		{ "Camera", OtCreateEntityTask::camera},
-		{ "Directional Light", OtCreateEntityTask::directionalLight},
-		{ "Model", OtCreateEntityTask::model},
-		{ "Geometry", OtCreateEntityTask::geometry},
-		{ "Procedural Sky", OtCreateEntityTask::sky},
-		{ "Sky Box", OtCreateEntityTask::skybox},
-		{ "Infinite Terrain", OtCreateEntityTask::terrain},
-		{ "Procedural Water", OtCreateEntityTask::water},
-		{ "Particles", OtCreateEntityTask::particles}
+		{ "Empty Entity", OtCreateEntityTask::Type::empty},
+		{ "Camera", OtCreateEntityTask::Type::camera},
+		{ "Directional Light", OtCreateEntityTask::Type::directionalLight},
+		{ "Model", OtCreateEntityTask::Type::model},
+		{ "Geometry", OtCreateEntityTask::Type::geometry},
+		{ "Procedural Sky", OtCreateEntityTask::Type::sky},
+		{ "Sky Box", OtCreateEntityTask::Type::skybox},
+		{ "Infinite Terrain", OtCreateEntityTask::Type::terrain},
+		{ "Procedural Water", OtCreateEntityTask::Type::water},
+		{ "Particles", OtCreateEntityTask::Type::particles}
 	};
 
 	for (auto& predefined : predefinedEntities) {

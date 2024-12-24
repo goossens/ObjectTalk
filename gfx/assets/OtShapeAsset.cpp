@@ -19,14 +19,14 @@
 //	OtShapeAsset::load
 //
 
-OtAssetBase::AssetState OtShapeAsset::load() {
+OtAssetBase::State OtShapeAsset::load() {
 	try {
 		// try to load the shape
 		shape.load(path);
-		return readyState;
+		return State::ready;
 
 	} catch (const OtException& exception) {
 		OtLogWarning("Can't load shape [{}]: {}", path, exception.what());
-		return invalidState;
+		return State::invalid;
 	}
 }

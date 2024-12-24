@@ -37,7 +37,7 @@ public:
 		ImGui::SetNextItemWidth(width);
 		auto old = serialize().dump();
 
-		if (OtUi::selectorEnum("##operator", &op, operatorTypes, operatorTypesCount)) {
+		if (OtUi::selectorEnum("##operator", &op, operators, operatorCount)) {
 			oldState = old;
 			newState = serialize().dump();
 			needsEvaluating = true;
@@ -59,42 +59,42 @@ public:
 	}
 
 	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		op = data->value("operator", addOperator);
+		op = data->value("operator", Operator::add);
 	}
 
 	// compare values
 	void onExecute() override {
 		switch (op) {
-			case addOperator: result = a + b; break;
-			case subtractOperator: result = a - b; break;
-			case multiplyOperator: result = a * b; break;
-			case divideOperator: result =  a / (b == 0.0f ? 0.000001 : b); break;
-			case moduloOperator: result = std::fmod(a, b); break;
-			case remainderOperator: result = std::remainder(a, b); break;
-			case powOperator: result = std::pow(a, b); break;
-			case minOperator: result = std::min(a, b); break;
-			case maxOperator: result = std::max(a, b); break;
+			case Operator::add: result = a + b; break;
+			case Operator::subtract: result = a - b; break;
+			case Operator::multiply: result = a * b; break;
+			case Operator::divide: result =  a / (b == 0.0f ? 0.000001 : b); break;
+			case Operator::modulo: result = std::fmod(a, b); break;
+			case Operator::remainder: result = std::remainder(a, b); break;
+			case Operator::pow: result = std::pow(a, b); break;
+			case Operator::min: result = std::min(a, b); break;
+			case Operator::max: result = std::max(a, b); break;
 		}
 	}
 
 	static constexpr const char* nodeName = "Binary Float";
-	static constexpr int nodeCategory = OtNodeClass::math;
-	static constexpr int nodeKind = OtNodeClass::flexible;
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::math;
+	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::flexible;
 
 protected:
-	enum {
-		addOperator,
-		subtractOperator,
-		multiplyOperator,
-		divideOperator,
-		moduloOperator,
-		remainderOperator,
-		powOperator,
-		minOperator,
-		maxOperator
+	enum class Operator {
+		add,
+		subtract,
+		multiply,
+		divide,
+		modulo,
+		remainder,
+		pow,
+		min,
+		max
 	};
 
-	static constexpr const char* operatorTypes[] = {
+	static constexpr const char* operators[] = {
 		"Add",
 		"Subtract",
 		"Multiply",
@@ -106,9 +106,9 @@ protected:
 		"Max"
 	};
 
-	static constexpr size_t operatorTypesCount = sizeof(operatorTypes) / sizeof(*operatorTypes);
+	static constexpr size_t operatorCount = sizeof(operators) / sizeof(*operators);
 
-	int op = addOperator;
+	Operator op = Operator::add;
 	float a = 0.0f;
 	float b = 0.0f;
 	float result = 0.0f;

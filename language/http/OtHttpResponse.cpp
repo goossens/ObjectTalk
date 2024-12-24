@@ -32,7 +32,7 @@ void OtHttpResponseClass::setStream(uv_stream_t* s) {
 //
 
 void OtHttpResponseClass::clear() {
-	responseState = START;
+	responseState = ResponseState::start;
 	setStatus(404);
 	headers.clear();
 }
@@ -128,7 +128,7 @@ OtObject OtHttpResponseClass::setStatus(int s) {
 //
 
 OtObject OtHttpResponseClass::setHeader(const std::string& name, const std::string& value) {
-	if (responseState != START) {
+	if (responseState != ResponseState::start) {
 		OtError("HttpResponse can't send headers after body transmission has started");
 	}
 
@@ -173,7 +173,7 @@ void OtHttpResponseClass::sendHeaders() {
 		free(req);
 	});
 
-	responseState = HEADERS_SENT;
+	responseState = ResponseState::headersSent;
 }
 
 
@@ -182,7 +182,7 @@ void OtHttpResponseClass::sendHeaders() {
 //
 
 OtObject OtHttpResponseClass::write(const char* data, size_t size) {
-	if (responseState == START) {
+	if (responseState == ResponseState::start) {
 		sendHeaders();
 	}
 
@@ -217,13 +217,13 @@ OtObject OtHttpResponseClass::write(const std::string& data) {
 //
 
 OtObject OtHttpResponseClass::end() {
-	if (responseState == START) {
+	if (responseState == ResponseState::start) {
 		headers.emplace("Content-Type", "text/plain");
 		headers.emplace("Content-Length", std::to_string(explanation.size()));
 		write(explanation);
 	}
 
-	responseState = COMPLETE;
+	responseState = ResponseState::complete;
 	return OtHttpResponse(this);
 }
 

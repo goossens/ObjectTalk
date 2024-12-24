@@ -25,8 +25,8 @@ class OtShapeAsset : public OtAssetBase {
 public:
 	// access the shape
 	inline OtShape& getShape() { return shape; }
-	inline void setShape(OtShape& s) { shape = s; assetState = readyState; }
-	inline void clearShape() { shape.clear(); assetState = missingState; }
+	inline void setShape(OtShape& s) { shape = s; state = State::ready; }
+	inline void clearShape() { shape.clear(); state = State::missing; }
 
 	// asset properties
 	static constexpr bool canHandleVirtual = false;
@@ -35,7 +35,7 @@ public:
 
 protected:
 	// load the asset
-	AssetState load() override;
+	OtAssetBase::State load() override;
 
 private:
 	// the actual shape

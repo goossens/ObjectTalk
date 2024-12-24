@@ -24,12 +24,24 @@
 class OtIslandizer : public OtFilter {
 public:
 	// distance functions
-	enum { squareBump, euclidean, euclidean2, hyperboloid, diagonal };
-	static constexpr const char* distanceFunctions[] = { "Square Bump Distance", "Euclidean Distance", "Euclidean2 Distance", "Hyperboloid Distance", "Diagonal Distance" };
+	enum class DistanceFunction {
+		squareBump,
+		euclidean,
+		euclidean2,
+		hyperboloid,
+		diagonal };
+
+	static constexpr const char* distanceFunctions[] = {
+		"Square Bump Distance",
+		"Euclidean Distance",
+		"Euclidean2 Distance",
+		"Hyperboloid Distance",
+		"Diagonal Distance" };
+
 	static constexpr size_t distanceFunctionCount = sizeof(distanceFunctions) / sizeof(*distanceFunctions);
 
 	// set properties
-	inline void setDistanceFunction(int df) { distanceFunction = df; }
+	inline void setDistanceFunction(DistanceFunction df) { distanceFunction = df; }
 
 private:
 	// execute filter
@@ -40,5 +52,5 @@ private:
 	OtUniformVec4 uniform{"u_islander", 1};
 
 	// properties
-	int distanceFunction = squareBump;
+	DistanceFunction distanceFunction = DistanceFunction::squareBump;
 };

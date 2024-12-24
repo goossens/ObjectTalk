@@ -218,15 +218,15 @@ std::string OtDebuggerClass::variables() {
 		OtObject value;
 
 		switch (symbol.type) {
-			case OtSymbol::heapType:
+			case OtSymbol::Type::heap:
 				value = symbol.object->get(symbol.id);
 				break;
 
-			case OtSymbol::stackType:
+			case OtSymbol::Type::stack:
 				value = OtVM::getStack()->getFrameItem(symbol.slot);
 				break;
 
-			case OtSymbol::captureType:
+			case OtSymbol::Type::capture:
 				break;
 		}
 

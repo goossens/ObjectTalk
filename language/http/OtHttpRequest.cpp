@@ -66,7 +66,7 @@ void OtHttpRequestClass::clear() {
 	path.clear();
 	version.clear();
 
-	headerState = WAITING_FOR_NAME;
+	headerState = HeaderState::waitingForName;
 	headerName.clear();
 	headerValue.clear();
 	headers.clear();
@@ -95,9 +95,9 @@ void OtHttpRequestClass::onURL(const char* data, size_t length) {
 
 void OtHttpRequestClass::onHeaderField(const char* data, size_t length) {
 	// push header if complete
-	if (headerState == WAITING_FOR_VALUE) {
+	if (headerState == HeaderState::waitingForValue) {
 		setHeader(headerName, headerValue);
-		headerState = WAITING_FOR_NAME;
+		headerState = HeaderState::waitingForName;
 		headerName.clear();
 		headerValue.clear();
 	}
@@ -114,7 +114,7 @@ void OtHttpRequestClass::onHeaderField(const char* data, size_t length) {
 void OtHttpRequestClass::onHeaderValue(const char* data, size_t length) {
 	// collect header value
 	headerValue.append(data, length);
-	headerState = WAITING_FOR_VALUE;
+	headerState = HeaderState::waitingForValue;
 }
 
 
@@ -128,7 +128,7 @@ void OtHttpRequestClass::onHeadersComplete(const std::string m, const std::strin
 	version = v;
 
 	// save last header if required
-	if (headerState == WAITING_FOR_VALUE) {
+	if (headerState == HeaderState::waitingForValue) {
 		setHeader(headerName, headerValue);
 	}
 
@@ -197,7 +197,7 @@ void OtHttpRequestClass::onMultipartBegin() {
 	multipartFile.clear();
 	multipartValue.clear();
 
-	headerState = WAITING_FOR_NAME;
+	headerState = HeaderState::waitingForName;
 	headerName.clear();
 	headerValue.clear();
 }
@@ -209,9 +209,9 @@ void OtHttpRequestClass::onMultipartBegin() {
 
 void OtHttpRequestClass::onMultipartHeaderField(const char* data, size_t length) {
 	// push multipart header if complete
-	if (headerState == WAITING_FOR_VALUE) {
+	if (headerState == HeaderState::waitingForValue) {
 		multipartHeaders.emplace(headerName, headerValue);
-		headerState = WAITING_FOR_NAME;
+		headerState = HeaderState::waitingForName;
 		headerName.clear();
 		headerValue.clear();
 	}
@@ -228,7 +228,7 @@ void OtHttpRequestClass::onMultipartHeaderField(const char* data, size_t length)
 void OtHttpRequestClass::onMultipartHeaderValue(const char* data, size_t length) {
 	// collect multipart header value
 	headerValue.append(data, length);
-	headerState = WAITING_FOR_VALUE;
+	headerState = HeaderState::waitingForValue;
 }
 
 
@@ -238,7 +238,7 @@ void OtHttpRequestClass::onMultipartHeaderValue(const char* data, size_t length)
 
 void OtHttpRequestClass::onMultipartHeadersComplete() {
 	// handle last multipart header (if required)
-	if (headerState == WAITING_FOR_VALUE) {
+	if (headerState == HeaderState::waitingForValue) {
 		multipartHeaders.emplace(headerName, headerValue);
 	}
 

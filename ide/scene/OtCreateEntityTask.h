@@ -24,7 +24,7 @@
 class OtCreateEntityTask : public OtEditorTask {
 public:
 	// entity type
-	enum Type {
+	enum class Type {
 		empty,
 		camera,
 		directionalLight,
@@ -83,50 +83,50 @@ private:
 	void addComponents() {
 		// add components based on type
 		switch (type) {
-			case empty:
+			case Type::empty:
 				break;
 
-			case camera:
+			case Type::camera:
 				scene->addComponent<OtCameraComponent>(entity);
 				scene->addComponent<OtTransformComponent>(entity);
 				break;
 
-			case directionalLight:
+			case Type::directionalLight:
 				scene->addComponent<OtDirectionalLightComponent>(entity);
 				scene->addComponent<OtTransformComponent>(entity);
 				break;
 
-			case pointLight:
+			case Type::pointLight:
 				break;
 
-			case model:
+			case Type::model:
 				scene->addComponent<OtModelComponent>(entity);
 				scene->addComponent<OtTransformComponent>(entity);
 				break;
 
-			case geometry:
+			case Type::geometry:
 				scene->addComponent<OtGeometryComponent>(entity);
 				scene->addComponent<OtTransformComponent>(entity);
 				scene->addComponent<OtMaterialComponent>(entity);
 				break;
 
-			case sky:
+			case Type::sky:
 				scene->addComponent<OtSkyComponent>(entity);
 				break;
 
-			case skybox:
+			case Type::skybox:
 				scene->addComponent<OtSkyBoxComponent>(entity);
 				break;
 
-			case terrain:
+			case Type::terrain:
 				scene->addComponent<OtTerrainComponent>(entity);
 				break;
 
-			case water:
+			case Type::water:
 				scene->addComponent<OtWaterComponent>(entity);
 				break;
 
-			case particles:
+			case Type::particles:
 				scene->addComponent<OtParticlesComponent>(entity);
 				scene->addComponent<OtTransformComponent>(entity);
 				break;

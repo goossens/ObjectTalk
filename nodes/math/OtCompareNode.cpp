@@ -35,7 +35,7 @@ public:
 		ImGui::SetNextItemWidth(width);
 		auto old = serialize().dump();
 
-		if (OtUi::selectorEnum("##operator", &op, operatorTypes, operatorTypesCount)) {
+		if (OtUi::selectorEnum("##operator", &op, operators, operatorCount)) {
 			oldState = old;
 			newState = serialize().dump();
 			needsEvaluating = true;
@@ -57,36 +57,36 @@ public:
 	}
 
 	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		op = data->value("operator", equalOperator);
+		op = data->value("operator", Operator::equal);
 	}
 
 	// compare values
 	void onExecute() override {
 		switch (op) {
-			case equalOperator: result = (a == b); break;
-			case notEqualOperator: result = (a != b); break;
-			case lessOperator: result = (a < b); break;
-			case lessEqualOperator: result = (a <= b); break;
-			case greaterOperator: result = (a > b); break;
-			case greatertEqualOperator: result = (a >= b); break;
+			case Operator::equal: result = (a == b); break;
+			case Operator::notEqual: result = (a != b); break;
+			case Operator::less: result = (a < b); break;
+			case Operator::lessEqual: result = (a <= b); break;
+			case Operator::greater: result = (a > b); break;
+			case Operator::greatertEqual: result = (a >= b); break;
 		}
 	}
 
 	static constexpr const char* nodeName = "Compare";
-	static constexpr int nodeCategory = OtNodeClass::math;
-	static constexpr int nodeKind = OtNodeClass::flexible;
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::math;
+	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::flexible;
 
 protected:
-	enum {
-		equalOperator,
-		notEqualOperator,
-		lessOperator,
-		lessEqualOperator,
-		greaterOperator,
-		greatertEqualOperator
+	enum class Operator {
+		equal,
+		notEqual,
+		less,
+		lessEqual,
+		greater,
+		greatertEqual
 	};
 
-	static constexpr const char* operatorTypes[] = {
+	static constexpr const char* operators[] = {
 		"Equal",
 		"Not Equal",
 		"Less",
@@ -95,9 +95,9 @@ protected:
 		"Greater Equal"
 	};
 
-	static constexpr size_t operatorTypesCount = sizeof(operatorTypes) / sizeof(*operatorTypes);
+	static constexpr size_t operatorCount = sizeof(operators) / sizeof(*operators);
 
-	int op = equalOperator;
+	Operator op = Operator::equal;
 	float a = 0.0f;
 	float b = 0.0f;
 	bool result = false;

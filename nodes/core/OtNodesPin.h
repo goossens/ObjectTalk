@@ -58,21 +58,6 @@ using OtNodesPinTypes = OtTypeList<
 	OtGeometry,
 	OtInstances>;
 
-enum {
-	OtNodesPinBoolType,
-	OtNodesPinIntType,
-	OtNodesPinFloatType,
-	OtNodesPinStringType,
-	OtNodesPinVectorType,
-	OtNodesPinColorType,
-	OtNodesPinFontType,
-	OtNodesPinImageType,
-	OtNodesPinTextureType,
-	OtNodesPinShapeType,
-	OtNodesPinGeometryType,
-	OtNodesPinInstancesType
-};
-
 static constexpr const char* OtNodesPinTypeNames[] = {
 	"bool",
 	"int",
@@ -107,13 +92,13 @@ typedef std::function<void(float)> OtNodesPinRenderer;
 class OtNodesPinClass : public std::enable_shared_from_this<OtNodesPinClass> {
 public:
 	// pin types
-	enum {
-		inputPin,
-		outputPin
+	enum class Direction {
+		input,
+		output
 	};
 
 	// constructor
-	inline OtNodesPinClass(const char* n, int d) : name(n), direction(d) {
+	inline OtNodesPinClass(const char* n, Direction d) : name(n), direction(d) {
 		id = OtNodesGenerateID();
 	}
 
@@ -133,8 +118,8 @@ public:
 	}
 
 	// check status
-	inline bool isInput() { return direction == inputPin; }
-	inline bool isOutput() { return direction == outputPin; }
+	inline bool isInput() { return direction == Direction::input; }
+	inline bool isOutput() { return direction == Direction::output; }
 	inline bool isVarying() { return varying; }
 
 	// handle connections
@@ -162,7 +147,7 @@ public:
 	int type;
 	uint32_t id;
 	const char* name;
-	int direction;
+	Direction direction;
 	OtNodeClass* node;
 
 	bool varying = false;
@@ -204,7 +189,7 @@ template <typename T>
 class OtNodesPinImpl : public OtNodesPinClass {
 public:
 	// constructor
-	inline OtNodesPinImpl(const char* n, int d, T& v) : OtNodesPinClass(n, d) {
+	inline OtNodesPinImpl(const char* n, Direction d, T& v) : OtNodesPinClass(n, d) {
 		static_assert(OtTypeListIndexOf<T, OtNodesPinTypes>() != -1, "Data type not allowed for node pin");
 		type = OtTypeListIndexOf<T, OtNodesPinTypes>();
 		value = &v;

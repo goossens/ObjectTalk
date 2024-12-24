@@ -68,13 +68,13 @@ public:
 	static OtType getMeta();
 
 private:
-	enum OtResponseState {
-		START = 1,
-		HEADERS_SENT,
-		COMPLETE
+	enum ResponseState {
+		start,
+		headersSent,
+		complete
 	};
 
-	OtResponseState responseState;
+	ResponseState responseState;
 	int responseStatus;
 	std::string explanation;
 	OtHttpHeaders headers;

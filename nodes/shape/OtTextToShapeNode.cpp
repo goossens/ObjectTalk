@@ -42,8 +42,8 @@ public:
 	}
 
 	static constexpr const char* nodeName = "Text to Shape";
-	static constexpr int nodeCategory = OtNodeClass::shape;
-	static constexpr int nodeKind = OtNodeClass::fixed;
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::shape;
+	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 protected:
 	OtFont font;

@@ -154,12 +154,12 @@ void OtNodesWidget::render(OtNodes* n) {
 			mousePos.y > position.y &&
 			mousePos.y < position.y + size.y;
 
-		if (inside || interactionState != noInteraction) {
+		if (inside || interactionState != InteractionState::none) {
 			handleInteractions(drawlist);
 		}
 
 		// are we in the process of connecting nodes?
-		if (interactionState == connecting || interactionState == reconnecting) {
+		if (interactionState == InteractionState::connecting || interactionState == InteractionState::reconnecting) {
 			if (outputToInput) {
 				renderLink(drawlist, fromPinPos, toPinPos, linkColor);
 
@@ -315,7 +315,7 @@ void OtNodesWidget::renderGrid(ImDrawList* drawlist) {
 
 void OtNodesWidget::renderRubberBand(ImDrawList* drawlist) {
 	// render rubberband
-	if (interactionState == rubberBand) {
+	if (interactionState == InteractionState::rubberBand) {
 		drawlist->AddRectFilled(rubberBandTopLeft, rubberBandBottomRight, rubberBandBackgroundColor);
 		drawlist->AddRect(rubberBandTopLeft, rubberBandBottomRight, rubberBandOutlineColor);
 	}
@@ -338,7 +338,7 @@ void OtNodesWidget::renderNode(ImDrawList* drawlist, OtNode& node) {
 	ImVec2 topLeft = offset + ImVec2(node->x, node->y);
 
 	// handle dragging offset
-	if (interactionState == dragNodes && node->selected) {
+	if (interactionState == InteractionState::dragNodes && node->selected) {
 		topLeft += draggingOffset;
 	}
 
@@ -348,7 +348,7 @@ void OtNodesWidget::renderNode(ImDrawList* drawlist, OtNode& node) {
 
 	// render the node's background
 	drawlist->AddRectFilled(topLeft, bottomRight, nodeBackgroundColor, nodeRounding);
-	drawlist->AddRectFilled(topLeft, headerBottomRight, nodeColors[node->category], nodeRounding);
+	drawlist->AddRectFilled(topLeft, headerBottomRight, nodeColors[static_cast<int>(node->category)], nodeRounding);
 	drawlist->AddRect(topLeft, bottomRight, node->selected ? nodeSelectedColor : nodeOutlineColor, nodeRounding);
 
 	// is mouse over node?
@@ -562,11 +562,11 @@ void OtNodesWidget::calculateNodeSize(OtNode& node) {
 
 void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 	// see if we have the start of a new mouse interaction
-	if (interactionState == noInteraction) {
+	if (interactionState == InteractionState::none) {
 		// scrooling event
 		if (ImGui::IsKeyDown(ImGuiMod_Ctrl) && ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
 			scrollingStartPos = ImGui::GetMousePos() - scrollingOffset;
-			interactionState = scrolling;
+			interactionState = InteractionState::scrolling;
 
 		// handle left mouse button events
 		} else if (ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
@@ -581,7 +581,7 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 					toPin = 0;
 					toPinPos = fromPinPos;
 					outputToInput = true;
-					interactionState = connecting;
+					interactionState = InteractionState::connecting;
 
 				// for a connected input pin we handle a (re/dis)connect
 				} else if (pin->isSourceConnected()) {
@@ -592,7 +592,7 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 					toPinPos = pinLocations[pin->id];
 					ignoreLink = nodes->findLink(fromPin, oldToPin)->id;
 					outputToInput = true;
-					interactionState = reconnecting;
+					interactionState = InteractionState::reconnecting;
 
 				// for an unconnected input pin we handle a new connection
 				} else {
@@ -601,7 +601,7 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 					toPin = 0;
 					toPinPos = fromPinPos;
 					outputToInput = false;
-					interactionState = connecting;
+					interactionState = InteractionState::connecting;
 				}
 
 			// are we hitting a node?
@@ -609,7 +609,7 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 				// yes, is it the content area (body)?
 				if (hoveredInNodeContent) {
 					// ignore mouse events until mouse is released
-						interactionState = ignoreMouse;
+						interactionState = InteractionState::ignoreMouse;
 
 				} else {
 					// we hit the header, handle node selection
@@ -617,7 +617,7 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 						nodes->select(hoveredNode, !ImGui::IsKeyDown(ImGuiMod_Shift));
 					}
 
-					interactionState = selectNode;
+					interactionState = InteractionState::selectNode;
 				}
 
 			// we are hitting the background
@@ -626,7 +626,7 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 				rubberBandStartPos = ImGui::GetMousePos();
 				rubberBandTopLeft = rubberBandStartPos;
 				rubberBandBottomRight = rubberBandStartPos;
-				interactionState = rubberBand;
+				interactionState = InteractionState::rubberBand;
 			}
 
 		// handle right mouse button events
@@ -637,25 +637,25 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 		}
 
 	// handle ignore mouse state
-	} else if (interactionState == ignoreMouse) {
+	} else if (interactionState == InteractionState::ignoreMouse) {
 		if (!ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
-			interactionState = noInteraction;
+			interactionState = InteractionState::none;
 		}
 
 	// handle select node state
-	} else if (interactionState == selectNode) {
+	} else if (interactionState == InteractionState::selectNode) {
 		// end state if required
 		if (!ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
-			interactionState = noInteraction;
+			interactionState = InteractionState::none;
 
 		// see if we started dragging
 		} else if (ImGui::IsMouseDragging(ImGuiMouseButton_Left)) {
 			draggingStartPos = ImGui::GetMousePos();
-			interactionState = dragNodes;
+			interactionState = InteractionState::dragNodes;
 		}
 
 	// handle drag node state
-	} else if (interactionState == dragNodes) {
+	} else if (interactionState == InteractionState::dragNodes) {
 		if (ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
 			draggingOffset = ImGui::GetMousePos() - draggingStartPos;
 
@@ -663,11 +663,11 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 			draggingDone = true;
 			draggedOffset = draggingOffset;
 			draggingOffset = ImVec2();
-			interactionState = noInteraction;
+			interactionState = InteractionState::none;
 		}
 
 	// handle rubberband state
-	} else if (interactionState == rubberBand) {
+	} else if (interactionState == InteractionState::rubberBand) {
 		if (ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
 			auto pos = ImGui::GetMousePos();
 
@@ -684,20 +684,20 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 			nodes->select(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y);
 
 		} else {
-			interactionState = noInteraction;
+			interactionState = InteractionState::none;
 		}
 
 	// handle nodes scrolling
-	} else if (interactionState == scrolling) {
+	} else if (interactionState == InteractionState::scrolling) {
 		if (ImGui::IsMouseDown(ImGuiPopupFlags_MouseButtonMiddle)) {
 			scrollingOffset = ImGui::GetMousePos() - scrollingStartPos;
 
 		} else {
-			interactionState = noInteraction;
+			interactionState = InteractionState::none;
 		}
 
 	// handle node connection (create a new link)
-	} else if (interactionState == connecting) {
+	} else if (interactionState == InteractionState::connecting) {
 		if (ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
 			// are we hovering over another pin?
 			if (hoveredPin && hoveredPin != fromPin) {
@@ -725,11 +725,11 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 				connectingDone = true;
 			}
 
-			interactionState = noInteraction;
+			interactionState = InteractionState::none;
 		}
 
 	// handle node reconnection (change an existing link)
-	} else if (interactionState == reconnecting) {
+	} else if (interactionState == InteractionState::reconnecting) {
 		if (ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
 			// are we hovering over another pin?
 			if (hoveredPin) {
@@ -763,12 +763,12 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 			}
 
 			ignoreLink = 0;
-			interactionState = noInteraction;
+			interactionState = InteractionState::none;
 		}
 	}
 
 	// handle keyboard interactions
-	if (interactionState == noInteraction) {
+	if (interactionState == InteractionState::none) {
 		if (ImGui::IsKeyPressed(ImGuiKey_Home)) {
 			scrollingOffset = ImVec2();
 		}

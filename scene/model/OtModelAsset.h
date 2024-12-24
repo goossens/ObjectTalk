@@ -41,7 +41,7 @@ public:
 
 protected:
 	// load the model
-	AssetState load() override;
+	OtAssetBase::State load() override;
 
 private:
 	// our meshes and materials

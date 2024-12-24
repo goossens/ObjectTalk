@@ -27,8 +27,8 @@ public:
 	}
 
 	static constexpr const char* nodeName = "Seamless Tiler";
-	static constexpr int nodeCategory = OtNodeClass::filter;
-	static constexpr int nodeKind = OtNodeClass::fixed;
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::filter;
+	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 	// properties
 	OtSeamlessTile tiler;

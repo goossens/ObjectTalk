@@ -65,8 +65,8 @@ private:
 	std::unordered_map<uint32_t, ImVec2> pinLocations;
 
 	// interaction properties
-	enum {
-		noInteraction,
+	enum class InteractionState {
+		none,
 		ignoreMouse,
 		selectNode,
 		dragNodes,
@@ -76,7 +76,7 @@ private:
 		reconnecting
 	};
 
-	int interactionState = noInteraction;
+	InteractionState interactionState = InteractionState::none;
 
 	bool nodeEdited = false;
 	bool renamingDone = false;

@@ -37,46 +37,46 @@ public:
 		segments.clear();
 		startPoint = glm::vec2(0.0);
 		currentPoint = glm::vec2(0.0);
-		state = undefined;
+		state = State::undefined;
 	}
 
 	// create a path out of segments
 	inline void moveTo(const glm::vec2& point) {
-		OtAssert(state == undefined);
-		state = started;
+		OtAssert(state == State::undefined);
+		state = State::started;
 		startPoint = point;
 		currentPoint = point;
 	}
 
 	inline void lineTo(const glm::vec2& point){
-		OtAssert(state == started || state == building);
-		state = building;
+		OtAssert(state == State::started || state == State::building);
+		state = State::building;
 		add(std::make_shared<OtLineSegment>(currentPoint, point));
 		currentPoint = point;
 	}
 
 	inline void quadraticCurveTo(const glm::vec2& control, const glm::vec2& point) {
-		OtAssert(state == started || state == building);
-		state = building;
+		OtAssert(state == State::started || state == State::building);
+		state = State::building;
 		add(std::make_shared<OtQuadraticBezierSegment>(currentPoint, control, point));
 		currentPoint = point;
 	}
 
 	inline void bezierCurveTo(const glm::vec2& control1, const glm::vec2& control2, const glm::vec2& point) {
-		OtAssert(state == started || state == building);
-		state = building;
+		OtAssert(state == State::started || state == State::building);
+		state = State::building;
 		add(std::make_shared<OtCubicBezierSegment>(currentPoint, control1, control2, point));
 		currentPoint = point;
 	}
 
 	inline void close() {
-		OtAssert(state == building);
+		OtAssert(state == State::building);
 
 		if (startPoint != currentPoint) {
 			moveTo(startPoint);
 		}
 
-		state = closed;
+		state = State::closed;
 	}
 
 	// get the length of the segment
@@ -91,7 +91,7 @@ public:
 
 	// get points on entire shape
 	void getPoints(std::vector<glm::vec2>& result) {
-		OtAssert(state == closed);
+		OtAssert(state == State::closed);
 		result.clear();
 		result.push_back(startPoint);
 
@@ -119,12 +119,14 @@ private:
 	}
 
 	// properties
-	enum {
+	enum class State {
 		undefined,
 		started,
 		building,
 		closed
-	} state = undefined;
+	};
+
+	State state = State::undefined;
 
 	std::vector<std::shared_ptr<OtShapeSegment>> segments;
 	glm::vec2 startPoint = glm::vec2(0.0);

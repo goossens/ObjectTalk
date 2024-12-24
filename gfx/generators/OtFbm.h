@@ -24,11 +24,11 @@
 class OtFbm : public OtGenerator {
 public:
 	// noise types
-	enum {
-		simplexNoiseType,
-		perlinNoiseType,
-		gradientNoiseType,
-		worleyNoiseType
+	enum class NoiseType {
+		simplex,
+		perlin,
+		gradient,
+		worley
 	};
 
 	static constexpr const char* noiseTypes[] = {
@@ -46,7 +46,7 @@ public:
 	inline void setAmplitude(float a) { amplitude = a; }
 	inline void setPersistence(float p) { persistence = p; }
 	inline void setOctaves(int o) { octaves = o; }
-	inline void setNoiseType(int nt) { noiseType = nt; }
+	inline void setNoiseType(NoiseType nt) { noiseType = nt; }
 
 private:
 	// execute generator
@@ -58,7 +58,7 @@ private:
 	float amplitude = 0.5f;
 	float persistence = 0.5f;
 	int octaves = 5;
-	int noiseType = simplexNoiseType;
+	NoiseType noiseType = NoiseType::simplex;
 
 	// shader resources
 	OtShaderProgram program{"OtGeneratorVS", "OtFbmFS"};

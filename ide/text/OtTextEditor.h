@@ -54,12 +54,13 @@ protected:
 	bool wholeWordFind = false;
 
 	void openFindReplace();
+	void find();
 	void findNext();
 	void findAll();
 	void replace();
 	void replaceAll();
 
 	// properties
-	int version = 0;
+	size_t version = 0;
 	int scrollToLine = 1;
 };

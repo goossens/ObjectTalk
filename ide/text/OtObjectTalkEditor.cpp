@@ -33,6 +33,7 @@ void OtObjectTalkEditor::highlightError(size_t line, const std::string& error) {
 	markers[(int) line] = error;
 	editor.SetErrorMarkers(markers);
 	scrollToLine = (int) line;
+	focusOnEditor = true;
 }
 
 

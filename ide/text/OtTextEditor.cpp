@@ -130,6 +130,11 @@ void OtTextEditor::renderMenu(bool canRun) {
 
 			ImGui::Separator();
 			if (ImGui::MenuItem("Select All", OT_UI_SHORTCUT "A", nullptr, !editor.IsEmpty())) { editor.SelectAll(); }
+
+			ImGui::Separator();
+			if (ImGui::MenuItem("Tabs To Spaces")) { editor.TabsToSpaces(); focusOnEditor = true; }
+			if (ImGui::MenuItem("Spaces To Tabs")) { editor.SpacesToTabs(); focusOnEditor = true; }
+			if (ImGui::MenuItem("Strip Trailing Whitespaces")) { editor.StripTrailingWhitespaces(); focusOnEditor = true; }
 			ImGui::EndMenu();
 		}
 
@@ -192,14 +197,14 @@ void OtTextEditor::renderEditor() {
 	}
 
 	// render the text editor
-	ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[OtUi::editorFont]);
+	ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[static_cast<size_t>(OtUi::Font::editor)]);
 	editor.Render("TextEditor");
 	ImGui::PopFont();
 
 	// scroll to line if required
 	// (this has to be done here as the editor doesn't handle this well on open)
 	if (scrollToLine) {
-		editor.SetCursorPosition(scrollToLine - 1, 0);
+		editor.SetViewAtLine(scrollToLine - 1, TextEditor::SetViewAtLineMode::Centered, true);
 		scrollToLine = 0;
 	}
 
@@ -243,11 +248,10 @@ void OtTextEditor::renderEditor() {
 
 		if (OtUi::inputString("###find", &findText, ImGuiInputTextFlags_AutoSelectAll)) {
 			if (findText.size()) {
-				editor.SetCursorPosition(0, 0);
-				editor.SelectNextOccurrenceOf(findText.c_str(), (int) findText.size(), caseSensitiveFind, wholeWordFind);
+				editor.SelectFirstOccurrenceOf(findText, caseSensitiveFind, wholeWordFind);
 
 			} else {
-				editor.ClearSelections();
+				editor.ClearCursors();
 			}
 		}
 
@@ -262,7 +266,7 @@ void OtTextEditor::renderEditor() {
 		ImGui::SameLine();
 
 		if (ImGui::Button("Find", ImVec2(replaceWidth, 0.0f))) {
-			findNext();
+			find();
 		}
 
 		ImGui::SameLine();
@@ -278,15 +282,13 @@ void OtTextEditor::renderEditor() {
 		ImGui::SameLine();
 
 		if (OtUi::latchButton("Aa", &caseSensitiveFind, ImVec2(optionWidth, 0.0f))) {
-			editor.SetCursorPosition(0, 0);
-			findNext();
+			find();
 		}
 
 		ImGui::SameLine();
 
 		if (OtUi::latchButton("[]", &wholeWordFind, ImVec2(optionWidth, 0.0f))) {
-			editor.SetCursorPosition(0, 0);
-			findNext();
+			find();
 		}
 
 		ImGui::SameLine();
@@ -334,12 +336,24 @@ void OtTextEditor::openFindReplace() {
 
 
 //
+//	OtTextEditor::find
+//
+
+void OtTextEditor::find() {
+	if (findText.size()) {
+		editor.SelectNextOccurrenceOf(findText, caseSensitiveFind, wholeWordFind);
+		focusOnEditor = true;
+	}
+}
+
+
+//
 //	OtTextEditor::findNext
 //
 
 void OtTextEditor::findNext() {
 	if (findText.size()) {
-		editor.SelectNextOccurrenceOf(findText.c_str(), (int) findText.size(), caseSensitiveFind, wholeWordFind);
+		editor.SelectNextOccurrenceOf(findText, caseSensitiveFind, wholeWordFind);
 		focusOnEditor = true;
 	}
 }
@@ -351,7 +365,7 @@ void OtTextEditor::findNext() {
 
 void OtTextEditor::findAll() {
 	if (findText.size()) {
-		editor.SelectAllOccurrencesOf(findText.c_str(), (int) findText.size(), caseSensitiveFind, wholeWordFind);
+		editor.SelectAllOccurrencesOf(findText, caseSensitiveFind, wholeWordFind);
 		focusOnEditor = true;
 	}
 }
@@ -364,11 +378,11 @@ void OtTextEditor::findAll() {
 void OtTextEditor::replace() {
 	if (findText.size()) {
 		if (!editor.AnyCursorHasSelection()) {
-			editor.SelectNextOccurrenceOf(findText.c_str(), (int) findText.size(), caseSensitiveFind, wholeWordFind);
+			editor.SelectNextOccurrenceOf(findText, caseSensitiveFind, wholeWordFind);
 		}
 
 		editor.ReplaceTextInCurrentCursor(replaceText);
-		editor.SelectNextOccurrenceOf(findText.c_str(), (int) findText.size(), caseSensitiveFind, wholeWordFind);
+		editor.SelectNextOccurrenceOf(findText, caseSensitiveFind, wholeWordFind);
 		focusOnEditor = true;
 	}
 }
@@ -380,9 +394,8 @@ void OtTextEditor::replace() {
 
 void OtTextEditor::replaceAll() {
 	if (findText.size()) {
-		editor.SelectAllOccurrencesOf(findText.c_str(), (int) findText.size(), caseSensitiveFind, wholeWordFind);
+		editor.SelectAllOccurrencesOf(findText, caseSensitiveFind, wholeWordFind);
 		editor.ReplaceTextInAllCursors(replaceText);
-		editor.ClearExtraCursors();
 		focusOnEditor = true;
 	}
 }

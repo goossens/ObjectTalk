@@ -156,10 +156,10 @@ std::string OtText::lower(const std::string& text) {
 	auto i2 = result.begin();
 
 	while (i < text.end()) {
-		int32_t codepoint;
+		char32_t codepoint;
 
 		i = OtCodePoint::get(i, &codepoint);
-		i2 = OtCodePoint::put(i2, OtCodePoint::lower(codepoint));
+		i2 = OtCodePoint::put(i2, OtCodePoint::lowercase(codepoint));
 	}
 
 	return result;
@@ -176,10 +176,10 @@ std::string OtText::upper(const std::string& text) {
 	auto i2 = result.begin();
 
 	while (i < text.end()) {
-		int32_t codepoint;
+		char32_t codepoint;
 
 		i = OtCodePoint::get(i, &codepoint);
-		i2 = OtCodePoint::put(i2, OtCodePoint::upper(codepoint));
+		i2 = OtCodePoint::put(i2, OtCodePoint::uppercase(codepoint));
 	}
 
 	return result;
@@ -195,16 +195,16 @@ int32_t OtText::caseCmp(const std::string& s1, const std::string& s2) {
 	auto i2 = s2.begin();
 
 	while (i1 != s1.end() && i2 != s2.end()) {
-		int32_t cp1, cp2;
+		char32_t cp1, cp2;
 
 		i1 = OtCodePoint::get(i1, &cp1);
 		i2 = OtCodePoint::get(i2, &cp2);
 
-		cp1 = OtCodePoint::lower(cp1);
-		cp2 = OtCodePoint::lower(cp2);
+		cp1 = OtCodePoint::lowercase(cp1);
+		cp2 = OtCodePoint::lowercase(cp2);
 
 		if (cp1 != cp2) {
-			return cp1 - cp2;
+			return static_cast<int32_t>(cp1 - cp2);
 		}
 	}
 
@@ -404,7 +404,7 @@ std::string OtText::toJSON(const std::string& text) {
 
 			default:
 				if (*c & 0x80) {
-					int32_t codepoint;
+					char32_t codepoint;
 					OtCodePoint::get(c, &codepoint);
 					o << "\\u" << std::hex << std::setw(4) << std::setfill('0') << codepoint;
 

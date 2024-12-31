@@ -10,6 +10,7 @@ been a lot harder to implement the language and it's components.
 * [llhttp](https://llhttp.org) - HTTP protocol parser released under the [MIT license](https://opensource.org/licenses/MIT).
 * [multipart-parser](https://github.com/francoiscolas/multipart-parser) - HTTP multipart body parser released under the [MIT license](https://opensource.org/licenses/MIT).
 * [isocline](https://github.com/daanx/isocline) - cross-platform library that can be used as an alternative to the GNU readline library released under the [MIT license](https://opensource.org/licenses/MIT).
+* [unicode tables](https://github.com/boostorg/spirit/tree/develop/include/boost/spirit/home/support/char_encoding/unicode) - Basic (Level 1) Unicode Support released under the [Boost Software License, Version 1.0](http://www.boost.org/LICENSE_1_0.txt).
 
 In case User Interface (UI) modules are included, we also use:
 

@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include <cstdint>
 #include <string>
 
 
@@ -22,18 +21,29 @@
 
 class OtCodePoint {
 public:
-	// get the number of bytes required for this code point
+	// get the number of bytes required for this codepoint
 	static size_t size(std::string::const_iterator i);
 
-	// get the next code point and update iterator
-	static std::string::const_iterator get(std::string::const_iterator i, int32_t* codeword);
+	// get the next codepoint and update iterator
+	static std::string::const_iterator get(std::string::const_iterator i, char32_t* codepoint);
 
-	// write code point in UTF-8 and update iterator
-	static std::string::iterator put(std::string::iterator i, int32_t codeword);
+	// write codepoint in UTF-8 and update iterator
+	static std::string::iterator put(std::string::iterator i, char32_t codepoint);
 
-	// convert code point to lower case
-	static int32_t lower(int32_t cp);
+	// get information about codepoint
+	static bool isPunctuation(char32_t codepoint);
+	static bool isDecimalNumber(char32_t codepoint);
+	static bool isHexDigit(char32_t codepoint);
+	static bool isAlphabetic(char32_t codepoint);
+	static bool isAlphaNumeric(char32_t codepoint);
+	static bool isUppercase(char32_t codepoint);
+	static bool isLowercase(char32_t codepoint);
+	static bool isWhiteSpace(char32_t codepoint);
+	static bool isBlank(char32_t codepoint);
+	static bool isGraph(char32_t codepoint);
+	static bool isPrint(char32_t codepoint);
 
-	// convert code point to upper case
-	static int32_t upper(int32_t cp);
+	// convert codepoint
+	static char32_t lowercase(char32_t codepoint);
+	static char32_t uppercase(char32_t codepoint);
 };

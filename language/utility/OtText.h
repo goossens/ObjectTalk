@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include <cctype>
+#include <cstdint>
 #include <string>
 #include <sstream>
 

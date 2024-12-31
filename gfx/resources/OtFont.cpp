@@ -81,7 +81,7 @@ float OtFont::getWidth(const std::string& text, float size) {
 	auto i = text.begin();
 
 	while (i < text.end()) {
-		int32_t codepoint;
+		char32_t codepoint;
 		i = OtCodePoint::get(i, &codepoint);
 
 		// get character width
@@ -124,7 +124,7 @@ void OtFont::parseGlyph(
 	auto i = text.begin();
 
 	while (i < text.end()) {
-		int32_t codepoint;
+		char32_t codepoint;
 		i = OtCodePoint::get(i, &codepoint);
 
 		// process all vertices (drawing commands) for this codepoint

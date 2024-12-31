@@ -797,7 +797,6 @@ int TextEditor::InsertTextAt(Coordinates& /* inout */ aWhere, const char* aValue
 	{
 		if (*aValue == '\r')
 		{
-			// skip
 			++aValue;
 		}
 		else if (*aValue == '\n')
@@ -2352,7 +2351,7 @@ void TextEditor::HandleKeyboardInputs(bool aParentIsFocused)
 		else if (!mReadOnly && isOptionalAlt && ImGui::IsKeyPressed(ImGuiKey_Backspace)) Backspace(alt);
 		else if (!mReadOnly && isShiftShortcut && ImGui::IsKeyPressed(ImGuiKey_K)) RemoveCurrentLines();
 
-			// text manipulation
+		// text manipulation
 		else if (!mReadOnly && isShortcut && ImGui::IsKeyPressed(ImGuiKey_LeftBracket)) ChangeCurrentLinesIndentation(false);
 		else if (!mReadOnly && isShortcut && ImGui::IsKeyPressed(ImGuiKey_RightBracket)) ChangeCurrentLinesIndentation(true);
 		else if (!mReadOnly && isAltOnly && ImGui::IsKeyPressed(ImGuiKey_UpArrow)) MoveUpCurrentLines();
@@ -2406,7 +2405,7 @@ void TextEditor::HandleMouseInputs()
 		ImVec2 mouseDelta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Middle);
 		ImGui::SetScrollX(ImGui::GetScrollX() - mouseDelta.x);
 		ImGui::SetScrollY(ImGui::GetScrollY() - mouseDelta.y);
-		ImGui::ResetMouseDragDelta();
+		ImGui::ResetMouseDragDelta(ImGuiMouseButton_Middle);
 	}
 
 	// Re-sort and possibly merge cursors on left mouse button release

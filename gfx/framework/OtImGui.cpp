@@ -187,7 +187,10 @@ void OtFramework::initIMGUI() {
 
 	pio.Platform_GetClipboardTextFn = [](ImGuiContext* ctx) {
 		OtFramework* framework = (OtFramework*) ImGui::GetPlatformIO().Platform_ClipboardUserData;
-		return glfwGetClipboardString(framework->window);
+		auto callback = glfwSetErrorCallback(nullptr);
+		auto result = glfwGetClipboardString(framework->window);
+		glfwSetErrorCallback(callback);
+		return result;
 	};
 
 	// add custom font

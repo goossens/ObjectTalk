@@ -28,6 +28,7 @@
 #include "OtNodesEditor.h"
 #include "OtObjectTalkEditor.h"
 #include "OtSceneEditor.h"
+#include "OtTestEditor.h"
 #include "OtTxtEditor.h"
 #include "OtWorkspace.h"
 
@@ -43,6 +44,7 @@ OtWorkspace::OtWorkspace() {
 	registerEditorType<OtNodesEditor>();
 	registerEditorType<OtObjectTalkEditor>();
 	registerEditorType<OtSceneEditor>();
+	registerEditorType<OtTestEditor>();
 	registerEditorType<OtTxtEditor>();
 }
 

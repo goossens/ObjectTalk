@@ -19,7 +19,7 @@
 
 #include "OtInteger.h"
 
-#include "OtBitstreamVeraMono.h"
+#include "OtDejaVu.h"
 #include "OtFramework.h"
 
 
@@ -199,18 +199,25 @@ void OtFramework::initIMGUI() {
 	config.OversampleH = 1;
 	config.OversampleV = 1;
 
-	io.Fonts->AddFontFromMemoryTTF(
-		(void*) &OtBitstreamVeraMono,
-		sizeof(OtBitstreamVeraMono),
+	static const ImWchar unicodeRanges[] = {
+		0x0020, 0x00FF, // Basic Latin + Latin Supplement
+		0x2190, 0x21ff, // Arrows block
+		0
+	};
+
+	io.Fonts->AddFontFromMemoryCompressedTTF(
+		(void*) &OtDejaVu,
+		OtDejaVuSize,
 		15.0,
-		&config);
+		&config,
+		unicodeRanges);
 
-
-	io.Fonts->AddFontFromMemoryTTF(
-		(void*) &OtBitstreamVeraMono,
-		sizeof(OtBitstreamVeraMono),
+	io.Fonts->AddFontFromMemoryCompressedTTF(
+		(void*) &OtDejaVu,
+		OtDejaVuSize,
 		17.0,
-		&config);
+		&config,
+		unicodeRanges);
 
 	// setup font atlas in texture
 	unsigned char* pixels;

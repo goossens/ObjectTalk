@@ -19,4 +19,6 @@
 //	Static variables
 //
 
-extern const uint8_t OtBitstreamVeraMono[49224];
+
+extern const unsigned int OtDejaVu[258552 / 4];
+static constexpr int OtDejaVuSize = 258552;

@@ -1470,9 +1470,6 @@ bool TextEditor::FindNextOccurrence(const char* aText, int aTextSize, const Coor
 				Coordinates start = { fline, GetCharacterColumn(fline, findex) };
 				Coordinates end = { fline + lineOffset, GetCharacterColumn(fline + lineOffset, currentCharIndex) };
 
-				if (aTextSize == 4) {
-					int w = 4;
-				}
 				if (!aWholeWord || IsWholeWord(start, end))
 				{
 					outStart = start;

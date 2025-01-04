@@ -13,6 +13,7 @@
 #include "OtException.h"
 #include "OtUnicode.h"
 
+
 //
 //	OtCodePointSize
 //
@@ -32,9 +33,8 @@ size_t OtCodePoint::size(std::string::const_iterator i) {
 
 	} else {
 		OtError("Invalid codepoint in UTF-8 string");
+		return 0;
 	}
-
-	return 0;
 }
 
 
@@ -72,27 +72,23 @@ std::string::const_iterator OtCodePoint::get(std::string::const_iterator i, char
 //
 
 std::string::iterator OtCodePoint::put(std::string::iterator i, char32_t codepoint) {
-	if ((codepoint & 0xffffff80) == 0) {
-		*i = codepoint;
-		i++;
+	if (codepoint < 0x80) {
+		*i++ = codepoint;
 
-	} else if ((codepoint & 0xffffff80) == 0) {
-		*i = 0xc0 | ((codepoint >> 6) & 0x1f);
-		*(i + 1) = 0x80 | (codepoint & 0x3f);
-		i += 2;
+	} else if (codepoint < 0x800) {
+		*i++ = 0xc0 | ((codepoint >> 6) & 0x1f);
+		*i++ = 0x80 | (codepoint & 0x3f);
 
-	} else if ((codepoint & 0xffff0000) == 0) {
-		*i = 0xe0 | ((codepoint >> 12) & 0x0f);
-		*(i + 1) = 0x80 | ((codepoint >> 6) & 0x3f);
-		*(i + 2) = 0x80 | (codepoint & 0x3f);
-		i += 3;
+	} else if (codepoint < 0x10000) {
+		*i++ = 0xe0 | ((codepoint >> 12) & 0x0f);
+		*i++ = 0x80 | ((codepoint >> 6) & 0x3f);
+		*i++ = 0x80 | (codepoint & 0x3f);
 
 	} else {
-		*i = 0xf0 | ((codepoint >> 18) & 0x07);
-		*(i + 1) = 0x80 | ((codepoint >> 12) & 0x3f);
-		*(i + 2) = 0x80 | ((codepoint >> 6) & 0x3f);
-		*(i + 3) = 0x80 | (codepoint & 0x3f);
-		i += 4;
+		*i++ = 0xf0 | ((codepoint >> 18) & 0x07);
+		*i++ = 0x80 | ((codepoint >> 12) & 0x3f);
+		*i++ = 0x80 | ((codepoint >> 6) & 0x3f);
+		*i++ = 0x80 | (codepoint & 0x3f);
 	}
 
 	return i;

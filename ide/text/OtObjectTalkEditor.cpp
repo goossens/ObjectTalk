@@ -10,7 +10,52 @@
 //
 
 #include "OtObjectTalkEditor.h"
-#include "OtObjectTalkLanguage.h"
+
+
+//
+//	GetLanguageDefinition
+//
+
+static TextEditor::Language& GetLanguageDefinition() {
+	static bool initialized = false;
+	static TextEditor::Language language;
+
+	if (!initialized) {
+		language.name = "ObjectTalk";
+		language.commentStart = "/*";
+		language.commentEnd = "*/";
+		language.singleLineComment1 = "//";
+		language.singleLineComment2 = "#";
+		language.hasSingleQuoteStrings = true;
+		language.hasDoubleQuoteStrings = true;
+		language.stringEscapeCharacter = '\\';
+
+		static const char* const keywords[] = {
+			"catch", "do", "elif", "else", "for", "if", "in", "not", "return", "super", "throw", "try", "while"
+		};
+
+		static const char* const declarations[] = {
+			"class", "function", "var"
+		};
+
+		static const char* const functions[] = {
+			"assert", "import", "members", "print", "range"
+		};
+
+		static const char* const constants[] = {
+			"e", "false", "null", "pi", "print", "true"
+		};
+
+		for (auto& keyword : keywords) { language.keywords.insert(keyword); }
+		for (auto& declaration : declarations) { language.declarations.insert(declaration); }
+		for (auto& identifier : functions) { language.identifiers.insert(identifier); }
+		for (auto& identifier : constants) { language.identifiers.insert(identifier); }
+
+		initialized = true;
+	}
+
+	return language;
+}
 
 
 //
@@ -18,7 +63,7 @@
 //
 
 OtObjectTalkEditor::OtObjectTalkEditor() {
-	editor.SetLanguageDefinition(OtObjectTalkLanguageGetDefinition());
+	editor.SetLanguage(GetLanguageDefinition());
 	editor.SetShowMatchingBrackets(true);
 	editor.SetCompletePairedGlyphs(true);
 }

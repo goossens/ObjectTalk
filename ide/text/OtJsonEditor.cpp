@@ -17,7 +17,7 @@
 //
 
 OtJsonEditor::OtJsonEditor() {
-	editor.SetLanguageDefinition(TextEditor::LanguageDefinition::Json());
+//	editor.SetLanguageDefinition(TextEditor::LanguageDefinition::Json());
 	editor.SetShowMatchingBrackets(true);
 	editor.SetCompletePairedGlyphs(true);
 }

@@ -25,28 +25,24 @@
 //	Color palette
 //
 
-const static TextEditor::Palette colorPalette = { {
-	IM_COL32(212, 212, 212, 255),	// Default
-	IM_COL32(197, 134, 192, 255),	// Keyword
-	IM_COL32(181, 206, 168, 255),	// Number
-	IM_COL32(206, 145, 120, 255),	// String
-	IM_COL32(206, 145, 120, 255),	// Char literal
-	IM_COL32(255, 255, 255, 255),	// Punctuation
-	IM_COL32(128, 128,  64, 255),	// Preprocessor
-	IM_COL32(156, 220, 254, 255),	// Identifier
-	IM_COL32( 79, 193, 255, 255),	// Known identifier
-	IM_COL32( 99, 198, 171, 255),	// Preproc identifier
-	IM_COL32(106, 153,  85, 255),	// Comment (single line)
-	IM_COL32(106, 153,  85, 255),	// Comment (multi line)
-	IM_COL32( 30,  30,  30, 255),	// Background
-	IM_COL32(224, 224, 224, 255),	// Cursor
-	IM_COL32( 32,  96, 160, 255),	// Selection
-	IM_COL32(128,   0,  32, 255),	// ErrorMarker
-	IM_COL32( 64,  64,  64, 255),	// ControlCharacter
-	IM_COL32(  0, 128, 240,  64),	// Breakpoint
-	IM_COL32(110, 118, 129, 255),	// Line number
-	IM_COL32(204, 204, 204, 255),	// Current line number
-} };
+const static TextEditor::Palette colorPalette = {{
+	IM_COL32(224, 224, 224, 255),	// standard
+	IM_COL32(197, 134, 192, 255),	// keyword
+	IM_COL32(181, 206, 168, 255),	// number
+	IM_COL32(206, 145, 120, 255),	// string
+	IM_COL32(255, 255, 255, 255),	// punctuation
+	IM_COL32(128, 128,  64, 255),	// preprocessor
+	IM_COL32(156, 220, 254, 255),	// identifier
+	IM_COL32( 79, 193, 255, 255),	// known identifier
+	IM_COL32(106, 153,  85, 255),	// comment
+	IM_COL32( 30,  30,  30, 255),	// background
+	IM_COL32(224, 224, 224, 255),	// cursor
+	IM_COL32( 32,  96, 160, 255),	// selection
+	IM_COL32(128,   0,  32, 255),	// errorMarker
+	IM_COL32( 90,  90,  90, 255),	// whitespace
+	IM_COL32(128, 128, 144, 255),	// line number
+	IM_COL32(224, 224, 240, 255),	// current line number
+}};
 
 
 //
@@ -54,9 +50,7 @@ const static TextEditor::Palette colorPalette = { {
 //
 
 OtTextEditor::OtTextEditor() {
-	editor.SetLineSpacing(1.25f);
 	editor.SetShowWhitespacesEnabled(true);
-	editor.SetShortTabsEnabled(true);
 	editor.SetPalette(colorPalette);
 }
 
@@ -116,25 +110,36 @@ void OtTextEditor::renderMenu(bool canRun) {
 		renderFileMenu(canRun);
 
 		if (ImGui::BeginMenu("Edit")) {
-			if (ImGui::MenuItem("Undo", OT_UI_SHORTCUT "Z", nullptr, editor.CanUndo())) { editor.Undo(); }
+			if (ImGui::MenuItem("Undo", " " OT_UI_SHORTCUT "Z", nullptr, editor.CanUndo())) { editor.Undo(); }
 #if __APPLE__
 			if (ImGui::MenuItem("Redo", "^" OT_UI_SHORTCUT "Z", nullptr, editor.CanRedo())) { editor.Redo(); }
 #else
-			if (ImGui::MenuItem("Redo", OT_UI_SHORTCUT "Y", nullptr, editor.CanRedo())) { editor.Redo(); }
+			if (ImGui::MenuItem("Redo", " " OT_UI_SHORTCUT "Y", nullptr, editor.CanRedo())) { editor.Redo(); }
 #endif
 
 			ImGui::Separator();
-			if (ImGui::MenuItem("Cut", OT_UI_SHORTCUT "X", nullptr, editor.AnyCursorHasSelection())) { editor.Cut(); }
-			if (ImGui::MenuItem("Copy", OT_UI_SHORTCUT "C", nullptr, editor.AnyCursorHasSelection())) { editor.Copy(); }
-			if (ImGui::MenuItem("Paste", OT_UI_SHORTCUT "V", nullptr, ImGui::GetClipboardText() != nullptr)) { editor.Paste(); }
-
-			ImGui::Separator();
-			if (ImGui::MenuItem("Select All", OT_UI_SHORTCUT "A", nullptr, !editor.IsEmpty())) { editor.SelectAll(); }
+			if (ImGui::MenuItem("Cut", " " OT_UI_SHORTCUT "X", nullptr, editor.AnyCursorHasSelection())) { editor.Cut(); }
+			if (ImGui::MenuItem("Copy", " " OT_UI_SHORTCUT "C", nullptr, editor.AnyCursorHasSelection())) { editor.Copy(); }
+			if (ImGui::MenuItem("Paste", " " OT_UI_SHORTCUT "V", nullptr, ImGui::GetClipboardText() != nullptr)) { editor.Paste(); }
 
 			ImGui::Separator();
 			if (ImGui::MenuItem("Tabs To Spaces")) { editor.TabsToSpaces(); focusOnEditor = true; }
 			if (ImGui::MenuItem("Spaces To Tabs")) { editor.SpacesToTabs(); focusOnEditor = true; }
 			if (ImGui::MenuItem("Strip Trailing Whitespaces")) { editor.StripTrailingWhitespaces(); focusOnEditor = true; }
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Selection")) {
+			if (ImGui::MenuItem("Select All", " " OT_UI_SHORTCUT "A", nullptr, !editor.IsEmpty())) { editor.SelectAll(); }
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Move Line(s) Up", " " OT_UI_SHORTCUT "\u2191", nullptr, !editor.IsEmpty())) { editor.MoveUpLines(); }
+			if (ImGui::MenuItem("Move Line(s) Down", " " OT_UI_SHORTCUT "\u2193", nullptr, !editor.IsEmpty())) { editor.MoveDownLines(); }
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Add Next Occurrence", " " OT_UI_SHORTCUT "D", nullptr, editor.CurrentCursorHasSelection())) { editor.AddNextOccurrence(); }
+			if (ImGui::MenuItem("Select All Occurrences", "^" OT_UI_SHORTCUT "D", nullptr, editor.CurrentCursorHasSelection())) { editor.SelectAllOccurrences(); }
+
 			ImGui::EndMenu();
 		}
 
@@ -145,7 +150,6 @@ void OtTextEditor::renderMenu(bool canRun) {
 			bool flag;
 			flag = editor.IsShowWhitespacesEnabled(); if (ImGui::MenuItem("Show Whitespaces", nullptr, &flag)) { editor.SetShowWhitespacesEnabled(flag); };
 			flag = editor.IsShowLineNumbersEnabled(); if (ImGui::MenuItem("Show Line Numbers", nullptr, &flag)) { editor.SetShowLineNumbersEnabled(flag); };
-			flag = editor.IsShortTabsEnabled(); if (ImGui::MenuItem("Show Short Tabs", nullptr, &flag)) { editor.SetShortTabsEnabled(flag); };
 			flag = editor.IsShowingMatchingBrackets(); if (ImGui::MenuItem("Show Matching Brackets", nullptr, &flag)) { editor.SetShowMatchingBrackets(flag); };
 			flag = editor.IsCompletingPairedGlyphs(); if (ImGui::MenuItem("Complete Matchng Glyphs", nullptr, &flag)) { editor.SetCompletePairedGlyphs(flag); };
 
@@ -155,8 +159,8 @@ void OtTextEditor::renderMenu(bool canRun) {
 		}
 
 		if (ImGui::BeginMenu("Find")) {
-			if (ImGui::MenuItem("Find", OT_UI_SHORTCUT "F")) { openFindReplace(); }
-			if (ImGui::MenuItem("Find Next", OT_UI_SHORTCUT "G"), findText.size()) { findNext(); }
+			if (ImGui::MenuItem("Find", " " OT_UI_SHORTCUT "F")) { openFindReplace(); }
+			if (ImGui::MenuItem("Find Next", " " OT_UI_SHORTCUT "G"), findText.size()) { findNext(); }
 			if (ImGui::MenuItem("Find All", "^" OT_UI_SHORTCUT "G", findText.size())) { findAll(); }
 			ImGui::Separator();
 			ImGui::EndMenu();
@@ -204,7 +208,7 @@ void OtTextEditor::renderEditor() {
 	// scroll to line if required
 	// (this has to be done here as the editor doesn't handle this well on open)
 	if (scrollToLine) {
-		editor.SetViewAtLine(scrollToLine - 1, TextEditor::SetViewAtLineMode::Centered, true);
+		editor.SetCursor(scrollToLine - 1, 0);
 		scrollToLine = 0;
 	}
 

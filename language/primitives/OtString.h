@@ -96,6 +96,9 @@ public:
 	inline std::string lower() { return OtText::lower(value); }
 	inline std::string upper() { return OtText::upper(value); }
 
+	int toCodePoint();
+	std::string fromCodePoint(int codepoint);
+
 	OtObject split(const std::string& delimiter);
 
 	OtObject format(size_t count, OtObject* parameters);

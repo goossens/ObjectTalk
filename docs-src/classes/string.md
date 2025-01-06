@@ -27,8 +27,10 @@ characters (like "€") or use JSON style encoding like
 | ltrim() | Trim all whitespaces (SPACE, TAB, VTAB, CR, LF) from the start of the object's value and return result. |
 | rtrim() | Trim all whitespaces (SPACE, TAB, VTAB, CR, LF) from the end of the object's value and return result. |
 | compress() | Trim all whitespaces (SPACE, TAB, VTAB, CR, LF) from the start and the end of the object's value, replace whitespace sequence in the middle with a single space and return result. |
-| lower() | Convert all characters in the object's value to lowercase and return result. |
-| upper() | Convert all characters in the object's value to uppercase and return result. |
+| lower() | Convert all characters to lowercase and return result. |
+| upper() | Convert all characters to uppercase and return result. |
+| toCodePoint() | Convert the first character to a unicode codepoint. |
+| fromCodePoint() | Convert a unicode codepoint to a UTF-8 string. |
 | split(delimiter) | Split string based on delimiter and return array of substrings. |
 | format(parameters...) | Format a string using the value as a mask and the parameters to substitute (like printf). |
 

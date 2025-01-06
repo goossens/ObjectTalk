@@ -75,6 +75,27 @@ OtObject OtStringClass::iterate() {
 
 
 //
+//	OtStringClass::toCodePoint
+//
+
+int OtStringClass::toCodePoint() {
+	char32_t codepoint;
+	OtCodePoint::get(value.begin(), &codepoint);
+	return static_cast<int>(codepoint);
+}
+
+
+//
+//	OtStringClass::fromCodePoint
+//
+
+std::string OtStringClass::fromCodePoint(int codepoint) {
+	std::string utf8(4, 0);
+	std::string text(utf8.begin(), OtCodePoint::put(utf8.begin(), codepoint));
+	return text;
+}
+
+//
 //	OtStringClass::split
 //
 
@@ -91,7 +112,6 @@ OtObject OtStringClass::split(const std::string& delimiter) {
 	result->append(OtString::create(value.substr(start)));
 	return result;
 }
-
 
 //
 //	OtStringClass::format
@@ -335,6 +355,9 @@ OtType OtStringClass::getMeta() {
 
 		type->set("lower", OtFunction::create(&OtStringClass::lower));
 		type->set("upper", OtFunction::create(&OtStringClass::upper));
+
+		type->set("toCodePoint", OtFunction::create(&OtStringClass::toCodePoint));
+		type->set("fromCodePoint", OtFunction::create(&OtStringClass::fromCodePoint));
 
 		type->set("split", OtFunction::create(&OtStringClass::split));
 

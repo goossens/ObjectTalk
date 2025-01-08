@@ -1,0 +1,97 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var animation = import("animation");
+var input = import("input");
+var math = import("math");
+
+var canvas = import("canvas");
+var config = import("config");
+var actor = import("actor");
+
+class Pacman : actor.Actor {
+	function __init__(this) {
+		this.name = "pacman";
+		this.color = "#FFFF00";
+
+		// set default start posiiton and direction
+		this.startPixelPosition = this.tileToPixels(math.Vec2(13.5, 26));
+		this.startDirection = config.left;
+
+		// create an animation for the mouth
+		animation.Animation()
+			.from(0.0)
+			.to(pi / 2.5)
+			.during(0.25)
+			.to(0.0)
+			.during(0.25)
+			.continuous()
+			.onStep(function(angle) { this.angle = angle; })
+			.start();
+
+		super.__init__(this);
+	}
+
+	function update(this, map) {
+		// see if we are about to enter a tunnel
+		if (map.isTunnelEntrance(this.tile, this.direction)) {
+			this.moveToTile(this.direction == config.left ? config.rightTunnel : config.leftTunnel);
+
+		} else {
+			// see if we are about to run into a wall
+			var stopped = this.centered && !map.isFloorTile(this.tile + this.velocity);
+
+			// update position (if required)
+			if (!stopped) {
+				this.moveByPixels(this.velocity * input.getDeltaTime() * config.pacmanSpeed * config.tileSize);
+			}
+
+			// see if we want to change direction
+			if (this.centered) {
+				if (input.isButtonPressed(input.keyLeftArrow) && map.isFloorTile(this.tile - math.Vec2(1, 0))) {
+					this.changeDirection(config.left);
+
+				} elif (input.isButtonPressed(input.keyRightArrow) && map.isFloorTile(this.tile + math.Vec2(1, 0))) {
+					this.changeDirection(config.right);
+
+				} elif (input.isButtonPressed(input.keyUpArrow) && map.isFloorTile(this.tile - math.Vec2(0, 1))) {
+					this.changeDirection(config.up);
+
+				} elif (input.isButtonPressed(input.keyDownArrow) && map.isFloorTile(this.tile + math.Vec2(0, 1))) {
+					this.changeDirection(config.down);
+				}
+			}
+		}
+	}
+
+	function render(this, renderer) {
+		renderer.save();
+		renderer.beginPath();
+		renderer.translate(this.position.x, this.position.y);
+
+		if (this.direction == config.left) {
+			renderer.rotate(pi);
+
+		} elif (this.direction == config.right) {
+			renderer.rotate(0.0);
+
+		} elif (this.direction == config.up) {
+			renderer.rotate(pi * 1.5);
+
+		} elif (this.direction == config.down) {
+			renderer.rotate(pi * 0.5);
+		}
+
+		renderer.beginPath();
+		renderer.moveTo(0, 0);
+		renderer.arc(0, 0, config.actorSize, this.angle, pi * 2.0 - this.angle, canvas.cw);
+		renderer.closePath();
+		renderer.fillColor(this.color);
+		renderer.fill();
+
+		renderer.restore();
+	}
+}

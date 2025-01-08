@@ -1,0 +1,97 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var math = import("math");
+
+var assets = __DIR__.directory().join("assets");
+
+var tiles = [
+	"____________________________",
+	"____________________________",
+	"____________________________",
+	"||||||||||||||||||||||||||||",
+	"|............||............|",
+	"|.||||.|||||.||.|||||.||||.|",
+	"|o||||.|||||.||.|||||.||||o|",
+	"|.||||.|||||.||.|||||.||||.|",
+	"|..........................|",
+	"|.||||.||.||||||||.||.||||.|",
+	"|.||||.||.||||||||.||.||||.|",
+	"|......||....||....||......|",
+	"||||||.||||| || |||||.||||||",
+	"_____|.||||| || |||||.|_____",
+	"_____|.||          ||.|_____",
+	"_____|.|| |||--||| ||.|_____",
+	"||||||.|| |______| ||.||||||",
+	"      .   |______|   .      ",
+	"||||||.|| |______| ||.||||||",
+	"_____|.|| |||||||| ||.|_____",
+	"_____|.||          ||.|_____",
+	"_____|.|| |||||||| ||.|_____",
+	"||||||.|| |||||||| ||.||||||",
+	"|............||............|",
+	"|.||||.|||||.||.|||||.||||.|",
+	"|.||||.|||||.||.|||||.||||.|",
+	"|o..||.......  .......||..o|",
+	"|||.||.||.||||||||.||.||.|||",
+	"|||.||.||.||||||||.||.||.|||",
+	"|......||....||....||......|",
+	"|.||||||||||.||.||||||||||.|",
+	"|.||||||||||.||.||||||||||.|",
+	"|..........................|",
+	"||||||||||||||||||||||||||||",
+	"____________________________",
+	"____________________________"
+];
+
+var tilesX = 28;
+var tilesY = 36;
+
+var tileSize = 8.0;
+var halfTile = tileSize / 2.0;
+
+var width = tilesX * tileSize;
+var height = tilesY * tileSize;
+
+var tunnelRow = 17;
+var leftTunnel = math.Vec2(0, tunnelRow);
+var rightTunnel = math.Vec2(tilesX - 1, tunnelRow);
+
+var homeTopPixel = 17 * tileSize;
+var homeBottomPixel = 18 * tileSize;
+var homeDoorTile = math.Vec2(14.0, 14.5);
+var homeDoorPixel = homeDoorTile * tileSize;
+
+var pelletSize = 2;
+var actorScale = 0.8;
+var actorSize = actorScale * tileSize;
+
+var pacmanSpeed = 0.6 * tileSize;
+var ghostSpeed = 0.5 * tileSize;
+
+var wallColor = "#2121FF";
+var doorColor = "#FFB8DE";
+var pelletColor = "#FFB8AE";
+var blinkyColor = "#FF0000";
+var pinkyColor = "#FFB8FF";
+var inkyColor = "#00FFFF";
+var clydeColor = "#FFB851";
+var eyeColor = "#FFFFFF";
+var pupilColor = "#0000FF";
+var packmanColor = "#FFFF00";
+
+var up = 0;
+var left = 1;
+var down = 2;
+var right = 3;
+var steady = 4;
+
+var velocities = [
+	math.Vec2(0, -1),
+	math.Vec2(-1, 0),
+	math.Vec2(0, 1),
+	math.Vec2(1, 0),
+	math.Vec2(0, 0)];

@@ -1,0 +1,93 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var canvas = import("canvas");
+var config = import("config");
+
+class Pellets : canvas.Canvas {
+	var empty = 0;
+	var pellet = 1;
+	var energizer = 2;
+
+	function __init__(this) {
+		this.reset();
+	}
+
+	function reset(this) {
+		this.state = [];
+		this.count = 0;
+
+		for y in range(config.tilesY) {
+			for x in range(config.tilesX) {
+				var tile = config.tiles[y][x];
+
+				if (tile == ".") {
+					this.state.append(pellet);
+					this.count++;
+
+				} elif (tile == "o") {
+					this.state.append(energizer);
+
+				} else {
+					this.state.append(empty);
+				}
+			}
+		}
+	}
+
+	function isPellet(this, tile) {
+		return this.state[tile.y * config.tilesX + tile.x] == pellet;
+	}
+
+	function isEnergizer(this, tile) {
+		return this.state[tile.y * config.tilesX + tile.x] == energizer;
+	}
+
+	function eatPellet(this, tile) {
+		// remove pellet and decrease count
+		this.state[tile.y * config.tilesX + tile.x] = empty;
+		this.count--;
+
+		// mark this layer as dirty
+		this.requestRerender();
+	}
+
+	function render(this) {
+		this.save();
+		this.fillColor(config.pelletColor);
+
+		var i = 0;
+
+		for y in range(config.tilesY) {
+			for x in range(config.tilesX) {
+				var tile = this.state[i++];
+
+				if (tile == pellet) {
+					this.beginPath();
+
+					this.rect(
+						x * config.tileSize + config.halfTile - config.pelletSize / 2.0,
+						y * config.tileSize + config.halfTile - config.pelletSize / 2.0,
+						config.pelletSize, config.pelletSize);
+
+					this.fill();
+
+				} elif (tile == energizer) {
+					this.beginPath();
+
+					this.circle(
+						x * config.tileSize + config.halfTile,
+						y * config.tileSize + config.halfTile,
+						config.tileSize / 2.0);
+
+					this.fill();
+				}
+			}
+		}
+
+		this.restore();
+	}
+}

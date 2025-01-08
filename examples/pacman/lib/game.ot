@@ -1,0 +1,108 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var input = import("input");
+
+var map = import("map");
+var pellets = import("pellets");
+var actors = import("actors");
+var messages = import("messages");
+
+class Game : Object {
+	var idleState = 1;
+	var runningState = 2;
+	var killedState = 3;
+	var gameOverState = 4;
+
+	function __init__(this, stack) {
+		// create drawing layers
+		this.map = map.Map();
+		this.pellets = pellets.Pellets();
+		this.actors = actors.Actors();
+		this.messages = messages.Messages();
+
+		// add them to the stack
+		stack.addCanvas(this.map);
+		stack.addCanvas(this.pellets);
+		stack.addCanvas(this.actors);
+		stack.addCanvas(this.messages);
+
+		// set initial state
+		this.enterIdleState();
+	}
+
+	function enterIdleState(this) {
+		// reset state and show welcome message
+		this.state = idleState;
+		this.score = 0;
+		this.messages.showWelcomeMessage();
+	}
+
+	function enterRunningState(this) {
+		this.state = runningState;
+		this.messages.ClearMessage();
+		this.actors.reset();
+	}
+
+	function update(this) {
+		// check our current state
+		if (this.state == idleState) {
+			if (input.isButtonPressed(input.keySpace)) {
+				this.enterRunningState();
+			}
+
+		} elif (this.state == runningState) {
+			this.runFrame();
+
+		} elif (this.state == killedState) {
+
+		} elif (this.state == gameOverState) {
+		}
+	}
+
+	function runFrame(this) {
+		// update the position of all actors
+		this.actors.update(this.map);
+
+		// see if pacman is eating a pellet
+		var tile = this.actors.pacman.tile;
+
+		if (this.pellets.isPellet(tile)) {
+			this.pellets.eatPellet(tile);
+			this.score += 10;
+			this.messages.updateScore(this.score);
+		}
+
+		// see if pacman is eating an energizer
+		if (this.pellets.isEnergizer(tile)) {
+			this.pellets.eatPellet(tile);
+			this.ghostValue = 200;
+			this.score += 50;
+			this.messages.updateScore(this.score);
+			this.actors.startFrightened();
+		}
+
+		// check for collisions between pacman and ghost
+		this.checkCollision(this.actors.pacman, this.actors.blinky);
+		this.checkCollision(this.actors.pacman, this.actors.pinky);
+		this.checkCollision(this.actors.pacman, this.actors.inky);
+		this.checkCollision(this.actors.pacman, this.actors.clyde);
+	}
+
+	function checkCollision(this, pacman, ghost) {
+		if (pacman.tile == ghost.tile) {
+			if ghost.isFrightened() {
+				this.score += this.ghostValue;
+				this.messages.updateScore(this.score);
+				ghost.startCaptured(this.ghostValue);
+				this.ghostValue *= 2;
+
+			} else {
+
+			}
+		}
+	}
+}

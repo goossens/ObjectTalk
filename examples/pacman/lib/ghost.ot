@@ -1,0 +1,489 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var input = import("input");
+var math = import("math");
+
+var canvas = import("canvas");
+var config = import("config");
+var actor = import("actor");
+
+class Ghost : actor.Actor {
+	// ghost states
+	var pacingGhostHouse = 1;
+	var leavingGhostHouse = 2;
+	var scattering = 3;
+	var chasing = 4;
+	var frightened = 5;
+	var captured = 6;
+	var goingToGhostHouse = 7;
+	var enteringGhostHouse = 8;
+
+	// rendering paths for ghost features
+	var feet1 = [13, 13, 11, 11, 9, 13, 8, 13, 8, 11, 5, 11, 5, 13, 4, 13, 2, 11, 0, 13];
+	var feet2 = [13, 12, 12, 13, 11, 13, 9, 11, 7, 13, 6, 13, 4, 11, 2, 13, 1, 13, 0, 12];
+	var eye = [0, 1, 1, 0, 2, 0, 3, 1, 3, 3, 2, 4, 1, 4, 0, 3];
+
+	function reset(this) {
+		// reset the ghost
+		super.reset(this);
+
+		if (this.startState == pacingGhostHouse) {
+			this.startPacingGhostHouse();
+
+		} else {
+			this.startScattering();
+		}
+	}
+
+	function move(this, speedFactor) {
+		this.moveByPixels(this.velocity * input.getDeltaTime() * config.ghostSpeed * speedFactor * config.tileSize);
+	}
+
+	function update(this, map, pacman) {
+		// update the position of the ghost
+		if (this.state == pacingGhostHouse) {
+			// pace inside the
+			this.updatePacingGhostHouse();
+
+		} elif (this.state == leavingGhostHouse) {
+			this.updateLeavingGhostHouse();
+
+		} elif (this.state == scattering) {
+			// ghost is scattering by heading to its corner
+			this.updateScattering(map);
+
+		} elif (this.state == chasing) {
+			// ghost is chasing pacman
+			this.updateChasing(map, pacman);
+
+		} elif (this.state == frightened) {
+			// ghost is scared and is running away from pacman
+			this.updateFrightened(map, pacman);
+
+		} elif (this.state == captured) {
+			// ghost has been captured
+			this.updateCaptured();
+
+		} elif (this.state == goingToGhostHouse) {
+			this.updateGoingToGhostHouse(map);
+
+		} elif (this.state == enteringGhostHouse) {
+			this.updateEnteringGhostHouse();
+		}
+	}
+
+	function startPacingGhostHouse(this) {
+		this.state = pacingGhostHouse;
+		this.homeTimeRemaining = this.homeReleaseTime;
+		this.timeLeftInState = 7.0;
+	}
+
+	function updatePacingGhostHouse(this) {
+		// see if it's time to release this ghost
+		this.homeTimeRemaining -= input.getDeltaTime();
+
+		if (this.homeTimeRemaining <= 0.0) {
+			this.startLeavingGhostHouse();
+
+		} else {
+			// keep pacing
+			if (this.position.y <= config.homeTopPixel) {
+				this.setDirection(config.down);
+
+			} elif (this.position.y >= config.homeBottomPixel) {
+				this.setDirection(config.up);
+			}
+
+			this.move(0.5);
+		}
+	}
+
+	function startLeavingGhostHouse(this) {
+		if ((this.position.x - config.homeDoorPixel.x).abs() <= 1.0) {
+			this.position.x = config.homeDoorPixel.x;
+			this.setDirection(config.up);
+
+		} else {
+			this.setDirection(this.position.x < config.homeDoorPixel.x ? config.right : config.left);
+		}
+
+		this.state = leavingGhostHouse;
+	}
+
+	function updateLeavingGhostHouse(this) {
+		// update the position
+		this.move(0.5);
+
+		if (this.direction == config.up && (this.position.y - config.homeDoorPixel.y).abs() <= 1.0) {
+			// move up until we are fully outside the home
+			this.position.y = config.homeDoorPixel.y;
+			this.setDirection(1.random() ? config.left : config.right);
+			this.startScattering();
+
+		} elif ((this.position.x - config.homeDoorPixel.x).abs() <= 1.0) {
+			// keep moving towards center until we are in front of the door
+			this.position.x = config.homeDoorPixel.x;
+			this.setDirection(config.up);
+		}
+	}
+
+	function startScattering(this) {
+		this.state = scattering;
+		this.timeLeftInState = 7.0;
+	}
+
+	function updateScattering(this, map) {
+		// see we are done scattering
+		this.timeLeftInState -= input.getDeltaTime();
+
+		if (this.timeLeftInState <= 0.0) {
+			this.startChasing();
+
+		} else {
+			// steer ghost towards home corner (if we are at the middle of a tile)
+			if (this.centered) {
+				this.steer(map, this.cornerTile);
+			}
+
+			this.move(1.0);
+		}
+	}
+
+	function startChasing(this) {
+		this.state = chasing;
+		this.timeLeftInState = 20.0;
+	}
+
+	function updateChasing(this, map, pacman) {
+		// see we are done chasing
+		this.timeLeftInState -= input.getDeltaTime();
+
+		if (this.timeLeftInState <= 0.0) {
+			this.startScattering();
+
+		} else {
+			// steer ghost towards target (if we are at the middle of a tile)
+			if (this.centered) {
+				this.steer(map, this.getTarget(pacman));
+			}
+
+			this.move(1.0);
+		}
+	}
+
+	function isFrightened(this) {
+		return this.state == frightened;
+	}
+
+	function startFrightened(this) {
+		if (this.state == scattering || this.state == chasing) {
+			this.state = frightened;
+			this.timeLeftInState = 6.0;
+		}
+	}
+
+	function updateFrightened(this, map, pacman) {
+		// see we are done running away
+		this.timeLeftInState -= input.getDeltaTime();
+
+		if (this.timeLeftInState <= 0.0) {
+
+			this.startChasing();
+
+		} else {
+			// steer away from pacman (if we are at the middle of a tile)
+			if (this.centered) {
+				this.steer(map, pacman.tile);
+			}
+
+			this.move(0.5);
+		}
+	}
+
+	function startCaptured(this, value) {
+		this.state = captured;
+		this.timeLeftInState = 1.5;
+		this.value = value;
+	}
+
+	function updateCaptured(this) {
+		// see we are done running away
+		this.timeLeftInState -= input.getDeltaTime();
+
+		if (this.timeLeftInState <= 0.0) {
+			this.startGoingToGhostHouse();
+		}
+	}
+
+	function startGoingToGhostHouse(this) {
+		this.state = goingToGhostHouse;
+	}
+
+	function updateGoingToGhostHouse(this, map) {
+		// see if we there yet
+		if ((this.position.x - config.homeDoorPixel.x).abs() <= 1.0 && (this.position.y - config.homeDoorPixel.y).abs() <= 1.0) {
+			// switch ghost back to start state
+			if (this.startState == Ghost.scattering) {
+				this.setDirection(this.startDirection);
+				this.startScattering();
+
+			} else {
+				this.startEnteringGhostHouse();
+			}
+
+		} else {
+			// steer towards ghost house (if we are at the middle of a tile)
+			if (this.centered) {
+				this.steer(map, config.homeDoorTile);
+			}
+
+			this.move(2.0);
+		}
+	}
+
+	function startEnteringGhostHouse(this) {
+		this.state = enteringGhostHouse;
+		this.position = config.homeDoorPixel;
+		this.setDirection(config.down);
+	}
+
+	function updateEnteringGhostHouse(this) {
+		// update the position
+		this.move(1.0);
+
+		if (this.direction == config.down && (this.position.y - this.startPixelPosition.y).abs() <= 1.0) {
+			// move down until we are fully inside the home
+			this.position.y = this.startPixelPosition.y;
+			this.setDirection(this.startPixelPosition.x < this.position.x ? config.left : config.right);
+
+		} elif ((this.position.x - this.startPixelPosition.x).abs() <= 1.0) {
+			// keep moving towards start position
+			this.position.x = this.startPixelPosition.x;
+			this.setDirection(this.startDirection);
+			this.startPacingGhostHouse();
+		}
+	}
+
+	function steer(this, map, target) {
+		// get a list of open tiles
+		var openTiles = map.getOpenTiles(this.tile);
+
+		// count open tiles
+		var count = 0;
+
+		for item in openTiles {
+			count += item ? 1 : 0;
+		}
+
+		// if possible, remove opposite direction to avoid ping-ponging
+		if (count > 1) {
+			openTiles[(this.direction + 2) % 4] = false;
+		}
+
+		// determine which direction is fastest/slowest to target
+		var bestDistance = this.state == frightened ? 0 : 1000000;
+		var bestDirection = config.steady;
+
+		for i in range(4) {
+			if (openTiles[i]) {
+				var velocity = config.velocities[i];
+				var distance = (this.tile + velocity - target).length();
+
+				if ((this.state == frightened && distance > bestDistance) || distance < bestDistance) {
+					bestDistance = distance;
+					bestDirection = i;
+				}
+			}
+		}
+
+		// set best direction
+		this.changeDirection(bestDirection);
+	}
+
+	function render(this, renderer) {
+		// setup rendering
+		renderer.save();
+		renderer.translate(this.position.x - 5, this.position.y - 4);
+		renderer.scale(config.actorScale, config.actorScale);
+
+		if (this.state == captured) {
+			// just render the value when just capured/eaten
+			this.drawPoints(renderer, this.value, "#00FFFF");
+
+		} else {
+			// draw head
+			renderer.beginPath();
+			renderer.moveTo(0, 6);
+			renderer.quadTo(1.5, 0.0, 6.5, 0.0);
+			renderer.quadTo(11.5, 0.0, 13.0, 6.0);
+
+			// draw feet
+			var feet = (input.getTime() * 2).fraction() < 0.5 ? feet1 : feet2;
+
+			for i in range(10) {
+				renderer.lineTo(feet[i * 2], feet[i * 2 + 1]);
+			}
+
+			renderer.closePath();
+
+			// determine color
+			var color;
+
+			if (this.state == frightened) {
+				if (this.timeLeftInState <= 2.0) {
+					color = (this.timeLeftInState * 5.0).integer() % 2 ? "#202020" : "#2121ff";
+
+				} else {
+					color = "#2121ff";
+				}
+
+			} elif (this.state == captured || this.state == goingToGhostHouse) {
+					color = "rgba(255,255,255,0.3)";
+
+			} else {
+				color = this.color;
+			}
+
+			renderer.strokeColor(color);
+			renderer.fillColor(color);
+
+			// render body
+			renderer.lineCap(canvas.roundCap);
+			renderer.lineJoin(canvas.roundJoin);
+			renderer.strokeWidth(0.5);
+			renderer.stroke();
+			renderer.fill();
+
+			// draw eye balls
+			var drawEyeball = function(renderer) {
+				renderer.beginPath();
+				renderer.moveTo(eye[0], eye[1]);
+
+				for i in range(1, 7) {
+					renderer.lineTo(eye[i * 2], eye[i * 2 + 1]);
+				}
+
+				renderer.closePath();
+				renderer.fill();
+				renderer.stroke();
+			};
+
+			renderer.fillColor(config.eyeColor);
+			renderer.lineJoin(canvas.roundJoin);
+			renderer.strokeWidth(1.0);
+			renderer.strokeColor(config.eyeColor);
+
+			drawEyeball(renderer);
+			renderer.translate(6, 0);
+			drawEyeball(renderer);
+
+			// draw pupils
+			if (this.direction == config.left) {
+				renderer.translate(0, 2);
+
+			} elif (this.direction == config.right) {
+				renderer.translate(2, 2);
+
+			} elif (this.direction == config.up) {
+				renderer.translate(1, 0.7);
+
+			} elif (this.direction == config.down) {
+				renderer.translate(1, 3);
+			}
+
+			renderer.beginPath();
+			renderer.rect(0, 0, 2, 2);
+			renderer.translate(-6, 0);
+			renderer.rect(0, 0, 2, 2);
+
+			renderer.fillColor(config.pupilColor);
+			renderer.fill();
+		}
+
+		renderer.restore();
+	}
+}
+
+
+class Blinky : Ghost {
+	function __init__(this) {
+		this.name = "blinky";
+		this.color = config.blinkyColor;
+		this.startPixelPosition = this.tileToPixels(math.Vec2(13.5, 14));
+		this.startState = Ghost.scattering;
+		this.startDirection = config.left;
+		this.homeReleaseTime = 0.0;
+		this.cornerTile = math.Vec2(25, 0);
+		super.__init__(this);
+	}
+
+	function getTarget(this, pacman) {
+		return pacman.tile;
+	}
+}
+
+class Pinky : Ghost {
+	function __init__(this) {
+		this.name = "pinky";
+		this.color = config.pinkyColor;
+		this.startPixelPosition = this.tileToPixels(math.Vec2(13.5, 17));
+		this.startState = Ghost.pacingGhostHouse;
+		this.startDirection = config.down;
+		this.homeReleaseTime = 2.0;
+		this.cornerTile = math.Vec2(2, 0);
+		super.__init__(this);
+	}
+
+	function getTarget(this, pacman) {
+		return pacman.tile + 4 * pacman.velocity;
+	}
+}
+
+class Inky : Ghost {
+	function __init__(this) {
+		this.name = "inky";
+		this.color = config.inkyColor;
+		this.startPixelPosition = this.tileToPixels(math.Vec2(11.5, 17));
+		this.startState = Ghost.pacingGhostHouse;
+		this.startDirection = config.up;
+		this.homeReleaseTime = 4.0;
+		this.cornerTile = math.Vec2(27, 34);
+		super.__init__(this);
+	}
+
+	function getTarget(this, pacman) {
+		var target = pacman.tile + 2 * pacman.velocity;
+
+		if (pacman.direction == config.up) {
+			target.x -= 2;
+		}
+
+		return target;
+	}
+}
+
+class Clyde : Ghost {
+	function __init__(this) {
+		this.name = "clyde";
+		this.color = config.clydeColor;
+		this.startPixelPosition = this.tileToPixels(math.Vec2(15.5, 17));
+		this.startState = Ghost.pacingGhostHouse;
+		this.startDirection = config.up;
+		this.homeReleaseTime = 7.0;
+		this.cornerTile = math.Vec2(0, 34);
+		super.__init__(this);
+	}
+
+	function getTarget(this, pacman) {
+		if ((this.tile - pacman.tile).length() >= 8.0) {
+			return pacman.tile;
+
+		} else {
+			return this.cornerTile;
+		}
+	}
+}

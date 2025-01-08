@@ -1,0 +1,56 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var canvas = import("canvas");
+var ghost = import("ghost");
+var pacman = import("pacman");
+
+class Actors : canvas.Canvas {
+	function __init__(this) {
+		this.blinky = ghost.Blinky();
+		this.pinky = ghost.Pinky();
+		this.inky = ghost.Inky();
+		this.clyde = ghost.Clyde();
+		this.pacman = pacman.Pacman();
+	}
+
+	function reset(this) {
+		// reset all actors
+		this.blinky.reset();
+		this.pinky.reset();
+		this.inky.reset();
+		this.clyde.reset();
+		this.pacman.reset();
+	}
+
+	function startFrightened(this) {
+		this.blinky.startFrightened();
+		this.pinky.startFrightened();
+		this.inky.startFrightened();
+		this.clyde.startFrightened();
+	}
+
+	function update(this, map) {
+		// update the position of all actors
+		this.blinky.update(map, this.pacman);
+		this.pinky.update(map, this.pacman);
+		this.inky.update(map, this.pacman);
+		this.clyde.update(map, this.pacman);
+		this.pacman.update(map);
+
+		// mark this layer as dirty
+		this.requestRerender();
+	}
+
+	function render(this) {
+		// render all actors
+		this.blinky.render(this);
+		this.pinky.render(this);
+		this.inky.render(this);
+		this.clyde.render(this);
+		this.pacman.render(this);
+	}
+}

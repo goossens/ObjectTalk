@@ -1,0 +1,120 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var canvas = import("canvas");
+var math = import("math");
+
+var config = import("config");
+
+class Actor : Object {
+	function __init__(this) {
+		// constructor
+		this.direction = config.steady;
+		this.reset();
+	}
+
+	function reset(this) {
+		// reset position and direction to starting points
+		this.updatePosition(this.startPixelPosition);
+		this.setDirection(this.startDirection);
+	}
+
+	function tileToPixels(this, tile) {
+		// convert tile to pixel coordinates of tile's center
+		return tile * config.tileSize + config.halfTile;
+	}
+
+	function moveToTile(this, tile) {
+		// move actor to the center of a specified tile
+		this.updatePosition(this.tileToPixels(tile));
+	}
+
+	function moveByPixels(this, offset) {
+		// update position by specified offset
+		this.updatePosition(this.position + offset);
+	}
+
+	function updatePosition(this, position) {
+		// update position of actor to specified location and derive other information
+		this.position = position;
+		this.tile = (position / math.Vec2(config.tileSize, config.tileSize)).floor();
+		var x = position.x.integer() % config.tileSize;
+		var y = position.y.integer() % config.tileSize;
+		this.centeredX = (x - config.halfTile).abs() <= 1;
+		this.centeredY = (y - config.halfTile).abs() <= 1;
+		this.centered = this.centeredX && this.centeredY;
+	}
+
+	function setDirection(this, direction) {
+		// set a new direction and determine the velocity vector
+		this.direction = direction;
+		this.velocity = config.velocities[direction];
+	}
+
+	function changeDirection(this, direction) {
+		// ensure we are really changing direction
+		if (direction != this.direction) {
+			// capture new direction
+			this.setDirection(direction);
+
+			// center the position on the current tile
+			this.moveToTile(this.tile);
+
+			// offset to position in the new direction to avoid being in the center in the next frame
+			this.position += this.velocity * 2;
+		}
+	}
+
+	function drawPoints(this, ctx, points, color) {
+		function plot(points, color) {
+			// plot lines between the specified points in the specified colors
+			ctx.beginPath();
+			ctx.moveTo(points[0], points[1]);
+
+			for i in range(1, (points.size() / 2) - 1) {
+				ctx.lineTo(points[i * 2], points[i * 2 + 1]);
+			}
+
+			ctx.stroke();
+		}
+
+		// draw the speficied widgets
+		function draw0(x, y) { ctx.save(); ctx.translate(x, y); plot([1, 0, 2, 0, 3, 1, 3, 5, 2, 6, 1, 6, 0, 5, 0, 1, 1, 0], color); ctx.restore(); }
+		function draw1(x, y) { ctx.save(); ctx.translate(x, y); plot([0, 1, 1, 0, 1, 6, 0, 6, 2, 6], color); ctx.restore(); }
+		function draw2(x, y) { ctx.save(); ctx.translate(x, y); plot([0, 2, 0, 1, 1, 0, 3, 0, 4, 1, 4, 2, 0, 6, 4, 6], color); ctx.restore(); }
+		function draw3(x, y) { ctx.save(); ctx.translate(x, y); plot([0, 0, 4, 0, 2, 2, 4, 4, 4, 5, 3, 6, 1, 6, 0, 5], color); ctx.restore(); }
+		function draw4(x, y) { ctx.save(); ctx.translate(x, y); plot([3, 6, 3, 0, 0, 3, 0, 4, 4, 4], color); ctx.restore(); }
+		function draw5(x, y) { ctx.save(); ctx.translate(x, y); plot([4, 0, 0, 0, 0, 2, 3, 2, 4, 3, 4, 5, 3, 6, 1, 6, 0, 5], color); ctx.restore(); }
+		function draw6(x, y) { ctx.save(); ctx.translate(x, y); plot([3, 0, 1, 0, 0, 1, 0, 5, 1, 6, 2, 6, 3, 5, 3, 3, 0, 3], color); ctx.restore(); }
+		function draw7(x, y) { ctx.save(); ctx.translate(x, y); plot([0, 1, 0, 0, 4, 0, 4, 1, 2, 4, 2, 6], color); ctx.restore(); }
+		function draw8(x, y) { ctx.save(); ctx.translate(x, y); plot([1, 0, 3, 0, 4, 1, 4, 2, 3, 3, 1, 3, 0, 4, 0, 5, 1, 6, 3, 6, 4, 5, 4, 4, 3, 3, 1, 3, 0, 2, 0, 1, 1, 0], color); ctx.restore(); }
+
+		// dedicated draw functions for the known point amounts
+		var functions = {
+			"100": function() { draw1(-5, -3); draw0(-1, -3); draw0(4, -3); },
+			"200": function() { draw2(-7, -3); draw0(-1, -3); draw0(4, -3); },
+			"300": function() { draw3(-7, -3); draw0(-1, -3); draw0(4, -3); },
+			"400": function() { draw4(-7, -3); draw0(-1, -3); draw0(4, -3); },
+			"500": function() { draw5(-7, -3); draw0(-1, -3); draw0(4, -3); },
+			"700": function() { draw7(-7, -3); draw0(-1, -3); draw0(4, -3); },
+			"800": function() { draw8(-7, -3); draw0(-1, -3); draw0(4, -3); },
+			"1000": function() { draw1(-8,- 3); draw0(-4, -3); draw0(1, -3); draw0(6, -3); },
+			"1600": function() { draw1(-8,- 3); draw6(-4, -3); draw0(1, -3); draw0(6, -3); },
+			"2000": function() { draw2(-10,- 3); draw0(-4, -3); draw0(1, -3); draw0(6, -3); },
+			"3000": function() { draw3(-10,- 3); draw0(-4, -3); draw0(1, -3); draw0(6, -3); },
+			"5000": function() { draw4(-10,- 3); draw0(-4, -3); draw0(1, -3); draw0(6, -3); }
+ 		};
+
+		// render the point count at the specified location
+ 		ctx.save();
+		ctx.strokeWidth(1.0);
+		ctx.lineCap(canvas.roundCap);
+		ctx.lineJoin(canvas.roundJoin);
+		ctx.strokeColor(color);
+		functions[points.string()]();
+	 	ctx.restore();
+	}
+}

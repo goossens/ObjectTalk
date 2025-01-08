@@ -1,0 +1,88 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var canvas = import("canvas");
+var config = import("config");
+
+class Messages : canvas.Canvas {
+	var noMessage = 0;
+	var welcomeMessage = 1;
+
+	var welcome = "WELCOME TO PACMAN\n\nHIT SPACEBAR\nTO START\n\nUSE CURSOR KEYS\nTO CONTROL PACMAN";
+
+	function __init__(this) {
+		// load the arcade font and set default state
+		this.font = this.loadFont(Path(config.assets, "arcade.ttf"));
+		this.reset();
+	}
+
+	function reset(this) {
+		this.message = noMessage;
+		this.score = 0;
+	}
+
+	function updateScore(this, score) {
+		this.score = score;
+		this.requestRerender();
+	}
+
+	function ClearMessage(this) {
+		this.message = noMessage;
+		this.requestRerender();
+	}
+
+	function showWelcomeMessage(this) {
+		this.message = welcomeMessage;
+		this.requestRerender();
+	}
+
+	function render(this) {
+		this.save();
+
+		// setup common font stuff
+		this.fontFace(this.font);
+		this.fontSize(config.tileSize);
+		this.fontAlign(canvas.center | canvas.top);
+
+		// setup scoreboard font
+		this.fillColor("#FFFFFF");
+
+		// render score board elements
+		this.text(4 * config.tileSize, 2, "1UP");
+		this.text(4 * config.tileSize, config.tileSize + 4, this.score.string());
+		this.text(14.5 * config.tileSize, 2, "HIGH SCORE");
+		this.text(14.5 * config.tileSize, config.tileSize + 4, "12333");
+
+		// setup message font
+		this.fillColor("#FFFF00");
+
+		if (this.message == welcomeMessage) {
+			// determine size and position of textbox
+			var size = this.textBoxSize(welcome, config.width);
+			var x = (config.width - size.x) / 2.0;
+			var y = (config.height - size.y) / 2.0;
+
+			// render a background frame
+			this.save();
+			this.fillColor("rgba(64, 64, 64, 128)");
+			this.strokeColor("#FFFF00");
+			this.beginPath();
+			this.roundedRect(x, y - 10, size.x, size.y + 20, 8);
+			this.fill();
+			this.stroke();
+			this.restore();
+
+			// render the text
+			this.textBox(x, y, size.x, welcome);
+
+		} elif (this.message == welcomeMessage) {
+			this.text(14 * config.tileSize, 20 * config.tileSize, "HIT SPACE TO START");
+
+		}
+
+		this.restore();
+	}
+}

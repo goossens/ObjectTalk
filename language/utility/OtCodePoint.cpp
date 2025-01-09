@@ -15,7 +15,7 @@
 
 
 //
-//	OtCodePointSize
+//	OtCodePoint::size
 //
 
 size_t OtCodePoint::size(std::string::const_iterator i) {
@@ -39,7 +39,7 @@ size_t OtCodePoint::size(std::string::const_iterator i) {
 
 
 //
-//	OtCodePointGet
+//	OtCodePoint::get
 //
 
 std::string::const_iterator OtCodePoint::get(std::string::const_iterator i, char32_t* codepoint) {
@@ -68,7 +68,7 @@ std::string::const_iterator OtCodePoint::get(std::string::const_iterator i, char
 
 
 //
-//	OtCodePointPut
+//	OtCodePoint::put
 //
 
 std::string::iterator OtCodePoint::put(std::string::iterator i, char32_t codepoint) {
@@ -100,6 +100,7 @@ std::string::iterator OtCodePoint::put(std::string::iterator i, char32_t codepoi
 //
 
 bool OtCodePoint::isPunctuation(char32_t codepoint) { return is_punctuation(codepoint); }
+bool OtCodePoint::isDecimalNumber(char32_t codepoint) { return is_decimal_number(codepoint); }
 bool OtCodePoint::isHexDigit(char32_t codepoint) { return is_hex_digit(codepoint); }
 bool OtCodePoint::isAlphabetic(char32_t codepoint) { return is_alphabetic(codepoint); }
 bool OtCodePoint::isAlphaNumeric(char32_t codepoint) { return is_alphanumeric(codepoint); }

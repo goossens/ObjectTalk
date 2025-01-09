@@ -112,12 +112,12 @@ void OtScanner::loadSource(OtSource src) {
 //
 
 OtScanner::Token OtScanner::advance() {
-	// skip all white space and comments
+	// skip all whitespaces and comments
 	while (isspace(source->at(position)) ||
 		   (source->at(position) == '#') ||
 		   (source->at(position) == '/' && source->at(position + 1) == '*') ||
 		   (source->at(position) == '/' && source->at(position + 1) == '/')) {
-		// skip white space
+
 		while (isspace(source->at(position))) {
 			position++;
 		}
@@ -134,8 +134,8 @@ OtScanner::Token OtScanner::advance() {
 				position++;
 			}
 
+		// skip C style comments
 		} else if (source->at(position) =='/' && source->at(position + 1) =='*') {
-			// skip C style comments
 			position += 2;
 
 			while (position < size && !(source->at(position) =='*' && source->at(position + 1) =='/')) {
@@ -146,8 +146,8 @@ OtScanner::Token OtScanner::advance() {
 				position += 2;
 			}
 
+		// skip C++ style comments
 		} else if (source->at(position) =='/' && source->at(position + 1) =='/') {
-			// skip C++ style comments
 			position += 2;
 
 			while (position < size && !(source->at(position) == '\n')) {
@@ -157,7 +157,6 @@ OtScanner::Token OtScanner::advance() {
 			if (position < size) {
 				position++;
 			}
-
 		}
 	}
 

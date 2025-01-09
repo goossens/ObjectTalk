@@ -24,11 +24,11 @@ static TextEditor::Language& GetLanguageDefinition() {
 		language.name = "ObjectTalk";
 		language.commentStart = "/*";
 		language.commentEnd = "*/";
-		language.singleLineComment1 = "//";
-		language.singleLineComment2 = "#";
-		language.hasSingleQuoteStrings = true;
+		language.singleLineComment = "//";
+		language.singleLineCommentAlt = "#";
+		language.hasSingleQuoteStrings = false;
 		language.hasDoubleQuoteStrings = true;
-		language.stringEscapeCharacter = '\\';
+		language.stringEscape = '\\';
 
 		static const char* const keywords[] = {
 			"catch", "do", "elif", "else", "for", "if", "in", "not", "return", "super", "throw", "try", "while"
@@ -50,6 +50,11 @@ static TextEditor::Language& GetLanguageDefinition() {
 		for (auto& declaration : declarations) { language.declarations.insert(declaration); }
 		for (auto& identifier : functions) { language.identifiers.insert(identifier); }
 		for (auto& identifier : constants) { language.identifiers.insert(identifier); }
+
+		language.isPunctuation = TextEditor::Language::isCStylePunctuation;
+		language.isWord = TextEditor::Language::isCStyleWordCharacter;
+		language.getIdentifier = TextEditor::Language::getCStyleIdentifier;
+		language.getNumber = TextEditor::Language::getCStyleNumber;
 
 		initialized = true;
 	}

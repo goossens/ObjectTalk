@@ -8,8 +8,8 @@
 ![Repo activity](https://img.shields.io/github/commit-activity/m/goossens/ObjectTalk?label=Commits&style=for-the-badge)
 <br/>
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
-![Maintained](https://img.shields.io/maintenance/yes/2024?style=for-the-badge)
-![Version](https://img.shields.io/badge/version-0.3-blue?style=for-the-badge)
+![Maintained](https://img.shields.io/maintenance/yes/2025?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-0.4-blue?style=for-the-badge)
 
 # ObjectTalk Scripting Language
 
@@ -57,7 +57,7 @@ been a lot harder to implement ObjectTalk. You can find a full list on the
 
 ## License
 
-Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
 
 This work is licensed under the terms of the MIT license.
 For a copy, see <https://opensource.org/licenses/MIT>.

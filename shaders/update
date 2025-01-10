@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 #	ObjectTalk Scripting Language
-#	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+#	Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
 #
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
@@ -182,7 +182,7 @@ done
 # create master shader include file
 cat <<END | sed -e 's/\\n/\n/g' -e 's/\\t/\t/g' >OtShaders.cpp
 //	ObjectTalk Scripting Language
-//	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+//	Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
 //
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
@@ -231,7 +231,7 @@ END
 # create shader update script for windows
 cat <<END | sed 's/\\n/\n/g' >update.bat
 ::	ObjectTalk Scripting Language
-::	Copyright (c) 1993-2024 Johan A. Goossens. All rights reserved.
+::	Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
 ::
 ::	This work is licensed under the terms of the MIT license.
 ::	For a copy, see <https://opensource.org/licenses/MIT>.

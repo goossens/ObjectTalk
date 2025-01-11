@@ -30,7 +30,7 @@
 //
 //	Assets are owned and managed by the OtAssetManager
 //	This class simply provides a pointer to an OtAssetBase subclass instance
-//	Each asset only exists ones but multiple instances can refer to the same asset
+//	Each asset only exists once but multiple instances can refer to the same asset
 //
 //	Assets can be files on disk or virtual files that only exist in memory
 //	Virtual assets have a path starting with "virtual:"

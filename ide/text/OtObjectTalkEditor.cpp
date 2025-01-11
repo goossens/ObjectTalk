@@ -13,10 +13,10 @@
 
 
 //
-//	GetLanguageDefinition
+//	getLanguageDefinition
 //
 
-static TextEditor::Language& GetLanguageDefinition() {
+static TextEditor::Language& getLanguageDefinition() {
 	static bool initialized = false;
 	static TextEditor::Language language;
 
@@ -26,8 +26,8 @@ static TextEditor::Language& GetLanguageDefinition() {
 		language.commentEnd = "*/";
 		language.singleLineComment = "//";
 		language.singleLineCommentAlt = "#";
-		language.hasSingleQuoteStrings = false;
-		language.hasDoubleQuoteStrings = true;
+		language.hasSingleQuotedStrings = false;
+		language.hasDoubleQuotedStrings = true;
 		language.stringEscape = '\\';
 
 		static const char* const keywords[] = {
@@ -68,9 +68,7 @@ static TextEditor::Language& GetLanguageDefinition() {
 //
 
 OtObjectTalkEditor::OtObjectTalkEditor() {
-	editor.SetLanguage(GetLanguageDefinition());
-	editor.SetShowMatchingBrackets(true);
-	editor.SetCompletePairedGlyphs(true);
+	editor.SetLanguage(getLanguageDefinition());
 }
 
 

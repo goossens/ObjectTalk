@@ -141,7 +141,8 @@ public:
 		count
 	};
 
-	struct Palette : public std::array<ImU32, static_cast<size_t>(Color::count)> {
+	class Palette : public std::array<ImU32, static_cast<size_t>(Color::count)> {
+	public:
 		inline ImU32 get(Color color) const { return at(static_cast<size_t>(color)); }
 	};
 
@@ -183,7 +184,8 @@ public:
 	};
 
 	// language support
-	struct Language {
+	class Language {
+	public:
 		std::string name;
 		ImWchar preprocess = 0;
 
@@ -221,14 +223,19 @@ public:
 		static const Language& Markdown();
 
 		static bool isCStylePunctuation(ImWchar character);
-		static bool isCStyleWordCharacter(ImWchar character);
-		static Iterator getCStyleIdentifier(Iterator start, Iterator end);
-		static Iterator getCStyleNumber(Iterator start, Iterator end);
-
 		static bool isLuaStylePunctuation(ImWchar character);
-		static Iterator getLuaStyleNumber(Iterator start, Iterator end);
+		static bool isJsonStylePunctuation(ImWchar character);
+		static bool isMarkdownStylePunctuation(ImWchar character);
 
+		static bool isCStyleWordCharacter(ImWchar character);
+
+		static Iterator getCStyleIdentifier(Iterator start, Iterator end);
+
+		static Iterator getCStyleNumber(Iterator start, Iterator end);
+		static Iterator getCsStyleNumber(Iterator start, Iterator end);
+		static Iterator getLuaStyleNumber(Iterator start, Iterator end);
 		static Iterator getPythonStyleNumber(Iterator start, Iterator end);
+		static Iterator getJsonStyleNumber(Iterator start, Iterator end);
 	};
 
 	inline void SetLanguage(const Language& language) { document.setLanguage(language); }
@@ -242,7 +249,7 @@ private:
 	// private members (function and variables) start with an lowercase character
 	//
 
-	struct Coordinate {
+	class Coordinate {
 		// represent a character coordinate from the user's point of view, i. e. consider an uniform grid
 		// on the screen as it is rendered, and each cell has its own coordinate, starting from 0
 		//
@@ -252,6 +259,7 @@ private:
 		// for example, coordinate (1, 5) represents the character 'B' in a line "\tABC", when tabsize = 4,
 		// because it is rendered as "    ABC" on the screen
 
+	public:
 		Coordinate() = default;
 		Coordinate(int l, int c) : line(l), column(c) {}
 
@@ -378,7 +386,8 @@ private:
 	} cursors;
 
 	// a single colored character
-	struct Glyph {
+	class Glyph {
+	public:
 		// constructors
 		Glyph() = default;
 		Glyph(ImWchar ch) : character(ch) {}
@@ -515,7 +524,8 @@ private:
 	} document;
 
 	// single action to be performed on text as part of a larger transaction
-	struct Action {
+	class Action {
+	public:
 		// action types
 		enum class Type : char {
 			insertText,
@@ -580,7 +590,8 @@ private:
 	} transactions;
 
 	// details about bracketed text
-	struct Bracket {
+	class Bracket {
+	public:
 		Bracket(ImWchar sc, Coordinate s, ImWchar ec, Coordinate e, int l) : startChar(sc), start(s), endChar(ec), end(e), level(l) {}
 		ImWchar startChar;
 		Coordinate start;
@@ -588,7 +599,6 @@ private:
 		Coordinate end;
 		int level;
 
-		inline bool isValid() const { return start.isValid() && end.isValid(); }
 		inline bool isAfter(Coordinate location) const { return start > location; }
 		inline bool isAround(Coordinate location) const { return start <= location && end >= location; }
 	};
@@ -605,6 +615,15 @@ private:
 		iterator active = end();
 		Coordinate activeLocation = Coordinate::invalid();
 	} brackets;
+
+	// functions to work with unicode codepoints
+	class CodePoint {
+	public:
+		static std::string::const_iterator get(std::string::const_iterator i, ImWchar* codepoint);
+		static std::string::iterator put(std::string::iterator i, ImWchar codepoint);
+		static bool isSpace(ImWchar codepoint);
+		static ImWchar toLower(ImWchar codepoint);
+	};
 
 	// set the editor's text
 	void setText(const std::string& text);

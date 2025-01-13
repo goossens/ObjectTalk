@@ -2,15 +2,15 @@ module	::= statement*
 
 statement ::= expression ";"
 | block
-| "var" name ("=" expression)? ";"
-| "class" name ":" expression block
-| "function" name "(" ((name ("," name)*)?) ")" block
+| "var" identifier ("=" expression)? ";"
+| "class" identifier ":" expression block
+| "function" identifier "(" ((identifier ("," identifier)*)?) ")" block
 | "if" expression block ("elif" expression block)* ("else" block)?
 | "while" expression block
 | "do" block "while" expression ";"
-| "for" name "in" expression block
+| "for" identifier "in" expression block
 | "throw" expression ";"
-| "try" block "catch" name block
+| "try" block "catch" identifier block
 | "return" expression ";"
 
 block ::= "{" statement* "}"
@@ -45,7 +45,7 @@ addition ::= multiplication ("+" multiplication | "-" multiplication)*
 multiplication ::= prefix ("*" prefix | "/" prefix | "%" prefix)*
 
 prefix ::= ("-" | "+" | "!" | "^" | "++" | "--")? postfix
-postfix ::= primary ("[" expression "]" | "(" expression ("," expression)* ")" | "." name | "++" | "--")*
+postfix ::= primary ("[" expression "]" | "(" expression ("," expression)* ")" | "." identifier | "++" | "--")*
 
 primary ::= "(" expression ")"
 | "[" expression ("," expression)* "]"
@@ -54,11 +54,11 @@ primary ::= "(" expression ")"
 | real
 | string
 | function
-| name
-| "super" "." name
+| identifier
+| "super" "." identifier
 
-integer ::= [-+]? [0-9]+
+integer ::= [-+]? ([1-9][0-9]* | "0"[Bb][01]+ | "0"[Oo][0-7]* | "0"[Xx][0-9A-Fa-f]* | "0"[0-7]*)
 real ::= [-+]? [0-9]+.[0-9]+ ([Ee] [-+]? [0-9]+)?
-string ::= '"' (Char - ["\] | '\' ["\bfnrt] | "\u"  [0-9A-Fa-f] [0-9A-Fa-f] [0-9A-Fa-f] [0-9A-Fa-f])* '"'
-function ::= "function" "(" ((name ("," name)*)?) ")" block
-name ::= [a-zA-Z_][a-zA-Z0-9_]*
+string ::= '"' ("\u" [0-9A-Fa-f] [0-9A-Fa-f] [0-9A-Fa-f] [0-9A-Fa-f] | '\' ["\bfnrt] | [^\\"])* '"'
+function ::= "function" "(" ((identifier ("," identifier)*)?) ")" block
+identifier ::= [a-zA-Z_][a-zA-Z0-9_]*

@@ -13,6 +13,82 @@
 
 
 //
+//	getObjectTalkStyleNumber
+//
+
+static TextEditor::Iterator getObjectTalkStyleNumber(TextEditor::Iterator start, TextEditor::Iterator end) {
+	// see if we have a string that looks like:
+	// [-+]? ([1-9][0-9]* | "0"[Bb][01]+ | "0"[Oo][0-7]* | "0"[Xx][0-9A-Fa-f]* | "0"[0-7]*)
+	auto i = start;
+	if (i != end && (*i == '-' || *i == '+')) { i++; }
+	if (i == end || !std::isdigit(*i)) { return start; }
+
+	if (*i == '0') {
+		if (++i == end) { return i;	}
+
+		if (*i == 'b' || *i == 'B') {
+			i++;
+			if (i == end || !(*i == '0' || *i == '1')) { return start; }
+			while (i != end && (*i == '0' || *i == '1')) { i++; }
+
+		} else if (*i == 'o' || *i == 'O') {
+			i++;
+			if (i == end || !(*i >= '0' && *i <= '7')) { return start; }
+			while (i != end && *i >= '0' && *i <= '7') { i++; }
+
+		} else if (*i == 'x' || *i == 'X') {
+			i++;
+			if (i == end || !std::isxdigit(*i)) { return start; }
+			while (i != end && std::isxdigit(*i)) { i++; }
+
+			if (i != end && *i == '.') {
+				i++;
+				while (i != end && std::isdigit(*i)) { i++; }
+			}
+
+			if (i != end && (*i == 'e' || *i == 'E' || *i == 'p'|| *i == 'P')) {
+				i++;
+				if (i != end && (*i == '-' || *i == '+')) { i++; }
+				if (i == end || !std::isdigit(*i)) { return start; }
+				while (i != end && std::isdigit(*i)) { i++; }
+			}
+
+		} else {
+			while (i != end && *i >= '0' && *i <= '7') { i++; }
+		}
+
+		while (i != end && (*i == 'u' || *i == 'U' || *i == 'l' || *i == 'L' || *i == 'z' || *i == 'Z')) {
+			i++;
+		}
+
+	} else {
+		while (i != end && std::isdigit(*i)) { i++; }
+
+		if (i != end) {
+			if (*i == '.') {
+				i++;
+				while (i != end && std::isdigit(*i)) { i++; }
+
+				if (i != end && (*i == 'e'|| *i == 'E')) {
+					i++;
+					if (i != end && (*i == '-' || *i == '+')) { i++; }
+					if (i == end || !std::isdigit(*i)) { return start; }
+					while (i != end && std::isdigit(*i)) { i++; }
+				}
+
+				if (i != end && (*i == 'f'|| *i == 'F' || *i == 'l' || *i == 'L')) { i++; }
+
+			} else if (*i == 'u' || *i == 'U' || *i == 'l' || *i == 'L') {
+				i++;
+			}
+		}
+	}
+
+	return i;
+}
+
+
+//
 //	getLanguageDefinition
 //
 
@@ -54,7 +130,7 @@ static TextEditor::Language& getLanguageDefinition() {
 		language.isPunctuation = TextEditor::Language::isCStylePunctuation;
 		language.isWord = TextEditor::Language::isCStyleWordCharacter;
 		language.getIdentifier = TextEditor::Language::getCStyleIdentifier;
-		language.getNumber = TextEditor::Language::getCStyleNumber;
+		language.getNumber = getObjectTalkStyleNumber;
 
 		initialized = true;
 	}

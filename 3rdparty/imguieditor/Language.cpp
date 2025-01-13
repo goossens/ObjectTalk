@@ -14,6 +14,10 @@
 #include "TextEditor.h"
 
 
+//
+//	Fast lookup tables
+//
+
 static bool identifierStart[128] = {
 	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
 	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
@@ -58,6 +62,46 @@ static bool luaStylePunctuation[128] = {
 	false, false, false, false, false, false, false, false, false, false, false,  true,  true,  true,  true, false,
 };
 
+static bool jsonStylePunctuation[128] = {
+	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+	false, false, false, false, false, false, false, false, false, false, false, false,  true, false, false, false,
+	false, false, false, false, false, false, false, false, false, false,  true, false, false, false, false, false,
+	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+	false, false, false, false, false, false, false, false, false, false, false,  true, false,  true, false, false,
+	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+	false, false, false, false, false, false, false, false, false, false, false,  true, false,  true, false, false,
+};
+
+static bool markdownStylePunctuation[128] = {
+	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+	false,  true, false, false, false, false, false, false,  true,  true,  true,  true, false,  true, false, false,
+	false, false, false, false, false, false, false, false, false, false,  true, false,  true,  true,  true, false,
+	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+	false, false, false, false, false, false, false, false, false, false, false,  true, false,  true, false,  true,
+	 true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+	false, false, false, false, false, false, false, false, false, false, false, false,  true, false,  true, false,
+};
+
+
+//
+//	TextEditor::Iterator::operator*
+//
+
+TextEditor::Iterator::reference TextEditor::Iterator::operator*() const {
+	return static_cast<Line*>(line)->at(index).character;
+}
+
+
+//
+//	TextEditor::Iterator::operator->
+//
+
+TextEditor::Iterator::pointer TextEditor::Iterator::operator->() const {
+	return &(static_cast<Line*>(line)->at(index).character);
+}
+
 
 //
 //	TextEditor::Language::isCStylePunctuation
@@ -100,97 +144,75 @@ TextEditor::Iterator TextEditor::Language::getCStyleIdentifier(Iterator start, I
 
 TextEditor::Iterator TextEditor::Language::getCStyleNumber(Iterator start, Iterator end) {
 	auto i = start;
-	auto startsWithNumber = *i >= '0' && *i <= '9';
+	if (i != end && (*i == '-' || *i == '+')) { i++; }
+	if (i == end || !std::isdigit(*i)) { return start; }
 
-	if (*i != '+' && *i != '-' && !startsWithNumber) {
-		return start;
-	}
+	if (*i == '0') {
+		if (++i == end) { return i;	}
 
-	i++;
-	auto hasNumber = startsWithNumber;
-
-	while (i < end && (*i >= '0' && *i <= '9')) {
-		hasNumber = true;
-		i++;
-	}
-
-	if (hasNumber == false) {
-		return start;
-	}
-
-	auto isFloat = false;
-	auto isNonFloat = false;
-
-	if (i < end) {
-		if (*i == '.') {
-			isFloat = true;
+		if (*i == 'b' || *i == 'B') {
 			i++;
+			if (i == end || !(*i == '0' || *i == '1')) { return start; }
+			while (i != end && (*i == '0' || *i == '1')) { i++; }
 
-			while (i < end && (*i >= '0' && *i <= '9')) {
-				i++;
-			}
+		} else if (*i == 'o' || *i == 'O') {
+			i++;
+			if (i == end || !(*i >= '0' && *i <= '7')) { return start; }
+			while (i != end && *i >= '0' && *i <= '7') { i++; }
 
 		} else if (*i == 'x' || *i == 'X') {
-			// hex formatted integer of the type 0xef80
-			isNonFloat = true;
 			i++;
+			if (i == end || !std::isxdigit(*i)) { return start; }
+			while (i != end && std::isxdigit(*i)) { i++; }
 
-			while (i < end && ((*i >= '0' && *i <= '9') || (*i >= 'a' && *i <= 'f') || (*i >= 'A' && *i <= 'F'))) {
+			if (i != end && *i == '.') {
 				i++;
+				while (i != end && std::isdigit(*i)) { i++; }
 			}
 
-		} else if (*i == '0') {
-			// octal formatted integer of the type 0784
-			isNonFloat = true;
-			i++;
-
-			while (i < end && (*i >= '0' && *i <= '7')) {
+			if (i != end && (*i == 'e' || *i == 'E' || *i == 'p'|| *i == 'P')) {
 				i++;
+				if (i != end && (*i == '-' || *i == '+')) { i++; }
+				if (i == end || !std::isdigit(*i)) { return start; }
+				while (i != end && std::isdigit(*i)) { i++; }
 			}
 
-		} else if (*i == 'b' || *i == 'B') {
-			// binary formatted integer of the type 0b01011101
-			isNonFloat = true;
-			i++;
-
-			while (i < end && (*i >= '0' && *i <= '1')) {
-				i++;
-			}
-		}
-	}
-
-	if (!isNonFloat) {
-		// floating point exponent
-		if (i < end && (*i == 'e' || *i == 'E')) {
-			isFloat = true;
-			i++;
-
-			if (i < end && (*i == '+' || *i == '-')) {
-				i++;
-			}
-
-			bool hasDigits = false;
-
-			while (i < end && (*i >= '0' && *i <= '9')) {
-				hasDigits = true;
-				i++;
-			}
-
-			if (!hasDigits) {
-				return start;
-			}
+		} else {
+			while (i != end && *i >= '0' && *i <= '7') { i++; }
 		}
 
-		// single precision floating point type
-		if (i < end && *i == 'f') {
+		while (i != end && (*i == 'u' || *i == 'U' || *i == 'l' || *i == 'L' || *i == 'z' || *i == 'Z')) {
 			i++;
 		}
-	}
 
-	if (isFloat == false) {
-		// integer size type
-		while (i < end && (*i == 'u' || *i == 'U' || *i == 'l' || *i == 'L')) {
-			i++;
+	} else {
+		while (i != end && std::isdigit(*i)) { i++; }
+
+		if (i != end) {
+			bool isFloat = false;
+
+			if (*i == '.') {
+				i++;
+				while (i != end && std::isdigit(*i)) { i++; }
+				isFloat = true;
+			}
+
+			if (i != end && (*i == 'e' || *i == 'E')) {
+				i++;
+				if (i != end && (*i == '-' || *i == '+')) { i++; }
+				if (i == end || !std::isdigit(*i)) { return start; }
+				while (i != end && std::isdigit(*i)) { i++; }
+				isFloat = true;
+			}
+
+			if (isFloat) {
+				if (i != end && (*i == 'f' || *i == 'F' || *i == 'l' || *i == 'L')) { i++; }
+
+			}else {
+				while (*i == 'u' || *i == 'U' || *i == 'l' || *i == 'L') {
+					i++;
+				}
+			}
 		}
 	}
 
@@ -312,6 +334,71 @@ const TextEditor::Language& TextEditor::Language::Cpp() {
 
 
 //
+//	TextEditor::Language::getCsStyleNumber
+//
+
+TextEditor::Iterator TextEditor::Language::getCsStyleNumber(Iterator start, Iterator end) {
+	auto i = start;
+	if (i != end && (*i == '-' || *i == '+')) { i++; }
+	if (i == end || !std::isdigit(*i)) { return start; }
+
+	if (*i == '0') {
+		if (++i == end) { return i;	}
+
+		if (*i == 'b' || *i == 'B') {
+			i++;
+			if (i == end || !(*i == '0' || *i == '1' || *i == '_')) { return start; }
+			while (i != end && (*i == '0' || *i == '1' || *i == '_')) { i++; }
+
+		} else if (*i == 'x' || *i == 'X') {
+			i++;
+			if (i == end || !(std::isxdigit(*i) || *i == '_')) { return start; }
+			while (i != end && (std::isxdigit(*i) || *i == '_')) { i++; }
+
+		} else {
+			return start;
+		}
+
+		while (i != end && (*i == 'u' || *i == 'U' || *i == 'l' || *i == 'L')) {
+			i++;
+		}
+
+	} else {
+		while (i != end && (std::isdigit(*i) || *i == 'z')) { i++; }
+
+		if (i != end) {
+			bool isFloat = false;
+
+			if (*i == '.') {
+				i++;
+				while (i != end && (std::isdigit(*i || *i == 'z'))) { i++; }
+				isFloat = true;
+			}
+
+			if (i != end && (*i == 'e' || *i == 'E')) {
+				i++;
+				if (i != end && (*i == '-' || *i == '+')) { i++; }
+				if (i == end || !(std::isdigit(*i) || *i == 'z')) { return start; }
+				while (i != end && (std::isdigit(*i) || *i == 'z')) { i++; }
+				isFloat = true;
+			}
+
+			if (isFloat) {
+				if (i != end && (*i == 'f' || *i == 'F' || *i == 'd' || *i == 'D' || *i == 'm' || *i == 'M')) { i++; }
+
+			}else {
+				while (*i == 'u' || *i == 'U' || *i == 'l' || *i == 'L') {
+					i++;
+				}
+			}
+		}
+	}
+
+	return i;
+}
+
+
+//
 //	TextEditor::Language::Cs
 //
 
@@ -350,7 +437,7 @@ const TextEditor::Language& TextEditor::Language::Cs() {
 		language.isPunctuation = TextEditor::Language::isCStylePunctuation;
 		language.isWord = TextEditor::Language::isCStyleWordCharacter;
 		language.getIdentifier = TextEditor::Language::getCStyleIdentifier;
-		language.getNumber = TextEditor::Language::getCStyleNumber;
+		language.getNumber = TextEditor::Language::getCsStyleNumber;
 
 		initialized = true;
 	}
@@ -422,50 +509,47 @@ bool TextEditor::Language::isLuaStylePunctuation(ImWchar character) {
 
 TextEditor::Iterator TextEditor::Language::getLuaStyleNumber(Iterator start, Iterator end) {
 	auto i = start;
-	auto startsWithNumber = *i >= '0' && *i <= '9';
+	if (i != end && (*i == '-' || *i == '+')) { i++; }
+	if (i == end || !std::isdigit(*i)) { return start; }
 
-	if (*i != '+' && *i != '-' && !startsWithNumber) {
-		return start;
-	}
+	if (*i == '0') {
+		if (++i == end) { return i;	}
 
-	i++;
-	bool hasNumber = startsWithNumber;
-
-	while (i < end && (*i >= '0' && *i <= '9')) {
-		hasNumber = true;
-		i++;
-	}
-
-	if (!hasNumber) {
-		return start;
-	}
-
-	if (i < end) {
-		if (*i == '.') {
+		if (*i == 'x' || *i == 'X') {
 			i++;
+			if (i == end || !std::isxdigit(*i)) { return start; }
+			while (i != end && std::isxdigit(*i)) { i++; }
 
-			while (i < end && (*i >= '0' && *i <= '9')) {
+			if (i != end && *i == '.') {
 				i++;
+				while (i != end && std::isdigit(*i)) { i++; }
 			}
+
+			if (i != end && (*i == 'p' || *i == 'P')) {
+				i++;
+				if (i != end && (*i == '-' || *i == '+')) { i++; }
+				if (i == end || !std::isdigit(*i)) { return start; }
+				while (i != end && std::isdigit(*i)) { i++; }
+			}
+
+		} else {
+			return start;
 		}
 
-		// floating point exponent
-		if (i < end && (*i == 'e' || *i == 'E')) {
-			i++;
+	} else {
+		while (i != end && std::isdigit(*i)) { i++; }
 
-			if (i < end && (*i == '+' || *i == '-')) {
+		if (i != end) {
+			if (*i == '.') {
 				i++;
-			}
+				while (i != end && std::isdigit(*i)) { i++; }
 
-			bool hasDigits = false;
-
-			while (i < end && (*i >= '0' && *i <= '9')) {
-				hasDigits = true;
-				i++;
-			}
-
-			if (!hasDigits) {
-				return start;
+				if (i != end && (*i == 'e'|| *i == 'E')) {
+					i++;
+					if (i != end && (*i == '-' || *i == '+')) { i++; }
+					if (i == end || !std::isdigit(*i)) { return start; }
+					while (i != end && std::isdigit(*i)) { i++; }
+				}
 			}
 		}
 	}
@@ -538,97 +622,45 @@ const TextEditor::Language& TextEditor::Language::Lua() {
 
 TextEditor::Iterator TextEditor::Language::getPythonStyleNumber(Iterator start, Iterator end) {
 	auto i = start;
-	auto startsWithNumber = *i >= '0' && *i <= '9';
+	if (i != end && (*i == '-' || *i == '+')) { i++; }
+	if (i == end || !std::isdigit(*i)) { return start; }
 
-	if (*i != '+' && *i != '-' && !startsWithNumber) {
-		return start;
-	}
+	if (*i == '0') {
+		if (++i == end) { return i;	}
 
-	i++;
-	auto hasNumber = startsWithNumber;
-
-	while (i < end && (*i >= '0' && *i <= '9')) {
-		hasNumber = true;
-		i++;
-	}
-
-	if (hasNumber == false) {
-		return start;
-	}
-
-	auto isFloat = false;
-	auto isNonFloat = false;
-
-	if (i < end) {
-		if (*i == '.') {
-			isFloat = true;
+		if (*i == 'b' || *i == 'B') {
 			i++;
-
-			while (i < end && (*i >= '0' && *i <= '9')) {
-				i++;
-			}
-
-		} else if (*i == 'x' || *i == 'X') {
-			// hex formatted integer of the type 0xef80
-			isNonFloat = true;
-			i++;
-
-			while (i < end && ((*i >= '0' && *i <= '9') || (*i >= 'a' && *i <= 'f') || (*i >= 'A' && *i <= 'F'))) {
-				i++;
-			}
+			if (i == end || !(*i == '0' || *i == '1' || *i == '_')) { return start; }
+			while (i != end && (*i == '0' || *i == '1' || *i == '_')) { i++; }
 
 		} else if (*i == 'o' || *i == 'O') {
-			// octal formatted integer of the type 0o784
-			isNonFloat = true;
 			i++;
+			if (i == end || !((*i >= '0' && *i <= '7' || *i == '_'))) { return start; }
+			while (i != end && ((*i >= '0' && *i <= '7') || *i == '_')) { i++; }
 
-			while (i < end && (*i >= '0' && *i <= '7')) {
-				i++;
-			}
-
-		} else if (*i == 'b' || *i == 'B') {
-			// binary formatted integer of the type 0b01011101
-			isNonFloat = true;
+		} else if (*i == 'x' || *i == 'X') {
 			i++;
+			if (i == end || !(std::isxdigit(*i)) || *i == '_') { return start; }
+			while (i != end && (std::isxdigit(*i) || *i == '_')) { i++; }
 
-			while (i < end && (*i >= '0' && *i <= '1')) {
-				i++;
-			}
-		}
-	}
-
-	if (!isNonFloat) {
-		// floating point exponent
-		if (i < end && (*i == 'e' || *i == 'E')) {
-			isFloat = true;
-			i++;
-
-			if (i < end && (*i == '+' || *i == '-')) {
-				i++;
-			}
-
-			bool hasDigits = false;
-
-			while (i < end && (*i >= '0' && *i <= '9')) {
-				hasDigits = true;
-				i++;
-			}
-
-			if (!hasDigits) {
-				return start;
-			}
+		} else {
+			return start;
 		}
 
-		// single precision floating point type
-		if (i < end && *i == 'f') {
-			i++;
-		}
-	}
+	} else {
+		while (i != end && (std::isdigit(*i) || *i == '_')) { i++; }
 
-	if (isFloat == false) {
-		// integer size type
-		while (i < end && (*i == 'u' || *i == 'U' || *i == 'l' || *i == 'L')) {
-			i++;
+		if (i != end) {
+			if (*i == '.') {
+				i++;
+				while (i != end && (std::isdigit(*i) || *i == '_')) { i++; }
+
+				if (i != end && (*i == 'e'|| *i == 'E' || *i == '+'|| *i == '-')) {
+					i++;
+					if (i == end || !std::isdigit(*i) || *i == '_') { return start; }
+					while (i != end && std::isdigit(*i) || *i == '_') { i++; }
+				}
+			}
 		}
 	}
 
@@ -679,6 +711,107 @@ const TextEditor::Language& TextEditor::Language::Python() {
 		language.isWord = TextEditor::Language::isCStyleWordCharacter;
 		language.getIdentifier = TextEditor::Language::getCStyleIdentifier;
 		language.getNumber = TextEditor::Language::getPythonStyleNumber;
+
+		initialized = true;
+	}
+
+	return language;
+}
+
+
+//
+//	TextEditor::Language::isJsonStylePunctuation
+//
+
+bool TextEditor::Language::isJsonStylePunctuation(ImWchar character) {
+	return character < 127 ? jsonStylePunctuation[character] : false;
+}
+
+
+//
+//	TextEditor::Language::getJsonStyleNumber
+//
+
+TextEditor::Iterator TextEditor::Language::getJsonStyleNumber(Iterator start, Iterator end) {
+	auto i = start;
+	if (i != end && *i == '-') { i++; }
+	if (i == end || !std::isdigit(*i)) { return start; }
+	while (i != end && std::isdigit(*i)) { i++; }
+
+	if (i != end) {
+		if (*i == '.') {
+			i++;
+			while (i != end && std::isdigit(*i)) { i++; }
+		}
+
+		if (i != end && (*i == 'e'|| *i == 'E')) {
+			i++;
+			if (i != end && (*i == '-' || *i == '+')) { i++; }
+			if (i == end || !std::isdigit(*i)) { return start; }
+			while (i != end && std::isdigit(*i)) { i++; }
+		}
+	}
+
+	return i;
+}
+
+
+//
+//	TextEditor::Language::Json
+//
+
+const TextEditor::Language &TextEditor::Language::Json() {
+	static bool initialized = false;
+	static TextEditor::Language language;
+
+	if (!initialized) {
+		language.name = "JSON";
+		language.hasDoubleQuotedStrings = true;
+		language.stringEscape = '\\';
+
+		static const char* const identifiers[] = {
+			"false", "null", "true"
+		};
+
+		for (auto& identifier : identifiers) { language.identifiers.insert(identifier); }
+
+		language.isPunctuation = TextEditor::Language::isJsonStylePunctuation;
+		language.isWord = TextEditor::Language::isCStyleWordCharacter;
+		language.getIdentifier = TextEditor::Language::getCStyleIdentifier;
+		language.getNumber = TextEditor::Language::getJsonStyleNumber;
+
+		initialized = true;
+	}
+
+	return language;
+}
+
+
+//
+//	TextEditor::Language::isMarkdownStylePunctuation
+//
+
+bool TextEditor::Language::isMarkdownStylePunctuation(ImWchar character) {
+	return character < 127 ? markdownStylePunctuation[character] : false;
+}
+
+
+//
+//	TextEditor::Language::Markdown
+//
+
+const TextEditor::Language& TextEditor::Language::Markdown() {
+	static bool initialized = false;
+	static TextEditor::Language language;
+
+	if (!initialized) {
+		language.name = "Markdown";
+		language.preprocess = '#';
+		language.commentStart = "<!--";
+		language.commentEnd = "-->";
+
+		language.isPunctuation = TextEditor::Language::isMarkdownStylePunctuation;
+		language.isWord = TextEditor::Language::isCStyleWordCharacter;
 
 		initialized = true;
 	}

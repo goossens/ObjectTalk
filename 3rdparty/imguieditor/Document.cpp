@@ -389,12 +389,12 @@ TextEditor::Coordinate TextEditor::Document::findWordStart(Coordinate from) cons
 				index--;
 			}
 
-		} else if (language->isWord(firstCharacter)) {
-			while (index > 0 && language->isWord(line[index - 1].character)) {
+		} else if (CodePoint::isWord(firstCharacter)) {
+			while (index > 0 && CodePoint::isWord(line[index - 1].character)) {
 				index--;
 			}
 
-		} else if (language->isPunctuation(firstCharacter)) {
+		} else if (language->isPunctuation && language->isPunctuation(firstCharacter)) {
 			while (index > 0 && language->isPunctuation(line[index - 1].character)) {
 				index--;
 			}
@@ -417,25 +417,30 @@ TextEditor::Coordinate TextEditor::Document::findWordEnd(Coordinate from) const 
 	auto index = getIndex(from);
 	auto size = line.glyphs();
 
-	auto firstCharacter = line[index].character;
-
-	if (CodePoint::isSpace(firstCharacter)) {
-		while (index < size && CodePoint::isSpace(line[index].character)) {
+	if (index >= size) {
+		return from;
+		
+	} else {
+		auto firstCharacter = line[index].character;
+		
+		if (CodePoint::isSpace(firstCharacter)) {
+			while (index < size && CodePoint::isSpace(line[index].character)) {
+				index++;
+			}
+			
+		} else if (CodePoint::isWord(firstCharacter)) {
+			while (index < size && CodePoint::isWord(line[index].character)) {
+				index++;
+			}
+			
+		} else if (language->isPunctuation && language->isPunctuation(firstCharacter)) {
+			while (index < size && language->isPunctuation(line[index].character)) {
+				index++;
+			}
+			
+		} else if (index < size) {
 			index++;
 		}
-
-	} else if (language->isWord(firstCharacter)) {
-		while (index < size && language->isWord(line[index].character)) {
-			index++;
-		}
-
-	} else if (language->isPunctuation(firstCharacter)) {
-		while (index < size && language->isPunctuation(line[index].character)) {
-			index++;
-		}
-
-	} else if (index < size) {
-		index++;
 	}
 
 	return Coordinate(from.line, getColumn(line, index));
@@ -588,12 +593,18 @@ TextEditor::State TextEditor::Document::colorize(Line& line) {
 
 	// process all glyphs in this line
 	auto glyph = line.begin();
+	Iterator end(static_cast<void*>(&line), line.glyphs());
+	Iterator newEnd;
+
 	auto nonWhiteSpace = false;
+	Color color;
 
 	while (glyph < line.end()) {
+		Iterator start(static_cast<void*>(&line), static_cast<int>(glyph - line.begin()));
+
 		if (state == State::inText) {
 			// special handling for preprocessor lines
-			if (language->preprocess && glyph->character != language->preprocess && !CodePoint::isSpace(glyph->character)) {
+			if (!nonWhiteSpace && language->preprocess && glyph->character != language->preprocess && !CodePoint::isSpace(glyph->character)) {
 				nonWhiteSpace = true;
 			}
 
@@ -645,19 +656,21 @@ TextEditor::State TextEditor::Document::colorize(Line& line) {
 				line.setColor(line.begin(), line.end(), Color::preprocessor);
 				glyph = line.end();
 
+			// handle custom tokenizer (if we have one)
+			} else if (language->customTokenizer && (newEnd = language->customTokenizer(start, end, color)) != start) {
+				int size = newEnd - start;
+				line.setColor(glyph, glyph + size, color);
+				glyph += size;
+
 			// nothing worked so far so it's time to do some tokenizing
 			} else {
-				Iterator start(static_cast<void*>(&line), static_cast<int>(glyph - line.begin()));
-				Iterator end(static_cast<void*>(&line), line.glyphs());
-				Iterator newEnd;
-
 				// do we have an identifier
 				if (language->getIdentifier && (newEnd = language->getIdentifier(start, end)) != start) {
 					int size = newEnd - start;
 
 					// determine identifier text and color color
 					std::string identifier;
-					auto color = Color::identifier;
+					color = Color::identifier;
 
 					for (auto i = start; i < newEnd; i++) {
 						identifier += *i;
@@ -684,11 +697,11 @@ TextEditor::State TextEditor::Document::colorize(Line& line) {
 					glyph += size;
 
 				// is this punctuation
-				} else if (language->isPunctuation(glyph->character)) {
+				} else if (language->isPunctuation && language->isPunctuation(glyph->character)) {
 					(glyph++)->color = Color::punctuation;
 
 				} else {
-					// I guess we didn't know what this character is
+					// I guess we don't know what this character is
 					(glyph++)->color = Color::text;
 				}
 			}

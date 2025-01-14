@@ -115,7 +115,7 @@ public:
 	inline void TabsToSpaces() { if (!readOnly) tabsToSpaces(); }
 	inline void SpacesToTabs() { if (!readOnly) spacesToTabs(); }
 
-	// color palete support
+	// color palette support
 	enum class Color : char {
 		text,
 		keyword,
@@ -157,6 +157,10 @@ public:
 	// iterator used in language specific tokonizer
 	class Iterator {
 	public:
+		// constructors
+		Iterator() = default;
+		Iterator(void* l, int i) : line(l), index(i) {}
+
 		using iterator_category = std::forward_iterator_tag;
 		using difference_type = std::ptrdiff_t;
 		using value_type = ImWchar;
@@ -171,13 +175,11 @@ public:
 		inline friend bool operator== (const Iterator& a, const Iterator& b) { return a.index == b.index; };
 		inline friend bool operator!= (const Iterator& a, const Iterator& b) { return !(a == b); };
 		inline friend bool operator< (const Iterator& a, const Iterator& b) { return a.index < b.index; };
+		inline friend bool operator<= (const Iterator& a, const Iterator& b) { return a.index <= b.index; };
+		inline friend bool operator> (const Iterator& a, const Iterator& b) { return a.index > b.index; };
+		inline friend bool operator>= (const Iterator& a, const Iterator& b) { return a.index >= b.index; };
 
 	private:
-		// private constructors
-		friend class TextEditor;
-		Iterator() = default;
-		Iterator(void* l, int i) : line(l), index(i) {}
-
 		// properties
 		void* line;
 		int index;
@@ -206,9 +208,9 @@ public:
 		std::unordered_set<std::string> declarations;
 		std::unordered_set<std::string> identifiers;
 		std::function<bool(ImWchar)> isPunctuation;
-		std::function<bool(ImWchar)> isWord;
 		std::function<Iterator(Iterator start, Iterator end)> getIdentifier;
 		std::function<Iterator(Iterator start, Iterator end)> getNumber;
+		std::function<Iterator(Iterator start, Iterator end, Color& color)> customTokenizer;
 
 		static const Language& C();
 		static const Language& Cpp();
@@ -218,24 +220,12 @@ public:
 		static const Language& Python();
 		static const Language& Glsl();
 		static const Language& Hlsl();
-		static const Language& Sql();
 		static const Language& Json();
 		static const Language& Markdown();
 
 		static bool isCStylePunctuation(ImWchar character);
 		static bool isLuaStylePunctuation(ImWchar character);
-		static bool isJsonStylePunctuation(ImWchar character);
-		static bool isMarkdownStylePunctuation(ImWchar character);
-
-		static bool isCStyleWordCharacter(ImWchar character);
-
 		static Iterator getCStyleIdentifier(Iterator start, Iterator end);
-
-		static Iterator getCStyleNumber(Iterator start, Iterator end);
-		static Iterator getCsStyleNumber(Iterator start, Iterator end);
-		static Iterator getLuaStyleNumber(Iterator start, Iterator end);
-		static Iterator getPythonStyleNumber(Iterator start, Iterator end);
-		static Iterator getJsonStyleNumber(Iterator start, Iterator end);
 	};
 
 	inline void SetLanguage(const Language& language) { document.setLanguage(language); }
@@ -622,6 +612,7 @@ private:
 		static std::string::const_iterator get(std::string::const_iterator i, ImWchar* codepoint);
 		static std::string::iterator put(std::string::iterator i, ImWchar codepoint);
 		static bool isSpace(ImWchar codepoint);
+		static bool isWord(ImWchar codepoint);
 		static ImWchar toLower(ImWchar codepoint);
 	};
 

@@ -13,6 +13,13 @@
 
 #include "TextEditor.h"
 
+#include "lexers/c.h"
+#include "lexers/cs.h"
+#include "lexers/json.h"
+#include "lexers/lua.h"
+#include "lexers/markdown.h"
+#include "lexers/python.h"
+
 
 //
 //	Fast lookup tables
@@ -62,28 +69,6 @@ static bool luaStylePunctuation[128] = {
 	false, false, false, false, false, false, false, false, false, false, false,  true,  true,  true,  true, false,
 };
 
-static bool jsonStylePunctuation[128] = {
-	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-	false, false, false, false, false, false, false, false, false, false, false, false,  true, false, false, false,
-	false, false, false, false, false, false, false, false, false, false,  true, false, false, false, false, false,
-	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-	false, false, false, false, false, false, false, false, false, false, false,  true, false,  true, false, false,
-	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-	false, false, false, false, false, false, false, false, false, false, false,  true, false,  true, false, false,
-};
-
-static bool markdownStylePunctuation[128] = {
-	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-	false,  true, false, false, false, false, false, false,  true,  true,  true,  true, false,  true, false, false,
-	false, false, false, false, false, false, false, false, false, false,  true, false,  true,  true,  true, false,
-	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-	false, false, false, false, false, false, false, false, false, false, false,  true, false,  true, false,  true,
-	 true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-	false, false, false, false, false, false, false, false, false, false, false, false,  true, false,  true, false,
-};
-
 
 //
 //	TextEditor::Iterator::operator*
@@ -113,20 +98,11 @@ bool TextEditor::Language::isCStylePunctuation(ImWchar character) {
 
 
 //
-//	TextEditor::Language::isCStyleWordCharacter
-//
-
-bool TextEditor::Language::isCStyleWordCharacter(ImWchar character) {
-	return character < 127 ? identifierNoneStart[character] : false;
-}
-
-
-//
 //	TextEditor::Language::getCStyleIdentifier
 //
 
 TextEditor::Iterator TextEditor::Language::getCStyleIdentifier(Iterator start, Iterator end) {
-	if (*start < 128 && identifierStart[*start]) {
+	if (start < end && *start < 128 && identifierStart[*start]) {
 		start++;
 
 		while (start < end && *start < 128 && identifierNoneStart[*start]) {
@@ -135,88 +111,6 @@ TextEditor::Iterator TextEditor::Language::getCStyleIdentifier(Iterator start, I
 	}
 
 	return start;
-}
-
-
-//
-//	TextEditor::Language::getCStyleNumber
-//
-
-TextEditor::Iterator TextEditor::Language::getCStyleNumber(Iterator start, Iterator end) {
-	auto i = start;
-	if (i != end && (*i == '-' || *i == '+')) { i++; }
-	if (i == end || !std::isdigit(*i)) { return start; }
-
-	if (*i == '0') {
-		if (++i == end) { return i;	}
-
-		if (*i == 'b' || *i == 'B') {
-			i++;
-			if (i == end || !(*i == '0' || *i == '1')) { return start; }
-			while (i != end && (*i == '0' || *i == '1')) { i++; }
-
-		} else if (*i == 'o' || *i == 'O') {
-			i++;
-			if (i == end || !(*i >= '0' && *i <= '7')) { return start; }
-			while (i != end && *i >= '0' && *i <= '7') { i++; }
-
-		} else if (*i == 'x' || *i == 'X') {
-			i++;
-			if (i == end || !std::isxdigit(*i)) { return start; }
-			while (i != end && std::isxdigit(*i)) { i++; }
-
-			if (i != end && *i == '.') {
-				i++;
-				while (i != end && std::isdigit(*i)) { i++; }
-			}
-
-			if (i != end && (*i == 'e' || *i == 'E' || *i == 'p'|| *i == 'P')) {
-				i++;
-				if (i != end && (*i == '-' || *i == '+')) { i++; }
-				if (i == end || !std::isdigit(*i)) { return start; }
-				while (i != end && std::isdigit(*i)) { i++; }
-			}
-
-		} else {
-			while (i != end && *i >= '0' && *i <= '7') { i++; }
-		}
-
-		while (i != end && (*i == 'u' || *i == 'U' || *i == 'l' || *i == 'L' || *i == 'z' || *i == 'Z')) {
-			i++;
-		}
-
-	} else {
-		while (i != end && std::isdigit(*i)) { i++; }
-
-		if (i != end) {
-			bool isFloat = false;
-
-			if (*i == '.') {
-				i++;
-				while (i != end && std::isdigit(*i)) { i++; }
-				isFloat = true;
-			}
-
-			if (i != end && (*i == 'e' || *i == 'E')) {
-				i++;
-				if (i != end && (*i == '-' || *i == '+')) { i++; }
-				if (i == end || !std::isdigit(*i)) { return start; }
-				while (i != end && std::isdigit(*i)) { i++; }
-				isFloat = true;
-			}
-
-			if (isFloat) {
-				if (i != end && (*i == 'f' || *i == 'F' || *i == 'l' || *i == 'L')) { i++; }
-
-			}else {
-				while (*i == 'u' || *i == 'U' || *i == 'l' || *i == 'L') {
-					i++;
-				}
-			}
-		}
-	}
-
-	return i;
 }
 
 
@@ -262,10 +156,8 @@ const TextEditor::Language& TextEditor::Language::C() {
 		for (auto& identifier : identifiers) { language.identifiers.insert(identifier); }
 
 		language.isPunctuation = TextEditor::Language::isCStylePunctuation;
-		language.isWord = TextEditor::Language::isCStyleWordCharacter;
 		language.getIdentifier = TextEditor::Language::getCStyleIdentifier;
-		language.getNumber = TextEditor::Language::getCStyleNumber;
-
+		language.getNumber = getCStyleNumber;
 		initialized = true;
 	}
 
@@ -322,80 +214,14 @@ const TextEditor::Language& TextEditor::Language::Cpp() {
 		for (auto& identifier : identifiers) { language.identifiers.insert(identifier); }
 
 		language.isPunctuation = TextEditor::Language::isCStylePunctuation;
-		language.isWord = TextEditor::Language::isCStyleWordCharacter;
 		language.getIdentifier = TextEditor::Language::getCStyleIdentifier;
-		language.getNumber = TextEditor::Language::getCStyleNumber;
-
+		language.getNumber = getCStyleNumber;
 		initialized = true;
 	}
 
 	return language;
 }
 
-
-//
-//	TextEditor::Language::getCsStyleNumber
-//
-
-TextEditor::Iterator TextEditor::Language::getCsStyleNumber(Iterator start, Iterator end) {
-	auto i = start;
-	if (i != end && (*i == '-' || *i == '+')) { i++; }
-	if (i == end || !std::isdigit(*i)) { return start; }
-
-	if (*i == '0') {
-		if (++i == end) { return i;	}
-
-		if (*i == 'b' || *i == 'B') {
-			i++;
-			if (i == end || !(*i == '0' || *i == '1' || *i == '_')) { return start; }
-			while (i != end && (*i == '0' || *i == '1' || *i == '_')) { i++; }
-
-		} else if (*i == 'x' || *i == 'X') {
-			i++;
-			if (i == end || !(std::isxdigit(*i) || *i == '_')) { return start; }
-			while (i != end && (std::isxdigit(*i) || *i == '_')) { i++; }
-
-		} else {
-			return start;
-		}
-
-		while (i != end && (*i == 'u' || *i == 'U' || *i == 'l' || *i == 'L')) {
-			i++;
-		}
-
-	} else {
-		while (i != end && (std::isdigit(*i) || *i == 'z')) { i++; }
-
-		if (i != end) {
-			bool isFloat = false;
-
-			if (*i == '.') {
-				i++;
-				while (i != end && (std::isdigit(*i || *i == 'z'))) { i++; }
-				isFloat = true;
-			}
-
-			if (i != end && (*i == 'e' || *i == 'E')) {
-				i++;
-				if (i != end && (*i == '-' || *i == '+')) { i++; }
-				if (i == end || !(std::isdigit(*i) || *i == 'z')) { return start; }
-				while (i != end && (std::isdigit(*i) || *i == 'z')) { i++; }
-				isFloat = true;
-			}
-
-			if (isFloat) {
-				if (i != end && (*i == 'f' || *i == 'F' || *i == 'd' || *i == 'D' || *i == 'm' || *i == 'M')) { i++; }
-
-			}else {
-				while (*i == 'u' || *i == 'U' || *i == 'l' || *i == 'L') {
-					i++;
-				}
-			}
-		}
-	}
-
-	return i;
-}
 
 
 //
@@ -435,10 +261,8 @@ const TextEditor::Language& TextEditor::Language::Cs() {
 		for (auto& identifier : identifiers) { language.identifiers.insert(identifier); }
 
 		language.isPunctuation = TextEditor::Language::isCStylePunctuation;
-		language.isWord = TextEditor::Language::isCStyleWordCharacter;
 		language.getIdentifier = TextEditor::Language::getCStyleIdentifier;
-		language.getNumber = TextEditor::Language::getCsStyleNumber;
-
+		language.getNumber = getCsStyleNumber;
 		initialized = true;
 	}
 
@@ -483,10 +307,8 @@ const TextEditor::Language& TextEditor::Language::AngelScript() {
 		for (auto& identifier : identifiers) { language.identifiers.insert(identifier); }
 
 		language.isPunctuation = TextEditor::Language::isCStylePunctuation;
-		language.isWord = TextEditor::Language::isCStyleWordCharacter;
 		language.getIdentifier = TextEditor::Language::getCStyleIdentifier;
-		language.getNumber = TextEditor::Language::getCStyleNumber;
-
+		language.getNumber = getCStyleNumber;
 		initialized = true;
 	}
 
@@ -500,61 +322,6 @@ const TextEditor::Language& TextEditor::Language::AngelScript() {
 
 bool TextEditor::Language::isLuaStylePunctuation(ImWchar character) {
 	return character < 127 ? luaStylePunctuation[character] : false;
-}
-
-
-//
-//	TextEditor::Language::getLuaStyleNumber
-//
-
-TextEditor::Iterator TextEditor::Language::getLuaStyleNumber(Iterator start, Iterator end) {
-	auto i = start;
-	if (i != end && (*i == '-' || *i == '+')) { i++; }
-	if (i == end || !std::isdigit(*i)) { return start; }
-
-	if (*i == '0') {
-		if (++i == end) { return i;	}
-
-		if (*i == 'x' || *i == 'X') {
-			i++;
-			if (i == end || !std::isxdigit(*i)) { return start; }
-			while (i != end && std::isxdigit(*i)) { i++; }
-
-			if (i != end && *i == '.') {
-				i++;
-				while (i != end && std::isdigit(*i)) { i++; }
-			}
-
-			if (i != end && (*i == 'p' || *i == 'P')) {
-				i++;
-				if (i != end && (*i == '-' || *i == '+')) { i++; }
-				if (i == end || !std::isdigit(*i)) { return start; }
-				while (i != end && std::isdigit(*i)) { i++; }
-			}
-
-		} else {
-			return start;
-		}
-
-	} else {
-		while (i != end && std::isdigit(*i)) { i++; }
-
-		if (i != end) {
-			if (*i == '.') {
-				i++;
-				while (i != end && std::isdigit(*i)) { i++; }
-
-				if (i != end && (*i == 'e'|| *i == 'E')) {
-					i++;
-					if (i != end && (*i == '-' || *i == '+')) { i++; }
-					if (i == end || !std::isdigit(*i)) { return start; }
-					while (i != end && std::isdigit(*i)) { i++; }
-				}
-			}
-		}
-	}
-
-	return i;
 }
 
 
@@ -585,9 +352,9 @@ const TextEditor::Language& TextEditor::Language::Lua() {
 		static const char* const identifiers[] = {
 			"assert", "collectgarbage", "dofile", "error", "getmetatable", "ipairs", "loadfile", "load", "loadstring",
 			"next", "pairs", "pcall", "print", "rawequal", "rawlen", "rawget", "rawset", "select", "setmetatable",
-			"tonumber", "tostring", "type", "xpcall", "_G", "_VERSION","arshift", "band", "bnot", "bor", "bxor", "btest",
+			"tonumber", "tostring", "type", "xpcall", "_G", "_VERSION", "arshift", "band", "bnot", "bor", "bxor", "btest",
 			"extract", "lrotate", "lshift", "replace", "rrotate", "rshift", "create", "resume", "running", "status",
-			"wrap", "yield", "isyieldable", "debug","getuservalue", "gethook", "getinfo", "getlocal", "getregistry",
+			"wrap", "yield", "isyieldable", "debug", "getuservalue", "gethook", "getinfo", "getlocal", "getregistry",
 			"getmetatable", "getupvalue", "upvaluejoin", "upvalueid", "setuservalue", "sethook", "setlocal", "setmetatable",
 			"setupvalue", "traceback", "close", "flush", "input", "lines", "open", "output", "popen", "read", "tmpfile",
 			"type", "write", "close", "flush", "lines", "read", "seek", "setvbuf", "write", "__gc", "__tostring", "abs",
@@ -605,66 +372,12 @@ const TextEditor::Language& TextEditor::Language::Lua() {
 		for (auto& identifier : identifiers) { language.identifiers.insert(identifier); }
 
 		language.isPunctuation = TextEditor::Language::isCStylePunctuation;
-		language.isWord = TextEditor::Language::isCStyleWordCharacter;
 		language.getIdentifier = TextEditor::Language::getCStyleIdentifier;
-		language.getNumber = TextEditor::Language::getCStyleNumber;
-
+		language.getNumber = getLuaStyleNumber;
 		initialized = true;
 	}
 
 	return language;
-}
-
-
-//
-//	TextEditor::Language::getPythonStyleNumber
-//
-
-TextEditor::Iterator TextEditor::Language::getPythonStyleNumber(Iterator start, Iterator end) {
-	auto i = start;
-	if (i != end && (*i == '-' || *i == '+')) { i++; }
-	if (i == end || !std::isdigit(*i)) { return start; }
-
-	if (*i == '0') {
-		if (++i == end) { return i;	}
-
-		if (*i == 'b' || *i == 'B') {
-			i++;
-			if (i == end || !(*i == '0' || *i == '1' || *i == '_')) { return start; }
-			while (i != end && (*i == '0' || *i == '1' || *i == '_')) { i++; }
-
-		} else if (*i == 'o' || *i == 'O') {
-			i++;
-			if (i == end || !((*i >= '0' && *i <= '7' || *i == '_'))) { return start; }
-			while (i != end && ((*i >= '0' && *i <= '7') || *i == '_')) { i++; }
-
-		} else if (*i == 'x' || *i == 'X') {
-			i++;
-			if (i == end || !(std::isxdigit(*i)) || *i == '_') { return start; }
-			while (i != end && (std::isxdigit(*i) || *i == '_')) { i++; }
-
-		} else {
-			return start;
-		}
-
-	} else {
-		while (i != end && (std::isdigit(*i) || *i == '_')) { i++; }
-
-		if (i != end) {
-			if (*i == '.') {
-				i++;
-				while (i != end && (std::isdigit(*i) || *i == '_')) { i++; }
-
-				if (i != end && (*i == 'e'|| *i == 'E' || *i == '+'|| *i == '-')) {
-					i++;
-					if (i == end || !std::isdigit(*i) || *i == '_') { return start; }
-					while (i != end && std::isdigit(*i) || *i == '_') { i++; }
-				}
-			}
-		}
-	}
-
-	return i;
 }
 
 
@@ -708,10 +421,8 @@ const TextEditor::Language& TextEditor::Language::Python() {
 		for (auto& identifier : identifiers) { language.identifiers.insert(identifier); }
 
 		language.isPunctuation = TextEditor::Language::isCStylePunctuation;
-		language.isWord = TextEditor::Language::isCStyleWordCharacter;
 		language.getIdentifier = TextEditor::Language::getCStyleIdentifier;
-		language.getNumber = TextEditor::Language::getPythonStyleNumber;
-
+		language.getNumber = getPythonStyleNumber;
 		initialized = true;
 	}
 
@@ -720,39 +431,130 @@ const TextEditor::Language& TextEditor::Language::Python() {
 
 
 //
-//	TextEditor::Language::isJsonStylePunctuation
+//	TextEditor::Language::Glsl
 //
 
-bool TextEditor::Language::isJsonStylePunctuation(ImWchar character) {
-	return character < 127 ? jsonStylePunctuation[character] : false;
+const TextEditor::Language& TextEditor::Language::Glsl() {
+	static bool initialized = false;
+	static TextEditor::Language language;
+
+	if (!initialized) {
+		language.name = "C";
+		language.preprocess = '#';
+		language.singleLineComment = "//";
+		language.commentStart = "/*";
+		language.commentEnd = "*/";
+		language.hasSingleQuotedStrings = true;
+		language.hasDoubleQuotedStrings = true;
+		language.stringEscape = '\\';
+
+		static const char* const keywords[] = {
+			"auto", "break", "case", "char", "const", "continue", "default", "do", "double", "else", "enum",
+			"extern", "float", "for", "goto", "if", "inline", "int", "long", "register", "restrict", "return",
+			"short", "signed", "sizeof", "static", "struct", "switch", "typedef", "union", "unsigned", "void",
+			"volatile", "while", "_Alignas", "_Alignof", "_Atomic", "_Bool", "_Complex", "_Generic", "_Imaginary",
+			"_Noreturn", "_Static_assert", "_Thread_local"
+		};
+
+		static const char* const identifiers[] = {
+			"abort", "abs", "acos", "asin", "atan", "atexit", "atof", "atoi", "atol", "ceil", "clock", "cosh",
+			"ctime", "div", "exit", "fabs", "floor", "fmod", "getchar", "getenv", "isalnum", "isalpha", "isdigit",
+			"isgraph", "ispunct", "isspace", "isupper", "kbhit", "log10", "log2", "log", "memcmp", "modf", "pow",
+			"putchar", "putenv", "puts", "rand", "remove", "rename", "sinh", "sqrt", "srand", "strcat", "strcmp",
+			"strerror", "time", "tolower", "toupper"
+		};
+
+		for (auto& keyword : keywords) { language.keywords.insert(keyword); }
+		for (auto& identifier : identifiers) { language.identifiers.insert(identifier); }
+
+		language.isPunctuation = TextEditor::Language::isCStylePunctuation;
+		language.getIdentifier = TextEditor::Language::getCStyleIdentifier;
+		language.getNumber = getCStyleNumber;
+		initialized = true;
+	}
+
+	return language;
 }
 
 
+
+
 //
-//	TextEditor::Language::getJsonStyleNumber
+//	TextEditor::Language::Hlsl
 //
 
-TextEditor::Iterator TextEditor::Language::getJsonStyleNumber(Iterator start, Iterator end) {
-	auto i = start;
-	if (i != end && *i == '-') { i++; }
-	if (i == end || !std::isdigit(*i)) { return start; }
-	while (i != end && std::isdigit(*i)) { i++; }
+const TextEditor::Language& TextEditor::Language::Hlsl() {
+	static bool initialized = false;
+	static TextEditor::Language language;
 
-	if (i != end) {
-		if (*i == '.') {
-			i++;
-			while (i != end && std::isdigit(*i)) { i++; }
-		}
+	if (!initialized) {
+		language.name = "C";
+		language.preprocess = '#';
+		language.singleLineComment = "//";
+		language.commentStart = "/*";
+		language.commentEnd = "*/";
+		language.hasSingleQuotedStrings = true;
+		language.hasDoubleQuotedStrings = true;
+		language.stringEscape = '\\';
 
-		if (i != end && (*i == 'e'|| *i == 'E')) {
-			i++;
-			if (i != end && (*i == '-' || *i == '+')) { i++; }
-			if (i == end || !std::isdigit(*i)) { return start; }
-			while (i != end && std::isdigit(*i)) { i++; }
-		}
+		static const char* const keywords[] = {
+			"AppendStructuredBuffer", "asm", "asm_fragment", "BlendState", "bool", "break", "Buffer",
+			"ByteAddressBuffer", "case", "cbuffer", "centroid", "class", "column_major", "compile",
+			"compile_fragment", "CompileShader", "const", "continue", "ComputeShader", "ConsumeStructuredBuffer",
+			"default", "DepthStencilState", "DepthStencilView", "discard", "do", "double", "DomainShader", "dword",
+			"else", "export", "extern", "false", "float", "for", "fxgroup", "GeometryShader", "groupshared", "half",
+			"Hullshader", "if", "in", "inline", "inout", "InputPatch", "int", "interface", "line", "lineadj",
+			"linear", "LineStream", "matrix", "min16float", "min10float", "min16int", "min12int", "min16uint",
+			"namespace", "nointerpolation", "noperspective", "NULL", "out", "OutputPatch", "packoffset",
+			"pass", "pixelfragment", "PixelShader", "point", "PointStream", "precise", "RasterizerState",
+			"RenderTargetView", "return", "register", "row_major", "RWBuffer", "RWByteAddressBuffer",
+			"RWStructuredBuffer", "RWTexture1D", "RWTexture1DArray", "RWTexture2D", "RWTexture2DArray",
+			"RWTexture3D", "sample", "sampler", "SamplerState", "SamplerComparisonState", "shared",
+			"snorm", "stateblock", "stateblock_state", "static", "string", "struct", "switch", "StructuredBuffer",
+			"tbuffer", "technique", "technique10", "technique11", "texture", "Texture1D", "Texture1DArray",
+			"Texture2D", "Texture2DArray", "Texture2DMS", "Texture2DMSArray", "Texture3D", "TextureCube",
+			"TextureCubeArray", "true", "typedef", "triangle", "triangleadj", "TriangleStream", "uint",
+			"uniform", "unorm", "unsigned", "vector", "vertexfragment", "VertexShader", "void", "volatile", "while",
+			"bool1", "bool2", "bool3", "bool4", "double1", "double2", "double3", "double4", "float1", "float2",
+			"float3", "float4", "int1", "int2", "int3", "int4", "in", "out", "inout", "uint1", "uint2", "uint3",
+			"uint4", "dword1", "dword2", "dword3", "dword4", "half1", "half2", "half3", "half4", "float1x1",
+			"float2x1", "float3x1", "float4x1", "float1x2", "float2x2", "float3x2", "float4x2",
+			"float1x3", "float2x3", "float3x3", "float4x3", "float1x4", "float2x4", "float3x4", "float4x4",
+			"half1x1", "half2x1", "half3x1", "half4x1", "half1x2", "half2x2", "half3x2", "half4x2",
+			"half1x3", "half2x3", "half3x3", "half4x3", "half1x4", "half2x4", "half3x4", "half4x4",
+		};
+
+		static const char* const identifiers[] = {
+			"abort", "abs", "acos", "all", "AllMemoryBarrier", "AllMemoryBarrierWithGroupSync", "any", "asdouble",
+			"asfloat", "asin", "asint", "asint", "asuint", "asuint", "atan", "atan2", "ceil", "CheckAccessFullyMapped",
+			"clamp", "clip", "cos", "cosh", "countbits", "cross", "D3DCOLORtoUBYTE4", "ddx", "ddx_coarse", "ddx_fine",
+			"ddy", "ddy_coarse", "ddy_fine", "degrees", "determinant", "DeviceMemoryBarrier", "DeviceMemoryBarrierWithGroupSync",
+			"distance", "dot", "dst", "errorf", "EvaluateAttributeAtCentroid", "EvaluateAttributeAtSample",
+			"EvaluateAttributeSnapped", "exp", "exp2", "f16tof32", "f32tof16", "faceforward", "firstbithigh", "firstbitlow",
+			"floor", "fma", "fmod", "frac", "frexp", "fwidth", "GetRenderTargetSampleCount", "GetRenderTargetSamplePosition",
+			"GroupMemoryBarrier", "GroupMemoryBarrierWithGroupSync", "InterlockedAdd", "InterlockedAnd", "InterlockedCompareExchange",
+			"InterlockedCompareStore", "InterlockedExchange", "InterlockedMax", "InterlockedMin", "InterlockedOr",
+			"InterlockedXor", "isfinite", "isinf", "isnan", "ldexp", "length", "lerp", "lit", "log", "log10", "log2", "mad",
+			"max", "min", "modf", "msad4", "mul", "noise", "normalize", "pow", "printf", "Process2DQuadTessFactorsAvg",
+			"Process2DQuadTessFactorsMax", "Process2DQuadTessFactorsMin", "ProcessIsolineTessFactors", "ProcessQuadTessFactorsAvg",
+			"ProcessQuadTessFactorsMax", "ProcessQuadTessFactorsMin", "ProcessTriTessFactorsAvg", "ProcessTriTessFactorsMax",
+			"ProcessTriTessFactorsMin", "radians", "rcp", "reflect", "refract", "reversebits", "round", "rsqrt", "saturate",
+			"sign", "sin", "sincos", "sinh", "smoothstep", "sqrt", "step", "tan", "tanh", "tex1D", "tex1D", "tex1Dbias", "tex1Dgrad",
+			"tex1Dlod", "tex1Dproj", "tex2D", "tex2D", "tex2Dbias", "tex2Dgrad", "tex2Dlod", "tex2Dproj", "tex3D", "tex3D",
+			"tex3Dbias", "tex3Dgrad", "tex3Dlod", "tex3Dproj", "texCUBE", "texCUBE", "texCUBEbias", "texCUBEgrad", "texCUBElod",
+			"texCUBEproj", "transpose", "trunc"
+		};
+
+		for (auto& keyword : keywords) { language.keywords.insert(keyword); }
+		for (auto& identifier : identifiers) { language.identifiers.insert(identifier); }
+
+		language.isPunctuation = TextEditor::Language::isCStylePunctuation;
+		language.getIdentifier = TextEditor::Language::getCStyleIdentifier;
+		language.getNumber = getCStyleNumber;
+		initialized = true;
 	}
 
-	return i;
+	return language;
 }
 
 
@@ -775,24 +577,11 @@ const TextEditor::Language &TextEditor::Language::Json() {
 
 		for (auto& identifier : identifiers) { language.identifiers.insert(identifier); }
 
-		language.isPunctuation = TextEditor::Language::isJsonStylePunctuation;
-		language.isWord = TextEditor::Language::isCStyleWordCharacter;
-		language.getIdentifier = TextEditor::Language::getCStyleIdentifier;
-		language.getNumber = TextEditor::Language::getJsonStyleNumber;
-
+		language.customTokenizer = tokenizeJson;
 		initialized = true;
 	}
 
 	return language;
-}
-
-
-//
-//	TextEditor::Language::isMarkdownStylePunctuation
-//
-
-bool TextEditor::Language::isMarkdownStylePunctuation(ImWchar character) {
-	return character < 127 ? markdownStylePunctuation[character] : false;
 }
 
 
@@ -806,13 +595,11 @@ const TextEditor::Language& TextEditor::Language::Markdown() {
 
 	if (!initialized) {
 		language.name = "Markdown";
-		language.preprocess = '#';
-		language.commentStart = "<!--";
-		language.commentEnd = "-->";
+		language.singleLineComment = ">";
+		language.commentStart = "```";
+		language.commentEnd = "```";
 
-		language.isPunctuation = TextEditor::Language::isMarkdownStylePunctuation;
-		language.isWord = TextEditor::Language::isCStyleWordCharacter;
-
+		language.customTokenizer = tokenizeMarkdown;
 		initialized = true;
 	}
 

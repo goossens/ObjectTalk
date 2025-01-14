@@ -13,6 +13,22 @@
 
 
 //
+//	Lookup tables
+//
+
+static bool word[128] = {
+	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+	 true,  true,  true,  true,  true,  true,  true,  true,  true,  true, false, false, false, false, false, false,
+	false,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
+	 true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true, false, false, false, false,  true,
+	false,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
+	 true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true, false, false, false, false, false
+};
+
+
+//
 //	TextEditor::CodePoint::get
 //
 
@@ -97,6 +113,15 @@ std::string::iterator TextEditor::CodePoint::put(std::string::iterator i, ImWcha
 bool TextEditor::CodePoint::isSpace(ImWchar codepoint) {
 	// see if codepoint represents a whitespace
 	return codepoint < 256 ? std::isspace(static_cast<unsigned char>(codepoint)) : false;
+}
+
+
+//
+//	TextEditor::CodePoint::isWord
+//
+
+bool TextEditor::CodePoint::isWord(ImWchar codepoint) {
+	return codepoint < 127 ? word[codepoint] : false;
 }
 
 

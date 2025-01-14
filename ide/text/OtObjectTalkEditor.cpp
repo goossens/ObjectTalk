@@ -128,7 +128,6 @@ static TextEditor::Language& getLanguageDefinition() {
 		for (auto& identifier : constants) { language.identifiers.insert(identifier); }
 
 		language.isPunctuation = TextEditor::Language::isCStylePunctuation;
-		language.isWord = TextEditor::Language::isCStyleWordCharacter;
 		language.getIdentifier = TextEditor::Language::getCStyleIdentifier;
 		language.getNumber = getObjectTalkStyleNumber;
 

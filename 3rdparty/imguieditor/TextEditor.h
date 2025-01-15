@@ -222,16 +222,26 @@ public:
 		static const Language& Hlsl();
 		static const Language& Json();
 		static const Language& Markdown();
-
-		static bool isCStylePunctuation(ImWchar character);
-		static bool isLuaStylePunctuation(ImWchar character);
-		static Iterator getCStyleIdentifier(Iterator start, Iterator end);
 	};
 
 	inline void SetLanguage(const Language& language) { document.setLanguage(language); }
 	inline const Language& GetLanguage() const { return document.getLanguage(); };
 	inline bool HasLanguage() const { return document.hasLanguage(); }
 	inline std::string GetLanguageName() const { return document.getLanguageName(); }
+
+	// unicode support
+	class Unicode {
+	public:
+		std::function<bool(ImWchar)> isSpace;
+		std::function<bool(ImWchar)> isWord;
+		std::function<bool(ImWchar)> isUpper;
+		std::function<bool(ImWchar)> isLower;
+		std::function<ImWchar(ImWchar)> toUpper;
+		std::function<ImWchar(ImWchar)> toLower;
+	};
+
+	// specify unicode support function (used globally in all TextEditor instances)
+	inline void SetUnicode(const Unicode& unicode) { document.setUnicode(unicode); }
 
 private:
 	//
@@ -264,7 +274,7 @@ private:
 		inline Coordinate operator +(const Coordinate& o) const { return Coordinate(line + o.line, column + o.column); }
 
 		static Coordinate invalid() { static Coordinate invalid(-1, -1); return invalid; }
-		inline bool isValid() const { return line >= 0 and column >=0; }
+		inline bool isValid() const { return line >= 0 && column >=0; }
 
 		int line = 0;
 		int column = 0;
@@ -375,7 +385,7 @@ private:
 		size_t current = 0;
 	} cursors;
 
-	// a single colored character
+	// a single colored character (a glyph)
 	class Glyph {
 	public:
 		// constructors
@@ -398,7 +408,7 @@ private:
 		inOtherStringAlt
 	};
 
-	// a single line in the editor
+	// a single line in a document
 	class Line : public std::vector<Glyph> {
 	public:
 		friend class Document;
@@ -432,6 +442,24 @@ private:
 
 		// state at start of line
 		State state = State::inText;
+	};
+
+	// support unicode codepoints
+	class CodePoint {
+	public:
+		inline void setUnicode(const Unicode& u) { unicode = u; }
+
+		std::string::const_iterator read(std::string::const_iterator i, ImWchar* codepoint) const;
+		std::string::iterator write(std::string::iterator i, ImWchar codepoint) const;
+		bool isSpace(ImWchar codepoint) const;
+		bool isWord(ImWchar codepoint) const;
+		bool isUpper(ImWchar codepoint) const;
+		bool isLower(ImWchar codepoint) const;
+		ImWchar toUpper(ImWchar codepoint) const;
+		ImWchar toLower(ImWchar codepoint) const;
+
+	private:
+		Unicode unicode;
 	};
 
 	// the document being edited (Lines of Glyphs)
@@ -502,6 +530,10 @@ private:
 		inline bool hasLanguage() const { return language != nullptr; }
 		inline std::string getLanguageName() const {  return language == nullptr ? "None" : language->name; }
 
+		// unicode support
+		inline void setUnicode(const Unicode& unicode) { codepoint.setUnicode(unicode); }
+		inline const CodePoint& getCodePoint() const { return codepoint; }
+
 		// colorizer
 		State colorize(Line& line);
 		void colorize(int start, int end);
@@ -510,6 +542,7 @@ private:
 	private:
 		int tabSize = 4;
 		const Language* language = nullptr;
+		CodePoint codepoint;
 		bool updated = false;
 	} document;
 
@@ -605,16 +638,6 @@ private:
 		iterator active = end();
 		Coordinate activeLocation = Coordinate::invalid();
 	} brackets;
-
-	// functions to work with unicode codepoints
-	class CodePoint {
-	public:
-		static std::string::const_iterator get(std::string::const_iterator i, ImWchar* codepoint);
-		static std::string::iterator put(std::string::iterator i, ImWchar codepoint);
-		static bool isSpace(ImWchar codepoint);
-		static bool isWord(ImWchar codepoint);
-		static ImWchar toLower(ImWchar codepoint);
-	};
 
 	// set the editor's text
 	void setText(const std::string& text);

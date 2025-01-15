@@ -237,6 +237,7 @@ bool OtWorkspace::onCanQuit() {
 	}
 }
 
+
 //
 //	OtWorkspace::newFile
 //

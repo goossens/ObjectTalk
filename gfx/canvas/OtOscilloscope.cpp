@@ -31,6 +31,7 @@ void OtOscilloscope::drawLine(float x0, float y0, float x1, float y1, float line
 	endDraw(lineWidth, color);
 }
 
+
 //
 //	OtOscilloscope::drawRectangle
 //

@@ -13,26 +13,10 @@
 
 
 //
-//	Lookup tables
+//	TextEditor::CodePoint::read
 //
 
-static bool word[128] = {
-	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-	 true,  true,  true,  true,  true,  true,  true,  true,  true,  true, false, false, false, false, false, false,
-	false,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
-	 true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true, false, false, false, false,  true,
-	false,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
-	 true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true, false, false, false, false, false
-};
-
-
-//
-//	TextEditor::CodePoint::get
-//
-
-std::string::const_iterator TextEditor::CodePoint::get(std::string::const_iterator i, ImWchar* codepoint) {
+std::string::const_iterator TextEditor::CodePoint::read(std::string::const_iterator i, ImWchar* codepoint) const {
 	// parse a UTF-8 sequence into a unicode codepoint
 	if ((*i & 0x80) == 0) {
 		*codepoint = *i;
@@ -64,10 +48,10 @@ std::string::const_iterator TextEditor::CodePoint::get(std::string::const_iterat
 
 
 //
-//	TextEditor::CodePoint::put
+//	TextEditor::CodePoint::write
 //
 
-std::string::iterator TextEditor::CodePoint::put(std::string::iterator i, ImWchar codepoint) {
+std::string::iterator TextEditor::CodePoint::write(std::string::iterator i, ImWchar codepoint) const {
 	// generate UTF-8 sequence from a unicode codepoint
 	if (codepoint < 0x80) {
 		*i++ = codepoint;
@@ -93,6 +77,7 @@ std::string::iterator TextEditor::CodePoint::put(std::string::iterator i, ImWcha
 		*i++ = 0x80 | ((codepoint >> 12) & 0x3f);
 		*i++ = 0x80 | ((codepoint >> 6) & 0x3f);
 		*i++ = 0x80 | (codepoint & 0x3f);
+	}
 
 #else
 	} else {
@@ -110,9 +95,9 @@ std::string::iterator TextEditor::CodePoint::put(std::string::iterator i, ImWcha
 //	TextEditor::CodePoint::isSpace
 //
 
-bool TextEditor::CodePoint::isSpace(ImWchar codepoint) {
+bool TextEditor::CodePoint::isSpace(ImWchar codepoint) const {
 	// see if codepoint represents a whitespace
-	return codepoint < 256 ? std::isspace(static_cast<unsigned char>(codepoint)) : false;
+	return unicode.isSpace ?  unicode.isSpace(codepoint) : codepoint < 256 ? std::isspace(static_cast<unsigned char>(codepoint)) : false;
 }
 
 
@@ -120,8 +105,46 @@ bool TextEditor::CodePoint::isSpace(ImWchar codepoint) {
 //	TextEditor::CodePoint::isWord
 //
 
-bool TextEditor::CodePoint::isWord(ImWchar codepoint) {
-	return codepoint < 127 ? word[codepoint] : false;
+bool TextEditor::CodePoint::isWord(ImWchar codepoint) const {
+	static bool word[128] = {
+		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+		 true,  true,  true,  true,  true,  true,  true,  true,  true,  true, false, false, false, false, false, false,
+		false,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
+		 true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true, false, false, false, false,  true,
+		false,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
+		 true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true, false, false, false, false, false
+	};
+
+	return unicode.isWord ? unicode.isWord(codepoint) : codepoint < 127 ? word[codepoint] : false;
+}
+
+
+//
+//	TextEditor::CodePoint::isUpper
+//
+
+bool TextEditor::CodePoint::isUpper(ImWchar codepoint) const {
+	return unicode.isUpper ? unicode.isUpper(codepoint) : codepoint < 256 ? std::isupper(static_cast<unsigned char>(codepoint)) : codepoint;
+}
+
+
+//
+//	TextEditor::CodePoint::isLower
+//
+
+bool TextEditor::CodePoint::isLower(ImWchar codepoint) const {
+	return unicode.isLower ? unicode.isLower(codepoint) : codepoint < 256 ? std::islower(static_cast<unsigned char>(codepoint)) : codepoint;
+}
+
+
+//
+//	TextEditor::CodePoint::toUpper
+//
+
+ImWchar TextEditor::CodePoint::toUpper(ImWchar codepoint) const {
+	return unicode.toUpper ? unicode.toUpper(codepoint) : codepoint < 256 ? std::toupper(static_cast<unsigned char>(codepoint)) : codepoint;
 }
 
 
@@ -129,7 +152,7 @@ bool TextEditor::CodePoint::isWord(ImWchar codepoint) {
 //	TextEditor::CodePoint::toLower
 //
 
-ImWchar TextEditor::CodePoint::toLower(ImWchar codepoint) {
+ImWchar TextEditor::CodePoint::toLower(ImWchar codepoint) const {
 	// convert a codepoint to lowercase
-	return codepoint < 256 ? std::tolower(static_cast<unsigned char>(codepoint)) : codepoint;
+	return unicode.toLower ? unicode.toLower(codepoint) : codepoint < 256 ? std::tolower(static_cast<unsigned char>(codepoint)) : codepoint;
 }

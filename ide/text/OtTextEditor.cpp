@@ -15,6 +15,7 @@
 
 #include "imgui.h"
 
+#include "OtCodePoint.h"
 #include "OtMessageBus.h"
 #include "OtUi.h"
 
@@ -22,11 +23,25 @@
 
 
 //
+//	Unicode support
+//
+
+static TextEditor::Unicode unicode{
+	nullptr,
+	nullptr,
+	OtCodePoint::isUpperCase,
+	OtCodePoint::isLowerCase,
+	OtCodePoint::toUpperCase,
+	OtCodePoint::toLowerCase
+};
+
+
+//
 //	Color palette
 //
 
 const static TextEditor::Palette colorPalette = {{
-	IM_COL32(224, 224, 224, 255),	// standard
+	IM_COL32(224, 224, 224, 255),	// text
 	IM_COL32(197, 134, 192, 255),	// keyword
 	IM_COL32( 90, 179, 155, 255),	// declaration
 	IM_COL32(181, 206, 168, 255),	// number
@@ -55,6 +70,7 @@ const static TextEditor::Palette colorPalette = {{
 //
 
 OtTextEditor::OtTextEditor() {
+	editor.SetUnicode(unicode);
 	editor.SetShowWhitespacesEnabled(true);
 	editor.SetPalette(colorPalette);
 }

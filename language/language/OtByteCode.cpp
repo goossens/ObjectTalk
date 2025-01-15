@@ -370,6 +370,7 @@ size_t OtByteCodeClass::getOpcodeSize(size_t offset) {
 	return pc - offset;
 }
 
+
 //
 //	OtByteCodeClass::isPush
 //
@@ -516,6 +517,7 @@ size_t OtByteCodeClass::getStatementStart(size_t pc) {
 	// we'll never get here but it keeps the compiler happy
 	return 0;
 }
+
 
 //
 //	OtByteCodeClass::getStatementEnd

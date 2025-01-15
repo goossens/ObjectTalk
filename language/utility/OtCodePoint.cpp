@@ -39,10 +39,10 @@ size_t OtCodePoint::size(std::string::const_iterator i) {
 
 
 //
-//	OtCodePoint::get
+//	OtCodePoint::read
 //
 
-std::string::const_iterator OtCodePoint::get(std::string::const_iterator i, char32_t* codepoint) {
+std::string::const_iterator OtCodePoint::read(std::string::const_iterator i, char32_t* codepoint) {
 	if ((*i & 0x80) == 0) {
 		*codepoint = *i;
 		i++;
@@ -68,10 +68,10 @@ std::string::const_iterator OtCodePoint::get(std::string::const_iterator i, char
 
 
 //
-//	OtCodePoint::put
+//	OtCodePoint::write
 //
 
-std::string::iterator OtCodePoint::put(std::string::iterator i, char32_t codepoint) {
+std::string::iterator OtCodePoint::write(std::string::iterator i, char32_t codepoint) {
 	if (codepoint < 0x80) {
 		*i++ = codepoint;
 
@@ -104,8 +104,8 @@ bool OtCodePoint::isDecimalNumber(char32_t codepoint) { return is_decimal_number
 bool OtCodePoint::isHexDigit(char32_t codepoint) { return is_hex_digit(codepoint); }
 bool OtCodePoint::isAlphabetic(char32_t codepoint) { return is_alphabetic(codepoint); }
 bool OtCodePoint::isAlphaNumeric(char32_t codepoint) { return is_alphanumeric(codepoint); }
-bool OtCodePoint::isUppercase(char32_t codepoint) { return is_uppercase(codepoint); }
-bool OtCodePoint::isLowercase(char32_t codepoint) { return is_lowercase(codepoint); }
+bool OtCodePoint::isUpperCase(char32_t codepoint) { return is_uppercase(codepoint); }
+bool OtCodePoint::isLowerCase(char32_t codepoint) { return is_lowercase(codepoint); }
 bool OtCodePoint::isWhiteSpace(char32_t codepoint) { return is_white_space(codepoint); }
 bool OtCodePoint::isBlank(char32_t codepoint) { return is_blank(codepoint); }
 bool OtCodePoint::isGraph(char32_t codepoint) { return is_graph(codepoint); }
@@ -116,5 +116,5 @@ bool OtCodePoint::isPrint(char32_t codepoint) { return is_print(codepoint); }
 //	Convert codepoint
 //
 
-char32_t OtCodePoint::lowercase(char32_t codepoint) { return to_lowercase(codepoint); }
-char32_t OtCodePoint::uppercase(char32_t codepoint) { return to_uppercase(codepoint); }
+char32_t OtCodePoint::toLowerCase(char32_t codepoint) { return to_lowercase(codepoint); }
+char32_t OtCodePoint::toUpperCase(char32_t codepoint) { return to_uppercase(codepoint); }

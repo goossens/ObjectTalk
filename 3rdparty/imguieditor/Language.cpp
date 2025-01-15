@@ -22,55 +22,6 @@
 
 
 //
-//	Fast lookup tables
-//
-
-static bool identifierStart[128] = {
-	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-	false,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
-	 true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true, false, false, false, false,  true,
-	false,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
-	 true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true, false, false, false, false, false
-};
-
-static bool identifierNoneStart[128] = {
-	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-	 true,  true,  true,  true,  true,  true,  true,  true,  true,  true, false, false, false, false, false, false,
-	false,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
-	 true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true, false, false, false, false,  true,
-	false,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
-	 true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true, false, false, false, false, false
-};
-
-static bool cStylePunctuation[128] = {
-	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-	false,  true, false, false, false,  true,  true, false,  true,  true,  true,  true,  true,  true,  true,  true,
-	false, false, false, false, false, false, false, false, false, false,  true,  true,  true,  true,  true,  true,
-	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-	false, false, false, false, false, false, false, false, false, false, false,  true, false,  true,  true, false,
-	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-	false, false, false, false, false, false, false, false, false, false, false,  true,  true,  true,  true, false,
-};
-
-static bool luaStylePunctuation[128] = {
-	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-	false,  true, false,  true, false,  true,  true, false,  true,  true,  true,  true,  true,  true,  true,  true,
-	false, false, false, false, false, false, false, false, false, false,  true,  true,  true,  true,  true,  true,
-	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-	false, false, false, false, false, false, false, false, false, false, false,  true, false,  true,  true, false,
-	false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-	false, false, false, false, false, false, false, false, false, false, false,  true,  true,  true,  true, false,
-};
-
-
-//
 //	TextEditor::Iterator::operator*
 //
 
@@ -85,32 +36,6 @@ TextEditor::Iterator::reference TextEditor::Iterator::operator*() const {
 
 TextEditor::Iterator::pointer TextEditor::Iterator::operator->() const {
 	return &(static_cast<Line*>(line)->at(index).character);
-}
-
-
-//
-//	TextEditor::Language::isCStylePunctuation
-//
-
-bool TextEditor::Language::isCStylePunctuation(ImWchar character) {
-	return character < 127 ? cStylePunctuation[character] : false;
-}
-
-
-//
-//	TextEditor::Language::getCStyleIdentifier
-//
-
-TextEditor::Iterator TextEditor::Language::getCStyleIdentifier(Iterator start, Iterator end) {
-	if (start < end && *start < 128 && identifierStart[*start]) {
-		start++;
-
-		while (start < end && *start < 128 && identifierNoneStart[*start]) {
-			start++;
-		}
-	}
-
-	return start;
 }
 
 
@@ -143,20 +68,11 @@ const TextEditor::Language& TextEditor::Language::C() {
 			"restrict", "short", "signed", "static", "struct", "typedef", "union", "unsigned", "void", "volatile"
 		};
 
-		static const char* const identifiers[] = {
-			"abort", "abs", "acos", "asin", "atan", "atexit", "atof", "atoi", "atol", "ceil", "clock", "cosh",
-			"ctime", "div", "exit", "fabs", "floor", "fmod", "getchar", "getenv", "isalnum", "isalpha", "isdigit",
-			"isgraph", "ispunct", "isspace", "isupper", "kbhit", "log10", "log2", "log", "memcmp", "modf", "pow",
-			"putchar", "putenv", "puts", "rand", "remove", "rename", "sinh", "sqrt", "srand", "strcat", "strcmp",
-			"strerror", "time", "tolower", "toupper"
-		};
-
 		for (auto& keyword : keywords) { language.keywords.insert(keyword); }
 		for (auto& declaration : declarations) { language.declarations.insert(declaration); }
-		for (auto& identifier : identifiers) { language.identifiers.insert(identifier); }
 
-		language.isPunctuation = TextEditor::Language::isCStylePunctuation;
-		language.getIdentifier = TextEditor::Language::getCStyleIdentifier;
+		language.isPunctuation = isCStylePunctuation;
+		language.getIdentifier = getCStyleIdentifier;
 		language.getNumber = getCStyleNumber;
 		initialized = true;
 	}
@@ -200,28 +116,17 @@ const TextEditor::Language& TextEditor::Language::Cpp() {
 			"virtual", "void", "volatile", "wchar_t"
 		};
 
-		static const char* const identifiers[] = {
-			"abort", "abs", "acos", "asin", "atan", "atexit", "atof", "atoi", "atol", "ceil", "clock", "cosh", "ctime",
-			"div", "exit", "fabs", "floor", "fmod", "getchar", "getenv", "isalnum", "isalpha", "isdigit", "isgraph",
-			"ispunct", "isspace", "isupper", "kbhit", "log10", "log2", "log", "memcmp", "modf", "pow", "printf",
-			"sprintf", "snprintf", "putchar", "putenv", "puts", "rand", "remove", "rename", "sinh", "sqrt", "srand",
-			"strcat", "strcmp", "strerror", "time", "tolower", "toupper", "std", "string", "vector", "map", "unordered_map",
-			"set", "unordered_set", "min", "max"
-		};
-
 		for (auto& keyword : keywords) { language.keywords.insert(keyword); }
 		for (auto& declaration : declarations) { language.declarations.insert(declaration); }
-		for (auto& identifier : identifiers) { language.identifiers.insert(identifier); }
 
-		language.isPunctuation = TextEditor::Language::isCStylePunctuation;
-		language.getIdentifier = TextEditor::Language::getCStyleIdentifier;
+		language.isPunctuation = isCStylePunctuation;
+		language.getIdentifier = getCStyleIdentifier;
 		language.getNumber = getCStyleNumber;
 		initialized = true;
 	}
 
 	return language;
 }
-
 
 
 //
@@ -252,16 +157,10 @@ const TextEditor::Language& TextEditor::Language::Cs() {
 			"unsafe", "ushort", "using", "using static", "void", "volatile", "while"
 		};
 
-		static const char* const identifiers[] = {
-			"add", "alias", "ascending", "async", "await", "descending", "dynamic", "from", "get", "global", "group", "into",
-			"join", "let", "orderby", "partial", "remove", "select", "set", "value", "var", "when", "where", "yield"
-		};
-
 		for (auto& keyword : keywords) { language.keywords.insert(keyword); }
-		for (auto& identifier : identifiers) { language.identifiers.insert(identifier); }
 
-		language.isPunctuation = TextEditor::Language::isCStylePunctuation;
-		language.getIdentifier = TextEditor::Language::getCStyleIdentifier;
+		language.isPunctuation = isCStylePunctuation;
+		language.getIdentifier = getCStyleIdentifier;
 		language.getNumber = getCsStyleNumber;
 		initialized = true;
 	}
@@ -297,31 +196,15 @@ const TextEditor::Language& TextEditor::Language::AngelScript() {
 			"while", "xor"
 		};
 
-		static const char* const identifiers[] = {
-			"cos", "sin", "tab", "acos", "asin", "atan", "atan2", "cosh", "sinh", "tanh", "log", "log10", "pow",
-			"sqrt", "abs", "ceil", "floor", "fraction", "closeTo", "fpFromIEEE", "fpToIEEE", "complex", "opEquals",
-			"opAddAssign", "opSubAssign", "opMulAssign", "opDivAssign", "opAdd", "opSub", "opMul", "opDiv"
-		};
-
 		for (auto& keyword : keywords) { language.keywords.insert(keyword); }
-		for (auto& identifier : identifiers) { language.identifiers.insert(identifier); }
 
-		language.isPunctuation = TextEditor::Language::isCStylePunctuation;
-		language.getIdentifier = TextEditor::Language::getCStyleIdentifier;
+		language.isPunctuation = isCStylePunctuation;
+		language.getIdentifier = getCStyleIdentifier;
 		language.getNumber = getCStyleNumber;
 		initialized = true;
 	}
 
 	return language;
-}
-
-
-//
-//	TextEditor::Language::isLuaStylePunctuation
-//
-
-bool TextEditor::Language::isLuaStylePunctuation(ImWchar character) {
-	return character < 127 ? luaStylePunctuation[character] : false;
 }
 
 
@@ -349,30 +232,10 @@ const TextEditor::Language& TextEditor::Language::Lua() {
 			"not", "or", "repeat", "return", "then", "true", "until", "while"
 		};
 
-		static const char* const identifiers[] = {
-			"assert", "collectgarbage", "dofile", "error", "getmetatable", "ipairs", "loadfile", "load", "loadstring",
-			"next", "pairs", "pcall", "print", "rawequal", "rawlen", "rawget", "rawset", "select", "setmetatable",
-			"tonumber", "tostring", "type", "xpcall", "_G", "_VERSION", "arshift", "band", "bnot", "bor", "bxor", "btest",
-			"extract", "lrotate", "lshift", "replace", "rrotate", "rshift", "create", "resume", "running", "status",
-			"wrap", "yield", "isyieldable", "debug", "getuservalue", "gethook", "getinfo", "getlocal", "getregistry",
-			"getmetatable", "getupvalue", "upvaluejoin", "upvalueid", "setuservalue", "sethook", "setlocal", "setmetatable",
-			"setupvalue", "traceback", "close", "flush", "input", "lines", "open", "output", "popen", "read", "tmpfile",
-			"type", "write", "close", "flush", "lines", "read", "seek", "setvbuf", "write", "__gc", "__tostring", "abs",
-			"acos", "asin", "atan", "ceil", "cos", "deg", "exp", "tointeger", "floor", "fmod", "ult", "log", "max", "min",
-			"modf", "rad", "random", "randomseed", "sin", "sqrt", "string", "tan", "type", "atan2", "cosh", "sinh", "tanh",
-			"pow", "frexp", "ldexp", "log10", "pi", "huge", "maxinteger", "mininteger", "loadlib", "searchpath", "seeall",
-			"preload", "cpath", "path", "searchers", "loaded", "module", "require", "clock", "date", "difftime", "execute",
-			"exit", "getenv", "remove", "rename", "setlocale", "time", "tmpname", "byte", "char", "dump", "find", "format",
-			"gmatch", "gsub", "len", "lower", "match", "rep", "reverse", "sub", "upper", "pack", "packsize", "unpack",
-			"concat", "maxn", "insert", "pack", "unpack", "remove", "move", "sort", "offset", "codepoint", "char", "len",
-			"codes", "charpattern", "coroutine", "table", "io", "os", "string", "utf8", "bit32", "math", "debug", "package"
-		};
-
 		for (auto& keyword : keywords) { language.keywords.insert(keyword); }
-		for (auto& identifier : identifiers) { language.identifiers.insert(identifier); }
 
-		language.isPunctuation = TextEditor::Language::isCStylePunctuation;
-		language.getIdentifier = TextEditor::Language::getCStyleIdentifier;
+		language.isPunctuation = isCStylePunctuation;
+		language.getIdentifier = getCStyleIdentifier;
 		language.getNumber = getLuaStyleNumber;
 		initialized = true;
 	}
@@ -407,21 +270,10 @@ const TextEditor::Language& TextEditor::Language::Python() {
 			"if", "or", "yield"
 		};
 
-		static const char* const identifiers[] = {
-			"abs", "aiter", "all", "any", "anext", "ascii", "bin", "bool", "breakpoint", "bytearray",
-			"bytes", "callable", "chr", "classmethod", "compile", "complex", "delattr", "dict", "dir",
-			"divmod", "enumerate", "eval", "exec", "filter", "float", "format", "frozenset", "getattr",
-			"globals", "hasattr", "hash", "help", "hex", "id", "input", "int", "isinstance", "issubclass",
-			"iter", "len", "list", "locals", "map", "max", "memoryview", "min", "next", "object", "oct",
-			"open", "ord", "pow", "print", "property", "range", "repr", "reversed", "round", "set", "setattr",
-			"slice", "sorted", "staticmethod", "str", "sum", "super", "tuple", "type", "vars", "zip", "__import__"
-		};
-
 		for (auto& keyword : keywords) { language.keywords.insert(keyword); }
-		for (auto& identifier : identifiers) { language.identifiers.insert(identifier); }
 
-		language.isPunctuation = TextEditor::Language::isCStylePunctuation;
-		language.getIdentifier = TextEditor::Language::getCStyleIdentifier;
+		language.isPunctuation = isCStylePunctuation;
+		language.getIdentifier = getCStyleIdentifier;
 		language.getNumber = getPythonStyleNumber;
 		initialized = true;
 	}
@@ -439,7 +291,7 @@ const TextEditor::Language& TextEditor::Language::Glsl() {
 	static TextEditor::Language language;
 
 	if (!initialized) {
-		language.name = "C";
+		language.name = "GLSL";
 		language.preprocess = '#';
 		language.singleLineComment = "//";
 		language.commentStart = "/*";
@@ -448,35 +300,40 @@ const TextEditor::Language& TextEditor::Language::Glsl() {
 		language.hasDoubleQuotedStrings = true;
 		language.stringEscape = '\\';
 
+		// source: https://registry.khronos.org/OpenGL/specs/gl/GLSLangSpec.4.60.html
 		static const char* const keywords[] = {
-			"auto", "break", "case", "char", "const", "continue", "default", "do", "double", "else", "enum",
-			"extern", "float", "for", "goto", "if", "inline", "int", "long", "register", "restrict", "return",
-			"short", "signed", "sizeof", "static", "struct", "switch", "typedef", "union", "unsigned", "void",
-			"volatile", "while", "_Alignas", "_Alignof", "_Atomic", "_Bool", "_Complex", "_Generic", "_Imaginary",
-			"_Noreturn", "_Static_assert", "_Thread_local"
-		};
-
-		static const char* const identifiers[] = {
-			"abort", "abs", "acos", "asin", "atan", "atexit", "atof", "atoi", "atol", "ceil", "clock", "cosh",
-			"ctime", "div", "exit", "fabs", "floor", "fmod", "getchar", "getenv", "isalnum", "isalpha", "isdigit",
-			"isgraph", "ispunct", "isspace", "isupper", "kbhit", "log10", "log2", "log", "memcmp", "modf", "pow",
-			"putchar", "putenv", "puts", "rand", "remove", "rename", "sinh", "sqrt", "srand", "strcat", "strcmp",
-			"strerror", "time", "tolower", "toupper"
+			"atomic_uint", "attribute", "bool", "break", "buffer", "bvec2", "bvec3", "bvec4", "case", "centroid",
+			"coherent", "const", "continue", "default", "discard", "dmat2", "dmat2x2", "dmat2x3", "dmat2x4", "dmat3",
+			"dmat3x2", "dmat3x3", "dmat3x4", "dmat4", "dmat4x2", "dmat4x3", "dmat4x4", "do", "double", "dvec2", "dvec3",
+			"dvec4", "else", "false", "flat", "float", "for", "highp", "if", "iimage1D", "iimage1DArray", "iimage2D",
+			"iimage2DArray", "iimage2DMS", "iimage2DMSArray", "iimage2DRect", "iimage3D", "iimageBuffer", "iimageCube",
+			"iimageCubeArray", "image1D", "image1DArray", "image2D", "image2DArray", "image2DMS", "image2DMSArray",
+			"image2DRect", "image3D", "imageBuffer", "imageCube", "imageCubeArray", "in", "inout", "int", "invariant",
+			"isampler1D", "isampler1DArray", "isampler2D", "isampler2DArray", "isampler2DMS", "isampler2DMSArray",
+			"isampler2DRect", "isampler3D", "isamplerBuffer", "isamplerCube", "isamplerCubeArray", "ivec2", "ivec3",
+			"ivec4", "layout", "lowp", "mat2", "mat2x2", "mat2x3", "mat2x4", "mat3", "mat3x2", "mat3x3", "mat3x4",
+			"mat4", "mat4x2", "mat4x3", "mat4x4", "mediump", "noperspective", "out", "patch", "precise", "precision",
+			"readonly", "restrict", "return", "sample", "sampler1D", "sampler1DArray", "sampler1DArrayShadow",
+			"sampler1DShadow", "sampler2D", "sampler2DArray", "sampler2DArrayShadow", "sampler2DMS", "sampler2DMSArray",
+			"sampler2DRect", "sampler2DRectShadow", "sampler2DShadow", "sampler3D", "samplerBuffer", "samplerCube",
+			"samplerCubeArray", "samplerCubeArrayShadow", "samplerCubeShadow", "shared", "smooth", "struct", "subroutine",
+			"switch", "true", "uimage1D", "uimage1DArray", "uimage2D", "uimage2DArray", "uimage2DMS", "uimage2DMSArray",
+			"uimage2DRect", "uimage3D", "uimageBuffer", "uimageCube", "uimageCubeArray", "uint", "uniform", "usampler1D",
+			"usampler1DArray", "usampler2D", "usampler2DArray", "usampler2DMS", "usampler2DMSArray", "usampler2DRect",
+			"usampler3D", "usamplerBuffer", "usamplerCube", "usamplerCubeArray", "uvec2", "uvec3", "uvec4", "varying",
+			"vec2", "vec3", "vec4", "void", "volatile", "while", "writeonly"
 		};
 
 		for (auto& keyword : keywords) { language.keywords.insert(keyword); }
-		for (auto& identifier : identifiers) { language.identifiers.insert(identifier); }
 
-		language.isPunctuation = TextEditor::Language::isCStylePunctuation;
-		language.getIdentifier = TextEditor::Language::getCStyleIdentifier;
+		language.isPunctuation = isCStylePunctuation;
+		language.getIdentifier = getCStyleIdentifier;
 		language.getNumber = getCStyleNumber;
 		initialized = true;
 	}
 
 	return language;
 }
-
-
 
 
 //
@@ -488,7 +345,7 @@ const TextEditor::Language& TextEditor::Language::Hlsl() {
 	static TextEditor::Language language;
 
 	if (!initialized) {
-		language.name = "C";
+		language.name = "HLSL";
 		language.preprocess = '#';
 		language.singleLineComment = "//";
 		language.commentStart = "/*";
@@ -524,32 +381,10 @@ const TextEditor::Language& TextEditor::Language::Hlsl() {
 			"half1x3", "half2x3", "half3x3", "half4x3", "half1x4", "half2x4", "half3x4", "half4x4",
 		};
 
-		static const char* const identifiers[] = {
-			"abort", "abs", "acos", "all", "AllMemoryBarrier", "AllMemoryBarrierWithGroupSync", "any", "asdouble",
-			"asfloat", "asin", "asint", "asint", "asuint", "asuint", "atan", "atan2", "ceil", "CheckAccessFullyMapped",
-			"clamp", "clip", "cos", "cosh", "countbits", "cross", "D3DCOLORtoUBYTE4", "ddx", "ddx_coarse", "ddx_fine",
-			"ddy", "ddy_coarse", "ddy_fine", "degrees", "determinant", "DeviceMemoryBarrier", "DeviceMemoryBarrierWithGroupSync",
-			"distance", "dot", "dst", "errorf", "EvaluateAttributeAtCentroid", "EvaluateAttributeAtSample",
-			"EvaluateAttributeSnapped", "exp", "exp2", "f16tof32", "f32tof16", "faceforward", "firstbithigh", "firstbitlow",
-			"floor", "fma", "fmod", "frac", "frexp", "fwidth", "GetRenderTargetSampleCount", "GetRenderTargetSamplePosition",
-			"GroupMemoryBarrier", "GroupMemoryBarrierWithGroupSync", "InterlockedAdd", "InterlockedAnd", "InterlockedCompareExchange",
-			"InterlockedCompareStore", "InterlockedExchange", "InterlockedMax", "InterlockedMin", "InterlockedOr",
-			"InterlockedXor", "isfinite", "isinf", "isnan", "ldexp", "length", "lerp", "lit", "log", "log10", "log2", "mad",
-			"max", "min", "modf", "msad4", "mul", "noise", "normalize", "pow", "printf", "Process2DQuadTessFactorsAvg",
-			"Process2DQuadTessFactorsMax", "Process2DQuadTessFactorsMin", "ProcessIsolineTessFactors", "ProcessQuadTessFactorsAvg",
-			"ProcessQuadTessFactorsMax", "ProcessQuadTessFactorsMin", "ProcessTriTessFactorsAvg", "ProcessTriTessFactorsMax",
-			"ProcessTriTessFactorsMin", "radians", "rcp", "reflect", "refract", "reversebits", "round", "rsqrt", "saturate",
-			"sign", "sin", "sincos", "sinh", "smoothstep", "sqrt", "step", "tan", "tanh", "tex1D", "tex1D", "tex1Dbias", "tex1Dgrad",
-			"tex1Dlod", "tex1Dproj", "tex2D", "tex2D", "tex2Dbias", "tex2Dgrad", "tex2Dlod", "tex2Dproj", "tex3D", "tex3D",
-			"tex3Dbias", "tex3Dgrad", "tex3Dlod", "tex3Dproj", "texCUBE", "texCUBE", "texCUBEbias", "texCUBEgrad", "texCUBElod",
-			"texCUBEproj", "transpose", "trunc"
-		};
-
 		for (auto& keyword : keywords) { language.keywords.insert(keyword); }
-		for (auto& identifier : identifiers) { language.identifiers.insert(identifier); }
 
-		language.isPunctuation = TextEditor::Language::isCStylePunctuation;
-		language.getIdentifier = TextEditor::Language::getCStyleIdentifier;
+		language.isPunctuation = isCStylePunctuation;
+		language.getIdentifier = getCStyleIdentifier;
 		language.getNumber = getCStyleNumber;
 		initialized = true;
 	}
@@ -571,11 +406,11 @@ const TextEditor::Language &TextEditor::Language::Json() {
 		language.hasDoubleQuotedStrings = true;
 		language.stringEscape = '\\';
 
-		static const char* const identifiers[] = {
+		static const char* const keywords[] = {
 			"false", "null", "true"
 		};
 
-		for (auto& identifier : identifiers) { language.identifiers.insert(identifier); }
+		for (auto& keyword : keywords) { language.keywords.insert(keyword); }
 
 		language.customTokenizer = tokenizeJson;
 		initialized = true;

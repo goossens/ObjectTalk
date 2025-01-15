@@ -27,22 +27,23 @@ static TextEditor::Iterator getCsStyleNumber(TextEditor::Iterator start, TextEdi
 		re2c:yyfill:enable = 0;
 		re2c:eof = 0;
 
-		B    = [01];
-		DB   = [01_];
-		D    = [0-9];
-		DD   = [0-9_];
-		H    = [a-fA-F0-9];
-		DH   = [a-fA-F0-9_];
-		BP   = ("0"[bB]);
-		HP   = ("0"[xX]);
-		E    = ([Ee][+-]?DD+);
-		FS   = [fFlL];
-		IS   = (([uU]("l"|"L"|"ll"|"LL")?)|(("l"|"L"|"ll"|"LL")[uU]?));
+		D    = [0-9];							// decimal digit
+		DD   = [0-9_];							// decorated decimal digit
+		B    = [01];							// binary digit
+		DB   = [01_];							// decorated binary digit
+		H    = [a-fA-F0-9];						// hexadecimal digit
+		DH   = [a-fA-F0-9_];					// decorated hexadecimal digit
+		BP   = "0"[bB];							// binary integer prefix
+		HP   = "0"[xX];							// hexadecimal integer prefix
+		E    = [Ee][+-]?DD+;					// exponent
+		FS   = [fFlL];							// float suffixes
+		IS   = [uU]("l"|"L"|"ll"|"LL")? | ("l"|"L"|"ll"|"LL")[uU]?;
 
-		BP B DB* IS?                    { return i; }
-		HP H DH* IS?                    { return i; }
-		D DD* IS?                       { return i; }
-		(D DD*)? ("." D DD*)? E? FS?    { return i; }
+		D DD* IS?               { return i; }	// decimal integer
+		BP B DB* IS?            { return i; }	// binary integer
+		HP H DH* IS?            { return i; }	// hexadecimal integer
+		"." D DD* E? FS?        { return i; }	// float
+		D DD* "." D DD* E? FS?  { return i; }
 
 		$ { return start; }
 		* { return start; }

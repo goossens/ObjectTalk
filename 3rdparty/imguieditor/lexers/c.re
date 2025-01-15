@@ -8,6 +8,45 @@
 
 
 //
+//	getCStyleIdentifier
+//
+
+static TextEditor::Iterator getCStyleIdentifier(TextEditor::Iterator start, TextEditor::Iterator end) {
+	static bool identifierStart[128] = {
+		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+		false,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
+		 true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true, false, false, false, false,  true,
+		false,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
+		 true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true, false, false, false, false, false
+	};
+
+	static bool identifierNoneStart[128] = {
+		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+		 true,  true,  true,  true,  true,  true,  true,  true,  true,  true, false, false, false, false, false, false,
+		false,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
+		 true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true, false, false, false, false,  true,
+		false,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
+		 true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true, false, false, false, false, false
+	};
+
+	if (start < end && *start < 128 && identifierStart[*start]) {
+		start++;
+
+		while (start < end && *start < 128 && identifierNoneStart[*start]) {
+			start++;
+		}
+	}
+
+	return start;
+}
+
+
+//
 //	getCStyleNumber
 //
 
@@ -27,27 +66,28 @@ static TextEditor::Iterator getCStyleNumber(TextEditor::Iterator start, TextEdit
 		re2c:yyfill:enable = 0;
 		re2c:eof = 0;
 
-		B    = [01];
-		O    = [0-7];
-		D    = [0-9];
-		NZ   = [1-9];
-		H    = [a-fA-F0-9];
-		BP   = ("0"[bB]);
-		HP   = ("0"[xX]);
-		E    = ([Ee][+-]?D+);
-		P    = ([Pp][+-]?D+);
-		FS   = [fFlL];
-		IS   = (([uU]("l"|"L"|"ll"|"LL")?)|(("l"|"L"|"ll"|"LL")[uU]?));
+		D    = [0-9];						// decimal digit
+		NZ   = [1-9];						// non-zero digit
+		B    = [01];						// binary digit
+		O    = [0-7];						// octal digit
+		H    = [a-fA-F0-9];					// hexadecimal digit
+		BP   = "0"[bB];						// binary integer prefix
+		HP   = "0"[xX];						// hexadecimal integer prefix
+		E    = [Ee][+-]?D+;					// decimal exponent
+		P    = [Pp][+-]?D+;					// hexadecimal exponent
+		FS   = [fFlL];						// float suffixes
+		IS   = [uU]("l"|"L"|"ll"|"LL")? | ("l"|"L"|"ll"|"LL")[uU]?;
 
-		BP B+ IS?  { return i; }
-		HP H+ IS?  { return i; }
-		NZ D* IS?  { return i; }
-		"0" O* IS? { return i; }
+		NZ D* IS?           { return i; }	// decimal integer
+		BP B+ IS?           { return i; }	// binary integer
+		HP H+ IS?           { return i; }	// hexadecimal integer
+		"0" O* IS?          { return i; }	// octal integer
 
-		D+ E FS?            { return i; }
+		D+ E FS?            { return i; }	//floats
 		D* "." D+ E? FS?    { return i; }
 		D+ "." E? FS?       { return i; }
-		HP H+ P FS?         { return i; }
+
+		HP H+ P FS?         { return i; }	// hexadecimal float
 		HP H* "." H+ P FS?  { return i; }
 		HP H+ "." P FS?     { return i; }
 
@@ -55,3 +95,25 @@ static TextEditor::Iterator getCStyleNumber(TextEditor::Iterator start, TextEdit
 		* { return start; }
 	*/
 }
+
+
+//
+//	isCStylePunctuation
+//
+
+static bool isCStylePunctuation(ImWchar character) {
+	static bool punctuation[128] = {
+		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+		false,  true, false, false, false,  true,  true, false,  true,  true,  true,  true,  true,  true,  true,  true,
+		false, false, false, false, false, false, false, false, false, false,  true,  true,  true,  true,  true,  true,
+		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+		false, false, false, false, false, false, false, false, false, false, false,  true, false,  true,  true, false,
+		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+		false, false, false, false, false, false, false, false, false, false, false,  true,  true,  true,  true, false,
+	};
+
+	return character < 127 ? punctuation[character] : false;
+}
+
+

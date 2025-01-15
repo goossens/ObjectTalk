@@ -9,7 +9,7 @@
 //	Include files
 //
 
-#include <cctype>
+#include <cmath>
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
@@ -468,8 +468,8 @@ void TextEditor::handleMouseInteractions() {
 		bool overLineNumbers = showLineNumbers && (mousePos.x - ImGui::GetScrollX() < textStart);
 
 		auto mouseCoord = document.normalizeCoordinate(Coordinate(
-			std::max(0, static_cast<int>(floor(mousePos.y / glyphSize.y))),
-			std::max(0, static_cast<int>(floor((mousePos.x - textStart) / glyphSize.x)))
+			std::max(0, static_cast<int>(std::floor(mousePos.y / glyphSize.y))),
+			std::max(0, static_cast<int>(std::floor((mousePos.x - textStart) / glyphSize.x)))
 		));
 
 		// show text cursor if required
@@ -993,7 +993,7 @@ void TextEditor::handleCharacter(ImWchar character) {
 
 		// just insert a regular character
 		std::string utf8(4, 0);
-		std::string text(utf8.begin(), CodePoint::put(utf8.begin(), character));
+		std::string text(utf8.begin(), document.getCodePoint().write(utf8.begin(), character));
 		insertTextIntoAllCursors(transaction, text);
 	}
 
@@ -1019,6 +1019,7 @@ void TextEditor::handleBackspace(bool wordMode) {
 
 	endTransaction(transaction);
 }
+
 
 //
 //	TextEditor::handleDelete
@@ -1254,7 +1255,7 @@ void TextEditor::toggleComments() {
 				int start = 0;
 				int i = 0;
 
-				while (start < document[line].glyphs() && CodePoint::isSpace(document[line][start].character)) {
+				while (start < document[line].glyphs() && document.getCodePoint().isSpace(document[line][start].character)) {
 					start++;
 				}
 
@@ -1297,7 +1298,7 @@ void TextEditor::stripTrailingWhitespaces() {
 
 		// look for first non-whitespace glyph at the end of the line
 		for (auto index = size - 1; !done && index >= 0; index--) {
-			if (CodePoint::isSpace(line[index].character)) {
+			if (document.getCodePoint().isSpace(line[index].character)) {
 				whitespace = index;
 
 			} else {
@@ -1513,8 +1514,8 @@ void TextEditor::autoIndentAllCursors(std::shared_ptr<Transaction> transaction) 
 		ImWchar nextChar = index < line.size() ? line[index].character : 0;
 
 		// remove extra whitespaces if required
-		if (CodePoint::isSpace(nextChar)) {
-			while (index < line.size() && CodePoint::isSpace(line[index].character)) {
+		if (document.getCodePoint().isSpace(nextChar)) {
+			while (index < line.size() && document.getCodePoint().isSpace(line[index].character)) {
 				index++;
 			}
 
@@ -1526,7 +1527,7 @@ void TextEditor::autoIndentAllCursors(std::shared_ptr<Transaction> transaction) 
 		// determine whitespace at start of current line
 		std::string whitespace;
 
-		for (auto i = 0; i < line.size() && CodePoint::isSpace(line[i].character); i++) {
+		for (auto i = 0; i < line.size() && document.getCodePoint().isSpace(line[i].character); i++) {
 			whitespace += line[i].character;
 		}
 
@@ -1750,7 +1751,7 @@ void TextEditor::updatePalette() {
 
 const TextEditor::Palette& TextEditor::GetDarkPalette() {
 	const static Palette p = {{
-		IM_COL32(220, 223, 228, 255),	// standard
+		IM_COL32(220, 223, 228, 255),	// text
 		IM_COL32(224, 108, 117, 255),	// keyword
 		IM_COL32( 90, 179, 155, 255),	// declaration
 		IM_COL32(229, 192, 123, 255),	// number
@@ -1779,7 +1780,7 @@ const TextEditor::Palette& TextEditor::GetDarkPalette() {
 const TextEditor::Palette& TextEditor::GetLightPalette()
 {
 	const static Palette p = {{
-		IM_COL32( 64,  64,  64, 255),	// standard
+		IM_COL32( 64,  64,  64, 255),	// text
 		IM_COL32(  6,  12, 255, 255),	// keyword
 		IM_COL32(  6,  12, 255, 255),	// declaration
 		IM_COL32(  0, 128,   0, 255),	// number

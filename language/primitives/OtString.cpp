@@ -80,7 +80,7 @@ OtObject OtStringClass::iterate() {
 
 int OtStringClass::toCodePoint() {
 	char32_t codepoint;
-	OtCodePoint::get(value.begin(), &codepoint);
+	OtCodePoint::read(value.begin(), &codepoint);
 	return static_cast<int>(codepoint);
 }
 
@@ -91,9 +91,10 @@ int OtStringClass::toCodePoint() {
 
 std::string OtStringClass::fromCodePoint(int codepoint) {
 	std::string utf8(4, 0);
-	std::string text(utf8.begin(), OtCodePoint::put(utf8.begin(), codepoint));
+	std::string text(utf8.begin(), OtCodePoint::write(utf8.begin(), codepoint));
 	return text;
 }
+
 
 //
 //	OtStringClass::split
@@ -112,6 +113,7 @@ OtObject OtStringClass::split(const std::string& delimiter) {
 	result->append(OtString::create(value.substr(start)));
 	return result;
 }
+
 
 //
 //	OtStringClass::format

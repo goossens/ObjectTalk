@@ -42,3 +42,24 @@ static TextEditor::Iterator getLuaStyleNumber(TextEditor::Iterator start, TextEd
 		* { return start; }
 	*/
 }
+
+
+//
+//	isLuaStylePuctuation
+//	[]{}!%#^&*()-+=~|<>?:/;,.
+//
+
+static bool isLuaStylePunctuation(ImWchar character) {
+	static bool punctuation[128] = {
+		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+		false,  true, false,  true, false,  true,  true, false,  true,  true,  true,  true,  true,  true,  true,  true,
+		false, false, false, false, false, false, false, false, false, false,  true,  true,  true,  true,  true,  true,
+		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+		false, false, false, false, false, false, false, false, false, false, false,  true, false,  true,  true, false,
+		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+		false, false, false, false, false, false, false, false, false, false, false,  true,  true,  true,  true, false,
+	};
+
+	return character < 127 ? punctuation[character] : false;
+}

@@ -97,14 +97,13 @@ static TextEditor::Language& getLanguageDefinition() {
 	static TextEditor::Language language;
 
 	if (!initialized) {
+		// inherit from the C language
+		language = TextEditor::Language::C();
+
+		// set ObjectTalk unique features
 		language.name = "ObjectTalk";
-		language.commentStart = "/*";
-		language.commentEnd = "*/";
-		language.singleLineComment = "//";
 		language.singleLineCommentAlt = "#";
 		language.hasSingleQuotedStrings = false;
-		language.hasDoubleQuotedStrings = true;
-		language.stringEscape = '\\';
 
 		static const char* const keywords[] = {
 			"catch", "do", "elif", "else", "for", "if", "in", "not", "return", "super", "throw", "try", "while"
@@ -122,15 +121,16 @@ static TextEditor::Language& getLanguageDefinition() {
 			"e", "false", "null", "pi", "print", "true"
 		};
 
+		language.keywords.clear();
+		language.declarations.clear();
+		language.identifiers.clear();
+
 		for (auto& keyword : keywords) { language.keywords.insert(keyword); }
 		for (auto& declaration : declarations) { language.declarations.insert(declaration); }
 		for (auto& identifier : functions) { language.identifiers.insert(identifier); }
 		for (auto& identifier : constants) { language.identifiers.insert(identifier); }
 
-		language.isPunctuation = TextEditor::Language::isCStylePunctuation;
-		language.getIdentifier = TextEditor::Language::getCStyleIdentifier;
 		language.getNumber = getObjectTalkStyleNumber;
-
 		initialized = true;
 	}
 

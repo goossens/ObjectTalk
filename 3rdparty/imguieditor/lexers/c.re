@@ -115,5 +115,3 @@ static bool isCStylePunctuation(ImWchar character) {
 
 	return character < 127 ? punctuation[character] : false;
 }
-
-

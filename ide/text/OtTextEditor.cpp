@@ -56,9 +56,9 @@ const static TextEditor::Palette colorPalette = {{
 	IM_COL32( 32,  96, 160, 255),	// selection
 	IM_COL32(128,   0,  32, 255),	// errorMarker
 	IM_COL32( 90,  90,  90, 255),	// whitespace
-	IM_COL32(246, 222,  36, 255),	// matchingBracket1
-	IM_COL32( 66, 120, 198, 255),	// matchingBracket2
-	IM_COL32(213,  96, 213, 255),	// matchingBracket3
+	IM_COL32(246, 222,  36, 255),	// matchingBracketLevel1
+	IM_COL32( 66, 120, 198, 255),	// matchingBracketLevel2
+	IM_COL32(213,  96, 213, 255),	// matchingBracketLevel3
 	IM_COL32(198,   8,  32, 255),	// matchingBracketError
 	IM_COL32(128, 128, 144, 255),	// line number
 	IM_COL32(224, 224, 240, 255),	// current line number

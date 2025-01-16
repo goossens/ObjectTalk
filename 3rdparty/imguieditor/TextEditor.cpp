@@ -28,7 +28,6 @@ void TextEditor::setText(const std::string &text) {
 	cursors.clearAll();
 }
 
-
 //
 //	TextEditor::render
 //
@@ -124,7 +123,7 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 	visibleHeight = ImGui::GetWindowHeight() - ((longestLine >= visibleColumns) ? scrollbarSize : 0.0f);
 	visibleLines = std::max(static_cast<int>(std::ceil(visibleHeight / glyphSize.y)), 0);
 	firstVisibleLine = std::max(static_cast<int>(std::floor(ImGui::GetScrollY() / glyphSize.y)), 0);
-	lastVisibleLine = static_cast<int>(std::ceil((ImGui::GetScrollY() + visibleHeight) / glyphSize.y));
+	lastVisibleLine = std::min(static_cast<int>(std::ceil((ImGui::GetScrollY() + visibleHeight) / glyphSize.y)), document.lines() - 1);
 
 	auto tabSize = document.getTabSize();
 	visibleWidth = ImGui::GetWindowWidth() - textStart - ((document.lines() >= visibleLines) ? scrollbarSize : 0.0f);
@@ -134,6 +133,7 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 
 	// render editor parts
 	renderSelections();
+	renderErrorMarkers();
 	renderMatchingBrackets();
 	renderText();
 	renderCursors();
@@ -169,6 +169,37 @@ void TextEditor::renderSelections() {
 					auto right = x + (line == last ? end.column : document.maxColumn(line)) * glyphSize.x;
 					auto y = cursorScreenPos.y + line * glyphSize.y;
 					drawList->AddRectFilled(ImVec2(left, y), ImVec2(right, y + glyphSize.y), palette.get(Color::selection));
+				}
+			}
+		}
+	}
+}
+
+
+//
+//	TextEditor::renderErrorMarkers
+//
+
+void TextEditor::renderErrorMarkers() {
+	if (errorMarkers.size()) {
+		auto drawList = ImGui::GetWindowDrawList();
+		ImVec2 cursorScreenPos = ImGui::GetCursorScreenPos();
+
+		for (int line = firstVisibleLine; line <= lastVisibleLine; line++) {
+			if (document[line].errorMarker) {
+				auto left = cursorScreenPos.x + textStart;
+				auto right = left + document.maxColumn(line) * glyphSize.x;
+				auto y = cursorScreenPos.y + line * glyphSize.y;
+				auto start = ImVec2(left, y);
+				auto end = ImVec2(right, y + glyphSize.y);
+				drawList->AddRectFilled(start, end, palette.get(Color::errorMarker));
+
+				if (ImGui::IsMouseHoveringRect(start, end)) {
+					ImGui::PushStyleColor(ImGuiCol_PopupBg, palette.get(Color::errorMarker));
+					ImGui::BeginTooltip();
+					ImGui::TextUnformatted(errorMarkers[document[line].errorMarker - 1].c_str());
+					ImGui::EndTooltip();
+					ImGui::PopStyleColor();
 				}
 			}
 		}
@@ -234,7 +265,7 @@ void TextEditor::renderText() {
 	ImVec2 lineScreenPos = cursorScreenPos + ImVec2(textStart, firstVisibleLine * glyphSize.y);
 	auto tabSize = document.getTabSize();
 
-	for (int i = firstVisibleLine; i <= lastVisibleLine && i < document.lines(); i++) {
+	for (int i = firstVisibleLine; i <= lastVisibleLine; i++) {
 		auto& line = document[i];
 
 		// draw colored glyphs for current line
@@ -331,7 +362,7 @@ void TextEditor::renderLineNumbers() {
 		// get the line number of the last cursor
 		auto curserLine = cursors.getCurrent().getInteractiveEnd().line;
 
-		for (int i = firstVisibleLine; i <= lastVisibleLine && i < document.lines(); i++) {
+		for (int i = firstVisibleLine; i <= lastVisibleLine; i++) {
 			int digits = static_cast<int>(std::log10(i + 1) + 1.0f);
 			auto lineNumberWidth = (digits + lineNumberMargin) * glyphSize.x;
 			Color foreground =  i == curserLine ? Color::currentLineNumber : Color::lineNumber;
@@ -1571,161 +1602,27 @@ TextEditor::Coordinate TextEditor::insertText(std::shared_ptr<Transaction> trans
 
 
 //
-//	TextEditor::deleteText
+//	TextEditor::AddErrorMarker
 //
 
-void TextEditor::deleteText(std::shared_ptr<Transaction> transaction, Coordinate start, Coordinate end) {
-	// update document and add transaction
-	// this function does not touch the cursors
-	auto text = document.getSectionText(start, end);
-	document.deleteText(start, end);
-	transaction->addDelete(start, end, text);
-}
-
-
-//
-//	TextEditor::Transactions::add
-//
-
-void TextEditor::Transactions::add(std::shared_ptr<Transaction> transaction) {
-	resize(undoIndex);
-	push_back(transaction);
-	undoIndex++;
-}
-
-
-//
-//	TextEditor::Transactions::undo
-//
-
-void TextEditor::Transactions::undo(Document& document, Cursors& cursors) {
-	auto& transaction = at(--undoIndex);
-
-	for (auto i = transaction->rbegin(); i < transaction->rend(); i++) {
-		if (i->type == Action::Type::insertText) {
-			document.deleteText(i->start, i->end);
-
-		} else {
-			document.insertText(i->start, i->text);
-		}
-	}
-
-	cursors = transaction->getBeforeState();
-}
-
-
-//
-//	TextEditor::Transactions::redo
-//
-
-void TextEditor::Transactions::redo(Document& document, Cursors& cursors) {
-	auto& transaction = at(undoIndex++);
-
-	for (auto& action : *transaction) {
-		if (action.type == Action::Type::insertText) {
-			document.insertText(action.start, action.text);
-
-		} else {
-			document.deleteText(action.start, action.end);
-		}
-	}
-
-	cursors = transaction->getAfterState();
-}
-
-
-//
-//	TextEditor::Brackets::update
-//
-
-void TextEditor::Brackets::update(Document& document) {
-	Color bracketColors[] = {
-		Color::matchingBracket1,
-		Color::matchingBracket2,
-		Color::matchingBracket3
-	};
-
-	clear();
-	std::vector<size_t> levels;
-	int level = 0;
-
-	// process all the glyphs
-	for (auto line = 0; line < document.lines(); line++) {
-		for (auto index = 0; index < document[line].glyphs(); index++) {
-			auto& glyph = document[line][index];
-
-			// handle a bracket opener that is not in a comment, string or preprocessor statement
-			if (isBracketCandidate(glyph) && isBracketOpener(glyph.character)) {
-				// start a new level
-				levels.emplace_back(size());
-				emplace_back(glyph.character, Coordinate(line, document.getColumn(line, index)), 0, Coordinate::invalid(), level);
-				glyph.color = bracketColors[level % 3];
-				level++;
-
-			// handle a bracket closer that is not in a comment, string or preprocessor statement
-			} else if (isBracketCandidate(glyph) && isBracketCloser(glyph.character)) {
-				if (levels.size()) {
-					auto& lastBracket = at(levels.back());
-					levels.pop_back();
-					level--;
-
-					if (lastBracket.startChar == toBracketOpener(glyph.character)) {
-						// handle matching bracket
-						glyph.color = bracketColors[level % 3];
-						lastBracket.endChar = glyph.character;
-						lastBracket.end = Coordinate(line, document.getColumn(line, index));
-
-					} else {
-						// no matching bracket, mark brackets as errors
-						glyph.color = Color::matchingBracketError;
-						document[lastBracket.start.line][document.getIndex(lastBracket.start)].color = Color::matchingBracketError;
-						pop_back();
-					}
-
-				// this is a closer without an opener
-				} else {
-					glyph.color = Color::matchingBracketError;
-				}
-			}
-		}
-	}
-
-	// handle levels left open and mark them as errors
-	if (levels.size()) {
-		for (auto i = levels.rbegin(); i < levels.rend(); i++) {
-			auto& start = at(*i).start;
-			document[start.line][document.getIndex(start)].color = Color::matchingBracketError;
-			erase(begin() + *i);
-		}
+void TextEditor::AddErrorMarker(int line, const std::string &marker) {
+	if (line >= 0 && line < document.lines()) {
+		errorMarkers.emplace_back(marker);
+		document[line].errorMarker = errorMarkers.size();
 	}
 }
 
 
 //
-//	TextEditor::Brackets::getActive
+//	TextEditor::ClearErrorMarkers
 //
 
-TextEditor::Brackets::iterator TextEditor::Brackets::getActive(Coordinate location) {
-	if (location != activeLocation) {
-		active = end();
-		bool done = false;
-
-		for (auto i = begin(); i < end(); i++) {
-			// skip pairs that start after specified location
-			if (i->isAfter(location)) {
-				done = true;
-			}
-
-			// brackets are active when they are around specified location
-			else if (i->isAround(location)) {
-				active = i;
-			}
-		}
-
-		activeLocation = location;
+void TextEditor::ClearErrorMarkers() {
+	for (auto& line : document) {
+		line.errorMarker = 0;
 	}
 
-	return active;
+	errorMarkers.clear();
 }
 
 
@@ -1766,9 +1663,9 @@ const TextEditor::Palette& TextEditor::GetDarkPalette() {
 		IM_COL32( 32,  96, 160, 128),	// selection
 		IM_COL32(255,  32,   0, 128),	// errorMarker
 		IM_COL32(255, 255, 255,  21),	// whitespace
-		IM_COL32(246, 222,  36, 255),	// matchingBracket1
-		IM_COL32( 66, 120, 198, 255),	// matchingBracket2
-		IM_COL32(213,  96, 213, 255),	// matchingBracket3
+		IM_COL32(246, 222,  36, 255),	// matchingBracketLevel1
+		IM_COL32( 66, 120, 198, 255),	// matchingBracketLevel2
+		IM_COL32(213,  96, 213, 255),	// matchingBracketLevel3
 		IM_COL32(198,   8,  32, 255),	// matchingBracketError
 		IM_COL32(122, 131, 148, 255),	// line number
 		IM_COL32(255, 255, 255, 255),	// current line number
@@ -1795,9 +1692,9 @@ const TextEditor::Palette& TextEditor::GetLightPalette()
 		IM_COL32(  0,   0,  96,  64),	// selection
 		IM_COL32(255,  16,   0, 160),	// errorMarker
 		IM_COL32(144, 144, 144, 144),	// whitespace
-		IM_COL32(246, 222,  36, 255),	// matchingBracket1
-		IM_COL32( 66, 120, 198, 255),	// matchingBracket2
-		IM_COL32(213,  96, 213, 255),	// matchingBracket3
+		IM_COL32(246, 222,  36, 255),	// matchingBracketLevel1
+		IM_COL32( 66, 120, 198, 255),	// matchingBracketLevel2
+		IM_COL32(213,  96, 213, 255),	// matchingBracketLevel3
 		IM_COL32(198,   8,  32, 255),	// matchingBracketError
 		IM_COL32(  0,  80,  80, 255),	// line number
 		IM_COL32(  0,   0,   0, 255),	// current line number

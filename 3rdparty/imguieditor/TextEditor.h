@@ -16,7 +16,6 @@
 #include <array>
 #include <functional>
 #include <iterator>
-#include <map>
 #include <memory>
 #include <string>
 #include <unordered_set>
@@ -69,7 +68,7 @@ public:
 	// render the text editor in a Dear ImGui context
 	inline void Render(const char* title, const ImVec2& size=ImVec2(), bool border=false) { render(title, size, border); }
 
-	// manipulate cursors and selections
+	// manipulate cursors and selections (line numbers are zero-based)
 	inline void SetCursor(int line, int column) { moveTo(document.normalizeCoordinate(Coordinate(line, column)), false); }
 	inline void SelectAll() { selectAll(); }
 	inline void SelectLine(int line) { if (line >= 0 && line < document.lines()) selectLine(line); }
@@ -98,9 +97,9 @@ public:
 	inline void ReplaceTextInCurrentCursor(const std::string& text) { if (!readOnly) replaceTextInCurrentCursor(text); }
 	inline void ReplaceTextInAllCursors(const std::string& text) { if (!readOnly) replaceTextInAllCursors(text); }
 
-	// access error markers
-	inline void SetErrorMarkers(const std::map<int, std::string>& markers) { errorMarkers = markers; }
-	inline void ClearErrorMarkers() { errorMarkers.clear(); }
+	// access error markers (line numbers are zero-based)
+	void AddErrorMarker(int line, const std::string& marker);
+	void ClearErrorMarkers();
 	inline bool HasErrorMarkers() const { return errorMarkers.size() != 0; }
 
 	// useful editor functions
@@ -132,9 +131,9 @@ public:
 		selection,
 		errorMarker,
 		whitespace,
-		matchingBracket1,
-		matchingBracket2,
-		matchingBracket3,
+		matchingBracketLevel1,
+		matchingBracketLevel2,
+		matchingBracketLevel3,
 		matchingBracketError,
 		lineNumber,
 		currentLineNumber,
@@ -442,6 +441,9 @@ private:
 
 		// state at start of line
 		State state = State::inText;
+
+		// error marker
+		size_t errorMarker;
 	};
 
 	// support unicode codepoints
@@ -645,6 +647,7 @@ private:
 	// render (parts of) the text editor
 	void render(const char* title, const ImVec2& size, bool border);
 	void renderSelections();
+	void renderErrorMarkers();
 	void renderMatchingBrackets();
 	void renderText();
 	void renderCursors();
@@ -724,9 +727,9 @@ private:
 	// utility functions
 	static inline bool isBracketCandidate(Glyph& glyph) {
 		return glyph.color == Color::punctuation ||
-			glyph.color == Color::matchingBracket1 ||
-			glyph.color == Color::matchingBracket2 ||
-			glyph.color == Color::matchingBracket3 ||
+			glyph.color == Color::matchingBracketLevel1 ||
+			glyph.color == Color::matchingBracketLevel2 ||
+			glyph.color == Color::matchingBracketLevel3 ||
 			glyph.color == Color::matchingBracketError;
 	}
 
@@ -762,7 +765,7 @@ private:
 	bool ensureCursorIsVisible = false;
 	float cursorAnimationTimer = 0.0f;
 	bool lastShowMatchingBrackets = true;
-	std::map<int, std::string> errorMarkers;
+	std::vector<std::string> errorMarkers;
 
 	static constexpr int leftMargin = 2;
 	static constexpr int lineNumberMargin = 2;

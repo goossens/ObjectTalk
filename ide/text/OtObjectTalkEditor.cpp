@@ -152,9 +152,7 @@ OtObjectTalkEditor::OtObjectTalkEditor() {
 //
 
 void OtObjectTalkEditor::highlightError(size_t line, const std::string& error) {
-	std::map<int, std::string> markers;
-	markers[(int) line] = error;
-	editor.SetErrorMarkers(markers);
+	editor.AddErrorMarker(line - 1, error);
 	scrollToLine = (int) line;
 	focusOnEditor = true;
 }
@@ -165,6 +163,5 @@ void OtObjectTalkEditor::highlightError(size_t line, const std::string& error) {
 //
 
 void OtObjectTalkEditor::clearError() {
-	std::map<int, std::string> markers;
-	editor.SetErrorMarkers(markers);
+	editor.ClearErrorMarkers();
 }

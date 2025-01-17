@@ -151,15 +151,14 @@ std::string OtText::set(const std::string& text, size_t offset, const std::strin
 //
 
 std::string OtText::lower(const std::string& text) {
-	std::string result(text.length(), 0);
+	std::string result;
 	auto i = text.begin();
-	auto i2 = result.begin();
+	std::string utf8(4, 0);
 
 	while (i < text.end()) {
 		char32_t codepoint;
-
 		i = OtCodePoint::read(i, &codepoint);
-		i2 = OtCodePoint::write(i2, OtCodePoint::isLowerCase(codepoint));
+		result.append(utf8.begin(), OtCodePoint::write(utf8.begin(), OtCodePoint::toLowerCase(codepoint)));
 	}
 
 	return result;
@@ -171,15 +170,14 @@ std::string OtText::lower(const std::string& text) {
 //
 
 std::string OtText::upper(const std::string& text) {
-	std::string result(text.length(), 0);
+	std::string result;
 	auto i = text.begin();
-	auto i2 = result.begin();
+	std::string utf8(4, 0);
 
 	while (i < text.end()) {
 		char32_t codepoint;
-
 		i = OtCodePoint::read(i, &codepoint);
-		i2 = OtCodePoint::write(i2, OtCodePoint::isUpperCase(codepoint));
+		result.append(utf8.begin(), OtCodePoint::write(utf8.begin(), OtCodePoint::toUpperCase(codepoint)));
 	}
 
 	return result;
@@ -200,8 +198,8 @@ int32_t OtText::caseCmp(const std::string& s1, const std::string& s2) {
 		i1 = OtCodePoint::read(i1, &cp1);
 		i2 = OtCodePoint::read(i2, &cp2);
 
-		cp1 = OtCodePoint::isLowerCase(cp1);
-		cp2 = OtCodePoint::isLowerCase(cp2);
+		cp1 = OtCodePoint::toLowerCase(cp1);
+		cp2 = OtCodePoint::toLowerCase(cp2);
 
 		if (cp1 != cp2) {
 			return static_cast<int32_t>(cp1 - cp2);

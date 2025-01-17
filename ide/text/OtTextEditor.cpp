@@ -15,6 +15,8 @@
 
 #include "imgui.h"
 
+#include "OtText.h"
+
 #include "OtCodePoint.h"
 #include "OtMessageBus.h"
 #include "OtUi.h"
@@ -131,17 +133,17 @@ void OtTextEditor::renderMenu(bool canRun) {
 		renderFileMenu(canRun);
 
 		if (ImGui::BeginMenu("Edit")) {
-			if (ImGui::MenuItem("Undo", " " OT_UI_SHORTCUT "Z", nullptr, editor.CanUndo())) { editor.Undo(); }
+			if (ImGui::MenuItem("Undo", " " OT_UI_SHORTCUT "Z", nullptr, editor.CanUndo())) { editor.Undo(); focusOnEditor = true; }
 #if __APPLE__
-			if (ImGui::MenuItem("Redo", "^" OT_UI_SHORTCUT "Z", nullptr, editor.CanRedo())) { editor.Redo(); }
+			if (ImGui::MenuItem("Redo", "^" OT_UI_SHORTCUT "Z", nullptr, editor.CanRedo())) { editor.Redo(); focusOnEditor = true; }
 #else
-			if (ImGui::MenuItem("Redo", " " OT_UI_SHORTCUT "Y", nullptr, editor.CanRedo())) { editor.Redo(); }
+			if (ImGui::MenuItem("Redo", " " OT_UI_SHORTCUT "Y", nullptr, editor.CanRedo())) { editor.Redo(); focusOnEditor = true; }
 #endif
 
 			ImGui::Separator();
-			if (ImGui::MenuItem("Cut", " " OT_UI_SHORTCUT "X", nullptr, editor.AnyCursorHasSelection())) { editor.Cut(); }
-			if (ImGui::MenuItem("Copy", " " OT_UI_SHORTCUT "C", nullptr, editor.AnyCursorHasSelection())) { editor.Copy(); }
-			if (ImGui::MenuItem("Paste", " " OT_UI_SHORTCUT "V", nullptr, ImGui::GetClipboardText() != nullptr)) { editor.Paste(); }
+			if (ImGui::MenuItem("Cut", " " OT_UI_SHORTCUT "X", nullptr, editor.AnyCursorHasSelection())) { editor.Cut(); focusOnEditor = true; }
+			if (ImGui::MenuItem("Copy", " " OT_UI_SHORTCUT "C", nullptr, editor.AnyCursorHasSelection())) { editor.Copy(); focusOnEditor = true; }
+			if (ImGui::MenuItem("Paste", " " OT_UI_SHORTCUT "V", nullptr, ImGui::GetClipboardText() != nullptr)) { editor.Paste(); focusOnEditor = true; }
 
 			ImGui::Separator();
 			if (ImGui::MenuItem("Tabs To Spaces")) { editor.TabsToSpaces(); focusOnEditor = true; }
@@ -154,15 +156,19 @@ void OtTextEditor::renderMenu(bool canRun) {
 			if (ImGui::MenuItem("Select All", " " OT_UI_SHORTCUT "A", nullptr, !editor.IsEmpty())) { editor.SelectAll(); }
 			ImGui::Separator();
 
-			if (ImGui::MenuItem("Indent Line(s)", " " OT_UI_SHORTCUT "]", nullptr, !editor.IsEmpty())) { editor.IndentLines(); }
-			if (ImGui::MenuItem("Deindent Line(s)", " " OT_UI_SHORTCUT "[", nullptr, !editor.IsEmpty())) { editor.DeindentLines(); }
-			if (ImGui::MenuItem("Move Line(s) Up", " " OT_UI_SHORTCUT "\u2191", nullptr, !editor.IsEmpty())) { editor.MoveUpLines(); }
-			if (ImGui::MenuItem("Move Line(s) Down", " " OT_UI_SHORTCUT "\u2193", nullptr, !editor.IsEmpty())) { editor.MoveDownLines(); }
+			if (ImGui::MenuItem("Indent Line(s)", " " OT_UI_SHORTCUT "]", nullptr, !editor.IsEmpty())) { editor.IndentLines(); focusOnEditor = true; }
+			if (ImGui::MenuItem("Deindent Line(s)", " " OT_UI_SHORTCUT "[", nullptr, !editor.IsEmpty())) { editor.DeindentLines(); focusOnEditor = true; }
+			if (ImGui::MenuItem("Move Line(s) Up", " " OT_UI_SHORTCUT "\u2191", nullptr, !editor.IsEmpty())) { editor.MoveUpLines(); focusOnEditor = true; }
+			if (ImGui::MenuItem("Move Line(s) Down", " " OT_UI_SHORTCUT "\u2193", nullptr, !editor.IsEmpty())) { editor.MoveDownLines(); focusOnEditor = true; }
 			if (ImGui::MenuItem("Toggle Comments", " " OT_UI_SHORTCUT "/", nullptr, editor.HasLanguage())) { editor.ToggleComments(); focusOnEditor = true; }
 			ImGui::Separator();
 
-			if (ImGui::MenuItem("Add Next Occurrence", " " OT_UI_SHORTCUT "D", nullptr, editor.CurrentCursorHasSelection())) { editor.AddNextOccurrence(); }
-			if (ImGui::MenuItem("Select All Occurrences", "^" OT_UI_SHORTCUT "D", nullptr, editor.CurrentCursorHasSelection())) { editor.SelectAllOccurrences(); }
+			if (ImGui::MenuItem("To Uppercase", nullptr, nullptr, editor.AnyCursorHasSelection())) { toUpperCase(); focusOnEditor = true; }
+			if (ImGui::MenuItem("To Lowercase", nullptr, nullptr, editor.AnyCursorHasSelection())) { toLowerCase(); focusOnEditor = true; }
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Add Next Occurrence", " " OT_UI_SHORTCUT "D", nullptr, editor.CurrentCursorHasSelection())) { editor.AddNextOccurrence(); focusOnEditor = true; }
+			if (ImGui::MenuItem("Select All Occurrences", "^" OT_UI_SHORTCUT "D", nullptr, editor.CurrentCursorHasSelection())) { editor.SelectAllOccurrences(); focusOnEditor = true; }
 
 			ImGui::EndMenu();
 		}
@@ -172,20 +178,20 @@ void OtTextEditor::renderMenu(bool canRun) {
 			ImGui::Separator();
 
 			bool flag;
-			flag = editor.IsShowWhitespacesEnabled(); if (ImGui::MenuItem("Show Whitespaces", nullptr, &flag)) { editor.SetShowWhitespacesEnabled(flag); };
-			flag = editor.IsShowLineNumbersEnabled(); if (ImGui::MenuItem("Show Line Numbers", nullptr, &flag)) { editor.SetShowLineNumbersEnabled(flag); };
-			flag = editor.IsShowingMatchingBrackets(); if (ImGui::MenuItem("Show Matching Brackets", nullptr, &flag)) { editor.SetShowMatchingBrackets(flag); };
-			flag = editor.IsCompletingPairedGlyphs(); if (ImGui::MenuItem("Complete Matchng Glyphs", nullptr, &flag)) { editor.SetCompletePairedGlyphs(flag); };
+			flag = editor.IsShowWhitespacesEnabled(); if (ImGui::MenuItem("Show Whitespaces", nullptr, &flag)) { editor.SetShowWhitespacesEnabled(flag); focusOnEditor = true; };
+			flag = editor.IsShowLineNumbersEnabled(); if (ImGui::MenuItem("Show Line Numbers", nullptr, &flag)) { editor.SetShowLineNumbersEnabled(flag); focusOnEditor = true; };
+			flag = editor.IsShowingMatchingBrackets(); if (ImGui::MenuItem("Show Matching Brackets", nullptr, &flag)) { editor.SetShowMatchingBrackets(flag); focusOnEditor = true; };
+			flag = editor.IsCompletingPairedGlyphs(); if (ImGui::MenuItem("Complete Matching Glyphs", nullptr, &flag)) { editor.SetCompletePairedGlyphs(flag); focusOnEditor = true; };
 
 			ImGui::Separator();
-			if (ImGui::MenuItem("Clear Errors", nullptr, nullptr, editor.HasErrorMarkers())) { editor.ClearErrorMarkers(); }
+			if (ImGui::MenuItem("Clear Errors", nullptr, nullptr, editor.HasErrorMarkers())) { editor.ClearErrorMarkers(); focusOnEditor = true; }
 			ImGui::EndMenu();
 		}
 
 		if (ImGui::BeginMenu("Find")) {
 			if (ImGui::MenuItem("Find", " " OT_UI_SHORTCUT "F")) { openFindReplace(); }
-			if (ImGui::MenuItem("Find Next", " " OT_UI_SHORTCUT "G"), findText.size()) { findNext(); }
-			if (ImGui::MenuItem("Find All", "^" OT_UI_SHORTCUT "G", findText.size())) { findAll(); }
+			if (ImGui::MenuItem("Find Next", " " OT_UI_SHORTCUT "G"), findText.size()) { findNext(); focusOnEditor = true; }
+			if (ImGui::MenuItem("Find All", "^" OT_UI_SHORTCUT "G", findText.size())) { findAll(); focusOnEditor = true; }
 			ImGui::Separator();
 			ImGui::EndMenu();
 		}
@@ -426,4 +432,27 @@ void OtTextEditor::replaceAll() {
 		editor.ReplaceTextInAllCursors(replaceText);
 		focusOnEditor = true;
 	}
+}
+
+
+//
+//	OtTextEditor::toUpperCase
+//
+
+void OtTextEditor::toUpperCase() {
+	editor.FilterSelections([](const std::string& text) {
+		auto t = OtText::upper(text);
+		return OtText::upper(text);
+	});
+}
+
+
+//
+//	OtTextEditor::toLowerCase
+//
+
+void OtTextEditor::toLowerCase(){
+	editor.FilterSelections([](const std::string& text) {
+		return OtText::lower(text);
+	});
 }

@@ -1139,7 +1139,7 @@ void TextEditor::indentLines() {
 	// process all cursors
 	for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
 		auto cursorStart = cursor->getSelectionStart();
-		auto cursorEnd = cursor->getInteractiveEnd();
+		auto cursorEnd = cursor->getSelectionEnd();
 
 		// process all lines in this cursor
 		for (auto line = cursorStart.line; line <= cursorEnd.line; line++) {
@@ -1170,7 +1170,7 @@ void TextEditor::deindentLines() {
 	// process all cursors
 	for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
 		auto cursorStart = cursor->getSelectionStart();
-		auto cursorEnd = cursor->getInteractiveEnd();
+		auto cursorEnd = cursor->getSelectionEnd();
 		auto tabSize = document.getTabSize();
 
 		for (auto line = cursorStart.line; line <= cursorEnd.line; line++) {
@@ -1274,10 +1274,10 @@ void TextEditor::toggleComments() {
 	auto transaction = startTransaction();
 	auto comment = document.getLanguage().singleLineComment;
 
-	// process al cursors
+	// process all cursors
 	for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
 		auto cursorStart = cursor->getSelectionStart();
-		auto cursorEnd = cursor->getInteractiveEnd();
+		auto cursorEnd = cursor->getSelectionEnd();
 
 		// process all lines in this cursor
 		for (auto line = cursorStart.line; line <= cursorEnd.line; line++) {
@@ -1304,6 +1304,41 @@ void TextEditor::toggleComments() {
 					auto insertStart = Coordinate(line, document.getColumn(line, start));
 					auto insertEnd = insertText(transaction, insertStart, comment + " ");
 					cursors.adjustForInsert(cursor, insertStart, insertEnd);
+				}
+			}
+		}
+	}
+
+	endTransaction(transaction);
+}
+
+
+//
+//	TextEditor::filterSelections
+//
+
+void TextEditor::filterSelections(std::function<std::string(std::string)> filter) {
+	auto transaction = startTransaction();
+
+	// process all cursors
+	for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
+		auto start = cursor->getSelectionStart();
+		auto end = cursor->getSelectionEnd();
+
+		// process all lines in this cursor
+		for (auto line = start.line; line <= end.line; line++) {
+			if (Coordinate(line, 0) != end && document[line].glyphs()) {
+				// get original text and run it through filter
+				auto before = document.getSectionText(start, end);
+				std::string after = filter(before);
+
+				// update selection if anything changed
+				if (after != before) {
+					deleteText(transaction, start, end);
+					cursors.adjustForDelete(cursor, start, end);
+					auto newEnd = insertText(transaction, start, after);
+					cursor->update(start, newEnd);
+					cursors.adjustForInsert(cursor, start, newEnd);
 				}
 			}
 		}

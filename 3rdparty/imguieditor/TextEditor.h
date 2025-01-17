@@ -102,17 +102,22 @@ public:
 	void ClearErrorMarkers();
 	inline bool HasErrorMarkers() const { return errorMarkers.size() != 0; }
 
-	// useful editor functions
+	// useful editor functions to work on selections
 	inline void IndentLines() { if (!readOnly) indentLines(); }
 	inline void DeindentLines() { if (!readOnly) deindentLines(); }
 	inline void MoveUpLines() { if (!readOnly) moveUpLines(); }
 	inline void MoveDownLines() { if (!readOnly) moveDownLines(); }
 	inline void ToggleComments() { if (!readOnly && document.hasLanguage()) toggleComments(); }
+	inline void FilterSelections(std::function<std::string(std::string)> filter) { if (!readOnly) filterSelections(filter); }
 
+	// useful editor functions to work on entire text
 	inline void StripTrailingWhitespaces() { if (!readOnly) stripTrailingWhitespaces(); }
 	inline void FilterLines(std::function<std::string(std::string)> filter) { if (!readOnly) filterLines(filter); }
 	inline void TabsToSpaces() { if (!readOnly) tabsToSpaces(); }
 	inline void SpacesToTabs() { if (!readOnly) spacesToTabs(); }
+
+	// NOTE: filter function provided to FilterSelections or FilterLines
+	//       should accept and return UTF-8 encoded strings
 
 	// color palette support
 	enum class Color : char {
@@ -153,7 +158,7 @@ public:
 	static const Palette& GetDarkPalette();
 	static const Palette& GetLightPalette();
 
-	// iterator used in language specific tokonizer
+	// iterator used in language specific tokonizers
 	class Iterator {
 	public:
 		// constructors
@@ -209,6 +214,7 @@ public:
 		std::function<bool(ImWchar)> isPunctuation;
 		std::function<Iterator(Iterator start, Iterator end)> getIdentifier;
 		std::function<Iterator(Iterator start, Iterator end)> getNumber;
+
 		std::function<Iterator(Iterator start, Iterator end, Color& color)> customTokenizer;
 
 		static const Language& C();
@@ -239,7 +245,25 @@ public:
 		std::function<ImWchar(ImWchar)> toLower;
 	};
 
-	// specify unicode support function (used globally in all TextEditor instances)
+	// support unicode codepoints
+	class CodePoint {
+	public:
+		inline void setUnicode(const Unicode& u) { unicode = u; }
+
+		std::string::const_iterator read(std::string::const_iterator i, ImWchar* codepoint) const;
+		std::string::iterator write(std::string::iterator i, ImWchar codepoint) const;
+		bool isSpace(ImWchar codepoint) const;
+		bool isWord(ImWchar codepoint) const;
+		bool isUpper(ImWchar codepoint) const;
+		bool isLower(ImWchar codepoint) const;
+		ImWchar toUpper(ImWchar codepoint) const;
+		ImWchar toLower(ImWchar codepoint) const;
+
+	private:
+		Unicode unicode;
+	};
+
+	// specify unicode support function
 	inline void SetUnicode(const Unicode& unicode) { document.setUnicode(unicode); }
 
 private:
@@ -444,24 +468,6 @@ private:
 
 		// error marker
 		size_t errorMarker;
-	};
-
-	// support unicode codepoints
-	class CodePoint {
-	public:
-		inline void setUnicode(const Unicode& u) { unicode = u; }
-
-		std::string::const_iterator read(std::string::const_iterator i, ImWchar* codepoint) const;
-		std::string::iterator write(std::string::iterator i, ImWchar codepoint) const;
-		bool isSpace(ImWchar codepoint) const;
-		bool isWord(ImWchar codepoint) const;
-		bool isUpper(ImWchar codepoint) const;
-		bool isLower(ImWchar codepoint) const;
-		ImWchar toUpper(ImWchar codepoint) const;
-		ImWchar toLower(ImWchar codepoint) const;
-
-	private:
-		Unicode unicode;
 	};
 
 	// the document being edited (Lines of Glyphs)
@@ -707,7 +713,11 @@ private:
 	void moveDownLines();
 	void toggleComments();
 
-	// transform entire document
+
+	// transform selections (filter function should accept and return UTF-8 encoded strings)
+	void filterSelections(std::function<std::string(std::string)> filter);
+
+	// transform entire document (filter function should accept and return UTF-8 encoded strings)
 	void stripTrailingWhitespaces();
 	void filterLines(std::function<std::string(std::string)> filter);
 	void tabsToSpaces();

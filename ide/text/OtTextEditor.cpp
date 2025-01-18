@@ -25,20 +25,6 @@
 
 
 //
-//	Unicode support
-//
-
-static TextEditor::Unicode unicode{
-	nullptr,
-	nullptr,
-	OtCodePoint::isUpperCase,
-	OtCodePoint::isLowerCase,
-	OtCodePoint::toUpperCase,
-	OtCodePoint::toLowerCase
-};
-
-
-//
 //	Color palette
 //
 
@@ -72,7 +58,6 @@ const static TextEditor::Palette colorPalette = {{
 //
 
 OtTextEditor::OtTextEditor() {
-	editor.SetUnicode(unicode);
 	editor.SetShowWhitespacesEnabled(true);
 	editor.SetPalette(colorPalette);
 }
@@ -441,7 +426,6 @@ void OtTextEditor::replaceAll() {
 
 void OtTextEditor::toUpperCase() {
 	editor.FilterSelections([](const std::string& text) {
-		auto t = OtText::upper(text);
 		return OtText::upper(text);
 	});
 }

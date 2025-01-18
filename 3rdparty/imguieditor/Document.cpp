@@ -83,7 +83,7 @@ void TextEditor::Document::setText(const std::string& text) {
 
 	while (i < text.end()) {
 		ImWchar character;
-		i = codepoint.read(i, &character);
+		i = CodePoint::read(i, &character);
 
 		if (character == '\n') {
 			emplace_back();
@@ -114,7 +114,7 @@ TextEditor::Coordinate TextEditor::Document::insertText(Coordinate start, const 
 	// process all codepoints
 	while (i < text.end()) {
 		ImWchar character;
-		i = codepoint.read(i, &character);
+		i = CodePoint::read(i, &character);
 
 		if (character == '\n') {
 			// split line
@@ -195,7 +195,7 @@ std::string TextEditor::Document::getText() const {
 
 	for (auto i = begin(); i < end(); i++) {
 		for (auto& glyph : *i) {
-			text.append(utf8.begin(), codepoint.write(utf8.begin(), glyph.character));
+			text.append(utf8.begin(), CodePoint::write(utf8.begin(), glyph.character));
 		}
 
 		if (i < end() - 1) {
@@ -223,7 +223,7 @@ std::string TextEditor::Document::getSectionText(Coordinate start, Coordinate en
 		auto& line = at(lineNo);
 
 		if (index < line.glyphs()) {
-			section.append(utf8.begin(), codepoint.write(utf8.begin(), line[index].character));
+			section.append(utf8.begin(), CodePoint::write(utf8.begin(), line[index].character));
 
 			index++;
 		} else {
@@ -384,17 +384,17 @@ TextEditor::Coordinate TextEditor::Document::findWordStart(Coordinate from) cons
 		auto index = getIndex(from);
 		auto firstCharacter = line[index - 1].character;
 
-		if (codepoint.isSpace(firstCharacter)) {
-			while (index > 0 && codepoint.isSpace(line[index - 1].character)) {
+		if (CodePoint::isWhiteSpace(firstCharacter)) {
+			while (index > 0 && CodePoint::isWhiteSpace(line[index - 1].character)) {
 				index--;
 			}
 
-		} else if (codepoint.isWord(firstCharacter)) {
-			while (index > 0 && codepoint.isWord(line[index - 1].character)) {
+		} else if (CodePoint::isWord(firstCharacter)) {
+			while (index > 0 && CodePoint::isWord(line[index - 1].character)) {
 				index--;
 			}
 
-		} else if (language->isPunctuation && language->isPunctuation(firstCharacter)) {
+		} else if (language && language->isPunctuation && language->isPunctuation(firstCharacter)) {
 			while (index > 0 && language->isPunctuation(line[index - 1].character)) {
 				index--;
 			}
@@ -423,17 +423,17 @@ TextEditor::Coordinate TextEditor::Document::findWordEnd(Coordinate from) const 
 	} else {
 		auto firstCharacter = line[index].character;
 
-		if (codepoint.isSpace(firstCharacter)) {
-			while (index < size && codepoint.isSpace(line[index].character)) {
+		if (CodePoint::isWhiteSpace(firstCharacter)) {
+			while (index < size && CodePoint::isWhiteSpace(line[index].character)) {
 				index++;
 			}
 
-		} else if (codepoint.isWord(firstCharacter)) {
-			while (index < size && codepoint.isWord(line[index].character)) {
+		} else if (CodePoint::isWord(firstCharacter)) {
+			while (index < size && CodePoint::isWord(line[index].character)) {
 				index++;
 			}
 
-		} else if (language->isPunctuation && language->isPunctuation(firstCharacter)) {
+		} else if (language && language->isPunctuation && language->isPunctuation(firstCharacter)) {
 			while (index < size && language->isPunctuation(line[index].character)) {
 				index++;
 			}
@@ -458,8 +458,8 @@ bool TextEditor::Document::findText(Coordinate from, const std::string& text, bo
 
 	while (i < text.end()) {
 		ImWchar character;
-		i = codepoint.read(i, &character);
-		search.emplace_back(caseSensitive ? character : codepoint.toLower(character));
+		i = CodePoint::read(i, &character);
+		search.emplace_back(caseSensitive ? character : CodePoint::toLower(character));
 	}
 
 	// search document
@@ -500,7 +500,7 @@ bool TextEditor::Document::findText(Coordinate from, const std::string& text, bo
 					auto ch = at(line)[index].character;
 
 					if (!caseSensitive) {
-						ch = codepoint.toLower(ch);
+						ch = CodePoint::toLower(ch);
 					}
 
 					if (ch == search[i]) {
@@ -605,12 +605,12 @@ TextEditor::State TextEditor::Document::colorize(Line& line) {
 
 		if (state == State::inText) {
 			// special handling for preprocessor lines
-			if (!nonWhiteSpace && language->preprocess && glyph->character != language->preprocess && !codepoint.isSpace(glyph->character)) {
+			if (!nonWhiteSpace && language->preprocess && glyph->character != language->preprocess && !CodePoint::isWhiteSpace(glyph->character)) {
 				nonWhiteSpace = true;
 			}
 
 			// mark whitespace characters
-			if (codepoint.isSpace(glyph->character)) {
+			if (CodePoint::isWhiteSpace(glyph->character)) {
 				(glyph++)->color = Color::whitespace;
 
 			// handle single line comments

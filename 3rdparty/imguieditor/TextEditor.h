@@ -234,37 +234,18 @@ public:
 	inline bool HasLanguage() const { return document.hasLanguage(); }
 	inline std::string GetLanguageName() const { return document.getLanguageName(); }
 
-	// unicode support
-	class Unicode {
-	public:
-		std::function<bool(ImWchar)> isSpace;
-		std::function<bool(ImWchar)> isWord;
-		std::function<bool(ImWchar)> isUpper;
-		std::function<bool(ImWchar)> isLower;
-		std::function<ImWchar(ImWchar)> toUpper;
-		std::function<ImWchar(ImWchar)> toLower;
-	};
-
 	// support unicode codepoints
 	class CodePoint {
 	public:
-		inline void setUnicode(const Unicode& u) { unicode = u; }
-
-		std::string::const_iterator read(std::string::const_iterator i, ImWchar* codepoint) const;
-		std::string::iterator write(std::string::iterator i, ImWchar codepoint) const;
-		bool isSpace(ImWchar codepoint) const;
-		bool isWord(ImWchar codepoint) const;
-		bool isUpper(ImWchar codepoint) const;
-		bool isLower(ImWchar codepoint) const;
-		ImWchar toUpper(ImWchar codepoint) const;
-		ImWchar toLower(ImWchar codepoint) const;
-
-	private:
-		Unicode unicode;
+		static std::string::const_iterator read(std::string::const_iterator i, ImWchar* codepoint);
+		static std::string::iterator write(std::string::iterator i, ImWchar codepoint);
+		static bool isWhiteSpace(ImWchar codepoint);
+		static bool isWord(ImWchar codepoint);
+		static bool isLower(ImWchar codepoint);
+		static bool isUpper(ImWchar codepoint);
+		static ImWchar toUpper(ImWchar codepoint);
+		static ImWchar toLower(ImWchar codepoint);
 	};
-
-	// specify unicode support function
-	inline void SetUnicode(const Unicode& unicode) { document.setUnicode(unicode); }
 
 private:
 	//
@@ -538,10 +519,6 @@ private:
 		inline bool hasLanguage() const { return language != nullptr; }
 		inline std::string getLanguageName() const {  return language == nullptr ? "None" : language->name; }
 
-		// unicode support
-		inline void setUnicode(const Unicode& unicode) { codepoint.setUnicode(unicode); }
-		inline const CodePoint& getCodePoint() const { return codepoint; }
-
 		// colorizer
 		State colorize(Line& line);
 		void colorize(int start, int end);
@@ -550,7 +527,6 @@ private:
 	private:
 		int tabSize = 4;
 		const Language* language = nullptr;
-		CodePoint codepoint;
 		bool updated = false;
 	} document;
 

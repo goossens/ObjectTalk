@@ -1024,7 +1024,7 @@ void TextEditor::handleCharacter(ImWchar character) {
 
 		// just insert a regular character
 		std::string utf8(4, 0);
-		std::string text(utf8.begin(), document.getCodePoint().write(utf8.begin(), character));
+		std::string text(utf8.begin(), CodePoint::write(utf8.begin(), character));
 		insertTextIntoAllCursors(transaction, text);
 	}
 
@@ -1286,7 +1286,7 @@ void TextEditor::toggleComments() {
 				int start = 0;
 				int i = 0;
 
-				while (start < document[line].glyphs() && document.getCodePoint().isSpace(document[line][start].character)) {
+				while (start < document[line].glyphs() && CodePoint::isWhiteSpace(document[line][start].character)) {
 					start++;
 				}
 
@@ -1364,7 +1364,7 @@ void TextEditor::stripTrailingWhitespaces() {
 
 		// look for first non-whitespace glyph at the end of the line
 		for (auto index = size - 1; !done && index >= 0; index--) {
-			if (document.getCodePoint().isSpace(line[index].character)) {
+			if (CodePoint::isWhiteSpace(line[index].character)) {
 				whitespace = index;
 
 			} else {
@@ -1580,8 +1580,8 @@ void TextEditor::autoIndentAllCursors(std::shared_ptr<Transaction> transaction) 
 		ImWchar nextChar = index < line.size() ? line[index].character : 0;
 
 		// remove extra whitespaces if required
-		if (document.getCodePoint().isSpace(nextChar)) {
-			while (index < line.size() && document.getCodePoint().isSpace(line[index].character)) {
+		if (CodePoint::isWhiteSpace(nextChar)) {
+			while (index < line.size() && CodePoint::isWhiteSpace(line[index].character)) {
 				index++;
 			}
 
@@ -1593,7 +1593,7 @@ void TextEditor::autoIndentAllCursors(std::shared_ptr<Transaction> transaction) 
 		// determine whitespace at start of current line
 		std::string whitespace;
 
-		for (auto i = 0; i < line.size() && document.getCodePoint().isSpace(line[i].character); i++) {
+		for (auto i = 0; i < line.size() && CodePoint::isWhiteSpace(line[i].character); i++) {
 			whitespace += line[i].character;
 		}
 

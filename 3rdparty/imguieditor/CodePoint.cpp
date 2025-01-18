@@ -9,14 +9,40 @@
 //	Include files
 //
 
+#include "Tables.h"
 #include "TextEditor.h"
+
+
+//
+//	Statistics
+//
+
+static constexpr size_t totalSizeOfTables16 =
+	sizeof(lower16) +
+	sizeof(upper16) +
+	sizeof(numbers16) +
+	sizeof(whitespace16) +
+	sizeof(case16);
+
+#if defined(IMGUI_USE_WCHAR32)
+static constexpr size_t totalSizeOfTables32 =
+	sizeof(lower32) +
+	sizeof(upper32) +
+	sizeof(numbers32) +
+	sizeof(case32);
+
+#else
+static constexpr size_t totalSizeOfTables32 = 0;
+#endif
+
+static constexpr size_t totalSizeOfTables = totalSizeOfTables16 + totalSizeOfTables32;
 
 
 //
 //	TextEditor::CodePoint::read
 //
 
-std::string::const_iterator TextEditor::CodePoint::read(std::string::const_iterator i, ImWchar* codepoint) const {
+std::string::const_iterator TextEditor::CodePoint::read(std::string::const_iterator i, ImWchar* codepoint) {
 	// parse a UTF-8 sequence into a unicode codepoint
 	if ((*i & 0x80) == 0) {
 		*codepoint = *i;
@@ -51,7 +77,7 @@ std::string::const_iterator TextEditor::CodePoint::read(std::string::const_itera
 //	TextEditor::CodePoint::write
 //
 
-std::string::iterator TextEditor::CodePoint::write(std::string::iterator i, ImWchar codepoint) const {
+std::string::iterator TextEditor::CodePoint::write(std::string::iterator i, ImWchar codepoint) {
 	// generate UTF-8 sequence from a unicode codepoint
 	if (codepoint < 0x80) {
 		*i++ = codepoint;
@@ -92,12 +118,21 @@ std::string::iterator TextEditor::CodePoint::write(std::string::iterator i, ImWc
 
 
 //
-//	TextEditor::CodePoint::isSpace
+//	TextEditor::CodePoint::isWhiteSpace
 //
 
-bool TextEditor::CodePoint::isSpace(ImWchar codepoint) const {
-	// see if codepoint represents a whitespace
-	return unicode.isSpace ?  unicode.isSpace(codepoint) : codepoint < 256 ? std::isspace(static_cast<unsigned char>(codepoint)) : false;
+bool TextEditor::CodePoint::isWhiteSpace(ImWchar codepoint) {
+	if (codepoint < 0x7f) {
+		return std::isspace(static_cast<unsigned char>(codepoint));
+
+#if defined(IMGUI_USE_WCHAR32)
+	} else if (codepoint >= 0x10000) {
+		return false;
+#endif
+
+	} else {
+		return rangeContains(whitespace16, static_cast<ImWchar16>(codepoint));
+	}
 }
 
 
@@ -105,28 +140,24 @@ bool TextEditor::CodePoint::isSpace(ImWchar codepoint) const {
 //	TextEditor::CodePoint::isWord
 //
 
-bool TextEditor::CodePoint::isWord(ImWchar codepoint) const {
-	static bool word[128] = {
-		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-		 true,  true,  true,  true,  true,  true,  true,  true,  true,  true, false, false, false, false, false, false,
-		false,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
-		 true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true, false, false, false, false,  true,
-		false,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
-		 true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true, false, false, false, false, false
-	};
+bool TextEditor::CodePoint::isWord(ImWchar codepoint) {
+	if (codepoint < 0x7f) {
+		return std::isalnum(static_cast<unsigned char>(codepoint));
 
-	return unicode.isWord ? unicode.isWord(codepoint) : codepoint < 127 ? word[codepoint] : false;
-}
+#if defined(IMGUI_USE_WCHAR32)
+	} else if (codepoint >= 0x10000) {
+		return
+			rangeContains(lower32, static_cast<ImWchar32>(codepoint)) ||
+			rangeContains(upper32, static_cast<ImWchar32>(codepoint))||
+			rangeContains(numbers32, static_cast<ImWchar32>(codepoint));
+#endif
 
-
-//
-//	TextEditor::CodePoint::isUpper
-//
-
-bool TextEditor::CodePoint::isUpper(ImWchar codepoint) const {
-	return unicode.isUpper ? unicode.isUpper(codepoint) : codepoint < 256 ? std::isupper(static_cast<unsigned char>(codepoint)) : codepoint;
+	} else {
+		return
+			rangeContains(lower16, static_cast<ImWchar16>(codepoint)) ||
+			rangeContains(upper16, static_cast<ImWchar16>(codepoint)) ||
+			rangeContains(numbers16, static_cast<ImWchar16>(codepoint));
+	}
 }
 
 
@@ -134,8 +165,37 @@ bool TextEditor::CodePoint::isUpper(ImWchar codepoint) const {
 //	TextEditor::CodePoint::isLower
 //
 
-bool TextEditor::CodePoint::isLower(ImWchar codepoint) const {
-	return unicode.isLower ? unicode.isLower(codepoint) : codepoint < 256 ? std::islower(static_cast<unsigned char>(codepoint)) : codepoint;
+bool TextEditor::CodePoint::isLower(ImWchar codepoint) {
+	if (codepoint < 0x7f) {
+		return std::islower(static_cast<unsigned char>(codepoint));
+
+#if defined(IMGUI_USE_WCHAR32)
+	} else if (codepoint >= 0x10000) {
+		return rangeContains(lower32, static_cast<ImWchar32>(codepoint));
+#endif
+
+	} else {
+		return rangeContains(lower16, static_cast<ImWchar16>(codepoint));
+	}
+}
+
+
+//
+//	TextEditor::CodePoint::isUpper
+//
+
+bool TextEditor::CodePoint::isUpper(ImWchar codepoint) {
+	if (codepoint < 0x7f) {
+		return std::isupper(static_cast<unsigned char>(codepoint));
+
+#if defined(IMGUI_USE_WCHAR32)
+	} else if (codepoint >= 0x10000) {
+		return rangeContains(upper32, static_cast<ImWchar32>(codepoint));
+#endif
+
+	} else {
+		return rangeContains(upper16, static_cast<ImWchar16>(codepoint));
+	}
 }
 
 
@@ -143,8 +203,18 @@ bool TextEditor::CodePoint::isLower(ImWchar codepoint) const {
 //	TextEditor::CodePoint::toUpper
 //
 
-ImWchar TextEditor::CodePoint::toUpper(ImWchar codepoint) const {
-	return unicode.toUpper ? unicode.toUpper(codepoint) : codepoint < 256 ? std::toupper(static_cast<unsigned char>(codepoint)) : codepoint;
+ImWchar TextEditor::CodePoint::toUpper(ImWchar codepoint) {
+	if (codepoint < 0x7f) {
+		return std::toupper(static_cast<unsigned char>(codepoint));
+
+#if defined(IMGUI_USE_WCHAR32)
+	} else if (codepoint >= 0x10000) {
+		return caseRangeToUpper(case32, static_cast<char32_t>(codepoint));
+#endif
+
+	} else {
+		return caseRangeToUpper(case16, static_cast<char16_t>(codepoint));
+	}
 }
 
 
@@ -152,7 +222,16 @@ ImWchar TextEditor::CodePoint::toUpper(ImWchar codepoint) const {
 //	TextEditor::CodePoint::toLower
 //
 
-ImWchar TextEditor::CodePoint::toLower(ImWchar codepoint) const {
-	// convert a codepoint to lowercase
-	return unicode.toLower ? unicode.toLower(codepoint) : codepoint < 256 ? std::tolower(static_cast<unsigned char>(codepoint)) : codepoint;
+ImWchar TextEditor::CodePoint::toLower(ImWchar codepoint) {
+	if (codepoint < 0x7f) {
+		return std::tolower(static_cast<unsigned char>(codepoint));
+
+#if defined(IMGUI_USE_WCHAR32)
+	} else if (codepoint >= 0x10000) {
+		return caseRangeToLower(case32, static_cast<char32_t>(codepoint));
+#endif
+
+	} else {
+		return caseRangeToLower(case16, static_cast<char16_t>(codepoint));
+	}
 }

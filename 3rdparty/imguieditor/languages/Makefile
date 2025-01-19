@@ -7,4 +7,7 @@
 %.h : %.re
 	re2c -i -o $@ $<
 
-lexers: c.h cs.h json.h lua.h markdown.h python.h
+FILES = $(wildcard *.re)
+TARGETS = $(subst .re,.h,$(FILES))
+
+all: $(TARGETS)

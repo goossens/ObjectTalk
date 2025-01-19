@@ -55,3 +55,41 @@ static TextEditor::Iterator getPythonStyleNumber(TextEditor::Iterator start, Tex
 		* { return start; }
 	*/
 }
+
+
+//
+//	TextEditor::Language::Python
+//
+
+const TextEditor::Language& TextEditor::Language::Python() {
+	static bool initialized = false;
+	static TextEditor::Language language;
+
+	if (!initialized) {
+		language.name = "Python";
+		language.singleLineComment = "#";
+		language.hasSingleQuotedStrings = true;
+		language.hasDoubleQuotedStrings = true;
+		language.otherStringStart = "\"\"\"";
+		language.otherStringEnd = "\"\"\"";
+		language.otherStringAltStart = "'''";
+		language.otherStringAltEnd = "'''";
+		language.stringEscape = '\\';
+
+		static const char* const keywords[] = {
+			"False", "await", "else", "import", "pass", "None", "break", "except", "in", "raise", "True",
+			"class", "finally", "is", "return", "and", "continue", "for", "lambda", "try", "as", "def",
+			"from", "nonlocal", "while", "assert", "del", "global", "not", "with", "async", "elif",
+			"if", "or", "yield"
+		};
+
+		for (auto& keyword : keywords) { language.keywords.insert(keyword); }
+
+		language.isPunctuation = isCStylePunctuation;
+		language.getIdentifier = getCStyleIdentifier;
+		language.getNumber = getPythonStyleNumber;
+		initialized = true;
+	}
+
+	return language;
+}

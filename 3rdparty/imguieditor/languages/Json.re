@@ -62,3 +62,30 @@ static TextEditor::Iterator tokenizeJson(TextEditor::Iterator start, TextEditor:
 		* { return start; }
 	*/
 }
+
+
+//
+//	TextEditor::Language::Json
+//
+
+const TextEditor::Language &TextEditor::Language::Json() {
+	static bool initialized = false;
+	static TextEditor::Language language;
+
+	if (!initialized) {
+		language.name = "JSON";
+		language.hasDoubleQuotedStrings = true;
+		language.stringEscape = '\\';
+
+		static const char* const keywords[] = {
+			"false", "null", "true"
+		};
+
+		for (auto& keyword : keywords) { language.keywords.insert(keyword); }
+
+		language.customTokenizer = tokenizeJson;
+		initialized = true;
+	}
+
+	return language;
+}

@@ -116,3 +116,45 @@ static bool isCStylePunctuation(ImWchar character) {
 
 	return character < 127 ? punctuation[character] : false;
 }
+
+
+//
+//	TextEditor::Language::C
+//
+
+const TextEditor::Language& TextEditor::Language::C() {
+	static bool initialized = false;
+	static TextEditor::Language language;
+
+	if (!initialized) {
+		language.name = "C";
+		language.preprocess = '#';
+		language.singleLineComment = "//";
+		language.commentStart = "/*";
+		language.commentEnd = "*/";
+		language.hasSingleQuotedStrings = true;
+		language.hasDoubleQuotedStrings = true;
+		language.stringEscape = '\\';
+
+		static const char* const keywords[] = {
+			"break", "case", "continue", "default", "do", "else", "for", "goto", "if", "return", "sizeof",
+			"switch", "while", "_Alignas", "_Alignof", "_Atomic", "_Bool", "_Complex", "_Generic",
+			"_Imaginary", "_Noreturn", "_Static_assert", "_Thread_local"
+		};
+
+		static const char* const declarations[] = {
+			"auto", "char", "const", "double", "enum", "extern", "float", "inline", "int", "long", "register",
+			"restrict", "short", "signed", "static", "struct", "typedef", "union", "unsigned", "void", "volatile"
+		};
+
+		for (auto& keyword : keywords) { language.keywords.insert(keyword); }
+		for (auto& declaration : declarations) { language.declarations.insert(declaration); }
+
+		language.isPunctuation = isCStylePunctuation;
+		language.getIdentifier = getCStyleIdentifier;
+		language.getNumber = getCStyleNumber;
+		initialized = true;
+	}
+
+	return language;
+}

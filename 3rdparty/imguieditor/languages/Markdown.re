@@ -76,3 +76,25 @@ static TextEditor::Iterator tokenizeMarkdown(TextEditor::Iterator start, TextEdi
 		* { return start; }
 	*/
 }
+
+
+//
+//	TextEditor::Language::Markdown
+//
+
+const TextEditor::Language& TextEditor::Language::Markdown() {
+	static bool initialized = false;
+	static TextEditor::Language language;
+
+	if (!initialized) {
+		language.name = "Markdown";
+		language.singleLineComment = ">";
+		language.commentStart = "```";
+		language.commentEnd = "```";
+
+		language.customTokenizer = tokenizeMarkdown;
+		initialized = true;
+	}
+
+	return language;
+}

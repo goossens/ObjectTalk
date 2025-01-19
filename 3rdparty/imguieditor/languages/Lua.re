@@ -64,3 +64,39 @@ static bool isLuaStylePunctuation(ImWchar character) {
 
 	return character < 127 ? punctuation[character] : false;
 }
+
+
+//
+//	TextEditor::Language::Lua
+//
+
+const TextEditor::Language& TextEditor::Language::Lua() {
+	static bool initialized = false;
+	static TextEditor::Language language;
+
+	if (!initialized) {
+		language.name = "Lua";
+		language.singleLineComment = "--";
+		language.commentStart = "--[[";
+		language.commentEnd = "]]";
+		language.hasSingleQuotedStrings = true;
+		language.hasDoubleQuotedStrings = true;
+		language.otherStringStart = "[[";
+		language.otherStringEnd = "]]";
+		language.stringEscape = '\\';
+
+		static const char* const keywords[] = {
+			"and", "break", "do", "else", "elseif", "end", "false", "for", "function", "goto", "if", "in", "local", "nil",
+			"not", "or", "repeat", "return", "then", "true", "until", "while"
+		};
+
+		for (auto& keyword : keywords) { language.keywords.insert(keyword); }
+
+		language.isPunctuation = isCStylePunctuation;
+		language.getIdentifier = getCStyleIdentifier;
+		language.getNumber = getLuaStyleNumber;
+		initialized = true;
+	}
+
+	return language;
+}

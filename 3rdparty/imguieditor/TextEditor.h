@@ -237,7 +237,8 @@ public:
 	// support unicode codepoints
 	class CodePoint {
 	public:
-		static std::string::const_iterator read(std::string::const_iterator i, ImWchar* codepoint);
+		static std::string::const_iterator skipBOM(std::string::const_iterator i, std::string::const_iterator end);
+		static std::string::const_iterator read(std::string::const_iterator i, std::string::const_iterator end, ImWchar* codepoint);
 		static std::string::iterator write(std::string::iterator i, ImWchar codepoint);
 		static bool isWhiteSpace(ImWchar codepoint);
 		static bool isWord(ImWchar codepoint);

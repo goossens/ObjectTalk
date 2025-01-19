@@ -80,7 +80,7 @@ OtObject OtStringClass::iterate() {
 
 int OtStringClass::toCodePoint() {
 	char32_t codepoint;
-	OtCodePoint::read(value.begin(), &codepoint);
+	OtCodePoint::read(value.begin(), value.end(), &codepoint);
 	return static_cast<int>(codepoint);
 }
 

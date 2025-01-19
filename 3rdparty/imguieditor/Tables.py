@@ -363,7 +363,11 @@ if __name__ == "__main__":
 		formatStride = lambda r : ("{0x%04x, 0x%04x, 0x%04x}" if r[0] < 0x10000 else "{0x%05x, 0x%05x, 0x%04x}") % (r[0], r[1], r[2])
 		formatCase = lambda r : ("{0x%04x, 0x%04x, %6d, %6d}" if r[0] < 0x10000 else "{0x%05x, 0x%05x, %3d, %2d}") % (r[0], r[1], r[2], r[3])
 
-		lower = calculateStrides(buildRangeTable("UnicodeData.txt", lambda line : line[2] == "Lu"))
+		letters = calculateStrides(buildRangeTable("UnicodeData.txt", lambda line : line[2][0] == "L"))
+		tables.write(printTable(letters, "Range16", "letters16", filter16, formatStride, False))
+		tables.write(printTable(letters , "Range32", "letters32", filter32, formatStride, True))
+
+		lower = calculateStrides(buildRangeTable("UnicodeData.txt", lambda line : line[2] == "Ll"))
 		tables.write(printTable(lower, "Range16", "lower16", filter16, formatStride, False))
 		tables.write(printTable(lower , "Range32", "lower32", filter32, formatStride, True))
 

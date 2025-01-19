@@ -13,19 +13,6 @@
 
 
 //
-//	TextEditor::deleteText
-//
-
-void TextEditor::deleteText(std::shared_ptr<Transaction> transaction, Coordinate start, Coordinate end) {
-	// update document and add transaction
-	// this function does not touch the cursors
-	auto text = document.getSectionText(start, end);
-	document.deleteText(start, end);
-	transaction->addDelete(start, end, text);
-}
-
-
-//
 //	TextEditor::Transactions::add
 //
 

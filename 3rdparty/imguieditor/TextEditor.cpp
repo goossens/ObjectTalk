@@ -28,6 +28,7 @@ void TextEditor::setText(const std::string &text) {
 	cursors.clearAll();
 }
 
+
 //
 //	TextEditor::render
 //
@@ -1633,6 +1634,19 @@ TextEditor::Coordinate TextEditor::insertText(std::shared_ptr<Transaction> trans
 	auto end = document.insertText(start, text);
 	transaction->addInsert(start, end, text);
 	return end;
+}
+
+
+//
+//	TextEditor::deleteText
+//
+
+void TextEditor::deleteText(std::shared_ptr<Transaction> transaction, Coordinate start, Coordinate end) {
+	// update document and add transaction
+	// this function does not touch the cursors
+	auto text = document.getSectionText(start, end);
+	document.deleteText(start, end);
+	transaction->addDelete(start, end, text);
 }
 
 

@@ -78,11 +78,12 @@ float OtFont::getWidth(const std::string& text, float size) {
 
 	// process all unicode characters (codepoints)
 	int width = 0;
+	auto end = text.end();
 	auto i = text.begin();
 
-	while (i < text.end()) {
+	while (i < end) {
 		char32_t codepoint;
-		i = OtCodePoint::read(i, &codepoint);
+		i = OtCodePoint::read(i, end, &codepoint);
 
 		// get character width
 		int advanceWidth;
@@ -121,11 +122,12 @@ void OtFont::parseGlyph(
 	float scale = stbtt_ScaleForPixelHeight(&fontdata->font, size);
 
 	// process all unicode characters (codepoints)
+	auto end = text.end();
 	auto i = text.begin();
 
-	while (i < text.end()) {
+	while (i < end) {
 		char32_t codepoint;
-		i = OtCodePoint::read(i, &codepoint);
+		i = OtCodePoint::read(i, end, &codepoint);
 
 		// process all vertices (drawing commands) for this codepoint
 		stbtt_vertex* verts;

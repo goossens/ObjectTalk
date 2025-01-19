@@ -152,12 +152,13 @@ std::string OtText::set(const std::string& text, size_t offset, const std::strin
 
 std::string OtText::lower(const std::string& text) {
 	std::string result;
+	auto end = text.end();
 	auto i = text.begin();
 	std::string utf8(4, 0);
 
-	while (i < text.end()) {
+	while (i < end) {
 		char32_t codepoint;
-		i = OtCodePoint::read(i, &codepoint);
+		i = OtCodePoint::read(i, end, &codepoint);
 		result.append(utf8.begin(), OtCodePoint::write(utf8.begin(), OtCodePoint::toLowerCase(codepoint)));
 	}
 
@@ -171,12 +172,13 @@ std::string OtText::lower(const std::string& text) {
 
 std::string OtText::upper(const std::string& text) {
 	std::string result;
+	auto end = text.end();
 	auto i = text.begin();
 	std::string utf8(4, 0);
 
-	while (i < text.end()) {
+	while (i < end) {
 		char32_t codepoint;
-		i = OtCodePoint::read(i, &codepoint);
+		i = OtCodePoint::read(i, end, &codepoint);
 		result.append(utf8.begin(), OtCodePoint::write(utf8.begin(), OtCodePoint::toUpperCase(codepoint)));
 	}
 
@@ -190,13 +192,15 @@ std::string OtText::upper(const std::string& text) {
 
 int32_t OtText::caseCmp(const std::string& s1, const std::string& s2) {
 	auto i1 = s1.begin();
+	auto e1 = s1.end();
 	auto i2 = s2.begin();
+	auto e2 = s2.end();
 
-	while (i1 != s1.end() && i2 != s2.end()) {
+	while (i1 != e1 && i2 != e2) {
 		char32_t cp1, cp2;
 
-		i1 = OtCodePoint::read(i1, &cp1);
-		i2 = OtCodePoint::read(i2, &cp2);
+		i1 = OtCodePoint::read(i1, e1, &cp1);
+		i2 = OtCodePoint::read(i2, e2, &cp2);
 
 		cp1 = OtCodePoint::toLowerCase(cp1);
 		cp2 = OtCodePoint::toLowerCase(cp2);
@@ -206,10 +210,10 @@ int32_t OtText::caseCmp(const std::string& s1, const std::string& s2) {
 		}
 	}
 
-	if (i1 == s1.end() && i2 == s2.end()) {
+	if (i1 == e1 && i2 == e2) {
 		return 0;
 
-	} else if (i1 == s1.end()) {
+	} else if (i1 == e1) {
 		return -1;
 
 	} else {
@@ -389,8 +393,9 @@ std::string OtText::decodeURL(const std::string& text) {
 std::string OtText::toJSON(const std::string& text) {
 	std::ostringstream o;
 	o << '"';
+	auto end = text.end();
 
-	for (auto c = text.begin(); c != text.end(); c += OtCodePoint::size(c)) {
+	for (auto c = text.begin(); c != end; c += OtCodePoint::size(c)) {
 		switch (*c) {
 			case '"': o << "\\\""; break;
 			case '\\': o << "\\\\"; break;
@@ -403,7 +408,7 @@ std::string OtText::toJSON(const std::string& text) {
 			default:
 				if (*c & 0x80) {
 					char32_t codepoint;
-					OtCodePoint::read(c, &codepoint);
+					OtCodePoint::read(c, end, &codepoint);
 					o << "\\u" << std::hex << std::setw(4) << std::setfill('0') << codepoint;
 
 				} else {

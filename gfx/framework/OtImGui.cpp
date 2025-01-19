@@ -200,8 +200,13 @@ void OtFramework::initIMGUI() {
 	config.OversampleV = 1;
 
 	static const ImWchar unicodeRanges[] = {
-		0x0020, 0x00FF, // Basic Latin + Latin Supplement
-		0x2190, 0x21ff, // Arrows block
+		0x0020, 0x007f, // basic latin
+		0x0080, 0x00ff, // latin supplement
+		0x0100, 0x017f, // latin extended A
+		0x0180, 0x024f, // latin extended B
+		0x1e00, 0x1eff, // latin extended additional
+		0x20a0, 0x21cf, // currency symbols
+		0x2190, 0x21ff, // arrows block
 		0
 	};
 

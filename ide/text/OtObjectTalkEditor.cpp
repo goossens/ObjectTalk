@@ -152,8 +152,8 @@ OtObjectTalkEditor::OtObjectTalkEditor() {
 //
 
 void OtObjectTalkEditor::highlightError(size_t line, const std::string& error) {
-	editor.AddErrorMarker(line - 1, error);
-	scrollToLine = (int) line;
+	editor.AddErrorMarker(static_cast<int>(line - 1), error);
+	scrollToLine = static_cast<int>(line);
 	focusOnEditor = true;
 }
 

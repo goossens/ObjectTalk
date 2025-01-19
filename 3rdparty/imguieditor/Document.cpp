@@ -79,11 +79,12 @@ void TextEditor::Document::setText(const std::string& text) {
 	emplace_back();
 
 	// process input UTF-8 and generate lines of glyphs
-	auto i = text.begin();
+	auto end = text.end();
+	auto i = CodePoint::skipBOM(text.begin(), end);
 
-	while (i < text.end()) {
+	while (i < end) {
 		ImWchar character;
-		i = CodePoint::read(i, &character);
+		i = CodePoint::read(i, end, &character);
 
 		if (character == '\n') {
 			emplace_back();
@@ -109,12 +110,13 @@ TextEditor::Coordinate TextEditor::Document::insertText(Coordinate start, const 
 	auto lineNo = start.line;
 
 	// process input as UTF-8
+	auto endOfText = text.end();
 	auto i = text.begin();
 
 	// process all codepoints
-	while (i < text.end()) {
+	while (i < endOfText) {
 		ImWchar character;
-		i = CodePoint::read(i, &character);
+		i = CodePoint::read(i, endOfText, &character);
 
 		if (character == '\n') {
 			// split line
@@ -454,11 +456,12 @@ TextEditor::Coordinate TextEditor::Document::findWordEnd(Coordinate from) const 
 bool TextEditor::Document::findText(Coordinate from, const std::string& text, bool caseSensitive, bool wholeWord, Coordinate& start, Coordinate& end) const {
 	// convert input string to vector of codepoints
 	std::vector<ImWchar> search;
+	auto endOfText = text.end();
 	auto i = text.begin();
 
-	while (i < text.end()) {
+	while (i < endOfText) {
 		ImWchar character;
-		i = CodePoint::read(i, &character);
+		i = CodePoint::read(i, endOfText, &character);
 		search.emplace_back(caseSensitive ? character : CodePoint::toLower(character));
 	}
 

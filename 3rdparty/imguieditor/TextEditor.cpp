@@ -1741,27 +1741,27 @@ void TextEditor::updatePalette() {
 
 const TextEditor::Palette& TextEditor::GetDarkPalette() {
 	const static Palette p = {{
-		IM_COL32(220, 223, 228, 255),	// text
-		IM_COL32(224, 108, 117, 255),	// keyword
+		IM_COL32(224, 224, 224, 255),	// text
+		IM_COL32(197, 134, 192, 255),	// keyword
 		IM_COL32( 90, 179, 155, 255),	// declaration
-		IM_COL32(229, 192, 123, 255),	// number
-		IM_COL32(152, 195, 121, 255),	// string
-		IM_COL32(106, 115, 132, 255),	// punctuation
-		IM_COL32(128, 128,  64, 255),	// preprocessor
-		IM_COL32(220, 223, 228, 255),	// identifier
-		IM_COL32( 97, 175, 239, 255),	// known identifier
-		IM_COL32( 54, 150, 162, 255),	// comment
-		IM_COL32( 40,  44,  52, 255),	// background
+		IM_COL32(181, 206, 168, 255),	// number
+		IM_COL32(206, 145, 120, 255),	// string
+		IM_COL32(255, 255, 153, 255),	// punctuation
+		IM_COL32( 64, 192, 128, 255),	// preprocessor
+		IM_COL32(156, 220, 254, 255),	// identifier
+		IM_COL32( 79, 193, 255, 255),	// known identifier
+		IM_COL32(106, 153,  85, 255),	// comment
+		IM_COL32( 30,  30,  30, 255),	// background
 		IM_COL32(224, 224, 224, 255),	// cursor
-		IM_COL32( 32,  96, 160, 128),	// selection
-		IM_COL32(255,  32,   0, 128),	// errorMarker
-		IM_COL32(255, 255, 255,  21),	// whitespace
+		IM_COL32( 32,  96, 160, 255),	// selection
+		IM_COL32(128,   0,  32, 255),	// errorMarker
+		IM_COL32( 90,  90,  90, 255),	// whitespace
 		IM_COL32(246, 222,  36, 255),	// matchingBracketLevel1
 		IM_COL32( 66, 120, 198, 255),	// matchingBracketLevel2
 		IM_COL32(213,  96, 213, 255),	// matchingBracketLevel3
 		IM_COL32(198,   8,  32, 255),	// matchingBracketError
-		IM_COL32(122, 131, 148, 255),	// line number
-		IM_COL32(255, 255, 255, 255),	// current line number
+		IM_COL32(128, 128, 144, 255),	// line number
+		IM_COL32(224, 224, 240, 255),	// current line number
 	}};
 
 	return p;

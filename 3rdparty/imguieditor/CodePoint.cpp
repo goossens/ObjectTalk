@@ -141,7 +141,9 @@ std::string::iterator TextEditor::CodePoint::write(std::string::iterator i, ImWc
 	}
 
 #else
-	} else {
+	}
+
+	else {
 		*i++ = sch(0xe0 | ((codepoint >> 12) & 0x0f));
 		*i++ = sch(0x80 | ((codepoint >> 6) & 0x3f));
 		*i++ = sch(0x80 | (codepoint & 0x3f));
@@ -149,6 +151,40 @@ std::string::iterator TextEditor::CodePoint::write(std::string::iterator i, ImWc
 #endif
 
 	return i;
+}
+
+
+//
+//	TextEditor::CodePoint::isLetter
+//
+
+bool TextEditor::CodePoint::isLetter(ImWchar codepoint) {
+	if (codepoint < 0x7f) {
+		return static_cast<unsigned>((codepoint | 32) - 'a') < 26;
+
+#if defined(IMGUI_USE_WCHAR32)
+	} else if (codepoint >= 0x10000) {
+		return rangeContains(letters32, static_cast<ImWchar32>(codepoint));
+#endif
+
+	} else {
+		return rangeContains(letters16, static_cast<ImWchar16>(codepoint));
+	}
+}
+
+
+bool TextEditor::CodePoint::isNumber(ImWchar codepoint) {
+	if (codepoint < 0x7f) {
+		return static_cast<unsigned>(codepoint - '0') < 10;
+
+#if defined(IMGUI_USE_WCHAR32)
+	} else if (codepoint >= 0x10000) {
+		return rangeContains(numbers32, static_cast<ImWchar32>(codepoint));
+#endif
+
+	} else {
+		return rangeContains(numbers16, static_cast<ImWchar16>(codepoint));
+	}
 }
 
 
@@ -190,6 +226,44 @@ bool TextEditor::CodePoint::isWord(ImWchar codepoint) {
 		return
 			rangeContains(letters16, static_cast<ImWchar16>(codepoint)) ||
 			rangeContains(numbers16, static_cast<ImWchar16>(codepoint));
+	}
+}
+
+
+//
+//	TextEditor::CodePoint::isXidStart
+//
+
+bool TextEditor::CodePoint::isXidStart(ImWchar codepoint) {
+	if (codepoint < 0x7f) {
+		return codepoint == '_' || static_cast<unsigned>((codepoint | 32) - 'a') < 26;
+
+#if defined(IMGUI_USE_WCHAR32)
+	} else if (codepoint >= 0x10000) {
+		return rangeContains(xidStart32, static_cast<ImWchar32>(codepoint))
+#endif
+
+	} else {
+		return rangeContains(xidStart16, static_cast<ImWchar16>(codepoint));
+	}
+}
+
+
+//
+//	TextEditor::CodePoint::isXidContinue
+//
+
+bool TextEditor::CodePoint::isXidContinue(ImWchar codepoint) {
+	if (codepoint < 0x7f) {
+		return codepoint == '_' || (static_cast<unsigned>((codepoint | 32) - 'a') < 26) || (static_cast<unsigned>(codepoint - '0') < 10);
+
+#if defined(IMGUI_USE_WCHAR32)
+	} else if (codepoint >= 0x10000) {
+		return rangeContains(xidContinue32, static_cast<ImWchar16>(codepoint));
+#endif
+
+	} else {
+		return rangeContains(xidContinue16, static_cast<ImWchar16>(codepoint));
 	}
 }
 

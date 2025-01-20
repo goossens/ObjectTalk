@@ -1350,6 +1350,50 @@ void TextEditor::filterSelections(std::function<std::string(std::string)> filter
 
 
 //
+//	TextEditor::selectionToLowerCase
+//
+
+void TextEditor::selectionToLowerCase() {
+	FilterSelections([](const std::string& text) {
+		std::string result;
+		auto end = text.end();
+		auto i = text.begin();
+		std::string utf8(4, 0);
+
+		while (i < end) {
+			ImWchar codepoint;
+			i = CodePoint::read(i, end, &codepoint);
+			result.append(utf8.begin(), CodePoint::write(utf8.begin(), CodePoint::toLower(codepoint)));
+		}
+
+		return result;
+	});
+}
+
+
+//
+//	TextEditor::selectionToUpperCase
+//
+
+void TextEditor::selectionToUpperCase() {
+	FilterSelections([](const std::string& text) {
+		std::string result;
+		auto end = text.end();
+		auto i = text.begin();
+		std::string utf8(4, 0);
+
+		while (i < end) {
+			ImWchar codepoint;
+			i = CodePoint::read(i, end, &codepoint);
+			result.append(utf8.begin(), CodePoint::write(utf8.begin(), CodePoint::toUpper(codepoint)));
+		}
+
+		return result;
+	});
+}
+
+
+//
 //	TextEditor::stripTrailingWhitespaces
 //
 

@@ -13,32 +13,10 @@
 //
 
 static TextEditor::Iterator getCStyleIdentifier(TextEditor::Iterator start, TextEditor::Iterator end) {
-	static bool identifierStart[128] = {
-		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-		false,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
-		 true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true, false, false, false, false,  true,
-		false,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
-		 true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true, false, false, false, false, false
-	};
-
-	static bool identifierNoneStart[128] = {
-		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-		 true,  true,  true,  true,  true,  true,  true,  true,  true,  true, false, false, false, false, false, false,
-		false,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
-		 true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true, false, false, false, false,  true,
-		false,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
-		 true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true, false, false, false, false, false
-	};
-
-	if (start < end && *start < 128 && identifierStart[*start]) {
+	if (start < end && TextEditor::CodePoint::isXidStart(*start)) {
 		start++;
 
-		while (start < end && *start < 128 && identifierNoneStart[*start]) {
+		while (start < end && TextEditor::CodePoint::isXidContinue(*start)) {
 			start++;
 		}
 	}

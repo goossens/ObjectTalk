@@ -59,8 +59,6 @@ protected:
 	void findAll();
 	void replace();
 	void replaceAll();
-	void toUpperCase();
-	void toLowerCase();
 
 	// properties
 	size_t version = 0;

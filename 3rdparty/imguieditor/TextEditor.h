@@ -109,6 +109,8 @@ public:
 	inline void MoveDownLines() { if (!readOnly) moveDownLines(); }
 	inline void ToggleComments() { if (!readOnly && document.hasLanguage()) toggleComments(); }
 	inline void FilterSelections(std::function<std::string(std::string)> filter) { if (!readOnly) filterSelections(filter); }
+	inline void SelectionToLowerCase() { if (!readOnly) selectionToLowerCase(); }
+	inline void SelectionToUpperCase() { if (!readOnly) selectionToUpperCase(); }
 
 	// useful editor functions to work on entire text
 	inline void StripTrailingWhitespaces() { if (!readOnly) stripTrailingWhitespaces(); }
@@ -240,8 +242,12 @@ public:
 		static std::string::const_iterator skipBOM(std::string::const_iterator i, std::string::const_iterator end);
 		static std::string::const_iterator read(std::string::const_iterator i, std::string::const_iterator end, ImWchar* codepoint);
 		static std::string::iterator write(std::string::iterator i, ImWchar codepoint);
+		static bool isLetter(ImWchar codepoint);
+		static bool isNumber(ImWchar codepoint);
 		static bool isWhiteSpace(ImWchar codepoint);
 		static bool isWord(ImWchar codepoint);
+		static bool isXidStart(ImWchar codepoint);
+		static bool isXidContinue(ImWchar codepoint);
 		static bool isLower(ImWchar codepoint);
 		static bool isUpper(ImWchar codepoint);
 		static ImWchar toUpper(ImWchar codepoint);
@@ -690,9 +696,10 @@ private:
 	void moveDownLines();
 	void toggleComments();
 
-
 	// transform selections (filter function should accept and return UTF-8 encoded strings)
 	void filterSelections(std::function<std::string(std::string)> filter);
+	void selectionToLowerCase();
+	void selectionToUpperCase();
 
 	// transform entire document (filter function should accept and return UTF-8 encoded strings)
 	void stripTrailingWhitespaces();

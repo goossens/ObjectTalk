@@ -15,8 +15,6 @@
 
 #include "imgui.h"
 
-#include "OtText.h"
-
 #include "OtCodePoint.h"
 #include "OtMessageBus.h"
 #include "OtUi.h"
@@ -148,8 +146,8 @@ void OtTextEditor::renderMenu(bool canRun) {
 			if (ImGui::MenuItem("Toggle Comments", " " OT_UI_SHORTCUT "/", nullptr, editor.HasLanguage())) { editor.ToggleComments(); focusOnEditor = true; }
 			ImGui::Separator();
 
-			if (ImGui::MenuItem("To Uppercase", nullptr, nullptr, editor.AnyCursorHasSelection())) { toUpperCase(); focusOnEditor = true; }
-			if (ImGui::MenuItem("To Lowercase", nullptr, nullptr, editor.AnyCursorHasSelection())) { toLowerCase(); focusOnEditor = true; }
+			if (ImGui::MenuItem("To Uppercase", nullptr, nullptr, editor.AnyCursorHasSelection())) { editor.SelectionToUpperCase(); focusOnEditor = true; }
+			if (ImGui::MenuItem("To Lowercase", nullptr, nullptr, editor.AnyCursorHasSelection())) { editor.SelectionToLowerCase(); focusOnEditor = true; }
 			ImGui::Separator();
 
 			if (ImGui::MenuItem("Add Next Occurrence", " " OT_UI_SHORTCUT "D", nullptr, editor.CurrentCursorHasSelection())) { editor.AddNextOccurrence(); focusOnEditor = true; }
@@ -417,26 +415,4 @@ void OtTextEditor::replaceAll() {
 		editor.ReplaceTextInAllCursors(replaceText);
 		focusOnEditor = true;
 	}
-}
-
-
-//
-//	OtTextEditor::toUpperCase
-//
-
-void OtTextEditor::toUpperCase() {
-	editor.FilterSelections([](const std::string& text) {
-		return OtText::upper(text);
-	});
-}
-
-
-//
-//	OtTextEditor::toLowerCase
-//
-
-void OtTextEditor::toLowerCase(){
-	editor.FilterSelections([](const std::string& text) {
-		return OtText::lower(text);
-	});
 }

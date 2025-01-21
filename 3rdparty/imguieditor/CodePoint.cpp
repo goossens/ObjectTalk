@@ -69,7 +69,7 @@ std::string::const_iterator TextEditor::CodePoint::skipBOM(std::string::const_it
 	static constexpr char bom1 = static_cast<char>(0xEF);
 	static constexpr char bom2 = static_cast<char>(0xBB);
 	static constexpr char bom3 = static_cast<char>(0xBF);
-	return (i + 3 < end && i[0] == bom1 && i[1] == bom2 && i[2] == bom3) ? i + 3 : i;
+	return ((end - i) >= 3 && i[0] == bom1 && i[1] == bom2 && i[2] == bom3) ? i + 3 : i;
 }
 
 

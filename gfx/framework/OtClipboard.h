@@ -62,16 +62,13 @@ private:
 
 		// reset the managed promise and future objects to new ones
 		void reset() {
-			promise.reset(nullptr);
-			future.reset(nullptr);
 			promise = std::make_unique<std::promise<T>>();
 			future = std::make_unique<std::future<T>>(promise->get_future());
 		}
 
 		// non-blocking function that returns whether or not the future object has a valid value
 		bool ready() {
-			std::future_status status = future->wait_for(std::chrono::milliseconds(0));
-			return (status == std::future_status::ready);
+			return (future->wait_for(std::chrono::milliseconds(0)) == std::future_status::ready);
 		}
 
 		// blocking function that retrieves and returns value
@@ -100,7 +97,7 @@ private:
 
 	struct Message {
 		Message(Type t) : type(t), text(nullptr) {}
-		Message(Type t, const const char* txt) : type(t), text(txt) {}
+		Message(Type t, const char* txt) : type(t), text(txt) {}
 
 		Type type;
 		const char* text;

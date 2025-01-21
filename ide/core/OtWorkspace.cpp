@@ -62,7 +62,7 @@ void OtWorkspace::onSetup() {
 		OtPath::changeDirectory(examples);
 
 	} else {
-		root = OtPath::getParent(OtPath::getParent(OtPath::getParent(OtPath::getParent(root))));
+		root = OtPath::getParent(root);
 		examples = OtPath::join(root, "examples");
 
 		if (OtPath::isDirectory(examples)) {

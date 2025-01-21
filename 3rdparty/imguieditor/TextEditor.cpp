@@ -681,10 +681,11 @@ void TextEditor::copy() const {
 
 void TextEditor::paste() {
 	// ignore non-text clipboard content
-	if (ImGui::GetClipboardText() != nullptr) {
+	auto clipboard = ImGui::GetClipboardText();
+
+	if (clipboard) {
 		auto transaction = startTransaction();
-		std::string clipboardText = ImGui::GetClipboardText();
-		insertTextIntoAllCursors(transaction, ImGui::GetClipboardText());
+		insertTextIntoAllCursors(transaction, clipboard);
 		endTransaction(transaction);
 	}
 }

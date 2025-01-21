@@ -23,6 +23,7 @@
 #include "bgfx/embedded_shader.h"
 #include "imgui.h"
 
+#include "OtClipboard.h"
 #include "OtFrameworkApp.h"
 #include "OtFrameworkEvents.h"
 #include "OtSampler.h"
@@ -113,7 +114,7 @@ private:
 	float loopDuration;
 	float cpuTime;
 
-	// to render ImGui
+	// support ImGui
 	bgfx::VertexLayout imguiVertexLayout;
 	OtTexture imguiFontTexture;
 	OtSampler imguiFontSampler{"s_imguiFontAtlas"};
@@ -135,8 +136,10 @@ private:
 	// are we running?
 	bool running;
 
-	// bridge between threads
+	// bridges between threads
 	OtFwEventQueue eventQueue;
+	OtClipboard clipboard;
+	std::string clipboardText;
 
 	// track keyboard modifier state
 	int modifiers = 0;

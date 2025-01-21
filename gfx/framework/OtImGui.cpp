@@ -182,15 +182,16 @@ void OtFramework::initIMGUI() {
 
 	pio.Platform_SetClipboardTextFn = [](ImGuiContext* ctx, const char* text) {
 		OtFramework* framework = (OtFramework*) ImGui::GetPlatformIO().Platform_ClipboardUserData;
-		glfwSetClipboardString(framework->window, text);
+		framework->clipboard.set(text);
 	};
 
 	pio.Platform_GetClipboardTextFn = [](ImGuiContext* ctx) {
 		OtFramework* framework = (OtFramework*) ImGui::GetPlatformIO().Platform_ClipboardUserData;
 		auto callback = glfwSetErrorCallback(nullptr);
-		auto result = glfwGetClipboardString(framework->window);
+		auto clipboard =framework->clipboard.get();
+		framework->clipboardText = clipboard ? clipboard : "";
 		glfwSetErrorCallback(callback);
-		return result;
+		return framework->clipboardText.c_str();
 	};
 
 	// add custom font

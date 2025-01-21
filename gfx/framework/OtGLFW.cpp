@@ -274,6 +274,9 @@ void OtFramework::eventsGLFW() {
 	// wait for window events
 	glfwWaitEventsTimeout(0.01f);
 
+	// process clipboard requests
+	clipboard.process(window);
+
 	// update cursor (if required)
 	if (setCursor) {
 		if (cursor == ImGuiMouseCursor_None) {

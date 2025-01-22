@@ -10,18 +10,17 @@ been a lot harder to implement the language and it's components.
 * [llhttp](https://llhttp.org) - HTTP protocol parser released under the [MIT license](https://opensource.org/licenses/MIT).
 * [multipart-parser](https://github.com/francoiscolas/multipart-parser) - HTTP multipart body parser released under the [MIT license](https://opensource.org/licenses/MIT).
 * [isocline](https://github.com/daanx/isocline) - cross-platform library that can be used as an alternative to the GNU readline library released under the [MIT license](https://opensource.org/licenses/MIT).
-* [unicode tables](https://github.com/boostorg/spirit/tree/develop/include/boost/spirit/home/support/char_encoding/unicode) - Basic (Level 1) Unicode Support released under the [Boost Software License, Version 1.0](http://www.boost.org/LICENSE_1_0.txt).
 
 In case User Interface (UI) modules are included, we also use:
 
 * [GLFW](https://www.glfw.org) - multi-platform library for desktop application development released under the [zlib license](https://opensource.org/licenses/Zlib).
-* [bgfx](https://github.com/bkaradzic/bgfx) - cross-platform, graphics API agnostic rendering library. It's dependencies [bimg](https://github.com/bkaradzic/bimg) and [bx](https://github.com/bkaradzic/bx) are also included. All are released under the [BSD 2-Clause "Simplified" License](https://opensource.org/licenses/BSD-2-Clause)
+* [bgfx](https://github.com/bkaradzic/bgfx) - cross-platform, graphics API agnostic rendering library. It's dependencies [bimg](https://github.com/bkaradzic/bimg) and [bx](https://github.com/bkaradzic/bx) are also used. All are released under the [BSD 2-Clause "Simplified" License](https://opensource.org/licenses/BSD-2-Clause)
 * [Dear ImGui](https://github.com/ocornut/imgui) - graphical user interface library released under the [MIT license](https://opensource.org/licenses/MIT).
 * [ImGuiFileDialog](https://github.com/aiekick/ImGuiFileDialog) - file selection dialog for Dear ImGui released under the [MIT license](https://opensource.org/licenses/MIT).
 * [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo) - Gizmo to visually manipulate 4x4 matrices released under the [MIT license](https://opensource.org/licenses/MIT).
 * [glm](https://github.com/g-truc/glm) - mathematics library for graphics software released under the [MIT license](https://opensource.org/licenses/MIT).
 * [libtess2](https://github.com/memononen/libtess2) - library to convert (tesssallate) polygons into triangles by [Mikko Mononen](https://github.com/memononen) released under the [SGI Free Sofware License B, version 2](https://directory.fsf.org/wiki/License:SGI-B-2.0)
-* [EnTT](https://github.com/skypjack/entt) - Entity Component System (ECS) released under the [MIT license](https://opensource.org/licenses/MIT).
+* [EnTT](https://github.com/skypjack/entt) - Entity Component System (ECS) by [Michele Caini](https://github.com/skypjack) released under the [MIT license](https://opensource.org/licenses/MIT).
 * [JSON for Modern C++](https://github.com/nlohmann/json) - JSON creation/parsing library released under the [MIT license](https://opensource.org/licenses/MIT).
 * [BS::thread_pool](https://github.com/bshoshany/thread-pool) - A fast, lightweight, and easy-to-use C++17 thread pool library released under the [MIT license](https://opensource.org/licenses/MIT).
 * [Jolt Physics](https://github.com/jrouwe/JoltPhysics) - A multi core friendly 3D rigid body physics and collision detection library released under the [MIT license](https://opensource.org/licenses/MIT).
@@ -51,7 +50,7 @@ released under the [GNU General Public License, version 2](https://www.gnu.org/l
 
 A special thanks also goes to [Gunther Rademacher](https://github.com/GuntherRademacher) for his
 ["RailRoad Diagram Generator"](https://github.com/GuntherRademacher/rr)
-which is used in the documentation to visualize the ObjectTalk grammar. The tool is release under the
+which is used in the documentation to visualize the ObjectTalk grammar. The tool is released under the
 [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
 ## Documentation

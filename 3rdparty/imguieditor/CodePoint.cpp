@@ -45,7 +45,7 @@ static constexpr size_t totalSizeOfTables = totalSizeOfTables16 + totalSizeOfTab
 
 
 //
-//	Internal type conversions because "char" is signed
+//	Internal type conversions because "char" (in std::string) is signed
 //
 
 static inline ImWchar uch(char c) {
@@ -240,7 +240,7 @@ bool TextEditor::CodePoint::isXidStart(ImWchar codepoint) {
 
 #if defined(IMGUI_USE_WCHAR32)
 	} else if (codepoint >= 0x10000) {
-		return rangeContains(xidStart32, static_cast<ImWchar32>(codepoint))
+		return rangeContains(xidStart32, static_cast<ImWchar32>(codepoint));
 #endif
 
 	} else {

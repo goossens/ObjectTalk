@@ -118,27 +118,24 @@
 		"print": "cpp"
 	},
 	"files.exclude": {
-		"debug/**": true,
-		"release/**": true,
-		"vs/**": true,
-		"xcode/**": true
+		"build/**": true
 	},
     "editor.insertSpaces": false,
     "editor.renderWhitespace": "all",
 	"editor.detectIndentation": false,
     "editor.defaultFormatter": "ms-vscode.cpptools",
 	"C_Cpp.errorSquiggles": "disabled",
-    "C_Cpp.clang_format_style": "Visual Studio",
-    "C_Cpp.vcFormat.newLine.closeBraceSameLine.emptyFunction": true,
+	"C_Cpp.formatting": "vcFormat",
+    "C_Cpp.vcFormat.newLine.closeBraceSameLine.emptyFunction": false,
     "C_Cpp.vcFormat.newLine.beforeElse": false,
     "C_Cpp.vcFormat.newLine.beforeOpenBrace.block": "sameLine",
     "C_Cpp.vcFormat.newLine.beforeOpenBrace.function": "sameLine",
     "C_Cpp.vcFormat.newLine.beforeOpenBrace.lambda": "sameLine",
     "C_Cpp.vcFormat.newLine.beforeOpenBrace.namespace": "sameLine",
     "C_Cpp.vcFormat.newLine.beforeOpenBrace.type": "sameLine",
-    "C_Cpp.vcFormat.space.pointerReferenceAlignment": "ignore",
+    "C_Cpp.vcFormat.space.pointerReferenceAlignment": "left",
     "C_Cpp.vcFormat.space.withinInitializerListBraces": false,
-    "telemetry.telemetryLevel": "off",
+	"telemetry.telemetryLevel": "off",
     "cmake.configureOnOpen": false,
 	"cmake.buildDirectory": "${workspaceFolder}/build/vscode",
 	"files.trimTrailingWhitespace": true

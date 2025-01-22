@@ -5,6 +5,10 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 
+// 	Fast ASCII ctype functions borrowed from the musl library
+//	https://git.musl-libc.org/cgit/musl/tree/include/ctype.h
+
+
 //
 //	Include files
 //
@@ -15,7 +19,7 @@
 
 
 //
-//	Internal type conversions because "char" is signed
+//	Internal type conversions because "char" (in std::string) is signed
 //
 
 static constexpr char32_t invalidCodePoint = 0xFFFD;
@@ -34,16 +38,16 @@ static inline char sch(char32_t i) {
 //
 
 size_t OtCodePoint::size(std::string::const_iterator i) {
-	if ((*i & 0x80) == 0) {
+	if ((uch(*i) & 0x80) == 0) {
 		return 1;
 
-	} else if ((*i & 0xE0) == 0xC0) {
+	} else if ((uch(*i) & 0xE0) == 0xC0) {
 		return 2;
 
-	} else if ((*i & 0xF0) == 0xE0) {
+	} else if ((uch(*i) & 0xF0) == 0xE0) {
 		return 3;
 
-	} else if ((*i & 0xF8) == 0xF0) {
+	} else if ((uch(*i) & 0xF8) == 0xF0) {
 		return 4;
 
 	} else {
@@ -63,9 +67,9 @@ std::string::const_iterator OtCodePoint::skipBOM(std::string::const_iterator i, 
 	// Note: the standard states that:
 	// Use of a BOM is neither required nor recommended for UTF-8
 	static constexpr char bom1 = static_cast<char>(0xEF);
-	static constexpr char bom2 = 0xBB;
-	static constexpr char bom3 = 0xBF;
-	return (i + 3 < end && i[0] == bom1 && i[1] == bom2 && i[2] == bom3) ? i + 3 : i;
+	static constexpr char bom2 = static_cast<char>(0xBB);
+	static constexpr char bom3 = static_cast<char>(0xBF);
+	return ((end - i) >= 3 && i[0] == bom1 && i[1] == bom2 && i[2] == bom3) ? i + 3 : i;
 }
 
 
@@ -136,21 +140,153 @@ std::string::iterator OtCodePoint::write(std::string::iterator i, char32_t codep
 
 
 //
-// 	Get information about codepoint
+//	OtCodePoint::isAlphabetic
 //
 
-bool OtCodePoint::isPunctuation(char32_t codepoint) { return is_punctuation(codepoint); }
-bool OtCodePoint::isNumber(char32_t codepoint) { return is_decimal_number(codepoint); }
-bool OtCodePoint::isAlphabetic(char32_t codepoint) { return is_alphabetic(codepoint); }
-bool OtCodePoint::isAlphaNumeric(char32_t codepoint) { return is_alphanumeric(codepoint); }
-bool OtCodePoint::isUpperCase(char32_t codepoint) { return is_uppercase(codepoint); }
-bool OtCodePoint::isLowerCase(char32_t codepoint) { return is_lowercase(codepoint); }
-bool OtCodePoint::isWhiteSpace(char32_t codepoint) { return is_white_space(codepoint); }
+bool OtCodePoint::isAlphabetic(char32_t codepoint) {
+	if (codepoint < 0x7f) {
+		return static_cast<unsigned>((codepoint | 32) - 'a') < 26;
+
+	} else if (codepoint < 0x10000) {
+		return rangeContains(letters16, static_cast<char16_t>(codepoint));
+
+	} else {
+		return rangeContains(letters32, codepoint);
+	}
+}
 
 
 //
-//	Convert codepoint
+//	OtCodePoint::isNumeric
 //
 
-char32_t OtCodePoint::toLowerCase(char32_t codepoint) { return to_lowercase(codepoint); }
-char32_t OtCodePoint::toUpperCase(char32_t codepoint) { return to_uppercase(codepoint); }
+bool OtCodePoint::isNumeric(char32_t codepoint) {
+	if (codepoint < 0x7f) {
+		return static_cast<unsigned>(codepoint - '0') < 10;
+
+	} else if (codepoint < 0x10000) {
+		return rangeContains(numbers16, static_cast<char16_t>(codepoint));
+
+	} else {
+		return rangeContains(numbers32, codepoint);
+	}
+}
+
+
+//
+//	OtCodePoint::isWhiteSpace
+//
+
+bool OtCodePoint::isWhiteSpace(char32_t codepoint) {
+	if (codepoint < 0x7f) {
+		return codepoint == ' ' || static_cast<unsigned>(codepoint - '\t') < 5;
+
+	} else if (codepoint < 0x10000) {
+		return rangeContains(whitespace16, static_cast<char16_t>(codepoint));
+
+	} else {
+		return false;
+	}
+}
+
+
+//
+//	OtCodePoint::isXidStart
+//
+
+bool OtCodePoint::isXidStart(char32_t codepoint) {
+	if (codepoint < 0x7f) {
+		return codepoint == '_' || static_cast<unsigned>((codepoint | 32) - 'a') < 26;
+
+	} else if (codepoint < 0x10000) {
+		return rangeContains(xidStart16, static_cast<char16_t>(codepoint));
+
+	} else {
+		return rangeContains(xidStart32, codepoint);
+	}
+}
+
+
+//
+//	OtCodePoint::isXidContinue
+//
+
+bool OtCodePoint::isXidContinue(char32_t codepoint) {
+	if (codepoint < 0x7f) {
+		return codepoint == '_' || (static_cast<unsigned>((codepoint | 32) - 'a') < 26) || (static_cast<unsigned>(codepoint - '0') < 10);
+
+	} else if (codepoint < 0x10000) {
+		return rangeContains(xidContinue16, static_cast<char16_t>(codepoint));
+
+	} else {
+		return rangeContains(xidContinue32, static_cast<char16_t>(codepoint));
+	}
+}
+
+
+//
+//	OtCodePoint::isLowerCase
+//
+
+bool OtCodePoint::isLowerCase(char32_t codepoint) {
+	if (codepoint < 0x7f) {
+		return static_cast<unsigned>(codepoint - 'a') < 26;
+
+	} else if (codepoint < 0x10000) {
+		return rangeContains(lower16, static_cast<char16_t>(codepoint));
+
+	} else {
+		return rangeContains(lower32, codepoint);
+	}
+}
+
+
+//
+//	OtCodePoint::isUpperCase
+//
+
+bool OtCodePoint::isUpperCase(char32_t codepoint) {
+	if (codepoint < 0x7f) {
+		return static_cast<unsigned>(codepoint - 'A') < 26;
+
+	} else if (codepoint < 0x10000) {
+		return rangeContains(upper16, static_cast<char16_t>(codepoint));
+
+	} else {
+		return rangeContains(upper32, codepoint);
+	}
+}
+
+
+//
+//	OtCodePoint::toLowerCase
+//
+
+char32_t OtCodePoint::toLowerCase(char32_t codepoint) {
+	if (codepoint < 0x7f) {
+		return (static_cast<unsigned>(codepoint - 'A') < 26) ? codepoint | 32 : codepoint;
+
+	} else if (codepoint < 0x10000) {
+		return caseRangeToLower(case16, static_cast<char16_t>(codepoint));
+
+	} else {
+		return caseRangeToLower(case32, static_cast<char32_t>(codepoint));
+	}
+}
+
+
+//
+//	OtCodePoint::toUpperCase
+//
+
+char32_t OtCodePoint::toUpperCase(char32_t codepoint) {
+	if (codepoint < 0x7f) {
+		return (static_cast<unsigned>(codepoint - 'a') < 26) ? codepoint & 0x5f : codepoint;
+
+	} else if (codepoint < 0x10000) {
+		return caseRangeToUpper(case16, static_cast<char16_t>(codepoint));
+
+	} else {
+		return caseRangeToUpper(case32, static_cast<char32_t>(codepoint));
+	}
+}

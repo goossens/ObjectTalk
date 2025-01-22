@@ -34,13 +34,13 @@ public:
 	static std::string::iterator write(std::string::iterator i, char32_t codepoint);
 
 	// get information about codepoint
-	static bool isPunctuation(char32_t codepoint);
-	static bool isNumber(char32_t codepoint);
 	static bool isAlphabetic(char32_t codepoint);
-	static bool isAlphaNumeric(char32_t codepoint);
-	static bool isUpperCase(char32_t codepoint);
-	static bool isLowerCase(char32_t codepoint);
+	static bool isNumeric(char32_t codepoint);
 	static bool isWhiteSpace(char32_t codepoint);
+	static bool isXidStart(char32_t codepoint);
+	static bool isXidContinue(char32_t codepoint);
+	static bool isLowerCase(char32_t codepoint);
+	static bool isUpperCase(char32_t codepoint);
 
 	// convert codepoint
 	static char32_t toLowerCase(char32_t codepoint);

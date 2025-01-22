@@ -102,6 +102,7 @@ static TextEditor::Language& getLanguageDefinition() {
 
 		// set ObjectTalk unique features
 		language.name = "ObjectTalk";
+		language.preprocess = 0;
 		language.singleLineCommentAlt = "#";
 		language.hasSingleQuotedStrings = false;
 

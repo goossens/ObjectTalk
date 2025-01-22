@@ -90,7 +90,7 @@ nlohmann::json OtTerrain::serialize(std::string* basedir) {
 	data["hScale"] = hScale;
 	data["vScale"] = vScale;
 	data["vOffset"] = vOffset;
-	data["heightmap"] = heights.serialize(basedir);
+	data["heights"] = heights.serialize(basedir);
 	data["material"] = material.serialize(basedir);
 	data["wireframe"] = wireframe;
 	return data;

@@ -68,7 +68,7 @@
 				{
 					"component": "Terrain",
 					"hScale": 1.0,
-					"heightmap": {
+					"heights": {
 						"amplitude": 0.5,
 						"frequency": 10,
 						"lacunarity": 2,

@@ -91,6 +91,7 @@ void OtTerrainHeights::deserialize(nlohmann::json data, std::string* basedir) {
 	frequency = data.value("frequency", 10);
 	lacunarity = data.value("lacunarity", 2);
 	amplitude = data.value("amplitude", 0.5f);
+	persistence = data.value("persistence", 0.5f);
 	octaves = data.value("octaves", 5);
 	dirty = true;
 }

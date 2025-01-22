@@ -56,9 +56,9 @@
 						1.0
 					],
 					"translation": [
-						0.0,
-						572.2000122070313,
-						155.3000030517578
+						-21.0,
+						190.0,
+						2.799999952316284
 					]
 				},
 				{
@@ -103,7 +103,7 @@
 				{
 					"component": "Terrain",
 					"hScale": 1.0,
-					"heightmap": {
+					"heights": {
 						"amplitude": 0.5,
 						"frequency": 10,
 						"lacunarity": 2,

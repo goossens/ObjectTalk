@@ -30,7 +30,7 @@
 //
 
 TextEditor::Iterator::reference TextEditor::Iterator::operator*() const {
-	return static_cast<Line*>(line)->at(index).character;
+	return static_cast<Line*>(line)->at(index).codepoint;
 }
 
 
@@ -39,5 +39,5 @@ TextEditor::Iterator::reference TextEditor::Iterator::operator*() const {
 //
 
 TextEditor::Iterator::pointer TextEditor::Iterator::operator->() const {
-	return &(static_cast<Line*>(line)->at(index).character);
+	return &(static_cast<Line*>(line)->at(index).codepoint);
 }

@@ -70,17 +70,26 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 		cursors.update();
 	}
 
-	// recolorize document if showMatchingBrackets option has changed
-	if (lastShowMatchingBrackets != showMatchingBrackets) {
-		document.colorize();
+	// recolorize document if showMatchingBrackets option or language has changed
+	if (showMatchingBracketsChanged || languageChanged) {
+		colorizer.updateEntireDocument(document, language);
 	}
 
-	// rebuild bracket list (if document has changes or showMatchingBrackets option has changed)
-	if (showMatchingBrackets && (!lastShowMatchingBrackets || document.isUpdated())) {
-		brackets.update(document);
+	// recolorize changed lines (if required)
+	auto documentChanged = document.isUpdated();
+
+	if (language && documentChanged) {
+		colorizer.updateChangedLines(document, language);
 	}
 
-	lastShowMatchingBrackets = showMatchingBrackets;
+	// rebuild bracket list (if document has changed or showMatchingBrackets option has changed)
+	if (language && showMatchingBrackets && (showMatchingBracketsChanged || documentChanged)) {
+		bracketeer.update(document);
+	}
+
+	// reset changed states
+	showMatchingBracketsChanged = false;
+	languageChanged = false;
 
 	// ensure cursor is visible (if requested)
 	if (ensureCursorIsVisible) {
@@ -214,12 +223,12 @@ void TextEditor::renderErrorMarkers() {
 
 void TextEditor::renderMatchingBrackets() {
 	if (showMatchingBrackets) {
-		if (brackets.size()) {
+		if (bracketeer.size()) {
 			auto drawList = ImGui::GetWindowDrawList();
 			ImVec2 cursorScreenPos = ImGui::GetCursorScreenPos();
 
 			// render bracket pair lines
-			for (auto& bracket : brackets) {
+			for (auto& bracket : bracketeer) {
 				if ((bracket.end.line - bracket.start.line) > 1 &&
 					bracket.start.line <= lastVisibleLine &&
 					bracket.end.line > firstVisibleLine) {
@@ -232,9 +241,9 @@ void TextEditor::renderMatchingBrackets() {
 			}
 
 			// render active bracket pair
-			auto active = brackets.getActive(cursors.getMain().getInteractiveEnd());
+			auto active = bracketeer.getActive(cursors.getMain().getInteractiveEnd());
 
-			if (active != brackets.end() &&
+			if (active != bracketeer.end() &&
 				active->start.line <= lastVisibleLine &&
 				active->end.line > firstVisibleLine) {
 
@@ -276,10 +285,10 @@ void TextEditor::renderText() {
 
 		while (index < glyphs && column <= lastVisibleColumn) {
 			auto& glyph = line[index];
-			auto character = glyph.character;
+			auto codepoint = glyph.codepoint;
 			ImVec2 glyphPos{lineScreenPos.x + column * glyphSize.x, lineScreenPos.y};
 
-			if (character == '\t') {
+			if (codepoint == '\t') {
 				if (showWhitespaces) {
 					const auto x1 = glyphPos.x + glyphSize.x * 0.3f;
 					const auto y = glyphPos.y + fontSize * 0.5f;
@@ -296,7 +305,7 @@ void TextEditor::renderText() {
 					drawList->AddLine(p2, p4, palette.get(Color::whitespace));
 				}
 
-			} else if (character == ' ') {
+			} else if (codepoint == ' ') {
 				if (showWhitespaces) {
 					const auto x = glyphPos.x + glyphSize.x * 0.5f;
 					const auto y = glyphPos.y + fontSize * 0.5f;
@@ -304,11 +313,11 @@ void TextEditor::renderText() {
 				}
 
 			} else {
-				font->RenderChar(drawList, fontSize, glyphPos, palette.get(glyph.color), character);
+				font->RenderChar(drawList, fontSize, glyphPos, palette.get(glyph.color), codepoint);
 			}
 
 			index++;
-			column += (character == '\t') ? tabSize - (column % tabSize) : 1;
+			column += (codepoint == '\t') ? tabSize - (column % tabSize) : 1;
 		}
 
 		lineScreenPos.y += glyphSize.y;
@@ -441,7 +450,7 @@ void TextEditor::handleKeyboardInputs() {
 		else if (!readOnly && isShortcut && ImGui::IsKeyPressed(ImGuiKey_RightBracket)) { indentLines(); }
 		else if (!readOnly && isAltOnly && ImGui::IsKeyPressed(ImGuiKey_UpArrow)) { moveUpLines(); }
 		else if (!readOnly && isAltOnly && ImGui::IsKeyPressed(ImGuiKey_DownArrow)) { moveDownLines(); }
-		else if (!readOnly && isShortcut && ImGui::IsKeyPressed(ImGuiKey_Slash) && document.hasLanguage()) { toggleComments(); }
+		else if (!readOnly && language && isShortcut && ImGui::IsKeyPressed(ImGuiKey_Slash)) { toggleComments(); }
 
 		// change insert mode
 		else if (isNoModifiers && ImGui::IsKeyPressed(ImGuiKey_Insert)) { overwrite = !overwrite; }
@@ -1180,8 +1189,8 @@ void TextEditor::deindentLines() {
 			int column = 0;
 			int index = 0;
 
-			while (column < 4 && index < document[line].glyphs() && std::isblank(document[line][index].character)) {
-				column += document[line][index].character == '\t' ? tabSize - (column % tabSize) : 1;
+			while (column < 4 && index < document[line].glyphs() && std::isblank(document[line][index].codepoint)) {
+				column += document[line][index].codepoint == '\t' ? tabSize - (column % tabSize) : 1;
 				index++;
 			}
 
@@ -1274,7 +1283,7 @@ void TextEditor::moveDownLines() {
 
 void TextEditor::toggleComments() {
 	auto transaction = startTransaction();
-	auto comment = document.getLanguage().singleLineComment;
+	auto comment = language->singleLineComment;
 
 	// process all cursors
 	for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
@@ -1288,11 +1297,11 @@ void TextEditor::toggleComments() {
 				int start = 0;
 				int i = 0;
 
-				while (start < document[line].glyphs() && CodePoint::isWhiteSpace(document[line][start].character)) {
+				while (start < document[line].glyphs() && CodePoint::isWhiteSpace(document[line][start].codepoint)) {
 					start++;
 				}
 
-				while (start + i < document[line].glyphs() && i < comment.size() && document[line][start + i].character == comment[i]) {
+				while (start + i < document[line].glyphs() && i < comment.size() && document[line][start + i].codepoint == comment[i]) {
 					i++;
 				}
 
@@ -1410,7 +1419,7 @@ void TextEditor::stripTrailingWhitespaces() {
 
 		// look for first non-whitespace glyph at the end of the line
 		for (auto index = size - 1; !done && index >= 0; index--) {
-			if (CodePoint::isWhiteSpace(line[index].character)) {
+			if (CodePoint::isWhiteSpace(line[index].codepoint)) {
 				whitespace = index;
 
 			} else {
@@ -1622,12 +1631,12 @@ void TextEditor::autoIndentAllCursors(std::shared_ptr<Transaction> transaction) 
 		// get previous and next character
 		auto index = document.getIndex(start);
 		auto& line = document[start.line];
-		ImWchar previousChar = index > 0 ? line[index - 1].character : 0;
-		ImWchar nextChar = index < line.size() ? line[index].character : 0;
+		ImWchar previousChar = index > 0 ? line[index - 1].codepoint : 0;
+		ImWchar nextChar = index < line.size() ? line[index].codepoint : 0;
 
 		// remove extra whitespaces if required
 		if (CodePoint::isWhiteSpace(nextChar)) {
-			while (index < line.size() && CodePoint::isWhiteSpace(line[index].character)) {
+			while (index < line.size() && CodePoint::isWhiteSpace(line[index].codepoint)) {
 				index++;
 			}
 
@@ -1639,8 +1648,8 @@ void TextEditor::autoIndentAllCursors(std::shared_ptr<Transaction> transaction) 
 		// determine whitespace at start of current line
 		std::string whitespace;
 
-		for (auto i = 0; i < line.size() && CodePoint::isWhiteSpace(line[i].character); i++) {
-			whitespace += line[i].character;
+		for (auto i = 0; i < line.size() && CodePoint::isWhiteSpace(line[i].codepoint); i++) {
+			whitespace += line[i].codepoint;
 		}
 
 		// determine text to insert

@@ -13,63 +13,6 @@
 
 
 //
-//	TextEditor::Line::maxColumn
-//
-
-int TextEditor::Line::maxColumn(int tabSize) const {
-	// determine the maximum column number for this line
-	int column = 0;
-
-	for (auto glyph = begin(); glyph < end(); glyph++) {
-		column = (glyph->character == '\t') ? ((column / tabSize) + 1) * tabSize : column + 1;
-	}
-
-	return column;
-}
-
-
-//
-//	TextEditor::Line::columnToIndex
-//
-
-int TextEditor::Line::columnToIndex(int column, int tabSize) const {
-	// convert a column reference to a glyph index for this line (taking tabs into account)
-	int index = 0;
-	int c = 0;
-
-	for (auto glyph = begin(); glyph < end(); glyph++) {
-		if (c == column) {
-			return index;
-
-		} if (c > column) {
-			return index - 1;
-		}
-
-		c = (glyph->character == '\t') ? ((c / tabSize) + 1) * tabSize : c + 1;
-		index++;
-	}
-
-	return index;
-}
-
-
-//
-//	TextEditor::Line::indexToColumn
-//
-
-int TextEditor::Line::indexToColumn(int index, int tabSize) const {
-	// convert a glyph index to a column reference for this line (taking tabs into account)
-	int column = 0;
-
-	for (auto glyph = begin(); glyph < begin() + index; glyph++) {
-		column = (glyph->character == '\t') ? ((column / tabSize) + 1) * tabSize : column + 1;
-	}
-
-	return column;
-}
-
-
-//
 //	TextEditor::Document::setText
 //
 
@@ -77,6 +20,7 @@ void TextEditor::Document::setText(const std::string& text) {
 	// reset document
 	clear();
 	emplace_back();
+	updated = true;
 
 	// process input UTF-8 and generate lines of glyphs
 	auto end = text.end();
@@ -93,10 +37,6 @@ void TextEditor::Document::setText(const std::string& text) {
 			back().emplace_back(Glyph(character, Color::text));
 		}
 	}
-
-	// colorize the text
-	colorize();
-	updated = true;
 }
 
 
@@ -141,8 +81,11 @@ TextEditor::Coordinate TextEditor::Document::insertText(Coordinate start, const 
 	// determine end-of insert
 	auto end = Coordinate(lineNo, getColumn(static_cast<int>(line - begin()), index));
 
-	// colorize the new lines
-	colorize(start.line, end.line);
+	// mark affected lines for colorization
+	for (auto line = start.line; line <= end.line; line++) {
+		at(line).colorize = true;
+	}
+
 	updated = true;
 	return end;
 }
@@ -180,8 +123,13 @@ void TextEditor::Document::deleteText(Coordinate start, Coordinate end) {
 		erase(begin() + start.line + 1);
 	}
 
-	// colorize around the deleted line(s)
-	colorize(start.line, (start.line == lines() - 1) ? start.line : start.line + 1);
+	// mark affected lines for colorization
+	auto last = (start.line == lines() - 1) ? start.line : start.line + 1;
+
+	for (auto line = start.line; line <= last; line++) {
+		at(line).colorize = true;
+	}
+
 	updated = true;
 }
 
@@ -197,7 +145,7 @@ std::string TextEditor::Document::getText() const {
 
 	for (auto i = begin(); i < end(); i++) {
 		for (auto& glyph : *i) {
-			text.append(utf8.begin(), CodePoint::write(utf8.begin(), glyph.character));
+			text.append(utf8.begin(), CodePoint::write(utf8.begin(), glyph.codepoint));
 		}
 
 		if (i < end() - 1) {
@@ -225,7 +173,7 @@ std::string TextEditor::Document::getSectionText(Coordinate start, Coordinate en
 		auto& line = at(lineNo);
 
 		if (index < line.glyphs()) {
-			section.append(utf8.begin(), CodePoint::write(utf8.begin(), line[index].character));
+			section.append(utf8.begin(), CodePoint::write(utf8.begin(), line[index].codepoint));
 
 			index++;
 		} else {
@@ -261,6 +209,65 @@ int TextEditor::Document::maxColumn() const {
 	}
 
 	return result;
+}
+
+
+//
+//	TextEditor::Document::maxColumn
+//
+
+int TextEditor::Document::maxColumn(const Line& line) const {
+	// determine the maximum column number for this line
+	int column = 0;
+
+	for (auto glyph = line.begin(); glyph < line.end(); glyph++) {
+		column = (glyph->codepoint == '\t') ? ((column / tabSize) + 1) * tabSize : column + 1;
+	}
+
+	return column;
+}
+
+
+//
+//	TextEditor::Document::getIndex
+//
+
+inline int TextEditor::Document::getIndex(const Line& line, int column) const {
+	// convert a column reference to a glyph index for a specified line (taking tabs into account)
+	auto end = line.end();
+	int index = 0;
+	int c = 0;
+
+	for (auto glyph = line.begin(); glyph < end; glyph++) {
+		if (c == column) {
+			return index;
+
+		} if (c > column) {
+			return index - 1;
+		}
+
+		c = (glyph->codepoint == '\t') ? ((c / tabSize) + 1) * tabSize : c + 1;
+		index++;
+	}
+
+	return index;
+}
+
+
+//
+//	TextEditor::Document::getColumn
+//
+
+int TextEditor::Document::getColumn(const Line& line, int index) const {
+	// convert a glyph index to a column reference for the specified line (taking tabs into account)
+	auto end = line.begin() + index;
+	int column = 0;
+
+	for (auto glyph = line.begin(); glyph < end; glyph++) {
+		column = (glyph->codepoint == '\t') ? ((column / tabSize) + 1) * tabSize : column + 1;
+	}
+
+	return column;
 }
 
 
@@ -384,25 +391,22 @@ TextEditor::Coordinate TextEditor::Document::findWordStart(Coordinate from) cons
 	} else {
 		auto& line = at(from.line);
 		auto index = getIndex(from);
-		auto firstCharacter = line[index - 1].character;
+		auto firstCharacter = line[index - 1].codepoint;
 
 		if (CodePoint::isWhiteSpace(firstCharacter)) {
-			while (index > 0 && CodePoint::isWhiteSpace(line[index - 1].character)) {
+			while (index > 0 && CodePoint::isWhiteSpace(line[index - 1].codepoint)) {
 				index--;
 			}
 
 		} else if (CodePoint::isWord(firstCharacter)) {
-			while (index > 0 && CodePoint::isWord(line[index - 1].character)) {
+			while (index > 0 && CodePoint::isWord(line[index - 1].codepoint)) {
 				index--;
 			}
 
-		} else if (language && language->isPunctuation && language->isPunctuation(firstCharacter)) {
-			while (index > 0 && language->isPunctuation(line[index - 1].character)) {
+		} else {
+			while (index > 0 && !CodePoint::isWord(line[index - 1].codepoint) && !CodePoint::isWhiteSpace(line[index - 1].codepoint)) {
 				index--;
 			}
-
-		} else if (index > 0) {
-			index--;
 		}
 
 		return Coordinate(from.line, getColumn(line, index));
@@ -423,25 +427,22 @@ TextEditor::Coordinate TextEditor::Document::findWordEnd(Coordinate from) const 
 		return from;
 
 	} else {
-		auto firstCharacter = line[index].character;
+		auto firstCharacter = line[index].codepoint;
 
 		if (CodePoint::isWhiteSpace(firstCharacter)) {
-			while (index < size && CodePoint::isWhiteSpace(line[index].character)) {
+			while (index < size && CodePoint::isWhiteSpace(line[index].codepoint)) {
 				index++;
 			}
 
 		} else if (CodePoint::isWord(firstCharacter)) {
-			while (index < size && CodePoint::isWord(line[index].character)) {
+			while (index < size && CodePoint::isWord(line[index].codepoint)) {
 				index++;
 			}
 
-		} else if (language && language->isPunctuation && language->isPunctuation(firstCharacter)) {
-			while (index < size && language->isPunctuation(line[index].character)) {
+		} else {
+			while (index < size && !CodePoint::isWord(line[index].codepoint) && !CodePoint::isWhiteSpace(line[index].codepoint)) {
 				index++;
 			}
-
-		} else if (index < size) {
-			index++;
 		}
 	}
 
@@ -500,7 +501,7 @@ bool TextEditor::Document::findText(Coordinate from, const std::string& text, bo
 					done = true;
 
 				} else {
-					auto ch = at(line)[index].character;
+					auto ch = at(line)[index].codepoint;
 
 					if (!caseSensitive) {
 						ch = CodePoint::toLower(ch);
@@ -574,257 +575,4 @@ TextEditor::Coordinate TextEditor::Document::normalizeCoordinate(Coordinate coor
 	}
 
 	return Coordinate(result.line, getColumn(result.line, getIndex(result)));
-}
-
-
-//
-//	TextEditor::Document::setLanguage
-//
-
-void TextEditor::Document::setLanguage(const Language &definition) {
-	language = &definition;
-	colorize();
-	updated = true;
-}
-
-
-//
-//	TextEditor::Document::colorize
-//
-
-TextEditor::State TextEditor::Document::colorize(Line& line) {
-	auto state = line.state;
-
-	// process all glyphs in this line
-	auto glyph = line.begin();
-	Iterator end(static_cast<void*>(&line), line.glyphs());
-	Iterator newEnd;
-
-	auto nonWhiteSpace = false;
-	Color color;
-
-	while (glyph < line.end()) {
-		Iterator start(static_cast<void*>(&line), static_cast<int>(glyph - line.begin()));
-
-		if (state == State::inText) {
-			// special handling for preprocessor lines
-			if (!nonWhiteSpace && language->preprocess && glyph->character != language->preprocess && !CodePoint::isWhiteSpace(glyph->character)) {
-				nonWhiteSpace = true;
-			}
-
-			// mark whitespace characters
-			if (CodePoint::isWhiteSpace(glyph->character)) {
-				(glyph++)->color = Color::whitespace;
-
-			// handle single line comments
-			} else if (language->singleLineComment.size() && line.matches(glyph, language->singleLineComment)) {
-				line.setColor(glyph, line.end(), Color::comment);
-				glyph = line.end();
-
-			} else if (language->singleLineCommentAlt.size() && line.matches(glyph, language->singleLineCommentAlt)) {
-				line.setColor(glyph, line.end(), Color::comment);
-				glyph = line.end();
-
-			// are we starting a multiline comment
-			} else if (language->commentStart.size() && line.matches(glyph, language->commentStart)) {
-				state = State::inComment;
-				auto size = language->commentEnd.size();
-				line.setColor(glyph, glyph + size, Color::comment);
-				glyph += size;
-
-			// are we starting a special string
-			} else if (language->otherStringStart.size() && line.matches(glyph, language->otherStringStart)) {
-				state = State::inOtherString;
-				auto size = language->otherStringStart.size();
-				line.setColor(glyph, glyph + size, Color::string);
-				glyph += size;
-
-			} else if (language->otherStringAltStart.size() && line.matches(glyph, language->otherStringAltStart)) {
-				state = State::inOtherStringAlt;
-				auto size = language->otherStringAltStart.size();
-				line.setColor(glyph, glyph + size, Color::string);
-				glyph += size;
-
-			// are we starting a single quoted string
-			} else if (language->hasSingleQuotedStrings && glyph->character == '\'') {
-				state = State::inSingleQuotedString;
-				(glyph++)->color = Color::string;
-
-			// are we starting a double quoted string
-			} else if (language->hasDoubleQuotedStrings && glyph->character == '"') {
-				state = State::inDoubleQuotedString;
-				(glyph++)->color = Color::string;
-
-			// is this a preprocessor line
-			} else if (language->preprocess && !nonWhiteSpace && glyph->character == language->preprocess) {
-				line.setColor(line.begin(), line.end(), Color::preprocessor);
-				glyph = line.end();
-
-			// handle custom tokenizer (if we have one)
-			} else if (language->customTokenizer && (newEnd = language->customTokenizer(start, end, color)) != start) {
-				int size = newEnd - start;
-				line.setColor(glyph, glyph + size, color);
-				glyph += size;
-
-			// nothing worked so far so it's time to do some tokenizing
-			} else {
-				// do we have an identifier
-				if (language->getIdentifier && (newEnd = language->getIdentifier(start, end)) != start) {
-					int size = newEnd - start;
-
-					// determine identifier text and color color
-					std::string identifier;
-					color = Color::identifier;
-
-					for (auto i = start; i < newEnd; i++) {
-						identifier += *i;
-					}
-
-					if (language->keywords.find(identifier) != language->keywords.end()) {
-						color = Color::keyword;
-
-					} else if (language->declarations.find(identifier) != language->declarations.end()) {
-						color = Color::declaration;
-
-					} else if (language->identifiers.find(identifier) != language->identifiers.end()) {
-						color = Color::knownIdentifier;
-					}
-
-					// colorize identifier and move on
-					line.setColor(glyph, glyph + size, color);
-					glyph += size;
-
-				// do we have a number
-				} else if (language->getNumber && (newEnd = language->getNumber(start, end)) != start) {
-					int size = newEnd - start;
-					line.setColor(glyph, glyph + size, Color::number);
-					glyph += size;
-
-				// is this punctuation
-				} else if (language->isPunctuation && language->isPunctuation(glyph->character)) {
-					(glyph++)->color = Color::punctuation;
-
-				} else {
-					// I guess we don't know what this character is
-					(glyph++)->color = Color::text;
-				}
-			}
-
-		} else if (state == State::inComment) {
-			// stay in comment state until we see the end sequence
-			if (line.matches(glyph, language->commentEnd)) {
-				auto size = language->commentEnd.size();
-				line.setColor(glyph, glyph + size, Color::comment);
-				glyph += size;
-				state = State::inText;
-
-			} else {
-				(glyph++)->color = Color::comment;
-			}
-
-		} else if (state == State::inOtherString) {
-			// stay in otherString state until we see the end sequence
-			// skip escaped character
-			if (glyph->character == language->stringEscape) {
-				(glyph++)->color = Color::string;
-
-				if (glyph < line.end()) {
-					(glyph++)->color = Color::string;
-				}
-
-			} else if (line.matches(glyph, language->otherStringEnd)) {
-				auto size = language->otherStringEnd.size();
-				line.setColor(glyph, glyph + size, Color::string);
-				glyph += size;
-				state = State::inText;
-
-			} else {
-				(glyph++)->color = Color::comment;
-			}
-
-		} else if (state == State::inOtherStringAlt) {
-			// stay in otherStringAlt state until we see the end sequence
-			// skip escaped character
-			if (glyph->character == language->stringEscape) {
-				(glyph++)->color = Color::string;
-
-				if (glyph < line.end()) {
-					(glyph++)->color = Color::string;
-				}
-
-			} else if (line.matches(glyph, language->otherStringAltEnd)) {
-				auto size = language->otherStringAltEnd.size();
-				line.setColor(glyph, glyph + size, Color::string);
-				glyph += size;
-				state = State::inText;
-
-			} else {
-				(glyph++)->color = Color::comment;
-			}
-
-		} else if (state == State::inSingleQuotedString) {
-			// stay in single quote state until we see an end
-			// skip escaped character
-			if (glyph->character == language->stringEscape) {
-				(glyph++)->color = Color::string;
-
-				if (glyph < line.end()) {
-					(glyph++)->color = Color::string;
-				}
-
-			} else if (glyph->character == '\'') {
-				(glyph++)->color = Color::string;
-				state = State::inText;
-
-			} else {
-				(glyph++)->color = Color::string;
-			}
-
-		} else if (state == State::inDoubleQuotedString) {
-			// stay in double quote state until we see an end
-			if (glyph->character == language->stringEscape) {
-				// skip escaped character
-				(glyph++)->color = Color::string;
-
-				if (glyph < line.end()) {
-					(glyph++)->color = Color::string;
-				}
-
-			} else if (glyph->character == '"') {
-				(glyph++)->color = Color::string;
-				state = State::inText;
-
-			} else {
-				(glyph++)->color = Color::string;
-			}
-		}
-	}
-
-	return state;
-}
-
-void TextEditor::Document::colorize(int start, int end) {
-	if (language) {
-		for (auto line = start; line <= end; line++) {
-			State state = colorize(at(line));
-
-			if (line < lines() - 1) {
-				auto& nextLine = at(line + 1);
-
-				if (nextLine.state != state) {
-					nextLine.state = state;
-
-					if (line == end) {
-						end++;
-					}
-				}
-			}
-		}
-	}
-}
-
-void TextEditor::Document::colorize() {
-	if (language) {
-		colorize(0, lines() - 1);
-	}
 }

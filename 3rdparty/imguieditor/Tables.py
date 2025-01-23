@@ -379,7 +379,7 @@ if __name__ == "__main__":
 		tables.write(printTable(numbers, "Range16", "numbers16", filter16, formatStride, False))
 		tables.write(printTable(numbers, "Range32", "numbers32", filter32, formatStride, True))
 
-		whitespace =calculateStrides( buildRangeTable("PropList.txt", lambda line : line[1] == "White_Space"))
+		whitespace = calculateStrides( buildRangeTable("PropList.txt", lambda line : line[1] == "White_Space"))
 		tables.write(printTable(whitespace, "Range16", "whitespace16", filter16, formatStride, False))
 
 		xidStart = calculateStrides(buildRangeTable("DerivedCoreProperties.txt", lambda line : line[1] == "XID_Start"))

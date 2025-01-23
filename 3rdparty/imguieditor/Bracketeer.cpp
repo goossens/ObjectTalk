@@ -13,10 +13,10 @@
 
 
 //
-//	TextEditor::Brackets::update
+//	TextEditor::Bracketeer::update
 //
 
-void TextEditor::Brackets::update(Document& document) {
+void TextEditor::Bracketeer::update(Document& document) {
 	Color bracketColors[] = {
 		Color::matchingBracketLevel1,
 		Color::matchingBracketLevel2,
@@ -33,24 +33,24 @@ void TextEditor::Brackets::update(Document& document) {
 			auto& glyph = document[line][index];
 
 			// handle a bracket opener that is not in a comment, string or preprocessor statement
-			if (isBracketCandidate(glyph) && isBracketOpener(glyph.character)) {
+			if (isBracketCandidate(glyph) && isBracketOpener(glyph.codepoint)) {
 				// start a new level
 				levels.emplace_back(size());
-				emplace_back(glyph.character, Coordinate(line, document.getColumn(line, index)), 0, Coordinate::invalid(), level);
+				emplace_back(glyph.codepoint, Coordinate(line, document.getColumn(line, index)), 0, Coordinate::invalid(), level);
 				glyph.color = bracketColors[level % 3];
 				level++;
 
 			// handle a bracket closer that is not in a comment, string or preprocessor statement
-			} else if (isBracketCandidate(glyph) && isBracketCloser(glyph.character)) {
+			} else if (isBracketCandidate(glyph) && isBracketCloser(glyph.codepoint)) {
 				if (levels.size()) {
 					auto& lastBracket = at(levels.back());
 					levels.pop_back();
 					level--;
 
-					if (lastBracket.startChar == toBracketOpener(glyph.character)) {
+					if (lastBracket.startChar == toBracketOpener(glyph.codepoint)) {
 						// handle matching bracket
 						glyph.color = bracketColors[level % 3];
-						lastBracket.endChar = glyph.character;
+						lastBracket.endChar = glyph.codepoint;
 						lastBracket.end = Coordinate(line, document.getColumn(line, index));
 
 					} else {
@@ -80,10 +80,10 @@ void TextEditor::Brackets::update(Document& document) {
 
 
 //
-//	TextEditor::Brackets::getActive
+//	TextEditor::Bracketeer::getActive
 //
 
-TextEditor::Brackets::iterator TextEditor::Brackets::getActive(Coordinate location) {
+TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getActive(Coordinate location) {
 	if (location != activeLocation) {
 		active = end();
 		bool done = false;

@@ -52,7 +52,7 @@ public:
 	inline bool IsShowWhitespacesEnabled() const { return showWhitespaces; }
 	inline void SetShowLineNumbersEnabled(bool value) { showLineNumbers = value; }
 	inline bool IsShowLineNumbersEnabled() const { return showLineNumbers; }
-	inline void SetShowMatchingBrackets(bool value) { showMatchingBrackets = value; }
+	inline void SetShowMatchingBrackets(bool value) { showMatchingBrackets = value; showMatchingBracketsChanged = true; }
 	inline bool IsShowingMatchingBrackets() const { return showMatchingBrackets; }
 	inline void SetCompletePairedGlyphs(bool value) { completePairedGlyphs = value; }
 	inline bool IsCompletingPairedGlyphs() const { return completePairedGlyphs; }
@@ -107,7 +107,7 @@ public:
 	inline void DeindentLines() { if (!readOnly) deindentLines(); }
 	inline void MoveUpLines() { if (!readOnly) moveUpLines(); }
 	inline void MoveDownLines() { if (!readOnly) moveDownLines(); }
-	inline void ToggleComments() { if (!readOnly && document.hasLanguage()) toggleComments(); }
+	inline void ToggleComments() { if (!readOnly && language) toggleComments(); }
 	inline void FilterSelections(std::function<std::string(std::string)> filter) { if (!readOnly) filterSelections(filter); }
 	inline void SelectionToLowerCase() { if (!readOnly) selectionToLowerCase(); }
 	inline void SelectionToUpperCase() { if (!readOnly) selectionToUpperCase(); }
@@ -231,10 +231,10 @@ public:
 		static const Language& Markdown();
 	};
 
-	inline void SetLanguage(const Language& language) { document.setLanguage(language); }
-	inline const Language& GetLanguage() const { return document.getLanguage(); };
-	inline bool HasLanguage() const { return document.hasLanguage(); }
-	inline std::string GetLanguageName() const { return document.getLanguageName(); }
+	inline void SetLanguage(const Language& l) { language = &l; languageChanged = true; }
+	inline const Language& GetLanguage() const { return *language; };
+	inline bool HasLanguage() const { return language != nullptr; }
+	inline std::string GetLanguageName() const { return language == nullptr ? "None" : language->name; }
 
 	// support unicode codepoints
 	class CodePoint {
@@ -244,8 +244,8 @@ public:
 		static std::string::iterator write(std::string::iterator i, ImWchar codepoint);
 		static bool isLetter(ImWchar codepoint);
 		static bool isNumber(ImWchar codepoint);
-		static bool isWhiteSpace(ImWchar codepoint);
 		static bool isWord(ImWchar codepoint);
+		static bool isWhiteSpace(ImWchar codepoint);
 		static bool isXidStart(ImWchar codepoint);
 		static bool isXidContinue(ImWchar codepoint);
 		static bool isLower(ImWchar codepoint);
@@ -285,7 +285,7 @@ private:
 		inline Coordinate operator +(const Coordinate& o) const { return Coordinate(line + o.line, column + o.column); }
 
 		static Coordinate invalid() { static Coordinate invalid(-1, -1); return invalid; }
-		inline bool isValid() const { return line >= 0 && column >=0; }
+		inline bool isValid() const { return line >= 0 && column >= 0; }
 
 		int line = 0;
 		int column = 0;
@@ -401,11 +401,11 @@ private:
 	public:
 		// constructors
 		Glyph() = default;
-		Glyph(ImWchar ch) : character(ch) {}
-		Glyph(ImWchar ch, Color col) : character(ch), color(col) {}
+		Glyph(ImWchar cp) : codepoint(cp) {}
+		Glyph(ImWchar cp, Color col) : codepoint(cp), color(col) {}
 
 		// properties
-		ImWchar character = 0;
+		ImWchar codepoint = 0;
 		Color color = Color::text;
 	};
 
@@ -422,40 +422,17 @@ private:
 	// a single line in a document
 	class Line : public std::vector<Glyph> {
 	public:
-		friend class Document;
-		// get number of glyphs
+		// get number of glyphs (as an int)
 		inline int glyphs() const { return static_cast<int>(size()); }
-
-		// determine the maximum column number for this line
-		int maxColumn(int tabSize) const;
-
-		// translate visible column to line index (and visa versa)
-		int columnToIndex(int column, int tabSize) const;
-		int indexToColumn(int index, int tabSize) const;
-
-		// see if text at iterator matches (this only works for latin-1 codepoints at the moment)
-		inline bool matches(iterator start, const std::string& text) {
-			for (auto character : text) {
-				if ((start++)->character != character) {
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		// set glyph colors
-		inline void setColor(iterator start, iterator end, Color color) {
-			while (start < end) {
-				(start++)->color = color;
-			}
-		}
 
 		// state at start of line
 		State state = State::inText;
 
 		// error marker
 		size_t errorMarker;
+
+		// do we need to colorize this line
+		bool colorize = true;
 	};
 
 	// the document being edited (Lines of Glyphs)
@@ -478,22 +455,19 @@ private:
 		std::string getSectionText(Coordinate start, Coordinate end) const;
 		std::string getLineText(int line) const;
 
-		// get number of lines
+		// get number of lines (as an int)
 		inline int lines() const { return static_cast<int>(size()); }
 
 		// determine maximum column for this document or just a line
 		int maxColumn() const;
-		inline int maxColumn(int line) const { return at(line).maxColumn(tabSize); }
-		inline int maxColumn(const Line& line) const  { return line.maxColumn(tabSize); }
-		inline int maxColumn(const iterator line) const  { return line->maxColumn(tabSize); }
+		int maxColumn(const Line& line) const;
+		inline int maxColumn(int line) const { return maxColumn(at(line)); }
 
 		// translate visible column to line index (and visa versa)
-		inline int getIndex(Coordinate coordinate) const { return at(coordinate.line).columnToIndex(coordinate.column, tabSize); }
-		inline int getIndex(const Line& line, int column) const { return line.columnToIndex(column, tabSize); }
-		inline int getIndex(const iterator line, int column) const { return line->columnToIndex(column, tabSize); }
-		inline int getColumn(int line, int index) const { return at(line).indexToColumn(index, tabSize); }
-		inline int getColumn(const Line& line, int index) const { return line.indexToColumn(index, tabSize); }
-		inline int getColumn(const iterator line, int index) const { return line->indexToColumn(index, tabSize); }
+		int getIndex(const Line& line, int column) const;
+		inline int getIndex(Coordinate coordinate) const { return getIndex(at(coordinate.line), coordinate.column); }
+		int getColumn(const Line& line, int index) const;
+		inline int getColumn(int line, int index) const { return getColumn(at(line), index); }
 
 		// coordinate operations in context of document
 		Coordinate getUp(Coordinate from, int lines=1) const;
@@ -520,20 +494,8 @@ private:
 		inline bool isLastLine(int line) const { return line == lines() - 1; }
 		Coordinate normalizeCoordinate(Coordinate coordinate) const;
 
-		// language support
-		void setLanguage(const Language& language);
-		inline const Language& getLanguage() const { return *language; }
-		inline bool hasLanguage() const { return language != nullptr; }
-		inline std::string getLanguageName() const {  return language == nullptr ? "None" : language->name; }
-
-		// colorizer
-		State colorize(Line& line);
-		void colorize(int start, int end);
-		void colorize();
-
 	private:
 		int tabSize = 4;
-		const Language* language = nullptr;
 		bool updated = false;
 	} document;
 
@@ -603,6 +565,26 @@ private:
 		size_t undoIndex = 0;
 	} transactions;
 
+	// text colorizer (handles language tokenizing)
+	class Colorizer {
+	public:
+		// update colors in entire document
+		void updateEntireDocument(Document& document, const Language* language);
+
+		// update colors in changed lines in specified document
+		void updateChangedLines(Document& document, const Language* language);
+
+	private:
+		// update color in a single line
+		State update(Line& line, const Language* language);
+
+		// see if string matches part of line
+		bool matches(Line::iterator start, Line::iterator end, const std::string& text);
+
+		// set color fofr specified range of glyphs
+		inline void setColor(Line::iterator start, Line::iterator end, Color color) { while (start < end) (start++)->color = color; }
+	} colorizer;
+
 	// details about bracketed text
 	class Bracket {
 	public:
@@ -617,7 +599,7 @@ private:
 		inline bool isAround(Coordinate location) const { return start <= location && end >= location; }
 	};
 
-	class Brackets : public std::vector<Bracket> {
+	class Bracketeer : public std::vector<Bracket> {
 	public:
 		// update the list of bracket pairs in the document and colorize the relevant glyphs
 		void update(Document& document);
@@ -626,9 +608,23 @@ private:
 		iterator getActive(Coordinate location);
 
 	private:
+		// utility functions
+		static inline bool isBracketCandidate(Glyph& glyph) {
+			return glyph.color == Color::punctuation ||
+				glyph.color == Color::matchingBracketLevel1 ||
+				glyph.color == Color::matchingBracketLevel2 ||
+				glyph.color == Color::matchingBracketLevel3 ||
+				glyph.color == Color::matchingBracketError;
+		}
+
+		static inline bool isBracketOpener(ImWchar ch) { return ch == '{' || ch == '[' || ch == '('; }
+		static inline bool isBracketCloser(ImWchar ch) { return ch == '}' || ch == ']' || ch == ')'; }
+		static inline ImWchar toBracketCloser(ImWchar ch) { return ch == '{' ? '}' : (ch == '[' ? ']' : (ch == '(' ? ')' : ch)); }
+		static inline ImWchar toBracketOpener(ImWchar ch) { return ch == '}' ? '{' : (ch == ']' ? '[' : (ch == ')' ? '(' : ch)); }
+
 		iterator active = end();
 		Coordinate activeLocation = Coordinate::invalid();
-	} brackets;
+	} bracketeer;
 
 	// set the editor's text
 	void setText(const std::string& text);
@@ -718,20 +714,6 @@ private:
 	Coordinate insertText(std::shared_ptr<Transaction> transaction, Coordinate start, const std::string& text);
 	void deleteText(std::shared_ptr<Transaction> transaction, Coordinate start, Coordinate end);
 
-	// utility functions
-	static inline bool isBracketCandidate(Glyph& glyph) {
-		return glyph.color == Color::punctuation ||
-			glyph.color == Color::matchingBracketLevel1 ||
-			glyph.color == Color::matchingBracketLevel2 ||
-			glyph.color == Color::matchingBracketLevel3 ||
-			glyph.color == Color::matchingBracketError;
-	}
-
-	static inline bool isBracketOpener(ImWchar ch) { return ch == '{' || ch == '[' || ch == '('; }
-	static inline bool isBracketCloser(ImWchar ch) { return ch == '}' || ch == ']' || ch == ')'; }
-	static inline ImWchar toBracketCloser(ImWchar ch) { return ch == '{' ? '}' : (ch == '[' ? ']' : (ch == '(' ? ')' : ch)); }
-	static inline ImWchar toBracketOpener(ImWchar ch) { return ch == '}' ? '{' : (ch == ']' ? '[' : (ch == ')' ? '(' : ch)); }
-
 	// editor options
 	float lineSpacing = 1.0f;
 	bool readOnly = false;
@@ -756,9 +738,10 @@ private:
 	int visibleColumns;
 	int firstVisibleColumn;
 	int lastVisibleColumn;
-	bool ensureCursorIsVisible = false;
 	float cursorAnimationTimer = 0.0f;
-	bool lastShowMatchingBrackets = true;
+	bool ensureCursorIsVisible = false;
+	bool showMatchingBracketsChanged = false;
+	bool languageChanged = false;
 	std::vector<std::string> errorMarkers;
 
 	static constexpr int leftMargin = 2;
@@ -776,4 +759,7 @@ private:
 	Palette paletteBase;
 	Palette palette;
 	float paletteAlpha;
+
+	// language support
+	const Language* language = nullptr;
 };

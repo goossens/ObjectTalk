@@ -173,6 +173,10 @@ bool TextEditor::CodePoint::isLetter(ImWchar codepoint) {
 }
 
 
+//
+//	TextEditor::CodePoint::isNumber
+//
+
 bool TextEditor::CodePoint::isNumber(ImWchar codepoint) {
 	if (codepoint < 0x7f) {
 		return static_cast<unsigned>(codepoint - '0') < 10;
@@ -184,6 +188,25 @@ bool TextEditor::CodePoint::isNumber(ImWchar codepoint) {
 
 	} else {
 		return rangeContains(numbers16, static_cast<ImWchar16>(codepoint));
+	}
+}
+
+
+//
+//	TextEditor::CodePoint::isXidStart
+//
+
+bool TextEditor::CodePoint::isXidStart(ImWchar codepoint) {
+	if (codepoint < 0x7f) {
+		return codepoint == '_' || static_cast<unsigned>((codepoint | 32) - 'a') < 26;
+
+#if defined(IMGUI_USE_WCHAR32)
+	} else if (codepoint >= 0x10000) {
+		return rangeContains(xidStart32, static_cast<ImWchar32>(codepoint));
+#endif
+
+	} else {
+		return rangeContains(xidStart16, static_cast<ImWchar16>(codepoint));
 	}
 }
 
@@ -226,25 +249,6 @@ bool TextEditor::CodePoint::isWord(ImWchar codepoint) {
 		return
 			rangeContains(letters16, static_cast<ImWchar16>(codepoint)) ||
 			rangeContains(numbers16, static_cast<ImWchar16>(codepoint));
-	}
-}
-
-
-//
-//	TextEditor::CodePoint::isXidStart
-//
-
-bool TextEditor::CodePoint::isXidStart(ImWchar codepoint) {
-	if (codepoint < 0x7f) {
-		return codepoint == '_' || static_cast<unsigned>((codepoint | 32) - 'a') < 26;
-
-#if defined(IMGUI_USE_WCHAR32)
-	} else if (codepoint >= 0x10000) {
-		return rangeContains(xidStart32, static_cast<ImWchar32>(codepoint));
-#endif
-
-	} else {
-		return rangeContains(xidStart16, static_cast<ImWchar16>(codepoint));
 	}
 }
 

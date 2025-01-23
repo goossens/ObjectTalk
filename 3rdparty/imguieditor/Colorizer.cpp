@@ -224,6 +224,7 @@ TextEditor::State TextEditor::Colorizer::update(Line& line, const Language* lang
 		}
 	}
 
+	line.colorize = false;
 	return state;
 }
 
@@ -235,7 +236,15 @@ TextEditor::State TextEditor::Colorizer::update(Line& line, const Language* lang
 void TextEditor::Colorizer::updateEntireDocument(Document& document, const Language* language) {
 	if (language) {
 		for (auto line = document.begin(); line < document.end(); line++) {
-			update(*line, language);
+			auto state = update(*line, language);
+
+			if (line != document.end()) {
+				auto next = line + 1;
+
+				if (next->state != state) {
+					next->state = state;
+				}
+			}
 		}
 
 	} else {
@@ -243,6 +252,9 @@ void TextEditor::Colorizer::updateEntireDocument(Document& document, const Langu
 			for (auto glyph = line->begin(); glyph < line->end(); glyph++) {
 				glyph->color = Color::text;
 			}
+
+			line->state = State::inText;
+			line->colorize = false;
 		}
 	}
 }

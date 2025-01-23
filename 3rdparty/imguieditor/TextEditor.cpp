@@ -70,7 +70,7 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 		cursors.update();
 	}
 
-	// recolorize document if showMatchingBrackets option or language has changed
+	// recolorize entire document (if showMatchingBrackets option or language have changed)
 	if (showMatchingBracketsChanged || languageChanged) {
 		colorizer.updateEntireDocument(document, language);
 	}
@@ -82,8 +82,8 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 		colorizer.updateChangedLines(document, language);
 	}
 
-	// rebuild bracket list (if document has changed or showMatchingBrackets option has changed)
-	if (language && showMatchingBrackets && (showMatchingBracketsChanged || documentChanged)) {
+	// rebuild bracket list (if document or showMatchingBrackets option have changed)
+	if (language && showMatchingBrackets && (documentChanged || showMatchingBracketsChanged)) {
 		bracketeer.update(document);
 	}
 

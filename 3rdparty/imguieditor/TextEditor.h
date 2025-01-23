@@ -33,7 +33,6 @@ public:
 	// constructor
 	TextEditor() { SetPalette(defaultPalette); }
 
-
 	//
 	// Below is the public API
 	// Public member functions start with an uppercase character to be consistent with Dear ImGui
@@ -118,7 +117,7 @@ public:
 	inline void TabsToSpaces() { if (!readOnly) tabsToSpaces(); }
 	inline void SpacesToTabs() { if (!readOnly) spacesToTabs(); }
 
-	// NOTE: filter function provided to FilterSelections or FilterLines
+	// NOTE: functions provided to FilterSelections or FilterLines
 	//       should accept and return UTF-8 encoded strings
 
 	// color palette support
@@ -257,7 +256,7 @@ public:
 private:
 	//
 	// below is the private API
-	// private members (function and variables) start with an lowercase character
+	// private members (function and variables) start with a lowercase character
 	//
 
 	class Coordinate {
@@ -431,7 +430,7 @@ private:
 		// error marker
 		size_t errorMarker;
 
-		// do we need to colorize this line
+		// do we need to (re)colorize this line
 		bool colorize = true;
 	};
 

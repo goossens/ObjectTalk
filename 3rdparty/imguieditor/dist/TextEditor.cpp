@@ -431,14 +431,14 @@ void TextEditor::handleKeyboardInputs() {
 		// clipboard operations
 		else if (isShortcut && ImGui::IsKeyPressed(ImGuiKey_X)) { cut(); }
 		else if (isShiftOnly && ImGui::IsKeyPressed(ImGuiKey_Delete)) { cut(); }
-		else if (isShortcut && ImGui::IsKeyPressed(ImGuiKey_Insert)) { copy(); }
 		else if (isShortcut && ImGui::IsKeyPressed(ImGuiKey_C)) { copy() ;}
+		else if (isShortcut && ImGui::IsKeyPressed(ImGuiKey_Insert)) { copy(); }
 
-		else if (!readOnly && isShiftOnly && ImGui::IsKeyPressed(ImGuiKey_Insert)) { paste(); }
 		else if (!readOnly && isShortcut && ImGui::IsKeyPressed(ImGuiKey_V)) { paste(); }
+		else if (!readOnly && isShiftOnly && ImGui::IsKeyPressed(ImGuiKey_Insert)) { paste(); }
 		else if (!readOnly && isShortcut && ImGui::IsKeyPressed(ImGuiKey_Z)) { undo(); }
-		else if (!readOnly && isShortcut && ImGui::IsKeyPressed(ImGuiKey_Y)) { redo(); }
 		else if (!readOnly && isShiftShortcut && ImGui::IsKeyPressed(ImGuiKey_Z)) { redo(); }
+		else if (!readOnly && isShortcut && ImGui::IsKeyPressed(ImGuiKey_Y)) { redo(); }
 
 		// remove text
 		else if (!readOnly && isOptionalAlt && ImGui::IsKeyPressed(ImGuiKey_Delete)) { handleDelete(alt); }

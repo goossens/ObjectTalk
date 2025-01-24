@@ -16,6 +16,7 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
+#include "OtLog.h"
 #include "OtNumbers.h"
 
 #include "OtUi.h"
@@ -76,7 +77,7 @@ static constexpr float pinBox = pinRadius * 2.0f + 2.0f;
 static constexpr float topPadding = 2.0f;
 static constexpr float horizontalPadding = pinRadius + 4.0f;
 
-static constexpr float linkThinkness = 1.5f;
+static constexpr float linkThickness = 1.5f;
 
 
 //
@@ -100,18 +101,21 @@ void OtNodesWidget::render(OtNodes* n) {
 	hoveredPin = 0;
 	pinLocations.clear();
 
-	// start rendering
-	ImGuiChildFlags flags =
-		ImGuiWindowFlags_NoMove |
-		ImGuiWindowFlags_NoScrollbar |
-		ImGuiWindowFlags_NoScrollWithMouse;
+	// determine visual limits of all nodes
+	float width = 0.0f;
+	float height = 0.0f;
 
-	ImGui::BeginChild("nodes", ImVec2(), ImGuiChildFlags_None, flags);
-	position = ImGui::GetCursorScreenPos();
-	size = ImGui::GetContentRegionAvail();
-	offset = position + scrollingOffset;
+	nodes->eachNode([&](OtNode& node) {
+		width = std::max(width, node->x + node->w);
+		height = std::max(height, node->y + node->h);
+	});
+
+	// start rendering
+	ImGui::SetNextWindowContentSize(ImVec2(width, height));
+	ImGui::BeginChild("nodes", ImVec2(), ImGuiChildFlags_None, ImGuiWindowFlags_HorizontalScrollbar);
 	pinOffset = ImGui::GetStyle().FramePadding.y + ImGui::GetFont()->Ascent - pinRadius + 1.0f;
 	ImDrawList* drawlist = ImGui::GetWindowDrawList();
+	widgetOffset = ImGui::GetCursorScreenPos();
 
 	// render the grid and rubberband
 	renderGrid(drawlist);
@@ -138,33 +142,23 @@ void OtNodesWidget::render(OtNodes* n) {
 		if (link->id != ignoreLink) {
 			renderLink(
 				drawlist,
-				pinLocations[link->from->id],
-				pinLocations[link->to->id],
+				widgetOffset + pinLocations[link->from->id],
+				widgetOffset + pinLocations[link->to->id],
 				pinColors[link->from->type]);
 		}
 	});
 
 	// handle user interactions (if required)
 	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows)) {
-		ImVec2 mousePos = ImGui::GetMousePos();
-
-		bool inside =
-			mousePos.x > position.x &&
-			mousePos.x < position.x + size.x &&
-			mousePos.y > position.y &&
-			mousePos.y < position.y + size.y;
-
-		if (inside || interactionState != InteractionState::none) {
-			handleInteractions(drawlist);
-		}
+		handleInteractions(drawlist);
 
 		// are we in the process of connecting nodes?
 		if (interactionState == InteractionState::connecting || interactionState == InteractionState::reconnecting) {
-			if (outputToInput) {
-				renderLink(drawlist, fromPinPos, toPinPos, linkColor);
+				if (outputToInput) {
+				renderLink(drawlist, widgetOffset + fromPinPos, widgetOffset + toPinPos, linkColor);
 
 			} else {
-				renderLink(drawlist, toPinPos, fromPinPos, linkColor);
+				renderLink(drawlist, widgetOffset + toPinPos, widgetOffset + fromPinPos, linkColor);
 			}
 		}
 	}
@@ -269,10 +263,10 @@ bool OtNodesWidget::isDraggingComplete(ImVec2& offset)
 
 
 //
-//	OtNodesWidget::showContextMenu
+//	OtNodesWidget::isRequestingContextMenu
 //
 
-bool OtNodesWidget::showContextMenu() {
+bool OtNodesWidget::isRequestingContextMenu() {
 	if (contextMenuDone) {
 		contextMenuDone = false;
 		return true;
@@ -284,28 +278,22 @@ bool OtNodesWidget::showContextMenu() {
 
 
 //
-//	OtNodesWidget::screenToWidget
-//
-
-ImVec2 OtNodesWidget::screenToWidget(const ImVec2& in) {
-	return in - offset;
-}
-
-
-//
 //	OtNodesWidget::renderGrid
 //
 
 void OtNodesWidget::renderGrid(ImDrawList* drawlist) {
-	for (float x = std::fmod(scrollingOffset.x, gridSpacing); x < size.x; x += gridSpacing) {
-		drawlist->AddLine(ImVec2(x, 0.0f) + position, ImVec2(x, size.y) + position, gridColor);
+	auto left = ImGui::GetScrollX();
+	auto right = left + ImGui::GetWindowWidth();
+	auto top = ImGui::GetScrollY();
+	auto bottom = top + ImGui::GetWindowHeight();
+
+	for (float x = std::floor(left / gridSpacing) * gridSpacing; x <= right; x += gridSpacing) {
+		drawlist->AddLine(widgetOffset + ImVec2(x, top), widgetOffset + ImVec2(x, bottom), gridColor);
 	}
 
-	for (float y = std::fmod(scrollingOffset.y, gridSpacing); y < size.y; y += gridSpacing) {
-		drawlist->AddLine(ImVec2(0.0f, y) + position, ImVec2(size.x, y) + position, gridColor);
+	for (float y = std::floor(top / gridSpacing) * gridSpacing; y <= bottom; y += gridSpacing) {
+		drawlist->AddLine(widgetOffset + ImVec2(left, y), widgetOffset + ImVec2(right, y), gridColor);
 	}
-
-	drawlist->AddRect(position, position + size, gridColor);
 }
 
 
@@ -316,8 +304,8 @@ void OtNodesWidget::renderGrid(ImDrawList* drawlist) {
 void OtNodesWidget::renderRubberBand(ImDrawList* drawlist) {
 	// render rubberband
 	if (interactionState == InteractionState::rubberBand) {
-		drawlist->AddRectFilled(rubberBandTopLeft, rubberBandBottomRight, rubberBandBackgroundColor);
-		drawlist->AddRect(rubberBandTopLeft, rubberBandBottomRight, rubberBandOutlineColor);
+		drawlist->AddRectFilled(widgetOffset + rubberBandTopLeft, widgetOffset + rubberBandBottomRight, rubberBandBackgroundColor);
+		drawlist->AddRect(widgetOffset + rubberBandTopLeft, widgetOffset + rubberBandBottomRight, rubberBandOutlineColor);
 	}
 }
 
@@ -335,7 +323,7 @@ void OtNodesWidget::renderNode(ImDrawList* drawlist, OtNode& node) {
 
 	// start the node rendering
 	ImGui::PushID(node->id);
-	ImVec2 topLeft = offset + ImVec2(node->x, node->y);
+	ImVec2 topLeft = widgetOffset + ImVec2(node->x, node->y);
 
 	// handle dragging offset
 	if (interactionState == InteractionState::dragNodes && node->selected) {
@@ -423,6 +411,7 @@ void OtNodesWidget::renderNode(ImDrawList* drawlist, OtNode& node) {
 		}
 	}
 
+	ImGui::SetCursorScreenPos(widgetOffset);
 	ImGui::PopID();
 }
 
@@ -449,7 +438,7 @@ void OtNodesWidget::renderPin(ImDrawList* drawlist, OtNodesPin& pin, float x, fl
 	}
 
 	// remember pin location
-	pinLocations[pin->id] = pos;
+	pinLocations[pin->id] = pos - widgetOffset;
 
 	// handle mouse interactions
 	auto savedPos = ImGui::GetCursorScreenPos();
@@ -498,7 +487,7 @@ void OtNodesWidget::renderLink(ImDrawList* drawlist, const ImVec2& start, const 
 		auto distanceY = end.y - start.y;
 		auto length = std::sqrt(distanceX * distanceX + distanceY * distanceY);
 		auto offset = ImVec2(0.25f * length, 0.0f);
-		drawlist->AddBezierCubic(start, start + offset, end - offset, end, color, linkThinkness);
+		drawlist->AddBezierCubic(start, start + offset, end - offset, end, color, linkThickness);
 
 	} else {
 		// we need a wrap-around curved line
@@ -510,9 +499,9 @@ void OtNodesWidget::renderLink(ImDrawList* drawlist, const ImVec2& start, const 
 		ImVec2 control1b = start + ImVec2(vd2a, vd2);
 		ImVec2 control2a = end - ImVec2(vd2a, vd2);
 		ImVec2 control2b = end - ImVec2(vd2a, 0.0f);
-		drawlist->AddBezierCubic(start, control1a, control1b, center1, color, linkThinkness);
-		drawlist->AddLine(center1, center2, color, linkThinkness);
-		drawlist->AddBezierCubic(center2, control2a, control2b, end, color, linkThinkness);
+		drawlist->AddBezierCubic(start, control1a, control1b, center1, color, linkThickness);
+		drawlist->AddLine(center1, center2, color, linkThickness);
+		drawlist->AddBezierCubic(center2, control2a, control2b, end, color, linkThickness);
 	}
 }
 
@@ -561,15 +550,13 @@ void OtNodesWidget::calculateNodeSize(OtNode& node) {
 //
 
 void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
+	// get mouse position relative to graph
+	auto mousePos = ImGui::GetMousePos() - widgetOffset;
+
 	// see if we have the start of a new mouse interaction
 	if (interactionState == InteractionState::none) {
-		// scrooling event
-		if (ImGui::IsKeyDown(ImGuiMod_Ctrl) && ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
-			scrollingStartPos = ImGui::GetMousePos() - scrollingOffset;
-			interactionState = InteractionState::scrolling;
-
 		// handle left mouse button events
-		} else if (ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
+		if (ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
 			// are we hitting a pin?
 			if (hoveredPin) {
 				auto pin = nodes->getPin(hoveredPin);
@@ -620,10 +607,10 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 					interactionState = InteractionState::selectNode;
 				}
 
-			// we are hitting the background
-			} else {
+			// are we hitting the background?
+			} else if (ImGui::IsWindowHovered()) {
 				// start rubber banding
-				rubberBandStartPos = ImGui::GetMousePos();
+				rubberBandStartPos = mousePos;
 				rubberBandTopLeft = rubberBandStartPos;
 				rubberBandBottomRight = rubberBandStartPos;
 				interactionState = InteractionState::rubberBand;
@@ -633,6 +620,7 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 		} else if (ImGui::IsMouseDown(ImGuiMouseButton_Right)) {
 			if (!hoveredPin && !hoveredNode) {
 				contextMenuDone = true;
+				contextMenuPos = mousePos;
 			}
 		}
 
@@ -650,14 +638,14 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 
 		// see if we started dragging
 		} else if (ImGui::IsMouseDragging(ImGuiMouseButton_Left)) {
-			draggingStartPos = ImGui::GetMousePos();
+			draggingStartPos = mousePos;
 			interactionState = InteractionState::dragNodes;
 		}
 
 	// handle drag node state
 	} else if (interactionState == InteractionState::dragNodes) {
 		if (ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
-			draggingOffset = ImGui::GetMousePos() - draggingStartPos;
+			draggingOffset = mousePos - draggingStartPos;
 
 		} else {
 			draggingDone = true;
@@ -669,28 +657,15 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 	// handle rubberband state
 	} else if (interactionState == InteractionState::rubberBand) {
 		if (ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
-			auto pos = ImGui::GetMousePos();
-
 			rubberBandTopLeft = ImVec2(
-				std::min(pos.x, rubberBandStartPos.x),
-				std::min(pos.y, rubberBandStartPos.y));
+				std::min(mousePos.x, rubberBandStartPos.x),
+				std::min(mousePos.y, rubberBandStartPos.y));
 
 			rubberBandBottomRight = ImVec2(
-				std::max(pos.x, rubberBandStartPos.x),
-				std::max(pos.y, rubberBandStartPos.y));
+				std::max(mousePos.x, rubberBandStartPos.x),
+				std::max(mousePos.y, rubberBandStartPos.y));
 
-			auto topLeft = rubberBandTopLeft - offset;
-			auto bottomRight = rubberBandBottomRight - offset;
-			nodes->select(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y);
-
-		} else {
-			interactionState = InteractionState::none;
-		}
-
-	// handle nodes scrolling
-	} else if (interactionState == InteractionState::scrolling) {
-		if (ImGui::IsMouseDown(ImGuiPopupFlags_MouseButtonMiddle)) {
-			scrollingOffset = ImGui::GetMousePos() - scrollingStartPos;
+			nodes->select(rubberBandTopLeft.x, rubberBandTopLeft.y, rubberBandBottomRight.x, rubberBandBottomRight.y);
 
 		} else {
 			interactionState = InteractionState::none;
@@ -715,7 +690,7 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 
 			} else {
 				toPin = 0;
-				toPinPos = ImGui::GetMousePos();
+				toPinPos = mousePos;
 				linkValid = false;
 				linkColor = creatingLinkColor;
 			}
@@ -747,7 +722,7 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 
 			} else {
 				toPin = 0;
-				toPinPos = ImGui::GetMousePos();
+				toPinPos = mousePos;
 				linkValid = false;
 				linkColor = creatingLinkColor;
 			}
@@ -764,13 +739,6 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 
 			ignoreLink = 0;
 			interactionState = InteractionState::none;
-		}
-	}
-
-	// handle keyboard interactions
-	if (interactionState == InteractionState::none) {
-		if (ImGui::IsKeyPressed(ImGuiKey_Home)) {
-			scrollingOffset = ImVec2();
 		}
 	}
 }

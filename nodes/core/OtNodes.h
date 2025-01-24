@@ -104,6 +104,7 @@ public:
 	std::vector<uint32_t> getSelected();
 	inline size_t getSelectedCount() { return getSelected().size(); }
 	inline bool hasSelected() { return getSelected().size() != 0; }
+	inline bool hasMultipleSelected() { return getSelected().size() > 1; }
 
 	// iterate through nodes and links
 	inline void eachNode(std::function<void(OtNode&)> callback) {

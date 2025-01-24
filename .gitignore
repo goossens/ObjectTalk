@@ -31,7 +31,3 @@
 
 # Local files
 /build
-/debug
-/release
-/xcode
-/vs

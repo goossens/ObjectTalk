@@ -17,6 +17,7 @@
 
 #include "OtNodes.h"
 
+#include "OtAlignNodesTask.h"
 #include "OtEditor.h"
 #include "OtEditorTask.h"
 #include "OtNodesWidget.h"
@@ -44,6 +45,9 @@ public:
 	void pasteSelectedNodes();
 	void deleteSelectedNodes();
 	void duplicateSelectedNodes();
+
+	// alignment operations
+	void alignSelectedNodes(OtAlignNodesTask::Alignment alignment);
 
 private:
 	// file access functions

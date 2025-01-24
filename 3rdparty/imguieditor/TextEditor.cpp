@@ -56,9 +56,9 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 
 	// start a new child window
-	// this must be done before we we handle keyboard and mouse interactions to ensure correct ImGui context
+	// this must be done before we handle keyboard and mouse interactions to ensure correct ImGui context
 	int longestLine = document.maxColumn();
-	ImGui::SetNextWindowContentSize({textStart + longestLine * glyphSize.x + cursorWidth, document.lines() * glyphSize.y});
+	ImGui::SetNextWindowContentSize(ImVec2(textStart + longestLine * glyphSize.x + cursorWidth, document.lines() * glyphSize.y));
 	ImGui::BeginChild(title, size, border, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNavInputs);
 
 	// handle keyboard and mouse inputs
@@ -431,14 +431,14 @@ void TextEditor::handleKeyboardInputs() {
 		// clipboard operations
 		else if (isShortcut && ImGui::IsKeyPressed(ImGuiKey_X)) { cut(); }
 		else if (isShiftOnly && ImGui::IsKeyPressed(ImGuiKey_Delete)) { cut(); }
-		else if (isShortcut && ImGui::IsKeyPressed(ImGuiKey_Insert)) { copy(); }
 		else if (isShortcut && ImGui::IsKeyPressed(ImGuiKey_C)) { copy() ;}
+		else if (isShortcut && ImGui::IsKeyPressed(ImGuiKey_Insert)) { copy(); }
 
-		else if (!readOnly && isShiftOnly && ImGui::IsKeyPressed(ImGuiKey_Insert)) { paste(); }
 		else if (!readOnly && isShortcut && ImGui::IsKeyPressed(ImGuiKey_V)) { paste(); }
+		else if (!readOnly && isShiftOnly && ImGui::IsKeyPressed(ImGuiKey_Insert)) { paste(); }
 		else if (!readOnly && isShortcut && ImGui::IsKeyPressed(ImGuiKey_Z)) { undo(); }
-		else if (!readOnly && isShortcut && ImGui::IsKeyPressed(ImGuiKey_Y)) { redo(); }
 		else if (!readOnly && isShiftShortcut && ImGui::IsKeyPressed(ImGuiKey_Z)) { redo(); }
+		else if (!readOnly && isShortcut && ImGui::IsKeyPressed(ImGuiKey_Y)) { redo(); }
 
 		// remove text
 		else if (!readOnly && isOptionalAlt && ImGui::IsKeyPressed(ImGuiKey_Delete)) { handleDelete(alt); }
@@ -509,9 +509,8 @@ void TextEditor::handleMouseInteractions() {
 		bool overLineNumbers = showLineNumbers && (mousePos.x - ImGui::GetScrollX() < textStart);
 
 		auto mouseCoord = document.normalizeCoordinate(Coordinate(
-			std::max(0, static_cast<int>(std::floor(mousePos.y / glyphSize.y))),
-			std::max(0, static_cast<int>(std::floor((mousePos.x - textStart) / glyphSize.x)))
-		));
+			static_cast<int>(std::floor(mousePos.y / glyphSize.y)),
+			static_cast<int>(std::floor((mousePos.x - textStart) / glyphSize.x))));
 
 		// show text cursor if required
 		if (ImGui::IsWindowFocused() && !overLineNumbers) {

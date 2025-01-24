@@ -35,10 +35,8 @@ public:
 	bool isDroppingLink(uint32_t& from, uint32_t& to);
 	bool isChangingLink(uint32_t& from, uint32_t& oldTo, uint32_t& newTo);
 	bool isDraggingComplete(ImVec2& offset);
-	bool showContextMenu();
-
-	// convert coordinates from screen to widget space
-	ImVec2 screenToWidget(const ImVec2& in);
+	bool isRequestingContextMenu();
+	inline ImVec2 getContextMenuPos() { return contextMenuPos; }
 
 private:
 	// render the parts
@@ -56,9 +54,7 @@ private:
 	OtNodes* nodes;
 
 	// positional properties
-	ImVec2 position;					// in screen space
-	ImVec2 size;
-	ImVec2 offset;						// between screen and widget space
+	ImVec2 widgetOffset;
 	float pinOffset;
 
 	// pin locations in screen space
@@ -71,7 +67,6 @@ private:
 		selectNode,
 		dragNodes,
 		rubberBand,
-		scrolling,
 		connecting,
 		reconnecting
 	};
@@ -92,23 +87,22 @@ private:
 	uint32_t renamingNode;
 	uint32_t hoveredPin;
 
-	ImVec2 rubberBandStartPos;			// in screen space
-	ImVec2 rubberBandTopLeft;			// in screen space
-	ImVec2 rubberBandBottomRight;		// in screen space
+	ImVec2 rubberBandStartPos;
+	ImVec2 rubberBandTopLeft;
+	ImVec2 rubberBandBottomRight;
 
-	ImVec2 draggingStartPos;			// in screen space
+	ImVec2 contextMenuPos;
+
+	ImVec2 draggingStartPos;
 	ImVec2 draggingOffset;
 	ImVec2 draggedOffset;
-
-	ImVec2 scrollingStartPos;			// in screen space
-	ImVec2 scrollingOffset{0.0f, 0.0f};
 
 	uint32_t ignoreLink = 0;
 	uint32_t fromPin = 0;
 	uint32_t toPin = 0;
 	uint32_t oldToPin = 0;
-	ImVec2 fromPinPos;					// in screen space
-	ImVec2 toPinPos;					// in screen space
+	ImVec2 fromPinPos;
+	ImVec2 toPinPos;
 	bool outputToInput;
 	bool linkValid;
 	ImU32 linkColor;

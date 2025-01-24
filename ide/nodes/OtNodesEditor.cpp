@@ -21,6 +21,7 @@
 
 #include "OtNodesEditor.h"
 
+#include "OtAlignNodesTask.h"
 #include "OtCopyNodesTask.h"
 #include "OtChangeLinkTask.h"
 #include "OtCreateLinkTask.h"
@@ -108,12 +109,22 @@ void OtNodesEditor::duplicateSelectedNodes() {
 
 
 //
+//	OtNodesEditor::alignSelectedNodes
+//
+
+void OtNodesEditor::alignSelectedNodes(OtAlignNodesTask::Alignment alignment) {
+	nextTask = std::make_shared<OtAlignNodesTask>(&nodes, alignment);
+}
+
+
+//
 //	OtNodesEditor::renderMenu
 //
 
 void OtNodesEditor::renderMenu(bool canRun) {
 	// get status
 	bool selected = nodes.hasSelected();
+	bool multipleSelected = nodes.hasMultipleSelected();
 	bool clipable = clipboard.size() > 0;
 
 	// create menubar
@@ -134,6 +145,23 @@ void OtNodesEditor::renderMenu(bool canRun) {
 			if (ImGui::MenuItem("Paste", OT_UI_SHORTCUT "V", nullptr, selected && clipable)) { pasteSelectedNodes(); }
 			if (ImGui::MenuItem("Delete", "Del", nullptr, selected)) { deleteSelectedNodes(); }
 			if (ImGui::MenuItem("Duplicate", OT_UI_SHORTCUT "D", nullptr, selected)) { duplicateSelectedNodes(); }
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Selection")) {
+			if (ImGui::MenuItem("Select All", OT_UI_SHORTCUT "A")) { nodes.selectAll(); }
+			if (ImGui::MenuItem("Clear Selection")) { nodes.deselectAll(); }
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Align")) {
+			if (ImGui::MenuItem("Left", nullptr, nullptr, multipleSelected)) { alignSelectedNodes(OtAlignNodesTask::Alignment::left); }
+			if (ImGui::MenuItem("Center", nullptr, nullptr, multipleSelected)) { alignSelectedNodes(OtAlignNodesTask::Alignment::center); }
+			if (ImGui::MenuItem("Right", nullptr, nullptr, multipleSelected)) { alignSelectedNodes(OtAlignNodesTask::Alignment::right); }
+			ImGui::Separator();
+			if (ImGui::MenuItem("Top", nullptr, nullptr, multipleSelected)) { alignSelectedNodes(OtAlignNodesTask::Alignment::top); }
+			if (ImGui::MenuItem("Middle", nullptr, nullptr, multipleSelected)) { alignSelectedNodes(OtAlignNodesTask::Alignment::middle); }
+			if (ImGui::MenuItem("Bottom", nullptr, nullptr, multipleSelected)) { alignSelectedNodes(OtAlignNodesTask::Alignment::bottom); }
 			ImGui::EndMenu();
 		}
 
@@ -172,6 +200,9 @@ void OtNodesEditor::renderMenu(bool canRun) {
 
 			} else if (ImGui::IsKeyPressed(ImGuiKey_D, false) && selected) {
 				duplicateSelectedNodes();
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_A, false)) {
+				nodes.selectAll();
 			}
 
 		} else if ((ImGui::IsKeyPressed(ImGuiKey_Backspace, false) || ImGui::IsKeyPressed(ImGuiKey_Delete, false)) && selected) {
@@ -227,12 +258,12 @@ void OtNodesEditor::renderEditor() {
 	}
 
 	// handle context menu
-	if (widget.showContextMenu()) {
+	if (widget.isRequestingContextMenu()) {
 		ImGui::OpenPopup("Background Context");
 	}
 
 	if (ImGui::BeginPopup("Background Context")) {
-		auto nodePosition = widget.screenToWidget(ImGui::GetMousePosOnOpeningCurrentPopup());
+		auto nodePosition = widget.getContextMenuPos();
 		ImGui::TextUnformatted("Create Node");
 		ImGui::Separator();
 

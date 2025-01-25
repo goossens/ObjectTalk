@@ -135,7 +135,7 @@ private:
 	void clearUnusedAssets();
 
 	// the thread pool to handle the asset loading
-	BS::thread_pool threadpool;
+	BS::thread_pool<> threadpool;
 	std::atomic<int> loading = 0;
 
 	// timer to run the "garbage collector"

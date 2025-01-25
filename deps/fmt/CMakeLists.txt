@@ -7,6 +7,6 @@
 set(FMT_INSTALL OFF CACHE BOOL "" FORCE)
 set(FMT_OS OFF CACHE BOOL "" FORCE)
 
-FetchContent_Declare(fmt GIT_REPOSITORY "https://github.com/fmtlib/fmt" GIT_TAG "11.0.2")
+FetchContent_Declare(fmt GIT_REPOSITORY "https://github.com/fmtlib/fmt" GIT_TAG "11.1.2")
 FetchContent_MakeAvailable(fmt)
 set_target_properties(fmt PROPERTIES FOLDER deps)

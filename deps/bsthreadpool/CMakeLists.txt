@@ -4,7 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Declare(bsthreadpool GIT_REPOSITORY "https://github.com/bshoshany/thread-pool" GIT_TAG "v4.1.0")
+FetchContent_Declare(bsthreadpool GIT_REPOSITORY "https://github.com/bshoshany/thread-pool" GIT_TAG "v5.0.0")
 FetchContent_MakeAvailable(bsthreadpool)
 
 add_library(bsthreadpool INTERFACE)

@@ -3,7 +3,6 @@ been a lot harder to implement the language and it's components.
 
 ## Software
 
-* [CMake](https://cmake.org) - cross-platform family of tools designed to build, test and package software released under the [OSI-approved BSD 3-clause License](https://gitlab.kitware.com/cmake/cmake/raw/master/Copyright.txt).
 * [libuv](https://libuv.org) - multi-platform support library with a focus on asynchronous I/O released under the [MIT license](https://opensource.org/licenses/MIT). Its documentation is released uder the [CC BY 4.0 license](https://creativecommons.org/licenses/by/4.0/)
 * [{fmt}](https://github.com/fmtlib/fmt) - open-source formatting library released under the [MIT license](https://opensource.org/licenses/MIT).
 * [argparse](https://github.com/p-ranav/argparse) - command line argument parser released under the [MIT license](https://opensource.org/licenses/MIT).
@@ -48,10 +47,9 @@ released under the [GNU General Public License, version 2](https://www.gnu.org/l
 
 ## Tools
 
-A special thanks also goes to [Gunther Rademacher](https://github.com/GuntherRademacher) for his
-["RailRoad Diagram Generator"](https://github.com/GuntherRademacher/rr)
-which is used in the documentation to visualize the ObjectTalk grammar. The tool is released under the
-[Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+* [CMake](https://cmake.org) - cross-platform family of tools designed to build, test and package software released under the [OSI-approved BSD 3-clause License](https://gitlab.kitware.com/cmake/cmake/raw/master/Copyright.txt).
+* [re2c](https://github.com/skvadrik/re2c) - a free and open-source lexer generator for C/C++, Go and Rust released under a public domain license.
+* [Gunther Rademacher](https://github.com/GuntherRademacher) - a ["RailRoad Diagram Generator"](https://github.com/GuntherRademacher/rr) which is used in the documentation to visualize the ObjectTalk grammar. The tool is released under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
 ## Documentation
 

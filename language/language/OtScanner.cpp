@@ -108,6 +108,18 @@ void OtScanner::loadSource(OtSource src) {
 
 
 //
+//	Helper functions
+//
+
+static inline bool isBinaryPrefix(char c) { return c == 'b' || c == 'B'; }
+static inline bool isOctalPrefix(char c) { return c == 'o' || c == 'O'; }
+static inline bool isHexPrefix(char c) { return c == 'x' || c == 'X'; }
+
+static inline bool isBinaryDigit(char c) { return c == '0' || c == '1'; }
+static inline bool isOctalDigit(char c) { return c >= '0' && c <= '7'; }
+
+
+//
 //	OtScanner::advance
 //
 
@@ -171,10 +183,11 @@ OtScanner::Token OtScanner::advance() {
 	if (position == size) {
 		token = Token::endOfText;
 
-	// handle numerical values
+	// handle numeric literals
 	} else if (std::isdigit(source->at(position)) ||
-				(source->at(position) =='-' && position < size && std::isdigit(source->at(position + 1))) ||
-				(source->at(position) =='+' && position < size && std::isdigit(source->at(position + 1)))) {
+		(source->at(position) =='-' && position < size && std::isdigit(source->at(position + 1))) ||
+		(source->at(position) =='+' && position < size && std::isdigit(source->at(position + 1)))) {
+
 		auto start = position;
 		int sign = 1;
 
@@ -186,68 +199,79 @@ OtScanner::Token OtScanner::advance() {
 			position++;
 		}
 
-		// see if we have a binary constant
-		if (source->at(position) == '0' && (source->at(position + 1) == 'b' || source->at(position + 1) == 'B')) {
+		// see if we have a binary literal
+		if (position + 3 < size && source->at(position) == '0' && isBinaryPrefix(source->at(position + 1)) && isBinaryDigit(source->at(position + 2))) {
 			position += 2;
 			auto value = position;
 
-			while (source->at(position) == '0' || source->at(position) == '1') {
+			while (position < size && isBinaryDigit(source->at(position))) {
 				position++;
 			}
 
 			integerValue = sign * std::stol(source->substr(value, position - value), 0, 2);
 			token = Token::integerLiteral;
 
-		// see if we have an octal constant
-		} else if (source->at(position) == '0' && (source->at(position + 1) == 'o' || source->at(position + 1) == 'O')) {
+		// see if we have an octal literal
+		} else if (position + 3 < size && source->at(position) == '0' && isOctalPrefix(source->at(position + 1)) && isOctalDigit(source->at(position + 2))) {
 			position += 2;
 			auto value = position;
 
-			while (source->at(position) >= '0' && source->at(position) <= '7') {
+			while (position < size && isOctalDigit(source->at(position))) {
 				position++;
 			}
 
 			integerValue = sign * std::stol(source->substr(value, position - value), 0, 8);
 			token = Token::integerLiteral;
 
-		// see if we have a hexadecimal constant
-		} else if (source->at(position) == '0' && (source->at(position + 1) == 'x' || source->at(position + 1) == 'X')) {
+		// see if we have a hexadecimal literal
+		} else if (position + 3 < size && source->at(position) == '0' && isHexPrefix(source->at(position + 1)) && isxdigit(source->at(position + 2))) {
 			position += 2;
 			auto value = position;
 
-			while (isxdigit(source->at(position))) {
+			while (position < size && isxdigit(source->at(position))) {
 				position++;
 			}
 
 			integerValue = sign * std::stol(source->substr(value, position - value), 0, 16);
 			token = Token::integerLiteral;
 
-		// handle integers and reals
+		// see if we have a C-style octal literal
+		} else if (position + 2 < size && source->at(position) == '0' && isOctalDigit(source->at(position + 1))) {
+			auto value = ++position;
+
+			while (position < size && isOctalDigit(source->at(position))) {
+				position++;
+			}
+
+			integerValue = sign * std::stol(source->substr(value, position - value), 0, 8);
+			token = Token::integerLiteral;
+
+		// handle decimal integers and reals
 		} else {
 			// handle integer part
-			while (std::isdigit(source->at(position))) {
+			while (position < size && std::isdigit(source->at(position))) {
 				position++;
 			}
 
 			// is this a real?
-			if (source->at(position) =='.' && position < size && std::isdigit(source->at(position + 1))) {
+			if (position < size && source->at(position) =='.' && position < size && std::isdigit(source->at(position + 1))) {
 				position++;
 
-				while (std::isdigit(source->at(position))) {
+				while (position < size && std::isdigit(source->at(position))) {
 					position++;
 				}
 
 				if (tolower(source->at(position)) =='e' && position < size) {
 					position++;
 
-					if (source->at(position) =='-') {
+					if (position < size && source->at(position) =='-') {
 						position++;
 
-					} else if (source->at(position) =='+') {
+					} else if (position < size && source->at(position) =='+') {
 						position++;
 					}
 
-					while (std::isdigit(source->at(position))) {
+					while (position < size && std::isdigit(source->at(position))) {
 						position++;
 					}
 				}
@@ -261,7 +285,7 @@ OtScanner::Token OtScanner::advance() {
 			}
 		}
 
-	// handle strings
+	// handle string literals
 	} else if (source->at(position) =='"') {
 		auto start = ++position;
 
@@ -279,7 +303,7 @@ OtScanner::Token OtScanner::advance() {
 
 	// handle identifiers (and tokens with identifier structure)
 	} else if (source->at(position) =='_' || std::isalpha(source->at(position))) {
-		while (source->at(position) =='_' || std::isalnum(source->at(position))) {
+		while (position < size && (source->at(position) =='_' || std::isalnum(source->at(position)))) {
 			position++;
 		}
 

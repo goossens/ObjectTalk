@@ -25,9 +25,9 @@ to learn and have some fun.
 Late 2020, I retired after a 40+ year career in the software and
 system development business. Starting as a programmer/analyst and later
 moving up the ladder to management, international standardization
-and geopolitics exposing my to lots of technologies including operating
-systems, computer language development, web application design, military
-command and control systems, data science and what we now call
+and geopolitics, I was exposed to lots of technologies including operating
+systems, computer language development, military command and control
+systems, web application design, data science and what we now call
 artificial intelligence. You can read my full bio on
 [my website](https://goossens.github.io).
 
@@ -37,8 +37,9 @@ health) and that's how this repository came about. I started by revisiting
 a scripting language I wrote decades ago, modernizing it and learning
 things along the way. Once the language was stable, it needed a few
 use cases and I dusted off some 2D/3D graphic projects that I had laying
-around. This then led to including graphics engine, an Entity Component System
-(ECS), Node Based programming and a custom Integrated Development Environment (IDE).
+around. This then led to including a graphics engine, an Entity Component
+System (ECS), Node Based programming and a custom Integrated Development
+Environment (IDE).
 
 So today, this project contains a lot of code, compiles into a single
 executable with no runtime dependancies and is functional on MacOS, Linux
@@ -68,11 +69,12 @@ ObjectTalk contains a pretty decent 2D/3D graphics engine that works
 across multiple platforms providing system agnostic abstractions
 for the higher level capabilities. At its core, the graphics engine
 manages graphical resources (e.g. shaders, buffers, uniforms, textures
-and other assets) and it is multithreaded. It also contains cross platform
-libraries to implement a canvas, filters, generators, vector display,
-font management, 2D/3D geometric primitives and 2D path manipulation.
+and other assets) and is multithreaded. It also contains cross platform
+libraries to implement canvases, filters, generators, vector displays,
+font management, asynchronous asset loading in a variety of formats,
+2D/3D geometric primitives and 2D path manipulation.
 
-Some of its capabilities are already exposed in the scripting language
+Some of its capabilities are already exposed to the scripting language
 and the examples folder shows how to use it to create simple GUIs,
 run some games in a vintage vector display or implement a simple
 version of Pac-Man.
@@ -83,11 +85,11 @@ version of Pac-Man.
 
 Many years ago, I developed a graphical node-based editor to configure
 computer I/O systems complete with stream processing and protocol
-conversion. This worked really well and it allowed none-programmers
+conversion. This worked really well and it allowed non-programmers
 to assist during development, maintenance and operations. Once I played
-with Blender's nodes for geometry and shaders, I thought it was a good idea
-to add nodes to ObjectTalk as well. Please keep in mind though the becoming
-a Blender clone is not one of the ambitions.
+with Blender's nodes for geometry and shaders, I thought it was a good
+idea to also add nodes to ObjectTalk. Please keep in mind though that
+becoming a Blender clone is not one of the ambitions of this project.
 
 Each node really feels like an object instance and drawing connections
 between them is akin to visual programming. Today, in ObjectTalk, the
@@ -95,64 +97,66 @@ IDE has an node editor that allows you to setup nodes and connect them
 into a graph. These graphs are automatically reevaluated when values
 change. The examples folder contains image processing chains and nodes
 are used in the scene examples to process images or create geometry.
-ObjectTalk has over 50 nodes already and many will follow depending
-on my needs.
+ObjectTalk already has over 50 nodes already and many will follow
+depending on my needs.
 
 ![Logo](docs/img/nodes.png)
 
 ## 3D Scenes through an Entity Component System
 
 My older 3D graphics projects were always based on OpenGL as at the
-time, it felt like a good cross-platform solution. Fast forwarding
+time, it felt like a good cross-platform solution and a standard that
+most operating system providers would implement. Fast forwarding
 a few years and we now have a number of graphics APIs like DirectX,
-Vulkan and Metal with programmable shaders. So in the end I decided
-that the graphics engine mentioned above will provide an abstraction
-over these APIs (in fact, the graphics engine uses DirectX on Windows,
-Vulkan on Linux and Metal on MacOS) and focus the 3D scene capability
-at a higher level.
+Vulkan and Metal with programmable shaders and all of them are different.
+So in the end, I decided that my graphics engine mentioned above will
+provide an abstraction over all of these APIs (in fact, the graphics
+engine uses DirectX on Windows, Vulkan on Linux and Metal on MacOS)
+and focus the 3D scene capability at a higher level.
 
 This is where the Entity Component System (ECS) comes in as an architectural
 pattern that has already been used in games for many years. ObjectTalk's
 IDE contains an ECS editor that allows you to define entities (objects in
-the real world) and associate a variety of components with them that
-themselves offer functionality.
+the real world) and associate a variety of components with them that offer
+functionality.
 
 The 3D scene ECS also has nodes and script components to make the whole
 thing more dynamic. In the examples folder, you'll find automatically
-spinning cubes and an earth rotating based on mouse movements. Both of these
-a driven by script components. The jungle and island example use nodes
-to procedurally create terrain and add asset instances.
+spinning cubes based on timers and an earth rotating based on mouse movements.
+Both of these a driven by script components. The jungle and island examples
+use nodes to procedurally create terrain and asset instances.
 
 To round it all out, modern engine features like deferred rendering,
-particle systems and post processing with fog, FXAA, Bloom, God Rays,
+particle systems, Image Based Lighting (IBL) and post processing with
+fog, Bloom, God Rays, Fast Approximate Anti-Aliasing (FXAA),
 Cascaded Shadow Maps and Tone Mapping are also available.
 
 ![Logo](docs/img/scenes.png)
 
 ## Integrated Development Environment
 
-To round it all out, the ObjectTalk executable comes with builtin development
-environment that allows editing and execution of the ObjectTalk thingies:
+To round it all out, the ObjectTalk executable comes with a builtin development
+environment that allows editing and execution of the ObjectTalk elements:
 
 * **ObjectTalk script editor**
-** This editor provides a powerful syntax highlighting capability modeled after a subset Visual Studio Code.
-** The editor has full undo capabilities and works with UTF-8 encoded unicode text.
-** The editor can launch to ObjectTalk scripts and has a console for output and highlighting for errors
-** A visual debugger is planned but not yet integrated.
+** This editor provides a powerful syntax highlighting capability modeled after a subset of Visual Studio Code.
+** The editor has full undo capabilities and works with UTF-8 encoded text.
+** The editor can launch ObjectTalk scripts and has a console for output and highlighting for errors.
+** A visual debugger is planned but not yet implemented.
 
 * **Node editor**
 ** This editor allows the creation of node graphs.
 ** The editor has full undo capabilities.
-** The editor automatically evaluates the graphs so it can be used for realtime visual programming (e.g. image processing).
+** The editor automatically evaluates graphs so it can be used for realtime visual programming (e.g. image processing or asset generation).
 
 * **Scene editor**
 ** This editor allows the creation and configuration of entities and components.
 ** Entities are stored in trees making it easy to create entity hierarchies.
 ** The editor has full undo capabilities.
-** Scenes can be run directly form the IDE to ensures node and script components function properly.
+** Scenes can be run directly from the IDE to ensures node and script components function properly.
 
-* **Miscelanious editors**
-** The IDE is also capable of editing pure text, JSON and Markdown files (with syntax highlighting).
+* **Miscellaneous editors**
+** The IDE is also capable of editing pure text, JSON and Markdown files (complete with syntax highlighting).
 
 ## Building and Installing ObjectTalk
 
@@ -163,6 +167,15 @@ Currently, instructions are available for MacOS, Linux and Windows.
 
 ## Future
 
+As mentioned a few times, ObjectTalk is a playground to learn, have fun and keep my
+brain as young as possible. As a one-man army, I'm constantly hopping around the elements
+of ObjectTalk to keep myself engaged in all parts of this rather large code base.
+
+If people are interested in using ObjectTalk, steal parts of the code, make
+suggestions for improvements or contribute fixes/enhancements, be my guest as
+this repository is released under the MIT license. For people that want to contribute,
+[Contributing Guidelines](CONTRIBUTING.md) and a [Code of Conduct](CODE_OF_CONDUCT.md)
+are available.
 
 ## Special Thanks
 

@@ -56,9 +56,9 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 
 	// start a new child window
-	// this must be done before we we handle keyboard and mouse interactions to ensure correct ImGui context
+	// this must be done before we handle keyboard and mouse interactions to ensure correct ImGui context
 	int longestLine = document.maxColumn();
-	ImGui::SetNextWindowContentSize({textStart + longestLine * glyphSize.x + cursorWidth, document.lines() * glyphSize.y});
+	ImGui::SetNextWindowContentSize(ImVec2(textStart + longestLine * glyphSize.x + cursorWidth, document.lines() * glyphSize.y));
 	ImGui::BeginChild(title, size, border, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNavInputs);
 
 	// handle keyboard and mouse inputs
@@ -509,9 +509,8 @@ void TextEditor::handleMouseInteractions() {
 		bool overLineNumbers = showLineNumbers && (mousePos.x - ImGui::GetScrollX() < textStart);
 
 		auto mouseCoord = document.normalizeCoordinate(Coordinate(
-			std::max(0, static_cast<int>(std::floor(mousePos.y / glyphSize.y))),
-			std::max(0, static_cast<int>(std::floor((mousePos.x - textStart) / glyphSize.x)))
-		));
+			static_cast<int>(std::floor(mousePos.y / glyphSize.y)),
+			static_cast<int>(std::floor((mousePos.x - textStart) / glyphSize.x))));
 
 		// show text cursor if required
 		if (ImGui::IsWindowFocused() && !overLineNumbers) {

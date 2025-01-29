@@ -171,7 +171,7 @@ As mentioned a few times, ObjectTalk is a playground to learn, have fun and keep
 brain as young as possible. As a one-man army, I'm constantly hopping around the elements
 of ObjectTalk to keep myself engaged in all parts of this rather large code base.
 
-If people are interested in using ObjectTalk, steal parts of the code, make
+If you are interested in using ObjectTalk, steal parts of the code, make
 suggestions for improvements or contribute fixes/enhancements, be my guest as
 this repository is released under the MIT license. For people that want to contribute,
 [Contributing Guidelines](CONTRIBUTING.md) and a [Code of Conduct](CODE_OF_CONDUCT.md)

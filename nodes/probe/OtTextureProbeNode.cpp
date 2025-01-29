@@ -51,6 +51,17 @@ public:
 			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (width - customW) / 2.0f);
 			ImGui::Image((ImTextureID)(intptr_t) texture.getIndex(), ImVec2(customW, customH));
 
+			if (ImGui::IsItemClicked(ImGuiPopupFlags_MouseButtonLeft) && ImGui::IsMouseDoubleClicked(ImGuiPopupFlags_MouseButtonLeft)) {
+				ImGui::OpenPopup("Texture Popup");
+			}
+
+			if (ImGui::BeginPopup("Texture Popup")) {
+				auto size = ImGui::GetMainViewport()->WorkSize;
+				auto scale = std::min(size.x * 0.75f / customW, size.y * 0.75f / customH);
+				ImGui::Image((ImTextureID)(intptr_t) texture.getIndex(), ImVec2(scale * customW, scale * customH));
+				ImGui::EndPopup();
+			}
+
 		} else {
 			ImGui::TextUnformatted("No Texture available");
 		}

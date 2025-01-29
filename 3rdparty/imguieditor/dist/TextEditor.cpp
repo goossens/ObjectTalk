@@ -2283,7 +2283,7 @@ int TextEditor::Document::maxColumn(const Line& line) const {
 //	TextEditor::Document::getIndex
 //
 
-inline int TextEditor::Document::getIndex(const Line& line, int column) const {
+int TextEditor::Document::getIndex(const Line& line, int column) const {
 	// convert a column reference to a glyph index for a specified line (taking tabs into account)
 	auto end = line.end();
 	int index = 0;
@@ -4431,7 +4431,7 @@ static TextEditor::Iterator getCStyleNumber(TextEditor::Iterator start, TextEdit
 	TextEditor::Iterator i = start;
 	TextEditor::Iterator marker;
 
-	
+
 {
 	ImWchar yych;
 	unsigned int yyaccept = 0;
@@ -5438,7 +5438,7 @@ static TextEditor::Iterator getCsStyleNumber(TextEditor::Iterator start, TextEdi
 	TextEditor::Iterator i = start;
 	TextEditor::Iterator marker;
 
-	
+
 {
 	ImWchar yych;
 	unsigned int yyaccept = 0;
@@ -6049,7 +6049,7 @@ static TextEditor::Iterator getLuaStyleNumber(TextEditor::Iterator start, TextEd
 	TextEditor::Iterator i = start;
 	TextEditor::Iterator marker;
 
-	
+
 {
 	ImWchar yych;
 	yych = i < end ? *i : 0;
@@ -6365,7 +6365,7 @@ static TextEditor::Iterator getPythonStyleNumber(TextEditor::Iterator start, Tex
 	TextEditor::Iterator i = start;
 	TextEditor::Iterator marker;
 
-	
+
 {
 	ImWchar yych;
 	yych = i < end ? *i : 0;
@@ -6782,7 +6782,7 @@ static TextEditor::Iterator tokenizeJson(TextEditor::Iterator start, TextEditor:
 	TextEditor::Iterator i = start;
 	TextEditor::Iterator marker;
 
-	
+
 {
 	ImWchar yych;
 	unsigned int yyaccept = 0;
@@ -7082,7 +7082,7 @@ static TextEditor::Iterator tokenizeMarkdown(TextEditor::Iterator start, TextEdi
 	TextEditor::Iterator i = start;
 	TextEditor::Iterator marker;
 
-	
+
 {
 	ImWchar yych;
 	yych = i < end ? *i : 0;

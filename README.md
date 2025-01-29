@@ -46,7 +46,7 @@ executable with no runtime dependancies and is functional on MacOS, Linux
 and Windows. It basically is a playground to learn and have fun.
 Think of it as a educational jack of all trades, master of none.
 
-![Logo](docs/img/screenshots.png)
+![Screenshots](docs/img/screenshots.png)
 
 ## ObjectTalk Scripting Language
 
@@ -79,7 +79,7 @@ and the examples folder shows how to use it to create simple GUIs,
 run some games in a vintage vector display or implement a simple
 version of Pac-Man.
 
-![Logo](docs/img/graphics.png)
+![Graphics](docs/img/graphics.png)
 
 ## Node Based Programming
 
@@ -100,7 +100,7 @@ are used in the scene examples to process images or create geometry.
 ObjectTalk already has over 50 nodes already and many will follow
 depending on my needs.
 
-![Logo](docs/img/nodes.png)
+![Nodes](docs/img/nodes.png)
 
 ## 3D Scenes through an Entity Component System
 
@@ -131,7 +131,7 @@ particle systems, Image Based Lighting (IBL) and post processing with
 fog, Bloom, God Rays, Fast Approximate Anti-Aliasing (FXAA),
 Cascaded Shadow Maps and Tone Mapping are also available.
 
-![Logo](docs/img/scenes.png)
+![Scenes](docs/img/scenes.png)
 
 ## Integrated Development Environment
 

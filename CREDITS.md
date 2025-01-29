@@ -1,6 +1,8 @@
 ObjectTalk uses a lot of Open Source products without which it would have
 been a lot harder to implement the language and it's components.
 
+![Screenshots](docs/img/screenshots.png)
+
 ## Software
 
 * [libuv](https://libuv.org) - multi-platform support library with a focus on asynchronous I/O released under the [MIT license](https://opensource.org/licenses/MIT). Its documentation is released uder the [CC BY 4.0 license](https://creativecommons.org/licenses/by/4.0/)

@@ -232,7 +232,7 @@ int TextEditor::Document::maxColumn(const Line& line) const {
 //	TextEditor::Document::getIndex
 //
 
-inline int TextEditor::Document::getIndex(const Line& line, int column) const {
+int TextEditor::Document::getIndex(const Line& line, int column) const {
 	// convert a column reference to a glyph index for a specified line (taking tabs into account)
 	auto end = line.end();
 	int index = 0;

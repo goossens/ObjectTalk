@@ -15,6 +15,13 @@
 #include <thread>
 #include <vector>
 
+#if _WIN32
+#include <windows.h>
+
+#else
+#include <stdlib.h>
+#endif
+
 #include "OtConfig.h"
 #include "OtException.h"
 #include "OtFunction.h"
@@ -219,3 +226,30 @@ void OtFramework::setAntiAliasing(int aa) {
 
 	antiAliasing = aa;
 }
+
+
+
+//
+//	OtFramework::openURL
+//
+
+#if __APPLE__
+	// MacOS version is in OtMacos.mm as it requires Objective-C
+
+#else
+
+void OtFramework::openURL(const std::string& url) {
+#if _WIN32
+	WCHAR *temp = new WCHAR[url.size() + 1];
+	int wchars_num = MultiByteToWideChar(CP_UTF8, 0, url.c_str(), url.size() + 1, temp, url.size() + 1);
+	HINSTANCE r = ShellExecuteW(NULL, L"open", temp, NULL, NULL, SW_SHOWNORMAL);
+	delete[] temp;
+
+#else
+#include <stdlib.h>
+	std::string op = std::string("xdg-open '").append(url).append("'");
+	return system(op.c_str()) == 0;
+#endif
+}
+
+#endif

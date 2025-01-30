@@ -55,6 +55,9 @@ public:
 	// set anti-aliasing
 	void setAntiAliasing(int level);
 
+	// open specified URL in browser
+	static void openURL(const std::string& url);
+
 	// get list of file to open on startup
 	inline static std::vector<std::string>& getStartupFiles() { return filesToOpen; }
 

@@ -514,14 +514,14 @@ void OtWorkspace::renderSplashScreen() {
 	OtUi::centeredText("Integrated Development Environment (IDE)");
 	OtUi::centeredText("");
 
-	if (ImGui::GetIO().ConfigMacOSXBehaviors) {
-		OtUi::centeredText("Use Cmd-N to create a new file");
-		OtUi::centeredText("Use Cmd-O to open an existing file");
+#if __APPLE__
+	OtUi::centeredText("Use Cmd-N to create a new file");
+	OtUi::centeredText("Use Cmd-O to open an existing file");
 
-	} else {
-		OtUi::centeredText("Use Ctrl-N to create a new file");
-		OtUi::centeredText("Use Ctrl-O to open an existing file");
-	}
+#else
+	OtUi::centeredText("Use Ctrl-N to create a new file");
+	OtUi::centeredText("Use Ctrl-O to open an existing file");
+#endif
 
 	ImGui::End();
 

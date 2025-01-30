@@ -1,0 +1,112 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+
+//
+//	Include files
+//
+
+#include "imgui.h"
+
+#include "OtFunction.h"
+#include "OtLog.h"
+
+#include "OtUi.h"
+
+#include "OtTextEditorWidget.h"
+
+
+//
+//	OtTextEditorWidgetClass::init
+//
+
+void OtTextEditorWidgetClass::init(size_t count, OtObject* parameters) {
+	switch (count) {
+		case 2:
+			setLanguage(parameters[1]->operator std::string());
+
+		case 1:
+			setText(parameters[0]->operator std::string());
+
+		case 0:
+			break;
+
+		default:
+			OtLogFatal("[TextEditor] constructor expects up to 2 arguments (not {})", count);
+	}
+}
+
+
+//
+//	OtTextEditorWidgetClass::setLanguage
+//
+
+void OtTextEditorWidgetClass::setLanguage(const std::string& text) {
+	if (text == "C") {
+		editor.SetLanguage(TextEditor::Language::C());
+
+	} else if (text == "C++") {
+		editor.SetLanguage(TextEditor::Language::Cpp());
+
+	} else if (text == "C#") {
+		editor.SetLanguage(TextEditor::Language::Cs());
+
+	} else if (text == "AngelScript") {
+		editor.SetLanguage(TextEditor::Language::AngelScript());
+
+	} else if (text == "Lua") {
+		editor.SetLanguage(TextEditor::Language::Lua());
+
+	} else if (text == "Python") {
+		editor.SetLanguage(TextEditor::Language::Python());
+
+	} else if (text == "GLSL") {
+		editor.SetLanguage(TextEditor::Language::Glsl());
+
+	} else if (text == "HLSL") {
+		editor.SetLanguage(TextEditor::Language::Hlsl());
+
+	} else if (text == "JSON") {
+		editor.SetLanguage(TextEditor::Language::Json());
+
+	} else if (text == "Markdown") {
+		editor.SetLanguage(TextEditor::Language::Markdown());
+
+	} else {
+		OtLogFatal("Unknow language[{}],Shoudl be C, C++, C#, AngelScript", "Lua", "Python", "GLSL", "HLSL", "JSON", "Markdown", text);
+	}
+}
+
+
+//
+//	OtTextEditorWidgetClass::render
+//
+
+void OtTextEditorWidgetClass::render() {
+	ImGui::PushID(this);
+	editor.Render("Editor");
+	ImGui::PopID();
+}
+
+
+//
+//	OtTextEditorWidgetClass::getMeta
+//
+
+OtType OtTextEditorWidgetClass::getMeta() {
+	static OtType type;
+
+	if (!type) {
+		type = OtType::create<OtTextEditorWidgetClass>("TextEditor", OtWidgetClass::getMeta());
+		type->set("__init__", OtFunction::create(&OtTextEditorWidgetClass::init));
+		type->set("setText", OtFunction::create(&OtTextEditorWidgetClass::setText));
+		type->set("getText", OtFunction::create(&OtTextEditorWidgetClass::getText));
+		type->set("setLanguage", OtFunction::create(&OtTextEditorWidgetClass::setLanguage));
+		type->set("getLanguage", OtFunction::create(&OtTextEditorWidgetClass::getLanguage));
+	}
+
+	return type;
+}

@@ -31,6 +31,7 @@
 #include "OtRows.h"
 #include "OtTab.h"
 #include "OtTabBar.h"
+#include "OtTextEditorWidget.h"
 #include "OtTextField.h"
 #include "OtTreeNode.h"
 #include "OtTron.h"
@@ -61,6 +62,7 @@ static OtModuleRegistration registration{"gui", [](OtModule module) {
 	module->set("Rows", OtClass::create(OtRowsClass::getMeta()));
 	module->set("Tab", OtClass::create(OtTabClass::getMeta()));
 	module->set("TabBar", OtClass::create(OtTabBarClass::getMeta()));
+	module->set("TextEditor", OtClass::create(OtTextEditorWidgetClass::getMeta()));
 	module->set("TextField", OtClass::create(OtTextFieldClass::getMeta()));
 	module->set("TreeNode", OtClass::create(OtTreeNodeClass::getMeta()));
 	module->set("Tron", OtClass::create(OtTronClass::getMeta()));

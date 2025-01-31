@@ -257,7 +257,7 @@ void TextEditor::renderMatchingBrackets() {
 
 				if (active->end.line - active->start.line > 1) {
 					auto lineX = std::min(x1, x2);
-					drawList->AddLine(ImVec2(lineX, y1 + glyphSize.y), ImVec2(lineX, y2), palette.get(Color::cursor), 1.0f);
+					drawList->AddLine(ImVec2(lineX, y1 + glyphSize.y), ImVec2(lineX, y2), palette.get(Color::matchingBracketActive), 1.0f);
 				}
 			}
 		}
@@ -341,7 +341,7 @@ void TextEditor::renderCursors() {
 			auto pos = cursor.getInteractiveEnd();
 
 			if (pos.line >= firstVisibleLine && pos.line <= lastVisibleLine) {
-				auto x = cursorScreenPos.x + textStart + pos.column * glyphSize.x;
+				auto x = cursorScreenPos.x + textStart + pos.column * glyphSize.x - 1;
 				auto y = cursorScreenPos.y + pos.line * glyphSize.y;
 				drawList->AddRectFilled(ImVec2(x, y), ImVec2(x + cursorWidth, y + glyphSize.y), palette.get(Color::cursor));
 			}
@@ -1765,6 +1765,7 @@ const TextEditor::Palette& TextEditor::GetDarkPalette() {
 		IM_COL32( 32,  96, 160, 255),	// selection
 		IM_COL32(128,   0,  32, 255),	// errorMarker
 		IM_COL32( 90,  90,  90, 255),	// whitespace
+		IM_COL32(140, 140, 140, 255),	// matchingBracketActive
 		IM_COL32(246, 222,  36, 255),	// matchingBracketLevel1
 		IM_COL32( 66, 120, 198, 255),	// matchingBracketLevel2
 		IM_COL32(213,  96, 213, 255),	// matchingBracketLevel3
@@ -1794,6 +1795,7 @@ const TextEditor::Palette& TextEditor::GetLightPalette()
 		IM_COL32(  0,   0,  96,  64),	// selection
 		IM_COL32(255,  16,   0, 160),	// errorMarker
 		IM_COL32(144, 144, 144, 144),	// whitespace
+		IM_COL32( 72,  72,  72, 255),	// matchingBracketActive
 		IM_COL32(246, 222,  36, 255),	// matchingBracketLevel1
 		IM_COL32( 66, 120, 198, 255),	// matchingBracketLevel2
 		IM_COL32(213,  96, 213, 255),	// matchingBracketLevel3

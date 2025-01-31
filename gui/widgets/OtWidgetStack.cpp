@@ -23,7 +23,6 @@
 void OtWidgetStackClass::render() {
 	// render the first enabled child
 	ImGui::PushID(this);
-	ImGui::BeginChild("stack");
 
 	bool done = false;
 
@@ -34,7 +33,6 @@ void OtWidgetStackClass::render() {
 		}
 	}
 
-	ImGui::EndChild();
 	ImGui::PopID();
 }
 

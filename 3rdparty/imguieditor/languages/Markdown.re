@@ -31,44 +31,47 @@ static TextEditor::Iterator tokenizeMarkdown(TextEditor::Iterator start, TextEdi
 		header = "#"+.*;
 
 		header {
-			color = TextEditor::Color::keyword;
-			return i;
-		}
-
-		bold = "**"[^*]+"**";
-		italic = "*"[^*]+"*";
-		strikethrough = "~~"[^~]+"~~";
-
-		bold | italic | strikethrough {
 			color = TextEditor::Color::declaration;
 			return i;
 		}
 
-		image = "![" [^\]]*"](" [^)]* ")";
+		punctuation = [|\-:];
+		ol = [0-9]+". ";
+		ul = [*+\-]" ";
 
-		image {
+		punctuation | ol | ul {
+			color = TextEditor::Color::punctuation;
+			return i;
+		}
+
+		bold = "**"[^*]+"**";
+		italic = "*"[^ *]+"*";
+		strikethrough = "~~"[^~]+"~~";
+
+		bold | italic | strikethrough {
+			color = TextEditor::Color::number;
+			return i;
+		}
+
+		image = "![" [^\]]*"](" [^)]* ")";
+		link = "[" [^\]]*"](" [^)]* ")";
+
+		image | link {
 			color = TextEditor::Color::identifier;
 			return i;
 		}
 
-		link = "[" [^\]]*"](" [^)]* ")";
-
-		link {
-			color = TextEditor::Color::knownIdentifier;
-			return i;
-		}
-
-		inline = "`" [^`]*"`";
+		inline = "`"[^`]*"`";
 
 		inline {
 			color = TextEditor::Color::string;
 			return i;
 		}
 
-		rule = "---".*;
+		html = "<"[a-zA-Z]+">";
 
-		rule {
-			color = TextEditor::Color::string;
+		html {
+			color = TextEditor::Color::keyword;
 			return i;
 		}
 
@@ -88,9 +91,8 @@ const TextEditor::Language& TextEditor::Language::Markdown() {
 
 	if (!initialized) {
 		language.name = "Markdown";
-		language.singleLineComment = ">";
-		language.commentStart = "```";
-		language.commentEnd = "```";
+		language.commentStart = "<!--";
+		language.commentEnd = "-->";
 
 		language.customTokenizer = tokenizeMarkdown;
 		initialized = true;

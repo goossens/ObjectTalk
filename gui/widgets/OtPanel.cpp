@@ -23,13 +23,7 @@
 void OtPanelClass::render() {
 	// render all children
 	ImGui::PushID(this);
-	ImGui::BeginChild("panel");
-	ImGui::PushItemWidth(ImGui::GetWindowWidth() * 0.6f);
-
 	renderChildren();
-
-	ImGui::PopItemWidth();
-	ImGui::EndChild();
 	ImGui::PopID();
 }
 

@@ -43,13 +43,9 @@ void OtPropertiesClass::init(size_t count, OtObject* parameters) {
 void OtPropertiesClass::render() {
 	// render all children
 	ImGui::PushID(this);
-	ImGui::BeginChild("panel");
 	ImGui::PushItemWidth(ImGui::GetWindowWidth() * split);
-
 	renderChildren();
-
 	ImGui::PopItemWidth();
-	ImGui::EndChild();
 	ImGui::PopID();
 }
 

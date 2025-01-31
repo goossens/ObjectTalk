@@ -16,8 +16,6 @@
 
 #include "TextEditor.h"
 
-#include "OtUi.h"
-
 #include "OtWidget.h"
 
 
@@ -39,6 +37,9 @@ public:
 
 	void setLanguage(const std::string& text);
 	inline std::string getLanguage() { return editor.GetLanguageName(); }
+
+	//	clipboard functions
+	inline int getUndoIndex() { return editor.GetUndoIndex(); }
 
 	// render content
 	void render() override;

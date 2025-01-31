@@ -14,8 +14,6 @@
 #include "OtFunction.h"
 #include "OtLog.h"
 
-#include "OtUi.h"
-
 #include "OtTextEditorWidget.h"
 
 
@@ -106,6 +104,8 @@ OtType OtTextEditorWidgetClass::getMeta() {
 		type->set("getText", OtFunction::create(&OtTextEditorWidgetClass::getText));
 		type->set("setLanguage", OtFunction::create(&OtTextEditorWidgetClass::setLanguage));
 		type->set("getLanguage", OtFunction::create(&OtTextEditorWidgetClass::getLanguage));
+
+		type->set("getUndoIndex", OtFunction::create(&OtTextEditorWidgetClass::getUndoIndex));
 	}
 
 	return type;

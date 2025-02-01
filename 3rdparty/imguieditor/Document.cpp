@@ -78,7 +78,7 @@ TextEditor::Coordinate TextEditor::Document::insertText(Coordinate start, const 
 		}
 	}
 
-	// determine end-of insert
+	// determine end of insert
 	auto end = Coordinate(lineNo, getColumn(static_cast<int>(line - begin()), index));
 
 	// mark affected lines for colorization

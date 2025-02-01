@@ -100,11 +100,41 @@ OtType OtTextEditorWidgetClass::getMeta() {
 	if (!type) {
 		type = OtType::create<OtTextEditorWidgetClass>("TextEditor", OtWidgetClass::getMeta());
 		type->set("__init__", OtFunction::create(&OtTextEditorWidgetClass::init));
-		type->set("setText", OtFunction::create(&OtTextEditorWidgetClass::setText));
-		type->set("getText", OtFunction::create(&OtTextEditorWidgetClass::getText));
+
+		type->set("setTabSize", OtFunction::create(&OtTextEditorWidgetClass::setTabSize));
+		type->set("getTabSize", OtFunction::create(&OtTextEditorWidgetClass::getTabSize));
+		type->set("setLineSpacing", OtFunction::create(&OtTextEditorWidgetClass::setLineSpacing));
+		type->set("getLineSpacing", OtFunction::create(&OtTextEditorWidgetClass::getLineSpacing));
+		type->set("setReadOnlyEnabled", OtFunction::create(&OtTextEditorWidgetClass::setReadOnlyEnabled));
+		type->set("isReadOnlyEnabled", OtFunction::create(&OtTextEditorWidgetClass::isReadOnlyEnabled));
+		type->set("setAutoIndentEnabled", OtFunction::create(&OtTextEditorWidgetClass::setAutoIndentEnabled));
+		type->set("isAutoIndentEnabled", OtFunction::create(&OtTextEditorWidgetClass::isAutoIndentEnabled));
+		type->set("setShowWhitespacesEnabled", OtFunction::create(&OtTextEditorWidgetClass::setShowWhitespacesEnabled));
+		type->set("isShowWhitespacesEnabled", OtFunction::create(&OtTextEditorWidgetClass::isShowWhitespacesEnabled));
+		type->set("setShowLineNumbersEnabled", OtFunction::create(&OtTextEditorWidgetClass::setShowLineNumbersEnabled));
+		type->set("isShowLineNumbersEnabled", OtFunction::create(&OtTextEditorWidgetClass::isShowLineNumbersEnabled));
+		type->set("setShowMatchingBrackets", OtFunction::create(&OtTextEditorWidgetClass::setShowMatchingBrackets));
+		type->set("isShowingMatchingBrackets", OtFunction::create(&OtTextEditorWidgetClass::isShowingMatchingBrackets));
+		type->set("setCompletePairedGlyphs", OtFunction::create(&OtTextEditorWidgetClass::setCompletePairedGlyphs));
+		type->set("isCompletingPairedGlyphs", OtFunction::create(&OtTextEditorWidgetClass::isCompletingPairedGlyphs));
+		type->set("setOverwriteEnabled", OtFunction::create(&OtTextEditorWidgetClass::setOverwriteEnabled));
+		type->set("isOverwriteEnabled", OtFunction::create(&OtTextEditorWidgetClass::isOverwriteEnabled));
+
 		type->set("setLanguage", OtFunction::create(&OtTextEditorWidgetClass::setLanguage));
 		type->set("getLanguage", OtFunction::create(&OtTextEditorWidgetClass::getLanguage));
 
+		type->set("setText", OtFunction::create(&OtTextEditorWidgetClass::setText));
+		type->set("getText", OtFunction::create(&OtTextEditorWidgetClass::getText));
+		type->set("isEmpty", OtFunction::create(&OtTextEditorWidgetClass::isEmpty));
+		type->set("getLineCount", OtFunction::create(&OtTextEditorWidgetClass::getLineCount));
+
+		type->set("cut", OtFunction::create(&OtTextEditorWidgetClass::cut));
+		type->set("copy", OtFunction::create(&OtTextEditorWidgetClass::copy));
+		type->set("paste", OtFunction::create(&OtTextEditorWidgetClass::paste));
+		type->set("undo", OtFunction::create(&OtTextEditorWidgetClass::undo));
+		type->set("redo", OtFunction::create(&OtTextEditorWidgetClass::redo));
+		type->set("canUndo", OtFunction::create(&OtTextEditorWidgetClass::canUndo));
+		type->set("canRedo", OtFunction::create(&OtTextEditorWidgetClass::canRedo));
 		type->set("getUndoIndex", OtFunction::create(&OtTextEditorWidgetClass::getUndoIndex));
 	}
 

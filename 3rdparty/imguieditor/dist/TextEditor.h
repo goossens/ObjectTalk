@@ -67,6 +67,16 @@ public:
 	// render the text editor in a Dear ImGui context
 	inline void Render(const char* title, const ImVec2& size=ImVec2(), bool border=false) { render(title, size, border); }
 
+	// clipboard actions
+	inline void Cut() { if (!readOnly) cut(); }
+	inline void Copy() const { copy(); }
+	inline void Paste() { if (!readOnly) paste(); }
+	inline void Undo() { if (!readOnly) undo(); }
+	inline void Redo() { if (!readOnly) redo(); }
+	inline bool CanUndo() const { return !readOnly && transactions.canUndo(); };
+	inline bool CanRedo() const { return !readOnly && transactions.canRedo(); };
+	inline size_t GetUndoIndex() const { return transactions.getUndoIndex(); };
+
 	// manipulate cursors and selections (line numbers are zero-based)
 	inline void SetCursor(int line, int column) { moveTo(document.normalizeCoordinate(Coordinate(line, column)), false); }
 	inline void SelectAll() { selectAll(); }
@@ -78,16 +88,6 @@ public:
 	inline bool AllCursorsHaveSelection() const { return cursors.allHaveSelection(); }
 	inline bool CurrentCursorHasSelection() const { return cursors.currentCursorHasSelection(); }
 	inline void ClearCursors() { cursors.clearAll(); }
-
-	// clipboard actions
-	inline void Cut() { if (!readOnly) cut(); }
-	inline void Copy() const { copy(); }
-	inline void Paste() { if (!readOnly) paste(); }
-	inline void Undo() { if (!readOnly) undo(); }
-	inline void Redo() { if (!readOnly) redo(); }
-	inline bool CanUndo() { return !readOnly && transactions.canUndo(); };
-	inline bool CanRedo() { return !readOnly && transactions.canRedo(); };
-	inline size_t GetUndoIndex() { return transactions.getUndoIndex(); };
 
 	// find/replace support
 	inline void SelectFirstOccurrenceOf(const std::string& text, bool caseSensitive=true, bool wholeWord=false) { selectFirstOccurrenceOf(text, caseSensitive, wholeWord); }
@@ -101,7 +101,7 @@ public:
 	void ClearErrorMarkers();
 	inline bool HasErrorMarkers() const { return errorMarkers.size() != 0; }
 
-	// useful editor functions to work on selections
+	// useful functions to work on selections
 	inline void IndentLines() { if (!readOnly) indentLines(); }
 	inline void DeindentLines() { if (!readOnly) deindentLines(); }
 	inline void MoveUpLines() { if (!readOnly) moveUpLines(); }
@@ -111,7 +111,7 @@ public:
 	inline void SelectionToLowerCase() { if (!readOnly) selectionToLowerCase(); }
 	inline void SelectionToUpperCase() { if (!readOnly) selectionToUpperCase(); }
 
-	// useful editor functions to work on entire text
+	// useful functions to work on entire text
 	inline void StripTrailingWhitespaces() { if (!readOnly) stripTrailingWhitespaces(); }
 	inline void FilterLines(std::function<std::string(std::string)> filter) { if (!readOnly) filterLines(filter); }
 	inline void TabsToSpaces() { if (!readOnly) tabsToSpaces(); }
@@ -284,7 +284,7 @@ private:
 		inline Coordinate operator -(const Coordinate& o) const { return Coordinate(line - o.line, column - o.column); }
 		inline Coordinate operator +(const Coordinate& o) const { return Coordinate(line + o.line, column + o.column); }
 
-		static Coordinate invalid() { static Coordinate invalid(-1, -1); return invalid; }
+		static inline Coordinate invalid() { static Coordinate invalid(-1, -1); return invalid; }
 		inline bool isValid() const { return line >= 0 && column >= 0; }
 
 		int line = 0;
@@ -366,7 +366,7 @@ private:
 		bool allHaveSelection() const;
 		inline bool mainCursorHasSelection() const { return at(main).hasSelection(); }
 		inline bool currentCursorHasSelection() const { return at(current).hasSelection(); }
-		inline bool mainHasUpdate() const  { return at(main).isUpdated(); }
+		inline bool mainHasUpdate() const { return at(main).isUpdated(); }
 		bool anyHasUpdate() const;
 
 		// clear the selections and create the default cursor

@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 
+#include "OtFrameBuffer.h"
 #include "OtOscilloscope.h"
 #include "OtUi.h"
 
@@ -111,6 +112,7 @@ private:
 
 	// oscilloscope to render display
 	OtOscilloscope scope;
+	OtFrameBuffer framebuffer{OtTexture::rgba8Texture};
 
 	// style variables
 	struct Style {

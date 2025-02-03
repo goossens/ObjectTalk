@@ -35,11 +35,6 @@
 class OtOscilloscope {
 public:
 	// update properties
-	inline void setSize(int w, int h) {
-		width = w;
-		height = h;
-	}
-
 	inline void setBrightness(float b) { brightness = b; }
 	inline void setTopLeftOrigin() { origin = Origin::topLeft; }
 	inline void setBottomLeftOrigin() { origin = Origin::bottomLeft; }
@@ -59,12 +54,12 @@ public:
 	void drawText(float x, float y, float size, const std::string& text, float lineWidth, uint32_t color);
 
 	// render the vector display
-	int render();
+	void render(OtFrameBuffer& framebuffer);
 
 private:
 	// properties
-	int width = 100;
-	int height = 100;
+	int width;
+	int height;
 	float brightness = 1.0f;
 
 	int decaySteps = 4;
@@ -106,7 +101,6 @@ private:
 	OtBlit blit;
 
 	// GPU resources
-	OtFrameBuffer texture{OtTexture::rgba8Texture};
 	OtFrameBuffer blur1{OtTexture::rgba8Texture};
 	OtFrameBuffer blur2{OtTexture::rgba8Texture};
 	OtUniformVec4 uniform = OtUniformVec4("u_params", 1);

@@ -106,4 +106,6 @@ private:
 	bool outputToInput;
 	bool linkValid;
 	ImU32 linkColor;
+
+	bool focusOnEditor = true;
 };

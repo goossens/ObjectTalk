@@ -184,7 +184,7 @@ OtObject OtCanvasClass::textBoxSize(const std::string& string, float width) {
 //	OtCanvasClass::render
 //
 
-void OtCanvasClass::render(OtFrameBuffer &framebuffer, float scale, std::function<void()> renderer) {
+void OtCanvasClass::render(OtFrameBuffer& framebuffer, float scale, std::function<void()> renderer) {
 	// get dimensions
 	width = float(framebuffer.getWidth());
 	height = float(framebuffer.getHeight());

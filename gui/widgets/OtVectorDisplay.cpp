@@ -566,7 +566,7 @@ void OtVectorDisplayClass::render() {
 
 	// calculate size of scope
 	ImVec2 size{width * scale, height * scale};
-	scope.setSize(size.x, size.y);
+	framebuffer.update(size.x, size.y);
 
 	// render all shapes
 	for (auto& shape : shapes) {
@@ -614,9 +614,9 @@ void OtVectorDisplayClass::render() {
 	}
 
 	// render scope frame, align it and put it on the screen
-	auto index = scope.render();
+	scope.render(framebuffer);
 	OtUi::align(size, horizontalAlign, verticalAlign);
-	ImGui::Image((ImTextureID)(intptr_t) index, size);
+	ImGui::Image((ImTextureID)(intptr_t) framebuffer.getColorTextureIndex(), size);
 }
 
 

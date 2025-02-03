@@ -127,9 +127,9 @@ Both of these a driven by script components. The jungle and island examples
 use nodes to procedurally create terrain and asset instances.
 
 To round it all out, modern engine features like deferred rendering,
-particle systems, Image Based Lighting (IBL) and post processing with
-fog, Bloom, God Rays, Fast Approximate Anti-Aliasing (FXAA),
-Cascaded Shadow Maps and Tone Mapping are also available.
+Physically Based Rendering (PBR), particle systems, Image Based Lighting (IBL),
+Cascaded Shadow Maps (CSMs) and post processing with fog, Bloom, God Rays,
+Fast Approximate Anti-Aliasing (FXAA) and Tone Mapping are also available.
 
 ![Scenes](docs/img/scenes.png)
 

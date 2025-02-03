@@ -33,7 +33,9 @@ public:
 	// render custom fields
 	void customRendering(float width) override {
 		// render button
-		if (ImGui::Button("Configure", ImVec2(width, 0.0f))) {
+		auto type = primitive->getTypeName();
+
+		if (ImGui::Button(type, ImVec2(width, 0.0f))) {
 			ImGui::OpenPopup("primitivePopup");
 		}
 
@@ -42,7 +44,6 @@ public:
 			auto old = serialize().dump();
 
 			bool changed = false;
-			auto type = primitive->getTypeName();
 
 			if (ImGui::BeginCombo("Type", type)) {
 				factory.each([&](const char* name) {

@@ -111,6 +111,11 @@ void OtNodesWidget::render(OtNodes* n) {
 	});
 
 	// start rendering
+	if (focusOnEditor) {
+		ImGui::SetNextWindowFocus();
+		focusOnEditor = false;
+	}
+
 	ImGui::SetNextWindowContentSize(ImVec2(width, height));
 	ImGui::BeginChild("nodes", ImVec2(), ImGuiChildFlags_None, ImGuiWindowFlags_HorizontalScrollbar);
 	pinOffset = ImGui::GetStyle().FramePadding.y + ImGui::GetFont()->Ascent - pinRadius + 1.0f;
@@ -149,7 +154,7 @@ void OtNodesWidget::render(OtNodes* n) {
 	});
 
 	// handle user interactions (if required)
-	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows)) {
+	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows)) {
 		handleInteractions(drawlist);
 
 		// are we in the process of connecting nodes?
@@ -617,7 +622,7 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 			}
 
 		// handle right mouse button events
-		} else if (ImGui::IsMouseDown(ImGuiMouseButton_Right)) {
+		} else if (ImGui::IsMouseDown(ImGuiMouseButton_Right) && ImGui::IsWindowHovered()) {
 			if (!hoveredPin && !hoveredNode) {
 				contextMenuDone = true;
 				contextMenuPos = mousePos;

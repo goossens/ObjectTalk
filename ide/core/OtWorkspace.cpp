@@ -18,6 +18,7 @@
 
 #include "OtAssert.h"
 #include "OtStderrMultiplexer.h"
+#include "OtText.h"
 
 #include "OtMessageBus.h"
 #include "OtPath.h"
@@ -67,6 +68,9 @@ void OtWorkspace::onSetup() {
 
 		if (OtPath::isDirectory(examples)) {
 			OtPath::changeDirectory(examples);
+
+		} else if (OtText::contains(exec, "/build/xcode/Debug/ObjectTalk.app/Contents/MacOS/ot")) {
+			OtPath::changeDirectory(OtPath::join(OtText::left(exec, exec.size() - 51), "examples"));
 
 		} else {
 			auto path = OtPath::getDocumentsDirectory();

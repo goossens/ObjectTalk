@@ -164,8 +164,7 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtColor& value) {
 			ImGuiColorEditFlags flags =
 				ImGuiColorEditFlags_Float |
 				ImGuiColorEditFlags_NoInputs |
-				ImGuiColorEditFlags_AlphaBar |
-				ImGuiColorEditFlags_AlphaPreview;
+				ImGuiColorEditFlags_AlphaBar;
 
 			if (ImGui::ColorEdit4("##value", value.data(), flags)) {
 				node->oldState = old;

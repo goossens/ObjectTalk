@@ -132,13 +132,14 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(std::string& value) {
 		[]() { return 100.0f; },
 
 		[&](OtNodesPin pin, float width) {
-			auto node = pin->node;
-			auto old = node->serialize().dump();
+			auto text = value;
 			ImGui::PushID(&value);
 			ImGui::SetNextItemWidth(width);
 
-			if (OtUi::inputText("##value", &value)) {
-				node->oldState = old;
+			if (OtUi::inputText("##value", &text)) {
+				auto node = pin->node;
+				node->oldState = node->serialize().dump();
+				value = text;
 				node->newState = node->serialize().dump();
 				node->needsEvaluating = true;
 				node->needsSaving = true;

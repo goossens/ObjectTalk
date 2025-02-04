@@ -96,7 +96,7 @@
 			"title": "Size",
 			"type": "Integer Input",
 			"value": 512,
-			"x": 33.0,
+			"x": 29.0,
 			"y": 89.0
 		},
 		{
@@ -112,7 +112,7 @@
 			"title": "Frequency",
 			"type": "Float Input",
 			"value": 3.0,
-			"x": 33.0,
+			"x": 29.0,
 			"y": 153.0
 		},
 		{
@@ -128,7 +128,7 @@
 			"title": "Lacunarity",
 			"type": "Float Input",
 			"value": 1.7000000476837158,
-			"x": 34.0,
+			"x": 29.0,
 			"y": 216.0
 		},
 		{
@@ -144,7 +144,7 @@
 			"title": "Amplitude",
 			"type": "Float Input",
 			"value": 0.5,
-			"x": 33.0,
+			"x": 29.0,
 			"y": 279.0
 		},
 		{
@@ -160,7 +160,7 @@
 			"title": "Persistence",
 			"type": "Float Input",
 			"value": 0.5,
-			"x": 31.0,
+			"x": 29.0,
 			"y": 344.0
 		},
 		{
@@ -176,7 +176,7 @@
 			"title": "Octaves",
 			"type": "Integer Input",
 			"value": 6,
-			"x": 31.0,
+			"x": 29.0,
 			"y": 410.0
 		},
 		{
@@ -228,7 +228,7 @@
 			],
 			"title": "NoiseMap Generator",
 			"type": "NoiseMap Generator",
-			"x": 241.0,
+			"x": 224.0,
 			"y": 90.0
 		},
 		{
@@ -243,7 +243,7 @@
 			"outputs": [],
 			"title": "Texture Probe",
 			"type": "Texture Probe",
-			"x": 485.0,
+			"x": 495.0,
 			"y": 170.0
 		},
 		{
@@ -287,7 +287,7 @@
 			"title": "HeightMap to NormalMap",
 			"type": "HeightMap to NormalMap",
 			"x": 755.0,
-			"y": 146.0
+			"y": 144.0
 		},
 		{
 			"id": 833814754,
@@ -307,7 +307,7 @@
 			],
 			"title": "Texture to Image",
 			"type": "Texture to Image",
-			"x": 800.0,
+			"x": 803.0,
 			"y": 17.0
 		},
 		{
@@ -323,7 +323,7 @@
 			"path": "virtual:normalmap",
 			"title": "Texture Input",
 			"type": "Texture Input",
-			"x": 30.0,
+			"x": 29.0,
 			"y": 703.0
 		},
 		{
@@ -357,10 +357,9 @@
 				}
 			],
 			"outputs": [],
-			"path": "virtual:heightmap",
 			"title": "Save Image To Virtual",
 			"type": "Save Image To Virtual",
-			"x": 1033.0,
+			"x": 1032.0,
 			"y": 17.0
 		},
 		{
@@ -397,8 +396,8 @@
 			],
 			"title": "Image to Texture",
 			"type": "Image to Texture",
-			"x": 328.0,
-			"y": 551.0
+			"x": 386.0,
+			"y": 546.0
 		},
 		{
 			"id": 2846125169,

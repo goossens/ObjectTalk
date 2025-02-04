@@ -780,14 +780,16 @@ void OtSceneEditor::renderEntity(OtEntity entity) {
 			ImGui::GetTreeNodeToLabelSpacing() -
 			(buttonSize + ImGui::GetStyle().FramePadding.y) * 2.0f);
 
-		auto& component = scene.getComponent<OtCoreComponent>(entity);
-		auto oldValue = component.serialize(nullptr).dump();
-
 		if (startEntityRenaming) {
 			ImGui::SetKeyboardFocusHere();
 		}
 
-		if (OtUi::inputText("##rename", &component.tag)) {
+		auto& component = scene.getComponent<OtCoreComponent>(entity);
+		auto tag = component.tag;
+
+		if (OtUi::inputText("##rename", &tag)) {
+			auto oldValue = component.serialize(nullptr).dump();
+			component.tag = tag;
 			auto newValue = component.serialize(nullptr).dump();
 			nextTask = std::make_shared<OtEditComponentTask<OtCoreComponent>>(&scene, entity, oldValue, newValue);
 			renamingEntity = OtEntityNull;

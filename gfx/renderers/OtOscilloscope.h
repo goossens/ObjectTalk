@@ -53,7 +53,7 @@ public:
 	void drawSevenSegment(float x, float y, float size, const std::string& text, float lineWidth, uint32_t color);
 	void drawText(float x, float y, float size, const std::string& text, float lineWidth, uint32_t color);
 
-	// render the vector display
+	// render to a specified framebuffer
 	void render(OtFrameBuffer& framebuffer);
 
 private:

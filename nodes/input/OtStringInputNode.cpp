@@ -44,9 +44,17 @@ public:
 
 	// special rendering for input nodes
 	inline bool customInputRendering(float width) override {
-		ImGui::SetNextItemWidth(width);
-		return OtUi::inputText("##value", &value);
+		auto text = value;
+
+		if (OtUi::inputText("##value", &text)) {
+			value = text;
+			return true;
+
+		} else {
+			return false;
+		}
 	}
+
 
 	// (de)serialize node
 	void customSerialize(nlohmann::json* data, std::string* basedir) override {

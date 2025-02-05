@@ -158,7 +158,7 @@ bool OtUi::toggleButton(const char* labelPlusID, bool* value) {
 	float width = height * 1.55f;
 	float radius = height * 0.5f;
 
-	ImGui::InvisibleButton(label.c_str(), ImVec2(width, height));
+	ImGui::InvisibleButton(id.c_str(), ImVec2(width, height));
 
 	if (ImGui::IsItemClicked()) {
 		*value = !*value;

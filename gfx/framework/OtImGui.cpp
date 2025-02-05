@@ -173,6 +173,9 @@ void OtFramework::initIMGUI() {
 	io.DisplaySize = ImVec2(width, height);
 	io.DeltaTime = 1.0f / 60.0f;
 
+	// windows can only be dragged using the title bar
+	io.ConfigWindowsMoveFromTitleBarOnly = true;
+
 	// setup main viewport
 	ImGui::GetMainViewport()->PlatformHandleRaw = nativeDisplayHandle;
 

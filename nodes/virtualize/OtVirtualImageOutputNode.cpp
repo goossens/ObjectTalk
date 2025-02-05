@@ -31,13 +31,16 @@ public:
 
 	// synchronize the asset with the incoming image
 	void onExecute() override {
-		if (image.isValid() && name.size()) {
-			asset = "virtual:" + name;
-			asset->setImage(image);
-
-		} else if (name.size()) {
-			asset = "virtual:" + name;
+		if (!asset.isNull()) {
 			asset->clearImage();
+		}
+
+		if (name.size()) {
+			asset = "virtual:" + name;
+
+			if (image.isValid()) {
+				asset->setImage(image);
+			}
 
 		} else {
 			asset.clear();

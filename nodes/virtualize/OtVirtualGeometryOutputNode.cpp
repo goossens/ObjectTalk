@@ -31,13 +31,16 @@ public:
 
 	// synchronize the asset with the incoming geometry
 	void onExecute() override {
-		if (geometry.isValid() && name.size()) {
-			asset = "virtual:" + name;
-			asset->setGeometry(geometry);
-
-		} else if (name.size()) {
-			asset = "virtual:" + name;
+		if (!asset.isNull()) {
 			asset->clearGeometry();
+		}
+
+		if (name.size()) {
+			asset = "virtual:" + name;
+
+			if (geometry.isValid()) {
+				asset->setGeometry(geometry);
+			}
 
 		} else {
 			asset.clear();

@@ -196,6 +196,8 @@ public:
 	std::string oldState;
 	std::string newState;
 
+	std::string error;
+
 protected:
 	// private properties
 	std::vector<OtNodesPin> inputPins;

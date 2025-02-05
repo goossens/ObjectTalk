@@ -38,6 +38,8 @@ static constexpr ImU32 normalLinkColor = IM_COL32(255, 255, 255, 255);
 static constexpr ImU32 creatingLinkColor = IM_COL32(248, 222, 126, 255);
 static constexpr ImU32 validLinkColor = IM_COL32(128, 255, 128, 255);
 static constexpr ImU32 invalidLinkColor = IM_COL32(255, 32, 32, 255);
+static constexpr ImU32 errorBackgroundColor = IM_COL32(255, 32, 32, 64);
+static constexpr ImU32 errorTooltipColor = IM_COL32(128, 0, 32, 255);
 
 static constexpr ImU32 nodeColors[] = {
 	IM_COL32(125, 45, 75, 255),		// input
@@ -340,7 +342,7 @@ void OtNodesWidget::renderNode(ImDrawList* drawlist, OtNode& node) {
 	ImVec2 headerBottomRight = ImVec2(bottomRight.x, topLeft.y + ImGui::GetFrameHeight() + topPadding);
 
 	// render the node's background
-	drawlist->AddRectFilled(topLeft, bottomRight, nodeBackgroundColor, nodeRounding);
+	drawlist->AddRectFilled(topLeft, bottomRight, node->error.size() ? errorBackgroundColor : nodeBackgroundColor, nodeRounding);
 	drawlist->AddRectFilled(topLeft, headerBottomRight, nodeColors[static_cast<int>(node->category)], nodeRounding);
 	drawlist->AddRect(topLeft, bottomRight, node->selected ? nodeSelectedColor : nodeOutlineColor, nodeRounding);
 
@@ -414,6 +416,18 @@ void OtNodesWidget::renderNode(ImDrawList* drawlist, OtNode& node) {
 		if (ImGui::IsItemHovered()) {
 			ImGui::SetMouseCursor(ImGuiMouseCursor_TextInput);
 		}
+	}
+
+	// render error tooltip (if required)
+	if (hoveredInNodeContent && node->error.size()) {
+		std::string message = std::string("Error: " + node->error);
+		ImGui::PushStyleColor(ImGuiCol_Border, errorTooltipColor);
+		ImGui::PushStyleVar(ImGuiStyleVar_PopupBorderSize, 3.0f);
+		ImGui::BeginTooltip();
+		ImGui::TextUnformatted(message.c_str());
+		ImGui::EndTooltip();
+		ImGui::PopStyleVar();
+		ImGui::PopStyleColor();
 	}
 
 	ImGui::SetCursorScreenPos(widgetOffset);

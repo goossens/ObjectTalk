@@ -69,7 +69,7 @@
 			"outputs": [],
 			"title": "Texture Probe",
 			"type": "Texture Probe",
-			"x": 399.0,
+			"x": 381.0,
 			"y": 424.0
 		},
 		{
@@ -125,7 +125,7 @@
 			],
 			"title": "CheckerBoard Generator",
 			"type": "CheckerBoard Generator",
-			"x": 65.0,
+			"x": 61.0,
 			"y": 6.0
 		},
 		{
@@ -195,7 +195,7 @@
 			],
 			"title": "RGB Curves",
 			"type": "RGB Curves",
-			"x": 349.0,
+			"x": 366.0,
 			"y": 6.0
 		},
 		{

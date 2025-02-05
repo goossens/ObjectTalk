@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include "fmt/format.h"
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
@@ -20,15 +21,14 @@
 
 
 //
-//	OtLoadInstancesNode
+//	OtInstancesInputNode
 //
 
-class OtLoadInstancesNode : public OtNodeClass {
+class OtInstancesInputNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
 		addOutputPin("Instances", instances)->addCustomRenderer([this](float width) {
-			ImGui::SetNextItemWidth(width);
 			auto old = serialize().dump();
 
 			if (customInputRendering(width)) {
@@ -57,9 +57,24 @@ public:
 		return asset.renderUI("##instances");
 	}
 
-	// update state
+	// update status by checking for errors or load completion
 	inline bool onUpdate() override {
-		if (!asset.isNull() && asset->getInstances() != instances) {
+		error.clear();
+
+		if (asset.isNull()) {
+			return false;
+
+		} else if (asset.isMissing()) {
+			error = fmt::format("Asset [{}] is missing", asset.getPath());
+			instances.clear();
+			return false;
+
+		} else if (asset.isInvalid()) {
+			error = fmt::format("Asset [{}] is invalid", asset.getPath());
+			instances.clear();
+			return false;
+
+		} else if (asset->getInstances() != instances) {
 			instances = asset->getInstances();
 			return true;
 
@@ -93,4 +108,4 @@ protected:
 	OtInstances instances;
 };
 
-static OtNodesFactoryRegister<OtLoadInstancesNode> type;
+static OtNodesFactoryRegister<OtInstancesInputNode> type;

@@ -41,8 +41,7 @@ OtObject OtFSClass::gethome() {
 //
 
 OtObject OtFSClass::gettmp() {
-	return OtPathObject::create(std::filesystem::canonical(
-		std::filesystem::temp_directory_path()));
+	return OtPathObject::create(std::filesystem::canonical(std::filesystem::temp_directory_path()));
 }
 
 
@@ -79,8 +78,7 @@ OtObject OtFSClass::tmpnam() {
 
 OtObject OtFSClass::getcwd() {
 	try {
-		return OtPathObject::create(std::filesystem::canonical(
-			std::filesystem::current_path()));
+		return OtPathObject::create(std::filesystem::canonical(std::filesystem::current_path()));
 
 	} catch (std::exception& e) {
 		OtError("Can't get current directory, error: {}", e.what());

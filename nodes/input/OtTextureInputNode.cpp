@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include "fmt/format.h"
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
@@ -20,15 +21,14 @@
 
 
 //
-//	OtLoadTextureNode
+//	OtTextureInputNode
 //
 
-class OtLoadTextureNode : public OtNodeClass {
+class OtTextureInputNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
 		addOutputPin("Texture", texture)->addCustomRenderer([this](float width) {
-			ImGui::SetNextItemWidth(width);
 			auto old = serialize().dump();
 
 			if (customInputRendering(width)) {
@@ -57,9 +57,24 @@ public:
 		return asset.renderUI("##texture");
 	}
 
-	// update state
+	// update status by checking for errors or load completion
 	inline bool onUpdate() override {
-		if (!asset.isNull() && asset->getTexture() != texture) {
+		error.clear();
+
+		if (asset.isNull()) {
+			return false;
+
+		} else if (asset.isMissing()) {
+			error = fmt::format("Asset [{}] is missing", asset.getPath());
+			texture.clear();
+			return false;
+
+		} else if (asset.isInvalid()) {
+			error = fmt::format("Asset [{}] is invalid", asset.getPath());
+			texture.clear();
+			return false;
+
+		} else if (asset->getTexture() != texture) {
 			texture = asset->getTexture();
 			return true;
 
@@ -94,4 +109,4 @@ protected:
 	OtTexture texture;
 };
 
-static OtNodesFactoryRegister<OtLoadTextureNode> type;
+static OtNodesFactoryRegister<OtTextureInputNode> type;

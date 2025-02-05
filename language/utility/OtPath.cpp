@@ -129,7 +129,14 @@ std::string OtPath::getAbsolute(const std::string& path, std::string* basedir) {
 	// make a path absolute based on a provided base directory
 	if (path.size()) {
 		if (basedir) {
-			return std::filesystem::canonical(std::filesystem::path(*basedir) / std::filesystem::path(path)).string();
+			auto fullPath = std::filesystem::path(*basedir) / std::filesystem::path(path);
+
+			if (std::filesystem::exists(fullPath)) {
+				return std::filesystem::canonical(fullPath).string();
+
+			} else {
+				return fullPath.string();
+			}
 
 		} else {
 			return path;

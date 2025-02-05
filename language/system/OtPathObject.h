@@ -76,7 +76,7 @@ public:
 	inline OtObject stem() { return OtPathObject::create(path.stem()); }
 	inline OtObject extension() { return OtPathObject::create(path.extension()); }
 
-	//
+	// get canonical form of path (absolute, no dots, resolved symbolic links)
 	inline OtObject canonical() { return OtPathObject::create(std::filesystem::canonical(path)); }
 
 	// get relative path to other location

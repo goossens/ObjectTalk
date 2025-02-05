@@ -33,13 +33,16 @@ public:
 
 	// synchronize the asset with the incoming instances
 	void onExecute() override {
-		if (instances.isValid() && name.size()) {
-			asset = "virtual:" + name;
-			asset->setInstances(instances);
-
-		} else if (name.size()) {
-			asset = "virtual:" + name;
+		if (!asset.isNull()) {
 			asset->clearInstances();
+		}
+
+		if (name.size()) {
+			asset = "virtual:" + name;
+
+			if (instances.isValid()) {
+				asset->setInstances(instances);
+			}
 
 		} else {
 			asset.clear();

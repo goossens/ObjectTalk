@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include "fmt/format.h"
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
@@ -20,15 +21,14 @@
 
 
 //
-//	OtLoadFontNode
+//	OtFontInputNode
 //
 
-class OtLoadFontNode : public OtNodeClass {
+class OtFontInputNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
 		addOutputPin("Font", font)->addCustomRenderer([this](float width) {
-			ImGui::SetNextItemWidth(width);
 			auto old = serialize().dump();
 
 			if (customInputRendering(width)) {
@@ -57,9 +57,24 @@ public:
 		return asset.renderUI("##font");
 	}
 
-	// update state
+	// update status by checking for errors or load completion
 	inline bool onUpdate() override {
-		if (!asset.isNull() && asset->getFont() != font) {
+		error.clear();
+
+		if (asset.isNull()) {
+			return false;
+
+		} else if (asset.isMissing()) {
+			error = fmt::format("Asset [{}] is missing", asset.getPath());
+			font.clear();
+			return false;
+
+		} else if (asset.isInvalid()) {
+			error = fmt::format("Asset [{}] is invalid", asset.getPath());
+			font.clear();
+			return false;
+
+		} else if (asset->getFont() != font) {
 			font = asset->getFont();
 			return true;
 
@@ -93,4 +108,4 @@ protected:
 	OtFont font;
 };
 
-static OtNodesFactoryRegister<OtLoadFontNode> type;
+static OtNodesFactoryRegister<OtFontInputNode> type;

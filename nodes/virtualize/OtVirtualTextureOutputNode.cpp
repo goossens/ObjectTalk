@@ -31,13 +31,16 @@ public:
 
 	// synchronize the asset with the incoming texture
 	void onExecute() override {
-		if (texture.isValid() && name.size()) {
-			asset = "virtual:" + name;
-			asset->setTexture(texture);
-
-		} else if (name.size()) {
-			asset = "virtual:" + name;
+		if (!asset.isNull()) {
 			asset->clearTexture();
+		}
+
+		if (name.size()) {
+			asset = "virtual:" + name;
+
+			if (texture.isValid()) {
+				asset->setTexture(texture);
+			}
 
 		} else {
 			asset.clear();

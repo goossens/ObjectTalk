@@ -11,6 +11,7 @@
 
 #include "nanovg_bgfx.h"
 
+#include "OtException.h"
 #include "OtFunction.h"
 #include "OtLog.h"
 #include "OtPath.h"
@@ -200,7 +201,15 @@ void OtCanvasClass::render(OtFrameBuffer& framebuffer, float scale, std::functio
 	nvgSetViewId(context, pass.getViewId());
 	nvgBeginFrame(context, width, height, 1.0);
 	nvgScale(context, scale, scale);
-	renderer();
+
+	try {
+		renderer();
+
+	} catch (OtException& e) {
+		nvgEndFrame(context);
+		throw(e);
+	}
+
 	nvgEndFrame(context);
 }
 

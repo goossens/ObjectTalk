@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include "fmt/format.h"
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
@@ -20,10 +21,10 @@
 
 
 //
-//	OtLoadGeometryNode
+//	OtGeometryInputNode
 //
 
-class OtLoadGeometryNode : public OtNodeClass {
+class OtGeometryInputNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
@@ -56,9 +57,24 @@ public:
 		return asset.renderUI("##geometry");
 	}
 
-	// update state
+	// update status by checking for errors or load completion
 	inline bool onUpdate() override {
-		if (!asset.isNull() && asset->getGeometry() != geometry) {
+		error.clear();
+
+		if (asset.isNull()) {
+			return false;
+
+		} else if (asset.isMissing()) {
+			error = fmt::format("Asset [{}] is missing", asset.getPath());
+			geometry.clear();
+			return false;
+
+		} else if (asset.isInvalid()) {
+			error = fmt::format("Asset [{}] is invalid", asset.getPath());
+			geometry.clear();
+			return false;
+
+		} else if (asset->getGeometry() != geometry) {
 			geometry = asset->getGeometry();
 			return true;
 
@@ -92,4 +108,4 @@ protected:
 	OtGeometry geometry;
 };
 
-static OtNodesFactoryRegister<OtLoadGeometryNode> type;
+static OtNodesFactoryRegister<OtGeometryInputNode> type;

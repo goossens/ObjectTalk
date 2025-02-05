@@ -121,6 +121,11 @@ void OtWorkspace::onMessage(const std::string& msg) {
 		} else if (command == "error") {
 			state = State::confirmError;
 			message = operand;
+
+		} else if (command == "highlight") {
+			OtException exception;
+			exception.deserialize(operand);
+			highlightError(exception);
 		}
 
 	} else {

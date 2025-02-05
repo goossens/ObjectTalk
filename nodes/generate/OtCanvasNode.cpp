@@ -11,11 +11,13 @@
 
 #include <fstream>
 
+#include "fmt/format.h"
 #include "nlohmann/json.hpp"
 
 #include "OtException.h"
 #include "OtClass.h"
 #include "OtIdentifier.h"
+#include "OtMessageBus.h"
 #include "OtVM.h"
 
 #include "OtCanvas.h"
@@ -100,9 +102,16 @@ public:
 			auto canvas = OtCanvas(instance);
 
 			// render the canvas by calling the script
-			canvas->render(output, 1.0f, [this]() {
-				OtVM::callMemberFunction(instance, renderID);
-			});
+			try {
+				canvas->render(output, 1.0f, [this]() {
+					OtVM::callMemberFunction(instance, renderID);
+				});
+
+				error.clear();
+
+			} catch (OtException& e) {
+				onError(e);
+			}
 
 		} else {
 			// no script available so we clear the output
@@ -116,33 +125,53 @@ public:
 		hasRenderMethod = false;
 
 		if (script.isReady()) {
-			script->compile();
-			auto path = script.getPath();
-			auto module = script->getModule();
+			try {
+				script->compile();
+				auto path = script.getPath();
+				auto module = script->getModule();
 
-			if (!module->has(rendererID)) {
-				OtError("Script [{}] does not contain class [Renderer]", path);
+				if (!module->has(rendererID)) {
+					OtError("Script [{}] does not contain class [Renderer]", path);
+				}
+
+				auto classObject = module->get(rendererID);
+
+				// ensure it is a class object
+				if (!classObject.isKindOf<OtClassClass>()) {
+					OtError("Object [Renderer] in script [{}] is not a class", path);
+				}
+
+				// create instance of class
+				instance = OtClass(classObject)->instantiate();
+
+				// ensure the class is derived from Canvas
+				if (!instance.isKindOf<OtCanvasClass>()) {
+					OtError("Class [Renderer] in script [{}] is not derived from [Canvas]", path);
+				}
+
+				// ensure class has a render method
+				if (!instance->has(renderID)) {
+					OtError("Class [Renderer] in script [{}] does not have a [render] method", path);
+				}
+
+				hasRenderMethod = true;
+
+			} catch (OtException& e) {
+				onError(e);
 			}
-
-			auto classObject = module->get(rendererID);
-
-			// ensure it is a class object
-			if (!classObject.isKindOf<OtClassClass>()) {
-				OtError("Object [Renderer] in script [{}] is not a class", path);
-			}
-
-			// create instance of class
-			instance = OtClass(classObject)->instantiate();
-
-			// ensure the class is derived from Canvas
-			if (!instance.isKindOf<OtCanvasClass>()) {
-				OtError("Class [Renderer] in script [{}] is not derived from [Canvas]", path);
-			}
-
-			hasRenderMethod = instance->has(renderID);
 		}
 
 		needsEvaluating = true;
+	}
+
+	void onError(OtException& e) {
+		instance = nullptr;
+		hasRenderMethod = false;
+		error = e.what();
+
+		if (e.getModule().size()) {
+			OtMessageBus::send(fmt::format("highlight {}", e.serialize()));
+		}
 	}
 
 	static constexpr const char* nodeName = "Canvas Generator";

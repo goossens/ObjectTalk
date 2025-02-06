@@ -43,7 +43,7 @@ private:
 	void renderGrid(ImDrawList* drawlist);
 	void renderRubberBand(ImDrawList* drawlist);
 	void renderNode(ImDrawList* drawlist, OtNode& node);
-	void renderLink(ImDrawList* drawlist, const ImVec2& start, const ImVec2& end, ImU32 color);
+	void renderLink(ImDrawList* drawlist, const ImVec2& start, const ImVec2& end, ImU32 color, bool isVarying=false);
 	void renderPin(ImDrawList* drawlist, OtNodesPin& pin, float x, float w);
 
 	// utility functions

@@ -96,7 +96,7 @@
 			"title": "Size",
 			"type": "Integer Input",
 			"value": 300,
-			"x": 37.0,
+			"x": 23.0,
 			"y": 40.0
 		},
 		{
@@ -112,7 +112,7 @@
 			"title": "Frequency",
 			"type": "Float Input",
 			"value": 7.0,
-			"x": 37.0,
+			"x": 23.0,
 			"y": 105.0
 		},
 		{
@@ -128,7 +128,7 @@
 			"title": "Lacunarity",
 			"type": "Float Input",
 			"value": 1.7000000476837158,
-			"x": 38.0,
+			"x": 23.0,
 			"y": 168.0
 		},
 		{
@@ -144,7 +144,7 @@
 			"title": "Amplitude",
 			"type": "Float Input",
 			"value": 0.5,
-			"x": 37.0,
+			"x": 23.0,
 			"y": 231.0
 		},
 		{
@@ -160,7 +160,7 @@
 			"title": "Persistence",
 			"type": "Float Input",
 			"value": 0.5,
-			"x": 35.0,
+			"x": 23.0,
 			"y": 296.0
 		},
 		{
@@ -176,7 +176,7 @@
 			"title": "Octaves",
 			"type": "Integer Input",
 			"value": 6,
-			"x": 35.0,
+			"x": 23.0,
 			"y": 362.0
 		},
 		{
@@ -228,8 +228,8 @@
 			],
 			"title": "NoiseMap Generator",
 			"type": "NoiseMap Generator",
-			"x": 236.0,
-			"y": 42.0
+			"x": 275.0,
+			"y": 43.0
 		},
 		{
 			"distance": 0,
@@ -250,8 +250,8 @@
 			],
 			"title": "Islandizer",
 			"type": "Islandizer",
-			"x": 470.0,
-			"y": 264.0
+			"x": 509.0,
+			"y": 266.0
 		},
 		{
 			"id": 3557975928,
@@ -265,7 +265,7 @@
 			"outputs": [],
 			"title": "Texture Probe",
 			"type": "Texture Probe",
-			"x": 717.0,
+			"x": 775.0,
 			"y": 45.0
 		},
 		{
@@ -286,8 +286,8 @@
 			],
 			"title": "Texture to Image",
 			"type": "Texture to Image",
-			"x": 717.0,
-			"y": 340.0
+			"x": 817.0,
+			"y": 339.0
 		},
 		{
 			"id": 978565693,
@@ -307,8 +307,8 @@
 			],
 			"title": "Terrain Builder",
 			"type": "Terrain Builder",
-			"x": 266.0,
-			"y": 455.0
+			"x": 305.0,
+			"y": 456.0
 		},
 		{
 			"id": 4257377701,
@@ -347,7 +347,7 @@
 				0.0,
 				0.0
 			],
-			"x": 24.0,
+			"x": 23.0,
 			"y": 586.0
 		},
 		{
@@ -367,7 +367,7 @@
 				58.0,
 				200.0
 			],
-			"x": 25.0,
+			"x": 23.0,
 			"y": 645.0
 		},
 		{
@@ -403,8 +403,8 @@
 			],
 			"title": "Geometry Transform",
 			"type": "Geometry Transform",
-			"x": 465.0,
-			"y": 496.0
+			"x": 537.0,
+			"y": 498.0
 		},
 		{
 			"id": 285853508,

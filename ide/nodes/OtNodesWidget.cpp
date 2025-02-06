@@ -11,6 +11,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <vector>
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
@@ -151,7 +152,8 @@ void OtNodesWidget::render(OtNodes* n) {
 				drawlist,
 				widgetOffset + pinLocations[link->from->id],
 				widgetOffset + pinLocations[link->to->id],
-				pinColors[link->from->type]);
+				pinColors[link->from->type],
+				link->from->isVarying() || link->to->isVarying());
 		}
 	});
 
@@ -161,7 +163,7 @@ void OtNodesWidget::render(OtNodes* n) {
 
 		// are we in the process of connecting nodes?
 		if (interactionState == InteractionState::connecting || interactionState == InteractionState::reconnecting) {
-				if (outputToInput) {
+			if (outputToInput) {
 				renderLink(drawlist, widgetOffset + fromPinPos, widgetOffset + toPinPos, linkColor);
 
 			} else {
@@ -495,10 +497,44 @@ void OtNodesWidget::renderPin(ImDrawList* drawlist, OtNodesPin& pin, float x, fl
 
 
 //
+//	cubicBezier
+//
+
+static float cubicBezier(float t, float v1, float v2, float v3, float v4) {
+	float k = 1 - t;
+
+	return (k * k * k * v1) +
+		(3.0f * k * k * t * v2) +
+		(3.0f * k * t * t * v3) +
+		(t * t * t * v4);
+}
+
+
+//
+//	dashedBezierCubic
+//
+
+static void dashedBezierCubic(ImDrawList* drawlist, const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, ImU32 color, int segments) {
+	auto step = 1.0f / segments;
+	std::vector<ImVec2> points;
+	points.reserve(segments + 1);
+
+	for (auto i = 0; i <= segments; i++) {
+		auto t = step * i;
+		points.emplace_back(cubicBezier(t, p1.x, p2.x, p3.x, p4.x), cubicBezier(t, p1.y, p2.y, p3.y, p4.y));
+	}
+
+	for (auto i = 0; i < segments; i += 2) {
+		drawlist->AddLine(points[i], points[i + 1], color, 1.5f);
+	}
+}
+
+
+//
 //	OtNodesWidget::renderLink
 //
 
-void OtNodesWidget::renderLink(ImDrawList* drawlist, const ImVec2& start, const ImVec2& end, ImU32 color) {
+void OtNodesWidget::renderLink(ImDrawList* drawlist, const ImVec2& start, const ImVec2& end, ImU32 color, bool isVarying) {
 	// see what kind of line we need
 	if (start.x < end.x) {
 		// we need a simple left to right curved line
@@ -506,7 +542,14 @@ void OtNodesWidget::renderLink(ImDrawList* drawlist, const ImVec2& start, const 
 		auto distanceY = end.y - start.y;
 		auto length = std::sqrt(distanceX * distanceX + distanceY * distanceY);
 		auto offset = ImVec2(0.25f * length, 0.0f);
-		drawlist->AddBezierCubic(start, start + offset, end - offset, end, color, linkThickness);
+		int segments = std::max(int(length / 4), 2) | 1;
+
+		if (isVarying) {
+			dashedBezierCubic(drawlist, start, start + offset, end - offset, end, color, segments);
+
+		} else {
+	 		drawlist->AddBezierCubic(start, start + offset, end - offset, end, color, linkThickness, segments);
+		}
 
 	} else {
 		// we need a wrap-around curved line

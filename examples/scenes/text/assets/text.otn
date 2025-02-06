@@ -67,7 +67,7 @@
 			"title": "Size",
 			"type": "Float Input",
 			"value": 12.0,
-			"x": 69.0,
+			"x": 67.0,
 			"y": 246.0
 		},
 		{
@@ -83,7 +83,7 @@
 			"title": "Text",
 			"type": "String Input",
 			"value": "Test",
-			"x": 69.0,
+			"x": 67.0,
 			"y": 160.0
 		},
 		{
@@ -99,7 +99,7 @@
 			"title": "Center",
 			"type": "Boolean Input",
 			"value": true,
-			"x": 71.0,
+			"x": 67.0,
 			"y": 328.0
 		},
 		{
@@ -151,7 +151,7 @@
 			"title": "Depth",
 			"type": "Float Input",
 			"value": 3.0,
-			"x": 72.0,
+			"x": 67.0,
 			"y": 410.0
 		},
 		{

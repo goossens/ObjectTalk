@@ -238,8 +238,10 @@ public:
 
 		OtAssetSelector::Info info;
 		info.label = label;
-		info.path = ptr ? ptr->getPath() : "";
+		info.path = getPath();
 		info.supportedFileTypes = T::supportedFileTypes;
+		info.isMissing = isMissing();
+		info.isInvalid = isInvalid();
 		info.hasEditor = T::hasEditor;
 		info.virtualMode = canHandleVirtual() ? &virtualMode : nullptr;
 		info.creator = creator;

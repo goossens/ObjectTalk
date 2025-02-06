@@ -9,7 +9,6 @@
 //	Include files
 //
 
-#include "fmt/format.h"
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
@@ -61,16 +60,7 @@ public:
 	inline bool onUpdate() override {
 		error.clear();
 
-		if (asset.isNull()) {
-			return false;
-
-		} else if (asset.isMissing()) {
-			error = fmt::format("Asset [{}] is missing", asset.getPath());
-			texture.clear();
-			return false;
-
-		} else if (asset.isInvalid()) {
-			error = fmt::format("Asset [{}] is invalid", asset.getPath());
+		if (asset.isNull() || asset.isMissing() || asset.isInvalid()) {
 			texture.clear();
 			return false;
 

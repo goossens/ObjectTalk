@@ -26,6 +26,8 @@ public:
 		const char* label;
 		std::string path;
 		const char* supportedFileTypes = "";
+		bool isMissing = false;
+		bool isInvalid = false;
 		bool hasEditor = false;
 		bool virtualOnly = false;
 		bool* virtualMode = nullptr;
@@ -33,4 +35,7 @@ public:
 	};
 
 	static bool renderUI(Info& info);
+
+private:
+	static void showErrorPopup(Info& info);
 };

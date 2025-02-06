@@ -11,6 +11,8 @@
 
 #include <vector>
 
+#include "fmt/format.h"
+#define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 #include "ImGuiFileDialog.h"
 
@@ -20,6 +22,37 @@
 #include "OtMessageBus.h"
 #include "OtPath.h"
 #include "OtUi.h"
+
+
+//
+//	Constants
+//
+
+static constexpr ImU32 errorColor = IM_COL32(255, 32, 32, 128);
+
+
+//
+//	OtAssetSelector::showErrorPopup
+//
+
+void OtAssetSelector::showErrorPopup(Info& info) {
+	std::string message("Error: ");
+
+	if (info.isMissing) {
+		message += fmt::format("Asset [{}] is missing", info.path);
+
+	} else if (info.isInvalid) {
+		message += fmt::format("Asset [{}] is invalid", info.path);
+	}
+
+	ImGui::PushStyleColor(ImGuiCol_Border, errorColor);
+	ImGui::PushStyleVar(ImGuiStyleVar_PopupBorderSize, 3.0f);
+	ImGui::BeginTooltip();
+	ImGui::TextUnformatted(message.c_str());
+	ImGui::EndTooltip();
+	ImGui::PopStyleVar();
+	ImGui::PopStyleColor();
+}
 
 
 //
@@ -71,17 +104,30 @@ bool OtAssetSelector::renderUI(Info& info) {
 		auto filename = OtText::from(info.path, 8);
 		ImGui::SetNextItemWidth(pathWidth);
 
+		auto backgroundColor = ImGui::ColorConvertFloat4ToU32(ImGui::GetStyle().Colors[ImGuiCol_FrameBg]);
+		ImGui::PushStyleColor(ImGuiCol_FrameBg, info.isMissing || info.isInvalid ? errorColor : backgroundColor);
+
 		if (OtUi::inputText("##virtualpath", &filename) && info.path != "virtual:" + filename) {
 			info.path = "virtual:" + filename;
 			changed = true;
+		}
+
+		ImGui::PopStyleColor();
+
+		if (ImGui::IsItemHovered() && (info.isMissing || info.isInvalid)) {
+			showErrorPopup(info);
 		}
 
 	} else {
 		// render path as a button
 		auto filename = OtPath::getFilename(info.path);
 		ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2(0.0f, 0.5f));
+		auto buttonColor = ImGui::ColorConvertFloat4ToU32(ImGui::GetStyle().Colors[ImGuiCol_Button]);
+		ImGui::PushStyleColor(ImGuiCol_Button, info.isMissing || info.isInvalid ? errorColor : buttonColor);
 
 		if (ImGui::Button((filename + "##path").c_str(), ImVec2(pathWidth, itemHeight))) {
+			ImGui::PopStyleColor();
+
 			IGFD::FileDialogConfig config;
 			config.filePathName = info.path;
 			config.countSelectionMax = 1;
@@ -91,6 +137,13 @@ bool OtAssetSelector::renderUI(Info& info) {
 					ImGuiFileDialogFlags_ReadOnlyFileNameField;
 
 			dialog->OpenDialog(dialogID.c_str(), "Select file...", filter.c_str(), config);
+
+		} else {
+			ImGui::PopStyleColor();
+
+			if (ImGui::IsItemHovered() && (info.isMissing || info.isInvalid)) {
+				showErrorPopup(info);
+			}
 		}
 
 		ImGui::PopStyleVar();

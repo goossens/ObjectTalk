@@ -422,7 +422,7 @@ void OtNodesWidget::renderNode(ImDrawList* drawlist, OtNode& node) {
 
 	// render error tooltip (if required)
 	if (hoveredInNodeContent && node->error.size()) {
-		std::string message = std::string("Error: " + node->error);
+		std::string message = std::string("Error: ") + node->error;
 		ImGui::PushStyleColor(ImGuiCol_Border, errorTooltipColor);
 		ImGui::PushStyleVar(ImGuiStyleVar_PopupBorderSize, 3.0f);
 		ImGui::BeginTooltip();

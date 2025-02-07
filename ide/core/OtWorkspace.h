@@ -58,6 +58,10 @@ public:
 	// run the current file
 	void runFile();
 
+	// move all editors to floating window or tabs
+	void windifyAllEditors();
+	void TabifyAllEditors();
+
 	// delete a specified editor
 	void deleteEditor(std::shared_ptr<OtEditor> editor);
 
@@ -89,6 +93,8 @@ private:
 	// render parts of workspace
 	void renderSplashScreen();
 	void renderEditors();
+	void renderTabbedEditors();
+	void renderWindowedEditors();
 	void renderNewFileType();
 	void renderFileOpen();
 	void renderSaveAs();

@@ -150,6 +150,12 @@ void OtWorkspace::onMessage(const std::string& msg) {
 		} else if (command == "close") {
 			closeFile();
 
+		} else if (command == "windowfy") {
+			windifyAllEditors();
+
+		} else if (command == "tabify") {
+			TabifyAllEditors();
+
 		} else if (command == "toggleconsole") {
 			consoleAsPanel = !consoleAsPanel;
 		}
@@ -452,6 +458,28 @@ void OtWorkspace::runFile() {
 
 
 //
+//	OtWorkspace::windifyAllEditors
+//
+
+void OtWorkspace::windifyAllEditors() {
+	for (auto& editor : editors) {
+		editor->setVisualState(OtEditor::VisualState::inWindow);
+	}
+}
+
+
+//
+//	OtWorkspace::TabifyAllEditors
+//
+
+void OtWorkspace::TabifyAllEditors() {
+	for (auto& editor : editors) {
+		editor->setVisualState(OtEditor::VisualState::inTab);
+	}
+}
+
+
+//
 //	OtWorkspace::deleteEditor
 //
 
@@ -551,6 +579,15 @@ void OtWorkspace::renderSplashScreen() {
 //
 
 void OtWorkspace::renderEditors() {
+	// determine number of editors by type
+	size_t inTabEditors = 0;
+	size_t iWindowEditors = 0;
+
+	for (auto& editor : editors) {
+		inTabEditors += editor->isRenderedInTab() ? 1 : 0;
+		iWindowEditors += editor->isRenderedInWindow() ? 1 : 0;
+	}
+
 	// create workspace window
 	ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
 	ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
@@ -572,12 +609,40 @@ void OtWorkspace::renderEditors() {
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, spacing);
 	}
 
-	// make clone of editor list since renderers might change it
-	std::vector<std::shared_ptr<OtEditor>> clone = editors;
+	// render tab bar with editor windws (if required)
+	if (inTabEditors) {
+		renderTabbedEditors();
+	}
 
+	if (consoleAsPanel) {
+		// split the screen between the editors and the console
+		ImGui::PopStyleVar();
+		ImGui::EndChild();
+		ImGui::PopStyleVar();
+		OtUi::splitterVertical(&editorsHeight, editorsMinHeight, editorsMaxHeight);
+		console.render();
+	}
+
+	ImGui::End();
+	ImGui::PopStyleVar();
+
+	// render all windowed editors (if required)
+	if (iWindowEditors) {
+		renderWindowedEditors();
+	}
+}
+
+
+//
+//	OtWorkspace::renderTabbedEditors
+//
+
+void OtWorkspace::renderTabbedEditors() {
 	// start a tab bar and render all editors that have an "in tab" state
 	if (ImGui::BeginTabBar("Tabs", ImGuiTabBarFlags_AutoSelectNewTabs)) {
-		// render all editors as tabs
+		// make clone of editor list since renderers might change it
+		std::vector<std::shared_ptr<OtEditor>> clone = editors;
+
 		for (auto& editor : clone) {
 			if (editor->isRenderedInTab()) {
 				// this ID is required to handle duplicate filenames
@@ -598,11 +663,10 @@ void OtWorkspace::renderEditors() {
 				// create tab and editor
 				if (ImGui::BeginTabItem(OtPath::getFilename(editor->getPath()).c_str(), nullptr, flags)) {
 					ImGui::BeginChild("editor", ImVec2(), ImGuiChildFlags_Borders, ImGuiWindowFlags_MenuBar);
-
-					editor->renderMenu(!subprocess.isRunning());
+					editor->renderMenuBar(!subprocess.isRunning());
 					editor->renderEditor();
-
 					ImGui::EndChild();
+
 					ImGui::EndTabItem();
 					activeEditor = editor;
 				}
@@ -613,6 +677,16 @@ void OtWorkspace::renderEditors() {
 
 		ImGui::EndTabBar();
 	}
+}
+
+
+//
+//	OtWorkspace::renderWindowedEditors
+//
+
+void OtWorkspace::renderWindowedEditors() {
+	// make clone of editor list since renderers might change it
+	std::vector<std::shared_ptr<OtEditor>> clone = editors;
 
 	// render all editors that have an "in window" state
 	for (auto& editor : clone) {
@@ -631,15 +705,18 @@ void OtWorkspace::renderEditors() {
 			}
 
 			// set size and position when opened for the first time
+			static int count = 0;
+			float offset = (count - 2) * 40.0f;
+			count = (count + 1) % 5;
+
 			auto size = ImGui::GetIO().DisplaySize;
-			ImGui::SetNextWindowPos(ImVec2(size.x / 6.0f, size.y / 6.0f), ImGuiCond_Once);
+			ImGui::SetNextWindowPos(ImVec2(size.x / 6.0f + offset, size.y / 6.0f + offset), ImGuiCond_Once);
 			ImGui::SetNextWindowSize(ImVec2(size.x * 0.6f, size.y * 0.6f), ImGuiCond_Once);
 
 			// render editor in seperate window
 			bool open = true;
 			ImGui::Begin(OtPath::getFilename(editor->getPath()).c_str(), &open, flags);
-
-			editor->renderMenu(!subprocess.isRunning());
+			editor->renderMenuBar(!subprocess.isRunning());
 			editor->renderEditor();
 
 			if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows)) {
@@ -654,18 +731,6 @@ void OtWorkspace::renderEditors() {
 			}
 		}
 	}
-
-	if (consoleAsPanel) {
-		// split the screen between the editors and the console
-		ImGui::PopStyleVar();
-		ImGui::EndChild();
-		ImGui::PopStyleVar();
-		OtUi::splitterVertical(&editorsHeight, editorsMinHeight, editorsMaxHeight);
-		console.render();
-	}
-
-	ImGui::End();
-	ImGui::PopStyleVar();
 }
 
 

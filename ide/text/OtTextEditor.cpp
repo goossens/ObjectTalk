@@ -16,7 +16,6 @@
 #include "imgui.h"
 
 #include "OtCodePoint.h"
-#include "OtMessageBus.h"
 #include "OtUi.h"
 
 #include "OtTextEditor.h"
@@ -68,93 +67,87 @@ void OtTextEditor::save() {
 
 
 //
-//	OtTextEditor::renderMenu
+//	OtTextEditor::renderMenus
 //
 
-void OtTextEditor::renderMenu(bool canRun) {
-	// create menubar
-	if (ImGui::BeginMenuBar()) {
-		renderFileMenu(canRun);
-
-		if (ImGui::BeginMenu("Edit")) {
-			if (ImGui::MenuItem("Undo", " " OT_UI_SHORTCUT "Z", nullptr, editor.CanUndo())) { editor.Undo(); focusOnEditor = true; }
+void OtTextEditor::renderMenus() {
+	if (ImGui::BeginMenu("Edit")) {
+		if (ImGui::MenuItem("Undo", " " OT_UI_SHORTCUT "Z", nullptr, editor.CanUndo())) { editor.Undo(); focusOnEditor = true; }
 #if __APPLE__
-			if (ImGui::MenuItem("Redo", "^" OT_UI_SHORTCUT "Z", nullptr, editor.CanRedo())) { editor.Redo(); focusOnEditor = true; }
+		if (ImGui::MenuItem("Redo", "^" OT_UI_SHORTCUT "Z", nullptr, editor.CanRedo())) { editor.Redo(); focusOnEditor = true; }
 #else
-			if (ImGui::MenuItem("Redo", " " OT_UI_SHORTCUT "Y", nullptr, editor.CanRedo())) { editor.Redo(); focusOnEditor = true; }
+		if (ImGui::MenuItem("Redo", " " OT_UI_SHORTCUT "Y", nullptr, editor.CanRedo())) { editor.Redo(); focusOnEditor = true; }
 #endif
 
-			ImGui::Separator();
-			if (ImGui::MenuItem("Cut", " " OT_UI_SHORTCUT "X", nullptr, editor.AnyCursorHasSelection())) { editor.Cut(); focusOnEditor = true; }
-			if (ImGui::MenuItem("Copy", " " OT_UI_SHORTCUT "C", nullptr, editor.AnyCursorHasSelection())) { editor.Copy(); focusOnEditor = true; }
-			if (ImGui::MenuItem("Paste", " " OT_UI_SHORTCUT "V", nullptr, ImGui::GetClipboardText() != nullptr)) { editor.Paste(); focusOnEditor = true; }
+		ImGui::Separator();
+		if (ImGui::MenuItem("Cut", " " OT_UI_SHORTCUT "X", nullptr, editor.AnyCursorHasSelection())) { editor.Cut(); focusOnEditor = true; }
+		if (ImGui::MenuItem("Copy", " " OT_UI_SHORTCUT "C", nullptr, editor.AnyCursorHasSelection())) { editor.Copy(); focusOnEditor = true; }
+		if (ImGui::MenuItem("Paste", " " OT_UI_SHORTCUT "V", nullptr, ImGui::GetClipboardText() != nullptr)) { editor.Paste(); focusOnEditor = true; }
 
-			ImGui::Separator();
-			if (ImGui::MenuItem("Tabs To Spaces")) { editor.TabsToSpaces(); focusOnEditor = true; }
-			if (ImGui::MenuItem("Spaces To Tabs")) { editor.SpacesToTabs(); focusOnEditor = true; }
-			if (ImGui::MenuItem("Strip Trailing Whitespaces")) { editor.StripTrailingWhitespaces(); focusOnEditor = true; }
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("Selection")) {
-			if (ImGui::MenuItem("Select All", " " OT_UI_SHORTCUT "A", nullptr, !editor.IsEmpty())) { editor.SelectAll(); }
-			ImGui::Separator();
-
-			if (ImGui::MenuItem("Indent Line(s)", " " OT_UI_SHORTCUT "]", nullptr, !editor.IsEmpty())) { editor.IndentLines(); focusOnEditor = true; }
-			if (ImGui::MenuItem("Deindent Line(s)", " " OT_UI_SHORTCUT "[", nullptr, !editor.IsEmpty())) { editor.DeindentLines(); focusOnEditor = true; }
-			if (ImGui::MenuItem("Move Line(s) Up", " " OT_UI_SHORTCUT "\u2191", nullptr, !editor.IsEmpty())) { editor.MoveUpLines(); focusOnEditor = true; }
-			if (ImGui::MenuItem("Move Line(s) Down", " " OT_UI_SHORTCUT "\u2193", nullptr, !editor.IsEmpty())) { editor.MoveDownLines(); focusOnEditor = true; }
-			if (ImGui::MenuItem("Toggle Comments", " " OT_UI_SHORTCUT "/", nullptr, editor.HasLanguage())) { editor.ToggleComments(); focusOnEditor = true; }
-			ImGui::Separator();
-
-			if (ImGui::MenuItem("To Uppercase", nullptr, nullptr, editor.AnyCursorHasSelection())) { editor.SelectionToUpperCase(); focusOnEditor = true; }
-			if (ImGui::MenuItem("To Lowercase", nullptr, nullptr, editor.AnyCursorHasSelection())) { editor.SelectionToLowerCase(); focusOnEditor = true; }
-			ImGui::Separator();
-
-			if (ImGui::MenuItem("Add Next Occurrence", " " OT_UI_SHORTCUT "D", nullptr, editor.CurrentCursorHasSelection())) { editor.AddNextOccurrence(); focusOnEditor = true; }
-			if (ImGui::MenuItem("Select All Occurrences", "^" OT_UI_SHORTCUT "D", nullptr, editor.CurrentCursorHasSelection())) { editor.SelectAllOccurrences(); focusOnEditor = true; }
-
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("View")) {
-			if (ImGui::MenuItem("Toggle Console")) { OtMessageBus::send("toggleconsole"); }
-			ImGui::Separator();
-
-			bool flag;
-			flag = editor.IsShowWhitespacesEnabled(); if (ImGui::MenuItem("Show Whitespaces", nullptr, &flag)) { editor.SetShowWhitespacesEnabled(flag); focusOnEditor = true; };
-			flag = editor.IsShowLineNumbersEnabled(); if (ImGui::MenuItem("Show Line Numbers", nullptr, &flag)) { editor.SetShowLineNumbersEnabled(flag); focusOnEditor = true; };
-			flag = editor.IsShowingMatchingBrackets(); if (ImGui::MenuItem("Show Matching Brackets", nullptr, &flag)) { editor.SetShowMatchingBrackets(flag); focusOnEditor = true; };
-			flag = editor.IsCompletingPairedGlyphs(); if (ImGui::MenuItem("Complete Matching Glyphs", nullptr, &flag)) { editor.SetCompletePairedGlyphs(flag); focusOnEditor = true; };
-
-			ImGui::Separator();
-			if (ImGui::MenuItem("Clear Errors", nullptr, nullptr, editor.HasErrorMarkers())) { editor.ClearErrorMarkers(); focusOnEditor = true; }
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("Find")) {
-			if (ImGui::MenuItem("Find", " " OT_UI_SHORTCUT "F")) { openFindReplace(); }
-			if (ImGui::MenuItem("Find Next", " " OT_UI_SHORTCUT "G"), findText.size()) { findNext(); focusOnEditor = true; }
-			if (ImGui::MenuItem("Find All", "^" OT_UI_SHORTCUT "G", findText.size())) { findAll(); focusOnEditor = true; }
-			ImGui::Separator();
-			ImGui::EndMenu();
-		}
-
-		ImGui::EndMenuBar();
+		ImGui::Separator();
+		if (ImGui::MenuItem("Tabs To Spaces")) { editor.TabsToSpaces(); focusOnEditor = true; }
+		if (ImGui::MenuItem("Spaces To Tabs")) { editor.SpacesToTabs(); focusOnEditor = true; }
+		if (ImGui::MenuItem("Strip Trailing Whitespaces")) { editor.StripTrailingWhitespaces(); focusOnEditor = true; }
+		ImGui::EndMenu();
 	}
 
-	// handle keyboard shortcuts (if required)
-	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows)) {
-		// handle menu shortcuts
-		if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_F)) {
-			openFindReplace();
+	if (ImGui::BeginMenu("Selection")) {
+		if (ImGui::MenuItem("Select All", " " OT_UI_SHORTCUT "A", nullptr, !editor.IsEmpty())) { editor.SelectAll(); }
+		ImGui::Separator();
 
-		} else if (ImGui::IsKeyChordPressed(ImGuiMod_Shift | ImGuiMod_Ctrl | ImGuiKey_G)) {
-			findAll();
+		if (ImGui::MenuItem("Indent Line(s)", " " OT_UI_SHORTCUT "]", nullptr, !editor.IsEmpty())) { editor.IndentLines(); focusOnEditor = true; }
+		if (ImGui::MenuItem("Deindent Line(s)", " " OT_UI_SHORTCUT "[", nullptr, !editor.IsEmpty())) { editor.DeindentLines(); focusOnEditor = true; }
+		if (ImGui::MenuItem("Move Line(s) Up", " " OT_UI_SHORTCUT "\u2191", nullptr, !editor.IsEmpty())) { editor.MoveUpLines(); focusOnEditor = true; }
+		if (ImGui::MenuItem("Move Line(s) Down", " " OT_UI_SHORTCUT "\u2193", nullptr, !editor.IsEmpty())) { editor.MoveDownLines(); focusOnEditor = true; }
+		if (ImGui::MenuItem("Toggle Comments", " " OT_UI_SHORTCUT "/", nullptr, editor.HasLanguage())) { editor.ToggleComments(); focusOnEditor = true; }
+		ImGui::Separator();
 
-		} else if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_G)) {
-			findNext();
-		}
+		if (ImGui::MenuItem("To Uppercase", nullptr, nullptr, editor.AnyCursorHasSelection())) { editor.SelectionToUpperCase(); focusOnEditor = true; }
+		if (ImGui::MenuItem("To Lowercase", nullptr, nullptr, editor.AnyCursorHasSelection())) { editor.SelectionToLowerCase(); focusOnEditor = true; }
+		ImGui::Separator();
+
+		if (ImGui::MenuItem("Add Next Occurrence", " " OT_UI_SHORTCUT "D", nullptr, editor.CurrentCursorHasSelection())) { editor.AddNextOccurrence(); focusOnEditor = true; }
+		if (ImGui::MenuItem("Select All Occurrences", "^" OT_UI_SHORTCUT "D", nullptr, editor.CurrentCursorHasSelection())) { editor.SelectAllOccurrences(); focusOnEditor = true; }
+
+		ImGui::EndMenu();
+	}
+
+	if (ImGui::BeginMenu("View")) {
+		bool flag;
+		flag = editor.IsShowWhitespacesEnabled(); if (ImGui::MenuItem("Show Whitespaces", nullptr, &flag)) { editor.SetShowWhitespacesEnabled(flag); focusOnEditor = true; };
+		flag = editor.IsShowLineNumbersEnabled(); if (ImGui::MenuItem("Show Line Numbers", nullptr, &flag)) { editor.SetShowLineNumbersEnabled(flag); focusOnEditor = true; };
+		flag = editor.IsShowingMatchingBrackets(); if (ImGui::MenuItem("Show Matching Brackets", nullptr, &flag)) { editor.SetShowMatchingBrackets(flag); focusOnEditor = true; };
+		flag = editor.IsCompletingPairedGlyphs(); if (ImGui::MenuItem("Complete Matching Glyphs", nullptr, &flag)) { editor.SetCompletePairedGlyphs(flag); focusOnEditor = true; };
+
+		ImGui::Separator();
+		if (ImGui::MenuItem("Clear Errors", nullptr, nullptr, editor.HasErrorMarkers())) { editor.ClearErrorMarkers(); focusOnEditor = true; }
+		ImGui::EndMenu();
+	}
+
+	if (ImGui::BeginMenu("Find")) {
+		if (ImGui::MenuItem("Find", " " OT_UI_SHORTCUT "F")) { openFindReplace(); }
+		if (ImGui::MenuItem("Find Next", " " OT_UI_SHORTCUT "G"), findText.size()) { findNext(); focusOnEditor = true; }
+		if (ImGui::MenuItem("Find All", "^" OT_UI_SHORTCUT "G", findText.size())) { findAll(); focusOnEditor = true; }
+		ImGui::Separator();
+		ImGui::EndMenu();
+	}
+}
+
+
+//
+//	OtTextEditor::handleShortcuts
+//
+
+void OtTextEditor::handleShortcuts() {
+	// handle menu shortcuts
+	if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_F)) {
+		openFindReplace();
+
+	} else if (ImGui::IsKeyChordPressed(ImGuiMod_Shift | ImGuiMod_Ctrl | ImGuiKey_G)) {
+		findAll();
+
+	} else if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_G)) {
+		findNext();
 	}
 }
 

@@ -36,7 +36,8 @@ public:
 	static constexpr const char* extension = ".otn";
 
 	// render the editor
-	void renderMenu(bool canRun) override;
+	void renderMenus() override;
+	void handleShortcuts() override;
 	void renderEditor() override;
 
 	// clipboard operations

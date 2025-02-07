@@ -1,7 +1,10 @@
 // https://github.com/ocornut/imgui/issues/76
 // Taken from: https://github.com/wasikuss/imgui/commit/a50515ace6d9a62ebcd69817f1da927d31c39bb1
 
+#ifndef IMGUI_DEFINE_MATH_OPERATORS
 #define IMGUI_DEFINE_MATH_OPERATORS
+#endif
+
 #include "imgui.h"
 #include "imgui_internal.h"
 

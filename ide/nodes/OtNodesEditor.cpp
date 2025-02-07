@@ -11,12 +11,10 @@
 
 #include <algorithm>
 
-#define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "nlohmann/json.hpp"
 
-#include "OtMessageBus.h"
 #include "OtUi.h"
 
 #include "OtNodesEditor.h"
@@ -118,96 +116,92 @@ void OtNodesEditor::alignSelectedNodes(OtAlignNodesTask::Alignment alignment) {
 
 
 //
-//	OtNodesEditor::renderMenu
+//	OtNodesEditor::renderMenus
 //
 
-void OtNodesEditor::renderMenu(bool canRun) {
+void OtNodesEditor::renderMenus() {
 	// get status
 	bool selected = nodes.hasSelected();
 	bool multipleSelected = nodes.hasMultipleSelected();
 	bool clipable = clipboard.size() > 0;
 
-	// create menubar
-	if (ImGui::BeginMenuBar()) {
-		renderFileMenu(canRun);
-
-		if (ImGui::BeginMenu("Edit")) {
-			if (ImGui::MenuItem("Undo", OT_UI_SHORTCUT "Z", nullptr, taskManager.canUndo())) { taskManager.undo(); }
+	if (ImGui::BeginMenu("Edit")) {
+		if (ImGui::MenuItem("Undo", OT_UI_SHORTCUT "Z", nullptr, taskManager.canUndo())) { taskManager.undo(); }
 #if __APPLE__
-			if (ImGui::MenuItem("Redo", "^" OT_UI_SHORTCUT "Z", nullptr, taskManager.canRedo())) { taskManager.redo(); }
+		if (ImGui::MenuItem("Redo", "^" OT_UI_SHORTCUT "Z", nullptr, taskManager.canRedo())) { taskManager.redo(); }
 #else
-			if (ImGui::MenuItem("Redo", OT_UI_SHORTCUT "Y", nullptr, taskManager.canRedo())) { taskManager.redo(); }
+		if (ImGui::MenuItem("Redo", OT_UI_SHORTCUT "Y", nullptr, taskManager.canRedo())) { taskManager.redo(); }
 #endif
 
-			ImGui::Separator();
-			if (ImGui::MenuItem("Cut", OT_UI_SHORTCUT "X", nullptr, selected)) { cutSelectedNodes(); }
-			if (ImGui::MenuItem("Copy", OT_UI_SHORTCUT "C", nullptr, selected)) { copySelectedNodes(); }
-			if (ImGui::MenuItem("Paste", OT_UI_SHORTCUT "V", nullptr, selected && clipable)) { pasteSelectedNodes(); }
-			if (ImGui::MenuItem("Delete", "Del", nullptr, selected)) { deleteSelectedNodes(); }
-			if (ImGui::MenuItem("Duplicate", OT_UI_SHORTCUT "D", nullptr, selected)) { duplicateSelectedNodes(); }
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("Selection")) {
-			if (ImGui::MenuItem("Select All", OT_UI_SHORTCUT "A")) { nodes.selectAll(); }
-			if (ImGui::MenuItem("Clear Selection")) { nodes.deselectAll(); }
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("Align")) {
-			if (ImGui::MenuItem("Left", nullptr, nullptr, multipleSelected)) { alignSelectedNodes(OtAlignNodesTask::Alignment::left); }
-			if (ImGui::MenuItem("Center", nullptr, nullptr, multipleSelected)) { alignSelectedNodes(OtAlignNodesTask::Alignment::center); }
-			if (ImGui::MenuItem("Right", nullptr, nullptr, multipleSelected)) { alignSelectedNodes(OtAlignNodesTask::Alignment::right); }
-			ImGui::Separator();
-			if (ImGui::MenuItem("Top", nullptr, nullptr, multipleSelected)) { alignSelectedNodes(OtAlignNodesTask::Alignment::top); }
-			if (ImGui::MenuItem("Middle", nullptr, nullptr, multipleSelected)) { alignSelectedNodes(OtAlignNodesTask::Alignment::middle); }
-			if (ImGui::MenuItem("Bottom", nullptr, nullptr, multipleSelected)) { alignSelectedNodes(OtAlignNodesTask::Alignment::bottom); }
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("View")) {
-			if (ImGui::MenuItem("Toggle Console")) { OtMessageBus::send("toggleconsole"); }
-			ImGui::EndMenu();
-		}
-
-		ImGui::EndMenuBar();
+		ImGui::Separator();
+		if (ImGui::MenuItem("Cut", OT_UI_SHORTCUT "X", nullptr, selected)) { cutSelectedNodes(); }
+		if (ImGui::MenuItem("Copy", OT_UI_SHORTCUT "C", nullptr, selected)) { copySelectedNodes(); }
+		if (ImGui::MenuItem("Paste", OT_UI_SHORTCUT "V", nullptr, selected && clipable)) { pasteSelectedNodes(); }
+		if (ImGui::MenuItem("Delete", "Del", nullptr, selected)) { deleteSelectedNodes(); }
+		if (ImGui::MenuItem("Duplicate", OT_UI_SHORTCUT "D", nullptr, selected)) { duplicateSelectedNodes(); }
+		ImGui::EndMenu();
 	}
 
-	// handle keyboard shortcuts (if required)
-	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows) && !ImGui::GetIO().WantCaptureKeyboard) {
-		if (ImGui::IsKeyDown(ImGuiMod_Ctrl)) {
-			if (ImGui::IsKeyDown(ImGuiMod_Shift) && ImGui::IsKeyPressed(ImGuiKey_Z, false)) {
-				if (taskManager.canRedo()) {
-					taskManager.redo();
-				}
+	if (ImGui::BeginMenu("Selection")) {
+		if (ImGui::MenuItem("Select All", OT_UI_SHORTCUT "A")) { nodes.selectAll(); }
+		if (ImGui::MenuItem("Clear Selection")) { nodes.deselectAll(); }
+		ImGui::EndMenu();
+	}
 
-			} else if (ImGui::IsKeyPressed(ImGuiKey_Z, false) && taskManager.canUndo()) {
-				// this is a hack as ImGui's InputText keeps a private copy of its content
-				// ClearActiveID() takes the possible focus away and allows undo to work
-				// see ImGuiInputTextFlags_NoUndoRedo documentation in imgui.h
-				// so much for immediate mode :-)
-				ImGui::ClearActiveID();
-				taskManager.undo();
+	if (ImGui::BeginMenu("Align")) {
+		if (ImGui::MenuItem("Left", nullptr, nullptr, multipleSelected)) { alignSelectedNodes(OtAlignNodesTask::Alignment::left); }
+		if (ImGui::MenuItem("Center", nullptr, nullptr, multipleSelected)) { alignSelectedNodes(OtAlignNodesTask::Alignment::center); }
+		if (ImGui::MenuItem("Right", nullptr, nullptr, multipleSelected)) { alignSelectedNodes(OtAlignNodesTask::Alignment::right); }
+		ImGui::Separator();
+		if (ImGui::MenuItem("Top", nullptr, nullptr, multipleSelected)) { alignSelectedNodes(OtAlignNodesTask::Alignment::top); }
+		if (ImGui::MenuItem("Middle", nullptr, nullptr, multipleSelected)) { alignSelectedNodes(OtAlignNodesTask::Alignment::middle); }
+		if (ImGui::MenuItem("Bottom", nullptr, nullptr, multipleSelected)) { alignSelectedNodes(OtAlignNodesTask::Alignment::bottom); }
+		ImGui::EndMenu();
+	}
+}
 
-			} else if (ImGui::IsKeyPressed(ImGuiKey_X, false) && selected) {
-				cutSelectedNodes();
 
-			} else if (ImGui::IsKeyPressed(ImGuiKey_C, false) && selected) {
-				copySelectedNodes();
+//
+//	OtNodesEditor::handleShortcuts
+//
 
-			} else if (ImGui::IsKeyPressed(ImGuiKey_V, false) && selected && clipable) {
-				pasteSelectedNodes();
+void OtNodesEditor::handleShortcuts() {
+	// get status
+	bool selected = nodes.hasSelected();
+	bool clipable = clipboard.size() > 0;
 
-			} else if (ImGui::IsKeyPressed(ImGuiKey_D, false) && selected) {
-				duplicateSelectedNodes();
-
-			} else if (ImGui::IsKeyPressed(ImGuiKey_A, false)) {
-				nodes.selectAll();
+	if (ImGui::IsKeyDown(ImGuiMod_Ctrl)) {
+		if (ImGui::IsKeyDown(ImGuiMod_Shift) && ImGui::IsKeyPressed(ImGuiKey_Z, false)) {
+			if (taskManager.canRedo()) {
+				taskManager.redo();
 			}
 
-		} else if ((ImGui::IsKeyPressed(ImGuiKey_Backspace, false) || ImGui::IsKeyPressed(ImGuiKey_Delete, false)) && selected) {
-			deleteSelectedNodes();
+		} else if (ImGui::IsKeyPressed(ImGuiKey_Z, false) && taskManager.canUndo()) {
+			// this is a hack as ImGui's InputText keeps a private copy of its content
+			// ClearActiveID() takes the possible focus away and allows undo to work
+			// see ImGuiInputTextFlags_NoUndoRedo documentation in imgui.h
+			// so much for immediate mode :-)
+			ImGui::ClearActiveID();
+			taskManager.undo();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_X, false) && selected) {
+			cutSelectedNodes();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_C, false) && selected) {
+			copySelectedNodes();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_V, false) && selected && clipable) {
+			pasteSelectedNodes();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_D, false) && selected) {
+			duplicateSelectedNodes();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_A, false)) {
+			nodes.selectAll();
 		}
+
+	} else if ((ImGui::IsKeyPressed(ImGuiKey_Backspace, false) || ImGui::IsKeyPressed(ImGuiKey_Delete, false)) && selected) {
+		deleteSelectedNodes();
 	}
 }
 

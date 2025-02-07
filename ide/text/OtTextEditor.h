@@ -29,7 +29,8 @@ public:
 	inline bool isDirty() override { return editor.GetUndoIndex() != version; }
 
 	// render the parts
-	void renderMenu(bool canRun) override;
+	void renderMenus() override;
+	void handleShortcuts() override;
 	void renderEditor() override;
 
 protected:

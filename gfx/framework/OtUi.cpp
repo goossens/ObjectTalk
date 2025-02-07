@@ -16,7 +16,6 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "nlohmann/json.hpp"
 
-#define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "ImGuiFileDialog.h"

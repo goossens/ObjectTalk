@@ -13,14 +13,12 @@
 #include <cstring>
 #include <functional>
 
-#define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "ImGuizmo.h"
 #include "nlohmann/json.hpp"
 
 #include "OtAssetManager.h"
-#include "OtMessageBus.h"
 #include "OtUi.h"
 
 #include "OtSceneEditor.h"
@@ -177,205 +175,205 @@ void OtSceneEditor::setSceneCamera(int cameraNumber) {
 
 
 //
-//	OtSceneEditor::renderMenu
+//	OtSceneEditor::renderMenus
 //
 
-void OtSceneEditor::renderMenu(bool canRun) {
+void OtSceneEditor::renderMenus() {
 	// get status
 	bool selected = scene.isValidEntity(selectedEntity);
 	bool clipable = clipboard.size() > 0;
 
-	// create menubar
-	if (ImGui::BeginMenuBar()) {
-		renderFileMenu(canRun);
-
-		if (ImGui::BeginMenu("Edit")) {
-			if (ImGui::MenuItem("Undo", OT_UI_SHORTCUT "Z", nullptr, taskManager.canUndo())) { taskManager.undo(); }
+	if (ImGui::BeginMenu("Edit")) {
+		if (ImGui::MenuItem("Undo", OT_UI_SHORTCUT "Z", nullptr, taskManager.canUndo())) { taskManager.undo(); }
 #if __APPLE__
-			if (ImGui::MenuItem("Redo", "^" OT_UI_SHORTCUT "Z", nullptr, taskManager.canRedo())) { taskManager.redo(); }
+		if (ImGui::MenuItem("Redo", "^" OT_UI_SHORTCUT "Z", nullptr, taskManager.canRedo())) { taskManager.redo(); }
 #else
-			if (ImGui::MenuItem("Redo", OT_UI_SHORTCUT "Y", nullptr, taskManager.canRedo())) { taskManager.redo(); }
+		if (ImGui::MenuItem("Redo", OT_UI_SHORTCUT "Y", nullptr, taskManager.canRedo())) { taskManager.redo(); }
 #endif
 
-			ImGui::Separator();
-			if (ImGui::MenuItem("Cut", OT_UI_SHORTCUT "X", nullptr, selected)) { cutEntity(); }
-			if (ImGui::MenuItem("Copy", OT_UI_SHORTCUT "C", nullptr, selected)) { copyEntity(); }
-			if (ImGui::MenuItem("Paste", OT_UI_SHORTCUT "V", nullptr, selected && clipable)) { pasteEntity(); }
-			if (ImGui::MenuItem("Duplicate", OT_UI_SHORTCUT "D", nullptr, selected)) { duplicateEntity(); }
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("View")) {
-			if (ImGui::MenuItem("Toggle Console")) { OtMessageBus::send("toggleconsole"); }
-			if (ImGui::MenuItem("Toggle Debug")) { toggleRendererDebug(); }
-			ImGui::Separator();
-
-			// render camera selector
-			if (ImGui::BeginMenu("Active Camera")) {
-				if (ImGui::RadioButton("Editor Camera", selectedCamera == OtEntityNull)) {
-					selectedCamera = OtEntityNull;
-				}
-
-				// get a list of cameras
-				OtEntity list[9];
-				int entries = 0;
-				makeCameraList(&scene, scene.getRootEntity(), list, entries);
-
-				for (auto i = 0; i < entries; i++) {
-					if (ImGui::RadioButton(scene.getTag(list[i]).c_str(), selectedCamera == list[i])) {
-						selectedCamera = list[i];
-					}
-				}
-
-				ImGui::EndMenu();
-			}
-
-			// render editor camera settings
-			if (ImGui::BeginMenu("Editor Camera Settings")) {
-				editorCamera.renderUI();
-				ImGui::EndMenu();
-			}
-
-			// allow editor camera settings to be transferred to scene camera
-			if (ImGui::BeginMenu("Save Editor Camera To")) {
-				// get a list of cameras
-				OtEntity list[9];
-				int entries = 0;
-				makeCameraList(&scene, scene.getRootEntity(), list, entries);
-
-				for (auto i = 0; i < entries; i++) {
-					if (ImGui::MenuItem(scene.getTag(list[i]).c_str())) {
-						saveEditorCamera(list[i]);
-					}
-				}
-
-				ImGui::EndMenu();
-			}
-
-			ImGui::Separator();
-			ImGui::MenuItem("Grid", OT_UI_SHORTCUT "D", &gridEnabled);
-
-			if (ImGui::BeginMenu("Grid Scale", gridEnabled)) {
-				OtUi::dragFloat("##scale", &gridScale, 0.1f, 100.0f);
-				ImGui::EndMenu();
-			}
-
-			ImGui::Separator();
-			ImGui::MenuItem("Gizmo", OT_UI_SHORTCUT "G", &guizmoEnabled);
-
-			if (ImGui::BeginMenu("Gizmo Mode", guizmoEnabled)) {
-				if (ImGui::RadioButton("Translate", guizmoOperation == ImGuizmo::TRANSLATE)) {
-					guizmoOperation = ImGuizmo::TRANSLATE;
-				}
-
-				if (ImGui::RadioButton("Rotate", guizmoOperation == ImGuizmo::ROTATE)) {
-					guizmoOperation = ImGuizmo::ROTATE;
-				}
-
-				if (ImGui::RadioButton("Scale", guizmoOperation == ImGuizmo::SCALE)) {
-					guizmoOperation = ImGuizmo::SCALE;
-				}
-
-				ImGui::EndMenu();
-			}
-
-			// render snap control
-			if (ImGui::BeginMenu("Gizmo Snap", guizmoEnabled)) {
-				OtUi::toggleButton("Snaping", &guizmoSnapping);
-				OtUi::editVec3("##Interval", &guizmoSnapInterval, 0.0f, 0.1f);
-				ImGui::EndMenu();
-			}
-
-			ImGui::EndMenu();
-		}
-
-		// render post processing menu
-		if (ImGui::BeginMenu("Processing")) {
-			auto& processor = scene.getPostProcessing();
-			auto oldValue = processor.serialize(nullptr).dump();
-
-			OtUi::header("Post Proceessing Settings");
-			ImGui::Dummy(ImVec2(0.0f, 0.0f));
-
-			if (processor.renderUI()) {
-				auto newValue = processor.serialize(nullptr).dump();
-				nextTask = std::make_shared<OtEditPostProcessingTask>(&scene, oldValue, newValue);
-			}
-
-			ImGui::EndMenu();
-		}
-
-		ImGui::EndMenuBar();
+		ImGui::Separator();
+		if (ImGui::MenuItem("Cut", OT_UI_SHORTCUT "X", nullptr, selected)) { cutEntity(); }
+		if (ImGui::MenuItem("Copy", OT_UI_SHORTCUT "C", nullptr, selected)) { copyEntity(); }
+		if (ImGui::MenuItem("Paste", OT_UI_SHORTCUT "V", nullptr, selected && clipable)) { pasteEntity(); }
+		if (ImGui::MenuItem("Duplicate", OT_UI_SHORTCUT "D", nullptr, selected)) { duplicateEntity(); }
+		ImGui::EndMenu();
 	}
 
-	// handle keyboard shortcuts (if required)
-	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows)) {
-		// handle menu shortcuts
-		if (ImGui::IsKeyDown(ImGuiMod_Ctrl)) {
-			if (ImGui::IsKeyDown(ImGuiMod_Shift) && ImGui::IsKeyPressed(ImGuiKey_Z, false)) {
-				if (taskManager.canRedo()) {
-					taskManager.redo();
+	if (ImGui::BeginMenu("View")) {
+		if (ImGui::MenuItem("Toggle Debug")) { toggleRendererDebug(); }
+		ImGui::Separator();
+
+		// render camera selector
+		if (ImGui::BeginMenu("Active Camera")) {
+			if (ImGui::RadioButton("Editor Camera", selectedCamera == OtEntityNull)) {
+				selectedCamera = OtEntityNull;
+			}
+
+			// get a list of cameras
+			OtEntity list[9];
+			int entries = 0;
+			makeCameraList(&scene, scene.getRootEntity(), list, entries);
+
+			for (auto i = 0; i < entries; i++) {
+				if (ImGui::RadioButton(scene.getTag(list[i]).c_str(), selectedCamera == list[i])) {
+					selectedCamera = list[i];
 				}
-
-			} else if (ImGui::IsKeyPressed(ImGuiKey_Z, false) && taskManager.canUndo()) {
-				// this is a hack as ImGui's InputText keeps a private copy of its content
-				// ClearActiveID() takes the possible focus away and allows undo to work
-				// see ImGuiInputTextFlags_NoUndoRedo documentation in imgui.h
-				// so much for immediate mode :-)
-				ImGui::ClearActiveID();
-				taskManager.undo();
-
-			} else if (ImGui::IsKeyPressed(ImGuiKey_X, false) && selected) {
-				cutEntity();
-
-			} else if (ImGui::IsKeyPressed(ImGuiKey_C, false) && selected) {
-				copyEntity();
-
-			} else if (ImGui::IsKeyPressed(ImGuiKey_V, false) && selected && clipable) {
-				pasteEntity();
-
-			} else if (ImGui::IsKeyPressed(ImGuiKey_D, false) && selected) {
-				duplicateEntity();
-
-			} else if (ImGui::IsKeyPressed(ImGuiKey_G, false)) {
-				guizmoEnabled = !guizmoEnabled;
 			}
 
-		// handle camera switching shortcuts
-		} else if (ImGui::IsKeyDown(ImGuiMod_Alt)) {
-			if (ImGui::IsKeyPressed(ImGuiKey_0, false)) {
-				setSceneCamera(0);
+			ImGui::EndMenu();
+		}
 
-			} else if (ImGui::IsKeyPressed(ImGuiKey_1, false)) {
-				setSceneCamera(1);
+		// render editor camera settings
+		if (ImGui::BeginMenu("Editor Camera Settings")) {
+			editorCamera.renderUI();
+			ImGui::EndMenu();
+		}
 
-			} else if (ImGui::IsKeyPressed(ImGuiKey_1, false)) {
-				setSceneCamera(1);
+		// allow editor camera settings to be transferred to scene camera
+		if (ImGui::BeginMenu("Save Editor Camera To")) {
+			// get a list of cameras
+			OtEntity list[9];
+			int entries = 0;
+			makeCameraList(&scene, scene.getRootEntity(), list, entries);
 
-			} else if (ImGui::IsKeyPressed(ImGuiKey_2, false)) {
-				setSceneCamera(2);
-
-			} else if (ImGui::IsKeyPressed(ImGuiKey_3, false)) {
-				setSceneCamera(3);
-
-			} else if (ImGui::IsKeyPressed(ImGuiKey_4, false)) {
-				setSceneCamera(4);
-
-			} else if (ImGui::IsKeyPressed(ImGuiKey_5, false)) {
-				setSceneCamera(5);
-
-			} else if (ImGui::IsKeyPressed(ImGuiKey_6, false)) {
-				setSceneCamera(6);
-
-			} else if (ImGui::IsKeyPressed(ImGuiKey_7, false)) {
-				setSceneCamera(7);
-
-			} else if (ImGui::IsKeyPressed(ImGuiKey_8, false)) {
-				setSceneCamera(8);
-
-			} else if (ImGui::IsKeyPressed(ImGuiKey_9, false)) {
-				setSceneCamera(9);
+			for (auto i = 0; i < entries; i++) {
+				if (ImGui::MenuItem(scene.getTag(list[i]).c_str())) {
+					saveEditorCamera(list[i]);
+				}
 			}
+
+			ImGui::EndMenu();
+		}
+
+		ImGui::Separator();
+		ImGui::MenuItem("Grid", OT_UI_SHORTCUT "D", &gridEnabled);
+
+		if (ImGui::BeginMenu("Grid Scale", gridEnabled)) {
+			OtUi::dragFloat("##scale", &gridScale, 0.1f, 100.0f);
+			ImGui::EndMenu();
+		}
+
+		ImGui::Separator();
+		ImGui::MenuItem("Gizmo", OT_UI_SHORTCUT "G", &guizmoEnabled);
+
+		if (ImGui::BeginMenu("Gizmo Mode", guizmoEnabled)) {
+			if (ImGui::RadioButton("Translate", guizmoOperation == ImGuizmo::TRANSLATE)) {
+				guizmoOperation = ImGuizmo::TRANSLATE;
+			}
+
+			if (ImGui::RadioButton("Rotate", guizmoOperation == ImGuizmo::ROTATE)) {
+				guizmoOperation = ImGuizmo::ROTATE;
+			}
+
+			if (ImGui::RadioButton("Scale", guizmoOperation == ImGuizmo::SCALE)) {
+				guizmoOperation = ImGuizmo::SCALE;
+			}
+
+			ImGui::EndMenu();
+		}
+
+		// render snap control
+		if (ImGui::BeginMenu("Gizmo Snap", guizmoEnabled)) {
+			OtUi::toggleButton("Snaping", &guizmoSnapping);
+			OtUi::editVec3("##Interval", &guizmoSnapInterval, 0.0f, 0.1f);
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMenu();
+	}
+
+	// render post processing menu
+	if (ImGui::BeginMenu("Processing")) {
+		auto& processor = scene.getPostProcessing();
+		auto oldValue = processor.serialize(nullptr).dump();
+
+		OtUi::header("Post Proceessing Settings");
+		ImGui::Dummy(ImVec2(0.0f, 0.0f));
+
+		if (processor.renderUI()) {
+			auto newValue = processor.serialize(nullptr).dump();
+			nextTask = std::make_shared<OtEditPostProcessingTask>(&scene, oldValue, newValue);
+		}
+
+		ImGui::EndMenu();
+	}
+}
+
+
+//
+//	OtSceneEditor::handleShortcuts
+//
+
+void OtSceneEditor::handleShortcuts() {
+	// get status
+	bool selected = scene.isValidEntity(selectedEntity);
+	bool clipable = clipboard.size() > 0;
+
+	// handle menu shortcuts
+	if (ImGui::IsKeyDown(ImGuiMod_Ctrl)) {
+		if (ImGui::IsKeyDown(ImGuiMod_Shift) && ImGui::IsKeyPressed(ImGuiKey_Z, false)) {
+			if (taskManager.canRedo()) {
+				taskManager.redo();
+			}
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_Z, false) && taskManager.canUndo()) {
+			// this is a hack as ImGui's InputText keeps a private copy of its content
+			// ClearActiveID() takes the possible focus away and allows undo to work
+			// see ImGuiInputTextFlags_NoUndoRedo documentation in imgui.h
+			// so much for immediate mode :-)
+			ImGui::ClearActiveID();
+			taskManager.undo();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_X, false) && selected) {
+			cutEntity();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_C, false) && selected) {
+			copyEntity();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_V, false) && selected && clipable) {
+			pasteEntity();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_D, false) && selected) {
+			duplicateEntity();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_G, false)) {
+			guizmoEnabled = !guizmoEnabled;
+		}
+
+	// handle camera switching shortcuts
+	} else if (ImGui::IsKeyDown(ImGuiMod_Alt)) {
+		if (ImGui::IsKeyPressed(ImGuiKey_0, false)) {
+			setSceneCamera(0);
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_1, false)) {
+			setSceneCamera(1);
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_1, false)) {
+			setSceneCamera(1);
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_2, false)) {
+			setSceneCamera(2);
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_3, false)) {
+			setSceneCamera(3);
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_4, false)) {
+			setSceneCamera(4);
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_5, false)) {
+			setSceneCamera(5);
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_6, false)) {
+			setSceneCamera(6);
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_7, false)) {
+			setSceneCamera(7);
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_8, false)) {
+			setSceneCamera(8);
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_9, false)) {
+			setSceneCamera(9);
 		}
 	}
 
@@ -383,6 +381,7 @@ void OtSceneEditor::renderMenu(bool canRun) {
 		toggleRendererDebug();
 	}
 }
+
 
 
 //

@@ -12,7 +12,6 @@
 #include <vector>
 
 #include "fmt/format.h"
-#define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 #include "ImGuiFileDialog.h"
 

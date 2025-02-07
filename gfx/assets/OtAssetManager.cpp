@@ -12,7 +12,6 @@
 #include <algorithm>
 #include <cmath>
 
-#define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 
 #include "OtAssert.h"

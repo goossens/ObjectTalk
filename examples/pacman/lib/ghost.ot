@@ -318,8 +318,8 @@ class Ghost : actor.Actor {
 			// draw head
 			renderer.beginPath();
 			renderer.moveTo(0, 6);
-			renderer.quadTo(1.5, 0.0, 6.5, 0.0);
-			renderer.quadTo(11.5, 0.0, 13.0, 6.0);
+			renderer.quadraticCurveTo(1.5, 0.0, 6.5, 0.0);
+			renderer.quadraticCurveTo(11.5, 0.0, 13.0, 6.0);
 
 			// draw feet
 			var feet = (input.getTime() * 2).fraction() < 0.5 ? feet1 : feet2;

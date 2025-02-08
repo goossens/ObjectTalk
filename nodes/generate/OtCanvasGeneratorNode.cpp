@@ -43,10 +43,10 @@ class Renderer : canvas.Canvas {\n\
 
 
 //
-//	OtCanvasNode
+//	OtCanvasGeneratorNode
 //
 
-class OtCanvasNode : public OtTextureGeneratorNode {
+class OtCanvasGeneratorNode : public OtTextureGeneratorNode {
 public:
 	// configure node
 	inline void configure() override {
@@ -187,4 +187,4 @@ protected:
 	bool hasRenderMethod = false;
 };
 
-static OtNodesFactoryRegister<OtCanvasNode> type;
+static OtNodesFactoryRegister<OtCanvasGeneratorNode> type;

@@ -266,8 +266,8 @@ OtType OtCanvasClass::getMeta() {
 		type->set("beginPath", OtFunction::create(&OtCanvasClass::beginPath));
 		type->set("moveTo", OtFunction::create(&OtCanvasClass::moveTo));
 		type->set("lineTo", OtFunction::create(&OtCanvasClass::lineTo));
-		type->set("bezierTo", OtFunction::create(&OtCanvasClass::bezierTo));
-		type->set("quadTo", OtFunction::create(&OtCanvasClass::quadTo));
+		type->set("bezierCurveTo", OtFunction::create(&OtCanvasClass::bezierCurveTo));
+		type->set("quadraticCurveTo", OtFunction::create(&OtCanvasClass::quadraticCurveTo));
 		type->set("arcTo", OtFunction::create(&OtCanvasClass::arcTo));
 		type->set("closePath", OtFunction::create(&OtCanvasClass::closePath));
 		type->set("pathWinding", OtFunction::create(&OtCanvasClass::pathWinding));

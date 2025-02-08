@@ -85,8 +85,8 @@ public:
 	inline void beginPath() { nvgBeginPath(context); }
 	inline void moveTo(float x, float y) { nvgMoveTo(context, x, y); }
 	inline void lineTo(float x, float y) { nvgLineTo(context, x, y); }
-	inline void bezierTo(float c1x, float c1y, float c2x, float c2y, float x, float y) { nvgBezierTo(context, c1x, c1y, c2x, c2y, x, y); }
-	inline void quadTo(float cx, float cy, float x, float y) { nvgQuadTo(context, cx, cy, x, y); }
+	inline void bezierCurveTo(float c1x, float c1y, float c2x, float c2y, float x, float y) { nvgBezierTo(context, c1x, c1y, c2x, c2y, x, y); }
+	inline void quadraticCurveTo(float cx, float cy, float x, float y) { nvgQuadTo(context, cx, cy, x, y); }
 	inline void arcTo(float x1, float y1, float x2, float y2, float radius) { nvgArcTo(context, x1, y1, x2, y2, radius); }
 	inline void closePath() { nvgClosePath(context); }
 	inline void pathWinding(int winding) { nvgPathWinding(context, NVGwinding(winding)); }

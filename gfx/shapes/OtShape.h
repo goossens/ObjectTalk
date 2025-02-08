@@ -37,36 +37,36 @@ public:
 		}
 	}
 
-	// see if path is valid
-	inline bool isValid() { return getPolygonCount() != 0; }
+	// see if shape is valid
+	inline bool isValid() { return getPathCount() != 0; }
 
 	// shape I/O
 	void load(const std::string& path);
 	void save(const std::string& path);
 
-	// construct a segment
-	OtShape* moveTo(float x, float y);
-	OtShape* lineTo(float x, float y);
-	OtShape* quadraticCurveTo(float cx, float cy, float x, float y);
-	OtShape* bezierCurveTo(float cx1, float cy1, float cx2, float cy2, float x, float y);
-	OtShape* close();
+	// construct a path
+	void moveTo(float x, float y);
+	void lineTo(float x, float y);
+	void quadraticCurveTo(float cx, float cy, float x, float y);
+	void bezierCurveTo(float cx1, float cy1, float cx2, float cy2, float x, float y);
+	void close();
 
 	// add simple geometries
-	OtShape* circle(float x, float y, float radius);
-	OtShape* text(OtFont& font, const std::string& text, float size, bool center);
+	void circle(float x, float y, float radius);
+	void text(OtFont& font, const std::string& text, float size, bool center);
 
-	// get number of polygons in shape
-	inline size_t getPolygonCount() {
+	// get number of paths in shape
+	inline size_t getPathCount() {
 		return paths ? paths->size() : 0;
 	}
 
-	// get Nth polygon
-	inline void getPolygon(std::vector<glm::vec2>& points, size_t n) {
+	// get Nth path
+	inline void getPath(std::vector<glm::vec2>& points, size_t n) {
 		return (*paths)[n].getPoints(points);
 	}
 
-	// return area of polygon
-	static inline float getPolygonArea(const std::vector<glm::vec2>& points) {
+	// return area of path
+	static inline float getPathArea(const std::vector<glm::vec2>& points) {
 		auto n = points.size();
 		float area = 0.0f;
 
@@ -77,9 +77,9 @@ public:
 		return area * 0.5f;
 	}
 
-	// see if polygon winding is clockwise
-	static inline bool isPolygonClockwise(const std::vector<glm::vec2>& points) {
-		return getPolygonArea(points) < 0;
+	// see if path winding is clockwise
+	static inline bool isPathClockwise(const std::vector<glm::vec2>& points) {
+		return getPathArea(points) < 0.0f;
 	}
 
 	// version management

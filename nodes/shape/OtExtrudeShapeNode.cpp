@@ -40,7 +40,7 @@ public:
 	// extrude a 2D shape
 	void onExecute() override {
 		if (shape.isValid()) {
-			auto polygonCount = shape.getPolygonCount();
+			auto polygonCount = shape.getPathCount();
 
 			// create a tesselator
 			TESStesselator* tess = tessNewTess(NULL);
@@ -55,11 +55,11 @@ public:
 
 			for (auto i = 0; i < polygonCount; i++) {
 				// get the points on the polygon
-				shape.getPolygon(polygon, i);
+				shape.getPath(polygon, i);
 
 				// determine winding order of first polygon
 				if (i == 0) {
-					cw = OtShape::isPolygonClockwise(polygon);
+					cw = OtShape::isPathClockwise(polygon);
 				}
 
 				// reverse polygon order if shape uses clockwise order for external contours

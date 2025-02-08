@@ -27,7 +27,7 @@ public:
 	// configure node
 	inline void configure() override {
 		addInputPin("Input", shape)->addCustomRenderer([&](float width) {
-			// render button to save shape if shape is valid
+			// render button to save shape if it is valid
 			if (!shape.isValid()) {
 				ImGui::BeginDisabled();
 			}

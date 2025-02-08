@@ -107,13 +107,12 @@ void OtShape::save(const std::string& path) {
 //	OtShape::moveTo
 //
 
-OtShape* OtShape::moveTo(float x, float y) {
+void OtShape::moveTo(float x, float y) {
 	if (currentPath.hasSegments()) {
 		close();
 	}
 
 	currentPath.moveTo(glm::vec2(x, y));
-	return this;
 }
 
 
@@ -121,9 +120,8 @@ OtShape* OtShape::moveTo(float x, float y) {
 //	OtShape::lineTo
 //
 
-OtShape* OtShape::lineTo(float x, float y) {
+void OtShape::lineTo(float x, float y) {
 	currentPath.lineTo(glm::vec2(x, y));
-	return this;
 }
 
 
@@ -131,9 +129,8 @@ OtShape* OtShape::lineTo(float x, float y) {
 //	OtShape::quadraticCurveTo
 //
 
-OtShape* OtShape::quadraticCurveTo(float cx, float cy, float x, float y) {
+void OtShape::quadraticCurveTo(float cx, float cy, float x, float y) {
 	currentPath.quadraticCurveTo(glm::vec2(cx, cy), glm::vec2(x, y));
-	return this;
 }
 
 
@@ -141,9 +138,8 @@ OtShape* OtShape::quadraticCurveTo(float cx, float cy, float x, float y) {
 //	OtShape::quadBezierTo
 //
 
-OtShape* OtShape::bezierCurveTo(float cx1, float cy1, float cx2, float cy2, float x, float y) {
+void OtShape::bezierCurveTo(float cx1, float cy1, float cx2, float cy2, float x, float y) {
 	currentPath.bezierCurveTo(glm::vec2(cx1, cy1), glm::vec2(cx2, cy2), glm::vec2(x, y));
-	return this;
 }
 
 
@@ -151,7 +147,7 @@ OtShape* OtShape::bezierCurveTo(float cx1, float cy1, float cx2, float cy2, floa
 //	OtShape::close
 //
 
-OtShape* OtShape::close() {
+void OtShape::close() {
 	if (currentPath.hasSegments()) {
 		currentPath.close();
 
@@ -163,8 +159,6 @@ OtShape* OtShape::close() {
 		currentPath.clear();
 		incrementVersion();
 	}
-
-	return this;
 }
 
 
@@ -172,7 +166,7 @@ OtShape* OtShape::close() {
 //	OtShape::circle
 //
 
-OtShape* OtShape::circle(float x, float y, float radius) {
+void OtShape::circle(float x, float y, float radius) {
 	// see https://stackoverflow.com/questions/1734745/how-to-create-circle-with-bézier-curves
 	// for explanation of this approximation
 	auto segment = [&](float x, float y, float rx, float ry) {
@@ -186,8 +180,6 @@ OtShape* OtShape::circle(float x, float y, float radius) {
 	segment(x, y, radius, -radius);
 	segment(x, y, -radius, -radius);
 	close();
-
-	return this;
 }
 
 
@@ -195,7 +187,7 @@ OtShape* OtShape::circle(float x, float y, float radius) {
 //	OtShape::text
 //
 
-OtShape* OtShape::text(OtFont& font, const std::string& text, float size, bool center) {
+void OtShape::text(OtFont& font, const std::string& text, float size, bool center) {
 	close();
 
 	auto width = font.getWidth(text, size);
@@ -209,5 +201,4 @@ OtShape* OtShape::text(OtFont& font, const std::string& text, float size, bool c
 		[&](float cx1, float cy1, float cx2, float cy2, float x, float y) { bezierCurveTo(dx + cx1, cy1, dx + cx2, cy2, dx + x, y); });
 
 	close();
-	return this;
 }

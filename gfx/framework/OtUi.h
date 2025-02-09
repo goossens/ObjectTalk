@@ -128,6 +128,7 @@ public:
 	static bool dragFloat(const char* label, float* value, float minv=std::numeric_limits<float>::lowest(), float maxv=std::numeric_limits<float>::max());
 
 	// field to edit glm vectors
+	static bool editVec2(const char* label, glm::vec2* vector, float minv=std::numeric_limits<float>::lowest(), float maxv=std::numeric_limits<float>::max());
 	static bool editVec3(const char* label, glm::vec3* vector, float minv=std::numeric_limits<float>::lowest(), float maxv=std::numeric_limits<float>::max());
 	static bool editVec4(const char* label, glm::vec4* vector, float minv=std::numeric_limits<float>::lowest(), float maxv=std::numeric_limits<float>::max());
 

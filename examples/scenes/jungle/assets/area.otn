@@ -104,7 +104,7 @@
 				{
 					"id": 2440111593,
 					"name": "Value",
-					"type": "vector"
+					"type": "vector3"
 				}
 			],
 			"title": "Combine XYZ",
@@ -123,17 +123,17 @@
 				{
 					"id": 3794724185,
 					"name": "Translate",
-					"type": "vector"
+					"type": "vector3"
 				},
 				{
 					"id": 2482379890,
 					"name": "Rotate",
-					"type": "vector"
+					"type": "vector3"
 				},
 				{
 					"id": 1921743067,
 					"name": "Scale",
-					"type": "vector"
+					"type": "vector3"
 				}
 			],
 			"outputs": [

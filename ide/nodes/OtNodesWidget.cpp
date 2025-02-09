@@ -61,8 +61,10 @@ static constexpr ImU32 pinColors[] = {
 	IM_COL32(100, 160, 100, 255),	// int
 	IM_COL32(180, 180, 180, 255),	// float
 	IM_COL32(0, 100, 180, 255),		// string
-	IM_COL32(120, 60, 255, 200),	// vector
-	IM_COL32(200, 51, 123, 255), 	// color
+	IM_COL32(150, 25, 80, 200),		// vector2
+	IM_COL32(150, 55, 255, 200),	// vector3
+	IM_COL32(0, 125, 150, 200),		// vector4
+	IM_COL32(255, 50, 150, 255), 	// color
 	IM_COL32(140, 190, 40, 255),	// font
 	IM_COL32(200, 190, 120, 255),	// image
 	IM_COL32(180, 90, 0, 255),		// texture

@@ -46,11 +46,6 @@
 			"to": 1290617004
 		},
 		{
-			"from": 1534376766,
-			"id": 1164553210,
-			"to": 803165759
-		},
-		{
 			"from": 659017989,
 			"id": 1534377328,
 			"to": 3674880614
@@ -99,6 +94,11 @@
 			"from": 3645131408,
 			"id": 3332762566,
 			"to": 2041633410
+		},
+		{
+			"from": 3666040649,
+			"id": 2657004906,
+			"to": 803165759
 		}
 	],
 	"metadata": {},
@@ -128,26 +128,38 @@
 			"y": 12.0
 		},
 		{
-			"id": 3367287478,
+			"id": 1792799497,
 			"inputs": [
 				{
-					"id": 4010838657,
-					"name": "A",
+					"id": 2042123989,
+					"name": "X",
+					"type": "float",
+					"value": 6.0
+				},
+				{
+					"id": 2970645583,
+					"name": "Y",
+					"type": "float",
+					"value": 6.0
+				},
+				{
+					"id": 1043555924,
+					"name": "Z",
 					"type": "float",
 					"value": 6.0
 				}
 			],
 			"outputs": [
 				{
-					"id": 1534376766,
+					"id": 3666040649,
 					"name": "Value",
-					"type": "vector"
+					"type": "vector3"
 				}
 			],
-			"title": "Float to Vector",
-			"type": "Float to Vector",
-			"x": 69.0,
-			"y": 112.0
+			"title": "Combine XYZ",
+			"type": "Combine XYZ",
+			"x": 102.0,
+			"y": 130.0
 		},
 		{
 			"id": 3781631580,
@@ -160,17 +172,17 @@
 				{
 					"id": 997779709,
 					"name": "Translate",
-					"type": "vector"
+					"type": "vector3"
 				},
 				{
 					"id": 3911898886,
 					"name": "Rotate",
-					"type": "vector"
+					"type": "vector3"
 				},
 				{
 					"id": 803165759,
 					"name": "Scale",
-					"type": "vector"
+					"type": "vector3"
 				}
 			],
 			"outputs": [
@@ -211,12 +223,12 @@
 				{
 					"id": 482523770,
 					"name": "Value",
-					"type": "vector"
+					"type": "vector3"
 				}
 			],
 			"title": "Combine XYZ",
 			"type": "Combine XYZ",
-			"x": 272.0,
+			"x": 268.0,
 			"y": 177.0
 		},
 		{
@@ -230,17 +242,17 @@
 				{
 					"id": 840759907,
 					"name": "Translate",
-					"type": "vector"
+					"type": "vector3"
 				},
 				{
 					"id": 3245459342,
 					"name": "Rotate",
-					"type": "vector"
+					"type": "vector3"
 				},
 				{
 					"id": 2296027807,
 					"name": "Scale",
-					"type": "vector"
+					"type": "vector3"
 				}
 			],
 			"outputs": [
@@ -273,7 +285,7 @@
 			"outputs": [],
 			"title": "Save Geometry To Virtual",
 			"type": "Save Geometry To Virtual",
-			"x": 1160.0,
+			"x": 1156.0,
 			"y": 34.0
 		},
 		{
@@ -298,7 +310,7 @@
 			},
 			"title": "Create Cone",
 			"type": "Geometry Generator",
-			"x": 36.0,
+			"x": 40.0,
 			"y": 431.0
 		},
 		{
@@ -327,12 +339,12 @@
 				{
 					"id": 659017989,
 					"name": "Value",
-					"type": "vector"
+					"type": "vector3"
 				}
 			],
 			"title": "Combine XYZ",
 			"type": "Combine XYZ",
-			"x": 99.0,
+			"x": 102.0,
 			"y": 521.0
 		},
 		{
@@ -361,12 +373,12 @@
 				{
 					"id": 2775206220,
 					"name": "Value",
-					"type": "vector"
+					"type": "vector3"
 				}
 			],
 			"title": "Combine XYZ",
 			"type": "Combine XYZ",
-			"x": 100.0,
+			"x": 102.0,
 			"y": 661.0
 		},
 		{
@@ -380,17 +392,17 @@
 				{
 					"id": 3674880614,
 					"name": "Translate",
-					"type": "vector"
+					"type": "vector3"
 				},
 				{
 					"id": 59766303,
 					"name": "Rotate",
-					"type": "vector"
+					"type": "vector3"
 				},
 				{
 					"id": 1831560002,
 					"name": "Scale",
-					"type": "vector"
+					"type": "vector3"
 				}
 			],
 			"outputs": [
@@ -423,7 +435,7 @@
 			"outputs": [],
 			"title": "Save Geometry To Virtual",
 			"type": "Save Geometry To Virtual",
-			"x": 1162.0,
+			"x": 1156.0,
 			"y": 511.0
 		},
 		{
@@ -501,12 +513,12 @@
 				{
 					"id": 2278322405,
 					"name": "Rotation",
-					"type": "vector"
+					"type": "vector3"
 				},
 				{
 					"id": 502892136,
 					"name": "Scale",
-					"type": "vector"
+					"type": "vector3"
 				}
 			],
 			"outputs": [
@@ -518,7 +530,7 @@
 			],
 			"title": "Instances on Vertices",
 			"type": "Instances on Vertices",
-			"x": 901.0,
+			"x": 897.0,
 			"y": 83.0
 		},
 		{
@@ -568,12 +580,12 @@
 				{
 					"id": 1503567322,
 					"name": "Value",
-					"type": "vector"
+					"type": "vector3"
 				}
 			],
 			"title": "Combine XYZ",
 			"type": "Combine XYZ",
-			"x": 271.0,
+			"x": 268.0,
 			"y": 317.0
 		},
 		{
@@ -587,17 +599,17 @@
 				{
 					"id": 1290617004,
 					"name": "Translate",
-					"type": "vector"
+					"type": "vector3"
 				},
 				{
 					"id": 2264241974,
 					"name": "Rotate",
-					"type": "vector"
+					"type": "vector3"
 				},
 				{
 					"id": 3805232308,
 					"name": "Scale",
-					"type": "vector"
+					"type": "vector3"
 				}
 			],
 			"outputs": [
@@ -609,7 +621,7 @@
 			],
 			"title": "Transform",
 			"type": "Geometry Transform",
-			"x": 431.0,
+			"x": 428.0,
 			"y": 247.0
 		},
 		{
@@ -634,7 +646,7 @@
 			],
 			"title": "Position",
 			"type": "Position Field",
-			"x": 550.0,
+			"x": 549.0,
 			"y": 382.0
 		},
 		{
@@ -662,7 +674,7 @@
 			],
 			"title": "Compare",
 			"type": "Compare",
-			"x": 682.0,
+			"x": 674.0,
 			"y": 383.0
 		},
 		{
@@ -699,12 +711,12 @@
 				{
 					"id": 2137833022,
 					"name": "Rotation",
-					"type": "vector"
+					"type": "vector3"
 				},
 				{
 					"id": 652117834,
 					"name": "Scale",
-					"type": "vector"
+					"type": "vector3"
 				}
 			],
 			"outputs": [
@@ -737,7 +749,7 @@
 			"outputs": [],
 			"title": "Save Instances To Virtual",
 			"type": "Save Instances To Virtual",
-			"x": 1161.0,
+			"x": 1156.0,
 			"y": 357.0
 		},
 		{
@@ -758,7 +770,7 @@
 			"outputs": [],
 			"title": "Save Geometry To Virtual",
 			"type": "Save Geometry To Virtual",
-			"x": 1157.0,
+			"x": 1156.0,
 			"y": 250.0
 		}
 	]

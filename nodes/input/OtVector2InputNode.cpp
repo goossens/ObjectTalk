@@ -19,10 +19,10 @@
 
 
 //
-//	OtVectorInputNode
+//	OtVector2InputNode
 //
 
-class OtVectorInputNode : public OtNodeClass {
+class OtVector2InputNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
@@ -38,13 +38,13 @@ public:
 					needsSaving = true;
 				}
 			}
-		}, 200.0f);
+		}, 130.0f);
 	}
 
 	// special rendering for input nodes
 	inline bool customInputRendering(float width) override {
 		ImGui::SetNextItemWidth(width);
-		return OtUi::editVec3("##value", &value);
+		return OtUi::editVec2("##value", &value);
 	}
 
 	// (de)serialize node
@@ -53,15 +53,15 @@ public:
 	}
 
 	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		value = data->value("value", glm::vec3(0.0f));
+		value = data->value("value", glm::vec2(0.0f));
 	}
 
-	static constexpr const char* nodeName = "Vector Input";
+	static constexpr const char* nodeName = "Vector2 Input";
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::input;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 protected:
-	glm::vec3 value{0.0f};
+	glm::vec2 value{0.0f};
 };
 
-static OtNodesFactoryRegister<OtVectorInputNode> type;
+static OtNodesFactoryRegister<OtVector2InputNode> type;

@@ -20,6 +20,10 @@
 //	glm::to_json
 //
 
+void glm::to_json(nlohmann::json& j, const glm::vec2& v) {
+	j = nlohmann::json{v.x, v.y};
+}
+
 void glm::to_json(nlohmann::json& j, const glm::vec3& v) {
 	j = nlohmann::json{v.x, v.y, v.z};
 }
@@ -53,6 +57,11 @@ void glm::to_json(nlohmann::json& j, const glm::mat4& m) {
 //
 //	glm::from_json
 //
+
+void glm::from_json(const nlohmann::json& j, glm::vec2& v) {
+	v.x = j[0];
+	v.y = j[1];
+}
 
 void glm::from_json(const nlohmann::json& j, glm::vec3& v) {
 	v.x = j[0];

@@ -359,6 +359,15 @@ bool OtUi::editVecX(const char* labelPlusID, float* value, int components, float
 
 
 //
+//	OtUi::editVec2
+//
+
+bool OtUi::editVec2(const char* label, glm::vec2* vector, float minv, float maxv) {
+	return editVecX(label, glm::value_ptr(*vector), 2, minv, maxv);
+}
+
+
+//
 //	OtUi::editVec3
 //
 

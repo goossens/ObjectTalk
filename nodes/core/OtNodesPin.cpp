@@ -177,6 +177,7 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtColor& value) {
 		}};
 }
 
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec2& value) { return nullptr; }
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec3& value) { return nullptr; }
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec4& value) { return nullptr; }
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtFont& value) { return nullptr; }

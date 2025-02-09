@@ -49,7 +49,9 @@ using OtNodesPinTypes = OtTypeList<
 	int,
 	float,
 	std::string,
+	glm::vec2,
 	glm::vec3,
+	glm::vec4,
 	OtColor,
 	OtFont,
 	OtImage,
@@ -63,14 +65,17 @@ static constexpr const char* OtNodesPinTypeNames[] = {
 	"int",
 	"float",
 	"string",
-	"vector",
+	"vector2",
+	"vector3",
+	"vector4",
 	"color",
 	"font",
 	"image",
 	"texture",
 	"shape",
 	"geometry",
-	"instances" };
+	"instances"
+};
 
 
 //
@@ -170,6 +175,7 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(bool& value);
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(int& value);
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(float& value);
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(std::string& value);
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec2& value);
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec3& value);
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec4& value);
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtColor& value);

@@ -15,29 +15,32 @@
 
 
 //
-//	OtFloatToVectorNode
+//	OtSeparateXyNode
 //
 
-class OtFloatToVectorNode : public OtNodeClass {
+class OtSeparateXyNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addInputPin("A", a);
-		addOutputPin("Value", value);
+		addInputPin("Value", value);
+		addOutputPin("X", x);
+		addOutputPin("Y", y);
 	}
 
-	// combine values
+	// separate values
 	void onExecute() override {
-		value = glm::vec3(a, a, a);
+		x = value.x;
+		y = value.y;
 	}
 
-	static constexpr const char* nodeName = "Float to Vector";
+	static constexpr const char* nodeName = "Separate XY";
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::transform;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::flexible;
 
 protected:
-	float a{0.0f};
-	glm::vec3 value{0.0f};
+	glm::vec2 value{0.0f};
+	float x{0.0f};
+	float y{0.0f};
 };
 
-static OtNodesFactoryRegister<OtFloatToVectorNode> type;
+static OtNodesFactoryRegister<OtSeparateXyNode> type;

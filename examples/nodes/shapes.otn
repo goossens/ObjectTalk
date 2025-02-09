@@ -1,0 +1,298 @@
+{
+	"links": [
+		{
+			"from": 3119975211,
+			"id": 429424177,
+			"to": 4119941361
+		}
+	],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 3866103533,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 3119975211,
+					"name": "Shape",
+					"type": "shape"
+				}
+			],
+			"path": "assets/heart.ot",
+			"title": "Shape Generator",
+			"type": "Shape Generator",
+			"x": 179.0,
+			"y": 133.0
+		},
+		{
+			"id": 4057788996,
+			"inputs": [
+				{
+					"id": 4119941361,
+					"name": "Input",
+					"type": "shape"
+				}
+			],
+			"outputs": [],
+			"title": "Save Shape to File",
+			"type": "Save Shape to File",
+			"x": 578.0,
+			"y": 133.0
+		},
+		{
+			"id": 2527335152,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 1857944008,
+					"name": "Value",
+					"type": "vector2"
+				}
+			],
+			"title": "Vector2 Input",
+			"type": "Vector2 Input",
+			"value": [
+				0.0,
+				0.0
+			],
+			"x": 324.0,
+			"y": 261.0
+		},
+		{
+			"id": 479012699,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 1249195470,
+					"name": "Value",
+					"type": "vector3"
+				}
+			],
+			"title": "Vector3 Input",
+			"type": "Vector3 Input",
+			"value": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"x": 324.0,
+			"y": 410.0
+		},
+		{
+			"id": 475945722,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 874184664,
+					"name": "Value",
+					"type": "vector4"
+				}
+			],
+			"title": "Vector4 Input",
+			"type": "Vector4 Input",
+			"value": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"x": 324.0,
+			"y": 578.0
+		},
+		{
+			"id": 2576034713,
+			"inputs": [
+				{
+					"id": 1859560194,
+					"name": "X",
+					"type": "float",
+					"value": 0.0
+				},
+				{
+					"id": 3095925007,
+					"name": "Y",
+					"type": "float",
+					"value": 0.0
+				},
+				{
+					"id": 2299930968,
+					"name": "Z",
+					"type": "float",
+					"value": 0.0
+				}
+			],
+			"outputs": [
+				{
+					"id": 1962595429,
+					"name": "Value",
+					"type": "vector3"
+				}
+			],
+			"title": "Combine XYZ",
+			"type": "Combine XYZ",
+			"x": 654.0,
+			"y": 410.0
+		},
+		{
+			"id": 1801440000,
+			"inputs": [
+				{
+					"id": 1806219533,
+					"name": "Value",
+					"type": "vector3"
+				}
+			],
+			"outputs": [
+				{
+					"id": 3514441314,
+					"name": "X",
+					"type": "float"
+				},
+				{
+					"id": 4141965968,
+					"name": "Y",
+					"type": "float"
+				},
+				{
+					"id": 1470935777,
+					"name": "Z",
+					"type": "float"
+				}
+			],
+			"title": "Separate XYZ",
+			"type": "Separate XYZ",
+			"x": 858.0,
+			"y": 410.0
+		},
+		{
+			"id": 808594743,
+			"inputs": [
+				{
+					"id": 3548053382,
+					"name": "X",
+					"type": "float",
+					"value": 0.0
+				},
+				{
+					"id": 206513027,
+					"name": "Y",
+					"type": "float",
+					"value": 0.0
+				}
+			],
+			"outputs": [
+				{
+					"id": 2796440996,
+					"name": "Value",
+					"type": "vector2"
+				}
+			],
+			"title": "Combine XY",
+			"type": "Combine XY",
+			"x": 654.0,
+			"y": 261.0
+		},
+		{
+			"id": 2382870443,
+			"inputs": [
+				{
+					"id": 4066371858,
+					"name": "Value",
+					"type": "vector2"
+				}
+			],
+			"outputs": [
+				{
+					"id": 637517853,
+					"name": "X",
+					"type": "float"
+				},
+				{
+					"id": 4199789279,
+					"name": "Y",
+					"type": "float"
+				}
+			],
+			"title": "Separate XY",
+			"type": "Separate XY",
+			"x": 858.0,
+			"y": 261.0
+		},
+		{
+			"id": 417636461,
+			"inputs": [
+				{
+					"id": 2831216411,
+					"name": "X",
+					"type": "float",
+					"value": 0.0
+				},
+				{
+					"id": 1183581134,
+					"name": "Y",
+					"type": "float",
+					"value": 0.0
+				},
+				{
+					"id": 1743719458,
+					"name": "Z",
+					"type": "float",
+					"value": 0.0
+				},
+				{
+					"id": 617182617,
+					"name": "W",
+					"type": "float",
+					"value": 0.0
+				}
+			],
+			"outputs": [
+				{
+					"id": 3540493513,
+					"name": "Value",
+					"type": "vector4"
+				}
+			],
+			"title": "Combine XYZW",
+			"type": "Combine XYZW",
+			"x": 654.0,
+			"y": 578.0
+		},
+		{
+			"id": 3360711886,
+			"inputs": [
+				{
+					"id": 459992671,
+					"name": "Value",
+					"type": "vector4"
+				}
+			],
+			"outputs": [
+				{
+					"id": 2629243271,
+					"name": "X",
+					"type": "float"
+				},
+				{
+					"id": 2211785114,
+					"name": "Y",
+					"type": "float"
+				},
+				{
+					"id": 1632883904,
+					"name": "Z",
+					"type": "float"
+				},
+				{
+					"id": 1273450074,
+					"name": "W",
+					"type": "float"
+				}
+			],
+			"title": "Separate XYZW",
+			"type": "Separate XYZW",
+			"x": 858.0,
+			"y": 578.0
+		}
+	]
+}

@@ -40,7 +40,7 @@ public:
 	// extrude a 2D shape
 	void onExecute() override {
 		if (shape.isValid()) {
-			auto polygonCount = shape.getPathCount();
+			auto pathCount = shape.getPathCount();
 
 			// create a tesselator
 			TESStesselator* tess = tessNewTess(NULL);
@@ -49,34 +49,34 @@ public:
 			// create an empty mesh
 			std::shared_ptr<OtMesh> mesh = std::make_shared<OtMesh>();
 
-			// process all polygons
-			std::vector<glm::vec2> polygon;
+			// process all paths
+			std::vector<glm::vec2> path;
 			bool cw;
 
-			for (auto i = 0; i < polygonCount; i++) {
-				// get the points on the polygon
-				shape.getPath(polygon, i);
+			for (auto i = 0; i < pathCount; i++) {
+				// get the points on the path
+				shape.getPath(path, i);
 
-				// determine winding order of first polygon
+				// determine winding order of first path
 				if (i == 0) {
-					cw = OtShape::isPathClockwise(polygon);
+					cw = OtShape::isPathClockwise(path);
 				}
 
-				// reverse polygon order if shape uses clockwise order for external contours
+				// reverse path order if shape uses clockwise order for external contours
 				if (cw) {
-					std::reverse(polygon.begin(), polygon.end());
+					std::reverse(path.begin(), path.end());
 				}
 
-				// add polygon to tesselator
-				tessAddContour(tess, 2, polygon.data(), sizeof(glm::vec2), (int) polygon.size());
+				// add path to tesselator
+				tessAddContour(tess, 2, path.data(), sizeof(glm::vec2), (int) path.size());
 
 				// create faces to connect front and back
-				for (auto j = 0; j < polygon.size() - 1; j++) {
+				for (auto j = 0; j < path.size() - 1; j++) {
 					mesh->addFace(
-						glm::vec3(polygon[j].x, polygon[j].y, 0.0),
-						glm::vec3(polygon[j].x, polygon[j].y, -depth),
-						glm::vec3(polygon[j + 1].x, polygon[j + 1].y, -depth),
-						glm::vec3(polygon[j + 1].x, polygon[j + 1].y, 0.0));
+						glm::vec3(path[j].x, path[j].y, 0.0),
+						glm::vec3(path[j].x, path[j].y, -depth),
+						glm::vec3(path[j + 1].x, path[j + 1].y, -depth),
+						glm::vec3(path[j + 1].x, path[j + 1].y, 0.0));
 				}
 			}
 

@@ -252,11 +252,11 @@ void TextEditor::renderMatchingBrackets() {
 
 				auto x1 = cursorScreenPos.x + textStart + active->start.column * glyphSize.x;
 				auto y1 = cursorScreenPos.y + active->start.line * glyphSize.y;
-				drawList->AddRectFilled(ImVec2(x1, y1), ImVec2(x1 + glyphSize.x, y1 + glyphSize.y), palette.get(Color::whitespace));
+				drawList->AddRectFilled(ImVec2(x1, y1), ImVec2(x1 + glyphSize.x, y1 + glyphSize.y), palette.get(Color::matchingBracketBackground));
 
 				auto x2 = cursorScreenPos.x + textStart + active->end.column * glyphSize.x;
 				auto y2 = cursorScreenPos.y + active->end.line * glyphSize.y;
-				drawList->AddRectFilled(ImVec2(x2, y2), ImVec2(x2 + glyphSize.x, y2 + glyphSize.y), palette.get(Color::whitespace));
+				drawList->AddRectFilled(ImVec2(x2, y2), ImVec2(x2 + glyphSize.x, y2 + glyphSize.y), palette.get(Color::matchingBracketBackground));
 
 				if (active->end.line - active->start.line > 1) {
 					auto lineX = std::min(x1, x2);
@@ -1187,7 +1187,7 @@ void TextEditor::deindentLines() {
 		auto tabSize = document.getTabSize();
 
 		for (auto line = cursorStart.line; line <= cursorEnd.line; line++) {
-			// determine how many whitespace are available at the start with a max of 4 columns
+			// determine how many whitespaces are available at the start with a max of 4 columns
 			int column = 0;
 			int index = 0;
 
@@ -1767,7 +1767,8 @@ const TextEditor::Palette& TextEditor::GetDarkPalette() {
 		IM_COL32(224, 224, 224, 255),	// cursor
 		IM_COL32( 32,  96, 160, 255),	// selection
 		IM_COL32(128,   0,  32, 255),	// errorMarker
-		IM_COL32( 90,  90,  90, 255),	// whitespace
+		IM_COL32( 80,  80,  80, 255),	// whitespace
+		IM_COL32( 70,  70,  70, 255),	// matchingBracketBackground
 		IM_COL32(140, 140, 140, 255),	// matchingBracketActive
 		IM_COL32(246, 222,  36, 255),	// matchingBracketLevel1
 		IM_COL32( 66, 120, 198, 255),	// matchingBracketLevel2
@@ -1784,24 +1785,25 @@ const TextEditor::Palette& TextEditor::GetLightPalette()
 {
 	const static Palette p = {{
 		IM_COL32( 64,  64,  64, 255),	// text
-		IM_COL32(  6,  12, 255, 255),	// keyword
-		IM_COL32(  6,  12, 255, 255),	// declaration
-		IM_COL32(  0, 128,   0, 255),	// number
+		IM_COL32( 170,  0, 220, 255),	// keyword
+		IM_COL32( 65,   0, 255, 255),	// declaration
+		IM_COL32( 40, 140,  90, 255),	// number
 		IM_COL32(160,  32,  32, 255),	// string
 		IM_COL32(  0,   0,   0, 255),	// punctuation
 		IM_COL32( 96,  96,  64, 255),	// preprocessor
 		IM_COL32( 64,  64,  64, 255),	// identifier
 		IM_COL32( 16,  96,  96, 255),	// known identifier
-		IM_COL32( 32,  80,  32, 255),	// comment
+		IM_COL32( 35, 135,   5, 255),	// comment
 		IM_COL32(255, 255, 255, 255),	// background
 		IM_COL32(  0,   0,   0, 255),	// cursor
 		IM_COL32(  0,   0,  96,  64),	// selection
 		IM_COL32(255,  16,   0, 160),	// errorMarker
 		IM_COL32(144, 144, 144, 144),	// whitespace
+		IM_COL32(180, 180, 180, 144),	// matchingBracketBackground
 		IM_COL32( 72,  72,  72, 255),	// matchingBracketActive
-		IM_COL32(246, 222,  36, 255),	// matchingBracketLevel1
-		IM_COL32( 66, 120, 198, 255),	// matchingBracketLevel2
-		IM_COL32(213,  96, 213, 255),	// matchingBracketLevel3
+		IM_COL32( 70,   0, 250, 255),	// matchingBracketLevel1
+		IM_COL32( 80, 160,  70, 255),	// matchingBracketLevel2
+		IM_COL32(120,  60, 25, 255),	// matchingBracketLevel3
 		IM_COL32(198,   8,  32, 255),	// matchingBracketError
 		IM_COL32(  0,  80,  80, 255),	// line number
 		IM_COL32(  0,   0,   0, 255),	// current line number

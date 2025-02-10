@@ -137,6 +137,7 @@ public:
 		selection,
 		errorMarker,
 		whitespace,
+		matchingBracketBackground,
 		matchingBracketActive,
 		matchingBracketLevel1,
 		matchingBracketLevel2,

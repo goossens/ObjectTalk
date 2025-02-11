@@ -65,9 +65,9 @@ private:
 	b2World* world = nullptr;
 
 	// tracking time in update loop to ensure constant simulation speed
-	static constexpr double secondsPerUpdate = 1 / 30.0;
+	static constexpr double secondsPerUpdate = 1 / 30.0f;
 	bool running = false;
-	double delta = 0.0;
+	double delta = 0.0f;
 
 	// list of our bodies
 	std::vector<OtObject> bodies;

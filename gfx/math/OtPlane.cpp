@@ -40,8 +40,8 @@ void OtPlane::negate() {
 
 OtPlane OtPlane::transform(const glm::mat4& transform) {
 	// see https://stackoverflow.com/questions/7685495/transforming-a-3d-plane-using-a-4x4-matrix
-	auto O = transform * glm::vec4(normal * distance, 1.0);
-	auto N = glm::transpose(glm::inverse(transform)) * glm::vec4(normal, 0.0);
+	auto O = transform * glm::vec4(normal * distance, 1.0f);
+	auto N = glm::transpose(glm::inverse(transform)) * glm::vec4(normal, 0.0f);
 	return OtPlane(glm::vec3(N), glm::dot(glm::vec3(O), glm::vec3(N)));
 }
 

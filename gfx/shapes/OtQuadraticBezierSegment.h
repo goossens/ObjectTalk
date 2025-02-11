@@ -26,7 +26,6 @@ public:
 		p1 = v1;
 		p2 = v2;
 		p3 = v3;
-		calculateLength();
 	}
 
 	// get a point in the segment at curve parameter t [0, 1]
@@ -36,17 +35,24 @@ public:
 
 	// convert segment to string representation
 	inline std::string toString() override {
-		return fmt::format("q {} {} {} {}\n", p2.x, p2.y, p3.x, p3.y);
+		return fmt::format("Q {} {} {} {}\n", p2.x, p2.y, p3.x, p3.y);
 	}
 
 private:
 	// control points
 	glm::vec2 p1, p2, p3;
 
+	// get approximate length of curve
+	float getLength() override {
+		return (glm::distance(p1, p3) * 2 + glm::distance(p1, p2) + glm::distance(p2, p3)) / 3.0f;
+	}
+
+	// get value at curve parameter t [0, 1]
 	static inline float quatraticBezier(float t, float v1, float v2, float v3) {
 		float k = 1.0f - t;
 
-		return (k * k * v1) +
+		return
+			(k * k * v1) +
 			(2.0f * k * t * v2) +
 			(t * t * v3);
 	}

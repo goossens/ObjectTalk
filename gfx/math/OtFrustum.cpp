@@ -134,7 +134,7 @@ bool OtFrustum::isVisibleSphere(const glm::vec3& center, float radius) {
 //
 
 glm::vec3 OtFrustum::getCenter() {
-	glm::vec3 center = glm::vec3(0.0);
+	glm::vec3 center = glm::vec3(0.0f);
 
 	for (auto& point : corners) {
 		center += point;

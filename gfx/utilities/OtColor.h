@@ -63,7 +63,7 @@ public:
 	}
 
 private:
-	glm::vec4 color{0.0};
+	glm::vec4 color{0.0f};
 };
 
 

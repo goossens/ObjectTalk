@@ -245,7 +245,7 @@ void OtMesh::generateAABB() {
 void OtMesh::generateNormals() {
 	// clear tangents
 	for (auto& vertex : vertices) {
-		vertex.normal = glm::vec3(0.0);
+		vertex.normal = glm::vec3(0.0f);
 	}
 
 	// generate new normals
@@ -276,8 +276,8 @@ void OtMesh::generateNormals() {
 void OtMesh::generateTangents() {
 	// clear tangents
 	for (auto& vertex : vertices) {
-		vertex.tangent = glm::vec3(0.0);
-		vertex.bitangent = glm::vec3(0.0);
+		vertex.tangent = glm::vec3(0.0f);
+		vertex.bitangent = glm::vec3(0.0f);
 	}
 
 	// generate new tangents

@@ -196,7 +196,7 @@ float OtVectorDisplayClass::getSevenSegmentWidth(const std::string& text, float 
 
 float OtVectorDisplayClass::getTextWidth(const std::string& text, float size) {
 	auto factor = size / 32.0f;
-	float width = 0.0;
+	float width = 0.0f;
 
 	for (auto& c : text) {
 		if (c >= 32 || c <= 126) {

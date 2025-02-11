@@ -67,6 +67,6 @@ public:
 
 private:
 	// normal and distance to origin
-	glm::vec3 normal = glm::vec3(0.0, 1.0, 0.0);
-	float distance = 0.0;
+	glm::vec3 normal = glm::vec3(0.0f, 1.0f, 0.0f);
+	float distance = 0.0f;
 };

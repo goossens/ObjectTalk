@@ -29,7 +29,7 @@ OtConsole::OtConsole() {
 
 void OtConsole::render() {
 	// create the window
-	ImGui::BeginChild("Console", ImVec2(0.0, 0.0), ImGuiChildFlags_Borders, ImGuiWindowFlags_HorizontalScrollbar);
+	ImGui::BeginChild("Console", ImVec2(), ImGuiChildFlags_Borders, ImGuiWindowFlags_HorizontalScrollbar);
 
 	ImGuiListClipper clipper;
 	clipper.Begin((int) lines.size());
@@ -37,37 +37,37 @@ void OtConsole::render() {
 	while (clipper.Step()) {
 		for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
 			if (lines[i].type == Type::standardOut) {
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0, 1.0, 1.0, 1.0));
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
 
 			} else if (lines[i].type == Type::standardError) {
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0, 0.0, 0.0, 1.0));
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
 
 			} else if (lines[i].type == Type::help) {
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0, 0.7, 0.7, 1.0));
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.7f, 0.7f, 1.0f));
 
 			} else if (lines[i].type == Type::input) {
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0, 0.7, 1.0, 1.0));
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.7f, 1.0f, 1.0f));
 
 			} else if (lines[i].type == Type::success) {
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0, 1.0, 0.0, 1.0));
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 1.0f, 0.0f, 1.0f));
 
 			} else if (lines[i].type == Type::debug) {
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7, 0.7, 0.7, 1.0));
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7f, 0.7f, 0.7f, 1.0f));
 
 			} else if (lines[i].type == Type::info) {
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5, 0.8, 1.0, 1.0));
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.8f, 1.0f, 1.0f));
 
 			} else if (lines[i].type == Type::warning) {
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0, 0.8, 0.0, 1.0));
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.8f, 0.0f, 1.0f));
 
 			} else if (lines[i].type == Type::error) {
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0, 0.3, 0.0, 1.0));
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.3f, 0.0f, 1.0f));
 
 			} else if (lines[i].type == Type::fatal) {
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0, 0.3, 0.0, 1.0));
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.3f, 0.0f, 1.0f));
 
 			} else {
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0, 0.0, 1.0, 1.0));
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.0f, 1.0f, 1.0f));
 			}
 
 			ImGui::TextUnformatted(lines[i].text.c_str());

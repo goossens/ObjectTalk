@@ -39,27 +39,27 @@ void OtShape::load(const std::string& path) {
 		    std::istringstream iss(line);
 			char command;
 
-			if (line[0] == 'm') {
+			if (line[0] == 'M') {
 				float x, y;
 				iss >> command >> x >> y;
 				moveTo(x, y);
 
-			} else if (line[0] == 'l') {
+			} else if (line[0] == 'L') {
 				float x, y;
 				iss >> command >> x >> y;
 				lineTo(x, y);
 
-			} else if (line[0] == 'q') {
+			} else if (line[0] == 'Q') {
 				float cx, cy, x, y;
 				iss >> command >> cx >> cy >> x >> y;
 				quadraticCurveTo(cx, cy, x, y);
 
-			} else if (line[0] == 'c') {
+			} else if (line[0] == 'C') {
 				float cx1, cy1, cx2, cy2, x, y;
 				iss >> command >> cx1 >> cy1 >> cx2 >> cy2 >> x >> y;
 				bezierCurveTo(cx1, cy1, cx2, cy2, x, y);
 
-			} else if (line[0] == 'z') {
+			} else if (line[0] == 'Z') {
 				close();
 			}
 		}

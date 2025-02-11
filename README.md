@@ -42,7 +42,7 @@ System (ECS), Node Based programming and a custom Integrated Development
 Environment (IDE).
 
 So today, this project contains a lot of code, compiles into a single
-executable with no runtime dependancies and is functional on MacOS, Linux
+executable with no runtime dependencies and is functional on MacOS, Linux
 and Windows. It basically is a playground to learn and have fun.
 Think of it as a educational jack of all trades, master of none.
 

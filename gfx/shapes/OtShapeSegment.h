@@ -23,9 +23,6 @@
 
 class OtShapeSegment {
 public:
-	// get length of segment
-	virtual float getLength() = 0;
-
 	// get points on segment
 	virtual void getPoints(std::vector<glm::vec2>& result) = 0;
 

@@ -41,17 +41,17 @@ private:
 	// state parameters
 	bool opening = false;
 	bool closing = true;
-	float tronScale = 0.0;
-	float tronRotation = 0.0;
+	float tronScale = 0.0f;
+	float tronRotation = 0.0f;
 
 	// definition of one arc
 	class OtTronArc {
 	public:
-		float start = 0.0;
-		float end = 0.0;
-		float radius = 300.0;
-		float width = 5.0;
-		float rotation = 0.0;
+		float start = 0.0f;
+		float end = 0.0f;
+		float radius = 300.0f;
+		float width = 5.0f;
+		float rotation = 0.0f;
 		ImU32 color;
 		bool clockwise = true;
 	};

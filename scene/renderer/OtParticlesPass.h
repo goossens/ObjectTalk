@@ -64,10 +64,10 @@ public:
 
 			// send out geometry
 			static glm::vec3 vertices[] = {
-				glm::vec3{-0.5, -0.5, 0.0},
-				glm::vec3{0.5, -0.5, 0.0},
-				glm::vec3{0.5, 0.5, 0.0},
-				glm::vec3{-0.5, 0.5, 0.0}
+				glm::vec3{-0.5f, -0.5f, 0.0f},
+				glm::vec3{0.5f, -0.5f, 0.0f},
+				glm::vec3{0.5f, 0.5f, 0.0f},
+				glm::vec3{-0.5f, 0.5f, 0.0f}
 			};
 
 			OtTransientVertexBuffer tvb;

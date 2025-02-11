@@ -671,7 +671,7 @@ bool OtUi::bezier(const char* label, float P[4]) {
 	}
 
 	// eval curve
-	ImVec2 Q[4] = {{0, 0}, {P[0], P[1]}, {P[2], P[3]}, {1, 1}};
+	ImVec2 Q[4] = {{0.0f, 0.0f}, {P[0], P[1]}, {P[2], P[3]}, {1.0f, 1.0f}};
 	ImVec2 results[smoothness + 1];
 	bezierTable<smoothness>(Q, results);
 

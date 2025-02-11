@@ -27,11 +27,6 @@ public:
 		p2 = v2;
 	}
 
-	// get the length of the segment
-	inline float getLength() override {
-		return glm::distance(p1, p2);
-	}
-
 	// get points on segment
 	virtual void getPoints(std::vector<glm::vec2>& result) override {
 		result.push_back(p2);
@@ -39,7 +34,7 @@ public:
 
 	// convert segment to string representation
 	inline std::string toString() override {
-		return fmt::format("l {} {}\n", p2.x, p2.y);
+		return fmt::format("L {} {}\n", p2.x, p2.y);
 	}
 
 private:

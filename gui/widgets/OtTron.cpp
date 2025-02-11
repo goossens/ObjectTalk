@@ -71,76 +71,76 @@ static void OtLed7(ImDrawList* list, float x, float y, float size, char ch, ImU3
 
 	// segment A
 	if (pattern & 0b0000001) {
-		list->PathLineTo(ImVec2(x + 2.7 * s, y + 0.0));
-		list->PathLineTo(ImVec2(x + 49.0 * s, y + 0.0));
-		list->PathLineTo(ImVec2(x + 49.0 * s, y + 0.5 * s));
-		list->PathLineTo(ImVec2(x + 41.0 * s, y + 8.0 * s));
-		list->PathLineTo(ImVec2(x + 9.8 * s, y + 8.0 * s));
-		list->PathLineTo(ImVec2(x + 2.2 * s, y + 0.5 * s));
+		list->PathLineTo(ImVec2(x + 2.7f * s, y + 0.0f));
+		list->PathLineTo(ImVec2(x + 49.0f * s, y + 0.0f));
+		list->PathLineTo(ImVec2(x + 49.0f * s, y + 0.5f * s));
+		list->PathLineTo(ImVec2(x + 41.0f * s, y + 8.0f * s));
+		list->PathLineTo(ImVec2(x + 9.8f * s, y + 8.0f * s));
+		list->PathLineTo(ImVec2(x + 2.2f * s, y + 0.5f * s));
 		list->PathFillConvex(color);
 	}
 
 	// segment B
 	if (pattern & 0b0000010) {
-		list->PathLineTo(ImVec2(x + 50.0 * s, y + 2.7 * s));
-		list->PathLineTo(ImVec2(x + 50.0 * s, y + 49.0 * s));
-		list->PathLineTo(ImVec2(x + 46.0 * s, y + 49.0 * s));
-		list->PathLineTo(ImVec2(x + 42.0 * s, y + 45.0 * s));
-		list->PathLineTo(ImVec2(x + 42.0 * s, y + 9.8 * s));
-		list->PathLineTo(ImVec2(x + 50.0 * s, y + 2.2 * s));
+		list->PathLineTo(ImVec2(x + 50.0f * s, y + 2.7f * s));
+		list->PathLineTo(ImVec2(x + 50.0f * s, y + 49.0f * s));
+		list->PathLineTo(ImVec2(x + 46.0f * s, y + 49.0f * s));
+		list->PathLineTo(ImVec2(x + 42.0f * s, y + 45.0f * s));
+		list->PathLineTo(ImVec2(x + 42.0f * s, y + 9.8f * s));
+		list->PathLineTo(ImVec2(x + 50.0f * s, y + 2.2f * s));
 		list->PathFillConvex(color);
 	}
 
 	// segment C
 	if (pattern & 0b0000100) {
-		list->PathLineTo(ImVec2(x + 50.0 * s, y + 98.0 * s));
-		list->PathLineTo(ImVec2(x + 42.0 * s, y + 91.0 * s));
-		list->PathLineTo(ImVec2(x + 42.0 * s, y + 55.0 * s));
-		list->PathLineTo(ImVec2(x + 46.0 * s, y + 51.0 * s));
-		list->PathLineTo(ImVec2(x + 50.0 * s, y + 51.0 * s));
+		list->PathLineTo(ImVec2(x + 50.0f * s, y + 98.0f * s));
+		list->PathLineTo(ImVec2(x + 42.0f * s, y + 91.0f * s));
+		list->PathLineTo(ImVec2(x + 42.0f * s, y + 55.0f * s));
+		list->PathLineTo(ImVec2(x + 46.0f * s, y + 51.0f * s));
+		list->PathLineTo(ImVec2(x + 50.0f * s, y + 51.0f * s));
 		list->PathFillConvex(color);
 	}
 
 	// segment D
 	if (pattern & 0b0001000) {
-		list->PathLineTo(ImVec2(x + 2.2 * s, y + 100.0 * s));
-		list->PathLineTo(ImVec2(x + 9.8 * s, y + 92.0 * s));
-		list->PathLineTo(ImVec2(x + 41.0 * s, y + 92.0 * s));
-		list->PathLineTo(ImVec2(x + 49.0 * s, y + 100.0 * s));
-		list->PathLineTo(ImVec2(x + 2.7 * s, y + 100.0 * s));
+		list->PathLineTo(ImVec2(x + 2.2f * s, y + 100.0f * s));
+		list->PathLineTo(ImVec2(x + 9.8f * s, y + 92.0f * s));
+		list->PathLineTo(ImVec2(x + 41.0f * s, y + 92.0f * s));
+		list->PathLineTo(ImVec2(x + 49.0f * s, y + 100.0f * s));
+		list->PathLineTo(ImVec2(x + 2.7f * s, y + 100.0f * s));
 		list->PathFillConvex(color);
 	}
 
 	// segment E
 	if (pattern & 0b0010000) {
-		list->PathLineTo(ImVec2(x + 0.0, y + 98.0 * s));
-		list->PathLineTo(ImVec2(x + 0.0, y + 51.0 * s));
-		list->PathLineTo(ImVec2(x + 4.0 * s, y + 51.0 * s));
-		list->PathLineTo(ImVec2(x + 8.0 * s, y + 55.0 * s));
-		list->PathLineTo(ImVec2(x + 8.0 * s, y + 91.0 * s));
-		list->PathLineTo(ImVec2(x + 0.5 * s, y + 98.0 * s));
+		list->PathLineTo(ImVec2(x + 0.0f, y + 98.0f * s));
+		list->PathLineTo(ImVec2(x + 0.0f, y + 51.0 * s));
+		list->PathLineTo(ImVec2(x + 4.0f * s, y + 51.0f * s));
+		list->PathLineTo(ImVec2(x + 8.0f * s, y + 55.0f * s));
+		list->PathLineTo(ImVec2(x + 8.0f * s, y + 91.0f * s));
+		list->PathLineTo(ImVec2(x + 0.5f * s, y + 98.0f * s));
 		list->PathFillConvex(color);
 	}
 
 	// segment F
 	if (pattern & 0b0100000) {
-		list->PathLineTo(ImVec2(x + 0.5 * s, y + 2.2 * s));
-		list->PathLineTo(ImVec2(x + 8.0 * s, y + 9.8 * s));
-		list->PathLineTo(ImVec2(x + 8.0 * s, y + 45.0 * s));
-		list->PathLineTo(ImVec2(x + 4.0 * s, y + 49.0 * s));
-		list->PathLineTo(ImVec2(x + 0.0 * s, y + 49.0 * s));
-		list->PathLineTo(ImVec2(x + 0.0 * s, y + 2.7 * s));
+		list->PathLineTo(ImVec2(x + 0.5f * s, y + 2.2f * s));
+		list->PathLineTo(ImVec2(x + 8.0f * s, y + 9.8f * s));
+		list->PathLineTo(ImVec2(x + 8.0f * s, y + 45.0f * s));
+		list->PathLineTo(ImVec2(x + 4.0f * s, y + 49.0f * s));
+		list->PathLineTo(ImVec2(x + 0.0f * s, y + 49.0f * s));
+		list->PathLineTo(ImVec2(x + 0.0f * s, y + 2.7f * s));
 		list->PathFillConvex(color);
 	}
 
 	// segment G
 	if (pattern & 0b1000000) {
-		list->PathLineTo(ImVec2(x + 10.2 * s, y + 46.0 * s));
-		list->PathLineTo(ImVec2(x + 40.0 * s, y + 46.0 * s));
-		list->PathLineTo(ImVec2(x + 44.0 * s, y + 50.0 * s));
-		list->PathLineTo(ImVec2(x + 40.0 * s, y + 54.0 * s));
-		list->PathLineTo(ImVec2(x + 10.2 * s, y + 54.0 * s));
-		list->PathLineTo(ImVec2(x + 6.2 * s, y + 50.0 * s));
+		list->PathLineTo(ImVec2(x + 10.2f * s, y + 46.0f * s));
+		list->PathLineTo(ImVec2(x + 40.0f * s, y + 46.0f * s));
+		list->PathLineTo(ImVec2(x + 44.0f * s, y + 50.0f * s));
+		list->PathLineTo(ImVec2(x + 40.0f * s, y + 54.0f * s));
+		list->PathLineTo(ImVec2(x + 10.2f * s, y + 54.0f * s));
+		list->PathLineTo(ImVec2(x + 6.2f * s, y + 50.0f * s));
 		list->PathFillConvex(color);
 	}
 }
@@ -203,7 +203,7 @@ void OtTronClass::render() {
 	for (auto i = arcs.begin(); i != arcs.end(); i++) {
 		auto rotation = (i->rotation + tronRotation) * (i->clockwise ? 1.0f : -1.0f);
 		list->PathArcTo(center, i->radius * scale, i->start + rotation, i->end + rotation);
-		list->PathStroke(i->color, 0, i->width * scale);
+		list->PathStroke(i->color, ImDrawFlags_None, i->width * scale);
 	}
 
 	// render seconds indicator
@@ -249,19 +249,19 @@ void OtTronClass::createArcs() {
 
 	while (arc.radius < 500.0f) {
 		// determine start of arc
-		arc.start = arc.end + OtRandom(0.1, 0.3);
+		arc.start = arc.end + OtRandom(0.1f, 0.3f);
 
 		// ensure arc is still meaningful
-		if (arc.start > std::numbers::pi * 2.0 - 0.2) {
+		if (arc.start > std::numbers::pi * 2.0f - 0.2f) {
 			nextCircle = true;
 
 		} else {
 			// determine end of arc
-			arc.end = arc.start + OtRandom(0.3, std::numbers::pi / 3.0);
+			arc.end = arc.start + OtRandom(0.3, std::numbers::pi / 3.0f);
 
 			// ensure arc is still meaningful
-			if (arc.end > std::numbers::pi * 2.0) {
-				arc.end = std::numbers::pi * 2.0 - 0.1;
+			if (arc.end > std::numbers::pi * 2.0f) {
+				arc.end = std::numbers::pi * 2.0f - 0.1f;
 				nextCircle = true;
 			}
 
@@ -275,11 +275,11 @@ void OtTronClass::createArcs() {
 		// start next circle if required
 		if (nextCircle) {
 			// update angles
-			arc.end = 0.0;
-			arc.width = OtRandom(6.0, 14.0);
+			arc.end = 0.0f;
+			arc.width = OtRandom(6.0f, 14.0f);
 			arc.rotation = OtRandom(std::numbers::pi);
-			arc.radius += arc.width + OtRandom(8.0, 12.0);
-			arc.clockwise = OtRandom() > 0.5;
+			arc.radius += arc.width + OtRandom(8.0f, 12.0f);
+			arc.clockwise = OtRandom() > 0.5f;
 			nextCircle = false;
 		}
 	}

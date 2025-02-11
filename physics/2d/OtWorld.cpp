@@ -25,7 +25,7 @@
 //
 
 OtWorldClass::OtWorldClass() {
-	world = new b2World(b2Vec2(0.0, 0.0));
+	world = new b2World(b2Vec2(0.0f, 0.0f));
 	world->SetContactListener(this);
 }
 
@@ -111,7 +111,7 @@ OtObject OtWorldClass::addEndContactCallback(OtObject callback) {
 
 OtObject OtWorldClass::start() {
 	running = true;
-	delta = 0.0;
+	delta = 0.0f;
 	return OtObject();
 }
 

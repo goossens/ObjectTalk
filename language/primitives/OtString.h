@@ -42,7 +42,7 @@ public:
 	inline operator int() override { try { return std::stoi(value, nullptr, 0); } catch(...) { return 0; }}
 	inline operator int64_t() override { try { return std::stol(value, nullptr, 0); } catch(...) { return 0; }}
 	inline operator size_t() override { try { return (size_t) std::stol(value, nullptr, 0); } catch(...) { return 0; }}
-	inline operator float() override { try { return std::stof(value); } catch(...) { return 0.0; }}
+	inline operator float() override { try { return std::stof(value); } catch(...) { return 0.0f; }}
 	inline operator double() override { try { return std::stod(value); } catch(...) { return 0.0; }}
 	inline operator std::string() override {return value; }
 

@@ -33,7 +33,7 @@ public:
 	inline operator int() override { return value ? 1 : 0; }
 	inline operator int64_t() override { return value ? 1 : 0; }
 	inline operator size_t() override { return value ? 1 : 0; }
-	inline operator float() override { return value ? 1.0 : 0.0; }
+	inline operator float() override { return value ? 1.0f : 0.0f; }
 	inline operator double() override { return value ? 1.0 : 0.0; }
 	inline operator std::string() override { return value ? "true" : "false"; }
 

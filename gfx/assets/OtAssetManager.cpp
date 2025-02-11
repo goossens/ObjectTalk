@@ -168,7 +168,7 @@ void OtAssetManager::scheduleLoad(OtAssetBase* asset) {
 //
 
 void OtAssetManager::clearUnusedAssets() {
-	// possibly need to loop multiple times due to asset dependancies
+	// possibly need to loop multiple times due to asset dependencies
 	size_t lastCleared;
 	size_t cleared = 0;
 

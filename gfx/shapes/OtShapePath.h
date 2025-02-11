@@ -35,8 +35,8 @@ public:
 	// clear the path
 	inline void clear() {
 		segments.clear();
-		startPoint = glm::vec2(0.0);
-		currentPoint = glm::vec2(0.0);
+		startPoint = glm::vec2(0.0f);
+		currentPoint = glm::vec2(0.0f);
 		state = State::undefined;
 	}
 
@@ -51,21 +51,21 @@ public:
 	inline void lineTo(const glm::vec2& point){
 		OtAssert(state == State::started || state == State::building);
 		state = State::building;
-		add(std::make_shared<OtLineSegment>(currentPoint, point));
+		segments.push_back(std::make_shared<OtLineSegment>(currentPoint, point));
 		currentPoint = point;
 	}
 
 	inline void quadraticCurveTo(const glm::vec2& control, const glm::vec2& point) {
 		OtAssert(state == State::started || state == State::building);
 		state = State::building;
-		add(std::make_shared<OtQuadraticBezierSegment>(currentPoint, control, point));
+		segments.push_back(std::make_shared<OtQuadraticBezierSegment>(currentPoint, control, point));
 		currentPoint = point;
 	}
 
 	inline void bezierCurveTo(const glm::vec2& control1, const glm::vec2& control2, const glm::vec2& point) {
 		OtAssert(state == State::started || state == State::building);
 		state = State::building;
-		add(std::make_shared<OtCubicBezierSegment>(currentPoint, control1, control2, point));
+		segments.push_back(std::make_shared<OtCubicBezierSegment>(currentPoint, control1, control2, point));
 		currentPoint = point;
 	}
 
@@ -73,15 +73,10 @@ public:
 		OtAssert(state == State::building);
 
 		if (startPoint != currentPoint) {
-			moveTo(startPoint);
+			lineTo(startPoint);
 		}
 
 		state = State::closed;
-	}
-
-	// get the length of the segment
-	inline float getLength() {
-		return currentLength;
 	}
 
 	// see if we have completed segments
@@ -101,23 +96,17 @@ public:
 	}
 
 	std::string toString() {
-		std::string result = fmt::format("m {} {}\n", startPoint.x, startPoint.y);
+		std::string result = fmt::format("M {} {}\n", startPoint.x, startPoint.y);
 
 		for (auto& segment : segments) {
 			result += segment->toString();
 		}
 
-		result += "z\n";
+		result += "Z\n";
 		return result;
 	}
 
 private:
-	// add a segment
-	inline void add(std::shared_ptr<OtShapeSegment> segment) {
-		currentLength += segment->getLength();
-		segments.push_back(segment);
-	}
-
 	// properties
 	enum class State {
 		undefined,
@@ -129,7 +118,6 @@ private:
 	State state = State::undefined;
 
 	std::vector<std::shared_ptr<OtShapeSegment>> segments;
-	glm::vec2 startPoint = glm::vec2(0.0);
-	glm::vec2 currentPoint = glm::vec2(0.0);
-	float currentLength = 0.0;
+	glm::vec2 startPoint = glm::vec2(0.0f);
+	glm::vec2 currentPoint = glm::vec2(0.0f);
 };

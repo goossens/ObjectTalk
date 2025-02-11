@@ -972,6 +972,7 @@ void TextEditor::handleCharacter(ImWchar character) {
 	if (completePairCloser) {
 		if (completePairCloser == character && completePairLocation == cursors.getCurrent().getSelectionEnd()) {
 			completePairCloser = 0;
+			moveRight(false, false);
 			return;
 		}
 

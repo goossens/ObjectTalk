@@ -391,7 +391,7 @@ TextEditor::Coordinate TextEditor::Document::findWordStart(Coordinate from) cons
 	} else {
 		auto& line = at(from.line);
 		auto index = getIndex(from);
-		auto firstCharacter = line[index - 1].codepoint;
+		auto firstCharacter = line[index].codepoint;
 
 		if (CodePoint::isWhiteSpace(firstCharacter)) {
 			while (index > 0 && CodePoint::isWhiteSpace(line[index - 1].codepoint)) {

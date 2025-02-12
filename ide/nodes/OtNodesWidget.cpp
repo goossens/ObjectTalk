@@ -526,7 +526,16 @@ static void dashedBezierCubic(ImDrawList* drawlist, const ImVec2& p1, const ImVe
 	}
 
 	for (auto i = 0; i < segments; i += 2) {
-		drawlist->AddLine(points[i], points[i + 1], color, 1.5f);
+		drawlist->AddLine(points[i], points[i + 1], color, linkThickness);
+	}
+}
+
+
+static void dashedLine(ImDrawList* drawlist, const ImVec2& p1, const ImVec2& p2, ImU32 color, int segments) {
+	auto step = (p2 - p1) / segments;
+
+	for (auto i = 1; i < segments - 1; i += 2) {
+		drawlist->AddLine(p1 + step * i, p1 + step * (i + 1), color, linkThickness);
 	}
 }
 
@@ -562,9 +571,20 @@ void OtNodesWidget::renderLink(ImDrawList* drawlist, const ImVec2& start, const 
 		ImVec2 control1b = start + ImVec2(vd2a, vd2);
 		ImVec2 control2a = end - ImVec2(vd2a, vd2);
 		ImVec2 control2b = end - ImVec2(vd2a, 0.0f);
-		drawlist->AddBezierCubic(start, control1a, control1b, center1, color, linkThickness);
-		drawlist->AddLine(center1, center2, color, linkThickness);
-		drawlist->AddBezierCubic(center2, control2a, control2b, end, color, linkThickness);
+
+		if (isVarying) {
+			int arcSegments = std::max(int(std::numbers::pi / 2.0f * vd2a / 4.0f), 2) | 1;
+			int lineSegments = std::max(int((std::abs(center2.x - center1.x)) / 6.0f), 2) | 1;
+
+			dashedBezierCubic(drawlist, start, control1a, control1b, center1, color, arcSegments);
+			dashedLine(drawlist, center1, center2, color, lineSegments);
+			dashedBezierCubic(drawlist, center2, control2a, control2b, end, color, arcSegments);
+
+		} else {
+			drawlist->AddBezierCubic(start, control1a, control1b, center1, color, linkThickness);
+			drawlist->AddLine(center1, center2, color, linkThickness);
+			drawlist->AddBezierCubic(center2, control2a, control2b, end, color, linkThickness);
+		}
 	}
 }
 

@@ -128,7 +128,7 @@ void OtEditor::renderMenuBar(bool canRun) {
 	}
 
 	// handle keyboard shortcuts
-	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows) && !ImGui::GetIO().WantCaptureKeyboard) {
+	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && !ImGui::GetIO().WantCaptureKeyboard) {
 		if (ImGui::IsKeyDown(ImGuiMod_Ctrl)) {
 			if (ImGui::IsKeyPressed(ImGuiKey_N)) {
 				OtMessageBus::send("new");

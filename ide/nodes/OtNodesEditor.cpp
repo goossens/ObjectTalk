@@ -217,7 +217,7 @@ void OtNodesEditor::renderEditor() {
 	// render the nodes
 	widget.render(&nodes);
 
-	// handle node editing
+	// handle node editing events
 	uint32_t node;
 
 	if (widget.isNodeEdited(node)) {

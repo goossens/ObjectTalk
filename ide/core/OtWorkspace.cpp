@@ -653,7 +653,6 @@ void OtWorkspace::renderTabbedEditors() {
 
 				if (editorToActivate == editor) {
 					flags |= ImGuiTabItemFlags_SetSelected;
-					editorToActivate = nullptr;
 				}
 
 				if (editor->isDirty()) {
@@ -662,8 +661,13 @@ void OtWorkspace::renderTabbedEditors() {
 
 				// create tab and editor
 				if (ImGui::BeginTabItem(OtPath::getFilename(editor->getPath()).c_str(), nullptr, flags)) {
+					if (editorToActivate == editor) {
+						ImGui::SetNextWindowFocus();
+					}
+
 					ImGui::BeginChild("editor", ImVec2(), ImGuiChildFlags_Borders, ImGuiWindowFlags_MenuBar);
 					editor->renderMenuBar(!subprocess.isRunning());
+
 					editor->renderEditor();
 					ImGui::EndChild();
 
@@ -671,6 +675,7 @@ void OtWorkspace::renderTabbedEditors() {
 					activeEditor = editor;
 				}
 
+				editorToActivate = nullptr;
 				ImGui::PopID();
 			}
 		}

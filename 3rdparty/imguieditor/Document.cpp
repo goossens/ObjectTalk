@@ -295,15 +295,21 @@ TextEditor::Coordinate TextEditor::Document::getDown(Coordinate from, int lines)
 
 TextEditor::Coordinate TextEditor::Document::getLeft(Coordinate from, bool wordMode) const {
 	if (wordMode) {
-		if (from.column == 0) {
-			if (from.line) {
-				from = Coordinate(from.line - 1, maxColumn(from.line - 1));
-			}
+		// first move left by one glyph
+		from = getLeft(from);
+		auto& line = at(from.line);
+		auto index = getIndex(from);
+
+		// now skip all whitespaces
+		while (index > 0 && CodePoint::isWhiteSpace(line[index].codepoint)) {
+			index--;
 		}
 
-		return findWordStart(from);
+		// find the start of the current word
+		return findWordStart(Coordinate(from.line, getColumn(from.line, index)));
 
 	} else {
+		// calculate coordinate of previous glyph (could be on previous line)
 		auto index = getIndex(from);
 
 		if (index == 0) {
@@ -322,15 +328,22 @@ TextEditor::Coordinate TextEditor::Document::getLeft(Coordinate from, bool wordM
 
 TextEditor::Coordinate TextEditor::Document::getRight(Coordinate from, bool wordMode) const {
 	if (wordMode) {
-		if (isEndOfLine(from)) {
-			if (from.line < lines() - 1) {
-				from = Coordinate(from.line + 1, 0);
-			}
+		// first move right by one glyph
+		from = getRight(from);
+		auto& line = at(from.line);
+		auto index = getIndex(from);
+		auto size = line.glyphs();
+
+		// now skip all whitespaces
+		while (index < size && CodePoint::isWhiteSpace(line[index].codepoint)) {
+			index++;
 		}
 
-		return findWordEnd(from);
+		// find the end of the current word
+		return findWordEnd(Coordinate(from.line, getColumn(from.line, index)));
 
 	} else {
+		// calculate coordinate of next glyph (could be on next line)
 		auto index = getIndex(from);
 
 		if (index == at(from.line).glyphs()) {

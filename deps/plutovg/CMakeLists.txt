@@ -11,6 +11,7 @@ file(GLOB PLUTOVG_SOURCES
 	${plutovg_SOURCE_DIR}/source/*.c)
 
 add_library(plutovg STATIC ${PLUTOVG_SOURCES})
+target_compile_definitions(plutovg PUBLIC "PLUTOVG_BUILD_STATIC")
 target_include_directories(plutovg PUBLIC ${plutovg_SOURCE_DIR}/include)
 
 set_target_properties(plutovg PROPERTIES FOLDER "deps")

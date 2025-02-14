@@ -16,7 +16,11 @@
 #include <vector>
 
 #if _WIN32
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
+#undef APIENTRY
 #include <windows.h>
+#include <shellapi.h>
 
 #else
 #include <stdlib.h>
@@ -237,7 +241,6 @@ void OtFramework::setAntiAliasing(int aa) {
 	// MacOS version is in OtMacos.mm as it requires Objective-C
 
 #else
-
 void OtFramework::openURL(const std::string& url) {
 #if _WIN32
 	WCHAR *temp = new WCHAR[url.size() + 1];
@@ -247,8 +250,9 @@ void OtFramework::openURL(const std::string& url) {
 
 #else
 #include <stdlib.h>
-	std::string op = std::string("xdg-open '").append(url).append("'");
-	return system(op.c_str()) == 0;
+
+	std::string command = std::string("xdg-open '").append(url).append("'");
+	system(command.c_str());
 #endif
 }
 

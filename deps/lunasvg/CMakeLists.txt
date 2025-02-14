@@ -12,6 +12,7 @@ file(GLOB LUNASVG_SOURCES
 	${lunasvg_SOURCE_DIR}/source/*.cpp)
 
 add_library(lunasvg STATIC ${LUNASVG_SOURCES})
+target_compile_definitions(lunasvg PUBLIC LUNASVG_BUILD_STATIC)
 target_include_directories(lunasvg PUBLIC ${lunasvg_SOURCE_DIR}/include)
 target_link_libraries(lunasvg PUBLIC plutovg)
 

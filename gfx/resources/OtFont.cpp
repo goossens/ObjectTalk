@@ -98,10 +98,10 @@ float OtFont::getWidth(const std::string& text, float size) {
 
 
 //
-//	OtFont::parseGlyph
+//	OtFont::parseGlyphs
 //
 
-void OtFont::parseGlyph(
+void OtFont::parseGlyphs(
 	const std::string& text,
 	float size,
 	std::function<void(float, float)> moveTo,

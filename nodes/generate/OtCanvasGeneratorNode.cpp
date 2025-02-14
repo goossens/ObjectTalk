@@ -62,7 +62,7 @@ public:
 		ImGui::SetNextItemWidth(width);
 		auto old = serialize().dump();
 
-		bool changed = script.renderUI("##ScriptPath", [](const std::string& path) {
+		bool changed = script.renderUI("##script", [](const std::string& path) {
 			// create a new script file
 			std::ofstream stream(path);
 			stream << scriptTemplate;

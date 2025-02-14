@@ -16,10 +16,10 @@
 
 
 //
-//	OtTerrainBuilder
+//	OtTerrainBuilderNode
 //
 
-class OtTerrainBuilder : public OtNodeClass {
+class OtTerrainBuilderNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
@@ -115,4 +115,4 @@ protected:
 	int depth = 0;
 };
 
-static OtNodesFactoryRegister<OtTerrainBuilder> type;
+static OtNodesFactoryRegister<OtTerrainBuilderNode> type;

@@ -35,13 +35,6 @@ static bx::DefaultAllocator allocator;
 
 
 //
-//	Error handler
-//
-
-#define CHECK(name, ptr) if (!ptr) { OtLogFatal("Function [{}] failed", name); }
-
-
-//
 //	OtImage::OtImage
 //
 
@@ -77,7 +70,10 @@ void OtImage::update(int width, int height, int format) {
 			false,
 			false);
 
-		CHECK("bimg::imageAlloc", imageContainer);
+		if (!imageContainer) {
+			OtLogFatal("Function [bimg::imageAlloc] failed");
+		}
+
 		assignImageContainer(imageContainer);
 	}
 }
@@ -105,7 +101,10 @@ void OtImage::load(const std::string& path, bool powerof2, bool square) {
 
 	auto imageContainer = bimg::imageParse(&allocator, buffer, (uint32_t) filesize);
 	delete [] buffer;
-	CHECK("bimg::imageParse", imageContainer);
+
+	if (!imageContainer) {
+		OtLogFatal("Function [bimg::imageParse] failed");
+	}
 
 	if (!imageContainer) {
 		OtError("Can't process image in [{}]", path);

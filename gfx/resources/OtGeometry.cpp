@@ -52,10 +52,10 @@ void OtGeometry::setMesh(std::shared_ptr<OtMesh> m) {
 
 
 //
-//	OtGeometry::cloneMesh
+//	OtGeometry::cloneFrom
 //
 
-void OtGeometry::cloneMesh(const OtGeometry& geometry) {
+void OtGeometry::cloneFrom(const OtGeometry& geometry) {
 	mesh = std::make_shared<OtMesh>(*geometry.mesh);
 	incrementVersion();
 }

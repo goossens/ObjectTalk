@@ -19,10 +19,10 @@
 
 
 //
-//	OtTransformGeometryNode
+//	OtGeometryTransform
 //
 
-class OtTransformGeometryNode : public OtNodeClass {
+class OtGeometryTransform : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
@@ -38,7 +38,7 @@ public:
 		// do we have a valid input
 		if (input.isValid()) {
 			// clone the mesh
-			output.cloneMesh(input);
+			output.cloneFrom(input);
 
 			// get accesss to the mesh and vertex list
 			auto& mesh = output.getMesh();
@@ -95,4 +95,4 @@ protected:
 	glm::vec3 scale{1.0f};
 };
 
-static OtNodesFactoryRegister<OtTransformGeometryNode> type;
+static OtNodesFactoryRegister<OtGeometryTransform> type;

@@ -13,29 +13,33 @@
 
 #include "imgui.h"
 
+#include "OtImage.h"
+#include "OtShape.h"
 #include "OtTexture.h"
 
 #include "OtNodesFactory.h"
 
 
 //
-//	OtTextureProbeNode
+//	OtShapeProbeNode
 //
 
-class OtTextureProbeNode : public OtNodeClass {
+class OtShapeProbeNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addInputPin("Texture", texture);
+		addInputPin("Shape", shape);
 	}
 
-	// nothing to do on execute but we'll use it to determine texture size
+	// convert shape to texture and determine size
 	void onExecute() override {
 		auto fieldWidth = 170.0f;
 
-		if (texture.isValid()) {
-			customW = std::min(fieldWidth, (float) texture.getWidth());
-			customH = customW * texture.getHeight() / texture.getWidth();
+		if (shape.isValid()) {
+			shape.renderFill(image, OtColor(1.0, 1.0, 1.0, 1.0));
+			texture.loadFromImage(image);
+			customW = std::min(fieldWidth, (float) image.getWidth());
+			customH = customW * image.getHeight() / image.getWidth();
 
 		} else {
 			customW = fieldWidth;
@@ -47,15 +51,15 @@ public:
 
 	// render custom fields
 	void customRendering(float width) override {
-		if (texture.isValid()) {
+		if (shape.isValid()) {
 			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (width - customW) / 2.0f);
 			ImGui::Image((ImTextureID)(intptr_t) texture.getIndex(), ImVec2(customW, customH));
 
 			if (ImGui::IsItemClicked(ImGuiPopupFlags_MouseButtonLeft) && ImGui::IsMouseDoubleClicked(ImGuiPopupFlags_MouseButtonLeft)) {
-				ImGui::OpenPopup("Texture Popup");
+				ImGui::OpenPopup("Shape Popup");
 			}
 
-			if (ImGui::BeginPopup("Texture Popup")) {
+			if (ImGui::BeginPopup("Shape Popup")) {
 				auto size = ImGui::GetMainViewport()->WorkSize;
 				auto scale = std::min(size.x * 0.75f / customW, size.y * 0.75f / customH);
 				ImGui::Image((ImTextureID)(intptr_t) texture.getIndex(), ImVec2(scale * customW, scale * customH));
@@ -63,7 +67,7 @@ public:
 			}
 
 		} else {
-			ImGui::TextUnformatted("No texture available");
+			ImGui::TextUnformatted("No shape available");
 		}
 	}
 
@@ -75,14 +79,16 @@ public:
 		return customH;
 	}
 
-	static constexpr const char* nodeName = "Texture Probe";
+	static constexpr const char* nodeName = "Shape Probe";
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::probe;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 protected:
+	OtShape shape;
+	OtImage image;
 	OtTexture texture;
 	float customW;
 	float customH;
 };
 
-static OtNodesFactoryRegister<OtTextureProbeNode> type;
+static OtNodesFactoryRegister<OtShapeProbeNode> type;

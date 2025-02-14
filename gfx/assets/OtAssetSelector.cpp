@@ -62,8 +62,8 @@ bool OtAssetSelector::renderUI(Info& info) {
 	// determine button status
 	bool showClearButton = !info.path.empty();
 	bool showVirtualButton = info.virtualMode;
-	bool showCreateButton = info.path.empty() && info.creator;
-	bool showEditButton = !info.path.empty() && info.hasEditor;
+	bool showCreateButton = info.creator && info.path.empty();
+	bool showEditButton = info.hasEditor && !info.path.empty() && OtPath::isRegularFile(info.path);
 
 	// determine number of buttons
 	int buttons =
@@ -86,7 +86,7 @@ bool OtAssetSelector::renderUI(Info& info) {
 
 	// get file dialog information
 	auto dialog = ImGuiFileDialog::Instance();
-	auto dialogID = std::string("select-file-") + id;
+	auto dialogID = fmt::format("select-file-{}", info.id);
 	std::string filter = info.supportedFileTypes;
 
 	if (filter.find(',') != std::string::npos) {

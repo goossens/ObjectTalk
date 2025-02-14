@@ -410,6 +410,7 @@ void OtNodes::deleteLinks(OtNodesPin any) {
 
 void OtNodes::redirectLink(OtNodesLink link, uint32_t newTo) {
 	// redirect link
+	link->to->node->needsEvaluating = true;
 	link->to->node->needsSizing = true;
 	link->disconnect();
 	link->redirectTo(pinIndex[newTo]);

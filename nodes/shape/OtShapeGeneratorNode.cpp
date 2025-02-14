@@ -24,7 +24,6 @@
 #include "OtScriptAsset.h"
 
 #include "OtNodesFactory.h"
-#include "OtTextureGeneratorNode.h"
 
 
 //
@@ -58,7 +57,7 @@ public:
 		ImGui::SetNextItemWidth(width);
 		auto old = serialize().dump();
 
-		bool changed = script.renderUI("##ScriptPath", [](const std::string& path) {
+		bool changed = script.renderUI("##script", [](const std::string& path) {
 			// create a new script file
 			std::ofstream stream(path);
 			stream << scriptTemplate;
@@ -167,7 +166,7 @@ public:
 	}
 
 	static constexpr const char* nodeName = "Shape Generator";
-	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::generate;
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::shape;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 protected:

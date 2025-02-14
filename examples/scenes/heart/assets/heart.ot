@@ -9,5 +9,7 @@ class Renderer : shape.Shape {
 		this.bezierCurveTo(60, -27, 80, -5, 80, 15);
 		this.bezierCurveTo(80, 15, 80, 50, 50, 50);
 		this.bezierCurveTo(35, 50, 25, 25, 25, 25);
+
+		this.circle(25, 0, 15);
 	}
 }

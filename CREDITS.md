@@ -21,6 +21,8 @@ In case User Interface (UI) modules are included, we also use:
 * [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo) - Gizmo to visually manipulate 4x4 matrices released under the [MIT license](https://opensource.org/licenses/MIT).
 * [glm](https://github.com/g-truc/glm) - mathematics library for graphics software released under the [MIT license](https://opensource.org/licenses/MIT).
 * [libtess2](https://github.com/memononen/libtess2) - library to convert (tesssallate) polygons into triangles by [Mikko Mononen](https://github.com/memononen) released under the [SGI Free Sofware License B, version 2](https://directory.fsf.org/wiki/License:SGI-B-2.0)
+* [PlutoVG](https://github.com/sammycage/plutovg) - standalone 2D vector graphics library in C released under the [MIT license](https://opensource.org/licenses/MIT).
+* [LunaSVG](https://github.com/sammycage/lunasvg) - SVG rendering library designed to be lightweight and portable, offering efficient rendering and manipulation released under the [MIT license](https://opensource.org/licenses/MIT).
 * [EnTT](https://github.com/skypjack/entt) - Entity Component System (ECS) by [Michele Caini](https://github.com/skypjack) released under the [MIT license](https://opensource.org/licenses/MIT).
 * [JSON for Modern C++](https://github.com/nlohmann/json) - JSON creation/parsing library released under the [MIT license](https://opensource.org/licenses/MIT).
 * [BS::thread_pool](https://github.com/bshoshany/thread-pool) - A fast, lightweight, and easy-to-use C++17 thread pool library released under the [MIT license](https://opensource.org/licenses/MIT).

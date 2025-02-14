@@ -46,8 +46,8 @@ public:
 	// get the width of a text string
 	float getWidth(const std::string& text, float size);
 
-	// parse glyph and call functions for outline
-	void parseGlyph(
+	// parse glyphs and call functions for outline
+	void parseGlyphs(
 		const std::string& text,
 		float size,
 		std::function<void(float, float)> moveTo,

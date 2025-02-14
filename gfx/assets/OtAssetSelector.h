@@ -23,6 +23,7 @@
 class OtAssetSelector {
 public:
 	struct Info {
+		void* id;
 		const char* label;
 		std::string path;
 		const char* supportedFileTypes = "";

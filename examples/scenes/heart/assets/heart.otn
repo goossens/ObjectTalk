@@ -1,0 +1,127 @@
+{
+	"links": [
+		{
+			"from": 2873823255,
+			"id": 2160878527,
+			"to": 3195650876
+		},
+		{
+			"from": 2547115557,
+			"id": 1069569191,
+			"to": 3761969199
+		},
+		{
+			"from": 839890254,
+			"id": 2723048497,
+			"to": 3380124045
+		},
+		{
+			"from": 109698154,
+			"id": 457562317,
+			"to": 2781239163
+		}
+	],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 1210579916,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 2547115557,
+					"name": "Value",
+					"type": "float"
+				}
+			],
+			"title": "Depth",
+			"type": "Float Input",
+			"value": 3.0,
+			"x": 49.0,
+			"y": 230.0
+		},
+		{
+			"id": 2320515272,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 839890254,
+					"name": "Shape",
+					"type": "shape"
+				}
+			],
+			"path": "heart.ot",
+			"title": "Shape Generator",
+			"type": "Shape Generator",
+			"x": 49.0,
+			"y": 115.0
+		},
+		{
+			"id": 790235078,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 109698154,
+					"name": "Value",
+					"type": "float"
+				}
+			],
+			"title": "Tolerance",
+			"type": "Float Input",
+			"value": 0.009999999776482582,
+			"x": 51.0,
+			"y": 327.0
+		},
+		{
+			"id": 3232750156,
+			"inputs": [
+				{
+					"id": 3380124045,
+					"name": "Shape",
+					"type": "shape"
+				},
+				{
+					"id": 3761969199,
+					"name": "Depth",
+					"type": "float"
+				},
+				{
+					"id": 2781239163,
+					"name": "Tolerance",
+					"type": "float"
+				}
+			],
+			"outputs": [
+				{
+					"id": 2873823255,
+					"name": "Geometry",
+					"type": "geometry"
+				}
+			],
+			"title": "Extrude Shape",
+			"type": "Extrude Shape",
+			"x": 374.0,
+			"y": 92.0
+		},
+		{
+			"id": 2601550030,
+			"inputs": [
+				{
+					"id": 3195650876,
+					"name": "Input",
+					"type": "geometry"
+				},
+				{
+					"id": 2302637727,
+					"name": "Name",
+					"type": "string",
+					"value": "heart"
+				}
+			],
+			"outputs": [],
+			"title": "Save Geometry To Virtual",
+			"type": "Save Geometry To Virtual",
+			"x": 655.0,
+			"y": 91.0
+		}
+	]
+}

@@ -11,8 +11,8 @@
 				{
 					"component": "Transform",
 					"rotation": [
-						-14.397780418395996,
-						-1.2881314754486084,
+						12.0,
+						-13.199999809265137,
 						0.0
 					],
 					"scale": [
@@ -23,13 +23,13 @@
 					"translation": [
 						0.5671269297599792,
 						3.5236403942108154,
-						24.77860450744629
+						120.0
 					]
 				},
 				{
 					"component": "Camera",
 					"far": 500.0,
-					"fov": 60.0,
+					"fov": 50.0,
 					"mainCamera": false,
 					"near": 1.0
 				}
@@ -78,22 +78,22 @@
 			"components": [
 				{
 					"component": "Core",
-					"tag": "Text",
+					"tag": "Heart",
 					"uuid": 449063505
 				},
 				{
 					"component": "Geometry",
 					"cullback": false,
-					"path": "virtual:text",
+					"path": "virtual:heart",
 					"transparent": false,
 					"wireframe": false
 				},
 				{
 					"component": "Transform",
 					"rotation": [
-						-8.979999542236328,
-						-17.0,
-						0.8899999856948853
+						22.100000381469727,
+						-31.0,
+						1.5199999809265137
 					],
 					"scale": [
 						1.0,
@@ -102,17 +102,17 @@
 					],
 					"translation": [
 						0.0,
-						-6.630000114440918,
-						-3.2200000286102295
+						25.100000381469727,
+						-29.0
 					]
 				},
 				{
 					"component": "Material",
 					"material": {
 						"albedo": [
-							0.787610650062561,
-							0.7353664636611938,
-							0.25092020630836487,
+							0.8461074233055115,
+							0.4131098687648773,
+							0.9336283206939697,
 							1.0
 						],
 						"albedoTexture": "",
@@ -124,34 +124,22 @@
 							0.0
 						],
 						"emissiveTexture": "",
-						"metallic": 0.7200000286102295,
+						"metallic": 0.8299999833106995,
 						"metallicRoughnessTexture": "",
 						"normalTexture": "",
-						"roughness": 0.4000000059604645,
+						"roughness": 0.5600000023841858,
 						"scale": 1.0
 					}
 				},
 				{
 					"component": "Nodes",
-					"path": "assets/text.otn",
+					"path": "assets/heart.otn",
 					"settings": {
 						"1210579916": {
-							"value": 3.0
+							"value": 31.0
 						},
-						"1509100340": {
-							"value": 12.0
-						},
-						"240854171": {
-							"value": "Test"
-						},
-						"2418679538": {
-							"value": 0.05000000074505806
-						},
-						"2590841629": {
-							"value": true
-						},
-						"2625173197": {
-							"path": "assets/roboto.ttf"
+						"790235078": {
+							"value": 0.20000000298023224
 						}
 					}
 				}
@@ -161,16 +149,16 @@
 	"metadata": {
 		"camera": {
 			"far": 500.0,
-			"fov": 60.0,
+			"fov": 50.0,
 			"near": 1.0,
-			"pitch": -14.397780418395996,
+			"pitch": 12.0,
 			"position": [
 				0.5671269297599792,
 				3.5236403942108154,
-				24.77860450744629
+				120.0
 			],
 			"speed": 3.0,
-			"yaw": -1.2881314754486084
+			"yaw": -13.199999809265137
 		},
 		"gizmo": {
 			"enabled": false,

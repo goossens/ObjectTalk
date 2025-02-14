@@ -68,7 +68,7 @@ public:
 	inline void redo() { editor.Redo(); }
 	inline bool canUndo() { return editor.CanUndo(); };
 	inline bool canRedo() { return  editor.CanRedo(); };
-	inline int getUndoIndex() { return editor.GetUndoIndex(); }
+	inline size_t getUndoIndex() { return editor.GetUndoIndex(); }
 
 	// render content
 	void render() override;

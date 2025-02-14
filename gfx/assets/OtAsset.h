@@ -237,6 +237,7 @@ public:
 		virtualMode |= isVirtual();
 
 		OtAssetSelector::Info info;
+		info.id = this;
 		info.label = label;
 		info.path = getPath();
 		info.supportedFileTypes = T::supportedFileTypes;

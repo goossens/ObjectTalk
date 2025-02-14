@@ -34,50 +34,57 @@ public:
 	inline void configure() override {
 		addInputPin("Shape", shape);
 		addInputPin("Depth", depth);
+		addInputPin("Tolerance", tolerance);
 		addOutputPin("Geometry", geometry);
 	}
 
 	// extrude a 2D shape
 	void onExecute() override {
 		if (shape.isValid()) {
-			auto pathCount = shape.getPathCount();
-
 			// create a tesselator
 			TESStesselator* tess = tessNewTess(NULL);
-    		tessSetOption(tess, TESS_CONSTRAINED_DELAUNAY_TRIANGULATION, 1);
+			tessSetOption(tess, TESS_CONSTRAINED_DELAUNAY_TRIANGULATION, 1);
 
 			// create an empty mesh
 			std::shared_ptr<OtMesh> mesh = std::make_shared<OtMesh>();
 
-			// process all paths
-			std::vector<glm::vec2> path;
-			bool cw;
+			// get the shape's path segments
+			std::vector<glm::vec2> points;
+			std::vector<size_t> sizes;
+			shape.getSegments(points, sizes, tolerance);
+			size_t start = 0;
 
-			for (auto i = 0; i < pathCount; i++) {
-				// get the points on the path
-				shape.getPath(path, i);
+			// determine winding order of first segment
+			auto n = sizes[0];
+			float area = 0.0f;
 
-				// determine winding order of first path
-				if (i == 0) {
-					cw = OtShape::isPathClockwise(path);
-				}
+			for (size_t p = n - 1, q = 0; q < n; p = q++) {
+				area += points[p].x * points[q].y - points[q].x * points[p].y;
+			}
 
-				// reverse path order if shape uses clockwise order for external contours
+			bool cw = area < 0;
+
+			// process all segments
+			for (auto size : sizes) {
+				// reverse order if shape uses clockwise order for external contours (i.e. first segment)
 				if (cw) {
-					std::reverse(path.begin(), path.end());
+					auto first = points.begin() + start;
+					std::reverse(first, first + size);
 				}
 
-				// add path to tesselator
-				tessAddContour(tess, 2, path.data(), sizeof(glm::vec2), (int) path.size());
+				// add segment to the tesselator
+				tessAddContour(tess, 2, &points[start], sizeof(glm::vec2), (int) size);
 
-				// create faces to connect front and back
-				for (auto j = 0; j < path.size() - 1; j++) {
+				// create faces to connect front and back of segment
+				for (auto j = start; j < start + size - 1; j++) {
 					mesh->addFace(
-						glm::vec3(path[j].x, path[j].y, 0.0),
-						glm::vec3(path[j].x, path[j].y, -depth),
-						glm::vec3(path[j + 1].x, path[j + 1].y, -depth),
-						glm::vec3(path[j + 1].x, path[j + 1].y, 0.0));
+						glm::vec3(points[j].x, points[j].y, 0.0),
+						glm::vec3(points[j].x, points[j].y, -depth),
+						glm::vec3(points[j + 1].x, points[j + 1].y, -depth),
+						glm::vec3(points[j + 1].x, points[j + 1].y, 0.0));
 				}
+
+				start += size;
 			}
 
 			// perform the tesselation
@@ -129,6 +136,7 @@ public:
 protected:
 	OtShape shape;
 	float depth = 1.0f;
+	float tolerance = 0.25f;
 	OtGeometry geometry;
 };
 

@@ -264,18 +264,7 @@ void OtFramework::frameIMGUI() {
 				io.AddKeyEvent(ImGuiMod_Shift, (event.mouseButton.mods & GLFW_MOD_SHIFT) != 0);
 				io.AddKeyEvent(ImGuiMod_Alt, (event.mouseButton.mods & GLFW_MOD_ALT) != 0);
 				io.AddKeyEvent(ImGuiMod_Super, (event.mouseButton.mods & GLFW_MOD_SUPER) != 0);
-
-#if __APPLE__
-				if (inRightClick || ((event.mouseButton.mods & GLFW_MOD_CONTROL) && event.mouseButton.button == ImGuiMouseButton_Left)) {
-					inRightClick = event.mouseButton.action == GLFW_PRESS;
-					io.AddMouseButtonEvent(ImGuiMouseButton_Right, inRightClick);
-
-				} else {
-					io.AddMouseButtonEvent(event.mouseButton.button, event.mouseButton.action == GLFW_PRESS);
-				}
-#else
 				io.AddMouseButtonEvent(event.mouseButton.button, event.mouseButton.action == GLFW_PRESS);
-#endif
 				break;
 
 			case OtFwEvent::Type::mouseMove:

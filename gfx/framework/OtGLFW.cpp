@@ -187,8 +187,6 @@ void OtFramework::initGLFW() {
 		double xpos, ypos;
 		glfwGetCursorPos(window, &xpos, &ypos);
 
-		fw->modifiers = (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS) ? mods : 0;
-
 #if !__APPLE__ && !_WIN32
 		mods = (action == GLFW_PRESS) ? mods | keysToMods(window) : mods & ~keysToMods(window);
 #endif
@@ -199,13 +197,7 @@ void OtFramework::initGLFW() {
 	// setup mouse move callback
 	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) {
 		OtFramework* fw = (OtFramework*) glfwGetWindowUserPointer(window);
-
-		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
-			fw->eventQueue.pushMouseDragEvent(GLFW_MOUSE_BUTTON_1, fw->modifiers, xpos, ypos);
-
-		} else {
-			fw->eventQueue.pushMouseMoveEvent((float) xpos, (float) ypos);
-		}
+		fw->eventQueue.pushMouseMoveEvent((float) xpos, (float) ypos);
 	});
 
 	// setup scroll wheel callback

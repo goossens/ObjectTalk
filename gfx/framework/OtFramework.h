@@ -144,9 +144,6 @@ private:
 	OtClipboard clipboard;
 	std::string clipboardText;
 
-	// track keyboard modifier state
-	int modifiers = 0;
-
 #if __APPLE__
 	// for right/middle click simulation (using ctrl-click)
 	bool inRightClick = false;

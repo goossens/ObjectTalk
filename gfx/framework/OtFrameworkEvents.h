@@ -25,7 +25,6 @@ struct OtFwEvent {
 	enum class Type {
 		mouseButton,
 		mouseMove,
-		mouseDrag,
 		mouseWheel,
 		keyboard,
 		character,
@@ -56,13 +55,6 @@ struct OtFwEvent {
 			float x;
 			float y;
 		} mouseMove;
-
-		struct {
-			int button;
-			int mods;
-			float x;
-			float y;
-		} mouseDrag;
 
 		struct {
 			float xOffset;
@@ -96,7 +88,6 @@ struct OtFwEvent {
 	inline bool isMouseEvent() {
 		return type == Type::mouseButton ||
 			type == Type::mouseMove ||
-			type == Type::mouseDrag ||
 			type == Type::mouseWheel;
 	}
 
@@ -134,16 +125,6 @@ public:
 		event.type = OtFwEvent::Type::mouseMove;
 		event.mouseMove.x = x;
 		event.mouseMove.y = y;
-		push(event);
-	}
-
-	inline void pushMouseDragEvent(int button, int mods, float x, float y) {
-		OtFwEvent event;
-		event.type = OtFwEvent::Type::mouseDrag;
-		event.mouseDrag.button = button;
-		event.mouseDrag.mods = mods;
-		event.mouseDrag.x = x;
-		event.mouseDrag.y = y;
 		push(event);
 	}
 

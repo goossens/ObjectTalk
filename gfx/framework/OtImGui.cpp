@@ -282,10 +282,6 @@ void OtFramework::frameIMGUI() {
 				io.AddMousePosEvent(event.mouseMove.x, event.mouseMove.y);
 				break;
 
-			case OtFwEvent::Type::mouseDrag:
-				io.AddMousePosEvent(event.mouseDrag.x, event.mouseDrag.y);
-				break;
-
 			case OtFwEvent::Type::mouseWheel:
 				io.AddMouseWheelEvent(event.mouseWheel.xOffset, event.mouseWheel.yOffset);
 				break;

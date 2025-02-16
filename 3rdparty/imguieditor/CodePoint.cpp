@@ -45,7 +45,7 @@ static constexpr size_t totalSizeOfTables = totalSizeOfTables16 + totalSizeOfTab
 
 
 //
-//	Internal type conversions because "char" (in std::string) is signed
+//	Internal type conversions because "char" is signed
 //
 
 static inline ImWchar uch(char c) {
@@ -61,7 +61,7 @@ static inline char sch(ImWchar i) {
 //	skipBOM
 //
 
-std::string::const_iterator TextEditor::CodePoint::skipBOM(std::string::const_iterator i, std::string::const_iterator end) {
+std::string_view::const_iterator TextEditor::CodePoint::skipBOM(std::string_view::const_iterator i, std::string_view::const_iterator end) {
 	// skip Byte Order Mark (BOM) just in case there is one
 
 	// Note: the standard states that:
@@ -77,7 +77,7 @@ std::string::const_iterator TextEditor::CodePoint::skipBOM(std::string::const_it
 //	TextEditor::CodePoint::read
 //
 
-std::string::const_iterator TextEditor::CodePoint::read(std::string::const_iterator i, std::string::const_iterator end, ImWchar *codepoint) {
+std::string_view::const_iterator TextEditor::CodePoint::read(std::string_view::const_iterator i, std::string_view::const_iterator end, ImWchar *codepoint) {
 	// parse a UTF-8 sequence into a unicode codepoint
 	if (i < end && (uch(*i) & 0x80) == 0) {
 		*codepoint = uch(*i);
@@ -112,8 +112,10 @@ std::string::const_iterator TextEditor::CodePoint::read(std::string::const_itera
 //	TextEditor::CodePoint::write
 //
 
-std::string::iterator TextEditor::CodePoint::write(std::string::iterator i, ImWchar codepoint) {
+size_t TextEditor::CodePoint::write(char* start, ImWchar codepoint) {
 	// generate UTF-8 sequence from a unicode codepoint
+	auto i = start;
+
 	if (codepoint < 0x80) {
 		*i++ = sch(codepoint);
 
@@ -138,19 +140,16 @@ std::string::iterator TextEditor::CodePoint::write(std::string::iterator i, ImWc
 		*i++ = sch(0x80 | ((codepoint >> 12) & 0x3f));
 		*i++ = sch(0x80 | ((codepoint >> 6) & 0x3f));
 		*i++ = sch(0x80 | (codepoint & 0x3f));
-	}
 
 #else
-	}
-
-	else {
+	} else {
 		*i++ = sch(0xe0 | ((codepoint >> 12) & 0x0f));
 		*i++ = sch(0x80 | ((codepoint >> 6) & 0x3f));
 		*i++ = sch(0x80 | (codepoint & 0x3f));
-	}
 #endif
+	}
 
-	return i;
+	return i - start;
 }
 
 

@@ -24,7 +24,7 @@
 //	TextEditor::setText
 //
 
-void TextEditor::setText(const std::string &text) {
+void TextEditor::setText(const std::string_view &text) {
 	// load text into document and reset transactions and cursors
 	document.setText(text);
 	transactions.clear();
@@ -857,7 +857,7 @@ void TextEditor::scrollToLine(int line, Scroll alignment) {
 //	TextEditor::selectFirstOccurrenceOf
 //
 
-void TextEditor::selectFirstOccurrenceOf(const std::string& text, bool caseSensitive, bool wholeWord) {
+void TextEditor::selectFirstOccurrenceOf(const std::string_view& text, bool caseSensitive, bool wholeWord) {
 	Coordinate start, end;
 
 	if (document.findText(Coordinate(0, 0), text, caseSensitive, wholeWord, start, end)) {
@@ -874,7 +874,7 @@ void TextEditor::selectFirstOccurrenceOf(const std::string& text, bool caseSensi
 //	TextEditor::selectNextOccurrenceOf
 //
 
-void TextEditor::selectNextOccurrenceOf(const std::string& text, bool caseSensitive, bool wholeWord) {
+void TextEditor::selectNextOccurrenceOf(const std::string_view& text, bool caseSensitive, bool wholeWord) {
 	Coordinate start, end;
 
 	if (document.findText(cursors.getCurrent().getSelectionEnd(), text, caseSensitive, wholeWord, start, end)) {
@@ -891,7 +891,7 @@ void TextEditor::selectNextOccurrenceOf(const std::string& text, bool caseSensit
 //	TextEditor::selectAllOccurrencesOf
 //
 
-void TextEditor::selectAllOccurrencesOf(const std::string& text, bool caseSensitive, bool wholeWord) {
+void TextEditor::selectAllOccurrencesOf(const std::string_view& text, bool caseSensitive, bool wholeWord) {
 	Coordinate start, end;
 
 	if (document.findText(Coordinate(0, 0), text, caseSensitive, wholeWord, start, end)) {
@@ -949,7 +949,7 @@ void TextEditor::selectAllOccurrences() {
 //	TextEditor::replaceTextInCurrentCursor
 //
 
-void TextEditor::replaceTextInCurrentCursor(const std::string& text) {
+void TextEditor::replaceTextInCurrentCursor(const std::string_view& text) {
 	auto transaction = startTransaction();
 
 	// first delete old text
@@ -972,7 +972,7 @@ void TextEditor::replaceTextInCurrentCursor(const std::string& text) {
 //	TextEditor::replaceTextInAllCursors
 //
 
-void TextEditor::replaceTextInAllCursors(const std::string& text) {
+void TextEditor::replaceTextInAllCursors(const std::string_view& text) {
 	auto transaction = startTransaction();
 	insertTextIntoAllCursors(transaction, text);
 	endTransaction(transaction);
@@ -983,7 +983,7 @@ void TextEditor::replaceTextInAllCursors(const std::string& text) {
 //	TextEditor::addMarker
 //
 
-void TextEditor::addMarker(int line, ImU32 lineNumberColor, ImU32 textColor, const std::string& lineNumberTooltip, const std::string& textTooltip) {
+void TextEditor::addMarker(int line, ImU32 lineNumberColor, ImU32 textColor, const std::string_view& lineNumberTooltip, const std::string_view& textTooltip) {
 	if (line >= 0 && line < document.lines()) {
 		markers.emplace_back(lineNumberColor, textColor, lineNumberTooltip, textTooltip);
 		document[line].marker = markers.size();
@@ -1141,11 +1141,11 @@ void TextEditor::handleCharacter(ImWchar character) {
 				auto end = cursor->getSelectionEnd();
 
 				// insert the opening glyph
-				auto end1 = insertText(transaction, end, std::string(1, closer));
+				auto end1 = insertText(transaction, end, std::string_view(&closer, 1));
 				cursors.adjustForInsert(cursor, start, end1);
 
 				// insert the closing glyph
-				auto end2 = insertText(transaction, start, std::string(1, opener));
+				auto end2 = insertText(transaction, start, std::string_view(&opener, 1));
 				cursors.adjustForInsert(cursor, start, end2);
 
 				// update old selection
@@ -1191,9 +1191,8 @@ void TextEditor::handleCharacter(ImWchar character) {
 		}
 
 		// just insert a regular character
-		std::string utf8(4, 0);
-		std::string text(utf8.begin(), CodePoint::write(utf8.begin(), character));
-		insertTextIntoAllCursors(transaction, text);
+		char utf8[4];
+		insertTextIntoAllCursors(transaction, std::string_view(utf8, CodePoint::write(utf8, character)));
 	}
 
 	endTransaction(transaction);
@@ -1485,7 +1484,7 @@ void TextEditor::toggleComments() {
 //	TextEditor::filterSelections
 //
 
-void TextEditor::filterSelections(std::function<std::string(std::string)> filter) {
+void TextEditor::filterSelections(std::function<std::string(std::string_view)> filter) {
 	auto transaction = startTransaction();
 
 	// process all cursors
@@ -1521,16 +1520,16 @@ void TextEditor::filterSelections(std::function<std::string(std::string)> filter
 //
 
 void TextEditor::selectionToLowerCase() {
-	FilterSelections([](const std::string& text) {
+	FilterSelections([](const std::string_view& text) {
 		std::string result;
 		auto end = text.end();
 		auto i = text.begin();
-		std::string utf8(4, 0);
+		char utf8[4];
 
 		while (i < end) {
 			ImWchar codepoint;
 			i = CodePoint::read(i, end, &codepoint);
-			result.append(utf8.begin(), CodePoint::write(utf8.begin(), CodePoint::toLower(codepoint)));
+			result.append(utf8, CodePoint::write(utf8, CodePoint::toLower(codepoint)));
 		}
 
 		return result;
@@ -1543,16 +1542,16 @@ void TextEditor::selectionToLowerCase() {
 //
 
 void TextEditor::selectionToUpperCase() {
-	FilterSelections([](const std::string& text) {
+	FilterSelections([](const std::string_view& text) {
 		std::string result;
 		auto end = text.end();
 		auto i = text.begin();
-		std::string utf8(4, 0);
+		char utf8[4];
 
 		while (i < end) {
 			ImWchar codepoint;
 			i = CodePoint::read(i, end, &codepoint);
-			result.append(utf8.begin(), CodePoint::write(utf8.begin(), CodePoint::toUpper(codepoint)));
+			result.append(utf8, CodePoint::write(utf8, CodePoint::toUpper(codepoint)));
 		}
 
 		return result;
@@ -1603,7 +1602,7 @@ void TextEditor::stripTrailingWhitespaces() {
 //	TextEditor::filterLines
 //
 
-void TextEditor::filterLines(std::function<std::string(std::string)> filter) {
+void TextEditor::filterLines(std::function<std::string(std::string_view)> filter) {
 	auto transaction = startTransaction();
 
 	// process all the lines
@@ -1633,7 +1632,7 @@ void TextEditor::filterLines(std::function<std::string(std::string)> filter) {
 //
 
 void TextEditor::tabsToSpaces() {
-	filterLines([this](const std::string& input) {
+	filterLines([this](const std::string_view& input) {
 		auto tabSize = document.getTabSize();
 		std::string output;
 
@@ -1656,7 +1655,7 @@ void TextEditor::tabsToSpaces() {
 //
 
 void TextEditor::spacesToTabs() {
-	FilterLines([this](const std::string& input) {
+	FilterLines([this](const std::string_view& input) {
 		auto tabSize = document.getTabSize();
 		std::string output;
 		int pos = 0;
@@ -1740,7 +1739,7 @@ bool TextEditor::endTransaction(std::shared_ptr<Transaction> transaction) {
 //	TextEditor::insertTextIntoAllCursors
 //
 
-void TextEditor::insertTextIntoAllCursors(std::shared_ptr<Transaction> transaction, const std::string& text) {
+void TextEditor::insertTextIntoAllCursors(std::shared_ptr<Transaction> transaction, const std::string_view& text) {
 	// delete any selection content first
 	deleteTextFromAllCursors(transaction);
 
@@ -1839,7 +1838,7 @@ void TextEditor::autoIndentAllCursors(std::shared_ptr<Transaction> transaction) 
 //	TextEditor::insertText
 //
 
-TextEditor::Coordinate TextEditor::insertText(std::shared_ptr<Transaction> transaction, Coordinate start, const std::string& text) {
+TextEditor::Coordinate TextEditor::insertText(std::shared_ptr<Transaction> transaction, Coordinate start, const std::string_view& text) {
 	// update document, add transaction and return coordinate of end of insert
 	// this function does not touch the cursors
 	auto end = document.insertText(start, text);

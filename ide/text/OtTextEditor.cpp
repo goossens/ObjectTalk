@@ -210,7 +210,6 @@ void OtTextEditor::renderEditor() {
 			pos.y + style.ItemSpacing.y * 2.0f));
 
 		ImGui::BeginChild("find-replace", ImVec2(windowWidth, windowHeight), ImGuiChildFlags_Borders);
-
 		ImGui::SetNextItemWidth(fieldWidth);
 
 		if (focusOnFind) {

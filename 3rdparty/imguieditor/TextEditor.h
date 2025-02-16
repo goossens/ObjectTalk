@@ -18,6 +18,7 @@
 #include <iterator>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <unordered_set>
 #include <vector>
 
@@ -59,7 +60,7 @@ public:
 	inline bool IsOverwriteEnabled() const { return overwrite; }
 
 	// access text (using UTF-8 encoded strings)
-	inline void SetText(const std::string& text) { setText(text); }
+	inline void SetText(const std::string_view& text) { setText(text); }
 	inline std::string GetText() { return document.getText(); }
 	inline bool IsEmpty() const { return document.size() == 1 && document[0].size() == 0; }
 	inline int GetLineCount() const { return document.lines(); }
@@ -112,14 +113,14 @@ public:
 	inline int GetGlyphWidth() const { return glyphSize.x; }
 
 	// find/replace support
-	inline void SelectFirstOccurrenceOf(const std::string& text, bool caseSensitive=true, bool wholeWord=false) { selectFirstOccurrenceOf(text, caseSensitive, wholeWord); }
-	inline void SelectNextOccurrenceOf(const std::string& text, bool caseSensitive=true, bool wholeWord=false) { selectNextOccurrenceOf(text, caseSensitive, wholeWord); }
-	inline void SelectAllOccurrencesOf(const std::string& text, bool caseSensitive=true, bool wholeWord=false) { selectAllOccurrencesOf(text, caseSensitive, wholeWord); }
-	inline void ReplaceTextInCurrentCursor(const std::string& text) { if (!readOnly) replaceTextInCurrentCursor(text); }
-	inline void ReplaceTextInAllCursors(const std::string& text) { if (!readOnly) replaceTextInAllCursors(text); }
+	inline void SelectFirstOccurrenceOf(const std::string_view& text, bool caseSensitive=true, bool wholeWord=false) { selectFirstOccurrenceOf(text, caseSensitive, wholeWord); }
+	inline void SelectNextOccurrenceOf(const std::string_view& text, bool caseSensitive=true, bool wholeWord=false) { selectNextOccurrenceOf(text, caseSensitive, wholeWord); }
+	inline void SelectAllOccurrencesOf(const std::string_view& text, bool caseSensitive=true, bool wholeWord=false) { selectAllOccurrencesOf(text, caseSensitive, wholeWord); }
+	inline void ReplaceTextInCurrentCursor(const std::string_view& text) { if (!readOnly) replaceTextInCurrentCursor(text); }
+	inline void ReplaceTextInAllCursors(const std::string_view& text) { if (!readOnly) replaceTextInAllCursors(text); }
 
 	// access markers (line numbers are zero-based)
-	inline void AddMarker(int line, ImU32 lineNumberColor, ImU32 textColor, const std::string& lineNumberTooltip, const std::string& textTooltip) { addMarker(line, lineNumberColor, textColor, lineNumberTooltip, textTooltip); }
+	inline void AddMarker(int line, ImU32 lineNumberColor, ImU32 textColor, const std::string_view& lineNumberTooltip, const std::string_view& textTooltip) { addMarker(line, lineNumberColor, textColor, lineNumberTooltip, textTooltip); }
 	inline void ClearMarkers() { clearMarkers(); }
 	inline bool HasMarkers() const { return markers.size() != 0; }
 
@@ -154,13 +155,13 @@ public:
 	inline void MoveUpLines() { if (!readOnly) moveUpLines(); }
 	inline void MoveDownLines() { if (!readOnly) moveDownLines(); }
 	inline void ToggleComments() { if (!readOnly && language) toggleComments(); }
-	inline void FilterSelections(std::function<std::string(std::string)> filter) { if (!readOnly) filterSelections(filter); }
+	inline void FilterSelections(std::function<std::string(std::string_view)> filter) { if (!readOnly) filterSelections(filter); }
 	inline void SelectionToLowerCase() { if (!readOnly) selectionToLowerCase(); }
 	inline void SelectionToUpperCase() { if (!readOnly) selectionToUpperCase(); }
 
 	// useful functions to work on entire text
 	inline void StripTrailingWhitespaces() { if (!readOnly) stripTrailingWhitespaces(); }
-	inline void FilterLines(std::function<std::string(std::string)> filter) { if (!readOnly) filterLines(filter); }
+	inline void FilterLines(std::function<std::string(std::string_view)> filter) { if (!readOnly) filterLines(filter); }
 	inline void TabsToSpaces() { if (!readOnly) tabsToSpaces(); }
 	inline void SpacesToTabs() { if (!readOnly) spacesToTabs(); }
 
@@ -286,9 +287,9 @@ public:
 	// support unicode codepoints
 	class CodePoint {
 	public:
-		static std::string::const_iterator skipBOM(std::string::const_iterator i, std::string::const_iterator end);
-		static std::string::const_iterator read(std::string::const_iterator i, std::string::const_iterator end, ImWchar* codepoint);
-		static std::string::iterator write(std::string::iterator i, ImWchar codepoint);
+		static std::string_view::const_iterator skipBOM(std::string_view::const_iterator i, std::string_view::const_iterator end);
+		static std::string_view::const_iterator read(std::string_view::const_iterator i, std::string_view::const_iterator end, ImWchar* codepoint);
+		static size_t write(char* i, ImWchar codepoint); // must point to buffer of 4 character (returns number of characters written)
 		static bool isLetter(ImWchar codepoint);
 		static bool isNumber(ImWchar codepoint);
 		static bool isWord(ImWchar codepoint);
@@ -449,7 +450,7 @@ private:
 	// the list of text markers
 	class Marker {
 	public:
-		Marker(ImU32 lc, ImU32 tc, const std::string& lt, const std::string& tt) :
+		Marker(ImU32 lc, ImU32 tc, const std::string_view& lt, const std::string_view& tt) :
 			lineNumberColor(lc), textColor(tc), lineNumberTooltip(lt), textTooltip(tt) {}
 
 		ImU32 lineNumberColor;
@@ -510,8 +511,8 @@ private:
 		inline int getTabSize() const { return tabSize; }
 
 		// manipulate document text (strings should be UTF-8 encoded)
-		void setText(const std::string& text);
-		Coordinate insertText(Coordinate start, const std::string& text);
+		void setText(const std::string_view& text);
+		Coordinate insertText(Coordinate start, const std::string_view& text);
 		void deleteText(Coordinate start, Coordinate end);
 
 		// access document text (strings are UTF-8 encoded)
@@ -547,7 +548,7 @@ private:
 		// search in document
 		Coordinate findWordStart(Coordinate from) const;
 		Coordinate findWordEnd(Coordinate from) const;
-		bool findText(Coordinate from, const std::string& text, bool caseSensitive, bool wholeWord, Coordinate& start, Coordinate& end) const;
+		bool findText(Coordinate from, const std::string_view& text, bool caseSensitive, bool wholeWord, Coordinate& start, Coordinate& end) const;
 
 		// see if document was updated this frame (can only be called once)
 		inline bool isUpdated() { auto result = updated; updated = false; return result; }
@@ -574,7 +575,7 @@ private:
 
 		// constructors
 		Action() = default;
-		Action(Type t, Coordinate s, Coordinate e, const std::string& txt) : type(t), start(s), end(e), text(txt) {}
+		Action(Type t, Coordinate s, Coordinate e, const std::string_view& txt) : type(t), start(s), end(e), text(txt) {}
 
 		// properties
 		Type type;
@@ -583,7 +584,7 @@ private:
 		std::string text;
 	};
 
-	// a collection of actions that for a complete transaction
+	// a collection of actions for a complete transaction
  	class Transaction : public std::vector<Action> {
 	public:
 		// access state before/after transactions
@@ -593,8 +594,8 @@ private:
 		inline const Cursors& getAfterState() const { return after; }
 
 		// add actions by type
-		void addInsert(Coordinate start, Coordinate end, std::string text) { emplace_back(Action::Type::insertText, start, end, text); };
-		void addDelete(Coordinate start, Coordinate end, std::string text) { emplace_back(Action::Type::deleteText, start, end, text); };
+		void addInsert(Coordinate start, Coordinate end, std::string_view text) { emplace_back(Action::Type::insertText, start, end, text); };
+		void addDelete(Coordinate start, Coordinate end, std::string_view text) { emplace_back(Action::Type::deleteText, start, end, text); };
 
 		// get number of actions
 		inline int actions() const { return static_cast<int>(size()); }
@@ -643,7 +644,7 @@ private:
 		State update(Line& line, const Language* language);
 
 		// see if string matches part of line
-		bool matches(Line::iterator start, Line::iterator end, const std::string& text);
+		bool matches(Line::iterator start, Line::iterator end, const std::string_view& text);
 
 		// set color fofr specified range of glyphs
 		inline void setColor(Line::iterator start, Line::iterator end, Color color) { while (start < end) (start++)->color = color; }
@@ -694,7 +695,7 @@ private:
 	} bracketeer;
 
 	// set the editor's text
-	void setText(const std::string& text);
+	void setText(const std::string_view& text);
 
 	// render (parts of) the text editor
 	void render(const char* title, const ImVec2& size, bool border);
@@ -730,17 +731,17 @@ private:
 	void scrollToLine(int line, Scroll alignment);
 
 	// find/replace support
-	void selectFirstOccurrenceOf(const std::string& text, bool caseSensitive, bool wholeWord);
-	void selectNextOccurrenceOf(const std::string& text, bool caseSensitive, bool wholeWord);
-	void selectAllOccurrencesOf(const std::string& text, bool caseSensitive, bool wholeWord);
+	void selectFirstOccurrenceOf(const std::string_view& text, bool caseSensitive, bool wholeWord);
+	void selectNextOccurrenceOf(const std::string_view& text, bool caseSensitive, bool wholeWord);
+	void selectAllOccurrencesOf(const std::string_view& text, bool caseSensitive, bool wholeWord);
 	void addNextOccurrence();
 	void selectAllOccurrences();
 
-	void replaceTextInCurrentCursor(const std::string& text);
-	void replaceTextInAllCursors(const std::string& text);
+	void replaceTextInCurrentCursor(const std::string_view& text);
+	void replaceTextInAllCursors(const std::string_view& text);
 
 	// marker support
-	void addMarker(int line, ImU32 lineNumberColor, ImU32 textColor, const std::string& lineNumberTooltip, const std::string& textTooltip);
+	void addMarker(int line, ImU32 lineNumberColor, ImU32 textColor, const std::string_view& lineNumberTooltip, const std::string_view& textTooltip);
 	void clearMarkers();
 
 	// cursor/selection functions
@@ -772,13 +773,13 @@ private:
 	void toggleComments();
 
 	// transform selections (filter function should accept and return UTF-8 encoded strings)
-	void filterSelections(std::function<std::string(std::string)> filter);
+	void filterSelections(std::function<std::string(std::string_view)> filter);
 	void selectionToLowerCase();
 	void selectionToUpperCase();
 
 	// transform entire document (filter function should accept and return UTF-8 encoded strings)
 	void stripTrailingWhitespaces();
-	void filterLines(std::function<std::string(std::string)> filter);
+	void filterLines(std::function<std::string(std::string_view)> filter);
 	void tabsToSpaces();
 	void spacesToTabs();
 
@@ -787,10 +788,10 @@ private:
 	std::shared_ptr<Transaction> startTransaction();
 	bool endTransaction(std::shared_ptr<Transaction> transaction);
 
-	void insertTextIntoAllCursors(std::shared_ptr<Transaction> transaction, const std::string& text);
+	void insertTextIntoAllCursors(std::shared_ptr<Transaction> transaction, const std::string_view& text);
 	void deleteTextFromAllCursors(std::shared_ptr<Transaction> transaction);
 	void autoIndentAllCursors(std::shared_ptr<Transaction> transaction);
-	Coordinate insertText(std::shared_ptr<Transaction> transaction, Coordinate start, const std::string& text);
+	Coordinate insertText(std::shared_ptr<Transaction> transaction, Coordinate start, const std::string_view& text);
 	void deleteText(std::shared_ptr<Transaction> transaction, Coordinate start, Coordinate end);
 
 	// editor options

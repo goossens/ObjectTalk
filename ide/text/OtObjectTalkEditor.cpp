@@ -145,15 +145,6 @@ static TextEditor::Language* getLanguageDefinition() {
 
 OtObjectTalkEditor::OtObjectTalkEditor() {
 	editor.SetLanguage(getLanguageDefinition());
-
-	editor.SetLineNumberContextMenuCallback([](int line) {
-		if (ImGui::MenuItem("Set Breakpoint")) { /* handle click */ }
-		if (ImGui::MenuItem("Remove Breakpoint")) { /* handle click */ }
-	});
-
-	editor.SetTextContextMenuCallback([](int line, int column) {
-		ImGui::Text("Line %d, column %d", line + 1, column + 1);
-	});
 }
 
 

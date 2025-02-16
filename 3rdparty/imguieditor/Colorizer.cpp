@@ -280,7 +280,7 @@ void TextEditor::Colorizer::updateChangedLines(Document& document, const Languag
 //	TextEditor::Colorizer::matches
 //
 
-bool TextEditor::Colorizer::matches(Line::iterator start, Line::iterator end, const std::string& text) {
+bool TextEditor::Colorizer::matches(Line::iterator start, Line::iterator end, const std::string_view& text) {
 	// see if text at iterators matches provided UTF-8 string
 	auto i = text.begin();
 

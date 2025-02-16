@@ -16,7 +16,7 @@
 //	TextEditor::Document::setText
 //
 
-void TextEditor::Document::setText(const std::string& text) {
+void TextEditor::Document::setText(const std::string_view& text) {
 	// reset document
 	clear();
 	emplace_back();
@@ -44,7 +44,7 @@ void TextEditor::Document::setText(const std::string& text) {
 //	TextEditor::Document::insertText
 //
 
-TextEditor::Coordinate TextEditor::Document::insertText(Coordinate start, const std::string& text) {
+TextEditor::Coordinate TextEditor::Document::insertText(Coordinate start, const std::string_view& text) {
 	auto line = begin() + start.line;
 	auto index = getIndex(start);
 	auto lineNo = start.line;
@@ -141,11 +141,11 @@ void TextEditor::Document::deleteText(Coordinate start, Coordinate end) {
 std::string TextEditor::Document::getText() const {
 	// process all glyphs and generate UTF-8 output
 	std::string text;
-	std::string utf8(4, 0);
+	char utf8[4];
 
 	for (auto i = begin(); i < end(); i++) {
 		for (auto& glyph : *i) {
-			text.append(utf8.begin(), CodePoint::write(utf8.begin(), glyph.codepoint));
+			text.append(std::string_view(utf8, CodePoint::write(utf8, glyph.codepoint)));
 		}
 
 		if (i < end() - 1) {
@@ -167,15 +167,15 @@ std::string TextEditor::Document::getSectionText(Coordinate start, Coordinate en
 	auto lineNo = start.line;
 	auto index = getIndex(start);
 	auto endIndex = getIndex(end);
-	std::string utf8(4, 0);
+	char utf8[4];
 
 	while (lineNo < end.line || index < endIndex) {
 		auto& line = at(lineNo);
 
 		if (index < line.glyphs()) {
-			section.append(utf8.begin(), CodePoint::write(utf8.begin(), line[index].codepoint));
-
+			section.append(std::string_view(utf8, CodePoint::write(utf8, line[index].codepoint)));
 			index++;
+
 		} else {
 			section += '\n';
 			lineNo++;
@@ -467,7 +467,7 @@ TextEditor::Coordinate TextEditor::Document::findWordEnd(Coordinate from) const 
 //	TextEditor::Document::findText
 //
 
-bool TextEditor::Document::findText(Coordinate from, const std::string& text, bool caseSensitive, bool wholeWord, Coordinate& start, Coordinate& end) const {
+bool TextEditor::Document::findText(Coordinate from, const std::string_view& text, bool caseSensitive, bool wholeWord, Coordinate& start, Coordinate& end) const {
 	// convert input string to vector of codepoints
 	std::vector<ImWchar> search;
 	auto endOfText = text.end();

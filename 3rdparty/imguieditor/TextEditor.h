@@ -89,6 +89,28 @@ public:
 	inline bool CurrentCursorHasSelection() const { return cursors.currentCursorHasSelection(); }
 	inline void ClearCursors() { cursors.clearAll(); }
 
+	// get cursor positions (the meaning of main and current is explained in README.md)
+	inline size_t GetNumberOfCursors() const { return cursors.size(); }
+	inline void GetCursor(int& line, int& column, size_t cursor) const { return getCursor(line, column, cursor); }
+	inline void GetMainCursor(int& line, int& column) const { return getCursor(line, column, cursors.getMainIndex()); }
+	inline void GetCurrentCursor(int& line, int& column) const { return getCursor(line, column, cursors.getCurrentIndex()); }
+
+	// scrolling support
+	enum class Scroll {
+		alignTop,
+		alignMiddle,
+		alignBottom
+	};
+
+	inline void ScrollToLine(int line, Scroll alignment) { scrollToLine(line, alignment); }
+	inline int GetFirstVisibleLine() const { return firstVisibleLine; }
+	inline int GetLastVisibleLine() const { return lastVisibleLine; }
+	inline int GetFirstVisibleColumn() const { return firstVisibleColumn; }
+	inline int GetLastVisibleColumn() const { return lastVisibleColumn; }
+
+	inline int GetLineHeight() const { return glyphSize.y; }
+	inline int GetGlyphWidth() const { return glyphSize.x; }
+
 	// find/replace support
 	inline void SelectFirstOccurrenceOf(const std::string& text, bool caseSensitive=true, bool wholeWord=false) { selectFirstOccurrenceOf(text, caseSensitive, wholeWord); }
 	inline void SelectNextOccurrenceOf(const std::string& text, bool caseSensitive=true, bool wholeWord=false) { selectNextOccurrenceOf(text, caseSensitive, wholeWord); }
@@ -96,10 +118,35 @@ public:
 	inline void ReplaceTextInCurrentCursor(const std::string& text) { if (!readOnly) replaceTextInCurrentCursor(text); }
 	inline void ReplaceTextInAllCursors(const std::string& text) { if (!readOnly) replaceTextInAllCursors(text); }
 
-	// access error markers (line numbers are zero-based)
-	void AddErrorMarker(int line, const std::string& marker);
-	void ClearErrorMarkers();
-	inline bool HasErrorMarkers() const { return errorMarkers.size() != 0; }
+	// access markers (line numbers are zero-based)
+	inline void AddMarker(int line, ImU32 lineNumberColor, ImU32 textColor, const std::string& lineNumberTooltip, const std::string& textTooltip) { addMarker(line, lineNumberColor, textColor, lineNumberTooltip, textTooltip); }
+	inline void ClearMarkers() { clearMarkers(); }
+	inline bool HasMarkers() const { return markers.size() != 0; }
+
+	// line-based decoration
+	struct Decorator {
+		int line; // zero-based
+		float width;
+		float height;
+	};
+
+	inline void SetLineDecorator(float width, std::function<void(Decorator& decorator)> callback) {
+		decoratorWidth = width;
+		decoratorCallback = callback;
+	}
+
+	inline void ClearLineDecorator() { SetLineDecorator(0.0f, nullptr); }
+	inline bool HasLineDecorator() const { return decoratorWidth > 0.0f && decoratorCallback != nullptr; }
+
+	// setup context menu callbacks (these are called when a user right clicks line numbers or somewhere in the text)
+	// the editor sets up the popup menus, the callback has to populate them
+	inline void SetLineNumberContextMenuCallback(std::function<void(int line)> callback) { lineNumberContextMenuCallback = callback; }
+	inline void ClearLineNumberContextMenuCallback() { SetLineNumberContextMenuCallback(nullptr); }
+	inline bool HasLineNumberContextMenuCallback() const { return lineNumberContextMenuCallback != nullptr; }
+
+	inline void SetTextContextMenuCallback(std::function<void(int line, int column)> callback) { textContextMenuCallback = callback; }
+	inline void ClearTextContextMenuCallback() { SetTextContextMenuCallback(nullptr); }
+	inline bool HasTextContextMenuCallback() const { return textContextMenuCallback != nullptr; }
 
 	// useful functions to work on selections
 	inline void IndentLines() { if (!readOnly) indentLines(); }
@@ -135,7 +182,6 @@ public:
 		background,
 		cursor,
 		selection,
-		errorMarker,
 		whitespace,
 		matchingBracketBackground,
 		matchingBracketActive,
@@ -220,20 +266,20 @@ public:
 
 		std::function<Iterator(Iterator start, Iterator end, Color& color)> customTokenizer;
 
-		static const Language& C();
-		static const Language& Cpp();
-		static const Language& Cs();
-		static const Language& AngelScript();
-		static const Language& Lua();
-		static const Language& Python();
-		static const Language& Glsl();
-		static const Language& Hlsl();
-		static const Language& Json();
-		static const Language& Markdown();
+		static const Language* C();
+		static const Language* Cpp();
+		static const Language* Cs();
+		static const Language* AngelScript();
+		static const Language* Lua();
+		static const Language* Python();
+		static const Language* Glsl();
+		static const Language* Hlsl();
+		static const Language* Json();
+		static const Language* Markdown();
 	};
 
-	inline void SetLanguage(const Language& l) { language = &l; languageChanged = true; }
-	inline const Language& GetLanguage() const { return *language; };
+	inline void SetLanguage(const Language* l) { language = l; languageChanged = true; }
+	inline const Language* GetLanguage() const { return language; };
 	inline bool HasLanguage() const { return language != nullptr; }
 	inline std::string GetLanguageName() const { return language == nullptr ? "None" : language->name; }
 
@@ -259,6 +305,7 @@ private:
 	//
 	// below is the private API
 	// private members (function and variables) start with a lowercase character
+	// private class names start with a lowercase character
 	//
 
 	class Coordinate {
@@ -381,7 +428,9 @@ private:
 
 		// get main/current cursor
 		inline Cursor& getMain() { return at(main); }
+		inline size_t getMainIndex() const { return main; }
 		inline Cursor& getCurrent() { return at(current); }
+		inline size_t getCurrentIndex() const { return current; }
 		inline iterator getCurrentAsIterator() { return begin() + current; }
 
 		// update cursors
@@ -396,6 +445,20 @@ private:
 		size_t main = 0;
 		size_t current = 0;
 	} cursors;
+
+	// the list of text markers
+	class Marker {
+	public:
+		Marker(ImU32 lc, ImU32 tc, const std::string& lt, const std::string& tt) :
+			lineNumberColor(lc), textColor(tc), lineNumberTooltip(lt), textTooltip(tt) {}
+
+		ImU32 lineNumberColor;
+		ImU32 textColor;
+		std::string lineNumberTooltip;
+		std::string textTooltip;
+	};
+
+	std::vector<Marker> markers;
 
 	// a single colored character (a glyph)
 	class Glyph {
@@ -429,8 +492,8 @@ private:
 		// state at start of line
 		State state = State::inText;
 
-		// error marker
-		size_t errorMarker;
+		// marker
+		size_t marker;
 
 		// do we need to (re)colorize this line
 		bool colorize = true;
@@ -602,6 +665,9 @@ private:
 
 	class Bracketeer : public std::vector<Bracket> {
 	public:
+		// reset the bracketeer
+		void reset();
+
 		// update the list of bracket pairs in the document and colorize the relevant glyphs
 		void update(Document& document);
 
@@ -633,11 +699,13 @@ private:
 	// render (parts of) the text editor
 	void render(const char* title, const ImVec2& size, bool border);
 	void renderSelections();
-	void renderErrorMarkers();
+	void renderMarkers();
 	void renderMatchingBrackets();
 	void renderText();
 	void renderCursors();
+	void renderMargin();
 	void renderLineNumbers();
+	void renderDecorations();
 
 	// keyboard and mouse interactions
 	void handleKeyboardInputs();
@@ -655,6 +723,12 @@ private:
 	void undo();
 	void redo();
 
+	// access cursor location
+	void getCursor(int& line, int& column, size_t cursor) const;
+
+	// scrolling support
+	void scrollToLine(int line, Scroll alignment);
+
 	// find/replace support
 	void selectFirstOccurrenceOf(const std::string& text, bool caseSensitive, bool wholeWord);
 	void selectNextOccurrenceOf(const std::string& text, bool caseSensitive, bool wholeWord);
@@ -664,6 +738,10 @@ private:
 
 	void replaceTextInCurrentCursor(const std::string& text);
 	void replaceTextInAllCursors(const std::string& text);
+
+	// marker support
+	void addMarker(int line, ImU32 lineNumberColor, ImU32 textColor, const std::string& lineNumberTooltip, const std::string& textTooltip);
+	void clearMarkers();
 
 	// cursor/selection functions
 	void moveUp(int lines, bool select);
@@ -729,8 +807,10 @@ private:
 	ImFont* font;
 	float fontSize;
 	ImVec2 glyphSize;
-	float textStart;
-	int longestLine;
+	float lineNumberLeftOffset;
+	float lineNumberRightOffset;
+	float decorationOffset;
+	float textOffset;
 	float visibleHeight;
 	int visibleLines;
 	int firstVisibleLine;
@@ -741,12 +821,22 @@ private:
 	int lastVisibleColumn;
 	float cursorAnimationTimer = 0.0f;
 	bool ensureCursorIsVisible = false;
+	int scrollToLineNumber = -1;
+	Scroll scrollToAlignment = Scroll::alignMiddle;
 	bool showMatchingBracketsChanged = false;
 	bool languageChanged = false;
-	std::vector<std::string> errorMarkers;
 
-	static constexpr int leftMargin = 2;
-	static constexpr int lineNumberMargin = 2;
+	float decoratorWidth = 0.0f;
+	std::function<void(Decorator&)> decoratorCallback;
+
+	std::function<void(int line)> lineNumberContextMenuCallback;
+	std::function<void(int line, int column)> textContextMenuCallback;
+	int contextMenuLine = 0;
+	int contextMenuColumn = 0;
+
+	static constexpr int leftMargin = 1; // margins are expressed in glyphs
+	static constexpr int decorationMargin = 1;
+	static constexpr int textMargin = 2;
 	static constexpr int cursorWidth = 1;
 
 	// interaction context

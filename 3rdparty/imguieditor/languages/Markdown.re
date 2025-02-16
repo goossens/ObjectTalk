@@ -85,7 +85,7 @@ static TextEditor::Iterator tokenizeMarkdown(TextEditor::Iterator start, TextEdi
 //	TextEditor::Language::Markdown
 //
 
-const TextEditor::Language& TextEditor::Language::Markdown() {
+const TextEditor::Language* TextEditor::Language::Markdown() {
 	static bool initialized = false;
 	static TextEditor::Language language;
 
@@ -98,5 +98,5 @@ const TextEditor::Language& TextEditor::Language::Markdown() {
 		initialized = true;
 	}
 
-	return language;
+	return &language;
 }

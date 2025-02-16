@@ -5,7 +5,9 @@
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
 
-import os, shutil
+import os, shutil, sys
+
+destination = "../../../ImGuiColorTextEdit/"
 
 
 #
@@ -15,7 +17,7 @@ import os, shutil
 def append(filename, skip):
 	count = 0
 
-	with open("dist/TextEditor.cpp", "a") as output:
+	with open(destination + "TextEditor.cpp", "a") as output:
 		with open(filename, "r") as input:
 			for line in input:
 				if count < skip:
@@ -32,8 +34,12 @@ def append(filename, skip):
 if __name__ == "__main__":
 	os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-	shutil.copyfile("TextEditor.h", "dist/TextEditor.h")
-	shutil.copyfile("TextEditor.cpp", "dist/TextEditor.cpp")
+	if not os.path.isdir(destination):
+		print("Target path[" + destination +"] does not exist")
+		sys.exit(1)
+
+	shutil.copyfile("TextEditor.h", destination + "TextEditor.h")
+	shutil.copyfile("TextEditor.cpp", destination + "TextEditor.cpp")
 
 	append("Cursors.cpp", 12)
 	append("Document.cpp", 12)

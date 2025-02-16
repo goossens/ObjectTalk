@@ -92,13 +92,13 @@ static TextEditor::Iterator getObjectTalkStyleNumber(TextEditor::Iterator start,
 //	getLanguageDefinition
 //
 
-static TextEditor::Language& getLanguageDefinition() {
+static TextEditor::Language* getLanguageDefinition() {
 	static bool initialized = false;
 	static TextEditor::Language language;
 
 	if (!initialized) {
 		// inherit from the C language
-		language = TextEditor::Language::C();
+		language = *TextEditor::Language::C();
 
 		// set ObjectTalk unique features
 		language.name = "ObjectTalk";
@@ -135,7 +135,7 @@ static TextEditor::Language& getLanguageDefinition() {
 		initialized = true;
 	}
 
-	return language;
+	return &language;
 }
 
 
@@ -145,6 +145,15 @@ static TextEditor::Language& getLanguageDefinition() {
 
 OtObjectTalkEditor::OtObjectTalkEditor() {
 	editor.SetLanguage(getLanguageDefinition());
+
+	editor.SetLineNumberContextMenuCallback([](int line) {
+		if (ImGui::MenuItem("Set Breakpoint")) { /* handle click */ }
+		if (ImGui::MenuItem("Remove Breakpoint")) { /* handle click */ }
+	});
+
+	editor.SetTextContextMenuCallback([](int line, int column) {
+		ImGui::Text("Line %d, column %d", line + 1, column + 1);
+	});
 }
 
 
@@ -153,7 +162,7 @@ OtObjectTalkEditor::OtObjectTalkEditor() {
 //
 
 void OtObjectTalkEditor::highlightError(size_t line, const std::string& error) {
-	editor.AddErrorMarker(static_cast<int>(line - 1), error);
+	editor.AddMarker(static_cast<int>(line - 1), 0, IM_COL32(128, 0, 32, 128), "", error);
 	scrollToLine = static_cast<int>(line);
 	focusOnEditor = true;
 }
@@ -164,5 +173,5 @@ void OtObjectTalkEditor::highlightError(size_t line, const std::string& error) {
 //
 
 void OtObjectTalkEditor::clearError() {
-	editor.ClearErrorMarkers();
+	editor.ClearMarkers();
 }

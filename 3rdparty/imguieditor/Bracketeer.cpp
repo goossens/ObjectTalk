@@ -13,6 +13,17 @@
 
 
 //
+//	TextEditor::Bracketeer::reset
+//
+
+void TextEditor::Bracketeer::reset() {
+	clear();
+	active = end();
+	activeLocation = Coordinate::invalid();
+}
+
+
+//
 //	TextEditor::Bracketeer::update
 //
 
@@ -32,7 +43,7 @@ void TextEditor::Bracketeer::update(Document& document) {
 		for (auto index = 0; index < document[line].glyphs(); index++) {
 			auto& glyph = document[line][index];
 
-			// handle a bracket opener that is not in a comment, string or preprocessor statement
+			// handle a "bracket opener" that is not in a comment, string or preprocessor statement
 			if (isBracketCandidate(glyph) && isBracketOpener(glyph.codepoint)) {
 				// start a new level
 				levels.emplace_back(size());
@@ -40,7 +51,7 @@ void TextEditor::Bracketeer::update(Document& document) {
 				glyph.color = bracketColors[level % 3];
 				level++;
 
-			// handle a bracket closer that is not in a comment, string or preprocessor statement
+			// handle a "bracket closer" that is not in a comment, string or preprocessor statement
 			} else if (isBracketCandidate(glyph) && isBracketCloser(glyph.codepoint)) {
 				if (levels.size()) {
 					auto& lastBracket = at(levels.back());
@@ -88,7 +99,7 @@ TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getActive(Coordinate lo
 		active = end();
 		bool done = false;
 
-		for (auto i = begin(); i < end(); i++) {
+		for (auto i = begin(); !done && i < end(); i++) {
 			// skip pairs that start after specified location
 			if (i->isAfter(location)) {
 				done = true;

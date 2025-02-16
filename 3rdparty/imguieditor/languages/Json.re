@@ -68,7 +68,7 @@ static TextEditor::Iterator tokenizeJson(TextEditor::Iterator start, TextEditor:
 //	TextEditor::Language::Json
 //
 
-const TextEditor::Language &TextEditor::Language::Json() {
+const TextEditor::Language* TextEditor::Language::Json() {
 	static bool initialized = false;
 	static TextEditor::Language language;
 
@@ -87,5 +87,5 @@ const TextEditor::Language &TextEditor::Language::Json() {
 		initialized = true;
 	}
 
-	return language;
+	return &language;
 }

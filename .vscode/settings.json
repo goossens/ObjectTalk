@@ -112,7 +112,6 @@
 		"typeindex": "cpp",
 		"strstream": "cpp",
 		"__memory": "cpp",
-		"*.sh": "cpp",
 		"execution": "cpp",
 		"text_encoding": "cpp",
 		"print": "cpp"

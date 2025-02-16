@@ -9,7 +9,7 @@
 //	TextEditor::Language::AngelScript
 //
 
-const TextEditor::Language& TextEditor::Language::AngelScript() {
+const TextEditor::Language* TextEditor::Language::AngelScript() {
 	static bool initialized = false;
 	static TextEditor::Language language;
 
@@ -40,5 +40,5 @@ const TextEditor::Language& TextEditor::Language::AngelScript() {
 		initialized = true;
 	}
 
-	return language;
+	return &language;
 }

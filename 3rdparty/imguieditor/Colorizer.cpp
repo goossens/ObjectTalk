@@ -237,13 +237,10 @@ void TextEditor::Colorizer::updateEntireDocument(Document& document, const Langu
 	if (language) {
 		for (auto line = document.begin(); line < document.end(); line++) {
 			auto state = update(*line, language);
+			auto next = line + 1;
 
-			if (line != document.end()) {
-				auto next = line + 1;
-
-				if (next->state != state) {
-					next->state = state;
-				}
+			if (next < document.end()) {
+				next->state = state;
 			}
 		}
 
@@ -268,14 +265,11 @@ void TextEditor::Colorizer::updateChangedLines(Document& document, const Languag
 	for (auto line = document.begin(); line < document.end(); line++) {
 		if (line->colorize) {
 			auto state = update(*line, language);
+			auto next = line + 1;
 
-			if (line != document.end()) {
-				auto next = line + 1;
-
-				if (next->state != state) {
-					next->state = state;
-					next->colorize = true;
-				}
+			if (next < document.end() && next->state != state) {
+				next->state = state;
+				next->colorize = true;
 			}
 		}
 	}

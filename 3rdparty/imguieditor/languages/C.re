@@ -100,7 +100,7 @@ static bool isCStylePunctuation(ImWchar character) {
 //	TextEditor::Language::C
 //
 
-const TextEditor::Language& TextEditor::Language::C() {
+const TextEditor::Language* TextEditor::Language::C() {
 	static bool initialized = false;
 	static TextEditor::Language language;
 
@@ -134,5 +134,5 @@ const TextEditor::Language& TextEditor::Language::C() {
 		initialized = true;
 	}
 
-	return language;
+	return &language;
 }

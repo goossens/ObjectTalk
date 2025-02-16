@@ -70,7 +70,7 @@ static bool isLuaStylePunctuation(ImWchar character) {
 //	TextEditor::Language::Lua
 //
 
-const TextEditor::Language& TextEditor::Language::Lua() {
+const TextEditor::Language* TextEditor::Language::Lua() {
 	static bool initialized = false;
 	static TextEditor::Language language;
 
@@ -92,11 +92,11 @@ const TextEditor::Language& TextEditor::Language::Lua() {
 
 		for (auto& keyword : keywords) { language.keywords.insert(keyword); }
 
-		language.isPunctuation = isCStylePunctuation;
+		language.isPunctuation = isLuaStylePunctuation;
 		language.getIdentifier = getCStyleIdentifier;
 		language.getNumber = getLuaStyleNumber;
 		initialized = true;
 	}
 
-	return language;
+	return &language;
 }

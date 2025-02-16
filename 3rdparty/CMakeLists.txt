@@ -18,7 +18,6 @@ set_target_properties(multipart PROPERTIES FOLDER 3rdParty)
 
 if(OT_INCLUDE_UI)
 	set(IMGUI_EDITOR_HOME "imguieditor")
-#	set(IMGUI_EDITOR_HOME "imguieditor/dist")
 	file(GLOB IMGUI_EDITOR_SOURCES ${IMGUI_EDITOR_HOME}/*.cpp ${IMGUI_EDITOR_HOME}/*.h)
 	add_library(imguieditor STATIC ${IMGUI_EDITOR_SOURCES})
 	target_include_directories(imguieditor PUBLIC ${IMGUI_EDITOR_HOME})

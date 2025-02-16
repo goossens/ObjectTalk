@@ -61,7 +61,7 @@ static TextEditor::Iterator getPythonStyleNumber(TextEditor::Iterator start, Tex
 //	TextEditor::Language::Python
 //
 
-const TextEditor::Language& TextEditor::Language::Python() {
+const TextEditor::Language* TextEditor::Language::Python() {
 	static bool initialized = false;
 	static TextEditor::Language language;
 
@@ -91,5 +91,5 @@ const TextEditor::Language& TextEditor::Language::Python() {
 		initialized = true;
 	}
 
-	return language;
+	return &language;
 }

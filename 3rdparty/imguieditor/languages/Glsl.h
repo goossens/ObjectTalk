@@ -9,7 +9,7 @@
 //	TextEditor::Language::Glsl
 //
 
-const TextEditor::Language& TextEditor::Language::Glsl() {
+const TextEditor::Language* TextEditor::Language::Glsl() {
 	static bool initialized = false;
 	static TextEditor::Language language;
 
@@ -55,5 +55,5 @@ const TextEditor::Language& TextEditor::Language::Glsl() {
 		initialized = true;
 	}
 
-	return language;
+	return &language;
 }

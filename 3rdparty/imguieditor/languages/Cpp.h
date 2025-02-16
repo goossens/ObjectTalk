@@ -9,7 +9,7 @@
 //	TextEditor::Language::Cpp
 //
 
-const TextEditor::Language& TextEditor::Language::Cpp() {
+const TextEditor::Language* TextEditor::Language::Cpp() {
 	static bool initialized = false;
 	static TextEditor::Language language;
 
@@ -49,5 +49,5 @@ const TextEditor::Language& TextEditor::Language::Cpp() {
 		initialized = true;
 	}
 
-	return language;
+	return &language;
 }

@@ -120,7 +120,7 @@ void OtTextEditor::renderMenus() {
 		flag = editor.IsCompletingPairedGlyphs(); if (ImGui::MenuItem("Complete Matching Glyphs", nullptr, &flag)) { editor.SetCompletePairedGlyphs(flag); focusOnEditor = true; };
 
 		ImGui::Separator();
-		if (ImGui::MenuItem("Clear Errors", nullptr, nullptr, editor.HasErrorMarkers())) { editor.ClearErrorMarkers(); focusOnEditor = true; }
+		if (ImGui::MenuItem("Clear Errors", nullptr, nullptr, editor.HasMarkers())) { editor.ClearMarkers(); focusOnEditor = true; }
 		ImGui::EndMenu();
 	}
 
@@ -176,6 +176,7 @@ void OtTextEditor::renderEditor() {
 	// (this has to be done here as the editor doesn't handle this well on open)
 	if (scrollToLine) {
 		editor.SetCursor(scrollToLine - 1, 0);
+		editor.ScrollToLine(scrollToLine - 1, TextEditor::Scroll::alignMiddle);
 		scrollToLine = 0;
 	}
 

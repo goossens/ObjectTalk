@@ -56,7 +56,7 @@ static TextEditor::Iterator getCsStyleNumber(TextEditor::Iterator start, TextEdi
 //	TextEditor::Language::Cs
 //
 
-const TextEditor::Language& TextEditor::Language::Cs() {
+const TextEditor::Language* TextEditor::Language::Cs() {
 	static bool initialized = false;
 	static TextEditor::Language language;
 
@@ -88,5 +88,5 @@ const TextEditor::Language& TextEditor::Language::Cs() {
 		initialized = true;
 	}
 
-	return language;
+	return &language;
 }

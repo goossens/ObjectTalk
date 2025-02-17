@@ -41,22 +41,6 @@ protected:
 
 	// visual text editor
 	TextEditor editor;
-	bool focusOnEditor = true;
-
-	// find and replace support
-	bool findReplaceVisible = false;
-	bool focusOnFind = false;
-	std::string findText;
-	std::string replaceText;
-	bool caseSensitiveFind = false;
-	bool wholeWordFind = false;
-
-	void openFindReplace();
-	void find();
-	void findNext();
-	void findAll();
-	void replace();
-	void replaceAll();
 
 	// properties
 	size_t version = 0;

@@ -126,7 +126,7 @@ OtType OtTextEditorWidgetClass::getMeta() {
 		type->set("setText", OtFunction::create(&OtTextEditorWidgetClass::setText));
 		type->set("getText", OtFunction::create(&OtTextEditorWidgetClass::getText));
 		type->set("isEmpty", OtFunction::create(&OtTextEditorWidgetClass::isEmpty));
-		type->set("getLineCount", OtFunction::create(&OtTextEditorWidgetClass::getLineCount));
+		type->set("lineCount", OtFunction::create(&OtTextEditorWidgetClass::lineCount));
 
 		type->set("cut", OtFunction::create(&OtTextEditorWidgetClass::cut));
 		type->set("copy", OtFunction::create(&OtTextEditorWidgetClass::copy));

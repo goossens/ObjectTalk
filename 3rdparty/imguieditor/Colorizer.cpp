@@ -19,22 +19,19 @@
 TextEditor::State TextEditor::Colorizer::update(Line& line, const Language* language) {
 	auto state = line.state;
 
-	// process all glyphs in this line
-	auto glyph = line.begin();
-	Iterator end(static_cast<void*>(&line), line.glyphs());
-	Iterator newEnd;
-
+	// process all glyphs on this line
 	auto nonWhiteSpace = false;
-	Color color;
+	auto glyph = line.begin();
 
 	while (glyph < line.end()) {
-		Iterator start(static_cast<void*>(&line), static_cast<int>(glyph - line.begin()));
-
 		if (state == State::inText) {
 			// special handling for preprocessor lines
 			if (!nonWhiteSpace && language->preprocess && glyph->codepoint != language->preprocess && !CodePoint::isWhiteSpace(glyph->codepoint)) {
 				nonWhiteSpace = true;
 			}
+
+			// start parsing glyphs
+			auto start = glyph;
 
 			// mark whitespace characters
 			if (CodePoint::isWhiteSpace(glyph->codepoint)) {
@@ -85,22 +82,34 @@ TextEditor::State TextEditor::Colorizer::update(Line& line, const Language* lang
 				glyph = line.end();
 
 			// handle custom tokenizer (if we have one)
-			} else if (language->customTokenizer && (newEnd = language->customTokenizer(start, end, color)) != start) {
-				int size = newEnd - start;
-				setColor(glyph, glyph + size, color);
-				glyph += size;
+			} else if (language->customTokenizer) {
+				Color color;
+				Iterator tokenStart(&*glyph);
+				Iterator lineEnd(line.data() + line.size());
+				Iterator tokenEnd = language->customTokenizer(tokenStart, lineEnd, color);
 
-			// nothing worked so far so it's time to do some tokenizing
-			} else {
+				if (tokenEnd != tokenStart) {
+					auto size = tokenEnd - tokenStart;
+					setColor(glyph, glyph + size, color);
+					glyph += size;
+				}
+			}
+
+			if (glyph == start) {
+				// nothing worked so far so it's time to do some tokenizing
+				Color color;
+				Iterator lineEnd(line.data() + line.size());
+				Iterator tokenStart(&*glyph);
+				Iterator tokenEnd;
+
 				// do we have an identifier
-				if (language->getIdentifier && (newEnd = language->getIdentifier(start, end)) != start) {
-					int size = newEnd - start;
-
+				if (language->getIdentifier && (tokenEnd = language->getIdentifier(tokenStart, lineEnd)) != tokenStart) {
 					// determine identifier text and color color
+					auto size = tokenEnd - tokenStart;
 					std::string identifier;
 					color = Color::identifier;
 
-					for (auto i = start; i < newEnd; i++) {
+					for (auto i = tokenStart; i < tokenEnd; i++) {
 						identifier += *i;
 					}
 
@@ -119,8 +128,8 @@ TextEditor::State TextEditor::Colorizer::update(Line& line, const Language* lang
 					glyph += size;
 
 				// do we have a number
-				} else if (language->getNumber && (newEnd = language->getNumber(start, end)) != start) {
-					int size = newEnd - start;
+				} else if (language->getNumber && (tokenEnd = language->getNumber(tokenStart, lineEnd)) != tokenStart) {
+					auto size = tokenEnd - tokenStart;
 					setColor(glyph, glyph + size, Color::number);
 					glyph += size;
 

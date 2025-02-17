@@ -25,11 +25,12 @@
 //
 
 void TextEditor::setText(const std::string_view &text) {
-	// load text into document and reset transactions and cursors
+	// load text into document and reset subsystems
 	document.setText(text);
 	transactions.clear();
-	cursors.clearAll();
 	bracketeer.reset();
+	cursors.clearAll();
+	ensureCursorIsVisible = true;
 }
 
 
@@ -43,6 +44,10 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 		updatePalette();
 	}
 
+	// get current position and available space
+	auto pos = ImGui::GetCursorPos();
+	auto available = ImGui::GetContentRegionAvail();
+
 	// get font information and determine start of line numbers, decorations and text
 	font = ImGui::GetFont();
 	fontSize = ImGui::GetFontSize();
@@ -50,7 +55,7 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 	lineNumberLeftOffset = leftMargin * glyphSize.x;
 
 	if (showLineNumbers) {
-		int digits = static_cast<int>(std::log10(document.lines() + 1) + 1.0f);
+		int digits = static_cast<int>(std::log10(document.lineCount() + 1) + 1.0f);
 		lineNumberRightOffset = lineNumberLeftOffset + digits * glyphSize.x;
 		decorationOffset = lineNumberRightOffset + decorationMargin * glyphSize.x;
 
@@ -70,10 +75,15 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 	ImGui::PushStyleColor(ImGuiCol_ChildBg, ImGui::ColorConvertU32ToFloat4(palette.get(Color::background)));
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 
+	// ensure editor has focus (if required)
+	if (focusOnEditor) {
+		ImGui::SetNextWindowFocus();
+		focusOnEditor = false;
+	}
+
 	// start a new child window
 	// this must be done before we handle keyboard and mouse interactions to ensure correct ImGui context
-	int longestLine = document.maxColumn();
-	ImGui::SetNextWindowContentSize(ImVec2(textOffset + longestLine * glyphSize.x + cursorWidth, document.lines() * glyphSize.y));
+	ImGui::SetNextWindowContentSize(ImVec2(textOffset + document.getMaxColumn() * glyphSize.x + cursorWidth, document.lineCount() * glyphSize.y));
 	ImGui::BeginChild(title, size, border, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNavInputs);
 
 	// handle keyboard and mouse inputs
@@ -165,13 +175,13 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 
 	// determine view parameters
 	float scrollbarSize = ImGui::GetStyle().ScrollbarSize;
-	visibleHeight = ImGui::GetWindowHeight() - ((longestLine >= visibleColumns) ? scrollbarSize : 0.0f);
+	visibleHeight = ImGui::GetWindowHeight() - ((document.getMaxColumn() >= visibleColumns) ? scrollbarSize : 0.0f);
 	visibleLines = std::max(static_cast<int>(std::ceil(visibleHeight / glyphSize.y)), 0);
 	firstVisibleLine = std::max(static_cast<int>(std::floor(ImGui::GetScrollY() / glyphSize.y)), 0);
-	lastVisibleLine = std::min(static_cast<int>(std::floor((ImGui::GetScrollY() + visibleHeight) / glyphSize.y)), document.lines() - 1);
+	lastVisibleLine = std::min(static_cast<int>(std::floor((ImGui::GetScrollY() + visibleHeight) / glyphSize.y)), document.lineCount() - 1);
 
 	auto tabSize = document.getTabSize();
-	visibleWidth = ImGui::GetWindowWidth() - textOffset - ((document.lines() >= visibleLines) ? scrollbarSize : 0.0f);
+	visibleWidth = ImGui::GetWindowWidth() - textOffset - ((document.lineCount() >= visibleLines) ? scrollbarSize : 0.0f);
 	visibleColumns = std::max(static_cast<int>(std::ceil(visibleWidth / glyphSize.x)), 0);
 	firstVisibleColumn = (std::max(static_cast<int>(std::floor(ImGui::GetScrollX() / glyphSize.x)), 0) / tabSize) * tabSize;
 	lastVisibleColumn = static_cast<int>(std::floor((ImGui::GetScrollX() + visibleWidth) / glyphSize.x));
@@ -199,6 +209,9 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 	ImGui::EndChild();
 	ImGui::PopStyleVar();
 	ImGui::PopStyleColor();
+
+	// render find/replace popup
+	renderFindReplace(pos, available);
 }
 
 
@@ -223,7 +236,7 @@ void TextEditor::renderSelections() {
 				for (auto line = first; line <= last; line++) {
 					auto x = cursorScreenPos.x + textOffset;
 					auto left = x + (line == first ? start.column : 0) * glyphSize.x;
-					auto right = x + (line == last ? end.column : document.maxColumn(line)) * glyphSize.x;
+					auto right = x + (line == last ? end.column : document[line].maxColumn) * glyphSize.x;
 					auto y = cursorScreenPos.y + line * glyphSize.y;
 					drawList->AddRectFilled(ImVec2(left, y), ImVec2(right, y + glyphSize.y), palette.get(Color::selection));
 				}
@@ -308,7 +321,7 @@ void TextEditor::renderMatchingBrackets() {
 			}
 
 			// render active bracket pair
-			auto active = bracketeer.getActive(cursors.getMain().getInteractiveEnd());
+			auto active = bracketeer.getActiveBracket(cursors.getMain().getInteractiveEnd());
 
 			if (active != bracketeer.end() &&
 				active->start.line <= lastVisibleLine &&
@@ -348,9 +361,9 @@ void TextEditor::renderText() {
 		// draw colored glyphs for current line
 		auto column = firstVisibleColumn;
 		auto index = document.getIndex(line, column);
-		auto glyphs = line.glyphs();
+		auto lineSize = line.glyphCount();
 
-		while (index < glyphs && column <= lastVisibleColumn) {
+		while (index < lineSize && column <= lastVisibleColumn) {
 			auto& glyph = line[index];
 			auto codepoint = glyph.codepoint;
 			ImVec2 glyphPos{lineScreenPos.x + column * glyphSize.x, lineScreenPos.y};
@@ -480,6 +493,179 @@ void TextEditor::renderDecorations() {
 
 
 //
+//	latchButton
+//
+
+static bool latchButton(const char* label, bool* value, const ImVec2& size) {
+	bool changed = false;
+	ImVec4* colors = ImGui::GetStyle().Colors;
+
+	if (*value) {
+		ImGui::PushStyleColor(ImGuiCol_Button, colors[ImGuiCol_ButtonActive]);
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colors[ImGuiCol_ButtonActive]);
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, colors[ImGuiCol_TableBorderLight]);
+
+	} else {
+		ImGui::PushStyleColor(ImGuiCol_Button, colors[ImGuiCol_TableBorderLight]);
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colors[ImGuiCol_TableBorderLight]);
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, colors[ImGuiCol_ButtonActive]);
+	}
+
+	ImGui::Button(label, size);
+
+	if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
+		*value = !*value;
+		changed = true;
+	}
+
+	ImGui::PopStyleColor(3);
+	return changed;
+}
+
+
+//
+//	inputString
+//
+
+static bool inputString(const char* label, std::string* value, ImGuiInputTextFlags flags=ImGuiInputTextFlags_None) {
+	flags |=
+		ImGuiInputTextFlags_NoUndoRedo |
+		ImGuiInputTextFlags_CallbackResize;
+
+	return ImGui::InputText(label, (char*) value->c_str(), value->capacity() + 1, flags, [](ImGuiInputTextCallbackData* data) {
+		if (data->EventFlag == ImGuiInputTextFlags_CallbackResize) {
+			std::string* value = (std::string*) data->UserData;
+			value->resize(data->BufTextLen);
+			data->Buf = (char*) value->c_str();
+		}
+
+		return 0;
+	}, value);
+}
+
+
+//
+//	TextEditor::renderFindReplace
+//
+
+void TextEditor::renderFindReplace(ImVec2 pos, ImVec2 available) {
+	// render find/replace window (if required)
+	if (findReplaceVisible) {
+		// calculate sizes
+		auto& style = ImGui::GetStyle();
+		auto fieldWidth = 250.0f;
+
+		auto replaceWidth = ImGui::CalcTextSize(" Replace ").x + style.FramePadding.x * 2.0f;
+		auto replaceAllWidth = ImGui::CalcTextSize(" Replace All ").x + style.FramePadding.x * 2.0f;
+		auto optionWidth = ImGui::CalcTextSize("Aa").x + style.FramePadding.x * 2.0f;
+
+		auto windowHeight =
+			style.ChildBorderSize * 2.0f +
+			style.WindowPadding.y * 2.0f +
+			ImGui::GetFrameHeight() * 2.0f +
+			style.ItemSpacing.y;
+
+		auto windowWidth =
+			style.ChildBorderSize * 2.0f +
+			style.WindowPadding.x * 2.0f +
+			fieldWidth + style.ItemSpacing.x +
+			replaceWidth + style.ItemSpacing.x +
+			replaceAllWidth + style.ItemSpacing.x +
+			optionWidth * 3.0f + style.ItemSpacing.x * 2.0f;
+
+		// create window
+		ImGui::SetCursorPos(ImVec2(
+			pos.x + available.x - windowWidth - style.ScrollbarSize - style.ItemSpacing.x,
+			pos.y + style.ItemSpacing.y * 2.0f));
+
+		ImGui::BeginChild("find-replace", ImVec2(windowWidth, windowHeight), ImGuiChildFlags_Borders);
+		ImGui::SetNextItemWidth(fieldWidth);
+
+		if (focusOnFind) {
+			ImGui::SetKeyboardFocusHere();
+			focusOnFind = false;
+		}
+
+		if (inputString("###find", &findText, ImGuiInputTextFlags_AutoSelectAll)) {
+			if (findText.size()) {
+				selectFirstOccurrenceOf(findText, caseSensitiveFind, wholeWordFind);
+
+			} else {
+				cursors.clearAll();
+			}
+		}
+
+		if (ImGui::IsItemDeactivated() && (ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_KeypadEnter))){
+			focusOnEditor = true;
+		}
+
+		if (!findText.size()) {
+			ImGui::BeginDisabled();
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Find", ImVec2(replaceWidth, 0.0f))) {
+			find();
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Find All", ImVec2(replaceAllWidth, 0.0f))) {
+			findAll();
+		}
+
+		if (!findText.size()) {
+			ImGui::EndDisabled();
+		}
+
+		ImGui::SameLine();
+
+		if (latchButton("Aa", &caseSensitiveFind, ImVec2(optionWidth, 0.0f))) {
+			find();
+		}
+
+		ImGui::SameLine();
+
+		if (latchButton("[]", &wholeWordFind, ImVec2(optionWidth, 0.0f))) {
+			find();
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("x", ImVec2(optionWidth, 0.0f))) {
+			findReplaceVisible = false;
+			focusOnEditor = true;
+		}
+
+		ImGui::SetNextItemWidth(fieldWidth);
+		inputString("###replace", &replaceText);
+		ImGui::SameLine();
+
+		if (!findText.size() || !replaceText.size()) {
+			ImGui::BeginDisabled();
+		}
+
+		if (ImGui::Button("Replace", ImVec2(replaceWidth, 0.0f))) {
+			replace();
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Replace All", ImVec2(replaceAllWidth, 0.0f))) {
+			replaceAll();
+		}
+
+		if (!findText.size() || !replaceText.size()) {
+			ImGui::EndDisabled();
+		}
+
+		ImGui::EndChild();
+	}
+}
+
+
+//
 //	TextEditor::handleKeyboardInputs
 //
 
@@ -543,6 +729,11 @@ void TextEditor::handleKeyboardInputs() {
 		else if (!readOnly && isAltOnly && ImGui::IsKeyPressed(ImGuiKey_UpArrow)) { moveUpLines(); }
 		else if (!readOnly && isAltOnly && ImGui::IsKeyPressed(ImGuiKey_DownArrow)) { moveDownLines(); }
 		else if (!readOnly && language && isShortcut && ImGui::IsKeyPressed(ImGuiKey_Slash)) { toggleComments(); }
+
+		// find/replace support
+		else if (isShortcut && ImGui::IsKeyPressed(ImGuiKey_F)) { openFindReplace(); }
+		else if (isShiftShortcut && ImGui::IsKeyPressed(ImGuiKey_F)) { findAll(); }
+		else if (isShortcut && ImGui::IsKeyPressed(ImGuiKey_G)) { findNext(); }
 
 		// change insert mode
 		else if (isNoModifiers && ImGui::IsKeyPressed(ImGuiKey_Insert)) { overwrite = !overwrite; }
@@ -980,11 +1171,87 @@ void TextEditor::replaceTextInAllCursors(const std::string_view& text) {
 
 
 //
+//	TextEditor::openFindReplace
+//
+
+void TextEditor::openFindReplace() {
+	findReplaceVisible = true;
+	focusOnFind = true;
+}
+
+
+//
+//	TextEditor::find
+//
+
+void TextEditor::find() {
+	if (findText.size()) {
+		selectNextOccurrenceOf(findText, caseSensitiveFind, wholeWordFind);
+		focusOnEditor = true;
+	}
+}
+
+
+//
+//	TextEditor::findNext
+//
+
+void TextEditor::findNext() {
+	if (findText.size()) {
+		selectNextOccurrenceOf(findText, caseSensitiveFind, wholeWordFind);
+		focusOnEditor = true;
+	}
+}
+
+
+//
+//	TextEditor::findAll
+//
+
+void TextEditor::findAll() {
+	if (findText.size()) {
+		selectAllOccurrencesOf(findText, caseSensitiveFind, wholeWordFind);
+		focusOnEditor = true;
+	}
+}
+
+
+//
+//	TextEditor::replace
+//
+
+void TextEditor::replace() {
+	if (findText.size()) {
+		if (!cursors.anyHasSelection()) {
+			selectNextOccurrenceOf(findText, caseSensitiveFind, wholeWordFind);
+		}
+
+		replaceTextInCurrentCursor(replaceText);
+		selectNextOccurrenceOf(findText, caseSensitiveFind, wholeWordFind);
+		focusOnEditor = true;
+	}
+}
+
+
+//
+//	TextEditor::replaceAll
+//
+
+void TextEditor::replaceAll() {
+	if (findText.size()) {
+		selectAllOccurrencesOf(findText, caseSensitiveFind, wholeWordFind);
+		replaceTextInAllCursors(replaceText);
+		focusOnEditor = true;
+	}
+}
+
+
+//
 //	TextEditor::addMarker
 //
 
 void TextEditor::addMarker(int line, ImU32 lineNumberColor, ImU32 textColor, const std::string_view& lineNumberTooltip, const std::string_view& textTooltip) {
-	if (line >= 0 && line < document.lines()) {
+	if (line >= 0 && line < document.lineCount()) {
 		markers.emplace_back(lineNumberColor, textColor, lineNumberTooltip, textTooltip);
 		document[line].marker = markers.size();
 	}
@@ -1310,7 +1577,7 @@ void TextEditor::indentLines() {
 
 		// process all lines in this cursor
 		for (auto line = cursorStart.line; line <= cursorEnd.line; line++) {
-			if (Coordinate(line, 0) != cursorEnd && document[line].glyphs()) {
+			if (Coordinate(line, 0) != cursorEnd && document[line].glyphCount()) {
 				auto insertStart = Coordinate(line, 0);
 				auto insertEnd = insertText(transaction, insertStart, "\t");
 				cursors.adjustForInsert(cursor, insertStart, insertEnd);
@@ -1345,7 +1612,7 @@ void TextEditor::deindentLines() {
 			int column = 0;
 			int index = 0;
 
-			while (column < 4 && index < document[line].glyphs() && std::isblank(document[line][index].codepoint)) {
+			while (column < 4 && index < document[line].glyphCount() && std::isblank(document[line][index].codepoint)) {
 				column += document[line][index].codepoint == '\t' ? tabSize - (column % tabSize) : 1;
 				index++;
 			}
@@ -1448,16 +1715,16 @@ void TextEditor::toggleComments() {
 
 		// process all lines in this cursor
 		for (auto line = cursorStart.line; line <= cursorEnd.line; line++) {
-			if (Coordinate(line, 0) != cursorEnd && document[line].glyphs()) {
+			if (Coordinate(line, 0) != cursorEnd && document[line].glyphCount()) {
 				// see if line starts with a comment (after possible leading whitespaces)
 				int start = 0;
 				int i = 0;
 
-				while (start < document[line].glyphs() && CodePoint::isWhiteSpace(document[line][start].codepoint)) {
+				while (start < document[line].glyphCount() && CodePoint::isWhiteSpace(document[line][start].codepoint)) {
 					start++;
 				}
 
-				while (start + i < document[line].glyphs() && i < comment.size() && document[line][start + i].codepoint == comment[i]) {
+				while (start + i < document[line].glyphCount() && i < comment.size() && document[line][start + i].codepoint == comment[i]) {
 					i++;
 				}
 
@@ -1494,7 +1761,7 @@ void TextEditor::filterSelections(std::function<std::string(std::string_view)> f
 
 		// process all lines in this cursor
 		for (auto line = start.line; line <= end.line; line++) {
-			if (Coordinate(line, 0) != end && document[line].glyphs()) {
+			if (Coordinate(line, 0) != end && document[line].glyphCount()) {
 				// get original text and run it through filter
 				auto before = document.getSectionText(start, end);
 				std::string after = filter(before);
@@ -1567,14 +1834,14 @@ void TextEditor::stripTrailingWhitespaces() {
 	auto transaction = startTransaction();
 
 	// process all the lines
-	for (int i = 0; i < document.lines(); i++) {
+	for (int i = 0; i < document.lineCount(); i++) {
 		auto& line = document[i];
-		int size = line.glyphs();
+		int lineSize = line.glyphCount();
 		int whitespace = -1;
 		bool done = false;
 
 		// look for first non-whitespace glyph at the end of the line
-		for (auto index = size - 1; !done && index >= 0; index--) {
+		for (auto index = lineSize - 1; !done && index >= 0; index--) {
 			if (CodePoint::isWhiteSpace(line[index].codepoint)) {
 				whitespace = index;
 
@@ -1586,7 +1853,7 @@ void TextEditor::stripTrailingWhitespaces() {
 		// remove whitespaces (if required)
 		if (whitespace >= 0) {
 			auto start = Coordinate(i, document.getColumn(line, whitespace));
-			auto end = Coordinate(i, document.getColumn(line, size));
+			auto end = Coordinate(i, document.getColumn(line, lineSize));
 			deleteText(transaction, start, end);
 		}
 	}
@@ -1606,7 +1873,7 @@ void TextEditor::filterLines(std::function<std::string(std::string_view)> filter
 	auto transaction = startTransaction();
 
 	// process all the lines
-	for (int i = 0; i < document.lines(); i++) {
+	for (int i = 0; i < document.lineCount(); i++) {
 		// get original text and run it through filter
 		auto before = document.getLineText(i);
 		std::string after = filter(before);

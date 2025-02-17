@@ -18,7 +18,7 @@
 
 void TextEditor::Bracketeer::reset() {
 	clear();
-	active = end();
+	active = -1;
 	activeLocation = Coordinate::invalid();
 }
 
@@ -34,13 +34,13 @@ void TextEditor::Bracketeer::update(Document& document) {
 		Color::matchingBracketLevel3
 	};
 
-	clear();
+	reset();
 	std::vector<size_t> levels;
 	int level = 0;
 
 	// process all the glyphs
-	for (auto line = 0; line < document.lines(); line++) {
-		for (auto index = 0; index < document[line].glyphs(); index++) {
+	for (auto line = 0; line < document.lineCount(); line++) {
+		for (auto index = 0; index < document[line].glyphCount(); index++) {
 			auto& glyph = document[line][index];
 
 			// handle a "bracket opener" that is not in a comment, string or preprocessor statement
@@ -91,12 +91,12 @@ void TextEditor::Bracketeer::update(Document& document) {
 
 
 //
-//	TextEditor::Bracketeer::getActive
+//	TextEditor::Bracketeer::getActiveBracket
 //
 
-TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getActive(Coordinate location) {
+TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getActiveBracket(Coordinate location) {
 	if (location != activeLocation) {
-		active = end();
+		active = -1;
 		bool done = false;
 
 		for (auto i = begin(); !done && i < end(); i++) {
@@ -107,12 +107,12 @@ TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getActive(Coordinate lo
 
 			// brackets are active when they are around specified location
 			else if (i->isAround(location)) {
-				active = i;
+				active = static_cast<int>(i - begin());
 			}
 		}
 
 		activeLocation = location;
 	}
 
-	return active;
+	return active == -1 ? end() : begin() + active;
 }

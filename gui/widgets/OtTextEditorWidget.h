@@ -58,7 +58,7 @@ public:
 	inline void setText(const std::string& text) { editor.SetText(text); }
 	inline std::string getText() { return editor.GetText(); }
 	inline bool isEmpty() { return editor.IsEmpty(); }
-	inline int getLineCount() { return editor.GetLineCount(); }
+	inline int lineCount() { return editor.GetLineCount(); }
 
 	//	clipboard functions
 	inline void cut() { editor.Cut(); }

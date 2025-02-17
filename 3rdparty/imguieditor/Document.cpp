@@ -37,6 +37,9 @@ void TextEditor::Document::setText(const std::string_view& text) {
 			back().emplace_back(Glyph(character, Color::text));
 		}
 	}
+
+	// update maximum column counts
+	updateMaximumColumn(0, lineCount() - 1);
 }
 
 
@@ -86,6 +89,9 @@ TextEditor::Coordinate TextEditor::Document::insertText(Coordinate start, const 
 		at(line).colorize = true;
 	}
 
+	// update maximum column counts
+	updateMaximumColumn(start.line, end.line);
+
 	updated = true;
 	return end;
 }
@@ -124,12 +130,14 @@ void TextEditor::Document::deleteText(Coordinate start, Coordinate end) {
 	}
 
 	// mark affected lines for colorization
-	auto last = (start.line == lines() - 1) ? start.line : start.line + 1;
+	auto last = (start.line == lineCount() - 1) ? start.line : start.line + 1;
 
 	for (auto line = start.line; line <= last; line++) {
 		at(line).colorize = true;
 	}
 
+	// update maximum column counts
+	updateMaximumColumn(start.line, end.line);
 	updated = true;
 }
 
@@ -172,7 +180,7 @@ std::string TextEditor::Document::getSectionText(Coordinate start, Coordinate en
 	while (lineNo < end.line || index < endIndex) {
 		auto& line = at(lineNo);
 
-		if (index < line.glyphs()) {
+		if (index < line.glyphCount()) {
 			section.append(std::string_view(utf8, CodePoint::write(utf8, line[index].codepoint)));
 			index++;
 
@@ -192,39 +200,33 @@ std::string TextEditor::Document::getSectionText(Coordinate start, Coordinate en
 //
 
 std::string TextEditor::Document::getLineText(int line) const {
-	return getSectionText(Coordinate(line, 0), Coordinate(line, maxColumn(line)));
+	return getSectionText(Coordinate(line, 0), Coordinate(line, at(line).maxColumn));
 }
 
 
 //
-//	TextEditor::Document::maxColumn
+//	TextEditor::Document::updateMaximumColumn
 //
 
-int TextEditor::Document::maxColumn() const {
-	// determine the maximum column number for this document
-	int result = 0;
+void TextEditor::Document::updateMaximumColumn(int first, int last) {
+	// process specified lines
+	for (auto i = begin() + first; i <= begin() + last; i++) {
+		// determine the maximum column number for this line
+		int column = 0;
 
-	for (auto& line : *this) {
-		result = std::max(result, maxColumn(line));
+		for (auto glyph = i->begin(); glyph < i->end(); glyph++) {
+			column = (glyph->codepoint == '\t') ? ((column / tabSize) + 1) * tabSize : column + 1;
+		}
+
+		i->maxColumn = column;
 	}
 
-	return result;
-}
+	// determine maximum line number in document
+	maxColumn = 0;
 
-
-//
-//	TextEditor::Document::maxColumn
-//
-
-int TextEditor::Document::maxColumn(const Line& line) const {
-	// determine the maximum column number for this line
-	int column = 0;
-
-	for (auto glyph = line.begin(); glyph < line.end(); glyph++) {
-		column = (glyph->codepoint == '\t') ? ((column / tabSize) + 1) * tabSize : column + 1;
+	for (auto i = begin(); i < end(); i++) {
+		maxColumn = std::max(maxColumn, i->maxColumn);
 	}
-
-	return column;
 }
 
 
@@ -313,7 +315,7 @@ TextEditor::Coordinate TextEditor::Document::getLeft(Coordinate from, bool wordM
 		auto index = getIndex(from);
 
 		if (index == 0) {
-			return (from.line > 0) ? Coordinate(from.line - 1, maxColumn(from.line - 1)) : from;
+			return (from.line > 0) ? Coordinate(from.line - 1, at(from.line - 1).maxColumn) : from;
 
 		} else {
 			return Coordinate(from.line, getColumn(from.line, index - 1));
@@ -332,10 +334,10 @@ TextEditor::Coordinate TextEditor::Document::getRight(Coordinate from, bool word
 		from = getRight(from);
 		auto& line = at(from.line);
 		auto index = getIndex(from);
-		auto size = line.glyphs();
+		auto lineSize = line.glyphCount();
 
 		// now skip all whitespaces
-		while (index < size && CodePoint::isWhiteSpace(line[index].codepoint)) {
+		while (index < lineSize && CodePoint::isWhiteSpace(line[index].codepoint)) {
 			index++;
 		}
 
@@ -346,8 +348,8 @@ TextEditor::Coordinate TextEditor::Document::getRight(Coordinate from, bool word
 		// calculate coordinate of next glyph (could be on next line)
 		auto index = getIndex(from);
 
-		if (index == at(from.line).glyphs()) {
-			return (from.line < lines() - 1) ? Coordinate(from.line + 1, 0) : from;
+		if (index == at(from.line).glyphCount()) {
+			return (from.line < lineCount() - 1) ? Coordinate(from.line + 1, 0) : from;
 
 		} else {
 			return Coordinate(from.line, getColumn(from.line, index + 1));
@@ -370,8 +372,8 @@ TextEditor::Coordinate TextEditor::Document::getTop() const {
 //
 
 TextEditor::Coordinate TextEditor::Document::getBottom() const {
-	auto lastLine = lines() - 1;
-	return Coordinate(lastLine, maxColumn(lastLine));
+	auto lastLine = lineCount() - 1;
+	return Coordinate(lastLine, at(lastLine).maxColumn);
 }
 
 
@@ -389,7 +391,7 @@ TextEditor::Coordinate TextEditor::Document::getStartOfLine(Coordinate from) con
 //
 
 TextEditor::Coordinate TextEditor::Document::getEndOfLine(Coordinate from) const {
-	return Coordinate(from.line, maxColumn(from.line));
+	return Coordinate(from.line, at(from.line).maxColumn);
 }
 
 
@@ -434,7 +436,7 @@ TextEditor::Coordinate TextEditor::Document::findWordStart(Coordinate from) cons
 TextEditor::Coordinate TextEditor::Document::findWordEnd(Coordinate from) const {
 	auto& line = at(from.line);
 	auto index = getIndex(from);
-	auto size = line.glyphs();
+	auto size = line.glyphCount();
 
 	if (index >= size) {
 		return from;
@@ -488,20 +490,20 @@ bool TextEditor::Document::findText(Coordinate from, const std::string_view& tex
 	do {
 		auto line = searchLine;
 		auto index = searchIndex;
-		auto lineSize = at(line).glyphs();
+		auto lineSize = at(line).glyphCount();
 		bool done = false;
 		int i = 0;
 
 		while (!done && i < search.size()) {
 			if (search[i] == '\n') {
 				if (index == lineSize) {
-					if (line == lines() - 1) {
+					if (line == lineCount() - 1) {
 						done = true;
 
 					} else {
 						line++;
 						index = 0;
-						lineSize = at(line).glyphs();
+						lineSize = at(line).glyphCount();
 						i++;
 					}
 
@@ -540,8 +542,8 @@ bool TextEditor::Document::findText(Coordinate from, const std::string_view& tex
 			}
 		}
 
-		if (searchIndex == at(searchLine).glyphs()) {
-			searchLine = (searchLine == lines() - 1) ? 0 : searchLine + 1;
+		if (searchIndex == at(searchLine).glyphCount()) {
+			searchLine = (searchLine == lineCount() - 1) ? 0 : searchLine + 1;
 			searchIndex = 0;
 
 		} else {
@@ -580,11 +582,11 @@ TextEditor::Coordinate TextEditor::Document::normalizeCoordinate(Coordinate coor
 	if (coordinate.line < 0) {
 		result = Coordinate(0, 0);
 
-	} else if (coordinate.line >= lines()) {
-		result = Coordinate(lines() - 1, maxColumn(lines() - 1));
+	} else if (coordinate.line >= lineCount()) {
+		result = Coordinate(lineCount() - 1, at(lineCount() - 1).maxColumn);
 
 	} else {
-		result = Coordinate(coordinate.line, std::max(0, std::min(coordinate.column, maxColumn(coordinate.line))));
+		result = Coordinate(coordinate.line, std::max(0, std::min(coordinate.column, at(coordinate.line).maxColumn)));
 	}
 
 	return Coordinate(result.line, getColumn(result.line, getIndex(result)));

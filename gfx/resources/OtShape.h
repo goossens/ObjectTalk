@@ -48,13 +48,15 @@ public:
 		plutovg_path_destroy(path);
 		path = plutovg_path_reference(shape.path);
 		version = shape.version;
-		return *this; }
+		return *this;
+	}
 
     OtShape& operator=(OtShape&& shape) {
 		plutovg_path_destroy(path);
 		path = std::exchange(shape.path, nullptr);
 		version = shape.version;
-		return *this; }
+		return *this;
+	}
 
 	// clear the shape
 	inline void clear() {

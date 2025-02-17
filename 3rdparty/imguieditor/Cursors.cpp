@@ -20,7 +20,7 @@ TextEditor::Coordinate TextEditor::Cursor::adjustCoordinateForInsert(Coordinate 
 	coordinate.line += end.line - start.line;
 
 	if (end.line == coordinate.line) {
-		coordinate.column += end.column;
+		coordinate.column += end.column - start.column;
 	}
 
 	return coordinate;
@@ -45,7 +45,7 @@ TextEditor::Coordinate TextEditor::Cursor::adjustCoordinateForDelete(Coordinate 
 	coordinate.line -= end.line - start.line;
 
 	if (end.line == coordinate.line) {
-		coordinate.column -= end.column;
+		coordinate.column -= end.column - start.column;
 	}
 
 	return coordinate;

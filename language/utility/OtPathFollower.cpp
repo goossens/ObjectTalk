@@ -65,9 +65,7 @@ void OtPathFollower::unfollow() {
 		UV_CHECK_ERROR("uv_fs_event_stop", status);
 
 		uv_close((uv_handle_t*) fsEventHandle, [](uv_handle_t* handle) {
-			auto follower = (OtPathFollower*) handle->data;
 			delete (uv_fs_event_t*) handle;
-			follower->fsEventHandle = nullptr;
 		});
 
 		path.clear();

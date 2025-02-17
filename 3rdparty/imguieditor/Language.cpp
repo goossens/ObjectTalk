@@ -23,21 +23,3 @@
 #include "languages/Hlsl.h"
 #include "languages/Json.h"
 #include "languages/Markdown.h"
-
-
-//
-//	TextEditor::Iterator::operator*
-//
-
-TextEditor::Iterator::reference TextEditor::Iterator::operator*() const {
-	return static_cast<Line*>(line)->at(index).codepoint;
-}
-
-
-//
-//	TextEditor::Iterator::operator->
-//
-
-TextEditor::Iterator::pointer TextEditor::Iterator::operator->() const {
-	return &(static_cast<Line*>(line)->at(index).codepoint);
-}

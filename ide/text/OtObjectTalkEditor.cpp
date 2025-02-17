@@ -155,7 +155,6 @@ OtObjectTalkEditor::OtObjectTalkEditor() {
 void OtObjectTalkEditor::highlightError(size_t line, const std::string& error) {
 	editor.AddMarker(static_cast<int>(line - 1), 0, IM_COL32(128, 0, 32, 128), "", error);
 	scrollToLine = static_cast<int>(line);
-	focusOnEditor = true;
 }
 
 

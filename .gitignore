@@ -10,12 +10,12 @@
 *.gch
 *.pch
 
-# Compiled Dynamic libraries
+# Compiled dynamic libraries
 *.so
 *.dylib
 *.dll
 
-# Compiled Static libraries
+# Compiled static libraries
 *.lai
 *.la
 *.a
@@ -29,5 +29,5 @@
 # MacOS files
 .DS_Store
 
-# Local files
+# Local build files
 /build

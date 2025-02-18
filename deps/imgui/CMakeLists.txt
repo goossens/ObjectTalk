@@ -31,8 +31,8 @@ target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR})
 
 target_link_libraries(imgui PUBLIC freetype)
 
-if(APPLE)
-	set_property(TARGET imgui APPEND_STRING PROPERTY COMPILE_FLAGS "-fobjc-arc")
-endif()
+#if(APPLE)
+#	set_property(TARGET imgui APPEND_STRING PROPERTY COMPILE_FLAGS "-fobjc-arc")
+#ndif()
 
 set_target_properties(imgui PROPERTIES FOLDER deps)

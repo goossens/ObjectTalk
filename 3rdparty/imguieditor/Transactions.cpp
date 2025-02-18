@@ -30,12 +30,12 @@ void TextEditor::Transactions::add(std::shared_ptr<Transaction> transaction) {
 void TextEditor::Transactions::undo(Document& document, Cursors& cursors) {
 	auto& transaction = at(--undoIndex);
 
-	for (auto i = transaction->rbegin(); i < transaction->rend(); i++) {
-		if (i->type == Action::Type::insertText) {
-			document.deleteText(i->start, i->end);
+	for (auto action = transaction->rbegin(); action < transaction->rend(); action++) {
+		if (action->type == Action::Type::insertText) {
+			document.deleteText(action->start, action->end);
 
 		} else {
-			document.insertText(i->start, i->text);
+			document.insertText(action->start, action->text);
 		}
 	}
 
@@ -50,12 +50,12 @@ void TextEditor::Transactions::undo(Document& document, Cursors& cursors) {
 void TextEditor::Transactions::redo(Document& document, Cursors& cursors) {
 	auto& transaction = at(undoIndex++);
 
-	for (auto& action : *transaction) {
-		if (action.type == Action::Type::insertText) {
-			document.insertText(action.start, action.text);
+	for (auto action = transaction->rbegin(); action < transaction->rend(); action++) {
+		if (action->type == Action::Type::insertText) {
+			document.insertText(action->start, action->text);
 
 		} else {
-			document.deleteText(action.start, action.end);
+			document.deleteText(action->start, action->end);
 		}
 	}
 

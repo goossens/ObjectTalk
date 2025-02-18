@@ -151,12 +151,12 @@ std::string TextEditor::Document::getText() const {
 	std::string text;
 	char utf8[4];
 
-	for (auto i = begin(); i < end(); i++) {
-		for (auto& glyph : *i) {
-			text.append(std::string_view(utf8, CodePoint::write(utf8, glyph.codepoint)));
+	for (auto line = begin(); line < end(); line++) {
+		for (auto glyph = line->begin(); glyph < line->end(); glyph++) {
+			text.append(std::string_view(utf8, CodePoint::write(utf8, glyph->codepoint)));
 		}
 
-		if (i < end() - 1) {
+		if (line < end() - 1) {
 			text += "\n";
 		}
 	}
@@ -210,22 +210,22 @@ std::string TextEditor::Document::getLineText(int line) const {
 
 void TextEditor::Document::updateMaximumColumn(int first, int last) {
 	// process specified lines
-	for (auto i = begin() + first; i <= begin() + last; i++) {
+	for (auto line = begin() + first; line <= begin() + last; line++) {
 		// determine the maximum column number for this line
 		int column = 0;
 
-		for (auto glyph = i->begin(); glyph < i->end(); glyph++) {
+		for (auto glyph = line->begin(); glyph < line->end(); glyph++) {
 			column = (glyph->codepoint == '\t') ? ((column / tabSize) + 1) * tabSize : column + 1;
 		}
 
-		i->maxColumn = column;
+		line->maxColumn = column;
 	}
 
 	// determine maximum line number in document
 	maxColumn = 0;
 
-	for (auto i = begin(); i < end(); i++) {
-		maxColumn = std::max(maxColumn, i->maxColumn);
+	for (auto line = begin(); line < end(); line++) {
+		maxColumn = std::max(maxColumn, line->maxColumn);
 	}
 }
 

@@ -95,22 +95,24 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 		cursors.update();
 	}
 
-	// recolorize entire document (if showMatchingBrackets option or language have changed)
+	// recolorize entire document and reset brackets (if required)
 	if (showMatchingBracketsChanged || languageChanged) {
 		colorizer.updateEntireDocument(document, language);
 		bracketeer.reset();
 	}
 
-	// recolorize changed lines (if required)
 	auto documentChanged = document.isUpdated();
 
-	if (language && documentChanged) {
-		colorizer.updateChangedLines(document, language);
-	}
+	if (language) {
+		if (documentChanged) {
+			// recolorize updated lines
+			colorizer.updateChangedLines(document, language);
+		}
 
-	// rebuild bracket list (if document or showMatchingBrackets option have changed)
-	if (language && showMatchingBrackets && (documentChanged || showMatchingBracketsChanged)) {
-		bracketeer.update(document);
+		if (showMatchingBrackets && (documentChanged || showMatchingBracketsChanged || languageChanged)) {
+			// rebuild bracket list
+			bracketeer.update(document);
+		}
 	}
 
 	// reset changed states
@@ -578,6 +580,7 @@ void TextEditor::renderFindReplace(ImVec2 pos, ImVec2 available) {
 			pos.x + available.x - windowWidth - style.ScrollbarSize - style.ItemSpacing.x,
 			pos.y + style.ItemSpacing.y * 2.0f));
 
+		ImGui::SetNextWindowBgAlpha(0.6f);
 		ImGui::BeginChild("find-replace", ImVec2(windowWidth, windowHeight), ImGuiChildFlags_Borders);
 		ImGui::SetNextItemWidth(fieldWidth);
 
@@ -599,7 +602,9 @@ void TextEditor::renderFindReplace(ImVec2 pos, ImVec2 available) {
 			focusOnEditor = true;
 		}
 
-		if (!findText.size()) {
+		bool disableFindButtons = !findText.size();
+
+		if (disableFindButtons) {
 			ImGui::BeginDisabled();
 		}
 
@@ -615,7 +620,7 @@ void TextEditor::renderFindReplace(ImVec2 pos, ImVec2 available) {
 			findAll();
 		}
 
-		if (!findText.size()) {
+		if (disableFindButtons) {
 			ImGui::EndDisabled();
 		}
 
@@ -638,11 +643,21 @@ void TextEditor::renderFindReplace(ImVec2 pos, ImVec2 available) {
 			focusOnEditor = true;
 		}
 
+		if (readOnly) {
+			ImGui::BeginDisabled();
+		}
+
 		ImGui::SetNextItemWidth(fieldWidth);
 		inputString("###replace", &replaceText);
 		ImGui::SameLine();
 
-		if (!findText.size() || !replaceText.size()) {
+		if (readOnly) {
+			ImGui::EndDisabled();
+		}
+
+		bool disableReplaceButtons = readOnly || !findText.size() || !replaceText.size();
+
+		if (disableReplaceButtons) {
 			ImGui::BeginDisabled();
 		}
 
@@ -656,7 +671,7 @@ void TextEditor::renderFindReplace(ImVec2 pos, ImVec2 available) {
 			replaceAll();
 		}
 
-		if (!findText.size() || !replaceText.size()) {
+		if (disableReplaceButtons) {
 			ImGui::EndDisabled();
 		}
 
@@ -760,11 +775,12 @@ void TextEditor::handleKeyboardInputs() {
 
 		// handle regular text
 		if (!readOnly && !io.InputQueueCharacters.empty()) {
-			for (int i = 0; i < io.InputQueueCharacters.Size; i++) {
+			for (int i = 0; i < io.InputQueueCharacters.size(); i++) {
 				auto character = io.InputQueueCharacters[i];
 
-				if (character == '\n' || character >= 32)
+				if (character == '\n' || character >= 32) {
 					handleCharacter(character);
+				}
 			}
 
 			io.InputQueueCharacters.resize(0);

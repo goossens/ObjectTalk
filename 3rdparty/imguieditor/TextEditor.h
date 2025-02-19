@@ -60,6 +60,7 @@ public:
 	inline bool IsOverwriteEnabled() const { return overwrite; }
 
 	// access text (using UTF-8 encoded strings)
+	// (see note below on cursor and scroll manipulation after setting new text)
 	inline void SetText(const std::string_view& text) { setText(text); }
 	inline std::string GetText() { return document.getText(); }
 	inline bool IsEmpty() const { return document.size() == 1 && document[0].size() == 0; }
@@ -111,6 +112,22 @@ public:
 
 	inline int GetLineHeight() const { return glyphSize.y; }
 	inline int GetGlyphWidth() const { return glyphSize.x; }
+
+	// note on setting cursor and scrolling
+	//
+	// calling SetCursor or ScrollToLine has no effect until the next call to Render
+	// this is because we can only do layout calculations when we are in a Dear ImGui drawing context
+	// as a result, SetCursor or ScrollToLine just mark the request and let Render execute it
+	//
+	// the order of the calls is therefore important as they can interfere with each other
+	// so if you call SetText, SetCursor and/or ScrollToLine before Render, the order should be:
+	//
+	// * call SetText first as it resets the entire editor state including cursors and scrolling
+	// * then call SetCursor as it sets the cursor and requests that we make the cursor visible (i.e. scroll to it)
+	// * then call ScrollToLine to mark the exact scroll location (it cancels the possible SetCursor scroll request)
+	// * call Render to properly update the entire state
+	//
+	// this works on opening the editor as well as later
 
 	// find/replace support
 	inline void SelectFirstOccurrenceOf(const std::string_view& text, bool caseSensitive=true, bool wholeWord=false) { selectFirstOccurrenceOf(text, caseSensitive, wholeWord); }
@@ -763,6 +780,7 @@ private:
 	void getCursor(int& line, int& column, size_t cursor) const;
 
 	// scrolling support
+	void makeCursorVisible();
 	void scrollToLine(int line, Scroll alignment);
 
 	// find/replace support

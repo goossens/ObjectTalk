@@ -44,5 +44,4 @@ protected:
 
 	// properties
 	size_t version = 0;
-	int scrollToLine = 1;
 };

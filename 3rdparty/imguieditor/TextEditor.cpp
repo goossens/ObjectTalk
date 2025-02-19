@@ -415,18 +415,36 @@ void TextEditor::renderCursors() {
 	// update cursor animation timer
 	cursorAnimationTimer = std::fmod(cursorAnimationTimer + ImGui::GetIO().DeltaTime, 1.0f);
 
-	if (ImGui::IsWindowFocused() && (!ImGui::GetIO().ConfigInputTextCursorBlink || cursorAnimationTimer < 0.5f)) {
-		auto drawList = ImGui::GetWindowDrawList();
+	if (ImGui::IsWindowFocused()) {
 		ImVec2 cursorScreenPos = ImGui::GetCursorScreenPos();
 
-		for (auto& cursor : cursors) {
-			auto pos = cursor.getInteractiveEnd();
+		if (!ImGui::GetIO().ConfigInputTextCursorBlink || cursorAnimationTimer < 0.5f) {
+			auto drawList = ImGui::GetWindowDrawList();
 
-			if (pos.line >= firstVisibleLine && pos.line <= lastVisibleLine) {
-				auto x = cursorScreenPos.x + textOffset + pos.column * glyphSize.x - 1;
-				auto y = cursorScreenPos.y + pos.line * glyphSize.y;
-				drawList->AddRectFilled(ImVec2(x, y), ImVec2(x + cursorWidth, y + glyphSize.y), palette.get(Color::cursor));
+			for (auto& cursor : cursors) {
+				auto pos = cursor.getInteractiveEnd();
+
+				if (pos.line >= firstVisibleLine && pos.line <= lastVisibleLine) {
+					auto x = cursorScreenPos.x + textOffset + pos.column * glyphSize.x - 1;
+					auto y = cursorScreenPos.y + pos.line * glyphSize.y;
+					drawList->AddRectFilled(ImVec2(x, y), ImVec2(x + cursorWidth, y + glyphSize.y), palette.get(Color::cursor));
+				}
 			}
+		}
+
+		// notify OS of text input position for advanced Input Method Editor (IME)
+		// this is very hackish but required for SDL3 backend as it will not report
+		// text input events unless we do this
+		if (!readOnly && ImGui::GetPlatformIO().Platform_SetImeDataFn) {
+			auto pos = cursors.getCurrent().getInteractiveEnd();
+			auto x = cursorScreenPos.x + textOffset + pos.column * glyphSize.x - 1;
+			auto y = cursorScreenPos.y + pos.line * glyphSize.y;
+
+			ImGuiPlatformImeData data;
+			data.WantVisible = true;
+			data.InputPos = ImVec2(x, y);
+			data.InputLineHeight = glyphSize.y;
+			ImGui::GetPlatformIO().Platform_SetImeDataFn(ImGui::GetIO().Ctx, ImGui::GetMainViewport(), &data);
 		}
 	}
 }
@@ -2142,6 +2160,7 @@ void TextEditor::deleteText(std::shared_ptr<Transaction> transaction, Coordinate
 	document.deleteText(start, end);
 	ensureCursorIsVisible = true;
 	transaction->addDelete(start, end, text);
+	ensureCursorIsVisible = true;
 }
 
 

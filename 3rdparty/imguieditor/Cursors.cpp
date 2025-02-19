@@ -16,11 +16,11 @@
 //	TextEditor::Cursor::adjustCoordinateForInsert
 //
 
-TextEditor::Coordinate TextEditor::Cursor::adjustCoordinateForInsert(Coordinate coordinate, Coordinate start, Coordinate end) {
-	coordinate.line += end.line - start.line;
+TextEditor::Coordinate TextEditor::Cursor::adjustCoordinateForInsert(Coordinate coordinate, Coordinate insertStart, Coordinate insertEnd) {
+	coordinate.line += insertEnd.line - insertStart.line;
 
 	if (end.line == coordinate.line) {
-		coordinate.column += end.column - start.column;
+		coordinate.column += insertEnd.column - insertStart.column;
 	}
 
 	return coordinate;
@@ -41,11 +41,11 @@ void TextEditor::Cursor::adjustForInsert(Coordinate insertStart, Coordinate inse
 //	TextEditor::Cursor::adjustCoordinateForDelete
 //
 
-TextEditor::Coordinate TextEditor::Cursor::adjustCoordinateForDelete(Coordinate coordinate, Coordinate start, Coordinate end) {
-	coordinate.line -= end.line - start.line;
+TextEditor::Coordinate TextEditor::Cursor::adjustCoordinateForDelete(Coordinate coordinate, Coordinate deleteStart, Coordinate deleteEnd) {
+	coordinate.line -= deleteEnd.line - deleteStart.line;
 
-	if (end.line == coordinate.line) {
-		coordinate.column -= end.column - start.column;
+	if (deleteEnd.line == coordinate.line) {
+		coordinate.column -= deleteEnd.column - deleteStart.column;
 	}
 
 	return coordinate;
@@ -66,9 +66,9 @@ void TextEditor::Cursor::adjustForDelete(Coordinate deleteStart, Coordinate dele
 //	TextEditor::Cursors::setCursor
 //
 
-void TextEditor::Cursors::setCursor(Coordinate start, Coordinate end) {
+void TextEditor::Cursors::setCursor(Coordinate cursorStart, Coordinate cursorEnd) {
 	clear();
-	emplace_back(start, end);
+	emplace_back(cursorStart, cursorEnd);
 	front().setMain(true);
 	front().setCurrent(true);
 	main = 0;
@@ -236,7 +236,7 @@ void TextEditor::Cursors::update() {
 		}
 
 		// find current cursor
-		for (auto c = 0; c < size(); c++) {
+		for (size_t c = 0; c < size(); c++) {
 			if (at(c).isCurrent()) {
 				current = c;
 			}

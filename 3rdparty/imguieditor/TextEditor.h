@@ -110,8 +110,8 @@ public:
 	inline int GetFirstVisibleColumn() const { return firstVisibleColumn; }
 	inline int GetLastVisibleColumn() const { return lastVisibleColumn; }
 
-	inline int GetLineHeight() const { return glyphSize.y; }
-	inline int GetGlyphWidth() const { return glyphSize.x; }
+	inline float GetLineHeight() const { return glyphSize.y; }
+	inline float GetGlyphWidth() const { return glyphSize.x; }
 
 	// note on setting cursor and scrolling
 	//
@@ -222,7 +222,7 @@ public:
 		inline ImU32 get(Color color) const { return at(static_cast<size_t>(color)); }
 	};
 
-	inline void SetPalette(const Palette& palette) { paletteBase = palette; paletteAlpha = -1.0f; }
+	inline void SetPalette(const Palette& newPalette) { paletteBase = newPalette; paletteAlpha = -1.0f; }
 	inline const Palette& GetPalette() const { return paletteBase; }
 	inline static void SetDefaultPalette(const Palette& aValue) { defaultPalette = aValue; }
 	inline static Palette& GetDefaultPalette() { return defaultPalette; }
@@ -440,8 +440,8 @@ private:
 
 	private:
 		// helper functions
-		Coordinate adjustCoordinateForInsert(Coordinate coordinate, Coordinate start, Coordinate end);
-		Coordinate adjustCoordinateForDelete(Coordinate coordinate, Coordinate start, Coordinate end);
+		Coordinate adjustCoordinateForInsert(Coordinate coordinate, Coordinate insertStart, Coordinate insertEnd);
+		Coordinate adjustCoordinateForDelete(Coordinate coordinate, Coordinate deleteStart, Coordinate deleteEnd);
 
 		// properties
 		Coordinate start{0, 0};
@@ -463,7 +463,7 @@ private:
 
 		// add a cursor to the list
 		inline void addCursor(Coordinate c) { addCursor(c, c); }
-		void addCursor(Coordinate start, Coordinate end);
+		void addCursor(Coordinate cursorStart, Coordinate cursorEnd);
 
 		// update the current cursor (the one last added)
 		inline void updateCurrentCursor(Coordinate coordinate) { at(current).update(coordinate); }
@@ -535,9 +535,6 @@ private:
 	// a single line in a document
 	class Line : public std::vector<Glyph> {
 	public:
-		// get number of glyphs (as an int)
-		inline int glyphCount() const { return static_cast<int>(size()); }
-
 		// state at start of line
 		State state = State::inText;
 
@@ -579,10 +576,10 @@ private:
 		inline int getMaxColumn() const { return maxColumn; }
 
 		// translate visible column to line index (and visa versa)
-		int getIndex(const Line& line, int column) const;
-		inline int getIndex(Coordinate coordinate) const { return getIndex(at(coordinate.line), coordinate.column); }
-		int getColumn(const Line& line, int index) const;
-		inline int getColumn(int line, int index) const { return getColumn(at(line), index); }
+		size_t getIndex(const Line& line, int column) const;
+		inline size_t getIndex(Coordinate coordinate) const { return getIndex(at(coordinate.line), coordinate.column); }
+		int getColumn(const Line& line, size_t index) const;
+		inline int getColumn(int line, size_t index) const { return getColumn(at(line), index); }
 
 		// coordinate operations in context of document
 		Coordinate getUp(Coordinate from, int lines=1) const;
@@ -605,7 +602,7 @@ private:
 
 		// utility functions
 		bool isWholeWord(Coordinate start, Coordinate end) const;
-		inline bool isEndOfLine(Coordinate from) const { return getIndex(from) == at(from.line).glyphCount(); }
+		inline bool isEndOfLine(Coordinate from) const { return getIndex(from) == at(from.line).size(); }
 		inline bool isLastLine(int line) const { return line == lineCount() - 1; }
 		Coordinate normalizeCoordinate(Coordinate coordinate) const;
 

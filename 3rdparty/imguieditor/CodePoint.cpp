@@ -18,33 +18,6 @@
 
 
 //
-//	Statistics
-//
-
-static constexpr size_t totalSizeOfTables16 =
-	sizeof(letters16) +
-	sizeof(lower16) +
-	sizeof(upper16) +
-	sizeof(numbers16) +
-	sizeof(whitespace16) +
-	sizeof(case16);
-
-#if defined(IMGUI_USE_WCHAR32)
-static constexpr size_t totalSizeOfTables32 =
-	sizeof(letters32) +
-	sizeof(lower32) +
-	sizeof(upper32) +
-	sizeof(numbers32) +
-	sizeof(case32);
-
-#else
-static constexpr size_t totalSizeOfTables32 = 0;
-#endif
-
-static constexpr size_t totalSizeOfTables = totalSizeOfTables16 + totalSizeOfTables32;
-
-
-//
 //	Internal type conversions because "char" is signed
 //
 

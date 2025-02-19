@@ -39,8 +39,8 @@ void TextEditor::Bracketeer::update(Document& document) {
 	int level = 0;
 
 	// process all the glyphs
-	for (auto line = 0; line < document.lineCount(); line++) {
-		for (auto index = 0; index < document[line].glyphCount(); index++) {
+	for (int line = 0; line < document.lineCount(); line++) {
+		for (size_t index = 0; index < document[line].size(); index++) {
 			auto& glyph = document[line][index];
 
 			// handle a "bracket opener" that is not in a comment, string or preprocessor statement

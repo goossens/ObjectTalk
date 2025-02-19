@@ -135,7 +135,7 @@ C caseRangeToUpper(const T& table, C codepoint) {
 	}
 
 	else {
-		return codepoint + caseRange->toUpper;
+		return static_cast<C>(static_cast<int32_t>(codepoint) + caseRange->toUpper);
 	}
 }
 
@@ -156,7 +156,7 @@ C caseRangeToLower(const T& table, C codepoint) {
 	}
 
 	else {
-		return codepoint + caseRange->toLower;
+		return static_cast<C>(static_cast<int32_t>(codepoint) + caseRange->toLower);
 	}
 }
 '''

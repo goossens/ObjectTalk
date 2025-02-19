@@ -24,6 +24,12 @@ if(OT_INCLUDE_UI)
 	target_link_libraries(imguieditor imgui)
 	set_target_properties(imguieditor PROPERTIES FOLDER 3rdParty)
 
+	target_compile_options(imguieditor PRIVATE
+		$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang,GNU>:-Wall>
+		$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang,GNU>:-Wpedantic>
+		$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang,GNU>:-Wextra>
+		$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/W4>)
+
 	file(GLOB IMGUI_WIDGET_SOURCES imguiwidgets/*.cpp imguiwidgets/*.h)
 	add_library(imguiwidgets STATIC ${IMGUI_WIDGET_SOURCES})
 	target_include_directories(imguiwidgets PUBLIC imguiwidgets)

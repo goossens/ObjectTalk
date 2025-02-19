@@ -10,6 +10,7 @@
 //
 
 #include <cmath>
+#include <limits>
 
 #ifndef IMGUI_DEFINE_MATH_OPERATORS
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -69,7 +70,7 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 
 	// get current position and total/visible editor size
 	auto pos = ImGui::GetCursorPos();
-	auto totalSize = ImVec2(textOffset + document.getMaxColumn() * glyphSize.x + cursorWidth, document.lineCount() * glyphSize.y);
+	auto totalSize = ImVec2(textOffset + document.getMaxColumn() * glyphSize.x + cursorWidth, document.size() * glyphSize.y);
 	auto visibleSize = ImGui::GetContentRegionAvail();
 
 	if (size.x > 0.0f) {
@@ -380,7 +381,7 @@ void TextEditor::renderText() {
 		// draw colored glyphs for current line
 		auto column = firstRenderableColumn;
 		auto index = document.getIndex(line, column);
-		auto lineSize = line.glyphCount();
+		auto lineSize = line.size();
 
 		while (index < lineSize && column <= lastVisibleColumn) {
 			auto& glyph = line[index];
@@ -1641,7 +1642,7 @@ void TextEditor::indentLines() {
 
 		// process all lines in this cursor
 		for (auto line = cursorStart.line; line <= cursorEnd.line; line++) {
-			if (Coordinate(line, 0) != cursorEnd && document[line].glyphCount()) {
+			if (Coordinate(line, 0) != cursorEnd && document[line].size()) {
 				auto insertStart = Coordinate(line, 0);
 				auto insertEnd = insertText(transaction, insertStart, "\t");
 				cursors.adjustForInsert(cursor, insertStart, insertEnd);
@@ -1674,9 +1675,9 @@ void TextEditor::deindentLines() {
 		for (auto line = cursorStart.line; line <= cursorEnd.line; line++) {
 			// determine how many whitespaces are available at the start with a max of 4 columns
 			int column = 0;
-			int index = 0;
+			size_t index = 0;
 
-			while (column < 4 && index < document[line].glyphCount() && std::isblank(document[line][index].codepoint)) {
+			while (column < 4 && index < document[line].size() && std::isblank(document[line][index].codepoint)) {
 				column += document[line][index].codepoint == '\t' ? tabSize - (column % tabSize) : 1;
 				index++;
 			}
@@ -1779,16 +1780,16 @@ void TextEditor::toggleComments() {
 
 		// process all lines in this cursor
 		for (auto line = cursorStart.line; line <= cursorEnd.line; line++) {
-			if (Coordinate(line, 0) != cursorEnd && document[line].glyphCount()) {
+			if (Coordinate(line, 0) != cursorEnd && document[line].size()) {
 				// see if line starts with a comment (after possible leading whitespaces)
-				int start = 0;
-				int i = 0;
+				size_t start = 0;
+				size_t i = 0;
 
-				while (start < document[line].glyphCount() && CodePoint::isWhiteSpace(document[line][start].codepoint)) {
+				while (start < document[line].size() && CodePoint::isWhiteSpace(document[line][start].codepoint)) {
 					start++;
 				}
 
-				while (start + i < document[line].glyphCount() && i < comment.size() && document[line][start + i].codepoint == comment[i]) {
+				while (start + i < document[line].size() && i < comment.size() && document[line][start + i].codepoint == comment[i]) {
 					i++;
 				}
 
@@ -1825,7 +1826,7 @@ void TextEditor::filterSelections(std::function<std::string(std::string_view)> f
 
 		// process all lines in this cursor
 		for (auto line = start.line; line <= end.line; line++) {
-			if (Coordinate(line, 0) != end && document[line].glyphCount()) {
+			if (Coordinate(line, 0) != end && document[line].size()) {
 				// get original text and run it through filter
 				auto before = document.getSectionText(start, end);
 				std::string after = filter(before);
@@ -1900,22 +1901,28 @@ void TextEditor::stripTrailingWhitespaces() {
 	// process all the lines
 	for (int i = 0; i < document.lineCount(); i++) {
 		auto& line = document[i];
-		int lineSize = line.glyphCount();
-		int whitespace = -1;
+		size_t lineSize = line.size();
+		size_t whitespace = std::numeric_limits<std::size_t>::max();
 		bool done = false;
 
 		// look for first non-whitespace glyph at the end of the line
-		for (auto index = lineSize - 1; !done && index >= 0; index--) {
-			if (CodePoint::isWhiteSpace(line[index].codepoint)) {
-				whitespace = index;
+		if (lineSize) {
+			for (auto index = lineSize - 1; !done; index--) {
+				if (CodePoint::isWhiteSpace(line[index].codepoint)) {
+					whitespace = index;
 
-			} else {
-				done = true;
+					if (index == 0) {
+						done = true;
+					}
+
+				} else {
+					done = true;
+				}
 			}
 		}
 
 		// remove whitespaces (if required)
-		if (whitespace >= 0) {
+		if (whitespace != std::numeric_limits<std::size_t>::max()) {
 			auto start = Coordinate(i, document.getColumn(line, whitespace));
 			auto end = Coordinate(i, document.getColumn(line, lineSize));
 			deleteText(transaction, start, end);
@@ -2135,8 +2142,9 @@ void TextEditor::autoIndentAllCursors(std::shared_ptr<Transaction> transaction) 
 		// determine whitespace at start of current line
 		std::string whitespace;
 
-		for (auto i = 0; i < line.size() && CodePoint::isWhiteSpace(line[i].codepoint); i++) {
-			whitespace += line[i].codepoint;
+		for (size_t i = 0; i < line.size() && CodePoint::isWhiteSpace(line[i].codepoint); i++) {
+			char utf8[4];
+			whitespace.append(utf8, CodePoint::write(utf8, line[i].codepoint));
 		}
 
 		// determine text to insert
@@ -2201,7 +2209,7 @@ void TextEditor::updatePalette() {
 	// Update palette with the current alpha from style
 	paletteAlpha = ImGui::GetStyle().Alpha;
 
-	for (int i = 0; i < static_cast<size_t>(Color::count); i++) {
+	for (size_t i = 0; i < static_cast<size_t>(Color::count); i++) {
 		auto color = ImGui::ColorConvertU32ToFloat4(paletteBase[i]);
 		color.w *= paletteAlpha;
 		palette[i] = ImGui::ColorConvertFloat4ToU32(color);

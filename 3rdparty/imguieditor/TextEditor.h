@@ -137,6 +137,10 @@ public:
 	inline void ReplaceTextInAllCursors(const std::string_view& text) { if (!readOnly) replaceTextInAllCursors(text); }
 
 	inline void OpenFindReplaceWindow() { findReplaceVisible = true; focusOnFind = true; }
+	inline void SetFindButtonLabel(const std::string_view& label) { findButtonLabel = label; }
+	inline void SetFindAllButtonLabel(const std::string_view& label) { findAllButtonLabel = label; }
+	inline void SetReplaceButtonLabel(const std::string_view& label) { replaceButtonLabel = label; }
+	inline void SetReplaceAllButtonLabel(const std::string_view& label) { replaceAllButtonLabel = label; }
 	inline bool HasFindString() const { return findText.size(); }
 	inline void FindNext() { findNext(); }
 	inline void FindAll() { findAll(); }
@@ -898,6 +902,10 @@ private:
 	static constexpr int cursorWidth = 1;
 
 	// find and replace support
+	std::string findButtonLabel = "Find";
+	std::string findAllButtonLabel = "Find All";
+	std::string replaceButtonLabel = "Replace";
+	std::string replaceAllButtonLabel = "Replace All";
 	bool findReplaceVisible = false;
 	bool focusOnEditor = true;
 	bool focusOnFind = false;

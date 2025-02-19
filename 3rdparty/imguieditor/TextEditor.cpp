@@ -593,22 +593,27 @@ void TextEditor::renderFindReplace(ImVec2 pos, ImVec2 contentSize) {
 		auto& style = ImGui::GetStyle();
 		auto fieldWidth = 250.0f;
 
-		auto replaceWidth = ImGui::CalcTextSize(" Replace ").x + style.FramePadding.x * 2.0f;
-		auto replaceAllWidth = ImGui::CalcTextSize(" Replace All ").x + style.FramePadding.x * 2.0f;
-		auto optionWidth = ImGui::CalcTextSize("Aa").x + style.FramePadding.x * 2.0f;
+		auto button1Width = ImGui::CalcTextSize(findButtonLabel.c_str()).x + style.ItemSpacing.x * 2.0f;
+		auto button2Width = ImGui::CalcTextSize(findAllButtonLabel.c_str()).x + style.ItemSpacing.x * 2.0f;
+		auto optionWidth = ImGui::CalcTextSize("Aa").x + style.ItemSpacing.x * 2.0f;
+
+		if (!readOnly) {
+			button1Width = std::max(button1Width, ImGui::CalcTextSize(replaceButtonLabel.c_str()).x + style.ItemSpacing.x * 2.0f);
+			button2Width = std::max(button2Width, ImGui::CalcTextSize(replaceAllButtonLabel.c_str()).x + style.ItemSpacing.x * 2.0f);
+		}
 
 		auto windowHeight =
 			style.ChildBorderSize * 2.0f +
 			style.WindowPadding.y * 2.0f +
-			ImGui::GetFrameHeight() * 2.0f +
-			style.ItemSpacing.y;
+			ImGui::GetFrameHeight() +
+			(readOnly ? 0.0f : (style.ItemSpacing.y + ImGui::GetFrameHeight()));
 
 		auto windowWidth =
 			style.ChildBorderSize * 2.0f +
 			style.WindowPadding.x * 2.0f +
 			fieldWidth + style.ItemSpacing.x +
-			replaceWidth + style.ItemSpacing.x +
-			replaceAllWidth + style.ItemSpacing.x +
+			button1Width + style.ItemSpacing.x +
+			button2Width + style.ItemSpacing.x +
 			optionWidth * 3.0f + style.ItemSpacing.x * 2.0f;
 
 		// create window
@@ -646,13 +651,13 @@ void TextEditor::renderFindReplace(ImVec2 pos, ImVec2 contentSize) {
 
 		ImGui::SameLine();
 
-		if (ImGui::Button("Find", ImVec2(replaceWidth, 0.0f))) {
+		if (ImGui::Button(findButtonLabel.c_str(), ImVec2(button1Width, 0.0f))) {
 			find();
 		}
 
 		ImGui::SameLine();
 
-		if (ImGui::Button("Find All", ImVec2(replaceAllWidth, 0.0f))) {
+		if (ImGui::Button(findAllButtonLabel.c_str(), ImVec2(button2Width, 0.0f))) {
 			findAll();
 		}
 
@@ -679,36 +684,30 @@ void TextEditor::renderFindReplace(ImVec2 pos, ImVec2 contentSize) {
 			focusOnEditor = true;
 		}
 
-		if (readOnly) {
-			ImGui::BeginDisabled();
-		}
+		if (!readOnly) {
+			ImGui::SetNextItemWidth(fieldWidth);
+			inputString("###replace", &replaceText);
+			ImGui::SameLine();
 
-		ImGui::SetNextItemWidth(fieldWidth);
-		inputString("###replace", &replaceText);
-		ImGui::SameLine();
+			bool disableReplaceButtons = !findText.size() || !replaceText.size();
 
-		if (readOnly) {
-			ImGui::EndDisabled();
-		}
+			if (disableReplaceButtons) {
+				ImGui::BeginDisabled();
+			}
 
-		bool disableReplaceButtons = readOnly || !findText.size() || !replaceText.size();
+			if (ImGui::Button(replaceButtonLabel.c_str(), ImVec2(button1Width, 0.0f))) {
+				replace();
+			}
 
-		if (disableReplaceButtons) {
-			ImGui::BeginDisabled();
-		}
+			ImGui::SameLine();
 
-		if (ImGui::Button("Replace", ImVec2(replaceWidth, 0.0f))) {
-			replace();
-		}
+			if (ImGui::Button(replaceAllButtonLabel.c_str(), ImVec2(button2Width, 0.0f))) {
+				replaceAll();
+			}
 
-		ImGui::SameLine();
-
-		if (ImGui::Button("Replace All", ImVec2(replaceAllWidth, 0.0f))) {
-			replaceAll();
-		}
-
-		if (disableReplaceButtons) {
-			ImGui::EndDisabled();
+			if (disableReplaceButtons) {
+				ImGui::EndDisabled();
+			}
 		}
 
 		ImGui::EndChild();

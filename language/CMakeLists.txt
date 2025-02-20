@@ -10,8 +10,8 @@ file(GLOB LANGUAGE_SOURCES */*.cpp)
 set(LANGUAGE_INCLUDE_DIRS "")
 
 foreach(HEADER ${LANGUAGE_INCLUDES})
-    get_filename_component(DIR ${HEADER} PATH)
-    list(APPEND LANGUAGE_INCLUDE_DIRS ${DIR})
+	get_filename_component(DIR ${HEADER} PATH)
+	list(APPEND LANGUAGE_INCLUDE_DIRS ${DIR})
 endforeach()
 
 list(REMOVE_DUPLICATES LANGUAGE_INCLUDE_DIRS)

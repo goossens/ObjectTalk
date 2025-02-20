@@ -181,7 +181,11 @@ static std::string randomDemo() {
 //
 
 void OtTextEditor::handleShortcuts() {
-	if (ImGui::IsKeyDown(ImGuiMod_Ctrl) && ImGui::IsKeyPressed(ImGuiKey_P)) { editor.SetText(randomDemo()); }
+	if (ImGui::IsKeyDown(ImGuiMod_Ctrl) && ImGui::IsKeyPressed(ImGuiKey_P)) {
+		editor.SetText(randomDemo());
+		editor.SetCursor(55, 0);
+		editor.ScrollToLine(50, TextEditor::Scroll::alignTop);
+	}
 }
 
 
@@ -194,12 +198,4 @@ void OtTextEditor::renderEditor() {
 	ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[static_cast<size_t>(OtUi::Font::editor)]);
 	editor.Render("TextEditor");
 	ImGui::PopFont();
-
-	// scroll to line if required
-	// (this has to be done here as the editor doesn't handle this well on open)
-	if (scrollToLine) {
-		editor.SetCursor(scrollToLine - 1, 0);
-		editor.ScrollToLine(scrollToLine - 1, TextEditor::Scroll::alignMiddle);
-		scrollToLine = 0;
-	}
 }

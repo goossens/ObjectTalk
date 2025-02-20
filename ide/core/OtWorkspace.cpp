@@ -385,7 +385,6 @@ void OtWorkspace::saveAsFile() {
 //
 
 void OtWorkspace::closeFile() {
-	// see if editor is dirty
 	if (activeEditor->isDirty()) {
 		state = State::confirmClose;
 
@@ -746,24 +745,27 @@ void OtWorkspace::renderWindowedEditors() {
 void OtWorkspace::renderNewFileType() {
 	ImGui::OpenPopup("New File...");
 	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5, 0.5));
+	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 
 	if (ImGui::BeginPopupModal("New File...", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
 		ImGui::Spacing();
 
-		if (ImGui::Button("Script", ImVec2(120, 0))) { newFile(".ot"); ImGui::CloseCurrentPopup(); } ImGui::SameLine();
-		if (ImGui::Button("Scene", ImVec2(120, 0))) { newFile(".ots"); ImGui::CloseCurrentPopup(); } ImGui::SameLine();
-		if (ImGui::Button("Nodes", ImVec2(120, 0))) { newFile(".otn"); ImGui::CloseCurrentPopup(); }
+		static constexpr float buttonWidth = 120.0f;
+		if (ImGui::Button("Script", ImVec2(buttonWidth, 0.0f))) { newFile(".ot"); ImGui::CloseCurrentPopup(); } ImGui::SameLine();
+		if (ImGui::Button("Scene", ImVec2(buttonWidth, 0.0f))) { newFile(".ots"); ImGui::CloseCurrentPopup(); } ImGui::SameLine();
+		if (ImGui::Button("Nodes", ImVec2(buttonWidth, 0.0f))) { newFile(".otn"); ImGui::CloseCurrentPopup(); }
 
-		if (ImGui::Button("Text", ImVec2(120, 0))) { newFile(".txt"); ImGui::CloseCurrentPopup(); } ImGui::SameLine();
-		if (ImGui::Button("JSON", ImVec2(120, 0))) { newFile(".json"); ImGui::CloseCurrentPopup(); } ImGui::SameLine();
-		if (ImGui::Button("Markdown", ImVec2(120, 0))) { newFile(".md"); ImGui::CloseCurrentPopup(); }
+		if (ImGui::Button("Text", ImVec2(buttonWidth, 0.0f))) { newFile(".txt"); ImGui::CloseCurrentPopup(); } ImGui::SameLine();
+		if (ImGui::Button("JSON", ImVec2(buttonWidth, 0.0f))) { newFile(".json"); ImGui::CloseCurrentPopup(); } ImGui::SameLine();
+		if (ImGui::Button("Markdown", ImVec2(buttonWidth, 0.0f))) { newFile(".md"); ImGui::CloseCurrentPopup(); }
 
 		ImGui::Spacing();
 		ImGui::Separator();
 		ImGui::Spacing();
 
-		if (ImGui::Button("Cancel", ImVec2(120, 0)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
+		ImGui::SameLine(0.0f, ImGui::GetContentRegionAvail().x - buttonWidth);
+
+		if (ImGui::Button("Cancel", ImVec2(buttonWidth, 0.0f)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
 			state = editors.size() ? State::edit : State::splash;
 			ImGui::CloseCurrentPopup();
 		}
@@ -780,12 +782,12 @@ void OtWorkspace::renderNewFileType() {
 void OtWorkspace::renderFileOpen() {
 	// handle file open dialog
 	ImVec2 maxSize = ImGui::GetIO().DisplaySize;
-	ImVec2 minSize = ImVec2(maxSize.x * 0.5, maxSize.y * 0.5);
+	ImVec2 minSize = ImVec2(maxSize.x * 0.5f, maxSize.y * 0.5f);
+	auto dialog = ImGuiFileDialog::Instance();
 
-	if (ImGuiFileDialog::Instance()->Display("workspace-open", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
+	if (dialog->Display("workspace-open", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
 		// open selected file if required
-		if (ImGuiFileDialog::Instance()->IsOk()) {
-			auto dialog = ImGuiFileDialog::Instance();
+		if (dialog->IsOk()) {
 			auto path = OtPath::join(dialog->GetCurrentPath(), dialog->GetCurrentFileName());
 			openFile(path, OtEditor::VisualState::inTab);
 
@@ -800,7 +802,7 @@ void OtWorkspace::renderFileOpen() {
 		}
 
 		// close dialog
-		ImGuiFileDialog::Instance()->Close();
+		dialog->Close();
 	}
 }
 
@@ -812,12 +814,12 @@ void OtWorkspace::renderFileOpen() {
 void OtWorkspace::renderSaveAs() {
 	// handle saveas dialog
 	ImVec2 maxSize = ImGui::GetIO().DisplaySize;
-	ImVec2 minSize = ImVec2(maxSize.x * 0.5, maxSize.y * 0.5);
+	ImVec2 minSize = ImVec2(maxSize.x * 0.5f, maxSize.y * 0.5f);
+	auto dialog = ImGuiFileDialog::Instance();
 
-	if (ImGuiFileDialog::Instance()->Display("workspace-saveas", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
+	if (dialog->Display("workspace-saveas", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
 		// open selected file if required
-		if (ImGuiFileDialog::Instance()->IsOk()) {
-			auto dialog = ImGuiFileDialog::Instance();
+		if (dialog->IsOk()) {
 			auto path = OtPath::join(dialog->GetCurrentPath(), dialog->GetCurrentFileName());
 			path = OtPath::replaceExtension(path, activeEditor->getExtension());
 			activeEditor->saveAsFile(path);
@@ -830,7 +832,7 @@ void OtWorkspace::renderSaveAs() {
 		}
 
 		// close dialog
-		ImGuiFileDialog::Instance()->Close();
+		dialog->Close();
 	}
 }
 
@@ -842,22 +844,24 @@ void OtWorkspace::renderSaveAs() {
 void OtWorkspace::renderConfirmClose() {
 	ImGui::OpenPopup("Delete?");
 	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5, 0.5));
+	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 
 	if (ImGui::BeginPopupModal("Delete?", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
 		ImGui::Text("This file has changed!\nDo you really want to delete it?\n\n");
 		ImGui::Separator();
 
-		if (ImGui::Button("OK", ImVec2(120, 0))) {
+		static constexpr float buttonWidth = 80.0f;
+		ImGui::SameLine(0.0f, ImGui::GetContentRegionAvail().x - buttonWidth * 2.0f - ImGui::GetStyle().ItemSpacing.x);
+
+		if (ImGui::Button("OK", ImVec2(buttonWidth, 0.0f))) {
 			deleteEditor(activeEditor);
 			state = editors.size() ? State::edit : State::splash;
 			ImGui::CloseCurrentPopup();
 		}
 
-		ImGui::SetItemDefaultFocus();
 		ImGui::SameLine();
 
-		if (ImGui::Button("Cancel", ImVec2(120, 0)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
+		if (ImGui::Button("Cancel", ImVec2(buttonWidth, 0.0f)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
 			state = State::edit;
 			ImGui::CloseCurrentPopup();
 		}
@@ -874,22 +878,24 @@ void OtWorkspace::renderConfirmClose() {
 void OtWorkspace::renderConfirmQuit() {
 	ImGui::OpenPopup("Quit Application?");
 	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5, 0.5));
+	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 
 	if (ImGui::BeginPopupModal("Quit Application?", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
 		ImGui::Text("You have unsaved files!\nDo you really want to quit?\n\n");
 		ImGui::Separator();
 
-		if (ImGui::Button("OK", ImVec2(120, 0))) {
+		static constexpr float buttonWidth = 80.0f;
+		ImGui::SameLine(0.0f, ImGui::GetContentRegionAvail().x - buttonWidth * 2.0f - ImGui::GetStyle().ItemSpacing.x);
+
+		if (ImGui::Button("OK", ImVec2(buttonWidth, 0.0f))) {
 			OtMessageBus::send("stop");
 			state = State::edit;
 			ImGui::CloseCurrentPopup();
 		}
 
-		ImGui::SetItemDefaultFocus();
 		ImGui::SameLine();
 
-		if (ImGui::Button("Cancel", ImVec2(120, 0)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
+		if (ImGui::Button("Cancel", ImVec2(buttonWidth, 0.0f)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
 			state = State::edit;
 			ImGui::CloseCurrentPopup();
 		}
@@ -906,13 +912,16 @@ void OtWorkspace::renderConfirmQuit() {
 void OtWorkspace::renderConfirmWarning() {
 	ImGui::OpenPopup("Warning");
 	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5, 0.5));
+	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 
 	if (ImGui::BeginPopupModal("Warning", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
 		ImGui::Text("%s\n", message.c_str());
 		ImGui::Separator();
 
-		if (ImGui::Button("OK", ImVec2(120, 0)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
+		static constexpr float buttonWidth = 80.0f;
+		ImGui::SameLine(0.0f, ImGui::GetContentRegionAvail().x);
+
+		if (ImGui::Button("OK", ImVec2(buttonWidth, 0.0f)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
 			state = editors.size() ? State::edit : State::splash;
 			ImGui::CloseCurrentPopup();
 		}
@@ -929,13 +938,16 @@ void OtWorkspace::renderConfirmWarning() {
 void OtWorkspace::renderConfirmError() {
 	ImGui::OpenPopup("Error");
 	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5, 0.5));
+	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 
 	if (ImGui::BeginPopupModal("Error", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
 		ImGui::Text("%s\n", message.c_str());
 		ImGui::Separator();
 
-		if (ImGui::Button("OK", ImVec2(120, 0)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
+		static constexpr float buttonWidth = 80.0f;
+		ImGui::SameLine(0.0f, ImGui::GetContentRegionAvail().x);
+
+		if (ImGui::Button("OK", ImVec2(buttonWidth, 0.0f)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
 			state = editors.size() ? State::edit : State::splash;
 			ImGui::CloseCurrentPopup();
 		}

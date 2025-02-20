@@ -28,7 +28,7 @@
 void TextEditor::setText(const std::string_view &text) {
 	// load text into document and reset subsystems
 	document.setText(text);
-	transactions.clear();
+	transactions.reset();
 	bracketeer.reset();
 	cursors.clearAll();
 	makeCursorVisible();
@@ -589,6 +589,9 @@ static bool inputString(const char* label, std::string* value, ImGuiInputTextFla
 void TextEditor::renderFindReplace(ImVec2 pos, ImVec2 contentSize) {
 	// render find/replace window (if required)
 	if (findReplaceVisible) {
+		// save current screen position
+		auto currentScreenPosition = ImGui::GetCursorScreenPos();
+
 		// calculate sizes
 		auto& style = ImGui::GetStyle();
 		auto fieldWidth = 250.0f;
@@ -711,6 +714,7 @@ void TextEditor::renderFindReplace(ImVec2 pos, ImVec2 contentSize) {
 		}
 
 		ImGui::EndChild();
+		ImGui::SetCursorScreenPos(currentScreenPosition);
 	}
 }
 
@@ -738,13 +742,25 @@ void TextEditor::handleKeyboardInputs() {
 		auto isShiftOnly = !ctrl && shift && !alt;
 		auto isOptionalShift = !ctrl && !alt;
 		auto isOptionalAlt = !ctrl && !shift;
+
+#if __APPLE__
 		auto isOptionalAltShift = !ctrl;
+	#else
+		auto isOptionalCtrlShift = !alt;
+	#endif
 
 		// cursor movements and selections
 		if (isOptionalShift && ImGui::IsKeyPressed(ImGuiKey_UpArrow)) { moveUp(1, shift); }
 		else if (isOptionalShift && ImGui::IsKeyPressed(ImGuiKey_DownArrow)) { moveDown(1, shift); }
+
+#if __APPLE__
 		else if (isOptionalAltShift && ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) { moveLeft(shift, alt); }
 		else if (isOptionalAltShift && ImGui::IsKeyPressed(ImGuiKey_RightArrow)) { moveRight(shift, alt); }
+#else
+		else if (isOptionalCtrlShift && ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) { moveLeft(shift, ctrl); }
+		else if (isOptionalCtrlShift && ImGui::IsKeyPressed(ImGuiKey_RightArrow)) { moveRight(shift, ctrl); }
+#endif
+
 		else if (isOptionalShift && ImGui::IsKeyPressed(ImGuiKey_PageUp)) { moveUp(visibleLines - 2, shift); }
 		else if (isOptionalShift && ImGui::IsKeyPressed(ImGuiKey_PageDown)) { moveDown(visibleLines - 2, shift); }
 		else if (isOptionalShiftShortcut && ImGui::IsKeyPressed(ImGuiKey_UpArrow)) { moveToTop(shift); }

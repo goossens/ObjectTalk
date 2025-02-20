@@ -69,6 +69,9 @@ public:
 	// render the text editor in a Dear ImGui context
 	inline void Render(const char* title, const ImVec2& size=ImVec2(), bool border=false) { render(title, size, border); }
 
+	// programmatically set focus on the editor
+	inline void SetFocus() { focusOnEditor = true; }
+
 	// clipboard actions
 	inline void Cut() { if (!readOnly) cut(); }
 	inline void Copy() const { copy(); }
@@ -661,6 +664,9 @@ private:
 	// transaction list to support do/undo/redo
  	class Transactions : public std::vector<std::shared_ptr<Transaction>> {
 	public:
+		// reset the transactions
+		void reset();
+
 		// create a new transaction
 		static inline std::shared_ptr<Transaction> create() { return std::make_shared<Transaction>(); }
 

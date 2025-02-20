@@ -13,6 +13,16 @@
 
 
 //
+//	TextEditor::Transactions::reset
+//
+
+void TextEditor::Transactions::reset() {
+	clear();
+	undoIndex = 0;
+}
+
+
+//
 //	TextEditor::Transactions::add
 //
 

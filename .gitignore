@@ -1,33 +1,10 @@
-# Prerequisites
-*.d
-
-# Compiled Object files
-*.slo
-*.lo
-*.o
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Compiled static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
-
 # MacOS files
 .DS_Store
+
+# Editor files
+/.vscode
+*.bak
+Save/*
 
 # Local build files
 /build

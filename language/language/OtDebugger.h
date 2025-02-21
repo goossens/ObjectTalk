@@ -51,5 +51,4 @@ private:
 
 	// debugger state
 	size_t stackFrame = 0;
-	size_t instructionStart;
 };

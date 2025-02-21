@@ -44,7 +44,7 @@ var router = http.Router()
 	})
 
 	.get("/file", function(req, res, next) {
-		res.sendfile(Path(__DIR__, "static", "test.txt"));
+		res.sendFile(Path(__DIR__, "static", "test.txt"));
 	})
 
 	.get("/stop", function(req, res, next) {

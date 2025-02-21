@@ -53,10 +53,10 @@ public:
 	OtObject send(const std::string& text);
 
 	// send result as jSON
-	OtObject json(OtObject object);
+	OtObject sendJson(OtObject object);
 
 	// send a file as the response
-	OtObject sendfile(const std::string& name);
+	OtObject sendFile(const std::string& name);
 
 	// handle file read events
 	void onFileRead(ssize_t size);

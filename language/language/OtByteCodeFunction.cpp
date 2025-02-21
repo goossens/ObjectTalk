@@ -19,7 +19,7 @@
 //	OtByteCodeFunctionClass::operator()
 //
 
-OtObject OtByteCodeFunctionClass::operator()(size_t count, OtObject* parameters) {
+OtObject OtByteCodeFunctionClass::operator()(size_t count, OtObject* /* parameters */) {
 	// sanity check
 	if (parameterCount != count) {
 		if (parameterCount == 1) {

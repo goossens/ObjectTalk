@@ -25,6 +25,12 @@ endif()
 target_include_directories(language PUBLIC ${LANGUAGE_INCLUDE_DIRS})
 target_link_libraries(language PUBLIC uv_a json fmt isocline multipart llhttp ${LANGUAGE_EXTRA_LIBS})
 
+target_compile_options(language PRIVATE
+	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang,GNU>:-Wall>
+	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang,GNU>:-Wpedantic>
+	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang,GNU>:-Wextra>
+	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/W4>)
+
 set_target_properties(language PROPERTIES PREFIX "")
 set_target_properties(language PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set_target_properties(language PROPERTIES LIBRARY_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/lib)

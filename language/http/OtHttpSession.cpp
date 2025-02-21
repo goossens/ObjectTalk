@@ -89,7 +89,7 @@ OtHttpSessionClass::OtHttpSessionClass(uv_stream_t* stream, OtHttpRouter r) : ro
 	// allocate memory and attempt to read
 	status = uv_read_start(
 		(uv_stream_t*) &uv_client,
-		[](uv_handle_t* handle, size_t size, uv_buf_t* buffer) {
+		[](uv_handle_t* /* handle */, size_t size, uv_buf_t* buffer) {
 			*buffer = uv_buf_init((char*) malloc(size), (unsigned int) size);
 		},
 		[](uv_stream_t* socket, ssize_t nread, const uv_buf_t* buffer) {

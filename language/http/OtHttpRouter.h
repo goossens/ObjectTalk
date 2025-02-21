@@ -61,7 +61,7 @@ private:
 		virtual ~OtHandler() {}
 
 		// run as a the handler
-		virtual void run(OtHttpRequest req, OtHttpResponse res, OtObject next) {}
+		virtual void run(OtHttpRequest /* req */, OtHttpResponse /* res */, OtObject /* next */) {}
 	};
 
 	// manage handlers

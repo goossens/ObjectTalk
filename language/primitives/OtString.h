@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include <algorithm>
 #include <string>
 #include <string_view>
 
@@ -38,7 +37,7 @@ public:
 	OtStringClass(const std::string_view string) : value(string) {}
 
 	// convertors
-	inline operator bool() override { auto v = value; std::transform(v.begin(), v.end(), v.begin(), ::tolower); return v == "true"; }
+	inline operator bool() override { return value == "true"; }
 	inline operator int() override { try { return std::stoi(value, nullptr, 0); } catch(...) { return 0; }}
 	inline operator int64_t() override { try { return std::stol(value, nullptr, 0); } catch(...) { return 0; }}
 	inline operator size_t() override { try { return (size_t) std::stol(value, nullptr, 0); } catch(...) { return 0; }}

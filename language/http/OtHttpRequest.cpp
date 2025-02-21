@@ -145,12 +145,12 @@ void OtHttpRequestClass::onHeadersComplete(const std::string m, const std::strin
 
 	// handle multipart form data
 	if (OtText::contains(getHeader("Content-Type"), "multipart/form-data")) {
-		auto type = getHeader("Content-Type");
-		auto pos = type.find("boundary=");
+		auto contextType = getHeader("Content-Type");
+		auto pos = contextType.find("boundary=");
 
 		// find boundary string
 		if (pos != std::string::npos) {
-			multipartBoundary = type.substr(pos + 9);
+			multipartBoundary = contextType.substr(pos + 9);
 
 			if (multipartBoundary.length() >= 2 &&
 				multipartBoundary.front() == '"' &&

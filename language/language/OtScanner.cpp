@@ -357,7 +357,7 @@ void OtScanner::error(std::string message) {
 	auto lineNumber = source->getLineNumber(tokenStart);
 	std::string marker;
 
-	for (auto c = 0; c < tokenStart - start; c++) {
+	for (size_t c = 0; c < tokenStart - start; c++) {
 		if (std::isspace(lineText[c])) {
 			marker += lineText[c];
 

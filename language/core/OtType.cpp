@@ -26,7 +26,7 @@ std::list<OtTypeClass> OtType::types;
 //
 
 OtTypeClass::OtTypeClass(OtID i, OtType p, OtTypeAllocator a) {
-	id = i;
+	typeID = i;
 	parent = p;
 	allocator = a ? a : p ? p->allocator : nullptr;
 }
@@ -38,7 +38,7 @@ OtTypeClass::OtTypeClass(OtID i, OtType p, OtTypeAllocator a) {
 
 OtObject OtTypeClass::allocate() {
 	if (!allocator) {
-		OtError("Can't allocate incomplete type [{}]", OtIdentifier::name(id));
+		OtError("Can't allocate incomplete type [{}]", OtIdentifier::name(typeID));
 	}
 
 	return allocator();
@@ -60,7 +60,7 @@ void OtTypeClass::setParent(OtType p) {
 
 bool OtTypeClass::isKindOf(OtID otherID) {
 	for (auto p = this; p; p = p->parent.raw()) {
-		if (p->id == otherID) {
+		if (p->typeID == otherID) {
 			return true;
 		}
 	}

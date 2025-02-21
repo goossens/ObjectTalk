@@ -163,12 +163,15 @@ void OtHttpResponseClass::sendHeaders() {
 	stream << "\r\n";
 
 	// send response
-	std::string text = stream.str();
-	uv_buf_t buffer = uv_buf_init(strdup(text.c_str()), (unsigned int) text.size());
-	uv_write_t* uv_write_req = (uv_write_t*) malloc(sizeof(uv_write_t));
+	std::string headerText = stream.str();
+	char* text = (char*) std::malloc(headerText.size() + 1);
+	std::memcpy(text, headerText.c_str(), headerText.size() + 1);
+
+	uv_buf_t buffer = uv_buf_init(text, (unsigned int) headerText.size());
+	uv_write_t* uv_write_req = (uv_write_t*) std::malloc(sizeof(uv_write_t));
 	uv_write_req->data = buffer.base;
 
-	uv_write(uv_write_req, clientStream, &buffer, 1, [](uv_write_t* req, int status) {
+	uv_write(uv_write_req, clientStream, &buffer, 1, [](uv_write_t* req, int /* status */) {
 		free(req->data);
 		free(req);
 	});
@@ -194,7 +197,7 @@ OtObject OtHttpResponseClass::write(const char* data, size_t size) {
 	uv_write_t* uv_write_req = (uv_write_t*) malloc(sizeof(uv_write_t));
 	uv_write_req->data = buffer.base;
 
-	uv_write(uv_write_req, clientStream, &buffer, 1, [](uv_write_t* req, int status) {
+	uv_write(uv_write_req, clientStream, &buffer, 1, [](uv_write_t* req, int /* status */) {
 		free(req->data);
 		free(req);
 	});
@@ -248,10 +251,10 @@ OtObject OtHttpResponseClass::send(const std::string& text) {
 
 
 //
-//	OtHttpResponseClass::json
+//	OtHttpResponseClass::sendJson
 //
 
-OtObject OtHttpResponseClass::json(OtObject object) {
+OtObject OtHttpResponseClass::sendJson(OtObject object) {
 	setStatus(200);
 	std::string text = object->json();
 	headers.emplace("Content-Type", "application/json");
@@ -264,10 +267,10 @@ OtObject OtHttpResponseClass::json(OtObject object) {
 
 
 //
-//	OtHttpResponseClass::sendfile
+//	OtHttpResponseClass::sendFile
 //
 
-OtObject OtHttpResponseClass::sendfile(const std::string& name) {
+OtObject OtHttpResponseClass::sendFile(const std::string& name) {
 	// handle file not found error
 	if (!OtPath::isRegularFile(name)) {
 		setStatus(404);
@@ -294,7 +297,6 @@ OtObject OtHttpResponseClass::sendfile(const std::string& name) {
 
 		status = uv_fs_read(uv_default_loop(), &uv_read_req, uv_read_fd, &buffer, 1, -1, [](uv_fs_t* req) {
 			uv_fs_req_cleanup(req);
-			OtHttpResponseClass* res = (OtHttpResponseClass*) req->data;
 			((OtHttpResponseClass*)(req->data))->onFileRead(req->result);
 		});
 
@@ -319,7 +321,6 @@ void OtHttpResponseClass::onFileRead(ssize_t size) {
 
 		auto status = uv_fs_read(uv_default_loop(), &uv_read_req, uv_read_fd, &buffer, 1, -1, [](uv_fs_t* req) {
 			uv_fs_req_cleanup(req);
-			OtHttpResponseClass* res = (OtHttpResponseClass*) req->data;
 			((OtHttpResponseClass*)(req->data))->onFileRead(req->result);
 		});
 
@@ -344,7 +345,7 @@ void OtHttpResponseClass::onFileRead(ssize_t size) {
 
 OtObject OtHttpResponseClass::download(const std::string& name) {
 	headers.emplace("Content-Disposition", "attachment; filename=" + name);
-	return sendfile(name);
+	return sendFile(name);
 }
 
 
@@ -362,7 +363,7 @@ OtType OtHttpResponseClass::getMeta() {
 		type->set("hasHeader", OtFunction::create(&OtHttpResponseClass::hasHeader));
 		type->set("end", OtFunction::create(&OtHttpResponseClass::end));
 		type->set("send", OtFunction::create(&OtHttpResponseClass::send));
-		type->set("sendfile", OtFunction::create(&OtHttpResponseClass::sendfile));
+		type->set("sendFile", OtFunction::create(&OtHttpResponseClass::sendFile));
 		type->set("download", OtFunction::create(&OtHttpResponseClass::download));
 		type->set("json", OtFunction::create(&OtHttpResponseClass::json));
 	}

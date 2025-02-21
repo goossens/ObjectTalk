@@ -69,10 +69,10 @@ public:
 	inline double positive() { return value; }
 	inline double abs() { return std::abs(value); }
 	inline int64_t sign() { return (0.0 < value) - (value < 0.0); }
-	inline int64_t round() { return std::round(value); }
-	inline int64_t ceil() { return std::ceil(value); }
-	inline int64_t floor() { return std::floor(value); }
-	inline int64_t trunc() { return std::trunc(value); }
+	inline int64_t round() { return static_cast<int64_t>(std::round(value)); }
+	inline int64_t ceil() { return static_cast<int64_t>(std::ceil(value)); }
+	inline int64_t floor() { return static_cast<int64_t>(std::floor(value)); }
+	inline int64_t trunc() { return static_cast<int64_t>(std::trunc(value)); }
 	inline double fraction() { return std::fmod(value, 1.0f); }
 	inline double min(double operand) { return std::min(value, operand); }
 	inline double max(double operand) { return std::max(value, operand); }

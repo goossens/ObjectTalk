@@ -41,7 +41,7 @@ public:
 	inline OtObjectPointer() : ptr(nullptr) {}
 
 	// null constructor
-	inline OtObjectPointer(std::nullptr_t n) : ptr(nullptr) {}
+	inline OtObjectPointer(std::nullptr_t) : ptr(nullptr) {}
 
 	// constructor for when we already have a pointer
 	inline OtObjectPointer(T* instance) : ptr(instance) {

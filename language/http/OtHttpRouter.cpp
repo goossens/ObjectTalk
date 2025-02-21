@@ -75,7 +75,7 @@ public:
 					std::smatch values;
 
 					if (regex_match(path, values, pattern)) {
-						for (auto i = 1; i < values.size(); i++) {
+						for (size_t i = 1; i < values.size(); i++) {
 							req->setParam(names[i], values[i]);
 						}
 
@@ -132,7 +132,7 @@ public:
 	void run(OtHttpRequest req, OtHttpResponse res, OtObject next) override {
 		if (OtText::startsWith(req->getPath(), serverPath)) {
 			// send file
-			res->sendfile(fsPath + req->getPath().substr(serverPath.size(), -1));
+			res->sendFile(fsPath + req->getPath().substr(serverPath.size(), -1));
 
 		} else {
 			// no match, pass to next handler

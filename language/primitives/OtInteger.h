@@ -63,7 +63,7 @@ public:
 	inline int64_t multiply(int64_t operand) { return value * operand; }
 	inline int64_t divide(int64_t operand) { if (operand == 0) OtError("Divide by zero"); return value / operand; }
 	inline int64_t modulo(int64_t operand) { if (operand == 0) OtError("Divide by zero"); return value % operand; }
-	inline int64_t power(int64_t operand) { return std::pow(value, operand); }
+	inline int64_t power(int64_t operand) { return static_cast<int64_t>(std::pow(value, operand)); }
 
 	inline int64_t increment() { return value + 1; }
 	inline int64_t decrement() { return value - 1; }

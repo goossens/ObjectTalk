@@ -84,9 +84,9 @@ public:
 	bool isKindOf(const std::string& name);
 
 	// get information
-	inline OtID getID() { return id; }
+	inline OtID getID() { return typeID; }
 	inline OtType getParent() { return parent; }
-	inline std::string getName() { return std::string(OtIdentifier::name(id)); }
+	inline std::string getName() { return std::string(OtIdentifier::name(typeID)); }
 
 	// member access
 	inline bool has(OtID id) { return members.has(id) != 0; }
@@ -101,7 +101,7 @@ public:
 
 private:
 	// attributes
-	OtID id;
+	OtID typeID;
 	OtType parent;
 	OtMembers members;
 	OtTypeAllocator allocator;

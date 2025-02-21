@@ -80,7 +80,7 @@ public:
 
 	// constructors
 	OtByteCodeClass() = default;
-	OtByteCodeClass(OtSource s, OtID i) : source(s), id(i) {}
+	OtByteCodeClass(OtSource s, OtID i) : source(s), bytecodeID(i) {}
 
 	// add compiler opcodes
 	inline void statement() { emitOpcode(Opcode::statement); }
@@ -162,7 +162,7 @@ public:
 	// get code parts
 	inline std::string getModule() { return source->getModule(); }
 	inline OtSource& getSource() { return source; }
-	inline OtID getID() { return id; }
+	inline OtID getID() { return bytecodeID; }
 	inline uint8_t* getCode() { return bytecode.data(); }
 	inline OtObject& getConstant(size_t index) { return constants[index]; }
 	inline std::vector<size_t>& getJumps() { return jumps; }
@@ -216,7 +216,7 @@ private:
 
 	inline void emitNumber(size_t number) {
 		while (number > 0x7f) {
-			bytecode.emplace_back(((uint8_t)(number & 0x7f)) | 0x80);
+			bytecode.emplace_back(static_cast<uint8_t>((number & 0x7f) | 0x80));
 			number >>= 7;
 		}
 
@@ -225,7 +225,7 @@ private:
 
 	// properties
 	OtSource source;
-	OtID id;
+	OtID bytecodeID;
 	std::vector<uint8_t> bytecode;
 	std::vector<OtObject> constants;
 	std::vector<size_t> jumps;

@@ -136,9 +136,9 @@ OtObject OtGlobalClass::import(const std::string& path) {
 //
 
 OtObject OtGlobalClass::range(size_t count, OtObject* parameters) {
-	int64_t from;
-	int64_t to;
-	int64_t increment;
+	int64_t from = 0;
+	int64_t to = 0;
+	int64_t increment = 0;
 
 	if (count == 1) {
 		from = 0;
@@ -155,7 +155,7 @@ OtObject OtGlobalClass::range(size_t count, OtObject* parameters) {
 		to = parameters[1]->operator int64_t();
 		increment = parameters[2]->operator int64_t();
 
-	}else {
+	} else {
 		OtError("Range function requires 1, 2 or 3 parameters, not {}", count);
 	}
 

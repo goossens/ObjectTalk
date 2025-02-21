@@ -54,9 +54,9 @@ public:
 		static 	uv_timer_t uv_shutdown;
 		uv_timer_init(uv_default_loop(), &uv_shutdown);
 
-		uv_timer_start(&uv_shutdown, [](uv_timer_t* handle) {
+		uv_timer_start(&uv_shutdown, [](uv_timer_t* /* handle */) {
 			// close all handles which will end libuv's loop
-			uv_walk(uv_default_loop(), [](uv_handle_t* handle, void* arg) {
+			uv_walk(uv_default_loop(), [](uv_handle_t* handle, void* /* arg */) {
 				if (!uv_is_closing(handle)) {
 					uv_close(handle, nullptr);
 				}
@@ -67,7 +67,7 @@ public:
 	// terminate LibUV
 	static inline void end() {
 		// properly close all libuv handles
-		uv_walk(uv_default_loop(), [](uv_handle_t* handle, void* arg) {
+		uv_walk(uv_default_loop(), [](uv_handle_t* handle, void* /* arg */) {
 			if (!uv_is_closing(handle))
 				uv_close(handle, nullptr);
 		}, nullptr);

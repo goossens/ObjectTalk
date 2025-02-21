@@ -23,7 +23,7 @@
 //
 
 OtSetClass::OtSetClass(OtObject* objects, size_t count) {
-	for (auto c = 0; c < count; c++) {
+	for (size_t c = 0; c < count; c++) {
 		add(objects[c]);
 	}
 }
@@ -60,7 +60,7 @@ OtSetClass::operator std::string() {
 //
 
 void OtSetClass::init(size_t count, OtObject* parameters) {
-	for (auto c = 0; c < count; c++) {
+	for (size_t c = 0; c < count; c++) {
 		set.insert(parameters[c]);
 	}
 }

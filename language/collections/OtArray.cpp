@@ -25,7 +25,7 @@
 //
 
 OtArrayClass::OtArrayClass(size_t count, OtObject* objects) {
-	for (auto c = 0; c < count; c++) {
+	for (size_t c = 0; c < count; c++) {
 		append(objects[c]);
 	}
 }
@@ -62,7 +62,7 @@ OtArrayClass::operator std::string() {
 //
 
 void OtArrayClass::init(size_t count, OtObject* parameters) {
-	for (auto c = 0; c < count; c++) {
+	for (size_t c = 0; c < count; c++) {
 		array.push_back(parameters[c]);
 	}
 }
@@ -85,7 +85,7 @@ bool OtArrayClass::operator==(OtObject operand) {
 	}
 
 	// compare all elements
-	for (auto c = 0; c < array.size(); c++) {
+	for (size_t c = 0; c < array.size(); c++) {
 		if (!array[c]->equal(op->array[c])) {
 			return false;
 		}
@@ -383,7 +383,7 @@ OtObject OtArrayClass::pop() {
 OtObject OtArrayClass::fill(size_t count, OtObject object) {
 	array.clear();
 
-	for (auto c = 0; c < count; c++) {
+	for (size_t c = 0; c < count; c++) {
 		array.push_back(object);
 	}
 

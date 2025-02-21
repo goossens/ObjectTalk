@@ -146,7 +146,7 @@ bool OtObjectClass::operator<(OtObject operand) {
 //
 
 static bool isvowel(char ch) {
-	ch = tolower(ch);
+	ch = static_cast<char>(tolower(ch));
 	return ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u';
 }
 

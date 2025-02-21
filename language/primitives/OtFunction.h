@@ -55,7 +55,7 @@ public:
 
 	template<typename ...Args>
 	inline OtFunctionClass(void (*function)(Args...)) {
-		caller = [function](size_t count, OtObject* parameters) {
+		caller = [function](size_t /* count */, OtObject* parameters) {
 			std::apply(
 				function,
 				functionArgs<typename std::tuple<Args...>>(
@@ -70,7 +70,7 @@ public:
 
 	template<typename Result, typename ...Args>
 	inline OtFunctionClass(Result (*function)(Args...)) {
-		caller = [function](size_t count, OtObject* parameters) {
+		caller = [function](size_t /* count */, OtObject* parameters) {
 			return OtValue<Result>::encode(
 				std::apply(
 					function,
@@ -84,7 +84,7 @@ public:
 
 	template<typename ...Args>
 	inline OtFunctionClass(std::function<void(Args...)> function) {
-		caller = [function](size_t count, OtObject* parameters) {
+		caller = [function](size_t /* count */, OtObject* parameters) {
 			std::apply(function,
 				functionArgs<typename std::tuple<Args...>>(
 					parameters,
@@ -98,7 +98,7 @@ public:
 
 	template<typename Result, typename ...Args>
 	inline OtFunctionClass(std::function<Result(Args...)> function) {
-		caller = [function](size_t count, OtObject* parameters) {
+		caller = [function](size_t /* count */, OtObject* parameters) {
 			return OtValue<Result>::encode(
 				std::apply(
 					function,
@@ -140,7 +140,7 @@ public:
 
 	template<typename Class, typename ...Args>
 	inline OtFunctionClass(void (Class::*method)(Args...)) {
-		caller = [method](size_t count, OtObject* parameters) {
+		caller = [method](size_t /* count */, OtObject* parameters) {
 			std::apply(
 				method,
 				methodArgs<Class, typename std::tuple<Args...>>(
@@ -155,7 +155,7 @@ public:
 
 	template<typename Class, typename Result, typename ...Args>
 	inline OtFunctionClass(Result (Class::*method)(Args...)) {
-		caller = [method](size_t count, OtObject* parameters) {
+		caller = [method](size_t /* count */, OtObject* parameters) {
 			return OtValue<Result>::encode(
 				std::apply(
 					method,
@@ -169,7 +169,7 @@ public:
 
 	template<typename Class, typename Result, typename ...Args>
 	inline OtFunctionClass(Result (Class::*method)(Args...) const) {
-		caller = [method](size_t count, OtObject* parameters) {
+		caller = [method](size_t /* count */, OtObject* parameters) {
 			return OtValue<Result>::encode(
 				std::apply(
 					method,

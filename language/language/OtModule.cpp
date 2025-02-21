@@ -9,7 +9,6 @@
 //	Include files
 //
 
-#include <cstdlib>
 #include <fstream>
 #include <sstream>
 
@@ -110,18 +109,6 @@ void OtModuleClass::load(const std::string& path, const std::string& code) {
 void OtModuleClass::buildModulePath() {
 	// use current directory as default
 	modulePath.push_back(OtPath::getCWD());
-
-	// use OT_PATH environment variable if provided
-	auto path = std::getenv("OT_PATH");
-
-	if (path) {
-		std::vector<std::string> parts;
-		OtText::split(path, parts, ';');
-
-		for (auto part = parts.begin(); part != parts.end(); ++part) {
-			modulePath.push_back(OtPath::getCanonical(*part));
-		}
-	}
 
 	// use lib directory
 	auto root = OtPath::getParent(OtPath::getParent(OtPath::getExecutable()));

@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include <cctype>
 #include <regex>
 
 #include "OtException.h"
@@ -43,8 +44,16 @@ static std::string submatch(const std::smatch& match, int index) {
 //	OtURLClass::parse
 //
 
-void OtURLClass::parse(const std::string& url) {
-	this->url = url;
+static char myToLower(char ch) {
+    return static_cast<char>(std::tolower(static_cast<int>(ch)));
+}
+
+static char myToUpper(char ch) {
+    return static_cast<char>(std::toupper(static_cast<int>(ch)));
+}
+
+void OtURLClass::parse(const std::string& urlString) {
+	url = urlString;
 
 	static std::regex urlRegex(
 		"([a-zA-Z][a-zA-Z0-9+.-]*):"	// scheme:
@@ -59,7 +68,7 @@ void OtURLClass::parse(const std::string& url) {
 	}
 
 	scheme = submatch(match, 1);
-	std::transform(scheme.begin(), scheme.end(), scheme.begin(), ::tolower);
+	std::transform(scheme.begin(), scheme.end(), scheme.begin(), myToUpper);
 	path = submatch(match, 2);
 
 	static std::regex authorityAndPathRegex("//([^/]*)(/.*)?");
@@ -107,7 +116,7 @@ void OtURLClass::parse(const std::string& url) {
 		} else {
 			stem = filename.substr(0, period);
 			extension = filename.substr(period + 1);
-			std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
+			std::transform(extension.begin(), extension.end(), extension.begin(), myToLower);
 		}
 	}
 

@@ -71,10 +71,10 @@ public:
 
 			case REGEX:
 				if (method == "ALL" || req->getMethod() == method) {
-					std::string path = req->getPath();
+					std::string requestedPath = req->getPath();
 					std::smatch values;
 
-					if (regex_match(path, values, pattern)) {
+					if (regex_match(requestedPath, values, pattern)) {
 						for (size_t i = 1; i < values.size(); i++) {
 							req->setParam(names[i], values[i]);
 						}
@@ -132,7 +132,7 @@ public:
 	void run(OtHttpRequest req, OtHttpResponse res, OtObject next) override {
 		if (OtText::startsWith(req->getPath(), serverPath)) {
 			// send file
-			res->sendFile(fsPath + req->getPath().substr(serverPath.size(), -1));
+			res->sendFile(fsPath + req->getPath().substr(serverPath.size()));
 
 		} else {
 			// no match, pass to next handler

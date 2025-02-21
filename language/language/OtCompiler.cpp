@@ -48,8 +48,8 @@ OtByteCode OtCompiler::compileFile(const std::string& path) {
 	std::stringstream buffer;
 	buffer << stream.rdbuf();
 	stream.close();
-	OtSource source = OtSourceClass::create(path, buffer.str());
-	return compileSource(source, nullptr);
+
+	return compileSource(OtSourceClass::create(path, buffer.str()), nullptr);
 }
 
 
@@ -59,8 +59,7 @@ OtByteCode OtCompiler::compileFile(const std::string& path) {
 
 OtByteCode OtCompiler::compileText(const std::string& text) {
 	// convert to source object, compile and return bytecode
-	OtSource source = OtSourceClass::create("__internal__", text);
-	return compileSource(source, nullptr);
+	return compileSource(OtSourceClass::create("__internal__", text), nullptr);
 }
 
 

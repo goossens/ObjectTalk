@@ -204,6 +204,22 @@ std::string TextEditor::Document::getLineText(int line) const {
 
 
 //
+//	TextEditor::Document::getCodePoint
+//
+
+ImWchar TextEditor::Document::getCodePoint(Coordinate location) {
+	auto index = getIndex(location);
+
+	if (index < at(location.line).size()) {
+		return at(location.line)[index].codepoint;
+
+	} else {
+		return IM_UNICODE_CODEPOINT_INVALID;
+	}
+}
+
+
+//
 //	TextEditor::Document::updateMaximumColumn
 //
 

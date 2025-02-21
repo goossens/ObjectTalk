@@ -63,16 +63,25 @@ void TextEditor::Cursor::adjustForDelete(Coordinate deleteStart, Coordinate dele
 
 
 //
+//	TextEditor::Cursors::reset
+//
+
+void TextEditor::Cursors::reset() {
+	clear();
+	main = 0;
+	current = 0;
+}
+
+
+//
 //	TextEditor::Cursors::setCursor
 //
 
 void TextEditor::Cursors::setCursor(Coordinate cursorStart, Coordinate cursorEnd) {
-	clear();
+	reset();
 	emplace_back(cursorStart, cursorEnd);
 	front().setMain(true);
 	front().setCurrent(true);
-	main = 0;
-	current = 0;
 }
 
 
@@ -138,12 +147,10 @@ bool TextEditor::Cursors::anyHasUpdate() const {
 //
 
 void TextEditor::Cursors::clearAll() {
-	clear();
+	reset();
 	emplace_back(Coordinate(0, 0));
 	front().setMain(true);
 	front().setCurrent(true);
-	main = 0;
-	current = 0;
 }
 
 

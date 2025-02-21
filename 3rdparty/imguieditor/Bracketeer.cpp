@@ -18,8 +18,6 @@
 
 void TextEditor::Bracketeer::reset() {
 	clear();
-	active = -1;
-	activeLocation = Coordinate::invalid();
 }
 
 
@@ -47,7 +45,7 @@ void TextEditor::Bracketeer::update(Document& document) {
 			if (isBracketCandidate(glyph) && isBracketOpener(glyph.codepoint)) {
 				// start a new level
 				levels.emplace_back(size());
-				emplace_back(glyph.codepoint, Coordinate(line, document.getColumn(line, index)), 0, Coordinate::invalid(), level);
+				emplace_back(glyph.codepoint, Coordinate(line, document.getColumn(line, index)), static_cast<ImWchar>(0), Coordinate::invalid(), level);
 				glyph.color = bracketColors[level % 3];
 				level++;
 
@@ -91,28 +89,73 @@ void TextEditor::Bracketeer::update(Document& document) {
 
 
 //
-//	TextEditor::Bracketeer::getActiveBracket
+//	TextEditor::Bracketeer::getEnclosingCurlyBrackets
 //
 
-TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getActiveBracket(Coordinate location) {
-	if (location != activeLocation) {
-		active = -1;
-		bool done = false;
+TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getEnclosingBrackets(Coordinate location) {
+	iterator brackets = end();
+	bool done = false;
 
-		for (auto i = begin(); !done && i < end(); i++) {
-			// skip pairs that start after specified location
-			if (i->isAfter(location)) {
-				done = true;
-			}
-
-			// brackets are active when they are around specified location
-			else if (i->isAround(location)) {
-				active = static_cast<int>(i - begin());
-			}
+	for (auto i = begin(); !done && i < end(); i++) {
+		// brackets are sorted so no need to go past specified location
+		if (i->isAfter(location)) {
+			done = true;
 		}
 
-		activeLocation = location;
+		else if (i->isAround(location)) {
+			// this could be what we're looking for
+			brackets = i;
+		}
 	}
 
-	return active == -1 ? end() : begin() + active;
+	return brackets;
+}
+
+
+//
+//	TextEditor::Bracketeer::getEnclosingCurlyBrackets
+//
+
+TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getEnclosingCurlyBrackets(Coordinate location) {
+	iterator brackets = end();
+	bool done = false;
+
+	for (auto i = begin(); !done && i < end(); i++) {
+		// brackets are sorted so no need to go past specified location
+		if (i->isAfter(location)) {
+			done = true;
+		}
+
+		else if (i->isAround(location) && i->startChar == '{') {
+			// this could be what we're looking for
+			brackets = i;
+		}
+	}
+
+	return brackets;
+}
+
+
+//
+//	TextEditor::Bracketeer::getInnerCurlyBrackets
+//
+
+TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getInnerCurlyBrackets(Coordinate location) {
+	auto brackets = getEnclosingCurlyBrackets(location);
+
+	if (brackets != end()) {
+		bool done = false;
+
+		for (auto next = brackets + 1; next < end() && !done; next++) {
+			 if (next->level == brackets->level + 1 && next->startChar == '{') {
+				brackets = next;
+				done = true;
+
+			} else if (next->level <= brackets->level) {
+				done = true;
+			 }
+		}
+	}
+
+	return brackets;
 }

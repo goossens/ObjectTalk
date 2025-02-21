@@ -340,7 +340,7 @@ void TextEditor::renderMatchingBrackets() {
 			}
 
 			// render active bracket pair
-			auto active = bracketeer.getActiveBracket(cursors.getMain().getInteractiveEnd());
+			auto active = bracketeer.getEnclosingBrackets(cursors.getMain().getInteractiveEnd());
 
 			if (active != bracketeer.end() &&
 				active->start.line <= lastVisibleLine &&
@@ -744,8 +744,12 @@ void TextEditor::handleKeyboardInputs() {
 		auto isOptionalAlt = !ctrl && !shift;
 
 #if __APPLE__
+		// Dear ImGui switches the Cmd(Super) and Ctrl keys on MacOS
+		auto super = ImGui::IsKeyDown(ImGuiMod_Super);
+		auto isCtrlShift = !ctrl && shift && !alt && super;
 		auto isOptionalAltShift = !ctrl;
 	#else
+		auto isShiftAlt = !ctrl && shift && alt;
 		auto isOptionalCtrlShift = !alt;
 	#endif
 
@@ -754,9 +758,13 @@ void TextEditor::handleKeyboardInputs() {
 		else if (isOptionalShift && ImGui::IsKeyPressed(ImGuiKey_DownArrow)) { moveDown(1, shift); }
 
 #if __APPLE__
+		else if (isCtrlShift && ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) { shrinkSelectionsToCurlyBrackets(true); }
+		else if (isCtrlShift && ImGui::IsKeyPressed(ImGuiKey_RightArrow)) { growSelectionsToCurlyBrackets(true); }
 		else if (isOptionalAltShift && ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) { moveLeft(shift, alt); }
 		else if (isOptionalAltShift && ImGui::IsKeyPressed(ImGuiKey_RightArrow)) { moveRight(shift, alt); }
 #else
+		else if (isShiftAlt && ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) { shrinkSelectionsToCurlyBrackets(true); }
+		else if (isShiftAlt && ImGui::IsKeyPressed(ImGuiKey_RightArrow)) { growSelectionsToCurlyBrackets(true); }
 		else if (isOptionalCtrlShift && ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) { moveLeft(shift, ctrl); }
 		else if (isOptionalCtrlShift && ImGui::IsKeyPressed(ImGuiKey_RightArrow)) { moveRight(shift, ctrl); }
 #endif
@@ -919,9 +927,33 @@ void TextEditor::handleMouseInteractions() {
 			} else if (doubleClick) {
 				// left mouse button double click
 				if (overText) {
-					auto start = document.findWordStart(mouseCoord);
-					auto end = document.findWordEnd(mouseCoord);
-					cursors.updateCurrentCursor(start, end);
+					auto codepoint = document.getCodePoint(mouseCoord);
+					bool handled = false;
+
+					// select block (if required)
+					if (Bracketeer::isBracketOpener(codepoint)) {
+						auto brackets = bracketeer.getEnclosingBrackets(document.getRight(mouseCoord));
+
+						if (brackets != bracketeer.end()) {
+							cursors.setCursor(brackets->start, document.getRight(brackets->end));
+							handled = true;
+						}
+
+					} else if (Bracketeer::isBracketCloser(codepoint)) {
+						auto brackets = bracketeer.getEnclosingBrackets(document.getLeft(mouseCoord));
+
+						if (brackets != bracketeer.end()) {
+							cursors.setCursor(brackets->start, document.getRight(brackets->end));
+							handled = true;
+						}
+					}
+
+					// select word if it wasn't a block
+					if (!handled) {
+						auto start = document.findWordStart(mouseCoord);
+						auto end = document.findWordEnd(mouseCoord);
+						cursors.updateCurrentCursor(start, end);
+					}
 				}
 
 			} else if (click) {
@@ -1001,6 +1033,102 @@ void TextEditor::selectLines(int startLine, int endLine) {
 	Coordinate start{startLine, 0};
 	moveTo(start, false);
 	moveTo(document.getDown(start, endLine - startLine + 1), true);
+}
+
+
+//
+//	TextEditor::selectRegion
+//
+
+void TextEditor::selectRegion(int startLine, int startColumn, int endLine, int endColumn) {
+	auto start = document.normalizeCoordinate(Coordinate(startLine, startColumn));
+	auto end = document.normalizeCoordinate(Coordinate(endLine, endColumn));
+
+	if (end < start) {
+		std::swap(start, end);
+	}
+
+	cursors.setCursor(start, end);
+}
+
+
+//
+//	TextEditor::selectToBrackets
+//
+
+void TextEditor::selectToBrackets(bool includeBrackets) {
+	if (!showMatchingBrackets) {
+		bracketeer.update(document);
+	}
+
+	for (auto& cursor : cursors) {
+		auto bracket = bracketeer.getEnclosingBrackets(cursor.getSelectionStart());
+
+		if (bracket != bracketeer.end()) {
+			if (includeBrackets) {
+				cursor.update(bracket->start, document.getRight(bracket->end));
+
+			} else {
+				cursor.update(document.getRight(bracket->start), bracket->end);
+			}
+		}
+	}
+}
+
+
+//
+//	TextEditor::growSelectionsToCurlyBrackets
+//
+
+void TextEditor::growSelectionsToCurlyBrackets(bool includeBrackets) {
+	if (!showMatchingBrackets) {
+		bracketeer.update(document);
+	}
+
+	for (auto& cursor : cursors) {
+		auto bracket = bracketeer.getEnclosingCurlyBrackets(cursor.getSelectionStart());
+
+		if (bracket != bracketeer.end()) {
+			if (includeBrackets) {
+				cursor.update(bracket->start, document.getRight(bracket->end));
+
+			} else {
+				cursor.update(document.getRight(bracket->start), bracket->end);
+			}
+		}
+	}
+}
+
+
+//
+//	TextEditor::shrinkSelectionsToCurlyBrackets
+//
+
+void TextEditor::shrinkSelectionsToCurlyBrackets(bool includeBrackets) {
+	if (!showMatchingBrackets) {
+		bracketeer.update(document);
+	}
+
+	for (auto& cursor : cursors) {
+		if (cursor.hasSelection()){
+			auto start = cursor.getSelectionStart();
+
+			if (document.getCodePoint(start) == '{') {
+				start = document.getRight(start);
+			}
+
+			auto bracket = bracketeer.getInnerCurlyBrackets(start);
+
+			if (bracket != bracketeer.end()) {
+				if (includeBrackets) {
+					cursor.update(bracket->start, document.getRight(bracket->end));
+
+				} else {
+					cursor.update(document.getRight(bracket->start), bracket->end);
+				}
+			}
+		}
+	}
 }
 
 

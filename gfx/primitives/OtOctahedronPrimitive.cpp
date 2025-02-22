@@ -26,8 +26,6 @@
 //	Globals
 //
 
-static float t = (1.0 + std::sqrt(5.0)) / 2.0;
-
 static glm::vec3 bv[] = {
 	glm::vec3(1.0f, 0.0f, 0.0f),
 	glm::vec3(-1.0f, 0.0f, 0.0f),

@@ -29,8 +29,13 @@ list(REMOVE_DUPLICATES GFX_INCLUDE_DIRS)
 set(GFX_INCLUDE_DIRS ${GFX_INCLUDE_DIRS} PARENT_SCOPE)
 
 add_library(gfx OBJECT ${GFX_INCLUDES} ${GFX_SOURCES})
-target_include_directories(gfx PUBLIC ${GFX_INCLUDE_DIRS})
 
+target_compile_options(gfx PRIVATE
+	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang,GNU>:-Werror -Wall -Wextra>
+	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wpedantic>
+	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/W4 /WX>)
+
+target_include_directories(gfx PUBLIC ${GFX_INCLUDE_DIRS})
 target_link_libraries(gfx PUBLIC language shaders glfw bgfx imgui imguifd imguiwidgets glm tess2 lunasvg entt assimp md4c bsthreadpool tweeny ${GFX_LIBS})
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${GFX_INCLUDES} ${GFX_SOURCES})

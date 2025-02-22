@@ -257,16 +257,16 @@ bool OtUi::inputText(const char* label, std::string* value, ImGuiInputTextFlags 
 bool OtUi::dragInt(const char* label, int* value, int minv, int maxv) {
 	// automatically determine drag speed
 	auto absValue = std::abs(*value);
-	int speed;
+	float speed;
 
 	if (absValue < 100) {
-		speed = 1;
+		speed = 1.0f;
 
 	} else if (absValue < 1000) {
-		speed = 10;
+		speed = 10.0f;
 
 	} else {
-		speed = 100;
+		speed = 100.0f;
 	}
 
 	if (ImGui::DragInt(label, value, speed, minv, maxv, "%d", ImGuiSliderFlags_AlwaysClamp)) {
@@ -415,7 +415,6 @@ bool OtUi::fileSelector(const char* label, std::string* path, const char* filter
 	// render widgets
 	ImGui::PushID(id.c_str());
 	bool changed = false;
-	static bool creating = false;
 
 	// get the filename without the path
 	auto filename = OtPath::getFilename(*path);
@@ -464,7 +463,6 @@ bool OtUi::fileSelector(const char* label, std::string* path, const char* filter
 			changed = true;
 		}
 
-		creating = false;
 		dialog->Close();
  	}
 
@@ -610,34 +608,34 @@ bool OtUi::bezier(const char* label, float P[4]) {
 		const char* name;
 		float points[4];
 	} presets[] = {
-		{ "Linear", 0.250f, 0.250f, 0.750f, 0.750f },
-		{ "-", 0.0f, 0.0f, 0.0f, 0.0f },
+		{"Linear", {0.250f, 0.250f, 0.750f, 0.750f}},
+		{"-", {0.0f, 0.0f, 0.0f, 0.0f}},
 
-		{ "In Sine", 0.470f, 0.000f, 0.745f, 0.715f },
-		{ "In Quad", 0.550f, 0.085f, 0.680f, 0.530f },
-		{ "In Cubic", 0.550f, 0.055f, 0.675f, 0.190f },
-		{ "In Quart", 0.895f, 0.030f, 0.685f, 0.220f },
-		{ "In Quint", 0.755f, 0.050f, 0.855f, 0.060f },
-		{ "In Expo", 0.950f, 0.050f, 0.795f, 0.035f },
-		{ "In Circ", 0.600f, 0.040f, 0.980f, 0.335f },
-		{ "-", 0.0f, 0.0f, 0.0f, 0.0f },
+		{"In Sine", {0.470f, 0.000f, 0.745f, 0.715f}},
+		{"In Quad", {0.550f, 0.085f, 0.680f, 0.530f}},
+		{"In Cubic", {0.550f, 0.055f, 0.675f, 0.190f}},
+		{"In Quart", {0.895f, 0.030f, 0.685f, 0.220f}},
+		{"In Quint", {0.755f, 0.050f, 0.855f, 0.060f}},
+		{"In Expo", {0.950f, 0.050f, 0.795f, 0.035f}},
+		{"In Circ", {0.600f, 0.040f, 0.980f, 0.335f}},
+		{"-", {0.0f, 0.0f, 0.0f, 0.0f}},
 
-		{ "Out Sine", 0.390f, 0.575f, 0.565f, 1.000f },
-		{ "Out Quad", 0.250f, 0.460f, 0.450f, 0.940f },
-		{ "Out Cubic", 0.215f, 0.610f, 0.355f, 1.000f },
-		{ "Out Quart", 0.165f, 0.840f, 0.440f, 1.000f },
-		{ "Out Quint", 0.230f, 1.000f, 0.320f, 1.000f },
-		{ "Out Expo", 0.190f, 1.000f, 0.220f, 1.000f },
-		{ "Out Circ", 0.075f, 0.820f, 0.165f, 1.000f },
-		{ "-", 0.0f, 0.0f, 0.0f, 0.0f },
+		{"Out Sine", {0.390f, 0.575f, 0.565f, 1.000f}},
+		{"Out Quad", {0.250f, 0.460f, 0.450f, 0.940f}},
+		{"Out Cubic", {0.215f, 0.610f, 0.355f, 1.000f}},
+		{"Out Quart", {0.165f, 0.840f, 0.440f, 1.000f}},
+		{"Out Quint", {0.230f, 1.000f, 0.320f, 1.000f}},
+		{"Out Expo", {0.190f, 1.000f, 0.220f, 1.000f}},
+		{"Out Circ", {0.075f, 0.820f, 0.165f, 1.000f}},
+		{"-", {0.0f, 0.0f, 0.0f, 0.0f}},
 
-		{ "InOut Sine", 0.445f, 0.050f, 0.550f, 0.950f },
-		{ "InOut Quad", 0.455f, 0.030f, 0.515f, 0.955f },
-		{ "InOut Cubic", 0.645f, 0.045f, 0.355f, 1.000f },
-		{ "InOut Quart", 0.770f, 0.000f, 0.175f, 1.000f },
-		{ "InOut Quint", 0.860f, 0.000f, 0.070f, 1.000f },
-		{ "InOut Expo", 1.000f, 0.000f, 0.000f, 1.000f },
-		{ "InOut Circ", 0.785f, 0.135f, 0.150f, 0.860f },
+		{"InOut Sine", {0.445f, 0.050f, 0.550f, 0.950f}},
+		{"InOut Quad", {0.455f, 0.030f, 0.515f, 0.955f}},
+		{"InOut Cubic", {0.645f, 0.045f, 0.355f, 1.000f}},
+		{"InOut Quart", {0.770f, 0.000f, 0.175f, 1.000f}},
+		{"InOut Quint", {0.860f, 0.000f, 0.070f, 1.000f}},
+		{"InOut Expo", {1.000f, 0.000f, 0.000f, 1.000f}},
+		{"InOut Circ", {0.785f, 0.135f, 0.150f, 0.860f}},
 	};
 
 	ImGuiStyle& style = ImGui::GetStyle();
@@ -648,6 +646,8 @@ bool OtUi::bezier(const char* label, float P[4]) {
 		return false;
 	}
 
+	ImGui::PushID(label);
+
 	// prepare canvas
 	const float dim = ImGui::CalcItemWidth();
 	ImVec2 canvas(dim, dim);
@@ -656,14 +656,14 @@ bool OtUi::bezier(const char* label, float P[4]) {
 	ImGui::RenderFrame(bb.Min, bb.Max, ImGui::GetColorU32(ImGuiCol_FrameBg, 1), true, style.FrameRounding);
 
 	// background grid
-	for (int i = 0; i <= canvas.x; i += (canvas.x / 4)) {
+	for (int i = 0; i <= static_cast<int>(canvas.x); i += static_cast<int>(canvas.x / 4)) {
 		drawList->AddLine(
 			ImVec2(bb.Min.x + i, bb.Min.y),
 			ImVec2(bb.Min.x + i, bb.Max.y),
 			ImGui::GetColorU32(ImGuiCol_TextDisabled));
 	}
 
-	for (int i = 0; i <= canvas.y; i += (canvas.y / 4)) {
+	for (int i = 0; i <= static_cast<int>(canvas.y); i += static_cast<int>(canvas.y / 4)) {
 		drawList->AddLine(
 			ImVec2(bb.Min.x, bb.Min.y + i),
 			ImVec2(bb.Max.x, bb.Min.y + i),
@@ -748,7 +748,7 @@ bool OtUi::bezier(const char* label, float P[4]) {
 
 	// restore cursor pos
 	ImGui::SetCursorScreenPos(ImVec2(bb.Min.x, bb.Max.y + grabRadius));
-
+	ImGui::PopID();
 	return changed;
 }
 

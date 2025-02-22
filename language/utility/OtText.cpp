@@ -119,7 +119,7 @@ std::string OtText::get(const std::string& text, size_t offset) {
 		offset--;
 	}
 
-	if (offset < 0 || pos == text.end()) {
+	if (pos == text.end()) {
 		return "";
 
 	} else {
@@ -135,10 +135,8 @@ std::string OtText::get(const std::string& text, size_t offset) {
 std::string OtText::set(const std::string& text, size_t offset, const std::string& ch) {
 	auto length = OtText::len(text);
 
-	if (offset >= 0 && offset < length) {
-		return OtText::left(text, offset) +
-			OtText::get(ch, 0) +
-			OtText::right(text, length - offset - 1);
+	if (offset < length) {
+		return OtText::left(text, offset) + OtText::get(ch, 0) + OtText::right(text, length - offset - 1);
 
 	} else {
 		return text;

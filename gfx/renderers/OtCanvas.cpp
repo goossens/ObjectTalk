@@ -60,7 +60,7 @@ int OtCanvasClass::loadImage(const std::string &path, int flags) {
 
 int OtCanvasClass::createLinearGradient(float sx, float sy, float ex, float ey, const std::string& startColor, const std::string& endColor) {
 	auto sc = OtColorParser::toVec4(startColor);
-	auto ec = OtColorParser::toVec4(startColor);
+	auto ec = OtColorParser::toVec4(endColor);
 	auto paint = nvgLinearGradient(context, sx, sy, ex, ey, nvgRGBAf(sc.r, sc.g, sc.b, sc.a), nvgRGBAf(ec.r, ec.g, ec.b, ec.a));
 	return addPaint(paint);
 }
@@ -72,7 +72,7 @@ int OtCanvasClass::createLinearGradient(float sx, float sy, float ex, float ey, 
 
 int OtCanvasClass::createBoxGradient(float x, float y, float w, float h, float r, float f, const std::string& startColor, const std::string& endColor) {
 	auto sc = OtColorParser::toVec4(startColor);
-	auto ec = OtColorParser::toVec4(startColor);
+	auto ec = OtColorParser::toVec4(endColor);
 	auto paint = nvgBoxGradient(context, x, y, w, h, r, f, nvgRGBAf(sc.r, sc.g, sc.b, sc.a), nvgRGBAf(ec.r, ec.g, ec.b, ec.a));
 	return addPaint(paint);
 }
@@ -84,7 +84,7 @@ int OtCanvasClass::createBoxGradient(float x, float y, float w, float h, float r
 
 int OtCanvasClass::createRadialGradient(float cx, float cy, float inner, float outer, const std::string& startColor, const std::string& endColor) {
 	auto sc = OtColorParser::toVec4(startColor);
-	auto ec = OtColorParser::toVec4(startColor);
+	auto ec = OtColorParser::toVec4(endColor);
 	auto paint = nvgRadialGradient(context, cx, cy, inner, outer, nvgRGBAf(sc.r, sc.g, sc.b, sc.a), nvgRGBAf(ec.r, ec.g, ec.b, ec.a));
 	return addPaint(paint);
 }
@@ -135,13 +135,13 @@ int OtCanvasClass::createTexturePattern(float sx, float sy, float ex, float ey, 
 void OtCanvasClass::drawImage(int image, float x, float y) {
 	int w, h;
 	nvgImageSize(context, image, &w, &h);
-	drawImage(image, 0.0f, 0.0f, float(w), float(h), x, y, w, h);
+	drawImage(image, 0.0f, 0.0f, static_cast<float>(w), static_cast<float>(h), x, y, static_cast<float>(w), static_cast<float>(h));
 }
 
 void OtCanvasClass::drawImage(int image, float x, float y, float w, float h) {
 	int sw, sh;
 	nvgImageSize(context, image, &sw, &sh);
-	drawImage(image, 0.0f, 0.0f, float(sw), float(sh), x, y, w, h);
+	drawImage(image, 0.0f, 0.0f, static_cast<float>(sw), static_cast<float>(sh), x, y, w, h);
 }
 
 void OtCanvasClass::drawImage(int image, float sx, float sy, float sw, float sh, float x, float y, float w, float h) {
@@ -150,7 +150,7 @@ void OtCanvasClass::drawImage(int image, float sx, float sy, float sw, float sh,
 
 	float ax = w / sw;
 	float ay = h / sh;
-	NVGpaint imgPaint = nvgImagePattern(context, x - sx * ax, y - sy * ay, float(iw) * ax, float(ih) * ay, 0.0f, image, 1.0f);
+	NVGpaint imgPaint = nvgImagePattern(context, x - sx * ax, y - sy * ay, static_cast<float>(iw) * ax, static_cast<float>(ih) * ay, 0.0f, image, 1.0f);
 
 	nvgBeginPath(context);
 	nvgRect(context, x, y, w, h);
@@ -174,9 +174,9 @@ OtObject OtCanvasClass::textSize(const std::string& string) {
 //	OtCanvasClass::textBoxSize
 //
 
-OtObject OtCanvasClass::textBoxSize(const std::string& string, float width) {
+OtObject OtCanvasClass::textBoxSize(const std::string& string, float w) {
 	float bounds[4];
-	nvgTextBoxBounds(context, 0.0f, 0.0f, width, string.c_str(), nullptr, bounds);
+	nvgTextBoxBounds(context, 0.0f, 0.0f, w, string.c_str(), nullptr, bounds);
 	return OtVec2::create(bounds[2] - bounds[0], bounds[3] - bounds[1]);
 }
 
@@ -187,8 +187,8 @@ OtObject OtCanvasClass::textBoxSize(const std::string& string, float width) {
 
 void OtCanvasClass::render(OtFrameBuffer& framebuffer, float scale, std::function<void()> renderer) {
 	// get dimensions
-	width = float(framebuffer.getWidth());
-	height = float(framebuffer.getHeight());
+	width = static_cast<float>(framebuffer.getWidth());
+	height = static_cast<float>(framebuffer.getHeight());
 
 	// setup rendering pass
 	OtPass pass;

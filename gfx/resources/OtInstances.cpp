@@ -139,7 +139,7 @@ bool OtInstances::submit(OtFrustum& frustum, OtAABB& aabb) {
 
 		// get number of instances and size of instance data
 		uint32_t count = (uint32_t) tmp.size();
-		uint32_t stride = sizeof(glm::mat4);
+		uint16_t stride = sizeof(glm::mat4);
 
 		if (count) {
 			// create instance data buffer and submit it to the GPU

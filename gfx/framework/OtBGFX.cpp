@@ -32,7 +32,7 @@
 struct BgfxCallback : public bgfx::CallbackI {
 	virtual ~BgfxCallback() {}
 
-	virtual void fatal(const char* filePath, uint16_t line, bgfx::Fatal::Enum code, const char* str) override {
+	virtual void fatal(const char* /* filePath */, uint16_t /* line */, bgfx::Fatal::Enum code, const char* str) override {
 		OtLogFatal("Fatal error: {:#08x}: {}", int(code), str);
 	}
 
@@ -47,16 +47,16 @@ struct BgfxCallback : public bgfx::CallbackI {
 		OtLog::log(filePath, line, OtLog::Type::debug, std::string(buffer));
 	}
 
-	virtual void profilerBegin(const char* name, uint32_t abgr, const char* filePath, uint16_t line) override {}
-	virtual void profilerBeginLiteral(const char* name, uint32_t abgr, const char* filePath, uint16_t line) override {}
+	virtual void profilerBegin(const char* /* name */, uint32_t /* abgr */, const char* /* filePath */, uint16_t /* line */) override {}
+	virtual void profilerBeginLiteral(const char* /* name */, uint32_t /* abgr */, const char* /* filePath */, uint16_t /* line */) override {}
 	virtual void profilerEnd() override {}
-	virtual uint32_t cacheReadSize(uint64_t id) override { return 0; }
-	virtual bool cacheRead(uint64_t id, void* data, uint32_t size) override { return false; }
-	virtual void cacheWrite(uint64_t id, const void* data, uint32_t size) override {}
-	virtual void screenShot(const char* filePath, uint32_t width, uint32_t height, uint32_t pitch, const void* data, uint32_t size, bool yflip) override {}
-	virtual void captureBegin(uint32_t width, uint32_t height, uint32_t pitch, bgfx::TextureFormat::Enum format, bool yflip) override {}
+	virtual uint32_t cacheReadSize(uint64_t /* id */) override { return 0; }
+	virtual bool cacheRead(uint64_t /* id */, void* /* data */, uint32_t /* size */) override { return false; }
+	virtual void cacheWrite(uint64_t /* id */, const void* /* data */, uint32_t /* size */) override {}
+	virtual void screenShot(const char* /* filePath */, uint32_t /* width */, uint32_t /* height */, uint32_t /* pitch */, const void* /* data */, uint32_t /* size */, bool /* yflip */) override {}
+	virtual void captureBegin(uint32_t /* width */, uint32_t /* height */, uint32_t /* pitch */, bgfx::TextureFormat::Enum /* format */, bool /* yflip */) override {}
 	virtual void captureEnd() override {}
-	virtual void captureFrame(const void* data, uint32_t size) override {}
+	virtual void captureFrame(const void* /* data */, uint32_t /* size */) override {}
 };
 
 static BgfxCallback callbacks;
@@ -173,7 +173,7 @@ void OtFramework::frameBGFX() {
 
 	// start BGFX frame by clearing the backbuffer
 	bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000ff, 1.0f, 0);
-	bgfx::setViewRect(0, 0, 0, width, height);
+	bgfx::setViewRect(0, 0, 0, static_cast<uint16_t>(width), static_cast<uint16_t>(height));
 	bgfx::touch(0);
 }
 

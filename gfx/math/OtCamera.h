@@ -31,8 +31,8 @@ public:
 	inline OtCamera(int w, int h, const glm::mat4 pm, const glm::mat4& vm) :
 		width(w),
 		height(h),
-		projectionMatrix(pm),
-		viewMatrix(vm) {
+		viewMatrix(vm),
+		projectionMatrix(pm) {
 
 		// update camera
 		update();

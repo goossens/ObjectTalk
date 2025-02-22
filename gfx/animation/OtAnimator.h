@@ -38,7 +38,7 @@ public:
 		// remove animations from the list when they are done
 		auto& animations = instance().animations;
 
-		animations.erase(std::remove_if(animations.begin(), animations.end(), [timestep](OtAnimation animation) {
+		animations.erase(std::remove_if(animations.begin(), animations.end(), [](OtAnimation animation) {
 			return !animation->isRunning();
 		}), animations.end());
 

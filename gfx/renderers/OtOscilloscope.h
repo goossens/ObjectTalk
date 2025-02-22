@@ -40,7 +40,7 @@ public:
 	inline void setBottomLeftOrigin() { origin = Origin::bottomLeft; }
 	inline void setCenterOrigin() { origin = Origin::center; }
 
-	inline void setDecay(int s, float ds, float dv) {
+	inline void setDecay(size_t s, float ds, float dv) {
 		decaySteps = s;
 		decayStart = ds;
 		decayValue = dv;
@@ -62,7 +62,7 @@ private:
 	int height;
 	float brightness = 1.0f;
 
-	int decaySteps = 4;
+	size_t decaySteps = 4;
 	float decayStart = 0.1f;
 	float decayValue = 0.8f;
 

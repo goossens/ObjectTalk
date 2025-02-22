@@ -74,7 +74,7 @@ static int keysToMods(GLFWwindow* window) {
 
 void OtFramework::initGLFW() {
 	// initialize GLFW library
-	glfwSetErrorCallback([](int error, const char* description) {
+	glfwSetErrorCallback([](int /* error */, const char* description) {
 		OtLogFatal(description);
 	});
 
@@ -245,7 +245,7 @@ void OtFramework::initGLFW() {
 	// capture mouse starting point
 	double xpos, ypos;
 	glfwGetCursorPos(window, &xpos, &ypos);
-	eventQueue.pushMouseMoveEvent(xpos, ypos);
+	eventQueue.pushMouseMoveEvent(static_cast<float>(xpos), static_cast<float>(ypos));
 }
 
 
@@ -289,7 +289,7 @@ void OtFramework::eventsGLFW() {
 
 		if (axes) {
 			for (auto axis = 0; axis < std::min(numAxes, 2); axis++) {
-				eventQueue.pushGamepadAxisEvent(gamepad, axis, std::round(axes[axis] * 100.0));
+				eventQueue.pushGamepadAxisEvent(gamepad, axis, static_cast<int>(std::round(axes[axis] * 100.0)));
 			}
 		}
 

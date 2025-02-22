@@ -394,12 +394,12 @@ void OtScanner::expect(Token expectedToken, bool advanceToNextToken) {
 //	OtScanner::addToken
 //
 
-void OtScanner::addToken(const std::string text, Token token) {
+void OtScanner::addToken(const std::string text, Token textToken) {
 	// add token to lookup
-	tokens[token] = text;
+	tokens[textToken] = text;
 
 	// set start state
-	short state = 0;
+	size_t state = 0;
 
 	// process all characters
 	for (auto i = text.begin(); i < text.end(); i++) {
@@ -418,5 +418,5 @@ void OtScanner::addToken(const std::string text, Token token) {
 	}
 
 	// store the token
-	stateTable[state].token = token;
+	stateTable[state].token = textToken;
 }

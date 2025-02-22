@@ -89,7 +89,14 @@ void OtCubeMap::create(int s, bool m, int l, int f, uint64_t flags) {
 	mip = m;
 	layers = l;
 	format = f;
-	cubemap = bgfx::createTextureCube(size, mip, layers, bgfx::TextureFormat::Enum(format), flags);
+
+	cubemap = bgfx::createTextureCube(
+		static_cast<uint16_t>(size),
+		mip,
+		static_cast<uint16_t>(layers),
+		bgfx::TextureFormat::Enum(format),
+		flags);
+
 	version++;
 }
 
@@ -154,70 +161,74 @@ void OtCubeMap::loadJSON(const std::string& path) {
 	OtImage image;
 	image.load(posx, true, true);
 	bimg::ImageContainer* container = image.getContainer();
-	uint16_t imageSize = container->m_width;
+	size = static_cast<int>(container->m_width);
 	bimg::TextureFormat::Enum imageFormat = container->m_format;
-	size = imageSize;
 	mip = false;
 	layers = 1;
 	format = bgfx::TextureFormat::Enum(imageFormat);
 
 	// create a new cubemap
-	cubemap = bgfx::createTextureCube(imageSize, false, 1, bgfx::TextureFormat::Enum(imageFormat), BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE);
+	cubemap = bgfx::createTextureCube(
+		static_cast<uint16_t>(size),
+		false,
+		1,
+		bgfx::TextureFormat::Enum(imageFormat),
+		BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE);
 
 	// store first side
 	const bgfx::Memory* mem = bgfx::copy(container->m_data, container->m_size);
-	bgfx::updateTextureCube(cubemap.getHandle(), 0, 0, 0, 0, 0, imageSize, imageSize, mem);
+	bgfx::updateTextureCube(cubemap.getHandle(), 0, 0, 0, 0, 0, static_cast<uint16_t>(size), static_cast<uint16_t>(size), mem);
 
 	// load and store other sides
 	image.load(negx, true, true);
 	container = image.getContainer();
 
-	if (container->m_width != imageSize || container->m_format != imageFormat) {
+	if (container->m_width != static_cast<uint32_t>(size) || container->m_format != imageFormat) {
 		OtError("Cubemap image (negx] does not have same size or format as others");
 	}
 
 	mem = bgfx::copy(container->m_data, container->m_size);
-	bgfx::updateTextureCube(cubemap.getHandle(), 0, 1, 0, 0, 0, imageSize, imageSize, mem);
+	bgfx::updateTextureCube(cubemap.getHandle(), 0, 1, 0, 0, 0, static_cast<uint16_t>(size), static_cast<uint16_t>(size), mem);
 
 	image.load(posy, true, true);
 	container = image.getContainer();
 
-	if (container->m_width != imageSize || container->m_format != imageFormat) {
+	if (container->m_width != static_cast<uint32_t>(size) || container->m_format != imageFormat) {
 		OtError("Cubemap image (posy] does not have same size or format as others");
 	}
 
 	mem = bgfx::copy(container->m_data, container->m_size);
-	bgfx::updateTextureCube(cubemap.getHandle(), 0, 2, 0, 0, 0, imageSize, imageSize, mem);
+	bgfx::updateTextureCube(cubemap.getHandle(), 0, 2, 0, 0, 0, static_cast<uint16_t>(size), static_cast<uint16_t>(size), mem);
 
 	image.load(negy, true, true);
 	container = image.getContainer();
 
-	if (container->m_width != imageSize || container->m_format != imageFormat) {
+	if (container->m_width != static_cast<uint32_t>(size) || container->m_format != imageFormat) {
 		OtError("Cubemap image (negy] does not have same size or format as others");
 	}
 
 	mem = bgfx::copy(container->m_data, container->m_size);
-	bgfx::updateTextureCube(cubemap.getHandle(), 0, 3, 0, 0, 0, imageSize, imageSize, mem);
+	bgfx::updateTextureCube(cubemap.getHandle(), 0, 3, 0, 0, 0, static_cast<uint16_t>(size), static_cast<uint16_t>(size), mem);
 
 	image.load(posz, true, true);
 	container = image.getContainer();
 
-	if (container->m_width != imageSize || container->m_format != imageFormat) {
+	if (container->m_width != static_cast<uint32_t>(size) || container->m_format != imageFormat) {
 		OtError("Cubemap image (posz] does not have same size or format as others");
 	}
 
 	mem = bgfx::copy(container->m_data, container->m_size);
-	bgfx::updateTextureCube(cubemap.getHandle(), 0, 4, 0, 0, 0, imageSize, imageSize, mem);
+	bgfx::updateTextureCube(cubemap.getHandle(), 0, 4, 0, 0, 0, static_cast<uint16_t>(size), static_cast<uint16_t>(size), mem);
 
 	image.load(negz, true, true);
 	container = image.getContainer();
 
-	if (container->m_width != imageSize || container->m_format != imageFormat) {
+	if (container->m_width != static_cast<uint32_t>(size) || container->m_format != imageFormat) {
 		OtError("Cubemap image (negz] does not have same size or format as others");
 	}
 
 	mem = bgfx::copy(container->m_data, container->m_size);
-	bgfx::updateTextureCube(cubemap.getHandle(), 0, 5, 0, 0, 0, imageSize, imageSize, mem);
+	bgfx::updateTextureCube(cubemap.getHandle(), 0, 5, 0, 0, 0, static_cast<uint16_t>(size), static_cast<uint16_t>(size), mem);
 	version++;
 }
 
@@ -235,7 +246,7 @@ void OtCubeMap::loadCubemapImage(const std::string& path) {
 	// is this a real cubemap?
 	if (container->m_cubeMap) {
 		cubemap = bgfx::createTextureCube(
-			container->m_width,
+			static_cast<uint16_t>(container->m_width),
 			false,
 			1,
 			bgfx::TextureFormat::Enum(container->m_format),
@@ -339,15 +350,15 @@ void OtCubeMap::renderCubemap() {
 	version++;
 
 	cubemap = bgfx::createTextureCube(
-		size,
+		static_cast<uint16_t>(size),
 		mip,
-		layers,
+		static_cast<uint16_t>(layers),
 		bgfx::TextureFormat::RGBA16F,
 		BGFX_TEXTURE_RT,
 		nullptr);
 
 	// render all 6 sides of the cube
-	for (int side = 0; side < 6; side++) {
+	for (uint16_t side = 0; side < 6; side++) {
 		// setup framebuffer
 		bgfx::Attachment attachment;
 		attachment.init(cubemap.getHandle(), bgfx::Access::Write, side);

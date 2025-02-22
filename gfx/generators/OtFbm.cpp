@@ -17,8 +17,8 @@
 //
 
 void OtFbm::execute(OtPass& pass) {
-	uniform.setValue(0, frequency, lacunarity, amplitude, persistence);
-	uniform.setValue(1, octaves, static_cast<float>(noiseType), 0.0f, 0.0f);
+	uniform.setValue(0, static_cast<float>(frequency), lacunarity, amplitude, persistence);
+	uniform.setValue(1, static_cast<float>(octaves), static_cast<float>(noiseType), 0.0f, 0.0f);
 	uniform.submit();
 	pass.runShaderProgram(program);
 }

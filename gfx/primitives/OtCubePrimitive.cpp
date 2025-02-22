@@ -34,7 +34,7 @@ bool OtCubePrimitive::renderUI() {
 //	OtCubePrimitive::serialize
 //
 
-nlohmann::json OtCubePrimitive::serialize(std::string* basedir) {
+nlohmann::json OtCubePrimitive::serialize(std::string* /* basedir */) {
 	auto data = nlohmann::json::object();
 	data["type"] = name;
 	data["xsegments"] = widthSegments;
@@ -48,7 +48,7 @@ nlohmann::json OtCubePrimitive::serialize(std::string* basedir) {
 //	OtCubePrimitive::deserialize
 //
 
-void OtCubePrimitive::deserialize(nlohmann::json data, std::string* basedir) {
+void OtCubePrimitive::deserialize(nlohmann::json data, std::string* /* basedir */) {
 	widthSegments = data.value("xsegments", 1);
 	heightSegments = data.value("ysegments", 1);
 	depthSegments = data.value("zsegments", 1);
@@ -74,14 +74,14 @@ void OtCubePrimitive::createMesh(OtMesh* mesh) {
 //	OtCubePrimitive::buildPlane
 //
 
-void OtCubePrimitive::buildPlane(OtMesh* mesh, int udir, int vdir, float w, float h, float d, int gridX, int gridY, glm::vec3 (*cb)(float, float, float)) {
+void OtCubePrimitive::buildPlane(OtMesh* mesh, int udir, int vdir, float w, float h, float depth, int gridX, int gridY, glm::vec3 (*cb)(float, float, float)) {
 	// add vertices
 	auto segmentWidth = w / gridX;
 	auto segmentHeight = h / gridY;
 
 	auto widthHalf = w / 2.0f;
 	auto heightHalf = h / 2.0f;
-	auto depthHalf = d / 2.0f;
+	auto depthHalf = depth / 2.0f;
 
 	auto gridX1 = gridX + 1;
 	auto gridY1 = gridY + 1;
@@ -96,7 +96,7 @@ void OtCubePrimitive::buildPlane(OtMesh* mesh, int udir, int vdir, float w, floa
 
 			mesh->addVertex(OtVertex(
 				cb(x * udir, y * vdir, depthHalf),
-				cb(0, 0, (d > 0) ? 1 : - 1),
+				cb(0.0f, 0.0f, (depth > 0.0f) ? 1.0f : -1.0f),
 				glm::vec2((float) ix / gridX, (float) iy / gridY)));
 		}
 	}

@@ -133,13 +133,12 @@ void OtCascadedShadowMap::update(OtCamera& camera, const glm::vec3& lightDirecti
 		glm::mat4 shadowMatrix = lightProjectionMatrix * lightViewMatrix;
 		glm::vec4 shadowOrigin = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		shadowOrigin = shadowMatrix * shadowOrigin;
-		float storedW = shadowOrigin.w;
-		float size = static_cast<float>(cascades[cascade].framebuffer.getWidth());
-		shadowOrigin = shadowOrigin * size / 2.0f;
+		float mapSize = static_cast<float>(cascades[cascade].framebuffer.getWidth());
+		shadowOrigin = shadowOrigin * mapSize / 2.0f;
 
 		glm::vec4 roundedOrigin = glm::round(shadowOrigin);
 		glm::vec4 roundOffset = roundedOrigin - shadowOrigin;
-		roundOffset = roundOffset * 2.0f / size;
+		roundOffset = roundOffset * (2.0f / mapSize);
 		roundOffset.z = 0.0f;
 		roundOffset.w = 0.0f;
 
@@ -149,7 +148,7 @@ void OtCascadedShadowMap::update(OtCamera& camera, const glm::vec3& lightDirecti
 
 		// store information
 		cascades[cascade].distance = minZ + splitDist * range;
-		cascades[cascade].camera = OtCamera(size, size, lightProjectionMatrix, lightViewMatrix);
+		cascades[cascade].camera = OtCamera(static_cast<int>(mapSize), static_cast<int>(mapSize), lightProjectionMatrix, lightViewMatrix);
 		lastSplitDist = splitDist;
 	}
 }

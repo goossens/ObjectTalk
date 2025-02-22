@@ -85,7 +85,6 @@ void OtAssetManager::renderManagerUI() {
 	if (loading != 0) {
 		// spinner size
 		static constexpr float spinnerRadius = 40.0f;
-		static constexpr float spinnerMargin = 20.0f;
 		static constexpr float spinnerSpeed = 7.0f;
 		static constexpr float circleRadius = spinnerRadius / 10.0f;
 		static constexpr int spinnerCircles = 12;
@@ -98,7 +97,7 @@ void OtAssetManager::renderManagerUI() {
 
 		static float time = 0.0f;
 		time += ImGui::GetIO().DeltaTime;
-		float offset = std::numbers::pi2 / spinnerCircles;
+		float offset = static_cast<float>(std::numbers::pi2 / spinnerCircles);
 
 		for (int i = 0; i < spinnerCircles; i++) {
 			float x = spinnerRadius * std::sin(offset * i);

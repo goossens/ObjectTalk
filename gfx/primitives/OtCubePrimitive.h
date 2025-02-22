@@ -50,7 +50,7 @@ private:
 	void createMesh(OtMesh* mesh) override;
 
 	// create one side of the BoxGeometry
-	void buildPlane(OtMesh* mesh, int udir, int vdir, float w, float h, float d, int gridX, int gridY, glm::vec3 (*cb)(float, float, float));
+	void buildPlane(OtMesh* mesh, int udir, int vdir, float w, float h, float depth, int gridX, int gridY, glm::vec3 (*cb)(float, float, float));
 
 	// attributes
 	int widthSegments = 1;

@@ -9,6 +9,10 @@
 //	Include files
 //
 
+#if _WIN32
+#define _CRT_SECURE_NO_WARNINGS // for localtime
+#endif
+
 #include <chrono>
 #include <cstdio>
 #include <cstdlib>
@@ -35,7 +39,7 @@
 //	Message types
 //
 
-static const char* types[] = {
+static const char* messageTypes[] = {
 	"debug",
 	"info",
 	"warning",
@@ -75,7 +79,7 @@ void OtLog::logMessage(const char* filename, int lineno, Type type, const std::s
 	// get timestamp, filename and message type
 	auto timestamp = GetTimestamp();
 	auto shortname = OtPath::getFilename(filename);
-	auto messageType = types[static_cast<int>(type)];
+	auto messageType = messageTypes[static_cast<int>(type)];
 	auto output = fmt::format("{} [{}] {} ({}): {}\n", timestamp, messageType, shortname, lineno, message);
 
 	// send to IDE (if required)

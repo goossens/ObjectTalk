@@ -79,7 +79,7 @@ void OtUniformVec4::submit() {
 		// sanity check
 		if (name.size() && size) {
 			// register uniform
-			uniform = bgfx::createUniform(name.c_str(), bgfx::UniformType::Vec4, size);
+			uniform = bgfx::createUniform(name.c_str(), bgfx::UniformType::Vec4, static_cast<uint16_t>(size));
 
 		} else {
 			OtLogFatal("Internal error: uniform not initialized before submission");
@@ -87,5 +87,5 @@ void OtUniformVec4::submit() {
 	}
 
 	// submit uniform value(s) to GPU
-	bgfx::setUniform(uniform.getHandle(), values, size);
+	bgfx::setUniform(uniform.getHandle(), values, static_cast<uint16_t>(size));
 }

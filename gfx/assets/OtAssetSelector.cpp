@@ -219,7 +219,6 @@ bool OtAssetSelector::renderUI(Info& info) {
 
 	if (dialog->Display(dialogID.c_str(), ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
 		if (dialog->IsOk()) {
-			auto dialog = ImGuiFileDialog::Instance();
 			info.path = OtPath::join(dialog->GetCurrentPath(), dialog->GetCurrentFileName());
 			OtPath::changeDirectory(OtPath::getParent(info.path));
 			changed = true;

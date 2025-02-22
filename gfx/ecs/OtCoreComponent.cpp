@@ -53,7 +53,7 @@ void OtCoreComponent::assignNewUuid() {
 //	OtCoreComponent::serialize
 //
 
-nlohmann::json OtCoreComponent::serialize(std::string* basedir) {
+nlohmann::json OtCoreComponent::serialize(std::string* /* basedir */) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
 	data["uuid"] = uuid;
@@ -66,7 +66,7 @@ nlohmann::json OtCoreComponent::serialize(std::string* basedir) {
 //	OtCoreComponent::deserialize
 //
 
-void OtCoreComponent::deserialize(nlohmann::json data, std::string* basedir) {
+void OtCoreComponent::deserialize(nlohmann::json data, std::string* /* basedir */) {
 	uuid = data["uuid"];
 	tag = data["tag"];
 }

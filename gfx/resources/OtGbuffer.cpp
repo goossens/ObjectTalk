@@ -48,11 +48,11 @@ void OtGbuffer::update(int w, int h) {
 			BGFX_TEXTURE_RT;
 
 		// create new textures
-		albedoTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA16F, flags);
-		normalTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA8, flags);
-		pbrTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA8, flags);
-		emissiveTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::RGBA8, flags);
-		depthTexture = bgfx::createTexture2D(w, h, false, 1, bgfx::TextureFormat::D16F, flags);
+		albedoTexture = bgfx::createTexture2D(static_cast<uint16_t>(w), static_cast<uint16_t>(h), false, 1, bgfx::TextureFormat::RGBA16F, flags);
+		normalTexture = bgfx::createTexture2D(static_cast<uint16_t>(w), static_cast<uint16_t>(h), false, 1, bgfx::TextureFormat::RGBA8, flags);
+		pbrTexture = bgfx::createTexture2D(static_cast<uint16_t>(w), static_cast<uint16_t>(h), false, 1, bgfx::TextureFormat::RGBA8, flags);
+		emissiveTexture = bgfx::createTexture2D(static_cast<uint16_t>(w), static_cast<uint16_t>(h), false, 1, bgfx::TextureFormat::RGBA8, flags);
+		depthTexture = bgfx::createTexture2D(static_cast<uint16_t>(w), static_cast<uint16_t>(h), false, 1, bgfx::TextureFormat::D16F, flags);
 
 		// create gbuffer
 		bgfx::TextureHandle textures[] = {

@@ -24,13 +24,13 @@
 
 void OtInstanceDataBuffer::submit(void* data, size_t count, size_t stride) {
 	// sanity check
-	if ((bgfx::getAvailInstanceDataBuffer((uint32_t) count, (uint32_t) stride) != count)) {
+	if (bgfx::getAvailInstanceDataBuffer(static_cast<uint32_t>(count), static_cast<uint16_t>(stride) != count)) {
 		OtLogFatal("Internal error: insufficient instance data buffer space");
 	}
 
 	// create instance data buffer and submit it to the GPU
 	bgfx::InstanceDataBuffer idb;
-	bgfx::allocInstanceDataBuffer(&idb, (uint32_t) count, (uint32_t) stride);
+	bgfx::allocInstanceDataBuffer(&idb, static_cast<uint32_t>(count), static_cast<uint16_t>(stride));
 	std::memcpy(idb.data, data, idb.size);
 	bgfx::setInstanceDataBuffer(&idb);
 }

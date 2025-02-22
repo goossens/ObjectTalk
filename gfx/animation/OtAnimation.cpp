@@ -64,7 +64,7 @@ OtObject OtAnimationClass::during(double seconds) {
 OtObject OtAnimationClass::repeat(size_t times) {
 	repeatCounter = times;
 
-	animator.onStep([this](tweeny::tween<double>& tween, double value) {
+	animator.onStep([this](tweeny::tween<double>& tween, double /* value */) {
 		this->repeatCounter--;
 
 		if (tween.progress() >= 1.0 && this->repeatCounter) {
@@ -85,7 +85,7 @@ OtObject OtAnimationClass::repeat(size_t times) {
 OtObject OtAnimationClass::continuous() {
 	forever = true;
 
-	animator.onStep([](tweeny::tween<double>& tween, double value) {
+	animator.onStep([](tweeny::tween<double>& tween, double /* value */) {
 		if (tween.progress() >= 1.0) {
 			tween.seek(0);
 		}
@@ -112,7 +112,7 @@ OtObject OtAnimationClass::seek(double percentage) {
 //
 
 OtObject OtAnimationClass::onStep(OtObject callback) {
-	animator.onStep([callback](tweeny::tween<double>& a, double value) {
+	animator.onStep([callback](tweeny::tween<double>& /* a */, double value) {
 		OtVM::callMemberFunction(callback, "__call__", OtReal::create(value));
 		return false;
 	});

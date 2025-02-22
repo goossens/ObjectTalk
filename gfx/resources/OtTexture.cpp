@@ -49,8 +49,8 @@ void OtTexture::create(int w, int h, int f, uint64_t flags) {
 	incrementVersion();
 
 	texture = bgfx::createTexture2D(
-		uint16_t(width),
-		uint16_t(height),
+		static_cast<uint16_t>(width),
+		static_cast<uint16_t>(height),
 		false,
 		1,
 		bgfx::TextureFormat::Enum(format),
@@ -64,8 +64,8 @@ void OtTexture::create(int w, int h, int f, uint64_t flags) {
 
 static bgfx::TextureHandle createRegularTexture(bimg::ImageContainer* image) {
 	return bgfx::createTexture2D(
-		uint16_t(image->m_width),
-		uint16_t(image->m_height),
+		static_cast<uint16_t>(image->m_width),
+		static_cast<uint16_t>(image->m_height),
 		false,
 		image->m_numLayers,
 		bgfx::TextureFormat::Enum(image->m_format),
@@ -81,8 +81,8 @@ static bgfx::TextureHandle createRegularTexture(bimg::ImageContainer* image) {
 static bgfx::TextureHandle createMipmapTexture(bimg::ImageContainer* image) {
 	// create a new empty texture
 	bgfx::TextureHandle texture = bgfx::createTexture2D(
-		uint16_t(image->m_width),
-		uint16_t(image->m_height),
+		static_cast<uint16_t>(image->m_width),
+		static_cast<uint16_t>(image->m_height),
 		true,
 		image->m_numLayers,
 		bgfx::TextureFormat::Enum(image->m_format));
@@ -101,12 +101,15 @@ static bgfx::TextureHandle createMipmapTexture(bimg::ImageContainer* image) {
 
 		bimg::ImageMip mip;
 
-		if (bimg::imageGetRawData(*image, 0, lod, image->m_data, image->m_size, mip)) {
+		if (bimg::imageGetRawData(*image, 0, static_cast<uint8_t>(lod), image->m_data, image->m_size, mip)) {
 			bgfx::updateTexture2D(
 				texture,
-				0, lod,
-				0, 0,
-				uint16_t(w), uint16_t(h),
+				0,
+				static_cast<uint8_t>(lod),
+				0,
+				0,
+				static_cast<uint16_t>(w),
+				static_cast<uint16_t>(h),
 				bgfx::copy(mip.m_data, mip.m_size));
 		}
 
@@ -165,11 +168,22 @@ void OtTexture::loadFromMemory(int w, int h, int f, void* pixels) {
 	incrementVersion();
 
 	// determine image size
-	int size = bimg::imageGetSize(nullptr, w, h, 1, false, false, 1, bimg::TextureFormat::Enum(format));
+	int size = bimg::imageGetSize(
+		nullptr,
+		static_cast<uint16_t>(w),
+		static_cast<uint16_t>(h),
+		1,
+		false,
+		false,
+		1,
+		bimg::TextureFormat::Enum(format));
 
 	// create texture
 	texture = bgfx::createTexture2D(
-		w, h, false, 1,
+		static_cast<uint16_t>(w),
+		static_cast<uint16_t>(h),
+		false,
+		1,
 		bgfx::TextureFormat::Enum(format),
 		BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
 		bgfx::copy(pixels, size));
@@ -203,13 +217,25 @@ void OtTexture::loadFromFileInMemory(void* data, uint32_t size) {
 
 void OtTexture::update(int x, int y, int w, int h, void* pixels) {
 	// determine size of update
-	int size = bimg::imageGetSize(nullptr, w, h, 1, false, false, 1, bimg::TextureFormat::Enum(format));
+	auto size = bimg::imageGetSize(
+		nullptr,
+		static_cast<uint16_t>(w),
+		static_cast<uint16_t>(h),
+		1,
+		false,
+		false,
+		1,
+		bimg::TextureFormat::Enum(format));
 
 	// update the texture
 	bgfx::updateTexture2D(
 		texture.getHandle(),
-		0, 0,
-		uint16_t(x), uint16_t(y), uint16_t(w), uint16_t(h),
+		0,
+		0,
+		static_cast<uint16_t>(x),
+		static_cast<uint16_t>(y),
+		static_cast<uint16_t>(w),
+		static_cast<uint16_t>(h),
 		bgfx::copy(pixels, size));
 
 	incrementVersion();

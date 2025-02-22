@@ -81,7 +81,7 @@ void OtUniformMat3::submit() {
 		// sanity check
 		if (name.size() && size) {
 			// register uniform
-			uniform = bgfx::createUniform(name.c_str(), bgfx::UniformType::Mat3, size);
+			uniform = bgfx::createUniform(name.c_str(), bgfx::UniformType::Mat3, static_cast<uint16_t>(size));
 
 		} else {
 			OtLogFatal("Internal error: uniform not initialized before submission");
@@ -89,5 +89,5 @@ void OtUniformMat3::submit() {
 	}
 
 	// submit uniform value(s) to GPU
-	bgfx::setUniform(uniform.getHandle(), values, size);
+	bgfx::setUniform(uniform.getHandle(), values, static_cast<uint16_t>(size));
 }

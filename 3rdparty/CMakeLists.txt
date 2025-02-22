@@ -25,10 +25,9 @@ if(OT_INCLUDE_UI)
 	set_target_properties(imguieditor PROPERTIES FOLDER 3rdParty)
 
 	target_compile_options(imguieditor PRIVATE
-		$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang,GNU>:-Wall>
-		$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang,GNU>:-Wpedantic>
-		$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang,GNU>:-Wextra>
-		$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/W4>)
+		$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang,GNU>:-Werror -Wall -Wextra>
+		$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wpedantic>
+		$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/W4 /WX>)
 
 	file(GLOB IMGUI_WIDGET_SOURCES imguiwidgets/*.cpp imguiwidgets/*.h)
 	add_library(imguiwidgets STATIC ${IMGUI_WIDGET_SOURCES})
@@ -41,4 +40,11 @@ if(OT_INCLUDE_UI)
 	target_include_directories(md4c PUBLIC md4c)
 	target_link_libraries(md4c imgui)
 	set_target_properties(md4c PROPERTIES FOLDER 3rdParty)
+
+	add_library(tweeny INTERFACE)
+	target_include_directories(tweeny INTERFACE tweeny)
+	file(GLOB TWEENY_SOURCES tweeny/*.h tweeny/*.tcc)
+	add_custom_target(tweeny_src SOURCES ${TWEENY_SOURCES})
+	source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/tweeny" FILES ${TWEENY_SOURCES})
+	set_target_properties(tweeny_src PROPERTIES FOLDER deps)
 endif()

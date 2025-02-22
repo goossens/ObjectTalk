@@ -150,7 +150,7 @@ void OtFSClass::touch(const std::string& path) {
 		uv_timeval64_t time;
 		auto result = uv_gettimeofday(&time);
 		UV_CHECK_ERROR("uv_gettimeofday", result);
-		double now = time.tv_sec;
+		double now = static_cast<double>(time.tv_sec);
 
 		uv_fs_t req;
 		result = uv_fs_utime(nullptr, &req, path.c_str(), now, now, nullptr);

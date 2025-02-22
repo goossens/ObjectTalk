@@ -130,8 +130,11 @@ void OtMesh::load(const std::string& path) {
 	uint32_t flags =
 		aiProcessPreset_TargetRealtime_Quality |
 		aiProcess_OptimizeMeshes |
-		aiProcess_PreTransformVertices |
-		(OtGpuHasOriginBottomLeft() ? 0 : aiProcess_FlipUVs);
+		aiProcess_PreTransformVertices;
+
+	if (!OtGpuHasOriginBottomLeft()) {
+		flags |= aiProcess_FlipUVs;
+	}
 
 	// read the file
 	const aiScene* scene = importer.ReadFile(path, flags);
@@ -150,8 +153,8 @@ void OtMesh::load(const std::string& path) {
 	int offset = 0;
 	bool needsTangents = false;
 
-	for (auto i = 0; i < scene->mNumMeshes; i++) {
-		auto aimesh = scene->mMeshes[i];
+	for (auto im = 0u; im < scene->mNumMeshes; im++) {
+		auto aimesh = scene->mMeshes[im];
 
 		// ensure this is a mesh with triangles
 		if (aimesh->mPrimitiveTypes == aiPrimitiveType_TRIANGLE) {
@@ -160,21 +163,21 @@ void OtMesh::load(const std::string& path) {
 			needsTangents |= aimesh->mTangents == nullptr;
 
 			// process all vertices
-			for (auto i = 0; i < aimesh->mNumVertices; i++) {
+			for (auto iv = 0u; iv < aimesh->mNumVertices; iv++) {
 				// add a new vertex
 				addVertex(OtVertex(
-					ToVec3(aimesh->mVertices[i]),
-					ToVec3(aimesh->mNormals[i]),
-					hasUV ? ToVec2(aimesh->mTextureCoords[0][i]) : glm::vec2(),
-					aimesh->mTangents ? ToVec3(aimesh->mTangents[i]) : glm::vec3(),
-					aimesh->mTangents ? ToVec3(aimesh->mBitangents[i]) : glm::vec3()));
+					ToVec3(aimesh->mVertices[iv]),
+					ToVec3(aimesh->mNormals[iv]),
+					hasUV ? ToVec2(aimesh->mTextureCoords[0][iv]) : glm::vec2(),
+					aimesh->mTangents ? ToVec3(aimesh->mTangents[iv]) : glm::vec3(),
+					aimesh->mTangents ? ToVec3(aimesh->mBitangents[iv]) : glm::vec3()));
 			}
 
 			// process all indices
-			for (auto i = 0; i < aimesh->mNumFaces; i++) {
-				auto i0 = aimesh->mFaces[i].mIndices[0] + offset;
-				auto i1 = aimesh->mFaces[i].mIndices[1] + offset;
-				auto i2 = aimesh->mFaces[i].mIndices[2] + offset;
+			for (auto it = 0u; it < aimesh->mNumFaces; it++) {
+				auto i0 = aimesh->mFaces[it].mIndices[0] + offset;
+				auto i1 = aimesh->mFaces[it].mIndices[1] + offset;
+				auto i2 = aimesh->mFaces[it].mIndices[2] + offset;
 				addTriangle(i0, i1, i2);
 			}
 		}
@@ -249,7 +252,7 @@ void OtMesh::generateNormals() {
 	}
 
 	// generate new normals
-	for (auto c = 0; c < indices.size(); c += 3) {
+	for (size_t c = 0; c < indices.size(); c += 3) {
 		OtVertex& v0 = vertices[indices[c]];
 		OtVertex& v1 = vertices[indices[c + 1]];
 		OtVertex& v2 = vertices[indices[c + 2]];
@@ -281,7 +284,7 @@ void OtMesh::generateTangents() {
 	}
 
 	// generate new tangents
-	for (auto i = 0; i < indices.size(); i += 3) {
+	for (size_t i = 0; i < indices.size(); i += 3) {
 		OtVertex& v0 = vertices[indices[i]];
 		OtVertex& v1 = vertices[indices[i + 1]];
 		OtVertex& v2 = vertices[indices[i + 2]];
@@ -381,7 +384,7 @@ void OtMesh::updateBuffers(bool updateLines) {
 	if (updateLines && refreshLinesBuffer) {
 		std::vector<uint32_t> lines;
 
-		for (auto i = 0; i < indices.size(); i += 3) {
+		for (size_t i = 0; i < indices.size(); i += 3) {
 			auto p0 = indices[i];
 			auto p1 = indices[i + 1];
 			auto p2 = indices[i + 2];

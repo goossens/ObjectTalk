@@ -58,7 +58,7 @@ void OtImage::clear() {
 //
 
 void OtImage::update(int width, int height, int format) {
-	if (!image || image->m_width != width || image->m_height != height || image->m_format != format) {
+	if (!image || image->m_width != uint32_t(width) || image->m_height != uint32_t(height) || image->m_format != format) {
 		// allocate space for a new image
 		auto imageContainer = bimg::imageAlloc(
 			&allocator,
@@ -425,8 +425,8 @@ glm::vec4 OtImage::sampleValueRgba(float x, float y) {
 	x *= image->m_width - 1;
 	y *= image->m_height - 1;
 
-	int x1 = std::floor(x);
-	int y1 = std::floor(y);
+	int x1 = static_cast<int>(std::floor(x));
+	int y1 = static_cast<int>(std::floor(y));
 	int x2 = x1 + 1;
 	int y2 = y1 + 1;
 
@@ -452,8 +452,8 @@ float OtImage::sampleValueGray(float x, float y) {
 	x *= image->m_width - 1;
 	y *= image->m_height - 1;
 
-	int x1 = std::floor(x);
-	int y1 = std::floor(y);
+	int x1 = static_cast<int>(std::floor(x));
+	int y1 = static_cast<int>(std::floor(y));
 	int x2 = x1 + 1;
 	int y2 = y1 + 1;
 

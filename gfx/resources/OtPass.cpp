@@ -128,14 +128,14 @@ void OtPass::submitQuad(int w, int h) {
 	bool originBottomLeft = OtGpuHasOriginBottomLeft();
 	OtVertexPosUv vertices[3];
 
-	vertices[0].position = glm::vec3(-w, 0.0, 0.0);
-	vertices[0].uv = originBottomLeft ? glm::vec2(-1.0, 1.0) : glm::vec2(-1.0, 0.0);
+	vertices[0].position = glm::vec3(static_cast<float>(-w), 0.0f, 0.0f);
+	vertices[0].uv = originBottomLeft ? glm::vec2(-1.0f, 1.0f) : glm::vec2(-1.0f, 0.0f);
 
 	vertices[1].position = glm::vec3(w, 0.0, 0.0);
-	vertices[1].uv = originBottomLeft ? glm::vec2(1.0, 1.0) : glm::vec2(1.0, 0.0);
+	vertices[1].uv = originBottomLeft ? glm::vec2(1.0f, 1.0f) : glm::vec2(1.0f, 0.0f);
 
-	vertices[2].position = glm::vec3(w, h * 2.0, 0.0);
-	vertices[2].uv = originBottomLeft ? glm::vec2(1.0, -1.0) : glm::vec2(1.0, 2.0);
+	vertices[2].position = glm::vec3(static_cast<float>(w), static_cast<float>(h) * 2.0f, 0.0f);
+	vertices[2].uv = originBottomLeft ? glm::vec2(1.0f, -1.0f) : glm::vec2(1.0f, 2.0f);
 
 	OtTransientVertexBuffer tvb;
 	tvb.submit(vertices, sizeof(vertices) / sizeof(*vertices), OtVertexPosUv::getLayout());
@@ -155,7 +155,7 @@ void OtPass::submitQuad(int w, int h) {
 void OtPass::submitCircle(int segments) {
 	std::vector<glm::vec3> vertices;
 	std::vector<uint32_t> indices;
-	float segment = std::numbers::pi2 / segments;
+	float segment = static_cast<float>(std::numbers::pi2) / segments;
 
 	for (auto i = 0; i < segments; i++) {
 		float angle = segment * i;
@@ -254,11 +254,11 @@ void OtPass::touch() {
 //
 
 void OtPass::setImage(int stage, OtTexture& texture, int mip, int access) {
-	bgfx::setImage(stage, texture.getHandle(), mip, bgfx::Access::Enum(access));
+	bgfx::setImage(static_cast<uint8_t>(stage), texture.getHandle(), static_cast<uint8_t>(mip), bgfx::Access::Enum(access));
 }
 
 void OtPass::setImage(int stage, OtCubeMap& cubemap, int mip, int access) {
-	bgfx::setImage(stage, cubemap.getHandle(), mip, bgfx::Access::Enum(access));
+	bgfx::setImage(static_cast<uint8_t>(stage), cubemap.getHandle(), static_cast<uint8_t>(mip), bgfx::Access::Enum(access));
 }
 
 

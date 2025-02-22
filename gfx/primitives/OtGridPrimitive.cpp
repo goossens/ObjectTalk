@@ -65,7 +65,7 @@ bool OtGridPrimitive::renderUI() {
 //	OtGridPrimitive::serialize
 //
 
-nlohmann::json OtGridPrimitive::serialize(std::string* basedir) {
+nlohmann::json OtGridPrimitive::serialize(std::string* /* basedir */) {
 	auto data = nlohmann::json::object();
 	data["type"] = name;
 	data["widthSegments"] = widthSegments;
@@ -78,7 +78,7 @@ nlohmann::json OtGridPrimitive::serialize(std::string* basedir) {
 //	OtGridPrimitive::deserialize
 //
 
-void OtGridPrimitive::deserialize(nlohmann::json data, std::string* basedir) {
+void OtGridPrimitive::deserialize(nlohmann::json data, std::string* /* basedir */) {
 	widthSegments = data.value("widthSegments", 1);
 	depthSegments = data.value("depthSegments", 1);
 }

@@ -77,12 +77,11 @@ private:
 	bool isTableHeader = false;
 	bool isTableBody = false;
 	bool isImage = false;
-	bool isCode = false;
 	int hLevel = 0;
 
 	bool tableBorder = true;
 	bool tableHeaderHighlight = true;
-	int tableNextColumn = 0;
+	size_t tableNextColumn = 0;
 	ImVec2 tableLastPos;
 	std::vector<float> tableColPos;
 	std::vector<float> tableRowPos;

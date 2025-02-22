@@ -141,7 +141,7 @@ public:
 
 private:
 	// specify a new token to the scanner
-	void addToken(const std::string text, Token token);
+	void addToken(const std::string text, Token textToken);
 
 	// state definition for token state/transition table
 	class OtScannerState {

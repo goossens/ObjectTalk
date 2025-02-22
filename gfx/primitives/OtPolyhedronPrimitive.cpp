@@ -34,7 +34,7 @@ static float correctUV(const glm::vec3& normal, float u, float azimuth) {
 		return u - 1.0f;
 
 	} else if ((normal.x == 0.0f) && (normal.z == 0.0f)) {
-		return azimuth / 2.0f / std::numbers::pi + 0.5f;
+		return azimuth / 2.0f / static_cast<float>(std::numbers::pi) + 0.5f;
 
 	} else {
 		return u;
@@ -52,7 +52,7 @@ void OtPolyhedronPrimitive::createMesh(OtMesh* mesh) {
 	std::vector<std::vector<glm::vec3>> v(cols + 1, std::vector<glm::vec3>(cols + 1));
 
 	// process all base faces
-	for (auto f = 0; f < baseIndexCount; f += 3) {
+	for (size_t f = 0; f < baseIndexCount; f += 3) {
 		auto a = baseVertices[baseIndices[f]];
 		auto b = baseVertices[baseIndices[f + 1]];
 		auto c = baseVertices[baseIndices[f + 2]];
@@ -86,8 +86,8 @@ void OtPolyhedronPrimitive::createMesh(OtMesh* mesh) {
 	}
 
 	// add all triangles and lines
-	for (auto i = 0; i < mesh->getVertexCount(); i += 3) {
-		mesh->addTriangle(i, i + 1, i + 2);
+	for (size_t i = 0; i < mesh->getVertexCount(); i += 3) {
+		mesh->addTriangle(static_cast<uint32_t>(i), static_cast<uint32_t>(i + 1), static_cast<uint32_t>(i + 2));
 	}
 
 	// correct the UVs
@@ -163,7 +163,7 @@ bool OtPolyhedronPrimitive::renderUI() {
 //	OtPolyhedronPrimitive::serialize
 //
 
-nlohmann::json OtPolyhedronPrimitive::serialize(std::string* basedir) {
+nlohmann::json OtPolyhedronPrimitive::serialize(std::string* /* basedir */) {
 	auto data = nlohmann::json::object();
 	data["type"] = name;
 	data["detail"] = detail;
@@ -175,6 +175,6 @@ nlohmann::json OtPolyhedronPrimitive::serialize(std::string* basedir) {
 //	OtPolyhedronPrimitive::deserialize
 //
 
-void OtPolyhedronPrimitive::deserialize(nlohmann::json data, std::string* basedir) {
+void OtPolyhedronPrimitive::deserialize(nlohmann::json data, std::string* /* basedir */) {
 	detail = data.value("detail", 1);
 }

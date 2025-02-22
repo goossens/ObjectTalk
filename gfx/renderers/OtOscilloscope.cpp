@@ -53,9 +53,9 @@ void OtOscilloscope::drawRectangle(float x, float y, float w, float h, float lin
 void OtOscilloscope::drawCircle(float x, float y, float radius, float steps, float lineWidth, uint32_t color) {
 	beginDraw(x, y - radius);
 
-	float step = std::numbers::pi * 2.0 / steps;
+	float step = static_cast<float>(std::numbers::pi) * 2.0f / steps;
 
-	for (float angle = step; angle < 2.0 * std::numbers::pi - 0.001; angle += step) {
+	for (float angle = step; angle < static_cast<float>(2.0 * std::numbers::pi - 0.001); angle += step) {
 		drawTo(x + radius * std::sin(angle), y - radius * std::cos(angle));
 	}
 
@@ -174,7 +174,7 @@ void OtOscilloscope::drawSevenSegment(float x, float y, float size, const std::s
 			drawTo(x + 8.0f * s, y + 55.0f * t);
 			drawTo(x + 8.0f * s, y + 91.0f * t);
 			drawTo(x + 0.5f * s, y + 98.0f * t);
-			drawTo(x + 0.0, y + 98.0f * t);
+			drawTo(x + 0.0f, y + 98.0f * t);
 			endDraw(lineWidth, color);
 		}
 
@@ -216,7 +216,7 @@ void OtOscilloscope::drawText(float x, float y, float size, const std::string& t
 	auto scaleY = scaleX * ((origin == Origin::topLeft) ? -1.0f : 1.0f);
 
 	for (auto& c : text) {
-		if (c >= 32 || c <= 126) {
+		if (c >= 32 && c <= 126) {
 			const int8_t* chr = simplex[c - 32];
 			const int8_t* p = chr + 2;
 			bool isDrawing = false;
@@ -256,8 +256,8 @@ void OtOscilloscope::drawText(float x, float y, float size, const std::string& t
 
 void OtOscilloscope::render(OtFrameBuffer& framebuffer) {
 	// get dimensions
-	width = float(framebuffer.getWidth());
-	height = float(framebuffer.getHeight());
+	width = framebuffer.getWidth();
+	height = framebuffer.getHeight();
 
 	// update vertex buffers (if required)
 	if (vertexBuffers.size() != decaySteps) {
@@ -266,8 +266,8 @@ void OtOscilloscope::render(OtFrameBuffer& framebuffer) {
 	}
 
 	// update framebuffers
-	blur1.update(width / 3.0f, height / 3.0f);
-	blur2.update(width / 3.0f, height / 3.0f);
+	blur1.update(width / 3, height / 3);
+	blur2.update(width / 3, height / 3);
 
 	// create brush (if required)
 	if (!brush.isValid()) {
@@ -321,9 +321,9 @@ void OtOscilloscope::render(OtFrameBuffer& framebuffer) {
 	vertexBufferSizes[currentDrawStep] = (uint32_t) vertices.size();
 
 	// render all decay steps
-	for (auto c = 0; c < decaySteps; c++) {
-		int stepi = decaySteps - c - 1;
-		int i = (currentDrawStep + decaySteps - stepi) % decaySteps;
+	for (size_t c = 0; c < decaySteps; c++) {
+		size_t stepi = decaySteps - c - 1;
+		size_t i = (currentDrawStep + decaySteps - stepi) % decaySteps;
 
 		// don't render empty buffers
 		if (vertexBufferSizes[i] != 0) {
@@ -357,7 +357,7 @@ void OtOscilloscope::render(OtFrameBuffer& framebuffer) {
 	vertices.clear();
 
 	// apply glow
-	blur.setIntensity(1.05 + ((brightness - 1.0f) / 5.0f));
+	blur.setIntensity(1.05f + ((brightness - 1.0f) / 5.0f));
 	blur.setAlpha(1.0f);
 
 	for (auto p = 0; p < 4; p++) {
@@ -412,7 +412,7 @@ void OtOscilloscope::drawTo(float x, float y) {
 //
 
 static inline float normalizeAngle(float angle) {
-	float wrap = 2.0f * std::numbers::pi;
+	float wrap = 2.0f * static_cast<float>(std::numbers::pi);
 	float result = std::fmod(angle, wrap);
 	return result < 0.0f ? result + wrap : result;
 }
@@ -456,7 +456,7 @@ void OtOscilloscope::endDraw(float lineWidth, uint32_t color) {
 	bool firstIsLast = std::abs(points[0].x - points[nlines].x) < 0.1f && std::abs(points[0].y - points[nlines].y) < 0.1f;
 
 	// compute basics
-	for (auto i = 1; i < points.size(); i++) {
+	for (size_t i = 1; i < points.size(); i++) {
 		Line* line = &lines[i - 1];
 		line->is_first = i == 1;
 		line->is_last = i == nlines;
@@ -481,8 +481,7 @@ void OtOscilloscope::endDraw(float lineWidth, uint32_t color) {
 	}
 
 	// compute adjustments for connected line segments
-	for (auto i = 0; i < nlines; i++)
-	{
+	for (size_t i = 0; i < nlines; i++) {
 		Line* line = &lines[i];
 		Line* pline = &lines[(nlines + i - 1) % nlines];
 
@@ -494,7 +493,7 @@ void OtOscilloscope::endDraw(float lineWidth, uint32_t color) {
 			if (std::min(a2pa, pa2a) <= (std::numbers::pi / 2.0f + 0.00001f)) {
 				if (a2pa < pa2a) {
 					float shorten = t * std::sin(a2pa / 2.0f) / std::cos(a2pa / 2.0f);
-					float a = (std::numbers::pi - a2pa) / 2.0f;
+					float a = (static_cast<float>(std::numbers::pi) - a2pa) / 2.0f;
 
 					if (shorten > maxshorten) {
 						line->s0 = pline->s1 = maxshorten;
@@ -506,7 +505,7 @@ void OtOscilloscope::endDraw(float lineWidth, uint32_t color) {
 
 				} else {
 					float shorten = t * std::sin(pa2a / 2.0f) / std::cos(pa2a / 2.0f);
-					float a = (std::numbers::pi - pa2a) / 2.0f;
+					float a = (static_cast<float>(std::numbers::pi) - pa2a) / 2.0f;
 
 					if (shorten > maxshorten) {
 						line->s0  = pline->s1 = maxshorten;
@@ -528,7 +527,7 @@ void OtOscilloscope::endDraw(float lineWidth, uint32_t color) {
 	}
 
 	// compute line geometry
-	for (auto i = 0; i < nlines; i++) {
+	for (size_t i = 0; i < nlines; i++) {
 		Line* line = &lines[i];
 
 		// shorten lines if needed
@@ -559,7 +558,7 @@ void OtOscilloscope::endDraw(float lineWidth, uint32_t color) {
 	}
 
 	// draw the lines
-	for (auto i = 0; i < nlines; i++) {
+	for (size_t i = 0; i < nlines; i++) {
 		Line* line = &lines[i];
 		Line* pline = &lines[(nlines + i - 1) % nlines];
 

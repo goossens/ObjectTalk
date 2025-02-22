@@ -170,7 +170,7 @@ void OtFramework::initIMGUI() {
 	io.BackendRendererName = "BGFX/GLFW";
 
 	// connect ImGui to GLFW window
-	io.DisplaySize = ImVec2(width, height);
+	io.DisplaySize = ImVec2(static_cast<float>(width), static_cast<float>(height));
 	io.DeltaTime = 1.0f / 60.0f;
 
 	// windows can only be dragged using the title bar
@@ -183,12 +183,12 @@ void OtFramework::initIMGUI() {
 	ImGuiPlatformIO& pio = ImGui::GetPlatformIO();
 	pio.Platform_ClipboardUserData = this;
 
-	pio.Platform_SetClipboardTextFn = [](ImGuiContext* ctx, const char* text) {
+	pio.Platform_SetClipboardTextFn = [](ImGuiContext* /* ctx */, const char* text) {
 		OtFramework* framework = (OtFramework*) ImGui::GetPlatformIO().Platform_ClipboardUserData;
 		framework->clipboard.set(text);
 	};
 
-	pio.Platform_GetClipboardTextFn = [](ImGuiContext* ctx) {
+	pio.Platform_GetClipboardTextFn = [](ImGuiContext* /* ctx */) {
 		OtFramework* framework = (OtFramework*) ImGui::GetPlatformIO().Platform_ClipboardUserData;
 		auto callback = glfwSetErrorCallback(nullptr);
 		auto clipboard =framework->clipboard.get();
@@ -252,7 +252,7 @@ void OtFramework::initIMGUI() {
 void OtFramework::frameIMGUI() {
 	// update ImGui state
 	ImGuiIO& io = ImGui::GetIO();
-	io.DisplaySize = ImVec2(width, height);
+	io.DisplaySize = ImVec2(static_cast<float>(width), static_cast<float>(height));
 	io.DeltaTime = loopDuration / 1000.0f;
 
 	while (!eventQueue.empty()) {
@@ -329,8 +329,8 @@ void OtFramework::renderIMGUI() {
 	// Avoid rendering when minimized, scale coordinates for retina displays
 	// (screen coordinates != framebuffer coordinates)
 	ImGuiIO& io = ImGui::GetIO();
-	int fb_width = io.DisplaySize.x * io.DisplayFramebufferScale.x;
-	int fb_height = io.DisplaySize.y * io.DisplayFramebufferScale.y;
+	int fb_width = static_cast<int>(io.DisplaySize.x * io.DisplayFramebufferScale.x);
+	int fb_height = static_cast<int>(io.DisplaySize.y * io.DisplayFramebufferScale.y);
 
 	if (fb_width == 0 || fb_height == 0) {
 		return;
@@ -341,7 +341,7 @@ void OtFramework::renderIMGUI() {
 	// setup orthographic projection matrix
 	glm::mat4 matrix = glm::ortho(0.0f, io.DisplaySize.x, io.DisplaySize.y, 0.0f);
 	bgfx::setViewTransform(255, nullptr, glm::value_ptr(matrix));
-	bgfx::setViewRect(255, 0, 0, fb_width, fb_height);
+	bgfx::setViewRect(255, 0, 0, static_cast<uint16_t>(fb_width), static_cast<uint16_t>(fb_height));
 
 	// Render command lists
 	for (int n = 0; n < drawData->CmdListsCount; n++) {
@@ -384,7 +384,11 @@ void OtFramework::renderIMGUI() {
 					BGFX_STATE_MSAA |
 					BGFX_STATE_BLEND_ALPHA);
 
-				bgfx::setScissor(xx, yy, std::min(cmd->ClipRect.z, 65535.0f) - xx, std::min(cmd->ClipRect.w, 65535.0f) - yy);
+				bgfx::setScissor(
+					xx, yy,
+					static_cast<uint16_t>(std::min(cmd->ClipRect.z, 65535.0f) - xx),
+					static_cast<uint16_t>(std::min(cmd->ClipRect.w, 65535.0f) - yy));
+
 				bgfx::TextureHandle texture = { (uint16_t)((intptr_t) cmd->TextureId & 0xffff) };
 				imguiFontSampler.submit(0, texture);
 				bgfx::setVertexBuffer(0, &tvb);

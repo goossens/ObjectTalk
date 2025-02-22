@@ -243,14 +243,13 @@ void OtFramework::setAntiAliasing(int aa) {
 #else
 void OtFramework::openURL(const std::string& url) {
 #if _WIN32
-	WCHAR *temp = new WCHAR[url.size() + 1];
-	int wchars_num = MultiByteToWideChar(CP_UTF8, 0, url.c_str(), url.size() + 1, temp, url.size() + 1);
-	HINSTANCE r = ShellExecuteW(NULL, L"open", temp, NULL, NULL, SW_SHOWNORMAL);
+	int size = static_cast<int>(url.size()) + 1;
+	WCHAR *temp = new WCHAR[size];
+	MultiByteToWideChar(CP_UTF8, 0, url.c_str(), size, temp, size);
+	ShellExecuteW(NULL, L"open", temp, NULL, NULL, SW_SHOWNORMAL);
 	delete[] temp;
 
 #else
-#include <stdlib.h>
-
 	std::string command = std::string("xdg-open '").append(url).append("'");
 	system(command.c_str());
 #endif

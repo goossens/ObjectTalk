@@ -9,6 +9,10 @@
 //	Include files
 //
 
+#if _WIN32
+#define _CRT_SECURE_NO_WARNINGS // for localtime
+#endif
+
 #include <cstdint>
 #include <chrono>
 #include <ctime>
@@ -20,6 +24,7 @@
 #include "OtFunction.h"
 #include "OtLibuv.h"
 #include "OtOS.h"
+
 
 
 //
@@ -180,7 +185,7 @@ std::string OtOSClass::uuid() {
 	const char* digits = "0123456789abcdef";
 	std:: string result;
 
-	for (auto dash : { 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0 }) {
+	for (auto dash : {0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0}) {
 		if (dash) {
 			result += "-";
 		}

@@ -47,12 +47,12 @@ void OtSampler::clear() {
 //	OtSampler::submit
 //
 
-void OtSampler::submit(int unit, OtTexture& texture, const char* name) {
+void OtSampler::submit(int unit, OtTexture& texture, const char* samplerName) {
 	// see if texture is valid/ready
 	if (texture.isValid()) {
 		// initialize sampler if new name is provided
-		if (name) {
-			initialize(name);
+		if (samplerName) {
+			initialize(samplerName);
 		}
 
 		// generate resource (if required)
@@ -61,20 +61,20 @@ void OtSampler::submit(int unit, OtTexture& texture, const char* name) {
 		}
 
 		// submit texture
-		bgfx::setTexture(unit, uniform.getHandle(), texture.getHandle(), uint32_t(flags));
+		bgfx::setTexture(static_cast<uint8_t>(unit), uniform.getHandle(), texture.getHandle(), static_cast<uint32_t>(flags));
 
 	} else {
 		// submit dummy texture
-		submitDummyTexture(unit, name);
+		submitDummyTexture(unit, samplerName);
 	}
 }
 
-void OtSampler::submit(int unit, bgfx::TextureHandle texture, const char* name) {
+void OtSampler::submit(int unit, bgfx::TextureHandle texture, const char* samplerName) {
 	// see if texture is valid/ready
 	if (bgfx::isValid(texture)) {
 		// initialize sampler if new name is provided
-		if (name) {
-			initialize(name);
+		if (samplerName) {
+			initialize(samplerName);
 		}
 
 		// generate resource (if required)
@@ -83,19 +83,19 @@ void OtSampler::submit(int unit, bgfx::TextureHandle texture, const char* name) 
 		}
 
 		// submit texture
-		bgfx::setTexture(unit, uniform.getHandle(), texture, uint32_t(flags));
+		bgfx::setTexture(static_cast<uint8_t>(unit), uniform.getHandle(), texture, static_cast<uint32_t>(flags));
 
 	} else {
-		submitDummyTexture(unit, name);
+		submitDummyTexture(unit, samplerName);
 	}
 }
 
-void OtSampler::submit(int unit, OtCubeMap& cubemap, const char* name) {
+void OtSampler::submit(int unit, OtCubeMap& cubemap, const char* samplerName) {
 	// see if cubemap is valid/ready
 	if (cubemap.isValid()) {
 		// initialize sampler if new name is provided
-		if (name) {
-			initialize(name);
+		if (samplerName) {
+			initialize(samplerName);
 		}
 
 		// generate resource (if required)
@@ -104,10 +104,10 @@ void OtSampler::submit(int unit, OtCubeMap& cubemap, const char* name) {
 		}
 
 		// submit texture
-		bgfx::setTexture(unit, uniform.getHandle(), cubemap.getHandle(), uint32_t(flags));
+		bgfx::setTexture(static_cast<uint8_t>(unit), uniform.getHandle(), cubemap.getHandle(), static_cast<uint32_t>(flags));
 
 	} else {
-		submitDummyCubeMap(unit, name);
+		submitDummyCubeMap(unit, samplerName);
 	}
 }
 
@@ -116,10 +116,10 @@ void OtSampler::submit(int unit, OtCubeMap& cubemap, const char* name) {
 //	OtSampler::submitDummyTexture
 //
 
-void OtSampler::submitDummyTexture(int unit, const char* n) {
+void OtSampler::submitDummyTexture(int unit, const char* samplerName) {
 	// initialize sampler if new name is provided
-	if (n) {
-		initialize(n);
+	if (samplerName) {
+		initialize(samplerName);
 	}
 
 	// generate resource (if required)
@@ -129,7 +129,7 @@ void OtSampler::submitDummyTexture(int unit, const char* n) {
 
 	// submit dummy texture
 	OtTexture dummy;
-	bgfx::setTexture(unit, uniform.getHandle(), dummy.getHandle(), uint32_t(flags));
+	bgfx::setTexture(static_cast<uint8_t>(unit), uniform.getHandle(), dummy.getHandle(), static_cast<uint32_t>(flags));
 }
 
 
@@ -137,10 +137,10 @@ void OtSampler::submitDummyTexture(int unit, const char* n) {
 //	OtSampler::submitDummyCubeMap
 //
 
-void OtSampler::submitDummyCubeMap(int unit, const char* n) {
+void OtSampler::submitDummyCubeMap(int unit, const char* samplerName) {
 	// initialize sampler if new name is provided
-	if (n) {
-		initialize(n);
+	if (samplerName) {
+		initialize(samplerName);
 	}
 
 	// generate resource (if required)
@@ -150,7 +150,7 @@ void OtSampler::submitDummyCubeMap(int unit, const char* n) {
 
 	// submit dummy texture
 	OtCubeMap dummy;
-	bgfx::setTexture(unit, uniform.getHandle(), dummy.getHandle(), uint32_t(flags));
+	bgfx::setTexture(static_cast<uint8_t>(unit), uniform.getHandle(), dummy.getHandle(), static_cast<uint32_t>(flags));
 }
 
 

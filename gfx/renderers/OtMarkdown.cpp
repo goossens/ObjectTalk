@@ -76,7 +76,7 @@ void OtMarkdown::render(const std::string& markdown) {
 //	OtMarkdown::docBlock
 //
 
-void OtMarkdown::docBlock(bool enter) {
+void OtMarkdown::docBlock(bool /* enter */) {
 }
 
 
@@ -84,7 +84,7 @@ void OtMarkdown::docBlock(bool enter) {
 //	OtMarkdown::quoteBlock
 //
 
-void OtMarkdown::quoteBlock(bool enter) {
+void OtMarkdown::quoteBlock(bool /* enter */) {
 }
 
 
@@ -127,7 +127,7 @@ void OtMarkdown::olBlock(const MD_BLOCK_OL_DETAIL* detail, bool enter) {
 //	OtMarkdown::liBlock
 //
 
-void OtMarkdown::liBlock(const MD_BLOCK_LI_DETAIL* detail, bool enter) {
+void OtMarkdown::liBlock(const MD_BLOCK_LI_DETAIL* /* detail */, bool enter) {
 	if (enter) {
 		ImGui::NewLine();
 
@@ -197,7 +197,7 @@ void OtMarkdown::hBlock(const MD_BLOCK_H_DETAIL* detail, bool enter) {
 //	OtMarkdown::codeBlock
 //
 
-void OtMarkdown::codeBlock(const MD_BLOCK_CODE_DETAIL* detail, bool enter) {
+void OtMarkdown::codeBlock(const MD_BLOCK_CODE_DETAIL* /* detail */, bool /* enter */) {
 }
 
 
@@ -205,7 +205,7 @@ void OtMarkdown::codeBlock(const MD_BLOCK_CODE_DETAIL* detail, bool enter) {
 //	OtMarkdown::htmlBlock
 //
 
-void OtMarkdown::htmlBlock(bool enter) {
+void OtMarkdown::htmlBlock(bool /* enter */) {
 }
 
 
@@ -213,7 +213,7 @@ void OtMarkdown::htmlBlock(bool enter) {
 //	OtMarkdown::pBlock
 //
 
-void OtMarkdown::pBlock(bool enter) {
+void OtMarkdown::pBlock(bool /* enter */) {
 	if (listStack.empty()) {
 		ImGui::NewLine();
 	}
@@ -224,7 +224,7 @@ void OtMarkdown::pBlock(bool enter) {
 //	OtMarkdown::tableBlock
 //
 
-void OtMarkdown::tableBlock(const MD_BLOCK_TABLE_DETAIL* detail, bool enter) {
+void OtMarkdown::tableBlock(const MD_BLOCK_TABLE_DETAIL* /* detail */, bool enter) {
 	if (enter) {
 		tableRowPos.clear();
 		tableColPos.clear();
@@ -244,11 +244,11 @@ void OtMarkdown::tableBlock(const MD_BLOCK_TABLE_DETAIL* detail, bool enter) {
 			const float wx = wp.x + sp.x / 2;
 			const float wy = wp.y - sp.y / 2 - ImGui::GetScrollY();
 
-			for (int i = 0; i < tableColPos.size(); ++i) {
+			for (size_t i = 0; i < tableColPos.size(); ++i) {
 				tableColPos[i] += wx;
 			}
 
-			for (int i = 0; i < tableRowPos.size(); ++i) {
+			for (size_t i = 0; i < tableRowPos.size(); ++i) {
 				tableRowPos[i] += wy;
 			}
 
@@ -257,7 +257,7 @@ void OtMarkdown::tableBlock(const MD_BLOCK_TABLE_DETAIL* detail, bool enter) {
 			const float xmin = tableColPos.front();
 			const float xmax = tableColPos.back();
 
-			for (int i = 0; i < tableRowPos.size(); ++i) {
+			for (size_t i = 0; i < tableRowPos.size(); ++i) {
 				const float p = tableRowPos[i];
 				dl->AddLine(ImVec2(xmin, p), ImVec2(xmax, p), color, i == 1 && tableHeaderHighlight ? 2.0f : 1.0f);
 			}
@@ -265,7 +265,7 @@ void OtMarkdown::tableBlock(const MD_BLOCK_TABLE_DETAIL* detail, bool enter) {
 			const float ymin = tableRowPos.front();
 			const float ymax = tableRowPos.back();
 
-			for (int i = 0; i < tableColPos.size(); i++) {
+			for (size_t i = 0; i < tableColPos.size(); i++) {
 				const float p = tableColPos[i];
 				dl->AddLine(ImVec2(p, ymin), ImVec2(p, ymax), color, 1.0f);
 			}
@@ -324,7 +324,7 @@ void OtMarkdown::thBlock(const MD_BLOCK_TD_DETAIL* detail, bool enter) {
 //	OtMarkdown::tdBlock
 //
 
-void OtMarkdown::tdBlock(const MD_BLOCK_TD_DETAIL* detail, bool enter) {
+void OtMarkdown::tdBlock(const MD_BLOCK_TD_DETAIL* /* detail */, bool enter) {
 	if (enter) {
 		if (tableNextColumn < tableColPos.size()) {
 			ImGui::SetCursorPosX(tableColPos[tableNextColumn]);
@@ -435,7 +435,7 @@ void OtMarkdown::imgSpan(const MD_SPAN_IMG_DETAIL* detail, bool enter) {
 //	OtMarkdown::codeSpan
 //
 
-void OtMarkdown::codeSpan(bool enter) {
+void OtMarkdown::codeSpan(bool /* enter */) {
 }
 
 
@@ -443,7 +443,7 @@ void OtMarkdown::codeSpan(bool enter) {
 //	OtMarkdown::latexMathSpan
 //
 
-void OtMarkdown::latexMathSpan(bool enter) {
+void OtMarkdown::latexMathSpan(bool /* enter */) {
 }
 
 
@@ -460,7 +460,7 @@ void OtMarkdown::latexMathDisplaySpan(bool enter) {
 //	OtMarkdown::wikiLinkSpan
 //
 
-void OtMarkdown::wikiLinkSpan(const MD_SPAN_WIKILINK_DETAIL* detail, bool enter) {
+void OtMarkdown::wikiLinkSpan(const MD_SPAN_WIKILINK_DETAIL* /* detail */, bool /* enter */) {
 }
 
 
@@ -468,7 +468,7 @@ void OtMarkdown::wikiLinkSpan(const MD_SPAN_WIKILINK_DETAIL* detail, bool enter)
 //	OtMarkdown::uSpan
 //
 
-void OtMarkdown::uSpan(bool enter) {
+void OtMarkdown::uSpan(bool /* enter */) {
 }
 
 

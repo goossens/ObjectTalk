@@ -865,7 +865,11 @@ void TextEditor::handleMouseInteractions() {
 			static_cast<int>(std::floor(mousePos.y / glyphSize.y)),
 			static_cast<int>(std::round((mousePos.x - textOffset) / glyphSize.x))));
 
-		// show text cursor if required
+		auto mouseCoordAbs = document.normalizeCoordinate(Coordinate(
+			static_cast<int>(std::floor(mousePos.y / glyphSize.y)),
+			static_cast<int>(std::floor((mousePos.x - textOffset) / glyphSize.x))));
+
+				// show text cursor if required
 		if (ImGui::IsWindowFocused() && overText) {
 			ImGui::SetMouseCursor(ImGuiMouseCursor_TextInput);
 		}
@@ -896,12 +900,12 @@ void TextEditor::handleMouseInteractions() {
 		} else if (ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
 			// handle right clicks by setting up context menu (if required)
 			if (overLineNumbers && lineNumberContextMenuCallback) {
-				contextMenuLine = mouseCoord.line;
+				contextMenuLine = mouseCoordAbs.line;
 				ImGui::OpenPopup("LineNumberContextMenu");
 
 			} else if (overText && textContextMenuCallback) {
-				contextMenuLine = mouseCoord.line;
-				contextMenuColumn = mouseCoord.column;
+				contextMenuLine = mouseCoordAbs.line;
+				contextMenuColumn = mouseCoordAbs.column;
 				ImGui::OpenPopup("TextContextMenu");
 			}
 
@@ -927,12 +931,12 @@ void TextEditor::handleMouseInteractions() {
 			} else if (doubleClick) {
 				// left mouse button double click
 				if (overText) {
-					auto codepoint = document.getCodePoint(mouseCoord);
+					auto codepoint = document.getCodePoint(mouseCoordAbs);
 					bool handled = false;
 
-					// select block (if required)
+					// select bracketed section (if required)
 					if (Bracketeer::isBracketOpener(codepoint)) {
-						auto brackets = bracketeer.getEnclosingBrackets(document.getRight(mouseCoord));
+						auto brackets = bracketeer.getEnclosingBrackets(document.getRight(mouseCoordAbs));
 
 						if (brackets != bracketeer.end()) {
 							cursors.setCursor(brackets->start, document.getRight(brackets->end));
@@ -940,7 +944,7 @@ void TextEditor::handleMouseInteractions() {
 						}
 
 					} else if (Bracketeer::isBracketCloser(codepoint)) {
-						auto brackets = bracketeer.getEnclosingBrackets(document.getLeft(mouseCoord));
+						auto brackets = bracketeer.getEnclosingBrackets(mouseCoordAbs);
 
 						if (brackets != bracketeer.end()) {
 							cursors.setCursor(brackets->start, document.getRight(brackets->end));
@@ -948,10 +952,10 @@ void TextEditor::handleMouseInteractions() {
 						}
 					}
 
-					// select word if it wasn't a block
+					// select word if it wasn't a bracketed section
 					if (!handled) {
-						auto start = document.findWordStart(mouseCoord);
-						auto end = document.findWordEnd(mouseCoord);
+						auto start = document.findWordStart(mouseCoordAbs);
+						auto end = document.findWordEnd(mouseCoordAbs);
 						cursors.updateCurrentCursor(start, end);
 					}
 				}

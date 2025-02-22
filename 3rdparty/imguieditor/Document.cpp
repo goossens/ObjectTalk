@@ -165,6 +165,15 @@ std::string TextEditor::Document::getText() const {
 
 
 //
+//	TextEditor::Document::getLineText
+//
+
+std::string TextEditor::Document::getLineText(int line) const {
+	return getSectionText(Coordinate(line, 0), Coordinate(line, at(line).maxColumn));
+}
+
+
+//
 //	TextEditor::Document::getSectionText
 //
 
@@ -191,15 +200,6 @@ std::string TextEditor::Document::getSectionText(Coordinate start, Coordinate en
 	}
 
 	return section;
-}
-
-
-//
-//	TextEditor::Document::getLineText
-//
-
-std::string TextEditor::Document::getLineText(int line) const {
-	return getSectionText(Coordinate(line, 0), Coordinate(line, at(line).maxColumn));
 }
 
 

@@ -62,9 +62,22 @@ public:
 	// access text (using UTF-8 encoded strings)
 	// (see note below on cursor and scroll manipulation after setting new text)
 	inline void SetText(const std::string_view& text) { setText(text); }
-	inline std::string GetText() { return document.getText(); }
+	inline std::string GetText() const { return document.getText(); }
+	inline std::string GetCursorText(size_t cursor) const { return getCursorText(cursor); }
+
+	inline std::string GetLineText(int line) const {
+		return (line < 0 || line > static_cast<int>(document.size())) ? "" : document.getLineText(line);
+	}
+
+	inline std::string GetSectionText(int startLine, int startColumn, int endLine, int endColumn) const {
+		return document.getSectionText(
+			document.normalizeCoordinate(Coordinate(startLine, startColumn)),
+			document.normalizeCoordinate(Coordinate(endLine, endColumn)));
+	}
+
 	inline bool IsEmpty() const { return document.size() == 1 && document[0].size() == 0; }
 	inline int GetLineCount() const { return document.lineCount(); }
+
 
 	// render the text editor in a Dear ImGui context
 	inline void Render(const char* title, const ImVec2& size=ImVec2(), bool border=false) { render(title, size, border); }
@@ -87,7 +100,11 @@ public:
 	inline void SelectAll() { selectAll(); }
 	inline void SelectLine(int line) { if (line >= 0 && line < document.lineCount()) selectLine(line); }
 	inline void SelectLines(int start, int end) { if (start >= 0 && end < document.lineCount() && start <= end) selectLines(start, end); }
-	inline void SelectRegion(int startLine, int startColumn, int endLine, int endColumn) { selectRegion(startLine, startColumn, endLine, endColumn); }
+
+	inline void SelectRegion(int startLine, int startColumn, int endLine, int endColumn) {
+		selectRegion(startLine, startColumn, endLine, endColumn);
+	}
+
 	inline void SelectToBrackets(bool includeBrackets=true) { selectToBrackets(includeBrackets); }
 	inline void GrowSelectionsToCurlyBrackets(bool includeBrackets=true) { growSelectionsToCurlyBrackets(includeBrackets); }
 	inline void ShrinkSelectionsToCurlyBrackets(bool includeBrackets=true) { growSelectionsToCurlyBrackets(includeBrackets); }
@@ -101,6 +118,7 @@ public:
 	// get cursor positions (the meaning of main and current is explained in README.md)
 	inline size_t GetNumberOfCursors() const { return cursors.size(); }
 	inline void GetCursor(int& line, int& column, size_t cursor) const { return getCursor(line, column, cursor); }
+	inline void GetCursor(int& startLine, int& startColumn, int& endLine, int& endColumn, size_t cursor) const { return getCursor(startLine, startColumn, endLine, endColumn, cursor); }
 	inline void GetMainCursor(int& line, int& column) const { return getCursor(line, column, cursors.getMainIndex()); }
 	inline void GetCurrentCursor(int& line, int& column) const { return getCursor(line, column, cursors.getCurrentIndex()); }
 
@@ -579,8 +597,8 @@ private:
 
 		// access document text (strings are UTF-8 encoded)
 		std::string getText() const;
-		std::string getSectionText(Coordinate start, Coordinate end) const;
 		std::string getLineText(int line) const;
+		std::string getSectionText(Coordinate start, Coordinate end) const;
 		ImWchar getCodePoint(Coordinate location);
 
 		// get number of lines (as an int)
@@ -758,7 +776,7 @@ private:
 		static inline ImWchar toBracketOpener(ImWchar ch) { return ch == '}' ? '{' : (ch == ']' ? '[' : (ch == ')' ? '(' : ch)); }
 	} bracketeer;
 
-	// set the editor's text
+	// access the editor's text
 	void setText(const std::string_view& text);
 
 	// render (parts of) the text editor
@@ -792,8 +810,10 @@ private:
 	void undo();
 	void redo();
 
-	// access cursor location
+	// access cursor locations
 	void getCursor(int& line, int& column, size_t cursor) const;
+	void getCursor(int& startLine, int& startColumn, int& endLine, int& endColumn, size_t cursor) const;
+	std::string	getCursorText(size_t cursor) const;
 
 	// scrolling support
 	void makeCursorVisible();

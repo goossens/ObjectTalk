@@ -1236,6 +1236,31 @@ void TextEditor::getCursor(int& line, int& column, size_t cursor) const {
 
 
 //
+//	TextEditor::getCursor
+//
+
+void TextEditor::getCursor(int& startLine, int& startColumn, int& endLine, int& endColumn, size_t cursor) const {
+	cursor = std::min(cursor, cursors.size() - 1);
+	auto start = cursors[cursor].getSelectionStart();
+	auto end = cursors[cursor].getSelectionEnd();
+	startLine = start.line;
+	startColumn = start.column;
+	endLine = end.line;
+	endColumn = end.column;
+}
+
+
+//
+//	TextEditor::getCursorText
+//
+
+std::string TextEditor::getCursorText(size_t cursor) const {
+	cursor = std::min(cursor, cursors.size() - 1);
+	return document.getSectionText(cursors[cursor].getSelectionStart(), cursors[cursor].getSelectionEnd());
+}
+
+
+//
 //	TextEditor::makeCursorVisible
 //
 

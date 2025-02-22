@@ -26,9 +26,9 @@
 class OtIslandizerNode : public OtTextureFilterNode {
 public:
 	// render custom fields
-	void customRendering(float width) override {
+	void customRendering(float itemWidth) override {
 		auto old = serialize().dump();
-		ImGui::SetNextItemWidth(width);
+		ImGui::SetNextItemWidth(itemWidth);
 
 		if (OtUi::selectorEnum("##distance", &distance, OtIslandizer::distanceFunctions, OtIslandizer::distanceFunctionCount)) {
 			oldState = old;
@@ -47,11 +47,11 @@ public:
 	}
 
 	// (de)serialize node
-	void customSerialize(nlohmann::json* data, std::string* basedir) override {
+	void customSerialize(nlohmann::json* data, std::string* /* basedir */) override {
 		(*data)["distance"] = distance;
 	}
 
-	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
+	void customDeserialize(nlohmann::json* data, std::string* /* basedir */) override {
 		distance = data->value("distance", OtIslandizer::DistanceFunction::squareBump);
 	}
 
@@ -70,4 +70,4 @@ public:
 	OtIslandizer::DistanceFunction distance = OtIslandizer::DistanceFunction::squareBump;
 };
 
-static OtNodesFactoryRegister<OtIslandizerNode> type;
+static OtNodesFactoryRegister<OtIslandizerNode> registration;

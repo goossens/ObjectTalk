@@ -44,4 +44,4 @@ protected:
 	glm::vec3 value{0.0f};
 };
 
-static OtNodesFactoryRegister<OtCombineXyzNode> type;
+static OtNodesFactoryRegister<OtCombineXyzNode> registration;

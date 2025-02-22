@@ -39,8 +39,8 @@ public:
 
 	// manipulate composite operation
 	inline void compositeOperation(int operation) { nvgGlobalCompositeOperation(context, operation); }
-	inline void compositeBlendFunc(int operation, int sfactor, int dfactor) { nvgGlobalCompositeBlendFunc(context, sfactor, dfactor); }
-	inline void compositeBlendFuncSeparate(int operation, int srcRGB, int dstRGB, int srcAlpha, int dstAlpha) { nvgGlobalCompositeBlendFuncSeparate(context, srcRGB, dstRGB, srcAlpha, dstAlpha); }
+	inline void compositeBlendFunc(int /* operation */, int sfactor, int dfactor) { nvgGlobalCompositeBlendFunc(context, sfactor, dfactor); }
+	inline void compositeBlendFuncSeparate(int /* operation */, int srcRGB, int dstRGB, int srcAlpha, int dstAlpha) { nvgGlobalCompositeBlendFuncSeparate(context, srcRGB, dstRGB, srcAlpha, dstAlpha); }
 
 	// manipulate rendering state
 	inline void save() { nvgSave(context); }
@@ -64,13 +64,13 @@ public:
 	int loadFont(const std::string& path);
 
 	// manipulate styles
-	inline void antiAlias(bool enabled) { nvgShapeAntiAlias(context, enabled); }
+	inline void antiAlias(bool on) { nvgShapeAntiAlias(context, on); }
 	inline void strokeColor(const std::string& color) { auto c = OtColorParser::toVec4(color); nvgStrokeColor(context, nvgRGBAf(c.r, c.g, c.b, c.a)); }
 	inline void strokePaint(int id) { nvgStrokePaint(context, paints[id]); }
 	inline void fillColor(const std::string& color) { auto c = OtColorParser::toVec4(color); nvgFillColor(context, nvgRGBAf(c.r, c.g, c.b, c.a)); }
 	inline void fillPaint(int id) { nvgFillPaint(context, paints[id]); }
 	inline void miterLimit(float limit) { nvgMiterLimit(context, limit); }
-	inline void strokeWidth(float width) { nvgStrokeWidth(context, width); }
+	inline void strokeWidth(float w) { nvgStrokeWidth(context, w); }
 	inline void lineCap(int cap) { nvgLineCap(context, cap); }
 	inline void lineJoin(int join) { nvgLineJoin(context, join); }
 	inline void globalAlpha(float alpha) { nvgGlobalAlpha(context, alpha); }
@@ -108,7 +108,7 @@ public:
 	inline void fontSize(float size) { nvgFontSize(context, size); }
 	inline void fontBlur(float blur) { nvgFontBlur(context, blur); }
 	inline void fontLetterSpacing(float spacing) { nvgTextLetterSpacing(context, spacing); }
-	inline void fontLineHeight(float height) { nvgTextLineHeight(context, height); }
+	inline void fontLineHeight(float h) { nvgTextLineHeight(context, h); }
 	inline void fontAlign(int align) { nvgTextAlign(context, align); }
 	inline float text(float x, float y, const std::string& s) { return nvgText(context, x, y, s.c_str(), nullptr); }
 	inline void textBox(float x, float y, float w, const std::string& s) { nvgTextBox(context, x, y, w, s.c_str(), nullptr); }
@@ -139,8 +139,8 @@ private:
 	NVGcontext* context;
 	std::unordered_map<int, NVGpaint> paints;
 
-	bool enabled{true};
-	bool dirty{true};
+	bool enabled = true;
+	bool dirty = true;
 
 	float width;
 	float height;

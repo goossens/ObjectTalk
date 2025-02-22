@@ -31,11 +31,11 @@
 struct OtNodeVaryingContext {
 	// contructors
 	OtNodeVaryingContext() : index(0), hasVertex(false), hasInstance(false) {}
-	OtNodeVaryingContext(int i, const OtVertex& v) : index(i), hasVertex(true), hasInstance(false), vertex(v) {}
-	OtNodeVaryingContext(int i, const glm::mat4& in) : index(i), hasVertex(false), hasInstance(true), instance(in) {}
+	OtNodeVaryingContext(size_t i, const OtVertex& v) : index(i), hasVertex(true), hasInstance(false), vertex(v) {}
+	OtNodeVaryingContext(size_t i, const glm::mat4& in) : index(i), hasVertex(false), hasInstance(true), instance(in) {}
 
 	// properties
-	int index;
+	size_t index;
 	bool hasVertex;
 	bool hasInstance;
 	OtVertex vertex;
@@ -123,8 +123,8 @@ public:
 	void deserialize(nlohmann::json data, bool restoreIDs=true, std::string* basedir=nullptr);
 	void deserializeFromString(const std::string& json, bool restoreIDs=true, std::string* basedir=nullptr);
 
-	virtual inline void customSerialize(nlohmann::json* data, std::string* basedir) {}
-	virtual inline void customDeserialize(nlohmann::json* data, std::string* basedir) {}
+	virtual inline void customSerialize(nlohmann::json* /* data */, std::string* /* basedir */) {}
+	virtual inline void customDeserialize(nlohmann::json* /* data */, std::string* /* basedir */) {}
 
 	// get pin counts
 	inline size_t getInputPinCount() { return inputPins.size(); }
@@ -159,19 +159,19 @@ public:
 	inline bool hasVaryingInput() { return varyingInput; }
 
 	// process the varying context (called for each iteration)
-	virtual void processVaryingContext(OtNodeVaryingContext& context) {}
+	virtual void processVaryingContext(OtNodeVaryingContext& /* context */) {}
 
 	// interfaces
 	virtual inline bool onUpdate() { return false; };
 	virtual inline void onExecute() {};
 
 	// handle custom section of nodes
-	virtual inline void customRendering(float width) {}
+	virtual inline void customRendering(float /* itemWidth */) {}
 	virtual inline float getCustomRenderingWidth() { return 0.0f; }
 	virtual inline float getCustomRenderingHeight() { return 0.0f; }
 
 	// special rendering for input nodes
-	virtual inline bool customInputRendering(float width) { return false; }
+	virtual inline bool customInputRendering(float /* itemWidth */) { return false; }
 
 	// public properties
 	uint32_t id;

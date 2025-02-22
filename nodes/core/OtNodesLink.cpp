@@ -18,7 +18,7 @@
 //	OtNodesLinkClass::serialize
 //
 
-nlohmann::json OtNodesLinkClass::serialize(std::string* basedir) {
+nlohmann::json OtNodesLinkClass::serialize(std::string* /* basedir */) {
 	auto data = nlohmann::json::object();
 	data["id"] = id;
 	data["from"] = from->id;

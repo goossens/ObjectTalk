@@ -47,4 +47,4 @@ protected:
 	OtShape output;
 };
 
-static OtNodesFactoryRegister<OtMergeShapesNode> type;
+static OtNodesFactoryRegister<OtMergeShapesNode> registration;

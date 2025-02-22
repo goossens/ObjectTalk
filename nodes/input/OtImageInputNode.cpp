@@ -98,4 +98,4 @@ protected:
 	OtImage image;
 };
 
-static OtNodesFactoryRegister<OtImageInputNode> type;
+static OtNodesFactoryRegister<OtImageInputNode> registration;

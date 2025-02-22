@@ -49,4 +49,4 @@ protected:
 	float w{0.0f};
 };
 
-static OtNodesFactoryRegister<OtSeparateXyzwNode> type;
+static OtNodesFactoryRegister<OtSeparateXyzwNode> registration;

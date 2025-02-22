@@ -59,4 +59,4 @@ protected:
 	OtReadBackBuffer buffer;
 };
 
-static OtNodesFactoryRegister<OtTextureToImageNode> type;
+static OtNodesFactoryRegister<OtTextureToImageNode> registration;

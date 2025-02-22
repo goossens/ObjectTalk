@@ -30,7 +30,7 @@ public:
 
 	// process the varying context (called for each iteration)
 	void processVaryingContext(OtNodeVaryingContext& context) override {
-		index = context.index;
+		index = static_cast<int>(context.index);
 	}
 
 	static constexpr const char* nodeName = "Index Field";
@@ -41,4 +41,4 @@ protected:
 	int index = 0;
 };
 
-static OtNodesFactoryRegister<OtIndexFieldNode> type;
+static OtNodesFactoryRegister<OtIndexFieldNode> registration;

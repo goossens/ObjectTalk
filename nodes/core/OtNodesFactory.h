@@ -34,8 +34,8 @@ public:
 	inline OtNodeCategory(const char* n) : name(n) {}
 
 	// add a new type
-	inline void addType(const char* name) {
-		types.emplace_back(name);
+	inline void addType(const char* typeName) {
+		types.emplace_back(typeName);
 		std::sort(types.begin(), types.end());
 	}
 

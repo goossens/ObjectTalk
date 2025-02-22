@@ -98,4 +98,4 @@ protected:
 	OtInstances instances;
 };
 
-static OtNodesFactoryRegister<OtInstancesInputNode> type;
+static OtNodesFactoryRegister<OtInstancesInputNode> registration;

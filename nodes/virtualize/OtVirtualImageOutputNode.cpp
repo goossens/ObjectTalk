@@ -57,4 +57,4 @@ protected:
 	OtAsset<OtImageAsset> asset;
 };
 
-static OtNodesFactoryRegister<OtVirtualImageOutputNode> type;
+static OtNodesFactoryRegister<OtVirtualImageOutputNode> registration;

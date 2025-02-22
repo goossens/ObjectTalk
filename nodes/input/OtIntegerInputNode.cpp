@@ -47,11 +47,11 @@ public:
 	}
 
 	// (de)serialize node
-	void customSerialize(nlohmann::json* data, std::string* basedir) override {
+	void customSerialize(nlohmann::json* data, std::string* /* basedir */) override {
 		(*data)["value"] = value;
 	}
 
-	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
+	void customDeserialize(nlohmann::json* data, std::string* /* basedir */) override {
 		value = data->value("value", 0);
 	}
 
@@ -63,4 +63,4 @@ protected:
 	int value = 0;
 };
 
-static OtNodesFactoryRegister<OtIntegerInputNode> type;
+static OtNodesFactoryRegister<OtIntegerInputNode> registration;

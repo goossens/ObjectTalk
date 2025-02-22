@@ -33,8 +33,8 @@ public:
 	}
 
 	// render custom fields
-	void customRendering(float width) override {
-		ImGui::SetNextItemWidth(width);
+	void customRendering(float itemWidth) override {
+		ImGui::SetNextItemWidth(itemWidth);
 		auto old = serialize().dump();
 
 		if (OtUi::selectorEnum("##operator", &op, operators, operatorCount)) {
@@ -54,11 +54,11 @@ public:
 	}
 
 	// (de)serialize node
-	void customSerialize(nlohmann::json* data, std::string* basedir) override {
+	void customSerialize(nlohmann::json* data, std::string* /* basedir */) override {
 		(*data)["operator"] = op;
 	}
 
-	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
+	void customDeserialize(nlohmann::json* data, std::string* /* basedir */) override {
 		op = data->value("operator", Operator::neg);
 	}
 
@@ -153,4 +153,4 @@ protected:
 	float result = 0.0f;
 };
 
-static OtNodesFactoryRegister<OtUnaryFloatNode> type;
+static OtNodesFactoryRegister<OtUnaryFloatNode> registration;

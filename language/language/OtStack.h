@@ -13,12 +13,6 @@
 //
 
 #include <algorithm>
-#include <cstdlib>
-#include <iomanip>
-#include <memory>
-#include <sstream>
-#include <string>
-#include <utility>
 #include <vector>
 
 #include "OtByteCode.h"
@@ -124,12 +118,17 @@ public:
 private:
 	// reserve specified capacity on stack
 	inline void reserve(size_t newCapacity) {
-		stack = reinterpret_cast<OtObject*>(std::realloc(stack, sizeof(OtObject) * newCapacity));
+		auto newStack = new OtObject[newCapacity];
 
-		for (auto i = stack + capacity; i < stack + newCapacity; i++) {
-			new(i) OtObject;
+		if (stack) {
+			for (size_t i = 0; i < capacity; i++) {
+				newStack[i] = stack[i];
+			}
+
+			delete[] stack;
 		}
 
+		stack = newStack;
 		capacity = newCapacity;
 	}
 
@@ -140,7 +139,7 @@ private:
 				i->~OtObject();
 			}
 
-			std::free(stack);
+			delete[] stack;
 			stack = nullptr;
 			sp = 0;
 			capacity = 0;

@@ -49,4 +49,4 @@ public:
 	OtTexture overlayTexture;
 };
 
-static OtNodesFactoryRegister<OtAlphaOverNode> type;
+static OtNodesFactoryRegister<OtAlphaOverNode> registration;

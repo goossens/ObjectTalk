@@ -111,9 +111,9 @@ private:
 	}
 
 	// get random point inside triangle based on barycentric coordinate
-	OtVertex getRandomPoint(int id, OtVertex* vertices, uint32_t* indices, size_t triangles) {
+	OtVertex getRandomPoint(int instanceID, OtVertex* vertices, uint32_t* indices, size_t triangles) {
 		// select a random triangle
-		int triangle = int(OtHash::toFloat(id, seed) * float(triangles - 1));
+		int triangle = int(OtHash::toFloat(instanceID, seed) * float(triangles - 1));
 
 		// get the corners of the triangle
 		auto index = indices + triangle * 3;
@@ -122,8 +122,8 @@ private:
 		auto& v3 = vertices[index[2]];
 
 		// generate a random barycentric coordinate
-		auto a = OtHash::toFloat(id, seed, 1);
-		auto b = OtHash::toFloat(id, seed, 2);
+		auto a = OtHash::toFloat(instanceID, seed, 1);
+		auto b = OtHash::toFloat(instanceID, seed, 2);
 
 		if (a + b > 1.0f) {
 			a = 1.0f - a;
@@ -150,4 +150,4 @@ protected:
 	glm::vec3 scale{1.0f};
 };
 
-static OtNodesFactoryRegister<OtInstancesOnFacesNode> type;
+static OtNodesFactoryRegister<OtInstancesOnFacesNode> registration;

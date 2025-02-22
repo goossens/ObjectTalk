@@ -106,12 +106,12 @@
 				{
 					"id": 2192342675,
 					"name": "Value",
-					"type": "float"
+					"type": "int"
 				}
 			],
 			"title": "Frequency",
-			"type": "Float Input",
-			"value": 3.0,
+			"type": "Integer Input",
+			"value": 3,
 			"x": 29.0,
 			"y": 153.0
 		},
@@ -195,7 +195,7 @@
 				{
 					"id": 849638715,
 					"name": "Frequency",
-					"type": "float"
+					"type": "int"
 				},
 				{
 					"id": 3698526399,

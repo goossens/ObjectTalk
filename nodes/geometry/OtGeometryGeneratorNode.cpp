@@ -31,11 +31,11 @@ public:
 	}
 
 	// render custom fields
-	void customRendering(float width) override {
+	void customRendering(float itemWidth) override {
 		// render button
-		auto type = primitive->getTypeName();
+		auto geometryType = primitive->getTypeName();
 
-		if (ImGui::Button(type, ImVec2(width, 0.0f))) {
+		if (ImGui::Button(geometryType, ImVec2(itemWidth, 0.0f))) {
 			ImGui::OpenPopup("primitivePopup");
 		}
 
@@ -45,12 +45,12 @@ public:
 
 			bool changed = false;
 
-			if (ImGui::BeginCombo("Type", type)) {
+			if (ImGui::BeginCombo("Type", geometryType)) {
 				factory.each([&](const char* name) {
-					bool isSelectedOne = !std::strcmp(type, name);
+					bool isSelectedOne = !std::strcmp(geometryType, name);
 
 					if (ImGui::Selectable(name, isSelectedOne)) {
-						if (std::strcmp(type, name)) {
+						if (std::strcmp(geometryType, name)) {
 							primitive = factory.create(name);
 							changed = true;
 						}
@@ -93,8 +93,8 @@ public:
 
 	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
 		if (data->contains("primitive") && (*data)["primitive"].contains("type") ) {
-			std::string type = (*data)["primitive"]["type"];
-			primitive = factory.create(type);
+			std::string geometryType = (*data)["primitive"]["type"];
+			primitive = factory.create(geometryType);
 		}
 
 		primitive->deserialize((*data)["primitive"], basedir);
@@ -118,4 +118,4 @@ protected:
 	OtPrimitiveFactory factory;
 };
 
-static OtNodesFactoryRegister<OtGeometryGeneratorNode> type;
+static OtNodesFactoryRegister<OtGeometryGeneratorNode> registration;

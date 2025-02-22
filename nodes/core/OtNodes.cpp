@@ -130,23 +130,23 @@ void OtNodes::save(const std::string& path) {
 	// create json outline
 	auto data = nlohmann::json::object();
 	data["metadata"] = nlohmann::json::parse(metadata.c_str());
-	auto nodes = nlohmann::json::array();
-	auto links = nlohmann::json::array();
+	auto nodesJSON = nlohmann::json::array();
+	auto linksJSON = nlohmann::json::array();
 
 	// save all nodes
 	auto basedir = OtPath::getParent(path);
 
 	eachNode([&](OtNode& node) {
-		nodes.push_back(node->serialize(&basedir));
+		nodesJSON.push_back(node->serialize(&basedir));
 	});
 
 	// save all links
 	eachLink([&](OtNodesLink& link) {
-		links.push_back(link->serialize(&basedir));
+		linksJSON.push_back(link->serialize(&basedir));
 	});
 
-	data["nodes"] = nodes;
-	data["links"] = links;
+	data["nodes"] = nodesJSON;
+	data["links"] = linksJSON;
 
 	// write nodes to file
 	try {
@@ -221,8 +221,8 @@ void OtNodes::deleteNode(OtNode node) {
 //	OtNodes::deleteNodes
 //
 
-void OtNodes::deleteNodes(const std::vector<uint32_t>& nodes) {
-	for (auto id : nodes) {
+void OtNodes::deleteNodes(const std::vector<uint32_t>& nodeIDs) {
+	for (auto id : nodeIDs) {
 		deleteNode(id);
 	}
 }
@@ -457,12 +457,12 @@ void OtNodes::select(uint32_t id, bool deselect) {
 	nodeIndex[id]->selected = true;
 }
 
-void OtNodes::select(const std::vector<uint32_t>& nodes, bool deselect) {
+void OtNodes::select(const std::vector<uint32_t>& nodeIDs, bool deselect) {
 	if (deselect) {
 		deselectAll();
 	}
 
-	for (auto id : nodes) {
+	for (auto id : nodeIDs) {
 		nodeIndex[id]->selected = true;
 	}
 }
@@ -519,13 +519,13 @@ std::string OtNodes::archiveNode(uint32_t node) {
 //
 
 std::string OtNodes::archiveNodes(const std::vector<uint32_t>& selection) {
-	auto nodes = nlohmann::json::array();
-	auto links = nlohmann::json::array();
+	auto nodesJSON = nlohmann::json::array();
+	auto linksJSON = nlohmann::json::array();
 	std::set<OtNodesLink> associatedLinks;
 
 	for (auto id : selection) {
 		auto node = nodeIndex[id];
-		nodes.push_back(node->serialize());
+		nodesJSON.push_back(node->serialize());
 
 		eachLink([&](OtNodesLink& link) {
 			if (link->from->node->id == id || link->to->node->id == id) {
@@ -535,12 +535,12 @@ std::string OtNodes::archiveNodes(const std::vector<uint32_t>& selection) {
 	}
 
 	for (auto& link : associatedLinks) {
-		links.push_back(link->serialize());
+		linksJSON.push_back(link->serialize());
 	}
 
 	auto data = nlohmann::json::object();
-	data["nodes"] = nodes;
-	data["links"] = links;
+	data["nodes"] = nodesJSON;
+	data["links"] = linksJSON;
 	return data.dump();
 }
 
@@ -593,18 +593,18 @@ void OtNodes::restoreNodes(const std::string& json) {
 
 std::vector<uint32_t> OtNodes::duplicateNodes(const std::string& json) {
 	auto data = nlohmann::json::parse(json);
-	std::vector<uint32_t> nodes;
+	std::vector<uint32_t> nodeIDs;
 
 	// restore each node
 	for (auto& node : data["nodes"]) {
 		auto newNode = restoreNode(node, false);
 		newNode->x += 50.0f;
 		newNode->y += 50.0f;
-		nodes.push_back(newNode->id);
+		nodeIDs.push_back(newNode->id);
 	}
 
 	// create list of node IDs
-	return nodes;
+	return nodeIDs;
 }
 
 
@@ -647,7 +647,7 @@ void OtNodes::unindexNode(OtNode node) {
 //	OtNodes::visitNode
 //
 
-bool OtNodes::visitNode(OtNode& node, std::vector<OtNode>& nodes) {
+bool OtNodes::visitNode(OtNode& node, std::vector<OtNode>& nodeList) {
 	// function result
 	bool cycle = false;
 
@@ -664,7 +664,7 @@ bool OtNodes::visitNode(OtNode& node, std::vector<OtNode>& nodes) {
 			// visit all nodes it depends on
 			node->eachInput([&](OtNodesPin& pin) {
 				if (!cycle && pin->sourcePin != nullptr) {
-					cycle = visitNode(nodeIndex[pin->sourcePin->node->id], nodes);
+					cycle = visitNode(nodeIndex[pin->sourcePin->node->id], nodeList);
 				}
 			});
 
@@ -672,7 +672,7 @@ bool OtNodes::visitNode(OtNode& node, std::vector<OtNode>& nodes) {
 			if (!cycle) {
 				node->temporaryMark = false;
 				node->permanentMark = true;
-				nodes.push_back(node);
+				nodeList.push_back(node);
 			}
 		}
 	}
@@ -719,7 +719,7 @@ void OtNodes::classifyLinks() {
 		node->varyingInput = false;
 
 		node->eachInput([&](OtNodesPin& pin) {
-			pin->varying = pin->sourcePin ? pin->varying = pin->sourcePin->varying : false;
+			pin->varying = pin->sourcePin ? pin->sourcePin->varying : false;
 			node->varyingInput |= pin->varying;
 		});
 

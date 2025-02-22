@@ -98,11 +98,11 @@ public:
 			const TESSreal* verts = tessGetVertices(tess);
 
 			for (auto i = 0; i < vertexCount; i++) {
-				auto x = *verts++;
-				auto y = *verts++;
+				auto vx = *verts++;
+				auto vy = *verts++;
 
-				mesh->addVertex(OtVertex(glm::vec3(x, y, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
-				mesh->addVertex(OtVertex(glm::vec3(x, y, -depth), glm::vec3(0.0f, 0.0f, -1.0f)));
+				mesh->addVertex(OtVertex(glm::vec3(vx, vy, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
+				mesh->addVertex(OtVertex(glm::vec3(vx, vy, -depth), glm::vec3(0.0f, 0.0f, -1.0f)));
 			}
 
 			// create the front and back-facing indices
@@ -140,4 +140,4 @@ protected:
 	OtGeometry geometry;
 };
 
-static OtNodesFactoryRegister<OtExtrudeShapeNode> type;
+static OtNodesFactoryRegister<OtExtrudeShapeNode> registration;

@@ -53,4 +53,4 @@ protected:
 	OtShape shape;
 };
 
-static OtNodesFactoryRegister<OtTextToShapeNode> type;
+static OtNodesFactoryRegister<OtTextToShapeNode> registration;

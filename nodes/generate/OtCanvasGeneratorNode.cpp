@@ -58,8 +58,8 @@ public:
 	inline void configureFrameBuffer() override { framebuffer.initialize(OtTexture::rgba8Texture, OtTexture::d24s8Texture); }
 
 	// render custom fields
-	inline void customRendering(float width) override {
-		ImGui::SetNextItemWidth(width);
+	inline void customRendering(float itemWidth) override {
+		ImGui::SetNextItemWidth(itemWidth);
 		auto old = serialize().dump();
 
 		bool changed = script.renderUI("##script", [](const std::string& path) {
@@ -187,4 +187,4 @@ protected:
 	bool hasRenderMethod = false;
 };
 
-static OtNodesFactoryRegister<OtCanvasGeneratorNode> type;
+static OtNodesFactoryRegister<OtCanvasGeneratorNode> registration;

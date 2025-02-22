@@ -62,4 +62,4 @@ protected:
 	OtImage image;
 };
 
-static OtNodesFactoryRegister<OtShapeToImageNode> type;
+static OtNodesFactoryRegister<OtShapeToImageNode> registration;

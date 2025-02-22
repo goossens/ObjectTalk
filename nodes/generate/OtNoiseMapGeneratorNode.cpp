@@ -39,8 +39,8 @@ public:
 	}
 
 	// render custom fields
-	void customRendering(float width) override {
-		ImGui::SetNextItemWidth(width);
+	void customRendering(float itemWidth) override {
+		ImGui::SetNextItemWidth(itemWidth);
 		auto old = serialize().dump();
 
 		if (OtUi::selectorEnum("##noiseType", &noiseType, OtFbm::noiseTypes, OtFbm::noiseTypeCount)) {
@@ -60,11 +60,11 @@ public:
 	}
 
 	// (de)serialize node
-	void customSerialize(nlohmann::json* data, std::string* basedir) override {
+	void customSerialize(nlohmann::json* data, std::string* /* basedir */) override {
 		(*data)["noiseType"] = noiseType;
 	}
 
-	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
+	void customDeserialize(nlohmann::json* data, std::string* /* basedir */) override {
 		noiseType = data->value("noiseType", OtFbm::NoiseType::simplex);
 	}
 
@@ -94,7 +94,7 @@ public:
 protected:
 	int width = 256;
 	int height = 256;
-	float frequency = 10.0f;
+	int frequency = 10;
 	float lacunarity = 2.0f;
 	float amplitude = 0.5f;
 	float persistence = 0.5f;
@@ -107,4 +107,4 @@ protected:
 	int version = 1;
 };
 
-static OtNodesFactoryRegister<OtNoiseMapGeneratorNode> type;
+static OtNodesFactoryRegister<OtNoiseMapGeneratorNode> registration;

@@ -53,7 +53,7 @@ private:
 	void execute(OtPass& pass) override;
 
 	// properties
-	float frequency = 1.0f;
+	int frequency = 1;
 	float lacunarity = 2.0f;
 	float amplitude = 0.5f;
 	float persistence = 0.5f;

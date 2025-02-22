@@ -99,4 +99,4 @@ protected:
 	OtTexture texture;
 };
 
-static OtNodesFactoryRegister<OtTextureInputNode> type;
+static OtNodesFactoryRegister<OtTextureInputNode> registration;

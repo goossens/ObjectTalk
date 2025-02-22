@@ -22,7 +22,7 @@
 //	OtNodesPinClass::serialize
 //
 
-nlohmann::json OtNodesPinClass::serialize(std::string* basedir) {
+nlohmann::json OtNodesPinClass::serialize(std::string* /* basedir */) {
 	auto data = nlohmann::json::object();
 	data["type"] = getTypeName();
 	data["id"] = id;
@@ -40,7 +40,7 @@ nlohmann::json OtNodesPinClass::serialize(std::string* basedir) {
 //	OtNodesPinClass::deserialize
 //
 
-void OtNodesPinClass::deserialize(nlohmann::json data, bool restoreIDs, std::string* basedir) {
+void OtNodesPinClass::deserialize(nlohmann::json data, bool restoreIDs, std::string* /* basedir */) {
 	// restore ID (if required)
 	if (restoreIDs) {
 		id = data["id"];
@@ -177,12 +177,12 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtColor& value) {
 		}};
 }
 
-OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec2& value) { return nullptr; }
-OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec3& value) { return nullptr; }
-OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec4& value) { return nullptr; }
-OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtFont& value) { return nullptr; }
-OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtImage& value) { return nullptr; }
-OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtTexture& value) { return nullptr; }
-OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtShape& value) { return nullptr; }
-OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtGeometry& value) { return nullptr; }
-OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtInstances& value) { return nullptr; }
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec2& /* value */) { return nullptr; }
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec3& /* value */) { return nullptr; }
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec4& /* value */) { return nullptr; }
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtFont& /* value */) { return nullptr; }
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtImage& /* value */) { return nullptr; }
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtTexture& /* value */) { return nullptr; }
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtShape& /* value */) { return nullptr; }
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtGeometry& /* value */) { return nullptr; }
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtInstances& /* value */) { return nullptr; }

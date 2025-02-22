@@ -48,10 +48,6 @@ static char myToLower(char ch) {
     return static_cast<char>(std::tolower(static_cast<int>(ch)));
 }
 
-static char myToUpper(char ch) {
-    return static_cast<char>(std::toupper(static_cast<int>(ch)));
-}
-
 void OtURLClass::parse(const std::string& urlString) {
 	url = urlString;
 
@@ -68,7 +64,7 @@ void OtURLClass::parse(const std::string& urlString) {
 	}
 
 	scheme = submatch(match, 1);
-	std::transform(scheme.begin(), scheme.end(), scheme.begin(), myToUpper);
+	std::transform(scheme.begin(), scheme.end(), scheme.begin(), myToLower);
 	path = submatch(match, 2);
 
 	static std::regex authorityAndPathRegex("//([^/]*)(/.*)?");

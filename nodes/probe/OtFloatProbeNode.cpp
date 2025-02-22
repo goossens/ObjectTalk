@@ -37,4 +37,4 @@ protected:
 };
 
 
-static OtNodesFactoryRegister<OtFloatProbeNode> type;
+static OtNodesFactoryRegister<OtFloatProbeNode> registration;

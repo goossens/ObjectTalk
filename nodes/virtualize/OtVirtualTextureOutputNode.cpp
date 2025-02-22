@@ -57,4 +57,4 @@ protected:
 	OtAsset<OtTextureAsset> asset;
 };
 
-static OtNodesFactoryRegister<OtVirtualTextureOutputNode> type;
+static OtNodesFactoryRegister<OtVirtualTextureOutputNode> registration;

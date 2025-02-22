@@ -42,4 +42,4 @@ protected:
 	glm::vec2 value{0.0f};
 };
 
-static OtNodesFactoryRegister<OtCombineXyNode> type;
+static OtNodesFactoryRegister<OtCombineXyNode> registration;

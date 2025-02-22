@@ -46,4 +46,4 @@ protected:
 	float z{0.0f};
 };
 
-static OtNodesFactoryRegister<OtSeparateXyzNode> type;
+static OtNodesFactoryRegister<OtSeparateXyzNode> registration;

@@ -53,8 +53,8 @@ public:
 	}
 
 	// render custom fields
-	inline void customRendering(float width) override {
-		ImGui::SetNextItemWidth(width);
+	inline void customRendering(float itemWidth) override {
+		ImGui::SetNextItemWidth(itemWidth);
 		auto old = serialize().dump();
 
 		bool changed = script.renderUI("##script", [](const std::string& path) {
@@ -180,4 +180,4 @@ protected:
 	bool hasRenderMethod = false;
 };
 
-static OtNodesFactoryRegister<OtShapeGeneratorNode> type;
+static OtNodesFactoryRegister<OtShapeGeneratorNode> registration;

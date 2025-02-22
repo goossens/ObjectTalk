@@ -61,7 +61,7 @@ public:
 	OtNode createNode(const std::string& name, float x, float y);
 	inline void deleteNode(uint32_t id) { deleteNode(nodeIndex[id]); }
 	void deleteNode(OtNode node);
-	void deleteNodes(const std::vector<uint32_t>& nodes);
+	void deleteNodes(const std::vector<uint32_t>& nodeIDs);
 	inline size_t getNodeCount() {return nodes.size(); }
 
 	// check links
@@ -96,7 +96,7 @@ public:
 	void selectAll();
 	void deselectAll();
 	void select(uint32_t id, bool deselect=true);
-	void select(const std::vector<uint32_t>& nodes, bool deselect=true);
+	void select(const std::vector<uint32_t>& nodeIDs, bool deselect=true);
 	void select(int x1, int y1, int x2, int y2);
 	void deselect(uint32_t id);
 	inline bool isNodeSelected(uint32_t id) { return nodeIndex[id]->selected; }

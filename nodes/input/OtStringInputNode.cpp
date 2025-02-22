@@ -58,11 +58,11 @@ public:
 
 
 	// (de)serialize node
-	void customSerialize(nlohmann::json* data, std::string* basedir) override {
+	void customSerialize(nlohmann::json* data, std::string* /* basedir */) override {
 		(*data)["value"] = value;
 	}
 
-	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
+	void customDeserialize(nlohmann::json* data, std::string* /* basedir */) override {
 		value = data->value("value", "");
 	}
 
@@ -74,4 +74,4 @@ protected:
 	std::string value = "";
 };
 
-static OtNodesFactoryRegister<OtStringInputNode> type;
+static OtNodesFactoryRegister<OtStringInputNode> registration;

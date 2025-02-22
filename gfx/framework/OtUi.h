@@ -146,7 +146,7 @@ public:
 		bool changed = false;
 
 		if (ImGui::BeginCombo(label, names[static_cast<size_t>(*value)])) {
-			for (auto i = 0; i < count; i++) {
+			for (size_t i = 0; i < count; i++) {
 				if (ImGui::Selectable(names[i], static_cast<size_t>(*value) == i)) {
 					if (static_cast<size_t>(*value) != i) {
 						*value = static_cast<T>(i);

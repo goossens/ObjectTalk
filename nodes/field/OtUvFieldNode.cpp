@@ -46,4 +46,4 @@ protected:
 	float v = 0.0f;
 };
 
-static OtNodesFactoryRegister<OtUvFieldNode> type;
+static OtNodesFactoryRegister<OtUvFieldNode> registration;

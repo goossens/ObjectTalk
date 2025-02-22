@@ -37,4 +37,4 @@ public:
 	OtNormalMapper mapper;
 };
 
-static OtNodesFactoryRegister<OtHeightmapToNormalMapNode> type;
+static OtNodesFactoryRegister<OtHeightmapToNormalMapNode> registration;

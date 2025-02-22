@@ -57,11 +57,11 @@ public:
 		auto& mesh = geometry.getMesh();
 
 		// add vertices
-		for (auto z = 0; z < depth; z++) {
-			auto v = (float) z / (depth - 1);
+		for (auto vz = 0; vz < depth; vz++) {
+			auto v = (float) vz / (depth - 1);
 
-			for (auto x = 0; x < width; x++) {
-				auto u = (float) x / (width - 1);
+			for (auto vx = 0; vx < width; vx++) {
+				auto u = (float) vx / (width - 1);
 
 				mesh.addVertex(OtVertex(
 					glm::vec3(u - 0.5f, 0.0f, v - 0.5f),
@@ -71,9 +71,9 @@ public:
 		}
 
 		// add triangles
-		for (auto z = 0; z < (depth - 1); z++) {
-			for (auto x = 0; x < (width - 1); x++) {
-				auto a = z * width + x;
+		for (auto vz = 0; vz < (depth - 1); vz++) {
+			for (auto vx = 0; vx < (width - 1); vx++) {
+				auto a = vz * width + vx;
 				auto b = a + 1;
 				auto c = a + width;
 				auto d = c + 1;
@@ -91,9 +91,9 @@ public:
 		OtVertex* vertex = mesh.getVertices(true).data();
 
 		// update height of each vertex
-		for (auto z = 0; z < depth; z++) {
-			for (auto x = 0; x < width; x++) {
-				(vertex++)->position.y = image.getPixelGray(x, z);
+		for (auto vz = 0; vz < depth; vz++) {
+			for (auto vx = 0; vx < width; vx++) {
+				(vertex++)->position.y = image.getPixelGray(vx, vz);
 			}
 		}
 
@@ -115,4 +115,4 @@ protected:
 	int depth = 0;
 };
 
-static OtNodesFactoryRegister<OtTerrainBuilderNode> type;
+static OtNodesFactoryRegister<OtTerrainBuilderNode> registration;

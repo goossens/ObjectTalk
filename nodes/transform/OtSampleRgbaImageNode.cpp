@@ -60,4 +60,4 @@ protected:
 	float a{0.0f};
 };
 
-static OtNodesFactoryRegister<OtSampleRgbaImageNode> type;
+static OtNodesFactoryRegister<OtSampleRgbaImageNode> registration;

@@ -49,4 +49,4 @@ protected:
 	OtCheckerBoard checkerboard;
 };
 
-static OtNodesFactoryRegister<OtCheckerBoardGeneratorNode> type;
+static OtNodesFactoryRegister<OtCheckerBoardGeneratorNode> registration;

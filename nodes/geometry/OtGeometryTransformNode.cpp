@@ -49,7 +49,7 @@ public:
 			if (hasVaryingInput()) {
 				OtNodeVaryingContext context;
 
-				for (auto i = 0; i < count; i++) {
+				for (size_t i = 0; i < count; i++) {
 					evaluateVariableInputs(context);
 
 					auto transform =
@@ -68,7 +68,7 @@ public:
 					glm::toMat4(glm::quat(glm::radians(rotate))) *
 					glm::scale(glm::mat4(1.0f), scale);
 
-				for (auto i = 0; i < count; i++) {
+				for (size_t i = 0; i < count; i++) {
 					vertex->position = glm::vec3(transform * glm::vec4(vertex->position, 1.0f));
 					vertex->normal = glm::vec3(glm::normalize((transform * glm::vec4(vertex->normal, 0.0f))));
 					vertex++;
@@ -95,4 +95,4 @@ protected:
 	glm::vec3 scale{1.0f};
 };
 
-static OtNodesFactoryRegister<OtGeometryTransform> type;
+static OtNodesFactoryRegister<OtGeometryTransform> registration;

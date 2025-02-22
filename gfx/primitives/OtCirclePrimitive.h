@@ -25,8 +25,8 @@ class OtCirclePrimitive : public OtPrimitiveBase {
 public:
 	// access properties
 	inline void setSegments(int s) { segments = s; }
-	inline void setThetaStart(int ts) { thetaStart = ts; }
-	inline void setThetaLength(int tl) { thetaLength = tl; }
+	inline void setThetaStart(float ts) { thetaStart = ts; }
+	inline void setThetaLength(float tl) { thetaLength = tl; }
 
 	inline int getSegments() { return segments; }
 	inline float getThetaStart() { return thetaStart; }

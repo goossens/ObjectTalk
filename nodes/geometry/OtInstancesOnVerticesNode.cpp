@@ -52,8 +52,8 @@ public:
 
 			// turn each vertex into an instance
 			if (hasVaryingInput()) {
-				for (auto i = 0; i < count; i++) {
-					OtNodeVaryingContext context(i, vertex[i]);
+				for (size_t i = 0; i < count; i++) {
+					OtNodeVaryingContext context(static_cast<int>(i), vertex[i]);
 					evaluateVariableInputs(context);
 
 					if (selection) {
@@ -65,7 +65,7 @@ public:
 			} else {
 				auto transform = glm::toMat4(glm::quat(glm::radians(rotation))) * glm::scale(glm::mat4(1.0f), scale);
 
-				for (auto i = 0; i < count; i++) {
+				for (size_t i = 0; i < count; i++) {
 					if (selection) {
 						generateInstance(*vertex++, transform);
 					}
@@ -102,4 +102,4 @@ protected:
 	glm::vec3 scale{1.0f};
 };
 
-static OtNodesFactoryRegister<OtInstancesOnVerticesNode> type;
+static OtNodesFactoryRegister<OtInstancesOnVerticesNode> registration;

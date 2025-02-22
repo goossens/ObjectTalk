@@ -48,4 +48,4 @@ public:
 	float brightness = 1.0f;
 };
 
-static OtNodesFactoryRegister<OtContrastSaturationBrightnessNode> type;
+static OtNodesFactoryRegister<OtContrastSaturationBrightnessNode> registration;

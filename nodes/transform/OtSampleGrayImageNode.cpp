@@ -47,4 +47,4 @@ protected:
 	float gray{0.0f};
 };
 
-static OtNodesFactoryRegister<OtSampleGrayImageNode> type;
+static OtNodesFactoryRegister<OtSampleGrayImageNode> registration;

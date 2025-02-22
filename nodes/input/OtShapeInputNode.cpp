@@ -98,4 +98,4 @@ protected:
 	OtShape shape;
 };
 
-static OtNodesFactoryRegister<OtShapeInputNode> type;
+static OtNodesFactoryRegister<OtShapeInputNode> registration;

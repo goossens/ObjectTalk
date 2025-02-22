@@ -59,4 +59,4 @@ protected:
 	OtAsset<OtInstancesAsset> asset;
 };
 
-static OtNodesFactoryRegister<OtVirtualInstancesOutputNode> type;
+static OtNodesFactoryRegister<OtVirtualInstancesOutputNode> registration;

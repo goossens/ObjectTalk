@@ -46,4 +46,4 @@ protected:
 	OtTexture texture;
 };
 
-static OtNodesFactoryRegister<OtImageToTextureNode> type;
+static OtNodesFactoryRegister<OtImageToTextureNode> registration;

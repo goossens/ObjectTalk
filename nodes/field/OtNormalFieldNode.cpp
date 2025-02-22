@@ -49,4 +49,4 @@ protected:
 	float z = 0.0f;
 };
 
-static OtNodesFactoryRegister<OtNormalFieldNode> type;
+static OtNodesFactoryRegister<OtNormalFieldNode> registration;

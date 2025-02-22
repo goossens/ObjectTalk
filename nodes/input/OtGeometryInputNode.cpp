@@ -98,4 +98,4 @@ protected:
 	OtGeometry geometry;
 };
 
-static OtNodesFactoryRegister<OtGeometryInputNode> type;
+static OtNodesFactoryRegister<OtGeometryInputNode> registration;

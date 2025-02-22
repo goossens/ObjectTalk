@@ -98,4 +98,4 @@ protected:
 	OtFont font;
 };
 
-static OtNodesFactoryRegister<OtFontInputNode> type;
+static OtNodesFactoryRegister<OtFontInputNode> registration;

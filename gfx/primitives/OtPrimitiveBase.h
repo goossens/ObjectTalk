@@ -26,6 +26,9 @@
 
 class OtPrimitiveBase {
 public:
+	// destructor
+	virtual ~OtPrimitiveBase() {}
+
 	// create a new mesh
 	std::shared_ptr<OtMesh> createMesh() {
 		auto mesh = std::make_shared<OtMesh>();

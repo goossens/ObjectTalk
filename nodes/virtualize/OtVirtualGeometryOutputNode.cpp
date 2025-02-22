@@ -57,4 +57,4 @@ protected:
 	OtAsset<OtGeometryAsset> asset;
 };
 
-static OtNodesFactoryRegister<OtVirtualGeometryOutputNode> type;
+static OtNodesFactoryRegister<OtVirtualGeometryOutputNode> registration;

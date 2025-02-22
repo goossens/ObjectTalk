@@ -47,7 +47,7 @@ public:
 			if (hasVaryingInput()) {
 				OtNodeVaryingContext context;
 
-				for (auto i = 0; i < count; i++) {
+				for (size_t i = 0; i < count; i++) {
 					evaluateVariableInputs(context);
 
 					output.add(
@@ -63,7 +63,7 @@ public:
 					glm::toMat4(glm::quat(glm::radians(rotate))) *
 					glm::scale(glm::mat4(1.0f), scale);
 
-				for (auto i = 0; i < count; i++) {
+				for (size_t i = 0; i < count; i++) {
 					output.add(transform * input[i]);
 				}
 			}
@@ -82,4 +82,4 @@ protected:
 	glm::vec3 scale{1.0f};
 };
 
-static OtNodesFactoryRegister<OtTransformInstancesNode> type;
+static OtNodesFactoryRegister<OtTransformInstancesNode> registration;

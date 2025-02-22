@@ -34,4 +34,4 @@ public:
 	OtSeamlessTile tiler;
 };
 
-static OtNodesFactoryRegister<OtSeamlessTilerNode> type;
+static OtNodesFactoryRegister<OtSeamlessTilerNode> registration;

@@ -48,11 +48,11 @@ public:
 	}
 
 	// (de)serialize node
-	void customSerialize(nlohmann::json* data, std::string* basedir) override {
+	void customSerialize(nlohmann::json* data, std::string* /* basedir */) override {
 		(*data)["value"] = value;
 	}
 
-	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
+	void customDeserialize(nlohmann::json* data, std::string* /* basedir */) override {
 		value = data->value("value", glm::vec4(0.0f));
 	}
 
@@ -64,4 +64,4 @@ protected:
 	glm::vec4 value{0.0f};
 };
 
-static OtNodesFactoryRegister<OtVector4InputNode> type;
+static OtNodesFactoryRegister<OtVector4InputNode> registration;

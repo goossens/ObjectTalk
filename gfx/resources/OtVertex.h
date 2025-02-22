@@ -36,7 +36,7 @@ struct OtVertex {
 	OtVertex() = default;
 
 	inline OtVertex(const glm::vec3& p, const glm::vec3& n=glm::vec3(0.0f), const glm::vec2& u=glm::vec2(0.0f), const glm::vec3 t=glm::vec3(0.0f), const glm::vec3 b=glm::vec3(0.0f)) :
-		position(p), normal(n), uv(u), tangent(t), bitangent(b) {
+		position(p), normal(n), tangent(t), bitangent(b), uv(u) {
 	}
 
 	// get vertex description

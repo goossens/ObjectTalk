@@ -49,7 +49,7 @@ public:
 
 			// handle saveas dialog
 			ImVec2 maxSize = ImGui::GetIO().DisplaySize;
-			ImVec2 minSize = ImVec2(maxSize.x * 0.5, maxSize.y * 0.5);
+			ImVec2 minSize = ImVec2(maxSize.x * 0.5f, maxSize.y * 0.5f);
 
 			if (ImGuiFileDialog::Instance()->Display("instances-saveas", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
 				// save file (if required)
@@ -75,4 +75,4 @@ protected:
 	OtInstances instances;
 };
 
-static OtNodesFactoryRegister<OtSaveInstancesNode> type;
+static OtNodesFactoryRegister<OtSaveInstancesNode> registration;

@@ -38,7 +38,7 @@ public:
 	}
 
 	// render custom fields
-	void customRendering(float width) override {
+	void customRendering(float itemWidth) override {
 		bool changed = false;
 		auto old = serialize().dump();
 
@@ -54,18 +54,18 @@ public:
 		changed |= OtUi::radioButton("A", &curve, OtRgbCurve::Curve::alpha);
 		ImGui::PopID();
 
-		ImVec2 size{width, getCustomRenderingWidth()};
-		const char* title;
+		ImVec2 size{itemWidth, getCustomRenderingWidth()};
+		const char* curveSelector = "";
 
 		switch (curve) {
-			case OtRgbCurve::Curve::rgb: title = "RGB"; break;
-			case OtRgbCurve::Curve::red: title = "Red"; break;
-			case OtRgbCurve::Curve::green: title = "Green"; break;
-			case OtRgbCurve::Curve::blue: title = "Blue"; break;
-			case OtRgbCurve::Curve::alpha: title = "Alpha"; break;
+			case OtRgbCurve::Curve::rgb: curveSelector = "RGB"; break;
+			case OtRgbCurve::Curve::red: curveSelector = "Red"; break;
+			case OtRgbCurve::Curve::green: curveSelector = "Green"; break;
+			case OtRgbCurve::Curve::blue: curveSelector = "Blue"; break;
+			case OtRgbCurve::Curve::alpha: curveSelector = "Alpha"; break;
 		}
 
-		changed |= ImGui::Curve(title, size, curvePoints, lut.data(), &lutSelection);
+		changed |= ImGui::Curve(curveSelector, size, curvePoints, lut.data(), &lutSelection);
 
 		if (changed) {
 			oldState = old;
@@ -84,13 +84,13 @@ public:
 	}
 
 	// (de)serialize node
-	void customSerialize(nlohmann::json* data, std::string* basedir) override {
+	void customSerialize(nlohmann::json* data, std::string* /* basedir */) override {
 
 		(*data)["curve"] = curve;
 		(*data)["lut"] = lut;
 	}
 
-	void customDeserialize(nlohmann::json* data, std::string* basedir) override {
+	void customDeserialize(nlohmann::json* data, std::string* /* basedir */) override {
 		curve = data->value("curve", OtRgbCurve::Curve::rgb);
 		lut = data->value("lut", std::array<ImVec2, curvePoints>{ImVec2(ImGui::CurveTerminator, 0.0f)});
 	}
@@ -101,7 +101,7 @@ public:
 		uint8_t lutValues[256];
 
 		for (auto i = 0; i < 256; i++) {
-			lutValues[i] = ImGui::CurveValueSmooth(float(i) / 255.0f, curvePoints, lut.data()) * 255;
+			lutValues[i] = static_cast<uint8_t>(ImGui::CurveValueSmooth(float(i) / 255.0f, curvePoints, lut.data()) * 255.0f);
 		}
 
 		if (!lutCurve.isValid()) {
@@ -136,4 +136,4 @@ public:
 	OtRgbCurve rgbCurve;
 };
 
-static OtNodesFactoryRegister<OtRbgCurvesNode> type;
+static OtNodesFactoryRegister<OtRbgCurvesNode> registration;

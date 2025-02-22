@@ -46,9 +46,9 @@ public:
 	}
 
 	// render custom fields
-	void customRendering(float width) override {
+	void customRendering(float itemWidth) override {
 		if (texture.isValid()) {
-			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (width - customW) / 2.0f);
+			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (itemWidth - customW) / 2.0f);
 			ImGui::Image((ImTextureID)(intptr_t) texture.getIndex(), ImVec2(customW, customH));
 
 			if (ImGui::IsItemClicked(ImGuiPopupFlags_MouseButtonLeft) && ImGui::IsMouseDoubleClicked(ImGuiPopupFlags_MouseButtonLeft)) {
@@ -85,4 +85,4 @@ protected:
 	float customH;
 };
 
-static OtNodesFactoryRegister<OtTextureProbeNode> type;
+static OtNodesFactoryRegister<OtTextureProbeNode> registration;

@@ -157,7 +157,7 @@ public:
 
 	bool varying = false;
 
-	OtNodesPinInputConfig* inputConfig = nullptr;;
+	OtNodesPinInputConfig* inputConfig = nullptr;
 	OtNodesPinRenderer render = [](float){};
 	float renderingWidth = 0.0f;
 	bool hasRenderer = false;

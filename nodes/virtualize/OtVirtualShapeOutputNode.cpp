@@ -59,4 +59,4 @@ protected:
 	OtAsset<OtShapeAsset> asset;
 };
 
-static OtNodesFactoryRegister<OtVirtualShapeOutputNode> type;
+static OtNodesFactoryRegister<OtVirtualShapeOutputNode> registration;

@@ -29,8 +29,8 @@ public:
 	inline void setRadialSegments(int rs) { radialSegments = rs; }
 	inline void setHeightSegments(int hs) { heightSegments = hs; }
 	inline void setOpenEnded(bool oe) { openEnded = oe; }
-	inline void setThetaStart(int ts) { thetaStart = ts; }
-	inline void setThetaLength(int tl) { thetaLength = tl; }
+	inline void setThetaStart(float ts) { thetaStart = ts; }
+	inline void setThetaLength(float tl) { thetaLength = tl; }
 
 	inline float getTopRadius() { return topRadius; }
 	inline float getBottomRadius() { return bottomRadius; }

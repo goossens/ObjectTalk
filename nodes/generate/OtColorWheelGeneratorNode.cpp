@@ -34,4 +34,4 @@ protected:
 	OtColorWheel colorwheel;
 };
 
-static OtNodesFactoryRegister<OtColorWheelGeneratorNode> type;
+static OtNodesFactoryRegister<OtColorWheelGeneratorNode> registration;

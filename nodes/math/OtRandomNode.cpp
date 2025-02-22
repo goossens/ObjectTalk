@@ -44,7 +44,7 @@ public:
 		}
 
 		if (outputPin->isDestinationConnected() && outputPin->destinationPin->isVarying()) {
-			value = OtHash::toFloat(id, seed) * (maxValue - minValue) + minValue;
+			value = OtHash::toFloat(static_cast<uint32_t>(id), seed) * (maxValue - minValue) + minValue;
 
 		} else {
 			value = OtRandom(minValue, maxValue);
@@ -56,7 +56,7 @@ public:
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::varying;
 
 protected:
-	int id = 0;
+	size_t id = 0;
 	int seed = 1;
 	float minValue = 0.0f;
 	float maxValue = 1.0f;
@@ -64,4 +64,4 @@ protected:
 	OtNodesPin outputPin;
 };
 
-static OtNodesFactoryRegister<OtRandomNode> type;
+static OtNodesFactoryRegister<OtRandomNode> registration;

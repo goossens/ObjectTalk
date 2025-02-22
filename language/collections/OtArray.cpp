@@ -101,7 +101,7 @@ bool OtArrayClass::operator==(OtObject operand) {
 
 OtObject OtArrayClass::getEntry(size_t index) {
 	// sanity check
-	if (index < 0 || index >= array.size()) {
+	if (index >= array.size()) {
 		OtError("invalid index [{}] for array of size [{}]", index, array.size());
 	}
 
@@ -116,7 +116,7 @@ OtObject OtArrayClass::getEntry(size_t index) {
 
 OtObject OtArrayClass::setEntry(size_t index, OtObject object) {
 	// sanity check
-	if (index < 0 || index >= array.size()) {
+	if (index >= array.size()) {
 		OtError("invalid index [{}] for array of size [{}]", index, array.size());
 	}
 
@@ -131,12 +131,9 @@ OtObject OtArrayClass::setEntry(size_t index, OtObject object) {
 //
 
 OtObject OtArrayClass::index(size_t index) {
-	if (index < 0) {
-		OtError("Negative index [{}] is not allowed in array", index);
-
-	} else if (index >= array.size()) {
-		OtError("Index [{}] is greater than array length [{}]", index, array.size());
-
+	// sanity check
+	if (index >= array.size()) {
+		OtError("invalid index [{}] for array of size [{}]", index, array.size());
 	}
 
 	return OtArrayReference::create(OtArray(this), index);
@@ -254,12 +251,9 @@ OtObject OtArrayClass::append(OtObject object) {
 //
 
 OtObject OtArrayClass::insert(size_t index, OtObject object) {
-	if (index < 0) {
-		OtError("Negative index [{}] is not allowed in array", index);
-
-	} else if (index >= size()) {
-		OtError("Index [{}] is greater than array length [{}]", index, size());
-
+	// sanity check
+	if (index >= array.size()) {
+		OtError("invalid index [{}] for array of size [{}]", index, array.size());
 	}
 
 	array.insert(array.begin() + index, std::move(object));
@@ -272,12 +266,9 @@ OtObject OtArrayClass::insert(size_t index, OtObject object) {
 //
 
 OtObject OtArrayClass::erase(size_t index) {
-	if (index < 0) {
-		OtError("Negative index [{}] is not allowed in array", index);
-
-	} else if (index >= size()) {
-		OtError("Index [{}] is greater than array length [{}]", index, size());
-
+	// sanity check
+	if (index >= array.size()) {
+		OtError("invalid index [{}] for array of size [{}]", index, array.size());
 	}
 
 	array.erase(array.begin() + index);
@@ -290,20 +281,13 @@ OtObject OtArrayClass::erase(size_t index) {
 //
 
 OtObject OtArrayClass::eraseMultiple(size_t index1, size_t index2) {
-	if (index1 < 0) {
-		OtError("Negative index [{}] is not allowed in array", index1);
-
-	} else if (index1 >= size()) {
-		OtError("Index [{}] is greater than array length [{}]", index1, size());
-
+	// sanity check
+	if (index1 >= array.size()) {
+		OtError("invalid index [{}] for array of size [{}]", index1, array.size());
 	}
 
-	if (index2 < 0) {
-		OtError("Negative index [{}] is not allowed in array", index2);
-
-	} else if (index2 >= size()) {
-		OtError("Index [{}] is greater than array length [{}]", index2, size());
-
+	if (index2 >= array.size()) {
+		OtError("invalid index [{}] for array of size [{}]", index2, array.size());
 	}
 
 	if (index1 > index2) {

@@ -47,14 +47,14 @@ public:
 	// rendering pass
 	OtPass* pass;
 
-	// clipping plane
-	glm::vec4 clippingPlane;
-
 	// image base lighting
 	OtImageBasedLighting* ibl;
 
 	// shadows
 	OtCascadedShadowMap* csm;
+
+	// clipping plane
+	glm::vec4 clippingPlane;
 
 	// rendering flags
 	bool hasImageBasedLighting;

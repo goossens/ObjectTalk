@@ -24,7 +24,7 @@ target_compile_options(gui PRIVATE
 	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wpedantic>
 	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/W4 /WX>)
 
-	target_include_directories(gui PUBLIC ${GUI_INCLUDE_DIRS})
+target_include_directories(gui PUBLIC ${GUI_INCLUDE_DIRS})
 target_link_libraries(gui PUBLIC language shaders gfx imguieditor)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${GUI_INCLUDES} ${GUI_SOURCES})

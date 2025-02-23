@@ -48,7 +48,7 @@ private:
 
 	// utility functions
 	void calculateNodeSize(OtNode& node);
-	void handleInteractions(ImDrawList* drawlist);
+	void handleInteractions();
 
 	// target nodes
 	OtNodes* nodes;
@@ -74,7 +74,6 @@ private:
 	InteractionState interactionState = InteractionState::none;
 
 	bool nodeEdited = false;
-	bool renamingDone = false;
 	bool draggingDone = false;
 	bool connectingDone = false;
 	bool disconnectingDone = false;

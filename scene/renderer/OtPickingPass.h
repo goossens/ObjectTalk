@@ -147,7 +147,7 @@ protected:
 			OtStateLines;
 	};
 
-	inline void submitUniforms(OtSceneRendererContext& ctx, Scope& scope) override {
+	inline void submitUniforms(OtSceneRendererContext& /* ctx */, Scope& scope) override {
 		pickingUniforms.setValue(0, float(nextID) / 255.0f, 0.0f, 0.0f, 0.0f);
 		pickingUniforms.submit();
 		entityMap[nextID++] = scope.entity;

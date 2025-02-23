@@ -784,11 +784,11 @@ void OtSceneEditor::renderEntity(OtEntity entity) {
 		}
 
 		auto& component = scene.getComponent<OtCoreComponent>(entity);
-		auto tag = component.tag;
+		auto componentTag = component.tag;
 
-		if (OtUi::inputText("##rename", &tag)) {
+		if (OtUi::inputText("##rename", &componentTag)) {
 			auto oldValue = component.serialize(nullptr).dump();
-			component.tag = tag;
+			component.tag = componentTag;
 			auto newValue = component.serialize(nullptr).dump();
 			nextTask = std::make_shared<OtEditComponentTask<OtCoreComponent>>(&scene, entity, oldValue, newValue);
 			renamingEntity = OtEntityNull;

@@ -34,6 +34,6 @@ public:
 	virtual void redo() { perform(); }
 
 	// support task merging
-	virtual bool isMergeable(std::shared_ptr<OtEditorTask> task) { return false; }
-	virtual void merge(std::shared_ptr<OtEditorTask> task) {}
+	virtual bool isMergeable(std::shared_ptr<OtEditorTask> /* task */) { return false; }
+	virtual void merge(std::shared_ptr<OtEditorTask> /* task */) {}
 };

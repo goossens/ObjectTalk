@@ -56,7 +56,7 @@ public:
 	virtual inline std::string getExtension() { return ""; }
 
 	// handle exception during a "run"
-	virtual inline void error(OtException e) {}
+	virtual inline void error(OtException) {}
 
 protected:
 	// these methods must be overriden by subclasses

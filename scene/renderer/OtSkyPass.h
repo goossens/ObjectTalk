@@ -56,19 +56,19 @@ public:
 
 		// see if we have any sky components
 		for (auto&& [entity, component] : ctx.scene->view<OtSkyComponent>().each()) {
-			renderSky(ctx, pass, component);
+			renderSky(pass, component);
 		};
 
 		// see if we have any sky boxes
 		for (auto&& [entity, component] : ctx.scene->view<OtSkyBoxComponent>().each()) {
 			if (component.cubemap.isReady()) {
-				renderSkyBox(ctx, pass, component);
+				renderSkyBox(pass, component);
 			}
 		};
 	}
 
 	// render procedural sky
-	void renderSky(OtSceneRendererContext& ctx, OtPass& pass, OtSkyComponent& component) {
+	void renderSky(OtPass& pass, OtSkyComponent& component) {
 		// set the uniform values
 		static float time = 0.0f;
 		time += ImGui::GetIO().DeltaTime;
@@ -101,7 +101,7 @@ public:
 	}
 
 	// render skybox
-	void renderSkyBox(OtSceneRendererContext& ctx, OtPass& pass, OtSkyBoxComponent& component) {
+	void renderSkyBox(OtPass& pass, OtSkyBoxComponent& component) {
 		// set the uniform values
 		skyUniforms.setValue(0, component.brightness, component.gamma, 0.0f, 0.0f);
 		skyUniforms.submit();

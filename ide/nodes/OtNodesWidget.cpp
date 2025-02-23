@@ -34,7 +34,6 @@ static constexpr ImU32 rubberBandOutlineColor = IM_COL32(5, 130, 255, 192);
 static constexpr ImU32 nodeBackgroundColor = IM_COL32(60, 60, 60, 128);
 static constexpr ImU32 nodeOutlineColor = IM_COL32(100, 100, 100, 255);
 static constexpr ImU32 nodeSelectedColor = IM_COL32(255, 176,  50, 255);
-static constexpr ImU32 normalLinkColor = IM_COL32(255, 255, 255, 255);
 static constexpr ImU32 creatingLinkColor = IM_COL32(248, 222, 126, 255);
 static constexpr ImU32 validLinkColor = IM_COL32(128, 255, 128, 255);
 static constexpr ImU32 invalidLinkColor = IM_COL32(255, 32, 32, 255);
@@ -160,7 +159,7 @@ void OtNodesWidget::render(OtNodes* n) {
 
 	// handle user interactions (if required)
 	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows)) {
-		handleInteractions(drawlist);
+		handleInteractions();
 
 		// are we in the process of connecting nodes?
 		if (interactionState == InteractionState::connecting || interactionState == InteractionState::reconnecting) {
@@ -398,7 +397,7 @@ void OtNodesWidget::renderNode(ImDrawList* drawlist, OtNode& node) {
 
 	if (node->id == renamingNode) {
 		ImGui::SetCursorScreenPos(topLeft + ImVec2(horizontalPadding, topPadding));
-		ImGui::SetNextItemWidth(node->w - 2.0 * horizontalPadding);
+		ImGui::SetNextItemWidth(node->w - 2.0f * horizontalPadding);
 
 		if (startNodeRenaming) {
 			ImGui::SetKeyboardFocusHere();
@@ -532,10 +531,14 @@ static void dashedBezierCubic(ImDrawList* drawlist, const ImVec2& p1, const ImVe
 
 
 static void dashedLine(ImDrawList* drawlist, const ImVec2& p1, const ImVec2& p2, ImU32 color, int segments) {
-	auto step = (p2 - p1) / segments;
+	auto step = (p2 - p1) / static_cast<float>(segments);
 
 	for (auto i = 1; i < segments - 1; i += 2) {
-		drawlist->AddLine(p1 + step * i, p1 + step * (i + 1), color, linkThickness);
+		drawlist->AddLine(
+			p1 + step * static_cast<float>(i),
+			p1 + step * static_cast<float>(i + 1),
+			color,
+			linkThickness);
 	}
 }
 
@@ -632,7 +635,7 @@ void OtNodesWidget::calculateNodeSize(OtNode& node) {
 //	OtNodesWidget::handleInteractions
 //
 
-void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
+void OtNodesWidget::handleInteractions() {
 	// get mouse position relative to graph
 	auto mousePos = ImGui::GetMousePos() - widgetOffset;
 
@@ -748,7 +751,11 @@ void OtNodesWidget::handleInteractions(ImDrawList* drawlist) {
 				std::max(mousePos.x, rubberBandStartPos.x),
 				std::max(mousePos.y, rubberBandStartPos.y));
 
-			nodes->select(rubberBandTopLeft.x, rubberBandTopLeft.y, rubberBandBottomRight.x, rubberBandBottomRight.y);
+			nodes->select(
+				static_cast<int>(rubberBandTopLeft.x),
+				static_cast<int>(rubberBandTopLeft.y),
+				static_cast<int>(rubberBandBottomRight.x),
+				static_cast<int>(rubberBandBottomRight.y));
 
 		} else {
 			interactionState = InteractionState::none;

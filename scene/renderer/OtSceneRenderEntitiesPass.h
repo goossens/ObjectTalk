@@ -46,7 +46,7 @@ protected:
 		std::shared_ptr<OtTerrain> terrain;
 	};
 
-	virtual void submitUniforms(OtSceneRendererContext& ctx, Scope& scope) {}
+	virtual void submitUniforms(OtSceneRendererContext& /* ctx */, Scope& /* scope */) {}
 
 protected:
 	// utility methods for subclasses

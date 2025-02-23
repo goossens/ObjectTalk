@@ -146,7 +146,7 @@ public:
 			start = now;
 		}
 
-		float time = float(double(now - start) / 1000.0) * 0.1f * water.speed;
+		float time = static_cast<float>(static_cast<double>(now - start) / 1000.0) * 0.1f * water.speed;
 
 		// get maximum distance in clip space
 		glm::vec4 farPoint = ctx.camera.projectionMatrix * glm::vec4(0.0, water.level, -water.distance, 1.0);
@@ -154,9 +154,9 @@ public:
 
 		// submit uniforms
 		waterUniforms.setValue(0, water.level, distance, 0.0f, 0.0f);
-		waterUniforms.setValue(1, water.scale, water.normals.isReady() ? water.normals->getTexture().getWidth() : 1, time, 0.0f);
+		waterUniforms.setValue(1, water.scale, static_cast<float>(water.normals.isReady() ? water.normals->getTexture().getWidth() : 1), time, 0.0f);
 		waterUniforms.setValue(2, water.metallic, water.roughness, water.ao, water.reflectivity);
-		waterUniforms.setValue(3, water.color, float(water.useRefractance));
+		waterUniforms.setValue(3, water.color, static_cast<float>(water.useRefractance));
 		waterUniforms.submit();
 
 		submitLightingUniforms(ctx);

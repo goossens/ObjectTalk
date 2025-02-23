@@ -62,7 +62,7 @@ protected:
 	inline uint64_t getCullbackState() override { return OtStateWriteZ | OtStateDepthTestLess | OtStateCullCw; };
 	inline uint64_t getWireframeState() override { return OtStateWriteZ | OtStateDepthTestLess | OtStateLines; };
 
-	inline void submitUniforms(OtSceneRendererContext& ctx, Scope& scope) override {
+	inline void submitUniforms(OtSceneRendererContext& /* ctx */, Scope& scope) override {
 		if (scope.isTransparent) { submitAlbedoUniforms(*scope.material); }
 		if (scope.isTerrain) { submitTerrainUniforms(*scope.terrain); }
 	}

@@ -109,9 +109,15 @@ void OtSubProcess::kill(int signal) {
 //	OtSubProcess::onAllocateMemory
 //
 
-void OtSubProcess::onAllocateMemory(uv_handle_t* handle, size_t len, uv_buf_t* buf) {
+void OtSubProcess::onAllocateMemory(uv_handle_t* /* handle */, size_t len, uv_buf_t* buf) {
 	buf->base = new char[len];
+
+#ifdef _WIN32
+	buf->len = static_cast<ULONG>(len);
+
+#else
 	buf->len = len;
+#endif
 }
 
 

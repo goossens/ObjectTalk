@@ -121,7 +121,7 @@ protected:
 	inline uint64_t getCullbackState() override { return OtStateWriteRgb; };
 	inline uint64_t getWireframeState() override { return OtStateWriteRgb; };
 
-	inline void submitUniforms(OtSceneRendererContext& ctx, Scope& scope) override {
+	inline void submitUniforms(OtSceneRendererContext& /* ctx */, Scope& scope) override {
 		if (scope.isTransparent) { submitAlbedoUniforms(*scope.material); }
 	}
 

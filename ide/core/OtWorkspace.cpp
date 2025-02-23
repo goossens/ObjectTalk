@@ -484,8 +484,8 @@ void OtWorkspace::TabifyAllEditors() {
 
 void OtWorkspace::deleteEditor(std::shared_ptr<OtEditor> editor) {
 	// remove specified editor from list
-	editors.erase(std::remove_if(editors.begin(), editors.end(), [this](std::shared_ptr<OtEditor> candidate) {
-		return candidate == activeEditor;
+	editors.erase(std::remove_if(editors.begin(), editors.end(), [editor](std::shared_ptr<OtEditor> candidate) {
+		return candidate == editor;
 	}), editors.end());
 
 	if (editors.size() == 0) {
@@ -544,7 +544,9 @@ void OtWorkspace::renderSplashScreen() {
 			ImGuiWindowFlags_NoBringToFrontOnFocus |
 			ImGuiWindowFlags_NoInputs);
 
-	ImGui::Image((ImTextureID)(intptr_t) logo->getTextureIndex(), ImVec2(logo->getWidth(), logo->getHeight()));
+	ImGui::Image((
+		ImTextureID)(intptr_t) logo->getTextureIndex(),
+		ImVec2(static_cast<float>(logo->getWidth()), static_cast<float>(logo->getHeight())));
 
 	OtUi::centeredText("Welcome to the ObjectTalk");
 	OtUi::centeredText("Integrated Development Environment (IDE)");
